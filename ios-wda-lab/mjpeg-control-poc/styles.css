@@ -1,0 +1,22 @@
+:root { color-scheme: dark; font-family: Inter, "PingFang SC", sans-serif; background: #080b10; color: #edf2fb; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; background: radial-gradient(circle at top right, #17344a, transparent 42%), #080b10; }
+.workspace { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 32px 0 44px; }
+header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.eyebrow { margin: 0 0 5px; color: #76c7ff; font-size: 12px; font-weight: 700; letter-spacing: 1.2px; }
+h1 { margin: 0; font-size: 26px; }
+.state { border: 1px solid #344254; border-radius: 999px; padding: 8px 12px; color: #aebcd0; }
+.state[data-state="live"] { color: #51dda2; border-color: #27775a; background: #102c25; }
+.state[data-state="error"] { color: #ffaaa2; border-color: #87433d; background: #341615; }
+.stage-panel, .controls { border: 1px solid #263343; background: rgba(16, 23, 34, .9); border-radius: 8px; }
+.stage-panel { padding: 18px; }
+.stage { position: relative; display: grid; place-items: center; min-height: 640px; background: #05070a; overflow: hidden; }
+.stage img { display: block; max-height: 74vh; max-width: 100%; object-fit: contain; touch-action: none; user-select: none; }
+.loading { position: absolute; color: #91a3bb; }
+.controls { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; padding: 16px; margin-top: 16px; }
+button, input { border: 1px solid #344254; border-radius: 6px; background: #111a26; color: inherit; padding: 10px 13px; font: inherit; }
+button { cursor: pointer; } button:disabled { cursor: not-allowed; opacity: .45; } .primary { background: #ffc34d; color: #1d1606; border-color: #ffc34d; font-weight: 700; }
+dl { display: flex; gap: 10px; margin: 0; } dl div { min-width: 82px; border-left: 1px solid #283647; padding-left: 10px; } dt { color: #879ab1; font-size: 12px; } dd { margin: 3px 0 0; font-weight: 700; }
+label { display: flex; align-items: center; gap: 8px; color: #9cadc2; } input { min-width: 230px; }
+.hint { color: #8191a6; font-size: 13px; }
+@media (max-width: 720px) { .workspace { width: min(100% - 24px, 700px); padding-top: 18px; } header { align-items: flex-start; gap: 14px; } .stage { min-height: 520px; } .controls, dl { align-items: stretch; } label, input { width: 100%; } }

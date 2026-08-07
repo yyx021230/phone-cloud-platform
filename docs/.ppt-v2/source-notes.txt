@@ -1,0 +1,16 @@
+Research sources used in speaker notes
+
+Google PAIR — People + AI Guidebook
+https://pair.withgoogle.com/guidebook-v2/
+
+Microsoft HAX — Guidelines for Human-AI Interaction
+https://www.microsoft.com/en-us/haxtoolkit/ai-guidelines/
+
+Figma Make — Create and edit a functional prototype or web app
+https://help.figma.com/hc/en-us/articles/31304485164695-Create-and-edit-a-functional-prototype-or-web-app
+
+Vercel — How to prompt v0
+https://vercel.com/blog/how-to-prompt-v0
+
+OpenAI API Quickstart
+https://platform.openai.com/docs/quickstart/make-your-first-api-request

@@ -1,0 +1,20 @@
+plugins {
+    id "com.android.application"
+}
+
+android {
+    namespace "com.ztqc.smsrelay"
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "com.ztqc.smsrelay"
+        minSdk 23
+        targetSdk 35
+        versionCode 101
+        versionName "0.1.0-phone-cloud"
+    }
+}
+
+dependencies {
+    implementation "com.squareup.okhttp3:okhttp:4.12.0"
+}

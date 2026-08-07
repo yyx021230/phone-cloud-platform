@@ -1,0 +1,42 @@
+:root {
+  color-scheme: dark;
+  font-family: Inter, "Segoe UI", sans-serif;
+  background: #080b10;
+  color: #eef2f7;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; background: #080b10; }
+button, select { font: inherit; }
+
+.shell { width: min(1040px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0 40px; }
+header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #27303d; padding-bottom: 18px; }
+.eyebrow { color: #f5b82e; font-size: 12px; font-weight: 700; }
+h1 { margin: 6px 0 0; font-size: 25px; letter-spacing: 0; }
+.status { border: 1px solid #344154; background: #121923; padding: 9px 12px; font-size: 13px; }
+.status[data-state="live"] { border-color: #267854; color: #56dda0; }
+.status[data-state="preparing"] { border-color: #8b6924; color: #ffd36c; }
+.status[data-state="failed"] { border-color: #8f3d45; color: #ff939d; }
+.workspace { display: grid; grid-template-columns: 270px minmax(0, 1fr); gap: 28px; padding-top: 26px; }
+aside { border-right: 1px solid #27303d; padding-right: 28px; }
+label { display: block; color: #98a5b7; font-size: 13px; margin-bottom: 8px; }
+select, aside button { width: 100%; height: 42px; border: 1px solid #344154; background: #111822; color: #eef2f7; padding: 0 12px; }
+aside button { margin-top: 12px; cursor: pointer; background: #f5b82e; border-color: #f5b82e; color: #111; font-weight: 700; }
+aside button.secondary { background: #151d28; border-color: #344154; color: #d7deea; }
+button:disabled { cursor: not-allowed; opacity: .45; }
+dl { margin: 28px 0 0; border-top: 1px solid #27303d; }
+dl div { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #202835; font-size: 12px; }
+dt { color: #8190a5; } dd { margin: 0; }
+.device-stage { display: grid; justify-items: center; align-content: start; }
+.phone-frame { position: relative; width: min(360px, 100%); aspect-ratio: 9 / 20; border: 8px solid #1d2633; outline: 1px solid #455267; background: #000; overflow: hidden; }
+canvas { display: block; width: 100%; height: 100%; object-fit: contain; background: #000; touch-action: none; }
+.empty { position: absolute; inset: 0; display: grid; place-items: center; color: #6f7d90; font-size: 13px; pointer-events: none; }
+.empty[hidden] { display: none; }
+nav { display: flex; gap: 12px; margin-top: 16px; }
+nav button { width: 44px; height: 38px; border: 1px solid #344154; background: #121923; color: #dce3ee; cursor: pointer; font-size: 21px; }
+
+@media (max-width: 720px) {
+  header { align-items: flex-start; gap: 16px; }
+  .workspace { grid-template-columns: 1fr; }
+  aside { border-right: 0; border-bottom: 1px solid #27303d; padding: 0 0 22px; }
+}

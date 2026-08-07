@@ -1,0 +1,239 @@
+{"kind":"deck","id":"pr/h5z6cp","name":"Deck"}
+{"kind":"layout","layoutId":"bfb52af7-0b5c-488f-afc4-7cbab8a83b58","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"be5cfad0-a1a1-49d3-8e67-5310df54982b","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/ckfc90","slide":1,"title":"从案例出发的课堂工作坊","textShapes":6}
+{"kind":"shape","id":"sh/dkbixg3i","slide":1,"bbox":[0,0,595,720]}
+{"kind":"shape","id":"sh/sj214bmx","slide":1,"bbox":[52,68,88,8]}
+{"kind":"textbox","id":"sh/fmt0z6l8","slide":1,"text":"从案例出发的课堂工作坊","textPreview":"从案例出发的课堂工作坊","textChars":11,"textLines":1,"bbox":[52,100,420,24]}
+{"kind":"textbox","id":"sh/elkj6143","slide":1,"text":"AI 前端设计\n工作坊","textPreview":"AI 前端设计 | 工作坊","textChars":11,"textLines":2,"bbox":[52,166,500,152]}
+{"kind":"textbox","id":"sh/1obi1g3e","slide":1,"text":"把一个“能回答”的 AI 功能，\n设计成用户敢用、能改、能验证的产品。","textPreview":"把一个“能回答”的 AI 功能， | 设计成用户敢用、能改、能验证的产品。","textChars":35,"textLines":2,"bbox":[52,406,470,88]}
+{"kind":"textbox","id":"sh/0n218bmt","slide":1,"text":"今天的产出：关键时刻图 · 审计表 · 低保真方案","textPreview":"今天的产出：关键时刻图 · 审计表 · 低保真方案","textChars":25,"textLines":1,"bbox":[52,595,500,28]}
+{"kind":"shape","id":"sh/nad03qlk","slide":1,"bbox":[52,676,1176,1]}
+{"kind":"textbox","id":"sh/2pkjal4z","slide":1,"text":"AI 前端设计工作坊","textPreview":"AI 前端设计工作坊","textChars":10,"textLines":1,"bbox":[52,686,250,18]}
+{"kind":"textbox","id":"sh/wnmlcnql","slide":1,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[1174,686,54,18]}
+{"kind":"image","id":"im/nadovypc","slide":1,"name":"","alt":"AI 前端设计工作流","bbox":[0,0,1280,720]}
+{"kind":"notes","id":"nt/ckfc90","slide":1,"text":"[Sources]\nGoogle PAIR Workshop Slides: https://pair.withgoogle.com/guidebook-v2/workshop/Guidebook-Workshop-Slides.pdf\nCHI 2025 GenAI Design Thinking course: https://sites.google.com/umd.edu/genaidesignthinking\nVisual generated with OpenAI image generation for this deck."}
+{"kind":"slide","id":"sl/ipwqvh","slide":2,"title":"这不是听完就忘的分享","textShapes":17}
+{"kind":"textbox","id":"sh/3etkruh4","slide":2,"text":"这不是听完就忘的分享","textPreview":"这不是听完就忘的分享","textChars":10,"textLines":1,"bbox":[58,58,420,24]}
+{"kind":"textbox","id":"sh/4f2lkzyp","slide":2,"text":"这堂课结束时，\n每组要带走 4 个东西。","textPreview":"这堂课结束时， | 每组要带走 4 个东西。","textChars":20,"textLines":2,"bbox":[58,108,760,120]}
+{"kind":"shape","id":"sh/pgb2t4za","slide":2,"bbox":[58,338,246,206]}
+{"kind":"textbox","id":"sh/qhk3m9gv","slide":2,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[82,364,45,22]}
+{"kind":"textbox","id":"sh/ritkvehg","slide":2,"text":"关键时刻","textPreview":"关键时刻","textChars":4,"textLines":1,"bbox":[82,411,180,36]}
+{"kind":"textbox","id":"sh/cj2lojy1","slide":2,"text":"AI 最可能帮上忙或帮倒忙的那一刻","textPreview":"AI 最可能帮上忙或帮倒忙的那一刻","textChars":17,"textLines":1,"bbox":[82,470,188,48]}
+{"kind":"shape","id":"sh/dkb2xoz6","slide":2,"bbox":[344,338,246,206]}
+{"kind":"textbox","id":"sh/el43q9gr","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[368,364,45,22]}
+{"kind":"textbox","id":"sh/zmdkzehc","slide":2,"text":"机会陈述","textPreview":"机会陈述","textChars":4,"textLines":1,"bbox":[368,411,180,36]}
+{"kind":"textbox","id":"sh/7idsby58","slide":2,"text":"用用户的语气说清“我需要什么”","textPreview":"用用户的语气说清“我需要什么”","textChars":15,"textLines":1,"bbox":[368,470,188,48]}
+{"kind":"shape","id":"sh/mh4bit4n","slide":2,"bbox":[630,338,246,206]}
+{"kind":"textbox","id":"sh/9kvadony","slide":2,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[654,364,45,22]}
+{"kind":"textbox","id":"sh/8jmtk3mt","slide":2,"text":"控制审计","textPreview":"控制审计","textChars":4,"textLines":1,"bbox":[654,411,180,36]}
+{"kind":"textbox","id":"sh/zets7e5w","slide":2,"text":"哪里要确认、拒绝、修改与撤销","textPreview":"哪里要确认、拒绝、修改与撤销","textChars":14,"textLines":1,"bbox":[654,470,188,48]}
+{"kind":"shape","id":"sh/ydkbe94b","slide":2,"bbox":[916,338,246,206]}
+{"kind":"textbox","id":"sh/lgva9on2","slide":2,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[940,364,45,22]}
+{"kind":"textbox","id":"sh/kf2tgjmh","slide":2,"text":"一张草图","textPreview":"一张草图","textChars":4,"textLines":1,"bbox":[940,411,180,36]}
+{"kind":"textbox","id":"sh/jaxcjilg","slide":2,"text":"把状态和证据放进页面","textPreview":"把状态和证据放进页面","textChars":10,"textLines":1,"bbox":[940,470,188,48]}
+{"kind":"textbox","id":"sh/i9obqd4v","slide":2,"text":"规则：所有概念都要回到同一个案例；每讲 1 个方法，就产出 1 张可用的设计工件。","textPreview":"规则：所有概念都要回到同一个案例；每讲 1 个方法，就产出 1 张可用的设计工件。","textChars":41,"textLines":1,"bbox":[58,600,1120,32]}
+{"kind":"shape","id":"sh/e58viho3","slide":2,"bbox":[52,676,1176,1]}
+{"kind":"textbox","id":"sh/f6hwbmpo","slide":2,"text":"AI 前端设计工作坊","textPreview":"AI 前端设计工作坊","textChars":10,"textLines":1,"bbox":[52,686,250,18]}
+{"kind":"textbox","id":"sh/07adk76t","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[1174,686,54,18]}
+{"kind":"notes","id":"nt/ipwqvh","slide":2,"text":"[Sources]\nGoogle PAIR Workshop Slides: https://pair.withgoogle.com/guidebook-v2/workshop/Guidebook-Workshop-Slides.pdf\nCHI 2025 GenAI Design Thinking course: https://sites.google.com/umd.edu/genaidesignthinking"}
+{"kind":"slide","id":"sl/vud5jp","slide":3,"title":"贯穿案例：销售异常分析助手","textShapes":10}
+{"kind":"textbox","id":"sh/mpwzuhsr","slide":3,"text":"贯穿案例：销售异常分析助手","textPreview":"贯穿案例：销售异常分析助手","textChars":13,"textLines":1,"bbox":[58,56,420,24]}
+{"kind":"textbox","id":"sh/9sny5wb2","slide":3,"text":"先别设计页面。\n先认识你要解决的用户时刻。","textPreview":"先别设计页面。 | 先认识你要解决的用户时刻。","textChars":21,"textLines":2,"bbox":[58,105,800,115]}
+{"kind":"shape","id":"sh/8rehwrax","slide":3,"bbox":[58,302,480,258]}
+{"kind":"textbox","id":"sh/vu5g7mt8","slide":3,"text":"场景","textPreview":"场景","textChars":2,"textLines":1,"bbox":[86,332,120,26]}
+{"kind":"textbox","id":"sh/utwzy1sn","slide":3,"text":"门店经理在早晨站会前 3 分钟，\n要决定今天先跟进哪一家门店。","textPreview":"门店经理在早晨站会前 3 分钟， | 要决定今天先跟进哪一家门店。","textChars":31,"textLines":2,"bbox":[86,386,390,75]}
+{"kind":"textbox","id":"sh/hg7y9wbe","slide":3,"text":"数据：昨日销售、库存预警、AI 原因摘要。","textPreview":"数据：昨日销售、库存预警、AI 原因摘要。","textChars":21,"textLines":1,"bbox":[86,522,360,24]}
+{"kind":"shape","id":"sh/wveh0rat","slide":3,"bbox":[660,302,555,258]}
+{"kind":"textbox","id":"sh/3ip0b6tk","slide":3,"text":"AI 会做什么？","textPreview":"AI 会做什么？","textChars":8,"textLines":1,"bbox":[692,332,260,26]}
+{"kind":"textbox","id":"sh/ihgz21sz","slide":3,"text":"分析异常\n生成原因摘要\n生成跟进消息草稿","textPreview":"分析异常 | 生成原因摘要 | 生成跟进消息草稿","textChars":20,"textLines":3,"bbox":[692,382,350,102]}
+{"kind":"textbox","id":"sh/s7mlkv6p","slide":3,"text":"它也可能：无结果、低置信度、数据延迟、建议不当。","textPreview":"它也可能：无结果、低置信度、数据延迟、建议不当。","textChars":24,"textLines":1,"bbox":[692,512,440,28]}
+{"kind":"shape","id":"sh/t8vmtg7u","slide":3,"bbox":[52,676,1176,1]}
+{"kind":"textbox","id":"sh/6543iloj","slide":3,"text":"AI 前端设计工作坊","textPreview":"AI 前端设计工作坊","textChars":10,"textLines":1,"bbox":[52,686,250,18]}
+{"kind":"textbox","id":"sh/r6dkrqp4","slide":3,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[1174,686,54,18]}
+{"kind":"notes","id":"nt/vud5jp","slide":3,"text":"[Sources]\nGoogle PAIR Workshop Slides: https://pair.withgoogle.com/guidebook-v2/workshop/Guidebook-Workshop-Slides.pdf\nGoogle Codelab: https://codelabs.developers.google.com/codelabs/pair-guidebook"}
+{"kind":"slide","id":"sl/1pbsik","slide":4,"title":"热身：先找风险，而不是先找功能","textShapes":14}
+{"kind":"textbox","id":"sh/czapgru1","slide":4,"text":"热身：先找风险，而不是先找功能","textPreview":"热身：先找风险，而不是先找功能","textChars":15,"textLines":1,"bbox":[58,58,420,24]}
+{"kind":"textbox","id":"sh/by18nmdg","slide":4,"text":"如果它做错了，\n哪一个时刻最可能让用户受伤？","textPreview":"如果它做错了， | 哪一个时刻最可能让用户受伤？","textChars":22,"textLines":2,"bbox":[58,107,900,118]}
+{"kind":"shape","id":"sh/qxs7ehcb","slide":4,"bbox":[58,330,352,210]}
+{"kind":"textbox","id":"sh/pwjqlcvq","slide":4,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[82,354,45,22]}
+{"kind":"textbox","id":"sh/ovapc7u5","slide":4,"text":"看不到异常","textPreview":"看不到异常","textChars":5,"textLines":1,"bbox":[82,396,290,36]}
+{"kind":"textbox","id":"sh/3u1oj2dk","slide":4,"text":"AI 漏掉一家真的有问题的门店。","textPreview":"AI 漏掉一家真的有问题的门店。","textChars":16,"textLines":1,"bbox":[82,446,292,80]}
+{"kind":"shape","id":"sh/2ts7axcz","slide":4,"bbox":[464,330,352,210]}
+{"kind":"textbox","id":"sh/1sj6hcve","slide":4,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[488,354,45,22]}
+{"kind":"textbox","id":"sh/grqp87ut","slide":4,"text":"解释不可信","textPreview":"解释不可信","textChars":5,"textLines":1,"bbox":[488,396,290,36]}
+{"kind":"textbox","id":"sh/edgr6d4v","slide":4,"text":"它说“库存导致下滑”，但没有证据。","textPreview":"它说“库存导致下滑”，但没有证据。","textChars":17,"textLines":1,"bbox":[488,446,292,80]}
+{"kind":"shape","id":"sh/fep8zilg","slide":4,"bbox":[870,330,352,210]}
+{"kind":"textbox","id":"sh/0fy98nm1","slide":4,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[894,354,45,22]}
+{"kind":"textbox","id":"sh/1g7q1s3m","slide":4,"text":"越权执行","textPreview":"越权执行","textChars":4,"textLines":1,"bbox":[894,396,290,36]}
+{"kind":"textbox","id":"sh/qpwr2d4z","slide":4,"text":"它把跟进消息直接发给客户。","textPreview":"它把跟进消息直接发给客户。","textChars":13,"textLines":1,"bbox":[894,446,292,80]}
+{"kind":"textbox","id":"sh/rqp8vylk","slide":4,"text":"讨论：请选择一个时刻。它的后果是什么？用户当时最需要什么？","textPreview":"讨论：请选择一个时刻。它的后果是什么？用户当时最需要什么？","textChars":29,"textLines":1,"bbox":[58,600,1100,30]}
+{"kind":"shape","id":"sh/sry943m5","slide":4,"bbox":[52,676,1176,1]}
+{"kind":"textbox","id":"sh/ds7qx83q","slide":4,"text":"AI 前端设计工作坊","textPreview":"AI 前端设计工作坊","textChars":10,"textLines":1,"bbox":[52,686,250,18]}
+{"kind":"textbox","id":"sh/ilw7yt43","slide":4,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[1174,686,54,18]}
+{"kind":"notes","id":"nt/1pbsik","slide":4,"text":"[Sources]\nGoogle PAIR Workshop Slides: https://pair.withgoogle.com/guidebook-v2/workshop/Guidebook-Workshop-Slides.pdf\n活动提示：小组 5 分钟，选一个关键时刻；记录“后果”和“用户需要”。"}
+{"kind":"slide","id":"sl/cki34f","slide":5,"title":"工件 1：关键时刻图","textShapes":20}
+{"kind":"textbox","id":"sh/mhwb2pwb","slide":5,"text":"工件 1：关键时刻图","textPreview":"工件 1：关键时刻图","textChars":10,"textLines":1,"bbox":[58,56,420,24]}
+{"kind":"textbox","id":"sh/9knaxkfm","slide":5,"text":"把 AI 功能拆成 5 个时刻，\n圈出最需要设计的那一个。","textPreview":"把 AI 功能拆成 5 个时刻， | 圈出最需要设计的那一个。","textChars":29,"textLines":2,"bbox":[58,105,850,118]}
+{"kind":"shape","id":"sh/ojet4fe1","slide":5,"bbox":[95,395,1070,4]}
+{"kind":"shape","id":"sh/zulsraxk","slide":5,"bbox":[58,381,28,28]}
+{"kind":"textbox","id":"sh/etcry5wz","slide":5,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[58,308,80,20]}
+{"kind":"textbox","id":"sh/1wnatkfq","slide":5,"text":"打开看板","textPreview":"打开看板","textChars":4,"textLines":1,"bbox":[58,447,195,32]}
+{"kind":"textbox","id":"sh/0vet0fe5","slide":5,"text":"看到门店列表","textPreview":"看到门店列表","textChars":6,"textLines":1,"bbox":[58,495,195,28]}
+{"kind":"shape","id":"sh/jqps3exo","slide":5,"bbox":[290,381,28,28]}
+{"kind":"textbox","id":"sh/ypgba9w3","slide":5,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[290,308,80,20]}
+{"kind":"textbox","id":"sh/o7qdc3yp","slide":5,"text":"选择异常","textPreview":"选择异常","textChars":4,"textLines":1,"bbox":[290,447,195,32]}
+{"kind":"textbox","id":"sh/98ze58za","slide":5,"text":"查看 AI 原因","textPreview":"查看 AI 原因","textChars":8,"textLines":1,"bbox":[290,495,195,28]}
+{"kind":"shape","id":"sh/m58vatgj","slide":5,"bbox":[522,381,28,28]}
+{"kind":"textbox","id":"sh/n6hw3yh4","slide":5,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[522,308,80,20]}
+{"kind":"textbox","id":"sh/03qd83yd","slide":5,"text":"核验证据","textPreview":"核验证据","textChars":4,"textLines":1,"bbox":[522,447,195,32]}
+{"kind":"textbox","id":"sh/14ze1ozy","slide":5,"text":"判断是否可信","textPreview":"判断是否可信","textChars":6,"textLines":1,"bbox":[522,495,195,28]}
+{"kind":"shape","id":"sh/e1ov6t0n","slide":5,"bbox":[754,381,28,28]}
+{"kind":"textbox","id":"sh/z2hwzyhs","slide":5,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[754,308,80,20]}
+{"kind":"textbox","id":"sh/cf6d4jih","slide":5,"text":"生成草稿","textPreview":"生成草稿","textChars":4,"textLines":1,"bbox":[754,447,195,32]}
+{"kind":"textbox","id":"sh/dgfedoz2","slide":5,"text":"编辑跟进消息","textPreview":"编辑跟进消息","textChars":6,"textLines":1,"bbox":[754,495,195,28]}
+{"kind":"shape","id":"sh/tw7u1krq","slide":5,"bbox":[986,381,28,28]}
+{"kind":"textbox","id":"sh/svyt8fa5","slide":5,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[986,308,80,20]}
+{"kind":"textbox","id":"sh/7upcza9k","slide":5,"text":"确认发送","textPreview":"确认发送","textChars":4,"textLines":1,"bbox":[986,447,195,32]}
+{"kind":"textbox","id":"sh/69gb65sz","slide":5,"text":"留下审计记录","textPreview":"留下审计记录","textChars":6,"textLines":1,"bbox":[986,495,195,28]}
+{"kind":"shape","id":"sh/587ux0ru","slide":5,"bbox":[58,592,1138,54]}
+{"kind":"textbox","id":"sh/k7yt4va9","slide":5,"text":"你们要圈：哪个时刻的“错误后果”最高？这个时刻就是接下来所有设计的焦点。","textPreview":"你们要圈：哪个时刻的“错误后果”最高？这个时刻就是接下来所有设计的焦点。","textChars":36,"textLines":1,"bbox":[82,606,1060,28]}
+{"kind":"shape","id":"sh/j6pcvq9o","slide":5,"bbox":[52,676,1176,1]}
+{"kind":"textbox","id":"sh/i5wb25s3","slide":5,"text":"AI 前端设计工作坊","textPreview":"AI 前端设计工作坊","textChars":10,"textLines":1,"bbox":[52,686,250,18]}
+{"kind":"textbox","id":"sh/p4ru94ry","slide":5,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[1174,686,54,18]}
+{"kind":"notes","id":"nt/cki34f","slide":5,"text":"[Sources]\nGoogle PAIR Workshop Slides: https://pair.withgoogle.com/guidebook-v2/workshop/Guidebook-Workshop-Slides.pdf\n活动提示：小组 7 分钟，圈一个关键时刻并写下原因。"}
+{"kind":"slide","id":"sl/9e3mxj","slide":6,"title":"工件 2：机会陈述","textShapes":11}
+{"kind":"textbox","id":"sh/m1w721cn","slide":6,"text":"工件 2：机会陈述","textPreview":"工件 2：机会陈述","textChars":9,"textLines":1,"bbox":[58,58,420,24]}
+{"kind":"textbox","id":"sh/94nqdgbe","slide":6,"text":"不说“我要加一个 AI 功能”。\n要用用户的语气，写出真正的问题。","textPreview":"不说“我要加一个 AI 功能”。 | 要用用户的语气，写出真正的问题。","textChars":33,"textLines":2,"bbox":[58,107,950,118]}
+{"kind":"shape","id":"sh/o3ep4but","slide":6,"bbox":[58,326,1138,148]}
+{"kind":"textbox","id":"sh/zy5o7mtw","slide":6,"text":"当  [ 关键时刻 ]  发生时，\n我需要  [ 用户需要 / 任务 ]  ，以便  [ 想避免的后果 / 目标 ] 。","textPreview":"当  [ 关键时刻 ]  发生时， | 我需要  [ 用户需要 / 任务 ]  ，以便  [ 想避免的后果 / 目标 ] 。","textChars":60,"textLines":2,"bbox":[96,362,1020,78]}
+{"kind":"shape","id":"sh/exc7y1cr","slide":6,"bbox":[58,500,352,160]}
+{"kind":"textbox","id":"sh/10n69wb2","slide":6,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[82,524,45,22]}
+{"kind":"textbox","id":"sh/0zep0ruh","slide":6,"text":"差的写法","textPreview":"差的写法","textChars":4,"textLines":1,"bbox":[82,566,290,36]}
+{"kind":"textbox","id":"sh/ralo3mt0","slide":6,"text":"“给看板增加 AI 异常分析。”","textPreview":"“给看板增加 AI 异常分析。”","textChars":16,"textLines":1,"bbox":[82,616,292,30]}
+{"kind":"shape","id":"sh/q9c7uhcf","slide":6,"bbox":[464,500,352,160]}
+{"kind":"textbox","id":"sh/83y50v2d","slide":6,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[488,524,45,22]}
+{"kind":"textbox","id":"sh/t47mt0jy","slide":6,"text":"好的写法","textPreview":"好的写法","textChars":4,"textLines":1,"bbox":[488,566,290,36]}
+{"kind":"textbox","id":"sh/61gnylkn","slide":6,"text":"“我需要知道原因是否可信，以便决定是否联系门店。”","textPreview":"“我需要知道原因是否可信，以便决定是否联系门店。”","textChars":25,"textLines":1,"bbox":[488,616,292,30]}
+{"kind":"shape","id":"sh/72p4rq18","slide":6,"bbox":[52,676,1176,1]}
+{"kind":"textbox","id":"sh/kzy5wb2h","slide":6,"text":"AI 前端设计工作坊","textPreview":"AI 前端设计工作坊","textChars":10,"textLines":1,"bbox":[52,686,250,18]}
+{"kind":"textbox","id":"sh/l07mpgj2","slide":6,"text":"06","textPreview":"06","textChars":2,"textLines":1,"bbox":[1174,686,54,18]}
+{"kind":"notes","id":"nt/9e3mxj","slide":6,"text":"[Sources]\nGoogle PAIR Workshop Slides: https://pair.withgoogle.com/guidebook-v2/workshop/Guidebook-Workshop-Slides.pdf\n活动提示：小组 5 分钟；每组写一句机会陈述。"}
+{"kind":"slide","id":"sl/v6a9jm","slide":7,"title":"工件 3：控制与风险审计","textShapes":14}
+{"kind":"textbox","id":"sh/nepgjy5w","slide":7,"text":"工件 3：控制与风险审计","textPreview":"工件 3：控制与风险审计","textChars":12,"textLines":1,"bbox":[58,56,420,24]}
+{"kind":"textbox","id":"sh/ofyhc36h","slide":7,"text":"AI 能给建议，\n但不能偷走用户的决定权。","textPreview":"AI 能给建议， | 但不能偷走用户的决定权。","textChars":21,"textLines":2,"bbox":[58,105,820,115]}
+{"kind":"shape","id":"sh/9g7ylonm","slide":7,"bbox":[58,318,318,6]}
+{"kind":"textbox","id":"sh/a1gzeto7","slide":7,"text":"Q1","textPreview":"Q1","textChars":2,"textLines":1,"bbox":[58,356,50,22]}
+{"kind":"textbox","id":"sh/b2pgny5s","slide":7,"text":"用户知道它依据什么吗？","textPreview":"用户知道它依据什么吗？","textChars":11,"textLines":1,"bbox":[58,405,320,62]}
+{"kind":"textbox","id":"sh/w3yhg36d","slide":7,"text":"来源、时间、数据范围是否可查看？","textPreview":"来源、时间、数据范围是否可查看？","textChars":16,"textLines":1,"bbox":[58,495,320,50]}
+{"kind":"shape","id":"sh/x47yp8ny","slide":7,"bbox":[456,318,318,6]}
+{"kind":"textbox","id":"sh/y50zidoj","slide":7,"text":"Q2","textPreview":"Q2","textChars":2,"textLines":1,"bbox":[456,356,50,22]}
+{"kind":"textbox","id":"sh/j690ri54","slide":7,"text":"用户能拒绝或修改吗？","textPreview":"用户能拒绝或修改吗？","textChars":10,"textLines":1,"bbox":[456,405,320,62]}
+{"kind":"textbox","id":"sh/bi94nel4","slide":7,"text":"结果能编辑吗？能否重新生成？","textPreview":"结果能编辑吗？能否重新生成？","textChars":14,"textLines":1,"bbox":[456,495,320,50]}
+{"kind":"shape","id":"sh/ahg3u94j","slide":7,"bbox":[854,318,318,6]}
+{"kind":"textbox","id":"sh/x4rmpo3a","slide":7,"text":"Q3","textPreview":"Q3","textChars":2,"textLines":1,"bbox":[854,356,50,22]}
+{"kind":"textbox","id":"sh/w3i5wjmp","slide":7,"text":"如果错了，后果多大？","textPreview":"如果错了，后果多大？","textChars":10,"textLines":1,"bbox":[854,405,320,62]}
+{"kind":"textbox","id":"sh/nep4jel8","slide":7,"text":"低 / 中 / 高风险分别要什么确认？","textPreview":"低 / 中 / 高风险分别要什么确认？","textChars":19,"textLines":1,"bbox":[854,495,320,50]}
+{"kind":"shape","id":"sh/mdg3q94n","slide":7,"bbox":[58,590,1138,56]}
+{"kind":"textbox","id":"sh/9g7ml43y","slide":7,"text":"审计结论：涉及“发送、删除、写入、付款”等动作时，默认让用户确认，并提供撤销或替代路径。","textPreview":"审计结论：涉及“发送、删除、写入、付款”等动作时，默认让用户确认，并提供撤销或替代路径。","textChars":44,"textLines":1,"bbox":[84,604,1080,27]}
+{"kind":"shape","id":"sh/ofylsjmt","slide":7,"bbox":[52,676,1176,1]}
+{"kind":"textbox","id":"sh/7at4vylc","slide":7,"text":"AI 前端设计工作坊","textPreview":"AI 前端设计工作坊","textChars":10,"textLines":1,"bbox":[52,686,250,18]}
+{"kind":"textbox","id":"sh/69kn2t4r","slide":7,"text":"07","textPreview":"07","textChars":2,"textLines":1,"bbox":[1174,686,54,18]}
+{"kind":"notes","id":"nt/v6a9jm","slide":7,"text":"[Sources]\nGoogle PAIR Workshop Slides: https://pair.withgoogle.com/guidebook-v2/workshop/Guidebook-Workshop-Slides.pdf\nMicrosoft HAX: https://www.microsoft.com/en-us/haxtoolkit/ai-guidelines/\n活动提示：小组 8 分钟，针对所选关键时刻回答 Q1–Q3。"}
+{"kind":"slide","id":"sl/vqb2og","slide":8,"title":"工件 4：把状态画进界面","textShapes":17}
+{"kind":"textbox","id":"sh/bqpov2h4","slide":8,"text":"工件 4：把状态画进界面","textPreview":"工件 4：把状态画进界面","textChars":12,"textLines":1,"bbox":[58,58,420,24]}
+{"kind":"textbox","id":"sh/cry5o7ip","slide":8,"text":"“正常结果”只是 1/4。\n其余 3 个状态决定用户是否信任它。","textPreview":"“正常结果”只是 1/4。 | 其余 3 个状态决定用户是否信任它。","textChars":32,"textLines":2,"bbox":[58,107,900,118]}
+{"kind":"shape","id":"sh/ds76xszu","slide":8,"bbox":[58,330,246,210]}
+{"kind":"textbox","id":"sh/ytgnqx0f","slide":8,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[82,354,45,22]}
+{"kind":"textbox","id":"sh/zupoz2h0","slide":8,"text":"输入前","textPreview":"输入前","textChars":3,"textLines":1,"bbox":[82,400,185,36]}
+{"kind":"textbox","id":"sh/0vi5s7il","slide":8,"text":"示例任务\n数据范围 / 限制","textPreview":"示例任务 | 数据范围 / 限制","textChars":14,"textLines":2,"bbox":[82,460,185,52]}
+{"kind":"shape","id":"sh/lwr61cz6","slide":8,"bbox":[344,330,246,210]}
+{"kind":"textbox","id":"sh/exwned0b","slide":8,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[368,354,45,22]}
+{"kind":"textbox","id":"sh/fy54ni1w","slide":8,"text":"生成中","textPreview":"生成中","textChars":3,"textLines":1,"bbox":[368,400,185,36]}
+{"kind":"textbox","id":"sh/nah8vqts","slide":8,"text":"当前阶段\n停止 / 取消","textPreview":"当前阶段 | 停止 / 取消","textChars":12,"textLines":2,"bbox":[368,460,185,52]}
+{"kind":"shape","id":"sh/m987mlc7","slide":8,"bbox":[630,330,246,210]}
+{"kind":"textbox","id":"sh/9czqx0by","slide":8,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[654,354,45,22]}
+{"kind":"textbox","id":"sh/8bqpovad","slide":8,"text":"结果后","textPreview":"结果后","textChars":3,"textLines":1,"bbox":[654,400,185,36]}
+{"kind":"textbox","id":"sh/zmh8rqtw","slide":8,"text":"编辑 / 来源\n重新生成 / 确认","textPreview":"编辑 / 来源 | 重新生成 / 确认","textChars":17,"textLines":2,"bbox":[654,460,185,52]}
+{"kind":"shape","id":"sh/ylo7ilcb","slide":8,"bbox":[916,330,246,210]}
+{"kind":"textbox","id":"sh/l8zqtgbm","slide":8,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[940,354,45,22]}
+{"kind":"textbox","id":"sh/0nqpkbu1","slide":8,"text":"失败时","textPreview":"失败时","textChars":3,"textLines":1,"bbox":[940,400,185,36]}
+{"kind":"textbox","id":"sh/bix8n6tk","slide":8,"text":"保留输入\n重试 / 改写 / 转人工","textPreview":"保留输入 | 重试 / 改写 / 转人工","textChars":18,"textLines":2,"bbox":[940,460,185,52]}
+{"kind":"textbox","id":"sh/qho7e1cz","slide":8,"text":"检查：页面里有没有“来源 / 编辑 / 停止 / 确认 / 重试”这五类入口？","textPreview":"检查：页面里有没有“来源 / 编辑 / 停止 / 确认 / 重试”这五类入口？","textChars":39,"textLines":1,"bbox":[58,600,1080,32]}
+{"kind":"shape","id":"sh/ed4rq1w7","slide":8,"bbox":[52,676,1176,1]}
+{"kind":"textbox","id":"sh/fed8z6dc","slide":8,"text":"AI 前端设计工作坊","textPreview":"AI 前端设计工作坊","textChars":10,"textLines":1,"bbox":[52,686,250,18]}
+{"kind":"textbox","id":"sh/gf69sbex","slide":8,"text":"08","textPreview":"08","textChars":2,"textLines":1,"bbox":[1174,686,54,18]}
+{"kind":"notes","id":"nt/vqb2og","slide":8,"text":"[Sources]\nGoogle PAIR Workshop Slides: https://pair.withgoogle.com/guidebook-v2/workshop/Guidebook-Workshop-Slides.pdf\nMicrosoft HAX: https://www.microsoft.com/en-us/haxtoolkit/ai-guidelines/\n活动提示：小组 8 分钟，画出四种状态。"}
+{"kind":"slide","id":"sl/018os8","slide":9,"title":"参考：把可信交互做成可见界面","textShapes":6}
+{"kind":"shape","id":"sh/i98bedc3","slide":9,"bbox":[0,0,520,720]}
+{"kind":"textbox","id":"sh/jahc7id8","slide":9,"text":"参考：把可信交互做成可见界面","textPreview":"参考：把可信交互做成可见界面","textChars":14,"textLines":1,"bbox":[52,70,420,24]}
+{"kind":"textbox","id":"sh/wn6tc3ux","slide":9,"text":"用户不需要\nAI 像人。\n用户需要它\n清晰、可控、\n有证据。","textPreview":"用户不需要 | AI 像人。 | 用户需要它 | 清晰、可控、 | 有证据。","textChars":30,"textLines":5,"bbox":[52,132,430,260]}
+{"kind":"textbox","id":"sh/hozu58vi","slide":9,"text":"把“魔法感”换成：\n阶段、来源、确认、撤销和反馈。","textPreview":"把“魔法感”换成： | 阶段、来源、确认、撤销和反馈。","textChars":25,"textLines":2,"bbox":[52,450,410,65]}
+{"kind":"shape","id":"sh/ulobatcr","slide":9,"bbox":[52,573,320,48]}
+{"kind":"textbox","id":"sh/vmxc3ydc","slide":9,"text":"看得懂  ·  改得动  ·  有退路","textPreview":"看得懂  ·  改得动  ·  有退路","textChars":19,"textLines":1,"bbox":[76,587,280,22]}
+{"kind":"shape","id":"sh/gjadonu1","slide":9,"bbox":[52,676,1176,1]}
+{"kind":"textbox","id":"sh/1kjuhsvm","slide":9,"text":"AI 前端设计工作坊","textPreview":"AI 前端设计工作坊","textChars":10,"textLines":1,"bbox":[52,686,250,18]}
+{"kind":"textbox","id":"sh/dovy9wf6","slide":9,"text":"09","textPreview":"09","textChars":2,"textLines":1,"bbox":[1174,686,54,18]}
+{"kind":"image","id":"im/wv2dkvmd","slide":9,"name":"","alt":"可信 AI 前端界面视觉","bbox":[0,0,1280,720]}
+{"kind":"notes","id":"nt/018os8","slide":9,"text":"[Sources]\nGoogle PAIR Workshop Slides: https://pair.withgoogle.com/guidebook-v2/workshop/Guidebook-Workshop-Slides.pdf\nMicrosoft HAX: https://www.microsoft.com/en-us/haxtoolkit/ai-guidelines/\nVisual generated with OpenAI image generation for this deck."}
+{"kind":"slide","id":"sl/hxmlpg","slide":10,"title":"工程落地：三道护栏","textShapes":13}
+{"kind":"textbox","id":"sh/y5c765oz","slide":10,"text":"工程落地：三道护栏","textPreview":"工程落地：三道护栏","textChars":9,"textLines":1,"bbox":[58,56,420,24]}
+{"kind":"textbox","id":"sh/l83q107q","slide":10,"text":"模型负责“建议”，\n系统负责“决定”。","textPreview":"模型负责“建议”， | 系统负责“决定”。","textChars":19,"textLines":2,"bbox":[58,105,820,115]}
+{"kind":"shape","id":"sh/07up8v65","slide":10,"bbox":[58,330,316,6]}
+{"kind":"textbox","id":"sh/bi18vqpo","slide":10,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[58,365,50,21]}
+{"kind":"textbox","id":"sh/qhs72lo3","slide":10,"text":"结构","textPreview":"结构","textChars":2,"textLines":1,"bbox":[58,412,200,36]}
+{"kind":"textbox","id":"sh/d43qx07u","slide":10,"text":"固定 Schema\n用字段渲染卡片与表单\n不切割随机文本","textPreview":"固定 Schema | 用字段渲染卡片与表单 | 不切割随机文本","textChars":28,"textLines":3,"bbox":[58,475,325,80]}
+{"kind":"shape","id":"sh/c3up4v69","slide":10,"bbox":[455,330,316,6]}
+{"kind":"textbox","id":"sh/vy587ups","slide":10,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[455,365,50,21]}
+{"kind":"textbox","id":"sh/udwrepo7","slide":10,"text":"权限","textPreview":"权限","textChars":2,"textLines":1,"bbox":[455,412,200,36]}
+{"kind":"textbox","id":"sh/4za9on2t","slide":10,"text":"模型可以提议工具调用\n鉴权、写入、审计\n由服务端裁决","textPreview":"模型可以提议工具调用 | 鉴权、写入、审计 | 由服务端裁决","textChars":26,"textLines":3,"bbox":[455,475,325,80]}
+{"kind":"shape","id":"sh/p03qhs3e","slide":10,"bbox":[852,330,316,6]}
+{"kind":"textbox","id":"sh/ixsrmxkn","slide":10,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[852,365,50,21]}
+{"kind":"textbox","id":"sh/3y18f2l8","slide":10,"text":"安全","textPreview":"安全","textChars":2,"textLines":1,"bbox":[852,412,200,36]}
+{"kind":"textbox","id":"sh/gva9kn2h","slide":10,"text":"密钥不进浏览器\n模型文本、外链、上传、\n工具返回均要校验","textPreview":"密钥不进浏览器 | 模型文本、外链、上传、 | 工具返回均要校验","textChars":28,"textLines":3,"bbox":[852,475,325,80]}
+{"kind":"shape","id":"sh/hwjqds32","slide":10,"bbox":[52,676,1176,1]}
+{"kind":"textbox","id":"sh/uts7idkr","slide":10,"text":"AI 前端设计工作坊","textPreview":"AI 前端设计工作坊","textChars":10,"textLines":1,"bbox":[52,686,250,18]}
+{"kind":"textbox","id":"sh/vu18bilw","slide":10,"text":"10","textPreview":"10","textChars":2,"textLines":1,"bbox":[1174,686,54,18]}
+{"kind":"notes","id":"nt/hxmlpg","slide":10,"text":"[Sources]\nOpenAI API Quickstart: https://platform.openai.com/docs/quickstart/make-your-first-api-request"}
+{"kind":"slide","id":"sl/qhwvkz","slide":11,"title":"设计冲刺：把四张工件收拢成一页","textShapes":17}
+{"kind":"textbox","id":"sh/ls7mxkjq","slide":11,"text":"设计冲刺：把四张工件收拢成一页","textPreview":"设计冲刺：把四张工件收拢成一页","textChars":15,"textLines":1,"bbox":[58,58,420,24]}
+{"kind":"textbox","id":"sh/ypg3mp0f","slide":11,"text":"最后一轮：每组做 1 页，\n并用 2 分钟讲清楚。","textPreview":"最后一轮：每组做 1 页， | 并用 2 分钟讲清楚。","textChars":25,"textLines":2,"bbox":[58,107,840,115]}
+{"kind":"shape","id":"sh/zqp4vu1k","slide":11,"bbox":[58,335,246,208]}
+{"kind":"textbox","id":"sh/8vi5szih","slide":11,"text":"A","textPreview":"A","textChars":1,"textLines":1,"bbox":[82,359,40,24]}
+{"kind":"textbox","id":"sh/9wrm14j2","slide":11,"text":"关键时刻","textPreview":"关键时刻","textChars":4,"textLines":1,"bbox":[82,410,190,36]}
+{"kind":"textbox","id":"sh/mtgnqp0b","slide":11,"text":"画出用户流程，圈高风险时刻。","textPreview":"画出用户流程，圈高风险时刻。","textChars":14,"textLines":1,"bbox":[82,468,190,50]}
+{"kind":"shape","id":"sh/7u94zu1w","slide":11,"bbox":[344,335,246,208]}
+{"kind":"textbox","id":"sh/ozelgfix","slide":11,"text":"B","textPreview":"B","textChars":1,"textLines":1,"bbox":[368,359,40,24]}
+{"kind":"textbox","id":"sh/p0nmp0ji","slide":11,"text":"机会陈述","textPreview":"机会陈述","textChars":4,"textLines":1,"bbox":[368,410,190,36]}
+{"kind":"textbox","id":"sh/hwf2lwba","slide":11,"text":"用“我需要……以便……”写一句。","textPreview":"用“我需要……以便……”写一句。","textChars":16,"textLines":1,"bbox":[368,468,190,50]}
+{"kind":"shape","id":"sh/gv6lsrup","slide":11,"bbox":[630,335,246,208]}
+{"kind":"textbox","id":"sh/fuxkjmt4","slide":11,"text":"C","textPreview":"C","textChars":1,"textLines":1,"bbox":[654,359,40,24]}
+{"kind":"textbox","id":"sh/u9ojqhcj","slide":11,"text":"控制审计","textPreview":"控制审计","textChars":4,"textLines":1,"bbox":[654,410,190,36]}
+{"kind":"textbox","id":"sh/p0z2pwb6","slide":11,"text":"写清楚证据、确认、拒绝与撤销。","textPreview":"写清楚证据、确认、拒绝与撤销。","textChars":15,"textLines":1,"bbox":[654,468,190,50]}
+{"kind":"shape","id":"sh/4z6lwrul","slide":11,"bbox":[916,335,246,208]}
+{"kind":"textbox","id":"sh/3yxkn6tg","slide":11,"text":"D","textPreview":"D","textChars":1,"textLines":1,"bbox":[940,359,40,24]}
+{"kind":"textbox","id":"sh/2xo3u1cv","slide":11,"text":"低保真草图","textPreview":"低保真草图","textChars":5,"textLines":1,"bbox":[940,410,190,36]}
+{"kind":"textbox","id":"sh/d4z2tgbi","slide":11,"text":"画出正常、生成中、失败、确认。","textPreview":"画出正常、生成中、失败、确认。","textChars":15,"textLines":1,"bbox":[940,468,190,50]}
+{"kind":"shape","id":"sh/c3ql0bux","slide":11,"bbox":[58,590,1138,56]}
+{"kind":"textbox","id":"sh/w7y5wfi9","slide":11,"text":"汇报规则：不用介绍“功能很多”；只回答——用户在哪一刻最需要帮助、为什么这个设计值得信任。","textPreview":"汇报规则：不用介绍“功能很多”；只回答——用户在哪一刻最需要帮助、为什么这个设计值得信任。","textChars":45,"textLines":1,"bbox":[84,605,1070,28]}
+{"kind":"shape","id":"sh/x87mpkje","slide":11,"bbox":[52,676,1176,1]}
+{"kind":"textbox","id":"sh/a5gnu503","slide":11,"text":"AI 前端设计工作坊","textPreview":"AI 前端设计工作坊","textChars":10,"textLines":1,"bbox":[52,686,250,18]}
+{"kind":"textbox","id":"sh/b6p4na1o","slide":11,"text":"11","textPreview":"11","textChars":2,"textLines":1,"bbox":[1174,686,54,18]}
+{"kind":"notes","id":"nt/qhwvkz","slide":11,"text":"[Sources]\nGoogle PAIR Workshop Slides: https://pair.withgoogle.com/guidebook-v2/workshop/Guidebook-Workshop-Slides.pdf\n活动提示：小组 12 分钟制作 + 每组 2 分钟汇报。"}
+{"kind":"slide","id":"sl/la4bzo","slide":12,"title":"复盘","textShapes":11}
+{"kind":"shape","id":"sh/g7i18725","slide":12,"bbox":[52,74,80,8]}
+{"kind":"textbox","id":"sh/v6p0zmlk","slide":12,"text":"复盘","textPreview":"复盘","textChars":2,"textLines":1,"bbox":[52,104,420,24]}
+{"kind":"textbox","id":"sh/u5gj6hkf","slide":12,"text":"上完这堂课，\n以后都用这三问\n检查 AI 前端。","textPreview":"上完这堂课， | 以后都用这三问 | 检查 AI 前端。","textChars":24,"textLines":3,"bbox":[52,165,540,175]}
+{"kind":"textbox","id":"sh/t47ixc3u","slide":12,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[700,165,55,22]}
+{"kind":"textbox","id":"sh/83yh4729","slide":12,"text":"用户知道\n下一步做什么吗？","textPreview":"用户知道 | 下一步做什么吗？","textChars":13,"textLines":2,"bbox":[805,156,385,70]}
+{"kind":"shape","id":"sh/72p0v2lo","slide":12,"bbox":[700,260,490,2]}
+{"kind":"textbox","id":"sh/61gz2xk3","slide":12,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[700,332,55,22]}
+{"kind":"textbox","id":"sh/d0bi9wjy","slide":12,"text":"AI 的结论能被\n核验和纠正吗？","textPreview":"AI 的结论能被 | 核验和纠正吗？","textChars":16,"textLines":2,"bbox":[805,323,385,70]}
+{"kind":"shape","id":"sh/sz21gb2d","slide":12,"bbox":[700,427,490,2]}
+{"kind":"textbox","id":"sh/uhwry5cz","slide":12,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[700,499,55,22]}
+{"kind":"textbox","id":"sh/vi58radk","slide":12,"text":"慢了、错了、越权时，\n用户有出路吗？","textPreview":"慢了、错了、越权时， | 用户有出路吗？","textChars":18,"textLines":2,"bbox":[805,490,385,70]}
+{"kind":"textbox","id":"sh/wje90vu5","slide":12,"text":"它们不保证 AI 永远正确，但能保证用户始终有理解、控制和恢复的路径。","textPreview":"它们不保证 AI 永远正确，但能保证用户始终有理解、控制和恢复的路径。","textChars":35,"textLines":1,"bbox":[52,590,1110,32]}
+{"kind":"shape","id":"sh/hknqt0vq","slide":12,"bbox":[52,676,1176,1]}
+{"kind":"textbox","id":"sh/mtc7ulc3","slide":12,"text":"AI 前端设计工作坊","textPreview":"AI 前端设计工作坊","textChars":10,"textLines":1,"bbox":[52,686,250,18]}
+{"kind":"textbox","id":"sh/7ul8nqdo","slide":12,"text":"12","textPreview":"12","textChars":2,"textLines":1,"bbox":[1174,686,54,18]}
+{"kind":"notes","id":"nt/la4bzo","slide":12,"text":"[Sources]\nGoogle PAIR Workshop Slides: https://pair.withgoogle.com/guidebook-v2/workshop/Guidebook-Workshop-Slides.pdf\nMicrosoft HAX: https://www.microsoft.com/en-us/haxtoolkit/ai-guidelines/\nCHI 2025 GenAI Design Thinking course: https://sites.google.com/umd.edu/genaidesignthinking"}

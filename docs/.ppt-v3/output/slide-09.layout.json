@@ -1,0 +1,660 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/018os8",
+    "id": "018os8",
+    "slide": 9,
+    "layoutId": "be5cfad0-a1a1-49d3-8e67-5310df54982b",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "bfb52af7-0b5c-488f-afc4-7cbab8a83b58",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#080D19",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "bg1": "#FFFFFF",
+      "bg2": "#000000",
+      "tx1": "#1F1F1F",
+      "tx2": "#FFFFFF",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "typefaces": [
+      "PingFang SC"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "be5cfad0-a1a1-49d3-8e67-5310df54982b",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "bfb52af7-0b5c-488f-afc4-7cbab8a83b58",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "bfb52af7-0b5c-488f-afc4-7cbab8a83b58",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "image",
+      "scope": "slide",
+      "aid": "im/wv2dkvmd",
+      "id": "1",
+      "bbox": [
+        0,
+        0,
+        1280,
+        720
+      ],
+      "alt": "可信 AI 前端界面视觉",
+      "contentType": "image/png",
+      "imageFit": "cover",
+      "asset": {
+        "assetId": "9ca6bb45-c041-42a7-b448-f813704a71ec",
+        "contentType": "image/png",
+        "byteLength": 1261318
+      }
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/i98bedc3",
+      "id": "2",
+      "bbox": [
+        0,
+        0,
+        520,
+        720
+      ],
+      "geometry": "rect",
+      "fillColor": "#080D19",
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/jahc7id8",
+      "id": "3",
+      "bbox": [
+        52,
+        70,
+        420,
+        24
+      ],
+      "geometry": "rect",
+      "text": "参考：把可信交互做成可见界面",
+      "textPreview": "参考：把可信交互做成可见界面",
+      "resolvedFontSize": 16,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 16,
+        "typeface": "PingFang SC",
+        "color": "#D9FF45",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "参考：把可信交互做成可见界面"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "参考：把可信交互做成可见界面",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "typeface": "PingFang SC",
+            "color": "#D9FF45",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "参考：把可信交互做成可见界面",
+              "fontSize": 16,
+              "typeface": "PingFang SC",
+              "color": "#D9FF45",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/wn6tc3ux",
+      "id": "4",
+      "bbox": [
+        52,
+        132,
+        430,
+        260
+      ],
+      "geometry": "rect",
+      "text": "用户不需要\nAI 像人。\n用户需要它\n清晰、可控、\n有证据。",
+      "textPreview": "用户不需要 | AI 像人。 | 用户需要它 | 清晰、可控、 | 有证据。",
+      "resolvedFontSize": 45,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 45,
+        "typeface": "PingFang SC",
+        "color": "#F7F9FF",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 5,
+        "lines": [
+          {
+            "index": 1,
+            "text": "用户不需要"
+          },
+          {
+            "index": 2,
+            "text": "AI 像人。"
+          },
+          {
+            "index": 3,
+            "text": "用户需要它"
+          },
+          {
+            "index": 4,
+            "text": "清晰、可控、"
+          },
+          {
+            "index": 5,
+            "text": "有证据。"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "用户不需要",
+          "resolvedTextStyle": {
+            "fontSize": 45,
+            "typeface": "PingFang SC",
+            "color": "#F7F9FF",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "用户不需要",
+              "fontSize": 45,
+              "typeface": "PingFang SC",
+              "color": "#F7F9FF",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 2,
+          "text": "AI 像人。",
+          "resolvedTextStyle": {
+            "fontSize": 45,
+            "typeface": "PingFang SC",
+            "color": "#F7F9FF",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "AI 像人。",
+              "fontSize": 45,
+              "typeface": "PingFang SC",
+              "color": "#F7F9FF",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 3,
+          "text": "用户需要它",
+          "resolvedTextStyle": {
+            "fontSize": 45,
+            "typeface": "PingFang SC",
+            "color": "#F7F9FF",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "用户需要它",
+              "fontSize": 45,
+              "typeface": "PingFang SC",
+              "color": "#F7F9FF",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 4,
+          "text": "清晰、可控、",
+          "resolvedTextStyle": {
+            "fontSize": 45,
+            "typeface": "PingFang SC",
+            "color": "#F7F9FF",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "清晰、可控、",
+              "fontSize": 45,
+              "typeface": "PingFang SC",
+              "color": "#F7F9FF",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 5,
+          "text": "有证据。",
+          "resolvedTextStyle": {
+            "fontSize": 45,
+            "typeface": "PingFang SC",
+            "color": "#F7F9FF",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "有证据。",
+              "fontSize": 45,
+              "typeface": "PingFang SC",
+              "color": "#F7F9FF",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/hozu58vi",
+      "id": "5",
+      "bbox": [
+        52,
+        450,
+        410,
+        65
+      ],
+      "geometry": "rect",
+      "text": "把“魔法感”换成：\n阶段、来源、确认、撤销和反馈。",
+      "textPreview": "把“魔法感”换成： | 阶段、来源、确认、撤销和反馈。",
+      "resolvedFontSize": 23,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 23,
+        "typeface": "PingFang SC",
+        "color": "#AAB8D4",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "把“魔法感”换成："
+          },
+          {
+            "index": 2,
+            "text": "阶段、来源、确认、撤销和反馈。"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "把“魔法感”换成：",
+          "resolvedTextStyle": {
+            "fontSize": 23,
+            "typeface": "PingFang SC",
+            "color": "#AAB8D4",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "把“魔法感”换成：",
+              "fontSize": 23,
+              "typeface": "PingFang SC",
+              "color": "#AAB8D4",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 2,
+          "text": "阶段、来源、确认、撤销和反馈。",
+          "resolvedTextStyle": {
+            "fontSize": 23,
+            "typeface": "PingFang SC",
+            "color": "#AAB8D4",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "阶段、来源、确认、撤销和反馈。",
+              "fontSize": 23,
+              "typeface": "PingFang SC",
+              "color": "#AAB8D4",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ulobatcr",
+      "id": "6",
+      "bbox": [
+        52,
+        573,
+        320,
+        48
+      ],
+      "geometry": "roundRect",
+      "fillColor": "#D9FF45",
+      "lineWidth": 0
+    },
+    {
+      "order": 7,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/vmxc3ydc",
+      "id": "7",
+      "bbox": [
+        76,
+        587,
+        280,
+        22
+      ],
+      "geometry": "rect",
+      "text": "看得懂  ·  改得动  ·  有退路",
+      "textPreview": "看得懂  ·  改得动  ·  有退路",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 18,
+        "typeface": "PingFang SC",
+        "color": "#080D19",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "看得懂  ·  改得动  ·  有退路"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "看得懂  ·  改得动  ·  有退路",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "PingFang SC",
+            "color": "#080D19",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "看得懂  ·  改得动  ·  有退路",
+              "fontSize": 18,
+              "typeface": "PingFang SC",
+              "color": "#080D19",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 8,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/gjadonu1",
+      "id": "8",
+      "bbox": [
+        52,
+        676,
+        1176,
+        1
+      ],
+      "geometry": "rect",
+      "fillColor": "#2A3857",
+      "lineWidth": 0
+    },
+    {
+      "order": 9,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/1kjuhsvm",
+      "id": "9",
+      "bbox": [
+        52,
+        686,
+        250,
+        18
+      ],
+      "geometry": "rect",
+      "text": "AI 前端设计工作坊",
+      "textPreview": "AI 前端设计工作坊",
+      "resolvedFontSize": 13,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 13,
+        "typeface": "PingFang SC",
+        "color": "#AAB8D4",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "AI 前端设计工作坊"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "AI 前端设计工作坊",
+          "resolvedTextStyle": {
+            "fontSize": 13,
+            "typeface": "PingFang SC",
+            "color": "#AAB8D4",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "AI 前端设计工作坊",
+              "fontSize": 13,
+              "typeface": "PingFang SC",
+              "color": "#AAB8D4",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 10,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/dovy9wf6",
+      "id": "10",
+      "bbox": [
+        1174,
+        686,
+        54,
+        18
+      ],
+      "geometry": "rect",
+      "text": "09",
+      "textPreview": "09",
+      "resolvedFontSize": 13,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 13,
+        "typeface": "PingFang SC",
+        "color": "#AAB8D4",
+        "alignment": "right",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "09"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "09",
+          "resolvedTextStyle": {
+            "fontSize": 13,
+            "typeface": "PingFang SC",
+            "color": "#AAB8D4",
+            "alignment": "right"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "09",
+              "fontSize": 13,
+              "typeface": "PingFang SC",
+              "color": "#AAB8D4",
+              "alignment": "right"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}

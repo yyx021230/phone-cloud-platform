@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Phone Cloud Platform Backup Daily
+
+[Timer]
+OnCalendar=*-*-* 03:15:00
+Persistent=true
+RandomizedDelaySec=10m
+Unit=phone-cloud-backup.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,631 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/9u5qfv",
+    "id": "9u5qfv",
+    "slide": 6,
+    "layoutId": "6cb7951b-4a13-4ee6-9218-4c88ae92ea0c",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "310dacbb-7264-4db5-9d66-beeae6b5523a",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#080D19",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "bg1": "#FFFFFF",
+      "bg2": "#000000",
+      "tx1": "#1F1F1F",
+      "tx2": "#FFFFFF",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "typefaces": [
+      "PingFang SC"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "6cb7951b-4a13-4ee6-9218-4c88ae92ea0c",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "310dacbb-7264-4db5-9d66-beeae6b5523a",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "310dacbb-7264-4db5-9d66-beeae6b5523a",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "image",
+      "scope": "slide",
+      "aid": "im/vy183ihk",
+      "id": "1",
+      "bbox": [
+        0,
+        0,
+        1280,
+        720
+      ],
+      "alt": "可信 AI 交互界面视觉",
+      "contentType": "image/png",
+      "imageFit": "cover",
+      "asset": {
+        "assetId": "b1b3d563-9ae8-4683-931f-7ff6cc10c044",
+        "contentType": "image/png",
+        "byteLength": 1261318
+      }
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/dc7mtknu",
+      "id": "2",
+      "bbox": [
+        0,
+        0,
+        580,
+        720
+      ],
+      "geometry": "rect",
+      "fillColor": "#080D19",
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/cby5kzmp",
+      "id": "3",
+      "bbox": [
+        52,
+        70,
+        300,
+        25
+      ],
+      "geometry": "rect",
+      "text": "第二条线：为 AI 做前端",
+      "textPreview": "第二条线：为 AI 做前端",
+      "resolvedFontSize": 16,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 16,
+        "typeface": "PingFang SC",
+        "color": "#D9FF45",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "第二条线：为 AI 做前端"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "第二条线：为 AI 做前端",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "typeface": "PingFang SC",
+            "color": "#D9FF45",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "第二条线：为 AI 做前端",
+              "fontSize": 16,
+              "typeface": "PingFang SC",
+              "color": "#D9FF45",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/zepovu50",
+      "id": "4",
+      "bbox": [
+        52,
+        135,
+        460,
+        220
+      ],
+      "geometry": "rect",
+      "text": "AI 产品\n不能只画\n一个聊天框。",
+      "textPreview": "AI 产品 | 不能只画 | 一个聊天框。",
+      "resolvedFontSize": 55,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 55,
+        "typeface": "PingFang SC",
+        "color": "#F7F9FF",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 3,
+        "lines": [
+          {
+            "index": 1,
+            "text": "AI 产品"
+          },
+          {
+            "index": 2,
+            "text": "不能只画"
+          },
+          {
+            "index": 3,
+            "text": "一个聊天框。"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "AI 产品",
+          "resolvedTextStyle": {
+            "fontSize": 55,
+            "typeface": "PingFang SC",
+            "color": "#F7F9FF",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "AI 产品",
+              "fontSize": 55,
+              "typeface": "PingFang SC",
+              "color": "#F7F9FF",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 2,
+          "text": "不能只画",
+          "resolvedTextStyle": {
+            "fontSize": 55,
+            "typeface": "PingFang SC",
+            "color": "#F7F9FF",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "不能只画",
+              "fontSize": 55,
+              "typeface": "PingFang SC",
+              "color": "#F7F9FF",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 3,
+          "text": "一个聊天框。",
+          "resolvedTextStyle": {
+            "fontSize": 55,
+            "typeface": "PingFang SC",
+            "color": "#F7F9FF",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "一个聊天框。",
+              "fontSize": 55,
+              "typeface": "PingFang SC",
+              "color": "#F7F9FF",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/edgnmp4f",
+      "id": "5",
+      "bbox": [
+        52,
+        415,
+        430,
+        105
+      ],
+      "geometry": "rect",
+      "text": "用户需要知道：\n它在做什么、凭什么这么说、\n我能不能改、失败后怎么办。",
+      "textPreview": "用户需要知道： | 它在做什么、凭什么这么说、 | 我能不能改、失败后怎么办。",
+      "resolvedFontSize": 25,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 25,
+        "typeface": "PingFang SC",
+        "color": "#A9B6D0",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 3,
+        "lines": [
+          {
+            "index": 1,
+            "text": "用户需要知道："
+          },
+          {
+            "index": 2,
+            "text": "它在做什么、凭什么这么说、"
+          },
+          {
+            "index": 3,
+            "text": "我能不能改、失败后怎么办。"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "用户需要知道：",
+          "resolvedTextStyle": {
+            "fontSize": 25,
+            "typeface": "PingFang SC",
+            "color": "#A9B6D0",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "用户需要知道：",
+              "fontSize": 25,
+              "typeface": "PingFang SC",
+              "color": "#A9B6D0",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 2,
+          "text": "它在做什么、凭什么这么说、",
+          "resolvedTextStyle": {
+            "fontSize": 25,
+            "typeface": "PingFang SC",
+            "color": "#A9B6D0",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "它在做什么、凭什么这么说、",
+              "fontSize": 25,
+              "typeface": "PingFang SC",
+              "color": "#A9B6D0",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 3,
+          "text": "我能不能改、失败后怎么办。",
+          "resolvedTextStyle": {
+            "fontSize": 25,
+            "typeface": "PingFang SC",
+            "color": "#A9B6D0",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "我能不能改、失败后怎么办。",
+              "fontSize": 25,
+              "typeface": "PingFang SC",
+              "color": "#A9B6D0",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/1g76x4n6",
+      "id": "6",
+      "bbox": [
+        52,
+        574,
+        324,
+        48
+      ],
+      "geometry": "roundRect",
+      "fillColor": "#D9FF45",
+      "lineWidth": 0
+    },
+    {
+      "order": 7,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/0fy5ozml",
+      "id": "7",
+      "bbox": [
+        70,
+        587,
+        295,
+        26
+      ],
+      "geometry": "rect",
+      "text": "可信  ·  可控  ·  可恢复",
+      "textPreview": "可信  ·  可控  ·  可恢复",
+      "resolvedFontSize": 19,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 19,
+        "typeface": "PingFang SC",
+        "color": "#080D19",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "可信  ·  可控  ·  可恢复"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "可信  ·  可控  ·  可恢复",
+          "resolvedTextStyle": {
+            "fontSize": 19,
+            "typeface": "PingFang SC",
+            "color": "#080D19",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "可信  ·  可控  ·  可恢复",
+              "fontSize": 19,
+              "typeface": "PingFang SC",
+              "color": "#080D19",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 8,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/fil4ja5w",
+      "id": "8",
+      "bbox": [
+        52,
+        676,
+        1176,
+        1
+      ],
+      "geometry": "rect",
+      "fillColor": "#26334F",
+      "lineWidth": 0
+    },
+    {
+      "order": 9,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/uhcna5ob",
+      "id": "9",
+      "bbox": [
+        52,
+        686,
+        240,
+        20
+      ],
+      "geometry": "rect",
+      "text": "AI 前端设计课",
+      "textPreview": "AI 前端设计课",
+      "resolvedFontSize": 13,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 13,
+        "typeface": "PingFang SC",
+        "color": "#A9B6D0",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "AI 前端设计课"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "AI 前端设计课",
+          "resolvedTextStyle": {
+            "fontSize": 13,
+            "typeface": "PingFang SC",
+            "color": "#A9B6D0",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "AI 前端设计课",
+              "fontSize": 13,
+              "typeface": "PingFang SC",
+              "color": "#A9B6D0",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 10,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/cbalsvit",
+      "id": "10",
+      "bbox": [
+        1178,
+        686,
+        50,
+        20
+      ],
+      "geometry": "rect",
+      "text": "06",
+      "textPreview": "06",
+      "resolvedFontSize": 13,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 13,
+        "typeface": "PingFang SC",
+        "color": "#A9B6D0",
+        "alignment": "right",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "06"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "06",
+          "resolvedTextStyle": {
+            "fontSize": 13,
+            "typeface": "PingFang SC",
+            "color": "#A9B6D0",
+            "alignment": "right"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "06",
+              "fontSize": 13,
+              "typeface": "PingFang SC",
+              "color": "#A9B6D0",
+              "alignment": "right"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}
