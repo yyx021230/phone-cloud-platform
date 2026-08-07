@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>iOS WDA MJPEG Local POC</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="workspace">
+      <header>
+        <div><p class="eyebrow">LOCAL EXPERIMENT</p><h1>iPhone 实时控制验证</h1></div>
+        <div id="connectionState" class="state" data-state="idle">未连接</div>
+      </header>
+      <section class="stage-panel">
+        <div id="stage" class="stage" data-state="idle">
+          <img id="stream" alt="iPhone 实时画面" draggable="false" />
+          <div id="loading" class="loading">点击“连接 iPhone”开始验证</div>
+        </div>
+      </section>
+      <section class="controls">
+        <button id="connect" class="primary">连接 iPhone</button>
+        <button id="disconnect" disabled>结束会话</button>
+        <dl><div><dt>FPS</dt><dd id="fps">-</dd></div><div><dt>操作延迟</dt><dd id="latency">-</dd></div><div><dt>视口</dt><dd id="viewport">-</dd></div></dl>
+        <label>输入文字<input id="text" maxlength="512" placeholder="先在手机上点进可输入的位置" /></label>
+        <button id="sendText" disabled>发送文字</button>
+      </section>
+      <p class="hint">点击画面测试点按；按住拖动测试滑动。此页只连接本机的 WDA 与 iPhone。</p>
+    </main>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

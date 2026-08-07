@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ZTC 云控</string>
+    <string name="scan_accessibility_description">用于执行私有中台下发的设备自动化任务，并上报短信、状态和执行轨迹。</string>
+</resources>

@@ -1,0 +1,53 @@
+logLevel: info
+
+# WHIP publishers can send hundreds of RTP packets per video frame.  The
+# default kernel receive buffer and MediaMTX writer queue are too small for
+# 720p/60fps screen control and cause packet loss before WebRTC can recover.
+# These values keep short bursts in memory instead of discarding packets.
+udpReadBufferSize: 16777216
+writeQueueSize: 2048
+
+# scrcpy emits fewer frames on a visually static screen. Keep the publisher
+# alive through normal control sessions instead of applying MediaMTX's short
+# default RTSP read timeout. The screen session itself owns cleanup.
+readTimeout: 10m
+
+# Authentication is delegated to Phone Cloud. Every browser and Windows Agent
+# receives a short-lived token bound to exactly one screen-control session.
+authMethod: http
+authHTTPAddress: http://127.0.0.1:8787/api/internal/screen-media/auth
+authHTTPExclude:
+  - action: api
+  - action: metrics
+  - action: pprof
+
+rtsp: yes
+rtspAddress: :8554
+rtspTransports: [tcp]
+
+webrtc: yes
+webrtcAddress: :8889
+webrtcEncryption: false
+webrtcAllowOrigins:
+  - http://47.98.127.132
+# The host also has Docker bridge and loopback interfaces. Advertising those
+# private addresses to remote WHIP/WHEP peers leads ICE to select an unstable
+# candidate. Publish only the reachable public address below.
+webrtcIPsFromInterfaces: false
+webrtcAdditionalHosts:
+  - 47.98.127.132
+webrtcLocalUDPAddress: :8189
+webrtcLocalTCPAddress: :8189
+
+api: yes
+apiAddress: :9997
+metrics: yes
+metricsAddress: :9998
+
+# Do not declare idle slots as always available. Otherwise WHEP accepts a
+# browser before the RTSP publisher has produced an H.264 keyframe, which
+# yields a temporary "stream offline" / black connection. Returning 404 until
+# the publisher is genuinely online lets the browser's WHEP readiness loop
+# establish exactly one healthy session.
+paths:
+  all_others:

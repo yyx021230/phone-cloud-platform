@@ -1,0 +1,4187 @@
+
+const ONLINE_MS = 90_000;
+
+function readJsonLocalStorage(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+const state = {
+  token: localStorage.getItem("phoneCloudSessionToken") || "",
+  user: null,
+  page: localStorage.getItem("phoneCloudPage") || "dashboard",
+  overview: {},
+  agents: [],
+  devices: [],
+  users: [],
+  userDevices: [],
+  userDevicesLoading: false,
+  userDevicesLoadError: "",
+  userDevicesLoadedAt: 0,
+  userSelectedDeviceId: localStorage.getItem("phoneCloudUserSelectedDeviceId") || "",
+  userWorkbenchView: localStorage.getItem("phoneCloudUserWorkbenchView") || "inventory",
+  userDetailTab: localStorage.getItem("phoneCloudUserDetailTab") || "sms",
+  userDeviceFilter: localStorage.getItem("phoneCloudUserDeviceFilter") || "all",
+  userDeviceBrandFilter: localStorage.getItem("phoneCloudUserDeviceBrandFilter") || "",
+  userDeviceAndroidFilter: localStorage.getItem("phoneCloudUserDeviceAndroidFilter") || "",
+  userDeviceSearch: "",
+  userSmsSearch: "",
+  userSmsSimFilter: "",
+  userSmsCodeOnly: false,
+  userSmsPage: 1,
+  userSmsPageSize: Number(localStorage.getItem("phoneCloudUserSmsPageSize") || 20),
+  userPhones: [],
+  userDeviceSmsMessages: [],
+  userDeviceSmsTotal: 0,
+  userDeviceSmsLoading: false,
+  userDeviceSmsLoadingDeviceId: "",
+  userDeviceSmsLoadedAt: 0,
+  userDeviceSmsLoadedDeviceId: "",
+  userDeviceSmsLoadedQueryKey: "",
+  userSmsLoadError: "",
+  userSmsRefreshDeviceId: "",
+  userSmsRefreshCooldownUntil: 0,
+  userSmsOrders: [],
+  userXhsTasks: [],
+  userPendingXhsTasks: [],
+  userXhsSubmitting: false,
+  userScreenSession: null,
+  userScreenToken: "",
+  userScreenStatus: "idle",
+  userScreenDetail: "等待连接",
+  userScreenDeviceId: "",
+  userScreenController: null,
+  userScreenStarting: false,
+  userScreenMetrics: {},
+  userScreenGalleryImport: null,
+  userScreenGalleryImporting: false,
+  userScreenGalleryDraftFile: null,
+  userScreenGalleryDraftDataUrl: "",
+  userScreenGalleryDraftError: "",
+  userAutomationTargetByDevice: readJsonLocalStorage("phoneCloudUserAutomationTargetByDevice", {}),
+  windowsTasks: [],
+  windowsTaskEvidenceLoading: {},
+  smsOrders: [],
+  smsEvents: [],
+  smsMessages: [],
+  xhsTasks: [],
+  xhsTaskEvidenceLoading: {},
+  xhsTaskTotal: 0,
+  xhsTaskPage: Number(localStorage.getItem("phoneCloudXhsTaskPage") || 1),
+  xhsTaskPageSize: Number(localStorage.getItem("phoneCloudXhsTaskPageSize") || 20),
+  appRelease: null,
+  diagnostics: null,
+  operationsMetrics: null,
+  workflowScripts: [],
+  audit: [],
+  adminDeviceEditingUntil: 0,
+  adminWorkflowScriptEditingUntil: 0,
+  adminDeviceListingFilter: localStorage.getItem("phoneCloudAdminDeviceListingFilter") || "all"
+};
+
+const MAX_QR_IMAGE_FILE_BYTES = 3_000_000;
+const QR_IMAGE_TYPES = new Set(["image/png", "image/jpeg", "image/webp"]);
+const USER_SMS_AUTO_REFRESH_MS = 30_000;
+const USER_XHS_TASK_REFRESH_MS = 30_000;
+const AUTO_REFRESH_MS = 30_000;
+const REALTIME_DIAGNOSTICS_REFRESH_MS = 5_000;
+const USER_SMS_MANUAL_REFRESH_COOLDOWN_MS = 10_000;
+let userSmsSearchTimer = null;
+let userSmsRefreshCooldownTimer = null;
+let userSmsAutoRefreshTimer = null;
+let userXhsTaskRefreshTimer = null;
+const userSmsLastAutoRefreshAtByDevice = new Map();
+const userSmsDeviceSyncRequestedByDevice = new Set();
+const adminDeviceSavingIds = new Set();
+const adminDeviceListingIds = new Set();
+const adminDeviceExpandedIds = new Set();
+const adminDeviceFeedbackById = new Map();
+let latestLoadAllRequestId = 0;
+let latestUserSmsRequestId = 0;
+let loadAllInFlight = false;
+let didApplyUserDefaultLanding = false;
+let userScreenExitReleaseRequested = false;
+const screenshotStore = new Map();
+
+function forceUserInventoryHome() {
+  state.page = "user-workbench";
+  state.userWorkbenchView = "inventory";
+  state.userSelectedDeviceId = "";
+  state.userDeviceSmsMessages = [];
+  state.userDeviceSmsTotal = 0;
+  state.userDeviceSmsLoading = false;
+  state.userDeviceSmsLoadingDeviceId = "";
+  state.userSmsLoadError = "";
+  localStorage.setItem("phoneCloudPage", state.page);
+  localStorage.setItem("phoneCloudUserWorkbenchView", state.userWorkbenchView);
+  localStorage.removeItem("phoneCloudUserSelectedDeviceId");
+}
+
+function restoreUserWorkbenchRoute() {
+  state.page = "user-workbench";
+  if (!["inventory", "detail"].includes(state.userWorkbenchView)) {
+    state.userWorkbenchView = "inventory";
+  }
+  if (state.userWorkbenchView === "detail" && !state.userSelectedDeviceId) {
+    state.userWorkbenchView = "inventory";
+  }
+  localStorage.setItem("phoneCloudPage", state.page);
+  localStorage.setItem("phoneCloudUserWorkbenchView", state.userWorkbenchView);
+}
+
+const els = {
+  loginScreen: document.getElementById("loginScreen"),
+  loginForm: document.getElementById("loginForm"),
+  loginUsernameInput: document.getElementById("loginUsernameInput"),
+  loginPasswordInput: document.getElementById("loginPasswordInput"),
+  loginHint: document.getElementById("loginHint"),
+  authUserName: document.getElementById("authUserName"),
+  authUserRole: document.getElementById("authUserRole"),
+  refreshButton: document.getElementById("refreshButton"),
+  defaultTopTitle: document.getElementById("defaultTopTitle"),
+  userTopBrand: document.getElementById("userTopBrand"),
+  userTopMetrics: document.getElementById("userTopMetrics"),
+  userTopTotalDevices: document.getElementById("userTopTotalDevices"),
+  userTopAvailableDevices: document.getElementById("userTopAvailableDevices"),
+  userTopOnlineDevices: document.getElementById("userTopOnlineDevices"),
+  userTopBusyDevices: document.getElementById("userTopBusyDevices"),
+  userTopIdentity: document.getElementById("userTopIdentity"),
+  userTopIdentityText: document.getElementById("userTopIdentityText"),
+  userTopAvatar: document.getElementById("userTopAvatar"),
+  userTopAdminButton: document.getElementById("userTopAdminButton"),
+  topSettingsButton: document.getElementById("topSettingsButton"),
+  settingsOpenButtons: document.querySelectorAll("[data-settings-open]"),
+  settingsCloseButtons: document.querySelectorAll("[data-settings-close]"),
+  settingsModal: document.getElementById("settingsModal"),
+  settingsAvatar: document.getElementById("settingsAvatar"),
+  settingsDisplayName: document.getElementById("settingsDisplayName"),
+  settingsAccountMeta: document.getElementById("settingsAccountMeta"),
+  settingsAccountFacts: document.getElementById("settingsAccountFacts"),
+  settingsLogoutButton: document.getElementById("settingsLogoutButton"),
+  pageTitle: document.getElementById("pageTitle"),
+  pageSummary: document.getElementById("pageSummary"),
+  pageButtons: document.querySelectorAll("[data-page-button]"),
+  pages: document.querySelectorAll("[data-page]"),
+  overviewGrid: document.getElementById("overviewGrid"),
+  userSmsOrderForm: document.getElementById("userSmsOrderForm"),
+  userDeviceInventoryView: document.getElementById("userDeviceInventoryView"),
+  userDeviceDetailView: document.getElementById("userDeviceDetailView"),
+  userDeviceBackButton: document.getElementById("userDeviceBackButton"),
+  userInventorySummary: document.getElementById("userInventorySummary"),
+  userInventoryRefreshButton: document.getElementById("userInventoryRefreshButton"),
+  userDeviceSearchInput: document.getElementById("userDeviceSearchInput"),
+  userDeviceStatusSelect: document.getElementById("userDeviceStatusSelect"),
+  userDeviceBrandSelect: document.getElementById("userDeviceBrandSelect"),
+  userDeviceAndroidSelect: document.getElementById("userDeviceAndroidSelect"),
+  userDeviceClearFiltersButton: document.getElementById("userDeviceClearFiltersButton"),
+  userDeviceFilterChips: document.getElementById("userDeviceFilterChips"),
+  userDeviceList: document.getElementById("userDeviceList"),
+  userDeviceTitle: document.getElementById("userDeviceTitle"),
+  userDeviceStatusPills: document.getElementById("userDeviceStatusPills"),
+  userDeviceDetailStatus: document.getElementById("userDeviceDetailStatus"),
+  userDeviceDetailMeta: document.getElementById("userDeviceDetailMeta"),
+  userDeviceDetail: document.getElementById("userDeviceDetail"),
+  userDetailTabs: document.getElementById("userDetailTabs"),
+  userDetailPanels: document.querySelectorAll("[data-user-detail-panel]"),
+  userDeviceAutomationStatus: document.getElementById("userDeviceAutomationStatus"),
+  userDeviceSmsHint: document.getElementById("userDeviceSmsHint"),
+  userDeviceSmsRefreshButton: document.getElementById("userDeviceSmsRefreshButton"),
+  userSmsSearchInput: document.getElementById("userSmsSearchInput"),
+  userSmsSimFilter: document.getElementById("userSmsSimFilter"),
+  userSmsCodeOnlyToggle: document.getElementById("userSmsCodeOnlyToggle"),
+  userDeviceSmsList: document.getElementById("userDeviceSmsList"),
+  userSmsPagination: document.getElementById("userSmsPagination"),
+  userSmsHint: document.getElementById("userSmsHint"),
+  userSmsList: document.getElementById("userSmsList"),
+  userXhsTaskForm: document.getElementById("userXhsTaskForm"),
+  userAutomationTargetSelect: document.getElementById("userAutomationTargetSelect"),
+  userAutomationTargetCards: document.getElementById("userAutomationTargetCards"),
+  userQrImageInput: document.getElementById("userQrImageInput"),
+  userQrPreview: document.getElementById("userQrPreview"),
+  userXhsHint: document.getElementById("userXhsHint"),
+  userXhsList: document.getElementById("userXhsList"),
+  userScreenVideo: document.getElementById("userScreenVideo"),
+  userScreenStatus: document.getElementById("userScreenStatus"),
+  userScreenStartButton: document.getElementById("userScreenStartButton"),
+  userScreenWakeButton: document.getElementById("userScreenWakeButton"),
+  userScreenStopButton: document.getElementById("userScreenStopButton"),
+  userScreenGalleryFileInput: document.getElementById("userScreenGalleryFileInput"),
+  userScreenGalleryPasteButton: document.getElementById("userScreenGalleryPasteButton"),
+  userScreenGalleryPasteZone: document.getElementById("userScreenGalleryPasteZone"),
+  userScreenGalleryImport: document.getElementById("userScreenGalleryImport"),
+  userScreenGalleryDraft: document.getElementById("userScreenGalleryDraft"),
+  userScreenGalleryPreview: document.getElementById("userScreenGalleryPreview"),
+  userScreenGalleryFileName: document.getElementById("userScreenGalleryFileName"),
+  userScreenGalleryFileMeta: document.getElementById("userScreenGalleryFileMeta"),
+  userScreenGalleryClearButton: document.getElementById("userScreenGalleryClearButton"),
+  userScreenGalleryConfirmButton: document.getElementById("userScreenGalleryConfirmButton"),
+  userScreenGalleryImportStatus: document.getElementById("userScreenGalleryImportStatus"),
+  userScreenPlaceholder: document.getElementById("userScreenPlaceholder"),
+  userScreenOverlay: document.getElementById("userScreenOverlay"),
+  userScreenOverlaySpinner: document.getElementById("userScreenOverlaySpinner"),
+  userScreenOverlayTitle: document.getElementById("userScreenOverlayTitle"),
+  userScreenOverlayDetail: document.getElementById("userScreenOverlayDetail"),
+  userScreenReconnectButton: document.getElementById("userScreenReconnectButton"),
+  userScreenHint: document.getElementById("userScreenHint"),
+  userScreenNavigationButtons: document.querySelectorAll(".screen-navigation [data-screen-key]"),
+  passwordForm: document.getElementById("passwordForm"),
+  passwordHint: document.getElementById("passwordHint"),
+  userCreateForm: document.getElementById("userCreateForm"),
+  userCreateHint: document.getElementById("userCreateHint"),
+  userList: document.getElementById("userList"),
+  agentCreateButton: document.getElementById("agentCreateButton"),
+  agentTokenNotice: document.getElementById("agentTokenNotice"),
+  windowsList: document.getElementById("windowsList"),
+  windowsTaskList: document.getElementById("windowsTaskList"),
+  deviceList: document.getElementById("deviceList"),
+  deviceListingToolbar: document.getElementById("deviceListingToolbar"),
+  deviceBulkListingButtons: document.querySelectorAll("[data-device-bulk-listing]"),
+  smsOrderForm: document.getElementById("smsOrderForm"),
+  smsHint: document.getElementById("smsHint"),
+  smsList: document.getElementById("smsList"),
+  smsLibraryForm: document.getElementById("smsLibraryForm"),
+  smsLibraryDeviceSelect: document.getElementById("smsLibraryDeviceSelect"),
+  smsLibraryBoxSelect: document.getElementById("smsLibraryBoxSelect"),
+  smsLibrarySearchInput: document.getElementById("smsLibrarySearchInput"),
+  smsLibraryList: document.getElementById("smsLibraryList"),
+  releaseForm: document.getElementById("releaseForm"),
+  releaseHint: document.getElementById("releaseHint"),
+  releaseDetail: document.getElementById("releaseDetail"),
+  xhsTaskForm: document.getElementById("xhsTaskForm"),
+  xhsHint: document.getElementById("xhsHint"),
+  xhsDeviceSelect: document.getElementById("xhsDeviceSelect"),
+  xhsSlotSelect: document.getElementById("xhsSlotSelect"),
+  xhsList: document.getElementById("xhsList"),
+  workflowScriptForm: document.getElementById("workflowScriptForm"),
+  workflowScriptEnabled: document.getElementById("workflowScriptEnabled"),
+  workflowScriptMeta: document.getElementById("workflowScriptMeta"),
+  workflowConfirmWaitMs: document.getElementById("workflowConfirmWaitMs"),
+  workflowTimeoutTotalMs: document.getElementById("workflowTimeoutTotalMs"),
+  workflowTimeoutRestartMs: document.getElementById("workflowTimeoutRestartMs"),
+  workflowTimeoutProfileMs: document.getElementById("workflowTimeoutProfileMs"),
+  workflowTimeoutScannerMs: document.getElementById("workflowTimeoutScannerMs"),
+  workflowTimeoutAlbumMs: document.getElementById("workflowTimeoutAlbumMs"),
+  workflowTimeoutSelectImageMs: document.getElementById("workflowTimeoutSelectImageMs"),
+  workflowTimeoutLoginConfirmMs: document.getElementById("workflowTimeoutLoginConfirmMs"),
+  workflowLoginKeywords: document.getElementById("workflowLoginKeywords"),
+  workflowOrdinaryButtons: document.getElementById("workflowOrdinaryButtons"),
+  workflowPlatformButtons: document.getElementById("workflowPlatformButtons"),
+  workflowScriptSteps: document.getElementById("workflowScriptSteps"),
+  workflowScriptHint: document.getElementById("workflowScriptHint"),
+  workflowScriptPreview: document.getElementById("workflowScriptPreview"),
+  diagnosticsSummary: document.getElementById("diagnosticsSummary"),
+  diagnosticsChecks: document.getElementById("diagnosticsChecks"),
+  diagnosticsDetail: document.getElementById("diagnosticsDetail"),
+  realtimeDiagnostics: document.getElementById("realtimeDiagnostics"),
+  auditList: document.getElementById("auditList")
+};
+
+function authHeaders(extra = {}) {
+  return {
+    ...extra,
+    authorization: `Bearer ${state.token}`,
+    "content-type": "application/json"
+  };
+}
+
+async function api(path, options = {}) {
+  const signal = options.signal || AbortSignal.timeout(15_000);
+  const response = await fetch(path, {
+    ...options,
+    signal,
+    headers: authHeaders(options.headers || {})
+  });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const error = new Error(humanError(payload, response.status));
+    error.status = response.status;
+    error.code = payload.error || "";
+    error.payload = payload;
+    throw error;
+  }
+  return payload;
+}
+
+function humanError(payload = {}, status = 0) {
+  const code = payload.error || "";
+  const detail = payload.detail || "";
+  const map = {
+    device_busy: "这台手机正在执行任务，请稍后再试。",
+    account_slot_busy: "这个账号槽位正在扫码，请稍后再试。",
+    device_not_published: "这台手机还没有上架，暂时不能使用。",
+    sms_refresh_too_frequent: `短信库刷新太频繁，请 ${payload.retryAfterSeconds || 10} 秒后再试。`,
+    sms_refresh_unavailable: "这台手机暂时不能主动刷新短信库，请确认 Windows 管理器和 ADB 在线。",
+    screen_device_offline: "这台手机当前不在线，暂时不能投屏。",
+    screen_agent_offline: "负责这台手机的 Windows 管理器尚未连接投屏通道。",
+    device_screen_busy: "这台手机已经有一个实时控制会话。",
+    screen_session_not_found: "投屏会话已结束，请重新连接。",
+    screen_gallery_import_busy: "这张图片正在导入手机图库，请等待完成。",
+    xhs_device_not_available: "当前没有可用的小红书扫码手机。",
+    xhs_account_not_available: "这台手机未配置可用的小红书账号。",
+    account_not_configured: "这台手机未配置可用账号，请联系管理员。",
+    phone_not_available: "这个手机号当前不可用或正在等待验证码。",
+    user_active_xhs_task_limit_reached: "你的扫码任务已达到上限，请等待已有任务完成。",
+    user_waiting_sms_limit_reached: "你的验证码等待任务已达到上限。",
+    invalid_credentials: "账号或密码错误。",
+    too_many_login_attempts: "密码错误次数过多，请等几分钟后再试。",
+    unauthorized: "登录已失效，请重新登录。",
+    forbidden_origin: "当前访问来源未被允许。"
+  };
+  return detail || map[code] || code || `HTTP ${status}`;
+}
+
+function escapeHtml(value = "") {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function shortTime(value) {
+  if (!value) return "-";
+  const diff = Date.now() - new Date(value).getTime();
+  if (diff < 60_000) return "刚刚";
+  if (diff < 3_600_000) return `${Math.floor(diff / 60_000)} 分钟前`;
+  return new Date(value).toLocaleString("zh-CN", { hour12: false });
+}
+
+function visibleUserXhsTasks() {
+  return [...(state.userPendingXhsTasks || []), ...(state.userXhsTasks || [])];
+}
+
+function addPendingUserXhsTask(task) {
+  state.userPendingXhsTasks = [
+    task,
+    ...(state.userPendingXhsTasks || []).filter((item) => item.taskId !== task.taskId)
+  ];
+}
+
+function removePendingUserXhsTask(taskId) {
+  state.userPendingXhsTasks = (state.userPendingXhsTasks || []).filter((task) => task.taskId !== taskId);
+}
+
+function markPendingUserXhsTaskFailed(taskId, message) {
+  state.userPendingXhsTasks = (state.userPendingXhsTasks || []).map((task) => (
+    task.taskId === taskId
+      ? {
+          ...task,
+          status: "submit_failed",
+          summary: {
+            ...(task.summary || {}),
+            failureMessage: message || "任务创建失败，请重试"
+          }
+        }
+      : task
+  ));
+}
+
+function prunePendingUserXhsTasks() {
+  const now = Date.now();
+  state.userPendingXhsTasks = (state.userPendingXhsTasks || []).filter((task) => {
+    const age = now - new Date(task.createdAt || 0).getTime();
+    return Number.isFinite(age) && age < 90_000 && task.status !== "submit_failed";
+  });
+}
+
+function isActiveXhsStatus(status) {
+  return ["creating", "queued", "running", "stalled"].includes(String(status || ""));
+}
+
+function isUserScanPanelActive() {
+  return Boolean(
+    state.token &&
+    state.page === "user-workbench" &&
+    state.userWorkbenchView === "detail" &&
+    state.userDetailTab === "scan" &&
+    state.userSelectedDeviceId
+  );
+}
+
+function shouldFastRefreshUserXhsTasks() {
+  if (!state.token || state.page !== "user-workbench") return false;
+  return isUserScanPanelActive() || visibleUserXhsTasks().some((task) => isActiveXhsStatus(task.status));
+}
+
+function isOnline(value) {
+  return value && Date.now() - new Date(value).getTime() < ONLINE_MS;
+}
+
+function taskTypeLabel(type) {
+  return {
+    adb_install_apk: "安装 APK",
+    adb_grant_permissions: "授权权限",
+    adb_start_agent: "启动 Agent",
+    adb_collect_diagnostics: "采集诊断",
+    adb_restart_server: "重启 ADB",
+    sms_sync_now: "主动同步短信",
+    xhs_qr_appium: "小红书 Airtest/Poco 扫码"
+  }[type] || type || "ADB 任务";
+}
+
+function windowsTaskButtonLabel(type) {
+  return {
+    adb_install_apk: "旧 APK 安装",
+    adb_grant_permissions: "旧 APK 授权",
+    adb_start_agent: "旧 Agent 启动"
+  }[type] || taskTypeLabel(type);
+}
+
+function pageCopy(page) {
+  return {
+    dashboard: ["总览", "平台、Windows 管理器和手机状态"],
+    "user-workbench": ["用户工作台", "查看设备短信库和提交自动化扫码任务"],
+    users: ["用户账号", "创建、查看和停用平台用户"],
+    windows: ["Windows 管理器", "USB ADB 控制面，负责设备同步、短信库和扫码自动化"],
+    devices: ["手机设备", "核对设备资料、账号槽位和上架状态"],
+    release: ["APK 发布", "上传或登记手机 Agent APK，供 Windows 自动安装"],
+    sms: ["短信库", "按手机查看系统短信，并保留验证码订单闭环"],
+    xhs: ["小红书扫码", "上传二维码并派发小红书扫码任务"],
+    "workflow-scripts": ["自动化脚本", "维护小红书扫码默认脚本，任务创建时冻结配置"],
+    diagnostics: ["诊断检查", "上线前配置、运行状态和联调准备度"],
+    audit: ["审计日志", "管理操作、设备同步和任务轨迹"]
+  }[page] || ["总览", ""];
+}
+
+function rolePage(button) {
+  return button.dataset.rolePage || "admin";
+}
+
+function allowedPages() {
+  if (!state.user) return [];
+  const role = state.user.role === "admin" ? "admin" : "user";
+  return [...els.pageButtons]
+    .filter((button) => rolePage(button) === role || (role === "admin" && rolePage(button) === "user"))
+    .map((button) => button.dataset.pageButton);
+}
+
+function renderShell() {
+  const isAuthenticated = Boolean(state.user);
+  document.body.classList.remove("booting");
+  document.body.classList.toggle("auth-screen", !isAuthenticated);
+  document.body.classList.toggle("admin-chrome", isAuthenticated && state.user?.role === "admin");
+  els.loginScreen?.classList.toggle("hidden", isAuthenticated);
+  if (!isAuthenticated) return;
+
+  const allowed = allowedPages();
+  if (!allowed.includes(state.page)) {
+    state.page = allowed[0] || "dashboard";
+    localStorage.setItem("phoneCloudPage", state.page);
+  }
+  const [title, summary] = pageCopy(state.page);
+  const userWorkbenchChrome = state.page === "user-workbench";
+  const showTopDeviceMetrics = userWorkbenchChrome || (state.user?.role === "admin" && ["dashboard", "devices"].includes(state.page));
+  document.body.classList.toggle("user-workbench-chrome", Boolean(userWorkbenchChrome));
+  els.defaultTopTitle?.classList.toggle("hidden", Boolean(userWorkbenchChrome));
+  els.userTopBrand?.classList.toggle("hidden", !userWorkbenchChrome);
+  els.userTopMetrics?.classList.toggle("hidden", !showTopDeviceMetrics);
+  els.userTopIdentity?.classList.toggle("hidden", !userWorkbenchChrome);
+  els.userTopAdminButton?.classList.toggle("hidden", !userWorkbenchChrome || state.user?.role !== "admin");
+  els.topSettingsButton?.classList.toggle("hidden", !userWorkbenchChrome || !state.user);
+  els.pageTitle.textContent = title;
+  els.pageSummary.textContent = summary;
+  els.pageButtons.forEach((button) => {
+    const visible = allowed.includes(button.dataset.pageButton);
+    button.hidden = !visible;
+    button.classList.toggle("active", visible && button.dataset.pageButton === state.page);
+  });
+  els.pages.forEach((page) => page.classList.toggle("hidden", page.dataset.page !== state.page));
+  els.refreshButton.hidden = !state.user || userWorkbenchChrome;
+  els.authUserName.textContent = state.user?.displayName || state.user?.username || "未登录";
+  els.authUserRole.textContent = state.user ? (state.user.role === "admin" ? "管理员" : "普通用户") : "请登录平台账号";
+  if (els.userTopIdentityText) {
+    els.userTopIdentityText.textContent = state.user
+      ? `${state.user.displayName || state.user.username || "测试用户"} · ${state.user.role === "admin" ? "管理员" : "普通用户"}`
+      : "未登录";
+  }
+  if (els.userTopAvatar) {
+    els.userTopAvatar.textContent = String(state.user?.displayName || state.user?.username || "测").trim().slice(0, 1) || "测";
+  }
+  renderTopDeviceMetrics();
+}
+
+function renderTopDeviceMetrics() {
+  const usingAdminData = state.user?.role === "admin" && state.page !== "user-workbench";
+  const userDevicesLoading = !usingAdminData && state.userDevicesLoading && !state.userDevicesLoadedAt;
+  const devices = usingAdminData ? (state.devices || []) : (state.userDevices || []);
+  const total = usingAdminData
+    ? Number(state.overview?.devices ?? devices.length ?? 0)
+    : devices.length;
+  const online = usingAdminData
+    ? Number(state.overview?.adbOnline ?? devices.filter((device) => device?.adb?.state === "device" || device?.adbOnline).length)
+    : devices.filter(userDeviceOnline).length;
+  const busy = usingAdminData
+    ? (state.xhsTasks || []).filter((task) => ["queued", "running"].includes(task.status)).length
+    : devices.filter((device) => device.busy).length;
+  const available = usingAdminData
+    ? Math.max(0, online - busy)
+    : devices.filter((device) => device.available || (userDeviceOnline(device) && !device.busy)).length;
+
+  if (els.userTopTotalDevices) els.userTopTotalDevices.textContent = userDevicesLoading ? "-" : total;
+  if (els.userTopAvailableDevices) els.userTopAvailableDevices.textContent = userDevicesLoading ? "-" : available;
+  if (els.userTopOnlineDevices) els.userTopOnlineDevices.textContent = userDevicesLoading ? "-" : online;
+  if (els.userTopBusyDevices) els.userTopBusyDevices.textContent = userDevicesLoading ? "-" : busy;
+}
+
+function renderOverview() {
+  renderTopDeviceMetrics();
+  const items = [
+    ["Windows 管理器", state.overview.onlineAgents ?? 0, `共 ${state.overview.windowsAgents ?? 0} 台`],
+    ["ADB 在线手机", state.overview.adbOnline ?? 0, `设备池 ${state.overview.devices ?? 0} 台`],
+    ["活跃设备锁", state.overview.deviceLocks ?? 0, "扫码占用中"],
+    ["等待验证码", state.overview.waitingSms ?? 0, "短信订单"],
+    ["短信库", state.overview.smsLibraryMessages ?? 0, "已同步短信"],
+    ["扫码排队", state.overview.xhsQueued ?? 0, `运行中 ${state.overview.xhsRunning ?? 0}`],
+    ["扫码成功率", state.overview.xhsSuccessRate === null || state.overview.xhsSuccessRate === undefined ? "-" : `${state.overview.xhsSuccessRate}%`, "已完成任务"]
+  ];
+  els.overviewGrid.innerHTML = items.map(([label, value, note], index) => `
+    <article class="metric metric-${index + 1}">
+      <span>${escapeHtml(label)}</span>
+      <strong>${escapeHtml(value)}</strong>
+      <small>${escapeHtml(note)}</small>
+    </article>
+  `).join("");
+}
+
+function renderUserWorkbench() {
+  if (!els.userDeviceList) return;
+  const devicesLoading = Boolean(state.userDevicesLoading);
+  const hasLoadedDevicesOnce = Boolean(state.userDevicesLoadedAt);
+  if (state.userSelectedDeviceId && hasLoadedDevicesOnce && !devicesLoading && !state.userDevices.some((device) => device.deviceId === state.userSelectedDeviceId)) {
+    state.userSelectedDeviceId = "";
+    state.userWorkbenchView = "inventory";
+    localStorage.removeItem("phoneCloudUserSelectedDeviceId");
+    localStorage.setItem("phoneCloudUserWorkbenchView", state.userWorkbenchView);
+  }
+  const selectedDevice = state.userDevices.find((device) => device.deviceId === state.userSelectedDeviceId) || null;
+  const restoringSelectedDevice = state.userWorkbenchView === "detail" && state.userSelectedDeviceId && devicesLoading && !hasLoadedDevicesOnce;
+  const showDeviceDetail = state.userWorkbenchView === "detail" && (selectedDevice || restoringSelectedDevice);
+  const filteredDeviceSmsMessages = filterUserDeviceSmsMessages(selectedDevice);
+  const onlineCount = state.userDevices.filter(userDeviceOnline).length;
+  const availableCount = state.userDevices.filter((device) => device.available || (userDeviceOnline(device) && !device.busy)).length;
+  const busyCount = state.userDevices.filter((device) => device.busy).length;
+  const searchText = String(state.userDeviceSearch || "").trim().toLowerCase();
+  const numericSearch = /^\d+$/.test(searchText);
+  const filteredDevices = state.userDevices
+    .filter((device) => {
+      if (!matchesUserDeviceStatus(device, state.userDeviceFilter)) return false;
+      if (state.userDeviceBrandFilter && !userDeviceBrand(device).toLowerCase().includes(state.userDeviceBrandFilter.toLowerCase())) return false;
+      if (state.userDeviceAndroidFilter && String(device.androidVersion || "").trim() !== state.userDeviceAndroidFilter) return false;
+      if (searchText && !userDeviceSearchText(device).includes(searchText)) return false;
+      return true;
+    })
+    .map((device, index) => ({ device, index }))
+    .sort((left, right) => {
+      if (!numericSearch) return left.index - right.index;
+      return rankUserDeviceSearch(left.device, searchText) - rankUserDeviceSearch(right.device, searchText)
+        || left.index - right.index;
+    })
+    .map(({ device }) => device);
+
+  if (els.userInventorySummary) {
+    els.userInventorySummary.textContent = devicesLoading && !hasLoadedDevicesOnce
+      ? "正在加载手机库存..."
+      : state.userDevicesLoadError && !hasLoadedDevicesOnce
+        ? `手机库存加载失败：${state.userDevicesLoadError}`
+      : `共 ${state.userDevices.length} 台手机，可用 ${availableCount} 台，在线 ${onlineCount} 台，执行中 ${busyCount} 台`;
+  }
+  renderTopDeviceMetrics();
+  els.userDeviceInventoryView?.classList.toggle("hidden", Boolean(showDeviceDetail));
+  els.userDeviceDetailView?.classList.toggle("hidden", !showDeviceDetail);
+  if (!["sms", "scan", "screen"].includes(state.userDetailTab)) state.userDetailTab = "sms";
+  if (els.userDetailTabs) {
+    [...els.userDetailTabs.querySelectorAll("[data-user-detail-tab]")].forEach((button) => {
+      button.classList.toggle("active", button.dataset.userDetailTab === state.userDetailTab);
+    });
+  }
+  els.userDetailPanels?.forEach((panel) => {
+    panel.classList.toggle("hidden", panel.dataset.userDetailPanel !== state.userDetailTab);
+  });
+  if (els.userDeviceSearchInput && els.userDeviceSearchInput.value !== state.userDeviceSearch) {
+    els.userDeviceSearchInput.value = state.userDeviceSearch;
+  }
+  syncUserDeviceFilterOptions();
+  if (els.userDeviceStatusSelect) els.userDeviceStatusSelect.value = state.userDeviceFilter;
+  if (els.userDeviceBrandSelect) els.userDeviceBrandSelect.value = state.userDeviceBrandFilter;
+  if (els.userDeviceAndroidSelect) els.userDeviceAndroidSelect.value = state.userDeviceAndroidFilter;
+  if (els.userDeviceFilterChips) {
+    [...els.userDeviceFilterChips.querySelectorAll("[data-user-device-filter]")].forEach((button) => {
+      const active = button.dataset.userDeviceFilter === state.userDeviceFilter;
+      button.classList.toggle("active", active);
+      button.classList.toggle("is-active", active);
+    });
+  }
+
+  if (els.userDeviceList) {
+    els.userDeviceList.innerHTML = devicesLoading && !hasLoadedDevicesOnce
+      ? renderUserDeviceInventoryLoading()
+      : state.userDevicesLoadError && !hasLoadedDevicesOnce
+        ? `<div class="empty user-device-empty"><b>手机库存暂时无法加载</b><span>${escapeHtml(state.userDevicesLoadError)}</span></div>`
+      : filteredDevices.length
+        ? filteredDevices.map((device) => renderUserDeviceCard(device)).join("")
+        : `<div class="empty user-device-empty">没有匹配的手机。</div>`;
+  }
+
+  if (els.userDeviceTitle) els.userDeviceTitle.textContent = selectedDevice ? selectedDevice.deviceName || selectedDevice.deviceId : "手机详情";
+  if (els.userDeviceDetailStatus) {
+    els.userDeviceDetailStatus.className = `status-pill ${selectedDevice ? userDeviceStatusClass(selectedDevice) : ""}`;
+    els.userDeviceDetailStatus.textContent = selectedDevice ? userDeviceStatusLabel(selectedDevice) : "未选择";
+  }
+  if (els.userDeviceStatusPills) {
+    els.userDeviceStatusPills.innerHTML = selectedDevice
+      ? renderDeviceStatusPills(selectedDevice)
+      : `<span class="status-pill">未选择</span>`;
+  }
+  if (els.userDeviceDetailMeta) {
+    els.userDeviceDetailMeta.textContent = selectedDevice
+      ? [selectedDevice.model || "未知型号", selectedDevice.androidVersion ? `Android ${selectedDevice.androidVersion}` : "", selectedDevice.adbSerial || selectedDevice.deviceId].filter(Boolean).join(" · ")
+      : "这台手机的短信库和扫码任务。";
+  }
+  if (els.userDeviceDetail) {
+    els.userDeviceDetail.innerHTML = selectedDevice
+      ? renderUserDeviceDetailPanel(selectedDevice)
+      : `<div class="empty">选择一台在线手机查看详情。</div>`;
+  }
+  if (els.userDeviceAutomationStatus) {
+    els.userDeviceAutomationStatus.innerHTML = selectedDevice ? renderAutomationChecks(selectedDevice) : "";
+  }
+
+  const automationTargets = selectedDevice ? automationTargetsForDevice(selectedDevice) : [];
+  if (els.userAutomationTargetSelect) {
+    els.userAutomationTargetSelect.innerHTML = automationTargets.length
+      ? automationTargets.map((target) => `<option value="${escapeHtml(target.value)}" ${target.disabled ? "disabled" : ""}>${escapeHtml(target.label)}${target.description ? ` · ${escapeHtml(target.description)}` : ""}</option>`).join("")
+      : `<option value="">这台手机暂无可用自动化账号</option>`;
+    applyRememberedAutomationTarget(selectedDevice, automationTargets);
+  }
+  if (els.userAutomationTargetCards) {
+    els.userAutomationTargetCards.innerHTML = selectedDevice ? renderAutomationTargetCards(automationTargets) : `<div class="empty compact-empty">选择一台手机后显示可用账号。</div>`;
+    syncScanTargetCards();
+  }
+  if (els.userXhsTaskForm) {
+    const submitButton = els.userXhsTaskForm.querySelector(".scan-submit-button");
+    const hasAvailableTarget = automationTargets.some((target) => !target.disabled && target.platform === "xhs");
+    const disabledReason = !selectedDevice
+      ? "请先选择一台手机"
+      : selectedDevice.busy
+        ? "这台手机正在执行任务"
+        : !hasAvailableTarget
+          ? "这台手机未配置可用小红书账号"
+          : !automationReadyForDevice(selectedDevice)
+            ? automationIssueLabel(selectedDevice)
+            : "";
+    if (submitButton) {
+      submitButton.disabled = Boolean(disabledReason) || Boolean(state.userXhsSubmitting);
+      submitButton.classList.toggle("is-loading", Boolean(state.userXhsSubmitting));
+      submitButton.textContent = state.userXhsSubmitting ? "正在提交任务..." : (disabledReason || "提交扫码任务");
+      submitButton.title = disabledReason;
+    }
+  }
+  if (els.userSmsSearchInput && els.userSmsSearchInput.value !== state.userSmsSearch) {
+    els.userSmsSearchInput.value = state.userSmsSearch;
+  }
+  if (els.userSmsCodeOnlyToggle) {
+    els.userSmsCodeOnlyToggle.checked = Boolean(state.userSmsCodeOnly);
+  }
+  if (els.userSmsSimFilter) {
+    const simOptions = selectedDevice
+      ? (selectedDevice.sims || []).map((sim, index) => {
+          const value = String(sim.slotIndex ?? index);
+          const label = sim.label || `SIM ${Number(sim.slotIndex ?? index) + 1}`;
+          return `<option value="${escapeHtml(value)}">${escapeHtml(label)}${sim.phoneNumber ? ` · ${escapeHtml(displayPhoneNumber(sim.phoneNumber))}` : ""}</option>`;
+        }).join("")
+      : "";
+    els.userSmsSimFilter.innerHTML = `<option value="">全部 SIM</option>${simOptions}`;
+    els.userSmsSimFilter.value = state.userSmsSimFilter;
+  }
+
+  if (els.userDeviceSmsHint) {
+    const pageSize = normalizedUserSmsPageSize();
+    const pageStart = state.userDeviceSmsTotal ? (Math.max(1, state.userSmsPage) - 1) * pageSize + 1 : 0;
+    const pageEnd = Math.min(state.userDeviceSmsTotal || 0, pageStart + filteredDeviceSmsMessages.length - 1);
+    els.userDeviceSmsHint.textContent = selectedDevice
+      ? `${selectedDevice.deviceName || selectedDevice.deviceId} · 本机短信库 · 共 ${state.userDeviceSmsTotal || 0} 条，当前 ${pageStart}-${pageEnd}`
+      : "选择一台在线手机后查看。";
+  }
+  updateUserSmsRefreshButton(selectedDevice);
+  if (els.userDeviceSmsList) {
+    const isLoadingSelectedSms = state.userDeviceSmsLoading && state.userDeviceSmsLoadingDeviceId === state.userSelectedDeviceId;
+    els.userDeviceSmsList.innerHTML = isLoadingSelectedSms && !filteredDeviceSmsMessages.length && !state.userDeviceSmsTotal
+      ? `<div class="sms-loading-state"><span class="inline-spinner"></span><b>正在加载这台手机的短信库</b></div>`
+      : filteredDeviceSmsMessages.length
+        ? `${isLoadingSelectedSms ? `<div class="sms-library-updating"><span class="inline-spinner"></span>正在更新短信库</div>` : ""}${renderUserSmsTable(filteredDeviceSmsMessages)}`
+        : state.userSmsLoadError
+          ? `<div class="empty sms-load-error"><b>短信库暂时未加载</b><span>${escapeHtml(state.userSmsLoadError)}</span></div>`
+          : `<div class="empty">暂无短信记录。请等待 Windows 管理器完成短信同步，或确认这台手机短信库本身为空。</div>`;
+  }
+  if (els.userSmsPagination) {
+    els.userSmsPagination.innerHTML = selectedDevice ? renderUserSmsPagination() : "";
+  }
+
+  const selectedDeviceXhsTasks = selectedDevice
+    ? visibleUserXhsTasks().filter((task) => task.deviceId === selectedDevice.deviceId)
+    : [];
+  if (els.userXhsList) els.userXhsList.innerHTML = selectedDeviceXhsTasks.length
+    ? selectedDeviceXhsTasks.map((task) => renderUserXhsTaskCard(task)).join("")
+    : `<div class="empty scan-empty-state">暂无扫码任务。上传二维码后，这里会显示执行步骤和结果。</div>`;
+  renderUserScreenControl(selectedDevice);
+}
+
+function renderUserScreenControl(device) {
+  if (!els.userScreenStatus) return;
+  const session = state.userScreenSession;
+  const ownsActiveSession = Boolean(session && state.userScreenDeviceId === device?.deviceId && ["connecting", "preparing", "ready", "live", "streaming"].includes(state.userScreenStatus));
+  const live = ["live", "streaming"].includes(state.userScreenStatus);
+  const unavailableReason = !device
+    ? "请先选择一台手机"
+    : !device.adbOnline
+      ? "手机 ADB 离线"
+      : !device.screenControlAvailable
+        ? "Windows 管理器投屏通道未连接"
+        : device.busy && !ownsActiveSession
+          ? (device.busyReasons || ["手机正在执行其他任务"])[0]
+          : "";
+  els.userScreenStatus.dataset.state = state.userScreenStatus;
+  els.userScreenStatus.textContent = state.userScreenDetail || "等待连接";
+  els.userScreenStartButton.disabled = Boolean(unavailableReason) || ownsActiveSession || state.userScreenStarting;
+  els.userScreenStartButton.textContent = state.userScreenStarting ? "正在建立连接..." : ownsActiveSession ? "投屏已启动" : "开始投屏";
+  els.userScreenStartButton.title = unavailableReason;
+  els.userScreenWakeButton.disabled = Boolean(unavailableReason) || state.userScreenStarting || (ownsActiveSession && !live);
+  els.userScreenWakeButton.title = unavailableReason || (live ? "点亮手机屏幕，不会关闭已亮屏幕" : "建立投屏并自动点亮手机屏幕");
+  els.userScreenStopButton.disabled = !ownsActiveSession && !state.userScreenStarting;
+  const galleryImport = state.userScreenGalleryImport;
+  if (els.userScreenGalleryFileInput) {
+    els.userScreenGalleryFileInput.disabled = !live || isUserScreenGalleryImportActive();
+  }
+  if (els.userScreenGalleryPasteButton) {
+    els.userScreenGalleryPasteButton.disabled = !live || isUserScreenGalleryImportActive();
+  }
+  if (els.userScreenGalleryPasteZone) {
+    els.userScreenGalleryPasteZone.contentEditable = live && !isUserScreenGalleryImportActive() ? "true" : "false";
+    els.userScreenGalleryPasteZone.classList.toggle("is-disabled", !live || isUserScreenGalleryImportActive());
+  }
+  const galleryDraft = state.userScreenGalleryDraftFile;
+  els.userScreenGalleryImport?.classList.toggle("has-draft", Boolean(galleryDraft));
+  if (els.userScreenGalleryDraft) {
+    els.userScreenGalleryDraft.hidden = !galleryDraft;
+  }
+  if (els.userScreenGalleryPreview && galleryDraft) {
+    els.userScreenGalleryPreview.src = state.userScreenGalleryDraftDataUrl;
+  }
+  if (els.userScreenGalleryFileName) {
+    els.userScreenGalleryFileName.textContent = galleryDraft?.name || "未选择图片";
+  }
+  if (els.userScreenGalleryFileMeta) {
+    els.userScreenGalleryFileMeta.textContent = galleryDraft ? `${galleryDraft.type || "图片"} · ${formatScreenGalleryFileSize(galleryDraft.size)}` : "";
+  }
+  if (els.userScreenGalleryClearButton) {
+    els.userScreenGalleryClearButton.disabled = !galleryDraft || isUserScreenGalleryImportActive();
+  }
+  if (els.userScreenGalleryConfirmButton) {
+    els.userScreenGalleryConfirmButton.disabled = !live || !galleryDraft || isUserScreenGalleryImportActive();
+  }
+  if (els.userScreenGalleryImportStatus) {
+    const galleryMessage = galleryImport?.result?.message || "";
+    els.userScreenGalleryImportStatus.dataset.state = galleryImport?.status || "idle";
+    els.userScreenGalleryImportStatus.textContent = !live
+      ? "连接手机画面后可导入 PNG、JPEG 或 WebP 图片。"
+      : state.userScreenGalleryImporting
+        ? "正在将图片推送到手机图库..."
+        : galleryImport?.status === "queued"
+          ? "图片已提交，正在等待 Windows 管理器处理。"
+          : galleryImport?.status === "running"
+            ? "正在导入图片到手机图库..."
+            : galleryImport?.status === "succeeded"
+              ? (galleryMessage || "图片已导入手机图库。")
+              : galleryImport?.status === "failed"
+                ? (galleryMessage || "图片导入失败，请重试。")
+                : state.userScreenGalleryDraftError
+                  ? state.userScreenGalleryDraftError
+                  : galleryDraft
+                    ? "图片已暂存，确认后将导入手机图库。"
+                    : "选择或粘贴图片后会展开预览，确认后才导入手机相册。";
+  }
+  const screenConnecting = ["connecting", "preparing", "ready"].includes(state.userScreenStatus);
+  const screenFailed = state.userScreenStatus === "failed";
+  if (els.userScreenOverlay) {
+    const overlayTitle = {
+      connecting: "正在连接手机画面",
+      preparing: "正在准备手机画面",
+      ready: "正在等待视频首帧",
+      failed: "连接手机画面失败"
+    }[state.userScreenStatus] || "";
+    els.userScreenOverlay.hidden = !screenConnecting && !screenFailed;
+    els.userScreenOverlay.dataset.state = state.userScreenStatus;
+    if (els.userScreenOverlayTitle) els.userScreenOverlayTitle.textContent = overlayTitle;
+    if (els.userScreenOverlayDetail) els.userScreenOverlayDetail.textContent = state.userScreenDetail || (screenFailed ? "请重新连接后再试。" : "请保持当前页面打开。");
+    if (els.userScreenOverlaySpinner) els.userScreenOverlaySpinner.hidden = screenFailed;
+    if (els.userScreenReconnectButton) els.userScreenReconnectButton.hidden = !screenFailed;
+  }
+  els.userScreenPlaceholder.hidden = live || screenConnecting || screenFailed;
+  els.userScreenNavigationButtons?.forEach((button) => { button.disabled = !live; });
+  if (els.userScreenHint) {
+    const metrics = state.userScreenMetrics || {};
+    const liveMetrics = [
+      Number(metrics.fps) > 0 ? `${Number(metrics.fps).toFixed(0)} FPS` : "",
+      Number.isFinite(metrics.bufferSeconds) ? `缓冲 ${Math.round(Number(metrics.bufferSeconds) * 1000)}ms` : "",
+      Number.isFinite(metrics.controlRttMs) ? `控制 ${Math.round(Number(metrics.controlRttMs))}ms` : ""
+    ].filter(Boolean).join(" · ");
+    els.userScreenHint.textContent = unavailableReason
+      ? unavailableReason
+      : live
+        ? `实时控制已连接。${liveMetrics || "点击画面或滑动即可操作手机。"} 点击画面后可直接键盘输入，Ctrl/Cmd+V 粘贴，退格删除，Ctrl/Cmd+A 全选。`
+        : "投屏会独占这台手机，结束后才能继续扫码任务。";
+  }
+}
+
+async function startUserScreenSession() {
+  const device = state.userDevices.find((item) => item.deviceId === state.userSelectedDeviceId);
+  if (!device || state.userScreenStarting) return;
+  if (!window.PhoneCloudScreenController) throw new Error("实时控制组件尚未加载，请刷新页面后重试。");
+  state.userScreenStarting = true;
+  state.userScreenStatus = "connecting";
+  state.userScreenDetail = "正在请求实时控制会话";
+  state.userScreenMetrics = {};
+  state.userScreenGalleryImport = null;
+  state.userScreenGalleryImporting = false;
+  renderUserScreenControl(device);
+  try {
+    const payload = await api(`/api/v1/user/devices/${encodeURIComponent(device.deviceId)}/screen-sessions`, { method: "POST" });
+    state.userScreenSession = payload.session;
+    state.userScreenToken = payload.browserToken || "";
+    state.userScreenDeviceId = device.deviceId;
+    state.userScreenController?.destroy();
+    state.userScreenController = new window.PhoneCloudScreenController({
+      video: els.userScreenVideo,
+      onStatus(message) {
+        if (state.userScreenDeviceId !== device.deviceId) return;
+        state.userScreenStatus = message.status || "connecting";
+        state.userScreenDetail = message.detail || message.status || "正在连接";
+        if (["failed", "closed"].includes(state.userScreenStatus)) {
+          const failedSessionId = state.userScreenSession?.sessionId || "";
+          state.userScreenSession = null;
+          state.userScreenToken = "";
+          state.userScreenDeviceId = "";
+          if (failedSessionId) releaseFailedUserScreenSession(failedSessionId);
+        }
+        renderUserScreenControl(state.userDevices.find((item) => item.deviceId === state.userSelectedDeviceId));
+      },
+      onMetrics(metrics) {
+        if (state.userScreenDeviceId !== device.deviceId) return;
+        state.userScreenMetrics = metrics || {};
+        renderUserScreenControl(state.userDevices.find((item) => item.deviceId === state.userSelectedDeviceId));
+      }
+    });
+    state.userScreenController.connect({ sessionId: payload.session.sessionId, browserToken: payload.browserToken, media: payload.media });
+  } catch (error) {
+    state.userScreenStatus = "failed";
+    state.userScreenDetail = error.message || "投屏启动失败";
+    state.userScreenSession = null;
+    state.userScreenToken = "";
+    throw error;
+  } finally {
+    state.userScreenStarting = false;
+    renderUserScreenControl(device);
+  }
+}
+
+function releaseFailedUserScreenSession(sessionId) {
+  const controller = state.userScreenController;
+  state.userScreenController = null;
+  controller?.disconnect();
+  fetch(`/api/v1/screen-sessions/${encodeURIComponent(sessionId)}`, {
+    method: "DELETE",
+    headers: { authorization: `Bearer ${state.token}` },
+    keepalive: true
+  }).catch(() => {});
+}
+
+async function stopUserScreenSession() {
+  const sessionId = state.userScreenSession?.sessionId;
+  state.userScreenController?.disconnect();
+  state.userScreenController = null;
+  state.userScreenSession = null;
+  state.userScreenToken = "";
+  state.userScreenDeviceId = "";
+  state.userScreenStatus = "idle";
+  state.userScreenDetail = "等待连接";
+  state.userScreenMetrics = {};
+  state.userScreenGalleryImport = null;
+  state.userScreenGalleryImporting = false;
+  renderUserScreenControl(state.userDevices.find((item) => item.deviceId === state.userSelectedDeviceId));
+  if (sessionId) await api(`/api/v1/screen-sessions/${encodeURIComponent(sessionId)}`, { method: "DELETE" }).catch(() => {});
+}
+
+function releaseUserScreenSessionOnPageExit() {
+  const sessionId = state.userScreenSession?.sessionId;
+  if (!sessionId || !state.token || userScreenExitReleaseRequested) return;
+  userScreenExitReleaseRequested = true;
+  state.userScreenController?.disconnect();
+  fetch(`/api/v1/screen-sessions/${encodeURIComponent(sessionId)}`, {
+    method: "DELETE",
+    headers: { authorization: `Bearer ${state.token}` },
+    keepalive: true
+  }).catch(() => {});
+}
+
+async function wakeUserScreen() {
+  const device = state.userDevices.find((item) => item.deviceId === state.userSelectedDeviceId);
+  if (!device || state.userScreenStarting) return;
+  if (["live", "streaming"].includes(state.userScreenStatus) && state.userScreenController) {
+    state.userScreenController?.key("wakeup");
+    state.userScreenDetail = "已发送唤醒指令";
+    renderUserScreenControl(device);
+    setTimeout(() => {
+      if (state.userSelectedDeviceId !== device.deviceId || !["live", "streaming"].includes(state.userScreenStatus)) return;
+      if (state.userScreenDetail === "已发送唤醒指令") {
+        state.userScreenDetail = "实时画面已连接";
+        renderUserScreenControl(device);
+      }
+    }, 1200);
+    return;
+  }
+  await startUserScreenSession();
+}
+
+const SCREEN_GALLERY_IMAGE_TYPES = new Set(["image/png", "image/jpeg", "image/webp"]);
+
+function isUserScreenGalleryImportActive() {
+  return state.userScreenGalleryImporting || ["queued", "running"].includes(state.userScreenGalleryImport?.status);
+}
+
+function canImportUserScreenGallery() {
+  return Boolean(
+    state.userDetailTab === "screen"
+    && state.userScreenSession?.sessionId
+    && ["live", "streaming"].includes(state.userScreenStatus)
+    && !isUserScreenGalleryImportActive()
+  );
+}
+
+function isSupportedScreenGalleryImage(file) {
+  return Boolean(file && SCREEN_GALLERY_IMAGE_TYPES.has(String(file.type || "").toLowerCase()));
+}
+
+function clipboardImageFile(items) {
+  for (const item of Array.from(items || [])) {
+    if (item.kind !== "file" || !SCREEN_GALLERY_IMAGE_TYPES.has(String(item.type || "").toLowerCase())) continue;
+    const file = item.getAsFile?.();
+    if (file) return file;
+  }
+  return null;
+}
+
+function formatScreenGalleryFileSize(bytes) {
+  if (!Number.isFinite(bytes) || bytes < 1024) return `${bytes || 0} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function clearUserScreenGalleryDraft() {
+  state.userScreenGalleryDraftFile = null;
+  state.userScreenGalleryDraftDataUrl = "";
+  state.userScreenGalleryDraftError = "";
+}
+
+async function stageUserScreenGalleryImage(file) {
+  if (!isSupportedScreenGalleryImage(file)) throw new Error("仅支持 PNG、JPEG 或 WebP 图片。");
+  clearUserScreenGalleryDraft();
+  state.userScreenGalleryDraftFile = file;
+  state.userScreenGalleryDraftDataUrl = await fileToDataUrl(file, { label: "待上传图片" });
+  renderUserScreenControl(state.userDevices.find((item) => item.deviceId === state.userSelectedDeviceId));
+}
+
+async function handleUserScreenGalleryPaste(event) {
+  const target = event.target instanceof HTMLElement ? event.target.closest("#userScreenGalleryPasteZone") : null;
+  if (!target || !canImportUserScreenGallery()) return;
+  event.preventDefault();
+  const file = clipboardImageFile(event.clipboardData?.items);
+  if (!file) {
+    state.userScreenGalleryDraftError = "未识别到图片，请复制 PNG、JPEG 或 WebP 图片后再粘贴。";
+    renderUserScreenControl(state.userDevices.find((item) => item.deviceId === state.userSelectedDeviceId));
+    return;
+  }
+  await stageUserScreenGalleryImage(file);
+}
+
+async function importUserScreenGalleryImage(file = state.userScreenGalleryDraftFile) {
+  const sessionId = state.userScreenSession?.sessionId;
+  if (!file || !sessionId) return;
+  if (!['live', 'streaming'].includes(state.userScreenStatus)) throw new Error("请先等待实时画面连接成功");
+  if (isUserScreenGalleryImportActive()) return;
+  if (!isSupportedScreenGalleryImage(file)) throw new Error("仅支持 PNG、JPEG 或 WebP 图片。");
+  const device = state.userDevices.find((item) => item.deviceId === state.userSelectedDeviceId);
+  state.userScreenGalleryImporting = true;
+  state.userScreenGalleryImport = null;
+  renderUserScreenControl(device);
+  try {
+    const imageDataUrl = await fileToDataUrl(file, { label: "导入图片" });
+    const payload = await api(`/api/v1/screen-sessions/${encodeURIComponent(sessionId)}/gallery-imports`, {
+      method: "POST",
+      body: JSON.stringify({ imageDataUrl })
+    });
+    state.userScreenGalleryImport = payload.task || null;
+    if (els.userScreenGalleryFileInput) els.userScreenGalleryFileInput.value = "";
+    renderUserScreenControl(device);
+    if (payload.task?.taskId) pollUserScreenGalleryImport(sessionId, payload.task.taskId);
+  } catch (error) {
+    state.userScreenGalleryImport = { status: "failed", result: { message: error.message || "图片导入失败" } };
+    throw error;
+  } finally {
+    state.userScreenGalleryImporting = false;
+    renderUserScreenControl(device);
+  }
+}
+
+async function pollUserScreenGalleryImport(sessionId, taskId) {
+  for (let attempt = 0; attempt < 45; attempt += 1) {
+    await new Promise((resolve) => setTimeout(resolve, attempt === 0 ? 700 : 1500));
+    if (state.userScreenSession?.sessionId !== sessionId) return;
+    try {
+      const payload = await api(`/api/v1/screen-sessions/${encodeURIComponent(sessionId)}/gallery-imports/${encodeURIComponent(taskId)}`);
+      if (state.userScreenSession?.sessionId !== sessionId) return;
+      state.userScreenGalleryImport = payload.task || state.userScreenGalleryImport;
+      if (payload.task?.status === "succeeded") clearUserScreenGalleryDraft();
+      renderUserScreenControl(state.userDevices.find((item) => item.deviceId === state.userSelectedDeviceId));
+      if (["succeeded", "failed", "cancelled"].includes(payload.task?.status)) return;
+    } catch (error) {
+      if (error.code === "screen_session_not_found") return;
+      state.userScreenGalleryImport = { status: "failed", result: { message: error.message || "无法读取导入状态" } };
+      renderUserScreenControl(state.userDevices.find((item) => item.deviceId === state.userSelectedDeviceId));
+      return;
+    }
+  }
+}
+
+function renderUserDeviceInventoryLoading() {
+  return `
+    <div class="user-device-loading-state">
+      <span class="inline-spinner"></span>
+      <b>正在加载手机库存</b>
+      <small>正在同步设备在线状态和可用账号</small>
+    </div>
+  `;
+}
+
+function applyRememberedAutomationTarget(device, targets) {
+  if (!els.userAutomationTargetSelect || !device) return;
+  const remembered = state.userAutomationTargetByDevice?.[device.deviceId] || "";
+  const availableValues = targets.filter((target) => !target.disabled).map((target) => target.value);
+  const targetValue = availableValues.includes(remembered) ? remembered : (availableValues[0] || "");
+  els.userAutomationTargetSelect.value = targetValue;
+  if (targetValue) rememberAutomationTarget(device.deviceId, targetValue);
+}
+
+function rememberAutomationTarget(deviceId, value) {
+  if (!deviceId) return;
+  state.userAutomationTargetByDevice = {
+    ...(state.userAutomationTargetByDevice || {}),
+    [deviceId]: value || ""
+  };
+  localStorage.setItem("phoneCloudUserAutomationTargetByDevice", JSON.stringify(state.userAutomationTargetByDevice));
+}
+
+function renderUserDeviceCard(device) {
+  const adbOnline = Boolean(device.adbOnline);
+  const presence = userDevicePresence(device);
+  const latestTask = userLatestTaskLabel(device);
+  const sims = (device.sims || []).filter((sim) => sim.phoneNumber || sim.carrierName || sim.label);
+  const accounts = (device.xhsAccounts || []).filter((account) => account.enabled !== false);
+  const selected = device.deviceId === state.userSelectedDeviceId;
+  return `
+    <article class="device-card user-device-card selectable-row ${selected ? "is-selected selected-row" : ""} is-${presence.key}" data-user-device-id="${escapeHtml(device.deviceId)}" ondblclick="window.__openUserDeviceDetail?.(this.dataset.userDeviceId)" title="${escapeHtml(presence.hint)}" role="button" tabindex="0">
+      <button class="device-open-button" data-user-device-open="${escapeHtml(device.deviceId)}" onclick="window.__openUserDeviceDetail?.(this.dataset.userDeviceOpen)" type="button" aria-label="打开 ${escapeHtml(device.deviceName || device.deviceId)}"></button>
+      <div class="device-main">
+        <div class="device-top-row">
+          <div class="device-thumb" aria-hidden="true">
+            <span>${escapeHtml(deviceInitial(device))}</span>
+          </div>
+          <div class="device-top-content">
+            <div class="device-heading-row">
+              <div class="device-heading-copy">
+                <div class="device-title-line">
+                  <strong>${escapeHtml(device.deviceName || device.deviceId)}</strong>
+                  <span class="device-signal is-${presence.key}">${escapeHtml(presence.signal)}</span>
+                </div>
+                <small>${escapeHtml([deviceBrandLabel(device), device.model || "未知型号", device.androidVersion ? `Android ${device.androidVersion}` : "Android -", adbOnline ? "ADB" : device.appVersion || "App -"].filter(Boolean).join(" · "))}</small>
+              </div>
+            </div>
+            <div class="device-meta-grid">
+              <span><b>Battery</b>${escapeHtml(batteryLabel(device.batteryLevel))}</span>
+              <span><b>SIM</b>${escapeHtml((device.sims || []).length || 0)}</span>
+              <span><b>SMS</b>${escapeHtml(device.smsLibraryCount || 0)}</span>
+            </div>
+          </div>
+        </div>
+        <div class="phone-chips">
+          ${sims.length ? sims.slice(0, 2).map((sim, index) => {
+            const simText = [sim.label || `SIM ${index + 1}`, displayPhoneNumber(sim.phoneNumber), sim.carrierName].filter(Boolean).join(" · ");
+            return `<i>${escapeHtml(simText)}</i>`;
+          }).join("") : `<i>未读取到 SIM 信息</i>`}
+        </div>
+        <div class="xhs-chips">
+          ${accounts.length ? accounts.slice(0, 2).map((account) => `<i>${escapeHtml(account.appSlot || "")} · ${escapeHtml(account.accountName || account.label || "未填小红书账号")}</i>`).join("") : `<i>未填小红书账号</i>`}
+        </div>
+        ${renderDeviceOccupancy(device)}
+        <div class="device-task-line">
+          <span>Latest task</span>
+          <b>${escapeHtml(latestTask)}</b>
+          <button class="device-open-cta" data-user-device-open="${escapeHtml(device.deviceId)}" onclick="window.__openUserDeviceDetail?.(this.dataset.userDeviceOpen)" type="button">查看详情</button>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function renderUserDeviceDetailPanel(device) {
+  const sims = device.sims || [];
+  const accounts = (device.xhsAccounts || []).filter((account) => account.enabled !== false);
+  return `
+    <div class="device-profile-phone" aria-hidden="true">
+      <div class="detail-phone-large">
+        <span></span>
+        <strong>${escapeHtml(deviceInitial(device))}</strong>
+      </div>
+      <em>${escapeHtml(userDeviceStatusLabel(device))}</em>
+    </div>
+    <div class="device-profile-facts">
+      ${profileFact("手机品牌", deviceBrandLabel(device) || "未知品牌")}
+      ${profileFact("设备型号", device.model || "未知型号")}
+      ${profileFact("Android 版本", device.androidVersion ? `Android ${device.androidVersion}` : "-")}
+      ${profileFact("ADB 序列号", device.adbSerial || device.deviceId || "-")}
+      ${profileFact("电量", batteryLabel(device.batteryLevel), batteryTone(device.batteryLevel))}
+      ${profileFact("SIM 卡数量", String(sims.length || 0))}
+      ${profileFact("短信总数", `${device.smsLibraryCount || state.userDeviceSmsTotal || 0} 条`, "ok")}
+      ${profileFact("最后同步时间", shortTime(device.lastSeenAt || device.updatedAt || device.lastHeartbeatAt))}
+      ${profileFact("当前占用", device.occupancy ? `${device.occupancy.ownerLabel} · ${device.occupancy.label}` : "未占用", device.occupancy ? "warn" : "ok")}
+    </div>
+    <div class="device-profile-resources">
+      <section>
+        <h3>SIM 卡信息</h3>
+        <div class="profile-resource-grid">
+          ${sims.length ? sims.map((sim, index) => renderDetailSim(sim, index)).join("") : `<div class="empty compact-empty">未读取到 SIM 卡信息；部分 Android 机型会限制 ADB 读取 SIM 表。</div>`}
+        </div>
+      </section>
+      <section>
+        <h3>小红书账号槽位</h3>
+        <div class="profile-resource-grid">
+          ${accounts.length ? accounts.map((account) => renderDetailAccount(account)).join("") : `<div class="empty compact-empty">还没有配置小红书账号槽位。</div>`}
+        </div>
+      </section>
+    </div>
+  `;
+}
+
+function profileFact(label, value, tone = "") {
+  return `
+    <div class="profile-fact ${tone}">
+      <span>${escapeHtml(label)}</span>
+      <strong>${escapeHtml(value)}</strong>
+    </div>
+  `;
+}
+
+function renderDeviceOccupancy(device) {
+  const occupancy = device?.occupancy;
+  if (!occupancy) return "";
+  return `
+    <div class="device-occupancy-line" title="${escapeHtml(occupancy.label)}">
+      <span>占用</span>
+      <b>${escapeHtml(`${occupancy.ownerLabel} · ${occupancy.label}`)}</b>
+    </div>
+  `;
+}
+
+function renderDeviceStatusPills(device) {
+  const adbOnline = Boolean(device.adbOnline);
+  const adbUnauthorized = userDeviceAdbUnauthorized(device);
+  const automationReady = automationReadyForDevice(device);
+  const automationLabel = automationReady ? "自动化可用" : device.busy ? "任务占用中" : automationIssueLabel(device);
+  return [
+    `<span class="status-pill ${userDeviceStatusClass(device)}">${escapeHtml(userDeviceStatusLabel(device))}</span>`,
+    `<span class="status-pill ${adbOnline ? "ok" : adbUnauthorized ? "bad" : "warn"}">${escapeHtml(adbOnline ? "ADB 在线" : adbUnauthorized ? "ADB 未授权" : "未连接")}</span>`,
+    `<span class="status-pill ${automationReady ? "ok" : "warn"}">${escapeHtml(automationLabel)}</span>`
+  ].join("");
+}
+
+function renderAutomationChecks(device) {
+  const adbOnline = Boolean(device.adbOnline);
+  const adbUnauthorized = userDeviceAdbUnauthorized(device);
+  const configuredXhsAccounts = (device.xhsAccounts || []).filter((account) => (
+    account.enabled !== false && String(account.accountName || "").trim()
+  )).length;
+  const xhsDetail = configuredXhsAccounts
+    ? `${configuredXhsAccounts} 个账号槽位`
+    : "未配置账号槽位";
+  const checks = [
+    ["连接状态", adbOnline ? "手机在线" : adbUnauthorized ? "已连接，未授权" : "未连接", adbOnline ? "ok" : adbUnauthorized ? "warn" : "bad"],
+    ["任务状态", adbOnline ? (device.busy ? "占用中" : "可提交任务") : adbUnauthorized ? "请在手机上允许 USB 调试" : "不可用", adbOnline ? (device.busy ? "warn" : "ok") : "warn"],
+    ["账号槽位", adbOnline ? xhsDetail : "不可用", adbOnline && configuredXhsAccounts ? "ok" : "warn"],
+    ["异常处理", adbOnline ? "失败原因会显示在任务进度中" : adbUnauthorized ? "解锁手机并点击允许 USB 调试" : "请检查数据线、Hub 和 USB 调试", adbOnline ? "ok" : "warn"]
+  ];
+  return checks.map(([label, value, tone]) => `
+    <div class="automation-check ${tone}">
+      <span>${escapeHtml(label)}</span>
+      <strong>${escapeHtml(value)}</strong>
+    </div>
+  `).join("");
+}
+
+function filterUserDeviceSmsMessages(selectedDevice) {
+  if (!selectedDevice) return [];
+  const search = String(state.userSmsSearch || "").trim().toLowerCase();
+  return state.userDeviceSmsMessages.filter((message) => {
+    if (state.userSmsCodeOnly && !message.code) return false;
+    if (state.userSmsSimFilter !== "" && String(message.slotIndex ?? "") !== String(state.userSmsSimFilter)) return false;
+    if (!search) return true;
+    const haystack = [
+      message.address,
+      message.phoneNumber,
+      message.body,
+      message.code,
+      smsBoxLabel(message.box),
+      message.slotIndex !== null && message.slotIndex !== undefined ? `sim ${Number(message.slotIndex) + 1}` : ""
+    ].filter(Boolean).join(" ").toLowerCase();
+    return haystack.includes(search);
+  });
+}
+
+function renderUserSmsTable(messages) {
+  return `
+    <div class="sms-table-head">
+      <span>时间</span>
+      <span>发件人</span>
+      <span>SIM</span>
+      <span>验证码</span>
+      <span>内容预览</span>
+      <span>操作</span>
+    </div>
+    ${messages.map((message) => renderUserSmsTableRow(message)).join("")}
+  `;
+}
+
+function renderUserSmsTableRow(message) {
+  const slotLabel = message.slotIndex !== null && message.slotIndex !== undefined ? `SIM ${Number(message.slotIndex) + 1}` : "-";
+  const sender = displayPhoneNumber(message.address || message.phoneNumber || "未知号码");
+  const body = message.body || "";
+  return `
+    <article class="sms-table-row">
+      <time>${escapeHtml(shortTime(message.messageAt))}</time>
+      <strong>${escapeHtml(sender)}</strong>
+      <span>${escapeHtml(slotLabel)}</span>
+      <code class="${message.code ? "has-code" : ""}">${escapeHtml(message.code || "-")}</code>
+      <p>${escapeHtml(body)}</p>
+      <button data-copy-text="${escapeHtml(message.code || body)}" type="button">复制</button>
+    </article>
+  `;
+}
+
+function renderUserSmsPagination() {
+  const pageSize = normalizedUserSmsPageSize();
+  const total = state.userDeviceSmsTotal || 0;
+  const totalPages = userSmsTotalPages();
+  const page = Math.min(Math.max(1, Number(state.userSmsPage || 1)), totalPages);
+  const start = total ? (page - 1) * pageSize + 1 : 0;
+  const end = total ? Math.min(total, start + state.userDeviceSmsMessages.length - 1) : 0;
+  return `
+    <div class="sms-page-info">
+      <strong>${escapeHtml(start)}-${escapeHtml(end)}</strong>
+      <span>/ ${escapeHtml(total)} 条</span>
+    </div>
+    <div class="sms-page-controls">
+      <button data-user-sms-page="prev" type="button" ${page <= 1 ? "disabled" : ""}>上一页</button>
+      <span>第 ${escapeHtml(page)} / ${escapeHtml(totalPages)} 页</span>
+      <button data-user-sms-page="next" type="button" ${page >= totalPages ? "disabled" : ""}>下一页</button>
+      <select id="userSmsPageSizeSelect" data-user-sms-page-size aria-label="每页短信数量">
+        ${[10, 20, 50, 100].map((size) => `<option value="${size}" ${size === pageSize ? "selected" : ""}>每页 ${size} 条</option>`).join("")}
+      </select>
+    </div>
+  `;
+}
+
+function copyText(value) {
+  if (!value) return;
+  navigator.clipboard?.writeText(value).catch(() => {});
+}
+
+function detailMetric(label, value, tone = "") {
+  return `
+    <div class="detail-metric ${tone}">
+      <span>${escapeHtml(label)}</span>
+      <strong>${escapeHtml(value)}</strong>
+    </div>
+  `;
+}
+
+function renderDetailSim(sim, index) {
+  const simMeta = [displayPhoneNumber(sim.phoneNumber), sim.carrierName].filter(Boolean).join(" · ") || "未读取到手机号";
+  return `
+    <article class="detail-resource-card">
+      <div>
+        <strong>${escapeHtml(sim.label || `SIM ${Number(sim.slotIndex ?? index) + 1}`)}</strong>
+        <span>${escapeHtml(simMeta)}</span>
+      </div>
+      <em class="${sim.busy ? "warn" : "ok"}">${sim.busy ? "短信占用" : "可用"}</em>
+    </article>
+  `;
+}
+
+function renderDetailAccount(account) {
+  return `
+    <article class="detail-resource-card">
+      <div>
+        <strong>${escapeHtml(account.label || account.appSlot)}</strong>
+        <span>${escapeHtml(account.accountName || "未填账号备注")}</span>
+      </div>
+      <em class="${account.busy ? "warn" : "ok"}">${account.busy ? "扫码占用" : "可用"}</em>
+    </article>
+  `;
+}
+
+function syncScanTargetCards() {
+  if (!els.userAutomationTargetCards || !els.userAutomationTargetSelect) return;
+  const value = els.userAutomationTargetSelect.value || "";
+  els.userAutomationTargetCards.querySelectorAll("[data-scan-target-value]").forEach((card) => {
+    card.classList.toggle("is-selected", card.dataset.scanTargetValue === value);
+  });
+}
+
+function renderAutomationTargetCards(targets) {
+  if (!targets.length) return `<div class="empty compact-empty">这台手机暂无已配置账号槽位。</div>`;
+  return targets.map((target) => {
+    const platformLabel = target.platform === "douyin" ? "抖音" : "小红书";
+    const iconText = target.platform === "douyin" ? "抖" : "红";
+    return `
+      <button class="scan-target-card ${target.disabled ? "is-disabled" : ""}" data-scan-target-value="${escapeHtml(target.value)}" type="button" ${target.disabled ? "disabled" : ""}>
+        <span class="scan-target-icon">${escapeHtml(iconText)}</span>
+        <span class="scan-target-meta">
+          <small>${escapeHtml(platformLabel)}</small>
+          <strong>${escapeHtml(target.label)}</strong>
+          <em>${escapeHtml(target.description || "未填账号备注")}</em>
+        </span>
+        <b>${target.disabled ? "占用" : "可用"}</b>
+      </button>
+    `;
+  }).join("");
+}
+
+function automationTargetsForDevice(device) {
+  if (!device) return [];
+  const xhsTargets = (device.xhsAccounts || [])
+    .filter((account) => account.enabled !== false && String(account.accountName || "").trim())
+    .map((account) => ({
+      platform: "xhs",
+      slot: account.appSlot || "app1",
+      value: `xhs:${account.appSlot || "app1"}`,
+      label: account.label || (account.appSlot === "app2" ? "小红书 2" : "小红书 1"),
+      description: account.accountName || "未填账号备注",
+      disabled: Boolean(account.busy)
+    }));
+  const douyinTargets = (device.douyinAccounts || [])
+    .filter((account) => account.enabled !== false)
+    .map((account) => ({
+      platform: "douyin",
+      slot: account.appSlot || "app1",
+      value: `douyin:${account.appSlot || "app1"}`,
+      label: account.label || (account.appSlot === "app2" ? "抖音 2" : "抖音 1"),
+      description: account.accountName || "未填账号备注",
+      disabled: true
+    }));
+  return [...xhsTargets, ...douyinTargets];
+}
+
+function parseAutomationTarget(value) {
+  const [platform, slot] = String(value || "").split(":");
+  return {
+    platform: platform || "",
+    slot: slot || ""
+  };
+}
+
+function automationReadyForDevice(device) {
+  const automation = device?.automationStatus || {};
+  return Boolean(
+    device?.adbOnline &&
+    !device?.busy &&
+    automation.deviceAutomationReady
+  );
+}
+
+function automationIssueLabel(device) {
+  const automation = device?.automationStatus || {};
+  const status = automation.devicePreflightStatus || "unknown";
+  const repairAction = automation.repairAction || "";
+  const error = automation.deviceAutomationError || automation.lastError || "";
+  if (!device?.adbOnline) return "等待 ADB";
+  if (automation.deviceAutomationReady) return "ADB 自动化可用";
+  if (repairAction === "adb_install_permission_required" || /USB 安装|USER_RESTRICTED|User rejected|Install canceled/i.test(error)) return "需开启 USB 安装";
+  if (status === "failed") {
+    if (!automation.helpersReady) return "组件安装失败";
+    return "自动化异常";
+  }
+  if (status === "queued" || status === "preparing" || status === "unknown") return "环境准备中";
+  if (!automation.airtestReady) return "Airtest/Poco 未就绪";
+  if (!automation.pocoReady) return "PocoService 未就绪";
+  if (!automation.helpersReady) return "手机组件待装";
+  return "自动化待修复";
+}
+
+function userDeviceStatusLabel(device) {
+  if (userDeviceAdbUnauthorized(device)) return "ADB 未授权";
+  const adbOnline = Boolean(device.adbOnline);
+  if (device.busy) return "执行中";
+  if (automationReadyForDevice(device)) return "自动化可用";
+  if (adbOnline) return automationIssueLabel(device);
+  if (device.agentOnline) return "兼容在线";
+  return "未连接";
+}
+
+function userDeviceStatusClass(device) {
+  if (userDeviceAdbUnauthorized(device)) return "bad";
+  const adbOnline = Boolean(device.adbOnline);
+  if (device.busy) return "warn";
+  if (automationReadyForDevice(device)) return "ok";
+  if (adbOnline) return "warn";
+  if (device.agentOnline) return "warn";
+  return "bad";
+}
+
+function userDevicePresence(device) {
+  if (userDeviceAdbUnauthorized(device)) return { key: "unauthorized", signal: "Unauthorized", hint: "设备已连接，但尚未在手机上允许 USB 调试授权" };
+  const adbOnline = Boolean(device.adbOnline);
+  if (device.busy) return { key: "running", signal: "Running", hint: device.busyReasons?.join("、") || "设备执行中" };
+  if (automationReadyForDevice(device)) return { key: "online", signal: "Online", hint: "ADB 在线，自动化可用" };
+  if (adbOnline) return { key: "idle", signal: "Preparing", hint: automationIssueLabel(device) };
+  if (device.agentOnline) return { key: "idle", signal: "Idle", hint: "旧 Agent 在线，ADB 自动化暂不可用" };
+  return { key: "offline", signal: "Offline", hint: "Windows 管理器未检测到这台手机" };
+}
+
+function matchesUserDeviceStatus(device, status) {
+  if (!status || status === "all") return true;
+  if (status === "online") return userDeviceOnline(device);
+  if (status === "available") return automationReadyForDevice(device);
+  if (status === "busy") return Boolean(device.busy);
+  if (status === "unauthorized") return userDeviceAdbUnauthorized(device);
+  if (status === "offline") return userDeviceDisconnected(device);
+  return true;
+}
+
+function userDeviceAdbState(device) {
+  return String(device?.adbState || device?.adb?.state || "").trim().toLowerCase();
+}
+
+function userDeviceAdbUnauthorized(device) {
+  return userDeviceAdbState(device) === "unauthorized";
+}
+
+function userDeviceDisconnected(device) {
+  return !userDeviceAdbUnauthorized(device) && !userDeviceOnline(device);
+}
+
+function userDeviceBrand(device) {
+  return String(device.brand || device.manufacturer || device.model || device.deviceName || "").split(/\s+/)[0] || "";
+}
+
+function deviceBrandLabel(device) {
+  const value = String(device.brand || device.manufacturer || "").trim();
+  return value || userDeviceBrand(device);
+}
+
+function displayPhoneNumber(value) {
+  const text = String(value || "").trim();
+  const compact = text.replace(/[\s-]/g, "");
+  if (/^\+?861\d{10}$/.test(compact)) return compact.replace(/^\+?86/, "");
+  return text;
+}
+
+function syncUserDeviceFilterOptions() {
+  if (els.userDeviceBrandSelect) {
+    const brands = [...new Set(state.userDevices.map(userDeviceBrand).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+    const current = state.userDeviceBrandFilter;
+    els.userDeviceBrandSelect.innerHTML = `<option value="">品牌：全部</option>${brands.map((brand) => `<option value="${escapeHtml(brand)}">${escapeHtml(brand)}</option>`).join("")}`;
+    if (brands.includes(current)) els.userDeviceBrandSelect.value = current;
+    else state.userDeviceBrandFilter = "";
+  }
+  if (els.userDeviceAndroidSelect) {
+    const versions = [...new Set(state.userDevices.map((device) => String(device.androidVersion || "").trim()).filter(Boolean))].sort((a, b) => Number(b) - Number(a));
+    const current = state.userDeviceAndroidFilter;
+    els.userDeviceAndroidSelect.innerHTML = `<option value="">Android：全部</option>${versions.map((version) => `<option value="${escapeHtml(version)}">Android ${escapeHtml(version)}</option>`).join("")}`;
+    if (versions.includes(current)) els.userDeviceAndroidSelect.value = current;
+    else state.userDeviceAndroidFilter = "";
+  }
+}
+
+function userDeviceOnline(device) {
+  return Boolean(device.online || device.adbOnline || device.agentOnline || isOnline(device.lastSeenAt));
+}
+
+function userDeviceSearchText(device) {
+  return [
+    device.deviceId,
+    device.deviceName,
+    device.model,
+    device.androidVersion,
+    ...(device.sims || []).flatMap((sim) => [sim.phoneNumber, sim.carrierName, sim.label]),
+    ...(device.xhsAccounts || []).flatMap((account) => [account.label, account.accountName, account.appSlot])
+  ].filter(Boolean).join(" ").toLowerCase();
+}
+
+function rankUserDeviceSearch(device, searchText) {
+  const query = String(searchText || "").trim().toLowerCase();
+  const deviceName = String(device?.deviceName || "").trim().toLowerCase();
+  const deviceId = String(device?.deviceId || "").trim().toLowerCase();
+  const phoneNumbers = (device?.sims || [])
+    .map((sim) => String(sim?.phoneNumber || "").replace(/[^0-9]/g, ""))
+    .filter(Boolean);
+
+  if (deviceName === query) return 0;
+  if (deviceName.startsWith(query)) return 1;
+  if (deviceName.includes(query)) return 2;
+  if (phoneNumbers.some((phoneNumber) => phoneNumber.startsWith(query))) return 3;
+  if (phoneNumbers.some((phoneNumber) => phoneNumber.includes(query))) return 4;
+  if (deviceId.startsWith(query)) return 5;
+  if (deviceId.includes(query)) return 6;
+  return 7;
+}
+
+function userLatestTaskLabel(device) {
+  const xhsTask = visibleUserXhsTasks().find((task) => task.deviceId === device.deviceId);
+  if (xhsTask) return `扫码任务 · ${statusText(xhsTask.status)}`;
+  const phoneNumbers = new Set((device.sims || []).map((sim) => sim.phoneNumber).filter(Boolean));
+  const smsOrder = state.userSmsOrders.find((order) => phoneNumbers.has(order.phoneNumber));
+  if (smsOrder) return `短信验证码 · ${statusText(smsOrder.status)}`;
+  return "点开查看任务";
+}
+
+function batteryLabel(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? `${number}%` : "-";
+}
+
+function batteryTone(value) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return "";
+  if (number <= 20) return "bad";
+  if (number <= 45) return "warn";
+  return "ok";
+}
+
+function deviceInitial(device) {
+  const label = String(device.model || device.deviceName || device.deviceId || "?").trim();
+  return label ? label[0].toUpperCase() : "?";
+}
+
+function renderUsers() {
+  if (!els.userList) return;
+  els.userList.innerHTML = state.users.length
+    ? state.users.map((user) => `
+      <article class="data-row" data-user-id="${escapeHtml(user.userId)}">
+        <div>
+          <strong>${escapeHtml(user.displayName || user.username)}</strong>
+          <span>${escapeHtml(user.username)} · ${escapeHtml(user.role)} · ${escapeHtml(user.lastLoginAt ? shortTime(user.lastLoginAt) : "未登录")}</span>
+        </div>
+        <div class="row-actions">
+          <em class="${user.enabled ? "ok" : "bad"}">${user.enabled ? "启用" : "停用"}</em>
+          <button data-user-action="${user.enabled ? "disable" : "enable"}" type="button">${user.enabled ? "停用" : "启用"}</button>
+          <button data-user-action="reset-password" type="button">重置密码</button>
+        </div>
+      </article>
+    `).join("")
+    : `<div class="empty">暂无用户。</div>`;
+}
+
+function renderWindows() {
+  els.windowsList.innerHTML = state.agents.length
+    ? state.agents.map((agent) => {
+      const online = isOnline(agent.lastSeenAt);
+      const devices = agent.devices || [];
+      const enabled = agent.enabled !== false && !agent.revokedAt;
+      const boundToken = Boolean(agent.hasToken);
+      return `
+        <article class="agent-card ${enabled ? "" : "is-disabled"}" data-agent-id="${escapeHtml(agent.agentId)}">
+          <header>
+            <div>
+              <strong>${escapeHtml(agent.agentName || agent.agentId)}</strong>
+              <span>${escapeHtml(agent.agentId)} · ${escapeHtml(agent.hostname || "未知主机")} · ${escapeHtml(agent.adbVersion || "ADB 未上报")}</span>
+            </div>
+            <div class="agent-security-actions">
+              <em class="${online && enabled ? "ok" : "bad"}">${enabled ? online ? "在线" : "离线" : "已禁用"}</em>
+              <button data-agent-action="rotate-token" type="button">重置 token</button>
+              <button data-agent-action="${enabled ? "disable" : "enable"}" type="button">${enabled ? "禁用" : "启用"}</button>
+            </div>
+          </header>
+          <div class="agent-security-strip">
+            <span class="${boundToken ? "ok" : "warn"}">${boundToken ? `独立 token · ${escapeHtml(agent.tokenPrefix || "已绑定")}` : "未绑定独立 token"}</span>
+            <span>最后 IP ${escapeHtml(agent.lastIp || agent.ip || "-")}</span>
+            <span>轮换 ${escapeHtml(shortTime(agent.lastRotatedAt))}</span>
+            <span>权限 ${escapeHtml((agent.scopes || []).join(", ") || "默认")}</span>
+          </div>
+          <div class="mini-metrics">
+            <span>${devices.length} 个 ADB 设备</span>
+            <span>${devices.filter((device) => device.state === "device").length} 个可控制</span>
+            <span>${agent.taskCounts?.running || 0} 个执行中</span>
+            <span class="${agent.health?.status === "ok" ? "ok" : "warn"}">健康 ${escapeHtml(agent.health?.status || "unknown")}</span>
+            <span>进程 CPU ${formatMetric(agent.health?.runtime?.processCpuPercent, 1)}%</span>
+            <span>进程内存 ${formatMetric(agent.health?.runtime?.processRssMb, 0)} MB</span>
+            <span>系统内存 ${formatMetric(agent.health?.runtime?.hostMemoryUsedPercent, 0)}%</span>
+            <span>投屏会话 ${agent.health?.screenControl?.activeSessions || 0}</span>
+          </div>
+          ${agent.health?.warnings?.length ? `<div class="agent-warning">${escapeHtml(agent.health.warnings.join("、"))}</div>` : ""}
+          <div class="adb-list">
+            ${devices.length ? devices.map((device) => `
+              <div class="adb-row" data-agent-id="${escapeHtml(agent.agentId)}" data-adb-serial="${escapeHtml(device.adbSerial)}" data-device-id="${escapeHtml(device.deviceId || "")}">
+                <div>
+                  <strong>${escapeHtml(device.deviceName || device.adbSerial)}</strong>
+                  <span>${escapeHtml(device.adbSerial)} · ${escapeHtml(device.model || "未知型号")} · ${escapeHtml(device.state)}</span>
+                </div>
+                <div class="row-actions">
+                  <button data-task="adb_install_apk" type="button">旧 APK 安装</button>
+                  <button data-task="adb_grant_permissions" type="button">旧 APK 授权</button>
+                  <button data-task="adb_start_agent" type="button">旧 Agent 启动</button>
+                </div>
+              </div>
+            `).join("") : `<div class="empty">暂无 ADB 手机</div>`}
+          </div>
+        </article>
+      `;
+    }).join("")
+    : `<div class="empty">还没有 Windows 管理器上线。</div>`;
+  renderWindowsTasks();
+}
+
+function renderWindowsTasks() {
+  if (!els.windowsTaskList) return;
+  els.windowsTaskList.innerHTML = state.windowsTasks.length
+    ? state.windowsTasks.slice(0, 20).map((task) => {
+      const diagnostic = task.result?.diagnostic || null;
+      const lastEvent = task.lastEvent || {};
+      const message = task.result?.message || task.result?.error || lastEvent.message || "";
+      const screenshot = task.result?.screenshot || lastEvent.screenshot || null;
+      const uiHierarchy = task.result?.uiHierarchy || lastEvent.uiHierarchy || lastEvent.uiSnapshot || "";
+      const hasEvidence = Boolean(task.result?.hasScreenshot || task.result?.hasUiHierarchy || task.result?.screenshot || task.screenshotCount || uiHierarchy);
+      const uiHierarchyUrl = task.result?.uiHierarchyUrl || task.result?.uiHierarchyEvidence?.url || lastEvent.uiHierarchyUrl || lastEvent.uiHierarchyEvidence?.url || "";
+      const evidenceLoaded = Boolean(task.evidenceLoaded || screenshot?.dataUrl || screenshot?.url || uiHierarchy || uiHierarchyUrl);
+      const evidenceLoading = Boolean(state.windowsTaskEvidenceLoading?.[task.taskId]);
+      return `
+        <article class="data-row">
+          <div>
+            <strong>${escapeHtml(taskTypeLabel(task.type))} · ${escapeHtml(task.adbSerial || task.deviceId || "-")}</strong>
+            <span>${escapeHtml(shortTime(task.createdAt))} · ${escapeHtml(task.agentId || "-")} · ${escapeHtml(task.taskId)}</span>
+            ${message ? `<span class="task-diagnostic">${escapeHtml(message)}</span>` : ""}
+            ${diagnostic ? `<span class="task-diagnostic">${escapeHtml(diagnostic.code || "diagnostic")}：${escapeHtml(diagnostic.hint || diagnostic.message || "")}</span>` : ""}
+            ${lastEvent.currentActivity ? `<span class="task-diagnostic">${escapeHtml(lastEvent.currentActivity)}</span>` : ""}
+            ${renderScreenshotThumb(screenshot, "Windows 任务失败截图")}
+            ${renderUiHierarchy(uiHierarchy, uiHierarchyUrl)}
+            ${Number(task.screenshotCount || 0) ? `<span>${Number(task.screenshotCount || 0)} 张失败截图 · ${Number(task.eventCount || 0)} 条日志</span>` : `<span>${Number(task.eventCount || 0)} 条日志</span>`}
+            ${hasEvidence && !evidenceLoaded ? `<button class="inline-action" data-load-windows-evidence="${escapeHtml(task.taskId)}" type="button">${evidenceLoading ? "加载中..." : "加载失败现场"}</button>` : ""}
+            ${evidenceLoaded ? renderTaskRunnerLog(task) : ""}
+          </div>
+          <div class="row-actions">
+            <em class="${task.status === "succeeded" ? "ok" : task.status === "failed" ? "bad" : "warn"}">${escapeHtml(statusText(task.status))}</em>
+          </div>
+        </article>
+      `;
+    }).join("")
+    : `<div class="empty">暂无 ADB 任务。点击上方手机行里的安装、授权或启动按钮后会出现在这里。</div>`;
+}
+
+async function loadWindowsTaskEvidence(taskId) {
+  const id = String(taskId || "");
+  if (!id || state.windowsTaskEvidenceLoading[id]) return;
+  state.windowsTaskEvidenceLoading = { ...(state.windowsTaskEvidenceLoading || {}), [id]: true };
+  renderWindowsTasks();
+  try {
+    const [detail, events] = await Promise.all([
+      api(`/api/v1/windows-agent-tasks/${encodeURIComponent(id)}`),
+      api(`/api/v1/windows-agent-tasks/${encodeURIComponent(id)}/events?includeEvidence=1`)
+    ]);
+    state.windowsTasks = state.windowsTasks.map((task) => {
+      if (task.taskId !== id) return task;
+      const eventList = events.events || [];
+      const lastEvent = eventList[eventList.length - 1] || task.lastEvent || null;
+      return {
+        ...task,
+        ...(detail.task || {}),
+        events: eventList,
+        lastEvent,
+        evidenceLoaded: true
+      };
+    });
+  } finally {
+    state.windowsTaskEvidenceLoading = { ...(state.windowsTaskEvidenceLoading || {}), [id]: false };
+    renderWindowsTasks();
+  }
+}
+
+function renderDevices() {
+  if (isAdminDeviceEditing()) return;
+  renderDeviceListingToolbar();
+  const visibleDevices = state.devices.filter((device) => {
+    if (state.adminDeviceListingFilter === "all") return true;
+    return normalizedListingStatus(device.listingStatus) === state.adminDeviceListingFilter;
+  });
+  els.deviceList.innerHTML = visibleDevices.length
+    ? visibleDevices.map((device) => {
+      const isSaving = adminDeviceSavingIds.has(device.deviceId);
+      const isListing = adminDeviceListingIds.has(device.deviceId);
+      const isExpanded = adminDeviceExpandedIds.has(device.deviceId);
+      const feedback = adminDeviceFeedbackById.get(device.deviceId) || {};
+      const statusLine = feedback.message || (isSaving ? "正在保存设备资料..." : isListing ? "正在更新上架状态..." : "");
+      const app1 = (device.xhsAccounts || []).find((item) => item.appSlot === "app1") || {};
+      const app2 = (device.xhsAccounts || []).find((item) => item.appSlot === "app2") || {};
+      const occupancyText = device.occupancy ? `${device.occupancy.ownerLabel} · ${device.occupancy.label}` : "";
+      const adbState = String(device.adb?.state || "").trim().toLowerCase();
+      const adbStateText = adbState === "device" ? "ADB 在线" : adbState === "unauthorized" ? "ADB 未授权" : adbState === "missing" || !adbState ? "未连接" : `ADB ${adbState}`;
+      return `
+      <article class="device-card admin-device-card ${isExpanded ? "is-expanded" : ""} ${isSaving || isListing ? "is-saving" : ""} ${feedback.kind ? `has-${escapeHtml(feedback.kind)}` : ""}" data-device-id="${escapeHtml(device.deviceId)}">
+        <header class="admin-device-card-head">
+          <div class="admin-device-title">
+            <label class="device-select-row">
+              <input data-role="device-select" type="checkbox" />
+              <strong>${escapeHtml(device.deviceName || device.deviceId)}</strong>
+            </label>
+            <span>${escapeHtml(device.brand || device.manufacturer || "Android")} · ${escapeHtml(device.model || "未知型号")} · Android ${escapeHtml(device.androidVersion || "-")}</span>
+          </div>
+          <div class="device-status-stack admin-device-quick-actions">
+            <div class="device-status-pills">
+              <em class="${listingStatusClass(device.listingStatus)}">${escapeHtml(listingStatusText(device.listingStatus))}</em>
+              <em class="${adbState === "device" ? "ok" : adbState === "unauthorized" ? "bad" : "warn"}">${escapeHtml(adbStateText)}</em>
+              ${device.conflictStatus ? `<em class="bad">归属冲突</em>` : ""}
+            </div>
+            <div class="device-listing-inline-actions">
+              <button class="ghost-button device-editor-toggle" data-action="toggle-device-editor" type="button" aria-expanded="${isExpanded ? "true" : "false"}">${isExpanded ? "收起资料" : "编辑资料"}</button>
+              ${deviceListingActions(device)}
+            </div>
+          </div>
+        </header>
+        <div class="admin-device-summary">
+          <dl class="device-facts">
+            <div><dt>ADB 序列号</dt><dd>${escapeHtml(device.adb?.serial || "-")}</dd></div>
+            <div><dt>管理器</dt><dd>${escapeHtml(device.adb?.agentId || "-")}</dd></div>
+            <div><dt>最近同步</dt><dd>${escapeHtml(shortTime(device.lastSeenAt))}</dd></div>
+            <div><dt>电量</dt><dd>${device.batteryLevel ?? "-"}${device.batteryLevel === null || device.batteryLevel === undefined ? "" : "%"}</dd></div>
+          </dl>
+          <p class="device-listing-note">${escapeHtml(listingStatusHint(device.listingStatus))}${device.conflictStatus ? ` · ${escapeHtml(device.conflictAgents?.join(" / ") || "设备归属冲突")}` : ""}</p>
+          ${occupancyText ? `<p class="device-listing-note device-occupancy-note">占用：${escapeHtml(occupancyText)} · ${escapeHtml(shortTime(device.occupancy.startedAt))}</p>` : ""}
+        </div>
+        <div class="admin-device-editor ${isExpanded ? "" : "hidden"}">
+          <div class="admin-device-editor-head">
+            <div><strong>设备资料</strong><span>修改设备名称、SIM 号码和用户可选账号槽位</span></div>
+            <span class="device-save-status ${feedback.kind ? `is-${escapeHtml(feedback.kind)}` : ""}">${escapeHtml(statusLine)}</span>
+          </div>
+        <div class="device-edit-grid admin-device-edit-grid">
+          <fieldset>
+            <legend>设备</legend>
+            <label>
+              <span>设备名称</span>
+              <input data-role="device-name" value="${escapeHtml(device.deviceName || device.deviceId)}" placeholder="例如：94号-云英洲" maxlength="80" />
+            </label>
+          </fieldset>
+          <fieldset>
+            <legend>SIM 卡</legend>
+            <label>
+              <span>SIM 1 手机号</span>
+              <input data-role="sim-phone" data-index="0" value="${escapeHtml(device.sims?.[0]?.phoneNumber || "")}" placeholder="17500000000" inputmode="tel" />
+            </label>
+            <label>
+              <span>SIM 2 手机号</span>
+              <input data-role="sim-phone" data-index="1" value="${escapeHtml(device.sims?.[1]?.phoneNumber || "")}" placeholder="可选" inputmode="tel" />
+            </label>
+          </fieldset>
+          <fieldset>
+            <legend>小红书账号</legend>
+            <label>
+              <span>app1</span>
+              <input data-role="xhs-account-name" data-slot="app1" value="${escapeHtml(app1.accountName || "")}" placeholder="账号备注" />
+              <span class="inline-check"><input data-role="xhs-account-enabled" data-slot="app1" type="checkbox" ${app1.enabled === false ? "" : "checked"} />启用</span>
+            </label>
+            <label>
+              <span>app2 / II·小红书</span>
+              <input data-role="xhs-account-name" data-slot="app2" value="${escapeHtml(app2.accountName || "")}" placeholder="可选" />
+              <span class="inline-check"><input data-role="xhs-account-enabled" data-slot="app2" type="checkbox" ${app2.enabled === false ? "" : "checked"} />启用</span>
+            </label>
+          </fieldset>
+        </div>
+        <div class="row-actions device-save-actions">
+          <button class="ghost-button" data-action="toggle-device-editor" type="button">取消</button>
+          <button class="${isSaving ? "is-loading" : ""}" data-action="save-device-bindings" type="button" ${isSaving ? "disabled" : ""}>${isSaving ? "保存中..." : "保存绑定"}</button>
+        </div>
+        </div>
+      </article>
+    `;
+    }).join("")
+    : `<div class="empty">${state.devices.length ? "当前筛选下没有设备。" : "暂无设备。启动 Windows 管理器并插入手机后会出现在这里。"}</div>`;
+  els.xhsDeviceSelect.innerHTML = state.devices.length
+    ? state.devices.map((device) => `<option value="${escapeHtml(device.deviceId)}">${escapeHtml(device.deviceName || device.deviceId)}</option>`).join("")
+    : `<option value="">暂无设备</option>`;
+  renderXhsSlotOptions();
+}
+
+function renderDeviceListingToolbar() {
+  if (!els.deviceListingToolbar) return;
+  const counts = { all: state.devices.length, pending: 0, listed: 0, unlisted: 0 };
+  for (const device of state.devices) {
+    counts[normalizedListingStatus(device.listingStatus)] += 1;
+  }
+  const items = [
+    ["all", "全部", counts.all],
+    ["pending", "待确认", counts.pending],
+    ["listed", "已上架", counts.listed],
+    ["unlisted", "已下架", counts.unlisted]
+  ];
+  els.deviceListingToolbar.innerHTML = `
+    <div class="listing-tabs">
+      ${items.map(([value, label, count]) => `
+        <button class="${state.adminDeviceListingFilter === value ? "active" : ""}" data-device-listing-filter="${value}" type="button">
+          <span>${escapeHtml(label)}</span>
+          <strong>${count}</strong>
+        </button>
+      `).join("")}
+    </div>
+    <div class="listing-toolbar-copy">
+      <strong>${counts.pending}</strong>
+      <span>台待确认，确认后才会出现在用户端。</span>
+    </div>
+  `;
+}
+
+function normalizedListingStatus(status) {
+  const value = String(status || "listed").trim().toLowerCase();
+  if (value === "listed" || value === "published") return "listed";
+  if (value === "unlisted" || value === "hidden") return "unlisted";
+  return "pending";
+}
+
+function listingStatusText(status) {
+  return {
+    listed: "已上架",
+    pending: "待确认",
+    unlisted: "已下架"
+  }[normalizedListingStatus(status)] || "待确认";
+}
+
+function listingStatusClass(status) {
+  return {
+    listed: "ok",
+    pending: "warn",
+    unlisted: "bad"
+  }[normalizedListingStatus(status)] || "warn";
+}
+
+function listingStatusHint(status) {
+  return {
+    listed: "用户端可见，可接收短信库查询和扫码任务。",
+    pending: "新接入设备仅后台可见，请核对 SIM、账号槽位和自动化状态后上架。",
+    unlisted: "用户端隐藏，不能被普通用户选择或下发任务。"
+  }[normalizedListingStatus(status)] || "新接入设备仅后台可见，请核对后上架。";
+}
+
+function deviceListingActions(device) {
+  const status = normalizedListingStatus(device.listingStatus);
+  const isListing = adminDeviceListingIds.has(device.deviceId);
+  if (status === "listed") {
+    return `<button class="danger-soft ${isListing ? "is-loading" : ""}" data-action="set-device-listing" data-listing-status="unlisted" type="button" ${isListing ? "disabled" : ""}>${isListing ? "下架中..." : "下架"}</button>`;
+  }
+  return `<button class="primary ${isListing ? "is-loading" : ""}" data-action="set-device-listing" data-listing-status="listed" type="button" ${isListing ? "disabled" : ""}>${isListing ? "上架中..." : "上架"}</button>`;
+}
+
+function renderXhsSlotOptions() {
+  if (!els.xhsSlotSelect) return;
+  const device = state.devices.find((item) => item.deviceId === els.xhsDeviceSelect?.value) || state.devices[0];
+  const accounts = (device?.xhsAccounts || [])
+    .filter((account) => account.enabled !== false)
+    .slice(0, 2);
+  els.xhsSlotSelect.innerHTML = accounts.length
+    ? accounts.map((account) => {
+      const label = [account.label || account.appSlot, account.accountName].filter(Boolean).join(" · ");
+      return `<option value="${escapeHtml(account.appSlot)}">${escapeHtml(label)}</option>`;
+    }).join("")
+    : `<option value="">暂无可用小红书账号</option>`;
+}
+
+function renderSms() {
+  renderSmsLibraryFilters();
+  const orders = state.smsOrders.slice(0, 20).map((order) => `
+    <article class="data-row">
+      <div>
+        <strong>${escapeHtml(order.platform)}</strong>
+        <span>${escapeHtml(displayPhoneNumber(order.phoneNumber))} · ${escapeHtml(shortTime(order.createdAt))}</span>
+      </div>
+      <em class="${order.status === "received" ? "ok" : order.status === "expired" ? "bad" : "warn"}">${escapeHtml(order.status)}</em>
+      <code>${escapeHtml(order.code || "等待")}</code>
+    </article>
+  `).join("");
+  const events = state.smsEvents.slice(0, 20).map((event) => `
+    <article class="data-row">
+      <div>
+        <strong>${escapeHtml(event.sender || event.platform)}</strong>
+        <span>${escapeHtml(displayPhoneNumber(event.phoneNumber) || "-")} · ${escapeHtml(event.body)}</span>
+      </div>
+      <code>${escapeHtml(event.code || "-")}</code>
+    </article>
+  `).join("");
+  els.smsList.innerHTML = orders || events ? `${orders}${events}` : `<div class="empty">暂无短信订单。</div>`;
+  renderSmsLibrary();
+}
+
+function renderSmsLibraryFilters() {
+  if (!els.smsLibraryDeviceSelect) return;
+  const current = els.smsLibraryDeviceSelect.value || localStorage.getItem("phoneCloudSmsLibraryDeviceId") || "";
+  const options = [
+    `<option value="">全部手机</option>`,
+    ...state.devices.map((device) => {
+      const label = [device.deviceName || device.model || device.deviceId, device.adb?.serial].filter(Boolean).join(" · ");
+      return `<option value="${escapeHtml(device.deviceId)}">${escapeHtml(label)}</option>`;
+    })
+  ].join("");
+  els.smsLibraryDeviceSelect.innerHTML = options;
+  if ([...els.smsLibraryDeviceSelect.options].some((option) => option.value === current)) {
+    els.smsLibraryDeviceSelect.value = current;
+  }
+}
+
+function renderSmsLibrary() {
+  if (!els.smsLibraryList) return;
+  els.smsLibraryList.innerHTML = state.smsMessages.length
+    ? state.smsMessages.map((message) => {
+      const device = state.devices.find((item) => item.deviceId === message.deviceId);
+      const deviceLabel = device?.deviceName || device?.model || message.deviceId;
+      const box = smsBoxLabel(message.box);
+      const sim = message.slotIndex === null || message.slotIndex === undefined ? "" : `SIM ${Number(message.slotIndex) + 1}`;
+      return `
+        <article class="data-row sms-message-row">
+          <div>
+            <strong>${escapeHtml(displayPhoneNumber(message.address || message.phoneNumber || "未知号码"))}</strong>
+            <span>${escapeHtml([deviceLabel, box, sim, shortTime(message.messageAt)].filter(Boolean).join(" · "))}</span>
+            <p>${escapeHtml(message.body || "")}</p>
+          </div>
+          <em class="${message.box === "inbox" ? "ok" : message.box === "sent" ? "warn" : ""}">${escapeHtml(box)}</em>
+          <code>${escapeHtml(message.code || "-")}</code>
+        </article>
+      `;
+    }).join("")
+    : `<div class="empty">暂无短信库记录。请确认 Windows 管理器在线，且 ADB 能读取 content://sms。</div>`;
+}
+
+function smsBoxLabel(box) {
+  return {
+    inbox: "收件箱",
+    sent: "已发送",
+    draft: "草稿",
+    outbox: "发件箱",
+    failed: "发送失败",
+    queued: "待发送",
+    unknown: "未知"
+  }[box] || "全部";
+}
+
+function renderRelease() {
+  if (!els.releaseDetail) return;
+  const release = state.appRelease;
+  els.releaseDetail.innerHTML = release
+    ? `
+      <article class="data-row">
+        <div>
+          <strong>${escapeHtml(release.versionName || "-")} (${escapeHtml(release.versionCode || 0)})</strong>
+          <span>${escapeHtml(release.publishedAt ? shortTime(release.publishedAt) : "未发布")} · ${escapeHtml(release.sizeBytes || 0)} bytes</span>
+        </div>
+        <em class="${release.hasLocalApk ? "ok" : "warn"}">${release.hasLocalApk ? "本地 APK" : "外部地址"}</em>
+      </article>
+      <article class="data-row">
+        <div>
+          <strong>下载地址</strong>
+          <span>${escapeHtml(release.downloadUrl || "-")}</span>
+        </div>
+      </article>
+      <article class="data-row">
+        <div>
+          <strong>SHA256</strong>
+          <span>${escapeHtml(release.sha256 || "-")}</span>
+        </div>
+      </article>
+    `
+    : `<div class="empty">还没有发布 APK。Windows 安装任务会要求本地 apkPath，或先在这里发布。</div>`;
+}
+
+function renderXhs() {
+  const pageSize = normalizedXhsTaskPageSize();
+  const total = Number(state.xhsTaskTotal || state.xhsTasks.length || 0);
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  if (state.xhsTaskPage > totalPages) state.xhsTaskPage = totalPages;
+  els.xhsList.innerHTML = state.xhsTasks.length
+    ? state.xhsTasks.map((task) => {
+      const requester = task.requestedBy || {};
+      const requesterName = requester.displayName || requester.username || task.userId || "未知用户";
+      const requesterMeta = requester.username && requester.username !== requesterName
+        ? requester.username
+        : requester.role === "admin" ? "管理员" : requester.role === "external" ? "外部调用" : "普通用户";
+      const evidenceLoading = Boolean(state.xhsTaskEvidenceLoading?.[task.taskId]);
+      const evidenceLoaded = task.evidenceLoaded === true;
+      const eventCount = Number(task.summary?.eventCount || 0);
+      const screenshotCount = Number(task.summary?.screenshotCount || 0);
+      const canLoadEvidence = ["failed", "expired"].includes(task.status) && (eventCount > 0 || screenshotCount > 0);
+      return `
+        <article class="data-row admin-xhs-task-row ${evidenceLoaded ? "has-evidence" : ""}" data-admin-xhs-task-id="${escapeHtml(task.taskId)}">
+          <div class="admin-xhs-task-main">
+            <div class="admin-xhs-task-title">
+              <div>
+                <strong>小红书扫码</strong>
+                <span>${escapeHtml(task.deviceId)} · ${escapeHtml([task.xhsAccountLabel || task.xhsAppSlot, task.xhsAccountName].filter(Boolean).join(" · "))}</span>
+              </div>
+              <em class="${task.status === "succeeded" ? "ok" : ["failed", "cancelled", "expired"].includes(task.status) ? "bad" : "warn"}">${escapeHtml(xhsStatusText(task.status))}</em>
+            </div>
+            <div class="admin-xhs-task-meta">
+              <span class="task-requester"><b>发起用户</b><strong>${escapeHtml(requesterName)}</strong><small>${escapeHtml(requesterMeta)}</small></span>
+              <span><b>提交时间</b><strong>${escapeHtml(shortTime(task.createdAt))}</strong></span>
+              <span><b>任务 ID</b><code>${escapeHtml(task.taskId)}</code></span>
+            </div>
+            ${renderXhsTaskSummary(task)}
+            ${canLoadEvidence && !evidenceLoaded ? `
+              <div class="task-evidence-actions">
+                <button class="inline-action ${evidenceLoading ? "is-loading" : ""}" data-load-xhs-evidence="${escapeHtml(task.taskId)}" type="button" ${evidenceLoading ? "disabled" : ""}>${evidenceLoading ? "正在加载失败现场..." : `加载失败现场${screenshotCount ? ` · ${screenshotCount} 张截图` : ""}`}</button>
+              </div>
+            ` : ""}
+          </div>
+        </article>
+      `;
+    }).join("")
+    : `<div class="empty">暂无扫码任务。</div>`;
+  els.xhsList.insertAdjacentHTML("beforeend", renderXhsPagination(total));
+}
+
+async function loadAdminXhsTaskEvidence(taskId) {
+  const id = String(taskId || "");
+  if (!id || state.xhsTaskEvidenceLoading?.[id]) return;
+  state.xhsTaskEvidenceLoading = { ...(state.xhsTaskEvidenceLoading || {}), [id]: true };
+  renderXhs();
+  try {
+    const payload = await api(`/api/v1/xhs/qr-scan-tasks/${encodeURIComponent(id)}`);
+    state.xhsTasks = state.xhsTasks.map((task) => task.taskId === id
+      ? { ...task, ...(payload.task || {}), evidenceLoaded: true }
+      : task);
+  } finally {
+    state.xhsTaskEvidenceLoading = { ...(state.xhsTaskEvidenceLoading || {}), [id]: false };
+    renderXhs();
+  }
+}
+
+function mergeAdminXhsTaskList(incomingTasks) {
+  const loadedById = new Map((state.xhsTasks || [])
+    .filter((task) => task?.evidenceLoaded)
+    .map((task) => [task.taskId, task]));
+  return (incomingTasks || []).map((task) => {
+    const loaded = loadedById.get(task.taskId);
+    if (!loaded) return task;
+    return {
+      ...loaded,
+      ...task,
+      result: loaded.result,
+      events: loaded.events,
+      summary: { ...(task.summary || {}), ...(loaded.summary || {}) },
+      evidenceLoaded: true
+    };
+  });
+}
+
+function normalizedXhsTaskPageSize() {
+  const size = Number(state.xhsTaskPageSize || 20);
+  return [10, 20, 50].includes(size) ? size : 20;
+}
+
+function xhsTaskQuery() {
+  const pageSize = normalizedXhsTaskPageSize();
+  const page = Math.max(1, Number(state.xhsTaskPage || 1));
+  const params = new URLSearchParams();
+  params.set("limit", String(pageSize));
+  params.set("offset", String((page - 1) * pageSize));
+  return `/api/v1/xhs/qr-scan-tasks?${params.toString()}`;
+}
+
+function renderXhsPagination(total) {
+  const pageSize = normalizedXhsTaskPageSize();
+  const totalPages = Math.max(1, Math.ceil(Number(total || 0) / pageSize));
+  const page = Math.min(Math.max(1, Number(state.xhsTaskPage || 1)), totalPages);
+  const start = total ? (page - 1) * pageSize + 1 : 0;
+  const end = Math.min(total || 0, start + state.xhsTasks.length - 1);
+  return `
+    <div class="sms-pagination xhs-pagination">
+      <div class="sms-page-info">
+        <span>扫码任务</span>
+        <strong>${escapeHtml(start)}-${escapeHtml(end)}</strong>
+        <span>/ 共 ${escapeHtml(total || 0)} 条</span>
+      </div>
+      <div class="sms-page-controls">
+        <button data-xhs-task-page="prev" type="button" ${page <= 1 ? "disabled" : ""}>上一页</button>
+        <span>第 ${escapeHtml(page)} / ${escapeHtml(totalPages)} 页</span>
+        <button data-xhs-task-page="next" type="button" ${page >= totalPages ? "disabled" : ""}>下一页</button>
+        <select data-xhs-task-page-size aria-label="每页扫码任务数量">
+          ${[10, 20, 50].map((size) => `<option value="${size}" ${size === pageSize ? "selected" : ""}>每页 ${size} 条</option>`).join("")}
+        </select>
+      </div>
+    </div>
+  `;
+}
+
+function xhsStatusText(status) {
+  return {
+    creating: "创建中",
+    queued: "排队中",
+    running: "执行中",
+    stalled: "等待恢复",
+    succeeded: "已完成",
+    failed: "失败",
+    cancelled: "已取消",
+    expired: "已超时",
+    submit_failed: "提交失败"
+  }[status] || status || "-";
+}
+
+function xhsStatusClass(status) {
+  if (status === "succeeded") return "ok";
+  if (["failed", "cancelled", "expired", "submit_failed"].includes(status)) return "bad";
+  return "warn";
+}
+
+function xhsTaskProgress(task) {
+  if (task?.progress && Number.isFinite(Number(task.progress.percent))) {
+    return {
+      percent: Math.max(0, Math.min(100, Number(task.progress.percent))),
+      label: task.progress.message || task.progress.stepId || statusText(task.status)
+    };
+  }
+  const status = String(task?.status || "");
+  const summary = task?.summary || {};
+  const lastEvent = summary.lastEvent || {};
+  const source = [
+    status,
+    lastEvent.phase,
+    lastEvent.stepId,
+    lastEvent.message,
+    summary.progressMessage,
+    summary.failureMessage
+  ].filter(Boolean).join(" ").toLowerCase();
+  const stages = [
+    [8, "创建任务", /creating|已接收二维码|创建扫码任务/],
+    [16, "等待执行器领取", /queued|排队|等待.*领取|等待 windows/],
+    [24, "连接执行器", /poco_ready|poco_reused|airtest|poco 服务|执行器/],
+    [30, "同步二维码到手机", /qr|二维码已推送|相册.*二维码|prepareqr|push/],
+    [42, "重启小红书", /start_xhs|重启小红书|小红书已进入前台/],
+    [48, "选择小红书槽位", /choose_slot|picker|双开|系统双开/],
+    [56, "进入我的页面", /click_me|进入我的页面|profile|我的页面/],
+    [66, "打开扫一扫", /click_scan|扫一扫|scanner/],
+    [76, "打开相册", /click_album|打开相册|album/],
+    [84, "选择二维码图片", /after_select_image|选择二维码图片|定位相册图片/],
+    [90, "识别登录确认页", /confirm_visible|登录确认页断言|login-confirm/],
+    [93, "等待确认登录", /confirm_wait|等待后点击确认/],
+    [96, "点击确认登录", /click_confirm|确认登录点击完成|点击确认登录/],
+    [100, "任务完成", /done|扫码完成/]
+  ];
+  if (status === "succeeded") return { percent: 100, label: "任务完成" };
+  if (status === "cancelled") return { percent: 100, label: "已取消" };
+  if (status === "expired") return { percent: 100, label: "已超时" };
+  if (status === "submit_failed") return { percent: 100, label: "提交失败" };
+  if (lastEvent.level === "error" || /失败|未找到|超时|error|failed/i.test(lastEvent.message || "")) {
+    const failedAt = currentFromLastKnownStage(source);
+    return { percent: failedAt.percent, label: `失败于：${failedAt.label}` };
+  }
+  let current = status === "running"
+    ? { percent: 24, label: "执行器处理中" }
+    : status === "queued"
+      ? { percent: 16, label: "等待执行器领取" }
+      : { percent: 8, label: "创建任务" };
+  for (const [percent, label, matcher] of stages) {
+    if (matcher.test(source) && percent >= current.percent) current = { percent, label };
+  }
+  if (status === "failed") return { ...current, label: `失败于：${current.label}` };
+  return current;
+}
+
+function currentFromLastKnownStage(source) {
+  const stages = [
+    [24, "连接执行器", /poco_ready|poco_reused|airtest|poco 服务|执行器/],
+    [30, "同步二维码到手机", /qr|二维码已推送|相册.*二维码|prepareqr|push/],
+    [42, "重启小红书", /start_xhs|重启小红书|小红书已进入前台/],
+    [48, "选择小红书槽位", /choose_slot|picker|双开|系统双开/],
+    [56, "进入我的页面", /click_me|进入我的页面|profile|我的页面/],
+    [66, "打开扫一扫", /click_scan|扫一扫|scanner/],
+    [76, "打开相册", /click_album|打开相册|album/],
+    [84, "选择二维码图片", /after_select_image|选择二维码图片|定位相册图片/],
+    [90, "识别登录确认页", /confirm_visible|登录确认页断言|login-confirm/],
+    [93, "等待确认登录", /confirm_wait|等待后点击确认/],
+    [96, "点击确认登录", /click_confirm|确认登录点击完成|点击确认登录/]
+  ];
+  let current = { percent: 24, label: "执行器处理中" };
+  for (const [percent, label, matcher] of stages) {
+    if (matcher.test(source) && percent >= current.percent) current = { percent, label };
+  }
+  return current;
+}
+
+function renderUserXhsTaskCard(task) {
+  const summary = task.summary || {};
+  const lastEvent = summary.lastEvent || {};
+  const message = summary.failureMessage || summary.progressMessage || lastEvent.message || "等待 Windows 管理器上报步骤";
+  const eventCount = Number(summary.eventCount || 0);
+  const screenshotCount = Number(summary.screenshotCount || 0);
+  const account = [task.xhsAccountLabel || task.xhsAppSlot, task.xhsAccountName].filter(Boolean).join(" · ") || "未命名槽位";
+  const mode = task.executionMode === "windows_airtest_poco" ? "Airtest/Poco 扫码" : task.executionMode === "windows_xml_uiautomator" ? "XML UIAutomator 扫码" : task.executionMode === "windows_adb_uiautomator" ? "ADB 自动化扫码" : "兼容通道";
+  const statusClass = xhsStatusClass(task.status);
+  const progress = xhsTaskProgress(task);
+  return `
+    <article class="scan-task-card is-${escapeHtml(task.status || "unknown")}" data-user-xhs-task-id="${escapeHtml(task.taskId)}">
+      <header>
+        <div>
+          <span>${escapeHtml(mode)}</span>
+          <strong>${escapeHtml(account)}</strong>
+        </div>
+        <em class="${statusClass}">${escapeHtml(xhsStatusText(task.status))}</em>
+      </header>
+      <div class="scan-task-progress-meta">
+        <span>${escapeHtml(progress.label)}</span>
+        <strong>${escapeHtml(progress.percent)}%</strong>
+      </div>
+      <div class="scan-task-progress" aria-label="任务进度 ${escapeHtml(progress.percent)}%"><i style="width:${progress.percent}%"></i></div>
+      <p>${escapeHtml(message)}</p>
+      <footer>
+        <span>${escapeHtml(shortTime(task.createdAt))}</span>
+        <span>${eventCount} 条轨迹${screenshotCount ? ` · ${screenshotCount} 张截图` : ""}</span>
+        ${task.cancellable ? `<button data-user-xhs-action="cancel" type="button">取消任务</button>` : ""}
+      </footer>
+    </article>
+  `;
+}
+
+function renderXhsTaskSummary(task) {
+  const summary = task.summary || {};
+  const lastEvent = summary.lastEvent || {};
+  const message = summary.failureMessage || summary.progressMessage || lastEvent.message || "";
+  const eventCount = Number(summary.eventCount || 0);
+  const screenshotCount = Number(summary.screenshotCount || 0);
+  const mode = task.executionMode === "windows_airtest_poco" ? "Airtest/Poco" : task.executionMode === "windows_xml_uiautomator" ? "XML UIAutomator" : task.executionMode === "windows_adb_uiautomator" ? "ADB 自动化" : "旧 Agent 通道";
+  const diagnosticText = [lastEvent.errorCode, lastEvent.currentActivity || lastEvent.packageName].filter(Boolean).join(" · ");
+  const uiEvidence = pickTaskUiEvidence(task);
+  const screenshots = task.evidenceLoaded ? collectTaskScreenshots(task) : [];
+  const hasRunnerLog = Boolean(task.result?.runner?.log?.length || task.result?.runner?.error);
+  const hasLoadedEvidence = screenshots.length || uiEvidence.text || uiEvidence.url || hasRunnerLog;
+  if (!message && !eventCount) return `<small class="task-summary"><span>${escapeHtml(mode)}</span></small>`;
+  return `
+    <small class="task-summary">
+      <span>${escapeHtml(mode)}</span>
+      ${message ? `<span>${escapeHtml(message)}</span>` : ""}
+      ${diagnosticText ? `<span>${escapeHtml(diagnosticText)}</span>` : ""}
+      <span>${eventCount} 条轨迹${screenshotCount ? ` · ${screenshotCount} 张截图` : ""}${lastEvent.createdAt ? ` · ${escapeHtml(shortTime(lastEvent.createdAt))}` : ""}</span>
+      ${task.evidenceLoaded ? renderTaskScreenshot(task) : ""}
+      ${task.evidenceLoaded ? renderUiHierarchy(uiEvidence.text, uiEvidence.url) : ""}
+      ${task.evidenceLoaded ? renderTaskRunnerLog(task) : ""}
+      ${task.evidenceLoaded && !hasLoadedEvidence ? `<span class="task-evidence-empty">失败现场已加载，但执行器没有采集到手机截图或有效元素树。</span>` : ""}
+    </small>
+  `;
+}
+
+function pickTaskUiEvidence(task) {
+  const candidates = [
+    ...(Array.isArray(task?.events) ? [...task.events].reverse() : []),
+    task?.result || null,
+    task?.summary?.lastEvent || null
+  ].filter(Boolean);
+  let fallbackUrl = "";
+  for (const item of candidates) {
+    const url = String(item.uiHierarchyUrl || item.uiHierarchyEvidence?.url || item.uiSnapshotUrl || item.uiSnapshotEvidence?.url || "").trim();
+    if (!fallbackUrl && url) fallbackUrl = url;
+    const texts = [item.uiHierarchy, item.uiSnapshot, item.detail?.uiHierarchy, item.detail?.xml];
+    for (const value of texts) {
+      const text = String(value || "").trim();
+      if (isMeaningfulUiHierarchy(text)) return { text, url };
+    }
+  }
+  return { text: "", url: fallbackUrl };
+}
+
+function isMeaningfulUiHierarchy(value) {
+  const text = String(value || "").trim();
+  if (text.length < 24) return false;
+  const normalized = text.toLowerCase();
+  return !["killed", "null", "undefined", "none", "empty"].includes(normalized);
+}
+
+function renderTaskScreenshot(task) {
+  const screenshots = collectTaskScreenshots(task);
+  if (!screenshots.length) return "";
+  return `
+    <div class="task-screenshot-grid">
+      ${screenshots.map((screenshot, index) => renderScreenshotThumb(screenshot, `任务失败截图 ${index + 1}`)).join("")}
+    </div>
+  `;
+}
+
+function collectTaskScreenshots(task) {
+  const seen = new Set();
+  const screenshots = [];
+  const push = (screenshot) => {
+    const src = screenshot?.dataUrl || screenshot?.url || "";
+    if (!src || seen.has(src)) return;
+    seen.add(src);
+    screenshots.push(screenshot);
+  };
+  push(task?.result?.screenshot);
+  push(task?.summary?.lastEvent?.screenshot);
+  for (const event of Array.isArray(task?.events) ? task.events : []) push(event?.screenshot);
+  return screenshots.slice(-6);
+}
+
+function renderScreenshotThumb(screenshot, label = "失败截图") {
+  const src = screenshot?.dataUrl || screenshot?.url || "";
+  if (!src) return "";
+  const key = `shot_${screenshotStore.size + 1}`;
+  screenshotStore.set(key, { ...screenshot, label });
+  return `
+    <button class="task-screenshot" data-screenshot-key="${escapeHtml(key)}" type="button">
+      <img src="${escapeHtml(src)}" alt="${escapeHtml(label)}">
+      <span>${escapeHtml(label)} · 点击放大</span>
+    </button>
+  `;
+}
+
+function renderUiHierarchy(uiHierarchy, uiHierarchyUrl = "") {
+  const text = String(uiHierarchy || "").trim();
+  const url = String(uiHierarchyUrl || "").trim();
+  if (!text && !url) return "";
+  return `
+    <details class="task-ui-tree">
+      <summary>查看失败页面元素树</summary>
+      ${url ? `<a class="inline-action" href="${escapeHtml(url)}" target="_blank" rel="noopener">打开完整元素树</a>` : ""}
+      <pre>${escapeHtml(text)}</pre>
+    </details>
+  `;
+}
+
+function renderTaskRunnerLog(task) {
+  const logs = Array.isArray(task?.result?.runner?.log) ? task.result.runner.log : [];
+  const error = task?.result?.runner?.error || "";
+  if (!logs.length && !error) return "";
+  const rows = logs.slice(-80).map((item, index) => {
+    const step = item.step || item.stepId || `step-${index + 1}`;
+    const timing = [item.elapsedMs != null ? `${item.elapsedMs}ms` : "", item.sinceLastMs != null ? `+${item.sinceLastMs}ms` : ""].filter(Boolean).join(" ");
+    const message = [item.action, item.message, item.error].filter(Boolean).join(" · ");
+    return `${step}${timing ? ` ${timing}` : ""}${message ? ` | ${message}` : ""}`;
+  });
+  if (error) rows.push(`runner error | ${error}`);
+  return `
+    <details class="task-runner-log">
+      <summary>查看执行日志</summary>
+      <pre>${escapeHtml(rows.join("\n"))}</pre>
+    </details>
+  `;
+}
+
+function openScreenshotModal(key) {
+  const screenshot = screenshotStore.get(String(key || ""));
+  const src = screenshot?.dataUrl || screenshot?.url || "";
+  if (!src) return;
+  closeScreenshotModal();
+  const modal = document.createElement("div");
+  modal.className = "screenshot-modal";
+  modal.innerHTML = `
+    <div class="screenshot-modal-panel" role="dialog" aria-modal="true" aria-label="${escapeHtml(screenshot.label || "失败截图")}">
+      <header>
+        <strong>${escapeHtml(screenshot.label || "失败截图")}</strong>
+        <button data-screenshot-close type="button" aria-label="关闭截图">关闭</button>
+      </header>
+      <img src="${escapeHtml(src)}" alt="${escapeHtml(screenshot.label || "失败截图")}">
+      <footer>
+        <span>${escapeHtml([screenshot.adbSerial, screenshot.capturedAt].filter(Boolean).join(" · "))}</span>
+      </footer>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
+function closeScreenshotModal() {
+  document.querySelectorAll(".screenshot-modal").forEach((modal) => modal.remove());
+}
+
+function renderSettings() {
+  if (!els.settingsDisplayName) return;
+  const user = state.user || {};
+  const displayName = user.displayName || user.username || "未登录";
+  const roleLabel = user.role === "admin" ? "管理员" : user.role === "user" ? "普通用户" : "-";
+  const initial = String(displayName || "设").trim().slice(0, 1) || "设";
+  if (els.settingsAvatar) els.settingsAvatar.textContent = initial;
+  els.settingsDisplayName.textContent = displayName;
+  if (els.settingsAccountMeta) {
+    els.settingsAccountMeta.textContent = user.username
+      ? `${user.username} · ${roleLabel}`
+      : "登录后可以查看账号信息和当前会话。";
+  }
+  if (els.settingsAccountFacts) {
+    const facts = [
+      ["账号", user.username || "-"],
+      ["显示名", user.displayName || user.username || "-"],
+      ["角色", roleLabel],
+      ["状态", user.enabled === false ? "已停用" : "正常"],
+      ["最后登录", shortTime(user.lastLoginAt)],
+      ["创建时间", shortTime(user.createdAt)]
+    ];
+    els.settingsAccountFacts.innerHTML = facts.map(([label, value]) => `
+      <div>
+        <span>${escapeHtml(label)}</span>
+        <strong>${escapeHtml(value || "-")}</strong>
+      </div>
+    `).join("");
+  }
+}
+
+function openSettingsModal() {
+  if (!state.user || !els.settingsModal) return;
+  renderSettings();
+  els.settingsModal.classList.remove("hidden");
+  document.body.classList.add("settings-modal-open");
+  els.settingsCloseButton?.focus?.();
+}
+
+function closeSettingsModal() {
+  if (!els.settingsModal) return;
+  els.settingsModal.classList.add("hidden");
+  document.body.classList.remove("settings-modal-open");
+}
+
+function renderAudit() {
+  if (!els.auditList) return;
+  els.auditList.innerHTML = state.audit.length
+    ? state.audit.slice(0, 120).map((item) => `
+      <article class="data-row">
+        <div>
+          <strong>${escapeHtml(item.action)}</strong>
+          <span>${escapeHtml(item.actor || "system")} · ${escapeHtml(shortTime(item.createdAt))}</span>
+        </div>
+        <code>${escapeHtml(JSON.stringify(item.detail || {}))}</code>
+      </article>
+    `).join("")
+    : `<div class="empty">暂无审计日志。</div>`;
+}
+
+function statusText(status) {
+  return { ok: "通过", warn: "注意", fail: "失败" }[status] || status || "-";
+}
+
+
+function currentWorkflowScript() {
+  return (state.workflowScripts || []).find((script) => script.scriptId === "xhs_qr_default") || null;
+}
+
+function workflowListValue(value) {
+  return Array.isArray(value) ? value.join("\n") : "";
+}
+
+function workflowListFromTextarea(value) {
+  return String(value || "")
+    .split(/[\n,，]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function workflowNumber(input, fallback) {
+  const number = Number(input?.value || fallback);
+  return Number.isFinite(number) && number > 0 ? number : fallback;
+}
+
+function workflowStepsFromTextarea(value) {
+  const text = String(value || "").trim();
+  if (!text) return [];
+  const parsed = JSON.parse(text);
+  if (!Array.isArray(parsed)) throw new Error("steps 必须是 JSON 数组");
+  return parsed;
+}
+
+function touchWorkflowScriptEditing() {
+  state.adminWorkflowScriptEditingUntil = Date.now() + 45_000;
+}
+
+function renderWorkflowScripts() {
+  const script = currentWorkflowScript();
+  if (!script) {
+    if (els.workflowScriptPreview) els.workflowScriptPreview.innerHTML = `<div class="empty">暂无脚本配置，请刷新后重试。</div>`;
+    return;
+  }
+  const timeouts = script.timeouts || {};
+  const editing = Date.now() < Number(state.adminWorkflowScriptEditingUntil || 0);
+  if (!editing && els.workflowScriptForm) {
+    if (els.workflowScriptEnabled) els.workflowScriptEnabled.checked = script.enabled !== false;
+    if (els.workflowConfirmWaitMs) els.workflowConfirmWaitMs.value = script.confirmWaitMs || 6000;
+    if (els.workflowTimeoutTotalMs) els.workflowTimeoutTotalMs.value = timeouts.totalMs || 180000;
+    if (els.workflowTimeoutRestartMs) els.workflowTimeoutRestartMs.value = timeouts.restartMs || 25000;
+    if (els.workflowTimeoutProfileMs) els.workflowTimeoutProfileMs.value = timeouts.profileMs || 10000;
+    if (els.workflowTimeoutScannerMs) els.workflowTimeoutScannerMs.value = timeouts.scannerMs || 10000;
+    if (els.workflowTimeoutAlbumMs) els.workflowTimeoutAlbumMs.value = timeouts.albumMs || 10000;
+    if (els.workflowTimeoutSelectImageMs) els.workflowTimeoutSelectImageMs.value = timeouts.selectImageMs || 14000;
+    if (els.workflowTimeoutLoginConfirmMs) els.workflowTimeoutLoginConfirmMs.value = timeouts.loginConfirmMs || 45000;
+    if (els.workflowLoginKeywords) els.workflowLoginKeywords.value = workflowListValue(script.loginConfirmKeywords);
+    if (els.workflowOrdinaryButtons) els.workflowOrdinaryButtons.value = workflowListValue(script.ordinaryConfirmButtons);
+    if (els.workflowPlatformButtons) els.workflowPlatformButtons.value = workflowListValue(script.platformConfirmButtons);
+    if (els.workflowScriptSteps) els.workflowScriptSteps.value = JSON.stringify(script.steps || [], null, 2);
+  }
+  if (els.workflowScriptMeta) {
+    const updated = script.updatedAt ? ` · 最近保存 ${shortTime(script.updatedAt)}` : " · 使用默认配置";
+    els.workflowScriptMeta.textContent = `${script.enabled === false ? "已停用" : "已启用"} · ${script.version || "xhs_qr_default"}${updated}`;
+  }
+  if (els.workflowScriptPreview) {
+    const rows = [
+      ["脚本 ID", script.scriptId || "xhs_qr_default"],
+      ["启用状态", script.enabled === false ? "停用" : "启用"],
+      ["确认等待", `${script.confirmWaitMs || 6000} ms`],
+      ["确认页关键词", (script.loginConfirmKeywords || []).join(" / ")],
+      ["普通确认按钮", (script.ordinaryConfirmButtons || []).join(" / ")],
+      ["平台确认按钮", (script.platformConfirmButtons || []).join(" / ")],
+      ["步骤数量", `${(script.steps || []).length} 步`],
+      ["任务总超时", `${timeouts.totalMs || 180000} ms`],
+      ["确认页超时", `${timeouts.loginConfirmMs || 45000} ms`]
+    ];
+    els.workflowScriptPreview.innerHTML = rows.map(([key, value]) => `
+      <div class="script-preview-row">
+        <span>${escapeHtml(key)}</span>
+        <strong>${escapeHtml(value || "-")}</strong>
+      </div>
+    `).join("");
+  }
+}
+
+function renderDiagnostics() {
+  if (!els.diagnosticsSummary || !els.diagnosticsChecks || !els.diagnosticsDetail) return;
+  const diagnostics = state.diagnostics;
+  if (!diagnostics) {
+    els.diagnosticsSummary.innerHTML = `<div class="empty">暂无诊断数据。</div>`;
+    els.diagnosticsChecks.innerHTML = "";
+    els.diagnosticsDetail.innerHTML = "";
+    renderRealtimeDiagnostics();
+    return;
+  }
+
+  const warningList = diagnostics.warnings?.length ? diagnostics.warnings.join("、") : "无";
+  const launch = diagnostics.launchReadiness || {};
+  const launchStatus = launch.status || "unknown";
+  els.diagnosticsSummary.innerHTML = `
+    <article class="diagnostic-banner ${escapeHtml(diagnostics.status)}">
+      <div>
+        <strong>${escapeHtml(statusText(diagnostics.status))}</strong>
+        <span>${escapeHtml(diagnostics.generatedAt ? shortTime(diagnostics.generatedAt) : "-")} · 上线门禁: ${escapeHtml(launchStatus)} · ${escapeHtml(launch.summary || "未计算")} · warnings: ${escapeHtml(warningList)}</span>
+      </div>
+      <em class="${diagnostics.status === "ok" ? "ok" : diagnostics.status === "fail" ? "bad" : "warn"}">${escapeHtml(diagnostics.status)}</em>
+    </article>
+  `;
+  const launchCards = (launch.gates || []).map((gate) => `
+    <article class="check-card ${gate.status === "fail" ? "fail" : gate.status === "warn" ? "warn" : "ok"}">
+      <header>
+        <strong>${escapeHtml(gate.label)}</strong>
+        <em class="${gate.status === "ok" ? "ok" : gate.status === "fail" ? "bad" : "warn"}">${escapeHtml(statusText(gate.status))}</em>
+      </header>
+      <span>${escapeHtml(gate.detail)}</span>
+    </article>
+  `).join("");
+  const diagnosticCards = (diagnostics.checks || []).map((check) => `
+    <article class="check-card ${escapeHtml(check.status)}">
+      <header>
+        <strong>${escapeHtml(check.label)}</strong>
+        <em class="${check.status === "ok" ? "ok" : check.status === "fail" ? "bad" : "warn"}">${escapeHtml(statusText(check.status))}</em>
+      </header>
+      <span>${escapeHtml(check.detail)}</span>
+    </article>
+  `).join("");
+  els.diagnosticsChecks.innerHTML = `${launchCards}${diagnosticCards}`;
+
+  const rows = [
+    ["上线状态", launchStatus],
+    ["上线摘要", launch.summary || "-"],
+    ["阻塞项", (launch.blockers || []).join("、") || "无"],
+    ["复核项", (launch.reviews || []).join("、") || "无"],
+    ["环境", diagnostics.runtime?.env],
+    ["Node", diagnostics.runtime?.nodeVersion],
+    ["监听", `${diagnostics.runtime?.host || "-"}:${diagnostics.runtime?.port || "-"}`],
+    ["公网地址", diagnostics.runtime?.publicBaseUrl || "-"],
+    ["运行时间", `${diagnostics.runtime?.uptimeSeconds || 0}s`],
+    ["状态存储", diagnostics.storage?.backend || "-"],
+    ["JSON 生产确认", diagnostics.storage?.jsonStorageProductionAck ? "已确认" : "未确认"],
+    ["数据目录", diagnostics.storage?.dataDir?.path],
+    ["状态文件", diagnostics.storage?.dataFile?.exists ? `${diagnostics.storage.dataFile.sizeBytes} bytes` : "未创建"],
+    ["发布 APK", diagnostics.storage?.releaseFile?.exists ? `${diagnostics.storage.releaseFile.sizeBytes} bytes` : "未上传"],
+    ["Windows 管理器", `${diagnostics.counts?.onlineAgents || 0}/${diagnostics.counts?.windowsAgents || 0}`],
+    ["ADB 手机", `${diagnostics.counts?.adbOnline || 0}/${diagnostics.counts?.devices || 0}`],
+    ["Airtest/Poco 自动化", (diagnostics.checks || []).find((check) => check.key === "airtest_poco")?.detail || "-"],
+    ["兼容 Agent", `${diagnostics.counts?.agentOnline || 0}/${diagnostics.counts?.devices || 0}`],
+    ["短信等待上限", `${diagnostics.limits?.userMaxWaitingSms || 0}/用户`],
+    ["扫码任务上限", `${diagnostics.limits?.userMaxActiveXhsTasks || 0}/用户`],
+    ["设备扫码并发", `${diagnostics.limits?.deviceMaxActiveXhsTasks || 0}/手机`],
+    ["ADB 任务 TTL", `${diagnostics.limits?.windowsTaskTtlSeconds || 0}s`],
+    ["扫码任务 TTL", `${diagnostics.limits?.xhsTaskTtlSeconds || 0}s`],
+    ["数据保留", `${diagnostics.retention?.retentionDays || 0} 天`],
+    ["待清理记录", Object.values(diagnostics.retention?.pendingRemoval || {}).reduce((sum, value) => sum + Number(value || 0), 0)],
+    ["活跃设备锁", diagnostics.counts?.deviceLocks ?? 0],
+    ["扫码成功率", diagnostics.counts?.xhsSuccessRate === null || diagnostics.counts?.xhsSuccessRate === undefined ? "-" : `${diagnostics.counts.xhsSuccessRate}%`],
+    ["失败原因排行", (diagnostics.counts?.taskFailureReasons || []).map((item) => `${item.reason}(${item.count})`).join("、") || "无"],
+    ["近 10 分钟异常", (diagnostics.recentIssues || []).map((item) => item.message).slice(0, 5).join("、") || "无"]
+  ];
+  els.diagnosticsDetail.innerHTML = rows.map(([key, value]) => `
+    <div>
+      <dt>${escapeHtml(key)}</dt>
+      <dd>${escapeHtml(value || "-")}</dd>
+    </div>
+  `).join("");
+  renderRealtimeDiagnostics();
+}
+
+function renderRealtimeDiagnostics() {
+  if (!els.realtimeDiagnostics) return;
+  const realtime = state.operationsMetrics?.realtime;
+  if (!realtime) {
+    els.realtimeDiagnostics.innerHTML = `<div class="empty">正在读取实时控制监控数据。</div>`;
+    return;
+  }
+  const sessionRows = realtime.video?.sessions || [];
+  const recentSessions = realtime.sessions?.recent || [];
+  const summary = [
+    ["活跃投屏", `${realtime.sessions?.active || 0}`],
+    ["服务端转发", `${formatMetric(realtime.video?.totalBytes / 1024 / 1024, 1)} MB`],
+    ["视频丢包", `${realtime.video?.totalDroppedPackets || 0}`],
+    ["控制 RTT P95", `${formatMetric(realtime.control?.rttMs?.p95, 0)} ms`],
+    ["Agent 执行 P95", `${formatMetric(realtime.control?.agentElapsedMs?.p95, 0)} ms`],
+    ["服务端事件循环 P95", `${formatMetric(realtime.eventLoopDelayMs?.p95, 1)} ms`],
+    ["服务端 CPU", `${formatMetric(realtime.runtime?.processCpuPercent, 1)}%`]
+  ];
+  const findings = buildRealtimeFindings(realtime, state.operationsMetrics?.agents || []);
+  const sessions = sessionRows.length ? `
+    <div class="realtime-session-table" role="table" aria-label="实时控制会话">
+      <div class="realtime-session-row realtime-session-heading" role="row">
+        <span>设备 / 管理器</span><span>Agent 编码</span><span>浏览器解码</span><span>丢帧 / 缓冲</span><span>控制 RTT</span>
+      </div>
+      ${sessionRows.map((session) => {
+        const agent = session.agent || {};
+        const browser = session.browser || {};
+        return `<div class="realtime-session-row" role="row">
+          <span><strong>${escapeHtml(session.deviceId || "-")}</strong><small>${escapeHtml(session.agentId || "-")}</small></span>
+          <span>${formatMetric(agent.fps, 1)} FPS<small>${formatMetric(agent.megabitsPerSecond, 2)} Mbps · ${agent.width || "-"}×${agent.height || "-"}</small></span>
+          <span>${formatMetric(browser.fps, 1)} FPS<small>呈现 ${browser.presented || 0} · 解码 ${browser.decoded || 0}</small></span>
+          <span>${agent.droppedFrames || 0} / ${browser.dropped || 0}<small>${formatMetric(browser.bufferMs, 0)} ms · relay ${formatMetric(agent.bufferedBytes / 1024, 0)} KB</small></span>
+          <span>${formatMetric(browser.controlRttMs || realtime.control?.rttMs?.p95, 0)} ms<small>Agent ${formatMetric(browser.agentControlMs || realtime.control?.agentElapsedMs?.p95, 0)} ms</small></span>
+        </div>`;
+      }).join("")}
+    </div>` : `<div class="empty">当前没有实时控制会话。开始投屏后，这里会显示该会话的链路指标。</div>`;
+  const history = recentSessions.length ? `
+    <div class="realtime-history">
+      <div class="realtime-history-head"><strong>最近结束会话</strong><span>保留有限数值采样，不包含视频或操作内容</span></div>
+      <div class="realtime-session-table" role="table" aria-label="最近结束的实时控制会话">
+        <div class="realtime-session-row realtime-session-heading" role="row">
+          <span>设备</span><span>结束原因 / 时长</span><span>结束前 Agent</span><span>结束前浏览器</span><span>控制 RTT</span>
+        </div>
+        ${recentSessions.slice(0, 8).map((session) => {
+          const agent = session.agent || session.agentSamples?.at(-1) || {};
+          const browser = session.browser || session.browserSamples?.at(-1) || {};
+          return `<div class="realtime-session-row" role="row">
+            <span><strong>${escapeHtml(session.deviceId || "-")}</strong><small>${escapeHtml(session.agentId || "-")}</small></span>
+            <span>${escapeHtml(screenCloseReasonLabel(session.closeReason))}<small>${formatDurationMs(session.durationMs)} · ${escapeHtml(formatDateTime(session.endedAt))}</small></span>
+            <span>${formatMetric(agent.fps, 1)} FPS<small>${formatMetric(agent.megabitsPerSecond, 2)} Mbps</small></span>
+            <span>${formatMetric(browser.fps, 1)} FPS<small>丢帧 ${browser.dropped || 0} · 缓冲 ${formatMetric(browser.bufferMs, 0)} ms</small></span>
+            <span>${formatMetric(browser.controlRttMs, 0)} ms<small>Agent ${formatMetric(browser.agentControlMs, 0)} ms</small></span>
+          </div>`;
+        }).join("")}
+      </div>
+    </div>` : "";
+  els.realtimeDiagnostics.innerHTML = `
+    <div class="realtime-diagnostic-summary">
+      ${summary.map(([label, value]) => `<div><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join("")}
+    </div>
+    <div class="realtime-findings">
+      <strong>链路判断</strong>
+      <ul>${findings.map((finding) => `<li class="${escapeHtml(finding.level)}">${escapeHtml(finding.message)}</li>`).join("")}</ul>
+    </div>
+    ${sessions}
+    ${history}
+  `;
+}
+
+function buildRealtimeFindings(realtime, agents) {
+  const findings = [];
+  const serverRuntime = realtime.runtime || {};
+  if (Number(realtime.eventLoopDelayMs?.p95 || 0) >= 60) {
+    findings.push({ level: "warn", message: `服务端事件循环 P95 ${formatMetric(realtime.eventLoopDelayMs.p95, 1)} ms，服务端处理可能正在排队。` });
+  }
+  if (Number(serverRuntime.processCpuPercent || 0) >= 75) {
+    findings.push({ level: "warn", message: `服务端进程 CPU ${formatMetric(serverRuntime.processCpuPercent, 1)}%，需要结合并发会话数检查服务端资源。` });
+  }
+  for (const agent of agents) {
+    const runtime = agent.runtime || {};
+    if (Number(runtime.processCpuPercent || 0) >= 120) {
+      findings.push({ level: "warn", message: `${agent.agentName || agent.agentId} 进程 CPU ${formatMetric(runtime.processCpuPercent, 1)}%，Windows 编码或 ADB 处理可能成为瓶颈。` });
+    }
+    if (Number(runtime.hostMemoryUsedPercent || 0) >= 90) {
+      findings.push({ level: "warn", message: `${agent.agentName || agent.agentId} 系统内存使用 ${formatMetric(runtime.hostMemoryUsedPercent, 0)}%，可能影响长期投屏稳定性。` });
+    }
+  }
+  for (const session of realtime.video?.sessions || []) {
+    const agent = session.agent || {};
+    const browser = session.browser || {};
+    if (agent.reportedAt && !browser.reportedAt) {
+      findings.push({ level: "info", message: `${session.deviceId || session.sessionId} 已收到编码数据，正在等待浏览器首个 5 秒播放采样。` });
+      continue;
+    }
+    if (Number(agent.fps || 0) >= 12 && Number(browser.fps || 0) > 0 && Number(agent.fps) - Number(browser.fps) >= 8) {
+      findings.push({ level: "warn", message: `${session.deviceId || session.sessionId} Agent ${formatMetric(agent.fps, 1)} FPS、浏览器 ${formatMetric(browser.fps, 1)} FPS，瓶颈偏向浏览器解码或浏览器到用户网络。` });
+    }
+    if (Number(agent.bufferedBytes || 0) >= 1_000_000 || Number(agent.droppedFrames || 0) >= 30) {
+      findings.push({ level: "warn", message: `${session.deviceId || session.sessionId} Agent 缓冲 ${formatMetric(agent.bufferedBytes / 1024 / 1024, 1)} MB、丢帧 ${agent.droppedFrames || 0}，瓶颈偏向 Windows 编码或上行转发。` });
+    }
+    if (Number(browser.controlRttMs || 0) >= 300 && Number(browser.agentControlMs || 0) < 80) {
+      findings.push({ level: "warn", message: `${session.deviceId || session.sessionId} 控制往返 ${formatMetric(browser.controlRttMs, 0)} ms，但手机执行仅 ${formatMetric(browser.agentControlMs, 0)} ms，延迟偏向网络或服务器转发。` });
+    }
+  }
+  for (const session of (realtime.sessions?.recent || []).slice(0, 5)) {
+    const agent = session.agent || session.agentSamples?.at(-1) || {};
+    const browser = session.browser || session.browserSamples?.at(-1) || {};
+    if (Number(agent.fps || 0) >= 12 && Number(browser.fps || 0) > 0 && Number(agent.fps) - Number(browser.fps) >= 8) {
+      findings.push({ level: "warn", message: `最近结束的 ${session.deviceId || session.sessionId}：Agent ${formatMetric(agent.fps, 1)} FPS、浏览器 ${formatMetric(browser.fps, 1)} FPS，浏览器侧或用户网络存在解码/接收压力。` });
+    }
+  }
+  return findings.length ? findings.slice(0, 8) : [{ level: "ok", message: "当前采样未出现明显的服务端、Windows 管理器或浏览器链路压力。" }];
+}
+
+function formatDurationMs(value) {
+  const seconds = Math.max(0, Math.round(Number(value || 0) / 1000));
+  return seconds < 60 ? `${seconds} 秒` : `${Math.floor(seconds / 60)} 分 ${seconds % 60} 秒`;
+}
+
+function screenCloseReasonLabel(reason) {
+  return {
+    user_closed: "用户结束",
+    browser_disconnected: "浏览器断开",
+    session_failed: "执行失败",
+    stream_ended: "画面流结束",
+    expired: "会话超时",
+    failed: "启动失败"
+  }[String(reason || "")] || "会话结束";
+}
+
+function formatMetric(value, digits = 0) {
+  const numeric = Number(value || 0);
+  if (!Number.isFinite(numeric)) return "0";
+  return numeric.toFixed(digits).replace(/\.0+$/, "");
+}
+
+function render() {
+  screenshotStore.clear();
+  renderShell();
+  if (!state.user) return;
+  if (state.page === "user-workbench") {
+    renderUserWorkbench();
+    renderSettings();
+    return;
+  }
+  if (state.user.role !== "admin") {
+    renderSettings();
+    return;
+  }
+  if (state.page === "dashboard") renderOverview();
+  if (state.page === "users") renderUsers();
+  if (state.page === "windows") renderWindows();
+  if (state.page === "devices") renderDevices();
+  if (state.page === "release") renderRelease();
+  if (state.page === "sms") renderSms();
+  if (state.page === "xhs") renderXhs();
+  if (state.page === "workflow-scripts") renderWorkflowScripts();
+  if (state.page === "diagnostics") renderDiagnostics();
+  if (state.page === "audit") renderAudit();
+  renderSettings();
+}
+
+async function loadAll() {
+  if (loadAllInFlight) return;
+  loadAllInFlight = true;
+  try {
+  const requestId = ++latestLoadAllRequestId;
+  if (!state.token) {
+    state.user = null;
+    if (requestId !== latestLoadAllRequestId) return;
+    render();
+    return;
+  }
+  let me;
+  try {
+    me = await api("/api/v1/auth/me");
+  } catch (error) {
+    if (error.status === 401) {
+      state.token = "";
+      state.user = null;
+      didApplyUserDefaultLanding = false;
+      localStorage.removeItem("phoneCloudSessionToken");
+      if (requestId !== latestLoadAllRequestId) return;
+      render();
+      return;
+    }
+    throw error;
+  }
+  if (requestId !== latestLoadAllRequestId) return;
+  state.user = me.user || null;
+  if (state.user?.role !== "admin" && !didApplyUserDefaultLanding) {
+    restoreUserWorkbenchRoute();
+    didApplyUserDefaultLanding = true;
+  }
+  if (state.user?.role === "admin" && !didApplyUserDefaultLanding) {
+    didApplyUserDefaultLanding = true;
+    state.page = allowedPages().includes(state.page) ? state.page : "dashboard";
+    localStorage.setItem("phoneCloudPage", state.page);
+  }
+  const usesUserWorkbench = state.page === "user-workbench";
+  if (state.user?.role !== "admin" || usesUserWorkbench) {
+    state.userDevicesLoading = true;
+    state.userDevicesLoadError = "";
+  }
+  render();
+
+  if (state.user?.role !== "admin" || usesUserWorkbench) {
+    renderUserWorkbench();
+    let devices;
+    let phones;
+    let orders;
+    let xhs;
+    try {
+      [devices, phones, orders, xhs] = await Promise.all([
+        api("/api/v1/user/devices"),
+        api("/api/v1/user/phones"),
+        api("/api/v1/user/sms-orders"),
+        api("/api/v1/user/xhs/qr-scan-tasks")
+      ]);
+    } catch (error) {
+      if (requestId === latestLoadAllRequestId) {
+        state.userDevicesLoading = false;
+        state.userDevicesLoadError = error.message || "请求失败，请稍后重试。";
+        render();
+      }
+      throw error;
+    }
+    if (requestId !== latestLoadAllRequestId) return;
+    state.userDevices = devices.devices || [];
+    state.userDevicesLoading = false;
+    state.userDevicesLoadError = "";
+    state.userDevicesLoadedAt = Date.now();
+    if (state.userSelectedDeviceId && !state.userDevices.some((device) => device.deviceId === state.userSelectedDeviceId)) {
+      state.userSelectedDeviceId = "";
+      state.userWorkbenchView = "inventory";
+      localStorage.removeItem("phoneCloudUserSelectedDeviceId");
+      localStorage.setItem("phoneCloudUserWorkbenchView", state.userWorkbenchView);
+    }
+    state.userPhones = phones.phones || [];
+    state.userSmsOrders = orders.orders || [];
+    state.userXhsTasks = xhs.tasks || [];
+    prunePendingUserXhsTasks();
+    if (isUserSmsPanelActive()) {
+      loadUserSmsLibrary().catch((error) => console.warn("user sms library load failed", error));
+    } else if (state.userWorkbenchView !== "detail" || !state.userSelectedDeviceId) {
+      latestUserSmsRequestId++;
+      state.userDeviceSmsMessages = [];
+      state.userDeviceSmsTotal = 0;
+      state.userDeviceSmsLoading = false;
+      state.userDeviceSmsLoadingDeviceId = "";
+      state.userDeviceSmsLoadedAt = 0;
+      state.userDeviceSmsLoadedDeviceId = "";
+      state.userDeviceSmsLoadedQueryKey = "";
+      state.userSmsLoadError = "";
+      state.userSmsPage = 1;
+    }
+    if (requestId !== latestLoadAllRequestId) return;
+    render();
+    return;
+  }
+
+  await loadAdminPageData(requestId);
+  if (requestId !== latestLoadAllRequestId) return;
+  render();
+  } finally {
+    loadAllInFlight = false;
+  }
+}
+
+async function loadAdminPageData(requestId) {
+  const page = state.page;
+  if (page === "dashboard") {
+    const payload = await api("/api/v1/overview");
+    if (requestId === latestLoadAllRequestId) state.overview = payload.overview || {};
+    return;
+  }
+  if (page === "users") {
+    const payload = await api("/api/v1/users");
+    if (requestId === latestLoadAllRequestId) state.users = payload.users || [];
+    return;
+  }
+  if (page === "windows") {
+    const [agents, devices, tasks] = await Promise.all([
+      api("/api/v1/windows-agents"),
+      api("/api/v1/devices"),
+      api("/api/v1/windows-agent-tasks")
+    ]);
+    if (requestId !== latestLoadAllRequestId) return;
+    state.agents = agents.agents || [];
+    state.devices = devices.devices || [];
+    state.windowsTasks = tasks.tasks || [];
+    return;
+  }
+  if (page === "devices") {
+    const payload = await api("/api/v1/devices");
+    if (requestId === latestLoadAllRequestId) state.devices = payload.devices || [];
+    return;
+  }
+  if (page === "sms") {
+    const [devices, orders, events, smsLibrary] = await Promise.all([
+      api("/api/v1/devices"),
+      api("/api/v1/sms-orders"),
+      api("/api/v1/sms-events"),
+      api(`/api/v1/sms-library${smsLibraryQuery()}`)
+    ]);
+    if (requestId !== latestLoadAllRequestId) return;
+    state.devices = devices.devices || [];
+    state.smsOrders = orders.orders || [];
+    state.smsEvents = events.events || [];
+    state.smsMessages = smsLibrary.messages || [];
+    return;
+  }
+  if (page === "xhs") {
+    const [devices, xhs] = await Promise.all([
+      api("/api/v1/devices"),
+      api(xhsTaskQuery())
+    ]);
+    if (requestId !== latestLoadAllRequestId) return;
+    state.devices = devices.devices || [];
+    state.xhsTasks = mergeAdminXhsTaskList(xhs.tasks || []);
+    state.xhsTaskTotal = Number(xhs.total || state.xhsTasks.length || 0);
+    return;
+  }
+  if (page === "workflow-scripts") {
+    const payload = await api("/api/v1/workflow-scripts");
+    if (requestId === latestLoadAllRequestId) state.workflowScripts = payload.scripts || [];
+    return;
+  }
+  if (page === "release") {
+    const payload = await api("/api/v1/app-release/latest").catch(() => ({ release: null }));
+    if (requestId === latestLoadAllRequestId) state.appRelease = payload.release || null;
+    return;
+  }
+  if (page === "diagnostics") {
+    const [diagnosticPayload, metricsPayload] = await Promise.all([
+      api("/api/v1/diagnostics"),
+      api("/api/v1/metrics/operations")
+    ]);
+    if (requestId === latestLoadAllRequestId) {
+      state.diagnostics = diagnosticPayload.diagnostics || null;
+      state.operationsMetrics = metricsPayload.metrics || null;
+    }
+    return;
+  }
+  if (page === "audit") {
+    const payload = await api("/api/v1/audit");
+    if (requestId === latestLoadAllRequestId) state.audit = payload.audit || [];
+  }
+}
+
+function smsLibraryQuery() {
+  if (!els.smsLibraryForm) return "";
+  const params = new URLSearchParams();
+  const deviceId = els.smsLibraryDeviceSelect?.value || "";
+  const box = els.smsLibraryBoxSelect?.value || "all";
+  const q = els.smsLibrarySearchInput?.value || "";
+  if (deviceId) params.set("deviceId", deviceId);
+  if (box && box !== "all") params.set("box", box);
+  if (q.trim()) params.set("q", q.trim());
+  params.set("limit", "200");
+  const query = params.toString();
+  return query ? `?${query}` : "";
+}
+
+function userDeviceSmsLibraryQuery(deviceId) {
+  const params = new URLSearchParams();
+  const pageSize = normalizedUserSmsPageSize();
+  const page = Math.max(1, Number(state.userSmsPage || 1));
+  params.set("limit", String(pageSize));
+  params.set("offset", String((page - 1) * pageSize));
+  if (state.userSmsSearch.trim()) params.set("q", state.userSmsSearch.trim());
+  if (state.userSmsSimFilter !== "") params.set("slotIndex", state.userSmsSimFilter);
+  if (state.userSmsCodeOnly) params.set("codeOnly", "1");
+  return `/api/v1/user/devices/${encodeURIComponent(deviceId)}/sms-library?${params.toString()}`;
+}
+
+function normalizedUserSmsPageSize() {
+  const size = Number(state.userSmsPageSize || 20);
+  return [10, 20, 50, 100].includes(size) ? size : 20;
+}
+
+function userSmsTotalPages() {
+  return Math.max(1, Math.ceil((state.userDeviceSmsTotal || 0) / normalizedUserSmsPageSize()));
+}
+
+function userSmsRefreshRemainingSeconds() {
+  return Math.max(0, Math.ceil((Number(state.userSmsRefreshCooldownUntil || 0) - Date.now()) / 1000));
+}
+
+function updateUserSmsRefreshButton(selectedDevice = state.userDevices.find((device) => device.deviceId === state.userSelectedDeviceId)) {
+  if (!els.userDeviceSmsRefreshButton) return;
+  const refreshing = Boolean(state.userSmsRefreshDeviceId && state.userSmsRefreshDeviceId === state.userSelectedDeviceId);
+  const remaining = userSmsRefreshRemainingSeconds();
+  els.userDeviceSmsRefreshButton.disabled = !selectedDevice || refreshing || remaining > 0;
+  els.userDeviceSmsRefreshButton.textContent = refreshing
+    ? "同步中…"
+    : remaining > 0
+      ? `${remaining}s 后刷新`
+      : "主动刷新";
+  els.userDeviceSmsRefreshButton.title = remaining > 0
+    ? "为避免频繁读取手机短信库，10 秒内只能主动刷新一次"
+    : "立即通知 Windows 管理器读取这台手机的短信库";
+  if (remaining > 0 && !userSmsRefreshCooldownTimer) {
+    userSmsRefreshCooldownTimer = setInterval(() => {
+      updateUserSmsRefreshButton();
+      if (!userSmsRefreshRemainingSeconds()) {
+        clearInterval(userSmsRefreshCooldownTimer);
+        userSmsRefreshCooldownTimer = null;
+      }
+    }, 1000);
+  }
+}
+
+function isUserSmsPanelActive() {
+  return Boolean(
+    state.token
+    && state.page === "user-workbench"
+    && state.userWorkbenchView === "detail"
+    && state.userDetailTab === "sms"
+    && state.userSelectedDeviceId
+  );
+}
+
+async function autoRefreshCurrentUserSmsLibrary() {
+  if (!isUserSmsPanelActive()) return;
+  const deviceId = state.userSelectedDeviceId;
+  if (state.userSmsRefreshDeviceId === deviceId || (state.userDeviceSmsLoading && state.userDeviceSmsLoadingDeviceId === deviceId)) return;
+  const now = Date.now();
+  const lastAt = Number(userSmsLastAutoRefreshAtByDevice.get(deviceId) || 0);
+  if (now - lastAt < USER_SMS_AUTO_REFRESH_MS) return;
+  userSmsLastAutoRefreshAtByDevice.set(deviceId, now);
+  const needsDeviceSync = !userSmsDeviceSyncRequestedByDevice.has(deviceId);
+  try {
+    // Background synchronization is deliberately independent from the manual
+    // refresh action. It may reuse an in-flight Agent task on the server, but
+    // must never turn the user's button into "同步中" or consume its cooldown.
+    if (needsDeviceSync) {
+      await api(`/api/v1/user/devices/${encodeURIComponent(deviceId)}/sms-library/refresh`, {
+        method: "POST",
+        body: JSON.stringify({ source: "sms_panel_open" })
+      });
+      userSmsDeviceSyncRequestedByDevice.add(deviceId);
+    }
+    await loadUserSmsLibrary({ force: true });
+    if (needsDeviceSync) {
+      setTimeout(() => {
+        if (state.userSelectedDeviceId === deviceId && isUserSmsPanelActive()) {
+          loadUserSmsLibrary({ force: true }).catch(() => {});
+        }
+      }, 3000);
+    }
+  } catch (error) {
+    if (error.code !== "sms_refresh_too_frequent" && error.code !== "sms_refresh_unavailable") {
+      console.warn("auto sms refresh failed", error);
+    }
+  }
+}
+
+async function reloadUserSmsFirstPage() {
+  state.userSmsPage = 1;
+  await loadUserSmsLibrary({ force: true });
+}
+
+async function loadUserSmsLibrary(options = {}) {
+  if (!isUserSmsPanelActive()) return;
+  const deviceId = state.userSelectedDeviceId;
+  const query = userDeviceSmsLibraryQuery(deviceId);
+  const deviceChanged = state.userDeviceSmsLoadedDeviceId !== deviceId;
+  const queryChanged = state.userDeviceSmsLoadedQueryKey !== query;
+  const needsInitialLoad = !state.userDeviceSmsLoadedAt || deviceChanged || queryChanged;
+  if (!options.force && !needsInitialLoad) return;
+
+  const requestId = ++latestUserSmsRequestId;
+  state.userDeviceSmsLoading = true;
+  state.userDeviceSmsLoadingDeviceId = deviceId;
+  state.userSmsLoadError = "";
+  if (deviceChanged) {
+    state.userDeviceSmsMessages = [];
+    state.userDeviceSmsTotal = 0;
+  }
+  renderUserWorkbench();
+
+  try {
+    const sms = await api(query);
+    if (requestId !== latestUserSmsRequestId || deviceId !== state.userSelectedDeviceId) return;
+    state.userDeviceSmsMessages = sms.messages || [];
+    state.userDeviceSmsTotal = Number(sms.total || 0);
+    const totalPages = userSmsTotalPages();
+    if (state.userSmsPage > totalPages) {
+      state.userSmsPage = totalPages;
+      await loadUserSmsLibrary({ force: true });
+      return;
+    }
+  } catch (error) {
+    if (requestId !== latestUserSmsRequestId || deviceId !== state.userSelectedDeviceId) return;
+    state.userSmsLoadError = error.message || "无法读取短信库，请稍后重试。";
+  } finally {
+    if (requestId !== latestUserSmsRequestId || deviceId !== state.userSelectedDeviceId) return;
+    state.userDeviceSmsLoadedAt = Date.now();
+    state.userDeviceSmsLoadedDeviceId = deviceId;
+    state.userDeviceSmsLoadedQueryKey = userDeviceSmsLibraryQuery(deviceId);
+    state.userDeviceSmsLoading = false;
+    state.userDeviceSmsLoadingDeviceId = "";
+    renderUserWorkbench();
+  }
+}
+
+async function refreshUserXhsTasksOnly() {
+  if (!shouldFastRefreshUserXhsTasks()) return;
+  const payload = await api("/api/v1/user/xhs/qr-scan-tasks");
+  state.userXhsTasks = payload.tasks || [];
+  prunePendingUserXhsTasks();
+  renderUserWorkbench();
+}
+
+async function refreshCurrentUserSmsLibrary() {
+  const deviceId = state.userSelectedDeviceId;
+  if (!deviceId) return;
+  const remaining = userSmsRefreshRemainingSeconds();
+  if (remaining > 0) {
+    alert(`短信库刷新太频繁，请 ${remaining} 秒后再试。`);
+    return;
+  }
+  state.userSmsRefreshDeviceId = deviceId;
+  state.userSmsRefreshCooldownUntil = Date.now() + USER_SMS_MANUAL_REFRESH_COOLDOWN_MS;
+  state.userDeviceSmsLoading = true;
+  state.userDeviceSmsLoadingDeviceId = deviceId;
+  renderUserWorkbench();
+  try {
+    await api(`/api/v1/user/devices/${encodeURIComponent(deviceId)}/sms-library/refresh`, {
+      method: "POST",
+      body: JSON.stringify({ source: "manual_user_request" })
+    });
+    userSmsDeviceSyncRequestedByDevice.add(deviceId);
+    await loadUserSmsLibrary({ force: true });
+    setTimeout(() => {
+      if (state.userSelectedDeviceId === deviceId && isUserSmsPanelActive()) {
+        loadUserSmsLibrary({ force: true }).catch(() => {});
+      }
+    }, 3000);
+  } catch (error) {
+    if (error.code === "sms_refresh_too_frequent") {
+      alert(error.message || "短信库刷新太频繁，请稍后再试。");
+    } else {
+      alert(error.message);
+    }
+    await loadUserSmsLibrary({ force: true }).catch(() => {});
+  } finally {
+    if (state.userSmsRefreshDeviceId === deviceId) state.userSmsRefreshDeviceId = "";
+    updateUserSmsRefreshButton();
+  }
+}
+
+async function createWindowsTask(button) {
+  const row = button.closest(".adb-row");
+  const payload = await api("/api/v1/windows-agent-tasks", {
+    method: "POST",
+    body: JSON.stringify({
+      agentId: row.dataset.agentId,
+      adbSerial: row.dataset.adbSerial,
+      deviceId: row.dataset.deviceId,
+      type: button.dataset.task,
+      payload: {}
+    })
+  });
+  button.textContent = "已排队";
+  setTimeout(() => {
+    button.textContent = windowsTaskButtonLabel(button.dataset.task);
+  }, 1600);
+  await loadAll();
+  return payload;
+}
+
+async function fileToDataUrl(file, options = {}) {
+  const label = String(options.label || "二维码图片");
+  if (!file || file.size <= 0) throw new Error(`请选择${label}`);
+  if (!QR_IMAGE_TYPES.has(file.type)) throw new Error(`${label}只支持 PNG、JPEG 或 WebP`);
+  if (file.size > MAX_QR_IMAGE_FILE_BYTES) throw new Error(`${label}不能超过 3MB`);
+  return await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ""));
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function uploadRelease(form) {
+  const data = new FormData(form);
+  const versionName = String(data.get("versionName") || "").trim();
+  const versionCode = Number(data.get("versionCode") || 0);
+  const releaseNotes = String(data.get("releaseNotes") || "").trim();
+  const downloadUrl = String(data.get("downloadUrl") || "").trim();
+  const apkFile = data.get("apkFile");
+  if (!versionName || !versionCode) throw new Error("版本名和版本号必填");
+
+  await api("/api/v1/app-release/latest", {
+    method: "POST",
+    body: JSON.stringify({ versionName, versionCode, releaseNotes, downloadUrl })
+  });
+
+  if (apkFile && apkFile.size) {
+    const response = await fetch(`/api/v1/app-release/latest/apk?versionName=${encodeURIComponent(versionName)}&versionCode=${encodeURIComponent(versionCode)}`, {
+      method: "PUT",
+      headers: {
+        authorization: `Bearer ${state.token}`,
+        "content-type": "application/vnd.android.package-archive"
+      },
+      body: apkFile
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(payload.error || `HTTP ${response.status}`);
+  }
+}
+
+async function saveDeviceBindings(card) {
+  const deviceId = card.dataset.deviceId;
+  const device = state.devices.find((item) => item.deviceId === deviceId) || {};
+  const deviceName = String(card.querySelector('[data-role="device-name"]')?.value || "").trim();
+  if (!deviceName) throw new Error("设备名称不能为空");
+  const simInputs = [...card.querySelectorAll('[data-role="sim-phone"]')];
+  const sims = simInputs
+    .map((input) => {
+      const index = Number(input.dataset.index || 0);
+      const existing = (device.sims || []).find((sim) => Number(sim.slotIndex) === index) || device.sims?.[index] || {};
+      return {
+        subscriptionId: Number.isFinite(Number(existing.subscriptionId)) ? Number(existing.subscriptionId) : index,
+        slotIndex: index,
+        carrierName: existing.carrierName || "",
+        phoneNumber: input.value.trim(),
+        label: existing.label || `SIM ${index + 1}`,
+        enabled: existing.enabled !== false
+      };
+    })
+    .filter((sim) => sim.phoneNumber || sim.carrierName || sim.label);
+  await api(`/api/v1/devices/${encodeURIComponent(deviceId)}/sims`, {
+    method: "PUT",
+    body: JSON.stringify({ sims })
+  });
+
+  const accountInputs = [...card.querySelectorAll('[data-role="xhs-account-name"]')];
+  const accounts = accountInputs.map((input) => {
+    const enabledInput = card.querySelector(`[data-role="xhs-account-enabled"][data-slot="${input.dataset.slot}"]`);
+    return {
+      appSlot: input.dataset.slot,
+      accountName: input.value.trim(),
+      label: input.dataset.slot === "app2" ? "Ⅱ·小红书" : "小红书",
+      enabled: Boolean(enabledInput?.checked)
+      };
+    });
+  const payload = await api(`/api/v1/devices/${encodeURIComponent(deviceId)}`, {
+    method: "PUT",
+    body: JSON.stringify({ deviceName, sims, xhsAccounts: accounts })
+  });
+  if (payload.device) updateDeviceInState(payload.device);
+  state.adminDeviceEditingUntil = 0;
+  return payload.device || null;
+}
+
+async function setDeviceListing(card, listingStatus) {
+  const deviceId = card.dataset.deviceId;
+  const payload = await api(`/api/v1/devices/${encodeURIComponent(deviceId)}`, {
+    method: "PUT",
+    body: JSON.stringify({ listingStatus })
+  });
+  if (payload.device) updateDeviceInState(payload.device);
+  state.adminDeviceEditingUntil = 0;
+  return payload.device || null;
+}
+
+async function bulkSetDeviceListing(listingStatus) {
+  const deviceIds = [...els.deviceList.querySelectorAll('[data-role="device-select"]:checked')]
+    .map((input) => input.closest("[data-device-id]")?.dataset.deviceId)
+    .filter(Boolean);
+  if (!deviceIds.length) throw new Error("请先勾选要操作的手机");
+  await api("/api/v1/devices/bulk-listing", {
+    method: "POST",
+    body: JSON.stringify({ deviceIds, listingStatus })
+  });
+  state.adminDeviceEditingUntil = 0;
+  await loadAll();
+}
+
+function updateDeviceInState(updatedDevice) {
+  if (!updatedDevice?.deviceId) return;
+  const index = state.devices.findIndex((device) => device.deviceId === updatedDevice.deviceId);
+  if (index >= 0) state.devices.splice(index, 1, updatedDevice);
+  else state.devices.unshift(updatedDevice);
+}
+
+function setAdminDeviceFeedback(deviceId, message, kind = "info", ttlMs = 1800) {
+  if (!deviceId) return;
+  adminDeviceFeedbackById.set(deviceId, { message, kind });
+  if (ttlMs > 0) {
+    setTimeout(() => {
+      const current = adminDeviceFeedbackById.get(deviceId);
+      if (current?.message === message) {
+        adminDeviceFeedbackById.delete(deviceId);
+        if (!isAdminDeviceEditing()) renderDevices();
+      }
+    }, ttlMs);
+  }
+}
+
+function setDeviceButtonBusy(button, busyText) {
+  if (!button) return;
+  button.dataset.originalText = button.dataset.originalText || button.textContent || "";
+  button.textContent = busyText;
+  button.disabled = true;
+  button.classList.add("is-loading");
+}
+
+function clearDeviceButtonBusy(button, fallbackText = "") {
+  if (!button) return;
+  button.disabled = false;
+  button.classList.remove("is-loading");
+  button.textContent = fallbackText || button.dataset.originalText || button.textContent || "";
+}
+
+function setDeviceCardStatus(card, message, kind = "info") {
+  const status = card?.querySelector(".device-save-status");
+  if (!status) return;
+  status.textContent = message || "";
+  status.classList.remove("is-success", "is-error", "is-info");
+  status.classList.add(`is-${kind}`);
+}
+
+function touchAdminDeviceEditing() {
+  state.adminDeviceEditingUntil = Date.now() + 30_000;
+}
+
+function isAdminDeviceEditing() {
+  return Date.now() < Number(state.adminDeviceEditingUntil || 0);
+}
+
+async function loginWithCredentials(username, password) {
+  const payload = await api("/api/v1/auth/login", {
+    method: "POST",
+    body: JSON.stringify({
+      username: String(username || "").trim(),
+      password: String(password || "")
+    })
+  });
+  state.token = payload.session.token;
+  state.user = payload.user;
+  localStorage.setItem("phoneCloudSessionToken", state.token);
+  if (state.user?.role !== "admin") {
+    forceUserInventoryHome();
+    didApplyUserDefaultLanding = true;
+  } else {
+    didApplyUserDefaultLanding = true;
+    state.page = "dashboard";
+    localStorage.setItem("phoneCloudPage", state.page);
+  }
+  render();
+  loadAll().catch((error) => {
+    console.warn("loadAll after login failed", error);
+    if (els.loginHint) els.loginHint.textContent = error.message;
+  });
+}
+
+els.loginForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (els.loginHint) els.loginHint.textContent = "正在登录...";
+  try {
+    await loginWithCredentials(els.loginUsernameInput?.value, els.loginPasswordInput?.value);
+    if (els.loginPasswordInput) els.loginPasswordInput.value = "";
+    if (els.loginHint) els.loginHint.textContent = "";
+  } catch (error) {
+    if (els.loginHint) els.loginHint.textContent = error.message;
+  }
+});
+
+async function logout() {
+  await api("/api/v1/auth/logout", { method: "POST", body: "{}" }).catch(() => {});
+  state.token = "";
+  state.user = null;
+  didApplyUserDefaultLanding = false;
+  localStorage.removeItem("phoneCloudSessionToken");
+  closeSettingsModal();
+  render();
+}
+
+els.settingsLogoutButton?.addEventListener("click", () => logout().catch((error) => alert(error.message)));
+els.topSettingsButton?.addEventListener("click", () => openSettingsModal());
+els.settingsOpenButtons?.forEach((button) => button.addEventListener("click", () => openSettingsModal()));
+els.settingsCloseButtons?.forEach((button) => button.addEventListener("click", () => closeSettingsModal()));
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeScreenshotModal();
+    closeSettingsModal();
+  }
+});
+
+document.addEventListener("click", (event) => {
+  const xhsPageButton = event.target.closest("[data-xhs-task-page]");
+  if (xhsPageButton) {
+    event.preventDefault();
+    const totalPages = Math.max(1, Math.ceil(Number(state.xhsTaskTotal || 0) / normalizedXhsTaskPageSize()));
+    state.xhsTaskPage = xhsPageButton.dataset.xhsTaskPage === "next"
+      ? Math.min(totalPages, Number(state.xhsTaskPage || 1) + 1)
+      : Math.max(1, Number(state.xhsTaskPage || 1) - 1);
+    localStorage.setItem("phoneCloudXhsTaskPage", String(state.xhsTaskPage));
+    loadAll().catch((error) => alert(error.message));
+    return;
+  }
+  const screenshotButton = event.target.closest("[data-screenshot-key]");
+  if (screenshotButton) {
+    event.preventDefault();
+    openScreenshotModal(screenshotButton.dataset.screenshotKey);
+    return;
+  }
+  const xhsEvidenceButton = event.target.closest("[data-load-xhs-evidence]");
+  if (xhsEvidenceButton) {
+    event.preventDefault();
+    loadAdminXhsTaskEvidence(xhsEvidenceButton.dataset.loadXhsEvidence)
+      .catch((error) => alert(error.message || "加载失败现场失败"));
+    return;
+  }
+  const windowsEvidenceButton = event.target.closest("[data-load-windows-evidence]");
+  if (windowsEvidenceButton) {
+    event.preventDefault();
+    loadWindowsTaskEvidence(windowsEvidenceButton.dataset.loadWindowsEvidence)
+      .catch((error) => alert(error.message || "加载失败现场失败"));
+    return;
+  }
+  if (event.target.closest("[data-screenshot-close]")) {
+    closeScreenshotModal();
+    return;
+  }
+  if (event.target.classList?.contains("screenshot-modal")) {
+    closeScreenshotModal();
+  }
+});
+
+document.addEventListener("change", (event) => {
+  const xhsPageSize = event.target.closest("[data-xhs-task-page-size]");
+  if (!xhsPageSize) return;
+  state.xhsTaskPageSize = Number(xhsPageSize.value || 20);
+  state.xhsTaskPage = 1;
+  localStorage.setItem("phoneCloudXhsTaskPageSize", String(state.xhsTaskPageSize));
+  localStorage.setItem("phoneCloudXhsTaskPage", "1");
+  loadAll().catch((error) => alert(error.message));
+});
+
+els.refreshButton.addEventListener("click", () => loadAll().catch((error) => alert(error.message)));
+
+els.userTopAdminButton?.addEventListener("click", () => {
+  state.page = "dashboard";
+  localStorage.setItem("phoneCloudPage", state.page);
+  render();
+  loadAll().catch((error) => alert(error.message));
+});
+
+els.pageButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    state.page = button.dataset.pageButton;
+    localStorage.setItem("phoneCloudPage", state.page);
+    render();
+    loadAll().catch((error) => alert(error.message));
+  });
+});
+
+els.userCreateForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = new FormData(els.userCreateForm);
+  try {
+    await api("/api/v1/users", {
+      method: "POST",
+      body: JSON.stringify({
+        username: form.get("username"),
+        displayName: form.get("displayName"),
+        password: form.get("password"),
+        role: form.get("role")
+      })
+    });
+    els.userCreateHint.textContent = "账号已创建。";
+    els.userCreateForm.reset();
+    await loadAll();
+  } catch (error) {
+    els.userCreateHint.textContent = error.message;
+  }
+});
+
+els.userSmsOrderForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = new FormData(els.userSmsOrderForm);
+  try {
+    await api("/api/v1/user/sms-orders", {
+      method: "POST",
+      body: JSON.stringify({
+        phoneNumber: form.get("phoneNumber"),
+        platform: form.get("platform")
+      })
+    });
+    els.userSmsHint.textContent = "短信订单已创建。";
+    await loadAll();
+  } catch (error) {
+    els.userSmsHint.textContent = error.message;
+  }
+});
+
+els.userSmsList?.addEventListener("click", async (event) => {
+  const button = event.target.closest("[data-user-sms-action]");
+  if (!button) return;
+  const row = button.closest("[data-user-sms-order-id]");
+  try {
+    await api(`/api/v1/user/sms-orders/${encodeURIComponent(row.dataset.userSmsOrderId)}/cancel`, {
+      method: "POST",
+      body: "{}"
+    });
+    await loadAll();
+  } catch (error) {
+    alert(error.message);
+  }
+});
+
+function resetUserQrPreview() {
+  if (!els.userQrPreview) return;
+  els.userQrPreview.classList.remove("has-image", "has-error");
+  els.userQrPreview.innerHTML = `
+    <span class="scan-upload-icon">QR</span>
+    <span class="scan-upload-copy">
+      <strong>点击选择二维码</strong>
+      <small>支持 PNG / JPEG / WebP，提交后自动推送到手机相册。</small>
+    </span>
+  `;
+}
+
+async function updateUserQrPreview(file) {
+  if (!els.userQrPreview) return;
+  if (!file || !file.size) {
+    resetUserQrPreview();
+    return;
+  }
+  try {
+    const dataUrl = await fileToDataUrl(file);
+    els.userQrPreview.classList.remove("has-error");
+    els.userQrPreview.classList.add("has-image");
+    els.userQrPreview.innerHTML = `<img src="${escapeHtml(dataUrl)}" alt="二维码预览" /><span class="scan-upload-copy"><strong>${escapeHtml(file.name || "二维码图片")}</strong><small>${Math.max(1, Math.round(file.size / 1024))} KB · 已选择，等待提交</small></span>`;
+  } catch (error) {
+    els.userQrPreview.classList.remove("has-image");
+    els.userQrPreview.classList.add("has-error");
+    els.userQrPreview.innerHTML = `<span class="scan-upload-icon">!</span><span class="scan-upload-copy"><strong>预览失败</strong><small>${escapeHtml(error.message)}</small></span>`;
+  }
+}
+
+els.userAutomationTargetCards?.addEventListener("click", (event) => {
+  const card = event.target.closest("[data-scan-target-value]");
+  if (!card || card.disabled || !els.userAutomationTargetSelect) return;
+  els.userAutomationTargetSelect.value = card.dataset.scanTargetValue || "";
+  rememberAutomationTarget(state.userSelectedDeviceId, els.userAutomationTargetSelect.value);
+  syncScanTargetCards();
+});
+
+els.userAutomationTargetSelect?.addEventListener("change", () => {
+  rememberAutomationTarget(state.userSelectedDeviceId, els.userAutomationTargetSelect.value);
+  syncScanTargetCards();
+});
+
+els.userQrImageInput?.addEventListener("change", async () => {
+  await updateUserQrPreview(els.userQrImageInput.files?.[0]);
+});
+
+els.userXhsTaskForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (state.userXhsSubmitting) return;
+  const form = new FormData(els.userXhsTaskForm);
+  const pendingTaskId = `local-xhs-${Date.now()}`;
+  let addedPendingTask = false;
+  state.userXhsSubmitting = true;
+  if (els.userXhsHint) els.userXhsHint.textContent = "正在读取二维码并创建任务...";
+  renderUserWorkbench();
+  try {
+    const qrImageDataUrl = await fileToDataUrl(form.get("qrImage"));
+    const target = parseAutomationTarget(form.get("target"));
+    if (!state.userSelectedDeviceId) throw new Error("请先选择一台手机");
+    const device = state.userDevices.find((item) => item.deviceId === state.userSelectedDeviceId);
+    if (!automationReadyForDevice(device)) throw new Error(`当前手机${automationIssueLabel(device)}，请等待 Windows 管理器预检完成后再提交扫码`);
+    if (target.platform !== "xhs") throw new Error("当前仅支持小红书扫码任务");
+    if (!target.slot) throw new Error("请选择一个账号槽位");
+    const targetInfo = automationTargetsForDevice(device).find((item) => item.value === form.get("target")) || {};
+    addPendingUserXhsTask({
+      taskId: pendingTaskId,
+      deviceId: state.userSelectedDeviceId,
+      status: "creating",
+      createdAt: new Date().toISOString(),
+      xhsAppSlot: target.slot,
+      xhsAccountLabel: targetInfo.label || (target.slot === "app2" ? "小红书 2" : "小红书 1"),
+      xhsAccountName: targetInfo.description || "",
+      executionMode: "windows_airtest_poco",
+      cancellable: false,
+      summary: {
+        progressMessage: "已接收二维码，正在创建扫码任务",
+        eventCount: 0,
+        screenshotCount: 0
+      }
+    });
+    addedPendingTask = true;
+    if (els.userXhsHint) els.userXhsHint.textContent = "任务正在创建，右侧会实时显示进度。";
+    renderUserWorkbench();
+    const payload = await api("/api/v1/user/xhs/qr-scan-tasks", {
+      method: "POST",
+      body: JSON.stringify({
+        deviceId: state.userSelectedDeviceId,
+        xhsAppSlot: target.slot,
+        qrImageDataUrl
+      })
+    });
+    removePendingUserXhsTask(pendingTaskId);
+    if (payload.task) {
+      state.userXhsTasks = [
+        payload.task,
+        ...state.userXhsTasks.filter((task) => task.taskId !== payload.task.taskId)
+      ];
+      renderUserWorkbench();
+    }
+    if (els.userXhsHint) els.userXhsHint.textContent = "扫码任务已创建，正在等待 Windows 管理器领取。";
+    if (els.userQrImageInput) els.userQrImageInput.value = "";
+    resetUserQrPreview();
+    loadAll().catch((error) => console.warn("refresh after xhs task create failed", error));
+  } catch (error) {
+    if (addedPendingTask) {
+      markPendingUserXhsTaskFailed(pendingTaskId, error.message);
+    }
+    if (els.userXhsHint) els.userXhsHint.textContent = error.message;
+    renderUserWorkbench();
+  } finally {
+    state.userXhsSubmitting = false;
+    renderUserWorkbench();
+  }
+});
+
+els.userDeviceList?.addEventListener("click", async (event) => {
+  const opener = event.target.closest("[data-user-device-open]");
+  if (opener) {
+    event.preventDefault();
+    event.stopPropagation();
+    await openUserDeviceDetail(opener.dataset.userDeviceOpen);
+    return;
+  }
+  const row = event.target.closest("[data-user-device-id]");
+  if (!row) return;
+  await openUserDeviceDetail(row.dataset.userDeviceId);
+});
+
+els.userDeviceList?.addEventListener("keydown", async (event) => {
+  if (!["Enter", " "].includes(event.key)) return;
+  const opener = event.target.closest("[data-user-device-open]");
+  const row = opener || event.target.closest("[data-user-device-id]");
+  if (!row) return;
+  event.preventDefault();
+  await openUserDeviceDetail(row.dataset.userDeviceOpen || row.dataset.userDeviceId);
+});
+
+async function openUserDeviceDetail(deviceId) {
+  if (!deviceId) return;
+  if (state.userScreenDeviceId && state.userScreenDeviceId !== deviceId) await stopUserScreenSession();
+  if (state.userSelectedDeviceId !== deviceId) {
+    state.userSmsPage = 1;
+    latestUserSmsRequestId++;
+    state.userDeviceSmsMessages = [];
+    state.userDeviceSmsTotal = 0;
+    state.userDeviceSmsLoading = true;
+    state.userDeviceSmsLoadingDeviceId = deviceId;
+    state.userDeviceSmsLoadedAt = 0;
+    state.userDeviceSmsLoadedDeviceId = "";
+    state.userDeviceSmsLoadedQueryKey = "";
+    state.userSmsLoadError = "";
+  }
+  state.userSelectedDeviceId = deviceId;
+  state.userWorkbenchView = "detail";
+  localStorage.setItem("phoneCloudUserSelectedDeviceId", state.userSelectedDeviceId);
+  localStorage.setItem("phoneCloudUserWorkbenchView", state.userWorkbenchView);
+  renderUserWorkbench();
+  await loadAll();
+  autoRefreshCurrentUserSmsLibrary().catch(() => {});
+}
+
+window.__openUserDeviceDetail = (deviceId) => {
+  openUserDeviceDetail(deviceId).catch((error) => alert(error.message));
+};
+
+els.userDeviceBackButton?.addEventListener("click", async () => {
+  await stopUserScreenSession();
+  state.userWorkbenchView = "inventory";
+  localStorage.setItem("phoneCloudUserWorkbenchView", state.userWorkbenchView);
+  renderUserWorkbench();
+});
+
+els.userDetailTabs?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-user-detail-tab]");
+  if (!button) return;
+  state.userDetailTab = button.dataset.userDetailTab || "sms";
+  localStorage.setItem("phoneCloudUserDetailTab", state.userDetailTab);
+  renderUserWorkbench();
+  if (state.userDetailTab === "sms") {
+    reloadUserSmsFirstPage()
+      .then(() => autoRefreshCurrentUserSmsLibrary())
+      .catch(() => {});
+  }
+});
+
+els.userDeviceSearchInput?.addEventListener("input", () => {
+  state.userDeviceSearch = els.userDeviceSearchInput.value || "";
+  renderUserWorkbench();
+});
+
+els.userInventoryRefreshButton?.addEventListener("click", () => loadAll().catch((error) => alert(error.message)));
+els.userDeviceSmsRefreshButton?.addEventListener("click", () => refreshCurrentUserSmsLibrary().catch((error) => alert(error.message)));
+els.userScreenStartButton?.addEventListener("click", () => startUserScreenSession().catch((error) => alert(error.message)));
+els.userScreenReconnectButton?.addEventListener("click", () => startUserScreenSession().catch((error) => alert(error.message)));
+els.userScreenWakeButton?.addEventListener("click", () => wakeUserScreen().catch((error) => alert(error.message)));
+els.userScreenStopButton?.addEventListener("click", () => stopUserScreenSession().catch((error) => alert(error.message)));
+els.userScreenGalleryFileInput?.addEventListener("change", () => {
+  const [file] = els.userScreenGalleryFileInput.files || [];
+  if (!file) return;
+  stageUserScreenGalleryImage(file)
+    .then(() => { els.userScreenGalleryFileInput.value = ""; })
+    .catch((error) => alert(error.message));
+});
+els.userScreenGalleryPasteButton?.addEventListener("click", () => {
+  els.userScreenGalleryPasteZone?.focus();
+});
+els.userScreenGalleryClearButton?.addEventListener("click", () => {
+  clearUserScreenGalleryDraft();
+  renderUserScreenControl(state.userDevices.find((item) => item.deviceId === state.userSelectedDeviceId));
+});
+els.userScreenGalleryConfirmButton?.addEventListener("click", () => {
+  importUserScreenGalleryImage(state.userScreenGalleryDraftFile).catch((error) => alert(error.message));
+});
+document.addEventListener("paste", (event) => {
+  handleUserScreenGalleryPaste(event).catch((error) => alert(error.message));
+});
+els.userScreenNavigationButtons?.forEach((button) => {
+  button.addEventListener("click", () => state.userScreenController?.key(button.dataset.screenKey));
+});
+window.addEventListener("pagehide", releaseUserScreenSessionOnPageExit);
+
+els.userSmsSearchInput?.addEventListener("input", () => {
+  state.userSmsSearch = els.userSmsSearchInput.value || "";
+  clearTimeout(userSmsSearchTimer);
+  userSmsSearchTimer = setTimeout(() => {
+    reloadUserSmsFirstPage().catch((error) => alert(error.message));
+  }, 250);
+});
+
+els.userSmsSimFilter?.addEventListener("change", () => {
+  state.userSmsSimFilter = els.userSmsSimFilter.value || "";
+  reloadUserSmsFirstPage().catch((error) => alert(error.message));
+});
+
+els.userSmsCodeOnlyToggle?.addEventListener("change", () => {
+  state.userSmsCodeOnly = Boolean(els.userSmsCodeOnlyToggle.checked);
+  reloadUserSmsFirstPage().catch((error) => alert(error.message));
+});
+
+els.userSmsPagination?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-user-sms-page]");
+  if (!button || button.disabled) return;
+  const totalPages = userSmsTotalPages();
+  if (button.dataset.userSmsPage === "prev") state.userSmsPage = Math.max(1, state.userSmsPage - 1);
+  if (button.dataset.userSmsPage === "next") state.userSmsPage = Math.min(totalPages, state.userSmsPage + 1);
+  loadAll().catch((error) => alert(error.message));
+});
+
+els.userSmsPagination?.addEventListener("change", (event) => {
+  const select = event.target.closest("[data-user-sms-page-size]");
+  if (!select) return;
+  state.userSmsPageSize = Number(select.value || 20);
+  localStorage.setItem("phoneCloudUserSmsPageSize", String(normalizedUserSmsPageSize()));
+  reloadUserSmsFirstPage().catch((error) => alert(error.message));
+});
+
+els.userDeviceSmsList?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-copy-text]");
+  if (!button) return;
+  copyText(button.dataset.copyText || "");
+});
+
+els.userDeviceStatusSelect?.addEventListener("change", () => {
+  state.userDeviceFilter = els.userDeviceStatusSelect.value || "all";
+  localStorage.setItem("phoneCloudUserDeviceFilter", state.userDeviceFilter);
+  renderUserWorkbench();
+});
+
+els.userDeviceBrandSelect?.addEventListener("change", () => {
+  state.userDeviceBrandFilter = els.userDeviceBrandSelect.value || "";
+  localStorage.setItem("phoneCloudUserDeviceBrandFilter", state.userDeviceBrandFilter);
+  renderUserWorkbench();
+});
+
+els.userDeviceAndroidSelect?.addEventListener("change", () => {
+  state.userDeviceAndroidFilter = els.userDeviceAndroidSelect.value || "";
+  localStorage.setItem("phoneCloudUserDeviceAndroidFilter", state.userDeviceAndroidFilter);
+  renderUserWorkbench();
+});
+
+els.userDeviceClearFiltersButton?.addEventListener("click", () => {
+  state.userDeviceFilter = "all";
+  state.userDeviceBrandFilter = "";
+  state.userDeviceAndroidFilter = "";
+  state.userDeviceSearch = "";
+  localStorage.setItem("phoneCloudUserDeviceFilter", state.userDeviceFilter);
+  localStorage.removeItem("phoneCloudUserDeviceBrandFilter");
+  localStorage.removeItem("phoneCloudUserDeviceAndroidFilter");
+  renderUserWorkbench();
+});
+
+els.userDeviceFilterChips?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-user-device-filter]");
+  if (!button) return;
+  state.userDeviceFilter = button.dataset.userDeviceFilter || "all";
+  localStorage.setItem("phoneCloudUserDeviceFilter", state.userDeviceFilter);
+  renderUserWorkbench();
+});
+
+els.userXhsList.addEventListener("click", async (event) => {
+  const button = event.target.closest("[data-user-xhs-action]");
+  if (!button) return;
+  const row = button.closest("[data-user-xhs-task-id]");
+  try {
+    await api(`/api/v1/user/xhs/qr-scan-tasks/${encodeURIComponent(row.dataset.userXhsTaskId)}/cancel`, {
+      method: "POST",
+      body: "{}"
+    });
+    await loadAll();
+  } catch (error) {
+    alert(error.message);
+  }
+});
+
+els.passwordForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = new FormData(els.passwordForm);
+  try {
+    await api("/api/v1/auth/password", {
+      method: "POST",
+      body: JSON.stringify({
+        currentPassword: form.get("currentPassword"),
+        newPassword: form.get("newPassword")
+      })
+    });
+    els.passwordHint.textContent = "密码已更新。";
+    els.passwordForm.reset();
+  } catch (error) {
+    els.passwordHint.textContent = error.message;
+  }
+});
+
+els.userList.addEventListener("click", async (event) => {
+  const button = event.target.closest("[data-user-action]");
+  if (!button) return;
+  const row = button.closest("[data-user-id]");
+  const userId = row.dataset.userId;
+  try {
+    if (button.dataset.userAction === "reset-password") {
+      const password = prompt("输入新密码，普通用户至少 7 位");
+      if (!password) return;
+      await api(`/api/v1/users/${encodeURIComponent(userId)}`, {
+        method: "PUT",
+        body: JSON.stringify({ password })
+      });
+    } else {
+      await api(`/api/v1/users/${encodeURIComponent(userId)}`, {
+        method: "PUT",
+        body: JSON.stringify({ enabled: button.dataset.userAction === "enable" })
+      });
+    }
+    await loadAll();
+  } catch (error) {
+    alert(error.message);
+  }
+});
+
+els.agentCreateButton?.addEventListener("click", async () => {
+  const agentId = prompt("输入 Windows 管理器 ID，例如 win-office-001");
+  if (!agentId) return;
+  const agentName = prompt("输入显示名称", agentId) || agentId;
+  try {
+    const payload = await api("/api/v1/windows-agents", {
+      method: "POST",
+      body: JSON.stringify({ agentId, agentName })
+    });
+    showAgentToken(payload.agent, payload.token);
+    await loadAll();
+  } catch (error) {
+    alert(error.message);
+  }
+});
+
+els.windowsList.addEventListener("click", async (event) => {
+  const agentButton = event.target.closest("[data-agent-action]");
+  if (agentButton) {
+    const card = agentButton.closest("[data-agent-id]");
+    const agentId = card?.dataset.agentId || "";
+    if (!agentId) return;
+    try {
+      if (agentButton.dataset.agentAction === "rotate-token") {
+        if (!confirm("重置后旧 token 会立即失效，确定继续？")) return;
+        const payload = await api(`/api/v1/windows-agents/${encodeURIComponent(agentId)}/token/rotate`, { method: "POST", body: "{}" });
+        showAgentToken(payload.agent, payload.token);
+      } else {
+        await api(`/api/v1/windows-agents/${encodeURIComponent(agentId)}/${agentButton.dataset.agentAction}`, { method: "POST", body: "{}" });
+      }
+      await loadAll();
+    } catch (error) {
+      alert(error.message);
+    }
+    return;
+  }
+  const button = event.target.closest("[data-task]");
+  if (!button) return;
+  createWindowsTask(button).catch((error) => alert(error.message));
+});
+
+function showAgentToken(agent, token) {
+  if (!els.agentTokenNotice) return;
+  els.agentTokenNotice.classList.remove("hidden");
+  els.agentTokenNotice.innerHTML = `
+    <strong>${escapeHtml(agent?.agentName || agent?.agentId || "Windows 管理器")} 的新 token 只显示一次</strong>
+    <code>${escapeHtml(token || "")}</code>
+    <span>请写入该管理器的 <b>agentToken</b> 配置，并确认 <b>agentId</b> 为 ${escapeHtml(agent?.agentId || "")}。</span>
+  `;
+}
+
+els.deviceList.addEventListener("click", (event) => {
+  const editorButton = event.target.closest('[data-action="toggle-device-editor"]');
+  if (editorButton) {
+    const card = editorButton.closest("[data-device-id]");
+    const deviceId = card?.dataset.deviceId || "";
+    if (!deviceId) return;
+    if (adminDeviceExpandedIds.has(deviceId)) adminDeviceExpandedIds.delete(deviceId);
+    else adminDeviceExpandedIds.add(deviceId);
+    state.adminDeviceEditingUntil = 0;
+    renderDevices();
+    return;
+  }
+
+  const listingButton = event.target.closest('[data-action="set-device-listing"]');
+  if (listingButton) {
+    const card = listingButton.closest("[data-device-id]");
+    const nextStatus = listingButton.dataset.listingStatus || "pending";
+    const deviceId = card?.dataset.deviceId || "";
+    if (deviceId) adminDeviceListingIds.add(deviceId);
+    setDeviceButtonBusy(listingButton, nextStatus === "listed" ? "上架中..." : "下架中...");
+    setDeviceCardStatus(card, nextStatus === "listed" ? "正在上架到用户端..." : "正在从用户端下架...", "info");
+    setDeviceListing(card, nextStatus)
+      .then(() => {
+        if (deviceId) adminDeviceListingIds.delete(deviceId);
+        setAdminDeviceFeedback(deviceId, nextStatus === "listed" ? "已上架，用户端可见" : "已下架，用户端隐藏", "success");
+        renderDevices();
+      })
+      .catch((error) => {
+        if (deviceId) adminDeviceListingIds.delete(deviceId);
+        clearDeviceButtonBusy(listingButton, nextStatus === "listed" ? "上架" : "下架");
+        setDeviceCardStatus(card, `操作失败：${error.message}`, "error");
+        alert(error.message);
+      });
+    return;
+  }
+
+  const button = event.target.closest('[data-action="save-device-bindings"]');
+  if (!button) return;
+  const card = button.closest("[data-device-id]");
+  const deviceId = card?.dataset.deviceId || "";
+  if (deviceId) adminDeviceSavingIds.add(deviceId);
+  setDeviceButtonBusy(button, "保存中...");
+  setDeviceCardStatus(card, "正在保存设备名称、SIM 和账号槽位...", "info");
+  saveDeviceBindings(card)
+    .then(() => {
+      if (deviceId) adminDeviceSavingIds.delete(deviceId);
+      setAdminDeviceFeedback(deviceId, "已保存，设备资料已更新", "success");
+      renderDevices();
+      loadAll().catch(() => {});
+    })
+    .catch((error) => {
+      if (deviceId) adminDeviceSavingIds.delete(deviceId);
+      clearDeviceButtonBusy(button, "保存绑定");
+      setDeviceCardStatus(card, `保存失败：${error.message}`, "error");
+      alert(error.message);
+    });
+});
+
+els.deviceBulkListingButtons.forEach((button) => {
+  button.addEventListener("click", async () => {
+    const listingStatus = button.dataset.deviceBulkListing;
+    const original = button.textContent;
+    try {
+      els.deviceBulkListingButtons.forEach((item) => {
+        item.disabled = true;
+        item.classList.add("is-loading");
+      });
+      button.textContent = listingStatus === "listed" ? "批量上架中..." : "批量下架中...";
+      await bulkSetDeviceListing(listingStatus);
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      els.deviceBulkListingButtons.forEach((item) => {
+        item.disabled = false;
+        item.classList.remove("is-loading");
+      });
+      button.textContent = original;
+    }
+  });
+});
+
+els.deviceList.addEventListener("input", (event) => {
+  if (event.target.closest("[data-device-id]")) touchAdminDeviceEditing();
+});
+
+els.deviceList.addEventListener("focusin", (event) => {
+  if (event.target.closest("[data-device-id]")) touchAdminDeviceEditing();
+});
+
+els.deviceListingToolbar?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-device-listing-filter]");
+  if (!button) return;
+  state.adminDeviceListingFilter = button.dataset.deviceListingFilter || "all";
+  localStorage.setItem("phoneCloudAdminDeviceListingFilter", state.adminDeviceListingFilter);
+  renderDevices();
+});
+
+els.xhsDeviceSelect.addEventListener("change", () => {
+  renderXhsSlotOptions();
+});
+
+els.smsOrderForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = new FormData(els.smsOrderForm);
+  const payload = {
+    phoneNumber: form.get("phoneNumber"),
+    platform: form.get("platform")
+  };
+  await api("/api/v1/sms-orders", { method: "POST", body: JSON.stringify(payload) });
+  els.smsHint.textContent = "短信订单已创建。";
+  els.smsOrderForm.reset();
+  els.smsOrderForm.platform.value = "小红书";
+  await loadAll();
+});
+
+els.smsLibraryForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  localStorage.setItem("phoneCloudSmsLibraryDeviceId", els.smsLibraryDeviceSelect.value || "");
+  await loadAll();
+});
+
+els.smsLibraryDeviceSelect.addEventListener("change", async () => {
+  localStorage.setItem("phoneCloudSmsLibraryDeviceId", els.smsLibraryDeviceSelect.value || "");
+  await loadAll();
+});
+
+els.smsLibraryBoxSelect.addEventListener("change", async () => {
+  await loadAll();
+});
+
+els.releaseForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const button = els.releaseForm.querySelector("button");
+  button.disabled = true;
+  button.textContent = "保存中";
+  try {
+    await uploadRelease(els.releaseForm);
+    els.releaseHint.textContent = "APK 发布信息已保存。";
+    els.releaseForm.reset();
+    await loadAll();
+  } catch (error) {
+    els.releaseHint.textContent = error.message;
+  } finally {
+    button.disabled = false;
+    button.textContent = "保存发布";
+  }
+});
+
+els.xhsTaskForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = new FormData(els.xhsTaskForm);
+  try {
+    const qrImageDataUrl = await fileToDataUrl(form.get("qrImage"));
+    await api("/api/v1/xhs/qr-scan-tasks", {
+      method: "POST",
+      body: JSON.stringify({
+        deviceId: form.get("deviceId"),
+        xhsAppSlot: form.get("xhsAppSlot"),
+        qrImageDataUrl
+      })
+    });
+    els.xhsHint.textContent = "扫码任务已创建。";
+    els.xhsTaskForm.reset();
+    await loadAll();
+  } catch (error) {
+    els.xhsHint.textContent = error.message;
+  }
+});
+
+els.workflowScriptForm?.addEventListener("input", () => touchWorkflowScriptEditing());
+els.workflowScriptForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const button = els.workflowScriptForm.querySelector('button[type="submit"]');
+  const original = button?.textContent || "保存脚本配置";
+  try {
+    if (button) {
+      button.disabled = true;
+      button.textContent = "保存中";
+    }
+    const payload = {
+      enabled: Boolean(els.workflowScriptEnabled?.checked),
+      confirmWaitMs: workflowNumber(els.workflowConfirmWaitMs, 6000),
+      loginConfirmKeywords: workflowListFromTextarea(els.workflowLoginKeywords?.value),
+      ordinaryConfirmButtons: workflowListFromTextarea(els.workflowOrdinaryButtons?.value),
+      platformConfirmButtons: workflowListFromTextarea(els.workflowPlatformButtons?.value),
+      steps: workflowStepsFromTextarea(els.workflowScriptSteps?.value),
+      timeouts: {
+        totalMs: workflowNumber(els.workflowTimeoutTotalMs, 180000),
+        restartMs: workflowNumber(els.workflowTimeoutRestartMs, 25000),
+        profileMs: workflowNumber(els.workflowTimeoutProfileMs, 10000),
+        scannerMs: workflowNumber(els.workflowTimeoutScannerMs, 10000),
+        albumMs: workflowNumber(els.workflowTimeoutAlbumMs, 10000),
+        selectImageMs: workflowNumber(els.workflowTimeoutSelectImageMs, 14000),
+        loginConfirmMs: workflowNumber(els.workflowTimeoutLoginConfirmMs, 45000)
+      }
+    };
+    const result = await api("/api/v1/workflow-scripts/xhs_qr_default", { method: "PUT", body: JSON.stringify(payload) });
+    state.workflowScripts = [result.script, ...state.workflowScripts.filter((script) => script.scriptId !== "xhs_qr_default")];
+    state.adminWorkflowScriptEditingUntil = 0;
+    if (els.workflowScriptHint) els.workflowScriptHint.textContent = "脚本配置已保存，新创建的扫码任务会使用这份配置。";
+    renderWorkflowScripts();
+  } catch (error) {
+    if (els.workflowScriptHint) els.workflowScriptHint.textContent = error.message;
+  } finally {
+    if (button) {
+      button.disabled = false;
+      button.textContent = original;
+    }
+  }
+});
+
+loadAll().catch((error) => {
+  render();
+  alert(error.message);
+});
+
+setInterval(() => loadAll().catch(() => {}), AUTO_REFRESH_MS);
+setInterval(() => {
+  if (state.user?.role === "admin" && state.page === "diagnostics") {
+    loadAll().catch(() => {});
+  }
+}, REALTIME_DIAGNOSTICS_REFRESH_MS);
+userSmsAutoRefreshTimer = setInterval(() => {
+  autoRefreshCurrentUserSmsLibrary().catch(() => {});
+}, USER_SMS_AUTO_REFRESH_MS);
+userXhsTaskRefreshTimer = setInterval(() => {
+  refreshUserXhsTasksOnly().catch(() => {});
+}, USER_XHS_TASK_REFRESH_MS);

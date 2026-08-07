@@ -1,0 +1,183 @@
+{"kind":"deck","id":"pr/hpqpui","name":"Deck"}
+{"kind":"layout","layoutId":"310dacbb-7264-4db5-9d66-beeae6b5523a","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"6cb7951b-4a13-4ee6-9218-4c88ae92ea0c","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/ba7w83","slide":1,"title":"明天就能讲的一堂课","textShapes":6}
+{"kind":"shape","id":"sh/fqxk3alc","slide":1,"bbox":[0,0,585,720]}
+{"kind":"shape","id":"sh/epoja54r","slide":1,"bbox":[52,68,78,8]}
+{"kind":"textbox","id":"sh/pwz29k3e","slide":1,"text":"明天就能讲的一堂课","textPreview":"明天就能讲的一堂课","textChars":9,"textLines":1,"bbox":[52,98,300,25]}
+{"kind":"textbox","id":"sh/ov6lgfm9","slide":1,"text":"AI 开发中的\n前端设计","textPreview":"AI 开发中的 | 前端设计","textChars":12,"textLines":2,"bbox":[52,166,500,200]}
+{"kind":"textbox","id":"sh/nuxk7alo","slide":1,"text":"不是让 AI 替你画页面。\n而是用前端设计，把 AI 变成可交付的产品。","textPreview":"不是让 AI 替你画页面。 | 而是用前端设计，把 AI 变成可交付的产品。","textChars":36,"textLines":2,"bbox":[52,408,450,115]}
+{"kind":"textbox","id":"sh/2to3e543","slide":1,"text":"关键词 / 需求卡 · 交互状态 · 人类接管 · 结构化输出","textPreview":"关键词 / 需求卡 · 交互状态 · 人类接管 · 结构化输出","textChars":31,"textLines":1,"bbox":[52,590,500,35]}
+{"kind":"shape","id":"sh/50v2x03a","slide":1,"bbox":[52,676,1176,1]}
+{"kind":"textbox","id":"sh/4zm14vmp","slide":1,"text":"AI 前端设计课","textPreview":"AI 前端设计课","textChars":8,"textLines":1,"bbox":[52,686,240,20]}
+{"kind":"textbox","id":"sh/u5gji94f","slide":1,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[1178,686,50,20]}
+{"kind":"image","id":"im/tkjy147y","slide":1,"name":"","alt":"从模糊需求到精确前端设计的工作流视觉","bbox":[0,0,1280,720]}
+{"kind":"notes","id":"nt/ba7w83","slide":1,"text":"[Sources]\nGoogle PAIR: https://pair.withgoogle.com/guidebook-v2/\nFigma Make: https://help.figma.com/hc/en-us/articles/31304485164695-Create-and-edit-a-functional-prototype-or-web-app\nVercel v0 prompting guide: https://vercel.com/blog/how-to-prompt-v0\nVisual generated with OpenAI image generation for this deck."}
+{"kind":"slide","id":"sl/ewa5cq","slide":2,"title":"先给结论","textShapes":10}
+{"kind":"textbox","id":"sh/of2pcz2l","slide":2,"text":"先给结论","textPreview":"先给结论","textChars":4,"textLines":1,"bbox":[58,58,300,25]}
+{"kind":"textbox","id":"sh/neto3ul0","slide":2,"text":"AI 把“画页面”变快了，\n却把“想清楚”变得更重要。","textPreview":"AI 把“画页面”变快了， | 却把“想清楚”变得更重要。","textChars":27,"textLines":2,"bbox":[58,105,1060,150]}
+{"kind":"shape","id":"sh/mdk7apkf","slide":2,"bbox":[58,296,1164,2]}
+{"kind":"textbox","id":"sh/xkv69432","slide":2,"text":"过去","textPreview":"过去","textChars":2,"textLines":1,"bbox":[58,346,180,35]}
+{"kind":"textbox","id":"sh/wjmpgz2h","slide":2,"text":"把页面画出来","textPreview":"把页面画出来","textChars":6,"textLines":1,"bbox":[58,392,310,70]}
+{"kind":"textbox","id":"sh/bido7elw","slide":2,"text":"↓","textPreview":"↓","textChars":1,"textLines":1,"bbox":[430,390,60,60]}
+{"kind":"textbox","id":"sh/ahk7e9kb","slide":2,"text":"现在","textPreview":"现在","textChars":2,"textLines":1,"bbox":[550,346,180,35]}
+{"kind":"textbox","id":"sh/dor6xk3y","slide":2,"text":"把“用户、场景、约束、\n失败路径”设计进去","textPreview":"把“用户、场景、约束、 | 失败路径”设计进去","textChars":21,"textLines":2,"bbox":[550,388,610,100]}
+{"kind":"shape","id":"sh/cni54f2d","slide":2,"bbox":[58,548,1138,72]}
+{"kind":"textbox","id":"sh/elkrypkn","slide":2,"text":"真正稀缺的能力：减少 AI 替你“瞎猜”的空间。","textPreview":"真正稀缺的能力：减少 AI 替你“瞎猜”的空间。","textChars":24,"textLines":1,"bbox":[86,568,1040,35]}
+{"kind":"shape","id":"sh/fmtsrul8","slide":2,"bbox":[52,676,1176,1]}
+{"kind":"textbox","id":"sh/g72t0z2t","slide":2,"text":"AI 前端设计课","textPreview":"AI 前端设计课","textChars":8,"textLines":1,"bbox":[52,686,240,20]}
+{"kind":"textbox","id":"sh/18vat43e","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[1178,686,50,20]}
+{"kind":"notes","id":"nt/ewa5cq","slide":2,"text":"[Sources]\nFigma Make: https://help.figma.com/hc/en-us/articles/31304485164695-Create-and-edit-a-functional-prototype-or-web-app\nVercel v0 prompting guide: https://vercel.com/blog/how-to-prompt-v0"}
+{"kind":"slide","id":"sl/25rvfi","slide":3,"title":"第一步：把一句需求改成设计规格","textShapes":11}
+{"kind":"textbox","id":"sh/mpofy18r","slide":3,"text":"第一步：把一句需求改成设计规格","textPreview":"第一步：把一句需求改成设计规格","textChars":15,"textLines":1,"bbox":[58,56,300,25]}
+{"kind":"textbox","id":"sh/9sfy9wr2","slide":3,"text":"“帮我做个数据看板”\n为什么通常会做砸？","textPreview":"“帮我做个数据看板” | 为什么通常会做砸？","textChars":20,"textLines":2,"bbox":[58,104,760,120]}
+{"kind":"shape","id":"sh/8r6x0rqh","slide":3,"bbox":[58,275,470,280]}
+{"kind":"textbox","id":"sh/vuhgb698","slide":3,"text":"模糊输入","textPreview":"模糊输入","textChars":4,"textLines":1,"bbox":[86,306,250,32]}
+{"kind":"textbox","id":"sh/ut8f218n","slide":3,"text":"“做一个好看的\n销售数据看板。”","textPreview":"“做一个好看的 | 销售数据看板。”","textChars":16,"textLines":2,"bbox":[86,365,360,95]}
+{"kind":"textbox","id":"sh/hwzydgre","slide":3,"text":"它只能猜：谁在用？\n看什么？什么时候用？\n出错了怎么办？","textPreview":"它只能猜：谁在用？ | 看什么？什么时候用？ | 出错了怎么办？","textChars":28,"textLines":3,"bbox":[86,477,350,75]}
+{"kind":"textbox","id":"sh/wvqh4bqt","slide":3,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[552,375,90,55]}
+{"kind":"shape","id":"sh/jyhgfq94","slide":3,"bbox":[675,250,540,340]}
+{"kind":"textbox","id":"sh/ix8z6l8j","slide":3,"text":"可交付规格","textPreview":"可交付规格","textChars":5,"textLines":1,"bbox":[708,285,270,32]}
+{"kind":"textbox","id":"sh/cretszqp","slide":3,"text":"门店经理\n在早晨站会前 3 分钟\n用手机定位异常。","textPreview":"门店经理 | 在早晨站会前 3 分钟 | 用手机定位异常。","textChars":25,"textLines":3,"bbox":[708,340,470,115]}
+{"kind":"textbox","id":"sh/dsnu14ra","slide":3,"text":"必须：本周数据 / 主操作首屏 /\n加载、空、错误状态 / 可重试。","textPreview":"必须：本周数据 / 主操作首屏 / | 加载、空、错误状态 / 可重试。","textChars":34,"textLines":2,"bbox":[708,488,470,65]}
+{"kind":"shape","id":"sh/q5wbq98j","slide":3,"bbox":[52,676,1176,1]}
+{"kind":"textbox","id":"sh/rq5czu94","slide":3,"text":"AI 前端设计课","textPreview":"AI 前端设计课","textChars":8,"textLines":1,"bbox":[52,686,240,20]}
+{"kind":"textbox","id":"sh/0vydwjq1","slide":3,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[1178,686,50,20]}
+{"kind":"notes","id":"nt/25rvfi","slide":3,"text":"[Sources]\nFigma Make: https://help.figma.com/hc/en-us/articles/31304485164695-Create-and-edit-a-functional-prototype-or-web-app\nVercel v0 prompting guide: https://vercel.com/blog/how-to-prompt-v0"}
+{"kind":"slide","id":"sl/2lfdgw","slide":4,"title":"拿走就能用的模板","textShapes":17}
+{"kind":"textbox","id":"sh/8ze9gfmx","slide":4,"text":"拿走就能用的模板","textPreview":"拿走就能用的模板","textChars":8,"textLines":1,"bbox":[58,58,300,25]}
+{"kind":"textbox","id":"sh/ny5s7als","slide":4,"text":"一张设计规格卡，\n让 AI 的第一版就接近可用。","textPreview":"一张设计规格卡， | 让 AI 的第一版就接近可用。","textChars":24,"textLines":2,"bbox":[58,106,760,130]}
+{"kind":"shape","id":"sh/mxwre547","slide":4,"bbox":[58,332,235,220]}
+{"kind":"textbox","id":"sh/1w3a503m","slide":4,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[80,357,70,28]}
+{"kind":"textbox","id":"sh/0vu9cvm1","slide":4,"text":"用户","textPreview":"用户","textChars":2,"textLines":1,"bbox":[80,404,170,42]}
+{"kind":"textbox","id":"sh/zuls3a5g","slide":4,"text":"谁在什么时刻、\n什么设备上使用？","textPreview":"谁在什么时刻、 | 什么设备上使用？","textChars":16,"textLines":2,"bbox":[80,465,190,65]}
+{"kind":"shape","id":"sh/etcra54v","slide":4,"bbox":[328,332,235,220]}
+{"kind":"textbox","id":"sh/ds3a10na","slide":4,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[350,357,70,28]}
+{"kind":"textbox","id":"sh/cru98vm5","slide":4,"text":"任务","textPreview":"任务","textChars":2,"textLines":1,"bbox":[350,404,170,42]}
+{"kind":"textbox","id":"sh/qt4zy9oz","slide":4,"text":"用户要做哪个\n关键决定？","textPreview":"用户要做哪个 | 关键决定？","textChars":12,"textLines":2,"bbox":[350,465,190,65]}
+{"kind":"shape","id":"sh/redg7ep4","slide":4,"bbox":[598,332,235,220]}
+{"kind":"textbox","id":"sh/cfmh0j6p","slide":4,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[620,357,70,28]}
+{"kind":"textbox","id":"sh/dgvi9o7a","slide":4,"text":"状态","textPreview":"状态","textChars":2,"textLines":1,"bbox":[620,404,170,42]}
+{"kind":"textbox","id":"sh/2pkza9on","slide":4,"text":"加载、空、错、\n无权限如何呈现？","textPreview":"加载、空、错、 | 无权限如何呈现？","textChars":16,"textLines":2,"bbox":[620,465,190,65]}
+{"kind":"shape","id":"sh/3qtg3ep8","slide":4,"bbox":[868,332,235,220]}
+{"kind":"textbox","id":"sh/4rmhwz6t","slide":4,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[890,357,70,28]}
+{"kind":"textbox","id":"sh/psvy547e","slide":4,"text":"验收","textPreview":"验收","textChars":2,"textLines":1,"bbox":[890,404,170,42]}
+{"kind":"textbox","id":"sh/ulkz6por","slide":4,"text":"怎样算成功？\n如何被测试？","textPreview":"怎样算成功？ | 如何被测试？","textChars":13,"textLines":2,"bbox":[890,465,190,65]}
+{"kind":"textbox","id":"sh/fmtgzupw","slide":4,"text":"讲课时让学生先填这 4 格，再碰任何生成工具。","textPreview":"讲课时让学生先填这 4 格，再碰任何生成工具。","textChars":23,"textLines":1,"bbox":[58,604,1000,35]}
+{"kind":"shape","id":"sh/jqpw7q5o","slide":4,"bbox":[52,676,1176,1]}
+{"kind":"textbox","id":"sh/ipgvyl4j","slide":4,"text":"AI 前端设计课","textPreview":"AI 前端设计课","textChars":8,"textLines":1,"bbox":[52,686,240,20]}
+{"kind":"textbox","id":"sh/5sre90nu","slide":4,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[1178,686,50,20]}
+{"kind":"notes","id":"nt/2lfdgw","slide":4,"text":"[Sources]\nFigma Make: https://help.figma.com/hc/en-us/articles/31304485164695-Create-and-edit-a-functional-prototype-or-web-app\nVercel v0 prompting guide: https://vercel.com/blog/how-to-prompt-v0"}
+{"kind":"slide","id":"sl/gms8o4","slide":5,"title":"方法不是“一次生成”","textShapes":14}
+{"kind":"textbox","id":"sh/e1oz21wb","slide":5,"text":"方法不是“一次生成”","textPreview":"方法不是“一次生成”","textChars":10,"textLines":1,"bbox":[58,58,300,25]}
+{"kind":"textbox","id":"sh/1ofixwf2","slide":5,"text":"好页面，通常来自三轮对话。","textPreview":"好页面，通常来自三轮对话。","textChars":13,"textLines":1,"bbox":[58,104,900,65]}
+{"kind":"shape","id":"sh/gn6h4reh","slide":5,"bbox":[110,380,1050,4]}
+{"kind":"shape","id":"sh/nqh0z6x8","slide":5,"bbox":[80,338,26,26]}
+{"kind":"textbox","id":"sh/2poz61wn","slide":5,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[80,230,120,25]}
+{"kind":"textbox","id":"sh/pszi1gfy","slide":5,"text":"先定骨架","textPreview":"先定骨架","textChars":4,"textLines":1,"bbox":[80,420,250,42]}
+{"kind":"textbox","id":"sh/orqh8bed","slide":5,"text":"信息层级 / 主任务\n不谈配色，不谈动画","textPreview":"信息层级 / 主任务 | 不谈配色，不谈动画","textChars":20,"textLines":2,"bbox":[80,482,300,70]}
+{"kind":"shape","id":"sh/buh03qx4","slide":5,"bbox":[455,338,26,26]}
+{"kind":"textbox","id":"sh/at8zalwj","slide":5,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[455,230,120,25]}
+{"kind":"textbox","id":"sh/k3y5w7i5","slide":5,"text":"再补行为","textPreview":"再补行为","textChars":4,"textLines":1,"bbox":[455,420,250,42]}
+{"kind":"textbox","id":"sh/547mpcjq","slide":5,"text":"筛选、编辑、确认、撤销\n补齐加载、空、错误","textPreview":"筛选、编辑、确认、撤销 | 补齐加载、空、错误","textChars":21,"textLines":2,"bbox":[455,482,300,70]}
+{"kind":"shape","id":"sh/i1g3ux0f","slide":5,"bbox":[830,338,26,26]}
+{"kind":"textbox","id":"sh/j2p4n210","slide":5,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[830,230,120,25]}
+{"kind":"textbox","id":"sh/s7y50rih","slide":5,"text":"最后精修","textPreview":"最后精修","textChars":4,"textLines":1,"bbox":[830,420,250,42]}
+{"kind":"textbox","id":"sh/tsrmtcj2","slide":5,"text":"移动端 / 文案 / 无障碍\n代码与真实数据验证","textPreview":"移动端 / 文案 / 无障碍 | 代码与真实数据验证","textChars":24,"textLines":2,"bbox":[830,482,300,70]}
+{"kind":"textbox","id":"sh/65gnyh0b","slide":5,"text":"一句话：先把“什么页面”说清楚，再让 AI 帮你把它做漂亮。","textPreview":"一句话：先把“什么页面”说清楚，再让 AI 帮你把它做漂亮。","textChars":30,"textLines":1,"bbox":[58,605,1120,32]}
+{"kind":"shape","id":"sh/76p4rm1w","slide":5,"bbox":[52,676,1176,1]}
+{"kind":"textbox","id":"sh/gvi54rid","slide":5,"text":"AI 前端设计课","textPreview":"AI 前端设计课","textChars":8,"textLines":1,"bbox":[52,686,240,20]}
+{"kind":"textbox","id":"sh/hwrmxwjy","slide":5,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[1178,686,50,20]}
+{"kind":"notes","id":"nt/gms8o4","slide":5,"text":"[Sources]\nFigma Make: https://help.figma.com/hc/en-us/articles/31304485164695-Create-and-edit-a-functional-prototype-or-web-app\nVercel v0 prompting guide: https://vercel.com/blog/how-to-prompt-v0"}
+{"kind":"slide","id":"sl/9u5qfv","slide":6,"title":"第二条线：为 AI 做前端","textShapes":6}
+{"kind":"shape","id":"sh/dc7mtknu","slide":6,"bbox":[0,0,580,720]}
+{"kind":"textbox","id":"sh/cby5kzmp","slide":6,"text":"第二条线：为 AI 做前端","textPreview":"第二条线：为 AI 做前端","textChars":13,"textLines":1,"bbox":[52,70,300,25]}
+{"kind":"textbox","id":"sh/zepovu50","slide":6,"text":"AI 产品\n不能只画\n一个聊天框。","textPreview":"AI 产品 | 不能只画 | 一个聊天框。","textChars":17,"textLines":3,"bbox":[52,135,460,220]}
+{"kind":"textbox","id":"sh/edgnmp4f","slide":6,"text":"用户需要知道：\n它在做什么、凭什么这么说、\n我能不能改、失败后怎么办。","textPreview":"用户需要知道： | 它在做什么、凭什么这么说、 | 我能不能改、失败后怎么办。","textChars":35,"textLines":3,"bbox":[52,415,430,105]}
+{"kind":"shape","id":"sh/1g76x4n6","slide":6,"bbox":[52,574,324,48]}
+{"kind":"textbox","id":"sh/0fy5ozml","slide":6,"text":"可信  ·  可控  ·  可恢复","textPreview":"可信  ·  可控  ·  可恢复","textChars":17,"textLines":1,"bbox":[70,587,295,26]}
+{"kind":"shape","id":"sh/fil4ja5w","slide":6,"bbox":[52,676,1176,1]}
+{"kind":"textbox","id":"sh/uhcna5ob","slide":6,"text":"AI 前端设计课","textPreview":"AI 前端设计课","textChars":8,"textLines":1,"bbox":[52,686,240,20]}
+{"kind":"textbox","id":"sh/cbalsvit","slide":6,"text":"06","textPreview":"06","textChars":2,"textLines":1,"bbox":[1178,686,50,20]}
+{"kind":"image","id":"im/vy183ihk","slide":6,"name":"","alt":"可信 AI 交互界面视觉","bbox":[0,0,1280,720]}
+{"kind":"notes","id":"nt/9u5qfv","slide":6,"text":"[Sources]\nGoogle PAIR: https://pair.withgoogle.com/guidebook-v2/\nMicrosoft HAX: https://www.microsoft.com/en-us/haxtoolkit/ai-guidelines/\nVisual generated with OpenAI image generation for this deck."}
+{"kind":"slide","id":"sl/e83qyy","slide":7,"title":"AI 的体验不是一个静态页面","textShapes":17}
+{"kind":"textbox","id":"sh/bipgvup4","slide":7,"text":"AI 的体验不是一个静态页面","textPreview":"AI 的体验不是一个静态页面","textChars":14,"textLines":1,"bbox":[58,58,300,25]}
+{"kind":"textbox","id":"sh/cjyx4zqp","slide":7,"text":"把状态设计出来，\n用户才不会被黑箱困住。","textPreview":"把状态设计出来， | 用户才不会被黑箱困住。","textChars":20,"textLines":2,"bbox":[58,106,760,120]}
+{"kind":"shape","id":"sh/dk7yx47a","slide":7,"bbox":[58,328,246,212]}
+{"kind":"textbox","id":"sh/2twfyp8n","slide":7,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[80,350,50,24]}
+{"kind":"textbox","id":"sh/3u5wrup8","slide":7,"text":"输入前","textPreview":"输入前","textChars":3,"textLines":1,"bbox":[80,400,180,35]}
+{"kind":"textbox","id":"sh/ovex0fqt","slide":7,"text":"给真实示例\n说明数据范围","textPreview":"给真实示例 | 说明数据范围","textChars":12,"textLines":2,"bbox":[80,459,190,55]}
+{"kind":"shape","id":"sh/pwnetk7e","slide":7,"bbox":[344,328,246,212]}
+{"kind":"textbox","id":"sh/epwfu58r","slide":7,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[366,350,50,24]}
+{"kind":"textbox","id":"sh/fq5wnapw","slide":7,"text":"生成中","textPreview":"生成中","textChars":3,"textLines":1,"bbox":[366,400,180,35]}
+{"kind":"textbox","id":"sh/r6h4vad0","slide":7,"text":"说清当前阶段\n允许停止","textPreview":"说清当前阶段 | 允许停止","textChars":11,"textLines":2,"bbox":[366,459,190,55]}
+{"kind":"shape","id":"sh/658nm5cf","slide":7,"bbox":[630,328,246,212]}
+{"kind":"textbox","id":"sh/t8zmx0v6","slide":7,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[652,350,50,24]}
+{"kind":"textbox","id":"sh/s7q5ovul","slide":7,"text":"结果后","textPreview":"结果后","textChars":3,"textLines":1,"bbox":[652,400,180,35]}
+{"kind":"textbox","id":"sh/fah4zadc","slide":7,"text":"可编辑、可核验\n高风险须确认","textPreview":"可编辑、可核验 | 高风险须确认","textChars":14,"textLines":2,"bbox":[652,459,190,55]}
+{"kind":"shape","id":"sh/e98nq5cr","slide":7,"bbox":[916,328,246,212]}
+{"kind":"textbox","id":"sh/1cj61kv2","slide":7,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[938,350,50,24]}
+{"kind":"textbox","id":"sh/gba5sfux","slide":7,"text":"失败时","textPreview":"失败时","textChars":3,"textLines":1,"bbox":[938,400,180,35]}
+{"kind":"textbox","id":"sh/vex4n6ds","slide":7,"text":"保留输入\n重试 / 改写 / 转人工","textPreview":"保留输入 | 重试 / 改写 / 转人工","textChars":18,"textLines":2,"bbox":[938,459,190,55]}
+{"kind":"textbox","id":"sh/udo3elw7","slide":7,"text":"演示提问：如果 AI 等了 20 秒、答错、或要帮用户“执行操作”，你们的界面分别如何反应？","textPreview":"演示提问：如果 AI 等了 20 秒、答错、或要帮用户“执行操作”，你们的界面分别如何反应？","textChars":46,"textLines":1,"bbox":[58,598,1120,35]}
+{"kind":"shape","id":"sh/y5wzid07","slide":7,"bbox":[52,676,1176,1]}
+{"kind":"textbox","id":"sh/z65gbi1s","slide":7,"text":"AI 前端设计课","textPreview":"AI 前端设计课","textChars":8,"textLines":1,"bbox":[52,686,240,20]}
+{"kind":"textbox","id":"sh/k7ehknid","slide":7,"text":"07","textPreview":"07","textChars":2,"textLines":1,"bbox":[1178,686,50,20]}
+{"kind":"notes","id":"nt/e83qyy","slide":7,"text":"[Sources]\nGoogle PAIR: https://pair.withgoogle.com/guidebook-v2/\nMicrosoft HAX: https://www.microsoft.com/en-us/haxtoolkit/ai-guidelines/"}
+{"kind":"slide","id":"sl/7k0i6o","slide":8,"title":"前端实现：三道护栏","textShapes":13}
+{"kind":"textbox","id":"sh/0zax47qh","slide":8,"text":"前端实现：三道护栏","textPreview":"前端实现：三道护栏","textChars":9,"textLines":1,"bbox":[58,58,300,25]}
+{"kind":"textbox","id":"sh/zy1gv29c","slide":8,"text":"模型负责“建议”，\n你的系统负责“决定”。","textPreview":"模型负责“建议”， | 你的系统负责“决定”。","textChars":21,"textLines":2,"bbox":[58,105,820,125]}
+{"kind":"shape","id":"sh/yxsf2x8r","slide":8,"bbox":[58,332,310,6]}
+{"kind":"textbox","id":"sh/dwjytsr6","slide":8,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[58,360,60,24]}
+{"kind":"textbox","id":"sh/cvax0nql","slide":8,"text":"结构","textPreview":"结构","textChars":2,"textLines":1,"bbox":[58,409,280,42]}
+{"kind":"textbox","id":"sh/bu1gri90","slide":8,"text":"固定 JSON Schema\n把输出渲染成卡片、表格、表单。\n不要切割随机文本。","textPreview":"固定 JSON Schema | 把输出渲染成卡片、表格、表单。 | 不要切割随机文本。","textChars":40,"textLines":3,"bbox":[58,476,325,90]}
+{"kind":"shape","id":"sh/qtsfyd8f","slide":8,"bbox":[455,332,310,6]}
+{"kind":"textbox","id":"sh/xsny5wra","slide":8,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[455,360,60,24]}
+{"kind":"textbox","id":"sh/wruhcrqp","slide":8,"text":"权限","textPreview":"权限","textChars":2,"textLines":1,"bbox":[455,409,280,42]}
+{"kind":"textbox","id":"sh/i10fu94b","slide":8,"text":"模型可以建议调用工具。\n鉴权、写入、审计\n必须由服务端裁决。","textPreview":"模型可以建议调用工具。 | 鉴权、写入、审计 | 必须由服务端裁决。","textChars":30,"textLines":3,"bbox":[455,476,325,90]}
+{"kind":"shape","id":"sh/jm9gnelw","slide":8,"bbox":[852,332,310,6]}
+{"kind":"textbox","id":"sh/4nixwjmh","slide":8,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[852,360,60,24]}
+{"kind":"textbox","id":"sh/5orypo32","slide":8,"text":"安全","textPreview":"安全","textChars":2,"textLines":1,"bbox":[852,409,280,42]}
+{"kind":"textbox","id":"sh/uxgfq94f","slide":8,"text":"密钥不进浏览器。\n模型文本、外链、上传和\n工具返回都视为不可信输入。","textPreview":"密钥不进浏览器。 | 模型文本、外链、上传和 | 工具返回都视为不可信输入。","textChars":34,"textLines":3,"bbox":[852,476,325,90]}
+{"kind":"shape","id":"sh/vypgjul0","slide":8,"bbox":[52,676,1176,1]}
+{"kind":"textbox","id":"sh/wzyxszm5","slide":8,"text":"AI 前端设计课","textPreview":"AI 前端设计课","textChars":8,"textLines":1,"bbox":[52,686,240,20]}
+{"kind":"textbox","id":"sh/h07yl43q","slide":8,"text":"08","textPreview":"08","textChars":2,"textLines":1,"bbox":[1178,686,50,20]}
+{"kind":"notes","id":"nt/7k0i6o","slide":8,"text":"[Sources]\nOpenAI API Quickstart: https://platform.openai.com/docs/quickstart/make-your-first-api-request"}
+{"kind":"slide","id":"sl/80tt0b","slide":9,"title":"课堂实战：10 分钟","textShapes":13}
+{"kind":"textbox","id":"sh/c3ixcvyp","slide":9,"text":"课堂实战：10 分钟","textPreview":"课堂实战：10 分钟","textChars":10,"textLines":1,"bbox":[58,58,300,25]}
+{"kind":"textbox","id":"sh/r29w3qh4","slide":9,"text":"让学生做一件小事：\n销售异常分析助手。","textPreview":"让学生做一件小事： | 销售异常分析助手。","textChars":19,"textLines":2,"bbox":[58,106,800,120]}
+{"kind":"shape","id":"sh/q10falgj","slide":9,"bbox":[58,304,458,278]}
+{"kind":"textbox","id":"sh/18by90z6","slide":9,"text":"给定场景","textPreview":"给定场景","textChars":4,"textLines":1,"bbox":[88,339,180,32]}
+{"kind":"textbox","id":"sh/072xgfyl","slide":9,"text":"门店经理\n站会前 3 分钟\n决定今天先跟进谁。","textPreview":"门店经理 | 站会前 3 分钟 | 决定今天先跟进谁。","textChars":23,"textLines":3,"bbox":[88,397,340,100]}
+{"kind":"textbox","id":"sh/z6tg7ah0","slide":9,"text":"AI 可能：没有结果 / 低置信度 / 数据延迟。","textPreview":"AI 可能：没有结果 / 低置信度 / 数据延迟。","textChars":25,"textLines":1,"bbox":[88,525,340,35]}
+{"kind":"shape","id":"sh/e5kfe5gf","slide":9,"bbox":[590,323,612,58]}
+{"kind":"textbox","id":"sh/hc7exgz2","slide":9,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[616,340,42,22]}
+{"kind":"textbox","id":"sh/gbyx4byh","slide":9,"text":"需求卡：用户、任务、状态、验收","textPreview":"需求卡：用户、任务、状态、验收","textChars":15,"textLines":1,"bbox":[680,338,480,28]}
+{"kind":"shape","id":"sh/6xo3ah0v","slide":9,"bbox":[590,403,612,58]}
+{"kind":"textbox","id":"sh/7yx4jmhg","slide":9,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[616,420,42,22]}
+{"kind":"textbox","id":"sh/8z6lcri1","slide":9,"text":"低保真：正常 / 加载 / 失败 / 确认","textPreview":"低保真：正常 / 加载 / 失败 / 确认","textChars":21,"textLines":1,"bbox":[680,418,480,28]}
+{"kind":"shape","id":"sh/t0fmlwzm","slide":9,"bbox":[590,483,612,58]}
+{"kind":"textbox","id":"sh/u1o3e10r","slide":9,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[616,500,42,22]}
+{"kind":"textbox","id":"sh/v2x4n6hc","slide":9,"text":"提示词：任务 + 场景 + 约束 + 验收","textPreview":"提示词：任务 + 场景 + 约束 + 验收","textChars":21,"textLines":1,"bbox":[680,498,480,28]}
+{"kind":"shape","id":"sh/g3qlgbix","slide":9,"bbox":[52,676,1176,1]}
+{"kind":"textbox","id":"sh/h4zmpwzi","slide":9,"text":"AI 前端设计课","textPreview":"AI 前端设计课","textChars":8,"textLines":1,"bbox":[52,686,240,20]}
+{"kind":"textbox","id":"sh/i583i103","slide":9,"text":"09","textPreview":"09","textChars":2,"textLines":1,"bbox":[1178,686,50,20]}
+{"kind":"notes","id":"nt/80tt0b","slide":9,"text":"[Sources]\nGoogle PAIR: https://pair.withgoogle.com/guidebook-v2/\nMicrosoft HAX: https://www.microsoft.com/en-us/haxtoolkit/ai-guidelines/"}
+{"kind":"slide","id":"sl/8e474a","slide":10,"title":"收束","textShapes":11}
+{"kind":"shape","id":"sh/9gn21oju","slide":10,"bbox":[52,74,76,8]}
+{"kind":"textbox","id":"sh/mtc3q903","slide":10,"text":"收束","textPreview":"收束","textChars":2,"textLines":1,"bbox":[52,104,300,25]}
+{"kind":"textbox","id":"sh/nulkze1o","slide":10,"text":"AI 前端设计的\n最后三问","textPreview":"AI 前端设计的 | 最后三问","textChars":13,"textLines":2,"bbox":[52,160,520,130]}
+{"kind":"textbox","id":"sh/0rulozid","slide":10,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[684,162,62,28]}
+{"kind":"textbox","id":"sh/1s32x4ji","slide":10,"text":"用户知道下一步做什么吗？","textPreview":"用户知道下一步做什么吗？","textChars":12,"textLines":1,"bbox":[770,154,430,75]}
+{"kind":"shape","id":"sh/epc3mp07","slide":10,"bbox":[684,255,510,2]}
+{"kind":"textbox","id":"sh/zqlkvu1s","slide":10,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[684,330,62,28]}
+{"kind":"textbox","id":"sh/knyl03ih","slide":10,"text":"AI 的结论能被核验、纠正吗？","textPreview":"AI 的结论能被核验、纠正吗？","textChars":15,"textLines":1,"bbox":[770,322,430,75]}
+{"kind":"shape","id":"sh/lo7m98j2","slide":10,"bbox":[684,423,510,2]}
+{"kind":"textbox","id":"sh/xofmt4nm","slide":10,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[684,498,62,28]}
+{"kind":"textbox","id":"sh/wn6l0z61","slide":10,"text":"AI 慢了、错了、越权时，用户有出路吗？","textPreview":"AI 慢了、错了、越权时，用户有出路吗？","textChars":20,"textLines":1,"bbox":[770,490,430,75]}
+{"kind":"textbox","id":"sh/bmx4ru5g","slide":10,"text":"能回答这三问，AI 才是产品能力，而不只是一个会说话的接口。","textPreview":"能回答这三问，AI 才是产品能力，而不只是一个会说话的接口。","textChars":30,"textLines":1,"bbox":[52,594,1080,35]}
+{"kind":"shape","id":"sh/alo3ypov","slide":10,"bbox":[52,676,1176,1]}
+{"kind":"textbox","id":"sh/9kfmpk7q","slide":10,"text":"AI 前端设计课","textPreview":"AI 前端设计课","textChars":8,"textLines":1,"bbox":[52,686,240,20]}
+{"kind":"textbox","id":"sh/oz6lwf65","slide":10,"text":"10","textPreview":"10","textChars":2,"textLines":1,"bbox":[1178,686,50,20]}
+{"kind":"notes","id":"nt/8e474a","slide":10,"text":"[Sources]\nGoogle PAIR: https://pair.withgoogle.com/guidebook-v2/\nMicrosoft HAX: https://www.microsoft.com/en-us/haxtoolkit/ai-guidelines/\nFigma Make: https://help.figma.com/hc/en-us/articles/31304485164695-Create-and-edit-a-functional-prototype-or-web-app\nVercel v0 prompting guide: https://vercel.com/blog/how-to-prompt-v0\nOpenAI API Quickstart: https://platform.openai.com/docs/quickstart/make-your-first-api-request"}

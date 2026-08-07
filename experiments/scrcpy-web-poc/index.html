@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Phone Cloud 实时控制验证</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header>
+        <div>
+          <span class="eyebrow">PHONE CLOUD LAB</span>
+          <h1>手机实时控制验证</h1>
+        </div>
+        <div id="status" class="status" data-state="idle">等待连接</div>
+      </header>
+      <section class="workspace">
+        <aside>
+          <label for="device">测试设备</label>
+          <select id="device"></select>
+          <button id="connect" type="button">开始投屏</button>
+          <button id="disconnect" class="secondary" type="button" disabled>结束会话</button>
+          <dl>
+            <div><dt>协议</dt><dd>scrcpy 3.3.4</dd></div>
+            <div><dt>编码</dt><dd>H.264</dd></div>
+            <div><dt>画质</dt><dd>原生 720 × 1600</dd></div>
+            <div><dt>帧率</dt><dd>20 FPS</dd></div>
+            <div><dt>控制</dt><dd>元素坐标映射</dd></div>
+          </dl>
+        </aside>
+        <section class="device-stage">
+          <div class="phone-frame">
+            <canvas id="screen" width="360" height="800"></canvas>
+            <div id="empty" class="empty">选择设备并开始投屏</div>
+          </div>
+          <nav aria-label="手机导航控制">
+            <button data-key="back" title="返回" aria-label="返回">‹</button>
+            <button data-key="home" title="主页" aria-label="主页">○</button>
+            <button data-key="overview" title="最近任务" aria-label="最近任务">□</button>
+          </nav>
+        </section>
+      </section>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

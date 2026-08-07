@@ -1,0 +1,22 @@
+{
+  "name": "phone-cloud-scrcpy-web-poc",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite build && node server.mjs",
+    "build": "vite build",
+    "check": "node --check server.mjs && vite build"
+  },
+  "dependencies": {
+    "@yume-chan/adb": "2.6.0",
+    "@yume-chan/adb-scrcpy": "2.3.2",
+    "@yume-chan/adb-server-node-tcp": "2.5.2",
+    "@yume-chan/scrcpy": "2.3.0",
+    "@yume-chan/scrcpy-decoder-webcodecs": "2.5.3",
+    "ws": "8.21.0"
+  },
+  "devDependencies": {
+    "vite": "8.1.4"
+  }
+}

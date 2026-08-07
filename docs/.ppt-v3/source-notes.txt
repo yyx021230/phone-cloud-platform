@@ -1,0 +1,13 @@
+Course-structure references
+
+Google PAIR Workshop Slides (126 pages)
+https://pair.withgoogle.com/guidebook-v2/workshop/Guidebook-Workshop-Slides.pdf
+
+Google Codelab: Building Trusted AI Products with the PAIR Guidebook
+https://codelabs.developers.google.com/codelabs/pair-guidebook
+
+CHI 2025: Design Thinking with Generative AI course
+https://sites.google.com/umd.edu/genaidesignthinking
+
+Microsoft HAX Guidelines for Human-AI Interaction
+https://www.microsoft.com/en-us/haxtoolkit/ai-guidelines/
