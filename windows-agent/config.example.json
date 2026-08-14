@@ -20,6 +20,7 @@
   "smsLibraryBackgroundSyncConcurrency": 2,
   "smsLibraryBatchSize": 50,
   "smsNotificationFallbackEnabled": false,
+  "smsNotificationFallbackDeviceSerials": [],
   "smsNotificationBackgroundIntervalSeconds": 30,
   "smsNotificationBackgroundConcurrency": 2,
   "smsNotificationPackageCacheSeconds": 600,

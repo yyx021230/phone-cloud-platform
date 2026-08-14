@@ -65,6 +65,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const agentDir = path.dirname(__dirname);
 const configPath = process.env.PHONE_CLOUD_AGENT_CONFIG || path.join(agentDir, "config.json");
 const config = await loadAgentConfig({ agentDir, configPath });
+const smsNotificationFallbackDeviceSerials = new Set(config.smsNotificationFallbackDeviceSerials);
 const logDir = config.logDir || path.join(agentDir, "logs");
 const cacheDir = config.cacheDir || path.join(agentDir, "cache");
 const dataDir = config.dataDir || path.join(agentDir, "data");
@@ -287,6 +288,11 @@ for (const signal of ["SIGINT", "SIGTERM"]) {
 
 function isDeviceSerialReserved(serial) {
   return isSerialReservedForBackgroundWork(serial, activeTaskSerials, screenControlledSerials);
+}
+
+function isSmsNotificationFallbackEnabledForSerial(serial) {
+  if (!config.smsNotificationFallbackEnabled) return false;
+  return smsNotificationFallbackDeviceSerials.size === 0 || smsNotificationFallbackDeviceSerials.has(String(serial || "").trim());
 }
 
 async function runGuardedInterval(name, fn) {
@@ -1195,7 +1201,7 @@ async function taskSmsSyncNow(task, options = {}) {
   // after ColorOS verification-code protection is disabled).
   const result = await syncAdbSmsLibrary(device, { ...options, forceFull: true });
   let notification = { enabled: false, status: "disabled", received: 0, sent: 0 };
-  if (config.smsNotificationFallbackEnabled) {
+  if (isSmsNotificationFallbackEnabledForSerial(device.adbSerial)) {
     try {
       notification = await syncAdbSmsNotification(device, options);
     } catch (error) {
@@ -3440,6 +3446,7 @@ async function syncAdbSmsNotifications(devices) {
   const targets = [];
   for (const device of Array.isArray(devices) ? devices : []) {
     if (device.state !== "device" || isDeviceSerialReserved(device.adbSerial)) continue;
+    if (!isSmsNotificationFallbackEnabledForSerial(device.adbSerial)) continue;
     if (backgroundSmsAbortControllersBySerial.has(device.adbSerial)) continue;
     const lastSyncedAt = lastSmsNotificationSyncBySerial.get(device.adbSerial) || 0;
     if (now - lastSyncedAt < config.smsNotificationBackgroundIntervalSeconds * 1000) continue;
