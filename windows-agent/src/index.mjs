@@ -20,11 +20,38 @@ import { createAdbServerRecovery } from "./adb-server-recovery.mjs";
 import { createPnpMissingDeviceRecovery } from "./pnp-missing-device-recovery.mjs";
 import {
   ANDROID_USB_VENDOR_IDS,
+  isDeferredPnpRecoveryPlan,
+  isAutomaticRecoveryAction,
+  normalizePnpRecoveryTargetState,
   orderPnpRecoveryTargets,
-  pnpTargetRecoveryBackoffMs,
-  pnpTargetRecoveryMode
+  planPnpRecoveryAction,
+  pnpRecoveryActionBackoffMs,
+  selectPnpRecoveryBatch,
 } from "./pnp-recovery-policy.mjs";
 import { createPnpScreenCoordinator } from "./pnp-screen-coordinator.mjs";
+import {
+  DEVICE_RECOVERY_STATES,
+  buildDeviceRecoveryObservations,
+  isAutomaticAdbTransportRecoveryState,
+  isAutomaticPnpRecoveryState
+} from "./device-recovery-state.mjs";
+import { createPnpRecoverySafety } from "./pnp-recovery-safety.mjs";
+import { buildRecoveryQueue, createRecoveryEventJournal } from "./recovery-observability.mjs";
+import { observeAdbRecoveryVerification, observePhysicalAbsence } from "./pnp-recovery-verification.mjs";
+import { buildPhysicalAndroidUsbInventoryScript, parsePhysicalAndroidUsbInventory } from "./pnp-windows-inventory.mjs";
+import {
+  assertDistinctExactUsbInstances,
+  assertExactUsbInstanceId,
+  buildRemoveExactPnpArgs
+} from "./pnp-exact-actions.mjs";
+import { createGuardedTaskRunner } from "./guarded-task-runner.mjs";
+import { createPnpRecoveryWakeScheduler } from "./pnp-recovery-wake-scheduler.mjs";
+import {
+  scopePnpRecoveryPlansForSafety,
+  summarizePnpRecoveryBatchResults
+} from "./pnp-recovery-wave.mjs";
+import { buildSmsContentQueryArgs } from "./sms-content-query.mjs";
+import { assignSmsSlotIndexes, parseSubscriptionSlotMap } from "./sms-subscription-map.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const agentDir = path.dirname(__dirname);
@@ -36,6 +63,8 @@ const dataDir = config.dataDir || path.join(agentDir, "data");
 await fs.mkdir(logDir, { recursive: true });
 await fs.mkdir(path.join(cacheDir, "apk"), { recursive: true });
 await fs.mkdir(dataDir, { recursive: true });
+const pnpRecoveryStatePath = path.join(dataDir, "pnp-recovery-state.json");
+const persistedPnpRecoveryState = await loadPnpRecoveryState(pnpRecoveryStatePath);
 const agentInstanceLock = await acquireAgentInstanceLock({
   lockPath: path.join(dataDir, "agent-instance.lock"),
   agentId: config.agentId
@@ -48,6 +77,7 @@ let smsSyncCursors = await loadSmsSyncCursors();
 let lastServerDevicesById = await loadDeviceScanCache();
 const lastSmsLibrarySyncBySerial = new Map();
 const backgroundSmsAbortControllersBySerial = new Map();
+const smsSubscriptionSlotMapBySerial = new Map();
 let backgroundSmsSyncPromise = null;
 const simInfoCacheBySerial = new Map();
 const initialSimReadBySerial = new Set();
@@ -68,7 +98,7 @@ const activeTasksById = new Map();
 const activeTaskAbortControllersById = new Map();
 const activeTaskSerials = new Set();
 const screenControlledSerials = new Set();
-const pnpScreenCoordinator = createPnpScreenCoordinator();
+const pnpScreenCoordinator = createPnpScreenCoordinator({ maxConcurrent: config.pnpTargetRecoveryConcurrency });
 const runtimeMetrics = createProcessRuntimeMetrics();
 const qrRemoteDirReadyBySerial = new Set();
 const galleryRemoteDirReadyBySerial = new Set();
@@ -90,7 +120,35 @@ const pnpMissingDeviceRecovery = createPnpMissingDeviceRecovery({
 });
 let lastPhysicalPnpCandidateScanAt = 0;
 let lastPhysicallyPresentAndroidUsbSerials = [];
-const pnpTargetRecoveryAttempts = new Map();
+let lastPhysicalPnpInventory = [];
+let lastSuccessfulPhysicalPnpInventoryAt = 0;
+let lastPhysicalPnpInventoryError = "not_scanned";
+let lastDeviceRecoveryObservations = [];
+const pnpTargetRecoveryAttempts = new Map((persistedPnpRecoveryState.targets || [])
+  .map((item) => {
+    const serial = String(item?.serial || "").trim();
+    return [serial.toUpperCase(), normalizePnpRecoveryTargetState(item, serial)];
+  })
+  .filter(([key]) => key));
+const pnpRecoveryJournal = createRecoveryEventJournal({
+  initialEvents: persistedPnpRecoveryState.events,
+  initialStates: persistedPnpRecoveryState.observedStates
+});
+const pnpRecoverySafety = createPnpRecoverySafety({
+  massOutageMinDevices: config.pnpMassOutageMinDevices,
+  massOutageRatio: config.pnpMassOutageRatio,
+  circuitCooldownMs: config.pnpMassOutageCooldownSeconds * 1_000,
+  stableScansToClose: config.pnpMassOutageStableScans,
+  maxActionsPerHour: config.pnpMaxAutomaticActionsPerHour,
+  minimumActionIntervalMs: 0,
+  initialState: persistedPnpRecoveryState.safety
+});
+let lastPnpRecoveryHealth = pnpRecoverySafety.health();
+let lastPnpRecoverySafetyLogKey = "";
+let lastPnpRecoveryCircuitKey = [lastPnpRecoveryHealth.circuitOpen, lastPnpRecoveryHealth.circuitReason].join(":");
+let pnpRecoveryStateSaveTimer = null;
+let pnpRecoveryStateWriteChain = Promise.resolve();
+let lastSavedPnpRecoveryState = "";
 // Keep recently assigned phones under observation across an agent restart.  A
 // USB phone can reappear after the first ADB-missing recovery attempt, so only
 // tracking devices seen in this process leaves it permanently invisible.
@@ -99,7 +157,34 @@ pnpMissingDeviceRecovery.seed(cachedAdbSerials(lastServerDevicesById).filter((se
   return cached.listed !== false && cached.adb?.agentId === config.agentId;
 }));
 let health = await buildHealth("starting", null);
-const intervalGuards = new Map();
+const guardedTasks = createGuardedTaskRunner({
+  onError(error, name) {
+    log(`${name} failed`, error?.message || String(error));
+  }
+});
+let pnpRecoveryWakeScheduler = null;
+pnpRecoveryWakeScheduler = createPnpRecoveryWakeScheduler({
+  retryDelayMs: 1_000,
+  async run(reason) {
+    // Poll only the process list while Windows DeviceInstall is active. A
+    // hundred-device inventory every five seconds would make recovery faster
+    // on paper but add exactly the PnP pressure this guard is meant to avoid.
+    const installer = await inspectWindowsDeviceInstallActivity();
+    if (installer.busy) {
+      pnpRecoveryWakeScheduler.schedule(config.pnpDeviceInstallPollSeconds * 1_000, reason || "device_install_busy");
+      return { deferred: true };
+    }
+    return await runGuardedInterval("scan", () => scanAndSync({
+      forcePnpInventory: true,
+      skipSms: true,
+      skipPreflight: true,
+      reason: reason || "pnp_recovery_followup"
+    }));
+  },
+  onError(error, reason) {
+    log("pnp recovery wake failed", { reason, error: error?.message || String(error) });
+  }
+});
 const serialAdbActivity = createSerialAdbActivityTracker();
 const automationResumeScheduler = createSerialDelayScheduler({
   delayMs: 15_000,
@@ -175,8 +260,14 @@ process.stdin.resume();
 
 for (const signal of ["SIGINT", "SIGTERM"]) {
   process.on(signal, async () => {
+    pnpRecoveryWakeScheduler?.cancel();
     await screenStreamManager?.close().catch(() => {});
     deviceActors.close("agent_shutdown");
+    if (pnpRecoveryStateSaveTimer) {
+      clearTimeout(pnpRecoveryStateSaveTimer);
+      pnpRecoveryStateSaveTimer = null;
+    }
+    await flushPnpRecoveryState().catch(() => {});
     await agentInstanceLock.release();
     process.exit(0);
   });
@@ -187,23 +278,8 @@ function isDeviceSerialReserved(serial) {
 }
 
 async function runGuardedInterval(name, fn) {
-  if (intervalGuards.get(name)) return;
-  intervalGuards.set(name, true);
   const timeoutMs = name === "scan" ? 120_000 : name.includes("task poll") ? 30_000 : 45_000;
-  let timeoutId = null;
-  try {
-    await Promise.race([
-      Promise.resolve().then(fn),
-      new Promise((_, reject) => {
-        timeoutId = setTimeout(() => reject(new Error(`${name} timeout after ${timeoutMs}ms`)), timeoutMs);
-      })
-    ]);
-  } catch (error) {
-    log(`${name} failed`, error.message);
-  } finally {
-    if (timeoutId) clearTimeout(timeoutId);
-    intervalGuards.set(name, false);
-  }
+  return await guardedTasks.run(name, fn, timeoutMs);
 }
 
 async function buildHealth(reason, previousHealth = null) {
@@ -250,6 +326,7 @@ async function buildHealth(reason, previousHealth = null) {
     },
     runtime: runtimeMetrics.snapshot(),
     deviceActors: deviceActors.health().slice(0, 200),
+    deviceRecovery: currentPnpRecoveryHealth(),
     directories: {
       logDir: { path: logDir, ok: logOk, error: logDirCheck.status === "fulfilled" ? logDirCheck.value.error : logDirCheck.reason.message },
       cacheDir: { path: cacheDir, ok: cacheOk, error: cacheDirCheck.status === "fulfilled" ? cacheDirCheck.value.error : cacheDirCheck.reason.message }
@@ -307,9 +384,12 @@ async function scanAndSync(options = {}) {
     await heartbeat().catch((heartbeatError) => log("heartbeat after scan failure failed", heartbeatError.message));
     throw error;
   }
+  // Release stale Poco/ADB forwards before any exact PnP restart. Kernel-PnP
+  // event 225 showed adb-related processes holding device removal paths open.
+  await cleanupOfflineAutomationWorkers(devices).catch((error) => log("automation worker cleanup failed", error.message));
+  await requestSafePnpRescanForMissingDevices(devices, { forceInventory: options.forcePnpInventory === true });
+  health.deviceRecovery = currentPnpRecoveryHealth();
   markAutomationPreflightPending(devices);
-  cleanupOfflineAutomationWorkers(devices).catch((error) => log("automation worker cleanup failed", error.message));
-  await requestSafePnpRescanForMissingDevices(devices);
   lastDevices = devices;
   lastDevicesScannedAt = Date.now();
   annotateDeviceAutomationStatus(devices);
@@ -317,7 +397,8 @@ async function scanAndSync(options = {}) {
   rememberServerDevices(syncResult.devices || []);
   await saveDeviceScanCache(syncResult.devices || []).catch((error) => log("device scan cache save failed", error.message));
   log("synced devices", devices.map((device) => `${device.adbSerial}:${device.state}`).join(", ") || "none");
-  if (!activeAutomationTask && !options.skipPreflight) {
+  const recoveryPending = Number(health.deviceRecovery?.actionableCount || 0) > 0;
+  if (!activeAutomationTask && !recoveryPending && !options.skipPreflight) {
     scheduleAutomationPreflight(devices)
       .then((updated) => {
         if (updated) scheduleAutomationStatusSync();
@@ -326,12 +407,13 @@ async function scanAndSync(options = {}) {
   } else if (activeAutomationTask) {
     log("automation preflight skipped during active task");
   }
-  if (!options.skipSms && config.smsLibraryBackgroundSyncEnabled && !activeAutomationTask) {
+  if (!options.skipSms && config.smsLibraryBackgroundSyncEnabled && !activeAutomationTask && !recoveryPending) {
     scheduleBackgroundSmsSync(devices);
   } else {
     log("sms library background sync skipped", {
       enabled: Boolean(config.smsLibraryBackgroundSyncEnabled),
       activeAutomationTask,
+      recoveryPending,
       skipSms: Boolean(options.skipSms),
       reason: options.reason || ""
     });
@@ -822,6 +904,18 @@ function preemptSmsSyncForScreen(serial) {
   }
 }
 
+async function preemptBackgroundSmsSyncForPnpRecovery() {
+  if (!backgroundSmsSyncPromise) return;
+  let aborted = 0;
+  for (const controller of backgroundSmsAbortControllersBySerial.values()) {
+    if (controller.signal.aborted) continue;
+    controller.abort();
+    aborted += 1;
+  }
+  if (aborted) log("pnp recovery preempted background sms sync", { devices: aborted });
+  await Promise.race([backgroundSmsSyncPromise.catch(() => {}), delay(5_000)]);
+}
+
 function screenPriorityCancellationError() {
   const error = new Error("screen_control_priority");
   error.code = "screen_control_priority";
@@ -1061,7 +1155,10 @@ async function taskSmsSyncNow(task, options = {}) {
   const device = await assertAdbDeviceOnlineFast(task.adbSerial, options);
   await taskEvent(task, "sms_sync", "info", "开始主动读取手机短信库", { adbSerial: device.adbSerial });
   lastSmsLibrarySyncBySerial.delete(device.adbSerial);
-  const result = await syncAdbSmsLibrary(device, options);
+  // A user-triggered refresh is also a reconciliation operation.  Incremental
+  // cursors cannot recover messages that an OEM exposes later (for example,
+  // after ColorOS verification-code protection is disabled).
+  const result = await syncAdbSmsLibrary(device, { ...options, forceFull: true });
   lastSmsLibrarySyncBySerial.set(device.adbSerial, Date.now());
   return {
     action: "短信库已主动同步",
@@ -2123,11 +2220,7 @@ async function scanAdbDevices() {
     const recovery = await adbServerRecovery.recover({
       cause: cleanLogText(error?.message || error).slice(0, 300),
       busy: hasActiveAutomationTask() || Boolean(backgroundSmsSyncPromise) || screenControlledSerials.size > 0,
-      startServer: () => run(config.adbPath, ["start-server"], { timeoutMs: 10_000 }),
-      restartServer: async () => {
-        await run(config.adbPath, ["kill-server"], { timeoutMs: 10_000 });
-        await run(config.adbPath, ["start-server"], { timeoutMs: 10_000 });
-      }
+      startServer: () => run(config.adbPath, ["start-server"], { timeoutMs: 10_000 })
     });
     log("adb scan recovery", recovery);
     if (!recovery.attempted) throw error;
@@ -2137,8 +2230,9 @@ async function scanAdbDevices() {
   const rows = parseAdbDevices(output);
   const enriched = [];
   for (const row of rows) {
-    const previous = lastDevices.find((device) => device.adbSerial === row.adbSerial) || {};
-    const serverDevice = lastServerDevicesById.get(`adb:${row.adbSerial}`) || {};
+    const serialKey = String(row.adbSerial || "").toUpperCase();
+    const previous = lastDevices.find((device) => String(device.adbSerial || "").toUpperCase() === serialKey) || {};
+    const serverDevice = cachedServerDeviceForSerial(row.adbSerial);
     Object.assign(row, mergeCachedDeviceScanRow(row, previous, serverDevice));
     if (row.state === "device" && isDeviceSerialReserved(row.adbSerial)) {
       enriched.push({
@@ -2166,188 +2260,1011 @@ async function scanAdbDevices() {
   return enriched;
 }
 
-async function requestSafePnpRescanForMissingDevices(devices) {
+async function skipRecoveryIfAdbAlreadyOnline(serial, observation) {
+  try {
+    const output = await run(config.adbPath, ["-s", serial, "get-state"], { timeoutMs: 5_000 });
+    if (String(output || "").trim().toLowerCase() !== "device") return false;
+  } catch {
+    return false;
+  }
+
+  const key = String(serial || "").trim().toUpperCase();
+  const previous = normalizePnpRecoveryTargetState(pnpTargetRecoveryAttempts.get(key), serial);
+  const verification = observeAdbRecoveryVerification(previous, {
+    online: true,
+    minStableMs: config.pnpRecoveryStableSeconds * 1_000,
+    minStableScans: config.pnpRecoveryStableScans
+  });
+  pnpTargetRecoveryAttempts.set(key, verification.state);
+  pnpMissingDeviceRecovery.markReset(serial, {
+    targetPresent: true,
+    retryAfterMs: config.pnpTargetResetCooldownSeconds * 1_000
+  });
+  pnpRecoveryJournal.record({
+    type: "verification_started",
+    severity: "info",
+    serial,
+    state: DEVICE_RECOVERY_STATES.ADB_DEVICE,
+    previousState: observation?.state || "unknown",
+    attempt: previous.attempts || 0,
+    mode: previous.lastMode,
+    reason: "last_moment_adb_recheck_stability_pending"
+  });
+  schedulePnpRecoveryStateSave();
+  log("pnp target recovery skipped after live adb recheck; stability pending", {
+    serial,
+    previousState: observation?.state || "unknown",
+    attempts: previous.attempts || 0,
+    minStableSeconds: config.pnpRecoveryStableSeconds,
+    minStableScans: config.pnpRecoveryStableScans
+  });
+  return true;
+}
+
+async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
   if (os.platform() !== "win32") return;
   const online = new Set(devices
     .filter((device) => device?.state === "device")
     .map((device) => String(device.adbSerial || "").trim().toUpperCase())
     .filter(Boolean));
   for (const [serial, state] of pnpTargetRecoveryAttempts) {
-    if (!online.has(serial)) continue;
-    log("pnp target adb recovered", { serial: state.serial, attempts: state.attempts, lastMode: state.lastMode });
-    pnpTargetRecoveryAttempts.delete(serial);
+    const verification = observeAdbRecoveryVerification(state, {
+      online: online.has(serial),
+      minStableMs: config.pnpRecoveryStableSeconds * 1_000,
+      minStableScans: config.pnpRecoveryStableScans
+    });
+    if (verification.confirmed) {
+      log("pnp target adb recovery stability confirmed", {
+        serial: state.serial,
+        attempts: state.attempts,
+        lastMode: state.lastMode,
+        stableSeconds: Math.round(verification.elapsedMs / 1_000),
+        stableScans: verification.scans
+      });
+      pnpRecoveryJournal.record({
+        type: "recovered",
+        severity: "success",
+        serial: state.serial,
+        state: DEVICE_RECOVERY_STATES.ADB_DEVICE,
+        attempt: state.attempts || 0,
+        mode: state.lastMode,
+        reason: "stability_window_confirmed"
+      });
+      pnpTargetRecoveryAttempts.delete(serial);
+      continue;
+    }
+    if (verification.state !== state) pnpTargetRecoveryAttempts.set(serial, verification.state);
   }
 
   const isSerialBusy = (serial) => serialAdbActivity.activeCount(serial) > 0 || isDeviceSerialReserved(serial);
-  const physicalRecoveryDue = Date.now() - lastPhysicalPnpCandidateScanAt >= config.pnpRescanCooldownSeconds * 1_000;
+  const physicalRecoveryDue = options.forceInventory === true
+    || Date.now() - lastPhysicalPnpCandidateScanAt >= config.pnpRescanCooldownSeconds * 1_000;
   if (physicalRecoveryDue) {
     lastPhysicalPnpCandidateScanAt = Date.now();
-    lastPhysicallyPresentAndroidUsbSerials = await discoverPhysicallyPresentAndroidUsbSerials();
+    const inventoryResult = await discoverPhysicallyPresentAndroidUsbInventory();
+    if (inventoryResult.ok) {
+      lastPhysicalPnpInventory = inventoryResult.rows;
+      lastPhysicallyPresentAndroidUsbSerials = lastPhysicalPnpInventory.map((item) => item.serial);
+      lastSuccessfulPhysicalPnpInventoryAt = Date.now();
+      lastPhysicalPnpInventoryError = "";
+    } else {
+      lastPhysicalPnpInventoryError = inventoryResult.error || "inventory_failed";
+    }
     // Physical-only devices may never have reached ADB and therefore are not
     // present in the server cache. Seed them into the same per-device tracker
     // so cooldown and round-robin fairness apply to every recovery candidate.
     pnpMissingDeviceRecovery.seed(lastPhysicallyPresentAndroidUsbSerials);
   }
 
+  const inventoryReady = isPhysicalPnpInventoryReady();
+  lastDeviceRecoveryObservations = buildDeviceRecoveryObservations({
+    devices,
+    inventory: lastPhysicalPnpInventory,
+    knownSerials: cachedAdbSerials(lastServerDevicesById),
+    inventoryReady
+  });
+  pnpRecoveryJournal.observeTransitions(lastDeviceRecoveryObservations);
+  // A PnP restart/remove temporarily removes the exact phone from the tree.
+  // Only a sustained absence is treated as a real unplug and starts a fresh
+  // recovery cycle; otherwise the same stage must not repeat forever.
+  for (const observation of lastDeviceRecoveryObservations) {
+    const previous = pnpTargetRecoveryAttempts.get(observation.key);
+    if (!previous) continue;
+    const absence = observePhysicalAbsence(previous, {
+      absent: observation.state === DEVICE_RECOVERY_STATES.PHYSICALLY_ABSENT,
+      minAbsentMs: config.pnpRecoveryAbsentResetSeconds * 1_000
+    });
+    if (absence.reset) {
+      pnpTargetRecoveryAttempts.delete(observation.key);
+      log("pnp target recovery cycle reset after sustained physical absence", {
+        serial: observation.serial,
+        attempts: previous.attempts || 0,
+        absentSeconds: Math.round(absence.absentMs / 1_000)
+      });
+    } else if (absence.state !== previous) {
+      pnpTargetRecoveryAttempts.set(observation.key, absence.state);
+    }
+  }
+  appendPhysicalRecoveryRows(devices, lastDeviceRecoveryObservations);
+  const recoveryExclusions = new Set([...screenControlledSerials, ...activeTaskSerials]
+    .map((serial) => String(serial || "").trim().toUpperCase())
+    .filter(Boolean));
+  // A session on another phone no longer freezes the whole queue. The exact
+  // session phone remains excluded from safety candidates, telemetry and PnP
+  // selection; foreground automation still blocks mutations and DeviceInstall
+  // itself remains host-wide single-flight.
+  const hostBusy = false;
+  let safety = pnpRecoverySafety.observe(lastDeviceRecoveryObservations, {
+    hostBusy,
+    installerBusy: false,
+    inventoryReady,
+    ignoredSerials: recoveryExclusions
+  });
+  lastPnpRecoveryHealth = publicPnpRecoveryHealth(safety);
+  logPnpRecoverySafetyTransition(safety);
+  schedulePnpRecoveryStateSave();
+  if (safety.actionableCount > 0 && !safety.circuitOpen) {
+    await preemptBackgroundSmsSyncForPnpRecovery();
+  }
+
   const plan = pnpMissingDeviceRecovery.observe({ devices, busy: false, isSerialBusy });
+  scheduleNextPnpRecoveryDueWake();
   if (!plan.missing.length) return;
   const physical = new Set(lastPhysicallyPresentAndroidUsbSerials.map((serial) => serial.toUpperCase()));
-  const physicalMissing = lastPhysicallyPresentAndroidUsbSerials.filter((serial) => !online.has(serial.toUpperCase()));
+  const observationsBySerial = new Map(lastDeviceRecoveryObservations.map((item) => [item.key, item]));
+  const physicalMissing = lastDeviceRecoveryObservations
+    .filter((item) => item.physicalPresent && item.state !== DEVICE_RECOVERY_STATES.ADB_DEVICE)
+    .map((item) => item.serial);
   if (physicalRecoveryDue && physicalMissing.length) {
     log("pnp physical adb candidates", {
       serials: physicalMissing,
-      busySerials: physicalMissing.filter(isSerialBusy)
+      busySerials: physicalMissing.filter(isSerialBusy),
+      states: Object.fromEntries(physicalMissing.map((serial) => [serial, observationsBySerial.get(String(serial).toUpperCase())?.state || "unknown"]))
     });
   }
 
   const rescanSerials = plan.rescanSerials
     .filter((serial) => physical.has(String(serial).toUpperCase()))
     .filter((serial) => !isSerialBusy(serial));
-  if (rescanSerials.length && screenControlledSerials.size === 0) {
-    const releaseGlobalPnp = pnpScreenCoordinator.tryBegin("*", () => screenControlledSerials.size > 0);
-    if (releaseGlobalPnp) {
-      try {
-        await run("pnputil.exe", ["/scan-devices"], { timeoutMs: 30_000 });
-        pnpMissingDeviceRecovery.markRescan();
-        log("pnp rescan requested for physically present missing adb devices", { serials: rescanSerials });
-      } catch (error) {
-        log("pnp rescan failed", { serials: rescanSerials, error: cleanLogText(error?.message || error).slice(0, 300) });
-      } finally {
-        releaseGlobalPnp();
-      }
-    }
-  } else if (rescanSerials.length) {
-    // A global scan remains conservative, but device-targeted recovery below
-    // is still allowed for idle phones while unrelated streams are active.
-    log("pnp global rescan deferred while screen control is active", {
-      serials: rescanSerials,
-      activeScreenSerials: [...screenControlledSerials]
-    });
-  } else if (plan.rescanSerials.length) {
+  if (plan.rescanSerials.length) {
+    // D-003: a global PnP scan can touch every controller and is a maintenance
+    // operation. Mark this observation handled without executing the scan.
     pnpMissingDeviceRecovery.markRescan();
-    log("pnp rescan skipped for physically absent or busy adb devices", { serials: plan.rescanSerials });
+    if (rescanSerials.length) {
+      log("pnp global rescan blocked by policy", {
+        serials: rescanSerials,
+        reason: "explicit_maintenance_authorization_required"
+      });
+    }
   }
 
-  let attempted = 0;
   const dueTargets = orderPnpRecoveryTargets(
-    plan.resetSerials.filter((serial) => physical.has(String(serial).toUpperCase())),
+    plan.resetSerials
+      .filter((serial) => physical.has(String(serial).toUpperCase()))
+      .filter((serial) => {
+        const state = observationsBySerial.get(String(serial).toUpperCase())?.state;
+        return isAutomaticPnpRecoveryState(state) || isAutomaticAdbTransportRecoveryState(state);
+      }),
     pnpTargetRecoveryAttempts
   );
-  for (const serial of dueTargets) {
-    if (attempted >= config.pnpMaxTargetRecoveriesPerPass) break;
-    if (isSerialBusy(serial)) {
-      log("pnp target adb recovery deferred", { serial, reason: "target_busy" });
-      continue;
+  const plannedTargets = dueTargets.map((serial) => {
+    const key = String(serial).trim().toUpperCase();
+    const observation = observationsBySerial.get(key);
+    const previous = normalizePnpRecoveryTargetState(pnpTargetRecoveryAttempts.get(key), serial);
+    return {
+      serial,
+      plan: planPnpRecoveryAction({ observation, previous, maxAttempts: config.pnpMaxAutomaticAttemptsPerDevice })
+    };
+  });
+  // Exact child actions keep the authorized eight-lane throughput. Advanced
+  // root/Composite/port actions use at most one lane per proven upstream;
+  // automatic Hub reset and global scans are deliberately not part of the plan.
+  // A terminal/manual row is telemetry, not runnable work. Previously those
+  // rows occupied the batch and could indefinitely starve a phone that still
+  // had a safe exact-port action available.
+  const batchScope = scopePnpRecoveryPlansForSafety(
+    plannedTargets,
+    safety,
+    config.pnpMaxTargetRecoveriesPerPass
+  );
+  const rescueKeys = new Set(batchScope.rescueSerials);
+  const batchTargets = selectPnpRecoveryBatch(
+    batchScope.plans,
+    pnpTargetRecoveryAttempts,
+    batchScope.maxTargets
+  )
+    .map((item) => item.serial);
+  if (!batchTargets.length) return;
+  const batchKeys = new Set(batchTargets.map((serial) => String(serial).trim().toUpperCase()));
+  const batchNeedsPnp = plannedTargets.some((item) => batchKeys.has(String(item.serial).trim().toUpperCase())
+    && isAutomaticRecoveryAction(item.plan)
+    && item.plan.mode !== "adb_reconnect");
+  if (batchNeedsPnp) {
+    const installer = await inspectWindowsDeviceInstallActivity();
+    if (installer.busy) {
+      safety = pnpRecoverySafety.observe(lastDeviceRecoveryObservations, {
+        hostBusy,
+        installerBusy: true,
+        inventoryReady,
+        ignoredSerials: recoveryExclusions
+      });
+      lastPnpRecoveryHealth = publicPnpRecoveryHealth(safety);
+      logPnpRecoverySafetyTransition(safety);
+      pnpRecoveryJournal.record({ type: "deferred", severity: "warning", reason: "device_install_busy" });
+      schedulePnpRecoveryStateSave();
+      log("pnp concurrent recovery batch deferred", {
+        serials: batchTargets,
+        reason: "device_install_busy",
+        processCount: installer.processes.length,
+        processes: installer.processes.slice(0, 8)
+      });
+      pnpRecoveryWakeScheduler?.schedule(config.pnpDeviceInstallPollSeconds * 1_000, "device_install_idle");
+      return;
     }
-    const releaseTargetPnp = pnpScreenCoordinator.tryBegin(serial, () => isSerialBusy(serial));
-    if (!releaseTargetPnp) {
-      log("pnp target adb recovery deferred", { serial, reason: "pnp_action_in_progress" });
-      continue;
+  }
+
+  async function recoverSelectedTarget(serial) {
+  if (isSerialBusy(serial)) {
+    pnpRecoveryJournal.record({ type: "deferred", severity: "warning", serial, reason: "target_busy" });
+    schedulePnpRecoveryStateSave();
+    log("pnp target adb recovery deferred", { serial, reason: "target_busy" });
+    return { serial, status: "deferred", reason: "target_busy", actionAttempted: false };
+  }
+
+  const key = String(serial).toUpperCase();
+  const observation = observationsBySerial.get(key);
+  const previous = normalizePnpRecoveryTargetState(pnpTargetRecoveryAttempts.get(key), serial);
+  const actionPlan = planPnpRecoveryAction({
+    observation,
+    previous,
+    maxAttempts: config.pnpMaxAutomaticAttemptsPerDevice
+  });
+  const transportOnly = actionPlan.mode === "adb_reconnect";
+  const attempt = actionPlan.attempt;
+  const mode = actionPlan.mode;
+  // Append only when the command completes successfully. A stale exact PnP
+  // mapping or transient DeviceInstall failure must remain retryable.
+  const completedActionHistory = [...(previous.actionHistory || []), mode];
+  if (isDeferredPnpRecoveryPlan(actionPlan)) {
+    const nextRetryAt = Date.now() + config.pnpTargetAbsentRetrySeconds * 1_000;
+    pnpTargetRecoveryAttempts.set(key, {
+      ...previous,
+      serial,
+      lastMode: mode,
+      targetType: actionPlan.targetType,
+      nextRetryAt,
+      quarantinedAt: 0
+    });
+    pnpRecoveryJournal.record({
+      type: "deferred",
+      severity: "warning",
+      serial,
+      state: observation?.state || "unknown",
+      attempt: previous.attempts || 0,
+      maxAttempts: config.pnpMaxAutomaticAttemptsPerDevice,
+      mode,
+      reason: "exact_mapping_temporarily_unavailable",
+      nextActionAt: new Date(nextRetryAt).toISOString(),
+      targetType: actionPlan.targetType
+    });
+    await persistPnpRecoveryStateNow();
+    pnpMissingDeviceRecovery.markReset(serial, { targetPresent: true, retryAfterMs: config.pnpTargetAbsentRetrySeconds * 1_000 });
+    log("pnp target adb recovery deferred", {
+      serial,
+      state: observation?.state || "unknown",
+      attempts: previous.attempts || 0,
+      mode,
+      reason: "exact_mapping_temporarily_unavailable",
+      nextRetrySeconds: config.pnpTargetAbsentRetrySeconds
+    });
+    return { serial, status: "deferred", reason: "exact_mapping_temporarily_unavailable", mode, actionAttempted: false };
+  }
+  if (!isAutomaticRecoveryAction(actionPlan)) {
+    if (!previous.quarantinedAt || previous.lastMode !== mode) {
+      const quarantinedAt = Date.now();
+      pnpTargetRecoveryAttempts.set(key, {
+        ...previous,
+        serial,
+        lastMode: mode,
+        targetType: actionPlan.targetType,
+        quarantinedAt,
+        nextRetryAt: 0,
+        lastError: mode
+      });
+      pnpRecoveryJournal.record({
+        type: "quarantined",
+        severity: "error",
+        serial,
+        state: observation?.state || "unknown",
+        attempt: previous.attempts || 0,
+        maxAttempts: config.pnpMaxAutomaticAttemptsPerDevice,
+        mode,
+        reason: mode,
+        targetType: actionPlan.targetType
+      });
+      await persistPnpRecoveryStateNow();
+      log("pnp target automatic recovery exhausted by state", {
+        serial,
+        state: observation?.state || "unknown",
+        attempts: previous.attempts || 0,
+        mode,
+        maintenanceRequired: true
+      });
     }
-    const key = String(serial).toUpperCase();
-    const previous = pnpTargetRecoveryAttempts.get(key) || { serial, attempts: 0, lastMode: "", lastAttemptAt: 0 };
-    const attempt = previous.attempts + 1;
-    const mode = pnpTargetRecoveryMode(attempt);
+    pnpMissingDeviceRecovery.markReset(serial, { retryAfterMs: config.pnpTargetAbsentRetrySeconds * 1_000 });
+    return { serial, status: "quarantined", reason: mode, mode, actionAttempted: false };
+  }
+  const circuitRescue = safety.circuitOpen
+    && safety.rescueCanMutate
+    && rescueKeys.has(key);
+  const hardSafetyBlock = (safety.circuitOpen && !circuitRescue)
+    || safety.blockedReason === "hourly_budget_exhausted"
+    || safety.blockedReason === "physical_inventory_unavailable"
+    || safety.blockedReason === "action_cooldown";
+  if (hardSafetyBlock || (!transportOnly && !safety.canMutate && !circuitRescue)) {
+    return { serial, status: "blocked", reason: safety.blockedReason || "safety_block", mode, actionAttempted: false };
+  }
+  // The physical inventory and recovery plan are snapshots. A phone may have
+  // rejoined ADB while it was waiting for the host lane. Re-check immediately
+  // before consuming an attempt or touching PnP, and never restart a device
+  // which is already live now.
+  if (await skipRecoveryIfAdbAlreadyOnline(serial, observation)) {
+    return { serial, status: "skipped", reason: "already_online", mode, actionAttempted: false };
+  }
+  const retryAfterMs = pnpRecoveryActionBackoffMs(
+    previous,
+    mode,
+    config.pnpTargetResetCooldownSeconds * 1_000,
+    config.pnpTargetRetryMaxSeconds * 1_000
+  );
+  const nextCheckAfterMs = attempt >= config.pnpMaxAutomaticAttemptsPerDevice
+    ? config.pnpTargetResetCooldownSeconds * 1_000
+    : retryAfterMs;
+  if (transportOnly) {
     const attemptedAt = Date.now();
-    const retryAfterMs = pnpTargetRecoveryBackoffMs(
-      attempt,
-      config.pnpTargetResetCooldownSeconds * 1_000,
-      config.pnpTargetAbsentRetrySeconds * 1_000
-    );
-    attempted += 1;
     try {
-      // Re-check after acquiring the per-device lease to close the race with a
-      // screen or automation session starting between planning and execution.
-      if (isSerialBusy(serial)) {
-        attempted -= 1;
-        log("pnp target adb recovery deferred", { serial, reason: "target_became_busy" });
-        continue;
-      }
-      const result = await reenumerateMissingAdbDevice(serial, { mode });
-      pnpTargetRecoveryAttempts.set(key, { serial, attempts: attempt, lastMode: mode, lastAttemptAt: attemptedAt });
-      pnpMissingDeviceRecovery.markReset(serial, {
-        targetPresent: result.result !== "target_not_present",
-        retryAfterMs
+      pnpRecoverySafety.recordAction();
+      lastPnpRecoveryHealth = publicPnpRecoveryHealth(pnpRecoverySafety.health());
+      pnpTargetRecoveryAttempts.set(key, { ...previous, serial, attempts: attempt, actionHistory: previous.actionHistory || [], lastMode: mode, lastAttemptAt: attemptedAt, inProgress: true, quarantinedAt: 0 });
+      pnpRecoveryJournal.record({
+        type: "action_started",
+        severity: "info",
+        serial,
+        state: observation?.state || "unknown",
+        attempt,
+        maxAttempts: config.pnpMaxAutomaticAttemptsPerDevice,
+        mode
       });
-      log("pnp target adb recovery", {
+      await persistPnpRecoveryStateNow();
+      const output = await run(config.adbPath, ["-s", serial, "reconnect"], { timeoutMs: 10_000 });
+      const nextRetryAt = attemptedAt + nextCheckAfterMs;
+      pnpTargetRecoveryAttempts.set(key, { ...previous, serial, attempts: attempt, actionHistory: completedActionHistory, lastMode: mode, lastAttemptAt: attemptedAt, nextRetryAt, inProgress: false, quarantinedAt: 0 });
+      pnpRecoveryJournal.record({
+        type: "action_completed",
+        severity: "info",
+        serial,
+        state: observation?.state || "unknown",
+        attempt,
+        maxAttempts: config.pnpMaxAutomaticAttemptsPerDevice,
+        mode,
+        result: cleanLogText(output).slice(-300) || "reconnect_requested",
+        nextActionAt: new Date(nextRetryAt).toISOString()
+      });
+      schedulePnpRecoveryStateSave();
+      pnpMissingDeviceRecovery.markReset(serial, { targetPresent: true, retryAfterMs: nextCheckAfterMs });
+      log("adb transport recovery", {
         serial,
         attempt,
         mode,
-        nextRetrySeconds: Math.round(retryAfterMs / 1_000),
-        ...result
+        nextCheckSeconds: Math.round(nextCheckAfterMs / 1_000),
+        finalAttemptVerification: attempt >= config.pnpMaxAutomaticAttemptsPerDevice,
+        result: cleanLogText(output).slice(-300) || "reconnect_requested"
       });
+      return { serial, status: "action_completed", mode, actionAttempted: true };
     } catch (error) {
-      pnpTargetRecoveryAttempts.set(key, { serial, attempts: attempt, lastMode: mode, lastAttemptAt: attemptedAt });
-      pnpMissingDeviceRecovery.markReset(serial, { retryAfterMs });
-      log("pnp target adb recovery failed", {
+      const exhausted = attempt >= config.pnpMaxAutomaticAttemptsPerDevice;
+      const nextRetryAt = exhausted ? 0 : attemptedAt + retryAfterMs;
+      pnpTargetRecoveryAttempts.set(key, {
+        ...previous,
+        serial,
+        attempts: attempt,
+        actionHistory: previous.actionHistory || [],
+        lastMode: mode,
+        lastAttemptAt: attemptedAt,
+        nextRetryAt,
+        lastError: cleanLogText(error?.message || error).slice(0, 300),
+        ...(exhausted ? { quarantinedAt: attemptedAt } : {})
+      });
+      pnpRecoveryJournal.record({
+        type: exhausted ? "quarantined" : "action_failed",
+        severity: "error",
+        serial,
+        state: observation?.state || "unknown",
+        attempt,
+        maxAttempts: config.pnpMaxAutomaticAttemptsPerDevice,
+        mode,
+        reason: "adb_reconnect_failed",
+        result: cleanLogText(error?.message || error).slice(0, 300),
+        nextActionAt: nextRetryAt ? new Date(nextRetryAt).toISOString() : ""
+      });
+      await persistPnpRecoveryStateNow().catch((saveError) => log("pnp recovery state save failed", cleanLogText(saveError?.message || saveError).slice(0, 300)));
+      pnpMissingDeviceRecovery.markReset(serial, { retryAfterMs: exhausted ? config.pnpTargetAbsentRetrySeconds * 1_000 : retryAfterMs });
+      log("adb transport recovery failed", {
         serial,
         attempt,
+        maxAttempts: config.pnpMaxAutomaticAttemptsPerDevice,
         mode,
-        nextRetrySeconds: Math.round(retryAfterMs / 1_000),
+        nextRetrySeconds: exhausted ? null : Math.round(retryAfterMs / 1_000),
+        maintenanceRequired: exhausted,
         error: cleanLogText(error?.message || error).slice(0, 300)
       });
-    } finally {
-      releaseTargetPnp();
+      return { serial, status: "action_failed", reason: "adb_reconnect_failed", mode, actionAttempted: true };
     }
   }
-}
 
-async function discoverPhysicallyPresentAndroidUsbSerials() {
+  const releaseTargetPnp = pnpScreenCoordinator.tryBegin(serial, () => isSerialBusy(serial));
+  if (!releaseTargetPnp) {
+    pnpRecoveryJournal.record({ type: "deferred", severity: "warning", serial, state: observation?.state || "unknown", reason: "host_or_pnp_action_in_progress" });
+    schedulePnpRecoveryStateSave();
+    log("pnp target adb recovery deferred", { serial, reason: "host_or_pnp_action_in_progress" });
+    return { serial, status: "deferred", reason: "host_or_pnp_action_in_progress", mode, actionAttempted: false };
+  }
+  const attemptedAt = Date.now();
   try {
-    return await listPhysicallyPresentAndroidUsbSerials();
+    if (isSerialBusy(serial)) {
+      pnpRecoveryJournal.record({ type: "deferred", severity: "warning", serial, state: observation?.state || "unknown", reason: "host_became_busy" });
+      schedulePnpRecoveryStateSave();
+      log("pnp target adb recovery deferred", { serial, reason: "host_became_busy" });
+      return { serial, status: "deferred", reason: "host_became_busy", mode, actionAttempted: false };
+    }
+    const target = actionPlan;
+    if (!target.instanceId && target.mode !== "adb_reconnect") {
+      pnpTargetRecoveryAttempts.set(key, {
+        ...previous,
+        serial,
+        // No mutation happened, so this is not one of the five recovery
+        // attempts. Re-probe the read-only inventory soon and act once an
+        // exact phone node exists.
+        attempts: previous.attempts || 0,
+        lastMode: "no_exact_target",
+        lastAttemptAt: attemptedAt,
+        nextRetryAt: attemptedAt + config.pnpTargetAbsentRetrySeconds * 1_000
+      });
+      pnpRecoveryJournal.record({
+        type: "deferred",
+        severity: "warning",
+        serial,
+        state: observation?.state || "unknown",
+        attempt: previous.attempts || 0,
+        maxAttempts: config.pnpMaxAutomaticAttemptsPerDevice,
+        mode: "no_exact_target",
+        reason: "exact_instance_not_found",
+        nextActionAt: new Date(attemptedAt + config.pnpTargetAbsentRetrySeconds * 1_000).toISOString()
+      });
+      await persistPnpRecoveryStateNow();
+      pnpMissingDeviceRecovery.markReset(serial, { targetPresent: false, retryAfterMs: config.pnpTargetAbsentRetrySeconds * 1_000 });
+      log("pnp target adb recovery deferred", {
+        serial,
+        state: observation?.state || "unknown",
+        attempts: previous.attempts || 0,
+        maxAttempts: config.pnpMaxAutomaticAttemptsPerDevice,
+        reason: "exact_instance_not_found",
+        nextRetrySeconds: config.pnpTargetAbsentRetrySeconds,
+        maintenanceRequired: false
+      });
+      return { serial, status: "deferred", reason: "exact_instance_not_found", mode, actionAttempted: false };
+    }
+    pnpRecoverySafety.recordAction();
+    lastPnpRecoveryHealth = publicPnpRecoveryHealth(pnpRecoverySafety.health());
+    pnpTargetRecoveryAttempts.set(key, { ...previous, serial, attempts: attempt, actionHistory: previous.actionHistory || [], lastMode: mode, lastAttemptAt: attemptedAt, targetType: target.targetType, inProgress: true, quarantinedAt: 0 });
+    pnpRecoveryJournal.record({
+      type: "action_started",
+      severity: "info",
+      serial,
+      state: observation?.state || "unknown",
+      attempt,
+      maxAttempts: config.pnpMaxAutomaticAttemptsPerDevice,
+      mode,
+      targetType: target.targetType
+    });
+    await persistPnpRecoveryStateNow();
+    const result = await executePnpRecoveryAction(target);
+    const nextRetryAt = attemptedAt + nextCheckAfterMs;
+    pnpTargetRecoveryAttempts.set(key, { ...previous, serial, attempts: attempt, actionHistory: completedActionHistory, lastMode: mode, lastAttemptAt: attemptedAt, nextRetryAt, targetType: target.targetType, inProgress: false, quarantinedAt: 0 });
+    pnpRecoveryJournal.record({
+      type: "action_completed",
+      severity: "info",
+      serial,
+      state: observation?.state || "unknown",
+      attempt,
+      maxAttempts: config.pnpMaxAutomaticAttemptsPerDevice,
+      mode,
+      targetType: target.targetType,
+      result: cleanLogText(result?.result || "restart_requested").slice(0, 300),
+      nextActionAt: new Date(nextRetryAt).toISOString()
+    });
+    schedulePnpRecoveryStateSave();
+    pnpMissingDeviceRecovery.markReset(serial, { targetPresent: true, retryAfterMs: nextCheckAfterMs });
+    log("pnp target adb recovery", {
+      serial,
+      attempt,
+      mode,
+      state: observation?.state || "unknown",
+      targetType: target.targetType,
+      instanceId: target.instanceId,
+      nextRetrySeconds: attempt >= config.pnpMaxAutomaticAttemptsPerDevice ? null : Math.round(retryAfterMs / 1_000),
+      nextCheckSeconds: Math.round(nextCheckAfterMs / 1_000),
+      finalAttemptVerification: attempt >= config.pnpMaxAutomaticAttemptsPerDevice,
+      ...result
+    });
+    pnpRecoveryWakeScheduler?.schedule(config.pnpPostActionProbeSeconds * 1_000, "pnp_post_action_probe");
+    return { serial, status: "action_completed", mode, actionAttempted: true };
   } catch (error) {
-    log("pnp physical device discovery failed", cleanLogText(error?.message || error).slice(0, 300));
-    return [];
+    const reason = /timeout|timed out|ETIMEDOUT/i.test(String(error?.message || "")) ? "pnp_timeout" : "pnp_action_failed";
+    // A timeout may leave Windows DrvInst work alive, so briefly open the
+    // host-wide circuit. A normal command failure stays inside the per-device
+    // retry budget and must not stop unrelated recoveries.
+    if (reason === "pnp_timeout") {
+      pnpRecoverySafety.recordFailure(reason, { serial });
+      lastPnpRecoveryHealth = publicPnpRecoveryHealth(pnpRecoverySafety.health());
+    }
+    const exhausted = attempt >= config.pnpMaxAutomaticAttemptsPerDevice;
+    const nextRetryAt = exhausted ? 0 : attemptedAt + retryAfterMs;
+    pnpTargetRecoveryAttempts.set(key, {
+      ...previous,
+      serial,
+      attempts: attempt,
+      actionHistory: previous.actionHistory || [],
+      lastMode: mode,
+      lastAttemptAt: attemptedAt,
+      nextRetryAt,
+      lastError: cleanLogText(error?.message || error).slice(0, 300),
+      ...(exhausted ? { quarantinedAt: attemptedAt } : {})
+    });
+    pnpRecoveryJournal.record({
+      type: exhausted ? "quarantined" : "action_failed",
+      severity: "error",
+      serial,
+      state: observation?.state || "unknown",
+      attempt,
+      maxAttempts: config.pnpMaxAutomaticAttemptsPerDevice,
+      mode,
+      reason,
+      result: cleanLogText(error?.message || error).slice(0, 300),
+      nextActionAt: nextRetryAt ? new Date(nextRetryAt).toISOString() : ""
+    });
+    await persistPnpRecoveryStateNow().catch((saveError) => log("pnp recovery state save failed", cleanLogText(saveError?.message || saveError).slice(0, 300)));
+    pnpMissingDeviceRecovery.markReset(serial, { retryAfterMs: exhausted ? config.pnpTargetAbsentRetrySeconds * 1_000 : retryAfterMs });
+    log("pnp target adb recovery failed", {
+      serial,
+      attempt,
+      maxAttempts: config.pnpMaxAutomaticAttemptsPerDevice,
+      mode,
+      state: observation?.state || "unknown",
+      reason,
+      nextRetrySeconds: exhausted ? null : Math.round(retryAfterMs / 1_000),
+      maintenanceRequired: exhausted,
+      error: cleanLogText(error?.message || error).slice(0, 300)
+    });
+    pnpRecoveryWakeScheduler?.schedule(config.pnpDeviceInstallPollSeconds * 1_000, "pnp_failed_action_probe");
+    return { serial, status: "action_failed", reason, mode, actionAttempted: true };
+  } finally {
+    releaseTargetPnp();
+  }
+  }
+
+  if (batchScope.rescue && batchTargets[0]) {
+    pnpRecoveryJournal.record({
+      type: "rescue_started",
+      severity: "warning",
+      serial: batchTargets[0],
+      reason: "circuit_collateral_rescue"
+    });
+    schedulePnpRecoveryStateSave();
+  }
+  log("pnp concurrent recovery batch started", {
+    serials: batchTargets,
+    concurrency: config.pnpTargetRecoveryConcurrency,
+    maxPerPass: batchScope.maxTargets,
+    rescue: batchScope.rescue
+  });
+  const batchResults = await Promise.allSettled(batchTargets.map((serial) => recoverSelectedTarget(serial)));
+  const batchSummary = summarizePnpRecoveryBatchResults(batchResults, batchTargets);
+  const {
+    actionedSerials,
+    attempted,
+    failed,
+    deferred,
+    skipped,
+    quarantined,
+    internalFailures
+  } = batchSummary;
+  if (internalFailures.length) log("pnp concurrent recovery batch internal failures", internalFailures);
+
+  if (!actionedSerials.length) {
+    log("pnp concurrent recovery batch completed", {
+      serials: batchTargets,
+      selected: batchTargets.length,
+      attempted: 0,
+      failed: 0,
+      deferred,
+      skipped,
+      quarantined,
+      onlineBefore: online.size,
+      onlineAfter: online.size,
+      collateralLosses: []
+    });
+    return;
+  }
+
+  await delay(5_000);
+  try {
+    const postBatchRows = parseAdbDevices(await run(config.adbPath, ["devices", "-l"], { timeoutMs: 10_000 }));
+    const postBatchOnline = new Set(postBatchRows
+      .filter((item) => item.state === "device")
+      .map((item) => String(item.adbSerial || "").trim().toUpperCase()));
+    // Only a serial whose command actually started is a batch target for
+    // collateral accounting. Merely selecting a target must not hide a loss
+    // or inflate attempted telemetry when safety blocks the mutation.
+    const batchKeys = new Set(actionedSerials.map((serial) => String(serial).trim().toUpperCase()));
+    const collateralLosses = [...online].filter((serial) => !batchKeys.has(serial) && !postBatchOnline.has(serial));
+    if (collateralLosses.length) {
+      pnpRecoverySafety.recordFailure("burst_outage", { collateralLosses, batchTargets });
+      lastPnpRecoveryHealth = publicPnpRecoveryHealth(pnpRecoverySafety.health());
+      logPnpRecoverySafetyTransition(pnpRecoverySafety.health());
+      schedulePnpRecoveryStateSave();
+    }
+    log("pnp concurrent recovery batch completed", {
+      serials: batchTargets,
+      actionedSerials,
+      selected: batchTargets.length,
+      attempted,
+      failed,
+      deferred,
+      skipped,
+      quarantined,
+      onlineBefore: online.size,
+      onlineAfter: postBatchOnline.size,
+      collateralLosses
+    });
+  } catch (error) {
+    log("pnp concurrent recovery batch verification failed", cleanLogText(error?.message || error).slice(0, 300));
   }
 }
 
-async function listPhysicallyPresentAndroidUsbSerials() {
-  const vendorIds = ANDROID_USB_VENDOR_IDS.map((value) => `'${value}'`).join(",");
+async function loadPnpRecoveryState(filePath) {
+  try {
+    const parsed = JSON.parse((await fs.readFile(filePath, "utf8")).replace(/^\uFEFF/, ""));
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch (error) {
+    if (error.code !== "ENOENT") log("pnp recovery state load failed", cleanLogText(error?.message || error).slice(0, 300));
+    return {};
+  }
+}
+
+function schedulePnpRecoveryStateSave() {
+  if (pnpRecoveryStateSaveTimer) return;
+  pnpRecoveryStateSaveTimer = setTimeout(() => {
+    pnpRecoveryStateSaveTimer = null;
+    flushPnpRecoveryState().catch((error) => log("pnp recovery state save failed", cleanLogText(error?.message || error).slice(0, 300)));
+  }, 500);
+}
+
+async function persistPnpRecoveryStateNow() {
+  if (pnpRecoveryStateSaveTimer) {
+    clearTimeout(pnpRecoveryStateSaveTimer);
+    pnpRecoveryStateSaveTimer = null;
+  }
+  await flushPnpRecoveryState();
+}
+
+function flushPnpRecoveryState() {
+  const pending = pnpRecoveryStateWriteChain.then(() => writePnpRecoveryState());
+  pnpRecoveryStateWriteChain = pending.catch(() => {});
+  return pending;
+}
+
+async function writePnpRecoveryState() {
+  const journal = pnpRecoveryJournal.snapshot();
+  const state = {
+    version: 2,
+    safety: pnpRecoverySafety.snapshot(),
+    targets: [...pnpTargetRecoveryAttempts.values()].slice(0, 500),
+    events: journal.events,
+    observedStates: journal.observedStates
+  };
+  const signature = JSON.stringify(state);
+  if (signature === lastSavedPnpRecoveryState) return;
+  const payload = JSON.stringify({ ...state, updatedAt: new Date().toISOString() }, null, 2);
+  const temporary = `${pnpRecoveryStatePath}.tmp-${process.pid}`;
+  await fs.writeFile(temporary, payload, "utf8");
+  await fs.rename(temporary, pnpRecoveryStatePath);
+  lastSavedPnpRecoveryState = signature;
+}
+
+function hasHostWideRecoveryBlocker() {
+  return Boolean(
+    screenControlledSerials.size
+    || activeTaskSerials.size
+    || hasActiveAutomationTask()
+    || backgroundSmsSyncPromise
+    || automationPreflightRunning.size
+  );
+}
+
+function appendPhysicalRecoveryRows(devices, observations) {
+  const existing = new Map(devices.map((item) => [String(item?.adbSerial || "").toUpperCase(), item]).filter(([key]) => key));
+  for (const observation of observations) {
+    const recovery = {
+      state: observation.state,
+      physicalPresent: observation.physicalPresent,
+      rootProblem: String(observation.physical?.rootProblem || ""),
+      adbInterfaceProblem: String(observation.physical?.adbInterfaceProblem || ""),
+      lastObservedAt: new Date().toISOString()
+    };
+    const existingRow = existing.get(observation.key);
+    if (existingRow) {
+      existingRow.recovery = recovery;
+      continue;
+    }
+    const previous = lastDevices.find((item) => String(item?.adbSerial || "").toUpperCase() === observation.key) || {};
+    const serverDevice = cachedServerDeviceForSerial(observation.serial);
+    const row = mergeCachedDeviceScanRow({ adbSerial: observation.serial, state: observation.state }, previous, serverDevice);
+    row.adbSerial = observation.serial;
+    row.deviceId = row.deviceId || `adb:${observation.serial}`;
+    row.state = observation.state;
+    row.deviceName = row.deviceName || defaultDeviceName(row);
+    row.recovery = recovery;
+    devices.push(row);
+    existing.set(observation.key, row);
+  }
+}
+
+function logPnpRecoverySafetyTransition(safety) {
+  const circuitKey = [Boolean(safety.circuitOpen), String(safety.circuitReason || "")].join(":");
+  if (circuitKey !== lastPnpRecoveryCircuitKey) {
+    pnpRecoveryJournal.record({
+      type: safety.circuitOpen ? "circuit_opened" : "circuit_closed",
+      severity: safety.circuitOpen ? "error" : "success",
+      reason: safety.circuitReason || "stable_scans_passed",
+      result: safety.circuitUntil || ""
+    });
+    lastPnpRecoveryCircuitKey = circuitKey;
+    schedulePnpRecoveryStateSave();
+  }
+  const key = [
+    safety.circuitOpen,
+    safety.circuitReason,
+    safety.blockedReason,
+    safety.actionableCount,
+    safety.unauthorizedCount,
+    safety.rescueCanMutate,
+    ...(safety.rescueSerials || [])
+  ].join(":");
+  if (key === lastPnpRecoverySafetyLogKey) return;
+  lastPnpRecoverySafetyLogKey = key;
+  log("pnp recovery safety", {
+    circuitOpen: safety.circuitOpen,
+    circuitReason: safety.circuitReason,
+    circuitUntil: safety.circuitUntil,
+    blockedReason: safety.blockedReason,
+    physicalCount: safety.physicalCount,
+    adbDeviceCount: safety.adbDeviceCount,
+    actionableCount: safety.actionableCount,
+    unauthorizedCount: safety.unauthorizedCount,
+    automaticActionsLastHour: safety.automaticActionsLastHour,
+    rescueCanMutate: safety.rescueCanMutate,
+    rescueSerials: safety.rescueSerials || []
+  });
+}
+
+function publicPnpRecoveryHealth(value = {}) {
+  return {
+    observedAt: String(value.observedAt || ""),
+    circuitOpen: Boolean(value.circuitOpen),
+    circuitReason: String(value.circuitReason || ""),
+    circuitUntil: String(value.circuitUntil || ""),
+    blockedReason: String(value.blockedReason || ""),
+    physicalCount: Number(value.physicalCount || 0),
+    adbDeviceCount: Number(value.adbDeviceCount || 0),
+    actionableCount: Number(value.actionableCount || 0),
+    newlyLostCount: Number(value.newlyLostCount || 0),
+    unauthorizedCount: Number(value.unauthorizedCount || 0),
+    offlineCount: Number(value.offlineCount || 0),
+    absentCount: Number(value.absentCount || 0),
+    automaticActionsLastHour: Number(value.automaticActionsLastHour || 0),
+    maxActionsPerHour: Number(value.maxActionsPerHour || config.pnpMaxAutomaticActionsPerHour || 0),
+    acknowledgedActionableCount: Number(value.acknowledgedActionableCount || 0),
+    recoveryMode: String(value.recoveryMode || "normal"),
+    actionReadyAt: String(value.actionReadyAt || ""),
+    rescueSerials: (Array.isArray(value.rescueSerials) ? value.rescueSerials : [])
+      .map((serial) => String(serial || "").slice(0, 160))
+      .filter(Boolean)
+      .slice(0, 20),
+    rescueCanMutate: Boolean(value.rescueCanMutate),
+    maxAttemptsPerDevice: Number(config.pnpMaxAutomaticAttemptsPerDevice || 5),
+    quarantinedCount: [...pnpTargetRecoveryAttempts.values()].filter((item) => item?.quarantinedAt).length,
+    inventoryObservedAt: lastSuccessfulPhysicalPnpInventoryAt ? new Date(lastSuccessfulPhysicalPnpInventoryAt).toISOString() : "",
+    inventoryFresh: isPhysicalPnpInventoryReady(),
+    inventoryError: lastPhysicalPnpInventoryError
+  };
+}
+
+function currentPnpRecoveryHealth() {
+  return {
+    ...lastPnpRecoveryHealth,
+    queue: buildRecoveryQueue({
+      observations: lastDeviceRecoveryObservations,
+      attemptsBySerial: pnpTargetRecoveryAttempts,
+      devices: [...lastDevices, ...lastServerDevicesById.values()],
+      maxAttempts: config.pnpMaxAutomaticAttemptsPerDevice,
+      excludedSerials: [...new Set([...screenControlledSerials, ...activeTaskSerials])]
+    }).slice(0, 200),
+    recentEvents: pnpRecoveryJournal.events(80)
+  };
+}
+
+function isPhysicalPnpInventoryReady() {
+  return Boolean(
+    lastSuccessfulPhysicalPnpInventoryAt
+    && !lastPhysicalPnpInventoryError
+    && Date.now() - lastSuccessfulPhysicalPnpInventoryAt <= Math.max(120_000, config.pnpRescanCooldownSeconds * 2_000)
+  );
+}
+
+function cachedServerDeviceForSerial(serial) {
+  const normalized = String(serial || "").trim().toUpperCase();
+  if (!normalized) return {};
+  const direct = lastServerDevicesById.get(`adb:${serial}`) || lastServerDevicesById.get(`adb:${normalized}`);
+  if (direct) return direct;
+  for (const [deviceId, device] of lastServerDevicesById) {
+    if (String(deviceId || "").toUpperCase() === `ADB:${normalized}`) return device || {};
+  }
+  return {};
+}
+
+function scheduleNextPnpRecoveryDueWake() {
+  const at = Date.now();
+  let earliest = Infinity;
+  for (const state of pnpTargetRecoveryAttempts.values()) {
+    if (state?.quarantinedAt || state?.inProgress) continue;
+    const nextRetryAt = Number(state?.nextRetryAt || 0);
+    if (nextRetryAt > at && nextRetryAt < earliest) earliest = nextRetryAt;
+  }
+  if (!Number.isFinite(earliest)) return;
+  pnpRecoveryWakeScheduler?.schedule(
+    Math.max(1_000, earliest - at),
+    "pnp_retry_due"
+  );
+}
+
+async function inspectWindowsDeviceInstallActivity() {
   const script = [
-    "$seen = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)",
-    "Get-PnpDevice -PresentOnly | Where-Object { $_.Class -eq 'CDROM' -and $_.FriendlyName -eq 'Linux File-CD Gadget USB Device' } | ForEach-Object {",
-    "  $parts = $_.InstanceId.Split('&'); if ($parts.Length -lt 2) { return }",
-    "  $serial = [string]$parts[$parts.Length - 2]",
-    "  if ($serial -match '^[A-Za-z0-9._:-]{4,128}$' -and $seen.Add($serial)) { Write-Output $serial }",
-    "}",
-    // Some newly connected phones have only reached the USB composite root;
-    // they do not yet expose File-CD/MTP/ADB children, so include their root
-    // serials as physical candidates too.
-    `Get-PnpDevice -PresentOnly | Where-Object { $_.InstanceId -match '^USB\\\\VID_([0-9A-F]{4})&PID_[0-9A-F]{4}\\\\([^\\\\]+)$' -and $Matches[1] -in @(${vendorIds}) } | ForEach-Object {`,
-    "  if ($_.InstanceId -match '^USB\\\\VID_[0-9A-F]{4}&PID_[0-9A-F]{4}\\\\([^\\\\]+)$') { $serial = [string]$Matches[1]; if ($serial -match '^[A-Za-z0-9._:-]{4,128}$' -and $seen.Add($serial)) { Write-Output $serial } }",
-    "}"
+    "$rows = @(Get-CimInstance Win32_Process | Where-Object { $_.Name -in @('pnputil.exe','drvinst.exe') })",
+    "$rows | ForEach-Object { Write-Output ($_.ProcessId.ToString() + \"`t\" + $_.Name + \"`t\" + ([string]$_.CreationDate)) }"
   ].join("; ");
+  const encoded = Buffer.from(script, "utf16le").toString("base64");
+  try {
+    const output = await run("powershell.exe", ["-NoProfile", "-NonInteractive", "-EncodedCommand", encoded], { timeoutMs: 10_000 });
+    const processes = cleanLogText(output).split(/\r?\n/).map((line) => {
+      const [pid = "", name = "", createdAt = ""] = line.split("\t", 3);
+      return { pid: Number(pid || 0), name, createdAt };
+    }).filter((item) => item.pid && item.name);
+    return { busy: processes.length > 0, processes };
+  } catch (error) {
+    return { busy: true, processes: [{ pid: 0, name: "probe_failed", createdAt: cleanLogText(error?.message || error).slice(0, 120) }] };
+  }
+}
+
+async function discoverPhysicallyPresentAndroidUsbInventory() {
+  try {
+    return { ok: true, rows: await listPhysicallyPresentAndroidUsbInventory(), error: "" };
+  } catch (error) {
+    const message = cleanLogText(error?.message || error).slice(0, 300);
+    log("pnp physical device discovery failed", message);
+    return { ok: false, rows: [], error: message };
+  }
+}
+
+async function listPhysicallyPresentAndroidUsbInventory() {
+  const script = buildPhysicalAndroidUsbInventoryScript(ANDROID_USB_VENDOR_IDS);
   const encoded = Buffer.from(script, "utf16le").toString("base64");
   const output = await run("powershell.exe", ["-NoProfile", "-NonInteractive", "-EncodedCommand", encoded], { timeoutMs: 30_000 });
-  return cleanLogText(output)
-    .split(/\r?\n/)
-    .map((value) => value.trim())
-    .filter((value) => /^[A-Za-z0-9._:-]{4,128}$/.test(value));
+  return parsePhysicalAndroidUsbInventory(cleanLogText(output));
 }
 
-async function reenumerateMissingAdbDevice(serial, options = {}) {
-  const normalizedSerial = String(serial || "").trim();
-  if (!/^[A-Za-z0-9._:-]{1,128}$/.test(normalizedSerial)) {
-    throw new Error("unsafe adb serial for PnP recovery");
+async function restartExactPnpDevice(instanceId) {
+  const target = String(instanceId || "").trim();
+  if (!/^USB\\[A-Za-z0-9&_.\\:-]{4,500}$/i.test(target)) throw new Error("unsafe exact PnP instance id");
+  const output = await run("pnputil.exe", ["/restart-device", target], { timeoutMs: 45_000 });
+  return { result: cleanLogText(output).slice(-300) || "target_restarted" };
+}
+
+async function removeExactPnpDevice(instanceId, options = {}) {
+  const output = await run("pnputil.exe", buildRemoveExactPnpArgs(instanceId, options), { timeoutMs: 45_000 });
+  return cleanLogText(output).slice(-300) || "target_removed";
+}
+
+async function executePnpRecoveryAction(action = {}) {
+  const mode = String(action.mode || "");
+  if (["restart_adb_interface", "restart_usb_root"].includes(mode)) {
+    const restart = await restartExactPnpDevice(action.instanceId);
+    if (action.scanInstanceId) await scanExactPnpSubtree(action.scanInstanceId);
+    return { result: `${restart.result}; exact_subtree_scanned` };
   }
-  const mode = options.mode === "restart" ? "restart" : "reenumerate";
-  const script = [
-    `$serial = '${normalizedSerial}'`,
-    "$parents = @(Get-PnpDevice -PresentOnly | Where-Object { $_.InstanceId -like \"*$serial\" -and $_.InstanceId -match \"^USB\\\\VID_[0-9A-F]{4}&PID_[0-9A-F]{4}\\\\\" })",
-    "if (!$parents.Count) { Write-Output 'target_not_present'; exit 0 }",
-    ...(mode === "restart" ? [
-      "foreach ($parent in $parents) { & pnputil.exe /restart-device $parent.InstanceId; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }",
-      "Write-Output ('target_restarted=' + $parents.Count)"
-    ] : [
-      "$scanRoots = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)",
-      "foreach ($parent in $parents) { $upstream = Get-PnpDeviceProperty -InstanceId $parent.InstanceId -KeyName 'DEVPKEY_Device_Parent' -ErrorAction SilentlyContinue; if ($upstream.Data) { [void]$scanRoots.Add([string]$upstream.Data) }; & pnputil.exe /remove-device $parent.InstanceId; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }",
-      "if ($scanRoots.Count) { foreach ($scanRoot in $scanRoots) { & pnputil.exe /scan-devices /instanceid $scanRoot; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } } } else { & pnputil.exe /scan-devices; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }",
-      "Write-Output ('target_reenumerated=' + $parents.Count)"
-    ])
+  if (mode === "recreate_adb_interface") {
+    const { target, scan: phoneRoot } = assertDistinctExactUsbInstances(
+      action.instanceId,
+      action.scanInstanceId,
+      "unsafe ADB recreate without distinct phone root"
+    );
+    const removed = await removeExactPnpDevice(target);
+    await scanExactPnpSubtree(phoneRoot);
+    return { result: `${removed}; exact_phone_root_scanned` };
+  }
+  if (mode === "recreate_adb_root") {
+    const { target: phoneRoot, scan: upstream } = assertDistinctExactUsbInstances(
+      action.instanceId,
+      action.scanInstanceId,
+      "unsafe ADB root recreate without distinct upstream"
+    );
+    // PID_6001-style gadgets expose the ADB interface as the phone root. They
+    // have no independent child to rebuild, so remove only that exact phone
+    // node (without /subtree) and scan its proven upstream. Never remove or
+    // restart the upstream Hub itself.
+    const removed = await removeExactPnpDevice(phoneRoot);
+    await scanExactPnpSubtree(upstream);
+    return { result: `${removed}; exact_adb_root_parent_scanned` };
+  }
+  if (mode === "recreate_usb_composite") {
+    const { target: phoneRoot, scan: upstream } = assertDistinctExactUsbInstances(
+      action.instanceId,
+      action.scanInstanceId,
+      "unsafe Composite recreate without distinct upstream node"
+    );
+    const removed = await removeExactPnpDevice(phoneRoot, { subtree: true });
+    await scanExactPnpSubtree(upstream);
+    return { result: `${removed}; exact_upstream_scanned` };
+  }
+  if (mode === "cycle_usb_port") return cycleExactUsbDownstreamPort(action);
+  throw new Error(`unsupported PnP recovery action: ${mode}`);
+}
+
+async function scanExactPnpSubtree(instanceId) {
+  const target = assertExactUsbInstanceId(instanceId);
+  const output = await run("pnputil.exe", ["/scan-devices", "/instanceid", target], { timeoutMs: 45_000 });
+  return cleanLogText(output).slice(-300) || "exact_subtree_scanned";
+}
+
+async function cycleExactUsbDownstreamPort(action = {}) {
+  const rootInstanceId = assertExactUsbInstanceId(action.instanceId);
+  const upstreamInstanceId = assertExactUsbInstanceId(action.upstreamInstanceId);
+  const hubInterfacePath = String(action.hubInterfacePath || "").trim();
+  const portNumber = Number(action.portNumber || 0);
+  if (!/^\\\\\?\\USB#[A-Za-z0-9&_.#:-]{4,600}#\{f18a0e88-c30c-11d0-8815-00a0c906bed8\}$/i.test(hubInterfacePath)) {
+    throw new Error("unsafe exact USB hub interface path");
+  }
+  if (!Number.isInteger(portNumber) || portNumber < 1 || portNumber > 255) throw new Error("unsafe exact USB port number");
+  const ps = [
+    "$ErrorActionPreference='Stop'",
+    `$root='${escapePowerShellSingleQuoted(rootInstanceId)}'`,
+    `$upstream='${escapePowerShellSingleQuoted(upstreamInstanceId)}'`,
+    `$hubPath='${escapePowerShellSingleQuoted(hubInterfacePath)}'`,
+    `$port=[uint32]${portNumber}`,
+    "$props=Get-PnpDeviceProperty -InstanceId $root -ErrorAction Stop",
+    "$address=[uint32](($props | Where-Object KeyName -eq 'DEVPKEY_Device_Address').Data)",
+    "$parent=[string](($props | Where-Object KeyName -eq 'DEVPKEY_Device_Parent').Data)",
+    "if($address -ne $port -or $parent -ne $upstream){throw ('exact USB mapping changed: address='+$address+' parent='+$parent)}",
+    "Add-Type -TypeDefinition @'\nusing System;\nusing System.ComponentModel;\nusing System.Runtime.InteropServices;\npublic static class PhoneCloudExactUsbPortCycle {\n  [DllImport(\"kernel32.dll\", CharSet=CharSet.Unicode, SetLastError=true)] private static extern IntPtr CreateFile(string name, uint access, uint share, IntPtr security, uint creation, uint flags, IntPtr templateFile);\n  [DllImport(\"kernel32.dll\", SetLastError=true)] private static extern bool DeviceIoControl(IntPtr device, uint code, IntPtr input, int inputSize, IntPtr output, int outputSize, out int returned, IntPtr overlapped);\n  [DllImport(\"kernel32.dll\", SetLastError=true)] private static extern bool CloseHandle(IntPtr handle);\n  public static string Run(string hubPath, uint port) {\n    const uint GENERIC_WRITE=0x40000000, FILE_SHARE_WRITE=0x00000002, OPEN_EXISTING=3, IOCTL_USB_HUB_CYCLE_PORT=0x00220444;\n    IntPtr handle=CreateFile(hubPath,GENERIC_WRITE,FILE_SHARE_WRITE,IntPtr.Zero,OPEN_EXISTING,0,IntPtr.Zero);\n    if(handle==new IntPtr(-1)) throw new Win32Exception(Marshal.GetLastWin32Error(),\"CreateFile hub failed\");\n    IntPtr buffer=Marshal.AllocHGlobal(8);\n    try {\n      Marshal.WriteInt32(buffer,0,unchecked((int)port)); Marshal.WriteInt32(buffer,4,0); int returned;\n      if(!DeviceIoControl(handle,IOCTL_USB_HUB_CYCLE_PORT,buffer,8,buffer,8,out returned,IntPtr.Zero)) throw new Win32Exception(Marshal.GetLastWin32Error(),\"DeviceIoControl cycle failed\");\n      return \"exact_port_cycled returned=\"+returned+\" usbdStatus=0x\"+Marshal.ReadInt32(buffer,4).ToString(\"X8\");\n    } finally { Marshal.FreeHGlobal(buffer); CloseHandle(handle); }\n  }\n}\n'@",
+    "[PhoneCloudExactUsbPortCycle]::Run($hubPath,$port)"
   ].join("; ");
-  const encoded = Buffer.from(script, "utf16le").toString("base64");
+  const encoded = Buffer.from(ps, "utf16le").toString("base64");
   const output = await run("powershell.exe", ["-NoProfile", "-NonInteractive", "-EncodedCommand", encoded], { timeoutMs: 45_000 });
-  return { result: cleanLogText(output).slice(-300) || "target_command_completed" };
+  return { result: cleanLogText(output).slice(-300) || "exact_port_cycled" };
+}
+
+function escapePowerShellSingleQuoted(value) {
+  return String(value || "").replaceAll("'", "''");
 }
 
 async function hydrateStaticDeviceInfo(devices) {
@@ -2494,25 +3411,36 @@ async function syncAdbSmsLibrary(device, options = {}) {
   const serverDevice = lastServerDevicesById.get(deviceId);
   reconcileSmsCursorWithServer(device.adbSerial, serverDevice);
   const cursor = smsSyncCursors[device.adbSerial] || {};
-  const where = config.smsLibraryIncrementalSync && cursor.lastSmsId
+  const where = !options.forceFull && config.smsLibraryIncrementalSync && cursor.lastSmsId
     ? `_id > ${Number(cursor.lastSmsId)}`
     : "";
   let messages;
   let incremental = Boolean(where);
+  let queried = 0;
+  let fallbackMode = "";
+  let fallbackReason = "";
   try {
     messages = parseSmsContentQuery(await querySmsContent(device.adbSerial, columns, where, options), columns);
   } catch (error) {
+    fallbackMode = "projection";
+    fallbackReason = cleanLogText(error?.message || error).slice(0, 300);
     const fallbackColumns = ["_id", "thread_id", "address", "body", "date", "date_sent", "type", "read", "seen", "status"];
     try {
       messages = parseSmsContentQuery(await querySmsContent(device.adbSerial, fallbackColumns, where, options), fallbackColumns);
     } catch (fallbackError) {
       if (!where) throw fallbackError;
       incremental = false;
+      fallbackMode = "full";
+      fallbackReason = cleanLogText(fallbackError?.message || fallbackError).slice(0, 300);
       messages = parseSmsContentQuery(await querySmsContent(device.adbSerial, fallbackColumns, "", options), fallbackColumns);
     }
   }
+  queried = messages.length;
+  messages = await hydrateSmsSlotIndexes(device, messages, options);
   if (config.smsLibraryIncrementalSync && cursor.lastSmsId) {
-    messages = messages.filter((message) => Number(message.smsId || 0) > Number(cursor.lastSmsId || 0));
+    if (!options.forceFull) {
+      messages = messages.filter((message) => Number(message.smsId || 0) > Number(cursor.lastSmsId || 0));
+    }
   }
   throwIfScreenPriorityCancellation(options.signal);
   let sent = 0;
@@ -2542,7 +3470,52 @@ async function syncAdbSmsLibrary(device, options = {}) {
   }
   updateSmsSyncCursor(device.adbSerial, messages, { incremental, scanned: messages.length });
   await saveSmsSyncCursors();
-  return { adbSerial: device.adbSerial, deviceId, incremental, scanned: messages.length, sent, cursor: smsSyncCursors[device.adbSerial] };
+  return {
+    adbSerial: device.adbSerial,
+    deviceId,
+    incremental,
+    queried,
+    scanned: messages.length,
+    sent,
+    fallbackMode,
+    fallbackReason,
+    forceFull: Boolean(options.forceFull),
+    cursor: smsSyncCursors[device.adbSerial]
+  };
+}
+
+async function hydrateSmsSlotIndexes(device, messages, options = {}) {
+  const list = Array.isArray(messages) ? messages : [];
+  if (!list.some((message) => Number.isInteger(Number(message?.subscriptionId)))) return list;
+
+  const serial = String(device?.adbSerial || "").trim();
+  const cached = smsSubscriptionSlotMapBySerial.get(serial);
+  let subscriptionMap = cached && Date.now() - cached.checkedAtMs < 5 * 60_000
+    ? cached.map
+    : null;
+
+  if (!subscriptionMap) {
+    try {
+      const output = await adb(serial, ["shell", "dumpsys", "isub"], {
+        timeoutMs: 8_000,
+        maxBuffer: 2 * 1024 * 1024,
+        signal: options.signal
+      });
+      subscriptionMap = parseSubscriptionSlotMap(output);
+      smsSubscriptionSlotMapBySerial.set(serial, { map: subscriptionMap, checkedAtMs: Date.now() });
+      if (!subscriptionMap.size) {
+        log("sms subscription map returned no rows", { adbSerial: serial });
+      }
+    } catch (error) {
+      log("sms subscription map unavailable", {
+        adbSerial: serial,
+        error: cleanLogText(error?.message || error).slice(0, 300)
+      });
+      subscriptionMap = new Map();
+    }
+  }
+
+  return assignSmsSlotIndexes(list, device?.sims || [], subscriptionMap);
 }
 
 function reconcileSmsCursorWithServer(serial, serverDevice) {
@@ -2562,16 +3535,7 @@ function reconcileSmsCursorWithServer(serial, serverDevice) {
 }
 
 async function querySmsContent(serial, columns, where = "", options = {}) {
-  const args = [
-    "shell",
-    "content",
-    "query",
-    "--uri",
-    "content://sms",
-    "--projection",
-    columns.join(":")
-  ];
-  if (where) args.push("--where", where);
+  const args = buildSmsContentQueryArgs(columns, where);
   return await adb(serial, args, { timeoutMs: 120_000, maxBuffer: 50 * 1024 * 1024, signal: options.signal });
 }
 

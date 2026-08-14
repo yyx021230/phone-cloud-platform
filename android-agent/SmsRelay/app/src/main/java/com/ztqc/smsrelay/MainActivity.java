@@ -308,10 +308,7 @@ public class MainActivity extends Activity {
             || checkSelfPermission(Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[] {
                 Manifest.permission.RECEIVE_SMS,
-                Manifest.permission.READ_SMS,
-                Manifest.permission.READ_PHONE_STATE,
-                Manifest.permission.READ_PHONE_NUMBERS,
-                Build.VERSION.SDK_INT >= 33 ? Manifest.permission.POST_NOTIFICATIONS : Manifest.permission.RECEIVE_SMS
+                Manifest.permission.READ_SMS
             }, 1001);
         } else if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED
             || checkSelfPermission(Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED) {
@@ -321,6 +318,7 @@ public class MainActivity extends Activity {
 
     private void updateStatus() {
         boolean hasSms = checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED;
+        boolean hasReadSms = checkSelfPermission(Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED;
         boolean hasPhoneState = SimInfoReader.hasPhoneStatePermission(this);
         SmsQueueStore store = new SmsQueueStore(this);
         int pending;
@@ -333,6 +331,7 @@ public class MainActivity extends Activity {
         boolean notificationAccess = ActivationWindowStore.isNotificationAccessEnabled(this);
         statusText.setText(
             "短信权限：" + (hasSms ? "已授权" : "未授权")
+            + "\n读取短信：" + (hasReadSms ? "已授权" : "未授权（OPPO 请在权限管理中单独允许）")
             + "\nSIM 权限：" + (hasPhoneState ? "已授权" : "未授权")
             + "\n通知监听：" + (notificationAccess ? "已授权" : "未授权")
             + "\n接码窗口：" + activeWindows + " 个"

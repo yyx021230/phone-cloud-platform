@@ -61,6 +61,7 @@ public final class SmsLibrarySync {
             try {
                 syncNow(appContext, forceFull);
             } catch (Exception error) {
+                SmsRelayDiagnostics.recordSync(appContext, "failed", 0, error.getClass().getSimpleName() + ": " + error.getMessage());
                 error.printStackTrace();
             } finally {
                 running.set(false);
@@ -69,7 +70,10 @@ public final class SmsLibrarySync {
     }
 
     public static void syncNow(Context context, boolean forceFull) throws Exception {
-        if (context.checkSelfPermission(Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) return;
+        if (context.checkSelfPermission(Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
+            SmsRelayDiagnostics.recordSync(context, "read_sms_not_granted", 0, "android.permission.READ_SMS is not granted");
+            return;
+        }
         SharedPreferences prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         long now = System.currentTimeMillis();
         long lastSeenDate = prefs.getLong(LAST_SEEN_DATE, 0L);
@@ -90,7 +94,10 @@ public final class SmsLibrarySync {
         int scanned = 0;
         JSONArray batch = new JSONArray();
         try (Cursor cursor = query(context, selection, selectionArgs)) {
-            if (cursor == null) return;
+            if (cursor == null) {
+                SmsRelayDiagnostics.recordSync(context, "provider_returned_null", 0, "content://sms returned null cursor");
+                return;
+            }
             while (cursor.moveToNext() && scanned < limit) {
                 JSONObject message = cursorToMessage(context, cursor);
                 maxDate = Math.max(maxDate, message.optLong("date", 0L));
@@ -112,6 +119,7 @@ public final class SmsLibrarySync {
                 .putString(LAST_DEVICE_ID, currentDeviceId == null ? "" : currentDeviceId)
                 .apply();
         }
+        SmsRelayDiagnostics.recordSync(context, fullSync ? "full_ok" : "incremental_ok", scanned, "");
     }
 
     private static Cursor query(Context context, String selection, String[] selectionArgs) {

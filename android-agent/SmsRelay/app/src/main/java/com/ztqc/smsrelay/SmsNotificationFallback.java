@@ -25,6 +25,7 @@ public final class SmsNotificationFallback {
             );
             RelayForegroundService.start(context);
             RelayForegroundService.drainQueueAsync(context);
+            SmsRelayDiagnostics.recordNotificationFallback(context);
             Log.i(TAG, "queued notification sms inserted=" + inserted + " activation=" + match.window.activationId + " platform=" + match.window.platform);
             return inserted != 0;
         } finally {

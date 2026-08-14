@@ -126,6 +126,7 @@ public final class RelayClient {
         payload.put("sims", SimInfoReader.activeSims(context));
         payload.put("xhsTargets", XhsAppDiscovery.discoverJson(context));
         payload.put("liveStatus", DeviceLiveClient.statusJson());
+        payload.put("smsRelay", SmsRelayDiagnostics.snapshot(context));
         return payload;
     }
 

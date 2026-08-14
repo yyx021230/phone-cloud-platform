@@ -53,9 +53,9 @@ test("uses direct keyboard input on the focused phone surface", () => {
   assert.match(screenBundle, /compositionend/);
   assert.match(screenBundle, /clipboardData/);
   assert.match(screenBundle, /select_all/);
-  assert.match(html, /styles\.css\?v=20260804-keyboard-bridge-v1/);
-  assert.match(html, /app\.js\?v=20260723-phone-input-clear-v2/);
-  assert.match(html, /screen-control\.js\?v=20260805-reader-ready-canary-v1/);
+  assert.match(html, /styles\.css\?v=20260812-recovery-8way-v2/);
+  assert.match(html, /app\.js\?v=20260814-pnp-recovery-v1/);
+  assert.match(html, /screen-control\.js\?v=20260806-ice-ready-wake-v1/);
 });
 
 test("screen workspace imports an image into the active phone gallery", () => {

@@ -26,12 +26,35 @@ test("a screen start waits for PnP work on the same phone", async () => {
   assert.equal(coordinator.active, false);
 });
 
-test("a screen start does not wait for PnP work on another phone", async () => {
-  const coordinator = createPnpScreenCoordinator();
+test("targeted PnP work does not block a screen start on another phone", async () => {
+  const coordinator = createPnpScreenCoordinator({ maxConcurrent: 8 });
   const release = coordinator.tryBegin("phone-1");
   const result = await coordinator.waitForIdle("phone-2", 1_000, 50);
   assert.deepEqual(result, { idle: true, waitedMs: 0 });
   release();
+});
+
+test("serializes targeted PnP work even across different phones", () => {
+  const coordinator = createPnpScreenCoordinator();
+  const releasePhone1 = coordinator.tryBegin("phone-1");
+  const releasePhone2 = coordinator.tryBegin("phone-2");
+  assert.equal(typeof releasePhone1, "function");
+  assert.equal(releasePhone2, null);
+  assert.deepEqual(coordinator.activeSerials, ["PHONE-1"]);
+  assert.equal(coordinator.tryBegin("phone-1"), null);
+  assert.equal(coordinator.tryBegin("*"), null);
+  releasePhone1();
+  assert.equal(coordinator.active, false);
+});
+
+test("allows eight exact phone recoveries and rejects a ninth lane", () => {
+  const coordinator = createPnpScreenCoordinator({ maxConcurrent: 8 });
+  const releases = Array.from({ length: 8 }, (_, index) => coordinator.tryBegin(`phone-${index + 1}`));
+  assert.ok(releases.every((release) => typeof release === "function"));
+  assert.equal(coordinator.tryBegin("phone-9"), null);
+  assert.equal(coordinator.activeSerials.length, 8);
+  releases.forEach((release) => release());
+  assert.equal(coordinator.active, false);
 });
 
 test("global PnP work blocks every screen start", async () => {
