@@ -54,3 +54,10 @@ test("a later notification cannot erase provider SIM metadata", () => {
   assert.equal(merged.slotIndex, 1);
   assert.equal(merged.source, "windows-agent-adb");
 });
+
+test("matches an identical notification to the nearest of two real provider messages", () => {
+  const earlier = { ...provider, messageId: "earlier", messageKey: "sms:200", smsId: "200", messageAt: "2026-08-14T10:00:00.000Z" };
+  const later = { ...provider, messageId: "later", messageKey: "sms:201", smsId: "201", messageAt: "2026-08-14T10:01:00.000Z" };
+  const incoming = { ...notification, messageAt: "2026-08-14T10:00:55.000Z" };
+  assert.equal(findSemanticSmsDuplicate([earlier, later], incoming)?.messageId, "later");
+});

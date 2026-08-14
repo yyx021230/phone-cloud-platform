@@ -67,3 +67,26 @@ test("ignores records with no usable body", () => {
   const output = `NotificationRecord(0x1: pkg=com.android.mms id=1 key=x)\n android.title=String (短信)`;
   assert.deepEqual(parseSmsNotificationDump(output, { packageName: "com.android.mms", nowMs: 1_786_540_000_000 }), []);
 });
+
+test("keeps two identical SMS notifications received inside two minutes", () => {
+  const output = `
+    NotificationRecord(0x1: pkg=com.android.mms id=1 key=first)
+      mUpdateTimeMs=1786540000000
+      android.title=String (10690000)
+      android.text=String (验证码 123456)
+    NotificationRecord(0x2: pkg=com.android.mms id=2 key=second)
+      mUpdateTimeMs=1786540060000
+      android.title=String (10690000)
+      android.text=String (验证码 123456)
+  `;
+  const messages = parseSmsNotificationDump(output, {
+    packageName: "com.android.mms",
+    nowMs: 1_786_540_061_000
+  });
+  assert.equal(messages.length, 2);
+  assert.notEqual(messages[0].messageKey, messages[1].messageKey);
+  assert.deepEqual(
+    parseSmsNotificationDump(`${output}\n${output}`, { packageName: "com.android.mms", nowMs: 1_786_540_061_000 }).map((item) => item.messageKey),
+    messages.map((item) => item.messageKey)
+  );
+});

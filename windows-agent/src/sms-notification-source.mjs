@@ -111,7 +111,11 @@ export function parseSmsNotificationDump(output, { packageName, nowMs = Date.now
     const notificationKey = String(block.match(/\bkey=([^\s,)]+)/)?.[1] || "").trim();
     for (const body of bodyCandidates) {
       if (!body || body === title) continue;
-      const semantic = `${safePackage}\n${title}\n${body}\n${Math.floor(timestampMs / 120_000)}`;
+      // A notification dump is stable until Android updates that notification,
+      // so the record timestamp and notification key keep repeated polls
+      // idempotent while preserving two identical SMS messages received close
+      // together.
+      const semantic = `${safePackage}\n${notificationKey}\n${title}\n${body}\n${timestampMs}`;
       const localKey = hash(semantic);
       if (seen.has(localKey)) continue;
       seen.add(localKey);
