@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node src/index.mjs",
-    "check": "node --check src/index.mjs && node --check src/device-scan-cache.mjs && node --check src/serial-adb-activity.mjs && node --check src/serial-adb-health.mjs && node --check src/serial-delay-scheduler.mjs && node --check src/worker-shutdown.mjs && node --check src/screen-stream.mjs && node --test src/*.test.mjs"
+    "check": "node --check src/index.mjs && node --check src/sms-notification-source.mjs && node --check src/device-scan-cache.mjs && node --check src/serial-adb-activity.mjs && node --check src/serial-adb-health.mjs && node --check src/serial-delay-scheduler.mjs && node --check src/worker-shutdown.mjs && node --check src/screen-stream.mjs && node --test src/*.test.mjs"
   },
   "engines": {
     "node": ">=18"

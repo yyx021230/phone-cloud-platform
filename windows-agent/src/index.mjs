@@ -52,6 +52,14 @@ import {
 } from "./pnp-recovery-wave.mjs";
 import { buildSmsContentQueryArgs } from "./sms-content-query.mjs";
 import { assignSmsSlotIndexes, parseSubscriptionSlotMap } from "./sms-subscription-map.mjs";
+import {
+  buildLegacyDefaultSmsPackageArgs,
+  buildSmsNotificationDumpArgs,
+  buildSmsRoleHolderArgs,
+  parseDefaultSmsRoleHolders,
+  parseLegacyDefaultSmsPackage,
+  parseSmsNotificationDump
+} from "./sms-notification-source.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const agentDir = path.dirname(__dirname);
@@ -77,8 +85,12 @@ let smsSyncCursors = await loadSmsSyncCursors();
 let lastServerDevicesById = await loadDeviceScanCache();
 const lastSmsLibrarySyncBySerial = new Map();
 const backgroundSmsAbortControllersBySerial = new Map();
+const backgroundSmsNotificationAbortControllersBySerial = new Map();
 const smsSubscriptionSlotMapBySerial = new Map();
 let backgroundSmsSyncPromise = null;
+let backgroundSmsNotificationSyncPromise = null;
+const lastSmsNotificationSyncBySerial = new Map();
+const defaultSmsPackageBySerial = new Map();
 const simInfoCacheBySerial = new Map();
 const initialSimReadBySerial = new Set();
 for (const serial of cachedAdbSerials(lastServerDevicesById)) {
@@ -418,6 +430,9 @@ async function scanAndSync(options = {}) {
       reason: options.reason || ""
     });
   }
+  if (!options.skipSms && config.smsNotificationFallbackEnabled && !activeAutomationTask && !recoveryPending) {
+    scheduleBackgroundSmsNotificationSync(devices);
+  }
 }
 
 async function syncDevicesToPlatform(devices) {
@@ -474,6 +489,15 @@ function scheduleBackgroundSmsSync(devices) {
     .catch((error) => log("sms library sync failed", error.message))
     .finally(() => {
       backgroundSmsSyncPromise = null;
+    });
+}
+
+function scheduleBackgroundSmsNotificationSync(devices) {
+  if (backgroundSmsNotificationSyncPromise) return;
+  backgroundSmsNotificationSyncPromise = syncAdbSmsNotifications(devices)
+    .catch((error) => log("sms notification fallback sync failed", cleanLogText(error?.message || error).slice(0, 300)))
+    .finally(() => {
+      backgroundSmsNotificationSyncPromise = null;
     });
 }
 
@@ -895,6 +919,11 @@ function preemptSmsSyncForScreen(serial) {
     log("screen control preempted background sms sync", { adbSerial });
     backgroundController.abort();
   }
+  const notificationController = backgroundSmsNotificationAbortControllersBySerial.get(adbSerial);
+  if (notificationController && !notificationController.signal.aborted) {
+    log("screen control preempted sms notification fallback", { adbSerial });
+    notificationController.abort();
+  }
   for (const [taskId, task] of activeTasksById) {
     if (task?.type !== "sms_sync_now" || String(task.adbSerial || "").trim() !== adbSerial) continue;
     const controller = activeTaskAbortControllersById.get(taskId);
@@ -905,15 +934,21 @@ function preemptSmsSyncForScreen(serial) {
 }
 
 async function preemptBackgroundSmsSyncForPnpRecovery() {
-  if (!backgroundSmsSyncPromise) return;
+  if (!backgroundSmsSyncPromise && !backgroundSmsNotificationSyncPromise) return;
   let aborted = 0;
-  for (const controller of backgroundSmsAbortControllersBySerial.values()) {
+  for (const controller of [
+    ...backgroundSmsAbortControllersBySerial.values(),
+    ...backgroundSmsNotificationAbortControllersBySerial.values()
+  ]) {
     if (controller.signal.aborted) continue;
     controller.abort();
     aborted += 1;
   }
   if (aborted) log("pnp recovery preempted background sms sync", { devices: aborted });
-  await Promise.race([backgroundSmsSyncPromise.catch(() => {}), delay(5_000)]);
+  await Promise.race([
+    Promise.allSettled([backgroundSmsSyncPromise, backgroundSmsNotificationSyncPromise].filter(Boolean)),
+    delay(5_000)
+  ]);
 }
 
 function screenPriorityCancellationError() {
@@ -1159,10 +1194,29 @@ async function taskSmsSyncNow(task, options = {}) {
   // cursors cannot recover messages that an OEM exposes later (for example,
   // after ColorOS verification-code protection is disabled).
   const result = await syncAdbSmsLibrary(device, { ...options, forceFull: true });
+  let notification = { enabled: false, status: "disabled", received: 0, sent: 0 };
+  if (config.smsNotificationFallbackEnabled) {
+    try {
+      notification = await syncAdbSmsNotification(device, options);
+    } catch (error) {
+      notification = {
+        enabled: true,
+        status: "degraded",
+        received: 0,
+        sent: 0,
+        error: cleanLogText(error?.message || error).slice(0, 160)
+      };
+      await taskEvent(task, "sms_notification_fallback", "warn", "通知补全不可用，系统短信同步已完成", {
+        adbSerial: device.adbSerial,
+        error: notification.error
+      });
+    }
+  }
   lastSmsLibrarySyncBySerial.set(device.adbSerial, Date.now());
   return {
     action: "短信库已主动同步",
-    ...result
+    ...result,
+    notification
   };
 }
 
@@ -2219,7 +2273,7 @@ async function scanAdbDevices() {
   } catch (error) {
     const recovery = await adbServerRecovery.recover({
       cause: cleanLogText(error?.message || error).slice(0, 300),
-      busy: hasActiveAutomationTask() || Boolean(backgroundSmsSyncPromise) || screenControlledSerials.size > 0,
+      busy: hasActiveAutomationTask() || Boolean(backgroundSmsSyncPromise) || Boolean(backgroundSmsNotificationSyncPromise) || screenControlledSerials.size > 0,
       startServer: () => run(config.adbPath, ["start-server"], { timeoutMs: 10_000 })
     });
     log("adb scan recovery", recovery);
@@ -2988,6 +3042,7 @@ function hasHostWideRecoveryBlocker() {
     || activeTaskSerials.size
     || hasActiveAutomationTask()
     || backgroundSmsSyncPromise
+    || backgroundSmsNotificationSyncPromise
     || automationPreflightRunning.size
   );
 }
@@ -3354,6 +3409,7 @@ async function syncAdbSmsLibraries(devices) {
   for (const device of devices) {
     if (device.state !== "device") continue;
     if (isDeviceSerialReserved(device.adbSerial)) continue;
+    if (backgroundSmsNotificationAbortControllersBySerial.has(device.adbSerial)) continue;
     const lastSyncedAt = lastSmsLibrarySyncBySerial.get(device.adbSerial) || 0;
     if (now - lastSyncedAt < config.smsLibrarySyncIntervalSeconds * 1000) continue;
     lastSmsLibrarySyncBySerial.set(device.adbSerial, now);
@@ -3377,6 +3433,113 @@ async function syncAdbSmsLibraries(devices) {
       }
     }
   });
+}
+
+async function syncAdbSmsNotifications(devices) {
+  const now = Date.now();
+  const targets = [];
+  for (const device of Array.isArray(devices) ? devices : []) {
+    if (device.state !== "device" || isDeviceSerialReserved(device.adbSerial)) continue;
+    if (backgroundSmsAbortControllersBySerial.has(device.adbSerial)) continue;
+    const lastSyncedAt = lastSmsNotificationSyncBySerial.get(device.adbSerial) || 0;
+    if (now - lastSyncedAt < config.smsNotificationBackgroundIntervalSeconds * 1000) continue;
+    lastSmsNotificationSyncBySerial.set(device.adbSerial, now);
+    targets.push(device);
+  }
+  await runLimited(targets, config.smsNotificationBackgroundConcurrency, async (device) => {
+    const controller = new AbortController();
+    backgroundSmsNotificationAbortControllersBySerial.set(device.adbSerial, controller);
+    try {
+      const result = await syncAdbSmsNotification(device, { signal: controller.signal });
+      log("sms notification fallback synced", result);
+    } catch (error) {
+      if (isScreenPriorityCancellation(error)) return;
+      log("sms notification fallback device skipped", {
+        adbSerial: device.adbSerial,
+        error: cleanLogText(error?.message || error).slice(0, 180)
+      });
+    } finally {
+      if (backgroundSmsNotificationAbortControllersBySerial.get(device.adbSerial) === controller) {
+        backgroundSmsNotificationAbortControllersBySerial.delete(device.adbSerial);
+      }
+    }
+  });
+}
+
+async function discoverDefaultSmsPackage(serial, options = {}) {
+  const cached = defaultSmsPackageBySerial.get(serial);
+  if (cached && Date.now() - cached.checkedAtMs < config.smsNotificationPackageCacheSeconds * 1000) {
+    return cached.packageName;
+  }
+  let packageName = "";
+  try {
+    packageName = parseDefaultSmsRoleHolders(await adb(serial, buildSmsRoleHolderArgs(), {
+      timeoutMs: 5_000,
+      maxBuffer: 64 * 1024,
+      signal: options.signal
+    }));
+  } catch {
+    // Android versions without RoleManager fall through to the legacy setting.
+  }
+  if (!packageName) {
+    try {
+      packageName = parseLegacyDefaultSmsPackage(await adb(serial, buildLegacyDefaultSmsPackageArgs(), {
+        timeoutMs: 5_000,
+        maxBuffer: 64 * 1024,
+        signal: options.signal
+      }));
+    } catch {
+      packageName = "";
+    }
+  }
+  defaultSmsPackageBySerial.set(serial, { packageName, checkedAtMs: Date.now() });
+  return packageName;
+}
+
+async function syncAdbSmsNotification(device, options = {}) {
+  const serial = String(device?.adbSerial || "").trim();
+  if (!serial) throw new Error("adbSerial is required");
+  const deviceId = `adb:${serial}`;
+  const packageName = await discoverDefaultSmsPackage(serial, options);
+  if (!packageName) {
+    return { adbSerial: serial, deviceId, enabled: true, status: "unsupported", packageName: "", received: 0, sent: 0 };
+  }
+  const output = await adb(serial, buildSmsNotificationDumpArgs(packageName), {
+    timeoutMs: 10_000,
+    maxBuffer: 16 * 1024 * 1024,
+    signal: options.signal
+  });
+  throwIfScreenPriorityCancellation(options.signal);
+  const messages = parseSmsNotificationDump(output, {
+    packageName,
+    nowMs: Date.now(),
+    maxAgeMs: config.smsNotificationHistoryMaxAgeHours * 60 * 60_000
+  });
+  let sent = 0;
+  if (!messages.length) {
+    await deviceApi(`/api/v1/devices/${encodeURIComponent(deviceId)}/sms-library/batch`, {
+      method: "POST",
+      body: { source: "windows-agent-notification", messages: [] }
+    });
+  }
+  for (let index = 0; index < messages.length; index += config.smsLibraryBatchSize) {
+    const batch = messages.slice(index, index + config.smsLibraryBatchSize);
+    await deviceApi(`/api/v1/devices/${encodeURIComponent(deviceId)}/sms-library/batch`, {
+      method: "POST",
+      body: { source: "windows-agent-notification", messages: batch }
+    });
+    sent += batch.length;
+  }
+  lastSmsNotificationSyncBySerial.set(serial, Date.now());
+  return {
+    adbSerial: serial,
+    deviceId,
+    enabled: true,
+    status: "ok",
+    packageName,
+    received: messages.length,
+    sent
+  };
 }
 
 function rememberServerDevices(devices) {

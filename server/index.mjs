@@ -21,6 +21,7 @@ import { cleanupEvidenceStorage } from "./evidence-storage.mjs";
 import { buildDeviceOccupancy } from "./device-occupancy.mjs";
 import { smsRefreshRatePolicy } from "./sms-refresh-rate.mjs";
 import { readAgentRuntimeRelease } from "./agent-runtime-release.mjs";
+import { findSemanticSmsDuplicate, mergeCrossSourceSms } from "./sms-message-dedupe.mjs";
 import {
   applyAdbDeviceName,
   applyAdminDeviceName,
@@ -4560,18 +4561,34 @@ function upsertSmsLibraryMessages(deviceId, messages) {
     }
     const existing = state.smsMessages.find((item) => item.deviceId === message.deviceId && item.messageKey === message.messageKey);
     if (existing) {
+      const sourceAliases = [...new Set([
+        ...(Array.isArray(existing.sourceAliases) ? existing.sourceAliases : []),
+        ...(Array.isArray(message.sourceAliases) ? message.sourceAliases : []),
+        existing.source,
+        message.source
+      ].filter(Boolean))];
       Object.assign(existing, message, {
         messageId: existing.messageId,
         createdAt: existing.createdAt || message.createdAt,
+        sourcePackage: message.sourcePackage || existing.sourcePackage || "",
+        sourceNotificationKey: message.sourceNotificationKey || existing.sourceNotificationKey || "",
+        sourceAliases,
         updatedAt: nowIso()
       });
       persistedMessages.push(existing);
       updated += 1;
     } else {
-      state.smsMessages.unshift(message);
-      insertedMessages.push(message);
-      persistedMessages.push(message);
-      inserted += 1;
+      const semanticDuplicate = findSemanticSmsDuplicate(state.smsMessages, message);
+      if (semanticDuplicate) {
+        Object.assign(semanticDuplicate, mergeCrossSourceSms(semanticDuplicate, message), { updatedAt: nowIso() });
+        persistedMessages.push(semanticDuplicate);
+        updated += 1;
+      } else {
+        state.smsMessages.unshift(message);
+        insertedMessages.push(message);
+        persistedMessages.push(message);
+        inserted += 1;
+      }
     }
   }
   matchSmsOrdersFromLibrary(insertedMessages);
@@ -4616,6 +4633,11 @@ function normalizeSmsLibraryMessage(deviceId, raw = {}) {
     subscriptionId,
     slotIndex,
     source: sanitizePostgresText(raw.source || "android-agent", 60),
+    sourcePackage: sanitizePostgresText(raw.sourcePackage || "", 200),
+    sourceNotificationKey: sanitizePostgresText(raw.sourceNotificationKey || "", 80),
+    sourceAliases: Array.isArray(raw.sourceAliases)
+      ? [...new Set(raw.sourceAliases.map((item) => sanitizePostgresText(item || "", 60)).filter(Boolean))]
+      : [],
     createdAt: nowIso(),
     updatedAt: nowIso()
   };
@@ -5671,6 +5693,8 @@ function publicSmsMessage(message) {
     subscriptionId: message.subscriptionId ?? null,
     slotIndex: effectiveSmsSlotIndex(message),
     source: message.source || "",
+    sourcePackage: message.sourcePackage || "",
+    sourceAliases: Array.isArray(message.sourceAliases) ? message.sourceAliases : [],
     createdAt: message.createdAt,
     updatedAt: message.updatedAt
   };
