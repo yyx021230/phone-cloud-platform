@@ -10,7 +10,7 @@ export function createAdbServerRecovery(options = {}) {
     recordSuccess() {
       consecutiveFailures = 0;
     },
-    async recover({ startServer, restartServer, busy = false, cause = "" } = {}) {
+    async recover({ startServer, busy = false, cause = "" } = {}) {
       consecutiveFailures += 1;
       const at = now();
       if (consecutiveFailures < recoverAfterFailures) {
@@ -25,9 +25,11 @@ export function createAdbServerRecovery(options = {}) {
         return { attempted: true, action: "start_server", consecutiveFailures, cause };
       }
       if (busy) return { attempted: false, action: "deferred_busy", consecutiveFailures, cause };
+      // Killing the single host ADB daemon disconnects every phone and is an
+      // explicit maintenance action under D-003. Escalate instead of doing it
+      // from an unattended scan loop.
       lastRecoveryAt = at;
-      await restartServer();
-      return { attempted: true, action: "restart_server", consecutiveFailures, cause };
+      return { attempted: false, action: "maintenance_required", consecutiveFailures, cause };
     },
     health() {
       return {

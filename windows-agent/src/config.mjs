@@ -116,17 +116,46 @@ export async function loadAgentConfig({ agentDir, configPath }) {
     adbScanRecoveryFailures: Math.max(1, Math.min(10, Number(raw.adbScanRecoveryFailures || 2))),
     adbHardRecoveryFailures: Math.max(2, Math.min(12, Number(raw.adbHardRecoveryFailures || 3))),
     adbRecoveryCooldownSeconds: Math.max(15, Math.min(900, Number(raw.adbRecoveryCooldownSeconds || 120))),
-    pnpRescanAfterMissingScans: Math.max(2, Math.min(10, Number(raw.pnpRescanAfterMissingScans || 2))),
-    pnpRescanCooldownSeconds: Math.max(30, Math.min(900, Number(raw.pnpRescanCooldownSeconds || 180))),
+    // Confirm a missing ADB transport with two consecutive inventories before
+    // the first exact recovery batch. Keep this fixed so an older production
+    // config cannot silently stretch first action latency back to two minutes.
+    pnpRescanAfterMissingScans: 2,
+    // This interval now controls read-only USB inventory refreshes. Automatic
+    // global PnP scans are forbidden; they require an explicit maintenance task.
+    pnpRescanCooldownSeconds: Math.max(30, Math.min(900, Number(raw.pnpRescanCooldownSeconds || 60))),
     // If the phone is physically back but Windows fails to re-register it with
-    // the SYSTEM ADB daemon, re-enumerate that one composite device only.
-    pnpTargetResetAfterMissingScans: Math.max(2, Math.min(10, Number(raw.pnpTargetResetAfterMissingScans || 3))),
-    pnpTargetResetCooldownSeconds: Math.max(30, Math.min(900, Number(raw.pnpTargetResetCooldownSeconds || 90))),
-    // Bound targeted restarts per scan so a batch of missing phones recovers
-    // fairly without creating a burst of USB re-enumeration work.
-    pnpMaxTargetRecoveriesPerPass: Math.max(1, Math.min(5, Number(raw.pnpMaxTargetRecoveriesPerPass || 2))),
+    // the SYSTEM ADB daemon, retry only its exact PnP instance with backoff.
+    pnpTargetResetAfterMissingScans: 2,
+    pnpTargetResetCooldownSeconds: 30,
+    pnpTargetRetryMaxSeconds: 120,
+    // Recovery follow-ups are event-driven: while Windows is installing a
+    // device, poll only the process list; as soon as it becomes idle, run one
+    // fresh read-only topology scan instead of waiting for the 30/60s clocks.
+    pnpDeviceInstallPollSeconds: Math.max(2, Math.min(30, Number(raw.pnpDeviceInstallPollSeconds || 5))),
+    pnpPostActionProbeSeconds: Math.max(5, Math.min(60, Number(raw.pnpPostActionProbeSeconds || 10))),
+    // Explicitly authorized production policy: issue exact per-phone recovery
+    // against eight independent targets in one batch. Never reset a Hub.
+    pnpMaxTargetRecoveriesPerPass: 8,
+    pnpTargetRecoveryConcurrency: 8,
+    pnpMaxAutomaticAttemptsPerDevice: 5,
+    pnpMaxAutomaticActionsPerHour: 160,
+    // Do not call a one-scan ADB reappearance recovered. Some stale WinUSB
+    // transports rejoin briefly and disappear again a few minutes later.
+    pnpRecoveryStableSeconds: Math.max(30, Math.min(600, Number(raw.pnpRecoveryStableSeconds || 90))),
+    pnpRecoveryStableScans: Math.max(2, Math.min(20, Number(raw.pnpRecoveryStableScans || 3))),
+    // Exact PnP actions briefly remove a phone from the tree. Only a sustained
+    // absence starts a fresh recovery cycle; a transient must retain its stage.
+    pnpRecoveryAbsentResetSeconds: Math.max(60, Math.min(900, Number(raw.pnpRecoveryAbsentResetSeconds || 120))),
+    pnpMassOutageMinDevices: Math.max(2, Math.min(20, Number(raw.pnpMassOutageMinDevices || 4))),
+    pnpMassOutageRatio: Math.max(0.01, Math.min(1, Number(raw.pnpMassOutageRatio || 0.08))),
+    pnpMassOutageCooldownSeconds: Math.max(60, Math.min(3_600, Number(raw.pnpMassOutageCooldownSeconds || 180))),
+    pnpMassOutageStableScans: Math.max(1, Math.min(20, Number(raw.pnpMassOutageStableScans || 3))),
     pnpMissingDeviceTrackingSeconds: Math.max(600, Math.min(604_800, Number(raw.pnpMissingDeviceTrackingSeconds || 86_400))),
-    pnpTargetAbsentRetrySeconds: Math.max(300, Math.min(86_400, Number(raw.pnpTargetAbsentRetrySeconds || 1_800))),
+    // Older production configs used 1800 seconds here, which makes a
+    // temporary post-cycle topology gap look stuck for half an hour. This is
+    // now a policy migration, not a tunable: refresh the read-only mapping in
+    // one minute without consuming another recovery attempt.
+    pnpTargetAbsentRetrySeconds: 60,
     apkPath: raw.apkPath || "",
     logDir,
     dataDir,

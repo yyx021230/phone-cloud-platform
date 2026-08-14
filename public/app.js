@@ -13,7 +13,7 @@ function readJsonLocalStorage(key, fallback) {
 const state = {
   token: localStorage.getItem("phoneCloudSessionToken") || "",
   user: null,
-  page: localStorage.getItem("phoneCloudPage") || "dashboard",
+  page: new URLSearchParams(window.location.search).get("page") || localStorage.getItem("phoneCloudPage") || "dashboard",
   overview: {},
   agents: [],
   devices: [],
@@ -65,6 +65,7 @@ const state = {
   userAutomationTargetByDevice: readJsonLocalStorage("phoneCloudUserAutomationTargetByDevice", {}),
   windowsTasks: [],
   windowsTaskEvidenceLoading: {},
+  windowsRecoveryFilter: localStorage.getItem("phoneCloudWindowsRecoveryFilter") || "all",
   smsOrders: [],
   smsEvents: [],
   smsMessages: [],
@@ -237,6 +238,7 @@ const els = {
   agentTokenNotice: document.getElementById("agentTokenNotice"),
   windowsList: document.getElementById("windowsList"),
   windowsTaskList: document.getElementById("windowsTaskList"),
+  windowsRecoveryConsole: document.getElementById("windowsRecoveryConsole"),
   deviceList: document.getElementById("deviceList"),
   deviceListingToolbar: document.getElementById("deviceListingToolbar"),
   deviceBulkListingButtons: document.querySelectorAll("[data-device-bulk-listing]"),
@@ -322,6 +324,10 @@ function humanError(payload = {}, status = 0) {
     screen_gallery_import_busy: "这张图片正在导入手机图库，请等待完成。",
     xhs_device_not_available: "当前没有可用的小红书扫码手机。",
     xhs_account_not_available: "这台手机未配置可用的小红书账号。",
+    xhs_id_required: "已填写小红书账号名称时，小红书 ID 也必须填写。",
+    xhs_account_name_required: "已填写小红书 ID 时，账号名称也必须填写。",
+    xhs_id_duplicate_on_device: "同一台手机的两个槽位不能绑定同一个小红书 ID。",
+    xhs_id_already_bound: `小红书 ID ${payload.xhsId || ""} 已绑定在 ${payload.conflictDeviceName || payload.conflictDeviceId || "另一台手机"}，不能重复绑定。`,
     account_not_configured: "这台手机未配置可用账号，请联系管理员。",
     phone_not_available: "这个手机号当前不可用或正在等待验证码。",
     user_active_xhs_task_limit_reached: "你的扫码任务已达到上限，请等待已有任务完成。",
@@ -1124,7 +1130,7 @@ function renderUserDeviceCard(device) {
           }).join("") : `<i>未读取到 SIM 信息</i>`}
         </div>
         <div class="xhs-chips">
-          ${accounts.length ? accounts.slice(0, 2).map((account) => `<i>${escapeHtml(account.appSlot || "")} · ${escapeHtml(account.accountName || account.label || "未填小红书账号")}</i>`).join("") : `<i>未填小红书账号</i>`}
+          ${accounts.length ? accounts.slice(0, 2).map((account) => `<i>${escapeHtml(account.appSlot || "")} · ${escapeHtml(account.accountName || account.label || "未填小红书账号")}${account.xhsId ? ` · ID ${escapeHtml(account.xhsId)}` : ""}</i>`).join("") : `<i>未填小红书账号</i>`}
         </div>
         ${renderDeviceOccupancy(device)}
         <div class="device-task-line">
@@ -1335,7 +1341,7 @@ function renderDetailAccount(account) {
     <article class="detail-resource-card">
       <div>
         <strong>${escapeHtml(account.label || account.appSlot)}</strong>
-        <span>${escapeHtml(account.accountName || "未填账号备注")}</span>
+        <span>${escapeHtml(account.accountName || "未填账号备注")}${account.xhsId ? ` · ID ${escapeHtml(account.xhsId)}` : ""}</span>
       </div>
       <em class="${account.busy ? "warn" : "ok"}">${account.busy ? "扫码占用" : "可用"}</em>
     </article>
@@ -1378,7 +1384,9 @@ function automationTargetsForDevice(device) {
       slot: account.appSlot || "app1",
       value: `xhs:${account.appSlot || "app1"}`,
       label: account.label || (account.appSlot === "app2" ? "小红书 2" : "小红书 1"),
-      description: account.accountName || "未填账号备注",
+      xhsId: account.xhsId || "",
+      accountName: account.accountName || "",
+      description: [account.accountName, account.xhsId ? `ID ${account.xhsId}` : ""].filter(Boolean).join(" · ") || "未填账号备注",
       disabled: Boolean(account.busy)
     }));
   const douyinTargets = (device.douyinAccounts || [])
@@ -1526,7 +1534,7 @@ function userDeviceSearchText(device) {
     device.model,
     device.androidVersion,
     ...(device.sims || []).flatMap((sim) => [sim.phoneNumber, sim.carrierName, sim.label]),
-    ...(device.xhsAccounts || []).flatMap((account) => [account.label, account.accountName, account.appSlot])
+    ...(device.xhsAccounts || []).flatMap((account) => [account.label, account.accountName, account.xhsId, account.appSlot])
   ].filter(Boolean).join(" ").toLowerCase();
 }
 
@@ -1594,7 +1602,353 @@ function renderUsers() {
     : `<div class="empty">暂无用户。</div>`;
 }
 
+const AUTOMATIC_RECOVERY_STATES = new Set([
+  "usb_present_mtp_only",
+  "usb_composite_no_adb_interface",
+  "usb_root_pnp_error",
+  "adb_interface_pnp_error",
+  "adb_interface_ready_transport_missing",
+  "adb_offline"
+]);
+
+function renderWindowsRecoveryConsole() {
+  if (!els.windowsRecoveryConsole) return;
+  const telemetryAgents = state.agents.map((agent) => ({
+    agent,
+    recovery: agent.health?.deviceRecovery || {},
+    online: isOnline(agent.lastSeenAt)
+  })).filter(({ recovery, online }) => online || recovery.observedAt || recovery.inventoryObservedAt);
+  const queue = telemetryAgents.flatMap(({ agent, recovery, online }) => (recovery.queue || []).map((item) => ({
+    ...item,
+    agentId: agent.agentId,
+    agentName: agent.agentName || agent.agentId,
+    agentOnline: online,
+    agentCircuitOpen: Boolean(recovery.circuitOpen),
+    agentBlockedReason: String(recovery.blockedReason || ""),
+    agentRecoveryMode: String(recovery.recoveryMode || "normal"),
+    agentRescue: Boolean(recovery.rescueCanMutate)
+      && (recovery.rescueSerials || []).some((serial) => String(serial).toUpperCase() === String(item.serial || "").toUpperCase()),
+    nextActionAt: item.nextActionAt || recovery.actionReadyAt || (recovery.circuitOpen ? recovery.circuitUntil : "")
+  })));
+  const events = telemetryAgents.flatMap(({ agent, recovery }) => (recovery.recentEvents || []).map((event) => ({
+    ...event,
+    agentId: agent.agentId,
+    agentName: agent.agentName || agent.agentId
+  }))).sort((left, right) => new Date(right.at || 0).getTime() - new Date(left.at || 0).getTime()).slice(0, 40);
+  const observed = telemetryAgents.filter(({ recovery }) => recovery.observedAt || recovery.inventoryObservedAt);
+  const circuitAgents = telemetryAgents.filter(({ recovery }) => recovery.circuitOpen);
+  const rescueCount = telemetryAgents.reduce((sum, { recovery }) => sum + (recovery.rescueCanMutate ? Number((recovery.rescueSerials || []).length) : 0), 0);
+  const activeCount = queue.filter((item) => item.inProgress).length;
+  const quarantinedCount = queue.filter((item) => item.quarantined).length;
+  const unauthorizedCount = queue.filter((item) => item.state === "adb_unauthorized").length;
+  const physicalCount = telemetryAgents.reduce((sum, { recovery }) => sum + Number(recovery.physicalCount || 0), 0);
+  const adbCount = telemetryAgents.reduce((sum, { recovery }) => sum + Number(recovery.adbDeviceCount || 0), 0);
+  const actionsUsed = telemetryAgents.reduce((sum, { recovery }) => sum + Number(recovery.automaticActionsLastHour || 0), 0);
+  const actionsMax = telemetryAgents.reduce((sum, { recovery }) => sum + Number(recovery.maxActionsPerHour || 0), 0);
+  const status = !observed.length
+    ? { tone: "idle", label: "等待恢复遥测", detail: "Windows 管理器尚未上报逐设备恢复状态" }
+    : rescueCount
+      ? { tone: "active", label: `${rescueCount} 台连带设备精确救援`, detail: "普通队列保持熔断，仅逐台救回本轮恢复造成的批外掉线设备" }
+    : circuitAgents.length
+      ? { tone: "danger", label: "保护熔断", detail: circuitAgents.map(({ agent, recovery }) => `${agent.agentName || agent.agentId}：${recoveryBlockReason(recovery)}`).join("；") }
+      : activeCount
+        ? { tone: "active", label: `${activeCount} 台正在恢复`, detail: "动作执行后会先验证 ADB，再决定是否进入下一次重试" }
+        : telemetryAgents.some(({ recovery }) => recovery.recoveryMode === "degraded_recovery")
+          ? { tone: "active", label: "残余队列并发恢复", detail: "批量异常已稳定，正在按每批最多 8 台执行精确恢复" }
+        : queue.length
+          ? { tone: "warning", label: `${queue.length} 台待恢复`, detail: recoveryBlockSummary(telemetryAgents) }
+          : { tone: "healthy", label: "恢复链路稳定", detail: "当前没有物理在线但 ADB 异常的手机" };
+  const filter = ["all", "active", "waiting", "manual"].includes(state.windowsRecoveryFilter) ? state.windowsRecoveryFilter : "all";
+  const filteredQueue = queue.filter((item) => recoveryQueueMatchesFilter(item, filter));
+  const filterCounts = {
+    all: queue.length,
+    active: queue.filter((item) => item.inProgress).length,
+    waiting: queue.filter((item) => recoveryQueueMatchesFilter(item, "waiting")).length,
+    manual: queue.filter((item) => recoveryQueueMatchesFilter(item, "manual")).length
+  };
+  const latestObservedAt = observed.map(({ recovery }) => recovery.observedAt || recovery.inventoryObservedAt).sort().at(-1) || "";
+
+  els.windowsRecoveryConsole.innerHTML = `
+    <section class="recovery-console" aria-label="USB 和 ADB 自动恢复控制台">
+      <header class="recovery-console-head">
+        <div>
+          <span class="recovery-eyebrow">RECOVERY / LIVE</span>
+          <h3>USB · ADB 恢复控制台</h3>
+          <p>把每台手机从物理枚举、ADB 子接口到平台上线的恢复过程完整展开。</p>
+        </div>
+        <div class="recovery-global-status is-${status.tone}">
+          <i aria-hidden="true"></i>
+          <div><strong>${escapeHtml(status.label)}</strong><span>${escapeHtml(status.detail)}</span></div>
+        </div>
+      </header>
+
+      <div class="recovery-kpi-grid">
+        ${recoveryKpi("物理 USB", physicalCount, observed.length ? "Windows 已枚举" : "等待采样", "usb")}
+        ${recoveryKpi("ADB 在线", adbCount, physicalCount ? `${Math.round(adbCount / physicalCount * 100)}% 可达` : "暂无样本", "adb")}
+        ${recoveryKpi("恢复队列", queue.length, activeCount ? `${activeCount} 台执行中` : "当前等待", "queue")}
+        ${recoveryKpi("需人工", unauthorizedCount + quarantinedCount, `${unauthorizedCount} 未授权 · ${quarantinedCount} 隔离`, "manual")}
+        ${recoveryKpi("小时动作", actionsUsed, actionsMax ? `预算 ${actionsUsed} / ${actionsMax}` : "等待上报预算", "budget")}
+      </div>
+
+      <div class="recovery-agent-rail">
+        ${telemetryAgents.length ? telemetryAgents.map(({ agent, recovery, online }) => `
+          <div class="recovery-agent-node ${online ? "is-online" : "is-offline"} ${recovery.circuitOpen ? "is-circuit" : ""}">
+            <i aria-hidden="true"></i>
+            <div>
+              <strong>${escapeHtml(agent.agentName || agent.agentId)}</strong>
+              <span>${online ? recoveryAgentSummary(recovery) : "管理器离线，遥测已停止"}</span>
+            </div>
+            <time>${escapeHtml(shortTime(recovery.observedAt || agent.lastSeenAt))}</time>
+          </div>
+        `).join("") : `<div class="recovery-empty-inline">还没有 Windows 管理器上线。</div>`}
+      </div>
+
+      <div class="recovery-workspace">
+        <section class="recovery-queue-panel">
+          <div class="recovery-panel-head">
+            <div><span>DEVICE QUEUE</span><h4>逐设备恢复队列</h4></div>
+            <small>采样 ${escapeHtml(shortTime(latestObservedAt))}</small>
+          </div>
+          <div class="recovery-filter-bar" role="group" aria-label="恢复队列筛选">
+            ${recoveryFilterButton("all", "全部", filterCounts.all, filter)}
+            ${recoveryFilterButton("active", "执行中", filterCounts.active, filter)}
+            ${recoveryFilterButton("waiting", "等待重试", filterCounts.waiting, filter)}
+            ${recoveryFilterButton("manual", "需人工", filterCounts.manual, filter)}
+          </div>
+          <div class="recovery-queue-list">
+            ${filteredQueue.length ? filteredQueue.map(renderRecoveryQueueRow).join("") : renderRecoveryEmpty(queue.length, filter)}
+          </div>
+        </section>
+
+        <aside class="recovery-flight-recorder">
+          <div class="recovery-panel-head">
+            <div><span>FLIGHT RECORDER</span><h4>恢复事件记录</h4></div>
+            <small>最近 ${events.length} 条</small>
+          </div>
+          <div class="recovery-event-list">
+            ${events.length ? events.map((event) => renderRecoveryEvent(event, queue)).join("") : `<div class="recovery-empty"><strong>暂无恢复事件</strong><span>异常识别、动作、验证和熔断都会按时间记录在这里。</span></div>`}
+          </div>
+        </aside>
+      </div>
+      <footer class="recovery-legend">
+        <span><i class="is-auto"></i>自动处理：精确 ADB reconnect / 单设备 PnP 重启</span>
+        <span><i class="is-wait"></i>安全等待：任务占用、Windows 安装器或退避冷却</span>
+        <span><i class="is-manual"></i>人工处理：USB 未授权、物理拔出或 5 次状态化动作预算用尽</span>
+      </footer>
+    </section>
+  `;
+}
+
+function recoveryKpi(label, value, detail, tone) {
+  return `<div class="recovery-kpi is-${tone}"><span>${escapeHtml(label)}</span><strong>${Number(value || 0)}</strong><small>${escapeHtml(detail)}</small></div>`;
+}
+
+function recoveryFilterButton(value, label, count, selected) {
+  return `<button class="${selected === value ? "active" : ""}" data-recovery-filter="${value}" type="button"><span>${escapeHtml(label)}</span><strong>${Number(count || 0)}</strong></button>`;
+}
+
+function recoveryQueueMatchesFilter(item, filter) {
+  if (filter === "active") return Boolean(item.inProgress);
+  if (filter === "manual") return Boolean(item.quarantined || item.state === "adb_unauthorized" || item.state === "physically_absent");
+  if (filter === "waiting") return !item.inProgress && !recoveryQueueMatchesFilter(item, "manual");
+  return true;
+}
+
+function renderRecoveryQueueRow(item) {
+  const status = recoveryDeviceStatus(item);
+  const stateLabel = recoveryStateLabel(item.state);
+  const attempts = Math.max(0, Number(item.attempts || 0));
+  const maxAttempts = Math.max(1, Number(item.maxAttempts || 5));
+  const evidence = [item.lastError, item.rootProblem && `USB ${item.rootProblem}`, item.adbInterfaceProblem && `ADB ${item.adbInterfaceProblem}`].filter(Boolean).join(" · ");
+  return `
+    <article class="recovery-device-row is-${status.tone}">
+      <div class="recovery-device-identity">
+        <span class="recovery-device-number">${escapeHtml(recoveryDeviceNumber(item.deviceName))}</span>
+        <div><strong>${escapeHtml(item.deviceName || item.serial)}</strong><code>${escapeHtml(item.serial)}</code></div>
+      </div>
+      <div class="recovery-breakpoint">
+        <span>当前断点</span>
+        <strong>${escapeHtml(stateLabel)}</strong>
+        <small>${escapeHtml(item.agentName || item.agentId || "-")}</small>
+      </div>
+      <div class="recovery-attempts">
+        <div><span>自动尝试</span><strong>${attempts} / ${maxAttempts}</strong></div>
+        <div class="recovery-attempt-rail" aria-label="已执行 ${attempts} 次，共最多 ${maxAttempts} 次">
+          ${Array.from({ length: maxAttempts }, (_, index) => `<i class="${recoveryAttemptClass(index, attempts, item)}"></i>`).join("")}
+        </div>
+        <small>${escapeHtml(recoveryModeLabel(item.mode, item.targetType))}</small>
+      </div>
+      <div class="recovery-next-action">
+        <em class="is-${status.tone}">${escapeHtml(status.label)}</em>
+        ${item.nextActionAt && !item.quarantined ? `<strong data-recovery-countdown="${escapeHtml(item.nextActionAt)}">${escapeHtml(formatRecoveryCountdown(item.nextActionAt))}</strong>` : `<strong>${escapeHtml(status.next)}</strong>`}
+        <small>${escapeHtml(item.lastAttemptAt ? `上次动作 ${shortTime(item.lastAttemptAt)}` : "尚未执行恢复动作")}</small>
+      </div>
+      ${evidence ? `<p class="recovery-evidence" title="${escapeHtml(evidence)}">证据：${escapeHtml(evidence)}</p>` : ""}
+    </article>
+  `;
+}
+
+function recoveryDeviceNumber(name) {
+  const match = String(name || "").match(/\d+/);
+  return match ? match[0].padStart(2, "0") : "--";
+}
+
+function recoveryAttemptClass(index, attempts, item) {
+  if (item.inProgress && index === Math.max(0, attempts - 1)) return "is-active";
+  if (index < attempts) return item.quarantined && index === attempts - 1 ? "is-failed" : "is-done";
+  if (!item.quarantined && index === attempts) return "is-next";
+  return "";
+}
+
+function recoveryDeviceStatus(item) {
+  if (!item.agentOnline) return { tone: "danger", label: "主机离线", next: "等待管理器恢复" };
+  if (item.inProgress) return { tone: "active", label: "正在执行", next: "动作进行中" };
+  if (item.quarantined) return { tone: "danger", label: "已隔离", next: "等待人工诊断" };
+  if (item.state === "adb_unauthorized") return { tone: "manual", label: "待授权", next: "请在手机确认 USB 调试" };
+  if (item.state === "physically_absent") return { tone: "muted", label: "物理缺席", next: "等待重新插入" };
+  if (item.state === "inventory_unavailable") return { tone: "danger", label: "清单不可用", next: "等待 Windows 采样恢复" };
+  if (item.agentCircuitOpen && item.agentRescue) return { tone: "active", label: "熔断救援", next: "仅恢复该连带设备" };
+  if (item.agentCircuitOpen) return { tone: "muted", label: "熔断观察", next: "稳定窗口后单台探测" };
+  if (item.agentBlockedReason === "host_busy") return { tone: "muted", label: "任务避让", next: "等待前台自动化结束" };
+  if (item.agentBlockedReason === "device_install_busy") return { tone: "muted", label: "安装器忙", next: "等待 Windows 安装器空闲" };
+  if (item.agentBlockedReason === "hourly_budget_exhausted") return { tone: "muted", label: "预算已满", next: "等待小时预算释放" };
+  if (item.agentBlockedReason === "action_cooldown") return { tone: "warning", label: "主机冷却", next: "等待下一台安全窗口" };
+  return { tone: "warning", label: item.attempts ? "冷却验证" : "等待处理", next: "等待下次扫描" };
+}
+
+function recoveryStateLabel(value) {
+  return ({
+    inventory_unavailable: "物理 USB 清单不可用",
+    physically_absent: "Windows 未枚举到手机",
+    usb_present_mtp_only: "仅有 MTP / 文件传输",
+    usb_composite_no_adb_interface: "ADB USB 子接口未暴露",
+    usb_root_pnp_error: "USB Composite 设备异常",
+    adb_interface_pnp_error: "Android ADB 驱动异常",
+    adb_interface_ready_transport_missing: "ADB 接口正常，transport 缺失",
+    adb_unauthorized: "ADB 未授权",
+    adb_offline: "ADB transport 离线",
+    adb_device: "ADB 已在线"
+  })[value] || value || "状态未知";
+}
+
+function recoveryModeLabel(mode, targetType) {
+  if (mode === "adb_reconnect") return "动作：仅重连 ADB transport";
+  if (mode === "restart_adb_interface") return "动作：精确重启 ADB / WinUSB 接口";
+  if (mode === "recreate_adb_interface") return "动作：重建 ADB 子接口并扫描手机根节点";
+  if (mode === "recreate_adb_root") return "动作：重建单手机 ADB 根节点并扫描精确上游";
+  if (mode === "cycle_usb_port") return "动作：循环该手机的精确 USB 下游端口";
+  if (mode === "recreate_usb_composite") return "动作：重建单手机 USB Composite 子树";
+  if (mode === "restart") return `动作：精确重启${targetType === "adb_interface" ? " ADB 接口" : "单个 USB 设备"}`;
+  if (mode === "no_exact_target") return "只读复查：尚未找到安全目标";
+  if (mode === "quarantine") return "自动动作已停止，仍持续观察";
+  return "策略：等待精确目标与安全窗口";
+}
+
+function formatRecoveryCountdown(value) {
+  const remaining = new Date(value || 0).getTime() - Date.now();
+  if (!Number.isFinite(remaining) || remaining <= 0) return "等待本轮扫描";
+  const seconds = Math.ceil(remaining / 1000);
+  if (seconds < 60) return `${seconds} 秒后复查`;
+  return `${Math.floor(seconds / 60)}分${String(seconds % 60).padStart(2, "0")}秒后复查`;
+}
+
+function updateRecoveryCountdowns() {
+  document.querySelectorAll("[data-recovery-countdown]").forEach((node) => {
+    node.textContent = formatRecoveryCountdown(node.dataset.recoveryCountdown);
+  });
+}
+
+function recoveryBlockReason(recovery = {}) {
+  return ({
+    circuit_mass_outage: "多设备异常，保护熔断中",
+    circuit_burst_outage: "设备突发掉线，保护熔断中",
+    circuit_pnp_timeout: "PnP 动作超时，保护熔断中",
+    host_busy: "前台自动化任务正在执行，暂缓 PnP",
+    device_install_busy: "Windows 设备安装器忙，等待下一并发批次",
+    hourly_budget_exhausted: "小时动作预算已用尽",
+    action_cooldown: "上一台动作后处于主机冷却期",
+    physical_inventory_unavailable: "物理 USB 清单不可用",
+    not_observed: "等待第一次物理 USB 采样"
+  })[recovery.blockedReason] || (recovery.blockedReason ? recovery.blockedReason : "可执行自动恢复");
+}
+
+function recoveryBlockSummary(agents) {
+  const blocked = agents.map(({ recovery }) => recoveryBlockReason(recovery)).filter((value) => value !== "可执行自动恢复");
+  return blocked[0] || "按每台手机的退避时间依次恢复";
+}
+
+function recoveryAgentSummary(recovery = {}) {
+  if (!recovery.observedAt && !recovery.inventoryObservedAt) return "等待逐设备恢复遥测";
+  if (recovery.circuitOpen && recovery.rescueCanMutate) return `保护熔断中 · ${(recovery.rescueSerials || []).length} 台连带设备单台救援`;
+  if (recovery.circuitOpen) return recoveryBlockReason(recovery);
+  const queueCount = Array.isArray(recovery.queue) ? recovery.queue.length : Number(recovery.actionableCount || 0) + Number(recovery.unauthorizedCount || 0);
+  if (recovery.recoveryMode === "degraded_recovery") return `${queueCount} 台残余异常 · 最多 8 台并发恢复中`;
+  return queueCount ? `${queueCount} 台在恢复视野 · ${recoveryBlockReason(recovery)}` : `${Number(recovery.adbDeviceCount || 0)} 台 ADB 正常`;
+}
+
+function renderRecoveryEvent(event, queue) {
+  const match = queue.find((item) => String(item.serial).toUpperCase() === String(event.serial || "").toUpperCase());
+  const title = recoveryEventLabel(event);
+  const detail = recoveryEventDetail(event);
+  return `
+    <article class="recovery-event is-${escapeHtml(event.severity || "info")}">
+      <i aria-hidden="true"></i>
+      <div>
+        <time>${escapeHtml(shortTime(event.at))}</time>
+        <strong>${escapeHtml(title)}</strong>
+        <span>${escapeHtml(match?.deviceName || event.serial || event.agentName || "Windows 恢复器")}${detail ? ` · ${escapeHtml(detail)}` : ""}</span>
+      </div>
+    </article>
+  `;
+}
+
+function recoveryEventLabel(event) {
+  return ({
+    detected: "发现链路异常",
+    state_changed: "链路断点发生变化",
+    recovered: "ADB 已验证恢复",
+    action_started: `开始第 ${Number(event.attempt || 0)} 次自动恢复`,
+    action_completed: "恢复动作完成，等待验证",
+    action_failed: "恢复动作失败",
+    deferred: "恢复动作安全暂缓",
+    quarantined: `${Math.max(1, Number(event.maxAttempts || 5))} 次自动恢复已用尽`,
+    rescue_started: "熔断连带设备救援已开始",
+    circuit_opened: "主机保护熔断已打开",
+    circuit_closed: "主机保护熔断已解除"
+  })[event.type] || event.type || "恢复状态更新";
+}
+
+function recoveryEventDetail(event) {
+  if (event.type === "state_changed") return `${recoveryStateLabel(event.previousState)} → ${recoveryStateLabel(event.state)}`;
+  if (event.type === "recovered") return recoveryStateLabel(event.state);
+  return event.result || recoveryReasonLabel(event.reason) || recoveryModeLabel(event.mode, event.targetType);
+}
+
+function recoveryReasonLabel(value) {
+  return ({
+    target_busy: "该手机正在执行任务",
+    device_install_busy: "Windows 设备安装器正在工作",
+    host_or_pnp_action_in_progress: "同主机已有恢复动作",
+    host_became_busy: "执行前检测到主机被占用",
+    exact_instance_not_found: "未找到可安全重启的精确 PnP 节点",
+    automatic_attempt_limit_reached: "达到单设备自动尝试上限",
+    adb_reconnect_failed: "ADB transport 重连失败",
+    pnp_timeout: "单设备 PnP 重启超时",
+    pnp_action_failed: "单设备 PnP 重启失败",
+    circuit_collateral_rescue: "普通队列保持熔断，仅救回批外连带设备",
+    mass_outage: "同时异常设备过多",
+    burst_outage: "短时间内集中掉线",
+    stable_scans_passed: "连续稳定采样通过"
+  })[value] || value || "";
+}
+
+function renderRecoveryEmpty(hasQueue, filter) {
+  if (hasQueue && filter !== "all") return `<div class="recovery-empty"><strong>这个筛选下没有设备</strong><span>切换“全部”可查看当前完整恢复队列。</span></div>`;
+  return `<div class="recovery-empty is-healthy"><strong>当前队列已清空</strong><span>所有已物理连接的手机都已到达 ADB 在线状态。</span></div>`;
+}
+
 function renderWindows() {
+  renderWindowsRecoveryConsole();
   els.windowsList.innerHTML = state.agents.length
     ? state.agents.map((agent) => {
       const online = isOnline(agent.lastSeenAt);
@@ -1795,13 +2149,15 @@ function renderDevices() {
           <fieldset>
             <legend>小红书账号</legend>
             <label>
-              <span>app1</span>
-              <input data-role="xhs-account-name" data-slot="app1" value="${escapeHtml(app1.accountName || "")}" placeholder="账号备注" />
+              <span>app1 账号名称</span>
+              <input data-role="xhs-account-name" data-slot="app1" value="${escapeHtml(app1.accountName || "")}" placeholder="可改的显示名称" />
+              <input data-role="xhs-account-id" data-slot="app1" value="${escapeHtml(app1.xhsId || "")}" placeholder="小红书 ID（稳定标识）" maxlength="64" />
               <span class="inline-check"><input data-role="xhs-account-enabled" data-slot="app1" type="checkbox" ${app1.enabled === false ? "" : "checked"} />启用</span>
             </label>
             <label>
-              <span>app2 / II·小红书</span>
-              <input data-role="xhs-account-name" data-slot="app2" value="${escapeHtml(app2.accountName || "")}" placeholder="可选" />
+              <span>app2 / II·小红书 账号名称</span>
+              <input data-role="xhs-account-name" data-slot="app2" value="${escapeHtml(app2.accountName || "")}" placeholder="可改的显示名称" />
+              <input data-role="xhs-account-id" data-slot="app2" value="${escapeHtml(app2.xhsId || "")}" placeholder="小红书 ID（稳定标识）" maxlength="64" />
               <span class="inline-check"><input data-role="xhs-account-enabled" data-slot="app2" type="checkbox" ${app2.enabled === false ? "" : "checked"} />启用</span>
             </label>
           </fieldset>
@@ -1897,7 +2253,7 @@ function renderXhsSlotOptions() {
     .slice(0, 2);
   els.xhsSlotSelect.innerHTML = accounts.length
     ? accounts.map((account) => {
-      const label = [account.label || account.appSlot, account.accountName].filter(Boolean).join(" · ");
+      const label = [account.label || account.appSlot, account.accountName, account.xhsId ? `ID ${account.xhsId}` : ""].filter(Boolean).join(" · ");
       return `<option value="${escapeHtml(account.appSlot)}">${escapeHtml(label)}</option>`;
     }).join("")
     : `<option value="">暂无可用小红书账号</option>`;
@@ -2030,7 +2386,7 @@ function renderXhs() {
             <div class="admin-xhs-task-title">
               <div>
                 <strong>小红书扫码</strong>
-                <span>${escapeHtml(task.deviceId)} · ${escapeHtml([task.xhsAccountLabel || task.xhsAppSlot, task.xhsAccountName].filter(Boolean).join(" · "))}</span>
+                <span>${escapeHtml(task.deviceId)} · ${escapeHtml([task.xhsAccountLabel || task.xhsAppSlot, task.xhsAccountName, task.xhsAccountId ? `ID ${task.xhsAccountId}` : ""].filter(Boolean).join(" · "))}</span>
               </div>
               <em class="${task.status === "succeeded" ? "ok" : ["failed", "cancelled", "expired"].includes(task.status) ? "bad" : "warn"}">${escapeHtml(xhsStatusText(task.status))}</em>
             </div>
@@ -2227,7 +2583,7 @@ function renderUserXhsTaskCard(task) {
   const message = summary.failureMessage || summary.progressMessage || lastEvent.message || "等待 Windows 管理器上报步骤";
   const eventCount = Number(summary.eventCount || 0);
   const screenshotCount = Number(summary.screenshotCount || 0);
-  const account = [task.xhsAccountLabel || task.xhsAppSlot, task.xhsAccountName].filter(Boolean).join(" · ") || "未命名槽位";
+  const account = [task.xhsAccountLabel || task.xhsAppSlot, task.xhsAccountName, task.xhsAccountId ? `ID ${task.xhsAccountId}` : ""].filter(Boolean).join(" · ") || "未命名槽位";
   const mode = task.executionMode === "windows_airtest_poco" ? "Airtest/Poco 扫码" : task.executionMode === "windows_xml_uiautomator" ? "XML UIAutomator 扫码" : task.executionMode === "windows_adb_uiautomator" ? "ADB 自动化扫码" : "兼容通道";
   const statusClass = xhsStatusClass(task.status);
   const progress = xhsTaskProgress(task);
@@ -3266,16 +3622,13 @@ async function saveDeviceBindings(card) {
       };
     })
     .filter((sim) => sim.phoneNumber || sim.carrierName || sim.label);
-  await api(`/api/v1/devices/${encodeURIComponent(deviceId)}/sims`, {
-    method: "PUT",
-    body: JSON.stringify({ sims })
-  });
-
   const accountInputs = [...card.querySelectorAll('[data-role="xhs-account-name"]')];
   const accounts = accountInputs.map((input) => {
     const enabledInput = card.querySelector(`[data-role="xhs-account-enabled"][data-slot="${input.dataset.slot}"]`);
+    const idInput = card.querySelector(`[data-role="xhs-account-id"][data-slot="${input.dataset.slot}"]`);
     return {
       appSlot: input.dataset.slot,
+      xhsId: String(idInput?.value || "").replace(/\s+/g, "").trim(),
       accountName: input.value.trim(),
       label: input.dataset.slot === "app2" ? "Ⅱ·小红书" : "小红书",
       enabled: Boolean(enabledInput?.checked)
@@ -3620,7 +3973,8 @@ els.userXhsTaskForm.addEventListener("submit", async (event) => {
       createdAt: new Date().toISOString(),
       xhsAppSlot: target.slot,
       xhsAccountLabel: targetInfo.label || (target.slot === "app2" ? "小红书 2" : "小红书 1"),
-      xhsAccountName: targetInfo.description || "",
+      xhsAccountId: targetInfo.xhsId || "",
+      xhsAccountName: targetInfo.accountName || "",
       executionMode: "windows_airtest_poco",
       cancellable: false,
       summary: {
@@ -3691,6 +4045,9 @@ async function openUserDeviceDetail(deviceId) {
   if (state.userScreenDeviceId && state.userScreenDeviceId !== deviceId) await stopUserScreenSession();
   if (state.userSelectedDeviceId !== deviceId) {
     state.userSmsPage = 1;
+    state.userSmsSearch = "";
+    state.userSmsSimFilter = "";
+    state.userSmsCodeOnly = false;
     latestUserSmsRequestId++;
     state.userDeviceSmsMessages = [];
     state.userDeviceSmsTotal = 0;
@@ -3947,6 +4304,14 @@ els.windowsList.addEventListener("click", async (event) => {
   createWindowsTask(button).catch((error) => alert(error.message));
 });
 
+els.windowsRecoveryConsole?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-recovery-filter]");
+  if (!button) return;
+  state.windowsRecoveryFilter = button.dataset.recoveryFilter || "all";
+  localStorage.setItem("phoneCloudWindowsRecoveryFilter", state.windowsRecoveryFilter);
+  renderWindowsRecoveryConsole();
+});
+
 function showAgentToken(agent, token) {
   if (!els.agentTokenNotice) return;
   els.agentTokenNotice.classList.remove("hidden");
@@ -4174,6 +4539,7 @@ loadAll().catch((error) => {
 });
 
 setInterval(() => loadAll().catch(() => {}), AUTO_REFRESH_MS);
+setInterval(updateRecoveryCountdowns, 1_000);
 setInterval(() => {
   if (state.user?.role === "admin" && state.page === "diagnostics") {
     loadAll().catch(() => {});

@@ -27,6 +27,7 @@ public class SmsReceiver extends BroadcastReceiver {
         }
         long finalTimestamp = timestamp;
         Context appContext = context.getApplicationContext();
+        SmsRelayDiagnostics.recordSmsReceived(appContext);
         int subscriptionId = extractSubscriptionId(intent);
         int slotIndex = SimInfoReader.slotIndexForSubscription(appContext, subscriptionId);
         SmsQueueStore store = new SmsQueueStore(appContext);

@@ -2,6 +2,8 @@
 
 Phone Cloud 是“云端平台 + Windows 管理器 + Android 真机”的设备业务平台。当前主能力是：
 
+> **开发必读：** 开始任何开发、排障或部署前，先阅读 [`docs/PROJECT_DEVELOPMENT.md`](docs/PROJECT_DEVELOPMENT.md)。它是当前架构、生产事实、冻结范围、已知问题、决策和路线图的唯一事实来源。历史专题文档与它冲突时，以核实后的主文档为准。
+
 - Windows 管理器通过 ADB 上报和管理手机。
 - 按需同步设备短信库，并提供分页查询与验证码接口。
 - 使用 Airtest/Poco 执行小红书图库扫码任务。

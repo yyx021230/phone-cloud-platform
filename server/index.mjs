@@ -27,6 +27,16 @@ import {
   applyPhoneAgentDeviceName,
   defaultAdbDeviceName
 } from "./device-naming.mjs";
+import {
+  applyAdminSimAuthority,
+  mergeReportedSims,
+  normalizeSimPhoneSource
+} from "./device-sim-authority.mjs";
+import {
+  findXhsIdConflict,
+  normalizeXhsId,
+  validateXhsAccounts
+} from "./xhs-account-identity.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.dirname(__dirname);
@@ -846,6 +856,7 @@ async function routeApi(req, res, url) {
       deviceId: target.device.deviceId,
       xhsAppSlot: target.account.appSlot,
       xhsAccountLabel: target.account.label,
+      xhsAccountId: target.account.xhsId,
       xhsAccountName: target.account.accountName,
       qrImageDataUrl,
       userId: ctx.userId,
@@ -1219,11 +1230,16 @@ async function routeApi(req, res, url) {
       updates.listingStatus = listingStatus;
     }
     if (input.sims !== undefined) {
-      device.sims = normalizeSims(input.sims || []);
+      device.sims = applyAdminSimAuthority(normalizeSims(input.sims || []), nowIso());
       updates.sims = device.sims.length;
     }
     if (input.xhsAccounts !== undefined || input.accounts !== undefined) {
-      device.xhsAccounts = normalizeXhsAccounts(input.xhsAccounts || input.accounts || []);
+      const xhsAccounts = normalizeXhsAccounts(input.xhsAccounts || input.accounts || []);
+      const validationError = validateXhsAccounts(xhsAccounts);
+      if (validationError) return json(res, 400, validationError);
+      const conflict = findXhsIdConflict(state.devices, deviceId, xhsAccounts);
+      if (conflict) return json(res, 409, conflict);
+      device.xhsAccounts = xhsAccounts;
       updates.xhsAccounts = device.xhsAccounts.length;
     }
     if (!Object.keys(updates).length) return json(res, 400, { error: "no_device_updates" });
@@ -1265,7 +1281,7 @@ async function routeApi(req, res, url) {
     const deviceId = decodeURIComponent(deviceBindSimMatch[1]);
     const device = state.devices.find((item) => item.deviceId === deviceId);
     if (!device) return json(res, 404, { error: "device_not_found" });
-    device.sims = normalizeSims(input.sims || []);
+    device.sims = applyAdminSimAuthority(normalizeSims(input.sims || []), nowIso());
     device.updatedAt = nowIso();
     const audit = addAudit("device_sims_update", ctx, { deviceId, count: device.sims.length });
     await persistencePolicy.persist(() => structuredRepos.persistDeviceMutation({ device, audit }));
@@ -1279,7 +1295,12 @@ async function routeApi(req, res, url) {
     const deviceId = decodeURIComponent(deviceXhsAccountMatch[1]);
     const device = state.devices.find((item) => item.deviceId === deviceId);
     if (!device) return json(res, 404, { error: "device_not_found" });
-    device.xhsAccounts = normalizeXhsAccounts(input.accounts || []);
+    const xhsAccounts = normalizeXhsAccounts(input.accounts || []);
+    const validationError = validateXhsAccounts(xhsAccounts);
+    if (validationError) return json(res, 400, validationError);
+    const conflict = findXhsIdConflict(state.devices, deviceId, xhsAccounts);
+    if (conflict) return json(res, 409, conflict);
+    device.xhsAccounts = xhsAccounts;
     device.updatedAt = nowIso();
     const audit = addAudit("device_xhs_accounts_update", ctx, { deviceId, count: device.xhsAccounts.length });
     await persistencePolicy.persist(() => structuredRepos.persistDeviceMutation({ device, audit }));
@@ -1478,6 +1499,7 @@ async function routeApi(req, res, url) {
       deviceId,
       xhsAppSlot: account.appSlot,
       xhsAccountLabel: account.label,
+      xhsAccountId: account.xhsId,
       xhsAccountName: account.accountName,
       qrImageDataUrl,
       userId: input.userId || ctx.userId || "",
@@ -2091,6 +2113,34 @@ function normalizeAgentHealth(input = {}) {
       activeSessions: boundedMetric(input.screenControl?.activeSessions, 0, 1000, 0),
       serverJarReady: Boolean(input.screenControl?.serverJarReady)
     },
+    deviceRecovery: {
+      observedAt: String(input.deviceRecovery?.observedAt || "").slice(0, 80),
+      circuitOpen: Boolean(input.deviceRecovery?.circuitOpen),
+      circuitReason: String(input.deviceRecovery?.circuitReason || "").slice(0, 120),
+      circuitUntil: String(input.deviceRecovery?.circuitUntil || "").slice(0, 80),
+      blockedReason: String(input.deviceRecovery?.blockedReason || "").slice(0, 120),
+      physicalCount: boundedMetric(input.deviceRecovery?.physicalCount, 0, 10_000, 0),
+      adbDeviceCount: boundedMetric(input.deviceRecovery?.adbDeviceCount, 0, 10_000, 0),
+      actionableCount: boundedMetric(input.deviceRecovery?.actionableCount, 0, 10_000, 0),
+      newlyLostCount: boundedMetric(input.deviceRecovery?.newlyLostCount, 0, 10_000, 0),
+      unauthorizedCount: boundedMetric(input.deviceRecovery?.unauthorizedCount, 0, 10_000, 0),
+      offlineCount: boundedMetric(input.deviceRecovery?.offlineCount, 0, 10_000, 0),
+      absentCount: boundedMetric(input.deviceRecovery?.absentCount, 0, 10_000, 0),
+      automaticActionsLastHour: boundedMetric(input.deviceRecovery?.automaticActionsLastHour, 0, 10_000, 0),
+      maxActionsPerHour: boundedMetric(input.deviceRecovery?.maxActionsPerHour, 0, 10_000, 0),
+      acknowledgedActionableCount: boundedMetric(input.deviceRecovery?.acknowledgedActionableCount, 0, 10_000, 0),
+      recoveryMode: String(input.deviceRecovery?.recoveryMode || "normal").slice(0, 80),
+      actionReadyAt: String(input.deviceRecovery?.actionReadyAt || "").slice(0, 80),
+      rescueSerials: sanitizeStringList(input.deviceRecovery?.rescueSerials || [], 20, 160),
+      rescueCanMutate: Boolean(input.deviceRecovery?.rescueCanMutate),
+      maxAttemptsPerDevice: boundedMetric(input.deviceRecovery?.maxAttemptsPerDevice, 1, 100, 0),
+      quarantinedCount: boundedMetric(input.deviceRecovery?.quarantinedCount, 0, 10_000, 0),
+      inventoryObservedAt: String(input.deviceRecovery?.inventoryObservedAt || "").slice(0, 80),
+      inventoryFresh: Boolean(input.deviceRecovery?.inventoryFresh),
+      inventoryError: String(input.deviceRecovery?.inventoryError || "").slice(0, 300),
+      queue: normalizeRecoveryQueue(input.deviceRecovery?.queue),
+      recentEvents: normalizeRecoveryEvents(input.deviceRecovery?.recentEvents)
+    },
     directories: {
       logDir: {
         path: String(input.directories?.logDir?.path || "").slice(0, 300),
@@ -2124,18 +2174,60 @@ function boundedMetric(value, min, max, digits = 0) {
   return Math.round(bounded * factor) / factor;
 }
 
+function normalizeRecoveryQueue(value) {
+  return (Array.isArray(value) ? value : []).slice(0, 200).map((item = {}) => ({
+    serial: String(item.serial || "").slice(0, 160),
+    deviceId: String(item.deviceId || "").slice(0, 160),
+    deviceName: String(item.deviceName || item.serial || "未知设备").slice(0, 160),
+    state: String(item.state || "unknown").slice(0, 80),
+    physicalPresent: Boolean(item.physicalPresent),
+    attempts: boundedMetric(item.attempts, 0, 100, 0),
+    maxAttempts: boundedMetric(item.maxAttempts, 1, 100, 0),
+    mode: String(item.mode || "").slice(0, 80),
+    lastAttemptAt: String(item.lastAttemptAt || "").slice(0, 80),
+    nextActionAt: String(item.nextActionAt || "").slice(0, 80),
+    inProgress: Boolean(item.inProgress),
+    quarantined: Boolean(item.quarantined),
+    quarantinedAt: String(item.quarantinedAt || "").slice(0, 80),
+    targetType: String(item.targetType || "").slice(0, 80),
+    lastError: cleanLogText(item.lastError || "").slice(0, 300),
+    rootProblem: String(item.rootProblem || "").slice(0, 120),
+    adbInterfaceProblem: String(item.adbInterfaceProblem || "").slice(0, 120)
+  })).filter((item) => item.serial);
+}
+
+function normalizeRecoveryEvents(value) {
+  return (Array.isArray(value) ? value : []).slice(-80).map((item = {}) => ({
+    id: String(item.id || "").slice(0, 120),
+    at: String(item.at || "").slice(0, 80),
+    type: String(item.type || "status").slice(0, 60),
+    severity: ["success", "warning", "error", "info"].includes(item.severity) ? item.severity : "info",
+    serial: String(item.serial || "").slice(0, 160),
+    state: String(item.state || "").slice(0, 80),
+    previousState: String(item.previousState || "").slice(0, 80),
+    attempt: boundedMetric(item.attempt, 0, 100, 0),
+    maxAttempts: boundedMetric(item.maxAttempts, 0, 100, 0),
+    mode: String(item.mode || "").slice(0, 80),
+    reason: String(item.reason || "").slice(0, 160),
+    result: cleanLogText(item.result || "").slice(0, 300),
+    nextActionAt: String(item.nextActionAt || "").slice(0, 80),
+    targetType: String(item.targetType || "").slice(0, 80)
+  })).filter((item) => item.at && item.type);
+}
+
 function syncAdbDevices(agent, devices) {
   const seen = new Set();
   for (const input of Array.isArray(devices) ? devices : []) {
     const adbSerial = String(input.adbSerial || input.serial || "").trim();
     if (!adbSerial) continue;
-    seen.add(adbSerial);
-    let item = agent.devices.find((device) => device.adbSerial === adbSerial);
+    const adbSerialKey = adbSerial.toUpperCase();
+    seen.add(adbSerialKey);
+    let item = agent.devices.find((device) => String(device.adbSerial || "").toUpperCase() === adbSerialKey);
     if (!item) {
       item = { adbSerial, createdAt: nowIso() };
       agent.devices.push(item);
     }
-    item.deviceId = String(input.deviceId || (input.state === "device" ? `adb:${adbSerial}` : item.deviceId || ""));
+    item.deviceId = String(input.deviceId || item.deviceId || (input.state === "device" ? `adb:${adbSerial}` : ""));
     item.state = String(input.state || "unknown");
     item.model = String(input.model || item.model || "");
     item.manufacturer = String(input.manufacturer || item.manufacturer || "");
@@ -2147,15 +2239,20 @@ function syncAdbDevices(agent, devices) {
     item.batteryLevel = Number.isFinite(Number(input.batteryLevel)) ? Number(input.batteryLevel) : item.batteryLevel ?? null;
     if (Array.isArray(input.sims)) {
       const normalizedSims = normalizeSims(input.sims);
-      if (normalizedSims.length || !(item.sims || []).length) item.sims = mergeAdbSims(item.sims || [], normalizedSims);
+      if (normalizedSims.length || !(item.sims || []).length) {
+        item.sims = mergeAdbSims(item.sims || [], normalizedSims, { source: "adb", updatedAt: nowIso() });
+      }
     }
     item.automation = normalizeDeviceAutomation(input.automation || item.automation || {});
+    item.recovery = normalizeDeviceRecovery(input.recovery || { state: item.state, physicalPresent: item.state !== "missing" });
     item.updatedAt = nowIso();
     if (item.state === "device") item.lastSeenAt = nowIso();
     updateAdbDeviceState(agent, item);
 
-    if (item.state === "device" && item.deviceId) {
+    if (item.deviceId && (item.state === "device" || item.recovery.physicalPresent)) {
       upsertAdbDevice(agent, item);
+    }
+    if (item.state === "device" && item.deviceId) {
       recordDeviceOnlineRuntime(item.deviceId, {
         agentId: agent.agentId,
         adbSerial,
@@ -2169,17 +2266,19 @@ function syncAdbDevices(agent, devices) {
   // agent.devices would leave old records permanently shown as connected.
   for (const device of state.devices) {
     const serial = String(device.adb?.serial || "").trim();
-    if (!serial || device.adb?.agentId !== agent.agentId || seen.has(serial)) continue;
+    if (!serial || device.adb?.agentId !== agent.agentId || seen.has(serial.toUpperCase())) continue;
     device.adb = {
       ...(device.adb || {}),
       state: "missing",
       updatedAt: nowIso()
     };
+    device.recovery = normalizeDeviceRecovery({ state: "physically_absent", physicalPresent: false, lastObservedAt: nowIso() });
     device.updatedAt = nowIso();
   }
   for (const device of agent.devices) {
-    if (!seen.has(device.adbSerial)) {
+    if (!seen.has(String(device.adbSerial || "").toUpperCase())) {
       device.state = "missing";
+      device.recovery = normalizeDeviceRecovery({ state: "physically_absent", physicalPresent: false, lastObservedAt: nowIso() });
       device.updatedAt = nowIso();
       updateAdbDeviceState(agent, device);
     }
@@ -2189,7 +2288,12 @@ function syncAdbDevices(agent, devices) {
 }
 
 function updateAdbDeviceState(agent, adbDevice) {
-  const device = state.devices.find((item) => item.adb?.serial === adbDevice.adbSerial || item.deviceId === adbDevice.deviceId);
+  const adbSerialKey = String(adbDevice.adbSerial || "").toUpperCase();
+  const deviceIdKey = String(adbDevice.deviceId || "").toUpperCase();
+  const device = state.devices.find((item) => (
+    (adbSerialKey && String(item.adb?.serial || "").toUpperCase() === adbSerialKey)
+    || (deviceIdKey && String(item.deviceId || "").toUpperCase() === deviceIdKey)
+  ));
   if (!device) return;
   device.adb = {
     ...(device.adb || {}),
@@ -2205,11 +2309,17 @@ function updateAdbDeviceState(agent, adbDevice) {
     updatedAt: nowIso()
   };
   device.automation = normalizeDeviceAutomation(adbDevice.automation || device.automation || {});
+  device.recovery = normalizeDeviceRecovery(adbDevice.recovery || { state: adbDevice.state, physicalPresent: adbDevice.state !== "missing" });
   device.updatedAt = nowIso();
 }
 
 function upsertAdbDevice(agent, adbDevice) {
-  let device = state.devices.find((item) => item.deviceId === adbDevice.deviceId);
+  const adbSerialKey = String(adbDevice.adbSerial || "").toUpperCase();
+  const deviceIdKey = String(adbDevice.deviceId || "").toUpperCase();
+  let device = state.devices.find((item) => (
+    (deviceIdKey && String(item.deviceId || "").toUpperCase() === deviceIdKey)
+    || (adbSerialKey && String(item.adb?.serial || "").toUpperCase() === adbSerialKey)
+  ));
   const defaultName = defaultAdbDeviceName(adbDevice);
   if (!device) {
     device = {
@@ -2229,8 +2339,8 @@ function upsertAdbDevice(agent, adbDevice) {
       adb: {},
       sims: [],
       xhsAccounts: [
-        { appSlot: "app1", label: "小红书", accountName: "", enabled: true },
-        { appSlot: "app2", label: "Ⅱ·小红书", accountName: "", enabled: true }
+        { appSlot: "app1", label: "小红书", xhsId: "", accountName: "", enabled: true },
+        { appSlot: "app2", label: "Ⅱ·小红书", xhsId: "", accountName: "", enabled: true }
       ],
       createdAt: nowIso(),
       updatedAt: nowIso(),
@@ -2246,9 +2356,12 @@ function upsertAdbDevice(agent, adbDevice) {
   device.batteryLevel = adbDevice.batteryLevel ?? device.batteryLevel ?? null;
   if (Array.isArray(adbDevice.sims)) {
     const normalizedSims = normalizeSims(adbDevice.sims);
-    if (normalizedSims.length || !(device.sims || []).length) device.sims = mergeAdbSims(device.sims || [], normalizedSims);
+    if (normalizedSims.length || !(device.sims || []).length) {
+      device.sims = mergeAdbSims(device.sims || [], normalizedSims, { source: "adb", updatedAt: nowIso() });
+    }
   }
   device.automation = normalizeDeviceAutomation(adbDevice.automation || device.automation || {});
+  device.recovery = normalizeDeviceRecovery(adbDevice.recovery || { state: adbDevice.state, physicalPresent: true });
   device.adb = {
     agentId: agent.agentId,
     serial: adbDevice.adbSerial,
@@ -2258,7 +2371,7 @@ function upsertAdbDevice(agent, adbDevice) {
     brand: adbDevice.brand || "",
     product: adbDevice.product || "",
     transportId: adbDevice.transportId || "",
-    lastSeenAt: nowIso()
+    lastSeenAt: adbDevice.state === "device" ? nowIso() : device.adb?.lastSeenAt || null
   };
   device.updatedAt = nowIso();
 }
@@ -2281,6 +2394,16 @@ function normalizeDeviceAutomation(input = {}) {
     accessibilityConflicts: sanitizeStringList(input.accessibilityConflicts, 20, 240),
     repairAction: String(input.repairAction || "").slice(0, 120),
     lastError: String(input.lastError || "").slice(0, 1000)
+  };
+}
+
+function normalizeDeviceRecovery(input = {}) {
+  return {
+    state: String(input.state || "unknown").slice(0, 120),
+    physicalPresent: Boolean(input.physicalPresent),
+    rootProblem: String(input.rootProblem || "").slice(0, 160),
+    adbInterfaceProblem: String(input.adbInterfaceProblem || "").slice(0, 160),
+    lastObservedAt: String(input.lastObservedAt || "").slice(0, 80)
   };
 }
 
@@ -2308,13 +2431,34 @@ function upsertPhoneAgentDevice(input = {}) {
   device.androidVersion = String(input.androidVersion || device.androidVersion || "");
   device.appVersion = String(input.appVersion || device.appVersion || "");
   device.batteryLevel = Number.isFinite(Number(input.batteryLevel)) ? Number(input.batteryLevel) : device.batteryLevel ?? null;
+  device.smsRelay = normalizeSmsRelayStatus(input.smsRelay || device.smsRelay || {});
   device.lastSeenAt = nowIso();
   device.updatedAt = nowIso();
   if (Array.isArray(input.sims)) {
-    device.sims = normalizeSims(input.sims);
+    device.sims = mergeAdbSims(device.sims || [], normalizeSims(input.sims), {
+      source: "phone_agent",
+      updatedAt: nowIso()
+    });
   }
   mergeLegacyAndroidIdDevices(device);
   return device;
+}
+
+function normalizeSmsRelayStatus(input = {}) {
+  return {
+    receiveSmsGranted: Boolean(input.receiveSmsGranted),
+    readSmsGranted: Boolean(input.readSmsGranted),
+    notificationAccessGranted: Boolean(input.notificationAccessGranted),
+    batteryOptimizationIgnored: Boolean(input.batteryOptimizationIgnored),
+    oppoLike: Boolean(input.oppoLike),
+    defaultSmsPackage: String(input.defaultSmsPackage || "").slice(0, 160),
+    lastSyncStatus: String(input.lastSyncStatus || "unknown").slice(0, 80),
+    lastSyncError: String(input.lastSyncError || "").slice(0, 500),
+    lastSyncAt: Number.isFinite(Number(input.lastSyncAt)) ? Number(input.lastSyncAt) : 0,
+    lastSyncCount: Number.isFinite(Number(input.lastSyncCount)) ? Math.max(0, Number(input.lastSyncCount)) : 0,
+    lastReceiveAt: Number.isFinite(Number(input.lastReceiveAt)) ? Number(input.lastReceiveAt) : 0,
+    lastNotificationFallbackAt: Number.isFinite(Number(input.lastNotificationFallbackAt)) ? Number(input.lastNotificationFallbackAt) : 0
+  };
 }
 
 function mergeLegacyAndroidIdDevices(canonical) {
@@ -2376,31 +2520,16 @@ function normalizeSims(sims) {
       slotIndex: Number.isFinite(Number(sim.slotIndex)) ? Number(sim.slotIndex) : index,
       carrierName: String(sim.carrierName || ""),
       phoneNumber: normalizePhone(sim.phoneNumber || sim.number || ""),
+      phoneNumberSource: normalizeSimPhoneSource(sim.phoneNumberSource),
+      phoneNumberUpdatedAt: normalizeIsoTime(sim.phoneNumberUpdatedAt),
       label: String(sim.label || ""),
       enabled: sim.enabled !== false
     }))
     .slice(0, 4);
 }
 
-function mergeAdbSims(existingSims = [], adbSims = []) {
-  const existingBySlot = new Map(normalizeSims(existingSims).map((sim, index) => [String(sim.slotIndex ?? index), sim]));
-  const merged = normalizeSims(adbSims).map((sim, index) => {
-    const slotKey = String(sim.slotIndex ?? index);
-    const existing = existingBySlot.get(slotKey) || {};
-    existingBySlot.delete(slotKey);
-    return {
-      ...existing,
-      ...sim,
-      phoneNumber: sim.phoneNumber || existing.phoneNumber || "",
-      enabled: existing.enabled === false ? false : sim.enabled !== false
-    };
-  });
-  for (const sim of existingBySlot.values()) {
-    if (sim.phoneNumber) merged.push(sim);
-  }
-  return merged
-    .sort((a, b) => Number(a.slotIndex) - Number(b.slotIndex))
-    .slice(0, 4);
+function mergeAdbSims(existingSims = [], adbSims = [], options = {}) {
+  return mergeReportedSims(normalizeSims(existingSims), normalizeSims(adbSims), options);
 }
 
 function normalizeXhsAccounts(accounts) {
@@ -2408,13 +2537,14 @@ function normalizeXhsAccounts(accounts) {
     .map((account, index) => ({
       appSlot: normalizeXhsAppSlot(account.appSlot || (index === 1 ? "app2" : "app1")),
       label: String(account.label || (index === 1 ? "Ⅱ·小红书" : "小红书")),
+      xhsId: normalizeXhsId(account.xhsId || account.accountId || ""),
       accountName: String(account.accountName || account.xhsAccount || ""),
       enabled: account.enabled !== false
     }))
     .slice(0, 2);
   for (const slot of ["app1", "app2"]) {
     if (!normalized.some((item) => item.appSlot === slot)) {
-      normalized.push({ appSlot: slot, label: slot === "app2" ? "Ⅱ·小红书" : "小红书", accountName: "", enabled: true });
+      normalized.push({ appSlot: slot, label: slot === "app2" ? "Ⅱ·小红书" : "小红书", xhsId: "", accountName: "", enabled: true });
     }
   }
   return normalized.sort((a, b) => a.appSlot.localeCompare(b.appSlot));
@@ -2466,6 +2596,7 @@ function createXhsQrTask(input = {}) {
     deviceId: String(input.deviceId || ""),
     xhsAppSlot,
     xhsAccountLabel: String(input.xhsAccountLabel || (xhsAppSlot === "app2" ? "Ⅱ·小红书" : "小红书")),
+    xhsAccountId: normalizeXhsId(input.xhsAccountId),
     xhsAccountName: String(input.xhsAccountName || ""),
     platform: "小红书",
     executionMode: String(input.executionMode || "windows_airtest_poco"),
@@ -2757,6 +2888,7 @@ function queueXhsAirtestWindowsTask(device, xhsTask, ctx = { role: "system" }) {
       qrImageDataUrl: xhsTask.qrImageDataUrl || "",
       xhsAppSlot: xhsTask.xhsAppSlot || "app1",
       xhsAccountLabel: xhsTask.xhsAccountLabel || "",
+      xhsAccountId: xhsTask.xhsAccountId || "",
       xhsAccountName: xhsTask.xhsAccountName || "",
       executionMode,
       workflowScript
@@ -3851,6 +3983,7 @@ function publicUserDevice(device, ctx = null) {
     androidVersion: device.androidVersion || "",
     batteryLevel: device.batteryLevel ?? null,
     adbState: device.adb?.state || "",
+    connectionState: device.recovery?.state || device.adb?.state || "unknown",
     adbOnline,
     agentOnline,
     listingStatus: normalizeDeviceListingStatus(device.listingStatus || "listed"),
@@ -3914,6 +4047,7 @@ function publicUserDevice(device, ctx = null) {
         return {
           appSlot: account.appSlot,
           label: account.label,
+          xhsId: account.xhsId || "",
           accountName: account.accountName || "",
           enabled: account.enabled !== false,
           busy: Boolean(activeSlotTask || activeXhsTask),
@@ -4014,6 +4148,7 @@ function publicXhsTaskOccupancy(task) {
     deviceId: task.deviceId,
     xhsAppSlot: task.xhsAppSlot || "app1",
     xhsAccountLabel: task.xhsAccountLabel || "",
+    xhsAccountId: task.xhsAccountId || "",
     xhsAccountName: task.xhsAccountName || "",
     status: task.status,
     userId: task.userId || "",
@@ -4145,6 +4280,7 @@ function publicUserXhsTask(task) {
     platform: task.platform,
     xhsAppSlot: task.xhsAppSlot || "app1",
     xhsAccountLabel: task.xhsAccountLabel || "",
+    xhsAccountId: task.xhsAccountId || "",
     xhsAccountName: task.xhsAccountName || "",
     executionMode: task.executionMode || "legacy_device_agent",
     windowsTaskId: task.windowsTaskId || "",
@@ -4189,6 +4325,7 @@ function publicAdminXhsTask(task, options = {}) {
     platform: task.platform,
     xhsAppSlot: task.xhsAppSlot || "app1",
     xhsAccountLabel: task.xhsAccountLabel || "",
+    xhsAccountId: task.xhsAccountId || "",
     xhsAccountName: task.xhsAccountName || "",
     executionMode: task.executionMode || "legacy_device_agent",
     windowsTaskId: task.windowsTaskId || "",
@@ -5448,6 +5585,7 @@ function publicWindowsTaskPayload(payload = {}) {
     xhsTaskId: payload.xhsTaskId || "",
     xhsAppSlot: payload.xhsAppSlot || "",
     xhsAccountLabel: payload.xhsAccountLabel || "",
+    xhsAccountId: payload.xhsAccountId || "",
     xhsAccountName: payload.xhsAccountName || "",
     deviceName: payload.deviceName || "",
     apkPath: payload.apkPath || "",
@@ -5489,6 +5627,7 @@ function xhsTaskAsDeviceCommand(task) {
       autoConfirmLogin: true,
       xhsAppSlot: task.xhsAppSlot || "app1",
       xhsAccountLabel: task.xhsAccountLabel || "",
+      xhsAccountId: task.xhsAccountId || "",
       xhsAccountName: task.xhsAccountName || "",
       workflowScript: task.workflowScript || null
     },

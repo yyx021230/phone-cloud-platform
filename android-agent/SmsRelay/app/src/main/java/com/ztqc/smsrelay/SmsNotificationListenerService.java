@@ -104,6 +104,8 @@ public class SmsNotificationListenerService extends NotificationListenerService 
         String pkg = sbn.getPackageName();
         return "com.android.mms".equals(pkg)
             || "com.android.mms.service".equals(pkg)
+            || "com.oppo.mms".equals(pkg)
+            || "com.coloros.mms".equals(pkg)
             || "com.hihonor.mms".equals(pkg)
             || "com.huawei.message".equals(pkg)
             || "com.google.android.apps.messaging".equals(pkg)

@@ -1,25 +1,36 @@
 export function createPnpScreenCoordinator(options = {}) {
   const now = options.now || Date.now;
   const delayFn = options.delayFn || delay;
-  let activeSerial = "";
+  const maxConcurrent = Math.max(1, Math.min(16, Number(options.maxConcurrent || 1)));
+  const activeSerials = new Set();
+
+  function normalizeSerial(value) {
+    return String(value || "*").trim().toUpperCase() || "*";
+  }
 
   function tryBegin(serial = "*", isSerialBusy = () => false) {
-    const normalizedSerial = String(serial || "*");
-    if (activeSerial || isSerialBusy(normalizedSerial)) return null;
-    activeSerial = normalizedSerial;
+    const normalizedSerial = normalizeSerial(serial);
+    if (isSerialBusy(normalizedSerial)) return null;
+    if (normalizedSerial === "*") {
+      if (activeSerials.size) return null;
+    } else if (activeSerials.has("*") || activeSerials.has(normalizedSerial) || activeSerials.size >= maxConcurrent) {
+      return null;
+    }
+    activeSerials.add(normalizedSerial);
     let released = false;
     return () => {
       if (released) return;
       released = true;
-      activeSerial = "";
+      activeSerials.delete(normalizedSerial);
     };
   }
 
   async function waitForIdle(serial = "*", timeoutMs = 30_000, pollMs = 50) {
-    const normalizedSerial = String(serial || "*");
+    const normalizedSerial = normalizeSerial(serial);
     const startedAt = now();
     const deadline = startedAt + Math.max(0, Number(timeoutMs || 0));
-    while (activeSerial && (activeSerial === "*" || normalizedSerial === "*" || activeSerial === normalizedSerial)) {
+    const blocked = () => activeSerials.has("*") || (normalizedSerial === "*" ? activeSerials.size > 0 : activeSerials.has(normalizedSerial));
+    while (blocked()) {
       if (now() >= deadline) {
         return { idle: false, waitedMs: Math.max(0, now() - startedAt) };
       }
@@ -31,8 +42,9 @@ export function createPnpScreenCoordinator(options = {}) {
   return {
     tryBegin,
     waitForIdle,
-    get active() { return Boolean(activeSerial); },
-    get activeSerial() { return activeSerial; }
+    get active() { return activeSerials.size > 0; },
+    get activeSerial() { return activeSerials.values().next().value || ""; },
+    get activeSerials() { return [...activeSerials]; }
   };
 }
 

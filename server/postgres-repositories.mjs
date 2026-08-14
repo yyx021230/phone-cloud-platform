@@ -229,14 +229,14 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
     async loadOverlay() {
       const pool = await getPool();
       const [users, sessions, devices, smsMessages, windowsTasks, xhsTasks, deviceLocks, auditEvents] = await Promise.all([
-        loadDataRows(pool, "phone_cloud_users", "updated_at"),
-        loadDataRows(pool, "phone_cloud_sessions", "expires_at"),
-        loadDataRows(pool, "phone_cloud_devices", "updated_at"),
-        loadDataRows(pool, "phone_cloud_sms_messages", "message_at"),
-        loadDataRows(pool, "phone_cloud_windows_tasks", "updated_at"),
-        loadDataRows(pool, "phone_cloud_xhs_tasks", "updated_at"),
-        loadDataRows(pool, "phone_cloud_device_locks", "expires_at"),
-        loadDataRows(pool, "phone_cloud_audit_events", "created_at")
+        loadDataRows(pool, "phone_cloud_users", "updated_at", 5_000),
+        loadDataRows(pool, "phone_cloud_sessions", "expires_at", 5_000),
+        loadDataRows(pool, "phone_cloud_devices", "updated_at", 5_000),
+        loadDataRows(pool, "phone_cloud_sms_messages", "message_at", 50_000),
+        loadDataRows(pool, "phone_cloud_windows_tasks", "updated_at", 5_000),
+        loadDataRows(pool, "phone_cloud_xhs_tasks", "updated_at", 5_000),
+        loadDataRows(pool, "phone_cloud_device_locks", "expires_at", 5_000),
+        loadDataRows(pool, "phone_cloud_audit_events", "created_at", 5_000)
       ]);
       return { users, sessions, devices, smsMessages, windowsTasks, xhsTasks, deviceLocks, auditEvents };
     }
@@ -255,8 +255,11 @@ export function applyStructuredOverlay(state, overlay = {}) {
   return state;
 }
 
-async function loadDataRows(pool, table, orderColumn) {
-  const result = await pool.query(`select data from ${table} order by ${orderColumn} desc nulls last`);
+async function loadDataRows(pool, table, orderColumn, limit) {
+  const result = await pool.query(
+    `select data from ${table} order by ${orderColumn} desc nulls last limit $1`,
+    [Math.max(1, Number(limit) || 1)]
+  );
   return result.rows.map((row) => row.data).filter(Boolean);
 }
 
