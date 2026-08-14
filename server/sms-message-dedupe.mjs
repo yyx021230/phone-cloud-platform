@@ -30,9 +30,17 @@ export function isSemanticSmsDuplicate(existing, incoming, toleranceMs = 120_000
 }
 
 export function findSemanticSmsDuplicate(messages, incoming, toleranceMs = 120_000) {
-  return (Array.isArray(messages) ? messages : []).find((message) => (
-    isSemanticSmsDuplicate(message, incoming, toleranceMs)
-  )) || null;
+  const incomingTime = messageTime(incoming);
+  let nearest = null;
+  let nearestDistance = Number.POSITIVE_INFINITY;
+  for (const message of Array.isArray(messages) ? messages : []) {
+    if (!isSemanticSmsDuplicate(message, incoming, toleranceMs)) continue;
+    const distance = Math.abs(messageTime(message) - incomingTime);
+    if (distance >= nearestDistance) continue;
+    nearest = message;
+    nearestDistance = distance;
+  }
+  return nearest;
 }
 
 function filled(value) {

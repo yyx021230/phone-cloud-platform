@@ -82,19 +82,36 @@ async function main() {
     phoneNumber: "13800138000",
     platform: "小红书"
   });
+  const smsAt = new Date().toISOString();
+  const notificationSmsPayload = {
+    deviceId: device.deviceId,
+    messages: [{
+      messageKey: "notification:smoke-1",
+      address: "10690000",
+      phoneNumber: "13800138000",
+      body: "【小红书】验证码 123456，5 分钟内有效。",
+      code: "123456",
+      messageAt: smsAt,
+      box: "inbox",
+      source: "windows-agent-notification"
+    }]
+  };
   const smsPayload = {
     deviceId: device.deviceId,
     messages: [{
+      messageKey: "sms:1",
       smsId: "1",
       address: "10690000",
       phoneNumber: "13800138000",
       body: "【小红书】验证码 123456，5 分钟内有效。",
       code: "123456",
-      messageAt: new Date().toISOString(),
+      messageAt: smsAt,
       slotIndex: 0,
-      box: "inbox"
+      box: "inbox",
+      source: "windows-agent-adb"
     }]
   };
+  await api("POST", `/api/v1/devices/${encodeURIComponent(device.deviceId)}/sms-library/batch`, "dev-device-token", notificationSmsPayload);
   await api("POST", `/api/v1/devices/${encodeURIComponent(device.deviceId)}/sms-library/batch`, "dev-device-token", smsPayload);
   await api("POST", `/api/v1/devices/${encodeURIComponent(device.deviceId)}/sms-library/batch`, "dev-device-token", smsPayload);
 
@@ -106,6 +123,31 @@ async function main() {
   assert(bSms.total === 1, `user B should see full device SMS library for listed devices, got ${bSms.total}`);
   assert(aSms.messages[0]?.redacted === false, "user device SMS library should not be redacted");
   assert(String(aSms.messages[0]?.body || "").includes("123456"), "user device SMS library should include full message body");
+  assert(aSms.messages[0]?.messageKey === "sms:1", "provider key should replace the notification fallback key");
+  assert(aSms.messages[0]?.slotIndex === 0, "provider metadata should fill the notification-only SIM slot");
+  assert(aSms.messages[0]?.sourceAliases?.includes("windows-agent-notification"), "merged SMS should retain its notification source alias");
+
+  const repeatedBody = "相同验证码 888888";
+  const repeatedBase = Date.now();
+  await api("POST", `/api/v1/devices/${encodeURIComponent(device.deviceId)}/sms-library/batch`, "dev-device-token", {
+    messages: [
+      { messageKey: "sms:2", smsId: "2", address: "10690001", body: repeatedBody, messageAt: new Date(repeatedBase - 60_000).toISOString(), box: "inbox", source: "windows-agent-adb" },
+      { messageKey: "sms:3", smsId: "3", address: "10690001", body: repeatedBody, messageAt: new Date(repeatedBase - 10_000).toISOString(), box: "inbox", source: "windows-agent-adb" }
+    ]
+  });
+  await api("POST", `/api/v1/devices/${encodeURIComponent(device.deviceId)}/sms-library/batch`, "dev-device-token", {
+    messages: [{
+      messageKey: "notification:smoke-nearest",
+      address: "10690001",
+      body: repeatedBody,
+      messageAt: new Date(repeatedBase - 12_000).toISOString(),
+      box: "inbox",
+      source: "windows-agent-notification"
+    }]
+  });
+  const repeatedSms = await api("GET", `/api/v1/user/devices/${encodeURIComponent(device.deviceId)}/sms-library`, sessionA);
+  assert(repeatedSms.total === 3, `two real identical SMS messages must remain distinct, got ${repeatedSms.total}`);
+  assert(repeatedSms.messages.find((message) => message.messageKey === "sms:3")?.sourceAliases?.includes("windows-agent-notification"), "notification should merge into the nearest provider message");
 
   const qr = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=";
   const firstTask = await api("POST", "/api/v1/user/xhs/qr-scan-tasks", sessionA, {
