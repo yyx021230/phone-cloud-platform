@@ -20,3 +20,10 @@ test("does not turn a transient SMS request failure into an empty inbox", () => 
   assert.doesNotMatch(loader, /catch\(\(\) => \(\{ messages: \[\], total: 0 \}\)\)/);
   assert.match(loader, /userSmsLoadError/);
 });
+
+test("labels notification-supplemented messages in the user SMS library", () => {
+  assert.match(app, /function smsSourceLabel\(/);
+  assert.match(app, /通知补全/);
+  assert.match(app, /系统短信（已合并通知）/);
+  assert.match(app, /smsSourceLabel\(message\)/);
+});

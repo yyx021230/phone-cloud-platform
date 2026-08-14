@@ -22,6 +22,7 @@ async function main() {
       DATA_DIR: dataDir,
       ADMIN_USERNAME: "admin",
       ADMIN_PASSWORD: "admin123",
+      SCREEN_MEDIA_AUTH_SECRET: "local-smoke-screen-auth-secret",
       WINDOWS_AGENT_ONLINE_SECONDS: "120",
       MIN_PASSWORD_LENGTH: "8",
       MIN_MANAGED_USER_PASSWORD_LENGTH: "7"
@@ -72,7 +73,7 @@ async function main() {
   assert(device, "synced device should exist");
   await api("PUT", `/api/v1/devices/${encodeURIComponent(device.deviceId)}`, admin, { listingStatus: "listed", deviceName: "smoke-device" });
   await api("PUT", `/api/v1/devices/${encodeURIComponent(device.deviceId)}/xhs-accounts`, admin, {
-    accounts: [{ appSlot: "app1", label: "小红书", accountName: "烟测账号", enabled: true }]
+    accounts: [{ appSlot: "app1", label: "小红书", xhsId: "smoke_xhs_001", accountName: "烟测账号", enabled: true }]
   });
 
   await api("POST", "/api/v1/sms-orders", admin, {

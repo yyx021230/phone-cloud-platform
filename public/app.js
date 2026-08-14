@@ -1277,7 +1277,10 @@ function renderUserSmsTableRow(message) {
   return `
     <article class="sms-table-row">
       <time>${escapeHtml(shortTime(message.messageAt))}</time>
-      <strong>${escapeHtml(sender)}</strong>
+      <div class="sms-sender-cell">
+        <strong>${escapeHtml(sender)}</strong>
+        <small>${escapeHtml(smsSourceLabel(message))}</small>
+      </div>
       <span>${escapeHtml(slotLabel)}</span>
       <code class="${message.code ? "has-code" : ""}">${escapeHtml(message.code || "-")}</code>
       <p>${escapeHtml(body)}</p>
@@ -2312,7 +2315,7 @@ function renderSmsLibrary() {
         <article class="data-row sms-message-row">
           <div>
             <strong>${escapeHtml(displayPhoneNumber(message.address || message.phoneNumber || "未知号码"))}</strong>
-            <span>${escapeHtml([deviceLabel, box, sim, shortTime(message.messageAt)].filter(Boolean).join(" · "))}</span>
+            <span>${escapeHtml([deviceLabel, box, sim, smsSourceLabel(message), shortTime(message.messageAt)].filter(Boolean).join(" · "))}</span>
             <p>${escapeHtml(message.body || "")}</p>
           </div>
           <em class="${message.box === "inbox" ? "ok" : message.box === "sent" ? "warn" : ""}">${escapeHtml(box)}</em>
@@ -2333,6 +2336,14 @@ function smsBoxLabel(box) {
     queued: "待发送",
     unknown: "未知"
   }[box] || "全部";
+}
+
+function smsSourceLabel(message = {}) {
+  const source = String(message.source || "").toLowerCase();
+  const aliases = Array.isArray(message.sourceAliases) ? message.sourceAliases.map((item) => String(item || "").toLowerCase()) : [];
+  if (source.includes("notification")) return "通知补全";
+  if (aliases.some((item) => item.includes("notification"))) return "系统短信（已合并通知）";
+  return "系统短信";
 }
 
 function renderRelease() {
