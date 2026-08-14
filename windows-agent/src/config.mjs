@@ -2,6 +2,11 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
+export function normalizeDeviceSerialAllowlist(value) {
+  if (!Array.isArray(value)) return [];
+  return [...new Set(value.map((item) => String(item || "").trim()).filter(Boolean))];
+}
+
 export async function loadAgentConfig({ agentDir, configPath }) {
   let raw;
   try {
@@ -44,6 +49,7 @@ export async function loadAgentConfig({ agentDir, configPath }) {
     smsLibraryBackgroundSyncConcurrency: Math.max(1, Math.min(4, Number(raw.smsLibraryBackgroundSyncConcurrency || 2))),
     smsLibraryBatchSize: Math.max(10, Math.min(100, Number(raw.smsLibraryBatchSize || 50))),
     smsNotificationFallbackEnabled: raw.smsNotificationFallbackEnabled === true,
+    smsNotificationFallbackDeviceSerials: normalizeDeviceSerialAllowlist(raw.smsNotificationFallbackDeviceSerials),
     smsNotificationBackgroundIntervalSeconds: Math.max(30, Number(raw.smsNotificationBackgroundIntervalSeconds || 30)),
     smsNotificationBackgroundConcurrency: Math.max(1, Math.min(4, Number(raw.smsNotificationBackgroundConcurrency || 2))),
     smsNotificationPackageCacheSeconds: Math.max(60, Number(raw.smsNotificationPackageCacheSeconds || 600)),
