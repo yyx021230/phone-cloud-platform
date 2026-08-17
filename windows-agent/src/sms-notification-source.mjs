@@ -45,6 +45,16 @@ export function buildSmsNotificationDumpArgs(packageName) {
   return ["shell", "dumpsys", "notification", "--noredact", "--package", safePackage];
 }
 
+export function selectUnsentSmsNotifications(messages, uploadedKeys, { forceFull = false } = {}) {
+  const list = Array.isArray(messages) ? messages : [];
+  if (forceFull) return [...list];
+  const known = uploadedKeys instanceof Set ? uploadedKeys : new Set();
+  return list.filter((message) => {
+    const key = String(message?.messageKey || "").trim();
+    return !key || !known.has(key);
+  });
+}
+
 function hash(value, length = 40) {
   return createHash("sha256").update(String(value || ""), "utf8").digest("hex").slice(0, length);
 }

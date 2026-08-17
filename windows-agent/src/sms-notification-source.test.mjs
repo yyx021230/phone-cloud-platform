@@ -6,7 +6,8 @@ import {
   buildSmsRoleHolderArgs,
   parseDefaultSmsRoleHolders,
   parseLegacyDefaultSmsPackage,
-  parseSmsNotificationDump
+  parseSmsNotificationDump,
+  selectUnsentSmsNotifications
 } from "./sms-notification-source.mjs";
 
 test("discovers the default SMS package without accepting shell syntax", () => {
@@ -89,4 +90,18 @@ test("keeps two identical SMS notifications received inside two minutes", () => 
     parseSmsNotificationDump(`${output}\n${output}`, { packageName: "com.android.mms", nowMs: 1_786_540_061_000 }).map((item) => item.messageKey),
     messages.map((item) => item.messageKey)
   );
+});
+
+test("background notification polling skips keys already uploaded but manual reconciliation replays them", () => {
+  const messages = [
+    { messageKey: "notification:one" },
+    { messageKey: "notification:two" },
+    { messageKey: "" }
+  ];
+  const uploaded = new Set(["notification:one"]);
+  assert.deepEqual(
+    selectUnsentSmsNotifications(messages, uploaded).map((item) => item.messageKey),
+    ["notification:two", ""]
+  );
+  assert.deepEqual(selectUnsentSmsNotifications(messages, uploaded, { forceFull: true }), messages);
 });
