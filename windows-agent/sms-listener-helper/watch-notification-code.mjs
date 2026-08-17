@@ -29,8 +29,8 @@ const hash = (value, length = 24) =>
 function readMmsNotifications() {
   const result = spawnSync(
     adbPath,
-    ["-s", serial, "shell", "dumpsys", "notification", "--noredact"],
-    { encoding: "utf8", maxBuffer: 16 * 1024 * 1024, windowsHide: true },
+    ["-s", serial, "shell", "dumpsys", "notification", "--noredact", "--package", "com.android.mms"],
+    { encoding: "utf8", maxBuffer: 16 * 1024 * 1024, windowsHide: true, timeout: 15_000 },
   );
   if (result.status !== 0) throw new Error(`notification_dump_failed:${result.status ?? "spawn"}`);
 

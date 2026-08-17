@@ -7,10 +7,15 @@ function occupancyLabel(lockType, appSlot) {
 
 function resolveOwner(ownerUserId, viewer, users) {
   if (viewer?.role === "user" && viewer.userId === ownerUserId) return { label: "你", visible: true };
-  if (viewer?.role !== "admin") return { label: "其他用户", visible: false };
-  if (String(ownerUserId || "").startsWith("admin:")) return { label: "管理员", visible: true };
+  const normalizedOwnerUserId = String(ownerUserId || "").trim();
+  if (normalizedOwnerUserId.startsWith("admin:")) return { label: "管理员", visible: true };
+  if (normalizedOwnerUserId === "system" || normalizedOwnerUserId.startsWith("system:")) {
+    return { label: "系统任务", visible: true };
+  }
   const owner = users.find((user) => user.userId === ownerUserId);
-  return { label: owner?.displayName || owner?.username || "未知用户", visible: true };
+  if (!owner) return { label: "未知用户", visible: false };
+  if (owner.role === "admin") return { label: "管理员", visible: true };
+  return { label: owner.displayName || owner.username || "未知用户", visible: true };
 }
 
 export function buildDeviceOccupancy({ lock, viewer = null, users = [] } = {}) {

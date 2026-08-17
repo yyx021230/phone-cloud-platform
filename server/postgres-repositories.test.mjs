@@ -10,8 +10,8 @@ test("persists an SMS batch in one transaction and one set-based statement", asy
   await repos.persistSmsBatch({
     device: { deviceId: "device-1", updatedAt: "2026-07-17T00:00:00.000Z" },
     messages: [
-      { messageId: "sms-1", deviceId: "device-1", messageAt: "2026-07-17T00:00:00.000Z" },
-      { messageId: "sms-2", deviceId: "device-1", messageAt: "2026-07-17T00:00:01.000Z" }
+      { messageId: "sms-1", messageKey: "sms:1", deviceId: "device-1", messageAt: "2026-07-17T00:00:00.000Z" },
+      { messageId: "sms-2", messageKey: "sms:2", deviceId: "device-1", messageAt: "2026-07-17T00:00:01.000Z" }
     ],
     audit: { auditId: "audit-1", createdAt: "2026-07-17T00:00:02.000Z" }
   });
@@ -19,7 +19,11 @@ test("persists an SMS batch in one transaction and one set-based statement", asy
   assert.equal(database.calls[0].sql, "begin");
   assert.match(database.calls[1].sql, /insert into phone_cloud_devices/);
   assert.match(database.calls[2].sql, /jsonb_to_recordset/);
-  assert.equal(JSON.parse(database.calls[2].params[0]).length, 2);
+  const rows = JSON.parse(database.calls[2].params[0]);
+  assert.equal(rows.length, 2);
+  assert.deepEqual(rows.map((row) => row.message_key), ["sms:1", "sms:2"]);
+  assert.match(database.calls[2].sql, /on conflict \(device_id, message_key\) do update/);
+  assert.match(database.calls[2].sql, /phone_cloud_sms_messages\.message_id/);
   assert.match(database.calls[3].sql, /insert into phone_cloud_audit_events/);
   assert.equal(database.calls[4].sql, "commit");
   assert.equal(database.released, 1);
@@ -137,6 +141,31 @@ test("merges structured rows over an older snapshot without deleting legacy rows
   assert.deepEqual(state.smsMessages.map((item) => item.messageId), ["sms-new", "sms-old"]);
   assert.equal(state.windowsTasks[0].status, "running");
   assert.equal(state.xhsQrTasks[0].taskId, "xhs-1");
+});
+
+test("merges SMS overlay rows by device and business key instead of random message id", () => {
+  const state = {
+    devices: [],
+    users: [],
+    sessions: [],
+    smsMessages: [
+      { messageId: "snapshot-random", deviceId: "device-1", messageKey: "sms:42", body: "old" },
+      { messageId: "snapshot-other", deviceId: "device-1", messageKey: "sms:43", body: "keep" }
+    ],
+    windowsTasks: [],
+    xhsQrTasks: [],
+    deviceLocks: [],
+    audit: []
+  };
+
+  applyStructuredOverlay(state, {
+    smsMessages: [{ messageId: "database-canonical", deviceId: "device-1", messageKey: "sms:42", body: "new" }]
+  });
+
+  assert.deepEqual(state.smsMessages, [
+    { messageId: "database-canonical", deviceId: "device-1", messageKey: "sms:42", body: "new" },
+    { messageId: "snapshot-other", deviceId: "device-1", messageKey: "sms:43", body: "keep" }
+  ]);
 });
 
 test("ignores malformed device rows without a device id", () => {

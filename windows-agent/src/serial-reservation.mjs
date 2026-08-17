@@ -3,3 +3,7 @@ export function isSerialReservedForBackgroundWork(serial, taskSerials, screenSer
   if (!normalizedSerial) return false;
   return Boolean(taskSerials?.has(normalizedSerial) || screenSerials?.has(normalizedSerial));
 }
+
+export function shouldScheduleSmsBackground({ enabled, skipSms, activeAutomationTask } = {}) {
+  return Boolean(enabled) && !skipSms && !activeAutomationTask;
+}

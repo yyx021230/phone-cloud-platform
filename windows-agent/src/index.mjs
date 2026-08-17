@@ -3,13 +3,13 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { loadAgentConfig } from "./config.mjs";
+import { isDeviceSerialInNotificationFallbackScope, loadAgentConfig } from "./config.mjs";
 import { cachedAdbSerials, indexCachedDevices, mergeCachedDeviceScanRow } from "./device-scan-cache.mjs";
 import { galleryImportFileName, parseGalleryImportImage } from "./gallery-import.mjs";
 import { createSerialAdbActivityTracker } from "./serial-adb-activity.mjs";
 import { assertSerialAdbHealthy } from "./serial-adb-health.mjs";
 import { createSerialDelayScheduler } from "./serial-delay-scheduler.mjs";
-import { isSerialReservedForBackgroundWork } from "./serial-reservation.mjs";
+import { isSerialReservedForBackgroundWork, shouldScheduleSmsBackground } from "./serial-reservation.mjs";
 import { createDeviceActorManager } from "./device-actor.mjs";
 import { acquireAgentInstanceLock } from "./agent-instance-lock.mjs";
 import { createScreenStreamManager } from "./screen-stream.mjs";
@@ -65,7 +65,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const agentDir = path.dirname(__dirname);
 const configPath = process.env.PHONE_CLOUD_AGENT_CONFIG || path.join(agentDir, "config.json");
 const config = await loadAgentConfig({ agentDir, configPath });
-const smsNotificationFallbackDeviceSerials = new Set(config.smsNotificationFallbackDeviceSerials);
 const logDir = config.logDir || path.join(agentDir, "logs");
 const cacheDir = config.cacheDir || path.join(agentDir, "cache");
 const dataDir = config.dataDir || path.join(agentDir, "data");
@@ -154,6 +153,7 @@ const pnpRecoverySafety = createPnpRecoverySafety({
   stableScansToClose: config.pnpMassOutageStableScans,
   maxActionsPerHour: config.pnpMaxAutomaticActionsPerHour,
   minimumActionIntervalMs: 0,
+  postActionWatchMs: config.pnpCollateralWatchSeconds * 1_000,
   initialState: persistedPnpRecoveryState.safety
 });
 let lastPnpRecoveryHealth = pnpRecoverySafety.health();
@@ -291,8 +291,7 @@ function isDeviceSerialReserved(serial) {
 }
 
 function isSmsNotificationFallbackEnabledForSerial(serial) {
-  if (!config.smsNotificationFallbackEnabled) return false;
-  return smsNotificationFallbackDeviceSerials.size === 0 || smsNotificationFallbackDeviceSerials.has(String(serial || "").trim());
+  return isDeviceSerialInNotificationFallbackScope(config, serial);
 }
 
 async function runGuardedInterval(name, fn) {
@@ -425,7 +424,11 @@ async function scanAndSync(options = {}) {
   } else if (activeAutomationTask) {
     log("automation preflight skipped during active task");
   }
-  if (!options.skipSms && config.smsLibraryBackgroundSyncEnabled && !activeAutomationTask && !recoveryPending) {
+  if (shouldScheduleSmsBackground({
+    enabled: config.smsLibraryBackgroundSyncEnabled,
+    skipSms: options.skipSms,
+    activeAutomationTask
+  })) {
     scheduleBackgroundSmsSync(devices);
   } else {
     log("sms library background sync skipped", {
@@ -436,7 +439,11 @@ async function scanAndSync(options = {}) {
       reason: options.reason || ""
     });
   }
-  if (!options.skipSms && config.smsNotificationFallbackEnabled && !activeAutomationTask && !recoveryPending) {
+  if (shouldScheduleSmsBackground({
+    enabled: config.smsNotificationFallbackEnabled,
+    skipSms: options.skipSms,
+    activeAutomationTask
+  })) {
     scheduleBackgroundSmsNotificationSync(devices);
   }
 }
@@ -2931,6 +2938,7 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
   const batchResults = await Promise.allSettled(batchTargets.map((serial) => recoverSelectedTarget(serial)));
   const batchSummary = summarizePnpRecoveryBatchResults(batchResults, batchTargets);
   const {
+    outcomes,
     actionedSerials,
     attempted,
     failed,
@@ -2940,6 +2948,26 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
     internalFailures
   } = batchSummary;
   if (internalFailures.length) log("pnp concurrent recovery batch internal failures", internalFailures);
+
+  const pnpActionedSerials = outcomes
+    .filter((item) => item?.actionAttempted === true && item?.mode !== "adb_reconnect")
+    .map((item) => String(item.serial || "").trim())
+    .filter(Boolean);
+  if (pnpActionedSerials.length) {
+    const watchHealth = pnpRecoverySafety.beginPostActionWatch({
+      onlineSerials: [...online],
+      actionedSerials: pnpActionedSerials,
+      durationMs: config.pnpCollateralWatchSeconds * 1_000
+    });
+    lastPnpRecoveryHealth = publicPnpRecoveryHealth(watchHealth);
+    pnpRecoveryJournal.record({
+      type: "post_action_watch_started",
+      severity: "info",
+      result: `${config.pnpCollateralWatchSeconds}s`,
+      reason: "delayed_collateral_guard"
+    });
+    schedulePnpRecoveryStateSave();
+  }
 
   if (!actionedSerials.length) {
     log("pnp concurrent recovery batch completed", {
@@ -3138,6 +3166,8 @@ function publicPnpRecoveryHealth(value = {}) {
     acknowledgedActionableCount: Number(value.acknowledgedActionableCount || 0),
     recoveryMode: String(value.recoveryMode || "normal"),
     actionReadyAt: String(value.actionReadyAt || ""),
+    postActionWatchCount: Number(value.postActionWatchCount || 0),
+    postActionWatchUntil: String(value.postActionWatchUntil || ""),
     rescueSerials: (Array.isArray(value.rescueSerials) ? value.rescueSerials : [])
       .map((serial) => String(serial || "").slice(0, 160))
       .filter(Boolean)
@@ -3523,12 +3553,6 @@ async function syncAdbSmsNotification(device, options = {}) {
     maxAgeMs: config.smsNotificationHistoryMaxAgeHours * 60 * 60_000
   });
   let sent = 0;
-  if (!messages.length) {
-    await deviceApi(`/api/v1/devices/${encodeURIComponent(deviceId)}/sms-library/batch`, {
-      method: "POST",
-      body: { source: "windows-agent-notification", messages: [] }
-    });
-  }
   for (let index = 0; index < messages.length; index += config.smsLibraryBatchSize) {
     const batch = messages.slice(index, index + config.smsLibraryBatchSize);
     await deviceApi(`/api/v1/devices/${encodeURIComponent(deviceId)}/sms-library/batch`, {

@@ -153,7 +153,7 @@ test("does not count unauthorized phones as automatic PnP failures", () => {
   assert.equal(result.circuitOpen, false);
 });
 
-test("excludes a screen-controlled phone from recovery candidates and burst detection", () => {
+test("excludes a screen-controlled phone from recovery candidates but still observes its ADB loss", () => {
   const safety = createPnpRecoverySafety({ massOutageMinDevices: 4 });
   const healthy = Array.from({ length: 9 }, (_, index) => ({ serial: `healthy-${index}`, state: "adb_device", physicalPresent: true }));
   safety.observe([...healthy, { serial: "phone-screen", state: "adb_device", physicalPresent: true }]);
@@ -162,8 +162,109 @@ test("excludes a screen-controlled phone from recovery candidates and burst dete
     { serial: "phone-screen", state: "adb_offline", physicalPresent: true }
   ], { ignoredSerials: ["PHONE-SCREEN"] });
   assert.equal(result.actionableCount, 0);
-  assert.equal(result.newlyLostCount, 0);
+  assert.equal(result.newlyLostCount, 1);
   assert.equal(result.circuitOpen, false);
+});
+
+test("turns a delayed loss of a screen-controlled phone into post-action collateral", () => {
+  let clock = 0;
+  const safety = createPnpRecoverySafety({
+    now: () => clock,
+    massOutageMinDevices: 4,
+    postActionWatchMs: 180
+  });
+  const baseline = [
+    { serial: "target", state: "adb_interface_ready_transport_missing", physicalPresent: true },
+    { serial: "phone-screen", state: "adb_device", physicalPresent: true },
+    { serial: "phone-steady", state: "adb_device", physicalPresent: true }
+  ];
+  safety.observe(baseline, { ignoredSerials: ["phone-screen"] });
+  safety.beginPostActionWatch({
+    onlineSerials: ["phone-screen", "phone-steady"],
+    actionedSerials: ["target"]
+  });
+
+  clock = 120;
+  const result = safety.observe([
+    { serial: "target", state: "adb_interface_ready_transport_missing", physicalPresent: true },
+    { serial: "phone-screen", state: "adb_interface_ready_transport_missing", physicalPresent: true },
+    { serial: "phone-steady", state: "adb_device", physicalPresent: true }
+  ], { ignoredSerials: ["phone-screen"] });
+
+  assert.equal(result.circuitOpen, true);
+  assert.equal(result.circuitReason, "burst_outage");
+  assert.equal(result.newlyLostCount, 1);
+  assert.deepEqual(safety.snapshot().circuit.detail.collateralLosses, ["PHONE-SCREEN"]);
+  assert.deepEqual(result.rescueSerials, []);
+});
+
+test("blocks another PnP mutation until the post-action observation window expires", () => {
+  let clock = 0;
+  const safety = createPnpRecoverySafety({ now: () => clock, postActionWatchMs: 180 });
+  const baseline = [
+    { serial: "target", state: "adb_interface_ready_transport_missing", physicalPresent: true },
+    { serial: "phone-steady", state: "adb_device", physicalPresent: true }
+  ];
+  safety.observe(baseline);
+  safety.beginPostActionWatch({
+    onlineSerials: ["phone-steady"],
+    actionedSerials: ["target"]
+  });
+
+  clock = 120;
+  let result = safety.observe(baseline);
+  assert.equal(result.blockedReason, "post_action_stability_window");
+  assert.equal(result.canMutate, false);
+  assert.equal(result.postActionWatchCount, 1);
+
+  clock = 181;
+  result = safety.observe(baseline);
+  assert.equal(result.blockedReason, "");
+  assert.equal(result.canMutate, true);
+  assert.equal(result.postActionWatchCount, 0);
+});
+
+test("persists the post-action observation window across an Agent restart", () => {
+  let clock = 1_000;
+  const first = createPnpRecoverySafety({ now: () => clock, postActionWatchMs: 180 });
+  first.observe([
+    { serial: "target", state: "adb_interface_ready_transport_missing", physicalPresent: true },
+    { serial: "phone-steady", state: "adb_device", physicalPresent: true }
+  ]);
+  first.beginPostActionWatch({ onlineSerials: ["phone-steady"], actionedSerials: ["target"] });
+
+  clock = 1_100;
+  const restored = createPnpRecoverySafety({
+    now: () => clock,
+    postActionWatchMs: 180,
+    initialState: first.snapshot()
+  });
+  const result = restored.observe([
+    { serial: "target", state: "adb_interface_ready_transport_missing", physicalPresent: true },
+    { serial: "phone-steady", state: "adb_interface_ready_transport_missing", physicalPresent: true }
+  ]);
+  assert.equal(result.circuitOpen, true);
+  assert.deepEqual(restored.snapshot().circuit.detail.collateralLosses, ["PHONE-STEADY"]);
+});
+
+test("preserves delayed collateral evidence when a later PnP action failure is recorded", () => {
+  let clock = 1_000;
+  const safety = createPnpRecoverySafety({ now: () => clock, postActionWatchMs: 180 });
+  safety.observe([
+    { serial: "target", state: "adb_interface_ready_transport_missing", physicalPresent: true },
+    { serial: "phone-steady", state: "adb_device", physicalPresent: true }
+  ]);
+  safety.beginPostActionWatch({ onlineSerials: ["phone-steady"], actionedSerials: ["target"] });
+
+  clock = 1_100;
+  safety.observe([
+    { serial: "target", state: "adb_interface_ready_transport_missing", physicalPresent: true },
+    { serial: "phone-steady", state: "adb_interface_ready_transport_missing", physicalPresent: true }
+  ]);
+  safety.recordFailure("pnp_action_failed", { failedSerial: "target-2" });
+
+  assert.deepEqual(safety.snapshot().circuit.detail.collateralLosses, ["PHONE-STEADY"]);
+  assert.equal(safety.snapshot().circuit.detail.failedSerial, "target-2");
 });
 
 test("accepts a Set of screen-controlled serials from the live Agent", () => {
