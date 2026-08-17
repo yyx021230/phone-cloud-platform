@@ -15,6 +15,7 @@ import { acquireAgentInstanceLock } from "./agent-instance-lock.mjs";
 import { createScreenStreamManager } from "./screen-stream.mjs";
 import { createProcessRuntimeMetrics } from "./runtime-metrics.mjs";
 import { createSingleFlightRunner } from "./single-flight.mjs";
+import { createAtomicJsonWriter } from "./atomic-json-writer.mjs";
 import { pocoForwardLocals, stopWorkerWithFallback, waitForWorkerExit } from "./worker-shutdown.mjs";
 import { createAdbServerRecovery } from "./adb-server-recovery.mjs";
 import { createPnpMissingDeviceRecovery } from "./pnp-missing-device-recovery.mjs";
@@ -82,6 +83,7 @@ let lastDevices = [];
 let lastDevicesScannedAt = 0;
 let lastAdbVersion = "";
 let smsSyncCursors = await loadSmsSyncCursors();
+const writeSmsSyncCursors = createAtomicJsonWriter(smsCursorPath());
 let lastServerDevicesById = await loadDeviceScanCache();
 const lastSmsLibrarySyncBySerial = new Map();
 const backgroundSmsAbortControllersBySerial = new Map();
@@ -3822,11 +3824,7 @@ async function loadSmsSyncCursors() {
 }
 
 async function saveSmsSyncCursors() {
-  const target = smsCursorPath();
-  const tmp = `${target}.tmp`;
-  await fs.mkdir(path.dirname(target), { recursive: true });
-  await fs.writeFile(tmp, JSON.stringify(smsSyncCursors, null, 2), { mode: 0o600 });
-  await fs.rename(tmp, target);
+  await writeSmsSyncCursors(smsSyncCursors);
 }
 
 function buildSmsSyncCursorPayload(serial, messages, meta = {}) {
