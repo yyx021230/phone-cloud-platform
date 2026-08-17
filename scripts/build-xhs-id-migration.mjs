@@ -58,15 +58,25 @@ export function buildMigration(tableRows = [], platformRows = []) {
     if (!String(binding?.accountName || "").trim()) continue;
     const deviceName = numericDeviceName(binding.deviceName);
     const accountName = normalizeAccountName(binding.accountName);
-    const candidates = tableRows.filter((row) => (
+    let candidates = tableRows.filter((row) => (
       row.loginDeviceName === deviceName && row.aliases.includes(accountName)
     ));
+    let matchType = "device_alias";
     if (candidates.length === 0) {
-      unresolved.push(binding);
-      continue;
+      const uniqueAliasCandidates = tableRows.filter((row) => row.aliases.includes(accountName));
+      if (uniqueAliasCandidates.length === 1) {
+        candidates = uniqueAliasCandidates;
+        matchType = "unique_alias_moved_device";
+      } else if (uniqueAliasCandidates.length > 1) {
+        ambiguous.push({ binding, candidates: uniqueAliasCandidates, reason: "alias_matches_multiple_table_rows" });
+        continue;
+      } else {
+        unresolved.push(binding);
+        continue;
+      }
     }
     if (candidates.length > 1) {
-      ambiguous.push({ binding, candidates });
+      ambiguous.push({ binding, candidates, reason: "device_alias_matches_multiple_table_rows" });
       continue;
     }
     migrated.push({
@@ -75,7 +85,10 @@ export function buildMigration(tableRows = [], platformRows = []) {
       appSlot: String(binding.appSlot || ""),
       accountName: String(binding.accountName || ""),
       xhsId: candidates[0].xhsId,
-      tableLine: candidates[0].tableLine
+      tableLine: candidates[0].tableLine,
+      matchType,
+      tableDeviceName: candidates[0].loginDeviceName,
+      deviceMoved: matchType === "unique_alias_moved_device"
     });
   }
 
@@ -88,6 +101,7 @@ export function buildMigration(tableRows = [], platformRows = []) {
     summary: {
       platformBindings: (Array.isArray(platformRows) ? platformRows : []).filter((row) => String(row?.accountName || "").trim()).length,
       migrated: migrated.length,
+      movedDeviceMatches: migrated.filter((row) => row.deviceMoved).length,
       unresolved: unresolved.length,
       ambiguous: ambiguous.length,
       duplicateIds: duplicateIds.length

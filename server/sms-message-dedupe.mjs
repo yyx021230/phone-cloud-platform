@@ -11,6 +11,14 @@ function messageTime(value) {
   return Number.isFinite(time) ? time : NaN;
 }
 
+function verificationCodes(value) {
+  const candidates = [
+    String(value?.code || "").trim(),
+    ...[...String(value?.body || "").matchAll(/(?<!\d)\d{4,8}(?!\d)/g)].map((match) => match[0])
+  ];
+  return [...new Set(candidates.filter((item) => /^\d{4,8}$/.test(item)))];
+}
+
 export function smsSourceFamily(source) {
   return String(source || "").toLowerCase().includes("notification") ? "notification" : "provider";
 }
@@ -18,15 +26,28 @@ export function smsSourceFamily(source) {
 export function isSemanticSmsDuplicate(existing, incoming, toleranceMs = 120_000) {
   if (!existing || !incoming || existing.deviceId !== incoming.deviceId) return false;
   if (smsSourceFamily(existing.source) === smsSourceFamily(incoming.source)) return false;
-  const existingBody = compactText(existing.body);
-  const incomingBody = compactText(incoming.body);
-  if (!existingBody || existingBody !== incomingBody) return false;
-  const existingAddress = compactAddress(existing.address);
-  const incomingAddress = compactAddress(incoming.address);
-  if (existingAddress && incomingAddress && existingAddress !== incomingAddress) return false;
   const left = messageTime(existing);
   const right = messageTime(incoming);
-  return Number.isFinite(left) && Number.isFinite(right) && Math.abs(left - right) <= toleranceMs;
+  const distance = Math.abs(left - right);
+  if (!Number.isFinite(left) || !Number.isFinite(right) || distance > toleranceMs) return false;
+  const existingBody = compactText(existing.body);
+  const incomingBody = compactText(incoming.body);
+  if (existingBody && existingBody === incomingBody) {
+    const existingAddress = compactAddress(existing.address);
+    const incomingAddress = compactAddress(incoming.address);
+    if (!existingAddress || !incomingAddress || existingAddress === incomingAddress) return true;
+  }
+
+  // ColorOS may shorten both the sender and body in the notification while
+  // content://sms later exposes the full provider record. Keep this fallback
+  // deliberately narrow: only a single identical OTP on both cross-source
+  // records, and only inside a short arrival window, can bypass exact text.
+  if (distance > Math.min(Number(toleranceMs) || 0, 30_000)) return false;
+  const existingCodes = verificationCodes(existing);
+  const incomingCodes = verificationCodes(incoming);
+  return existingCodes.length === 1
+    && incomingCodes.length === 1
+    && existingCodes[0] === incomingCodes[0];
 }
 
 export function findSemanticSmsDuplicate(messages, incoming, toleranceMs = 120_000) {

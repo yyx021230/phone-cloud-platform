@@ -29,7 +29,7 @@ test("returns the named owner and slot to administrators", () => {
   });
 });
 
-test("hides another user's identity from a normal user", () => {
+test("shows another user's display name to a normal user", () => {
   const occupancy = buildDeviceOccupancy({
     lock: {
       lockType: "screen_control",
@@ -43,8 +43,8 @@ test("hides another user's identity from a normal user", () => {
 
   assert.equal(occupancy.kind, "screen_control");
   assert.equal(occupancy.label, "实时控制");
-  assert.equal(occupancy.ownerLabel, "其他用户");
-  assert.equal(occupancy.ownerVisible, false);
+  assert.equal(occupancy.ownerLabel, "邬成林");
+  assert.equal(occupancy.ownerVisible, true);
   assert.equal(occupancy.sessionId, "session-1");
 });
 
@@ -62,4 +62,45 @@ test("identifies the current user without exposing an account name", () => {
   assert.equal(occupancy.label, "等待短信");
   assert.equal(occupancy.ownerLabel, "你");
   assert.equal(occupancy.ownerVisible, true);
+});
+
+test("shows administrative and system occupancy without exposing account details", () => {
+  const adminOccupancy = buildDeviceOccupancy({
+    lock: {
+      lockType: "screen_control",
+      ownerUserId: "admin:support",
+      taskId: "session-admin"
+    },
+    viewer: { role: "user", userId: "user-1" },
+    users
+  });
+  const systemOccupancy = buildDeviceOccupancy({
+    lock: {
+      lockType: "task",
+      ownerUserId: "system:maintenance",
+      taskId: "task-system"
+    },
+    viewer: { role: "user", userId: "user-1" },
+    users
+  });
+
+  assert.equal(adminOccupancy.ownerLabel, "管理员");
+  assert.equal(adminOccupancy.ownerVisible, true);
+  assert.equal(systemOccupancy.ownerLabel, "系统任务");
+  assert.equal(systemOccupancy.ownerVisible, true);
+});
+
+test("marks an unresolvable owner as unknown", () => {
+  const occupancy = buildDeviceOccupancy({
+    lock: {
+      lockType: "xhs_qr",
+      ownerUserId: "deleted-user",
+      taskId: "task-orphan"
+    },
+    viewer: { role: "user", userId: "user-1" },
+    users
+  });
+
+  assert.equal(occupancy.ownerLabel, "未知用户");
+  assert.equal(occupancy.ownerVisible, false);
 });

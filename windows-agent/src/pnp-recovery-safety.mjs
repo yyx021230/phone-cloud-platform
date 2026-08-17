@@ -11,11 +11,13 @@ export function createPnpRecoverySafety(options = {}) {
   const stableScansToClose = Math.max(1, Number(options.stableScansToClose || 3));
   const maxActionsPerHour = Math.max(1, Number(options.maxActionsPerHour || 20));
   const minimumActionIntervalMs = Math.max(0, Number(options.minimumActionIntervalMs || 0));
+  const postActionWatchMs = Math.max(1, Number(options.postActionWatchMs || 180_000));
   let previousOnline = new Set((options.initialState?.previousOnline || []).map(normalize));
   let circuit = normalizeCircuit(options.initialState?.circuit);
   let acknowledgedActionable = new Set((options.initialState?.acknowledgedActionable || []).map(normalize));
   let stableScans = Number(options.initialState?.stableScans || 0);
   let actionTimestamps = (options.initialState?.actionTimestamps || []).map(Number).filter(Number.isFinite);
+  let postActionWatches = normalizePostActionWatches(options.initialState?.postActionWatches);
   let lastHealth = {
     ...emptyHealth(),
     circuitOpen: circuit.open,
@@ -26,7 +28,9 @@ export function createPnpRecoverySafety(options = {}) {
     automaticActionsLastHour: actionTimestamps.length,
     maxActionsPerHour,
     rescueSerials: [],
-    rescueCanMutate: false
+    rescueCanMutate: false,
+    postActionWatchCount: postActionWatches.length,
+    postActionWatchUntil: latestWatchUntil(postActionWatches)
   };
 
   function observe(observations = [], context = {}) {
@@ -36,12 +40,16 @@ export function createPnpRecoverySafety(options = {}) {
     const ignoredSerials = new Set(Array.from(context.ignoredSerials || [], normalize));
     const physical = rows.filter((item) => item.physicalPresent);
     const online = new Set(rows.filter((item) => item.state === "adb_device").map((item) => normalize(item.serial)));
+    postActionWatches = postActionWatches.filter((watch) => watch.until > at);
     const actionable = rows.filter((item) => !ignoredSerials.has(normalize(item.serial)) && item.physicalPresent && (
       isAutomaticPnpRecoveryState(item.state)
       || isAutomaticAdbTransportRecoveryState(item.state)
     ));
     const actionableKeys = new Set(actionable.map((item) => normalize(item.serial)));
-    const newlyLost = [...previousOnline].filter((serial) => !ignoredSerials.has(serial) && !online.has(serial));
+    // Busy phones are excluded from recovery candidates, but never from loss
+    // detection. A PnP action which drops an active screen-control phone is
+    // more severe collateral, not an event to hide from the circuit breaker.
+    const newlyLost = [...previousOnline].filter((serial) => !online.has(serial));
     acknowledgedActionable = new Set([...acknowledgedActionable].filter((serial) => actionableKeys.has(serial)));
     const unacknowledgedActionable = actionable.filter((item) => !acknowledgedActionable.has(normalize(item.serial)));
     const ratio = physical.length ? unacknowledgedActionable.length / physical.length : 0;
@@ -54,6 +62,17 @@ export function createPnpRecoverySafety(options = {}) {
     // formerly-online phone is collateral until proven otherwise. Re-open the
     // circuit immediately instead of waiting for four more phones to vanish.
     const burstOutage = newlyLost.length >= (acknowledgedActionable.size ? 1 : massOutageMinDevices);
+    const watchedCollateralLosses = [...new Set(postActionWatches.flatMap((watch) => (
+      watch.baselineOnline.filter((serial) => !online.has(serial))
+    )))];
+    const recordedCollateralLosses = new Set((circuit.detail?.collateralLosses || []).map(normalize));
+    const newWatchedCollateralLosses = watchedCollateralLosses.filter((serial) => !recordedCollateralLosses.has(serial));
+    if (newWatchedCollateralLosses.length) {
+      const collateralLosses = [...new Set([...recordedCollateralLosses, ...watchedCollateralLosses])];
+      const batchTargets = [...new Set(postActionWatches.flatMap((watch) => watch.actionedSerials))];
+      openCircuit("burst_outage", at, { collateralLosses, batchTargets });
+      stableScans = 0;
+    }
 
     if (circuit.open && ["mass_outage", "burst_outage"].includes(circuit.reason)) {
       let incidentSerials = new Set((circuit.detail?.actionableSerials || []).map(normalize));
@@ -133,6 +152,7 @@ export function createPnpRecoverySafety(options = {}) {
     const lastActionAt = actionTimestamps[actionTimestamps.length - 1] || 0;
     const actionReadyAt = lastActionAt ? lastActionAt + minimumActionIntervalMs : 0;
     const actionCoolingDown = actionReadyAt > at;
+    const postActionWatchActive = postActionWatches.length > 0;
     const rescueSerials = circuit.open && ["mass_outage", "burst_outage"].includes(circuit.reason)
       ? [...new Set((circuit.detail?.unresolvedCollateral || circuit.detail?.collateralLosses || [])
         .map(normalize)
@@ -143,7 +163,8 @@ export function createPnpRecoverySafety(options = {}) {
       && !context.hostBusy
       && !context.installerBusy
       && !budgetExhausted
-      && !actionCoolingDown;
+      && !actionCoolingDown
+      && !postActionWatchActive;
     const blockedReason = circuit.open
       ? `circuit_${circuit.reason}`
       : context.inventoryReady === false
@@ -156,6 +177,8 @@ export function createPnpRecoverySafety(options = {}) {
             ? "hourly_budget_exhausted"
             : actionCoolingDown
               ? "action_cooldown"
+              : postActionWatchActive
+                ? "post_action_stability_window"
             : "";
     lastHealth = {
       observedAt: new Date(at).toISOString(),
@@ -177,7 +200,9 @@ export function createPnpRecoverySafety(options = {}) {
       recoveryMode: circuit.open ? "circuit_open" : acknowledgedActionable.size ? "degraded_recovery" : "normal",
       actionReadyAt: actionReadyAt ? new Date(actionReadyAt).toISOString() : "",
       rescueSerials,
-      rescueCanMutate
+      rescueCanMutate,
+      postActionWatchCount: postActionWatches.length,
+      postActionWatchUntil: latestWatchUntil(postActionWatches)
     };
     return { ...lastHealth, actionable, canMutate: !blockedReason };
   }
@@ -196,7 +221,15 @@ export function createPnpRecoverySafety(options = {}) {
 
   function recordFailure(reason = "pnp_action_failed", detail = {}) {
     const at = now();
-    openCircuit(String(reason || "pnp_action_failed"), at, detail);
+    const currentCollateral = (circuit.detail?.collateralLosses || []).map(normalize);
+    const incomingCollateral = (detail?.collateralLosses || []).map(normalize);
+    const collateralLosses = [...new Set([...currentCollateral, ...incomingCollateral])];
+    const normalizedDetail = {
+      ...(circuit.detail || {}),
+      ...(detail || {}),
+      ...(collateralLosses.length ? { collateralLosses } : {})
+    };
+    openCircuit(String(reason || "pnp_action_failed"), at, normalizedDetail);
     stableScans = 0;
     lastHealth = {
       ...lastHealth,
@@ -207,6 +240,30 @@ export function createPnpRecoverySafety(options = {}) {
       blockedReason: `circuit_${circuit.reason}`,
       stableScans
     };
+  }
+
+  function beginPostActionWatch({ onlineSerials = [], actionedSerials = [], durationMs = postActionWatchMs } = {}) {
+    const at = now();
+    const actioned = new Set((Array.isArray(actionedSerials) ? actionedSerials : []).map(normalize).filter(Boolean));
+    const baselineOnline = [...new Set((Array.isArray(onlineSerials) ? onlineSerials : [])
+      .map(normalize)
+      .filter((serial) => serial && !actioned.has(serial)))];
+    if (!actioned.size || !baselineOnline.length) return { ...lastHealth };
+    const watch = {
+      startedAt: at,
+      until: at + Math.max(1, Number(durationMs || postActionWatchMs)),
+      baselineOnline,
+      actionedSerials: [...actioned]
+    };
+    postActionWatches = [...postActionWatches.filter((item) => item.until > at), watch].slice(-8);
+    lastHealth = {
+      ...lastHealth,
+      observedAt: new Date(at).toISOString(),
+      blockedReason: circuit.open ? `circuit_${circuit.reason}` : "post_action_stability_window",
+      postActionWatchCount: postActionWatches.length,
+      postActionWatchUntil: latestWatchUntil(postActionWatches)
+    };
+    return { ...lastHealth };
   }
 
   function openCircuit(reason, at, detail = {}) {
@@ -226,12 +283,14 @@ export function createPnpRecoverySafety(options = {}) {
       circuit,
       acknowledgedActionable: [...acknowledgedActionable],
       stableScans,
-      actionTimestamps
+      actionTimestamps,
+      postActionWatches
     };
   }
 
   return {
     observe,
+    beginPostActionWatch,
     recordAction,
     recordFailure,
     health: () => ({ ...lastHealth }),
@@ -251,6 +310,23 @@ function normalizeCircuit(value = {}) {
     until: Number(value?.until || 0),
     detail: value?.detail && typeof value.detail === "object" ? value.detail : {}
   };
+}
+
+function normalizePostActionWatches(value) {
+  return (Array.isArray(value) ? value : [])
+    .map((watch) => ({
+      startedAt: Number(watch?.startedAt || 0),
+      until: Number(watch?.until || 0),
+      baselineOnline: [...new Set((Array.isArray(watch?.baselineOnline) ? watch.baselineOnline : []).map(normalize).filter(Boolean))],
+      actionedSerials: [...new Set((Array.isArray(watch?.actionedSerials) ? watch.actionedSerials : []).map(normalize).filter(Boolean))]
+    }))
+    .filter((watch) => watch.until > 0 && watch.baselineOnline.length && watch.actionedSerials.length)
+    .slice(-8);
+}
+
+function latestWatchUntil(watches = []) {
+  const until = Math.max(0, ...(Array.isArray(watches) ? watches : []).map((watch) => Number(watch?.until || 0)));
+  return until ? new Date(until).toISOString() : "";
 }
 
 function emptyHealth() {
@@ -274,6 +350,8 @@ function emptyHealth() {
     recoveryMode: "normal",
     actionReadyAt: "",
     rescueSerials: [],
-    rescueCanMutate: false
+    rescueCanMutate: false,
+    postActionWatchCount: 0,
+    postActionWatchUntil: ""
   };
 }

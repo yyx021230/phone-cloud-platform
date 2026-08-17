@@ -193,21 +193,24 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
           const rows = messages.map((message) => ({
             message_id: requiredId(message.messageId, "message.messageId"),
             device_id: requiredId(message.deviceId || device.deviceId, "message.deviceId"),
+            message_key: requiredId(message.messageKey || message.messageId, "message.messageKey"),
             message_at: pgDate(message.messageAt || message.receivedAt || message.createdAt),
             data: message
           }));
           await client.query(
             `insert into phone_cloud_sms_messages
-               (message_id, device_id, message_at, data, updated_at)
-             select row.message_id, row.device_id,
+               (message_id, device_id, message_key, message_at, data, updated_at)
+             select row.message_id, row.device_id, row.message_key,
                     row.message_at::timestamptz, row.data, now()
              from jsonb_to_recordset($1::jsonb) as row(
-               message_id text, device_id text, message_at text, data jsonb
+               message_id text, device_id text, message_key text, message_at text, data jsonb
              )
-             on conflict (message_id) do update
-               set device_id = excluded.device_id,
-                   message_at = excluded.message_at,
-                   data = excluded.data,
+             on conflict (device_id, message_key) do update
+               set message_at = excluded.message_at,
+                   data = jsonb_set(
+                     jsonb_set(excluded.data, '{messageId}', to_jsonb(phone_cloud_sms_messages.message_id), true),
+                     '{messageKey}', to_jsonb(excluded.message_key), true
+                   ),
                    updated_at = now()`,
             [stringify(rows)]
           );
@@ -247,7 +250,7 @@ export function applyStructuredOverlay(state, overlay = {}) {
   state.users = mergeByKey(overlay.users, state.users, "userId");
   state.sessions = mergeByKey(overlay.sessions, state.sessions, "sessionId");
   state.devices = mergeByKey(overlay.devices, state.devices, "deviceId");
-  state.smsMessages = mergeByKey(overlay.smsMessages, state.smsMessages, "messageId");
+  state.smsMessages = mergeByComputedKey(overlay.smsMessages, state.smsMessages, smsMessageBusinessKey);
   state.windowsTasks = mergeByKey(overlay.windowsTasks, state.windowsTasks, "taskId");
   state.xhsQrTasks = mergeByKey(overlay.xhsTasks, state.xhsQrTasks, "taskId");
   state.deviceLocks = mergeByKey(overlay.deviceLocks, state.deviceLocks, "lockId");
@@ -264,16 +267,26 @@ async function loadDataRows(pool, table, orderColumn, limit) {
 }
 
 function mergeByKey(preferred = [], fallback = [], key) {
+  return mergeByComputedKey(preferred, fallback, (item) => item?.[key]);
+}
+
+function mergeByComputedKey(preferred = [], fallback = [], keyForItem) {
   const result = [];
   const seen = new Set();
   for (const item of [...(preferred || []), ...(fallback || [])]) {
     if (!item || typeof item !== "object") continue;
-    const id = String(item[key] || "").trim();
+    const id = String(keyForItem(item) || "").trim();
     if (!id || seen.has(id)) continue;
     seen.add(id);
     result.push(item);
   }
   return result;
+}
+
+function smsMessageBusinessKey(message = {}) {
+  const deviceId = String(message.deviceId || "").trim();
+  const messageKey = String(message.messageKey || message.messageId || "").trim();
+  return deviceId && messageKey ? `${deviceId}\u0000${messageKey}` : String(message.messageId || "").trim();
 }
 
 function requiredId(value, label) {

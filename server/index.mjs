@@ -2132,6 +2132,8 @@ function normalizeAgentHealth(input = {}) {
       acknowledgedActionableCount: boundedMetric(input.deviceRecovery?.acknowledgedActionableCount, 0, 10_000, 0),
       recoveryMode: String(input.deviceRecovery?.recoveryMode || "normal").slice(0, 80),
       actionReadyAt: String(input.deviceRecovery?.actionReadyAt || "").slice(0, 80),
+      postActionWatchCount: boundedMetric(input.deviceRecovery?.postActionWatchCount, 0, 100, 0),
+      postActionWatchUntil: String(input.deviceRecovery?.postActionWatchUntil || "").slice(0, 80),
       rescueSerials: sanitizeStringList(input.deviceRecovery?.rescueSerials || [], 20, 160),
       rescueCanMutate: Boolean(input.deviceRecovery?.rescueCanMutate),
       maxAttemptsPerDevice: boundedMetric(input.deviceRecovery?.maxAttemptsPerDevice, 1, 100, 0),

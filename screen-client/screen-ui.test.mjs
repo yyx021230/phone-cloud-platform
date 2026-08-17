@@ -43,6 +43,21 @@ test("uses a sectioned control rail and a four-card desktop inventory grid", () 
   assert.match(css, /\.user-device-grid\s*\{[^}]*grid-template-columns: repeat\(4, minmax\(0, 1fr\)\);/);
 });
 
+test("ordinary users can see who occupies a phone and when the usage started", () => {
+  assert.match(app, /<span>使用者<\/span>/);
+  assert.match(app, /<b>\$\{escapeHtml\(occupancy\.ownerLabel\)\}<\/b>/);
+  assert.match(app, /occupancy\.label} · \$\{startedAt}/);
+  assert.match(app, /profileFact\("当前使用者"/);
+  assert.match(css, /\.user-device-inventory-view \.device-occupancy-line\s*\{[^}]*display: grid;/);
+});
+
+test("recovery UI explains the delayed collateral guard and truthful state exhaustion", () => {
+  assert.match(app, /post_action_stability_window/);
+  assert.match(app, /PnP 动作后正在观察延迟连带掉线/);
+  assert.match(app, /post_action_watch_started/);
+  assert.match(app, /已无安全动作/);
+});
+
 test("uses direct keyboard input on the focused phone surface", () => {
   assert.match(html, /id="userScreenVideo"[^>]*tabindex="0"/);
   assert.match(html, /id="userScreenKeyboardBridge"/);
@@ -53,8 +68,8 @@ test("uses direct keyboard input on the focused phone surface", () => {
   assert.match(screenBundle, /compositionend/);
   assert.match(screenBundle, /clipboardData/);
   assert.match(screenBundle, /select_all/);
-  assert.match(html, /styles\.css\?v=20260812-recovery-8way-v2/);
-  assert.match(html, /app\.js\?v=20260814-pnp-recovery-v1/);
+  assert.match(html, /styles\.css\?v=20260814-user-occupancy-v1/);
+  assert.match(html, /app\.js\?v=20260814-user-occupancy-v1/);
   assert.match(html, /screen-control\.js\?v=20260806-ice-ready-wake-v1/);
 });
 

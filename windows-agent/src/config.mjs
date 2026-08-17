@@ -4,7 +4,15 @@ import path from "node:path";
 
 export function normalizeDeviceSerialAllowlist(value) {
   if (!Array.isArray(value)) return [];
-  return [...new Set(value.map((item) => String(item || "").trim()).filter(Boolean))];
+  return [...new Set(value.map((item) => String(item || "").trim().toUpperCase()).filter(Boolean))];
+}
+
+export function isDeviceSerialInNotificationFallbackScope(config = {}, serial = "") {
+  if (config.smsNotificationFallbackEnabled !== true) return false;
+  const normalizedSerial = String(serial || "").trim().toUpperCase();
+  if (!normalizedSerial) return false;
+  if (config.smsNotificationFallbackAllDevices === true) return true;
+  return normalizeDeviceSerialAllowlist(config.smsNotificationFallbackDeviceSerials).includes(normalizedSerial);
 }
 
 export async function loadAgentConfig({ agentDir, configPath }) {
@@ -49,6 +57,7 @@ export async function loadAgentConfig({ agentDir, configPath }) {
     smsLibraryBackgroundSyncConcurrency: Math.max(1, Math.min(4, Number(raw.smsLibraryBackgroundSyncConcurrency || 2))),
     smsLibraryBatchSize: Math.max(10, Math.min(100, Number(raw.smsLibraryBatchSize || 50))),
     smsNotificationFallbackEnabled: raw.smsNotificationFallbackEnabled === true,
+    smsNotificationFallbackAllDevices: raw.smsNotificationFallbackAllDevices === true,
     smsNotificationFallbackDeviceSerials: normalizeDeviceSerialAllowlist(raw.smsNotificationFallbackDeviceSerials),
     smsNotificationBackgroundIntervalSeconds: Math.max(30, Number(raw.smsNotificationBackgroundIntervalSeconds || 30)),
     smsNotificationBackgroundConcurrency: Math.max(1, Math.min(4, Number(raw.smsNotificationBackgroundConcurrency || 2))),
@@ -144,6 +153,10 @@ export async function loadAgentConfig({ agentDir, configPath }) {
     // fresh read-only topology scan instead of waiting for the 30/60s clocks.
     pnpDeviceInstallPollSeconds: Math.max(2, Math.min(30, Number(raw.pnpDeviceInstallPollSeconds || 5))),
     pnpPostActionProbeSeconds: Math.max(5, Math.min(60, Number(raw.pnpPostActionProbeSeconds || 10))),
+    // Windows may continue re-binding WinUSB/MTP nodes well after pnputil
+    // exits. Keep the pre-action online cohort under observation long enough
+    // to catch delayed collateral before another PnP batch is allowed.
+    pnpCollateralWatchSeconds: Math.max(60, Math.min(600, Number(raw.pnpCollateralWatchSeconds || 180))),
     // Explicitly authorized production policy: issue exact per-phone recovery
     // against eight independent targets in one batch. Never reset a Hub.
     pnpMaxTargetRecoveriesPerPass: 8,
@@ -211,5 +224,10 @@ function validateConfig(raw) {
   if (!raw.deviceToken || raw.deviceToken === "dev-device-token") warnings.push("deviceToken_uses_default");
   if (!raw.adbPath) warnings.push("adbPath_missing_using_path_lookup");
   if (raw.airtestEnabled !== false && !raw.pythonCommand) warnings.push("pythonCommand_missing_using_default");
+  if (raw.smsNotificationFallbackEnabled === true
+    && raw.smsNotificationFallbackAllDevices !== true
+    && normalizeDeviceSerialAllowlist(raw.smsNotificationFallbackDeviceSerials).length === 0) {
+    warnings.push("sms_notification_fallback_enabled_without_scope");
+  }
   return warnings;
 }

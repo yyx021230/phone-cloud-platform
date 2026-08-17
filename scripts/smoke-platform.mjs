@@ -87,11 +87,11 @@ async function main() {
     deviceId: device.deviceId,
     messages: [{
       messageKey: "notification:smoke-1",
-      address: "10690000",
+      address: "小红书",
       phoneNumber: "13800138000",
-      body: "【小红书】验证码 123456，5 分钟内有效。",
+      body: "验证码 123456，请勿泄露",
       code: "123456",
-      messageAt: smsAt,
+      messageAt: new Date(new Date(smsAt).getTime() + 2_024).toISOString(),
       box: "inbox",
       source: "windows-agent-notification"
     }]
@@ -124,6 +124,7 @@ async function main() {
   assert(aSms.messages[0]?.redacted === false, "user device SMS library should not be redacted");
   assert(String(aSms.messages[0]?.body || "").includes("123456"), "user device SMS library should include full message body");
   assert(aSms.messages[0]?.messageKey === "sms:1", "provider key should replace the notification fallback key");
+  assert(aSms.messages[0]?.body === smsPayload.messages[0].body, "provider body should replace the shortened notification body");
   assert(aSms.messages[0]?.slotIndex === 0, "provider metadata should fill the notification-only SIM slot");
   assert(aSms.messages[0]?.sourceAliases?.includes("windows-agent-notification"), "merged SMS should retain its notification source alias");
 

@@ -1163,7 +1163,7 @@ function renderUserDeviceDetailPanel(device) {
       ${profileFact("SIM 卡数量", String(sims.length || 0))}
       ${profileFact("短信总数", `${device.smsLibraryCount || state.userDeviceSmsTotal || 0} 条`, "ok")}
       ${profileFact("最后同步时间", shortTime(device.lastSeenAt || device.updatedAt || device.lastHeartbeatAt))}
-      ${profileFact("当前占用", device.occupancy ? `${device.occupancy.ownerLabel} · ${device.occupancy.label}` : "未占用", device.occupancy ? "warn" : "ok")}
+      ${profileFact("当前使用者", device.occupancy ? `${device.occupancy.ownerLabel} · ${device.occupancy.label}${device.occupancy.startedAt ? ` · ${shortTime(device.occupancy.startedAt)}` : ""}` : "未占用", device.occupancy ? "warn" : "ok")}
     </div>
     <div class="device-profile-resources">
       <section>
@@ -1194,10 +1194,12 @@ function profileFact(label, value, tone = "") {
 function renderDeviceOccupancy(device) {
   const occupancy = device?.occupancy;
   if (!occupancy) return "";
+  const startedAt = occupancy.startedAt ? shortTime(occupancy.startedAt) : "刚刚";
   return `
-    <div class="device-occupancy-line" title="${escapeHtml(occupancy.label)}">
-      <span>占用</span>
-      <b>${escapeHtml(`${occupancy.ownerLabel} · ${occupancy.label}`)}</b>
+    <div class="device-occupancy-line" title="${escapeHtml(`${occupancy.ownerLabel} · ${occupancy.label} · ${startedAt}`)}">
+      <span>使用者</span>
+      <b>${escapeHtml(occupancy.ownerLabel)}</b>
+      <small>${escapeHtml(`${occupancy.label} · ${startedAt}`)}</small>
     </div>
   `;
 }
@@ -1816,6 +1818,7 @@ function recoveryDeviceStatus(item) {
   if (item.agentBlockedReason === "device_install_busy") return { tone: "muted", label: "安装器忙", next: "等待 Windows 安装器空闲" };
   if (item.agentBlockedReason === "hourly_budget_exhausted") return { tone: "muted", label: "预算已满", next: "等待小时预算释放" };
   if (item.agentBlockedReason === "action_cooldown") return { tone: "warning", label: "主机冷却", next: "等待下一台安全窗口" };
+  if (item.agentBlockedReason === "post_action_stability_window") return { tone: "warning", label: "连带观察", next: "确认其他在线手机保持稳定" };
   return { tone: "warning", label: item.attempts ? "冷却验证" : "等待处理", next: "等待下次扫描" };
 }
 
@@ -1870,6 +1873,7 @@ function recoveryBlockReason(recovery = {}) {
     device_install_busy: "Windows 设备安装器忙，等待下一并发批次",
     hourly_budget_exhausted: "小时动作预算已用尽",
     action_cooldown: "上一台动作后处于主机冷却期",
+    post_action_stability_window: "PnP 动作后正在观察延迟连带掉线",
     physical_inventory_unavailable: "物理 USB 清单不可用",
     not_observed: "等待第一次物理 USB 采样"
   })[recovery.blockedReason] || (recovery.blockedReason ? recovery.blockedReason : "可执行自动恢复");
@@ -1914,8 +1918,13 @@ function recoveryEventLabel(event) {
     action_completed: "恢复动作完成，等待验证",
     action_failed: "恢复动作失败",
     deferred: "恢复动作安全暂缓",
-    quarantined: `${Math.max(1, Number(event.maxAttempts || 5))} 次自动恢复已用尽`,
+    quarantined: Number(event.attempt || 0) >= Math.max(1, Number(event.maxAttempts || 5))
+      ? `${Math.max(1, Number(event.maxAttempts || 5))} 次自动恢复已用尽`
+      : Number(event.attempt || 0) > 0
+        ? `第 ${Number(event.attempt)} 次后已无安全动作`
+        : "当前状态无安全动作",
     rescue_started: "熔断连带设备救援已开始",
+    post_action_watch_started: "PnP 动作进入连带观察期",
     circuit_opened: "主机保护熔断已打开",
     circuit_closed: "主机保护熔断已解除"
   })[event.type] || event.type || "恢复状态更新";
@@ -1938,6 +1947,7 @@ function recoveryReasonLabel(value) {
     adb_reconnect_failed: "ADB transport 重连失败",
     pnp_timeout: "单设备 PnP 重启超时",
     pnp_action_failed: "单设备 PnP 重启失败",
+    delayed_collateral_guard: "持续观察延迟出现的批外掉线",
     circuit_collateral_rescue: "普通队列保持熔断，仅救回批外连带设备",
     mass_outage: "同时异常设备过多",
     burst_outage: "短时间内集中掉线",

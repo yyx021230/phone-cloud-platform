@@ -4454,23 +4454,42 @@ em {
 }
 
 .user-device-inventory-view .device-occupancy-line {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  gap: 6px;
+  column-gap: 9px;
+  row-gap: 2px;
   min-width: 0;
   margin-top: 10px;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 187, 70, 0.2);
+  border-radius: 10px;
+  background: linear-gradient(90deg, rgba(255, 187, 70, 0.09), rgba(255, 187, 70, 0.025));
   color: var(--accent);
   font-size: 14px;
   line-height: 18px;
 }
 
 .user-device-inventory-view .device-occupancy-line span {
+  grid-row: 1 / span 2;
   flex: 0 0 auto;
   color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
 }
 
 .user-device-inventory-view .device-occupancy-line b {
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-device-inventory-view .device-occupancy-line small {
+  overflow: hidden;
+  color: #aab6c7;
+  font-size: 11px;
+  line-height: 14px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
