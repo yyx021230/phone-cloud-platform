@@ -675,21 +675,90 @@ async function ensureDeviceAutomationReady(device, options = {}) {
     });
     return automationStatusForSerial(serial);
   }
+  if (options.task) {
+    // A foreground QR task must not perform the full install/accessibility
+    // preflight merely because this Agent process has just restarted and its
+    // in-memory cache is empty. Start and probe the per-device worker first;
+    // a missing helper/package naturally fails this bounded fast path and then
+    // falls through to the repair-capable full preflight below.
+    try {
+      const startup = getAirtestWorker(serial);
+      const worker = await Promise.race([
+        startup,
+        delay(10_000).then(() => { throw new Error(`foreground_worker_start_timeout:${serial}`); })
+      ]);
+      await probeAirtestWorker(worker);
+      const now = Date.now();
+      const cached = automationPreflightBySerial.get(serial) || {};
+      automationPreflightBySerial.set(serial, {
+        ...cached,
+        serial,
+        ok: true,
+        status: "ready",
+        checkedAt: new Date(now).toISOString(),
+        checkedAtMs: now,
+        airtestReady: true,
+        pocoReady: true,
+        helpersReady: true,
+        repairAction: "",
+        lastError: ""
+      });
+      log("foreground task worker fast start passed", { serial });
+      return automationStatusForSerial(serial);
+    } catch (error) {
+      log("foreground task worker fast start failed, falling back to full preflight", {
+        serial,
+        error: error?.message || String(error)
+      });
+      await stopAirtestWorker(serial, "foreground_fast_start_failed").catch(() => {});
+    }
+  }
   const cachedReady = automationPreflightBySerial.get(serial);
   if (options.task && cachedReady?.ok && Date.now() - Number(cachedReady.checkedAtMs || 0) < config.automationPreflightIntervalSeconds * 1000) {
-    const worker = airtestWorkersBySerial.get(serial);
-    if (worker && !worker.exited) {
-      await getAirtestWorker(serial);
-      return automationStatusForSerial(serial);
-    }
+    // A timed-out Poco operation intentionally kills only that device's
+    // worker.  The installed helpers and recent preflight result are still
+    // valid, so rebuild the worker directly instead of repeating the full
+    // package/accessibility/Android-limit preflight (about 60–70 seconds on
+    // the production OPPO fleet).
+    await getAirtestWorker(serial);
+    return automationStatusForSerial(serial);
   }
   if (automationPreflightRunning.has(serial)) {
     if (!options.task) return automationStatusForSerial(serial);
-    const deadline = Date.now() + 60_000;
-    while (automationPreflightRunning.has(serial) && Date.now() < deadline) {
-      await delay(1000);
+    // A foreground QR task must not sit behind the full background preflight.
+    // The production 152 run showed that the worker became ready near the
+    // beginning of preflight but the task still waited the old fixed 60-second
+    // loop.  Observe the single worker briefly and take it as soon as it is
+    // usable; after the bound, let the task path call getAirtestWorker(), whose
+    // own single-flight safely joins or creates that same worker.
+    const deadline = Date.now() + 8_000;
+    while (Date.now() < deadline) {
+      const worker = airtestWorkersBySerial.get(serial);
+      if (worker && !worker.exited && !worker.stopping) {
+        await worker.readyPromise;
+        const now = Date.now();
+        const cached = automationPreflightBySerial.get(serial) || {};
+        automationPreflightBySerial.set(serial, {
+          ...cached,
+          serial,
+          ok: true,
+          status: "ready",
+          checkedAt: new Date(now).toISOString(),
+          checkedAtMs: now,
+          airtestReady: true,
+          pocoReady: true,
+          helpersReady: true,
+          repairAction: "",
+          lastError: ""
+        });
+        return automationStatusForSerial(serial);
+      }
+      await delay(250);
     }
-    if (automationPreflightRunning.has(serial)) return automationStatusForSerial(serial);
+    if (automationPreflightRunning.has(serial)) {
+      log("foreground task bypassed background automation preflight wait", { serial, waitedMs: 8_000 });
+      return automationStatusForSerial(serial);
+    }
   }
   automationPreflightRunning.add(serial);
   const startedAt = Date.now();

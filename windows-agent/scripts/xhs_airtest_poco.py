@@ -6,6 +6,7 @@ import subprocess
 import sys
 import time
 import traceback
+import xml.etree.ElementTree as ET
 
 CURRENT_ADB_PATH = ""
 CURRENT_SERIAL = ""
@@ -36,7 +37,20 @@ def create_stable_poco(**options):
     original = uiautomation.KeepRunningInstrumentationThread
     uiautomation.KeepRunningInstrumentationThread = DisabledKeepRunningInstrumentationThread
     try:
-        return uiautomation.AndroidUiautomationPoco(**options)
+        poco = uiautomation.AndroidUiautomationPoco(**options)
+        # HRPC defaults every remote selector evaluation to 15 seconds.  One
+        # seemingly small ``exists()`` call can issue several RPCs, so a stale
+        # PocoService used to block a task for roughly 150 seconds before the
+        # outer worker watchdog could react.  Bound each RPC at the transport
+        # client instead; selector loops can then try the next exact element or
+        # the existing popup-recovery path within the product's 60-second
+        # target instead of consuming the whole task budget in one call.
+        timeout_seconds = float(os.environ.get("PHONE_CLOUD_POCO_RPC_TIMEOUT_SECONDS", "2.0"))
+        timeout_seconds = max(0.5, min(timeout_seconds, 5.0))
+        client = getattr(getattr(poco, "_agent", None), "client", None)
+        if client is not None and hasattr(client, "set_timeout"):
+            client.set_timeout(timeout_seconds)
+        return poco
     finally:
         uiautomation.KeepRunningInstrumentationThread = original
 
@@ -71,6 +85,16 @@ def stop_stable_poco(poco, adb_path, serial):
         run_adb(adb_path, serial, ["shell", "am", "force-stop", "com.netease.open.pocoservice"], timeout=5)
     except Exception:
         pass
+
+
+def reset_stale_poco_instrumentation(adb_path, serial):
+    """Clear only this phone's orphaned Poco instrumentation before startup."""
+    for package_name in ("com.netease.open.pocoservice", "com.netease.open.pocoservice.test"):
+        try:
+            run_adb(adb_path, serial, ["shell", "am", "force-stop", package_name], timeout=5)
+        except Exception:
+            pass
+    time.sleep(0.3)
 
 
 def emit(log, step, **detail):
@@ -122,16 +146,20 @@ def screen_size(adb_path, serial):
 
 def tap_node(node, post_wait=0.5):
     if CURRENT_ADB_PATH and CURRENT_SERIAL:
+        # The element has already been resolved by Poco. Execute the tap over
+        # bounded ADB only; falling back to ``node.click()`` after a transient
+        # ADB error re-enters an unbounded HRPC call and can hold the entire
+        # task until the outer 180-second watchdog fires.
+        x, y = node.get_position()
         try:
-            x, y = node.get_position()
             width, height = screen_size(CURRENT_ADB_PATH, CURRENT_SERIAL)
-            px = max(1, min(width - 1, int(round(x * width))))
-            py = max(1, min(height - 1, int(round(y * height))))
-            run_adb(CURRENT_ADB_PATH, CURRENT_SERIAL, ["shell", "input", "tap", str(px), str(py)], timeout=5)
-            time.sleep(post_wait)
-            return
         except Exception:
-            pass
+            width, height = (1080, 2400)
+        px = max(1, min(width - 1, int(round(x * width))))
+        py = max(1, min(height - 1, int(round(y * height))))
+        run_adb(CURRENT_ADB_PATH, CURRENT_SERIAL, ["shell", "input", "tap", str(px), str(py)], timeout=5)
+        time.sleep(post_wait)
+        return
     node.click()
     time.sleep(post_wait)
 
@@ -335,7 +363,12 @@ def click_labeled_element_in_region(poco, label_text, log, label, y_min=0.0, y_m
     profile tab is valid only in the bottom navigation bar, so do not accept a
     similarly named element in feed, search, or publishing pages.
     """
-    for selector in (poco(desc=label_text), poco(text=label_text)):
+    try:
+        frozen = poco.freeze()
+    except Exception:
+        emit(log, label, hit=False)
+        return False
+    for selector in (frozen(desc=label_text), frozen(text=label_text)):
         try:
             nodes = list(selector)
         except Exception:
@@ -383,9 +416,14 @@ def click_top_icon_by_region(poco, log, label, x_min, x_max, y_max, timeout=4, p
     deadline = time.time() + timeout
     while time.time() <= deadline:
         candidates = []
+        try:
+            frozen = poco.freeze()
+        except Exception:
+            time.sleep(0.35)
+            continue
         for node_type in ("android.view.ViewGroup", "android.widget.ImageView"):
             try:
-                nodes = list(poco(type=node_type))
+                nodes = list(frozen(type=node_type))
             except Exception:
                 nodes = []
             for node in nodes:
@@ -421,7 +459,7 @@ def close_xhs_celebration_popup(poco, log):
     """
     candidates = []
     try:
-        nodes = list(poco(type="android.widget.ImageView"))
+        nodes = list(poco.freeze()(type="android.widget.ImageView"))
     except Exception:
         nodes = []
     for node in nodes:
@@ -817,7 +855,7 @@ def click_album_entry(poco, log, timeout=12):
 def list_texts(poco, keywords=None, limit=80):
     values = []
     try:
-        nodes = poco(type="android.widget.TextView")
+        nodes = poco.freeze()(type="android.widget.TextView")
     except Exception:
         return values
     try:
@@ -849,9 +887,13 @@ def poco_ui_snapshot(poco, limit=180):
         "android.view.ViewGroup",
     ]
     seen = set()
+    try:
+        frozen = poco.freeze()
+    except Exception as exc:
+        return f"poco_snapshot_error={repr(exc)}"
     for node_type in node_types:
         try:
-            nodes = list(poco(type=node_type))
+            nodes = list(frozen(type=node_type))
         except Exception:
             nodes = []
         for node in nodes[:260]:
@@ -915,7 +957,10 @@ def click_first_album_image(poco, log, timeout=5):
             collapse_system_panels(CURRENT_ADB_PATH, CURRENT_SERIAL, log, "collapse_before_album_thumbnail")
         candidates = []
         try:
-            nodes = list(poco(type="android.widget.ImageView"))
+            # One bounded hierarchy dump, then all candidate geometry and
+            # attributes are evaluated locally.  Querying each thumbnail over
+            # HRPC multiplied one transient timeout by every ImageView.
+            nodes = list(poco.freeze()(type="android.widget.ImageView"))
         except Exception as exc:
             emit(log, "album_candidates_failed", error=repr(exc))
             nodes = []
@@ -1021,21 +1066,218 @@ def classify_confirm_texts(texts):
     return ""
 
 
-def wait_confirm(poco, adb_path, serial, log, keywords, timeout=15):
+def xml_bounds_center(bounds):
+    values = bounds.replace("[", "").replace("]", ",").split(",")
+    x1, y1, x2, y2 = [int(value) for value in values[:4]]
+    return (x1 + x2) // 2, (y1 + y2) // 2
+
+
+def xml_bounds_values(bounds):
+    values = bounds.replace("[", "").replace("]", ",").split(",")
+    return tuple(int(value) for value in values[:4])
+
+
+def dump_confirm_xml(adb_path, serial, token):
+    """Read one bounded UIAutomator hierarchy after QR image selection.
+
+    Poco's hierarchy freeze can remain blocked after XHS switches from the
+    album Activity to its login-confirmation surface.  Subprocess timeouts are
+    enforceable, so this post-selection reader cannot hold the resident worker
+    beyond the task budget.
+    """
+    # ``dump <sdcard-file>`` is not portable across the Android builds in the
+    # fleet: some devices print success but never create the requested file.
+    # ``/dev/tty`` did return the hierarchy on those same devices.  Its stdout
+    # also contains a trailing "UI hierarchy dumped to" status line, so parse
+    # only the hierarchy element instead of feeding all stdout to ElementTree.
+    completed = subprocess.run(
+        [adb_path, "-s", serial, "exec-out", "uiautomator", "dump", "/dev/tty"],
+        capture_output=True,
+        timeout=8,
+        check=False,
+    )
+    raw = completed.stdout
+    if not raw.strip():
+        detail = completed.stderr.decode("utf-8", errors="replace").replace("\r", " ").replace("\n", " ")[:160]
+        raise RuntimeError(f"post_selection_uiautomator_xml_empty:rc={completed.returncode}:{detail}")
+    decoded = raw.decode("utf-8", errors="replace").replace("\r", "").strip()
+    xml_start = decoded.find("<hierarchy")
+    xml_end = decoded.rfind("</hierarchy>")
+    if xml_start < 0 or xml_end < xml_start:
+        detail = decoded.replace("\n", " ")[:160]
+        raise RuntimeError(f"post_selection_uiautomator_xml_missing_hierarchy:{detail}")
+    root = ET.fromstring(decoded[xml_start:xml_end + len("</hierarchy>")])
+    parent = {child: node for node in root.iter() for child in node}
+    values = []
+    for node in root.iter("node"):
+        for key in ("text", "content-desc"):
+            value = (node.get(key) or "").strip()
+            if value and value not in values:
+                values.append(value)
+    return root, parent, values, "/dev/tty"
+
+
+def release_poco_for_confirm_xml(adb_path, serial, log):
+    """End Poco's UiAutomation instrumentation before XML confirmation.
+
+    Android permits only one active UiAutomation owner on affected fleet
+    builds.  Starting the command-line ``uiautomator dump`` while PocoService
+    still owns that channel produces only ``Killed``.  Poco is no longer
+    needed after the QR thumbnail has been selected; every remaining read and
+    tap is XML/ADB based, so explicitly hand the channel over here.
+    """
+    for package_name in ("com.netease.open.pocoservice", "com.netease.open.pocoservice.test"):
+        try:
+            run_adb(adb_path, serial, ["shell", "am", "force-stop", package_name], timeout=5)
+        except Exception as exc:
+            emit(log, "release_poco_package_error", packageName=package_name, error=repr(exc))
+    time.sleep(0.4)
+    emit(log, "poco_released_for_confirm_xml")
+
+
+def click_first_album_image_xml(adb_path, serial, log, token, timeout=8):
+    """Select the first real gallery thumbnail from a bounded XML snapshot."""
+    deadline = time.time() + timeout
+    attempts = 0
+    while time.time() <= deadline:
+        attempts += 1
+        collapse_system_panels(adb_path, serial, log, "collapse_before_album_thumbnail_xml")
+        try:
+            root, _, _, _ = dump_confirm_xml(adb_path, serial, token)
+        except Exception as exc:
+            emit(log, "album_thumbnail_xml_error", attempts=attempts, error=repr(exc))
+            time.sleep(0.35)
+            continue
+
+        bounded = []
+        max_x = 0
+        max_y = 0
+        for node in root.iter("node"):
+            bounds = node.get("bounds") or ""
+            if not bounds:
+                continue
+            try:
+                x1, y1, x2, y2 = xml_bounds_values(bounds)
+            except Exception:
+                continue
+            max_x = max(max_x, x2)
+            max_y = max(max_y, y2)
+            bounded.append((node, x1, y1, x2, y2))
+        if max_x <= 0 or max_y <= 0:
+            time.sleep(0.35)
+            continue
+
+        candidates = []
+        for node, x1, y1, x2, y2 in bounded:
+            node_class = node.get("class") or ""
+            resource_id = node.get("resource-id") or ""
+            if node_class != "android.widget.ImageView":
+                continue
+            center_x = ((x1 + x2) / 2) / max_x
+            center_y = ((y1 + y2) / 2) / max_y
+            width = (x2 - x1) / max_x
+            height = (y2 - y1) / max_y
+            if (
+                "redscanner" not in resource_id
+                and "systemui" not in resource_id
+                and 0.05 < center_x < 0.95
+                and 0.08 < center_y < 0.78
+                and 0.08 <= width <= 0.5
+                and 0.08 <= height <= 0.5
+            ):
+                candidates.append((center_y, center_x, width, height, resource_id, node))
+        candidates.sort(key=lambda item: (item[0], item[1]))
+        if candidates:
+            center_y, center_x, width, height, resource_id, node = candidates[0]
+            x, y = xml_bounds_center(node.get("bounds"))
+            run_adb(adb_path, serial, ["shell", "input", "tap", str(x), str(y)], timeout=5)
+            emit(log, "click_album_first_thumbnail_xml", attempts=attempts, info={
+                "resourceId": resource_id,
+                "x": round(center_x, 3), "y": round(center_y, 3),
+                "w": round(width, 3), "h": round(height, 3),
+                "candidateCount": len(candidates),
+            })
+            time.sleep(0.8)
+            collapse_system_panels(adb_path, serial, log, "collapse_after_album_thumbnail_xml")
+            return True
+        time.sleep(0.35)
+    emit(log, "album_thumbnail_xml_not_found", attempts=attempts)
+    return False
+
+
+def accept_xhs_photo_permission_xml(adb_path, serial, log, token):
+    try:
+        root, parent, _, _ = dump_confirm_xml(adb_path, serial, token)
+    except Exception as exc:
+        emit(log, "allow_xhs_photo_access_xml_error", error=repr(exc))
+        return False
+    return tap_xml_label(
+        adb_path, serial, root, parent,
+        ["允许访问全部", "允许访问所有照片", "允许", "Allow all"],
+        log, "allow_xhs_photo_access_xml",
+    )
+
+
+def nearest_xml_tappable(node, parent):
+    current = node
+    while current is not None:
+        if current.get("bounds") and current.get("enabled", "true") != "false":
+            if current.get("clickable") == "true" or current.get("checkable") == "true":
+                return current
+        current = parent.get(current)
+    return node if node.get("bounds") else None
+
+
+def tap_xml_label(adb_path, serial, root, parent, labels, log, step):
+    wanted = set(labels)
+    for node in root.iter("node"):
+        text = (node.get("text") or "").strip()
+        desc = (node.get("content-desc") or "").strip()
+        if text not in wanted and desc not in wanted:
+            continue
+        candidate = nearest_xml_tappable(node, parent)
+        if candidate is None or not candidate.get("bounds"):
+            continue
+        x, y = xml_bounds_center(candidate.get("bounds"))
+        run_adb(adb_path, serial, ["shell", "input", "tap", str(x), str(y)], timeout=5)
+        emit(log, step, hit=True, element={"text": text, "desc": desc, "bounds": candidate.get("bounds")})
+        time.sleep(0.8)
+        return True
+    emit(log, step, hit=False, labels=list(labels))
+    return False
+
+
+def wait_confirm(poco, adb_path, serial, log, keywords, timeout=15, token="confirm"):
     deadline = time.time() + timeout
     if CURRENT_RUN_DEADLINE_AT is not None:
         deadline = min(deadline, CURRENT_RUN_DEADLINE_AT)
+    last_texts = []
+    last_error = ""
+    attempts = 0
     while time.time() <= deadline:
-        found = list_texts(poco, keywords=keywords, limit=20)
-        confirm_type = classify_confirm_texts(found)
+        attempts += 1
+        try:
+            _, _, texts, _ = dump_confirm_xml(adb_path, serial, token)
+        except Exception as exc:
+            last_error = repr(exc)
+            if attempts == 1:
+                emit(log, "confirm_xml_attempt_error", error=last_error, attempts=attempts)
+            time.sleep(0.35)
+            continue
+        last_texts = texts
+        found = [text for text in texts if any(keyword in text for keyword in keywords)][:20]
+        confirm_type = classify_confirm_texts(texts)
         if confirm_type:
-            emit(log, "confirm_visible", found=found, confirmType=confirm_type)
+            emit(log, "confirm_visible", found=found, confirmType=confirm_type, reader="uiautomator_xml")
             return confirm_type
         time.sleep(0.5)
     if CURRENT_RUN_DEADLINE_AT is not None and time.time() >= CURRENT_RUN_DEADLINE_AT:
         emit(log, "run_deadline_reached", label="wait_confirm")
         return ""
-    emit(log, "confirm_not_found", texts=list_texts(poco, limit=30), focus=focus(adb_path, serial))
+    emit(
+        log, "confirm_not_found", texts=last_texts[:30], focus=focus(adb_path, serial),
+        reader="uiautomator_xml", attempts=attempts, lastError=last_error,
+    )
     return ""
 
 
@@ -1055,14 +1297,19 @@ def click_confirm_text(poco, log, text, label, timeout=4, post_wait=1.0):
     return click_selector(poco, poco(desc=text), f"{label}_desc_{text}", log, timeout=min(timeout, 0.6), post_wait=post_wait)
 
 
-def wait_confirm_branch_ready(poco, log, confirm_type, wait_ms, ordinary_buttons, platform_buttons):
+def wait_confirm_branch_ready(poco, log, confirm_type, wait_ms, ordinary_buttons, platform_buttons, adb_path, serial, token):
     if wait_ms <= 0:
         emit(log, "confirm_wait_skipped", waitMs=wait_ms, confirmType=confirm_type)
         return confirm_type
     deadline = time.time() + (wait_ms / 1000.0)
     last_texts = []
     while time.time() <= deadline:
-        texts = list_texts(poco, limit=80)
+        try:
+            _, _, texts, _ = dump_confirm_xml(adb_path, serial, token)
+        except Exception as exc:
+            emit(log, "confirm_wait_xml_error", error=repr(exc))
+            time.sleep(0.25)
+            continue
         last_texts = texts
         detected = classify_confirm_texts(texts) or confirm_type
         if detected == "platform":
@@ -1094,13 +1341,27 @@ def click_platform_confirm_flow(poco, log):
     return False
 
 
-def click_confirm(poco, log, wait_ms, confirm_type, ordinary_buttons, platform_buttons):
-    confirm_type = wait_confirm_branch_ready(poco, log, confirm_type, wait_ms, ordinary_buttons, platform_buttons)
+def click_confirm(poco, log, wait_ms, confirm_type, ordinary_buttons, platform_buttons, adb_path, serial, token):
+    confirm_type = wait_confirm_branch_ready(
+        poco, log, confirm_type, wait_ms, ordinary_buttons, platform_buttons,
+        adb_path, serial, token,
+    )
+    root, parent, _, _ = dump_confirm_xml(adb_path, serial, token)
     if confirm_type == "ordinary":
         emit(log, "confirm_branch_ordinary", buttons=ordinary_buttons)
-        return click_confirm_button(poco, log, confirm_type, ordinary_buttons)
+        return tap_xml_label(adb_path, serial, root, parent, ordinary_buttons, log, "click_confirm_xml")
     if confirm_type == "platform":
-        return click_platform_confirm_flow(poco, log)
+        emit(log, "confirm_branch_platform", flow=["登录", "同意并登录"], reader="uiautomator_xml")
+        if not tap_xml_label(adb_path, serial, root, parent, ["登录"], log, "click_platform_login_xml"):
+            return False
+        deadline = time.time() + 12
+        while time.time() <= deadline:
+            root, parent, texts, _ = dump_confirm_xml(adb_path, serial, token)
+            if "同意并登录" in texts:
+                return tap_xml_label(adb_path, serial, root, parent, ["同意并登录"], log, "click_platform_agree_login_xml")
+            time.sleep(0.4)
+        emit(log, "platform_agree_login_not_present_after_login", reader="uiautomator_xml")
+        return True
     return False
 
 
@@ -1114,6 +1375,7 @@ def run_preflight(payload):
         from airtest.core.api import connect_device
 
         run_adb(adb_path, serial, ["shell", "echo", "ok"], timeout=8)
+        reset_stale_poco_instrumentation(adb_path, serial)
         connect_device(f"Android://127.0.0.1:5037/{serial}?cap_method=JAVACAP&touch_method=ADBTOUCH")
         create_stable_poco(use_airtest_input=True, screenshot_each_action=False)
         packages = run_adb(adb_path, serial, ["shell", "pm", "list", "packages"], timeout=20)
@@ -1158,6 +1420,7 @@ def run_xhs(payload, poco=None, connected=False):
         ["登录", "确认登录", "确定登录", "同意并登录", "授权登录"],
     )
     verbose_focus = bool(payload.get("verboseFocus"))
+    confirm_xml_token = str(payload.get("taskId") or int(time.time() * 1000))
     owns_poco = False
     try:
         run_adb(adb_path, serial, ["shell", "echo", "ok"], timeout=8)
@@ -1261,21 +1524,30 @@ def run_xhs(payload, poco=None, connected=False):
             elapsed_ms = int((time.perf_counter() - CURRENT_RUN_STARTED_AT) * 1000)
             return {"ok": True, "dryRun": True, "elapsedMs": elapsed_ms, "targetRunMs": CURRENT_TARGET_RUN_MS, "withinTarget": elapsed_ms <= CURRENT_TARGET_RUN_MS, "log": log}
 
-        if not click_first_album_image(poco, log):
+        # Poco's hierarchy snapshot can occasionally wedge after XHS opens its
+        # album, and standalone UIAutomator is killed while Poco owns the same
+        # UiAutomation channel.  The remaining flow is XML/ADB-only: release
+        # Poco first, select the thumbnail by its XML element, then inspect and
+        # confirm the result page through the same bounded reader.
+        release_poco_for_confirm_xml(adb_path, serial, log)
+        if not click_first_album_image_xml(adb_path, serial, log, confirm_xml_token):
             raise RuntimeError("相册未找到可点击图片")
         emit(log, "after_select_image", focus=maybe_focus(adb_path, serial, verbose_focus))
-        if accept_xhs_photo_permission(poco, log):
+        if accept_xhs_photo_permission_xml(adb_path, serial, log, confirm_xml_token):
             # The first image tap was intercepted by Android's permission
             # sheet. Return to the picker, then select the QR thumbnail again.
-            if not click_first_album_image(poco, log):
+            if not click_first_album_image_xml(adb_path, serial, log, confirm_xml_token):
                 raise RuntimeError("授予照片权限后未能重新选择二维码图片")
             emit(log, "after_reselect_image", focus=maybe_focus(adb_path, serial, verbose_focus))
 
-        confirm_type = wait_confirm(poco, adb_path, serial, log, confirm_keywords, timeout=18)
+        confirm_type = wait_confirm(poco, adb_path, serial, log, confirm_keywords, timeout=18, token=confirm_xml_token)
         if not confirm_type:
             raise RuntimeError("选中二维码后未进入登录确认页")
 
-        if not click_confirm(poco, log, wait_ms, confirm_type, ordinary_buttons, platform_buttons):
+        if not click_confirm(
+            poco, log, wait_ms, confirm_type, ordinary_buttons, platform_buttons,
+            adb_path, serial, confirm_xml_token,
+        ):
             raise RuntimeError(f"已进入{confirm_type}登录确认页，但未找到对应确认按钮")
         emit(log, "done", focus=maybe_focus(adb_path, serial, verbose_focus))
         elapsed_ms = int((time.perf_counter() - CURRENT_RUN_STARTED_AT) * 1000)
@@ -1283,13 +1555,19 @@ def run_xhs(payload, poco=None, connected=False):
     except Exception as exc:
         ui_snapshot = ""
         try:
-            ui_snapshot = poco_ui_snapshot(poco) if poco is not None else ""
+            _, _, snapshot_texts, _ = dump_confirm_xml(adb_path, serial, confirm_xml_token)
+            ui_snapshot = "\n".join(snapshot_texts[:180])
         except Exception as snapshot_exc:
-            ui_snapshot = f"poco_snapshot_error={repr(snapshot_exc)}"
+            ui_snapshot = f"bounded_xml_snapshot_error={repr(snapshot_exc)}"
         emit(log, "error", error=repr(exc), trace=traceback.format_exc(), focus=focus(adb_path, serial), uiSnapshot=ui_snapshot, uiHierarchy=ui_snapshot)
         elapsed_ms = int((time.perf_counter() - CURRENT_RUN_STARTED_AT) * 1000)
         return {"ok": False, "elapsedMs": elapsed_ms, "targetRunMs": CURRENT_TARGET_RUN_MS, "withinTarget": elapsed_ms <= CURRENT_TARGET_RUN_MS, "log": log, "error": str(exc)}
     finally:
+        try:
+            safe_token = "".join(ch if ch.isalnum() else "_" for ch in confirm_xml_token)[-80:]
+            run_adb(adb_path, serial, ["shell", "rm", "-f", f"/sdcard/PhoneCloud/.uia-poco-confirm-{safe_token}.xml"], timeout=5)
+        except Exception:
+            pass
         if owns_poco and poco is not None:
             try:
                 stop_stable_poco(poco, adb_path, serial)
@@ -1303,6 +1581,7 @@ def run_worker(serial, adb_path):
     from airtest.core.api import connect_device
 
     run_adb(adb_path, serial, ["shell", "echo", "ok"], timeout=8)
+    reset_stale_poco_instrumentation(adb_path, serial)
     connect_device(f"Android://127.0.0.1:5037/{serial}?cap_method=JAVACAP&touch_method=ADBTOUCH")
     poco = create_stable_poco(use_airtest_input=True, screenshot_each_action=False)
     print(json.dumps({"workerReady": True, "serial": serial}, ensure_ascii=False), flush=True)
