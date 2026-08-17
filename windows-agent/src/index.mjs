@@ -59,7 +59,8 @@ import {
   buildSmsRoleHolderArgs,
   parseDefaultSmsRoleHolders,
   parseLegacyDefaultSmsPackage,
-  parseSmsNotificationDump
+  parseSmsNotificationDump,
+  selectUnsentSmsNotifications
 } from "./sms-notification-source.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -92,6 +93,7 @@ const smsSubscriptionSlotMapBySerial = new Map();
 let backgroundSmsSyncPromise = null;
 let backgroundSmsNotificationSyncPromise = null;
 const lastSmsNotificationSyncBySerial = new Map();
+const uploadedSmsNotificationKeysBySerial = new Map();
 const defaultSmsPackageBySerial = new Map();
 const simInfoCacheBySerial = new Map();
 const initialSimReadBySerial = new Set();
@@ -1281,7 +1283,7 @@ async function taskSmsSyncNow(task, options = {}) {
   let notification = { enabled: false, status: "disabled", received: 0, sent: 0 };
   if (isSmsNotificationFallbackEnabledForSerial(device.adbSerial)) {
     try {
-      notification = await syncAdbSmsNotification(device, options);
+      notification = await syncAdbSmsNotification(device, { ...options, forceFull: true });
     } catch (error) {
       notification = {
         enabled: true,
@@ -3623,13 +3625,26 @@ async function syncAdbSmsNotification(device, options = {}) {
     nowMs: Date.now(),
     maxAgeMs: config.smsNotificationHistoryMaxAgeHours * 60 * 60_000
   });
+  let uploadedKeys = uploadedSmsNotificationKeysBySerial.get(serial);
+  if (!uploadedKeys) {
+    uploadedKeys = new Set();
+    uploadedSmsNotificationKeysBySerial.set(serial, uploadedKeys);
+  }
+  const pendingMessages = selectUnsentSmsNotifications(messages, uploadedKeys, {
+    forceFull: options.forceFull === true
+  });
   let sent = 0;
-  for (let index = 0; index < messages.length; index += config.smsLibraryBatchSize) {
-    const batch = messages.slice(index, index + config.smsLibraryBatchSize);
+  for (let index = 0; index < pendingMessages.length; index += config.smsLibraryBatchSize) {
+    const batch = pendingMessages.slice(index, index + config.smsLibraryBatchSize);
     await deviceApi(`/api/v1/devices/${encodeURIComponent(deviceId)}/sms-library/batch`, {
       method: "POST",
       body: { source: "windows-agent-notification", messages: batch }
     });
+    for (const message of batch) {
+      const key = String(message?.messageKey || "").trim();
+      if (key) uploadedKeys.add(key);
+    }
+    while (uploadedKeys.size > 2_000) uploadedKeys.delete(uploadedKeys.values().next().value);
     sent += batch.length;
   }
   lastSmsNotificationSyncBySerial.set(serial, Date.now());
@@ -3640,6 +3655,7 @@ async function syncAdbSmsNotification(device, options = {}) {
     status: "ok",
     packageName,
     received: messages.length,
+    replaySkipped: Math.max(0, messages.length - pendingMessages.length),
     sent
   };
 }
