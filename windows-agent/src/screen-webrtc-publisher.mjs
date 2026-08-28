@@ -7,7 +7,7 @@ const DEFAULT_START_TIMEOUT_MS = 15_000;
 const DEFAULT_STOP_TIMEOUT_MS = 2_000;
 const WHIP_FRAME_HEADER_BYTES = 13;
 
-export function buildWhipPublisherArgs(publishUrl, { profileLevelId = "42e01f", pacingBitRate = 12_000_000, statsIntervalMs = 0, queueLatencyMs = 400 } = {}) {
+export function buildWhipPublisherArgs(publishUrl, { profileLevelId = "42e01f", pacingBitRate = 12_000_000, maxPacketsPerBurst = 2, statsIntervalMs = 0, queueLatencyMs = 400 } = {}) {
   if (!/^https?:\/\//i.test(String(publishUrl || ""))) throw new Error("invalid_whip_publish_url");
   const normalizedProfile = normalizeH264ProfileLevelId(profileLevelId);
   const boundedPacingBitRate = Math.max(2_000_000, Math.min(48_000_000, Math.round(Number(pacingBitRate) || 12_000_000)));
@@ -15,6 +15,7 @@ export function buildWhipPublisherArgs(publishUrl, { profileLevelId = "42e01f", 
     "--whip-url", String(publishUrl),
     "--profile-level-id", normalizedProfile,
     "--pacing-bitrate", String(boundedPacingBitRate),
+    "--max-packets-per-burst", String(Math.max(1, Math.min(8, Math.round(Number(maxPacketsPerBurst) || 2)))),
     "--queue-latency", `${Math.max(100, Math.min(1_500, Math.round(Number(queueLatencyMs) || 400)))}ms`
   ];
   const boundedStatsIntervalMs = Math.max(0, Math.min(60_000, Math.round(Number(statsIntervalMs) || 0)));
@@ -88,6 +89,7 @@ export function createScreenWebRtcPublisher({
   h264ProfileLevelId: profileLevelId,
   frameRate = 30,
   pacingBitRate = 24_000_000,
+  maxPacketsPerBurst = 2,
   queueLatencyMs = 400,
   statsIntervalMs = 0,
   onLog = () => {},
@@ -106,6 +108,7 @@ export function createScreenWebRtcPublisher({
       publishUrl,
       profileLevelId,
       pacingBitRate,
+      maxPacketsPerBurst,
       queueLatencyMs,
       statsIntervalMs,
       onLog,
@@ -270,6 +273,7 @@ function createWhipScreenWebRtcPublisher({
   publishUrl,
   profileLevelId,
   pacingBitRate,
+  maxPacketsPerBurst,
   queueLatencyMs,
   statsIntervalMs = 0,
   onLog = () => {},
@@ -289,7 +293,7 @@ function createWhipScreenWebRtcPublisher({
   const start = async () => {
     if (started) return;
     if (closed) throw new Error("webrtc_publisher_closed");
-    const args = buildWhipPublisherArgs(publishUrl, { profileLevelId, pacingBitRate, statsIntervalMs, queueLatencyMs });
+    const args = buildWhipPublisherArgs(publishUrl, { profileLevelId, pacingBitRate, maxPacketsPerBurst, statsIntervalMs, queueLatencyMs });
     child = spawn(String(publisherPath || ""), args, { windowsHide: true, stdio: ["pipe", "pipe", "pipe"] });
     child.stderr?.on("data", (chunk) => {
       stderr = `${stderr}${Buffer.from(chunk).toString("utf8")}`.slice(-8_000);

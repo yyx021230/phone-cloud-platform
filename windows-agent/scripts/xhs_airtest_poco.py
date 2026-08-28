@@ -398,7 +398,10 @@ def click_labeled_element_in_region(poco, label_text, log, label, y_min=0.0, y_m
 def dismiss_notification_prompt_safely(adb_path, serial, log):
     """Close XHS's notification onboarding without changing permission state."""
     current_focus = "\n".join(focus(adb_path, serial))
-    if "NotificationAuthorizationTranslucentActivity" not in current_focus:
+    exact_vivo_notification_overlay = (
+        "com.vivo.pushservice" in current_focus and "type=2038" in current_focus
+    )
+    if "NotificationAuthorizationTranslucentActivity" not in current_focus and not exact_vivo_notification_overlay:
         return False
     try:
         # Back dismisses the app-level prompt; do not choose either notification
@@ -492,6 +495,32 @@ def close_xhs_celebration_popup_if_present(poco, log):
     return True
 
 
+def dismiss_xhs_draft_restore_popup_if_present(poco, log):
+    """Dismiss only the evidenced unfinished-draft prompt with Android Back.
+
+    The sheet offers destructive/continuation actions (``存草稿``/``去编辑``),
+    so neither button is suitable for an unattended login flow.  Inspect it
+    only after a required navigation element is absent, require the distinctive
+    question plus one of its action labels, then use Back to close the sheet.
+    """
+    try:
+        question_present = any(
+            poco(text=text).exists()
+            for text in ("继续编辑图文笔记吗", "继续编辑图文笔记吗?", "继续编辑图文笔记吗？")
+        )
+        action_present = poco(text="存草稿").exists() or poco(text="去编辑").exists()
+    except Exception:
+        return False
+    if not question_present or not action_present:
+        return False
+    if not (CURRENT_ADB_PATH and CURRENT_SERIAL):
+        return False
+    run_adb(CURRENT_ADB_PATH, CURRENT_SERIAL, ["shell", "input", "keyevent", "4"], timeout=5)
+    emit(log, "dismiss_xhs_draft_restore_popup_back", marker="继续编辑图文笔记吗")
+    time.sleep(0.5)
+    return True
+
+
 def dismiss_vivo_proximity_overlay_if_present(poco, log):
     """Dismiss vivo's infrared/proximity warning without touching XHS UI.
 
@@ -519,7 +548,7 @@ def handle_common_popups(poco, log, allow_back=False):
     started = time.perf_counter()
     popup_markers = [
         "恭喜你", "去发布", "你可能感兴趣的人", "发现新版本", "升级版本", "免流量升级", "新版本",
-        "青少年模式", "开启通知", "通讯录好友", "访问照片", "访问相册",
+        "青少年模式", "开启通知", "发送通知", "通讯录好友", "访问照片", "访问相册",
         "照片和视频", "选择照片", "媒体", "权限", "隐私政策",
     ]
     marker_hit = ""
@@ -539,7 +568,7 @@ def handle_common_popups(poco, log, allow_back=False):
     text_snapshot = list_texts(poco, limit=80)
     joined_texts = "\n".join(text_snapshot)
     permission_prompt = any(marker in joined_texts for marker in ["访问照片", "访问相册", "照片和视频", "选择照片", "媒体", "权限"])
-    notification_prompt = any(marker in joined_texts for marker in ["开启通知", "通知权限", "互动消息"])
+    notification_prompt = any(marker in joined_texts for marker in ["开启通知", "发送通知", "通知权限", "互动消息"])
     privacy_prompt = any(marker in joined_texts for marker in ["隐私政策", "用户协议"])
     # Never tap a generic "确认" here: a login confirmation is a business action,
     # not a disposable popup. System media permissions are the only prompts for
@@ -597,6 +626,55 @@ def dismiss_vivo_usb_connected_dialog_if_present(poco, log):
     return False
 
 
+def dismiss_known_resolver_system_overlay(adb_path, serial, log, lines):
+    """Dismiss only a proven system window above the clone-app resolver.
+
+    Vivo/OPPO may leave a USB notice or a system updater window above the clone
+    resolver. Poco is attached to the resolver hierarchy, so it cannot inspect
+    or click that separate system window. A single Back is safe only after both
+    the underlying resolver and an exact overlay window have been observed;
+    never send it for an ordinary XHS surface.
+    """
+    joined = "\n".join(lines)
+    if package_from_focus(lines) != "com.android.intentresolver":
+        return False
+    overlay = ""
+    overlay_package = ""
+    if "com.bbk.updater" in joined:
+        overlay = "vivo_system_update"
+        overlay_package = "com.bbk.updater"
+    elif "com.oplus.ota" in joined:
+        overlay = "oppo_system_update"
+        overlay_package = "com.oplus.ota"
+    elif "VivoUsbDialog" in joined:
+        overlay = "vivo_usb_dialog"
+    if not overlay:
+        return False
+    try:
+        method = "back"
+        run_adb(adb_path, serial, ["shell", "input", "keyevent", "4"], timeout=5)
+        time.sleep(0.6)
+        after = focus(adb_path, serial)
+        after_text = "\n".join(after)
+        overlay_marker = overlay_package or "VivoUsbDialog"
+        dismissed = overlay_marker not in after_text
+        # Some vendor updater windows consume KEYCODE_BACK without closing.
+        # Only after the underlying resolver and the exact updater package have
+        # both been proven may we stop that one package on this phone.
+        if not dismissed and overlay_package:
+            method = "force_stop_exact_package"
+            run_adb(adb_path, serial, ["shell", "am", "force-stop", overlay_package], timeout=5)
+            time.sleep(0.6)
+            after = focus(adb_path, serial)
+            after_text = "\n".join(after)
+            dismissed = overlay_package not in after_text
+        emit(log, "dismiss_resolver_system_overlay", overlay=overlay, method=method, dismissed=dismissed, focus=after)
+        return dismissed
+    except Exception as exc:
+        emit(log, "dismiss_resolver_system_overlay_error", overlay=overlay, error=repr(exc))
+        return False
+
+
 def choose_xhs_slot(poco, adb_path, serial, slot, log):
     started = time.perf_counter()
     labels = ["Ⅱ·小红书", "II·小红书", "II ·小红书", "Ⅱ ·小红书"] if slot == "app2" else ["小红书"]
@@ -604,16 +682,43 @@ def choose_xhs_slot(poco, adb_path, serial, slot, log):
     lines = focus(adb_path, serial)
     resolver_active = package_from_focus(lines) == "com.android.intentresolver"
     emit(log, "choose_slot_focus", resolverActive=resolver_active, focus=lines)
+    has_known_overlay = resolver_active and any(
+        marker in line for marker in ("com.bbk.updater", "com.oplus.ota", "VivoUsbDialog") for line in lines
+    )
+    if has_known_overlay:
+        if not dismiss_known_resolver_system_overlay(adb_path, serial, log, lines):
+            # Do not spend the whole task budget issuing Poco RPCs against a
+            # resolver that is still covered by a separate system window.
+            emit(log, "choose_slot_system_overlay_still_present")
+            return False
+        lines = focus(adb_path, serial)
+        resolver_active = package_from_focus(lines) == "com.android.intentresolver"
+        emit(log, "choose_slot_focus_after_system_overlay", resolverActive=resolver_active, focus=lines)
     # Some Vivo devices show a system USB-mode notice directly above the
     # double-app resolver after reconnect. It has an exact title and a single
     # cancel button; handle only that overlay before querying clone choices.
-    if resolver_active and dismiss_vivo_usb_connected_dialog_if_present(poco, log):
+    if resolver_active and any("VivoUsbDialog" in line for line in lines) and dismiss_vivo_usb_connected_dialog_if_present(poco, log):
         lines = focus(adb_path, serial)
         resolver_active = package_from_focus(lines) == "com.android.intentresolver"
         emit(log, "choose_slot_focus_after_usb_dialog", resolverActive=resolver_active, focus=lines)
     if not resolver_active:
         emit(log, "choose_slot_skip_not_resolver", elapsedMs=int((time.perf_counter() - started) * 1000))
         return True
+
+    # Vivo's DoubleAppResolverActivity is a separate system-UI hierarchy. On
+    # affected OriginOS builds a Poco selector call can block far beyond its
+    # nominal selector timeout, so a later fallback is never reached. Return
+    # promptly and let the caller release Poco before the bounded XML element
+    # picker runs. This is still element-based; it is not a coordinate guess.
+    vendor_xml_resolvers = (
+        "com.android.intentresolver.DoubleAppResolverActivity",
+        "com.android.intentresolver/.DoubleAppResolverActivity",
+        "com.android.intentresolver.ChooserActivityLauncher",
+        "com.android.intentresolver/.ChooserActivityLauncher",
+    )
+    if any(resolver in line for resolver in vendor_xml_resolvers for line in lines):
+        emit(log, "choose_slot_vendor_resolver_defer_to_xml", elapsedMs=int((time.perf_counter() - started) * 1000))
+        return False
 
     # Xiaomi/Redmi renders the two clone choices with identical text
     # ("小红书") under android:id/text1. Select the requested slot by the
@@ -679,6 +784,26 @@ def click_scan_entry(poco, log):
     return False
 
 
+def dismiss_profile_search_overlay_if_present(poco, log):
+    """Close XHS's profile-search surface only after the scan target is absent."""
+    markers = ["搜索我的笔记/收藏/赞过", "搜索我的笔记、收藏或赞过"]
+    marker_hit = ""
+    for marker in markers:
+        try:
+            if poco(text=marker).exists():
+                marker_hit = marker
+                break
+        except Exception:
+            pass
+    if not marker_hit:
+        return False
+    if click_selector_once(poco, poco(text="取消"), "dismiss_profile_search_cancel", log, post_wait=0.6):
+        emit(log, "profile_search_overlay_dismissed", marker=marker_hit)
+        return True
+    emit(log, "profile_search_overlay_dismiss_failed", marker=marker_hit)
+    return False
+
+
 def ensure_xhs_session_available(poco, log):
     # The task contract assumes XHS is already logged in.  Do not scan for
     # logout UI on the normal path: that adds a full UI RPC before the first
@@ -727,6 +852,12 @@ def click_me_entry(poco, log, timeout=12):
     def attempt():
         # The profile tab must be resolved as a bottom-navigation element; raw
         # coordinates can hit feed/search/publish controls on a restored page.
+        # Query the required target first. A repeated ``dumpsys window`` before
+        # this lookup consumed most of the 60-second target on slower devices.
+        if click_labeled_element_in_region(
+            poco, "我", log, "click_me_bottom_navigation_element", y_min=0.84, post_wait=0.7
+        ):
+            return True
         if CURRENT_ADB_PATH and CURRENT_SERIAL:
             # On Vivo, a window-focus query can take several seconds while the
             # notification translucent activity is present. Check it first so
@@ -749,6 +880,10 @@ def click_me_entry(poco, log, timeout=12):
                     run_adb(CURRENT_ADB_PATH, CURRENT_SERIAL, ["shell", "input", "keyevent", "4"], timeout=5)
                     time.sleep(0.5)
                     emit(log, "back_from_search_before_me")
+                elif "XhsAlbumActivity" in current_focus:
+                    run_adb(CURRENT_ADB_PATH, CURRENT_SERIAL, ["shell", "input", "keyevent", "4"], timeout=5)
+                    time.sleep(0.5)
+                    emit(log, "back_from_stale_album_before_me")
             except Exception as exc:
                 emit(log, "prepare_me_element_error", error=repr(exc))
         # Some XHS versions show a second, in-app notification sheet after
@@ -757,10 +892,8 @@ def click_me_entry(poco, log, timeout=12):
         for text in ("以后再说", "暂不开启", "下次再说"):
             if click_selector_once(poco, poco(text=text), f"dismiss_xhs_notification_{text}", log, post_wait=0.5):
                 return False
-        if click_labeled_element_in_region(
-            poco, "我", log, "click_me_bottom_navigation_element", y_min=0.84, post_wait=0.7
-        ):
-            return True
+        if dismiss_xhs_draft_restore_popup_if_present(poco, log):
+            return False
         # Keep the normal path to a single target lookup.  Only inspect the
         # vivo system dialog after that lookup actually missed.
         dismiss_vivo_proximity_overlay_if_present(poco, log)
@@ -780,8 +913,29 @@ def click_scan_entry_wait(poco, log, timeout=15):
     if wait_until("wait_scan_entry", log, direct_timeout, attempt, interval=0.5):
         return True
     emit(log, "scan_entry_missing_recover_popups")
+    if dismiss_profile_search_overlay_if_present(poco, log):
+        return wait_until(
+            "wait_scan_entry_after_profile_search",
+            log,
+            max(1, timeout - direct_timeout),
+            attempt,
+            interval=0.5,
+        )
     if close_xhs_celebration_popup_if_present(poco, log):
         return wait_until("wait_scan_entry_after_popup_recovery", log, max(1, timeout - direct_timeout), attempt, interval=0.5)
+    # The unfinished-draft sheet may be restored only after XHS opens the
+    # profile surface.  It is therefore not sufficient to handle it solely
+    # while looking for the bottom "我" tab.  Keep the recovery gated behind a
+    # missing scanner target and close the evidenced sheet with Android Back;
+    # never choose either business action ("存草稿" / "去编辑").
+    if dismiss_xhs_draft_restore_popup_if_present(poco, log):
+        return wait_until(
+            "wait_scan_entry_after_draft_restore",
+            log,
+            max(1, timeout - direct_timeout),
+            attempt,
+            interval=0.5,
+        )
     popup_closed = clear_popups_rounds(poco, log, rounds=1)
     # An upgrade/notification dialog can restore the previous XHS surface
     # instead of the profile page. Re-open the profile immediately after a
@@ -848,6 +1002,17 @@ def click_album_entry(poco, log, timeout=12):
     if wait_until("wait_album_entry", log, direct_timeout, attempt, interval=0.5):
         return True
     emit(log, "album_entry_missing_recover_popups")
+    # A restored draft sheet can also race with the transition into the
+    # scanner.  Apply the same exact-text, Back-only policy here before the
+    # generic popup sweep so its action buttons can never be selected.
+    if dismiss_xhs_draft_restore_popup_if_present(poco, log):
+        return wait_until(
+            "wait_album_entry_after_draft_restore",
+            log,
+            max(1, timeout - direct_timeout),
+            attempt,
+            interval=0.5,
+        )
     clear_popups_rounds(poco, log, rounds=1)
     return wait_until("wait_album_entry_after_popup_recovery", log, max(1, timeout - direct_timeout), attempt, interval=0.5)
 
@@ -1211,11 +1376,91 @@ def accept_xhs_photo_permission_xml(adb_path, serial, log, token):
     except Exception as exc:
         emit(log, "allow_xhs_photo_access_xml_error", error=repr(exc))
         return False
+    # Vivo/OriginOS uses the Android 12 foreground-only camera button while
+    # opening XHS Scanner. Prefer the stable permission-controller resource
+    # ids; the localized text remains a fallback for other Android variants.
+    preferred_ids = (
+        # Android 14 / OriginOS photo picker. This is distinct from the
+        # generic permission_allow_button and is the full-library choice; the
+        # sibling permission_allow_selected_button would expose only a user
+        # selected subset and can hide the QR that was just pushed by ADB.
+        "permission_allow_all_button",
+        "permission_allow_foreground_only_button",
+        "permission_allow_button",
+        "permission_allow_one_time_button",
+    )
+    for suffix in preferred_ids:
+        for node in root.iter("node"):
+            resource_id = (node.get("resource-id") or "").strip()
+            if not resource_id.endswith(suffix):
+                continue
+            candidate = nearest_xml_tappable(node, parent)
+            if candidate is None or not candidate.get("bounds"):
+                continue
+            x, y = xml_bounds_center(candidate.get("bounds"))
+            run_adb(adb_path, serial, ["shell", "input", "tap", str(x), str(y)], timeout=5)
+            emit(log, "allow_xhs_photo_access_xml", hit=True, method="resource_id", resourceId=resource_id)
+            time.sleep(0.8)
+            return True
     return tap_xml_label(
         adb_path, serial, root, parent,
-        ["允许访问全部", "允许访问所有照片", "允许", "Allow all"],
+        [
+            "使用应用时允许", "仅在使用中允许", "本次使用时允许",
+            "允许访问全部", "允许全部", "允许访问所有照片", "允许",
+            "While using the app", "Only this time", "Allow all",
+        ],
         log, "allow_xhs_photo_access_xml",
     )
+
+
+def system_media_permission_prompt_present(adb_path, serial):
+    current_focus = focus(adb_path, serial)
+    joined = "\n".join(current_focus)
+    return (
+        "GrantPermissionsActivity" in joined
+        or "permissioncontroller" in joined.lower()
+    )
+
+
+def click_album_entry_xml(adb_path, serial, log, token, timeout=8):
+    """Click the scanner album element after a system permission transition.
+
+    Poco cannot inspect Android's permission-controller hierarchy. Once that
+    exact foreground activity is observed we hand UiAutomation to the bounded
+    XML reader and keep the rest of the transition element based.
+    """
+    deadline = time.time() + timeout
+    attempts = 0
+    while time.time() <= deadline:
+        attempts += 1
+        try:
+            root, parent, _, _ = dump_confirm_xml(adb_path, serial, token)
+        except Exception as exc:
+            emit(log, "album_entry_xml_error", attempts=attempts, error=repr(exc))
+            time.sleep(0.35)
+            continue
+        for node in root.iter("node"):
+            text = (node.get("text") or "").strip()
+            desc = (node.get("content-desc") or "").strip()
+            resource_id = (node.get("resource-id") or "").strip()
+            if text != "相册" and desc != "相册" and not resource_id.endswith(":id/llMyPhoto"):
+                continue
+            candidate = nearest_xml_tappable(node, parent)
+            if candidate is None or not candidate.get("bounds"):
+                continue
+            x, y = xml_bounds_center(candidate.get("bounds"))
+            run_adb(adb_path, serial, ["shell", "input", "tap", str(x), str(y)], timeout=5)
+            emit(log, "click_album_entry_xml", hit=True, attempts=attempts, element={
+                "text": text,
+                "desc": desc,
+                "resourceId": resource_id,
+                "bounds": candidate.get("bounds"),
+            })
+            time.sleep(0.8)
+            return True
+        time.sleep(0.35)
+    emit(log, "click_album_entry_xml", hit=False, attempts=attempts, focus=focus(adb_path, serial))
+    return False
 
 
 def nearest_xml_tappable(node, parent):
@@ -1244,6 +1489,132 @@ def tap_xml_label(adb_path, serial, root, parent, labels, log, step):
         time.sleep(0.8)
         return True
     emit(log, step, hit=False, labels=list(labels))
+    return False
+
+
+def click_scan_entry_xml(adb_path, serial, log, token, timeout=8):
+    """Open XHS scanner through a bounded XML element lookup.
+
+    OPPO's clone resolver can leave PocoService responsive for the first few
+    selectors and then wedge on a later missing selector.  Once that exact
+    resolver transition has already required XML, keep the profile-to-scanner
+    transition on the same bounded UiAutomation reader instead of spending the
+    whole task watchdog on another Poco RPC.  The tap still requires the exact
+    ``扫一扫`` element; no screen coordinate is guessed.
+    """
+    deadline = time.time() + timeout
+    attempts = 0
+    search_markers = {"搜索我的笔记/收藏/赞过", "搜索我的笔记、收藏或赞过"}
+    while time.time() <= deadline:
+        attempts += 1
+        try:
+            root, parent, texts, _ = dump_confirm_xml(adb_path, serial, token)
+        except Exception as exc:
+            emit(log, "scan_entry_xml_error", attempts=attempts, error=repr(exc))
+            time.sleep(0.35)
+            continue
+
+        for node in root.iter("node"):
+            text = (node.get("text") or "").strip()
+            desc = (node.get("content-desc") or "").strip()
+            if text != "扫一扫" and desc != "扫一扫":
+                continue
+            candidate = nearest_xml_tappable(node, parent)
+            if candidate is None or not candidate.get("bounds"):
+                continue
+            x, y = xml_bounds_center(candidate.get("bounds"))
+            run_adb(adb_path, serial, ["shell", "input", "tap", str(x), str(y)], timeout=5)
+            emit(log, "click_scan_entry_xml", hit=True, attempts=attempts, element={
+                "text": text,
+                "desc": desc,
+                "resourceId": (node.get("resource-id") or "").strip(),
+                "bounds": candidate.get("bounds"),
+            })
+            time.sleep(0.8)
+            return True
+
+        # Preserve the evidenced profile-search recovery without issuing
+        # another Poco query: close only the exact search overlay by its
+        # localized Cancel element, then inspect the profile again.
+        if any(marker in texts for marker in search_markers):
+            if tap_xml_label(adb_path, serial, root, parent, ["取消"], log, "dismiss_profile_search_cancel_xml"):
+                emit(log, "profile_search_overlay_dismissed_xml")
+                continue
+        joined = "\n".join(texts)
+        celebration = "去发布" in joined and ("恭喜你" in joined or "赞和收藏" in joined)
+        draft_restore = "继续编辑图文笔记吗" in joined and any(label in joined for label in ("存草稿", "去编辑"))
+        if celebration or draft_restore:
+            marker = "去发布" if celebration else "继续编辑图文笔记吗"
+            run_adb(adb_path, serial, ["shell", "input", "keyevent", "4"], timeout=5)
+            emit(log, "dismiss_xhs_business_popup_back_xml", marker=marker, attempts=attempts)
+            time.sleep(0.5)
+            continue
+        time.sleep(0.35)
+    emit(log, "click_scan_entry_xml", hit=False, attempts=attempts, focus=focus(adb_path, serial))
+    return False
+
+
+def click_xhs_slot_xml(adb_path, serial, slot, log, token, timeout=8):
+    """Select one clone-app card from the system resolver by XML element.
+
+    This path is used only after the normal Poco resolver lookup has failed.
+    Poco owns a different UiAutomation hierarchy on affected vendor builds, so
+    the caller releases it before invoking this bounded system-UI fallback.
+    """
+    initial_focus = focus(adb_path, serial)
+    if package_from_focus(initial_focus) == "com.android.intentresolver" and any(
+        marker in line for marker in ("com.bbk.updater", "com.oplus.ota", "VivoUsbDialog") for line in initial_focus
+    ):
+        if not dismiss_known_resolver_system_overlay(adb_path, serial, log, initial_focus):
+            emit(log, "choose_slot_xml_system_overlay_still_present")
+            return False
+    labels = ["Ⅱ·小红书", "II·小红书", "II ·小红书", "Ⅱ ·小红书"] if slot == "app2" else ["小红书"]
+    deadline = time.time() + timeout
+    attempts = 0
+    while time.time() <= deadline:
+        attempts += 1
+        try:
+            root, parent, _, _ = dump_confirm_xml(adb_path, serial, token)
+        except Exception as exc:
+            emit(log, "choose_slot_xml_error", attempts=attempts, error=repr(exc))
+            time.sleep(0.35)
+            continue
+        exact = []
+        text1 = []
+        content = []
+        seen = set()
+        for node in root.iter("node"):
+            text = (node.get("text") or "").strip()
+            desc = (node.get("content-desc") or "").strip()
+            resource_id = (node.get("resource-id") or "").strip()
+            target = nearest_xml_tappable(node, parent)
+            bounds = target.get("bounds") if target is not None else ""
+            if not bounds:
+                continue
+            key = (bounds, text, desc, resource_id)
+            if key in seen:
+                continue
+            seen.add(key)
+            item = (xml_bounds_center(bounds), target, text, desc, resource_id)
+            if text in labels or desc in labels:
+                exact.append(item)
+            if resource_id.endswith(":id/text1") or resource_id == "android:id/text1":
+                text1.append(item)
+            elif resource_id.endswith(":id/content"):
+                content.append(item)
+        candidates = exact or text1 or content
+        candidates.sort(key=lambda item: (item[0][1], item[0][0]))
+        if candidates:
+            index = 1 if slot == "app2" and len(candidates) > 1 and not exact else 0
+            (x, y), _, text, desc, resource_id = candidates[min(index, len(candidates) - 1)]
+            run_adb(adb_path, serial, ["shell", "input", "tap", str(x), str(y)], timeout=5)
+            emit(log, "choose_slot_xml", hit=True, slot=slot, attempts=attempts, index=index, count=len(candidates), element={
+                "text": text, "desc": desc, "resourceId": resource_id, "x": x, "y": y,
+            })
+            time.sleep(0.9)
+            return True
+        time.sleep(0.35)
+    emit(log, "choose_slot_xml", hit=False, slot=slot, attempts=attempts, focus=focus(adb_path, serial))
     return False
 
 
@@ -1480,17 +1851,35 @@ def run_xhs(payload, poco=None, connected=False):
             poco = create_stable_poco(use_airtest_input=True, screenshot_each_action=False)
             owns_poco = True
             emit(log, "poco_ready_after_launch_surface", focus=maybe_focus(adb_path, serial, verbose_focus))
+        slot_selected_via_xml = False
         if need_choose_slot:
             emit(log, "choose_slot_call_begin", slot=slot)
             if not choose_xhs_slot(poco, adb_path, serial, slot, log):
-                raise RuntimeError("未找到系统双开应用入口")
+                # The clone picker is system UI. On some Vivo/OPPO builds Poco
+                # remains attached to the app-side hierarchy and cannot see
+                # resolver cards even though the resolver is foregrounded.
+                # Release only this phone's Poco channel, use bounded XML for
+                # the exact resolver elements, then attach a fresh Poco to XHS.
+                release_poco_for_confirm_xml(adb_path, serial, log)
+                poco = None
+                if not click_xhs_slot_xml(adb_path, serial, slot, log, f"{confirm_xml_token}-resolver", timeout=8):
+                    raise RuntimeError("未找到系统双开应用入口")
+                from airtest.core.settings import Settings as ST
+                ST.ADB = adb_path
+                from airtest.core.api import connect_device
+
+                connect_device(f"Android://127.0.0.1:5037/{serial}?cap_method=JAVACAP&touch_method=ADBTOUCH")
+                poco = create_stable_poco(use_airtest_input=True, screenshot_each_action=False)
+                owns_poco = True
+                slot_selected_via_xml = True
+                emit(log, "poco_recreated_after_clone_slot_xml", focus=maybe_focus(adb_path, serial, verbose_focus))
             emit(log, "choose_slot_call_end", slot=slot)
             # The resolver and XHS are distinct Android UI surfaces on vivo.
             # A Poco session attached while the resolver is foregrounded can
             # stop responding immediately after the selected clone opens.
             # Reattach only for this confirmed resolver transition; all later
             # controls remain element-based Poco operations.
-            if owns_poco:
+            if owns_poco and poco is not None and not slot_selected_via_xml:
                 stop_stable_poco(poco, adb_path, serial)
                 poco = None
                 from airtest.core.settings import Settings as ST
@@ -1500,6 +1889,26 @@ def run_xhs(payload, poco=None, connected=False):
                 connect_device(f"Android://127.0.0.1:5037/{serial}?cap_method=JAVACAP&touch_method=ADBTOUCH")
                 poco = create_stable_poco(use_airtest_input=True, screenshot_each_action=False)
                 emit(log, "poco_recreated_after_clone_slot", focus=maybe_focus(adb_path, serial, verbose_focus))
+
+            # A few Vivo devices use a very short screen timeout. The resolver
+            # transition plus Poco reattach can consume that whole interval,
+            # leaving XHS underneath a new keyguard just before profile
+            # navigation. Re-unlock only when keyguard state proves it, then
+            # recreate this phone's Poco session on the visible XHS surface.
+            if is_keyguard_showing(adb_path, serial):
+                emit(log, "post_slot_keyguard_detected", focus=focus(adb_path, serial))
+                wake_and_unlock(adb_path, serial, log)
+                if poco is not None:
+                    stop_stable_poco(poco, adb_path, serial)
+                    poco = None
+                from airtest.core.settings import Settings as ST
+                ST.ADB = adb_path
+                from airtest.core.api import connect_device
+
+                connect_device(f"Android://127.0.0.1:5037/{serial}?cap_method=JAVACAP&touch_method=ADBTOUCH")
+                poco = create_stable_poco(use_airtest_input=True, screenshot_each_action=False)
+                owns_poco = True
+                emit(log, "poco_recreated_after_post_slot_unlock", focus=maybe_focus(adb_path, serial, verbose_focus))
         emit(log, "after_choose_slot", focus=maybe_focus(adb_path, serial, verbose_focus))
         ensure_xhs_session_available(poco, log)
 
@@ -1507,13 +1916,45 @@ def run_xhs(payload, poco=None, connected=False):
             raise RuntimeError("未找到底部“我”入口")
         emit(log, "after_me", focus=maybe_focus(adb_path, serial, verbose_focus))
 
-        if not click_scan_entry_wait(poco, log, timeout=15):
+        scan_entry_via_xml = False
+        if slot_selected_via_xml:
+            # The exact vendor clone resolver already proved that Poco and the
+            # foreground hierarchy diverge on this phone. Profile navigation
+            # succeeded, so hand UiAutomation to the bounded XML reader before
+            # another missing Poco selector can wedge the resident worker.
+            if poco is not None:
+                release_poco_for_confirm_xml(adb_path, serial, log)
+                poco = None
+            if not click_scan_entry_xml(adb_path, serial, log, f"{confirm_xml_token}-scanner", timeout=8):
+                raise RuntimeError("未找到右上角“扫一扫”入口")
+            scan_entry_via_xml = True
+        elif not click_scan_entry_wait(poco, log, timeout=15):
             emit(log, "scan_entry_retry_reenter_profile")
             if not click_me_entry(poco, log, timeout=8) or not click_scan_entry_wait(poco, log, timeout=8):
                 raise RuntimeError("未找到右上角“扫一扫”入口")
         emit(log, "after_scan", focus=maybe_focus(adb_path, serial, verbose_focus))
 
-        if not click_album_entry(poco, log, timeout=12):
+        permission_transition = system_media_permission_prompt_present(adb_path, serial)
+        if scan_entry_via_xml:
+            if permission_transition:
+                emit(log, "album_permission_prompt_detected", focus=focus(adb_path, serial))
+                if not accept_xhs_photo_permission_xml(adb_path, serial, log, confirm_xml_token):
+                    raise RuntimeError("检测到相册权限提示，但未找到允许按钮")
+                emit(log, "album_permission_prompt_recovered", focus=focus(adb_path, serial))
+            if not click_album_entry_xml(adb_path, serial, log, confirm_xml_token, timeout=8):
+                raise RuntimeError("未找到扫码页“相册”入口")
+        elif permission_transition:
+            emit(log, "album_permission_prompt_detected", focus=focus(adb_path, serial))
+            if owns_poco and poco is not None:
+                stop_stable_poco(poco, adb_path, serial)
+                poco = None
+            release_poco_for_confirm_xml(adb_path, serial, log)
+            if not accept_xhs_photo_permission_xml(adb_path, serial, log, confirm_xml_token):
+                raise RuntimeError("检测到相册权限提示，但未找到允许按钮")
+            emit(log, "album_permission_prompt_recovered", focus=focus(adb_path, serial))
+            if not click_album_entry_xml(adb_path, serial, log, confirm_xml_token, timeout=8):
+                raise RuntimeError("授予照片权限后仍未找到扫码页“相册”入口")
+        elif not click_album_entry(poco, log, timeout=12):
             raise RuntimeError("未找到扫码页“相册”入口")
         emit(log, "after_album", focus=maybe_focus(adb_path, serial, verbose_focus))
 
@@ -1529,16 +1970,29 @@ def run_xhs(payload, poco=None, connected=False):
         # UiAutomation channel.  The remaining flow is XML/ADB-only: release
         # Poco first, select the thumbnail by its XML element, then inspect and
         # confirm the result page through the same bounded reader.
-        release_poco_for_confirm_xml(adb_path, serial, log)
-        if not click_first_album_image_xml(adb_path, serial, log, confirm_xml_token):
-            raise RuntimeError("相册未找到可点击图片")
-        emit(log, "after_select_image", focus=maybe_focus(adb_path, serial, verbose_focus))
-        if accept_xhs_photo_permission_xml(adb_path, serial, log, confirm_xml_token):
-            # The first image tap was intercepted by Android's permission
-            # sheet. Return to the picker, then select the QR thumbnail again.
-            if not click_first_album_image_xml(adb_path, serial, log, confirm_xml_token):
+        if poco is not None:
+            release_poco_for_confirm_xml(adb_path, serial, log)
+        image_selected = click_first_album_image_xml(adb_path, serial, log, confirm_xml_token)
+        permission_after_album = system_media_permission_prompt_present(adb_path, serial)
+        if permission_after_album:
+            # Android 14 may show the full/selected-photo permission sheet only
+            # after the album entry was tapped. In that state there cannot be a
+            # gallery thumbnail yet, so a failed first lookup is recoverable.
+            emit(log, "album_permission_prompt_detected_after_open", focus=focus(adb_path, serial))
+            if not accept_xhs_photo_permission_xml(adb_path, serial, log, confirm_xml_token):
+                raise RuntimeError("检测到相册照片权限提示，但未找到允许访问全部按钮")
+            emit(log, "album_permission_prompt_recovered_after_open", focus=focus(adb_path, serial))
+            # Most ROMs resume directly into the picker. A few return to the
+            # scanner, so retry the exact album element once before selecting.
+            image_selected = click_first_album_image_xml(adb_path, serial, log, confirm_xml_token)
+            if not image_selected and click_album_entry_xml(adb_path, serial, log, confirm_xml_token, timeout=4):
+                image_selected = click_first_album_image_xml(adb_path, serial, log, confirm_xml_token)
+            if not image_selected:
                 raise RuntimeError("授予照片权限后未能重新选择二维码图片")
             emit(log, "after_reselect_image", focus=maybe_focus(adb_path, serial, verbose_focus))
+        elif not image_selected:
+            raise RuntimeError("相册未找到可点击图片")
+        emit(log, "after_select_image", focus=maybe_focus(adb_path, serial, verbose_focus))
 
         confirm_type = wait_confirm(poco, adb_path, serial, log, confirm_keywords, timeout=18, token=confirm_xml_token)
         if not confirm_type:
@@ -1611,6 +2065,9 @@ def run_worker(serial, adb_path):
                         "selectorExists": probe_exists,
                         "elapsedMs": int((time.perf_counter() - probe_started_at) * 1000),
                     }
+                elif payload.get("workflow") == "alipay_name":
+                    from alipay_name_lookup import run_poco_operation
+                    result = run_poco_operation(payload, poco)
                 else:
                     result = run_xhs(payload, poco=poco, connected=True)
                 print(json.dumps({"requestId": request_id, "result": result}, ensure_ascii=False), flush=True)

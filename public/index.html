@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Phone Cloud Platform</title>
-  <link rel="stylesheet" href="./styles.css?v=20260814-user-occupancy-v1" />
+  <link rel="stylesheet" href="./styles.css?v=20260827-lookup-results-v2" />
   </head>
   <body class="booting">
     <div class="boot-loader" aria-label="正在加载 Phone Cloud">
@@ -172,7 +172,7 @@
 
             <div id="userDetailTabs" class="detail-switch" role="tablist" aria-label="手机详情模块">
               <button class="active" data-user-detail-tab="sms" type="button">短信库</button>
-              <button data-user-detail-tab="scan" type="button">扫码任务</button>
+              <button data-user-detail-tab="scan" type="button">自动化</button>
               <button data-user-detail-tab="screen" type="button">实时控制</button>
             </div>
 
@@ -200,7 +200,18 @@
               </section>
 
               <aside class="user-detail-action-rail scan-workspace" data-user-detail-panel="scan">
-                <form id="userXhsTaskForm" class="panel action-rail-card scan-create-card">
+                <div id="userAutomationModuleTabs" class="automation-module-tabs" role="tablist" aria-label="自动化模块">
+                  <button class="active" data-automation-module="scan" type="button" role="tab" aria-selected="true">
+                    <em>01</em><span><b>扫码任务</b><small>二维码登录</small></span><i aria-hidden="true">↗</i>
+                  </button>
+                  <button data-automation-module="publish" type="button" role="tab" aria-selected="false">
+                    <em>02</em><span><b>一键发布</b><small>图文笔记</small></span><i aria-hidden="true">↗</i>
+                  </button>
+                  <button data-automation-module="name" type="button" role="tab" aria-selected="false">
+                    <em>03</em><span><b>查名字</b><small>连续查询</small></span><i aria-hidden="true">↗</i>
+                  </button>
+                </div>
+                <form id="userXhsTaskForm" class="panel action-rail-card scan-create-card" data-automation-module-panel="scan">
                   <div class="scan-create-hero">
                     <div>
                       <span class="scan-kicker">QR LOGIN</span>
@@ -254,7 +265,7 @@
                   </div>
                   <p id="userXhsHint" class="hint scan-hint"></p>
                 </form>
-                <div class="panel action-rail-card compact-task-card scan-task-board">
+                <div class="panel action-rail-card compact-task-card scan-task-board" data-automation-module-panel="scan">
                   <div class="scan-board-head">
                     <div>
                       <h2>任务进度</h2>
@@ -263,9 +274,110 @@
                   </div>
                   <div id="userXhsList" class="stack scan-task-list"></div>
                 </div>
+
+                <form id="userPublishForm" class="panel action-rail-card automation-form-card publish-compose-card hidden" data-automation-module-panel="publish">
+                  <div class="automation-card-head publish-compose-head">
+                    <div>
+                      <span class="scan-kicker">XHS · CONTENT STUDIO</span>
+                      <h2>一键发布图文</h2>
+                      <p>在这里完成素材编排，设备会按元素定位路径自动发布。</p>
+                    </div>
+                    <span class="automation-mode-badge"><i></i> 小红书</span>
+                  </div>
+                  <div class="publish-route-strip" aria-hidden="true">
+                    <span class="is-ready"><b>01</b> 选择账号</span><i></i>
+                    <span><b>02</b> 编排素材</span><i></i>
+                    <span><b>03</b> 自动发布</span>
+                  </div>
+                  <div class="publish-compose-grid">
+                    <section class="publish-compose-section publish-account-section">
+                      <div class="automation-section-title"><span>01</span><div><strong>发布身份</strong><small>选择本次使用的小红书分身</small></div></div>
+                      <label class="scan-field automation-select-field">
+                        <span>账号槽位</span>
+                        <select id="userPublishTargetSelect" name="target"></select>
+                      </label>
+                      <div class="publish-safety-note"><i>✓</i><span><strong>元素定位模式</strong><small>执行到最终发布并返回真实结果</small></span></div>
+                    </section>
+                    <section class="publish-compose-section publish-media-section">
+                      <div class="automation-section-title"><span>02</span><div><strong>图片素材</strong><small>按选择顺序写入手机相册</small></div></div>
+                      <label id="userPublishImageUpload" class="scan-upload-card automation-image-upload">
+                        <input id="userPublishImagesInput" name="images" type="file" multiple accept="image/png,image/jpeg,image/webp" />
+                        <div class="publish-upload-visual" aria-hidden="true"><i></i><i></i><b>＋</b></div>
+                        <div class="publish-upload-copy"><strong>选择发布图片</strong><small id="userPublishImagesMeta">支持 1–5 张 PNG / JPEG / WebP</small></div>
+                        <em>最多 5 张</em>
+                      </label>
+                    </section>
+                  </div>
+                  <section class="publish-compose-section publish-copy-section">
+                    <div class="automation-section-title"><span>03</span><div><strong>笔记文案</strong><small>标题与正文会原样输入手机</small></div></div>
+                    <div class="publish-copy-grid">
+                      <label class="scan-field automation-text-field"><span>标题 <small id="userPublishTitleCount">0 / 100</small></span><input id="userPublishTitleInput" name="title" maxlength="100" placeholder="一句话说清这篇笔记" /></label>
+                      <label class="scan-field automation-text-field"><span>正文 <small id="userPublishContentCount">0 / 2000</small></span><textarea id="userPublishContentInput" name="content" maxlength="2000" rows="7" placeholder="输入正文、话题或行动引导…"></textarea></label>
+                    </div>
+                  </section>
+                  <div class="automation-submit-row publish-command-bar">
+                    <div><strong>准备发起发布</strong><p id="userPublishHint" class="hint">提交后将独占这台设备，完成后自动释放。</p></div>
+                    <button id="userPublishSubmitButton" class="scan-submit-button" type="submit"><span>开始发布</span><i aria-hidden="true">→</i></button>
+                  </div>
+                </form>
+                <div class="panel action-rail-card compact-task-card automation-side-board publish-history-board hidden" data-automation-module-panel="publish">
+                  <div class="scan-board-head"><div><span class="scan-kicker">LIVE QUEUE</span><h2>发布记录</h2><p>当前设备的任务进度与失败原因。</p></div><em>实时</em></div>
+                  <div id="userPublishTaskList" class="stack scan-task-list"></div>
+                </div>
+
+                <section class="panel action-rail-card automation-form-card lookup-console-card hidden" data-automation-module-panel="name">
+                  <div class="automation-card-head lookup-console-head">
+                    <div>
+                      <span class="scan-kicker">ALIPAY · SESSION CONSOLE</span>
+                      <h2>连续查名字</h2>
+                      <p>一次启动，持续复用支付宝搜索页，不再重复走完整路径。</p>
+                    </div>
+                    <span class="automation-mode-badge"><i></i> 长会话</span>
+                  </div>
+                  <div class="lookup-pipeline" aria-hidden="true">
+                    <span><i>1</i><b>建立会话</b><small>进入支付宝搜索页</small></span>
+                    <em></em>
+                    <span><i>2</i><b>连续查询</b><small>仅替换手机号码</small></span>
+                    <em></em>
+                    <span><i>3</i><b>自动续航</b><small>200 次切换账号</small></span>
+                  </div>
+                  <div class="lookup-console-grid">
+                    <section class="lookup-session-panel">
+                      <div class="automation-section-title"><span>A</span><div><strong>会话控制</strong><small>一台设备同一时间仅运行一个会话</small></div></div>
+                      <div id="userLookupSessionStatus" class="lookup-session-status" data-state="idle"><i></i><div><strong>尚未开始</strong><span>点击开始建立查询会话</span></div></div>
+                      <div class="lookup-session-facts">
+                        <span><small>查询上限</small><strong>200 <em>次/账号</em></strong></span>
+                        <span><small>异常策略</small><strong>2 <em>次重试</em></strong></span>
+                      </div>
+                      <div class="lookup-session-actions">
+                        <button id="userLookupStartButton" class="scan-submit-button" type="button"><span>启动查询会话</span><i aria-hidden="true">→</i></button>
+                        <button id="userLookupEndButton" class="danger-outline" type="button" disabled>结束会话</button>
+                      </div>
+                    </section>
+                    <section class="lookup-query-panel">
+                      <div class="automation-section-title"><span>B</span><div><strong>号码查询台</strong><small>查询成功后直接输入下一个号码</small></div></div>
+                      <label class="lookup-phone-label" for="userLookupPhoneInput">手机号码</label>
+                      <div class="lookup-phone-station">
+                        <span>+86</span>
+                        <input id="userLookupPhoneInput" inputmode="numeric" maxlength="11" placeholder="请输入 11 位手机号" disabled />
+                        <button id="userLookupQueryButton" type="button" disabled>查询名字 <i aria-hidden="true">↗</i></button>
+                      </div>
+                      <div class="lookup-query-notes">
+                        <span><i>✓</i> 查询后保持当前页面</span>
+                        <span><i>✓</i> 异常时才重走完整路径</span>
+                      </div>
+                      <p id="userLookupHint" class="hint"></p>
+                    </section>
+                  </div>
+                </section>
+                <div class="panel action-rail-card compact-task-card automation-side-board lookup-results-board hidden" data-automation-module-panel="name">
+                  <div class="scan-board-head"><div><span class="scan-kicker">RESULT STREAM</span><h2>返回信息</h2><p>当前会话结果持续保留。</p></div><em>最新在前</em></div>
+                  <div class="lookup-result-columns" aria-hidden="true"><span>#</span><span>手机号 / 姓名</span><span>尾字 / 复制</span><span>时间</span></div>
+                  <div id="userLookupResultList" class="lookup-result-list"></div>
+                </div>
               </aside>
 
-              <section class="panel screen-control-workspace" data-user-detail-panel="screen">
+              <section id="userScreenControlWorkspace" class="panel screen-control-workspace" data-user-detail-panel="screen">
                 <div class="screen-control-head">
                   <div>
                     <span class="scan-kicker">LIVE CONTROL</span>
@@ -367,6 +479,36 @@
           </div>
         </div>
       </section>
+
+      <div id="userScreenIdleModal" class="screen-idle-modal" hidden>
+        <div class="screen-idle-backdrop" aria-hidden="true"></div>
+        <section class="screen-idle-dialog" role="alertdialog" aria-modal="true" aria-labelledby="userScreenIdleTitle" aria-describedby="userScreenIdleDescription">
+          <div class="screen-idle-accent" aria-hidden="true"></div>
+          <div class="screen-idle-dialog-body">
+            <div id="userScreenIdleCountdownRing" class="screen-idle-countdown" aria-hidden="true">
+              <div>
+                <strong id="userScreenIdleCountdown">10</strong>
+                <span>秒</span>
+              </div>
+            </div>
+            <div class="screen-idle-copy">
+              <span class="screen-idle-eyebrow"><i aria-hidden="true"></i>会话保护</span>
+              <h2 id="userScreenIdleTitle">仍在使用这台手机吗？</h2>
+              <p id="userScreenIdleDescription">已连续 10 分钟没有检测到操作。为避免设备被长时间占用，将自动断开当前投屏连接。</p>
+              <div class="screen-idle-notice">
+                <span aria-hidden="true">⌁</span>
+                <strong><b id="userScreenIdleInlineCountdown">10</b> 秒后自动断开并释放手机</strong>
+              </div>
+            </div>
+          </div>
+          <div class="screen-idle-progress" aria-hidden="true"><i id="userScreenIdleProgress"></i></div>
+          <div class="screen-idle-actions">
+            <button id="userScreenIdleContinueButton" class="screen-idle-continue" type="button">继续控制</button>
+            <button id="userScreenIdleDisconnectButton" class="screen-idle-disconnect" type="button">立即断开</button>
+          </div>
+          <p class="screen-idle-footnote">未选择时默认断开，当前手机将重新回到可用设备池。</p>
+        </section>
+      </div>
 
       <div id="settingsModal" class="settings-modal hidden" role="dialog" aria-modal="true" aria-labelledby="settingsDisplayName">
         <button class="settings-backdrop" data-settings-close type="button" aria-label="关闭设置"></button>
@@ -716,6 +858,6 @@
     </main>
 
     <script type="module" src="./vendor/screen-control.js?v=20260806-ice-ready-wake-v1"></script>
-    <script type="module" src="./app.js?v=20260814-user-occupancy-v1"></script>
+    <script type="module" src="./app.js?v=20260827-screen-idle-10m-v1"></script>
   </body>
 </html>

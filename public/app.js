@@ -1,4 +1,7 @@
 
+import { ScreenInactivityGuard } from "./screen-inactivity-guard.js?v=20260827-screen-idle-10m-v1";
+import { createUserDeviceInventoryGuard, requireUserDeviceInventory } from "./user-device-inventory.js";
+
 const ONLINE_MS = 90_000;
 
 function readJsonLocalStorage(key, fallback) {
@@ -49,6 +52,12 @@ const state = {
   userXhsTasks: [],
   userPendingXhsTasks: [],
   userXhsSubmitting: false,
+  userAutomationModule: localStorage.getItem("phoneCloudUserAutomationModule") || "scan",
+  userPublishTasks: [],
+  userPublishSubmitting: false,
+  userLookupSessions: [],
+  userLookupBusy: false,
+  userLookupEnding: false,
   userScreenSession: null,
   userScreenToken: "",
   userScreenStatus: "idle",
@@ -87,7 +96,9 @@ const state = {
 const MAX_QR_IMAGE_FILE_BYTES = 3_000_000;
 const QR_IMAGE_TYPES = new Set(["image/png", "image/jpeg", "image/webp"]);
 const USER_SMS_AUTO_REFRESH_MS = 30_000;
-const USER_XHS_TASK_REFRESH_MS = 30_000;
+const USER_XHS_TASK_REFRESH_MS = 3_000;
+const USER_LOOKUP_REFRESH_MS = 1_000;
+const CLIENT_UPDATE_CHECK_MS = 15_000;
 const AUTO_REFRESH_MS = 30_000;
 const REALTIME_DIAGNOSTICS_REFRESH_MS = 5_000;
 const USER_SMS_MANUAL_REFRESH_COOLDOWN_MS = 10_000;
@@ -95,6 +106,7 @@ let userSmsSearchTimer = null;
 let userSmsRefreshCooldownTimer = null;
 let userSmsAutoRefreshTimer = null;
 let userXhsTaskRefreshTimer = null;
+let userLookupRefreshTimer = null;
 const userSmsLastAutoRefreshAtByDevice = new Map();
 const userSmsDeviceSyncRequestedByDevice = new Set();
 const adminDeviceSavingIds = new Set();
@@ -103,7 +115,15 @@ const adminDeviceExpandedIds = new Set();
 const adminDeviceFeedbackById = new Map();
 let latestLoadAllRequestId = 0;
 let latestUserSmsRequestId = 0;
+let latestUserAutomationRefreshRequestId = 0;
+let userAutomationRefreshPromise = null;
+let userLookupSyncVersion = 0;
+let userLookupRefreshPromise = null;
+let clientUpdateCheckPromise = null;
+let copiedLookupResultId = "";
+let copiedLookupResetTimer = null;
 let loadAllInFlight = false;
+const userDeviceInventoryGuard = createUserDeviceInventoryGuard({ emptyConfirmationCycles: 2 });
 let didApplyUserDefaultLanding = false;
 let userScreenExitReleaseRequested = false;
 const screenshotStore = new Map();
@@ -205,6 +225,27 @@ const els = {
   userQrPreview: document.getElementById("userQrPreview"),
   userXhsHint: document.getElementById("userXhsHint"),
   userXhsList: document.getElementById("userXhsList"),
+  userAutomationModuleTabs: document.getElementById("userAutomationModuleTabs"),
+  userAutomationModulePanels: document.querySelectorAll("[data-automation-module-panel]"),
+  userPublishForm: document.getElementById("userPublishForm"),
+  userPublishTargetSelect: document.getElementById("userPublishTargetSelect"),
+  userPublishImagesInput: document.getElementById("userPublishImagesInput"),
+  userPublishImageUpload: document.getElementById("userPublishImageUpload"),
+  userPublishImagesMeta: document.getElementById("userPublishImagesMeta"),
+  userPublishTitleInput: document.getElementById("userPublishTitleInput"),
+  userPublishTitleCount: document.getElementById("userPublishTitleCount"),
+  userPublishContentInput: document.getElementById("userPublishContentInput"),
+  userPublishContentCount: document.getElementById("userPublishContentCount"),
+  userPublishHint: document.getElementById("userPublishHint"),
+  userPublishSubmitButton: document.getElementById("userPublishSubmitButton"),
+  userPublishTaskList: document.getElementById("userPublishTaskList"),
+  userLookupSessionStatus: document.getElementById("userLookupSessionStatus"),
+  userLookupStartButton: document.getElementById("userLookupStartButton"),
+  userLookupPhoneInput: document.getElementById("userLookupPhoneInput"),
+  userLookupQueryButton: document.getElementById("userLookupQueryButton"),
+  userLookupEndButton: document.getElementById("userLookupEndButton"),
+  userLookupHint: document.getElementById("userLookupHint"),
+  userLookupResultList: document.getElementById("userLookupResultList"),
   userScreenVideo: document.getElementById("userScreenVideo"),
   userScreenStatus: document.getElementById("userScreenStatus"),
   userScreenStartButton: document.getElementById("userScreenStartButton"),
@@ -229,6 +270,14 @@ const els = {
   userScreenReconnectButton: document.getElementById("userScreenReconnectButton"),
   userScreenHint: document.getElementById("userScreenHint"),
   userScreenNavigationButtons: document.querySelectorAll(".screen-navigation [data-screen-key]"),
+  userScreenControlWorkspace: document.getElementById("userScreenControlWorkspace"),
+  userScreenIdleModal: document.getElementById("userScreenIdleModal"),
+  userScreenIdleCountdownRing: document.getElementById("userScreenIdleCountdownRing"),
+  userScreenIdleCountdown: document.getElementById("userScreenIdleCountdown"),
+  userScreenIdleInlineCountdown: document.getElementById("userScreenIdleInlineCountdown"),
+  userScreenIdleProgress: document.getElementById("userScreenIdleProgress"),
+  userScreenIdleContinueButton: document.getElementById("userScreenIdleContinueButton"),
+  userScreenIdleDisconnectButton: document.getElementById("userScreenIdleDisconnectButton"),
   passwordForm: document.getElementById("passwordForm"),
   passwordHint: document.getElementById("passwordHint"),
   userCreateForm: document.getElementById("userCreateForm"),
@@ -282,6 +331,37 @@ const els = {
   auditList: document.getElementById("auditList")
 };
 
+function updateUserScreenIdleCountdown({ seconds = 10, progress = 1 } = {}) {
+  const safeSeconds = Math.max(0, Number(seconds) || 0);
+  const safeProgress = Math.max(0, Math.min(1, Number(progress) || 0));
+  if (els.userScreenIdleCountdown) els.userScreenIdleCountdown.textContent = String(safeSeconds);
+  if (els.userScreenIdleInlineCountdown) els.userScreenIdleInlineCountdown.textContent = String(safeSeconds);
+  if (els.userScreenIdleCountdownRing) {
+    els.userScreenIdleCountdownRing.style.setProperty("--idle-countdown-progress", `${safeProgress * 100}%`);
+  }
+  if (els.userScreenIdleProgress) els.userScreenIdleProgress.style.transform = `scaleX(${safeProgress})`;
+}
+
+function renderUserScreenIdleWarning({ open, seconds = 10, progress = 1 } = {}) {
+  if (!els.userScreenIdleModal) return;
+  updateUserScreenIdleCountdown({ seconds, progress });
+  els.userScreenIdleModal.hidden = !open;
+  document.body.classList.toggle("screen-idle-modal-open", Boolean(open));
+  if (open) {
+    requestAnimationFrame(() => {
+      if (!els.userScreenIdleModal?.hidden) els.userScreenIdleContinueButton?.focus();
+    });
+  }
+}
+
+const userScreenInactivityGuard = new ScreenInactivityGuard({
+  onWarning: renderUserScreenIdleWarning,
+  onCountdown: updateUserScreenIdleCountdown,
+  onTimeout() {
+    stopUserScreenSession({ detail: "长时间未操作，已自动断开" }).catch(() => {});
+  }
+});
+
 function authHeaders(extra = {}) {
   return {
     ...extra,
@@ -297,7 +377,26 @@ async function api(path, options = {}) {
     signal,
     headers: authHeaders(options.headers || {})
   });
-  const payload = await response.json().catch(() => ({}));
+  let payload;
+  try {
+    payload = await response.json();
+  } catch (cause) {
+    if (!response.ok) {
+      payload = {};
+    } else {
+      const error = new Error("服务器响应不完整，本次刷新已取消并保留当前页面数据。");
+      error.status = response.status;
+      error.code = "invalid_json_response";
+      error.cause = cause;
+      throw error;
+    }
+  }
+  if (response.ok && (!payload || typeof payload !== "object" || Array.isArray(payload))) {
+    const error = new Error("服务器响应格式异常，本次刷新已取消并保留当前页面数据。");
+    error.status = response.status;
+    error.code = "invalid_json_response";
+    throw error;
+  }
   if (!response.ok) {
     const error = new Error(humanError(payload, response.status));
     error.status = response.status;
@@ -306,6 +405,33 @@ async function api(path, options = {}) {
     throw error;
   }
   return payload;
+}
+
+function waitForUserDeviceInventoryConfirmation(delayMs = 350) {
+  return new Promise((resolve) => setTimeout(resolve, delayMs));
+}
+
+async function loadStableUserDeviceInventory() {
+  const firstPayload = await api("/api/v1/user/devices");
+  const firstDevices = requireUserDeviceInventory(firstPayload);
+  if (firstDevices.length > 0 || state.userDevices.length === 0) {
+    userDeviceInventoryGuard.reset();
+    return firstPayload;
+  }
+
+  // A single empty inventory contradicting a populated screen is not enough
+  // to evict the selected phone. Re-read once to distinguish a truncated or
+  // stale backend response from a real fleet-wide inventory change.
+  await waitForUserDeviceInventoryConfirmation();
+  const confirmationPayload = await api("/api/v1/user/devices");
+  const confirmationDevices = requireUserDeviceInventory(confirmationPayload);
+  const decision = userDeviceInventoryGuard.decide(state.userDevices, confirmationDevices);
+  if (!decision.apply) {
+    const error = new Error("设备清单瞬时为空，已保留上次有效数据并等待下一轮确认。");
+    error.code = "user_devices_transient_empty";
+    throw error;
+  }
+  return { ...confirmationPayload, devices: decision.devices };
 }
 
 function humanError(payload = {}, status = 0) {
@@ -410,8 +536,56 @@ function isUserScanPanelActive() {
 }
 
 function shouldFastRefreshUserXhsTasks() {
-  if (!state.token || state.page !== "user-workbench") return false;
-  return isUserScanPanelActive() || visibleUserXhsTasks().some((task) => isActiveXhsStatus(task.status));
+  return isUserScanPanelActive();
+}
+
+function shouldFastRefreshUserLookupSessions() {
+  return Boolean(
+    state.token
+    && state.page === "user-workbench"
+    && state.userLookupSessions.some((session) => ["starting", "ready", "querying", "stopping"].includes(session.status))
+  );
+}
+
+function currentAppAssetVersion() {
+  const script = Array.from(document.scripts).find((item) => {
+    try {
+      return new URL(item.src, window.location.href).pathname.endsWith("/app.js");
+    } catch {
+      return false;
+    }
+  });
+  if (!script?.src) return "";
+  try {
+    return new URL(script.src, window.location.href).searchParams.get("v") || "";
+  } catch {
+    return "";
+  }
+}
+
+async function reloadActiveLookupAfterClientUpdate() {
+  if (document.visibilityState !== "visible" || clientUpdateCheckPromise) return clientUpdateCheckPromise;
+  const currentVersion = currentAppAssetVersion();
+  if (!currentVersion) return null;
+  clientUpdateCheckPromise = (async () => {
+    const response = await fetch(`/?client-version-check=${Date.now()}`, {
+      cache: "no-store",
+      signal: AbortSignal.timeout(5_000)
+    });
+    if (!response.ok) return;
+    const html = await response.text();
+    const latestVersion = html.match(/app\.js\?v=([^\"'&\s<]+)/)?.[1] || "";
+    if (!latestVersion || latestVersion === currentVersion) return;
+    const lookupActive = state.userLookupBusy
+      || state.userLookupEnding
+      || state.userLookupSessions.some((session) => ["starting", "ready", "querying", "stopping"].includes(session.status));
+    if (lookupActive) window.location.reload();
+  })();
+  try {
+    return await clientUpdateCheckPromise;
+  } finally {
+    clientUpdateCheckPromise = null;
+  }
 }
 
 function isOnline(value) {
@@ -590,11 +764,14 @@ function renderUserWorkbench() {
     .map(({ device }) => device);
 
   if (els.userInventorySummary) {
+    const staleInventorySuffix = state.userDevicesLoadError && hasLoadedDevicesOnce
+      ? " · 本次刷新异常，正在显示上次有效清单"
+      : "";
     els.userInventorySummary.textContent = devicesLoading && !hasLoadedDevicesOnce
       ? "正在加载手机库存..."
       : state.userDevicesLoadError && !hasLoadedDevicesOnce
         ? `手机库存加载失败：${state.userDevicesLoadError}`
-      : `共 ${state.userDevices.length} 台手机，可用 ${availableCount} 台，在线 ${onlineCount} 台，执行中 ${busyCount} 台`;
+      : `共 ${state.userDevices.length} 台手机，可用 ${availableCount} 台，在线 ${onlineCount} 台，执行中 ${busyCount} 台${staleInventorySuffix}`;
   }
   renderTopDeviceMetrics();
   els.userDeviceInventoryView?.classList.toggle("hidden", Boolean(showDeviceDetail));
@@ -734,7 +911,188 @@ function renderUserWorkbench() {
   if (els.userXhsList) els.userXhsList.innerHTML = selectedDeviceXhsTasks.length
     ? selectedDeviceXhsTasks.map((task) => renderUserXhsTaskCard(task)).join("")
     : `<div class="empty scan-empty-state">暂无扫码任务。上传二维码后，这里会显示执行步骤和结果。</div>`;
+  if (!["scan", "publish", "name"].includes(state.userAutomationModule)) state.userAutomationModule = "scan";
+  els.userAutomationModuleTabs?.querySelectorAll("[data-automation-module]").forEach((button) => {
+    const active = button.dataset.automationModule === state.userAutomationModule;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-selected", String(active));
+  });
+  els.userAutomationModulePanels?.forEach((panel) => {
+    panel.classList.toggle("hidden", panel.dataset.automationModulePanel !== state.userAutomationModule);
+  });
+  if (els.userPublishTargetSelect) {
+    const publishTargets = automationTargets.filter((target) => target.platform === "xhs");
+    els.userPublishTargetSelect.innerHTML = publishTargets.length
+      ? publishTargets.map((target) => `<option value="${escapeHtml(target.value)}" ${target.disabled ? "disabled" : ""}>${escapeHtml(target.label)}${target.description ? ` · ${escapeHtml(target.description)}` : ""}</option>`).join("")
+      : `<option value="">这台手机暂无可用小红书账号</option>`;
+    const remembered = state.userAutomationTargetByDevice?.[selectedDevice?.deviceId || ""];
+    if (remembered && publishTargets.some((target) => target.value === remembered && !target.disabled)) els.userPublishTargetSelect.value = remembered;
+  }
+  if (els.userPublishSubmitButton) {
+    const disabled = !selectedDevice || selectedDevice.busy || !automationReadyForDevice(selectedDevice) || state.userPublishSubmitting;
+    els.userPublishSubmitButton.disabled = disabled;
+    els.userPublishSubmitButton.innerHTML = `<span>${state.userPublishSubmitting ? "正在创建..." : "开始发布"}</span><i aria-hidden="true">→</i>`;
+  }
+  const selectedPublishTasks = selectedDevice
+    ? state.userPublishTasks.filter((task) => task.deviceId === selectedDevice.deviceId)
+    : [];
+  if (els.userPublishTaskList) els.userPublishTaskList.innerHTML = selectedPublishTasks.length
+    ? selectedPublishTasks.map(renderAutomationJobCard).join("")
+    : `<div class="empty scan-empty-state">暂无发布记录。</div>`;
+  const lookupSession = selectedDevice ? activeLookupSessionForDevice(selectedDevice.deviceId) : null;
+  renderLookupSession(lookupSession, selectedDevice);
   renderUserScreenControl(selectedDevice);
+}
+
+function renderAutomationJobCard(job) {
+  const status = String(job.status || "queued");
+  const statusText = ({ queued: "排队中", running: "执行中", succeeded: "已完成", failed: "失败", cancelled: "已取消", expired: "已过期" })[status] || status;
+  const message = job.result?.message || job.result?.error || job.events?.at(-1)?.message || "等待 Windows 管理器处理";
+  return `<article class="scan-task-card is-${escapeHtml(status)}">
+    <div class="scan-task-head"><div><strong>${escapeHtml(job.title || "小红书图文发布")}</strong><span>${escapeHtml(job.xhsAccountLabel || job.xhsAppSlot || "小红书")}</span></div><em class="${status === "succeeded" ? "ok" : ["failed", "expired"].includes(status) ? "bad" : "warn"}">${escapeHtml(statusText)}</em></div>
+    <p>${escapeHtml(message)}</p><small>${escapeHtml(shortTime(job.updatedAt || job.createdAt))}</small>
+  </article>`;
+}
+
+function activeLookupSessionForDevice(deviceId) {
+  return state.userLookupSessions.find((session) => session.deviceId === deviceId && ["starting", "ready", "querying", "stopping"].includes(session.status))
+    || state.userLookupSessions.find((session) => session.deviceId === deviceId)
+    || null;
+}
+
+function bumpUserLookupSyncVersion() {
+  userLookupSyncVersion += 1;
+  return userLookupSyncVersion;
+}
+
+function upsertUserLookupSession(session, options = {}) {
+  if (!session?.sessionId) return;
+  const current = state.userLookupSessions.find((item) => item.sessionId === session.sessionId);
+  if (options.preserveStopping && current?.status === "stopping") return;
+  state.userLookupSessions = [
+    session,
+    ...state.userLookupSessions.filter((item) => item.sessionId !== session.sessionId)
+  ];
+}
+
+function canApplyLookupRefresh(syncVersion) {
+  return syncVersion === userLookupSyncVersion && !state.userLookupBusy && !state.userLookupEnding;
+}
+
+async function copyLookupTailToClipboard(value) {
+  const text = String(value || "").trim();
+  if (!text) throw new Error("没有可复制的姓名尾字");
+  if (navigator.clipboard?.writeText && window.isSecureContext) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return;
+    } catch {
+      // HTTP deployments and restrictive browser policies use the synchronous fallback below.
+    }
+  }
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.readOnly = true;
+  textarea.setAttribute("aria-hidden", "true");
+  textarea.style.position = "fixed";
+  textarea.style.inset = "-1000px auto auto -1000px";
+  document.body.append(textarea);
+  textarea.select();
+  const copied = document.execCommand("copy");
+  textarea.remove();
+  if (!copied) throw new Error("浏览器未允许复制，请手动复制尾字");
+}
+
+function renderLookupSession(session, device) {
+  const active = session && ["starting", "ready", "querying", "stopping"].includes(session.status);
+  const ready = session?.status === "ready" && !session.pendingJobId;
+  const results = session?.results || [];
+  const runningResult = results.find((result) => ["submitting", "queued", "running", "cancelling"].includes(result.status));
+  const runningSince = new Date(runningResult?.createdAt || 0).getTime();
+  const runningElapsedMs = Number.isFinite(runningSince) && runningSince > 0 ? Math.max(0, Date.now() - runningSince) : 0;
+  const runningStage = runningResult?.stage || "查询任务已提交";
+  const startedAt = new Date(session?.createdAt || 0).getTime();
+  const startingSeconds = Number.isFinite(startedAt) && startedAt > 0
+    ? Math.max(0, Math.floor((Date.now() - startedAt) / 1000))
+    : 0;
+  const statusCopy = {
+    starting: ["正在启动", `正在打开支付宝并进入搜索页 · 已等待 ${startingSeconds} 秒`],
+    ready: [session?.error ? "需要处理后重试" : "查询会话已就绪", session?.error || `已成功查询 ${session?.successfulCount || 0} 个号码`],
+    querying: ["正在查询", `${runningStage} · 已用 ${formatDurationMs(runningElapsedMs)}`],
+    stopping: ["正在结束", "正在释放手机"],
+    failed: ["会话异常结束", session?.error || "请重新开始"],
+    ended: ["会话已结束", `本次成功 ${session?.successfulCount || 0} 个号码`],
+    expired: ["会话已过期", "请重新开始"]
+  };
+  const copy = statusCopy[session?.status] || ["尚未开始", "点击开始建立查询会话"];
+  if (els.userLookupSessionStatus) {
+    els.userLookupSessionStatus.dataset.state = session?.status || "idle";
+    els.userLookupSessionStatus.innerHTML = `<i></i><div><strong>${escapeHtml(copy[0])}</strong><span>${escapeHtml(copy[1])}</span></div>`;
+  }
+  if (els.userLookupStartButton) {
+    els.userLookupStartButton.disabled = Boolean(active) || !device || device.busy || state.userLookupBusy;
+    els.userLookupStartButton.innerHTML = `<span>${session?.status === "starting" ? "启动中..." : "启动查询会话"}</span><i aria-hidden="true">→</i>`;
+  }
+  if (els.userLookupPhoneInput) els.userLookupPhoneInput.disabled = !ready || state.userLookupBusy || state.userLookupEnding;
+  if (els.userLookupQueryButton) els.userLookupQueryButton.disabled = !ready || state.userLookupBusy || state.userLookupEnding;
+  if (els.userLookupEndButton) {
+    els.userLookupEndButton.disabled = !active || session?.status === "stopping" || state.userLookupEnding;
+    els.userLookupEndButton.textContent = session?.status === "stopping" || state.userLookupEnding ? "结束中..." : "结束会话";
+  }
+  if (els.userLookupHint && session) {
+    const hint = {
+      starting: `支付宝正在准备查询页，已等待 ${startingSeconds} 秒，请勿重复点击。`,
+      ready: session.error || (session.successfulCount > 0 ? "查询完成，可以继续输入下一个手机号。" : "查询会话已就绪，可以输入手机号。"),
+      querying: `${runningStage}，已用 ${formatDurationMs(runningElapsedMs)}。`,
+      stopping: "正在结束查询会话并释放手机。",
+      failed: session.error || "查询会话启动失败，请重新开始。",
+      ended: "查询会话已结束。",
+      expired: "查询会话已过期，请重新开始。"
+    }[session.status];
+    if (hint) els.userLookupHint.textContent = hint;
+  }
+  if (els.userLookupResultList) {
+    const previousFirstResultId = els.userLookupResultList.dataset.firstResultId || "";
+    const previousScrollTop = els.userLookupResultList.scrollTop;
+    const nextFirstResultId = String(results[0]?.resultId || "");
+    els.userLookupResultList.innerHTML = results.length
+      ? results.map((result, index) => {
+        const failed = result.status === "failed";
+        const notFound = result.status === "not_found";
+        const needsHuman = result.status === "needs_human_verification";
+        const cancelled = result.status === "cancelled";
+        const running = ["submitting", "queued", "running", "cancelling"].includes(result.status);
+        const lookupTail = String(result.realNameTailCharacter || "").trim();
+        const copyableTail = result.status === "succeeded" && Boolean(lookupTail);
+        const copied = copyableTail && copiedLookupResultId === result.resultId;
+        const resultStartedAt = new Date(result.createdAt || 0).getTime();
+        const liveDurationMs = Number.isFinite(resultStartedAt) && resultStartedAt > 0 ? Math.max(0, Date.now() - resultStartedAt) : 0;
+        const durationMs = running ? liveDurationMs : Math.max(0, Number(result.durationMs || 0));
+        const durationSuffix = durationMs > 0 ? ` · ${formatDurationMs(durationMs)}` : "";
+        const detail = running
+          ? `${result.stage || (result.status === "cancelling" ? "正在取消查询" : "查询任务已提交")}${durationSuffix}`
+          : cancelled
+            ? `${result.error || "查询已取消"}${durationSuffix}`
+            : notFound
+              ? `未查询到姓名${durationSuffix}`
+            : failed || needsHuman
+            ? `${result.error || (needsHuman ? "请在手机完成验证后重试" : "查询失败")}${durationSuffix}`
+            : `${result.name || `*${result.realNameTailCharacter || ""}`}${durationSuffix}`;
+        const rowClass = running ? "is-running" : failed ? "is-failed" : notFound ? "is-not-found" : needsHuman ? "is-attention" : cancelled ? "is-cancelled" : "";
+        const resultMark = running
+          ? `<i class="lookup-result-spinner" aria-label="查询进行中"></i>`
+          : escapeHtml(cancelled ? "×" : notFound ? "—" : result.realNameTailCharacter || "-");
+        const tailAction = copyableTail
+          ? `<button class="lookup-tail-copy ${copied ? "is-copied" : ""}" type="button" data-lookup-copy-result-id="${escapeHtml(result.resultId || "")}" aria-label="复制姓名尾字 ${escapeHtml(lookupTail)}"><b>${escapeHtml(lookupTail)}</b><span>${copied ? "已复制" : "复制"}</span></button>`
+          : `<b class="lookup-result-mark">${resultMark}</b>`;
+        return `<article class="lookup-result-row ${rowClass}" data-lookup-result-id="${escapeHtml(result.resultId || "")}"><span>${results.length - index}</span><div><strong>${escapeHtml(result.phoneNumber || "")}</strong><small>${escapeHtml(detail)}</small></div>${tailAction}<time>${escapeHtml(shortTime(result.updatedAt || result.createdAt))}</time></article>`;
+      }).join("")
+      : `<div class="empty scan-empty-state">暂无返回信息。</div>`;
+    els.userLookupResultList.dataset.firstResultId = nextFirstResultId;
+    if (nextFirstResultId && nextFirstResultId === previousFirstResultId) {
+      els.userLookupResultList.scrollTop = previousScrollTop;
+    }
+  }
 }
 
 function renderUserScreenControl(device) {
@@ -848,6 +1206,7 @@ async function startUserScreenSession() {
   const device = state.userDevices.find((item) => item.deviceId === state.userSelectedDeviceId);
   if (!device || state.userScreenStarting) return;
   if (!window.PhoneCloudScreenController) throw new Error("实时控制组件尚未加载，请刷新页面后重试。");
+  userScreenInactivityGuard.stop();
   state.userScreenStarting = true;
   state.userScreenStatus = "connecting";
   state.userScreenDetail = "正在请求实时控制会话";
@@ -860,6 +1219,7 @@ async function startUserScreenSession() {
     state.userScreenSession = payload.session;
     state.userScreenToken = payload.browserToken || "";
     state.userScreenDeviceId = device.deviceId;
+    userScreenInactivityGuard.start();
     state.userScreenController?.destroy();
     state.userScreenController = new window.PhoneCloudScreenController({
       video: els.userScreenVideo,
@@ -869,6 +1229,7 @@ async function startUserScreenSession() {
         state.userScreenDetail = message.detail || message.status || "正在连接";
         if (["failed", "closed"].includes(state.userScreenStatus)) {
           const failedSessionId = state.userScreenSession?.sessionId || "";
+          userScreenInactivityGuard.stop();
           state.userScreenSession = null;
           state.userScreenToken = "";
           state.userScreenDeviceId = "";
@@ -884,6 +1245,7 @@ async function startUserScreenSession() {
     });
     state.userScreenController.connect({ sessionId: payload.session.sessionId, browserToken: payload.browserToken, media: payload.media });
   } catch (error) {
+    userScreenInactivityGuard.stop();
     state.userScreenStatus = "failed";
     state.userScreenDetail = error.message || "投屏启动失败";
     state.userScreenSession = null;
@@ -896,6 +1258,7 @@ async function startUserScreenSession() {
 }
 
 function releaseFailedUserScreenSession(sessionId) {
+  userScreenInactivityGuard.stop();
   const controller = state.userScreenController;
   state.userScreenController = null;
   controller?.disconnect();
@@ -906,24 +1269,28 @@ function releaseFailedUserScreenSession(sessionId) {
   }).catch(() => {});
 }
 
-async function stopUserScreenSession() {
+async function stopUserScreenSession({ detail = "等待连接" } = {}) {
   const sessionId = state.userScreenSession?.sessionId;
+  const restoreStartButtonFocus = Boolean(els.userScreenIdleModal?.contains(document.activeElement));
+  userScreenInactivityGuard.stop();
   state.userScreenController?.disconnect();
   state.userScreenController = null;
   state.userScreenSession = null;
   state.userScreenToken = "";
   state.userScreenDeviceId = "";
   state.userScreenStatus = "idle";
-  state.userScreenDetail = "等待连接";
+  state.userScreenDetail = detail;
   state.userScreenMetrics = {};
   state.userScreenGalleryImport = null;
   state.userScreenGalleryImporting = false;
   renderUserScreenControl(state.userDevices.find((item) => item.deviceId === state.userSelectedDeviceId));
+  if (restoreStartButtonFocus) requestAnimationFrame(() => els.userScreenStartButton?.focus());
   if (sessionId) await api(`/api/v1/screen-sessions/${encodeURIComponent(sessionId)}`, { method: "DELETE" }).catch(() => {});
 }
 
 function releaseUserScreenSessionOnPageExit() {
   const sessionId = state.userScreenSession?.sessionId;
+  userScreenInactivityGuard.stop();
   if (!sessionId || !state.token || userScreenExitReleaseRequested) return;
   userScreenExitReleaseRequested = true;
   state.userScreenController?.disconnect();
@@ -1644,12 +2011,10 @@ function renderWindowsRecoveryConsole() {
   const circuitAgents = telemetryAgents.filter(({ recovery }) => recovery.circuitOpen);
   const rescueCount = telemetryAgents.reduce((sum, { recovery }) => sum + (recovery.rescueCanMutate ? Number((recovery.rescueSerials || []).length) : 0), 0);
   const activeCount = queue.filter((item) => item.inProgress).length;
-  const quarantinedCount = queue.filter((item) => item.quarantined).length;
   const unauthorizedCount = queue.filter((item) => item.state === "adb_unauthorized").length;
   const physicalCount = telemetryAgents.reduce((sum, { recovery }) => sum + Number(recovery.physicalCount || 0), 0);
   const adbCount = telemetryAgents.reduce((sum, { recovery }) => sum + Number(recovery.adbDeviceCount || 0), 0);
   const actionsUsed = telemetryAgents.reduce((sum, { recovery }) => sum + Number(recovery.automaticActionsLastHour || 0), 0);
-  const actionsMax = telemetryAgents.reduce((sum, { recovery }) => sum + Number(recovery.maxActionsPerHour || 0), 0);
   const status = !observed.length
     ? { tone: "idle", label: "等待恢复遥测", detail: "Windows 管理器尚未上报逐设备恢复状态" }
     : rescueCount
@@ -1658,6 +2023,8 @@ function renderWindowsRecoveryConsole() {
       ? { tone: "danger", label: "保护熔断", detail: circuitAgents.map(({ agent, recovery }) => `${agent.agentName || agent.agentId}：${recoveryBlockReason(recovery)}`).join("；") }
       : activeCount
         ? { tone: "active", label: `${activeCount} 台正在恢复`, detail: "动作执行后会先验证 ADB，再决定是否进入下一次重试" }
+        : telemetryAgents.some(({ recovery }) => recovery.recoveryMode === "continuous_recovery")
+          ? { tone: "active", label: "异常设备持续恢复", detail: "不隔离、不熔断；每台手机在轮次冷却后继续下一轮精确恢复" }
         : telemetryAgents.some(({ recovery }) => recovery.recoveryMode === "degraded_recovery")
           ? { tone: "active", label: "残余队列并发恢复", detail: "批量异常已稳定，正在按每批最多 8 台执行精确恢复" }
         : queue.length
@@ -1691,8 +2058,8 @@ function renderWindowsRecoveryConsole() {
         ${recoveryKpi("物理 USB", physicalCount, observed.length ? "Windows 已枚举" : "等待采样", "usb")}
         ${recoveryKpi("ADB 在线", adbCount, physicalCount ? `${Math.round(adbCount / physicalCount * 100)}% 可达` : "暂无样本", "adb")}
         ${recoveryKpi("恢复队列", queue.length, activeCount ? `${activeCount} 台执行中` : "当前等待", "queue")}
-        ${recoveryKpi("需人工", unauthorizedCount + quarantinedCount, `${unauthorizedCount} 未授权 · ${quarantinedCount} 隔离`, "manual")}
-        ${recoveryKpi("小时动作", actionsUsed, actionsMax ? `预算 ${actionsUsed} / ${actionsMax}` : "等待上报预算", "budget")}
+        ${recoveryKpi("需授权", unauthorizedCount, `${unauthorizedCount} 台等待手机确认 USB 调试`, "manual")}
+        ${recoveryKpi("小时动作", actionsUsed, "只统计动作，不再作为停止条件", "budget")}
       </div>
 
       <div class="recovery-agent-rail">
@@ -1808,6 +2175,7 @@ function recoveryAttemptClass(index, attempts, item) {
 function recoveryDeviceStatus(item) {
   if (!item.agentOnline) return { tone: "danger", label: "主机离线", next: "等待管理器恢复" };
   if (item.inProgress) return { tone: "active", label: "正在执行", next: "动作进行中" };
+  if (item.mode === "recovery_cycle_cooldown") return { tone: "warning", label: "轮次冷却", next: "冷却结束后自动开始下一轮" };
   if (item.quarantined) return { tone: "danger", label: "已隔离", next: "等待人工诊断" };
   if (item.state === "adb_unauthorized") return { tone: "manual", label: "待授权", next: "请在手机确认 USB 调试" };
   if (item.state === "physically_absent") return { tone: "muted", label: "物理缺席", next: "等待重新插入" };
@@ -1846,8 +2214,9 @@ function recoveryModeLabel(mode, targetType) {
   if (mode === "recreate_usb_composite") return "动作：重建单手机 USB Composite 子树";
   if (mode === "restart") return `动作：精确重启${targetType === "adb_interface" ? " ADB 接口" : "单个 USB 设备"}`;
   if (mode === "no_exact_target") return "只读复查：尚未找到安全目标";
+  if (mode === "recovery_cycle_cooldown") return "动作链已跑完，冷却后自动开始下一轮";
   if (mode === "quarantine") return "自动动作已停止，仍持续观察";
-  return "策略：等待精确目标与安全窗口";
+  return "策略：异常设备持续恢复，轮次之间固定冷却";
 }
 
 function formatRecoveryCountdown(value) {
@@ -1889,6 +2258,7 @@ function recoveryAgentSummary(recovery = {}) {
   if (recovery.circuitOpen && recovery.rescueCanMutate) return `保护熔断中 · ${(recovery.rescueSerials || []).length} 台连带设备单台救援`;
   if (recovery.circuitOpen) return recoveryBlockReason(recovery);
   const queueCount = Array.isArray(recovery.queue) ? recovery.queue.length : Number(recovery.actionableCount || 0) + Number(recovery.unauthorizedCount || 0);
+  if (recovery.recoveryMode === "continuous_recovery") return `${queueCount} 台在持续恢复 · 轮次冷却后自动重试`;
   if (recovery.recoveryMode === "degraded_recovery") return `${queueCount} 台残余异常 · 最多 8 台并发恢复中`;
   return queueCount ? `${queueCount} 台在恢复视野 · ${recoveryBlockReason(recovery)}` : `${Number(recovery.adbDeviceCount || 0)} 台 ADB 正常`;
 }
@@ -1917,6 +2287,7 @@ function recoveryEventLabel(event) {
     action_started: `开始第 ${Number(event.attempt || 0)} 次自动恢复`,
     action_completed: "恢复动作完成，等待验证",
     action_failed: "恢复动作失败",
+    cooldown_started: "本轮动作完成，进入冷却",
     deferred: "恢复动作安全暂缓",
     quarantined: Number(event.attempt || 0) >= Math.max(1, Number(event.maxAttempts || 5))
       ? `${Math.max(1, Number(event.maxAttempts || 5))} 次自动恢复已用尽`
@@ -1949,6 +2320,7 @@ function recoveryReasonLabel(value) {
     pnp_action_failed: "单设备 PnP 重启失败",
     delayed_collateral_guard: "持续观察延迟出现的批外掉线",
     circuit_collateral_rescue: "普通队列保持熔断，仅救回批外连带设备",
+    recovery_cycle_completed: "当前动作链已完成，冷却后自动开始下一轮",
     mass_outage: "同时异常设备过多",
     burst_outage: "短时间内集中掉线",
     stable_scans_passed: "连续稳定采样通过"
@@ -3176,6 +3548,7 @@ async function loadAll() {
   loadAllInFlight = true;
   try {
   const requestId = ++latestLoadAllRequestId;
+  const lookupSyncVersionAtStart = userLookupSyncVersion;
   if (!state.token) {
     state.user = null;
     if (requestId !== latestLoadAllRequestId) return;
@@ -3217,17 +3590,17 @@ async function loadAll() {
 
   if (state.user?.role !== "admin" || usesUserWorkbench) {
     renderUserWorkbench();
+    const shouldLoadXhsTasks = isUserScanPanelActive();
+    const auxiliaryRequests = Promise.allSettled([
+      api("/api/v1/user/phones"),
+      api("/api/v1/user/sms-orders"),
+      shouldLoadXhsTasks ? api("/api/v1/user/xhs/qr-scan-tasks") : Promise.resolve(null),
+      api("/api/v1/user/automation/xhs-publish-tasks"),
+      api("/api/v1/user/automation/alipay-name-sessions")
+    ]);
     let devices;
-    let phones;
-    let orders;
-    let xhs;
     try {
-      [devices, phones, orders, xhs] = await Promise.all([
-        api("/api/v1/user/devices"),
-        api("/api/v1/user/phones"),
-        api("/api/v1/user/sms-orders"),
-        api("/api/v1/user/xhs/qr-scan-tasks")
-      ]);
+      devices = await loadStableUserDeviceInventory();
     } catch (error) {
       if (requestId === latestLoadAllRequestId) {
         state.userDevicesLoading = false;
@@ -3247,9 +3620,23 @@ async function loadAll() {
       localStorage.removeItem("phoneCloudUserSelectedDeviceId");
       localStorage.setItem("phoneCloudUserWorkbenchView", state.userWorkbenchView);
     }
-    state.userPhones = phones.phones || [];
-    state.userSmsOrders = orders.orders || [];
-    state.userXhsTasks = xhs.tasks || [];
+    renderUserWorkbench();
+
+    const [phones, orders, xhs, publish, lookup] = await auxiliaryRequests;
+    if (requestId !== latestLoadAllRequestId) return;
+    if (phones.status === "fulfilled") state.userPhones = phones.value.phones || [];
+    else console.warn("user phones refresh failed", phones.reason);
+    if (orders.status === "fulfilled") state.userSmsOrders = orders.value.orders || [];
+    else console.warn("user sms orders refresh failed", orders.reason);
+    if (xhs.status === "fulfilled" && xhs.value) state.userXhsTasks = xhs.value.tasks || [];
+    else if (xhs.status === "rejected") console.warn("user xhs task refresh failed", xhs.reason);
+    if (publish.status === "fulfilled") state.userPublishTasks = publish.value.tasks || [];
+    else console.warn("user publish task refresh failed", publish.reason);
+    if (lookup.status === "fulfilled" && canApplyLookupRefresh(lookupSyncVersionAtStart)) {
+      state.userLookupSessions = lookup.value.sessions || [];
+    } else if (lookup.status === "rejected") {
+      console.warn("user lookup session refresh failed", lookup.reason);
+    }
     prunePendingUserXhsTasks();
     if (isUserSmsPanelActive()) {
       loadUserSmsLibrary().catch((error) => console.warn("user sms library load failed", error));
@@ -3516,12 +3903,45 @@ async function loadUserSmsLibrary(options = {}) {
   }
 }
 
-async function refreshUserXhsTasksOnly() {
-  if (!shouldFastRefreshUserXhsTasks()) return;
-  const payload = await api("/api/v1/user/xhs/qr-scan-tasks");
-  state.userXhsTasks = payload.tasks || [];
-  prunePendingUserXhsTasks();
-  renderUserWorkbench();
+async function refreshUserXhsTasksOnly(options = {}) {
+  if (!options.force && !shouldFastRefreshUserXhsTasks()) return;
+  if (userAutomationRefreshPromise) return userAutomationRefreshPromise;
+  userAutomationRefreshPromise = (async () => {
+    const requestId = ++latestUserAutomationRefreshRequestId;
+    const [qrPayload, publishPayload] = await Promise.allSettled([
+      api("/api/v1/user/xhs/qr-scan-tasks"),
+      api("/api/v1/user/automation/xhs-publish-tasks")
+    ]);
+    if (requestId !== latestUserAutomationRefreshRequestId) return;
+    if (qrPayload.status === "fulfilled") state.userXhsTasks = qrPayload.value.tasks || [];
+    else console.warn("user xhs task refresh failed", qrPayload.reason);
+    if (publishPayload.status === "fulfilled") state.userPublishTasks = publishPayload.value.tasks || [];
+    else console.warn("user publish task refresh failed", publishPayload.reason);
+    prunePendingUserXhsTasks();
+    renderUserWorkbench();
+  })();
+  try {
+    return await userAutomationRefreshPromise;
+  } finally {
+    userAutomationRefreshPromise = null;
+  }
+}
+
+async function refreshUserLookupSessionsOnly(options = {}) {
+  if (!options.force && !shouldFastRefreshUserLookupSessions()) return;
+  if (userLookupRefreshPromise) return userLookupRefreshPromise;
+  userLookupRefreshPromise = (async () => {
+    const lookupSyncVersionAtStart = userLookupSyncVersion;
+    const payload = await api("/api/v1/user/automation/alipay-name-sessions");
+    if (canApplyLookupRefresh(lookupSyncVersionAtStart)) state.userLookupSessions = payload.sessions || [];
+    renderUserWorkbench();
+    return payload;
+  })();
+  try {
+    return await userLookupRefreshPromise;
+  } finally {
+    userLookupRefreshPromise = null;
+  }
 }
 
 async function refreshCurrentUserSmsLibrary() {
@@ -4039,6 +4459,206 @@ els.userXhsTaskForm.addEventListener("submit", async (event) => {
   }
 });
 
+els.userAutomationModuleTabs?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-automation-module]");
+  if (!button) return;
+  state.userAutomationModule = button.dataset.automationModule || "scan";
+  localStorage.setItem("phoneCloudUserAutomationModule", state.userAutomationModule);
+  renderUserWorkbench();
+});
+
+els.userPublishImagesInput?.addEventListener("change", () => {
+  const files = [...(els.userPublishImagesInput.files || [])];
+  els.userPublishImageUpload?.classList.toggle("has-files", files.length > 0);
+  if (els.userPublishImagesMeta) els.userPublishImagesMeta.textContent = files.length
+    ? `已选择 ${files.length} 张 · ${files.map((file) => file.name).join("、")}`
+    : "支持 1–5 张 PNG / JPEG / WebP";
+});
+
+function updatePublishCopyCounters() {
+  if (els.userPublishTitleCount) els.userPublishTitleCount.textContent = `${els.userPublishTitleInput?.value.length || 0} / 100`;
+  if (els.userPublishContentCount) els.userPublishContentCount.textContent = `${els.userPublishContentInput?.value.length || 0} / 2000`;
+}
+
+els.userPublishTitleInput?.addEventListener("input", updatePublishCopyCounters);
+els.userPublishContentInput?.addEventListener("input", updatePublishCopyCounters);
+
+els.userPublishForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (state.userPublishSubmitting) return;
+  const deviceId = state.userSelectedDeviceId;
+  const target = parseAutomationTarget(els.userPublishTargetSelect?.value || "");
+  const files = [...(els.userPublishImagesInput?.files || [])];
+  state.userPublishSubmitting = true;
+  if (els.userPublishHint) els.userPublishHint.textContent = "正在读取图片并创建发布任务...";
+  renderUserWorkbench();
+  try {
+    if (!deviceId) throw new Error("请先选择一台手机");
+    if (target.platform !== "xhs" || !target.slot) throw new Error("请选择小红书 I 或 II");
+    if (!files.length || files.length > 5) throw new Error("请选择 1–5 张发布图片");
+    const imageDataUrls = await Promise.all(files.map(fileToDataUrl));
+    const payload = await api("/api/v1/user/automation/xhs-publish-tasks", {
+      method: "POST",
+      body: JSON.stringify({
+        deviceId,
+        xhsAppSlot: target.slot,
+        title: els.userPublishTitleInput?.value || "",
+        content: els.userPublishContentInput?.value || "",
+        imageDataUrls
+      })
+    });
+    if (payload.task) state.userPublishTasks = [payload.task, ...state.userPublishTasks.filter((task) => task.jobId !== payload.task.jobId)];
+    rememberAutomationTarget(deviceId, els.userPublishTargetSelect.value);
+    els.userPublishForm.reset();
+    els.userPublishImageUpload?.classList.remove("has-files");
+    updatePublishCopyCounters();
+    if (els.userPublishImagesMeta) els.userPublishImagesMeta.textContent = "支持 1–5 张 PNG / JPEG / WebP";
+    if (els.userPublishHint) els.userPublishHint.textContent = "发布任务已创建，正在等待 Windows 管理器领取。";
+  } catch (error) {
+    if (els.userPublishHint) els.userPublishHint.textContent = error.message;
+  } finally {
+    state.userPublishSubmitting = false;
+    renderUserWorkbench();
+  }
+});
+
+els.userLookupStartButton?.addEventListener("click", async () => {
+  if (!state.userSelectedDeviceId || state.userLookupBusy) return;
+  bumpUserLookupSyncVersion();
+  state.userLookupBusy = true;
+  if (els.userLookupHint) els.userLookupHint.textContent = "正在建立支付宝查询会话...";
+  renderUserWorkbench();
+  try {
+    const payload = await api("/api/v1/user/automation/alipay-name-sessions", {
+      method: "POST",
+      body: JSON.stringify({ deviceId: state.userSelectedDeviceId })
+    });
+    if (payload.session) upsertUserLookupSession(payload.session);
+    bumpUserLookupSyncVersion();
+    if (els.userLookupHint) els.userLookupHint.textContent = "启动任务已提交，搜索页就绪后即可连续查询。";
+  } catch (error) {
+    bumpUserLookupSyncVersion();
+    if (els.userLookupHint) els.userLookupHint.textContent = error.message;
+  } finally {
+    state.userLookupBusy = false;
+    renderUserWorkbench();
+    refreshUserLookupSessionsOnly({ force: true }).catch(() => {});
+  }
+});
+
+async function submitLookupQuery() {
+  if (state.userLookupBusy || state.userLookupEnding || !state.userSelectedDeviceId) return;
+  const session = activeLookupSessionForDevice(state.userSelectedDeviceId);
+  if (!session || session.status !== "ready") return;
+  const phoneNumber = String(els.userLookupPhoneInput?.value || "").replace(/\D/g, "");
+  if (!/^1\d{10}$/.test(phoneNumber)) {
+    if (els.userLookupHint) els.userLookupHint.textContent = "请输入正确的 11 位手机号。";
+    return;
+  }
+  state.userLookupBusy = true;
+  bumpUserLookupSyncVersion();
+  const optimisticResultId = `submitting-${Date.now()}`;
+  const optimisticCreatedAt = new Date().toISOString();
+  state.userLookupSessions = state.userLookupSessions.map((item) => item.sessionId === session.sessionId ? {
+    ...item,
+    status: "querying",
+    pendingJobId: optimisticResultId,
+    updatedAt: optimisticCreatedAt,
+    results: [{
+      resultId: optimisticResultId,
+      phoneNumber,
+      status: "submitting",
+      stage: "正在提交查询任务",
+      createdAt: optimisticCreatedAt,
+      updatedAt: optimisticCreatedAt
+    }, ...(item.results || [])]
+  } : item);
+  if (els.userLookupHint) els.userLookupHint.textContent = "正在查询，完成后会自动保留当前搜索页...";
+  renderUserWorkbench();
+  try {
+    const payload = await api(`/api/v1/user/automation/alipay-name-sessions/${encodeURIComponent(session.sessionId)}/queries`, {
+      method: "POST",
+      body: JSON.stringify({ phoneNumber })
+    });
+    if (payload.session) upsertUserLookupSession(payload.session, { preserveStopping: true });
+    bumpUserLookupSyncVersion();
+    if (els.userLookupPhoneInput) els.userLookupPhoneInput.value = "";
+    if (els.userLookupHint) els.userLookupHint.textContent = "查询任务已提交。";
+  } catch (error) {
+    state.userLookupSessions = state.userLookupSessions.map((item) => item.sessionId === session.sessionId ? {
+      ...item,
+      status: item.status === "stopping" ? "stopping" : "ready",
+      pendingJobId: item.pendingJobId === optimisticResultId ? "" : item.pendingJobId,
+      results: (item.results || []).filter((result) => result.resultId !== optimisticResultId)
+    } : item);
+    bumpUserLookupSyncVersion();
+    if (els.userLookupHint) els.userLookupHint.textContent = error.message;
+  } finally {
+    state.userLookupBusy = false;
+    renderUserWorkbench();
+    refreshUserLookupSessionsOnly({ force: true }).catch(() => {});
+  }
+}
+
+els.userLookupQueryButton?.addEventListener("click", submitLookupQuery);
+els.userLookupPhoneInput?.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter") return;
+  event.preventDefault();
+  submitLookupQuery().catch(() => {});
+});
+
+els.userLookupResultList?.addEventListener("click", async (event) => {
+  const button = event.target.closest("[data-lookup-copy-result-id]");
+  if (!button) return;
+  const resultId = String(button.dataset.lookupCopyResultId || "");
+  const session = activeLookupSessionForDevice(state.userSelectedDeviceId);
+  const result = (session?.results || []).find((item) => item.resultId === resultId);
+  const tail = String(result?.realNameTailCharacter || "").trim();
+  try {
+    await copyLookupTailToClipboard(tail);
+    copiedLookupResultId = resultId;
+    clearTimeout(copiedLookupResetTimer);
+    renderUserWorkbench();
+    copiedLookupResetTimer = setTimeout(() => {
+      if (copiedLookupResultId !== resultId) return;
+      copiedLookupResultId = "";
+      renderUserWorkbench();
+    }, 1_800);
+  } catch (error) {
+    if (els.userLookupHint) els.userLookupHint.textContent = error.message;
+  }
+});
+
+els.userLookupEndButton?.addEventListener("click", async () => {
+  const session = activeLookupSessionForDevice(state.userSelectedDeviceId);
+  if (!session || state.userLookupEnding || session.status === "stopping") return;
+  bumpUserLookupSyncVersion();
+  state.userLookupEnding = true;
+  state.userLookupSessions = state.userLookupSessions.map((item) => item.sessionId === session.sessionId ? {
+    ...item,
+    status: "stopping",
+    updatedAt: new Date().toISOString(),
+    results: (item.results || []).map((result) => ["submitting", "queued", "running"].includes(result.status)
+      ? { ...result, status: "cancelling", stage: "正在停止当前查询", updatedAt: new Date().toISOString() }
+      : result)
+  } : item);
+  if (els.userLookupHint) els.userLookupHint.textContent = "正在结束会话并释放手机...";
+  renderUserWorkbench();
+  try {
+    const payload = await api(`/api/v1/user/automation/alipay-name-sessions/${encodeURIComponent(session.sessionId)}/end`, { method: "POST", body: "{}" });
+    if (payload.session) upsertUserLookupSession(payload.session);
+    bumpUserLookupSyncVersion();
+  } catch (error) {
+    bumpUserLookupSyncVersion();
+    if (els.userLookupHint) els.userLookupHint.textContent = error.message;
+    refreshUserXhsTasksOnly().catch(() => {});
+  } finally {
+    state.userLookupEnding = false;
+    renderUserWorkbench();
+    refreshUserLookupSessionsOnly({ force: true }).catch(() => {});
+  }
+});
+
 els.userDeviceList?.addEventListener("click", async (event) => {
   const opener = event.target.closest("[data-user-device-open]");
   if (opener) {
@@ -4109,6 +4729,8 @@ els.userDetailTabs?.addEventListener("click", (event) => {
     reloadUserSmsFirstPage()
       .then(() => autoRefreshCurrentUserSmsLibrary())
       .catch(() => {});
+  } else if (state.userDetailTab === "scan") {
+    refreshUserXhsTasksOnly({ force: true }).catch(() => {});
   }
 });
 
@@ -4123,6 +4745,30 @@ els.userScreenStartButton?.addEventListener("click", () => startUserScreenSessio
 els.userScreenReconnectButton?.addEventListener("click", () => startUserScreenSession().catch((error) => alert(error.message)));
 els.userScreenWakeButton?.addEventListener("click", () => wakeUserScreen().catch((error) => alert(error.message)));
 els.userScreenStopButton?.addEventListener("click", () => stopUserScreenSession().catch((error) => alert(error.message)));
+els.userScreenIdleContinueButton?.addEventListener("click", () => {
+  if (!userScreenInactivityGuard.continueSession()) return;
+  els.userScreenVideo?.focus({ preventScroll: true });
+});
+els.userScreenIdleDisconnectButton?.addEventListener("click", () => {
+  stopUserScreenSession({ detail: "已断开实时控制" }).catch((error) => alert(error.message));
+});
+els.userScreenIdleModal?.addEventListener("keydown", (event) => {
+  if (event.key !== "Tab" || els.userScreenIdleModal.hidden) return;
+  const buttons = [els.userScreenIdleContinueButton, els.userScreenIdleDisconnectButton].filter(Boolean);
+  if (!buttons.length) return;
+  const currentIndex = buttons.indexOf(document.activeElement);
+  const nextIndex = event.shiftKey
+    ? (currentIndex <= 0 ? buttons.length - 1 : currentIndex - 1)
+    : (currentIndex >= buttons.length - 1 ? 0 : currentIndex + 1);
+  event.preventDefault();
+  buttons[nextIndex].focus();
+});
+for (const activityEvent of ["pointerdown", "keydown", "wheel", "touchstart"]) {
+  els.userScreenControlWorkspace?.addEventListener(activityEvent, (event) => {
+    if (!event.isTrusted || !state.userScreenSession?.sessionId) return;
+    userScreenInactivityGuard.activity();
+  }, { capture: true, passive: activityEvent === "wheel" || activityEvent === "touchstart" });
+}
 els.userScreenGalleryFileInput?.addEventListener("change", () => {
   const [file] = els.userScreenGalleryFileInput.files || [];
   if (!file) return;
@@ -4147,6 +4793,8 @@ els.userScreenNavigationButtons?.forEach((button) => {
   button.addEventListener("click", () => state.userScreenController?.key(button.dataset.screenKey));
 });
 window.addEventListener("pagehide", releaseUserScreenSessionOnPageExit);
+window.addEventListener("focus", () => userScreenInactivityGuard.reconcile());
+document.addEventListener("visibilitychange", () => userScreenInactivityGuard.reconcile());
 
 els.userSmsSearchInput?.addEventListener("input", () => {
   state.userSmsSearch = els.userSmsSearchInput.value || "";
@@ -4572,3 +5220,9 @@ userSmsAutoRefreshTimer = setInterval(() => {
 userXhsTaskRefreshTimer = setInterval(() => {
   refreshUserXhsTasksOnly().catch(() => {});
 }, USER_XHS_TASK_REFRESH_MS);
+userLookupRefreshTimer = setInterval(() => {
+  refreshUserLookupSessionsOnly().catch(() => {});
+}, USER_LOOKUP_REFRESH_MS);
+setInterval(() => {
+  reloadActiveLookupAfterClientUpdate().catch(() => {});
+}, CLIENT_UPDATE_CHECK_MS);

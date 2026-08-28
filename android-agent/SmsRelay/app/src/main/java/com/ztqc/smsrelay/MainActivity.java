@@ -121,17 +121,28 @@ public class MainActivity extends Activity {
         scroll.addView(root);
 
         TextView title = new TextView(this);
-        title.setText("验证码中控");
+        title.setText("云手机短信 · 设置");
         title.setTextSize(28);
         title.setTextColor(0xff2f1d0e);
         root.addView(title);
 
         TextView intro = new TextView(this);
-        intro.setText("仅用于自有手机号。保存配置后，本机收到短信会转发到你的私有后台。");
+        intro.setText("本机文字短信先保存到系统短信库，再异步上传私有后台。网络异常不会影响手机查看；当前版本暂不下载彩信内容。");
         intro.setTextSize(15);
         intro.setTextColor(0xaa2f1d0e);
         intro.setPadding(0, 10, 0, 26);
         root.addView(intro);
+
+        Button inbox = button("返回短信");
+        inbox.setOnClickListener(view -> {
+            startActivity(new Intent(this, SmsHomeActivity.class));
+            finish();
+        });
+        root.addView(inbox);
+
+        Button defaultSms = button("设为默认短信应用");
+        defaultSms.setOnClickListener(view -> DefaultSmsRole.requestDefaultRole(this));
+        root.addView(defaultSms);
 
         serverUrlInput = field(root, "服务地址", RelayConfig.serverUrl(this));
         tokenInput = field(root, "Token", RelayConfig.token(this));
@@ -167,7 +178,7 @@ public class MainActivity extends Activity {
         });
         root.addView(accessibility);
 
-        Button notificationAccess = button("打开通知监听授权");
+        Button notificationAccess = button("打开旧短信通知兜底授权（接管后无需）");
         notificationAccess.setOnClickListener(view -> {
             startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
             Toast.makeText(this, "请开启“ZTC 云控”的通知访问权限，用于 vivo 等机型验证码兜底", Toast.LENGTH_LONG).show();
@@ -304,16 +315,7 @@ public class MainActivity extends Activity {
     }
 
     private void requestSmsPermissions() {
-        if (checkSelfPermission(Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED
-            || checkSelfPermission(Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[] {
-                Manifest.permission.RECEIVE_SMS,
-                Manifest.permission.READ_SMS
-            }, 1001);
-        } else if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED
-            || checkSelfPermission(Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[] { Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_PHONE_NUMBERS }, 1002);
-        }
+        DefaultSmsRole.requestPermissions(this);
     }
 
     private void updateStatus() {
@@ -331,6 +333,7 @@ public class MainActivity extends Activity {
         boolean notificationAccess = ActivationWindowStore.isNotificationAccessEnabled(this);
         statusText.setText(
             "短信权限：" + (hasSms ? "已授权" : "未授权")
+            + "\n默认短信应用：" + (DefaultSmsRole.isDefaultSmsApp(this) ? "是" : "否")
             + "\n读取短信：" + (hasReadSms ? "已授权" : "未授权（OPPO 请在权限管理中单独允许）")
             + "\nSIM 权限：" + (hasPhoneState ? "已授权" : "未授权")
             + "\n通知监听：" + (notificationAccess ? "已授权" : "未授权")

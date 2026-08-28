@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <application
+        android:label="SmsRelay 兼容性探针"
+        tools:replace="android:label">
+        <!-- Keep the probe out of the launcher. Shell starts only the protected
+             RecoveryActivity, so no role or permission dialog can be shown. -->
+        <activity
+            android:name=".SmsHomeActivity"
+            android:enabled="false" />
+    </application>
+</manifest>

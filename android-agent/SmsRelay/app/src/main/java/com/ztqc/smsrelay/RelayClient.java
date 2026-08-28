@@ -28,12 +28,12 @@ public final class RelayClient {
         }).start();
     }
 
-    public static void sendSmsBlocking(Context context, String sender, String body, long receivedAtMillis) throws Exception {
-        sendSmsBlocking(context, sender, body, receivedAtMillis, null, null, null);
+    public static String sendSmsBlocking(Context context, String sender, String body, long receivedAtMillis) throws Exception {
+        return sendSmsBlocking(context, sender, body, receivedAtMillis, null, null, null);
     }
 
-    public static void sendQueuedSmsBlocking(Context context, SmsQueueStore.PendingSms pending) throws Exception {
-        sendSmsBlocking(
+    public static String sendQueuedSmsBlocking(Context context, SmsQueueStore.PendingSms pending) throws Exception {
+        return sendSmsBlocking(
             context,
             pending.sender,
             pending.body,
@@ -44,7 +44,7 @@ public final class RelayClient {
         );
     }
 
-    public static void sendSmsBlocking(Context context, String sender, String body, long receivedAtMillis, Integer subscriptionId, Integer slotIndex, String eventFingerprint) throws Exception {
+    public static String sendSmsBlocking(Context context, String sender, String body, long receivedAtMillis, Integer subscriptionId, Integer slotIndex, String eventFingerprint) throws Exception {
         JSONObject payload = basePayload(context);
         payload.put("sender", sender);
         payload.put("body", body);
@@ -54,7 +54,11 @@ public final class RelayClient {
         if (subscriptionId != null) payload.put("subscriptionId", subscriptionId);
         if (slotIndex != null) payload.put("slotIndex", slotIndex);
         if (eventFingerprint != null && !eventFingerprint.isEmpty()) payload.put("eventFingerprint", eventFingerprint);
-        post(context, "/api/v1/sms-events", payload);
+        JSONObject response = post(context, "/api/v1/sms-events", payload);
+        JSONObject event = response.optJSONObject("event");
+        String eventId = event == null ? "" : event.optString("eventId", "");
+        if (eventId.isEmpty()) throw new IllegalStateException("relay server response missing sms event ACK");
+        return eventId;
     }
 
     public static void sendHeartbeatAsync(Context context) {
@@ -149,7 +153,7 @@ public final class RelayClient {
             .format(new java.util.Date(timeMillis));
     }
 
-    private static void post(Context context, String path, JSONObject payload) throws Exception {
+    private static JSONObject post(Context context, String path, JSONObject payload) throws Exception {
         URL url = new URL(RelayConfig.serverUrl(context) + path);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("POST");
@@ -164,10 +168,13 @@ public final class RelayClient {
             stream.write(body);
         }
         int code = connection.getResponseCode();
+        InputStream responseStream = code >= 200 && code < 300 ? connection.getInputStream() : connection.getErrorStream();
+        String responseBody = readAll(responseStream);
+        connection.disconnect();
         if (code < 200 || code >= 300) {
             throw new IllegalStateException("relay server returned " + code);
         }
-        connection.disconnect();
+        return responseBody == null || responseBody.trim().isEmpty() ? new JSONObject() : new JSONObject(responseBody);
     }
 
     private static JSONObject get(Context context, String path) throws Exception {

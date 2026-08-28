@@ -244,6 +244,73 @@ GET /api/v1/user/xhs/qr-scan-tasks
 - `account_not_configured`：设备未配置对应平台账号槽位。
 - `device_automation_not_ready`：后台预检未通过。
 
+## 自动化中心：一键发布
+
+创建小红书图文发布任务：
+
+```http
+POST /api/v1/user/automation/xhs-publish-tasks
+Content-Type: application/json
+```
+
+```json
+{
+  "deviceId": "adb:10AF420R0900B1C",
+  "xhsAppSlot": "app1",
+  "title": "标题",
+  "content": "正文",
+  "imageDataUrls": ["data:image/png;base64,..."]
+}
+```
+
+- `imageDataUrls`：1–5 张 PNG、JPEG 或 WebP；单张默认最大 3MB。
+- `xhsAppSlot`：`app1` 或 `app2`，分别对应小红书 I/II。
+- 成功终点不是“已进入编辑页”，而是已点击最终发布并确认编辑页关闭或出现成功状态。
+
+查询与取消：
+
+```http
+GET  /api/v1/user/automation/xhs-publish-tasks
+POST /api/v1/user/automation/xhs-publish-tasks/{jobId}/cancel
+```
+
+## 自动化中心：支付宝查名字
+
+开始会话：
+
+```http
+POST /api/v1/user/automation/alipay-name-sessions
+Content-Type: application/json
+
+{"deviceId":"adb:10AF420R0900B1C"}
+```
+
+会话开始后会打开支付宝并停留在全局搜索页。后续查询复用当前页面，不重启支付宝：
+
+```http
+POST /api/v1/user/automation/alipay-name-sessions/{sessionId}/queries
+Content-Type: application/json
+
+{"phoneNumber":"13800138000"}
+```
+
+查询发生 Poco RPC、元素、输入回读或页面状态异常时，才切换 XML UIAutomator 完整重建搜索路径并重放同一号码，最多恢复 2 次。Poco 在稳定搜索页二次提交后仍没有姓名结果时，直接返回 `not_found`，不进入 XML；该号码计入每账号 200 次查询额度。每累计完成 200 个号码，下一次查询前自动切换一个已保存的支付宝账号。
+
+如果支付宝同时出现“为保障您的正常访问请进行验证”和“向右滑动验证”，Poco 会根据真实滑轨元素边界执行最多 3 次有界拖动，验证消失后自动重放当前号码，号码重放最多 2 次。只有元素证据不完整、3 次拖动仍未通过或重放仍失败时，任务才返回 `alipay_human_verification_required`；会话保持 `ready` 并继续占用原手机，用户可人工完成验证后重试同一号码。
+
+`alipay_name_start`、`alipay_name_query` 和 `alipay_name_stop` 不改变设备库存，因此完成后不会强制触发百台设备全量扫描；Agent 的正常周期扫描和其他任务原有的完成后扫描保持不变。
+
+查名字会话使用独立 1 秒状态刷新，不与扫码任务、发布任务接口组成同一个 `Promise.all`；查询中返回服务器阶段与已用时间，完成后返回实际 `durationMs`。
+
+查询会话与结束接口：
+
+```http
+GET  /api/v1/user/automation/alipay-name-sessions
+POST /api/v1/user/automation/alipay-name-sessions/{sessionId}/end
+```
+
+会话状态：`starting`、`ready`、`querying`、`stopping`、`ended`、`failed`、`expired`。只有 `ready` 且没有 `pendingJobId` 时才能提交下一个号码；结束、失败或过期会释放设备锁。
+
 ## 管理员运维接口
 
 ### 设备锁

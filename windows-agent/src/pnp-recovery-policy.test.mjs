@@ -4,8 +4,10 @@ import test from "node:test";
 import {
   ANDROID_USB_VENDOR_IDS,
   PNP_RECOVERY_POLICY_VERSION,
+  beginNextPnpRecoveryCycle,
   isAdvancedPnpRecoveryMode,
   isDeferredPnpRecoveryPlan,
+  isPnpRecoveryTargetDue,
   normalizePnpRecoveryTargetState,
   orderPnpRecoveryTargets,
   planPnpRecoveryAction,
@@ -20,13 +22,13 @@ test("discovers the Android and Unisoc USB vendor ids used by current phones", (
   assert.equal(ANDROID_USB_VENDOR_IDS.includes("1782"), true);
 });
 
-test("uses eight targeted restarts and then quarantines the phone", () => {
+test("uses the bounded attempt rail and then moves the phone into cooldown", () => {
   assert.equal(pnpTargetRecoveryMode(1), "restart");
   assert.equal(pnpTargetRecoveryMode(2), "restart");
   assert.equal(pnpTargetRecoveryMode(5), "restart");
   assert.equal(pnpTargetRecoveryMode(8), "restart");
-  assert.equal(pnpTargetRecoveryMode(9), "quarantine");
-  assert.equal(pnpTargetRecoveryMode(6, 5), "quarantine");
+  assert.equal(pnpTargetRecoveryMode(9), "cooldown");
+  assert.equal(pnpTargetRecoveryMode(6, 5), "cooldown");
 });
 
 test("resets persisted attempts when the state-driven policy version changes", () => {
@@ -69,7 +71,7 @@ test("migrates repeated v2 ADB-child restarts into one v3 step without clearing 
   });
 });
 
-test("preserves v2 retry state which was not blocked by duplicate ADB-child restarts", () => {
+test("preserves v2 action history but clears its permanent quarantine", () => {
   const normalized = normalizePnpRecoveryTargetState({
     serial: "phone-2",
     policyVersion: 2,
@@ -81,8 +83,57 @@ test("preserves v2 retry state which was not blocked by duplicate ADB-child rest
   assert.equal(normalized.policyVersion, PNP_RECOVERY_POLICY_VERSION);
   assert.equal(normalized.attempts, 3);
   assert.deepEqual(normalized.actionHistory, ["cycle_usb_port", "cycle_usb_port", "cycle_usb_port"]);
-  assert.equal(normalized.quarantinedAt, 789);
+  assert.equal(normalized.quarantinedAt, 0);
   assert.equal(normalized.lastMode, "cycle_usb_port");
+});
+
+test("reopens every persisted v4 terminal row for continuous recovery", () => {
+  const normalized = normalizePnpRecoveryTargetState({
+    serial: "phone-v4",
+    policyVersion: 4,
+    attempts: 2,
+    actionHistory: ["cycle_usb_port", "recreate_usb_composite"],
+    quarantinedAt: 789,
+    nextRetryAt: 456,
+    inProgress: true,
+    lastMode: "usb_gadget_adb_not_exposed"
+  }, "phone-v4");
+  assert.equal(normalized.policyVersion, PNP_RECOVERY_POLICY_VERSION);
+  assert.equal(normalized.quarantinedAt, 0);
+  assert.equal(normalized.nextRetryAt, 0);
+  assert.equal(normalized.inProgress, false);
+  assert.deepEqual(normalized.actionHistory, ["cycle_usb_port", "recreate_usb_composite"]);
+});
+
+test("starts another bounded recovery cycle after a fixed cooldown instead of quarantining", () => {
+  const next = beginNextPnpRecoveryCycle({
+    serial: "phone-loop",
+    policyVersion: PNP_RECOVERY_POLICY_VERSION,
+    attempts: 5,
+    actionHistory: ["restart_adb_interface", "recreate_adb_interface"],
+    quarantinedAt: 123,
+    recoveryCycle: 2
+  }, {
+    serial: "phone-loop",
+    terminalMode: "system_adb_maintenance_required",
+    at: 1_000,
+    cooldownMs: 30_000
+  });
+  assert.equal(next.attempts, 0);
+  assert.deepEqual(next.actionHistory, []);
+  assert.equal(next.quarantinedAt, 0);
+  assert.equal(next.recoveryCycle, 3);
+  assert.equal(next.lastMode, "recovery_cycle_cooldown");
+  assert.equal(next.lastTerminalMode, "system_adb_maintenance_required");
+  assert.equal(next.nextRetryAt, 31_000);
+});
+
+test("persists the per-device cooldown across coordinator restarts", () => {
+  assert.equal(isPnpRecoveryTargetDue({ nextRetryAt: 31_000 }, 30_999), false);
+  assert.equal(isPnpRecoveryTargetDue({ nextRetryAt: 31_000 }, 31_000), true);
+  assert.equal(isPnpRecoveryTargetDue({ nextRetryAt: 0 }, 1_000), true);
+  assert.equal(isPnpRecoveryTargetDue({ nextRetryAt: 0, inProgress: true }, 1_000), false);
+  assert.equal(isPnpRecoveryTargetDue({ nextRetryAt: 0, quarantinedAt: 10 }, 1_000), false);
 });
 
 test("reopens only v3 terminal states which gained a v4 exact recovery step", () => {

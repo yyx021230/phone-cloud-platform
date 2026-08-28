@@ -53,6 +53,45 @@ def wake_and_unlock(adb_path, serial, log):
     emit(log, "device_unlocked")
 
 
+def dismiss_clone_resolver_overlay_if_present(adb_path, serial, log, focus_lines):
+    """Reveal Vivo's clone resolver only when an exact covering window exists."""
+    joined = "\n".join(focus_lines)
+    if "DoubleAppResolverActivity" not in joined:
+        return False
+    overlay = ""
+    if "com.bbk.updater" in joined:
+        overlay = "vivo_system_update"
+    elif "VivoUsbDialog" in joined:
+        overlay = "vivo_usb_dialog"
+    if not overlay:
+        return False
+    run_adb(adb_path, serial, ["shell", "input", "keyevent", "4"], timeout=5, check=False)
+    time.sleep(0.6)
+    after = focus(adb_path, serial)
+    after_text = "\n".join(after)
+    dismissed = "com.bbk.updater" not in after_text and "VivoUsbDialog" not in after_text
+    if not dismissed and overlay == "vivo_system_update":
+        # Back is ignored by some OriginOS updater builds. Force-stop only this
+        # proven covering package; the underlying clone resolver remains alive.
+        run_adb(adb_path, serial, ["shell", "am", "force-stop", "com.bbk.updater"], timeout=5, check=False)
+        time.sleep(0.6)
+        after = focus(adb_path, serial)
+        dismissed = "com.bbk.updater" not in "\n".join(after)
+    emit(log, "dismiss_clone_resolver_overlay", overlay=overlay, dismissed=dismissed, focus=after)
+    return dismissed
+
+
+def is_xhs_clone_resolver_focus(focus_lines):
+    joined = "\n".join(focus_lines)
+    return any(marker in joined for marker in (
+        "DoubleAppResolverActivity",
+        "com.android.intentresolver",
+        # MIUI/HyperOS exposes the framework resolver under the android
+        # package instead of the vendor-specific resolver package.
+        "android/com.android.internal.app.ResolverActivity",
+    ))
+
+
 def require_default_internet_route(adb_path, serial, log):
     destination = "223.5.5.5"
     route = run_adb(adb_path, serial, ["shell", "ip", "route", "get", destination], timeout=6)
@@ -144,7 +183,10 @@ def bounds_size(bounds):
 
 def dismiss_notification_prompt_if_present(adb_path, serial, log):
     current_focus = "\n".join(focus(adb_path, serial))
-    if "NotificationAuthorizationTranslucentActivity" not in current_focus:
+    exact_vivo_notification_overlay = (
+        "com.vivo.pushservice" in current_focus and "type=2038" in current_focus
+    )
+    if "NotificationAuthorizationTranslucentActivity" not in current_focus and not exact_vivo_notification_overlay:
         return False
     run_adb(adb_path, serial, ["shell", "input", "keyevent", "4"], timeout=5)
     emit(log, "dismiss_notification_prompt_back")
@@ -203,8 +245,8 @@ def handle_common_popup(adb_path, serial, root, parent, log, allow_back=False):
     joined = "\n".join(texts)
     markers = [
         "恭喜你", "去发布", "你可能感兴趣的人", "发现新版本", "升级版本", "免流量升级", "新版本",
-        "青少年模式", "开启通知", "通讯录好友", "访问照片", "访问相册",
-        "照片和视频", "选择照片", "媒体", "权限", "隐私政策",
+        "青少年模式", "开启通知", "发送通知", "通讯录好友", "访问照片", "访问相册",
+        "照片和视频", "选择照片", "媒体", "权限", "隐私政策", "继续编辑图文笔记吗",
     ]
     marker = next((item for item in markers if item in joined), "")
     if not marker and not dismiss_notification_prompt_if_present(adb_path, serial, log):
@@ -212,7 +254,7 @@ def handle_common_popup(adb_path, serial, root, parent, log, allow_back=False):
     if not marker:
         return True
     permission_prompt = any(item in joined for item in ["访问照片", "访问相册", "照片和视频", "选择照片", "媒体", "权限"])
-    notification_prompt = any(item in joined for item in ["开启通知", "通知权限", "互动消息"])
+    notification_prompt = any(item in joined for item in ["开启通知", "发送通知", "通知权限", "互动消息"])
     privacy_prompt = any(item in joined for item in ["隐私政策", "用户协议"])
     # Never tap a generic “确认”: a QR login confirmation is a business action,
     # not a disposable popup.  Only the gallery media permission is accepted.
@@ -233,6 +275,11 @@ def handle_common_popup(adb_path, serial, root, parent, log, allow_back=False):
         return True
     if marker in {"恭喜你", "去发布"} and close_celebration_popup(adb_path, serial, root, log):
         emit(log, "popup_handled", marker=marker, checkMs=int((time.perf_counter() - started) * 1000))
+        return True
+    if marker == "继续编辑图文笔记吗" and any(label in joined for label in ("存草稿", "去编辑")):
+        run_adb(adb_path, serial, ["shell", "input", "keyevent", "4"], timeout=5)
+        emit(log, "dismiss_xhs_draft_restore_popup_back", marker=marker)
+        time.sleep(0.4)
         return True
     if close_popup_by_top_icon(adb_path, serial, root, log):
         emit(log, "popup_handled", marker=marker, checkMs=int((time.perf_counter() - started) * 1000))
@@ -318,7 +365,18 @@ def accept_xhs_photo_permission(adb_path, serial, token, log):
     texts = "\n".join(text_values(root))
     if not any(marker in texts for marker in ["访问照片", "访问相册", "照片和视频", "选择照片", "媒体", "权限"]):
         return False
-    node, info = find_labeled(root, parent, ["允许全部", "允许访问所有照片", "允许访问照片和视频", "选择照片和视频", "仅在使用期间允许", "允许"])
+    node = None
+    info = None
+    for candidate in root.iter("node"):
+        resource_id = (candidate.get("resource-id") or "").strip()
+        if not resource_id.endswith("permission_allow_all_button"):
+            continue
+        node = nearest_tappable(candidate, parent)
+        if node is not None and node.get("bounds"):
+            info = {"resourceId": resource_id, "bounds": node.get("bounds")}
+            break
+    if node is None:
+        node, info = find_labeled(root, parent, ["允许访问全部", "允许全部", "允许访问所有照片", "允许访问照片和视频", "选择照片和视频", "仅在使用期间允许", "允许"])
     if node is None:
         emit(log, "allow_xhs_photo_access", hit=False, texts=text_values(root)[:40])
         return False
@@ -410,8 +468,10 @@ def run_xhs(payload):
         start = run_adb(adb_path, serial, ["shell", "am", "start", "-W", "-f", "0x10008000", "-n", activity], timeout=20, check=False)
         emit(log, "start_xhs", activity=activity, output=start[-800:])
         time.sleep(1.0)
-        current_focus = "\n".join(focus(adb_path, serial))
-        if "DoubleAppResolverActivity" in current_focus or "com.android.intentresolver" in current_focus:
+        focus_lines = focus(adb_path, serial)
+        current_focus = "\n".join(focus_lines)
+        if is_xhs_clone_resolver_focus(focus_lines):
+            dismiss_clone_resolver_overlay_if_present(adb_path, serial, log, focus_lines)
             if not wait_and_tap(adb_path, serial, token, log, "choose_xhs_slot", [slot], timeout=8):
                 raise RuntimeError("未找到系统双开应用入口")
             time.sleep(1.0)
@@ -424,11 +484,16 @@ def run_xhs(payload):
         if payload.get("dryRun"):
             elapsed = int((time.perf_counter() - started) * 1000)
             return {"ok": True, "dryRun": True, "elapsedMs": elapsed, "log": log}
-        if not click_first_gallery_image(adb_path, serial, token, log):
-            raise RuntimeError("相册未找到可点击图片")
-        if accept_xhs_photo_permission(adb_path, serial, token, log):
-            if not click_first_gallery_image(adb_path, serial, token, log):
+        image_selected = click_first_gallery_image(adb_path, serial, token, log)
+        permission_recovered = accept_xhs_photo_permission(adb_path, serial, token, log)
+        if permission_recovered:
+            image_selected = click_first_gallery_image(adb_path, serial, token, log)
+            if not image_selected and wait_and_tap(adb_path, serial, token, log, "reopen_album_after_permission", ["相册"], timeout=4):
+                image_selected = click_first_gallery_image(adb_path, serial, token, log)
+            if not image_selected:
                 raise RuntimeError("授予照片权限后未能重新选择二维码图片")
+        elif not image_selected:
+            raise RuntimeError("相册未找到可点击图片")
         confirm_type, _ = wait_for_confirm(adb_path, serial, token, log, timeout=18)
         if not confirm_type:
             raise RuntimeError("选中二维码后未进入登录确认页")

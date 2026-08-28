@@ -76,12 +76,16 @@ async function main() {
     accounts: [{ appSlot: "app1", label: "小红书", xhsId: "smoke_xhs_001", accountName: "烟测账号", enabled: true }]
   });
 
-  await api("POST", "/api/v1/sms-orders", admin, {
+  const smsOrder = await api("POST", "/api/v1/sms-orders", admin, {
     userId: userA.user.userId,
     deviceId: device.deviceId,
     phoneNumber: "13800138000",
     platform: "小红书"
   });
+  const smsProbeTasks = await api("GET", "/api/v1/windows-agent-tasks?limit=10", admin);
+  const smsProbe = smsProbeTasks.tasks.find((task) => task.type === "sms_code_probe" && task.deviceId === device.deviceId);
+  assert(smsProbe?.status === "queued", "a waiting SMS order should queue an immediate targeted probe");
+  assert(smsProbe?.payload?.smsOrderId === smsOrder.order.orderId, "the targeted probe should retain its SMS order identity");
   const smsAt = new Date().toISOString();
   const notificationSmsPayload = {
     deviceId: device.deviceId,
@@ -169,6 +173,61 @@ async function main() {
   const activeLock = locks.locks.find((lock) => lock.taskId === firstTask.task.taskId && lock.status === "active");
   assert(activeLock, "admin lock view should include active task lock");
   await api("POST", `/api/v1/device-locks/${activeLock.lockId}/release`, admin, {});
+
+  const publishCreate = await api("POST", "/api/v1/user/automation/xhs-publish-tasks", sessionA, {
+    deviceId: device.deviceId,
+    xhsAppSlot: "app1",
+    title: "烟测标题",
+    content: "烟测正文",
+    imageDataUrls: [qr]
+  });
+  assert(publishCreate.task?.status === "queued", "publish task should enter the Windows queue");
+  let automationTasks = await api("GET", "/api/v1/windows-agent-tasks?limit=30", admin);
+  const publishWindowsTask = automationTasks.tasks.find((task) => task.type === "xhs_publish" && task.payload?.automationJobId === publishCreate.task.jobId);
+  assert(publishWindowsTask, "publish task should create a linked Windows task");
+  await api("POST", `/api/v1/windows-agent-tasks/${publishWindowsTask.taskId}/status`, agentToken, {
+    status: "succeeded",
+    result: { message: "smoke publish complete", publishedAt: new Date().toISOString() }
+  });
+  const published = await api("GET", "/api/v1/user/automation/xhs-publish-tasks", sessionA);
+  assert(published.tasks.find((task) => task.jobId === publishCreate.task.jobId)?.status === "succeeded", "publish result should sync back to the user task");
+
+  const lookupCreate = await api("POST", "/api/v1/user/automation/alipay-name-sessions", sessionA, { deviceId: device.deviceId });
+  automationTasks = await api("GET", "/api/v1/windows-agent-tasks?limit=30", admin);
+  const startWindowsTask = automationTasks.tasks.find((task) => task.type === "alipay_name_start" && task.payload?.automationSessionId === lookupCreate.session.sessionId);
+  assert(startWindowsTask, "lookup start should create a linked Windows task");
+  await api("POST", `/api/v1/windows-agent-tasks/${startWindowsTask.taskId}/status`, agentToken, {
+    status: "succeeded",
+    result: { message: "search ready", currentAccount: "smoke-account" }
+  });
+  let lookupSessions = await api("GET", "/api/v1/user/automation/alipay-name-sessions", sessionA);
+  let lookupSession = lookupSessions.sessions.find((session) => session.sessionId === lookupCreate.session.sessionId);
+  assert(lookupSession?.status === "ready", "lookup session should become reusable after startup");
+
+  const lookupQuery = await api("POST", `/api/v1/user/automation/alipay-name-sessions/${lookupSession.sessionId}/queries`, sessionA, { phoneNumber: "13800138000" });
+  automationTasks = await api("GET", "/api/v1/windows-agent-tasks?limit=30", admin);
+  const queryWindowsTask = automationTasks.tasks.find((task) => task.type === "alipay_name_query" && task.payload?.automationJobId === lookupQuery.job.jobId);
+  assert(queryWindowsTask, "lookup query should create a linked Windows task");
+  await api("POST", `/api/v1/windows-agent-tasks/${queryWindowsTask.taskId}/status`, agentToken, {
+    status: "succeeded",
+    result: { message: "lookup complete", matchedPhone: "13800138000", alipayDisplayName: "*测", realNameTailCharacter: "测", durationMs: 1234 }
+  });
+  lookupSessions = await api("GET", "/api/v1/user/automation/alipay-name-sessions", sessionA);
+  lookupSession = lookupSessions.sessions.find((session) => session.sessionId === lookupCreate.session.sessionId);
+  assert(lookupSession?.status === "ready" && lookupSession.successfulCount === 1, "lookup success should keep the session ready and increment progress");
+  assert(lookupSession.results[0]?.realNameTailCharacter === "测", "lookup result should be returned to the user list");
+
+  await api("POST", `/api/v1/user/automation/alipay-name-sessions/${lookupSession.sessionId}/end`, sessionA, {});
+  automationTasks = await api("GET", "/api/v1/windows-agent-tasks?limit=30", admin);
+  const stopWindowsTask = automationTasks.tasks.find((task) => task.type === "alipay_name_stop" && task.payload?.automationSessionId === lookupSession.sessionId);
+  assert(stopWindowsTask, "lookup end should create a linked stop task");
+  await api("POST", `/api/v1/windows-agent-tasks/${stopWindowsTask.taskId}/status`, agentToken, {
+    status: "succeeded",
+    result: { message: "session stopped" }
+  });
+  lookupSessions = await api("GET", "/api/v1/user/automation/alipay-name-sessions", sessionA);
+  lookupSession = lookupSessions.sessions.find((session) => session.sessionId === lookupCreate.session.sessionId);
+  assert(lookupSession?.status === "ended", "lookup end should release the persistent session");
 
   const metrics = await api("GET", "/api/v1/metrics/operations", admin);
   assert(metrics.metrics?.queue, "operations metrics should include queue data");
