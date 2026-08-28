@@ -108,6 +108,50 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
     ]
   );
 
+  const upsertAutomationJob = (client, job) => client.query(
+    `insert into phone_cloud_automation_jobs
+       (job_id, device_id, user_id, kind, status, created_at, updated_at, data)
+     values ($1, $2, $3, $4, $5, $6, $7, $8::jsonb)
+     on conflict (job_id) do update
+       set device_id = excluded.device_id,
+           user_id = excluded.user_id,
+           kind = excluded.kind,
+           status = excluded.status,
+           updated_at = excluded.updated_at,
+           data = excluded.data`,
+    [
+      requiredId(job?.jobId, "automationJob.jobId"),
+      job.deviceId || "",
+      job.userId || "",
+      job.kind || "",
+      job.status || "",
+      pgDate(job.createdAt),
+      pgDate(job.updatedAt),
+      stringify(job)
+    ]
+  );
+
+  const upsertAutomationSession = (client, session) => client.query(
+    `insert into phone_cloud_automation_sessions
+       (session_id, device_id, user_id, status, created_at, updated_at, data)
+     values ($1, $2, $3, $4, $5, $6, $7::jsonb)
+     on conflict (session_id) do update
+       set device_id = excluded.device_id,
+           user_id = excluded.user_id,
+           status = excluded.status,
+           updated_at = excluded.updated_at,
+           data = excluded.data`,
+    [
+      requiredId(session?.sessionId, "automationSession.sessionId"),
+      session.deviceId || "",
+      session.userId || "",
+      session.status || "",
+      pgDate(session.createdAt),
+      pgDate(session.updatedAt),
+      stringify(session)
+    ]
+  );
+
   const upsertDeviceLock = (client, lock) => client.query(
     `insert into phone_cloud_device_locks
        (lock_id, device_id, status, expires_at, data)
@@ -197,6 +241,7 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
             message_at: pgDate(message.messageAt || message.receivedAt || message.createdAt),
             data: message
           }));
+          const serializedRows = stringify(rows);
           await client.query(
             `insert into phone_cloud_sms_messages
                (message_id, device_id, message_key, message_at, data, updated_at)
@@ -205,24 +250,72 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
              from jsonb_to_recordset($1::jsonb) as row(
                message_id text, device_id text, message_key text, message_at text, data jsonb
              )
-             on conflict (device_id, message_key) do update
-               set message_at = excluded.message_at,
-                   data = jsonb_set(
-                     jsonb_set(excluded.data, '{messageId}', to_jsonb(phone_cloud_sms_messages.message_id), true),
-                     '{messageKey}', to_jsonb(excluded.message_key), true
-                   ),
-                   updated_at = now()`,
-            [stringify(rows)]
+             on conflict do nothing`,
+            [serializedRows]
+          );
+          await client.query(
+            `with incoming as (
+               select row.message_id, row.device_id, row.message_key,
+                      row.message_at::timestamptz as message_at, row.data
+               from jsonb_to_recordset($1::jsonb) as row(
+                 message_id text, device_id text, message_key text, message_at text, data jsonb
+               )
+             ), matched as (
+               select target.message_id as canonical_message_id,
+                      target.device_id as canonical_device_id,
+                      target.message_key as current_message_key,
+                      incoming.message_key as incoming_message_key,
+                      incoming.message_at,
+                      incoming.data,
+                      case
+                        when target.message_id = incoming.message_id
+                         and not exists (
+                           select 1
+                           from phone_cloud_sms_messages conflict
+                           where conflict.device_id = incoming.device_id
+                             and conflict.message_key = incoming.message_key
+                             and conflict.message_id <> target.message_id
+                         )
+                        then incoming.message_key
+                        else target.message_key
+                      end as canonical_message_key,
+                      row_number() over (
+                        partition by target.message_id
+                        order by (target.message_id = incoming.message_id) desc,
+                                 incoming.message_at desc nulls last
+                      ) as match_rank
+               from phone_cloud_sms_messages target
+               join incoming
+                 on target.message_id = incoming.message_id
+                 or (
+                   target.device_id = incoming.device_id
+                   and target.message_key = incoming.message_key
+                 )
+             )
+             update phone_cloud_sms_messages target
+                set message_key = matched.canonical_message_key,
+                    message_at = matched.message_at,
+                    data = jsonb_set(
+                      jsonb_set(matched.data, '{messageId}', to_jsonb(matched.canonical_message_id), true),
+                      '{messageKey}', to_jsonb(matched.canonical_message_key), true
+                    ),
+                    updated_at = now()
+               from matched
+              where matched.match_rank = 1
+                and target.message_id = matched.canonical_message_id`,
+            [serializedRows]
           );
         }
         await insertAudit(client, audit);
       });
     },
 
-    async persistTaskMutation({ windowsTask = null, xhsTask = null, deviceLock = null, events = [], audit = null } = {}) {
+    async persistTaskMutation({ windowsTask = null, xhsTask = null, automationJob = null, automationSession = null, deviceLock = null, events = [], audit = null } = {}) {
       return inTransaction(async (client) => {
         if (windowsTask) await upsertWindowsTask(client, windowsTask);
         if (xhsTask) await upsertXhsTask(client, xhsTask);
+        if (automationJob) await upsertAutomationJob(client, automationJob);
+        if (automationSession) await upsertAutomationSession(client, automationSession);
         if (deviceLock) await upsertDeviceLock(client, deviceLock);
         await insertTaskEvents(client, events);
         await insertAudit(client, audit);
@@ -231,17 +324,19 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
 
     async loadOverlay() {
       const pool = await getPool();
-      const [users, sessions, devices, smsMessages, windowsTasks, xhsTasks, deviceLocks, auditEvents] = await Promise.all([
+      const [users, sessions, devices, smsMessages, windowsTasks, xhsTasks, automationJobs, automationSessions, deviceLocks, auditEvents] = await Promise.all([
         loadDataRows(pool, "phone_cloud_users", "updated_at", 5_000),
         loadDataRows(pool, "phone_cloud_sessions", "expires_at", 5_000),
         loadDataRows(pool, "phone_cloud_devices", "updated_at", 5_000),
         loadDataRows(pool, "phone_cloud_sms_messages", "message_at", 50_000),
         loadDataRows(pool, "phone_cloud_windows_tasks", "updated_at", 5_000),
         loadDataRows(pool, "phone_cloud_xhs_tasks", "updated_at", 5_000),
+        loadDataRows(pool, "phone_cloud_automation_jobs", "updated_at", 5_000),
+        loadDataRows(pool, "phone_cloud_automation_sessions", "updated_at", 1_000),
         loadDataRows(pool, "phone_cloud_device_locks", "expires_at", 5_000),
         loadDataRows(pool, "phone_cloud_audit_events", "created_at", 5_000)
       ]);
-      return { users, sessions, devices, smsMessages, windowsTasks, xhsTasks, deviceLocks, auditEvents };
+      return { users, sessions, devices, smsMessages, windowsTasks, xhsTasks, automationJobs, automationSessions, deviceLocks, auditEvents };
     }
   };
 }
@@ -253,6 +348,8 @@ export function applyStructuredOverlay(state, overlay = {}) {
   state.smsMessages = mergeByComputedKey(overlay.smsMessages, state.smsMessages, smsMessageBusinessKey);
   state.windowsTasks = mergeByKey(overlay.windowsTasks, state.windowsTasks, "taskId");
   state.xhsQrTasks = mergeByKey(overlay.xhsTasks, state.xhsQrTasks, "taskId");
+  state.automationJobs = mergeByKey(overlay.automationJobs, state.automationJobs, "jobId");
+  state.automationSessions = mergeByKey(overlay.automationSessions, state.automationSessions, "sessionId");
   state.deviceLocks = mergeByKey(overlay.deviceLocks, state.deviceLocks, "lockId");
   state.audit = mergeByKey(overlay.auditEvents, state.audit, "auditId");
   return state;

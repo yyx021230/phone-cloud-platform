@@ -312,3 +312,36 @@ test("never mutates when the physical USB inventory is unavailable", () => {
   assert.equal(result.blockedReason, "physical_inventory_unavailable");
   assert.equal(result.canMutate, false);
 });
+
+test("continuous mode never opens circuits, enforces hourly budgets or starts post-action watches", () => {
+  let clock = 1_000;
+  const safety = createPnpRecoverySafety({
+    now: () => clock,
+    continuousRecovery: true,
+    massOutageMinDevices: 2,
+    maxActionsPerHour: 1,
+    postActionWatchMs: 180
+  });
+  safety.observe(rows({ online: 8, missing: 2 }));
+  safety.recordAction();
+  safety.beginPostActionWatch({ onlineSerials: ["online-0"], actionedSerials: ["missing-0"] });
+  safety.recordFailure("pnp_timeout", { serial: "missing-0" });
+  clock += 1;
+  const result = safety.observe(rows({ online: 7, missing: 3 }));
+
+  assert.equal(result.circuitOpen, false);
+  assert.equal(result.blockedReason, "");
+  assert.equal(result.canMutate, true);
+  assert.equal(result.recoveryMode, "continuous_recovery");
+  assert.equal(result.postActionWatchCount, 0);
+  assert.deepEqual(result.rescueSerials, []);
+  assert.equal(safety.snapshot().circuit.open, false);
+});
+
+test("continuous mode still waits for a fresh physical inventory", () => {
+  const safety = createPnpRecoverySafety({ continuousRecovery: true });
+  const result = safety.observe(rows({ online: 10, missing: 1 }), { inventoryReady: false });
+  assert.equal(result.blockedReason, "physical_inventory_unavailable");
+  assert.equal(result.canMutate, false);
+  assert.equal(result.circuitOpen, false);
+});

@@ -5,6 +5,7 @@ import {
   buildScreenStreamMetrics,
   applyScreenDeviceProfile,
   resolveScreenTransportPacingBitRate,
+  resolveScreenTransportPacketsPerBurst,
   createScreenStreamManager,
   createScreenScrcpyOptions,
   createScreenVideoCodecOptions,
@@ -63,6 +64,19 @@ test("uses a device-only burst pacing ceiling without changing encoder bitrate",
     resolveScreenTransportPacingBitRate({ config, serial: "other-phone", requestedOptions: { videoBitRate: 1_000_000 } }),
     4_000_000
   );
+});
+
+test("uses global two-packet RTP groups while allowing a bounded device override", () => {
+  const config = {
+    screenTransportPacketsPerBurst: 2,
+    screenDeviceProfiles: {
+      "phone-53": { transportPacketsPerBurst: 2 },
+      "phone-35": { transportPacketsPerBurst: 8 }
+    }
+  };
+  assert.equal(resolveScreenTransportPacketsPerBurst({ config, serial: "phone-53" }), 2);
+  assert.equal(resolveScreenTransportPacketsPerBurst({ config, serial: "phone-35" }), 8);
+  assert.equal(resolveScreenTransportPacketsPerBurst({ config, serial: "other-phone" }), 2);
 });
 
 test("keeps each Android encoder profile-compatible while forcing CBR and frequent keyframes", () => {

@@ -59,8 +59,9 @@ export async function loadAgentConfig({ agentDir, configPath }) {
     smsNotificationFallbackEnabled: raw.smsNotificationFallbackEnabled === true,
     smsNotificationFallbackAllDevices: raw.smsNotificationFallbackAllDevices === true,
     smsNotificationFallbackDeviceSerials: normalizeDeviceSerialAllowlist(raw.smsNotificationFallbackDeviceSerials),
+    smsNotificationContinuousScanEnabled: raw.smsNotificationContinuousScanEnabled === true,
     smsNotificationBackgroundIntervalSeconds: Math.max(30, Number(raw.smsNotificationBackgroundIntervalSeconds || 30)),
-    smsNotificationBackgroundConcurrency: Math.max(1, Math.min(4, Number(raw.smsNotificationBackgroundConcurrency || 2))),
+    smsNotificationBackgroundConcurrency: Math.max(1, Math.min(10, Number(raw.smsNotificationBackgroundConcurrency || 2))),
     smsNotificationPackageCacheSeconds: Math.max(60, Number(raw.smsNotificationPackageCacheSeconds || 600)),
     smsNotificationHistoryMaxAgeHours: Math.max(1, Math.min(168, Number(raw.smsNotificationHistoryMaxAgeHours || 24))),
     maxConcurrentAdbTasks: Math.max(1, Number(raw.maxConcurrentTasks || raw.maxConcurrentAdbTasks || 15)),
@@ -73,6 +74,8 @@ export async function loadAgentConfig({ agentDir, configPath }) {
       : ["airtest==1.4.3", "pocoui==1.0.94"],
     airtestRunnerPath: resolveAgentPath(raw.airtestRunnerPath || path.join(agentDir, "scripts", "xhs_airtest_poco.py"), ""),
     xmlUiAutomatorRunnerPath: resolveAgentPath(raw.xmlUiAutomatorRunnerPath || path.join(agentDir, "scripts", "xhs_xml_uiautomator.py"), ""),
+    xhsPublishRunnerPath: resolveAgentPath(raw.xhsPublishRunnerPath || path.join(agentDir, "scripts", "xhs_publish_poco.py"), ""),
+    alipayNameLookupRunnerPath: resolveAgentPath(raw.alipayNameLookupRunnerPath || path.join(agentDir, "scripts", "alipay_name_lookup.py"), ""),
     automationPreflightEnabled: raw.automationPreflightEnabled !== false,
     automationPreflightIntervalSeconds: Math.max(60, Number(raw.automationPreflightIntervalSeconds || 600)),
     // Preflight can involve a slow vendor install prompt. Keep a small parallel
@@ -91,6 +94,10 @@ export async function loadAgentConfig({ agentDir, configPath }) {
     // Keep the RTP wire rate close to the encoder target. A much higher value
     // turns normal H.264 VBR frames into UDP bursts and causes whole-frame loss.
     screenTransportPacingBitRate: Math.max(2_000_000, Math.min(48_000_000, Number(raw.screenTransportPacingBitRate || 12_000_000))),
+    // Keep the historical eight-packet write group as the global default.
+    // Smaller values are rolled out per device to reduce UDP microbursts
+    // without changing encoder quality or every active phone at once.
+    screenTransportPacketsPerBurst: Math.max(1, Math.min(8, Math.round(Number(raw.screenTransportPacketsPerBurst || 2)))),
     // Bound source backlog by time as well as bytes. A frame-count-only queue
     // turns one normal large IDR into a decoder discontinuity at high FPS.
     screenRealtimeQueueLatencyMs: Math.max(100, Math.min(1_500, Number(raw.screenRealtimeQueueLatencyMs || 400))),
@@ -153,6 +160,12 @@ export async function loadAgentConfig({ agentDir, configPath }) {
     // fresh read-only topology scan instead of waiting for the 30/60s clocks.
     pnpDeviceInstallPollSeconds: Math.max(2, Math.min(30, Number(raw.pnpDeviceInstallPollSeconds || 5))),
     pnpPostActionProbeSeconds: Math.max(5, Math.min(60, Number(raw.pnpPostActionProbeSeconds || 10))),
+    // Production recovery is continuous: a phone which exhausts one bounded
+    // action ladder starts another ladder after a fixed per-device cooldown.
+    // This deliberately replaces permanent quarantine and host-wide circuit
+    // blocking while keeping exact-target validation and target-busy checks.
+    pnpContinuousRecoveryEnabled: raw.pnpContinuousRecoveryEnabled !== false,
+    pnpRecoveryCycleCooldownSeconds: Math.max(10, Math.min(600, Number(raw.pnpRecoveryCycleCooldownSeconds || 30))),
     // Windows may continue re-binding WinUSB/MTP nodes well after pnputil
     // exits. Keep the pre-action online cohort under observation long enough
     // to catch delayed collateral before another PnP batch is allowed.
@@ -206,6 +219,9 @@ function normalizeScreenDeviceProfiles(value) {
     }
     if (Number.isFinite(Number(candidate.transportPacingBitRate))) {
       profile.transportPacingBitRate = Math.max(2_000_000, Math.min(48_000_000, Number(candidate.transportPacingBitRate)));
+    }
+    if (Number.isFinite(Number(candidate.transportPacketsPerBurst))) {
+      profile.transportPacketsPerBurst = Math.max(1, Math.min(8, Math.round(Number(candidate.transportPacketsPerBurst))));
     }
     if (typeof candidate.sourceRecovery === "boolean") profile.sourceRecovery = candidate.sourceRecovery;
     if (typeof candidate.isolateControl === "boolean") profile.isolateControl = candidate.isolateControl;

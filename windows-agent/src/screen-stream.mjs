@@ -164,6 +164,16 @@ export function resolveScreenTransportPacingBitRate({ requestedOptions = {}, con
   );
 }
 
+// Packet grouping changes the instantaneous UDP burst size, not the encoder
+// bitrate. Keep it independently device-scoped so two canaries can use smaller
+// groups while every other session retains the established eight-packet path.
+export function resolveScreenTransportPacketsPerBurst({ config = {}, serial = "" }) {
+  const profileValue = Number(config.screenDeviceProfiles?.[serial]?.transportPacketsPerBurst);
+  const configuredValue = Number(config.screenTransportPacketsPerBurst || 2);
+  const selected = Number.isFinite(profileValue) && profileValue > 0 ? profileValue : configuredValue;
+  return Math.max(1, Math.min(8, Math.round(Number(selected) || 8)));
+}
+
 export function parseScrcpyFallbackMaxSize(line) {
   const match = String(line || "").match(/Retrying with -m(\d+)/i);
   const maxSize = Number(match?.[1] || 0);
@@ -788,6 +798,10 @@ class ScreenStreamManager {
           frameRate: bounded(requestedOptions.maxFps, 5, 60, this.config.screenMaxFps),
           pacingBitRate: resolveScreenTransportPacingBitRate({
             requestedOptions,
+            config: this.config,
+            serial: session.serial
+          }),
+          maxPacketsPerBurst: resolveScreenTransportPacketsPerBurst({
             config: this.config,
             serial: session.serial
           }),

@@ -132,7 +132,7 @@ public final class SmsLibrarySync {
                 selectionArgs,
                 "date desc"
             );
-        } catch (IllegalArgumentException error) {
+        } catch (RuntimeException error) {
             return context.getContentResolver().query(
                 uri,
                 BASIC_PROJECTION,

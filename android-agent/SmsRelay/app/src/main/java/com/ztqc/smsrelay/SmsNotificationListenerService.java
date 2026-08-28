@@ -16,6 +16,10 @@ public class SmsNotificationListenerService extends NotificationListenerService 
     @Override
     public void onListenerConnected() {
         currentService = new WeakReference<>(this);
+        if (DefaultSmsRole.isDefaultSmsApp(this)) {
+            Log.i(TAG, "default sms role is owned by SmsRelay; legacy notification fallback is disabled");
+            return;
+        }
         Log.i(TAG, "notification listener connected; active notifications will be replayed inside active windows");
         ActivationWindowStore.refreshAsync(this);
         long cutoffMillis = ActivationWindowStore.staleNotificationCutoffMillis(this);
@@ -45,6 +49,7 @@ public class SmsNotificationListenerService extends NotificationListenerService 
 
     private void handleNotification(StatusBarNotification sbn, boolean activeReplay) {
         try {
+            if (DefaultSmsRole.isDefaultSmsApp(this)) return;
             if (!isSmsNotification(sbn)) return;
             Notification notification = sbn.getNotification();
             Bundle extras = notification == null ? null : notification.extras;
@@ -68,6 +73,7 @@ public class SmsNotificationListenerService extends NotificationListenerService 
     }
 
     private void replayActiveSmsNotificationsSince(long cutoffMillis) {
+        if (DefaultSmsRole.isDefaultSmsApp(this)) return;
         StatusBarNotification[] active = getActiveNotifications();
         if (active == null) return;
         int replayed = 0;
@@ -84,6 +90,7 @@ public class SmsNotificationListenerService extends NotificationListenerService 
     }
 
     private void pruneActiveSmsNotificationsBefore(long cutoffMillis) {
+        if (DefaultSmsRole.isDefaultSmsApp(this)) return;
         StatusBarNotification[] active = getActiveNotifications();
         if (active == null) return;
         int cancelled = 0;
@@ -102,6 +109,7 @@ public class SmsNotificationListenerService extends NotificationListenerService 
     private boolean isSmsNotification(StatusBarNotification sbn) {
         if (sbn == null) return false;
         String pkg = sbn.getPackageName();
+        if (getPackageName().equals(pkg)) return false;
         return "com.android.mms".equals(pkg)
             || "com.android.mms.service".equals(pkg)
             || "com.oppo.mms".equals(pkg)

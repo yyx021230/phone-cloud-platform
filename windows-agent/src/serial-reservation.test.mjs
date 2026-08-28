@@ -32,8 +32,8 @@ test("keeps healthy phones syncing while another phone is waiting for recovery",
   }), true);
 });
 
-test("foreground automation and explicit scan options still block background SMS", () => {
-  assert.equal(shouldScheduleSmsBackground({ enabled: true, activeAutomationTask: true }), false);
+test("foreground automation only reserves its serial while explicit scan options still block", () => {
+  assert.equal(shouldScheduleSmsBackground({ enabled: true, activeAutomationTask: true }), true);
   assert.equal(shouldScheduleSmsBackground({ enabled: true, skipSms: true }), false);
   assert.equal(shouldScheduleSmsBackground({ enabled: false }), false);
 });

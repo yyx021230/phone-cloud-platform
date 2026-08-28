@@ -8,12 +8,12 @@ export const ANDROID_USB_VENDOR_IDS = Object.freeze([
   "1782"  // Unisoc/Spreadtrum Android gadget
 ]);
 
-export const PNP_RECOVERY_POLICY_VERSION = 4;
+export const PNP_RECOVERY_POLICY_VERSION = 5;
 
 export function normalizePnpRecoveryTargetState(value = {}, serial = "") {
   const previous = value && typeof value === "object" ? value : {};
   const previousPolicyVersion = Number(previous.policyVersion || 0);
-  if (![PNP_RECOVERY_POLICY_VERSION, 2, 3].includes(previousPolicyVersion)) {
+  if (![PNP_RECOVERY_POLICY_VERSION, 2, 3, 4].includes(previousPolicyVersion)) {
     return {
       serial: String(serial || previous.serial || "").trim(),
       policyVersion: PNP_RECOVERY_POLICY_VERSION,
@@ -27,6 +27,22 @@ export function normalizePnpRecoveryTargetState(value = {}, serial = "") {
   const previousHistory = (Array.isArray(previous.actionHistory) ? previous.actionHistory : [])
     .map((item) => String(item || "").trim())
     .filter(Boolean);
+  if (previousPolicyVersion === 4) {
+    // V4 persisted terminal/quarantine states indefinitely. Reopen them once
+    // on upgrade; the live coordinator will finish the old ladder, apply the
+    // fixed cooldown and start a fresh bounded cycle. Preserve action evidence
+    // so the transition remains explainable in the recovery console.
+    return {
+      ...previous,
+      serial: String(serial || previous.serial || "").trim(),
+      policyVersion: PNP_RECOVERY_POLICY_VERSION,
+      attempts: Math.max(0, Number(previous.attempts || 0)),
+      actionHistory: previousHistory,
+      quarantinedAt: 0,
+      nextRetryAt: 0,
+      inProgress: false
+    };
+  }
   if (previousPolicyVersion === 2 || previousPolicyVersion === 3) {
     // V2 could consume the whole retry budget by repeatedly restarting the
     // same stale ADB child. V3 turns the next step into an exact remove + root
@@ -54,10 +70,10 @@ export function normalizePnpRecoveryTargetState(value = {}, serial = "") {
         ? migratedHistory.length
         : Math.max(0, Number(previous.attempts || 0)),
       actionHistory: migratedHistory,
+      quarantinedAt: 0,
+      inProgress: false,
       ...(reopenForV4 ? {
-        quarantinedAt: 0,
         nextRetryAt: 0,
-        inProgress: false,
         lastMode: migratedHistory.at(-1) || ""
       } : {})
     };
@@ -262,7 +278,7 @@ export function pnpTargetRecoveryMode(attempt, maxAttempts = 8) {
   // Kept for compatibility with historical callers. New code must use
   // planPnpRecoveryAction(), which treats the configured limit as a total
   // action budget instead of repeating this one mode blindly.
-  return Number(attempt) <= Math.max(1, Number(maxAttempts || 8)) ? "restart" : "quarantine";
+  return Number(attempt) <= Math.max(1, Number(maxAttempts || 8)) ? "restart" : "cooldown";
 }
 
 export function pnpTargetRecoveryBackoffMs(attempt, baseMs, capMs) {
@@ -280,6 +296,30 @@ export function pnpRecoveryActionBackoffMs(previous = {}, mode = "", baseMs, cap
   // the first-use delay while DeviceInstall single-flight prevents stacking.
   const actionUse = completedActionCount(previous, String(mode || "")) + 1;
   return pnpTargetRecoveryBackoffMs(actionUse, baseMs, capMs);
+}
+
+export function isPnpRecoveryTargetDue(previous = {}, at = Date.now()) {
+  if (previous?.inProgress || previous?.quarantinedAt) return false;
+  return Number(previous?.nextRetryAt || 0) <= Number(at || 0);
+}
+
+export function beginNextPnpRecoveryCycle(previous = {}, options = {}) {
+  const at = Math.max(1, Number(options.at || Date.now()));
+  const cooldownMs = Math.max(1, Number(options.cooldownMs || 30_000));
+  return {
+    ...previous,
+    serial: String(options.serial || previous.serial || "").trim(),
+    policyVersion: PNP_RECOVERY_POLICY_VERSION,
+    attempts: 0,
+    actionHistory: [],
+    lastMode: "recovery_cycle_cooldown",
+    lastTerminalMode: String(options.terminalMode || previous.lastMode || ""),
+    lastAttemptAt: at,
+    nextRetryAt: at + cooldownMs,
+    inProgress: false,
+    quarantinedAt: 0,
+    recoveryCycle: Math.max(0, Number(previous.recoveryCycle || 0)) + 1
+  };
 }
 
 export function orderPnpRecoveryTargets(serials, attemptsBySerial) {

@@ -28,6 +28,22 @@ func TestEventLogLimiterLogsDifferentLossShapeImmediately(t *testing.T) {
 	}
 }
 
+func TestNormalizeMaxPacketsPerBurstKeepsCanaryAndDefaultsSafely(t *testing.T) {
+	for _, testCase := range []struct {
+		input int
+		want  int
+	}{
+		{input: 2, want: 2},
+		{input: 8, want: 8},
+		{input: 0, want: 8},
+		{input: 9, want: 8},
+	} {
+		if got := normalizeMaxPacketsPerBurst(testCase.input); got != testCase.want {
+			t.Fatalf("normalizeMaxPacketsPerBurst(%d)=%d, want %d", testCase.input, got, testCase.want)
+		}
+	}
+}
+
 func TestRealtimeFrameQueueWaitsForAnIDR(t *testing.T) {
 	queue := newRealtimeFrameQueue(100*time.Millisecond, 1024)
 	if result := queue.push(queuedFrame{data: []byte{1}}); result.dropped != 1 || result.discontinuity || result.resyncRequired || result.reason != "waiting_for_idr" {

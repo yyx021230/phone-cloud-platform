@@ -10,8 +10,21 @@ android {
         applicationId "com.ztqc.smsrelay"
         minSdk 23
         targetSdk 35
-        versionCode 101
-        versionName "0.1.0-phone-cloud"
+        versionCode 109
+        versionName "0.4.0-fleet-compat"
+    }
+
+    buildTypes {
+        // Same bytecode and manifest contract as the production debug build,
+        // but isolated from the Agent's exact-package collection boundary.
+        // It can be installed fleet-wide for runtime compatibility checks
+        // without taking over SMS delivery or talking to production services.
+        compatProbe {
+            initWith debug
+            applicationIdSuffix ".compatprobe"
+            versionNameSuffix "-probe"
+            debuggable true
+        }
     }
 }
 

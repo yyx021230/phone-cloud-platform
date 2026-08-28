@@ -51,11 +51,12 @@ test("ordinary users can see who occupies a phone and when the usage started", (
   assert.match(css, /\.user-device-inventory-view \.device-occupancy-line\s*\{[^}]*display: grid;/);
 });
 
-test("recovery UI explains the delayed collateral guard and truthful state exhaustion", () => {
-  assert.match(app, /post_action_stability_window/);
-  assert.match(app, /PnP 动作后正在观察延迟连带掉线/);
-  assert.match(app, /post_action_watch_started/);
-  assert.match(app, /已无安全动作/);
+test("recovery UI explains continuous recovery and per-cycle cooldown", () => {
+  assert.match(app, /continuous_recovery/);
+  assert.match(app, /异常设备持续恢复/);
+  assert.match(app, /recovery_cycle_cooldown/);
+  assert.match(app, /冷却结束后自动开始下一轮/);
+  assert.match(app, /只统计动作，不再作为停止条件/);
 });
 
 test("uses direct keyboard input on the focused phone surface", () => {
@@ -68,8 +69,8 @@ test("uses direct keyboard input on the focused phone surface", () => {
   assert.match(screenBundle, /compositionend/);
   assert.match(screenBundle, /clipboardData/);
   assert.match(screenBundle, /select_all/);
-  assert.match(html, /styles\.css\?v=20260814-user-occupancy-v1/);
-  assert.match(html, /app\.js\?v=20260814-user-occupancy-v1/);
+  assert.match(html, /styles\.css\?v=20260827-lookup-results-v2/);
+  assert.match(html, /app\.js\?v=20260827-screen-idle-10m-v1/);
   assert.match(html, /screen-control\.js\?v=20260806-ice-ready-wake-v1/);
 });
 
@@ -127,6 +128,20 @@ test("releases an active screen session when the page is refreshed or closed", (
   assert.match(app, /function releaseUserScreenSessionOnPageExit\(\)/);
   assert.match(app, /method: "DELETE",[\s\S]{0,180}keepalive: true/);
   assert.match(app, /window\.addEventListener\("pagehide", releaseUserScreenSessionOnPageExit\)/);
+});
+
+test("screen sessions warn after ten idle minutes and default to disconnect after ten seconds", () => {
+  assert.match(html, /id="userScreenIdleModal"/);
+  assert.match(html, /role="alertdialog"/);
+  assert.match(html, /已连续 10 分钟没有检测到操作/);
+  assert.match(html, /id="userScreenIdleContinueButton"[^>]*>继续控制</);
+  assert.match(html, /id="userScreenIdleDisconnectButton"[^>]*>立即断开</);
+  assert.match(app, /import \{ ScreenInactivityGuard \} from "\.\/screen-inactivity-guard\.js\?v=20260827-screen-idle-10m-v1"/);
+  assert.match(app, /stopUserScreenSession\(\{ detail: "长时间未操作，已自动断开" \}\)/);
+  assert.match(app, /\["pointerdown", "keydown", "wheel", "touchstart"\]/);
+  assert.match(app, /if \(!event\.isTrusted \|\| !state\.userScreenSession\?\.sessionId\) return/);
+  assert.match(css, /\.screen-idle-modal\s*\{[^}]*position: fixed;[^}]*place-items: center;/);
+  assert.match(css, /\.screen-idle-modal\[hidden\]\s*\{\s*display: none;/);
 });
 
 test("administrators can switch to the user workbench and return to management", () => {

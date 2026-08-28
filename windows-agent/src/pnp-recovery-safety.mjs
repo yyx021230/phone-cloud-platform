@@ -5,6 +5,7 @@ import {
 
 export function createPnpRecoverySafety(options = {}) {
   const now = options.now || Date.now;
+  const continuousRecovery = options.continuousRecovery === true;
   const massOutageMinDevices = Math.max(2, Number(options.massOutageMinDevices || 4));
   const massOutageRatio = Math.max(0.01, Math.min(1, Number(options.massOutageRatio || 0.08)));
   const circuitCooldownMs = Math.max(1, Number(options.circuitCooldownMs || 180_000));
@@ -18,6 +19,12 @@ export function createPnpRecoverySafety(options = {}) {
   let stableScans = Number(options.initialState?.stableScans || 0);
   let actionTimestamps = (options.initialState?.actionTimestamps || []).map(Number).filter(Number.isFinite);
   let postActionWatches = normalizePostActionWatches(options.initialState?.postActionWatches);
+  if (continuousRecovery) {
+    circuit = { open: false, reason: "", openedAt: 0, until: 0, detail: {} };
+    acknowledgedActionable = new Set();
+    stableScans = 0;
+    postActionWatches = [];
+  }
   let lastHealth = {
     ...emptyHealth(),
     circuitOpen: circuit.open,
@@ -146,14 +153,25 @@ export function createPnpRecoverySafety(options = {}) {
         stableScans = 0;
       }
     }
+    if (continuousRecovery) {
+      // Continuous production mode keeps circuit history as diagnostics only.
+      // It must never stop exact per-phone recovery or turn a backlog into a
+      // permanent host-wide lock. Per-device cooldown is enforced by the
+      // coordinator, while unavailable inventory/DeviceInstall remain normal
+      // execution preconditions rather than protection states.
+      circuit = { open: false, reason: "", openedAt: 0, until: 0, detail: {} };
+      acknowledgedActionable = new Set();
+      stableScans = 0;
+      postActionWatches = [];
+    }
     previousOnline = online;
 
-    const budgetExhausted = actionTimestamps.length >= maxActionsPerHour;
+    const budgetExhausted = !continuousRecovery && actionTimestamps.length >= maxActionsPerHour;
     const lastActionAt = actionTimestamps[actionTimestamps.length - 1] || 0;
     const actionReadyAt = lastActionAt ? lastActionAt + minimumActionIntervalMs : 0;
     const actionCoolingDown = actionReadyAt > at;
-    const postActionWatchActive = postActionWatches.length > 0;
-    const rescueSerials = circuit.open && ["mass_outage", "burst_outage"].includes(circuit.reason)
+    const postActionWatchActive = !continuousRecovery && postActionWatches.length > 0;
+    const rescueSerials = !continuousRecovery && circuit.open && ["mass_outage", "burst_outage"].includes(circuit.reason)
       ? [...new Set((circuit.detail?.unresolvedCollateral || circuit.detail?.collateralLosses || [])
         .map(normalize)
         .filter((serial) => actionableKeys.has(serial)))]
@@ -197,7 +215,13 @@ export function createPnpRecoverySafety(options = {}) {
       automaticActionsLastHour: actionTimestamps.length,
       maxActionsPerHour,
       acknowledgedActionableCount: acknowledgedActionable.size,
-      recoveryMode: circuit.open ? "circuit_open" : acknowledgedActionable.size ? "degraded_recovery" : "normal",
+      recoveryMode: continuousRecovery && actionable.length
+        ? "continuous_recovery"
+        : circuit.open
+          ? "circuit_open"
+          : acknowledgedActionable.size
+            ? "degraded_recovery"
+            : "normal",
       actionReadyAt: actionReadyAt ? new Date(actionReadyAt).toISOString() : "",
       rescueSerials,
       rescueCanMutate,
@@ -221,6 +245,20 @@ export function createPnpRecoverySafety(options = {}) {
 
   function recordFailure(reason = "pnp_action_failed", detail = {}) {
     const at = now();
+    if (continuousRecovery) {
+      circuit = { open: false, reason: "", openedAt: 0, until: 0, detail: {} };
+      stableScans = 0;
+      lastHealth = {
+        ...lastHealth,
+        observedAt: new Date(at).toISOString(),
+        circuitOpen: false,
+        circuitReason: "",
+        circuitUntil: "",
+        blockedReason: "",
+        stableScans
+      };
+      return;
+    }
     const currentCollateral = (circuit.detail?.collateralLosses || []).map(normalize);
     const incomingCollateral = (detail?.collateralLosses || []).map(normalize);
     const collateralLosses = [...new Set([...currentCollateral, ...incomingCollateral])];
@@ -244,6 +282,16 @@ export function createPnpRecoverySafety(options = {}) {
 
   function beginPostActionWatch({ onlineSerials = [], actionedSerials = [], durationMs = postActionWatchMs } = {}) {
     const at = now();
+    if (continuousRecovery) {
+      postActionWatches = [];
+      lastHealth = {
+        ...lastHealth,
+        observedAt: new Date(at).toISOString(),
+        postActionWatchCount: 0,
+        postActionWatchUntil: ""
+      };
+      return { ...lastHealth };
+    }
     const actioned = new Set((Array.isArray(actionedSerials) ? actionedSerials : []).map(normalize).filter(Boolean));
     const baselineOnline = [...new Set((Array.isArray(onlineSerials) ? onlineSerials : [])
       .map(normalize)

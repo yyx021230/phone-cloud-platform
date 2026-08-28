@@ -10,6 +10,8 @@ import { createSerialAdbActivityTracker } from "./serial-adb-activity.mjs";
 import { assertSerialAdbHealthy } from "./serial-adb-health.mjs";
 import { createSerialDelayScheduler } from "./serial-delay-scheduler.mjs";
 import { isSerialReservedForBackgroundWork, shouldScheduleSmsBackground } from "./serial-reservation.mjs";
+import { shouldRunPostTaskDeviceScan } from "./post-task-scan-policy.mjs";
+import { shouldFallbackAlipayPocoFailure } from "./alipay-poco-fallback-policy.mjs";
 import { createDeviceActorManager } from "./device-actor.mjs";
 import { acquireAgentInstanceLock } from "./agent-instance-lock.mjs";
 import { createScreenStreamManager } from "./screen-stream.mjs";
@@ -23,6 +25,8 @@ import {
   ANDROID_USB_VENDOR_IDS,
   isDeferredPnpRecoveryPlan,
   isAutomaticRecoveryAction,
+  beginNextPnpRecoveryCycle,
+  isPnpRecoveryTargetDue,
   normalizePnpRecoveryTargetState,
   orderPnpRecoveryTargets,
   planPnpRecoveryAction,
@@ -52,14 +56,29 @@ import {
   summarizePnpRecoveryBatchResults
 } from "./pnp-recovery-wave.mjs";
 import { buildSmsContentQueryArgs } from "./sms-content-query.mjs";
+import {
+  buildSmsRelayHealthArgs,
+  buildSmsRelayRecoverArgs,
+  missingSmsRelayHealth,
+  parseSmsRelayHealth,
+  shouldRecoverSmsRelay,
+  usesSmsRelayManagedSmsPath
+} from "./sms-relay-health.mjs";
 import { assignSmsSlotIndexes, parseSubscriptionSlotMap } from "./sms-subscription-map.mjs";
 import {
+  buildDefaultSmsSendToResolveArgs,
   buildLegacyDefaultSmsPackageArgs,
   buildSmsNotificationDumpArgs,
+  buildSmsPackageDumpArgs,
+  buildSmsRelatedPackageListArgs,
   buildSmsRoleHolderArgs,
   parseDefaultSmsRoleHolders,
+  parseInstalledPackageNames,
   parseLegacyDefaultSmsPackage,
+  parseResolvedDefaultSmsPackage,
+  parseSmsPackageTrustEvidence,
   parseSmsNotificationDump,
+  selectTrustedSmsNotificationPackages,
   selectUnsentSmsNotifications
 } from "./sms-notification-source.mjs";
 
@@ -92,9 +111,13 @@ const backgroundSmsNotificationAbortControllersBySerial = new Map();
 const smsSubscriptionSlotMapBySerial = new Map();
 let backgroundSmsSyncPromise = null;
 let backgroundSmsNotificationSyncPromise = null;
+let backgroundSmsNotificationLoopTimer = null;
+let backgroundSmsNotificationLoopStopped = false;
+let backgroundSmsNotificationLoopDevices = [];
 const lastSmsNotificationSyncBySerial = new Map();
 const uploadedSmsNotificationKeysBySerial = new Map();
 const defaultSmsPackageBySerial = new Map();
+const smsNotificationPackageProfileBySerial = new Map();
 const simInfoCacheBySerial = new Map();
 const initialSimReadBySerial = new Set();
 for (const serial of cachedAdbSerials(lastServerDevicesById)) {
@@ -103,6 +126,8 @@ for (const serial of cachedAdbSerials(lastServerDevicesById)) {
   if (Array.isArray(sims)) simInfoCacheBySerial.set(serial, { sims, checkedAtMs: Date.now() });
 }
 const lastBatteryRefreshBySerial = new Map();
+const lastSmsRelayHealthBySerial = new Map();
+const lastSmsRelayRecoveryBySerial = new Map();
 const automationPreflightBySerial = new Map();
 const automationPreflightRunning = new Set();
 const scheduleAutomationPreflight = createSingleFlightRunner(runAutomationPreflightCycle);
@@ -143,7 +168,13 @@ let lastDeviceRecoveryObservations = [];
 const pnpTargetRecoveryAttempts = new Map((persistedPnpRecoveryState.targets || [])
   .map((item) => {
     const serial = String(item?.serial || "").trim();
-    return [serial.toUpperCase(), normalizePnpRecoveryTargetState(item, serial)];
+    const normalized = normalizePnpRecoveryTargetState(item, serial);
+    // Continuous mode must also reopen a V5 state written while the optional
+    // legacy mode was enabled. An Agent restart is not allowed to resurrect a
+    // quarantine or a stale in-progress marker.
+    return [serial.toUpperCase(), config.pnpContinuousRecoveryEnabled
+      ? { ...normalized, quarantinedAt: 0, inProgress: false }
+      : normalized];
   })
   .filter(([key]) => key));
 const pnpRecoveryJournal = createRecoveryEventJournal({
@@ -151,6 +182,7 @@ const pnpRecoveryJournal = createRecoveryEventJournal({
   initialStates: persistedPnpRecoveryState.observedStates
 });
 const pnpRecoverySafety = createPnpRecoverySafety({
+  continuousRecovery: config.pnpContinuousRecoveryEnabled,
   massOutageMinDevices: config.pnpMassOutageMinDevices,
   massOutageRatio: config.pnpMassOutageRatio,
   circuitCooldownMs: config.pnpMassOutageCooldownSeconds * 1_000,
@@ -193,7 +225,7 @@ pnpRecoveryWakeScheduler = createPnpRecoveryWakeScheduler({
     }
     return await runGuardedInterval("scan", () => scanAndSync({
       forcePnpInventory: true,
-      skipSms: true,
+      skipSms: false,
       skipPreflight: true,
       reason: reason || "pnp_recovery_followup"
     }));
@@ -277,6 +309,11 @@ process.stdin.resume();
 
 for (const signal of ["SIGINT", "SIGTERM"]) {
   process.on(signal, async () => {
+    backgroundSmsNotificationLoopStopped = true;
+    if (backgroundSmsNotificationLoopTimer) {
+      clearTimeout(backgroundSmsNotificationLoopTimer);
+      backgroundSmsNotificationLoopTimer = null;
+    }
     pnpRecoveryWakeScheduler?.cancel();
     await screenStreamManager?.close().catch(() => {});
     deviceActors.close("agent_shutdown");
@@ -510,11 +547,43 @@ function scheduleBackgroundSmsSync(devices) {
 }
 
 function scheduleBackgroundSmsNotificationSync(devices) {
-  if (backgroundSmsNotificationSyncPromise) return;
-  backgroundSmsNotificationSyncPromise = syncAdbSmsNotifications(devices)
-    .catch((error) => log("sms notification fallback sync failed", cleanLogText(error?.message || error).slice(0, 300)))
+  backgroundSmsNotificationLoopDevices = Array.isArray(devices) ? [...devices] : [];
+  if (backgroundSmsNotificationSyncPromise || backgroundSmsNotificationLoopTimer) return;
+  startBackgroundSmsNotificationCycle();
+}
+
+function scheduleNextBackgroundSmsNotificationCycle(delayMs = 0) {
+  if (backgroundSmsNotificationLoopStopped || backgroundSmsNotificationLoopTimer || backgroundSmsNotificationSyncPromise) return;
+  backgroundSmsNotificationLoopTimer = setTimeout(() => {
+    backgroundSmsNotificationLoopTimer = null;
+    startBackgroundSmsNotificationCycle();
+  }, Math.max(0, Number(delayMs || 0)));
+}
+
+function startBackgroundSmsNotificationCycle() {
+  if (backgroundSmsNotificationLoopStopped || backgroundSmsNotificationSyncPromise) return;
+  const startedAt = Date.now();
+  let completedTargetCount = 0;
+  backgroundSmsNotificationSyncPromise = syncAdbSmsNotifications(backgroundSmsNotificationLoopDevices)
+    .then((summary) => {
+      completedTargetCount = Number(summary?.targetCount || 0);
+      log("sms notification fallback cycle completed", {
+        ...summary,
+        durationMs: Date.now() - startedAt,
+        concurrency: config.smsNotificationBackgroundConcurrency,
+        continuous: config.smsNotificationContinuousScanEnabled
+      });
+      return summary;
+    })
+    .catch((error) => {
+      log("sms notification fallback sync failed", cleanLogText(error?.message || error).slice(0, 300));
+      return { targetCount: 0, failed: 1 };
+    })
     .finally(() => {
       backgroundSmsNotificationSyncPromise = null;
+      if (config.smsNotificationContinuousScanEnabled && completedTargetCount > 0) {
+        scheduleNextBackgroundSmsNotificationCycle(0);
+      }
     });
 }
 
@@ -909,22 +978,39 @@ function isAccessibilityConflict(service) {
 
 async function pollTask() {
   let picked = 0;
-  while (activeTasksById.size < config.maxConcurrentAdbTasks) {
+  let cancellationChecked = false;
+  while (!cancellationChecked || activeTasksById.size < config.maxConcurrentAdbTasks) {
     const excludeSerials = [...new Set([...activeTaskSerials, ...screenControlledSerials])]
       .filter(Boolean)
       .map(encodeURIComponent)
       .join(",");
     const screenGallerySerials = [...screenControlledSerials].filter(Boolean).map(encodeURIComponent).join(",");
+    const activeTaskIds = [...activeTasksById.keys()].filter(Boolean).map(encodeURIComponent).join(",");
     const params = new URLSearchParams();
     if (excludeSerials) params.set("excludeSerials", excludeSerials);
     if (screenGallerySerials) params.set("screenGallerySerials", screenGallerySerials);
+    if (activeTaskIds) params.set("activeTaskIds", activeTaskIds);
     const suffix = params.size ? `?${params.toString()}` : "";
     const payload = await api(`/api/v1/windows-agents/${encodeURIComponent(config.agentId)}/tasks/next${suffix}`);
+    cancellationChecked = true;
+    abortCancelledAutomationTasks(payload.cancelledTaskIds || []);
     if (!payload.task) break;
     startTask(payload.task);
     picked += 1;
   }
   if (picked) log("tasks dispatched", { picked, active: activeTasksById.size, maxConcurrentAdbTasks: config.maxConcurrentAdbTasks });
+}
+
+function abortCancelledAutomationTasks(taskIds = []) {
+  let aborted = 0;
+  for (const taskId of taskIds) {
+    const controller = activeTaskAbortControllersById.get(String(taskId || ""));
+    if (!controller || controller.signal.aborted) continue;
+    controller.abort(automationTaskCancellationError());
+    aborted += 1;
+  }
+  if (aborted) log("cancelled automation tasks interrupted", { count: aborted });
+  return aborted;
 }
 
 function scheduleTaskPoll(delayMs = 250) {
@@ -967,13 +1053,23 @@ async function runTask(task, options = {}) {
     else if (task.type === "adb_collect_diagnostics") result = await taskCollectDiagnostics(task);
     else if (task.type === "adb_restart_server") result = await taskRestartAdb(task);
     else if (task.type === "sms_sync_now") result = await taskSmsSyncNow(task, options);
+    else if (task.type === "sms_code_probe") result = await taskSmsCodeProbe(task, options);
     else if (task.type === "screen_gallery_import") result = await taskScreenGalleryImport(task);
     else if (task.type === "xhs_qr_appium") result = await taskXhsQrAirtestPoco(task);
+    else if (task.type === "xhs_publish") result = await taskXhsPublish(task);
+    else if (["alipay_name_start", "alipay_name_query", "alipay_name_stop"].includes(task.type)) result = await taskAlipayNameLookup(task, options);
     else throw new Error(`unsupported task type: ${task.type}`);
     await taskEvent(task, "finish", "info", "执行成功", compactTaskResultForEvent(result))
       .catch((error) => log("task finish event failed", { taskId: task.taskId, error: error.message }));
     await taskStatus(task, "succeeded", result);
   } catch (error) {
+    if (isAutomationTaskCancellation(error)) {
+      taskEvent(task, "cancelled", "info", "用户已结束会话，当前自动化任务已停止", { reason: "automation_task_cancelled" })
+        .catch((eventError) => log("task cancellation event failed", { taskId: task.taskId, error: eventError.message }));
+      taskStatus(task, "cancelled", { code: "automation_task_cancelled", message: "用户已结束会话，当前自动化任务已停止" })
+        .catch((statusError) => log("task cancellation status failed", { taskId: task.taskId, error: statusError.message }));
+      return;
+    }
     if (isScreenPriorityCancellation(error)) {
       taskEvent(task, "cancelled", "info", "投屏优先，已暂停短信同步", { reason: "screen_control_priority" })
         .catch((eventError) => log("task cancellation event failed", { taskId: task.taskId, error: eventError.message }));
@@ -990,9 +1086,20 @@ async function runTask(task, options = {}) {
     await taskStatus(task, "failed", failure);
   } finally {
     if (options.signal?.aborted) {
-      log("post-task scan skipped after screen priority cancellation", { taskId: task.taskId, adbSerial: task.adbSerial });
-    } else {
+      log("post-task scan skipped after task cancellation", {
+        taskId: task.taskId,
+        adbSerial: task.adbSerial,
+        reason: options.signal.reason?.code || options.signal.reason?.message || "cancelled"
+      });
+    } else if (shouldRunPostTaskDeviceScan(task.type)) {
       await scanAndSync({ force: true, skipSms: true, reason: "post_task" }).catch((error) => log("post-task scan failed", error.message));
+    } else {
+      log("post-task device scan skipped", {
+        taskId: task.taskId,
+        type: task.type,
+        adbSerial: task.adbSerial,
+        reason: "device_inventory_unchanged"
+      });
     }
   }
 }
@@ -1011,7 +1118,7 @@ function preemptSmsSyncForScreen(serial) {
     notificationController.abort();
   }
   for (const [taskId, task] of activeTasksById) {
-    if (task?.type !== "sms_sync_now" || String(task.adbSerial || "").trim() !== adbSerial) continue;
+    if (!["sms_sync_now", "sms_code_probe"].includes(task?.type) || String(task.adbSerial || "").trim() !== adbSerial) continue;
     const controller = activeTaskAbortControllersById.get(taskId);
     if (!controller || controller.signal.aborted) continue;
     log("screen control preempted sms sync", { taskId, adbSerial });
@@ -1019,27 +1126,38 @@ function preemptSmsSyncForScreen(serial) {
   }
 }
 
-async function preemptBackgroundSmsSyncForPnpRecovery() {
+async function preemptBackgroundSmsSyncForPnpRecovery(serials = []) {
+  const targets = new Set((Array.isArray(serials) ? serials : [])
+    .map((serial) => String(serial || "").trim().toUpperCase())
+    .filter(Boolean));
+  if (!targets.size) return;
   if (!backgroundSmsSyncPromise && !backgroundSmsNotificationSyncPromise) return;
   let aborted = 0;
-  for (const controller of [
-    ...backgroundSmsAbortControllersBySerial.values(),
-    ...backgroundSmsNotificationAbortControllersBySerial.values()
-  ]) {
-    if (controller.signal.aborted) continue;
-    controller.abort();
-    aborted += 1;
+  for (const controllers of [backgroundSmsAbortControllersBySerial, backgroundSmsNotificationAbortControllersBySerial]) {
+    for (const [serial, controller] of controllers) {
+      if (!targets.has(String(serial || "").trim().toUpperCase()) || controller.signal.aborted) continue;
+      controller.abort();
+      aborted += 1;
+    }
   }
-  if (aborted) log("pnp recovery preempted background sms sync", { devices: aborted });
-  await Promise.race([
-    Promise.allSettled([backgroundSmsSyncPromise, backgroundSmsNotificationSyncPromise].filter(Boolean)),
-    delay(5_000)
-  ]);
+  if (aborted) log("pnp recovery preempted exact-device sms sync", { devices: aborted, serials: [...targets] });
+  const released = () => [...targets].every((serial) => (
+    ![...backgroundSmsAbortControllersBySerial.keys()].some((value) => String(value || "").trim().toUpperCase() === serial)
+    && ![...backgroundSmsNotificationAbortControllersBySerial.keys()].some((value) => String(value || "").trim().toUpperCase() === serial)
+  ));
+  const deadline = Date.now() + 5_000;
+  while (!released() && Date.now() < deadline) await delay(50);
 }
 
 function screenPriorityCancellationError() {
   const error = new Error("screen_control_priority");
   error.code = "screen_control_priority";
+  return error;
+}
+
+function automationTaskCancellationError() {
+  const error = new Error("automation_task_cancelled");
+  error.code = "automation_task_cancelled";
   return error;
 }
 
@@ -1049,6 +1167,10 @@ function throwIfScreenPriorityCancellation(signal) {
 
 function isScreenPriorityCancellation(error) {
   return error?.code === "screen_control_priority" || error?.message === "screen_control_priority";
+}
+
+function isAutomationTaskCancellation(error) {
+  return error?.code === "automation_task_cancelled" || error?.message === "automation_task_cancelled";
 }
 
 async function captureFailureEvidence(task) {
@@ -1272,8 +1394,33 @@ async function taskRestartAdb() {
 }
 
 async function taskSmsSyncNow(task, options = {}) {
-  if (!config.smsLibrarySyncEnabled) throw new Error("短信库同步未启用，请检查 Windows 管理器 config.json");
   const device = await assertAdbDeviceOnlineFast(task.adbSerial, options);
+  if (usesSmsRelayManagedSmsPath(device.smsRelay)) {
+    let appWakeRequested = false;
+    let appWakeError = "";
+    try {
+      await adb(device.adbSerial, buildSmsRelayRecoverArgs(), { timeoutMs: 8_000, maxBuffer: 64 * 1024 });
+      appWakeRequested = true;
+    } catch (error) {
+      appWakeError = cleanLogText(error?.message || error).slice(0, 200);
+    }
+    await taskEvent(task, "sms_relay_health", "info", "SmsRelay 已接管，Windows 仅返回 APK 健康状态", {
+      adbSerial: device.adbSerial,
+      status: device.smsRelay.status || "unknown",
+      serviceAlive: Boolean(device.smsRelay.serviceAlive),
+      pendingUploadCount: Number(device.smsRelay.pendingUploadCount || 0),
+      appWakeRequested,
+      appWakeError
+    });
+    return {
+      action: "SmsRelay 已接管，已请求 APK 自身同步，Windows 未读取系统短信库或通知",
+      source: "sms-relay-health",
+      appWakeRequested,
+      appWakeError,
+      smsRelay: device.smsRelay
+    };
+  }
+  if (!config.smsLibrarySyncEnabled) throw new Error("短信库同步未启用，请检查 Windows 管理器 config.json");
   await taskEvent(task, "sms_sync", "info", "开始主动读取手机短信库", { adbSerial: device.adbSerial });
   lastSmsLibrarySyncBySerial.delete(device.adbSerial);
   // A user-triggered refresh is also a reconciliation operation.  Incremental
@@ -1304,6 +1451,94 @@ async function taskSmsSyncNow(task, options = {}) {
     ...result,
     notification
   };
+}
+
+async function taskSmsCodeProbe(task, options = {}) {
+  const device = await assertAdbDeviceOnlineFast(task.adbSerial, options);
+  const startedAt = Date.now();
+  if (usesSmsRelayManagedSmsPath(device.smsRelay)) {
+    let appWakeRequested = false;
+    let appWakeError = "";
+    try {
+      await adb(device.adbSerial, buildSmsRelayRecoverArgs(), { timeoutMs: 8_000, maxBuffer: 64 * 1024 });
+      appWakeRequested = true;
+    } catch (error) {
+      appWakeError = cleanLogText(error?.message || error).slice(0, 200);
+    }
+    return {
+      action: "验证码订单定向唤醒 SmsRelay",
+      source: "sms-relay-health",
+      smsOrderId: task.payload?.smsOrderId || "",
+      appWakeRequested,
+      appWakeError,
+      diagnostic: {
+        source: "sms-relay-health",
+        smsOrderId: task.payload?.smsOrderId || "",
+        appWakeRequested,
+        appWakeError
+      },
+      durationMs: Date.now() - startedAt
+    };
+  }
+
+  let provider = { status: "disabled", queried: 0, scanned: 0, sent: 0 };
+  let notification = { enabled: false, status: "disabled", received: 0, sent: 0 };
+  if (config.smsLibrarySyncEnabled) {
+    try {
+      provider = await syncAdbSmsLibrary(device, options);
+      lastSmsLibrarySyncBySerial.set(device.adbSerial, Date.now());
+    } catch (error) {
+      if (isScreenPriorityCancellation(error)) throw error;
+      provider = {
+        status: "degraded",
+        queried: 0,
+        scanned: 0,
+        sent: 0,
+        error: cleanLogText(error?.message || error).slice(0, 200)
+      };
+    }
+  }
+  if (isSmsNotificationFallbackEnabledForSerial(device.adbSerial)) {
+    try {
+      notification = await syncAdbSmsNotification(device, options);
+    } catch (error) {
+      if (isScreenPriorityCancellation(error)) throw error;
+      notification = {
+        enabled: true,
+        status: "degraded",
+        received: 0,
+        sent: 0,
+        error: cleanLogText(error?.message || error).slice(0, 200)
+      };
+    }
+  }
+  if (provider.status === "disabled" && notification.status === "disabled") {
+    throw new Error("短信库同步与通知补全均未启用");
+  }
+  const result = {
+    action: "验证码订单定向采集完成",
+    smsOrderId: task.payload?.smsOrderId || "",
+    durationMs: Date.now() - startedAt,
+    provider,
+    notification,
+    diagnostic: {
+      smsOrderId: task.payload?.smsOrderId || "",
+      providerStatus: provider.status || "ok",
+      providerSent: Number(provider.sent || 0),
+      notificationStatus: notification.status || "disabled",
+      notificationSent: Number(notification.sent || 0)
+    }
+  };
+  log("sms order targeted probe completed", {
+    adbSerial: device.adbSerial,
+    smsOrderId: result.smsOrderId,
+    durationMs: result.durationMs,
+    providerStatus: provider.status || "ok",
+    providerSent: Number(provider.sent || 0),
+    notificationStatus: notification.status || "disabled",
+    notificationSent: Number(notification.sent || 0)
+  });
+  return result;
 }
 
 async function taskScreenGalleryImport(task) {
@@ -1410,6 +1645,258 @@ async function taskXhsQrAirtestPoco(task) {
     throw error;
   } finally {
     await fs.unlink(qr.localPath).catch(() => {});
+  }
+}
+
+async function taskXhsPublish(task) {
+  const startedAt = Date.now();
+  if (!(await fileExists(config.xhsPublishRunnerPath))) throw new Error(`小红书发布执行器不存在：${config.xhsPublishRunnerPath}`);
+  const device = await assertAdbDeviceOnlineFast(task.adbSerial);
+  if (!(await isPackageInstalled(task.adbSerial, config.xhsPackageName))) {
+    throw new Error(`这台手机未安装小红书：${config.xhsPackageName}`);
+  }
+  await ensureDeviceAutomationReady(device, { task });
+  const prepared = await preparePublishImages(task);
+  const payloadPath = path.join(cacheDir, "xhs-publish", safeFileName(`publish-${task.taskId}.json`));
+  const payload = {
+    serial: task.adbSerial,
+    adbPath: config.adbPath,
+    xhsPackageName: config.xhsPackageName,
+    xhsAppSlot: task.payload?.xhsAppSlot === "app2" ? "app2" : "app1",
+    title: String(task.payload?.title || ""),
+    content: String(task.payload?.content || ""),
+    remotePaths: prepared.map((item) => item.remotePath),
+    taskId: task.taskId
+  };
+  const accountSwitchDue = operation === "query"
+    && payload.successfulCountBefore > 0
+    && payload.successfulCountBefore % payload.switchEvery === 0;
+  await fs.mkdir(path.dirname(payloadPath), { recursive: true });
+  await fs.writeFile(payloadPath, JSON.stringify(payload), "utf8");
+  await taskEvent(task, "xhs_publish", "info", "启动小红书图文发布流程", {
+    xhsAppSlot: payload.xhsAppSlot,
+    imageCount: payload.remotePaths.length,
+    clickMode: "Poco 元素定位"
+  });
+  try {
+    const output = await run(config.pythonCommand, [config.xhsPublishRunnerPath, "--payload", payloadPath], {
+      timeoutMs: Math.max(180_000, config.xhsTaskTimeoutSeconds * 1000),
+      maxBuffer: 10 * 1024 * 1024,
+      cwd: agentDir,
+      env: airtestEnv()
+    });
+    const parsed = parseAirtestRunnerOutput(output);
+    await replayAirtestEvents(task, parsed.log || []);
+    if (!parsed.ok) throw new Error(parsed.error || "小红书发布流程失败");
+    return {
+      action: "小红书图文发布完成",
+      message: "已点击发布并确认发布结果",
+      executionMode: "windows_airtest_poco",
+      remotePaths: payload.remotePaths,
+      publishedAt: new Date().toISOString(),
+      durationMs: Date.now() - startedAt,
+      runner: parsed
+    };
+  } finally {
+    await fs.unlink(payloadPath).catch(() => {});
+    await Promise.all(prepared.map((item) => fs.unlink(item.localPath).catch(() => {})));
+  }
+}
+
+function classifyAlipayNameLookupFailure(rawMessage = "") {
+  const raw = String(rawMessage || "");
+  const compactReason = raw
+    .replace(/texts=\[[\s\S]*$/i, "texts=<redacted>")
+    .replace(/search_input_readback_mismatch:[^;]*/i, "search_input_readback_mismatch:<redacted>")
+    .replace(/\d/g, "#")
+    .slice(0, 500);
+  const diagnostic = { code: "alipay_lookup_failed", retryable: true, runnerReason: compactReason };
+  if (raw.includes("alipay_access_denied_after_account_switch")) {
+    return {
+      ...diagnostic,
+      code: "alipay_access_denied_after_account_switch",
+      retryable: false,
+      message: "切换支付宝账号后仍被拒绝访问，请先更换手机网络后再重试。"
+    };
+  }
+  if (raw.includes("alipay_access_denied_account_switch_required")) {
+    return {
+      ...diagnostic,
+      code: "alipay_access_denied_account_switch_required",
+      message: "当前支付宝账号访问被拒绝，需要切换账号后重试。"
+    };
+  }
+  if (raw.includes("alipay_human_verification_required")) {
+    return {
+      ...diagnostic,
+      code: "alipay_human_verification_required",
+      requiresHumanAction: true,
+      message: "支付宝要求人工完成滑动验证；完成后可在当前会话重试同一号码"
+    };
+  }
+  if (raw.includes("search_input_readback_mismatch")) {
+    return {
+      ...diagnostic,
+      code: "alipay_search_input_not_stable",
+      message: "支付宝输入框未能稳定写入号码，自动恢复后仍失败；请重试当前号码。"
+    };
+  }
+  if (raw.includes("alipay_person_result_not_found")) {
+    return {
+      ...diagnostic,
+      code: "alipay_person_result_not_found",
+      message: "支付宝未返回可识别的姓名结果，请确认号码后重试。"
+    };
+  }
+  if (raw.includes("selector_missing") || raw.includes("selector_not_unique")) {
+    return {
+      ...diagnostic,
+      code: "alipay_page_element_changed",
+      message: "支付宝页面元素与当前脚本不一致，已保存诊断证据。"
+    };
+  }
+  if (raw.includes("uiautomator_hierarchy_missing")) {
+    return {
+      ...diagnostic,
+      code: "alipay_ui_hierarchy_unavailable",
+      message: "手机页面元素暂时无法读取，自动恢复后仍失败；请重试。"
+    };
+  }
+  if (raw.includes("device_not_online")) {
+    return { ...diagnostic, code: "device_not_online", retryable: false, message: "手机 ADB 已离线，查询会话已停止。" };
+  }
+  if (raw.includes("alipay_not_installed")) {
+    return { ...diagnostic, code: "alipay_not_installed", retryable: false, message: "这台手机未安装支付宝。" };
+  }
+  return { ...diagnostic, message: "支付宝查名字执行失败，已保留具体诊断原因；可重试当前号码。" };
+}
+
+async function taskAlipayNameLookup(task, options = {}) {
+  const startedAt = Date.now();
+  if (!(await fileExists(config.alipayNameLookupRunnerPath))) throw new Error(`支付宝查名字执行器不存在：${config.alipayNameLookupRunnerPath}`);
+  await assertAdbDeviceOnlineFast(task.adbSerial);
+  const packageName = "com.eg.android.AlipayGphone";
+  if (!(await isPackageInstalled(task.adbSerial, packageName))) throw new Error("这台手机未安装支付宝");
+  const operation = task.type === "alipay_name_start" ? "start" : task.type === "alipay_name_stop" ? "stop" : "query";
+  const successfulCountBefore = Math.max(0, Number(task.payload?.successfulCountBefore || 0));
+  const switchEvery = Math.max(1, Number(task.payload?.switchEvery || 200));
+  const accountSwitchDue = operation === "query"
+    && successfulCountBefore > 0
+      && successfulCountBefore % switchEvery === 0;
+  let accessDeniedSwitchRequired = false;
+  const payload = {
+    operation,
+    workflow: "alipay_name",
+    serial: task.adbSerial,
+    adbPath: config.adbPath,
+    phoneNumber: String(task.payload?.phoneNumber || ""),
+    successfulCountBefore,
+    switchEvery,
+    maxRecoveryAttempts: Math.min(2, Math.max(0, Number(task.payload?.maxRecoveryAttempts ?? 2))),
+    taskId: task.taskId
+  };
+  await taskEvent(task, "alipay_name", "info", operation === "query" ? "复用支付宝搜索页查询号码" : operation === "start" ? "建立支付宝查名字会话" : "结束支付宝查名字会话", {
+    operation,
+    reuseSearchSession: operation === "query",
+    maxRecoveryAttempts: payload.maxRecoveryAttempts,
+    preferredDriver: accountSwitchDue ? "xml_uiautomator_account_switch" : "poco_fast_path",
+    accountSwitchDue
+  });
+
+  const buildResult = (parsed, driver) => ({
+    action: operation === "query" ? "查名字完成" : operation === "start" ? "查名字会话已就绪" : "查名字会话已结束",
+    message: parsed.message || "",
+    realNameTailCharacter: parsed.realNameTailCharacter || "",
+    alipayDisplayName: parsed.alipayDisplayName || "",
+    matchedPhone: parsed.matchedPhone || "",
+    currentAccount: parsed.currentAccount || "",
+    accountSwitched: Boolean(parsed.accountSwitched),
+    accountSwitchReason: String(parsed.accountSwitchReason || ""),
+    recoveryAttempts: Number(parsed.recoveryAttempts || 0),
+    notFound: Boolean(parsed.notFound),
+    durationMs: Date.now() - startedAt,
+    driver,
+    runner: parsed
+  });
+
+  if (!accountSwitchDue) {
+    try {
+      const parsed = await runXhsAirtestPocoWorker(payload, {
+        readyTimeoutMs: 12_000,
+        timeoutMs: operation === "query" ? 45_000 : operation === "start" ? 45_000 : 12_000,
+        maxIdleMs: 15 * 60_000,
+        onEvent: (event) => replayAirtestEvents(task, [event])
+      });
+      const streamedReplayCount = Number(parsed.streamedReplayCount || 0);
+      if (!streamedReplayCount) await replayAirtestEvents(task, parsed.log || []);
+      if (!parsed.ok) throw new Error(parsed.error || "支付宝 Poco 快路径失败");
+      return buildResult(parsed, "poco");
+    } catch (error) {
+      if (isAutomationTaskCancellation(error)) throw error;
+      const pocoError = String(error?.message || error || "");
+      if (!shouldFallbackAlipayPocoFailure(error)) {
+        const diagnostic = classifyAlipayNameLookupFailure(pocoError);
+        const runnerError = new Error(diagnostic.message);
+        runnerError.code = diagnostic.code;
+        runnerError.diagnostic = diagnostic;
+        throw runnerError;
+      }
+      if (operation === "query" && pocoError.includes("alipay_access_denied_account_switch_required")) {
+        accessDeniedSwitchRequired = true;
+        payload.forceAccountSwitchReason = "access_denied";
+        await taskEvent(task, "alipay_name", "warn", "检测到支付宝访问被拒绝，正在切换账号并重试当前号码", {
+          operation,
+          fallbackDriver: "xml_uiautomator_account_switch",
+          reason: "access_denied",
+          retryCurrentPhone: true
+        });
+      } else {
+        await taskEvent(task, "alipay_name", "warn", "Poco 快路径异常，正在切换 XML 兜底", {
+          operation,
+          fallbackDriver: "xml_uiautomator",
+          reason: cleanLogText(pocoError).slice(0, 500)
+        });
+      }
+    }
+  }
+
+  const accountSwitchRequested = accountSwitchDue || accessDeniedSwitchRequired;
+  await ensureXmlUiAutomatorReady(task.adbSerial);
+  const payloadPath = path.join(cacheDir, "alipay-name", safeFileName(`${operation}-${task.taskId}.json`));
+  await fs.mkdir(path.dirname(payloadPath), { recursive: true });
+  await fs.writeFile(payloadPath, JSON.stringify(payload), "utf8");
+  try {
+    let output;
+    try {
+      output = await run(config.pythonCommand, [config.alipayNameLookupRunnerPath, "--payload", payloadPath], {
+        timeoutMs: operation === "query" ? 150_000 : 120_000,
+        maxBuffer: 10 * 1024 * 1024,
+        cwd: agentDir,
+        env: airtestEnv(),
+        signal: options.signal
+      });
+    } catch (error) {
+      if (isAutomationTaskCancellation(error)) throw error;
+      const failed = parseAirtestRunnerOutput(String(error.stdout || ""));
+      await replayAirtestEvents(task, failed.log || []);
+      const diagnostic = classifyAlipayNameLookupFailure(failed.error || error.message || "");
+      diagnostic.accountSwitched = Boolean(failed.accountSwitched);
+      diagnostic.currentAccount = String(failed.currentAccount || "");
+      diagnostic.accountSwitchReason = String(failed.accountSwitchReason || "");
+      const runnerError = new Error(diagnostic.message);
+      runnerError.code = diagnostic.code;
+      runnerError.diagnostic = diagnostic;
+      throw runnerError;
+    }
+    const parsed = parseAirtestRunnerOutput(output);
+    await replayAirtestEvents(task, parsed.log || []);
+    if (!parsed.ok) throw new Error(parsed.error || "支付宝查名字流程失败");
+    return buildResult(
+      parsed,
+      accountSwitchRequested || parsed.accountSwitched ? "xml_uiautomator_account_switch" : "xml_uiautomator_fallback"
+    );
+  } finally {
+    await fs.unlink(payloadPath).catch(() => {});
   }
 }
 
@@ -1570,8 +2057,22 @@ async function runXhsXmlUiAutomatorWorkflow(task, qr) {
 
 async function runXhsAirtestPocoWorker(payload, options = {}) {
   const serial = String(payload.serial || "").trim();
-  let worker = await getAirtestWorker(serial);
-  const maxIdleMs = 45_000;
+  let worker;
+  const readyTimeoutMs = Math.max(0, Number(options.readyTimeoutMs || 0));
+  if (readyTimeoutMs) {
+    try {
+      worker = await Promise.race([
+        getAirtestWorker(serial),
+        delay(readyTimeoutMs).then(() => { throw new Error(`Airtest/Poco worker 启动超时：${serial}`); })
+      ]);
+    } catch (error) {
+      await stopAirtestWorker(serial, "ready_timeout").catch(() => {});
+      throw error;
+    }
+  } else {
+    worker = await getAirtestWorker(serial);
+  }
+  const maxIdleMs = Math.max(5_000, Number(options.maxIdleMs || 45_000));
   const idleMs = Date.now() - Number(worker.lastUsedAt || worker.startedAt || Date.now());
   if (idleMs >= maxIdleMs) {
     log("recycling idle Airtest/Poco worker before task", { serial, idleMs, maxIdleMs });
@@ -1939,6 +2440,32 @@ async function replayAirtestEvents(task, events = []) {
     click_confirm_确认登录: ["login-confirm", "info", "点击确认登录"],
     click_confirm_contains: ["login-confirm", "info", "点击确认登录"],
     done: ["finish", "info", "Airtest/Poco 小红书扫码完成"],
+    launch_alipay: ["alipay", "info", "正在打开支付宝"],
+    open_search: ["alipay", "info", "正在进入支付宝搜索页"],
+    clear_previous_query: ["alipay", "info", "正在清空上一次号码"],
+    input_phone: ["alipay", "info", "号码已输入，正在搜索"],
+    submit_search: ["alipay", "info", "已确认搜索，正在等待结果"],
+    retry_search_result: ["alipay", "info", "结果暂未返回，正在重新提交一次"],
+    lookup_no_name_result: ["alipay", "info", "该号码未查询到姓名结果"],
+    alipay_access_denied_detected: ["alipay", "warn", "检测到支付宝访问被拒绝"],
+    account_switch_triggered: ["alipay", "warn", "正在切换支付宝账号并重试当前号码"],
+    alipay_access_denied_after_account_switch: ["alipay", "error", "切换账号后仍被支付宝拒绝访问"],
+    human_verification_detected: ["alipay", "warn", "检测到支付宝滑动验证，正在自动处理"],
+    human_verification_slider_drag: ["alipay", "info", "正在按元素轨道拖动验证滑块"],
+    human_verification_retry: ["alipay", "warn", "滑块验证未通过，正在重试"],
+    human_verification_passed: ["alipay", "info", "滑块验证已通过"],
+    human_verification_failed: ["alipay", "error", "滑块自动验证未通过"],
+    replay_query_after_human_verification: ["alipay", "info", "验证通过，正在重新提交当前号码"],
+    open_my_tab: ["alipay", "info", "正在进入支付宝账号设置"],
+    open_settings: ["alipay", "info", "正在打开支付宝设置"],
+    open_saved_account_picker: ["alipay", "info", "正在打开已保存账号列表"],
+    account_selected: ["alipay", "info", "已选择下一个支付宝账号"],
+    account_selection_returned_home: ["alipay", "info", "账号选择已返回首页，正在复核"],
+    account_switch_verified: ["alipay", "info", "支付宝账号切换验证成功"],
+    query_full_path_recovery: ["alipay", "warn", "页面状态异常，正在自动恢复"],
+    masked_real_name_tail_extracted: ["alipay", "info", "已识别结果，正在返回"],
+    lookup_session_stopped: ["alipay", "info", "查询会话已停止"],
+    reuse_existing_search_page: ["alipay", "info", "已复用支付宝搜索页"],
     error: ["airtest", "error", "Airtest/Poco 执行失败"]
   };
   let index = 0;
@@ -1986,6 +2513,32 @@ function shouldReplayAirtestEvent(step, event = {}) {
     "after_select_image",
     "confirm_visible",
     "confirm_wait",
+    "launch_alipay",
+    "open_search",
+    "clear_previous_query",
+    "input_phone",
+    "submit_search",
+    "retry_search_result",
+    "lookup_no_name_result",
+    "alipay_access_denied_detected",
+    "account_switch_triggered",
+    "alipay_access_denied_after_account_switch",
+    "human_verification_detected",
+    "human_verification_slider_drag",
+    "human_verification_retry",
+    "human_verification_passed",
+    "human_verification_failed",
+    "replay_query_after_human_verification",
+    "open_my_tab",
+    "open_settings",
+    "open_saved_account_picker",
+    "account_selected",
+    "account_selection_returned_home",
+    "account_switch_verified",
+    "query_full_path_recovery",
+    "masked_real_name_tail_extracted",
+    "lookup_session_stopped",
+    "reuse_existing_search_page",
     "done"
   ]).has(step);
 }
@@ -2116,6 +2669,42 @@ async function prepareQrImage(task) {
   return { localPath, remotePath, timings, scan };
 }
 
+async function preparePublishImages(task) {
+  const values = Array.isArray(task.payload?.imageDataUrls) ? task.payload.imageDataUrls : [];
+  if (!values.length) throw new Error("发布任务缺少图片");
+  const dir = path.join(cacheDir, "xhs-publish");
+  const remoteDir = "/sdcard/Pictures/PhoneCloud";
+  await fs.mkdir(dir, { recursive: true });
+  await adb(task.adbSerial, ["shell", "mkdir", "-p", remoteDir], { timeoutMs: 8_000 });
+  const prepared = new Array(values.length);
+  try {
+    // XHS sorts the gallery newest-first. Import in reverse so the first image
+    // submitted by the user is the newest thumbnail and remains the cover.
+    for (let index = values.length - 1; index >= 0; index -= 1) {
+      const match = String(values[index] || "").match(/^data:image\/(png|jpeg|webp);base64,([A-Za-z0-9+/=\r\n]+)$/i);
+      if (!match) throw new Error(`发布图片 ${index + 1} 格式无效`);
+      const ext = match[1].toLowerCase() === "jpeg" ? "jpg" : match[1].toLowerCase();
+      const bytes = Buffer.from(match[2].replace(/\s/g, ""), "base64");
+      if (!bytes.length) throw new Error(`发布图片 ${index + 1} 为空`);
+      const fileName = safeFileName(`publish-${Date.now()}-${task.taskId}-${String(index + 1).padStart(2, "0")}.${ext}`);
+      const localPath = path.join(dir, fileName);
+      const remotePath = `${remoteDir}/${fileName}`;
+      await fs.writeFile(localPath, bytes);
+      await adb(task.adbSerial, ["push", localPath, remotePath], { timeoutMs: 60_000 });
+      const scan = await scanMediaFile(task.adbSerial, remotePath);
+      prepared[index] = { localPath, remotePath, bytes: bytes.length, scan };
+    }
+    await taskEvent(task, "xhs_publish_images", "info", "发布图片已全部导入手机图库", {
+      imageCount: prepared.length,
+      remotePaths: prepared.map((item) => item.remotePath)
+    });
+    return prepared;
+  } catch (error) {
+    await Promise.all(prepared.filter(Boolean).map((item) => fs.unlink(item.localPath).catch(() => {})));
+    throw error;
+  }
+}
+
 async function scanMediaFile(serial, remotePath, options = {}) {
   try {
     const output = await adb(serial, ["shell", "cmd", "media", "scan-file", remotePath], {
@@ -2147,8 +2736,22 @@ async function resolveLaunchActivity(serial, packageName, userId = "0") {
 
 async function isPackageInstalled(serial, packageName) {
   if (!packageName) return false;
-  const output = await adb(serial, ["shell", "pm", "path", packageName], { timeoutMs: 5000 }).catch(() => "");
-  return /^package:/m.test(output);
+  try {
+    // PackageManager can be busy for 10-20 seconds on heavily loaded OPPO
+    // devices. A 5-second timeout was incorrectly reported as "not installed"
+    // even though the same command later returned the APK path. An actual
+    // missing package returns promptly with no package: line; only transport
+    // or timeout failures use the independent cmd-package fallback.
+    const output = await adb(serial, ["shell", "pm", "path", packageName], { timeoutMs: 25_000 });
+    return /^package:/m.test(output);
+  } catch (firstError) {
+    try {
+      const fallback = await adb(serial, ["shell", "cmd", "package", "path", packageName], { timeoutMs: 12_000 });
+      return /^package:/m.test(fallback);
+    } catch (fallbackError) {
+      throw new Error(`package_manager_unresponsive:${serial}:${fallbackError?.message || firstError?.message || "unknown"}`);
+    }
+  }
 }
 
 async function prepareAdbInstallPolicy(serial) {
@@ -2199,6 +2802,7 @@ function compactTaskResultForEvent(result = {}) {
     qrTimings: result.qrTimings || null,
     preRunTimings: result.preRunTimings || null,
     durationMs: result.durationMs ?? null,
+    notFound: Boolean(result.notFound),
     runnerOk: result?.runner?.ok ?? null,
     runnerEventCount: runnerLog.length,
     lastRunnerStep,
@@ -2287,6 +2891,12 @@ function compactTaskResultForStatus(result = {}) {
     durationMs: Number.isFinite(Number(result.durationMs)) ? Number(result.durationMs) : null,
     wallMs: Number.isFinite(Number(result.wallMs)) ? Number(result.wallMs) : null,
     timeoutSeconds: Number.isFinite(Number(result.timeoutSeconds)) ? Number(result.timeoutSeconds) : null,
+    realNameTailCharacter: String(result.realNameTailCharacter || "").slice(0, 8),
+    alipayDisplayName: String(result.alipayDisplayName || "").slice(0, 80),
+    currentAccount: String(result.currentAccount || "").slice(0, 120),
+    accountSwitched: Boolean(result.accountSwitched),
+    recoveryAttempts: Math.max(0, Number(result.recoveryAttempts || 0)),
+    notFound: Boolean(result.notFound),
     qrTimings: result.qrTimings || null,
     preRunTimings: result.preRunTimings || null,
     diagnostic: compactEventDetail(result.diagnostic || null, 12_000),
@@ -2359,7 +2969,14 @@ async function scanAdbDevices() {
   } catch (error) {
     const recovery = await adbServerRecovery.recover({
       cause: cleanLogText(error?.message || error).slice(0, 300),
-      busy: hasActiveAutomationTask() || Boolean(backgroundSmsSyncPromise) || Boolean(backgroundSmsNotificationSyncPromise) || screenControlledSerials.size > 0,
+      // A continuous notification sweep would otherwise make the host look
+      // permanently busy and suppress safe SYSTEM-owned `adb start-server`
+      // recovery forever. Failed notification reads are disposable and retry
+      // on the next round; foreground tasks and screens remain hard blockers.
+      busy: hasActiveAutomationTask()
+        || Boolean(backgroundSmsSyncPromise)
+        || (!config.smsNotificationContinuousScanEnabled && Boolean(backgroundSmsNotificationSyncPromise))
+        || screenControlledSerials.size > 0,
       startServer: () => run(config.adbPath, ["start-server"], { timeoutMs: 10_000 })
     });
     log("adb scan recovery", recovery);
@@ -2397,6 +3014,7 @@ async function scanAdbDevices() {
   }
   await hydrateStaticDeviceInfo(enriched);
   await refreshBatteryLevels(enriched);
+  await refreshSmsRelayHealth(enriched);
   return enriched;
 }
 
@@ -2544,7 +3162,10 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
   logPnpRecoverySafetyTransition(safety);
   schedulePnpRecoveryStateSave();
   if (safety.actionableCount > 0 && !safety.circuitOpen) {
-    await preemptBackgroundSmsSyncForPnpRecovery();
+    const pnpTargetSerials = lastDeviceRecoveryObservations
+      .filter((item) => item.physicalPresent && item.state !== DEVICE_RECOVERY_STATES.ADB_DEVICE && !recoveryExclusions.has(item.key))
+      .map((item) => item.serial);
+    await preemptBackgroundSmsSyncForPnpRecovery(pnpTargetSerials);
   }
 
   const plan = pnpMissingDeviceRecovery.observe({ devices, busy: false, isSerialBusy });
@@ -2578,12 +3199,18 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
     }
   }
 
+  const recoveryDueAt = Date.now();
   const dueTargets = orderPnpRecoveryTargets(
     plan.resetSerials
       .filter((serial) => physical.has(String(serial).toUpperCase()))
       .filter((serial) => {
         const state = observationsBySerial.get(String(serial).toUpperCase())?.state;
         return isAutomaticPnpRecoveryState(state) || isAutomaticAdbTransportRecoveryState(state);
+      })
+      .filter((serial) => {
+        const key = String(serial).trim().toUpperCase();
+        const previous = normalizePnpRecoveryTargetState(pnpTargetRecoveryAttempts.get(key), serial);
+        return isPnpRecoveryTargetDue(previous, recoveryDueAt);
       }),
     pnpTargetRecoveryAttempts
   );
@@ -2700,6 +3327,53 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
     return { serial, status: "deferred", reason: "exact_mapping_temporarily_unavailable", mode, actionAttempted: false };
   }
   if (!isAutomaticRecoveryAction(actionPlan)) {
+    if (config.pnpContinuousRecoveryEnabled && actionPlan.terminal) {
+      const cooldownMs = config.pnpRecoveryCycleCooldownSeconds * 1_000;
+      const nextCycle = beginNextPnpRecoveryCycle(previous, {
+        serial,
+        terminalMode: mode,
+        at: Date.now(),
+        cooldownMs
+      });
+      const nextRetryAt = nextCycle.nextRetryAt;
+      const recoveryCycle = nextCycle.recoveryCycle;
+      pnpTargetRecoveryAttempts.set(key, {
+        ...nextCycle,
+        targetType: actionPlan.targetType,
+        lastError: mode
+      });
+      pnpRecoveryJournal.record({
+        type: "cooldown_started",
+        severity: "warning",
+        serial,
+        state: observation?.state || "unknown",
+        attempt: previous.attempts || 0,
+        maxAttempts: config.pnpMaxAutomaticAttemptsPerDevice,
+        mode,
+        reason: "recovery_cycle_completed",
+        result: `cycle=${recoveryCycle}; cooldown=${config.pnpRecoveryCycleCooldownSeconds}s`,
+        nextActionAt: new Date(nextRetryAt).toISOString(),
+        targetType: actionPlan.targetType
+      });
+      await persistPnpRecoveryStateNow();
+      pnpMissingDeviceRecovery.markReset(serial, { targetPresent: true, retryAfterMs: cooldownMs });
+      pnpRecoveryWakeScheduler?.schedule(cooldownMs, "continuous_recovery_cycle");
+      log("pnp target recovery cycle cooling down", {
+        serial,
+        state: observation?.state || "unknown",
+        recoveryCycle,
+        completedAttempts: previous.attempts || 0,
+        terminalMode: mode,
+        cooldownSeconds: config.pnpRecoveryCycleCooldownSeconds
+      });
+      return {
+        serial,
+        status: "deferred",
+        reason: "recovery_cycle_cooldown",
+        mode: "recovery_cycle_cooldown",
+        actionAttempted: false
+      };
+    }
     if (!previous.quarantinedAt || previous.lastMode !== mode) {
       const quarantinedAt = Date.now();
       pnpTargetRecoveryAttempts.set(key, {
@@ -2803,20 +3477,25 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
       return { serial, status: "action_completed", mode, actionAttempted: true };
     } catch (error) {
       const exhausted = attempt >= config.pnpMaxAutomaticAttemptsPerDevice;
-      const nextRetryAt = exhausted ? 0 : attemptedAt + retryAfterMs;
+      const recycleAfterFailure = config.pnpContinuousRecoveryEnabled && exhausted;
+      const retryDelayMs = recycleAfterFailure
+        ? config.pnpRecoveryCycleCooldownSeconds * 1_000
+        : retryAfterMs;
+      const nextRetryAt = exhausted && !config.pnpContinuousRecoveryEnabled ? 0 : attemptedAt + retryDelayMs;
       pnpTargetRecoveryAttempts.set(key, {
         ...previous,
         serial,
-        attempts: attempt,
-        actionHistory: previous.actionHistory || [],
+        attempts: recycleAfterFailure ? 0 : attempt,
+        actionHistory: recycleAfterFailure ? [] : previous.actionHistory || [],
         lastMode: mode,
         lastAttemptAt: attemptedAt,
         nextRetryAt,
         lastError: cleanLogText(error?.message || error).slice(0, 300),
-        ...(exhausted ? { quarantinedAt: attemptedAt } : {})
+        quarantinedAt: exhausted && !config.pnpContinuousRecoveryEnabled ? attemptedAt : 0,
+        ...(recycleAfterFailure ? { recoveryCycle: Math.max(0, Number(previous.recoveryCycle || 0)) + 1 } : {})
       });
       pnpRecoveryJournal.record({
-        type: exhausted ? "quarantined" : "action_failed",
+        type: exhausted && !config.pnpContinuousRecoveryEnabled ? "quarantined" : "action_failed",
         severity: "error",
         serial,
         state: observation?.state || "unknown",
@@ -2828,14 +3507,15 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
         nextActionAt: nextRetryAt ? new Date(nextRetryAt).toISOString() : ""
       });
       await persistPnpRecoveryStateNow().catch((saveError) => log("pnp recovery state save failed", cleanLogText(saveError?.message || saveError).slice(0, 300)));
-      pnpMissingDeviceRecovery.markReset(serial, { retryAfterMs: exhausted ? config.pnpTargetAbsentRetrySeconds * 1_000 : retryAfterMs });
+      pnpMissingDeviceRecovery.markReset(serial, { retryAfterMs: nextRetryAt ? retryDelayMs : config.pnpTargetAbsentRetrySeconds * 1_000 });
+      if (recycleAfterFailure) pnpRecoveryWakeScheduler?.schedule(retryDelayMs, "continuous_adb_failure_cycle");
       log("adb transport recovery failed", {
         serial,
         attempt,
         maxAttempts: config.pnpMaxAutomaticAttemptsPerDevice,
         mode,
-        nextRetrySeconds: exhausted ? null : Math.round(retryAfterMs / 1_000),
-        maintenanceRequired: exhausted,
+        nextRetrySeconds: nextRetryAt ? Math.round(retryDelayMs / 1_000) : null,
+        maintenanceRequired: exhausted && !config.pnpContinuousRecoveryEnabled,
         error: cleanLogText(error?.message || error).slice(0, 300)
       });
       return { serial, status: "action_failed", reason: "adb_reconnect_failed", mode, actionAttempted: true };
@@ -2949,20 +3629,25 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
       lastPnpRecoveryHealth = publicPnpRecoveryHealth(pnpRecoverySafety.health());
     }
     const exhausted = attempt >= config.pnpMaxAutomaticAttemptsPerDevice;
-    const nextRetryAt = exhausted ? 0 : attemptedAt + retryAfterMs;
+    const recycleAfterFailure = config.pnpContinuousRecoveryEnabled && exhausted;
+    const retryDelayMs = recycleAfterFailure
+      ? config.pnpRecoveryCycleCooldownSeconds * 1_000
+      : retryAfterMs;
+    const nextRetryAt = exhausted && !config.pnpContinuousRecoveryEnabled ? 0 : attemptedAt + retryDelayMs;
     pnpTargetRecoveryAttempts.set(key, {
       ...previous,
       serial,
-      attempts: attempt,
-      actionHistory: previous.actionHistory || [],
+      attempts: recycleAfterFailure ? 0 : attempt,
+      actionHistory: recycleAfterFailure ? [] : previous.actionHistory || [],
       lastMode: mode,
       lastAttemptAt: attemptedAt,
       nextRetryAt,
       lastError: cleanLogText(error?.message || error).slice(0, 300),
-      ...(exhausted ? { quarantinedAt: attemptedAt } : {})
+      quarantinedAt: exhausted && !config.pnpContinuousRecoveryEnabled ? attemptedAt : 0,
+      ...(recycleAfterFailure ? { recoveryCycle: Math.max(0, Number(previous.recoveryCycle || 0)) + 1 } : {})
     });
     pnpRecoveryJournal.record({
-      type: exhausted ? "quarantined" : "action_failed",
+      type: exhausted && !config.pnpContinuousRecoveryEnabled ? "quarantined" : "action_failed",
       severity: "error",
       serial,
       state: observation?.state || "unknown",
@@ -2974,7 +3659,8 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
       nextActionAt: nextRetryAt ? new Date(nextRetryAt).toISOString() : ""
     });
     await persistPnpRecoveryStateNow().catch((saveError) => log("pnp recovery state save failed", cleanLogText(saveError?.message || saveError).slice(0, 300)));
-    pnpMissingDeviceRecovery.markReset(serial, { retryAfterMs: exhausted ? config.pnpTargetAbsentRetrySeconds * 1_000 : retryAfterMs });
+    pnpMissingDeviceRecovery.markReset(serial, { retryAfterMs: nextRetryAt ? retryDelayMs : config.pnpTargetAbsentRetrySeconds * 1_000 });
+    if (recycleAfterFailure) pnpRecoveryWakeScheduler?.schedule(retryDelayMs, "continuous_pnp_failure_cycle");
     log("pnp target adb recovery failed", {
       serial,
       attempt,
@@ -2982,8 +3668,8 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
       mode,
       state: observation?.state || "unknown",
       reason,
-      nextRetrySeconds: exhausted ? null : Math.round(retryAfterMs / 1_000),
-      maintenanceRequired: exhausted,
+      nextRetrySeconds: nextRetryAt ? Math.round(retryDelayMs / 1_000) : null,
+      maintenanceRequired: exhausted && !config.pnpContinuousRecoveryEnabled,
       error: cleanLogText(error?.message || error).slice(0, 300)
     });
     pnpRecoveryWakeScheduler?.schedule(config.pnpDeviceInstallPollSeconds * 1_000, "pnp_failed_action_probe");
@@ -3026,7 +3712,7 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
     .filter((item) => item?.actionAttempted === true && item?.mode !== "adb_reconnect")
     .map((item) => String(item.serial || "").trim())
     .filter(Boolean);
-  if (pnpActionedSerials.length) {
+  if (pnpActionedSerials.length && !config.pnpContinuousRecoveryEnabled) {
     const watchHealth = pnpRecoverySafety.beginPostActionWatch({
       onlineSerials: [...online],
       actionedSerials: pnpActionedSerials,
@@ -3497,6 +4183,63 @@ async function refreshBatteryLevels(devices) {
   });
 }
 
+async function refreshSmsRelayHealth(devices) {
+  const now = Date.now();
+  const targets = [];
+  for (const device of Array.isArray(devices) ? devices : []) {
+    const serial = String(device?.adbSerial || "").trim();
+    if (!serial || device.state !== "device") continue;
+    const cached = lastSmsRelayHealthBySerial.get(serial);
+    if (cached) device.smsRelay = cached.health;
+    if (isDeviceSerialReserved(serial)) continue;
+    if (cached && now - cached.checkedAtMs < 60_000) continue;
+    targets.push(device);
+  }
+
+  await runLimited(targets, 10, async (device) => {
+    const serial = String(device.adbSerial || "").trim();
+    const checkedAt = new Date().toISOString();
+    let health;
+    try {
+      const output = await adb(serial, buildSmsRelayHealthArgs(), {
+        timeoutMs: 5_000,
+        maxBuffer: 128 * 1024
+      });
+      health = { ...parseSmsRelayHealth(output, checkedAt), status: "ok" };
+    } catch (error) {
+      const message = cleanLogText(error?.message || error).slice(0, 200);
+      if (/no content provider|provider.*not found|unknown uri/i.test(message)) {
+        health = { ...missingSmsRelayHealth(checkedAt), status: "not_installed" };
+      } else {
+        const previous = lastSmsRelayHealthBySerial.get(serial)?.health || missingSmsRelayHealth(checkedAt);
+        health = { ...previous, checkedAt, status: "unavailable", error: message };
+      }
+    }
+
+    device.smsRelay = health;
+    lastSmsRelayHealthBySerial.set(serial, { health, checkedAtMs: Date.now() });
+    if (usesSmsRelayManagedSmsPath(health)) {
+      // Installation is the ownership boundary: stop any legacy Provider or
+      // notification read which was already in flight for this exact phone.
+      backgroundSmsAbortControllersBySerial.get(serial)?.abort();
+      backgroundSmsNotificationAbortControllersBySerial.get(serial)?.abort();
+    }
+    if (!shouldRecoverSmsRelay(health) || isDeviceSerialReserved(serial)) return;
+    const lastRecoveryAt = lastSmsRelayRecoveryBySerial.get(serial) || 0;
+    if (Date.now() - lastRecoveryAt < 60_000) return;
+    lastSmsRelayRecoveryBySerial.set(serial, Date.now());
+    try {
+      await adb(serial, buildSmsRelayRecoverArgs(), { timeoutMs: 8_000, maxBuffer: 64 * 1024 });
+      log("sms relay exact recovery requested", { adbSerial: serial });
+    } catch (error) {
+      log("sms relay exact recovery failed", {
+        adbSerial: serial,
+        error: cleanLogText(error?.message || error).slice(0, 200)
+      });
+    }
+  });
+}
+
 async function runLimited(items, limit, worker) {
   const list = Array.isArray(items) ? items : [];
   const concurrency = Math.max(1, Number(limit) || 1);
@@ -3518,6 +4261,7 @@ async function syncAdbSmsLibraries(devices) {
   for (const device of devices) {
     if (device.state !== "device") continue;
     if (isDeviceSerialReserved(device.adbSerial)) continue;
+    if (usesSmsRelayManagedSmsPath(device.smsRelay)) continue;
     if (backgroundSmsNotificationAbortControllersBySerial.has(device.adbSerial)) continue;
     const lastSyncedAt = lastSmsLibrarySyncBySerial.get(device.adbSerial) || 0;
     if (now - lastSyncedAt < config.smsLibrarySyncIntervalSeconds * 1000) continue;
@@ -3525,6 +4269,10 @@ async function syncAdbSmsLibraries(devices) {
     targets.push(device);
   }
   await runLimited(targets, config.smsLibraryBackgroundSyncConcurrency, async (device) => {
+    if (isDeviceSerialReserved(device.adbSerial)
+      || pnpScreenCoordinator.activeSerials.includes(String(device.adbSerial || "").trim().toUpperCase())) {
+      return;
+    }
     const controller = new AbortController();
     backgroundSmsAbortControllersBySerial.set(device.adbSerial, controller);
     try {
@@ -3549,21 +4297,48 @@ async function syncAdbSmsNotifications(devices) {
   const targets = [];
   for (const device of Array.isArray(devices) ? devices : []) {
     if (device.state !== "device" || isDeviceSerialReserved(device.adbSerial)) continue;
+    if (usesSmsRelayManagedSmsPath(device.smsRelay)) continue;
     if (!isSmsNotificationFallbackEnabledForSerial(device.adbSerial)) continue;
     if (backgroundSmsAbortControllersBySerial.has(device.adbSerial)) continue;
     const lastSyncedAt = lastSmsNotificationSyncBySerial.get(device.adbSerial) || 0;
-    if (now - lastSyncedAt < config.smsNotificationBackgroundIntervalSeconds * 1000) continue;
+    if (!config.smsNotificationContinuousScanEnabled
+      && now - lastSyncedAt < config.smsNotificationBackgroundIntervalSeconds * 1000) continue;
     lastSmsNotificationSyncBySerial.set(device.adbSerial, now);
     targets.push(device);
   }
+  const summary = {
+    targetCount: targets.length,
+    ok: 0,
+    unsupported: 0,
+    failed: 0,
+    preempted: 0,
+    received: 0,
+    sent: 0,
+    replaySkipped: 0
+  };
   await runLimited(targets, config.smsNotificationBackgroundConcurrency, async (device) => {
+    if (isDeviceSerialReserved(device.adbSerial)
+      || pnpScreenCoordinator.activeSerials.includes(String(device.adbSerial || "").trim().toUpperCase())) {
+      summary.preempted += 1;
+      return;
+    }
     const controller = new AbortController();
     backgroundSmsNotificationAbortControllersBySerial.set(device.adbSerial, controller);
     try {
       const result = await syncAdbSmsNotification(device, { signal: controller.signal });
-      log("sms notification fallback synced", result);
+      summary[result.status === "unsupported" ? "unsupported" : "ok"] += 1;
+      summary.received += Number(result.received || 0);
+      summary.sent += Number(result.sent || 0);
+      summary.replaySkipped += Number(result.replaySkipped || 0);
+      if (result.status !== "ok" || Number(result.sent || 0) > 0) {
+        log("sms notification fallback device result", result);
+      }
     } catch (error) {
-      if (isScreenPriorityCancellation(error)) return;
+      if (isScreenPriorityCancellation(error)) {
+        summary.preempted += 1;
+        return;
+      }
+      summary.failed += 1;
       log("sms notification fallback device skipped", {
         adbSerial: device.adbSerial,
         error: cleanLogText(error?.message || error).slice(0, 180)
@@ -3574,6 +4349,7 @@ async function syncAdbSmsNotifications(devices) {
       }
     }
   });
+  return summary;
 }
 
 async function discoverDefaultSmsPackage(serial, options = {}) {
@@ -3602,15 +4378,84 @@ async function discoverDefaultSmsPackage(serial, options = {}) {
       packageName = "";
     }
   }
-  defaultSmsPackageBySerial.set(serial, { packageName, checkedAtMs: Date.now() });
+  if (!packageName) {
+    try {
+      packageName = parseResolvedDefaultSmsPackage(await adb(serial, buildDefaultSmsSendToResolveArgs(), {
+        timeoutMs: 5_000,
+        maxBuffer: 64 * 1024,
+        signal: options.signal
+      }));
+    } catch {
+      packageName = "";
+    }
+  }
+  if (packageName) defaultSmsPackageBySerial.set(serial, { packageName, checkedAtMs: Date.now() });
+  else defaultSmsPackageBySerial.delete(serial);
   return packageName;
+}
+
+async function discoverSmsNotificationPackageProfile(serial, options = {}) {
+  const cached = smsNotificationPackageProfileBySerial.get(serial);
+  if (cached && Date.now() - cached.checkedAtMs < config.smsNotificationPackageCacheSeconds * 1000) {
+    return cached;
+  }
+  const packageName = await discoverDefaultSmsPackage(serial, options);
+  if (!packageName) return { packageName: "", packageNames: [], checkedAtMs: Date.now() };
+
+  try {
+    const installedOutput = await adb(serial, buildSmsRelatedPackageListArgs(packageName), {
+      timeoutMs: 5_000,
+      maxBuffer: 256 * 1024,
+      signal: options.signal
+    });
+    const installedPackages = parseInstalledPackageNames(installedOutput);
+    const candidates = installedPackages.filter((candidate) => (
+      candidate === packageName || candidate.startsWith(`${packageName}.`)
+    ));
+    if (!candidates.includes(packageName)) candidates.unshift(packageName);
+
+    const evidenceByPackage = new Map();
+    for (const candidate of candidates) {
+      const packageOutput = await adb(serial, buildSmsPackageDumpArgs(candidate), {
+        timeoutMs: 5_000,
+        maxBuffer: 2 * 1024 * 1024,
+        signal: options.signal
+      });
+      evidenceByPackage.set(candidate, parseSmsPackageTrustEvidence(packageOutput));
+    }
+    const packageNames = selectTrustedSmsNotificationPackages(packageName, installedPackages, evidenceByPackage);
+    const profile = { packageName, packageNames, checkedAtMs: Date.now() };
+    const previousNames = Array.isArray(cached?.packageNames) ? cached.packageNames : [];
+    if (packageNames.join(",") !== previousNames.join(",")) {
+      log("sms notification trusted package profile updated", {
+        adbSerial: serial,
+        packageName,
+        packageNames
+      });
+    }
+    smsNotificationPackageProfileBySerial.set(serial, profile);
+    return profile;
+  } catch (error) {
+    // Keep the exact default package usable, but do not cache a degraded
+    // profile: a transient PackageManager timeout must retry next cycle.
+    log("sms notification package profile discovery degraded", {
+      adbSerial: serial,
+      packageName,
+      error: cleanLogText(error?.message || error).slice(0, 200)
+    });
+    return { packageName, packageNames: [packageName], checkedAtMs: Date.now() };
+  }
 }
 
 async function syncAdbSmsNotification(device, options = {}) {
   const serial = String(device?.adbSerial || "").trim();
   if (!serial) throw new Error("adbSerial is required");
   const deviceId = `adb:${serial}`;
-  const packageName = await discoverDefaultSmsPackage(serial, options);
+  if (usesSmsRelayManagedSmsPath(device.smsRelay)) {
+    return { adbSerial: serial, deviceId, enabled: false, status: "managed_by_sms_relay", received: 0, sent: 0 };
+  }
+  const packageProfile = await discoverSmsNotificationPackageProfile(serial, options);
+  const packageName = packageProfile.packageName;
   if (!packageName) {
     return { adbSerial: serial, deviceId, enabled: true, status: "unsupported", packageName: "", received: 0, sent: 0 };
   }
@@ -3622,6 +4467,7 @@ async function syncAdbSmsNotification(device, options = {}) {
   throwIfScreenPriorityCancellation(options.signal);
   const messages = parseSmsNotificationDump(output, {
     packageName,
+    packageNames: packageProfile.packageNames,
     nowMs: Date.now(),
     maxAgeMs: config.smsNotificationHistoryMaxAgeHours * 60 * 60_000
   });
@@ -3654,6 +4500,7 @@ async function syncAdbSmsNotification(device, options = {}) {
     enabled: true,
     status: "ok",
     packageName,
+    packageNames: packageProfile.packageNames,
     received: messages.length,
     replaySkipped: Math.max(0, messages.length - pendingMessages.length),
     sent
@@ -3687,6 +4534,16 @@ async function saveDeviceScanCache(devices) {
 }
 
 async function syncAdbSmsLibrary(device, options = {}) {
+  if (usesSmsRelayManagedSmsPath(device?.smsRelay)) {
+    return {
+      adbSerial: device?.adbSerial || "",
+      deviceId: device?.adbSerial ? `adb:${device.adbSerial}` : "",
+      status: "managed_by_sms_relay",
+      queried: 0,
+      scanned: 0,
+      sent: 0
+    };
+  }
   const columns = ["_id", "thread_id", "address", "body", "date", "date_sent", "type", "read", "seen", "status", "locked", "sub_id"];
   const deviceId = `adb:${device.adbSerial}`;
   const serverDevice = lastServerDevicesById.get(deviceId);
@@ -4169,10 +5026,12 @@ function run(file, args, options = {}) {
       signal: options.signal
     }, (error, stdout, stderr) => {
       if (options.signal?.aborted) {
-        reject(screenPriorityCancellationError());
+        reject(options.signal.reason instanceof Error ? options.signal.reason : screenPriorityCancellationError());
         return;
       }
       if (error) {
+        error.stdout = String(stdout || "");
+        error.stderr = String(stderr || "");
         error.message = `${error.message}${stderr ? `\n${stderr}` : ""}`;
         reject(error);
         return;
@@ -4224,6 +5083,9 @@ function taskFailureResult(error) {
   };
   if (error.diagnostic) {
     result.diagnostic = error.diagnostic;
+    if (error.diagnostic.accountSwitched !== undefined) result.accountSwitched = Boolean(error.diagnostic.accountSwitched);
+    if (error.diagnostic.currentAccount) result.currentAccount = String(error.diagnostic.currentAccount);
+    if (error.diagnostic.accountSwitchReason) result.accountSwitchReason = String(error.diagnostic.accountSwitchReason);
     if (error.diagnostic.packageName) result.packageName = error.diagnostic.packageName;
     if (error.diagnostic.currentActivity) result.currentActivity = error.diagnostic.currentActivity;
     if (error.diagnostic.uiSnapshot) result.uiSnapshot = error.diagnostic.uiSnapshot;

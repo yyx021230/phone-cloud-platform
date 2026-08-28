@@ -415,6 +415,7 @@ func main() {
 	iceServersJSON := flag.String("ice-servers", "[]", "Direct WebRTC ICE server JSON")
 	profileLevelID := flag.String("profile-level-id", "42e01f", "H264 profile-level-id from the source SPS")
 	pacingBitrate := flag.Int("pacing-bitrate", 12_000_000, "maximum paced RTP wire bitrate in bits per second")
+	maxPacketsPerBurst := flag.Int("max-packets-per-burst", 2, "maximum RTP packets written back-to-back in one paced group")
 	queueLatency := flag.Duration("queue-latency", 400*time.Millisecond, "maximum queued source video age before a controlled IDR recovery")
 	statsInterval := flag.Duration("stats-interval", 0, "emit WebRTC transport statistics at this interval; 0 disables it")
 	flag.Parse()
@@ -450,7 +451,7 @@ func main() {
 		defer close(stopStats)
 		go reportTransportStats(pc, *statsInterval, stopStats)
 	}
-	if err := publishFrames(os.Stdin, track, *pacingBitrate, *queueLatency, func() {
+	if err := publishFrames(os.Stdin, track, *pacingBitrate, *maxPacketsPerBurst, *queueLatency, func() {
 		stdoutMu.Lock()
 		defer stdoutMu.Unlock()
 		fmt.Println("RESYNC_REQUIRED")
@@ -798,7 +799,7 @@ func buildWebRTCAPI(profileLevelID string) (webrtc.RTPCodecCapability, *webrtc.A
 	return codec, webrtc.NewAPI(webrtc.WithMediaEngine(mediaEngine), webrtc.WithInterceptorRegistry(interceptorRegistry)), nil
 }
 
-func publishFrames(input io.Reader, track *webrtc.TrackLocalStaticRTP, pacingBitrate int, queueLatency time.Duration, onResyncRequired func()) error {
+func publishFrames(input io.Reader, track *webrtc.TrackLocalStaticRTP, pacingBitrate int, maxPacketsPerBurst int, queueLatency time.Duration, onResyncRequired func()) error {
 	reader := bufio.NewReaderSize(input, 1<<20)
 	packetizer := rtp.NewPacketizer(1200, 102, 0, &codecs.H264Payloader{}, rtp.NewRandomSequencer(), 90_000)
 	timestampMapper := newRTPTimestampMapper(uint32(time.Now().UnixNano()))
@@ -889,13 +890,13 @@ func publishFrames(input io.Reader, track *webrtc.TrackLocalStaticRTP, pacingBit
 			queue.completeInFlight()
 			continue
 		}
-		result, err := writePacketsPaced(track, packets, pacer)
+		result, err := writePacketsPaced(track, packets, pacer, maxPacketsPerBurst)
 		queue.completeInFlight()
 		if err != nil {
 			return err
 		}
 		if frame.keyframe || len(packets) >= 24 {
-			fmt.Fprintf(os.Stderr, "whip packetize frame_bytes=%d packets=%d source_delta_ms=%d rtp_delta=%d rtp_rebased=%t keyframe=%t discontinuity=%t pacing_mbps=%.1f pacing_window_ms=%d queue_delay_ms=%d\n", len(frame.data), len(packets), mapping.sourceDelta.Milliseconds(), mapping.timestampDelta, mapping.rebased, frame.keyframe, frame.discontinuity, float64(pacer.bitrate)/1_000_000, result.scheduledWindow.Milliseconds(), result.queueDelay.Milliseconds())
+			fmt.Fprintf(os.Stderr, "whip packetize frame_bytes=%d packets=%d source_delta_ms=%d rtp_delta=%d rtp_rebased=%t keyframe=%t discontinuity=%t pacing_mbps=%.1f max_packets_per_burst=%d pacing_window_ms=%d queue_delay_ms=%d\n", len(frame.data), len(packets), mapping.sourceDelta.Milliseconds(), mapping.timestampDelta, mapping.rebased, frame.keyframe, frame.discontinuity, float64(pacer.bitrate)/1_000_000, normalizeMaxPacketsPerBurst(maxPacketsPerBurst), result.scheduledWindow.Milliseconds(), result.queueDelay.Milliseconds())
 		}
 		if frame.keyframe {
 			// READY only means WHIP negotiation completed. Do not let the browser
@@ -906,7 +907,14 @@ func publishFrames(input io.Reader, track *webrtc.TrackLocalStaticRTP, pacingBit
 	}
 }
 
-func writePacketsPaced(track *webrtc.TrackLocalStaticRTP, packets []*rtp.Packet, pacer *rtpPacer) (pacingResult, error) {
+func normalizeMaxPacketsPerBurst(value int) int {
+	if value < 1 || value > 8 {
+		return 8
+	}
+	return value
+}
+
+func writePacketsPaced(track *webrtc.TrackLocalStaticRTP, packets []*rtp.Packet, pacer *rtpPacer, maxPacketsPerBurst int) (pacingResult, error) {
 	result := pacingResult{}
 	if len(packets) == 0 {
 		return result, nil
@@ -915,7 +923,7 @@ func writePacketsPaced(track *webrtc.TrackLocalStaticRTP, packets []*rtp.Packet,
 	// window. That still emitted small frames at 30-40Mbps and stalled the
 	// scrcpy reader during motion. Pace actual RTP byte volume continuously,
 	// in small groups to keep Windows timer overhead practical.
-	const maxPacketsPerBurst = 8
+	maxPacketsPerBurst = normalizeMaxPacketsPerBurst(maxPacketsPerBurst)
 	for start := 0; start < len(packets); start += maxPacketsPerBurst {
 		end := start + maxPacketsPerBurst
 		if end > len(packets) {

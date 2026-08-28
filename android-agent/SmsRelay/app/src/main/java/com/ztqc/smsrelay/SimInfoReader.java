@@ -23,7 +23,14 @@ public final class SimInfoReader {
         SubscriptionManager manager = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
         if (manager == null) return sims;
 
-        List<SubscriptionInfo> infos = manager.getActiveSubscriptionInfoList();
+        List<SubscriptionInfo> infos = null;
+        try {
+            infos = manager.getActiveSubscriptionInfoList();
+        } catch (RuntimeException ignored) {
+            // OEM telephony providers sometimes deny this query even after the
+            // runtime permission was granted. Slot-level fallback still gives
+            // us a usable subscription/slot mapping when the ROM exposes one.
+        }
         if (infos != null) {
             for (SubscriptionInfo info : infos) {
                 JSONObject sim = new JSONObject();
@@ -123,6 +130,26 @@ public final class SimInfoReader {
         } catch (SecurityException ignored) {
             return Integer.MIN_VALUE;
         }
+    }
+
+    public static int subscriptionIdForSlot(Context context, int slotIndex) {
+        if (!hasPhoneStatePermission(context) || slotIndex < 0) return Integer.MIN_VALUE;
+        try {
+            SubscriptionManager manager = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+            if (manager == null) return Integer.MIN_VALUE;
+            if (Build.VERSION.SDK_INT >= 29) {
+                int[] ids = manager.getSubscriptionIds(slotIndex);
+                if (ids != null && ids.length > 0) return ids[0];
+            }
+            List<SubscriptionInfo> infos = manager.getActiveSubscriptionInfoList();
+            if (infos != null) {
+                for (SubscriptionInfo info : infos) {
+                    if (info.getSimSlotIndex() == slotIndex) return info.getSubscriptionId();
+                }
+            }
+        } catch (RuntimeException ignored) {
+        }
+        return Integer.MIN_VALUE;
     }
 
     public static boolean hasPhoneStatePermission(Context context) {

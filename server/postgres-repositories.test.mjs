@@ -3,7 +3,7 @@ import test from "node:test";
 
 import { applyStructuredOverlay, createPostgresRepositories } from "./postgres-repositories.mjs";
 
-test("persists an SMS batch in one transaction and one set-based statement", async () => {
+test("persists an SMS batch with conflict-safe insert and canonical update statements", async () => {
   const database = fakeDatabase();
   const repos = createPostgresRepositories({ getPool: async () => database.pool });
 
@@ -22,10 +22,14 @@ test("persists an SMS batch in one transaction and one set-based statement", asy
   const rows = JSON.parse(database.calls[2].params[0]);
   assert.equal(rows.length, 2);
   assert.deepEqual(rows.map((row) => row.message_key), ["sms:1", "sms:2"]);
-  assert.match(database.calls[2].sql, /on conflict \(device_id, message_key\) do update/);
-  assert.match(database.calls[2].sql, /phone_cloud_sms_messages\.message_id/);
-  assert.match(database.calls[3].sql, /insert into phone_cloud_audit_events/);
-  assert.equal(database.calls[4].sql, "commit");
+  assert.match(database.calls[2].sql, /on conflict do nothing/);
+  assert.match(database.calls[3].sql, /with incoming as/);
+  assert.match(database.calls[3].sql, /target\.message_id = incoming\.message_id/);
+  assert.match(database.calls[3].sql, /target\.device_id = incoming\.device_id/);
+  assert.match(database.calls[3].sql, /conflict\.message_id <> target\.message_id/);
+  assert.match(database.calls[3].sql, /matched\.canonical_message_id/);
+  assert.match(database.calls[4].sql, /insert into phone_cloud_audit_events/);
+  assert.equal(database.calls[5].sql, "commit");
   assert.equal(database.released, 1);
 });
 
@@ -88,6 +92,25 @@ test("persists linked task state and an event atomically", async () => {
     "phone_cloud_windows_tasks",
     "phone_cloud_xhs_tasks",
     "phone_cloud_task_events",
+    "commit"
+  ]);
+});
+
+test("persists an automation job and its long-lived lookup session atomically", async () => {
+  const database = fakeDatabase();
+  const repos = createPostgresRepositories({ getPool: async () => database.pool });
+
+  await repos.persistTaskMutation({
+    windowsTask: { taskId: "windows-auto-1", agentId: "agent-1", adbSerial: "serial-1", status: "running" },
+    automationJob: { jobId: "job-1", deviceId: "device-1", userId: "user-1", kind: "alipay_name_query", status: "running" },
+    automationSession: { sessionId: "lookup-1", deviceId: "device-1", userId: "user-1", status: "querying" }
+  });
+
+  assert.deepEqual(database.calls.map((call) => call.sql === "begin" || call.sql === "commit" ? call.sql : call.sql.match(/insert into ([a-z_]+)/)?.[1]), [
+    "begin",
+    "phone_cloud_windows_tasks",
+    "phone_cloud_automation_jobs",
+    "phone_cloud_automation_sessions",
     "commit"
   ]);
 });

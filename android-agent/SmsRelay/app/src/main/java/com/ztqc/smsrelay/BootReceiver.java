@@ -10,9 +10,11 @@ public class BootReceiver extends BroadcastReceiver {
         String action = intent == null ? "" : intent.getAction();
         if (Intent.ACTION_BOOT_COMPLETED.equals(action)
             || Intent.ACTION_LOCKED_BOOT_COMPLETED.equals(action)
+            || Intent.ACTION_USER_UNLOCKED.equals(action)
             || Intent.ACTION_MY_PACKAGE_REPLACED.equals(action)
             || RelayForegroundService.ACTION_POLL_TICK.equals(action)) {
             RelayForegroundService.start(context.getApplicationContext());
+            SmsUploadJobService.schedule(context.getApplicationContext(), 0L);
             if (RelayForegroundService.ACTION_POLL_TICK.equals(action)) {
                 DeviceCommandExecutor.pollAsync(context.getApplicationContext());
             }

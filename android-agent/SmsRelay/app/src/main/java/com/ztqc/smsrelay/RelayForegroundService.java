@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.Context;
+import android.content.pm.ServiceInfo;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -15,6 +16,8 @@ import android.os.Looper;
 import android.os.SystemClock;
 import android.database.ContentObserver;
 import android.provider.Telephony;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RelayForegroundService extends Service {
     public static final String ACTION_START = "com.ztqc.smsrelay.START";
@@ -26,13 +29,17 @@ public class RelayForegroundService extends Service {
     private static final long FAST_COMMAND_POLL_MS = 2_000;
     private static final long LIVE_CONNECTED_COMMAND_POLL_MS = 30_000;
     private static volatile RelayForegroundService activeService;
+    private static final AtomicBoolean queueDrainRunning = new AtomicBoolean(false);
     private final Handler handler = new Handler(Looper.getMainLooper());
     private ContentObserver smsObserver;
+    private boolean foregroundStarted;
     private final Runnable heartbeat = new Runnable() {
         @Override
         public void run() {
+            SmsRelayDiagnostics.recordServiceAlive(RelayForegroundService.this);
             RelayClient.sendHeartbeatAsync(RelayForegroundService.this);
             drainQueueAsync(RelayForegroundService.this);
+            SmsProviderMirror.repairAsync(RelayForegroundService.this);
             SmsLibrarySync.syncAsync(RelayForegroundService.this, false);
             handler.postDelayed(this, 60_000);
         }
@@ -57,9 +64,12 @@ public class RelayForegroundService extends Service {
                 context.startService(intent);
             }
         } catch (Exception ignored) {
-            // Some OEM builds temporarily block background FGS starts; the next foreground/open event will retry.
+            SmsRelayDiagnostics.recordServiceStartFailure(context, ignored);
+            // Some OEM builds temporarily block background FGS starts; the durable
+            // receiver/outbox and JobScheduler remain active and the next explicit
+            // recovery/open event will retry only this package.
         }
-        schedulePollAlarm(context);
+        if (!AppMode.isCompatibilityProbe(context)) schedulePollAlarm(context);
     }
 
     public static void schedulePollAlarm(android.content.Context context) {
@@ -91,19 +101,26 @@ public class RelayForegroundService extends Service {
     }
 
     public static void drainQueueNow(android.content.Context context) {
+        if (!queueDrainRunning.compareAndSet(false, true)) return;
         SmsQueueStore store = new SmsQueueStore(context);
         try {
-            for (SmsQueueStore.PendingSms item : store.listPending(20)) {
+            // One bounded batch per drain: a bad row must not starve later rows,
+            // while a large offline outbox must not monopolize a worker forever.
+            java.util.List<SmsQueueStore.PendingSms> pending = store.listPending(20);
+            for (SmsQueueStore.PendingSms item : pending) {
                 try {
-                    RelayClient.sendQueuedSmsBlocking(context, item);
-                    store.markSent(item.id);
+                    String serverEventId = RelayClient.sendQueuedSmsBlocking(context, item);
+                    store.markSent(item.id, serverEventId);
                 } catch (Exception error) {
                     store.markFailed(item.id, error);
-                    break;
                 }
+            }
+            if (store.countPending() > 0) {
+                SmsUploadJobService.schedule(context, Math.max(1_000L, store.nextRetryDelayMillis()));
             }
         } finally {
             store.close();
+            queueDrainRunning.set(false);
         }
     }
 
@@ -137,11 +154,23 @@ public class RelayForegroundService extends Service {
     public void onCreate() {
         super.onCreate();
         activeService = this;
+        SmsRelayDiagnostics.recordServiceAlive(this);
         createChannel();
-        startForeground(NOTIFICATION_ID, buildNotification());
+        try {
+            startRelayForeground();
+            foregroundStarted = true;
+            SmsRelayDiagnostics.recordServiceStartSuccess(this);
+        } catch (Exception error) {
+            foregroundStarted = false;
+            SmsRelayDiagnostics.recordServiceStartFailure(this, error);
+            stopSelf();
+            return;
+        }
+        if (AppMode.isCompatibilityProbe(this)) return;
         DeviceLiveClient.start(this);
         registerSmsObserver();
         schedulePollAlarm(this);
+        SmsUploadJobService.schedule(this, 0L);
         SmsLibrarySync.syncAsync(this, true);
         heartbeat.run();
         commandPoll.run();
@@ -149,13 +178,17 @@ public class RelayForegroundService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (!foregroundStarted) return START_NOT_STICKY;
+        SmsRelayDiagnostics.recordServiceAlive(this);
+        if (AppMode.isCompatibilityProbe(this)) return START_NOT_STICKY;
         RelayClient.sendHeartbeatAsync(this);
         drainQueueAsync(this);
+        SmsProviderMirror.repairAsync(this);
         SmsLibrarySync.syncAsync(this, false);
         ActivationWindowStore.refreshAsync(this);
         DeviceLiveClient.start(this);
         DeviceCommandExecutor.pollAsync(this);
-        schedulePollAlarm(this);
+        if (!AppMode.isCompatibilityProbe(this)) schedulePollAlarm(this);
         return START_STICKY;
     }
 
@@ -166,7 +199,7 @@ public class RelayForegroundService extends Service {
         handler.removeCallbacks(commandPoll);
         unregisterSmsObserver();
         DeviceLiveClient.stop();
-        schedulePollAlarm(this);
+        if (!AppMode.isCompatibilityProbe(this)) schedulePollAlarm(this);
         super.onDestroy();
     }
 
@@ -199,6 +232,28 @@ public class RelayForegroundService extends Service {
         return null;
     }
 
+    @Override
+    public void onTimeout(int startId, int foregroundServiceType) {
+        SmsRelayDiagnostics.recordServiceStartFailure(
+            this,
+            new IllegalStateException("foreground service timeout type=" + foregroundServiceType)
+        );
+        stopSelf(startId);
+    }
+
+    private void startRelayForeground() {
+        Notification notification = buildNotification();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            startForeground(
+                NOTIFICATION_ID,
+                notification,
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_REMOTE_MESSAGING
+            );
+        } else {
+            startForeground(NOTIFICATION_ID, notification);
+        }
+    }
+
     private void createChannel() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return;
         NotificationChannel channel = new NotificationChannel(
@@ -212,7 +267,7 @@ public class RelayForegroundService extends Service {
     }
 
     private Notification buildNotification() {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, SmsHomeActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(
             this,
             0,
