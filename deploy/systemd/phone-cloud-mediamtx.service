@@ -1,0 +1,18 @@
+[Unit]
+Description=Phone Cloud MediaMTX WebRTC relay
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/phone-cloud-mediamtx
+ExecStart=/opt/phone-cloud-mediamtx/mediamtx /etc/phone-cloud/mediamtx.yml
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ReadWritePaths=/opt/phone-cloud-mediamtx
+
+[Install]
+WantedBy=multi-user.target

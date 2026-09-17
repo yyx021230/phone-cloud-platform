@@ -1,0 +1,14 @@
+[Unit]
+Description=Phone Cloud Platform Backup
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/phone-cloud-platform
+EnvironmentFile=/opt/phone-cloud-platform/.env
+ExecStart=/opt/phone-cloud-platform/deploy/scripts/backup-current-storage.sh
+User=phonecloud
+Group=phonecloud
+NoNewPrivileges=true
+PrivateTmp=true

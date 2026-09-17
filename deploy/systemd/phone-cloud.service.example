@@ -1,0 +1,18 @@
+[Unit]
+Description=Phone Cloud Platform
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/phone-cloud-platform
+EnvironmentFile=/opt/phone-cloud-platform/.env
+ExecStart=/usr/bin/node /opt/phone-cloud-platform/server/index.mjs
+Restart=always
+RestartSec=5
+User=phonecloud
+Group=phonecloud
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

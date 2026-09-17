@@ -1,0 +1,24 @@
+--- a/internal/protocols/webrtc/peer_connection.go
++++ b/internal/protocols/webrtc/peer_connection.go
+@@ -161,6 +161,7 @@
+ 	AdditionalHosts       []string
+ 	STUNGatherTimeout     time.Duration
+ 	Publish               bool
++	ViewerPacing          bool
+ 	OutgoingTracks        []*OutgoingTrack
+ 	OutgoingDataChannels  []*OutgoingDataChannel
+ 	Log                   logger.Writer
+@@ -299,6 +300,13 @@
+ 	}
+ 
+ 	interceptorRegistry := &interceptor.Registry{}
++	// Bind before NACK: both original RTP and its saved retransmit writer
++	// must consume the same per-viewer pacing budget.
++	if co.Publish && co.ViewerPacing {
++		if err := registerViewerPacing(interceptorRegistry, co.Log); err != nil {
++			return err
++		}
++	}
+ 
+ 	err = registerInterceptors(
+ 		mediaEngine,

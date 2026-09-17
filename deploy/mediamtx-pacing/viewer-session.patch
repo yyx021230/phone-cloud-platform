@@ -1,0 +1,10 @@
+--- a/internal/servers/webrtc/session.go
++++ b/internal/servers/webrtc/session.go
+@@ -504,6 +504,7 @@
+ 		AdditionalHosts:       s.additionalHosts,
+ 		STUNGatherTimeout:     time.Duration(s.stunGatherTimeout),
+ 		Publish:               true,
++		ViewerPacing:          strings.HasPrefix(s.req.pathName, "pc/"),
+ 		Log:                   s,
+ 	}
+ 

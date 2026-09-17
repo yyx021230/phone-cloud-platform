@@ -1,0 +1,165 @@
+import assert from "node:assert/strict";
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import test from "node:test";
+import {
+  isDeviceSerialInNotificationFallbackScope,
+  loadAgentConfig,
+  normalizeDeviceSerialAllowlist
+} from "./config.mjs";
+
+test("normalizes the SMS notification canary device allowlist", () => {
+  assert.deepEqual(normalizeDeviceSerialAllowlist(), []);
+  assert.deepEqual(normalizeDeviceSerialAllowlist("SERIAL-1"), []);
+  assert.deepEqual(normalizeDeviceSerialAllowlist([" TESTDEVICE0009 ", "", "TESTDEVICE0009", "SECOND"]), [
+    "TESTDEVICE0009",
+    "SECOND"
+  ]);
+  assert.deepEqual(normalizeDeviceSerialAllowlist(["lower-case"]), ["LOWER-CASE"]);
+});
+
+test("notification fallback is fail-closed unless a canary or explicit all-device switch is configured", () => {
+  assert.equal(isDeviceSerialInNotificationFallbackScope({ smsNotificationFallbackEnabled: true }, "SERIAL-1"), false);
+  assert.equal(isDeviceSerialInNotificationFallbackScope({
+    smsNotificationFallbackEnabled: true,
+    smsNotificationFallbackDeviceSerials: ["serial-1"]
+  }, "SERIAL-1"), true);
+  assert.equal(isDeviceSerialInNotificationFallbackScope({
+    smsNotificationFallbackEnabled: true,
+    smsNotificationFallbackDeviceSerials: ["serial-1"]
+  }, "SERIAL-2"), false);
+  assert.equal(isDeviceSerialInNotificationFallbackScope({
+    smsNotificationFallbackEnabled: true,
+    smsNotificationFallbackAllDevices: true
+  }, "SERIAL-2"), true);
+});
+
+test("defaults and bounds the delayed collateral observation window", async () => {
+  const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "phone-cloud-config-"));
+  const configPath = path.join(agentDir, "config.json");
+  try {
+    await fs.writeFile(configPath, "{}", "utf8");
+    assert.equal((await loadAgentConfig({ agentDir, configPath })).pnpCollateralWatchSeconds, 180);
+
+    await fs.writeFile(configPath, JSON.stringify({ pnpCollateralWatchSeconds: 10 }), "utf8");
+    assert.equal((await loadAgentConfig({ agentDir, configPath })).pnpCollateralWatchSeconds, 60);
+
+    await fs.writeFile(configPath, JSON.stringify({ pnpCollateralWatchSeconds: 900 }), "utf8");
+    assert.equal((await loadAgentConfig({ agentDir, configPath })).pnpCollateralWatchSeconds, 600);
+  } finally {
+    await fs.rm(agentDir, { recursive: true, force: true });
+  }
+});
+
+test("defaults to continuous recovery with a bounded fixed cycle cooldown", async () => {
+  const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "phone-cloud-config-"));
+  const configPath = path.join(agentDir, "config.json");
+  try {
+    await fs.writeFile(configPath, "{}", "utf8");
+    let config = await loadAgentConfig({ agentDir, configPath });
+    assert.equal(config.pnpContinuousRecoveryEnabled, true);
+    assert.equal(config.pnpRecoveryCycleCooldownSeconds, 30);
+
+    await fs.writeFile(configPath, JSON.stringify({
+      pnpContinuousRecoveryEnabled: false,
+      pnpRecoveryCycleCooldownSeconds: 1
+    }), "utf8");
+    config = await loadAgentConfig({ agentDir, configPath });
+    assert.equal(config.pnpContinuousRecoveryEnabled, false);
+    assert.equal(config.pnpRecoveryCycleCooldownSeconds, 10);
+
+    await fs.writeFile(configPath, JSON.stringify({ pnpRecoveryCycleCooldownSeconds: 999 }), "utf8");
+    assert.equal((await loadAgentConfig({ agentDir, configPath })).pnpRecoveryCycleCooldownSeconds, 600);
+  } finally {
+    await fs.rm(agentDir, { recursive: true, force: true });
+  }
+});
+
+test("warns and remains fail-closed when notification fallback has no rollout scope", async () => {
+  const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "phone-cloud-config-"));
+  const configPath = path.join(agentDir, "config.json");
+  try {
+    await fs.writeFile(configPath, JSON.stringify({ smsNotificationFallbackEnabled: true }), "utf8");
+    const config = await loadAgentConfig({ agentDir, configPath });
+    assert.equal(config.smsNotificationFallbackAllDevices, false);
+    assert.deepEqual(config.smsNotificationFallbackDeviceSerials, []);
+    assert.ok(config.configWarnings.includes("sms_notification_fallback_enabled_without_scope"));
+    assert.equal(isDeviceSerialInNotificationFallbackScope(config, "SERIAL-1"), false);
+  } finally {
+    await fs.rm(agentDir, { recursive: true, force: true });
+  }
+});
+
+test("supports an explicit ten-lane continuous SMS notification sweep", async () => {
+  const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "phone-cloud-config-"));
+  const configPath = path.join(agentDir, "config.json");
+  try {
+    await fs.writeFile(configPath, JSON.stringify({
+      smsNotificationContinuousScanEnabled: true,
+      smsNotificationBackgroundConcurrency: 10
+    }), "utf8");
+    let config = await loadAgentConfig({ agentDir, configPath });
+    assert.equal(config.smsNotificationContinuousScanEnabled, true);
+    assert.equal(config.smsNotificationBackgroundConcurrency, 10);
+
+    await fs.writeFile(configPath, JSON.stringify({ smsNotificationBackgroundConcurrency: 99 }), "utf8");
+    config = await loadAgentConfig({ agentDir, configPath });
+    assert.equal(config.smsNotificationContinuousScanEnabled, false);
+    assert.equal(config.smsNotificationBackgroundConcurrency, 10);
+  } finally {
+    await fs.rm(agentDir, { recursive: true, force: true });
+  }
+});
+
+test("defaults and bounds the Airtest resident worker pool", async () => {
+  const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "phone-cloud-config-"));
+  const configPath = path.join(agentDir, "config.json");
+  try {
+    await fs.writeFile(configPath, "{}", "utf8");
+    let config = await loadAgentConfig({ agentDir, configPath });
+    assert.equal(config.airtestMaxResidentWorkers, 8);
+    assert.equal(config.airtestWorkerIdleSeconds, 120);
+    assert.equal(config.airtestWorkerCleanupIntervalSeconds, 30);
+    assert.equal(config.airtestLookupWarmSeconds, 900);
+
+    await fs.writeFile(configPath, JSON.stringify({
+      airtestMaxResidentWorkers: 100,
+      airtestWorkerIdleSeconds: 1,
+      airtestWorkerCleanupIntervalSeconds: 1,
+      airtestLookupWarmSeconds: 100_000
+    }), "utf8");
+    config = await loadAgentConfig({ agentDir, configPath });
+    assert.equal(config.airtestMaxResidentWorkers, 16);
+    assert.equal(config.airtestWorkerIdleSeconds, 30);
+    assert.equal(config.airtestWorkerCleanupIntervalSeconds, 10);
+    assert.equal(config.airtestLookupWarmSeconds, 3_600);
+  } finally {
+    await fs.rm(agentDir, { recursive: true, force: true });
+  }
+});
+
+test("bounds global and per-device RTP packet grouping independently", async () => {
+  const agentDir = await fs.mkdtemp(path.join(os.tmpdir(), "phone-cloud-config-"));
+  const configPath = path.join(agentDir, "config.json");
+  try {
+    await fs.writeFile(configPath, JSON.stringify({
+      screenTransportPacketsPerBurst: 99,
+      screenTransportAdaptivePacingEnabled: false,
+      screenDeviceProfiles: {
+        "phone-53": { transportPacketsPerBurst: 2, transportAdaptivePacing: true, transportReceiverFeedback: true },
+        "phone-35": { transportPacketsPerBurst: 0 },
+        "phone-other": { transportPacketsPerBurst: 99 }
+      }
+    }), "utf8");
+    const config = await loadAgentConfig({ agentDir, configPath });
+    assert.equal(config.screenTransportPacketsPerBurst, 8);
+    assert.equal(config.screenDeviceProfiles["phone-53"].transportPacketsPerBurst, 2);
+    assert.equal(config.screenDeviceProfiles["phone-53"].transportAdaptivePacing, true);
+    assert.equal(config.screenDeviceProfiles["phone-53"].transportReceiverFeedback, true);
+    assert.equal(config.screenDeviceProfiles["phone-35"].transportPacketsPerBurst, 1);
+    assert.equal(config.screenDeviceProfiles["phone-other"].transportPacketsPerBurst, 8);
+  } finally {
+    await fs.rm(agentDir, { recursive: true, force: true });
+  }
+});
