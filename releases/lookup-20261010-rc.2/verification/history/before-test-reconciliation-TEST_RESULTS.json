@@ -1,0 +1,73 @@
+{
+  "lookupNode": {
+    "total": 146,
+    "pass": 146
+  },
+  "lookupPython": {
+    "total": 56,
+    "pass": 56
+  },
+  "serverNode": {
+    "total": 198,
+    "pass": 198
+  },
+  "sdk": {
+    "total": 4,
+    "pass": 4
+  },
+  "rootSyntaxCheck": "passed",
+  "screenRegression": {
+    "total": 585,
+    "pass": 579,
+    "fail": 6,
+    "failures": [
+      "Alipay account restrictions are reported and never auto-switch the current account",
+      "foreground automation and explicit scan options still block background SMS",
+      "frames scrcpy H264 packets with their original PTS for WHIP",
+      "preserves v2 retry state which was not blocked by duplicate ADB-child restarts",
+      "the Python worker explicitly stops Poco with bounded ADB cleanup",
+      "uses eight targeted restarts and then quarantines the phone"
+    ],
+    "sameFailuresAsProductionAgent": true,
+    "ancillaryFixtures": "current workspace screen-client/scripts/deploy copied only into isolated validation; cache assertions updated"
+  },
+  "agentRegression": {
+    "total": 283,
+    "pass": 277,
+    "fail": 6,
+    "productionBaselineTotal": 221,
+    "productionBaselinePass": 215,
+    "introducedFailureNames": []
+  },
+  "productionPythonRegression": {
+    "total": 161,
+    "pass": 145,
+    "fail": 16,
+    "failures": [
+      "test_lookup_clear_search_input_batches_delete_keyevents",
+      "test_lookup_detects_the_exact_account_restrictions_observed_on_87",
+      "test_lookup_known_restriction_is_returned_without_automatic_switch",
+      "test_lookup_late_jigsaw_is_classified_after_single_submit_without_reinput",
+      "test_lookup_poco_bounds_hierarchy_failure_after_input_for_resume",
+      "test_lookup_poco_input_timeout_resumes_without_retyping_phone",
+      "test_lookup_poco_preserves_exact_slider_for_human",
+      "test_lookup_poco_query_clears_and_sets_phone_once",
+      "test_lookup_poco_slider_resume_never_retypes_phone",
+      "test_lookup_poco_stable_no_name_result_returns_within_five_seconds_without_xml",
+      "test_lookup_poco_start_keeps_an_evidenced_restriction_page_without_relaunch",
+      "test_lookup_poco_stop_does_not_probe_package_manager",
+      "test_lookup_poco_waits_for_late_restriction_when_search_submit_never_appears",
+      "test_lookup_query_checks_location_intro_before_input",
+      "test_lookup_waits_for_a_late_webview_restriction_after_phone_input",
+      "test_lookup_xml_verification_preserves_page_and_requires_human"
+    ],
+    "productionBaselineSameFailureNames": true,
+    "introducedFailureNames": [],
+    "fixtureChange": "mock only random input-throttle wait; production behavior unchanged"
+  },
+  "realDevice": "not_run",
+  "realPostgresFaults": "not_run; fake pool/transaction wiring only",
+  "realFeishu": "not_run",
+  "deployment": "not_run",
+  "review": "self review; source ranges/functions and actual production preservation compared"
+}
