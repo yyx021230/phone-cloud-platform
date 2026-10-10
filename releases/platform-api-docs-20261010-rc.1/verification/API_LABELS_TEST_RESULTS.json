@@ -1,0 +1,57 @@
+{
+  "date": "2026-10-10",
+  "candidateTag": "platform-api-docs-20261010-rc.5",
+  "baseCommit": "59b54b10b4bc185bacc3565b6ca2549682540808",
+  "status": "local_candidate_not_deployed",
+  "changes": [
+    {
+      "path": "public/api-docs.html",
+      "beforeSha256": "e6d876c91276d19d8fd763f47a0a64310c7021ee9885529e80dd31543766150f",
+      "afterSha256": "7e95a63449947b35b94adbbb1d06ea6225b8ff7ea11c4bda9e4bab53338d1da5"
+    },
+    {
+      "path": "public/api-docs.js",
+      "beforeSha256": "e70124434a11403735af73b69630d74004a66416c8bd1509e565b46c3d3ceb62",
+      "afterSha256": "34c06edd7eaac3e8546173b73d90b6f232ca0c6175fc2d093a0751c727ad89fc"
+    },
+    {
+      "path": "public/api-reference.json",
+      "beforeSha256": "9019aa3f62f8a96ec33388e96368f6a2bc3731faaaa8a9d81259c61f9d2c5ae9",
+      "afterSha256": "9aaa449bad5ed657830b787aaaf5dc38a180167e145d1a198c5802cdc91096b8"
+    },
+    {
+      "path": "public/openapi.json",
+      "beforeSha256": "d0e5b2358a42a4fe27adbf1a282299976bc7ac5fbcbd68da02af87cc393481b1",
+      "afterSha256": "a8a1e404d466b37dc95b0b94511cf8a0adbac325102a769cad711f43e46ff247"
+    }
+  ],
+  "labels": {
+    "qr-scan": "小红书自动登录",
+    "lookup-user": "支付宝查名字",
+    "xhs-publish": "小红书一键发布"
+  },
+  "verification": {
+    "command": "node --test scripts/api-docs.test.mjs",
+    "passed": 9,
+    "failed": 0,
+    "skipped": 0,
+    "javascriptSyntax": "passed",
+    "browserDirectoryAndOverviewLabels": true,
+    "all32EndpointObjectsUnchanged": true,
+    "frozenHashesPreserved": 22,
+    "historical594NotRerun": true
+  },
+  "review": "Primary agent self review. Names only; protocol paths, IDs, parameters, permissions and business runtime unchanged.",
+  "notVerified": [
+    "No real business API requests, physical-device or production acceptance; original lookup gaps retained."
+  ],
+  "sideEffects": {
+    "productionActions": 0,
+    "remotePush": false,
+    "businessRequests": 0,
+    "deviceActions": 0,
+    "notifications": 0,
+    "serviceRestarts": 0
+  },
+  "rollbackTag": "platform-api-docs-20261010-rc.4"
+}

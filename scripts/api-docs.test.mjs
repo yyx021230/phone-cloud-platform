@@ -161,7 +161,7 @@ test("platform navigation and search cannot restore excluded categories", () => 
 
 test("SMS, lookup, QR, Kuaishou and publishing are distinct business references", () => {
   const expected = { sms: 6, "lookup-user": 6, "qr-scan": 4, "kuaishou-lead": 3, "xhs-publish": 3 };
-  const titles = { sms: "短信接码", "lookup-user": "查名字", "qr-scan": "扫码", "kuaishou-lead": "快手录入", "xhs-publish": "一键发布" };
+  const titles = { sms: "短信接码", "lookup-user": "支付宝查名字", "qr-scan": "小红书自动登录", "kuaishou-lead": "快手录入", "xhs-publish": "小红书一键发布" };
   for (const [group, count] of Object.entries(expected)) {
     assert.equal(data.endpoints.filter((e) => e.group === group).length, count, group);
     assert.equal(data.groups.find((g) => g[0] === group)[1], titles[group]);
