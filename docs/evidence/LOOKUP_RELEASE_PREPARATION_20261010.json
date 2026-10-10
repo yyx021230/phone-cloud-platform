@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-10",
+  "status": "待验收",
+  "sourceCommit": "4c62986c9087b074dd15581742c656db6a49ea98",
+  "candidateTag": "lookup-20261010-rc.1",
+  "candidateTagObject": "081661a6636f8ef469f03792e6ed5b2295096a58",
+  "branch": "codex/lookup-production-merge",
+  "artifactsDirectory": "output/lookup-release-prep-20261010",
+  "artifacts": [
+    {
+      "file": "lookup-20261010-rc.1-patch.tar.gz",
+      "sha256": "a2b76c059ef342c32f15faa9a4869fda31be35e9e8053624146cbf41ad6f4458",
+      "bytes": 317596,
+      "entries": 18,
+      "roundTripVerified": true
+    },
+    {
+      "file": "lookup-20261010-rc.1-rollback-originals.tar.gz",
+      "sha256": "462777335e50e20bd3f4e1b07ac52f72adc2106d21422135c5bd8e0796ed0e99",
+      "bytes": 289993,
+      "entries": 10,
+      "roundTripVerified": true
+    }
+  ],
+  "prepared": [
+    "Immutable-tag source extraction",
+    "17 runtime files / 9 originals individually SHA256 checked",
+    "Patch and rollback archives round-trip verified",
+    "All 7 offline validation checks previously passed for this exact source commit",
+    "GitHub and GitLab candidate branch/tag push and remote identity verification"
+  ],
+  "offlineVerification": "releases/lookup-20261010-rc.1/verification/VERSION_REGISTRATION.json",
+  "pendingBeforeProduction": [
+    "Refresh actual production source/image/configuration baseline and D-075 live verification; no new production read or write was performed during this preparation.",
+    "Confirm current immutable cloud image and Windows/config/data backup availability; create approved fresh backups before release.",
+    "Build a production-compatible immutable application image from the approved current runtime base plus this minimum patch; fresh dependency installation and a deployable image are not verified.",
+    "Real isolated PostgreSQL transaction failure, terminal retry, cooldown persistence and restart compatibility validation.",
+    "Provision secret webhook and persistent receipt/outbox paths securely; separately authorize a real notification acceptance test.",
+    "Single-device then two-device acceptance, including limits, cooldown/switch, ordinary retries, name formats, puzzle notification/resume, all-cooling and end/cancel. Natural 8-hour expiry remains pending.",
+    "Current Agent index is shared across its host, and no device deployment allowlist was found in this source. A single-phone task does not make the Agent file update single-device. Review isolated Agent routing/no duplicate ownership before testing; do not start a second full-device Agent.",
+    "Agree exact release window/allowed interruption with no active conflicting tasks or viewing sessions; coordinate cloud first, Windows second only under an approved quiesced plan.",
+    "Observe canary 24-48 hours per project section 13.3 before expanding; stop on any task loss, repeated query/notification, wrong account cooling, other-device impact or media baseline failure."
+  ],
+  "authorizations": {
+    "pushCandidateToBothRemotes": "explicit user reply on 2026-10-10",
+    "productionDeployment": "not_granted",
+    "realDeviceActions": "not_granted_for_this_preparation",
+    "realNotification": "not_granted_for_this_preparation"
+  },
+  "productionActions": {
+    "write": false,
+    "restart": false,
+    "query": false,
+    "notification": false
+  },
+  "review": "Self-review of payload allowlist, source provenance, data compatibility and shared Agent rollout boundary; not independent production approval."
+}
