@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Phone Cloud 平台功能 API",
-    "version": "platform-api-docs-20261010-rc.4",
+    "version": "platform-api-docs-20261010-rc.5",
     "description": "仅平台功能接口，本地候选未部署。使用登录令牌Bearer认证；接口基线lookup-20261010-rc.2。"
   },
   "servers": [
@@ -26,11 +26,11 @@
     },
     {
       "name": "lookup-user",
-      "description": "查名字 · 业务接口"
+      "description": "支付宝查名字 · 业务接口"
     },
     {
       "name": "qr-scan",
-      "description": "扫码 · 业务接口"
+      "description": "小红书自动登录 · 业务接口"
     },
     {
       "name": "kuaishou-lead",
@@ -38,7 +38,7 @@
     },
     {
       "name": "xhs-publish",
-      "description": "一键发布 · 业务接口"
+      "description": "小红书一键发布 · 业务接口"
     },
     {
       "name": "screen",

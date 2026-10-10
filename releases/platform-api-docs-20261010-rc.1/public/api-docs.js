@@ -69,7 +69,7 @@
   function breadcrumb(name) { return `<div class="breadcrumb"><a href="#overview">开发者文档</a><span>/</span><span>${esc(name)}</span></div>`; }
 
   function guidePage(g) {
-    let html = `${breadcrumb(g.title)}${g.eyebrow ? `<p class="eyebrow">${esc(g.eyebrow)}</p>` : ""}<h1>${esc(g.intro)}</h1><p class="intro">${g.id === "overview" ? "短信接码、查名字、扫码、快手录入、一键发布，各业务独立查阅。" : esc(g.title)}</p>`;
+    let html = `${breadcrumb(g.title)}${g.eyebrow ? `<p class="eyebrow">${esc(g.eyebrow)}</p>` : ""}<h1>${esc(g.intro)}</h1><p class="intro">${g.id === "overview" ? "短信接码、支付宝查名字、小红书自动登录、快手录入、小红书一键发布，各业务独立查阅。" : esc(g.title)}</p>`;
     if (g.id === "overview") {
       html += `<div class="metrics-line"><div><strong>${data.endpoints.length}</strong><span>平台接口</span></div><div><strong>${data.groups.length}</strong><span>功能模块</span></div><div><strong>Bearer</strong><span>登录认证</span></div></div>`;
       html += section("getting-started", "调用顺序", '<p>登录获取令牌 → 获取可用设备 → 提交业务任务 → 按原任务ID查询结果。</p><a href="#authentication">查看认证与登录 →</a>');
