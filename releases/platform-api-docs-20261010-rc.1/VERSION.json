@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "releaseId": "20261010-platform-api-docs-v1",
+  "candidateTag": "platform-api-docs-20261010-rc.1",
+  "branch": "codex/api-documentation-portal",
+  "status": "local_candidate_not_deployed",
+  "sourcePath": "releases/platform-api-docs-20261010-rc.1",
+  "productionSourceImportCommit": "e72d66bcb3afde53623710fb3366844c944df33c",
+  "sourceManifest": "verification/MANIFEST.json",
+  "testResults": "verification/API_DOCS_TEST_RESULTS.json",
+  "releaseNotes": "RELEASE_NOTES.md",
+  "frozenRuntimeHashesPreserved": 22,
+  "rollbackOriginals": "verification/production-before",
+  "notVerified": [
+    "rc.2 real restriction -> rotation -> puzzle -> resume on physical device",
+    "two physical devices and other OEMs",
+    "natural eight-hour wait",
+    "full deployment artifact/fresh dependency installation",
+    "production D-075 live/current drift/Windows mixed-version and full rollback",
+    "24-48 hour soak"
+  ],
+  "deployment": "not_run",
+  "remotePush": "not_run",
+  "identityNote": "The immutable annotated candidate tag resolves the full source commit; no self-referential commit hash is stored here.",
+  "previousCandidate": {
+    "tag": "lookup-20261010-rc.2",
+    "sourceCommit": "f017254902ad4262bb036a461df725f8424b0758"
+  },
+  "runtimeFilesChangedVersusPreviousCandidate": 6,
+  "baseCandidateTag": "lookup-20261010-rc.2",
+  "baseSourceCommit": "f017254902ad4262bb036a461df725f8424b0758",
+  "apiDocsRuntimeFilesChangedVersusBase": 6,
+  "apiDocsNewAssets": 5,
+  "rollbackUi": {
+    "restoreIndexFromTag": "lookup-20261010-rc.2",
+    "newStaticFiles": [
+      "public/api-docs.html",
+      "public/api-docs.css",
+      "public/api-docs.js",
+      "public/api-reference.json",
+      "public/openapi.json"
+    ],
+    "databaseMigration": false
+  },
+  "inheritedLookupChanges": {
+    "productionRuntimeFiles": 17,
+    "reconciledTestFiles": 6,
+    "rc2RuntimeFilesVersusRc1": 3,
+    "note": "Historical lookup changes, not this documentation task."
+  }
+}

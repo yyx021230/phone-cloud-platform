@@ -1,0 +1,929 @@
+{
+  "candidate": "platform-api-docs-20261010-rc.1",
+  "status": "local_candidate_not_deployed",
+  "productionImageSha256": "907e0c65a50b1d066241e55ce475ac772647a531b582ae2894e25e1adc8ed3dd",
+  "workflowRevision": "2026-09-30",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "runtimeChanges": [
+    {
+      "path": "public/app.js",
+      "productionSha256": "f001ce98e89807120be30a0d028eb43cffc44a2b5d84efab83dd3732af03ef41",
+      "mergedSha256": "c6a6ac8c0a5eb2fb1fcd4a1057abd8d476ebc33570f20eb55b17d71cc0d1b250",
+      "status": "modified"
+    },
+    {
+      "path": "public/index.html",
+      "productionSha256": "2740d298da28cd8ccebf71c7698d631932f3e466d492d7471dd7d82d84072791",
+      "mergedSha256": "bf20576d5d965374bbc4f7973fa59a8b6200b0cfeac9ff7220ae1986d22f98b5",
+      "status": "modified"
+    },
+    {
+      "path": "public/styles.css",
+      "productionSha256": "b23fd542a1aaa13f15f15e53a48a913aa886f2918a2ac0828db67b8f8b811ffb",
+      "mergedSha256": "8956348200adee88a821ccd25d3cff2038b1930e04a7286f80c78257062bd98b",
+      "status": "modified"
+    },
+    {
+      "path": "server/automation-center.mjs",
+      "productionSha256": "1686e750fe3a574d1d5199707e39c51b7fc8489f8d64d8a49cb0c30d0a953bbd",
+      "mergedSha256": "e190d21cc2bcf99c8ef874b754e8cbe05419544efa24616d856c36d6eae2ddfd",
+      "status": "modified"
+    },
+    {
+      "path": "server/index.mjs",
+      "productionSha256": "1bdfbc3e370fff1c4a07e9c0f30242a348035d3e0227596f2e62eb90f3796e92",
+      "mergedSha256": "331720968d825f8a7922ce7048e117e5f883a1edddfa48dba559f67041061172",
+      "status": "modified"
+    },
+    {
+      "path": "server/lookup-account-cooldown.mjs",
+      "productionSha256": null,
+      "mergedSha256": "6c96b7786faa45e41c3d1f130dcc3b9172d1c0048bf6cde35a051d5c72523170",
+      "status": "new"
+    },
+    {
+      "path": "server/lookup-human-handover.mjs",
+      "productionSha256": null,
+      "mergedSha256": "7993e5ed41a13a26aa1d4aa03a2bb2665a4c74a5a0bcdb2fa8244240cd311a02",
+      "status": "new"
+    },
+    {
+      "path": "server/lookup-human-notifications.mjs",
+      "productionSha256": null,
+      "mergedSha256": "eff1e608eeed31153a4a0a8af13bed6420949ac030ca3b524e41d55528e475f7",
+      "status": "new"
+    },
+    {
+      "path": "server/open-name-lookup-api.mjs",
+      "productionSha256": "e8ea1d00f5be669984dfccfbb0ec6b8f86c68194e2fa87bc73d4eacbc635bcec",
+      "mergedSha256": "0c846c1cb1f01ca5a2cd662fc0b81d09568d17d89268b66254e37092664a4eb3",
+      "status": "modified"
+    },
+    {
+      "path": "server/postgres-repositories.mjs",
+      "productionSha256": "c5066a0daf7d41a27f17919b5926940795cab6f3feea8335867ede11baa8d1e7",
+      "mergedSha256": "bf6c10cf849cffc6c59c1f79e1fb62daeb548056632917d14bbd781ac8e70d54",
+      "status": "modified"
+    },
+    {
+      "path": "server/task-status-persistence.mjs",
+      "productionSha256": null,
+      "mergedSha256": "26f8e48a3a6a77de4d4f47aa8b9b54b45d1ee1a37a2ad4c787a8653845c4cab8",
+      "status": "new"
+    },
+    {
+      "path": "windows-agent/scripts/alipay_name_lookup.py",
+      "productionSha256": "3e73ddd4fe2e455f41977dbac18ddd88f7f80cbce18db634790bfdb547a419c2",
+      "mergedSha256": "4887d25c7c61d67bbba1ca71695648505b5fc5e5423499f651e75d4ef987f1ee",
+      "status": "modified"
+    },
+    {
+      "path": "windows-agent/src/index.mjs",
+      "productionSha256": "6e1110d41436e31d9f2950342cd65b2531aa1f36b0f6d53d1f0b2036ac16b86a",
+      "mergedSha256": "0d6a0aa177f38873b6999e18bba24fdecb865469924bc91efe396e91e2bd883b",
+      "status": "modified"
+    },
+    {
+      "path": "windows-agent/src/lookup-account-policy.mjs",
+      "productionSha256": null,
+      "mergedSha256": "b598b10ce46363b598e4f71b73ed88d15b0a33fe18732d067445370551a01024",
+      "status": "new"
+    },
+    {
+      "path": "windows-agent/src/lookup-human-observer.mjs",
+      "productionSha256": null,
+      "mergedSha256": "94dface8346e7b6908f4fd33c33d90566be59468874aa54d45473ca40537bdb4",
+      "status": "new"
+    },
+    {
+      "path": "windows-agent/src/lookup-page-recovery.mjs",
+      "productionSha256": null,
+      "mergedSha256": "acab1b3d3e96f17ee54fe393cdbcf31a9210139dd7694a04de1140b80f79daa9",
+      "status": "new"
+    },
+    {
+      "path": "windows-agent/src/lookup-status-outbox.mjs",
+      "productionSha256": null,
+      "mergedSha256": "572c48fd13e5db841481328da69611d25c91ec833b3bf7e417a8e340edb31182",
+      "status": "new"
+    }
+  ],
+  "productionOnlyPythonMethodsByteIdentical": [
+    "Runner.focus_components",
+    "Runner.focus_state",
+    "Runner.exact_search_activity_visible",
+    "Runner.system_ui_focus_visible",
+    "Runner.dismiss_real_name_prompt_xml",
+    "Runner.dismiss_canvas_modal_after_blocked_my_tab",
+    "Runner.dismiss_phone_credit_promo_xml",
+    "Runner.dismiss_honor_software_update_overlay",
+    "Runner.vivo_usb_mode_dialog_visible",
+    "Runner.dismiss_vivo_usb_mode_dialog",
+    "Runner.dismiss_vivo_wlan_risk_overlay",
+    "Runner.resume_alipay_under_exact_overlay",
+    "Runner.restart_alipay_for_fresh_poco_after_honor_update",
+    "Runner.restore_alipay_from_systemui",
+    "Runner.exit_search_activity_for_account_navigation",
+    "Runner.resume_alipay_home",
+    "Runner.poco_dismiss_local_service_prompt",
+    "Runner.poco_dismiss_alipay_home_overlay_snapshot",
+    "Runner.poco_dismiss_phone_credit_promo_snapshot",
+    "Runner.poco_dismiss_fullscreen_ad_live",
+    "Runner.poco_dismiss_real_name_prompt_live",
+    "Runner.poco_live_home_search_target",
+    "Runner.poco_home_search_target",
+    "Runner.poco_dismiss_honor_software_update_dialog",
+    "Runner.poco_dismiss_vivo_wlan_risk_dialog",
+    "Runner.data_network_acceleration_overlay_focus",
+    "Runner.poco_cancel_data_network_acceleration",
+    "Runner.poco_dismiss_post_input_usb_warning",
+    "Runner.poco_resume_alipay_home",
+    "Runner.poco_activate_home_tab_if_present",
+    "Runner.poco_observe_result_transition"
+  ],
+  "agentChangedFunctions": [
+    "pollTask",
+    "runTask",
+    "classifyAlipayNameLookupFailure",
+    "taskAlipayNameLookup",
+    "taskStatus",
+    "compactTaskResultForStatus",
+    "taskFailureResult"
+  ],
+  "agentUnchangedFunctionCount": 187,
+  "frozenProductionFilesUnchanged": [
+    {
+      "path": "server/screen-gallery-import.mjs",
+      "sha256": "39f7727860372f25959a5ca78145be07dfaf92c3747954afc99c8cd02cd8e697"
+    },
+    {
+      "path": "server/screen-sessions.mjs",
+      "sha256": "811a15aa7ecb87a934ef5f92826ed9031278d87df2387cc20a85098ce91cde09"
+    },
+    {
+      "path": "server/screen-media-auth.mjs",
+      "sha256": "c569931fdbad95338ebc50dee5d04b0f62550733bc627324171ab3590d3668b1"
+    },
+    {
+      "path": "server/screen-relay.mjs",
+      "sha256": "91b706a0cd00ea573997fdea338cad8f37e2c88e62fdbeee24b86ec4a6036c02"
+    },
+    {
+      "path": "server/screen-transport-policy.mjs",
+      "sha256": "331b212c564bc992628712eef81bff6dafe3b0df3f480f64fb808dfe7c41c721"
+    },
+    {
+      "path": "server/screen-backpressure.mjs",
+      "sha256": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4"
+    },
+    {
+      "path": "server/screen-quality.mjs",
+      "sha256": "bfadf379b03fadcf73bedc911649680ac6e3ace77907afee3524b335d4406451"
+    },
+    {
+      "path": "public/screen-inactivity-guard.js",
+      "sha256": "433578679963fc37b6eb2412c641cbaaa81f424f8611b109b28d2ba3b49ec182"
+    },
+    {
+      "path": "public/screen-control.js",
+      "sha256": "9618ae22993d0b1fc5bbffbedf2e9ced52ad5b8ccf46fded85513f39a4bda3ba"
+    },
+    {
+      "path": "public/vendor/screen-control.js",
+      "sha256": "ef4e36d5934050ad85075fb877257e4ec63b30af94becefc69e29bf76b2f44c5"
+    },
+    {
+      "path": "windows-agent/src/screen-webrtc-publisher.pre-20260722-wire-pacing.mjs",
+      "sha256": "d78b425dfdca9e3079cb9505a7b57d5d4d2bc7de3ce5174f52ab9e2c133d820c"
+    },
+    {
+      "path": "windows-agent/src/adb-priority-queue.mjs",
+      "sha256": "0bb8cfd86baaddc8a32d040e5835452f06e1ae5e3b78cbe2aeb0a67a24e5495d"
+    },
+    {
+      "path": "windows-agent/src/screen-control-queue.mjs",
+      "sha256": "27e6e5e39364817b2ee6a8ced3ecae8cee522904a7d4d3b0321bacd697212879"
+    },
+    {
+      "path": "windows-agent/src/screen-webrtc-publisher.mjs",
+      "sha256": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.pre-20260722-pacing-default.mjs",
+      "sha256": "9b28020b8f97e79068d944fd484596cae4e4ab4ae5a53ecf165fc016030b95e0"
+    },
+    {
+      "path": "windows-agent/src/pnp-screen-coordinator.mjs",
+      "sha256": "5eb1551e7dedbef4eed8d941733fa20b4780a362196338c51db4651b78ab9003"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.pre-pli-loop-20260722.mjs",
+      "sha256": "a7d113722291c2be02e3298d4364dc929c0ed3ca567e388272dfd2cea5efcb8b"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.mjs",
+      "sha256": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232"
+    },
+    {
+      "path": "windows-agent/src/screen-video-channel.mjs",
+      "sha256": "9e8c1ccd1439568beca2e99595764aa598893cee576109c514ae503486c1ca25"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.pre-20260722-wire-pacing.mjs",
+      "sha256": "c374bfd2e01376d07bfecb209388c3a1b6a2a34b71218852ad58aa3a9fca8538"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.verify.mjs",
+      "sha256": "cc2678e743981d65d16d54eac928bce407275f5244921e67d56fb4808251beb1"
+    },
+    {
+      "path": "windows-agent/src/screen-backpressure.mjs",
+      "sha256": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4"
+    }
+  ],
+  "rootNineBusinessFilesUnchanged": true,
+  "testFixtures": [
+    "screen-client/screen-ui.test.mjs",
+    "server/automation-center.test.mjs",
+    "server/lookup-account-cooldown.test.mjs",
+    "server/lookup-chain-reliability.test.mjs",
+    "server/lookup-human-handover.test.mjs",
+    "server/lookup-human-intervention.test.mjs",
+    "server/lookup-human-notifications.http.test.mjs",
+    "server/lookup-human-notifications.test.mjs",
+    "server/open-name-lookup-api.http.test.mjs",
+    "server/open-name-lookup-api.test.mjs",
+    "windows-agent/scripts/automation_runners_test.py",
+    "windows-agent/scripts/test_lookup_account_cooldown.py",
+    "windows-agent/scripts/test_lookup_human_probe.py",
+    "windows-agent/scripts/test_lookup_keyevent_compat.py",
+    "windows-agent/scripts/test_lookup_merge_compat.py",
+    "windows-agent/scripts/test_lookup_name_formats.py",
+    "windows-agent/scripts/test_lookup_page_recovery.py",
+    "windows-agent/scripts/test_lookup_result_wait.py",
+    "windows-agent/src/automation-center-wiring.test.mjs",
+    "windows-agent/src/lookup-account-policy.test.mjs",
+    "windows-agent/src/lookup-human-observer.test.mjs",
+    "windows-agent/src/lookup-page-recovery.test.mjs",
+    "windows-agent/src/lookup-result-transport.test.mjs",
+    "windows-agent/src/lookup-status-outbox.test.mjs",
+    "windows-agent/src/pnp-recovery-policy.test.mjs",
+    "windows-agent/src/screen-webrtc-publisher.test.mjs",
+    "windows-agent/src/serial-reservation.test.mjs",
+    "windows-agent/src/worker-shutdown.test.mjs"
+  ],
+  "verificationRevision": "20261010-post-rotation-failure-v1",
+  "testChanges": [
+    {
+      "path": "windows-agent/src/automation-center-wiring.test.mjs",
+      "beforeSha256": "f46279ed12702da735d22373633d4df48cd5415059049b5396afff0063c80e0a",
+      "afterSha256": "0d8baefe4394b1623101859ec2a65ac57f075687fbb6d40a3bddb8f2d7385cc3",
+      "runtimeChange": false
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-policy.test.mjs",
+      "beforeSha256": "c88a8af1e61e97389e4bcbb17930c3043300bed06a11cb75925aeed9671021cd",
+      "afterSha256": "a06bca3959075c4482c6bc9d587b8a2f217859a44119f5abb59f1b76328e2f0d",
+      "runtimeChange": false
+    },
+    {
+      "path": "windows-agent/src/screen-webrtc-publisher.test.mjs",
+      "beforeSha256": "3f98f6f1fd2d3c20fe3e824d48230287d0091db4d1652d5f41e1576934ce672a",
+      "afterSha256": "33858d5614b36cd588b0935f5ed0e55991663249437abf314f06ab287fd0bd34",
+      "runtimeChange": false
+    },
+    {
+      "path": "windows-agent/src/serial-reservation.test.mjs",
+      "beforeSha256": "ad6bd9f9c3081502860e86ef5d3e2d40ab117fadd09050535881dd66747fe5c0",
+      "afterSha256": "41c3d428847734a232db3909cdd4d4b9b86d54118b533f4421e7506ffdbc1a00",
+      "runtimeChange": false
+    },
+    {
+      "path": "windows-agent/src/worker-shutdown.test.mjs",
+      "beforeSha256": "0427921f914e274577973795bcb3fe928164bb099ab08ad5101901120afe9aad",
+      "afterSha256": "dc9b340bc5e6fa4253da3d60bfa9b89b8f2b19728c84704646587cf43a9bf759",
+      "runtimeChange": false
+    },
+    {
+      "path": "windows-agent/scripts/automation_runners_test.py",
+      "beforeSha256": "3c54274a6678d88df683d4513191d9f7eadb0571a5f11fdd370e8faea5a6b982",
+      "afterSha256": "2ec7184dbfaf1a6a9df6fce24ac88f45ef42e3723c80790803dde23e5683b5ad",
+      "runtimeChange": false
+    }
+  ],
+  "verificationFiles": [
+    {
+      "path": "verification/.gitattributes",
+      "sha256": "cfc1269e87f129d5c52a3cabf3fafb9070c6d3615659fe702e3ac52239d392cc"
+    },
+    {
+      "path": "verification/TEST_FAILURES_RECONCILED.json",
+      "sha256": "82ecce58e3009b2ac7e4fb30023bd5f90a566b079b61fe15b3038f83d5dd89c9"
+    },
+    {
+      "path": "verification/TEST_RESULTS.json",
+      "sha256": "864d565d2bca9ea96834fb9d4e1dd43aa5f73c4f642f96b721b30be9f881e428"
+    },
+    {
+      "path": "verification/VERSION_REGISTRATION.json",
+      "sha256": "e186921608b37871c2075e9e6c32e17830942523576da4f43bdb3c5126547431"
+    },
+    {
+      "path": "verification/fixtures/Dockerfile",
+      "sha256": "17b5962b4e2812047c0a0476da0f7b080c1daa089c9b94993d6b38d38f6f0a70"
+    },
+    {
+      "path": "verification/fixtures/Dockerfile.cached-base",
+      "sha256": "388bdb654aa3a4ae589fab6ec67e32f35f53c4711948b8e229ba65c55a4b196c"
+    },
+    {
+      "path": "verification/fixtures/deploy/mediamtx-pacing/build.mjs",
+      "sha256": "3bb1a914af57d03593c57c400696deb9c13825732a504282e10e4892cd6099ce"
+    },
+    {
+      "path": "verification/fixtures/deploy/mediamtx-pacing/enable.conf.example",
+      "sha256": "f8066357d386bd71938735de0fabc572a017ec8c6efdc1eaf232718648b70d66"
+    },
+    {
+      "path": "verification/fixtures/deploy/mediamtx-pacing/peer-connection.patch",
+      "sha256": "ce75d9ca0a229515f6b4597ddd7bf501dbfed104f108bd7f986e0a8bc64e94a4"
+    },
+    {
+      "path": "verification/fixtures/deploy/mediamtx-pacing/production-baseline.json",
+      "sha256": "d5b260558469ee75add1f747de2f7e5ad1604c4c7e897592fc6cdf5b91de8561"
+    },
+    {
+      "path": "verification/fixtures/deploy/mediamtx-pacing/verify.mjs",
+      "sha256": "2c5ee69ede4587e40b69333373b0956ffed20dfb9eea6467740a5f4704933a84"
+    },
+    {
+      "path": "verification/fixtures/deploy/mediamtx-pacing/viewer-session.patch",
+      "sha256": "83d5597484c3a61fb430a971470ba3509b034b8847963a6d9fc19b189400770a"
+    },
+    {
+      "path": "verification/fixtures/deploy/mediamtx-pacing/viewer_pacing.go",
+      "sha256": "b7a3ee05c13b4d012803a6af57fcf43a72d7ca2c8fdd3c1eeff777c62a4fa8d1"
+    },
+    {
+      "path": "verification/fixtures/deploy/mediamtx-pacing/viewer_pacing_test.go",
+      "sha256": "bffa105183093e3c63457f5b8388eb5f301b4689deb5987c482a4cfa1a45b5a4"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/aliyun-docker-deploy.sh",
+      "sha256": "95b5ed095add6f403c3a4c129315ee376ec4a17efbacc3612e050067a782be79"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/backup-current-storage.sh",
+      "sha256": "d222b9ca38c8ae9dff7cd15858322feef48a4a734a0df9b3bcdb5c2e27e5e205"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/backup-json-state.sh",
+      "sha256": "ffefc10916c96b35b6d3ba9cc02cf53ebee22f239191b5d854166a84ac7c62dd"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/backup-postgres-state.sh",
+      "sha256": "596494154d070a3ea6b98b27809f85cd983ed5274f554ca3e328b10dab233456"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/build-android-agent.sh",
+      "sha256": "2713d2714c0a0a7aef332d8432ab2485ebfd9add6d3874352c55d8170b4d604d"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/deploy-d066-windows.ps1",
+      "sha256": "0959afc58d91c7719c2b21cef4d34351fe467ff9e549f5573526e311c3a42e87"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/deploy-d067-windows.ps1",
+      "sha256": "b4c474a6063b2e856e642bcd1f0b9146875a226df82741292b86b5756703fcac"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/deploy-d069-windows.ps1",
+      "sha256": "8824a591613ee1076f379a73f71cef3c54df14bbe8a6bd0e740dd97adc55f1f9"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/deploy-d070-windows.ps1",
+      "sha256": "0e43b9f09d466f2f16147b3a4aeb470c1b3126521075dfa067e3621b921062ce"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/deploy-d071-windows.ps1",
+      "sha256": "9ddf942644b627402f89a98df3ef8a0ed4d5a273a22a6514c8bacf3f00c1707b"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/deploy-d072-windows.ps1",
+      "sha256": "1cfa12e04f9698a93cc2dbe6969ae6c0c484791b2889f2df831ed88fe29de020"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/generate-production-env.sh",
+      "sha256": "de430927ae0334f957b8f547c2c715185a628c1167e0f8a3725b7b03ab81a0af"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/install-backup-timer.sh",
+      "sha256": "e1bb5b03c55656d3172b579a36830941c0bf5b4964ca008ad4b0fccecfe69bdb"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/install-mediamtx.sh",
+      "sha256": "57795cbe28c74982d1c42561ffb9fffafcb5d3415e389e80db28edb655b900f7"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/preflight-production.sh",
+      "sha256": "877d65646da86eaa6ce167c958a1edb2288f5bfc65a824c3717c71cd00144e5b"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/prepare-d066-windows-merge.py",
+      "sha256": "afd7f14ab0bd35ab1b12a89b9e62876a5b7f416ef7c09c10edc0c34a21009227"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/prepare-d067-v2-windows-merge.py",
+      "sha256": "380420a67876697299dc01f73710907e76abcd7adc3cb33fc7a4a1b68f86c5bb"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/prepare-d067-windows-merge.py",
+      "sha256": "d1bc234cbc592655a97fe081108840615a26cba092bae157d90b72c9797eb9f3"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/prepare-d068-windows-merge.py",
+      "sha256": "8b934e7a9bf9ce47c0050262ce395ec6c1336933ae5086648aaf1634d7799034"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/prepare-d069-windows-merge.py",
+      "sha256": "2ff737738d58475cf22db2acaa45eca0e720f51dbfcbe474628f1a1f062e585b"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/prepare-d070-windows-merge.py",
+      "sha256": "551c916e069d69f8a3eadca95141a391de4ffb4ce76342a5e8bb8ffc921cc73a"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/prepare-d071-windows-merge.py",
+      "sha256": "51b8ff834798a4e2526258084140934d795866af2f8da846732a2b20be858177"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/prepare-d072-windows-merge.py",
+      "sha256": "49e6df8ad0963ac82de00c955831a9706feb75f501915d641817d452f305daeb"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/prepare-history-maintenance-merge.mjs",
+      "sha256": "b81c9ea3f1d5f796a1f85e6c333312a5095afd55cc9022ae572d38e5dab2891b"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/publish-built-apk.sh",
+      "sha256": "174ae3f84ca30926a95eee54b44379b4f12ba87d4ee37f616a9861cb79ec149b"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/render-nginx-config.sh",
+      "sha256": "627b6e8eae612e377b63bab98b3614d7d32cbd2e4bfd0b2b13116625507cde78"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/restore-json-state.sh",
+      "sha256": "89c45f4f4571e43105f07b1a7812d0743d340f3790233ed738343654635629f3"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/restore-postgres-state.sh",
+      "sha256": "ab762df36199547a20b5beaf1fccb7ad681d5245bf06c38b1202114f88606e58"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/smoke-test-platform.sh",
+      "sha256": "a4e309dcfa10d2c1378dc2604a5b5582d0d2957799b0ff5bc272618d4e359ba7"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/smoke-test-postgres.sh",
+      "sha256": "9544bc7a17ee7c80b6f55ae6579e64673fed57b812768ab5cef04f80cb8c2df7"
+    },
+    {
+      "path": "verification/fixtures/deploy/scripts/smoke-test-timeouts.sh",
+      "sha256": "6974b5ebb48db2bcae446c7eb5d6a2b3a513579c350a8d8a19e427be0d031de7"
+    },
+    {
+      "path": "verification/fixtures/deploy/sql/20260817-big-release-sms-message-key-rollback.sql",
+      "sha256": "c2693fb552b3837f50bfe4d75506b38eb3675590d3457a8c5221aa06260a9993"
+    },
+    {
+      "path": "verification/fixtures/deploy/sql/20260817-big-release-sms-message-key.sql",
+      "sha256": "98201a799ad730eb54aedbc083698da7405bed6d841ce7a73d71614a3e59e8fb"
+    },
+    {
+      "path": "verification/fixtures/deploy/sql/20260817-big-release-sms-preflight.sql",
+      "sha256": "38d0feea20219ec8a45a1c199353311c70f781cf1e2de2a18215d19f2dc5df9f"
+    },
+    {
+      "path": "verification/fixtures/deploy/sql/phone-cloud-structured-schema.sql",
+      "sha256": "ab11f1d80c0cf8224734e618b6ab56c8bf76ca83a33c17312b0cfe3ecfd51dcc"
+    },
+    {
+      "path": "verification/fixtures/deploy/sql/postgres-state.sql",
+      "sha256": "90b69cf072f131c812806fe7ca1d7882d03b7d95d3cc9c8d916bbc9fa0e6ff8e"
+    },
+    {
+      "path": "verification/fixtures/screen-client/control-input.js",
+      "sha256": "6add5a3c8df3ae393b0456c7bf3044b43555431724efedbfad4e6c223e03f0b0"
+    },
+    {
+      "path": "verification/fixtures/screen-client/control-input.test.mjs",
+      "sha256": "fb3effbb5b8f7048a0f3d6df7a5d69f480cf90f5796e9cb13c6539107a60a7aa"
+    },
+    {
+      "path": "verification/fixtures/screen-client/direct-webrtc-player.js",
+      "sha256": "284f1fd2a245ec7a33ca00d674e0f794221093cbaa155c74ecde401c78029d85"
+    },
+    {
+      "path": "verification/fixtures/screen-client/direct-webrtc-player.test.mjs",
+      "sha256": "025ad334706a46403eab1a863ce9c749473d02fbddde9f55554e6ae0748e2755"
+    },
+    {
+      "path": "verification/fixtures/screen-client/main.js",
+      "sha256": "d963f3c173f35d24cc9bcd43ae56009a1d3990efdb2a266c1fde5dfd5c59b35b"
+    },
+    {
+      "path": "verification/fixtures/screen-client/main.test.mjs",
+      "sha256": "1994a97f33dd48760f48a64ea3b29efd0ba091fba61077bebb81abe368891555"
+    },
+    {
+      "path": "verification/fixtures/screen-client/mse-player.js",
+      "sha256": "bb2c54be0f453b92f42621a805d27d08487a7f34c62ab5379d069dbb9369fd34"
+    },
+    {
+      "path": "verification/fixtures/screen-client/mse-player.test.mjs",
+      "sha256": "9060fbdf871bd1e84b84fdfdc1842c7596bf51c2758b818b2f87adc46bab29b2"
+    },
+    {
+      "path": "verification/fixtures/screen-client/recovery-console-ui.test.mjs",
+      "sha256": "e528e80e6b35755fea39426402d07571b6758752f59956783c154f3beb43550f"
+    },
+    {
+      "path": "verification/fixtures/screen-client/screen-inactivity-guard.test.mjs",
+      "sha256": "e2609e8fdf83aac8f35768de81c250b542d12c91c61d409e4647ff8b658636eb"
+    },
+    {
+      "path": "verification/fixtures/screen-client/screen-transport.js",
+      "sha256": "bac891e3ef5f2229b70ccba9c67ad550e5a06355ddd482e2c9b71b12be12198c"
+    },
+    {
+      "path": "verification/fixtures/screen-client/screen-transport.test.mjs",
+      "sha256": "053a2d492cd1044bbd6758b6771c5ef08e8a4e6150e567790a5d78edc59d5282"
+    },
+    {
+      "path": "verification/fixtures/screen-client/screen-ui.test.mjs",
+      "sha256": "ac93659c7383721cf094051d1c33f0a7f7d65dbeb03c82cb7c860d5593ad3247"
+    },
+    {
+      "path": "verification/fixtures/screen-client/user-device-search.test.mjs",
+      "sha256": "89d4f0b6dd2e2c6bc3bd9e106d9cee7d33f2f25320d57c954cdcc722fd601063"
+    },
+    {
+      "path": "verification/fixtures/screen-client/user-sms-load.test.mjs",
+      "sha256": "8296c9db8c850b462d5200a6f236db75fc469d07369e9bf4b207ff90ac4577a6"
+    },
+    {
+      "path": "verification/fixtures/screen-client/webrtc-player.js",
+      "sha256": "aeab64aedd8f6b89ef024acae4b5e685d70b548a1dc911ad3fa56fbcea3e2fa1"
+    },
+    {
+      "path": "verification/fixtures/screen-client/webrtc-player.test.mjs",
+      "sha256": "b8335435d5268e4cea4a46a200696f8aa2e48817480c012806bc7e5a163647d9"
+    },
+    {
+      "path": "verification/fixtures/scripts/alipay-full-chain-qa.mjs",
+      "sha256": "da86e97c167b3f054912205510bb815594955ac1f05c574ddccd61656eb14097"
+    },
+    {
+      "path": "verification/fixtures/scripts/apply-xhs-id-migration.mjs",
+      "sha256": "bcde571d5237552c3364a8256e8d26dce89185ba7263f81320a5279059673622"
+    },
+    {
+      "path": "verification/fixtures/scripts/apply-xhs-id-migration.test.mjs",
+      "sha256": "c7a79b2950b558516ff5e7cb517fb5000b8d5a497422b1aeddea0e7e07e9d777"
+    },
+    {
+      "path": "verification/fixtures/scripts/benchmark-task-history.mjs",
+      "sha256": "4b65d2d663ebb54b496343b183d7470cd513ee53d0c9a43507f366dec69f65e5"
+    },
+    {
+      "path": "verification/fixtures/scripts/big-release-sql.test.mjs",
+      "sha256": "8aacc861ba56d2f20b8c03aab523050087d42f4914f094809c33c7dbd9a09b27"
+    },
+    {
+      "path": "verification/fixtures/scripts/browser-screen-load-test.mjs",
+      "sha256": "8a328246f125b8b056310c00c6a41ec335326db2185517370a8d339c69d1d6c1"
+    },
+    {
+      "path": "verification/fixtures/scripts/build-xhs-id-migration.mjs",
+      "sha256": "47f5fedefe098058c93e907779ed8ca6ce15ff4735c8921bac44d2d8c03e135c"
+    },
+    {
+      "path": "verification/fixtures/scripts/build-xhs-id-migration.test.mjs",
+      "sha256": "777f13f221c41b983257865ecc29323d6d9f2a2366eac919c66d2b24e166f455"
+    },
+    {
+      "path": "verification/fixtures/scripts/deployment-baseline.test.mjs",
+      "sha256": "442c40f3c64e70dce5eb6079191f323000526e5887593aa6b92e10ec3bf00402"
+    },
+    {
+      "path": "verification/fixtures/scripts/media-pacing-baseline.test.mjs",
+      "sha256": "622ee988409c50271c29bd489ca7dfa539bfa202975fd2847ee32ea8fac5576e"
+    },
+    {
+      "path": "verification/fixtures/scripts/screen-load-report.mjs",
+      "sha256": "ffb2f01d518b6860801ddb620bb6f98e4e1e6cd47e3c067772cb629ca6241f76"
+    },
+    {
+      "path": "verification/fixtures/scripts/screen-load-report.test.mjs",
+      "sha256": "afd31defdc4426a0690444a5b84ceb631ed23fe05238c0dab226f1342ea6425b"
+    },
+    {
+      "path": "verification/fixtures/scripts/screen-load-test-actions.test.mjs",
+      "sha256": "bf0f47a1016e1d98682f454e0b8e821bf2dd52a84deb9d04c9d284aac5625163"
+    },
+    {
+      "path": "verification/fixtures/scripts/screen-load-test.mjs",
+      "sha256": "0e68d3e5a70afaa7b8167df735b32f15b43ef7447e44e2122fb1778f523fd1e8"
+    },
+    {
+      "path": "verification/fixtures/scripts/smoke-platform.mjs",
+      "sha256": "77b87b906ea23a7a8d93fbdf323797ad4b87fcec1bf3d58b651dd4b9a7af3f20"
+    },
+    {
+      "path": "verification/fixtures/scripts/start-local.mjs",
+      "sha256": "f135228bdddcc12835ccdc78173e4c803c3b06ba3feed4667b0305b7abbd1f7d"
+    },
+    {
+      "path": "verification/fixtures/scripts/udp-network-probe.go",
+      "sha256": "48ba542915288d1d2e2fdcd90110dd5c1a1f70756df9e437349b8bf5d3a77034"
+    },
+    {
+      "path": "verification/fixtures/sdk/__init__.py",
+      "sha256": "ef5f656be8b371afeca71e892bdc31f815fa375ecba9a7671996edd5d99ba77b"
+    },
+    {
+      "path": "verification/fixtures/sdk/open_name_lookup/README.md",
+      "sha256": "5af3666e6347652e7d88ca9022221e548c8e1db206af7e67dce13e0dafe39e0a"
+    },
+    {
+      "path": "verification/fixtures/sdk/open_name_lookup/__init__.py",
+      "sha256": "dabb7b3eba418d564910c1b4436e4b69afdcaae665be4362cb74761a2f01f8ff"
+    },
+    {
+      "path": "verification/fixtures/sdk/open_name_lookup/node_client.mjs",
+      "sha256": "8d826ee94be4c2a383e0b5ba232461d6341b7339dedc88d73c858f5ca63dd7d9"
+    },
+    {
+      "path": "verification/fixtures/sdk/open_name_lookup/node_client.test.mjs",
+      "sha256": "bcdb38e55d0875c6bf6c667a82888880a11bb59714ff38f362e2105b6165f24e"
+    },
+    {
+      "path": "verification/fixtures/sdk/open_name_lookup/python_client.py",
+      "sha256": "9b1440602651183a7d76a345a1ac8f4712190b589376f01d50269aa9b745c811"
+    },
+    {
+      "path": "verification/fixtures/sdk/open_name_lookup/python_client_test.py",
+      "sha256": "550fe59695e62b801a06610d787cd4be3a4c952604c0f691787fad0d756dc34e"
+    },
+    {
+      "path": "verification/history/before-test-reconciliation-MANIFEST.json",
+      "sha256": "0d16e551ee77c463ff8ea32d79b70df8e203d85abd9ebb5f69b711c035cb69ff"
+    },
+    {
+      "path": "verification/history/before-test-reconciliation-TEST_RESULTS.json",
+      "sha256": "9575a8a8f14c53680453521434751706192896b0f83546a81e941ed0cf802dea"
+    },
+    {
+      "path": "verification/history/rc1-TEST_RESULTS.json",
+      "sha256": "805e6aa0acad712d0c37093cb57820d8e1bc1e34193b2a3554d93ae4e537d793"
+    },
+    {
+      "path": "verification/history/rc1-VERSION_REGISTRATION.json",
+      "sha256": "966bd411fa6547c71b233ee4d7aba4b43b36dc55a704f812dda5ac3212580e44"
+    },
+    {
+      "path": "verification/production-before/public/app.js",
+      "sha256": "f001ce98e89807120be30a0d028eb43cffc44a2b5d84efab83dd3732af03ef41"
+    },
+    {
+      "path": "verification/production-before/public/index.html",
+      "sha256": "2740d298da28cd8ccebf71c7698d631932f3e466d492d7471dd7d82d84072791"
+    },
+    {
+      "path": "verification/production-before/public/styles.css",
+      "sha256": "b23fd542a1aaa13f15f15e53a48a913aa886f2918a2ac0828db67b8f8b811ffb"
+    },
+    {
+      "path": "verification/production-before/server/automation-center.mjs",
+      "sha256": "1686e750fe3a574d1d5199707e39c51b7fc8489f8d64d8a49cb0c30d0a953bbd"
+    },
+    {
+      "path": "verification/production-before/server/index.mjs",
+      "sha256": "1bdfbc3e370fff1c4a07e9c0f30242a348035d3e0227596f2e62eb90f3796e92"
+    },
+    {
+      "path": "verification/production-before/server/open-name-lookup-api.mjs",
+      "sha256": "e8ea1d00f5be669984dfccfbb0ec6b8f86c68194e2fa87bc73d4eacbc635bcec"
+    },
+    {
+      "path": "verification/production-before/server/postgres-repositories.mjs",
+      "sha256": "c5066a0daf7d41a27f17919b5926940795cab6f3feea8335867ede11baa8d1e7"
+    },
+    {
+      "path": "verification/production-before/windows-agent/scripts/alipay_name_lookup.py",
+      "sha256": "3e73ddd4fe2e455f41977dbac18ddd88f7f80cbce18db634790bfdb547a419c2"
+    },
+    {
+      "path": "verification/production-before/windows-agent/src/index.mjs",
+      "sha256": "6e1110d41436e31d9f2950342cd65b2531aa1f36b0f6d53d1f0b2036ac16b86a"
+    },
+    {
+      "path": "verification/production-to-merged.patch",
+      "sha256": "5931dc3bee082e0f1255fd2626a5f285b6063d7189c7d3172ecdf23a35d353a1"
+    },
+    {
+      "path": "verification/rc1-to-rc2.patch",
+      "sha256": "c1ac54e46e172e948d2b741a7f4a18ab2bc8fbb79dc535cc0869af11b72029ac"
+    },
+    {
+      "path": "verification/test-before/windows-agent/scripts/automation_runners_test.py",
+      "sha256": "3c54274a6678d88df683d4513191d9f7eadb0571a5f11fdd370e8faea5a6b982"
+    },
+    {
+      "path": "verification/test-before/windows-agent/src/automation-center-wiring.test.mjs",
+      "sha256": "f46279ed12702da735d22373633d4df48cd5415059049b5396afff0063c80e0a"
+    },
+    {
+      "path": "verification/test-before/windows-agent/src/pnp-recovery-policy.test.mjs",
+      "sha256": "c88a8af1e61e97389e4bcbb17930c3043300bed06a11cb75925aeed9671021cd"
+    },
+    {
+      "path": "verification/test-before/windows-agent/src/screen-webrtc-publisher.test.mjs",
+      "sha256": "3f98f6f1fd2d3c20fe3e824d48230287d0091db4d1652d5f41e1576934ce672a"
+    },
+    {
+      "path": "verification/test-before/windows-agent/src/serial-reservation.test.mjs",
+      "sha256": "ad6bd9f9c3081502860e86ef5d3e2d40ab117fadd09050535881dd66747fe5c0"
+    },
+    {
+      "path": "verification/test-before/windows-agent/src/worker-shutdown.test.mjs",
+      "sha256": "0427921f914e274577973795bcb3fe928164bb099ab08ad5101901120afe9aad"
+    },
+    {
+      "path": "verification/test-reconciliation.patch",
+      "sha256": "b0efccd915ca763b2beb8ad4a1dd2dcbfbcb44ce71e2addd164c72064f2b57b3"
+    },
+    {
+      "path": "verification/tests/screen-client/screen-ui.test.mjs",
+      "sha256": "ac93659c7383721cf094051d1c33f0a7f7d65dbeb03c82cb7c860d5593ad3247"
+    },
+    {
+      "path": "verification/tests/server/automation-center.test.mjs",
+      "sha256": "65f0593943e15bbfc2a432add98bffc8a9d143e926967c0908492641d398f979"
+    },
+    {
+      "path": "verification/tests/server/lookup-account-cooldown.test.mjs",
+      "sha256": "3f5d3bf626af2a360787d4570def52033143c774a43539ad25b55310a8f1c158"
+    },
+    {
+      "path": "verification/tests/server/lookup-chain-reliability.test.mjs",
+      "sha256": "e06583d711bd9043ae0fbeab0bfd9d00fa49b40de4670ec2e10fc711bbe5266d"
+    },
+    {
+      "path": "verification/tests/server/lookup-human-handover.test.mjs",
+      "sha256": "c4070e6ecfb6b8169fedc8617a85533235513e694abcee2946d72b66a46b1eaf"
+    },
+    {
+      "path": "verification/tests/server/lookup-human-intervention.test.mjs",
+      "sha256": "cc7d129734cdf4d54b6ae33be2eef51d8b6999b5a2ccca0467aa1fcc002e7e94"
+    },
+    {
+      "path": "verification/tests/server/lookup-human-notifications.http.test.mjs",
+      "sha256": "ca06160d101fd1bb241a281861a5a0dd12a5cb056bffd5802a87d4b8aa0c6258"
+    },
+    {
+      "path": "verification/tests/server/lookup-human-notifications.test.mjs",
+      "sha256": "c55bcf5a038d77d789821fb1f8a10d153a3e93f09f4d014778f92e71ec813c5a"
+    },
+    {
+      "path": "verification/tests/server/open-name-lookup-api.http.test.mjs",
+      "sha256": "790f9392b0c9eae79ab6c1040a7813bcd14a9a29b125f76b99f1577326cf57dc"
+    },
+    {
+      "path": "verification/tests/server/open-name-lookup-api.test.mjs",
+      "sha256": "13405982cc183b0b25bef8312e8e12edfe5b47741e4a88fd9ec0f811f615c3bc"
+    },
+    {
+      "path": "verification/tests/windows-agent/scripts/automation_runners_test.py",
+      "sha256": "2ec7184dbfaf1a6a9df6fce24ac88f45ef42e3723c80790803dde23e5683b5ad"
+    },
+    {
+      "path": "verification/tests/windows-agent/scripts/test_lookup_account_cooldown.py",
+      "sha256": "dd88bedcd1dcfd869cb3ae445a3d767c8ca8e3f28f05bae815f5ee76cc16a188"
+    },
+    {
+      "path": "verification/tests/windows-agent/scripts/test_lookup_human_probe.py",
+      "sha256": "03b343cdb50a87f4bb42206708ec08b85a23d70d9151822c5e3fa5f3962f01b0"
+    },
+    {
+      "path": "verification/tests/windows-agent/scripts/test_lookup_keyevent_compat.py",
+      "sha256": "3accb92699c70914773c13f2d0bc765d9979b9959126465869498c625815fd04"
+    },
+    {
+      "path": "verification/tests/windows-agent/scripts/test_lookup_merge_compat.py",
+      "sha256": "40d0c388b87c5d37a75ab8349cc95b055f5a6768c25e5cc8a003348a763b5715"
+    },
+    {
+      "path": "verification/tests/windows-agent/scripts/test_lookup_name_formats.py",
+      "sha256": "1fcbf5cc3d5b1f8f305d3d684d6091e1ef707c0b58303bfac16ef83823bda1dc"
+    },
+    {
+      "path": "verification/tests/windows-agent/scripts/test_lookup_page_recovery.py",
+      "sha256": "b39047fa9463d11c7ae87799bfd1ebb53ab417739f10a3e23a428d9e60312778"
+    },
+    {
+      "path": "verification/tests/windows-agent/scripts/test_lookup_result_wait.py",
+      "sha256": "1275ad72c4dc5961ecb9d8457f93cf84839ee04a98a932bef457743ae2ec29a4"
+    },
+    {
+      "path": "verification/tests/windows-agent/src/automation-center-wiring.test.mjs",
+      "sha256": "0d8baefe4394b1623101859ec2a65ac57f075687fbb6d40a3bddb8f2d7385cc3"
+    },
+    {
+      "path": "verification/tests/windows-agent/src/lookup-account-policy.test.mjs",
+      "sha256": "fe8114dec842f5c838322dd1e29fb279bd87896eea6d5282bb4a257e98c0dd13"
+    },
+    {
+      "path": "verification/tests/windows-agent/src/lookup-human-observer.test.mjs",
+      "sha256": "2685377899a8ec3baf14104ad7c267286dbaf4d36a4e5cffa182b62af528f9b2"
+    },
+    {
+      "path": "verification/tests/windows-agent/src/lookup-page-recovery.test.mjs",
+      "sha256": "a5133bfbb904d00f980822dde67efdd1157055c84f5ba743ea025797bcc3dceb"
+    },
+    {
+      "path": "verification/tests/windows-agent/src/lookup-result-transport.test.mjs",
+      "sha256": "02025ebc0ec618616c62dfe8f90412537818bc936f75741fd80fdcb3d9cc8af7"
+    },
+    {
+      "path": "verification/tests/windows-agent/src/lookup-status-outbox.test.mjs",
+      "sha256": "4d8636321c11dd64a31f88f1dd86858cc2a4eedffe6705e4ff179c9a7603de68"
+    },
+    {
+      "path": "verification/tests/windows-agent/src/pnp-recovery-policy.test.mjs",
+      "sha256": "a06bca3959075c4482c6bc9d587b8a2f217859a44119f5abb59f1b76328e2f0d"
+    },
+    {
+      "path": "verification/tests/windows-agent/src/screen-webrtc-publisher.test.mjs",
+      "sha256": "33858d5614b36cd588b0935f5ed0e55991663249437abf314f06ab287fd0bd34"
+    },
+    {
+      "path": "verification/tests/windows-agent/src/serial-reservation.test.mjs",
+      "sha256": "41c3d428847734a232db3909cdd4d4b9b86d54118b533f4421e7506ffdbc1a00"
+    },
+    {
+      "path": "verification/tests/windows-agent/src/worker-shutdown.test.mjs",
+      "sha256": "dc9b340bc5e6fa4253da3d60bfa9b89b8f2b19728c84704646587cf43a9bf759"
+    },
+    {
+      "path": "verification/verify.py",
+      "sha256": "0d1368c0d095a4253c1c1027268135d353db627ada581848c60a1aeb8551d474"
+    }
+  ],
+  "previousCandidate": {
+    "tag": "lookup-20261010-rc.2",
+    "sourceCommit": "f017254902ad4262bb036a461df725f8424b0758"
+  },
+  "baseCandidateTag": "lookup-20261010-rc.2",
+  "baseSourceCommit": "f017254902ad4262bb036a461df725f8424b0758",
+  "taskBaseCommit": "08b864e3a070e7a561358897494c6425b154d598",
+  "apiDocsChanges": [
+    {
+      "path": "public/index.html",
+      "beforeSha256": "230b79c66ded1afe2e4246039076e13efb648a5c4bd547ff3bf5a2d06387e451",
+      "afterSha256": "bf20576d5d965374bbc4f7973fa59a8b6200b0cfeac9ff7220ae1986d22f98b5"
+    },
+    {
+      "path": "public/api-docs.html",
+      "beforeSha256": null,
+      "afterSha256": "cdc421f9738d81e4bc8ff684d2d5bda69e72dcd5b580dc362cfc672ce149b971"
+    },
+    {
+      "path": "public/api-docs.css",
+      "beforeSha256": null,
+      "afterSha256": "28f38323f5e2397fafd81035058647f96b5203de0cf1a4ca00fe7ed5d1b43c03"
+    },
+    {
+      "path": "public/api-docs.js",
+      "beforeSha256": null,
+      "afterSha256": "b480b5989aee024c72b4f571d0aa76339b5e8b42c3086800678669ad93927a26"
+    },
+    {
+      "path": "public/api-reference.json",
+      "beforeSha256": null,
+      "afterSha256": "e1208e3328a0d84b85ae50e607d20f761969cbca9d63455f7941a89c5d9aaf5f"
+    },
+    {
+      "path": "public/openapi.json",
+      "beforeSha256": null,
+      "afterSha256": "5c20ba7e546b837538a00efb0ec8f32cec7ba1e3275b78c60b9519ef68664cbf"
+    }
+  ],
+  "inheritedMaterials": "production-to-merged.patch, production-before, TEST_RESULTS.json and prior rc.2 materials are historical; API docs changes and tests are recorded separately.",
+  "inheritedPreviousCandidate": {
+    "tag": "lookup-20261010-rc.1",
+    "sourceCommit": "4c62986c9087b074dd15581742c656db6a49ea98"
+  },
+  "inheritedWorkspaceHead": "6811aef632eeaaacd6d6ce1effc4afa64bf6d363"
+}

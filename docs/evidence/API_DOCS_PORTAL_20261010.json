@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-10",
+  "candidateTag": "platform-api-docs-20261010-rc.1",
+  "status": "local_candidate_not_deployed",
+  "branch": "codex/api-documentation-portal",
+  "taskBaseCommit": "08b864e3a070e7a561358897494c6425b154d598",
+  "baseCandidateTag": "lookup-20261010-rc.2",
+  "baseSourceCommit": "f017254902ad4262bb036a461df725f8424b0758",
+  "workflow": {
+    "revision": "2026-09-30",
+    "sha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+  },
+  "scope": {
+    "httpOperations": 106,
+    "websocketChannels": 6,
+    "groups": 15,
+    "guides": 7,
+    "models": 34,
+    "runtimeChanges": [
+      {
+        "path": "public/index.html",
+        "beforeSha256": "230b79c66ded1afe2e4246039076e13efb648a5c4bd547ff3bf5a2d06387e451",
+        "afterSha256": "bf20576d5d965374bbc4f7973fa59a8b6200b0cfeac9ff7220ae1986d22f98b5"
+      },
+      {
+        "path": "public/api-docs.html",
+        "beforeSha256": null,
+        "afterSha256": "cdc421f9738d81e4bc8ff684d2d5bda69e72dcd5b580dc362cfc672ce149b971"
+      },
+      {
+        "path": "public/api-docs.css",
+        "beforeSha256": null,
+        "afterSha256": "28f38323f5e2397fafd81035058647f96b5203de0cf1a4ca00fe7ed5d1b43c03"
+      },
+      {
+        "path": "public/api-docs.js",
+        "beforeSha256": null,
+        "afterSha256": "b480b5989aee024c72b4f571d0aa76339b5e8b42c3086800678669ad93927a26"
+      },
+      {
+        "path": "public/api-reference.json",
+        "beforeSha256": null,
+        "afterSha256": "e1208e3328a0d84b85ae50e607d20f761969cbca9d63455f7941a89c5d9aaf5f"
+      },
+      {
+        "path": "public/openapi.json",
+        "beforeSha256": null,
+        "afterSha256": "5c20ba7e546b837538a00efb0ec8f32cec7ba1e3275b78c60b9519ef68664cbf"
+      }
+    ],
+    "changedInheritedFiles": [
+      "VERSION.json",
+      "README.md",
+      "RELEASE_NOTES.md",
+      "verification/MANIFEST.json",
+      "public/index.html"
+    ],
+    "serverAndAgentFilesByteIdentical": 167,
+    "frozenRuntimeHashesPreserved": 22,
+    "appJsAndStylesUnchanged": true
+  },
+  "verification": {
+    "apiDocs": {
+      "command": "node --test scripts/api-docs.test.mjs",
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "nodeExamplesParsed": 105,
+      "pythonExamplesParsed": 105,
+      "examplesExecuted": false,
+      "signerComparedWithActualServer": true,
+      "signatureCases": [
+        "GET",
+        "JSON POST",
+        "empty JSON object"
+      ],
+      "publicLookupSerializationCompared": true,
+      "undocumentedRouteRejected": true,
+      "catalogReproducible": true
+    },
+    "syntax": {
+      "rootCheck": 0,
+      "portalJsCheck": 0
+    },
+    "regression": {
+      "command": "npm run test:screen",
+      "passed": 594,
+      "failed": 0,
+      "skipped": 0,
+      "isolatedTemporaryCopy": true,
+      "verificationFixturesOverlaid": true,
+      "businessEnvironmentLoaded": false
+    },
+    "browser": {
+      "desktopWidth": 1440,
+      "mobileWidth": 390,
+      "horizontalOverflow": false,
+      "search": true,
+      "httpNodePythonTabs": true,
+      "copyFeedback": true,
+      "mobileDirectory": true,
+      "deepLink": true,
+      "inventoryRightHandButtonVisible": true,
+      "temporaryLayoutFixtureRemoved": true,
+      "businessRequests": 0
+    },
+    "d075": {
+      "command": "node deploy/mediamtx-pacing/verify.mjs --repository",
+      "workspace": "original workspace read-only",
+      "result": "repository-only",
+      "liveVerified": false
+    }
+  },
+  "review": {
+    "type": "primary agent source and browser review",
+    "separateAgentReview": false,
+    "blockersFound": [
+      "Inventory toolbar-actions was hidden by existing CSS; moved anchor to inventory heading right side and rechecked visibility."
+    ],
+    "unresolvedDocumentationBlockers": []
+  },
+  "initialFailuresAndCorrections": [
+    "Initial direct root check in minimal snapshot lacked verification fixture scripts; reran successfully in isolated copy with existing fixture overlay.",
+    "Initial new-test instrumentation regex and string-count assertion corrected; final 8/8 passed.",
+    "Managed worktree lacks D-075 checker; repository-only check used original workspace, not production."
+  ],
+  "notVerified": [
+    "rc.2 real restriction -> rotation -> puzzle -> resume on physical device",
+    "two physical devices and other OEMs",
+    "natural eight-hour wait",
+    "full deployment artifact/fresh dependency installation",
+    "production D-075 live/current drift/Windows mixed-version and full rollback",
+    "24-48 hour soak",
+    "Third-party live integration and actual business requests were not run in this documentation task.",
+    "Full Agent/Python/SDK suites were not rerun; inherited evidence is historical."
+  ],
+  "sideEffects": {
+    "productionReads": 0,
+    "productionWrites": 0,
+    "deployment": false,
+    "remotePush": false,
+    "physicalDeviceActions": 0,
+    "nameLookupQueries": 0,
+    "notifications": 0,
+    "serviceRestarts": 0,
+    "databaseMigrations": 0
+  },
+  "versioning": {
+    "oldTagsMoved": false,
+    "identity": "New annotated candidate tag resolves the commit; no self-referential source SHA."
+  },
+  "rollback": {
+    "restoreIndexFromTag": "lookup-20261010-rc.2",
+    "newStaticFiles": [
+      "public/api-docs.html",
+      "public/api-docs.css",
+      "public/api-docs.js",
+      "public/api-reference.json",
+      "public/openapi.json"
+    ],
+    "databaseMigration": false
+  }
+}

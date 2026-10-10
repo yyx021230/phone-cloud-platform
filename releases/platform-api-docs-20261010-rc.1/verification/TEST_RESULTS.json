@@ -1,0 +1,115 @@
+{
+  "verificationRevision": "20261010-post-rotation-failure-v1",
+  "candidateTag": "lookup-20261010-rc.2",
+  "rootSyntaxCheck": "passed",
+  "screenRegression": {
+    "total": 594,
+    "pass": 594,
+    "fail": 0
+  },
+  "agentRegression": {
+    "total": 289,
+    "pass": 289,
+    "fail": 0
+  },
+  "productionPythonRegression": {
+    "total": 163,
+    "pass": 163,
+    "fail": 0
+  },
+  "lookupPython": {
+    "total": 56,
+    "pass": 56,
+    "fail": 0
+  },
+  "sdk": {
+    "total": 4,
+    "pass": 4,
+    "fail": 0
+  },
+  "targeted": {
+    "newBehaviorTests": 9,
+    "beforeFix": {
+      "total": 35,
+      "passed": 29,
+      "failed": 6
+    },
+    "afterFix": {
+      "total": 35,
+      "passed": 35,
+      "failed": 0
+    }
+  },
+  "commands": [
+    {
+      "check": "syntax",
+      "exitCode": 0,
+      "logSha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+    },
+    {
+      "check": "screen",
+      "exitCode": 0,
+      "logSha256": "8d1172732d6ba59c4e558139a56dc4c2f6d7cbeaa4dc9c752a049d102f28b56d"
+    },
+    {
+      "check": "agent",
+      "exitCode": 0,
+      "logSha256": "705da45f293eaa742380ca08f34dc5fe379bf630d2bd3617d2746fca4d877bea"
+    },
+    {
+      "check": "python",
+      "exitCode": 0,
+      "logSha256": "670d282c2d59403e1e977989c2cbfcb84a7abe5581fd4256e9ba677231a0055d"
+    },
+    {
+      "check": "lookup",
+      "exitCode": 0,
+      "logSha256": "ea64dcc278577caf64bc3f43059c8e03f81bc119ad2a5d7d3f4b8ed00cbbf3d4"
+    },
+    {
+      "check": "sdk-node",
+      "exitCode": 0,
+      "logSha256": "4add171a5cd00480ff5db56e8a203ef46495141829a3f3a791e4671a8f92ee05"
+    },
+    {
+      "check": "sdk-python",
+      "exitCode": 0,
+      "logSha256": "c346f1228fe88f4ab3cb336ffa610dc3a34ec7c7bb7d05df7a1c222f2d928881"
+    }
+  ],
+  "realPostgres": {
+    "version": "16.15 (Homebrew)",
+    "checks": [
+      {
+        "name": "policy_failure_serializer_http_pg_atomic_retry_keeps_verified_B_and_original_result",
+        "failedFirstResponse": 500,
+        "rotationCount": 1,
+        "sameOutboxPayload": true
+      },
+      {
+        "name": "two_original_result_resumptions_and_restarts_keep_two_verified_rotations",
+        "originalResults": 1,
+        "rotationCount": 2,
+        "duplicateTerminalReports": 3,
+        "directResumeExecutions": 1,
+        "cooldownExpiryUnchanged": true
+      },
+      {
+        "name": "final_identity_count_survive_structured_pg_reload",
+        "originalResults": 1,
+        "rotationCount": 2
+      }
+    ],
+    "realDevicesUsed": 0,
+    "database": "fresh isolated synthetic database; structured writes enabled",
+    "testHarnessSha256": "4162c744ac11b0db76acefb6024705c9e0a3f18250ef15f0463096f6c8381079",
+    "fixtureCorrection": "First harness run expected resultId on the Agent payload; the existing contract stores it on the linked automation job. Assertion corrected; no runtime change; repeated on a fresh database.",
+    "clusterStopped": true
+  },
+  "realDevice": "rc.2 not loaded yet; rc.1 query51 resumed successfully but lost historical count",
+  "deployment": "production not run",
+  "countsOverlap": true,
+  "review": "Self review of three runtime diffs/callers and failure, duplicate, cancellation and persistence boundaries; no independent reviewer",
+  "details": "../../../docs/evidence/LOOKUP_RC2_ROTATION_FAILURE_FIX_20261010.json",
+  "priorReconciliation": "history/rc1-TEST_RESULTS.json"
+}
