@@ -20,13 +20,13 @@ test("discovers the Android and Unisoc USB vendor ids used by current phones", (
   assert.equal(ANDROID_USB_VENDOR_IDS.includes("1782"), true);
 });
 
-test("uses eight targeted restarts and then quarantines the phone", () => {
+test("keeps the legacy eight-action budget and then enters cooldown", () => {
   assert.equal(pnpTargetRecoveryMode(1), "restart");
   assert.equal(pnpTargetRecoveryMode(2), "restart");
   assert.equal(pnpTargetRecoveryMode(5), "restart");
   assert.equal(pnpTargetRecoveryMode(8), "restart");
-  assert.equal(pnpTargetRecoveryMode(9), "quarantine");
-  assert.equal(pnpTargetRecoveryMode(6, 5), "quarantine");
+  assert.equal(pnpTargetRecoveryMode(9), "cooldown");
+  assert.equal(pnpTargetRecoveryMode(6, 5), "cooldown");
 });
 
 test("resets persisted attempts when the state-driven policy version changes", () => {
@@ -81,7 +81,8 @@ test("preserves v2 retry state which was not blocked by duplicate ADB-child rest
   assert.equal(normalized.policyVersion, PNP_RECOVERY_POLICY_VERSION);
   assert.equal(normalized.attempts, 3);
   assert.deepEqual(normalized.actionHistory, ["cycle_usb_port", "cycle_usb_port", "cycle_usb_port"]);
-  assert.equal(normalized.quarantinedAt, 789);
+  assert.equal(normalized.quarantinedAt, 0);
+  assert.equal(normalized.inProgress, false);
   assert.equal(normalized.lastMode, "cycle_usb_port");
 });
 

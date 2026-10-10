@@ -264,6 +264,9 @@ const els = {
   userLookupCurrentAccount: document.getElementById("userLookupCurrentAccount"),
   userLookupAccountChooser: document.getElementById("userLookupAccountChooser"),
   userLookupAccountList: document.getElementById("userLookupAccountList"),
+  userLookupCooldownPanel: document.getElementById("userLookupCooldownPanel"),
+  userLookupCooldownRows: document.getElementById("userLookupCooldownRows"),
+  userLookupRecoveryRetryButton: document.getElementById("userLookupRecoveryRetryButton"),
   userLookupPhoneInput: document.getElementById("userLookupPhoneInput"),
   userLookupQueryButton: document.getElementById("userLookupQueryButton"),
   userLookupHumanResumePanel: document.getElementById("userLookupHumanResumePanel"),
@@ -472,6 +475,7 @@ function humanError(payload = {}, status = 0) {
     screen_agent_offline: "负责这台手机的 Windows 管理器尚未连接投屏通道。",
     device_screen_busy: "这台手机已经有一个实时控制会话。",
     lookup_screen_control_active: "实时控屏进行中，请结束控屏后再继续查名字或切换账号。",
+    lookup_recovery_required: "当前任务恢复失败，后续队列已暂停；请重试当前任务或结束会话。",
     lookup_human_verification_not_resumable: "当前没有可继续检查的人工验证任务，请刷新会话状态。",
     lookup_human_verification_phone_missing: "原查询号码已缺失，无法安全恢复；请重新输入号码查询。",
     invalid_kuaishou_lead_delay_range: "间隔必须是 30–3600 秒，且最长时间不能小于最短时间。",
@@ -975,6 +979,7 @@ function renderUserWorkbench() {
   const lookupSession = selectedDevice ? activeLookupSessionForDevice(selectedDevice.deviceId) : null;
   renderLookupSession(lookupSession, selectedDevice);
   renderUserScreenControl(selectedDevice);
+  notifyLookupHumanVerification(lookupSession, selectedDevice);
 }
 
 function activeKuaishouLeadTask(deviceId = "") {
@@ -1080,7 +1085,7 @@ async function copyLookupTailToClipboard(value) {
 function renderLookupSession(session, device) {
   const active = session && ["starting", "ready", "querying", "switching", "choosing_account", "needs_human_verification", "stopping"].includes(session.status);
   const adminOverride = session?.operatorMode === "admin_override";
-  const ready = session?.status === "ready" && !session.pendingJobId;
+  const ready = session?.status === "ready" && !session.pendingJobId && !session.requiresAccountSwitch;
   const choosingAccount = session?.status === "choosing_account" && !session.pendingJobId;
   const lookupScreenControlActive = Boolean(
     device?.screenControlBusy
@@ -1089,6 +1094,8 @@ function renderLookupSession(session, device) {
   );
   const results = session?.results || [];
   const humanVerificationResult = resumableLookupHumanVerificationResult(session);
+  const recoveryResult = resumableLookupRecoveryResult(session);
+  const lookupBlocked = Boolean(humanVerificationResult || recoveryResult);
   const humanResumeAvailable = Boolean(
     humanVerificationResult
   );
@@ -1101,19 +1108,30 @@ function renderLookupSession(session, device) {
     ? Math.max(0, Math.floor((Date.now() - startedAt) / 1000))
     : 0;
   const statusCopy = {
-    starting: ["正在启动", `正在打开支付宝并进入搜索页 · 已等待 ${startingSeconds} 秒`],
+    starting: ["正在检查账户", `正在识别当前账户、检查冷却并准备搜索页 · 已等待 ${startingSeconds} 秒`],
     ready: [session?.error ? "需要处理后重试" : "查询会话已就绪", session?.error || `已成功查询 ${session?.successfulCount || 0} 个号码`],
     querying: ["正在查询", `${runningStage} · 已用 ${formatDurationMs(runningElapsedMs)}`],
     switching: ["正在处理账号", "正在读取账号列表或复核指定账号"],
     choosing_account: ["请选择支付宝账号", `已读取 ${session?.accountChoices?.length || 0} 个已保存账号`],
-    needs_human_verification: ["当前号码等待人工验证", "请进入实时控屏完成拼图，结束后继续获取本号码结果"],
+    needs_human_verification: ["当前号码等待人工验证", "请进入实时控屏完成拼图，系统检测通过后自动重查原号码"],
     stopping: ["正在结束", "正在释放手机"],
     failed: ["会话异常结束", session?.error || "请重新开始"],
     ended: ["会话已结束", `本次成功 ${session?.successfulCount || 0} 个号码`],
     expired: ["会话已过期", "请重新开始"]
   };
-  const copy = statusCopy[session?.status] || ["尚未开始", "点击开始建立查询会话"];
-  if (session?.status === "ready" && session?.lastAccountSwitch?.toAccount && !session.error) {
+  const copy = humanResumeAvailable
+    ? ["当前号码等待人工验证", "发起者或管理员可进入实时控屏；验证通过后系统自动交接并重查原号码"]
+    : statusCopy[session?.status] || ["尚未开始", "点击开始建立查询会话"];
+  if (humanVerificationResult?.phase === "start") {
+    copy[0] = "账户准备等待人工验证";
+    copy[1] = "请进入实时控屏完成拼图，系统检测通过后继续准备账户。";
+  }
+  if (recoveryResult) { copy[0] = "当前任务恢复失败"; copy[1] = session.error || "后续队列已暂停，请重试当前任务。"; }
+  if (!humanResumeAvailable && (session?.requiresAccountSwitch || session?.error?.includes("当前手机无可用账户"))) {
+    copy[0] = "当前手机无可用账户";
+    copy[1] = session.error || "已保存账户全部冷却中，请查看冷却结束时间，稍后重新建立会话。";
+  }
+  if (!humanResumeAvailable && session?.status === "ready" && session?.lastAccountSwitch?.toAccount && !session.error) {
     const fromAccount = session.lastAccountSwitch.fromAccount || "上一账号";
     copy[1] = `已从 ${fromAccount} 切换至 ${session.lastAccountSwitch.toAccount}`;
   }
@@ -1129,7 +1147,7 @@ function renderLookupSession(session, device) {
     els.userLookupCurrentAccount.textContent = session?.currentAccount || "尚未识别";
   }
   if (els.userLookupSwitchButton) {
-    els.userLookupSwitchButton.disabled = adminOverride || (!ready && !choosingAccount) || state.userLookupBusy || state.userLookupEnding || lookupScreenControlActive;
+    els.userLookupSwitchButton.disabled = adminOverride || lookupBlocked || (!ready && !choosingAccount) || state.userLookupBusy || state.userLookupEnding || lookupScreenControlActive;
     els.userLookupSwitchButton.textContent = session?.status === "switching" ? "处理中..." : choosingAccount ? "重新读取账号" : "选择切换账号";
   }
   if (els.userLookupAccountChooser) {
@@ -1139,16 +1157,39 @@ function renderLookupSession(session, device) {
     const choices = Array.isArray(session?.accountChoices) ? session.accountChoices : [];
     els.userLookupAccountList.innerHTML = choices.map((choice, index) => {
       const current = Boolean(choice.current);
-      return `<button type="button" class="lookup-account-choice ${current ? "is-current" : ""}" data-lookup-account-choice="${escapeHtml(choice.account || "")}" ${current ? "disabled" : ""}><span><small>账号 ${index + 1}</small><strong>${escapeHtml(choice.account || "未知账号")}</strong></span><em>${current ? "当前" : "切换到此账号"}</em></button>`;
+      const cooling = choice.cooling === true;
+      return `<button type="button" class="lookup-account-choice ${current ? "is-current" : ""}" data-lookup-account-choice="${escapeHtml(choice.account || "")}" ${current || cooling ? "disabled" : ""}><span><small>账号 ${index + 1}</small><strong>${escapeHtml(choice.account || "未知账号")}</strong></span><em>${cooling ? "冷却中，不可切换" : current ? "当前" : "切换到此账号"}</em></button>`;
     }).join("") || `<div class="empty scan-empty-state">没有读取到可切换账号，请重新读取。</div>`;
   }
-  if (els.userLookupPhoneInput) els.userLookupPhoneInput.disabled = adminOverride || !ready || state.userLookupBusy || state.userLookupEnding || lookupScreenControlActive;
-  if (els.userLookupQueryButton) els.userLookupQueryButton.disabled = adminOverride || !ready || state.userLookupBusy || state.userLookupEnding || lookupScreenControlActive;
-  if (els.userLookupHumanResumePanel) els.userLookupHumanResumePanel.hidden = !humanResumeAvailable;
-  if (els.userLookupHumanResumeButton) {
-    els.userLookupHumanResumeButton.disabled = !humanResumeAvailable || lookupScreenControlActive || state.userLookupBusy || state.userLookupEnding;
-    els.userLookupHumanResumeButton.textContent = lookupScreenControlActive ? "请先结束实时控屏" : "验证完成，继续获取本号码结果";
+  if (els.userLookupCooldownRows) {
+    const rows = Array.isArray(session?.accountCooldowns) ? session.accountCooldowns : [];
+    if (els.userLookupCooldownPanel) els.userLookupCooldownPanel.hidden = !rows.length;
+    const dateLabel = (value) => Number.isFinite(Date.parse(value)) ? new Date(value).toLocaleString("zh-CN", { hour12: false }) : "待确认";
+    els.userLookupCooldownRows.innerHTML = rows.map((row) => {
+      const minutes = Math.max(1, Math.ceil(Number(row.remainingMs || 0) / 60000));
+      const remaining = minutes >= 60 ? `${Math.floor(minutes / 60)}小时${minutes % 60}分` : `${minutes}分钟`;
+      return `<tr><th scope="row">${escapeHtml(row.account)}</th><td>${escapeHtml(dateLabel(row.limitedAt))}</td><td>${escapeHtml(dateLabel(row.cooldownUntil))}<small>${row.cooling ? `冷却中 · 剩余${remaining}` : "冷却已到期 · 可再次尝试"}</small></td></tr>`;
+    }).join("");
   }
+  if (els.userLookupPhoneInput) els.userLookupPhoneInput.disabled = adminOverride || lookupBlocked || !ready || state.userLookupBusy || state.userLookupEnding || lookupScreenControlActive;
+  if (els.userLookupQueryButton) els.userLookupQueryButton.disabled = adminOverride || lookupBlocked || !ready || state.userLookupBusy || state.userLookupEnding || lookupScreenControlActive;
+  if (els.userLookupHumanResumePanel) els.userLookupHumanResumePanel.hidden = !lookupBlocked;
+  if (els.userLookupHumanResumeButton) {
+    els.userLookupHumanResumeButton.hidden = true;
+    els.userLookupHumanResumeButton.disabled = true;
+  }
+  if (els.userLookupRecoveryRetryButton) {
+    els.userLookupRecoveryRetryButton.disabled = !recoveryResult || state.userLookupBusy || state.userLookupEnding || lookupScreenControlActive;
+    els.userLookupRecoveryRetryButton.hidden = !recoveryResult;
+    els.userLookupRecoveryRetryButton.textContent = recoveryResult?.phase === "start" ? "重试账户准备" : "重试当前号码";
+  }
+  const humanPanelTitle = els.userLookupHumanResumePanel?.querySelector?.("strong");
+  const humanPanelText = els.userLookupHumanResumePanel?.querySelector?.("small");
+  if (humanPanelTitle) humanPanelTitle.textContent = recoveryResult ? "当前任务恢复失败" : humanVerificationResult?.phase === "start" ? "账户准备等待人工验证" : "当前号码等待人工验证";
+  if (humanPanelText) humanPanelText.textContent = recoveryResult
+    ? "后续队列保持暂停。重试将继续当前任务，也可以结束会话。"
+    : humanVerificationResult?.phase === "start" ? "请进入实时控屏完成拼图，系统检测通过后继续准备账户，无需确认。"
+    : "请进入实时控屏完成拼图。系统检测通过后重查原号码，无需确认。";
   if (els.userLookupEndButton) {
     els.userLookupEndButton.disabled = adminOverride || !active || session?.status === "stopping" || state.userLookupEnding;
     els.userLookupEndButton.textContent = session?.status === "stopping" || state.userLookupEnding ? "结束中..." : "结束会话";
@@ -1170,6 +1211,10 @@ function renderLookupSession(session, device) {
     if (hint) els.userLookupHint.textContent = lookupScreenControlActive && ["ready", "choosing_account"].includes(session.status)
       ? "实时控屏中；结束控屏后可继续提交查名字或切换账号。"
       : hint;
+    if (recoveryResult) els.userLookupHint.textContent = session.error || "当前任务恢复失败，后续队列已暂停，请重试当前任务。";
+    if (humanResumeAvailable) els.userLookupHint.textContent = lookupScreenControlActive
+      ? "请人工完成拼图，无需点击确认；系统连续检测通过后会自动结束这次控屏，清空搜索框并重查原号码。当前号码和后续队列保持暂停。"
+      : "检测到拼图，需要人工介入；任务发起者或管理员可进入实时控屏。系统自动检测验证消失后清空搜索框并重查原号码，不跳过当前任务。";
   }
   if (els.userLookupResultList) {
     const previousFirstResultId = els.userLookupResultList.dataset.firstResultId || "";
@@ -1177,7 +1222,7 @@ function renderLookupSession(session, device) {
     const nextFirstResultId = String(results[0]?.resultId || "");
     els.userLookupResultList.innerHTML = results.length
       ? results.map((result, index) => {
-        const failed = result.status === "failed";
+        const failed = result.status === "failed" || result.status === "needs_recovery";
         const notFound = result.status === "not_found";
         const needsHuman = result.status === "needs_human_verification";
         const limitReached = result.status === "limit_reached";
@@ -1353,7 +1398,11 @@ async function startUserScreenSession() {
       onStatus(message) {
         if (state.userScreenDeviceId !== device.deviceId) return;
         state.userScreenStatus = message.status || "connecting";
-        state.userScreenDetail = message.detail || message.status || "正在连接";
+        const humanHandoverClosed = message.status === "closed"
+          && /^(控制|视频)通道连接失败（1000：lookup_human_verification_completed）$/.test(String(message.detail || ""));
+        state.userScreenDetail = humanHandoverClosed
+          ? "人工验证已完成，控屏已自动结束；脚本正在重查原号码。"
+          : message.detail || message.status || "正在连接";
         if (["failed", "closed"].includes(state.userScreenStatus)) {
           const failedSessionId = state.userScreenSession?.sessionId || "";
           userScreenInactivityGuard.stop();
@@ -4839,6 +4888,7 @@ async function submitLookupQuery() {
   if (state.userLookupBusy || state.userLookupEnding || !state.userSelectedDeviceId) return;
   const session = activeLookupSessionForDevice(state.userSelectedDeviceId);
   if (!session || session.status !== "ready") return;
+  if (resumableLookupHumanVerificationResult(session) || resumableLookupRecoveryResult(session)) return;
   const phoneNumber = String(els.userLookupPhoneInput?.value || "").replace(/\D/g, "");
   if (!/^1\d{10}$/.test(phoneNumber)) {
     if (els.userLookupHint) els.userLookupHint.textContent = "请输入正确的 11 位手机号。";
@@ -4889,32 +4939,16 @@ async function submitLookupQuery() {
   }
 }
 
-els.userLookupQueryButton?.addEventListener("click", submitLookupQuery);
-els.userLookupPhoneInput?.addEventListener("keydown", (event) => {
-  if (event.key !== "Enter") return;
-  event.preventDefault();
-  submitLookupQuery().catch(() => {});
-});
-
-els.userLookupHumanResumeButton?.addEventListener("click", async () => {
-  if (state.userLookupBusy || state.userLookupEnding || !state.userSelectedDeviceId) return;
+els.userLookupRecoveryRetryButton?.addEventListener?.("click", async () => {
   const session = activeLookupSessionForDevice(state.userSelectedDeviceId);
-  const resumable = Boolean(resumableLookupHumanVerificationResult(session));
-  if (!resumable) return;
-  state.userLookupBusy = true;
+  if (!resumableLookupRecoveryResult(session) || state.userLookupBusy || state.userLookupEnding) return;
   bumpUserLookupSyncVersion();
-  if (els.userLookupHint) els.userLookupHint.textContent = "正在检查拼图是否通过，并继续获取当前号码的姓名结果...";
+  state.userLookupBusy = true;
   renderUserWorkbench();
   try {
-    const payload = await api(`/api/v1/user/automation/alipay-name-sessions/${encodeURIComponent(session.sessionId)}/resume-after-human-verification`, {
-      method: "POST",
-      body: "{}"
-    });
-    if (payload.session) upsertUserLookupSession(payload.session, { preserveStopping: true });
-    bumpUserLookupSyncVersion();
-    if (els.userLookupHint) els.userLookupHint.textContent = "当前号码结果恢复任务已提交；系统不会跳过或重新输入这个号码。";
+    const payload = await api(`/api/v1/user/automation/alipay-name-sessions/${encodeURIComponent(session.sessionId)}/resume-after-human-verification`, { method: "POST", body: "{}" });
+    if (payload.session) state.userLookupSessions = state.userLookupSessions.map((item) => item.sessionId === payload.session.sessionId ? payload.session : item);
   } catch (error) {
-    bumpUserLookupSyncVersion();
     if (els.userLookupHint) els.userLookupHint.textContent = error.message;
   } finally {
     state.userLookupBusy = false;
@@ -4923,11 +4957,19 @@ els.userLookupHumanResumeButton?.addEventListener("click", async () => {
   }
 });
 
+els.userLookupQueryButton?.addEventListener("click", submitLookupQuery);
+els.userLookupPhoneInput?.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter") return;
+  event.preventDefault();
+  submitLookupQuery().catch(() => {});
+});
+
 function resumableLookupHumanVerificationResult(session) {
   if (!session || session.pendingJobId || !["ready", "needs_human_verification"].includes(session.status)) return null;
   const result = Array.isArray(session.results)
     ? session.results.find((item) => item?.status !== "queued")
     : null;
+  if (session.startupHumanVerification?.status === "needs_human_verification") return session.startupHumanVerification;
   if (!result) return null;
   return result.status === "needs_human_verification"
     || (result.limitReason === "jigsaw_verification" && !["succeeded", "not_found", "cancelled"].includes(result.status))
@@ -4935,10 +4977,58 @@ function resumableLookupHumanVerificationResult(session) {
     : null;
 }
 
+function resumableLookupRecoveryResult(session) {
+  if (!session || session.pendingJobId || session.status !== "ready") return null;
+  if (session.startupHumanVerification?.status === "needs_recovery") return session.startupHumanVerification;
+  const result = session.results?.find((item) => item?.status !== "queued");
+  return result?.status === "needs_recovery" ? result : null;
+}
+
+const lookupHumanPromptStates = new Map();
+
+function lookupHumanPromptVisible(session, device) {
+  return Boolean(state.token && state.page === "user-workbench" && state.userWorkbenchView === "detail"
+    && session?.deviceId === state.userSelectedDeviceId && device?.deviceId === session?.deviceId);
+}
+
+function notifyLookupHumanVerification(session, device) {
+  if (!session?.sessionId) return;
+  const result = resumableLookupHumanVerificationResult(session);
+  if (!result) {
+    lookupHumanPromptStates.delete(session.sessionId);
+    return;
+  }
+  if (!lookupHumanPromptVisible(session, device)) return;
+  const key = String(result.resultId || "human_verification");
+  if (lookupHumanPromptStates.get(session.sessionId)?.key === key) return;
+  const prompt = { key };
+  lookupHumanPromptStates.set(session.sessionId, prompt);
+  if (lookupHumanPromptStates.size > 50) lookupHumanPromptStates.delete(lookupHumanPromptStates.keys().next().value);
+  const token = state.token;
+  // Defer until the current render completes; a late refresh must not show a stale prompt.
+  setTimeout(() => {
+    if (lookupHumanPromptStates.get(session.sessionId) !== prompt) return;
+    const current = activeLookupSessionForDevice(session.deviceId);
+    const currentResult = resumableLookupHumanVerificationResult(current);
+    if (state.token !== token || current?.sessionId !== session.sessionId
+      || !lookupHumanPromptVisible(current, device) || !currentResult
+      || String(currentResult.resultId || "human_verification") !== key) {
+      lookupHumanPromptStates.delete(session.sessionId);
+      return;
+    }
+    if (currentResult.phase === "start") {
+      alert(`手机 ${device.deviceName || "当前设备"} 检测到拼图，需要人工介入。\n账户准备和后续队列已暂停，不会自动求解或代滑。\n请进入实时控屏完成拼图，系统检测通过后继续准备账户，无需点击确认。`);
+      return;
+    }
+    alert(`手机 ${device.deviceName || "当前设备"} 检测到拼图，需要人工介入。\n当前号码和后续队列已暂停，不会自动求解或代滑。\n请任务发起者或管理员进入实时控屏完成人工验证。无需点击确认；系统检测通过后会自动结束这次控屏，清空搜索框并重查原号码，然后继续队列。`);
+  }, 0);
+}
+
 async function submitLookupAccountAction(targetAccount = "") {
   if (state.userLookupBusy || state.userLookupEnding || !state.userSelectedDeviceId) return;
   const session = activeLookupSessionForDevice(state.userSelectedDeviceId);
   if (!session || !["ready", "choosing_account"].includes(session.status)) return;
+  if (resumableLookupHumanVerificationResult(session) || resumableLookupRecoveryResult(session)) return;
   const previousStatus = session.status;
   bumpUserLookupSyncVersion();
   state.userLookupBusy = true;

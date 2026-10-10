@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
+import vm from "node:vm";
 import { fileURLToPath } from "node:url";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
@@ -71,10 +72,27 @@ test("Alipay uses a bounded Poco fast path and reserves XML account navigation f
   assert.match(source, /poco_query_resume_failed/);
 });
 
-test("Alipay account restrictions are reported and never auto-switch the current account", () => {
+test("Alipay limits request account action while a jigsaw requests human action", () => {
   assert.match(source, /alipay_access_denied_account_switch_required/);
   assert.match(source, /alipay_account_restriction_switch_required/);
-  assert.match(source, /jigsaw_verification/);
+  const context = vm.createContext({});
+  for (const name of ["alipayAccountSwitchReasonFromError", "alipayLimitMessage", "classifyAlipayNameLookupFailure"]) {
+    const start = source.indexOf(`function ${name}(`);
+    assert.ok(start >= 0);
+    vm.runInContext(source.slice(start, source.indexOf("\n}", start) + 2), context);
+  }
+  for (const reason of ["access_denied", "device_risk", "frequent_or_abnormal_access"]) {
+    const result = context.classifyAlipayNameLookupFailure(reason === "access_denied"
+      ? "alipay_access_denied_account_switch_required" : `alipay_account_restriction_switch_required:${reason}`);
+    assert.equal(result.limitReached, true);
+    assert.equal(result.requiresAccountSwitch, true);
+    assert.equal(result.limitReason, reason);
+    assert.notEqual(result.requiresHumanAction, true);
+  }
+  const human = context.classifyAlipayNameLookupFailure("poco_alipay_human_verification_required:jigsaw_verification");
+  assert.equal(human.requiresHumanAction, true);
+  assert.notEqual(human.requiresAccountSwitch, true);
+  assert.notEqual(human.limitReached, true);
   assert.match(source, /device_risk/);
   assert.match(source, /frequent_or_abnormal_access/);
   assert.match(source, /requiresAccountSwitch: true/);
@@ -84,7 +102,7 @@ test("Alipay account restrictions are reported and never auto-switch the current
   assert.match(source, /savedAccounts: Array\.isArray\(parsed\.savedAccounts\)/);
   assert.doesNotMatch(source, /payload\.forceAccountSwitchReason/);
   assert.doesNotMatch(source, /accountSwitchDue/);
-  assert.match(source, /timeoutMs: operation === "query" \? 480_000/);
+  assert.match(source, /timeoutMs: payload\.operation === "query" \? 1_800_000 : 120_000/);
 });
 
 test("successful Alipay lookup fields survive the Windows status transport", () => {

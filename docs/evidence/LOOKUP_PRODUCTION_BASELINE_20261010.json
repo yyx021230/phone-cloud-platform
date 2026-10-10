@@ -1,0 +1,250 @@
+{
+  "observedAtUtc": "2026-10-10T06:09:24.9974330Z",
+  "status": "current Windows lookup source, cloud container source and image identity captured; production configuration hashes unavailable",
+  "scope": "lookup release documentation only; no remote mutations",
+  "windows": {
+    "directory": "D:\\PhoneCloud\\agent",
+    "agentProcesses": [
+      {
+        "created": "2026-09-29T09:58:35.4592860Z",
+        "pid": 85936,
+        "executable": "D:\\PhoneCloud\\tools\\node\\node.exe"
+      }
+    ],
+    "lookupModulesAbsent": [
+      "src/lookup-account-policy.mjs",
+      "src/lookup-status-outbox.mjs",
+      "src/lookup-human-observer.mjs",
+      "src/lookup-page-recovery.mjs"
+    ],
+    "screenStreamSha256": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+    "screenOwnerPublishedBaselineMatches": true
+  },
+  "cloudPublic": {
+    "healthz": 200,
+    "readyz": 200,
+    "indexSha256": "2740d298da28cd8ccebf71c7698d631932f3e466d492d7471dd7d82d84072791",
+    "backendSourceHashVerified": true,
+    "imageIdentityVerified": true,
+    "configurationHashVerified": false
+  },
+  "components": [
+    {
+      "component": "windows-agent/src/index.mjs",
+      "productionSha256": "6e1110d41436e31d9f2950342cd65b2531aa1f36b0f6d53d1f0b2036ac16b86a",
+      "candidateSha256": "272e48ebbf45e3b144c6c043ec0bb862245148001fc300ea0dd61fc137fb8225",
+      "productionEvidence": "authenticated readonly file capture with matching metadata hash"
+    },
+    {
+      "component": "windows-agent/scripts/alipay_name_lookup.py",
+      "productionSha256": "3e73ddd4fe2e455f41977dbac18ddd88f7f80cbce18db634790bfdb547a419c2",
+      "candidateSha256": "f444bc33aa97107d84e88abaca3b60948be70c2c14462f767815a1b1f7c688bd",
+      "productionEvidence": "authenticated readonly file capture with matching metadata hash"
+    },
+    {
+      "component": "public/app.js",
+      "productionSha256": "f001ce98e89807120be30a0d028eb43cffc44a2b5d84efab83dd3732af03ef41",
+      "candidateSha256": "7eca771a23af137be339b41c64e5c158d9d6df468d4fa7136eb61e6122576187",
+      "productionEvidence": "public HTTP response",
+      "productionResourceVersion": "20260918-gallery-delivery-v2"
+    },
+    {
+      "component": "server/automation-center.mjs",
+      "productionSha256": "1686e750fe3a574d1d5199707e39c51b7fc8489f8d64d8a49cb0c30d0a953bbd",
+      "candidateSha256": "79f5c1ccc7c5968bbedd6a20c7b0b41af4991075729ce776e756a4b230bd3a52",
+      "productionEvidence": "authenticated read-only capture from actual running business container"
+    },
+    {
+      "component": "server/index.mjs",
+      "productionSha256": "1bdfbc3e370fff1c4a07e9c0f30242a348035d3e0227596f2e62eb90f3796e92",
+      "candidateSha256": "57dc9f8785f63a181964b1cc494f0c1cc9d3f96d9106553306d3d508409e1e0d",
+      "productionEvidence": "authenticated read-only capture from actual running business container"
+    },
+    {
+      "component": "server/postgres-repositories.mjs",
+      "productionSha256": "c5066a0daf7d41a27f17919b5926940795cab6f3feea8335867ede11baa8d1e7",
+      "candidateSha256": "72ece8c0273deef96c3e737224e73297f890e2021893c30ba5ba350b00b0218b",
+      "productionEvidence": "authenticated read-only capture from actual running business container"
+    }
+  ],
+  "pythonStructure": {
+    "productionFunctionCount": 120,
+    "candidateFunctionCount": 97,
+    "productionOnlyMethodCount": 31,
+    "productionOnlyMethods": [
+      "Runner.data_network_acceleration_overlay_focus",
+      "Runner.dismiss_canvas_modal_after_blocked_my_tab",
+      "Runner.dismiss_honor_software_update_overlay",
+      "Runner.dismiss_phone_credit_promo_xml",
+      "Runner.dismiss_real_name_prompt_xml",
+      "Runner.dismiss_vivo_usb_mode_dialog",
+      "Runner.dismiss_vivo_wlan_risk_overlay",
+      "Runner.exact_search_activity_visible",
+      "Runner.exit_search_activity_for_account_navigation",
+      "Runner.focus_components",
+      "Runner.focus_state",
+      "Runner.poco_activate_home_tab_if_present",
+      "Runner.poco_cancel_data_network_acceleration",
+      "Runner.poco_dismiss_alipay_home_overlay_snapshot",
+      "Runner.poco_dismiss_fullscreen_ad_live",
+      "Runner.poco_dismiss_honor_software_update_dialog",
+      "Runner.poco_dismiss_local_service_prompt",
+      "Runner.poco_dismiss_phone_credit_promo_snapshot",
+      "Runner.poco_dismiss_post_input_usb_warning",
+      "Runner.poco_dismiss_real_name_prompt_live",
+      "Runner.poco_dismiss_vivo_wlan_risk_dialog",
+      "Runner.poco_home_search_target",
+      "Runner.poco_live_home_search_target",
+      "Runner.poco_observe_result_transition",
+      "Runner.poco_resume_alipay_home",
+      "Runner.restart_alipay_for_fresh_poco_after_honor_update",
+      "Runner.restore_alipay_from_systemui",
+      "Runner.resume_alipay_home",
+      "Runner.resume_alipay_under_exact_overlay",
+      "Runner.system_ui_focus_visible",
+      "Runner.vivo_usb_mode_dialog_visible"
+    ],
+    "candidateOnlyMethods": [
+      "Runner.account_metadata",
+      "Runner.assert_known_account",
+      "Runner.cooling_accounts",
+      "Runner.dismiss_notification_shade_if_present",
+      "Runner.dismiss_unverified_account_modal_visual",
+      "Runner.prepare_available_account",
+      "Runner.wake_and_unlock_for_lookup_start",
+      "focused_window_name"
+    ],
+    "sharedChangedMethodCount": 31,
+    "entireCandidateFileSafeToOverwriteProduction": false
+  },
+  "offlineSyntheticSourceReplays": {
+    "production-name-format-replay.json": [
+      {
+        "source": "production",
+        "segmentedMaskRecognized": false,
+        "onlySyntheticFixture": true
+      },
+      {
+        "source": "candidate",
+        "segmentedMaskRecognized": true,
+        "onlySyntheticFixture": true
+      }
+    ],
+    "production-terminal-replay.json": [
+      {
+        "source": "production",
+        "statuses": [
+          {
+            "status": "succeeded",
+            "hasResult": true
+          },
+          {
+            "status": "failed",
+            "hasResult": false
+          }
+        ],
+        "deviceOperations": 0
+      },
+      {
+        "source": "candidate",
+        "statuses": [
+          {
+            "status": "succeeded",
+            "hasResult": true
+          }
+        ],
+        "deviceOperations": 0
+      }
+    ]
+  },
+  "interpretation": "replays execute captured source with synthetic inputs; they do not trigger a real production failure or query",
+  "candidateLabel": "20261010-lookup-chain-reliability-v1",
+  "runtimeOperations": {
+    "deployments": 0,
+    "restarts": 0,
+    "deviceCommands": 0,
+    "realQueries": 0,
+    "realNotifications": 0
+  },
+  "secretsIncluded": false,
+  "cloudRuntime": {
+    "observedAtUtc": "2026-10-10T06:24:17.864325+00:00",
+    "containerId": "686d5a663506d6f823b24ad7a4ec2fd451e9745228ab6faa500a72753f2890b1",
+    "imageId": "sha256:907e0c65a50b1d066241e55ce475ac772647a531b582ae2894e25e1adc8ed3dd",
+    "startedAtUtc": "2026-09-21T07:38:22.5279431Z",
+    "restartCount": 0,
+    "health": "healthy",
+    "sourceCaptureStable": true,
+    "configurationHashVerified": false,
+    "codeInventoryScope": "server and public js/mjs/html/css, excluding tests, AppleDouble metadata and vendor bundles; SDK deployment layout excluded",
+    "comparison": {
+      "same": [
+        "server/agent-runtime-release.mjs",
+        "server/device-lock-compatibility.mjs",
+        "server/device-naming.mjs",
+        "server/device-occupancy.mjs",
+        "server/device-sim-authority.mjs",
+        "server/evidence-signing.mjs",
+        "server/evidence-storage.mjs",
+        "server/postgres-json.mjs",
+        "server/realtime-metrics.mjs",
+        "server/runtime-save-scheduler.mjs",
+        "server/save-queue.mjs",
+        "server/screen-backpressure.mjs",
+        "server/screen-media-auth.mjs",
+        "server/screen-quality.mjs",
+        "server/screen-sessions.mjs",
+        "server/sms-message-index.mjs",
+        "server/sms-refresh-rate.mjs",
+        "server/state-repositories.mjs",
+        "server/task-history-maintenance.mjs",
+        "server/xhs-account-identity.mjs",
+        "public/screen-inactivity-guard.js",
+        "public/user-device-inventory.js",
+        "public/user-sms-refresh-policy.mjs"
+      ],
+      "different": [
+        "server/automation-center.mjs",
+        "server/index.mjs",
+        "server/open-name-lookup-api.mjs",
+        "server/persistence-policy.mjs",
+        "server/postgres-repositories.mjs",
+        "server/screen-gallery-import.mjs",
+        "server/screen-relay.mjs",
+        "server/screen-transport-policy.mjs",
+        "server/sms-message-dedupe.mjs",
+        "server/sms-order-matcher.mjs",
+        "server/sms-order-probe.mjs",
+        "public/app.js",
+        "public/index.html",
+        "public/styles.css"
+      ],
+      "online_only": [
+        "server/lookup-session-lifecycle.mjs",
+        "server/windows-task-dispatch.mjs",
+        "public/screen-control.js"
+      ],
+      "local_only": [
+        "server/lookup-human-notifications.mjs",
+        "server/lookup-account-cooldown.mjs",
+        "server/lookup-human-handover.mjs",
+        "server/publish-evidence.mjs",
+        "server/screen-turn-credentials.mjs",
+        "server/sms-platform.mjs",
+        "server/task-status-persistence.mjs"
+      ]
+    },
+    "runtimeHostDifferenceScope": "only vendor worker bundle and its AppleDouble metadata in captured scope; main backend files match host",
+    "backendProductionProtectionsAbsentLocally": [
+      "kuaishou_lead routes, heartbeats, progress and lock renewal",
+      "snapshotWindowsTaskClaim / restoreWindowsTaskClaim on pickup and delivery ACK persistence failure",
+      "PostgreSQL updated_at guards against older task/job/session/lock writes",
+      "drainPendingLookupQueryBeforeStop"
+    ],
+    "productionOnlyHelperFilesNotImportedByEntry": [
+      "server/lookup-session-lifecycle.mjs",
+      "server/windows-task-dispatch.mjs"
+    ],
+    "frozenSourceCaveat": "entire local workspace also contains previously existing screen relay, transport policy and player differences; no frozen code changed by this comparison"
+  }
+}

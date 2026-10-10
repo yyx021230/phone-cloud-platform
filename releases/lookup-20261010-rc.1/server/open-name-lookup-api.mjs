@@ -1,3 +1,4 @@
+import { resumableLookupRecoveryResult } from "./automation-center.mjs";
 import crypto from "node:crypto";
 
 const CLIENT_ID_PATTERN = /^[A-Za-z0-9._-]{3,80}$/;
@@ -53,9 +54,10 @@ export function publicOpenLookupSession(session = {}) {
   const results = allResults.slice(0, 500).map(publicOpenLookupResult);
   const humanSource = allResults.find((result) => result?.status === "needs_human_verification") || null;
   const humanResult = humanSource ? publicOpenLookupResult(humanSource) : null;
-  const jigsawRequired = (session.limitReason === "jigsaw_verification" && session.requiresAccountSwitch !== true)
+  const jigsawRequired = !["ended", "failed", "expired"].includes(session.status) && ((session.limitReason === "jigsaw_verification" && session.requiresAccountSwitch !== true)
     || session.status === "needs_human_verification"
-    || Boolean(humanResult);
+    || Boolean(humanResult));
+  const recoveryResult = resumableLookupRecoveryResult(session);
   const automaticAccountRotationExhausted = session.requiresAccountSwitch === true
     && !session.pendingJobId;
   return {
@@ -73,6 +75,9 @@ export function publicOpenLookupSession(session = {}) {
       status: "paused",
       reason: String(session.automationHaltReason || session.limitReason || "automatic_account_rotation_exhausted"),
       action: "end_session_and_select_another_device"
+    } : recoveryResult ? {
+      status: "paused", reason: "lookup_human_recovery_failed", action: "retry_current_query",
+      queryId: recoveryResult.phase === "start" ? "" : String(recoveryResult.resultId || "")
     } : { status: session.pendingJobId ? "running" : session.queuedCount ? "waiting" : "idle" },
     humanAction: jigsawRequired ? {
       required: true,

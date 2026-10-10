@@ -20,6 +20,9 @@ import {
   isRetryableAlipayPocoStartFailure,
   shouldFallbackAlipayPocoFailure
 } from "./alipay-poco-fallback-policy.mjs";
+import { restartLookupQueryOnce } from "./lookup-page-recovery.mjs";
+import { createLookupStatusOutbox } from "./lookup-status-outbox.mjs";
+import { runLookupWithAccountPolicy } from "./lookup-account-policy.mjs";
 import { createDeviceActorManager } from "./device-actor.mjs";
 import { acquireAgentInstanceLock } from "./agent-instance-lock.mjs";
 import { createScreenStreamManager } from "./screen-stream.mjs";
@@ -62,6 +65,7 @@ import {
   buildRemoveExactPnpArgs
 } from "./pnp-exact-actions.mjs";
 import { createGuardedTaskRunner } from "./guarded-task-runner.mjs";
+import { classifyHumanVerificationXml, createLookupHumanObserver } from "./lookup-human-observer.mjs";
 import { createPnpRecoveryWakeScheduler } from "./pnp-recovery-wake-scheduler.mjs";
 import {
   scopePnpRecoveryPlansForSafety,
@@ -109,6 +113,13 @@ const persistedPnpRecoveryState = await loadPnpRecoveryState(pnpRecoveryStatePat
 const agentInstanceLock = await acquireAgentInstanceLock({
   lockPath: path.join(dataDir, "agent-instance.lock"),
   agentId: config.agentId
+});
+
+const lookupStatusOutbox = await createLookupStatusOutbox({
+  directory: path.join(dataDir, "lookup-status-outbox"),
+  send: (record) => api(`/api/v1/windows-agent-tasks/${encodeURIComponent(record.taskId)}/status`, {
+    method: "POST", body: { status: record.status, result: record.result }
+  })
 });
 
 let lastDevices = [];
@@ -317,6 +328,21 @@ screenStreamManager = createScreenStreamManager({
 });
 screenStreamManager.start();
 
+const failedHumanProbeWorkers = new WeakSet();
+const lookupHumanObserver = createLookupHumanObserver({
+  request: api,
+  agentId: config.agentId,
+  canObserve: (probe) => !pnpScreenCoordinator.active && !activeTaskSerials.has(probe.adbSerial)
+    && lastDevices.some((device) => device.adbSerial === probe.adbSerial && device.state === "device"),
+  observe: observeLookupHumanVerification
+});
+const lookupStatusOutboxTimer = setInterval(() => {
+  lookupStatusOutbox.flush().catch(() => log("lookup terminal report remains pending"));
+}, 3_000);
+const lookupHumanObserverTimer = setInterval(
+  () => runGuardedInterval("lookup human observation", () => lookupHumanObserver.poll()), 3_000
+);
+
 setInterval(() => runGuardedInterval("heartbeat", () => heartbeat()), config.heartbeatIntervalSeconds * 1000);
 setInterval(() => runGuardedInterval("scan", () => scanAndSync()), config.scanIntervalSeconds * 1000);
 setInterval(() => runGuardedInterval("task poll", () => pollTask()), config.taskPollIntervalSeconds * 1000);
@@ -333,6 +359,9 @@ process.stdin.resume();
 
 for (const signal of ["SIGINT", "SIGTERM"]) {
   process.on(signal, async () => {
+    lookupHumanObserver.stop();
+    clearInterval(lookupHumanObserverTimer);
+    clearInterval(lookupStatusOutboxTimer);
     backgroundSmsNotificationLoopStopped = true;
     if (airtestWorkerCleanupTimer) {
       clearInterval(airtestWorkerCleanupTimer);
@@ -1022,12 +1051,12 @@ async function pollTask() {
   let picked = 0;
   let cancellationChecked = false;
   while (!cancellationChecked || activeTasksById.size < config.maxConcurrentAdbTasks) {
-    const excludeSerials = [...new Set([...activeTaskSerials, ...screenControlledSerials])]
+    const excludeSerials = [...new Set([...activeTaskSerials, ...screenControlledSerials, ...lookupStatusOutbox.pendingTasks().map((item) => item.adbSerial)])]
       .filter(Boolean)
       .map(encodeURIComponent)
       .join(",");
     const screenGallerySerials = [...screenControlledSerials].filter(Boolean).map(encodeURIComponent).join(",");
-    const activeTaskIds = [...activeTasksById.keys()].filter(Boolean).map(encodeURIComponent).join(",");
+    const activeTaskIds = [...new Set([...activeTasksById.keys(), ...lookupStatusOutbox.pendingTasks().map((item) => item.taskId)])].filter(Boolean).map(encodeURIComponent).join(",");
     const params = new URLSearchParams();
     if (excludeSerials) params.set("excludeSerials", excludeSerials);
     if (screenGallerySerials) params.set("screenGallerySerials", screenGallerySerials);
@@ -1098,10 +1127,15 @@ function startTask(task) {
 }
 
 async function runTask(task, options = {}) {
+  const isLookup = task.type.startsWith("alipay_name_");
+  let lookupTerminal = null;
   log("task picked", { taskId: task.taskId, type: task.type, adbSerial: task.adbSerial });
   taskEvent(task, "start", "info", `开始执行 ${task.type}`)
     .catch((error) => log("task start event failed", { taskId: task.taskId, error: error.message }));
   try {
+    if (isLookup && task.type !== "alipay_name_stop" && !lookupStatusOutbox.isAvailable()) {
+      throw Object.assign(new Error("查名结果存储不可用，当前任务未操作手机；请检查存储后重试。"), { code: "lookup_status_storage_unavailable" });
+    }
     let result;
     if (task.type === "adb_install_apk") result = await taskInstallApk(task);
     else if (task.type === "adb_grant_permissions") result = await taskGrantPermissions(task);
@@ -1114,11 +1148,12 @@ async function runTask(task, options = {}) {
     else if (task.type === "xhs_qr_appium") result = await taskXhsQrAirtestPoco(task);
     else if (task.type === "xhs_publish") result = await taskXhsPublish(task);
     else if (task.type === "kuaishou_lead") result = await taskKuaishouLead(task, options);
-    else if (["alipay_name_start", "alipay_name_query", "alipay_name_switch", "alipay_name_stop"].includes(task.type)) result = await taskAlipayNameLookup(task, options);
+    else if (["alipay_name_start", "alipay_name_query", "alipay_name_switch", "alipay_name_stop"].includes(task.type)) result = await taskAlipayNameLookupWithAccounts(task, options);
     else throw new Error(`unsupported task type: ${task.type}`);
     await taskEvent(task, "finish", "info", "执行成功", compactTaskResultForEvent(result))
       .catch((error) => log("task finish event failed", { taskId: task.taskId, error: error.message }));
-    await taskStatus(task, "succeeded", result);
+    if (isLookup) lookupTerminal = { status: "succeeded", result };
+    else await taskStatus(task, "succeeded", result);
   } catch (error) {
     if (isAutomationTaskCancellation(error)) {
       taskEvent(task, "cancelled", "info", "用户已结束会话，当前自动化任务已停止", { reason: "automation_task_cancelled" })
@@ -1134,13 +1169,14 @@ async function runTask(task, options = {}) {
         .catch((statusError) => log("task cancellation status failed", { taskId: task.taskId, error: statusError.message }));
       return;
     }
-    const evidence = await captureFailureEvidence(task).catch((evidenceError) => ({
+    const evidence = error.code === "lookup_status_storage_unavailable" ? {} : await captureFailureEvidence(task).catch((evidenceError) => ({
       evidenceError: evidenceError?.message || String(evidenceError)
     }));
     const failure = { ...taskFailureResult(error), ...evidence };
     await taskEvent(task, "finish", "error", error.message, compactTaskResultForEvent(failure))
       .catch((eventError) => log("task failure event failed", { taskId: task.taskId, error: eventError.message }));
-    await taskStatus(task, "failed", failure);
+    if (isLookup) lookupTerminal = { status: "failed", result: failure };
+    else await taskStatus(task, "failed", failure);
   } finally {
     if (options.signal?.aborted) {
       log("post-task scan skipped after task cancellation", {
@@ -1159,6 +1195,8 @@ async function runTask(task, options = {}) {
       });
     }
   }
+  // Reporting faults are not Android execution failures.
+  if (lookupTerminal) await taskStatus(task, lookupTerminal.status, lookupTerminal.result);
 }
 
 function preemptSmsSyncForScreen(serial) {
@@ -1955,6 +1993,13 @@ function classifyAlipayNameLookupFailure(rawMessage = "") {
     .replace(/\d/g, "#")
     .slice(0, 500);
   const diagnostic = { code: "alipay_lookup_failed", retryable: true, runnerReason: compactReason };
+  if (raw.includes("alipay_no_available_account")) return { ...diagnostic,
+    code: "alipay_no_available_account", retryable: false,
+    message: "当前手机无可用账户：已保存账户全部在八小时冷却中。" };
+  if (/alipay_(?:account_identity_unverified|account_preflight_required|target_account_cooling|account_cooldown_data_invalid)/.test(raw)) {
+    return { ...diagnostic, code: "alipay_account_identity_unverified", retryable: false,
+      message: "账户身份或冷却状态未确认，已停止查询；请重新启动会话检查账户。" };
+  }
   if (raw.includes("alipay_all_saved_accounts_restricted")) {
     const reason = String(raw.match(/alipay_all_saved_accounts_restricted:([a-z_]+)/)?.[1] || "");
     return {
@@ -1991,6 +2036,7 @@ function classifyAlipayNameLookupFailure(rawMessage = "") {
       limitReached: true,
       requiresAccountSwitch: true,
       limitReason: "access_denied",
+      phoneQueryStarted: true,
       message: alipayLimitMessage("access_denied")
     };
   }
@@ -2003,6 +2049,7 @@ function classifyAlipayNameLookupFailure(rawMessage = "") {
       limitReached: true,
       requiresAccountSwitch: true,
       limitReason: reason,
+      phoneQueryStarted: true,
       message: alipayLimitMessage(reason)
     };
   }
@@ -2015,6 +2062,8 @@ function classifyAlipayNameLookupFailure(rawMessage = "") {
       limitReached: false,
       requiresAccountSwitch: false,
       limitReason: reason,
+      accountRestrictionDetected: true,
+      phoneQueryStarted: false,
       message: "支付宝在本次号码查询开始前就已显示账号或设备限制，不能认定为该号码触发的查询上限；请人工确认页面，或主动切换账号。"
     };
   }
@@ -2100,6 +2149,51 @@ function classifyAlipayNameLookupFailure(rawMessage = "") {
   return { ...diagnostic, message: "支付宝查名字执行失败，已保留具体诊断原因；可重试当前号码。" };
 }
 
+async function observeLookupHumanVerification(probe) {
+  const serial = probe.adbSerial;
+  if (activeTaskSerials.has(serial)) return "unknown";
+  const worker = airtestWorkersBySerial.get(serial);
+  if (!probe.screenSessionId && !screenControlledSerials.has(serial)) {
+    // Reuse only an already-idle worker. Observation never boots, recycles or
+    // repairs Poco, and never touches input or launches an application.
+    if (!worker || worker.exited || worker.stopping || worker.pending || worker.readyResolve
+      || failedHumanProbeWorkers.has(worker)) return "unknown";
+    try {
+      const parsed = await worker.enqueue({ operation: "human_probe", workflow: "alipay_name",
+        serial, adbPath: config.adbPath, requestId: `human-probe-${probe.probeId}` }, 6_000);
+      return parsed?.ok ? parsed.verificationState : "unknown";
+    } catch {
+      failedHumanProbeWorkers.add(worker);
+      return "unknown";
+    }
+  }
+  if (!probe.screenSessionId || !screenControlledSerials.has(serial)
+    || worker && !worker.exited) return "unknown";
+  const screen = screenStreamManager.sessions.get(probe.screenSessionId);
+  if (!screen || screen.serial !== serial || screen.closed) return "unknown";
+  const options = { allowScreenControl: true, timeoutMs: 2_000,
+    actorLabel: "lookup-human-readonly" };
+  const before = await adb(serial, ["shell", "dumpsys", "window"], options);
+  const xml = await adb(serial, ["exec-out", "uiautomator", "dump", "/dev/tty"], { ...options, timeoutMs: 4_000 });
+  const after = await adb(serial, ["shell", "dumpsys", "window"], options);
+  if (screen.closed || activeTaskSerials.has(serial)) return "unknown";
+  return classifyHumanVerificationXml(xml, before, after);
+}
+
+async function taskAlipayNameLookupWithAccounts(task, options = {}) {
+  return runLookupWithAccountPolicy({ task,
+    assertAllowed: () => {
+      if (options.signal?.aborted) throw automationTaskCancellationError();
+      if (screenControlledSerials.has(task.adbSerial)) throw screenPriorityCancellationError();
+    },
+    execute: (next, hooks = {}) => taskAlipayNameLookup(next, { ...options, ...hooks }),
+    recordLimit: (record) => taskEvent(task, "alipay_name", "warn", "查询限制已确认，保存账户八小时冷却后再继续", {
+      ...record, currentAccount: record.account, accountSwitchRequired: true,
+      stepId: "lookup_account_limit_confirmed"
+    })
+  });
+}
+
 async function taskAlipayNameLookup(task, options = {}) {
   const startedAt = Date.now();
   if (!(await fileExists(config.alipayNameLookupRunnerPath))) throw new Error(`支付宝查名字执行器不存在：${config.alipayNameLookupRunnerPath}`);
@@ -2112,12 +2206,16 @@ async function taskAlipayNameLookup(task, options = {}) {
       ? "stop"
       : task.type === "alipay_name_switch"
         ? (String(task.payload?.accountAction || "list") === "select" ? "switch" : "list_accounts")
-        : task.payload?.resumeAfterHumanVerification === true
+        : task.payload?.restartAfterHumanVerification === true
+          ? "query"
+          : task.payload?.resumeAfterHumanVerification === true
           ? "query_resume"
           : "query";
   const queryOperation = ["query", "query_resume"].includes(operation);
-  const accountOperation = ["list_accounts", "switch"].includes(operation);
+  const accountOperation = ["list_accounts", "switch"].includes(operation)
+    || (operation === "start" && task.payload?.accountCooldownProtocol === 1);
   if (operation === "stop") clearAirtestLookupWarmLease(task.adbSerial, "lookup_session_stopped");
+  if (task.payload?.restartAfterHumanVerification === true) automationResumeScheduler.cancel(task.adbSerial);
   const payload = {
     operation,
     workflow: "alipay_name",
@@ -2125,6 +2223,11 @@ async function taskAlipayNameLookup(task, options = {}) {
     adbPath: config.adbPath,
     phoneNumber: String(task.payload?.phoneNumber || ""),
     targetAccount: String(task.payload?.targetAccount || ""),
+    accountCooldownProtocol: task.payload?.accountCooldownProtocol,
+    knownAccount: String(task.payload?.knownAccount || ""),
+    accountIdentityVerified: task.payload?.accountIdentityVerified === true,
+    accountCooldowns: task.payload?.accountCooldowns || [],
+    savedAccounts: task.payload?.savedAccounts || [],
     maxRecoveryAttempts: Math.min(2, Math.max(0, Number(task.payload?.maxRecoveryAttempts ?? 2))),
     taskId: task.taskId
   };
@@ -2142,6 +2245,7 @@ async function taskAlipayNameLookup(task, options = {}) {
     operation,
     reuseSearchSession: queryOperation,
     resumeAfterHumanVerification: operation === "query_resume",
+    restartAfterHumanVerification: task.payload?.restartAfterHumanVerification === true,
     resubmitsInput: operation === "query_resume" ? false : undefined,
     maxRecoveryAttempts: payload.maxRecoveryAttempts,
     preferredDriver: accountOperation ? "xml_uiautomator_account_switch" : "poco_fast_path",
@@ -2157,6 +2261,7 @@ async function taskAlipayNameLookup(task, options = {}) {
       alipayDisplayName: parsed.alipayDisplayName || "",
       matchedPhone: parsed.matchedPhone || "",
       currentAccount: parsed.currentAccount || "",
+      accountIdentityVerified: parsed.accountIdentityVerified === true,
       accountSwitched: Boolean(parsed.accountSwitched),
       accountSwitchReason: String(parsed.accountSwitchReason || ""),
       accountSwitchCount: Math.max(0, Number(parsed.accountSwitchCount || 0)),
@@ -2346,6 +2451,39 @@ async function taskAlipayNameLookup(task, options = {}) {
       return result;
     } catch (error) {
       if (isAutomationTaskCancellation(error)) throw error;
+      // A generic execution/page failure is not limited to the input stage.
+      // Preserve the task/phone and bound an app-only full-path retry to one.
+      try {
+        const recovered = await restartLookupQueryOnce({
+          operation, error, payload,
+          assertAllowed: () => {
+            if (options.signal?.aborted) throw automationTaskCancellationError();
+            if (screenControlledSerials.has(task.adbSerial)) throw screenPriorityCancellationError();
+          },
+          onRecovery: () => taskEvent(task, "alipay_name", "warn", "查名字执行异常，最多重启支付宝一次后重查当前号码", {
+            recoveryAttempt: 1, maxRecoveryAttempts: 1, sameTask: true,
+            resubmitsInput: true, accountSwitchRequested: false, driver: "poco"
+          }),
+          stopWorker: () => stopAirtestWorker(task.adbSerial, "lookup_query_app_recovery"),
+          runWorker: async (recoveryPayload) => {
+            if (recoveryPayload.pageRecoveryStage === "continue_query" && options.beforeLookupRecovery) {
+              const policy = await options.beforeLookupRecovery();
+              recoveryPayload = { ...recoveryPayload, ...policy };
+            }
+            return runXhsAirtestPocoWorker(recoveryPayload, {
+            readyTimeoutMs: 25_000, timeoutMs: 45_000, maxIdleMs: 15 * 60_000,
+            onEvent: (event) => replayAirtestEvents(task, [event])
+          }); }
+        });
+        if (recovered) {
+          if (!Number(recovered.streamedReplayCount || 0)) await replayAirtestEvents(task, recovered.log || []);
+          if (!recovered.ok) throw new Error(recovered.error || "unknown");
+          return buildResult({ ...recovered, recoveryAttempts: 1 }, "poco");
+        }
+      } catch (recoveryError) {
+        if (isAutomationTaskCancellation(recoveryError)) throw recoveryError;
+        error = new Error(`poco_query_page_recovery_failed:${String(recoveryError?.message || recoveryError)}`);
+      }
       const pocoError = String(error?.message || error || "");
       if (operation === "stop") {
         // Ending a lookup session is a platform lifecycle action. Clearing the
@@ -2362,6 +2500,17 @@ async function taskAlipayNameLookup(task, options = {}) {
         markAutomationReadyOnDemand(task.adbSerial, "lookup_session_stopped");
         return buildResult({ ok: true, message: "session_stopped", log: [] }, "poco");
       }
+      if (pocoError.includes("poco_query_page_recovery_failed:")) {
+        const diagnostic = classifyAlipayNameLookupFailure(pocoError);
+        const runnerError = new Error(diagnostic.message);
+        runnerError.code = diagnostic.code;
+        runnerError.diagnostic = { ...diagnostic, appRecoveryAttempts: 1 };
+        throw runnerError;
+      }
+      if (payload.accountCooldownProtocol === 1 && pocoError.includes("alipay_account_restriction_before_search:")) {
+        const diagnostic = classifyAlipayNameLookupFailure(pocoError);
+        throw Object.assign(new Error(diagnostic.message), { code: diagnostic.code, diagnostic });
+      }
       const automaticAccountSwitchReason = ["query", "query_resume"].includes(operation)
         ? alipayAccountSwitchReasonFromError(pocoError)
         : "";
@@ -2373,6 +2522,10 @@ async function taskAlipayNameLookup(task, options = {}) {
         throw runnerError;
       }
       if (automaticAccountSwitchReason) {
+        if (payload.accountCooldownProtocol === 1) {
+          const diagnostic = classifyAlipayNameLookupFailure(pocoError);
+          throw Object.assign(new Error(diagnostic.message), { code: diagnostic.code, diagnostic });
+        }
         await taskEvent(task, "alipay_name", "warn", "检测到账号查询限制，正在自动切换已保存账号并重试当前号码", {
           operation,
           restrictionReason: automaticAccountSwitchReason,
@@ -2428,6 +2581,8 @@ async function taskAlipayNameLookup(task, options = {}) {
       diagnostic.accountSwitchHistory = Array.isArray(failed.accountSwitchHistory) ? failed.accountSwitchHistory : [];
       diagnostic.restrictedAccounts = Array.isArray(failed.restrictedAccounts) ? failed.restrictedAccounts : [];
       diagnostic.savedAccountCount = Math.max(0, Number(failed.savedAccountCount || 0));
+      diagnostic.savedAccounts = Array.isArray(failed.savedAccounts) ? failed.savedAccounts : [];
+      diagnostic.accountIdentityVerified = failed.accountIdentityVerified === true;
       const runnerError = new Error(diagnostic.message);
       runnerError.code = diagnostic.code;
       runnerError.diagnostic = diagnostic;
@@ -3564,6 +3719,9 @@ async function taskEvent(task, phase, level, message, detail = {}) {
 }
 
 async function taskStatus(task, status, result = {}) {
+  if (task.type?.startsWith("alipay_name_") && lookupStatusOutbox.isAvailable() && ["succeeded", "failed", "cancelled"].includes(status)) {
+    return lookupStatusOutbox.report(task, status, compactTaskResultForStatus(result));
+  }
   return await api(`/api/v1/windows-agent-tasks/${encodeURIComponent(task.taskId)}/status`, {
     method: "POST",
     body: { status, result: compactTaskResultForStatus(result) }
@@ -3615,6 +3773,9 @@ function compactTaskResultForStatus(result = {}) {
       log: runnerLog.slice(-80).map((item) => compactEventDetail(item, 3000))
     } : null
   };
+  if (result.accountIdentityVerified !== undefined) compact.accountIdentityVerified = result.accountIdentityVerified === true;
+  if (result.accountSwitchCount !== undefined) compact.accountSwitchCount = Math.max(0, Number(result.accountSwitchCount || 0));
+  if (result.accountSwitchReason !== undefined) compact.accountSwitchReason = String(result.accountSwitchReason || "").slice(0, 120);
   const uiHierarchy = result.uiHierarchy || result.evidence?.uiHierarchy || "";
   const uiSnapshot = result.uiSnapshot || result.evidence?.uiSnapshot || uiHierarchy;
   if (uiSnapshot) compact.uiSnapshot = String(uiSnapshot).slice(0, 8000);
