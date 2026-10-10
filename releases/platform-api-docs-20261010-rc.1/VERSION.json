@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "releaseId": "20261010-platform-api-docs-v3",
-  "candidateTag": "platform-api-docs-20261010-rc.3",
+  "releaseId": "20261010-platform-api-docs-v4",
+  "candidateTag": "platform-api-docs-20261010-rc.4",
   "branch": "codex/api-documentation-portal",
   "status": "local_candidate_not_deployed",
   "sourcePath": "releases/platform-api-docs-20261010-rc.1",
   "productionSourceImportCommit": "e72d66bcb3afde53623710fb3366844c944df33c",
   "sourceManifest": "verification/MANIFEST.json",
-  "testResults": "verification/API_PLATFORM_ONLY_TEST_RESULTS.json",
+  "testResults": "verification/API_BUSINESS_GROUPS_TEST_RESULTS.json",
   "releaseNotes": "RELEASE_NOTES.md",
   "frozenRuntimeHashesPreserved": 22,
   "rollbackOriginals": "verification/production-before",
@@ -23,10 +23,10 @@
   "remotePush": "not_run",
   "identityNote": "The immutable annotated candidate tag resolves the full source commit; no self-referential commit hash is stored here.",
   "previousCandidate": {
-    "tag": "platform-api-docs-20261010-rc.2",
-    "sourceCommit": "e8d7f77c6015be0f9dd886b8dc204f6366982a71"
+    "tag": "platform-api-docs-20261010-rc.3",
+    "sourceCommit": "c1d3f226ea9edbe00a11c930c0a073e36504ec01"
   },
-  "runtimeFilesChangedVersusPreviousCandidate": 5,
+  "runtimeFilesChangedVersusPreviousCandidate": 4,
   "baseCandidateTag": "lookup-20261010-rc.2",
   "baseSourceCommit": "f017254902ad4262bb036a461df725f8424b0758",
   "apiDocsRuntimeFilesChangedVersusBase": 6,
@@ -60,15 +60,18 @@
     "groups": [
       "auth",
       "user",
-      "lookup-user",
       "sms",
-      "automation",
+      "lookup-user",
+      "qr-scan",
+      "kuaishou-lead",
+      "xhs-publish",
       "screen"
     ],
     "httpOperations": 32,
     "models": 18,
     "websocketChannels": 0,
     "profile": "../../docs/platform-api-publication.json",
-    "businessApisChanged": false
+    "businessApisChanged": false,
+    "groupCount": 8
   }
 }

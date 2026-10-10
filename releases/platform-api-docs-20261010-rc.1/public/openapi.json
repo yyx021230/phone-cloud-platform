@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Phone Cloud 平台功能 API",
-    "version": "platform-api-docs-20261010-rc.3",
+    "version": "platform-api-docs-20261010-rc.4",
     "description": "仅平台功能接口，本地候选未部署。使用登录令牌Bearer认证；接口基线lookup-20261010-rc.2。"
   },
   "servers": [
@@ -14,27 +14,35 @@
   "tags": [
     {
       "name": "auth",
-      "description": "认证与会话 · 平台接口"
+      "description": "账户认证 · 基础接口"
     },
     {
       "name": "user",
-      "description": "设备库存与进度 · 平台接口"
-    },
-    {
-      "name": "lookup-user",
-      "description": "网页查名管理 · 平台接口"
+      "description": "设备库存 · 基础接口"
     },
     {
       "name": "sms",
-      "description": "短信与接码 · 平台接口"
+      "description": "短信接码 · 业务接口"
     },
     {
-      "name": "automation",
-      "description": "扫码与自动化 · 平台接口"
+      "name": "lookup-user",
+      "description": "查名字 · 业务接口"
+    },
+    {
+      "name": "qr-scan",
+      "description": "扫码 · 业务接口"
+    },
+    {
+      "name": "kuaishou-lead",
+      "description": "快手录入 · 业务接口"
+    },
+    {
+      "name": "xhs-publish",
+      "description": "一键发布 · 业务接口"
     },
     {
       "name": "screen",
-      "description": "实时控制与相册 · 平台接口"
+      "description": "实时控制与相册 · 设备工具"
     }
   ],
   "paths": {
@@ -330,7 +338,7 @@
         "summary": "扫码任务进度",
         "description": "用户只能读取自己的扫码任务；管理员可读取，越权按 404 处理。",
         "tags": [
-          "user"
+          "qr-scan"
         ],
         "deprecated": false,
         "security": [
@@ -396,7 +404,7 @@
         "summary": "可接码号码列表",
         "description": "返回当前可用号码、设备与 SIM 关联。",
         "tags": [
-          "user"
+          "sms"
         ],
         "deprecated": false,
         "security": [
@@ -1369,7 +1377,7 @@
         "summary": "我的扫码任务",
         "description": "返回当前用户最近100条扫码任务。",
         "tags": [
-          "automation"
+          "qr-scan"
         ],
         "deprecated": false,
         "security": [
@@ -1424,7 +1432,7 @@
         "summary": "创建小红书扫码任务",
         "description": "上传二维码 Data URL；可选择设备和 app1/app2，省略目标时由服务端挑选可用账号。活动任务数默认上限3（可配置）。",
         "tags": [
-          "automation"
+          "qr-scan"
         ],
         "deprecated": false,
         "security": [
@@ -1512,7 +1520,7 @@
         "summary": "取消我的扫码任务",
         "description": "仅 queued/running 可取消；取消关联 Windows 任务并释放锁。",
         "tags": [
-          "automation"
+          "qr-scan"
         ],
         "deprecated": false,
         "security": [
@@ -1594,7 +1602,7 @@
         "summary": "我的图文发布任务",
         "description": "返回当前用户最近100个 xhs_publish 作业。",
         "tags": [
-          "automation"
+          "xhs-publish"
         ],
         "deprecated": false,
         "security": [
@@ -1649,7 +1657,7 @@
         "summary": "创建图文发布任务",
         "description": "标题1–100字符、正文1–2000字符；图片默认最多5张，可配置1–9。201是受理，实际发布结果须轮询。超时不得直接重复发布。",
         "tags": [
-          "automation"
+          "xhs-publish"
         ],
         "deprecated": false,
         "security": [
@@ -1761,7 +1769,7 @@
         "summary": "取消图文发布任务",
         "description": "只允许当前用户取消活动作业；取消不证明已经发布的内容被撤回。",
         "tags": [
-          "automation"
+          "xhs-publish"
         ],
         "deprecated": false,
         "security": [
@@ -1843,7 +1851,7 @@
         "summary": "我的快手录入任务",
         "description": "读取当前用户最近100个持续作业。",
         "tags": [
-          "automation"
+          "kuaishou-lead"
         ],
         "deprecated": false,
         "security": [
@@ -1898,7 +1906,7 @@
         "summary": "启动快手录入",
         "description": "独占目标设备扫描配置的飞书队列；全系统同一时刻只允许一个活动快手作业。间隔范围30–3600秒，最短不得大于最长，默认240/420。",
         "tags": [
-          "automation"
+          "kuaishou-lead"
         ],
         "deprecated": false,
         "security": [
@@ -1996,7 +2004,7 @@
         "summary": "停止快手录入",
         "description": "取消当前用户的活动持续作业，保留既有结果。",
         "tags": [
-          "automation"
+          "kuaishou-lead"
         ],
         "deprecated": false,
         "security": [

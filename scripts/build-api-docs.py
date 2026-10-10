@@ -125,6 +125,10 @@ def make(candidate):
     if unknown: raise ValueError('Removed/stale routes ' + str(unknown))
     publication = json.loads((ROOT / 'docs/platform-api-publication.json').read_text())
     selected = [e for e in endpoints if e['group'] in publication['groups']]
+    for endpoint in selected:
+        endpoint['group'] = publication['endpointGroups'].get(endpoint['id'], endpoint['group'])
+        if endpoint['group'] not in {g[0] for g in publication['publishedGroups']}:
+            raise ValueError('Unassigned published business group: ' + endpoint['id'])
     # Publish only referenced models, including their recursive dependencies.
     needed = set()
     def include_type(typ):
@@ -138,7 +142,7 @@ def make(candidate):
     data = dict(version=publication['version'], updatedAt='2026-10-10',
                 baseline='lookup-20261010-rc.2', status='本地候选 · 未发布',
                 routerSha256=hashlib.sha256(source.encode()).hexdigest(), sourceRoutesReviewed=len(endpoints),
-                groups=[g for g in reviewed['groups'] if g[0] in publication['groups']], guides=publication['guides'],
+                groups=publication['publishedGroups'], guides=publication['guides'],
                 models={k: v for k, v in reviewed['models'].items() if k in needed},
                 commonErrors=publication['commonErrors'], websockets=[], endpoints=selected)
     out = candidate / 'public/api-reference.json'
