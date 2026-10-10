@@ -46,6 +46,7 @@ export function resumableLookupHumanVerificationResult(session = {}) {
   const latestResult = Array.isArray(session.results)
     ? session.results.find((result) => result?.status !== "queued")
     : null;
+  if (session.startupHumanVerification?.status === "needs_human_verification") return session.startupHumanVerification;
   if (!latestResult) return null;
   return latestResult.status === "needs_human_verification"
     || (latestResult.limitReason === "jigsaw_verification" && !["succeeded", "not_found", "cancelled"].includes(latestResult.status))
@@ -56,9 +57,32 @@ export function resumableLookupHumanVerificationResult(session = {}) {
 export function lookupHumanRecoveryUnresolved(job = {}, status = "", options = {}) {
   return Boolean(
     job.resumeAfterHumanVerification === true
-    && status !== "succeeded"
+    && status === "failed"
     && options.limitReached !== true
   );
+}
+
+export function resumableLookupRecoveryResult(session = {}) {
+  if (session.pendingJobId || session.status !== "ready") return null;
+  if (session.startupHumanVerification?.status === "needs_recovery") return session.startupHumanVerification;
+  const result = session.results?.find((item) => item?.status !== "queued");
+  return result?.status === "needs_recovery" ? result : null;
+}
+
+export function hasVerifiedAllSavedAccountsRestricted(diagnostic = {}) {
+  if (String(diagnostic.code || "") !== "alipay_all_saved_accounts_restricted") return false;
+  const savedAccountCount = Math.max(0, Number(diagnostic.savedAccountCount || 0));
+  const restrictedAccounts = [...new Set((Array.isArray(diagnostic.restrictedAccounts)
+    ? diagnostic.restrictedAccounts
+    : []).map((account) => String(account || "").trim()).filter(Boolean))];
+  const accountSwitchCount = Math.max(0, Number(diagnostic.accountSwitchCount || 0));
+  const accountSwitchHistory = Array.isArray(diagnostic.accountSwitchHistory)
+    ? diagnostic.accountSwitchHistory
+    : [];
+  return savedAccountCount > 0
+    && restrictedAccounts.length === savedAccountCount
+    && accountSwitchCount >= Math.max(0, savedAccountCount - 1)
+    && accountSwitchHistory.length >= Math.max(0, savedAccountCount - 1);
 }
 
 export function automationLockType(kind) {
@@ -70,7 +94,7 @@ export function isPostQueryLookupRestrictionEvent(event = {}) {
   const step = String(event.stepId || event.detail?.step || "");
   const detail = event.detail && typeof event.detail === "object" ? event.detail : {};
   const reason = String(detail.reason || "");
-  return ["alipay_access_denied_detected", "alipay_account_restriction_detected"].includes(step)
+  return ["alipay_access_denied_detected", "alipay_account_restriction_detected", "lookup_account_limit_confirmed"].includes(step)
     && detail.phoneQueryStarted === true
     && detail.accountSwitchRequired === true
     && LOOKUP_RESTRICTION_REASONS.has(reason);
@@ -181,6 +205,7 @@ export function publicLookupSession(session = {}) {
       }))
       : [],
     pendingJobId: String(session.pendingJobId || ""),
+    startupHumanVerification: session.startupHumanVerification || null,
     results: Array.isArray(session.results) ? session.results.slice(0, 500) : [],
     error: String(session.error || ""),
     createdAt: String(session.createdAt || ""),

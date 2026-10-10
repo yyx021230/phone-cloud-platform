@@ -19,6 +19,12 @@ def load_module(name, file_name):
     return module
 
 
+def phone_keycodes(phone):
+    return [str(7 + int(digit)) for digit in phone]
+
+def is_phone_keyevent_command(args, phone):
+    return args == ["shell", "input", "keyevent", *phone_keycodes(phone)]
+
 class FakeNode:
     def __init__(self, name, position, size=(0.2, 0.2), exists=True):
         self.name = name
@@ -93,6 +99,65 @@ class AutomationRunnerTests(unittest.TestCase):
         sys.modules["xhs_airtest_poco"] = fake_base
         cls.publish = load_module("xhs_publish_poco_test", "xhs_publish_poco.py")
         cls.lookup = load_module("alipay_name_lookup_test", "alipay_name_lookup.py")
+        cls.original_wait_before_phone_input = cls.lookup.Runner.wait_before_phone_input
+
+    def test_worker_cleanup_is_bounded_to_owned_forward_and_poco_packages(self):
+        packages = ("com.netease.open.pocoservice", "com.netease.open.pocoservice.test")
+        for survivor in (None, *packages):
+            with self.subTest(survivor=survivor):
+                thread = mock.Mock()
+                instrument = mock.Mock()
+                instrument.poll.return_value = None
+                poco = types.SimpleNamespace(_keep_running_thread=thread,
+                    _instrument_proc=instrument, forward_list=["tcp:12345"])
+                adb = mock.Mock(side_effect=lambda _path, _serial, args, **kwargs:
+                    "123" if args == ["shell", "pidof", survivor] else "")
+                with mock.patch.object(self.xhs, "run_adb", adb), mock.patch.object(self.xhs.time, "sleep"):
+                    self.xhs.stop_stable_poco(poco, "fake-adb", "SYNTHETIC")
+                expected = [mock.call("fake-adb", "SYNTHETIC", ["forward", "--remove", "tcp:12345"], timeout=1)]
+                expected += [mock.call("fake-adb", "SYNTHETIC", ["shell", "am", "force-stop", pkg], timeout=5) for pkg in packages]
+                for pkg in packages:
+                    expected.append(mock.call("fake-adb", "SYNTHETIC", ["shell", "pidof", pkg], timeout=2))
+                    if pkg == survivor:
+                        expected.append(mock.call("fake-adb", "SYNTHETIC", ["shell", "am", "force-stop", pkg], timeout=3))
+                self.assertEqual(adb.call_args_list, expected)
+                self.assertEqual(poco.forward_list, [])
+                thread.stop.assert_called_once_with()
+                thread.join.assert_called_once_with(0)
+                instrument.kill.assert_called_once_with()
+
+    def test_lookup_jigsaw_is_returned_for_human_without_automatic_switch(self):
+        phone = "13800138000"
+
+        class RestrictedRunner(self.lookup.Runner):
+            def __init__(inner_self):
+                super().__init__({
+                    "serial": "LOCAL", "taskId": "manual-limit",
+                    "operation": "query", "phoneNumber": phone,
+                })
+                inner_self.query_calls = []
+                inner_self.switch_calls = 0
+
+            def adb(inner_self, args, **kwargs):
+                return "device" if args == ["get-state"] else "package:/alipay.apk"
+
+            def switch_account(inner_self, reason="", excluded_accounts=None):
+                inner_self.switch_calls += 1
+                raise AssertionError("query must not switch accounts automatically")
+
+            def query_once(inner_self, queried_phone, **kwargs):
+                inner_self.query_calls.append(queried_phone)
+                raise RuntimeError(
+                    "alipay_human_verification_required:jigsaw_verification"
+                )
+
+        runner = RestrictedRunner()
+        with self.assertRaisesRegex(
+            RuntimeError, "alipay_human_verification_required:jigsaw_verification"
+        ):
+            runner.run()
+        self.assertEqual(runner.query_calls, [phone])
+        self.assertEqual(runner.switch_calls, 0)
 
     def instrument_fixture(self, states, exit_code=None):
         clock = [0.0]
@@ -585,12 +650,6 @@ class AutomationRunnerTests(unittest.TestCase):
         class InputNode:
             def __init__(inner_self):
                 inner_self.value = "old"
-                inner_self.values = []
-
-            def set_text(inner_self, value):
-                inner_self.value = value
-                inner_self.values.append(value)
-
             def attr(inner_self, key):
                 return inner_self.value if key == "text" else ""
 
@@ -602,21 +661,49 @@ class AutomationRunnerTests(unittest.TestCase):
             "matchMethod": "poco_geometry_plus_exact_account_actions",
         }
 
+        class Snapshot:
+            def __call__(inner_self, **selector):
+                return [input_node] if selector.get("name") == self.lookup.SEARCH_INPUT_ID else []
+
         class Poco:
             def freeze(inner_self):
-                return object()
+                return Snapshot()
 
         runner = self.lookup.Runner({"serial": "LOCAL", "taskId": "poco-input"})
-        runner.poco_search_ready = lambda poco: input_node
+        runner.poco_dismiss_post_input_usb_warning = mock.Mock(return_value=False)
+        runner.poco_search_ready = lambda poco, live=True: input_node
+        runner.poco_tap = mock.Mock()
+        runner.focused_search_input_length = mock.Mock(side_effect=[3, 0])
+        runner.clear_focused_search_input = mock.Mock(
+            side_effect=lambda method="": (
+                setattr(input_node, "value", ""),
+                runner.emit("clear_previous_query", method=method),
+            ),
+        )
+        runner.adb = mock.Mock(
+            side_effect=lambda args, **kwargs: (
+                setattr(input_node, "value", phone)
+                if is_phone_keyevent_command(args, phone) else None
+            ) or "",
+        )
         runner.poco_snapshot_texts = lambda snapshot, limit=120: []
         runner.parse_poco_result = lambda snapshot, target: result if target == phone else None
         with mock.patch.object(self.lookup.time, "sleep", return_value=None):
             observed = runner.query_once_poco(Poco(), phone)
-        self.assertEqual(input_node.values, ["", phone])
         self.assertEqual(observed["realNameTailCharacter"], "测")
+        self.assertEqual(runner.poco_tap.call_count, 2)
+        input_calls = [
+            call.args[0] for call in runner.adb.call_args_list
+            if is_phone_keyevent_command(call.args[0], phone)
+        ]
+        self.assertEqual(len(input_calls), 1)
+        self.assertEqual(input_calls[0][3:], phone_keycodes(phone))
         self.assertEqual(
             [item["step"] for item in runner.log],
-            ["clear_previous_query", "input_phone", "masked_real_name_tail_extracted"],
+            [
+                "clear_previous_query", "poco_input_clear_confirmed",
+                "input_phone", "masked_real_name_tail_extracted",
+            ],
         )
 
     def test_lookup_poco_slider_resume_never_retypes_phone(self):
@@ -634,6 +721,9 @@ class AutomationRunnerTests(unittest.TestCase):
             def attr(inner_self, key):
                 return inner_self.value if key == "text" else ""
 
+            def get_position(inner_self):
+                return (0.4, 0.08)
+
         input_node = InputNode()
         verifying = object()
         resumed = object()
@@ -644,15 +734,32 @@ class AutomationRunnerTests(unittest.TestCase):
             "matchMethod": "poco_geometry_plus_exact_account_actions",
         }
 
+        cleared = object()
+
         class Poco:
             def __init__(inner_self):
-                inner_self.snapshots = iter([verifying, resumed])
+                inner_self.snapshots = iter([cleared, verifying, resumed])
 
             def freeze(inner_self):
                 return next(inner_self.snapshots)
 
         runner = self.lookup.Runner({"serial": "LOCAL", "taskId": "poco-slider-resume"})
+        runner.poco_dismiss_post_input_usb_warning = mock.Mock(return_value=False)
         runner.poco_search_ready = mock.Mock(return_value=input_node)
+        runner.focused_search_input_length = mock.Mock(return_value=0)
+        runner.poco_nodes = mock.Mock(
+            side_effect=lambda snapshot, **selector: [input_node]
+            if selector.get("name") == self.lookup.SEARCH_INPUT_ID else [],
+        )
+        runner.clear_focused_search_input = mock.Mock(
+            side_effect=lambda method="": setattr(input_node, "value", ""),
+        )
+        runner.adb = mock.Mock(
+            side_effect=lambda args, **kwargs: (
+                setattr(input_node, "value", phone)
+                if is_phone_keyevent_command(args, phone) else None
+            ) or "",
+        )
         runner.poco_raise_if_account_restricted = mock.Mock()
         runner.poco_verification_evidence = mock.Mock(
             side_effect=lambda snapshot: {"action": "向右滑动验证"} if snapshot is verifying else None,
@@ -666,7 +773,7 @@ class AutomationRunnerTests(unittest.TestCase):
             observed = runner.query_once_poco(Poco(), phone)
 
         self.assertEqual(observed["realNameTailCharacter"], "测")
-        self.assertEqual(input_node.values, ["", phone])
+        self.assertEqual(input_node.values, [])
         steps = [item["step"] for item in runner.log]
         self.assertIn("resume_query_after_human_verification", steps)
         self.assertIn("resume_query_without_reinput", steps)
@@ -686,43 +793,80 @@ class AutomationRunnerTests(unittest.TestCase):
             def set_text(inner_self, value):
                 inner_self.values.append(value)
 
+            def attr(inner_self, key):
+                return "" if key == "text" else ""
+
+            def get_position(inner_self):
+                return (0.4, 0.08)
+
         class Poco:
+            def __init__(inner_self):
+                inner_self.calls = 0
+
             def freeze(inner_self):
+                inner_self.calls += 1
+                if inner_self.calls == 1:
+                    return lambda **selector: [input_node]
                 raise TimeoutError("bounded Poco HTTP timeout")
 
         input_node = InputNode()
         runner = self.lookup.Runner({"serial": "LOCAL", "taskId": "poco-timeout-after-input"})
-        runner.poco_search_ready = lambda poco: input_node
+        runner.poco_dismiss_post_input_usb_warning = mock.Mock(return_value=False)
+        runner.poco_search_ready = lambda poco, live=True: input_node
+        runner.poco_tap = mock.Mock()
+        runner.focused_search_input_length = mock.Mock(return_value=0)
+        runner.clear_focused_search_input = mock.Mock()
+        runner.adb = mock.Mock(return_value="")
         with self.assertRaisesRegex(RuntimeError, "poco_query_result_channel_timeout_after_input"):
             runner.query_once_poco(Poco(), phone)
-        self.assertEqual(input_node.values, ["", phone])
+        self.assertTrue(any(
+            is_phone_keyevent_command(call.args[0], phone)
+            for call in runner.adb.call_args_list
+        ))
 
     def test_lookup_poco_input_timeout_resumes_without_retyping_phone(self):
         phone = "13800138000"
 
         class InputNode:
             def __init__(inner_self):
-                inner_self.values = []
+                inner_self.value = ""
 
-            def set_text(inner_self, value):
-                inner_self.values.append(value)
-                if value == phone:
-                    raise TimeoutError("bounded Poco set_text timeout")
+            def attr(inner_self, key):
+                return inner_self.value if key == "text" else ""
+
+            def get_position(inner_self):
+                return (0.4, 0.08)
+
+        class Snapshot:
+            def __call__(inner_self, **selector):
+                return [input_node] if selector.get("name") == self.lookup.SEARCH_INPUT_ID else []
+
+        class Poco:
+            def freeze(inner_self):
+                return Snapshot()
 
         runner = self.lookup.Runner({"serial": "LOCAL", "taskId": "poco-input-timeout"})
         input_node = InputNode()
+        runner.poco_dismiss_post_input_usb_warning = mock.Mock(return_value=False)
         runner.poco_search_ready = mock.Mock(return_value=input_node)
+        runner.poco_tap = mock.Mock()
+        runner.focused_search_input_length = mock.Mock(return_value=0)
+        runner.clear_focused_search_input = mock.Mock()
+        runner.adb = mock.Mock(
+            side_effect=lambda args, **kwargs: (_ for _ in ()).throw(
+                TimeoutError("bounded ADB input timeout")
+            ) if is_phone_keyevent_command(args, phone) else "",
+        )
 
         with self.assertRaisesRegex(
             RuntimeError,
-            "poco_query_result_channel_timeout_after_input:poco_input_failed:TimeoutError",
+            "poco_query_result_channel_timeout_after_input:poco_bounded_input_failed:TimeoutError",
         ):
-            runner.query_once_poco(object(), phone)
+            runner.query_once_poco(Poco(), phone)
 
-        self.assertEqual(input_node.values, ["", phone])
         self.assertEqual(
             [item["step"] for item in runner.log],
-            ["clear_previous_query"],
+            ["poco_input_clear_confirmed"],
         )
 
     def test_lookup_poco_resume_inspects_result_without_retyping_phone(self):
@@ -804,10 +948,21 @@ class AutomationRunnerTests(unittest.TestCase):
                 return Snapshot()
 
         runner = self.lookup.Runner({"serial": "LOCAL", "taskId": "poco-no-name"})
-        runner.poco_search_ready = lambda poco: input_node
+        runner.poco_dismiss_post_input_usb_warning = mock.Mock(return_value=False)
+        runner.poco_search_ready = lambda poco, live=True: input_node
+        runner.focused_search_input_length = mock.Mock(return_value=0)
         runner.parse_poco_result = lambda snapshot, target: None
         runner.poco_verification_evidence = lambda snapshot: None
         runner.poco_tap = mock.Mock()
+        runner.clear_focused_search_input = mock.Mock(
+            side_effect=lambda method="": setattr(input_node, "value", ""),
+        )
+        runner.adb = mock.Mock(
+            side_effect=lambda args, **kwargs: (
+                setattr(input_node, "value", phone)
+                if is_phone_keyevent_command(args, phone) else None
+            ) or "",
+        )
         clock = [100.0]
 
         def advance(seconds):
@@ -820,7 +975,7 @@ class AutomationRunnerTests(unittest.TestCase):
             )
         self.assertTrue(result["notFound"])
         self.assertEqual(result["matchMethod"], "poco_stable_no_name_result")
-        self.assertEqual(runner.poco_tap.call_count, 1)
+        self.assertEqual(runner.poco_tap.call_count, 3)
         self.assertLessEqual(clock[0] - 100.0, 5.2)
         self.assertNotIn("retry_search_result", [item["step"] for item in runner.log])
         self.assertEqual(runner.log[-1]["step"], "lookup_no_name_result")
@@ -2120,7 +2275,7 @@ class AutomationRunnerTests(unittest.TestCase):
 
         verifying = Snapshot([
             Node(self.lookup.VERIFICATION_TITLE, (0.5, 0.49), (0.75, 0.04), "android.widget.TextView"),
-            Node(self.lookup.VERIFICATION_ACTION, (0.5, 0.568), (0.30, 0.03), "android.widget.TextView"),
+            Node(self.lookup.JIGSAW_VERIFICATION_ACTION, (0.5, 0.568), (0.30, 0.03), "android.widget.TextView"),
             Node("", (0.5, 0.568), (0.778, 0.0625), "android.widget.FrameLayout"),
         ])
         cleared = Snapshot([])
@@ -2223,6 +2378,16 @@ class AutomationRunnerTests(unittest.TestCase):
         )
         self.assertFalse(timeout_event["resubmitsInput"])
 
+    def setUp(self):
+        self.input_throttle_patcher = mock.patch.object(
+            self.lookup.Runner, "wait_before_phone_input", return_value=0,
+        )
+        self.input_throttle_patcher.start()
+        self.addCleanup(self.input_throttle_patcher.stop)
+        self.lookup_adb_guard = mock.patch.object(self.lookup.Runner, "adb", side_effect=AssertionError("unexpected real ADB access in offline test"))
+        self.lookup_adb_guard.start()
+        self.addCleanup(self.lookup_adb_guard.stop)
+
     def test_lookup_recognizes_human_verification(self):
         root = ET.fromstring("""
         <hierarchy><node text="为保障您的正常访问请进行验证"/>
@@ -2237,7 +2402,7 @@ class AutomationRunnerTests(unittest.TestCase):
         verification = ET.fromstring('''
         <hierarchy bounds="[0,0][720,1600]"><node text="为保障您的正常访问请进行验证">
           <node bounds="[80,700][640,780]">
-            <node text="向右滑动验证" bounds="[80,700][300,780]"/>
+            <node text="请拖动滑块完成拼图" bounds="[80,700][300,780]"/>
           </node>
         </node></hierarchy>
         ''')
@@ -2317,11 +2482,12 @@ class AutomationRunnerTests(unittest.TestCase):
         runner.clear_search_input(root, {}, input_node)
         self.assertEqual(len(runner.commands), 2)
         self.assertEqual(runner.commands[0], ["shell", "input", "tap", "360", "80"])
-        self.assertEqual(runner.commands[1][:7], [
-            "shell", "input", "keyevent", "--delay", "0", "123", "67",
+        self.assertEqual(runner.commands[1], [
+            "shell", "input", "keyevent", "123", *(["67"] * 24),
         ])
-        self.assertEqual(runner.commands[1].count("67"), 24)
         self.assertEqual(runner.log[-1]["method"], "element_tap_batched_keyevents")
+        self.assertEqual(runner.log[-1]["keyDelayMs"], 0)
+        self.assertEqual(runner.log[-1]["keyDelayMode"], "android_default")
 
     def test_lookup_focused_search_fast_path_requires_activity_field_and_editor_package(self):
         runner = self.lookup.Runner({"serial": "LOCAL", "taskId": "focus-proof"})
@@ -2617,13 +2783,25 @@ class AutomationRunnerTests(unittest.TestCase):
 
     def test_lookup_detects_the_exact_account_restrictions_observed_on_87(self):
         runner = self.lookup.Runner({"serial": "LOCAL", "taskId": "87-restrictions"})
-        jigsaw = runner.account_restriction_evidence_from_texts([
+        jigsaw = runner.verification_evidence(ET.fromstring('''
+        <hierarchy><node>
+          <node text="为保障您的正常访问请进行验证"/>
+          <node text="请拖动滑块完成拼图"/>
+        </node></hierarchy>
+        '''))
+        loading_jigsaw = runner.verification_evidence(ET.fromstring('''
+        <hierarchy><node>
+          <node text="为保障您的正常访问请进行验证"/>
+          <node text="反馈码: cb4cd32d-4a69-470f-b97e-7c65979cf724"/>
+        </node></hierarchy>
+        '''))
+        self.assertIsNone(runner.account_restriction_evidence_from_texts([
             "提示", "为保障您的正常访问请进行验证", "请拖动滑块完成拼图",
-        ])
-        loading_jigsaw = runner.account_restriction_evidence_from_texts([
+        ]))
+        self.assertIsNone(runner.account_restriction_evidence_from_texts([
             "提示", "为保障您的正常访问请进行验证",
             "反馈码: cb4cd32d-4a69-470f-b97e-7c65979cf724", "@蚂蚁集团",
-        ])
+        ]))
         device_risk = runner.account_restriction_evidence_from_texts([
             "您的设备可能存在风险，请检查或切换设备",
             "检查或切换设备后，请等待一段时间再试",
@@ -2631,8 +2809,8 @@ class AutomationRunnerTests(unittest.TestCase):
         frequent_access = runner.account_restriction_evidence_from_texts([
             "操作频繁或访问异常，请稍后再试", "请稍后",
         ])
-        self.assertEqual(jigsaw["reason"], "jigsaw_verification")
-        self.assertEqual(loading_jigsaw["reason"], "jigsaw_verification")
+        self.assertTrue(jigsaw["manual"])
+        self.assertTrue(loading_jigsaw["manual"])
         self.assertEqual(device_risk["reason"], "device_risk")
         self.assertEqual(frequent_access["reason"], "frequent_or_abnormal_access")
         self.assertEqual(
@@ -2679,7 +2857,7 @@ class AutomationRunnerTests(unittest.TestCase):
         ))
         runner.keep_awake_usb_best_effort = mock.Mock()
         runner.poco_try_reuse_search_page = mock.Mock(side_effect=RuntimeError(
-            "alipay_account_restriction_before_search:jigsaw_verification"
+            "alipay_account_restriction_before_search:device_risk"
         ))
         runner.poco_prepare_full_path = mock.Mock(side_effect=AssertionError(
             "an evidenced restriction page must not relaunch Alipay"
@@ -2689,7 +2867,7 @@ class AutomationRunnerTests(unittest.TestCase):
 
         self.assertTrue(result["ok"])
         self.assertEqual(result["message"], "search_session_restricted")
-        self.assertEqual(result["restrictionReason"], "jigsaw_verification")
+        self.assertEqual(result["restrictionReason"], "device_risk")
         self.assertEqual(runner.log[-1]["step"], "lookup_session_ready_on_restriction_page")
         self.assertFalse(runner.log[-1]["phoneQueryStarted"])
         self.assertEqual(runner.log[-1]["driver"], "poco")
@@ -3362,7 +3540,7 @@ class AutomationRunnerTests(unittest.TestCase):
         with mock.patch.object(self.lookup.time, "sleep", return_value=None):
             runner.poco_search_ready(poco)
         runner.poco_tap.assert_called_once_with(close)
-        runner.poco_unique.assert_called_once_with(poco, timeout=2.0, name=self.lookup.SEARCH_INPUT_ID)
+        runner.poco_unique.assert_called_once_with(poco, timeout=2.0, live=True, name=self.lookup.SEARCH_INPUT_ID)
 
     def test_lookup_late_jigsaw_is_classified_after_single_submit_without_reinput(self):
         phone = "13800138000"
@@ -3371,17 +3549,22 @@ class AutomationRunnerTests(unittest.TestCase):
         input_node.set_text = mock.Mock(side_effect=lambda text: setattr(input_node, "value", text))
         input_node.attr = lambda key: input_node.value if key == "text" else ""
         confirm = FakeNode("confirm", (0.9, 0.1))
-        snapshots = iter(["search", "search", "loading", "loading", "jigsaw"])
+        snapshots = iter(["search", "search", "search", "search", "loading", "loading", "jigsaw"])
         poco = mock.Mock()
 
         def freeze():
             clock[0] += 1.0
-            return next(snapshots)
+            return next(snapshots, "jigsaw")
 
         poco.freeze.side_effect = freeze
         runner = self.lookup.Runner({"serial": "LOCAL", "taskId": "late-jigsaw-after-submit"})
         runner.poco_search_ready = mock.Mock(return_value=input_node)
         runner.poco_tap = mock.Mock()
+        runner.focused_search_input_length = mock.Mock(side_effect=[3, 0])
+        runner.clear_focused_search_input = mock.Mock(side_effect=lambda **kwargs: setattr(input_node, "value", ""))
+        runner.poco_dismiss_post_input_usb_warning = mock.Mock(return_value=False)
+        runner.adb = mock.Mock(side_effect=lambda args, **kwargs:
+            (setattr(input_node, "value", phone) if is_phone_keyevent_command(args, phone) else None) or "")
         runner.poco_nodes = lambda snapshot, **selector: (
             [input_node] if snapshot == "search" and selector.get("name") == self.lookup.SEARCH_INPUT_ID
             else [confirm] if snapshot == "search" and str(selector.get("name", "")).endswith("search_confirm") else []
@@ -3393,14 +3576,16 @@ class AutomationRunnerTests(unittest.TestCase):
         with mock.patch.object(self.lookup.time, "time", side_effect=lambda: clock[0]), \
                 mock.patch.object(self.lookup.time, "perf_counter", side_effect=lambda: clock[0]), \
                 mock.patch.object(self.lookup.time, "sleep", side_effect=lambda delay: clock.__setitem__(0, clock[0] + delay)):
-            with self.assertRaisesRegex(RuntimeError, "alipay_account_restriction_switch_required:jigsaw_verification"):
+            with self.assertRaisesRegex(RuntimeError, "poco_alipay_human_verification_required:jigsaw_verification"):
                 runner.query_once_poco(poco, phone)
-        self.assertEqual(input_node.set_text.call_args_list, [mock.call(""), mock.call(phone)])
-        runner.poco_tap.assert_called_once_with(confirm)
-        transition = next(e for e in runner.log if e["step"] == "query_result_transition_observe")
-        self.assertFalse(transition["resubmitsInput"])
-        restriction = next(e for e in runner.log if e["step"] == "alipay_account_restriction_detected")
-        self.assertTrue(restriction["phoneQueryStarted"])
+        input_node.set_text.assert_not_called()
+        self.assertEqual(sum(is_phone_keyevent_command(c.args[0], phone) for c in runner.adb.call_args_list), 1)
+        self.assertEqual(sum(c.args[0] is confirm for c in runner.poco_tap.call_args_list), 1)
+        verification = next(e for e in runner.log if e["step"] == "human_verification_detected")
+        self.assertFalse(verification["resubmitsInput"])
+        self.assertTrue(verification["requiresHuman"])
+        self.assertEqual(verification["automatedAttempts"], 0)
+        self.assertFalse(any(e["step"] == "alipay_account_restriction_detected" for e in runner.log))
 
     def test_lookup_transition_returns_late_result_without_taps(self):
         runner = self.lookup.Runner({"serial": "LOCAL", "taskId": "late-result"})
@@ -3460,6 +3645,9 @@ class AutomationRunnerTests(unittest.TestCase):
             def attr(inner_self, key):
                 return inner_self.value if key == "text" else ""
 
+            def get_position(inner_self):
+                return (0.4, 0.08)
+
         input_node = InputNode()
 
         class Snapshot:
@@ -3473,7 +3661,19 @@ class AutomationRunnerTests(unittest.TestCase):
                 return Snapshot()
 
         runner = self.lookup.Runner({"serial": "LOCAL", "taskId": "late-submit-restriction"})
+        runner.poco_dismiss_post_input_usb_warning = mock.Mock(return_value=False)
         runner.poco_search_ready = mock.Mock(return_value=input_node)
+        runner.poco_tap = mock.Mock()
+        runner.focused_search_input_length = mock.Mock(return_value=0)
+        runner.clear_focused_search_input = mock.Mock(
+            side_effect=lambda method="": setattr(input_node, "value", ""),
+        )
+        runner.adb = mock.Mock(
+            side_effect=lambda args, **kwargs: (
+                setattr(input_node, "value", "13687366441")
+                if is_phone_keyevent_command(args, "13687366441") else None
+            ) or "",
+        )
         runner.poco_wait_for_post_query_restriction = mock.Mock(
             side_effect=RuntimeError("late restriction evidence"),
         )
@@ -3508,7 +3708,7 @@ class AutomationRunnerTests(unittest.TestCase):
         runner = LateRestrictionRunner()
         with mock.patch.object(self.lookup.time, "sleep", return_value=None):
             with self.assertRaisesRegex(
-                RuntimeError, "alipay_account_restriction_switch_required:jigsaw_verification",
+                RuntimeError, "alipay_human_verification_required:jigsaw_verification",
             ):
                 runner.wait_for_post_query_restriction_xml("transition", timeout=1)
         self.assertEqual(runner.dump_count, 2)
@@ -3630,6 +3830,9 @@ class AutomationRunnerTests(unittest.TestCase):
                 super().__init__({
                     "serial": "LOCAL", "taskId": "manual-limit",
                     "operation": "query", "phoneNumber": phone,
+                    "accountCooldownProtocol": 1, "knownAccount": "synthetic-account",
+                    "accountIdentityVerified": True,
+                    "savedAccounts": [{"account": "synthetic-account", "current": True}],
                 })
                 inner_self.query_calls = []
                 inner_self.switch_calls = 0
@@ -3644,12 +3847,12 @@ class AutomationRunnerTests(unittest.TestCase):
             def query_once(inner_self, queried_phone, **kwargs):
                 inner_self.query_calls.append(queried_phone)
                 raise RuntimeError(
-                    "alipay_account_restriction_switch_required:jigsaw_verification"
+                    "alipay_account_restriction_switch_required:device_risk"
                 )
 
         runner = RestrictedRunner()
         with self.assertRaisesRegex(
-            RuntimeError, "alipay_account_restriction_switch_required:jigsaw_verification"
+            RuntimeError, "alipay_account_restriction_switch_required:device_risk"
         ):
             runner.run()
         self.assertEqual(runner.query_calls, [phone])
@@ -3831,10 +4034,14 @@ class AutomationRunnerTests(unittest.TestCase):
                     raise AssertionError("stop must not query package manager")
                 return ""
 
-            def poco_search_ready(inner_self, poco):
+            def poco_search_ready(inner_self, poco, live=True):
                 return InputNode()
 
-        result = StopRunner().run_poco(object())
+        runner = StopRunner()
+        runner.poco_tap = mock.Mock()
+        runner.clear_focused_search_input = mock.Mock()
+        result = runner.run_poco(object())
+        runner.clear_focused_search_input.assert_called_once()
         self.assertTrue(result["ok"])
 
     def test_lookup_success_count_200_does_not_trigger_account_switch(self):

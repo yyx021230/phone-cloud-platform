@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "releaseId": "20261010-lookup-production-merge-v1",
+  "candidateTag": "lookup-20261010-rc.1",
+  "branch": "codex/lookup-production-merge",
+  "status": "local_candidate_not_deployed",
+  "sourcePath": "releases/lookup-20261010-rc.1",
+  "productionSourceImportCommit": "e72d66bcb3afde53623710fb3366844c944df33c",
+  "sourceManifest": "verification/MANIFEST.json",
+  "testResults": "verification/TEST_RESULTS.json",
+  "releaseNotes": "RELEASE_NOTES.md",
+  "runtimeFilesChanged": 17,
+  "testFilesReconciled": 6,
+  "frozenRuntimeHashesPreserved": 22,
+  "rollbackOriginals": "verification/production-before",
+  "notVerified": [
+    "real-device final combination",
+    "real PostgreSQL faults",
+    "natural 8-hour expiry",
+    "fresh dependency install",
+    "complete deployment artifact"
+  ],
+  "deployment": "not_run",
+  "remotePush": "not_run",
+  "identityNote": "The immutable annotated candidate tag resolves the full source commit; no self-referential commit hash is stored here."
+}

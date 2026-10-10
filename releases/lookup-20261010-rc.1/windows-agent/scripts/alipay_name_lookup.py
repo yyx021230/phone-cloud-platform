@@ -6,6 +6,7 @@ search page between invocations. A query therefore reuses the visible page;
 only an evidenced abnormal state triggers a bounded full-path recovery.
 """
 import argparse
+from datetime import datetime
 import json
 import os
 import random
@@ -70,6 +71,23 @@ ALIPAY_LOCAL_SERVICE_TITLE = "支付宝本地服务"
 ALIPAY_LOCAL_SERVICE_HINT = "允许地理位置权限，支付宝能更好的为您提供缴费、商户、乘车等服务"
 
 
+def focused_window_name(lines):
+    """Use the one actual window, never the activity left underneath it."""
+    current = [line.strip() for line in lines if "mCurrentFocus" in line
+               and not re.fullmatch(r"\s*mCurrentFocus\s*=\s*null\s*", line)]
+    if len(current) != 1:
+        return None
+    window = re.fullmatch(
+        r"mCurrentFocus\s*=\s*Window\{[^\s{}]+(?:\s+u\d+)?\s+"
+        r"([^\s{}]+)(?:\s+type=\d+)?\s*\}", current[0])
+    if window:
+        return window.group(1)
+    # Preserve exact component-only focus fixtures / older OEM output, but
+    # do not accept package substrings or an unstructured background activity.
+    component = re.fullmatch(r"mCurrentFocus\s*=\s*([^\s{}/]+/[^\s{}]+)", current[0])
+    return component.group(1) if component else None
+
+
 class Runner:
     def __init__(self, payload):
         self.payload = payload
@@ -81,6 +99,12 @@ class Runner:
         self.human_verification_passes = 0
         self.account_switched = False
         self.current_account_after_switch = ""
+        self.account_identity_verified = False
+        self.saved_accounts = []
+        if payload.get("accountCooldownProtocol") == 1:
+            self.current_account_after_switch = str(payload.get("knownAccount") or "")
+            self.account_identity_verified = payload.get("accountIdentityVerified") is True
+            self.saved_accounts = list(payload.get("savedAccounts") or [])
         self.account_switch_reason = ""
         self.account_switch_history = []
         self.restricted_accounts = set()
@@ -317,7 +341,9 @@ class Runner:
         protected = VERIFICATION_TITLE
         action = JIGSAW_VERIFICATION_ACTION if JIGSAW_VERIFICATION_ACTION in texts else VERIFICATION_ACTION
         feedback = next((value for value in texts if value.startswith(JIGSAW_FEEDBACK_PREFIX)), "")
-        if protected in texts or action in texts or feedback:
+        # Feedback codes are also shown on account restriction pages. Only
+        # the verification title/action proves a verification surface.
+        if protected in texts or action in texts:
             return {
                 "title": protected if protected in texts else "",
                 "action": action if action in texts else "",
@@ -389,7 +415,11 @@ class Runner:
             reason=reason,
             title=evidence.get("title", ""),
             phoneQueryStarted=bool(phone_query_started),
-            accountSwitchRequired=bool(phone_query_started),
+            accountSwitchRequired=bool(phone_query_started or (
+                self.payload.get("accountCooldownProtocol") == 1 and self.account_identity_verified
+            )),
+            currentAccount=self.current_account_after_switch,
+            accountIdentityVerified=self.account_identity_verified,
         )
         if not phone_query_started:
             raise RuntimeError(f"alipay_account_restriction_before_search:{reason}")
@@ -1376,9 +1406,17 @@ class Runner:
         return bool(served and current_editor)
 
     def focused_search_input_length(self):
-        """Return the focused EditText cursor length without Accessibility hint text."""
+        """Return the real focused EditText cursor length, excluding its hint.
+
+        Alipay exposes rotating search hints through Accessibility/Poco's
+        ``text`` attribute even while the EditText is actually empty. Some
+        hints contain digits (for example an amount), so digit-counting that
+        attribute can incorrectly look like a partially entered phone. The
+        active input connection's cursor is based on editable content and does
+        not include the hint.
+        """
         focus = "\n".join(self.focus())
-        if ALIPAY_PACKAGE not in focus or "MainSearchActivity" not in focus:
+        if "com.eg.android.AlipayGphone" not in focus or "MainSearchActivity" not in focus:
             return None
         state = str(self.adb(
             ["shell", "dumpsys", "input_method"], timeout=8, check=False,
@@ -1453,7 +1491,7 @@ class Runner:
     def parse_result(self, root, parent, phone):
         parent = parent or {child: node for node in root.iter() for child in node}
         patterns = [
-            re.compile(r"[\(（]\*+([^\(\)（）\s])[\)）]\s*$"),
+            re.compile(r"[\(（]\*+(?:·\*+)*([^\(\)（）\s])[\)）]\s*$"),
             re.compile(r"^\*+([\u4e00-\u9fff])$"),
             re.compile(r"^.{1,12}\*+([\u4e00-\u9fff])$"),
         ]
@@ -1638,12 +1676,23 @@ class Runner:
             try:
                 snapshot = poco.freeze()
                 last_texts = self.poco_snapshot_texts(snapshot, 200)
+                verification = self.poco_verification_evidence(snapshot)
+                if verification and verification.get("manual"):
+                    self.emit(
+                        "human_verification_detected", evidence=verification,
+                        token=phase, driver="poco",
+                    )
+                    raise RuntimeError(
+                        "poco_alipay_human_verification_required:jigsaw_verification"
+                    )
                 evidence = self.account_restriction_evidence_from_texts(last_texts)
                 if evidence:
                     self.raise_account_restriction(
                         evidence, phase, "poco", phone_query_started=True,
                     )
             except Exception as exc:
+                if "human_verification_required" in str(exc):
+                    raise
                 if self.account_switch_reason_from_error(exc):
                     raise
                 self.emit(
@@ -1758,7 +1807,7 @@ class Runner:
     def parse_poco_result(self, snapshot, phone):
         """Extract the same evidenced result from one frozen Poco snapshot."""
         patterns = [
-            re.compile(r"[\(（]\*+([^\(\)（）\s])[\)）]\s*$"),
+            re.compile(r"[\(（]\*+(?:·\*+)*([^\(\)（）\s])[\)）]\s*$"),
             re.compile(r"^\*+([\u4e00-\u9fff])$"),
             re.compile(r"^.{1,12}\*+([\u4e00-\u9fff])$"),
         ]
@@ -1842,6 +1891,9 @@ class Runner:
 
     def poco_search_ready(self, poco, live=True):
         _, current_focus, focused_app = self.focus_state()
+        foreground = focused_window_name([current_focus]) or ""
+        if foreground.startswith(ALIPAY_PACKAGE) and not foreground.startswith(ALIPAY_PACKAGE + "/"):
+            raise RuntimeError(f"poco_alipay_search_not_foreground:{current_focus}")
         if self.vivo_usb_mode_dialog_visible(current_focus):
             if not self.dismiss_vivo_usb_mode_dialog():
                 raise RuntimeError("poco_vivo_usb_mode_dialog:underlying_task_unverified")
@@ -3023,7 +3075,9 @@ class Runner:
     def query_once_poco(
         self, poco, phone, verification_recoveries=0, query_deadline=None,
         resume_after_input=False, allow_empty_reinput=True,
+        observation_only_resume=False,
     ):
+        self._query_usb_warning_dismissed = False
         if query_deadline is None:
             query_deadline = time.perf_counter() + 40.0
         no_name_deadline = time.time() + POCO_NO_NAME_RESULT_SECONDS
@@ -3056,58 +3110,78 @@ class Runner:
             if resumed_result:
                 self.emit_query_result(resumed_result, driver="poco")
                 return resumed_result
+            if observation_only_resume:
+                # A preceding query_resume already focused and submitted the
+                # original number before its Poco result channel timed out.
+                # After rebuilding Poco, observe only the page that is already
+                # rendered: never focus the field, inject text, or click search
+                # again. This closes the false-failure window without creating
+                # a duplicate lookup.
+                self.emit(
+                    "resume_result_observation_only",
+                    driver="poco", resubmitsInput=False, resubmitsSearch=False,
+                )
+                observation_deadline = min(
+                    time.time() + POCO_NO_NAME_RESULT_SECONDS,
+                    time.time() + max(0.0, query_deadline - time.perf_counter()),
+                )
+                while time.time() < observation_deadline:
+                    time.sleep(0.18)
+                    try:
+                        resume_snapshot = poco.freeze()
+                    except Exception as exc:
+                        raise RuntimeError(
+                            "poco_query_result_channel_timeout_after_input:"
+                            f"observation_only:{type(exc).__name__}:{exc}"
+                        ) from exc
+                    self.poco_raise_if_account_restricted(
+                        resume_snapshot, "query-resume-observation",
+                        phone_query_started=True,
+                    )
+                    if self.poco_verification_evidence(resume_snapshot):
+                        raise RuntimeError("poco_alipay_human_verification_required")
+                    resumed_result = self.parse_poco_result(resume_snapshot, phone)
+                    if resumed_result:
+                        self.emit_query_result(resumed_result, driver="poco")
+                        return resumed_result
+                raise RuntimeError("poco_query_resume_observation_no_result")
             resume_inputs = self.poco_nodes(resume_snapshot, name=SEARCH_INPUT_ID)
             resume_actual = self.poco_text(resume_inputs[0]) if len(resume_inputs) == 1 else ""
             resume_actual_digits = re.sub(r"\D", "", resume_actual)
-            resume_should_resubmit = resume_actual_digits == phone and allow_empty_reinput
-            if resume_should_resubmit:
-                # A completed external jigsaw returns to MainSearchActivity
-                # with the original phone preserved but the input unfocused.
-                # Focus that exact unchanged input so Alipay exposes Search;
-                # do not type the phone a second time.
-                self.poco_tap(resume_inputs[0])
-                self.emit(
-                    "resume_existing_input_focused",
-                    selector="exact_search_input",
-                    resubmitsInput=False,
-                    resubmitsSearch=True,
-                    driver="poco",
-                )
-                resume_after_input = False
-            elif resume_actual_digits != phone:
-                resume_editable_length = None
-                if allow_empty_reinput and len(resume_inputs) == 1:
-                    if not resume_actual_digits:
-                        self.poco_tap(resume_inputs[0])
-                        resume_editable_length = 0
-                    else:
-                        self.poco_tap(resume_inputs[0])
-                        self.adb(["shell", "input", "keyevent", "123"], timeout=5)
-                        resume_editable_length = self.focused_search_input_length()
+            if resume_actual_digits != phone:
+                # The Agent reaches query_resume only after terminating the
+                # worker whose set_text RPC timed out.  If the rebuilt Poco
+                # hierarchy proves that the one exact search input is still
+                # empty, the original input did not land and cannot arrive
+                # later.  Keep Poco as the element authority, focus that
+                # frozen exact node, and use bounded ADB text injection once.
+                # Any non-empty mismatch remains ambiguous and fails closed.
                 if (
                     allow_empty_reinput
                     and len(resume_inputs) == 1
-                    and resume_editable_length == 0
+                    and not resume_actual_digits
                 ):
                     self.emit(
                         "resume_empty_input_confirmed",
-                        selector="exact_search_input", resubmitsInput=True,
+                        selector="exact_search_input",
+                        resubmitsInput=True,
                         driver="poco",
                     )
-                    if query_deadline - time.perf_counter() < 3.0:
-                        raise RuntimeError("alipay_query_deadline_exceeded_before_input")
                     self.wait_before_phone_input("poco_resume_empty_adb")
                     no_name_deadline = time.time() + POCO_NO_NAME_RESULT_SECONDS
-                    remaining = max(1.0, query_deadline - time.perf_counter())
+                    self.poco_tap(resume_inputs[0])
                     self.input_phone_humanized(
-                        phone, "adb_keyevents_after_poco_confirmed_empty",
-                        timeout=min(5.0, remaining), driver="poco",
+                        phone, "adb_keyevents_after_poco_confirmed_empty", timeout=5,
+                        driver="poco",
                     )
-                    resume_after_input = False
+                    # The frozen node already proved the exact input and was
+                    # used to focus it. Avoid an immediate redundant live
+                    # selector RPC on devices whose set_text channel is the
+                    # failure being recovered; the bounded readback below is
+                    # the authoritative post-input verification.
+                    input_node = resume_inputs[0]
                 else:
-                    transitioned = self.poco_observe_result_transition(
-                        poco, phone, query_deadline,
-                    )
+                    transitioned = self.poco_observe_result_transition(poco, phone, query_deadline)
                     if transitioned:
                         return transitioned
                     raise RuntimeError(
@@ -3115,13 +3189,35 @@ class Runner:
                         f"length={len(resume_actual_digits)};"
                         f"emptyReinputAllowed={str(bool(allow_empty_reinput)).lower()}"
                     )
-        else:
-            input_node = self.poco_search_ready(poco, live=False)
-            if query_deadline - time.perf_counter() < 3.0:
-                raise RuntimeError("alipay_query_deadline_exceeded_before_input")
-            self._query_usb_warning_dismissed = False
-            try:
+            else:
+                input_node = self.poco_search_ready(poco)
+                # Completing a jigsaw can return to MainSearchActivity with
+                # the original phone still present but the input unfocused.
+                # In that state Alipay hides search_confirm, so observation
+                # alone eventually reports poco_search_submit_unavailable.
+                # Focus the exact, already-matching input without changing its
+                # value; this only reveals the normal submit control.
                 self.poco_tap(input_node)
+                self.emit(
+                    "resume_existing_input_focused",
+                    selector="exact_search_input",
+                    resubmitsInput=False,
+                    driver="poco",
+                )
+        else:
+            # Poco's synchronous set_text RPC becomes unreliable during a
+            # long sequence of searches on some vivo builds: the operation can
+            # reach the phone but its HTTP response stalls, leaving the caller
+            # unable to distinguish a completed, partial, or absent write.
+            # Keep Poco as the sole element authority, but perform the bounded
+            # clear/type actions through ADB after exact frozen-node focus.
+            phone_input_started = False
+            try:
+                input_node = self.poco_search_ready(poco, live=False)
+                self.poco_tap(input_node)
+                # Move the cursor to the end so the active input connection
+                # reports the real editable length. Unlike Poco/Accessibility
+                # text, this excludes Alipay's rotating hint text.
                 self.adb(["shell", "input", "keyevent", "123"], timeout=5)
                 editable_length = self.focused_search_input_length()
                 if editable_length is None:
@@ -3150,6 +3246,7 @@ class Runner:
                         "poco_query_input_state_invalid_before_input:"
                         f"count={len(cleared_inputs)}"
                     )
+                input_node = cleared_inputs[0]
                 self.emit(
                     "poco_input_clear_confirmed",
                     selector="exact_search_input", editableLength=0,
@@ -3157,18 +3254,35 @@ class Runner:
                 )
                 self.wait_before_phone_input("poco")
                 no_name_deadline = time.time() + POCO_NO_NAME_RESULT_SECONDS
-                self.poco_tap(cleared_inputs[0])
-                remaining = max(1.0, query_deadline - time.perf_counter())
+                # The throttle interval can allow a popup/app transition.
+                # Reconfirm the live search page before sending any digits.
+                input_node = self.poco_search_ready(poco, live=False)
+                self.poco_tap(input_node)
+                phone_input_started = True
                 self.input_phone_humanized(
-                    phone, "adb_keyevents_after_poco_exact_input",
-                    timeout=min(5.0, remaining), driver="poco",
+                    phone, "adb_keyevents_after_poco_exact_input", timeout=5,
+                    driver="poco",
                 )
             except Exception as exc:
+                if not phone_input_started:
+                    raise RuntimeError(
+                        f"poco_query_before_input_failed:{type(exc).__name__}:{exc}"
+                    ) from exc
+                # Once the clear has started, a transport failure leaves the
+                # exact input state unknown. Rebuild Poco and inspect it via
+                # query_resume; an empty field permits one evidenced input,
+                # the full target continues, and every other value fails
+                # closed. This also covers a bounded ADB input failure without
+                # ever blindly submitting the number twice.
                 raise RuntimeError(
                     f"poco_query_result_channel_timeout_after_input:"
                     f"poco_bounded_input_failed:{type(exc).__name__}:{exc}"
                 ) from exc
 
+        # Input/throttling time is not result observation time. Slow OEM ADB
+        # input must still receive a full readback/result window, bounded by
+        # the unchanged overall query deadline.
+        no_name_deadline = time.time() + POCO_NO_NAME_RESULT_SECONDS
         readback_deadline = min(
             time.time() + 3.0,
             no_name_deadline,
@@ -3184,10 +3298,12 @@ class Runner:
                 ) from exc
             if not resume_after_input and self.poco_dismiss_post_input_usb_warning(poco, snapshot, query_deadline):
                 continue
-            self.poco_raise_if_account_restricted(snapshot, "input-readback", phone_query_started=True)
+            self.poco_raise_if_account_restricted(
+                snapshot, "input-readback", phone_query_started=True,
+            )
             if self.poco_verification_evidence(snapshot):
                 if verification_recoveries >= 2:
-                    raise RuntimeError("poco_alipay_basic_slider_repeatedly_invalidated_query")
+                    raise RuntimeError("poco_alipay_human_verification_repeatedly_invalidated_query")
                 next_attempt = verification_recoveries + 1
                 self.poco_solve_human_verification(poco, f"input-readback-{next_attempt}")
                 self.emit(
@@ -3195,7 +3311,8 @@ class Runner:
                     phase="input-readback", driver="poco", resubmitsInput=False,
                 )
                 return self.query_once_poco(
-                    poco, phone, next_attempt, query_deadline, resume_after_input=True,
+                    poco, phone, next_attempt, query_deadline,
+                    resume_after_input=True,
                     allow_empty_reinput=allow_empty_reinput,
                 )
             result = self.parse_poco_result(snapshot, phone)
@@ -3207,16 +3324,21 @@ class Runner:
                 actual = self.poco_text(inputs[0]) if len(inputs) == 1 else ""
                 actual_digits = re.sub(r"\D", "", actual)
             except Exception as exc:
-                raise RuntimeError(f"poco_input_readback_failed:{exc}") from exc
+                raise RuntimeError(
+                    f"poco_query_result_channel_timeout_after_input:"
+                    f"poco_input_readback_failed:{exc}"
+                ) from exc
             if actual_digits == phone:
                 break
             time.sleep(0.1)
         else:
             self.poco_wait_for_post_query_restriction(
                 poco, "input-readback-transition",
-                timeout=min(1.5, max(0.0, query_deadline - time.perf_counter())),
             )
-            raise RuntimeError(f"search_input_readback_mismatch:length={len(actual_digits)}")
+            raise RuntimeError(
+                f"poco_query_result_channel_timeout_after_input:"
+                f"search_input_readback_mismatch:length={len(actual_digits)}"
+            )
 
         deadline = min(
             no_name_deadline,
@@ -3235,10 +3357,12 @@ class Runner:
                 ) from exc
             if not resume_after_input and self.poco_dismiss_post_input_usb_warning(poco, snapshot, query_deadline):
                 continue
-            self.poco_raise_if_account_restricted(snapshot, "result", phone_query_started=True)
+            self.poco_raise_if_account_restricted(
+                snapshot, "result", phone_query_started=True,
+            )
             if self.poco_verification_evidence(snapshot):
                 if verification_recoveries >= 2:
-                    raise RuntimeError("poco_alipay_basic_slider_repeatedly_invalidated_query")
+                    raise RuntimeError("poco_alipay_human_verification_repeatedly_invalidated_query")
                 next_attempt = verification_recoveries + 1
                 self.poco_solve_human_verification(poco, f"result-{next_attempt}")
                 self.emit(
@@ -3246,19 +3370,24 @@ class Runner:
                     phase="result", driver="poco", resubmitsInput=False,
                 )
                 return self.query_once_poco(
-                    poco, phone, next_attempt, query_deadline, resume_after_input=True,
+                    poco, phone, next_attempt, query_deadline,
+                    resume_after_input=True,
                     allow_empty_reinput=allow_empty_reinput,
                 )
             result = self.parse_poco_result(snapshot, phone)
             if result:
                 self.emit_query_result(result, driver="poco")
                 return result
-            should_submit = not resume_after_input and submit_count == 0 and time.time() >= submit_after
+            should_submit = submit_count == 0 and time.time() >= submit_after
             if should_submit:
                 confirms = self.poco_nodes(snapshot, name="com.alipay.mobile.antui:id/search_confirm")
                 if len(confirms) == 1:
                     self.poco_tap(confirms[0])
                     submit_count += 1
+                    deadline = min(
+                        time.time() + POCO_NO_NAME_RESULT_SECONDS,
+                        time.time() + max(0.0, query_deadline - time.perf_counter()),
+                    )
                     self.emit(
                         "submit_search",
                         selector="exact_search_confirm", attempt=submit_count, driver="poco",
@@ -3267,20 +3396,37 @@ class Runner:
         if submit_count < 1 or last_snapshot is None:
             self.poco_wait_for_post_query_restriction(
                 poco, "search-submit-unavailable",
-                timeout=min(1.5, max(0.0, query_deadline - time.perf_counter())),
             )
-            raise RuntimeError("poco_search_submit_unavailable")
+            raise RuntimeError(
+                "poco_query_result_channel_timeout_after_input:"
+                "poco_search_submit_unavailable"
+            )
         try:
             inputs = self.poco_nodes(last_snapshot, name=SEARCH_INPUT_ID)
             actual = self.poco_text(inputs[0]) if len(inputs) == 1 else ""
             actual_digits = re.sub(r"\D", "", actual)
         except Exception as exc:
-            raise RuntimeError(f"poco_result_state_readback_failed:{exc}") from exc
+            raise RuntimeError(
+                f"poco_query_result_channel_timeout_after_input:"
+                f"poco_result_state_readback_failed:{exc}"
+            ) from exc
         if actual_digits != phone:
             transitioned = self.poco_observe_result_transition(poco, phone, query_deadline)
             if transitioned:
                 return transitioned
-            raise RuntimeError(f"poco_result_page_state_changed:length={len(actual_digits)}")
+            # A submitted search can transition through an input-less WebView
+            # before an account restriction finishes rendering (observed on
+            # vivo V2442A). Keep probing that existing page through Poco. If no
+            # restriction becomes visible, force Agent's query_resume path;
+            # both outcomes are post-input and must never enter XML or submit
+            # the number again.
+            self.poco_wait_for_post_query_restriction(
+                poco, "result-page-state-changed",
+            )
+            raise RuntimeError(
+                f"poco_query_result_channel_timeout_after_input:"
+                f"poco_result_page_state_changed:length={len(actual_digits)}"
+            )
         self.emit(
             "lookup_no_name_result", reason="stable_search_page_without_name_result",
             submitAttempts=submit_count, driver="poco",
@@ -3296,6 +3442,46 @@ class Runner:
 
     def run_poco(self, poco):
         operation = str(self.payload.get("operation") or "")
+        if operation == "human_probe":
+            # Positive search-page evidence is required; missing hierarchy or
+            # another foreground app is unknown, never "verification passed".
+            # No tap, drag, input, launch, fallback or worker repair is permitted.
+            try:
+                before = self.focus()
+                snapshot = poco.freeze()
+                texts = self.poco_snapshot_texts(snapshot, 200)
+                markers = (VERIFICATION_TITLE, VERIFICATION_ACTION,
+                           JIGSAW_VERIFICATION_ACTION)
+                state = "unknown"
+                if any(marker in text for text in texts for marker in markers):
+                    state = "present"
+                else:
+                    inputs = self.poco_nodes(snapshot, name=SEARCH_INPUT_ID)
+                    webviews = self.poco_nodes(snapshot, type="android.webkit.WebView")
+                    after = self.focus()
+                    def foreground(lines):
+                        # Inactive virtual displays may have an exact null
+                        # record. Keep every other record fail-closed and
+                        # require one exact Alipay Window component.
+                        current = [line for line in lines if "mCurrentFocus" in line
+                                   and not re.fullmatch(r"\s*mCurrentFocus\s*=\s*null\s*", line)]
+                        if len(current) != 1:
+                            return False
+                        window = re.fullmatch(
+                            r"\s*mCurrentFocus\s*=\s*Window\{[^\s{}]+(?:\s+u\d+)?\s+"
+                            r"([^\s{}/]+)/[^\s{}]+(?:\s+type=\d+)?\s*\}\s*", current[0])
+                        return bool(window and window.group(1) == ALIPAY_PACKAGE)
+                    if (foreground(before) and foreground(after) and len(inputs) == 1 and not webviews
+                            and not any(marker in text for text in texts for marker in (
+                                ACCESS_DENIED_TITLE, DEVICE_RISK_TITLE,
+                                FREQUENT_OR_ABNORMAL_ACCESS_TITLE,
+                                JIGSAW_FEEDBACK_PREFIX, "短信验证码登录"))
+                            and inputs[0].attr("enabled") is True
+                            and inputs[0].attr("visible") is not False):
+                        state = "search_ready"
+                return {"ok": True, "operation": operation, "verificationState": state}
+            except Exception:
+                return {"ok": True, "operation": operation, "verificationState": "unknown"}
         self.emit("poco_request_received", operation=operation, workflow="alipay_name")
         if self.adb(["get-state"], timeout=8).strip() != "device":
             raise RuntimeError("device_not_online")
@@ -3318,87 +3504,98 @@ class Runner:
                     startAttachAttempt=start_attach_attempt,
                     reason="already_attempted_for_lookup_start",
                 )
-            try:
-                reused = self.poco_try_reuse_search_page(poco)
-            except Exception as exc:
-                raw_error = str(exc)
-                if "poco_alipay_login_required" in raw_error:
-                    raise
-                if "human_verification_required:jigsaw_verification" in raw_error:
-                    self.emit(
-                        "lookup_session_ready_on_human_verification_page",
-                        restrictionReason="jigsaw_verification",
-                        phoneQueryStarted=False,
-                        driver="poco",
-                    )
-                    return {
-                        "ok": True,
-                        "message": "search_session_human_verification_required",
-                        "restrictionReason": "jigsaw_verification",
-                        "requiresHumanAction": True,
-                        "currentAccount": "",
-                        "log": self.log,
-                    }
-                restriction_reason = self.account_switch_reason_from_error(exc)
-                if (
-                    "alipay_account_restriction_before_search:" in raw_error
-                    and restriction_reason
-                ):
-                    # The restriction page is already a stable, evidenced
-                    # Alipay state.  Keep it in place and let the session open
-                    # without relaunching Alipay, which would only invalidate
-                    # Poco's hierarchy channel and can never make the search
-                    # input available while this page remains foreground.
-                    self.emit(
-                        "lookup_session_ready_on_restriction_page",
-                        restrictionReason=restriction_reason,
-                        phoneQueryStarted=False,
-                        driver="poco",
-                    )
-                    return {
-                        "ok": True,
-                        "message": "search_session_restricted",
-                        "restrictionReason": restriction_reason,
-                        "currentAccount": "",
-                        "log": self.log,
-                    }
-                if ("poco_alipay_local_service_" in raw_error or "poco_vivo_usb_mode_dialog:" in raw_error
-                        or "poco_android_window_service_timeout" in raw_error
-                        or "poco_data_network_acceleration_" in raw_error):
-                    # An evidenced but uncloseable prompt must not trigger
-                    # another launch, permission grant or arbitrary click.
-                    raise
-                if "poco_rpc_failed:" in raw_error:
-                    # A broken hierarchy transport cannot be healed by
-                    # force-stopping and relaunching Alipay.  Return control
-                    # to the Agent immediately so it can rebuild only the
-                    # Poco worker and attach to the already-foreground app.
-                    self.emit(
-                        "reuse_search_transport_failed",
-                        error=str(exc),
-                        errorType=type(exc).__name__,
-                        driver="poco",
-                    )
-                    raise
-                if (
-                    (VIVO_SECURITY_CENTER_PACKAGE in raw_error
-                     or HONOR_SOFTWARE_UPDATE_PACKAGE in raw_error)
-                    and ("_resume_alipay_timeout" in raw_error
-                         or "_dismiss_timeout" in raw_error)
-                ):
-                    # An exact OEM overlay was identified but could not be
-                    # detached safely.  Relaunching/force-stopping Alipay does
-                    # not resolve the overlay and only destroys the warm task,
-                    # so fail closed and let the Agent retain evidence.
-                    self.emit(
-                        "reuse_search_overlay_recovery_failed",
-                        error=str(exc),
-                        errorType=type(exc).__name__,
-                        driver="poco_focus_adb",
-                    )
-                    raise
-                self.emit("reuse_search_page_failed", error=str(exc), driver="poco")
-                reused = False
+            reuse_selector_retry = 0
+            while True:
+                try:
+                    reused = self.poco_try_reuse_search_page(poco)
+                    break
+                except Exception as exc:
+                    raw_error = str(exc)
+                    if "poco_alipay_login_required" in raw_error:
+                        raise
+                    if "human_verification_required:jigsaw_verification" in raw_error:
+                        self.emit(
+                            "lookup_session_ready_on_human_verification_page",
+                            restrictionReason="jigsaw_verification",
+                            phoneQueryStarted=False,
+                            driver="poco",
+                        )
+                        return {
+                            "ok": True,
+                            "message": "search_session_human_verification_required",
+                            "restrictionReason": "jigsaw_verification",
+                            "requiresHumanAction": True,
+                            "currentAccount": "",
+                            "log": self.log,
+                        }
+                    restriction_reason = self.account_switch_reason_from_error(exc)
+                    if (
+                        "alipay_account_restriction_before_search:" in raw_error
+                        and restriction_reason
+                    ):
+                        # The restriction page is already a stable, evidenced
+                        # Alipay state.  Keep it in place and let the session open
+                        # without relaunching Alipay, which would only invalidate
+                        # Poco's hierarchy channel and can never make the search
+                        # input available while this page remains foreground.
+                        self.emit(
+                            "lookup_session_ready_on_restriction_page",
+                            restrictionReason=restriction_reason,
+                            phoneQueryStarted=False,
+                            driver="poco",
+                        )
+                        return {
+                            "ok": True,
+                            "message": "search_session_restricted",
+                            "restrictionReason": restriction_reason,
+                            "currentAccount": "",
+                            "log": self.log,
+                        }
+                    if ("poco_alipay_local_service_" in raw_error or "poco_vivo_usb_mode_dialog:" in raw_error
+                            or "poco_android_window_service_timeout" in raw_error
+                            or "poco_data_network_acceleration_" in raw_error):
+                        # An evidenced but uncloseable prompt must not trigger
+                        # another launch, permission grant or arbitrary click.
+                        raise
+                    if "poco_rpc_failed:" in raw_error:
+                        # A broken hierarchy transport cannot be healed by
+                        # force-stopping and relaunching Alipay.  Return control
+                        # to the Agent immediately so it can rebuild only the
+                        # Poco worker and attach to the already-foreground app.
+                        self.emit(
+                            "reuse_search_transport_failed",
+                            error=str(exc),
+                            errorType=type(exc).__name__,
+                            driver="poco",
+                        )
+                        raise
+                    if (
+                        (VIVO_SECURITY_CENTER_PACKAGE in raw_error
+                         or HONOR_SOFTWARE_UPDATE_PACKAGE in raw_error)
+                        and ("_resume_alipay_timeout" in raw_error
+                             or "_dismiss_timeout" in raw_error)
+                    ):
+                        # An exact OEM overlay was identified but could not be
+                        # detached safely.  Relaunching/force-stopping Alipay does
+                        # not resolve the overlay and only destroys the warm task,
+                        # so fail closed and let the Agent retain evidence.
+                        self.emit(
+                            "reuse_search_overlay_recovery_failed",
+                            error=str(exc),
+                            errorType=type(exc).__name__,
+                            driver="poco_focus_adb",
+                        )
+                        raise
+                    if (reuse_selector_retry == 0 and "poco_selector_missing:" in raw_error
+                            and (focused_window_name(self.focus()) or "").startswith(ALIPAY_PACKAGE + "/")):
+                        reuse_selector_retry += 1
+                        self.emit("reuse_search_selector_missing_retry", retryAttempt=1,
+                                  maxRetries=1, relaunchesAlipay=False, driver="poco")
+                        time.sleep(0.15)
+                        continue
+                    self.emit("reuse_search_page_failed", error=str(exc), driver="poco")
+                    reused = False
+                    break
             if not reused:
                 self.poco_prepare_full_path(poco, "session-start")
             return {"ok": True, "message": "search_session_ready", "currentAccount": "", "log": self.log}
@@ -3439,53 +3636,295 @@ class Runner:
         phone = re.sub(r"\D", "", str(self.payload.get("phoneNumber") or ""))
         if not re.fullmatch(r"1\d{10}", phone):
             raise RuntimeError("invalid_phone_number")
+        if self.payload.get("recoverUnexpectedPage") is True:
+            if operation != "query":
+                raise RuntimeError("page_recovery_operation_invalid")
+            recovery_stage = self.payload.get("pageRecoveryStage")
+            if recovery_stage not in ("restart_app", "continue_query"):
+                raise RuntimeError("page_recovery_stage_invalid")
+            # Never dismiss a visible verification/login/limit by restarting.
+            # An unavailable hierarchy fails closed instead of guessing.
+            self.dismiss_notification_shade_if_present()
+            snapshot = poco.freeze()
+            self.poco_raise_if_login_focus("\n".join(self.focus()), "page-recovery")
+            self.poco_raise_if_login_required(snapshot, "page-recovery")
+            self.poco_raise_if_account_restricted(
+                snapshot, "page-recovery", phone_query_started=False,
+            )
+            if self.poco_verification_evidence(snapshot):
+                raise RuntimeError("poco_alipay_human_verification_required")
+            if recovery_stage == "restart_app":
+                self.emit("query_page_recovery_begin", recoveryAttempt=1, sameTask=True, driver="poco")
+                self.adb(["shell", "am", "force-stop", ALIPAY_PACKAGE], timeout=8)
+                output = self.adb([
+                    "shell", "am", "start", "-W", "-f", "0x10008000",
+                    "-a", "android.intent.action.MAIN", "-c", "android.intent.category.LAUNCHER", "-n", ALIPAY_HOME,
+                ], timeout=25)
+                if "Error:" in str(output):
+                    raise RuntimeError("alipay_restart_launch_failed")
+                self.emit("launch_alipay", reason="query-page-recovery", driver="poco")
+                # Do not read this now-invalid hierarchy or submit any digits.
+                return {"ok": True, "appRecoveryStage": "app_restarted", "log": self.log}
+            try:
+                if not self.poco_try_reuse_search_page(poco):
+                    raise RuntimeError("poco_recovery_alipay_not_foreground")
+                self.poco_search_ready(poco, live=False)
+            except Exception as exc:
+                # No input has been entered in this worker. A transport error
+                # while opening Search may be retried by one fresh attachment,
+                # never by another app restart or by replaying a query result.
+                if "poco_rpc_failed:" in str(exc):
+                    raise RuntimeError(
+                        f"poco_query_page_recovery_prepare_failed:{exc}"
+                    ) from exc
+                raise
+            self.emit("query_page_recovery_ready", recoveryAttempt=1, driver="poco")
+        self.assert_known_account()
         # A verified account switch may leave Alipay on Home if the independent
         # XML navigation could not reopen Search. Re-establish the search page
         # with Poco before any phone input occurs.
-        if operation == "query" and not self.poco_try_reuse_search_page(poco):
+        if operation == "query" and not self.payload.get("recoverUnexpectedPage") and not self.poco_try_reuse_search_page(poco):
             raise RuntimeError("poco_query_search_page_unavailable_before_input")
-        query_budget = max(0, min(40.0, float(self.payload.get("queryBudgetMs", 40_000)) / 1000.0))
         result = self.query_once_poco(
-            poco, phone, query_deadline=self.started + query_budget,
+            poco, phone,
             resume_after_input=(operation == "query_resume"),
             allow_empty_reinput=bool(
                 self.payload.get("allowEmptyInputRecovery", True)
             ),
+            observation_only_resume=bool(self.payload.get("observationOnlyResume", False)),
         )
         return {
-            "ok": True, **result, "currentAccount": "", "accountSwitched": False,
+            "ok": True, **result, "currentAccount": "", **self.account_metadata(), "accountSwitched": False,
             "recoveryAttempts": 0,
             "elapsedMs": int((time.perf_counter() - self.started) * 1000), "log": self.log,
         }
 
+    def dismiss_notification_shade_if_present(self):
+        if focused_window_name(self.focus()) != "NotificationShade":
+            return False
+        # This only closes the evidenced system drawer; it never presses a
+        # permission button, dismisses a verification, or changes a setting.
+        self.adb(["shell", "cmd", "statusbar", "collapse"], timeout=5)
+        deadline = time.monotonic() + 2.0
+        while time.monotonic() < deadline:
+            current = focused_window_name(self.focus())
+            if current and current != "NotificationShade":
+                self.emit("notification_shade_collapsed", driver="adb_exact_window")
+                return True
+            time.sleep(0.1)
+        raise RuntimeError("notification_shade_collapse_unconfirmed")
+
+    def wake_and_unlock_for_lookup_start(self):
+        """Wake the display before reading the foreground Poco hierarchy.
+
+        KEYCODE_WAKEUP is normally idempotent, but vivo V2442A on Android 14
+        has been observed to leave ``mWakefulness=Asleep`` after accepting it.
+        Only when a read-only power-state check proves that the screen is still
+        asleep do we send KEYCODE_POWER, avoiding the risk of toggling an
+        already-awake display off.
+        """
+        self.adb(["shell", "input", "keyevent", "224"], timeout=5, check=False)
+        self.adb(["shell", "wm", "dismiss-keyguard"], timeout=5, check=False)
+        power_state = str(self.adb(
+            ["shell", "dumpsys", "power"], timeout=5, check=False,
+        ))
+        if re.search(r"mWakefulness\s*=\s*Asleep\b", power_state, re.IGNORECASE):
+            self.adb(["shell", "input", "keyevent", "26"], timeout=5, check=False)
+            self.adb(["shell", "wm", "dismiss-keyguard"], timeout=5, check=False)
+            self.emit(
+                "wake_display_power_fallback",
+                reason="keycode_wakeup_left_device_asleep",
+                driver="adb_power_state_guard",
+            )
+        else:
+            self.emit("wake_display_ready", driver="adb_keycode_wakeup")
+
+    def dismiss_unverified_account_modal_visual(self):
+        """Dismiss Alipay's Canvas-only "account not verified" home modal.
+
+        Some Alipay builds render this modal completely outside the
+        accessibility hierarchy.  The underlying Home/My nodes are still
+        exposed, so repeated element taps are silently consumed by the modal.
+        Require the modal's responsive geometry (large bright centre card,
+        blue CTA, dim surround, and a centred lower close ring) before tapping
+        its detected close control.  This keeps the fallback fail-closed and
+        avoids a blind coordinate or Back action on a normal home page.
+        """
+        try:
+            import cv2
+            import numpy as np
+
+            raw = self.adb(["exec-out", "screencap", "-p"], timeout=15, binary=True)
+            image = cv2.imdecode(np.frombuffer(raw, dtype=np.uint8), cv2.IMREAD_COLOR)
+            if image is None:
+                return False
+            height, width = image.shape[:2]
+            if width < 300 or height < 600:
+                return False
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            card = gray[int(height * .30):int(height * .69), int(width * .14):int(width * .86)]
+            surround = gray[int(height * .34):int(height * .66), int(width * .02):int(width * .11)]
+            cta = image[int(height * .60):int(height * .69), int(width * .22):int(width * .78)]
+            if not card.size or not surround.size or not cta.size:
+                return False
+            bright_card_ratio = float((card >= 225).mean())
+            dim_surround_ratio = float((surround <= 175).mean())
+            blue_cta_ratio = float((
+                (cta[:, :, 0] >= 150)
+                & (cta[:, :, 0] >= cta[:, :, 1] * .95)
+                & (cta[:, :, 2] <= 120)
+            ).mean())
+            if bright_card_ratio < .48 or dim_surround_ratio < .60 or blue_cta_ratio < .12:
+                return False
+
+            lower = gray[int(height * .71):int(height * .84), :]
+            binary = (lower >= 205).astype(np.uint8)
+            count, _, stats, centers = cv2.connectedComponentsWithStats(binary)
+            candidates = []
+            for index in range(1, count):
+                x, y, component_width, component_height, area = stats[index]
+                center_x, center_y = centers[index]
+                absolute_y = float(center_y + int(height * .71))
+                if not (width * .42 <= center_x <= width * .58):
+                    continue
+                if not (height * .735 <= absolute_y <= height * .82):
+                    continue
+                if not (width * .055 <= component_width <= width * .13):
+                    continue
+                if not (width * .055 <= component_height <= width * .13):
+                    continue
+                aspect = component_width / max(1.0, float(component_height))
+                if not (.72 <= aspect <= 1.38):
+                    continue
+                if area < width * height * .00022:
+                    continue
+                candidates.append((int(round(center_x)), int(round(absolute_y)), int(area)))
+            if len(candidates) != 1:
+                return False
+            tap_x, tap_y, area = candidates[0]
+            self.adb(["shell", "input", "tap", str(tap_x), str(tap_y)], timeout=8)
+            self.emit(
+                "dismiss_alipay_unverified_account_modal",
+                method="responsive_modal_close_detection",
+                evidence={
+                    "brightCardRatio": round(bright_card_ratio, 3),
+                    "dimSurroundRatio": round(dim_surround_ratio, 3),
+                    "blueCtaRatio": round(blue_cta_ratio, 3),
+                    "closeComponentArea": area,
+                },
+                tap={"x": tap_x, "y": tap_y},
+            )
+            time.sleep(0.5)
+            return True
+        except Exception as exc:
+            self.emit(
+                "unverified_account_modal_visual_probe_failed",
+                errorType=type(exc).__name__,
+            )
+            return False
+
+    def cooling_accounts(self):
+        cooling = set()
+        for row in self.payload.get("accountCooldowns") or []:
+            try:
+                until = datetime.fromisoformat(str(row["cooldownUntil"]).replace("Z", "+00:00"))
+                if until.tzinfo is None:
+                    raise ValueError("missing timezone")
+                if until.timestamp() > time.time():
+                    cooling.add(str(row["account"]))
+            except (KeyError, TypeError, ValueError, OverflowError):
+                raise RuntimeError("alipay_account_cooldown_data_invalid")
+        return cooling
+
+    def account_metadata(self):
+        if self.payload.get("accountCooldownProtocol") != 1:
+            return {}
+        return {
+            "currentAccount": self.current_account(),
+            "accountIdentityVerified": self.account_identity_verified,
+            "savedAccounts": self.saved_accounts,
+            "savedAccountCount": len(self.saved_accounts) or self.saved_account_count,
+        }
+
+    def assert_known_account(self):
+        if self.payload.get("accountCooldownProtocol") != 1:
+            return
+        rows = self.saved_accounts
+        accounts = [str(row.get("account") or "") for row in rows]
+        current = [row for row in rows if row.get("current") is True]
+        if (not self.account_identity_verified or not accounts or any(not value for value in accounts)
+                or len(accounts) > 12 or len(set(accounts)) != len(accounts) or len(current) != 1
+                or current[0]["account"] != self.current_account_after_switch):
+            raise RuntimeError("alipay_account_identity_unverified")
+        if self.current_account_after_switch in self.cooling_accounts():
+            raise RuntimeError("alipay_account_preflight_required")
+
+    def prepare_available_account(self):
+        # Never navigate away from a visible verification merely to select
+        # another account. Startup/preflight does not submit a probe number.
+        root, parent = self.dump("account-preflight-visible-state")
+        verification = self.verification_evidence(root)
+        if verification:
+            if verification.get("manual", True):
+                raise RuntimeError("alipay_human_verification_required:jigsaw_verification")
+            root, parent = self.solve_human_verification(root, parent, "account-preflight-visible-state")
+        restriction = self.account_restriction_evidence(root)
+        if restriction and self.current_account_after_switch not in self.cooling_accounts():
+            # Unknown identity cannot be assigned the previous account's limit.
+            self.assert_known_account()
+            self.raise_account_restriction(restriction, "account-preflight-visible-state",
+                                           "xml_uiautomator", phone_query_started=False)
+        self.launch("account-preflight")
+        rows = self.open_account_picker("preflight")
+        self.saved_accounts = self.saved_account_choices(rows)
+        self.saved_account_count = len(rows)
+        self.current_account_after_switch = next(row[0] for row in rows if row[1])
+        self.account_identity_verified = True
+        cooling = self.cooling_accounts()
+        if all(row[0] in cooling for row in rows):
+            raise RuntimeError("alipay_no_available_account")
+        if self.current_account_after_switch in cooling:
+            self.switch_account(reason="cooldown", excluded_accounts=cooling,
+                                reuse_open_picker=True, verify_current_marker=True)
+            self.open_search("account-preflight-switch-complete")
+        else:
+            self.launch("account-preflight-complete")
+            self.open_search("account-preflight-complete")
+        self.emit("lookup_account_ready", **self.account_metadata())
+        return self.account_metadata()
+
     def current_account(self):
         # The picker is not opened during the fast path. Return an empty value
         # unless a switch just produced exact account evidence.
-        return ""
+        return self.current_account_after_switch if self.account_identity_verified else ""
 
     def clear_focused_search_input(self, method="focused_input_resource"):
-        # Keep one bounded ADB round trip, but space the visible delete keys so
-        # the edit resembles an operator clearing the exact focused field.
-        key_delay_ms = random.randint(55, 95)
+        # Android's input command accepts multiple key codes.  Keep the same
+        # bounded clear behavior without paying one ADB round trip per delete.
+        # Do not pass --delay: older/OEM parsers can inject its numeric value
+        # as an unrelated key.  Only MOVE_END and DEL belong in this command.
         self.adb(
-            ["shell", "input", "keyevent", "--delay", str(key_delay_ms), "123", *(["67"] * 24)],
+            ["shell", "input", "keyevent", "123", *(["67"] * 24)],
             timeout=8,
         )
         self.emit(
             "clear_previous_query", selector="exact_search_input",
-            method=method, keyCount=25, keyDelayMs=key_delay_ms,
+            method=method, keyCount=25, keyDelayMs=0, keyDelayMode="android_default",
         )
 
     def input_phone_humanized(self, phone, method, timeout=8, driver="xml_uiautomator"):
-        key_delay_ms = random.randint(85, 145)
+        # Retain the helper name for existing callers, but use only the
+        # portable numeric-key grammar, with no options or timing tokens.
+        if not isinstance(phone, str) or not re.fullmatch(r"1[0-9]{10}", phone):
+            raise RuntimeError("invalid_phone_number")
         keycodes = [str(7 + int(digit)) for digit in phone]
         self.adb(
-            ["shell", "input", "keyevent", "--delay", str(key_delay_ms), *keycodes],
+            ["shell", "input", "keyevent", *keycodes],
             timeout=timeout,
         )
         self.emit(
             "input_phone", method=method, keyCount=len(keycodes),
-            keyDelayMs=key_delay_ms, driver=driver,
+            keyDelayMs=0, keyDelayMode="android_default", driver=driver,
         )
 
     def clear_search_input(self, root, parent, input_node):
@@ -3728,7 +4167,7 @@ class Runner:
     def saved_account_choices(rows):
         current_rows = [row for row in rows if row[1]]
         accounts = [str(row[0] or "").strip() for row in rows]
-        if len(rows) < 2 or len(current_rows) != 1 or any(not account for account in accounts):
+        if not rows or len(rows) > 12 or len(current_rows) != 1 or any(not account for account in accounts):
             raise RuntimeError("alipay_saved_account_candidate_missing")
         if len(set(accounts)) != len(accounts):
             raise RuntimeError("alipay_saved_account_labels_not_unique")
@@ -3754,6 +4193,13 @@ class Runner:
             self.resume_alipay_home("account-switch")
             rows = self.open_account_picker("before")
         self.saved_account_count = max(self.saved_account_count, len(rows))
+        if self.payload.get("accountCooldownProtocol") == 1:
+            self.saved_accounts = self.saved_account_choices(rows)
+            excluded_accounts = set(excluded_accounts or ()) | self.cooling_accounts()
+            if target_account and target_account in excluded_accounts:
+                raise RuntimeError("alipay_target_account_cooling")
+            if all(row[0] in self.cooling_accounts() for row in rows):
+                raise RuntimeError("alipay_no_available_account")
         current_rows = [row for row in rows if row[1]]
         if len(current_rows) != 1:
             raise RuntimeError("alipay_saved_account_candidate_missing")
@@ -3780,6 +4226,7 @@ class Runner:
         # Record the actual selection before verifying it so a caller never
         # retries the switch and ping-pongs between two saved accounts.
         self.account_switched = True
+        self.account_identity_verified = False
         self.current_account_after_switch = target[0]
         self.emit("account_selected", fromAccount=current[0], toAccount=target[0], selector="exact_account_resource")
         self.account_switch_history.append({
@@ -3794,6 +4241,8 @@ class Runner:
                 actual = verified[0] if verified else ""
                 raise RuntimeError(f"alipay_account_switch_verification_failed:expected={target[0]};actual={actual}")
             current_account = verified[0]
+            self.saved_accounts = self.saved_account_choices(verified_rows)
+            self.account_identity_verified = True
             verification = "exact_current_marker"
             self.launch("account-switch-complete")
         else:
@@ -3840,12 +4289,23 @@ class Runner:
         while time.time() < deadline:
             try:
                 root, _ = self.dump(phase)
+                verification = self.verification_evidence(root)
+                if verification and verification.get("manual"):
+                    self.emit(
+                        "human_verification_detected", evidence=verification,
+                        token=phase, driver="xml_uiautomator",
+                    )
+                    raise RuntimeError(
+                        "alipay_human_verification_required:jigsaw_verification"
+                    )
                 evidence = self.account_restriction_evidence(root)
                 if evidence:
                     self.raise_account_restriction(
                         evidence, phase, "xml_uiautomator", phone_query_started=True,
                     )
             except Exception as exc:
+                if "human_verification_required" in str(exc):
+                    raise
                 if self.account_switch_reason_from_error(exc):
                     raise
                 self.emit(
@@ -4005,6 +4465,11 @@ class Runner:
             raise RuntimeError("alipay_not_installed")
         if operation == "start":
             self.keep_awake_usb_best_effort()
+            if self.payload.get("accountCooldownProtocol") == 1:
+                self.wake_and_unlock_for_lookup_start()
+                return {"ok": True, "message": "search_session_ready",
+                        **self.prepare_available_account(), "accountSwitched": self.account_switched,
+                        "accountSwitchReason": self.account_switch_reason, "log": self.log}
             try:
                 reused = self.try_reuse_search_page()
             except Exception as exc:
@@ -4027,6 +4492,9 @@ class Runner:
             choices = self.saved_account_choices(rows)
             self.saved_account_count = max(self.saved_account_count, len(rows))
             current_account = next(choice["account"] for choice in choices if choice["current"])
+            self.current_account_after_switch = current_account
+            self.account_identity_verified = True
+            self.saved_accounts = choices
             self.emit(
                 "saved_account_list_ready", currentAccount=current_account,
                 savedAccountCount=len(choices),
@@ -4035,6 +4503,7 @@ class Runner:
                 "ok": True,
                 "message": "saved_account_list_ready",
                 "currentAccount": current_account,
+                "accountIdentityVerified": True,
                 "savedAccounts": choices,
                 "accountSwitched": False,
                 "savedAccountCount": self.saved_account_count,
@@ -4050,12 +4519,13 @@ class Runner:
             )
             current_account = self.switch_account(
                 reason="manual", target_account=target_account,
-                reuse_open_picker=True, verify_current_marker=False,
+                reuse_open_picker=True, verify_current_marker=self.payload.get("accountCooldownProtocol") == 1,
             )
             return {
                 "ok": True,
                 "message": "account_switch_completed",
                 "currentAccount": current_account,
+                **self.account_metadata(),
                 "accountSwitched": True,
                 "accountSwitchReason": "manual",
                 "accountSwitchCount": len(self.account_switch_history),
@@ -4076,6 +4546,7 @@ class Runner:
             return {"ok": True, "message": "session_stopped", "log": self.log}
         if operation != "query":
             raise RuntimeError("unsupported_operation")
+        self.assert_known_account()
         phone = re.sub(r"\D", "", str(self.payload.get("phoneNumber") or ""))
         if not re.fullmatch(r"1\d{10}", phone):
             raise RuntimeError("invalid_phone_number")
@@ -4099,6 +4570,7 @@ class Runner:
                     if attempt >= max_recoveries or query_elapsed >= 50:
                         break
                     self.emit("query_full_path_recovery", attempt=attempt + 1, error=raw_error)
+                    # App/page recovery preserves the already verified account.
                     self.prepare_full_path(f"query-recovery-{attempt + 1}")
             raise RuntimeError(f"alipay_lookup_failed_after_recovery:{last_error}")
 
@@ -4113,6 +4585,10 @@ class Runner:
             except Exception as exc:
                 restriction_reason = self.account_switch_reason_from_error(exc)
                 if restriction_reason not in ACCOUNT_SWITCH_REASONS:
+                    raise
+                if self.payload.get("accountCooldownProtocol") == 1:
+                    # The Agent persists and acknowledges cooldown before it
+                    # schedules a separate bounded account preflight.
                     raise
                 while True:
                     try:
@@ -4131,6 +4607,7 @@ class Runner:
             "ok": True,
             **result,
             "currentAccount": self.current_account_after_switch,
+            **self.account_metadata(),
             "accountSwitched": self.account_switched,
             "accountSwitchReason": self.account_switch_reason,
             "accountSwitchCount": len(self.account_switch_history),
@@ -4176,6 +4653,7 @@ def main():
             "error": str(exc),
             "accountSwitched": runner.account_switched,
             "currentAccount": runner.current_account_after_switch,
+            **runner.account_metadata(),
             "accountSwitchReason": runner.account_switch_reason,
             "accountSwitchCount": len(runner.account_switch_history),
             "accountSwitchHistory": runner.account_switch_history,

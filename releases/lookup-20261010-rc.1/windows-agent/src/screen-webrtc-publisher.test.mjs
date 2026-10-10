@@ -28,7 +28,7 @@ test("builds a no-reencode FFmpeg RTSP publisher command", () => {
 });
 
 test("frames scrcpy H264 packets with their original PTS for WHIP", () => {
-  assert.deepEqual(buildWhipPublisherArgs("http://example.test/webrtc/pc/slot-1/whip?token=x", { profileLevelId: "640029" }), ["--whip-url", "http://example.test/webrtc/pc/slot-1/whip?token=x", "--profile-level-id", "640029", "--pacing-bitrate", "12000000", "--queue-latency", "400ms"]);
+  assert.deepEqual(buildWhipPublisherArgs("http://example.test/webrtc/pc/slot-1/whip?token=x", { profileLevelId: "640029" }), ["--whip-url", "http://example.test/webrtc/pc/slot-1/whip?token=x", "--profile-level-id", "640029", "--pacing-bitrate", "12000000", "--max-packets-per-burst", "2", "--queue-latency", "400ms"]);
   const frame = encodeWhipFrame({ type: "data", pts: 1_234_567n, data: new Uint8Array([1, 2, 3]) });
   assert.equal(frame[0], 1);
   assert.equal(frame.readBigInt64BE(1), 1_234_567n);

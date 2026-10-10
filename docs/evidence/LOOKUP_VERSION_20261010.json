@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-10",
+  "branch": "codex/lookup-production-merge",
+  "candidateTag": "lookup-20261010-rc.1",
+  "sourcePath": "releases/lookup-20261010-rc.1",
+  "sourceWorktree": "/Users/yyx/.codex/worktrees/lookup-version-management/phone-cloud-platform",
+  "productionSourceImportCommit": "e72d66bcb3afde53623710fb3366844c944df33c",
+  "status": "local_candidate_not_deployed",
+  "verificationReport": "releases/lookup-20261010-rc.1/verification/VERSION_REGISTRATION.json",
+  "testSummary": {
+    "screen": 585,
+    "agent": 283,
+    "python": 163,
+    "lookup": 56,
+    "sdk-node": 3,
+    "sdk-python": 1
+  },
+  "failedChecks": 0,
+  "remotePush": "not_run",
+  "deployment": "not_run",
+  "identity": "Resolve the immutable annotated candidate tag for the full source commit; the original dirty workspace is not this snapshot."
+}

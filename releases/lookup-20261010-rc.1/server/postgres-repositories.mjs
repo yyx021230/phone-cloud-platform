@@ -324,8 +324,9 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
       });
     },
 
-    async persistTaskMutation({ windowsTask = null, windowsTasks = [], xhsTask = null, automationJob = null, automationJobs = [], automationSession = null, deviceLock = null, events = [], audit = null } = {}) {
+    async persistTaskMutation({ windowsTask = null, windowsTasks = [], xhsTask = null, automationJob = null, automationJobs = [], automationSession = null, device = null, deviceLock = null, events = [], audit = null } = {}) {
       return inTransaction(async (client) => {
+        if (device) await upsertDevice(client, device);
         if (windowsTask) await upsertWindowsTask(client, windowsTask);
         for (const item of windowsTasks) await upsertWindowsTask(client, item);
         if (xhsTask) await upsertXhsTask(client, xhsTask);

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Phone Cloud Platform</title>
-  <link rel="stylesheet" href="./styles.css?v=20260915-kuaishou-lead-v1" />
+  <link rel="stylesheet" href="./styles.css?v=20261010-lookup-production-merge-v1" />
   </head>
   <body class="booting">
     <div class="boot-loader" aria-label="正在加载 Phone Cloud">
@@ -392,11 +392,11 @@
                     <span class="automation-mode-badge"><i></i> 长会话</span>
                   </div>
                   <div class="lookup-pipeline" aria-hidden="true">
-                    <span><i>1</i><b>建立会话</b><small>进入支付宝搜索页</small></span>
+                    <span><i>1</i><b>检查账户</b><small>识别账户并检查冷却</small></span>
                     <em></em>
                     <span><i>2</i><b>连续查询</b><small>仅替换手机号码</small></span>
                     <em></em>
-                    <span><i>3</i><b>手动切号</b><small>触发限制后主动切换</small></span>
+                    <span><i>3</i><b>账户冷却</b><small>明确限制后冷却八小时</small></span>
                   </div>
                   <div class="lookup-console-grid">
                     <section class="lookup-session-panel">
@@ -415,6 +415,13 @@
                         <div><span>选择目标账号</span><small>账号来自当前手机支付宝</small></div>
                         <div id="userLookupAccountList" class="lookup-account-list"></div>
                       </div>
+                      <section id="userLookupCooldownPanel" class="lookup-cooldown-panel" hidden aria-labelledby="userLookupCooldownTitle">
+                        <h4 id="userLookupCooldownTitle">账户冷却记录 <small>触发限制起 8 小时</small></h4>
+                        <div class="lookup-cooldown-scroll" tabindex="0" role="region" aria-label="账户冷却时间表，可横向滚动">
+                          <table><thead><tr><th scope="col">账户</th><th scope="col">上限触发时间</th><th scope="col">冷却结束／状态</th></tr></thead><tbody id="userLookupCooldownRows"></tbody></table>
+                        </div>
+                        <p>到期后可再次尝试，不代表支付宝已解除限制。全部冷却时不再下发查询。</p>
+                      </section>
                     </section>
                     <section class="lookup-query-panel">
                       <div class="automation-section-title"><span>B</span><div><strong>号码查询台</strong><small>查询成功后直接输入下一个号码</small></div></div>
@@ -425,8 +432,8 @@
                         <button id="userLookupQueryButton" type="button" disabled>查询名字 <i aria-hidden="true">↗</i></button>
                       </div>
                       <div id="userLookupHumanResumePanel" class="lookup-human-resume" hidden>
-                        <div><strong>当前号码等待人工验证</strong><small>完成拼图并结束控屏后，脚本会继续获取这个号码的姓名结果。</small></div>
-                        <button id="userLookupHumanResumeButton" class="secondary-outline" type="button" disabled>验证完成，继续获取本号码结果</button>
+                        <div><strong>当前号码等待人工验证</strong><small>发起者或管理员进入实时控屏完成拼图。系统自动检测，结束这次控屏、清空搜索框并重查原号码，无需再点确认。</small></div>
+                        <button id="userLookupRecoveryRetryButton" type="button" hidden>重试当前号码</button>
                       </div>
                       <div class="lookup-query-notes">
                         <span><i>✓</i> 查询后保持当前页面</span>
@@ -924,6 +931,6 @@
     </main>
 
     <script type="module" src="./vendor/screen-control.js?v=20260828-receiver-feedback-v1"></script>
-    <script type="module" src="./app.js?v=20260918-gallery-delivery-v2"></script>
+    <script type="module" src="./app.js?v=20261010-lookup-production-merge-v1"></script>
   </body>
 </html>
