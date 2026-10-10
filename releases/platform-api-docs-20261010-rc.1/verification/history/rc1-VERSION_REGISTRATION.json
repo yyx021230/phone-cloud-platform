@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-10",
+  "candidateTag": "lookup-20261010-rc.1",
+  "status": "local_candidate_not_deployed",
+  "verification": "Offline replay from versioned snapshot, existing dependencies, cleared business environment and mock devices/upstream.",
+  "commands": [
+    {
+      "check": "syntax",
+      "exitCode": 0
+    },
+    {
+      "check": "screen",
+      "exitCode": 0
+    },
+    {
+      "check": "agent",
+      "exitCode": 0
+    },
+    {
+      "check": "python",
+      "exitCode": 0
+    },
+    {
+      "check": "lookup",
+      "exitCode": 0
+    },
+    {
+      "check": "sdk-node",
+      "exitCode": 0
+    },
+    {
+      "check": "sdk-python",
+      "exitCode": 0
+    }
+  ],
+  "counts": {
+    "screen": 585,
+    "agent": 283,
+    "python": 163,
+    "lookup": 56,
+    "sdk-node": 3,
+    "sdk-python": 1
+  },
+  "countsOverlap": true,
+  "failedChecks": 0,
+  "evidenceDirectory": "/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/phone-cloud-offline-verification-ooapel4x",
+  "nodeVersion": "v25.9.0",
+  "pythonVersion": "Python 3.9.6",
+  "sourceHashChecks": {
+    "runtime": 17,
+    "reconciledTests": 6,
+    "frozenRuntime": 22,
+    "allVerificationFiles": "matched"
+  },
+  "review": "Self-review; no second independent reviewer.",
+  "existingDirtyWorkspace": "Business files and staged state preserved; AGENTS and two existing documentation files updated, one version receipt added.",
+  "notRun": [
+    "remote push",
+    "deployment",
+    "real devices",
+    "real Feishu",
+    "real PostgreSQL faults",
+    "fresh dependency install"
+  ],
+  "whitespaceReview": {
+    "sourceAndDocs": "git diff --cached --check passed",
+    "diffEvidence": "verification/.gitattributes preserves unified-diff context formatting for .patch files only; source whitespace checks remain enabled"
+  }
+}

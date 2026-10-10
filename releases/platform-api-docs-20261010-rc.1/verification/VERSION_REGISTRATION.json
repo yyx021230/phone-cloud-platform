@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-10",
+  "candidateTag": "lookup-20261010-rc.2",
+  "status": "local_candidate_not_deployed",
+  "verification": "Actual rc.2 seven offline checks, existing dependencies, cleared business environment; new isolated PostgreSQL/HTTP fault and resume tests with synthetic Android executor",
+  "commands": [
+    {
+      "check": "syntax",
+      "exitCode": 0
+    },
+    {
+      "check": "screen",
+      "exitCode": 0
+    },
+    {
+      "check": "agent",
+      "exitCode": 0
+    },
+    {
+      "check": "python",
+      "exitCode": 0
+    },
+    {
+      "check": "lookup",
+      "exitCode": 0
+    },
+    {
+      "check": "sdk-node",
+      "exitCode": 0
+    },
+    {
+      "check": "sdk-python",
+      "exitCode": 0
+    }
+  ],
+  "counts": {
+    "screen": 594,
+    "agent": 289,
+    "python": 163,
+    "lookup": 56,
+    "sdkNode": 3,
+    "sdkPython": 1
+  },
+  "countsOverlap": true,
+  "failedChecks": 0,
+  "scopeProof": {
+    "rc1AllFilesUnchanged": 323,
+    "agentFunctionCount": 196,
+    "changedAgentFunctionsVersusRc1": [
+      "taskFailureResult"
+    ],
+    "unchangedAgentFunctionsVersusRc1": 195,
+    "frozenRuntimeFilesPreserved": 22
+  },
+  "evidenceDirectory": "/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/phone-cloud-offline-verification-hicai1vk",
+  "nodeVersion": "v25.9.0",
+  "pythonVersion": "Python 3.9.6",
+  "sourceHashChecks": {
+    "runtime": 17,
+    "frozenRuntime": 22,
+    "verificationFiles": "all manifest hashes checked before commit"
+  },
+  "review": "Self review of three runtime diffs/callers and failure, duplicate, cancellation and persistence boundaries; no independent reviewer",
+  "notRun": [
+    "rc.2 actual-device acceptance",
+    "remote push",
+    "production deployment",
+    "fresh dependencies"
+  ]
+}

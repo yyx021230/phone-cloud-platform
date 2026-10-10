@@ -1,0 +1,3 @@
+# Unified-diff context intentionally contains leading spaces, tabs and blank lines.
+# Preserve exact evidence bytes; source files keep normal whitespace checks.
+*.patch -whitespace

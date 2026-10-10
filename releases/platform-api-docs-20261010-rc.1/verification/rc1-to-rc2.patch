@@ -1,0 +1,250 @@
+--- a/windows-agent/src/lookup-account-policy.mjs
++++ b/windows-agent/src/lookup-account-policy.mjs
+@@ -29,6 +29,23 @@
+     accountSwitched: Boolean(result.accountSwitched || history.length),
+     accountSwitchHistory: [...history, ...(result.accountSwitchHistory || [])],
+     accountSwitchCount: history.length + Number(result.accountSwitchCount || 0) });
++  const preserveQueryFailure = (error) => {
++    const diagnostic = error?.diagnostic || {};
++    // A page/transport failure does not undo the last verified account change.
++    // Explicitly unknown or contradictory identity must never be promoted.
++    if (!error || typeof error !== "object"
++        || (diagnostic.code || error.code) === "alipay_account_identity_unverified"
++        || diagnostic.accountIdentityVerified !== undefined && diagnostic.accountIdentityVerified !== true
++        || diagnostic.currentAccount && diagnostic.currentAccount !== policy.knownAccount) return error;
++    try {
++      verifiedAccount({ currentAccount: policy.knownAccount,
++        accountIdentityVerified: policy.accountIdentityVerified, savedAccounts });
++      if (diagnostic.savedAccounts !== undefined) verifiedAccount({ ...diagnostic,
++        currentAccount: diagnostic.currentAccount || policy.knownAccount, accountIdentityVerified: true });
++    } catch { return error; }
++    error.diagnostic = decorate(diagnostic);
++    return error;
++  };
+   const saveRestriction = async (error, preparing = false) => {
+     const diagnostic = error?.diagnostic || {};
+     const reason = diagnostic.limitReason;
+@@ -108,7 +125,8 @@
+       if (result.currentAccount !== policy.knownAccount) throw failure("alipay_account_identity_unverified", "查询账户与已确认账户不一致，已停止。");
+       return decorate(result);
+     } catch (error) {
+-      await saveRestriction(error);
++      try { await saveRestriction(error); }
++      catch (failure) { throw preserveQueryFailure(failure); }
+       await prepare();
+     }
+   }
+--- a/windows-agent/src/index.mjs
++++ b/windows-agent/src/index.mjs
+@@ -5953,6 +5953,9 @@
+     result.diagnostic = error.diagnostic;
+     if (error.diagnostic.accountSwitched !== undefined) result.accountSwitched = Boolean(error.diagnostic.accountSwitched);
+     if (error.diagnostic.currentAccount) result.currentAccount = String(error.diagnostic.currentAccount);
++    if (error.diagnostic.accountIdentityVerified !== undefined) result.accountIdentityVerified = error.diagnostic.accountIdentityVerified === true;
++    if (Array.isArray(error.diagnostic.savedAccounts)) result.savedAccounts = error.diagnostic.savedAccounts;
++    if (error.diagnostic.accountSwitchCount !== undefined) result.accountSwitchCount = Math.max(0, Number(error.diagnostic.accountSwitchCount) || 0);
+     if (error.diagnostic.accountSwitchReason) result.accountSwitchReason = String(error.diagnostic.accountSwitchReason);
+     if (error.diagnostic.packageName) result.packageName = error.diagnostic.packageName;
+     if (error.diagnostic.currentActivity) result.currentActivity = error.diagnostic.currentActivity;
+--- a/server/index.mjs
++++ b/server/index.mjs
+@@ -3852,6 +3852,17 @@
+     };
+     session.results.unshift(result);
+   }
++  if (job.kind === "alipay_name_query" && patch.accountSwitchCount !== undefined) {
++    // Capture the preceding attempts once per job. Replayed terminal reports
++    // remain idempotent; retaining/pruning old jobs cannot reset this total.
++    if (job.lookupResultAccountSwitchBaseCount === undefined) {
++      job.lookupResultAccountSwitchBaseCount = Math.max(0, Number(result.accountSwitchCount) || 0);
++    }
++    const count = job.lookupResultAccountSwitchBaseCount + Math.max(0, Number(patch.accountSwitchCount) || 0);
++    patch = { ...patch, accountSwitchCount: count,
++      accountSwitched: Boolean(count || patch.accountSwitched),
++      accountSwitchReason: patch.accountSwitchReason || result.accountSwitchReason || "" };
++  }
+   Object.assign(result, patch, { updatedAt: patch.updatedAt || job.updatedAt || nowIso() });
+   if (session.source !== "open-api") session.results = session.results.slice(0, 500);
+   return result;
+@@ -4404,11 +4415,17 @@
+   if (session && ["succeeded", "failed"].includes(status) && accountProtocol) {
+     const runner = job.result.runner || job.result.diagnostic || {};
+     const saved = verifiedSavedAccounts(job.result.savedAccounts || runner.savedAccounts);
+-    if (saved) session.savedAccounts = saved;
++    const current = String(job.result.currentAccount || "");
++    const verified = job.result.accountIdentityVerified === true
++      && saved?.some((choice) => choice.current && choice.account === current);
++    if (verified && job.kind !== "alipay_name_stop") {
++      // Query failure/puzzle can follow a completed, verified rotation. Commit
++      // the identity and its picker together, independently of query success.
++      session.savedAccounts = saved;
++      session.currentAccount = current;
++      session.accountIdentityVerified = true;
++    }
+     if (status === "succeeded" && job.kind !== "alipay_name_stop") {
+-      const current = String(job.result.currentAccount || "");
+-      const verified = job.result.accountIdentityVerified === true
+-        && saved?.some((choice) => choice.current && choice.account === current);
+       if (!verified) {
+         status = job.status = "failed";
+         job.result.errorCode = "alipay_account_identity_unverified";
+@@ -4470,7 +4487,7 @@
+           finishLookupSession(session, "failed", job.result.errorCode || job.result.error || status);
+         }
+       } else if (job.kind === "alipay_name_query") {
+-        if (job.result.accountSwitched) {
++        if (!accountProtocol && job.result.accountSwitched) {
+           session.currentAccount = String(job.result.currentAccount || session.currentAccount || "");
+         }
+         if (status === "succeeded" && job.result.realNameTailCharacter) {
+--- a/verification/tests/server/lookup-chain-reliability.test.mjs
++++ b/verification/tests/server/lookup-chain-reliability.test.mjs
+@@ -5,6 +5,7 @@
+ import { createPersistencePolicy } from './persistence-policy.mjs';
+ import { createPostgresRepositories } from './postgres-repositories.mjs';
+ import * as automation from './automation-center.mjs';
++import { verifiedSavedAccounts } from './lookup-account-cooldown.mjs';
+ import { pendingLookupHumanNotifications } from './lookup-human-notifications.mjs';
+ const server = await fs.readFile(new URL('./index.mjs', import.meta.url), 'utf8');
+ const agent = await fs.readFile(new URL('../windows-agent/src/index.mjs', import.meta.url), 'utf8');
+@@ -22,7 +23,7 @@
+  const job={jobId:'original-job',resultId:'original-result',kind,status:'running',sessionId:'session',resumeAfterHumanVerification:true,phoneNumber:'13800000000',events:[]};
+  const session={sessionId:'session',deviceId:'device',userId:'owner',source:'open-api',clientId:'client',status:'querying',pendingJobId:job.jobId,successfulCount:0,results:[{resultId:'original-result',status:'running'}]};
+  const state={automationJobs:[job],automationSessions:[session],windowsTasks:[],deviceLocks:[]};
+- const context=vm.createContext({...automation,state,nowIso,isTerminalStatus:terminal,sanitizeTaskResult:x=>x,
++ const context=vm.createContext({...automation,verifiedSavedAccounts,state,nowIso,isTerminalStatus:terminal,sanitizeTaskResult:x=>x,
+  repos:{devices:{findById:()=>({deviceId:'device'})}},allSavedAccountsCooling:()=>false,
+  screenSessions:{activeForDevice:()=>null},isAdbOnline:()=>true,
+  releaseAutomationLock:()=>null,
+@@ -165,3 +166,49 @@
+   assert.equal(lookups, 0); assert.equal(evidence, 0); assert.equal(gallery, 1);
+   assert.deepEqual(reports, [{ status: "failed", code: "lookup_status_storage_unavailable" }, { status: "succeeded", code: undefined }]);
+ });
++
++const picker = current => ["A", "B", "C"].map(account => ({ account, current: account === current }));
++const verifiedResult = (currentAccount, extra = {}) => ({ currentAccount, accountIdentityVerified: true, savedAccounts: picker(currentAccount), ...extra });
++const protocolTask = job => ({ taskId: "task-" + job.jobId, payload: { automationJobId: job.jobId, accountCooldownProtocol: 1 } });
++function identityHarness() {
++  const h = syncHarness(); Object.assign(h.session, { currentAccount: "A", accountIdentityVerified: true, savedAccounts: picker("A") });
++  h.job.resumeAfterHumanVerification = false;
++  return h;
++}
++test("a verified account switch followed by puzzle updates identity while retaining the original failed result", () => {
++  const h = identityHarness();
++  h.context.syncAutomationJobFromWindowsTask(protocolTask(h.job), "failed", verifiedResult("B", {
++    errorCode: "alipay_human_verification_required", accountSwitched: true, accountSwitchCount: 1, diagnostic: { limitReason: "jigsaw_verification" } }));
++  assert.equal(h.session.currentAccount, "B"); assert.equal(h.session.accountIdentityVerified, true);
++  assert.equal(h.session.savedAccounts.find(r => r.current).account, "B");
++  assert.equal(h.session.results.length, 1); assert.equal(h.session.results[0].resultId, "original-result");
++  assert.equal(h.session.results[0].status, "needs_human_verification"); assert.equal(h.session.results[0].accountSwitchCount, 1);
++  assert.equal(pendingLookupHumanNotifications([h.session], [{deviceId:"device",deviceName:"118"}]).length, 1);
++});
++test("a failed report with incomplete account proof cannot overwrite the verified session", () => {
++  for (const result of [{ currentAccount: "B", savedAccounts: picker("B") },
++    verifiedResult("B", { savedAccounts: picker("C") }), verifiedResult("B", { accountIdentityVerified: false })]) {
++    const h = identityHarness();
++    h.context.syncAutomationJobFromWindowsTask(protocolTask(h.job), "failed", { ...result, accountSwitched: true, errorCode: "network_error" });
++    assert.equal(h.session.currentAccount, "A"); assert.equal(h.session.savedAccounts.find(r => r.current).account, "A");
++  }
++});
++test("original-result rotation totals survive two resumptions, duplicate reports and pruned old jobs", () => {
++  const h = identityHarness();
++  const report = (job, status, result) => h.context.syncAutomationJobFromWindowsTask(protocolTask(job), status, result);
++  report(h.job, "failed", verifiedResult("B", { errorCode: "alipay_human_verification_required", accountSwitched: true, accountSwitchCount: 1 }));
++  const resume = { ...h.job, jobId: "resume-1", status: "running", resumeAfterHumanVerification: true, result: null };
++  delete resume.lookupResultAccountSwitchBaseCount; h.state.automationJobs = [resume];
++  report(resume, "failed", verifiedResult("C", { errorCode: "alipay_human_verification_required", accountSwitched: true, accountSwitchCount: 1 }));
++  assert.equal(h.session.results[0].accountSwitchCount, 2);
++  report(resume, "failed", verifiedResult("C", { accountSwitchCount: 1 })); assert.equal(h.session.results[0].accountSwitchCount, 2);
++  // A fresh process sees persisted JSON fields, without depending on retained job history.
++  const restarted = identityHarness(); restarted.session.results = JSON.parse(JSON.stringify(h.session.results));
++  const final = { ...resume, jobId: "resume-2", status: "running", result: null }; delete final.lookupResultAccountSwitchBaseCount;
++  restarted.state.automationJobs = [final];
++  restarted.context.syncAutomationJobFromWindowsTask(protocolTask(final), "succeeded", verifiedResult("C", { realNameTailCharacter: "甲", accountSwitchCount: 0 }));
++  assert.equal(restarted.session.results.length, 1); assert.equal(restarted.session.results[0].status, "succeeded");
++  assert.equal(restarted.session.results[0].accountSwitchCount, 2); assert.equal(restarted.session.results[0].accountSwitched, true);
++  restarted.context.upsertLookupResult(restarted.session, final, { accountSwitchCount: 0, accountSwitched: false });
++  assert.equal(restarted.session.results[0].accountSwitchCount, 2);
++});
+--- a/verification/tests/windows-agent/src/lookup-account-policy.test.mjs
++++ b/verification/tests/windows-agent/src/lookup-account-policy.test.mjs
+@@ -188,3 +188,44 @@
+     assert.equal(workers, 1);
+   }
+ });
++
++for (const code of ["alipay_human_verification_required", "alipay_page_element_changed"]) test("post-rotation " + code + " retains verified identity without another rotation", async () => {
++  const calls = []; let writes = 0;
++  const error = Object.assign(new Error(code), { diagnostic: { code, limitReason: code.includes("human") ? "jigsaw_verification" : "", uiSnapshot: "synthetic evidence" } });
++  await assert.rejects(runLookupWithAccountPolicy({ task, now: () => now,
++    recordLimit: async () => { writes++; return { accountCooldown: { account: "A", limitedAt: new Date(now).toISOString(), cooldownUntil: new Date(now + 28_800_000).toISOString() } }; },
++    execute: async (item) => {
++      calls.push(item.type);
++      if (item.type === "alipay_name_start") return account("B", { accountSwitched: true });
++      if (calls.length === 1) throw { diagnostic: { limitReached: true, phoneQueryStarted: true, limitReason: "access_denied" } };
++      throw error;
++    } }), (reported) => {
++      assert.equal(reported, error); assert.equal(reported.diagnostic.code, code);
++      assert.equal(reported.diagnostic.currentAccount, "B"); assert.equal(reported.diagnostic.accountIdentityVerified, true);
++      assert.deepEqual(reported.diagnostic.savedAccounts, account("B").savedAccounts);
++      assert.equal(reported.diagnostic.accountSwitched, true); assert.equal(reported.diagnostic.accountSwitchCount, 1);
++      assert.equal(reported.diagnostic.accountSwitchHistory.length, 1); assert.equal(reported.diagnostic.uiSnapshot, "synthetic evidence");
++      return true;
++    });
++  assert.deepEqual(calls, ["alipay_name_query", "alipay_name_start", "alipay_name_query"]); assert.equal(writes, 1);
++});
++test("failure context never promotes unknown or contradictory account evidence", async () => {
++  for (const diagnostic of [{ code: "alipay_account_identity_unverified" }, { accountIdentityVerified: false },
++    { currentAccount: "B" }, { savedAccounts: account("B").savedAccounts }]) {
++    const error = Object.assign(new Error("synthetic"), { diagnostic: { ...diagnostic } });
++    await assert.rejects(runLookupWithAccountPolicy({ task, recordLimit: assert.fail, execute: async () => { throw error; } }), (reported) => {
++      assert.notEqual(reported.diagnostic.accountIdentityVerified, true); return true;
++    });
++  }
++});
++test("resuming the verified post-rotation account takes the direct query path", async () => {
++  const calls = [];
++  const resumed = { ...task, payload: { ...task.payload, knownAccount: "B", savedAccounts: account("B").savedAccounts,
++    resumeAfterHumanVerification: true, restartAfterHumanVerification: false,
++    accountCooldowns: [{ account: "A", cooldownUntil: new Date(now + 28_800_000).toISOString() }] } };
++  await runLookupWithAccountPolicy({ task: resumed, now: () => now, recordLimit: assert.fail, execute: async (item) => {
++    calls.push(item.type); assert.equal(item.payload.resumeAfterHumanVerification, true);
++    assert.equal(item.payload.restartAfterHumanVerification, false); return account("B", { notFound: true });
++  } });
++  assert.deepEqual(calls, ["alipay_name_query"]);
++});
+--- a/verification/tests/windows-agent/src/lookup-result-transport.test.mjs
++++ b/verification/tests/windows-agent/src/lookup-result-transport.test.mjs
+@@ -30,3 +30,21 @@
+   assert.equal(Object.hasOwn(unrelated, "accountSwitchCount"), false);
+   assert.equal(Object.hasOwn(unrelated, "accountSwitchReason"), false);
+ });
++
++const failureBody = source.match(/^function taskFailureResult\(error\) \{[\s\S]*?^\}/m)?.[0];
++assert.ok(failureBody);
++const failureResult = new Function(`${failureBody}; return taskFailureResult;`)();
++test("failed lookup carries the verified picker and count through the actual failure serializer", () => {
++  const wire = JSON.parse(JSON.stringify(compact(failureResult(Object.assign(new Error("puzzle"), { diagnostic: {
++    code: "alipay_human_verification_required", currentAccount: "synthetic-B", accountIdentityVerified: true,
++    savedAccounts: [{ account: "synthetic-A", current: false }, { account: "synthetic-B", current: true }],
++    accountSwitched: true, accountSwitchCount: 1
++  } })))));
++  assert.equal(wire.errorCode, "alipay_human_verification_required"); assert.equal(wire.currentAccount, "synthetic-B");
++  assert.equal(wire.accountIdentityVerified, true); assert.equal(wire.savedAccounts.find(r => r.current).account, wire.currentAccount);
++  assert.equal(wire.accountSwitchCount, 1); assert.equal(wire.accountSwitched, true);
++});
++test("failure serializer preserves false identity and unrelated error shape", () => {
++  assert.equal(failureResult({ message: "unknown", diagnostic: { accountIdentityVerified: false } }).accountIdentityVerified, false);
++  assert.deepEqual(failureResult(new Error("unrelated")), { message: "unrelated", errorCode: "task_failed" });
++});
+--- a/verification/verify.py
++++ b/verification/verify.py
+@@ -10,7 +10,7 @@
+ import tempfile
+ 
+ candidate = Path(__file__).resolve().parent.parent
+-workspace = candidate.parents[1]
++workspace = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else candidate.parents[1]
+ manifest = json.loads((candidate / 'verification/MANIFEST.json').read_text())
+ 
+ def digest(path):
