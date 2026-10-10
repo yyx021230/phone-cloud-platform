@@ -1,0 +1,187 @@
+{
+  "status": "all_22_resolved_in_offline_tests",
+  "meaning": "取回的生产源码在本地测试中失败22项，不等于确认22个线上运行故障；本轮确认均为旧测试夹具/断言不适配。",
+  "failures": [
+    {
+      "originalFailure": "Alipay account restrictions are reported and never auto-switch the current account",
+      "category": "查名限制与拼图分流",
+      "rootCause": "stale_test_expectation",
+      "resolution": "旧断言要求分类器源码直接含拼图字样和旧超时；改为执行真实分类函数，逐类验证限制切号与拼图人工互斥，并保留有界超时断言。",
+      "runtimeChange": false,
+      "status": "passed"
+    },
+    {
+      "originalFailure": "uses eight targeted restarts and then quarantines the phone",
+      "category": "USB恢复",
+      "rootCause": "stale_test_expectation",
+      "resolution": "生产v5早已耗尽后冷却，旧测试还要求永久隔离；改断言为cooldown，保留默认及自定义预算边界。",
+      "runtimeChange": false,
+      "status": "passed"
+    },
+    {
+      "originalFailure": "preserves v2 retry state which was not blocked by duplicate ADB-child restarts",
+      "category": "USB恢复",
+      "rootCause": "stale_test_expectation",
+      "resolution": "v5迁移清除旧隔离标记；保留次数/动作历史断言，改验隔离清零与非执行状态。",
+      "runtimeChange": false,
+      "status": "passed"
+    },
+    {
+      "originalFailure": "frames scrcpy H264 packets with their original PTS for WHIP",
+      "category": "投屏参数测试",
+      "rootCause": "stale_test_expectation",
+      "resolution": "旧期望参数漏掉现有--max-packets-per-burst=2；补齐参数断言，保留PTS/关键帧封装断言。Windows发送默认与D-075云端出口预算是不同层，均未修改。",
+      "runtimeChange": false,
+      "status": "passed"
+    },
+    {
+      "originalFailure": "foreground automation and explicit scan options still block background SMS",
+      "category": "短信避让",
+      "rootCause": "stale_test_expectation",
+      "resolution": "旧测试把单机占用当成全机暂停；改验其他手机可调度，同时确证占用设备仍被精确排除。",
+      "runtimeChange": false,
+      "status": "passed"
+    },
+    {
+      "originalFailure": "the Python worker explicitly stops Poco with bounded ADB cleanup",
+      "category": "Poco清理",
+      "rootCause": "stale_test_expectation",
+      "resolution": "原来硬编码一包，现在循环清理两个Poco包；修正接线断言，新增真实清理函数模拟执行，核对目标序列号、forward、双包、存活重试及全部超时。",
+      "runtimeChange": false,
+      "status": "passed"
+    },
+    {
+      "originalFailure": "test_lookup_clear_search_input_batches_delete_keyevents",
+      "category": "查名Python",
+      "rootCause": "stale_test_fixture_or_expectation",
+      "resolution": "旧测试期待Android不支持的--delay参数；改验可移植批量按键及默认零延迟证据。",
+      "runtimeChange": false,
+      "status": "passed"
+    },
+    {
+      "originalFailure": "test_lookup_detects_the_exact_account_restrictions_observed_on_87",
+      "category": "查名Python",
+      "rootCause": "stale_test_fixture_or_expectation",
+      "resolution": "旧测试把拼图当账户限制；改验拼图仅在验证证据中认定，设备风险/异常访问仍精确归入限制。",
+      "runtimeChange": false,
+      "status": "passed"
+    },
+    {
+      "originalFailure": "test_lookup_known_restriction_is_returned_without_automatic_switch",
+      "category": "查名Python",
+      "rootCause": "stale_test_fixture_or_expectation",
+      "resolution": "旧测试用拼图伪造账户限制错误；改为完整身份且冷却协议v1的真实设备风险，确认只返回给Agent等待ACK，不在Python内切号；另新增旧协议拼图不切号用例。",
+      "runtimeChange": false,
+      "status": "passed"
+    },
+    {
+      "originalFailure": "test_lookup_late_jigsaw_is_classified_after_single_submit_without_reinput",
+      "category": "查名Python",
+      "rootCause": "stale_test_fixture_or_expectation",
+      "resolution": "旧模拟仍使用set_text且未拦截ADB、拼图错误类型过时；补完整按键/回读/提交/晚到拼图状态，断言输入一次、提交一次、人工零自动尝试。",
+      "runtimeChange": false,
+      "status": "passed"
+    },
+    {
+      "originalFailure": "test_lookup_poco_bounds_hierarchy_failure_after_input_for_resume",
+      "category": "查名Python",
+      "rootCause": "stale_test_fixture_or_expectation",
+      "resolution": "模拟缺live参数、输入焦点与首个冻结页；补当前接口，保持输入后层级超时走原状态恢复的断言。",
+      "runtimeChange": false,
+      "status": "passed"
+    },
+    {
+      "originalFailure": "test_lookup_poco_input_timeout_resumes_without_retyping_phone",
+      "category": "查名Python",
+      "rootCause": "stale_test_fixture_or_expectation",
+      "resolution": "输入已改为有界ADB按键，旧测试只注入set_text超时；改在实际按键接口注入超时，确认进入输入后状态恢复。",
+      "runtimeChange": false,
+      "status": "passed"
+    },
+    {
+      "originalFailure": "test_lookup_poco_preserves_exact_slider_for_human",
+      "category": "查名Python",
+      "rootCause": "stale_test_fixture_or_expectation",
+      "resolution": "旧测试以普通滑块要求人工；换真实拼图动作作为证据，保留零自动尝试/无手机操作断言。",
+      "runtimeChange": false,
+      "status": "passed"
+    },
+    {
+      "originalFailure": "test_lookup_poco_query_clears_and_sets_phone_once",
+      "category": "查名Python",
+      "rootCause": "stale_test_fixture_or_expectation",
+      "resolution": "旧模拟不支持live参数，仍期待set_text；改验精确元素/输入焦点、清空回读和一次有界ADB输入。",
+      "runtimeChange": false,
+      "status": "passed"
+    },
+    {
+      "originalFailure": "test_lookup_poco_slider_resume_never_retypes_phone",
+      "category": "查名Python",
+      "rootCause": "stale_test_fixture_or_expectation",
+      "resolution": "旧模拟缺元素坐标、清空页、焦点与按键回读；补接口，继续确认普通滑块恢复不重复输入。",
+      "runtimeChange": false,
+      "status": "passed"
+    },
+    {
+      "originalFailure": "test_lookup_poco_stable_no_name_result_returns_within_five_seconds_without_xml",
+      "category": "查名Python",
+      "rootCause": "stale_test_fixture_or_expectation",
+      "resolution": "旧模拟缺live参数和真实输入回读；补接口，保持提交一次及5.2秒观察预算断言。",
+      "runtimeChange": false,
+      "status": "passed"
+    },
+    {
+      "originalFailure": "test_lookup_poco_start_keeps_an_evidenced_restriction_page_without_relaunch",
+      "category": "查名Python",
+      "rootCause": "stale_test_fixture_or_expectation",
+      "resolution": "旧模拟以jigsaw伪造账户限制；改用真实设备风险，保持不重启/未开始号码查询断言。",
+      "runtimeChange": false,
+      "status": "passed"
+    },
+    {
+      "originalFailure": "test_lookup_poco_stop_does_not_probe_package_manager",
+      "category": "查名Python",
+      "rootCause": "stale_test_fixture_or_expectation",
+      "resolution": "模拟缺live参数及元素点击/清空接口；补完整接口，保持不查询包管理器且执行清理。",
+      "runtimeChange": false,
+      "status": "passed"
+    },
+    {
+      "originalFailure": "test_lookup_poco_waits_for_late_restriction_when_search_submit_never_appears",
+      "category": "查名Python",
+      "rootCause": "stale_test_fixture_or_expectation",
+      "resolution": "旧模拟缺坐标、焦点与按键回读；补当前接口，保持提交按钮缺失后等待原页面限制证据。",
+      "runtimeChange": false,
+      "status": "passed"
+    },
+    {
+      "originalFailure": "test_lookup_query_checks_location_intro_before_input",
+      "category": "查名Python",
+      "rootCause": "stale_test_fixture_or_expectation",
+      "resolution": "生产selector已新增live参数，旧断言缺它；补精确参数，保留先关闭定位引导再找输入框的断言。",
+      "runtimeChange": false,
+      "status": "passed"
+    },
+    {
+      "originalFailure": "test_lookup_waits_for_a_late_webview_restriction_after_phone_input",
+      "category": "查名Python",
+      "rootCause": "stale_test_fixture_or_expectation",
+      "resolution": "拼图应抛人工验证错误，旧测试期待切号错误；改断言为人工，保持等待两次原页面观察。",
+      "runtimeChange": false,
+      "status": "passed"
+    },
+    {
+      "originalFailure": "test_lookup_xml_verification_preserves_page_and_requires_human",
+      "category": "查名Python",
+      "rootCause": "stale_test_fixture_or_expectation",
+      "resolution": "XML旧测试把普通滑块当拼图；换真实拼图动作，保留无自动操作和不重输的断言。",
+      "runtimeChange": false,
+      "status": "passed"
+    }
+  ],
+  "guards": [
+    "lookup测试禁止未模拟ADB调用",
+    "所有运行文件/冻结文件哈希不变",
+    "不删除或跳过失败测试；保留161个兼容测试并新增2个行为测试"
+  ]
+}

@@ -1,0 +1,3513 @@
+--- a/public/app.js
++++ b/public/app.js
+@@ -264,6 +264,9 @@
+   userLookupCurrentAccount: document.getElementById("userLookupCurrentAccount"),
+   userLookupAccountChooser: document.getElementById("userLookupAccountChooser"),
+   userLookupAccountList: document.getElementById("userLookupAccountList"),
++  userLookupCooldownPanel: document.getElementById("userLookupCooldownPanel"),
++  userLookupCooldownRows: document.getElementById("userLookupCooldownRows"),
++  userLookupRecoveryRetryButton: document.getElementById("userLookupRecoveryRetryButton"),
+   userLookupPhoneInput: document.getElementById("userLookupPhoneInput"),
+   userLookupQueryButton: document.getElementById("userLookupQueryButton"),
+   userLookupHumanResumePanel: document.getElementById("userLookupHumanResumePanel"),
+@@ -472,6 +475,7 @@
+     screen_agent_offline: "负责这台手机的 Windows 管理器尚未连接投屏通道。",
+     device_screen_busy: "这台手机已经有一个实时控制会话。",
+     lookup_screen_control_active: "实时控屏进行中，请结束控屏后再继续查名字或切换账号。",
++    lookup_recovery_required: "当前任务恢复失败，后续队列已暂停；请重试当前任务或结束会话。",
+     lookup_human_verification_not_resumable: "当前没有可继续检查的人工验证任务，请刷新会话状态。",
+     lookup_human_verification_phone_missing: "原查询号码已缺失，无法安全恢复；请重新输入号码查询。",
+     invalid_kuaishou_lead_delay_range: "间隔必须是 30–3600 秒，且最长时间不能小于最短时间。",
+@@ -975,6 +979,7 @@
+   const lookupSession = selectedDevice ? activeLookupSessionForDevice(selectedDevice.deviceId) : null;
+   renderLookupSession(lookupSession, selectedDevice);
+   renderUserScreenControl(selectedDevice);
++  notifyLookupHumanVerification(lookupSession, selectedDevice);
+ }
+ 
+ function activeKuaishouLeadTask(deviceId = "") {
+@@ -1080,7 +1085,7 @@
+ function renderLookupSession(session, device) {
+   const active = session && ["starting", "ready", "querying", "switching", "choosing_account", "needs_human_verification", "stopping"].includes(session.status);
+   const adminOverride = session?.operatorMode === "admin_override";
+-  const ready = session?.status === "ready" && !session.pendingJobId;
++  const ready = session?.status === "ready" && !session.pendingJobId && !session.requiresAccountSwitch;
+   const choosingAccount = session?.status === "choosing_account" && !session.pendingJobId;
+   const lookupScreenControlActive = Boolean(
+     device?.screenControlBusy
+@@ -1089,6 +1094,8 @@
+   );
+   const results = session?.results || [];
+   const humanVerificationResult = resumableLookupHumanVerificationResult(session);
++  const recoveryResult = resumableLookupRecoveryResult(session);
++  const lookupBlocked = Boolean(humanVerificationResult || recoveryResult);
+   const humanResumeAvailable = Boolean(
+     humanVerificationResult
+   );
+@@ -1101,19 +1108,30 @@
+     ? Math.max(0, Math.floor((Date.now() - startedAt) / 1000))
+     : 0;
+   const statusCopy = {
+-    starting: ["正在启动", `正在打开支付宝并进入搜索页 · 已等待 ${startingSeconds} 秒`],
++    starting: ["正在检查账户", `正在识别当前账户、检查冷却并准备搜索页 · 已等待 ${startingSeconds} 秒`],
+     ready: [session?.error ? "需要处理后重试" : "查询会话已就绪", session?.error || `已成功查询 ${session?.successfulCount || 0} 个号码`],
+     querying: ["正在查询", `${runningStage} · 已用 ${formatDurationMs(runningElapsedMs)}`],
+     switching: ["正在处理账号", "正在读取账号列表或复核指定账号"],
+     choosing_account: ["请选择支付宝账号", `已读取 ${session?.accountChoices?.length || 0} 个已保存账号`],
+-    needs_human_verification: ["当前号码等待人工验证", "请进入实时控屏完成拼图，结束后继续获取本号码结果"],
++    needs_human_verification: ["当前号码等待人工验证", "请进入实时控屏完成拼图，系统检测通过后自动重查原号码"],
+     stopping: ["正在结束", "正在释放手机"],
+     failed: ["会话异常结束", session?.error || "请重新开始"],
+     ended: ["会话已结束", `本次成功 ${session?.successfulCount || 0} 个号码`],
+     expired: ["会话已过期", "请重新开始"]
+   };
+-  const copy = statusCopy[session?.status] || ["尚未开始", "点击开始建立查询会话"];
+-  if (session?.status === "ready" && session?.lastAccountSwitch?.toAccount && !session.error) {
++  const copy = humanResumeAvailable
++    ? ["当前号码等待人工验证", "发起者或管理员可进入实时控屏；验证通过后系统自动交接并重查原号码"]
++    : statusCopy[session?.status] || ["尚未开始", "点击开始建立查询会话"];
++  if (humanVerificationResult?.phase === "start") {
++    copy[0] = "账户准备等待人工验证";
++    copy[1] = "请进入实时控屏完成拼图，系统检测通过后继续准备账户。";
++  }
++  if (recoveryResult) { copy[0] = "当前任务恢复失败"; copy[1] = session.error || "后续队列已暂停，请重试当前任务。"; }
++  if (!humanResumeAvailable && (session?.requiresAccountSwitch || session?.error?.includes("当前手机无可用账户"))) {
++    copy[0] = "当前手机无可用账户";
++    copy[1] = session.error || "已保存账户全部冷却中，请查看冷却结束时间，稍后重新建立会话。";
++  }
++  if (!humanResumeAvailable && session?.status === "ready" && session?.lastAccountSwitch?.toAccount && !session.error) {
+     const fromAccount = session.lastAccountSwitch.fromAccount || "上一账号";
+     copy[1] = `已从 ${fromAccount} 切换至 ${session.lastAccountSwitch.toAccount}`;
+   }
+@@ -1129,7 +1147,7 @@
+     els.userLookupCurrentAccount.textContent = session?.currentAccount || "尚未识别";
+   }
+   if (els.userLookupSwitchButton) {
+-    els.userLookupSwitchButton.disabled = adminOverride || (!ready && !choosingAccount) || state.userLookupBusy || state.userLookupEnding || lookupScreenControlActive;
++    els.userLookupSwitchButton.disabled = adminOverride || lookupBlocked || (!ready && !choosingAccount) || state.userLookupBusy || state.userLookupEnding || lookupScreenControlActive;
+     els.userLookupSwitchButton.textContent = session?.status === "switching" ? "处理中..." : choosingAccount ? "重新读取账号" : "选择切换账号";
+   }
+   if (els.userLookupAccountChooser) {
+@@ -1139,16 +1157,39 @@
+     const choices = Array.isArray(session?.accountChoices) ? session.accountChoices : [];
+     els.userLookupAccountList.innerHTML = choices.map((choice, index) => {
+       const current = Boolean(choice.current);
+-      return `<button type="button" class="lookup-account-choice ${current ? "is-current" : ""}" data-lookup-account-choice="${escapeHtml(choice.account || "")}" ${current ? "disabled" : ""}><span><small>账号 ${index + 1}</small><strong>${escapeHtml(choice.account || "未知账号")}</strong></span><em>${current ? "当前" : "切换到此账号"}</em></button>`;
++      const cooling = choice.cooling === true;
++      return `<button type="button" class="lookup-account-choice ${current ? "is-current" : ""}" data-lookup-account-choice="${escapeHtml(choice.account || "")}" ${current || cooling ? "disabled" : ""}><span><small>账号 ${index + 1}</small><strong>${escapeHtml(choice.account || "未知账号")}</strong></span><em>${cooling ? "冷却中，不可切换" : current ? "当前" : "切换到此账号"}</em></button>`;
+     }).join("") || `<div class="empty scan-empty-state">没有读取到可切换账号，请重新读取。</div>`;
+   }
+-  if (els.userLookupPhoneInput) els.userLookupPhoneInput.disabled = adminOverride || !ready || state.userLookupBusy || state.userLookupEnding || lookupScreenControlActive;
+-  if (els.userLookupQueryButton) els.userLookupQueryButton.disabled = adminOverride || !ready || state.userLookupBusy || state.userLookupEnding || lookupScreenControlActive;
+-  if (els.userLookupHumanResumePanel) els.userLookupHumanResumePanel.hidden = !humanResumeAvailable;
++  if (els.userLookupCooldownRows) {
++    const rows = Array.isArray(session?.accountCooldowns) ? session.accountCooldowns : [];
++    if (els.userLookupCooldownPanel) els.userLookupCooldownPanel.hidden = !rows.length;
++    const dateLabel = (value) => Number.isFinite(Date.parse(value)) ? new Date(value).toLocaleString("zh-CN", { hour12: false }) : "待确认";
++    els.userLookupCooldownRows.innerHTML = rows.map((row) => {
++      const minutes = Math.max(1, Math.ceil(Number(row.remainingMs || 0) / 60000));
++      const remaining = minutes >= 60 ? `${Math.floor(minutes / 60)}小时${minutes % 60}分` : `${minutes}分钟`;
++      return `<tr><th scope="row">${escapeHtml(row.account)}</th><td>${escapeHtml(dateLabel(row.limitedAt))}</td><td>${escapeHtml(dateLabel(row.cooldownUntil))}<small>${row.cooling ? `冷却中 · 剩余${remaining}` : "冷却已到期 · 可再次尝试"}</small></td></tr>`;
++    }).join("");
++  }
++  if (els.userLookupPhoneInput) els.userLookupPhoneInput.disabled = adminOverride || lookupBlocked || !ready || state.userLookupBusy || state.userLookupEnding || lookupScreenControlActive;
++  if (els.userLookupQueryButton) els.userLookupQueryButton.disabled = adminOverride || lookupBlocked || !ready || state.userLookupBusy || state.userLookupEnding || lookupScreenControlActive;
++  if (els.userLookupHumanResumePanel) els.userLookupHumanResumePanel.hidden = !lookupBlocked;
+   if (els.userLookupHumanResumeButton) {
+-    els.userLookupHumanResumeButton.disabled = !humanResumeAvailable || lookupScreenControlActive || state.userLookupBusy || state.userLookupEnding;
+-    els.userLookupHumanResumeButton.textContent = lookupScreenControlActive ? "请先结束实时控屏" : "验证完成，继续获取本号码结果";
+-  }
++    els.userLookupHumanResumeButton.hidden = true;
++    els.userLookupHumanResumeButton.disabled = true;
++  }
++  if (els.userLookupRecoveryRetryButton) {
++    els.userLookupRecoveryRetryButton.disabled = !recoveryResult || state.userLookupBusy || state.userLookupEnding || lookupScreenControlActive;
++    els.userLookupRecoveryRetryButton.hidden = !recoveryResult;
++    els.userLookupRecoveryRetryButton.textContent = recoveryResult?.phase === "start" ? "重试账户准备" : "重试当前号码";
++  }
++  const humanPanelTitle = els.userLookupHumanResumePanel?.querySelector?.("strong");
++  const humanPanelText = els.userLookupHumanResumePanel?.querySelector?.("small");
++  if (humanPanelTitle) humanPanelTitle.textContent = recoveryResult ? "当前任务恢复失败" : humanVerificationResult?.phase === "start" ? "账户准备等待人工验证" : "当前号码等待人工验证";
++  if (humanPanelText) humanPanelText.textContent = recoveryResult
++    ? "后续队列保持暂停。重试将继续当前任务，也可以结束会话。"
++    : humanVerificationResult?.phase === "start" ? "请进入实时控屏完成拼图，系统检测通过后继续准备账户，无需确认。"
++    : "请进入实时控屏完成拼图。系统检测通过后重查原号码，无需确认。";
+   if (els.userLookupEndButton) {
+     els.userLookupEndButton.disabled = adminOverride || !active || session?.status === "stopping" || state.userLookupEnding;
+     els.userLookupEndButton.textContent = session?.status === "stopping" || state.userLookupEnding ? "结束中..." : "结束会话";
+@@ -1170,6 +1211,10 @@
+     if (hint) els.userLookupHint.textContent = lookupScreenControlActive && ["ready", "choosing_account"].includes(session.status)
+       ? "实时控屏中；结束控屏后可继续提交查名字或切换账号。"
+       : hint;
++    if (recoveryResult) els.userLookupHint.textContent = session.error || "当前任务恢复失败，后续队列已暂停，请重试当前任务。";
++    if (humanResumeAvailable) els.userLookupHint.textContent = lookupScreenControlActive
++      ? "请人工完成拼图，无需点击确认；系统连续检测通过后会自动结束这次控屏，清空搜索框并重查原号码。当前号码和后续队列保持暂停。"
++      : "检测到拼图，需要人工介入；任务发起者或管理员可进入实时控屏。系统自动检测验证消失后清空搜索框并重查原号码，不跳过当前任务。";
+   }
+   if (els.userLookupResultList) {
+     const previousFirstResultId = els.userLookupResultList.dataset.firstResultId || "";
+@@ -1177,7 +1222,7 @@
+     const nextFirstResultId = String(results[0]?.resultId || "");
+     els.userLookupResultList.innerHTML = results.length
+       ? results.map((result, index) => {
+-        const failed = result.status === "failed";
++        const failed = result.status === "failed" || result.status === "needs_recovery";
+         const notFound = result.status === "not_found";
+         const needsHuman = result.status === "needs_human_verification";
+         const limitReached = result.status === "limit_reached";
+@@ -1353,7 +1398,11 @@
+       onStatus(message) {
+         if (state.userScreenDeviceId !== device.deviceId) return;
+         state.userScreenStatus = message.status || "connecting";
+-        state.userScreenDetail = message.detail || message.status || "正在连接";
++        const humanHandoverClosed = message.status === "closed"
++          && /^(控制|视频)通道连接失败（1000：lookup_human_verification_completed）$/.test(String(message.detail || ""));
++        state.userScreenDetail = humanHandoverClosed
++          ? "人工验证已完成，控屏已自动结束；脚本正在重查原号码。"
++          : message.detail || message.status || "正在连接";
+         if (["failed", "closed"].includes(state.userScreenStatus)) {
+           const failedSessionId = state.userScreenSession?.sessionId || "";
+           userScreenInactivityGuard.stop();
+@@ -4839,6 +4888,7 @@
+   if (state.userLookupBusy || state.userLookupEnding || !state.userSelectedDeviceId) return;
+   const session = activeLookupSessionForDevice(state.userSelectedDeviceId);
+   if (!session || session.status !== "ready") return;
++  if (resumableLookupHumanVerificationResult(session) || resumableLookupRecoveryResult(session)) return;
+   const phoneNumber = String(els.userLookupPhoneInput?.value || "").replace(/\D/g, "");
+   if (!/^1\d{10}$/.test(phoneNumber)) {
+     if (els.userLookupHint) els.userLookupHint.textContent = "请输入正确的 11 位手机号。";
+@@ -4889,6 +4939,24 @@
+   }
+ }
+ 
++els.userLookupRecoveryRetryButton?.addEventListener?.("click", async () => {
++  const session = activeLookupSessionForDevice(state.userSelectedDeviceId);
++  if (!resumableLookupRecoveryResult(session) || state.userLookupBusy || state.userLookupEnding) return;
++  bumpUserLookupSyncVersion();
++  state.userLookupBusy = true;
++  renderUserWorkbench();
++  try {
++    const payload = await api(`/api/v1/user/automation/alipay-name-sessions/${encodeURIComponent(session.sessionId)}/resume-after-human-verification`, { method: "POST", body: "{}" });
++    if (payload.session) state.userLookupSessions = state.userLookupSessions.map((item) => item.sessionId === payload.session.sessionId ? payload.session : item);
++  } catch (error) {
++    if (els.userLookupHint) els.userLookupHint.textContent = error.message;
++  } finally {
++    state.userLookupBusy = false;
++    renderUserWorkbench();
++    refreshUserLookupSessionsOnly({ force: true }).catch(() => {});
++  }
++});
++
+ els.userLookupQueryButton?.addEventListener("click", submitLookupQuery);
+ els.userLookupPhoneInput?.addEventListener("keydown", (event) => {
+   if (event.key !== "Enter") return;
+@@ -4896,38 +4964,12 @@
+   submitLookupQuery().catch(() => {});
+ });
+ 
+-els.userLookupHumanResumeButton?.addEventListener("click", async () => {
+-  if (state.userLookupBusy || state.userLookupEnding || !state.userSelectedDeviceId) return;
+-  const session = activeLookupSessionForDevice(state.userSelectedDeviceId);
+-  const resumable = Boolean(resumableLookupHumanVerificationResult(session));
+-  if (!resumable) return;
+-  state.userLookupBusy = true;
+-  bumpUserLookupSyncVersion();
+-  if (els.userLookupHint) els.userLookupHint.textContent = "正在检查拼图是否通过，并继续获取当前号码的姓名结果...";
+-  renderUserWorkbench();
+-  try {
+-    const payload = await api(`/api/v1/user/automation/alipay-name-sessions/${encodeURIComponent(session.sessionId)}/resume-after-human-verification`, {
+-      method: "POST",
+-      body: "{}"
+-    });
+-    if (payload.session) upsertUserLookupSession(payload.session, { preserveStopping: true });
+-    bumpUserLookupSyncVersion();
+-    if (els.userLookupHint) els.userLookupHint.textContent = "当前号码结果恢复任务已提交；系统不会跳过或重新输入这个号码。";
+-  } catch (error) {
+-    bumpUserLookupSyncVersion();
+-    if (els.userLookupHint) els.userLookupHint.textContent = error.message;
+-  } finally {
+-    state.userLookupBusy = false;
+-    renderUserWorkbench();
+-    refreshUserLookupSessionsOnly({ force: true }).catch(() => {});
+-  }
+-});
+-
+ function resumableLookupHumanVerificationResult(session) {
+   if (!session || session.pendingJobId || !["ready", "needs_human_verification"].includes(session.status)) return null;
+   const result = Array.isArray(session.results)
+     ? session.results.find((item) => item?.status !== "queued")
+     : null;
++  if (session.startupHumanVerification?.status === "needs_human_verification") return session.startupHumanVerification;
+   if (!result) return null;
+   return result.status === "needs_human_verification"
+     || (result.limitReason === "jigsaw_verification" && !["succeeded", "not_found", "cancelled"].includes(result.status))
+@@ -4935,10 +4977,58 @@
+     : null;
+ }
+ 
++function resumableLookupRecoveryResult(session) {
++  if (!session || session.pendingJobId || session.status !== "ready") return null;
++  if (session.startupHumanVerification?.status === "needs_recovery") return session.startupHumanVerification;
++  const result = session.results?.find((item) => item?.status !== "queued");
++  return result?.status === "needs_recovery" ? result : null;
++}
++
++const lookupHumanPromptStates = new Map();
++
++function lookupHumanPromptVisible(session, device) {
++  return Boolean(state.token && state.page === "user-workbench" && state.userWorkbenchView === "detail"
++    && session?.deviceId === state.userSelectedDeviceId && device?.deviceId === session?.deviceId);
++}
++
++function notifyLookupHumanVerification(session, device) {
++  if (!session?.sessionId) return;
++  const result = resumableLookupHumanVerificationResult(session);
++  if (!result) {
++    lookupHumanPromptStates.delete(session.sessionId);
++    return;
++  }
++  if (!lookupHumanPromptVisible(session, device)) return;
++  const key = String(result.resultId || "human_verification");
++  if (lookupHumanPromptStates.get(session.sessionId)?.key === key) return;
++  const prompt = { key };
++  lookupHumanPromptStates.set(session.sessionId, prompt);
++  if (lookupHumanPromptStates.size > 50) lookupHumanPromptStates.delete(lookupHumanPromptStates.keys().next().value);
++  const token = state.token;
++  // Defer until the current render completes; a late refresh must not show a stale prompt.
++  setTimeout(() => {
++    if (lookupHumanPromptStates.get(session.sessionId) !== prompt) return;
++    const current = activeLookupSessionForDevice(session.deviceId);
++    const currentResult = resumableLookupHumanVerificationResult(current);
++    if (state.token !== token || current?.sessionId !== session.sessionId
++      || !lookupHumanPromptVisible(current, device) || !currentResult
++      || String(currentResult.resultId || "human_verification") !== key) {
++      lookupHumanPromptStates.delete(session.sessionId);
++      return;
++    }
++    if (currentResult.phase === "start") {
++      alert(`手机 ${device.deviceName || "当前设备"} 检测到拼图，需要人工介入。\n账户准备和后续队列已暂停，不会自动求解或代滑。\n请进入实时控屏完成拼图，系统检测通过后继续准备账户，无需点击确认。`);
++      return;
++    }
++    alert(`手机 ${device.deviceName || "当前设备"} 检测到拼图，需要人工介入。\n当前号码和后续队列已暂停，不会自动求解或代滑。\n请任务发起者或管理员进入实时控屏完成人工验证。无需点击确认；系统检测通过后会自动结束这次控屏，清空搜索框并重查原号码，然后继续队列。`);
++  }, 0);
++}
++
+ async function submitLookupAccountAction(targetAccount = "") {
+   if (state.userLookupBusy || state.userLookupEnding || !state.userSelectedDeviceId) return;
+   const session = activeLookupSessionForDevice(state.userSelectedDeviceId);
+   if (!session || !["ready", "choosing_account"].includes(session.status)) return;
++  if (resumableLookupHumanVerificationResult(session) || resumableLookupRecoveryResult(session)) return;
+   const previousStatus = session.status;
+   bumpUserLookupSyncVersion();
+   state.userLookupBusy = true;
+--- a/public/index.html
++++ b/public/index.html
+@@ -4,7 +4,7 @@
+     <meta charset="UTF-8" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <title>Phone Cloud Platform</title>
+-  <link rel="stylesheet" href="./styles.css?v=20260915-kuaishou-lead-v1" />
++  <link rel="stylesheet" href="./styles.css?v=20261010-lookup-production-merge-v1" />
+   </head>
+   <body class="booting">
+     <div class="boot-loader" aria-label="正在加载 Phone Cloud">
+@@ -392,11 +392,11 @@
+                     <span class="automation-mode-badge"><i></i> 长会话</span>
+                   </div>
+                   <div class="lookup-pipeline" aria-hidden="true">
+-                    <span><i>1</i><b>建立会话</b><small>进入支付宝搜索页</small></span>
++                    <span><i>1</i><b>检查账户</b><small>识别账户并检查冷却</small></span>
+                     <em></em>
+                     <span><i>2</i><b>连续查询</b><small>仅替换手机号码</small></span>
+                     <em></em>
+-                    <span><i>3</i><b>手动切号</b><small>触发限制后主动切换</small></span>
++                    <span><i>3</i><b>账户冷却</b><small>明确限制后冷却八小时</small></span>
+                   </div>
+                   <div class="lookup-console-grid">
+                     <section class="lookup-session-panel">
+@@ -415,6 +415,13 @@
+                         <div><span>选择目标账号</span><small>账号来自当前手机支付宝</small></div>
+                         <div id="userLookupAccountList" class="lookup-account-list"></div>
+                       </div>
++                      <section id="userLookupCooldownPanel" class="lookup-cooldown-panel" hidden aria-labelledby="userLookupCooldownTitle">
++                        <h4 id="userLookupCooldownTitle">账户冷却记录 <small>触发限制起 8 小时</small></h4>
++                        <div class="lookup-cooldown-scroll" tabindex="0" role="region" aria-label="账户冷却时间表，可横向滚动">
++                          <table><thead><tr><th scope="col">账户</th><th scope="col">上限触发时间</th><th scope="col">冷却结束／状态</th></tr></thead><tbody id="userLookupCooldownRows"></tbody></table>
++                        </div>
++                        <p>到期后可再次尝试，不代表支付宝已解除限制。全部冷却时不再下发查询。</p>
++                      </section>
+                     </section>
+                     <section class="lookup-query-panel">
+                       <div class="automation-section-title"><span>B</span><div><strong>号码查询台</strong><small>查询成功后直接输入下一个号码</small></div></div>
+@@ -425,8 +432,8 @@
+                         <button id="userLookupQueryButton" type="button" disabled>查询名字 <i aria-hidden="true">↗</i></button>
+                       </div>
+                       <div id="userLookupHumanResumePanel" class="lookup-human-resume" hidden>
+-                        <div><strong>当前号码等待人工验证</strong><small>完成拼图并结束控屏后，脚本会继续获取这个号码的姓名结果。</small></div>
+-                        <button id="userLookupHumanResumeButton" class="secondary-outline" type="button" disabled>验证完成，继续获取本号码结果</button>
++                        <div><strong>当前号码等待人工验证</strong><small>发起者或管理员进入实时控屏完成拼图。系统自动检测，结束这次控屏、清空搜索框并重查原号码，无需再点确认。</small></div>
++                        <button id="userLookupRecoveryRetryButton" type="button" hidden>重试当前号码</button>
+                       </div>
+                       <div class="lookup-query-notes">
+                         <span><i>✓</i> 查询后保持当前页面</span>
+@@ -924,6 +931,6 @@
+     </main>
+ 
+     <script type="module" src="./vendor/screen-control.js?v=20260828-receiver-feedback-v1"></script>
+-    <script type="module" src="./app.js?v=20260918-gallery-delivery-v2"></script>
++    <script type="module" src="./app.js?v=20261010-lookup-production-merge-v1"></script>
+   </body>
+ </html>
+--- a/public/styles.css
++++ b/public/styles.css
+@@ -7968,6 +7968,18 @@
+ .lookup-account-choice.is-current { cursor: default; border-color: rgba(54, 208, 138, 0.18); background: rgba(54, 208, 138, 0.045); opacity: 1; }
+ .lookup-account-choice.is-current em { color: var(--green); }
+ 
++.lookup-account-choice:disabled:not(.is-current) { opacity: .55; cursor: not-allowed; }
++.lookup-cooldown-panel { min-width: 0; margin-top: 16px; border-top: 1px solid rgba(218,230,244,.1); padding-top: 12px; }
++.lookup-cooldown-panel[hidden] { display: none; }
++.lookup-cooldown-panel h4 { display: flex; flex-wrap: wrap; gap: 6px 12px; justify-content: space-between; margin: 0 0 10px; color: #dfe7f0; font-size: 11px; }
++.lookup-cooldown-panel h4 small, .lookup-cooldown-panel p { color: #8b9caf; font-size: 10px; font-weight: 400; line-height: 1.6; }
++.lookup-cooldown-scroll { overflow-x: auto; max-height: 230px; }
++.lookup-cooldown-scroll:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
++.lookup-cooldown-panel table { width: 100%; border-collapse: collapse; text-align: left; font-size: 10px; }
++.lookup-cooldown-panel th, .lookup-cooldown-panel td { padding: 9px 8px; border-bottom: 1px solid rgba(218,230,244,.08); white-space: nowrap; color: #cbd6e2; font-variant-numeric: tabular-nums; }
++.lookup-cooldown-panel thead th { color: #8b9caf; font-weight: 500; }
++.lookup-cooldown-panel td small { display: block; margin-top: 4px; color: var(--accent); font-size: 9px; }
++
+ .lookup-query-panel { display: grid; align-content: start; }
+ .lookup-phone-label { margin-bottom: 7px; color: #718095; font-size: 9px; font-weight: 950; letter-spacing: 0.11em; }
+ .lookup-phone-station { display: grid; grid-template-columns: 48px minmax(150px, 1fr) max-content; min-height: 58px; overflow: hidden; border: 1px solid rgba(218, 230, 244, 0.13); border-radius: 7px; background: #080e15; box-shadow: inset 0 1px 0 rgba(255,255,255,0.025); }
+--- a/server/automation-center.mjs
++++ b/server/automation-center.mjs
+@@ -46,6 +46,7 @@
+   const latestResult = Array.isArray(session.results)
+     ? session.results.find((result) => result?.status !== "queued")
+     : null;
++  if (session.startupHumanVerification?.status === "needs_human_verification") return session.startupHumanVerification;
+   if (!latestResult) return null;
+   return latestResult.status === "needs_human_verification"
+     || (latestResult.limitReason === "jigsaw_verification" && !["succeeded", "not_found", "cancelled"].includes(latestResult.status))
+@@ -56,9 +57,32 @@
+ export function lookupHumanRecoveryUnresolved(job = {}, status = "", options = {}) {
+   return Boolean(
+     job.resumeAfterHumanVerification === true
+-    && status !== "succeeded"
++    && status === "failed"
+     && options.limitReached !== true
+   );
++}
++
++export function resumableLookupRecoveryResult(session = {}) {
++  if (session.pendingJobId || session.status !== "ready") return null;
++  if (session.startupHumanVerification?.status === "needs_recovery") return session.startupHumanVerification;
++  const result = session.results?.find((item) => item?.status !== "queued");
++  return result?.status === "needs_recovery" ? result : null;
++}
++
++export function hasVerifiedAllSavedAccountsRestricted(diagnostic = {}) {
++  if (String(diagnostic.code || "") !== "alipay_all_saved_accounts_restricted") return false;
++  const savedAccountCount = Math.max(0, Number(diagnostic.savedAccountCount || 0));
++  const restrictedAccounts = [...new Set((Array.isArray(diagnostic.restrictedAccounts)
++    ? diagnostic.restrictedAccounts
++    : []).map((account) => String(account || "").trim()).filter(Boolean))];
++  const accountSwitchCount = Math.max(0, Number(diagnostic.accountSwitchCount || 0));
++  const accountSwitchHistory = Array.isArray(diagnostic.accountSwitchHistory)
++    ? diagnostic.accountSwitchHistory
++    : [];
++  return savedAccountCount > 0
++    && restrictedAccounts.length === savedAccountCount
++    && accountSwitchCount >= Math.max(0, savedAccountCount - 1)
++    && accountSwitchHistory.length >= Math.max(0, savedAccountCount - 1);
+ }
+ 
+ export function automationLockType(kind) {
+@@ -70,7 +94,7 @@
+   const step = String(event.stepId || event.detail?.step || "");
+   const detail = event.detail && typeof event.detail === "object" ? event.detail : {};
+   const reason = String(detail.reason || "");
+-  return ["alipay_access_denied_detected", "alipay_account_restriction_detected"].includes(step)
++  return ["alipay_access_denied_detected", "alipay_account_restriction_detected", "lookup_account_limit_confirmed"].includes(step)
+     && detail.phoneQueryStarted === true
+     && detail.accountSwitchRequired === true
+     && LOOKUP_RESTRICTION_REASONS.has(reason);
+@@ -181,6 +205,7 @@
+       }))
+       : [],
+     pendingJobId: String(session.pendingJobId || ""),
++    startupHumanVerification: session.startupHumanVerification || null,
+     results: Array.isArray(session.results) ? session.results.slice(0, 500) : [],
+     error: String(session.error || ""),
+     createdAt: String(session.createdAt || ""),
+--- a/server/index.mjs
++++ b/server/index.mjs
+@@ -1,3 +1,8 @@
++import { createLookupHumanNotifier, pendingLookupHumanNotifications, readLookupHumanWebhook } from "./lookup-human-notifications.mjs";
++import { createTaskStatusPersistence } from "./task-status-persistence.mjs";
++import { createLookupHumanHandover, lookupHumanChallenge } from "./lookup-human-handover.mjs";
++import { lookupAccountPolicy, publicLookupAccountCooldowns, recordLookupAccountCooldown,
++  verifiedSavedAccounts, allSavedAccountsCooling, isVerifiedLookupAccountRestrictionEvent } from "./lookup-account-cooldown.mjs";
+ import { compactTaskPayload, maintainTaskHistory, normalizeLoadedTaskHistory } from "./task-history-maintenance.mjs";
+ import crypto from "node:crypto";
+ import fs from "node:fs/promises";
+@@ -42,6 +47,7 @@
+ } from "./device-lock-compatibility.mjs";
+ import {
+   automationLockType,
++  hasVerifiedAllSavedAccountsRestricted,
+   isPostQueryLookupRestrictionEvent,
+   isActiveAutomationStatus,
+   lookupHumanRecoveryUnresolved,
+@@ -50,8 +56,9 @@
+   normalizeLookupAccountChoice,
+   normalizeLookupPhone,
+   publicAutomationJob as buildPublicAutomationJob,
+-  publicLookupSession,
++  publicLookupSession as buildPublicLookupSession,
+   resumableLookupHumanVerificationResult,
++  resumableLookupRecoveryResult,
+   upsertLookupRestrictionHistory
+ } from "./automation-center.mjs";
+ import { smsRefreshRatePolicy } from "./sms-refresh-rate.mjs";
+@@ -124,7 +131,7 @@
+ const WINDOWS_TASK_TTL_MS = Number(process.env.WINDOWS_TASK_TTL_SECONDS || 300) * 1000;
+ const ALIPAY_NAME_QUERY_WINDOWS_TASK_TTL_MS = Math.max(
+   WINDOWS_TASK_TTL_MS,
+-  Number(process.env.ALIPAY_NAME_QUERY_TASK_TTL_SECONDS || 600) * 1000
++  Number(process.env.ALIPAY_NAME_QUERY_TASK_TTL_SECONDS || 2100) * 1000
+ );
+ const WINDOWS_TASK_QUEUE_TTL_MS = Number(process.env.WINDOWS_TASK_QUEUE_TTL_SECONDS || 1800) * 1000;
+ const XHS_TASK_TTL_MS = Number(process.env.XHS_TASK_TTL_SECONDS || 600) * 1000;
+@@ -246,6 +253,7 @@
+   saveSnapshot: () => saveState(),
+   scheduleCheckpoint: () => runtimeSaveScheduler.mark()
+ });
++const taskStatusPersistence = createTaskStatusPersistence();
+ const pendingEvidenceDeletes = new Set();
+ let evidenceCleanupRunning = false;
+ let lastEvidenceCleanupAt = 0;
+@@ -253,6 +261,21 @@
+ await ensureBootstrapAdmin();
+ enforceStrictProductionConfig();
+ await logStartupDiagnostics();
++
++let lookupHumanNotifier = null;
++try {
++  lookupHumanNotifier = createLookupHumanNotifier({
++    webhookUrl: await readLookupHumanWebhook(),
++    receiptsDir: path.join(DATA_DIR, "lookup-human-notifications"),
++    getTargets: () => pendingLookupHumanNotifications(state.automationSessions, state.devices),
++    onResult: (outcome) => console.log("lookup human notification", outcome)
++  });
++} catch {
++  console.error("lookup human notification configuration unavailable; notifications disabled");
++}
++const lookupHumanNotificationTimer = setInterval(() => {
++  lookupHumanNotifier?.poll().catch(() => console.error("lookup human notification receipt unavailable"));
++}, 3_000).unref();
+ 
+ const maintenanceTimer = setInterval(() => {
+   const expiredScreenSessions = screenSessions.expire();
+@@ -333,6 +356,11 @@
+     runtimeSaveScheduler.mark();
+   },
+   logger: console
++});
++
++const lookupHumanHandover = createLookupHumanHandover({
++  targets: lookupHumanProbeTargets,
++  resume: resumeLookupAfterObservedHumanVerification
+ });
+ 
+ // Screen session state deliberately lives in memory so browser credentials do
+@@ -570,6 +598,12 @@
+         if (replay.requestFingerprint !== fingerprint) return json(res, 409, { error: "idempotency_conflict" });
+         return json(res, 200, { ok: true, idempotent: true, queryId: replay.resultId || replay.jobId, session: publicOpenLookupSession(session) });
+       }
++      if (session.requiresAccountSwitch) {
++        return json(res, 409, {
++          error: "lookup_queue_paused_account_switch_required",
++          session: publicOpenLookupSession(session)
++        });
++      }
+       if (!["starting", "ready", "querying", "switching", "choosing_account", "needs_human_verification"].includes(session.status)) {
+         return json(res, 409, { error: "lookup_session_not_accepting_queries", session: publicOpenLookupSession(session) });
+       }
+@@ -610,8 +644,9 @@
+       const { ctx, input } = await readSignedOpenJson(req, url, OPEN_NAME_LOOKUP_CLIENTS);
+       const session = openNameLookupSession(ctx.clientId, openLookupResumeMatch[1]);
+       if (!session) return json(res, 404, { error: "lookup_session_not_found" });
+-      const sourceResult = resumableLookupHumanVerificationResult(session);
++      const sourceResult = resumableLookupHumanVerificationResult(session) || resumableLookupRecoveryResult(session);
+       if (!sourceResult) return json(res, 409, { error: "lookup_human_verification_not_resumable", session: publicOpenLookupSession(session) });
++      if (sourceResult.phase === "start") return json(res, 409, { error: "lookup_startup_human_resume_automatic" });
+       if (String(input.queryId || "") !== String(sourceResult.resultId || "")) return json(res, 409, { error: "lookup_human_verification_query_mismatch" });
+       const idempotencyKey = requiredOpenIdempotencyKey(req);
+       const fingerprint = openLookupRequestFingerprint({ sessionId: session.sessionId, queryId: sourceResult.resultId });
+@@ -623,7 +658,7 @@
+       if (screenSessions.activeForDevice(session.deviceId)) return json(res, 409, { error: "lookup_screen_control_active" });
+       const device = repos.devices.findById(session.deviceId);
+       if (!device || !isAdbOnline(device)) return json(res, 409, { error: "device_not_available" });
+-      const job = createAutomationJob({ kind: "alipay_name_query", userId: session.userId, deviceId: session.deviceId, sessionId: session.sessionId, phoneNumber: sourceResult.phoneNumber, resultId: sourceResult.resultId, resumeAfterHumanVerification: true });
++      const job = createAutomationJob({ kind: "alipay_name_query", userId: session.userId, deviceId: session.deviceId, sessionId: session.sessionId, phoneNumber: sourceResult.phoneNumber, resultId: sourceResult.resultId, resumeAfterHumanVerification: true, restartAfterHumanVerification: sourceResult.status === "needs_recovery" });
+       Object.assign(job, { source: "open-api", clientId: ctx.clientId, idempotencyKey, requestFingerprint: fingerprint, clientReference: sourceResult.clientReference || "", consentReference: sourceResult.consentReference || "" });
+       session.status = "querying";
+       session.pendingJobId = job.jobId;
+@@ -643,6 +678,7 @@
+       if (!session) return json(res, 404, { error: "lookup_session_not_found" });
+       if (["ended", "failed", "expired"].includes(session.status)) return json(res, 200, { ok: true, session: publicOpenLookupSession(session) });
+       const pending = session.pendingJobId ? state.automationJobs.find((job) => job.jobId === session.pendingJobId) : null;
++      const pendingWindowsTask = pending ? state.windowsTasks.find((task) => task.taskId === pending.windowsTaskId) : null;
+       if (pending && isActiveAutomationStatus(pending.status)) {
+         cancelAutomationJob(pending, "session_stopping", { releaseLock: false });
+         if (pending.kind === "alipay_name_query") {
+@@ -673,7 +709,7 @@
+       }
+       const deviceLock = (state.deviceLocks || []).find((lock) => lock.lockId === session.lockId) || null;
+       const audit = addAudit("open_name_lookup_session_end", ctx, { sessionId: session.sessionId, deviceId: session.deviceId });
+-      await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask, automationJob: job, automationJobs: cancelledQueuedJobs, automationSession: session, deviceLock, audit }));
++      await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask, automationJob: job, automationJobs: [...cancelledQueuedJobs, ...(pending ? [pending] : [])], windowsTasks: pendingWindowsTask ? [pendingWindowsTask] : [], automationSession: session, deviceLock, audit }));
+       return json(res, 202, { ok: true, session: publicOpenLookupSession(session) });
+     }
+   }
+@@ -869,6 +905,15 @@
+       if (error.code === "device_screen_busy") return json(res, 409, { error: error.code, session: error.session });
+       throw error;
+     }
++    // Bind auto-handover only to this authorised manual intervention, never
++    // to an unrelated viewer or a later screen session on the same device.
++    const humanLookup = state.automationSessions.find((item) => item.deviceId === deviceId
++      && (item.userId === ctx.userId || ctx.role === "admin") && lookupHumanChallenge(item));
++    if (humanLookup) {
++      screenSessions.getMutable(created.session.sessionId).lookupHumanHandover = {
++        sessionId: humanLookup.sessionId, challengeId: lookupHumanChallenge(humanLookup)
++      };
++    }
+     acquireDeviceScreenLock(device, created.session, ctx);
+     if (!screenRelay.start(created.session)) {
+       screenSessions.close(created.session.sessionId, "failed", "Windows 管理器不在线");
+@@ -1337,6 +1382,11 @@
+     const session = state.automationSessions.find((item) => item.sessionId === lookupQueryMatch[1] && item.userId === ctx.userId);
+     if (!session) return json(res, 404, { error: "lookup_session_not_found" });
+     if (session.status !== "ready" || session.pendingJobId) return json(res, 409, { error: "lookup_session_not_ready", session: publicLookupSession(session) });
++    if (session.requiresAccountSwitch) return json(res, 409, { error: "lookup_no_available_account", session: publicLookupSession(session) });
++    if (resumableLookupRecoveryResult(session)) return json(res, 409, { error: "lookup_recovery_required", session: publicLookupSession(session) });
++    if (resumableLookupHumanVerificationResult(session)) {
++      return json(res, 409, { error: "lookup_human_verification_required", session: publicLookupSession(session) });
++    }
+     let phoneNumber;
+     try {
+       phoneNumber = normalizeLookupPhone(input.phoneNumber);
+@@ -1378,33 +1428,37 @@
+       && (item.userId === ctx.userId || ctx.role === "admin")
+     ));
+     if (!session) return json(res, 404, { error: "lookup_session_not_found" });
+-    const sourceResult = resumableLookupHumanVerificationResult(session);
++    const sourceResult = resumableLookupHumanVerificationResult(session) || resumableLookupRecoveryResult(session);
+     if (!sourceResult) return json(res, 409, { error: "lookup_human_verification_not_resumable", session: publicLookupSession(session) });
+     if (screenSessions.activeForDevice(session.deviceId)) {
+       return json(res, 409, { error: "lookup_screen_control_active", session: publicLookupSession(session) });
+     }
+     const device = repos.devices.findById(session.deviceId);
+     if (!device || !isAdbOnline(device)) return json(res, 409, { error: "device_not_available" });
++    const startup = sourceResult.phase === "start";
++    const ordinaryRecovery = sourceResult.status === "needs_recovery";
+     let phoneNumber;
+     try {
+-      phoneNumber = normalizeLookupPhone(sourceResult.phoneNumber);
++      phoneNumber = startup ? "" : normalizeLookupPhone(sourceResult.phoneNumber);
+     } catch {
+       return json(res, 409, { error: "lookup_human_verification_phone_missing", session: publicLookupSession(session) });
+     }
+     const job = createAutomationJob({
+-      kind: "alipay_name_query",
++      kind: startup ? "alipay_name_start" : "alipay_name_query",
+       userId: session.userId,
+       deviceId: session.deviceId,
+       sessionId: session.sessionId,
+       phoneNumber,
+       resultId: sourceResult.resultId,
+-      resumeAfterHumanVerification: true
++      resumeAfterHumanVerification: true,
++      restartAfterHumanVerification: ordinaryRecovery
+     });
+-    session.status = "querying";
++    session.status = startup ? "starting" : "querying";
+     session.pendingJobId = job.jobId;
+     session.error = "";
+     session.updatedAt = nowIso();
+-    upsertLookupResult(session, job, {
++    if (startup) session.startupHumanVerification.status = "queued";
++    else upsertLookupResult(session, job, {
+       status: "queued",
+       stage: "等待继续获取当前号码结果",
+       error: "",
+@@ -1434,6 +1488,10 @@
+     if (!["ready", "choosing_account"].includes(session.status) || session.pendingJobId) {
+       return json(res, 409, { error: "lookup_session_not_ready", session: publicLookupSession(session) });
+     }
++    if (resumableLookupRecoveryResult(session)) return json(res, 409, { error: "lookup_recovery_required", session: publicLookupSession(session) });
++    if (resumableLookupHumanVerificationResult(session)) {
++      return json(res, 409, { error: "lookup_human_verification_required", session: publicLookupSession(session) });
++    }
+     let targetAccount = "";
+     if (accountAction === "select") {
+       try {
+@@ -1447,6 +1505,9 @@
+     }
+     const device = repos.devices.findById(session.deviceId);
+     if (!device || !isAdbOnline(device)) return json(res, 409, { error: "device_not_available" });
++    if (targetAccount && publicLookupAccountCooldowns(device).some((row) => row.account === targetAccount && row.cooling)) {
++      return json(res, 409, { error: "lookup_account_cooling", session: publicLookupSession(session) });
++    }
+     if (screenSessions.activeForDevice(session.deviceId)) {
+       return json(res, 409, { error: "lookup_screen_control_active", session: publicLookupSession(session) });
+     }
+@@ -1473,6 +1534,7 @@
+     await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask, automationJob: job, automationSession: session, audit }));
+     return json(res, 202, { ok: true, job: publicAutomationJob(job), session: publicLookupSession(session) });
+   }
++
+   if (req.method === "POST" && lookupEndMatch) {
+     const ctx = requireAuth(req, ["user", "admin"]);
+     const session = state.automationSessions.find((item) => item.sessionId === lookupEndMatch[1] && item.userId === ctx.userId);
+@@ -1480,11 +1542,25 @@
+     if (["ended", "failed", "expired"].includes(session.status)) return json(res, 200, { ok: true, session: publicLookupSession(session) });
+     await drainPendingLookupQueryBeforeStop(session);
+     const pending = session.pendingJobId ? state.automationJobs.find((job) => job.jobId === session.pendingJobId) : null;
+-    if (pending && isActiveAutomationStatus(pending.status)) cancelAutomationJob(pending, "session_stopping", { releaseLock: false });
++    const pendingWindowsTask = pending ? state.windowsTasks.find((task) => task.taskId === pending.windowsTaskId) : null;
++    if (pending && isActiveAutomationStatus(pending.status)) {
++      cancelAutomationJob(pending, "session_stopping", { releaseLock: false });
++      if (pending.kind === "alipay_name_query") {
++        upsertLookupResult(session, pending, {
++          status: "cancelling",
++          stage: "正在停止当前查询",
++          error: "",
++          updatedAt: nowIso()
++        });
++      }
++    }
+     const device = repos.devices.findById(session.deviceId);
+     let job = null;
+     let windowsTask = null;
+     if (!device || !isAdbOnline(device)) {
++      session.results = (session.results || []).map((result) => result.status === "cancelling"
++        ? { ...result, status: "cancelled", stage: "查询已取消", error: "会话已结束", updatedAt: nowIso() }
++        : result);
+       finishLookupSession(session, "ended", "device_offline_on_stop");
+     } else {
+       job = createAutomationJob({ kind: "alipay_name_stop", userId: ctx.userId, deviceId: session.deviceId, sessionId: session.sessionId });
+@@ -1495,7 +1571,7 @@
+     }
+     const deviceLock = (state.deviceLocks || []).find((lock) => lock.lockId === session.lockId) || null;
+     const audit = addAudit("user_alipay_name_session_end", ctx, { sessionId: session.sessionId, deviceId: session.deviceId });
+-    await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask, automationJob: job, automationSession: session, deviceLock, audit }));
++    await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask, automationJob: job, automationJobs: pending ? [pending] : [], windowsTasks: pendingWindowsTask ? [pendingWindowsTask] : [], automationSession: session, deviceLock, audit }));
+     return json(res, 202, { ok: true, session: publicLookupSession(session) });
+   }
+ 
+@@ -1653,6 +1729,16 @@
+     addAudit("windows_agent_devices_sync", ctx, { agentId, count: agent.devices.length });
+     runtimeSaveScheduler.mark();
+     return json(res, 200, { ok: true, agent: publicWindowsAgent(agent), devices: state.devices.map(publicDevice) });
++  }
++
++  const humanProbeMatch = url.pathname.match(/^\/api\/v1\/windows-agents\/([^/]+)\/lookup-human-verifications$/);
++  if (humanProbeMatch && ["GET", "POST"].includes(req.method)) {
++    const agentId = decodeURIComponent(humanProbeMatch[1]);
++    const ctx = requireWindowsAgent(req, agentId);
++    requireWindowsScope(ctx, req.method === "GET" ? "tasks:read" : "tasks:write");
++    if (req.method === "GET") return json(res, 200, { ok: true, probes: lookupHumanHandover.list(agentId) });
++    const input = await readJson(req);
++    return json(res, 200, { ok: true, ...await lookupHumanHandover.report(agentId, input) });
+   }
+ 
+   const nextTaskMatch = url.pathname.match(/^\/api\/v1\/windows-agents\/([^/]+)\/tasks\/next$/);
+@@ -1878,10 +1964,16 @@
+     if (!windowsCtxCanAccessTask(ctx, task)) return json(res, 401, { error: "windows_agent_task_mismatch" });
+     if (!["running", "succeeded", "failed", "cancelled"].includes(input.status)) return json(res, 400, { error: "invalid_status" });
+     if (isTerminalStatus(task.status)) {
++      await taskStatusPersistence.persist(`${task.taskId}:${task.status}`, () => persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask: task })));
+       return json(res, 200, { ok: true, ignored: true, task: publicWindowsTask(task) });
+     }
++    const materializedResult = await materializeTaskResultEvidence(input.result || {}, { taskId: task.taskId, eventId: "result" });
++    // Evidence materialization can yield while another terminal report wins.
++    if (isTerminalStatus(task.status)) {
++      await taskStatusPersistence.persist(`${task.taskId}:${task.status}`, () => persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask: task })));
++      return json(res, 200, { ok: true, ignored: true, task: publicWindowsTask(task) });
++    }
+     task.status = input.status;
+-    const materializedResult = await materializeTaskResultEvidence(input.result || {}, { taskId: task.taskId, eventId: "result" });
+     task.result = sanitizeTaskResult(materializedResult, { includeEvidence: true });
+     task.updatedAt = nowIso();
+     if (["succeeded", "failed", "cancelled"].includes(task.status)) {
+@@ -1902,15 +1994,16 @@
+     }
+     const linkedLockId = String(automationSession?.lockId || automationJob?.lockId || xhsTask?.lockId || "");
+     const deviceLock = linkedLockId ? (state.deviceLocks || []).find((item) => item.lockId === linkedLockId) || null : null;
+-    await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({
++    await taskStatusPersistence.persist(`${task.taskId}:${task.status}`, () => persistencePolicy.persist(() => structuredRepos.persistTaskMutation({
+       windowsTask: task,
+       windowsTasks: openLookupDispatch?.windowsTask ? [openLookupDispatch.windowsTask] : [],
++      device: automationSession ? repos.devices.findById(automationSession.deviceId) : null,
+       xhsTask,
+       automationJob,
+       automationJobs: [...cancelledQueuedJobs, ...(openLookupDispatch?.job ? [openLookupDispatch.job] : [])],
+       automationSession,
+       deviceLock
+-    }));
++    })));
+     return json(res, 200, { ok: true, task: publicWindowsTask(task) });
+   }
+ 
+@@ -1975,13 +2068,24 @@
+     task.updatedAt = nowIso();
+     const xhsTask = appendWindowsEventToXhsTask(task, event);
+     const automationJob = appendWindowsEventToAutomationJob(task, event);
++    const automationSession = automationJob?.sessionId ? state.automationSessions.find((item) => item.sessionId === automationJob.sessionId) : null;
+     await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({
+       windowsTask: task,
+       xhsTask,
+       automationJob,
++      automationSession,
++      device: automationSession ? repos.devices.findById(automationSession.deviceId) : null,
+       events: [{ event, taskId: task.taskId, source: "windows" }]
+     }));
+-    return json(res, 201, { ok: true, event });
++    const acknowledgedRestriction = event.stepId === "lookup_account_limit_confirmed"
++      && task.payload?.accountCooldownProtocol === 1 && isVerifiedLookupAccountRestrictionEvent(event)
++      && automationJob && !isTerminalStatus(automationJob.status)
++      && repos.devices.findById(automationSession?.deviceId)?.lookupAccountCooldowns?.some((row) =>
++        row.account === event.detail.currentAccount && row.restrictionId === `${automationJob.jobId}:${row.account}`);
++    const accountCooldown = acknowledgedRestriction
++      ? publicLookupAccountCooldowns(repos.devices.findById(automationSession?.deviceId))
++        .find((row) => row.account === event.detail.currentAccount) || null : null;
++    return json(res, 201, { ok: true, event, ...(accountCooldown ? { accountCooldown } : {}) });
+   }
+ 
+   if (req.method === "GET" && url.pathname === "/api/v1/devices") {
+@@ -2553,7 +2657,7 @@
+ function dispatchNextOpenLookupQuery(session) {
+   const queued = refreshOpenLookupQueuePositions(session);
+   if (!queued.length || session.pendingJobId || session.status !== "ready") return null;
+-  if (session.requiresAccountSwitch || resumableLookupHumanVerificationResult(session)) return null;
++  if (session.requiresAccountSwitch || resumableLookupHumanVerificationResult(session) || resumableLookupRecoveryResult(session)) return null;
+   if (screenSessions.activeForDevice(session.deviceId)) return null;
+   const device = repos.devices.findById(session.deviceId);
+   if (!device || !isAdbOnline(device)) return null;
+@@ -3549,6 +3653,7 @@
+     maxDelaySeconds: Math.max(0, Number(input.maxDelaySeconds || 0)),
+     resultId: String(input.resultId || ""),
+     resumeAfterHumanVerification: input.resumeAfterHumanVerification === true,
++    restartAfterHumanVerification: input.restartAfterHumanVerification === true,
+     accountAction: String(input.accountAction || ""),
+     targetAccount: String(input.targetAccount || ""),
+     successfulCountBefore: Math.max(0, Number(input.successfulCountBefore || 0)),
+@@ -3567,6 +3672,18 @@
+   return job;
+ }
+ 
++function publicLookupSession(session = {}) {
++  const device = repos.devices.findById(session.deviceId);
++  const cooldowns = publicLookupAccountCooldowns(device);
++  const view = buildPublicLookupSession(session);
++  return { ...view, accountIdentityVerified: session.accountIdentityVerified === true,
++    savedAccounts: session.savedAccounts || [],
++    accountCooldowns: cooldowns,
++    accountChoices: view.accountChoices.map((choice) => ({ ...choice,
++      ...(cooldowns.find((row) => row.account === choice.account) || { cooling: false, remainingMs: 0 })
++    })) };
++}
++
+ function createLookupSession(input = {}) {
+   const createdAt = nowIso();
+   const session = {
+@@ -3576,6 +3693,9 @@
+     status: "starting",
+     successfulCount: 0,
+     currentAccount: "",
++    accountIdentityVerified: false,
++    accountQueryStarted: false,
++    savedAccounts: [],
+     requiresAccountSwitch: false,
+     limitReason: "",
+     automationHaltReason: "",
+@@ -3684,6 +3804,8 @@
+ 
+ function finishLookupSession(session, status, reason = "") {
+   session.status = status;
++  delete session.startupHumanVerification;
++  if (session.limitReason === "jigsaw_verification") session.limitReason = "";
+   session.pendingJobId = "";
+   session.error = status === "failed" ? String(reason || "lookup_session_failed") : "";
+   session.updatedAt = nowIso();
+@@ -3730,8 +3852,19 @@
+     };
+     session.results.unshift(result);
+   }
++  if (job.kind === "alipay_name_query" && patch.accountSwitchCount !== undefined) {
++    // Capture the preceding attempts once per job. Replayed terminal reports
++    // remain idempotent; retaining/pruning old jobs cannot reset this total.
++    if (job.lookupResultAccountSwitchBaseCount === undefined) {
++      job.lookupResultAccountSwitchBaseCount = Math.max(0, Number(result.accountSwitchCount) || 0);
++    }
++    const count = job.lookupResultAccountSwitchBaseCount + Math.max(0, Number(patch.accountSwitchCount) || 0);
++    patch = { ...patch, accountSwitchCount: count,
++      accountSwitched: Boolean(count || patch.accountSwitched),
++      accountSwitchReason: patch.accountSwitchReason || result.accountSwitchReason || "" };
++  }
+   Object.assign(result, patch, { updatedAt: patch.updatedAt || job.updatedAt || nowIso() });
+-  session.results = session.results.slice(0, 500);
++  if (session.source !== "open-api") session.results = session.results.slice(0, 500);
+   return result;
+ }
+ 
+@@ -3757,7 +3890,20 @@
+   if (step === "human_verification_passed") return "滑块验证已通过";
+   if (step === "human_verification_failed") return "滑块自动验证未通过";
+   if (step === "replay_query_after_human_verification") return "验证通过，正在重新提交当前号码";
+-  return String(event.message || "正在执行支付宝查询").slice(0, 120);
++  if (step === "open_my_tab" || step === "open_settings" || step === "open_saved_account_picker") return "正在读取支付宝已保存账号";
++  if (step === "reuse_open_account_picker") return "已复用当前账号页，正在切换指定账号";
++  if (step === "reuse_open_account_picker_failed") return "账号页已变化，正在重新读取";
++  if (step === "account_selected") return "已选择新账号，正在等待支付宝返回首页";
++  if (step === "account_selection_returned_home") return "账号切换已返回首页，正在恢复查询页";
++  if (step === "account_switch_verified") return "支付宝账号切换完成，正在继续查询";
++  if (step === "query_full_path_recovery") return "页面状态异常，正在自动恢复";
++  if (step === "launch_alipay") return "正在重新打开支付宝";
++  if (step === "open_search") return "正在进入支付宝搜索页";
++  if (step === "masked_real_name_tail_extracted") return "已识别结果，正在返回";
++  if (step === "error" || event.level === "error") return "查询失败，正在收集诊断";
++  if (event.phase === "start") return "Windows 管理器正在执行";
++  if (event.phase === "alipay_name") return "正在准备支付宝查询";
++  return "正在查询";
+ }
+ 
+ function acquireDeviceTaskLock(device, task, ctx = { role: "system" }) {
+@@ -4111,6 +4257,78 @@
+   xhsTask.windowsTaskId = task.taskId;
+   addAudit("xhs_windows_task_create", ctx, { agentId, adbSerial, deviceId: device.deviceId, xhsTaskId: xhsTask.taskId, windowsTaskId: task.taskId, executionMode });
+   return task;
++}
++
++function lookupHumanProbeTargets(agentId) {
++  const probes = [];
++  for (const session of state.automationSessions) {
++    const challengeId = lookupHumanChallenge(session);
++    if (!challengeId || session.requiresAccountSwitch) continue;
++    const device = repos.devices.findById(session.deviceId);
++    if (!device || !isAdbOnline(device) || device.adb?.agentId !== agentId) continue;
++    const lock = state.deviceLocks.find((item) => item.status === "active"
++      && item.lockType === "alipay_name_lookup" && item.taskId === session.sessionId
++      && item.deviceId === session.deviceId && item.ownerUserId === session.userId);
++    if (!lock) continue;
++    const screen = screenSessions.activeForDevice(session.deviceId);
++    if (screen) {
++      const handover = screenSessions.getMutable(screen.sessionId)?.lookupHumanHandover;
++      if (!screenRelay.agentOnline(agentId) || !["ready", "streaming"].includes(screen.status)
++        || handover?.sessionId !== session.sessionId || handover.challengeId !== challengeId) continue;
++    }
++    probes.push({ sessionId: session.sessionId, deviceId: session.deviceId,
++      adbSerial: device.adb.serial, challengeId, screenSessionId: screen?.sessionId || "" });
++  }
++  return probes;
++}
++
++async function resumeLookupAfterObservedHumanVerification(target) {
++  const session = state.automationSessions.find((item) => item.sessionId === target.sessionId);
++  if (!session || lookupHumanChallenge(session) !== target.challengeId) throw badRequest("lookup_human_probe_stale");
++  const sourceResult = resumableLookupHumanVerificationResult(session) || resumableLookupRecoveryResult(session);
++  const device = repos.devices.findById(session.deviceId);
++  const startup = sourceResult.phase === "start";
++  const phoneNumber = startup ? "" : normalizeLookupPhone(sourceResult.phoneNumber);
++  const screen = screenSessions.activeForDevice(session.deviceId);
++  if ((screen?.sessionId || "") !== target.screenSessionId) throw badRequest("lookup_human_probe_stale");
++  if (screen && !screenRelay.stop(screen.sessionId, "lookup_human_verification_completed")) {
++    throw badRequest("lookup_human_screen_stop_failed");
++  }
++  const job = createAutomationJob({ kind: startup ? "alipay_name_start" : "alipay_name_query", userId: session.userId,
++    deviceId: session.deviceId, sessionId: session.sessionId, phoneNumber,
++    resultId: sourceResult.resultId, resumeAfterHumanVerification: true,
++    restartAfterHumanVerification: true });
++  if (session.source === "open-api") Object.assign(job, {
++    source: "open-api", clientId: session.clientId,
++    clientReference: sourceResult.clientReference || "", consentReference: sourceResult.consentReference || ""
++  });
++  session.status = startup ? "starting" : "querying";
++  session.pendingJobId = job.jobId;
++  session.error = "";
++  session.updatedAt = nowIso();
++  if (startup) session.startupHumanVerification.status = "queued";
++  else upsertLookupResult(session, job, { status: "queued", error: "",
++    stage: "人工验证已消失，等待控屏释放后清空搜索框并重查原号码", updatedAt: session.updatedAt });
++  const windowsTask = queueAutomationWindowsTask(device, job);
++  // Do not admit a retry before its durable record exists. A persistence
++  // failure leaves it held, rather than blindly running/retrying a query.
++  windowsTask.status = "human_handover_pending";
++  const audit = addAudit("alipay_name_human_auto_handover", { role: "windows_agent", agentId: job.agentId }, {
++    sessionId: session.sessionId, jobId: job.jobId, sourceResultId: sourceResult.resultId,
++    deviceId: session.deviceId, screenSessionId: target.screenSessionId
++  });
++  try {
++    await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask, automationJob: job, automationSession: session, audit }));
++  } catch {
++    session.error = "人工验证自动恢复保存失败，任务保持暂停，请结束会话后检查。";
++    throw new Error("lookup_human_resume_persist_failed");
++  }
++  // End/cancel may have happened while saving. Never resurrect that task.
++  if (session.pendingJobId !== job.jobId || session.status !== (startup ? "starting" : "querying")
++    || job.status !== "queued" || windowsTask.status !== "human_handover_pending") return;
++  windowsTask.status = "queued";
++  runtimeSaveScheduler.mark();
++  return true;
+ }
+ 
+ function queueAutomationWindowsTask(device, job) {
+@@ -4142,8 +4360,13 @@
+       minDelaySeconds: job.minDelaySeconds || 0,
+       maxDelaySeconds: job.maxDelaySeconds || 0,
+       resumeAfterHumanVerification: job.resumeAfterHumanVerification === true,
++      restartAfterHumanVerification: job.restartAfterHumanVerification === true,
+       accountAction: job.accountAction || "",
+       targetAccount: job.targetAccount || "",
++      ...(job.kind.startsWith("alipay_name_") ? lookupAccountPolicy(device,
++        state.automationSessions.find((session) => session.sessionId === job.sessionId)) : {}),
++      savedAccounts: job.kind.startsWith("alipay_name_")
++        ? (state.automationSessions.find((session) => session.sessionId === job.sessionId)?.savedAccounts || []) : [],
+       maxRecoveryAttempts: 2
+     }
+   });
+@@ -4177,8 +4400,7 @@
+   if (!job || isTerminalStatus(job.status)) return job || null;
+   job.status = status;
+   const previousProgress = job.kind === "kuaishou_lead" && job.result?.progress && typeof job.result.progress === "object"
+-    ? { ...job.result.progress }
+-    : null;
++    ? { ...job.result.progress } : null;
+   job.result = sanitizeTaskResult(result || {}, { includeEvidence: true });
+   if (previousProgress) job.result.progress = previousProgress;
+   job.windowsTaskId = windowsTask.taskId;
+@@ -4188,6 +4410,33 @@
+   job.updatedAt = nowIso();
+   if (job.kind === "kuaishou_lead" && status === "running") renewAutomationLock(job, KUAISHOU_LEAD_LOCK_TTL_MS);
+   const session = job.sessionId ? state.automationSessions.find((item) => item.sessionId === job.sessionId) : null;
++  const device = session ? repos.devices.findById(session.deviceId) : null;
++  const accountProtocol = windowsTask.payload?.accountCooldownProtocol === 1;
++  if (session && ["succeeded", "failed"].includes(status) && accountProtocol) {
++    const runner = job.result.runner || job.result.diagnostic || {};
++    const saved = verifiedSavedAccounts(job.result.savedAccounts || runner.savedAccounts);
++    const current = String(job.result.currentAccount || "");
++    const verified = job.result.accountIdentityVerified === true
++      && saved?.some((choice) => choice.current && choice.account === current);
++    if (verified && job.kind !== "alipay_name_stop") {
++      // Query failure/puzzle can follow a completed, verified rotation. Commit
++      // the identity and its picker together, independently of query success.
++      session.savedAccounts = saved;
++      session.currentAccount = current;
++      session.accountIdentityVerified = true;
++    }
++    if (status === "succeeded" && job.kind !== "alipay_name_stop") {
++      if (!verified) {
++        status = job.status = "failed";
++        job.result.errorCode = "alipay_account_identity_unverified";
++        job.result.message = "账户身份未确认，未放行查询；请重新启动会话检查账户。";
++        session.accountIdentityVerified = false;
++      } else {
++        session.currentAccount = current;
++        session.accountIdentityVerified = true;
++      }
++    }
++  }
+   if (session && job.kind === "alipay_name_query" && status === "running") {
+     upsertLookupResult(session, job, {
+       status: "running",
+@@ -4211,16 +4460,36 @@
+       session.updatedAt = nowIso();
+       if (job.kind === "alipay_name_start") {
+         if (status === "succeeded") {
++          delete session.startupHumanVerification;
+           session.status = "ready";
+           session.currentAccount = String(job.result.currentAccount || "");
+           session.requiresAccountSwitch = false;
+           session.limitReason = "";
+           session.automationHaltReason = "";
+           session.error = "";
++        } else if (status === "failed" && (job.result.errorCode === "alipay_human_verification_required"
++          || String(job.result.error || "").includes("alipay_human_verification_required"))) {
++          session.startupHumanVerification = { resultId: job.jobId, phase: "start",
++            status: "needs_human_verification", limitReason: "jigsaw_verification",
++            errorCode: "alipay_human_verification_required", updatedAt: job.completedAt };
++          session.status = "needs_human_verification";
++          session.limitReason = "jigsaw_verification";
++          session.requiresAccountSwitch = false;
++          session.error = "启动时遇到拼图，请在实时控屏中完成，系统检测通过后继续准备账户。";
++        } else if (lookupHumanRecoveryUnresolved(job, status, { limitReached: job.result.errorCode === "alipay_no_available_account" })) {
++          session.startupHumanVerification = { resultId: job.jobId, phase: "start",
++            status: "needs_recovery", updatedAt: job.completedAt };
++          session.status = "ready";
++          session.limitReason = "";
++          session.automationHaltReason = "lookup_human_recovery_failed";
++          session.error = "账户准备恢复失败，队列已暂停；请重试或结束会话。";
+         } else {
+           finishLookupSession(session, "failed", job.result.errorCode || job.result.error || status);
+         }
+       } else if (job.kind === "alipay_name_query") {
++        if (!accountProtocol && job.result.accountSwitched) {
++          session.currentAccount = String(job.result.currentAccount || session.currentAccount || "");
++        }
+         if (status === "succeeded" && job.result.realNameTailCharacter) {
+           session.successfulCount += 1;
+           session.currentAccount = String(job.result.currentAccount || session.currentAccount || "");
+@@ -4270,10 +4539,15 @@
+           session.status = "ready";
+           session.error = "";
+         } else {
+-          const limitReached = Boolean(job.result.diagnostic?.requiresAccountSwitch || job.result.diagnostic?.limitReached);
+-          const needsHumanVerification = job.result.errorCode === "alipay_human_verification_required"
+-            || String(job.result.error || job.result.message || "").includes("alipay_human_verification_required")
+-            || lookupHumanRecoveryUnresolved(job, status, { limitReached });
++          const noAvailableAccount = accountProtocol && job.result.errorCode === "alipay_no_available_account"
++            && allSavedAccountsCooling(device, session.savedAccounts);
++          const limitReached = noAvailableAccount || hasVerifiedAllSavedAccountsRestricted(job.result.diagnostic);
++          const explicitHumanVerification = job.result.errorCode === "alipay_human_verification_required"
++            || String(job.result.error || job.result.message || "").includes("alipay_human_verification_required");
++          const needsHumanVerification = explicitHumanVerification;
++          const recoveryUnresolved = !explicitHumanVerification
++            && !limitReached && (lookupHumanRecoveryUnresolved(job, status, { limitReached })
++              || job.result.errorCode === "lookup_status_storage_unavailable");
+           const limitReason = String(job.result.diagnostic?.limitReason || "");
+           const errorMessage = String(job.result.message || job.result.error || status);
+           if (limitReached) {
+@@ -4285,7 +4559,7 @@
+               windowsTaskId: job.windowsTaskId,
+               deviceId: job.deviceId,
+               phoneNumber: job.phoneNumber,
+-              account: job.result.currentAccount || session.currentAccount,
++              account: detail.currentAccount || job.result.currentAccount || session.currentAccount,
+               reason: limitReason || detail.reason,
+               title: detail.title,
+               driver: detail.driver,
+@@ -4302,21 +4576,25 @@
+           upsertLookupResult(session, job, {
+             name: "",
+             realNameTailCharacter: "",
+-            status: status === "cancelled" ? "cancelled" : needsHumanVerification ? "needs_human_verification" : limitReached ? "limit_reached" : "failed",
++            status: status === "cancelled" ? "cancelled" : needsHumanVerification ? "needs_human_verification" : recoveryUnresolved ? "needs_recovery" : limitReached ? "limit_reached" : "failed",
+             account: String(job.result.currentAccount || ""),
+             accountSwitched: Boolean(job.result.accountSwitched),
+             accountSwitchReason: String(job.result.accountSwitchReason || ""),
+             accountSwitchCount: Math.max(0, Number(job.result.accountSwitchCount || 0)),
+             stage: needsHumanVerification
+               ? (job.resumeAfterHumanVerification ? "人工恢复未完成，需检查当前号码" : "等待人工验证")
+-              : status === "cancelled" ? "查询已取消" : limitReached ? "当前账号触发查询限制" : "查询失败",
++              : recoveryUnresolved ? "当前号码恢复失败，等待重试" : status === "cancelled" ? "查询已取消" : limitReached ? "当前账号触发查询限制" : "查询失败",
+             error: errorMessage,
+             errorCode: String(job.result.errorCode || ""),
+             limitReason,
+             durationMs: Number(job.result.durationMs || 0),
+             updatedAt: job.completedAt
+           });
+-          if (needsHumanVerification) {
++          if (recoveryUnresolved) {
++            session.status = "ready";
++            session.automationHaltReason = "lookup_human_recovery_failed";
++            session.error = "当前号码恢复失败，后续队列已暂停；请重试当前号码或结束会话。";
++          } else if (needsHumanVerification) {
+             session.status = "ready";
+             session.error = job.resumeAfterHumanVerification
+               ? "当前号码的人工恢复未完成；队列已暂停，请检查页面后再次确认。"
+@@ -4327,12 +4605,19 @@
+             session.limitReason = limitReason;
+             session.automationHaltReason = String(job.result.errorCode || limitReason || "automatic_account_rotation_exhausted");
+             session.error = errorMessage;
++          } else if (session.status !== "stopping") {
++            session.requiresAccountSwitch = false;
++            session.limitReason = "";
++            session.automationHaltReason = "";
++            session.status = "ready";
++            session.error = status === "cancelled" ? "查询已取消，可以继续输入号码。" : errorMessage;
+           } else {
+-            session.status = "ready";
+-            session.error = errorMessage;
++            session.updatedAt = job.completedAt;
+           }
+         }
++        session.accountQueryStarted = status === "succeeded";
+       } else if (job.kind === "alipay_name_switch") {
++        session.accountQueryStarted = false;
+         if (status === "succeeded" && job.accountAction === "list") {
+           const choices = Array.isArray(job.result.savedAccounts) ? job.result.savedAccounts : [];
+           session.accountChoices = choices.slice(0, 12).map((choice) => ({
+@@ -4360,6 +4645,9 @@
+           session.error = String(job.result.message || job.result.error || "支付宝账号切换失败，请重试。");
+         }
+       } else if (job.kind === "alipay_name_stop") {
++        session.results = (session.results || []).map((result) => result.status === "cancelling"
++          ? { ...result, status: "cancelled", stage: "查询已取消", error: "会话已结束", updatedAt: job.completedAt }
++          : result);
+         finishLookupSession(session, "ended", status);
+       }
+     }
+@@ -4373,6 +4661,7 @@
+   if (!jobId) return null;
+   const job = state.automationJobs.find((item) => item.jobId === jobId);
+   if (!job) return null;
++  if (isTerminalStatus(job.status)) return job;
+   job.events.push(sanitizeStoredEvent({ ...event, source: "windows-agent", windowsTaskId: windowsTask.taskId }));
+   job.events = job.events.slice(-100);
+   job.updatedAt = nowIso();
+@@ -4410,52 +4699,49 @@
+     progress.lastEventAt = job.updatedAt;
+     job.result = { ...(job.result || {}), progress };
+   }
++  const lookupSession = job.sessionId ? state.automationSessions.find((item) => item.sessionId === job.sessionId) : null;
++  const verifiedRestriction = windowsTask.payload?.accountCooldownProtocol === 1
++    && isVerifiedLookupAccountRestrictionEvent(event);
++  if (lookupSession && verifiedRestriction) {
++    const detail = event.detail;
++    recordLookupAccountCooldown(repos.devices.findById(lookupSession.deviceId), {
++      account: detail.currentAccount, reason: detail.reason,
++      restrictionId: `${job.jobId}:${detail.currentAccount}`, jobId: job.jobId,
++      accountIdentityVerified: true, phoneQueryStarted: detail.phoneQueryStarted,
++      detectedAt: event.createdAt || nowIso()
++    });
++  }
+   if (job.kind === "alipay_name_query") {
+     const session = state.automationSessions.find((item) => item.sessionId === job.sessionId);
+     if (session) {
+       const stopping = session.status === "stopping";
++      if (isPostQueryLookupRestrictionEvent(event) || verifiedRestriction) {
++        const detail = event.detail || {};
++        const account = String(detail.currentAccount || session.currentAccount || "");
++        upsertLookupRestrictionHistory(session, {
++          restrictionId: `${job.jobId}:${account}`,
++          jobId: job.jobId,
++          windowsTaskId: windowsTask.taskId,
++          deviceId: job.deviceId,
++          phoneNumber: job.phoneNumber,
++          account,
++          reason: detail.reason,
++          title: detail.title,
++          driver: detail.driver,
++          phase: detail.phase,
++          phoneQueryStarted: detail.phoneQueryStarted === true,
++          requiresAccountSwitch: true,
++          status: "detected",
++          detectedAt: event.createdAt || nowIso()
++        });
++      }
+       upsertLookupResult(session, job, {
+         status: stopping ? "cancelling" : "running",
+         stage: stopping ? "正在停止当前查询" : lookupProgressStage(event),
+         updatedAt: job.updatedAt
+       });
+-      if (!isPostQueryLookupRestrictionEvent(event)) {
+-        session.status = stopping ? "stopping" : "querying";
+-        session.updatedAt = job.updatedAt;
+-      }
+-    }
+-  }
+-  if (job.kind === "alipay_name_query" && isPostQueryLookupRestrictionEvent(event)) {
+-    const session = state.automationSessions.find((item) => item.sessionId === job.sessionId);
+-    if (session) {
+-      const detail = event.detail || {};
+-      const messages = {
+-        access_denied: "当前支付宝账号查询后出现访问被拒绝，请选择切换账号。",
+-        jigsaw_verification: "当前支付宝账号查询后进入拼图限制页，请选择切换账号。",
+-        device_risk: "当前支付宝账号查询后出现设备风险限制，请选择切换账号。",
+-        frequent_or_abnormal_access: "当前支付宝账号查询后提示操作频繁或访问异常，请选择切换账号。"
+-      };
+-      upsertLookupRestrictionHistory(session, {
+-        restrictionId: job.jobId,
+-        jobId: job.jobId,
+-        windowsTaskId: windowsTask.taskId,
+-        deviceId: job.deviceId,
+-        phoneNumber: job.phoneNumber,
+-        account: session.currentAccount,
+-        reason: detail.reason,
+-        title: detail.title,
+-        driver: detail.driver,
+-        phase: detail.phase,
+-        phoneQueryStarted: true,
+-        requiresAccountSwitch: true,
+-        status: "detected",
+-        detectedAt: event.createdAt || nowIso()
+-      });
+-      session.status = session.status === "stopping" ? "stopping" : "ready";
+-      session.requiresAccountSwitch = true;
+-      session.limitReason = String(detail.reason || "");
+-      session.error = messages[detail.reason] || "当前支付宝账号查询后触发限制，请选择切换账号。";
+-      session.updatedAt = event.createdAt || nowIso();
++      session.status = stopping ? "stopping" : "querying";
++      session.updatedAt = job.updatedAt;
+     }
+   }
+   return job;
+@@ -5357,6 +5643,7 @@
+   if (Number.isFinite(Number(input.recoveryAttempts))) result.recoveryAttempts = Number(input.recoveryAttempts);
+   if (Number.isFinite(Number(input.accountSwitchCount))) result.accountSwitchCount = Math.max(0, Number(input.accountSwitchCount));
+   if (input.accountSwitched !== undefined) result.accountSwitched = Boolean(input.accountSwitched);
++  if (input.accountIdentityVerified !== undefined) result.accountIdentityVerified = input.accountIdentityVerified === true;
+   if (input.notFound !== undefined) result.notFound = Boolean(input.notFound);
+   if (Array.isArray(input.savedAccounts)) {
+     result.savedAccounts = input.savedAccounts.slice(0, 12).map((choice) => ({
+@@ -7195,6 +7482,7 @@
+   shuttingDown = true;
+   console.log(`${nowIso()} received ${signal}, shutting down`);
+   clearInterval(maintenanceTimer);
++  clearInterval(lookupHumanNotificationTimer);
+   screenRelay?.close();
+   try {
+     await saveState();
+--- /dev/null
++++ b/server/lookup-account-cooldown.mjs
+@@ -0,0 +1,76 @@
++// Account labels are only unique inside one verified device's account picker.
++// Do not merge masked labels across phones, users or application slots.
++export const LOOKUP_ACCOUNT_COOLDOWN_MS = 8 * 60 * 60 * 1000;
++const LIMIT_REASONS = new Set(["access_denied", "device_risk", "frequent_or_abnormal_access"]);
++
++export function accountLabel(value) {
++  const label = String(value || "").trim();
++  return label && label.length <= 120 && !/[\u0000-\u001f\u007f]/.test(label) ? label : "";
++}
++
++export function isVerifiedLookupAccountRestrictionEvent(event = {}) {
++  const detail = event.detail || {};
++  return ["alipay_access_denied_detected", "alipay_account_restriction_detected", "lookup_account_limit_confirmed"]
++    .includes(String(event.stepId || detail.step || ""))
++    && detail.accountIdentityVerified === true && Boolean(accountLabel(detail.currentAccount))
++    && typeof detail.phoneQueryStarted === "boolean" && detail.accountSwitchRequired === true
++    && LIMIT_REASONS.has(detail.reason);
++}
++
++export function recordLookupAccountCooldown(device, input = {}, now = Date.now()) {
++  const account = accountLabel(input.account);
++  if (!device || !account || !input.restrictionId || input.accountIdentityVerified !== true
++      || typeof input.phoneQueryStarted !== "boolean"
++      || !LIMIT_REASONS.has(input.reason)) return null;
++  const detected = Date.parse(input.detectedAt);
++  if (!Number.isFinite(detected) || detected > now || detected < 0) return null;
++  const rows = device.lookupAccountCooldowns ||= [];
++  const previous = rows.find((row) => row.account === account);
++  // An event replay or the final result must not restart the eight-hour clock.
++  if (previous?.restrictionId === input.restrictionId) return previous;
++  if (previous && Date.parse(previous.limitedAt) >= detected) return previous;
++  const record = {
++    account, limitedAt: new Date(detected).toISOString(),
++    cooldownUntil: new Date(detected + LOOKUP_ACCOUNT_COOLDOWN_MS).toISOString(),
++    reason: input.reason, phoneQueryStarted: input.phoneQueryStarted,
++    restrictionId: String(input.restrictionId), jobId: String(input.jobId || "")
++  };
++  if (previous) rows.splice(rows.indexOf(previous), 1, record);
++  else rows.push(record);
++  return record;
++}
++
++export function publicLookupAccountCooldowns(device, now = Date.now()) {
++  return (Array.isArray(device?.lookupAccountCooldowns) ? device.lookupAccountCooldowns : [])
++    .filter((row) => accountLabel(row.account) && Number.isFinite(Date.parse(row.cooldownUntil)))
++    .map((row) => ({
++      account: row.account, limitedAt: row.limitedAt, cooldownUntil: row.cooldownUntil,
++      reason: row.reason, remainingMs: Math.max(0, Date.parse(row.cooldownUntil) - now),
++      cooling: Date.parse(row.cooldownUntil) > now
++    }));
++}
++
++export function lookupAccountPolicy(device, session = {}, now = Date.now()) {
++  return {
++    accountCooldownProtocol: 1,
++    knownAccount: accountLabel(session.currentAccount),
++    accountIdentityVerified: session.accountIdentityVerified === true,
++    verifyAccountBeforeQuery: session.accountQueryStarted !== true,
++    accountCooldowns: publicLookupAccountCooldowns(device, now)
++  };
++}
++
++export function verifiedSavedAccounts(value) {
++  if (!Array.isArray(value) || !value.length || value.length > 12) return null;
++  const rows = value.map((row) => ({ account: accountLabel(row?.account), current: row?.current === true }));
++  if (rows.some((row) => !row.account) || rows.filter((row) => row.current).length !== 1
++      || new Set(rows.map((row) => row.account)).size !== rows.length) return null;
++  return rows;
++}
++
++export function allSavedAccountsCooling(device, savedAccounts, now = Date.now()) {
++  const saved = verifiedSavedAccounts(savedAccounts);
++  if (!saved) return false;
++  const cooling = new Set(publicLookupAccountCooldowns(device, now).filter((row) => row.cooling).map((row) => row.account));
++  return saved.every((row) => cooling.has(row.account));
++}
+--- /dev/null
++++ b/server/lookup-human-handover.mjs
+@@ -0,0 +1,64 @@
++import crypto from "node:crypto";
++import { resumableLookupHumanVerificationResult } from "./automation-center.mjs";
++
++export function lookupHumanChallenge(session) {
++  const result = resumableLookupHumanVerificationResult(session);
++  if (!result?.resultId) return "";
++  return crypto.createHash("sha256").update(JSON.stringify([
++    session.sessionId, result.resultId, result.updatedAt || result.createdAt || ""
++  ])).digest("hex");
++}
++
++// Leases use the server clock. A late dump, duplicate POST or a different
++// screen session cannot supply either of the two required clear observations.
++export function createLookupHumanHandover({ targets, resume, now = Date.now }) {
++  const leases = new Map();
++  const observations = new Map();
++  const claimed = new Map();
++  function list(agentId) {
++    const time = now();
++    for (const [id, lease] of leases) if (time - lease.issuedAt > 15_000) leases.delete(id);
++    const current = targets(agentId);
++    const keys = new Set(current.map((target) => target.challengeId));
++    for (const [key, ownerAgentId] of claimed) if (ownerAgentId === agentId && !keys.has(key)) claimed.delete(key);
++    for (const [key, observation] of observations) {
++      if (observation.agentId === agentId && !keys.has(key)) observations.delete(key);
++    }
++    return current.filter((target) => !claimed.has(target.challengeId)).map((target) => {
++      const probeId = crypto.randomUUID();
++      leases.set(probeId, { ...target, agentId, issuedAt: time });
++      while (leases.size > 500) leases.delete(leases.keys().next().value);
++      return { ...target, probeId };
++    });
++  }
++  async function report(agentId, input = {}) {
++    const lease = leases.get(String(input.probeId || ""));
++    if (!lease || lease.agentId !== agentId) return { accepted: false, reason: "probe_stale" };
++    leases.delete(input.probeId);
++    const target = targets(agentId).find((item) => item.challengeId === lease.challengeId);
++    if (claimed.has(lease.challengeId) || now() - lease.issuedAt > 15_000 || !target
++      || target.screenSessionId !== lease.screenSessionId
++      || target.adbSerial !== lease.adbSerial || target.deviceId !== lease.deviceId) {
++      return { accepted: false, reason: "probe_stale" };
++    }
++    const previous = observations.get(lease.challengeId);
++    if (previous && lease.issuedAt <= previous.issuedAt) return { accepted: false, reason: "probe_out_of_order" };
++    const clear = input.state === "search_ready";
++    const consecutive = clear && previous?.clear
++      && previous.screenSessionId === lease.screenSessionId
++      && lease.issuedAt - previous.issuedAt >= 2_000
++      && lease.issuedAt - previous.issuedAt <= 15_000;
++    observations.set(lease.challengeId, {
++      clear, issuedAt: lease.issuedAt, agentId, screenSessionId: lease.screenSessionId
++    });
++    if (!consecutive) return { accepted: true, resumed: false };
++    // Claim before entering asynchronous persistence: concurrent reports can
++    // never launch two retries of the same original result.
++    observations.delete(lease.challengeId);
++    claimed.set(lease.challengeId, agentId);
++    for (const [id, item] of leases) if (item.challengeId === lease.challengeId) leases.delete(id);
++    const resumed = await resume(target);
++    return { accepted: true, resumed: resumed === true };
++  }
++  return { list, report };
++}
+--- /dev/null
++++ b/server/lookup-human-notifications.mjs
+@@ -0,0 +1,107 @@
++import fs from "node:fs/promises";
++import path from "node:path";
++import { resumableLookupHumanVerificationResult } from "./automation-center.mjs";
++import { lookupHumanChallenge } from "./lookup-human-handover.mjs";
++
++export async function readLookupHumanWebhook(env = process.env) {
++  if (env.LOOKUP_HUMAN_FEISHU_WEBHOOK_FILE) {
++    return (await fs.readFile(env.LOOKUP_HUMAN_FEISHU_WEBHOOK_FILE, "utf8")).trim();
++  }
++  return String(env.LOOKUP_HUMAN_FEISHU_WEBHOOK || "").trim();
++}
++
++export function lookupNotificationDeviceLabel(device = {}) {
++  // Inventory numbers are administrator-facing device names, never model
++  // digits, ADB serials, array positions, SIM numbers or an example number.
++  const match = String(device.deviceName || "").trim().match(/^([1-9]\d{0,5})(?:\s*号.*|\s*手机)?$/u);
++  return match ? `${match[1]}号手机` : "";
++}
++
++export function pendingLookupHumanNotifications(sessions = [], devices = []) {
++  const byId = new Map(devices.map((device) => [device.deviceId, device]));
++  return sessions.flatMap((session) => {
++    const result = resumableLookupHumanVerificationResult(session);
++    const device = byId.get(session.deviceId);
++    const deviceName = lookupNotificationDeviceLabel(device);
++    if (!session.sessionId || !result?.resultId || !deviceName
++        || !(result.limitReason === "jigsaw_verification"
++          || result.errorCode === "alipay_human_verification_required")) return [];
++    return [{
++      // Reuse the handover's stable challenge identity: a resumed query can
++      // encounter another puzzle while retaining the same original result.
++      key: lookupHumanChallenge(session),
++      deviceName
++    }];
++  });
++}
++
++// A durable claim precedes the only HTTP attempt. Unknown delivery is never
++// retried automatically: a bot webhook has no idempotency-key contract.
++export function createLookupHumanNotifier({ webhookUrl = "", receiptsDir, getTargets,
++  fetchImpl = fetch, now = () => new Date().toISOString(), onResult = () => {}, timeoutMs = 5000 }) {
++  if (webhookUrl) {
++    let url;
++    try { url = new URL(webhookUrl); } catch { throw new Error("invalid_lookup_human_webhook"); }
++    if (url.protocol !== "https:" || url.hostname !== "open.feishu.cn" || url.port
++        || url.username || url.password || url.search || url.hash
++        || !/^\/open-apis\/bot\/v2\/hook\/[a-z0-9-]+$/i.test(url.pathname)) {
++      throw new Error("invalid_lookup_human_webhook");
++    }
++  }
++  let running = null;
++  const report = (receipt) => {
++    try { onResult({ key: receipt.key, status: receipt.status,
++      httpStatus: receipt.httpStatus, providerCode: receipt.providerCode }); } catch {}
++  };
++  async function pollOnce() {
++    if (!webhookUrl) return [];
++    const targets = getTargets();
++    if (!targets.length) return [];
++    await fs.mkdir(receiptsDir, { recursive: true, mode: 0o700 });
++    const outcomes = [];
++    for (const target of targets) {
++      if (!/^[a-f0-9]{64}$/.test(target.key)) throw new Error("invalid_lookup_human_notification_key");
++      const receiptPath = path.join(receiptsDir, `${target.key}.json`);
++      let handle;
++      try { handle = await fs.open(receiptPath, "wx", 0o600); }
++      catch (error) { if (error.code === "EEXIST") continue; throw new Error("lookup_human_receipt_unavailable"); }
++      const receipt = { key: target.key, status: "sending", attemptedAt: now() };
++      try { await handle.writeFile(JSON.stringify(receipt)); await handle.sync(); }
++      finally { await handle.close(); }
++      if (!getTargets().some((item) => item.key === target.key)) {
++        receipt.status = "cancelled";
++      } else {
++        try {
++          const response = await fetchImpl(webhookUrl, {
++            method: "POST", headers: { "Content-Type": "application/json" }, redirect: "error",
++            signal: AbortSignal.timeout(timeoutMs),
++            body: JSON.stringify({ msg_type: "text", content: {
++              text: `${target.deviceName}出现拼图，请人工介入到云手机平台实时控制完成拼图。`
++            } })
++          });
++          receipt.httpStatus = response.status;
++          if (!response.ok) receipt.status = "rejected";
++          else {
++            const body = await response.json();
++            const code = body.code === undefined ? body.StatusCode : body.code;
++            if (typeof code === "number") receipt.providerCode = code;
++            receipt.status = code === 0 ? "sent" : typeof code === "number" ? "rejected" : "unknown";
++          }
++        } catch { receipt.status = "unknown"; }
++      }
++      receipt.updatedAt = now();
++      // If recording the response fails, the original claim still prevents a
++      // restart from duplicating a message already accepted by Feishu.
++      await fs.writeFile(receiptPath, JSON.stringify(receipt), { mode: 0o600 });
++      report(receipt);
++      outcomes.push(receipt);
++    }
++    return outcomes;
++  }
++  return {
++    poll() {
++      if (!running) running = pollOnce().finally(() => { running = null; });
++      return running;
++    }
++  };
++}
+--- a/server/open-name-lookup-api.mjs
++++ b/server/open-name-lookup-api.mjs
+@@ -1,3 +1,4 @@
++import { resumableLookupRecoveryResult } from "./automation-center.mjs";
+ import crypto from "node:crypto";
+ 
+ const CLIENT_ID_PATTERN = /^[A-Za-z0-9._-]{3,80}$/;
+@@ -53,9 +54,10 @@
+   const results = allResults.slice(0, 500).map(publicOpenLookupResult);
+   const humanSource = allResults.find((result) => result?.status === "needs_human_verification") || null;
+   const humanResult = humanSource ? publicOpenLookupResult(humanSource) : null;
+-  const jigsawRequired = (session.limitReason === "jigsaw_verification" && session.requiresAccountSwitch !== true)
++  const jigsawRequired = !["ended", "failed", "expired"].includes(session.status) && ((session.limitReason === "jigsaw_verification" && session.requiresAccountSwitch !== true)
+     || session.status === "needs_human_verification"
+-    || Boolean(humanResult);
++    || Boolean(humanResult));
++  const recoveryResult = resumableLookupRecoveryResult(session);
+   const automaticAccountRotationExhausted = session.requiresAccountSwitch === true
+     && !session.pendingJobId;
+   return {
+@@ -73,6 +75,9 @@
+       status: "paused",
+       reason: String(session.automationHaltReason || session.limitReason || "automatic_account_rotation_exhausted"),
+       action: "end_session_and_select_another_device"
++    } : recoveryResult ? {
++      status: "paused", reason: "lookup_human_recovery_failed", action: "retry_current_query",
++      queryId: recoveryResult.phase === "start" ? "" : String(recoveryResult.resultId || "")
+     } : { status: session.pendingJobId ? "running" : session.queuedCount ? "waiting" : "idle" },
+     humanAction: jigsawRequired ? {
+       required: true,
+--- a/server/postgres-repositories.mjs
++++ b/server/postgres-repositories.mjs
+@@ -324,8 +324,9 @@
+       });
+     },
+ 
+-    async persistTaskMutation({ windowsTask = null, windowsTasks = [], xhsTask = null, automationJob = null, automationJobs = [], automationSession = null, deviceLock = null, events = [], audit = null } = {}) {
+-      return inTransaction(async (client) => {
++    async persistTaskMutation({ windowsTask = null, windowsTasks = [], xhsTask = null, automationJob = null, automationJobs = [], automationSession = null, device = null, deviceLock = null, events = [], audit = null } = {}) {
++      return inTransaction(async (client) => {
++        if (device) await upsertDevice(client, device);
+         if (windowsTask) await upsertWindowsTask(client, windowsTask);
+         for (const item of windowsTasks) await upsertWindowsTask(client, item);
+         if (xhsTask) await upsertXhsTask(client, xhsTask);
+--- /dev/null
++++ b/server/task-status-persistence.mjs
+@@ -0,0 +1,19 @@
++// Keep the exact failed mutation until a subsequent status ACK can save it.
++// Concurrent duplicate reports join the same write; they cannot acknowledge
++// an in-memory terminal state ahead of that write.
++export function createTaskStatusPersistence() {
++  const pending = new Map();
++  return {
++    async persist(taskId, write) {
++      let entry = pending.get(taskId);
++      if (!entry) { entry = { write, running: null }; pending.set(taskId, entry); }
++      if (!entry.running) {
++        entry.running = Promise.resolve().then(entry.write).then((result) => {
++          pending.delete(taskId);
++          return result;
++        }).finally(() => { entry.running = null; });
++      }
++      return entry.running;
++    }
++  };
++}
+--- a/windows-agent/scripts/alipay_name_lookup.py
++++ b/windows-agent/scripts/alipay_name_lookup.py
+@@ -6,6 +6,7 @@
+ only an evidenced abnormal state triggers a bounded full-path recovery.
+ """
+ import argparse
++from datetime import datetime
+ import json
+ import os
+ import random
+@@ -70,6 +71,23 @@
+ ALIPAY_LOCAL_SERVICE_HINT = "允许地理位置权限，支付宝能更好的为您提供缴费、商户、乘车等服务"
+ 
+ 
++def focused_window_name(lines):
++    """Use the one actual window, never the activity left underneath it."""
++    current = [line.strip() for line in lines if "mCurrentFocus" in line
++               and not re.fullmatch(r"\s*mCurrentFocus\s*=\s*null\s*", line)]
++    if len(current) != 1:
++        return None
++    window = re.fullmatch(
++        r"mCurrentFocus\s*=\s*Window\{[^\s{}]+(?:\s+u\d+)?\s+"
++        r"([^\s{}]+)(?:\s+type=\d+)?\s*\}", current[0])
++    if window:
++        return window.group(1)
++    # Preserve exact component-only focus fixtures / older OEM output, but
++    # do not accept package substrings or an unstructured background activity.
++    component = re.fullmatch(r"mCurrentFocus\s*=\s*([^\s{}/]+/[^\s{}]+)", current[0])
++    return component.group(1) if component else None
++
++
+ class Runner:
+     def __init__(self, payload):
+         self.payload = payload
+@@ -81,6 +99,12 @@
+         self.human_verification_passes = 0
+         self.account_switched = False
+         self.current_account_after_switch = ""
++        self.account_identity_verified = False
++        self.saved_accounts = []
++        if payload.get("accountCooldownProtocol") == 1:
++            self.current_account_after_switch = str(payload.get("knownAccount") or "")
++            self.account_identity_verified = payload.get("accountIdentityVerified") is True
++            self.saved_accounts = list(payload.get("savedAccounts") or [])
+         self.account_switch_reason = ""
+         self.account_switch_history = []
+         self.restricted_accounts = set()
+@@ -317,7 +341,9 @@
+         protected = VERIFICATION_TITLE
+         action = JIGSAW_VERIFICATION_ACTION if JIGSAW_VERIFICATION_ACTION in texts else VERIFICATION_ACTION
+         feedback = next((value for value in texts if value.startswith(JIGSAW_FEEDBACK_PREFIX)), "")
+-        if protected in texts or action in texts or feedback:
++        # Feedback codes are also shown on account restriction pages. Only
++        # the verification title/action proves a verification surface.
++        if protected in texts or action in texts:
+             return {
+                 "title": protected if protected in texts else "",
+                 "action": action if action in texts else "",
+@@ -389,7 +415,11 @@
+             reason=reason,
+             title=evidence.get("title", ""),
+             phoneQueryStarted=bool(phone_query_started),
+-            accountSwitchRequired=bool(phone_query_started),
++            accountSwitchRequired=bool(phone_query_started or (
++                self.payload.get("accountCooldownProtocol") == 1 and self.account_identity_verified
++            )),
++            currentAccount=self.current_account_after_switch,
++            accountIdentityVerified=self.account_identity_verified,
+         )
+         if not phone_query_started:
+             raise RuntimeError(f"alipay_account_restriction_before_search:{reason}")
+@@ -1376,9 +1406,17 @@
+         return bool(served and current_editor)
+ 
+     def focused_search_input_length(self):
+-        """Return the focused EditText cursor length without Accessibility hint text."""
++        """Return the real focused EditText cursor length, excluding its hint.
++
++        Alipay exposes rotating search hints through Accessibility/Poco's
++        ``text`` attribute even while the EditText is actually empty. Some
++        hints contain digits (for example an amount), so digit-counting that
++        attribute can incorrectly look like a partially entered phone. The
++        active input connection's cursor is based on editable content and does
++        not include the hint.
++        """
+         focus = "\n".join(self.focus())
+-        if ALIPAY_PACKAGE not in focus or "MainSearchActivity" not in focus:
++        if "com.eg.android.AlipayGphone" not in focus or "MainSearchActivity" not in focus:
+             return None
+         state = str(self.adb(
+             ["shell", "dumpsys", "input_method"], timeout=8, check=False,
+@@ -1453,7 +1491,7 @@
+     def parse_result(self, root, parent, phone):
+         parent = parent or {child: node for node in root.iter() for child in node}
+         patterns = [
+-            re.compile(r"[\(（]\*+([^\(\)（）\s])[\)）]\s*$"),
++            re.compile(r"[\(（]\*+(?:·\*+)*([^\(\)（）\s])[\)）]\s*$"),
+             re.compile(r"^\*+([\u4e00-\u9fff])$"),
+             re.compile(r"^.{1,12}\*+([\u4e00-\u9fff])$"),
+         ]
+@@ -1638,12 +1676,23 @@
+             try:
+                 snapshot = poco.freeze()
+                 last_texts = self.poco_snapshot_texts(snapshot, 200)
++                verification = self.poco_verification_evidence(snapshot)
++                if verification and verification.get("manual"):
++                    self.emit(
++                        "human_verification_detected", evidence=verification,
++                        token=phase, driver="poco",
++                    )
++                    raise RuntimeError(
++                        "poco_alipay_human_verification_required:jigsaw_verification"
++                    )
+                 evidence = self.account_restriction_evidence_from_texts(last_texts)
+                 if evidence:
+                     self.raise_account_restriction(
+                         evidence, phase, "poco", phone_query_started=True,
+                     )
+             except Exception as exc:
++                if "human_verification_required" in str(exc):
++                    raise
+                 if self.account_switch_reason_from_error(exc):
+                     raise
+                 self.emit(
+@@ -1758,7 +1807,7 @@
+     def parse_poco_result(self, snapshot, phone):
+         """Extract the same evidenced result from one frozen Poco snapshot."""
+         patterns = [
+-            re.compile(r"[\(（]\*+([^\(\)（）\s])[\)）]\s*$"),
++            re.compile(r"[\(（]\*+(?:·\*+)*([^\(\)（）\s])[\)）]\s*$"),
+             re.compile(r"^\*+([\u4e00-\u9fff])$"),
+             re.compile(r"^.{1,12}\*+([\u4e00-\u9fff])$"),
+         ]
+@@ -1842,6 +1891,9 @@
+ 
+     def poco_search_ready(self, poco, live=True):
+         _, current_focus, focused_app = self.focus_state()
++        foreground = focused_window_name([current_focus]) or ""
++        if foreground.startswith(ALIPAY_PACKAGE) and not foreground.startswith(ALIPAY_PACKAGE + "/"):
++            raise RuntimeError(f"poco_alipay_search_not_foreground:{current_focus}")
+         if self.vivo_usb_mode_dialog_visible(current_focus):
+             if not self.dismiss_vivo_usb_mode_dialog():
+                 raise RuntimeError("poco_vivo_usb_mode_dialog:underlying_task_unverified")
+@@ -3023,7 +3075,9 @@
+     def query_once_poco(
+         self, poco, phone, verification_recoveries=0, query_deadline=None,
+         resume_after_input=False, allow_empty_reinput=True,
++        observation_only_resume=False,
+     ):
++        self._query_usb_warning_dismissed = False
+         if query_deadline is None:
+             query_deadline = time.perf_counter() + 40.0
+         no_name_deadline = time.time() + POCO_NO_NAME_RESULT_SECONDS
+@@ -3056,58 +3110,78 @@
+             if resumed_result:
+                 self.emit_query_result(resumed_result, driver="poco")
+                 return resumed_result
++            if observation_only_resume:
++                # A preceding query_resume already focused and submitted the
++                # original number before its Poco result channel timed out.
++                # After rebuilding Poco, observe only the page that is already
++                # rendered: never focus the field, inject text, or click search
++                # again. This closes the false-failure window without creating
++                # a duplicate lookup.
++                self.emit(
++                    "resume_result_observation_only",
++                    driver="poco", resubmitsInput=False, resubmitsSearch=False,
++                )
++                observation_deadline = min(
++                    time.time() + POCO_NO_NAME_RESULT_SECONDS,
++                    time.time() + max(0.0, query_deadline - time.perf_counter()),
++                )
++                while time.time() < observation_deadline:
++                    time.sleep(0.18)
++                    try:
++                        resume_snapshot = poco.freeze()
++                    except Exception as exc:
++                        raise RuntimeError(
++                            "poco_query_result_channel_timeout_after_input:"
++                            f"observation_only:{type(exc).__name__}:{exc}"
++                        ) from exc
++                    self.poco_raise_if_account_restricted(
++                        resume_snapshot, "query-resume-observation",
++                        phone_query_started=True,
++                    )
++                    if self.poco_verification_evidence(resume_snapshot):
++                        raise RuntimeError("poco_alipay_human_verification_required")
++                    resumed_result = self.parse_poco_result(resume_snapshot, phone)
++                    if resumed_result:
++                        self.emit_query_result(resumed_result, driver="poco")
++                        return resumed_result
++                raise RuntimeError("poco_query_resume_observation_no_result")
+             resume_inputs = self.poco_nodes(resume_snapshot, name=SEARCH_INPUT_ID)
+             resume_actual = self.poco_text(resume_inputs[0]) if len(resume_inputs) == 1 else ""
+             resume_actual_digits = re.sub(r"\D", "", resume_actual)
+-            resume_should_resubmit = resume_actual_digits == phone and allow_empty_reinput
+-            if resume_should_resubmit:
+-                # A completed external jigsaw returns to MainSearchActivity
+-                # with the original phone preserved but the input unfocused.
+-                # Focus that exact unchanged input so Alipay exposes Search;
+-                # do not type the phone a second time.
+-                self.poco_tap(resume_inputs[0])
+-                self.emit(
+-                    "resume_existing_input_focused",
+-                    selector="exact_search_input",
+-                    resubmitsInput=False,
+-                    resubmitsSearch=True,
+-                    driver="poco",
+-                )
+-                resume_after_input = False
+-            elif resume_actual_digits != phone:
+-                resume_editable_length = None
+-                if allow_empty_reinput and len(resume_inputs) == 1:
+-                    if not resume_actual_digits:
+-                        self.poco_tap(resume_inputs[0])
+-                        resume_editable_length = 0
+-                    else:
+-                        self.poco_tap(resume_inputs[0])
+-                        self.adb(["shell", "input", "keyevent", "123"], timeout=5)
+-                        resume_editable_length = self.focused_search_input_length()
++            if resume_actual_digits != phone:
++                # The Agent reaches query_resume only after terminating the
++                # worker whose set_text RPC timed out.  If the rebuilt Poco
++                # hierarchy proves that the one exact search input is still
++                # empty, the original input did not land and cannot arrive
++                # later.  Keep Poco as the element authority, focus that
++                # frozen exact node, and use bounded ADB text injection once.
++                # Any non-empty mismatch remains ambiguous and fails closed.
+                 if (
+                     allow_empty_reinput
+                     and len(resume_inputs) == 1
+-                    and resume_editable_length == 0
++                    and not resume_actual_digits
+                 ):
+                     self.emit(
+                         "resume_empty_input_confirmed",
+-                        selector="exact_search_input", resubmitsInput=True,
++                        selector="exact_search_input",
++                        resubmitsInput=True,
+                         driver="poco",
+                     )
+-                    if query_deadline - time.perf_counter() < 3.0:
+-                        raise RuntimeError("alipay_query_deadline_exceeded_before_input")
+                     self.wait_before_phone_input("poco_resume_empty_adb")
+                     no_name_deadline = time.time() + POCO_NO_NAME_RESULT_SECONDS
+-                    remaining = max(1.0, query_deadline - time.perf_counter())
++                    self.poco_tap(resume_inputs[0])
+                     self.input_phone_humanized(
+-                        phone, "adb_keyevents_after_poco_confirmed_empty",
+-                        timeout=min(5.0, remaining), driver="poco",
++                        phone, "adb_keyevents_after_poco_confirmed_empty", timeout=5,
++                        driver="poco",
+                     )
+-                    resume_after_input = False
++                    # The frozen node already proved the exact input and was
++                    # used to focus it. Avoid an immediate redundant live
++                    # selector RPC on devices whose set_text channel is the
++                    # failure being recovered; the bounded readback below is
++                    # the authoritative post-input verification.
++                    input_node = resume_inputs[0]
+                 else:
+-                    transitioned = self.poco_observe_result_transition(
+-                        poco, phone, query_deadline,
+-                    )
++                    transitioned = self.poco_observe_result_transition(poco, phone, query_deadline)
+                     if transitioned:
+                         return transitioned
+                     raise RuntimeError(
+@@ -3115,13 +3189,35 @@
+                         f"length={len(resume_actual_digits)};"
+                         f"emptyReinputAllowed={str(bool(allow_empty_reinput)).lower()}"
+                     )
++            else:
++                input_node = self.poco_search_ready(poco)
++                # Completing a jigsaw can return to MainSearchActivity with
++                # the original phone still present but the input unfocused.
++                # In that state Alipay hides search_confirm, so observation
++                # alone eventually reports poco_search_submit_unavailable.
++                # Focus the exact, already-matching input without changing its
++                # value; this only reveals the normal submit control.
++                self.poco_tap(input_node)
++                self.emit(
++                    "resume_existing_input_focused",
++                    selector="exact_search_input",
++                    resubmitsInput=False,
++                    driver="poco",
++                )
+         else:
+-            input_node = self.poco_search_ready(poco, live=False)
+-            if query_deadline - time.perf_counter() < 3.0:
+-                raise RuntimeError("alipay_query_deadline_exceeded_before_input")
+-            self._query_usb_warning_dismissed = False
++            # Poco's synchronous set_text RPC becomes unreliable during a
++            # long sequence of searches on some vivo builds: the operation can
++            # reach the phone but its HTTP response stalls, leaving the caller
++            # unable to distinguish a completed, partial, or absent write.
++            # Keep Poco as the sole element authority, but perform the bounded
++            # clear/type actions through ADB after exact frozen-node focus.
++            phone_input_started = False
+             try:
++                input_node = self.poco_search_ready(poco, live=False)
+                 self.poco_tap(input_node)
++                # Move the cursor to the end so the active input connection
++                # reports the real editable length. Unlike Poco/Accessibility
++                # text, this excludes Alipay's rotating hint text.
+                 self.adb(["shell", "input", "keyevent", "123"], timeout=5)
+                 editable_length = self.focused_search_input_length()
+                 if editable_length is None:
+@@ -3150,6 +3246,7 @@
+                         "poco_query_input_state_invalid_before_input:"
+                         f"count={len(cleared_inputs)}"
+                     )
++                input_node = cleared_inputs[0]
+                 self.emit(
+                     "poco_input_clear_confirmed",
+                     selector="exact_search_input", editableLength=0,
+@@ -3157,18 +3254,35 @@
+                 )
+                 self.wait_before_phone_input("poco")
+                 no_name_deadline = time.time() + POCO_NO_NAME_RESULT_SECONDS
+-                self.poco_tap(cleared_inputs[0])
+-                remaining = max(1.0, query_deadline - time.perf_counter())
++                # The throttle interval can allow a popup/app transition.
++                # Reconfirm the live search page before sending any digits.
++                input_node = self.poco_search_ready(poco, live=False)
++                self.poco_tap(input_node)
++                phone_input_started = True
+                 self.input_phone_humanized(
+-                    phone, "adb_keyevents_after_poco_exact_input",
+-                    timeout=min(5.0, remaining), driver="poco",
++                    phone, "adb_keyevents_after_poco_exact_input", timeout=5,
++                    driver="poco",
+                 )
+             except Exception as exc:
++                if not phone_input_started:
++                    raise RuntimeError(
++                        f"poco_query_before_input_failed:{type(exc).__name__}:{exc}"
++                    ) from exc
++                # Once the clear has started, a transport failure leaves the
++                # exact input state unknown. Rebuild Poco and inspect it via
++                # query_resume; an empty field permits one evidenced input,
++                # the full target continues, and every other value fails
++                # closed. This also covers a bounded ADB input failure without
++                # ever blindly submitting the number twice.
+                 raise RuntimeError(
+                     f"poco_query_result_channel_timeout_after_input:"
+                     f"poco_bounded_input_failed:{type(exc).__name__}:{exc}"
+                 ) from exc
+ 
++        # Input/throttling time is not result observation time. Slow OEM ADB
++        # input must still receive a full readback/result window, bounded by
++        # the unchanged overall query deadline.
++        no_name_deadline = time.time() + POCO_NO_NAME_RESULT_SECONDS
+         readback_deadline = min(
+             time.time() + 3.0,
+             no_name_deadline,
+@@ -3184,10 +3298,12 @@
+                 ) from exc
+             if not resume_after_input and self.poco_dismiss_post_input_usb_warning(poco, snapshot, query_deadline):
+                 continue
+-            self.poco_raise_if_account_restricted(snapshot, "input-readback", phone_query_started=True)
++            self.poco_raise_if_account_restricted(
++                snapshot, "input-readback", phone_query_started=True,
++            )
+             if self.poco_verification_evidence(snapshot):
+                 if verification_recoveries >= 2:
+-                    raise RuntimeError("poco_alipay_basic_slider_repeatedly_invalidated_query")
++                    raise RuntimeError("poco_alipay_human_verification_repeatedly_invalidated_query")
+                 next_attempt = verification_recoveries + 1
+                 self.poco_solve_human_verification(poco, f"input-readback-{next_attempt}")
+                 self.emit(
+@@ -3195,7 +3311,8 @@
+                     phase="input-readback", driver="poco", resubmitsInput=False,
+                 )
+                 return self.query_once_poco(
+-                    poco, phone, next_attempt, query_deadline, resume_after_input=True,
++                    poco, phone, next_attempt, query_deadline,
++                    resume_after_input=True,
+                     allow_empty_reinput=allow_empty_reinput,
+                 )
+             result = self.parse_poco_result(snapshot, phone)
+@@ -3207,16 +3324,21 @@
+                 actual = self.poco_text(inputs[0]) if len(inputs) == 1 else ""
+                 actual_digits = re.sub(r"\D", "", actual)
+             except Exception as exc:
+-                raise RuntimeError(f"poco_input_readback_failed:{exc}") from exc
++                raise RuntimeError(
++                    f"poco_query_result_channel_timeout_after_input:"
++                    f"poco_input_readback_failed:{exc}"
++                ) from exc
+             if actual_digits == phone:
+                 break
+             time.sleep(0.1)
+         else:
+             self.poco_wait_for_post_query_restriction(
+                 poco, "input-readback-transition",
+-                timeout=min(1.5, max(0.0, query_deadline - time.perf_counter())),
+-            )
+-            raise RuntimeError(f"search_input_readback_mismatch:length={len(actual_digits)}")
++            )
++            raise RuntimeError(
++                f"poco_query_result_channel_timeout_after_input:"
++                f"search_input_readback_mismatch:length={len(actual_digits)}"
++            )
+ 
+         deadline = min(
+             no_name_deadline,
+@@ -3235,10 +3357,12 @@
+                 ) from exc
+             if not resume_after_input and self.poco_dismiss_post_input_usb_warning(poco, snapshot, query_deadline):
+                 continue
+-            self.poco_raise_if_account_restricted(snapshot, "result", phone_query_started=True)
++            self.poco_raise_if_account_restricted(
++                snapshot, "result", phone_query_started=True,
++            )
+             if self.poco_verification_evidence(snapshot):
+                 if verification_recoveries >= 2:
+-                    raise RuntimeError("poco_alipay_basic_slider_repeatedly_invalidated_query")
++                    raise RuntimeError("poco_alipay_human_verification_repeatedly_invalidated_query")
+                 next_attempt = verification_recoveries + 1
+                 self.poco_solve_human_verification(poco, f"result-{next_attempt}")
+                 self.emit(
+@@ -3246,19 +3370,24 @@
+                     phase="result", driver="poco", resubmitsInput=False,
+                 )
+                 return self.query_once_poco(
+-                    poco, phone, next_attempt, query_deadline, resume_after_input=True,
++                    poco, phone, next_attempt, query_deadline,
++                    resume_after_input=True,
+                     allow_empty_reinput=allow_empty_reinput,
+                 )
+             result = self.parse_poco_result(snapshot, phone)
+             if result:
+                 self.emit_query_result(result, driver="poco")
+                 return result
+-            should_submit = not resume_after_input and submit_count == 0 and time.time() >= submit_after
++            should_submit = submit_count == 0 and time.time() >= submit_after
+             if should_submit:
+                 confirms = self.poco_nodes(snapshot, name="com.alipay.mobile.antui:id/search_confirm")
+                 if len(confirms) == 1:
+                     self.poco_tap(confirms[0])
+                     submit_count += 1
++                    deadline = min(
++                        time.time() + POCO_NO_NAME_RESULT_SECONDS,
++                        time.time() + max(0.0, query_deadline - time.perf_counter()),
++                    )
+                     self.emit(
+                         "submit_search",
+                         selector="exact_search_confirm", attempt=submit_count, driver="poco",
+@@ -3267,20 +3396,37 @@
+         if submit_count < 1 or last_snapshot is None:
+             self.poco_wait_for_post_query_restriction(
+                 poco, "search-submit-unavailable",
+-                timeout=min(1.5, max(0.0, query_deadline - time.perf_counter())),
+-            )
+-            raise RuntimeError("poco_search_submit_unavailable")
++            )
++            raise RuntimeError(
++                "poco_query_result_channel_timeout_after_input:"
++                "poco_search_submit_unavailable"
++            )
+         try:
+             inputs = self.poco_nodes(last_snapshot, name=SEARCH_INPUT_ID)
+             actual = self.poco_text(inputs[0]) if len(inputs) == 1 else ""
+             actual_digits = re.sub(r"\D", "", actual)
+         except Exception as exc:
+-            raise RuntimeError(f"poco_result_state_readback_failed:{exc}") from exc
++            raise RuntimeError(
++                f"poco_query_result_channel_timeout_after_input:"
++                f"poco_result_state_readback_failed:{exc}"
++            ) from exc
+         if actual_digits != phone:
+             transitioned = self.poco_observe_result_transition(poco, phone, query_deadline)
+             if transitioned:
+                 return transitioned
+-            raise RuntimeError(f"poco_result_page_state_changed:length={len(actual_digits)}")
++            # A submitted search can transition through an input-less WebView
++            # before an account restriction finishes rendering (observed on
++            # vivo V2442A). Keep probing that existing page through Poco. If no
++            # restriction becomes visible, force Agent's query_resume path;
++            # both outcomes are post-input and must never enter XML or submit
++            # the number again.
++            self.poco_wait_for_post_query_restriction(
++                poco, "result-page-state-changed",
++            )
++            raise RuntimeError(
++                f"poco_query_result_channel_timeout_after_input:"
++                f"poco_result_page_state_changed:length={len(actual_digits)}"
++            )
+         self.emit(
+             "lookup_no_name_result", reason="stable_search_page_without_name_result",
+             submitAttempts=submit_count, driver="poco",
+@@ -3296,6 +3442,46 @@
+ 
+     def run_poco(self, poco):
+         operation = str(self.payload.get("operation") or "")
++        if operation == "human_probe":
++            # Positive search-page evidence is required; missing hierarchy or
++            # another foreground app is unknown, never "verification passed".
++            # No tap, drag, input, launch, fallback or worker repair is permitted.
++            try:
++                before = self.focus()
++                snapshot = poco.freeze()
++                texts = self.poco_snapshot_texts(snapshot, 200)
++                markers = (VERIFICATION_TITLE, VERIFICATION_ACTION,
++                           JIGSAW_VERIFICATION_ACTION)
++                state = "unknown"
++                if any(marker in text for text in texts for marker in markers):
++                    state = "present"
++                else:
++                    inputs = self.poco_nodes(snapshot, name=SEARCH_INPUT_ID)
++                    webviews = self.poco_nodes(snapshot, type="android.webkit.WebView")
++                    after = self.focus()
++                    def foreground(lines):
++                        # Inactive virtual displays may have an exact null
++                        # record. Keep every other record fail-closed and
++                        # require one exact Alipay Window component.
++                        current = [line for line in lines if "mCurrentFocus" in line
++                                   and not re.fullmatch(r"\s*mCurrentFocus\s*=\s*null\s*", line)]
++                        if len(current) != 1:
++                            return False
++                        window = re.fullmatch(
++                            r"\s*mCurrentFocus\s*=\s*Window\{[^\s{}]+(?:\s+u\d+)?\s+"
++                            r"([^\s{}/]+)/[^\s{}]+(?:\s+type=\d+)?\s*\}\s*", current[0])
++                        return bool(window and window.group(1) == ALIPAY_PACKAGE)
++                    if (foreground(before) and foreground(after) and len(inputs) == 1 and not webviews
++                            and not any(marker in text for text in texts for marker in (
++                                ACCESS_DENIED_TITLE, DEVICE_RISK_TITLE,
++                                FREQUENT_OR_ABNORMAL_ACCESS_TITLE,
++                                JIGSAW_FEEDBACK_PREFIX, "短信验证码登录"))
++                            and inputs[0].attr("enabled") is True
++                            and inputs[0].attr("visible") is not False):
++                        state = "search_ready"
++                return {"ok": True, "operation": operation, "verificationState": state}
++            except Exception:
++                return {"ok": True, "operation": operation, "verificationState": "unknown"}
+         self.emit("poco_request_received", operation=operation, workflow="alipay_name")
+         if self.adb(["get-state"], timeout=8).strip() != "device":
+             raise RuntimeError("device_not_online")
+@@ -3318,87 +3504,98 @@
+                     startAttachAttempt=start_attach_attempt,
+                     reason="already_attempted_for_lookup_start",
+                 )
+-            try:
+-                reused = self.poco_try_reuse_search_page(poco)
+-            except Exception as exc:
+-                raw_error = str(exc)
+-                if "poco_alipay_login_required" in raw_error:
+-                    raise
+-                if "human_verification_required:jigsaw_verification" in raw_error:
+-                    self.emit(
+-                        "lookup_session_ready_on_human_verification_page",
+-                        restrictionReason="jigsaw_verification",
+-                        phoneQueryStarted=False,
+-                        driver="poco",
+-                    )
+-                    return {
+-                        "ok": True,
+-                        "message": "search_session_human_verification_required",
+-                        "restrictionReason": "jigsaw_verification",
+-                        "requiresHumanAction": True,
+-                        "currentAccount": "",
+-                        "log": self.log,
+-                    }
+-                restriction_reason = self.account_switch_reason_from_error(exc)
+-                if (
+-                    "alipay_account_restriction_before_search:" in raw_error
+-                    and restriction_reason
+-                ):
+-                    # The restriction page is already a stable, evidenced
+-                    # Alipay state.  Keep it in place and let the session open
+-                    # without relaunching Alipay, which would only invalidate
+-                    # Poco's hierarchy channel and can never make the search
+-                    # input available while this page remains foreground.
+-                    self.emit(
+-                        "lookup_session_ready_on_restriction_page",
+-                        restrictionReason=restriction_reason,
+-                        phoneQueryStarted=False,
+-                        driver="poco",
+-                    )
+-                    return {
+-                        "ok": True,
+-                        "message": "search_session_restricted",
+-                        "restrictionReason": restriction_reason,
+-                        "currentAccount": "",
+-                        "log": self.log,
+-                    }
+-                if ("poco_alipay_local_service_" in raw_error or "poco_vivo_usb_mode_dialog:" in raw_error
+-                        or "poco_android_window_service_timeout" in raw_error
+-                        or "poco_data_network_acceleration_" in raw_error):
+-                    # An evidenced but uncloseable prompt must not trigger
+-                    # another launch, permission grant or arbitrary click.
+-                    raise
+-                if "poco_rpc_failed:" in raw_error:
+-                    # A broken hierarchy transport cannot be healed by
+-                    # force-stopping and relaunching Alipay.  Return control
+-                    # to the Agent immediately so it can rebuild only the
+-                    # Poco worker and attach to the already-foreground app.
+-                    self.emit(
+-                        "reuse_search_transport_failed",
+-                        error=str(exc),
+-                        errorType=type(exc).__name__,
+-                        driver="poco",
+-                    )
+-                    raise
+-                if (
+-                    (VIVO_SECURITY_CENTER_PACKAGE in raw_error
+-                     or HONOR_SOFTWARE_UPDATE_PACKAGE in raw_error)
+-                    and ("_resume_alipay_timeout" in raw_error
+-                         or "_dismiss_timeout" in raw_error)
+-                ):
+-                    # An exact OEM overlay was identified but could not be
+-                    # detached safely.  Relaunching/force-stopping Alipay does
+-                    # not resolve the overlay and only destroys the warm task,
+-                    # so fail closed and let the Agent retain evidence.
+-                    self.emit(
+-                        "reuse_search_overlay_recovery_failed",
+-                        error=str(exc),
+-                        errorType=type(exc).__name__,
+-                        driver="poco_focus_adb",
+-                    )
+-                    raise
+-                self.emit("reuse_search_page_failed", error=str(exc), driver="poco")
+-                reused = False
++            reuse_selector_retry = 0
++            while True:
++                try:
++                    reused = self.poco_try_reuse_search_page(poco)
++                    break
++                except Exception as exc:
++                    raw_error = str(exc)
++                    if "poco_alipay_login_required" in raw_error:
++                        raise
++                    if "human_verification_required:jigsaw_verification" in raw_error:
++                        self.emit(
++                            "lookup_session_ready_on_human_verification_page",
++                            restrictionReason="jigsaw_verification",
++                            phoneQueryStarted=False,
++                            driver="poco",
++                        )
++                        return {
++                            "ok": True,
++                            "message": "search_session_human_verification_required",
++                            "restrictionReason": "jigsaw_verification",
++                            "requiresHumanAction": True,
++                            "currentAccount": "",
++                            "log": self.log,
++                        }
++                    restriction_reason = self.account_switch_reason_from_error(exc)
++                    if (
++                        "alipay_account_restriction_before_search:" in raw_error
++                        and restriction_reason
++                    ):
++                        # The restriction page is already a stable, evidenced
++                        # Alipay state.  Keep it in place and let the session open
++                        # without relaunching Alipay, which would only invalidate
++                        # Poco's hierarchy channel and can never make the search
++                        # input available while this page remains foreground.
++                        self.emit(
++                            "lookup_session_ready_on_restriction_page",
++                            restrictionReason=restriction_reason,
++                            phoneQueryStarted=False,
++                            driver="poco",
++                        )
++                        return {
++                            "ok": True,
++                            "message": "search_session_restricted",
++                            "restrictionReason": restriction_reason,
++                            "currentAccount": "",
++                            "log": self.log,
++                        }
++                    if ("poco_alipay_local_service_" in raw_error or "poco_vivo_usb_mode_dialog:" in raw_error
++                            or "poco_android_window_service_timeout" in raw_error
++                            or "poco_data_network_acceleration_" in raw_error):
++                        # An evidenced but uncloseable prompt must not trigger
++                        # another launch, permission grant or arbitrary click.
++                        raise
++                    if "poco_rpc_failed:" in raw_error:
++                        # A broken hierarchy transport cannot be healed by
++                        # force-stopping and relaunching Alipay.  Return control
++                        # to the Agent immediately so it can rebuild only the
++                        # Poco worker and attach to the already-foreground app.
++                        self.emit(
++                            "reuse_search_transport_failed",
++                            error=str(exc),
++                            errorType=type(exc).__name__,
++                            driver="poco",
++                        )
++                        raise
++                    if (
++                        (VIVO_SECURITY_CENTER_PACKAGE in raw_error
++                         or HONOR_SOFTWARE_UPDATE_PACKAGE in raw_error)
++                        and ("_resume_alipay_timeout" in raw_error
++                             or "_dismiss_timeout" in raw_error)
++                    ):
++                        # An exact OEM overlay was identified but could not be
++                        # detached safely.  Relaunching/force-stopping Alipay does
++                        # not resolve the overlay and only destroys the warm task,
++                        # so fail closed and let the Agent retain evidence.
++                        self.emit(
++                            "reuse_search_overlay_recovery_failed",
++                            error=str(exc),
++                            errorType=type(exc).__name__,
++                            driver="poco_focus_adb",
++                        )
++                        raise
++                    if (reuse_selector_retry == 0 and "poco_selector_missing:" in raw_error
++                            and (focused_window_name(self.focus()) or "").startswith(ALIPAY_PACKAGE + "/")):
++                        reuse_selector_retry += 1
++                        self.emit("reuse_search_selector_missing_retry", retryAttempt=1,
++                                  maxRetries=1, relaunchesAlipay=False, driver="poco")
++                        time.sleep(0.15)
++                        continue
++                    self.emit("reuse_search_page_failed", error=str(exc), driver="poco")
++                    reused = False
++                    break
+             if not reused:
+                 self.poco_prepare_full_path(poco, "session-start")
+             return {"ok": True, "message": "search_session_ready", "currentAccount": "", "log": self.log}
+@@ -3439,53 +3636,295 @@
+         phone = re.sub(r"\D", "", str(self.payload.get("phoneNumber") or ""))
+         if not re.fullmatch(r"1\d{10}", phone):
+             raise RuntimeError("invalid_phone_number")
++        if self.payload.get("recoverUnexpectedPage") is True:
++            if operation != "query":
++                raise RuntimeError("page_recovery_operation_invalid")
++            recovery_stage = self.payload.get("pageRecoveryStage")
++            if recovery_stage not in ("restart_app", "continue_query"):
++                raise RuntimeError("page_recovery_stage_invalid")
++            # Never dismiss a visible verification/login/limit by restarting.
++            # An unavailable hierarchy fails closed instead of guessing.
++            self.dismiss_notification_shade_if_present()
++            snapshot = poco.freeze()
++            self.poco_raise_if_login_focus("\n".join(self.focus()), "page-recovery")
++            self.poco_raise_if_login_required(snapshot, "page-recovery")
++            self.poco_raise_if_account_restricted(
++                snapshot, "page-recovery", phone_query_started=False,
++            )
++            if self.poco_verification_evidence(snapshot):
++                raise RuntimeError("poco_alipay_human_verification_required")
++            if recovery_stage == "restart_app":
++                self.emit("query_page_recovery_begin", recoveryAttempt=1, sameTask=True, driver="poco")
++                self.adb(["shell", "am", "force-stop", ALIPAY_PACKAGE], timeout=8)
++                output = self.adb([
++                    "shell", "am", "start", "-W", "-f", "0x10008000",
++                    "-a", "android.intent.action.MAIN", "-c", "android.intent.category.LAUNCHER", "-n", ALIPAY_HOME,
++                ], timeout=25)
++                if "Error:" in str(output):
++                    raise RuntimeError("alipay_restart_launch_failed")
++                self.emit("launch_alipay", reason="query-page-recovery", driver="poco")
++                # Do not read this now-invalid hierarchy or submit any digits.
++                return {"ok": True, "appRecoveryStage": "app_restarted", "log": self.log}
++            try:
++                if not self.poco_try_reuse_search_page(poco):
++                    raise RuntimeError("poco_recovery_alipay_not_foreground")
++                self.poco_search_ready(poco, live=False)
++            except Exception as exc:
++                # No input has been entered in this worker. A transport error
++                # while opening Search may be retried by one fresh attachment,
++                # never by another app restart or by replaying a query result.
++                if "poco_rpc_failed:" in str(exc):
++                    raise RuntimeError(
++                        f"poco_query_page_recovery_prepare_failed:{exc}"
++                    ) from exc
++                raise
++            self.emit("query_page_recovery_ready", recoveryAttempt=1, driver="poco")
++        self.assert_known_account()
+         # A verified account switch may leave Alipay on Home if the independent
+         # XML navigation could not reopen Search. Re-establish the search page
+         # with Poco before any phone input occurs.
+-        if operation == "query" and not self.poco_try_reuse_search_page(poco):
++        if operation == "query" and not self.payload.get("recoverUnexpectedPage") and not self.poco_try_reuse_search_page(poco):
+             raise RuntimeError("poco_query_search_page_unavailable_before_input")
+-        query_budget = max(0, min(40.0, float(self.payload.get("queryBudgetMs", 40_000)) / 1000.0))
+         result = self.query_once_poco(
+-            poco, phone, query_deadline=self.started + query_budget,
++            poco, phone,
+             resume_after_input=(operation == "query_resume"),
+             allow_empty_reinput=bool(
+                 self.payload.get("allowEmptyInputRecovery", True)
+             ),
++            observation_only_resume=bool(self.payload.get("observationOnlyResume", False)),
+         )
+         return {
+-            "ok": True, **result, "currentAccount": "", "accountSwitched": False,
++            "ok": True, **result, "currentAccount": "", **self.account_metadata(), "accountSwitched": False,
+             "recoveryAttempts": 0,
+             "elapsedMs": int((time.perf_counter() - self.started) * 1000), "log": self.log,
+         }
+ 
++    def dismiss_notification_shade_if_present(self):
++        if focused_window_name(self.focus()) != "NotificationShade":
++            return False
++        # This only closes the evidenced system drawer; it never presses a
++        # permission button, dismisses a verification, or changes a setting.
++        self.adb(["shell", "cmd", "statusbar", "collapse"], timeout=5)
++        deadline = time.monotonic() + 2.0
++        while time.monotonic() < deadline:
++            current = focused_window_name(self.focus())
++            if current and current != "NotificationShade":
++                self.emit("notification_shade_collapsed", driver="adb_exact_window")
++                return True
++            time.sleep(0.1)
++        raise RuntimeError("notification_shade_collapse_unconfirmed")
++
++    def wake_and_unlock_for_lookup_start(self):
++        """Wake the display before reading the foreground Poco hierarchy.
++
++        KEYCODE_WAKEUP is normally idempotent, but vivo V2442A on Android 14
++        has been observed to leave ``mWakefulness=Asleep`` after accepting it.
++        Only when a read-only power-state check proves that the screen is still
++        asleep do we send KEYCODE_POWER, avoiding the risk of toggling an
++        already-awake display off.
++        """
++        self.adb(["shell", "input", "keyevent", "224"], timeout=5, check=False)
++        self.adb(["shell", "wm", "dismiss-keyguard"], timeout=5, check=False)
++        power_state = str(self.adb(
++            ["shell", "dumpsys", "power"], timeout=5, check=False,
++        ))
++        if re.search(r"mWakefulness\s*=\s*Asleep\b", power_state, re.IGNORECASE):
++            self.adb(["shell", "input", "keyevent", "26"], timeout=5, check=False)
++            self.adb(["shell", "wm", "dismiss-keyguard"], timeout=5, check=False)
++            self.emit(
++                "wake_display_power_fallback",
++                reason="keycode_wakeup_left_device_asleep",
++                driver="adb_power_state_guard",
++            )
++        else:
++            self.emit("wake_display_ready", driver="adb_keycode_wakeup")
++
++    def dismiss_unverified_account_modal_visual(self):
++        """Dismiss Alipay's Canvas-only "account not verified" home modal.
++
++        Some Alipay builds render this modal completely outside the
++        accessibility hierarchy.  The underlying Home/My nodes are still
++        exposed, so repeated element taps are silently consumed by the modal.
++        Require the modal's responsive geometry (large bright centre card,
++        blue CTA, dim surround, and a centred lower close ring) before tapping
++        its detected close control.  This keeps the fallback fail-closed and
++        avoids a blind coordinate or Back action on a normal home page.
++        """
++        try:
++            import cv2
++            import numpy as np
++
++            raw = self.adb(["exec-out", "screencap", "-p"], timeout=15, binary=True)
++            image = cv2.imdecode(np.frombuffer(raw, dtype=np.uint8), cv2.IMREAD_COLOR)
++            if image is None:
++                return False
++            height, width = image.shape[:2]
++            if width < 300 or height < 600:
++                return False
++            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
++            card = gray[int(height * .30):int(height * .69), int(width * .14):int(width * .86)]
++            surround = gray[int(height * .34):int(height * .66), int(width * .02):int(width * .11)]
++            cta = image[int(height * .60):int(height * .69), int(width * .22):int(width * .78)]
++            if not card.size or not surround.size or not cta.size:
++                return False
++            bright_card_ratio = float((card >= 225).mean())
++            dim_surround_ratio = float((surround <= 175).mean())
++            blue_cta_ratio = float((
++                (cta[:, :, 0] >= 150)
++                & (cta[:, :, 0] >= cta[:, :, 1] * .95)
++                & (cta[:, :, 2] <= 120)
++            ).mean())
++            if bright_card_ratio < .48 or dim_surround_ratio < .60 or blue_cta_ratio < .12:
++                return False
++
++            lower = gray[int(height * .71):int(height * .84), :]
++            binary = (lower >= 205).astype(np.uint8)
++            count, _, stats, centers = cv2.connectedComponentsWithStats(binary)
++            candidates = []
++            for index in range(1, count):
++                x, y, component_width, component_height, area = stats[index]
++                center_x, center_y = centers[index]
++                absolute_y = float(center_y + int(height * .71))
++                if not (width * .42 <= center_x <= width * .58):
++                    continue
++                if not (height * .735 <= absolute_y <= height * .82):
++                    continue
++                if not (width * .055 <= component_width <= width * .13):
++                    continue
++                if not (width * .055 <= component_height <= width * .13):
++                    continue
++                aspect = component_width / max(1.0, float(component_height))
++                if not (.72 <= aspect <= 1.38):
++                    continue
++                if area < width * height * .00022:
++                    continue
++                candidates.append((int(round(center_x)), int(round(absolute_y)), int(area)))
++            if len(candidates) != 1:
++                return False
++            tap_x, tap_y, area = candidates[0]
++            self.adb(["shell", "input", "tap", str(tap_x), str(tap_y)], timeout=8)
++            self.emit(
++                "dismiss_alipay_unverified_account_modal",
++                method="responsive_modal_close_detection",
++                evidence={
++                    "brightCardRatio": round(bright_card_ratio, 3),
++                    "dimSurroundRatio": round(dim_surround_ratio, 3),
++                    "blueCtaRatio": round(blue_cta_ratio, 3),
++                    "closeComponentArea": area,
++                },
++                tap={"x": tap_x, "y": tap_y},
++            )
++            time.sleep(0.5)
++            return True
++        except Exception as exc:
++            self.emit(
++                "unverified_account_modal_visual_probe_failed",
++                errorType=type(exc).__name__,
++            )
++            return False
++
++    def cooling_accounts(self):
++        cooling = set()
++        for row in self.payload.get("accountCooldowns") or []:
++            try:
++                until = datetime.fromisoformat(str(row["cooldownUntil"]).replace("Z", "+00:00"))
++                if until.tzinfo is None:
++                    raise ValueError("missing timezone")
++                if until.timestamp() > time.time():
++                    cooling.add(str(row["account"]))
++            except (KeyError, TypeError, ValueError, OverflowError):
++                raise RuntimeError("alipay_account_cooldown_data_invalid")
++        return cooling
++
++    def account_metadata(self):
++        if self.payload.get("accountCooldownProtocol") != 1:
++            return {}
++        return {
++            "currentAccount": self.current_account(),
++            "accountIdentityVerified": self.account_identity_verified,
++            "savedAccounts": self.saved_accounts,
++            "savedAccountCount": len(self.saved_accounts) or self.saved_account_count,
++        }
++
++    def assert_known_account(self):
++        if self.payload.get("accountCooldownProtocol") != 1:
++            return
++        rows = self.saved_accounts
++        accounts = [str(row.get("account") or "") for row in rows]
++        current = [row for row in rows if row.get("current") is True]
++        if (not self.account_identity_verified or not accounts or any(not value for value in accounts)
++                or len(accounts) > 12 or len(set(accounts)) != len(accounts) or len(current) != 1
++                or current[0]["account"] != self.current_account_after_switch):
++            raise RuntimeError("alipay_account_identity_unverified")
++        if self.current_account_after_switch in self.cooling_accounts():
++            raise RuntimeError("alipay_account_preflight_required")
++
++    def prepare_available_account(self):
++        # Never navigate away from a visible verification merely to select
++        # another account. Startup/preflight does not submit a probe number.
++        root, parent = self.dump("account-preflight-visible-state")
++        verification = self.verification_evidence(root)
++        if verification:
++            if verification.get("manual", True):
++                raise RuntimeError("alipay_human_verification_required:jigsaw_verification")
++            root, parent = self.solve_human_verification(root, parent, "account-preflight-visible-state")
++        restriction = self.account_restriction_evidence(root)
++        if restriction and self.current_account_after_switch not in self.cooling_accounts():
++            # Unknown identity cannot be assigned the previous account's limit.
++            self.assert_known_account()
++            self.raise_account_restriction(restriction, "account-preflight-visible-state",
++                                           "xml_uiautomator", phone_query_started=False)
++        self.launch("account-preflight")
++        rows = self.open_account_picker("preflight")
++        self.saved_accounts = self.saved_account_choices(rows)
++        self.saved_account_count = len(rows)
++        self.current_account_after_switch = next(row[0] for row in rows if row[1])
++        self.account_identity_verified = True
++        cooling = self.cooling_accounts()
++        if all(row[0] in cooling for row in rows):
++            raise RuntimeError("alipay_no_available_account")
++        if self.current_account_after_switch in cooling:
++            self.switch_account(reason="cooldown", excluded_accounts=cooling,
++                                reuse_open_picker=True, verify_current_marker=True)
++            self.open_search("account-preflight-switch-complete")
++        else:
++            self.launch("account-preflight-complete")
++            self.open_search("account-preflight-complete")
++        self.emit("lookup_account_ready", **self.account_metadata())
++        return self.account_metadata()
++
+     def current_account(self):
+         # The picker is not opened during the fast path. Return an empty value
+         # unless a switch just produced exact account evidence.
+-        return ""
++        return self.current_account_after_switch if self.account_identity_verified else ""
+ 
+     def clear_focused_search_input(self, method="focused_input_resource"):
+-        # Keep one bounded ADB round trip, but space the visible delete keys so
+-        # the edit resembles an operator clearing the exact focused field.
+-        key_delay_ms = random.randint(55, 95)
++        # Android's input command accepts multiple key codes.  Keep the same
++        # bounded clear behavior without paying one ADB round trip per delete.
++        # Do not pass --delay: older/OEM parsers can inject its numeric value
++        # as an unrelated key.  Only MOVE_END and DEL belong in this command.
+         self.adb(
+-            ["shell", "input", "keyevent", "--delay", str(key_delay_ms), "123", *(["67"] * 24)],
++            ["shell", "input", "keyevent", "123", *(["67"] * 24)],
+             timeout=8,
+         )
+         self.emit(
+             "clear_previous_query", selector="exact_search_input",
+-            method=method, keyCount=25, keyDelayMs=key_delay_ms,
++            method=method, keyCount=25, keyDelayMs=0, keyDelayMode="android_default",
+         )
+ 
+     def input_phone_humanized(self, phone, method, timeout=8, driver="xml_uiautomator"):
+-        key_delay_ms = random.randint(85, 145)
++        # Retain the helper name for existing callers, but use only the
++        # portable numeric-key grammar, with no options or timing tokens.
++        if not isinstance(phone, str) or not re.fullmatch(r"1[0-9]{10}", phone):
++            raise RuntimeError("invalid_phone_number")
+         keycodes = [str(7 + int(digit)) for digit in phone]
+         self.adb(
+-            ["shell", "input", "keyevent", "--delay", str(key_delay_ms), *keycodes],
++            ["shell", "input", "keyevent", *keycodes],
+             timeout=timeout,
+         )
+         self.emit(
+             "input_phone", method=method, keyCount=len(keycodes),
+-            keyDelayMs=key_delay_ms, driver=driver,
++            keyDelayMs=0, keyDelayMode="android_default", driver=driver,
+         )
+ 
+     def clear_search_input(self, root, parent, input_node):
+@@ -3728,7 +4167,7 @@
+     def saved_account_choices(rows):
+         current_rows = [row for row in rows if row[1]]
+         accounts = [str(row[0] or "").strip() for row in rows]
+-        if len(rows) < 2 or len(current_rows) != 1 or any(not account for account in accounts):
++        if not rows or len(rows) > 12 or len(current_rows) != 1 or any(not account for account in accounts):
+             raise RuntimeError("alipay_saved_account_candidate_missing")
+         if len(set(accounts)) != len(accounts):
+             raise RuntimeError("alipay_saved_account_labels_not_unique")
+@@ -3754,6 +4193,13 @@
+             self.resume_alipay_home("account-switch")
+             rows = self.open_account_picker("before")
+         self.saved_account_count = max(self.saved_account_count, len(rows))
++        if self.payload.get("accountCooldownProtocol") == 1:
++            self.saved_accounts = self.saved_account_choices(rows)
++            excluded_accounts = set(excluded_accounts or ()) | self.cooling_accounts()
++            if target_account and target_account in excluded_accounts:
++                raise RuntimeError("alipay_target_account_cooling")
++            if all(row[0] in self.cooling_accounts() for row in rows):
++                raise RuntimeError("alipay_no_available_account")
+         current_rows = [row for row in rows if row[1]]
+         if len(current_rows) != 1:
+             raise RuntimeError("alipay_saved_account_candidate_missing")
+@@ -3780,6 +4226,7 @@
+         # Record the actual selection before verifying it so a caller never
+         # retries the switch and ping-pongs between two saved accounts.
+         self.account_switched = True
++        self.account_identity_verified = False
+         self.current_account_after_switch = target[0]
+         self.emit("account_selected", fromAccount=current[0], toAccount=target[0], selector="exact_account_resource")
+         self.account_switch_history.append({
+@@ -3794,6 +4241,8 @@
+                 actual = verified[0] if verified else ""
+                 raise RuntimeError(f"alipay_account_switch_verification_failed:expected={target[0]};actual={actual}")
+             current_account = verified[0]
++            self.saved_accounts = self.saved_account_choices(verified_rows)
++            self.account_identity_verified = True
+             verification = "exact_current_marker"
+             self.launch("account-switch-complete")
+         else:
+@@ -3840,12 +4289,23 @@
+         while time.time() < deadline:
+             try:
+                 root, _ = self.dump(phase)
++                verification = self.verification_evidence(root)
++                if verification and verification.get("manual"):
++                    self.emit(
++                        "human_verification_detected", evidence=verification,
++                        token=phase, driver="xml_uiautomator",
++                    )
++                    raise RuntimeError(
++                        "alipay_human_verification_required:jigsaw_verification"
++                    )
+                 evidence = self.account_restriction_evidence(root)
+                 if evidence:
+                     self.raise_account_restriction(
+                         evidence, phase, "xml_uiautomator", phone_query_started=True,
+                     )
+             except Exception as exc:
++                if "human_verification_required" in str(exc):
++                    raise
+                 if self.account_switch_reason_from_error(exc):
+                     raise
+                 self.emit(
+@@ -4005,6 +4465,11 @@
+             raise RuntimeError("alipay_not_installed")
+         if operation == "start":
+             self.keep_awake_usb_best_effort()
++            if self.payload.get("accountCooldownProtocol") == 1:
++                self.wake_and_unlock_for_lookup_start()
++                return {"ok": True, "message": "search_session_ready",
++                        **self.prepare_available_account(), "accountSwitched": self.account_switched,
++                        "accountSwitchReason": self.account_switch_reason, "log": self.log}
+             try:
+                 reused = self.try_reuse_search_page()
+             except Exception as exc:
+@@ -4027,6 +4492,9 @@
+             choices = self.saved_account_choices(rows)
+             self.saved_account_count = max(self.saved_account_count, len(rows))
+             current_account = next(choice["account"] for choice in choices if choice["current"])
++            self.current_account_after_switch = current_account
++            self.account_identity_verified = True
++            self.saved_accounts = choices
+             self.emit(
+                 "saved_account_list_ready", currentAccount=current_account,
+                 savedAccountCount=len(choices),
+@@ -4035,6 +4503,7 @@
+                 "ok": True,
+                 "message": "saved_account_list_ready",
+                 "currentAccount": current_account,
++                "accountIdentityVerified": True,
+                 "savedAccounts": choices,
+                 "accountSwitched": False,
+                 "savedAccountCount": self.saved_account_count,
+@@ -4050,12 +4519,13 @@
+             )
+             current_account = self.switch_account(
+                 reason="manual", target_account=target_account,
+-                reuse_open_picker=True, verify_current_marker=False,
++                reuse_open_picker=True, verify_current_marker=self.payload.get("accountCooldownProtocol") == 1,
+             )
+             return {
+                 "ok": True,
+                 "message": "account_switch_completed",
+                 "currentAccount": current_account,
++                **self.account_metadata(),
+                 "accountSwitched": True,
+                 "accountSwitchReason": "manual",
+                 "accountSwitchCount": len(self.account_switch_history),
+@@ -4076,6 +4546,7 @@
+             return {"ok": True, "message": "session_stopped", "log": self.log}
+         if operation != "query":
+             raise RuntimeError("unsupported_operation")
++        self.assert_known_account()
+         phone = re.sub(r"\D", "", str(self.payload.get("phoneNumber") or ""))
+         if not re.fullmatch(r"1\d{10}", phone):
+             raise RuntimeError("invalid_phone_number")
+@@ -4099,6 +4570,7 @@
+                     if attempt >= max_recoveries or query_elapsed >= 50:
+                         break
+                     self.emit("query_full_path_recovery", attempt=attempt + 1, error=raw_error)
++                    # App/page recovery preserves the already verified account.
+                     self.prepare_full_path(f"query-recovery-{attempt + 1}")
+             raise RuntimeError(f"alipay_lookup_failed_after_recovery:{last_error}")
+ 
+@@ -4113,6 +4585,10 @@
+             except Exception as exc:
+                 restriction_reason = self.account_switch_reason_from_error(exc)
+                 if restriction_reason not in ACCOUNT_SWITCH_REASONS:
++                    raise
++                if self.payload.get("accountCooldownProtocol") == 1:
++                    # The Agent persists and acknowledges cooldown before it
++                    # schedules a separate bounded account preflight.
+                     raise
+                 while True:
+                     try:
+@@ -4131,6 +4607,7 @@
+             "ok": True,
+             **result,
+             "currentAccount": self.current_account_after_switch,
++            **self.account_metadata(),
+             "accountSwitched": self.account_switched,
+             "accountSwitchReason": self.account_switch_reason,
+             "accountSwitchCount": len(self.account_switch_history),
+@@ -4176,6 +4653,7 @@
+             "error": str(exc),
+             "accountSwitched": runner.account_switched,
+             "currentAccount": runner.current_account_after_switch,
++            **runner.account_metadata(),
+             "accountSwitchReason": runner.account_switch_reason,
+             "accountSwitchCount": len(runner.account_switch_history),
+             "accountSwitchHistory": runner.account_switch_history,
+--- a/windows-agent/src/index.mjs
++++ b/windows-agent/src/index.mjs
+@@ -20,6 +20,9 @@
+   isRetryableAlipayPocoStartFailure,
+   shouldFallbackAlipayPocoFailure
+ } from "./alipay-poco-fallback-policy.mjs";
++import { restartLookupQueryOnce } from "./lookup-page-recovery.mjs";
++import { createLookupStatusOutbox } from "./lookup-status-outbox.mjs";
++import { runLookupWithAccountPolicy } from "./lookup-account-policy.mjs";
+ import { createDeviceActorManager } from "./device-actor.mjs";
+ import { acquireAgentInstanceLock } from "./agent-instance-lock.mjs";
+ import { createScreenStreamManager } from "./screen-stream.mjs";
+@@ -62,6 +65,7 @@
+   buildRemoveExactPnpArgs
+ } from "./pnp-exact-actions.mjs";
+ import { createGuardedTaskRunner } from "./guarded-task-runner.mjs";
++import { classifyHumanVerificationXml, createLookupHumanObserver } from "./lookup-human-observer.mjs";
+ import { createPnpRecoveryWakeScheduler } from "./pnp-recovery-wake-scheduler.mjs";
+ import {
+   scopePnpRecoveryPlansForSafety,
+@@ -109,6 +113,13 @@
+ const agentInstanceLock = await acquireAgentInstanceLock({
+   lockPath: path.join(dataDir, "agent-instance.lock"),
+   agentId: config.agentId
++});
++
++const lookupStatusOutbox = await createLookupStatusOutbox({
++  directory: path.join(dataDir, "lookup-status-outbox"),
++  send: (record) => api(`/api/v1/windows-agent-tasks/${encodeURIComponent(record.taskId)}/status`, {
++    method: "POST", body: { status: record.status, result: record.result }
++  })
+ });
+ 
+ let lastDevices = [];
+@@ -317,6 +328,21 @@
+ });
+ screenStreamManager.start();
+ 
++const failedHumanProbeWorkers = new WeakSet();
++const lookupHumanObserver = createLookupHumanObserver({
++  request: api,
++  agentId: config.agentId,
++  canObserve: (probe) => !pnpScreenCoordinator.active && !activeTaskSerials.has(probe.adbSerial)
++    && lastDevices.some((device) => device.adbSerial === probe.adbSerial && device.state === "device"),
++  observe: observeLookupHumanVerification
++});
++const lookupStatusOutboxTimer = setInterval(() => {
++  lookupStatusOutbox.flush().catch(() => log("lookup terminal report remains pending"));
++}, 3_000);
++const lookupHumanObserverTimer = setInterval(
++  () => runGuardedInterval("lookup human observation", () => lookupHumanObserver.poll()), 3_000
++);
++
+ setInterval(() => runGuardedInterval("heartbeat", () => heartbeat()), config.heartbeatIntervalSeconds * 1000);
+ setInterval(() => runGuardedInterval("scan", () => scanAndSync()), config.scanIntervalSeconds * 1000);
+ setInterval(() => runGuardedInterval("task poll", () => pollTask()), config.taskPollIntervalSeconds * 1000);
+@@ -333,6 +359,9 @@
+ 
+ for (const signal of ["SIGINT", "SIGTERM"]) {
+   process.on(signal, async () => {
++    lookupHumanObserver.stop();
++    clearInterval(lookupHumanObserverTimer);
++    clearInterval(lookupStatusOutboxTimer);
+     backgroundSmsNotificationLoopStopped = true;
+     if (airtestWorkerCleanupTimer) {
+       clearInterval(airtestWorkerCleanupTimer);
+@@ -1022,12 +1051,12 @@
+   let picked = 0;
+   let cancellationChecked = false;
+   while (!cancellationChecked || activeTasksById.size < config.maxConcurrentAdbTasks) {
+-    const excludeSerials = [...new Set([...activeTaskSerials, ...screenControlledSerials])]
++    const excludeSerials = [...new Set([...activeTaskSerials, ...screenControlledSerials, ...lookupStatusOutbox.pendingTasks().map((item) => item.adbSerial)])]
+       .filter(Boolean)
+       .map(encodeURIComponent)
+       .join(",");
+     const screenGallerySerials = [...screenControlledSerials].filter(Boolean).map(encodeURIComponent).join(",");
+-    const activeTaskIds = [...activeTasksById.keys()].filter(Boolean).map(encodeURIComponent).join(",");
++    const activeTaskIds = [...new Set([...activeTasksById.keys(), ...lookupStatusOutbox.pendingTasks().map((item) => item.taskId)])].filter(Boolean).map(encodeURIComponent).join(",");
+     const params = new URLSearchParams();
+     if (excludeSerials) params.set("excludeSerials", excludeSerials);
+     if (screenGallerySerials) params.set("screenGallerySerials", screenGallerySerials);
+@@ -1098,10 +1127,15 @@
+ }
+ 
+ async function runTask(task, options = {}) {
++  const isLookup = task.type.startsWith("alipay_name_");
++  let lookupTerminal = null;
+   log("task picked", { taskId: task.taskId, type: task.type, adbSerial: task.adbSerial });
+   taskEvent(task, "start", "info", `开始执行 ${task.type}`)
+     .catch((error) => log("task start event failed", { taskId: task.taskId, error: error.message }));
+   try {
++    if (isLookup && task.type !== "alipay_name_stop" && !lookupStatusOutbox.isAvailable()) {
++      throw Object.assign(new Error("查名结果存储不可用，当前任务未操作手机；请检查存储后重试。"), { code: "lookup_status_storage_unavailable" });
++    }
+     let result;
+     if (task.type === "adb_install_apk") result = await taskInstallApk(task);
+     else if (task.type === "adb_grant_permissions") result = await taskGrantPermissions(task);
+@@ -1114,11 +1148,12 @@
+     else if (task.type === "xhs_qr_appium") result = await taskXhsQrAirtestPoco(task);
+     else if (task.type === "xhs_publish") result = await taskXhsPublish(task);
+     else if (task.type === "kuaishou_lead") result = await taskKuaishouLead(task, options);
+-    else if (["alipay_name_start", "alipay_name_query", "alipay_name_switch", "alipay_name_stop"].includes(task.type)) result = await taskAlipayNameLookup(task, options);
++    else if (["alipay_name_start", "alipay_name_query", "alipay_name_switch", "alipay_name_stop"].includes(task.type)) result = await taskAlipayNameLookupWithAccounts(task, options);
+     else throw new Error(`unsupported task type: ${task.type}`);
+     await taskEvent(task, "finish", "info", "执行成功", compactTaskResultForEvent(result))
+       .catch((error) => log("task finish event failed", { taskId: task.taskId, error: error.message }));
+-    await taskStatus(task, "succeeded", result);
++    if (isLookup) lookupTerminal = { status: "succeeded", result };
++    else await taskStatus(task, "succeeded", result);
+   } catch (error) {
+     if (isAutomationTaskCancellation(error)) {
+       taskEvent(task, "cancelled", "info", "用户已结束会话，当前自动化任务已停止", { reason: "automation_task_cancelled" })
+@@ -1134,13 +1169,14 @@
+         .catch((statusError) => log("task cancellation status failed", { taskId: task.taskId, error: statusError.message }));
+       return;
+     }
+-    const evidence = await captureFailureEvidence(task).catch((evidenceError) => ({
++    const evidence = error.code === "lookup_status_storage_unavailable" ? {} : await captureFailureEvidence(task).catch((evidenceError) => ({
+       evidenceError: evidenceError?.message || String(evidenceError)
+     }));
+     const failure = { ...taskFailureResult(error), ...evidence };
+     await taskEvent(task, "finish", "error", error.message, compactTaskResultForEvent(failure))
+       .catch((eventError) => log("task failure event failed", { taskId: task.taskId, error: eventError.message }));
+-    await taskStatus(task, "failed", failure);
++    if (isLookup) lookupTerminal = { status: "failed", result: failure };
++    else await taskStatus(task, "failed", failure);
+   } finally {
+     if (options.signal?.aborted) {
+       log("post-task scan skipped after task cancellation", {
+@@ -1159,6 +1195,8 @@
+       });
+     }
+   }
++  // Reporting faults are not Android execution failures.
++  if (lookupTerminal) await taskStatus(task, lookupTerminal.status, lookupTerminal.result);
+ }
+ 
+ function preemptSmsSyncForScreen(serial) {
+@@ -1955,6 +1993,13 @@
+     .replace(/\d/g, "#")
+     .slice(0, 500);
+   const diagnostic = { code: "alipay_lookup_failed", retryable: true, runnerReason: compactReason };
++  if (raw.includes("alipay_no_available_account")) return { ...diagnostic,
++    code: "alipay_no_available_account", retryable: false,
++    message: "当前手机无可用账户：已保存账户全部在八小时冷却中。" };
++  if (/alipay_(?:account_identity_unverified|account_preflight_required|target_account_cooling|account_cooldown_data_invalid)/.test(raw)) {
++    return { ...diagnostic, code: "alipay_account_identity_unverified", retryable: false,
++      message: "账户身份或冷却状态未确认，已停止查询；请重新启动会话检查账户。" };
++  }
+   if (raw.includes("alipay_all_saved_accounts_restricted")) {
+     const reason = String(raw.match(/alipay_all_saved_accounts_restricted:([a-z_]+)/)?.[1] || "");
+     return {
+@@ -1991,6 +2036,7 @@
+       limitReached: true,
+       requiresAccountSwitch: true,
+       limitReason: "access_denied",
++      phoneQueryStarted: true,
+       message: alipayLimitMessage("access_denied")
+     };
+   }
+@@ -2003,6 +2049,7 @@
+       limitReached: true,
+       requiresAccountSwitch: true,
+       limitReason: reason,
++      phoneQueryStarted: true,
+       message: alipayLimitMessage(reason)
+     };
+   }
+@@ -2015,6 +2062,8 @@
+       limitReached: false,
+       requiresAccountSwitch: false,
+       limitReason: reason,
++      accountRestrictionDetected: true,
++      phoneQueryStarted: false,
+       message: "支付宝在本次号码查询开始前就已显示账号或设备限制，不能认定为该号码触发的查询上限；请人工确认页面，或主动切换账号。"
+     };
+   }
+@@ -2098,6 +2147,51 @@
+     return { ...diagnostic, code: "alipay_not_installed", retryable: false, message: "这台手机未安装支付宝。" };
+   }
+   return { ...diagnostic, message: "支付宝查名字执行失败，已保留具体诊断原因；可重试当前号码。" };
++}
++
++async function observeLookupHumanVerification(probe) {
++  const serial = probe.adbSerial;
++  if (activeTaskSerials.has(serial)) return "unknown";
++  const worker = airtestWorkersBySerial.get(serial);
++  if (!probe.screenSessionId && !screenControlledSerials.has(serial)) {
++    // Reuse only an already-idle worker. Observation never boots, recycles or
++    // repairs Poco, and never touches input or launches an application.
++    if (!worker || worker.exited || worker.stopping || worker.pending || worker.readyResolve
++      || failedHumanProbeWorkers.has(worker)) return "unknown";
++    try {
++      const parsed = await worker.enqueue({ operation: "human_probe", workflow: "alipay_name",
++        serial, adbPath: config.adbPath, requestId: `human-probe-${probe.probeId}` }, 6_000);
++      return parsed?.ok ? parsed.verificationState : "unknown";
++    } catch {
++      failedHumanProbeWorkers.add(worker);
++      return "unknown";
++    }
++  }
++  if (!probe.screenSessionId || !screenControlledSerials.has(serial)
++    || worker && !worker.exited) return "unknown";
++  const screen = screenStreamManager.sessions.get(probe.screenSessionId);
++  if (!screen || screen.serial !== serial || screen.closed) return "unknown";
++  const options = { allowScreenControl: true, timeoutMs: 2_000,
++    actorLabel: "lookup-human-readonly" };
++  const before = await adb(serial, ["shell", "dumpsys", "window"], options);
++  const xml = await adb(serial, ["exec-out", "uiautomator", "dump", "/dev/tty"], { ...options, timeoutMs: 4_000 });
++  const after = await adb(serial, ["shell", "dumpsys", "window"], options);
++  if (screen.closed || activeTaskSerials.has(serial)) return "unknown";
++  return classifyHumanVerificationXml(xml, before, after);
++}
++
++async function taskAlipayNameLookupWithAccounts(task, options = {}) {
++  return runLookupWithAccountPolicy({ task,
++    assertAllowed: () => {
++      if (options.signal?.aborted) throw automationTaskCancellationError();
++      if (screenControlledSerials.has(task.adbSerial)) throw screenPriorityCancellationError();
++    },
++    execute: (next, hooks = {}) => taskAlipayNameLookup(next, { ...options, ...hooks }),
++    recordLimit: (record) => taskEvent(task, "alipay_name", "warn", "查询限制已确认，保存账户八小时冷却后再继续", {
++      ...record, currentAccount: record.account, accountSwitchRequired: true,
++      stepId: "lookup_account_limit_confirmed"
++    })
++  });
+ }
+ 
+ async function taskAlipayNameLookup(task, options = {}) {
+@@ -2112,12 +2206,16 @@
+       ? "stop"
+       : task.type === "alipay_name_switch"
+         ? (String(task.payload?.accountAction || "list") === "select" ? "switch" : "list_accounts")
+-        : task.payload?.resumeAfterHumanVerification === true
++        : task.payload?.restartAfterHumanVerification === true
++          ? "query"
++          : task.payload?.resumeAfterHumanVerification === true
+           ? "query_resume"
+           : "query";
+   const queryOperation = ["query", "query_resume"].includes(operation);
+-  const accountOperation = ["list_accounts", "switch"].includes(operation);
++  const accountOperation = ["list_accounts", "switch"].includes(operation)
++    || (operation === "start" && task.payload?.accountCooldownProtocol === 1);
+   if (operation === "stop") clearAirtestLookupWarmLease(task.adbSerial, "lookup_session_stopped");
++  if (task.payload?.restartAfterHumanVerification === true) automationResumeScheduler.cancel(task.adbSerial);
+   const payload = {
+     operation,
+     workflow: "alipay_name",
+@@ -2125,6 +2223,11 @@
+     adbPath: config.adbPath,
+     phoneNumber: String(task.payload?.phoneNumber || ""),
+     targetAccount: String(task.payload?.targetAccount || ""),
++    accountCooldownProtocol: task.payload?.accountCooldownProtocol,
++    knownAccount: String(task.payload?.knownAccount || ""),
++    accountIdentityVerified: task.payload?.accountIdentityVerified === true,
++    accountCooldowns: task.payload?.accountCooldowns || [],
++    savedAccounts: task.payload?.savedAccounts || [],
+     maxRecoveryAttempts: Math.min(2, Math.max(0, Number(task.payload?.maxRecoveryAttempts ?? 2))),
+     taskId: task.taskId
+   };
+@@ -2142,6 +2245,7 @@
+     operation,
+     reuseSearchSession: queryOperation,
+     resumeAfterHumanVerification: operation === "query_resume",
++    restartAfterHumanVerification: task.payload?.restartAfterHumanVerification === true,
+     resubmitsInput: operation === "query_resume" ? false : undefined,
+     maxRecoveryAttempts: payload.maxRecoveryAttempts,
+     preferredDriver: accountOperation ? "xml_uiautomator_account_switch" : "poco_fast_path",
+@@ -2157,6 +2261,7 @@
+       alipayDisplayName: parsed.alipayDisplayName || "",
+       matchedPhone: parsed.matchedPhone || "",
+       currentAccount: parsed.currentAccount || "",
++      accountIdentityVerified: parsed.accountIdentityVerified === true,
+       accountSwitched: Boolean(parsed.accountSwitched),
+       accountSwitchReason: String(parsed.accountSwitchReason || ""),
+       accountSwitchCount: Math.max(0, Number(parsed.accountSwitchCount || 0)),
+@@ -2346,6 +2451,39 @@
+       return result;
+     } catch (error) {
+       if (isAutomationTaskCancellation(error)) throw error;
++      // A generic execution/page failure is not limited to the input stage.
++      // Preserve the task/phone and bound an app-only full-path retry to one.
++      try {
++        const recovered = await restartLookupQueryOnce({
++          operation, error, payload,
++          assertAllowed: () => {
++            if (options.signal?.aborted) throw automationTaskCancellationError();
++            if (screenControlledSerials.has(task.adbSerial)) throw screenPriorityCancellationError();
++          },
++          onRecovery: () => taskEvent(task, "alipay_name", "warn", "查名字执行异常，最多重启支付宝一次后重查当前号码", {
++            recoveryAttempt: 1, maxRecoveryAttempts: 1, sameTask: true,
++            resubmitsInput: true, accountSwitchRequested: false, driver: "poco"
++          }),
++          stopWorker: () => stopAirtestWorker(task.adbSerial, "lookup_query_app_recovery"),
++          runWorker: async (recoveryPayload) => {
++            if (recoveryPayload.pageRecoveryStage === "continue_query" && options.beforeLookupRecovery) {
++              const policy = await options.beforeLookupRecovery();
++              recoveryPayload = { ...recoveryPayload, ...policy };
++            }
++            return runXhsAirtestPocoWorker(recoveryPayload, {
++            readyTimeoutMs: 25_000, timeoutMs: 45_000, maxIdleMs: 15 * 60_000,
++            onEvent: (event) => replayAirtestEvents(task, [event])
++          }); }
++        });
++        if (recovered) {
++          if (!Number(recovered.streamedReplayCount || 0)) await replayAirtestEvents(task, recovered.log || []);
++          if (!recovered.ok) throw new Error(recovered.error || "unknown");
++          return buildResult({ ...recovered, recoveryAttempts: 1 }, "poco");
++        }
++      } catch (recoveryError) {
++        if (isAutomationTaskCancellation(recoveryError)) throw recoveryError;
++        error = new Error(`poco_query_page_recovery_failed:${String(recoveryError?.message || recoveryError)}`);
++      }
+       const pocoError = String(error?.message || error || "");
+       if (operation === "stop") {
+         // Ending a lookup session is a platform lifecycle action. Clearing the
+@@ -2362,6 +2500,17 @@
+         markAutomationReadyOnDemand(task.adbSerial, "lookup_session_stopped");
+         return buildResult({ ok: true, message: "session_stopped", log: [] }, "poco");
+       }
++      if (pocoError.includes("poco_query_page_recovery_failed:")) {
++        const diagnostic = classifyAlipayNameLookupFailure(pocoError);
++        const runnerError = new Error(diagnostic.message);
++        runnerError.code = diagnostic.code;
++        runnerError.diagnostic = { ...diagnostic, appRecoveryAttempts: 1 };
++        throw runnerError;
++      }
++      if (payload.accountCooldownProtocol === 1 && pocoError.includes("alipay_account_restriction_before_search:")) {
++        const diagnostic = classifyAlipayNameLookupFailure(pocoError);
++        throw Object.assign(new Error(diagnostic.message), { code: diagnostic.code, diagnostic });
++      }
+       const automaticAccountSwitchReason = ["query", "query_resume"].includes(operation)
+         ? alipayAccountSwitchReasonFromError(pocoError)
+         : "";
+@@ -2373,6 +2522,10 @@
+         throw runnerError;
+       }
+       if (automaticAccountSwitchReason) {
++        if (payload.accountCooldownProtocol === 1) {
++          const diagnostic = classifyAlipayNameLookupFailure(pocoError);
++          throw Object.assign(new Error(diagnostic.message), { code: diagnostic.code, diagnostic });
++        }
+         await taskEvent(task, "alipay_name", "warn", "检测到账号查询限制，正在自动切换已保存账号并重试当前号码", {
+           operation,
+           restrictionReason: automaticAccountSwitchReason,
+@@ -2428,6 +2581,8 @@
+       diagnostic.accountSwitchHistory = Array.isArray(failed.accountSwitchHistory) ? failed.accountSwitchHistory : [];
+       diagnostic.restrictedAccounts = Array.isArray(failed.restrictedAccounts) ? failed.restrictedAccounts : [];
+       diagnostic.savedAccountCount = Math.max(0, Number(failed.savedAccountCount || 0));
++      diagnostic.savedAccounts = Array.isArray(failed.savedAccounts) ? failed.savedAccounts : [];
++      diagnostic.accountIdentityVerified = failed.accountIdentityVerified === true;
+       const runnerError = new Error(diagnostic.message);
+       runnerError.code = diagnostic.code;
+       runnerError.diagnostic = diagnostic;
+@@ -3564,6 +3719,9 @@
+ }
+ 
+ async function taskStatus(task, status, result = {}) {
++  if (task.type?.startsWith("alipay_name_") && lookupStatusOutbox.isAvailable() && ["succeeded", "failed", "cancelled"].includes(status)) {
++    return lookupStatusOutbox.report(task, status, compactTaskResultForStatus(result));
++  }
+   return await api(`/api/v1/windows-agent-tasks/${encodeURIComponent(task.taskId)}/status`, {
+     method: "POST",
+     body: { status, result: compactTaskResultForStatus(result) }
+@@ -3615,6 +3773,9 @@
+       log: runnerLog.slice(-80).map((item) => compactEventDetail(item, 3000))
+     } : null
+   };
++  if (result.accountIdentityVerified !== undefined) compact.accountIdentityVerified = result.accountIdentityVerified === true;
++  if (result.accountSwitchCount !== undefined) compact.accountSwitchCount = Math.max(0, Number(result.accountSwitchCount || 0));
++  if (result.accountSwitchReason !== undefined) compact.accountSwitchReason = String(result.accountSwitchReason || "").slice(0, 120);
+   const uiHierarchy = result.uiHierarchy || result.evidence?.uiHierarchy || "";
+   const uiSnapshot = result.uiSnapshot || result.evidence?.uiSnapshot || uiHierarchy;
+   if (uiSnapshot) compact.uiSnapshot = String(uiSnapshot).slice(0, 8000);
+@@ -5792,6 +5953,9 @@
+     result.diagnostic = error.diagnostic;
+     if (error.diagnostic.accountSwitched !== undefined) result.accountSwitched = Boolean(error.diagnostic.accountSwitched);
+     if (error.diagnostic.currentAccount) result.currentAccount = String(error.diagnostic.currentAccount);
++    if (error.diagnostic.accountIdentityVerified !== undefined) result.accountIdentityVerified = error.diagnostic.accountIdentityVerified === true;
++    if (Array.isArray(error.diagnostic.savedAccounts)) result.savedAccounts = error.diagnostic.savedAccounts;
++    if (error.diagnostic.accountSwitchCount !== undefined) result.accountSwitchCount = Math.max(0, Number(error.diagnostic.accountSwitchCount) || 0);
+     if (error.diagnostic.accountSwitchReason) result.accountSwitchReason = String(error.diagnostic.accountSwitchReason);
+     if (error.diagnostic.packageName) result.packageName = error.diagnostic.packageName;
+     if (error.diagnostic.currentActivity) result.currentActivity = error.diagnostic.currentActivity;
+--- /dev/null
++++ b/windows-agent/src/lookup-account-policy.mjs
+@@ -0,0 +1,134 @@
++const LIMIT_REASONS = new Set(["access_denied", "device_risk", "frequent_or_abnormal_access"]);
++const COOLING_MS = 8 * 60 * 60 * 1000;
++
++function failure(code, message, diagnostic = {}) {
++  return Object.assign(new Error(message), { code, diagnostic: { code, ...diagnostic } });
++}
++
++function verifiedAccount(result) {
++  const saved = result?.savedAccounts;
++  if (result?.accountIdentityVerified !== true || !Array.isArray(saved) || !saved.length || saved.length > 12
++      || saved.some((row) => !row?.account) || new Set(saved.map((row) => row.account)).size !== saved.length
++      || saved.filter((row) => row.current).length !== 1
++      || !saved.some((row) => row.current && row.account === result.currentAccount)) {
++    throw failure("alipay_account_identity_unverified", "账户身份未确认，未执行查询。");
++  }
++  return result;
++}
++
++// Orchestrate only this task/serial. Persistence ACK precedes any rotation;
++// the original task/result/number remain unchanged throughout all attempts.
++export async function runLookupWithAccountPolicy({ task, execute, recordLimit, now = Date.now, assertAllowed = () => {} }) {
++  if (task.payload?.accountCooldownProtocol !== 1 || task.type === "alipay_name_stop") return execute(task);
++  let policy = { ...task.payload, accountCooldowns: [...(task.payload.accountCooldowns || [])] };
++  let savedAccounts = task.payload.savedAccounts || [];
++  const history = [];
++  const visited = new Set();
++  const decorate = (result) => ({ ...result, currentAccount: policy.knownAccount,
++    accountIdentityVerified: true, savedAccounts,
++    accountSwitched: Boolean(result.accountSwitched || history.length),
++    accountSwitchHistory: [...history, ...(result.accountSwitchHistory || [])],
++    accountSwitchCount: history.length + Number(result.accountSwitchCount || 0) });
++  const preserveQueryFailure = (error) => {
++    const diagnostic = error?.diagnostic || {};
++    // A page/transport failure does not undo the last verified account change.
++    // Explicitly unknown or contradictory identity must never be promoted.
++    if (!error || typeof error !== "object"
++        || (diagnostic.code || error.code) === "alipay_account_identity_unverified"
++        || diagnostic.accountIdentityVerified !== undefined && diagnostic.accountIdentityVerified !== true
++        || diagnostic.currentAccount && diagnostic.currentAccount !== policy.knownAccount) return error;
++    try {
++      verifiedAccount({ currentAccount: policy.knownAccount,
++        accountIdentityVerified: policy.accountIdentityVerified, savedAccounts });
++      if (diagnostic.savedAccounts !== undefined) verifiedAccount({ ...diagnostic,
++        currentAccount: diagnostic.currentAccount || policy.knownAccount, accountIdentityVerified: true });
++    } catch { return error; }
++    error.diagnostic = decorate(diagnostic);
++    return error;
++  };
++  const saveRestriction = async (error, preparing = false) => {
++    const diagnostic = error?.diagnostic || {};
++    const reason = diagnostic.limitReason;
++    if (!(diagnostic.limitReached === true || diagnostic.accountRestrictionDetected === true)
++        || !LIMIT_REASONS.has(reason) || typeof diagnostic.phoneQueryStarted !== "boolean") throw error;
++    // Preparation may have selected an account. Only its actual picker proof
++    // can identify a failed preparation; the preceding account is not evidence.
++    if (preparing) {
++      verifiedAccount(diagnostic);
++      if (Array.isArray(diagnostic.accountSwitchHistory)) history.push(...diagnostic.accountSwitchHistory);
++      savedAccounts = diagnostic.savedAccounts;
++      policy = { ...policy, knownAccount: diagnostic.currentAccount, accountIdentityVerified: true, savedAccounts };
++    } else {
++      verifiedAccount({ currentAccount: policy.knownAccount,
++        accountIdentityVerified: policy.accountIdentityVerified, savedAccounts });
++      if (diagnostic.accountIdentityVerified === false
++          || diagnostic.currentAccount && diagnostic.currentAccount !== policy.knownAccount) {
++        throw failure("alipay_account_identity_unverified", "限制账户与已确认账户不一致，已停止查询。");
++      }
++    }
++    const account = policy.knownAccount;
++    if (visited.has(account)) throw failure("alipay_account_identity_unverified", "限制账户重复出现，已停止查询。");
++    visited.add(account);
++    assertAllowed();
++    const ack = await recordLimit({ account, reason, phoneQueryStarted: diagnostic.phoneQueryStarted,
++      accountIdentityVerified: true });
++    const row = ack?.accountCooldown;
++    if (!row || row.account !== account || !Number.isFinite(Date.parse(row.limitedAt))
++        || Date.parse(row.cooldownUntil) - Date.parse(row.limitedAt) !== COOLING_MS
++        || Date.parse(row.cooldownUntil) <= now()) {
++      throw failure("alipay_cooldown_persist_unconfirmed", "冷却记录保存未确认，已停止切号及查询。");
++    }
++    policy.accountCooldowns = [...policy.accountCooldowns.filter((item) => item.account !== account), row];
++  };
++  const prepare = async () => {
++    for (let attempt = 0; attempt < 12; attempt += 1) {
++      assertAllowed();
++      const fromAccount = policy.knownAccount;
++      let prepared;
++      try { prepared = verifiedAccount(await execute({ ...task, type: "alipay_name_start", payload: policy })); }
++      catch (error) { await saveRestriction(error, true); continue; }
++      savedAccounts = prepared.savedAccounts;
++      policy = { ...policy, knownAccount: prepared.currentAccount, accountIdentityVerified: true,
++        verifyAccountBeforeQuery: false, savedAccounts };
++      if (fromAccount && fromAccount !== prepared.currentAccount) {
++        // A different account has no old result page to resume. Re-enter the
++        // original number as a query while retaining its task/result identity.
++        policy.resumeAfterHumanVerification = false;
++        policy.restartAfterHumanVerification = false;
++      }
++      if (prepared.accountSwitched) history.push({ fromAccount, toAccount: prepared.currentAccount, reason: "cooldown" });
++      return prepared;
++    }
++    throw failure("alipay_account_rotation_bound_reached", "账户检查次数已达安全上限，请检查账户列表。");
++  };
++  if (task.type === "alipay_name_start") return prepare();
++  if (task.type !== "alipay_name_query") return verifiedAccount(await execute(task));
++  if (!policy.accountIdentityVerified || !policy.knownAccount
++      || policy.accountCooldowns.some((row) => row.account === policy.knownAccount && Date.parse(row.cooldownUntil) > now())) {
++    await prepare();
++  }
++  // A failed query may reset the server's first-query hint. The session's
++  // complete verified identity remains valid until an actual account change.
++  verifiedAccount({ currentAccount: policy.knownAccount,
++    accountIdentityVerified: policy.accountIdentityVerified, savedAccounts });
++  for (let attempt = 0; attempt < 12; attempt += 1) {
++    assertAllowed();
++    try {
++      const result = await execute({ ...task, payload: policy }, { beforeLookupRecovery: async () => {
++        // Restarting this app does not switch accounts. Keep the session's
++        // verified identity and let page recovery navigate straight to Search.
++        verifiedAccount({ currentAccount: policy.knownAccount,
++          accountIdentityVerified: policy.accountIdentityVerified, savedAccounts });
++        return policy;
++      } });
++      verifiedAccount(result);
++      if (result.currentAccount !== policy.knownAccount) throw failure("alipay_account_identity_unverified", "查询账户与已确认账户不一致，已停止。");
++      return decorate(result);
++    } catch (error) {
++      try { await saveRestriction(error); }
++      catch (failure) { throw preserveQueryFailure(failure); }
++      await prepare();
++    }
++  }
++  throw failure("alipay_account_rotation_bound_reached", "账户检查次数已达安全上限，请检查账户列表。");
++}
+--- /dev/null
++++ b/windows-agent/src/lookup-human-observer.mjs
+@@ -0,0 +1,93 @@
++const PACKAGE = "com.eg.android.AlipayGphone";
++const INPUT = "com.alipay.mobile.antui:id/search_input_box";
++const VERIFICATION = ["为保障您的正常访问请进行验证", "请拖动滑块完成拼图", "向右滑动验证"];
++
++function foregroundIsAlipay(focus) {
++  // Inactive virtual displays can contribute a literal null focus. Ignore
++  // only that exact record; ambiguous/malformed non-null records stay unknown.
++  const lines = String(focus || "").split(/\r?\n/).filter((line) => line.includes("mCurrentFocus"))
++    .filter((line) => !/^\s*mCurrentFocus\s*=\s*null\s*$/.test(line));
++  if (lines.length !== 1) return false;
++  const window = lines[0].match(/^\s*mCurrentFocus\s*=\s*Window\{[^\s{}]+(?:\s+u\d+)?\s+([^\s{}/]+)\/[^\s{}]+(?:\s+type=\d+)?\s*\}\s*$/);
++  return window?.[1] === PACKAGE;
++}
++
++export function classifyHumanVerificationXml(xml, focusBefore, focusAfter) {
++  if (!foregroundIsAlipay(focusBefore) || !foregroundIsAlipay(focusAfter)) return "unknown";
++  const source = String(xml || "");
++  const start = source.indexOf("<hierarchy");
++  const end = source.lastIndexOf("</hierarchy>");
++  if (start < 0 || end < start || source.length > 1024 * 1024) return "unknown";
++  const document = source.slice(start, end + "</hierarchy>".length);
++  if (/<!|<\?/.test(document)) return "unknown";
++  // Validate the complete (tiny UIAutomator) element/attribute grammar instead
++  // of treating a missing string in truncated XML as a successful verification.
++  const stack = [];
++  const nodes = [];
++  let rootSeen = false;
++  const tags = document.match(/<[^>]*>/g) || [];
++  if (document.replace(/<[^>]*>/g, "").trim()) return "unknown";
++  for (const tag of tags) {
++    const close = tag.match(/^<\/(hierarchy|node)>$/);
++    if (close) { if (stack.pop() !== close[1]) return "unknown"; continue; }
++    const open = tag.match(/^<(hierarchy|node)\b([\s\S]*?)(\/?)>$/);
++    if (!open || (!stack.length && (open[1] !== "hierarchy" || nodes.length))) return "unknown";
++    if (open[1] === "hierarchy") {
++      if (rootSeen || stack.length) return "unknown";
++      rootSeen = true;
++    }
++    const attrs = {};
++    let invalid = false;
++    const remainder = open[2].replace(/\s+([\w:-]+)="([^"<>]*)"/g, (_match, key, value) => {
++      if (Object.hasOwn(attrs, key)) invalid = true;
++      // Unsupported/numeric entities must not hide a verification marker.
++      if (/&(?!(?:amp|quot|apos|lt|gt);)/.test(value)) invalid = true;
++      attrs[key] = value.replace(/&quot;/g, '"').replace(/&apos;/g, "'")
++        .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
++      return "";
++    });
++    if (invalid || remainder.trim()) return "unknown";
++    if (open[1] === "node") nodes.push(attrs);
++    if (!open[3]) stack.push(open[1]);
++  }
++  if (stack.length || !nodes.length) return "unknown";
++  const texts = nodes.flatMap((node) => [node.text || "", node["content-desc"] || ""]);
++  if (texts.some((text) => VERIFICATION.some((marker) => text.includes(marker)))) return "present";
++  if (nodes.some((node) => node.class === "android.webkit.WebView" && node["visible-to-user"] !== "false")) return "unknown";
++  if (texts.some((text) => ["访问被拒绝", "您的设备可能存在风险", "操作频繁或访问异常", "反馈码:", "短信验证码登录"].some((marker) => text.includes(marker)))) return "unknown";
++  const inputs = nodes.filter((node) => node["resource-id"] === INPUT && node.package === PACKAGE);
++  return inputs.length === 1 && inputs[0].enabled === "true" && inputs[0]["visible-to-user"] !== "false"
++    ? "search_ready" : "unknown";
++}
++
++export function createLookupHumanObserver({ request, observe, canObserve, agentId, maxPerPoll = 3 }) {
++  let running = false;
++  let stopped = false;
++  let cursor = 0;
++  return {
++    stop() { stopped = true; },
++    async poll() {
++      if (running || stopped) return;
++      running = true;
++      try {
++        const path = `/api/v1/windows-agents/${encodeURIComponent(agentId)}/lookup-human-verifications`;
++        const { probes = [] } = await request(path, { timeoutMs: 5_000 });
++        if (!probes.length) return;
++        const start = cursor % probes.length;
++        cursor += Math.min(maxPerPoll, probes.length);
++        for (let offset = 0; offset < Math.min(maxPerPoll, probes.length) && !stopped; offset += 1) {
++          const probe = probes[(start + offset) % probes.length];
++          let state = "unknown";
++          if (canObserve(probe)) {
++            try { state = await observe(probe); } catch { /* Failed reads are never clear. */ }
++          }
++          if (stopped) return;
++          await request(path, { method: "POST", timeoutMs: 5_000, body: {
++            probeId: probe.probeId,
++            state: ["present", "search_ready"].includes(state) ? state : "unknown"
++          } });
++        }
++      } finally { running = false; }
++    }
++  };
++}
+--- /dev/null
++++ b/windows-agent/src/lookup-page-recovery.mjs
+@@ -0,0 +1,55 @@
++// Unexpected lookup failures may restart this app once, never a device or ADB.
++// Business/verification/identity states are not execution failures to replay.
++const PROTECTED_STATES = [
++  "human_verification", "jigsaw_verification", "access_denied", "device_risk",
++  "frequent_or_abnormal_access", "account_restriction", "account_switch",
++  "login_required", "invalid_phone_number", "device_not_online", "alipay_not_installed",
++  "person_result_not_found", "local_lookup_", "cancel", "screen_control", "capacity_reached",
++  "poco_query_page_recovery_failed:"
++];
++
++export function canRestartLookupAfterFailure(operation, error) {
++  if (operation !== "query") return false;
++  const message = `${String(error?.code || "")} ${String(error?.message || error || "")}`.trim();
++  return Boolean(message) && !PROTECTED_STATES.some((token) => message.includes(token));
++}
++
++export async function restartLookupQueryOnce({ operation, error, payload, stopWorker, runWorker, onRecovery, assertAllowed = () => {} }) {
++  if (!canRestartLookupAfterFailure(operation, error)) return null;
++  assertAllowed();
++  await onRecovery();
++  // Do not swallow a worker shutdown failure: delayed input must be cancelled
++  // before app restart / original-number replay is permitted.
++  if (await stopWorker() !== true) throw new Error("lookup_old_worker_exit_unconfirmed");
++  assertAllowed();
++  const restarted = await runWorker({ ...payload, operation: "query", recoverUnexpectedPage: true,
++    pageRecoveryStage: "restart_app" });
++  if (!restarted?.ok) return restarted;
++  if (restarted.appRecoveryStage !== "app_restarted") throw new Error("lookup_app_restart_unconfirmed");
++  // Restarting Alipay invalidates Poco's old hierarchy transport. Reattach
++  // once after the app launch, without another app restart or any input yet.
++  if (await stopWorker() !== true) throw new Error("lookup_restart_worker_exit_unconfirmed");
++  assertAllowed();
++  const continuedPayload = { ...payload, operation: "query", recoverUnexpectedPage: true,
++    pageRecoveryStage: "continue_query" };
++  // Search navigation can invalidate the hierarchy channel too. Only the
++  // Python preparation block (which cannot enter input) may request one more
++  // attach. Untagged or post-input failures must never replay this stage.
++  const canReattach = (failure) => {
++    const reason = `${String(failure?.code || "")} ${String(failure?.message || failure || "")}`.trim();
++    return reason.includes("poco_query_page_recovery_prepare_failed:")
++      && reason.includes("poco_rpc_failed:")
++      && canRestartLookupAfterFailure("query", failure);
++  };
++  let result;
++  try {
++    result = await runWorker(continuedPayload);
++  } catch (error) {
++    if (!canReattach(error)) throw error;
++    result = { ok: false, error };
++  }
++  if (result?.ok || !canReattach(result?.error)) return result;
++  if (await stopWorker() !== true) throw new Error("lookup_prepare_worker_exit_unconfirmed");
++  assertAllowed();
++  return runWorker(continuedPayload);
++}
+--- /dev/null
++++ b/windows-agent/src/lookup-status-outbox.mjs
+@@ -0,0 +1,70 @@
++import fs from "node:fs/promises";
++import path from "node:path";
++import crypto from "node:crypto";
++
++// Lookup terminal reports only. Retrying this mailbox never executes Android
++// work, and a pending report reserves only its original serial/task.
++export async function createLookupStatusOutbox({ directory, send, fileSystem = fs }) {
++  const records = new Map();
++  const durable = new Set();
++  const inFlight = new Map();
++  let available = true;
++  const file = (id) => path.join(directory, `${crypto.createHash("sha256").update(id).digest("hex")}.json`);
++  try {
++    await fileSystem.mkdir(directory, { recursive: true, mode: 0o700 });
++    for (const name of await fileSystem.readdir(directory)) {
++      if (!/^[a-f0-9]{64}\.json$/.test(name)) continue;
++      const record = JSON.parse(await fileSystem.readFile(path.join(directory, name), "utf8"));
++      if (!record.taskId || !record.adbSerial || !["succeeded", "failed", "cancelled"].includes(record.status)
++        || file(record.taskId) !== path.join(directory, name)) throw new Error("lookup_status_outbox_invalid");
++      records.set(record.taskId, record); durable.add(record.taskId);
++    }
++  } catch { available = false; }
++  async function save(record) {
++    if (durable.has(record.taskId)) return;
++    const target = file(record.taskId), tmp = `${target}.tmp`;
++    const handle = await fileSystem.open(tmp, "w", 0o600);
++    try { await handle.writeFile(JSON.stringify(record)); await handle.sync(); }
++    finally { await handle.close(); }
++    await fileSystem.rename(tmp, target);
++    durable.add(record.taskId);
++  }
++  function flushOne(id) {
++    if (!available) return Promise.resolve();
++    if (inFlight.has(id)) return inFlight.get(id);
++    const record = records.get(id);
++    if (!record) return Promise.resolve();
++    const attempt = (async () => {
++      try {
++        await save(record);
++        const ack = await send(record);
++        if (ack?.ok !== true || ack.task?.taskId !== id
++          || !["succeeded", "failed", "cancelled", "expired"].includes(ack.task.status)) {
++          throw new Error("lookup_terminal_ack_unconfirmed");
++        }
++        await fileSystem.rm(file(id), { force: true });
++        durable.delete(id); records.delete(id);
++      } catch { /* Preserve unknown ACKs and the original terminal result. */ }
++    })().finally(() => { inFlight.delete(id); });
++    inFlight.set(id, attempt);
++    return attempt;
++  }
++  function flush() {
++    return Promise.all([...records.keys()].map(flushOne));
++  }
++  return {
++    isAvailable: () => available,
++    async report(task, status, result) {
++      if (!available) throw Object.assign(new Error("lookup_status_storage_unavailable"), { code: "lookup_status_storage_unavailable" });
++      if (!records.has(task.taskId)) records.set(task.taskId, {
++        taskId: task.taskId, adbSerial: task.adbSerial, status, result
++      });
++      // A local disk failure stays pending in memory and is retried by flush;
++      // it must never turn a successful lookup into a business failure.
++      await flushOne(task.taskId);
++      return { pending: records.has(task.taskId) };
++    },
++    flush,
++    pendingTasks: () => [...records.values()].map(({ taskId, adbSerial }) => ({ taskId, adbSerial }))
++  };
++}

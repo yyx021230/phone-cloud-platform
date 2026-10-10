@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "candidateTag": "lookup-20261010-rc.2",
+  "sourcePath": "releases/lookup-20261010-rc.2",
+  "previousSourceCommit": "4c62986c9087b074dd15581742c656db6a49ea98",
+  "recordedAt": "2026-10-10T08:12:21.066626+00:00",
+  "status": "local_candidate_not_deployed",
+  "problem": "Verified account and rotation metadata disappeared when a post-rotation query failed; resuming the original result overwrote its rotation total.",
+  "runtimeFilesChangedVersusRc1": [
+    "windows-agent/src/lookup-account-policy.mjs",
+    "windows-agent/src/index.mjs",
+    "server/index.mjs"
+  ],
+  "risk": "R2; lookup error transport and persisted JSON metadata only; no schema migration",
+  "reproduction": {
+    "newBehaviorTests": 9,
+    "beforeFix": {
+      "total": 35,
+      "passed": 29,
+      "failed": 6
+    },
+    "afterFix": {
+      "total": 35,
+      "passed": 35,
+      "failed": 0
+    }
+  },
+  "offlineChecks": [
+    {
+      "check": "syntax",
+      "exitCode": 0,
+      "logSha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+    },
+    {
+      "check": "screen",
+      "exitCode": 0,
+      "logSha256": "8d1172732d6ba59c4e558139a56dc4c2f6d7cbeaa4dc9c752a049d102f28b56d"
+    },
+    {
+      "check": "agent",
+      "exitCode": 0,
+      "logSha256": "705da45f293eaa742380ca08f34dc5fe379bf630d2bd3617d2746fca4d877bea"
+    },
+    {
+      "check": "python",
+      "exitCode": 0,
+      "logSha256": "670d282c2d59403e1e977989c2cbfcb84a7abe5581fd4256e9ba677231a0055d"
+    },
+    {
+      "check": "lookup",
+      "exitCode": 0,
+      "logSha256": "ea64dcc278577caf64bc3f43059c8e03f81bc119ad2a5d7d3f4b8ed00cbbf3d4"
+    },
+    {
+      "check": "sdk-node",
+      "exitCode": 0,
+      "logSha256": "4add171a5cd00480ff5db56e8a203ef46495141829a3f3a791e4671a8f92ee05"
+    },
+    {
+      "check": "sdk-python",
+      "exitCode": 0,
+      "logSha256": "c346f1228fe88f4ab3cb336ffa610dc3a34ec7c7bb7d05df7a1c222f2d928881"
+    }
+  ],
+  "counts": {
+    "screen": 594,
+    "agent": 289,
+    "python": 163,
+    "lookup": 56,
+    "sdkNode": 3,
+    "sdkPython": 1
+  },
+  "countsOverlap": true,
+  "postgres": {
+    "version": "16.15 (Homebrew)",
+    "checks": [
+      {
+        "name": "policy_failure_serializer_http_pg_atomic_retry_keeps_verified_B_and_original_result",
+        "failedFirstResponse": 500,
+        "rotationCount": 1,
+        "sameOutboxPayload": true
+      },
+      {
+        "name": "two_original_result_resumptions_and_restarts_keep_two_verified_rotations",
+        "originalResults": 1,
+        "rotationCount": 2,
+        "duplicateTerminalReports": 3,
+        "directResumeExecutions": 1,
+        "cooldownExpiryUnchanged": true
+      },
+      {
+        "name": "final_identity_count_survive_structured_pg_reload",
+        "originalResults": 1,
+        "rotationCount": 2
+      }
+    ],
+    "realDevicesUsed": 0,
+    "database": "fresh isolated synthetic database; structured writes enabled",
+    "testHarnessSha256": "4162c744ac11b0db76acefb6024705c9e0a3f18250ef15f0463096f6c8381079",
+    "fixtureCorrection": "First harness run expected resultId on the Agent payload; the existing contract stores it on the linked automation job. Assertion corrected; no runtime change; repeated on a fresh database.",
+    "clusterStopped": true
+  },
+  "scopeProof": {
+    "rc1AllFilesUnchanged": 323,
+    "agentFunctionCount": 196,
+    "changedAgentFunctionsVersusRc1": [
+      "taskFailureResult"
+    ],
+    "unchangedAgentFunctionsVersusRc1": 195,
+    "frozenRuntimeFilesPreserved": 22
+  },
+  "compatibility": {
+    "newAgentAndNewServer": "required for failure identity and cumulative-result behavior together",
+    "oldPeer": "old Agent lacks failure proof; old server may still reset totals. Do not claim the fix for mixed versions.",
+    "rollback": "rc.1 can read optional JSON field but does not implement this fix; preserve new data and full backup",
+    "newPersistedField": "automation job lookupResultAccountSwitchBaseCount; optional JSON number captured once per reporting job, persisted in the existing task transaction; no table/schema change"
+  },
+  "review": "Self review of three runtime diffs/callers and failure, duplicate, cancellation and persistence boundaries; no independent reviewer",
+  "originalBusinessFiles": "Four previously hashed business files match the preceding live-test baseline; original dirty files and staged state left intact",
+  "realDeviceObservation": {
+    "sourceTag": "lookup-20261010-rc.1",
+    "originalQuery51": "Automatically resumed and succeeded at 2026-10-10T08:02:01.480Z; old result count remains zero; no historical data backfill",
+    "rc2": "not loaded yet"
+  },
+  "privateEvidenceDirectory": "/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/phone-cloud-rc2-fix-o5whtqqn",
+  "productionActions": false,
+  "pushedThisRound": false,
+  "notVerified": [
+    "rc.2 real restriction -> rotation -> puzzle -> resume on physical device",
+    "two physical devices and other OEMs",
+    "natural eight-hour wait",
+    "full deployment artifact/fresh dependency installation",
+    "production D-075 live/current drift/Windows mixed-version and full rollback",
+    "24-48 hour soak"
+  ]
+}
