@@ -1,0 +1,20 @@
+{
+  "name": "phone-cloud-windows-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.mjs",
+    "check": "node --check src/index.mjs && node --check src/device-scan-cache.mjs && node --check src/serial-adb-activity.mjs && node --check src/serial-adb-health.mjs && node --check src/serial-delay-scheduler.mjs && node --check src/worker-shutdown.mjs && node --check src/screen-stream.mjs && node --test src/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@yume-chan/adb": "^2.6.0",
+    "@yume-chan/adb-scrcpy": "^2.3.2",
+    "@yume-chan/adb-server-node-tcp": "^2.5.2",
+    "@yume-chan/scrcpy": "^2.3.0",
+    "ws": "^8.21.0"
+  }
+}
