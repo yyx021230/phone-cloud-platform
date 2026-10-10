@@ -17,7 +17,27 @@
     "sdk-python": 1
   },
   "failedChecks": 0,
-  "remotePush": "not_run",
+  "remotePush": {
+    "status": "completed",
+    "date": "2026-10-10",
+    "authorization": "User explicitly selected both remotes.",
+    "candidateTagObject": "081661a6636f8ef469f03792e6ed5b2295096a58",
+    "remotes": [
+      {
+        "remote": "origin",
+        "branchAndTagSourceCommit": "4c62986c9087b074dd15581742c656db6a49ea98",
+        "verifiedByLsRemote": true
+      },
+      {
+        "remote": "gitlab",
+        "branchAndTagSourceCommit": "4c62986c9087b074dd15581742c656db6a49ea98",
+        "verifiedByLsRemote": true
+      }
+    ],
+    "note": "Candidate tag remains immutable. Later branch commits may contain preparation documentation only."
+  },
   "deployment": "not_run",
-  "identity": "Resolve the immutable annotated candidate tag for the full source commit; the original dirty workspace is not this snapshot."
+  "identity": "Resolve the immutable annotated candidate tag for the full source commit; the original dirty workspace is not this snapshot.",
+  "sourceCommit": "4c62986c9087b074dd15581742c656db6a49ea98",
+  "releasePreparation": "docs/evidence/LOOKUP_RELEASE_PREPARATION_20261010.json"
 }
