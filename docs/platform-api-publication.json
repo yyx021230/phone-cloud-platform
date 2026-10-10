@@ -1,5 +1,5 @@
 {
-  "version": "platform-api-docs-20261010-rc.3",
+  "version": "platform-api-docs-20261010-rc.4",
   "groups": [
     "auth",
     "user",
@@ -15,7 +15,7 @@
       "intro": "平台功能 API",
       "eyebrow": "PLATFORM API",
       "paragraphs": [
-        "本文仅包含平台功能接口：账户认证、设备库存、网页查名、短信接码、扫码与自动化、实时控制与相册。",
+        "本文仅包含平台功能接口：账户认证、设备库存、短信接码、查名字、扫码、快手录入、一键发布（小红书图文）、实时控制与相册。各业务单独列出接口。",
         "接口基线为 lookup-20261010-rc.2，本地文档候选尚未上线。任务 result/payload 等允许按执行器扩展，字段表列出常用稳定字段；实际接入请核对目标部署版本。"
       ]
     },
@@ -77,5 +77,60 @@
       "服务端错误",
       "结果可能未知；先查询原任务/会话ID，记录错误并设置总重试期限。"
     ]
-  ]
+  ],
+  "publishedGroups": [
+    [
+      "auth",
+      "账户认证",
+      "基础接口"
+    ],
+    [
+      "user",
+      "设备库存",
+      "基础接口"
+    ],
+    [
+      "sms",
+      "短信接码",
+      "业务接口"
+    ],
+    [
+      "lookup-user",
+      "查名字",
+      "业务接口"
+    ],
+    [
+      "qr-scan",
+      "扫码",
+      "业务接口"
+    ],
+    [
+      "kuaishou-lead",
+      "快手录入",
+      "业务接口"
+    ],
+    [
+      "xhs-publish",
+      "一键发布",
+      "业务接口"
+    ],
+    [
+      "screen",
+      "实时控制与相册",
+      "设备工具"
+    ]
+  ],
+  "endpointGroups": {
+    "get-api-v1-user-xhs-qr-scan-tasks": "qr-scan",
+    "post-api-v1-user-xhs-qr-scan-tasks": "qr-scan",
+    "post-api-v1-user-xhs-qr-scan-tasks-p1-cancel": "qr-scan",
+    "get-api-v1-user-automation-xhs-publish-tasks": "xhs-publish",
+    "post-api-v1-user-automation-xhs-publish-tasks": "xhs-publish",
+    "post-api-v1-user-automation-xhs-publish-tasks-p1-cancel": "xhs-publish",
+    "get-api-v1-user-automation-kuaishou-lead-tasks": "kuaishou-lead",
+    "post-api-v1-user-automation-kuaishou-lead-tasks": "kuaishou-lead",
+    "post-api-v1-user-automation-kuaishou-lead-tasks-p1-stop": "kuaishou-lead",
+    "get-api-v1-tasks-p1-progress": "qr-scan",
+    "get-api-v1-user-phones": "sms"
+  }
 }

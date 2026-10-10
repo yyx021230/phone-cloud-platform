@@ -1,5 +1,5 @@
 {
-  "version": "platform-api-docs-20261010-rc.3",
+  "version": "platform-api-docs-20261010-rc.4",
   "updatedAt": "2026-10-10",
   "baseline": "lookup-20261010-rc.2",
   "status": "本地候选 · 未发布",
@@ -8,33 +8,43 @@
   "groups": [
     [
       "auth",
-      "认证与会话",
-      "平台接口"
+      "账户认证",
+      "基础接口"
     ],
     [
       "user",
-      "设备库存与进度",
-      "平台接口"
-    ],
-    [
-      "lookup-user",
-      "网页查名管理",
-      "平台接口"
+      "设备库存",
+      "基础接口"
     ],
     [
       "sms",
-      "短信与接码",
-      "平台接口"
+      "短信接码",
+      "业务接口"
     ],
     [
-      "automation",
-      "扫码与自动化",
-      "平台接口"
+      "lookup-user",
+      "查名字",
+      "业务接口"
+    ],
+    [
+      "qr-scan",
+      "扫码",
+      "业务接口"
+    ],
+    [
+      "kuaishou-lead",
+      "快手录入",
+      "业务接口"
+    ],
+    [
+      "xhs-publish",
+      "一键发布",
+      "业务接口"
     ],
     [
       "screen",
       "实时控制与相册",
-      "平台接口"
+      "设备工具"
     ]
   ],
   "guides": [
@@ -44,7 +54,7 @@
       "intro": "平台功能 API",
       "eyebrow": "PLATFORM API",
       "paragraphs": [
-        "本文仅包含平台功能接口：账户认证、设备库存、网页查名、短信接码、扫码与自动化、实时控制与相册。",
+        "本文仅包含平台功能接口：账户认证、设备库存、短信接码、查名字、扫码、快手录入、一键发布（小红书图文）、实时控制与相册。各业务单独列出接口。",
         "接口基线为 lookup-20261010-rc.2，本地文档候选尚未上线。任务 result/payload 等允许按执行器扩展，字段表列出常用稳定字段；实际接入请核对目标部署版本。"
       ]
     },
@@ -1187,7 +1197,7 @@
       "line": 850,
       "path": "/api/v1/tasks/{taskId}/progress",
       "id": "get-api-v1-tasks-p1-progress",
-      "group": "user",
+      "group": "qr-scan",
       "title": "扫码任务进度",
       "description": "用户只能读取自己的扫码任务；管理员可读取，越权按 404 处理。",
       "auth": "user,admin",
@@ -1220,7 +1230,7 @@
       "line": 859,
       "path": "/api/v1/user/phones",
       "id": "get-api-v1-user-phones",
-      "group": "user",
+      "group": "sms",
       "title": "可接码号码列表",
       "description": "返回当前可用号码、设备与 SIM 关联。",
       "auth": "user,admin",
@@ -1722,7 +1732,7 @@
       "line": 1160,
       "path": "/api/v1/user/xhs/qr-scan-tasks",
       "id": "get-api-v1-user-xhs-qr-scan-tasks",
-      "group": "automation",
+      "group": "qr-scan",
       "title": "我的扫码任务",
       "description": "返回当前用户最近100条扫码任务。",
       "auth": "user,admin",
@@ -1740,7 +1750,7 @@
       "line": 1166,
       "path": "/api/v1/user/xhs/qr-scan-tasks",
       "id": "post-api-v1-user-xhs-qr-scan-tasks",
-      "group": "automation",
+      "group": "qr-scan",
       "title": "创建小红书扫码任务",
       "description": "上传二维码 Data URL；可选择设备和 app1/app2，省略目标时由服务端挑选可用账号。活动任务数默认上限3（可配置）。",
       "auth": "user,admin",
@@ -1793,7 +1803,7 @@
       "line": 1197,
       "path": "/api/v1/user/xhs/qr-scan-tasks/{taskId}/cancel",
       "id": "post-api-v1-user-xhs-qr-scan-tasks-p1-cancel",
-      "group": "automation",
+      "group": "qr-scan",
       "title": "取消我的扫码任务",
       "description": "仅 queued/running 可取消；取消关联 Windows 任务并释放锁。",
       "auth": "user,admin",
@@ -1829,7 +1839,7 @@
       "line": 1211,
       "path": "/api/v1/user/automation/xhs-publish-tasks",
       "id": "get-api-v1-user-automation-xhs-publish-tasks",
-      "group": "automation",
+      "group": "xhs-publish",
       "title": "我的图文发布任务",
       "description": "返回当前用户最近100个 xhs_publish 作业。",
       "auth": "user,admin",
@@ -1847,7 +1857,7 @@
       "line": 1222,
       "path": "/api/v1/user/automation/xhs-publish-tasks",
       "id": "post-api-v1-user-automation-xhs-publish-tasks",
-      "group": "automation",
+      "group": "xhs-publish",
       "title": "创建图文发布任务",
       "description": "标题1–100字符、正文1–2000字符；图片默认最多5张，可配置1–9。201是受理，实际发布结果须轮询。超时不得直接重复发布。",
       "auth": "user,admin",
@@ -1936,7 +1946,7 @@
       "line": 1263,
       "path": "/api/v1/user/automation/xhs-publish-tasks/{taskId}/cancel",
       "id": "post-api-v1-user-automation-xhs-publish-tasks-p1-cancel",
-      "group": "automation",
+      "group": "xhs-publish",
       "title": "取消图文发布任务",
       "description": "只允许当前用户取消活动作业；取消不证明已经发布的内容被撤回。",
       "auth": "user,admin",
@@ -1972,7 +1982,7 @@
       "line": 1275,
       "path": "/api/v1/user/automation/kuaishou-lead-tasks",
       "id": "get-api-v1-user-automation-kuaishou-lead-tasks",
-      "group": "automation",
+      "group": "kuaishou-lead",
       "title": "我的快手录入任务",
       "description": "读取当前用户最近100个持续作业。",
       "auth": "user,admin",
@@ -1990,7 +2000,7 @@
       "line": 1286,
       "path": "/api/v1/user/automation/kuaishou-lead-tasks",
       "id": "post-api-v1-user-automation-kuaishou-lead-tasks",
-      "group": "automation",
+      "group": "kuaishou-lead",
       "title": "启动快手录入",
       "description": "独占目标设备扫描配置的飞书队列；全系统同一时刻只允许一个活动快手作业。间隔范围30–3600秒，最短不得大于最长，默认240/420。",
       "auth": "user,admin",
@@ -2059,7 +2069,7 @@
       "line": 1328,
       "path": "/api/v1/user/automation/kuaishou-lead-tasks/{taskId}/stop",
       "id": "post-api-v1-user-automation-kuaishou-lead-tasks-p1-stop",
-      "group": "automation",
+      "group": "kuaishou-lead",
       "title": "停止快手录入",
       "description": "取消当前用户的活动持续作业，保留既有结果。",
       "auth": "user,admin",

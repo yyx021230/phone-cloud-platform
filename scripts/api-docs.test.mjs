@@ -86,7 +86,7 @@ test("all endpoint pages render; Node.js and Python examples parse without execu
 
 test("published data and downloads exclude other categories and unused models", () => {
   const reviewed = JSON.parse(fs.readFileSync(path.join(root, "docs/api-reference-contracts.json")));
-  const expected = new Set(["auth", "user", "lookup-user", "sms", "automation", "screen"]);
+  const expected = new Set(["auth", "user", "sms", "lookup-user", "qr-scan", "kuaishou-lead", "xhs-publish", "screen"]);
   assert.deepEqual(new Set(data.groups.map((g) => g[0])), expected);
   for (const e of data.endpoints) assert.ok(expected.has(e.group));
   assert.deepEqual(data.guides.map((g) => g.id), ["overview", "authentication", "models", "errors"]);
@@ -143,7 +143,7 @@ test("all server and Agent source files retain the immutable rc.2 hash", () => {
 
 test("platform navigation and search cannot restore excluded categories", () => {
   const groups = render.navigationSections.flatMap((section) => Array.from(section.groups || []));
-  assert.equal(new Set(groups).size, 6);
+  assert.equal(new Set(groups).size, 8);
   const nav = render.navigationContent().html;
   for (const e of data.endpoints) assert.ok(nav.includes(`href="#${e.id}"`), e.id);
   for (const guide of data.guides) assert.ok(nav.includes(`href="#${guide.id}"`));
@@ -156,5 +156,24 @@ test("platform navigation and search cannot restore excluded categories", () => 
   for (const guide of data.guides) {
     const html = render.guidePage(guide);
     for (const [, id] of html.matchAll(/href="#([^"~]+)(?:~[^"]*)?"/g)) assert.ok(data.guides.some((g) => g.id === id) || data.endpoints.some((e) => e.id === id), id);
+  }
+});
+
+test("SMS, lookup, QR, Kuaishou and publishing are distinct business references", () => {
+  const expected = { sms: 6, "lookup-user": 6, "qr-scan": 4, "kuaishou-lead": 3, "xhs-publish": 3 };
+  const titles = { sms: "短信接码", "lookup-user": "查名字", "qr-scan": "扫码", "kuaishou-lead": "快手录入", "xhs-publish": "一键发布" };
+  for (const [group, count] of Object.entries(expected)) {
+    assert.equal(data.endpoints.filter((e) => e.group === group).length, count, group);
+    assert.equal(data.groups.find((g) => g[0] === group)[1], titles[group]);
+    assert.ok(render.navigationContent().html.includes(`data-group="${group}"`));
+    assert.ok(render.guidePage(data.guides[0]).includes(`<b>${titles[group]}</b>`));
+  }
+  assert.equal(data.endpoints.find((e) => e.id === "get-api-v1-tasks-p1-progress").group, "qr-scan");
+  assert.equal(data.endpoints.find((e) => e.id === "get-api-v1-user-phones").group, "sms");
+  for (const e of data.endpoints) {
+    if (e.path.includes("xhs-publish-tasks")) assert.equal(e.group, "xhs-publish");
+    if (e.path.includes("kuaishou-lead-tasks")) assert.equal(e.group, "kuaishou-lead");
+    if (e.path.includes("/xhs/qr-scan-tasks")) assert.equal(e.group, "qr-scan");
+    assert.deepEqual(spec.paths[e.path][e.method.toLowerCase()].tags, [e.group]);
   }
 });

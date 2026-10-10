@@ -10,7 +10,9 @@
   const expandedGroups = new Set();
   const navigationSections = [
     { title: "开始使用", guides: ["overview", "authentication"] },
-    { title: "平台接口", groups: ["auth", "user", "lookup-user", "sms", "automation", "screen"] },
+    { title: "基础接口", groups: ["auth", "user"] },
+    { title: "业务接口", groups: ["sms", "lookup-user", "qr-scan", "kuaishou-lead", "xhs-publish"] },
+    { title: "设备工具", groups: ["screen"] },
     { title: "参考资料", guides: ["models", "errors"] }
   ];
   const authNames = { hmac: "HMAC-SHA256 · 第三方开放", "user,admin": "Bearer · 用户 / 管理员", "admin,user": "Bearer · 管理员 / 用户", admin: "Bearer · 管理员", windows: "Bearer · 绑定 Windows Agent", device: "Bearer · Android device", "admin,windows,device": "Bearer · admin / windows / device", "third-party": "Bearer · 旧版第三方", public: "无需认证", "media-hook": "媒体服务专用凭据", "admin / evidence-signature": "管理员或临时证据签名" };
@@ -67,7 +69,7 @@
   function breadcrumb(name) { return `<div class="breadcrumb"><a href="#overview">开发者文档</a><span>/</span><span>${esc(name)}</span></div>`; }
 
   function guidePage(g) {
-    let html = `${breadcrumb(g.title)}${g.eyebrow ? `<p class="eyebrow">${esc(g.eyebrow)}</p>` : ""}<h1>${esc(g.intro)}</h1><p class="intro">${g.id === "overview" ? "账户、设备、查名、短信和自动化任务的接口参考。" : esc(g.title)}</p>`;
+    let html = `${breadcrumb(g.title)}${g.eyebrow ? `<p class="eyebrow">${esc(g.eyebrow)}</p>` : ""}<h1>${esc(g.intro)}</h1><p class="intro">${g.id === "overview" ? "短信接码、查名字、扫码、快手录入、一键发布，各业务独立查阅。" : esc(g.title)}</p>`;
     if (g.id === "overview") {
       html += `<div class="metrics-line"><div><strong>${data.endpoints.length}</strong><span>平台接口</span></div><div><strong>${data.groups.length}</strong><span>功能模块</span></div><div><strong>Bearer</strong><span>登录认证</span></div></div>`;
       html += section("getting-started", "调用顺序", '<p>登录获取令牌 → 获取可用设备 → 提交业务任务 → 按原任务ID查询结果。</p><a href="#authentication">查看认证与登录 →</a>');
