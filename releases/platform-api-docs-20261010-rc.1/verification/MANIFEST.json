@@ -1,5 +1,5 @@
 {
-  "candidate": "platform-api-docs-20261010-rc.2",
+  "candidate": "platform-api-docs-20261010-rc.3",
   "status": "local_candidate_not_deployed",
   "productionImageSha256": "907e0c65a50b1d066241e55ce475ac772647a531b582ae2894e25e1adc8ed3dd",
   "workflowRevision": "2026-09-30",
@@ -897,27 +897,27 @@
     {
       "path": "public/api-docs.html",
       "beforeSha256": null,
-      "afterSha256": "a9728a55d6b7f19073468e78ba56566a36662e10030720334dcc73477c9f42eb"
+      "afterSha256": "903d09de65a05c308dd5c9eb399f7390054068efa2da062c2a053207128d29d8"
     },
     {
       "path": "public/api-docs.css",
       "beforeSha256": null,
-      "afterSha256": "aac4dbc65704b6e2dc2f1715ca84dc1fe3d500984afde1312f4aadaaf10bf9de"
+      "afterSha256": "e06f407f775fd2485b61a15419f908fd3f5bcb9f9a42ccd9cbf8a440e0432ffb"
     },
     {
       "path": "public/api-docs.js",
       "beforeSha256": null,
-      "afterSha256": "6e00de57a259ac894d45838112a203283110c6e0003c81a2b497712ab57fd4da"
+      "afterSha256": "3b7a23cf46773aaf18486d57a1e2fa45e3fe4a080d177c4702ac93fcb547145d"
     },
     {
       "path": "public/api-reference.json",
       "beforeSha256": null,
-      "afterSha256": "e1208e3328a0d84b85ae50e607d20f761969cbca9d63455f7941a89c5d9aaf5f"
+      "afterSha256": "e3230f097f472ad7babc56d3b0c6f6f98ed449edcdf785274434523f1829242e"
     },
     {
       "path": "public/openapi.json",
       "beforeSha256": null,
-      "afterSha256": "5c20ba7e546b837538a00efb0ec8f32cec7ba1e3275b78c60b9519ef68664cbf"
+      "afterSha256": "8b28bccb979768eb6e902e23215173d140a9899ebf23ef0cd7d507cd8e858829"
     }
   ],
   "inheritedMaterials": "production-to-merged.patch, production-before, TEST_RESULTS.json and prior rc.2 materials are historical; API docs changes and tests are recorded separately.",
@@ -943,5 +943,33 @@
       "afterSha256": "6e00de57a259ac894d45838112a203283110c6e0003c81a2b497712ab57fd4da"
     }
   ],
-  "navigationBaseCommit": "03b4fcb820ecac1d9979a71fce9e327142019d4c"
+  "navigationBaseCommit": "03b4fcb820ecac1d9979a71fce9e327142019d4c",
+  "platformOnlyChanges": [
+    {
+      "path": "public/api-docs.html",
+      "beforeSha256": "a9728a55d6b7f19073468e78ba56566a36662e10030720334dcc73477c9f42eb",
+      "afterSha256": "903d09de65a05c308dd5c9eb399f7390054068efa2da062c2a053207128d29d8"
+    },
+    {
+      "path": "public/api-docs.css",
+      "beforeSha256": "aac4dbc65704b6e2dc2f1715ca84dc1fe3d500984afde1312f4aadaaf10bf9de",
+      "afterSha256": "e06f407f775fd2485b61a15419f908fd3f5bcb9f9a42ccd9cbf8a440e0432ffb"
+    },
+    {
+      "path": "public/api-docs.js",
+      "beforeSha256": "6e00de57a259ac894d45838112a203283110c6e0003c81a2b497712ab57fd4da",
+      "afterSha256": "3b7a23cf46773aaf18486d57a1e2fa45e3fe4a080d177c4702ac93fcb547145d"
+    },
+    {
+      "path": "public/api-reference.json",
+      "beforeSha256": "e1208e3328a0d84b85ae50e607d20f761969cbca9d63455f7941a89c5d9aaf5f",
+      "afterSha256": "e3230f097f472ad7babc56d3b0c6f6f98ed449edcdf785274434523f1829242e"
+    },
+    {
+      "path": "public/openapi.json",
+      "beforeSha256": "5c20ba7e546b837538a00efb0ec8f32cec7ba1e3275b78c60b9519ef68664cbf",
+      "afterSha256": "8b28bccb979768eb6e902e23215173d140a9899ebf23ef0cd7d507cd8e858829"
+    }
+  ],
+  "platformOnlyBaseCommit": "e8d7f77c6015be0f9dd886b8dc204f6366982a71"
 }

@@ -6,43 +6,13 @@
   let data;
   let activeId = "overview";
   let copyTimer;
-  let activeScope = "partner";
   let lastNavWasSearch = false;
   const expandedGroups = new Set();
-  // Presentation only: endpoint contracts and permissions remain in the catalog.
-  const navigationScopes = {
-    partner: { title: "第三方接入", description: "查名字 · 短信验证码", sections: [
-      { title: "开始使用", guides: ["overview", "authentication"] },
-      { title: "查名字", guides: ["lookup-flow", "states"], groups: ["open-lookup"] },
-      { title: "短信验证码", groups: ["open-sms"] },
-      { title: "参考资料", guides: ["models", "errors"] },
-      { title: "旧版兼容", groups: ["legacy"] }
-    ] },
-    platform: { title: "平台功能", description: "库存 · 任务 · 自动化", sections: [
-      { title: "账户与认证", groups: ["auth"] },
-      { title: "设备与业务", groups: ["user", "lookup-user", "sms", "automation", "screen"] },
-      { title: "参考资料", guides: ["authentication", "models", "errors"] }
-    ] },
-    admin: { title: "管理与运维", description: "管理接口 · 版本 · 健康检查", sections: [
-      { title: "管理接口", groups: ["admin", "release"] },
-      { title: "运行状态", groups: ["system"] },
-      { title: "参考资料", guides: ["authentication", "models", "errors"] }
-    ] },
-    internal: { title: "内部协议", description: "Agent · Android · 实时通道", sections: [
-      { title: "协议说明", guides: ["websockets"] },
-      { title: "组件接口", groups: ["agent", "device", "internal"] },
-      { title: "参考资料", guides: ["models", "errors"] }
-    ] }
-  };
-  const groupTitles = { "open-lookup": "查名接口", "open-sms": "验证码接口", legacy: "旧版第三方接口" };
-  function scopeContains(scope, id) {
-    if (scope === "all") return true;
-    const group = data.endpoints.find((e) => e.id === id)?.group;
-    return navigationScopes[scope].sections.some((s) => s.guides?.includes(id) || group && s.groups?.includes(group));
-  }
-  function scopeForPage(id, current = activeScope) {
-    return scopeContains(current, id) ? current : Object.keys(navigationScopes).find((key) => scopeContains(key, id)) || "partner";
-  }
+  const navigationSections = [
+    { title: "开始使用", guides: ["overview", "authentication"] },
+    { title: "平台接口", groups: ["auth", "user", "lookup-user", "sms", "automation", "screen"] },
+    { title: "参考资料", guides: ["models", "errors"] }
+  ];
   const authNames = { hmac: "HMAC-SHA256 · 第三方开放", "user,admin": "Bearer · 用户 / 管理员", "admin,user": "Bearer · 管理员 / 用户", admin: "Bearer · 管理员", windows: "Bearer · 绑定 Windows Agent", device: "Bearer · Android device", "admin,windows,device": "Bearer · admin / windows / device", "third-party": "Bearer · 旧版第三方", public: "无需认证", "media-hook": "媒体服务专用凭据", "admin / evidence-signature": "管理员或临时证据签名" };
   const guideIcons = { overview: "◈", authentication: "⌘", "lookup-flow": "↗", states: "⇄", models: "▤", errors: "!", websockets: "⌁" };
   const exampleValues = { deviceId: "adb:SERIAL-DEMO", sessionId: "session-demo", queryId: "query-demo", requestId: "request-demo", taskId: "task-demo", userId: "user-demo", agentId: "agent-demo", clientReference: "demo-order-0001", consentReference: "demo-consent-0001", phoneNumber: "13800000000", username: "integration_demo", password: "<PASSWORD>", currentPassword: "<CURRENT_PASSWORD>", newPassword: "<NEW_PASSWORD>", deliveryToken: "<DELIVERY_TOKEN>", title: "示例标题", content: "已审核的示例正文", imageDataUrls: ["data:image/png;base64,<IMAGE_BYTES>"], qrImageDataUrl: "data:image/png;base64,<QR_BYTES>", imageDataUrl: "data:image/png;base64,<IMAGE_BYTES>", listingStatus: "listed", deviceIds: ["adb:SERIAL-DEMO"], type: "adb_collect_diagnostics", status: "running", probeId: "probe-demo", state: "search_ready" };
@@ -67,16 +37,9 @@
       const group = data.groups.find((g) => g[0] === id);
       const endpoints = matches.filter((e) => e.group === id); if (!endpoints.length) return "";
       const expanded = Boolean(query) || expandedGroups.has(id) || endpoints.some((e) => e.id === activeId);
-      return `<details class="nav-group" data-group="${esc(id)}" ${expanded ? "open" : ""}><summary><span>${esc(groupTitles[id] || group[1])}</span><span class="nav-count">${endpoints.length}</span></summary><div class="nav-children">${endpoints.map((e) => `<a class="nav-link${e.id === activeId ? " active" : ""}" ${e.id === activeId ? 'aria-current="page"' : ""} href="#${esc(e.id)}"><span class="nav-method ${esc(e.method)}">${esc(e.method)}</span><span>${esc(e.title)}</span></a>`).join("")}</div></details>`;
+      return `<details class="nav-group" data-group="${esc(id)}" ${expanded ? "open" : ""}><summary><span>${esc(group[1])}</span><span class="nav-count">${endpoints.length}</span></summary><div class="nav-children">${endpoints.map((e) => `<a class="nav-link${e.id === activeId ? " active" : ""}" ${e.id === activeId ? 'aria-current="page"' : ""} href="#${esc(e.id)}"><span class="nav-method ${esc(e.method)}">${esc(e.method)}</span><span>${esc(e.title)}</span></a>`).join("")}</div></details>`;
     };
-    let sections;
-    if (query || activeScope === "all") {
-      sections = [{ title: query ? "相关指南" : "接入指南", guides: guides.map((g) => g.id) }];
-      for (const scope of Object.values(navigationScopes)) {
-        const groups = scope.sections.flatMap((s) => s.groups || []);
-        sections.push({ title: scope.title, groups });
-      }
-    } else sections = navigationScopes[activeScope].sections;
+    const sections = navigationSections;
     const html = sections.map((section) => {
       const body = (section.guides || []).map(guideLink).join("") + (section.groups || []).map(groupNav).join("");
       return body ? `<section class="nav-section"><h2 class="nav-label">${esc(section.title)}</h2>${body}</section>` : "";
@@ -90,9 +53,7 @@
     });
     const query = $("docsSearch").value.trim().toLowerCase();
     const content = navigationContent(query);
-    $("docsScope").value = activeScope;
-    $("scopeDescription").textContent = navigationScopes[activeScope]?.description || "全部接口与指南";
-    $("searchSummary").textContent = query ? `全站搜索 · ${content.count} 个接口 · ${content.guides} 篇指南` : "选择主题查看接口，搜索覆盖全部文档";
+    $("searchSummary").textContent = query ? `找到 ${content.count} 个平台接口 · ${content.guides} 篇说明` : `${data.endpoints.length} 个接口 · ${data.groups.length} 个功能模块`;
     $("clearSearch").hidden = !query;
     $("navigation").innerHTML = content.html;
     lastNavWasSearch = Boolean(query);
@@ -106,17 +67,15 @@
   function breadcrumb(name) { return `<div class="breadcrumb"><a href="#overview">开发者文档</a><span>/</span><span>${esc(name)}</span></div>`; }
 
   function guidePage(g) {
-    let html = `${breadcrumb(g.title)}${g.eyebrow ? `<p class="eyebrow">${esc(g.eyebrow)}</p>` : ""}<h1>${esc(g.intro)}</h1><p class="intro">${g.id === "overview" ? "连接设备、提交任务、获取结果。让你的系统接入 Phone Cloud。" : esc(g.title)}</p>`;
+    let html = `${breadcrumb(g.title)}${g.eyebrow ? `<p class="eyebrow">${esc(g.eyebrow)}</p>` : ""}<h1>${esc(g.intro)}</h1><p class="intro">${g.id === "overview" ? "账户、设备、查名、短信和自动化任务的接口参考。" : esc(g.title)}</p>`;
     if (g.id === "overview") {
-      html += `<div class="metrics-line"><div><strong>${data.endpoints.length}</strong><span>HTTP 接口</span></div><div><strong>${data.websockets.length}</strong><span>实时通道</span></div><div><strong>v1</strong><span>接口版本</span></div></div>`;
-      html += `<div class="notice"><strong>推荐从查名开放接口开始</strong><br/>第三方系统通过后端 HMAC 签名接入。异步任务受理后保存 queryId，轮询取回结果；人工介入与账户冷却通过状态字段处理。</div>`;
-      html += section("quickstart", "四步接入查名字", `<div class="flow">${g.steps.map(([title, text], i) => `<div class="flow-step"><div class="step-number">0${i + 1} ${i < 3 ? "→" : "✓"}</div><strong>${esc(title)}</strong><p>${esc(text)}</p></div>`).join("")}</div><a class="section-link" href="#lookup-flow">查看完整调用流程 →</a>`);
-      html += section("essentials", "接入前先读", `<div class="feature-links">${[["authentication", "⌘", "认证与签名", "HMAC、请求头、幂等键与可复制示例"], ["lookup-flow", "↗", "查名接入流程", "会话、排队、取结果与人工恢复"], ["states", "⇄", "状态与异常处理", "自动切号、冷却、超时与重试"], ["errors", "!", "错误码与排障", "按 HTTP 状态和错误字符串定位问题"]].map(([id, icon, title, desc]) => `<a href="#${id}" class="feature-link"><span class="link-symbol" aria-hidden="true">${icon}</span><span><b>${title}</b><small>${desc}</small></span><span class="arrow" aria-hidden="true">↗</span></a>`).join("")}</div>`);
-      html += section("lookup-reference", "查名接口参考", `<div class="endpoint-directory">${data.endpoints.filter((e) => e.group === "open-lookup").map((e) => `<a class="endpoint-row" href="#${esc(e.id)}"><span class="method ${e.method}">${e.method}</span><span>${esc(e.title)}</span><code>${esc(e.path.replace("/api/v1/open/name-lookups", "…"))}</code></a>`).join("")}</div>`);
-      html += section("scope", "文档范围与版本", g.paragraphs.map((p) => `<p>${esc(p)}</p>`).join("") + '<p><a href="./openapi.json" download="phone-cloud-openapi.json">下载 OpenAPI 3.1 ↗</a> · <a href="./api-reference.json" download="phone-cloud-api-reference.json">下载完整接口参考 JSON ↗</a></p>');
+      html += `<div class="metrics-line"><div><strong>${data.endpoints.length}</strong><span>平台接口</span></div><div><strong>${data.groups.length}</strong><span>功能模块</span></div><div><strong>Bearer</strong><span>登录认证</span></div></div>`;
+      html += section("getting-started", "调用顺序", '<p>登录获取令牌 → 获取可用设备 → 提交业务任务 → 按原任务ID查询结果。</p><a href="#authentication">查看认证与登录 →</a>');
+      html += section("platform-modules", "平台功能", `<div class="feature-links">${data.groups.map(([id, title]) => { const endpoints = data.endpoints.filter((e) => e.group === id); return `<a class="feature-link" href="#${esc((id === "user" ? endpoints.find((e) => e.id === "get-api-v1-user-devices") : endpoints[0]).id)}"><span><b>${esc(title)}</b><small>${endpoints.length} 个接口</small></span><span class="arrow" aria-hidden="true">↗</span></a>`; }).join("")}</div>`);
+      html += section("scope", "文档范围与版本", g.paragraphs.map((p) => `<p>${esc(p)}</p>`).join("") + '<p><a href="./openapi.json" download="phone-cloud-platform-openapi.json">下载平台 OpenAPI 3.1 ↗</a> · <a href="./api-reference.json" download="phone-cloud-platform-api-reference.json">下载平台接口参考 JSON ↗</a></p>');
     } else {
       html += g.paragraphs.map((p, i) => section(`guide-part-${i}`, g.id === "lookup-flow" ? ["选择设备与创建会话", "提交号码与顺序队列", "保存查询 ID 并取结果", "拼图与自动人工交接", "首次准备账户遇到拼图", "普通故障恢复", "账户限制与冷却", "结束与释放设备"][i] : (i === 0 ? "使用说明" : `说明 ${i + 1}`), `<p>${esc(p)}</p>`)).join("");
-      if (g.code) html += section("code-example", g.id === "authentication" ? "Node.js 签名示例 · 保存为 sign.mjs" : "Node.js 调用示例", codePanel(g.code, "Node.js · 服务端执行"));
+      if (g.code) html += section("code-example", g.id === "authentication" ? "Node.js 调用示例" : "Node.js 调用示例", codePanel(g.code, "Node.js · 服务端执行"));
       if (g.id === "models") html += Object.entries(data.models).map(([name, fields]) => section(`model-${name}`, name, fieldTable(fields))).join("");
       if (g.id === "errors") html += section("error-reference", "公共错误参考", `<div class="table-wrap"><table><thead><tr><th>HTTP</th><th>error</th><th>处理方式</th></tr></thead><tbody>${data.commonErrors.map(([status, error, action]) => `<tr><td>${esc(status)}</td><td><code>${esc(error)}</code></td><td>${esc(action)}</td></tr>`).join("")}</tbody></table></div>`);
       if (g.id === "websockets") html += data.websockets.map((w, i) => section(`channel-${i}`, w.path, `<p><strong>认证：</strong>${esc(w.auth)}</p><p>${esc(w.description)}</p>`)).join("");
@@ -201,7 +160,6 @@
     const guide = data.guides.find((g) => g.id === id);
     const endpoint = data.endpoints.find((e) => e.id === id);
     activeId = guide || endpoint ? id : "overview";
-    activeScope = scopeForPage(activeId);
     $("article").innerHTML = guide ? guidePage(guide) : endpoint ? endpointPage(endpoint) : guidePage(data.guides[0]);
     document.title = `${guide?.title || endpoint?.title || "接入概览"} · Phone Cloud API`;
     $("outline").innerHTML = [...$("article").querySelectorAll("h2[id]")].map((h) => `<a href="#${esc(activeId)}~${esc(h.id)}">${esc(h.textContent)}</a>`).join("");
@@ -236,13 +194,6 @@
   }
   $("docsSearch").addEventListener("input", () => { if (data) renderNavigation(); });
   $("clearSearch").addEventListener("click", () => { $("docsSearch").value = ""; renderNavigation(); $("docsSearch").focus(); });
-  $("docsScope").addEventListener("change", () => {
-    if (!data) return;
-    activeScope = $("docsScope").value;
-    $("docsSearch").value = "";
-    const home = { partner: "overview", platform: "get-api-v1-user-devices", admin: data.endpoints.find((e) => e.group === "admin").id, internal: "websockets", all: "overview" }[activeScope];
-    if (location.hash === `#${home}` || !location.hash && home === "overview") renderPage(); else location.hash = home;
-  });
   $("menuButton").addEventListener("click", () => setMenu(!document.body.classList.contains("menu-open")));
   $("menuBackdrop").addEventListener("click", () => setMenu(false));
   window.addEventListener("hashchange", renderPage);
