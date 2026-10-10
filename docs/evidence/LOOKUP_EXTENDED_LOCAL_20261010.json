@@ -1,0 +1,231 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-10",
+  "recordedAt": "2026-10-10T07:53:44.539721+00:00",
+  "status": "待验收",
+  "localExtendedStatus": "confirmed_defect_and_human_action_pending",
+  "sourceTag": "lookup-20261010-rc.1",
+  "sourceCommit": "4c62986c9087b074dd15581742c656db6a49ea98",
+  "deviceName": "118",
+  "privateEvidenceDirectory": "/private/tmp/phone-cloud-rc1-local-20261010-e6occ1yo/extended",
+  "liveQueryBatch": {
+    "submitted": 51,
+    "completed": 50,
+    "namesExtracted": 44,
+    "notFound": 6,
+    "pendingHuman": 1,
+    "maximumOriginalQueries": 84,
+    "stoppedAddingQueriesAfter": 51,
+    "uniqueOriginalResults": true,
+    "originalResultPreservedDuringHumanWait": true,
+    "newEightHourCooldownSaved": true,
+    "persistenceBeforeAccountSelection": true,
+    "selectedAccountExcludedCoolingAccounts": true,
+    "actualAccountSwitchVerified": true,
+    "fullSameResultContinuationPassed": false,
+    "currentResultStatus": "needs_human_verification",
+    "feishuReceipts": 1,
+    "notificationStatus": "sent",
+    "httpStatus": 200,
+    "providerCode": 0,
+    "restrictionWasNotNotifiedAsPuzzle": true,
+    "humanEventAt": "2026-10-10T07:48:05.054Z",
+    "notificationAt": "2026-10-10T07:48:12.736Z",
+    "newCooldownLimitedAt": "2026-10-10T07:45:54.635Z",
+    "newCooldownUntil": "2026-10-10T15:45:54.635Z",
+    "activeTasks": 0,
+    "activeSessions": 1,
+    "activeLocks": 1,
+    "sessionIntentionallyRetained": true
+  },
+  "confirmedDefect": {
+    "trigger": "verified account rotation, then a genuine puzzle in the same original query",
+    "observed": "Phone switched to the new account, but platform retained the previous cooling account and reported zero account switches.",
+    "rootCause": "The account policy decorates only successful results. A non-restriction error after verified rotation escapes without the updated account proof/history; taskFailureResult also does not transfer identity/picker/count fields.",
+    "possibleConsequence": "Platform retains the old cooling account. A human resume can unnecessarily prepare accounts and reset resume flags, repeating input instead of reading the original result. Actual post-human behavior remains pending.",
+    "fixStatus": "not_modified; this round is test/diagnosis, source/tag unchanged",
+    "reproduction": {
+      "status": "confirmed_defect_reproduced",
+      "sourceTag": "lookup-20261010-rc.1",
+      "steps": [
+        "alipay_name_query",
+        "alipay_name_start",
+        "alipay_name_query"
+      ],
+      "verifiedActualAccount": "synthetic-B",
+      "reportedCurrentAccount": null,
+      "reportedAccountSwitched": null,
+      "reportedAccountSwitchCount": null,
+      "reportedIdentityVerified": null,
+      "cause": "The account policy decorates only successful results. A non-restriction error after verified rotation escapes without the updated account proof/history; taskFailureResult also does not transfer identity/picker/count fields.",
+      "possibleConsequence": "Platform retains the old cooling account. A human resume can unnecessarily prepare accounts and reset resume flags, repeating input instead of reading the original result. Actual post-human behavior remains pending.",
+      "productionActions": false
+    }
+  },
+  "postgres": {
+    "startedAt": "2026-10-10T07:39:06.310Z",
+    "sourceTag": "lookup-20261010-rc.1",
+    "storageBackend": "postgres",
+    "postgresVersion": "16.15 (Homebrew)",
+    "checks": [
+      {
+        "name": "real_transaction_rollback_and_concurrent_terminal_retry",
+        "failedFirstResponse": 500,
+        "linkedRowsRolledBack": true,
+        "exactOriginalResultRetained": true
+      },
+      {
+        "name": "platform_abrupt_process_restart_preserves_result"
+      },
+      {
+        "name": "real_cooldown_write_failure_has_no_ack_then_replay_preserves_expiry",
+        "failedFirstResponse": 500,
+        "cooldownMs": 28800000
+      },
+      {
+        "name": "real_http_ack_loss_worker_kill_restart_exact_result_replay",
+        "networkConnections": 2,
+        "androidExecutions": 0,
+        "originalResults": 3
+      },
+      {
+        "name": "all_cooling_pauses_and_rejects_new_query_without_task",
+        "realAccountsRestricted": 0
+      },
+      {
+        "name": "accelerated_eight_hour_expiry_retains_history",
+        "naturalWait": false,
+        "automaticOldQueueResume": false,
+        "existingContract": "requires explicit account preparation/session resume; no automatic timer dispatch"
+      },
+      {
+        "name": "postgres_restart_preserves_all_cooling_and_original_results"
+      }
+    ],
+    "failures": [],
+    "productionActions": false,
+    "realDevicesUsed": 0,
+    "status": "passed",
+    "completedAt": "2026-10-10T07:39:07.023Z",
+    "coverageClarification": "The seven-case suite restarts the platform process against PostgreSQL; database daemon restart and actual pg_dump/pg_restore were separately performed and checked."
+  },
+  "postgresBackupRestore": {
+    "status": "passed",
+    "isolatedDatabaseDaemonRestart": true,
+    "actualPgDumpPgRestore": true,
+    "newSeparateRestoreDatabase": true,
+    "comparedStructuredTables": 5,
+    "originalResults": 4,
+    "cooldownRecords": 2,
+    "productionActions": false
+  },
+  "simulatedConcurrency": {
+    "startedAt": "2026-10-10T07:42:42.688Z",
+    "realDevices": 0,
+    "agents": "two synthetic HTTP reporters",
+    "storage": "isolated PostgreSQL16",
+    "productionActions": false,
+    "checks": [
+      "simultaneous starts for same device yield one session and one 409",
+      "two fake devices progress independently; same account label cooling on A never cools B",
+      "both sessions end and release all synthetic device locks"
+    ],
+    "status": "passed",
+    "completedAt": "2026-10-10T07:42:42.930Z"
+  },
+  "cloudRollbackCompatibility": {
+    "startedAt": "2026-10-10T07:41:00.844Z",
+    "productionActions": false,
+    "scope": "captured cloud production source rollback then rc.1 restoration on cloned synthetic PostgreSQL database; no Android/Agent/mixed-version execution",
+    "checks": [
+      "old cloud reads new results and preserves cooldown/history through device save and graceful shutdown",
+      "rc.1 reload after rollback preserves all four result identities and both cooldown records"
+    ],
+    "status": "passed",
+    "completedAt": "2026-10-10T07:41:01.172Z"
+  },
+  "targetedTests": {
+    "nodePassed": 35,
+    "pythonPassed": 17,
+    "commands": [
+      {
+        "name": "node-boundaries",
+        "command": [
+          "node",
+          "--test",
+          "server/lookup-account-cooldown.test.mjs",
+          "server/lookup-chain-reliability.test.mjs",
+          "windows-agent/src/lookup-account-policy.test.mjs",
+          "windows-agent/src/lookup-status-outbox.test.mjs"
+        ],
+        "exitCode": 0
+      },
+      {
+        "name": "python-cooldown",
+        "command": [
+          "python3",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "windows-agent/scripts",
+          "-p",
+          "test_lookup_account_cooldown.py"
+        ],
+        "exitCode": 0
+      }
+    ],
+    "coverageLimit": "Existing checks passed but omitted the newly reproduced rotation-then-puzzle failure path."
+  },
+  "cleanup": {
+    "isolatedClusterStopped": true,
+    "productionConnections": false,
+    "syntheticDumps": [
+      {
+        "database": "lookup_test_v5",
+        "bytes": 30196,
+        "dumped": true
+      },
+      {
+        "database": "lookup_rollback",
+        "bytes": 30341,
+        "dumped": true
+      },
+      {
+        "database": "lookup_concurrency",
+        "bytes": 30254,
+        "dumped": true
+      }
+    ],
+    "persistentServiceRegistered": false
+  },
+  "sourceInvariantChecks": {
+    "runtimeHashes": 17,
+    "frozenRuntimeHashes": 22,
+    "matched": true,
+    "originalBusinessHashesPreserved": true
+  },
+  "harnessObservations": [
+    "Initial local guard metadata lacked agentId and stopped before task creation; the already verified local Agent identity was then used.",
+    "Private PG fixture corrections: compare claimed-result running state, use alipayDisplayName, select results by resultId rather than list order, and isolate stale worker markers. Failed attempts retained privately; no business code changed.",
+    "Homebrew service postinstall failed due to an existing Service API mismatch; direct installed PostgreSQL16 binaries used a private cluster only, no persistent service registered.",
+    "The first synthetic defect reproduction built ACK timestamps in different milliseconds; corrected to one fixed timestamp before reproducing the actual metadata loss."
+  ],
+  "remainingAcceptance": [
+    "The current original query is waiting for manual puzzle completion; observer retains the same task/result and test controller will not add another original number.",
+    "Repair and retest the confirmed rotation-then-puzzle metadata loss before treating rc.1 as a release candidate accepted for deployment.",
+    "Natural eight-hour waiting, two physical devices/other OEMs/host contention and 24–48-hour canary remain pending.",
+    "Clock acceleration clears cooldown eligibility but does not auto-dispatch the old paused queue; explicit account preparation/session recovery is current behavior.",
+    "Cloud source rollback on cloned synthetic PG passed; production image/secrets, Windows mixed versions and coordinated full rollback/D-075 live remain unverified."
+  ],
+  "productionActions": false,
+  "businessCodeChanged": false,
+  "review": "Self-review of live event order/SQL receipt timing, isolated actual HTTP/SQL rollback and replay, private process/database restart/restore, query uniqueness and immutable source hashes. This report includes a confirmed failure and does not claim complete acceptance.",
+  "privateHarnessHashes": {
+    "real-limit.mjs": "6ce6d1e8063cdaea8db568bf91291b09ebf211c8533e99c02c355ddc31838a8d",
+    "pg-acceptance.mjs": "18ee93a5af7419d60191344934c43e0226f24ce91f834d9a02db0051e9f0ae9f",
+    "rollback-acceptance.mjs": "5e59ed02715780d6972f3ce84dbfcbf1ad604e8b50e5cd6d049eee5bb0656233",
+    "concurrency-acceptance.mjs": "a4e8e031d2197dcfb4de42552b70ec4710052bfe1a4d34ea1a2c2c83199e9099",
+    "reproduce-rotation-human.mjs": "0cc3c7d74aae57b8d435c2f2ed36df04a968cfefb17c38788bdeb537458d9be3"
+  }
+}
