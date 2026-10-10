@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "candidateTag": "lookup-20261010-rc.2",
+  "sourceCommit": "f017254902ad4262bb036a461df725f8424b0758",
+  "startedAt": "2026-10-10T08:19:26.795Z",
+  "completedAt": "2026-10-10T08:29:29.479Z",
+  "status": "remaining_table_completed_target_fault_not_triggered",
+  "scope": {
+    "localPlatform": "127.0.0.1:8789",
+    "deviceName": "118",
+    "alreadyTerminalFromPriorRun": 51,
+    "remainingOriginalQueries": 33,
+    "originalTableTotalNowTerminal": 84,
+    "realValuesOmitted": true,
+    "productionActions": false
+  },
+  "counts": {
+    "submitted": 33,
+    "completed": 33,
+    "named": 27,
+    "notFound": 6,
+    "failed": 0,
+    "humanVerification": 0,
+    "newRestrictions": 0,
+    "rotations": 0
+  },
+  "checks": {
+    "savedAccountCount": 5,
+    "allQueryResultsHaveVerifiedSession": true,
+    "originalResultIdsPreserved": true,
+    "previousResultRecordsUnchanged": 143,
+    "cooldownsUnchanged": true,
+    "newFeishuNotifications": 0,
+    "allPriorNotificationReceiptsUnchanged": 4,
+    "noFalsePuzzleAlert": true,
+    "sessionEnded": true,
+    "finalNoActiveTasksSessionsLocks": true,
+    "adbServerUnchanged": true,
+    "runtimeHashesMatchTag": 17,
+    "frozenHashesMatchTag": 22,
+    "originalBusinessFilesPreserved": 4
+  },
+  "stopReason": "bounded_batch_exhausted_without_new_live_rotation",
+  "targetFaultAcceptance": "NOT PASSED/NOT FAILED: no fresh real restriction/rotation/puzzle, so the new failure branch was not exercised this round",
+  "authorization": {
+    "completed": "User requested continuation of the unfinished local test; resumed only the original remaining33 numbers",
+    "additionalQueries": "Asked whether another bounded round of up to84 queries using the same table is wanted; no answer received at record time, no extra query submitted",
+    "rule": "Prior original84 cap in project section13.5 and private test manifest; shared workflow section6 requires controlled real-device budget"
+  },
+  "remaining": [
+    "rc.2 real restriction -> cooldown ACK -> verified rotation -> genuine puzzle -> notification -> original-result continuation",
+    "Natural eight-hour expiry (earliest existing row 2026-10-10T18:49:37.209+08:00; not yet due)",
+    "Two physical devices/OEMs",
+    "Actual production deployment/Windows mixed version/full rollback and soak"
+  ],
+  "runtimeChangesThisRound": 0,
+  "testsNotRerun": "Offline seven-check regression already passed for this unchanged tag; this round only controlled real-device continuation and metadata/invariant checks",
+  "versionManagement": {
+    "branch": "codex/lookup-production-merge",
+    "codeTagUnchanged": true,
+    "testDocsSeparateCommit": true,
+    "pushedThisRound": false,
+    "productionDeployed": false
+  },
+  "privateEvidenceDirectory": "/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/phone-cloud-rc2-fix-o5whtqqn/continuation",
+  "controllerSha256": "a4daa2c16b14dbe3eac34c806edc872705f5b44fbd97a3854c808fcfa04d14db",
+  "workflowRevision": "2026-09-30",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "review": "Self review of test scope, original query/result identity, saved records/cooldown/notifications and runtime hashes; no independent reviewer",
+  "documentationRecorderCorrection": "Private documentation recorder initially failed source-encoding parsing before any document write; explicit UTF-8 declaration resolved it. Real-device controller and runtime were unaffected."
+}
