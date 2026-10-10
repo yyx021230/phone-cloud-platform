@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "candidateTag": "lookup-20261010-rc.2",
+  "sourceCommit": "f017254902ad4262bb036a461df725f8424b0758",
+  "status": "local_basic_acceptance_passed_not_production_deployed",
+  "startedAt": "2026-10-10T08:14:53.273Z",
+  "completedAt": "2026-10-10T08:15:30.379Z",
+  "scope": {
+    "platform": "127.0.0.1:8789",
+    "deviceName": "118",
+    "maxOriginalQueries": 2,
+    "queriesSubmitted": 2,
+    "realPhoneNumbers": "Two previously authorized missed-name samples; values/names omitted",
+    "productionActions": false
+  },
+  "runtime": {
+    "platformPid": 53874,
+    "agentPid": 53877,
+    "adbServerPidUnchanged": true,
+    "loadedRuntimeHashesMatchedTag": 17,
+    "frozenHashesMatchedTag": 22,
+    "resources": "Existing vendor resources reused; no media build/binary or ADB/USB change"
+  },
+  "checks": [
+    {
+      "ordinal": 1,
+      "status": "succeeded",
+      "nameExtracted": true,
+      "accountIdentityVerified": true,
+      "sameAccount": true,
+      "accountSwitchCount": 0,
+      "accountPreparationEvents": 0,
+      "androidTaskExecutions": 1,
+      "durationMs": 20519
+    },
+    {
+      "ordinal": 2,
+      "status": "succeeded",
+      "nameExtracted": true,
+      "accountIdentityVerified": true,
+      "sameAccount": true,
+      "accountSwitchCount": 0,
+      "accountPreparationEvents": 0,
+      "androidTaskExecutions": 1,
+      "durationMs": 10261
+    }
+  ],
+  "oldSessionResultsPreserved": 51,
+  "cooldownsUnchanged": true,
+  "endConfirmed": true,
+  "activeTasks": 0,
+  "activeLocks": 0,
+  "activeSessions": 0,
+  "privateBackups": [
+    "before-live-reload/state.json",
+    "before-live-reload/agent-data",
+    "before-live-query-state.json"
+  ],
+  "privateEvidenceDirectory": "/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/phone-cloud-rc2-fix-o5whtqqn",
+  "fixtureCorrections": [
+    "The private reload script initially had an extra closing parenthesis and failed parsing before any process action. Corrected and node --check passed; no runtime source change."
+  ],
+  "controllerSha256": "9cfcd2777c33768a986006537a39c31f8ca47e916c6d77443a481db43386f8b1",
+  "reloadControllerSha256": "c5920d8ec460881ab38857c1a6152e9630359fdc07b014743b325ace5d5339d6",
+  "review": "Self review only; immutable tag source hashes and original-result preservation checked.",
+  "notVerified": [
+    "Real rc.2 restriction -> rotation -> puzzle -> automatic/manual resume remains unexercised on a physical device",
+    "Natural eight-hour wait and two physical devices/OEMs",
+    "Production deployment and soak; no production reads or writes this round"
+  ],
+  "versionManagement": {
+    "rc1Unchanged": true,
+    "rc2TagUnchanged": true,
+    "acceptanceDocumentationSeparateCommit": true,
+    "pushedThisRound": false
+  }
+}
