@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-10",
+  "candidateTag": "platform-api-docs-20261010-rc.2",
+  "status": "local_candidate_not_deployed",
+  "branch": "codex/api-documentation-portal",
+  "baseTag": "platform-api-docs-20261010-rc.1",
+  "baseCommit": "03b4fcb820ecac1d9979a71fce9e327142019d4c",
+  "runtimeChanges": [
+    {
+      "path": "public/api-docs.html",
+      "beforeSha256": "cdc421f9738d81e4bc8ff684d2d5bda69e72dcd5b580dc362cfc672ce149b971",
+      "afterSha256": "a9728a55d6b7f19073468e78ba56566a36662e10030720334dcc73477c9f42eb"
+    },
+    {
+      "path": "public/api-docs.css",
+      "beforeSha256": "28f38323f5e2397fafd81035058647f96b5203de0cf1a4ca00fe7ed5d1b43c03",
+      "afterSha256": "aac4dbc65704b6e2dc2f1715ca84dc1fe3d500984afde1312f4aadaaf10bf9de"
+    },
+    {
+      "path": "public/api-docs.js",
+      "beforeSha256": "b480b5989aee024c72b4f571d0aa76339b5e8b42c3086800678669ad93927a26",
+      "afterSha256": "6e00de57a259ac894d45838112a203283110c6e0003c81a2b497712ab57fd4da"
+    }
+  ],
+  "scope": "Only API documentation navigation; all contracts, inventory entry, server, Agent and frozen runtime files unchanged.",
+  "verification": {
+    "command": "node --test scripts/api-docs.test.mjs",
+    "passed": 9,
+    "failed": 0,
+    "skipped": 0,
+    "syntax": "node --check public/api-docs.js passed",
+    "browser": {
+      "desktopWidth": 1440,
+      "mobileWidth": 390,
+      "audiences": [
+        "partner",
+        "platform",
+        "admin",
+        "internal",
+        "all"
+      ],
+      "allGroups": 15,
+      "allEndpointAndGuideLinks": 113,
+      "crossCategorySearch": true,
+      "searchResultScopeAndActiveLink": true,
+      "clearSearch": true,
+      "emptySearchState": true,
+      "expandedGroupRetainedOnNavigation": true,
+      "mobileMenuSelectionCloses": true,
+      "horizontalOverflow": false
+    },
+    "catalogAndOpenapiUnchanged": true,
+    "historical594": "Not rerun for this static navigation-only update; original API_DOCS_TEST_RESULTS.json preserved."
+  },
+  "review": "Primary agent self review; no unresolved blockers. New navigation check covers group ownership, 106 routes and every guide, deep-link category and cross-category search.",
+  "failures": [],
+  "notVerified": [
+    "Production deployment and live API integration not run.",
+    "Original lookup physical-device and production acceptance gaps retained."
+  ],
+  "sideEffects": {
+    "productionActions": 0,
+    "deviceActions": 0,
+    "businessQueries": 0,
+    "notifications": 0,
+    "serviceRestarts": 0,
+    "remotePush": false
+  },
+  "rollback": {
+    "tag": "platform-api-docs-20261010-rc.1",
+    "restoreFiles": [
+      "public/api-docs.html",
+      "public/api-docs.css",
+      "public/api-docs.js"
+    ],
+    "databaseMigration": false
+  },
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+}

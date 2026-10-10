@@ -23,7 +23,7 @@ const context = vm.createContext({ document: { getElementById: element, addEvent
   window: { addEventListener() {}, scrollTo() {}, matchMedia() { return { matches: false }; } }, location: { hash: "" }, setTimeout, clearTimeout });
 // Exercise the real renderer and snippet generator with a minimal DOM, without
 // executing fetch() or changing production exports just to accommodate tests.
-const instrumented = script.replace(/  load\(\);\n\}\)\(\);\s*$/, "  globalThis.referenceTest = { load, requestExample, endpointPage, guidePage, setData: v => { data = v; } };\n})();");
+const instrumented = script.replace(/  load\(\);\n\}\)\(\);\s*$/, "  globalThis.referenceTest = { load, requestExample, endpointPage, guidePage, navigationContent, scopeForPage, navigationScopes, setScope: v => { activeScope = v; }, setData: v => { data = v; } };\n})();");
 assert.ok(instrumented !== script, "Test instrumentation must replace only the auto-load call");
 vm.runInContext(instrumented, context);
 const render = context.referenceTest;
@@ -153,4 +153,31 @@ test("all server and Agent source files retain the immutable rc.2 hash", () => {
     }
   };
   for (const folder of ["server", "windows-agent"]) walk(path.join(base, folder), folder);
+});
+
+test("navigation separates audiences without losing routes or cross-category search results", () => {
+  const scopes = Object.keys(render.navigationScopes);
+  const groups = scopes.flatMap((key) => render.navigationScopes[key].sections.flatMap((section) => Array.from(section.groups || [])));
+  assert.equal(new Set(groups).size, data.groups.length);
+  assert.equal(groups.length, data.groups.length, "Every endpoint group belongs to exactly one audience");
+  render.setScope("partner");
+  const partner = render.navigationContent().html;
+  assert.ok(partner.includes("查名接入流程"));
+  assert.ok(partner.includes('data-group="open-lookup"'));
+  assert.ok(!partner.includes('data-group="admin"'));
+  assert.ok(!partner.includes('data-group="agent"'));
+  for (const e of data.endpoints) {
+    const scope = render.scopeForPage(e.id, "partner");
+    assert.ok(scopes.includes(scope));
+    render.setScope(scope);
+    assert.ok(render.navigationContent().html.includes(`href="#${e.id}"`), e.id);
+  }
+  render.setScope("partner");
+  const internal = data.endpoints.find((e) => e.group === "agent");
+  assert.ok(render.navigationContent(internal.path.toLowerCase()).html.includes(`href="#${internal.id}"`), "Search spans all audiences");
+  render.setScope("all");
+  const all = render.navigationContent().html;
+  for (const e of data.endpoints) assert.ok(all.includes(`href="#${e.id}"`));
+  for (const guide of data.guides) assert.ok(all.includes(`href="#${guide.id}"`));
+  render.setScope("partner");
 });

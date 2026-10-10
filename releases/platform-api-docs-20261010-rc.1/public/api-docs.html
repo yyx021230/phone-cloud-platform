@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="light" />
   <title>API 文档 · Phone Cloud</title>
-  <link rel="stylesheet" href="./api-docs.css?v=20261010-1" />
-  <script src="./api-docs.js?v=20261010-1" defer></script>
+  <link rel="stylesheet" href="./api-docs.css?v=20261010-2" />
+  <script src="./api-docs.js?v=20261010-2" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#article">跳到文档正文</a>
@@ -16,8 +16,15 @@
   </header>
   <div class="docs-shell">
     <aside id="sidebar" class="docs-sidebar" aria-label="文档目录">
-      <label class="search-wrap"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="m12 12 5 5"/></svg><input id="docsSearch" type="search" placeholder="搜索接口、路径、错误码" autocomplete="off" aria-label="搜索接口、路径、错误码"/><kbd>⌘ K</kbd></label>
+      <div class="sidebar-tools">
+      <label class="scope-label" for="docsScope">文档分类</label>
+      <select id="docsScope" class="scope-select" aria-label="文档分类">
+        <option value="partner">第三方接入</option><option value="platform">平台功能</option><option value="admin">管理与运维</option><option value="internal">内部协议</option><option value="all">全部文档</option>
+      </select>
+      <p id="scopeDescription" class="scope-description">查名字 · 短信验证码</p>
+      <div class="search-wrap"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="m12 12 5 5"/></svg><input id="docsSearch" type="search" placeholder="搜索全部文档" autocomplete="off" aria-label="搜索全部文档"/><button id="clearSearch" type="button" class="clear-search" aria-label="清除搜索" hidden>×</button><kbd>⌘ K</kbd></div>
       <p id="searchSummary" class="search-summary" role="status"></p>
+      </div>
       <nav id="navigation"><p class="loading">正在加载文档目录…</p></nav>
       <div class="sidebar-footer"><span class="status-dot"></span><span>API v1 <i>·</i> 更新于 2026.10.10</span></div>
     </aside>
