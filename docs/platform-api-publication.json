@@ -1,0 +1,81 @@
+{
+  "version": "platform-api-docs-20261010-rc.3",
+  "groups": [
+    "auth",
+    "user",
+    "lookup-user",
+    "sms",
+    "automation",
+    "screen"
+  ],
+  "guides": [
+    {
+      "id": "overview",
+      "title": "平台功能概览",
+      "intro": "平台功能 API",
+      "eyebrow": "PLATFORM API",
+      "paragraphs": [
+        "本文仅包含平台功能接口：账户认证、设备库存、网页查名、短信接码、扫码与自动化、实时控制与相册。",
+        "接口基线为 lookup-20261010-rc.2，本地文档候选尚未上线。任务 result/payload 等允许按执行器扩展，字段表列出常用稳定字段；实际接入请核对目标部署版本。"
+      ]
+    },
+    {
+      "id": "authentication",
+      "title": "认证与登录",
+      "intro": "使用登录令牌调用平台接口",
+      "paragraphs": [
+        "先调用 POST /api/v1/auth/login，成功后保存响应中的 session.token。后续请求携带 Authorization: Bearer <TOKEN>；GET /api/v1/auth/me 可读取当前用户。",
+        "具体接口按当前用户角色和设备归属校验。管理员与普通用户的可见设备或可执行任务不同；文档入口不会扩大权限。",
+        "登录令牌由调用方后端妥善保存。收到401先核对令牌是否有效、账户是否可用及角色是否符合接口要求；登录限流时按 retryAfterSeconds 退避。任务受理不代表执行完成，请保存原任务/会话ID并查询状态。"
+      ]
+    },
+    {
+      "id": "models",
+      "title": "公共数据模型",
+      "intro": "平台功能的数据模型",
+      "paragraphs": [
+        "本页列出当前平台接口引用的数据模型。result、payload、health 等对象可按执行器扩展；通用模型列常用稳定字段。请求和返回字段以具体接口说明为准。"
+      ]
+    },
+    {
+      "id": "errors",
+      "title": "错误与排障",
+      "intro": "根据 HTTP 状态定位问题",
+      "paragraphs": [
+        "接口失败通常返回包含 error 字符串的 JSON；先检查HTTP状态、请求字段、当前登录角色和设备归属，再查询原任务状态。网络超时可能意味着请求已受理，不能直接重复提交任务。"
+      ]
+    }
+  ],
+  "commonErrors": [
+    [
+      "400",
+      "invalid_json",
+      "检查JSON格式、字段类型及必填参数。"
+    ],
+    [
+      "401",
+      "unauthorized",
+      "检查Bearer令牌、账户状态与接口角色要求。"
+    ],
+    [
+      "404",
+      "资源不存在",
+      "检查设备/任务/会话ID以及当前用户可见范围。"
+    ],
+    [
+      "409",
+      "device_busy / device_not_available",
+      "设备占用或不可用；查询已有任务，避免重复提交。"
+    ],
+    [
+      "429",
+      "too_many_login_attempts / sms_refresh_too_frequent",
+      "按retryAfterSeconds退避；具体限制见对应接口。"
+    ],
+    [
+      "5xx",
+      "服务端错误",
+      "结果可能未知；先查询原任务/会话ID，记录错误并设置总重试期限。"
+    ]
+  ]
+}

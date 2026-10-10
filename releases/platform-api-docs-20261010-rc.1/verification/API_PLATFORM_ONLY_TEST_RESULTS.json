@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-10",
+  "candidateTag": "platform-api-docs-20261010-rc.3",
+  "status": "local_candidate_not_deployed",
+  "branch": "codex/api-documentation-portal",
+  "baseTag": "platform-api-docs-20261010-rc.2",
+  "baseCommit": "e8d7f77c6015be0f9dd886b8dc204f6366982a71",
+  "runtimeChanges": [
+    {
+      "path": "public/api-docs.html",
+      "beforeSha256": "a9728a55d6b7f19073468e78ba56566a36662e10030720334dcc73477c9f42eb",
+      "afterSha256": "903d09de65a05c308dd5c9eb399f7390054068efa2da062c2a053207128d29d8"
+    },
+    {
+      "path": "public/api-docs.css",
+      "beforeSha256": "aac4dbc65704b6e2dc2f1715ca84dc1fe3d500984afde1312f4aadaaf10bf9de",
+      "afterSha256": "e06f407f775fd2485b61a15419f908fd3f5bcb9f9a42ccd9cbf8a440e0432ffb"
+    },
+    {
+      "path": "public/api-docs.js",
+      "beforeSha256": "6e00de57a259ac894d45838112a203283110c6e0003c81a2b497712ab57fd4da",
+      "afterSha256": "3b7a23cf46773aaf18486d57a1e2fa45e3fe4a080d177c4702ac93fcb547145d"
+    },
+    {
+      "path": "public/api-reference.json",
+      "beforeSha256": "e1208e3328a0d84b85ae50e607d20f761969cbca9d63455f7941a89c5d9aaf5f",
+      "afterSha256": "e3230f097f472ad7babc56d3b0c6f6f98ed449edcdf785274434523f1829242e"
+    },
+    {
+      "path": "public/openapi.json",
+      "beforeSha256": "5c20ba7e546b837538a00efb0ec8f32cec7ba1e3275b78c60b9519ef68664cbf",
+      "afterSha256": "8b28bccb979768eb6e902e23215173d140a9899ebf23ef0cd7d507cd8e858829"
+    }
+  ],
+  "scope": {
+    "publishedHttpOperations": 32,
+    "publishedGroups": 6,
+    "publishedGuides": 4,
+    "publishedModels": 18,
+    "websockets": 0,
+    "sourceRoutesReviewedBeforeFiltering": 106,
+    "businessApisChanged": false,
+    "inventoryEntryUnchanged": true,
+    "serverAndAgentUnchanged": true,
+    "frozenHashesPreserved": 22
+  },
+  "verification": {
+    "command": "node --test scripts/api-docs.test.mjs",
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0,
+    "nodeExamplesParsed": 32,
+    "pythonExamplesParsed": 32,
+    "examplesExecuted": false,
+    "javascriptSyntax": "passed",
+    "reproducibleGeneration": true,
+    "unknownRouteGuardRetained": true,
+    "downloadSpecRefsAndBearerAuth": true,
+    "excludedCategoriesAbsentFromPublishedCatalogAndSearch": true,
+    "browser": {
+      "desktopWidth": 1440,
+      "mobileWidth": 390,
+      "categorySelectorRemoved": true,
+      "oldExcludedLinkFallsBackToPlatformOverview": true,
+      "platformDeviceDeepLink": true,
+      "onlySixPlatformGroups": true,
+      "mobileMenu": true,
+      "horizontalOverflow": false
+    },
+    "historicalRegression": "594 suite not rerun for document-only scope update; original evidence remains historical."
+  },
+  "review": "Primary agent self review; publication filtering does not modify business routes or permissions. Scoped model closure and valid guide links verified.",
+  "failures": [
+    "Version-record helper initially used an absolute Git object path and stopped before writes; corrected to repository-relative path. No product failure."
+  ],
+  "notVerified": [
+    "No live business API integration, production or physical device acceptance performed.",
+    "Original lookup rc.2 natural cooldown/real fault combination, multi-device and soak gaps retained."
+  ],
+  "sideEffects": {
+    "productionActions": 0,
+    "deviceActions": 0,
+    "businessRequests": 0,
+    "notifications": 0,
+    "serviceRestarts": 0,
+    "remotePush": false
+  },
+  "rollback": {
+    "tag": "platform-api-docs-20261010-rc.2",
+    "restoreStaticFiles": [
+      "public/api-docs.html",
+      "public/api-docs.css",
+      "public/api-docs.js",
+      "public/api-reference.json",
+      "public/openapi.json"
+    ],
+    "databaseMigration": false
+  },
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+}

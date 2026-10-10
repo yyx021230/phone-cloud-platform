@@ -123,15 +123,28 @@ def make(candidate):
         endpoints.append(endpoint)
     unknown = set(reviewed['endpoints']) - seen
     if unknown: raise ValueError('Removed/stale routes ' + str(unknown))
-    data = dict(version='platform-api-docs-20261010-rc.1', updatedAt='2026-10-10',
+    publication = json.loads((ROOT / 'docs/platform-api-publication.json').read_text())
+    selected = [e for e in endpoints if e['group'] in publication['groups']]
+    # Publish only referenced models, including their recursive dependencies.
+    needed = set()
+    def include_type(typ):
+        name = typ.replace('|null', '').replace('[]', '')
+        if name not in reviewed['models'] or name in needed: return
+        needed.add(name)
+        for field in reviewed['models'][name]: include_type(field['type'])
+    for endpoint in selected:
+        for field in endpoint['response'].split(','): include_type(field.split(':')[1])
+        for parameter in endpoint['parameters']: include_type(parameter['type'])
+    data = dict(version=publication['version'], updatedAt='2026-10-10',
                 baseline='lookup-20261010-rc.2', status='本地候选 · 未发布',
-                routerSha256=hashlib.sha256(source.encode()).hexdigest(),
-                groups=reviewed['groups'], guides=reviewed['guides'], models=reviewed['models'],
-                commonErrors=reviewed['commonErrors'], websockets=reviewed['websockets'], endpoints=endpoints)
+                routerSha256=hashlib.sha256(source.encode()).hexdigest(), sourceRoutesReviewed=len(endpoints),
+                groups=[g for g in reviewed['groups'] if g[0] in publication['groups']], guides=publication['guides'],
+                models={k: v for k, v in reviewed['models'].items() if k in needed},
+                commonErrors=publication['commonErrors'], websockets=[], endpoints=selected)
     out = candidate / 'public/api-reference.json'
     out.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
     build_openapi(data, candidate / 'public/openapi.json')
-    print('Built', len(endpoints), 'HTTP operations and', len(data['websockets']), 'WebSocket channels ->', out)
+    print('Reviewed', len(endpoints), 'routes; built', len(selected), 'platform HTTP operations and', len(data['websockets']), 'WebSocket channels ->', out)
 
 
 def build_openapi(data, out):
@@ -144,17 +157,18 @@ def build_openapi(data, out):
         if typ not in ['string', 'number', 'integer', 'boolean', 'object']:
             raise ValueError('Unknown API schema type: ' + typ)
         return {'type': typ}
-    doc = {'openapi': '3.1.0', 'info': {'title': 'Phone Cloud API', 'version': data['version'],
-           'description': '本地候选，未部署。接口基线 lookup-20261010-rc.2。内部接口不授予第三方权限。HMAC签名算法和状态流见api-docs.html；时间戳为毫秒，签名只使用pathname和最终UTF-8请求体。'},
+    doc = {'openapi': '3.1.0', 'info': {'title': 'Phone Cloud 平台功能 API', 'version': data['version'],
+           'description': '仅平台功能接口，本地候选未部署。使用登录令牌Bearer认证；接口基线lookup-20261010-rc.2。'},
            'servers': [{'url': 'https://cloud.example.com', 'description': '占位域名；替换为管理员交付的HTTPS根地址'}],
            'tags': [{'name': g[0], 'description': g[1] + ' · ' + g[2]} for g in data['groups']],
            'paths': {}, 'components': {'securitySchemes': {
              'Bearer': {'type': 'http', 'scheme': 'bearer'},
              'HmacSignature': {'type': 'apiKey', 'in': 'header', 'name': 'X-Signature', 'description': 'HMAC-SHA256小写hex；还必须提供X-Client-Id/X-Timestamp/X-Nonce。仅后端使用密钥。'}},
              'schemas': {}}, 'x-websocket-channels': data['websockets']}
+    if not any(e['auth'] == 'hmac' for e in data['endpoints']): doc['components']['securitySchemes'].pop('HmacSignature')
     for name, fields in data['models'].items():
         doc['components']['schemas'][name] = {'type': 'object', 'additionalProperties': True,
-            'description': '公开开放接口模型为完整字段表；平台/内部模型列常用稳定字段，result/health/payload允许按任务类型扩展。',
+            'description': '平台模型列常用稳定字段，result/health/payload允许按任务类型扩展。',
             'properties': {f['name']: {**schema(f['type']), 'description': f['description']} for f in fields}}
     for e in data['endpoints']:
         response_properties = {name: schema(typ) for name, typ in (field.split(':') for field in e['response'].split(',')) if name != 'binary'}

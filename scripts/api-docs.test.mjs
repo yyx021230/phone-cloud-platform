@@ -23,27 +23,26 @@ const context = vm.createContext({ document: { getElementById: element, addEvent
   window: { addEventListener() {}, scrollTo() {}, matchMedia() { return { matches: false }; } }, location: { hash: "" }, setTimeout, clearTimeout });
 // Exercise the real renderer and snippet generator with a minimal DOM, without
 // executing fetch() or changing production exports just to accommodate tests.
-const instrumented = script.replace(/  load\(\);\n\}\)\(\);\s*$/, "  globalThis.referenceTest = { load, requestExample, endpointPage, guidePage, navigationContent, scopeForPage, navigationScopes, setScope: v => { activeScope = v; }, setData: v => { data = v; } };\n})();");
+const instrumented = script.replace(/  load\(\);\n\}\)\(\);\s*$/, "  globalThis.referenceTest = { load, requestExample, endpointPage, guidePage, navigationContent, navigationSections, setData: v => { data = v; } };\n})();");
 assert.ok(instrumented !== script, "Test instrumentation must replace only the auto-load call");
 vm.runInContext(instrumented, context);
 const render = context.referenceTest;
 render.setData(data);
 
-test("generated catalog is reproducible and all 106 HTTP / 6 WS routes are covered", () => {
+test("platform catalog is reproducible and publishes 32 platform routes only", () => {
   const before = ["api-reference.json", "openapi.json"].map((file) => fs.readFileSync(path.join(publicDir, file), "utf8"));
   const build = spawnSync("python3", [path.join(root, "scripts/build-api-docs.py")], { cwd: root, encoding: "utf8" });
   assert.equal(build.status, 0, build.stderr);
   assert.deepEqual(["api-reference.json", "openapi.json"].map((file) => fs.readFileSync(path.join(publicDir, file), "utf8")), before);
-  assert.equal(data.endpoints.length, 106);
-  assert.equal(data.websockets.length, 6);
-  assert.equal(new Set(data.endpoints.map((e) => e.id)).size, 106);
-  assert.equal(Object.values(spec.paths).reduce((n, p) => n + Object.keys(p).length, 0), 106);
+  assert.equal(data.endpoints.length, 32);
+  assert.equal(data.websockets.length, 0);
+  assert.equal(new Set(data.endpoints.map((e) => e.id)).size, 32);
+  assert.equal(Object.values(spec.paths).reduce((n, p) => n + Object.keys(p).length, 0), 32);
   assert.equal(crypto.createHash("sha256").update(fs.readFileSync(path.join(candidate, "server/index.mjs"))).digest("hex"), data.routerSha256);
-  const relay = fs.readFileSync(path.join(candidate, "server/screen-relay.mjs"), "utf8");
-  assert.equal((relay.match(/const \w+Match = url\.pathname\.match/g) || []).length, data.websockets.length);
+  assert.equal(data.sourceRoutesReviewed, 106);
 });
 
-test("OpenAPI references, path parameters, methods and HMAC headers are valid", () => {
+test("OpenAPI references, path parameters, methods and Bearer security are valid", () => {
   const visit = (value) => {
     if (!value || typeof value !== "object") return;
     if (value.$ref) assert.ok(spec.components.schemas[value.$ref.split("/").at(-1)], value.$ref);
@@ -54,11 +53,8 @@ test("OpenAPI references, path parameters, methods and HMAC headers are valid", 
     const op = spec.paths[e.path][e.method.toLowerCase()];
     assert.equal(op.operationId, e.id);
     for (const [, name] of e.path.matchAll(/\{(\w+)\}/g)) assert.ok(op.parameters.some((p) => p.in === "path" && p.name === name && p.required));
-    if (e.auth === "hmac") {
-      assert.ok(op.security.some((s) => s.HmacSignature));
-      for (const name of ["X-Client-Id", "X-Timestamp", "X-Nonce"]) assert.ok(op.parameters.some((p) => p.name === name && p.required));
-      if (e.idempotency === "required") assert.ok(op.parameters.some((p) => p.name === "Idempotency-Key" && p.required));
-    }
+    assert.notEqual(e.auth, "hmac");
+    assert.deepEqual(op.security, e.auth === "public" ? [] : [{ Bearer: [] }]);
     assert.ok(!e.parameters.some((p) => p.name.startsWith("p1")));
   }
 });
@@ -84,33 +80,23 @@ test("all endpoint pages render; Node.js and Python examples parse without execu
     fs.writeFileSync(examples, JSON.stringify(pythonExamples));
     const python = spawnSync("python3", ["-c", "import json,sys; data=json.load(open(sys.argv[1])); [compile(x['code'], x['id'], 'exec') for x in data]; print(len(data))", examples], { encoding: "utf8" });
     assert.equal(python.status, 0, python.stderr);
-    assert.equal(Number(python.stdout), 105);
+    assert.equal(Number(python.stdout), 32);
   } finally { fs.rmSync(temp, { recursive: true }); }
 });
 
-test("published signing example matches the actual server signer with millisecond timestamps", () => {
-  const guide = data.guides.find((g) => g.id === "authentication");
-  const signerContext = vm.createContext({ crypto });
-  vm.runInContext(guide.code.replace('import crypto from "node:crypto";', "").replace("export function", "function") + "\nglobalThis.sign = signedHeaders;", signerContext);
-  const server = fs.readFileSync(path.join(candidate, "server/index.mjs"), "utf8");
-  const actualFunction = server.match(/function signOpenApiRequest\([\s\S]*?\n\}/)[0];
-  const actualSign = vm.runInNewContext(`(${actualFunction})`, { crypto });
-  for (const [method, pathname, body] of [["GET", "/api/v1/open/name-lookups/devices", ""], ["POST", "/api/v1/open/name-lookups/sessions", '{"deviceId":"adb:SERIAL-DEMO"}'], ["POST", "/api/v1/open/name-lookups/sessions/demo/end", "{}"]]) {
-    const headers = signerContext.sign("synthetic-test-secret-only", "partner-demo", method, pathname, body);
-    assert.equal(headers["X-Timestamp"].length, 13);
-    assert.equal(headers["X-Signature"], actualSign("synthetic-test-secret-only", method, pathname, headers["X-Timestamp"], headers["X-Nonce"], body));
-  }
-});
-
-test("open lookup model tables exactly match real public serialization and queue actions", async () => {
-  const { publicOpenLookupSession, publicOpenLookupResult } = await import(path.join(candidate, "server/open-name-lookup-api.mjs"));
-  assert.deepEqual(data.models.OpenLookupSession.map((f) => f.name).sort(), Object.keys(publicOpenLookupSession()).sort());
-  assert.deepEqual(data.models.OpenLookupResult.map((f) => f.name).sort(), Object.keys(publicOpenLookupResult()).sort());
-  const recovery = publicOpenLookupSession({ sessionId: "demo", status: "ready", results: [{ resultId: "query-demo", status: "needs_recovery", phoneNumber: "13800000000" }] });
-  assert.equal(recovery.humanAction.required, false);
-  assert.equal(recovery.queueState.action, "retry_current_query");
-  const exhausted = publicOpenLookupSession({ status: "ready", requiresAccountSwitch: true });
-  assert.equal(exhausted.queueState.action, "end_session_and_select_another_device");
+test("published data and downloads exclude other categories and unused models", () => {
+  const reviewed = JSON.parse(fs.readFileSync(path.join(root, "docs/api-reference-contracts.json")));
+  const expected = new Set(["auth", "user", "lookup-user", "sms", "automation", "screen"]);
+  assert.deepEqual(new Set(data.groups.map((g) => g[0])), expected);
+  for (const e of data.endpoints) assert.ok(expected.has(e.group));
+  assert.deepEqual(data.guides.map((g) => g.id), ["overview", "authentication", "models", "errors"]);
+  assert.equal(spec.components.securitySchemes.HmacSignature, undefined);
+  assert.deepEqual(spec["x-websocket-channels"], []);
+  assert.equal(data.models.OpenLookupSession, undefined);
+  assert.equal(data.models.OpenLookupResult, undefined);
+  for (const [name, fields] of Object.entries(data.models)) assert.deepEqual(fields, reviewed.models[name]);
+  for (const path of Object.keys(spec.paths)) assert.ok(!path.includes("/open/") && !path.includes("/windows-agents") && !path.includes("/internal/"), path);
+  assert.ok(!JSON.stringify(data.guides).includes("HMAC"));
 });
 
 test("renderer escapes untrusted strings and only fetches static reference data", async () => {
@@ -155,29 +141,20 @@ test("all server and Agent source files retain the immutable rc.2 hash", () => {
   for (const folder of ["server", "windows-agent"]) walk(path.join(base, folder), folder);
 });
 
-test("navigation separates audiences without losing routes or cross-category search results", () => {
-  const scopes = Object.keys(render.navigationScopes);
-  const groups = scopes.flatMap((key) => render.navigationScopes[key].sections.flatMap((section) => Array.from(section.groups || [])));
-  assert.equal(new Set(groups).size, data.groups.length);
-  assert.equal(groups.length, data.groups.length, "Every endpoint group belongs to exactly one audience");
-  render.setScope("partner");
-  const partner = render.navigationContent().html;
-  assert.ok(partner.includes("查名接入流程"));
-  assert.ok(partner.includes('data-group="open-lookup"'));
-  assert.ok(!partner.includes('data-group="admin"'));
-  assert.ok(!partner.includes('data-group="agent"'));
-  for (const e of data.endpoints) {
-    const scope = render.scopeForPage(e.id, "partner");
-    assert.ok(scopes.includes(scope));
-    render.setScope(scope);
-    assert.ok(render.navigationContent().html.includes(`href="#${e.id}"`), e.id);
+test("platform navigation and search cannot restore excluded categories", () => {
+  const groups = render.navigationSections.flatMap((section) => Array.from(section.groups || []));
+  assert.equal(new Set(groups).size, 6);
+  const nav = render.navigationContent().html;
+  for (const e of data.endpoints) assert.ok(nav.includes(`href="#${e.id}"`), e.id);
+  for (const guide of data.guides) assert.ok(nav.includes(`href="#${guide.id}"`));
+  assert.ok(!nav.includes('data-group="open-lookup"'));
+  assert.ok(!nav.includes('data-group="admin"'));
+  assert.ok(!nav.includes('data-group="agent"'));
+  assert.equal(render.navigationContent("/api/v1/open/").count, 0);
+  assert.equal(render.navigationContent("/api/v1/windows-agents").count, 0);
+  assert.ok(!fs.readFileSync(path.join(publicDir, "api-docs.html"), "utf8").includes('id="docsScope"'));
+  for (const guide of data.guides) {
+    const html = render.guidePage(guide);
+    for (const [, id] of html.matchAll(/href="#([^"~]+)(?:~[^"]*)?"/g)) assert.ok(data.guides.some((g) => g.id === id) || data.endpoints.some((e) => e.id === id), id);
   }
-  render.setScope("partner");
-  const internal = data.endpoints.find((e) => e.group === "agent");
-  assert.ok(render.navigationContent(internal.path.toLowerCase()).html.includes(`href="#${internal.id}"`), "Search spans all audiences");
-  render.setScope("all");
-  const all = render.navigationContent().html;
-  for (const e of data.endpoints) assert.ok(all.includes(`href="#${e.id}"`));
-  for (const guide of data.guides) assert.ok(all.includes(`href="#${guide.id}"`));
-  render.setScope("partner");
 });
