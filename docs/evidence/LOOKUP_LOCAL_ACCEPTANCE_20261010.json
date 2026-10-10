@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-10",
+  "timezone": "Asia/Shanghai",
+  "status": "待验收",
+  "localSampleStatus": "passed",
+  "productionStatus": "explicitly_deferred_by_user",
+  "sourceTag": "lookup-20261010-rc.1",
+  "sourceCommit": "4c62986c9087b074dd15581742c656db6a49ea98",
+  "deviceName": "118",
+  "localBase": "http://127.0.0.1:8789",
+  "storageBackend": "json",
+  "privateEvidenceDirectory": "/private/tmp/phone-cloud-rc1-local-20261010-e6occ1yo",
+  "startedAt": "2026-10-10T07:17:53.545Z",
+  "completedAt": "2026-10-10T07:22:12.155Z",
+  "actualChecks": {
+    "reportedMissingNames": {
+      "originalQueries": 2,
+      "succeeded": 2,
+      "namesExtracted": 2,
+      "fullPhoneNumbersAndNamesOmitted": true
+    },
+    "initialAccountVerification": {
+      "verified": true,
+      "savedAccountCount": 5,
+      "activeCooldownCount": 1
+    },
+    "existingCooldownInheritedWithoutExtendingExpiry": true,
+    "controlledAlipayStopRecovery": {
+      "stops": 1,
+      "recoveryAttempts": 1,
+      "sameAccount": true,
+      "accountNavigationRepeated": false,
+      "accountSwitches": 0
+    },
+    "realPuzzleHandover": {
+      "observed": true,
+      "feishuReceipts": 1,
+      "httpStatus": 200,
+      "providerCode": 0,
+      "sameOriginalResultResumed": true,
+      "extraApiSubmission": false
+    },
+    "coolingAccountSelectionRejected": {
+      "httpStatus": 409,
+      "error": "lookup_account_cooling",
+      "newTaskCreated": false
+    },
+    "endAndRelease": {
+      "sessionEnded": true,
+      "activeTasks": 0,
+      "activeSessions": 0,
+      "activeDeviceLocks": 0
+    },
+    "sourceHashes": {
+      "runtime": 17,
+      "frozenRuntime": 22,
+      "matched": true
+    },
+    "adbServerUnchanged": true
+  },
+  "testHarnessObservations": [
+    "The source capture excludes local binary resources. The first local startup detected the missing scrcpy resource before queries; the existing local vendor directory was reused unchanged and Agent screen capability rechecked.",
+    "The private test observer initially treated a valid HTTP 202 query acceptance as an error. It reattached to the unique existing original result without resubmitting; exactly two original API queries and one automatic same-result puzzle resume were verified."
+  ],
+  "remainingAcceptance": [
+    {
+      "area": "new live restriction -> durable ACK -> automatic account rotation -> same-number continuation",
+      "coverage": "offline covered; not newly triggered on rc.1 device",
+      "possibleSymptom": "Wrong account cooling, rotation before durable persistence or duplicate/lost result if an untested production failure occurs."
+    },
+    {
+      "area": "all accounts cooling and natural eight-hour expiry",
+      "coverage": "offline covered; one active cooldown inheritance/selection rejection passed on device",
+      "possibleSymptom": "Incorrect queue pause/resume, early account reuse or remaining stuck after expiry."
+    },
+    {
+      "area": "real PostgreSQL transaction failure/restart and actual network/process loss",
+      "coverage": "offline/mock covered; this live platform uses JSON",
+      "possibleSymptom": "Execution completes but platform result/cooldown is stale, terminal report remains pending or data does not survive a failed save."
+    },
+    {
+      "area": "multiple devices, other OEM variants and simultaneous human/control/task occupancy",
+      "coverage": "single local Vivo only",
+      "possibleSymptom": "Shared resource/ownership contention or an unsupported UI layout; this test does not establish a fleet-wide failure."
+    },
+    {
+      "area": "production image, secret/mount configuration, mixed versions and coordinated rollback",
+      "coverage": "minimum source patch and rollback originals prepared; actual deployment deferred",
+      "possibleSymptom": "Missing dependency/notification configuration, incompatible cloud/Agent versions or loss of new state if rollback is executed incorrectly."
+    }
+  ],
+  "authorizationBoundary": {
+    "currentRealQueryBatch": 2,
+    "extraBatch": "not_started; user asked about gaps rather than choosing extension scope",
+    "productionReadWriteRestart": false
+  },
+  "review": "Self-review of device events, unique original query/result identities, notification receipt, rejection side effects and immutable source hashes; not full production acceptance.",
+  "runtimeAfterTest": "rc.1 local platform and exact-serial guarded Agent retained, idle; prior state/results/cooldown preserved. No repository business files modified."
+}
