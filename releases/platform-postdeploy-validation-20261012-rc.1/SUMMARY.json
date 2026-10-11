@@ -1,0 +1,42 @@
+{
+  "productionVersion": "platform-api-entry-20261012-deployed.1",
+  "runtimeUntouched": true,
+  "testCounts": {
+    "screen": "594",
+    "agent": "289",
+    "python": "163",
+    "lookup": "56",
+    "sdk-node": "3",
+    "sdk-python": "1",
+    "published-api": "9",
+    "local-api": "9"
+  },
+  "countsOverlap": true,
+  "firstRegressionFailed": [
+    "screen stylesheet cache assertion remained at previous release value",
+    "documentation generator hardcoded unpublished metadata"
+  ],
+  "failuresResolvedWithoutProductionChanges": true,
+  "currentRuntimeFilesMatched": {
+    "cloud": 53,
+    "windows": 60
+  },
+  "exactChangedAndFrozenFilesMatched": 44,
+  "publicHttpChecks": 13,
+  "snapshotGapSeconds": 222.352531,
+  "continuousObservationAutomationId": "automation-2",
+  "cadenceMinutes": 30,
+  "productionWrites": 0,
+  "newRealQueries": 0,
+  "newFeishuAttempts": 0,
+  "productionAcceptanceComplete": false,
+  "pending": [
+    "fresh authorized phone numbers",
+    "natural limit/account switching/puzzle/original query resume",
+    "two physical devices/OEM",
+    "natural 8-hour cooldown",
+    "24-48-hour observation",
+    "real browser video and touch acceptance after rollout",
+    "real SMS/scan/publish business acceptance not attempted in this round"
+  ]
+}

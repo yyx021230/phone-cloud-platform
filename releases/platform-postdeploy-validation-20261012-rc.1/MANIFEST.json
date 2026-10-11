@@ -1,0 +1,12 @@
+{
+  "sourceTag": "platform-api-docs-20261010-rc.5",
+  "metadataTag": "platform-update-20261012-rc.3",
+  "entryTag": "platform-api-entry-20261012-rc.1",
+  "screenTestBeforeSha256": "ac93659c7383721cf094051d1c33f0a7f7d65dbeb03c82cb7c860d5593ad3247",
+  "screenTestAfterSha256": "b282cadea98fd0b546f6c6e2c10dc5e23aaa90cd6455add1b5ef8fc37a3ff134",
+  "runtimeModified": false,
+  "fixes": [
+    "update exact stylesheet cache assertion to approved production cache key",
+    "generator accepts reviewed production metadata and reproduces deployed JSON byte-for-byte"
+  ]
+}

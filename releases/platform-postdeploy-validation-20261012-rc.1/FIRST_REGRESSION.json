@@ -1,0 +1,64 @@
+{
+  "sourceTag": "platform-api-docs-20261010-rc.5",
+  "metadataTag": "platform-update-20261012-rc.3",
+  "entryTag": "platform-api-entry-20261012-rc.1",
+  "runtimeHashesVerified": 44,
+  "loopbackNetworkOnly": true,
+  "realCredentials": false,
+  "checks": [
+    {
+      "check": "syntax",
+      "exitCode": 0,
+      "seconds": 1.65,
+      "logSha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+    },
+    {
+      "check": "screen",
+      "exitCode": 1,
+      "seconds": 7.32,
+      "logSha256": "4eff9416ebe8fbb6c9a7f511079344580559f971415dcabdcce3b86fdeb1a1fa"
+    },
+    {
+      "check": "agent",
+      "exitCode": 0,
+      "seconds": 2.56,
+      "logSha256": "14d8538a78c63f5eaa7bb5125a5a59a87b87dcd1aade8239827d2c6204dfbef3"
+    },
+    {
+      "check": "python",
+      "exitCode": 0,
+      "seconds": 1.36,
+      "logSha256": "9a3befab4c6c1c04581222aed8c43eb696ff7e0a2fbcc80254bba2861b7bb1da"
+    },
+    {
+      "check": "lookup",
+      "exitCode": 0,
+      "seconds": 2.31,
+      "logSha256": "f9f22dad86704cec89ec9841878e3c238f9bfb36a6dc11d19dfa667c55095a9f"
+    },
+    {
+      "check": "sdk-node",
+      "exitCode": 0,
+      "seconds": 0.19,
+      "logSha256": "7fa12e446d2bef818e28414d79c9aa63a9b697d6b579ea1e983e570a7694e8b5"
+    },
+    {
+      "check": "sdk-python",
+      "exitCode": 0,
+      "seconds": 0.09,
+      "logSha256": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5"
+    },
+    {
+      "check": "api-docs",
+      "exitCode": 1,
+      "seconds": 2.5,
+      "logSha256": "d343192219d43d162d49f9e05b3ee80e8c0469706a550b19e4dcb267beaafdc0"
+    },
+    {
+      "check": "smoke",
+      "exitCode": 0,
+      "seconds": 3.46,
+      "logSha256": "a917e1a72233ca45562168e6d43183ba6b5a2ada4fb720884a1a54c0f0305bca"
+    }
+  ]
+}

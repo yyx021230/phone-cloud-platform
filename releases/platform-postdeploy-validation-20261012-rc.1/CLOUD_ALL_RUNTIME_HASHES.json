@@ -1,0 +1,7 @@
+{
+  "checkedRuntimeFiles": 53,
+  "passed": true,
+  "differences": [],
+  "packagingNote": "9 new test files intentionally absent in production; all test files excluded from runtime comparison",
+  "rawFilesCompared": 94
+}
