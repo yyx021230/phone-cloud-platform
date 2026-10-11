@@ -1,0 +1,18 @@
+{
+  "version": "platform-api-entry-20261012-rc.1",
+  "baseReceiptCommit": "9afd367fc7a4097f52fd08f130c55631120c54eb",
+  "baseImageId": "sha256:4e484ed7db6da2760c64de1f4481fdb7deb97b7acf4e4182e1658507a1d8b437",
+  "files": [
+    {
+      "path": "public/index.html",
+      "beforeSha256": "bf20576d5d965374bbc4f7973fa59a8b6200b0cfeac9ff7220ae1986d22f98b5",
+      "afterSha256": "988408fea9a82091ac75116d8a3ca81a594f73c686bb59c0fcadaea7d190542c"
+    },
+    {
+      "path": "public/styles.css",
+      "beforeSha256": "8956348200adee88a821ccd25d3cff2038b1930e04a7286f80c78257062bd98b",
+      "afterSha256": "115f31e4cb5ccfb11550dcd2978dcf20464ea007b247be6bcf475a4a694fffde"
+    }
+  ],
+  "method": "atomic static hot patch; immutable restart image; no service restart"
+}

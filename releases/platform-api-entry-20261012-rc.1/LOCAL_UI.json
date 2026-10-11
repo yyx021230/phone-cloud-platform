@@ -1,0 +1,21 @@
+{
+  "localIsolation": "JSON backend, no inherited credentials, loopback-only network sandbox",
+  "passed": [
+    "admin dashboard docs link visible",
+    "admin device page docs link visible",
+    "inventory docs link visible outside hidden title",
+    "duplicate header hidden in workbench",
+    "return to admin shows header link",
+    "390px inventory link within viewport",
+    "click opens relative api-docs.html new window"
+  ],
+  "failedResolved": [
+    "first preview inline style blocked by existing CSP; replaced with external CSS",
+    "existing inventory title CSS hides original docs link; moved link outside title"
+  ],
+  "fullRegressionRepeated": false,
+  "previousFullRegressionReceipt": "platform-update-20261012-deployed.1",
+  "realDeviceQueries": 0,
+  "feishuAttempts": 0,
+  "productionDeployed": false
+}
