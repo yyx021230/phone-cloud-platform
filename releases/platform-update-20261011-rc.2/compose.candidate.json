@@ -1,0 +1,18 @@
+{
+  "services": {
+    "phone-cloud": {
+      "image": "phone-cloud-platform:platform-update-20261011-rc.1",
+      "environment": {
+        "LOOKUP_HUMAN_FEISHU_WEBHOOK_FILE": "/run/secrets/lookup-human-feishu-webhook"
+      },
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/opt/phone-cloud-platform/staging/platform-update-20261011-rc.1/private/lookup-human-feishu-webhook",
+          "target": "/run/secrets/lookup-human-feishu-webhook",
+          "read_only": true
+        }
+      ]
+    }
+  }
+}

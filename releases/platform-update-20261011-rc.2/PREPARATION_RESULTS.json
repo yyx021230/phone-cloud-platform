@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "receiptVersion": "platform-update-20261011-rc.2",
+  "status": "candidate_verified_awaiting_maintenance_window",
+  "sourceTag": "platform-api-docs-20261010-rc.5",
+  "sourceCommit": "7f695507761b07504a94b7372de0c340befbf33f",
+  "previousPreparationCommit": "9f4459528dcd8fc483eaaf9120d262adae2d3199",
+  "previousPreparationTag": "platform-update-20261011-rc.1",
+  "branch": "codex/platform-update-prep-20261011",
+  "startingWorktreeDirtyEntries": 0,
+  "originalWorktreeExistingDirtyEntries": 235,
+  "workflow": {
+    "revision": "2026-09-30",
+    "sha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+  },
+  "authorization": {
+    "userRequested": "推进上线；当前有人用，完全停止前先告知；先完成构建等准备",
+    "performed": [
+      "remote private staging/upload",
+      "offline candidate Docker build from actual production image",
+      "isolated synthetic HTTP checks",
+      "complete backup and private clone restore",
+      "Windows isolated six-file candidate/hash/syntax verification",
+      "read-only live runtime/activity/D-075 checks",
+      "prepare and validate cutover/rollback Compose overlays"
+    ],
+    "pending": [
+      "confirmed maintenance window before production container or Windows Agent interruption",
+      "fresh stopped-window backup and task/session drain",
+      "specific real device/account/query/notification canary scope"
+    ]
+  },
+  "actualChecksThisTurn": {
+    "packagingVerify": {
+      "passed": true,
+      "runtimeFiles": 22,
+      "frozenFiles": 22,
+      "archives": 4
+    },
+    "dockerBuild": {
+      "passed": true,
+      "network": "none",
+      "dependencyInstall": false
+    },
+    "isolatedHttpSmoke": {
+      "passed": true,
+      "staticResources": 7,
+      "platformOperations": 32,
+      "unauthorizedInventoryStatus": 401,
+      "syntheticAuthorizedInventoryStatus": 200
+    },
+    "windowsStaging": {
+      "passed": true,
+      "stagedFiles": 6,
+      "productionHashes": 18,
+      "nodeSyntax": 5,
+      "pythonVersion": "3.9.13"
+    },
+    "cloudProductionHashes": {
+      "passed": true,
+      "checked": 26
+    },
+    "fullCloudPgDumpRestore": {
+      "passed": true,
+      "tables": 13,
+      "devices": 131,
+      "stateRows": 1,
+      "lookupSessions": 691,
+      "windowsTasks": 12380
+    },
+    "exactImageFullStateStartup": {
+      "passed": true,
+      "readyz": 200,
+      "postgresBackend": true,
+      "docs": 200,
+      "node": "v22.22.3",
+      "receipt": "FULL_STATE_IMAGE_RESULT.json",
+      "clonePrecondition": "Full dump restored; local same-Node startup maintenance/checkpoint performed before Docker test; not an untouched raw-dump cold image benchmark",
+      "sshCompression": true
+    },
+    "mediaStandardHostLive": {
+      "passed": true,
+      "bitsPerSecond": 8000000,
+      "packetsPerGroup": 2,
+      "pid": 2503525
+    },
+    "composePlanAndRollbackConfig": {
+      "passed": true,
+      "activationRun": false
+    },
+    "sameNodeOriginalFullStateColdStart": {
+      "passed": true,
+      "node": "v22.22.3",
+      "pg": "8.22.0",
+      "readyz": 200,
+      "seconds": 13.05,
+      "platform": "darwin-arm64",
+      "receipt": "LOCAL_COLD_START_RESULT.json"
+    }
+  },
+  "earlierSameRuntimeChecksNotRerunThisTurn": {
+    "syntaxEntrypoints": 7,
+    "screenTests": 594,
+    "agentTests": 289,
+    "pythonRunnerTests": 163,
+    "lookupTests": 56,
+    "sdkTests": 4,
+    "apiPortalTests": 9,
+    "note": "Previous preparation receipts, not this turn execution; coverage overlaps and static/mock tests are not production acceptance"
+  },
+  "failuresAndCorrections": [
+    {
+      "failure": "Initial Windows whole-agent archive truncated while active logs kept growing (~8.9GB)",
+      "correction": "Removed only the newly created invalid staging archive; excluded production logs/cache, retained code/config/data/dependencies. Valid new archive1.1GB and14 original runtime hashes verified; production log/cache untouched."
+    },
+    {
+      "failure": "Initial Docker archive verifier compared OCI index image ID with config digest; remote Python lacked hashlib.file_digest",
+      "correction": "Verified OCI root descriptor/blob identity and used chunked hashing; final archives passed."
+    },
+    {
+      "failure": "Isolated PostgreSQL readiness raced temporary init server before target database existed",
+      "correction": "Required successful SELECT1 on target database."
+    },
+    {
+      "failure": "Isolated full restore failed with768MiB DB cap; backend signal9",
+      "correction": "2GiB restore succeeded. No production DB configuration changed."
+    },
+    {
+      "failure": "Candidate full-state cold start with1GiB app cap OOM-killed; subsequent2GiB app with768MiB DB cap lost DB connection because DB backend was killed",
+      "correction": "Dedicated local full database restored. Same Node22.22.3/pg8.22.0 source cold-started in13.05s with network sandbox. Two uncompressed Docker/remote-PG startup timeouts observed waiting on startup diagnostics full-snapshot INSERT (ClientRead); next test explicitly stopped to change transport. Compressed private Unix-socket SSH transport passed exact-image readyz/Postgres/docs in202.73s. Clone already had local startup checkpoint; timings are not production downtime estimates. No production resource/config changes."
+    },
+    {
+      "failure": "Windows scp/SFTP and script execution-policy entry unavailable; transient ADB client PIDs initially counted as server drift",
+      "correction": "Bounded SSH stdin transfer with SHA checks, reviewed commands through existing PowerShell interface, no policy/runtime changes; final check uses persistent ADB server identity. Agent and ADB server unchanged."
+    },
+    {
+      "failure": "Final read-only activity wrapper initially invoked CommonJS fixture with ESM input mode",
+      "correction": "Failed before database access; reran CommonJS stdin and obtained final safe counts. No product code changed."
+    }
+  ],
+  "notVerified": [
+    "production activation and stopped-window fresh backup",
+    "full upgrade/rollback rehearsal on live Windows Agent",
+    "rc.2 real natural restriction -> account switch -> puzzle -> original result resume combination",
+    "two physical phones/OEM coverage",
+    "natural8h cooldown expiry and24-48h production observation",
+    "real notification delivery in this deployment",
+    "new production image with actual production Redis/credentials/external systems"
+  ],
+  "runtimeProtection": {
+    "productionContainerRecreated": false,
+    "windowsAgentRestarted": false,
+    "adbRestarted": false,
+    "mediaRestarted": false,
+    "windowsRebooted": false,
+    "phonesControlled": false,
+    "realNotificationsSent": 0,
+    "businessSourceChanges": 0,
+    "productionRuntimeFilesReplaced": 0,
+    "remotePush": false,
+    "gitCommitAndTag": "Scoped local commit and immutable annotated platform-update-20261011-rc.2; resolve via tag; no remote push"
+  },
+  "review": {
+    "kind": "self_review",
+    "conclusion": "Self-review complete:22-file runtime set unchanged, receipts and Compose plans consistent, full-state source and actual image startup passed with stated clone/runtime limitations. No third-party review claimed. Activation, real canary and observation pending."
+  },
+  "finishedAtUtc": "2026-10-11T14:58:29.667052+00:00",
+  "riskLevel": "R3 preparation; activation pending interruption window",
+  "cleanup": {
+    "ownCloudContainersAndVolumesRemoved": true,
+    "dedicatedLocalPostgresStopped": true,
+    "reverseForwardCancelled": true,
+    "privateBackupsRetained": true,
+    "temporaryNodeUsedOnlyUnderPrivateScratch": true
+  }
+}

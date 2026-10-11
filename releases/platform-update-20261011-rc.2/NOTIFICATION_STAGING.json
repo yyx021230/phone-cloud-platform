@@ -1,0 +1,8 @@
+{
+  "secretStaged": true,
+  "file": "/opt/phone-cloud-platform/staging/platform-update-20261011-rc.1/private/lookup-human-feishu-webhook",
+  "mode": "0600",
+  "activated": false,
+  "notificationsSent": 0,
+  "sha256": "abf0fcff9401954f8b725c3a8ec9f1eaab847e54197e2d570e749ccc01ac8a75"
+}

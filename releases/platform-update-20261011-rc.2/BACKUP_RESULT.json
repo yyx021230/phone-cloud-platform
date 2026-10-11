@@ -1,0 +1,40 @@
+{
+  "atUtc": "2026-10-11T14:10:11.541052+00:00",
+  "directory": "/opt/phone-cloud-platform/staging/platform-update-20261011-rc.1/backups",
+  "files": [
+    {
+      "file": "production-image.tar",
+      "sha256": "8f8d2f569fea2501f3cca356861d40b5382a7a99f1472df13224d34f1bee9811",
+      "bytes": 68712448,
+      "imageId": "sha256:907e0c65a50b1d066241e55ce475ac772647a531b582ae2894e25e1adc8ed3dd",
+      "tarManifestVerified": true
+    },
+    {
+      "file": "candidate-image.tar",
+      "sha256": "ca18a06ffcfe06e7f6c768681d055fab21f61fe3d7b93aa4587ce8a786d52b7a",
+      "bytes": 68957184,
+      "imageId": "sha256:41af4d0b836276c4db6058c88e8dd2769ff6ef445c806e871ce3754c3fc92be5",
+      "tarManifestVerified": true
+    },
+    {
+      "file": "postgres-full.dump",
+      "sha256": "2b8fc9973ac4abdcb9f73fabf07b28f168471d95ef0b501bfb52063fdcb58f9d",
+      "bytes": 417915837,
+      "customArchiveListVerified": true,
+      "tableOfContentsSha256": "5824e007ae9d8fe87bce42ff899e16c9e22a7e167efc8c4d249963427e184e8c"
+    },
+    {
+      "file": "host-config-and-data-warm.tar",
+      "sha256": "ae8f2c303d711eff2cdd4506fd7787d406b4a8593f071e374539ee550383db77",
+      "bytes": 57569280,
+      "tarEntries": 798,
+      "consistentFilesystemSnapshot": false,
+      "note": "Warm copy while service is active; refresh changed state at the approved stop window. Database dump is transaction-consistent."
+    }
+  ],
+  "productionContainerUnchanged": true,
+  "productionHealth": "healthy",
+  "productionRestartCount": 0,
+  "containsPrivateData": "server-only restricted archives; values and raw dumps not returned to chat or Git",
+  "refreshBeforeCutover": true
+}

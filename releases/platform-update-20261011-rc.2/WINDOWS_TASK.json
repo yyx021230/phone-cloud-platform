@@ -1,0 +1,10 @@
+{
+  "taskName": "PhoneCloud Windows Agent",
+  "taskPath": "\\",
+  "state": "Running",
+  "actionCount": 1,
+  "actionExecutable": [
+    "D:\\PhoneCloud\\tools\\node\\node.exe"
+  ],
+  "argumentsContainAgentPath": true
+}

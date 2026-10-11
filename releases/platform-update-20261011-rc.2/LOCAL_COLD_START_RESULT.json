@@ -1,0 +1,20 @@
+{
+  "atUtc": "2026-10-11T14:49:24.763177+00:00",
+  "passed": true,
+  "sourceCommit": "7f695507761b07504a94b7372de0c340befbf33f",
+  "node": "v22.22.3",
+  "pgLibrary": "8.22.0",
+  "platform": "darwin-arm64",
+  "coldStartupSeconds": 13.05,
+  "readyz": 200,
+  "data": "complete original dump restored; earlier remote INSERT attempts cancelled before commit",
+  "networkSandbox": "only isolated localhost database18848 and HTTP18847 permitted; no real external access",
+  "temporaryNodeArchiveSha256": "0da7ff74ef8611328c8212f17943368713a2ad953fb7d89a8c8a0eae87c23207",
+  "nodeChecksumSource": "https://nodejs.org/dist/v22.22.3/SHASUMS256.txt",
+  "globalRuntimeModified": false,
+  "localNodeHeapLimitMiB": 2048,
+  "limitations": [
+    "Same JS source and Node/pg versions, different OS/CPU from production Docker image",
+    "Synthetic process credentials and isolated development configuration"
+  ]
+}
