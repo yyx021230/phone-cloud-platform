@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "releaseId": "20261011-platform-update-preparation-v1",
+  "candidateTag": "platform-update-20261011-rc.1",
+  "branch": "codex/platform-update-prep-20261011",
+  "status": "local_candidate_not_deployed",
+  "runtimeSourceTag": "platform-api-docs-20261010-rc.5",
+  "runtimeSourceCommit": "7f695507761b07504a94b7372de0c340befbf33f",
+  "manifest": "MANIFEST.json",
+  "verification": "PREPARATION_RESULTS.json",
+  "runbook": "RUNBOOK.md",
+  "deployment": "not_run",
+  "remotePush": "not_run",
+  "identityNote": "Immutable annotated preparation tag resolves delivery commit; source tag separately resolves the unchanged reviewed runtime."
+}

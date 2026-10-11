@@ -1,0 +1,94 @@
+{
+  "observedAtUtc": "2026-10-11T13:53:49.5397966Z",
+  "hostname": "BF-202605262318",
+  "addresses": [
+    "192.168.20.123",
+    "100.93.121.88"
+  ],
+  "directory": "D:\\PhoneCloud\\agent",
+  "files": [
+    {
+      "path": "windows-agent/scripts/alipay_name_lookup.py",
+      "sha256": "3e73ddd4fe2e455f41977dbac18ddd88f7f80cbce18db634790bfdb547a419c2"
+    },
+    {
+      "path": "windows-agent/src/adb-priority-queue.mjs",
+      "sha256": "0bb8cfd86baaddc8a32d040e5835452f06e1ae5e3b78cbe2aeb0a67a24e5495d"
+    },
+    {
+      "path": "windows-agent/src/index.mjs",
+      "sha256": "6e1110d41436e31d9f2950342cd65b2531aa1f36b0f6d53d1f0b2036ac16b86a"
+    },
+    {
+      "path": "windows-agent/src/lookup-account-policy.mjs",
+      "sha256": null
+    },
+    {
+      "path": "windows-agent/src/lookup-human-observer.mjs",
+      "sha256": null
+    },
+    {
+      "path": "windows-agent/src/lookup-page-recovery.mjs",
+      "sha256": null
+    },
+    {
+      "path": "windows-agent/src/lookup-status-outbox.mjs",
+      "sha256": null
+    },
+    {
+      "path": "windows-agent/src/pnp-screen-coordinator.mjs",
+      "sha256": "5eb1551e7dedbef4eed8d941733fa20b4780a362196338c51db4651b78ab9003"
+    },
+    {
+      "path": "windows-agent/src/screen-backpressure.mjs",
+      "sha256": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4"
+    },
+    {
+      "path": "windows-agent/src/screen-control-queue.mjs",
+      "sha256": "27e6e5e39364817b2ee6a8ced3ecae8cee522904a7d4d3b0321bacd697212879"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.mjs",
+      "sha256": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.pre-20260722-pacing-default.mjs",
+      "sha256": "9b28020b8f97e79068d944fd484596cae4e4ab4ae5a53ecf165fc016030b95e0"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.pre-20260722-wire-pacing.mjs",
+      "sha256": "c374bfd2e01376d07bfecb209388c3a1b6a2a34b71218852ad58aa3a9fca8538"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.pre-pli-loop-20260722.mjs",
+      "sha256": "a7d113722291c2be02e3298d4364dc929c0ed3ca567e388272dfd2cea5efcb8b"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.verify.mjs",
+      "sha256": "cc2678e743981d65d16d54eac928bce407275f5244921e67d56fb4808251beb1"
+    },
+    {
+      "path": "windows-agent/src/screen-video-channel.mjs",
+      "sha256": "9e8c1ccd1439568beca2e99595764aa598893cee576109c514ae503486c1ca25"
+    },
+    {
+      "path": "windows-agent/src/screen-webrtc-publisher.mjs",
+      "sha256": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    {
+      "path": "windows-agent/src/screen-webrtc-publisher.pre-20260722-wire-pacing.mjs",
+      "sha256": "d78b425dfdca9e3079cb9505a7b57d5d4d2bc7de3ce5174f52ab9e2c133d820c"
+    }
+  ],
+  "agentProcesses": [
+    {
+      "pid": 85936,
+      "executable": "D:\\PhoneCloud\\tools\\node\\node.exe",
+      "created": "2026-09-29T09:58:35.4592860Z"
+    }
+  ],
+  "configSha256": "ee61ff30debd1b1077a1964ebd3946a0f36d8c4a221777be219890896c865b52",
+  "dataDir": "D:\\PhoneCloud\\agent\\data",
+  "dataDirectoryExists": true,
+  "baselineDriftPaths": []
+}

@@ -1,0 +1,215 @@
+{
+  "date": "2026-10-11",
+  "status": "local_candidate_not_deployed",
+  "preparationTag": "platform-update-20261011-rc.1",
+  "branch": "codex/platform-update-prep-20261011",
+  "initialBranch": "codex/api-documentation-portal",
+  "initialHead": "7f695507761b07504a94b7372de0c340befbf33f",
+  "initialManagedWorktreeDirtyEntries": 0,
+  "originalWorkspaceDirtyEntries": 235,
+  "sourceTag": "platform-api-docs-20261010-rc.5",
+  "sourceCommit": "7f695507761b07504a94b7372de0c340befbf33f",
+  "workflow": {
+    "revision": "2026-09-30",
+    "sha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+    "updatedAgentsVersionManagementRead": true,
+    "projectDocumentBeforeSha256": "ca163220e87bdbb0b319788d23ac3711ae856106221597f608050272933d2edb"
+  },
+  "verification": {
+    "command": "python3 verification/verify.py /Users/yyx/ztqc/phone-cloud-platform",
+    "cwd": "releases/platform-api-docs-20261010-rc.1",
+    "isolatedCopy": true,
+    "businessEnvironmentLoaded": false,
+    "commands": [
+      {
+        "check": "syntax",
+        "exitCode": 0,
+        "passed": null,
+        "failed": 0,
+        "logSha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+      },
+      {
+        "check": "screen",
+        "exitCode": 0,
+        "passed": 594,
+        "failed": 0,
+        "logSha256": "2e8e5b1cf1cc5616e39e97922d8e9a369346de9f6acfacab99e039388e5a35d6"
+      },
+      {
+        "check": "agent",
+        "exitCode": 0,
+        "passed": 289,
+        "failed": 0,
+        "logSha256": "228db13783f811af28274c0ffefdfe1707307215e05ff24cd3f4685700cd8d7f"
+      },
+      {
+        "check": "python",
+        "exitCode": 0,
+        "passed": 163,
+        "failed": 0,
+        "logSha256": "82536920534eecc5ff80d22b7fd85537a4cca99b133f79ab2cfcbb572e0818bb"
+      },
+      {
+        "check": "lookup",
+        "exitCode": 0,
+        "passed": 56,
+        "failed": 0,
+        "logSha256": "57e1d6ed6da828a0bb2bf2944af4e60b5378f4d40c61e38bbec6135b92e86dc3"
+      },
+      {
+        "check": "sdk-node",
+        "exitCode": 0,
+        "passed": 3,
+        "failed": 0,
+        "logSha256": "33956c3dacdac8c7abe72e460e491c4210cc9f0367f534c5dfa3788387f2bfb1"
+      },
+      {
+        "check": "sdk-python",
+        "exitCode": 0,
+        "passed": 1,
+        "failed": 0,
+        "logSha256": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5"
+      },
+      {
+        "check": "api-docs",
+        "command": "node --test scripts/api-docs.test.mjs",
+        "exitCode": 0,
+        "passed": 9,
+        "failed": 0,
+        "logSha256": "6c482b238e828b5746acdd77ccbc34da5f06bee999462190b314f001a12b68a9"
+      }
+    ],
+    "countsOverlap": true,
+    "packaging": {
+      "deterministicRebuild": true,
+      "changedSourceIdentity": true,
+      "corruptArchive": true,
+      "changedPayloadWithRehashedManifest": true,
+      "frozenRuntimeDriftRejected": true
+    },
+    "beforeChecker": {
+      "cloud": {
+        "component": "cloud",
+        "state": "before",
+        "checked": 26,
+        "passed": true,
+        "differences": []
+      },
+      "windows": {
+        "component": "windows",
+        "state": "before",
+        "checked": 18,
+        "passed": true,
+        "differences": []
+      }
+    },
+    "afterChecker": {
+      "cloud": {
+        "checked": 26,
+        "passed": true
+      },
+      "windows": {
+        "checked": 18,
+        "passed": true
+      }
+    },
+    "pythonSyntax": "passed",
+    "archiveSecretPatternScan": {
+      "entriesChecked": 49,
+      "matches": 0,
+      "scope": "private-key headers, literal Feishu webhook URLs and credential-bearing database URLs; not a proof against every possible secret"
+    },
+    "jsonAndMarkdownLocalLinks": "passed"
+  },
+  "productionReadOnly": {
+    "cloudFiles": 26,
+    "windowsFiles": 18,
+    "drift": [],
+    "imageId": "sha256:907e0c65a50b1d066241e55ce475ac772647a531b582ae2894e25e1adc8ed3dd",
+    "health": "healthy",
+    "restartCount": 0,
+    "healthz": 200,
+    "readyz": 200,
+    "windowsAgentProcesses": [
+      {
+        "pid": 85936,
+        "executable": "D:\\PhoneCloud\\tools\\node\\node.exe",
+        "created": "2026-09-29T09:58:35.4592860Z"
+      }
+    ],
+    "remoteWindowsIdentityMatched": true,
+    "configurationFingerprintsStoredWithoutValues": true,
+    "activityAndQueueInventory": "not_collected"
+  },
+  "d075": {
+    "remoteHostSnapshotVerifiedWithExistingVerifyLiveSnapshot": true,
+    "binaryAndRunningBinaryMatchApprovedHash": true,
+    "pidStable": true,
+    "pid": 2503525,
+    "officialHostLiveCommand": "not_run",
+    "reason": "node not available in host PATH or inspected host locations; initial command exit 127",
+    "deploymentGate": "blocked until standard host --live passes; no automatic repair"
+  },
+  "artifacts": {
+    "cloud-update.tar.gz": {
+      "sha256": "5116c8ba3fd24106bf3f97512e50e514aeaa38a94ccce88a450402410d6c9a3b",
+      "bytes": 232065,
+      "entries": 16
+    },
+    "windows-update.tar.gz": {
+      "sha256": "80adae52a17c9b7b15f25c98accc4ab4f07710e7eaaab834ec03b6c13448b2a1",
+      "bytes": 116433,
+      "entries": 6
+    },
+    "rollback-code-originals.tar.gz": {
+      "sha256": "ce8b61216a9be7333942994b2f0e5adfde7d33075b971f10bd5f1ec3a00999aa",
+      "bytes": 287766,
+      "entries": 9
+    },
+    "cloud-build-context.tar.gz": {
+      "sha256": "c7e0c9403435b03335d1de979ed745f3889517e38bcbab03a608b070ddb2bb49",
+      "bytes": 235912,
+      "entries": 18
+    }
+  },
+  "review": {
+    "type": "primary agent self review",
+    "independentReview": false,
+    "scope": "22 runtime files from immutable reviewed tag; no business changes; 22 frozen files retained; no user workspace used as package source; four archives verified without extraction"
+  },
+  "notVerified": [
+    "No production-base application image built: local Docker/Podman unavailable; deterministic minimal overlay build context prepared only.",
+    "No full fresh dependency install; inherited production image dependency layout must be used and verified.",
+    "Standard media-host D-075 --live command requires an available approved host Node runtime.",
+    "No new maintenance-window complete image/Windows/configuration/database backup or full paired deployment/rollback rehearsal.",
+    "rc.2 physical restriction -> switch -> puzzle -> resume fault combination remains pending; prior normal queries do not prove it.",
+    "Two physical devices/OEM, natural eight-hour expiry and 24-48 hour canary observation remain pending.",
+    "No current complete active task/viewing inventory; no release window or interruption authorization granted."
+  ],
+  "sideEffects": {
+    "productionReads": true,
+    "productionWrites": 0,
+    "uploads": 0,
+    "deployment": false,
+    "serviceRestarts": 0,
+    "deviceActions": 0,
+    "businessQueries": 0,
+    "notifications": 0,
+    "remotePush": false
+  },
+  "versioning": {
+    "newPreparationBranchAndAnnotatedTag": true,
+    "existingTagsMoved": false,
+    "sourceIdentity": "Immutable source tag/commit; preparation tag binds delivery and receipts, not a new business runtime revision."
+  },
+  "userExistingWorkPreserved": true,
+  "userWorkspaceVerification": {
+    "originalRuntimeWrites": 0,
+    "originalDocumentWrites": [
+      "docs/PROJECT_DEVELOPMENT.md"
+    ],
+    "initialOriginalStatusEntries": 235,
+    "finalOriginalStatusEntries": 235,
+    "initialIndividualRuntimeHashes": "not collected this preparation; inherited rootNineBusinessFilesUnchanged is only historical boolean, not fresh hash evidence"
+  }
+}
