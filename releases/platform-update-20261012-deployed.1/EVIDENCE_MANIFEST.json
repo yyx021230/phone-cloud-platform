@@ -1,0 +1,59 @@
+{
+  "files": [
+    {
+      "path": "ACTIVATE.json",
+      "bytes": 1299,
+      "sha256": "6f9bca92f0b9a89ad02bcced115870fd20526d3240d8996e86c1bcf1752d324a"
+    },
+    {
+      "path": "BUILD_BACKUP.json",
+      "bytes": 1086,
+      "sha256": "a1484d59c927e677dee3fd81bb06aeae580d815d90eb0657f700b803a059a1ca"
+    },
+    {
+      "path": "FILE_HASHES.json",
+      "bytes": 8114,
+      "sha256": "295abf678fb585caed84a7413ea6e8c0dc856f1ae297256dd0266ff5b855090c"
+    },
+    {
+      "path": "IMAGE_ARCHIVE.json",
+      "bytes": 383,
+      "sha256": "ce43114b9df7cb8abc68ea71d9aceb793160dd242d0ee69e22c317ba18452958"
+    },
+    {
+      "path": "ISOLATED_HTTP.json",
+      "bytes": 928,
+      "sha256": "562a22b7f70efcd95384d7fccb8efe45b91b1f17441664ca4dc42971d89f095f"
+    },
+    {
+      "path": "LIVE_HTTP_INVENTORY.json",
+      "bytes": 1731,
+      "sha256": "5f391e7bc1b39d0c083fff29d9ed6166b415976f4c5b6e3fb0d1a44b5c882889"
+    },
+    {
+      "path": "OBSERVATION.json",
+      "bytes": 468,
+      "sha256": "da66070c23f85ca4e5c1071fe07ceacaf9e1b9fb10f11007b5aa0ee572888b65"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1508,
+      "sha256": "c8202a41fe043638afae5c0795671e302467550436770e929d04a92ac3126a0b"
+    },
+    {
+      "path": "RUNBOOK.md",
+      "bytes": 1786,
+      "sha256": "679f78132c812f4cca7562ceac217598cef63273aae833389770ad6959366003"
+    },
+    {
+      "path": "VERSION.json",
+      "bytes": 2216,
+      "sha256": "1f4084fbce8c2f9f4cfd6d8c994cc401d6d6eb02d754828223de96423faf8045"
+    },
+    {
+      "path": "WINDOWS_FINAL.json",
+      "bytes": 186,
+      "sha256": "8fe0dff0f56d4a3910501b06d4c881f2c4f1ced6368b31714cd03c0b7e9b6d44"
+    }
+  ]
+}

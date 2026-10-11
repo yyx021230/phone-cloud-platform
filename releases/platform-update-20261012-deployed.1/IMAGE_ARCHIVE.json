@@ -1,0 +1,8 @@
+{
+  "atUtc": "2026-10-11T16:43:20.155797+00:00",
+  "imageId": "sha256:4e484ed7db6da2760c64de1f4481fdb7deb97b7acf4e4182e1658507a1d8b437",
+  "archive": "/opt/phone-cloud-platform/staging/platform-update-20261012-rc.3/backups/published-image.tar",
+  "bytes": 68980224,
+  "sha256": "77e5f06bd9baf2f250acf635911deb55e34f3dee8b8b8bec1404677ebc638878",
+  "ociImageIdentityVerified": true
+}

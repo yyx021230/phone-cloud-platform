@@ -1,0 +1,208 @@
+{
+  "originalActualProductionImage": "sha256:907e0c65a50b1d066241e55ce475ac772647a531b582ae2894e25e1adc8ed3dd",
+  "publishedImage": "sha256:4e484ed7db6da2760c64de1f4481fdb7deb97b7acf4e4182e1658507a1d8b437",
+  "runtimeFiles": [
+    {
+      "path": "public/api-docs.css",
+      "beforeSha256": null,
+      "afterSha256": "e06f407f775fd2485b61a15419f908fd3f5bcb9f9a42ccd9cbf8a440e0432ffb"
+    },
+    {
+      "path": "public/api-docs.html",
+      "beforeSha256": null,
+      "afterSha256": "4a9a754234dd75df8a2e6aa8d646335f2f23b1c6a85d1f66c73e97c40a00cbe4"
+    },
+    {
+      "path": "public/api-docs.js",
+      "beforeSha256": null,
+      "afterSha256": "34c06edd7eaac3e8546173b73d90b6f232ca0c6175fc2d093a0751c727ad89fc"
+    },
+    {
+      "path": "public/api-reference.json",
+      "beforeSha256": null,
+      "afterSha256": "8a596c801a74d4e72f1829ec7cb565f0004c037564498e219d92a42bbca3b378"
+    },
+    {
+      "path": "public/app.js",
+      "beforeSha256": "f001ce98e89807120be30a0d028eb43cffc44a2b5d84efab83dd3732af03ef41",
+      "afterSha256": "c6a6ac8c0a5eb2fb1fcd4a1057abd8d476ebc33570f20eb55b17d71cc0d1b250"
+    },
+    {
+      "path": "public/index.html",
+      "beforeSha256": "2740d298da28cd8ccebf71c7698d631932f3e466d492d7471dd7d82d84072791",
+      "afterSha256": "bf20576d5d965374bbc4f7973fa59a8b6200b0cfeac9ff7220ae1986d22f98b5"
+    },
+    {
+      "path": "public/openapi.json",
+      "beforeSha256": null,
+      "afterSha256": "38006a05f022f61193edd3106b68c0f8e9cb042d8a5a37c67400de8e221b2bee"
+    },
+    {
+      "path": "public/styles.css",
+      "beforeSha256": "b23fd542a1aaa13f15f15e53a48a913aa886f2918a2ac0828db67b8f8b811ffb",
+      "afterSha256": "8956348200adee88a821ccd25d3cff2038b1930e04a7286f80c78257062bd98b"
+    },
+    {
+      "path": "server/automation-center.mjs",
+      "beforeSha256": "1686e750fe3a574d1d5199707e39c51b7fc8489f8d64d8a49cb0c30d0a953bbd",
+      "afterSha256": "e190d21cc2bcf99c8ef874b754e8cbe05419544efa24616d856c36d6eae2ddfd"
+    },
+    {
+      "path": "server/index.mjs",
+      "beforeSha256": "1bdfbc3e370fff1c4a07e9c0f30242a348035d3e0227596f2e62eb90f3796e92",
+      "afterSha256": "331720968d825f8a7922ce7048e117e5f883a1edddfa48dba559f67041061172"
+    },
+    {
+      "path": "server/lookup-account-cooldown.mjs",
+      "beforeSha256": null,
+      "afterSha256": "6c96b7786faa45e41c3d1f130dcc3b9172d1c0048bf6cde35a051d5c72523170"
+    },
+    {
+      "path": "server/lookup-human-handover.mjs",
+      "beforeSha256": null,
+      "afterSha256": "7993e5ed41a13a26aa1d4aa03a2bb2665a4c74a5a0bcdb2fa8244240cd311a02"
+    },
+    {
+      "path": "server/lookup-human-notifications.mjs",
+      "beforeSha256": null,
+      "afterSha256": "eff1e608eeed31153a4a0a8af13bed6420949ac030ca3b524e41d55528e475f7"
+    },
+    {
+      "path": "server/open-name-lookup-api.mjs",
+      "beforeSha256": "e8ea1d00f5be669984dfccfbb0ec6b8f86c68194e2fa87bc73d4eacbc635bcec",
+      "afterSha256": "0c846c1cb1f01ca5a2cd662fc0b81d09568d17d89268b66254e37092664a4eb3"
+    },
+    {
+      "path": "server/postgres-repositories.mjs",
+      "beforeSha256": "c5066a0daf7d41a27f17919b5926940795cab6f3feea8335867ede11baa8d1e7",
+      "afterSha256": "bf6c10cf849cffc6c59c1f79e1fb62daeb548056632917d14bbd781ac8e70d54"
+    },
+    {
+      "path": "server/task-status-persistence.mjs",
+      "beforeSha256": null,
+      "afterSha256": "26f8e48a3a6a77de4d4f47aa8b9b54b45d1ee1a37a2ad4c787a8653845c4cab8"
+    },
+    {
+      "path": "windows-agent/scripts/alipay_name_lookup.py",
+      "beforeSha256": "3e73ddd4fe2e455f41977dbac18ddd88f7f80cbce18db634790bfdb547a419c2",
+      "afterSha256": "4887d25c7c61d67bbba1ca71695648505b5fc5e5423499f651e75d4ef987f1ee"
+    },
+    {
+      "path": "windows-agent/src/index.mjs",
+      "beforeSha256": "6e1110d41436e31d9f2950342cd65b2531aa1f36b0f6d53d1f0b2036ac16b86a",
+      "afterSha256": "0d6a0aa177f38873b6999e18bba24fdecb865469924bc91efe396e91e2bd883b"
+    },
+    {
+      "path": "windows-agent/src/lookup-account-policy.mjs",
+      "beforeSha256": null,
+      "afterSha256": "b598b10ce46363b598e4f71b73ed88d15b0a33fe18732d067445370551a01024"
+    },
+    {
+      "path": "windows-agent/src/lookup-human-observer.mjs",
+      "beforeSha256": null,
+      "afterSha256": "94dface8346e7b6908f4fd33c33d90566be59468874aa54d45473ca40537bdb4"
+    },
+    {
+      "path": "windows-agent/src/lookup-page-recovery.mjs",
+      "beforeSha256": null,
+      "afterSha256": "acab1b3d3e96f17ee54fe393cdbcf31a9210139dd7694a04de1140b80f79daa9"
+    },
+    {
+      "path": "windows-agent/src/lookup-status-outbox.mjs",
+      "beforeSha256": null,
+      "afterSha256": "572c48fd13e5db841481328da69611d25c91ec833b3bf7e417a8e340edb31182"
+    }
+  ],
+  "frozenFiles": [
+    {
+      "path": "server/screen-gallery-import.mjs",
+      "sha256": "39f7727860372f25959a5ca78145be07dfaf92c3747954afc99c8cd02cd8e697"
+    },
+    {
+      "path": "server/screen-sessions.mjs",
+      "sha256": "811a15aa7ecb87a934ef5f92826ed9031278d87df2387cc20a85098ce91cde09"
+    },
+    {
+      "path": "server/screen-media-auth.mjs",
+      "sha256": "c569931fdbad95338ebc50dee5d04b0f62550733bc627324171ab3590d3668b1"
+    },
+    {
+      "path": "server/screen-relay.mjs",
+      "sha256": "91b706a0cd00ea573997fdea338cad8f37e2c88e62fdbeee24b86ec4a6036c02"
+    },
+    {
+      "path": "server/screen-transport-policy.mjs",
+      "sha256": "331b212c564bc992628712eef81bff6dafe3b0df3f480f64fb808dfe7c41c721"
+    },
+    {
+      "path": "server/screen-backpressure.mjs",
+      "sha256": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4"
+    },
+    {
+      "path": "server/screen-quality.mjs",
+      "sha256": "bfadf379b03fadcf73bedc911649680ac6e3ace77907afee3524b335d4406451"
+    },
+    {
+      "path": "public/screen-inactivity-guard.js",
+      "sha256": "433578679963fc37b6eb2412c641cbaaa81f424f8611b109b28d2ba3b49ec182"
+    },
+    {
+      "path": "public/screen-control.js",
+      "sha256": "9618ae22993d0b1fc5bbffbedf2e9ced52ad5b8ccf46fded85513f39a4bda3ba"
+    },
+    {
+      "path": "public/vendor/screen-control.js",
+      "sha256": "ef4e36d5934050ad85075fb877257e4ec63b30af94becefc69e29bf76b2f44c5"
+    },
+    {
+      "path": "windows-agent/src/screen-webrtc-publisher.pre-20260722-wire-pacing.mjs",
+      "sha256": "d78b425dfdca9e3079cb9505a7b57d5d4d2bc7de3ce5174f52ab9e2c133d820c"
+    },
+    {
+      "path": "windows-agent/src/adb-priority-queue.mjs",
+      "sha256": "0bb8cfd86baaddc8a32d040e5835452f06e1ae5e3b78cbe2aeb0a67a24e5495d"
+    },
+    {
+      "path": "windows-agent/src/screen-control-queue.mjs",
+      "sha256": "27e6e5e39364817b2ee6a8ced3ecae8cee522904a7d4d3b0321bacd697212879"
+    },
+    {
+      "path": "windows-agent/src/screen-webrtc-publisher.mjs",
+      "sha256": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.pre-20260722-pacing-default.mjs",
+      "sha256": "9b28020b8f97e79068d944fd484596cae4e4ab4ae5a53ecf165fc016030b95e0"
+    },
+    {
+      "path": "windows-agent/src/pnp-screen-coordinator.mjs",
+      "sha256": "5eb1551e7dedbef4eed8d941733fa20b4780a362196338c51db4651b78ab9003"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.pre-pli-loop-20260722.mjs",
+      "sha256": "a7d113722291c2be02e3298d4364dc929c0ed3ca567e388272dfd2cea5efcb8b"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.mjs",
+      "sha256": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232"
+    },
+    {
+      "path": "windows-agent/src/screen-video-channel.mjs",
+      "sha256": "9e8c1ccd1439568beca2e99595764aa598893cee576109c514ae503486c1ca25"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.pre-20260722-wire-pacing.mjs",
+      "sha256": "c374bfd2e01376d07bfecb209388c3a1b6a2a34b71218852ad58aa3a9fca8538"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.verify.mjs",
+      "sha256": "cc2678e743981d65d16d54eac928bce407275f5244921e67d56fb4808251beb1"
+    },
+    {
+      "path": "windows-agent/src/screen-backpressure.mjs",
+      "sha256": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4"
+    }
+  ],
+  "cloudHashesVerified": 26,
+  "windowsHashesVerified": 18
+}

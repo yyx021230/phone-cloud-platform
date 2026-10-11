@@ -1,0 +1,56 @@
+{
+  "version": "platform-update-20261012-deployed.1",
+  "status": "deployed_observing",
+  "atUtc": "2026-10-11T16:45:30.612231+00:00",
+  "branch": "codex/platform-update-prep-20261011",
+  "runtimeCandidateTag": "platform-update-20261012-rc.3",
+  "runtimeCandidateCommit": "2f99a513dbb65c2671847dcc5a64b9b6ba66252f",
+  "businessSourceTag": "platform-api-docs-20261010-rc.5",
+  "businessSourceCommit": "7f695507761b07504a94b7372de0c340befbf33f",
+  "pairedCandidateCommit": "baf37da7fa810a3d87a005929c461bc814f7d0c1",
+  "imageId": "sha256:4e484ed7db6da2760c64de1f4481fdb7deb97b7acf4e4182e1658507a1d8b437",
+  "imageTag": "phone-cloud-platform:platform-update-20261012-rc.3",
+  "agentPid": 379908,
+  "adbServerPidUnchanged": 312588,
+  "mediaPidUnchanged": 2503525,
+  "activeCompose": [
+    {
+      "path": "/opt/phone-cloud-platform/docker-compose.yml",
+      "sha256": "8687bf4176f8f0d78ab73380a7ef0fd6b71bf044de5474f172ef5483d3e47435"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/platform-update-20261012-rc.3/compose.candidate.json",
+      "sha256": "2daf57d8d80bd7c7020614e79c6ec85b64d6ba6363a5831571ee32e2416a2134"
+    }
+  ],
+  "userAuthorization": "2026-10-12: 开始部署吧，没人用了，部署好后全量测试; subsequent118 phone plus maximum1 Feishu test, new query numbers to be provided",
+  "realTestUsage": {
+    "deviceNumber": 118,
+    "phoneQueries": 0,
+    "explicitAccountSwitches": 0,
+    "feishuAttempts": 1,
+    "postsPublished": 0
+  },
+  "productionAcceptanceComplete": false,
+  "notVerified": [
+    "new authorized phone-number queries",
+    "natural limit/account rotation/puzzle/original-result resume on this production rollout",
+    "two-device/OEM physical canary",
+    "natural8-hour cooldown expiry",
+    "24-48-hour observation",
+    "browser real-time picture/touch acceptance after this rollout"
+  ],
+  "userUiReport": {
+    "report": "平台没看到手机在线",
+    "verifiedPublicInventory": {
+      "listed": 125,
+      "online": 120,
+      "available": 120
+    },
+    "inAppPlatformTab": "http://127.0.0.1:8789/",
+    "addressConfirmationPending": true
+  },
+  "remoteGitPushed": false,
+  "originalDirtyEntriesPreserved": 235,
+  "rollbackPerformed": false
+}
