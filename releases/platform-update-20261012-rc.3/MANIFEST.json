@@ -1,0 +1,26 @@
+{
+  "version": "platform-update-20261012-rc.3",
+  "scope": "Three static document release-status files only; no API contract, Agent or frozen runtime changes",
+  "baseImageId": "sha256:41af4d0b836276c4db6058c88e8dd2769ff6ef445c806e871ce3754c3fc92be5",
+  "sourceCandidateCommit": "baf37da7fa810a3d87a005929c461bc814f7d0c1",
+  "files": [
+    {
+      "path": "public/api-docs.html",
+      "beforeSha256": "7e95a63449947b35b94adbbb1d06ea6225b8ff7ea11c4bda9e4bab53338d1da5",
+      "afterSha256": "4a9a754234dd75df8a2e6aa8d646335f2f23b1c6a85d1f66c73e97c40a00cbe4",
+      "bytes": 2864
+    },
+    {
+      "path": "public/api-reference.json",
+      "beforeSha256": "9aaa449bad5ed657830b787aaaf5dc38a180167e145d1a198c5802cdc91096b8",
+      "afterSha256": "8a596c801a74d4e72f1829ec7cb565f0004c037564498e219d92a42bbca3b378",
+      "bytes": 63128
+    },
+    {
+      "path": "public/openapi.json",
+      "beforeSha256": "a8a1e404d466b37dc95b0b94511cf8a0adbac325102a769cad711f43e46ff247",
+      "afterSha256": "38006a05f022f61193edd3106b68c0f8e9cb042d8a5a37c67400de8e221b2bee",
+      "bytes": 108321
+    }
+  ]
+}

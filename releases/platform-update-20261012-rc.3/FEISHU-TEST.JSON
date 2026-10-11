@@ -1,0 +1,1 @@
+{"atUtc":"2026-10-11T16:37:17.819Z","deviceNumber":118,"attempts":1,"outcomes":[{"status":"sent","httpStatus":200,"providerCode":0}],"secondPollAttempts":0,"persistentDurableClaim":true,"syntheticDeploymentTest":true,"realPuzzleTriggered":false}
