@@ -1,0 +1,11 @@
+{
+  "atUtc": "2026-10-11T16:36:45.2496459Z",
+  "phase": "Activate",
+  "updatedFiles": 6,
+  "runtimeAfterHashes": 18,
+  "agentPid": 379908,
+  "agentCreatedUtc": "2026-10-11T16:36:37.7856480Z",
+  "taskState": "Running",
+  "adbServerPid": 312588,
+  "configAndDataReplaced": false
+}

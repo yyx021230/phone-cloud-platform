@@ -1,0 +1,17 @@
+{
+  "atUtc": "2026-10-11T16:33:53.0665377Z",
+  "phase": "StopBackup",
+  "agentStopped": true,
+  "beforeHashes": 18,
+  "adbServerPid": 312588,
+  "backup": {
+    "path": "D:\\PhoneCloud\\staging\\platform-update-20261011-rc.1\\cutover-20261012\\agent-state-code.tar",
+    "sha256": "ecc23c5af95ba1972610c65903848c01c37dbccb729494e92f55c517c46d7d01",
+    "bytes": 1361920,
+    "contents": {
+      "runtimeOriginals": 14,
+      "entries": 22
+    }
+  },
+  "stateDataUntouched": true
+}

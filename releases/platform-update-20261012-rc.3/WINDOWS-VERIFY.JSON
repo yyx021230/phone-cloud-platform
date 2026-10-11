@@ -1,0 +1,9 @@
+{
+  "atUtc": "2026-10-11T16:37:53.2758705Z",
+  "phase": "Verify",
+  "runtimeAfterHashes": 18,
+  "agentPid": 379908,
+  "taskState": "Running",
+  "adbServerPid": 312588,
+  "outboxDirectoryExists": true
+}

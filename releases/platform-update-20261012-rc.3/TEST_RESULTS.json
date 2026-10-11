@@ -1,0 +1,133 @@
+{
+  "atUtc": "2026-10-11T16:39:38.731289+00:00",
+  "environment": "Disposable exact-source copy, credential allowlist; smoke limited to loopback network",
+  "tests": [
+    {
+      "name": "syntax",
+      "exitCode": 0,
+      "logSha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+      "summary": [
+        "",
+        "> phone-cloud-platform@0.1.0 check",
+        "> node --check server/index.mjs && node --check server/agent-runtime-release.mjs && node --check server/realtime-metrics.mjs && node --check server/postgres-repositories.mjs && node --check server/persistence-policy.mjs && node --check server/screen-gallery-import.mjs && node --check server/screen-relay.mjs && node --check server/screen-backpressure.mjs && node --check server/screen-quality.mjs && node --check scripts/screen-load-test.mjs && node --check scripts/browser-screen-load-test.mjs && node --check scripts/screen-load-report.mjs && node --check windows-agent/src/index.mjs && node --check windows-agent/src/sms-content-query.mjs && node --check windows-agent/src/device-recovery-state.mjs && node --check windows-agent/src/recovery-observability.mjs && node --check windows-agent/src/pnp-recovery-safety.mjs && node --check windows-agent/src/guarded-task-runner.mjs && node --check windows-agent/src/runtime-metrics.mjs && node --check windows-agent/src/device-actor.mjs && node --check windows-agent/src/adb-priority-queue.mjs && node --check windows-agent/src/device-scan-cache.mjs && node --check windows-agent/src/gallery-import.mjs && node --check windows-agent/src/serial-adb-activity.mjs && node --check windows-agent/src/serial-adb-health.mjs && node --check windows-agent/src/serial-delay-scheduler.mjs && node --check windows-agent/src/worker-shutdown.mjs && node --check windows-agent/src/serial-reservation.mjs && node --check windows-agent/src/screen-stream.mjs && node --check windows-agent/src/screen-video-channel.mjs && node --check windows-agent/src/screen-control-queue.mjs && node --check windows-agent/src/screen-backpressure.mjs && node --check screen-client/main.js && node --check screen-client/screen-transport.js && node --check screen-client/control-input.js && node --check screen-client/mse-player.js && node --check public/app.js",
+        ""
+      ]
+    },
+    {
+      "name": "screen",
+      "exitCode": 0,
+      "logSha256": "547c95452d28e9bab6fe38d2532484dd47b46500414f6ce7a42d68273e151103",
+      "summary": [
+        "ℹ tests 594",
+        "ℹ suites 0",
+        "ℹ pass 594",
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 7237.314542"
+      ]
+    },
+    {
+      "name": "agent",
+      "exitCode": 0,
+      "logSha256": "316ccf2ab184f16d30de867592112de5468ace4c2d9ca0e013927256052ffb2a",
+      "summary": [
+        "ℹ tests 289",
+        "ℹ suites 0",
+        "ℹ pass 289",
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 2102.755917"
+      ]
+    },
+    {
+      "name": "python",
+      "exitCode": 0,
+      "logSha256": "9c07c80cf2901ca498267810e0813ca40b000495c92faf4c728243ad22c5911f",
+      "summary": [
+        ".{\"event\": {\"step\": \"choose_slot_begin\", \"sinceLastMs\": 0, \"slot\": \"app2\", \"labels\": [\"\\u2161\\u00b7\\u5c0f\\u7ea2\\u4e66\", \"II\\u00b7\\u5c0f\\u7ea2\\u4e66\", \"II \\u00b7\\u5c0f\\u7ea2\\u4e66\", \"\\u2161 \\u00b7\\u5c0f\\u7ea2\\u4e66\"]}}",
+        "{\"event\": {\"step\": \"choose_slot_focus\", \"sinceLastMs\": 0, \"resolverActive\": true, \"focus\": [\"mCurrentFocus=Window{bfce448 u0 com.android.intentresolver/.ChooserActivityLauncher}\", \"mFocusedApp=ActivityRecord{9a35b49 u0 com.android.intentresolver/.ChooserActivityLauncher t309}\"]}}",
+        "{\"event\": {\"step\": \"choose_slot_vendor_resolver_defer_to_xml\", \"sinceLastMs\": 0, \"elapsedMs\": 0}}",
+        ".",
+        "----------------------------------------------------------------------",
+        "Ran 163 tests in 1.326s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "name": "lookup",
+      "exitCode": 0,
+      "logSha256": "c78e1618ebd16cc47e120aeeb1308aa1095f7d9e9052c54d92dd81dce9c797d2",
+      "summary": [
+        "........................{\"event\": {\"step\": \"poco_input_clear_confirmed\", \"elapsedMs\": 0, \"selector\": \"exact_search_input\", \"editableLength\": 0, \"driver\": \"poco_input_connection\"}}",
+        "{\"event\": {\"step\": \"submit_search\", \"elapsedMs\": 1, \"selector\": \"exact_search_confirm\", \"attempt\": 1, \"driver\": \"poco\"}}",
+        "{\"event\": {\"step\": \"masked_real_name_tail_extracted\", \"elapsedMs\": 1, \"character\": \"\\u7532\", \"matchMethod\": \"\", \"driver\": \"poco\"}}",
+        ".",
+        "----------------------------------------------------------------------",
+        "Ran 56 tests in 2.076s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "name": "sdk-node",
+      "exitCode": 0,
+      "logSha256": "ac431cfa49adeebf05f3291af0adc2cc32e1f02da80598c9ba56c7b061a54b61",
+      "summary": [
+        "ℹ tests 3",
+        "ℹ suites 0",
+        "ℹ pass 3",
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 82.23675"
+      ]
+    },
+    {
+      "name": "sdk-python",
+      "exitCode": 0,
+      "logSha256": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5",
+      "summary": [
+        ".",
+        "----------------------------------------------------------------------",
+        "Ran 1 test in 0.000s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "name": "smoke",
+      "exitCode": 0,
+      "logSha256": "a917e1a72233ca45562168e6d43183ba6b5a2ada4fb720884a1a54c0f0305bca",
+      "summary": [
+        "smoke ok"
+      ]
+    },
+    {
+      "name": "api-docs",
+      "exitCode": 0,
+      "logSha256": "12cab21315a648662c61b55f1b1358636412bdfc76d1b592f9a657e47254fc9a",
+      "summary": [
+        "ℹ tests 9",
+        "ℹ suites 0",
+        "ℹ pass 9",
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "ℹ todo 0",
+        "ℹ duration_ms 2322.305334"
+      ]
+    }
+  ],
+  "countsOverlap": true,
+  "correctedHarnessFailures": [
+    "PowerShell single-result array unwrapping rejected unchanged PID before any stop; wrapped result in array",
+    "API docs test not present in compact validation tree; rerun in isolated full doc generator fixture:9 passed"
+  ],
+  "productionShutdownIssue": "Old service hit existing10-second SIGTERM timeout; stopped-state PG backup validated with unchanged131/691/12380 counts"
+}
