@@ -1,0 +1,93 @@
+{
+  "atUtc": "2026-10-11T14:56:17.892Z",
+  "counts": {
+    "phone_cloud_windows_tasks": [
+      {
+        "status": "cancelled",
+        "count": 133
+      },
+      {
+        "status": "failed",
+        "count": 768
+      },
+      {
+        "status": "queued",
+        "count": 6
+      },
+      {
+        "status": "running",
+        "count": 5
+      },
+      {
+        "status": "succeeded",
+        "count": 11468
+      }
+    ],
+    "phone_cloud_automation_jobs": [
+      {
+        "status": "cancelled",
+        "count": 673
+      },
+      {
+        "status": "failed",
+        "count": 493
+      },
+      {
+        "status": "queued",
+        "count": 7
+      },
+      {
+        "status": "succeeded",
+        "count": 2136
+      }
+    ],
+    "phone_cloud_automation_sessions": [
+      {
+        "status": "ended",
+        "count": 526
+      },
+      {
+        "status": "failed",
+        "count": 161
+      },
+      {
+        "status": "ready",
+        "count": 4
+      }
+    ],
+    "phone_cloud_device_locks": [
+      {
+        "status": "active",
+        "count": 277
+      },
+      {
+        "status": "released",
+        "count": 997
+      }
+    ],
+    "phone_cloud_xhs_tasks": [
+      {
+        "status": "cancelled",
+        "count": 4
+      },
+      {
+        "status": "failed",
+        "count": 187
+      },
+      {
+        "status": "succeeded",
+        "count": 313
+      }
+    ]
+  },
+  "structuredDeviceCount": 131,
+  "inventory": {
+    "devices": 131,
+    "adbOnline": 120,
+    "occupancyByKind": {
+      "screen_control": 3
+    },
+    "screenSessionRegistryNotDirectlyEnumerated": true,
+    "freshestDeviceAt": "2026-10-11T14:55:50.699Z"
+  }
+}

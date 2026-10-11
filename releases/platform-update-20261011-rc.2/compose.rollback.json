@@ -1,0 +1,7 @@
+{
+  "services": {
+    "phone-cloud": {
+      "image": "phone-cloud-platform:baseline-907e0c65"
+    }
+  }
+}

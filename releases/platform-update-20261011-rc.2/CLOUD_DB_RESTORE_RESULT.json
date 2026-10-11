@@ -1,0 +1,13 @@
+{
+  "restoreExitCode": 0,
+  "restoredFullProductionDump": true,
+  "restoredCounts": {
+    "tables": 13,
+    "devices": 131,
+    "stateRows": 1,
+    "lookupSessions": 691,
+    "windowsTasks": 12380
+  },
+  "candidateStartupPassedInThisAttempt": false,
+  "startupFailure": "Clone PostgreSQL backend killed by signal 9 after reducing its cap to 768 MiB; candidate received connection-terminated error. Later exact-image acceptance is separate."
+}

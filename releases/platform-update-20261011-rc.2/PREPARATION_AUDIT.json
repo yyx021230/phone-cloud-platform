@@ -1,0 +1,31 @@
+{
+  "atUtc": "2026-10-11T14:56:04.690358+00:00",
+  "cloudRuntimeBefore": {
+    "checked": 26,
+    "passed": true,
+    "differences": []
+  },
+  "production": {
+    "image": "sha256:907e0c65a50b1d066241e55ce475ac772647a531b582ae2894e25e1adc8ed3dd",
+    "id": "686d5a663506d6f823b24ad7a4ec2fd451e9745228ab6faa500a72753f2890b1",
+    "pid": 3019339,
+    "restarts": 0,
+    "health": "healthy",
+    "readyz": 200,
+    "environmentSha256": "cb654272ee0a06546effc4fe58322aa29708dd90ce01e73bf3728a2985aea5d4"
+  },
+  "mediaLive": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "mediaRuntimeUsed": "existing production Node and musl executed in host namespace; no install or restart",
+  "rollbackComposeSha256": "7b870099038b000d08834a6020bb474889619ef7d2ceebd9edad14a8c5882dfc",
+  "baseComposeSha256": "8687bf4176f8f0d78ab73380a7ef0fd6b71bf044de5474f172ef5483d3e47435",
+  "rollbackConfigValidated": true,
+  "rollbackExecuted": false,
+  "servicesRestarted": 0
+}

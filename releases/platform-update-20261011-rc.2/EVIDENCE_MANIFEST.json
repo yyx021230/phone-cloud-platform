@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "receiptVersion": "platform-update-20261011-rc.2",
+  "status": "candidate_verified_awaiting_maintenance_window",
+  "runtimeSourceCommit": "7f695507761b07504a94b7372de0c340befbf33f",
+  "candidateImageId": "sha256:41af4d0b836276c4db6058c88e8dd2769ff6ef445c806e871ce3754c3fc92be5",
+  "files": {
+    "ACTIVITY_SNAPSHOT.json": {
+      "sha256": "b5ea20e73f6dbc1bfc1b45e76a20f46ec8f7bbcc7b4311bc5666c2d0dc3711f8",
+      "bytes": 1663
+    },
+    "BACKUP_RESULT.json": {
+      "sha256": "9b5c2b939bcaedd438a1a027436000124428e0aef3c58a762adbba108d23bb79",
+      "bytes": 1654
+    },
+    "BUILD_RESULT.json": {
+      "sha256": "0e3c6834639f7dc86adfb337583c4fcb0ec092c416306e65c7a82c10adff36b5",
+      "bytes": 862
+    },
+    "CLOUD_DB_RESTORE_RESULT.json": {
+      "sha256": "dcaad4df0273eb1fe3e4c98fa473599ed24699227c6192c50f8c679ff0782a17",
+      "bytes": 443
+    },
+    "COMPOSE_PLAN_RESULT.json": {
+      "sha256": "683247a7d0b9dbdeb52d4f97bd436a553fef3204d9c3dcec6e287f6e8f8c9db0",
+      "bytes": 1080
+    },
+    "FULL_STATE_IMAGE_RESULT.json": {
+      "sha256": "869641f6a52486c5b2b9c22b59915d4a6472cd14b208db50101fd982367c210b",
+      "bytes": 2074
+    },
+    "ISOLATED_HTTP_RESULT.json": {
+      "sha256": "b4c65143c19bc24204037dde5dd49173a5827570568b9990be2ea43e8221eec5",
+      "bytes": 1234
+    },
+    "LOCAL_COLD_START_RESULT.json": {
+      "sha256": "d3bd0b7dcb2337515389938ac7793f03448399d55cf0df94e03be44c4e897047",
+      "bytes": 897
+    },
+    "NOTIFICATION_STAGING.json": {
+      "sha256": "5faf3c9205d29b7632443477ac0852037a04600b12a296abfe070f5527f6ea4c",
+      "bytes": 286
+    },
+    "PREPARATION_AUDIT.json": {
+      "sha256": "17fceff3925461a12ddb6d3dcaf153bdcc119787b5a658c704904e385f53ca29",
+      "bytes": 1125
+    },
+    "PREPARATION_RESULTS.json": {
+      "sha256": "4592b2fe015d51477f9f780ea523928fe80d47a2d1bfbe9c4c39312470192afe",
+      "bytes": 7684
+    },
+    "README.md": {
+      "sha256": "5b27b12ac8a5217e673ba435e477c26d89df9a2105349793e23ae138ee7d7d40",
+      "bytes": 2288
+    },
+    "RUNBOOK.md": {
+      "sha256": "4c4041d9d32b7161a99079f17432d2bfc752c0c9cb5cbde9698e69f12fc8377b",
+      "bytes": 6271
+    },
+    "VERSION.json": {
+      "sha256": "a8d889f35adc9ec179166160b473292a627e00b4196bf182e1cbf928630e039f",
+      "bytes": 949
+    },
+    "WINDOWS_DATA_PATH.json": {
+      "sha256": "fa49274f69815f15eabb04550113d8e8060b3bc34e10e05e2f036a3147dd2225",
+      "bytes": 135
+    },
+    "WINDOWS_LIVE_FINAL.json": {
+      "sha256": "9c938d9ad1f04c5094f956c523557dd6651706065e0cfef448a4fd22f74347d7",
+      "bytes": 182
+    },
+    "WINDOWS_STAGING_RESULT.json": {
+      "sha256": "19c37194aa915f956ac96ea0bad82f7d60f3255b3d7595ed3b5ea192bd51025c",
+      "bytes": 786
+    },
+    "WINDOWS_TASK.json": {
+      "sha256": "c4b7d621a35829e48b8db7611aa3c947591f99613e8d737754ec6e13cef798e9",
+      "bytes": 217
+    },
+    "compose.candidate.json": {
+      "sha256": "dcd8423a954be727934f72ab962a6e085a0fe58dec874343fa9e8220aaae572d",
+      "bytes": 527
+    },
+    "compose.rollback.json": {
+      "sha256": "7b870099038b000d08834a6020bb474889619ef7d2ceebd9edad14a8c5882dfc",
+      "bytes": 107
+    }
+  },
+  "doesNotIncludePrivateBackupsOrSecrets": true
+}

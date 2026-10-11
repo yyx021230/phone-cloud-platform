@@ -1,0 +1,29 @@
+{
+  "atUtc": "2026-10-11T14:16:12.5127117Z",
+  "stage": "D:\\PhoneCloud\\staging\\platform-update-20261011-rc.1",
+  "stagedFiles": 6,
+  "productionHashesVerified": 18,
+  "nodeSyntaxPassed": 5,
+  "pythonSyntaxVersion": "3.9.13",
+  "agentPid": 85936,
+  "adbServer": {
+    "pid": 312588,
+    "createdUtc": "2026-10-08T02:44:30.2758260Z"
+  },
+  "productionFilesReplaced": 0,
+  "servicesRestarted": 0,
+  "backup": {
+    "file": "agent-warm.tar",
+    "bytes": 1127815168,
+    "sha256": "872169e0d2868548b3972de4f51c8be8918fad7fd09fcae2c48c2b825cc5171d",
+    "runtimeHashes": 14,
+    "archiveEntries": 3639,
+    "transactionConsistent": false,
+    "refreshAtStopWindow": true,
+    "excluded": [
+      "agent/logs",
+      "agent/cache"
+    ],
+    "excludedProductionFilesUntouched": true
+  }
+}

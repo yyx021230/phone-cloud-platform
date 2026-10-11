@@ -1,0 +1,18 @@
+{
+  "atUtc": "2026-10-11T14:04:31.998066+00:00",
+  "sourceCommit": "7f695507761b07504a94b7372de0c340befbf33f",
+  "sourceTag": "platform-api-docs-20261010-rc.5",
+  "baseImageId": "sha256:907e0c65a50b1d066241e55ce475ac772647a531b582ae2894e25e1adc8ed3dd",
+  "candidateImageTag": "phone-cloud-platform:platform-update-20261011-rc.1",
+  "candidateImageId": "sha256:41af4d0b836276c4db6058c88e8dd2769ff6ef445c806e871ce3754c3fc92be5",
+  "candidateImageBytes": 68906309,
+  "buildExitCode": 0,
+  "buildLogSha256": "c724d2d0b38571231facb7016a35a3adb76f95be158a1892337f149c6d5de503",
+  "networkDuringBuild": "none",
+  "dependencyInstall": false,
+  "productionContainerUnchanged": true,
+  "productionContainerId": "686d5a663506d6f823b24ad7a4ec2fd451e9745228ab6faa500a72753f2890b1",
+  "productionPid": 3019339,
+  "productionRestartCount": 0,
+  "productionHealth": "healthy"
+}

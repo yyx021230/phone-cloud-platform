@@ -1,0 +1,51 @@
+{
+  "atUtc": "2026-10-11T14:54:43.163400+00:00",
+  "passed": true,
+  "candidateImageId": "sha256:41af4d0b836276c4db6058c88e8dd2769ff6ef445c806e871ce3754c3fc92be5",
+  "candidateStartup": {
+    "readyz": 200,
+    "backend": "postgres",
+    "docs": 200,
+    "node": "v22.22.3"
+  },
+  "startupSeconds": 202.73,
+  "fullDatabaseLocation": "local protected PostgreSQL clone restored from complete production dump",
+  "isolation": {
+    "network": "none",
+    "portsPublished": false,
+    "productionMounts": false,
+    "databaseTransport": "read-only mount of dedicated Unix socket forwarded through own SSH session to local clone; no production DB connection",
+    "memoryLimitBytes": 2147483648,
+    "cpus": 0.75,
+    "syntheticProcessCredentials": true,
+    "realAgentsReachable": false,
+    "notificationsEnabled": false
+  },
+  "productionContainerUnchanged": true,
+  "temporaryContainerRemoved": true,
+  "limitations": [
+    "Isolated development configuration; production credentials, Redis and real devices are not exercised",
+    "Resource caps and CPU allocation differ from live unbounded application; startup time is not a downtime estimate"
+  ],
+  "dumpSha256": "2b8fc9973ac4abdcb9f73fabf07b28f168471d95ef0b501bfb52063fdcb58f9d",
+  "localPostgresVersion": "postgres (PostgreSQL) 16.15 (Homebrew)",
+  "databaseRestoreExitCode": 0,
+  "initialRestoreCounts": {
+    "tables": 13,
+    "devices": 131,
+    "stateRows": 1,
+    "lookupSessions": 691,
+    "windowsTasks": 12380,
+    "snapshotTextBytes": 62863394
+  },
+  "clonePrecondition": "Complete original dump restored; successful same-Node local source cold start performed routine stale-task expiry/checkpoint and shutdown before exact-image check. No production data modified.",
+  "sshTransportCompression": true,
+  "countsAfterLocalColdStart": {
+    "tables": 13,
+    "devices": 131,
+    "lookupSessions": 691,
+    "windowsTasks": 12380
+  },
+  "earlierUncompressedAttempts": "two startup polling timeouts; last uncompressed attempt explicitly stopped to change isolated test transport",
+  "localClusterStopped": true
+}

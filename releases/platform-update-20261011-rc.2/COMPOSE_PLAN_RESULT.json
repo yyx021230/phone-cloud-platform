@@ -1,0 +1,32 @@
+{
+  "atUtc": "2026-10-11T14:15:18.475097+00:00",
+  "service": "phone-cloud",
+  "candidateImageId": "sha256:41af4d0b836276c4db6058c88e8dd2769ff6ef445c806e871ce3754c3fc92be5",
+  "candidateImageTag": "phone-cloud-platform:platform-update-20261011-rc.1",
+  "baseCompose": "/opt/phone-cloud-platform/docker-compose.yml",
+  "overlay": "/opt/phone-cloud-platform/staging/platform-update-20261011-rc.1/compose.candidate.json",
+  "overlaySha256": "dcd8423a954be727934f72ab962a6e085a0fe58dec874343fa9e8220aaae572d",
+  "runtimeEnvironmentMatchesBaseCompose": true,
+  "existingVolumesPreserved": true,
+  "otherServicesUnchanged": true,
+  "addedEnvironmentKeys": [
+    "LOOKUP_HUMAN_FEISHU_WEBHOOK_FILE"
+  ],
+  "addedSecretMountReadonly": true,
+  "activationRun": false,
+  "futureCommand": [
+    "docker",
+    "compose",
+    "-f",
+    "/opt/phone-cloud-platform/docker-compose.yml",
+    "-f",
+    "/opt/phone-cloud-platform/staging/platform-update-20261011-rc.1/compose.candidate.json",
+    "up",
+    "-d",
+    "--no-deps",
+    "--no-build",
+    "--pull",
+    "never",
+    "phone-cloud"
+  ]
+}
