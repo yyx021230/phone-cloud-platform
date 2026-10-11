@@ -1,0 +1,50 @@
+{
+  "atUtc": "2026-10-11T16:56:55.181642+00:00",
+  "commit": "8ceaf56f1927637520f082c9c356ea49847c8b25",
+  "baseImageId": "sha256:4e484ed7db6da2760c64de1f4481fdb7deb97b7acf4e4182e1658507a1d8b437",
+  "imageId": "sha256:71b02934fac4bcbe57fb274e49952fcb9ac577a7800c092d930621288bbc7069",
+  "tag": "phone-cloud-platform:platform-api-entry-20261012-rc.1",
+  "containerId": "8f399b21be28502239d527bb007282af9b3274ca9362e6a3ebace7b478a5b07d",
+  "pid": 2684217,
+  "baselineHashes": {
+    "checked": 26,
+    "passed": true,
+    "differences": []
+  },
+  "mediaBefore": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "previousActiveSha256": "68d419c0bf9b1a6b462cf5878916c16e66534ab9a259198e113ea11d1e8e8164",
+  "activeCompose": [
+    {
+      "path": "/opt/phone-cloud-platform/docker-compose.yml",
+      "sha256": "8687bf4176f8f0d78ab73380a7ef0fd6b71bf044de5474f172ef5483d3e47435"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/platform-api-entry-20261012-rc.1/compose.candidate.json",
+      "sha256": "ba7d1cba6646f719976cbb5518c2a6d23d8f09a40a19d2a9e3c5f6c1eb156a31"
+    }
+  ],
+  "network": "none",
+  "dependencyInstall": false,
+  "productionRestarted": false,
+  "backupFiles": [
+    {
+      "path": "/opt/phone-cloud-platform/staging/platform-api-entry-20261012-rc.1/backups/ACTIVE_PLATFORM_RELEASE.json",
+      "sha256": "68d419c0bf9b1a6b462cf5878916c16e66534ab9a259198e113ea11d1e8e8164"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/platform-api-entry-20261012-rc.1/backups/public/styles.css",
+      "sha256": "8956348200adee88a821ccd25d3cff2038b1930e04a7286f80c78257062bd98b"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/platform-api-entry-20261012-rc.1/backups/public/index.html",
+      "sha256": "bf20576d5d965374bbc4f7973fa59a8b6200b0cfeac9ff7220ae1986d22f98b5"
+    }
+  ]
+}

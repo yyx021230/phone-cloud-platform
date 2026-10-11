@@ -1,0 +1,56 @@
+{
+  "atUtc": "2026-10-11T16:57:07.176308+00:00",
+  "candidateImageId": "sha256:71b02934fac4bcbe57fb274e49952fcb9ac577a7800c092d930621288bbc7069",
+  "passed": true,
+  "checks": {
+    "checks": [
+      {
+        "path": "/healthz",
+        "status": 200
+      },
+      {
+        "path": "/readyz",
+        "status": 200
+      },
+      {
+        "path": "/api-docs.html",
+        "status": 200
+      },
+      {
+        "path": "/api-docs.css",
+        "status": 200
+      },
+      {
+        "path": "/api-docs.js",
+        "status": 200
+      },
+      {
+        "path": "/api-reference.json",
+        "status": 200
+      },
+      {
+        "path": "/openapi.json",
+        "status": 200
+      }
+    ],
+    "platformOperations": 32,
+    "productLabels": true,
+    "unauthorizedStatus": 401,
+    "authorizedEmptyInventory": true,
+    "inventoryDocsEntry": true
+  },
+  "isolated": {
+    "network": "none",
+    "portBindings": false,
+    "productionMounts": false,
+    "rootReadonly": true,
+    "memoryBytes": 268435456,
+    "nanoCpus": 500000000,
+    "pidsLimit": 128,
+    "realCredentials": false,
+    "productionDb": false,
+    "deviceConnectivity": false,
+    "notificationConnectivity": false
+  },
+  "temporaryContainerRemoved": true
+}

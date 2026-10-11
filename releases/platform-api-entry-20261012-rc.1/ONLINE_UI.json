@@ -1,0 +1,24 @@
+{
+  "productionOrigin": "http://47.98.127.132",
+  "adminDashboardEntryVisible": true,
+  "adminDevicesEntryVisible": true,
+  "inventoryEntryVisible": true,
+  "inventoryHeaderDuplicateHidden": true,
+  "buttonOpensProductionDocsNewWindow": true,
+  "docsTitle": "platform API overview",
+  "listed": 125,
+  "online": 120,
+  "working": 3,
+  "screenshot": "ONLINE_ENTRY.jpg",
+  "realQueries": 0,
+  "newFeishuAttempts": 0,
+  "productionAcceptanceComplete": false,
+  "notVerified": [
+    "new query numbers",
+    "natural limit/account rotation/puzzle/resume",
+    "two-device/OEM",
+    "natural 8-hour cooldown",
+    "24-48-hour observation",
+    "browser real-time picture/touch"
+  ]
+}

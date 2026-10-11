@@ -1,0 +1,105 @@
+{
+  "atUtc": "2026-10-11T16:57:36.564391+00:00",
+  "version": "platform-api-entry-20261012-rc.1",
+  "commit": "8ceaf56f1927637520f082c9c356ea49847c8b25",
+  "runningBaseImageId": "sha256:4e484ed7db6da2760c64de1f4481fdb7deb97b7acf4e4182e1658507a1d8b437",
+  "hotPatchedRuntimeFiles": [
+    {
+      "path": "public/index.html",
+      "beforeSha256": "bf20576d5d965374bbc4f7973fa59a8b6200b0cfeac9ff7220ae1986d22f98b5",
+      "afterSha256": "988408fea9a82091ac75116d8a3ca81a594f73c686bb59c0fcadaea7d190542c"
+    },
+    {
+      "path": "public/styles.css",
+      "beforeSha256": "8956348200adee88a821ccd25d3cff2038b1930e04a7286f80c78257062bd98b",
+      "afterSha256": "115f31e4cb5ccfb11550dcd2978dcf20464ea007b247be6bcf475a4a694fffde"
+    }
+  ],
+  "restartImageId": "sha256:71b02934fac4bcbe57fb274e49952fcb9ac577a7800c092d930621288bbc7069",
+  "restartImageTag": "phone-cloud-platform:platform-api-entry-20261012-rc.1",
+  "containerId": "8f399b21be28502239d527bb007282af9b3274ca9362e6a3ebace7b478a5b07d",
+  "pid": 2684217,
+  "restartCount": 0,
+  "health": "healthy",
+  "runtimeHashes": {
+    "checked": 26,
+    "passed": true,
+    "differences": []
+  },
+  "otherContainersUnchanged": true,
+  "environmentUnchanged": true,
+  "noProductionServiceRestart": true,
+  "mediaBefore": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "mediaAfter": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "activeCompose": [
+    {
+      "path": "/opt/phone-cloud-platform/docker-compose.yml",
+      "sha256": "8687bf4176f8f0d78ab73380a7ef0fd6b71bf044de5474f172ef5483d3e47435"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/platform-api-entry-20261012-rc.1/compose.candidate.json",
+      "sha256": "ba7d1cba6646f719976cbb5518c2a6d23d8f09a40a19d2a9e3c5f6c1eb156a31"
+    }
+  ],
+  "activeRecordSha256": "59925c9235db6590704edcaa21575eec37b2dd53d16cc872b0a239f5e5afc038",
+  "http": {
+    "checks": [
+      {
+        "path": "/healthz",
+        "status": 200
+      },
+      {
+        "path": "/readyz",
+        "status": 200
+      },
+      {
+        "path": "/",
+        "status": 200
+      },
+      {
+        "path": "/styles.css?v=20261012-api-entry-v1",
+        "status": 200
+      },
+      {
+        "path": "/api-docs.html",
+        "status": 200
+      },
+      {
+        "path": "/api-docs.css",
+        "status": 200
+      },
+      {
+        "path": "/api-docs.js",
+        "status": 200
+      },
+      {
+        "path": "/api-reference.json",
+        "status": 200
+      },
+      {
+        "path": "/openapi.json",
+        "status": 200
+      }
+    ],
+    "inventory": {
+      "listed": 125,
+      "online": 120
+    }
+  },
+  "realQueries": 0,
+  "newFeishuAttempts": 0
+}
