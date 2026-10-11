@@ -58,7 +58,7 @@ def routes(source):
     return result
 
 
-def make(candidate):
+def make(candidate, publication_path=None):
     source = (candidate / 'server/index.mjs').read_text()
     reviewed = json.loads((ROOT / 'docs/api-reference-contracts.json').read_text())
     fields = reviewed['fields']
@@ -123,7 +123,7 @@ def make(candidate):
         endpoints.append(endpoint)
     unknown = set(reviewed['endpoints']) - seen
     if unknown: raise ValueError('Removed/stale routes ' + str(unknown))
-    publication = json.loads((ROOT / 'docs/platform-api-publication.json').read_text())
+    publication = json.loads((publication_path or ROOT / 'docs/platform-api-publication.json').read_text())
     selected = [e for e in endpoints if e['group'] in publication['groups']]
     for endpoint in selected:
         endpoint['group'] = publication['endpointGroups'].get(endpoint['id'], endpoint['group'])
@@ -139,19 +139,19 @@ def make(candidate):
     for endpoint in selected:
         for field in endpoint['response'].split(','): include_type(field.split(':')[1])
         for parameter in endpoint['parameters']: include_type(parameter['type'])
-    data = dict(version=publication['version'], updatedAt='2026-10-10',
-                baseline='lookup-20261010-rc.2', status='本地候选 · 未发布',
+    data = dict(version=publication['version'], updatedAt=publication.get('updatedAt', '2026-10-10'),
+                baseline='lookup-20261010-rc.2', status=publication.get('status', '本地候选 · 未发布'),
                 routerSha256=hashlib.sha256(source.encode()).hexdigest(), sourceRoutesReviewed=len(endpoints),
                 groups=publication['publishedGroups'], guides=publication['guides'],
                 models={k: v for k, v in reviewed['models'].items() if k in needed},
                 commonErrors=publication['commonErrors'], websockets=[], endpoints=selected)
     out = candidate / 'public/api-reference.json'
     out.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
-    build_openapi(data, candidate / 'public/openapi.json')
+    build_openapi(data, candidate / 'public/openapi.json', publication.get('openapiDescription'))
     print('Reviewed', len(endpoints), 'routes; built', len(selected), 'platform HTTP operations and', len(data['websockets']), 'WebSocket channels ->', out)
 
 
-def build_openapi(data, out):
+def build_openapi(data, out, description=None):
     def schema(typ):
         if typ.endswith('|null'):
             return {'anyOf': [schema(typ[:-5]), {'type': 'null'}]}
@@ -162,7 +162,7 @@ def build_openapi(data, out):
             raise ValueError('Unknown API schema type: ' + typ)
         return {'type': typ}
     doc = {'openapi': '3.1.0', 'info': {'title': 'Phone Cloud 平台功能 API', 'version': data['version'],
-           'description': '仅平台功能接口，本地候选未部署。使用登录令牌Bearer认证；接口基线lookup-20261010-rc.2。'},
+           'description': description or '仅平台功能接口，本地候选未部署。使用登录令牌Bearer认证；接口基线lookup-20261010-rc.2。'},
            'servers': [{'url': 'https://cloud.example.com', 'description': '占位域名；替换为管理员交付的HTTPS根地址'}],
            'tags': [{'name': g[0], 'description': g[1] + ' · ' + g[2]} for g in data['groups']],
            'paths': {}, 'components': {'securitySchemes': {
@@ -203,4 +203,6 @@ def build_openapi(data, out):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('candidate', nargs='?', type=Path, default=DEFAULT)
-    make(parser.parse_args().candidate)
+    parser.add_argument('--publication', type=Path, help='Reviewed release metadata; defaults to the local candidate publication')
+    args = parser.parse_args()
+    make(args.candidate, args.publication)

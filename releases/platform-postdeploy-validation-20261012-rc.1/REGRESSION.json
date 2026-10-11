@@ -1,0 +1,73 @@
+{
+  "sourceTags": [
+    "platform-api-docs-20261010-rc.5",
+    "platform-update-20261012-rc.3",
+    "platform-api-entry-20261012-rc.1"
+  ],
+  "runtimeHashesVerified": 44,
+  "loopbackNetworkOnly": true,
+  "realCredentials": false,
+  "productionDb": false,
+  "checks": [
+    {
+      "check": "syntax",
+      "exitCode": 0,
+      "seconds": 1.6,
+      "logSha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+    },
+    {
+      "check": "screen",
+      "exitCode": 0,
+      "seconds": 7.34,
+      "logSha256": "96921047ae03f76b9553651f1c8f0a9d053da0d956a04525499b620c96537bda"
+    },
+    {
+      "check": "agent",
+      "exitCode": 0,
+      "seconds": 2.52,
+      "logSha256": "f0ce5de90c491b339d0e6248048bc1685da42dd0b62bc953cbfb2dcfe89408a2"
+    },
+    {
+      "check": "python",
+      "exitCode": 0,
+      "seconds": 1.3,
+      "logSha256": "a44870b43b774ac612572a991c6f38aa659ee3de247085b85e34c61e290fd296"
+    },
+    {
+      "check": "lookup",
+      "exitCode": 0,
+      "seconds": 2.29,
+      "logSha256": "4a381b92e91306b73f56cc479a968edb0dfee74e8c6ec4e2b900f7ca9a2e0be2"
+    },
+    {
+      "check": "sdk-node",
+      "exitCode": 0,
+      "seconds": 0.2,
+      "logSha256": "de799772d37766ae85fa4c5cc8e75b6cba30de6b5479947ada07db4706e40abe"
+    },
+    {
+      "check": "sdk-python",
+      "exitCode": 0,
+      "seconds": 0.09,
+      "logSha256": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5"
+    },
+    {
+      "check": "published-api",
+      "exitCode": 0,
+      "seconds": 2.48,
+      "logSha256": "823df1bde20710ab6095a4cc488a77bc8072d723497f5815309e23de82f6f041"
+    },
+    {
+      "check": "local-api",
+      "exitCode": 0,
+      "seconds": 2.46,
+      "logSha256": "9a7b0f92d3a759c489e69e51ef0c8274f09282e49d04ad5caff033bfe84d4088"
+    },
+    {
+      "check": "smoke",
+      "exitCode": 0,
+      "seconds": 3.44,
+      "logSha256": "a917e1a72233ca45562168e6d43183ba6b5a2ada4fb720884a1a54c0f0305bca"
+    }
+  ]
+}

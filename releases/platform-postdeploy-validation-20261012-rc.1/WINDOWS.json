@@ -1,0 +1,13 @@
+{
+  "atUtc": "2026-10-11T17:04:08.6680151Z",
+  "runtimeHashes": 18,
+  "agentPid": 379908,
+  "agentCreatedUtc": "2026-10-11T16:36:37.7856480Z",
+  "taskState": "Running",
+  "adbServerPid": 312588,
+  "outboxExists": true,
+  "outboxPendingFiles": 0,
+  "oldestPendingUtc": null,
+  "servicesRestarted": 0,
+  "productionWrites": 0
+}

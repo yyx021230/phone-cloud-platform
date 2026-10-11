@@ -1,0 +1,78 @@
+{
+  "files": [
+    {
+      "path": "CLOUD_ALL_RUNTIME_HASHES.json",
+      "sha256": "be5a737df80b188de9bb79f1167cccac95232f5778c3f8479009df057dee273a"
+    },
+    {
+      "path": "CLOUD_FINAL.json",
+      "sha256": "f62e5c222548ee1a9f6c32930706d2c98ae0e699211245dc166cf446baf7bf3b"
+    },
+    {
+      "path": "CLOUD_FIRST.json",
+      "sha256": "bfc2d9b9448ed60596b6d30e227bcf906ab485dbf33ee2c7810238874f83e21a"
+    },
+    {
+      "path": "CLOUD_LAST.json",
+      "sha256": "62ea153d841cf8b91dcc99ca233187ebe451c6f72fb97ec1e0ac1d2a41fbf02b"
+    },
+    {
+      "path": "FIRST_REGRESSION.json",
+      "sha256": "6a3c7922646c3548c6bb1672ff5f17f718d711dd518466bc9688e7efe59d47fb"
+    },
+    {
+      "path": "MANIFEST.json",
+      "sha256": "978d692c514f8cc14c383c0a85d40e86724d3d994faf7fbaeb7b094c9bb3e627"
+    },
+    {
+      "path": "PUBLICATION_CLI.json",
+      "sha256": "39b0c5499d110e9fa9c6c8388bb7948db786466765e96dde2988c29a42019d9a"
+    },
+    {
+      "path": "PUBLIC_HTTP.json",
+      "sha256": "dcfbcecdd566cd306d0e3fad623df7c3b21080defb63bc8019153ab090c00057"
+    },
+    {
+      "path": "README.md",
+      "sha256": "193c52cdc73288d84e89e69f3fcc13d4ea32a646996509717c0ac3555f291684"
+    },
+    {
+      "path": "REGRESSION.json",
+      "sha256": "70efa8543481e73ae5ef921ff98b95542e291f05eaff24ca08b297f1a5b00bb1"
+    },
+    {
+      "path": "SUMMARY.json",
+      "sha256": "a8d60c71d183668b6b4e5d63659b1bd9cc443e365eb41cf156f336d8a6185a56"
+    },
+    {
+      "path": "WINDOWS.json",
+      "sha256": "43652f1d08b0b12db2b637e2ac1b0a4024e29e5841780d7f07a7d126637da0c5"
+    },
+    {
+      "path": "WINDOWS_ALL_RUNTIME_HASHES.json",
+      "sha256": "56ffa0eb1d218fa5fe5b7dd3cf5b4805a2dd46883eec8f757bc4379b1d4a6a17"
+    },
+    {
+      "path": "cloud_readonly.py",
+      "sha256": "ff96947809a9e4c9efddb282ad6c09ca4efe5d563eb84398647c48f4433c6736"
+    },
+    {
+      "path": "publication.json",
+      "sha256": "baad8324e23e49ad91dd79909ea990ed41ee69f98acb41a64f5354a4cf28f4a7"
+    },
+    {
+      "path": "screen-client/screen-ui.test.mjs",
+      "sha256": "b282cadea98fd0b546f6c6e2c10dc5e23aaa90cd6455add1b5ef8fc37a3ff134"
+    },
+    {
+      "path": "verify.py",
+      "sha256": "64043f13ad5b9febc4ce2a66786e28b5d8c8630ff91658c6ec26ac9a5bf80173"
+    }
+  ],
+  "generator": {
+    "path": "scripts/build-api-docs.py",
+    "beforeSha256": "571fea23dd8672ffa10ffb16791b0ece23f4a46e1c14247bc3622f18026b2e87",
+    "afterSha256": "18e5ac80be7ae258591026625f2835135bfeb2815efe4938a54c83169d4a3108"
+  },
+  "productionModified": false
+}

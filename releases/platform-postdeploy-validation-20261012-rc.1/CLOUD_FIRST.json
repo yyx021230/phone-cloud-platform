@@ -1,0 +1,192 @@
+{
+  "atUtc": "2026-10-11T17:03:53.943212+00:00",
+  "activeVersion": "platform-api-entry-20261012-deployed.1",
+  "activeRecordSha256": "d867027ae05aa90394f3a05a3dbaec7d8b868ff0e5705a4f8b0ce5c23f8ebe5c",
+  "container": {
+    "id": "8f399b21be28502239d527bb007282af9b3274ca9362e6a3ebace7b478a5b07d",
+    "pid": 2684217,
+    "baseImage": "sha256:4e484ed7db6da2760c64de1f4481fdb7deb97b7acf4e4182e1658507a1d8b437",
+    "health": "healthy",
+    "restartCount": 0,
+    "oomKilled": false,
+    "startedAt": "2026-10-11T16:41:45.890652151Z"
+  },
+  "restartImageId": "sha256:71b02934fac4bcbe57fb274e49952fcb9ac577a7800c092d930621288bbc7069",
+  "runtimeHashes": {
+    "checked": 26,
+    "passed": true,
+    "differences": []
+  },
+  "compose": [
+    {
+      "path": "/opt/phone-cloud-platform/docker-compose.yml",
+      "passed": true,
+      "sha256": "8687bf4176f8f0d78ab73380a7ef0fd6b71bf044de5474f172ef5483d3e47435"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/platform-api-entry-20261012-rc.1/compose.candidate.json",
+      "passed": true,
+      "sha256": "ba7d1cba6646f719976cbb5518c2a6d23d8f09a40a19d2a9e3c5f6c1eb156a31"
+    }
+  ],
+  "mediaLive": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "readOnlyChecks": {
+    "http": [
+      {
+        "path": "/healthz",
+        "status": 200,
+        "bytes": 43
+      },
+      {
+        "path": "/readyz",
+        "status": 200,
+        "bytes": 315
+      },
+      {
+        "path": "/",
+        "status": 200,
+        "bytes": 53559
+      },
+      {
+        "path": "/styles.css?v=20261012-api-entry-v1",
+        "status": 200,
+        "bytes": 171243
+      },
+      {
+        "path": "/app.js",
+        "status": 200,
+        "bytes": 285241
+      },
+      {
+        "path": "/api-docs.html",
+        "status": 200,
+        "bytes": 2864
+      },
+      {
+        "path": "/api-docs.css",
+        "status": 200,
+        "bytes": 14979
+      },
+      {
+        "path": "/api-docs.js",
+        "status": 200,
+        "bytes": 26723
+      },
+      {
+        "path": "/api-reference.json",
+        "status": 200,
+        "bytes": 63128
+      },
+      {
+        "path": "/openapi.json",
+        "status": 200,
+        "bytes": 108321
+      }
+    ],
+    "ready": {
+      "storageOk": true,
+      "storageBackend": "postgres",
+      "runtimeOk": true,
+      "runtimeMode": "redis"
+    },
+    "auth": [
+      {
+        "path": "/api/v1/devices",
+        "noAuth": 401,
+        "authorized": 200
+      },
+      {
+        "path": "/api/v1/user/devices",
+        "noAuth": 401,
+        "authorized": 200
+      },
+      {
+        "path": "/api/v1/windows-agents",
+        "noAuth": 401,
+        "authorized": 200
+      }
+    ],
+    "adminInventory": {
+      "total": 131,
+      "online": 120,
+      "occupied": 1
+    },
+    "publicInventory": {
+      "listed": 125,
+      "online": 120,
+      "available": 119
+    },
+    "agents": [
+      {
+        "id": "win-bf-202605262318-20260727",
+        "lastSeenAt": "2026-10-11T17:03:37.801Z",
+        "healthCheckedAt": "2026-10-11T17:03:37.795Z",
+        "status": "ok",
+        "screenConnected": true,
+        "scanAt": "2026-10-11T17:03:09.181Z"
+      },
+      {
+        "id": "windows-desktop-8v8n4pe-v2",
+        "lastSeenAt": "2026-08-10T06:02:47.953Z",
+        "healthCheckedAt": "2026-08-10T06:02:47.670Z",
+        "status": "ok",
+        "screenConnected": true,
+        "scanAt": "2026-08-10T06:02:47.612Z"
+      },
+      {
+        "id": "windows-desktop-8v8n4pe",
+        "lastSeenAt": "2026-07-03T04:15:49.959Z",
+        "healthCheckedAt": "2026-07-03T04:15:35.881Z",
+        "status": "ok",
+        "scanAt": "2026-07-03T04:15:33.635Z"
+      },
+      {
+        "id": "local-mac-windows-agent",
+        "lastSeenAt": "2026-07-03T05:36:47.198Z",
+        "healthCheckedAt": "2026-07-03T05:36:21.214Z",
+        "status": "ok",
+        "scanAt": "2026-07-03T05:36:21.217Z"
+      }
+    ],
+    "databaseCounts": {
+      "phone_cloud_devices": 131,
+      "phone_cloud_automation_sessions": 692,
+      "phone_cloud_windows_tasks": 12382
+    },
+    "notification": {
+      "configured": true,
+      "secretReadable": true,
+      "persistentReceiptDirectory": true
+    }
+  },
+  "logs": {
+    "since": "2026-10-11T16:41:00Z",
+    "tailLimit": 3000,
+    "linesSampled": 3000,
+    "fatalMarkers": {
+      "uncaughtException": 0,
+      "unhandledRejection": 0,
+      "MODULE_NOT_FOUND": 0,
+      "saveState failed": 0,
+      "persistence failed": 0,
+      "lookup human notification receipt unavailable": 0,
+      "out of memory": 0
+    },
+    "rawLogsPublished": false
+  },
+  "resources": {
+    "cpu": "0.70%",
+    "memory": "161.8MiB / 7.096GiB",
+    "pids": "11"
+  },
+  "productionWrites": 0,
+  "realQueries": 0,
+  "feishuAttempts": 0
+}
