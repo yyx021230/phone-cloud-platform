@@ -1,0 +1,7 @@
+{
+  "state": "needs_attention",
+  "deviceNumber": "118",
+  "sessionId": "5436a07e-b129-4220-8f94-d7c88f1f23be",
+  "error": "RPC failed; never blindly repeat mutation. Guard or API failure; mutation outcome may be unknown; reconcile original session\n",
+  "authentication": "platform Bearer; not third-party HMAC"
+}

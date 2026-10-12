@@ -1,0 +1,73 @@
+{
+  "atUtc": "2026-10-12T03:13:12.566Z",
+  "sessionId": "5ec5224a-e017-4b7a-bd11-cc004d76229a",
+  "tasks": [
+    {
+      "taskId": "9d717d14-45f9-41bf-80d6-c0ade122dd30",
+      "type": "alipay_name_start",
+      "status": "failed",
+      "resultKeys": [
+        "action",
+        "message",
+        "error",
+        "errorCode",
+        "executionMode",
+        "packageName",
+        "currentActivity",
+        "durationMs",
+        "wallMs",
+        "timeoutSeconds",
+        "diagnostic",
+        "realNameTailCharacter",
+        "alipayDisplayName",
+        "currentAccount",
+        "recoveryAttempts",
+        "accountSwitchCount",
+        "accountSwitched",
+        "accountIdentityVerified",
+        "notFound",
+        "savedAccounts"
+      ],
+      "resultError": "",
+      "resultMessage": "支付宝查名字执行失败，已保留具体诊断原因；可重试当前号码。",
+      "errorCode": "alipay_lookup_failed",
+      "resultAction": "",
+      "stdoutErrorLines": [],
+      "stderr": "",
+      "events": [
+        {
+          "at": "2026-10-12T03:12:23.280Z",
+          "phase": "start",
+          "message": "开始执行 alipay_name_start",
+          "detailKeys": []
+        },
+        {
+          "at": "2026-10-12T03:12:23.425Z",
+          "phase": "alipay_name",
+          "message": "建立支付宝查名字会话",
+          "detailKeys": []
+        },
+        {
+          "at": "2026-10-12T03:12:31.600Z",
+          "stepId": "launch_alipay",
+          "phase": "alipay",
+          "message": "正在打开支付宝",
+          "detailKeys": []
+        },
+        {
+          "at": "2026-10-12T03:12:31.631Z",
+          "stepId": "error",
+          "phase": "airtest",
+          "message": "Airtest/Poco 执行失败",
+          "detailKeys": []
+        },
+        {
+          "at": "2026-10-12T03:12:31.747Z",
+          "phase": "finish",
+          "message": "支付宝查名字执行失败，已保留具体诊断原因；可重试当前号码。",
+          "detailKeys": []
+        }
+      ]
+    }
+  ]
+}

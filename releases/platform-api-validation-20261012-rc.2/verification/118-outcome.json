@@ -1,0 +1,18 @@
+{
+  "state": "completed after original-ID reconciliation",
+  "deviceNumber": "118",
+  "sessionId": "5436a07e-b129-4220-8f94-d7c88f1f23be",
+  "realQueries": 2,
+  "inputIndexes": [
+    57,
+    58
+  ],
+  "succeeded": 1,
+  "notFound": 1,
+  "ended": true,
+  "locksReleased": true,
+  "pollFailureRootCause": "not established; original error detail not captured by initial test harness",
+  "duplicateQueries": 0,
+  "authentication": "platform Bearer; not third-party HMAC",
+  "pollRpcFailures": 1
+}

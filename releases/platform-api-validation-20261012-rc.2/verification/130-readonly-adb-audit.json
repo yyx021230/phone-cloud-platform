@@ -1,0 +1,16 @@
+{
+  "atUtc": "2026-10-12T03:14:47.6725075Z",
+  "configAdbPath": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+  "adbPid": 312588,
+  "onlineDeviceCount": 124,
+  "target130SerialHash": "c280523fe490",
+  "target130State": "device",
+  "taskAndInventorySerialMatch": true,
+  "taskAndInventoryAgentMatch": true,
+  "echoAtUtc": "2026-10-12T03:15:16.6614158Z",
+  "echoVerified": true,
+  "echoExitCode": 0,
+  "adbPidUnchanged": true,
+  "deviceWrites": 0,
+  "rootCause": "runner reported device not found during first start; later fresh inventory and single-device echo pass; transient transport loss suspected, not proven"
+}
