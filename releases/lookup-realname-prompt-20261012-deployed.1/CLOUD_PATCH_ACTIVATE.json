@@ -1,0 +1,32 @@
+{
+  "atUtc": "2026-10-12T07:43:22.442731+00:00",
+  "version": "lookup-realname-prompt-20261012-deployed.1",
+  "previousVersion": "platform-api-integration-20261012-deployed.1",
+  "candidateCommit": "4ee0e9f8bde774ba1888c78dcb55bf816b644e46",
+  "windowsRunnerSha256": "24a9429c2735454ef854c0b6fa4346fedbb7a50ce264fd9ee4811cc43e7acc0d",
+  "activeSha256": "3407856aa2804e3b0caec4703218f736953a3d70cd7f4ccd6e4c9b5d3c361d57",
+  "beforeActiveSha256": "aa5c5aa3f123bced09451c116b0b1d37fce4b9d507c46766e431e683102a54a5",
+  "mediaAfter": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "cloudRuntime": {
+    "id": "8f399b21be28502239d527bb007282af9b3274ca9362e6a3ebace7b478a5b07d",
+    "image": "sha256:4e484ed7db6da2760c64de1f4481fdb7deb97b7acf4e4182e1658507a1d8b437",
+    "pid": 2684217,
+    "restartCount": 0,
+    "startedAt": "2026-10-11T16:41:45.890652151Z",
+    "health": "healthy",
+    "envHash": "6357666b2bad032da6519cbb33bc0b3012218377b5c8f14c8bf98558a671c2db",
+    "mountsHash": "a4cc3c293b036b3ea7f5454da23457e2078363981b280c5679b860e33d97a805"
+  },
+  "nextStartupCloudImageId": "sha256:97633e241d545dbe895ad003852dfd35eae39cab9bcb54fbee95740b67daa053",
+  "documentVersion": "platform-api-integration-20261012-rc.3",
+  "documentCommit": "20ecebdb91a531dd55a83dbc8cf18cc5a93565fd",
+  "scope": "Windows runner file only; cloud business/static images unchanged except version metadata",
+  "newRealTasks": 0
+}

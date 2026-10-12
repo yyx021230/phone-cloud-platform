@@ -1,0 +1,67 @@
+{
+  "atUtc": "2026-10-12T07:52:25.818Z",
+  "action": "get",
+  "deviceNumber": "177",
+  "ok": true,
+  "idempotent": false,
+  "queryId": "",
+  "session": {
+    "sessionId": "361ca1f4-8725-4b35-9098-0a4ea39f0a85",
+    "deviceHash": "349cd1b53176",
+    "status": "ready",
+    "pending": false,
+    "queuedCount": 0,
+    "resultCount": 2,
+    "successfulCount": 2,
+    "accountHash": "5f9b119eb443",
+    "queueState": {
+      "status": "idle"
+    },
+    "humanAction": {
+      "required": false
+    },
+    "error": "",
+    "endedAt": null,
+    "results": [
+      {
+        "queryId": "1ac39861-e519-4eed-a843-a40d7f4d6eb0",
+        "clientReference": "api-prompt-retest-20261012-177-064",
+        "status": "succeeded",
+        "stage": "查询完成",
+        "hasMaskedName": true,
+        "hasTail": true,
+        "accountSwitched": false,
+        "accountSwitchCount": 0,
+        "reason": "",
+        "error": "",
+        "queuePosition": null
+      },
+      {
+        "queryId": "bc8ce867-8a33-4265-ad3e-c506fd6d174b",
+        "clientReference": "api-prompt-retest-20261012-177-063",
+        "status": "succeeded",
+        "stage": "人工验证后当前号码查询完成",
+        "hasMaskedName": true,
+        "hasTail": true,
+        "accountSwitched": false,
+        "accountSwitchCount": 0,
+        "reason": "",
+        "error": "",
+        "queuePosition": null
+      }
+    ]
+  },
+  "query": null,
+  "calls": [
+    {
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/devices",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/sessions/361ca1f4-8725-4b35-9098-0a4ea39f0a85",
+      "status": 200
+    }
+  ]
+}
