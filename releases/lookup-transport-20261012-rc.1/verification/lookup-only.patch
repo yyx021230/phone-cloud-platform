@@ -1,0 +1,52 @@
+--- a/windows-agent/scripts/alipay_name_lookup.py
++++ b/windows-agent/scripts/alipay_name_lookup.py
+@@ -294,0 +295,49 @@
++        try:
++            return self._dump_once(token, command_timeout, read_timeout, allow_tty_fallback)
++        except RuntimeError as exc:
++            # Replay only this UI snapshot, never an input, launch, account
++            # switch or query. A target transport can briefly disappear and
++            # return while the shared ADB server remains healthy.
++            detail = str(exc).strip()
++            missing = re.fullmatch(
++                rf"(?:adb(?:\.exe)?: |error: )?device '{re.escape(self.serial)}' not found",
++                detail,
++            )
++            offline = re.fullmatch(r"(?:adb(?:\.exe)?: |error: )?device offline", detail)
++            if not (missing or offline):
++                raise
++            self.emit("alipay_ui_transport_wait", driver="xml_uiautomator",
++                      deviceRestarted=False, adbRestarted=False, queryReplayed=False)
++            deadline = time.monotonic() + 8.0
++            online_samples = 0
++            while time.monotonic() < deadline:
++                remaining = deadline - time.monotonic()
++                try:
++                    state = str(self.adb(["get-state"], timeout=min(2.0, remaining))).strip()
++                except subprocess.TimeoutExpired:
++                    state = ""
++                except RuntimeError as probe_exc:
++                    probe_detail = str(probe_exc).strip()
++                    if "unauthorized" in probe_detail.lower():
++                        raise RuntimeError("alipay_ui_transport_unauthorized") from probe_exc
++                    if not re.fullmatch(
++                        rf"(?:adb(?:\.exe)?: |error: )?device (?:'{re.escape(self.serial)}' not found|offline)",
++                        probe_detail,
++                    ):
++                        raise
++                    state = ""
++                if "unauthorized" in state.lower():
++                    raise RuntimeError("alipay_ui_transport_unauthorized") from exc
++                online_samples = online_samples + 1 if state == "device" else 0
++                if online_samples >= 2:
++                    self.emit("alipay_ui_transport_returned", driver="xml_uiautomator",
++                              deviceRestarted=False, adbRestarted=False, queryReplayed=False)
++                    break
++                time.sleep(min(0.25, max(0.0, deadline - time.monotonic())))
++            else:
++                raise RuntimeError("alipay_ui_transport_unavailable") from exc
++            # Exactly one retry; a second loss still fails closed. No reconnect,
++            # kill-server, wait-for-device, USB/PnP action or another device.
++            return self._dump_once(token, command_timeout, read_timeout, allow_tty_fallback)
++
++    def _dump_once(self, token, command_timeout=15, read_timeout=12, allow_tty_fallback=True):

@@ -1,0 +1,25 @@
+{
+  "atUtc": "2026-10-12T03:33:24.293Z",
+  "baseUrl": "http://47.98.127.132",
+  "deviceNumber": "130",
+  "action": "start",
+  "httpStatus": 201,
+  "error": "",
+  "jobId": "",
+  "session": {
+    "sessionId": "a04c3d54-0b04-4c4b-b184-1ace859ca249",
+    "deviceHash": "31bba16d8714",
+    "status": "starting",
+    "pendingJobId": "78893dd6-732b-4fe2-8946-1c9cb5f742a8",
+    "successfulCount": 0,
+    "accountHash": "e3b0c44298fc",
+    "accountIdentityVerified": false,
+    "requiresAccountSwitch": false,
+    "error": "",
+    "limitReason": "",
+    "startupHumanVerification": null,
+    "accountCooldowns": [],
+    "results": [],
+    "endedAt": null
+  }
+}

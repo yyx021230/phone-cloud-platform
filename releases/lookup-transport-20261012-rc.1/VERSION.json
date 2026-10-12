@@ -1,0 +1,49 @@
+{
+  "version": "lookup-transport-20261012-rc.1",
+  "status": "local candidate; not deployed",
+  "branch": "codex/lookup-transport-recovery-20261012",
+  "parentCommit": "b2c6dcdf5b317978709cfa15adff02645e81af49",
+  "productionVersion": "platform-api-entry-20261012-deployed.1",
+  "runtimeSourceCommit": "7f695507761b07504a94b7372de0c340befbf33f",
+  "baselineRunnerSha256": "4887d25c7c61d67bbba1ca71695648505b5fc5e5423499f651e75d4ef987f1ee",
+  "candidateRunnerSha256": "ab20472a843882547ad61aae38fc81e476fc233bf554a355d890da2e425cc8ce",
+  "sharedAgentAdbAndFrozenFilesChanged": false,
+  "tests": {
+    "failureInjection": {
+      "baseline": {
+        "total": 10,
+        "failed": 7
+      },
+      "candidate": {
+        "total": 10,
+        "failed": 0
+      }
+    },
+    "existingRunnerRegression": {
+      "total": 163,
+      "failed": 0
+    }
+  },
+  "real": {
+    "newDiagnosticSessions": 1,
+    "newQueries": 0,
+    "diagnosticSessionStatus": "failed",
+    "targetLocksAfter": 0,
+    "inputConsumptionUnchanged": true
+  },
+  "notVerified": [
+    "installed candidate on real device",
+    "underlying transport disappearance cause",
+    "HMAC full real flow; configuration activation still pending window approval"
+  ],
+  "productionCodeOrConfigWrites": 0,
+  "restarts": 0,
+  "pushes": 0,
+  "review": "self review; only snapshot replay, targeted get-state, at most eight-second wait and one snapshot retry; no business input replay or global recovery",
+  "risk": "R2 local runner behavior; production activation R3 pending authorization",
+  "latestObservationUtc": "2026-10-12T03:38:25.675Z",
+  "globalActiveLocksAtLatestObservation": 9,
+  "verificationNotes": [
+    "Initial staged diff check flagged blank-context whitespace in patch artifact; regenerated zero-context patch and rechecked."
+  ]
+}
