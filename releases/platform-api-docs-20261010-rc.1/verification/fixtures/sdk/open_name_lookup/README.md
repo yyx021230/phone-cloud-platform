@@ -1,6 +1,6 @@
 # 支付宝查名字接入包
 
-版本：platform-api-integration-20261012-rc.2（文档候选，待发布）。业务基线platform-api-entry-20261012-deployed.1。
+版本：platform-api-integration-20261012-rc.3。业务基线platform-api-entry-20261012-deployed.1。
 
 先读OPEN_NAME_LOOKUP_API.md，再导入openapi.json。sign.mjs供门户Node.js请求示例导入；SDK无需这个辅助文件。node_client.mjs和python_client.py来自已审阅业务源码7f695507761b07504a94b7372de0c340befbf33f的SDK，本轮代码未修改。
 
@@ -54,4 +54,4 @@ outcome = client.wait_for_queries(session["sessionId"], [accepted["queryId"]], t
 
 SDK默认可生成随机幂等键；实际业务必须显式传入已持久化的键。同次网络重试沿用原键。SDK不自动重试网络异常、不会自动持久化关联或在异常时结束会话，调用方需实现自己的生命周期。enqueueMany/enqueue_many按数组顺序逐条受理，跨进程仍以服务端到达顺序为准。
 
-当前第三方接口返回掩码姓名和姓名末字，不保证完整实名；没有结果Webhook，按2–5秒轮询。真实签名/隔离/真机联调与自然8小时到期等仍待验收，详见独立说明。
+当前第三方接口返回掩码姓名和姓名末字，不保证完整实名；没有结果Webhook，按2–5秒轮询。现有客户端在177/161已完成有界HMAC真机闭环；新合作方独立签名/隔离、自然8小时到期等仍待验收，详见独立说明。

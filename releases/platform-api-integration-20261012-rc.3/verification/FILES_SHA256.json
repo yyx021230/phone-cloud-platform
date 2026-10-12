@@ -1,0 +1,18 @@
+{
+  "docs/API_PORTAL.md": "f3e9257c36f010a37ea5fc2268cdbe623b375de6eab9251c68667cf539b38502",
+  "docs/PROJECT_DEVELOPMENT.md": "9deb0e227ca35d48a8d726c5a8fc6200e00c45b3b5073e93698ee68d8ecccd72",
+  "docs/platform-api-publication.json": "fbb9ef4f6cf0513166ea5d4b73775aa14903088a855aa6a5e8bd98d4d805845b",
+  "releases/platform-api-docs-20261010-rc.1/OPEN_NAME_LOOKUP_API.md": "48dfb57c03d9ae7c16dcc349b6f03f51854bcfeb755aa1eaaa0de05139b1bab4",
+  "releases/platform-api-docs-20261010-rc.1/public/api-docs.css": "63d05021377c39441aafa5b6917928eaa7f7f71b7cef75d38fbc07e90fc3896a",
+  "releases/platform-api-docs-20261010-rc.1/public/api-docs.html": "d6930845d9f5f9a93b84a59e3de8111b22ea6db5c456a437e31cf34dd5157861",
+  "releases/platform-api-docs-20261010-rc.1/public/api-docs.js": "63e8f55692019a243ee7f6aace733d842f6ccd979c01fd7aee3430f95f830b54",
+  "releases/platform-api-docs-20261010-rc.1/public/api-reference.json": "caa91c1479d9694f140095e0eab85b37bff48c6c301833fc6a521cbafeef9d79",
+  "releases/platform-api-docs-20261010-rc.1/public/downloads/name-lookup-integration.zip": "7e44e797e6acfd4e9b13d0882ad4a6caa2f54885b0710eea2932247bbce4cff2",
+  "releases/platform-api-docs-20261010-rc.1/public/downloads/name-lookup-openapi.json": "076015c74331006e399ac770550d696cfc9381dcda5069f5b23f594ea593e149",
+  "releases/platform-api-docs-20261010-rc.1/public/downloads/name-lookup-sha256.json": "7a85a17714f3e1c56998ae186b82c210c87797d93605cdcf3213d953fc439251",
+  "releases/platform-api-docs-20261010-rc.1/public/downloads/sign.mjs": "8aac5bdf144c8dd6c93da3aa34c63c21952270fba139e5b117730b6730c51946",
+  "releases/platform-api-docs-20261010-rc.1/public/openapi.json": "c0afb091c3ab74077bfa79570201363d42ab883f23a18791eecfe0a397900ee8",
+  "releases/platform-api-docs-20261010-rc.1/verification/fixtures/sdk/open_name_lookup/README.md": "ba10f656b64ba237797a5aef266373140b58c8d248bb99533e5a2344abce5450",
+  "releases/platform-api-integration-20261012-rc.3/MANIFEST.json": "5b5d27070b9cb0825b562d531c0730fb642a5a09b0ebcc6879f296838d008519",
+  "releases/platform-api-integration-20261012-rc.3/README.md": "ad1ce438b7c68a79ce39404c81eb6c693b7d174ca55b629685ee8aa9e87372a2"
+}
