@@ -1,0 +1,10 @@
+✔ isolated external name lookup API covers auth, idempotency, human resume and tenant isolation (7813.832125ms)
+ℹ {"driver":"python","sdkRequests":26,"actions":["list","create","session","enqueue","resume","query","end"]}
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7883.818083

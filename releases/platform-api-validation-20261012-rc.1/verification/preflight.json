@@ -1,0 +1,26 @@
+[
+  {
+    "atUtc": "2026-10-12T02:13:34.870Z",
+    "enabled": "true",
+    "clientCount": 1,
+    "clientsAllowing118": 0,
+    "http": {
+      "health": 200,
+      "ready": 200,
+      "devices": 200,
+      "locks": 200,
+      "sessions": 200
+    },
+    "device118": {
+      "number": "118",
+      "listed": "listed",
+      "adbState": "device"
+    },
+    "activeLocks118": 0,
+    "activeLookupSessions118": 0
+  },
+  {
+    "release": "platform-api-entry-20261012-deployed.1",
+    "activeRecordSha256": "d867027ae05aa90394f3a05a3dbaec7d8b868ff0e5705a4f8b0ce5c23f8ebe5c"
+  }
+]

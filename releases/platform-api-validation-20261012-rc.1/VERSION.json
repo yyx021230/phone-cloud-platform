@@ -1,0 +1,16 @@
+{
+  "version": "platform-api-validation-20261012-rc.1",
+  "state": "partial validation; device selection and trusted HTTPS pending",
+  "branch": "codex/api-doc-validation-20261012",
+  "baseCommit": "44292376ef1ce49356d8b0413474788997173ee0",
+  "documentCandidate": "platform-api-integration-20261012-rc.1",
+  "documentArchiveSha256": "806f63a85b62571ea06235e541a23143962e00bd3c70c5e3515ba5e5bb480652",
+  "productionVersion": "platform-api-entry-20261012-deployed.1",
+  "productionRuntimeSourceCommit": "7f695507761b07504a94b7372de0c340befbf33f",
+  "deployable": false,
+  "runtimeChanges": false,
+  "productionConfigChanges": 0,
+  "realQueries": 0,
+  "restarts": 0,
+  "remotePushes": 0
+}

@@ -1,0 +1,36 @@
+{
+  "atUtc": "2026-10-12T02:17:24.772Z",
+  "requests": [
+    {
+      "name": "expired timestamp",
+      "status": 401,
+      "error": "open_api_timestamp_expired",
+      "requestId": "7fd3553a-f584-422c-9fb1-2120a6ff02aa"
+    },
+    {
+      "name": "invalid nonce",
+      "status": 401,
+      "error": "invalid_open_api_nonce",
+      "requestId": "debacced-4ea2-492a-9f7e-a23e518dbb24"
+    },
+    {
+      "name": "unknown client",
+      "status": 401,
+      "error": "invalid_open_api_client",
+      "requestId": "d73e354d-08b8-4a51-8d12-0c7e31114965"
+    },
+    {
+      "name": "tampered UTF-8 body",
+      "status": 401,
+      "error": "invalid_open_api_signature",
+      "requestId": "a35e3e85-895e-40ff-b5c1-e0629a2befe0"
+    },
+    {
+      "name": "open client cannot read ended platform session",
+      "status": 404,
+      "error": "lookup_session_not_found",
+      "requestId": "835ba641-a178-4bfc-b6a1-b1d544011680"
+    }
+  ],
+  "realQueriesCreated": 0
+}
