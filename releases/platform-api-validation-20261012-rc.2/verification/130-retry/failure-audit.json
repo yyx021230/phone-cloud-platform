@@ -1,0 +1,11 @@
+{
+  "atUtc": "2026-10-12T03:16:56.982Z",
+  "tasks": [
+    {
+      "taskId": "edd9a541-7e73-4988-a752-f208009434ee",
+      "status": "failed",
+      "errorCode": "alipay_lookup_failed",
+      "runnerReason": "adb.exe: device '##AF#T#C#Y##DBY' not found"
+    }
+  ]
+}

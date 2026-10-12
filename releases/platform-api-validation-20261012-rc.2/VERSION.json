@@ -1,0 +1,19 @@
+{
+  "version": "platform-api-validation-20261012-rc.2",
+  "state": "partial validation; HMAC activation and 130 startup blocked",
+  "branch": "codex/api-full-flow-20261012",
+  "baseCommit": "408036e5a2bd4f4a4d992abe09f9d26ed617b607",
+  "documentCandidate": "platform-api-integration-20261012-rc.2",
+  "productionVersion": "platform-api-entry-20261012-deployed.1",
+  "productionRuntimeSourceCommit": "7f695507761b07504a94b7372de0c340befbf33f",
+  "deployable": false,
+  "runtimeChanges": false,
+  "realQueries": 2,
+  "createdSessions": 3,
+  "productionConfigChanges": 0,
+  "restarts": 0,
+  "remotePushes": 0,
+  "allTestSessionLocksReleased": true,
+  "original235DirtyEntriesPreserved": true,
+  "originalConcurrentMainDocumentUntouched": true
+}

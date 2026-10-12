@@ -1,0 +1,13 @@
+{
+  "atUtc": "2026-10-12T03:12:16.629Z",
+  "baseUrl": "http://47.98.127.132",
+  "deviceNumber": "118",
+  "deviceHash": "379e304eabd6",
+  "adbOnline": true,
+  "listed": true,
+  "activeLocks": 0,
+  "activeSessions": 0,
+  "globalActiveLocks": 10,
+  "health": 200,
+  "ready": 200
+}

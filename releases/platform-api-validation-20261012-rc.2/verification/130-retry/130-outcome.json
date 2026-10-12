@@ -1,0 +1,7 @@
+{
+  "state": "needs_attention",
+  "deviceNumber": "130",
+  "sessionId": "21ee97ab-d7e2-427a-a341-ca1cfce56704",
+  "error": "stopped on terminal/exhausted state",
+  "authentication": "platform Bearer; not third-party HMAC"
+}

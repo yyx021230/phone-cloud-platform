@@ -1,0 +1,44 @@
+{
+  "atUtc": "2026-10-12T03:10:08.471Z",
+  "baseUrl": "http://47.98.127.132",
+  "deviceNumber": "118",
+  "action": "submit",
+  "httpStatus": 202,
+  "error": "",
+  "jobId": "8c959b09-d90f-447d-911a-cf09b46352fc",
+  "session": {
+    "sessionId": "5436a07e-b129-4220-8f94-d7c88f1f23be",
+    "deviceHash": "379e304eabd6",
+    "status": "querying",
+    "pendingJobId": "8c959b09-d90f-447d-911a-cf09b46352fc",
+    "successfulCount": 0,
+    "accountHash": "2de63bce79c2",
+    "accountIdentityVerified": true,
+    "requiresAccountSwitch": false,
+    "error": "",
+    "limitReason": "",
+    "startupHumanVerification": null,
+    "accountCooldowns": [
+      {
+        "accountHash": "126c5418b436",
+        "limitedAt": "2026-10-12T01:21:39.279Z",
+        "cooldownUntil": "2026-10-12T09:21:39.279Z",
+        "cooling": true,
+        "remainingMs": 22290811
+      }
+    ],
+    "results": [
+      {
+        "resultId": "8c959b09-d90f-447d-911a-cf09b46352fc",
+        "status": "queued",
+        "hasName": false,
+        "hasTail": false,
+        "stage": "查询任务已提交，等待 Windows 管理器领取",
+        "errorCode": "",
+        "error": "",
+        "accountSwitched": false
+      }
+    ],
+    "endedAt": null
+  }
+}

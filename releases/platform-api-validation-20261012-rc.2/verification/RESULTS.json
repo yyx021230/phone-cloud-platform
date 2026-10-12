@@ -1,0 +1,99 @@
+{
+  "state": "partial validation; HMAC activation and 130 startup blocked",
+  "atUtc": "2026-10-12T03:23:54.972Z",
+  "baseUrl": "http://47.98.127.132",
+  "foregroundAuthorizedDeviceNumbers": [
+    "118",
+    "130"
+  ],
+  "authenticationThisStage": "platform Bearer APIs in documentation; not HMAC positive-flow acceptance",
+  "realQueries": 2,
+  "createdSessions": 3,
+  "device118": {
+    "createHTTP": 201,
+    "duplicateCreateHTTP": 409,
+    "duplicateError": "device_busy",
+    "querySubmitHTTP": [
+      202,
+      202
+    ],
+    "results": {
+      "succeeded": 1,
+      "not_found": 1,
+      "failed": 0
+    },
+    "stableResultIdsPreserved": true,
+    "oldCooldownDeadlineUnchanged": true,
+    "endHTTP": 202,
+    "terminalStatus": "ended",
+    "locksReleased": true,
+    "pollRpcFailures": 1,
+    "originalIdReconciliation": "second query already succeeded; no duplicate submission",
+    "pollRpcFailureRootCause": "not established; initial harness did not retain underlying error detail"
+  },
+  "device130": {
+    "attempts": 2,
+    "createHTTP": [
+      201,
+      201
+    ],
+    "startupOutcome": [
+      "failed",
+      "failed"
+    ],
+    "submittedNumbers": 0,
+    "failureCode": "alipay_lookup_failed",
+    "observedRunnerReason": "adb device not found",
+    "confirmedFailureLocation": "After successful Alipay am start, launch -> dismiss_known_overlay -> dump -> shell mkdir -p /sdcard/PhoneCloud",
+    "taskSerialAndAgentMatchInventory": true,
+    "readOnlyADBListAndShellEcho": "pass between two failures; same ADB server PID312588",
+    "rootCause": "not established; do not claim transient USB or hardware cause from later online snapshot",
+    "terminalEndHTTP": 200,
+    "locksReleased": true,
+    "furtherRetriesStopped": true
+  },
+  "thirdPartyHmac": {
+    "currentStageFullRealFlow": "not run; authorized devices absent from runtime allowlist",
+    "authorizedDeviceNumbers": [
+      "130",
+      "118"
+    ],
+    "activationPlan": "../platform-api-integration-20261012-rc.2/CONFIG_CHANGE_PLAN.json",
+    "activationApproval": "pending async user reply; no production interruption or config write",
+    "priorProof": "platform-api-integration-20261012-rc.2 verified public signed HTTP list200 and two device-create403; earlier isolated SDK positive-flow proof remains simulated"
+  },
+  "latestHealth": {
+    "health": 200,
+    "ready": 200,
+    "postgres": true,
+    "redis": true,
+    "totalDevices": 131,
+    "listedDevices": 125,
+    "onlineDevices": 124,
+    "globalActiveLocks": 7,
+    "targetActiveLocks": 0
+  },
+  "baseline": {
+    "runtimeFileHashesMatched": 4,
+    "activeRecordUnchanged": true,
+    "composeMatched": 2,
+    "containerPidUnchanged": 2684217,
+    "restartCount": 0,
+    "windowsAgentPidObserved": 379908,
+    "adbServerPidObserved": 312588,
+    "D075Live": "not rerun this stage; no deployment or media operation"
+  },
+  "productionCodeChanges": 0,
+  "productionConfigChanges": 0,
+  "serviceRestarts": 0,
+  "testNotifications": 0,
+  "remotePushes": 0,
+  "harnessConnectionFailure": "SSH master expired before failed-session end request could authenticate; no API request sent; reconnected then reconciled terminal state before terminal end200",
+  "notVerified": [
+    "HMAC real create/queue/query/get/resume/end on130/118",
+    "130 account preparation and name query",
+    "This stage did not trigger real puzzle, ordinary recovery, natural account limit or cooldown expiry; previous evidence remains separately scoped.",
+    "Full201 input batch and long-term production acceptance"
+  ],
+  "productionAcceptanceComplete": false
+}

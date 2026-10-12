@@ -1,0 +1,10 @@
+{
+  "atUtc": "2026-10-12T03:09:18.543Z",
+  "baseUrl": "http://47.98.127.132",
+  "deviceNumber": "118",
+  "action": "duplicate-start",
+  "httpStatus": 409,
+  "error": "device_busy",
+  "jobId": "",
+  "session": null
+}

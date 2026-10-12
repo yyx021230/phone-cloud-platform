@@ -1,0 +1,10 @@
+{
+  "atUtc": "2026-10-12T03:25:37.743141+00:00",
+  "receiptJsonParsed": 26,
+  "manifestFilesVerified": 28,
+  "personalPhoneNumberScan": "no full phone numbers found in new receipt files",
+  "semanticChecks": "two real queries; zero130 inputs; all target locks released; HMAC remains unaccepted",
+  "diffCheck": "passed",
+  "rootFullRegression": "not rerun; no runtime changes",
+  "review": "self-review of documentation and redacted receipts; no independent reviewer"
+}

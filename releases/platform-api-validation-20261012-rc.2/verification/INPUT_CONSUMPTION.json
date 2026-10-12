@@ -1,0 +1,16 @@
+{
+  "batchSource": "previous user-authorized 201-record file; actual values private",
+  "batchSha256": "9fefe9c6544fdc480e3cc45c7c75149491f819752179d75ad045ae3353d79a7e",
+  "priorConsumedIndexes": "0..56",
+  "thisStageConsumedIndexes": [
+    57,
+    58
+  ],
+  "unusedPlannedIndexes": [
+    59,
+    60
+  ],
+  "cumulativeConsumedCount": 59,
+  "thisStageRealQueries": 2,
+  "phoneNumbersOrNamesExported": false
+}
