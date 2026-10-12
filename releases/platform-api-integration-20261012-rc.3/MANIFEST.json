@@ -1,0 +1,73 @@
+{
+  "version": "platform-api-integration-20261012-rc.3",
+  "branch": "codex/api-docs-publish-20261012",
+  "baseCommit": "4ee0e9f8bde774ba1888c78dcb55bf816b644e46",
+  "productionVersion": "platform-api-entry-20261012-deployed.1",
+  "productionActiveSha256": "d867027ae05aa90394f3a05a3dbaec7d8b868ff0e5705a4f8b0ce5c23f8ebe5c",
+  "productionImageId": "sha256:4e484ed7db6da2760c64de1f4481fdb7deb97b7acf4e4182e1658507a1d8b437",
+  "previousRestartImageId": "sha256:71b02934fac4bcbe57fb274e49952fcb9ac577a7800c092d930621288bbc7069",
+  "deploymentScope": [
+    {
+      "source": "releases/platform-api-docs-20261010-rc.1/public/api-docs.html",
+      "target": "public/api-docs.html",
+      "sha256": "d6930845d9f5f9a93b84a59e3de8111b22ea6db5c456a437e31cf34dd5157861"
+    },
+    {
+      "source": "releases/platform-api-docs-20261010-rc.1/public/api-docs.css",
+      "target": "public/api-docs.css",
+      "sha256": "63d05021377c39441aafa5b6917928eaa7f7f71b7cef75d38fbc07e90fc3896a"
+    },
+    {
+      "source": "releases/platform-api-docs-20261010-rc.1/public/api-docs.js",
+      "target": "public/api-docs.js",
+      "sha256": "63e8f55692019a243ee7f6aace733d842f6ccd979c01fd7aee3430f95f830b54"
+    },
+    {
+      "source": "releases/platform-api-docs-20261010-rc.1/public/api-reference.json",
+      "target": "public/api-reference.json",
+      "sha256": "caa91c1479d9694f140095e0eab85b37bff48c6c301833fc6a521cbafeef9d79"
+    },
+    {
+      "source": "releases/platform-api-docs-20261010-rc.1/public/openapi.json",
+      "target": "public/openapi.json",
+      "sha256": "c0afb091c3ab74077bfa79570201363d42ab883f23a18791eecfe0a397900ee8"
+    },
+    {
+      "source": "releases/platform-api-docs-20261010-rc.1/public/downloads/sign.mjs",
+      "target": "public/downloads/sign.mjs",
+      "sha256": "8aac5bdf144c8dd6c93da3aa34c63c21952270fba139e5b117730b6730c51946"
+    },
+    {
+      "source": "releases/platform-api-docs-20261010-rc.1/public/downloads/name-lookup-openapi.json",
+      "target": "public/downloads/name-lookup-openapi.json",
+      "sha256": "076015c74331006e399ac770550d696cfc9381dcda5069f5b23f594ea593e149"
+    },
+    {
+      "source": "releases/platform-api-docs-20261010-rc.1/public/downloads/name-lookup-integration.zip",
+      "target": "public/downloads/name-lookup-integration.zip",
+      "sha256": "7e44e797e6acfd4e9b13d0882ad4a6caa2f54885b0710eea2932247bbce4cff2"
+    },
+    {
+      "source": "releases/platform-api-docs-20261010-rc.1/public/downloads/name-lookup-sha256.json",
+      "target": "public/downloads/name-lookup-sha256.json",
+      "sha256": "7a85a17714f3e1c56998ae186b82c210c87797d93605cdcf3213d953fc439251"
+    }
+  ],
+  "authorization": "user: 更新一下吧, in reply to syncing current docs and integration bundle",
+  "method": "9 static assets only; atomic file hot patch; immutable successor image from verified71b02934; preserve all other runtime/entry patches; no service restart",
+  "exclusions": [
+    "realname prompt candidate",
+    "130 transport fix",
+    "whitelist or credentials",
+    "runtime application files",
+    "Agent,ADB,Windows,USB,media"
+  ],
+  "checks": {
+    "documentTests": 11,
+    "failures": 0,
+    "platformOperations": 39,
+    "openNameLookupOperations": 7,
+    "sdkRuntimeCodeUnchanged": true
+  },
+  "status": "reviewed candidate, deployment authorized, not yet deployed"
+}

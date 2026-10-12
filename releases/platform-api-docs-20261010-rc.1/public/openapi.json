@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Phone Cloud 平台功能 API",
-    "version": "platform-api-integration-20261012-rc.2",
-    "description": "平台功能API文档候选，业务基线platform-api-entry-20261012-deployed.1。第三方支付宝查名字用HMAC-SHA256，其余平台操作用Bearer；凭据与设备授权另行交付。"
+    "version": "platform-api-integration-20261012-rc.3",
+    "description": "平台功能API文档，业务基线platform-api-entry-20261012-deployed.1。第三方支付宝查名字用HMAC-SHA256，其余平台操作用Bearer；凭据与设备授权另行交付。"
   },
   "servers": [
     {

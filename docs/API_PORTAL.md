@@ -1,3 +1,11 @@
+# 平台API文档更新 rc.3（已授权，发布准备）
+
+当前候选 `platform-api-integration-20261012-rc.3`，分支 `codex/api-docs-publish-20261012`。用户明确要求同步线上文档/接入包；仅9公开静态资源、39平台接口，其中7项是已存在的第三方HMAC支付宝查名接口。保持现有HTTP地址与库存入口。
+
+本轮文档11专项通过，SDK运行代码及全部业务/Agent/冻结源码保持。新增177/161两机4条HMAC实际验证范围及未验事项；实名认证弹窗兼容仍未发布。生产状态将在实际部署后以回执更新，准备不等于上线。候选及范围见releases/platform-api-integration-20261012-rc.3/。
+
+## 此前候选与验证记录（历史）
+
 # 平台功能 API 文档（第三方查名接入补全候选）
 
 版本 `platform-api-integration-20261012-rc.2`，分支 `codex/api-http-scope-20261012`。业务基线为实际生产 `platform-api-entry-20261012-deployed.1`，业务源码7f695507761b07504a94b7372de0c340befbf33f；本轮只更新文档及维护工具，尚未推送/发布。风险R1。

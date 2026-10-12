@@ -1,13 +1,13 @@
 {
-  "version": "platform-api-integration-20261012-rc.2",
+  "version": "platform-api-integration-20261012-rc.3",
   "businessBaseline": "platform-api-entry-20261012-deployed.1",
   "files": {
-    "README.md": "4d9089209ae556f81f9f275017284579a2b5a289d20fd114a27a77bca9fde359",
-    "OPEN_NAME_LOOKUP_API.md": "25e086a1c251720ab5a8c72e5f6c1ef5b12ad75723233d912524e76d0a1bb9ad",
-    "openapi.json": "68d92381393f59b8da01fb150a0561f68839e10deeaba4a72d27ce31f284fc0c",
+    "README.md": "ba10f656b64ba237797a5aef266373140b58c8d248bb99533e5a2344abce5450",
+    "OPEN_NAME_LOOKUP_API.md": "48dfb57c03d9ae7c16dcc349b6f03f51854bcfeb755aa1eaaa0de05139b1bab4",
+    "openapi.json": "076015c74331006e399ac770550d696cfc9381dcda5069f5b23f594ea593e149",
     "sign.mjs": "8aac5bdf144c8dd6c93da3aa34c63c21952270fba139e5b117730b6730c51946",
     "node_client.mjs": "8d826ee94be4c2a383e0b5ba232461d6341b7339dedc88d73c858f5ca63dd7d9",
     "python_client.py": "9b1440602651183a7d76a345a1ac8f4712190b589376f01d50269aa9b745c811"
   },
-  "archiveSha256": "947c780650387de73c105850eda24eabea6711fe8d0af487989a73147fecfd5c"
+  "archiveSha256": "7e44e797e6acfd4e9b13d0882ad4a6caa2f54885b0710eea2932247bbce4cff2"
 }
