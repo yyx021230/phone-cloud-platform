@@ -1,0 +1,12 @@
+{
+  "existingFunctions": 134,
+  "changedExistingFunctions": [
+    "dump"
+  ],
+  "newFunction": "_dump_once",
+  "originalDumpBodyPreserved": true,
+  "otherExistingFunctionsUnchanged": 133,
+  "baselineSha256": "4887d25c7c61d67bbba1ca71695648505b5fc5e5423499f651e75d4ef987f1ee",
+  "productionWindowsHashMatched": true,
+  "sharedAdbSchedulerLifecycleOrMediaFilesChanged": false
+}

@@ -1,0 +1,57 @@
+{
+  "atUtc": "2026-10-12T03:38:45.687Z",
+  "databaseReadOnly": true,
+  "tasks": [
+    {
+      "taskId": "8cccda0f-b5b8-4371-bc34-600b98eeea07",
+      "status": "failed",
+      "events": [
+        {
+          "stepId": "launch_alipay",
+          "detailKeys": [
+            "step",
+            "detail",
+            "driver",
+            "reason",
+            "stepId",
+            "elapsedMs",
+            "stepIndex"
+          ],
+          "error": "",
+          "trace": [],
+          "launchDetail": "Starting: Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=#x######## cmp=com.eg.android.AlipayGphone/.AlipayLogin }\nStatus: ok\nLaunchState: COLD\nActivity: com.eg.android.AlipayGphone/.AlipayLogin\nTotalTime: ###\nWaitTime: ###\nComplete\n"
+        },
+        {
+          "stepId": "error",
+          "detailKeys": [
+            "step",
+            "error",
+            "focus",
+            "trace",
+            "driver",
+            "stepId",
+            "elapsedMs",
+            "stepIndex"
+          ],
+          "error": "RuntimeError(\"adb.exe: device '##AF#T#C#Y##DBY' not found\")",
+          "trace": [
+            "  File \"D:\\PhoneCloud\\agent\\scripts\\alipay_name_lookup.py\", line 4647, in main",
+            "  File \"D:\\PhoneCloud\\agent\\scripts\\alipay_name_lookup.py\", line 4471, in run",
+            "    **self.prepare_available_account(), \"accountSwitched\": self.account_switched,",
+            "  File \"D:\\PhoneCloud\\agent\\scripts\\alipay_name_lookup.py\", line 3877, in prepare_available_account",
+            "    self.launch(\"account-preflight\")",
+            "  File \"D:\\PhoneCloud\\agent\\scripts\\alipay_name_lookup.py\", line 1180, in launch",
+            "    self.dismiss_known_overlay()",
+            "  File \"D:\\PhoneCloud\\agent\\scripts\\alipay_name_lookup.py\", line 767, in dismiss_known_overlay",
+            "    root, parent = self.dump(\"overlay\")",
+            "  File \"D:\\PhoneCloud\\agent\\scripts\\alipay_name_lookup.py\", line 296, in dump",
+            "    self.adb([\"shell\", \"mkdir\", \"-p\", \"/sdcard/PhoneCloud\"], timeout=8)",
+            "  File \"D:\\PhoneCloud\\agent\\scripts\\alipay_name_lookup.py\", line 143, in adb",
+            "    raise RuntimeError((detail or f\"adb exited {proc.returncode}\").strip())"
+          ],
+          "launchDetail": ""
+        }
+      ]
+    }
+  ]
+}

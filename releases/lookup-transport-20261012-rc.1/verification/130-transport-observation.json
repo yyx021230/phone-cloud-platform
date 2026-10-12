@@ -1,0 +1,36 @@
+{
+  "atUtc": "2026-10-12T03:33:15.152Z",
+  "durationSeconds": 35,
+  "samples": 130,
+  "missingSamples": 12,
+  "transitions": [
+    {
+      "atUtc": "2026-10-12T03:33:15.152Z",
+      "state": "device",
+      "transportId": 2624
+    },
+    {
+      "atUtc": "2026-10-12T03:33:33.078Z",
+      "state": "absent"
+    },
+    {
+      "atUtc": "2026-10-12T03:33:34.948Z",
+      "state": "device",
+      "transportId": 2628
+    },
+    {
+      "atUtc": "2026-10-12T03:33:46.850Z",
+      "state": "absent"
+    },
+    {
+      "atUtc": "2026-10-12T03:33:48.212Z",
+      "state": "device",
+      "transportId": 2629
+    }
+  ],
+  "deviceNumber": "130",
+  "serialHash": "c280523fe490",
+  "command": "existing ADB server -P 5037 devices -l; hash-filtered in memory",
+  "deviceWrites": 0,
+  "disconnectCause": "unconfirmed; disappearance/reappearance and transport identity changes directly observed"
+}

@@ -1,0 +1,95 @@
+[
+  {
+    "type": "version",
+    "version": "platform-api-entry-20261012-deployed.1",
+    "activeSha256": "d867027ae05aa90394f3a05a3dbaec7d8b868ff0e5705a4f8b0ce5c23f8ebe5c",
+    "containerPid": 2684217,
+    "restartCount": 0,
+    "health": "healthy",
+    "restartImageId": "sha256:71b02934fac4bcbe57fb274e49952fcb9ac577a7800c092d930621288bbc7069",
+    "compose": [
+      {
+        "path": "/opt/phone-cloud-platform/docker-compose.yml",
+        "matches": true
+      },
+      {
+        "path": "/opt/phone-cloud-platform/staging/platform-api-entry-20261012-rc.1/compose.candidate.json",
+        "matches": true
+      }
+    ]
+  },
+  {
+    "atUtc": "2026-10-12T03:38:25.675Z",
+    "health": 200,
+    "ready": 200,
+    "storage": {
+      "ok": true,
+      "backend": "postgres"
+    },
+    "runtime": {
+      "ok": true,
+      "mode": "redis"
+    },
+    "totalDevices": 131,
+    "listedDevices": 125,
+    "onlineDevices": 124,
+    "globalActiveLocks": 9,
+    "targetActiveLocks": 0,
+    "testSessions": [
+      {
+        "sessionId": "21ee97ab-d7e2-427a-a341-ca1cfce56704",
+        "status": "failed",
+        "successfulCount": 0,
+        "pending": false,
+        "results": [],
+        "endedAt": "2026-10-12T03:15:46.991Z"
+      },
+      {
+        "sessionId": "5ec5224a-e017-4b7a-bd11-cc004d76229a",
+        "status": "failed",
+        "successfulCount": 0,
+        "pending": false,
+        "results": [],
+        "endedAt": "2026-10-12T03:12:31.786Z"
+      },
+      {
+        "sessionId": "5436a07e-b129-4220-8f94-d7c88f1f23be",
+        "status": "ended",
+        "successfulCount": 2,
+        "pending": false,
+        "results": [
+          {
+            "resultId": "6afdd8be-1ba6-40b0-8f4b-3163a2bb0f5a",
+            "status": "succeeded",
+            "hasName": true,
+            "hasTail": true
+          },
+          {
+            "resultId": "8c959b09-d90f-447d-911a-cf09b46352fc",
+            "status": "not_found",
+            "hasName": false,
+            "hasTail": false
+          }
+        ],
+        "endedAt": "2026-10-12T03:12:00.665Z"
+      }
+    ],
+    "hmacClients": [
+      {
+        "deviceNumbers": [
+          "177",
+          "161"
+        ],
+        "allows118": false,
+        "allows130": false
+      }
+    ],
+    "freshestAgent": [
+      {
+        "lastSeenAt": "2026-10-12T03:38:12.416Z",
+        "status": "ok",
+        "scanAt": null
+      }
+    ]
+  }
+]

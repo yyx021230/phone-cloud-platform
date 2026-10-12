@@ -1,0 +1,89 @@
+test_healthy_dump_has_no_additional_probes (__main__.RecoveryTests) ... ok
+test_offline_transport_recovers (__main__.RecoveryTests) ... FAIL
+test_other_device_error_is_not_retried (__main__.RecoveryTests) ... ok
+test_permanent_absence_has_finite_budget (__main__.RecoveryTests) ... FAIL
+test_probe_permission_failure_stops_immediately (__main__.RecoveryTests) ... FAIL
+test_probe_timeout_has_finite_budget (__main__.RecoveryTests) ... FAIL
+test_second_disconnect_is_not_replayed_again (__main__.RecoveryTests) ... FAIL
+test_short_disconnect_returns_same_snapshot_without_business_replay (__main__.RecoveryTests) ... FAIL
+test_unauthorized_stops_without_retrying_snapshot (__main__.RecoveryTests) ... FAIL
+test_unrelated_failure_is_not_retried (__main__.RecoveryTests) ... ok
+
+======================================================================
+FAIL: test_offline_transport_recovers (__main__.RecoveryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/lookup-version-management/phone-cloud-platform/releases/lookup-transport-20261012-rc.1/verification/transport_recovery_test.py", line 66, in test_offline_transport_recovers
+    self.assertEqual(self.exercise(failure="error: device offline")[0], "hierarchy")
+AssertionError: 'error: device offline' != 'hierarchy'
+- error: device offline
++ hierarchy
+
+
+======================================================================
+FAIL: test_permanent_absence_has_finite_budget (__main__.RecoveryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/lookup-version-management/phone-cloud-platform/releases/lookup-transport-20261012-rc.1/verification/transport_recovery_test.py", line 75, in test_permanent_absence_has_finite_budget
+    self.assertEqual(outcome, "alipay_ui_transport_unavailable")
+AssertionError: "adb.exe: device 'LOCAL' not found" != 'alipay_ui_transport_unavailable'
+- adb.exe: device 'LOCAL' not found
++ alipay_ui_transport_unavailable
+
+
+======================================================================
+FAIL: test_probe_permission_failure_stops_immediately (__main__.RecoveryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/lookup-version-management/phone-cloud-platform/releases/lookup-transport-20261012-rc.1/verification/transport_recovery_test.py", line 106, in test_probe_permission_failure_stops_immediately
+    self.assertEqual(outcome, "error: permission denied")
+AssertionError: "adb.exe: device 'LOCAL' not found" != 'error: permission denied'
+- adb.exe: device 'LOCAL' not found
++ error: permission denied
+
+
+======================================================================
+FAIL: test_probe_timeout_has_finite_budget (__main__.RecoveryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/lookup-version-management/phone-cloud-platform/releases/lookup-transport-20261012-rc.1/verification/transport_recovery_test.py", line 81, in test_probe_timeout_has_finite_budget
+    self.assertEqual(outcome, "alipay_ui_transport_unavailable")
+AssertionError: "adb.exe: device 'LOCAL' not found" != 'alipay_ui_transport_unavailable'
+- adb.exe: device 'LOCAL' not found
++ alipay_ui_transport_unavailable
+
+
+======================================================================
+FAIL: test_second_disconnect_is_not_replayed_again (__main__.RecoveryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/lookup-version-management/phone-cloud-platform/releases/lookup-transport-20261012-rc.1/verification/transport_recovery_test.py", line 97, in test_second_disconnect_is_not_replayed_again
+    self.assertEqual(commands.count(["shell", "mkdir", "-p", "/sdcard/PhoneCloud"]), 2)
+AssertionError: 1 != 2
+
+======================================================================
+FAIL: test_short_disconnect_returns_same_snapshot_without_business_replay (__main__.RecoveryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/lookup-version-management/phone-cloud-platform/releases/lookup-transport-20261012-rc.1/verification/transport_recovery_test.py", line 60, in test_short_disconnect_returns_same_snapshot_without_business_replay
+    self.assertEqual(outcome, "hierarchy")
+AssertionError: "adb.exe: device 'LOCAL' not found" != 'hierarchy'
+- adb.exe: device 'LOCAL' not found
++ hierarchy
+
+
+======================================================================
+FAIL: test_unauthorized_stops_without_retrying_snapshot (__main__.RecoveryTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/lookup-version-management/phone-cloud-platform/releases/lookup-transport-20261012-rc.1/verification/transport_recovery_test.py", line 101, in test_unauthorized_stops_without_retrying_snapshot
+    self.assertEqual(outcome, "alipay_ui_transport_unauthorized")
+AssertionError: "adb.exe: device 'LOCAL' not found" != 'alipay_ui_transport_unauthorized'
+- adb.exe: device 'LOCAL' not found
++ alipay_ui_transport_unauthorized
+
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.002s
+
+FAILED (failures=7)

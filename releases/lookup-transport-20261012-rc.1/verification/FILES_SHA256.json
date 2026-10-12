@@ -1,0 +1,20 @@
+{
+  "releases/lookup-transport-20261012-rc.1/README.md": "41469c8c4a9963474fdda747e94064f5ce34a3d3ff150e9e281729ee48576bc5",
+  "releases/lookup-transport-20261012-rc.1/VERSION.json": "166f0b3158b587ea3dbb86adfd02a15a7624a87824f29c4fa3c14819ee1707ba",
+  "releases/lookup-transport-20261012-rc.1/verification/130-after-diagnostic.json": "3fc30fdeb3056ba432a344ca161e3a7f7069e7160c9f4d4461576df0d61506ee",
+  "releases/lookup-transport-20261012-rc.1/verification/130-diagnostic-latest.json": "333943a22a6e0f7ef0193e413399c6acf698115535622aa0627e5104225eacb3",
+  "releases/lookup-transport-20261012-rc.1/verification/130-diagnostic-start.json": "31015cf0b673aa11928e1c80c4ffe6fe1e85c3146e2f20f295adf6c1290da0ad",
+  "releases/lookup-transport-20261012-rc.1/verification/130-readonly-task-trace.json": "202bdbdeea223e099b693b374af9b4edb296046d0bf0676cc7c444ee5291a5e4",
+  "releases/lookup-transport-20261012-rc.1/verification/130-transport-observation.json": "a8b16b4a92c310ac2c83534a3566c93075307a4c32ca785ddeac893cb2fead78",
+  "releases/lookup-transport-20261012-rc.1/verification/baseline-transport-tests.txt": "1750fb3a876c8f4d828c646ce33720a007bd8f5e4c7c48e15417c9fb77866cfb",
+  "releases/lookup-transport-20261012-rc.1/verification/candidate-transport-tests.txt": "1f3f711b08f9e307dbe4b08142dc470ac4d98b5c365bec2fae6c005a3408cc4d",
+  "releases/lookup-transport-20261012-rc.1/verification/existing-runner-tests.txt": "09f7b3ea31af626c1a024976db2ea42521a0aecf7d06c291b69978113d46ef71",
+  "releases/lookup-transport-20261012-rc.1/verification/final-audit.json": "2e9c77a06678e4d03fe26189a51c214125cb436efc09211a80c6ac83999ab342",
+  "releases/lookup-transport-20261012-rc.1/verification/lookup-only.patch": "dcc39b7d459ebce3a0c9441781f7b181618d7b5809263894febf3b35621c439e",
+  "releases/lookup-transport-20261012-rc.1/verification/run_existing_tests.py": "b0b6cce06d51a2050f69092466ff8102af55113f763fa611b2f918adea0b274e",
+  "releases/lookup-transport-20261012-rc.1/verification/scope-audit.json": "15c4ba0d290cb4b1cdf869129fec687c235d80841965362116a80369d82e5434",
+  "releases/lookup-transport-20261012-rc.1/verification/transport_recovery_test.py": "f42753c94c35c90e3d53b80203b1d745a881f438ef0ea58dc4e89a34735d1257",
+  "releases/lookup-transport-20261012-rc.1/windows-agent/scripts/alipay_name_lookup.py": "ab20472a843882547ad61aae38fc81e476fc233bf554a355d890da2e425cc8ce",
+  "docs/PROJECT_DEVELOPMENT.md": "dd1e3c42799cb5824eba3c1491925be70ad2a1d19613846e95b28846a78699d0",
+  "docs/API_PORTAL.md": "3e347e768ca9daf1f27347eb320c33cdff62fad648576667a05725d3ed5b5c87"
+}
