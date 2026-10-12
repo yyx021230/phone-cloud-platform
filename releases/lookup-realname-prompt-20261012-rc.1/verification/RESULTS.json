@@ -1,0 +1,42 @@
+{
+  "timeBeijing": "2026-10-12T14:46:34.769455+08:00",
+  "status": "local candidate; not deployed or real-device tested",
+  "tests": [
+    {
+      "command": "python3 releases/lookup-realname-prompt-20261012-rc.1/verification/realname_prompt_test.py",
+      "passed": 20,
+      "failed": 0,
+      "environment": "offline fixture/mock"
+    },
+    {
+      "command": "python3 releases/lookup-realname-prompt-20261012-rc.1/verification/run_existing_tests.py",
+      "passed": 163,
+      "failed": 0,
+      "environment": "existing fake/mock runner regression with candidate loaded"
+    },
+    {
+      "command": "python3 releases/lookup-realname-prompt-20261012-rc.1/verification/replay_blocked_start.py",
+      "passed": 1,
+      "failed": 0,
+      "environment": "offline real modal pixels + archived XML shape; baseline fails navigation after 3 taps, candidate closes once and opens settings"
+    },
+    {
+      "command": "AST parse and allowlist compare to production hash4887d25c",
+      "passed": true
+    }
+  ],
+  "actualReadOnlyVerification": "177 archived failed-task home/settings XML read with existing ADB socket guard; only selected tab flags and prompt-presence booleans retained",
+  "actualScreenshotChecks": "actual177 prompt detected; actual jigsaw and clear Home not detected",
+  "initialTestHarnessFailure": "first mock navigation clock ran out; fixture corrected, current full suite passes",
+  "newRealSessions": 0,
+  "newPhoneQueries": 0,
+  "humanNotifications": 0,
+  "productionFileOrConfigWrites": 0,
+  "serviceRestarts": 0,
+  "pushes": 0,
+  "notVerified": [
+    "real dismissal on 177 using installed candidate",
+    "other unseen Alipay modal designs/fonts/OEMs",
+    "real timing and future natural account restrictions/cooldown expiry"
+  ]
+}

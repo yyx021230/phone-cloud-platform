@@ -1,0 +1,16 @@
+{
+  "review": "self review, no independent reviewer",
+  "changedExistingMethods": [
+    "enter_my_settings"
+  ],
+  "addedMethods": [
+    "canvas_real_name_home_evidence",
+    "dismiss_canvas_real_name_prompt"
+  ],
+  "addedPureFunction": "real_name_canvas_evidence",
+  "sharedAdbAndAgentLifecycleChanges": 0,
+  "queryInputAndAccountPolicyChanges": 0,
+  "mediaOrScreenChanges": 0,
+  "diffConclusion": "only evidenced optional Canvas prompt close after blocked My navigation; no authentication action, protected states retained",
+  "localTransportCandidateMerged": false
+}

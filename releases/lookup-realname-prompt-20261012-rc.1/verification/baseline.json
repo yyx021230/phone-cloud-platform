@@ -1,0 +1,9 @@
+{
+  "sourceCommit": "b2c6dcdf5b317978709cfa15adff02645e81af49",
+  "sourceSha256": "4887d25c7c61d67bbba1ca71695648505b5fc5e5423499f651e75d4ef987f1ee",
+  "productionVerification": "2026-10-12 05:54 UTC, actual Windows script matched",
+  "taskBaseCommit": "45932ad087da71964512b3e1fcaed8ca6aee289c",
+  "status": "local candidate, no deployment",
+  "scope": "only Alipay first-start optional real-name Canvas modal",
+  "excludedLocalCandidate": "lookup-transport-20261012-rc.1; no implicit merge"
+}

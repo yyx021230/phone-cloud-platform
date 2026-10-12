@@ -1,0 +1,6 @@
+{
+  "isolatedGitApplyCheck": true,
+  "forwardPatchByteIdenticalToCandidate": true,
+  "reversePatchByteIdenticalToProductionBaseline": true,
+  "productionModified": false
+}
