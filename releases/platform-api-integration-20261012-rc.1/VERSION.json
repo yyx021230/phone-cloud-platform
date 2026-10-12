@@ -1,0 +1,30 @@
+{
+  "version": "platform-api-integration-20261012-rc.1",
+  "status": "local candidate; not deployed or pushed",
+  "branch": "codex/api-integration-docs-20261012",
+  "baseCommit": "78b5ce03fa61e59deec692be5e2066c12b99823a",
+  "gitRef": "refs/tags/platform-api-integration-20261012-rc.1",
+  "productionBaseline": {
+    "version": "platform-api-entry-20261012-deployed.1",
+    "sourceCommit": "7f695507761b07504a94b7372de0c340befbf33f",
+    "runningBaseImagePrefix": "4e484ed7",
+    "runningStaticPatches": [
+      "index.html",
+      "styles.css"
+    ],
+    "nextStartupImagePrefix": "71b02934"
+  },
+  "deploymentScope": [
+    "releases/platform-api-docs-20261010-rc.1/public/api-docs.html",
+    "releases/platform-api-docs-20261010-rc.1/public/api-docs.css",
+    "releases/platform-api-docs-20261010-rc.1/public/api-docs.js",
+    "releases/platform-api-docs-20261010-rc.1/public/api-reference.json",
+    "releases/platform-api-docs-20261010-rc.1/public/openapi.json",
+    "releases/platform-api-docs-20261010-rc.1/public/downloads/sign.mjs",
+    "releases/platform-api-docs-20261010-rc.1/public/downloads/name-lookup-openapi.json",
+    "releases/platform-api-docs-20261010-rc.1/public/downloads/name-lookup-integration.zip",
+    "releases/platform-api-docs-20261010-rc.1/public/downloads/name-lookup-sha256.json"
+  ],
+  "runtimeChanges": false,
+  "rollback": "Restore the five prior docs assets from the active production baseline and unpublish four new download paths; preserve runtime, current entry hotfix, Compose, database, Agent and D-075 media. A future release must verify D-075 on its real host and record runtime patches and next-start image separately."
+}

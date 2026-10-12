@@ -724,7 +724,33 @@
       "获取可用查名设备",
       "只返回客户端精确白名单中的已存在设备。available 是瞬时信息，创建会话仍可能发生设备争用。",
       {
-        "response": "devices:LookupDevice[]"
+        "response": "devices:LookupDevice[]",
+        "helperErrors": {
+          "open_api_auth_required": [
+            401
+          ],
+          "invalid_open_api_client": [
+            401
+          ],
+          "open_api_timestamp_expired": [
+            401
+          ],
+          "invalid_open_api_nonce": [
+            401
+          ],
+          "open_api_nonce_replayed": [
+            401
+          ],
+          "invalid_open_api_signature": [
+            401
+          ],
+          "open_name_lookup_api_not_enabled": [
+            404
+          ],
+          "open_name_lookup_user_not_available": [
+            403
+          ]
+        }
       }
     ],
     "POST /api/v1/open/name-lookups/sessions": [
@@ -736,7 +762,42 @@
         "required": [
           "deviceId"
         ],
-        "idempotency": "required"
+        "idempotency": "required",
+        "helperErrors": {
+          "open_api_auth_required": [
+            401
+          ],
+          "invalid_open_api_client": [
+            401
+          ],
+          "open_api_timestamp_expired": [
+            401
+          ],
+          "invalid_open_api_nonce": [
+            401
+          ],
+          "open_api_nonce_replayed": [
+            401
+          ],
+          "invalid_open_api_signature": [
+            401
+          ],
+          "open_name_lookup_api_not_enabled": [
+            404
+          ],
+          "invalid_json": [
+            400
+          ],
+          "idempotency_key_required": [
+            400
+          ],
+          "invalid_idempotency_key": [
+            400
+          ],
+          "open_name_lookup_user_not_available": [
+            403
+          ]
+        }
       }
     ],
     "GET /api/v1/open/name-lookups/sessions/{p1}": [
@@ -745,7 +806,30 @@
       "轮询状态、人工动作和队列。results 最多返回最近 500 条；完整历史通过保存的 queryId 查询。ready 且无阻塞时，此接口也会推进排队查询。",
       {
         "response": "session:OpenLookupSession",
-        "path": "/api/v1/open/name-lookups/sessions/{sessionId}"
+        "path": "/api/v1/open/name-lookups/sessions/{sessionId}",
+        "helperErrors": {
+          "open_api_auth_required": [
+            401
+          ],
+          "invalid_open_api_client": [
+            401
+          ],
+          "open_api_timestamp_expired": [
+            401
+          ],
+          "invalid_open_api_nonce": [
+            401
+          ],
+          "open_api_nonce_replayed": [
+            401
+          ],
+          "invalid_open_api_signature": [
+            401
+          ],
+          "open_name_lookup_api_not_enabled": [
+            404
+          ]
+        }
       }
     ],
     "POST /api/v1/open/name-lookups/sessions/{p1}/queries": [
@@ -760,7 +844,48 @@
           "clientReference",
           "consentReference"
         ],
-        "idempotency": "required"
+        "idempotency": "required",
+        "helperErrors": {
+          "open_api_auth_required": [
+            401
+          ],
+          "invalid_open_api_client": [
+            401
+          ],
+          "open_api_timestamp_expired": [
+            401
+          ],
+          "invalid_open_api_nonce": [
+            401
+          ],
+          "open_api_nonce_replayed": [
+            401
+          ],
+          "invalid_open_api_signature": [
+            401
+          ],
+          "open_name_lookup_api_not_enabled": [
+            404
+          ],
+          "invalid_json": [
+            400
+          ],
+          "idempotency_key_required": [
+            400
+          ],
+          "invalid_idempotency_key": [
+            400
+          ],
+          "invalid_phone_number": [
+            400
+          ],
+          "invalid_client_reference": [
+            400
+          ],
+          "invalid_consent_reference": [
+            400
+          ]
+        }
       }
     ],
     "GET /api/v1/open/name-lookups/sessions/{p1}/queries/{p2}": [
@@ -769,20 +894,75 @@
       "按 queryId 取回结果，避免依赖数组顺序或 500 条会话窗口。仅当前客户端可读。",
       {
         "response": "query:OpenLookupResult",
-        "path": "/api/v1/open/name-lookups/sessions/{sessionId}/queries/{queryId}"
+        "path": "/api/v1/open/name-lookups/sessions/{sessionId}/queries/{queryId}",
+        "helperErrors": {
+          "open_api_auth_required": [
+            401
+          ],
+          "invalid_open_api_client": [
+            401
+          ],
+          "open_api_timestamp_expired": [
+            401
+          ],
+          "invalid_open_api_nonce": [
+            401
+          ],
+          "open_api_nonce_replayed": [
+            401
+          ],
+          "invalid_open_api_signature": [
+            401
+          ],
+          "open_name_lookup_api_not_enabled": [
+            404
+          ]
+        }
       }
     ],
     "POST /api/v1/open/name-lookups/sessions/{p1}/resume": [
       "open-lookup",
       "恢复原号码查询",
-      "用于仍可恢复的人工验证或普通恢复故障。沿用原 queryId，不创建新业务查询。新版真实拼图通常自动交接；若已经自动恢复，先轮询再决定是否调用。",
+      "显式恢复仍阻塞的原号码，主要用于queueState.action=retry_current_query。真实拼图优先由平台自动接续；resumeAllowed仅表示具备原查询，不代表需要立即调用。已自动恢复或查询已完成时重新轮询原queryId，不能重复提交号码。",
       {
         "response": "ok:boolean,queryId:string,session:OpenLookupSession,idempotent:boolean",
         "path": "/api/v1/open/name-lookups/sessions/{sessionId}/resume",
         "idempotency": "required",
         "required": [
           "queryId"
-        ]
+        ],
+        "helperErrors": {
+          "open_api_auth_required": [
+            401
+          ],
+          "invalid_open_api_client": [
+            401
+          ],
+          "open_api_timestamp_expired": [
+            401
+          ],
+          "invalid_open_api_nonce": [
+            401
+          ],
+          "open_api_nonce_replayed": [
+            401
+          ],
+          "invalid_open_api_signature": [
+            401
+          ],
+          "open_name_lookup_api_not_enabled": [
+            404
+          ],
+          "invalid_json": [
+            400
+          ],
+          "idempotency_key_required": [
+            400
+          ],
+          "invalid_idempotency_key": [
+            400
+          ]
+        }
       }
     ],
     "POST /api/v1/open/name-lookups/sessions/{p1}/end": [
@@ -791,7 +971,33 @@
       "停止当前工作并取消排队查询。202 后轮询到 ended；已 ended/failed/expired 返回 200。stopping 期间不要反复 POST，当前实现可能重新下发停止任务。",
       {
         "response": "ok:boolean,session:OpenLookupSession",
-        "path": "/api/v1/open/name-lookups/sessions/{sessionId}/end"
+        "path": "/api/v1/open/name-lookups/sessions/{sessionId}/end",
+        "helperErrors": {
+          "open_api_auth_required": [
+            401
+          ],
+          "invalid_open_api_client": [
+            401
+          ],
+          "open_api_timestamp_expired": [
+            401
+          ],
+          "invalid_open_api_nonce": [
+            401
+          ],
+          "open_api_nonce_replayed": [
+            401
+          ],
+          "invalid_open_api_signature": [
+            401
+          ],
+          "open_name_lookup_api_not_enabled": [
+            404
+          ],
+          "invalid_json": [
+            400
+          ]
+        }
       }
     ],
     "GET /api/v1/overview": [
@@ -1971,12 +2177,12 @@
       {
         "name": "successfulCount",
         "type": "number",
-        "description": "成功计数"
+        "description": "正常完成计数，包含succeeded与not_found；不是返回姓名条数"
       },
       {
         "name": "currentAccount",
         "type": "string",
-        "description": "已验证的当前账户展示标识；可为空"
+        "description": "当前账户脱敏展示标识，可能为空；不是可跨设备关联的账户主键"
       },
       {
         "name": "results",
@@ -2665,7 +2871,7 @@
       {
         "name": "status",
         "type": "string",
-        "description": "会话状态"
+        "description": "starting/ready/querying/switching/choosing_account/needs_human_verification/stopping/ended/failed/expired；还须检查阻塞结果"
       },
       {
         "name": "pendingJobId",
@@ -2678,9 +2884,14 @@
         "description": "当前已验证账户"
       },
       {
+        "name": "accountIdentityVerified",
+        "type": "boolean",
+        "description": "当前账户身份是否已核验；普通重试复用已知账户"
+      },
+      {
         "name": "successfulCount",
         "type": "number",
-        "description": "成功计数"
+        "description": "正常完成计数，包含succeeded和not_found；不是返回姓名条数"
       },
       {
         "name": "results",
@@ -2727,7 +2938,17 @@
       {
         "name": "account",
         "type": "string",
-        "description": "受限账户标识"
+        "description": "同一设备内受限账户展示标识"
+      },
+      {
+        "name": "limitedAt",
+        "type": "string",
+        "description": "首次检测到限制的ISO8601时间；不是restrictedAt"
+      },
+      {
+        "name": "cooldownUntil",
+        "type": "string",
+        "description": "limitedAt加8小时的自然到期时间，事件重放不重置"
       },
       {
         "name": "reason",
@@ -2735,24 +2956,14 @@
         "description": "access_denied/device_risk/frequent_or_abnormal_access"
       },
       {
-        "name": "restrictedAt",
-        "type": "string",
-        "description": "首次确认限制时间"
-      },
-      {
-        "name": "cooldownUntil",
-        "type": "string",
-        "description": "自然冷却到期时间"
+        "name": "remainingMs",
+        "type": "number",
+        "description": "剩余冷却毫秒，最低0"
       },
       {
         "name": "cooling",
         "type": "boolean",
-        "description": "当前是否冷却"
-      },
-      {
-        "name": "restrictionId",
-        "type": "string",
-        "description": "限制事件引用"
+        "description": "当前是否仍在冷却"
       }
     ],
     "DeviceLock": [
@@ -3706,7 +3917,7 @@
         "4. needs_human_verification：平台向已配置的飞书机器人发手机编号提醒，操作员登录云手机平台完成拼图。新版只读确认两次通过后自动关闭对应控屏、重查原号码，沿用原queryId并接回队列。第三方继续轮询，不创建重复查询；旧版/显式恢复须依据resumeAllowed及实际状态，活动控屏不能恢复。通知依赖部署配置，不保证外部机器人投递永不失败。",
         "5. 首次账户准备阶段人工动作的queryId为空，不调用开放resume；人工结束后等待starting/ready。首次准备的普通恢复故障需要网页重试账户准备或结束会话。",
         "6. queueState.action=retry_current_query：普通恢复失败，humanAction.required=false，不是拼图。对返回原queryId调用resume并带恢复专用幂等键；启动阶段没有queryId，走网页恢复或结束。若自动恢复已抢先执行而返回409，重新轮询原任务。",
-        "7. 真实触限由平台确认当前账户、记录8小时冷却、自动选择可用账户继续原号码；普通重试不再反复核对账户。全部账户耗尽时 queueState.action=end_session_and_select_another_device，结束会话并选择别的设备。候选自然8小时到期、两机长测等尚未全部真机验收。",
+        "7. 真实触限由平台确认当前账户、记录8小时冷却、自动选择可用账户继续原号码；普通重试不再反复核对账户。全部账户耗尽时 queueState.action=end_session_and_select_another_device，结束会话并选择别的设备。当前生产已验证自然触限切号和跨会话冷却继承；自然8小时到期后再查询、两机/OEM等尚未验收。",
         "8. 完成或决定放弃后POST end，202后轮询到ended。排队条目会cancelled，当前条目经过cancelling；不要因超时重复创建任务，stopping期间不要反复POST end。查询数据不是跨会话永久存档服务，请自行按queryId保存结果。"
       ],
       "code": "// 后端示例；凭据来自环境变量，页面不保存密钥\nimport { signedHeaders } from \"./sign.mjs\";\nconst base = process.env.PHONE_CLOUD_BASE_URL;\nconst clientId = process.env.PHONE_CLOUD_CLIENT_ID;\nconst secret = process.env.PHONE_CLOUD_SECRET;\nasync function call(method, path, input, idempotencyKey) {\n  const body = method === \"GET\" ? \"\" : JSON.stringify(input ?? {});\n  const headers = signedHeaders(secret, clientId, method, path, body);\n  if (idempotencyKey) headers[\"Idempotency-Key\"] = idempotencyKey;\n  const res = await fetch(new URL(path, base), {\n    method, headers, ...(body ? { body } : {}),\n    signal: AbortSignal.timeout(20000)\n  });\n  const data = await res.json();\n  if (!res.ok) throw Object.assign(new Error(data.error), { status: res.status, data });\n  return data;\n}\nconst { session } = await call(\"POST\", \"/api/v1/open/name-lookups/sessions\",\n  { deviceId: \"adb:SERIAL-DEMO\" }, \"demo-session-0001\");\nconst root = `/api/v1/open/name-lookups/sessions/${encodeURIComponent(session.sessionId)}`;\nconst { queryId } = await call(\"POST\", `${root}/queries`, {\n  phoneNumber: \"13800000000\",\n  clientReference: \"demo-order-0001\", consentReference: \"demo-consent-0001\"\n}, \"demo-query-0001\");\n// 定时调用并按状态处理，勿以数组位置关联号码\nconst { query } = await call(\"GET\", `${root}/queries/${encodeURIComponent(queryId)}`);\nconsole.log(query.queryId, query.status, query.maskedName);\n// 业务完成/放弃时：await call(\"POST\", `${root}/end`, {});"
@@ -3717,7 +3928,7 @@
       "intro": "受理成功与业务完成是两个阶段",
       "paragraphs": [
         "会话：starting → ready → querying → ready；自动切号为switching，人工为needs_human_verification，选择账户为choosing_account；停止为stopping，终态为ended/failed/expired。以机器字段做判断，不依赖stage的中文文案。",
-        "查询：queued/running/cancelling为处理中；succeeded/not_found是正常完成；needs_human_verification等待人工；needs_recovery等待原任务恢复；limit_reached/failed/cancelled需要按原因处置。此处列出候选实际可能返回的状态，生产是否具备新增状态须核对部署。",
+        "查询：queued/running/cancelling为处理中；succeeded/not_found是正常完成；needs_human_verification等待人工；needs_recovery等待原任务恢复；limit_reached/failed/cancelled需要按原因处置。这些状态已在当前部署代码中确认，真机覆盖范围见交付与联调说明。",
         "session.pending只表示当前作业存在，不代表所有排队任务都完成；还要检查queuedCount和已保存queryId。会话results有500条窗口，始终以单结果接口补取。",
         "请求超时不表示未执行：先以原ID查询，创建/提交/恢复重试保留原幂等键。HTTP期限建议10–30秒，业务等待设独立总期限；人工等待不应被短HTTP重试循环误判。429使用返回冷却时间，5xx指数退避；409先核对状态。",
         "本平台业务接口使用HTTP状态和error字符串，没有统一的飞书式数字业务码；成功可能没有ok字段。X-Request-Id由服务器响应头返回，排障可提供此值。JSON时间通常为ISO8601；证据/APK/ZIP是二进制响应。"

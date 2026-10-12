@@ -1,0 +1,33 @@
+{
+  "version": "platform-api-integration-20261012-rc.1",
+  "files": {
+    "docs/API_PORTAL.md": "634bd73e9ac2f78db81b1ca462886010c57d27f61128192e968ca4152c770420",
+    "docs/PROJECT_DEVELOPMENT.md": "999b4ed9c2d6a96bcfc58b8f34cf90bf74d307a0556d6a0a1075e70b48da65d9",
+    "docs/api-reference-contracts.json": "ab4518c6be3f53931c8501a6e72c60adf537149bce4207eea37bf37ca6e62d22",
+    "docs/platform-api-publication.json": "cd59bed49c54656999621932ac581c88fd1a8166992a3071d14acb7d1e0209d8",
+    "releases/platform-api-docs-20261010-rc.1/OPEN_NAME_LOOKUP_API.md": "0a8fcb6e218b8ca1643829fd664cc5be5c2c1c747242957fb5fa2526425cd8f7",
+    "releases/platform-api-docs-20261010-rc.1/public/api-docs.css": "63d05021377c39441aafa5b6917928eaa7f7f71b7cef75d38fbc07e90fc3896a",
+    "releases/platform-api-docs-20261010-rc.1/public/api-docs.html": "a5f66fbb090941986927fb30fc3fd77c40522182bde58a165cf9d863e2096b2d",
+    "releases/platform-api-docs-20261010-rc.1/public/api-docs.js": "41889531f6a3e2532c207f9871c9f75ff5c5ccc053aaaf660ccf6b2ca662c26e",
+    "releases/platform-api-docs-20261010-rc.1/public/api-reference.json": "e3b0055c33db86353b3a339acdfa31a942100144f7f98344441bcf32c607742e",
+    "releases/platform-api-docs-20261010-rc.1/public/downloads/name-lookup-integration.zip": "806f63a85b62571ea06235e541a23143962e00bd3c70c5e3515ba5e5bb480652",
+    "releases/platform-api-docs-20261010-rc.1/public/downloads/name-lookup-openapi.json": "af49e9d9354615f31194bb967bf695c4430d1ba2ec7d86905c1834438aa25d01",
+    "releases/platform-api-docs-20261010-rc.1/public/downloads/name-lookup-sha256.json": "6317bd84d87b7ef30fd593d47262e753ce167256a7f55b147dc7d0661ad8bd18",
+    "releases/platform-api-docs-20261010-rc.1/public/downloads/sign.mjs": "8aac5bdf144c8dd6c93da3aa34c63c21952270fba139e5b117730b6730c51946",
+    "releases/platform-api-docs-20261010-rc.1/public/openapi.json": "62896997ff1ecbfd978f9f5282c475e3d053c4380e481c5c1138548cf2aaeed6",
+    "releases/platform-api-docs-20261010-rc.1/verification/fixtures/sdk/open_name_lookup/README.md": "f381bd4128c28e8ac1c36019dac16319b69ceb0ed276d79e78ade30d9ac72ef4",
+    "scripts/api-docs.test.mjs": "ba7f3d2bfa286893cd0e9da02b24d921949d0de695f3a6f41af95090eb7abcfe",
+    "scripts/build-api-docs.py": "fab295a76d3055621d533fbc49a4da13a3c2577eb007c3226cd16499198370ce"
+  },
+  "staticDeploymentFiles": {
+    "releases/platform-api-docs-20261010-rc.1/public/api-docs.html": "a5f66fbb090941986927fb30fc3fd77c40522182bde58a165cf9d863e2096b2d",
+    "releases/platform-api-docs-20261010-rc.1/public/api-docs.css": "63d05021377c39441aafa5b6917928eaa7f7f71b7cef75d38fbc07e90fc3896a",
+    "releases/platform-api-docs-20261010-rc.1/public/api-docs.js": "41889531f6a3e2532c207f9871c9f75ff5c5ccc053aaaf660ccf6b2ca662c26e",
+    "releases/platform-api-docs-20261010-rc.1/public/api-reference.json": "e3b0055c33db86353b3a339acdfa31a942100144f7f98344441bcf32c607742e",
+    "releases/platform-api-docs-20261010-rc.1/public/openapi.json": "62896997ff1ecbfd978f9f5282c475e3d053c4380e481c5c1138548cf2aaeed6",
+    "releases/platform-api-docs-20261010-rc.1/public/downloads/sign.mjs": "8aac5bdf144c8dd6c93da3aa34c63c21952270fba139e5b117730b6730c51946",
+    "releases/platform-api-docs-20261010-rc.1/public/downloads/name-lookup-openapi.json": "af49e9d9354615f31194bb967bf695c4430d1ba2ec7d86905c1834438aa25d01",
+    "releases/platform-api-docs-20261010-rc.1/public/downloads/name-lookup-integration.zip": "806f63a85b62571ea06235e541a23143962e00bd3c70c5e3515ba5e5bb480652",
+    "releases/platform-api-docs-20261010-rc.1/public/downloads/name-lookup-sha256.json": "6317bd84d87b7ef30fd593d47262e753ce167256a7f55b147dc7d0661ad8bd18"
+  }
+}

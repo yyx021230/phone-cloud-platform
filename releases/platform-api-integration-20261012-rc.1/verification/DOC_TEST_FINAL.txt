@@ -1,0 +1,19 @@
+✔ platform catalog is reproducible and publishes 39 reviewed platform operations (585.132ms)
+✔ OpenAPI references, path parameters, methods and Bearer security are valid (0.604375ms)
+✔ all endpoint pages render; Node.js and Python examples parse without execution (1531.497083ms)
+✔ published data and downloads exclude other categories and unused models (0.791375ms)
+✔ renderer escapes untrusted strings and only fetches static reference data (1.662917ms)
+✔ builder rejects an undocumented new route before generating files (559.645042ms)
+✔ all server and Agent source files retain the immutable rc.2 hash (13.35925ms)
+✔ platform navigation and search cannot restore excluded categories (1.225291ms)
+✔ SMS, lookup, QR, Kuaishou and publishing are distinct business references (0.613209ms)
+✔ HMAC examples match the deployed signing function for exact UTF-8 request bodies (1.646708ms)
+✔ handover archive has verified members, seven HMAC operations and unchanged SDK code (33.693417ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2800.582084
