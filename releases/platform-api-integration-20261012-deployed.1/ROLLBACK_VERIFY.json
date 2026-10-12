@@ -1,2 +1,5 @@
-{"isolatedRollbackPassed":true,"resources":9,"productionModified":false}
-
+{
+  "isolatedRollbackPassed": true,
+  "resources": 9,
+  "productionModified": false
+}

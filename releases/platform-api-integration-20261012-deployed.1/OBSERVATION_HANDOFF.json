@@ -1,0 +1,12 @@
+{
+  "expectedDeployment": "platform-api-integration-20261012-deployed.1",
+  "documentVersion": "platform-api-integration-20261012-rc.3",
+  "documentCommit": "20ecebdb91a531dd55a83dbc8cf18cc5a93565fd",
+  "receiptCommit": "d1f89f9e22a10e604500c2eab2ea88bb2a7d63ac",
+  "activeSha256": "aa5c5aa3f123bced09451c116b0b1d37fce4b9d507c46766e431e683102a54a5",
+  "runningImage": "4e484ed7 plus11 static patches",
+  "restartImage": "97633e241d545dbe895ad003852dfd35eae39cab9bcb54fbee95740b67daa053",
+  "automation2Updated": false,
+  "reason": "view returned only a rendered card; no matching readable automation TOML; no partial replacement or new duplicate created",
+  "safeNextObservation": "Use current ACTIVE plus this authorized docs-only release and its manifests; all existing bounded read-only, no real business, no restart or publishing rules remain"
+}

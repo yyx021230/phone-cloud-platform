@@ -1,0 +1,13 @@
+{
+  "atUtc": "2026-10-12T07:17:06.647502+00:00",
+  "version": "platform-api-integration-20261012-deployed.1",
+  "candidateCommit": "20ecebdb91a531dd55a83dbc8cf18cc5a93565fd",
+  "receiptCommit": "d1f89f9e22a10e604500c2eab2ea88bb2a7d63ac",
+  "receiptTag": "platform-api-integration-20261012-deployed.1",
+  "receiptArchiveSha256": "b8635ec5024f1ee99de936f86f45ba0d46234356674ba5662aa51befc6a8a0e8",
+  "receiptArchivePath": "/opt/phone-cloud-platform/staging/platform-api-integration-20261012-rc.3/deployment-receipt.tar",
+  "finalActiveSha256": "aa5c5aa3f123bced09451c116b0b1d37fce4b9d507c46766e431e683102a54a5",
+  "runtimePid": 2684217,
+  "productionRestarts": 0,
+  "onlyVersionMetadataBound": true
+}
