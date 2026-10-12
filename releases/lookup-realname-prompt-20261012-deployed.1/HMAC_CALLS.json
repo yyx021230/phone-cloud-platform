@@ -1,0 +1,532 @@
+[
+  {
+    "evidence": "161-create-receipt.json",
+    "atUtc": "2026-10-12T07:48:41.696Z",
+    "action": "create",
+    "deviceNumber": "161",
+    "ok": true,
+    "idempotent": false,
+    "code": null,
+    "queryId": "",
+    "calls": [
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/devices",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/open/name-lookups/sessions",
+        "status": 201
+      }
+    ],
+    "sessionId": "33e8b68f-f076-4285-be2a-0117e3359695"
+  },
+  {
+    "evidence": "161-create-replay-receipt.json",
+    "atUtc": "2026-10-12T07:48:41.978Z",
+    "action": "replay-create",
+    "deviceNumber": "161",
+    "ok": true,
+    "idempotent": true,
+    "code": null,
+    "queryId": "",
+    "calls": [
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/devices",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/open/name-lookups/sessions",
+        "status": 200
+      }
+    ],
+    "sessionId": "33e8b68f-f076-4285-be2a-0117e3359695"
+  },
+  {
+    "evidence": "161-duplicate-create-receipt.json",
+    "atUtc": "2026-10-12T07:49:35.399Z",
+    "action": "replay-create",
+    "deviceNumber": "161",
+    "ok": false,
+    "idempotent": null,
+    "code": "device_busy",
+    "queryId": null,
+    "calls": [
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/devices",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/open/name-lookups/sessions",
+        "status": 409
+      }
+    ],
+    "sessionId": null
+  },
+  {
+    "evidence": "161-end-receipt.json",
+    "atUtc": "2026-10-12T07:50:17.659Z",
+    "action": "end",
+    "deviceNumber": "161",
+    "ok": true,
+    "idempotent": false,
+    "code": null,
+    "queryId": "",
+    "calls": [
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/devices",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/sessions/33e8b68f-f076-4285-be2a-0117e3359695",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/open/name-lookups/sessions/33e8b68f-f076-4285-be2a-0117e3359695/end",
+        "status": 202
+      }
+    ],
+    "sessionId": "33e8b68f-f076-4285-be2a-0117e3359695"
+  },
+  {
+    "evidence": "161-end-terminal-receipt.json",
+    "atUtc": "2026-10-12T07:50:21.508Z",
+    "action": "end",
+    "deviceNumber": "161",
+    "ok": true,
+    "idempotent": false,
+    "code": null,
+    "queryId": "",
+    "calls": [
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/devices",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/sessions/33e8b68f-f076-4285-be2a-0117e3359695",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/open/name-lookups/sessions/33e8b68f-f076-4285-be2a-0117e3359695/end",
+        "status": 200
+      }
+    ],
+    "sessionId": "33e8b68f-f076-4285-be2a-0117e3359695"
+  },
+  {
+    "evidence": "161-nonresumable-probe-receipt.json",
+    "atUtc": "2026-10-12T07:50:17.379Z",
+    "action": "resume",
+    "deviceNumber": "161",
+    "ok": false,
+    "idempotent": null,
+    "code": "lookup_human_verification_not_resumable",
+    "queryId": null,
+    "calls": [
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/devices",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/sessions/33e8b68f-f076-4285-be2a-0117e3359695",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/open/name-lookups/sessions/33e8b68f-f076-4285-be2a-0117e3359695/resume",
+        "status": 409
+      }
+    ],
+    "sessionId": "33e8b68f-f076-4285-be2a-0117e3359695"
+  },
+  {
+    "evidence": "161-query-65-receipt.json",
+    "atUtc": "2026-10-12T07:49:35.682Z",
+    "action": "query",
+    "deviceNumber": "161",
+    "ok": true,
+    "idempotent": false,
+    "code": null,
+    "queryId": "bbb46126-324a-4469-b7dc-6da7921d14ea",
+    "calls": [
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/devices",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/sessions/33e8b68f-f076-4285-be2a-0117e3359695",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/open/name-lookups/sessions/33e8b68f-f076-4285-be2a-0117e3359695/queries",
+        "status": 202
+      }
+    ],
+    "sessionId": "33e8b68f-f076-4285-be2a-0117e3359695"
+  },
+  {
+    "evidence": "161-query-66-receipt.json",
+    "atUtc": "2026-10-12T07:49:36.227Z",
+    "action": "queue",
+    "deviceNumber": "161",
+    "ok": true,
+    "idempotent": false,
+    "code": null,
+    "queryId": "6560ae39-4e84-4fee-b626-b5d3674e03d5",
+    "calls": [
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/devices",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/sessions/33e8b68f-f076-4285-be2a-0117e3359695",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/open/name-lookups/sessions/33e8b68f-f076-4285-be2a-0117e3359695/queries",
+        "status": 202
+      }
+    ],
+    "sessionId": "33e8b68f-f076-4285-be2a-0117e3359695"
+  },
+  {
+    "evidence": "161-query-replay-65-receipt.json",
+    "atUtc": "2026-10-12T07:49:35.950Z",
+    "action": "replay-query",
+    "deviceNumber": "161",
+    "ok": true,
+    "idempotent": true,
+    "code": null,
+    "queryId": "bbb46126-324a-4469-b7dc-6da7921d14ea",
+    "calls": [
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/devices",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/sessions/33e8b68f-f076-4285-be2a-0117e3359695",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/open/name-lookups/sessions/33e8b68f-f076-4285-be2a-0117e3359695/queries",
+        "status": 200
+      }
+    ],
+    "sessionId": "33e8b68f-f076-4285-be2a-0117e3359695"
+  },
+  {
+    "evidence": "161-query-replay-66-receipt.json",
+    "atUtc": "2026-10-12T07:49:36.511Z",
+    "action": "replay-query",
+    "deviceNumber": "161",
+    "ok": true,
+    "idempotent": true,
+    "code": null,
+    "queryId": "6560ae39-4e84-4fee-b626-b5d3674e03d5",
+    "calls": [
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/devices",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/sessions/33e8b68f-f076-4285-be2a-0117e3359695",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/open/name-lookups/sessions/33e8b68f-f076-4285-be2a-0117e3359695/queries",
+        "status": 200
+      }
+    ],
+    "sessionId": "33e8b68f-f076-4285-be2a-0117e3359695"
+  },
+  {
+    "evidence": "177-create-receipt.json",
+    "atUtc": "2026-10-12T07:46:31.500Z",
+    "action": "create",
+    "deviceNumber": "177",
+    "ok": true,
+    "idempotent": false,
+    "code": null,
+    "queryId": "",
+    "calls": [
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/devices",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/open/name-lookups/sessions",
+        "status": 201
+      }
+    ],
+    "sessionId": "361ca1f4-8725-4b35-9098-0a4ea39f0a85"
+  },
+  {
+    "evidence": "177-create-replay-receipt.json",
+    "atUtc": "2026-10-12T07:46:31.766Z",
+    "action": "replay-create",
+    "deviceNumber": "177",
+    "ok": true,
+    "idempotent": true,
+    "code": null,
+    "queryId": "",
+    "calls": [
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/devices",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/open/name-lookups/sessions",
+        "status": 200
+      }
+    ],
+    "sessionId": "361ca1f4-8725-4b35-9098-0a4ea39f0a85"
+  },
+  {
+    "evidence": "177-duplicate-create-receipt.json",
+    "atUtc": "2026-10-12T07:47:22.401Z",
+    "action": "replay-create",
+    "deviceNumber": "177",
+    "ok": false,
+    "idempotent": null,
+    "code": "device_busy",
+    "queryId": null,
+    "calls": [
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/devices",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/open/name-lookups/sessions",
+        "status": 409
+      }
+    ],
+    "sessionId": null
+  },
+  {
+    "evidence": "177-end-receipt.json",
+    "atUtc": "2026-10-12T07:52:41.368Z",
+    "action": "end",
+    "deviceNumber": "177",
+    "ok": true,
+    "idempotent": false,
+    "code": null,
+    "queryId": "",
+    "calls": [
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/devices",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/sessions/361ca1f4-8725-4b35-9098-0a4ea39f0a85",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/open/name-lookups/sessions/361ca1f4-8725-4b35-9098-0a4ea39f0a85/end",
+        "status": 202
+      }
+    ],
+    "sessionId": "361ca1f4-8725-4b35-9098-0a4ea39f0a85"
+  },
+  {
+    "evidence": "177-end-terminal-receipt.json",
+    "atUtc": "2026-10-12T07:52:45.183Z",
+    "action": "end",
+    "deviceNumber": "177",
+    "ok": true,
+    "idempotent": false,
+    "code": null,
+    "queryId": "",
+    "calls": [
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/devices",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/sessions/361ca1f4-8725-4b35-9098-0a4ea39f0a85",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/open/name-lookups/sessions/361ca1f4-8725-4b35-9098-0a4ea39f0a85/end",
+        "status": 200
+      }
+    ],
+    "sessionId": "361ca1f4-8725-4b35-9098-0a4ea39f0a85"
+  },
+  {
+    "evidence": "177-nonresumable-probe-receipt.json",
+    "atUtc": "2026-10-12T07:52:41.094Z",
+    "action": "resume",
+    "deviceNumber": "177",
+    "ok": false,
+    "idempotent": null,
+    "code": "lookup_human_verification_not_resumable",
+    "queryId": null,
+    "calls": [
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/devices",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/sessions/361ca1f4-8725-4b35-9098-0a4ea39f0a85",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/open/name-lookups/sessions/361ca1f4-8725-4b35-9098-0a4ea39f0a85/resume",
+        "status": 409
+      }
+    ],
+    "sessionId": "361ca1f4-8725-4b35-9098-0a4ea39f0a85"
+  },
+  {
+    "evidence": "177-query-63-receipt.json",
+    "atUtc": "2026-10-12T07:47:22.709Z",
+    "action": "query",
+    "deviceNumber": "177",
+    "ok": true,
+    "idempotent": false,
+    "code": null,
+    "queryId": "bc8ce867-8a33-4265-ad3e-c506fd6d174b",
+    "calls": [
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/devices",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/sessions/361ca1f4-8725-4b35-9098-0a4ea39f0a85",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/open/name-lookups/sessions/361ca1f4-8725-4b35-9098-0a4ea39f0a85/queries",
+        "status": 202
+      }
+    ],
+    "sessionId": "361ca1f4-8725-4b35-9098-0a4ea39f0a85"
+  },
+  {
+    "evidence": "177-query-64-receipt.json",
+    "atUtc": "2026-10-12T07:47:23.326Z",
+    "action": "queue",
+    "deviceNumber": "177",
+    "ok": true,
+    "idempotent": false,
+    "code": null,
+    "queryId": "1ac39861-e519-4eed-a843-a40d7f4d6eb0",
+    "calls": [
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/devices",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/sessions/361ca1f4-8725-4b35-9098-0a4ea39f0a85",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/open/name-lookups/sessions/361ca1f4-8725-4b35-9098-0a4ea39f0a85/queries",
+        "status": 202
+      }
+    ],
+    "sessionId": "361ca1f4-8725-4b35-9098-0a4ea39f0a85"
+  },
+  {
+    "evidence": "177-query-replay-63-receipt.json",
+    "atUtc": "2026-10-12T07:47:23.000Z",
+    "action": "replay-query",
+    "deviceNumber": "177",
+    "ok": true,
+    "idempotent": true,
+    "code": null,
+    "queryId": "bc8ce867-8a33-4265-ad3e-c506fd6d174b",
+    "calls": [
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/devices",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/sessions/361ca1f4-8725-4b35-9098-0a4ea39f0a85",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/open/name-lookups/sessions/361ca1f4-8725-4b35-9098-0a4ea39f0a85/queries",
+        "status": 200
+      }
+    ],
+    "sessionId": "361ca1f4-8725-4b35-9098-0a4ea39f0a85"
+  },
+  {
+    "evidence": "177-query-replay-64-receipt.json",
+    "atUtc": "2026-10-12T07:47:23.645Z",
+    "action": "replay-query",
+    "deviceNumber": "177",
+    "ok": true,
+    "idempotent": true,
+    "code": null,
+    "queryId": "1ac39861-e519-4eed-a843-a40d7f4d6eb0",
+    "calls": [
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/devices",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/sessions/361ca1f4-8725-4b35-9098-0a4ea39f0a85",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/open/name-lookups/sessions/361ca1f4-8725-4b35-9098-0a4ea39f0a85/queries",
+        "status": 200
+      }
+    ],
+    "sessionId": "361ca1f4-8725-4b35-9098-0a4ea39f0a85"
+  }
+]

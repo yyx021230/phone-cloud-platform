@@ -1,0 +1,18 @@
+{
+  "atUtc": "2026-10-12T07:42:06.669Z",
+  "version": "lookup-realname-prompt-20261012-deployed.1",
+  "candidateVersion": "lookup-realname-prompt-20261012-rc.1",
+  "sourceCommit": "4ee0e9f8bde774ba1888c78dcb55bf816b644e46",
+  "beforeSha256": "4887d25c7c61d67bbba1ca71695648505b5fc5e5423499f651e75d4ef987f1ee",
+  "afterSha256": "24a9429c2735454ef854c0b6fa4346fedbb7a50ce264fd9ee4811cc43e7acc0d",
+  "backupPath": "D:\\PhoneCloud\\release-backups\\lookup-realname-prompt-20261012-rc.1\\alipay_name_lookup.before.py",
+  "backupSha256": "4887d25c7c61d67bbba1ca71695648505b5fc5e5423499f651e75d4ef987f1ee",
+  "aclSha256": "ab0df64813092a7c8a65b7d40b45154afec506df5c4de29a12510bf49720071c",
+  "aclPreserved": true,
+  "pythonAstPassed": true,
+  "agentPid379908Present": true,
+  "adbPid312588Present": true,
+  "serviceRestarts": 0,
+  "sharedAgentCodeChanges": 0,
+  "mediaOrUsbActions": 0
+}

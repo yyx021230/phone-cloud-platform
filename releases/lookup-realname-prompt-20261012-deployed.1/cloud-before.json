@@ -1,0 +1,73 @@
+{
+  "activeVersion": "platform-api-integration-20261012-deployed.1",
+  "activeSha256": "aa5c5aa3f123bced09451c116b0b1d37fce4b9d507c46766e431e683102a54a5",
+  "businessSourceCommit": "7f695507761b07504a94b7372de0c340befbf33f",
+  "documentVersion": "platform-api-integration-20261012-rc.3",
+  "documentCommit": "20ecebdb91a531dd55a83dbc8cf18cc5a93565fd",
+  "receiptCommit": "d1f89f9e22a10e604500c2eab2ea88bb2a7d63ac",
+  "running": {
+    "id": "8f399b21be28502239d527bb007282af9b3274ca9362e6a3ebace7b478a5b07d",
+    "image": "sha256:4e484ed7db6da2760c64de1f4481fdb7deb97b7acf4e4182e1658507a1d8b437",
+    "pid": 2684217,
+    "restartCount": 0,
+    "startedAt": "2026-10-11T16:41:45.890652151Z",
+    "health": "healthy",
+    "envHash": "6357666b2bad032da6519cbb33bc0b3012218377b5c8f14c8bf98558a671c2db",
+    "mountsHash": "a4cc3c293b036b3ea7f5454da23457e2078363981b280c5679b860e33d97a805"
+  },
+  "restartImageId": "sha256:97633e241d545dbe895ad003852dfd35eae39cab9bcb54fbee95740b67daa053",
+  "activeCompose": [
+    {
+      "path": "/opt/phone-cloud-platform/docker-compose.yml",
+      "sha256": "8687bf4176f8f0d78ab73380a7ef0fd6b71bf044de5474f172ef5483d3e47435"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/platform-api-integration-20261012-rc.3/compose.candidate.json",
+      "sha256": "45f735c99379398e200b9323e4016fd75dc6f1b7a6c0895340b5434f3f02a14e"
+    }
+  ],
+  "mediaBefore": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "observation": {
+    "total": 131,
+    "listed": 125,
+    "online": 124,
+    "agents": [
+      {
+        "enabled": true,
+        "lastSeenAt": "2026-10-12T07:40:16.057Z",
+        "online": true,
+        "reportedDevices": 131
+      },
+      {
+        "enabled": false,
+        "lastSeenAt": "2026-08-10T06:02:47.953Z",
+        "online": false,
+        "reportedDevices": 50
+      },
+      {
+        "enabled": false,
+        "lastSeenAt": "2026-07-03T04:15:49.959Z",
+        "online": false,
+        "reportedDevices": 2
+      },
+      {
+        "enabled": false,
+        "lastSeenAt": "2026-07-03T05:36:47.198Z",
+        "online": false,
+        "reportedDevices": 4
+      }
+    ],
+    "activeLocks": 2,
+    "healthReady": {
+      "/healthz": 200,
+      "/readyz": 200
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "status": "needs attention",
+  "deviceNumber": "177",
+  "sessionId": "361ca1f4-8725-4b35-9098-0a4ea39f0a85",
+  "indexesPlanned": [
+    63,
+    64
+  ],
+  "error": "human intervention or recovery required; preserve original IDs"
+}

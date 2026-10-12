@@ -1,0 +1,64 @@
+{
+  "version": "lookup-realname-prompt-20261012-deployed.1",
+  "atUtc": "2026-10-12T07:56:20.649400+00:00",
+  "sourceCommit": "4ee0e9f8bde774ba1888c78dcb55bf816b644e46",
+  "sourceCandidateTag": "lookup-realname-prompt-20261012-rc.1",
+  "branch": "codex/lookup-prompt-deploy-20261012",
+  "previousRelease": "platform-api-integration-20261012-deployed.1",
+  "windowsRunnerBeforeSha256": "4887d25c7c61d67bbba1ca71695648505b5fc5e5423499f651e75d4ef987f1ee",
+  "windowsRunnerAfterSha256": "24a9429c2735454ef854c0b6fa4346fedbb7a50ce264fd9ee4811cc43e7acc0d",
+  "cloudBusinessSourceCommit": "7f695507761b07504a94b7372de0c340befbf33f",
+  "cloudRestartImageId": "sha256:97633e241d545dbe895ad003852dfd35eae39cab9bcb54fbee95740b67daa053",
+  "localTests": {
+    "newOffline": 20,
+    "existingRunnerRegression": 163,
+    "failed": 0
+  },
+  "realDevices": [
+    177,
+    161
+  ],
+  "sessionsCreated": 3,
+  "uniqueInputs": 4,
+  "inputIndexes": [
+    63,
+    64,
+    65,
+    66
+  ],
+  "consumedOriginalBatchIndexes": "0..66",
+  "nextInputIndex": 67,
+  "results": {
+    "succeeded": 2,
+    "not_found": 2
+  },
+  "sevenHmacRoutesReached": true,
+  "explicitResumePositiveTriggered": false,
+  "humanPuzzle": {
+    "device": 177,
+    "originalQueryPreserved": true,
+    "automaticContinuationPassed": true,
+    "notificationSent": true,
+    "httpStatus": 200,
+    "providerCode": 0
+  },
+  "optionalRealnameModalNaturallyTriggered": false,
+  "realModalDismissalAccepted": false,
+  "allTestSessionsEnded": true,
+  "targetLocksReleased": true,
+  "productionAcceptanceComplete": false,
+  "notVerified": [
+    "natural optional real-name popup dismissal with installed script",
+    "explicit resume positive response",
+    "177/161 natural account limitation and rotation",
+    "natural cooldown expiry and all-account exhaustion",
+    "unseen OEM modal styles",
+    "new partner credentials and long-duration acceptance"
+  ],
+  "cloudPackagedWindowsScriptCaveat": "Cloud image still packages the previous Windows source; Windows disk override is authoritative. Future full Agent package deployment must preserve/update this committed patch.",
+  "serviceRestarts": 0,
+  "remoteGitPushes": 0,
+  "rootDirtyEntriesPreserved": 235,
+  "risk": "R3 authorized single-file live update and bounded 177/161 business calls",
+  "receiptBinding": "This committed receipt/tag will be bound in ACTIVE after commit, no source image rebuild."
+}

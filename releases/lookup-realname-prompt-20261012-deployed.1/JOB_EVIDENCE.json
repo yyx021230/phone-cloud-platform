@@ -1,0 +1,324 @@
+{
+  "atUtc": "2026-10-12T07:53:33.762Z",
+  "notification": {
+    "challengeSha256": "b350eeaeec24fd3040878bc7155fbce11f4a24179ba9130e87c1b86b7555ace0",
+    "found": true,
+    "keys": [
+      "key",
+      "status",
+      "attemptedAt",
+      "httpStatus",
+      "providerCode",
+      "updatedAt"
+    ],
+    "status": "sent",
+    "httpStatus": 200,
+    "providerCode": 0,
+    "attemptedAt": "2026-10-12T07:47:42.990Z"
+  },
+  "sessions": [
+    "14860149-1012-4cd4-bd4a-e6e6b12c25f1",
+    "361ca1f4-8725-4b35-9098-0a4ea39f0a85",
+    "33e8b68f-f076-4285-be2a-0117e3359695"
+  ],
+  "jobs": [
+    {
+      "jobId": "3231df18-07ff-45da-9ba4-949bef0adc28",
+      "kind": "alipay_name_stop",
+      "status": "succeeded",
+      "resultUpdatedAt": "2026-10-12T07:52:43.781Z",
+      "sessionId": "361ca1f4-8725-4b35-9098-0a4ea39f0a85",
+      "windowsTaskId": "2920aaf5-b6a8-4645-9135-394b17d39c64",
+      "events": []
+    },
+    {
+      "jobId": "e9f0431b-27a3-4117-b32c-7d52c21377f3",
+      "kind": "alipay_name_stop",
+      "status": "succeeded",
+      "resultUpdatedAt": "2026-10-12T07:50:20.942Z",
+      "sessionId": "33e8b68f-f076-4285-be2a-0117e3359695",
+      "windowsTaskId": "fc981077-92e2-4670-9716-f42ab4094b43",
+      "events": []
+    },
+    {
+      "jobId": "6560ae39-4e84-4fee-b626-b5d3674e03d5",
+      "kind": "alipay_name_query",
+      "status": "succeeded",
+      "resultUpdatedAt": "2026-10-12T07:50:15.019Z",
+      "sessionId": "33e8b68f-f076-4285-be2a-0117e3359695",
+      "windowsTaskId": "e1e4849d-b8fa-400e-b554-0ec1fcf5823d",
+      "events": []
+    },
+    {
+      "jobId": "bbb46126-324a-4469-b7dc-6da7921d14ea",
+      "kind": "alipay_name_query",
+      "status": "succeeded",
+      "resultUpdatedAt": "2026-10-12T07:50:00.264Z",
+      "sessionId": "33e8b68f-f076-4285-be2a-0117e3359695",
+      "windowsTaskId": "2b96af2e-86c2-4cab-b0d7-44cf4f55c4c0",
+      "events": []
+    },
+    {
+      "jobId": "d1e9aa9e-66da-44ad-ab03-6fec53b57309",
+      "kind": "alipay_name_start",
+      "status": "succeeded",
+      "resultUpdatedAt": "2026-10-12T07:49:32.936Z",
+      "sessionId": "33e8b68f-f076-4285-be2a-0117e3359695",
+      "windowsTaskId": "8df714cb-45c1-41ab-9acb-4bdc84bf3055",
+      "events": []
+    },
+    {
+      "jobId": "1ac39861-e519-4eed-a843-a40d7f4d6eb0",
+      "kind": "alipay_name_query",
+      "status": "succeeded",
+      "resultUpdatedAt": "2026-10-12T07:48:59.446Z",
+      "sessionId": "361ca1f4-8725-4b35-9098-0a4ea39f0a85",
+      "windowsTaskId": "c43765fb-3039-41ea-b88e-ede6cb33f33c",
+      "events": []
+    },
+    {
+      "jobId": "e6307797-d9af-4de6-843d-eb0fdab0216b",
+      "kind": "alipay_name_query",
+      "status": "succeeded",
+      "resultUpdatedAt": "2026-10-12T07:48:49.807Z",
+      "sessionId": "361ca1f4-8725-4b35-9098-0a4ea39f0a85",
+      "windowsTaskId": "c82f0e1c-6c0c-47b0-83ed-9914451d7b78",
+      "events": []
+    },
+    {
+      "jobId": "bc8ce867-8a33-4265-ad3e-c506fd6d174b",
+      "kind": "alipay_name_query",
+      "status": "failed",
+      "resultUpdatedAt": "2026-10-12T07:47:40.315Z",
+      "sessionId": "361ca1f4-8725-4b35-9098-0a4ea39f0a85",
+      "windowsTaskId": "06a6c691-0314-44e4-8c0d-f98947f2aada",
+      "events": []
+    },
+    {
+      "jobId": "909d6384-ee94-45f2-905d-68b80aacb46a",
+      "kind": "alipay_name_start",
+      "status": "succeeded",
+      "resultUpdatedAt": "2026-10-12T07:47:20.620Z",
+      "sessionId": "361ca1f4-8725-4b35-9098-0a4ea39f0a85",
+      "windowsTaskId": "b3482b37-e958-4a4d-b506-3917fc3b1302",
+      "events": []
+    },
+    {
+      "jobId": "fac852dc-15d5-4030-9282-ac89c1695524",
+      "kind": "alipay_name_stop",
+      "status": "succeeded",
+      "resultUpdatedAt": "2026-10-12T07:45:14.478Z",
+      "sessionId": "14860149-1012-4cd4-bd4a-e6e6b12c25f1",
+      "windowsTaskId": "e0441ade-8efd-47c8-917f-bb791225c31d",
+      "events": []
+    },
+    {
+      "jobId": "45d17171-c490-4d05-95a0-8d1d28ba9dc6",
+      "kind": "alipay_name_start",
+      "status": "succeeded",
+      "resultUpdatedAt": "2026-10-12T07:45:01.106Z",
+      "sessionId": "14860149-1012-4cd4-bd4a-e6e6b12c25f1",
+      "windowsTaskId": "73324074-03e8-43ba-9fb4-8770e1d29329",
+      "events": []
+    }
+  ],
+  "windowsTasks": [
+    {
+      "taskId": "c82f0e1c-6c0c-47b0-83ed-9914451d7b78",
+      "status": "succeeded",
+      "events": [],
+      "runnerLogCount": 14,
+      "steps": [
+        "poco_request_received",
+        "poco_reused",
+        "poco_reuse_focus_observed",
+        "reuse_search_page_by_exact_activity",
+        "reuse_existing_search_page",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "clear_previous_query",
+        "poco_input_clear_confirmed",
+        "query_input_throttle_wait",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "input_phone",
+        "masked_real_name_tail_extracted"
+      ],
+      "diagnosticCode": ""
+    },
+    {
+      "taskId": "c43765fb-3039-41ea-b88e-ede6cb33f33c",
+      "status": "succeeded",
+      "events": [],
+      "runnerLogCount": 14,
+      "steps": [
+        "poco_request_received",
+        "poco_reused",
+        "poco_reuse_focus_observed",
+        "reuse_search_page_by_exact_activity",
+        "reuse_existing_search_page",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "clear_previous_query",
+        "poco_input_clear_confirmed",
+        "query_input_throttle_wait",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "input_phone",
+        "masked_real_name_tail_extracted"
+      ],
+      "diagnosticCode": ""
+    },
+    {
+      "taskId": "b3482b37-e958-4a4d-b506-3917fc3b1302",
+      "status": "succeeded",
+      "events": [],
+      "runnerLogCount": 8,
+      "steps": [
+        "wake_display_ready",
+        "launch_alipay",
+        "open_my_tab",
+        "open_settings",
+        "open_saved_account_picker",
+        "launch_alipay",
+        "open_search",
+        "lookup_account_ready"
+      ],
+      "diagnosticCode": ""
+    },
+    {
+      "taskId": "2920aaf5-b6a8-4645-9135-394b17d39c64",
+      "status": "succeeded",
+      "events": [],
+      "runnerLogCount": 6,
+      "steps": [
+        "poco_request_received",
+        "poco_reused",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "clear_previous_query",
+        "lookup_session_stopped"
+      ],
+      "diagnosticCode": ""
+    },
+    {
+      "taskId": "73324074-03e8-43ba-9fb4-8770e1d29329",
+      "status": "succeeded",
+      "events": [],
+      "runnerLogCount": 8,
+      "steps": [
+        "wake_display_ready",
+        "launch_alipay",
+        "open_my_tab",
+        "open_settings",
+        "open_saved_account_picker",
+        "launch_alipay",
+        "open_search",
+        "lookup_account_ready"
+      ],
+      "diagnosticCode": ""
+    },
+    {
+      "taskId": "e0441ade-8efd-47c8-917f-bb791225c31d",
+      "status": "succeeded",
+      "events": [],
+      "runnerLogCount": 6,
+      "steps": [
+        "poco_request_received",
+        "poco_reused",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "clear_previous_query",
+        "lookup_session_stopped"
+      ],
+      "diagnosticCode": ""
+    },
+    {
+      "taskId": "06a6c691-0314-44e4-8c0d-f98947f2aada",
+      "status": "failed",
+      "events": [],
+      "runnerLogCount": 0,
+      "steps": [],
+      "diagnosticCode": "alipay_human_verification_required"
+    },
+    {
+      "taskId": "8df714cb-45c1-41ab-9acb-4bdc84bf3055",
+      "status": "succeeded",
+      "events": [],
+      "runnerLogCount": 8,
+      "steps": [
+        "wake_display_ready",
+        "launch_alipay",
+        "open_my_tab",
+        "open_settings",
+        "open_saved_account_picker",
+        "launch_alipay",
+        "open_search",
+        "lookup_account_ready"
+      ],
+      "diagnosticCode": ""
+    },
+    {
+      "taskId": "e1e4849d-b8fa-400e-b554-0ec1fcf5823d",
+      "status": "succeeded",
+      "events": [],
+      "runnerLogCount": 15,
+      "steps": [
+        "poco_request_received",
+        "poco_reused",
+        "poco_reuse_focus_observed",
+        "reuse_search_page_by_exact_activity",
+        "reuse_existing_search_page",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "clear_previous_query",
+        "poco_input_clear_confirmed",
+        "query_input_throttle_wait",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "input_phone",
+        "submit_search",
+        "lookup_no_name_result"
+      ],
+      "diagnosticCode": ""
+    },
+    {
+      "taskId": "2b96af2e-86c2-4cab-b0d7-44cf4f55c4c0",
+      "status": "succeeded",
+      "events": [],
+      "runnerLogCount": 14,
+      "steps": [
+        "poco_request_received",
+        "poco_reused",
+        "poco_reuse_focus_observed",
+        "reuse_search_page_by_exact_activity",
+        "reuse_existing_search_page",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "poco_input_clear_confirmed",
+        "query_input_throttle_wait",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "input_phone",
+        "submit_search",
+        "lookup_no_name_result"
+      ],
+      "diagnosticCode": ""
+    },
+    {
+      "taskId": "fc981077-92e2-4670-9716-f42ab4094b43",
+      "status": "succeeded",
+      "events": [],
+      "runnerLogCount": 6,
+      "steps": [
+        "poco_request_received",
+        "poco_reused",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "clear_previous_query",
+        "lookup_session_stopped"
+      ],
+      "diagnosticCode": ""
+    }
+  ]
+}
