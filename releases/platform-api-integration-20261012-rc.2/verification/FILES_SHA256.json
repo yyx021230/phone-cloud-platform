@@ -1,0 +1,19 @@
+{
+  "docs/API_PORTAL.md": "d6741fd6fe22a39a84374cd813069bfc690bd7e741e71c01a82816d2fbd1e5bb",
+  "docs/PROJECT_DEVELOPMENT.md": "5395346c4fbd7711cd9c869b8891015f1f5f0b9cb4e5dab6583d8fdf8b31c156",
+  "docs/platform-api-publication.json": "c0bb767ce64472da47f001384ef9e2cad5a5406772f711fa89a3dd7295a77b56",
+  "releases/platform-api-docs-20261010-rc.1/OPEN_NAME_LOOKUP_API.md": "25e086a1c251720ab5a8c72e5f6c1ef5b12ad75723233d912524e76d0a1bb9ad",
+  "releases/platform-api-docs-20261010-rc.1/public/api-docs.js": "63e8f55692019a243ee7f6aace733d842f6ccd979c01fd7aee3430f95f830b54",
+  "releases/platform-api-docs-20261010-rc.1/public/api-reference.json": "4406dc9ee361a30b83eb8a281f93cad96a17868ecc9486dcda40a19d3f1837fa",
+  "releases/platform-api-docs-20261010-rc.1/public/downloads/name-lookup-integration.zip": "947c780650387de73c105850eda24eabea6711fe8d0af487989a73147fecfd5c",
+  "releases/platform-api-docs-20261010-rc.1/public/downloads/name-lookup-openapi.json": "68d92381393f59b8da01fb150a0561f68839e10deeaba4a72d27ce31f284fc0c",
+  "releases/platform-api-docs-20261010-rc.1/public/downloads/name-lookup-sha256.json": "877bfc3f5f4e298ec311365f37ae51e9bb04a5177439f1234d4e512df086d19c",
+  "releases/platform-api-docs-20261010-rc.1/public/openapi.json": "9f172800d7a5c16cdb534c9f5ab6035d30c73bf85934b4333ad32c927744ea4c",
+  "releases/platform-api-docs-20261010-rc.1/verification/fixtures/sdk/open_name_lookup/README.md": "4d9089209ae556f81f9f275017284579a2b5a289d20fd114a27a77bca9fde359",
+  "releases/platform-api-integration-20261012-rc.2/CONFIG_CHANGE_PLAN.json": "12de45e1cc5cb81f67a15c349fe2628486aac2f6bccf6bd1a43ed6a2555e5641",
+  "releases/platform-api-integration-20261012-rc.2/VERSION.json": "b7175c753d497d270cb558149b0f1349787c9121ccfb9c52de3d2c2678498f23",
+  "releases/platform-api-integration-20261012-rc.2/verification/http-doc-tests.txt": "445324143e2a85462e329d6ece13e70fe28e6d4b4b35175999beb4239808fd81",
+  "releases/platform-api-integration-20261012-rc.2/verification/http-scope-check.json": "b2ead394e182ed540af625c5aa76015f77f01333d8f896d5a07a038cf7796717",
+  "releases/platform-api-integration-20261012-rc.2/verification/whitelist-change-preview.json": "3c23066a5b8a8e1033825b1d4aac8d5fe03a8d7e73432dbf4724e1485e0d6194",
+  "scripts/build-api-docs.py": "1125d7f0c33328479303baa700ce5b23d5009e2386b8d390542dbf006fecd491"
+}

@@ -2,13 +2,13 @@
   "openapi": "3.1.0",
   "info": {
     "title": "支付宝查名字 · 第三方 HMAC Open API",
-    "version": "platform-api-integration-20261012-rc.1",
+    "version": "platform-api-integration-20261012-rc.2",
     "description": "平台功能API文档候选，业务基线platform-api-entry-20261012-deployed.1。第三方支付宝查名字用HMAC-SHA256，其余平台操作用Bearer；凭据与设备授权另行交付。"
   },
   "servers": [
     {
-      "url": "https://cloud.example.com",
-      "description": "占位域名；替换为管理员交付的HTTPS根地址"
+      "url": "http://47.98.127.132",
+      "description": "当前平台HTTP根地址；其他部署使用管理员交付的BASE_URL"
     }
   ],
   "tags": [

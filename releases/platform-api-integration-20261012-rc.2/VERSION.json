@@ -1,0 +1,32 @@
+{
+  "version": "platform-api-integration-20261012-rc.2",
+  "state": "local reviewed documentation candidate; whitelist activation not performed",
+  "branch": "codex/api-http-scope-20261012",
+  "baseCommit": "a66908890a5dd3bd09ac0de7fc6faa6d81ca6020",
+  "productionVersion": "platform-api-entry-20261012-deployed.1",
+  "baseUrl": "http://47.98.127.132",
+  "authorizedTestDeviceNumbers": [
+    "130",
+    "118"
+  ],
+  "runtimeChanges": false,
+  "productionConfigChanges": 0,
+  "createdSessions": 0,
+  "realQueries": 0,
+  "restarts": 0,
+  "remotePushes": 0,
+  "archiveSha256": "947c780650387de73c105850eda24eabea6711fe8d0af487989a73147fecfd5c",
+  "checks": {
+    "documentationTests": 11,
+    "documentationFailures": 0,
+    "publicHttpSignedList": 200,
+    "publicHttpCreate130": 403,
+    "publicHttpCreate118": 403
+  },
+  "pending": [
+    "Explicit idle maintenance activation of reviewed whitelist; real HMAC lookup on130/118 not yet passed.",
+    "Other historical real acceptance gaps retained."
+  ],
+  "originalWorkspacePreserved": true,
+  "originalMainDocumentConcurrentEdits": "not overwritten"
+}

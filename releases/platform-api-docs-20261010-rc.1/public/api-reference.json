@@ -1,5 +1,5 @@
 {
-  "version": "platform-api-integration-20261012-rc.1",
+  "version": "platform-api-integration-20261012-rc.2",
   "updatedAt": "2026-10-12",
   "baseline": "platform-api-entry-20261012-deployed.1",
   "status": "文档候选 · 待发布（业务已上线）",
@@ -69,7 +69,7 @@
         "第三方请求必须带X-Client-Id、X-Timestamp（Unix毫秒）、X-Nonce、X-Signature。时钟默认允许5分钟误差；Nonce每次请求新建，8–120字符A–Z/a–z/0–9/._:-；签名为小写hex。",
         "签名原文是大写METHOD、pathname、timestamp、nonce、SHA256(rawBody)，用四个换行连接且末尾不追加换行。pathname不含域名/查询串。GET使用空字节串；POST签实际发送的UTF-8 JSON原文，{}也纳入摘要，签完不得重新格式化。",
         "创建会话、提交号码、显式恢复必须提供Idempotency-Key（8–160字符A–Z/a–z/0–9/._:-）。创建键按客户端隔离，查询和恢复键按客户端+会话隔离；查询与恢复应使用不同的业务键。网络重试保留原键和参数，重新生成时间戳/Nonce/签名。",
-        "BASE_URL为管理员交付的HTTPS根地址，不包含/api/v1。签名不绑定查询串和幂等键，代理应保留pathname和请求原文。真实clientId、独立密钥和设备白名单由管理员另行交付；页面及示例不含凭据。"
+        "BASE_URL为管理员交付的根地址，当前平台为http://47.98.127.132，不包含/api/v1。签名不绑定查询串和幂等键，代理应保留pathname和请求原文。真实clientId、独立密钥和设备白名单由管理员另行交付；页面及示例不含凭据。"
       ],
       "code": "import crypto from \"node:crypto\";\n\nexport function signedHeaders(secret, clientId, method, pathname, rawBody = \"\") {\n  const timestamp = String(Date.now()); // 毫秒\n  const nonce = crypto.randomUUID();\n  const digest = crypto.createHash(\"sha256\").update(rawBody, \"utf8\").digest(\"hex\");\n  const canonical = [method.toUpperCase(), pathname, timestamp, nonce, digest].join(\"\\n\");\n  return {\n    \"Content-Type\": \"application/json\",\n    \"X-Client-Id\": clientId,\n    \"X-Timestamp\": timestamp,\n    \"X-Nonce\": nonce,\n    \"X-Signature\": crypto.createHmac(\"sha256\", secret).update(canonical).digest(\"hex\")\n  };\n}",
       "headings": [
@@ -289,7 +289,7 @@
       "intro": "给接入开发的准备与验收清单",
       "paragraphs": [
         "开发交付物：本平台文档、7接口查名OpenAPI、Node.js/Python SDK和独立接入说明。真实凭据单独安全交付，不放在文档或下载包。",
-        "管理员需交付：生产/测试HTTPS BASE_URL、查名clientId与至少32字符独立随机secret、精确deviceId白名单、人工操作账号和飞书通知安排。新合作方的配置并未因文档更新自动建立。",
+        "管理员需交付：生产/测试BASE_URL（当前http://47.98.127.132）、查名clientId与至少32字符独立随机secret、精确deviceId白名单、人工操作账号和飞书通知安排。新合作方的配置并未因文档更新自动建立。",
         "代码与实测范围：业务基线platform-api-entry-20261012-deployed.1。118真机57条经平台Bearer接口完成，覆盖自然触限自动切号、原结果接续、冷却继承、真实拼图飞书及自动恢复；不代表合作方HMAC全链路已联调。",
         "仍待验：新合作方签名及隔离联调、自然8小时到期后再查询、全部账户冷却、触限切号后再次拼图组合、两机/OEM及长时观察。文档完整性与这些运行验收分开记录。"
       ],

@@ -216,7 +216,7 @@ def build_openapi(data, out, description=None):
         return {'type': typ}
     doc = {'openapi': '3.1.0', 'info': {'title': 'Phone Cloud 平台功能 API', 'version': data['version'],
            'description': description or '平台功能文档候选；第三方支付宝查名使用HMAC，平台操作使用Bearer。请核对目标部署版本。'},
-           'servers': [{'url': 'https://cloud.example.com', 'description': '占位域名；替换为管理员交付的HTTPS根地址'}],
+           'servers': [{'url': 'http://47.98.127.132', 'description': '当前平台HTTP根地址；其他部署使用管理员交付的BASE_URL'}],
            'tags': [{'name': g[0], 'description': g[1] + ' · ' + g[2]} for g in data['groups']],
            'paths': {}, 'components': {'securitySchemes': {
              'Bearer': {'type': 'http', 'scheme': 'bearer'},

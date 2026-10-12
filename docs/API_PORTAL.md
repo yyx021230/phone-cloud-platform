@@ -1,6 +1,6 @@
 # 平台功能 API 文档（第三方查名接入补全候选）
 
-版本 `platform-api-integration-20261012-rc.1`，分支 `codex/api-integration-docs-20261012`。业务基线为实际生产 `platform-api-entry-20261012-deployed.1`，业务源码7f695507761b07504a94b7372de0c340befbf33f；本轮只更新文档及维护工具，尚未推送/发布。风险R1。
+版本 `platform-api-integration-20261012-rc.2`，分支 `codex/api-http-scope-20261012`。业务基线为实际生产 `platform-api-entry-20261012-deployed.1`，业务源码7f695507761b07504a94b7372de0c340befbf33f；本轮只更新文档及维护工具，尚未推送/发布。风险R1。
 
 ## 页面与交接资料
 
@@ -20,7 +20,7 @@ python3 scripts/build-api-docs.py
 node --test scripts/api-docs.test.mjs
 ```
 
-源码资源目录仍沿用`releases/platform-api-docs-20261010-rc.1/`，不代表当前版本是rc.1。以本次不可变标签和`releases/platform-api-integration-20261012-rc.1/VERSION.json`识别；不得把整个历史目录或仓根运行代码覆盖生产。拟发布仅该回执列出的9个静态文档/下载文件。
+源码资源目录仍沿用`releases/platform-api-docs-20261010-rc.1/`，不代表当前版本是rc.1。以本次不可变标签和`releases/platform-api-integration-20261012-rc.2/VERSION.json`识别；不得把整个历史目录或仓根运行代码覆盖生产。拟发布仅该回执列出的9个静态文档/下载文件。
 
 ## 本轮验证与边界
 
@@ -30,11 +30,19 @@ node --test scripts/api-docs.test.mjs
 
 验证及文件哈希见`releases/platform-api-integration-20261012-rc.1/verification/`。回退仅恢复生产已记录旧版5个静态文档文件，并撤销本次新增4个下载文件的公开路径；不动业务源码、数据库、Agent或媒体。发布前后仍须按AGENTS执行D-075真实宿主机只读核验，维护ACTIVE_PLATFORM_RELEASE及下次启动镜像；本轮未发布，未重复历史全套回归。
 
-## 2026-10-12 按文档实际调用验证（部分完成，存在接入阻塞）
+## 2026-10-12 当前HTTP地址及测试设备范围
+
+用户明确当前只使用HTTP、真机测试仅限130与118号。门户请求说明、OpenAPI与接入ZIP已按`http://47.98.127.132`更正，不再把HTTPS域名/证书作为本次联调前置条件；SDK签名和运行代码不变。
+
+02:54 UTC用下载包原版Node SDK走公网HTTP：签名设备列表200；130与118创建均403 `open_name_lookup_device_not_allowed`，0会话/0号码。实际唯一客户端白名单仍对应177/161，主机.env与运行容器一致，130/118在线空闲；不是HTTP或签名故障。旧设备未发起任务。白名单只在进程启动时加载，无在线重载接口；已生成只替换deviceIds、不改密钥/用户/其他配置的内存预览及回退步骤，未写生产配置。预览时全平台有5个活动锁，不能直接重建容器打断现有工作。
+
+本轮11项文档专项通过。候选与脱敏预览/公网回执见`releases/platform-api-integration-20261012-rc.2/`；0生产变更/重启/真实查询/推送。原仓主文档存在其他任务并行修改，本轮只更新独立工作区主文档，保留原仓全部既有工作。
+
+## 2026-10-12 早先按文档调用验证（历史快照，范围由上文更正）
 
 文档候选仍为platform-api-integration-20261012-rc.1，未发布；本轮验证证据另存platform-api-validation-20261012-rc.1，不移动原标签或修改业务配置。按接入包原版签名辅助、Node SDK和Python SDK对实际生产执行有界请求，合法签名设备列表均成功；签名错误、过期时间戳、非法Nonce、重放、原文篡改、未知客户端及读取已结束平台会话均被预期拒绝。全部7条开放路由已触达，但创建118会话返回403，不能把不存在会话的404负向检查当作真实查询成功。18次受SSH保护的回环请求，加公网未认证拒绝检查1次；0真实查询、0生产配置更新、0重启。
 
-当前既有客户端映射正常启用的普通用户，但只允许177、161号，未允许118。两台在02:15 UTC附近在线空闲不等于预留；已询问用户选择，尚未改用其他真机或扩白名单。公网IP的HTTPS证书校验返回self signed certificate，Nginx仅配置IP及默认主机名，未验收受信任的HTTPS域名；没有绕过校验或在公网明文发送认证请求。正式交接需补齐受信任域名/证书，并使用明确获准且在白名单的测试设备。
+当前既有客户端映射正常启用的普通用户，但只允许177、161号，未允许118。两台在02:15 UTC附近在线空闲不等于预留；已询问用户选择，尚未改用其他真机或扩白名单。公网IP的HTTPS证书校验返回self signed certificate，Nginx仅配置IP及默认主机名，未验收受信任的HTTPS域名；没有绕过校验或在公网明文发送认证请求。此为早先TLS探测结果；用户随后确认仅HTTP，当前联调不要求补域名/证书，测试设备明确为130/118，见上文。
 
 隔离副本使用同版服务端、临时JSON数据和fake Agent，分别让接入ZIP原版Node/Python SDK替代既有HTTP回归中的全部开放请求；每种26次调用，覆盖7接口、创建/查询幂等、跨客户端隔离、队列、拼图及普通恢复、原结果、冷却/耗尽、结束和取消，两轮均通过。首次因干净worktree缺node_modules/ws未启动，改用既有本机依赖后通过；未安装依赖。此为模拟执行证据，不替代真机。4份生产API运行源码哈希与文档基线一致，health/ready为200，容器PID2684217及restartCount0保持，118无活动会话或锁。证据及重现布局见releases/platform-api-validation-20261012-rc.1/。
 
