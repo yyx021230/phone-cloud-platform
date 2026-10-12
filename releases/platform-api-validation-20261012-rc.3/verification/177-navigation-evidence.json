@@ -1,0 +1,33 @@
+{
+  "taskId": "603e7d75-151f-4b4f-845d-6fcbf891a242",
+  "events": [
+    {
+      "stepId": "open_my_tab",
+      "tap": {
+        "x": 648,
+        "y": 1550
+      }
+    },
+    {
+      "stepId": "open_my_tab",
+      "tap": {
+        "x": 648,
+        "y": 1550
+      }
+    },
+    {
+      "stepId": "open_my_tab",
+      "tap": {
+        "x": 648,
+        "y": 1550
+      }
+    },
+    {
+      "stepId": "error",
+      "focus": [
+        "mCurrentFocus=Window{f5d7476 u0 com.eg.android.AlipayGphone/com.eg.android.AlipayGphone.AlipayLogin}",
+        "mFocusedApp=ActivityRecord{6db2324 u0 com.eg.android.AlipayGphone/.AlipayLogin t467}"
+      ]
+    }
+  ]
+}

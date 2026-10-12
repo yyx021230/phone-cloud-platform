@@ -1,0 +1,39 @@
+{
+  "atUtc": "2026-10-12T05:49:53.987Z",
+  "action": "detail",
+  "deviceNumber": "161",
+  "ok": true,
+  "idempotent": false,
+  "queryId": "",
+  "session": null,
+  "query": {
+    "queryId": "a911b6c2-103f-4fae-904d-ecfd5173fc66",
+    "clientReference": "api-fullflow-20261012-161-061",
+    "status": "not_found",
+    "stage": "该号码未查询到姓名结果",
+    "hasMaskedName": false,
+    "hasTail": false,
+    "accountSwitched": false,
+    "accountSwitchCount": 0,
+    "reason": "",
+    "error": "",
+    "queuePosition": null
+  },
+  "calls": [
+    {
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/devices",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/sessions/0a2ff6d8-5a22-414b-9a5d-1861569dff4a",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/sessions/0a2ff6d8-5a22-414b-9a5d-1861569dff4a/queries/a911b6c2-103f-4fae-904d-ecfd5173fc66",
+      "status": 200
+    }
+  ]
+}

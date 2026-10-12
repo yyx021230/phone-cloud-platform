@@ -1,0 +1,72 @@
+{
+  "label": "queries",
+  "atUtc": "2026-10-12T05:51:15.876Z",
+  "action": "get",
+  "deviceNumber": "177",
+  "ok": true,
+  "idempotent": false,
+  "queryId": "",
+  "session": {
+    "sessionId": "818a5e53-e222-4419-a2f9-01fabba6cb68",
+    "deviceHash": "349cd1b53176",
+    "status": "ready",
+    "pending": false,
+    "queuedCount": 1,
+    "resultCount": 2,
+    "successfulCount": 0,
+    "accountHash": "5f9b119eb443",
+    "queueState": {
+      "status": "waiting"
+    },
+    "humanAction": {
+      "required": true,
+      "type": "manual_jigsaw_verification",
+      "reason": "alipay_human_verification_required",
+      "queryId": "33f20262-a1e5-4e60-98dc-bf5c8fab9811",
+      "resumeAllowed": true
+    },
+    "error": "支付宝要求人工完成滑动验证；完成后可重试当前号码",
+    "endedAt": null,
+    "results": [
+      {
+        "queryId": "e1a4acf8-9b14-4482-849f-8177d7821f60",
+        "clientReference": "api-fullflow-20261012-177-060",
+        "status": "queued",
+        "stage": "队列等待中，前方 0 个查询",
+        "hasMaskedName": false,
+        "hasTail": false,
+        "accountSwitched": false,
+        "accountSwitchCount": 0,
+        "reason": "",
+        "error": "",
+        "queuePosition": 1
+      },
+      {
+        "queryId": "33f20262-a1e5-4e60-98dc-bf5c8fab9811",
+        "clientReference": "api-fullflow-20261012-177-059",
+        "status": "needs_human_verification",
+        "stage": "等待人工验证",
+        "hasMaskedName": false,
+        "hasTail": false,
+        "accountSwitched": false,
+        "accountSwitchCount": 0,
+        "reason": "alipay_human_verification_required",
+        "error": "支付宝要求人工完成滑动验证；完成后可在当前会话重试同一号码",
+        "queuePosition": null
+      }
+    ]
+  },
+  "query": null,
+  "calls": [
+    {
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/devices",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/sessions/818a5e53-e222-4419-a2f9-01fabba6cb68",
+      "status": 200
+    }
+  ]
+}

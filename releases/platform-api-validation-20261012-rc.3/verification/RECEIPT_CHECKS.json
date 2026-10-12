@@ -1,0 +1,18 @@
+{
+  "jsonArtifactsParsed": 41,
+  "uniqueRoutePatternsReached": [
+    "GET /api/v1/open/name-lookups/devices",
+    "GET /api/v1/open/name-lookups/sessions/{sessionId}",
+    "GET /api/v1/open/name-lookups/sessions/{sessionId}/queries/{queryId}",
+    "POST /api/v1/open/name-lookups/sessions",
+    "POST /api/v1/open/name-lookups/sessions/{sessionId}/end",
+    "POST /api/v1/open/name-lookups/sessions/{sessionId}/queries",
+    "POST /api/v1/open/name-lookups/sessions/{sessionId}/resume"
+  ],
+  "sessionAndQueryReplayIdsMatched": true,
+  "targetLocksAndSessionsZero": true,
+  "notificationChallengeExactlyCorrelated": true,
+  "noFullPhoneOrNamesSaved": true,
+  "runtimeOrConfigChanges": 0,
+  "newTestsNotRerun": "runtime unchanged; actual HMAC real-device tests are this phase validation"
+}

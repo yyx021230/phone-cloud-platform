@@ -1,0 +1,54 @@
+{
+  "state": "two-device ordinary HMAC flow and natural jigsaw handover completed; first 177 startup failed, unresolved intermittent prompt handling",
+  "deviceResults": {
+    "177": {
+      "attempts": 2,
+      "firstAttempt": "startup failed, account_settings_navigation, no phone queries",
+      "secondAttempt": "two succeeded with masked name and tail; first real jigsaw then same queryId resumed",
+      "manualClicksByAgent": 0,
+      "ended": true,
+      "locksReleased": true
+    },
+    "161": {
+      "attempts": 1,
+      "results": [
+        "not_found",
+        "not_found"
+      ],
+      "nameAccuracy": "not_found is this execution result, not proof no identity",
+      "ended": true,
+      "locksReleased": true
+    }
+  },
+  "assertions": {
+    "signedPublicHttpList200": true,
+    "create201Replay200SameSession": true,
+    "differentCreateKey409Busy": true,
+    "query202Replay200SameQueryIds": true,
+    "secondQueryQueuedWhileFirstRunsOrWaitsForHuman": true,
+    "getSessionAndResult200": true,
+    "healthyResume409NoNewJob": true,
+    "end202ThenEndedAndRepeat200": true,
+    "realJigsawAndOriginalIdAutomaticHandover": true,
+    "feishu177ExactChallengeReceiptSentHttp200Code0": true,
+    "allTestSessionsTerminalAndTargetLocksZero": true
+  },
+  "actualNewSessions": 3,
+  "actualUniqueQueries": 4,
+  "humanResumeExecutionOfOriginalQuery": 1,
+  "newTestNotifications": 0,
+  "naturalProductionHumanNotifications": 1,
+  "productionConfigOrCodeChanges": 0,
+  "serviceRestarts": 0,
+  "remotePushes": 0,
+  "notTestedThisRound": [
+    "positive explicit /resume (automatic handover executed instead)",
+    "natural account restriction/rotation and cold-account expiry on177/161",
+    "all accounts cooling/exhaustion",
+    "arbitrary OEM and long-term reliability",
+    "first-start modal failure repair",
+    "130 fix deployment and real acceptance",
+    "new partner independent credentials/tenant configuration"
+  ],
+  "firstReceiptLookupNote": "An initial notification lookup happened after automatic handover; current challengeId was empty, so receipt_not_found did not indicate failed notification. Corrected using exact original challenge SHA256 and original-result timestamp."
+}

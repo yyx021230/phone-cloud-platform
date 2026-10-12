@@ -1,0 +1,43 @@
+{
+  "status": "HMAC real flow completed after natural puzzle and original-ID handover",
+  "sessionId": "818a5e53-e222-4419-a2f9-01fabba6cb68",
+  "indexes": [
+    59,
+    60
+  ],
+  "queryIds": [
+    "33f20262-a1e5-4e60-98dc-bf5c8fab9811",
+    "e1a4acf8-9b14-4482-849f-8177d7821f60"
+  ],
+  "results": [
+    {
+      "queryId": "33f20262-a1e5-4e60-98dc-bf5c8fab9811",
+      "clientReference": "api-fullflow-20261012-177-059",
+      "status": "succeeded",
+      "stage": "人工验证后当前号码查询完成",
+      "hasMaskedName": true,
+      "hasTail": true,
+      "accountSwitched": false,
+      "accountSwitchCount": 0,
+      "reason": "",
+      "error": "",
+      "queuePosition": null
+    },
+    {
+      "queryId": "e1a4acf8-9b14-4482-849f-8177d7821f60",
+      "clientReference": "api-fullflow-20261012-177-060",
+      "status": "succeeded",
+      "stage": "查询完成",
+      "hasMaskedName": true,
+      "hasTail": true,
+      "accountSwitched": false,
+      "accountSwitchCount": 0,
+      "reason": "",
+      "error": "",
+      "queuePosition": null
+    }
+  ],
+  "humanChallengeOccurred": true,
+  "originalQueryIdsPreserved": true,
+  "locksReleased": true
+}

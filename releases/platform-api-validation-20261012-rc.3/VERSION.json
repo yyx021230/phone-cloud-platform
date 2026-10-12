@@ -1,0 +1,18 @@
+{
+  "version": "platform-api-validation-20261012-rc.3",
+  "branch": "codex/hmac-realflow-177-161-20261012",
+  "baseCommit": "f10965a0dccab188384a83e4f288e665ee2b0013",
+  "productionVersion": "platform-api-entry-20261012-deployed.1",
+  "productionRuntimeSourceCommit": "7f695507761b07504a94b7372de0c340befbf33f",
+  "documentCandidate": "platform-api-integration-20261012-rc.2; not deployed this round",
+  "status": "two-device ordinary HMAC flow and natural jigsaw handover completed; first 177 startup failed, unresolved intermittent prompt handling",
+  "deployable": false,
+  "risk": "R3 explicitly user-authorized real tests; evidence/docs only",
+  "realQueries": 4,
+  "createdSessions": 3,
+  "configOrRuntimeChanges": 0,
+  "restartCountThisRound": 0,
+  "pushes": 0,
+  "existing235OriginalDirtyEntriesPreserved": true,
+  "originalConcurrentMainDocumentUntouched": true
+}

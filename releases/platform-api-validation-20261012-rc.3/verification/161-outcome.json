@@ -1,0 +1,46 @@
+{
+  "status": "ordinary HMAC real flow passed",
+  "deviceNumber": "161",
+  "sessionId": "0a2ff6d8-5a22-414b-9a5d-1861569dff4a",
+  "indexes": [
+    61,
+    62
+  ],
+  "queryIds": [
+    "a911b6c2-103f-4fae-904d-ecfd5173fc66",
+    "a14373d1-8db5-4767-b1c9-0127505870c4"
+  ],
+  "queryResults": [
+    {
+      "queryId": "a911b6c2-103f-4fae-904d-ecfd5173fc66",
+      "clientReference": "api-fullflow-20261012-161-061",
+      "status": "not_found",
+      "stage": "该号码未查询到姓名结果",
+      "hasMaskedName": false,
+      "hasTail": false,
+      "accountSwitched": false,
+      "accountSwitchCount": 0,
+      "reason": "",
+      "error": "",
+      "queuePosition": null
+    },
+    {
+      "queryId": "a14373d1-8db5-4767-b1c9-0127505870c4",
+      "clientReference": "api-fullflow-20261012-161-062",
+      "status": "not_found",
+      "stage": "该号码未查询到姓名结果",
+      "hasMaskedName": false,
+      "hasTail": false,
+      "accountSwitched": false,
+      "accountSwitchCount": 0,
+      "reason": "",
+      "error": "",
+      "queuePosition": null
+    }
+  ],
+  "sevenRoutesReached": true,
+  "resumePositiveNotTriggered": true,
+  "locksReleased": true,
+  "createdSessions": 1,
+  "realQueries": 2
+}

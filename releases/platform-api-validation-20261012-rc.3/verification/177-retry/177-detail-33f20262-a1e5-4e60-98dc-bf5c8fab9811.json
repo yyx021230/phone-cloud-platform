@@ -1,0 +1,39 @@
+{
+  "atUtc": "2026-10-12T05:52:53.990Z",
+  "action": "detail",
+  "deviceNumber": "177",
+  "ok": true,
+  "idempotent": false,
+  "queryId": "",
+  "session": null,
+  "query": {
+    "queryId": "33f20262-a1e5-4e60-98dc-bf5c8fab9811",
+    "clientReference": "api-fullflow-20261012-177-059",
+    "status": "succeeded",
+    "stage": "人工验证后当前号码查询完成",
+    "hasMaskedName": true,
+    "hasTail": true,
+    "accountSwitched": false,
+    "accountSwitchCount": 0,
+    "reason": "",
+    "error": "",
+    "queuePosition": null
+  },
+  "calls": [
+    {
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/devices",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/sessions/818a5e53-e222-4419-a2f9-01fabba6cb68",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/sessions/818a5e53-e222-4419-a2f9-01fabba6cb68/queries/33f20262-a1e5-4e60-98dc-bf5c8fab9811",
+      "status": 200
+    }
+  ]
+}

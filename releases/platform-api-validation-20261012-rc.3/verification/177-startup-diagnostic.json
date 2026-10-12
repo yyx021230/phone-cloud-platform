@@ -1,0 +1,96 @@
+{
+  "atUtc": "2026-10-12T05:48:13.367Z",
+  "status": "failed",
+  "result": {
+    "errorCode": "alipay_lookup_failed",
+    "diagnosticCode": "alipay_lookup_failed",
+    "reason": "alipay_account_settings_navigation_failed"
+  },
+  "events": [
+    {
+      "stepId": "",
+      "createdAt": "2026-10-12T05:46:43.643Z",
+      "error": "",
+      "trace": "",
+      "reason": ""
+    },
+    {
+      "stepId": "",
+      "createdAt": "2026-10-12T05:46:43.761Z",
+      "error": "",
+      "trace": "",
+      "reason": ""
+    },
+    {
+      "stepId": "launch_alipay",
+      "createdAt": "2026-10-12T05:47:41.815Z",
+      "detailStep": "launch_alipay",
+      "error": "",
+      "trace": "",
+      "reason": "account-preflight"
+    },
+    {
+      "stepId": "open_my_tab",
+      "createdAt": "2026-10-12T05:47:41.843Z",
+      "detailStep": "open_my_tab",
+      "error": "",
+      "trace": "",
+      "reason": ""
+    },
+    {
+      "stepId": "visual_settings_fallback_failed",
+      "createdAt": "2026-10-12T05:47:41.883Z",
+      "detailStep": "visual_settings_fallback_failed",
+      "error": "visual_settings_requires_selected_my_tab",
+      "trace": "",
+      "reason": ""
+    },
+    {
+      "stepId": "open_my_tab",
+      "createdAt": "2026-10-12T05:47:41.913Z",
+      "detailStep": "open_my_tab",
+      "error": "",
+      "trace": "",
+      "reason": ""
+    },
+    {
+      "stepId": "visual_settings_fallback_failed",
+      "createdAt": "2026-10-12T05:47:41.940Z",
+      "detailStep": "visual_settings_fallback_failed",
+      "error": "visual_settings_requires_selected_my_tab",
+      "trace": "",
+      "reason": ""
+    },
+    {
+      "stepId": "open_my_tab",
+      "createdAt": "2026-10-12T05:47:41.985Z",
+      "detailStep": "open_my_tab",
+      "error": "",
+      "trace": "",
+      "reason": ""
+    },
+    {
+      "stepId": "visual_settings_fallback_failed",
+      "createdAt": "2026-10-12T05:47:42.035Z",
+      "detailStep": "visual_settings_fallback_failed",
+      "error": "visual_settings_requires_selected_my_tab",
+      "trace": "",
+      "reason": ""
+    },
+    {
+      "stepId": "error",
+      "createdAt": "2026-10-12T05:47:42.065Z",
+      "detailStep": "error",
+      "error": "RuntimeError('alipay_account_settings_navigation_failed')",
+      "trace": "Traceback (most recent call last):\n  File \"D:\\PhoneCloud\\agent\\scripts\\alipay_name_lookup.py\", line 4647, in main\n    result = runner.run()\n  File \"D:\\PhoneCloud\\agent\\scripts\\alipay_name_lookup.py\", line 4471, in run\n    **self.prepare_available_account(), \"accountSwitched\": self.account_switched,\n  File \"D:\\PhoneCloud\\agent\\scripts\\alipay_name_lookup.py\", line 3878, in prepare_available_account\n    rows = self.open_account_picker(\"preflight\")\n  File \"D:\\PhoneCloud\\agent\\scripts\\alipay_name_lookup.py\", line 4055, in open_account_picker\n    self.enter_my_settings(token)\n  File \"D:\\PhoneCloud\\agent\\scripts\\alipay_name_lookup.py\", line 4052, in enter_my_settings\n    raise RuntimeError(\"alipay_account_settings_navigation_failed\")\nRuntimeError: alipay_account_settings_navigation_failed\n",
+      "reason": ""
+    },
+    {
+      "stepId": "",
+      "createdAt": "2026-10-12T05:47:45.426Z",
+      "error": "",
+      "trace": "",
+      "reason": ""
+    }
+  ]
+}
