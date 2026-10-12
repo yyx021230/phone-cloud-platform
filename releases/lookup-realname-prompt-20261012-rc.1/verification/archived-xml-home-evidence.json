@@ -1,0 +1,40 @@
+{
+  "deviceNumber": "177",
+  "readOnly": true,
+  "archive": [
+    {
+      "token": "preflight-home-ready-1",
+      "sha256": "4ceab6d0f355da495dd9ef9f622a384468b151098739f17863a204485c551cff",
+      "selectedHome": [
+        {
+          "desc": "首页",
+          "selected": "true"
+        }
+      ],
+      "myTabs": [
+        {
+          "selected": "false"
+        }
+      ],
+      "promptTitlePresent": false,
+      "promptActionPresent": false
+    },
+    {
+      "token": "preflight-settings-ready-1",
+      "sha256": "3519f478e9a0b2c485adeabe7637fd13962ff38623d3eff40e4fd94db8e5eddd",
+      "selectedHome": [
+        {
+          "desc": "首页",
+          "selected": "true"
+        }
+      ],
+      "myTabs": [
+        {
+          "selected": "false"
+        }
+      ],
+      "promptTitlePresent": false,
+      "promptActionPresent": false
+    }
+  ]
+}

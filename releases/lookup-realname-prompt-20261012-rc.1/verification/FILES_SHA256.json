@@ -1,0 +1,19 @@
+{
+  "docs/PROJECT_DEVELOPMENT.md": "342d33b12d5f1eb3d3324ae201a9f3931c70bc9269116344297bad43e0e9e72f",
+  "releases/lookup-realname-prompt-20261012-rc.1/README.md": "f24f7ac41b7dc08f70677e42fab01c75800761ab1b7569dc8e44d29b44d4a5d4",
+  "releases/lookup-realname-prompt-20261012-rc.1/TASK.json": "d4518224a5f1d8dd0f69c80039e0c771e4fdf299688644a27cfa89a0ad43cdc8",
+  "releases/lookup-realname-prompt-20261012-rc.1/VERSION.json": "126f4618262415339fc302b575590f4f9e8732ec1cba6e03c64307e9bb6b7147",
+  "releases/lookup-realname-prompt-20261012-rc.1/verification/RESULTS.json": "f6a955ef1a42c6cc311ef613e122103de5c9aa15382e1c3cd615f6e25ccaa4e4",
+  "releases/lookup-realname-prompt-20261012-rc.1/verification/actual-screenshot-checks.json": "1f481efa47a3ec53a5b8c23d441dc93b3cdf79395634538728d4a07278dc1212",
+  "releases/lookup-realname-prompt-20261012-rc.1/verification/archived-xml-home-evidence.json": "ae6dfe59543733b025cbde03f3e571fb6f23ddbde6428b7b99fa6545fb02e50a",
+  "releases/lookup-realname-prompt-20261012-rc.1/verification/baseline.json": "3fdee45eb369c934945573e762fe2c72ec10f9454deba0a6e07f233ac0df7192",
+  "releases/lookup-realname-prompt-20261012-rc.1/verification/lookup-only.patch": "4d28e2a0e9936c32ccc0d0391b99b8cb59e84e2bfe8ed5b475a54ee1c13ed0f2",
+  "releases/lookup-realname-prompt-20261012-rc.1/verification/optional-realname-modal.png": "5003dd3af461db84c2e6b172062c82b6b33b27af029a2575a0f8a61f3ae885ce",
+  "releases/lookup-realname-prompt-20261012-rc.1/verification/realname_prompt_test.py": "9b79fb35b2f274de9122dccedfd724200a8629e2734a0a5d31c5a49ded0427a2",
+  "releases/lookup-realname-prompt-20261012-rc.1/verification/replay_blocked_start.py": "11de28cceabcb5ea299c8263b7d68913d7ebf1d71668560231a828a98c911d23",
+  "releases/lookup-realname-prompt-20261012-rc.1/verification/rollback-verification.json": "c997c1f3e1d3fdc5a2ca7902b632b800f6f595a9d5e80051824fc2b09bc05ec4",
+  "releases/lookup-realname-prompt-20261012-rc.1/verification/rollback.patch": "3b8adc10f05b7da0546d01f79f9b7c9da92be227f7b50fdce5bce947a1089b8f",
+  "releases/lookup-realname-prompt-20261012-rc.1/verification/run_existing_tests.py": "0827be5c66d467f7640c6961c45eb8da35a23356d6bcbfaf34f9ed4ba4c3319e",
+  "releases/lookup-realname-prompt-20261012-rc.1/verification/scope-review.json": "0d77fdad24cf56d77907af14ac23914502b91066b01d2cb99dc27f5f4f669fb3",
+  "releases/lookup-realname-prompt-20261012-rc.1/windows-agent/scripts/alipay_name_lookup.py": "24a9429c2735454ef854c0b6fa4346fedbb7a50ce264fd9ee4811cc43e7acc0d"
+}

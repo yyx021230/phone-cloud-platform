@@ -1,0 +1,12 @@
+{
+  "request": "用户要求兼容177首次启动可关闭的实名认证提示",
+  "state": "本地候选，待发布授权和真机验收",
+  "rulesRead": "AGENTS + 已完整读取且本轮hash未变的主文档 + 共同流程2026-09-30重读",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "rootHead": "6811aef632eeaaacd6d6ce1effc4afa64bf6d363",
+  "rootDirtyEntries": 235,
+  "rootMainSha256Preserved": "ae7924395876b7811da2c5cc49aeca01f0be936e1121cfec456a2483505aee1c",
+  "allowedFiles": "new release candidate plus isolated docs/PROJECT_DEVELOPMENT.md; no root dirty files",
+  "authorization": "local fix and tests; local commit/tag persistent authority; no fresh deployment inferred",
+  "review": "self review documented in scope-review.json"
+}

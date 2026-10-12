@@ -1,0 +1,14 @@
+{
+  "177-current.png": {
+    "sha256": "04e347aa2cc905bfd42ac679bbf0830d4c79bcf108f9b7d515336fd2a9e20d50",
+    "detected": true
+  },
+  "177-human-challenge.png": {
+    "sha256": "1f1f882b0649e2bdb4b03cbf1811b60f602d6398a56460f59f952129b2fe7935",
+    "detected": false
+  },
+  "177-retry-current.png": {
+    "sha256": "b197206dae1987febdd1bfb7591e559cabad7aa11cc6b9fc4683d4f99c261b83",
+    "detected": false
+  }
+}

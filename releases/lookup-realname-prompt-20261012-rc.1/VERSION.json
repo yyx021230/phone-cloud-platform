@@ -1,0 +1,12 @@
+{
+  "version": "lookup-realname-prompt-20261012-rc.1",
+  "branch": "codex/lookup-realname-prompt-20261012",
+  "taskBaseCommit": "45932ad087da71964512b3e1fcaed8ca6aee289c",
+  "productionVersion": "platform-api-entry-20261012-deployed.1",
+  "productionRuntimeSourceCommit": "7f695507761b07504a94b7372de0c340befbf33f",
+  "productionRunnerSha256": "4887d25c7c61d67bbba1ca71695648505b5fc5e5423499f651e75d4ef987f1ee",
+  "candidateRunnerSha256": "24a9429c2735454ef854c0b6fa4346fedbb7a50ce264fd9ee4811cc43e7acc0d",
+  "risk": "R2 local automation candidate; deployment and real control are R3 separate steps",
+  "deploymentStatus": "not deployed",
+  "localTransportFixIncluded": false
+}

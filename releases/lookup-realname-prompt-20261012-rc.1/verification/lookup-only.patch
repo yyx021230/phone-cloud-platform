@@ -1,0 +1,158 @@
+--- a/windows-agent/scripts/alipay_name_lookup.py
++++ b/windows-agent/scripts/alipay_name_lookup.py
+@@ -70,6 +70,72 @@
+ ALIPAY_LOCAL_SERVICE_TITLE = "支付宝本地服务"
+ ALIPAY_LOCAL_SERVICE_HINT = "允许地理位置权限，支付宝能更好的为您提供缴费、商户、乘车等服务"
+
++
++REAL_NAME_CANVAS_TITLE_PNG = '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'
++REAL_NAME_CANVAS_ACTION_PNG = 'iVBORw0KGgoAAAANSUhEUgAAAJsAAAAoCAAAAADMVNeLAAAC1UlEQVRYCc3BQXKYMAAEMO3/H721TQBTkiYzvUSK3yt+r/i94qWI/9B4KvGXxnfipYhP1C6oTRxKPJR4KjHVWyzxVsRb7YLaxKGIXYmHGmKot1jirYi32gW1iQ9FbEo81RDUWyzxVsRbiUMJSkxFnIq4lfhbEZsSu1jqX2IpcShBiamISxGXEi9F3ErsYql/iqnEoQQlpiJuFbcSbxWbErtY6p9iKnEoQYmpiC8U8a0Su/i52gUlpiK+UMS3Suzi52oXlJiK+EIR3yqxi5+rXVBiKuILRXypxFBiF7ciNkVcShxKUGIqYqhD3Iq41SGWEkOJXdyK2BRxKXEoQYmpiKEOcashLnWIpcRQYhebEpsStxKHEpSYihjqELca4lKHWEoMJXaxKeJSxK3EoQQlpiJOJW41xFOJpcRQp1hiU8SliFsRSwlKTEWcSlxqiqcSS4mhTrHEpohLEbfaBSWmIk4lLrXEQ4mlxFCnWGJX4lJiU7ugxFTEqcSllngosZQYSuxiV8SHIjZF7EpMRZxKXEqU2JVYSgwldrEr4kMRmxIPJaYiTiVORZTYlVhKDCV28VDiQ4ldiYcSUxGnEqciSuxKLCWGErt4KGIpYlfi0JhKTEWcSpxKUGJTYikxlNjFQxFLEbsSUxFDiamIU4kPRVBiU2IpMZTYxUMRS4mHEkuJocRUxKmExlBiKnEroaHEUGIXD0VMRTyUWIqgxFTEqUQFRUwlbiUqlBhK7OKpxFTEQ4lDCUrUEpeSEoo4lLjUEkoMJXbxVGIq8VRiqCWUqCUutYQiDkWcagklhhK7+FwRTyXqFEqoIW41hSJOJU41BSWGEruY6htB3aJEiZcagiIuRXyoIYYSQ4ldTPWNoE5BiRIvRVBD3Io4FKE+E1NM9Y2gljhUlHiroIbYFHGoGOozMcWPFfFQ4q0xlXioeKrPxBT/o8TXGn9p/Fz8XvF7xe8Vv9cfokw0ODWxsJAAAAAASUVORK5CYII='
++REAL_NAME_CANVAS_CLOSE_PNG = 'iVBORw0KGgoAAAANSUhEUgAAAEYAAABFCAAAAADS0c/2AAAB4klEQVRYCa3BB3KDQAAEMO3/H70JhwvliMmMpfiK+Ir4iviK+KSID+Ja7cWluFBDrGqIuZiqX3FQxExMlJgrcRZnJa6UOImjEn8pcRAHJf5WYi/2Kj6r2ImdijsqtmKr4p6KjdiouKviLd4q7qt4ibeK+0o8xUvFf1Q8xVPF/1Q8xFPFPzUe4qHirXFDxSoeKl5KTJTYaKxiVfFWxFmJjYohVhVbJQ6K2KoYYlWxVcROEXuNIYaKgxIbRRw0hhgqDop4KeKoYhFDxUmJhyLOGosYGmdFrEpMNBYxNGZK/CpiprGIoTFTBCWmGosYGnMlRcw1FrGomKshLjQWsai4UsSVxiKGxpUirjQWMTTmaogLjUUMjakiRcw1FjE0ZoqgxFRjEUPFWRG/ipioWMRQcVLEqsRZxSKGipMSD0WcVCxiVbFXxFuJo8YQq4q9EhtF7FUMsarYKmKvxE7FEA8VGyWOSmw1VvFQ8VLEWYm3ilU8VTyVmGlsNB7iqeKl8VnFQ7xU/EfFU7xV3FfxEm8V91W8xEbFXRVvsVVxT8VG7FTcUbEVexWfVezEQYkPKvbiqMRfShzEWYlLFScxUWKuxFlM1a84KGImLtQQqxpiLq7VXlyKT4r4IL4iviK+Ir4ivuIHQu+mRu4j7oUAAAAASUVORK5CYII='
++
++def real_name_canvas_evidence(raw):
++    """Match only the observed optional prompt and its separate circle X.
++
++    Templates contain the title, authentication-action label and close icon
++    only. The rest of the phone screenshot is never retained or logged.
++    Coordinates come from unique current-image matches, not a blind tap.
++    """
++    import base64
++    import cv2
++    import numpy as np
++    image = cv2.imdecode(np.frombuffer(raw, dtype=np.uint8), cv2.IMREAD_COLOR)
++    if image is None:
++        raise RuntimeError("alipay_canvas_prompt_screenshot_invalid")
++    height, width = image.shape[:2]
++    if not 1.9 <= height / max(width, 1) <= 2.5:
++        return {"visible": False, "close": None, "unsupported": True}
++    normalized = cv2.resize(image, (720, round(height * 720 / width)))
++    gray = cv2.cvtColor(normalized, cv2.COLOR_BGR2GRAY)
++    h, w = gray.shape
++
++    def matches(encoded, light, cutoff, top, bottom):
++        template = cv2.imdecode(np.frombuffer(base64.b64decode(encoded), dtype=np.uint8), cv2.IMREAD_GRAYSCALE)
++        mask = ((gray > cutoff) if light else (gray < cutoff)).astype(np.uint8) * 255
++        if light:
++            kernel = np.ones((3, 3), np.uint8)
++            mask = cv2.dilate(mask, kernel)
++            template = cv2.dilate(template, kernel)
++        y0, y1 = round(h * top), round(h * bottom)
++        x0, x1 = round(w * .10), round(w * .90)
++        region = mask[y0:y1, x0:x1]
++        if region.shape[0] < template.shape[0] or region.shape[1] < template.shape[1]:
++            return []
++        scores = cv2.matchTemplate(region, template, cv2.TM_CCOEFF_NORMED)
++        count, labels = cv2.connectedComponents((scores >= .93).astype(np.uint8))
++        points = []
++        for label in range(1, count):
++            ys, xs = np.where(labels == label)
++            best = int(np.argmax(scores[ys, xs]))
++            points.append((x0 + int(xs[best]) + template.shape[1] / 2,
++                           y0 + int(ys[best]) + template.shape[0] / 2))
++        return points
++
++    titles = matches(REAL_NAME_CANVAS_TITLE_PNG, False, 170, .30, .60)
++    actions = matches(REAL_NAME_CANVAS_ACTION_PNG, True, 200, .55, .76)
++    closes = matches(REAL_NAME_CANVAS_CLOSE_PNG, True, 180, .68, .88)
++    evidence = {"visible": bool(titles or actions), "close": None,
++                "titleCount": len(titles), "actionCount": len(actions), "closeCount": len(closes)}
++    if not (len(titles) == len(actions) == len(closes) == 1):
++        return evidence
++    title, action, close = titles[0], actions[0], closes[0]
++    if (any(abs(point[0] - w / 2) > w * .045 for point in (title, action, close))
++            or not h * .12 <= action[1] - title[1] <= h * .31
++            or not h * .08 <= close[1] - action[1] <= h * .20):
++        return evidence
++    # The exact blue action is evidence only; never a tap target.
++    x, y = map(round, action)
++    button = normalized[y-15:y+15, x-60:x+60]
++    if not button.size or np.mean((button[:, :, 0] > 180) & (button[:, :, 2] < 100)) < .35:
++        return evidence
++    evidence["close"] = [round(close[0] * width / 720), round(close[1] * width / 720)]
++    return evidence
+
+ def focused_window_name(lines):
+     """Use the one actual window, never the activity left underneath it."""
+@@ -3983,6 +4049,63 @@
+         except Exception as exc:
+             raise RuntimeError(f"alipay_visual_settings_open_failed:{exc}") from exc
+
++    def canvas_real_name_home_evidence(self, root):
++        # This fallback is exclusive to account preparation after a blocked
++        # My-tab tap. Protected pages and an already selected My tab cannot
++        # become generic screenshot-close targets.
++        if root is None or self.verification_evidence(root) or self.account_restriction_evidence(root):
++            return False
++        homes = self.find(root, resource_id=TAB_SELECTED_FRAME_ID)
++        my_tabs = self.find(root, text="我的", resource_id=TAB_DESCRIPTION_ID)
++        return (len(homes) == 1 and homes[0].get("selected") == "true"
++                and homes[0].get("content-desc") in {"首页", "推荐"}
++                and len(my_tabs) == 1 and my_tabs[0].get("selected") == "false")
++
++    def dismiss_canvas_real_name_prompt(self, root, token):
++        """One evidenced circle-X tap, followed only by dismissal observation."""
++        if not self.canvas_real_name_home_evidence(root):
++            return False
++        home_components = {ALIPAY_HOME, ALIPAY_PACKAGE + "/" + ALIPAY_PACKAGE + ".AlipayLogin"}
++        _, current_focus, _ = self.focus_state()
++        if focused_window_name([current_focus]) not in home_components:
++            return False
++        raw = self.adb(["exec-out", "screencap", "-p"], timeout=5, binary=True)
++        evidence = real_name_canvas_evidence(raw)
++        if evidence["close"] is None:
++            return False
++        # Re-read both UI and image before mutating; a late captcha or a
++        # changed activity must not inherit the previous screenshot's X.
++        fresh_root, _ = self.dump(f"{token}-canvas-prompt-before-close")
++        _, current_focus, _ = self.focus_state()
++        if (not self.canvas_real_name_home_evidence(fresh_root)
++                or focused_window_name([current_focus]) not in home_components):
++            raise RuntimeError("alipay_canvas_prompt_foreground_changed")
++        fresh = real_name_canvas_evidence(self.adb(["exec-out", "screencap", "-p"], timeout=5, binary=True))
++        if fresh["close"] is None or any(abs(a-b) > 3 for a,b in zip(evidence["close"], fresh["close"])):
++            raise RuntimeError("alipay_canvas_prompt_evidence_changed")
++        x, y = fresh["close"]
++        self.adb(["shell", "input", "tap", str(x), str(y)], timeout=8)
++        self.emit("dismiss_alipay_real_name_prompt", driver="xml_account_preflight_visual",
++                  evidence="unique_visual_title_action_circle_x_and_home_focus",
++                  tap={"x": x, "y": y}, authenticationStarted=False)
++        for index in range(3):
++            time.sleep(.3)
++            _, current_focus, _ = self.focus_state()
++            if focused_window_name([current_focus]) not in home_components:
++                raise RuntimeError("alipay_canvas_prompt_foreground_changed")
++            observed = real_name_canvas_evidence(self.adb(["exec-out", "screencap", "-p"], timeout=5, binary=True))
++            if observed.get("unsupported"):
++                raise RuntimeError("alipay_canvas_prompt_evidence_changed")
++            if not observed["visible"]:
++                after_root, _ = self.dump(f"{token}-canvas-prompt-after-close")
++                if self.verification_evidence(after_root):
++                    raise RuntimeError("alipay_human_verification_required:jigsaw_verification")
++                if not self.canvas_real_name_home_evidence(after_root):
++                    raise RuntimeError("alipay_canvas_prompt_evidence_changed")
++                self.emit("alipay_canvas_real_name_prompt_dismissed", observation=index + 1)
++                return True
++        raise RuntimeError("alipay_canvas_real_name_prompt_not_dismissed")
++
+     def enter_my_settings(self, token, max_attempts=3):
+         """Enter My > Settings, tolerating only evidenced late startup ads.
+
+@@ -3992,6 +4115,7 @@
+         successful only after the exact Settings element is present.
+         """
+         canvas_modal_back_recoveries = 0
++        canvas_real_name_close_attempted = False
+         for attempt in range(1, max_attempts + 1):
+             deadline = time.time() + 12
+             root = parent = None
+@@ -4034,6 +4158,10 @@
+                 if len(settings) > 1:
+                     raise RuntimeError("alipay_settings_entry_not_unique")
+                 time.sleep(0.35)
++            if not canvas_real_name_close_attempted and self.canvas_real_name_home_evidence(root):
++                canvas_real_name_close_attempted = True
++                if self.dismiss_canvas_real_name_prompt(root, token):
++                    continue
+             try:
+                 self.tap_visual_settings_gear(root)
+                 self.wait_unique(f"{token}-visual-settings-ready-{attempt}", timeout=5, text="设置")
