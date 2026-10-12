@@ -1,0 +1,20 @@
+{
+  "version": "platform-api-validation-20261012-rc.1",
+  "files": {
+    "releases/platform-api-validation-20261012-rc.1/VERSION.json": "bff2eee4a99cf0d84cf92693cb991810bfcfe6278cc883fe9f17aba437437dd0",
+    "releases/platform-api-validation-20261012-rc.1/verification/node-doc-sdk-http-first-failure.txt": "cded72a6c0450d998568225b988158c73fb490bbffe1ac006866c0cec53a334b",
+    "releases/platform-api-validation-20261012-rc.1/verification/python-signed-probes.json": "12d94b1606ca81f22ea2f5a4267c8fb5261484128862d90d3c54c17eafafde2d",
+    "releases/platform-api-validation-20261012-rc.1/verification/node-doc-sdk-http.txt": "b21b8d294df04db6d955657bce581f3eee7223730d89eb7d34d1769535511d27",
+    "releases/platform-api-validation-20261012-rc.1/verification/REPRODUCE.json": "6774e44b7b57f1aa3530fa2f8923b17051b9106aa325517572cf75315c87f83e",
+    "releases/platform-api-validation-20261012-rc.1/verification/negative-auth-probes.json": "b008fcb4dbd39e9a8268d72ccdaa863c2f7edef8f66c7e0e92671e01c6694bf2",
+    "releases/platform-api-validation-20261012-rc.1/verification/RESULTS.json": "d37b3805bcc9a5c4a92f86517fcc30a1472099e6ec5b6a5f51debf28930d0c97",
+    "releases/platform-api-validation-20261012-rc.1/verification/signed-probes.json": "0daf6c63fb6b13fe431220d15a1a6c9cb9ffd6c9fbbe8b923ac7e6d2078413a9",
+    "releases/platform-api-validation-20261012-rc.1/verification/public-edge.json": "0bb03d2243ae5f3d9f981367d9f972512f30e456f16a8756047df9cfd59d64b4",
+    "releases/platform-api-validation-20261012-rc.1/verification/after.json": "1cf24ef000df1e0d2dcb41a301bcdffedd33119e58a767d7f49afc2aceca1517",
+    "releases/platform-api-validation-20261012-rc.1/verification/python-doc-sdk-http.txt": "accd83d97d5c0a590e9c46402e6bad3c65ced15d58c7a7b5bb75ede755a86ec7",
+    "releases/platform-api-validation-20261012-rc.1/verification/preflight.json": "f9beae988b57cffd8b68b6b90e95cc83d3f1fccbe5155794c70763e239ce5fa6",
+    "releases/platform-api-validation-20261012-rc.1/verification/fixtures/doc-sdk-http.test.mjs": "3e8e192efd6b1ca43de0236a79d22ab3c1cbcf81f370dd657f614165b761d705",
+    "docs/PROJECT_DEVELOPMENT.md": "b9c0c2e426c9515b50a3b99fbc17b93f1f241dee93c8067c30a602c2296116ae",
+    "docs/API_PORTAL.md": "3e11221dee122fe95f71d681bb30c04e5456cacff111ab1cd725fe3949ddbf7e"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "atUtc": "2026-10-12T02:14:32.872Z",
+  "transport": "SSH-protected loopback HTTP; public HTTPS not validated",
+  "mappedUser": {
+    "exists": true,
+    "enabled": true,
+    "role": "user"
+  },
+  "allowedDeviceCount": 2,
+  "allows118": false,
+  "requests": [
+    {
+      "name": "unsigned rejected",
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/devices",
+      "status": 401,
+      "error": "open_api_auth_required",
+      "requestId": "730cb675-34d7-42f3-9b95-9db0cc7a7ae3"
+    },
+    {
+      "name": "bad signature rejected",
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/devices",
+      "status": 401,
+      "error": "invalid_open_api_signature",
+      "requestId": "27f778ff-1123-4815-90e1-baa58710dca7"
+    },
+    {
+      "name": "valid document signing helper",
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/devices",
+      "status": 200,
+      "error": "",
+      "devicesCount": 2,
+      "requestId": "f566fc18-802f-4d42-82db-eca717d596dd"
+    },
+    {
+      "name": "nonce replay rejected",
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/devices",
+      "status": 401,
+      "error": "open_api_nonce_replayed",
+      "requestId": "2c5b83f6-a88b-494c-9e42-95f4b38a9a0f"
+    },
+    {
+      "name": "downloaded Node SDK",
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/devices",
+      "status": 200,
+      "error": "",
+      "devicesCount": 2
+    },
+    {
+      "name": "downloaded Node SDK",
+      "method": "POST",
+      "path": "/api/v1/open/name-lookups/sessions",
+      "status": 403,
+      "error": "open_name_lookup_device_not_allowed"
+    },
+    {
+      "name": "downloaded Node SDK",
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/sessions/api-doc-no-such-session",
+      "status": 404,
+      "error": "lookup_session_not_found"
+    },
+    {
+      "name": "downloaded Node SDK",
+      "method": "POST",
+      "path": "/api/v1/open/name-lookups/sessions/api-doc-no-such-session/queries",
+      "status": 404,
+      "error": "lookup_session_not_found"
+    },
+    {
+      "name": "downloaded Node SDK",
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/sessions/api-doc-no-such-session/queries/api-doc-no-such-query",
+      "status": 404,
+      "error": "lookup_session_not_found"
+    },
+    {
+      "name": "downloaded Node SDK",
+      "method": "POST",
+      "path": "/api/v1/open/name-lookups/sessions/api-doc-no-such-session/resume",
+      "status": 404,
+      "error": "lookup_session_not_found"
+    },
+    {
+      "name": "downloaded Node SDK",
+      "method": "POST",
+      "path": "/api/v1/open/name-lookups/sessions/api-doc-no-such-session/end",
+      "status": 404,
+      "error": "lookup_session_not_found"
+    }
+  ],
+  "realQueriesCreated": 0,
+  "configurationChanges": 0
+}

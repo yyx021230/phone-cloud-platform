@@ -1,0 +1,103 @@
+{
+  "checkedAt": "2026-10-12T02:20:57.160814+00:00",
+  "scope": "Actual documentation signing helper and downloaded Node/Python SDK validation",
+  "production": {
+    "loopbackHttpRequests": 18,
+    "signedRequestsIncludingNegativeCases": 17,
+    "publicUnsignedLookupRequests": 1,
+    "successfulDeviceListVariants": [
+      "document sign.mjs",
+      "archive Node SDK",
+      "archive Python SDK"
+    ],
+    "sevenRoutesReached": true,
+    "sevenRoutesPositiveAccepted": false,
+    "negativeAuthChecks": [
+      "missing auth",
+      "bad signature",
+      "expired timestamp",
+      "invalid nonce",
+      "nonce replay",
+      "unknown client",
+      "tampered raw body"
+    ],
+    "isolationChecks": [
+      "118 denied by device whitelist",
+      "ended platform Bearer session invisible to open client",
+      "unknown resources return 404"
+    ],
+    "transport": "Authenticated calls only on loopback through SSH-protected host execution; public HTTPS verification not bypassed",
+    "apiRuntimeFilesSha256Matched": 4,
+    "healthStatus": 200,
+    "readyStatus": 200,
+    "containerPid": 2684217,
+    "containerRestartCount": 0,
+    "active118Locks": 0,
+    "active118Sessions": 0
+  },
+  "isolated": {
+    "node": {
+      "passed": true,
+      "sdkHttpRequests": 26
+    },
+    "python": {
+      "passed": true,
+      "sdkHttpRequests": 26
+    },
+    "allSevenActions": [
+      "list devices",
+      "create session",
+      "get session",
+      "enqueue query",
+      "get query",
+      "resume",
+      "end"
+    ],
+    "coverage": [
+      "idempotent replay",
+      "cross-client isolation",
+      "queue order",
+      "startup puzzle auto-resume",
+      "original query human resume",
+      "ordinary recovery",
+      "duplicate ACK after temporary storage failure",
+      "result privacy and references",
+      "not_found",
+      "eight-hour cooldown persistence and non-extension",
+      "all accounts exhausted",
+      "end and cancellation",
+      "unverified startup refusal"
+    ],
+    "limitations": "Fake Agent and temporary JSON storage; no ADB, phone, production database, notifications or external upstream calls",
+    "firstFailure": "Isolated server could not resolve ws because clean worktree had no node_modules; used existing original dependency directory, no install; both reruns passed.",
+    "failureEvidenceFormatting": "Only trailing whitespace trimmed in repository text copy; original private log retained."
+  },
+  "blockers": [
+    {
+      "code": "118_not_in_whitelist",
+      "observedHttpStatus": 403,
+      "error": "open_name_lookup_device_not_allowed",
+      "currentAllowedDeviceNumbers": [
+        "177",
+        "161"
+      ],
+      "action": "Await user selection before any real query; do not expand whitelist automatically."
+    },
+    {
+      "code": "public_ip_untrusted_tls",
+      "observedError": "self signed certificate",
+      "nginxServerNames": [
+        "47.98.127.132",
+        "_"
+      ],
+      "action": "Obtain chosen HTTPS domain and trusted certificate before normal public SDK integration; no verification bypass."
+    }
+  ],
+  "originalWorkspace": {
+    "dirtyEntries": 235,
+    "preserved": true,
+    "onlyPlannedMirror": "Skipped: hash guard found independent D-078 investigation edits in original main document; original left untouched, current stage main-document additions kept only in this isolated branch.",
+    "observedOriginalMainSha256": "ae7924395876b7811da2c5cc49aeca01f0be936e1121cfec456a2483505aee1c"
+  },
+  "review": "Self-review only; verification stage, not production acceptance or deployment approval."
+}

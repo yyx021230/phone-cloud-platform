@@ -1,0 +1,21 @@
+{
+  "requirements": [
+    "Existing Node runtime and ws dependency",
+    "Python 3.9+",
+    "No production credentials in test environment"
+  ],
+  "steps": [
+    "Create a temporary folder with a server subfolder.",
+    "Copy immutable releases/platform-api-docs-20261010-rc.1/server runtime to temporary server.",
+    "Extract node_client.mjs, python_client.py and sign.mjs from the candidate archive to temporary root.",
+    "Copy verification/fixtures/doc-sdk-http.test.mjs to temporary server/doc-sdk-http.test.mjs.",
+    "Link existing local node_modules into temporary root.",
+    "Run SDK_DRIVER=node node --test server/doc-sdk-http.test.mjs, then SDK_DRIVER=python with same command."
+  ],
+  "testEnvironment": "Fixture supplies synthetic credentials, loopback ports, temporary JSON, empty REDIS_URL/DATABASE_URL and fake Agent; runtime source is unchanged.",
+  "rules": {
+    "agentsSha256": "248e6285e61900d4abfc4fd837bd033a3d6e8f7bd791f93b232ee1c8884be2c2",
+    "workflowRevision": "2026-09-30",
+    "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+  }
+}

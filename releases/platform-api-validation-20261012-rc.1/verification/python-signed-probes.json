@@ -1,0 +1,19 @@
+{
+  "atUtc": "2026-10-12T02:15:18.776476+00:00",
+  "sdk": "exact Python SDK from integration ZIP",
+  "transport": "SSH-protected host loopback HTTP",
+  "requests": [
+    {
+      "operation": "list_devices",
+      "success": true,
+      "devicesCount": 2
+    },
+    {
+      "operation": "create_118",
+      "success": false,
+      "status": 403,
+      "error": "open_name_lookup_device_not_allowed"
+    }
+  ],
+  "realQueriesCreated": 0
+}

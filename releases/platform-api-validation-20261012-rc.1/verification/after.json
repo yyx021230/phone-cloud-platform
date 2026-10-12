@@ -1,0 +1,20 @@
+[
+  {
+    "atUtc": "2026-10-12T02:19:25.954Z",
+    "digests": {
+      "server/index.mjs": "331720968d825f8a7922ce7048e117e5f883a1edddfa48dba559f67041061172",
+      "server/open-name-lookup-api.mjs": "0c846c1cb1f01ca5a2cd662fc0b81d09568d17d89268b66254e37092664a4eb3",
+      "server/automation-center.mjs": "e190d21cc2bcf99c8ef874b754e8cbe05419544efa24616d856c36d6eae2ddfd",
+      "server/lookup-account-cooldown.mjs": "6c96b7786faa45e41c3d1f130dcc3b9172d1c0048bf6cde35a051d5c72523170"
+    },
+    "health": 200,
+    "ready": 200,
+    "active118Sessions": 0,
+    "active118Locks": 0
+  },
+  {
+    "pid": 2684217,
+    "running": true,
+    "restartCount": 0
+  }
+]
