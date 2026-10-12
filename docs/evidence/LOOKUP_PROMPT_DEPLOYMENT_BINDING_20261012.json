@@ -1,0 +1,14 @@
+{
+  "version": "lookup-realname-prompt-20261012-deployed.1",
+  "receiptCommit": "bc2cb6aa6ab214bbd14ed13222d86374f51b416f",
+  "receiptTag": "lookup-realname-prompt-20261012-deployed.1",
+  "receiptArchiveSha256": "4730bd7c0929b2f8d481d508832a6eed75d381e49ba11ebeb8249e56b5ab72ec",
+  "activeSha256": "0b7e3f3e931ae79b84b4ee3597b24baaf934826d65d23c74d21def66efc3ce42",
+  "documentVersion": "platform-api-integration-20261012-rc.3",
+  "documentCommit": "20ecebdb91a531dd55a83dbc8cf18cc5a93565fd",
+  "documentReceiptCommit": "d1f89f9e22a10e604500c2eab2ea88bb2a7d63ac",
+  "productionAcceptanceComplete": false,
+  "ordinaryHmacVerified": true,
+  "realModalDismissalVerified": false,
+  "atUtc": "2026-10-12T07:57:23.398180+00:00"
+}
