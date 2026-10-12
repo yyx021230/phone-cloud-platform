@@ -10,13 +10,14 @@
   const expandedGroups = new Set();
   const navigationSections = [
     { title: "开始使用", guides: ["overview", "authentication"] },
+    { title: "接入指南", guides: ["lookup-flow", "states", "business-flow", "handover"] },
     { title: "基础接口", groups: ["auth", "user"] },
     { title: "业务接口", groups: ["sms", "lookup-user", "qr-scan", "kuaishou-lead", "xhs-publish"] },
     { title: "设备工具", groups: ["screen"] },
     { title: "参考资料", guides: ["models", "errors"] }
   ];
   const authNames = { hmac: "HMAC-SHA256 · 第三方开放", "user,admin": "Bearer · 用户 / 管理员", "admin,user": "Bearer · 管理员 / 用户", admin: "Bearer · 管理员", windows: "Bearer · 绑定 Windows Agent", device: "Bearer · Android device", "admin,windows,device": "Bearer · admin / windows / device", "third-party": "Bearer · 旧版第三方", public: "无需认证", "media-hook": "媒体服务专用凭据", "admin / evidence-signature": "管理员或临时证据签名" };
-  const guideIcons = { overview: "◈", authentication: "⌘", "lookup-flow": "↗", states: "⇄", models: "▤", errors: "!", websockets: "⌁" };
+  const guideIcons = { overview: "◈", authentication: "⌘", "lookup-flow": "↗", states: "⇄", models: "▤", errors: "!", websockets: "⌁", "business-flow": "↗", handover: "✓" };
   const exampleValues = { deviceId: "adb:SERIAL-DEMO", sessionId: "session-demo", queryId: "query-demo", requestId: "request-demo", taskId: "task-demo", userId: "user-demo", agentId: "agent-demo", clientReference: "demo-order-0001", consentReference: "demo-consent-0001", phoneNumber: "13800000000", username: "integration_demo", password: "<PASSWORD>", currentPassword: "<CURRENT_PASSWORD>", newPassword: "<NEW_PASSWORD>", deliveryToken: "<DELIVERY_TOKEN>", title: "示例标题", content: "已审核的示例正文", imageDataUrls: ["data:image/png;base64,<IMAGE_BYTES>"], qrImageDataUrl: "data:image/png;base64,<QR_BYTES>", imageDataUrl: "data:image/png;base64,<IMAGE_BYTES>", listingStatus: "listed", deviceIds: ["adb:SERIAL-DEMO"], type: "adb_collect_diagnostics", status: "running", probeId: "probe-demo", state: "search_ready" };
 
   function fieldTable(fields, parameters = false) {
@@ -30,7 +31,7 @@
 
   function navigationContent(query = "") {
     const matches = data.endpoints.filter((e) => `${e.title} ${e.method} ${e.path} ${e.description} ${e.auth} ${e.errors.join(" ")} ${e.parameters.map((p) => p.name).join(" ")}`.toLowerCase().includes(query));
-    const guides = data.guides.filter((g) => !query || `${g.title} ${g.intro} ${g.paragraphs.join(" ")}`.toLowerCase().includes(query));
+    const guides = data.guides.filter((g) => !query || `${g.title} ${g.intro} ${g.paragraphs.join(" ")} ${JSON.stringify(g.sections || [])}`.toLowerCase().includes(query));
     const guideLink = (id) => {
       const g = guides.find((g) => g.id === id); if (!g) return "";
       return `<a class="nav-link${activeId === id ? " active" : ""}" ${activeId === id ? 'aria-current="page"' : ""} href="#${esc(id)}"><span class="nav-icon" aria-hidden="true">${esc(guideIcons[id])}</span><span>${esc(g.title)}</span></a>`;
@@ -39,7 +40,11 @@
       const group = data.groups.find((g) => g[0] === id);
       const endpoints = matches.filter((e) => e.group === id); if (!endpoints.length) return "";
       const expanded = Boolean(query) || expandedGroups.has(id) || endpoints.some((e) => e.id === activeId);
-      return `<details class="nav-group" data-group="${esc(id)}" ${expanded ? "open" : ""}><summary><span>${esc(group[1])}</span><span class="nav-count">${endpoints.length}</span></summary><div class="nav-children">${endpoints.map((e) => `<a class="nav-link${e.id === activeId ? " active" : ""}" ${e.id === activeId ? 'aria-current="page"' : ""} href="#${esc(e.id)}"><span class="nav-method ${esc(e.method)}">${esc(e.method)}</span><span>${esc(e.title)}</span></a>`).join("")}</div></details>`;
+      const links = (items) => items.map((e) => `<a class="nav-link${e.id === activeId ? " active" : ""}" ${e.id === activeId ? 'aria-current="page"' : ""} href="#${esc(e.id)}"><span class="nav-method ${esc(e.method)}">${esc(e.method)}</span><span>${esc(e.title)}</span></a>`).join("");
+      const children = id === "lookup-user"
+        ? [["第三方接入 · HMAC", endpoints.filter((e) => e.auth === "hmac")], ["平台操作 · Bearer", endpoints.filter((e) => e.auth !== "hmac")]].filter(([, items]) => items.length).map(([title, items]) => `<div class="nav-subgroup"><p class="nav-sublabel">${esc(title)}</p>${links(items)}</div>`).join("")
+        : links(endpoints);
+      return `<details class="nav-group" data-group="${esc(id)}" ${expanded ? "open" : ""}><summary><span>${esc(group[1])}</span><span class="nav-count">${endpoints.length}</span></summary><div class="nav-children">${children}</div></details>`;
     };
     const sections = navigationSections;
     const html = sections.map((section) => {
@@ -62,7 +67,7 @@
   }
 
   function footer() {
-    return `<footer class="article-footer">接口基线：${esc(data.baseline)} · ${esc(data.status)} · ${esc(data.updatedAt)}<br/>结构参考 <a href="https://open.feishu.cn/document/server-docs/docs/drive-v1/file/get" target="_blank" rel="noopener noreferrer">飞书开放平台接口文档 ↗</a>，契约以本平台实际代码为准。</footer>`;
+    return `<footer class="article-footer">文档版本：${esc(data.version)} · ${esc(data.status)} · ${esc(data.updatedAt)}<br/>业务基线：${esc(data.baseline)}<br/>结构参考 <a href="https://open.feishu.cn/document/server-docs/docs/drive-v1/file/get" target="_blank" rel="noopener noreferrer">飞书开放平台接口文档 ↗</a>，契约以本平台实际代码为准。</footer>`;
   }
 
   function section(id, title, body) { return `<section><h2 id="${esc(id)}">${esc(title)}</h2>${body}</section>`; }
@@ -71,12 +76,19 @@
   function guidePage(g) {
     let html = `${breadcrumb(g.title)}${g.eyebrow ? `<p class="eyebrow">${esc(g.eyebrow)}</p>` : ""}<h1>${esc(g.intro)}</h1><p class="intro">${g.id === "overview" ? "短信接码、支付宝查名字、小红书自动登录、快手录入、小红书一键发布，各业务独立查阅。" : esc(g.title)}</p>`;
     if (g.id === "overview") {
-      html += `<div class="metrics-line"><div><strong>${data.endpoints.length}</strong><span>平台接口</span></div><div><strong>${data.groups.length}</strong><span>功能模块</span></div><div><strong>Bearer</strong><span>登录认证</span></div></div>`;
-      html += section("getting-started", "调用顺序", '<p>登录获取令牌 → 获取可用设备 → 提交业务任务 → 按原任务ID查询结果。</p><a href="#authentication">查看认证与登录 →</a>');
+      html += `<div class="metrics-line"><div><strong>${data.endpoints.length}</strong><span>平台接口</span></div><div><strong>${data.groups.length}</strong><span>功能模块</span></div><div><strong>2</strong><span>认证方式：Bearer / HMAC</span></div></div>`;
+      html += section("getting-started", "调用顺序", '<p>第三方查名：申请HMAC凭据 → 选择设备 → 创建会话 → 提交号码 → 轮询原查询 → 结束会话。</p><p>平台其他业务：登录获取Bearer → 获取可用设备 → 提交对应业务任务 → 查询原任务结果。</p><a href="#lookup-flow">查看查名接入流程 →</a> · <a href="#authentication">查看认证与签名 →</a>');
       html += section("platform-modules", "平台功能", `<div class="feature-links">${data.groups.map(([id, title]) => { const endpoints = data.endpoints.filter((e) => e.group === id); return `<a class="feature-link" href="#${esc((id === "user" ? endpoints.find((e) => e.id === "get-api-v1-user-devices") : endpoints[0]).id)}"><span><b>${esc(title)}</b><small>${endpoints.length} 个接口</small></span><span class="arrow" aria-hidden="true">↗</span></a>`; }).join("")}</div>`);
       html += section("scope", "文档范围与版本", g.paragraphs.map((p) => `<p>${esc(p)}</p>`).join("") + '<p><a href="./openapi.json" download="phone-cloud-platform-openapi.json">下载平台 OpenAPI 3.1 ↗</a> · <a href="./api-reference.json" download="phone-cloud-platform-api-reference.json">下载平台接口参考 JSON ↗</a></p>');
     } else {
-      html += g.paragraphs.map((p, i) => section(`guide-part-${i}`, g.id === "lookup-flow" ? ["选择设备与创建会话", "提交号码与顺序队列", "保存查询 ID 并取结果", "拼图与自动人工交接", "首次准备账户遇到拼图", "普通故障恢复", "账户限制与冷却", "结束与释放设备"][i] : (i === 0 ? "使用说明" : `说明 ${i + 1}`), `<p>${esc(p)}</p>`)).join("");
+      html += g.paragraphs.map((p, i) => section(`guide-part-${i}`, g.headings?.[i] || (g.id === "lookup-flow" ? ["选择设备与创建会话", "提交号码与顺序队列", "保存查询 ID 并取结果", "拼图与自动人工交接", "首次准备账户遇到拼图", "普通故障恢复", "账户限制与冷却", "结束与释放设备"][i] : (i === 0 ? "使用说明" : `说明 ${i + 1}`)), `<p>${esc(p)}</p>`)).join("");
+      for (const [i, item] of (g.sections || []).entries()) {
+        let body = (item.paragraphs || []).map((p) => `<p>${esc(p)}</p>`).join("");
+        if (item.table) body += `<div class="table-wrap"><table><thead><tr>${item.table.headers.map((h) => `<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${item.table.rows.map((row) => `<tr>${row.map((cell) => `<td>${esc(cell)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+        if (item.code) body += codePanel(item.code, item.language || "JSON");
+        html += section(`guide-section-${i}`, item.title, body);
+      }
+      if (["lookup-flow", "handover"].includes(g.id)) html += section("integration-downloads", "查名接入资料下载", '<p><a href="./downloads/name-lookup-integration.zip" download>下载接入包（说明 + Node.js/Python SDK + OpenAPI）</a></p><p><a href="./downloads/name-lookup-openapi.json" download>仅下载第三方查名 OpenAPI</a> · <a href="./downloads/name-lookup-sha256.json" download>文件校验清单</a></p>');
       if (g.code) html += section("code-example", g.id === "authentication" ? "Node.js 调用示例" : "Node.js 调用示例", codePanel(g.code, "Node.js · 服务端执行"));
       if (g.id === "models") html += Object.entries(data.models).map(([name, fields]) => section(`model-${name}`, name, fieldTable(fields))).join("");
       if (g.id === "errors") html += section("error-reference", "公共错误参考", `<div class="table-wrap"><table><thead><tr><th>HTTP</th><th>error</th><th>处理方式</th></tr></thead><tbody>${data.commonErrors.map(([status, error, action]) => `<tr><td>${esc(status)}</td><td><code>${esc(error)}</code></td><td>${esc(action)}</td></tr>`).join("")}</tbody></table></div>`);
@@ -127,7 +139,7 @@
   function endpointPage(e) {
     const category = data.groups.find(([id]) => id === e.group)?.[1] || "接口参考";
     let html = `${breadcrumb(category)}<p class="eyebrow">API REFERENCE</p><h1>${esc(e.title)}</h1><p class="intro">${esc(e.description)}</p><div class="api-meta"><span class="tag auth">${esc(authNames[e.auth] || e.auth)}</span>${e.scope ? `<span class="tag">scope: ${esc(e.scope)}</span>` : ""}<span class="tag">成功 HTTP ${e.successCodes.join(" / ")}</span>${e.idempotency ? `<span class="tag">幂等键${e.idempotency === "required" ? "必填" : "可选 · 旧语义"}</span>` : ""}${e.deprecated ? '<span class="tag deprecated">兼容接口 · 新接入请用开放接口</span>' : ""}</div><div class="endpoint-url"><span class="method ${e.method}">${e.method}</span><code>${esc(e.path)}</code><button class="copy-small" data-copy-text="${esc(e.path)}" aria-label="复制接口路径">复制</button></div>`;
-    html += section("request", "请求", `<p>基础地址：管理员交付的 HTTPS 根地址，例如 <code>https://cloud.example.com</code>。接口权限沿用现有服务端，不因文档入口而扩大。</p>${e.auth === "hmac" ? '<div class="notice">每次携带 <code>X-Client-Id</code>、<code>X-Timestamp</code>（毫秒）、<code>X-Nonce</code>、<code>X-Signature</code>。<a href="#authentication">查看签名算法与示例 →</a></div>' : `<p>认证：${esc(authNames[e.auth] || e.auth)}。</p>`}${e.idempotency ? `<p><code>Idempotency-Key</code>：${e.idempotency === "required" ? "必填，同业务相同参数重试使用同键，参数不同返回409。" : "可选。同客户端同键直接返回旧请求，当前实现不做参数冲突比较；调用方应确保同键只用于同一业务。"}</p>` : ""}${e.bodyFormat ? `<p>请求体：<code>${esc(e.bodyFormat)}</code> 原始字节。</p>` : e.method === "POST" || e.method === "PUT" ? '<p>请求体：<code>application/json</code>。没有字段时也发送 <code>{}</code>。</p>' : ""}`);
+    html += section("request", "请求", `<p>基础地址：管理员交付的 HTTPS 根地址，例如 <code>https://cloud.example.com</code>。接口权限沿用现有服务端，不因文档入口而扩大。</p>${e.auth === "hmac" ? '<div class="notice">每次携带 <code>X-Client-Id</code>、<code>X-Timestamp</code>（毫秒）、<code>X-Nonce</code>、<code>X-Signature</code>。<a href="#authentication">查看签名算法与示例 →</a> · <a href="./downloads/sign.mjs" download>下载 Node.js sign.mjs</a></div>' : `<p>认证：${esc(authNames[e.auth] || e.auth)}。</p>`}${e.idempotency ? `<p><code>Idempotency-Key</code>：${e.idempotency === "required" ? "必填，同业务相同参数重试使用同键，参数不同返回409。" : "可选。同客户端同键直接返回旧请求，当前实现不做参数冲突比较；调用方应确保同键只用于同一业务。"}</p>` : ""}${e.bodyFormat ? `<p>请求体：<code>${esc(e.bodyFormat)}</code> 原始字节。</p>` : e.method === "POST" || e.method === "PUT" ? '<p>请求体：<code>application/json</code>。没有字段时也发送 <code>{}</code>。</p>' : ""}`);
     for (const [location, title] of [["path", "路径参数"], ["query", "查询参数"], ["body", "请求体字段"]]) {
       const params = e.parameters.filter((p) => p.location === location);
       if (params.length || location === "body" && ["POST", "PUT"].includes(e.method) && !e.bodyFormat) html += section(`params-${location}`, title, fieldTable(params, true));
@@ -141,12 +153,12 @@
       const example = Object.fromEntries(fields.filter((f) => !["ignored", "accountCooldown", "capacity", "idempotent"].includes(f.name)).map((f) => [f.name, exampleForType(f.type, f.name)]));
       if (example.session?.humanAction) example.session.humanAction = { required: false };
       if (example.session?.queueState) example.session.queueState = { status: example.session.pending ? "running" : "idle" };
-      if (example.session && e.path.endsWith("/queries")) { example.session.queuedCount = 1; example.session.resultCount = 1; example.session.results = [{ ...exampleForType("OpenLookupResult", ""), status: "queued", stage: "队列等待中", queuePosition: 1, maskedName: "", nameTailCharacter: "" }]; }
-      if (example.session && e.method === "POST" && e.path.endsWith("/sessions")) example.session.status = "starting";
+      if (e.auth === "hmac" && example.session && e.path.endsWith("/queries")) { example.session.queuedCount = 1; example.session.resultCount = 1; example.session.results = [{ ...exampleForType("OpenLookupResult", ""), status: "queued", stage: "队列等待中", queuePosition: 1, maskedName: "", nameTailCharacter: "" }]; }
+      if (example.session && e.method === "POST" && (e.path.endsWith("/sessions") || e.path.endsWith("/alipay-name-sessions"))) example.session.status = "starting";
       if (example.session && e.method === "POST" && e.path.endsWith("/end")) example.session.status = "stopping";
       html += section("response-example", "响应示例", codePanel(JSON.stringify(example, null, 2), "JSON · 结构示例，非实时数据"));
     }
-    html += section("endpoint-errors", "错误处理", e.errors.length ? `<p>路由直接返回的错误如下。认证、参数规范化、执行器和存储还可能产生公共或扩展错误。</p><div class="table-wrap"><table><thead><tr><th>HTTP</th><th>error</th><th>处理方式</th></tr></thead><tbody>${e.errors.map((error) => `<tr><td>${esc(e.errorStatuses?.[error]?.join(" / ") || "扩展")}</td><td><code>${esc(error)}</code></td><td>${esc(data.commonErrors.find(([, codes]) => codes.split(" / ").includes(error))?.[2] || "核对请求字段、资源归属和当前状态；任务超时先查询原ID，按错误原因修正后处理。")}</td></tr>`).join("")}</tbody></table></div>` : '<p>本路由没有直接声明固定 error 字符串；认证、参数规范化、执行器或存储仍可能返回公共/扩展错误。</p>');
+    html += section("endpoint-errors", "错误处理", e.errors.length ? `<p>已核对的路由及查名鉴权/校验错误如下。执行器和存储仍可能产生扩展错误。</p><div class="table-wrap"><table><thead><tr><th>HTTP</th><th>error</th><th>处理方式</th></tr></thead><tbody>${e.errors.map((error) => `<tr><td>${esc(e.errorStatuses?.[error]?.join(" / ") || "扩展")}</td><td><code>${esc(error)}</code></td><td>${esc(data.commonErrors.find(([, codes]) => codes.split(" / ").includes(error))?.[2] || "核对请求字段、资源归属和当前状态；任务超时先查询原ID，按错误原因修正后处理。")}</td></tr>`).join("")}</tbody></table></div>` : '<p>本路由没有直接声明固定 error 字符串；认证、参数规范化、执行器或存储仍可能返回公共/扩展错误。</p>');
     html += '<p><a href="#errors">查看公共错误码、限流和重试策略 →</a></p>';
     return html + footer();
   }

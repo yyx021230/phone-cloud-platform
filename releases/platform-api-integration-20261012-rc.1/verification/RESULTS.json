@@ -1,0 +1,61 @@
+{
+  "checkedAt": "2026-10-12T01:48:33.967074+00:00",
+  "version": "platform-api-integration-20261012-rc.1",
+  "scope": "API documentation, static portal and offline integration handover only",
+  "rules": {
+    "workflowRevision": "2026-09-30",
+    "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+    "agentsSha256": "248e6285e61900d4abfc4fd837bd033a3d6e8f7bd791f93b232ee1c8884be2c2"
+  },
+  "passed": {
+    "docTests": 11,
+    "catalogOperations": 39,
+    "businessModules": 8,
+    "guides": 8,
+    "nodeExamplesParsed": 39,
+    "pythonExamplesParsed": 39,
+    "hmacOperations": 7,
+    "localHttpResources": 9,
+    "archiveDownloadMatches": true,
+    "signingCrossCheckedAgainstDeployedFunction": true,
+    "sdkRuntimeUnchanged": true,
+    "serverAndAgentSourceUnchanged": true,
+    "reproducibleArchiveAndReferences": true,
+    "desktopRendered": true,
+    "mobile390NoWholePageOverflow": true
+  },
+  "failuresResolved": [
+    "Initial test source had a JavaScript string syntax error; corrected before final 11/11 run.",
+    "One main-doc edit command failed UTF-8 parsing before execution; applied with the file patch tool instead.",
+    "Pre-commit hash guard caught a transcribed workflow hash typo; re-read authoritative workflow and corrected evidence. No concurrent workflow change found."
+  ],
+  "verificationLimits": [
+    "Later browser click/keyboard inputs did not reach page event handlers, including on a new normal-size tab; full interactive revalidation was blocked. Temporary local diagnostics were reverted; menu logic unchanged.",
+    "Existing 57-device-query acceptance used platform Bearer, not partner HMAC; it is historical evidence, not this round.",
+    "No partner credentials configured or actual signed partner end-to-end call performed.",
+    "No natural eight-hour expiry, all-accounts-cooling, switch-then-puzzle combination, two-device/OEM or long-duration acceptance added.",
+    "No full runtime suite rerun for documentation-only changes; prior full-suite receipts retained."
+  ],
+  "productionChanges": 0,
+  "realQueries": 0,
+  "notifications": 0,
+  "restarts": 0,
+  "remotePushes": 0,
+  "originalWorkspace": {
+    "existingDirtyEntries": 235,
+    "preservation": "All existing work preserved; only authority main document mirrored after prior hash check."
+  },
+  "selfReview": "Reviewed docs, generator, renderer, snippets, package scope, auth and immutable source preservation; no runtime or media change.",
+  "environment": {
+    "node": "v25.9.0",
+    "python": "Python 3.9.6"
+  },
+  "commands": [
+    "python3 scripts/build-api-docs.py",
+    "node --test scripts/api-docs.test.mjs",
+    "node --check releases/platform-api-docs-20261010-rc.1/public/api-docs.js",
+    "Python compile(generator) without executing",
+    "Nine local static HTTP GETs with SHA256 comparison",
+    "git diff --cached --check"
+  ]
+}

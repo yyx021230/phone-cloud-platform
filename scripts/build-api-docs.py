@@ -9,6 +9,7 @@ import argparse
 import hashlib
 import json
 import re
+import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -111,6 +112,11 @@ def make(candidate, publication_path=None):
         error_statuses = {}
         for code, error_name in re.findall(r'json\(res,\s*(\d+),\s*\{\s*error:\s*"([^\"]+)"', body):
             error_statuses.setdefault(error_name, []).append(int(code))
+        # Reviewed helper errors are part of the public contract too; the
+        # immediate route body cannot reveal validation/signature helpers.
+        for error_name, statuses in extra.get('helperErrors', {}).items():
+            error_statuses[error_name] = sorted(set(error_statuses.get(error_name, []) + statuses))
+        errors = sorted(set(errors) | set(error_statuses))
         codes = sorted(set(int(n) for n in re.findall(r'json\(res, (\d+)', body)))
         success = [n for n in codes if n < 400] or [extra.get('successCode', 200)]
         scope = re.search(r'requireWindowsScope\(ctx, "([^\"]+)"', body)
@@ -119,7 +125,7 @@ def make(candidate, publication_path=None):
                         group=group, title=title, description=description, auth=auth,
                         parameters=parameters, errors=errors, errorStatuses=error_statuses, successCodes=success,
                         scope=scope[1] if scope else extra.get('scope', ''),
-                        **{k: v for k, v in extra.items() if k not in ['path', 'id', 'auth', 'inputHelpers', 'parameters', 'scope', 'successCode']})
+                        **{k: v for k, v in extra.items() if k not in ['path', 'id', 'auth', 'inputHelpers', 'parameters', 'scope', 'successCode', 'helperErrors']})
         endpoints.append(endpoint)
     unknown = set(reviewed['endpoints']) - seen
     if unknown: raise ValueError('Removed/stale routes ' + str(unknown))
@@ -140,7 +146,7 @@ def make(candidate, publication_path=None):
         for field in endpoint['response'].split(','): include_type(field.split(':')[1])
         for parameter in endpoint['parameters']: include_type(parameter['type'])
     data = dict(version=publication['version'], updatedAt=publication.get('updatedAt', '2026-10-10'),
-                baseline='lookup-20261010-rc.2', status=publication.get('status', '本地候选 · 未发布'),
+                baseline=publication.get('baseline', 'lookup-20261010-rc.2'), status=publication.get('status', '本地候选 · 未发布'),
                 routerSha256=hashlib.sha256(source.encode()).hexdigest(), sourceRoutesReviewed=len(endpoints),
                 groups=publication['publishedGroups'], guides=publication['guides'],
                 models={k: v for k, v in reviewed['models'].items() if k in needed},
@@ -148,7 +154,54 @@ def make(candidate, publication_path=None):
     out = candidate / 'public/api-reference.json'
     out.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
     build_openapi(data, candidate / 'public/openapi.json', publication.get('openapiDescription'))
+    if any(e['auth'] == 'hmac' for e in selected):
+        build_handover(candidate, data)
     print('Reviewed', len(endpoints), 'routes; built', len(selected), 'platform HTTP operations and', len(data['websockets']), 'WebSocket channels ->', out)
+
+
+def build_handover(candidate, data):
+    """Package only reviewed public reference and unchanged dependency-free SDKs."""
+    folder = candidate / 'public/downloads'
+    folder.mkdir(exist_ok=True)
+    signing = next(g['code'] for g in data['guides'] if g['id'] == 'authentication') + '\n'
+    (folder / 'sign.mjs').write_text(signing)
+    spec = json.loads((candidate / 'public/openapi.json').read_text())
+    spec['info']['title'] = '支付宝查名字 · 第三方 HMAC Open API'
+    spec['paths'] = {p: v for p, v in spec['paths'].items() if p.startswith('/api/v1/open/name-lookups/')}
+    spec['components']['securitySchemes'].pop('Bearer', None)
+    spec['tags'] = [t for t in spec['tags'] if t['name'] == 'lookup-user']
+    needed = set()
+    def visit(value):
+        if isinstance(value, dict):
+            if '$ref' in value:
+                name = value['$ref'].split('/')[-1]
+                if name not in needed:
+                    needed.add(name)
+                    visit(spec['components']['schemas'][name])
+            for item in value.values(): visit(item)
+        elif isinstance(value, list):
+            for item in value: visit(item)
+    visit(spec['paths'])
+    spec['components']['schemas'] = {k: v for k, v in spec['components']['schemas'].items() if k in needed}
+    (folder / 'name-lookup-openapi.json').write_text(json.dumps(spec, ensure_ascii=False, indent=2) + '\n')
+    sdk = candidate / 'verification/fixtures/sdk/open_name_lookup'
+    items = {'README.md': (sdk / 'README.md').read_bytes(),
+             'OPEN_NAME_LOOKUP_API.md': (candidate / 'OPEN_NAME_LOOKUP_API.md').read_bytes(),
+             'openapi.json': (folder / 'name-lookup-openapi.json').read_bytes(),
+             'sign.mjs': signing.encode()}
+    for name in ['node_client.mjs', 'python_client.py']: items[name] = (sdk / name).read_bytes()
+    manifest = {'version': data['version'], 'businessBaseline': data['baseline'],
+                'files': {name: hashlib.sha256(blob).hexdigest() for name, blob in items.items()}}
+    items['SHA256.json'] = (json.dumps(manifest, indent=2) + '\n').encode()
+    archive = folder / 'name-lookup-integration.zip'
+    with zipfile.ZipFile(archive, 'w', compression=zipfile.ZIP_DEFLATED) as bundle:
+        for name, blob in sorted(items.items()):
+            info = zipfile.ZipInfo(name, (2026, 10, 12, 0, 0, 0))
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 0o100644 << 16
+            bundle.writestr(info, blob)
+    manifest['archiveSha256'] = hashlib.sha256(archive.read_bytes()).hexdigest()
+    (folder / 'name-lookup-sha256.json').write_text(json.dumps(manifest, indent=2) + '\n')
 
 
 def build_openapi(data, out, description=None):
@@ -162,7 +215,7 @@ def build_openapi(data, out, description=None):
             raise ValueError('Unknown API schema type: ' + typ)
         return {'type': typ}
     doc = {'openapi': '3.1.0', 'info': {'title': 'Phone Cloud 平台功能 API', 'version': data['version'],
-           'description': description or '仅平台功能接口，本地候选未部署。使用登录令牌Bearer认证；接口基线lookup-20261010-rc.2。'},
+           'description': description or '平台功能文档候选；第三方支付宝查名使用HMAC，平台操作使用Bearer。请核对目标部署版本。'},
            'servers': [{'url': 'https://cloud.example.com', 'description': '占位域名；替换为管理员交付的HTTPS根地址'}],
            'tags': [{'name': g[0], 'description': g[1] + ' · ' + g[2]} for g in data['groups']],
            'paths': {}, 'components': {'securitySchemes': {

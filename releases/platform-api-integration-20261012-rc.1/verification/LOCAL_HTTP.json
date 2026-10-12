@@ -1,0 +1,60 @@
+{
+  "checkedAt": "2026-10-12T01:47:19.250117+00:00",
+  "scope": "local static HTTP only",
+  "resources": [
+    {
+      "path": "api-docs.html",
+      "status": 200,
+      "sha256": "a5f66fbb090941986927fb30fc3fd77c40522182bde58a165cf9d863e2096b2d",
+      "bytes": 2881
+    },
+    {
+      "path": "api-docs.css",
+      "status": 200,
+      "sha256": "63d05021377c39441aafa5b6917928eaa7f7f71b7cef75d38fbc07e90fc3896a",
+      "bytes": 15165
+    },
+    {
+      "path": "api-docs.js",
+      "status": 200,
+      "sha256": "41889531f6a3e2532c207f9871c9f75ff5c5ccc053aaaf660ccf6b2ca662c26e",
+      "bytes": 28750
+    },
+    {
+      "path": "api-reference.json",
+      "status": 200,
+      "sha256": "e3b0055c33db86353b3a339acdfa31a942100144f7f98344441bcf32c607742e",
+      "bytes": 104543
+    },
+    {
+      "path": "openapi.json",
+      "status": 200,
+      "sha256": "62896997ff1ecbfd978f9f5282c475e3d053c4380e481c5c1138548cf2aaeed6",
+      "bytes": 147239
+    },
+    {
+      "path": "downloads/sign.mjs",
+      "status": 200,
+      "sha256": "8aac5bdf144c8dd6c93da3aa34c63c21952270fba139e5b117730b6730c51946",
+      "bytes": 605
+    },
+    {
+      "path": "downloads/name-lookup-openapi.json",
+      "status": 200,
+      "sha256": "af49e9d9354615f31194bb967bf695c4430d1ba2ec7d86905c1834438aa25d01",
+      "bytes": 39154
+    },
+    {
+      "path": "downloads/name-lookup-integration.zip",
+      "status": 200,
+      "sha256": "806f63a85b62571ea06235e541a23143962e00bd3c70c5e3515ba5e5bb480652",
+      "bytes": 18418
+    },
+    {
+      "path": "downloads/name-lookup-sha256.json",
+      "status": 200,
+      "sha256": "6317bd84d87b7ef30fd593d47262e753ce167256a7f55b147dc7d0661ad8bd18",
+      "bytes": 765
+    }
+  ]
+}
