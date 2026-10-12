@@ -1,0 +1,17 @@
+{
+  "version": "platform-api-integration-20261012-deployed.1",
+  "candidateVersion": "platform-api-integration-20261012-rc.3",
+  "candidateCommit": "20ecebdb91a531dd55a83dbc8cf18cc5a93565fd",
+  "branch": "codex/api-docs-publish-20261012",
+  "state": "docs published and publicly verified; business full acceptance not completed",
+  "businessSourceCommit": "7f695507761b07504a94b7372de0c340befbf33f",
+  "actualSourceScope": "9 static docs/download assets only",
+  "runningBaseImageId": "sha256:4e484ed7db6da2760c64de1f4481fdb7deb97b7acf4e4182e1658507a1d8b437",
+  "runtimeHotPatchCount": 11,
+  "nextStartupImageId": "sha256:97633e241d545dbe895ad003852dfd35eae39cab9bcb54fbee95740b67daa053",
+  "oldRestartImageRetained": "sha256:71b02934fac4bcbe57fb274e49952fcb9ac577a7800c092d930621288bbc7069",
+  "productionRestarts": 0,
+  "newRealTasks": 0,
+  "remoteGitPushes": 0,
+  "browserDownloadCaveat": "IAB file transfer events timed out; direct public HTTP ZIP integrity validated; no claim IAB download succeeded"
+}

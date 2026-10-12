@@ -1,0 +1,86 @@
+{
+  "resources": [
+    {
+      "path": "public/api-docs.html",
+      "status": 200,
+      "sha256": "d6930845d9f5f9a93b84a59e3de8111b22ea6db5c456a437e31cf34dd5157861",
+      "contentType": "text/html; charset=utf-8",
+      "cacheControl": "no-store"
+    },
+    {
+      "path": "public/api-docs.css",
+      "status": 200,
+      "sha256": "63d05021377c39441aafa5b6917928eaa7f7f71b7cef75d38fbc07e90fc3896a",
+      "contentType": "text/css; charset=utf-8",
+      "cacheControl": "no-store"
+    },
+    {
+      "path": "public/api-docs.js",
+      "status": 200,
+      "sha256": "63e8f55692019a243ee7f6aace733d842f6ccd979c01fd7aee3430f95f830b54",
+      "contentType": "text/javascript; charset=utf-8",
+      "cacheControl": "no-store"
+    },
+    {
+      "path": "public/api-reference.json",
+      "status": 200,
+      "sha256": "caa91c1479d9694f140095e0eab85b37bff48c6c301833fc6a521cbafeef9d79",
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "no-store"
+    },
+    {
+      "path": "public/openapi.json",
+      "status": 200,
+      "sha256": "c0afb091c3ab74077bfa79570201363d42ab883f23a18791eecfe0a397900ee8",
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "no-store"
+    },
+    {
+      "path": "public/downloads/sign.mjs",
+      "status": 200,
+      "sha256": "8aac5bdf144c8dd6c93da3aa34c63c21952270fba139e5b117730b6730c51946",
+      "contentType": "text/javascript; charset=utf-8",
+      "cacheControl": "no-store"
+    },
+    {
+      "path": "public/downloads/name-lookup-openapi.json",
+      "status": 200,
+      "sha256": "076015c74331006e399ac770550d696cfc9381dcda5069f5b23f594ea593e149",
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "no-store"
+    },
+    {
+      "path": "public/downloads/name-lookup-integration.zip",
+      "status": 200,
+      "sha256": "7e44e797e6acfd4e9b13d0882ad4a6caa2f54885b0710eea2932247bbce4cff2",
+      "contentType": "application/octet-stream",
+      "cacheControl": "no-store"
+    },
+    {
+      "path": "public/downloads/name-lookup-sha256.json",
+      "status": 200,
+      "sha256": "7a85a17714f3e1c56998ae186b82c210c87797d93605cdcf3213d953fc439251",
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "no-store"
+    }
+  ],
+  "zip": {
+    "members": [
+      "OPEN_NAME_LOOKUP_API.md",
+      "README.md",
+      "SHA256.json",
+      "node_client.mjs",
+      "openapi.json",
+      "python_client.py",
+      "sign.mjs"
+    ],
+    "version": "platform-api-integration-20261012-rc.3",
+    "membersMatchManifest": true,
+    "runtimeSdksUnchanged": true,
+    "openHmacOperations": 7
+  },
+  "sourceCommit": "20ecebdb91a531dd55a83dbc8cf18cc5a93565fd",
+  "browserOverviewAndHandoverVisible": true,
+  "browserDownloadEvent": "in-app download event and downloadMedia both timed out; raw public HTTP binary and ZIP verified independently; not reported as browser download success",
+  "initialFinalCheckFailure": "checker incorrectly expected6 paths; actual API has7 paths/7 operations, corrected checker and passed all"
+}
