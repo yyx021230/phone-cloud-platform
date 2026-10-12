@@ -1,0 +1,35 @@
+{
+  "productionVersion": "platform-api-entry-20261012-deployed.1",
+  "envFile": "/opt/phone-cloud-platform/.env",
+  "expectedEnvSha256": "baf016e062085e046822b3430c7bec5237291111b050ff4ef0ba0ad05250a768",
+  "proposedEnvSha256": "a36b9dd1b34d950407bc47d64b257cb07d7a17cfbf01562c56364ea4662baffc",
+  "changedKey": "OPEN_NAME_LOOKUP_CLIENTS_JSON",
+  "clientCount": 1,
+  "oldDeviceNumbers": [
+    "177",
+    "161"
+  ],
+  "proposedDeviceNumbers": [
+    "130",
+    "118"
+  ],
+  "credentialsAndMappedUserUnchanged": true,
+  "otherEnvLinesUnchanged": true,
+  "written": false,
+  "activeLocksAtPreview": 5,
+  "targetActiveLocks": 0,
+  "activeCompose": [
+    {
+      "path": "/opt/phone-cloud-platform/docker-compose.yml",
+      "sha256": "8687bf4176f8f0d78ab73380a7ef0fd6b71bf044de5474f172ef5483d3e47435"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/platform-api-entry-20261012-rc.1/compose.candidate.json",
+      "sha256": "ba7d1cba6646f719976cbb5518c2a6d23d8f09a40a19d2a9e3c5f6c1eb156a31"
+    }
+  ],
+  "restartImageId": "sha256:71b02934fac4bcbe57fb274e49952fcb9ac577a7800c092d930621288bbc7069",
+  "restartImageTag": "phone-cloud-platform:platform-api-entry-20261012-rc.1",
+  "runtimePid": 2684217,
+  "restartCount": 0
+}

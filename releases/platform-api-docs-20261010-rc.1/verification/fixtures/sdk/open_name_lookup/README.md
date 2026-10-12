@@ -1,10 +1,10 @@
 # 支付宝查名字接入包
 
-版本：platform-api-integration-20261012-rc.1（文档候选，待发布）。业务基线platform-api-entry-20261012-deployed.1。
+版本：platform-api-integration-20261012-rc.2（文档候选，待发布）。业务基线platform-api-entry-20261012-deployed.1。
 
 先读OPEN_NAME_LOOKUP_API.md，再导入openapi.json。sign.mjs供门户Node.js请求示例导入；SDK无需这个辅助文件。node_client.mjs和python_client.py来自已审阅业务源码7f695507761b07504a94b7372de0c340befbf33f的SDK，本轮代码未修改。
 
-管理员单独交付HTTPS BASE_URL、clientId、至少32字符独立secret、精确deviceId白名单和人工操作账号。包内不包含真实凭据或手机号。
+管理员单独交付BASE_URL（当前`http://47.98.127.132`）、clientId、至少32字符独立secret、精确deviceId白名单和人工操作账号。包内不包含真实凭据或手机号。
 
 ## Node.js 18+
 

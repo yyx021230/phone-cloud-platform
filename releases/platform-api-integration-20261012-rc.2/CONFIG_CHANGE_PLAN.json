@@ -1,0 +1,33 @@
+{
+  "status": "prepared only; not applied",
+  "risk": "R2 production configuration/recreation; R1 documentation",
+  "sourcePreview": "verification/whitelist-change-preview.json",
+  "scope": {
+    "allowedRealTestDeviceNumbers": [
+      "130",
+      "118"
+    ],
+    "onlyChangedSetting": "OPEN_NAME_LOOKUP_CLIENTS_JSON[0].deviceIds",
+    "clientSecretUsernameAndOtherSettings": "preserve exactly",
+    "realInput": "previous user-authorized batch; do not query old whitelist devices"
+  },
+  "activation": "clients parsed once at startup; container recreation with updated env required, restart alone retains old container env",
+  "approvalRequired": "current foreground authorization covers HTTP requests and 130/118 testing; current production interruption/configuration activation needs explicit window approval",
+  "gates": [
+    "Recheck ACTIVE record, env/Compose/image/file hashes against preview; stop on drift.",
+    "Confirm idle maintenance window; check all device locks, in-flight jobs and sessions. Do not cancel unrelated work.",
+    "Run D-075 verify --live on actual media host before and after; stop on failure; no media fix/restart.",
+    "Secure on-host backup of original env, active record and current/next image/file manifest; never export credentials to repository.",
+    "Resolve exactly one device for each 130/118 name, compare stable IDs to reviewed preview; replace only that client deviceIds and reparse.",
+    "Activate with BOTH Compose files from ACTIVE activeCompose and verified 71b02934 image; preserve entry hotpatch. Recreate only phone-cloud business service, no dependencies or Windows/Agent/ADB/media restart.",
+    "Verify health/ready, PG/Redis, Agent heartbeat and 131 inventory, returned HMAC device list exactly130/118, no credential changes; store deployment receipt/config fingerprint and observed runtime/startup versions.",
+    "Use exact downloaded SDK through http://47.98.127.132; single idle authorized device first, bounded prior authorized inputs, stable idempotency/query IDs, poll/end/release, then second device. Report actual outcomes and manual intervention."
+  ],
+  "rollback": [
+    "Retain original env privately with permissions. On activation failure restore exact bytes/hash, retain verified business/entry image, recreate only business service in approved window and verify health/Agent.",
+    "Do not revert media D-075, Windows, ADB or production data.",
+    "Documentation rc.2 stays local until separately authorized for static release; rollback documentation via prior immutable candidate."
+  ],
+  "productionChangesSoFar": 0,
+  "realQueriesSoFar": 0
+}

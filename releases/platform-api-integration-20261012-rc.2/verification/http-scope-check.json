@@ -1,0 +1,38 @@
+{
+  "atUtc": "2026-10-12T02:54:03.141Z",
+  "baseUrl": "http://47.98.127.132",
+  "sdk": "exact downloaded node_client.mjs",
+  "calls": [
+    {
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/devices",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/open/name-lookups/sessions",
+      "status": 403,
+      "deviceNumber": "130",
+      "error": "open_name_lookup_device_not_allowed"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/open/name-lookups/sessions",
+      "status": 403,
+      "deviceNumber": "118",
+      "error": "open_name_lookup_device_not_allowed"
+    }
+  ],
+  "returnedDeviceNumbers": [
+    "177",
+    "161"
+  ],
+  "allowedTestDeviceNumbers": [
+    "130",
+    "118"
+  ],
+  "realQueries": 0,
+  "createdSessions": 0,
+  "configChanges": 0,
+  "restarts": 0
+}

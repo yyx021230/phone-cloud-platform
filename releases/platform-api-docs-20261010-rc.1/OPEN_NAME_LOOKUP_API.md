@@ -1,6 +1,6 @@
 # 支付宝查名字：第三方 Open API 接入规范
 
-文档版本：`platform-api-integration-20261012-rc.1`，更新于2026-10-12。业务基线：`platform-api-entry-20261012-deployed.1`。业务已上线，本次文档更新尚待发布；新增合作方凭据及联调须另行交付。本说明只描述已有能力，不新增权限。
+文档版本：`platform-api-integration-20261012-rc.2`，更新于2026-10-12。业务基线：`platform-api-entry-20261012-deployed.1`。业务已上线，本次文档更新尚待发布；新增合作方凭据及联调须另行交付。本说明只描述已有能力，不新增权限。
 
 ## 1. 选用正确接口
 
@@ -13,7 +13,7 @@
 
 ## 2. 管理员交付内容
 
-- 测试/生产HTTPS根地址`BASE_URL`，不含`/api/v1`；示例域名仅占位。
+- 测试/生产根地址`BASE_URL`，当前为`http://47.98.127.132`，不含`/api/v1`。
 - `clientId`、至少32字符的独立随机`secret`、精确`deviceId`白名单。
 - 客户端映射的已启用普通平台专用用户；不同客户端不能共用该用户名。
 - 人工拼图使用的平台操作账号、手机编号映射和飞书通知安排。
@@ -41,7 +41,7 @@ X-Nonce
 SHA256(rawBody)
 ```
 
-`pathname`不含域名、查询串；GET的rawBody为零字节空串；POST必须签实际发送的UTF-8 JSON原文，`{}`也是两个字节。签完不能再格式化JSON。使用HTTPS，代理保持pathname和请求原文；签名不绑定查询串和`Idempotency-Key`。可直接使用下载包的`sign.mjs`或SDK，两个语言的示例均从服务端环境变量读取凭据。
+`pathname`不含域名、查询串；GET的rawBody为零字节空串；POST必须签实际发送的UTF-8 JSON原文，`{}`也是两个字节。签完不能再格式化JSON。按管理员交付的BASE_URL及协议调用，当前平台使用HTTP；代理保持pathname和请求原文；签名不绑定查询串和`Idempotency-Key`。可直接使用下载包的`sign.mjs`或SDK，两个语言的示例均从服务端环境变量读取凭据。
 
 ## 4. 幂等与关联
 
