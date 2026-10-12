@@ -1,0 +1,19 @@
+[
+  {
+    "atUtc": "2026-10-12T05:47:06.997Z",
+    "tasks": [
+      {
+        "taskId": "603e7d75-151f-4b4f-845d-6fcbf891a242",
+        "status": "running",
+        "updatedAt": "2026-10-12T05:46:43.761Z"
+      }
+    ]
+  },
+  {
+    "type": "baseline",
+    "activeVersion": "platform-api-entry-20261012-deployed.1",
+    "activeHash": "d867027ae05aa90394f3a05a3dbaec7d8b868ff0e5705a4f8b0ce5c23f8ebe5c",
+    "containerPid": 2684217,
+    "restartCount": 0
+  }
+]

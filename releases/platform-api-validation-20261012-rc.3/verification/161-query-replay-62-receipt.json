@@ -1,0 +1,72 @@
+{
+  "atUtc": "2026-10-12T05:49:10.508Z",
+  "action": "replay-query",
+  "deviceNumber": "161",
+  "ok": true,
+  "idempotent": true,
+  "queryId": "a14373d1-8db5-4767-b1c9-0127505870c4",
+  "session": {
+    "sessionId": "0a2ff6d8-5a22-414b-9a5d-1861569dff4a",
+    "deviceHash": "ee5adc5b6c0d",
+    "status": "querying",
+    "pending": true,
+    "queuedCount": 1,
+    "resultCount": 2,
+    "successfulCount": 0,
+    "accountHash": "5ffa7a966d18",
+    "queueState": {
+      "status": "running"
+    },
+    "humanAction": {
+      "required": false
+    },
+    "error": "",
+    "endedAt": null,
+    "results": [
+      {
+        "queryId": "a14373d1-8db5-4767-b1c9-0127505870c4",
+        "clientReference": "api-fullflow-20261012-161-062",
+        "status": "queued",
+        "stage": "队列等待中，前方 0 个查询",
+        "hasMaskedName": false,
+        "hasTail": false,
+        "accountSwitched": false,
+        "accountSwitchCount": 0,
+        "reason": "",
+        "error": "",
+        "queuePosition": 1
+      },
+      {
+        "queryId": "a911b6c2-103f-4fae-904d-ecfd5173fc66",
+        "clientReference": "api-fullflow-20261012-161-061",
+        "status": "running",
+        "stage": "正在准备支付宝查询",
+        "hasMaskedName": false,
+        "hasTail": false,
+        "accountSwitched": false,
+        "accountSwitchCount": 0,
+        "reason": "",
+        "error": "",
+        "queuePosition": null
+      }
+    ]
+  },
+  "query": null,
+  "calls": [
+    {
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/devices",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/sessions/0a2ff6d8-5a22-414b-9a5d-1861569dff4a",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/open/name-lookups/sessions/0a2ff6d8-5a22-414b-9a5d-1861569dff4a/queries",
+      "status": 200
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "atUtc": "2026-10-12T05:49:54.618Z",
+  "action": "resume",
+  "deviceNumber": "161",
+  "ok": false,
+  "status": 409,
+  "code": "lookup_human_verification_not_resumable",
+  "message": "lookup_human_verification_not_resumable",
+  "session": {
+    "sessionId": "0a2ff6d8-5a22-414b-9a5d-1861569dff4a",
+    "deviceHash": "ee5adc5b6c0d",
+    "status": "ready",
+    "pending": false,
+    "queuedCount": 0,
+    "resultCount": 2,
+    "successfulCount": 2,
+    "accountHash": "5ffa7a966d18",
+    "queueState": {
+      "status": "idle"
+    },
+    "humanAction": {
+      "required": false
+    },
+    "error": "",
+    "endedAt": null,
+    "results": [
+      {
+        "queryId": "a14373d1-8db5-4767-b1c9-0127505870c4",
+        "clientReference": "api-fullflow-20261012-161-062",
+        "status": "not_found",
+        "stage": "该号码未查询到姓名结果",
+        "hasMaskedName": false,
+        "hasTail": false,
+        "accountSwitched": false,
+        "accountSwitchCount": 0,
+        "reason": "",
+        "error": "",
+        "queuePosition": null
+      },
+      {
+        "queryId": "a911b6c2-103f-4fae-904d-ecfd5173fc66",
+        "clientReference": "api-fullflow-20261012-161-061",
+        "status": "not_found",
+        "stage": "该号码未查询到姓名结果",
+        "hasMaskedName": false,
+        "hasTail": false,
+        "accountSwitched": false,
+        "accountSwitchCount": 0,
+        "reason": "",
+        "error": "",
+        "queuePosition": null
+      }
+    ]
+  },
+  "calls": [
+    {
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/devices",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/sessions/0a2ff6d8-5a22-414b-9a5d-1861569dff4a",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/open/name-lookups/sessions/0a2ff6d8-5a22-414b-9a5d-1861569dff4a/resume",
+      "status": 409
+    }
+  ]
+}

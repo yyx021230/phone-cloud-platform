@@ -1,0 +1,40 @@
+{
+  "atUtc": "2026-10-12T05:50:04.866Z",
+  "action": "replay-create",
+  "deviceNumber": "177",
+  "ok": true,
+  "idempotent": true,
+  "queryId": "",
+  "session": {
+    "sessionId": "818a5e53-e222-4419-a2f9-01fabba6cb68",
+    "deviceHash": "349cd1b53176",
+    "status": "starting",
+    "pending": true,
+    "queuedCount": 0,
+    "resultCount": 0,
+    "successfulCount": 0,
+    "accountHash": "e3b0c44298fc",
+    "queueState": {
+      "status": "running"
+    },
+    "humanAction": {
+      "required": false
+    },
+    "error": "",
+    "endedAt": null,
+    "results": []
+  },
+  "query": null,
+  "calls": [
+    {
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/devices",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/open/name-lookups/sessions",
+      "status": 200
+    }
+  ]
+}

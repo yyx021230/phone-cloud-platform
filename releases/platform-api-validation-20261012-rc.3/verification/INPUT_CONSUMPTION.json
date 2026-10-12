@@ -1,0 +1,25 @@
+{
+  "batchSha256": "9fefe9c6544fdc480e3cc45c7c75149491f819752179d75ad045ae3353d79a7e",
+  "priorConsumedIndexes": "0..58",
+  "thisRoundSubmittedIndexes": [
+    59,
+    60,
+    61,
+    62
+  ],
+  "perDevice": {
+    "177": [
+      59,
+      60
+    ],
+    "161": [
+      61,
+      62
+    ]
+  },
+  "cumulativeConsumedIndexes": "0..62",
+  "cumulativeUniqueCount": 63,
+  "nextUnusedIndex": 63,
+  "puzzleResumedOriginalQueryNotNewInput": true,
+  "actualPhonesOrNamesExported": false
+}

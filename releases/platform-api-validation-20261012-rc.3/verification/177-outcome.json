@@ -1,0 +1,10 @@
+{
+  "status": "needs attention",
+  "deviceNumber": "177",
+  "sessionId": "2539c5b5-716e-4e35-a1df-37031bb01915",
+  "indexesPlanned": [
+    59,
+    60
+  ],
+  "error": "startup terminal failure"
+}

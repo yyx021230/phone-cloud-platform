@@ -1,0 +1,41 @@
+{
+  "task": "Existing whitelist devices HMAC real full-flow validation",
+  "status": "bounded two-device real test completed; first-start modal failure remains unresolved",
+  "authorization": "Latest user explicitly chose 177 and161 using current whitelist, HTTP and prior batch; supersedes this foreground round 130/118 scope",
+  "deviceNumbers": [
+    "177",
+    "161"
+  ],
+  "baseUrl": "http://47.98.127.132",
+  "sdk": "exact Node SDK in current locally reviewed documentation integration ZIP",
+  "sdkSha256": "8d826ee94be4c2a383e0b5ba232461d6341b7339dedc88d73c858f5ca63dd7d9",
+  "maximumNewQueries": 4,
+  "plannedInputIndexes": {
+    "177": [
+      59,
+      60
+    ],
+    "161": [
+      61,
+      62
+    ]
+  },
+  "priorConsumedIndexes": "0..58",
+  "phoneValuesExported": false,
+  "sourceCommit": "7f695507761b07504a94b7372de0c340befbf33f",
+  "productionVersion": "platform-api-entry-20261012-deployed.1",
+  "baselineHead": "f10965a0dccab188384a83e4f288e665ee2b0013",
+  "branch": "codex/hmac-realflow-177-161-20261012",
+  "risk": "R3 explicitly authorized real device and account operations; no deployment/config/restart/push",
+  "stopConditions": [
+    "unknown write result: reconcile same key/ID",
+    "puzzle requires manual action",
+    "startup or query failure",
+    "account exhaustion",
+    "version drift",
+    "bounded wait expiry"
+  ],
+  "naturalHumanReminder": "existing configured production notification only; no additional test notification",
+  "createdAtUtc": "2026-10-12T05:47:27.528699+00:00",
+  "manualPuzzleCompletionUserConfirmed": true
+}
