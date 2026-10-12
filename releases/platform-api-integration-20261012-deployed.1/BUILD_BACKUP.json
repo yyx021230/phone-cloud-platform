@@ -1,0 +1,186 @@
+{
+  "atUtc": "2026-10-12T07:04:36.787631+00:00",
+  "version": "platform-api-integration-20261012-rc.3",
+  "commit": "20ecebdb91a531dd55a83dbc8cf18cc5a93565fd",
+  "beforeActiveSha256": "d867027ae05aa90394f3a05a3dbaec7d8b868ff0e5705a4f8b0ce5c23f8ebe5c",
+  "beforeActiveVersion": "platform-api-entry-20261012-deployed.1",
+  "beforeContainer": {
+    "id": "8f399b21be28502239d527bb007282af9b3274ca9362e6a3ebace7b478a5b07d",
+    "image": "sha256:4e484ed7db6da2760c64de1f4481fdb7deb97b7acf4e4182e1658507a1d8b437",
+    "pid": 2684217,
+    "restartCount": 0,
+    "startedAt": "2026-10-11T16:41:45.890652151Z",
+    "health": "healthy",
+    "envHash": "6357666b2bad032da6519cbb33bc0b3012218377b5c8f14c8bf98558a671c2db",
+    "mountsHash": "a4cc3c293b036b3ea7f5454da23457e2078363981b280c5679b860e33d97a805"
+  },
+  "beforeEnvFileSha256": "baf016e062085e046822b3430c7bec5237291111b050ff4ef0ba0ad05250a768",
+  "previousRestartImageId": "sha256:71b02934fac4bcbe57fb274e49952fcb9ac577a7800c092d930621288bbc7069",
+  "previousRestartImageTag": "phone-cloud-platform:platform-api-entry-20261012-rc.1",
+  "imageId": "sha256:97633e241d545dbe895ad003852dfd35eae39cab9bcb54fbee95740b67daa053",
+  "imageTag": "phone-cloud-platform:platform-api-integration-20261012-rc.3",
+  "imageArchiveSha256": "d16a220b779a87e9bf75066c2e4d3bb489c09785e4aaa7ac5058cf6b9001e653",
+  "assets": [
+    {
+      "path": "public/api-docs.html",
+      "beforeSha256": "4a9a754234dd75df8a2e6aa8d646335f2f23b1c6a85d1f66c73e97c40a00cbe4",
+      "afterSha256": "d6930845d9f5f9a93b84a59e3de8111b22ea6db5c456a437e31cf34dd5157861"
+    },
+    {
+      "path": "public/api-docs.css",
+      "beforeSha256": "e06f407f775fd2485b61a15419f908fd3f5bcb9f9a42ccd9cbf8a440e0432ffb",
+      "afterSha256": "63d05021377c39441aafa5b6917928eaa7f7f71b7cef75d38fbc07e90fc3896a"
+    },
+    {
+      "path": "public/api-docs.js",
+      "beforeSha256": "34c06edd7eaac3e8546173b73d90b6f232ca0c6175fc2d093a0751c727ad89fc",
+      "afterSha256": "63e8f55692019a243ee7f6aace733d842f6ccd979c01fd7aee3430f95f830b54"
+    },
+    {
+      "path": "public/api-reference.json",
+      "beforeSha256": "8a596c801a74d4e72f1829ec7cb565f0004c037564498e219d92a42bbca3b378",
+      "afterSha256": "caa91c1479d9694f140095e0eab85b37bff48c6c301833fc6a521cbafeef9d79"
+    },
+    {
+      "path": "public/openapi.json",
+      "beforeSha256": "38006a05f022f61193edd3106b68c0f8e9cb042d8a5a37c67400de8e221b2bee",
+      "afterSha256": "c0afb091c3ab74077bfa79570201363d42ab883f23a18791eecfe0a397900ee8"
+    },
+    {
+      "path": "public/downloads/sign.mjs",
+      "beforeSha256": null,
+      "afterSha256": "8aac5bdf144c8dd6c93da3aa34c63c21952270fba139e5b117730b6730c51946"
+    },
+    {
+      "path": "public/downloads/name-lookup-openapi.json",
+      "beforeSha256": null,
+      "afterSha256": "076015c74331006e399ac770550d696cfc9381dcda5069f5b23f594ea593e149"
+    },
+    {
+      "path": "public/downloads/name-lookup-integration.zip",
+      "beforeSha256": null,
+      "afterSha256": "7e44e797e6acfd4e9b13d0882ad4a6caa2f54885b0710eea2932247bbce4cff2"
+    },
+    {
+      "path": "public/downloads/name-lookup-sha256.json",
+      "beforeSha256": null,
+      "afterSha256": "7a85a17714f3e1c56998ae186b82c210c87797d93605cdcf3213d953fc439251"
+    }
+  ],
+  "expectedNonDocHashes": {
+    "public/app.js": "c6a6ac8c0a5eb2fb1fcd4a1057abd8d476ebc33570f20eb55b17d71cc0d1b250",
+    "public/index.html": "988408fea9a82091ac75116d8a3ca81a594f73c686bb59c0fcadaea7d190542c",
+    "public/styles.css": "115f31e4cb5ccfb11550dcd2978dcf20464ea007b247be6bcf475a4a694fffde",
+    "server/automation-center.mjs": "e190d21cc2bcf99c8ef874b754e8cbe05419544efa24616d856c36d6eae2ddfd",
+    "server/index.mjs": "331720968d825f8a7922ce7048e117e5f883a1edddfa48dba559f67041061172",
+    "server/lookup-account-cooldown.mjs": "6c96b7786faa45e41c3d1f130dcc3b9172d1c0048bf6cde35a051d5c72523170",
+    "server/lookup-human-handover.mjs": "7993e5ed41a13a26aa1d4aa03a2bb2665a4c74a5a0bcdb2fa8244240cd311a02",
+    "server/lookup-human-notifications.mjs": "eff1e608eeed31153a4a0a8af13bed6420949ac030ca3b524e41d55528e475f7",
+    "server/open-name-lookup-api.mjs": "0c846c1cb1f01ca5a2cd662fc0b81d09568d17d89268b66254e37092664a4eb3",
+    "server/postgres-repositories.mjs": "bf6c10cf849cffc6c59c1f79e1fb62daeb548056632917d14bbd781ac8e70d54",
+    "server/task-status-persistence.mjs": "26f8e48a3a6a77de4d4f47aa8b9b54b45d1ee1a37a2ad4c787a8653845c4cab8",
+    "server/screen-gallery-import.mjs": "39f7727860372f25959a5ca78145be07dfaf92c3747954afc99c8cd02cd8e697",
+    "server/screen-sessions.mjs": "811a15aa7ecb87a934ef5f92826ed9031278d87df2387cc20a85098ce91cde09",
+    "server/screen-media-auth.mjs": "c569931fdbad95338ebc50dee5d04b0f62550733bc627324171ab3590d3668b1",
+    "server/screen-relay.mjs": "91b706a0cd00ea573997fdea338cad8f37e2c88e62fdbeee24b86ec4a6036c02",
+    "server/screen-transport-policy.mjs": "331b212c564bc992628712eef81bff6dafe3b0df3f480f64fb808dfe7c41c721",
+    "server/screen-backpressure.mjs": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4",
+    "server/screen-quality.mjs": "bfadf379b03fadcf73bedc911649680ac6e3ace77907afee3524b335d4406451",
+    "public/screen-inactivity-guard.js": "433578679963fc37b6eb2412c641cbaaa81f424f8611b109b28d2ba3b49ec182",
+    "public/screen-control.js": "9618ae22993d0b1fc5bbffbedf2e9ced52ad5b8ccf46fded85513f39a4bda3ba",
+    "public/vendor/screen-control.js": "ef4e36d5934050ad85075fb877257e4ec63b30af94becefc69e29bf76b2f44c5"
+  },
+  "mediaBefore": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "beforeObservation": {
+    "total": 131,
+    "listed": 125,
+    "online": 124,
+    "agents": [
+      {
+        "enabled": true,
+        "lastSeenAt": "2026-10-12T07:04:16.068Z",
+        "online": true,
+        "reportedDevices": 131
+      },
+      {
+        "enabled": false,
+        "lastSeenAt": "2026-08-10T06:02:47.953Z",
+        "online": false,
+        "reportedDevices": 50
+      },
+      {
+        "enabled": false,
+        "lastSeenAt": "2026-07-03T04:15:49.959Z",
+        "online": false,
+        "reportedDevices": 2
+      },
+      {
+        "enabled": false,
+        "lastSeenAt": "2026-07-03T05:36:47.198Z",
+        "online": false,
+        "reportedDevices": 4
+      }
+    ],
+    "activeLocks": 3,
+    "healthReady": {
+      "/healthz": 200,
+      "/readyz": 200
+    }
+  },
+  "oldCompose": [
+    {
+      "path": "/opt/phone-cloud-platform/docker-compose.yml",
+      "sha256": "8687bf4176f8f0d78ab73380a7ef0fd6b71bf044de5474f172ef5483d3e47435"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/platform-api-entry-20261012-rc.1/compose.candidate.json",
+      "sha256": "ba7d1cba6646f719976cbb5518c2a6d23d8f09a40a19d2a9e3c5f6c1eb156a31"
+    }
+  ],
+  "newCompose": [
+    {
+      "path": "/opt/phone-cloud-platform/docker-compose.yml",
+      "sha256": "8687bf4176f8f0d78ab73380a7ef0fd6b71bf044de5474f172ef5483d3e47435"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/platform-api-integration-20261012-rc.3/compose.candidate.json",
+      "sha256": "45f735c99379398e200b9323e4016fd75dc6f1b7a6c0895340b5434f3f02a14e"
+    }
+  ],
+  "isolatedStaticHttp": {
+    "network": "none",
+    "staticHttpResources": 9,
+    "passed": true,
+    "businessAppStarted": false
+  },
+  "dependenciesInstalled": false,
+  "productionAssetWrites": 0,
+  "restarts": 0,
+  "mountFingerprintCorrection": {
+    "reason": "Docker inspect Mounts array order varies; entry contents proven equivalent by original permutation fingerprint",
+    "originalUnsortedHash": "b15c0bb66d1d383322ed5ed07b47191a3220fd5258b0670c655035fcf636e9c1",
+    "canonicalHash": "a4cc3c293b036b3ea7f5454da23457e2078363981b280c5679b860e33d97a805",
+    "mountCount": 3,
+    "configurationChanged": false
+  },
+  "reconciliation": {
+    "twoFreshIdentityHealthSnapshotsPassed": true,
+    "allRuntimeAndImageHashesPassed": true,
+    "activeAndEnvUnchanged": true,
+    "previousFinalPrepareAssertionFailed": true,
+    "prepareGuardFalsePositive": "unsorted Mounts array fingerprint; exact entries matched baseline permutation and now sorted canonically",
+    "noRebuildOrAssetMutation": true
+  },
+  "otherContainersBaseline": {
+    "count": 16,
+    "sha256": "80898249882728b7abafba05a8325339702baf23d40b032b6e1c5ae57506b49a"
+  },
+  "initialBuildFailure": "Docker interpreted FROM sha256:image-id as a repository tag; cached tagged base verified exact71b02934, legacy builder with no pull/network used successfully; initial log retained on host"
+}

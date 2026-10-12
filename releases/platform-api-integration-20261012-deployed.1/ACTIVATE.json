@@ -1,0 +1,140 @@
+{
+  "atUtc": "2026-10-12T07:07:58.427373+00:00",
+  "version": "platform-api-integration-20261012-deployed.1",
+  "candidateVersion": "platform-api-integration-20261012-rc.3",
+  "commit": "20ecebdb91a531dd55a83dbc8cf18cc5a93565fd",
+  "activeRecordSha256": "a9b57793ff74377f7fbfcc66dd20dc74b4686b32da5057ece73d1576bff01626",
+  "beforeActiveSha256": "d867027ae05aa90394f3a05a3dbaec7d8b868ff0e5705a4f8b0ce5c23f8ebe5c",
+  "runningContainer": {
+    "id": "8f399b21be28502239d527bb007282af9b3274ca9362e6a3ebace7b478a5b07d",
+    "image": "sha256:4e484ed7db6da2760c64de1f4481fdb7deb97b7acf4e4182e1658507a1d8b437",
+    "pid": 2684217,
+    "restartCount": 0,
+    "startedAt": "2026-10-11T16:41:45.890652151Z",
+    "health": "healthy",
+    "envHash": "6357666b2bad032da6519cbb33bc0b3012218377b5c8f14c8bf98558a671c2db",
+    "mountsHash": "a4cc3c293b036b3ea7f5454da23457e2078363981b280c5679b860e33d97a805"
+  },
+  "restartImageId": "sha256:97633e241d545dbe895ad003852dfd35eae39cab9bcb54fbee95740b67daa053",
+  "restartImageTag": "phone-cloud-platform:platform-api-integration-20261012-rc.3",
+  "activeCompose": [
+    {
+      "path": "/opt/phone-cloud-platform/docker-compose.yml",
+      "sha256": "8687bf4176f8f0d78ab73380a7ef0fd6b71bf044de5474f172ef5483d3e47435"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/platform-api-integration-20261012-rc.3/compose.candidate.json",
+      "sha256": "45f735c99379398e200b9323e4016fd75dc6f1b7a6c0895340b5434f3f02a14e"
+    }
+  ],
+  "previousRestartImageId": "sha256:71b02934fac4bcbe57fb274e49952fcb9ac577a7800c092d930621288bbc7069",
+  "staticResources": [
+    {
+      "path": "/api-docs.html",
+      "status": 200,
+      "sha256": "d6930845d9f5f9a93b84a59e3de8111b22ea6db5c456a437e31cf34dd5157861"
+    },
+    {
+      "path": "/api-docs.css",
+      "status": 200,
+      "sha256": "63d05021377c39441aafa5b6917928eaa7f7f71b7cef75d38fbc07e90fc3896a"
+    },
+    {
+      "path": "/api-docs.js",
+      "status": 200,
+      "sha256": "63e8f55692019a243ee7f6aace733d842f6ccd979c01fd7aee3430f95f830b54"
+    },
+    {
+      "path": "/api-reference.json",
+      "status": 200,
+      "sha256": "caa91c1479d9694f140095e0eab85b37bff48c6c301833fc6a521cbafeef9d79"
+    },
+    {
+      "path": "/openapi.json",
+      "status": 200,
+      "sha256": "c0afb091c3ab74077bfa79570201363d42ab883f23a18791eecfe0a397900ee8"
+    },
+    {
+      "path": "/downloads/sign.mjs",
+      "status": 200,
+      "sha256": "8aac5bdf144c8dd6c93da3aa34c63c21952270fba139e5b117730b6730c51946"
+    },
+    {
+      "path": "/downloads/name-lookup-openapi.json",
+      "status": 200,
+      "sha256": "076015c74331006e399ac770550d696cfc9381dcda5069f5b23f594ea593e149"
+    },
+    {
+      "path": "/downloads/name-lookup-integration.zip",
+      "status": 200,
+      "sha256": "7e44e797e6acfd4e9b13d0882ad4a6caa2f54885b0710eea2932247bbce4cff2"
+    },
+    {
+      "path": "/downloads/name-lookup-sha256.json",
+      "status": 200,
+      "sha256": "7a85a17714f3e1c56998ae186b82c210c87797d93605cdcf3213d953fc439251"
+    }
+  ],
+  "nonDocHashesUnchanged": 21,
+  "mediaBefore": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "mediaAfter": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "observation": {
+    "total": 131,
+    "listed": 125,
+    "online": 124,
+    "agents": [
+      {
+        "enabled": true,
+        "lastSeenAt": "2026-10-12T07:07:43.930Z",
+        "online": true,
+        "reportedDevices": 131
+      },
+      {
+        "enabled": false,
+        "lastSeenAt": "2026-08-10T06:02:47.953Z",
+        "online": false,
+        "reportedDevices": 50
+      },
+      {
+        "enabled": false,
+        "lastSeenAt": "2026-07-03T04:15:49.959Z",
+        "online": false,
+        "reportedDevices": 2
+      },
+      {
+        "enabled": false,
+        "lastSeenAt": "2026-07-03T05:36:47.198Z",
+        "online": false,
+        "reportedDevices": 4
+      }
+    ],
+    "activeLocks": 2,
+    "healthReady": {
+      "/healthz": 200,
+      "/readyz": 200
+    }
+  },
+  "environmentUnchanged": true,
+  "otherContainersUnchanged": true,
+  "productionServiceRestarts": 0,
+  "newRealTasksOrQueries": 0,
+  "newHumanNotifications": 0,
+  "businessSourceCommit": "7f695507761b07504a94b7372de0c340befbf33f",
+  "runtimeHotPatchCount": 11,
+  "rollbackDirectory": "/opt/phone-cloud-platform/staging/platform-api-integration-20261012-rc.3/backups",
+  "productionFullAcceptanceComplete": false
+}

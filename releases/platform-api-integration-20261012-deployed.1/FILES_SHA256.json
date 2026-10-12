@@ -1,0 +1,13 @@
+{
+  "docs/API_PORTAL.md": "0caa8304aa926044a32054ca738b1929acde0fc38fc8c88047355c1b381c3311",
+  "docs/PROJECT_DEVELOPMENT.md": "23f141b91492387372cdc757087aef9ac51b3004938b4fd368fe6c6f83ac8247",
+  "releases/platform-api-integration-20261012-deployed.1/ACTIVATE.json": "917368b76d3c37c966651e52ab80ceebe8f197a59dd1f4d103454b4fad1ef682",
+  "releases/platform-api-integration-20261012-deployed.1/BUILD_BACKUP.json": "fb00694aec45f0dfc3334aa965260d3cb88237c672243de99f666da4c377d289",
+  "releases/platform-api-integration-20261012-deployed.1/HTTP_FINAL.json": "4518731ce4963528a5ce348119c72b43dd87049fcb43a6cddcb9090a2351c79f",
+  "releases/platform-api-integration-20261012-deployed.1/ONLINE_DOCS.jpg": "edad44552cbe3a7375657b973aebd0459bb6648fd2166ca13b11fbfa042e2842",
+  "releases/platform-api-integration-20261012-deployed.1/README.md": "794374cd8202d468674fb89e16249380c3609f924466650f942230343e6ac33e",
+  "releases/platform-api-integration-20261012-deployed.1/ROLLBACK_VERIFY.json": "2f9cc83f23450e81c49adcd5ab5f8d185b10f97df77734a43b6098d1e6782062",
+  "releases/platform-api-integration-20261012-deployed.1/RUNBOOK.md": "b601e0e0db1a080562c32fd1fa1967017e1a6f84b5ef06201f055b5a7cabe3f4",
+  "releases/platform-api-integration-20261012-deployed.1/VERSION.json": "6cf26ab5d62247bd98bd69296b9656f8281e2659a8adc704197244493230819f",
+  "releases/platform-api-integration-20261012-deployed.1/deployment-helper.py": "1b023b131d10e679f55c7086a2f9d4e2c549e7215a77601eb25c50712fd6af3d"
+}
