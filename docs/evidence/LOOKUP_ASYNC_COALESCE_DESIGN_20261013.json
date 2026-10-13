@@ -1,0 +1,54 @@
+{
+  "task": "lookup-async-contract-20261013-design.2",
+  "status": "documentation design candidate only; not implemented",
+  "atLocal": "2026-10-13T16:14:34.346585+08:00",
+  "branch": "codex/lookup-async-contract-20261013",
+  "baseCommit": "f3084a2f0239b54e8d46749e57d11cc23341c579",
+  "candidateTag": "lookup-async-contract-20261013-design.2",
+  "userClarification": "Caller result timeout120seconds followed by a fresh same-phone submission, possibly a new key",
+  "decisionRelationship": "Extends stable-key idempotency with same-client/normalized-phone in-flight coalescing for proposed async API; changes earlier different-key-is-independent-execution proposal only. Existing sync and old7 untouched.",
+  "proposalOnly": {
+    "inflightIdentity": [
+      "clientId",
+      "normalizedPhoneNumber"
+    ],
+    "newRequestKeyPersistedAsAlias": true,
+    "keepOriginalLookupId": true,
+    "unknownAndStoppingKeepBinding": true,
+    "recentSuccessOrNotFoundReuseSuggestedSeconds": 600,
+    "recentWindowFixedFromCompletionNotSliding": true,
+    "sameKeyReplayIndependentOfRecentCacheExpiry": true,
+    "tenantIsolation": true,
+    "notPermanentGlobalPhoneCache": true,
+    "failedExpiredAreNotCachedNameResults": true
+  },
+  "plannedAsynchronousCases": 23,
+  "newCases": 7,
+  "beforeHashes": {
+    "docs/PROJECT_DEVELOPMENT.md": "32a276cf7d33d91133c5f1c2c61c4f6ad2ceb8bfce34f3e6316ef9c5ee88a8a6",
+    "docs/LOOKUP_DEVICE_POOL_DESIGN.md": "1578a087a9e4f65530f1c791047e72e43214e483e30a091513348d6e24ce495f"
+  },
+  "files": {
+    "docs/PROJECT_DEVELOPMENT.md": "6562e7b9c7b2f3c7ade46b31873d91f3524fbbd0790e3bb9d700f662ea5a9687",
+    "docs/LOOKUP_DEVICE_POOL_DESIGN.md": "ff468e0f390d3aea96a88b640a1c4c3aadf1e5b19825300d4fcb54c2ff44b09b"
+  },
+  "rules": "Existing full main/workflow context retained; document baselines reread/hash-checked; workflow unchanged0a06c335",
+  "review": "Self review of two-minute/new-key case, concurrent binding, completed race, aliases/expiry, tenant isolation and stop proof; runtime assertions not executed",
+  "runtimeChanges": 0,
+  "applicationTestsRun": false,
+  "realQueries": 0,
+  "productionConnections": 0,
+  "productionMutations": 0,
+  "pushes": 0,
+  "externalMessages": 0,
+  "rootDirtyWorkPreserved": true,
+  "previousTagsPreserved": true,
+  "rollback": "Revert this document-only commit or supersede explicitly; no data/runtime changes",
+  "unverified": [
+    "Canonical/alias PG persistence and concurrent admission",
+    "New asynchronous API and SDK retry tests",
+    "Suggested600-second completed result reuse behavior and freshness contract",
+    "23new async acceptance cases",
+    "All previous real five-phone/limit-switch/expiry/Windows/production acceptance gaps retained"
+  ]
+}
