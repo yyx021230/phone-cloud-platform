@@ -102,25 +102,69 @@
     "lease ACK protocol for managed tasks",
     "5-device real concurrency acceptance"
   ],
-  "validation": {
-    "atBeijing": "2026-10-13T10:29:35.497085+08:00",
-    "rosterTranscription": "49 unique; image groups and design table match;161 included177 excluded",
-    "relativeDocumentLinks": "passed",
-    "sourceHashesAgainstLastReceipt": {
-      "server/index.mjs": "331720968d825f8a7922ce7048e117e5f883a1edddfa48dba559f67041061172",
-      "server/open-name-lookup-api.mjs": "0c846c1cb1f01ca5a2cd662fc0b81d09568d17d89268b66254e37092664a4eb3",
-      "server/automation-center.mjs": "e190d21cc2bcf99c8ef874b754e8cbe05419544efa24616d856c36d6eae2ddfd",
-      "server/postgres-repositories.mjs": "bf6c10cf849cffc6c59c1f79e1fb62daeb548056632917d14bbd781ac8e70d54"
-    },
-    "applicationSourceChanges": 0,
-    "rootPreserved": true,
-    "rootDirtyEntriesPreserved": 235,
-    "scopeAndDiff": "documentation only; git diff --check passed",
-    "review": "self review; durable dispatch, shared lock admission, managed ACK, unknown-result hold, human slot admission and backward compatibility explicitly required",
-    "applicationTestsRun": false,
-    "realDeviceTestsRun": false,
-    "runtimeOrProductionAcceptance": false,
-    "externalReference": "PostgreSQL16 official SELECT row-lock and SKIP LOCKED documentation read; referenced only to support proposed queue locking"
+  "version": "lookup-pool-design-20261013-rc.2",
+  "currentStageBaseCommit": "a75f221fbe60e2c72aaec8363d6f38be93d54118",
+  "publicContract": {
+    "mode": "synchronous request-response",
+    "endpoint": "POST /api/v1/open/name-lookups/query",
+    "requiredBodyFields": [
+      "phoneNumber"
+    ],
+    "successFields": [
+      "ok",
+      "name"
+    ],
+    "externalTaskManagementRequired": false,
+    "lookupIdInternalOnly": true,
+    "httpWaitSecondsProposed": 120,
+    "sdkReadTimeoutSecondsProposed": 130,
+    "proxyReadTimeoutSecondsProposed": 150,
+    "nameSource": "actual masked/display name, not guaranteed full legal name",
+    "authAndIdempotency": "existing HMAC and stable per-logical-call key encapsulated in SDK"
   },
-  "designFileSha256": "9ac30001fb2c8e471422970073d99c8c75201c2e2df768b850a5fe42a254edd0"
+  "replaces": "rc.1 external four task routes/ID polling design only; internal queue and49-device/5 concurrency remain",
+  "validationHistory": [
+    {
+      "atBeijing": "2026-10-13T10:29:35.497085+08:00",
+      "rosterTranscription": "49 unique; image groups and design table match;161 included177 excluded",
+      "relativeDocumentLinks": "passed",
+      "sourceHashesAgainstLastReceipt": {
+        "server/index.mjs": "331720968d825f8a7922ce7048e117e5f883a1edddfa48dba559f67041061172",
+        "server/open-name-lookup-api.mjs": "0c846c1cb1f01ca5a2cd662fc0b81d09568d17d89268b66254e37092664a4eb3",
+        "server/automation-center.mjs": "e190d21cc2bcf99c8ef874b754e8cbe05419544efa24616d856c36d6eae2ddfd",
+        "server/postgres-repositories.mjs": "bf6c10cf849cffc6c59c1f79e1fb62daeb548056632917d14bbd781ac8e70d54"
+      },
+      "applicationSourceChanges": 0,
+      "rootPreserved": true,
+      "rootDirtyEntriesPreserved": 235,
+      "scopeAndDiff": "documentation only; git diff --check passed",
+      "review": "self review; durable dispatch, shared lock admission, managed ACK, unknown-result hold, human slot admission and backward compatibility explicitly required",
+      "applicationTestsRun": false,
+      "realDeviceTestsRun": false,
+      "runtimeOrProductionAcceptance": false,
+      "externalReference": "PostgreSQL16 official SELECT row-lock and SKIP LOCKED documentation read; referenced only to support proposed queue locking"
+    }
+  ],
+  "validation": {
+    "atBeijing": "2026-10-13T10:41:43.068012+08:00",
+    "documentDiffCheck": "passed",
+    "fourJsonExamples": "parsed and checked",
+    "onePublicSynchronousRoute": "confirmed in design, not implemented",
+    "externalTaskIdAndPollingRemoved": true,
+    "rosterUnchanged49": true,
+    "relativeLinks": "passed",
+    "review": "self review; persistent result before response, bounded HTTP wait, connection waiter limits, retry same logical key, no release/replay due disconnect, known not_found vs timeout/human/unknown",
+    "runtimeTestsRun": false,
+    "productionOrRealDeviceActions": 0,
+    "rootNoWritesByThisTask": true,
+    "rootParallelChangeObserved": {
+      "initialHash": "99f752fd14f3664537778b90a8e8b7b3f08dd8b5399680d623082d7a527a8411",
+      "currentHash": "61ecfb063022f99c57bde0490960548de03d2cc666f3b777580220aa44f17b0b",
+      "initialDirtyEntries": 235,
+      "currentDirtyEntries": 236,
+      "readOnlyDiff": "D-079 standalone XHS draft-save candidate record added by parallel work; preserved without copying or overwriting",
+      "initialValidationFailure": "root hash/count equality guard detected parallel change; own isolated files unaffected, links/examples/roster passed, validation updated to reflect actual observation"
+    }
+  },
+  "designFileSha256": "fe73a6846aa8d42aee8ced9e816509cdbb0839e9b56c64e2564f667d95ed8c04"
 }
