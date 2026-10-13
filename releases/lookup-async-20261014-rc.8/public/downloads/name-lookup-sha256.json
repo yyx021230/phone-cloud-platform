@@ -1,0 +1,15 @@
+{
+  "version": "lookup-async-20261014-rc.8",
+  "status": "local-candidate-not-deployed",
+  "files": {
+    "PARTNER_HANDOFF.md": "7e61755eb8431ea3a146f10fbdb48f566e5d8ab9ba2a5a01a8f4fb288ffee0ca",
+    "partner_example.py": "83fd56ebf63f3bd0b7251e14eee198aa7b0b44126cd09edc855e0a60db625bc0",
+    "README.md": "4a9228df0a81cf808cacfb5628d5701032715d55dfeb37ab06c8524dffbd7aed",
+    "OPEN_NAME_LOOKUP_API.md": "677b5ff42ac743a0a37bbdf99e20df558d726d58509a3a037b66484b3ac7cf54",
+    "node_client.mjs": "150aedce47ecef93103dc39adc5a48f32a9e72f6912c419dd22e5acbbde8732f",
+    "python_client.py": "0c1270b06502ef66f8ecf729e48c9da5644fe65992f62cc575f22440a3b85512",
+    "sign.mjs": "8aac5bdf144c8dd6c93da3aa34c63c21952270fba139e5b117730b6730c51946",
+    "openapi.json": "e0d7accd7901bbf07242ea2cb977d303f190cbb63efe328a897b43933b1b0f9b"
+  },
+  "zipSha256": "654119bc2dde54f7fcd4533687f759d27102b51a7814dee163510252237ee14d"
+}
