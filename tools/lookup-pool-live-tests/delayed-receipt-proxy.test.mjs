@@ -1,0 +1,5 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {delayedTask} from './delayed-receipt-proxy.mjs';
+const c={taskId:'original-task',armedAtMs:1000,releaseAtMs:146000},path='/api/v1/windows-agent-tasks/original-task/status';
+test('only exact scoped terminal report is delayed and it automatically expires',()=>{assert.equal(delayedTask(c,path,{status:'succeeded'},122000),true);assert.equal(delayedTask(c,path,{status:'succeeded'},146000),false);assert.equal(delayedTask(c,path,{status:'succeeded'},999),false);});
+test('other tasks, progress reports, heartbeat and task polling pass through',()=>{for(const p of ['/api/v1/windows-agent-tasks/another-task/status','/api/v1/windows-agents/local/heartbeat','/api/v1/windows-agents/local/tasks/next'])assert.equal(delayedTask(c,p,{status:'succeeded'},122000),false);assert.equal(delayedTask(c,path,{status:'running'},122000),false);});
+test('missing or unbounded control never holds a callback',()=>{for(const x of [null,{}, {...c,taskId:''},{...c,releaseAtMs:999999},{...c,releaseAtMs:NaN}])assert.equal(delayedTask(x,path,{status:'succeeded'},122000),false);});
