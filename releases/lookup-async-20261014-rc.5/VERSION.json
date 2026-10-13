@@ -1,0 +1,26 @@
+{
+  "version": "lookup-async-20261014-rc.5",
+  "candidateTag": "lookup-async-20261014-rc.5",
+  "branch": "codex/lookup-async-real-20261014",
+  "baselineCommit": "6905fac2856931d7a609e4c08866cf5c02470940",
+  "status": "local-candidate-not-deployed",
+  "baseTag": "lookup-async-20261013-rc.4",
+  "baseManifestSha256": "7fb8ea0cd2f269e238782bedceae42b14e867c29734c0bf1eddc19e6d334a261",
+  "baseFileHashes": {
+    "windows-agent/scripts/alipay_name_lookup.py": "35518f30a442e1cbfe07a741d28c0a4ab697077171a97a82606fce1c4ab88004",
+    "windows-agent/scripts/alipay_visual_result.py": "92c9e8a663eafcac4a5f80e45777df50f1aa73f8e9deb8332fce04a688e5022f"
+  },
+  "overlayFiles": [
+    "windows-agent/scripts/alipay_name_lookup.py",
+    "windows-agent/scripts/alipay_visual_result.py"
+  ],
+  "testFiles": [
+    "windows-agent/scripts/test_lookup_loading_guard.py"
+  ],
+  "platformReleaseReady": false,
+  "apiChanges": false,
+  "schemaChanges": false,
+  "mediaChanges": false,
+  "productionActions": 0,
+  "realTestStatus": "rc.4 initial three failed while searching; rc.5 real validation pending at tag creation"
+}
