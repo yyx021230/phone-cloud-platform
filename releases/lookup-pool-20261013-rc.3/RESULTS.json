@@ -1,5 +1,5 @@
 {
-  "status": "local offline passed; patched real canary pending",
+  "status": "local offline and scoped2-device real fixes passed; full acceptance incomplete",
   "changedPythonFunctionsFromRc2": [
     "account_picker_rows"
   ],
@@ -48,5 +48,18 @@
   },
   "productionActions": 0,
   "remotePushes": 0,
-  "true5PhoneConcurrencyVerified": false
+  "true5PhoneConcurrencyVerified": false,
+  "realReceipt": "../../docs/evidence/LOOKUP_POOL_REAL_LOCAL_RETRY_20261013.json",
+  "realPhase3LogicalRequests": 10,
+  "realPhase3Completed": 10,
+  "realPhase3HasName": 5,
+  "realPhase3NotFound": 5,
+  "realMaxExecuting": 2,
+  "realMaxQueryPhones": 2,
+  "humanIsolation": true,
+  "stopRejoinDispatchErrors": 0,
+  "manualTrueRowSelectedAndIdentityVerified": true,
+  "naturalSuccessfulRotationSameQueryVerified": false,
+  "nameAccuracyFullyPassed": false,
+  "ownedRuntimeStopped": true
 }
