@@ -1,0 +1,149 @@
+{
+  "candidate": "xhs-data-automation-20261013-rc.2",
+  "branch": "codex/xhs-data-automation-20261013",
+  "parent_commit": "79d88cbb12039a8974c42d582a9bad88812c868c",
+  "original_collector_baseline": "ff8a64a88792897da11bebc2055a4bf370725ac2",
+  "production_deployed": false,
+  "production_full_baseline_verified": false,
+  "modules": [
+    "scan",
+    "publish",
+    "kuaishou",
+    "data",
+    "name"
+  ],
+  "scope": "rc.2 restores existing deployed Kuaishou frontend and five-module compatibility; backend/Agent unchanged from rc.1; old whole entry files must not be deployed",
+  "verification_this_round": {
+    "syntax": "passed",
+    "ui_targeted": {
+      "passed": 47,
+      "failed": 0
+    },
+    "full_regression": {
+      "passed": 529,
+      "failed": 0,
+      "skipped": 0
+    },
+    "browser": "five modules; mock Kuaishou start/stop/history; existing collection snapshot; console errors 0",
+    "agent_independent_check": "not rerun; source unchanged from rc.1",
+    "python_check": "not rerun; source unchanged from rc.1",
+    "real_kuaishou_feishu_device_test": false
+  },
+  "files": [
+    {
+      "path": "docs/PROJECT_DEVELOPMENT.md",
+      "sha256": "7483d4a450777c7026924595a05439b89fa839845ac028cd8d09c4cabc3b23f2"
+    },
+    {
+      "path": "docs/XHS_DATA_AUTOMATION_RC_20261013.md",
+      "sha256": "1dc3f19f4d7df56b809e6a904a14992167dc6b68e16c9dc890078a3ce6cc847d"
+    },
+    {
+      "path": "docs/evidence/xhs-data-automation-20261013-rc1-manifest.json",
+      "sha256": "6a4667f803c5d99b2c1857d5d1d2663602cb07152a9f3077449676fdea4cba0e"
+    },
+    {
+      "path": "docs/evidence/xhs-data-automation-20261013-rc2-kuaishou.json",
+      "sha256": "f62f73cc9a761d999c6b5383616b1ff9cc4e381e2f7de19e6a9753b149fc38fc"
+    },
+    {
+      "path": "public/app.js",
+      "sha256": "0dd6c906a9f935048a992f5547ff335cd77f341cb56822dc882522ffdef43e41"
+    },
+    {
+      "path": "public/index.html",
+      "sha256": "fe672baa88d7398f10d61f6f81bfc426678fbced09300892e25163aaf2b75230"
+    },
+    {
+      "path": "public/styles.css",
+      "sha256": "0997409af8edab3597c24b08ba63839173fdf732f57436c00abe41d674ee613b"
+    },
+    {
+      "path": "public/xhs-data-collection-ui.js",
+      "sha256": "423f616e0158b0dbe26f4255742a18ddc43a8841b423825f67a0c34c7c00f6c7"
+    },
+    {
+      "path": "screen-client/screen-ui.test.mjs",
+      "sha256": "bc92b92036d5c204b9b11bb5c9a4640966a75f395d6ddb5bd4729808bb7e1d93"
+    },
+    {
+      "path": "server/automation-center-ui.test.mjs",
+      "sha256": "8238fb7a1b47053d0bc9940b7bd24c3ca6ebda6edac1dda627cfc1884b81a83e"
+    },
+    {
+      "path": "server/automation-center.mjs",
+      "sha256": "3746829675b451ee9fa4fddbfcbeee178119cbe13ca25b6e041267a5a7c01264"
+    },
+    {
+      "path": "server/automation-center.test.mjs",
+      "sha256": "5d4142cf059432b230969fbfb52b2b2e21d0380436d81add096e6f98d065fb89"
+    },
+    {
+      "path": "server/automation-module-preservation.test.mjs",
+      "sha256": "ff79666e11c51c292e7948f4a1b7e141b53132f7ee812bebb10845a8d4ba2ac9"
+    },
+    {
+      "path": "server/device-occupancy.mjs",
+      "sha256": "3d6c7d4045cd82cb283d4a35c1473760f2d0a21601b6d9da032649bb19013baf"
+    },
+    {
+      "path": "server/index.mjs",
+      "sha256": "3e01dfcdad11608931cdfbce7e06707c247b316ea018980647926dbc1ff666d6"
+    },
+    {
+      "path": "server/xhs-data-collection.http.test.mjs",
+      "sha256": "c73a06c68368af5632c89ce97472419c429103525b2d2b310414d8d5f7892dcf"
+    },
+    {
+      "path": "server/xhs-data-collection.mjs",
+      "sha256": "17738a1f2f9fb2eb93ba4ba89f4e563f53d9b0a8313087fdfa6a1c620a55a49a"
+    },
+    {
+      "path": "server/xhs-data-collection.test.mjs",
+      "sha256": "02280f50a591535889265eaf6d68ceea872298377ccc4ce85672b230456b96b4"
+    },
+    {
+      "path": "server/xhs-data-ui.test.mjs",
+      "sha256": "c7c16a3f1c7857105ac712f1ea112f53c148729c8097fde5805e92438007d7bd"
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_data_sync.py",
+      "sha256": "21b650aa02c53dbd4deee721d1e92ff0c7d15ea378513f426c7674eeb96ae4e5"
+    },
+    {
+      "path": "windows-agent/scripts/小红书数据同步.py",
+      "sha256": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9"
+    },
+    {
+      "path": "windows-agent/src/automation-center-wiring.test.mjs",
+      "sha256": "1250df1e5a6da0b98dad2b3d8ac52082ea6acc2a1c9e2be02b59144f8b554c2e"
+    },
+    {
+      "path": "windows-agent/src/config.mjs",
+      "sha256": "ea836263b5f5e1d052c3e866c05ea7e5e89499c53fb2fab938040ea06471e27a"
+    },
+    {
+      "path": "windows-agent/src/index.mjs",
+      "sha256": "2b62cbe8308a3f4acf95c0200abf9cb5fff08ff642a6f2971de9fefab2bfdd0a"
+    },
+    {
+      "path": "windows-agent/src/post-task-scan-policy.mjs",
+      "sha256": "7596422f1abefb7793f3650658f8991d817e87bcb4fb1d2b2b92abde902a263e"
+    },
+    {
+      "path": "windows-agent/src/post-task-scan-policy.test.mjs",
+      "sha256": "e9198ced86f76a03a4b71438b93a16a23083a04f22c4dcc1461585a7441766ad"
+    },
+    {
+      "path": "windows-agent/src/xhs-data-collection.mjs",
+      "sha256": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4"
+    },
+    {
+      "path": "windows-agent/src/xhs-data-collection.test.mjs",
+      "sha256": "60f4e1969dc7e0d6193d3c7159d2e8c9a62f3a800eb2bb53763eb6b3e0f2cc35"
+    }
+  ],
+  "historical_manifest": "rc1 manifest is retained and applies only to rc1 tag",
+  "review": "self-review; no independent reviewer",
+  "rollback": "reverse only rc2 frontend changes; preserve live Kuaishou and D-075; production release still needs minimal merge and rollback receipt"
+}

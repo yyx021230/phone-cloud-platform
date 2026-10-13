@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Phone Cloud Platform</title>
-  <link rel="stylesheet" href="./styles.css?v=20261013-xhs-data-rc1" />
+  <link rel="stylesheet" href="./styles.css?v=20261013-xhs-data-rc2" />
   </head>
   <body class="booting">
     <div class="boot-loader" aria-label="正在加载 Phone Cloud">
@@ -207,11 +207,14 @@
                   <button data-automation-module="publish" type="button" role="tab" aria-selected="false">
                     <em>02</em><span><b>一键发布</b><small>图文笔记</small></span><i aria-hidden="true">↗</i>
                   </button>
+                  <button data-automation-module="kuaishou" type="button" role="tab" aria-selected="false">
+                    <em>03</em><span><b>快手录入</b><small>飞书队列</small></span><i aria-hidden="true">↗</i>
+                  </button>
                   <button data-automation-module="data" type="button" role="tab" aria-selected="false">
-                    <em>03</em><span><b>小红书数据采集</b><small>最近 30 天</small></span><i aria-hidden="true">↗</i>
+                    <em>04</em><span><b>小红书数据采集</b><small>最近 30 天</small></span><i aria-hidden="true">↗</i>
                   </button>
                   <button data-automation-module="name" type="button" role="tab" aria-selected="false">
-                    <em>04</em><span><b>查名字</b><small>连续查询</small></span><i aria-hidden="true">↗</i>
+                    <em>05</em><span><b>查名字</b><small>连续查询</small></span><i aria-hidden="true">↗</i>
                   </button>
                 </div>
                 <form id="userXhsTaskForm" class="panel action-rail-card scan-create-card" data-automation-module-panel="scan">
@@ -326,6 +329,38 @@
                 <div class="panel action-rail-card compact-task-card automation-side-board publish-history-board hidden" data-automation-module-panel="publish">
                   <div class="scan-board-head"><div><span class="scan-kicker">LIVE QUEUE</span><h2>发布记录</h2><p>当前设备的任务进度与失败原因。</p></div><em>实时</em></div>
                   <div id="userPublishTaskList" class="stack scan-task-list"></div>
+                </div>
+
+                <section class="panel action-rail-card automation-form-card kuaishou-lead-card hidden" data-automation-module-panel="kuaishou">
+                  <div class="automation-card-head">
+                    <div>
+                      <span class="scan-kicker">KUAISHOU · FEISHU QUEUE</span>
+                      <h2>快手录入</h2>
+                      <p>持续扫描飞书中的未处理行和“推送失败（提交前）”行，直到你主动停止。</p>
+                    </div>
+                    <span class="automation-mode-badge"><i></i> 持续任务</span>
+                  </div>
+                  <div id="userKuaishouStatus" class="lookup-session-status" data-state="idle"><i></i><div><strong>尚未启动</strong><span>选择间隔范围后启动飞书队列</span></div></div>
+                  <div class="kuaishou-delay-grid">
+                    <label class="scan-field automation-text-field"><span>最短间隔（秒）</span><input id="userKuaishouMinDelay" type="number" min="30" max="3600" step="1" value="240" /></label>
+                    <label class="scan-field automation-text-field"><span>最长间隔（秒）</span><input id="userKuaishouMaxDelay" type="number" min="30" max="3600" step="1" value="420" /></label>
+                  </div>
+                  <div class="kuaishou-safety-note">
+                    <span><i>✓</i> 空白数据按表格从上到下处理</span>
+                    <span><i>✓</i> 仅提交前失败会自动重试</span>
+                    <span><i>✓</i> 结果待确认绝不重复提交</span>
+                  </div>
+                  <div class="automation-submit-row">
+                    <div><strong>独占当前设备运行</strong><p id="userKuaishouHint" class="hint">飞书暂时没有新数据时也会继续等待。</p></div>
+                    <div class="kuaishou-command-buttons">
+                      <button id="userKuaishouStartButton" class="scan-submit-button" type="button"><span>启动快手录入</span><i aria-hidden="true">→</i></button>
+                      <button id="userKuaishouStopButton" class="danger-outline" type="button" disabled>停止任务</button>
+                    </div>
+                  </div>
+                </section>
+                <div class="panel action-rail-card compact-task-card automation-side-board kuaishou-history-board hidden" data-automation-module-panel="kuaishou">
+                  <div class="scan-board-head"><div><span class="scan-kicker">CONTINUOUS QUEUE</span><h2>运行记录</h2><p>显示当前设备的扫描状态、累计结果和下一次检查时间。</p></div><em>实时</em></div>
+                  <div id="userKuaishouTaskList" class="stack scan-task-list"></div>
                 </div>
 
                 <form id="userDataCollectionForm" class="panel action-rail-card automation-form-card xhs-data-console hidden" data-automation-module-panel="data">
@@ -875,6 +910,6 @@
     </main>
 
     <script type="module" src="./vendor/screen-control.js?v=20260806-ice-ready-wake-v1"></script>
-    <script type="module" src="./app.js?v=20261013-xhs-data-rc1"></script>
+    <script type="module" src="./app.js?v=20261013-xhs-data-rc2"></script>
   </body>
 </html>

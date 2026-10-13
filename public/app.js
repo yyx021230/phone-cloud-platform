@@ -62,6 +62,8 @@ const state = {
   userDataHint: "",
   userPublishTasks: [],
   userPublishSubmitting: false,
+  userKuaishouTasks: [],
+  userKuaishouBusy: false,
   userLookupSessions: [],
   userLookupBusy: false,
   userLookupEnding: false,
@@ -247,6 +249,13 @@ const els = {
   userPublishHint: document.getElementById("userPublishHint"),
   userPublishSubmitButton: document.getElementById("userPublishSubmitButton"),
   userPublishTaskList: document.getElementById("userPublishTaskList"),
+  userKuaishouStatus: document.getElementById("userKuaishouStatus"),
+  userKuaishouMinDelay: document.getElementById("userKuaishouMinDelay"),
+  userKuaishouMaxDelay: document.getElementById("userKuaishouMaxDelay"),
+  userKuaishouHint: document.getElementById("userKuaishouHint"),
+  userKuaishouStartButton: document.getElementById("userKuaishouStartButton"),
+  userKuaishouStopButton: document.getElementById("userKuaishouStopButton"),
+  userKuaishouTaskList: document.getElementById("userKuaishouTaskList"),
   userDataCollectionForm: document.getElementById("userDataCollectionForm"),
   userDataTargetSelect: document.getElementById("userDataTargetSelect"),
   userDataCollectButton: document.getElementById("userDataCollectButton"),
@@ -925,7 +934,7 @@ function renderUserWorkbench() {
   if (els.userXhsList) els.userXhsList.innerHTML = selectedDeviceXhsTasks.length
     ? selectedDeviceXhsTasks.map((task) => renderUserXhsTaskCard(task)).join("")
     : `<div class="empty scan-empty-state">暂无扫码任务。上传二维码后，这里会显示执行步骤和结果。</div>`;
-  if (!["scan", "publish", "data", "name"].includes(state.userAutomationModule)) state.userAutomationModule = "scan";
+  if (!["scan", "publish", "kuaishou", "data", "name"].includes(state.userAutomationModule)) state.userAutomationModule = "scan";
   els.userAutomationModuleTabs?.querySelectorAll("[data-automation-module]").forEach((button) => {
     const active = button.dataset.automationModule === state.userAutomationModule;
     button.classList.toggle("active", active);
@@ -953,6 +962,7 @@ function renderUserWorkbench() {
   if (els.userPublishTaskList) els.userPublishTaskList.innerHTML = selectedPublishTasks.length
     ? selectedPublishTasks.map(renderAutomationJobCard).join("")
     : `<div class="empty scan-empty-state">暂无发布记录。</div>`;
+  renderKuaishouLead(selectedDevice);
   const dataTargets = xhsDataTargetsForDevice(selectedDevice);
   if (els.userDataTargetSelect) {
     const previous = els.userDataTargetSelect.value;
@@ -977,6 +987,47 @@ function renderUserWorkbench() {
   const lookupSession = selectedDevice ? activeLookupSessionForDevice(selectedDevice.deviceId) : null;
   renderLookupSession(lookupSession, selectedDevice);
   renderUserScreenControl(selectedDevice);
+}
+
+function activeKuaishouLeadTask(deviceId = "") {
+  return state.userKuaishouTasks.find((task) => task.deviceId === deviceId && ["queued", "running", "stalled"].includes(task.status)) || null;
+}
+
+function renderKuaishouLead(device) {
+  const tasks = device ? state.userKuaishouTasks.filter((task) => task.deviceId === device.deviceId) : [];
+  const active = activeKuaishouLeadTask(device?.deviceId || "");
+  const progress = active?.result?.progress || tasks[0]?.result?.progress || {};
+  const status = active?.status || tasks[0]?.status || "idle";
+  const statusText = ({ queued: "等待 Windows 管理器", running: "持续扫描中", stalled: "管理器离线，等待恢复", failed: "任务异常停止", cancelled: "已由用户停止", expired: "任务已过期", idle: "尚未启动" })[status] || status;
+  const lastMessage = active?.events?.at(-1)?.message || tasks[0]?.events?.at(-1)?.message || (active ? "正在准备飞书消费器" : "选择间隔范围后启动飞书队列");
+  if (els.userKuaishouStatus) {
+    els.userKuaishouStatus.dataset.state = status === "running" ? "ready" : status;
+    els.userKuaishouStatus.innerHTML = `<i></i><div><strong>${escapeHtml(statusText)}</strong><span>${escapeHtml(lastMessage)}</span></div>`;
+  }
+  const controlsDisabled = Boolean(active) || state.userKuaishouBusy;
+  if (els.userKuaishouMinDelay) els.userKuaishouMinDelay.disabled = controlsDisabled;
+  if (els.userKuaishouMaxDelay) els.userKuaishouMaxDelay.disabled = controlsDisabled;
+  if (els.userKuaishouStartButton) {
+    els.userKuaishouStartButton.disabled = !device || Boolean(device.busy) || controlsDisabled || !automationReadyForDevice(device);
+    els.userKuaishouStartButton.innerHTML = `<span>${state.userKuaishouBusy && !active ? "正在启动..." : "启动快手录入"}</span><i aria-hidden="true">→</i>`;
+  }
+  if (els.userKuaishouStopButton) {
+    els.userKuaishouStopButton.disabled = !active || state.userKuaishouBusy;
+    els.userKuaishouStopButton.textContent = state.userKuaishouBusy && active ? "正在停止..." : "停止任务";
+  }
+  if (els.userKuaishouTaskList) {
+    els.userKuaishouTaskList.innerHTML = tasks.length ? tasks.map((task) => {
+      const taskProgress = task.result?.progress || {};
+      const taskStatus = ({ queued: "排队中", running: "运行中", stalled: "待恢复", failed: "异常停止", cancelled: "已停止", expired: "已过期" })[task.status] || task.status;
+      const message = task.events?.at(-1)?.message || task.result?.message || "等待执行";
+      const nextRun = taskProgress.nextRunAt ? ` · 下次 ${shortTime(taskProgress.nextRunAt)}` : "";
+      return `<article class="scan-task-card is-${escapeHtml(task.status || "queued")}">
+        <div class="scan-task-head"><div><strong>快手录入</strong><span>${escapeHtml(task.minDelaySeconds)}–${escapeHtml(task.maxDelaySeconds)} 秒间隔</span></div><em class="${task.status === "running" ? "ok" : ["failed", "expired"].includes(task.status) ? "bad" : "warn"}">${escapeHtml(taskStatus)}</em></div>
+        <div class="kuaishou-progress-facts"><span>已处理<b>${Math.max(0, Number(taskProgress.processedCount || 0))}</b></span><span>成功<b>${Math.max(0, Number(taskProgress.successCount || 0))}</b></span><span>提交前失败<b>${Math.max(0, Number(taskProgress.failedAttemptCount || 0))}</b></span><span>安全跳过<b>${Math.max(0, Number(taskProgress.skippedCount || 0))}</b></span></div>
+        <p>${escapeHtml(message)}${escapeHtml(nextRun)}</p><small>${escapeHtml(shortTime(task.updatedAt || task.createdAt))}</small>
+      </article>`;
+    }).join("") : `<div class="empty scan-empty-state">暂无快手录入任务。启动后会持续等待飞书中的新数据。</div>`;
+  }
 }
 
 function renderAutomationJobCard(job) {
@@ -3634,6 +3685,7 @@ async function loadAll() {
       api("/api/v1/user/sms-orders"),
       shouldLoadXhsTasks ? api("/api/v1/user/xhs/qr-scan-tasks") : Promise.resolve(null),
       api("/api/v1/user/automation/xhs-publish-tasks"),
+      api("/api/v1/user/automation/kuaishou-lead-tasks"),
       api("/api/v1/user/automation/alipay-name-sessions"),
       api("/api/v1/user/automation/xhs-data-tasks")
     ]);
@@ -3661,7 +3713,7 @@ async function loadAll() {
     }
     renderUserWorkbench();
 
-    const [phones, orders, xhs, publish, lookup, dataTasks] = await auxiliaryRequests;
+    const [phones, orders, xhs, publish, kuaishou, lookup, dataTasks] = await auxiliaryRequests;
     if (requestId !== latestLoadAllRequestId) return;
     if (phones.status === "fulfilled") state.userPhones = phones.value.phones || [];
     else console.warn("user phones refresh failed", phones.reason);
@@ -3676,6 +3728,8 @@ async function loadAll() {
     } else if (lookup.status === "rejected") {
       console.warn("user lookup session refresh failed", lookup.reason);
     }
+    if (kuaishou.status === "fulfilled") state.userKuaishouTasks = kuaishou.value.tasks || [];
+    else console.warn("user Kuaishou lead task refresh failed", kuaishou.reason);
     if (dataTasks.status === "fulfilled") await applyUserDataTasks(dataTasks.value, dataSessionAtStart);
     prunePendingUserXhsTasks();
     if (isUserSmsPanelActive()) {
@@ -3949,9 +4003,10 @@ async function refreshUserXhsTasksOnly(options = {}) {
   userAutomationRefreshPromise = (async () => {
     const requestId = ++latestUserAutomationRefreshRequestId;
     const dataSessionAtStart = userDataSessionVersion;
-    const [qrPayload, publishPayload, dataPayload] = await Promise.allSettled([
+    const [qrPayload, publishPayload, kuaishouPayload, dataPayload] = await Promise.allSettled([
       api("/api/v1/user/xhs/qr-scan-tasks"),
       api("/api/v1/user/automation/xhs-publish-tasks"),
+      api("/api/v1/user/automation/kuaishou-lead-tasks"),
       state.userAutomationModule === "data" ? api("/api/v1/user/automation/xhs-data-tasks") : Promise.resolve(null)
     ]);
     if (requestId !== latestUserAutomationRefreshRequestId) return;
@@ -3959,6 +4014,8 @@ async function refreshUserXhsTasksOnly(options = {}) {
     else console.warn("user xhs task refresh failed", qrPayload.reason);
     if (publishPayload.status === "fulfilled") state.userPublishTasks = publishPayload.value.tasks || [];
     else console.warn("user publish task refresh failed", publishPayload.reason);
+    if (kuaishouPayload.status === "fulfilled") state.userKuaishouTasks = kuaishouPayload.value.tasks || [];
+    else console.warn("user Kuaishou lead task refresh failed", kuaishouPayload.reason);
     if (dataPayload.status === "fulfilled" && dataPayload.value) await applyUserDataTasks(dataPayload.value, dataSessionAtStart);
     prunePendingUserXhsTasks();
     renderUserWorkbench();
@@ -4597,6 +4654,57 @@ els.userDataCollectionResult?.addEventListener("click", (event) => {
   const url = URL.createObjectURL(blob); const anchor = document.createElement("a");
   anchor.href = url; anchor.download = `小红书数据-${job.jobId}.json`; anchor.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+
+els.userKuaishouStartButton?.addEventListener("click", async () => {
+  if (!state.userSelectedDeviceId || state.userKuaishouBusy) return;
+  const minDelaySeconds = Number(els.userKuaishouMinDelay?.value || 0);
+  const maxDelaySeconds = Number(els.userKuaishouMaxDelay?.value || 0);
+  if (!Number.isInteger(minDelaySeconds) || !Number.isInteger(maxDelaySeconds)
+    || minDelaySeconds < 30 || maxDelaySeconds > 3600 || maxDelaySeconds < minDelaySeconds) {
+    if (els.userKuaishouHint) els.userKuaishouHint.textContent = "间隔必须是 30–3600 秒，且最长时间不能小于最短时间。";
+    return;
+  }
+  state.userKuaishouBusy = true;
+  if (els.userKuaishouHint) els.userKuaishouHint.textContent = "正在创建持续扫描任务...";
+  renderUserWorkbench();
+  try {
+    const payload = await api("/api/v1/user/automation/kuaishou-lead-tasks", {
+      method: "POST",
+      body: JSON.stringify({ deviceId: state.userSelectedDeviceId, minDelaySeconds, maxDelaySeconds })
+    });
+    if (payload.task) state.userKuaishouTasks = [payload.task, ...state.userKuaishouTasks.filter((task) => task.jobId !== payload.task.jobId)];
+    if (els.userKuaishouHint) els.userKuaishouHint.textContent = "任务已启动；飞书没有待处理数据时也会继续扫描。";
+  } catch (error) {
+    if (els.userKuaishouHint) els.userKuaishouHint.textContent = error.message;
+  } finally {
+    state.userKuaishouBusy = false;
+    renderUserWorkbench();
+    refreshUserXhsTasksOnly({ force: true }).catch(() => {});
+  }
+});
+
+els.userKuaishouStopButton?.addEventListener("click", async () => {
+  if (state.userKuaishouBusy || !state.userSelectedDeviceId) return;
+  const task = activeKuaishouLeadTask(state.userSelectedDeviceId);
+  if (!task) return;
+  state.userKuaishouBusy = true;
+  if (els.userKuaishouHint) els.userKuaishouHint.textContent = "正在通知 Windows 管理器停止任务...";
+  renderUserWorkbench();
+  try {
+    const payload = await api(`/api/v1/user/automation/kuaishou-lead-tasks/${encodeURIComponent(task.jobId)}/stop`, {
+      method: "POST",
+      body: "{}"
+    });
+    if (payload.task) state.userKuaishouTasks = [payload.task, ...state.userKuaishouTasks.filter((item) => item.jobId !== payload.task.jobId)];
+    if (els.userKuaishouHint) els.userKuaishouHint.textContent = "任务已停止，不会再扫描飞书。";
+  } catch (error) {
+    if (els.userKuaishouHint) els.userKuaishouHint.textContent = error.message;
+  } finally {
+    state.userKuaishouBusy = false;
+    renderUserWorkbench();
+    refreshUserXhsTasksOnly({ force: true }).catch(() => {});
+  }
 });
 
 els.userPublishImagesInput?.addEventListener("change", () => {
