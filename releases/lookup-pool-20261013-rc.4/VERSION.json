@@ -1,0 +1,24 @@
+{
+  "candidateTag": "lookup-pool-20261013-rc.4",
+  "status": "local candidate, not deployed",
+  "branch": "codex/lookup-empty-results-20261013",
+  "runtimeSourceCommit": "aad953292a44e37d1b84c3982085cfe233983386",
+  "visualSourceCommit": "fdc0729537bcfcffefef220aa651e3e93e3f8889",
+  "previousTag": "lookup-pool-20261013-rc.3",
+  "requires": [
+    "lookup-pool-20261013-rc.1",
+    "lookup-pool-20261013-rc.2",
+    "lookup-pool-20261013-rc.3"
+  ],
+  "sourceHashes": {
+    "windows-agent/scripts/alipay_name_lookup.py": "35518f30a442e1cbfe07a741d28c0a4ab697077171a97a82606fce1c4ab88004",
+    "windows-agent/scripts/alipay_visual_result.py": "92c9e8a663eafcac4a5f80e45777df50f1aa73f8e9deb8332fce04a688e5022f",
+    "windows-agent/src/alipay-poco-fallback-policy.mjs": "0d56fccc2d1b81541668cf2880e3da4b4547b54a34aef92120516bd6e9fd2f09",
+    "server/managed-lookup.mjs": "e4a091254c680762199e8239e6b20f87391d78b15bb4b6a4075214b38929d834"
+  },
+  "receipt": "docs/evidence/LOOKUP_EMPTY_RESULTS_LOCAL_20261013.json",
+  "receiptSha256": "12d6337a1d5270044e68bc18867312dffbdae71a4d66789ba4eb83f501429312",
+  "rollback": "Drain owned tasks, preserve data/keys/cooldowns and backup; restoreBASELINE scoped old files, remove newvisual helper/private PYTHONPATH. Do not roll back previous tagged overlays or frozen/media production baseline.",
+  "windowsDependencies": "Pinned requirements/models need separately authorized Windows install/validation before deployment",
+  "tagBindsFinalMetadataCommit": true
+}
