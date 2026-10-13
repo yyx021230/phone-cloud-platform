@@ -1,0 +1,52 @@
+{
+  "status": "offline passed; actual patched two-phone acceptance pending",
+  "counterexamples": [
+    {
+      "phase": "old",
+      "name": "blank-return",
+      "exitCode": 1,
+      "logSha256": "4ae9d358c02de471497d9360c2de83a9be1f8cf54986010decb8cf407f6b7d28"
+    },
+    {
+      "phase": "old",
+      "name": "no-replay",
+      "exitCode": 1,
+      "logSha256": "5ea53abe0a76b341668d8cecf165d3ac4705d85c5fadd09a5ec69440c8663794"
+    },
+    {
+      "phase": "new",
+      "name": "blank-return",
+      "exitCode": 0,
+      "logSha256": "c346f1228fe88f4ab3cb336ffa610dc3a34ec7c7bb7d05df7a1c222f2d928881"
+    },
+    {
+      "phase": "new",
+      "name": "no-replay",
+      "exitCode": 0,
+      "logSha256": "de88a2b2bd8509517b92f47cd42ea589d69841d4b9fd087751c2ddec120e1eea"
+    }
+  ],
+  "testCounts": {
+    "node": 605,
+    "pythonMain": 163,
+    "lookupPython": 77,
+    "noReplay": 21,
+    "countsOverlap": true
+  },
+  "logSha256": {
+    "qa4-python-lookup-final.log": "d3646c3286139f857b818a599f9ff651a249ae594347ae4a3d34827bf29b4715",
+    "qa4-python-main.log": "ba460bbbd58a96b06cce5ccd6a3716ba0de1a722028ebba79e983e84de49b357",
+    "qa4-python-main-final.log": "56b9cf552d051344d7ea51028b81a02047751cb3a72765e858b5d6405f921b13",
+    "qa4-python-main-corrected.log": "960d00932fd8d5b00d83ee061edd30ab2af73fe4ce13340680a7df48eebebfde",
+    "qa4-screen-final.log": "ba56649551dc0924f5dcf15e947ab8355c9eb9ae1e85432669580584ef57989b",
+    "qa4-no-replay.log": "a5fb443ea82c82775085f9c233c2d1e62fc007d74cd98f838eec3c741fe5f7c9",
+    "qa4-root-check.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+  },
+  "failuresPreserved": [
+    "Old blank-card fake returnednot_found and old XML policy would fallback:2 counterexamples failed before patch.",
+    "Main fixture expected old blank-noName semantics:1error; updating targeted fixture accidentally changed another same-string assertion:2 fixture failures. Restored unrelated unverified-account assertion and corrected targeted fixture;163pass.",
+    "Isolated OCR dependency six1.17 conflicted with existingAirtest requirement; pinned target-onlysix1.16 and removed own superseded metadata; no global install."
+  ],
+  "productionActions": 0,
+  "sharedMediaOrAdbCodeChanges": 0
+}

@@ -1,0 +1,18 @@
+{
+  "manifestSelfExcluded": true,
+  "files": {
+    "BASELINE.json": "2fe6e7ad566b1bc195c94ff0bf87ea39ba4f51794a0e68d638435b83cf07c533",
+    "OCR_DEPENDENCIES.json": "1470a73e4eab11718bc3a5fe7196e93916567a00df02d6bc1125d2ef7f4cdeaa",
+    "README.md": "352383cbc2f6d957dfd4dbe42d2115240c187ab127a1134f68c1adf16ac57cb7",
+    "RESULTS.json": "54d103bc5a1f647bef7c4b9473aad3f72f1df6de534c8a7f59f577222937570d",
+    "requirements-visual-lookup.txt": "23808ea43c34074a08754216be27b582efe2d4f6003ebe7682ec4901fd67660d",
+    "windows-agent/scripts/alipay_name_lookup.py": "35518f30a442e1cbfe07a741d28c0a4ab697077171a97a82606fce1c4ab88004",
+    "windows-agent/scripts/alipay_visual_result.py": "92c9e8a663eafcac4a5f80e45777df50f1aa73f8e9deb8332fce04a688e5022f",
+    "windows-agent/scripts/automation_runners_test.py": "5e2cd5fbbdfd1bb1882f6580540666d5fcebab9e6a7c3a90787fbec66b1ff6a2",
+    "windows-agent/scripts/test_lookup_blank_card_guard.py": "2d14a5cb2ae2e5714934764e7ee3187f6fef84258d67d0518e33325a01a7d4c6",
+    "windows-agent/scripts/test_lookup_visual_result.py": "c9a986a27745403c537cdfc60f3f754e16bd0e429571a57b9dcbcb05d2dbd546",
+    "windows-agent/src/alipay-poco-fallback-policy.mjs": "0d56fccc2d1b81541668cf2880e3da4b4547b54a34aef92120516bd6e9fd2f09",
+    "windows-agent/src/alipay-poco-fallback-policy.test.mjs": "bc8ed1a46cc6e8a3a215a56d7aac4b80715564142b3e80f15f1365cd299de6aa",
+    "windows-agent/src/lookup-page-recovery.test.mjs": "919c1844e6e0d9ee459e6c90870489b70ce6ae5d3511adfff728f71f813abf19"
+  }
+}

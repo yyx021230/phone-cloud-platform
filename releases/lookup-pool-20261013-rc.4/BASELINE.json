@@ -1,0 +1,17 @@
+{
+  "kind": "minimal-overlay-requires-rc.1-rc.2-rc.3",
+  "precedingTag": "lookup-pool-20261013-rc.3",
+  "precedingCommit": "91928df04f4ce1a2bdf1a8e3842b9739f20fe5b5",
+  "precedingRuntimeSource": "c6c297e584509dfd0a892aaf398301a5ecefccce",
+  "baseFiles": {
+    "windows-agent/scripts/alipay_name_lookup.py": "8575a26fb470e319ba6ddd9e7187f7265a5a306bb4a6bc5f91905f4b7d950330",
+    "windows-agent/src/alipay-poco-fallback-policy.mjs": "d60111f31169e355131a591aaeb8045510d2ad5c6b12952c38812afc6c42952f",
+    "windows-agent/scripts/automation_runners_test.py": "c669aae7faa2176bb68d6299f3c467a30c4b10a9a9e38161bb71cee0fe30d5a9"
+  },
+  "newRuntimeFile": "windows-agent/scripts/alipay_visual_result.py",
+  "scopedRuntimeFiles": [
+    "windows-agent/scripts/alipay_name_lookup.py",
+    "windows-agent/scripts/alipay_visual_result.py",
+    "windows-agent/src/alipay-poco-fallback-policy.mjs"
+  ]
+}
