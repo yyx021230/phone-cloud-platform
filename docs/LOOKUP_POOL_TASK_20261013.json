@@ -1,0 +1,126 @@
+{
+  "task": "phone-only managed lookup pool design",
+  "date": "2026-10-13",
+  "status": "design candidate; no runtime implementation or deployment",
+  "scope": "design and primary document decision/change log only",
+  "branch": "codex/lookup-pool-design-20261013",
+  "baseCommit": "203deca1441b2c1ecb2d529c80dfa17fd27a0850",
+  "worktree": "/Users/yyx/.codex/worktrees/lookup-version-management/phone-cloud-platform",
+  "rootBranch": "codex/sms-notification-library",
+  "rootHead": "6811aef632eeaaacd6d6ce1effc4afa64bf6d363",
+  "rootDirtyEntries": 235,
+  "primaryDocBeforeSha256": "72fdd97bbefb09716cb80db01619a3a615275788b354977d3cb41576a91e8369",
+  "rootPrimaryDocSha256": "99f752fd14f3664537778b90a8e8b7b3f08dd8b5399680d623082d7a527a8411",
+  "sharedWorkflowRevision": "2026-09-30",
+  "sharedWorkflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "imageRosterGroups": [
+    [
+      51,
+      52,
+      54,
+      55,
+      87,
+      138,
+      152
+    ],
+    [
+      188,
+      172,
+      156,
+      155,
+      115,
+      60,
+      58
+    ],
+    [
+      164,
+      163,
+      154,
+      6,
+      57,
+      10,
+      183
+    ],
+    [
+      82,
+      86,
+      121,
+      146,
+      149,
+      153,
+      181,
+      182
+    ],
+    [
+      162,
+      161,
+      142,
+      74,
+      78,
+      79,
+      118,
+      130
+    ],
+    [
+      157,
+      147,
+      101,
+      107
+    ],
+    [
+      165,
+      112,
+      67,
+      53,
+      128,
+      158,
+      143
+    ],
+    [
+      148
+    ]
+  ],
+  "rosterCount": 49,
+  "uniqueRosterCount": 49,
+  "concurrencyTarget": 5,
+  "stableDeviceMappingVerified": false,
+  "personNamesTranscribed": false,
+  "lastRecordedProductionRelease": "lookup-realname-prompt-20261012-deployed.1",
+  "lastRecordedCloudBusinessSourceCommit": "7f695507761b07504a94b7372de0c340befbf33f",
+  "lastRecordedWindowsRunnerSha256": "24a9429c2735454ef854c0b6fa4346fedbb7a50ce264fd9ee4811cc43e7acc0d",
+  "productionReadThisRound": false,
+  "sourceEvidence": "last deployed receipts plus four matching production-recorded cloud file hashes; root business source is older",
+  "implementationRisk": "R2 queue/auth/leases/new schema and shared admission checks; R3 migration/deployment/real-device tests require separate authorization",
+  "productionMutations": 0,
+  "newRealQueries": 0,
+  "remoteGitPushes": 0,
+  "serviceRestarts": 0,
+  "notImplemented": [
+    "managed API and administration",
+    "durable queue/scheduler",
+    "stable49-device mapping",
+    "lease ACK protocol for managed tasks",
+    "5-device real concurrency acceptance"
+  ],
+  "validation": {
+    "atBeijing": "2026-10-13T10:29:35.497085+08:00",
+    "rosterTranscription": "49 unique; image groups and design table match;161 included177 excluded",
+    "relativeDocumentLinks": "passed",
+    "sourceHashesAgainstLastReceipt": {
+      "server/index.mjs": "331720968d825f8a7922ce7048e117e5f883a1edddfa48dba559f67041061172",
+      "server/open-name-lookup-api.mjs": "0c846c1cb1f01ca5a2cd662fc0b81d09568d17d89268b66254e37092664a4eb3",
+      "server/automation-center.mjs": "e190d21cc2bcf99c8ef874b754e8cbe05419544efa24616d856c36d6eae2ddfd",
+      "server/postgres-repositories.mjs": "bf6c10cf849cffc6c59c1f79e1fb62daeb548056632917d14bbd781ac8e70d54"
+    },
+    "applicationSourceChanges": 0,
+    "rootPreserved": true,
+    "rootDirtyEntriesPreserved": 235,
+    "scopeAndDiff": "documentation only; git diff --check passed",
+    "review": "self review; durable dispatch, shared lock admission, managed ACK, unknown-result hold, human slot admission and backward compatibility explicitly required",
+    "applicationTestsRun": false,
+    "realDeviceTestsRun": false,
+    "runtimeOrProductionAcceptance": false,
+    "externalReference": "PostgreSQL16 official SELECT row-lock and SKIP LOCKED documentation read; referenced only to support proposed queue locking"
+  },
+  "designFileSha256": "9ac30001fb2c8e471422970073d99c8c75201c2e2df768b850a5fe42a254edd0"
+}
