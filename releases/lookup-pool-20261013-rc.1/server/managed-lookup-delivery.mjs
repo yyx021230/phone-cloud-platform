@@ -20,3 +20,10 @@ export function acknowledgeScreenGalleryDelivery(t,token,now=Date.now()){
   if(!hasActiveScreenGalleryDelivery(t,now)||token!==t.delivery.token)return {ok:false,error:'managed_lookup_delivery_stale'};
   t.status='running';t.pickedAt=t.pickedAt||new Date(now).toISOString();t.updatedAt=new Date(now).toISOString();t.delivery.ackedAt=t.updatedAt;return {ok:true,idempotent:false};
 }
+
+// This WeakSet is process-local and deliberately not serialized into task data.
+// A task added to legacy memory before SQL commit cannot be leased by the Agent.
+// Restart loads only committed rows, so no volatile admission marker is needed.
+const pendingDispatch = new WeakSet();
+export function holdManagedLookupDispatch(task,tx){pendingDispatch.add(task);tx.onCommit(()=>pendingDispatch.delete(task));}
+export function canDeliverManagedLookupTask(task){return !pendingDispatch.has(task);}

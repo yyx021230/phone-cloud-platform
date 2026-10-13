@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>支付宝查名设备池 · Phone Cloud</title><link rel="stylesheet" href="/lookup-pool.css"></head>
+<body>
+<header><a href="/">PC <span>Phone Cloud</span></a><nav><a href="/api-docs.html">API文档</a><a href="/">返回平台</a></nav></header>
+<main>
+  <section class="intro"><div><p class="eyebrow">ALIPAY / DEVICE OPERATIONS</p><h1>查名设备池</h1><p>统一分配手机，查询与异常处理由平台接续。</p></div><div class="pool-toggle"><label><input id="enabled" type="checkbox">允许接收查名请求</label><button id="save">保存设置</button></div></section>
+  <p id="notice" role="status" aria-live="polite">正在读取设备池…</p>
+  <section class="counters" aria-label="调度概况"><div><span>已绑定 / 清单49台</span><strong id="registered">—</strong></div><div><span>自动执行 / 上限5台</span><strong id="executing">—</strong></div><div><span>等待人工</span><strong id="human">—</strong></div><div><span>待查号码</span><strong id="queued">—</strong></div></section>
+  <section class="workspace">
+    <aside><h2>调度设置</h2><label>最多并发手机<input id="concurrency" type="number" min="1" max="5" value="5"></label><label>接口等待时间（秒）<input id="waitSeconds" type="number" min="1" max="180" value="120"></label><p class="hint">暂停后不派新任务，正在执行的手机会安全收尾。</p><hr><h2>接入授权</h2><label>客户端<select id="client"></select></label><label>授权用途引用<input id="consent" autocomplete="off" placeholder="填写已登记的授权引用"></label><label class="check"><input id="grantEnabled" type="checkbox">允许使用此设备池</label><button id="grant" class="secondary">保存客户端授权</button></aside>
+    <section class="ledger"><div class="section-head"><div><h2>查名手机</h2><p>暂停手机只阻止新分配，不中断当前查询。</p></div><button id="preview" class="secondary">核对49台清单</button></div><div class="table-wrap"><table><thead><tr><th>编号</th><th>设备状态</th><th>当前阶段</th><th>分配开关</th></tr></thead><tbody id="devices"></tbody></table></div></section>
+  </section>
+  <section class="requests"><div class="section-head"><h2>最近任务</h2><button id="refresh" class="secondary">刷新状态</button></div><div class="table-wrap"><table><thead><tr><th>任务</th><th>客户端</th><th>状态</th><th>姓名结果</th><th>操作</th></tr></thead><tbody id="requests"></tbody></table></div></section>
+</main><script type="module" src="/lookup-pool.js"></script>
+</body></html>

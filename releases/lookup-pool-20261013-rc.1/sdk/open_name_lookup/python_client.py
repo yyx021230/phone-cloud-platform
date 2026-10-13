@@ -34,7 +34,7 @@ class OpenNameLookupClient:
         self.request_timeout = max(1, float(request_timeout))
         self.opener = opener
 
-    def lookup_name(self, phone_number, *, idempotency_key=None, request_timeout=130):
+    def lookup_name(self, phone_number, *, idempotency_key=None, request_timeout=190):
         key = idempotency_key or str(uuid.uuid4())
         for attempt in range(2):
             try:

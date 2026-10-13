@@ -1,9 +1,9 @@
 {
-  "version": "platform-api-integration-20261012-rc.3",
-  "updatedAt": "2026-10-12",
+  "version": "lookup-pool-20261013-rc.1",
+  "updatedAt": "2026-10-13",
   "baseline": "platform-api-entry-20261012-deployed.1",
-  "status": "平台功能 API · 2026-10-12",
-  "routerSha256": "331720968d825f8a7922ce7048e117e5f883a1edddfa48dba559f67041061172",
+  "status": "本地候选，统一设备池接口未上线；旧接口保留",
+  "routerSha256": "1a3a5f0b68bea8fc9860e48159bfb5f79f57962bf442a608b643846c53dd759a",
   "sourceRoutesReviewed": 106,
   "groups": [
     [
@@ -55,7 +55,7 @@
       "eyebrow": "PLATFORM API",
       "paragraphs": [
         "平台功能按业务独立查阅：短信接码、支付宝查名字、小红书自动登录、快手录入、小红书一键发布，以及账户、设备和实时控制工具。支付宝查名字同时列出第三方HMAC开放接口与平台Bearer操作接口。",
-        "业务已上线，本文按当前部署接口和已完成的联调证据更新；业务基线platform-api-entry-20261012-deployed.1。新增文档不增加接口权限，不改变自动化或投屏行为。所有示例使用虚构号码和占位符。",
+        "新增统一设备池同步查名是本地候选，尚未上线；原平台接口来自历史已部署快照。仅更新候选文档，不扩展生产权限。示例使用合成号码及占位符。",
         "外部系统接入查名字从“查名接入流程”开始；其他平台功能先读“认证与签名”和对应业务说明。页面只展示静态文档，不发送业务请求。"
       ]
     },
@@ -68,7 +68,7 @@
         "平台登录：POST /api/v1/auth/login 返回session.token，后续携带Authorization: Bearer <TOKEN>。权限按用户角色、设备归属和占用校验。401时核对身份与过期时间；429按retryAfterSeconds退避。",
         "第三方请求必须带X-Client-Id、X-Timestamp（Unix毫秒）、X-Nonce、X-Signature。时钟默认允许5分钟误差；Nonce每次请求新建，8–120字符A–Z/a–z/0–9/._:-；签名为小写hex。",
         "签名原文是大写METHOD、pathname、timestamp、nonce、SHA256(rawBody)，用四个换行连接且末尾不追加换行。pathname不含域名/查询串。GET使用空字节串；POST签实际发送的UTF-8 JSON原文，{}也纳入摘要，签完不得重新格式化。",
-        "创建会话、提交号码、显式恢复必须提供Idempotency-Key（8–160字符A–Z/a–z/0–9/._:-）。创建键按客户端隔离，查询和恢复键按客户端+会话隔离；查询与恢复应使用不同的业务键。网络重试保留原键和参数，重新生成时间戳/Nonce/签名。",
+        "同步设备池POST query必须带Idempotency-Key，同客户端同键同号码重放原结果，不同号码409。旧创建/提交/恢复仍分别沿用原幂等作用域。所有网络重试保留键和号码，更新时间戳/Nonce/签名。",
         "BASE_URL为管理员交付的根地址，当前平台为http://47.98.127.132，不包含/api/v1。签名不绑定查询串和幂等键，代理应保留pathname和请求原文。真实clientId、独立密钥和设备白名单由管理员另行交付；页面及示例不含凭据。"
       ],
       "code": "import crypto from \"node:crypto\";\n\nexport function signedHeaders(secret, clientId, method, pathname, rawBody = \"\") {\n  const timestamp = String(Date.now()); // 毫秒\n  const nonce = crypto.randomUUID();\n  const digest = crypto.createHash(\"sha256\").update(rawBody, \"utf8\").digest(\"hex\");\n  const canonical = [method.toUpperCase(), pathname, timestamp, nonce, digest].join(\"\\n\");\n  return {\n    \"Content-Type\": \"application/json\",\n    \"X-Client-Id\": clientId,\n    \"X-Timestamp\": timestamp,\n    \"X-Nonce\": nonce,\n    \"X-Signature\": crypto.createHmac(\"sha256\", secret).update(canonical).digest(\"hex\")\n  };\n}",
@@ -84,8 +84,210 @@
     {
       "id": "lookup-flow",
       "title": "查名接入流程",
+      "intro": "传号码，一次调用返回名字",
+      "paragraphs": [
+        "本地候选新增POST /api/v1/open/name-lookups/query，请求体只有phoneNumber。查到返回HTTP200 {ok:true,name:\"**某\"}；明确未查到返回HTTP200 {ok:true,name:\"\",code:\"not_found\"}。name保持支付宝页面实际显示的脱敏形态，不承诺完整实名。内部ID、选手机、会话、切号和冷却均不交给调用方管理。",
+        "使用独立HMAC凭据及管理员显式设备池授权。SDK自动签名并生成幂等键；实际业务先持久保存业务键，再调用lookupName/lookup_name。用途引用由管理员在平台为客户端登记，不要求每个调用额外填写。旧deviceIds白名单只作用于原7接口，不自动授权设备池。",
+        "默认服务端等待120秒，可配置上限180秒；新SDK单次HTTP等待190秒，代理读超时建议210秒。一次逻辑调用最多自动重试1次网络错误，沿用原键、每次更新Nonce/签名。504、断网或503不等于没执行；后续用原键和原号码重试，不能换键重查。首次新调用生成新键，SDK不会替业务保存键。",
+        "平台统一排队、同客户端会话短时复用，自动执行（含准备/切号/恢复/停止/未知）最高5台。拼图由平台通知人工并接回原任务；普通恢复、取消和未知任务对账由内部管理员处理。已开始或执行事实未知的查询不自动换手机重查；仅准备阶段确定失败允许换另一台1次。所有账户冷却时不派新号码。",
+        "仅完成隔离HTTP/fake Agent、临时PostgreSQL和本地页面验证，没有连接生产或操作真机。49个编号是纳管清单，需逐台唯一绑定稳定deviceId并检查Agent配套能力；不是49台已验收在线。发布前还需单机、两机、五机、真实代理超时与OEM验收。"
+      ],
+      "sections": [
+        {
+          "title": "Node.js最小调用",
+          "language": "Node.js",
+          "code": "const result = await client.lookupName(\"13800000000\", {idempotencyKey: savedBusinessKey});\nconsole.log(result.name); // 示例号码为合成；同业务重试保留savedBusinessKey"
+        },
+        {
+          "title": "Python最小调用",
+          "language": "Python",
+          "code": "result = client.lookup_name(\"13800000000\", idempotency_key=saved_business_key)\nprint(result[\"name\"])"
+        },
+        {
+          "title": "兼容接口",
+          "paragraphs": [
+            "原7个会话接口和SDK方法保持，供既有系统继续使用；新设备池接口不返回202，不要求轮询或主动结束手机。"
+          ]
+        }
+      ],
+      "headings": [
+        "接口与返回",
+        "认证由SDK处理",
+        "超时与同键重试",
+        "异常由平台接续",
+        "候选验证边界"
+      ]
+    },
+    {
+      "id": "states",
+      "title": "状态与异常处理",
+      "intro": "设备池同步响应与旧会话状态分别处理",
+      "paragraphs": [
+        "设备池成功直接返回ok/name；未查到为code=not_found。400修输入，401修签名，403核对授权，409键冲突，429按Retry-After退避，503表示人工/恢复/未知等原因，504本次等待到期。503/504后沿用原业务键，内部任务继续对账。下方session/query状态和10–30秒HTTP建议仅针对旧会话模式。",
+        "会话：starting → ready → querying → ready；自动切号为switching，人工为needs_human_verification，选择账户为choosing_account；停止为stopping，终态为ended/failed/expired。以机器字段做判断，不依赖stage的中文文案。",
+        "查询：queued/running/cancelling为处理中；succeeded/not_found是正常完成；needs_human_verification等待人工；needs_recovery等待原任务恢复；limit_reached/failed/cancelled需要按原因处置。这些状态已在当前部署代码中确认，真机覆盖范围见交付与联调说明。",
+        "session.pending只表示当前作业存在，不代表所有排队任务都完成；还要检查queuedCount和已保存queryId。会话results有500条窗口，始终以单结果接口补取。",
+        "请求超时不表示未执行：先以原ID查询，创建/提交/恢复重试保留原幂等键。HTTP期限建议10–30秒，业务等待设独立总期限；人工等待不应被短HTTP重试循环误判。429使用返回冷却时间，5xx指数退避；409先核对状态。",
+        "本平台业务接口使用HTTP状态和error字符串，没有统一的飞书式数字业务码；成功可能没有ok字段。X-Request-Id由服务器响应头返回，排障可提供此值。JSON时间通常为ISO8601；证据/APK/ZIP是二进制响应。"
+      ],
+      "sections": [
+        {
+          "title": "查询状态与处理动作",
+          "table": {
+            "headers": [
+              "字段/状态",
+              "调用方动作"
+            ],
+            "rows": [
+              [
+                "queued / running / cancelling",
+                "继续轮询原queryId，不创建第二条查询"
+              ],
+              [
+                "succeeded",
+                "保存maskedName/nameTailCharacter和业务引用"
+              ],
+              [
+                "not_found",
+                "保存本次无姓名结果；不是完整实名存在性判断"
+              ],
+              [
+                "humanAction.required=true / needs_human_verification",
+                "等待操作员完成拼图，继续轮询原ID，平台自动接续优先"
+              ],
+              [
+                "queueState.action=retry_current_query / needs_recovery",
+                "普通恢复失败，对原queryId显式resume；同一次HTTP重试沿用恢复键"
+              ],
+              [
+                "queueState.action=end_session_and_select_another_device",
+                "本机可用账户耗尽，结束会话；另选设备须按调用方业务策略"
+              ],
+              [
+                "limit_reached / failed / cancelled",
+                "异常/取消终态，保存原因；不可当成姓名结果"
+              ],
+              [
+                "会话ended / failed / expired",
+                "停止提交，保存结果；不可恢复时终止业务"
+              ]
+            ]
+          }
+        },
+        {
+          "title": "限流、超时与重试",
+          "paragraphs": [
+            "HTTP超时建议10–30秒，整批业务与人工等待另设总期限。401先修认证，400修参数，409先读原状态，429按服务端退避，5xx或断网保留原幂等键并退避。没有自动恢复成功证据时，不自动换queryId重查。SDK不替调用方持久化幂等键，也不自动保证网络重试或会话清理。"
+          ]
+        },
+        {
+          "title": "拼图、切号和冷却的边界",
+          "paragraphs": [
+            "真实拼图需要人工；触限由平台自动切号，普通故障直接恢复搜索路径。冷却从首次限制时间起8小时，切号/回报/新会话不重置。开放会话当前不返回accountCooldowns列表，第三方按queueState处理；详细冷却记录仅平台操作视图可见。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "business-flow",
+      "title": "其他业务调用流程",
+      "intro": "每项业务按自己的任务与结果处理",
+      "paragraphs": [
+        "短信接码、小红书自动登录、快手录入和小红书一键发布继续独立列出。当前这些平台接口使用Bearer，不能复用查名HMAC凭据；第三方如需这些业务权限，由管理员确定专用平台账户及设备范围。",
+        "任务创建受理与执行完成分开。先持久保存响应中的任务/订单ID，再查对应业务状态；禁止将查名queryId、扫码taskId或发布jobId混用。取消/停止也使用所属业务接口。"
+      ],
+      "sections": [
+        {
+          "title": "业务流程索引",
+          "table": {
+            "headers": [
+              "业务",
+              "创建/读取",
+              "完成及异常核对"
+            ],
+            "rows": [
+              [
+                "短信接码",
+                "GET /api/v1/user/phones → POST /api/v1/user/sms-orders → GET /api/v1/user/sms-orders",
+                "按orderId取code/body/status；过期/取消不等于收到短信"
+              ],
+              [
+                "小红书自动登录",
+                "POST /api/v1/user/xhs/qr-scan-tasks → GET同路径任务列表；GET /api/v1/tasks/{taskId}/progress",
+                "按taskId看状态和结果，需人工或失败时读具体错误"
+              ],
+              [
+                "快手录入",
+                "POST /api/v1/user/automation/kuaishou-lead-tasks → GET同路径任务列表",
+                "按任务ID取result，停止使用/{taskId}/stop"
+              ],
+              [
+                "小红书一键发布",
+                "POST /api/v1/user/automation/xhs-publish-tasks → GET同路径任务列表",
+                "受理/ACK不等于发布成功；读最终result，超时先查原任务"
+              ],
+              [
+                "实时控制与相册",
+                "从对应会话创建响应取得连接信息与临时凭据",
+                "按接口权限操作，HMAC查名接口不下发控屏凭据"
+              ]
+            ]
+          }
+        }
+      ],
+      "headings": [
+        "业务身份与权限",
+        "任务关联与结果"
+      ]
+    },
+    {
+      "id": "handover",
+      "title": "交付与联调",
+      "intro": "本地候选接入包与灰度验收",
+      "paragraphs": [
+        "交付物含1个设备池同步接口、原7个兼容接口的OpenAPI、Node/Python SDK、签名示例、说明和校验清单。新接口尚未上线，生产地址目前不能据此认定已开放。",
+        "管理员单独交付BASE_URL、clientId和独立secret，登记设备池用途授权与稳定映射。生产凭据及真实号码不会写入文档或包。",
+        "本轮只运行本地隔离测试、临时PG事务/重启测试和模拟设备页面，不调用生产、真实手机或飞书。历史单机接口验收不能代替本轮49台设备池验收。",
+        "发布前需单机→两机→五机验收、代理长请求、账户自然触限切号/8小时到期、OEM和原投屏影响。新云端与支持managed_lookup_v1的Agent须配套部署；默认开关关闭，迁移仅新增两张表，回退先排空在途任务。"
+      ],
+      "sections": [],
+      "headings": [
+        "可交付资料",
+        "管理员交付项",
+        "已经验证的范围",
+        "仍需联调的项目"
+      ]
+    },
+    {
+      "id": "models",
+      "title": "公共数据模型",
+      "intro": "平台功能的数据模型",
+      "paragraphs": [
+        "开放查名模型与平台操作模型分别列出。开放结果为queryId/maskedName/nameTailCharacter，平台结果可能为resultId/name/realNameTailCharacter，不能混用字段。",
+        "model列稳定字段，result/payload/health允许按任务扩展。分支字段可能省略；例如humanAction只在required=true时提供type/queryId，idempotent只在重放时出现。"
+      ],
+      "headings": [
+        "开放与平台字段分工",
+        "可选字段与扩展"
+      ]
+    },
+    {
+      "id": "errors",
+      "title": "错误与排障",
+      "intro": "根据 HTTP 状态定位问题",
+      "paragraphs": [
+        "按HTTP状态与error字符串处理，不假定有统一数字业务码。各接口列出直接路由及已核对的查名鉴权/校验错误；执行器和存储仍可能产生扩展错误。网络超时先按原ID/幂等键对账，禁止盲目新建任务。"
+      ],
+      "headings": [
+        "按HTTP状态定位问题"
+      ]
+    },
+    {
+      "id": "lookup-legacy",
+      "title": "旧会话模式（兼容）",
       "intro": "围绕 sessionId 和 queryId 管理异步查询",
       "paragraphs": [
+        "以下是原有7接口的单设备会话模式，仅供既有接入兼容。新接入请使用设备池同步入口。",
         "1. GET devices 选 available=true 的设备；POST sessions 带 Idempotency-Key，保存 sessionId。available不预留设备，409设备占用时换可用设备。",
         "2. POST sessions/{sessionId}/queries 提交 phoneNumber、clientReference、consentReference。每个业务号码使用独立且稳定的幂等键；同一会话可连续入队，实际按服务端入队顺序单机串行。首次starting、切号switching、人工处理期间允许排队，暂停/停止/终态以实际409和queueState为准。",
         "3. 保存202或幂等200返回的queryId。每2–5秒轮询会话和单个结果，succeeded/not_found才是正常业务完成。maskedName保持上游脱敏形态，nameTailCharacter可能为空，不等于取得完整实名。",
@@ -153,212 +355,6 @@
             "接入包包含7个开放接口的OpenAPI、独立接入说明、Node.js/Python SDK、签名示例和文件校验清单。SDK使用环境变量或服务端密钥配置，不包含真实凭据。"
           ]
         }
-      ]
-    },
-    {
-      "id": "states",
-      "title": "状态与异常处理",
-      "intro": "受理成功与业务完成是两个阶段",
-      "paragraphs": [
-        "会话：starting → ready → querying → ready；自动切号为switching，人工为needs_human_verification，选择账户为choosing_account；停止为stopping，终态为ended/failed/expired。以机器字段做判断，不依赖stage的中文文案。",
-        "查询：queued/running/cancelling为处理中；succeeded/not_found是正常完成；needs_human_verification等待人工；needs_recovery等待原任务恢复；limit_reached/failed/cancelled需要按原因处置。这些状态已在当前部署代码中确认，真机覆盖范围见交付与联调说明。",
-        "session.pending只表示当前作业存在，不代表所有排队任务都完成；还要检查queuedCount和已保存queryId。会话results有500条窗口，始终以单结果接口补取。",
-        "请求超时不表示未执行：先以原ID查询，创建/提交/恢复重试保留原幂等键。HTTP期限建议10–30秒，业务等待设独立总期限；人工等待不应被短HTTP重试循环误判。429使用返回冷却时间，5xx指数退避；409先核对状态。",
-        "本平台业务接口使用HTTP状态和error字符串，没有统一的飞书式数字业务码；成功可能没有ok字段。X-Request-Id由服务器响应头返回，排障可提供此值。JSON时间通常为ISO8601；证据/APK/ZIP是二进制响应。"
-      ],
-      "sections": [
-        {
-          "title": "查询状态与处理动作",
-          "table": {
-            "headers": [
-              "字段/状态",
-              "调用方动作"
-            ],
-            "rows": [
-              [
-                "queued / running / cancelling",
-                "继续轮询原queryId，不创建第二条查询"
-              ],
-              [
-                "succeeded",
-                "保存maskedName/nameTailCharacter和业务引用"
-              ],
-              [
-                "not_found",
-                "保存本次无姓名结果；不是完整实名存在性判断"
-              ],
-              [
-                "humanAction.required=true / needs_human_verification",
-                "等待操作员完成拼图，继续轮询原ID，平台自动接续优先"
-              ],
-              [
-                "queueState.action=retry_current_query / needs_recovery",
-                "普通恢复失败，对原queryId显式resume；同一次HTTP重试沿用恢复键"
-              ],
-              [
-                "queueState.action=end_session_and_select_another_device",
-                "本机可用账户耗尽，结束会话；另选设备须按调用方业务策略"
-              ],
-              [
-                "limit_reached / failed / cancelled",
-                "异常/取消终态，保存原因；不可当成姓名结果"
-              ],
-              [
-                "会话ended / failed / expired",
-                "停止提交，保存结果；不可恢复时终止业务"
-              ]
-            ]
-          }
-        },
-        {
-          "title": "限流、超时与重试",
-          "paragraphs": [
-            "HTTP超时建议10–30秒，整批业务与人工等待另设总期限。401先修认证，400修参数，409先读原状态，429按服务端退避，5xx或断网保留原幂等键并退避。没有自动恢复成功证据时，不自动换queryId重查。SDK不替调用方持久化幂等键，也不自动保证网络重试或会话清理。"
-          ]
-        },
-        {
-          "title": "拼图、切号和冷却的边界",
-          "paragraphs": [
-            "真实拼图需要人工；触限由平台自动切号，普通故障直接恢复搜索路径。冷却从首次限制时间起8小时，切号/回报/新会话不重置。开放会话当前不返回accountCooldowns列表，第三方按queueState处理；详细冷却记录仅平台操作视图可见。"
-          ]
-        }
-      ],
-      "headings": [
-        "会话状态",
-        "查询状态",
-        "列表窗口与结果关联",
-        "超时与重试",
-        "返回规范与排障"
-      ]
-    },
-    {
-      "id": "business-flow",
-      "title": "其他业务调用流程",
-      "intro": "每项业务按自己的任务与结果处理",
-      "paragraphs": [
-        "短信接码、小红书自动登录、快手录入和小红书一键发布继续独立列出。当前这些平台接口使用Bearer，不能复用查名HMAC凭据；第三方如需这些业务权限，由管理员确定专用平台账户及设备范围。",
-        "任务创建受理与执行完成分开。先持久保存响应中的任务/订单ID，再查对应业务状态；禁止将查名queryId、扫码taskId或发布jobId混用。取消/停止也使用所属业务接口。"
-      ],
-      "sections": [
-        {
-          "title": "业务流程索引",
-          "table": {
-            "headers": [
-              "业务",
-              "创建/读取",
-              "完成及异常核对"
-            ],
-            "rows": [
-              [
-                "短信接码",
-                "GET /api/v1/user/phones → POST /api/v1/user/sms-orders → GET /api/v1/user/sms-orders",
-                "按orderId取code/body/status；过期/取消不等于收到短信"
-              ],
-              [
-                "小红书自动登录",
-                "POST /api/v1/user/xhs/qr-scan-tasks → GET同路径任务列表；GET /api/v1/tasks/{taskId}/progress",
-                "按taskId看状态和结果，需人工或失败时读具体错误"
-              ],
-              [
-                "快手录入",
-                "POST /api/v1/user/automation/kuaishou-lead-tasks → GET同路径任务列表",
-                "按任务ID取result，停止使用/{taskId}/stop"
-              ],
-              [
-                "小红书一键发布",
-                "POST /api/v1/user/automation/xhs-publish-tasks → GET同路径任务列表",
-                "受理/ACK不等于发布成功；读最终result，超时先查原任务"
-              ],
-              [
-                "实时控制与相册",
-                "从对应会话创建响应取得连接信息与临时凭据",
-                "按接口权限操作，HMAC查名接口不下发控屏凭据"
-              ]
-            ]
-          }
-        }
-      ],
-      "headings": [
-        "业务身份与权限",
-        "任务关联与结果"
-      ]
-    },
-    {
-      "id": "handover",
-      "title": "交付与联调",
-      "intro": "给接入开发的准备与验收清单",
-      "paragraphs": [
-        "开发交付物：本平台文档、7接口查名OpenAPI、Node.js/Python SDK和独立接入说明。真实凭据单独安全交付，不放在文档或下载包。",
-        "管理员需交付：生产/测试BASE_URL（当前http://47.98.127.132）、查名clientId与至少32字符独立随机secret、精确deviceId白名单、人工操作账号和飞书通知安排。新合作方的配置并未因文档更新自动建立。",
-        "代码与实测范围：业务基线platform-api-entry-20261012-deployed.1。118号曾完成57条平台Bearer真实查询，覆盖自然触限切号、冷却继承与拼图接续；本轮现有授权HMAC客户端在177/161号完成4条公网HTTP真实查询，并验证幂等、队列、原queryId拼图自动接续、飞书提醒及结束释放。新合作方独立凭据与隔离联调仍需单独验收。",
-        "仍待验：新合作方独立签名与隔离联调、正向显式resume、177/161自然触限切号、自然8小时冷却到期、全部账户冷却和长时/OEM覆盖。177首次实名认证弹窗兼容已形成本地候选，尚未上线；本次只同步文档，不发布业务补丁。"
-      ],
-      "sections": [
-        {
-          "title": "双方联调顺序",
-          "table": {
-            "headers": [
-              "检查",
-              "预期结果"
-            ],
-            "rows": [
-              [
-                "有效签名GET devices",
-                "仅看到授权设备；错误签名、重用Nonce被拒绝"
-              ],
-              [
-                "创建/提交同键重放及不同参数",
-                "相同业务返回原对象；冲突409且无重复任务"
-              ],
-              [
-                "单号码及顺序队列",
-                "queryId关联正确，正常/未找到/失败各按状态保存"
-              ],
-              [
-                "网络超时后对账",
-                "同键重试，保存原queryId，不重复创建业务"
-              ],
-              [
-                "拼图/普通恢复/全部账号受限",
-                "按humanAction和queueState分别等待、恢复或结束"
-              ],
-              [
-                "停止和跨客户端隔离",
-                "结束后释放占用；其他client读不到会话"
-              ]
-            ]
-          }
-        }
-      ],
-      "headings": [
-        "可交付资料",
-        "管理员交付项",
-        "已经验证的范围",
-        "仍需联调的项目"
-      ]
-    },
-    {
-      "id": "models",
-      "title": "公共数据模型",
-      "intro": "平台功能的数据模型",
-      "paragraphs": [
-        "开放查名模型与平台操作模型分别列出。开放结果为queryId/maskedName/nameTailCharacter，平台结果可能为resultId/name/realNameTailCharacter，不能混用字段。",
-        "model列稳定字段，result/payload/health允许按任务扩展。分支字段可能省略；例如humanAction只在required=true时提供type/queryId，idempotent只在重放时出现。"
-      ],
-      "headings": [
-        "开放与平台字段分工",
-        "可选字段与扩展"
-      ]
-    },
-    {
-      "id": "errors",
-      "title": "错误与排障",
-      "intro": "根据 HTTP 状态定位问题",
-      "paragraphs": [
-        "按HTTP状态与error字符串处理，不假定有统一数字业务码。各接口列出直接路由及已核对的查名鉴权/校验错误；执行器和存储仍可能产生扩展错误。网络超时先按原ID/幂等键对账，禁止盲目新建任务。"
-      ],
-      "headings": [
-        "按HTTP状态定位问题"
       ]
     }
   ],
@@ -1630,6 +1626,101 @@
       "5xx",
       "服务端错误",
       "结果可能未知。查询原ID；可幂等请求重试保留原Idempotency-Key，每次重新签名，指数退避并设置总期限。"
+    ],
+    [
+      400,
+      "invalid_lookup_phone",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      400,
+      "idempotency_key_required",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      403,
+      "managed_lookup_not_authorized",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      404,
+      "managed_lookup_not_enabled",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      429,
+      "lookup_queue_full",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      429,
+      "lookup_waiter_limit",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      503,
+      "lookup_pool_disabled",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      503,
+      "lookup_manual_action_pending",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      503,
+      "lookup_recovery_required",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      503,
+      "lookup_outcome_unknown",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      503,
+      "lookup_accounts_cooling",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      503,
+      "lookup_prepare_failed",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      503,
+      "lookup_execution_failed",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      503,
+      "lookup_cancelled",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      503,
+      "lookup_storage_unavailable",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      503,
+      "lookup_manual_wait_expired",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      403,
+      "permission_revoked",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      504,
+      "lookup_queue_timeout",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      504,
+      "lookup_timeout",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
     ]
   ],
   "websockets": [],
@@ -1763,6 +1854,155 @@
         "currentPassword",
         "newPassword"
       ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/open/name-lookups/query",
+      "id": "post-api-v1-open-name-lookups-query",
+      "group": "lookup-user",
+      "title": "传号码直接查名字（设备池）",
+      "description": "本地候选：只传号码，平台从49台登记手机中统一分配，自动执行最多5台。本次HTTP直接等待并返回页面显示姓名；无需deviceId/sessionId/queryId。",
+      "auth": "hmac",
+      "managed": true,
+      "parameters": [
+        {
+          "name": "phoneNumber",
+          "location": "body",
+          "type": "string",
+          "required": true,
+          "description": "中国大陆11位手机号；示例为合成号码"
+        }
+      ],
+      "errors": [
+        "invalid_idempotency_key",
+        "invalid_lookup_phone",
+        "idempotency_key_required",
+        "managed_lookup_not_authorized",
+        "managed_lookup_not_enabled",
+        "idempotency_conflict",
+        "lookup_queue_full",
+        "lookup_waiter_limit",
+        "lookup_pool_disabled",
+        "lookup_manual_action_pending",
+        "lookup_recovery_required",
+        "lookup_outcome_unknown",
+        "lookup_accounts_cooling",
+        "lookup_prepare_failed",
+        "lookup_execution_failed",
+        "lookup_cancelled",
+        "lookup_storage_unavailable",
+        "lookup_manual_wait_expired",
+        "permission_revoked",
+        "lookup_queue_timeout",
+        "lookup_timeout",
+        "open_name_lookup_user_not_available",
+        "open_api_auth_required",
+        "invalid_open_api_client",
+        "open_api_timestamp_expired",
+        "invalid_open_api_nonce",
+        "open_api_nonce_replayed",
+        "invalid_open_api_signature"
+      ],
+      "errorStatuses": {
+        "invalid_idempotency_key": [
+          400
+        ],
+        "invalid_lookup_phone": [
+          400
+        ],
+        "idempotency_key_required": [
+          400
+        ],
+        "managed_lookup_not_authorized": [
+          403
+        ],
+        "managed_lookup_not_enabled": [
+          404
+        ],
+        "idempotency_conflict": [
+          409
+        ],
+        "lookup_queue_full": [
+          429
+        ],
+        "lookup_waiter_limit": [
+          429
+        ],
+        "lookup_pool_disabled": [
+          503
+        ],
+        "lookup_manual_action_pending": [
+          503
+        ],
+        "lookup_recovery_required": [
+          503
+        ],
+        "lookup_outcome_unknown": [
+          503
+        ],
+        "lookup_accounts_cooling": [
+          503
+        ],
+        "lookup_prepare_failed": [
+          503
+        ],
+        "lookup_execution_failed": [
+          503
+        ],
+        "lookup_cancelled": [
+          503
+        ],
+        "lookup_storage_unavailable": [
+          503
+        ],
+        "lookup_manual_wait_expired": [
+          503
+        ],
+        "permission_revoked": [
+          403
+        ],
+        "lookup_queue_timeout": [
+          504
+        ],
+        "lookup_timeout": [
+          504
+        ],
+        "open_name_lookup_user_not_available": [
+          403
+        ],
+        "open_api_auth_required": [
+          401
+        ],
+        "invalid_open_api_client": [
+          401
+        ],
+        "open_api_timestamp_expired": [
+          401
+        ],
+        "invalid_open_api_nonce": [
+          401
+        ],
+        "open_api_nonce_replayed": [
+          401
+        ],
+        "invalid_open_api_signature": [
+          401
+        ]
+      },
+      "successCodes": [
+        200
+      ],
+      "scope": "管理员显式设备池授权",
+      "idempotency": "required",
+      "response": "ok:boolean,name:string",
+      "example": {
+        "phoneNumber": "13800000000"
+      },
+      "responseExample": {
+        "ok": true,
+        "name": "**某"
+      },
+      "line": 394
     },
     {
       "method": "GET",

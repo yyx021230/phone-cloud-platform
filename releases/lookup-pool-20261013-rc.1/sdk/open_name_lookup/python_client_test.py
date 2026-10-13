@@ -21,6 +21,23 @@ class FakeResponse:
 
 
 class ClientTest(unittest.TestCase):
+    def test_managed_phone_only_retry_preserves_key_with_new_nonce(self):
+        requests = []
+        def opener(request, timeout):
+            requests.append((request, timeout))
+            if len(requests) == 1:
+                from urllib.error import URLError
+                raise URLError("synthetic connection reset")
+            return FakeResponse({"ok": True, "name": "test*"})
+        client = OpenNameLookupClient(base_url="http://127.0.0.1:1", client_id="fixture", secret="s" * 32, opener=opener)
+        result = client.lookup_name("13800000000", idempotency_key="fixture-request-1")
+        self.assertEqual(result["name"], "test*")
+        self.assertEqual(json.loads(requests[0][0].data), {"phoneNumber": "13800000000"})
+        headers = [{key.lower(): value for key, value in request.header_items()} for request, _ in requests]
+        self.assertEqual(headers[0]["idempotency-key"], headers[1]["idempotency-key"])
+        self.assertNotEqual(headers[0]["x-nonce"], headers[1]["x-nonce"])
+        self.assertEqual(requests[0][1], 190)
+
     def test_signs_transmitted_body_and_preserves_batch_order(self):
         requests = []
         secret = "s" * 32

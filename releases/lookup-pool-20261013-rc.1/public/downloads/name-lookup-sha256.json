@@ -1,13 +1,13 @@
 {
-  "version": "platform-api-integration-20261012-rc.3",
-  "businessBaseline": "platform-api-entry-20261012-deployed.1",
+  "version": "lookup-pool-20261013-rc.1",
+  "status": "local-candidate-not-deployed",
   "files": {
-    "README.md": "ba10f656b64ba237797a5aef266373140b58c8d248bb99533e5a2344abce5450",
-    "OPEN_NAME_LOOKUP_API.md": "48dfb57c03d9ae7c16dcc349b6f03f51854bcfeb755aa1eaaa0de05139b1bab4",
-    "openapi.json": "076015c74331006e399ac770550d696cfc9381dcda5069f5b23f594ea593e149",
+    "README.md": "a88c51aed6ca0f8c8a1df7009dda228fc7925b486b2ed77010b3fb6116990812",
+    "OPEN_NAME_LOOKUP_API.md": "03d3b230a23f6b02eed21d298d8e9524ac5b3aff53b1cf65d89d1374817940d0",
+    "node_client.mjs": "c8f7085162062a620e44694e7ba515d5bc3a2dc08ec0ce6cbc3cbc3d58eed5ff",
+    "python_client.py": "f3a0f9cf645cbcc90f3fa1fd458ae68e83e296d570a853fa945dd6fffb5ff555",
     "sign.mjs": "8aac5bdf144c8dd6c93da3aa34c63c21952270fba139e5b117730b6730c51946",
-    "node_client.mjs": "8d826ee94be4c2a383e0b5ba232461d6341b7339dedc88d73c858f5ca63dd7d9",
-    "python_client.py": "9b1440602651183a7d76a345a1ac8f4712190b589376f01d50269aa9b745c811"
+    "openapi.json": "d97b2c548ef19acfc9635d1317e12dfce271e0389110dd792b401b3922b9a90e"
   },
-  "archiveSha256": "7e44e797e6acfd4e9b13d0882ad4a6caa2f54885b0710eea2932247bbce4cff2"
+  "zipSha256": "d5795507f835e78f89c85baa606bfe3f20bccfc2108b2a7bc207e20df1fb6e97"
 }

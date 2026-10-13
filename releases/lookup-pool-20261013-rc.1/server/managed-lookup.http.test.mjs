@@ -28,14 +28,14 @@ test('real isolated HTTP:phone-only result,49-device mapping,max5,duplicate repl
   async function signed(phone,key,client='client-a',signal){const p='/api/v1/open/name-lookups/query',body=JSON.stringify({phoneNumber:phone}),timestamp=String(Date.now()),nonce=crypto.randomUUID(),hash=crypto.createHash('sha256').update(body).digest('hex'),sig=crypto.createHmac('sha256',secret).update(['POST',p,timestamp,nonce,hash].join('\n')).digest('hex');const res=await fetch(base+p,{method:'POST',signal,headers:{'Content-Type':'application/json','X-Client-Id':client,'X-Timestamp':timestamp,'X-Nonce':nonce,'X-Signature':sig,'Idempotency-Key':key},body});return {status:res.status,body:await res.json()};}
   for(let i=0;i<2;i++)await api('POST','/api/v1/users',admin,{username:`lookup_${i}`,password:crypto.randomUUID(),role:'user'});
   const {token}=await api('POST','/api/v1/windows-agents',admin,{agentId:'fake-agent'});
-  await api('POST','/api/v1/windows-agents/fake-agent/devices/sync',token,{agent:{agentId:'fake-agent',managedLookupProtocol:MANAGED_LOOKUP_PROTOCOL},devices:LOOKUP_POOL_NUMBERS.map(n=>({adbSerial:`SYNTH-${n}`,state:'device',deviceName:String(n)}))});
+  await api('POST','/api/v1/windows-agents/fake-agent/devices/sync',token,{agent:{agentId:'fake-agent',managedLookupProtocol:MANAGED_LOOKUP_PROTOCOL,health:{airtest:{enabled:true,ok:true}}},devices:LOOKUP_POOL_NUMBERS.map(n=>({adbSerial:`SYNTH-${n}`,state:'device',deviceName:String(n)}))});
   for(const n of LOOKUP_POOL_NUMBERS)await api('PUT',`/api/v1/devices/${encodeURIComponent('adb:SYNTH-'+n)}`,admin,{deviceName:String(n),listingStatus:'listed'});
   const preview=await api('POST','/api/v1/admin/lookup-pool/preview',admin,{});assert.equal(preview.devices.length,49);assert.ok(preview.devices.every(d=>d.matches===1&&d.ready));
   const cfg={enabled:true,concurrency:5,waitMs:12000,idleMs:400,devices:preview.devices.map(d=>({...d,enabled:true})),grants:clients.map(c=>({clientId:c.clientId,consentReference:'authorized-test-fixture',enabled:true}))};await api('PUT','/api/v1/admin/lookup-pool',admin,cfg);
   assert.equal((await signed('invalid',crypto.randomUUID())).status,400);
   assert.equal((await raw('PUT','/api/v1/admin/lookup-pool',admin,{concurrency:6})).status,400);
   assert.equal((await raw('GET','/api/v1/admin/lookup-pool','invalid',undefined)).status,401);
-  let max=0,queryCount=0,release=false,loseNextAck=false;const puzzled=new Set(),uncertain=new Set();const live=new Map(),tasks=[],inFlight=new Set();
+  let max=0,queryCount=0,release=false,loseNextAck=false,holdOne=false,heldTask=null;const puzzled=new Set(),uncertain=new Set(),recoveryFailed=new Set();const live=new Map(),tasks=[],inFlight=new Set();
   const request=async(p,o={})=>api(o.method||'GET',p,token,o.body);
   async function complete(task){
     const lose=loseNextAck;loseNextAck=false;const prepared=await hydrateManagedLookupTask(task,{request:async(p,o)=>{const result=await request(p,o);if(lose&&p.endsWith('/ack'))throw new Error('simulated ACK response lost');return result;}});if(!prepared.acknowledged){uncertain.add(task.taskId);return;}task=prepared.task;tasks.push(task);
@@ -43,7 +43,7 @@ test('real isolated HTTP:phone-only result,49-device mapping,max5,duplicate repl
     if(task.type!=='alipay_name_stop')result={currentAccount:'fixture-account',accountIdentityVerified:true,savedAccounts:[{account:'fixture-account',current:true}]};
     if(task.type==='alipay_name_query'){
       assert.equal(live.has(task.adbSerial),false,'same phone cannot overlap');live.set(task.adbSerial,task.taskId);max=Math.max(max,live.size);queryCount++;
-      while(!release&&run)await sleep(10);await sleep(50);result={...result,...(task.payload.phoneNumber.endsWith('9')?{notFound:true}:{alipayDisplayName:'测*',realNameTailCharacter:'测'})};if(task.payload.phoneNumber==='13800009991'&&!puzzled.has(task.payload.phoneNumber)){puzzled.add(task.payload.phoneNumber);status='failed';result={...result,errorCode:'alipay_human_verification_required'};}live.delete(task.adbSerial);
+      while((!release||holdOne)&&run)await sleep(10);if(holdOne){heldTask=task;live.delete(task.adbSerial);return;}await sleep(50);result={...result,...(task.payload.phoneNumber.endsWith('9')?{notFound:true}:{alipayDisplayName:'测*',realNameTailCharacter:'测'})};if(task.payload.phoneNumber==='13800009991'&&!puzzled.has(task.payload.phoneNumber)){puzzled.add(task.payload.phoneNumber);status='failed';result={...result,errorCode:'alipay_human_verification_required'};}if(task.payload.phoneNumber==='13800009994'&&!recoveryFailed.has(task.payload.phoneNumber)){recoveryFailed.add(task.payload.phoneNumber);status='failed';result={...result,errorCode:'lookup_status_storage_unavailable'};}live.delete(task.adbSerial);
     }
     const bad=await raw('POST',`/api/v1/windows-agent-tasks/${task.taskId}/status`,token,{status:'succeeded',result,managedLookupGeneration:'stale'});assert.equal(bad.status,409);
     await api('POST',`/api/v1/windows-agent-tasks/${task.taskId}/status`,token,{status,result,managedLookupGeneration:m});
@@ -72,11 +72,20 @@ test('real isolated HTTP:phone-only result,49-device mapping,max5,duplicate repl
   const probePath='/api/v1/windows-agents/fake-agent/lookup-human-verifications';let probes=(await api('GET',probePath,token)).probes;assert.equal(probes.length,1);assert.equal((await api('POST',probePath,token,{probeId:probes[0].probeId,state:'search_ready'})).resumed,false);
   await sleep(2100);probes=(await api('GET',probePath,token)).probes;assert.equal((await api('POST',probePath,token,{probeId:probes[0].probeId,state:'search_ready'})).resumed,true);
   const recovered=await signed('13800009991',puzzleKey);assert.deepEqual(recovered.body,{ok:true,name:'测*'});const after=(await api('GET','/api/v1/admin/lookup-pool',admin)).pool.requests.find(r=>r.lookupId===original.lookupId);assert.equal(after.queryId,queryId,'human recovery writes original result');
+  await api('PUT','/api/v1/admin/lookup-pool',admin,{waitMs:1000});const recoveryKey=crypto.randomUUID();const failedRecovery=await signed('13800009994',recoveryKey);assert.equal(failedRecovery.body.code,'lookup_recovery_required');
+  const recoverable=(await api('GET','/api/v1/admin/lookup-pool',admin)).pool.requests.find(r=>r.status==='needs_recovery');assert.ok(recoverable);
+  await api('POST',`/api/v1/admin/lookup-pool/requests/${recoverable.lookupId}/retry`,admin,{});assert.equal((await signed('13800009994',recoveryKey)).body.name,'测*');assert.equal((await api('GET','/api/v1/admin/lookup-pool',admin)).pool.requests.find(r=>r.lookupId===recoverable.lookupId).queryId,recoverable.queryId);
+  assert.equal((await raw('PUT','/api/v1/admin/lookup-pool',admin,{enabled:false,expectedConfigRevision:-1})).status,409,'stale admin edits cannot overwrite configuration');
   assert.ok(max<=5);await api('PUT','/api/v1/admin/lookup-pool',admin,{enabled:false});
   for(let i=0;i<120;i++){if(!(await api('GET','/api/v1/admin/lookup-pool',admin)).pool.channels.length)break;await sleep(20);}assert.equal((await api('GET','/api/v1/device-locks',admin)).locks.filter(l=>l.status==='active').length,0);
-  run=false;await worker;const exit=once(child,'exit');child.kill('SIGKILL');await exit;
+  await api('PUT','/api/v1/admin/lookup-pool',admin,{enabled:true,waitMs:4000});holdOne=true;const pendingKey=crypto.randomUUID();const pending=signed('13800009993',pendingKey).catch(()=>({status:0}));
+  for(let i=0;i<120&&!live.size;i++)await sleep(20);assert.equal(live.size,1);const beforeCrash=(await api('GET','/api/v1/admin/lookup-pool',admin)).pool.requests.find(r=>r.status==='running');assert.ok(beforeCrash);
+  run=false;await worker;const exit=once(child,'exit');child.kill('SIGKILL');await exit;await pending;
   start();for(let i=0;i<100;i++){try{if((await fetch(base+'/readyz')).ok)break;}catch{}await sleep(30);}
   const restored=await signed(phones[0],keys[0]);assert.deepEqual(restored,results[0],'hard restart preserves stored name and same-key result');
-  assert.equal((await api('GET','/api/v1/admin/lookup-pool',admin)).pool.channels.length,0);
+  const activeRestored=(await api('GET','/api/v1/admin/lookup-pool',admin)).pool;assert.equal(activeRestored.channels.length,1);assert.equal(activeRestored.requests.find(r=>r.lookupId===beforeCrash.lookupId).queryId,beforeCrash.queryId);
+  assert.equal((await api('GET',`/api/v1/windows-agents/fake-agent/tasks/next?managedLookupDelivery=${MANAGED_LOOKUP_PROTOCOL}`,token)).task,null,'in-flight query is not redelivered after platform crash');
+  const attach=signed('13800009993',pendingKey);assert.ok(heldTask);await api('POST',`/api/v1/windows-agent-tasks/${heldTask.taskId}/status`,token,{status:'succeeded',managedLookupGeneration:heldTask.payload.managedLookup.generation,result:{currentAccount:'fixture-account',accountIdentityVerified:true,savedAccounts:[{account:'fixture-account',current:true}],alipayDisplayName:'原*',realNameTailCharacter:'原'}});
+  assert.deepEqual((await attach).body,{ok:true,name:'原*'});holdOne=false;run=true;worker=drive();await api('PUT','/api/v1/admin/lookup-pool',admin,{enabled:false});for(let i=0;i<100;i++){if(!(await api('GET','/api/v1/admin/lookup-pool',admin)).pool.channels.length)break;await sleep(20);}assert.equal((await api('GET','/api/v1/admin/lookup-pool',admin)).pool.channels.length,0);
   assert.doesNotMatch(errors,/fatal|SyntaxError|unhandled/i);
 });

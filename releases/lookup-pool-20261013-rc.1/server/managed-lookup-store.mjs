@@ -4,7 +4,7 @@ import path from 'node:path';
 export const LOOKUP_POOL_NUMBERS = Object.freeze([51,52,54,55,87,138,152,188,172,156,155,115,60,58,164,163,154,6,57,10,183,82,86,121,146,149,153,181,182,162,161,142,74,78,79,118,130,157,147,101,107,165,112,67,53,128,158,143,148]);
 export const MANAGED_LOOKUP_PROTOCOL = 'managed_lookup_v1';
 export function initialManagedLookupState() {
-  return {version:1, revision:0, config:{enabled:false, concurrency:5, waitMs:120000, idleMs:120000, queueLimit:1000, clientQueueLimit:200, waiterLimit:20, humanLimit:5}, devices:[], grants:[], requests:[], channels:[], audits:[], lastClient:''};
+  return {version:1, revision:0, config:{enabled:false, concurrency:5, waitMs:120000, idleMs:120000, queueLimit:1000, clientQueueLimit:200, waiterLimit:20, humanLimit:5, humanWaitMs:1800000}, devices:[], grants:[], requests:[], channels:[], audits:[], lastClient:''};
 }
 
 // A single service process owns the existing in-memory platform state. The
@@ -41,11 +41,11 @@ export async function createManagedLookupStore({getPool, file, key='default', pe
     async transact(operation){
       const job=tail.then(async()=>{
         if(fenced)throw new Error('managed_lookup_storage_fenced');
-        let client;const rollbacks=[];
+        let client;const rollbacks=[],commits=[];
         try{
           if(getPool){client=await (await getPool()).connect();await client.query('begin');const rows=await client.query('select data from phone_cloud_managed_lookup where state_key=$1 for update',[key]);if(!rows.rows.length)throw new Error('managed_lookup_state_missing');value=rows.rows[0].data;}
           const next=structuredClone(value);
-          const result=await operation(next,{client,onRollback:fn=>rollbacks.push(fn), archived:async(clientId,requestKey)=>client?(await client.query('select data from phone_cloud_managed_lookup_results where state_key=$1 and client_id=$2 and idempotency_key=$3',[key,clientId,requestKey])).rows[0]?.data:null});
+          const result=await operation(next,{client,onRollback:fn=>rollbacks.push(fn),onCommit:fn=>commits.push(fn), archived:async(clientId,requestKey)=>client?(await client.query('select data from phone_cloud_managed_lookup_results where state_key=$1 and client_id=$2 and idempotency_key=$3',[key,clientId,requestKey])).rows[0]?.data:null});
           next.revision=(value.revision||0)+1;
           if(client){
             for(const r of next.requests.filter(r=>r.completedAt&&!r.archived)){
@@ -55,7 +55,7 @@ export async function createManagedLookupStore({getPool, file, key='default', pe
             await client.query('update phone_cloud_managed_lookup set data=$2::jsonb, updated_at=now() where state_key=$1',[key,JSON.stringify(next)]);await client.query('commit');
           }
           else{if(persistLegacy)await persistLegacy();await saveFile(next);}
-          value=next;return result;
+          value=next;for(const commit of commits)commit();return result;
         }catch(e){if(client)await client.query('rollback').catch(()=>{});for(const undo of rollbacks.reverse())undo();throw e;}finally{client?.release();}
       });tail=job.catch(()=>{});return job;
     },

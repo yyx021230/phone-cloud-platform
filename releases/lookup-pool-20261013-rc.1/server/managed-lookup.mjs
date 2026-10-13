@@ -30,12 +30,12 @@ export function createManagedLookupService({store,adapter,now=Date.now}) {
       if(!input||typeof input!=='object'||Array.isArray(input))throw managedLookupError('invalid_pool_config');
       return store.transact(async (s,tx)=>{
         if(input.expectedConfigRevision!==undefined&&input.expectedConfigRevision!==(s.configRevision||0))throw managedLookupError('pool_config_changed',409);
-        for(const [k,min,max] of [['concurrency',1,5],['waitMs',100,180000],['idleMs',100,300000],['queueLimit',1,1000],['clientQueueLimit',1,200],['waiterLimit',1,20],['humanLimit',0,5]])if(input[k]!==undefined)s.config[k]=integer(input[k],min,max);
+        for(const [k,min,max] of [['concurrency',1,5],['waitMs',100,180000],['idleMs',100,300000],['queueLimit',1,1000],['clientQueueLimit',1,200],['waiterLimit',1,20],['humanLimit',0,5],['humanWaitMs',100,1800000]])if(input[k]!==undefined)s.config[k]=integer(input[k],min,max);
         if(input.enabled!==undefined){if(typeof input.enabled!=='boolean')throw managedLookupError('invalid_pool_config');s.config.enabled=input.enabled;}
         if(input.devices!==undefined){
           if(!Array.isArray(input.devices)||input.devices.length>49)throw managedLookupError('invalid_pool_devices');
-          const ids=new Set(),numbers=new Set();
-          s.devices=input.devices.map(d=>{const n=Number(d.deviceNumber);if(!LOOKUP_POOL_NUMBERS.includes(n)||ids.has(d.deviceId)||numbers.has(n))throw managedLookupError('invalid_pool_devices');adapter.validateDevice(d.deviceId,n);ids.add(d.deviceId);numbers.add(n);return {deviceId:d.deviceId,deviceNumber:n,enabled:d.enabled===true};});
+          const ids=new Set(),numbers=new Set(),previous=s.devices;
+          s.devices=input.devices.map(d=>{const n=Number(d.deviceNumber);if(!LOOKUP_POOL_NUMBERS.includes(n)||ids.has(d.deviceId)||numbers.has(n))throw managedLookupError('invalid_pool_devices');adapter.validateDevice(d.deviceId,n,previous.some(x=>x.deviceId===d.deviceId&&x.deviceNumber===n));ids.add(d.deviceId);numbers.add(n);const old=previous.find(x=>x.deviceId===d.deviceId);return {lastUsedAt:old?.lastUsedAt||0,quarantineUntil:old?.quarantineUntil||0,prepareFailureCount:old?.prepareFailureCount||0,deviceId:d.deviceId,deviceNumber:n,enabled:d.enabled===true};});
         }
         if(input.grants!==undefined){
           if(!Array.isArray(input.grants)||input.grants.length>100)throw managedLookupError('invalid_pool_grants');const seen=new Set();
@@ -45,7 +45,7 @@ export function createManagedLookupService({store,adapter,now=Date.now}) {
       });
     },
     preview(){return LOOKUP_POOL_NUMBERS.map(n=>adapter.resolveNumber(n));},
-    admin(){const s=store.snapshot();return {...s,clientOptions:adapter.clientOptions?.()||[],requests:s.requests.map(({phoneNumber,fingerprint,idempotencyKey,...r})=>({...r,hasName:Boolean(r.name)})),devices:s.devices.map(d=>({...d,health:adapter.health(d.deviceId),channel:s.channels.find(c=>c.deviceId===d.deviceId)||null})),counts:{registered:s.devices.length,executing:activeCount(s),waitingHuman:s.channels.filter(c=>c.phase==='human').length,queued:s.requests.filter(r=>r.status==='queued').length}};},
+    admin(){const s=store.snapshot();return {...s,clientOptions:adapter.clientOptions?.()||[],requests:s.requests.map(({phoneNumber,fingerprint,idempotencyKey,...r})=>({...r,hasName:Boolean(r.name)})),devices:s.devices.map(d=>({...d,health:d.quarantineUntil>now()?{ready:false,reason:'preparation_backoff',until:d.quarantineUntil}:adapter.health(d.deviceId),channel:s.channels.find(c=>c.deviceId===d.deviceId)||null})),counts:{registered:s.devices.length,executing:activeCount(s),waitingHuman:s.channels.filter(c=>c.phase==='human').length,queued:s.requests.filter(r=>r.status==='queued').length}};},
     async submit({clientId,phoneNumber,key}){
       if(!key||!/^[A-Za-z0-9._:-]{8,160}$/.test(key))throw managedLookupError('idempotency_key_required');
       return store.transact(async (s,tx)=>{
@@ -75,7 +75,17 @@ export function createManagedLookupService({store,adapter,now=Date.now}) {
       }finally{waiters.set(clientId,(waiters.get(clientId)||1)-1);waiters.set(key,(waiters.get(key)||1)-1);if(!waiters.get(clientId))waiters.delete(clientId);if(!waiters.get(key))waiters.delete(key);}
     },
     async beforeResume(sessionId){
-      return store.transact(s=>{const c=s.channels.find(c=>c.sessionId===sessionId);if(!c)return false;if(!s.config.enabled||activeCount(s)>=s.config.concurrency)return false;c.phase='resuming';return true;}).then(result=>{syncOccupied();return result;});
+      return store.transact(s=>{const c=s.channels.find(c=>c.sessionId===sessionId);if(!c)return false;const r=s.requests.find(r=>r.lookupId===c.requestId);if(!s.config.enabled||!r||r.cancelRequested||!authorized(s,c.clientId)||!adapter.clientValid(c.clientId)||!adapter.health(c.deviceId,{allowScreenControl:true}).ready||activeCount(s)>=s.config.concurrency)return false;c.phase='resuming';return true;}).then(result=>{syncOccupied();return result;});
+    },
+    async retry(lookupId,actor){
+      await store.transact(async(s,tx)=>{
+        const r=s.requests.find(r=>r.lookupId===lookupId),c=s.channels.find(c=>c.requestId===lookupId);
+        if(!r||!c||c.phase!=='recovery'||r.status!=='needs_recovery')throw managedLookupError('managed_recovery_not_ready',409);
+        if(!authorized(s,r.clientId)||!adapter.clientValid(r.clientId))throw managedLookupError('managed_lookup_not_authorized',403);
+        if(activeCount(s)>=s.config.concurrency)throw managedLookupError('managed_lookup_capacity_busy',409);
+        if(!adapter.health(c.deviceId).ready)throw managedLookupError('managed_lookup_device_not_ready',409);
+        await adapter.query(c,r,tx,{recovery:true});c.phase=r.queryId?'querying':'starting';r.status='retrying';r.code='';audit(s,'lookup_retry_original',actor,{lookupId});
+      });syncOccupied();
     },
     async cancel(lookupId,actor){
       await store.transact(async(s,tx)=>{const r=s.requests.find(r=>r.lookupId===lookupId);if(!r)throw managedLookupError('lookup_not_found',404);if(DONE.has(r.status))return;if(r.status==='queued')finish(r,'cancelled','lookup_cancelled');else{r.cancelRequested=true;r.status='cancelling';}audit(s,'lookup_cancel',actor,{lookupId});});syncOccupied();
@@ -86,28 +96,28 @@ export function createManagedLookupService({store,adapter,now=Date.now}) {
         for(const c of [...s.channels]){
           const r=s.requests.find(r=>r.lookupId===c.requestId);
           const o=adapter.observe(c);
-          if(r?.cancelRequested&&c.phase!=='stopping'){if(channelActive(c)||activeCount(s)<s.config.concurrency){await adapter.stop(c,tx);c.phase='stopping';}continue;}
+          if(r?.cancelRequested&&c.phase!=='stopping'){if(!adapter.canStop(c)){c.phase='unknown';continue;}if(channelActive(c)||activeCount(s)<s.config.concurrency){await adapter.stop(c,tx);c.phase='stopping';}continue;}
           if(c.phase==='stopping'){
-            if(o.stopped){s.channels.splice(s.channels.indexOf(c),1);if(r&&!DONE.has(r.status))finish(r,r.cancelRequested?'cancelled':'failed',r.cancelRequested?'lookup_cancelled':'lookup_execution_failed');}
+            if(o.stopped){s.channels.splice(s.channels.indexOf(c),1);if(r&&!DONE.has(r.status))finish(r,r.cancelRequested?'cancelled':'failed',r.cancelRequested?(r.cancelReason||'lookup_cancelled'):'lookup_execution_failed');}
             continue;
           }
           if(o.unknown){c.phase='unknown';if(r&&!DONE.has(r.status))r.status='unknown';continue;}
           if(o.busy){c.phase=o.switching?'switching':c.phase==='starting'?'starting':'querying';if(r&&!DONE.has(r.status))r.status=c.phase==='starting'?'preparing':'running';continue;}
-          if(o.human){c.phase='human';if(r&&!DONE.has(r.status))r.status='waiting_human';continue;}
+          if(o.human){c.phase='human';c.humanSince=c.humanSince||now();if(r&&!DONE.has(r.status)){r.status='waiting_human';if(now()-c.humanSince>=s.config.humanWaitMs){r.cancelRequested=true;r.cancelReason='lookup_manual_wait_expired';}}continue;}
           if(o.recovery){c.phase='recovery';if(r&&!DONE.has(r.status)){r.status='needs_recovery';r.code='lookup_recovery_required';}continue;}
           if(o.result&&r&&!DONE.has(r.status)){
             if(o.result.status==='succeeded'||o.result.status==='not_found'){r.name=o.result.name||'';finish(r,o.result.status);c.requestId='';c.phase='idle';c.idleAt=now();}
             else if(o.exhausted){finish(r,'failed','lookup_accounts_cooling');await adapter.stop(c,tx);c.phase='stopping';}
-            else {r.status='needs_recovery';r.code='lookup_recovery_required';c.phase='recovery';}
+            else {finish(r,'failed','lookup_execution_failed');await adapter.stop(c,tx);c.phase='stopping';}
             continue;
           }
-          if(o.startFailed&&r){
+          if(o.startFailed&&r){const d=s.devices.find(d=>d.deviceId===c.deviceId);if(d){d.prepareFailureCount=Math.min(3,(d.prepareFailureCount||0)+1);d.quarantineUntil=now()+[30000,60000,120000][d.prepareFailureCount-1];}
             // Only failed preparation before any query can move to one other
             // device. A failed/unknown query is never replayed elsewhere.
             if(r.attempts.length<2&&!r.queryId){r.status='queued';c.requestId='';}else finish(r,'failed','lookup_prepare_failed');
             if(o.stopped)s.channels.splice(s.channels.indexOf(c),1);else{await adapter.stop(c,tx);c.phase='stopping';}continue;
           }
-          if(o.ready&&c.phase==='starting'&&r){await adapter.query(c,r,tx);c.phase='querying';r.status='running';continue;}
+          if(o.ready&&c.phase==='starting'&&r){if(!adapter.health(c.deviceId).ready)continue;const d=s.devices.find(d=>d.deviceId===c.deviceId);if(d){d.prepareFailureCount=0;d.quarantineUntil=0;}await adapter.query(c,r,tx);c.phase='querying';r.status='running';continue;}
           if(c.phase==='resuming'&&o.ready){c.phase=r&&!DONE.has(r.status)?'starting':'idle';}
           if(c.phase==='idle'&&(!s.config.enabled||!s.devices.some(d=>d.deviceId===c.deviceId&&d.enabled)||!authorized(s,c.clientId)||now()-c.idleAt>=s.config.idleMs)){
             if(activeCount(s)<s.config.concurrency){await adapter.stop(c,tx);c.phase='stopping';}
@@ -123,7 +133,7 @@ export function createManagedLookupService({store,adapter,now=Date.now}) {
         while(activeCount(s)<s.config.concurrency&&waiting.length){
           let selected=null;
           for(const clientId of order){const r=waiting.find(r=>r.clientId===clientId);if(!r)continue;const used=new Set(r.attempts.map(a=>a.deviceId));
-            const candidates=s.devices.filter(d=>d.enabled&&!used.has(d.deviceId)).map(d=>({d,c:s.channels.find(c=>c.deviceId===d.deviceId),h:adapter.health(d.deviceId)})).filter(x=>x.h.ready&&(!x.c||(x.c.phase==='idle'&&x.c.clientId===clientId))).sort((a,b)=>Number(!a.c)-Number(!b.c)||(a.d.lastUsedAt||0)-(b.d.lastUsedAt||0));
+            const candidates=s.devices.filter(d=>d.enabled&&!(d.quarantineUntil>now())&&!used.has(d.deviceId)).map(d=>({d,c:s.channels.find(c=>c.deviceId===d.deviceId),h:adapter.health(d.deviceId)})).filter(x=>x.h.ready&&(!x.c||(x.c.phase==='idle'&&x.c.clientId===clientId))).sort((a,b)=>Number(!a.c)-Number(!b.c)||(a.d.lastUsedAt||0)-(b.d.lastUsedAt||0));
             if(candidates.length){selected={r,...candidates[0]};break;}
           }
           if(!selected)break;const {r,d}=selected;let c=selected.c;
