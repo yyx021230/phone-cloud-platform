@@ -1,0 +1,137 @@
+{
+  "task": "lookup-sdk-timeout-fix-20261013",
+  "atUtc": "2026-10-13T09:39:57.008811+00:00",
+  "status": "local-candidate",
+  "userScope": "Explain F1/F2/F3/F5; fix F4 locally only. No runtime scheduler fixes or deployment.",
+  "risk": "R2: shared Node SDK transport/retry classification; no server or schema change",
+  "branch": "codex/lookup-sdk-timeout-20261013",
+  "baselineCommit": "ce5c42cba1bb94f0faba487f443976d8faeb31a8",
+  "candidateTag": "lookup-async-20261013-rc.2",
+  "baseVersion": "lookup-async-20261013-rc.1",
+  "baseTagCommit": "1d644817d67fc64b3ea6d8620705b3c5422036a3",
+  "baseManifestSha256": "e688023f831dcccf780408b04f6c48bedb024481b2272194536508c56c5b694c",
+  "rules": {
+    "fullMainReadContextReused": true,
+    "AGENTSAndWorkflowReread": true,
+    "workflowRevision": "2026-09-30",
+    "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+    "mainShaBefore": "89410d8b9965b739ced0d6dfef91ce30a3863e1fb5c2726472f82a649cfa7d19"
+  },
+  "changes": [
+    "Deadline stays active until response body finishes; fetch headers do not reset or clear it.",
+    "2xx response body failures become network_error; submitLookup/lookupName reuse key and fresh nonce for at most one retry.",
+    "Known non-2xx status with unreadable body stays HTTP error, preserving status and fallback http_<status>; no automatic retry.",
+    "Complete HTTP errors retain business code/payload. GET remains one attempt and caller polls original ID.",
+    "Node SDK and README replaced in ZIP; SHA256 rebuilt; all remaining ZIP entries byte-identical."
+  ],
+  "compatibility": {
+    "methodsPathsSignaturesUnchanged": true,
+    "sameCallKeyStable": true,
+    "eachAttemptFreshNonce": true,
+    "retryCountUnchanged": 1,
+    "timeoutBudget": "per HTTP attempt; submit methods at most two attempts, not one overall deadline",
+    "pythonSdkUnchanged": true,
+    "databaseMigration": "none",
+    "serverCancellation": "HTTP timeout never cancels accepted task"
+  },
+  "actualVerification": {
+    "environment": "Node v25.9.0 / local macOS; env -i with PATH/HOME/LANG/LC_ALL only",
+    "before": {
+      "command": "node --test releases/lookup-async-20261013-rc.2/sdk/open_name_lookup/node_client.transport.test.mjs (before SDK edit; identical rc.1 code)",
+      "tests": 15,
+      "passed": 7,
+      "failed": 8,
+      "exitCode": 1,
+      "logSha256": "7c0d0d1770ba26fa4aa8d499276201630bef107fc9186102abf819ab3d34738a"
+    },
+    "after": {
+      "command": "node --test --test-reporter=tap releases/lookup-async-20261013-rc.2/sdk/open_name_lookup/node_client.test.mjs releases/lookup-async-20261013-rc.2/sdk/open_name_lookup/node_client.transport.test.mjs",
+      "tests": 21,
+      "passed": 21,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "logSha256": "40652b6e63df28e5853377e9f02eaffee4410de8d674c093287c469659bebd9b"
+    },
+    "packagedSdk": {
+      "command": "extract only Node SDK from candidate ZIP into owned temp directory; run unchanged original 6 plus new transport 15 tests",
+      "tests": 21,
+      "passed": 21,
+      "failed": 0,
+      "exitCode": 0,
+      "logSha256": "05c908dd3fe30c6cda35a53a33570c49dcdea1f8091994fdaefc5263ebdb5961"
+    },
+    "syntax": {
+      "files": [
+        "sdk/open_name_lookup/node_client.mjs",
+        "sdk/open_name_lookup/node_client.transport.test.mjs"
+      ],
+      "exitCode": 0
+    },
+    "cases": [
+      "GET body deadline, no resubmit",
+      "single deadline across headers and body",
+      "accepted body loss stable-key replay with one synthetic ledger entry",
+      "legacy lookupName same-key replay",
+      "repeated disconnect/timeout stops after two HTTP attempts",
+      "known HTTP body timeout or disconnect does not retry",
+      "401/403/409/429/503 preserves business error payload",
+      "timer cleared after success"
+    ],
+    "loopbackServersClosed": true,
+    "fixturePhysicalQueries": 0,
+    "notRepeated": "Full 618/server/PG/screen/Agent suite not rerun: no changes to those components. Previous evidence retained; not a claim of complete acceptance.",
+    "artifactVerification": {
+      "command": "python3 releases/lookup-async-20261013-rc.2/verification/verify-overlay.py",
+      "baseManifestFiles": 332,
+      "overlayManifestFiles": 10,
+      "exitCode": 0,
+      "changedZipEntries": [
+        "README.md",
+        "SHA256.json",
+        "node_client.mjs"
+      ],
+      "deterministicRebuildConfirmed": true,
+      "allOtherZipEntriesUnchanged": true
+    }
+  },
+  "selfReview": {
+    "reviewer": "Codex self-review; no subagent or independent reviewer",
+    "result": "F4 local patch verified; whole platform still blocked by F1/F2/F3/F5",
+    "runtimeDiff": "Only Node SDK response-body deadline/error classification relative to immutable rc.1; tests and SDK README/ZIP artifacts additional",
+    "secretMaterials": "Synthetic credentials and synthetic test numbers only"
+  },
+  "modifiedFileHashes": {
+    "sdk/open_name_lookup/node_client.mjs": "07f86ca4ff7bf3848083c8e1d1ecc30b69da67951e554d0121e1efdb4120fa3a",
+    "sdk/open_name_lookup/README.md": "32563f409ea16500eba122938e1bd5a64d42455aa6d28d0ccd9c4fb508efac93",
+    "public/downloads/name-lookup-integration.zip": "39dd6fe13a0942479ef7a1741a959661ae077e13a052a1878630e3e666e92843",
+    "public/downloads/name-lookup-sha256.json": "986b63c6d0674b1f64fd33716cbf377d0c1d371f811a605790e2801edc9ca527"
+  },
+  "rootPreserved": {
+    "head": "6811aef632eeaaacd6d6ce1effc4afa64bf6d363",
+    "dirtyEntries": 236,
+    "writes": 0,
+    "mainSha256": "3dd6365329b18c9a50df97a1f10f95990b9a02342b48873108c0b25c33e22790"
+  },
+  "oldCandidateAndTagUnchanged": true,
+  "remainingReviewFindings": [
+    "F1 offline stop rolls back pool tick",
+    "F2 missing grant check before first prepared query",
+    "F3 cancel/budget result race",
+    "F5 legacy synchronous recommendation retained in old API document"
+  ],
+  "unverified": [
+    "true async lookup on phones / five concurrent phones",
+    "natural account limit switching and natural 8-hour cooldown",
+    "actual Windows disconnect/restart",
+    "other developer application and production transport/proxy",
+    "Node versions other than v25.9.0"
+  ],
+  "productionConnections": 0,
+  "productionMutations": 0,
+  "realPhoneActions": 0,
+  "feishuMessages": 0,
+  "remotePushes": 0,
+  "mediaLiveVerification": "not run; no deployment, Agent or frozen-path changes",
+  "rollback": "OverlayFiles can be restored from immutable rc.1 after hash check; retains known F4 defect. No DB/schema/phone/service operation needed; preserve business key and lookupId."
+}

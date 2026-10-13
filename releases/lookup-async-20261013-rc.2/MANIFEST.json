@@ -1,0 +1,20 @@
+{
+  "version": "lookup-async-20261013-rc.2",
+  "candidateTag": "lookup-async-20261013-rc.2",
+  "status": "local-sdk-overlay-not-deployed",
+  "baseManifestSha256": "e688023f831dcccf780408b04f6c48bedb024481b2272194536508c56c5b694c",
+  "hash": "SHA256",
+  "selfExcluded": "MANIFEST.json",
+  "files": {
+    "README.md": "bb8a86fe467febe60fa0c361898359f43f39892cb33564bbf0c9d367a5cf09ad",
+    "VERSION.json": "485c50f27a2d783b00b9936a274d893201c65b58e98e24e3cece33b4cf90337f",
+    "public/downloads/name-lookup-integration.zip": "39dd6fe13a0942479ef7a1741a959661ae077e13a052a1878630e3e666e92843",
+    "public/downloads/name-lookup-sha256.json": "986b63c6d0674b1f64fd33716cbf377d0c1d371f811a605790e2801edc9ca527",
+    "sdk/open_name_lookup/README.md": "32563f409ea16500eba122938e1bd5a64d42455aa6d28d0ccd9c4fb508efac93",
+    "sdk/open_name_lookup/node_client.mjs": "07f86ca4ff7bf3848083c8e1d1ecc30b69da67951e554d0121e1efdb4120fa3a",
+    "sdk/open_name_lookup/node_client.test.mjs": "a945f2cbcb4186f4767ce3f7e3ca212fef6ffa3a54cd4440259208b567f292db",
+    "sdk/open_name_lookup/node_client.transport.test.mjs": "976cb27e25dbf410148165f0bd8b5a46e41ede243632857a998783ab2176a6b3",
+    "verification/build-sdk-overlay.py": "d0b94ee3213079d869bfa9b7a168b3d7318a08d104ebe7a4bc31d760c0e6468f",
+    "verification/verify-overlay.py": "18d80508f28074ab74ac52ee3ebb9fa292ed44c0b59181b443cc88b72c2a34aa"
+  }
+}
