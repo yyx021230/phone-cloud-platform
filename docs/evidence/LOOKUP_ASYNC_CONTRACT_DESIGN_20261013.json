@@ -1,0 +1,66 @@
+{
+  "task": "lookup-async-contract-20261013",
+  "status": "design candidate only; asynchronous APIs not implemented",
+  "branch": "codex/lookup-async-contract-20261013",
+  "baseCommit": "e3805931556f5852c836ab0cc22207c298e488cf",
+  "candidateTag": "lookup-async-contract-20261013-design.1",
+  "atLocal": "2026-10-13T16:06:54.625104+08:00",
+  "ruleContext": "Existing complete main/workflow context reused; AGENTS reread and unchanged workflow SHA verified",
+  "workflowRevision": "2026-09-30",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "sourceDocument": "https://ncisb4cgbz.feishu.cn/wiki/L1iZwtQqqiXBqqkN1Ysc0RXEnRd",
+  "sourceRead": "Chrome logged-in DOM: business conditions, separate submission/result cron tasks, interface confirmation, responsibilities, fill-back conditions; no content edit",
+  "factVsProposal": {
+    "codeConfirmed": [
+      "Current synchronous POST and explicit idempotency key",
+      "PG state-row transaction checks client/key + normalized phone fingerprint before enqueue",
+      "Archived terminal requests queried by client/key",
+      "PG archive unique(state_key,client_id,idempotency_key)",
+      "HTTP connection close aborts waiter only, original request retained",
+      "SDK default generated key spans one call only; caller must persist key across scheduled invocations"
+    ],
+    "proposal": [
+      "Two new async tasks POST/GET routes",
+      "Stable key persisted before first send by caller, body only phone",
+      "Public five-state mapping with unknown outcome retained for internal reconciliation",
+      "5-second polling recommendation, result/tombstone retention and async task deadlines",
+      "New asynchronous counterexample acceptance plan"
+    ],
+    "implementedThisTurn": false
+  },
+  "risk": "R0 documentation; future API/idempotency/clock/schema implementation R2; no production authority expanded",
+  "beforeHashes": {
+    "main": "46086141538fb269532d0c6e27f15bc9cdf50c5981bc1ab935d5ab032d0b50f2",
+    "design": "72297d46c6e53674e8c53d3a2d699a317ad330d03e8064986a96bda59e3ab488"
+  },
+  "files": {
+    "docs/LOOKUP_DEVICE_POOL_DESIGN.md": "1578a087a9e4f65530f1c791047e72e43214e483e30a091513348d6e24ce495f",
+    "docs/PROJECT_DEVELOPMENT.md": "32a276cf7d33d91133c5f1c2c61c4f6ad2ceb8bfce34f3e6316ef9c5ee88a8a6"
+  },
+  "rootPreserved": {
+    "head": "6811aef632eeaaacd6d6ce1effc4afa64bf6d363",
+    "dirtyEntries": 236,
+    "writesOrStaging": 0
+  },
+  "validation": {
+    "kind": "source/DOM/document consistency and self review",
+    "applicationTestsRun": false,
+    "reason": "Only design text; asynchronous code is not implemented",
+    "old608TestsNotClaimedAsAsyncProof": true
+  },
+  "productionConnections": 0,
+  "productionMutations": 0,
+  "realPhoneQueries": 0,
+  "externalDocumentWrites": 0,
+  "notifications": 0,
+  "pushes": 0,
+  "existingRc4TagNotMoved": true,
+  "rollback": "Revert only this documentation commit if proposal superseded; no database/runtime rollback needed",
+  "unverified": [
+    "New asynchronous routes, SDK, authorization and isolation",
+    "Retry/drop/concurrent/late response scenarios through new async HTTP",
+    "Result/tombstone expiration and async processing deadlines",
+    "Production/Windows/real five-phone capacity gaps from rc.4 unchanged"
+  ],
+  "asynchronousAcceptanceCasesPlanned": 16
+}
