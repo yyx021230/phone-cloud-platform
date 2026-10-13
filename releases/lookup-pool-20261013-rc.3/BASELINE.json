@@ -1,0 +1,11 @@
+{
+  "kind": "minimal-overlay-requires-full-rc.1-and-rc.2",
+  "baseFullTag": "lookup-pool-20261013-rc.1",
+  "precedingPatchTag": "lookup-pool-20261013-rc.2",
+  "baseRuntimeCommit": "5b22bf1e0ab78a441abd47b1691a8e0c53e2d098",
+  "precedingPatchCommit": "8eb976ac629c1f0020968c58c20f673b11d03e01",
+  "baseFiles": {
+    "server/managed-lookup.mjs": "2e839bca833705769529366bcbf7320454ff56d13633f0df2a16b906c3b70448",
+    "windows-agent/scripts/alipay_name_lookup.py": "78f974bf472c780137c469e7584761a02836c7699bfa9d1d936dbeb3ada9bedc"
+  }
+}

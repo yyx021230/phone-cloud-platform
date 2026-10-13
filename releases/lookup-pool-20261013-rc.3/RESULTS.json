@@ -1,0 +1,52 @@
+{
+  "status": "local offline passed; patched real canary pending",
+  "changedPythonFunctionsFromRc2": [
+    "account_picker_rows"
+  ],
+  "changedServerFunction": "createManagedLookupService.tick; retain published reservation until commit",
+  "counterexamples": [
+    {
+      "stage": "before",
+      "suite": "reservation",
+      "exitCode": 1,
+      "logSha256": "a7924f9c2efc9107f119e2904f0774b583fb39181710c339b7573f1652c0be7d"
+    },
+    {
+      "stage": "before",
+      "suite": "action-row",
+      "exitCode": 1,
+      "logSha256": "ecfbb7c25d1f1e6a2cd4414e4976a7207fbd4f26f1c2aa252256cf3a91eda95e"
+    },
+    {
+      "stage": "after",
+      "suite": "reservation",
+      "exitCode": 0,
+      "logSha256": "0e640b02e9b9916579a6f952ae264065dfb75f1a29013d21d71ede356cab72e9"
+    },
+    {
+      "stage": "after",
+      "suite": "action-row",
+      "exitCode": 0,
+      "logSha256": "e6ec182765cd965f2837d8eeaef5a64af48a104f245cd1a0b7281559194c57c1"
+    }
+  ],
+  "regression": {
+    "node": 604,
+    "pythonMain": 163,
+    "lookupPython": 65,
+    "continuousCaller": 3,
+    "countsOverlap": true
+  },
+  "processFailures": [
+    "First Python main missed existing OpenCV PYTHONPATH:2 dependency errors; cached path restored and163 passed; no install."
+  ],
+  "logSha256": {
+    "qa3-screen.log": "e37af1357c7ee3ab1d9db930baec3c441e2c87ad3f13edbfb99ed12943c934b3",
+    "qa3-python-lookup.log": "eaf15b5be2c5f265dedbc1aa278d21136db9f2eddd2069d676815e931519375d",
+    "qa3-python-main.log": "7d65d03a665f72c95b2494a6df071bca8eadae03452ec85051a27eac2b7c853c",
+    "qa3-python-main-final.log": "7c53605c6fb8664f3d182cea63745e91b4f8a7efd2c58bd51bf71dba5e2bc9f0"
+  },
+  "productionActions": 0,
+  "remotePushes": 0,
+  "true5PhoneConcurrencyVerified": false
+}
