@@ -1,0 +1,546 @@
+{
+  "recordedAtUtc": "2026-10-13T06:11:45.759147+00:00",
+  "status": "local rc.3 blocking and account-action fixes verified; full accuracy/natural switch and five real phones remain unverified",
+  "branch": "codex/lookup-pool-realtest-20261013",
+  "sourceCommit": "c6c297e584509dfd0a892aaf398301a5ecefccce",
+  "candidateTag": "lookup-pool-20261013-rc.3",
+  "previousFullCandidate": "lookup-pool-20261013-rc.1",
+  "previousOverlay": "lookup-pool-20261013-rc.2",
+  "productionReads": 0,
+  "productionWrites": 0,
+  "remotePushes": 0,
+  "feishuMessages": 0,
+  "authorization": "Original batch local118/130; preserved2 natural8h cooldowns;10 explicit rc.3 rechecks plus0-phone manual saved-account selection. No production deployment.",
+  "phase2BeforeFix": {
+    "at": "2026-10-13T05:57:43.124Z",
+    "base": "http://127.0.0.1:59304",
+    "sourceTag": "lookup-pool-20261013-rc.2",
+    "ledgerEntries": 206,
+    "completed": 203,
+    "hasName": 165,
+    "notFound": 38,
+    "nonterminal": [],
+    "uniqueSourceOrdinals": 201,
+    "physicalQueryTasks": 207,
+    "queryStatuses": {
+      "succeeded": 203,
+      "failed": 4
+    },
+    "tasksOnAuthorizedDevices": true,
+    "allManagedTasksHaveGeneration": true,
+    "succeededTasksAcked": true,
+    "archivedResults": 206,
+    "maxExecuting": 2,
+    "maxRunningQueryPhones": 2,
+    "maxQueued": 4,
+    "overlapSamples": 1156,
+    "channels": [],
+    "activeTasks": [],
+    "liveSessions": 0,
+    "historicalLockRows": 7,
+    "activeLockRows": 0,
+    "cooldowns": [
+      {
+        "number": 130,
+        "accountHash": "b1b626a87f11",
+        "limitedAt": "2026-10-13T04:49:01.367Z",
+        "cooldownUntil": "2026-10-13T12:49:01.367Z",
+        "reason": "frequent_or_abnormal_access",
+        "durationMs": 28800000
+      },
+      {
+        "number": 130,
+        "accountHash": "60cd3aa0c18a",
+        "limitedAt": "2026-10-13T05:53:11.749Z",
+        "cooldownUntil": "2026-10-13T13:53:11.749Z",
+        "reason": "frequent_or_abnormal_access",
+        "durationMs": 28800000
+      }
+    ],
+    "accountSwitches": 2,
+    "restrictionEvents": 4,
+    "outboxFiles": 0
+  },
+  "phase3": {
+    "atUtc": "2026-10-13T06:08:52.722Z",
+    "sourceTag": "lookup-pool-20261013-rc.3",
+    "sourceCommit": "c6c297e584509dfd0a892aaf398301a5ecefccce",
+    "oldAgentPaused": true,
+    "startedAtUtc": "2026-10-13T06:01:37Z",
+    "entries": [
+      {
+        "sourceOrdinal": 196,
+        "phase": "retest130-after-action-fix",
+        "status": "completed",
+        "hasName": false,
+        "responseCode": "not_found",
+        "lookupId": "274b133f-3c55-4265-9706-24d054aa0c96",
+        "queryId": "97722e69-20b7-4bd0-ad9e-d6063a237b91"
+      },
+      {
+        "sourceOrdinal": 200,
+        "phase": "retest-two-after-action-fix",
+        "status": "completed",
+        "hasName": false,
+        "responseCode": "not_found",
+        "lookupId": "0047b4a3-87c4-42a0-881c-80a9d83516d2",
+        "queryId": "867a53a9-0e6d-44d5-9654-fe9e36039b33"
+      },
+      {
+        "sourceOrdinal": 67,
+        "phase": "retest-two-after-action-fix",
+        "status": "completed",
+        "hasName": false,
+        "responseCode": "not_found",
+        "lookupId": "4d128a08-c1f7-4152-9bc6-f82a453e075d",
+        "queryId": "a4a1e7f1-b479-4554-8c39-aa9e53a851ab"
+      },
+      {
+        "sourceOrdinal": 68,
+        "phase": "retest-two-after-action-fix",
+        "status": "completed",
+        "hasName": true,
+        "responseCode": "",
+        "lookupId": "8dc11daf-6574-4b55-97f6-ad7b392adc3d",
+        "queryId": "023a05eb-6d7e-4498-97f5-186cc2d352e3"
+      },
+      {
+        "sourceOrdinal": 165,
+        "phase": "retest-two-after-action-fix",
+        "status": "completed",
+        "hasName": true,
+        "responseCode": "",
+        "lookupId": "82d8835b-4851-4b5a-99f8-6a387bd24377",
+        "queryId": "e698c6ad-a59f-4c22-930b-be99baace413"
+      },
+      {
+        "sourceOrdinal": 188,
+        "phase": "retest-two-after-action-fix",
+        "status": "completed",
+        "hasName": true,
+        "responseCode": "",
+        "lookupId": "bd7cd5e1-9aec-4b00-9167-db0494faa8d2",
+        "queryId": "230f3022-85b6-4113-ae7e-6582de3e3f36"
+      },
+      {
+        "sourceOrdinal": 67,
+        "phase": "retest-stop-rejoin",
+        "status": "completed",
+        "hasName": false,
+        "responseCode": "not_found",
+        "lookupId": "430fc67d-e9f1-486d-ad10-997a7bb8cc89",
+        "queryId": "de3c7aa6-1f91-423a-b31c-c0d6c315d848"
+      },
+      {
+        "sourceOrdinal": 68,
+        "phase": "retest-stop-rejoin",
+        "status": "completed",
+        "hasName": true,
+        "responseCode": "",
+        "lookupId": "0cc34743-c94f-4274-baed-fd8c548d79da",
+        "queryId": "49088aec-ae40-4a08-b63f-4f2bb492f916"
+      },
+      {
+        "sourceOrdinal": 165,
+        "phase": "retest-stop-rejoin",
+        "status": "completed",
+        "hasName": false,
+        "responseCode": "not_found",
+        "lookupId": "b5ccb1c9-6041-4521-8906-b5fca4b40aae",
+        "queryId": "e0d57383-73fa-41a7-96a5-a87e7e9693dd"
+      },
+      {
+        "sourceOrdinal": 188,
+        "phase": "retest-stop-rejoin",
+        "status": "completed",
+        "hasName": true,
+        "responseCode": "",
+        "lookupId": "5abf7b8f-7b1d-42c8-bad6-3935768608fc",
+        "queryId": "f5743a91-0fd9-46ae-bf24-e5e31346d582"
+      }
+    ],
+    "maxExecuting": 2,
+    "maxQueryPhones": 2,
+    "twoQueryPhoneSamples": 3,
+    "newManagedDispatchErrors": 0,
+    "normalStopRejoin": {
+      "observed130Stopping": true,
+      "stops": [
+        {
+          "number": 130,
+          "createdAt": "2026-10-13T06:04:15.336Z",
+          "completedAt": "2026-10-13T06:04:18.438Z",
+          "status": "succeeded"
+        },
+        {
+          "number": 118,
+          "createdAt": "2026-10-13T06:06:17.568Z",
+          "completedAt": "2026-10-13T06:06:20.681Z",
+          "status": "succeeded"
+        },
+        {
+          "number": 130,
+          "createdAt": "2026-10-13T06:06:17.582Z",
+          "completedAt": "2026-10-13T06:06:21.980Z",
+          "status": "succeeded"
+        },
+        {
+          "number": 130,
+          "createdAt": "2026-10-13T06:08:26.773Z",
+          "completedAt": "2026-10-13T06:08:33.140Z",
+          "status": "succeeded"
+        }
+      ],
+      "starts": [
+        {
+          "number": 130,
+          "createdAt": "2026-10-13T06:01:43.059Z",
+          "completedAt": "2026-10-13T06:02:20.653Z",
+          "status": "succeeded",
+          "identityVerified": true,
+          "currentAccountHash": "d51d749d25ff",
+          "savedAccountCount": 4,
+          "accountSwitched": false,
+          "accountSwitchCount": 0
+        },
+        {
+          "number": 118,
+          "createdAt": "2026-10-13T06:03:02.891Z",
+          "completedAt": "2026-10-13T06:03:51.320Z",
+          "status": "succeeded",
+          "identityVerified": true,
+          "currentAccountHash": "2de63bce79c2",
+          "savedAccountCount": 5,
+          "accountSwitched": false,
+          "accountSwitchCount": 0
+        },
+        {
+          "number": 130,
+          "createdAt": "2026-10-13T06:04:18.851Z",
+          "completedAt": "2026-10-13T06:04:55.823Z",
+          "status": "succeeded",
+          "identityVerified": true,
+          "currentAccountHash": "d51d749d25ff",
+          "savedAccountCount": 4,
+          "accountSwitched": false,
+          "accountSwitchCount": 0
+        },
+        {
+          "number": 130,
+          "createdAt": "2026-10-13T06:06:44.249Z",
+          "completedAt": "2026-10-13T06:07:22.390Z",
+          "status": "succeeded",
+          "identityVerified": true,
+          "currentAccountHash": "d51d749d25ff",
+          "savedAccountCount": 4,
+          "accountSwitched": false,
+          "accountSwitchCount": 0
+        }
+      ],
+      "otherPhoneQueries": [
+        {
+          "number": 118,
+          "createdAt": "2026-10-13T06:03:51.530Z",
+          "completedAt": "2026-10-13T06:04:12.024Z",
+          "status": "succeeded"
+        },
+        {
+          "number": 118,
+          "createdAt": "2026-10-13T06:04:15.587Z",
+          "completedAt": "2026-10-13T06:04:30.545Z",
+          "status": "succeeded"
+        },
+        {
+          "number": 118,
+          "createdAt": "2026-10-13T06:04:30.641Z",
+          "completedAt": "2026-10-13T06:04:44.743Z",
+          "status": "succeeded"
+        },
+        {
+          "number": 118,
+          "createdAt": "2026-10-13T06:04:44.925Z",
+          "completedAt": "2026-10-13T06:04:57.120Z",
+          "status": "failed"
+        },
+        {
+          "number": 118,
+          "createdAt": "2026-10-13T06:05:17.023Z",
+          "completedAt": "2026-10-13T06:05:29.423Z",
+          "status": "failed"
+        },
+        {
+          "number": 118,
+          "createdAt": "2026-10-13T06:05:40.956Z",
+          "completedAt": "2026-10-13T06:05:51.518Z",
+          "status": "succeeded"
+        }
+      ]
+    },
+    "accountSelections": [
+      {
+        "at": "2026-10-13T06:08:26.020Z",
+        "number": 130,
+        "fromHash": "d51d749d25ff",
+        "targetHash": "a07e3968147d",
+        "targetIsLoginOther": false
+      }
+    ],
+    "cooldowns": [
+      {
+        "number": 130,
+        "accountHash": "b1b626a87f11",
+        "limitedAt": "2026-10-13T04:49:01.367Z",
+        "cooldownUntil": "2026-10-13T12:49:01.367Z",
+        "durationMs": 28800000
+      },
+      {
+        "number": 130,
+        "accountHash": "60cd3aa0c18a",
+        "limitedAt": "2026-10-13T05:53:11.749Z",
+        "cooldownUntil": "2026-10-13T13:53:11.749Z",
+        "durationMs": 28800000
+      }
+    ],
+    "queryPayloads": [
+      {
+        "number": 130,
+        "queryId": "97722e69-20b7-4bd0-ad9e-d6063a237b91",
+        "createdAt": "2026-10-13T06:02:20.674Z",
+        "knownAccountHash": "d51d749d25ff",
+        "startsOnActiveCoolingAccount": false,
+        "inheritedCooldownCount": 2,
+        "status": "succeeded"
+      },
+      {
+        "number": 130,
+        "queryId": "867a53a9-0e6d-44d5-9654-fe9e36039b33",
+        "createdAt": "2026-10-13T06:03:02.888Z",
+        "knownAccountHash": "d51d749d25ff",
+        "startsOnActiveCoolingAccount": false,
+        "inheritedCooldownCount": 2,
+        "status": "succeeded"
+      },
+      {
+        "number": 130,
+        "queryId": "023a05eb-6d7e-4498-97f5-186cc2d352e3",
+        "createdAt": "2026-10-13T06:03:16.174Z",
+        "knownAccountHash": "d51d749d25ff",
+        "startsOnActiveCoolingAccount": false,
+        "inheritedCooldownCount": 2,
+        "status": "succeeded"
+      },
+      {
+        "number": 130,
+        "queryId": "e698c6ad-a59f-4c22-930b-be99baace413",
+        "createdAt": "2026-10-13T06:03:26.457Z",
+        "knownAccountHash": "d51d749d25ff",
+        "startsOnActiveCoolingAccount": false,
+        "inheritedCooldownCount": 2,
+        "status": "succeeded"
+      },
+      {
+        "number": 130,
+        "queryId": "230f3022-85b6-4113-ae7e-6582de3e3f36",
+        "createdAt": "2026-10-13T06:03:38.734Z",
+        "knownAccountHash": "d51d749d25ff",
+        "startsOnActiveCoolingAccount": false,
+        "inheritedCooldownCount": 2,
+        "status": "succeeded"
+      },
+      {
+        "number": 118,
+        "queryId": "a4a1e7f1-b479-4554-8c39-aa9e53a851ab",
+        "createdAt": "2026-10-13T06:03:51.530Z",
+        "knownAccountHash": "2de63bce79c2",
+        "startsOnActiveCoolingAccount": false,
+        "inheritedCooldownCount": 0,
+        "status": "succeeded"
+      },
+      {
+        "number": 118,
+        "queryId": "de3c7aa6-1f91-423a-b31c-c0d6c315d848",
+        "createdAt": "2026-10-13T06:04:15.587Z",
+        "knownAccountHash": "2de63bce79c2",
+        "startsOnActiveCoolingAccount": false,
+        "inheritedCooldownCount": 0,
+        "status": "succeeded"
+      },
+      {
+        "number": 118,
+        "queryId": "e0d57383-73fa-41a7-96a5-a87e7e9693dd",
+        "createdAt": "2026-10-13T06:04:30.641Z",
+        "knownAccountHash": "2de63bce79c2",
+        "startsOnActiveCoolingAccount": false,
+        "inheritedCooldownCount": 0,
+        "status": "succeeded"
+      },
+      {
+        "number": 118,
+        "queryId": "f5743a91-0fd9-46ae-bf24-e5e31346d582",
+        "createdAt": "2026-10-13T06:04:44.925Z",
+        "knownAccountHash": "2de63bce79c2",
+        "startsOnActiveCoolingAccount": false,
+        "inheritedCooldownCount": 0,
+        "status": "failed"
+      },
+      {
+        "number": 130,
+        "queryId": "49088aec-ae40-4a08-b63f-4f2bb492f916",
+        "createdAt": "2026-10-13T06:04:55.951Z",
+        "knownAccountHash": "d51d749d25ff",
+        "startsOnActiveCoolingAccount": false,
+        "inheritedCooldownCount": 2,
+        "status": "succeeded"
+      },
+      {
+        "number": 118,
+        "queryId": "7ba06320-1a54-4e3b-8acd-92ecf838cdd4",
+        "createdAt": "2026-10-13T06:05:17.023Z",
+        "knownAccountHash": "2de63bce79c2",
+        "startsOnActiveCoolingAccount": false,
+        "inheritedCooldownCount": 0,
+        "status": "failed"
+      },
+      {
+        "number": 118,
+        "queryId": "c0094858-d915-488f-ba6a-bf8890db233e",
+        "createdAt": "2026-10-13T06:05:40.956Z",
+        "knownAccountHash": "2de63bce79c2",
+        "startsOnActiveCoolingAccount": false,
+        "inheritedCooldownCount": 0,
+        "status": "succeeded"
+      }
+    ]
+  },
+  "humanIsolation": {
+    "numberWaiting": 118,
+    "windowStart": "2026-10-13T06:04:57.987Z",
+    "windowEnd": "2026-10-13T06:05:40.643Z",
+    "numberContinued": 130,
+    "otherOriginalOrdinal": 68,
+    "otherCompletedAt": "2026-10-13T06:05:11.047Z",
+    "otherCompletedWithinHumanWindow": true,
+    "originalBusinessKeyAndResultRetained": true,
+    "internalNewExecutionJobsAreDistinct": true
+  },
+  "manualSelection": {
+    "atUtc": "2026-10-13T06:08:26.767Z",
+    "number": 130,
+    "sessionId": "bd2008f9-e9fe-4a66-a265-063eb37a1292",
+    "selectionJobId": "13079a76-82cb-4cd5-8886-2ba6cc38b67e",
+    "choices": 4,
+    "targetHash": "a07e3968147d",
+    "actualAccountHash": "a07e3968147d",
+    "identityVerified": true,
+    "targetMatches": true,
+    "phoneQueries": 0
+  },
+  "protocol": {
+    "managedTasks": 239,
+    "allManagedHaveGeneration": true,
+    "allSucceededManagedAcked": true,
+    "legacyManualSwitchTasks": 4
+  },
+  "finalAudit": {
+    "at": "2026-10-13T06:08:52.619Z",
+    "base": "http://127.0.0.1:59304",
+    "sourceTag": "lookup-pool-20261013-rc.3",
+    "ledgerEntries": 216,
+    "completed": 213,
+    "hasName": 170,
+    "notFound": 43,
+    "nonterminal": [],
+    "uniqueSourceOrdinals": 201,
+    "physicalQueryTasks": 219,
+    "queryStatuses": {
+      "succeeded": 213,
+      "failed": 6
+    },
+    "tasksOnAuthorizedDevices": true,
+    "allManagedTasksHaveGeneration": false,
+    "succeededTasksAcked": false,
+    "archivedResults": 216,
+    "maxExecuting": 2,
+    "maxRunningQueryPhones": 2,
+    "maxQueued": 4,
+    "overlapSamples": 1159,
+    "channels": [],
+    "activeTasks": [],
+    "liveSessions": 0,
+    "historicalLockRows": 11,
+    "activeLockRows": 0,
+    "cooldowns": [
+      {
+        "number": 130,
+        "accountHash": "b1b626a87f11",
+        "limitedAt": "2026-10-13T04:49:01.367Z",
+        "cooldownUntil": "2026-10-13T12:49:01.367Z",
+        "reason": "frequent_or_abnormal_access",
+        "durationMs": 28800000
+      },
+      {
+        "number": 130,
+        "accountHash": "60cd3aa0c18a",
+        "limitedAt": "2026-10-13T05:53:11.749Z",
+        "cooldownUntil": "2026-10-13T13:53:11.749Z",
+        "reason": "frequent_or_abnormal_access",
+        "durationMs": 28800000
+      }
+    ],
+    "accountSwitches": 2,
+    "restrictionEvents": 4,
+    "outboxFiles": 0
+  },
+  "cleanup": {
+    "atUtc": "2026-10-13T06:09:57.315351+00:00",
+    "oldAgentSamePidRestored": 44042,
+    "oldAgentFreshHeartbeat": true,
+    "oldAgentInstances": 1,
+    "adbDaemonSamePid": 26031,
+    "oldServerPreservedPid": 46592,
+    "ownedPortsClosed": true,
+    "stayAwakeAfter": {
+      "118": "2",
+      "130": "0"
+    },
+    "stayAwakeUnchanged": true,
+    "oldConfigSha256": "547e6eaaff47f20ab8faf5482ee4e0bbe99f86938720a16b7921b8db94584c0a",
+    "oldConfigUnchanged": true,
+    "oldPlatformNewTasks": 0,
+    "privatePostgresBackupSha256": "736925797865654813fd141e29dd9ea3616915ad250e98ede33c1fc31c743bd2",
+    "productionActions": 0
+  },
+  "hashCheck": {
+    "matchedBaseFiles": 314,
+    "expectedPatchedFiles": [
+      "server/managed-lookup.mjs",
+      "windows-agent/scripts/alipay_name_lookup.py"
+    ],
+    "frozenFilesMatched": 33,
+    "rootMainShaNow": "771b9ebb24298ef9171f18ec5b47d9e4499242297c185bba440b4d6e787807cc",
+    "rootMainUnchanged": false
+  },
+  "input": {
+    "uniqueOriginalOrdinals": 201,
+    "logicalRequests": 216,
+    "completed": 213,
+    "hasName": 170,
+    "notFound": 43,
+    "historicalTerminalNonSuccess": 3,
+    "historicalFailuresKept": true,
+    "workbookModified": false,
+    "rawPhonesNamesCredentialsInReceipt": false
+  },
+  "limitations": [
+    "Only2 physical devices; real5 overlap and49 mappings not verified",
+    "Natural restriction -> automatic successful switch -> same original query continuation not yet verified; manual true-row switch separately passed",
+    "Natural8hour expiry and all-account exhaustion not verified",
+    "Name accuracy not fully passed:rc.3 known-positive source67 twice and165 once returnednot_found on118;130165 succeeded. Raw visible-result cause unconfirmed.",
+    "No production/HTTP gateway/deployment acceptance"
+  ],
+  "errata": [
+    "Phase1 and phase2 selected Login-other action mislabeled as saved-account authentication expiry; rawXML proves sharedACCOUNT_ID navigation row. Real LoginActivity classification remains valid.",
+    "Runtime generic all-task ACK/generation audit isfalse after4 explicit legacy manual lifecycle tasks; scoped239 managed tasks have generation/ACK. Legacy protocol intentionally has no managedACK.",
+    "First hash check expected root main unchanged; concurrent rootD-079 candidate documentation changed. Read-only checked and preserved; no root file written by this task."
+  ]
+}

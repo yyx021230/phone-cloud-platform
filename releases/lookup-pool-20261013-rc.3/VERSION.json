@@ -1,0 +1,17 @@
+{
+  "version": "lookup-pool-20261013-rc.3",
+  "status": "local-candidate-not-deployed",
+  "runtimeSourceCommit": "c6c297e584509dfd0a892aaf398301a5ecefccce",
+  "kind": "minimal-overlay",
+  "requires": [
+    "lookup-pool-20261013-rc.1",
+    "lookup-pool-20261013-rc.2"
+  ],
+  "candidateTag": "lookup-pool-20261013-rc.3",
+  "runtimeFiles": {
+    "server/managed-lookup.mjs": "ef1383c0c4d1c5e2ff5d08496ee22cfabf41cd73a529f3b2bc3d911ef28db677",
+    "server/managed-lookup-release.test.mjs": "94687c23711e66868295947c09a77857c6bc8155c3a0a4a3ef8ffe64256f7744",
+    "windows-agent/scripts/alipay_name_lookup.py": "8575a26fb470e319ba6ddd9e7187f7265a5a306bb4a6bc5f91905f4b7d950330",
+    "windows-agent/scripts/test_lookup_account_action_rows.py": "7265f58dd5f1dd9f42ef0634a375bf943c631d457ce92316083fe149bdce0c4e"
+  }
+}
