@@ -1,0 +1,27 @@
+{
+  "version": "xhs-data-automation-20261013-rc.4",
+  "branch": "codex/xhs-data-automation-20261013",
+  "parentCommit": "dc52422b9cd44c05c6eb4dca09b1aed0d12f5eb9",
+  "state": "local_candidate_not_deployed",
+  "productionAgentIndexSha256": "0d6a0aa177f38873b6999e18bba24fdecb865469924bc91efe396e91e2bd883b",
+  "files": {
+    "windows-agent/scripts/小红书数据同步.py": "d4c85dd0755f524fb17d592a62def2e1caee2dffd00f30c7112533ec5cf1efb2",
+    "windows-agent/scripts/test_xhs_data_sync.py": "2503df786116260c8b177eaa64df45550bc6ac20cb4de97c2eec47b44e13e844",
+    "windows-agent/src/xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+    "docs/PROJECT_DEVELOPMENT.md": "d15cfdf600d6cb5aa320a24db45aa808065a3c400d6507ab2198e3ff743d0dfb",
+    "docs/XHS_DATA_AUTOMATION_RC_20261013.md": "7a9f79319bb746c6cbfdcc7d3d3afe3c91b38572bc12b49a1d057499fc8f768c",
+    "docs/evidence/xhs-data-automation-20261013-rc4-fleet.json": "0779eef6aa288e7f76db7cd8160813f4b620e63f1a359d90c75c75e351943e99"
+  },
+  "tests": {
+    "rootCheck": "passed",
+    "screen": 533,
+    "agent": 277,
+    "python": 117,
+    "finalPair": [
+      "140/app1",
+      "165/app2"
+    ],
+    "qaPlanRejectCases": 6
+  },
+  "rollback": "Only scoped dedicated Python/test/doc changes from parent rc.3; immutable staged versions retained. No production rollback artifact or release."
+}

@@ -83,6 +83,22 @@ class FleetReadingTests(unittest.TestCase):
         self.assertEqual(cards[0][1], {"title": "测试作品", "published_at_raw": "09-17", "status_raw": "笔记状态正常",
                                       "list_view_count": 133, "list_like_count": 0, "list_comment_count": 1})
 
+    def test_proven_works_webview_can_scroll_when_oem_reports_a_false_scrollable_flag(self):
+        root = self.flat_list()
+        root[2].set("scrollable", "false")
+        with patch.object(sync, "focus", return_value="com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}"), patch.object(sync, "wake_if_asleep", return_value=False), patch.object(sync.time, "sleep"), patch.object(sync, "adb") as adb:
+            events = []
+            sync.swipe("adb", "serial", root, lambda: None, events)
+        adb.assert_called_once_with("adb", "serial", "shell", "input", "swipe", "810", "1812", "810", "679", "550", timeout=8)
+        self.assertEqual(events, ["works_webview_scroll_flag_fallback"])
+
+    def test_non_list_or_another_foreground_cannot_use_the_scrollable_flag_fallback(self):
+        for current in ("com.other/com.xingin.xywebview.activity.WebViewActivityV2}", "com.xingin.xhs/.index.v2.IndexActivityV2}"):
+            with self.subTest(current=current), patch.object(sync, "focus", return_value=current), patch.object(sync, "adb") as adb:
+                with self.assertRaisesRegex(RuntimeError, "container not found"):
+                    sync.swipe("adb", "serial", self.flat_list(), lambda: None, [])
+                adb.assert_not_called()
+
     def test_flat_card_requires_one_complete_visible_row_and_the_target_webview(self):
         roots = [self.flat_list() for _ in range(6)]
         roots[0][2].remove(roots[0][2][-1])
@@ -99,6 +115,27 @@ class FleetReadingTests(unittest.TestCase):
         root = self.flat_list()
         root[2][2].set("text", "该篇笔记已不可被他人查看")
         self.assertEqual(sync.note_cards(root)[0][1]["status_raw"], "该篇笔记已不可被他人查看")
+
+    def test_new_cards_after_swiping_are_read_without_redundant_filter_taps(self):
+        previous, current = self.flat_list(), self.flat_list()
+        current[2][1].set("text", "下一篇作品")
+        with patch.object(sync, "focus", return_value="com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}"), patch.object(sync, "adb") as adb:
+            events = []
+            self.assertIs(sync.refresh_scrolled_webview("adb", "serial", current, lambda: None, events, previous), current)
+            self.assertEqual(events, ["works_list_updated_without_filter_toggle"])
+            adb.assert_not_called()
+        with patch.object(sync, "focus", return_value="com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}"), patch.object(sync, "adb") as adb:
+            with self.assertRaisesRegex(RuntimeError, "occupied"):
+                sync.refresh_scrolled_webview("adb", "serial", current, unittest.mock.Mock(side_effect=RuntimeError("occupied")), [], previous)
+            adb.assert_not_called()
+
+    def test_unchanged_cards_do_not_claim_the_webview_has_updated(self):
+        previous, current = self.flat_list(), self.flat_list()
+        events = []
+        with patch.object(sync, "wake_if_asleep"), patch.object(sync, "tap_filter_label"), patch.object(sync, "navigation_capture", return_value=xml()):
+            with self.assertRaisesRegex(RuntimeError, "filter panel"):
+                sync.refresh_scrolled_webview("adb", "serial", current, lambda: None, events, previous)
+        self.assertNotIn("works_list_updated_without_filter_toggle", events)
 
     def scrolled_flat_list(self):
         root = self.flat_list()
@@ -262,7 +299,244 @@ class OppoCloneTests(unittest.TestCase):
         adb.assert_not_called()
 
 
+class ZeroBoundsProfileTests(unittest.TestCase):
+    current = "mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xhs.index.v2.IndexActivityV2}"
+
+    def footer(self, selected="false"):
+        nodes = []
+        for v in ("首页", "市集", "发布", "消息，99+条未读", "我"):
+            active = selected if v == "我" else "true" if v == "首页" and selected == "false" else "false"
+            nodes.append(f'<node package="com.xingin.xhs" class="android.view.ViewGroup" content-desc="{v}" clickable="true" enabled="true" selected="{active}" bounds="[0,0][0,0]"/>')
+        nodes = ''.join(nodes)
+        return xml('<node>'+nodes+'</node>', '<node text="关注" bounds="[260,106][447,194]"/>',
+                   '<node text="发现" bounds="[447,106][634,194]"/>', '<node text="搜索" bounds="[955,100][1055,200]"/>')
+
+    def image(self, locations, scale=1.0, inverse=False):
+        import cv2
+        import numpy as np
+        import base64
+        glyph = cv2.imdecode(np.frombuffer(base64.b64decode(sync.PROFILE_GLYPH_PNG), np.uint8), cv2.IMREAD_GRAYSCALE)
+        frame = np.full((int(2248*scale), int(1080*scale)), 0 if inverse else 255, dtype=np.uint8)
+        glyph = cv2.resize(glyph, None, fx=scale, fy=scale, interpolation=cv2.INTER_AREA)
+        if inverse:glyph = 255-glyph
+        for x, y in locations:frame[y:y+glyph.shape[0], x:x+glyph.shape[1]] = glyph
+        return cv2.imencode('.png', frame)[1].tobytes()
+
+    def test_glyph_match_is_confined_to_the_footer_and_supports_screen_scale_and_dark_theme(self):
+        self.assertEqual(sync.profile_glyph_position(self.image([(948,2162)])), (971,2186))
+        self.assertEqual(sync.profile_glyph_position(self.image([(948,2162)], inverse=True)), (971,2186))
+        self.assertEqual(sync.profile_glyph_position(self.image([(632,1441)], scale=2/3)), (647,1457))
+
+    def test_blank_or_multiple_glyphs_do_not_produce_a_tap_position(self):
+        for png in (self.image([]), self.image([(100,100)]), self.image([(948,2050)]), self.image([(868,2162),(948,2162)])):
+            with self.assertRaises(RuntimeError):sync.profile_glyph_position(png)
+
+    def test_verified_footer_uses_image_position_then_requires_the_selected_personal_tab(self):
+        events = []
+        with patch.object(sync.subprocess, "run", return_value=unittest.mock.Mock(returncode=0, stdout=b'png')), patch.object(sync, "profile_glyph_position", return_value=(971,2186)), \
+                patch.object(sync, "focus", return_value=self.current), patch.object(sync, "capture", return_value=self.footer("true")), patch.object(sync.time, "sleep"), patch.object(sync, "adb") as adb:
+            result = sync.select_zero_bounds_profile("adb", "serial", self.footer(), self.current, lambda: None, events)
+        self.assertIsNotNone(result)
+        adb.assert_called_once_with("adb", "serial", "shell", "input", "tap", "971", "2186", timeout=7)
+        self.assertEqual(events, ["profile_zero_bounds_image_selected"])
+
+    def test_changed_footer_or_occupied_phone_stops_before_screenshot_or_tap(self):
+        for kind in ("unknown_footer", "occupied", "other_activity"):
+            root = self.footer()
+            if kind == "unknown_footer":root[0][2].set("content-desc", "other")
+            with self.subTest(kind=kind), patch.object(sync.subprocess, "run") as run, patch.object(sync, "adb") as adb:
+                guard = unittest.mock.Mock(side_effect=RuntimeError("occupied") if kind == "occupied" else None)
+                if kind == "other_activity":self.assertIsNone(sync.select_zero_bounds_profile("adb", "serial", root, "com.other/IndexActivityV2}", guard, []))
+                else:
+                    with self.assertRaises(RuntimeError):sync.select_zero_bounds_profile("adb", "serial", root, self.current, guard, [])
+                run.assert_not_called();adb.assert_not_called()
+
+    def test_image_tap_without_a_confirmed_personal_tab_is_not_recovered(self):
+        with patch.object(sync.subprocess, "run", return_value=unittest.mock.Mock(returncode=0, stdout=b'png')), patch.object(sync, "profile_glyph_position", return_value=(971,2186)), \
+                patch.object(sync, "focus", return_value=self.current), patch.object(sync, "capture", return_value=self.footer()), patch.object(sync.time, "sleep"), patch.object(sync, "adb"):
+            with self.assertRaisesRegex(RuntimeError, "did not confirm"):
+                sync.select_zero_bounds_profile("adb", "serial", self.footer(), self.current, lambda: None, [])
+
+    def test_personal_tab_confirmation_waits_for_the_observed_milestone_overlay(self):
+        popup = xml('<node package="com.xingin.xhs" text="恭喜你🎉单篇笔记阅读超过1万啦" bounds="[171,1363][909,1421]"/>')
+        with patch.object(sync.subprocess, "run", return_value=unittest.mock.Mock(returncode=0, stdout=b'png')), \
+                patch.object(sync, "profile_glyph_position", return_value=(971,2186)), \
+                patch.object(sync, "focus", return_value=self.current), \
+                patch.object(sync, "navigation_capture", side_effect=[popup, self.footer("true")]), \
+                patch.object(sync, "recover_known_overlay", return_value=True) as recover, \
+                patch.object(sync.time, "sleep"), patch.object(sync, "adb"):
+            events = []
+            self.assertIsNotNone(sync.select_zero_bounds_profile("adb", "serial", self.footer(), self.current, lambda: None, events))
+        recover.assert_called_once()
+        self.assertEqual(events, ["profile_zero_bounds_image_selected"])
+
+
+class CreatorServerErrorTests(unittest.TestCase):
+    current = "mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.reactnative.ui.XhsReactActivity}"
+
+    def page(self):
+        return xml('<node package="com.xingin.xhs" text="服务器出错" bounds="[280,55][440,155]"/>',
+                   '<node package="com.xingin.xhs" text="工程薯正在努力抢修，你还可以:" bounds="[149,635][570,676]"/>',
+                   '<node package="com.xingin.xhs" text="返回上一页" bounds="[65,736][345,810]"/>',
+                   '<node package="com.xingin.xhs" class="android.widget.Button" text="刷新试试" clickable="true" enabled="true" bounds="[375,736][655,810]"/>')
+
+    def test_exact_creator_server_error_refreshes_only_once(self):
+        with patch.object(sync, "focus", return_value=self.current), patch.object(sync, "adb") as adb, patch.object(sync.time, "sleep"):
+            events = []
+            self.assertTrue(sync.refresh_creator_server_error("adb", "serial", self.page(), lambda: None, events, 0))
+            with self.assertRaisesRegex(RuntimeError, "after one refresh"):
+                sync.refresh_creator_server_error("adb", "serial", self.page(), lambda: None, events, 1)
+            adb.assert_called_once_with("adb", "serial", "shell", "input", "tap", "515", "773", timeout=7)
+            self.assertEqual(events, ["creator_server_error_refreshed_once"])
+
+    def test_foreign_page_and_an_occupied_phone_cannot_be_refreshed(self):
+        with patch.object(sync, "focus", return_value="com.other/XhsReactActivity}"), patch.object(sync, "adb") as adb:
+            self.assertFalse(sync.refresh_creator_server_error("adb", "serial", self.page(), lambda: None, [], 0))
+            adb.assert_not_called()
+        with patch.object(sync, "focus", return_value=self.current), patch.object(sync, "adb") as adb:
+            with self.assertRaisesRegex(RuntimeError, "occupied"):
+                sync.refresh_creator_server_error("adb", "serial", self.page(), unittest.mock.Mock(side_effect=RuntimeError("occupied")), [], 0)
+            adb.assert_not_called()
+
+    def test_missing_or_duplicate_refresh_button_stops_without_a_tap(self):
+        for duplicate in (False, True):
+            root = self.page()
+            if duplicate:root.append(ET.fromstring(ET.tostring(root[-1])))
+            else:root[-1].set("enabled", "false")
+            with patch.object(sync, "focus", return_value=self.current), patch.object(sync, "adb") as adb:
+                with self.assertRaisesRegex(RuntimeError, "not proven"):
+                    sync.refresh_creator_server_error("adb", "serial", root, lambda: None, [], 0)
+                adb.assert_not_called()
+
+    def test_first_use_privacy_agreement_stops_without_accepting_or_declining(self):
+        root = xml('<node package="com.xingin.xhs" text="个人信息保护提示" bounds="[100,200][600,250]"/>',
+                   '<node package="com.xingin.xhs" text="欢迎使用小红书！ 协议内容" bounds="[100,300][600,900]"/>',
+                   '<node package="com.xingin.xhs" text="同意" bounds="[400,1000][600,1100]"/>',
+                   '<node package="com.xingin.xhs" text="不同意" bounds="[100,1000][300,1100]"/>')
+        with patch.object(sync, "wake_if_asleep", return_value=False), patch.object(sync, "adb") as adb:
+            with self.assertRaisesRegex(RuntimeError, "requires manual acceptance"):
+                sync.ensure_creator_list("adb", "serial", root, "app1", lambda: None, [])
+            adb.assert_not_called()
+
+
+class UnsecuredKeyguardTests(unittest.TestCase):
+    locked = "mKeyguardOccluded=false\nKeyguardServiceDelegate\n showing=true\n secure=false\nKeyguardStateMonitor\n"
+    unlocked = locked.replace("showing=true", "showing=false")
+
+    def test_only_a_proven_unsecured_keyguard_can_be_dismissed(self):
+        def command(_adb, _serial, *args, **kwargs):
+            if "policy" in args:return self.locked if command.calls == 0 else self.unlocked
+            command.calls += 1
+            return ""
+        command.calls = 0
+        with patch.object(sync, "adb", side_effect=command) as adb, patch.object(sync, "focus", return_value="u0 NotificationShade}"), patch.object(sync.time, "sleep"):
+            events = []
+            self.assertTrue(sync.dismiss_unsecured_keyguard("adb", "serial", lambda: None, events))
+        self.assertEqual(events, ["unsecured_keyguard_dismissed"])
+        self.assertEqual([c.args[2:] for c in adb.call_args_list][1:3], [("shell", "input", "keyevent", "82"), ("shell", "wm", "dismiss-keyguard")])
+
+    def test_secure_or_unproven_keyguard_never_receives_an_unlock_action(self):
+        for policy in (self.locked.replace("secure=false", "secure=true"), self.locked.replace(" secure=false\n", "")):
+            with patch.object(sync, "adb", return_value=policy) as adb:
+                with self.assertRaisesRegex(RuntimeError, "manual unlock"):
+                    sync.dismiss_unsecured_keyguard("adb", "serial", lambda: None, [])
+                self.assertEqual(adb.call_count, 1)
+
+    def test_occupied_device_stops_before_the_unsecured_unlock_action(self):
+        with patch.object(sync, "adb", return_value=self.locked) as adb, patch.object(sync, "focus", return_value="u0 NotificationShade}"):
+            with self.assertRaisesRegex(RuntimeError, "occupied"):
+                sync.dismiss_unsecured_keyguard("adb", "serial", unittest.mock.Mock(side_effect=RuntimeError("occupied")), [])
+            self.assertEqual(adb.call_count, 1)
+
+
+class HonorOwnerSelectorTests(unittest.TestCase):
+    def chooser(self):
+        package = "com.hihonor.android.internal.app"
+        items = []
+        for x in (108, 540):
+            items.append(f'<node package="{package}" class="android.widget.LinearLayout" enabled="true" bounds="[{x},1848][{x+432},2136]">'
+                         f'<node package="{package}" class="android.widget.ImageView" bounds="[{x+135},1872][{x+297},2034]"/>'
+                         f'<node package="{package}" resource-id="android:id/text1" text="小红书" bounds="[{x+12},2040][{x+420},2136]"/></node>')
+        return xml(f'<node package="{package}" resource-id="android:id/alertTitle" text="使用以下方式打开" bounds="[108,1599][972,1680]"/>',
+                   f'<node package="{package}" resource-id="{package}:id/normal_profile_layout" bounds="[36,1776][1044,2136]">'
+                   f'<node package="{package}" class="android.widget.GridView" bounds="[108,1848][972,2136]">'+''.join(items)+'</node></node>')
+
+    def test_owner_selection_requires_exact_layout_then_a_real_owner_foreground_proof(self):
+        events = []
+        with patch.object(sync, "explicit_clone_user", return_value="128"), patch.object(sync.time, "sleep"), patch.object(sync, "adb") as adb:
+            self.assertTrue(sync.select_honor_owner("adb", "serial", self.chooser(), "com.hihonor.android.internal.app/com.hihonor.android.internal.app.HwChooserActivity}", "app1", lambda: None, events))
+        adb.assert_called_once_with("adb", "serial", "shell", "input", "tap", "324", "1992", timeout=7)
+        with patch.object(sync, "focus", return_value="u128 com.xingin.xhs/.index.v2.IndexActivityV2}"):
+            with self.assertRaisesRegex(RuntimeError, "does not match"):
+                sync.verify_collection_slot("adb", "serial", "app1", events)
+        with patch.object(sync, "focus", return_value="u0 com.xingin.xhs/.index.v2.IndexActivityV2}"):
+            sync.verify_collection_slot("adb", "serial", "app1", events)
+
+    def test_unknown_honor_layout_or_occupied_phone_cannot_pick_an_item(self):
+        for kind in ("extra_item", "occupied"):
+            root = self.chooser()
+            if kind == "extra_item":root[1][0].append(ET.fromstring(ET.tostring(root[1][0][0], encoding="unicode")))
+            with self.subTest(kind=kind), patch.object(sync, "explicit_clone_user", return_value="128"), patch.object(sync, "adb") as adb:
+                guard = unittest.mock.Mock(side_effect=RuntimeError("occupied") if kind == "occupied" else None)
+                with self.assertRaises(RuntimeError):sync.select_honor_owner("adb", "serial", root, "com.hihonor.android.internal.app/com.hihonor.android.internal.app.HwChooserActivity}", "app1", guard, [])
+                adb.assert_not_called()
+
+    def test_this_owner_layout_cannot_select_a_clone_or_another_app(self):
+        for slot, current in (("app2", "com.hihonor.android.internal.app/com.hihonor.android.internal.app.HwChooserActivity}"), ("app1", "com.other/com.hihonor.android.internal.app.HwChooserActivity}")):
+            with patch.object(sync, "adb") as adb:
+                self.assertFalse(sync.select_honor_owner("adb", "serial", self.chooser(), current, slot, lambda: None, []))
+                adb.assert_not_called()
+
+
+class RestoredAiCloseTests(unittest.TestCase):
+    def intro(self):
+        return xml('<node package="com.xingin.xhs" bounds="[0,0][1080,2248]">'
+                   '<node text="聊聊新话题" bounds="[470,290][610,330]"/>'
+                   '<node package="com.xingin.xhs" text="内容由AI生成" bounds="[460,2180][620,2220]"/>'
+                   '<node package="com.xingin.xhs" class="android.widget.LinearLayout" clickable="true" enabled="true" bounds="[0,89][132,243]">'
+                   '<node package="com.xingin.xhs" class="android.widget.ImageView" resource-id="com.xingin.xhs:id/0_resource_name_obfuscated" bounds="[33,133][99,199]"/></node></node>')
+
+    def test_exact_intro_closes_via_its_unique_element_and_confirms_activity_changed(self):
+        events = []
+        with patch.object(sync, "focus", return_value="com.xingin.xhs/.index.v2.IndexActivityV2}"), patch.object(sync.time, "sleep"), patch.object(sync, "adb") as adb:
+            self.assertTrue(sync.close_restored_ai_page("adb", "serial", self.intro(), "com.xingin.xhs/com.xingin.dot_agent_page.DotsAgentPageActivity}", lambda: None, events))
+        adb.assert_called_once_with("adb", "serial", "shell", "input", "tap", "66", "166", timeout=7)
+        self.assertEqual(events, ["restored_ai_close_selected"])
+
+    def test_unknown_page_duplicate_close_or_occupied_device_never_taps(self):
+        for kind in ("other_app", "duplicate", "occupied"):
+            root = self.intro();current = "com.xingin.xhs/com.xingin.dot_agent_page.DotsAgentPageActivity}"
+            if kind == "other_app":current = "com.other/com.xingin.dot_agent_page.DotsAgentPageActivity}"
+            if kind == "duplicate":root[0].append(ET.fromstring(ET.tostring(root[0][-1], encoding="unicode")))
+            with self.subTest(kind=kind), patch.object(sync, "adb") as adb:
+                guard = unittest.mock.Mock(side_effect=RuntimeError("occupied") if kind == "occupied" else None)
+                if kind == "other_app":self.assertFalse(sync.close_restored_ai_page("adb", "serial", root, current, guard, []))
+                else:
+                    with self.assertRaises(RuntimeError):sync.close_restored_ai_page("adb", "serial", root, current, guard, [])
+                adb.assert_not_called()
+
+    def test_same_activity_after_close_is_not_treated_as_recovered(self):
+        current = "com.xingin.xhs/com.xingin.dot_agent_page.DotsAgentPageActivity}"
+        with patch.object(sync, "focus", return_value=current), patch.object(sync.time, "sleep"), patch.object(sync, "adb"):
+            with self.assertRaisesRegex(RuntimeError, "stayed open"):
+                sync.close_restored_ai_page("adb", "serial", self.intro(), current, lambda: None, [])
+
+    def test_ai_copyright_with_zero_accessibility_bounds_does_not_hide_the_close_element(self):
+        root = self.intro()
+        root[0][1].set("bounds", "[0,0][0,0]")
+        with patch.object(sync, "focus", return_value="com.xingin.xhs/.index.v2.IndexActivityV2}"), patch.object(sync.time, "sleep"), patch.object(sync, "adb") as adb:
+            self.assertTrue(sync.close_restored_ai_page("adb", "serial", root, "com.xingin.xhs/com.xingin.dot_agent_page.DotsAgentPageActivity}", lambda: None, []))
+        self.assertEqual(adb.call_count, 1)
+
+
 class CloneProfileTests(unittest.TestCase):
+    def test_vivo_selects_only_the_installed_999_clone_even_with_another_space_user(self):
+        with patch.object(sync, "adb", side_effect=["vivo", "UserInfo{0:机主:4c13}\nUserInfo{666:XSpace User:80001010}\nUserInfo{999:应用分身:20001010} running", "package:com.xingin.xhs\n"]):
+            self.assertEqual(sync.explicit_clone_user("adb", "serial"), "999")
+        with patch.object(sync, "adb", side_effect=["vivo", "UserInfo{666:应用分身:20001010}"]):
+            with self.assertRaisesRegex(RuntimeError, "uniquely proven"):
+                sync.explicit_clone_user("adb", "serial")
+
     def test_xiaomi_and_oppo_require_the_observed_profile_name_and_installed_app(self):
         for brand, name in (("Xiaomi", "XSpace"), ("OPPO", "MultiApp")):
             with self.subTest(brand=brand), patch.object(sync, "adb", side_effect=[brand, f"UserInfo{{999:{name}:4001010}} running", "package:com.xingin.xhs\n"]):
@@ -952,6 +1226,84 @@ class OverlayRecoveryTests(unittest.TestCase):
             self.assertTrue(sync.recover_known_overlay("adb", "serial", xml(), lambda: None, events))
         adb.assert_called_once_with("adb", "serial", "shell", "input", "keyevent", "4", timeout=7)
         self.assertEqual(events, ["notification_prompt_back"])
+
+    def index_notification(self):
+        return xml('<node package="com.xingin.xhs" bounds="[95,582][625,1089]">'
+                   '<node package="com.xingin.xhs" class="android.widget.LinearLayout" bounds="[95,612][625,1089]">'
+                   '<node package="com.xingin.xhs" class="android.widget.ImageView" bounds="[241,612][479,850]"/>'
+                   '<node package="com.xingin.xhs" text="打开通知，有热门笔记和互动消息第一时间通知你" bounds="[186,866][534,931]"/>'
+                   '<node package="com.xingin.xhs" text="确认" clickable="true" bounds="[191,971][529,1039]"/></node>'
+                   '<node package="com.xingin.xhs" class="android.widget.ImageView" resource-id="com.xingin.xhs:id/0_resource_name_obfuscated" clickable="true" enabled="true" bounds="[565,582][625,642]"/></node>')
+
+    def test_index_notification_closes_the_exact_icon_without_confirming_notifications(self):
+        with patch.object(sync, "focus", return_value=ZeroBoundsProfileTests.current), patch.object(sync, "navigation_capture", return_value=xml()), \
+                patch.object(sync, "adb") as adb, patch.object(sync.time, "sleep"):
+            events = []
+            self.assertTrue(sync.recover_known_overlay("adb", "serial", self.index_notification(), lambda: None, events))
+            adb.assert_called_once_with("adb", "serial", "shell", "input", "tap", "595", "612", timeout=7)
+            self.assertEqual(events, ["index_notification_close_selected"])
+
+    def test_index_notification_requires_its_layout_and_live_idle_guard(self):
+        for kind in ("wrong_close", "occupied", "stayed_open"):
+            root = self.index_notification()
+            if kind == "wrong_close":root[0][1].set("bounds", "[95,582][155,642]")
+            with self.subTest(kind=kind), patch.object(sync, "focus", return_value=ZeroBoundsProfileTests.current), \
+                    patch.object(sync, "adb") as adb, patch.object(sync, "navigation_capture", return_value=root), patch.object(sync.time, "sleep"):
+                guard = unittest.mock.Mock(side_effect=RuntimeError("occupied") if kind == "occupied" else None)
+                with self.assertRaises(RuntimeError):sync.recover_known_overlay("adb", "serial", root, guard, [])
+                self.assertEqual(adb.call_count, 1 if kind == "stayed_open" else 0)
+
+    def milestone_sheet(self, reading=True):
+        title = "恭喜你🎉单篇笔记阅读超过1万啦" if reading else "恭喜你🎉累计获得400个赞和收藏啦"
+        subtitle = "发笔记记录一下此刻吧！✌" if reading else "发笔记感谢一下大家的喜爱❤️"
+        return xml('<node package="com.xingin.xhs" bounds="[0,1228][1080,2029]">'
+                   '<node package="com.xingin.xhs" class="android.widget.ImageView" resource-id="com.xingin.xhs:id/0_resource_name_obfuscated" clickable="true" enabled="true" bounds="[986,1228][1080,1322]"/>'
+                   f'<node package="com.xingin.xhs" text="{title}" bounds="[171,1363][909,1421]"/>'
+                   f'<node package="com.xingin.xhs" text="{subtitle}" bounds="[301,1443][779,1488]"/>'
+                   '<node package="com.xingin.xhs" class="android.widget.ImageView" bounds="[309,1560][771,2022]"/>'
+                   '<node package="com.xingin.xhs" text="去发布" clickable="true" bounds="[0,0][0,0]"/></node>')
+
+    def test_anniversary_sheet_closes_with_back_and_never_publishes(self):
+        root = xml('<node package="com.xingin.xhs" text="嗨👋今天是你加入小红书的1周年" bounds="[94,969][625,1011]"/>',
+                   '<node package="com.xingin.xhs" text="分享你在小红书遇到的有趣故事吧🎈" bounds="[132,1027][587,1060]"/>',
+                   '<node package="com.xingin.xhs" text="去发布" clickable="true" bounds="[32,1516][688,1596]"/>')
+        for remains in (False, True):
+            with self.subTest(remains=remains), patch.object(sync, "focus", return_value="mCurrentFocus=com.xingin.xhs/IndexActivityV2"), \
+                    patch.object(sync, "navigation_capture", return_value=root if remains else xml()), patch.object(sync, "adb") as adb, patch.object(sync.time, "sleep"):
+                events = []
+                if remains:
+                    with self.assertRaisesRegex(RuntimeError, "stayed open"):
+                        sync.recover_known_overlay("adb", "serial", root, lambda: None, events)
+                else:
+                    self.assertTrue(sync.recover_known_overlay("adb", "serial", root, lambda: None, events))
+                    self.assertEqual(events, ["anniversary_sheet_back"])
+                adb.assert_called_once_with("adb", "serial", "shell", "input", "keyevent", "4", timeout=7)
+
+    def test_observed_milestone_sheets_close_the_icon_even_with_a_zero_bounds_publish_cta(self):
+        for reading in (True, False):
+            with self.subTest(reading=reading), patch.object(sync, "focus", return_value="mCurrentFocus=com.xingin.xhs/IndexActivityV2"), \
+                    patch.object(sync, "adb") as adb, patch.object(sync, "navigation_capture", return_value=xml()), patch.object(sync.time, "sleep"):
+                events = []
+                self.assertTrue(sync.recover_known_overlay("adb", "serial", self.milestone_sheet(reading), lambda: None, events))
+                adb.assert_called_once_with("adb", "serial", "shell", "input", "tap", "1033", "1275", timeout=7)
+                self.assertEqual(events, ["milestone_close_selected"])
+
+    def test_milestone_close_requires_the_exact_parent_and_an_idle_phone(self):
+        for kind in ("changed_subtitle", "wrong_icon", "occupied"):
+            root = self.milestone_sheet()
+            if kind == "changed_subtitle":root[0][2].set("text", "立即升级")
+            if kind == "wrong_icon":root[0][0].set("bounds", "[0,1228][100,1322]")
+            with self.subTest(kind=kind), patch.object(sync, "focus", return_value="mCurrentFocus=com.xingin.xhs/IndexActivityV2"), patch.object(sync, "adb") as adb:
+                guard = unittest.mock.Mock(side_effect=RuntimeError("occupied") if kind == "occupied" else None)
+                with self.assertRaises(RuntimeError):sync.recover_known_overlay("adb", "serial", root, guard, [])
+                adb.assert_not_called()
+
+    def test_milestone_still_visible_after_close_is_a_failure(self):
+        root = self.milestone_sheet()
+        with patch.object(sync, "focus", return_value="mCurrentFocus=com.xingin.xhs/IndexActivityV2"), patch.object(sync, "adb"), \
+                patch.object(sync, "navigation_capture", return_value=root), patch.object(sync.time, "sleep"):
+            with self.assertRaisesRegex(RuntimeError, "stayed open"):
+                sync.recover_known_overlay("adb", "serial", root, lambda: None, [])
 
     def test_milestone_popup_uses_back(self):
         root = xml(

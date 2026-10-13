@@ -11,6 +11,7 @@ as authorized by the user, before continuing navigation.
 """
 
 import argparse
+import base64
 import datetime as dt
 import json
 import os
@@ -28,6 +29,8 @@ COUNT = re.compile(r"^(\d+(?:\.\d+)?)(万|亿)?$")
 DATE = re.compile(r"^(?:\d{2}-\d{2}|\d{4}-\d{2}-\d{2})$")
 XHS_PACKAGE = "com.xingin.xhs"
 SHANGHAI = dt.timezone(dt.timedelta(hours=8))
+# Only the verified bottom-profile glyph; no phone screenshot/user content.
+PROFILE_GLYPH_PNG = "iVBORw0KGgoAAAANSUhEUgAAAC8AAAAwCAAAAACkzHw+AAADH0lEQVR4nM2W/U9SURjHvwgiF4lMUMPAKDWzlnM6cTTzpWzZbNbWmrm1tbV+6j9qa+svqOUP9qZllrPR0tTNZgaCYE1QE5BXu17aOfeFCwLabz4bPM8593Of+z3Pec4FRQr/ZUU4XLwq7xVuKpFgbx2IZ3e0QMoB6PbPzwX9K66jg8VptUF/Q24+uR3eXPPFASQcHVAA5BP8NsvtXMji/f5YNLIeSt863WgQ+Mg8h7ea+kxeN7Ile47JesKkpvmLAPPNZ8DL2+YMvrRzWISZGxUMHxVx4ABY+16DfTWky9BvrVXrdHr9cBjqGvFOTQxJ4s9vORAeHVDKeRVfaKJBMk0MZO2AfdOJ5S/2dMVyWzGAXRIor5aBMWE/Xi3y0F43DVkz9BfmUT3IqwcUpP8dG8LIyUJVJ/K/toE6WT7mspg/sJSeZRflz3DKYuM++nMazV9ZlEtPcA2o1qdRRuLbxaknIZT2i4PFEaCxOSt/AT1aADE+jHMH4BkAET78MC4UtlD9S8kaaOT+jr+9qgL5YwGihwHoxkTGgIWtfPl3A6tun/ZBCVDhRTymBfc+DHRU5OGjj0lTxn40AUYvENJi6idgatm73rh7MgqwfA97hQ0NYt4BMH38+Zfys+u/PR6pMPUnq8lxKietwo0CuEZCiY96vMsJcUJts1QJzVgOYIE8rqcWcn53jBUGHAdG2mww5lV6wtpF8YJ+vY1ExvY7j45krr2GfrddlE1R/c3zJqtZkihZwEW+7XZFNs88FI+PzLi5j0SmxsbjEUaZrk8O3D/hoz7hPU29y39Fmb9/wjPTxOkiwAzPry5udxvy9E9o8inFbfeNwIqbhEknPPN78tMfv+T4Ah1UdlvQ+gaYMGkAHwtYsvszFSEJStrIBabnrgU4awA2R3fAzQEqsyw/Xb6To6fEMPD8T0szOV5QXXoBLAWbAh7gnEZ8/wD49FWn5UjXt3WSu5XCOxp4NytG96pkemq58BrBcYbWRcLRJb4vmggu8WWC7z2eVStVfyv11i7qRD34HGNTymOnDDnKu+7aUJsb+D2V+APaYfv/8A/nYfKVUWstFQAAAABJRU5ErkJggg=="
 
 
 def adb(adb_path, serial, *args, timeout=12):
@@ -222,7 +225,8 @@ def wake_if_asleep(adb_path, serial, guard, events):
 def explicit_clone_user(adb_path, serial):
     """Use only brand/profile pairs observed in fleet QA, never guess a user."""
     brand = adb(adb_path, serial, "shell", "getprop", "ro.product.manufacturer").strip().upper()
-    profiles = {"HONOR": ("128", "分身应用"), "XIAOMI": ("999", "XSpace"), "OPPO": ("999", "MultiApp")}
+    profiles = {"HONOR": ("128", "分身应用"), "XIAOMI": ("999", "XSpace"),
+                "OPPO": ("999", "MultiApp"), "VIVO": ("999", "应用分身")}
     if brand not in profiles:
         return None
     expected_id, expected_name = profiles[brand]
@@ -234,6 +238,32 @@ def explicit_clone_user(adb_path, serial):
     if f"package:{XHS_PACKAGE}" not in installed.splitlines():
         raise RuntimeError("Xiaohongshu is not installed in the requested clone profile")
     return clones[0]
+
+
+def dismiss_unsecured_keyguard(adb_path, serial, guard, events):
+    policy = adb(adb_path, serial, "shell", "dumpsys", "window", "policy", timeout=8)
+    if "KeyguardServiceDelegate" not in policy:
+        return False
+    delegate = policy.split("KeyguardServiceDelegate", 1)[1].split("KeyguardStateMonitor", 1)[0]
+    showing = re.findall(r"^\s*showing=(true|false)\s*$", delegate, re.MULTILINE)
+    secure = re.findall(r"^\s*secure=(true|false)\s*$", delegate, re.MULTILINE)
+    if showing == ["false"] or not showing:
+        return False
+    if showing != ["true"] or secure != ["false"]:
+        raise RuntimeError("target keyguard requires manual unlock or its security state is unproven")
+    current = focus(adb_path, serial)
+    if XHS_PACKAGE in current or "mKeyguardOccluded=false" not in policy:
+        raise RuntimeError("unsecured keyguard foreground is not proven")
+    guard()
+    adb(adb_path, serial, "shell", "input", "keyevent", "82", timeout=7)
+    adb(adb_path, serial, "shell", "wm", "dismiss-keyguard", timeout=7)
+    time.sleep(.5)
+    refreshed = adb(adb_path, serial, "shell", "dumpsys", "window", "policy", timeout=8)
+    section = refreshed.split("KeyguardServiceDelegate", 1)[-1].split("KeyguardStateMonitor", 1)[0]
+    if re.findall(r"^\s*showing=(true|false)\s*$", section, re.MULTILINE) != ["false"]:
+        raise RuntimeError("unsecured keyguard stayed visible after dismissal")
+    events.append("unsecured_keyguard_dismissed")
+    return True
 
 
 def verify_collection_slot(adb_path, serial, slot, events):
@@ -308,10 +338,49 @@ def select_oppo_clone(adb_path, serial, root, current, slot, guard, events):
     return True
 
 
+def select_honor_owner(adb_path, serial, root, current, slot, guard, events):
+    """188's observed chooser has an owner icon at left and a badged clone at right.
+
+    Restrict selection to this exact two-item layout; verify u0 before any
+    Creator Center navigation. A changed OEM order fails without reading data.
+    """
+    package = "com.hihonor.android.internal.app"
+    if (slot != "app1" or not re.search(r"\bcom\.hihonor\.android\.internal\.app/com\.hihonor\.android\.internal\.app\.HwChooserActivity(?:[}\s]|$)", current)
+            or not any(n.get("package") == package and n.get("resource-id") == "android:id/alertTitle"
+                       and n.get("text") == "使用以下方式打开" for n in live_nodes(root))):
+        return False
+    profiles = [n for n in live_nodes(root) if n.get("package") == package
+                and n.get("resource-id") == package + ":id/normal_profile_layout"]
+    grids = [n for n in profiles[0].iter("node") if n.get("class") == "android.widget.GridView" and n in live_nodes(root)] if len(profiles) == 1 else []
+    rows = list(grids[0]) if len(grids) == 1 else []
+    if (len(rows) != 2 or any(n.get("package") != package or n.get("class") != "android.widget.LinearLayout"
+                            or n.get("enabled") != "true" or n not in live_nodes(root)
+                            or len([c for c in n.iter("node") if c.get("package") == package
+                                    and c.get("resource-id") == "android:id/text1" and c.get("text") == "小红书"]) != 1
+                            or len([c for c in n.iter("node") if c.get("package") == package
+                                    and c.get("class") == "android.widget.ImageView" and c in live_nodes(root)]) != 1 for n in rows)):
+        raise RuntimeError("Honor owner selector layout is not uniquely proven")
+    rows.sort(key=lambda n: bounds(n)[0])
+    left, right, grid = bounds(rows[0]), bounds(rows[1]), bounds(grids[0])
+    if left[0] != grid[0] or left[2] != right[0] or right[2] != grid[2] or explicit_clone_user(adb_path, serial) != "128":
+        raise RuntimeError("Honor owner selector profile/layout is not proven")
+    guard()
+    adb(adb_path, serial, "shell", "input", "tap", str((left[0]+left[2])//2), str((left[1]+left[3])//2), timeout=7)
+    time.sleep(0.5)
+    if "clone_user_requested:0" not in events:
+        events.append("clone_user_requested:0")
+    events.append("honor_owner_item_selected")
+    return True
+
+
 def start_xhs(adb_path, serial, slot, guard, events):
     """Cold-start the app and choose only the caller's explicit clone slot."""
     guard()
     adb(adb_path, serial, "shell", "input", "keyevent", "224", timeout=7)
+    # Vivo reports the old unlocked state briefly while its screen wakes.
+    # Inspect the settled lock before the generic asynchronous dismissal.
+    time.sleep(.7)
+    dismiss_unsecured_keyguard(adb_path, serial, guard, events)
     adb(adb_path, serial, "shell", "wm", "dismiss-keyguard", timeout=7)
     if f"package:{XHS_PACKAGE}" not in adb(adb_path, serial, "shell", "pm", "list", "packages", XHS_PACKAGE):
         raise RuntimeError("Xiaohongshu is not installed on this phone")
@@ -336,9 +405,10 @@ def start_xhs(adb_path, serial, slot, guard, events):
                 root = navigation_capture(adb_path, serial, guard, events)
                 continue
         if any(marker in current for marker in ("DoubleAppResolverActivity", "com.android.intentresolver",
-                                                "ResolverActivity")):
+                                                "ResolverActivity", "HwChooserActivity")):
             if (select_miui_clone(adb_path, serial, root, current, slot, guard, events)
-                    or select_oppo_clone(adb_path, serial, root, current, slot, guard, events)):
+                    or select_oppo_clone(adb_path, serial, root, current, slot, guard, events)
+                    or select_honor_owner(adb_path, serial, root, current, slot, guard, events)):
                 return navigation_capture(adb_path, serial, guard, events)
             labels = ("小红书",) if slot == "app1" else ("Ⅱ·小红书", "II·小红书", "II ·小红书", "Ⅱ ·小红书")
             for value in labels:
@@ -376,6 +446,34 @@ def recover_known_overlay(adb_path, serial, root, guard, events):
         if "NotificationAuthorizationTranslucentActivity" in focus(adb_path, serial):
             raise RuntimeError("notification overlay stayed open after Back")
         events.append("notification_prompt_back")
+        return True
+
+    notification_copy = "打开通知，有热门笔记和互动消息第一时间通知你"
+    prompts = [n for n in label(root, notification_copy) if n.get("package") == XHS_PACKAGE]
+    if (len(prompts) == 1 and re.search(r"com\.xingin\.xhs/com\.xingin\.xhs\.index\.v2\.IndexActivityV2(?:[}\s]|$)", current)):
+        body = parents.get(prompts[0])
+        panel = parents.get(body) if body is not None else None
+        children = list(panel) if panel is not None else []
+        contents = list(body) if body is not None else []
+        if (len(children) != 2 or len(contents) != 3 or children[0] is not body
+                or contents[1] is not prompts[0] or contents[2].get("text") != "确认"
+                or any(n.get("package") != XHS_PACKAGE for n in children + contents)):
+            raise RuntimeError("index notification close layout is not proven")
+        close = children[1]
+        box, panel_box = bounds(close), bounds(panel)
+        if (close not in live_nodes(root) or panel not in live_nodes(root)
+                or close.get("class") != "android.widget.ImageView"
+                or close.get("resource-id") != XHS_PACKAGE + ":id/0_resource_name_obfuscated"
+                or close.get("clickable") != "true" or close.get("enabled") != "true"
+                or box[2] != panel_box[2] or box[1] != panel_box[1]
+                or box[0] < panel_box[0] + (panel_box[2]-panel_box[0]) * .75):
+            raise RuntimeError("index notification close element is not proven")
+        guard()
+        adb(adb_path, serial, "shell", "input", "tap", str((box[0]+box[2])//2), str((box[1]+box[3])//2), timeout=7)
+        time.sleep(.5)
+        if label(navigation_capture(adb_path, serial, guard, events), notification_copy):
+            raise RuntimeError("index notification stayed open after close")
+        events.append("index_notification_close_selected")
         return True
 
     permission_package = "com.android.permissioncontroller"
@@ -629,6 +727,45 @@ def recover_known_overlay(adb_path, serial, root, guard, events):
             raise RuntimeError("growth-center overlay stayed open after defer")
         events.append("growth_center_deferred")
         return True
+    anniversary = [n for n in live_nodes(root) if n.get("package") == XHS_PACKAGE
+                   and re.fullmatch(r"嗨👋今天是你加入小红书的\d+周年", n.get("text", ""))]
+    if (XHS_PACKAGE in current and len(anniversary) == 1
+            and "分享你在小红书遇到的有趣故事吧🎈" in values and "去发布" in values):
+        press_back()
+        if label(navigation_capture(adb_path, serial, guard, events), anniversary[0].get("text")):
+            raise RuntimeError("anniversary sheet stayed open after Back")
+        events.append("anniversary_sheet_back")
+        return True
+    # 140's milestone sheet exposes the publish CTA with zero bounds, while
+    # the observed close icon and its exact five-child parent remain visible.
+    milestone = [n for n in live_nodes(root) if n.get("package") == XHS_PACKAGE
+                 and (n.get("text") == "恭喜你🎉单篇笔记阅读超过1万啦"
+                      or re.fullmatch(r"恭喜你🎉累计获得\d+个赞和收藏啦", n.get("text", "")))]
+    panel = parents.get(milestone[0]) if len(milestone) == 1 else None
+    children = list(panel) if panel is not None else []
+    if XHS_PACKAGE in current and len(milestone) == 1 and len(children) == 5:
+        subtitle = ("发笔记记录一下此刻吧！✌" if "单篇笔记阅读" in milestone[0].get("text", "")
+                    else "发笔记感谢一下大家的喜爱❤️")
+        if (children[1] is not milestone[0] or children[2].get("text") != subtitle
+                or children[4].get("text") != "去发布"
+                or any(n.get("package") != XHS_PACKAGE for n in children)):
+            raise RuntimeError("reading milestone close layout is not proven")
+        close = children[0]
+        box, title_box, panel_box = bounds(close), bounds(milestone[0]), bounds(panel)
+        if (close not in live_nodes(root) or panel not in live_nodes(root)
+                or close.get("class") != "android.widget.ImageView"
+                or close.get("resource-id") != XHS_PACKAGE + ":id/0_resource_name_obfuscated"
+                or close.get("clickable") != "true" or close.get("enabled") != "true"
+                or box[2] != panel_box[2] or box[1] != panel_box[1]
+                or box[0] < panel_box[2] * .85 or box[3] >= title_box[1]):
+            raise RuntimeError("reading milestone close element is not proven")
+        guard()
+        adb(adb_path, serial, "shell", "input", "tap", str((box[0]+box[2])//2), str((box[1]+box[3])//2), timeout=7)
+        time.sleep(.5)
+        if label(navigation_capture(adb_path, serial, guard, events), milestone[0].get("text")):
+            raise RuntimeError("reading milestone stayed open after close")
+        events.append("milestone_close_selected")
+        return True
     if ("com.xingin.xhs" in current and "去发布" in values
             and sum(value.startswith("恭喜你") for value in values) == 1):
         press_back()
@@ -704,12 +841,142 @@ def xhs_chat_activity(current):
         r"com\.xingin\.dot_agent_page\.DotsAgentPageActivity)(?:[}\s]|$)", current))
 
 
+def close_restored_ai_page(adb_path, serial, root, current, guard, events):
+    """The observed AI introduction ignores Back; its close icon has a parent."""
+    if (not re.search(r"com\.xingin\.xhs/com\.xingin\.dot_agent_page\.DotsAgentPageActivity(?:[}\s]|$)", current)
+            or not label(root, "聊聊新话题") or not any(n.get("package") == XHS_PACKAGE
+                and n.get("text") == "内容由AI生成" for n in root.iter("node"))):
+        return False
+    nodes = live_nodes(root)
+    width = max((bounds(n)[2] for n in nodes), default=0)
+    height = max((bounds(n)[3] for n in nodes), default=0)
+    candidates = []
+    for n in nodes:
+        if (n.get("package") != XHS_PACKAGE or n.get("class") != "android.widget.LinearLayout"
+                or n.get("clickable") != "true" or n.get("enabled") != "true"):
+            continue
+        box = bounds(n)
+        icons = [c for c in n if c.get("package") == XHS_PACKAGE and c.get("class") == "android.widget.ImageView"
+                 and c.get("resource-id") == XHS_PACKAGE + ":id/0_resource_name_obfuscated" and c in nodes]
+        if (box[0] == 0 and box[2] <= width * 0.20 and box[3] <= height * 0.15
+                and len(icons) == 1 and len(list(n)) == 1):
+            candidates.append(n)
+    if len(candidates) != 1:
+        raise RuntimeError("restored AI page close element is not uniquely proven")
+    x1, y1, x2, y2 = bounds(candidates[0])
+    guard()
+    adb(adb_path, serial, "shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2), timeout=7)
+    time.sleep(0.5)
+    if "com.xingin.dot_agent_page.DotsAgentPageActivity" in focus(adb_path, serial):
+        raise RuntimeError("restored AI page stayed open after close")
+    events.append("restored_ai_close_selected")
+    return True
+
+
+def profile_glyph_position(png):
+    """Match the verified profile glyph only inside the observed footer region."""
+    try:
+        import cv2
+        import numpy as np
+    except ImportError as error:
+        raise RuntimeError("profile image fallback requires the existing OpenCV runtime") from error
+    frame = cv2.imdecode(np.frombuffer(png, dtype=np.uint8), cv2.IMREAD_GRAYSCALE)
+    template = cv2.imdecode(np.frombuffer(base64.b64decode(PROFILE_GLYPH_PNG), dtype=np.uint8), cv2.IMREAD_GRAYSCALE)
+    if frame is None or template is None or frame.shape[0] < 700 or frame.shape[1] < 400:
+        raise RuntimeError("profile image fallback did not receive a usable screenshot")
+    height, width = frame.shape
+    left, top, bottom = int(width * .80), int(height * .95), int(height * .995)
+    region = frame[top:bottom, left:width]
+    matches = []
+    for step in range(13, 30):
+        scale = width / 1080 * step / 20
+        glyph = cv2.resize(template, None, fx=scale, fy=scale, interpolation=cv2.INTER_AREA)
+        gh, gw = glyph.shape
+        if gh >= region.shape[0] or gw >= region.shape[1]:
+            continue
+        for variant in (glyph, 255-glyph):
+            scores = cv2.matchTemplate(region, variant, cv2.TM_CCOEFF_NORMED)
+            ys, xs = np.where(scores >= .92)
+            for y, x in zip(ys, xs):
+                matches.append((float(scores[y, x]), left + int(x) + gw//2, top + int(y) + gh//2, max(gw, gh)))
+    if not matches:
+        raise RuntimeError("profile glyph not proven in the footer screenshot")
+    matches.sort(reverse=True)
+    best = matches[0]
+    if any(abs(m[1]-best[1]) + abs(m[2]-best[2]) > max(m[3], best[3]) for m in matches[1:]):
+        raise RuntimeError("profile glyph matches multiple footer locations")
+    return best[1], best[2]
+
+
+def select_zero_bounds_profile(adb_path, serial, root, current, guard, events):
+    """140's footer is visible, but all five accessibility bounds are zero."""
+    if not re.search(r"com\.xingin\.xhs/com\.xingin\.xhs\.index\.v2\.IndexActivityV2(?:[}\s]|$)", current):
+        return None
+    if not all(label(root, value) for value in ("关注", "发现", "搜索")):
+        return None
+    targets = [n for n in root.iter("node") if n.get("package") == XHS_PACKAGE
+               and n.get("class") == "android.view.ViewGroup" and n.get("content-desc") == "我"
+               and n.get("clickable") == "true" and n.get("enabled") == "true"
+               and n.get("selected") == "false" and n.get("bounds") == "[0,0][0,0]"]
+    if len(targets) != 1:
+        return None
+    parents = {child: parent for parent in root.iter() for child in parent}
+    row = parents.get(targets[0])
+    children = list(row) if row is not None else []
+    captions = [n.get("content-desc", "").split("，", 1)[0] for n in children]
+    if (captions != ["首页", "市集", "发布", "消息", "我"] or any(n.get("package") != XHS_PACKAGE
+            or n.get("clickable") != "true" or n.get("enabled") != "true"
+            or n.get("bounds") != "[0,0][0,0]" for n in children)):
+        raise RuntimeError("zero-bounds profile footer is not uniquely proven")
+    if children[0].get("selected") != "true":
+        raise RuntimeError("zero-bounds profile footer is not on the verified home tab")
+    guard()
+    screenshot = subprocess.run([adb_path, "-s", serial, "exec-out", "screencap", "-p"], capture_output=True, timeout=10)
+    if screenshot.returncode:
+        raise RuntimeError("profile image fallback screenshot failed")
+    x, y = profile_glyph_position(screenshot.stdout)
+    if focus(adb_path, serial) != current:
+        raise RuntimeError("profile image fallback foreground changed")
+    guard()
+    adb(adb_path, serial, "shell", "input", "tap", str(x), str(y), timeout=7)
+    time.sleep(.5)
+    refreshed = navigation_capture(adb_path, serial, guard, events)
+    if any(n.get("text", "").startswith(("恭喜你🎉", "嗨👋今天是你加入小红书的")) for n in live_nodes(refreshed)):
+        recover_known_overlay(adb_path, serial, refreshed, guard, events)
+        refreshed = navigation_capture(adb_path, serial, guard, events)
+    if (not re.search(r"com\.xingin\.xhs/com\.xingin\.xhs\.index\.v2\.IndexActivityV2(?:[}\s]|$)", focus(adb_path, serial))
+            or not any(n.get("package") == XHS_PACKAGE and n.get("content-desc") == "我"
+                       and n.get("selected") == "true" for n in refreshed.iter("node"))):
+        raise RuntimeError("profile image fallback did not confirm the selected personal tab")
+    events.append("profile_zero_bounds_image_selected")
+    return refreshed
+
+
+def refresh_creator_server_error(adb_path, serial, root, guard, events, attempts):
+    current = focus(adb_path, serial)
+    if (not re.search(r"com\.xingin\.xhs/com\.xingin\.reactnative\.ui\.XhsReactActivity(?:[}\s]|$)", current)
+            or not label(root, "服务器出错")
+            or not label(root, "工程薯正在努力抢修，你还可以:")):
+        return False
+    if attempts >= 1:
+        raise RuntimeError("Xiaohongshu Creator Center reported server error after one refresh")
+    buttons = [n for n in label(root, "刷新试试") if n.get("package") == XHS_PACKAGE
+               and n.get("class") == "android.widget.Button" and n.get("clickable") == "true"
+               and n.get("enabled") == "true"]
+    if len(buttons) != 1 or not label(root, "返回上一页"):
+        raise RuntimeError("Creator Center server-error refresh action is not proven")
+    tap_label(adb_path, serial, root, "刷新试试", guard)
+    events.append("creator_server_error_refreshed_once")
+    return True
+
+
 def ensure_creator_list(adb_path, serial, root, slot, guard, events):
     recoveries = 0
     more_attempts = 0
     shell_passes = 0
     shell_reopens = 0
     chat_backs = 0
+    server_refreshes = 0
     for _ in range(14):
         if wake_if_asleep(adb_path, serial, guard, events):
             root = navigation_capture(adb_path, serial, guard, events)
@@ -719,6 +986,15 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
                 verify_collection_slot(adb_path, serial, slot, events)
         if creator_list(root):
             return root
+        if (label(root, "个人信息保护提示") and any(n.get("package") == XHS_PACKAGE
+                and n.get("text", "").startswith("欢迎使用小红书！") for n in root.iter("node"))
+                and label(root, "同意") and label(root, "不同意")):
+            raise RuntimeError("Xiaohongshu first-use privacy agreement requires manual acceptance")
+        if label(root, "服务器出错") and refresh_creator_server_error(adb_path, serial, root, guard, events, server_refreshes):
+            server_refreshes += 1
+            time.sleep(1)
+            root = navigation_capture(adb_path, serial, guard, events)
+            continue
         if open_works_tab(adb_path, serial, root, guard, events):
             root = navigation_capture(adb_path, serial, guard, events)
             continue
@@ -756,9 +1032,10 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
                 and not label(root, "最新笔记")):
             raise RuntimeError("Creator Center data permission is not enabled")
         if any(marker in current for marker in ("DoubleAppResolverActivity", "com.android.intentresolver",
-                                                "ResolverActivity")):
+                                                "ResolverActivity", "HwChooserActivity")):
             if (select_miui_clone(adb_path, serial, root, current, slot, guard, events)
-                    or select_oppo_clone(adb_path, serial, root, current, slot, guard, events)):
+                    or select_oppo_clone(adb_path, serial, root, current, slot, guard, events)
+                    or select_honor_owner(adb_path, serial, root, current, slot, guard, events)):
                 root = navigation_capture(adb_path, serial, guard, events)
                 continue
             labels = ("小红书",) if slot == "app1" else ("Ⅱ·小红书", "II·小红书", "II ·小红书", "Ⅱ ·小红书")
@@ -773,6 +1050,9 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
                             and node.get("focused") == "false")
                    for node in live_nodes(root)):
                 raise RuntimeError("restored chat has unsent text; collection stopped")
+            if close_restored_ai_page(adb_path, serial, root, current, guard, events):
+                root = navigation_capture(adb_path, serial, guard, events)
+                continue
             if chat_backs >= 2:
                 raise RuntimeError("restored Xiaohongshu chat page did not close")
             guard()
@@ -811,6 +1091,14 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
             screen_bottom = max((bounds(n)[3] for n in live_nodes(root)), default=0)
             if any(bounds(n)[1] > screen_bottom * 0.75 for n in label(root, "我")):
                 tap_label(adb_path, serial, root, "我", guard)
+        elif any(n.get("package") == XHS_PACKAGE and n.get("content-desc") == "我"
+                 and n.get("selected") == "false" and n.get("bounds") == "[0,0][0,0]"
+                 for n in root.iter("node")):
+            refreshed = select_zero_bounds_profile(adb_path, serial, root, current, guard, events)
+            if refreshed is None:
+                raise RuntimeError("profile tab is inaccessible outside the verified index page")
+            root = refreshed
+            continue
         elif re.search(r"com\.xingin\.xhs/(?:com\.xingin\.xhs\.index\.v2\.IndexActivityV2|"
                        r"\.index\.v2\.IndexActivityV2)(?:[}\s]|$)", current) and len([
             node for node in label(root, "菜单") if node.get("package") == XHS_PACKAGE
@@ -951,6 +1239,14 @@ def wait_creator_content(adb_path, serial, root, guard, events):
 
 def swipe(adb_path, serial, root, guard, events):
     containers = [n for n in live_nodes(root) if n.get("scrollable") == "true"]
+    if (not containers and creator_list(root) and note_cards(root)
+            and re.search(r"com\.xingin\.xhs/com\.xingin\.xywebview\.activity\.WebViewActivityV2(?:[}\s]|$)", focus(adb_path, serial))):
+        containers = [n for n in live_nodes(root) if n.get("package") == XHS_PACKAGE
+                      and n.get("class") == "android.webkit.WebView" and n.get("text") == "数据中心"]
+        if len(containers) != 1:
+            containers = []
+        else:
+            events.append("works_webview_scroll_flag_fallback")
     if not containers:
         raise RuntimeError("works-analysis scroll container not found")
     container = max(containers, key=lambda n: (bounds(n)[2]-bounds(n)[0]) * (bounds(n)[3]-bounds(n)[1]))
@@ -976,8 +1272,16 @@ def tap_filter_label(adb_path, serial, root, value, guard):
     time.sleep(0.5)
 
 
-def refresh_scrolled_webview(adb_path, serial, root, guard, events):
+def refresh_scrolled_webview(adb_path, serial, root, guard, events, previous_root=None):
     """Refresh a stale WebView accessibility tree without changing filters."""
+    if previous_root is not None and creator_list(root) and note_cards(root):
+        previous = [(n[1]["title"], n[1]["published_at_raw"]) for n in note_cards(previous_root)]
+        current_cards = [(n[1]["title"], n[1]["published_at_raw"]) for n in note_cards(root)]
+        if (previous and current_cards != previous
+                and re.search(r"com\.xingin\.xhs/com\.xingin\.xywebview\.activity\.WebViewActivityV2(?:[}\s]|$)", focus(adb_path, serial))):
+            guard()
+            events.append("works_list_updated_without_filter_toggle")
+            return root
     if (creator_list(root) and not label(root, "全部笔记") and note_cards(root)
             and re.search(r"com\.xingin\.xhs/com\.xingin\.xywebview\.activity\.WebViewActivityV2(?:[}\s]|$)", focus(adb_path, serial))):
         guard()
@@ -1084,7 +1388,8 @@ def collect(args):
             break
         swipe(args.adb, args.serial, root, guard, events)
         result["scrolls"] += 1
-        root = refresh_scrolled_webview(args.adb, args.serial, navigation_capture(args.adb, args.serial, guard, events), guard, events)
+        previous_root = root
+        root = refresh_scrolled_webview(args.adb, args.serial, navigation_capture(args.adb, args.serial, guard, events), guard, events, previous_root)
         root = wait_creator_content(args.adb, args.serial, root, guard, events)
     if not result["complete"]:
         result["warnings"].append("recent_window_not_proven")
