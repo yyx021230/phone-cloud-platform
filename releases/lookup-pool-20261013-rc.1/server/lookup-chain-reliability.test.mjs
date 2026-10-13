@@ -17,6 +17,7 @@ function fn(source,name) {
  const next=tail.slice(1).search(/\n(?:async )?function /);
  return next<0?tail:tail.slice(0,next+1);
 }
+const isManagedLookupTask=t=>t?.payload?.managedLookup?.protocol==='managed_lookup_v1';
 const terminal=s=>['succeeded','failed','cancelled','expired'].includes(s);
 const nowIso=()=>new Date().toISOString();
 function syncHarness(kind='alipay_name_query') {
@@ -47,7 +48,7 @@ test('successful lookup is never downgraded by a reporting transport error',asyn
 test('terminal retry ACK follows persistence after failed first write',async()=>{
  const task={taskId:'synthetic',status:'running',events:[]};let writes=0;
  const persistencePolicy=createPersistencePolicy({structuredWritesEnabled:false,saveSnapshot:async()=>{writes++;if(writes===1)throw new Error('synthetic disk failure');},scheduleCheckpoint:()=>{}});
- const context=vm.createContext({req:{method:'POST'},res:{},url:{pathname:'/api/v1/windows-agent-tasks/synthetic/status'},
+ const context=vm.createContext({isManagedLookupTask,req:{method:'POST'},res:{},url:{pathname:'/api/v1/windows-agent-tasks/synthetic/status'},
  requireWindowsAgent:()=>({}),requireWindowsScope:()=>{},readJson:async()=>({status:'succeeded',result:{realNameTailCharacter:'甲'}}),
  repos:{windowsTasks:{findById:()=>task}},windowsCtxCanAccessTask:()=>true,isTerminalStatus:terminal,
  publicWindowsTask:t=>({status:t.status}),json:(_r,status,body)=>({status,body}),
@@ -118,7 +119,7 @@ test("late evidence materialization cannot overwrite a winning terminal result",
   const task = { taskId: "race", status: "running" };
   let releaseFirst, materializations = 0, syncs = 0;
   const inputs = [ { status: "succeeded", result: { marker: "late" } }, { status: "succeeded", result: { marker: "winner" } } ];
-  const context = vm.createContext({ req: { method: "POST" }, res: {}, url: { pathname: "/api/v1/windows-agent-tasks/race/status" },
+  const context = vm.createContext({ isManagedLookupTask,req: { method: "POST" }, res: {}, url: { pathname: "/api/v1/windows-agent-tasks/race/status" },
     requireWindowsAgent: () => ({}), requireWindowsScope: () => {}, readJson: async () => inputs.shift(),
     repos: { windowsTasks: { findById: () => task } }, windowsCtxCanAccessTask: () => true, isTerminalStatus: terminal,
     publicWindowsTask: (t) => ({ status: t.status }), json: (_r, status, body) => ({ status, body }),
@@ -139,7 +140,7 @@ test("pending lookup reports reserve only their serial while retaining screen po
   const context = vm.createContext({ URLSearchParams, encodeURIComponent, config: { maxConcurrentAdbTasks: 1, agentId: "a" },
     activeTasksById: new Map([["active", {}]]), activeTaskSerials: new Set(["ACTIVE"]), screenControlledSerials: new Set(["SCREEN"]),
     lookupStatusOutbox: { pendingTasks: () => [{ taskId: "pending", adbSerial: "LOOKUP" }] },
-    SCREEN_GALLERY_DELIVERY_PROTOCOL: "gallery", XHS_PUBLISH_DELIVERY_PROTOCOL: "publish",
+    MANAGED_LOOKUP_PROTOCOL:"managed_lookup_v1",SCREEN_GALLERY_DELIVERY_PROTOCOL: "gallery", XHS_PUBLISH_DELIVERY_PROTOCOL: "publish",
     api: async (url) => { params = new URL("http://local" + url).searchParams; return { task: null, cancelledTaskIds: [] }; },
     abortCancelledAutomationTasks: () => {}, log: () => {} });
   vm.runInContext(fn(agent, "pollTask"), context); await context.pollTask();

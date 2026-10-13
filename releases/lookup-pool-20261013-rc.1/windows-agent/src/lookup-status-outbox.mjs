@@ -57,7 +57,8 @@ export async function createLookupStatusOutbox({ directory, send, fileSystem = f
     async report(task, status, result) {
       if (!available) throw Object.assign(new Error("lookup_status_storage_unavailable"), { code: "lookup_status_storage_unavailable" });
       if (!records.has(task.taskId)) records.set(task.taskId, {
-        taskId: task.taskId, adbSerial: task.adbSerial, status, result
+        taskId: task.taskId, adbSerial: task.adbSerial, status, result,
+        ...(task.payload?.managedLookup?.generation ? {managedLookupGeneration:task.payload.managedLookup.generation} : {})
       });
       // A local disk failure stays pending in memory and is retried by flush;
       // it must never turn a successful lookup into a business failure.

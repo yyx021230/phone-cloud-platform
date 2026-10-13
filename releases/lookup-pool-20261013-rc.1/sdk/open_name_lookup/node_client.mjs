@@ -31,6 +31,15 @@ export class OpenNameLookupClient {
     this.requestTimeoutMs = Math.max(1, Number(requestTimeoutMs) || 30_000);
   }
 
+  async lookupName(phoneNumber, { idempotencyKey = crypto.randomUUID(), requestTimeoutMs = 130_000 } = {}) {
+    // One key for this logical call, including its network retry. Separate
+    // invocations are independent business requests unless caller reuses it.
+    for (let attempt = 0; ; attempt++) {
+      try { return await this.#request("POST", "/api/v1/open/name-lookups/query", {body:{phoneNumber},idempotencyKey,requestTimeoutMs}); }
+      catch (e) { if (e.code !== "network_error" || attempt >= 1) throw e; }
+    }
+  }
+
   async listDevices() {
     return this.#request("GET", "/api/v1/open/name-lookups/devices");
   }
@@ -117,7 +126,7 @@ export class OpenNameLookupClient {
     return queryIds.map((queryId) => byId.get(queryId)).filter(Boolean);
   }
 
-  async #request(method, pathname, { body, idempotencyKey } = {}) {
+  async #request(method, pathname, { body, idempotencyKey, requestTimeoutMs } = {}) {
     const rawBody = body === undefined ? "" : JSON.stringify(body);
     const timestamp = String(Date.now());
     const nonce = crypto.randomUUID();
@@ -133,7 +142,7 @@ export class OpenNameLookupClient {
     if (body !== undefined) headers["Content-Type"] = "application/json";
     if (idempotencyKey) headers["Idempotency-Key"] = idempotencyKey;
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(new Error("Open name lookup request timed out")), this.requestTimeoutMs);
+    const timer = setTimeout(() => controller.abort(new Error("Open name lookup request timed out")), requestTimeoutMs || this.requestTimeoutMs);
     let response;
     try {
       response = await this.fetchImpl(this.baseUrl + pathname, {
@@ -148,7 +157,7 @@ export class OpenNameLookupClient {
     let payload = null;
     try { payload = text ? JSON.parse(text) : {}; } catch { payload = { raw: text }; }
     if (!response.ok) {
-      const code = String(payload?.error || `http_${response.status}`);
+      const code = String(payload?.code || payload?.error || `http_${response.status}`);
       throw new OpenNameLookupApiError(code, { status: response.status, code, payload });
     }
     return payload;

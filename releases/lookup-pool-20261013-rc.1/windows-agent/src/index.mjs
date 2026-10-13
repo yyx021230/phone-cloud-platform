@@ -1,3 +1,4 @@
+import {hydrateManagedLookupTask,MANAGED_LOOKUP_PROTOCOL} from './managed-lookup-delivery.mjs';
 import { execFile, spawn } from "node:child_process";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -118,7 +119,7 @@ const agentInstanceLock = await acquireAgentInstanceLock({
 const lookupStatusOutbox = await createLookupStatusOutbox({
   directory: path.join(dataDir, "lookup-status-outbox"),
   send: (record) => api(`/api/v1/windows-agent-tasks/${encodeURIComponent(record.taskId)}/status`, {
-    method: "POST", body: { status: record.status, result: record.result }
+    method: "POST", body: { status: record.status, result: record.result, managedLookupGeneration:record.managedLookupGeneration }
   })
 });
 
@@ -478,6 +479,7 @@ async function heartbeat() {
       platform: os.platform(),
       arch: os.arch(),
       adbVersion: lastAdbVersion,
+      managedLookupProtocol: MANAGED_LOOKUP_PROTOCOL,
       maxConcurrentAdbTasks: config.maxConcurrentAdbTasks,
       deviceTaskConcurrency: config.deviceTaskConcurrency,
       health
@@ -561,6 +563,7 @@ async function syncDevicesToPlatform(devices) {
         platform: os.platform(),
         arch: os.arch(),
         adbVersion: lastAdbVersion,
+        managedLookupProtocol: MANAGED_LOOKUP_PROTOCOL,
         health
       },
       devices
@@ -1061,6 +1064,7 @@ async function pollTask() {
     if (excludeSerials) params.set("excludeSerials", excludeSerials);
     if (screenGallerySerials) params.set("screenGallerySerials", screenGallerySerials);
     if (activeTaskIds) params.set("activeTaskIds", activeTaskIds);
+    params.set("managedLookupDelivery", MANAGED_LOOKUP_PROTOCOL);
     params.set("galleryDelivery", SCREEN_GALLERY_DELIVERY_PROTOCOL);
     params.set("xhsPublishDelivery", XHS_PUBLISH_DELIVERY_PROTOCOL);
     const suffix = params.size ? `?${params.toString()}` : "";
@@ -1068,7 +1072,7 @@ async function pollTask() {
     cancellationChecked = true;
     abortCancelledAutomationTasks(payload.cancelledTaskIds || []);
     if (!payload.task) break;
-    const prepared = await hydrateLeasedWindowsTask(payload.task, { request: api });
+    const prepared = payload.task.payload?.managedLookup ? await hydrateManagedLookupTask(payload.task,{request:api}) : await hydrateLeasedWindowsTask(payload.task, { request: api });
     if (!prepared.acknowledged) {
       log("task acknowledgement uncertain", {
         taskId: prepared.task.taskId,
@@ -1078,7 +1082,7 @@ async function pollTask() {
       // Gallery import is idempotent enough to finish after a lost ACK
       // response. Publishing is an external side effect: never click publish
       // unless the server has confirmed ownership of this delivery.
-      if (prepared.task.type === "xhs_publish") continue;
+      if (prepared.task.type === "xhs_publish" || prepared.task.payload?.managedLookup) continue;
     }
     startTask(prepared.task);
     picked += 1;
@@ -3724,7 +3728,7 @@ async function taskStatus(task, status, result = {}) {
   }
   return await api(`/api/v1/windows-agent-tasks/${encodeURIComponent(task.taskId)}/status`, {
     method: "POST",
-    body: { status, result: compactTaskResultForStatus(result) }
+    body: { status, result: compactTaskResultForStatus(result), managedLookupGeneration:task.payload?.managedLookup?.generation }
   });
 }
 
