@@ -3,8 +3,9 @@
   "files": {
     "BASELINE.json": "752a62ad687fcbb26bd24f48fa51d3591f20acd21d0c91b54cb9c3645f30313c",
     "OCR_DEPENDENCIES.json": "1470a73e4eab11718bc3a5fe7196e93916567a00df02d6bc1125d2ef7f4cdeaa",
-    "README.md": "953038b2ad9bc3bf83e43374ad6544067252104a1242b04d38c52c087ed1c5a6",
-    "RESULTS.json": "d9fe5cc80199c05017d9b0d96656f1874b8ba64dbee857b08e2f635de5d16c98",
+    "README.md": "ca44d3d74d72b91aab293942a5c7092dcfd4f33e00e0f27de690907a46d4aa2a",
+    "RESULTS.json": "ae96f7a1fb271b730c9923a059963ae92954da0f690995973b609926d7ddb20d",
+    "VERSION.json": "354d2588209018963f23283d4c0d22a368e1d6a2e796c6585469cd405bdd59f3",
     "requirements-visual-lookup.txt": "23808ea43c34074a08754216be27b582efe2d4f6003ebe7682ec4901fd67660d",
     "server/managed-lookup.mjs": "e4a091254c680762199e8239e6b20f87391d78b15bb4b6a4075214b38929d834",
     "server/managed-lookup.test.mjs": "1f15b525a42b1d5535dc6d5c67ccaa963524ea0c985c301abf3d0744c6ae7c28",

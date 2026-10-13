@@ -1,5 +1,5 @@
 {
-  "status": "offline passed; actual patched two-phone acceptance pending",
+  "status": "scoped local real tests complete; acceptance gaps retained",
   "counterexamples": [
     {
       "phase": "old",
@@ -42,20 +42,67 @@
     "qa4-screen-final.log": "ba56649551dc0924f5dcf15e947ab8355c9eb9ae1e85432669580584ef57989b",
     "qa4-no-replay.log": "a5fb443ea82c82775085f9c233c2d1e62fc007d74cd98f838eec3c741fe5f7c9",
     "qa4-root-check.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
-    "qa4-screen-final2.log": "4de1c9bb6e4bcb12d26b654bda535be2b6cc48b86899bfc7ddfe73c6c2242e29"
+    "qa4-screen-final2.log": "4de1c9bb6e4bcb12d26b654bda535be2b6cc48b86899bfc7ddfe73c6c2242e29",
+    "qa4-root-check-final.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "qa4-startup-counterexample.log": "6bd24eb32498e1d2c65c1e4b38d24e055f218de7620758041fb8eddc53a7c68c",
+    "qa4-startup-fixed.log": "1f56d9c66a44d2e2621063cd50258f19498a32cc634fd98f17a1bfa639eca3fc"
   },
   "failuresPreserved": [
     "Old blank-card fake returnednot_found and old XML policy would fallback:2 counterexamples failed before patch.",
     "Main fixture expected old blank-noName semantics:1error; updating targeted fixture accidentally changed another same-string assertion:2 fixture failures. Restored unrelated unverified-account assertion and corrected targeted fixture;163pass.",
     "Isolated OCR dependency six1.17 conflicted with existingAirtest requirement; pinned target-onlysix1.16 and removed own superseded metadata; no global install.",
-    "Standalone overlay test without base import: module load failure; materialized old2 counterexamples failed then8 passed."
+    "Standalone overlay test without base import: module load failure; materialized old2 counterexamples failed then8 passed.",
+    "Two queued requests expired before input during118startup CAPTCHA; preserved original terminal IDs, explicit queue retries succeeded.",
+    "First parallel simultaneous-query assertion failed despite4good API results; warm two-device4-call round passed.",
+    "130 initial verification event mistakenly announced as puzzle; actual task steps proved simple slider processed automatically. Reminder corrected; no required manual action for that event.",
+    "Cleanup helper initially used nonexistent PG outbox table; actual Agent filesystem outbox verified0. PID/path guards failed safely on relative script/cwd aliases, corrected before completing cleanup."
   ],
   "productionActions": 0,
   "sharedMediaOrAdbCodeChanges": 0,
   "startupHandover": {
     "oldCounterexampleFailures": 2,
     "patchedPass": 8,
-    "persistedOriginalRequestAcceptance": "pending",
+    "persistedOriginalRequestAcceptance": "passed: same lookup,1physical query/1input",
     "automaticStartupObserverMissingWorker": "known limitation"
-  }
+  },
+  "realTests": {
+    "afterSubmitted": 19,
+    "completed": 17,
+    "names": 15,
+    "notRealNamed": 2,
+    "queuedExpiredBeforeInput": 2,
+    "knownPositiveFalseEmpty": 0,
+    "simultaneousPhones": 2,
+    "sameDeviceOverlap": false,
+    "directVisualMethodRealPhones": 2,
+    "naturalApiVisualFallbackTriggered": false
+  },
+  "receipt": "../../docs/evidence/LOOKUP_EMPTY_RESULTS_LOCAL_20261013.json",
+  "cleanup": {
+    "atUtc": "2026-10-13T07:19:16Z",
+    "ownedPortsClosed": true,
+    "oldAgentSamePidResumed": 44042,
+    "oldAgentFreshHeartbeat": true,
+    "oldAgentInstances": 1,
+    "oldServerSamePidReady": 46592,
+    "adbDaemonSamePid": 26031,
+    "oldConfigSha256": "547e6eaaff47f20ab8faf5482ee4e0bbe99f86938720a16b7921b8db94584c0a",
+    "oldConfigUnchanged": true,
+    "stayAwakeUnchanged": true,
+    "stayAwakeAfter": {
+      "118": "2",
+      "130": "0"
+    },
+    "privatePostgresBackupSha256": "a2deef4521d72481df7231923206b1439c62750abb353ccf27152c98b58485f1",
+    "productionActions": 0
+  },
+  "unverified": [
+    "Natural recurrence of missing accessibility result through patched API fallback",
+    "Automatic initial-start CAPTCHA observation without an already idle worker or real control screen",
+    "5 independent real phones and49production mappings",
+    "Natural limit then successful automatic saved-account switch and same-query resume",
+    "All accounts cooling and natural8hour expiry",
+    "Windows pinned OCR wheel/model install and resource impact; local macOS CPU only",
+    "Production deployment, gateway integration and production acceptance; none performed"
+  ]
 }

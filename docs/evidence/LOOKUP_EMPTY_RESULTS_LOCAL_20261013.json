@@ -1,0 +1,1816 @@
+{
+  "task": "lookup-empty-results-local-20261013",
+  "status": "local candidate; scoped real tests complete; known acceptance gaps retained",
+  "completedAtUtc": "2026-10-13T07:22:35.783580+00:00",
+  "branch": "codex/lookup-empty-results-20261013",
+  "candidateTag": "lookup-pool-20261013-rc.4",
+  "sourceCommits": {
+    "visualFix": "fdc0729537bcfcffefef220aa651e3e93e3f8889",
+    "firstStartupQueryFix": "aad953292a44e37d1b84c3982085cfe233983386"
+  },
+  "baseline": {
+    "branch": "codex/lookup-empty-results-20261013",
+    "head": "91928df04f4ce1a2bdf1a8e3842b9739f20fe5b5",
+    "worktreeInitiallyClean": true,
+    "mainSha256Before": "38cb3a03d81d227402a76c1550b03ee0cdb1e8f21bf699f3bcecca42ec4245dd",
+    "sharedWorkflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+    "devices": [
+      118,
+      130
+    ],
+    "purpose": "reproduce and repair known-positive empty result; new bounded explicit local rechecks",
+    "maximumLogicalRechecks": 32,
+    "productionActions": 0,
+    "rootHead": "6811aef632eeaaacd6d6ce1effc4afa64bf6d363",
+    "rootMainShaBefore": "771b9ebb24298ef9171f18ec5b47d9e4499242297c185bba440b4d6e787807cc",
+    "priorFullMainReadReused": true,
+    "mainRc3ContinuationRechecked": true,
+    "risk": "R2 local runner and authorized scoped real queries",
+    "plannedFiles": [
+      "newrc.4 overlay XML/Poco lookup runner and regression tests",
+      "main docs and sanitized receipt; all previous release artifacts remain immutable"
+    ],
+    "runtimeSourceBaseline": "c6c297e584509dfd0a892aaf398301a5ecefccce",
+    "runtimePythonShaBefore": "8575a26fb470e319ba6ddd9e7187f7265a5a306bb4a6bc5f91905f4b7d950330"
+  },
+  "taskAuthority": "User-authorized118/130 and original batch local true-phone rechecks; no production/push/Feishu",
+  "rootPreserved": {
+    "branch": "codex/sms-notification-library",
+    "head": "6811aef632eeaaacd6d6ce1effc4afa64bf6d363",
+    "dirtyStatusEntries": 236,
+    "mainSha256": "771b9ebb24298ef9171f18ec5b47d9e4499242297c185bba440b4d6e787807cc",
+    "taskWritesOrStaging": 0
+  },
+  "rootCause": {
+    "fact": "130 sourceOrdinal67 API not_found although same visible result card had masked name/exact phone/actions; native Poco and independently read XML omitted result card text",
+    "apiCompletedAtUtc": "2026-10-13T06:21:16.373Z",
+    "nativeReadonlyObservations": [
+      {
+        "atUtc": "2026-10-13T06:21:17Z",
+        "number": 130,
+        "sourceOrdinal": 67,
+        "label": "before-single",
+        "sample": 0,
+        "exactInput": true,
+        "exactPhoneRows": 0,
+        "hasTransfer": false,
+        "hasAddFriend": false,
+        "parserHasName": false,
+        "parserNotRealNamed": false,
+        "puzzleVisible": false,
+        "typeCount": 13,
+        "treeSha256": "d9d66a825115758dd0484dbf5e1f6e530ed46c38dccf695024942b5fc60142cc"
+      },
+      {
+        "atUtc": "2026-10-13T06:21:18Z",
+        "number": 130,
+        "sourceOrdinal": 67,
+        "label": "before-single",
+        "sample": 1,
+        "exactInput": true,
+        "exactPhoneRows": 0,
+        "hasTransfer": false,
+        "hasAddFriend": false,
+        "parserHasName": false,
+        "parserNotRealNamed": false,
+        "puzzleVisible": false,
+        "typeCount": 13,
+        "treeSha256": "d9d66a825115758dd0484dbf5e1f6e530ed46c38dccf695024942b5fc60142cc"
+      },
+      {
+        "atUtc": "2026-10-13T06:21:20Z",
+        "number": 130,
+        "sourceOrdinal": 67,
+        "label": "before-single",
+        "sample": 2,
+        "exactInput": true,
+        "exactPhoneRows": 0,
+        "hasTransfer": false,
+        "hasAddFriend": false,
+        "parserHasName": false,
+        "parserNotRealNamed": false,
+        "puzzleVisible": false,
+        "typeCount": 13,
+        "treeSha256": "4a94a3b88bddf5f4e8b219a5818bd8ec2bde77e19a00b6d4d559d8a671fd6fc0"
+      },
+      {
+        "atUtc": "2026-10-13T06:21:22Z",
+        "number": 130,
+        "sourceOrdinal": 67,
+        "label": "before-single",
+        "sample": 3,
+        "exactInput": true,
+        "exactPhoneRows": 0,
+        "hasTransfer": false,
+        "hasAddFriend": false,
+        "parserHasName": false,
+        "parserNotRealNamed": false,
+        "puzzleVisible": false,
+        "typeCount": 13,
+        "treeSha256": "aad11a274b1f4d17510b1c34418b39f82e7044be4632613ad1b2dea041b7d213"
+      },
+      {
+        "atUtc": "2026-10-13T06:21:35Z",
+        "number": 130,
+        "sourceOrdinal": 67,
+        "label": "before-late-observe",
+        "sample": 0,
+        "exactInput": true,
+        "exactPhoneRows": 0,
+        "hasTransfer": false,
+        "hasAddFriend": false,
+        "parserHasName": false,
+        "parserNotRealNamed": false,
+        "puzzleVisible": false,
+        "typeCount": 13,
+        "treeSha256": "3f9e8261e6eb55c612d7a875d65b7f1a646ea7ce65b4c5448cbebb430426bc15"
+      },
+      {
+        "atUtc": "2026-10-13T06:21:36Z",
+        "number": 130,
+        "sourceOrdinal": 67,
+        "label": "before-late-observe",
+        "sample": 1,
+        "exactInput": true,
+        "exactPhoneRows": 0,
+        "hasTransfer": false,
+        "hasAddFriend": false,
+        "parserHasName": false,
+        "parserNotRealNamed": false,
+        "puzzleVisible": false,
+        "typeCount": 13,
+        "treeSha256": "3f9e8261e6eb55c612d7a875d65b7f1a646ea7ce65b4c5448cbebb430426bc15"
+      },
+      {
+        "atUtc": "2026-10-13T06:21:38Z",
+        "number": 130,
+        "sourceOrdinal": 67,
+        "label": "before-late-observe",
+        "sample": 2,
+        "exactInput": true,
+        "exactPhoneRows": 0,
+        "hasTransfer": false,
+        "hasAddFriend": false,
+        "parserHasName": false,
+        "parserNotRealNamed": false,
+        "puzzleVisible": false,
+        "typeCount": 13,
+        "treeSha256": "4a94a3b88bddf5f4e8b219a5818bd8ec2bde77e19a00b6d4d559d8a671fd6fc0"
+      },
+      {
+        "atUtc": "2026-10-13T06:21:40Z",
+        "number": 130,
+        "sourceOrdinal": 67,
+        "label": "before-late-observe",
+        "sample": 3,
+        "exactInput": true,
+        "exactPhoneRows": 0,
+        "hasTransfer": false,
+        "hasAddFriend": false,
+        "parserHasName": false,
+        "parserNotRealNamed": false,
+        "puzzleVisible": false,
+        "typeCount": 13,
+        "treeSha256": "4a94a3b88bddf5f4e8b219a5818bd8ec2bde77e19a00b6d4d559d8a671fd6fc0"
+      }
+    ],
+    "screenshotSha256": "5bc0442877c0dc7e102d2d4c08bbcbf6899af977cd9c15db8025d7905a48efdc",
+    "independentXmlSha256": "891558a299138341f079ef665d1219158036459cf6ca4f81081a36c557422da3",
+    "interpretation": "Canvas result not exposed as native accessibility text; unchanged search input is insufficient evidence of no name",
+    "historicalScope": "Earlier11867/165 empty reason matched stable_search_page_without_name_result, but those original calls had no screenshots; not every historical miss is proven same cause"
+  },
+  "fix": {
+    "runtimeFiles": {
+      "windows-agent/scripts/alipay_name_lookup.py": "35518f30a442e1cbfe07a741d28c0a4ab697077171a97a82606fce1c4ab88004",
+      "windows-agent/scripts/alipay_visual_result.py": "92c9e8a663eafcac4a5f80e45777df50f1aa73f8e9deb8332fce04a688e5022f",
+      "windows-agent/src/alipay-poco-fallback-policy.mjs": "0d56fccc2d1b81541668cf2880e3da4b4547b54a34aef92120516bd6e9fd2f09",
+      "server/managed-lookup.mjs": "e4a091254c680762199e8239e6b20f87391d78b15bb4b6a4075214b38929d834"
+    },
+    "visualPolicy": "Existing query only: exact current native input, exact screenshot search number/result number, unique masked name and adjacent two actions, strict confidence and two agreeing frames; no input/search/account/app actions in visual reader",
+    "failurePolicy": "local_lookup_result_unconfirmed throws; no XML/new input/restart fallback; existing non200 managed failure instead of fake200 empty",
+    "preservedSemantics": "native Poco fast path and explicit account_not_real_named negative; external endpoint/body/auth unchanged",
+    "startupFix": "Only ready first query missing both business/channel queryId is dispatched; actual original lookup continued after isolated local business-process reload, no query rekey/replay",
+    "automaticStartupObservation": "Still not implemented for no resident worker/no control screen. Diagnostic two actual XML/focus reads reported via original leases/challenge; not autonomous production proof"
+  },
+  "tests": {
+    "beforeLogicalCalls": 5,
+    "afterLogicalCalls": 19,
+    "afterCompleted": 17,
+    "afterNames": 15,
+    "afterExplicitNotRealNamed": 2,
+    "afterKnownPositiveFalseEmpty": 0,
+    "afterQueuedExpiryBeforeAnyQuery": 2,
+    "totalTaskLogicalCalls": 24,
+    "maximumAuthorizedLogicalRechecks": 32,
+    "records": [
+      {
+        "number": 118,
+        "ordinal": 67,
+        "phase": "before-single",
+        "status": "completed",
+        "hasName": true,
+        "code": "",
+        "lookupId": "809606a0-1807-4ef9-a3df-2f3cd7024026",
+        "queryId": "b51bcedf-c44b-4e62-adc2-4ecc07e7ccfb",
+        "tasks": [
+          {
+            "status": "succeeded",
+            "notFound": false,
+            "reason": "",
+            "errorCode": ""
+          }
+        ],
+        "visualProbe": false,
+        "visualName": false,
+        "inputEvents": 1,
+        "submitEvents": 1,
+        "steps": [
+          {
+            "at": "2026-10-13T06:18:09.758Z",
+            "step": "input_phone",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T06:18:12.494Z",
+            "step": "submit_search",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T06:18:15.372Z",
+            "step": "masked_real_name_tail_extracted",
+            "driver": "airtest_poco"
+          }
+        ]
+      },
+      {
+        "number": 118,
+        "ordinal": 165,
+        "phase": "before-single",
+        "status": "completed",
+        "hasName": true,
+        "code": "",
+        "lookupId": "ce8e3fd5-de6e-45b1-badf-ed795bc6e9d0",
+        "queryId": "0d5221b2-be3a-4152-8171-fdf3085d9525",
+        "tasks": [
+          {
+            "status": "succeeded",
+            "notFound": false,
+            "reason": "",
+            "errorCode": ""
+          }
+        ],
+        "visualProbe": false,
+        "visualName": false,
+        "inputEvents": 1,
+        "submitEvents": 0,
+        "steps": [
+          {
+            "at": "2026-10-13T06:19:02.415Z",
+            "step": "input_phone",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T06:19:03.367Z",
+            "step": "masked_real_name_tail_extracted",
+            "driver": "airtest_poco"
+          }
+        ]
+      },
+      {
+        "number": 130,
+        "ordinal": 67,
+        "phase": "before-single",
+        "status": "completed",
+        "hasName": false,
+        "code": "not_found",
+        "lookupId": "0ac5c98e-93e3-478c-a4c0-e3f24d25a16f",
+        "queryId": "883747b5-7594-4a55-a6f3-bcdf957de174",
+        "tasks": [
+          {
+            "status": "succeeded",
+            "notFound": true,
+            "reason": "no_name_result",
+            "errorCode": ""
+          }
+        ],
+        "visualProbe": false,
+        "visualName": false,
+        "inputEvents": 1,
+        "submitEvents": 1,
+        "steps": [
+          {
+            "at": "2026-10-13T06:21:03.741Z",
+            "step": "input_phone",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T06:21:11.506Z",
+            "step": "submit_search",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T06:21:16.124Z",
+            "step": "lookup_no_name_result",
+            "driver": "airtest_poco",
+            "reason": "stable_search_page_without_name_result"
+          }
+        ]
+      },
+      {
+        "number": 118,
+        "ordinal": 108,
+        "phase": "before-negative",
+        "status": "completed",
+        "hasName": false,
+        "code": "not_found",
+        "lookupId": "13fe4426-a5dc-4827-b1b6-bb36abdb76bb",
+        "queryId": "b2834f13-14c1-4927-b42a-8bc0feafaba5",
+        "tasks": [
+          {
+            "status": "succeeded",
+            "notFound": true,
+            "reason": "account_not_real_named",
+            "errorCode": ""
+          }
+        ],
+        "visualProbe": false,
+        "visualName": false,
+        "inputEvents": 1,
+        "submitEvents": 0,
+        "steps": [
+          {
+            "at": "2026-10-13T06:28:28.522Z",
+            "step": "input_phone",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T06:28:29.859Z",
+            "step": "lookup_no_name_result",
+            "driver": "airtest_poco",
+            "reason": "account_not_real_named"
+          }
+        ]
+      },
+      {
+        "number": 130,
+        "ordinal": 165,
+        "phase": "before-card",
+        "status": "completed",
+        "hasName": true,
+        "code": "",
+        "lookupId": "0c3bf41f-3384-4cc2-96e5-1d98602537c4",
+        "queryId": "5f46d21c-3cfb-4724-8435-1d4680e55a6e",
+        "tasks": [
+          {
+            "status": "succeeded",
+            "notFound": false,
+            "reason": "",
+            "errorCode": ""
+          }
+        ],
+        "visualProbe": false,
+        "visualName": false,
+        "inputEvents": 1,
+        "submitEvents": 0,
+        "steps": [
+          {
+            "at": "2026-10-13T06:32:00.472Z",
+            "step": "input_phone",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T06:32:01.636Z",
+            "step": "masked_real_name_tail_extracted",
+            "driver": "airtest_poco"
+          }
+        ]
+      },
+      {
+        "number": 130,
+        "ordinal": 67,
+        "phase": "after-single-1",
+        "status": "completed",
+        "hasName": true,
+        "code": "",
+        "lookupId": "23b47009-7298-43a6-8d1f-124e38ea4cad",
+        "queryId": "8964153c-bf3e-437b-b232-f3c567c0330e",
+        "tasks": [
+          {
+            "status": "succeeded",
+            "notFound": false,
+            "reason": "",
+            "errorCode": ""
+          }
+        ],
+        "visualProbe": false,
+        "visualName": false,
+        "inputEvents": 1,
+        "submitEvents": 0,
+        "steps": [
+          {
+            "at": "2026-10-13T06:46:02.540Z",
+            "step": "input_phone",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T06:46:03.704Z",
+            "step": "masked_real_name_tail_extracted",
+            "driver": "airtest_poco"
+          }
+        ]
+      },
+      {
+        "number": 130,
+        "ordinal": 165,
+        "phase": "after-single-1",
+        "status": "completed",
+        "hasName": true,
+        "code": "",
+        "lookupId": "1e551b31-9605-4d5a-ae6d-ca64644a4068",
+        "queryId": "5c3411c8-708d-4ebc-9185-3af9a79ea561",
+        "tasks": [
+          {
+            "status": "succeeded",
+            "notFound": false,
+            "reason": "",
+            "errorCode": ""
+          }
+        ],
+        "visualProbe": false,
+        "visualName": false,
+        "inputEvents": 1,
+        "submitEvents": 0,
+        "steps": [
+          {
+            "at": "2026-10-13T06:47:35.954Z",
+            "step": "input_phone",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T06:47:37.899Z",
+            "step": "masked_real_name_tail_extracted",
+            "driver": "airtest_poco"
+          }
+        ]
+      },
+      {
+        "number": 130,
+        "ordinal": 188,
+        "phase": "after-single-1",
+        "status": "completed",
+        "hasName": true,
+        "code": "",
+        "lookupId": "8f286d37-7da5-496d-8339-45cdf73e2fdd",
+        "queryId": "850e4ba5-4d76-4cc8-9eb3-cf7b6888da14",
+        "tasks": [
+          {
+            "status": "succeeded",
+            "notFound": false,
+            "reason": "",
+            "errorCode": ""
+          }
+        ],
+        "visualProbe": false,
+        "visualName": false,
+        "inputEvents": 1,
+        "submitEvents": 0,
+        "steps": [
+          {
+            "at": "2026-10-13T06:47:51.729Z",
+            "step": "input_phone",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T06:47:53.384Z",
+            "step": "masked_real_name_tail_extracted",
+            "driver": "airtest_poco"
+          }
+        ]
+      },
+      {
+        "number": 130,
+        "ordinal": 67,
+        "phase": "after-repeat-1",
+        "status": "completed",
+        "hasName": true,
+        "code": "",
+        "lookupId": "bfa43624-3069-4487-9034-7a733db8c149",
+        "queryId": "3004c215-95af-416d-84d5-c63a7cb36fd7",
+        "tasks": [
+          {
+            "status": "succeeded",
+            "notFound": false,
+            "reason": "",
+            "errorCode": ""
+          }
+        ],
+        "visualProbe": false,
+        "visualName": false,
+        "inputEvents": 1,
+        "submitEvents": 0,
+        "steps": [
+          {
+            "at": "2026-10-13T06:48:04.482Z",
+            "step": "input_phone",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T06:48:05.572Z",
+            "step": "masked_real_name_tail_extracted",
+            "driver": "airtest_poco"
+          }
+        ]
+      },
+      {
+        "number": 130,
+        "ordinal": 108,
+        "phase": "after-negative",
+        "status": "completed",
+        "hasName": false,
+        "code": "not_found",
+        "lookupId": "4228b16f-9a63-442f-bc2d-0ced2855ea8b",
+        "queryId": "b8a7dbeb-cfd3-457b-9166-38333d3c97df",
+        "tasks": [
+          {
+            "status": "succeeded",
+            "notFound": true,
+            "reason": "account_not_real_named",
+            "errorCode": ""
+          }
+        ],
+        "visualProbe": false,
+        "visualName": false,
+        "inputEvents": 1,
+        "submitEvents": 0,
+        "steps": [
+          {
+            "at": "2026-10-13T06:48:16.738Z",
+            "step": "input_phone",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T06:48:17.716Z",
+            "step": "lookup_no_name_result",
+            "driver": "airtest_poco",
+            "reason": "account_not_real_named"
+          }
+        ]
+      },
+      {
+        "number": 118,
+        "ordinal": 165,
+        "phase": "after-single-1",
+        "status": "completed",
+        "hasName": true,
+        "code": "",
+        "lookupId": "2a6b8766-9a8e-4050-93d1-3773f73ff963",
+        "queryId": "8704760e-6960-4d54-a7b3-7775a31edaae",
+        "tasks": [
+          {
+            "status": "succeeded",
+            "notFound": false,
+            "reason": "",
+            "errorCode": ""
+          }
+        ],
+        "visualProbe": false,
+        "visualName": false,
+        "inputEvents": 1,
+        "submitEvents": 0,
+        "steps": [
+          {
+            "at": "2026-10-13T07:07:11.072Z",
+            "step": "input_phone",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T07:07:12.439Z",
+            "step": "masked_real_name_tail_extracted",
+            "driver": "airtest_poco"
+          }
+        ]
+      },
+      {
+        "number": 118,
+        "ordinal": 188,
+        "phase": "after-single-1",
+        "status": "expired",
+        "code": "lookup_timeout",
+        "lookupId": "6c0e6faf-5f1c-42c6-9def-4154e354d844",
+        "tasks": [],
+        "visualProbe": false,
+        "visualName": false,
+        "inputEvents": 0,
+        "submitEvents": 0,
+        "steps": []
+      },
+      {
+        "number": 118,
+        "ordinal": 67,
+        "phase": "after-single-1",
+        "status": "expired",
+        "code": "lookup_timeout",
+        "lookupId": "1811ea5a-219d-409f-abf3-eba7b34aa042",
+        "tasks": [],
+        "visualProbe": false,
+        "visualName": false,
+        "inputEvents": 0,
+        "submitEvents": 0,
+        "steps": []
+      },
+      {
+        "number": 118,
+        "ordinal": 188,
+        "phase": "after-explicit-queue-retry",
+        "status": "completed",
+        "hasName": true,
+        "code": "",
+        "lookupId": "cc5704ba-d00a-49e6-80e6-c3a1d26298c5",
+        "queryId": "b086bfde-c464-42a0-b497-5c7eceb78f99",
+        "tasks": [
+          {
+            "status": "succeeded",
+            "notFound": false,
+            "reason": "",
+            "errorCode": ""
+          }
+        ],
+        "visualProbe": false,
+        "visualName": false,
+        "inputEvents": 1,
+        "submitEvents": 0,
+        "steps": [
+          {
+            "at": "2026-10-13T07:08:33.198Z",
+            "step": "input_phone",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T07:08:33.987Z",
+            "step": "masked_real_name_tail_extracted",
+            "driver": "airtest_poco"
+          }
+        ]
+      },
+      {
+        "number": 118,
+        "ordinal": 67,
+        "phase": "after-explicit-queue-retry",
+        "status": "completed",
+        "hasName": true,
+        "code": "",
+        "lookupId": "695ac146-5393-44a7-8d7c-877e783a74f2",
+        "queryId": "6928b776-fce6-4ff0-9074-19e3955f6920",
+        "tasks": [
+          {
+            "status": "succeeded",
+            "notFound": false,
+            "reason": "",
+            "errorCode": ""
+          }
+        ],
+        "visualProbe": false,
+        "visualName": false,
+        "inputEvents": 1,
+        "submitEvents": 0,
+        "steps": [
+          {
+            "at": "2026-10-13T07:08:45.309Z",
+            "step": "input_phone",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T07:08:45.953Z",
+            "step": "masked_real_name_tail_extracted",
+            "driver": "airtest_poco"
+          }
+        ]
+      },
+      {
+        "number": 118,
+        "ordinal": 108,
+        "phase": "after-negative",
+        "status": "completed",
+        "hasName": false,
+        "code": "not_found",
+        "lookupId": "3e574dd0-d0ab-4e50-b103-5ee24052a808",
+        "queryId": "4c901487-2ef4-47fb-b31a-e077d19947b0",
+        "tasks": [
+          {
+            "status": "succeeded",
+            "notFound": true,
+            "reason": "account_not_real_named",
+            "errorCode": ""
+          }
+        ],
+        "visualProbe": false,
+        "visualName": false,
+        "inputEvents": 1,
+        "submitEvents": 0,
+        "steps": [
+          {
+            "at": "2026-10-13T07:08:58.359Z",
+            "step": "input_phone",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T07:08:59.137Z",
+            "step": "lookup_no_name_result",
+            "driver": "airtest_poco",
+            "reason": "account_not_real_named"
+          }
+        ]
+      },
+      {
+        "number": 118,
+        "ordinal": 67,
+        "phase": "after-parallel-1",
+        "status": "completed",
+        "hasName": true,
+        "code": "",
+        "lookupId": "03d29077-bfde-4483-9c09-0b5fa8658e53",
+        "queryId": "b5ff9a92-02eb-4b70-b50d-c2f175f2dffd",
+        "tasks": [
+          {
+            "status": "succeeded",
+            "notFound": false,
+            "reason": "",
+            "errorCode": ""
+          }
+        ],
+        "visualProbe": false,
+        "visualName": false,
+        "inputEvents": 1,
+        "submitEvents": 0,
+        "steps": [
+          {
+            "at": "2026-10-13T07:11:53.255Z",
+            "step": "input_phone",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T07:11:53.983Z",
+            "step": "masked_real_name_tail_extracted",
+            "driver": "airtest_poco"
+          }
+        ]
+      },
+      {
+        "number": 130,
+        "ordinal": 165,
+        "phase": "after-parallel-2",
+        "status": "completed",
+        "hasName": true,
+        "code": "",
+        "lookupId": "d5b9b1d4-b14b-4b66-9e1f-69ce7aaf58e7",
+        "queryId": "70609273-a728-4bc9-a7fd-8e5aacf2d7b0",
+        "tasks": [
+          {
+            "status": "succeeded",
+            "notFound": false,
+            "reason": "",
+            "errorCode": ""
+          }
+        ],
+        "visualProbe": false,
+        "visualName": false,
+        "inputEvents": 1,
+        "submitEvents": 1,
+        "steps": [
+          {
+            "at": "2026-10-13T07:12:31.958Z",
+            "step": "input_phone",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T07:12:40.049Z",
+            "step": "submit_search",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T07:12:49.478Z",
+            "step": "masked_real_name_tail_extracted",
+            "driver": "airtest_poco"
+          }
+        ]
+      },
+      {
+        "number": 118,
+        "ordinal": 188,
+        "phase": "after-parallel-3",
+        "status": "completed",
+        "hasName": true,
+        "code": "",
+        "lookupId": "016afb80-aa10-4325-af09-7a84121c637c",
+        "queryId": "4d4f6770-9517-4f17-8fc8-3f6766d0bc40",
+        "tasks": [
+          {
+            "status": "succeeded",
+            "notFound": false,
+            "reason": "",
+            "errorCode": ""
+          }
+        ],
+        "visualProbe": false,
+        "visualName": false,
+        "inputEvents": 1,
+        "submitEvents": 0,
+        "steps": [
+          {
+            "at": "2026-10-13T07:12:03.066Z",
+            "step": "input_phone",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T07:12:03.889Z",
+            "step": "masked_real_name_tail_extracted",
+            "driver": "airtest_poco"
+          }
+        ]
+      },
+      {
+        "number": 118,
+        "ordinal": 67,
+        "phase": "after-parallel-4",
+        "status": "completed",
+        "hasName": true,
+        "code": "",
+        "lookupId": "91cc3ba5-386c-40ce-80bd-598bab94c6b8",
+        "queryId": "431cab36-5bf7-4862-b460-df4487525da2",
+        "tasks": [
+          {
+            "status": "succeeded",
+            "notFound": false,
+            "reason": "",
+            "errorCode": ""
+          }
+        ],
+        "visualProbe": false,
+        "visualName": false,
+        "inputEvents": 1,
+        "submitEvents": 0,
+        "steps": [
+          {
+            "at": "2026-10-13T07:12:15.686Z",
+            "step": "input_phone",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T07:12:16.529Z",
+            "step": "masked_real_name_tail_extracted",
+            "driver": "airtest_poco"
+          }
+        ]
+      },
+      {
+        "number": 130,
+        "ordinal": 67,
+        "phase": "after-warm-parallel-1",
+        "status": "completed",
+        "hasName": true,
+        "code": "",
+        "lookupId": "f32a2811-9c8e-4919-935d-dad77dfb430d",
+        "queryId": "8d18f19b-5992-49b1-b2e4-2a5ce351aebd",
+        "tasks": [
+          {
+            "status": "succeeded",
+            "notFound": false,
+            "reason": "",
+            "errorCode": ""
+          }
+        ],
+        "visualProbe": false,
+        "visualName": false,
+        "inputEvents": 1,
+        "submitEvents": 0,
+        "steps": [
+          {
+            "at": "2026-10-13T07:14:04.968Z",
+            "step": "input_phone",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T07:14:05.976Z",
+            "step": "masked_real_name_tail_extracted",
+            "driver": "airtest_poco"
+          }
+        ]
+      },
+      {
+        "number": 118,
+        "ordinal": 165,
+        "phase": "after-warm-parallel-2",
+        "status": "completed",
+        "hasName": true,
+        "code": "",
+        "lookupId": "3d7049da-80b9-4781-8356-b58ccc2996da",
+        "queryId": "b4b66052-04c4-4a0b-ad63-a76f13c5b270",
+        "tasks": [
+          {
+            "status": "succeeded",
+            "notFound": false,
+            "reason": "",
+            "errorCode": ""
+          }
+        ],
+        "visualProbe": false,
+        "visualName": false,
+        "inputEvents": 1,
+        "submitEvents": 0,
+        "steps": [
+          {
+            "at": "2026-10-13T07:14:01.725Z",
+            "step": "input_phone",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T07:14:02.503Z",
+            "step": "masked_real_name_tail_extracted",
+            "driver": "airtest_poco"
+          }
+        ]
+      },
+      {
+        "number": 118,
+        "ordinal": 188,
+        "phase": "after-warm-parallel-3",
+        "status": "completed",
+        "hasName": true,
+        "code": "",
+        "lookupId": "ac0f6fb9-5ddb-45ff-824a-8d2400747f31",
+        "queryId": "b3e6406b-65b4-4d9c-9487-623d94bc4e46",
+        "tasks": [
+          {
+            "status": "succeeded",
+            "notFound": false,
+            "reason": "",
+            "errorCode": ""
+          }
+        ],
+        "visualProbe": false,
+        "visualName": false,
+        "inputEvents": 1,
+        "submitEvents": 0,
+        "steps": [
+          {
+            "at": "2026-10-13T07:14:17.164Z",
+            "step": "input_phone",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T07:14:18.051Z",
+            "step": "masked_real_name_tail_extracted",
+            "driver": "airtest_poco"
+          }
+        ]
+      },
+      {
+        "number": 130,
+        "ordinal": 67,
+        "phase": "after-warm-parallel-4",
+        "status": "completed",
+        "hasName": true,
+        "code": "",
+        "lookupId": "84cc18a1-22c3-4b64-ba2d-54b776663693",
+        "queryId": "da51c609-1706-4e52-b709-60415f0edd14",
+        "tasks": [
+          {
+            "status": "succeeded",
+            "notFound": false,
+            "reason": "",
+            "errorCode": ""
+          }
+        ],
+        "visualProbe": false,
+        "visualName": false,
+        "inputEvents": 1,
+        "submitEvents": 0,
+        "steps": [
+          {
+            "at": "2026-10-13T07:14:18.155Z",
+            "step": "input_phone",
+            "driver": "airtest_poco"
+          },
+          {
+            "at": "2026-10-13T07:14:19.086Z",
+            "step": "masked_real_name_tail_extracted",
+            "driver": "airtest_poco"
+          }
+        ]
+      }
+    ],
+    "parallel": {
+      "startedAtUtc": "2026-10-13T07:13:52.527Z",
+      "logicalCalls": 4,
+      "maximumExecuting": 2,
+      "maximumActiveQueryPhones": 2,
+      "sameDeviceTaskOverlap": false,
+      "samples": [
+        {
+          "atUtc": "2026-10-13T07:13:52.543Z",
+          "executing": 0,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": []
+        },
+        {
+          "atUtc": "2026-10-13T07:13:53.051Z",
+          "executing": 2,
+          "queued": 2,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:13:53.558Z",
+          "executing": 2,
+          "queued": 2,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:13:54.064Z",
+          "executing": 2,
+          "queued": 2,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:13:54.573Z",
+          "executing": 2,
+          "queued": 2,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:13:55.085Z",
+          "executing": 2,
+          "queued": 2,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:13:55.592Z",
+          "executing": 2,
+          "queued": 2,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:13:56.101Z",
+          "executing": 2,
+          "queued": 2,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:13:56.611Z",
+          "executing": 2,
+          "queued": 2,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:13:57.124Z",
+          "executing": 2,
+          "queued": 2,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:13:57.629Z",
+          "executing": 2,
+          "queued": 2,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:13:58.137Z",
+          "executing": 2,
+          "queued": 2,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:13:58.647Z",
+          "executing": 2,
+          "queued": 2,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:13:59.163Z",
+          "executing": 2,
+          "queued": 2,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:13:59.683Z",
+          "executing": 2,
+          "queued": 2,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:00.195Z",
+          "executing": 2,
+          "queued": 2,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:00.707Z",
+          "executing": 2,
+          "queued": 2,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:01.215Z",
+          "executing": 2,
+          "queued": 2,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:01.727Z",
+          "executing": 2,
+          "queued": 2,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:02.238Z",
+          "executing": 2,
+          "queued": 2,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:02.749Z",
+          "executing": 2,
+          "queued": 1,
+          "waitingHuman": 0,
+          "queryPhones": [
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:03.255Z",
+          "executing": 2,
+          "queued": 1,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:03.760Z",
+          "executing": 2,
+          "queued": 1,
+          "waitingHuman": 0,
+          "queryPhones": [
+            130,
+            118
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:04.265Z",
+          "executing": 2,
+          "queued": 1,
+          "waitingHuman": 0,
+          "queryPhones": [
+            130,
+            118
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:04.770Z",
+          "executing": 2,
+          "queued": 1,
+          "waitingHuman": 0,
+          "queryPhones": [
+            130,
+            118
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:05.281Z",
+          "executing": 2,
+          "queued": 1,
+          "waitingHuman": 0,
+          "queryPhones": [
+            130,
+            118
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:05.789Z",
+          "executing": 2,
+          "queued": 1,
+          "waitingHuman": 0,
+          "queryPhones": [
+            130,
+            118
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:06.303Z",
+          "executing": 2,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:06.809Z",
+          "executing": 2,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:07.314Z",
+          "executing": 2,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:07.820Z",
+          "executing": 2,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:08.325Z",
+          "executing": 2,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:08.838Z",
+          "executing": 2,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:09.345Z",
+          "executing": 2,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:09.859Z",
+          "executing": 2,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:10.370Z",
+          "executing": 2,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:10.882Z",
+          "executing": 2,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:11.396Z",
+          "executing": 2,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:11.908Z",
+          "executing": 2,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:12.420Z",
+          "executing": 2,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:12.931Z",
+          "executing": 2,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:13.442Z",
+          "executing": 2,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:13.953Z",
+          "executing": 2,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:14.460Z",
+          "executing": 2,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:14.971Z",
+          "executing": 2,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:15.481Z",
+          "executing": 2,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:15.989Z",
+          "executing": 2,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:16.494Z",
+          "executing": 2,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:17.005Z",
+          "executing": 2,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:17.515Z",
+          "executing": 2,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:18.026Z",
+          "executing": 2,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            118,
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:18.535Z",
+          "executing": 1,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            130
+          ]
+        },
+        {
+          "atUtc": "2026-10-13T07:14:19.045Z",
+          "executing": 1,
+          "queued": 0,
+          "waitingHuman": 0,
+          "queryPhones": [
+            130
+          ]
+        }
+      ],
+      "completed": 4,
+      "names": 4,
+      "finishedAtUtc": "2026-10-13T07:14:19.552Z",
+      "records": [
+        {
+          "number": 130,
+          "ordinal": 67,
+          "status": "completed",
+          "hasName": true,
+          "lookupId": "f32a2811-9c8e-4919-935d-dad77dfb430d",
+          "queryId": "8d18f19b-5992-49b1-b2e4-2a5ce351aebd"
+        },
+        {
+          "number": 118,
+          "ordinal": 165,
+          "status": "completed",
+          "hasName": true,
+          "lookupId": "3d7049da-80b9-4781-8356-b58ccc2996da",
+          "queryId": "b4b66052-04c4-4a0b-ad63-a76f13c5b270"
+        },
+        {
+          "number": 118,
+          "ordinal": 188,
+          "status": "completed",
+          "hasName": true,
+          "lookupId": "ac0f6fb9-5ddb-45ff-824a-8d2400747f31",
+          "queryId": "b3e6406b-65b4-4d9c-9487-623d94bc4e46"
+        },
+        {
+          "number": 130,
+          "ordinal": 67,
+          "status": "completed",
+          "hasName": true,
+          "lookupId": "84cc18a1-22c3-4b64-ba2d-54b776663693",
+          "queryId": "da51c609-1706-4e52-b709-60415f0edd14"
+        }
+      ]
+    },
+    "initialParallelCoverageFailure": {
+      "callsCompleted": 4,
+      "names": 4,
+      "maxExecuting": 2,
+      "maxActiveQueryPhones": 1,
+      "reason": "130 preparing while118 finished queue; strict simultaneous-query assertion failed",
+      "correction": "Retained first proof; warmed both already-ready phones in separate explicit4-call round, max simultaneous query phones2 and no same-device overlap"
+    },
+    "visualEvidence": {
+      "savedActualFailureImageParsedByNewReader": true,
+      "directPatchedMethodOnActualPhone": [
+        {
+          "atUtc": "2026-10-13T07:08:02Z",
+          "number": 118,
+          "ordinal": 165,
+          "directPatchedReadonlyMethodOnCurrentActualPhone": true,
+          "nativeHasName": true,
+          "visualHasName": true,
+          "sameNameAsNative": true,
+          "screenCaptures": 2,
+          "focusReads": 4,
+          "inputCommands": 0,
+          "searchCommands": 0,
+          "appLaunchCommands": 0,
+          "wallMs": 6037,
+          "events": [
+            {
+              "step": "lookup_visual_result_probe",
+              "driver": "poco_visual_readonly"
+            },
+            {
+              "step": "masked_real_name_tail_extracted",
+              "driver": "poco_visual_readonly"
+            }
+          ],
+          "automaticApiFallbackTriggered": false
+        },
+        {
+          "atUtc": "2026-10-13T07:14:52Z",
+          "number": 130,
+          "ordinal": 67,
+          "directPatchedReadonlyMethodOnCurrentActualPhone": true,
+          "nativeHasName": true,
+          "visualHasName": true,
+          "sameNameAsNative": true,
+          "screenCaptures": 2,
+          "focusReads": 4,
+          "inputCommands": 0,
+          "searchCommands": 0,
+          "appLaunchCommands": 0,
+          "wallMs": 6672,
+          "events": [
+            {
+              "step": "lookup_visual_result_probe",
+              "driver": "poco_visual_readonly"
+            },
+            {
+              "step": "masked_real_name_tail_extracted",
+              "driver": "poco_visual_readonly"
+            }
+          ],
+          "automaticApiFallbackTriggered": false
+        }
+      ],
+      "naturalApiVisualFallbackTriggered": false,
+      "limit": "All17 successful postpatch API calls used native tree; direct two-phone read-only visual method and old actual failure image passed, branch integration covered by offline counterexample, natural missing-tree fallback not reencountered"
+    },
+    "offline": {
+      "node": 608,
+      "pythonMain": 163,
+      "lookupPython": 77,
+      "noReplay": 21,
+      "startupService": 8,
+      "countsOverlap": true,
+      "rootCheckExitCode": 0
+    },
+    "startupHumanHandover": {
+      "atUtc": "2026-10-13T07:01:36.140Z",
+      "scope": "118 existing startup human request only; no phone input/app launch/task replay",
+      "observations": [
+        {
+          "atUtc": "2026-10-13T07:01:39.036Z",
+          "state": "search_ready",
+          "ok": true,
+          "accepted": true,
+          "resumed": false
+        },
+        {
+          "atUtc": "2026-10-13T07:01:44.179Z",
+          "state": "search_ready",
+          "ok": true,
+          "accepted": true,
+          "resumed": true
+        }
+      ]
+    },
+    "managedProtocol": {
+      "atUtc": "2026-10-13T07:17:31.121Z",
+      "sourceCommit": "aad953292a44e37d1b84c3982085cfe233983386",
+      "runtimeSinceUtc": "2026-10-13T06:44:46Z",
+      "managedTasks": 24,
+      "queryTasks": 17,
+      "allHaveGeneration": true,
+      "allSucceededAcked": true,
+      "only118And130": true,
+      "originalStartupRequest": {
+        "lookupId": "2a6b8766-9a8e-4050-93d1-3773f73ff963",
+        "queryId": "8704760e-6960-4d54-a7b3-7775a31edaae",
+        "status": "succeeded",
+        "logicalAttempts": 1,
+        "physicalQueryTasks": 1,
+        "inputEvents": 1,
+        "submitEvents": 0
+      },
+      "cooldowns": [
+        {
+          "number": 130,
+          "accountHash": "b1b626a87f11",
+          "limitedAt": "2026-10-13T04:49:01.367Z",
+          "cooldownUntil": "2026-10-13T12:49:01.367Z",
+          "durationMs": 28800000
+        },
+        {
+          "number": 130,
+          "accountHash": "60cd3aa0c18a",
+          "limitedAt": "2026-10-13T05:53:11.749Z",
+          "cooldownUntil": "2026-10-13T13:53:11.749Z",
+          "durationMs": 28800000
+        }
+      ],
+      "newManagedDispatchErrors": 0
+    }
+  },
+  "failuresAndCorrections": [
+    "Old blank-result and XML-fallback counterexamples failed before patch.",
+    "Legacy blank-noName fixture1error and accidentally modified unrelated same-text unverified assertion2failures: restored unrelated assertion and scoped correct expectation, Python163passed.",
+    "Isolated six1.17 conflicted with Airtest; target-only pinned1.16, global/oldvenv unchanged.",
+    "Standalone overlay startup test lacked required base import; combined old2 counterexamples failed then patched8passed.",
+    "Two queued requests expired before input during118startup CAPTCHA; preserved original terminal IDs, explicit queue retries succeeded.",
+    "First parallel simultaneous-query assertion failed despite4good API results; warm two-device4-call round passed.",
+    "130 initial verification event mistakenly announced as puzzle; actual task steps proved simple slider processed automatically. Reminder corrected; no required manual action for that event.",
+    "Cleanup helper initially used nonexistent PG outbox table; actual Agent filesystem outbox verified0. PID/path guards failed safely on relative script/cwd aliases, corrected before completing cleanup."
+  ],
+  "cleanup": {
+    "drain": {
+      "atUtc": "2026-10-13T07:16:43.813Z",
+      "channels": 0,
+      "nonterminalManagedRequests": 0,
+      "activeTasks": 0,
+      "activeLocks": 0,
+      "activeSessions": 0,
+      "pendingOutbox": 0
+    },
+    "restore": {
+      "atUtc": "2026-10-13T07:19:16Z",
+      "ownedPortsClosed": true,
+      "oldAgentSamePidResumed": 44042,
+      "oldAgentFreshHeartbeat": true,
+      "oldAgentInstances": 1,
+      "oldServerSamePidReady": 46592,
+      "adbDaemonSamePid": 26031,
+      "oldConfigSha256": "547e6eaaff47f20ab8faf5482ee4e0bbe99f86938720a16b7921b8db94584c0a",
+      "oldConfigUnchanged": true,
+      "stayAwakeUnchanged": true,
+      "stayAwakeAfter": {
+        "118": "2",
+        "130": "0"
+      },
+      "privatePostgresBackupSha256": "a2deef4521d72481df7231923206b1439c62750abb353ccf27152c98b58485f1",
+      "productionActions": 0
+    },
+    "localOwnedBusinessProcessReloads": 1,
+    "sharedAdbUsbMediaRestarts": 0,
+    "oldAgentSamePidPauseResume": "44042 kept; no launchd changes",
+    "privatePgBackupKept": true
+  },
+  "review": {
+    "kind": "self review; no independent reviewer/subagent",
+    "conclusion": "Only4runtime files changed against rc.3; SDK/API/SQL schema unchanged, no shared Agent/control/media code changes, strict no requery guards; source and actual runtime hashes matched",
+    "hashes": {
+      "atUtc": "2026-10-13T07:13:53.615890+00:00",
+      "baseExistingFilesMatched": 316,
+      "runtimePatches": {
+        "windows-agent/scripts/alipay_name_lookup.py": "35518f30a442e1cbfe07a741d28c0a4ab697077171a97a82606fce1c4ab88004",
+        "windows-agent/scripts/alipay_visual_result.py": "92c9e8a663eafcac4a5f80e45777df50f1aa73f8e9deb8332fce04a688e5022f",
+        "windows-agent/src/alipay-poco-fallback-policy.mjs": "0d56fccc2d1b81541668cf2880e3da4b4547b54a34aef92120516bd6e9fd2f09",
+        "server/managed-lookup.mjs": "e4a091254c680762199e8239e6b20f87391d78b15bb4b6a4075214b38929d834"
+      },
+      "newVisualFileMatched": true,
+      "unexpectedRuntimeDrift": [],
+      "windowsAgentIndexUnchanged": true,
+      "frozenFilesMatched": 33,
+      "frozenFilePaths": [
+        "deploy/mediamtx-pacing/build.mjs",
+        "deploy/mediamtx-pacing/enable.conf.example",
+        "deploy/mediamtx-pacing/peer-connection.patch",
+        "deploy/mediamtx-pacing/production-baseline.json",
+        "deploy/mediamtx-pacing/verify.mjs",
+        "deploy/mediamtx-pacing/viewer-session.patch",
+        "deploy/mediamtx-pacing/viewer_pacing.go",
+        "deploy/mediamtx-pacing/viewer_pacing_test.go",
+        "public/app.js",
+        "public/styles.css",
+        "screen-client/control-input.js",
+        "screen-client/direct-webrtc-player.js",
+        "screen-client/main.js",
+        "screen-client/mse-player.js",
+        "screen-client/screen-transport.js",
+        "screen-client/webrtc-player.js",
+        "server/screen-backpressure.mjs",
+        "server/screen-gallery-import.mjs",
+        "server/screen-media-auth.mjs",
+        "server/screen-quality.mjs",
+        "server/screen-relay.mjs",
+        "server/screen-sessions.mjs",
+        "server/screen-transport-policy.mjs",
+        "windows-agent/src/screen-backpressure.mjs",
+        "windows-agent/src/screen-control-queue.mjs",
+        "windows-agent/src/screen-stream.mjs",
+        "windows-agent/src/screen-stream.pre-20260722-pacing-default.mjs",
+        "windows-agent/src/screen-stream.pre-20260722-wire-pacing.mjs",
+        "windows-agent/src/screen-stream.pre-pli-loop-20260722.mjs",
+        "windows-agent/src/screen-stream.verify.mjs",
+        "windows-agent/src/screen-video-channel.mjs",
+        "windows-agent/src/screen-webrtc-publisher.mjs",
+        "windows-agent/src/screen-webrtc-publisher.pre-20260722-wire-pacing.mjs"
+      ],
+      "frozenComparison": "immutable rc.1 full runtime"
+    }
+  },
+  "unverified": [
+    "Natural recurrence of missing accessibility result through patched API fallback",
+    "Automatic initial-start CAPTCHA observation without an already idle worker or real control screen",
+    "5 independent real phones and49production mappings",
+    "Natural limit then successful automatic saved-account switch and same-query resume",
+    "All accounts cooling and natural8hour expiry",
+    "Windows pinned OCR wheel/model install and resource impact; local macOS CPU only",
+    "Production deployment, gateway integration and production acceptance; none performed"
+  ],
+  "productionConnections": 0,
+  "productionMutations": 0,
+  "feishuNotifications": 0,
+  "remotePushes": 0,
+  "mediaLiveVerification": "not run: no production host access/deployment",
+  "sensitiveArtifactPolicy": "No phone digits, names, screenshot pixels, raw trees, credentials, keys or OCR text in this receipt; private raw evidence/backup retained outside Git"
+}
