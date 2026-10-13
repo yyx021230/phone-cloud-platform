@@ -57,7 +57,10 @@ export function createLookupHumanHandover({ targets, resume, now = Date.now }) {
     observations.delete(lease.challengeId);
     claimed.set(lease.challengeId, agentId);
     for (const [id, item] of leases) if (item.challengeId === lease.challengeId) leases.delete(id);
-    const resumed = await resume(target);
+    let resumed;
+    try { resumed = await resume(target); }
+    catch (e) { if(target.managedLookup) claimed.delete(lease.challengeId);throw e; }
+    if(target.managedLookup && resumed!==true) claimed.delete(lease.challengeId);
     return { accepted: true, resumed: resumed === true };
   }
   return { list, report };

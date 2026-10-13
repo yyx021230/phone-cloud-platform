@@ -34,6 +34,15 @@ class OpenNameLookupClient:
         self.request_timeout = max(1, float(request_timeout))
         self.opener = opener
 
+    def lookup_name(self, phone_number, *, idempotency_key=None, request_timeout=130):
+        key = idempotency_key or str(uuid.uuid4())
+        for attempt in range(2):
+            try:
+                return self._request("POST", "/api/v1/open/name-lookups/query", body={"phoneNumber": phone_number}, idempotency_key=key, request_timeout=request_timeout)
+            except OpenNameLookupApiError as error:
+                if error.code != "network_error" or attempt == 1:
+                    raise
+
     def list_devices(self):
         return self._request("GET", "/api/v1/open/name-lookups/devices")
 
@@ -109,7 +118,7 @@ class OpenNameLookupClient:
         by_id = {str(query.get("queryId")): query for query in selected}
         return [by_id[query_id] for query_id in query_ids if query_id in by_id]
 
-    def _request(self, method, pathname, *, body=None, idempotency_key=None):
+    def _request(self, method, pathname, *, body=None, idempotency_key=None, request_timeout=None):
         raw_body = b"" if body is None else json.dumps(
             body, ensure_ascii=False, separators=(",", ":")
         ).encode("utf-8")
@@ -131,11 +140,11 @@ class OpenNameLookupClient:
         request = Request(self.base_url + pathname, data=raw_body if body is not None else None,
                           headers=headers, method=method)
         try:
-            with self.opener(request, timeout=self.request_timeout) as response:
+            with self.opener(request, timeout=request_timeout or self.request_timeout) as response:
                 return _decode_response(response.read())
         except HTTPError as error:
             payload = _decode_response(error.read())
-            code = str(payload.get("error", f"http_{error.code}"))
+            code = str(payload.get("code") or payload.get("error", f"http_{error.code}"))
             raise OpenNameLookupApiError(
                 code, status=error.code, code=code, payload=payload
             ) from error

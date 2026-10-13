@@ -1,3 +1,7 @@
+import { createManagedLookupStore, MANAGED_LOOKUP_PROTOCOL } from './managed-lookup-store.mjs';
+import { createManagedLookupService } from './managed-lookup.mjs';
+import { createManagedLookupAdapter } from './managed-lookup-platform.mjs';
+import { isManagedLookupTask, supportsLeasedWindowsTaskDelivery, hasActiveScreenGalleryDelivery, issueScreenGalleryDelivery, readScreenGalleryDeliveryPayload, acknowledgeScreenGalleryDelivery } from './managed-lookup-delivery.mjs';
 import { createLookupHumanNotifier, pendingLookupHumanNotifications, readLookupHumanWebhook } from "./lookup-human-notifications.mjs";
 import { createTaskStatusPersistence } from "./task-status-persistence.mjs";
 import { createLookupHumanHandover, lookupHumanChallenge } from "./lookup-human-handover.mjs";
@@ -22,14 +26,9 @@ import { createScreenMediaAuthorizer, mediaPathForSession } from "./screen-media
 import {
   SCREEN_GALLERY_DELIVERY_PROTOCOL,
   XHS_PUBLISH_DELIVERY_PROTOCOL,
-  acknowledgeScreenGalleryDelivery,
   canQueueScreenGalleryImport,
-  hasActiveScreenGalleryDelivery,
-  issueScreenGalleryDelivery,
   maintainScreenGalleryDeliveries,
-  publicScreenGalleryImportTask,
-  readScreenGalleryDeliveryPayload,
-  supportsLeasedWindowsTaskDelivery
+  publicScreenGalleryImportTask
 } from "./screen-gallery-import.mjs";
 import { sanitizePostgresText, stringifyPostgresJson } from "./postgres-json.mjs";
 import { createSaveQueue } from "./save-queue.mjs";
@@ -254,6 +253,7 @@ const persistencePolicy = createPersistencePolicy({
   scheduleCheckpoint: () => runtimeSaveScheduler.mark()
 });
 const taskStatusPersistence = createTaskStatusPersistence();
+let managedLookup = null;
 const pendingEvidenceDeletes = new Set();
 let evidenceCleanupRunning = false;
 let lastEvidenceCleanupAt = 0;
@@ -261,6 +261,17 @@ let screenRelay = null;
 await ensureBootstrapAdmin();
 enforceStrictProductionConfig();
 await logStartupDiagnostics();
+if (boolEnv(process.env.MANAGED_NAME_LOOKUP_ENABLED, false)) {
+  if (NODE_ENV === 'production' && (!structuredRepos || STORAGE_BACKEND !== 'postgres')) throw new Error('managed_lookup_requires_structured_postgres');
+  const store = await createManagedLookupStore({getPool: structuredRepos ? getPostgresPool : null, file:path.join(DATA_DIR,'managed-lookup.json'), key:POSTGRES_STATE_KEY, persistLegacy:saveState});
+  const adapter = createManagedLookupAdapter({state, clientIds:()=>[...OPEN_NAME_LOOKUP_CLIENTS.keys()], userFor:id=>openNameLookupUser(OPEN_NAME_LOOKUP_CLIENTS.get(id)), persist:bundle=>structuredRepos.persistTaskMutation(bundle),
+    listed:isDeviceListed,online:isAdbOnline,onlineMs:WINDOWS_AGENT_ONLINE_MS,screenActive:id=>screenSessions.activeForDevice(id),lockFor:activeDeviceLockForTask,
+    allCooling:d=>{const session=state.automationSessions.find(x=>x.deviceId===d.deviceId&&x.savedAccounts?.length);return session?allSavedAccountsCooling(d,session.savedAccounts):false;},
+    createSession:createLookupSession,createJob:createAutomationJob,acquireLock:acquireAutomationDeviceLock,queueTask:queueAutomationWindowsTask,result:upsertLookupResult,cancelJob:cancelAutomationJob});
+  managedLookup = createManagedLookupService({store,adapter});
+}
+const managedLookupTimer=setInterval(()=>managedLookup?.tick().catch(e=>console.error('managed lookup storage/dispatch unavailable; original tasks retained',e.code||e.name||'error')),250).unref();
+
 
 let lookupHumanNotifier = null;
 try {
@@ -380,6 +391,27 @@ process.on("SIGINT", () => shutdown("SIGINT"));
 
 async function routeApi(req, res, url) {
   enforceRequestOrigin(req);
+  if (req.method === 'POST' && url.pathname === '/api/v1/open/name-lookups/query') {
+    if (!OPEN_NAME_LOOKUP_API_ENABLED || !managedLookup) return json(res,404,{ok:false,name:'',code:'managed_lookup_not_enabled'});
+    try {
+      const {ctx,input}=await readSignedOpenJson(req,url,OPEN_NAME_LOOKUP_CLIENTS);
+      let phoneNumber;try{phoneNumber=normalizeLookupPhone(input.phoneNumber);}catch{throw badRequest('invalid_lookup_phone');}
+      const id=await managedLookup.submit({clientId:ctx.clientId,phoneNumber,key:requiredOpenIdempotencyKey(req)});
+      const abort=new AbortController();const disconnect=()=>{if(!res.writableEnded)abort.abort();};res.once('close',disconnect);
+      try { const result=await managedLookup.wait(id,ctx.clientId,{signal:abort.signal});if(!res.destroyed)return json(res,result.status,result.body); }
+      finally {res.removeListener('close',disconnect);}return;
+    } catch (e) {if(res.destroyed)return;if(!e.statusCode)return json(res,503,{ok:false,name:'',code:'lookup_storage_unavailable'});if(e.statusCode===429)res.setHeader('Retry-After','3');return json(res,e.statusCode,{ok:false,name:'',code:e.message});}
+  }
+  if(url.pathname.startsWith('/api/v1/admin/lookup-pool')) {
+    const ctx=requireAuth(req,['admin']);if(!managedLookup)return json(res,404,{error:'managed_lookup_not_enabled'});
+    if(req.method==='GET' && url.pathname==='/api/v1/admin/lookup-pool')return json(res,200,{pool:managedLookup.admin()});
+    if(req.method==='POST' && url.pathname==='/api/v1/admin/lookup-pool/preview')return json(res,200,{devices:managedLookup.preview()});
+    if(req.method==='PUT' && url.pathname==='/api/v1/admin/lookup-pool')return json(res,200,{ok:true,...await managedLookup.configure(await readJson(req),ctx.userId||ctx.role)});
+    const cancel=url.pathname.match(/^\/api\/v1\/admin\/lookup-pool\/requests\/([^/]+)\/cancel$/);
+    if(req.method==='POST' && cancel){await managedLookup.cancel(cancel[1],ctx.userId||ctx.role);return json(res,202,{ok:true});}
+    return json(res,404,{error:'not_found'});
+  }
+
 
   if (req.method === "POST" && url.pathname === "/api/internal/screen-media/auth") {
     const input = await readJson(req);
@@ -1381,6 +1413,7 @@ async function routeApi(req, res, url) {
     const input = await readJson(req);
     const session = state.automationSessions.find((item) => item.sessionId === lookupQueryMatch[1] && item.userId === ctx.userId);
     if (!session) return json(res, 404, { error: "lookup_session_not_found" });
+    if (session.managedLookupGeneration) return json(res,409,{error:"managed_lookup_use_pool_management"});
     if (session.status !== "ready" || session.pendingJobId) return json(res, 409, { error: "lookup_session_not_ready", session: publicLookupSession(session) });
     if (session.requiresAccountSwitch) return json(res, 409, { error: "lookup_no_available_account", session: publicLookupSession(session) });
     if (resumableLookupRecoveryResult(session)) return json(res, 409, { error: "lookup_recovery_required", session: publicLookupSession(session) });
@@ -1428,6 +1461,7 @@ async function routeApi(req, res, url) {
       && (item.userId === ctx.userId || ctx.role === "admin")
     ));
     if (!session) return json(res, 404, { error: "lookup_session_not_found" });
+    if (session.managedLookupGeneration) return json(res,409,{error:"managed_lookup_use_pool_management"});
     const sourceResult = resumableLookupHumanVerificationResult(session) || resumableLookupRecoveryResult(session);
     if (!sourceResult) return json(res, 409, { error: "lookup_human_verification_not_resumable", session: publicLookupSession(session) });
     if (screenSessions.activeForDevice(session.deviceId)) {
@@ -1483,6 +1517,7 @@ async function routeApi(req, res, url) {
     const input = await readJson(req);
     const session = state.automationSessions.find((item) => item.sessionId === lookupSwitchMatch[1] && item.userId === ctx.userId);
     if (!session) return json(res, 404, { error: "lookup_session_not_found" });
+    if (session.managedLookupGeneration) return json(res,409,{error:"managed_lookup_use_pool_management"});
     const requestedAccount = String(input.targetAccount || "").trim();
     const accountAction = requestedAccount ? "select" : "list";
     if (!["ready", "choosing_account"].includes(session.status) || session.pendingJobId) {
@@ -1539,6 +1574,7 @@ async function routeApi(req, res, url) {
     const ctx = requireAuth(req, ["user", "admin"]);
     const session = state.automationSessions.find((item) => item.sessionId === lookupEndMatch[1] && item.userId === ctx.userId);
     if (!session) return json(res, 404, { error: "lookup_session_not_found" });
+    if (session.managedLookupGeneration) return json(res,409,{error:"managed_lookup_use_pool_management"});
     if (["ended", "failed", "expired"].includes(session.status)) return json(res, 200, { ok: true, session: publicLookupSession(session) });
     await drainPendingLookupQueryBeforeStop(session);
     const pending = session.pendingJobId ? state.automationJobs.find((job) => job.jobId === session.pendingJobId) : null;
@@ -1783,6 +1819,7 @@ async function routeApi(req, res, url) {
       .map((value) => decodeURIComponent(value).trim())
       .filter(Boolean)
       .slice(0, 32));
+    const managedDeliveryV1 = String(url.searchParams.get("managedLookupDelivery") || "") === MANAGED_LOOKUP_PROTOCOL;
     const galleryDeliveryV2 = String(url.searchParams.get("galleryDelivery") || "") === SCREEN_GALLERY_DELIVERY_PROTOCOL;
     const xhsPublishDeliveryV1 = String(url.searchParams.get("xhsPublishDelivery") || "") === XHS_PUBLISH_DELIVERY_PROTOCOL;
     const cancelledTaskIds = state.windowsTasks
@@ -1806,9 +1843,10 @@ async function routeApi(req, res, url) {
     const task = state.windowsTasks.find((item) => (
       item.agentId === agentId
       && item.status === "queued"
+      && (!isManagedLookupTask(item) || managedDeliveryV1)
       && !activeTaskIds.has(item.taskId)
       && !(supportsLeasedWindowsTaskDelivery(item)
-        && ((item.type === "screen_gallery_import" && galleryDeliveryV2) || (item.type === "xhs_publish" && xhsPublishDeliveryV1))
+        && ((item.type === "screen_gallery_import" && galleryDeliveryV2) || (item.type === "xhs_publish" && xhsPublishDeliveryV1) || isManagedLookupTask(item))
         && hasActiveScreenGalleryDelivery(item))
       && (!item.adbSerial || (
         !runningSerials.has(String(item.adbSerial))
@@ -1823,6 +1861,7 @@ async function routeApi(req, res, url) {
       return json(res, 200, { task: null, cancelledTaskIds });
     }
     const leasedDeliveryEnabled = (
+      isManagedLookupTask(task) ||
       (task.type === "screen_gallery_import" && galleryDeliveryV2)
       || (task.type === "xhs_publish" && xhsPublishDeliveryV1)
     );
@@ -1894,7 +1933,7 @@ async function routeApi(req, res, url) {
       if (!acknowledgement.ok) return json(res, 409, { error: acknowledgement.error });
       let automationJob = null;
       let automationSession = null;
-      if (!acknowledgement.idempotent && task.type === "xhs_publish") {
+      if (!acknowledgement.idempotent && (task.type === "xhs_publish" || isManagedLookupTask(task))) {
         automationJob = syncAutomationJobFromWindowsTask(task, "running", { action: "Windows 管理器已确认接收发布任务" });
         automationSession = automationJob?.sessionId
           ? state.automationSessions.find((item) => item.sessionId === automationJob.sessionId) || null
@@ -1924,6 +1963,7 @@ async function routeApi(req, res, url) {
   if (req.method === "POST" && url.pathname === "/api/v1/windows-agent-tasks") {
     const ctx = requireAuth(req, ["admin"]);
     const input = await readJson(req);
+    if(managedLookup?.reserved(input.deviceId))return json(res,409,{error:"managed_device_reserved"});
     const agent = repos.agents.findById(input.agentId);
     if (!agent) return json(res, 404, { error: "windows_agent_not_found" });
     const allowed = new Set(["adb_install_apk", "adb_grant_permissions", "adb_start_agent", "adb_collect_diagnostics", "adb_restart_server", "xhs_qr_appium", "xhs_publish", "kuaishou_lead", "alipay_name_start", "alipay_name_query", "alipay_name_switch", "alipay_name_stop", "sms_sync_now"]);
@@ -1962,6 +2002,7 @@ async function routeApi(req, res, url) {
     const task = repos.windowsTasks.findById(taskStatusMatch[1]);
     if (!task) return json(res, 404, { error: "task_not_found" });
     if (!windowsCtxCanAccessTask(ctx, task)) return json(res, 401, { error: "windows_agent_task_mismatch" });
+    if (isManagedLookupTask(task) && input.managedLookupGeneration !== task.payload.managedLookup.generation) return json(res,409,{error:"managed_lookup_generation_mismatch"});
     if (!["running", "succeeded", "failed", "cancelled"].includes(input.status)) return json(res, 400, { error: "invalid_status" });
     if (isTerminalStatus(task.status)) {
       await taskStatusPersistence.persist(`${task.taskId}:${task.status}`, () => persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask: task })));
@@ -3054,6 +3095,7 @@ function upsertWindowsAgent(input = {}, req) {
   agent.ip = String(input.ip || req?.socket?.remoteAddress || agent.ip || "");
   agent.lastIp = String(req?.socket?.remoteAddress || input.ip || agent.lastIp || agent.ip || "");
   agent.adbVersion = String(input.adbVersion || agent.adbVersion || "");
+  if (input.managedLookupProtocol !== undefined) agent.managedLookupProtocol = input.managedLookupProtocol === MANAGED_LOOKUP_PROTOCOL ? MANAGED_LOOKUP_PROTOCOL : "";
   agent.health = normalizeAgentHealth(input.health || agent.health || {});
   if (input.tokenHash) agent.tokenHash = String(input.tokenHash);
   if (input.tokenPrefix) agent.tokenPrefix = String(input.tokenPrefix).slice(0, 16);
@@ -3951,6 +3993,12 @@ function releaseDeviceTaskLock(task, reason = "completed") {
   return lock;
 }
 
+function managedLookupReservationLock(deviceId) {
+  const c=managedLookup?.reserved(deviceId);if(!c)return null;
+  const session=state.automationSessions.find(s=>s.sessionId===c.sessionId);
+  return {lockId:session?.lockId||c.generation,lockType:'alipay_name_lookup',deviceId,status:'active',taskId:c.sessionId,ownerUserId:session?.userId||'',managedLookupGeneration:c.generation};
+}
+
 function activeDeviceLockForTask(deviceId = "", xhsAppSlot = "") {
   expireDeviceLocks();
   const normalizedSlot = xhsAppSlot ? normalizeXhsAppSlot(xhsAppSlot) : "";
@@ -3958,7 +4006,7 @@ function activeDeviceLockForTask(deviceId = "", xhsAppSlot = "") {
     lock.status === "active"
     && lock.deviceId === deviceId
     && (lock.lockType !== "xhs_qr" || DEVICE_MAX_ACTIVE_XHS_TASKS <= 1 || !normalizedSlot || !lock.appSlot || lock.appSlot === normalizedSlot)
-  )) || null;
+  )) || (typeof managedLookup!=="undefined" && managedLookup ? managedLookupReservationLock(deviceId) : null);
 }
 
 function activeDeviceLockForScreenControl(deviceId = "", ownerUserId = "", options = {}) {
@@ -3966,6 +4014,7 @@ function activeDeviceLockForScreenControl(deviceId = "", ownerUserId = "", optio
   const locks = (state.deviceLocks || []).filter((lock) => (
     lock.status === "active" && lock.deviceId === deviceId
   ));
+  if(!locks.length && typeof managedLookup!=="undefined" && managedLookup?.reserved(deviceId)) locks.push(managedLookupReservationLock(deviceId));
   const conflict = findScreenControlLockConflict(locks, deviceId, ownerUserId, options);
   if (conflict) return conflict;
   const lookupLock = locks.find((lock) => canShareDeviceLockWithScreenControl(lock, ownerUserId, options));
@@ -4038,6 +4087,7 @@ function expireDeviceLocks() {
   let changed = false;
   for (const lock of state.deviceLocks) {
     if (lock.status !== "active") continue;
+    if (lock.managedLookupGeneration && managedLookup?.reserved(lock.deviceId)) continue;
     if (lock.lockType === "kuaishou_lead") {
       const job = (state.automationJobs || []).find((item) => item.jobId === lock.taskId);
       const windowsTask = job?.windowsTaskId ? (state.windowsTasks || []).find((item) => item.taskId === job.windowsTaskId) : null;
@@ -4276,7 +4326,8 @@ function lookupHumanProbeTargets(agentId) {
       if (!screenRelay.agentOnline(agentId) || !["ready", "streaming"].includes(screen.status)
         || handover?.sessionId !== session.sessionId || handover.challengeId !== challengeId) continue;
     }
-    probes.push({ sessionId: session.sessionId, deviceId: session.deviceId,
+    if (session.managedLookupGeneration && managedLookup?.admin().counts.executing >= managedLookup.store.snapshot().config.concurrency) continue;
+    probes.push({ managedLookup: Boolean(session.managedLookupGeneration), sessionId: session.sessionId, deviceId: session.deviceId,
       adbSerial: device.adb.serial, challengeId, screenSessionId: screen?.sessionId || "" });
   }
   return probes;
@@ -4285,6 +4336,7 @@ function lookupHumanProbeTargets(agentId) {
 async function resumeLookupAfterObservedHumanVerification(target) {
   const session = state.automationSessions.find((item) => item.sessionId === target.sessionId);
   if (!session || lookupHumanChallenge(session) !== target.challengeId) throw badRequest("lookup_human_probe_stale");
+  if (session.managedLookupGeneration && !(await managedLookup?.beforeResume(session.sessionId))) return false;
   const sourceResult = resumableLookupHumanVerificationResult(session) || resumableLookupRecoveryResult(session);
   const device = repos.devices.findById(session.deviceId);
   const startup = sourceResult.phase === "start";
@@ -4298,8 +4350,8 @@ async function resumeLookupAfterObservedHumanVerification(target) {
     deviceId: session.deviceId, sessionId: session.sessionId, phoneNumber,
     resultId: sourceResult.resultId, resumeAfterHumanVerification: true,
     restartAfterHumanVerification: true });
-  if (session.source === "open-api") Object.assign(job, {
-    source: "open-api", clientId: session.clientId,
+  if (["open-api", "managed-api"].includes(session.source)) Object.assign(job, {
+    source: session.source, clientId: session.clientId,
     clientReference: sourceResult.clientReference || "", consentReference: sourceResult.consentReference || ""
   });
   session.status = startup ? "starting" : "querying";
@@ -4351,6 +4403,7 @@ function queueAutomationWindowsTask(device, job) {
     payload: {
       automationJobId: job.jobId,
       automationSessionId: job.sessionId || "",
+      ...(state.automationSessions.find(s=>s.sessionId===job.sessionId)?.managedLookupGeneration ? {managedLookup:{protocol:MANAGED_LOOKUP_PROTOCOL,generation:state.automationSessions.find(s=>s.sessionId===job.sessionId).managedLookupGeneration}} : {}),
       xhsAppSlot: job.xhsAppSlot || "",
       xhsAccountLabel: job.xhsAccountLabel || "",
       title: job.title || "",
@@ -6684,6 +6737,7 @@ function expireWindowsTasks() {
     } else if (now - new Date(anchor || task.createdAt).getTime() <= ttlMs) {
       continue;
     }
+    if (isManagedLookupTask(task)) {task.status="stalled";task.stalledAt=task.stalledAt||nowIso();task.updatedAt=nowIso();changed=true;continue;}
     const expiredStatus = task.status;
     const timeoutSeconds = Math.round(ttlMs / 1000);
     task.status = "failed";
@@ -6767,6 +6821,7 @@ function expireAutomationJobs() {
     changed = true;
   }
   for (const session of state.automationSessions || []) {
+    if (session.managedLookupGeneration && managedLookup?.reserved(session.deviceId)) continue;
     if (!["starting", "ready", "querying", "switching", "choosing_account", "needs_human_verification", "stopping"].includes(session.status)) continue;
     const lock = (state.deviceLocks || []).find((item) => item.lockId === session.lockId);
     const anchor = toTime(session.updatedAt || session.createdAt);
@@ -7483,6 +7538,8 @@ async function shutdown(signal) {
   console.log(`${nowIso()} received ${signal}, shutting down`);
   clearInterval(maintenanceTimer);
   clearInterval(lookupHumanNotificationTimer);
+  clearInterval(managedLookupTimer);
+  await managedLookup?.close();
   screenRelay?.close();
   try {
     await saveState();

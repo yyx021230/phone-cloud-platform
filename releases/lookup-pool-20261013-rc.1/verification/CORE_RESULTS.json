@@ -1,0 +1,60 @@
+{
+  "phase": "backend/Agent synchronous managed lookup local validation",
+  "atBeijing": "2026-10-13T11:08:01.556971+08:00",
+  "status": "local core candidate; UI/API documentation and final regression pending",
+  "checks": [
+    {
+      "check": "syntax",
+      "exitCode": 0,
+      "tests": null,
+      "privateLog": "/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/pc-managed-regression-0qhnrrtd/syntax.log"
+    },
+    {
+      "check": "screen",
+      "exitCode": 0,
+      "tests": 596,
+      "privateLog": "/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/pc-managed-regression-0qhnrrtd/screen.log"
+    },
+    {
+      "check": "agent",
+      "exitCode": 0,
+      "tests": 290,
+      "privateLog": "/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/pc-managed-regression-0qhnrrtd/agent.log"
+    },
+    {
+      "check": "python",
+      "exitCode": 0,
+      "tests": 163,
+      "privateLog": "/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/pc-managed-regression-0qhnrrtd/python.log"
+    },
+    {
+      "check": "sdk-node",
+      "exitCode": 0,
+      "tests": 3,
+      "privateLog": "/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/pc-managed-regression-0qhnrrtd/sdk-node.log"
+    },
+    {
+      "check": "sdk-python",
+      "exitCode": 0,
+      "tests": 1,
+      "privateLog": "/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/pc-managed-regression-0qhnrrtd/sdk-python.log"
+    }
+  ],
+  "realHttpTests": "49 unique mappings/20 inputs/max5/per-phone1/directname/not_found/idempotency/21st waiter429/late stale generation409/ACK uncertainty no execute/cancel/stop locks0/puzzle pause/other device progression/original result human continuation/hard restart cached result",
+  "realPostgres16": "same real HTTP flow + atomic legacy-task rollback/owner coordinator exclusion/300-result bounded active cache/archive lookup/reopen/tenant andstate-key isolation",
+  "initialFailures": [
+    "adapter checkpoint used auditEvents instead of existing audit; fixed to audit",
+    "first21st connection expected duplicate200 despite configured20 waiter cap; corrected to assert429 plus cached original200",
+    "isolated PostgreSQL startup locale failure; setLC_ALL=C in private runner",
+    "private PG harness imported old typed preparation schema; removed, real app bootstraps matching structured data schema",
+    "VM test harness lacked two new imported identifiers; added protocol/predicate binding",
+    "old css version assertion expected10/10 despite10/12 production entry baseline; updated expected deployed cache marker",
+    "test runner usedroot node_modules forAgent andPython withoutcv2; useexisting Agent deps and cachedOpenCV with bundledPython"
+  ],
+  "productionAccess": 0,
+  "realPhonesUsed": 0,
+  "realNotifications": 0,
+  "serviceRestarts": 0,
+  "newRuntimeDependenciesInstalled": 0,
+  "review": "self review; masked result only; actor ownership on ACK; managed-specific timeout unknown fence; no media/encoding/ADB/USB change"
+}
