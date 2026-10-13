@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { createHash } from "node:crypto";
 
 // Only this task's subprocess is added. Existing scan, screen and ADB scheduling
 // continue to own device exclusion and task cancellation.
@@ -12,8 +13,14 @@ export async function runXhsDataCollection(task, { config, run, adb, signal, cac
   }
   const folder = path.join(cacheDir, "xhs-data-collection");
   await fs.mkdir(folder, { recursive: true });
+  const serialKey = createHash("sha256").update(String(task.adbSerial).toLowerCase()).digest("hex").slice(0, 16);
+  if ((await fs.readdir(folder)).some((name) => name.startsWith(`${serialKey}-`) && name.endsWith(".settings.json"))) {
+    throw new Error("xhs_data_settings_recovery_pending");
+  }
   const outputPath = path.join(folder, `${task.taskId}.json`);
   const cancelPath = path.join(folder, `${task.taskId}.cancel`);
+  const recoveryPath = path.join(folder, `${serialKey}-${task.taskId}.settings.json`);
+  let recoveryWritten = false;
   const processController = new AbortController();
   let forceStopTimer;
   let cancellationWrite = Promise.resolve();
@@ -38,6 +45,12 @@ export async function runXhsDataCollection(task, { config, run, adb, signal, cac
     for (const [scope, key] of settings) {
       original.push(String(await adb(task.adbSerial, ["shell", "settings", "get", scope, key], { timeoutMs: 8_000 })).trim());
     }
+    const recovery = { schemaVersion: 1, taskId: task.taskId, serial: task.adbSerial,
+      deviceName: task.payload.deviceName, capturedAt: new Date().toISOString(),
+      settings: settings.map(([scope, key], index) => ({ scope, key, original: original[index] })) };
+    await fs.writeFile(`${recoveryPath}.tmp`, JSON.stringify(recovery));
+    await fs.rename(`${recoveryPath}.tmp`, recoveryPath);
+    recoveryWritten = true;
     let exitCode = 0;
     try {
       await run(config.pythonCommand, [config.xhsDataCollectionRunnerPath,
@@ -56,6 +69,7 @@ export async function runXhsDataCollection(task, { config, run, adb, signal, cac
     if (snapshot.schema_version !== 3 || snapshot.serial !== task.adbSerial
         || String(snapshot.device_name) !== String(task.payload.deviceName)
         || snapshot.app_slot !== slot || snapshot.window_days !== 30
+        || (slot === "app2" && !snapshot.recovery_events?.includes("clone_slot_selected:app2"))
         || !Array.isArray(snapshot.notes) || snapshot.notes.length > 1000
         || (exitCode === 0) !== (snapshot.complete === true)) {
       throw new Error("xhs_data_collection_output_mismatch");
@@ -84,12 +98,22 @@ export async function runXhsDataCollection(task, { config, run, adb, signal, cac
       const [scope, key] = settings[index];
       try {
         const current = String(await adb(task.adbSerial, ["shell", "settings", "get", scope, key], { timeoutMs: 8_000 })).trim();
-        if (current !== value) await adb(task.adbSerial, ["shell", "settings", "put", scope, key, value], { timeoutMs: 8_000 });
+        if (current !== value) {
+          await adb(task.adbSerial, ["shell", "settings", "put", scope, key, value], { timeoutMs: 8_000 });
+          const restored = String(await adb(task.adbSerial, ["shell", "settings", "get", scope, key], { timeoutMs: 8_000 })).trim();
+          if (restored !== value) throw new Error(`xhs_data_setting_restore_unconfirmed:${scope}:${key}`);
+        }
       } catch (error) { restorationErrors.push(error.message); }
     }
     await fs.unlink(outputPath).catch(() => {});
     await fs.unlink(cancelPath).catch(() => {});
-    if (restorationErrors.length && !executionError) throw new Error("xhs_data_settings_restore_failed");
-    if (restorationErrors.length && executionError) executionError.restorationErrors = restorationErrors;
+    if (!restorationErrors.length && recoveryWritten) await fs.unlink(recoveryPath).catch(() => {});
+    if (restorationErrors.length && !executionError) {
+      throw Object.assign(new Error("xhs_data_settings_restore_failed"), { restorationErrors, settingsRecoveryPath: recoveryPath });
+    }
+    if (restorationErrors.length && executionError) {
+      executionError.restorationErrors = restorationErrors;
+      executionError.settingsRecoveryPath = recoveryPath;
+    }
   }
 }

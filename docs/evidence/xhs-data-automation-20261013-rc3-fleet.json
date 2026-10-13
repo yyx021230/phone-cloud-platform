@@ -1,0 +1,3601 @@
+{
+  "version": "xhs-data-automation-20261013-rc.3",
+  "state": "local_candidate_not_deployed",
+  "parentCommit": "6193a77922db93403efc1d2c3fd09a7b9651b61e",
+  "summary": {
+    "date": "2026-10-13",
+    "windowStart": "2026-09-14",
+    "windowEnd": "2026-10-13",
+    "status": "fleet_attempts_finished",
+    "recordedAttempts": 255,
+    "plannedPhones": 121,
+    "operatedPhones": 120,
+    "plannedSlots": 168,
+    "recordedUniqueSlots": 168,
+    "recordedPhones": 121,
+    "slotsByStatus": {
+      "passed": 95,
+      "failed_xml": 8,
+      "blocked_login": 25,
+      "failed_navigation": 5,
+      "clone_absent": 1,
+      "blocked_permission": 5,
+      "blocked_server_error": 1,
+      "blocked_account": 4,
+      "blocked_terms": 5,
+      "package_absent": 2,
+      "failed_adb_timeout": 3,
+      "failed_external_app": 2,
+      "target_offline": 3,
+      "skipped_busy": 2,
+      "failed_adb": 1,
+      "failed_chat_recovery": 3,
+      "blocked_external_permission": 1,
+      "blocked_ambiguous_selector": 1,
+      "blocked_keyguard": 1
+    },
+    "passedSlots": 95,
+    "passedPhones": 67,
+    "passedNotes": 1371,
+    "pendingSettingsLedgers": 0,
+    "productionAgentIndexSha256": "0d6a0aa177f38873b6999e18bba24fdecb865469924bc91efe396e91e2bd883b",
+    "scope": "Staged real consumer + Python + ADB, not production platform queue/Agent deployment"
+  },
+  "finalSourceSha256": {
+    "windows-agent/scripts/小红书数据同步.py": "111259cd63e10d6657610fd3b12caf7e0e3dabe03683f0114f29aa51fe86bf96",
+    "windows-agent/src/xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782"
+  },
+  "actualValidation": {
+    "rootCheck": "passed",
+    "screenRegression": {
+      "passed": 533,
+      "failed": 0,
+      "skipped": 0
+    },
+    "agentCheck": {
+      "passed": 277,
+      "failed": 0,
+      "skipped": 0
+    },
+    "pythonFocused": {
+      "passed": 86,
+      "failed": 0
+    },
+    "pythonCompile": "passed",
+    "diffCheck": "passed",
+    "productionQueueToDevice": "not_tested",
+    "productionPostgres": "not_tested",
+    "productionRelease": "not_performed"
+  },
+  "fleetMethod": "SSH / standalone Windows staging; actual consumer + Python + ADB, fresh identity/occupancy cache, same-phone slots serialized; no production cloud lease or queue",
+  "batchLimits": "Four-phone phase showed transport losses of unconfirmed cause; owned tests drained/cancelled, then resumed with at most two phones. No Windows/Agent/ADB/USB/media restart or global recovery by this task.",
+  "restorationLimitations": [
+    "67 first old attempt did not persist original settings. No temporary timeout residue found on reconnection; later re-test confirmed its new before/after values.",
+    "79 first old attempt left temporary 600000 ms after disconnect. Restored persistent device default 300000 ms and read back. First actual original value was not recorded and remains unproven. Later attempts confirmed their own before/after values."
+  ],
+  "dataLimitations": [
+    "Counts are latest passed phone-slot records, not cross-account/device deduplicated posts.",
+    "Only title/date/status/views/likes/comments from the external works list; no detail-page metrics, stable note ID, or Web database write.",
+    "0 notes requires proven list end or valid older-than-window date order.",
+    "Not all phones compatible; failures/blocks and busy skips remain distinct."
+  ],
+  "unavailableAtStart": {
+    "count": 10,
+    "installationState": "unknown",
+    "reconnectedEligibleAtFinalCheck": 0
+  },
+  "stagedExecutedVersions": [
+    {
+      "folder": "xhs-fleet-20261013-1352",
+      "attempts": 64,
+      "fingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "restorationReceiptCount": 0
+    },
+    {
+      "folder": "xhs-fleet-fixed-20261013",
+      "attempts": 3,
+      "fingerprints": {
+        "collector.py": "3bbefcb5cde6a6150eea8ebcef9b1357ccb3e87626d5430762aad85b1cad6e5f",
+        "xhs-data-collection.mjs": "250b2077c697de9a41b8bccca5f27ebf278b7fa1cecafc6ab7c804258dd022c8",
+        "fleet.mjs": "9835d854011832a60f2cedc50934d72efa0a47eaf933832f12525aa557e87f11"
+      },
+      "restorationReceiptCount": 0
+    },
+    {
+      "folder": "xhs-fleet-v3-20261013",
+      "attempts": 2,
+      "fingerprints": {
+        "collector.py": "0e8950c68a162f2188db39103f4bbbb8780c99a0f57e000666d15a3158793001",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "9af2f6b0bc27356d6e3613509bc5778f4270cf80104b1ef43d6febbe9bd7d3f4"
+      },
+      "restorationReceiptCount": 0
+    },
+    {
+      "folder": "xhs-fleet-v4-20261013",
+      "attempts": 19,
+      "fingerprints": {
+        "collector.py": "09b8466ae01d5370bfedbc3ec6886728e0693e7f8ed5f6926dfdd1108c34087c",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "9af2f6b0bc27356d6e3613509bc5778f4270cf80104b1ef43d6febbe9bd7d3f4"
+      },
+      "restorationReceiptCount": 0
+    },
+    {
+      "folder": "xhs-fleet-v5-20261013",
+      "attempts": 3,
+      "fingerprints": {
+        "collector.py": "6964924f26c16e5c8f0f6205d8b8813a60ba0d2174a57b11b4660d7f5c9dd677",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "9af2f6b0bc27356d6e3613509bc5778f4270cf80104b1ef43d6febbe9bd7d3f4"
+      },
+      "restorationReceiptCount": 0
+    },
+    {
+      "folder": "xhs-fleet-v6-20261013",
+      "attempts": 74,
+      "fingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "restorationReceiptCount": 5
+    },
+    {
+      "folder": "xhs-fleet-v7-20261013",
+      "attempts": 3,
+      "fingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "restorationReceiptCount": 0
+    },
+    {
+      "folder": "xhs-fleet-v8-20261013",
+      "attempts": 61,
+      "fingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "restorationReceiptCount": 3
+    },
+    {
+      "folder": "xhs-fleet-v9-20261013",
+      "attempts": 2,
+      "fingerprints": {
+        "collector.py": "03df277f629ed3439fe25cf20bd1a5329ba0fae79354aa272996bb517cd92707",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "restorationReceiptCount": 0
+    },
+    {
+      "folder": "xhs-fleet-v10-20261013",
+      "attempts": 1,
+      "fingerprints": {
+        "collector.py": "b8e7eed8ef4c291df12b34d6a35a196920fe0268ab7743858951fb8224dcd9f7",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "restorationReceiptCount": 0
+    },
+    {
+      "folder": "xhs-fleet-v11-20261013",
+      "attempts": 1,
+      "fingerprints": {
+        "collector.py": "b8e7eed8ef4c291df12b34d6a35a196920fe0268ab7743858951fb8224dcd9f7",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "restorationReceiptCount": 0
+    },
+    {
+      "folder": "xhs-fleet-v12-20261013",
+      "attempts": 8,
+      "fingerprints": {
+        "collector.py": "b08d1e5a418e14b47b2f76e9ec957ba7e9503b4b74a1fbb6e856402eb21677e6",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "restorationReceiptCount": 0
+    },
+    {
+      "folder": "xhs-fleet-v13-20261013",
+      "attempts": 11,
+      "fingerprints": {
+        "collector.py": "569f4800cf2c10660ba05837e390c7bb6ad17ce70f2bfd5377636600d5d2b6e4",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "restorationReceiptCount": 0
+    },
+    {
+      "folder": "xhs-fleet-v15-20261013",
+      "attempts": 2,
+      "fingerprints": {
+        "collector.py": "cb39b305e1026a6ee67d6cfc7578e18c54ed91bd965affb077b8034f2b6a5090",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "restorationReceiptCount": 0
+    },
+    {
+      "folder": "xhs-fleet-v16-20261013",
+      "attempts": 1,
+      "fingerprints": {
+        "collector.py": "111259cd63e10d6657610fd3b12caf7e0e3dabe03683f0114f29aa51fe86bf96",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "restorationReceiptCount": 0
+    }
+  ],
+  "slots": [
+    {
+      "name": "47",
+      "manufacturer": "Xiaomi",
+      "model": "M2010J19SC",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 33,
+      "scrolls": 8,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "150",
+      "manufacturer": "Xiaomi",
+      "model": "22041219C",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 55,
+      "scrolls": 11,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "150",
+      "manufacturer": "Xiaomi",
+      "model": "22041219C",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v4-20261013",
+      "sourceFingerprints": {
+        "collector.py": "09b8466ae01d5370bfedbc3ec6886728e0693e7f8ed5f6926dfdd1108c34087c",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "9af2f6b0bc27356d6e3613509bc5778f4270cf80104b1ef43d6febbe9bd7d3f4"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "154",
+      "manufacturer": "OPPO",
+      "model": "PMC110",
+      "slot": "app1",
+      "reportStatus": "failed_xml",
+      "reportReason": "UIAutomator 两种读取方式仍未取得 XML 层级",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v12-20261013",
+      "sourceFingerprints": {
+        "collector.py": "b08d1e5a418e14b47b2f76e9ec957ba7e9503b4b74a1fbb6e856402eb21677e6",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "183",
+      "manufacturer": "HONOR",
+      "model": "ANN_AN00",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 3,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "183",
+      "manufacturer": "HONOR",
+      "model": "ANN_AN00",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v4-20261013",
+      "sourceFingerprints": {
+        "collector.py": "09b8466ae01d5370bfedbc3ec6886728e0693e7f8ed5f6926dfdd1108c34087c",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "9af2f6b0bc27356d6e3613509bc5778f4270cf80104b1ef43d6febbe9bd7d3f4"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "143",
+      "manufacturer": "HONOR",
+      "model": "KOZ_AL00",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 10,
+      "scrolls": 2,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "145",
+      "manufacturer": "HUAWEI",
+      "model": "TAS_AN00",
+      "slot": "app1",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v13-20261013",
+      "sourceFingerprints": {
+        "collector.py": "569f4800cf2c10660ba05837e390c7bb6ad17ce70f2bfd5377636600d5d2b6e4",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "142",
+      "manufacturer": "OPPO",
+      "model": "PDYM20",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 2,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "18",
+      "manufacturer": "Xiaomi",
+      "model": "M2010J19SC",
+      "slot": "app1",
+      "reportStatus": "failed_navigation",
+      "reportReason": "未证实完整作品列表路径，保留原始错误",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "18",
+      "manufacturer": "Xiaomi",
+      "model": "M2010J19SC",
+      "slot": "app2",
+      "reportStatus": "clone_absent",
+      "reportReason": "指定 Android 分身用户未安装小红书",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v4-20261013",
+      "sourceFingerprints": {
+        "collector.py": "09b8466ae01d5370bfedbc3ec6886728e0693e7f8ed5f6926dfdd1108c34087c",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "9af2f6b0bc27356d6e3613509bc5778f4270cf80104b1ef43d6febbe9bd7d3f4"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "4",
+      "manufacturer": "vivo",
+      "model": "V2020A",
+      "slot": "app1",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "113",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 56,
+      "scrolls": 11,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "113",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "1",
+      "manufacturer": "HUAWEI",
+      "model": "KKG_AN00",
+      "slot": "app1",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-fixed-20261013",
+      "sourceFingerprints": {
+        "collector.py": "3bbefcb5cde6a6150eea8ebcef9b1357ccb3e87626d5430762aad85b1cad6e5f",
+        "xhs-data-collection.mjs": "250b2077c697de9a41b8bccca5f27ebf278b7fa1cecafc6ab7c804258dd022c8",
+        "fleet.mjs": "9835d854011832a60f2cedc50934d72efa0a47eaf933832f12525aa557e87f11"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "3",
+      "manufacturer": "Xiaomi",
+      "model": "220233L2C",
+      "slot": "app1",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "6",
+      "manufacturer": "vivo",
+      "model": "V2020A",
+      "slot": "app1",
+      "reportStatus": "blocked_permission",
+      "reportReason": "创作中心未提供数据权限",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "10",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "12",
+      "manufacturer": "Xiaomi",
+      "model": "M2010J19SC",
+      "slot": "app1",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "13",
+      "manufacturer": "Xiaomi",
+      "model": "220233L2C",
+      "slot": "app2",
+      "reportStatus": "failed_xml",
+      "reportReason": "UIAutomator 未取得 XML 层级",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v9-20261013",
+      "sourceFingerprints": {
+        "collector.py": "03df277f629ed3439fe25cf20bd1a5329ba0fae79354aa272996bb517cd92707",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "14",
+      "manufacturer": "Xiaomi",
+      "model": "M2006C3LC",
+      "slot": "app2",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "20",
+      "manufacturer": "Xiaomi",
+      "model": "M2006C3LC",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 73,
+      "scrolls": 18,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v5-20261013",
+      "sourceFingerprints": {
+        "collector.py": "6964924f26c16e5c8f0f6205d8b8813a60ba0d2174a57b11b4660d7f5c9dd677",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "9af2f6b0bc27356d6e3613509bc5778f4270cf80104b1ef43d6febbe9bd7d3f4"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "21",
+      "manufacturer": "HUAWEI",
+      "model": "TNNH_AN00",
+      "slot": "app1",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "22",
+      "manufacturer": "Xiaomi",
+      "model": "220233L2C",
+      "slot": "app1",
+      "reportStatus": "blocked_permission",
+      "reportReason": "创作中心未提供数据权限",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "23",
+      "manufacturer": "Xiaomi",
+      "model": "220233L2C",
+      "slot": "app1",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "24",
+      "manufacturer": "Xiaomi",
+      "model": "220233L2C",
+      "slot": "app1",
+      "reportStatus": "blocked_permission",
+      "reportReason": "创作中心未提供数据权限",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v4-20261013",
+      "sourceFingerprints": {
+        "collector.py": "09b8466ae01d5370bfedbc3ec6886728e0693e7f8ed5f6926dfdd1108c34087c",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "9af2f6b0bc27356d6e3613509bc5778f4270cf80104b1ef43d6febbe9bd7d3f4"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "25",
+      "manufacturer": "Xiaomi",
+      "model": "220233L2C",
+      "slot": "app2",
+      "reportStatus": "blocked_permission",
+      "reportReason": "创作中心未提供数据权限",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "26",
+      "manufacturer": "Xiaomi",
+      "model": "220233L2C",
+      "slot": "app1",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "27",
+      "manufacturer": "Xiaomi",
+      "model": "220233L2C",
+      "slot": "app1",
+      "reportStatus": "blocked_server_error",
+      "reportReason": "截图确认小红书“服务器出错”",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v4-20261013",
+      "sourceFingerprints": {
+        "collector.py": "09b8466ae01d5370bfedbc3ec6886728e0693e7f8ed5f6926dfdd1108c34087c",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "9af2f6b0bc27356d6e3613509bc5778f4270cf80104b1ef43d6febbe9bd7d3f4"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "28",
+      "manufacturer": "Xiaomi",
+      "model": "220233L2C",
+      "slot": "app1",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "32",
+      "manufacturer": "Xiaomi",
+      "model": "M2010J19SC",
+      "slot": "app1",
+      "reportStatus": "failed_navigation",
+      "reportReason": "未证实完整作品列表路径，保留原始错误",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "34",
+      "manufacturer": "vivo",
+      "model": "V2020A",
+      "slot": "app1",
+      "reportStatus": "blocked_account",
+      "reportReason": "创作中心显示账号异常，作品列表为空；未断言两者因果",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "35",
+      "manufacturer": "vivo",
+      "model": "V2020CA",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 12,
+      "scrolls": 2,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v16-20261013",
+      "sourceFingerprints": {
+        "collector.py": "111259cd63e10d6657610fd3b12caf7e0e3dabe03683f0114f29aa51fe86bf96",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "43",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v4-20261013",
+      "sourceFingerprints": {
+        "collector.py": "09b8466ae01d5370bfedbc3ec6886728e0693e7f8ed5f6926dfdd1108c34087c",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "9af2f6b0bc27356d6e3613509bc5778f4270cf80104b1ef43d6febbe9bd7d3f4"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "51",
+      "manufacturer": "OPPO",
+      "model": "PECM20",
+      "slot": "app1",
+      "reportStatus": "blocked_terms",
+      "reportReason": "截图确认首次个人信息保护协议提示",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v5-20261013",
+      "sourceFingerprints": {
+        "collector.py": "6964924f26c16e5c8f0f6205d8b8813a60ba0d2174a57b11b4660d7f5c9dd677",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "9af2f6b0bc27356d6e3613509bc5778f4270cf80104b1ef43d6febbe9bd7d3f4"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "52",
+      "manufacturer": "OPPO",
+      "model": "PECM30",
+      "slot": "app1",
+      "reportStatus": "blocked_terms",
+      "reportReason": "截图确认首次个人信息保护协议提示",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v5-20261013",
+      "sourceFingerprints": {
+        "collector.py": "6964924f26c16e5c8f0f6205d8b8813a60ba0d2174a57b11b4660d7f5c9dd677",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "9af2f6b0bc27356d6e3613509bc5778f4270cf80104b1ef43d6febbe9bd7d3f4"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "53",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "package_absent",
+      "reportReason": "实际 PackageManager 查询未找到安装包",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "54",
+      "manufacturer": "OPPO",
+      "model": "PECM30",
+      "slot": "app1",
+      "reportStatus": "failed_navigation",
+      "reportReason": "未证实完整作品列表路径，保留原始错误",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "55",
+      "manufacturer": "OPPO",
+      "model": "PDYM20",
+      "slot": "app1",
+      "reportStatus": "blocked_terms",
+      "reportReason": "首次协议提示，未自动同意",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "57",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "blocked_terms",
+      "reportReason": "首次协议提示，未自动同意",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "58",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 12,
+      "scrolls": 2,
+      "complete": true,
+      "stopReason": "list_end_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "59",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "failed_navigation",
+      "reportReason": "未证实完整作品列表路径，保留原始错误",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v7-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "59",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "failed_xml",
+      "reportReason": "UIAutomator 两种读取方式仍未取得 XML 层级",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v13-20261013",
+      "sourceFingerprints": {
+        "collector.py": "569f4800cf2c10660ba05837e390c7bb6ad17ce70f2bfd5377636600d5d2b6e4",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "60",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 16,
+      "scrolls": 3,
+      "complete": true,
+      "stopReason": "list_end_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "61",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 1,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "list_end_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "62",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 46,
+      "scrolls": 11,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "67",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 31,
+      "scrolls": 6,
+      "complete": true,
+      "stopReason": "list_end_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v4-20261013",
+      "sourceFingerprints": {
+        "collector.py": "09b8466ae01d5370bfedbc3ec6886728e0693e7f8ed5f6926dfdd1108c34087c",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "9af2f6b0bc27356d6e3613509bc5778f4270cf80104b1ef43d6febbe9bd7d3f4"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "69",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 28,
+      "scrolls": 5,
+      "complete": true,
+      "stopReason": "list_end_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "71",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 9,
+      "scrolls": 1,
+      "complete": true,
+      "stopReason": "list_end_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "74",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 1,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "list_end_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v13-20261013",
+      "sourceFingerprints": {
+        "collector.py": "569f4800cf2c10660ba05837e390c7bb6ad17ce70f2bfd5377636600d5d2b6e4",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "78",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "78",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 60,
+      "scrolls": 13,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "79",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "failed_xml",
+      "reportReason": "UIAutomator 两种读取方式仍未取得 XML 层级",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v13-20261013",
+      "sourceFingerprints": {
+        "collector.py": "569f4800cf2c10660ba05837e390c7bb6ad17ce70f2bfd5377636600d5d2b6e4",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "79",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "failed_xml",
+      "reportReason": "UIAutomator 两种读取方式仍未取得 XML 层级",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v13-20261013",
+      "sourceFingerprints": {
+        "collector.py": "569f4800cf2c10660ba05837e390c7bb6ad17ce70f2bfd5377636600d5d2b6e4",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "80",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "failed_xml",
+      "reportReason": "UIAutomator 两种读取方式仍未取得 XML 层级",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v12-20261013",
+      "sourceFingerprints": {
+        "collector.py": "b08d1e5a418e14b47b2f76e9ec957ba7e9503b4b74a1fbb6e856402eb21677e6",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "81",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 23,
+      "scrolls": 4,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "82",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 14,
+      "scrolls": 2,
+      "complete": true,
+      "stopReason": "list_end_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "86",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 18,
+      "scrolls": 4,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-20261013-1352",
+      "sourceFingerprints": {
+        "collector.py": "795269bb24c2f9febdcb75c2795ae0e8ca21d25903dd630f21b60fe44b316eb9",
+        "xhs-data-collection.mjs": "9f4fe99b45d20b8c55e40b38022a7799148a553919d721f41cd830515aaf9ab4",
+        "fleet.mjs": "a4287079949b9a9709ea53f438613b7701e7ecdb92728ecdf2738db829673dc7"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "86",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "87",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "87",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "failed_adb_timeout",
+      "reportReason": "有界 ADB/界面命令超时，未做全局恢复",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "88",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "88",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 1,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "90",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "90",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "91",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 30,
+      "scrolls": 6,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "91",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "failed_external_app",
+      "reportReason": "小红书通知关闭后前台为企业微信；切出原因未确认",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v13-20261013",
+      "sourceFingerprints": {
+        "collector.py": "569f4800cf2c10660ba05837e390c7bb6ad17ce70f2bfd5377636600d5d2b6e4",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "92",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "92",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 18,
+      "scrolls": 3,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "93",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 23,
+      "scrolls": 4,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "93",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "94",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 19,
+      "scrolls": 3,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "94",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 10,
+      "scrolls": 2,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "95",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "95",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "96",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "96",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "97",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 62,
+      "scrolls": 13,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "97",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 5,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "98",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 10,
+      "scrolls": 2,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "98",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 11,
+      "scrolls": 2,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "99",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 32,
+      "scrolls": 6,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "99",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 18,
+      "scrolls": 3,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "101",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 15,
+      "scrolls": 3,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "102",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 13,
+      "scrolls": 2,
+      "complete": true,
+      "stopReason": "list_end_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v7-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "103",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 4,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "list_end_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "106",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 7,
+      "scrolls": 1,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "106",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "107",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "blocked_account",
+      "reportReason": "创作中心未提供数据权限",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "108",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "109",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 16,
+      "scrolls": 3,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "109",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 13,
+      "scrolls": 2,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "111",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 17,
+      "scrolls": 3,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "111",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 15,
+      "scrolls": 3,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "112",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 40,
+      "scrolls": 8,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "112",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 43,
+      "scrolls": 8,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v12-20261013",
+      "sourceFingerprints": {
+        "collector.py": "b08d1e5a418e14b47b2f76e9ec957ba7e9503b4b74a1fbb6e856402eb21677e6",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "114",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "blocked_account",
+      "reportReason": "创作中心未提供数据权限",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "114",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 1,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "115",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "116",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "blocked_account",
+      "reportReason": "创作中心未提供数据权限",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "117",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "119",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "120",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 26,
+      "scrolls": 5,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "120",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "target_offline",
+      "reportReason": "测试时 ADB 离线或手机状态发生变化",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": null,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": true
+    },
+    {
+      "name": "121",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 4,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "121",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "123",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "target_offline",
+      "reportReason": "测试时 ADB 离线或手机状态发生变化",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": null,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": true
+    },
+    {
+      "name": "124",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "skipped_busy",
+      "reportReason": "screen_control",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": null,
+      "sourceFolder": "xhs-fleet-v13-20261013",
+      "sourceFingerprints": {
+        "collector.py": "569f4800cf2c10660ba05837e390c7bb6ad17ce70f2bfd5377636600d5d2b6e4",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "125",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 46,
+      "scrolls": 9,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "125",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "126",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v11-20261013",
+      "sourceFingerprints": {
+        "collector.py": "b8e7eed8ef4c291df12b34d6a35a196920fe0268ab7743858951fb8224dcd9f7",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "127",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "failed_adb",
+      "reportReason": "目标 ADB 命令失败，根因未确认",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": null,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": true
+    },
+    {
+      "name": "127",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "target_offline",
+      "reportReason": "测试时 ADB 离线或手机状态发生变化",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": null,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "128",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "blocked_permission",
+      "reportReason": "创作中心未提供数据权限",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "129",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "failed_navigation",
+      "reportReason": "未证实完整作品列表路径，保留原始错误",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v6-20261013",
+      "sourceFingerprints": {
+        "collector.py": "1db5b1dae8ac07c987f4aeb61d70696f8177804d944a7e15ad42d7eed1a4a48d",
+        "xhs-data-collection.mjs": "75176186b89b6d7cc5b957cb1629c0cebd3a71152a21716bd26aa973f54ed6bd",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "131",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 44,
+      "scrolls": 9,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "131",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "slot": "app2",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "132",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 74,
+      "scrolls": 15,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "132",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 18,
+      "scrolls": 3,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "138",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v13-20261013",
+      "sourceFingerprints": {
+        "collector.py": "569f4800cf2c10660ba05837e390c7bb6ad17ce70f2bfd5377636600d5d2b6e4",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "139",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "139",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "140",
+      "manufacturer": "Xiaomi",
+      "model": "MI_8",
+      "slot": "app1",
+      "reportStatus": "failed_chat_recovery",
+      "reportReason": "恢复聊天页两次返回后仍未退出，停止采集",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v12-20261013",
+      "sourceFingerprints": {
+        "collector.py": "b08d1e5a418e14b47b2f76e9ec957ba7e9503b4b74a1fbb6e856402eb21677e6",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "140",
+      "manufacturer": "Xiaomi",
+      "model": "MI_8",
+      "slot": "app2",
+      "reportStatus": "failed_chat_recovery",
+      "reportReason": "恢复聊天页两次返回后仍未退出，停止采集",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v12-20261013",
+      "sourceFingerprints": {
+        "collector.py": "b08d1e5a418e14b47b2f76e9ec957ba7e9503b4b74a1fbb6e856402eb21677e6",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "141",
+      "manufacturer": "Xiaomi",
+      "model": "220233L2C",
+      "slot": "app1",
+      "reportStatus": "failed_adb_timeout",
+      "reportReason": "有界 ADB/界面命令超时，未做全局恢复",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "141",
+      "manufacturer": "Xiaomi",
+      "model": "220233L2C",
+      "slot": "app2",
+      "reportStatus": "failed_adb_timeout",
+      "reportReason": "有界 ADB/界面命令超时，未做全局恢复",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "144",
+      "manufacturer": "HUAWEI",
+      "model": "DVC_AN20",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "146",
+      "manufacturer": "OPPO",
+      "model": "PHJ110",
+      "slot": "app1",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "147",
+      "manufacturer": "OPPO",
+      "model": "PHJ110",
+      "slot": "app1",
+      "reportStatus": "package_absent",
+      "reportReason": "实际 PackageManager 查询未找到安装包",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "149",
+      "manufacturer": "OPPO",
+      "model": "PKL110",
+      "slot": "app1",
+      "reportStatus": "blocked_terms",
+      "reportReason": "首次协议提示，未自动同意",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "151",
+      "manufacturer": "vivo",
+      "model": "V2230A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 47,
+      "scrolls": 11,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "151",
+      "manufacturer": "vivo",
+      "model": "V2230A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 47,
+      "scrolls": 11,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "152",
+      "manufacturer": "OPPO",
+      "model": "PHJ110",
+      "slot": "app1",
+      "reportStatus": "skipped_busy",
+      "reportReason": "用户确认是他人实时控制，保持跳过",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": null,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "153",
+      "manufacturer": "OPPO",
+      "model": "PKL110",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "153",
+      "manufacturer": "OPPO",
+      "model": "PKL110",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 5,
+      "scrolls": 1,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v10-20261013",
+      "sourceFingerprints": {
+        "collector.py": "b8e7eed8ef4c291df12b34d6a35a196920fe0268ab7743858951fb8224dcd9f7",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "155",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 19,
+      "scrolls": 4,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "155",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 14,
+      "scrolls": 2,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "156",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 2,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "156",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 19,
+      "scrolls": 4,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "158",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app1",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "158",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app2",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "159",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app1",
+      "reportStatus": "failed_xml",
+      "reportReason": "UIAutomator 未取得 XML 层级",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "161",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app1",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "162",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "162",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "163",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app1",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "163",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app2",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "164",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 4,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "164",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 6,
+      "scrolls": 1,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "165",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app1",
+      "reportStatus": "failed_external_app",
+      "reportReason": "前台为 vivo 浏览器，目标应用读取失败；原因未确认",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "165",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app2",
+      "reportStatus": "blocked_external_permission",
+      "reportReason": "浏览器位置权限弹窗遮挡，未操作非小红书权限",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "172",
+      "manufacturer": "Tianyi",
+      "model": "TYH651M_02",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 1,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "list_end_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "173",
+      "manufacturer": "Xiaomi",
+      "model": "25082RNC1C",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v13-20261013",
+      "sourceFingerprints": {
+        "collector.py": "569f4800cf2c10660ba05837e390c7bb6ad17ce70f2bfd5377636600d5d2b6e4",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "173",
+      "manufacturer": "Xiaomi",
+      "model": "25082RNC1C",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "176",
+      "manufacturer": "vivo",
+      "model": "V2443A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 1,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "177",
+      "manufacturer": "HONOR",
+      "model": "NIC_AN00",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 25,
+      "scrolls": 5,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "180",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 9,
+      "scrolls": 1,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "180",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 2,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "181",
+      "manufacturer": "HUAWEI",
+      "model": "STG_AL00",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 5,
+      "scrolls": 1,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v15-20261013",
+      "sourceFingerprints": {
+        "collector.py": "cb39b305e1026a6ee67d6cfc7578e18c54ed91bd965affb077b8034f2b6a5090",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "182",
+      "manufacturer": "HUAWEI",
+      "model": "ANA_AN00",
+      "slot": "app1",
+      "reportStatus": "failed_chat_recovery",
+      "reportReason": "恢复聊天页两次返回后仍未退出，停止采集",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v12-20261013",
+      "sourceFingerprints": {
+        "collector.py": "b08d1e5a418e14b47b2f76e9ec957ba7e9503b4b74a1fbb6e856402eb21677e6",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "184",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 7,
+      "scrolls": 1,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v12-20261013",
+      "sourceFingerprints": {
+        "collector.py": "b08d1e5a418e14b47b2f76e9ec957ba7e9503b4b74a1fbb6e856402eb21677e6",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "184",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app2",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 3,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "185",
+      "manufacturer": "OPPO",
+      "model": "PFJM10",
+      "slot": "app1",
+      "reportStatus": "failed_xml",
+      "reportReason": "UIAutomator 两种读取方式仍未取得 XML 层级",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v13-20261013",
+      "sourceFingerprints": {
+        "collector.py": "569f4800cf2c10660ba05837e390c7bb6ad17ce70f2bfd5377636600d5d2b6e4",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "186",
+      "manufacturer": "vivo",
+      "model": "V2272A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "186",
+      "manufacturer": "vivo",
+      "model": "V2272A",
+      "slot": "app2",
+      "reportStatus": "blocked_login",
+      "reportReason": "小红书未登录或登录已失效",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "187",
+      "manufacturer": "vivo",
+      "model": "V2034A",
+      "slot": "app1",
+      "reportStatus": "passed",
+      "reportReason": "",
+      "notes": 17,
+      "scrolls": 3,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "188",
+      "manufacturer": "HONOR",
+      "model": "LLY_AN00",
+      "slot": "app1",
+      "reportStatus": "blocked_ambiguous_selector",
+      "reportReason": "荣耀系统选择器两项同名小红书，没有可证实槽位的元素",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    },
+    {
+      "name": "189",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "slot": "app1",
+      "reportStatus": "blocked_keyguard",
+      "reportReason": "截图/XML 为锁屏，自动唤醒后仍未进入目标应用",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "sourceFolder": "xhs-fleet-v8-20261013",
+      "sourceFingerprints": {
+        "collector.py": "95973722149669784d4079e10afcf40031fdc14f029cd3d1a6ab1795d4352026",
+        "xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+        "fleet.mjs": "2ab86df95f488109b2e6da3aa2a8f734dd344427ab37c1b07801dc8d7b68f533"
+      },
+      "reconnectionOriginalSettingsVerified": false
+    }
+  ]
+}

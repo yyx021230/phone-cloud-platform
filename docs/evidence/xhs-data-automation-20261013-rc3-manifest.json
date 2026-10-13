@@ -1,0 +1,17 @@
+{
+  "version": "xhs-data-automation-20261013-rc.3",
+  "branch": "codex/xhs-data-automation-20261013",
+  "parentCommit": "6193a77922db93403efc1d2c3fd09a7b9651b61e",
+  "state": "local_candidate_not_deployed",
+  "productionAgentIndexSha256": "0d6a0aa177f38873b6999e18bba24fdecb865469924bc91efe396e91e2bd883b",
+  "files": {
+    "windows-agent/scripts/小红书数据同步.py": "111259cd63e10d6657610fd3b12caf7e0e3dabe03683f0114f29aa51fe86bf96",
+    "windows-agent/scripts/test_xhs_data_sync.py": "e859401d6ad30397fac60b84cd467828217451f5538e8b6b69c26653676b038b",
+    "windows-agent/src/xhs-data-collection.mjs": "50146cad7389c88fa4748e8d12367dac261b48659a781d52c16082dd5c073782",
+    "windows-agent/src/xhs-data-collection.test.mjs": "f78f4fe13b8263cf7806c035d229213a657a38bac13abd7658d47872d866f852",
+    "docs/PROJECT_DEVELOPMENT.md": "0c128504a5554cfcf4b304ab9b149aec85eb1ac886f188a55a164983393e865a",
+    "docs/XHS_DATA_AUTOMATION_RC_20261013.md": "8d6aa3f4653813b226f8cafeca88de781b738d3348d590991800267e63a3a896",
+    "docs/evidence/xhs-data-automation-20261013-rc3-fleet.json": "fbc5d642940e34fd96dcd97540627046faf7e262b060c0acdbf8e985f7f0acc4"
+  },
+  "rollback": "Only scoped dedicated collector/consumer files from parent rc.2; no production rollback artifacts created or deployment performed."
+}

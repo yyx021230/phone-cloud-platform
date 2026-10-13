@@ -18,6 +18,7 @@ import re
 import subprocess
 import sys
 import time
+import uuid
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -80,7 +81,42 @@ def capture(adb_path, serial):
             return ET.fromstring(raw[start:end + len(HIERARCHY_END)])
         if attempt == 0:
             time.sleep(0.5)
+    current = focus(adb_path, serial)
+    if re.search(r"com\.xingin\.xhs/com\.xingin\.login\.device\.offline\.DeviceOfflineRemindActivity(?:[}\s]|$)", current):
+        raise RuntimeError("Xiaohongshu account is logged out; manual login is required")
+    # Some OEM builds return no XML through /dev/tty while a file dump works.
+    # Use a fresh per-capture path, never a cached hierarchy from another page.
+    path = "/sdcard/phonecloud-xhs-capture-" + uuid.uuid4().hex + ".xml"
+    try:
+        adb(adb_path, serial, "shell", "uiautomator", "dump", path, timeout=15)
+        raw = adb(adb_path, serial, "exec-out", "cat", path, timeout=8)
+        start, end = raw.find("<hierarchy"), raw.rfind(HIERARCHY_END)
+        if start >= 0 and end >= start:
+            return ET.fromstring(raw[start:end + len(HIERARCHY_END)])
+    except (RuntimeError, subprocess.TimeoutExpired):
+        # Preserve the original no-hierarchy error for the narrowly scoped
+        # transparent-notification recovery in navigation_capture.
+        pass
+    finally:
+        adb(adb_path, serial, "shell", "rm", "-f", path, timeout=8)
     raise RuntimeError("UIAutomator did not return an XML hierarchy")
+
+
+def navigation_capture(adb_path, serial, guard, events):
+    try:
+        return capture(adb_path, serial)
+    except RuntimeError as error:
+        current = focus(adb_path, serial)
+        notification = re.search(
+            r"com\.xingin\.xhs/(?:com\.xingin\.authorization\.NotificationAuthorizationTranslucentActivity|"
+            r"\.authorization\.NotificationAuthorizationTranslucentActivity)(?:[}\s]|$)", current)
+        if "did not return an XML hierarchy" not in str(error) or not notification:
+            raise
+        guard()
+        adb(adb_path, serial, "shell", "input", "keyevent", "4", timeout=7)
+        time.sleep(0.4)
+        events.append("inaccessible_notification_prompt_back")
+        return capture(adb_path, serial)
 
 
 def assert_no_poco(adb_path, serial):
@@ -183,6 +219,95 @@ def wake_if_asleep(adb_path, serial, guard, events):
     return True
 
 
+def explicit_clone_user(adb_path, serial):
+    """Use only brand/profile pairs observed in fleet QA, never guess a user."""
+    brand = adb(adb_path, serial, "shell", "getprop", "ro.product.manufacturer").strip().upper()
+    profiles = {"HONOR": ("128", "分身应用"), "XIAOMI": ("999", "XSpace"), "OPPO": ("999", "MultiApp")}
+    if brand not in profiles:
+        return None
+    expected_id, expected_name = profiles[brand]
+    users = adb(adb_path, serial, "shell", "pm", "list", "users")
+    clones = re.findall(r"UserInfo\{(" + expected_id + "):" + re.escape(expected_name) + r":[0-9a-fA-F]+\}", users)
+    if len(clones) != 1:
+        raise RuntimeError("Xiaohongshu clone profile is not uniquely proven")
+    installed = adb(adb_path, serial, "shell", "pm", "list", "packages", "--user", clones[0], XHS_PACKAGE)
+    if f"package:{XHS_PACKAGE}" not in installed.splitlines():
+        raise RuntimeError("Xiaohongshu is not installed in the requested clone profile")
+    return clones[0]
+
+
+def verify_collection_slot(adb_path, serial, slot, events):
+    requested = [event.split(":", 1)[1] for event in events if event.startswith("clone_user_requested:")]
+    if requested:
+        current = focus(adb_path, serial)
+        if len(requested) != 1 or not re.search(r"\bu" + re.escape(requested[0]) + r"\s+com\.xingin\.xhs/", current):
+            raise RuntimeError("Xiaohongshu foreground clone user does not match the requested slot")
+        if "clone_slot_selected:" + slot not in events:
+            events.append("clone_slot_selected:" + slot)
+    if slot == "app2" and "clone_slot_selected:app2" not in events:
+        raise RuntimeError("Xiaohongshu clone slot could not be proven")
+
+
+def select_miui_clone(adb_path, serial, root, current, slot, guard, events):
+    """MIUI gives both items the same text; use the observed slot container and icon."""
+    if (not re.search(r"\bandroid/com\.android\.internal\.app\.ResolverActivity(?:[}\s]|$)", current)
+            or not any(n.get("package") == "android" and n.get("resource-id") == "miui:id/alertTitle"
+                       and n.get("text") == "请选择要使用的应用" for n in live_nodes(root))):
+        return False
+    choices = [n for n in live_nodes(root) if n.get("package") == "android"
+               and n.get("resource-id") == "android.miui:id/" + slot
+               and n.get("class") == "android.widget.LinearLayout"
+               and n.get("clickable") == "true" and n.get("enabled") == "true"]
+    if len(choices) != 1 or not label(choices[0], "小红书"):
+        raise RuntimeError("MIUI Xiaohongshu clone slot container is not uniquely proven")
+    icon = "小红书" if slot == "app1" else "双开小红书"
+    if len([n for n in live_nodes(choices[0]) if n.get("package") == "android"
+            and n.get("class") == "android.widget.ImageView" and n.get("content-desc") == icon]) != 1:
+        raise RuntimeError("MIUI Xiaohongshu clone icon does not match the requested slot")
+    x1, y1, x2, y2 = bounds(choices[0])
+    guard()
+    adb(adb_path, serial, "shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2), timeout=7)
+    time.sleep(0.5)
+    requested = "clone_user_requested:" + ("0" if slot == "app1" else "999")
+    if requested not in events:
+        events.append(requested)
+    if "clone_slot_selected:" + slot not in events:
+        events.append("clone_slot_selected:" + slot)
+    events.append("miui_clone_container_selected:" + slot)
+    return True
+
+
+def select_oppo_clone(adb_path, serial, root, current, slot, guard, events):
+    package = "com.android.intentresolver"
+    if not re.search(r"\bcom\.android\.intentresolver/com\.android\.intentresolver\.ChooserActivityLauncher(?:[}\s]|$)", current):
+        return False
+    remember = [n for n in live_nodes(root) if n.get("package") == package
+                and n.get("resource-id") == package + ":id/button_always_multiapp"
+                and n.get("class") == "android.widget.CheckBox"]
+    if len(remember) != 1 or remember[0].get("checked") != "false":
+        raise RuntimeError("OPPO clone one-time selection is not proven")
+    value = "小红书" if slot == "app1" else "小红书(分身)"
+    labels = [n for n in label(root, value) if n.get("package") == package
+              and n.get("resource-id") == "android:id/text1" and n.get("enabled") == "true"]
+    parents = {child: parent for parent in root.iter() for child in parent}
+    rows = [parents.get(n) for n in labels]
+    if (len(rows) != 1 or rows[0] is None or rows[0].get("package") != package
+            or rows[0].get("resource-id") != package + ":id/resolver_item_layout"
+            or rows[0].get("class") != "android.widget.LinearLayout"
+            or rows[0].get("clickable") != "true" or rows[0].get("enabled") != "true"
+            or rows[0] not in live_nodes(root)):
+        raise RuntimeError("OPPO Xiaohongshu clone slot item is not uniquely proven")
+    x1, y1, x2, y2 = bounds(rows[0])
+    guard()
+    adb(adb_path, serial, "shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2), timeout=7)
+    time.sleep(0.5)
+    for event in ("clone_user_requested:" + ("0" if slot == "app1" else "999"), "clone_slot_selected:" + slot):
+        if event not in events:
+            events.append(event)
+    events.append("oppo_clone_item_selected:" + slot)
+    return True
+
+
 def start_xhs(adb_path, serial, slot, guard, events):
     """Cold-start the app and choose only the caller's explicit clone slot."""
     guard()
@@ -190,36 +315,45 @@ def start_xhs(adb_path, serial, slot, guard, events):
     adb(adb_path, serial, "shell", "wm", "dismiss-keyguard", timeout=7)
     if f"package:{XHS_PACKAGE}" not in adb(adb_path, serial, "shell", "pm", "list", "packages", XHS_PACKAGE):
         raise RuntimeError("Xiaohongshu is not installed on this phone")
-    resolved = adb(adb_path, serial, "shell", "cmd", "package", "resolve-activity", "--brief", XHS_PACKAGE)
+    clone_user = explicit_clone_user(adb_path, serial) if slot == "app2" else None
+    user_args = ("--user", clone_user) if clone_user else ()
+    resolved = adb(adb_path, serial, "shell", "cmd", "package", "resolve-activity", "--brief", *user_args, XHS_PACKAGE)
     activity = next((line.strip() for line in reversed(resolved.splitlines())
                      if "/" in line and " " not in line), f"{XHS_PACKAGE}/.index.v2.IndexActivityV2")
     guard()
-    adb(adb_path, serial, "shell", "am", "force-stop", XHS_PACKAGE, timeout=8)
+    adb(adb_path, serial, "shell", "am", "force-stop", *user_args, XHS_PACKAGE, timeout=8)
     events.append("xhs_cold_started")
     guard()
-    adb(adb_path, serial, "shell", "am", "start", "-W", "-n", activity, timeout=20)
+    adb(adb_path, serial, "shell", "am", "start", "-W", *user_args, "-n", activity, timeout=20)
+    if clone_user:
+        events.append("clone_user_requested:" + clone_user)
     time.sleep(0.7)
-    root = capture(adb_path, serial)
+    root = navigation_capture(adb_path, serial, guard, events)
     for _ in range(5):
         current = focus(adb_path, serial)
         if any(marker in current for marker in ("com.bbk.updater", "VivoUsbDialog", "UsbDetailsActivity")):
             if recover_known_overlay(adb_path, serial, root, guard, events):
-                root = capture(adb_path, serial)
+                root = navigation_capture(adb_path, serial, guard, events)
                 continue
         if any(marker in current for marker in ("DoubleAppResolverActivity", "com.android.intentresolver",
                                                 "ResolverActivity")):
+            if (select_miui_clone(adb_path, serial, root, current, slot, guard, events)
+                    or select_oppo_clone(adb_path, serial, root, current, slot, guard, events)):
+                return navigation_capture(adb_path, serial, guard, events)
             labels = ("小红书",) if slot == "app1" else ("Ⅱ·小红书", "II·小红书", "II ·小红书", "Ⅱ ·小红书")
             for value in labels:
                 if label(root, value):
                     tap_label(adb_path, serial, root, value, guard)
                     events.append("clone_slot_selected:" + slot)
-                    return capture(adb_path, serial)
+                    return navigation_capture(adb_path, serial, guard, events)
             if recover_known_overlay(adb_path, serial, root, guard, events):
-                root = capture(adb_path, serial)
+                root = navigation_capture(adb_path, serial, guard, events)
                 continue
             time.sleep(0.5)
-            root = capture(adb_path, serial)
+            root = navigation_capture(adb_path, serial, guard, events)
             continue
+        if slot == "app2" and not clone_user:
+            raise RuntimeError("Xiaohongshu clone slot could not be proven")
         return root
     raise RuntimeError("Xiaohongshu clone slot could not be proven")
 
@@ -242,6 +376,103 @@ def recover_known_overlay(adb_path, serial, root, guard, events):
         if "NotificationAuthorizationTranslucentActivity" in focus(adb_path, serial):
             raise RuntimeError("notification overlay stayed open after Back")
         events.append("notification_prompt_back")
+        return True
+
+    permission_package = "com.android.permissioncontroller"
+    notification_title = "“Ⅱ·小红书”请求向您发送通知"
+    if (re.search(r"\bu999\s+com\.android\.permissioncontroller/com\.android\.permissioncontroller\.permission\.ui\.GrantPermissionsActivity(?:[}\s]|$)", current)
+            and any(n.get("package") == permission_package and n.get("resource-id") == permission_package + ":id/permission_message"
+                    and n.get("text") == notification_title for n in live_nodes(root))):
+        press_back()
+        refreshed = navigation_capture(adb_path, serial, guard, events)
+        if not label(refreshed, notification_title):
+            events.append("vivo_clone_notification_back")
+            return True
+        buttons = [n for n in live_nodes(refreshed) if n.get("package") == permission_package
+                   and n.get("resource-id") == permission_package + ":id/permission_deny_and_dont_ask_again_button"
+                   and n.get("text") == "禁止且不再询问" and n.get("class") == "android.widget.Button"
+                   and n.get("clickable") == "true" and n.get("enabled") == "true"]
+        if len(buttons) != 1 or not re.search(r"\bu999\s+com\.android\.permissioncontroller/", focus(adb_path, serial)):
+            raise RuntimeError("Vivo clone notification safe decline action not proven")
+        x1, y1, x2, y2 = bounds(buttons[0])
+        guard()
+        adb(adb_path, serial, "shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2), timeout=7)
+        time.sleep(0.4)
+        if label(navigation_capture(adb_path, serial, guard, events), notification_title):
+            raise RuntimeError("Vivo clone notification prompt stayed open after declining")
+        events.append("vivo_clone_notification_denied")
+        return True
+
+    if (re.search(r"\bcom\.oplus\.notificationmanager(?:[}/\s]|$)", current)
+            and any(node.get("package") == "com.oplus.notificationmanager"
+                    and (node.get("text") or "").strip() == "允许“小红书”发送通知吗？"
+                    for node in live_nodes(root))):
+        press_back()
+        refreshed = navigation_capture(adb_path, serial, guard, events)
+        if any(node.get("package") == "com.oplus.notificationmanager"
+               and (node.get("text") or "").strip() == "允许“小红书”发送通知吗？"
+               for node in live_nodes(refreshed)):
+            # These fleet dialogs ignore Back; decline only the observed XHS request.
+            buttons = [node for node in live_nodes(refreshed)
+                       if node.get("package") == "com.oplus.notificationmanager"
+                       and node.get("resource-id") == "android:id/button2"
+                       and node.get("class") == "android.widget.Button"
+                       and (node.get("text") or "").strip() == "拒绝"
+                       and node.get("clickable") == "true" and node.get("enabled") == "true"]
+            if (not re.search(r"\bcom\.oplus\.notificationmanager(?:[}/\s]|$)", focus(adb_path, serial))
+                    or len(buttons) != 1):
+                raise RuntimeError("OPPO notification safe decline action not proven")
+            x1, y1, x2, y2 = bounds(buttons[0])
+            guard()
+            adb(adb_path, serial, "shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2), timeout=7)
+            time.sleep(0.4)
+            closed = navigation_capture(adb_path, serial, guard, events)
+            if any(node.get("package") == "com.oplus.notificationmanager"
+                   and (node.get("text") or "").strip() == "允许“小红书”发送通知吗？"
+                   for node in live_nodes(closed)):
+                raise RuntimeError("OPPO notification prompt stayed open after declining")
+            events.append("oppo_notification_prompt_denied")
+            return True
+        events.append("oppo_notification_prompt_back")
+        return True
+
+    heytap_package = "com.heytap.mcs"
+    heytap_title = "允许“小红书”向你发送消息？"
+    if (re.search(r"\bcom\.heytap\.mcs/com\.heytap\.mcs\.addition\.notifi\.NotifiPermissionActivity(?:[}\s]|$)", current)
+            and any(node.get("package") == heytap_package and node.get("text") == heytap_title
+                    and node.get("resource-id") == heytap_package + ":id/notification_permission_txt_title"
+                    for node in live_nodes(root))):
+        press_back()
+        refreshed = navigation_capture(adb_path, serial, guard, events)
+        if not any(node.get("package") == heytap_package and node.get("text") == heytap_title for node in live_nodes(refreshed)):
+            events.append("heytap_notification_prompt_back")
+            return True
+        buttons = [node for node in live_nodes(refreshed) if node.get("package") == heytap_package
+                   and node.get("resource-id") == heytap_package + ":id/notification_permission_btn_close"
+                   and node.get("text") == "禁止" and node.get("clickable") == "true" and node.get("enabled") == "true"]
+        if len(buttons) != 1 or "com.heytap.mcs/com.heytap.mcs.addition.notifi.NotifiPermissionActivity" not in focus(adb_path, serial):
+            raise RuntimeError("HeyTap notification safe decline action not proven")
+        x1, y1, x2, y2 = bounds(buttons[0])
+        guard()
+        adb(adb_path, serial, "shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2), timeout=7)
+        time.sleep(0.4)
+        closed = navigation_capture(adb_path, serial, guard, events)
+        if any(node.get("package") == heytap_package and node.get("text") == heytap_title for node in live_nodes(closed)):
+            raise RuntimeError("HeyTap notification prompt stayed open after declining")
+        events.append("heytap_notification_prompt_denied")
+        return True
+
+    if (re.search(r"com\.xingin\.xhs/com\.xingin\.update\.UpdateDialogActivity(?:[}\s]|$)", current)
+            and label(root, "免流量升级") and label(root, "立即安装")):
+        later = [node for node in label(root, "稍后再说") if node.get("package") == XHS_PACKAGE
+                 and node.get("class") == "android.widget.Button" and node.get("clickable") == "true"
+                 and node.get("enabled") == "true"]
+        if len(later) != 1:
+            raise RuntimeError("Xiaohongshu update safe defer action not proven")
+        tap_label(adb_path, serial, root, "稍后再说", guard)
+        if "UpdateDialogActivity" in focus(adb_path, serial):
+            raise RuntimeError("Xiaohongshu update stayed open after defer")
+        events.append("xhs_update_deferred")
         return True
 
     if "com.bbk.updater" in current or any(node.get("package") == "com.bbk.updater" for node in nodes):
@@ -268,6 +499,27 @@ def recover_known_overlay(adb_path, serial, root, guard, events):
         events.append("vivo_update_deferred")
         return True
 
+    honor_package = "com.hihonor.ouc"
+    honor_focus = bool(re.search(r"\bcom\.hihonor\.ouc(?:[}/\s]|$)", current))
+    if honor_focus or any(node.get("package") == honor_package for node in nodes):
+        titles = [node for node in live_nodes(root) if node.get("package") == honor_package
+                  and (node.get("text") or "").strip() == "软件更新"]
+        installs = [node for node in live_nodes(root) if node.get("package") == honor_package
+                    and (node.get("text") or "").strip() == "下载并安装"]
+        buttons = [node for node in live_nodes(root) if node.get("package") == honor_package
+                   and (node.get("text") or "").strip() == "稍后"
+                   and node.get("clickable") == "true" and node.get("enabled") == "true"]
+        if not honor_focus or len(titles) != 1 or len(installs) != 1 or len(buttons) != 1:
+            raise RuntimeError("Honor update overlay safe defer action not proven")
+        x1, y1, x2, y2 = bounds(buttons[0])
+        guard()
+        adb(adb_path, serial, "shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2), timeout=7)
+        time.sleep(0.4)
+        if re.search(r"\bcom\.hihonor\.ouc(?:[}/\s]|$)", focus(adb_path, serial)):
+            raise RuntimeError("Honor update overlay stayed open after defer")
+        events.append("honor_update_deferred")
+        return True
+
     if "VivoUsbDialog" in current or any((node.get("text") or "").strip() == "USB 已连接" for node in nodes):
         titles = [node for node in nodes if node.get("package") == "android"
                   and node.get("resource-id") == "android:id/alertTitle"
@@ -285,6 +537,30 @@ def recover_known_overlay(adb_path, serial, root, guard, events):
         if "VivoUsbDialog" in focus(adb_path, serial):
             raise RuntimeError("Vivo USB overlay stayed open after cancel")
         events.append("vivo_usb_cancelled")
+        return True
+
+    huawei_usb_titles = [node for node in live_nodes(root)
+                         if node.get("package") == "com.android.settings"
+                         and node.get("resource-id") == "android:id/alertTitle"
+                         and (node.get("text") or "").strip() == "USB 连接方式"]
+    if huawei_usb_titles:
+        expected = {"USB 连接方式", "传输照片", "传输文件", "仅充电"}
+        buttons = [node for node in live_nodes(root) if node.get("package") == "com.android.settings"
+                   and node.get("resource-id") == "android:id/button2"
+                   and (node.get("text") or "").strip() == "取消"
+                   and node.get("clickable") == "true" and node.get("enabled") == "true"]
+        if (not re.search(r"\bcom\.android\.settings(?:[}/\s]|$)", current)
+                or not expected.issubset(values) or len(huawei_usb_titles) != 1 or len(buttons) != 1):
+            raise RuntimeError("Huawei USB mode overlay safe cancel action not proven")
+        x1, y1, x2, y2 = bounds(buttons[0])
+        guard()
+        adb(adb_path, serial, "shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2), timeout=7)
+        time.sleep(0.4)
+        refreshed = navigation_capture(adb_path, serial, guard, events)
+        if any(node.get("package") == "com.android.settings"
+               and (node.get("text") or "").strip() == "USB 连接方式" for node in live_nodes(refreshed)):
+            raise RuntimeError("Huawei USB mode overlay stayed open after cancel")
+        events.append("huawei_usb_mode_cancelled")
         return True
 
     if "com.android.settings/com.android.settings.Settings$UsbDetailsActivity" in current:
@@ -328,7 +604,7 @@ def recover_known_overlay(adb_path, serial, root, guard, events):
         guard()
         adb(adb_path, serial, "shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2), timeout=7)
         time.sleep(0.5)
-        refreshed = capture(adb_path, serial)
+        refreshed = navigation_capture(adb_path, serial, guard, events)
         if any(node.get("package") == XHS_PACKAGE
                and (node.get("text") or "").strip() in draft_questions
                for node in live_nodes(refreshed)):
@@ -336,10 +612,21 @@ def recover_known_overlay(adb_path, serial, root, guard, events):
         events.append("draft_saved_before_collection")
         return True
     if ("com.xingin.xhs" in current and "解锁成长中心" in values
-            and "超多创作者权益等你来看" in values and "立即看看" in values
-            and len([node for node in label(root, "稍后再看")
-                     if node.get("clickable") == "true"]) == 1):
-        tap_label(adb_path, serial, root, "稍后再看", guard)
+            and "超多创作者权益等你来看" in values and "立即看看" in values):
+        buttons = set()
+        for node in label(root, "稍后再看"):
+            candidate = node if node.get("clickable") == "true" else parents.get(node)
+            if (candidate is not None and candidate in live_nodes(root) and candidate.get("package") == XHS_PACKAGE
+                    and candidate.get("clickable") == "true" and candidate.get("enabled") == "true"):
+                buttons.add(candidate)
+        if len(buttons) != 1:
+            raise RuntimeError("growth-center safe defer action not proven")
+        x1, y1, x2, y2 = bounds(next(iter(buttons)))
+        guard()
+        adb(adb_path, serial, "shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2), timeout=7)
+        time.sleep(0.5)
+        if label(navigation_capture(adb_path, serial, guard, events), "解锁成长中心"):
+            raise RuntimeError("growth-center overlay stayed open after defer")
         events.append("growth_center_deferred")
         return True
     if ("com.xingin.xhs" in current and "去发布" in values
@@ -357,7 +644,64 @@ def recover_known_overlay(adb_path, serial, root, guard, events):
 
 
 def creator_list(root):
-    return bool(label(root, "数据中心") and label(root, "作品分析") and label(root, "全部笔记"))
+    if label(root, "数据中心") and label(root, "作品分析") and label(root, "全部笔记"):
+        return True
+    # Some WebViews scroll their header off-screen but retain the same
+    # data-center WebView and exact tab/filter fields in its hierarchy.
+    views = [n for n in live_nodes(root) if n.get("package") == XHS_PACKAGE
+             and n.get("class") == "android.webkit.WebView" and n.get("text") == "数据中心"]
+    return len(views) == 1 and all(any(n.get("package") == XHS_PACKAGE
+                                     and n.get("class") in ("android.widget.TextView", "android.view.View")
+                                     and n.get("text") == value
+                                     for n in views[0].iter("node")) for value in ("作品分析", "全部笔记"))
+
+
+def creator_overview_entry(root):
+    return bool(label(root, "创作中心") and label(root, "近 7 日数据")
+                and len([n for n in label(root, "观看") if n.get("package") == XHS_PACKAGE
+                         and n.get("class") == "android.widget.TextView"]) == 1)
+
+
+def creator_more_label(root):
+    return next((value for value in ("更多", "更多笔记") if label(root, value)), "")
+
+
+def open_works_tab(adb_path, serial, root, guard, events):
+    """The observed data-center WebView marks its tab label non-clickable."""
+    if not (label(root, "数据中心") and label(root, "账号概览") and not label(root, "全部笔记")):
+        return False
+    if not re.search(r"com\.xingin\.xhs/com\.xingin\.xywebview\.activity\.WebViewActivityV2(?:[}\s]|$)", focus(adb_path, serial)):
+        return False
+    parents = {child: parent for parent in root.iter() for child in parent}
+    tabs = [n for n in label(root, "作品分析") if n.get("package") == XHS_PACKAGE
+            and (n.get("class") == "android.widget.TextView"
+                 or (n.get("class") == "android.view.View" and n.get("clickable") == "true"))
+            and n.get("enabled") == "true"]
+    if len(tabs) != 1:
+        raise RuntimeError("data-center works tab is not unique")
+    row = parents.get(tabs[0])
+    if row is not None and not label(row, "账号概览"):
+        row = parents.get(row)
+    if row is None or not label(row, "账号概览") or not label(row, "粉丝数据") or not label(row, "收入数据"):
+        raise RuntimeError("data-center works tab header is not proven")
+    views = [n for n in live_nodes(root) if n.get("package") == XHS_PACKAGE
+             and n.get("class") == "android.webkit.WebView" and n.get("text") == "数据中心"]
+    if (len(views) != 1 or not bounds(row) or bounds(tabs[0])[3] > bounds(views[0])[3] * 0.25
+            or bounds(row)[3] - bounds(row)[1] > bounds(views[0])[3] * 0.20):
+        raise RuntimeError("data-center works tab is outside the header")
+    x1, y1, x2, y2 = bounds(tabs[0])
+    guard()
+    adb(adb_path, serial, "shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2), timeout=7)
+    time.sleep(0.5)
+    events.append("data_center_works_tab_selected")
+    return True
+
+
+def xhs_chat_activity(current):
+    return bool(re.search(
+        r"com\.xingin\.xhs/(?:com\.xingin\.im\.ui\.activity\.ChatActivity|"
+        r"\.im\.ui\.activity\.ChatActivity|com\.xingin\.im\.ui\.message\.msgcenter\.MsgCenterActivity|"
+        r"com\.xingin\.dot_agent_page\.DotsAgentPageActivity)(?:[}\s]|$)", current))
 
 
 def ensure_creator_list(adb_path, serial, root, slot, guard, events):
@@ -365,11 +709,19 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
     more_attempts = 0
     shell_passes = 0
     shell_reopens = 0
+    chat_backs = 0
     for _ in range(14):
         if wake_if_asleep(adb_path, serial, guard, events):
-            root = capture(adb_path, serial)
+            root = navigation_capture(adb_path, serial, guard, events)
+        if any(event.startswith("clone_user_requested:") for event in events):
+            current = focus(adb_path, serial)
+            if re.search(r"\bu\d+\s+com\.xingin\.xhs/", current):
+                verify_collection_slot(adb_path, serial, slot, events)
         if creator_list(root):
             return root
+        if open_works_tab(adb_path, serial, root, guard, events):
+            root = navigation_capture(adb_path, serial, guard, events)
+            continue
         if (label(root, "账号异常") and label(root, "开通数据权限")
                 and label(root, "创作中心") and not label(root, "最新笔记")):
             raise RuntimeError("creator account shows abnormal status and no latest-notes entry")
@@ -380,42 +732,77 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
             elif shell_reopens < 2:
                 guard()
                 adb(adb_path, serial, "shell", "input", "keyevent", "4", timeout=7)
-                center = capture(adb_path, serial)
+                center = navigation_capture(adb_path, serial, guard, events)
                 if not (label(center, "创作中心") and label(center, "最新笔记")
-                        and label(center, "更多")):
+                        and creator_more_label(center)):
                     raise RuntimeError("works-analysis shell could not return to Creator Center")
-                tap_label(adb_path, serial, center, "更多", guard)
+                tap_label(adb_path, serial, center, creator_more_label(center), guard)
                 shell_reopens += 1
                 shell_passes = 0
                 events.append("works_analysis_shell_reopened")
                 time.sleep(0.8)
             else:
                 raise RuntimeError("works-analysis WebView remained inaccessible after reopening")
-            root = capture(adb_path, serial)
+            root = navigation_capture(adb_path, serial, guard, events)
             continue
         if recoveries < 3 and recover_known_overlay(adb_path, serial, root, guard, events):
             recoveries += 1
-            root = capture(adb_path, serial)
+            root = navigation_capture(adb_path, serial, guard, events)
             continue
         current = focus(adb_path, serial)
+        if re.search(r"com\.xingin\.xhs/com\.xingin\.login\.device\.offline\.DeviceOfflineRemindActivity(?:[}\s]|$)", current):
+            raise RuntimeError("Xiaohongshu account is logged out; manual login is required")
+        if (XHS_PACKAGE in current and label(root, "创作中心") and label(root, "开通数据权限")
+                and not label(root, "最新笔记")):
+            raise RuntimeError("Creator Center data permission is not enabled")
         if any(marker in current for marker in ("DoubleAppResolverActivity", "com.android.intentresolver",
                                                 "ResolverActivity")):
+            if (select_miui_clone(adb_path, serial, root, current, slot, guard, events)
+                    or select_oppo_clone(adb_path, serial, root, current, slot, guard, events)):
+                root = navigation_capture(adb_path, serial, guard, events)
+                continue
             labels = ("小红书",) if slot == "app1" else ("Ⅱ·小红书", "II·小红书", "II ·小红书", "Ⅱ ·小红书")
             target = next((value for value in labels if label(root, value)), None)
             if target:
                 tap_label(adb_path, serial, root, target, guard)
                 events.append("clone_slot_selected:" + slot)
+        elif xhs_chat_activity(current):
+            if any(node.get("package") == XHS_PACKAGE and "EditText" in node.get("class", "")
+                   and (node.get("text") or "").strip() not in ("", "请友善发言...")
+                   and not ((node.get("text") or "").strip() in ("发消息…", "发消息或按住说话...")
+                            and node.get("focused") == "false")
+                   for node in live_nodes(root)):
+                raise RuntimeError("restored chat has unsent text; collection stopped")
+            if chat_backs >= 2:
+                raise RuntimeError("restored Xiaohongshu chat page did not close")
+            guard()
+            adb(adb_path, serial, "shell", "input", "keyevent", "4", timeout=7)
+            chat_backs += 1
+            events.append("restored_chat_back")
         elif label(root, "笔记分析详情"):
             guard()
             adb(adb_path, serial, "shell", "input", "keyevent", "4", timeout=7)
-        elif label(root, "创作中心") and label(root, "最新笔记"):
+        elif label(root, "创作中心") and label(root, "最新笔记") and creator_more_label(root):
             if more_attempts >= 2 and label(root, "账号异常"):
                 raise RuntimeError("creator account abnormal; More did not open works analysis")
-            tap_label(adb_path, serial, root, "更多", guard)
+            tap_label(adb_path, serial, root, creator_more_label(root), guard)
             more_attempts += 1
             time.sleep(1)
+        elif creator_overview_entry(root):
+            tap_label(adb_path, serial, root, "观看", guard)
+            events.append("creator_overview_opened_without_latest_notes")
+            time.sleep(0.8)
         elif label(root, "创作者中心") and label(root, "我的草稿"):
             tap_label(adb_path, serial, root, "创作者中心", guard)
+        elif label(root, "我的草稿") and any(
+            node.get("package") == XHS_PACKAGE and node.get("class") == "android.widget.Button"
+            and node.get("clickable") == "true" and node.get("enabled") == "true"
+            and ((node.get("text") or "").strip() == "创作中心"
+                 or (node.get("content-desc") or "").strip() == "创作中心")
+            for node in live_nodes(root)
+        ):
+            tap_label(adb_path, serial, root, "创作中心", guard)
+            events.append("creator_drawer_alias_selected")
         elif label(root, "创作中心"):
             time.sleep(0.5)
         elif label(root, "菜单") and label(root, "已选定笔记"):
@@ -424,25 +811,40 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
             screen_bottom = max((bounds(n)[3] for n in live_nodes(root)), default=0)
             if any(bounds(n)[1] > screen_bottom * 0.75 for n in label(root, "我")):
                 tap_label(adb_path, serial, root, "我", guard)
+        elif re.search(r"com\.xingin\.xhs/(?:com\.xingin\.xhs\.index\.v2\.IndexActivityV2|"
+                       r"\.index\.v2\.IndexActivityV2)(?:[}\s]|$)", current) and len([
+            node for node in label(root, "菜单") if node.get("package") == XHS_PACKAGE
+            and node.get("clickable") == "true" and node.get("enabled") == "true"
+        ]) == 1:
+            tap_label(adb_path, serial, root, "菜单", guard)
+            events.append("index_menu_opened_without_bottom_tab")
         else:
             time.sleep(0.5)
-        root = capture(adb_path, serial)
+        root = navigation_capture(adb_path, serial, guard, events)
     raise RuntimeError("could not prove the Creator Center works-analysis path")
 
 
-def reopen_creator_list(adb_path, serial, root, guard, events):
+def reopen_creator_list(adb_path, serial, root, guard, events, slot="app1"):
     """Discard a WebView's restored scroll position before scanning newest first."""
     if not creator_list(root):
         raise RuntimeError("works-analysis list is not open for reset")
     guard()
     adb(adb_path, serial, "shell", "input", "keyevent", "4", timeout=7)
     time.sleep(0.4)
-    root = capture(adb_path, serial)
-    if not (label(root, "创作中心") and label(root, "最新笔记") and label(root, "更多")):
+    root = navigation_capture(adb_path, serial, guard, events)
+    if label(root, "创作中心") and label(root, "最新笔记") and creator_more_label(root):
+        tap_label(adb_path, serial, root, creator_more_label(root), guard)
+    elif creator_overview_entry(root):
+        tap_label(adb_path, serial, root, "观看", guard)
+        events.append("creator_overview_reopened")
+        root = navigation_capture(adb_path, serial, guard, events)
+        root = ensure_creator_list(adb_path, serial, root, slot, guard, events)
+        events.append("list_reopened_at_newest")
+        return root
+    else:
         raise RuntimeError("could not prove list returned to Creator Center")
-    tap_label(adb_path, serial, root, "更多", guard)
     events.append("list_reopened_at_newest")
-    return capture(adb_path, serial)
+    return navigation_capture(adb_path, serial, guard, events)
 
 
 def note_cards(root):
@@ -474,6 +876,53 @@ def note_cards(root):
                              "list_view_count": values[0] if len(values) > 0 else None,
                              "list_like_count": values[1] if len(values) > 1 else None,
                              "list_comment_count": values[2] if len(values) > 2 else None}))
+    if not cards:
+        cards = flat_webview_cards(root)
+    return cards
+
+
+def flat_webview_cards(root):
+    """Huawei WebView can expose card fields as direct siblings without rows."""
+    if not creator_list(root):
+        return []
+    webviews = [n for n in live_nodes(root) if n.get("package") == XHS_PACKAGE
+                and n.get("class") == "android.webkit.WebView" and n.get("text") == "数据中心"]
+    if len(webviews) != 1:
+        return []
+    groups = []
+    for node in webviews[0]:
+        text = (node.get("text") or "").strip()
+        if DATE.fullmatch(text):
+            groups.append([node])
+        elif groups and text:
+            groups[-1].append(node)
+    cards = []
+    visible = set(live_nodes(root))
+    for group in groups:
+        if len(group) != 6 or any(n not in visible or n.get("package") != XHS_PACKAGE
+                                  or n.get("class") != "android.widget.TextView" for n in group):
+            continue
+        date, title, status, *metrics = group
+        title_text = (title.get("text") or "").strip()
+        status_text = (status.get("text") or "").strip()
+        values = [count(n.get("text")) for n in metrics]
+        if (not 1 <= len(title_text) <= 180 or DATE.fullmatch(title_text) or count(title_text) is not None
+                or not (status_text.startswith("笔记状态") or status_text == "该篇笔记已不可被他人查看")
+                or any(v is None for v in values)):
+            continue
+        db, tb, sb = bounds(date), bounds(title), bounds(status)
+        mb = [bounds(n) for n in metrics]
+        # Prove the same card geometry: date at left, title/status above a
+        # single left-to-right metric row, all within one observed row height.
+        if (not db[2] < tb[0] or not tb[3] <= sb[1] < sb[3] <= min(b[1] for b in mb)
+                or not all(db[1] < b[3] and b[1] < db[3] for b in mb)
+                or max(b[1] for b in mb)-min(b[1] for b in mb) > 6
+                or not mb[0][2] < mb[1][0] < mb[1][2] < mb[2][0]
+                or not 140 <= max(db[3], *(b[3] for b in mb))-tb[1] <= 320):
+            continue
+        proxy = ET.Element("node", {"bounds": f"[{db[0]},{tb[1]}][{tb[2]},{max(db[3], *(b[3] for b in mb))}]"})
+        cards.append((proxy, {"title": title_text, "published_at_raw": date.get("text"), "status_raw": status_text,
+                              "list_view_count": values[0], "list_like_count": values[1], "list_comment_count": values[2]}))
     return cards
 
 
@@ -482,21 +931,21 @@ def wait_creator_content(adb_path, serial, root, guard, events):
     for pass_index in range(2):
         for _ in range(6):
             if wake_if_asleep(adb_path, serial, guard, events):
-                root = capture(adb_path, serial)
+                root = navigation_capture(adb_path, serial, guard, events)
             if note_cards(root) or label(root, "到底了") or label(root, "暂无笔记"):
                 return root
             time.sleep(0.6)
-            root = capture(adb_path, serial)
+            root = navigation_capture(adb_path, serial, guard, events)
         if pass_index == 0 and creator_list(root):
             # The embedded page occasionally remains blank after loading.
             # Reopen this known page once; never treat blank as zero notes.
             guard()
             adb(adb_path, serial, "shell", "input", "keyevent", "4", timeout=7)
             time.sleep(0.4)
-            root = capture(adb_path, serial)
-            if label(root, "创作中心") and label(root, "最新笔记"):
-                tap_label(adb_path, serial, root, "更多", guard)
-                root = capture(adb_path, serial)
+            root = navigation_capture(adb_path, serial, guard, events)
+            if label(root, "创作中心") and label(root, "最新笔记") and creator_more_label(root):
+                tap_label(adb_path, serial, root, creator_more_label(root), guard)
+                root = navigation_capture(adb_path, serial, guard, events)
     raise RuntimeError("works-analysis note list stayed blank; collection aborted")
 
 
@@ -529,15 +978,20 @@ def tap_filter_label(adb_path, serial, root, value, guard):
 
 def refresh_scrolled_webview(adb_path, serial, root, guard, events):
     """Refresh a stale WebView accessibility tree without changing filters."""
+    if (creator_list(root) and not label(root, "全部笔记") and note_cards(root)
+            and re.search(r"com\.xingin\.xhs/com\.xingin\.xywebview\.activity\.WebViewActivityV2(?:[}\s]|$)", focus(adb_path, serial))):
+        guard()
+        events.append("works_list_offscreen_header_verified")
+        return root
     if not creator_list(root) or not label(root, "全部笔记"):
         raise RuntimeError("works-analysis filter entry is not proven")
     wake_if_asleep(adb_path, serial, guard, events)
     tap_filter_label(adb_path, serial, root, "全部笔记", guard)
-    expanded = capture(adb_path, serial)
+    expanded = navigation_capture(adb_path, serial, guard, events)
     if not all(label(expanded, value) for value in ("笔记类型", "发布时间", "排序方式", "收起")):
         raise RuntimeError("works-analysis filter panel is not proven")
     tap_filter_label(adb_path, serial, expanded, "收起", guard)
-    refreshed = capture(adb_path, serial)
+    refreshed = navigation_capture(adb_path, serial, guard, events)
     if label(refreshed, "排序方式") or not creator_list(refreshed):
         raise RuntimeError("works-analysis filter panel did not close")
     events.append("webview_accessibility_refreshed")
@@ -557,8 +1011,9 @@ def collect(args):
     release_idle_poco(args.adb, args.serial, guard, events)
     root = start_xhs(args.adb, args.serial, args.app_slot, guard, events)
     root = ensure_creator_list(args.adb, args.serial, root, args.app_slot, guard, events)
+    verify_collection_slot(args.adb, args.serial, args.app_slot, events)
     root = wait_creator_content(args.adb, args.serial,
-                                reopen_creator_list(args.adb, args.serial, root, guard, events), guard, events)
+                                reopen_creator_list(args.adb, args.serial, root, guard, events, args.app_slot), guard, events)
     as_of = dt.datetime.now(SHANGHAI).date()
     # Include today as the first calendar date in the requested day count.
     cutoff = as_of - dt.timedelta(days=args.days - 1)
@@ -629,7 +1084,7 @@ def collect(args):
             break
         swipe(args.adb, args.serial, root, guard, events)
         result["scrolls"] += 1
-        root = refresh_scrolled_webview(args.adb, args.serial, capture(args.adb, args.serial), guard, events)
+        root = refresh_scrolled_webview(args.adb, args.serial, navigation_capture(args.adb, args.serial, guard, events), guard, events)
         root = wait_creator_content(args.adb, args.serial, root, guard, events)
     if not result["complete"]:
         result["warnings"].append("recent_window_not_proven")

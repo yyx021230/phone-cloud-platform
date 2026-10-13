@@ -25,7 +25,8 @@ const task = { taskId: "task-1", adbSerial: "TEST_SERIAL", payload: {
 } };
 const snapshot = (complete = true) => ({ schema_version: 3, serial: task.adbSerial,
   device_name: "测试手机", app_slot: "app2", window_days: 30, complete, notes: [],
-  window_start_date: "2026-09-14", window_end_date: "2026-10-13", stop_reason: complete ? "list_end_visible" : null });
+  window_start_date: "2026-09-14", window_end_date: "2026-10-13", recovery_events: ["clone_slot_selected:app2"],
+  stop_reason: complete ? "list_end_visible" : null });
 
 async function harness(t, body) {
   const cacheDir = await fs.mkdtemp(path.join(os.tmpdir(), "xhs-data-runner-test-"));
@@ -91,6 +92,11 @@ test("foreign account-slot output is rejected, and stale output cannot be reused
   await assert.rejects(runXhsDataCollection(task, h.dependencies), { code: "ENOENT" });
 });
 
+test("an app2 label without a proven clone selection cannot return a successful snapshot", async (t) => {
+  const h = await harness(t, async (args) => fs.writeFile(args.at(-1), JSON.stringify({ ...snapshot(), recovery_events: [] })));
+  await assert.rejects(runXhsDataCollection(task, h.dependencies), /output_mismatch/);
+});
+
 test("cancellation writes a cooperative marker before force-killing the Python runner", async (t) => {
   const controller = new AbortController();
   const reason = Object.assign(new Error("automation_task_cancelled"), { code: "automation_task_cancelled" });
@@ -108,4 +114,60 @@ test("cancellation writes a cooperative marker before force-killing the Python r
   h.dependencies.signal = controller.signal;
   await assert.rejects(runXhsDataCollection(task, h.dependencies), (error) => error === reason);
   assert.equal(markerSeen, true);
+});
+
+test("a lost transport retains the exact original settings and blocks a new baseline on that phone", async (t) => {
+  const primary = new Error("transport_disconnected");
+  const h = await harness(t, async () => {});
+  // The dependency wrapper remains the same object during execution.
+  const originalAdb = h.dependencies.adb;
+  let disconnected = false;
+  h.dependencies.adb = async (...args) => { if (disconnected) throw new Error("device_not_found"); return originalAdb(...args); };
+  h.dependencies.run = async () => {
+    const names = (await fs.readdir(path.dirname(h.outputPath))).filter((name) => name.endsWith(".settings.json"));
+    const ledger = JSON.parse(await fs.readFile(path.join(path.dirname(h.outputPath), names[0]), "utf8"));
+    assert.deepEqual(ledger.settings.map((item) => item.original), ["60000", "1"]);
+    disconnected = true;
+    throw primary;
+  };
+  await assert.rejects(runXhsDataCollection(task, h.dependencies), (error) => {
+    assert.equal(error, primary);
+    assert.equal(error.restorationErrors.length, 2);
+    assert.match(error.settingsRecoveryPath, /\.settings\.json$/);
+    return true;
+  });
+  const recovery = JSON.parse(await fs.readFile(primary.settingsRecoveryPath, "utf8"));
+  assert.deepEqual(recovery.settings.map((item) => item.original), ["60000", "1"]);
+  h.dependencies.adb = originalAdb;
+  await assert.rejects(runXhsDataCollection({ ...task, taskId: "next-task" }, h.dependencies), /settings_recovery_pending/);
+});
+
+test("successful restoration removes the pre-execution settings ledger", async (t) => {
+  const h = await harness(t, async (args, settings, dependencies) => {
+    const names = await fs.readdir(path.join(dependencies.cacheDir, "xhs-data-collection"));
+    assert.equal(names.filter((name) => name.endsWith(".settings.json")).length, 1);
+    settings.set("screen_off_timeout", "600000");
+    await fs.writeFile(args.at(-1), JSON.stringify(snapshot()));
+  });
+  await runXhsDataCollection(task, h.dependencies);
+  assert.equal(h.settings.get("screen_off_timeout"), "60000");
+  const remaining = await fs.readdir(path.dirname(h.outputPath));
+  assert.equal(remaining.filter((name) => name.endsWith(".settings.json")).length, 0);
+});
+
+test("a settings write that returns success without applying keeps the recovery ledger", async (t) => {
+  const h = await harness(t, async (args, settings) => {
+    settings.set("screen_off_timeout", "600000");
+    await fs.writeFile(args.at(-1), JSON.stringify(snapshot()));
+  });
+  const originalAdb = h.dependencies.adb;
+  h.dependencies.adb = async (serial, args) => args[2] === "put" ? "" : originalAdb(serial, args);
+  await assert.rejects(runXhsDataCollection(task, h.dependencies), (error) => {
+    assert.equal(error.message, "xhs_data_settings_restore_failed");
+    assert.match(error.restorationErrors[0], /restore_unconfirmed/);
+    assert.match(error.settingsRecoveryPath, /\.settings\.json$/);
+    return true;
+  });
+  const pending = (await fs.readdir(path.dirname(h.outputPath))).filter((name) => name.endsWith(".settings.json"));
+  assert.equal(pending.length, 1);
 });
