@@ -6,12 +6,14 @@
   "baseFiles": {
     "windows-agent/scripts/alipay_name_lookup.py": "8575a26fb470e319ba6ddd9e7187f7265a5a306bb4a6bc5f91905f4b7d950330",
     "windows-agent/src/alipay-poco-fallback-policy.mjs": "d60111f31169e355131a591aaeb8045510d2ad5c6b12952c38812afc6c42952f",
-    "windows-agent/scripts/automation_runners_test.py": "c669aae7faa2176bb68d6299f3c467a30c4b10a9a9e38161bb71cee0fe30d5a9"
+    "windows-agent/scripts/automation_runners_test.py": "c669aae7faa2176bb68d6299f3c467a30c4b10a9a9e38161bb71cee0fe30d5a9",
+    "server/managed-lookup.mjs": "ef1383c0c4d1c5e2ff5d08496ee22cfabf41cd73a529f3b2bc3d911ef28db677"
   },
   "newRuntimeFile": "windows-agent/scripts/alipay_visual_result.py",
   "scopedRuntimeFiles": [
     "windows-agent/scripts/alipay_name_lookup.py",
     "windows-agent/scripts/alipay_visual_result.py",
-    "windows-agent/src/alipay-poco-fallback-policy.mjs"
+    "windows-agent/src/alipay-poco-fallback-policy.mjs",
+    "server/managed-lookup.mjs"
   ]
 }

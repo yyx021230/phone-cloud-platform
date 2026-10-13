@@ -27,11 +27,12 @@
     }
   ],
   "testCounts": {
-    "node": 605,
+    "node": 608,
     "pythonMain": 163,
     "lookupPython": 77,
     "noReplay": 21,
-    "countsOverlap": true
+    "countsOverlap": true,
+    "startupService": 8
   },
   "logSha256": {
     "qa4-python-lookup-final.log": "d3646c3286139f857b818a599f9ff651a249ae594347ae4a3d34827bf29b4715",
@@ -40,13 +41,21 @@
     "qa4-python-main-corrected.log": "960d00932fd8d5b00d83ee061edd30ab2af73fe4ce13340680a7df48eebebfde",
     "qa4-screen-final.log": "ba56649551dc0924f5dcf15e947ab8355c9eb9ae1e85432669580584ef57989b",
     "qa4-no-replay.log": "a5fb443ea82c82775085f9c233c2d1e62fc007d74cd98f838eec3c741fe5f7c9",
-    "qa4-root-check.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+    "qa4-root-check.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "qa4-screen-final2.log": "4de1c9bb6e4bcb12d26b654bda535be2b6cc48b86899bfc7ddfe73c6c2242e29"
   },
   "failuresPreserved": [
     "Old blank-card fake returnednot_found and old XML policy would fallback:2 counterexamples failed before patch.",
     "Main fixture expected old blank-noName semantics:1error; updating targeted fixture accidentally changed another same-string assertion:2 fixture failures. Restored unrelated unverified-account assertion and corrected targeted fixture;163pass.",
-    "Isolated OCR dependency six1.17 conflicted with existingAirtest requirement; pinned target-onlysix1.16 and removed own superseded metadata; no global install."
+    "Isolated OCR dependency six1.17 conflicted with existingAirtest requirement; pinned target-onlysix1.16 and removed own superseded metadata; no global install.",
+    "Standalone overlay test without base import: module load failure; materialized old2 counterexamples failed then8 passed."
   ],
   "productionActions": 0,
-  "sharedMediaOrAdbCodeChanges": 0
+  "sharedMediaOrAdbCodeChanges": 0,
+  "startupHandover": {
+    "oldCounterexampleFailures": 2,
+    "patchedPass": 8,
+    "persistedOriginalRequestAcceptance": "pending",
+    "automaticStartupObserverMissingWorker": "known limitation"
+  }
 }
