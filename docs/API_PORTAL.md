@@ -1,3 +1,13 @@
+# 平台API文档：设备池同步接口本地候选（未上线）
+
+2026-10-13候选lookup-pool-20261013-rc.1基于最后生产组件记录开发，新增唯一同步POST /api/v1/open/name-lookups/query：只传phoneNumber，原HTTP返回ok/name，SDK封装签名；调用方不管理手机/会话/轮询。旧7个开放接口保持，候选门户共40平台操作/8个HMAC。管理页入口和文档入口均保留，ZIP内实际候选Node/Python SDK与OpenAPI已同步。此候选未上线，线上文档仍是下方rc.3，不将候选说明当生产能力。
+
+本地真实HTTP/fake Agent、临时PG、smoke/602 Node/290 Agent/163 Python/SDK4+2及浏览器通过，34冻结运行hash与旧39契约保留。默认关闭；真实49稳定映射、五台同窗、自然触限/8小时到期、真实代理和生产迁移仍待验。服务端默认120秒/最多180秒、新SDK190秒、代理建议210秒；超时/断网重试保留原业务键。源码5b22bf1，完整候选、hash、回退与回执见releases/lookup-pool-20261013-rc.1/README.md。0生产操作/真机/飞书/推送。
+
+候选生成只运行其scripts/build-managed-lookup-docs.py，不使用下方历史根生成器去覆写旧不可变发布目录。新版接入包校验由候选verification/verify-candidate.py负责，此本地脚本不是生产CI强制门禁。
+
+## 线上及历史记录
+
 # 平台API文档更新 rc.3（已发布）
 
 当前文档 `platform-api-integration-20261012-rc.3`，部署 `platform-api-integration-20261012-deployed.1`，分支 `codex/api-docs-publish-20261012`。用户明确要求同步线上文档/接入包；仅9公开静态资源、39平台接口，其中7项是已存在的第三方HMAC支付宝查名接口。保持现有HTTP地址与库存入口。

@@ -1,9 +1,9 @@
 {
-  "task": "phone-only managed lookup pool design",
+  "task": "phone-only managed lookup pool implementation",
   "date": "2026-10-13",
-  "status": "design candidate; no runtime implementation or deployment",
-  "scope": "design and primary document decision/change log only",
-  "branch": "codex/lookup-pool-design-20261013",
+  "status": "local implementation and isolated validation complete; not deployed",
+  "scope": "isolated candidate cloud/Agent management, synchronous API, SDK/docs and tests",
+  "branch": "codex/lookup-pool-20261013",
   "baseCommit": "203deca1441b2c1ecb2d529c80dfa17fd27a0850",
   "worktree": "/Users/yyx/.codex/worktrees/lookup-version-management/phone-cloud-platform",
   "rootBranch": "codex/sms-notification-library",
@@ -96,14 +96,13 @@
   "remoteGitPushes": 0,
   "serviceRestarts": 0,
   "notImplemented": [
-    "managed API and administration",
-    "durable queue/scheduler",
-    "stable49-device mapping",
-    "lease ACK protocol for managed tasks",
-    "5-device real concurrency acceptance"
+    "real49-device stable mapping/gray acceptance",
+    "five physical phones simultaneous acceptance",
+    "production proxy/migration acceptance",
+    "advanced p95 and archive pagination"
   ],
-  "version": "lookup-pool-design-20261013-rc.2",
-  "currentStageBaseCommit": "a75f221fbe60e2c72aaec8363d6f38be93d54118",
+  "version": "lookup-pool-20261013-rc.1",
+  "currentStageBaseCommit": "9fd9fb6bdb43ccc411d8605a81dc0b199b0507fd",
   "publicContract": {
     "mode": "synchronous request-response",
     "endpoint": "POST /api/v1/open/name-lookups/query",
@@ -120,7 +119,11 @@
     "sdkReadTimeoutSecondsProposed": 130,
     "proxyReadTimeoutSecondsProposed": 150,
     "nameSource": "actual masked/display name, not guaranteed full legal name",
-    "authAndIdempotency": "existing HMAC and stable per-logical-call key encapsulated in SDK"
+    "authAndIdempotency": "existing HMAC and stable per-logical-call key encapsulated in SDK",
+    "httpWaitSecondsDefault": 120,
+    "httpWaitSecondsMax": 180,
+    "sdkReadTimeoutSeconds": 190,
+    "proxyReadTimeoutSecondsRecommended": 210
   },
   "replaces": "rc.1 external four task routes/ID polling design only; internal queue and49-device/5 concurrency remain",
   "validationHistory": [
@@ -146,6 +149,23 @@
     }
   ],
   "validation": {
+    "status": "local complete; not deployed",
+    "receipt": "releases/lookup-pool-20261013-rc.1/verification/RESULTS.json",
+    "runtimeTestsRun": true,
+    "realDeviceTestsRun": false,
+    "productionAccess": 0,
+    "scopeReviewed": true,
+    "rootNoWritesByThisTask": true
+  },
+  "designFileSha256": "72297d46c6e53674e8c53d3a2d699a317ad330d03e8064986a96bda59e3ab488",
+  "runtimeSourceCommit": "5b22bf1e0ab78a441abd47b1691a8e0c53e2d098",
+  "candidateTag": "lookup-pool-20261013-rc.1",
+  "implementationValidation": "releases/lookup-pool-20261013-rc.1/verification/RESULTS.json",
+  "sourceParentCommit": "9fd9fb6",
+  "rootCurrentMainSha256": "d44137e59e319765f8223a6de1997e5866b284639ef1c70056b4ee5d01c855e1",
+  "rootCurrentDirtyEntries": 236,
+  "rootNoWritesByThisTask": true,
+  "designValidation": {
     "atBeijing": "2026-10-13T10:41:43.068012+08:00",
     "documentDiffCheck": "passed",
     "fourJsonExamples": "parsed and checked",
@@ -165,6 +185,5 @@
       "readOnlyDiff": "D-079 standalone XHS draft-save candidate record added by parallel work; preserved without copying or overwriting",
       "initialValidationFailure": "root hash/count equality guard detected parallel change; own isolated files unaffected, links/examples/roster passed, validation updated to reflect actual observation"
     }
-  },
-  "designFileSha256": "fe73a6846aa8d42aee8ced9e816509cdbb0839e9b56c64e2564f667d95ed8c04"
+  }
 }
