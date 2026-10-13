@@ -1,0 +1,15 @@
+{
+  "version": "lookup-pool-20261013-rc.2",
+  "kind": "minimal-overlay-requires-rc.1",
+  "status": "local-candidate-not-deployed; complete real acceptance blocked",
+  "branch": "codex/lookup-pool-realtest-20261013",
+  "candidateTag": "lookup-pool-20261013-rc.2",
+  "patchSourceCommit": "8eb976ac629c1f0020968c58c20f673b11d03e01",
+  "baseCandidateCommit": "99255025f748167514add026adeaaa3def9cee4f",
+  "baseRuntimeSourceCommit": "5b22bf1e0ab78a441abd47b1691a8e0c53e2d098",
+  "runtimeFiles": 1,
+  "tests": 2,
+  "realDeviceAcceptanceComplete": false,
+  "productionAccess": 0,
+  "remotePushes": 0
+}

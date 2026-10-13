@@ -1,11 +1,11 @@
 {
-  "recordedAtUtc": "2026-10-13T03:50:54.821909+00:00",
-  "status": "waiting-for-test-devices; real testing not started",
+  "recordedAtUtc": "2026-10-13T05:04:11.258151+00:00",
+  "status": "local partial real acceptance; blocked by130 saved-account login; strict isolation repeat required",
   "branch": "codex/lookup-pool-realtest-20261013",
   "baseCommit": "99255025f748167514add026adeaaa3def9cee4f",
   "runtimeSourceCommit": "5b22bf1e0ab78a441abd47b1691a8e0c53e2d098",
   "runtimeCandidateTag": "lookup-pool-20261013-rc.1",
-  "authorization": "User explicitly requested original batch local physical tests:5 concurrent, natural restriction/rotation/cooldown; production unchanged. No selected5 stable serials supplied yet.",
+  "authorization": "User explicitly narrowed to local118/130 and original batch; test max2 physical phones, natural restriction/rotation/cooldown; production unchanged.201 unique input budget plus2 deliberate diagnostic rechecks.",
   "rules": {
     "sharedRevision": "2026-09-30",
     "sharedSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
@@ -24,10 +24,11 @@
     "daemonPidBefore": 26031,
     "daemonPidAfter": 26031,
     "readonlyLists": 2,
-    "onlineDevices": 0,
-    "physicalDevice118Connected": false,
+    "onlineDevices": 2,
+    "physicalDevice118Connected": true,
     "serverRestarted": false,
-    "usbReset": false
+    "usbReset": false,
+    "physicalDevice130Connected": true
   },
   "input": {
     "workbookSha256": "874c801e6f3eff06cd480c7ab81713b4f822bd54911a7696fa0d192143d31011",
@@ -41,7 +42,7 @@
     "legacyBatchDigest": "9fefe9c6544fdc480e3cc45c7c75149491f819752179d75ad045ae3353d79a7e",
     "commonArraySerializationDigestMatched": false,
     "consumptionMappingVerifiedThisRound": false,
-    "requiredBeforeSubmit": "Verify original private batch/schema and mapping; retain original business keys for unknown in-flight tasks; no claims of prior-consumption reconciliation yet.",
+    "requiredBeforeSubmit": "This round own logical keys saved before send; prior unknown production work not reused.",
     "historicalLocalBatchEvidence": {
       "extendedCount": 84,
       "extendedSourceOrdinalsFirstLast": [
@@ -57,39 +58,315 @@
       ],
       "warning": "Historical local batch selected noncontiguous rows; do not map last production nextIndex67 to workbookB69 without original API-batch schema."
     },
-    "batchDigestReconciliation": "not yet matched; no new query sent"
+    "batchDigestReconciliation": "original private ordered list matches workbook; old production9fefe digest/schema unresolved",
+    "originalOrderedPrivateBatchSha256": "20d3440551746ef8abe6919e5a8b3c7d0c6c12ac555f00f97d61d82fa8c64b95",
+    "orderedCompactArrayMatchesWorkbookSha256": "2603b65a881c3a7b6214e40ec8aba8c81aa9111e73a258b784c050b5a503a6ff",
+    "ordered201PrivateListVerified": true,
+    "purpose": "new intentional local pooled acceptance rechecks; not blind unknown replay or claim of unused production inputs"
   },
   "plan": {
-    "targets": [],
-    "requiredPhoneCount": 5,
-    "physicalPhoneNumbersMustBeIn49Roster": true,
-    "stages": [
-      "single-device short real API canary",
-      "two-device short real API canary",
-      "five-device overlap then continue bounded unused authorized batch to natural restriction when possible"
+    "targets": [
+      118,
+      130
     ],
-    "initialCanaryQueryBudget": 2,
-    "fiveDeviceInitialQueryBudget": 10,
-    "extendedBudgetMaximum": "remaining unconsumed batch after mapping is verified; no blind replay of unknown tasks",
-    "naturalRestrictionMayNotOccurWithinBatch": true,
-    "cooldownDurationRemainsHours": 8,
-    "noClockOrThresholdSimulation": true,
-    "stopConditions": [
-      "puzzle:keep task/device, request human intervention",
-      "unknown duplicate/late report:stop adding and reconcile original IDs",
-      "global active count exceeds5 or same phone overlaps:stop adding",
-      "other task/screen owns selected phone:do not start",
-      "shared resource or media/control baseline abnormality:stop expansion"
-    ]
+    "currentPhysicalConcurrency": 2,
+    "originalRequiredPhoneCount": 5,
+    "maximumUniqueInputs": 201,
+    "resumeAfter130Login": true,
+    "actualSubmittedUniqueInputs": 102,
+    "remainingOriginalInputsNotSubmitted": 99,
+    "naturalCooldownHours": 8,
+    "noClockOrThresholdSimulation": true
   },
   "productionReads": 0,
   "productionWrites": 0,
-  "realQueries": 0,
-  "accountSwitches": 0,
+  "realQueries": 104,
+  "accountSwitches": {
+    "selected": 1,
+    "identityVerified": 0
+  },
   "feishuMessages": 0,
-  "newAgentsStarted": 0,
+  "newAgentsStarted": 1,
   "serviceRestarts": 0,
   "remotePushes": 0,
   "existingWorkPreserved": true,
-  "review": "self review of preparation only; no real-device acceptance"
+  "review": "self review; partial real evidence with isolation and name-accuracy gaps; no full acceptance claim",
+  "preparationHistory": {
+    "recordedAtUtc": "2026-10-13T03:50:54.821909+00:00",
+    "status": "waiting-for-test-devices; real testing not started",
+    "adb": {
+      "daemonPidBefore": 26031,
+      "daemonPidAfter": 26031,
+      "readonlyLists": 2,
+      "onlineDevices": 0,
+      "physicalDevice118Connected": false,
+      "serverRestarted": false,
+      "usbReset": false
+    },
+    "realQueries": 0,
+    "newAgentsStarted": 0
+  },
+  "patchSourceCommit": "8eb976ac629c1f0020968c58c20f673b11d03e01",
+  "patchCandidateTag": "lookup-pool-20261013-rc.2",
+  "patchKind": "minimal-overlay-requires-rc.1",
+  "realTest": {
+    "at": "2026-10-13T04:56:14.805Z",
+    "base": "http://127.0.0.1:59304",
+    "sourceTag": "lookup-pool-20261013-rc.1",
+    "ledgerEntries": 104,
+    "completed": 103,
+    "hasName": 90,
+    "notFound": 13,
+    "nonterminal": [],
+    "uniqueSourceOrdinals": 102,
+    "physicalQueryTasks": 104,
+    "queryStatuses": {
+      "succeeded": 103,
+      "failed": 1
+    },
+    "tasksOnAuthorizedDevices": true,
+    "allManagedTasksHaveGeneration": true,
+    "succeededTasksAcked": true,
+    "archivedResults": 104,
+    "maxExecuting": 2,
+    "maxRunningQueryPhones": 2,
+    "maxQueued": 4,
+    "overlapSamples": 556,
+    "channels": [],
+    "activeTasks": [],
+    "liveSessions": 0,
+    "historicalLockRows": 5,
+    "activeLockRows": 0,
+    "cooldowns": [
+      {
+        "number": 130,
+        "accountHash": "b1b626a87f11",
+        "limitedAt": "2026-10-13T04:49:01.367Z",
+        "cooldownUntil": "2026-10-13T12:49:01.367Z",
+        "reason": "frequent_or_abnormal_access",
+        "durationMs": 28800000
+      }
+    ],
+    "accountSwitches": 1,
+    "restrictionEvents": 2,
+    "outboxFiles": 0,
+    "queriesMeaning": "physicalQueryTasks counts query task invocations; failed40 did not input the new number",
+    "apiLogicalRequests": 104,
+    "returnedName": 90,
+    "failed": 1,
+    "uniqueOriginalInputs": 102,
+    "deliberateDiagnosticRechecks": 2,
+    "sameKeySuccessReplay": {
+      "at": "2026-10-13T04:24:23.734Z",
+      "sourceOrdinal": 67,
+      "originalLookupId": "3c810542-6c98-4878-81bb-8cc177b52846",
+      "hasName": true,
+      "newTasks": 0,
+      "sameOriginalKey": true,
+      "physicalQueriesAdded": 0
+    },
+    "longSessionAdmission": {
+      "at": "2026-10-13T04:48:07.204Z",
+      "results": [
+        {
+          "number": 118,
+          "status": 409,
+          "code": "managed_device_reserved"
+        },
+        {
+          "number": 130,
+          "status": 409,
+          "code": "managed_device_reserved"
+        }
+      ],
+      "physicalTasksAdded": 0,
+      "containsNoExecutablePayload": true,
+      "expiredLegacyLockStillReservedOn130": true
+    },
+    "nameAccuracy": {
+      "fullyPassed": false,
+      "historyPositiveInitiallyEmptyOrdinals": [
+        68,
+        133
+      ],
+      "bothExplicitDiagnosticRechecksHaveName": true,
+      "rootCause": "unconfirmed intermittent empty page/result; no evidence to claim parser dropped a visible name",
+      "initialResultsPreserved": true
+    },
+    "restriction": {
+      "number": 130,
+      "detectedAtUtc": "2026-10-13T04:49:01.367Z",
+      "cooldownUntilUtc": "2026-10-13T12:49:01.367Z",
+      "durationMs": 28800000,
+      "oldAccountRef": "b1b626a87f11",
+      "phoneQueryStarted": false,
+      "savedAccountSelectionAttempts": 1,
+      "verifiedSuccessfulSwitches": 0,
+      "nextSavedAccountRequiresLogin": true,
+      "failedOriginalLookupId": "ed6a3a3c-4ee6-4a61-b143-f23f47fbce3b",
+      "failedOriginalQueryId": "8b46c8a7-7577-4661-83bb-f773c83b2b5c",
+      "failedSourceOrdinal": 40,
+      "failedOriginalTerminal": "failed; lookup_execution_failed; not pending automatic continuation"
+    },
+    "terminalFailures": [
+      {
+        "sourceOrdinal": 40,
+        "lookupId": "ed6a3a3c-4ee6-4a61-b143-f23f47fbce3b",
+        "queryId": "8b46c8a7-7577-4661-83bb-f773c83b2b5c",
+        "status": "failed",
+        "code": "lookup_execution_failed",
+        "beforeInputConfirmed": true
+      }
+    ]
+  },
+  "localIsolation": {
+    "productionConnections": 0,
+    "guardedDevices": [
+      118,
+      130
+    ],
+    "temporaryPostgres16": true,
+    "oldAgentRequestedStopPid": 29618,
+    "unexpectedSupervisorRespawnPid": 44042,
+    "supervisor": "com.phonecloud.kuaishou.local-agent; launchd keepalive",
+    "oldAgentStillScannedDuringTest": true,
+    "oldPlatformTasksCreatedDuringTest": 0,
+    "oldPlatformQueryTasksCreatedDuringTest": 0,
+    "strictSingleActiveAgentIsolationVerified": false,
+    "requiredRepeat": "Temporarily pause idle supervisor-managed local process without exiting it, verify no child/ADB work and no automatic respawn; resume same process after scoped real canaries. Do not reboot ADB/USB or change production."
+  },
+  "patchValidation": {
+    "oldCodeNewCounterexampleFailures": 1,
+    "newTests": 5,
+    "newTestsPassed": 5,
+    "actual130ReadOnlyClassification": {
+      "atUtc": "2026-10-13T04:55:16Z",
+      "number": 130,
+      "code": "poco_alipay_login_required",
+      "recognizedActualLoginPage": true,
+      "readOnlyWindowCalls": 1,
+      "inputOrAccountSelectionActions": 0,
+      "realQuerySubmitted": false
+    },
+    "changedRuntimeFunctions": [
+      "Runner.wait_unique"
+    ],
+    "changedToken": "account-switch-returned-home",
+    "tests": [
+      {
+        "name": "python-main",
+        "command": [
+          "/Users/yyx/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "windows-agent/scripts",
+          "-p",
+          "automation_runners_test.py"
+        ],
+        "exitCode": 1,
+        "elapsedSeconds": 1.65,
+        "logSha256": "09a76da954abb69b81e5945e0a0130d0569d75c709bbbd991a1f86a74ecdffa0"
+      },
+      {
+        "name": "python-lookup",
+        "command": [
+          "/Users/yyx/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "windows-agent/scripts",
+          "-p",
+          "test_lookup_*.py"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 2.29,
+        "logSha256": "72a52e1ab99048c8bafb9ba2cdf7557a9f0906685c6e690cbb8fcbc108b27742",
+        "testCount": 61
+      },
+      {
+        "name": "screen-protection",
+        "command": [
+          "npm",
+          "run",
+          "test:screen"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 11.63,
+        "logSha256": "b6157dd0a2dd9eaa45592c5c96bcb45907c520f4f14b42a4fd179bb3d3a63af3",
+        "testCount": 602
+      },
+      {
+        "name": "python-main-final",
+        "exitCode": 0,
+        "testCount": 163,
+        "logSha256": "bfee033f0acda3a5245036baa675870f7462ac0887d820034198c1410ba0db0b"
+      }
+    ],
+    "testCountsOverlap": true,
+    "runtimeLoadedForFullRealTask": false,
+    "baseRuntimeMatchedFiles": 316,
+    "baseRuntimeDriftFiles": [],
+    "missing6VerificationFilesInRuntimeCopyIntentional": true,
+    "baseRc1Untouched": true,
+    "sharedAdbMediaControlFilesModified": 0
+  },
+  "cleanup": {
+    "atUtc": "2026-10-13T05:02:22Z",
+    "ownedPlatformStopped": true,
+    "ownedAgentStopped": true,
+    "ownedPostgresStopped": true,
+    "privateDataAndCooldownPreserved": true,
+    "oldLocalAgentAutomaticallyResumedPid": 44042,
+    "oldAgentLaunchedAgainByThisTask": false,
+    "oldLocalAgentService": "gui/501/com.phonecloud.kuaishou.local-agent",
+    "oldLocalAgentServicePlist": "(submitted by launchctl[46752])",
+    "supervisorPresent": true,
+    "supervisorMentionsKeepalive": true,
+    "oldLocalConfigSha256": "547e6eaaff47f20ab8faf5482ee4e0bbe99f86938720a16b7921b8db94584c0a",
+    "oldLocalConfigModified": false,
+    "oldLocalServerPreservedPid": 46592,
+    "adbDaemonPreservedPid": 26031,
+    "stayAwakeUnchanged": {
+      "118": "2",
+      "130": "0"
+    },
+    "initialCleanupPollRaceResolved": true,
+    "restoreAttemptStoppedAtExistingInstanceGuard": true,
+    "oldPlatformTasksCreatedDuringTest": 0,
+    "localTestIsolation": "old agent automatically respawned with passive scanning; new agent alone executed lookup tasks; strict isolated two-phone acceptance needs repeat",
+    "productionActions": 0,
+    "oldAgentFreshHeartbeatVerified": true,
+    "oldLocalReadyzHttpStatus": 200,
+    "ownedLocalPortsClosed": [
+      59304,
+      59305
+    ]
+  },
+  "unverified": [
+    "strict isolated two-phone repeated concurrency",
+    "successful identity-verified natural switch and same-query continuation",
+    "new session on same phone inherits cooldown",
+    "all accounts cooling stop",
+    "natural8hour expiry",
+    "real5phone overlap",
+    "real49phone mappings",
+    "intermittent initially empty known positive result root cause"
+  ],
+  "processFailuresPreserved": [
+    "readonlyuiautomator dump missing whilePoco owned instrumentation",
+    "wrong HRPC ping port corrected toexisting10081",
+    "fast readonly HRPC observer eventually disconnected after diagnostic completed; not fulltrace pass",
+    "public task payload redactsgeneration: verified fromPG instead",
+    "terminal leases intentionally stripped byhistory maintenance: ACK verified throughlocal200acklogs",
+    "Python main1fixture failure fixed byonlymockreadonlyhomefocus; original noaccounttap assertions kept",
+    "test helper fixture edit anchor mismatch corrected without runtime change",
+    "cleanup firstPGstop poll raced wrapper completion; waited and confirmed stopped",
+    "oldAgent restore guard discovered automatic existinginstance; did not create anotherAgent"
+  ],
+  "localOldAgentStopRequested": 1,
+  "unexpectedSupervisorRespawns": 1,
+  "productionServiceRestarts": 0
 }

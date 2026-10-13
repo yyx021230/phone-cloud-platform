@@ -1,0 +1,83 @@
+{
+  "version": {
+    "version": "lookup-pool-20261013-rc.2",
+    "kind": "minimal-overlay-requires-rc.1",
+    "status": "local-candidate-not-deployed; complete real acceptance blocked",
+    "branch": "codex/lookup-pool-realtest-20261013",
+    "candidateTag": "lookup-pool-20261013-rc.2",
+    "patchSourceCommit": "8eb976ac629c1f0020968c58c20f673b11d03e01",
+    "baseCandidateCommit": "99255025f748167514add026adeaaa3def9cee4f",
+    "baseRuntimeSourceCommit": "5b22bf1e0ab78a441abd47b1691a8e0c53e2d098",
+    "runtimeFiles": 1,
+    "tests": 2,
+    "realDeviceAcceptanceComplete": false,
+    "productionAccess": 0,
+    "remotePushes": 0
+  },
+  "testChecks": [
+    {
+      "name": "python-main",
+      "command": [
+        "/Users/yyx/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "windows-agent/scripts",
+        "-p",
+        "automation_runners_test.py"
+      ],
+      "exitCode": 1,
+      "elapsedSeconds": 1.65,
+      "logSha256": "09a76da954abb69b81e5945e0a0130d0569d75c709bbbd991a1f86a74ecdffa0"
+    },
+    {
+      "name": "python-lookup",
+      "command": [
+        "/Users/yyx/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "windows-agent/scripts",
+        "-p",
+        "test_lookup_*.py"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 2.29,
+      "logSha256": "72a52e1ab99048c8bafb9ba2cdf7557a9f0906685c6e690cbb8fcbc108b27742",
+      "testCount": 61
+    },
+    {
+      "name": "screen-protection",
+      "command": [
+        "npm",
+        "run",
+        "test:screen"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 11.63,
+      "logSha256": "b6157dd0a2dd9eaa45592c5c96bcb45907c520f4f14b42a4fd179bb3d3a63af3",
+      "testCount": 602
+    },
+    {
+      "name": "python-main-final",
+      "exitCode": 0,
+      "testCount": 163,
+      "logSha256": "bfee033f0acda3a5245036baa675870f7462ac0887d820034198c1410ba0db0b"
+    }
+  ],
+  "realReadOnlyLogin": {
+    "atUtc": "2026-10-13T04:55:16Z",
+    "number": 130,
+    "code": "poco_alipay_login_required",
+    "recognizedActualLoginPage": true,
+    "readOnlyWindowCalls": 1,
+    "inputOrAccountSelectionActions": 0,
+    "realQuerySubmitted": false
+  },
+  "realBatchReceipt": "../../docs/evidence/LOOKUP_POOL_REAL_LOCAL_20261013.json",
+  "localIsolationStrictAcceptanceComplete": false,
+  "physicalTaskRetestAfterPatch": false,
+  "productionAccess": 0
+}

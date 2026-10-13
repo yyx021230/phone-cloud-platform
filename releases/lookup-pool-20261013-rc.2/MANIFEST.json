@@ -1,0 +1,17 @@
+{
+  "version": "lookup-pool-20261013-rc.2",
+  "kind": "minimal-overlay-requires-rc.1",
+  "patchSourceCommit": "8eb976ac629c1f0020968c58c20f673b11d03e01",
+  "baseCandidateCommit": "99255025f748167514add026adeaaa3def9cee4f",
+  "manifestSelfExcluded": true,
+  "files": {
+    "BASELINE.json": "23466a75294c0b8bb77ac2025fd70fda17266c9afe446dc02102388e18ecbd2d",
+    "README.md": "a900907d45653776366995b7d024ccdc379d7c4038f85bc5b190ab40ade5b476",
+    "RESULTS.json": "ae523eccc2b697ce69f62a99823f55f5e4e2be5cb6a6603b465eca3e745f1822",
+    "VERSION.json": "a421c57bbcd1a5552f8f92b567c1d3d8a6da351c24f03526d64bedf34f343e44",
+    "verify-overlay.py": "b2ad20504f6028343a8575684d1a4f52d0dbb27fc6d10494e43a9a68e1060153",
+    "windows-agent/scripts/alipay_name_lookup.py": "78f974bf472c780137c469e7584761a02836c7699bfa9d1d936dbeb3ada9bedc",
+    "windows-agent/scripts/automation_runners_test.py": "c669aae7faa2176bb68d6299f3c467a30c4b10a9a9e38161bb71cee0fe30d5a9",
+    "windows-agent/scripts/test_lookup_switch_login.py": "8484b7f1b42b571f04cad8ce1fd44e9842eadb56e0d6004e1821406f640f36fe"
+  }
+}
