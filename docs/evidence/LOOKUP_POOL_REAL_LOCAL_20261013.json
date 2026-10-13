@@ -1,0 +1,95 @@
+{
+  "recordedAtUtc": "2026-10-13T03:50:54.821909+00:00",
+  "status": "waiting-for-test-devices; real testing not started",
+  "branch": "codex/lookup-pool-realtest-20261013",
+  "baseCommit": "99255025f748167514add026adeaaa3def9cee4f",
+  "runtimeSourceCommit": "5b22bf1e0ab78a441abd47b1691a8e0c53e2d098",
+  "runtimeCandidateTag": "lookup-pool-20261013-rc.1",
+  "authorization": "User explicitly requested original batch local physical tests:5 concurrent, natural restriction/rotation/cooldown; production unchanged. No selected5 stable serials supplied yet.",
+  "rules": {
+    "sharedRevision": "2026-09-30",
+    "sharedSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+    "candidateMainShaBefore": "5fc16f485e45f879352d78dd116b0ea4df6c709f75181d01ff349c990f01a4f8",
+    "rootMainShaUnchanged": "d44137e59e319765f8223a6de1997e5866b284639ef1c70056b4ee5d01c855e1"
+  },
+  "candidateChecks": {
+    "frozenRuntimeFiles": 34,
+    "legacyPublicContracts": 39,
+    "sdkBundleSourceAndReproducibility": "passed",
+    "runtimeSourceModified": false,
+    "fullRegressionRepeated": false,
+    "whyNotRepeated": "same immutable candidate; previous full local regression passed"
+  },
+  "adb": {
+    "daemonPidBefore": 26031,
+    "daemonPidAfter": 26031,
+    "readonlyLists": 2,
+    "onlineDevices": 0,
+    "physicalDevice118Connected": false,
+    "serverRestarted": false,
+    "usbReset": false
+  },
+  "input": {
+    "workbookSha256": "874c801e6f3eff06cd480c7ab81713b4f822bd54911a7696fa0d192143d31011",
+    "phoneCellCount": 201,
+    "uniquePhoneCount": 201,
+    "workbookModified": false,
+    "phonesDisclosed": false,
+    "lastCommittedConsumptionReceipt": "releases/lookup-realname-prompt-20261012-deployed.1/RECEIPT.json",
+    "lastReceiptConsumedIndexes": "0..66",
+    "lastReceiptNextIndex": 67,
+    "legacyBatchDigest": "9fefe9c6544fdc480e3cc45c7c75149491f819752179d75ad045ae3353d79a7e",
+    "commonArraySerializationDigestMatched": false,
+    "consumptionMappingVerifiedThisRound": false,
+    "requiredBeforeSubmit": "Verify original private batch/schema and mapping; retain original business keys for unknown in-flight tasks; no claims of prior-consumption reconciliation yet.",
+    "historicalLocalBatchEvidence": {
+      "extendedCount": 84,
+      "extendedSourceOrdinalsFirstLast": [
+        67,
+        201
+      ],
+      "all84ItemsFoundInCurrentWorkbook": true,
+      "orderedRangeIsContiguous": false,
+      "continuationCount": 33,
+      "continuationSourceOrdinalRange": [
+        169,
+        201
+      ],
+      "warning": "Historical local batch selected noncontiguous rows; do not map last production nextIndex67 to workbookB69 without original API-batch schema."
+    },
+    "batchDigestReconciliation": "not yet matched; no new query sent"
+  },
+  "plan": {
+    "targets": [],
+    "requiredPhoneCount": 5,
+    "physicalPhoneNumbersMustBeIn49Roster": true,
+    "stages": [
+      "single-device short real API canary",
+      "two-device short real API canary",
+      "five-device overlap then continue bounded unused authorized batch to natural restriction when possible"
+    ],
+    "initialCanaryQueryBudget": 2,
+    "fiveDeviceInitialQueryBudget": 10,
+    "extendedBudgetMaximum": "remaining unconsumed batch after mapping is verified; no blind replay of unknown tasks",
+    "naturalRestrictionMayNotOccurWithinBatch": true,
+    "cooldownDurationRemainsHours": 8,
+    "noClockOrThresholdSimulation": true,
+    "stopConditions": [
+      "puzzle:keep task/device, request human intervention",
+      "unknown duplicate/late report:stop adding and reconcile original IDs",
+      "global active count exceeds5 or same phone overlaps:stop adding",
+      "other task/screen owns selected phone:do not start",
+      "shared resource or media/control baseline abnormality:stop expansion"
+    ]
+  },
+  "productionReads": 0,
+  "productionWrites": 0,
+  "realQueries": 0,
+  "accountSwitches": 0,
+  "feishuMessages": 0,
+  "newAgentsStarted": 0,
+  "serviceRestarts": 0,
+  "remotePushes": 0,
+  "existingWorkPreserved": true,
+  "review": "self review of preparation only; no real-device acceptance"
+}
