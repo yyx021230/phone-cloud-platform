@@ -1,0 +1,41 @@
+{
+  "version": "lookup-async-20261013-rc.2",
+  "candidateTag": "lookup-async-20261013-rc.2",
+  "branch": "codex/lookup-sdk-timeout-20261013",
+  "status": "local-sdk-overlay-not-deployed",
+  "candidateKind": "SDK-only overlay on immutable async rc.1, not a complete platform tree",
+  "baselineCommit": "ce5c42cba1bb94f0faba487f443976d8faeb31a8",
+  "baseVersion": "lookup-async-20261013-rc.1",
+  "baseTagCommit": "1d644817d67fc64b3ea6d8620705b3c5422036a3",
+  "baseManifestSha256": "e688023f831dcccf780408b04f6c48bedb024481b2272194536508c56c5b694c",
+  "overlayFiles": [
+    "sdk/open_name_lookup/node_client.mjs",
+    "sdk/open_name_lookup/README.md",
+    "public/downloads/name-lookup-integration.zip",
+    "public/downloads/name-lookup-sha256.json"
+  ],
+  "baseFileHashes": {
+    "sdk/open_name_lookup/node_client.mjs": "43eadea37f076cff444a1242d82f9755e42b84f1ab2643ffa82a72e6d9baff7d",
+    "sdk/open_name_lookup/README.md": "4e7498057e6766cc7eb3f4f16c44636d22344f5df5e054bc1a82a0e124250b87",
+    "public/downloads/name-lookup-integration.zip": "ed834e0e09e67c34374db0847a84cd8015e83b5c05f7017b1c7a12a53d2e3cdd",
+    "public/downloads/name-lookup-sha256.json": "92590da18509597149cc092839af0c8d3c77a3eddec595f7c75227afdc401e27"
+  },
+  "fixedReviewFindings": [
+    "F4"
+  ],
+  "openReviewFindings": [
+    "F1",
+    "F2",
+    "F3",
+    "F5"
+  ],
+  "platformReleaseReady": false,
+  "productionRechecked": false,
+  "serverChanges": false,
+  "agentChanges": false,
+  "schemaChanges": false,
+  "pythonSdkChanges": false,
+  "remotePushes": 0,
+  "realPhoneActions": 0,
+  "newProductionDeployment": false
+}

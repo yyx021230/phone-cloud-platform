@@ -1,0 +1,14 @@
+{
+  "version": "lookup-async-20261013-rc.2",
+  "baseVersion": "lookup-async-20261013-rc.1",
+  "status": "local-sdk-overlay-not-deployed",
+  "files": {
+    "OPEN_NAME_LOOKUP_API.md": "cf813aa2c4de3ea5d5d8757d3f0d5f958ac5c2bdc3ee20b93f17568ec2cfb416",
+    "README.md": "32563f409ea16500eba122938e1bd5a64d42455aa6d28d0ccd9c4fb508efac93",
+    "node_client.mjs": "07f86ca4ff7bf3848083c8e1d1ecc30b69da67951e554d0121e1efdb4120fa3a",
+    "openapi.json": "818ac70d0dc2078903a7ee3734bc39e4ab484490289cea76a8139de6210a2af1",
+    "python_client.py": "e797a5cd6a08b3bd480d41198e87a774e0e4f239bfc81b9b75ef9f9056b22ce4",
+    "sign.mjs": "8aac5bdf144c8dd6c93da3aa34c63c21952270fba139e5b117730b6730c51946"
+  },
+  "zipSha256": "39dd6fe13a0942479ef7a1741a959661ae077e13a052a1878630e3e666e92843"
+}
