@@ -70,6 +70,14 @@ test("exit 2 retains incomplete data instead of treating the result as empty", a
   assert.equal(result.errorCode, "recent_window_not_proven");
 });
 
+test("image-derived results expose their execution mode without changing the snapshot", async (t) => {
+  const image = { ...snapshot(), warnings: ["list_read_with_local_image_recognition"] };
+  const h = await harness(t, async (args) => fs.writeFile(args.at(-1), JSON.stringify(image)));
+  const result = await runXhsDataCollection(task, h.dependencies);
+  assert.equal(result.executionMode, "windows_xml_with_native_image_reader");
+  assert.deepEqual(result.collection, image);
+});
+
 test("cancellation restores only this phone's temporary settings and preserves cancellation", async (t) => {
   const controller = new AbortController();
   const reason = Object.assign(new Error("automation_task_cancelled"), { code: "automation_task_cancelled" });

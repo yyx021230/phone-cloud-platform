@@ -79,7 +79,8 @@ export async function runXhsDataCollection(task, { config, run, adb, signal, cac
         ? `已采集 ${snapshot.notes.length} 篇，时间范围完整`
         : `已采集 ${snapshot.notes.length} 篇，尚未确认时间边界`,
       errorCode: snapshot.complete ? "" : "recent_window_not_proven",
-      executionMode: "windows_xml_uiautomator", durationMs: Date.now() - startedAt,
+      executionMode: snapshot.warnings?.includes("list_read_with_local_image_recognition")
+        ? "windows_xml_with_native_image_reader" : "windows_xml_uiautomator", durationMs: Date.now() - startedAt,
       collection: snapshot
     };
   } catch (error) {

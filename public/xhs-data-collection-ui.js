@@ -28,6 +28,8 @@ export function renderXhsDataResult(job) {
     <span class="status-pill ${data.complete ? "ok" : "warn"}">${escape(status)}</span></div>
     <p class="hint">${escape(data.window_start_date)} — ${escape(data.window_end_date)} · ${escape(data.captured_at ? new Date(data.captured_at).toLocaleString("zh-CN", { timeZone: "Asia/Shanghai", hour12: false }) : "")}</p>
     ${data.complete ? "" : '<p class="hint warn">尚未读到时间边界或列表末尾，以下是已采到的作品。</p>'}
+    ${Array.isArray(data.warnings) && data.warnings.includes("list_read_with_local_image_recognition") ? '<p class="hint warn">部分数据来自截图识别，请核对标题和日期。</p>' : ""}
+    ${Array.isArray(data.warnings) && data.warnings.includes("list_metric_units_are_displayed_approximations") ? '<p class="hint">带“万”等单位的计数按页面显示换算，为近似值。</p>' : ""}
     <div class="xhs-data-totals"><div><small>观看</small><strong>${metric(total.list_view_count)}</strong></div>
     <div><small>点赞</small><strong>${metric(total.list_like_count)}</strong></div><div><small>评论</small><strong>${metric(total.list_comment_count)}</strong></div></div>
     <div class="xhs-data-table-wrap"><table class="xhs-data-table"><thead><tr><th>作品 / 发布日期</th><th>观看</th><th>点赞</th><th>评论</th></tr></thead><tbody>
