@@ -104,6 +104,11 @@
       "GETHttpExampleNoIdempotencyHeader": true,
       "GETPythonGetterCorrect": true,
       "newRoutesMarkedNotDeployed": true
+    },
+    "diffCheck": {
+      "newFilesAndChanges": "passed",
+      "inheritedMediaPatchContext": "full artifact diff --check flags spaces/tabs in2 pre-existing unified-patch context files; unchanged hashes verified, excluded only these2 patch files for task check",
+      "checkExitCodeExcludingThese2InheritedPatchFiles": 0
     }
   },
   "scope": {
@@ -171,6 +176,10 @@
     {
       "case": "stop-unconfirmed archive pruning",
       "result": "new PG counterexample failed when >256 terminals pruned channel-referenced canonical; smallest keep-set fix preserves referenced requests, final PG passed"
+    },
+    {
+      "case": "full newly assembled artifact diff --check",
+      "result": "2 unchanged D-075 unified patch files retain required context-space+tabs/trailing blank context; baseline hash equality proven, not rewritten. All other334 staged file changes pass diff --check."
     }
   ],
   "rootPreserved": {
@@ -209,5 +218,7 @@
     "sdk-python-fixed.log": "33060fd73862c5e1af97335504d5b45211fce6d229657f556d8deceeadc52ce4",
     "counterexample-old.log": "09a244ac1f0f10fc384a00157c3dbc63c39472b119954687b18f7be56b566d5d",
     "archive-stop-counterexample.log": "7ec3e842ba2e4f66b64672bbfb32fc85f5745718c9d377cf8322baa7441926a8"
-  }
+  },
+  "runtimeSourceCommit": "bd1f120e72b550c95725b415ae5d2c448201e39b",
+  "candidateTag": "lookup-async-20261013-rc.1"
 }

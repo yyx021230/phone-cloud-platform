@@ -1,0 +1,34 @@
+{
+  "version": "lookup-async-20261013-rc.1",
+  "status": "local-candidate-not-deployed",
+  "branch": "codex/lookup-async-api-20261013",
+  "candidateTag": "lookup-async-20261013-rc.1",
+  "runtimeSourceCommit": "bd1f120e72b550c95725b415ae5d2c448201e39b",
+  "baseCommit": "aab7f924568ad1b2f168ce6d4ed6037f21637526",
+  "candidateKind": "full verified pool rc.1+rc.2+rc.3+rc.4 composite with async-only cloud/SDK changes",
+  "lastRecordedProduction": "lookup-realname-prompt-20261012-deployed.1",
+  "productionRechecked": false,
+  "migrations": [
+    "deploy/sql/20261013-managed-lookup.sql",
+    "deploy/sql/20261013-managed-lookup-async.sql"
+  ],
+  "protocol": "managed_lookup_v1",
+  "managedFeatureDefault": false,
+  "rosterCount": 49,
+  "concurrencyMax": 5,
+  "asyncDefaults": {
+    "queueWaitMs": 1800000,
+    "taskBudgetMs": 3600000,
+    "recentResultMs": 600000,
+    "newAliasesPerCanonical": 50,
+    "sdkRequestTimeoutMs": 30000,
+    "recommendedPollMs": 5000
+  },
+  "humanWaitMs": 1800000,
+  "accountCooldownMs": 28800000,
+  "standaloneGETLimiterImplemented": false,
+  "automaticArchiveCleanupImplemented": false,
+  "realDeviceAcceptance": false,
+  "remotePushes": 0,
+  "newProductionDeployment": false
+}
