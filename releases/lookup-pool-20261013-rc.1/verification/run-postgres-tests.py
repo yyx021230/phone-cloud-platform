@@ -1,0 +1,22 @@
+from pathlib import Path
+import subprocess,tempfile,socket,os,json,sys
+repo=Path(__file__).resolve().parent.parent
+tmp=Path(tempfile.mkdtemp(prefix='pc-managed-pg-',dir='/tmp'));db=tmp/'cluster';sock=tmp/'socket';sock.mkdir();pg=Path(os.environ.get('MANAGED_TEST_PG_BIN','/opt/homebrew/opt/postgresql@16/bin'))
+s=socket.socket();s.bind(('127.0.0.1',0));port=s.getsockname()[1];s.close();url=f'postgresql://fixture_user@127.0.0.1:{port}/postgres'
+env={'PATH':os.environ['PATH'],'HOME':str(tmp),'TMPDIR':str(tmp),'PYTHONDONTWRITEBYTECODE':'1','NO_PROXY':'127.0.0.1,localhost','LC_ALL':'C','LANG':'C'}
+started=False
+try:
+ subprocess.run([str(pg/'initdb'),'-D',str(db),'-U','fixture_user','--auth=trust','--no-locale'],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.PIPE,check=True)
+ subprocess.run([str(pg/'pg_ctl'),'-D',str(db),'-l',str(tmp/'postgres.log'),'-o',f'-h 127.0.0.1 -p {port} -k {sock}','-w','start'],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.PIPE,check=True);started=True
+ js="import pg from 'pg';import fs from 'node:fs';const p=new pg.Pool({connectionString:"+json.dumps(url)+"});await p.query(fs.readFileSync('deploy/sql/20261013-managed-lookup.sql','utf8'));await p.end();"
+ subprocess.run(['node','--input-type=module'],input=js,text=True,cwd=repo,env=env,stdout=subprocess.DEVNULL,stderr=subprocess.PIPE,check=True)
+ with (tmp/'http.log').open('w') as log:r=subprocess.run(['node','--test','server/managed-lookup.http.test.mjs'],cwd=repo,env={**env,'MANAGED_LOOKUP_TEST_DATABASE_URL':url},stdout=log,stderr=subprocess.STDOUT)
+ print('Isolated PostgreSQL16 plus real HTTP:',r.returncode,flush=True)
+ js="import pg from 'pg';import assert from 'node:assert/strict';import {createManagedLookupStore} from './server/managed-lookup-store.mjs';import {createPostgresRepositories} from './server/postgres-repositories.mjs';const pool=new pg.Pool({connectionString:"+json.dumps(url)+"});const getPool=async()=>pool;const repos=createPostgresRepositories({getPool});const store=await createManagedLookupStore({getPool,key:'atomic-test'});await assert.rejects(createManagedLookupStore({getPool,key:'atomic-test'}),/already_active/);let undone=false;await assert.rejects(store.transact(async(s,tx)=>{tx.onRollback(()=>undone=true);s.channels.push({deviceId:'atomic-fixture'});await repos.persistTaskMutation({transactionClient:tx.client,windowsTask:{taskId:'rollback-fixture',type:'alipay_name_start',status:'queued',agentId:'fixture',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),payload:{}}});throw Error('injected commit failure');}),/injected/);assert.ok(undone);assert.equal(store.snapshot().channels.length,0);assert.equal((await pool.query(\"select task_id from phone_cloud_windows_tasks where task_id='rollback-fixture'\")).rows.length,0);await store.transact(s=>{for(let i=0;i<300;i++)s.requests.push({lookupId:'archive-'+i,clientId:'fixture-client',idempotencyKey:'fixture-key-'+i,fingerprint:'fixture',name:'test*',status:'succeeded',completedAt:new Date().toISOString()});});assert.equal(store.snapshot().requests.length,256);assert.equal((await store.readRequest('archive-0','fixture-client')).name,'test*');assert.equal(await store.readRequest('archive-0','other-client'),null);assert.equal((await store.transact((s,tx)=>tx.archived('fixture-client','fixture-key-0'))).lookupId,'archive-0');await store.close();const reopened=await createManagedLookupStore({getPool,key:'atomic-test'});assert.equal((await reopened.readRequest('archive-0','fixture-client')).name,'test*');await reopened.close();const other=await createManagedLookupStore({getPool,key:'other-namespace'});assert.equal(await other.readRequest('archive-0','fixture-client'),null);await other.close();await pool.end();console.log('Atomic rollback, owner lock, archive retention and tenant/state-key isolation PASS');"
+ with (tmp/'store.log').open('w') as log:r2=subprocess.run(['node','--input-type=module'],input=js,text=True,cwd=repo,env=env,stdout=log,stderr=subprocess.STDOUT)
+ print('PostgreSQL transaction/restart/archive checks:',r2.returncode,flush=True)
+ (tmp/'RESULT.json').write_text(json.dumps({'postgresHttpExit':r.returncode,'postgresAtomicStoreExit':r2.returncode,'productionAccess':0,'root':str(tmp)},indent=2));print('Private PostgreSQL evidence:',tmp,flush=True)
+finally:
+ if started:subprocess.run([str(pg/'pg_ctl'),'-D',str(db),'-m','fast','-w','stop'],env=env,stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
+
+sys.exit(bool(r.returncode or r2.returncode))

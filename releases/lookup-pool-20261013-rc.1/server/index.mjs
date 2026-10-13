@@ -1,7 +1,7 @@
 import { createManagedLookupStore, MANAGED_LOOKUP_PROTOCOL } from './managed-lookup-store.mjs';
 import { createManagedLookupService } from './managed-lookup.mjs';
 import { createManagedLookupAdapter } from './managed-lookup-platform.mjs';
-import { isManagedLookupTask, supportsLeasedWindowsTaskDelivery, hasActiveScreenGalleryDelivery, issueScreenGalleryDelivery, readScreenGalleryDeliveryPayload, acknowledgeScreenGalleryDelivery } from './managed-lookup-delivery.mjs';
+import { canDeliverManagedLookupTask, isManagedLookupTask, supportsLeasedWindowsTaskDelivery, hasActiveScreenGalleryDelivery, issueScreenGalleryDelivery, readScreenGalleryDeliveryPayload, acknowledgeScreenGalleryDelivery } from './managed-lookup-delivery.mjs';
 import { createLookupHumanNotifier, pendingLookupHumanNotifications, readLookupHumanWebhook } from "./lookup-human-notifications.mjs";
 import { createTaskStatusPersistence } from "./task-status-persistence.mjs";
 import { createLookupHumanHandover, lookupHumanChallenge } from "./lookup-human-handover.mjs";
@@ -265,7 +265,7 @@ if (boolEnv(process.env.MANAGED_NAME_LOOKUP_ENABLED, false)) {
   if (NODE_ENV === 'production' && (!structuredRepos || STORAGE_BACKEND !== 'postgres')) throw new Error('managed_lookup_requires_structured_postgres');
   const store = await createManagedLookupStore({getPool: structuredRepos ? getPostgresPool : null, file:path.join(DATA_DIR,'managed-lookup.json'), key:POSTGRES_STATE_KEY, persistLegacy:saveState});
   const adapter = createManagedLookupAdapter({state, clientIds:()=>[...OPEN_NAME_LOOKUP_CLIENTS.keys()], userFor:id=>openNameLookupUser(OPEN_NAME_LOOKUP_CLIENTS.get(id)), persist:bundle=>structuredRepos.persistTaskMutation(bundle),
-    listed:isDeviceListed,online:isAdbOnline,onlineMs:WINDOWS_AGENT_ONLINE_MS,screenActive:id=>screenSessions.activeForDevice(id),lockFor:activeDeviceLockForTask,
+    listed:isDeviceListed,online:isAdbOnline,onlineMs:WINDOWS_AGENT_ONLINE_MS,screenActive:id=>screenSessions.activeForDevice(id),lockFor:activeDeviceLockForTask,recovery:resumableLookupRecoveryResult,
     allCooling:d=>{const session=state.automationSessions.find(x=>x.deviceId===d.deviceId&&x.savedAccounts?.length);return session?allSavedAccountsCooling(d,session.savedAccounts):false;},
     createSession:createLookupSession,createJob:createAutomationJob,acquireLock:acquireAutomationDeviceLock,queueTask:queueAutomationWindowsTask,result:upsertLookupResult,cancelJob:cancelAutomationJob});
   managedLookup = createManagedLookupService({store,adapter});
@@ -407,6 +407,8 @@ async function routeApi(req, res, url) {
     if(req.method==='GET' && url.pathname==='/api/v1/admin/lookup-pool')return json(res,200,{pool:managedLookup.admin()});
     if(req.method==='POST' && url.pathname==='/api/v1/admin/lookup-pool/preview')return json(res,200,{devices:managedLookup.preview()});
     if(req.method==='PUT' && url.pathname==='/api/v1/admin/lookup-pool')return json(res,200,{ok:true,...await managedLookup.configure(await readJson(req),ctx.userId||ctx.role)});
+    const retry=url.pathname.match(/^\/api\/v1\/admin\/lookup-pool\/requests\/([^/]+)\/retry$/);
+    if(req.method==='POST' && retry){await managedLookup.retry(retry[1],ctx.userId||ctx.role);return json(res,202,{ok:true});}
     const cancel=url.pathname.match(/^\/api\/v1\/admin\/lookup-pool\/requests\/([^/]+)\/cancel$/);
     if(req.method==='POST' && cancel){await managedLookup.cancel(cancel[1],ctx.userId||ctx.role);return json(res,202,{ok:true});}
     return json(res,404,{error:'not_found'});
@@ -1843,7 +1845,7 @@ async function routeApi(req, res, url) {
     const task = state.windowsTasks.find((item) => (
       item.agentId === agentId
       && item.status === "queued"
-      && (!isManagedLookupTask(item) || managedDeliveryV1)
+      && (!isManagedLookupTask(item) || (managedDeliveryV1 && canDeliverManagedLookupTask(item)))
       && !activeTaskIds.has(item.taskId)
       && !(supportsLeasedWindowsTaskDelivery(item)
         && ((item.type === "screen_gallery_import" && galleryDeliveryV2) || (item.type === "xhs_publish" && xhsPublishDeliveryV1) || isManagedLookupTask(item))

@@ -31,7 +31,7 @@ export class OpenNameLookupClient {
     this.requestTimeoutMs = Math.max(1, Number(requestTimeoutMs) || 30_000);
   }
 
-  async lookupName(phoneNumber, { idempotencyKey = crypto.randomUUID(), requestTimeoutMs = 130_000 } = {}) {
+  async lookupName(phoneNumber, { idempotencyKey = crypto.randomUUID(), requestTimeoutMs = 190_000 } = {}) {
     // One key for this logical call, including its network retry. Separate
     // invocations are independent business requests unless caller reuses it.
     for (let attempt = 0; ; attempt++) {

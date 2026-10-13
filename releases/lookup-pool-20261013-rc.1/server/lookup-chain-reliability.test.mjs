@@ -17,6 +17,7 @@ function fn(source,name) {
  const next=tail.slice(1).search(/\n(?:async )?function /);
  return next<0?tail:tail.slice(0,next+1);
 }
+const canDeliverManagedLookupTask=()=>true;
 const isManagedLookupTask=t=>t?.payload?.managedLookup?.protocol==='managed_lookup_v1';
 const terminal=s=>['succeeded','failed','cancelled','expired'].includes(s);
 const nowIso=()=>new Date().toISOString();
@@ -140,7 +141,7 @@ test("pending lookup reports reserve only their serial while retaining screen po
   const context = vm.createContext({ URLSearchParams, encodeURIComponent, config: { maxConcurrentAdbTasks: 1, agentId: "a" },
     activeTasksById: new Map([["active", {}]]), activeTaskSerials: new Set(["ACTIVE"]), screenControlledSerials: new Set(["SCREEN"]),
     lookupStatusOutbox: { pendingTasks: () => [{ taskId: "pending", adbSerial: "LOOKUP" }] },
-    MANAGED_LOOKUP_PROTOCOL:"managed_lookup_v1",SCREEN_GALLERY_DELIVERY_PROTOCOL: "gallery", XHS_PUBLISH_DELIVERY_PROTOCOL: "publish",
+    canDeliverManagedLookupTask,MANAGED_LOOKUP_PROTOCOL:"managed_lookup_v1",SCREEN_GALLERY_DELIVERY_PROTOCOL: "gallery", XHS_PUBLISH_DELIVERY_PROTOCOL: "publish",
     api: async (url) => { params = new URL("http://local" + url).searchParams; return { task: null, cancelledTaskIds: [] }; },
     abortCancelledAutomationTasks: () => {}, log: () => {} });
   vm.runInContext(fn(agent, "pollTask"), context); await context.pollTask();

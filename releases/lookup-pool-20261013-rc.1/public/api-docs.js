@@ -10,7 +10,7 @@
   const expandedGroups = new Set();
   const navigationSections = [
     { title: "开始使用", guides: ["overview", "authentication"] },
-    { title: "接入指南", guides: ["lookup-flow", "states", "business-flow", "handover"] },
+    { title: "接入指南", guides: ["lookup-flow", "lookup-legacy", "states", "business-flow", "handover"] },
     { title: "基础接口", groups: ["auth", "user"] },
     { title: "业务接口", groups: ["sms", "lookup-user", "qr-scan", "kuaishou-lead", "xhs-publish"] },
     { title: "设备工具", groups: ["screen"] },
@@ -77,7 +77,7 @@
     let html = `${breadcrumb(g.title)}${g.eyebrow ? `<p class="eyebrow">${esc(g.eyebrow)}</p>` : ""}<h1>${esc(g.intro)}</h1><p class="intro">${g.id === "overview" ? "短信接码、支付宝查名字、小红书自动登录、快手录入、小红书一键发布，各业务独立查阅。" : esc(g.title)}</p>`;
     if (g.id === "overview") {
       html += `<div class="metrics-line"><div><strong>${data.endpoints.length}</strong><span>平台接口</span></div><div><strong>${data.groups.length}</strong><span>功能模块</span></div><div><strong>2</strong><span>认证方式：Bearer / HMAC</span></div></div>`;
-      html += section("getting-started", "调用顺序", '<p>第三方查名：申请HMAC凭据 → 选择设备 → 创建会话 → 提交号码 → 轮询原查询 → 结束会话。</p><p>平台其他业务：登录获取Bearer → 获取可用设备 → 提交对应业务任务 → 查询原任务结果。</p><a href="#lookup-flow">查看查名接入流程 →</a> · <a href="#authentication">查看认证与签名 →</a>');
+      html += section("getting-started", "调用顺序", '<p>第三方新接入（本地候选）：申请HMAC及设备池授权 → 传号码 → 本次HTTP返回名字。旧会话接口保留兼容。</p><p>平台其他业务：登录获取Bearer → 获取可用设备 → 提交对应业务任务 → 查询原任务结果。</p><a href="#lookup-flow">查看查名接入流程 →</a> · <a href="#authentication">查看认证与签名 →</a>');
       html += section("platform-modules", "平台功能", `<div class="feature-links">${data.groups.map(([id, title]) => { const endpoints = data.endpoints.filter((e) => e.group === id); return `<a class="feature-link" href="#${esc((id === "user" ? endpoints.find((e) => e.id === "get-api-v1-user-devices") : endpoints[0]).id)}"><span><b>${esc(title)}</b><small>${endpoints.length} 个接口</small></span><span class="arrow" aria-hidden="true">↗</span></a>`; }).join("")}</div>`);
       html += section("scope", "文档范围与版本", g.paragraphs.map((p) => `<p>${esc(p)}</p>`).join("") + '<p><a href="./openapi.json" download="phone-cloud-platform-openapi.json">下载平台 OpenAPI 3.1 ↗</a> · <a href="./api-reference.json" download="phone-cloud-platform-api-reference.json">下载平台接口参考 JSON ↗</a></p>');
     } else {
@@ -88,7 +88,7 @@
         if (item.code) body += codePanel(item.code, item.language || "JSON");
         html += section(`guide-section-${i}`, item.title, body);
       }
-      if (["lookup-flow", "handover"].includes(g.id)) html += section("integration-downloads", "查名接入资料下载", '<p><a href="./downloads/name-lookup-integration.zip" download>下载接入包（说明 + Node.js/Python SDK + OpenAPI）</a></p><p><a href="./downloads/name-lookup-openapi.json" download>仅下载第三方查名 OpenAPI</a> · <a href="./downloads/name-lookup-sha256.json" download>文件校验清单</a></p>');
+      if (["lookup-flow", "lookup-legacy", "handover"].includes(g.id)) html += section("integration-downloads", "查名接入资料下载", '<p><a href="./downloads/name-lookup-integration.zip" download>下载接入包（说明 + Node.js/Python SDK + OpenAPI）</a></p><p><a href="./downloads/name-lookup-openapi.json" download>仅下载第三方查名 OpenAPI</a> · <a href="./downloads/name-lookup-sha256.json" download>文件校验清单</a></p>');
       if (g.code) html += section("code-example", g.id === "authentication" ? "Node.js 调用示例" : "Node.js 调用示例", codePanel(g.code, "Node.js · 服务端执行"));
       if (g.id === "models") html += Object.entries(data.models).map(([name, fields]) => section(`model-${name}`, name, fieldTable(fields))).join("");
       if (g.id === "errors") html += section("error-reference", "公共错误参考", `<div class="table-wrap"><table><thead><tr><th>HTTP</th><th>error</th><th>处理方式</th></tr></thead><tbody>${data.commonErrors.map(([status, error, action]) => `<tr><td>${esc(status)}</td><td><code>${esc(error)}</code></td><td>${esc(action)}</td></tr>`).join("")}</tbody></table></div>`);
@@ -121,10 +121,12 @@
   }
 
   function responseFields(e) {
-    return e.response.split(",").map((part) => { const [name, type] = part.split(":"); return { name, type, description: data.models[type?.replace(/\[\]|\|null/g, "")] ? `参见 ${type} 数据模型` : ({ ok: "受理成功标记；业务完成需读取任务状态", queryId: "稳定查询ID；请持久保存", idempotent: "仅重放时返回", ignored: "仅忽略迟到或重复状态时返回", binary: "文件原始字节；非JSON", token: "本次返回的完整凭据，妥善保存", total: "筛选后或集合总数", limit: "实际分页条数", offset: "实际偏移", capacity: "仅容量分支返回 {running,max}", accountCooldown: "仅已持久化限制事件的ACK返回", accepted: "只读观察是否受理，非恢复完成", probes: "当前可用只读观察任务", payload: "对应type的执行载荷", actor: "当前操作者名称" }[name] || "当前接口的业务返回对象；类型专属扩展字段见说明") }; });
+    return e.response.split(",").map((part) => { const [name, type] = part.split(":"); return { name, type, description: data.models[type?.replace(/\[\]|\|null/g, "")] ? `参见 ${type} 数据模型` : ({ name: e.managed ? "Page-displayed masked name; empty when not found or error" : "Business name", code: "Only present for not_found or an error", ok: e.managed ? "本次查询完成标记；未查到参见code" : "受理成功标记；业务完成需读取任务状态", queryId: "稳定查询ID；请持久保存", idempotent: "仅重放时返回", ignored: "仅忽略迟到或重复状态时返回", binary: "文件原始字节；非JSON", token: "本次返回的完整凭据，妥善保存", total: "筛选后或集合总数", limit: "实际分页条数", offset: "实际偏移", capacity: "仅容量分支返回 {running,max}", accountCooldown: "仅已持久化限制事件的ACK返回", accepted: "只读观察是否受理，非恢复完成", probes: "当前可用只读观察任务", payload: "对应type的执行载荷", actor: "当前操作者名称" }[name] || "当前接口的业务返回对象；类型专属扩展字段见说明") }; });
   }
 
   function requestExample(e, language) {
+    if(e.managed && language === "Node.js") return 'const result = await client.lookupName("13800000000", {idempotencyKey: savedBusinessKey});\nconsole.log(result.name); // client初始化见查名接入流程，原业务键先持久保存';
+    if(e.managed && language === "Python") return 'result = client.lookup_name("13800000000", idempotency_key=saved_business_key)\nprint(result["name"])';
     const path = e.path.replace(/\{(\w+)\}/g, (_, name) => encodeURIComponent(exampleValues[name] || `${name}-demo`));
     const json = JSON.stringify(bodyExample(e), null, 2);
     const body = ["POST", "PUT", "PATCH"].includes(e.method) && !e.bodyFormat ? json : "";
@@ -146,11 +148,11 @@
     }
     html += section("request-example", "请求示例", `<p>仅为后端接入示例，不会在此页面执行。替换示例资源ID；图片/密码/令牌占位符需替换为你有权使用的真实输入。</p><div class="code-panel" id="requestCodePanel"><div class="code-toolbar" role="tablist" aria-label="示例语言">${["Node.js", "Python", "HTTP"].map((l, i) => `<button role="tab" aria-selected="${i === 0}" data-language="${l}">${l}</button>`).join("")}<button class="copy-small" data-copy-code>复制代码</button></div><pre role="tabpanel" aria-label="请求代码"><code id="requestCode">${esc(requestExample(e, "Node.js"))}</code></pre></div>`);
     const fields = responseFields(e);
-    html += section("response", "响应", `<p>HTTP ${e.successCodes.join(" / ")}；${e.binary ? "返回原始文件字节，不使用JSON包装。" : "以下为成功响应字段；条件分支字段可以省略。幂等重放可能增加 idempotent=true。"}</p>${fieldTable(fields)}`);
+    html += section("response", "响应", `<p>HTTP ${e.successCodes.join(" / ")}；${e.binary ? "返回原始文件字节，不使用JSON包装。" : e.managed ? "同步返回本次姓名；未查到增加code=not_found；错误返回ok=false/code。" : "以下为成功响应字段；条件分支字段可以省略。幂等重放可能增加 idempotent=true。"}</p>${fieldTable(fields)}`);
     const models = [...new Set(fields.map((f) => f.type.replace(/\[\]|\|null/g, "")).filter((name) => data.models[name]))];
     html += models.map((name) => `<details class="model-details" open><summary>${esc(name)} · 展开字段</summary>${fieldTable(data.models[name])}<p><a href="#models">查看所有嵌套模型 →</a></p></details>`).join("");
     if (!e.binary) {
-      const example = Object.fromEntries(fields.filter((f) => !["ignored", "accountCooldown", "capacity", "idempotent"].includes(f.name)).map((f) => [f.name, exampleForType(f.type, f.name)]));
+      const example = e.responseExample || Object.fromEntries(fields.filter((f) => !["ignored", "accountCooldown", "capacity", "idempotent"].includes(f.name)).map((f) => [f.name, exampleForType(f.type, f.name)]));
       if (example.session?.humanAction) example.session.humanAction = { required: false };
       if (example.session?.queueState) example.session.queueState = { status: example.session.pending ? "running" : "idle" };
       if (e.auth === "hmac" && example.session && e.path.endsWith("/queries")) { example.session.queuedCount = 1; example.session.resultCount = 1; example.session.results = [{ ...exampleForType("OpenLookupResult", ""), status: "queued", stage: "队列等待中", queuePosition: 1, maskedName: "", nameTailCharacter: "" }]; }
@@ -158,7 +160,7 @@
       if (example.session && e.method === "POST" && e.path.endsWith("/end")) example.session.status = "stopping";
       html += section("response-example", "响应示例", codePanel(JSON.stringify(example, null, 2), "JSON · 结构示例，非实时数据"));
     }
-    html += section("endpoint-errors", "错误处理", e.errors.length ? `<p>已核对的路由及查名鉴权/校验错误如下。执行器和存储仍可能产生扩展错误。</p><div class="table-wrap"><table><thead><tr><th>HTTP</th><th>error</th><th>处理方式</th></tr></thead><tbody>${e.errors.map((error) => `<tr><td>${esc(e.errorStatuses?.[error]?.join(" / ") || "扩展")}</td><td><code>${esc(error)}</code></td><td>${esc(data.commonErrors.find(([, codes]) => codes.split(" / ").includes(error))?.[2] || "核对请求字段、资源归属和当前状态；任务超时先查询原ID，按错误原因修正后处理。")}</td></tr>`).join("")}</tbody></table></div>` : '<p>本路由没有直接声明固定 error 字符串；认证、参数规范化、执行器或存储仍可能返回公共/扩展错误。</p>');
+    html += section("endpoint-errors", "错误处理", e.errors.length ? `<p>已核对的路由及查名鉴权/校验错误如下（设备池用code字段）。执行器和存储仍可能产生扩展错误。</p><div class="table-wrap"><table><thead><tr><th>HTTP</th><th>error</th><th>处理方式</th></tr></thead><tbody>${e.errors.map((error) => `<tr><td>${esc(e.errorStatuses?.[error]?.join(" / ") || "扩展")}</td><td><code>${esc(error)}</code></td><td>${esc(data.commonErrors.find(([, codes]) => codes.split(" / ").includes(error))?.[2] || "核对请求字段、资源归属和当前状态；任务超时先查询原ID，按错误原因修正后处理。")}</td></tr>`).join("")}</tbody></table></div>` : '<p>本路由没有直接声明固定 error 字符串；认证、参数规范化、执行器或存储仍可能返回公共/扩展错误。</p>');
     html += '<p><a href="#errors">查看公共错误码、限流和重试策略 →</a></p>';
     return html + footer();
   }

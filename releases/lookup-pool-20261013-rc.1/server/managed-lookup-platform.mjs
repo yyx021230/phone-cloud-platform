@@ -1,3 +1,4 @@
+import {holdManagedLookupDispatch} from './managed-lookup-delivery.mjs';
 import {MANAGED_LOOKUP_PROTOCOL} from './managed-lookup-store.mjs';
 import {managedLookupError} from './managed-lookup.mjs';
 
@@ -14,34 +15,37 @@ export function createManagedLookupAdapter(api){
   }
   async function persist(tx,bundle){if(tx.client)await api.persist({...bundle,transactionClient:tx.client});}
   return {
+    canStop:c=>{const d=state.devices.find(d=>d.deviceId===c.deviceId);return !!d&&api.online(d);},
     clientValid:id=>Boolean(userFor(id)),
     clientOptions:()=>api.clientIds().filter(id=>userFor(id)),
-    validateDevice(id,n){const matches=state.devices.filter(d=>String(d.deviceName).trim()===String(n));if(matches.length!==1||matches[0].deviceId!==id)throw managedLookupError('pool_device_mapping_not_unique');},
+    validateDevice(id,n,previouslyBound=false){if(previouslyBound&&state.devices.some(d=>d.deviceId===id))return;const matches=state.devices.filter(d=>String(d.deviceName).trim()===String(n));if(matches.length!==1||matches[0].deviceId!==id)throw managedLookupError('pool_device_mapping_not_unique');},
     resolveNumber(n){const matches=state.devices.filter(d=>String(d.deviceName).trim()===String(n));return {deviceNumber:n,matches:matches.length,deviceId:matches.length===1?matches[0].deviceId:'',...(matches.length===1?this.health(matches[0].deviceId):{ready:false,reason:'mapping_not_unique'})};},
-    health(id){
+    health(id,{allowScreenControl=false}={}){
       const d=state.devices.find(d=>d.deviceId===id);if(!d)return {ready:false,reason:'device_missing'};
       const a=state.windowsAgents.find(a=>a.agentId===d.adb?.agentId);
       if(!api.listed(d)||!api.online(d)||!a||a.enabled===false||(!Number.isFinite(Date.parse(a.lastSeenAt))||Date.now()-Date.parse(a.lastSeenAt)>api.onlineMs))return {ready:false,reason:'device_or_agent_offline'};
       if(a.managedLookupProtocol!==MANAGED_LOOKUP_PROTOCOL)return {ready:false,reason:'managed_agent_upgrade_required'};
-      if(api.screenActive(id))return {ready:false,reason:'screen_control_active'};
+      if(a.health?.airtest?.enabled!==true||a.health?.airtest?.ok!==true)return {ready:false,reason:'lookup_executor_not_ready'};
+      if(!allowScreenControl&&api.screenActive(id))return {ready:false,reason:'screen_control_active'};
       const lock=api.lockFor(id);if(lock&&!lock.managedLookupGeneration)return {ready:false,reason:'device_busy'};
       if(api.allCooling(d))return {ready:false,reason:'accounts_cooling'};
       return {ready:true,reason:''};
     },
     async start(c,r,tx){
-      const mark=checkpoint(tx);const user=userFor(c.clientId);if(!user)throw managedLookupError('managed_lookup_not_authorized',403);
-      const device=state.devices.find(d=>d.deviceId===c.deviceId);const session=api.createSession({userId:user.userId,deviceId:c.deviceId});
+      const mark=checkpoint(tx);const track=fn=>{try{return fn();}finally{mark();}};const user=userFor(c.clientId);if(!user)throw managedLookupError('managed_lookup_not_authorized',403);
+      const device=state.devices.find(d=>d.deviceId===c.deviceId);const session=track(()=>api.createSession({userId:user.userId,deviceId:c.deviceId}));
       Object.assign(session,{source:'managed-api',clientId:c.clientId,managedLookupGeneration:c.generation});c.sessionId=session.sessionId;
-      const job=api.createJob({kind:'alipay_name_start',userId:user.userId,deviceId:c.deviceId,sessionId:session.sessionId});tag(c,job);session.pendingJobId=job.jobId;
-      const lock=api.acquireLock(device,job,{userId:user.userId,user,role:'system'},{taskId:session.sessionId});lock.managedLookupGeneration=c.generation;session.lockId=lock.lockId;
-      const task=api.queueTask(device,job);mark();await persist(tx,{automationSession:session,automationJob:job,windowsTask:task,deviceLock:lock});
+      const job=track(()=>api.createJob({kind:'alipay_name_start',userId:user.userId,deviceId:c.deviceId,sessionId:session.sessionId}));tag(c,job);session.pendingJobId=job.jobId;
+      const lock=track(()=>api.acquireLock(device,job,{userId:user.userId,user,role:'system'},{taskId:session.sessionId}));lock.managedLookupGeneration=c.generation;session.lockId=lock.lockId;
+      const task=track(()=>api.queueTask(device,job));holdManagedLookupDispatch(task,tx);mark();await persist(tx,{automationSession:session,automationJob:job,windowsTask:task,deviceLock:lock});
     },
-    async query(c,r,tx){
-      const mark=checkpoint(tx);const session=state.automationSessions.find(s=>s.sessionId===c.sessionId);if(!session||session.pendingJobId||session.status!=='ready')throw managedLookupError('managed_session_not_ready',409);
+    async query(c,r,tx,{recovery=false}={}){
+      const mark=checkpoint(tx);const track=fn=>{try{return fn();}finally{mark();}};const session=state.automationSessions.find(s=>s.sessionId===c.sessionId);if(!session||session.pendingJobId||session.status!=='ready')throw managedLookupError('managed_session_not_ready',409);
       const old=structuredClone(session);tx.onRollback(()=>Object.assign(session,old));
-      const device=state.devices.find(d=>d.deviceId===c.deviceId);const job=api.createJob({kind:'alipay_name_query',userId:session.userId,deviceId:c.deviceId,sessionId:c.sessionId,phoneNumber:r.phoneNumber});tag(c,job);job.clientReference=r.lookupId;job.consentReference=r.consentReference;
-      session.status='querying';session.pendingJobId=job.jobId;session.updatedAt=new Date().toISOString();const result=api.result(session,job,{status:'queued',stage:'平台自动分配手机，等待查询'});r.queryId=c.queryId=result.resultId;
-      const task=api.queueTask(device,job);mark();await persist(tx,{automationSession:session,automationJob:job,windowsTask:task});
+      const source=recovery?api.recovery(session):null;if(recovery&&(!source||(source.phase!=='start'&&source.resultId!==r.queryId)))throw managedLookupError('managed_recovery_not_ready',409);
+      const device=state.devices.find(d=>d.deviceId===c.deviceId);const startup=source?.phase==='start';const job=track(()=>api.createJob({kind:startup?'alipay_name_start':'alipay_name_query',userId:session.userId,deviceId:c.deviceId,sessionId:c.sessionId,phoneNumber:startup?'':r.phoneNumber,resultId:recovery?r.queryId||'':'',resumeAfterHumanVerification:recovery,restartAfterHumanVerification:recovery}));tag(c,job);job.clientReference=r.lookupId;job.consentReference=r.consentReference;
+      session.status=startup?'starting':'querying';session.pendingJobId=job.jobId;session.updatedAt=new Date().toISOString();if(startup){session.startupHumanVerification.status='queued';}else{const result=api.result(session,job,{status:'queued',stage:'平台自动分配手机，等待查询'});r.queryId=c.queryId=result.resultId;}
+      const task=track(()=>api.queueTask(device,job));holdManagedLookupDispatch(task,tx);mark();await persist(tx,{automationSession:session,automationJob:job,windowsTask:task});
     },
     observe(c){
       const s=state.automationSessions.find(s=>s.sessionId===c.sessionId);if(!s)return {unknown:true};
@@ -55,12 +59,12 @@ export function createManagedLookupAdapter(api){
       return {ready:s.status==='ready',exhausted:s.requiresAccountSwitch===true};
     },
     async stop(c,tx){
-      const mark=checkpoint(tx);const s=state.automationSessions.find(s=>s.sessionId===c.sessionId);if(!s)return;
+      const mark=checkpoint(tx);const track=fn=>{try{return fn();}finally{mark();}};const s=state.automationSessions.find(s=>s.sessionId===c.sessionId);if(!s)return;
       const old=structuredClone(s);tx.onRollback(()=>Object.assign(s,old));let cancelledJob=null,cancelledTask=null;
       if(s.pendingJobId){const job=state.automationJobs.find(j=>j.jobId===s.pendingJobId);if(job){const copy=structuredClone(job),task=state.windowsTasks.find(t=>t.taskId===job.windowsTaskId),taskCopy=task&&structuredClone(task);tx.onRollback(()=>{Object.assign(job,copy);if(task)Object.assign(task,taskCopy);});api.cancelJob(job,'managed_pool_stopping',{releaseLock:false});cancelledJob=job;cancelledTask=task;}}
       const device=state.devices.find(d=>d.deviceId===c.deviceId);
       if(!device||!api.online(device))throw managedLookupError('managed_stop_requires_online',503);
-      const job=api.createJob({kind:'alipay_name_stop',userId:s.userId,deviceId:c.deviceId,sessionId:c.sessionId});tag(c,job);s.status='stopping';s.pendingJobId=job.jobId;const task=api.queueTask(device,job);mark();await persist(tx,{automationSession:s,automationJob:job,windowsTask:task,automationJobs:cancelledJob?[cancelledJob]:[],windowsTasks:cancelledTask?[cancelledTask]:[]});
+      const job=track(()=>api.createJob({kind:'alipay_name_stop',userId:s.userId,deviceId:c.deviceId,sessionId:c.sessionId}));tag(c,job);s.status='stopping';s.pendingJobId=job.jobId;const task=track(()=>api.queueTask(device,job));holdManagedLookupDispatch(task,tx);mark();await persist(tx,{automationSession:s,automationJob:job,windowsTask:task,automationJobs:cancelledJob?[cancelledJob]:[],windowsTasks:cancelledTask?[cancelledTask]:[]});
     }
   };
 }

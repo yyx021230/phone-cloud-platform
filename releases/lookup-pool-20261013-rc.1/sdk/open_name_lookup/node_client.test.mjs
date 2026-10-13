@@ -75,3 +75,8 @@ test("HTTP failures expose status, code and response payload", async () => {
     return true;
   });
 });
+
+test("managed lookupName uses phone-only body and stable key across a network retry", async () => {
+  const calls=[];const client=new OpenNameLookupClient({baseUrl:"http://local",clientId:"fixture",secret:"fixture-secret",fetchImpl:async(url,options)=>{calls.push({url,body:JSON.parse(options.body),key:options.headers["Idempotency-Key"],nonce:options.headers["X-Nonce"]});if(calls.length===1)throw new Error("lost response");return new Response(JSON.stringify({ok:true,name:"test*"}),{status:200});}});
+  const result=await client.lookupName("13800000000");assert.equal(result.name,"test*");assert.deepEqual(calls[0].body,{phoneNumber:"13800000000"});assert.equal(calls[0].key,calls[1].key);assert.notEqual(calls[0].nonce,calls[1].nonce);assert.ok(calls[0].url.endsWith("/query"));
+});
