@@ -1,0 +1,13 @@
+{
+  "version": "lookup-async-20261013-rc.1",
+  "status": "local-candidate-not-deployed",
+  "files": {
+    "README.md": "4e7498057e6766cc7eb3f4f16c44636d22344f5df5e054bc1a82a0e124250b87",
+    "OPEN_NAME_LOOKUP_API.md": "cf813aa2c4de3ea5d5d8757d3f0d5f958ac5c2bdc3ee20b93f17568ec2cfb416",
+    "node_client.mjs": "43eadea37f076cff444a1242d82f9755e42b84f1ab2643ffa82a72e6d9baff7d",
+    "python_client.py": "e797a5cd6a08b3bd480d41198e87a774e0e4f239bfc81b9b75ef9f9056b22ce4",
+    "sign.mjs": "8aac5bdf144c8dd6c93da3aa34c63c21952270fba139e5b117730b6730c51946",
+    "openapi.json": "818ac70d0dc2078903a7ee3734bc39e4ab484490289cea76a8139de6210a2af1"
+  },
+  "zipSha256": "ed834e0e09e67c34374db0847a84cd8015e83b5c05f7017b1c7a12a53d2e3cdd"
+}

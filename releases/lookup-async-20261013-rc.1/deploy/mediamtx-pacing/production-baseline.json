@@ -1,0 +1,15 @@
+{
+  "decision": "D-075",
+  "activatedUtc": "2026-09-10T10:16:25.118181Z",
+  "service": "phone-cloud-mediamtx.service",
+  "unitPath": "/etc/systemd/system/phone-cloud-mediamtx.service",
+  "binaryPath": "/opt/phone-cloud-mediamtx/mediamtx",
+  "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+  "dropInPath": "/etc/systemd/system/phone-cloud-mediamtx.service.d/75-viewer-pacing.conf",
+  "scope": "all server-side pc/ viewers; original RTP and NACK share per-viewer budget",
+  "environment": {
+    "PHONECLOUD_VIEWER_PACING_BPS": "8000000",
+    "PHONECLOUD_VIEWER_PACING_GROUP_PACKETS": "2"
+  },
+  "changesRequireExplicitUserApproval": true
+}
