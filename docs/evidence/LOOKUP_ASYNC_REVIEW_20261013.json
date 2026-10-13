@@ -1,0 +1,234 @@
+{
+  "task": "lookup-async-workflow-review-20261013",
+  "atUtc": "2026-10-13T09:27:45.431393+00:00",
+  "status": "review-complete-findings-open",
+  "decision": "architecture reasonable; current candidate not approved for release until5 findings are corrected and reverified",
+  "reviewer": "Codex self-review; no subagent or independent human reviewer",
+  "branch": "codex/lookup-async-review-20261013",
+  "reviewedHead": "1d644817d67fc64b3ea6d8620705b3c5422036a3",
+  "reviewedTag": "lookup-async-20261013-rc.1",
+  "runtimeSourceCommit": "bd1f120e72b550c95725b415ae5d2c448201e39b",
+  "initialWorktreeClean": true,
+  "mainShaBefore": "2001bd7f9945c6ae61809fda0bf880e86ae83387275bf28a40bc864265abb7cb",
+  "rules": {
+    "fullMainReadContextReused": true,
+    "currentMain13_7AndDesign10_2Rechecked": true,
+    "AGENTSAndWorkflowReread": true,
+    "workflowRevision": "2026-09-30",
+    "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+  },
+  "scope": [
+    "async submit/HMAC/current grants",
+    "same/new-key coalescing and result cache",
+    "PG admission/alias/archive and reservation retention code review",
+    "queue/prepare/query/stop/human recovery/expiry/cancel scheduling",
+    "Agent lease/generation/ACK and cooldown integration source review",
+    "result representation and SDK transport",
+    "published local API contract and integration package",
+    "rollback/unverified production boundaries"
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "priority": "P1",
+      "title": "空闲离线设备回收使整池调度事务回滚",
+      "file": "releases/lookup-async-20261013-rc.1/server/managed-lookup.mjs",
+      "line": 130,
+      "tests": [
+        "R1"
+      ],
+      "trigger": "一台已完成查询/idle的手机离线，达到idleMs或被暂停/排空，同时其他设备有结果或排队任务",
+      "observed": "实际platform adapter.stop抛managed_stop_requires_online；另一台已收到succeeded结果的canonical仍running。下一tick遇同一离线会话仍失败。",
+      "impact": "单机掉线可能堵住全部托管设备的结果提交、停止回收及新任务分配。",
+      "recommendedFix": "回收前识别离线并保留原预约/跳过该设备；单设备可预期异常须隔离，不能回滚其他设备进度。不得靠删预约或全局重启恢复。"
+    },
+    {
+      "id": "F2",
+      "priority": "P1",
+      "title": "准备完成派首条查询时遗漏最新客户授权检查",
+      "file": "releases/lookup-async-20261013-rc.1/server/managed-lookup.mjs",
+      "line": 128,
+      "tests": [
+        "R3"
+      ],
+      "trigger": "请求已进入preparing，管理员撤销该客户端池授权，然后账号准备完成ready",
+      "observed": "已关闭grant，submit/GET会拒绝；tick的ready分支仍调用adapter.query一次并置running。",
+      "impact": "违反设计中撤权禁止新派发的约束；尚未输入的号码仍会被交给手机。",
+      "recommendedFix": "在每个首次query派发边界重核授权及客户端有效性；撤权后保留原任务记录并安全停止尚未查询的会话。"
+    },
+    {
+      "id": "F3",
+      "priority": "P1",
+      "title": "取消或执行预算到期优先于已收到的成功结果，丢失对外姓名",
+      "file": "releases/lookup-async-20261013-rc.1/server/managed-lookup.mjs",
+      "line": 106,
+      "tests": [
+        "R4",
+        "R4B"
+      ],
+      "trigger": "Agent成功结果已可observe，但managed tick尚未转存canonical；这时取消或总体执行预算到期",
+      "observed": "tick先标取消/stop，后续确认停止把原任务记cancelled，GET返回failed/name空（分别lookup_cancelled和lookup_processing_timeout）。原成功分支未执行。",
+      "impact": "平台已查到姓名却向调用方返回失败；安全结束后新键可创建新业务，导致本可复用结果的号码再次查询。底层执行证据仍在，不等同数据被物理删除。",
+      "recommendedFix": "按执行证据/完成与取消顺序对账；已确认的原成功结果先持久结算，取消只管理仍执行的尝试，禁止把已收到结果覆盖为单纯失败。"
+    },
+    {
+      "id": "F4",
+      "priority": "P2",
+      "title": "Node SDK响应体缺少超时保护及网络错误重试分类",
+      "file": "releases/lookup-async-20261013-rc.1/sdk/open_name_lookup/node_client.mjs",
+      "line": 165,
+      "tests": [
+        "R5",
+        "R6"
+      ],
+      "trigger": "服务端先返回响应头，JSON body延迟/中途断开",
+      "observed": "30ms超时测试等待262ms仍成功；accepted响应半包断开时只有1次HTTP请求，抛裸TypeError，没有进入原键network_error重试。",
+      "impact": "调用方定时任务可能长时间挂住，SDK对提交响应丢失的处理不符合文档。服务端幂等保护本身仍存在。",
+      "recommendedFix": "AbortController覆盖响应体读取，读取异常归network_error；保留同业务键/更新Nonce的有界重试，业务HTTP错误仍不重试。"
+    },
+    {
+      "id": "F5",
+      "priority": "P2",
+      "title": "新对接文档残留推荐同步入口，会绕回没有换键合并的路径",
+      "file": "releases/lookup-async-20261013-rc.1/OPEN_NAME_LOOKUP_API.md",
+      "line": 19,
+      "tests": [
+        "R7"
+      ],
+      "trigger": "开发者按交付说明的“新接入优先使用上面的同步接口”接入",
+      "observed": "同页第15行明确旧query不采用异步不同键合并，第19行却推荐新接入用同步；SDK ZIP也收录此文件。",
+      "impact": "对接方可能采用旧query；2分钟后新键重提可新建任务，与新对接目标不一致。",
+      "recommendedFix": "新接入统一推荐POST tasks+GET tasks/{lookupId}，同步/旧会话仅置兼容章节，重建ZIP并校验门户/OpenAPI/SDK说明一致。"
+    }
+  ],
+  "actualVerification": {
+    "reviewCommand": "node --test verification/lookup-async-review-20261013/review.test.mjs",
+    "reviewCases": 9,
+    "passed": 2,
+    "failed": 7,
+    "skipped": 0,
+    "exitCode": 1,
+    "failureMeaning": "intentional desired-behavior assertions expose5 confirmed issues; not a passing application regression",
+    "observations": [
+      {
+        "scenario": "R1",
+        "observed": {
+          "error": "managed_stop_requires_online",
+          "otherStatus": "running"
+        },
+        "physicalQueries": 0,
+        "productionConnections": 0
+      },
+      {
+        "scenario": "R2",
+        "observed": {
+          "error": null,
+          "otherStatus": "succeeded"
+        },
+        "physicalQueries": 0,
+        "productionConnections": 0
+      },
+      {
+        "scenario": "R3",
+        "observed": {
+          "queriesAfterGrantRevocation": 1,
+          "status": "running"
+        },
+        "physicalQueries": 0,
+        "productionConnections": 0
+      },
+      {
+        "scenario": "R4",
+        "observed": {
+          "status": "failed",
+          "code": "lookup_cancelled",
+          "namePreserved": false
+        },
+        "physicalQueries": 0,
+        "productionConnections": 0
+      },
+      {
+        "scenario": "R4B",
+        "observed": {
+          "status": "failed",
+          "code": "lookup_processing_timeout",
+          "namePreserved": false
+        },
+        "physicalQueries": 0,
+        "productionConnections": 0
+      },
+      {
+        "scenario": "R5",
+        "observed": {
+          "elapsedMs": 262,
+          "requestedTimeoutMs": 30,
+          "errorCode": null
+        },
+        "physicalQueries": 0,
+        "productionConnections": 0
+      },
+      {
+        "scenario": "R6",
+        "observed": {
+          "httpRequests": 1,
+          "errorName": "TypeError",
+          "errorCode": null
+        },
+        "physicalQueries": 0,
+        "productionConnections": 0
+      },
+      {
+        "scenario": "R7",
+        "observed": {
+          "newIntegrationStillRecommendsSync": true
+        },
+        "physicalQueries": 0,
+        "productionConnections": 0
+      }
+    ],
+    "testLogSha256": "63ef9ca8eae957667736171469aa7be4af80823b43b1cf54eac9145dcfa396a3",
+    "existingAsyncCommand": "env -i PATH=<existing> HOME=<existing> LANG=C LC_ALL=C node --test releases/lookup-async-20261013-rc.1/server/managed-lookup-async.test.mjs",
+    "existingAsyncPassed": 9,
+    "existingAsyncFailed": 0,
+    "existingAsyncExitCode": 0,
+    "candidateManifestFilesVerified": 332,
+    "candidateVerificationExitCode": 0,
+    "full618NotRerun": "no runtime edits; previous618 history preserved, does not cover these new cases",
+    "realPhoneActions": 0,
+    "ownedLoopbackServersClosed": true
+  },
+  "disprovedSuspicion": {
+    "R2": "startup failure does not reacquire same device immediately because30s quarantine excludes it; kept as passing control, not reported as defect"
+  },
+  "reasonableDesign": [
+    "immediate durable submit + separate read-only GET",
+    "same-client normalized-phone in-flight coalescing plus persistent original-key aliases",
+    "fixed10min completed result window separated from original identity retention",
+    "unknown execution keeps reservation until safely stopped",
+    "internal pool49/max5; caller need not manage devices",
+    "HMAC and tenant isolation; compatible legacy endpoints"
+  ],
+  "unverified": [
+    "new async true-phone path on118/130 and true5 concurrent devices",
+    "natural account limit -> correct saved account -> original query continuation",
+    "all accounts cooling / natural8h expiry",
+    "actual Windows disconnect/restart and OCR installation",
+    "production migration/proxy and other-system cron/backfill",
+    "commit-response-loss reconciliation is source-reviewed only; no real PG fault injection this review",
+    "GET standalone limiter/retention cleanup are recorded follow-up features, not implemented"
+  ],
+  "runtimeFilesModified": 0,
+  "existingCandidateTagsMoved": 0,
+  "rootPreserved": {
+    "head": "6811aef632eeaaacd6d6ce1effc4afa64bf6d363",
+    "dirtyEntries": 236,
+    "writes": 0,
+    "mainSha256": "3dd6365329b18c9a50df97a1f10f95990b9a02342b48873108c0b25c33e22790"
+  },
+  "productionConnections": 0,
+  "productionMutations": 0,
+  "feishuMessages": 0,
+  "remotePushes": 0,
+  "mediaLiveVerification": "not run; review only, no deployment or frozen changes",
+  "nextStep": "fix F1/F2/F3 scheduler boundaries then F4 SDK/F5 docs in a new candidate; run these counterexamples plus appropriate regression before authorized real-device testing"
+}
