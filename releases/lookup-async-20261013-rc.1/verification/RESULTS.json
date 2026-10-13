@@ -1,0 +1,213 @@
+{
+  "task": "lookup-async-api-20261013",
+  "version": "lookup-async-20261013-rc.1",
+  "status": "local-candidate-not-deployed",
+  "completedAtUtc": "2026-10-13T09:14:37.779016+00:00",
+  "branch": "codex/lookup-async-api-20261013",
+  "baseCommit": "aab7f924568ad1b2f168ce6d4ed6037f21637526",
+  "risk": "R2 async protocol, scheduling identity, PostgreSQL additive migration",
+  "ruleRead": "Full main/workflow context retained from continuous task, AGENTS reread and13.7/design10/10.1 latest hash rechecked",
+  "workflowRevision": "2026-09-30",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "authority": "user authorized async two APIs, different-key retry after120s coalescing, local verification and version management; production explicitly unchanged",
+  "runtimeSourceCommitLocation": "../VERSION.json",
+  "tests": {
+    "nodeFull": {
+      "command": "env -i PATH=<existing> HOME=<existing> LANG=C LC_ALL=C npm run test:screen",
+      "passed": 618,
+      "failed": 0,
+      "skipped": 0
+    },
+    "syntax": {
+      "command": "npm run check plus explicit new async/store/managed/public JS node --check",
+      "exitCode": 0
+    },
+    "legacySmoke": {
+      "command": "env -i PATH=<existing> HOME=<existing> LANG=C LC_ALL=C npm run test:smoke",
+      "exitCode": 0
+    },
+    "sdkNode": {
+      "command": "node --test sdk/open_name_lookup/node_client.test.mjs",
+      "passed": 6
+    },
+    "sdkPython": {
+      "command": "python -m unittest discover -s sdk/open_name_lookup -p python_client_test.py",
+      "passed": 3
+    },
+    "countsOverlap": true,
+    "wallClockHTTP": {
+      "atUtc": "2026-10-13T09:10:07.837Z",
+      "loopbackOnly": true,
+      "storage": "postgres",
+      "elapsedBeforeFreshKeyRetryMs": 121001,
+      "over120Seconds": true,
+      "submittedReusesSameLookupId": true,
+      "actualCloudQueryTasks": 1,
+      "syntheticAgentStarts": 1,
+      "physicalRealPhoneQueries": 0,
+      "readOnlyResultRetries": true,
+      "concurrentFreshKeys": 8,
+      "postgresOrJsonReopenAliases": true,
+      "originalQueryNotRedelivered": true,
+      "lateOriginalResult": "passed",
+      "recentReuse": "passed",
+      "sameKeySyncCompatible": true,
+      "tenantIsolation": "passed",
+      "httpStatusCases": [
+        200,
+        202,
+        400,
+        409,
+        404
+      ],
+      "drained": true,
+      "productionConnections": 0
+    },
+    "postgresStorage": {
+      "archivePrunedTo256": true,
+      "aliasRollback": true,
+      "recentResultFoundOutsideMemory": true,
+      "aliasReopen": true,
+      "fixed600SecondBoundary": true,
+      "originalKeyStillHistorical": true,
+      "stateKeyIsolation": true,
+      "tenantSamePhoneDifferentCanonical": true,
+      "ownerLock": true,
+      "stopUnconfirmedSurvivesArchivePruning": true,
+      "productionConnections": 0
+    },
+    "postgresChecks": {
+      "checks": [
+        {
+          "check": "async_http",
+          "exitCode": 0
+        },
+        {
+          "check": "async_store",
+          "exitCode": 0
+        },
+        {
+          "check": "legacy_http",
+          "exitCode": 0
+        }
+      ],
+      "ownedClusterStopped": true,
+      "isolatedLoopbackOnly": true
+    },
+    "documentation": {
+      "operations": 42,
+      "hmacOperations": 10,
+      "previous40EndpointObjectsUnchanged": true,
+      "SDKZIPSourceAndSHA256Match": true,
+      "reproducibleGeneration": true,
+      "browserPOSTAndGETRendered": true,
+      "GETHttpExampleNoIdempotencyHeader": true,
+      "GETPythonGetterCorrect": true,
+      "newRoutesMarkedNotDeployed": true
+    }
+  },
+  "scope": {
+    "allAgentFilesUnchanged": 118,
+    "frozenScreenAndMediaFilesUnchanged": 53,
+    "baselineFiles": 322,
+    "changedBaselineFiles": [
+      "OPEN_NAME_LOOKUP_API.md",
+      "README.md",
+      "RELEASE_NOTES.md",
+      "public/api-docs.js",
+      "public/api-reference.json",
+      "public/downloads/name-lookup-integration.zip",
+      "public/downloads/name-lookup-openapi.json",
+      "public/downloads/name-lookup-sha256.json",
+      "public/openapi.json",
+      "scripts/build-managed-lookup-docs.py",
+      "sdk/open_name_lookup/README.md",
+      "sdk/open_name_lookup/node_client.mjs",
+      "sdk/open_name_lookup/node_client.test.mjs",
+      "sdk/open_name_lookup/python_client.py",
+      "sdk/open_name_lookup/python_client_test.py",
+      "server/index.mjs",
+      "server/managed-lookup-store.mjs",
+      "server/managed-lookup.mjs"
+    ]
+  },
+  "review": {
+    "type": "self-review after final diff/call-chain inspection",
+    "independentReviewer": false,
+    "result": "local candidate approved within scope; production/real-device acceptance pending",
+    "checked": [
+      "tenant auth before reuse and GET",
+      "serialized PG admission and rollback",
+      "same/new-key fingerprints and aliases",
+      "fixed completion cache vs retained original identity",
+      "HTTP disconnect and deadline do not release unknown execution",
+      "archive preserves channel-referenced terminal phone binding",
+      "old40 contracts and synchronous alias compatibility",
+      "additive migration and rollback compatibility",
+      "no Agent/shared ADB/media/control changes"
+    ]
+  },
+  "failuresAndCorrections": [
+    {
+      "case": "legacy runtime counterexample",
+      "result": "new key after121s returned different lookupId before patch; new runtime passed"
+    },
+    {
+      "case": "candidate assembly",
+      "result": "initial copy followed borrowed dependencies; only new candidate removed and rebuilt from322 verified manifest files before business edits"
+    },
+    {
+      "case": "full Node missing inherited @yume-chan dependency",
+      "result": "temporary candidate Agent dependency link restored; final618 passed, no dependencies installed"
+    },
+    {
+      "case": "Python SDK fixture import and missing URLError",
+      "result": "test discovery/import corrected; final3 passed"
+    },
+    {
+      "case": "two long HTTP fixture drain failures",
+      "result": "synthetic Agent never rescanned after owned platform restart; offline device correctly retained reservation. Fixture reconnect/device scan added; no runtime stop safety weakened, final121s drained"
+    },
+    {
+      "case": "stop-unconfirmed archive pruning",
+      "result": "new PG counterexample failed when >256 terminals pruned channel-referenced canonical; smallest keep-set fix preserves referenced requests, final PG passed"
+    }
+  ],
+  "rootPreserved": {
+    "head": "6811aef632eeaaacd6d6ce1effc4afa64bf6d363",
+    "dirtyEntries": 236,
+    "mainSha256Unchanged": "771b9ebb24298ef9171f18ec5b47d9e4499242297c185bba440b4d6e787807cc",
+    "writes": 0,
+    "previousCandidateTagsMoved": 0
+  },
+  "cleanup": {
+    "ownedHttpAndPGStopped": true,
+    "drainedHTTPFixture": true,
+    "legacyLocalPlatformAgentADBChanged": false
+  },
+  "unverified": [
+    "new async routes on real118/130/5 phones",
+    "49 stable production mappings",
+    "natural limit -> successful account switch -> original query; all accounts cooling and natural8h expiry",
+    "real Agent disconnect/restart on Windows",
+    "Windows OCR install/resources",
+    "real external partner cron/backfill and public proxy",
+    "production version/live media checks, production migration/deployment",
+    "GET standalone rate limiter and result410/tombstone cleanup not implemented",
+    "existing first-start jigsaw observation without resident worker and natural API Canvas fallback"
+  ],
+  "productionConnections": 0,
+  "productionMutations": 0,
+  "physicalRealPhoneQueries": 0,
+  "feishuMessages": 0,
+  "remotePushes": 0,
+  "mediaLiveVerification": "not run; no production release, D-075 retained",
+  "evidenceLogHashes": {
+    "full-node-final.log": "82fadbd8c33c7c8bae03434de600b13f66a6321db897741fcd93f8722f53d591",
+    "smoke-final.log": "279ce4f8f3bc7e15372f073d42af12d46542a9102f8e9c601a7db51eb4c9842d",
+    "sdk-node.log": "6ed7c19428b07063207b83286fa50092194fb027522b4f4d1010359422b923c5",
+    "sdk-python-fixed.log": "33060fd73862c5e1af97335504d5b45211fce6d229657f556d8deceeadc52ce4",
+    "counterexample-old.log": "09a244ac1f0f10fc384a00157c3dbc63c39472b119954687b18f7be56b566d5d",
+    "archive-stop-counterexample.log": "7ec3e842ba2e4f66b64672bbfb32fc85f5745718c9d377cf8322baa7441926a8"
+  }
+}
