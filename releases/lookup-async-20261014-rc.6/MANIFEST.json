@@ -1,0 +1,11 @@
+{
+  "version": "lookup-async-20261014-rc.6",
+  "hash": "SHA256",
+  "files": {
+    "README.md": "729e30956b0da09f97577ef263aafe299d8906697dd70beaf9a7cb93433695f6",
+    "VERSION.json": "11906f92c9e61f63f1b588ae7e0ccf00a82470f42ea9540f28ddffc153776603",
+    "verification/prepare-local.py": "c04eb3eed20c497559c2f27d08d9eef7f03af60f68b2991c0233a50bf12b145b",
+    "windows-agent/scripts/alipay_visual_result.py": "2c92eca1fe65165c1a4caa40934f1572e717f1644083bb904b3dd644cb3302b7",
+    "windows-agent/scripts/test_lookup_loading_animation.py": "e791cac35977a4a7977e981a3283babf34a0d9aaa3d59a9da440db4c8fa82a60"
+  }
+}

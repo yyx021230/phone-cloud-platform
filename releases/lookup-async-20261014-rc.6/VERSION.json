@@ -1,0 +1,24 @@
+{
+  "version": "lookup-async-20261014-rc.6",
+  "candidateTag": "lookup-async-20261014-rc.6",
+  "branch": "codex/lookup-async-real-20261014",
+  "baselineCommit": "ae20bd1969c6468cb2e744899d33d206eb17cbb0",
+  "status": "local-candidate-not-deployed",
+  "baseTag": "lookup-async-20261014-rc.5",
+  "baseManifestSha256": "234e900c4bc44ce1d7d17188bf0d512de687b139825ef94af2e9d1d097909587",
+  "baseFileHashes": {
+    "windows-agent/scripts/alipay_visual_result.py": "26abb8e6418a2a90a792d7391d70824de12a408c0bd3c5d7e755f95d08f4f5fb"
+  },
+  "overlayFiles": [
+    "windows-agent/scripts/alipay_visual_result.py"
+  ],
+  "testFiles": [
+    "windows-agent/scripts/test_lookup_loading_animation.py"
+  ],
+  "platformReleaseReady": false,
+  "apiChanges": false,
+  "schemaChanges": false,
+  "mediaChanges": false,
+  "productionActions": 0,
+  "realTestStatus": "new animated-marker branch offline verified; rc.6 real continuation pending"
+}
