@@ -1,0 +1,500 @@
+{
+  "recordedAtUtc": "2026-10-13T18:25:24.941223+00:00",
+  "status": "local-focused-tests-completed-with-unresolved-real-phone-failure",
+  "candidateTag": "lookup-async-20261014-rc.7",
+  "candidateCommit": "5dc93a47c46ae70dd6ab15111e5a16fc2a03ee1a",
+  "branch": "codex/lookup-async-real-20261014",
+  "notDeployed": true,
+  "productionConnections": 0,
+  "pushes": 0,
+  "externalNotifications": 0,
+  "scope": {
+    "devices": [
+      118,
+      130
+    ],
+    "userConfirmedAuthorizedOriginalNumbers": true,
+    "workbookSha256": "874c801e6f3eff06cd480c7ab81713b4f822bd54911a7696fa0d192143d31011",
+    "initialLogicalQueryBound": 8,
+    "boundedExtensions": [
+      10,
+      11,
+      12
+    ],
+    "actualLogicalQueries": 12,
+    "reasonForExtensions": "two isolation completion checks and one recheck after each subsequent loading fix; no unbounded batch",
+    "phoneValuesAndNamesOmitted": true,
+    "uniqueOriginalNumberCount": 6
+  },
+  "baseline": {
+    "sourceCommit": "6905fac2856931d7a609e4c08866cf5c02470940",
+    "sourceTag": "lookup-async-20261013-rc.4",
+    "branch": "codex/lookup-async-real-20261014",
+    "mainBeforeSha": "88af5962eb76b2da3a4f8bc9ee77ae2cc37bd0d556635b7ee5f7922c643016c2",
+    "workflowSha": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+    "rootExistingDirtyEntries": 236
+  },
+  "acceptance": {
+    "twoMinuteNewKeyDeduplication": {
+      "passed": true,
+      "evidence": [
+        {
+          "actualElapsedMs": 148296,
+          "newKeys": 3,
+          "allOriginalLookupId": true,
+          "heldStatus": "processing",
+          "isolationSuccessAtTwoMinutes": false,
+          "phase": "delayed-receipt-v2",
+          "realQueryTasks": 1,
+          "realInputEvents": 1,
+          "originalQueryId": "b96a7d5e-c866-440c-85fe-0da1f854384b",
+          "finalStatus": "succeeded",
+          "hasName": true,
+          "persistedAliases": 3,
+          "completedAliasReplayPassed": true
+        },
+        {
+          "actualElapsedMs": 121784,
+          "newKeys": 3,
+          "allOriginalLookupId": true,
+          "heldStatus": "processing",
+          "otherCompletedBeforeRelease": 1,
+          "phase": "delayed-receipt-v3",
+          "realQueryTasks": 1,
+          "realInputEvents": 1,
+          "originalQueryId": "0beaf5b0-cc15-4789-a90f-d2bbe2babd3d",
+          "finalStatus": "failed",
+          "hasName": false,
+          "persistedAliases": 3,
+          "completedAliasReplayPassed": true
+        }
+      ],
+      "localPostgresReopenedAfterTheseChecks": true,
+      "aliasesAndOriginalResultsReplayedAfterReopen": true
+    },
+    "independentSuccessfulResultWhileOtherDeviceBlocked": {
+      "passed": true,
+      "mode": "local exact-task terminal HTTP callback 503 fault; real phones and real results",
+      "blockedDevice": 130,
+      "blockedLookupId": "df191cb4-00bb-41bd-a34d-a70d3b308d4e",
+      "otherDevice": 118,
+      "otherLookupId": "9db46237-c79f-409c-8192-64dbcaa8ae26",
+      "otherCompletedAt": "2026-10-13T18:10:20.123Z",
+      "holdReleaseAtUtc": "2026-10-13T18:11:39.071Z",
+      "heldStillProcessingAtRetry": true,
+      "notANaturalCaptchaOrPhysicalDisconnectionTest": true
+    },
+    "allRealQueriesSucceeded": false,
+    "actualQueryTasksAndInputEvents": {
+      "queries": 12,
+      "inputEvents": 12
+    },
+    "totalSucceeded": 5,
+    "totalFailed": 7,
+    "explicitNotFoundRealCasePassed": false
+  },
+  "realQueries": [
+    {
+      "ordinal": 67,
+      "phase": "canary-118",
+      "lookupId": "9feff78c-3372-4b96-b04c-09aba8da3f83",
+      "queryId": "0da0a9d2-d4d7-4fc2-ab1c-bd1dd316dab2",
+      "status": "failed",
+      "hasName": false,
+      "publicCode": "lookup_execution_failed",
+      "number": 118,
+      "queryTaskCount": 1,
+      "inputCount": 1,
+      "completedAt": "2026-10-13T17:50:59.757Z",
+      "replayedLoadingEventCount": 0,
+      "failureCodes": [
+        "RuntimeError('local_lookup_result_unconfirmed:visual_card_not_proven')"
+      ],
+      "sourceTag": "lookup-async-20261013-rc.4"
+    },
+    {
+      "ordinal": 165,
+      "phase": "warm",
+      "lookupId": "bde76161-d8e6-4a2b-a5c9-52ee420adfca",
+      "queryId": "012bc058-002b-4621-9111-a4bdf3e84345",
+      "status": "failed",
+      "hasName": false,
+      "publicCode": "lookup_execution_failed",
+      "number": 130,
+      "queryTaskCount": 1,
+      "inputCount": 1,
+      "completedAt": "2026-10-13T17:54:24.363Z",
+      "replayedLoadingEventCount": 0,
+      "failureCodes": [
+        "RuntimeError('local_lookup_result_unconfirmed:visual_card_not_proven')"
+      ],
+      "sourceTag": "lookup-async-20261013-rc.4"
+    },
+    {
+      "ordinal": 188,
+      "phase": "warm",
+      "lookupId": "9e9ec2ce-e603-440d-88aa-dc95b874d06b",
+      "queryId": "04d02edb-1a48-4053-9ab2-92c436ccf78b",
+      "status": "failed",
+      "hasName": false,
+      "publicCode": "lookup_execution_failed",
+      "number": 118,
+      "queryTaskCount": 1,
+      "inputCount": 1,
+      "completedAt": "2026-10-13T17:54:35.676Z",
+      "replayedLoadingEventCount": 0,
+      "failureCodes": [
+        "RuntimeError('local_lookup_result_unconfirmed:visual_card_not_proven')"
+      ],
+      "sourceTag": "lookup-async-20261013-rc.4"
+    },
+    {
+      "ordinal": 67,
+      "phase": "after-fix-canary-118",
+      "lookupId": "a9549ebb-8daf-46b9-a1f1-1655995bcd71",
+      "queryId": "35a39999-eaf1-4e88-ace5-0f6fa5dbd7de",
+      "status": "succeeded",
+      "hasName": true,
+      "publicCode": "",
+      "number": 118,
+      "queryTaskCount": 1,
+      "inputCount": 1,
+      "completedAt": "2026-10-13T18:04:12.358Z",
+      "replayedLoadingEventCount": 0,
+      "failureCodes": [],
+      "sourceTag": "lookup-async-20261014-rc.5"
+    },
+    {
+      "ordinal": 188,
+      "phase": "delayed-receipt",
+      "lookupId": "068fdb45-e6a2-4ba7-b12c-9da0ee1b6e0f",
+      "queryId": "1c59b916-06f5-463a-8442-de1925a72e06",
+      "status": "succeeded",
+      "hasName": true,
+      "publicCode": "",
+      "number": 118,
+      "queryTaskCount": 1,
+      "inputCount": 1,
+      "completedAt": "2026-10-13T18:04:48.722Z",
+      "replayedLoadingEventCount": 0,
+      "failureCodes": [],
+      "sourceTag": "lookup-async-20261014-rc.5"
+    },
+    {
+      "ordinal": 165,
+      "phase": "delayed-receipt-v2",
+      "lookupId": "976b17d7-9d4c-4f4b-93c2-ebd48c32d7c6",
+      "queryId": "b96a7d5e-c866-440c-85fe-0da1f854384b",
+      "status": "succeeded",
+      "hasName": true,
+      "publicCode": "",
+      "number": 118,
+      "queryTaskCount": 1,
+      "inputCount": 1,
+      "completedAt": "2026-10-13T18:07:50.351Z",
+      "replayedLoadingEventCount": 0,
+      "failureCodes": [],
+      "sourceTag": "lookup-async-20261014-rc.5"
+    },
+    {
+      "ordinal": 190,
+      "phase": "other-while-held",
+      "lookupId": "36206232-a469-4167-93fc-e2e77a505c0d",
+      "queryId": "96b7260e-02a5-4668-871d-5cd22d890535",
+      "status": "failed",
+      "hasName": false,
+      "publicCode": "lookup_execution_failed",
+      "number": 130,
+      "queryTaskCount": 1,
+      "inputCount": 1,
+      "completedAt": "2026-10-13T18:06:45.368Z",
+      "replayedLoadingEventCount": 0,
+      "failureCodes": [
+        "RuntimeError('local_lookup_result_unconfirmed:observation_budget_exhausted')"
+      ],
+      "sourceTag": "lookup-async-20261014-rc.5"
+    },
+    {
+      "ordinal": 191,
+      "phase": "other-while-held",
+      "lookupId": "ceab4f13-cd01-409c-9852-cb6bbe265611",
+      "queryId": "86b7fb46-14ee-4ee5-b33f-180aac9a1716",
+      "status": "succeeded",
+      "hasName": true,
+      "publicCode": "",
+      "number": 130,
+      "queryTaskCount": 1,
+      "inputCount": 1,
+      "completedAt": "2026-10-13T18:07:54.115Z",
+      "replayedLoadingEventCount": 0,
+      "failureCodes": [],
+      "sourceTag": "lookup-async-20261014-rc.5"
+    },
+    {
+      "ordinal": 108,
+      "phase": "delayed-receipt-v3",
+      "lookupId": "df191cb4-00bb-41bd-a34d-a70d3b308d4e",
+      "queryId": "0beaf5b0-cc15-4789-a90f-d2bbe2babd3d",
+      "status": "failed",
+      "hasName": false,
+      "publicCode": "lookup_execution_failed",
+      "number": 130,
+      "queryTaskCount": 1,
+      "inputCount": 1,
+      "completedAt": "2026-10-13T18:11:41.628Z",
+      "replayedLoadingEventCount": 0,
+      "failureCodes": [
+        "RuntimeError('local_lookup_result_unconfirmed:visual_card_not_proven')"
+      ],
+      "sourceTag": "lookup-async-20261014-rc.5"
+    },
+    {
+      "ordinal": 190,
+      "phase": "other-while-held-v3",
+      "lookupId": "9db46237-c79f-409c-8192-64dbcaa8ae26",
+      "queryId": "ed5ece42-8bdd-48fb-8894-9fa3e54700a5",
+      "status": "succeeded",
+      "hasName": true,
+      "publicCode": "",
+      "number": 118,
+      "queryTaskCount": 1,
+      "inputCount": 1,
+      "completedAt": "2026-10-13T18:10:20.123Z",
+      "replayedLoadingEventCount": 0,
+      "failureCodes": [],
+      "sourceTag": "lookup-async-20261014-rc.5"
+    },
+    {
+      "ordinal": 108,
+      "phase": "rc6-canary-130",
+      "lookupId": "35b09864-169e-496a-9146-b7f143e536fe",
+      "queryId": "6900acf1-bc9d-4c66-a2d1-a9d14f640cfe",
+      "status": "failed",
+      "hasName": false,
+      "publicCode": "lookup_execution_failed",
+      "number": 130,
+      "queryTaskCount": 1,
+      "inputCount": 1,
+      "completedAt": "2026-10-13T18:16:08.017Z",
+      "replayedLoadingEventCount": 0,
+      "failureCodes": [
+        "RuntimeError('local_lookup_result_unconfirmed:visual_card_not_proven')"
+      ],
+      "sourceTag": "lookup-async-20261014-rc.6"
+    },
+    {
+      "ordinal": 108,
+      "phase": "rc7-canary-130",
+      "lookupId": "f7548b83-972a-44d5-a5d5-2862f96ba342",
+      "queryId": "18fb417d-d1c4-48c4-a003-c724a549f3ca",
+      "status": "failed",
+      "hasName": false,
+      "publicCode": "lookup_execution_failed",
+      "number": 130,
+      "queryTaskCount": 1,
+      "inputCount": 1,
+      "completedAt": "2026-10-13T18:21:56.892Z",
+      "replayedLoadingEventCount": 0,
+      "failureCodes": [
+        "RuntimeError('local_lookup_result_unconfirmed:observation_budget_exhausted')"
+      ],
+      "sourceTag": "lookup-async-20261014-rc.7"
+    }
+  ],
+  "faultReceipts": [
+    {
+      "taskId": "535b3ebe-a36b-4ed9-a880-e96c1400e556",
+      "terminalReportStatus": "failed",
+      "blockedReportCount": 42,
+      "firstAtUtc": "2026-10-13T18:09:36.144Z",
+      "lastAtUtc": "2026-10-13T18:11:38.382Z"
+    },
+    {
+      "taskId": "bf1cfc74-2ea5-4415-b396-f15da804b705",
+      "terminalReportStatus": "succeeded",
+      "blockedReportCount": 48,
+      "firstAtUtc": "2026-10-13T18:05:27.484Z",
+      "lastAtUtc": "2026-10-13T18:07:47.281Z"
+    }
+  ],
+  "rawLoadingWaitEvents": [
+    {
+      "atUtc": "2026-10-13T18:09:31.319Z",
+      "deviceNumber": 130,
+      "step": "lookup_visual_loading_wait",
+      "elapsedMs": 21673,
+      "resubmitsInput": false,
+      "resubmitsSearch": false
+    },
+    {
+      "atUtc": "2026-10-13T18:15:51.560Z",
+      "deviceNumber": 130,
+      "step": "lookup_visual_loading_wait",
+      "elapsedMs": 23563,
+      "resubmitsInput": false,
+      "resubmitsSearch": false
+    },
+    {
+      "atUtc": "2026-10-13T18:21:35.699Z",
+      "deviceNumber": 130,
+      "step": "lookup_visual_loading_wait",
+      "elapsedMs": 20428,
+      "resubmitsInput": false,
+      "resubmitsSearch": false
+    }
+  ],
+  "eventLimit": "Shared Agent replay whitelist omits new visual probe/loading diagnostics. Cloud event count zero does not prove no observation; raw Agent events above are the evidence. Shared logger unchanged.",
+  "fixes": [
+    {
+      "tag": "lookup-async-20261014-rc.5",
+      "change": "bounded read-only observation after positively identified loading",
+      "oldRegression": "9 methods: 3 passed, 6 failed",
+      "fixedPythonTests": 184
+    },
+    {
+      "tag": "lookup-async-20261014-rc.6",
+      "change": "animated loading suffix recognition; only waiting threshold changes",
+      "oldRegression": "3 methods: 1 passed, 2 failed; includes 4 failing suffix subtests",
+      "fixedPythonTests": 187
+    },
+    {
+      "tag": "lookup-async-20261014-rc.7",
+      "change": "after loading is confirmed, tolerate incomplete transition frames until original deadline",
+      "oldRegression": "2 methods failed",
+      "fixedPythonTests": 189
+    }
+  ],
+  "validation": {
+    "nodeFullRegression": {
+      "passed": 654,
+      "failed": 0,
+      "skipped": 0,
+      "ranOn": "final assembled rc.7, rerun after all Python overlays to cover Node tests that inspect runner source"
+    },
+    "proxyUnitTests": 3,
+    "finalPythonRegression": 189,
+    "finalAssembledHashVerifiedFiles": 339,
+    "frozenSharedAgentAndMediaUnchanged": true,
+    "D075Live": "not run: no production connection or deployment",
+    "selfReviewOnly": true,
+    "newSourceFiles": [
+      "alipay_name_lookup.py observation branch",
+      "alipay_visual_result.py loading marker",
+      "3 regression files in overlays",
+      "local delayed-receipt proxy and unit test",
+      "main documentation and this receipt"
+    ]
+  },
+  "testHarnessFailures": [
+    {
+      "case": "first delay setup",
+      "reason": "unassigned queryId matched a historical task due missing truthy guard",
+      "action": "test helper corrected; already submitted original query completed normally, no injection on that request; no production code change"
+    },
+    {
+      "case": "first isolation success assertion",
+      "reason": "130 consumed original query deadline in verification; next query started independently but success came after150s release",
+      "action": "failure retained; 148296ms duplicate proof separately completed; bounded second two-device case proved success while held"
+    },
+    {
+      "case": "second held result assertion",
+      "reason": "expected success/not_found, original130 search-loading task actually failed",
+      "action": "failed terminal was preserved; 121784ms duplicate and other-device success facts verified separately"
+    },
+    {
+      "case": "rc.6 and rc.7 canaries",
+      "reason": "each failed to obtain a complete result; rc.7 waited until original observation budget",
+      "action": "reported as failed, not empty-name success; no further new query"
+    }
+  ],
+  "unresolved": [
+    {
+      "deviceNumber": 130,
+      "originalWorkbookOrdinal": 108,
+      "lastLookupId": "f7548b83-972a-44d5-a5d5-2862f96ba342",
+      "status": "failed",
+      "reason": "observation_budget_exhausted",
+      "runnerElapsedMs": 40172,
+      "failureScreenshot": {
+        "atUtc": "2026-10-13T18:22:40Z",
+        "taskId": "1b3f36c4-8dc5-43d4-bca9-9113871e1440",
+        "loadingAtFailureScreenshot": true,
+        "completeResultAtFailureScreenshot": false,
+        "screenshotSha256": "6724e6fe21d1584a3403a5e302f15fb483d23b156c5acbf4334eb12d297ed98c"
+      },
+      "conclusion": "loading early-exit fixed, but this phone/number remained searching through the original deadline; upstream reason not established; not a missing-name or not_found assertion"
+    }
+  ],
+  "notCovered": [
+    "natural human puzzle and automatic same-request continuation through new async API",
+    "five physical phones / all49 mappings",
+    "natural account limit/full successful rotation/8h cooldown expiry this round",
+    "real Windows runtime/disconnection and production gray rollout",
+    "integrating partner system persistence and result backfill"
+  ],
+  "preservation": {
+    "rootDirtyEntriesBeforeAndAfter": 236,
+    "priorLocalAgentConfigUnchanged": true,
+    "testAgentConfigUnchanged": true,
+    "cooldownsUnchanged": true,
+    "cooldownRecordsPreserved": 2,
+    "inputWorkbookUnchanged": true,
+    "oldTagsPreserved": true
+  },
+  "cleanup": {
+    "atUtc": "2026-10-13T18:23:28.185394+00:00",
+    "oldAgentPid": 44042,
+    "oldAgentResumed": true,
+    "oldAgentHeartbeatAgeSeconds": 6.712394,
+    "oldServerPid": 46592,
+    "oldServerReady": 200,
+    "oldTaskCount": 4,
+    "oldActiveTasks": 0,
+    "oldActiveAutomationSessions": 0,
+    "oldActiveScreenSessions": 0,
+    "portsClosed": {
+      "59304": true,
+      "59305": true,
+      "59306": true
+    },
+    "oldConfigUnchanged": true,
+    "testConfigUnchanged": true,
+    "originalAdbPid": 26031,
+    "originalAdbAlive": true,
+    "awake": {
+      "118": "2",
+      "130": "0"
+    },
+    "ownedPidsGone": true,
+    "rootDirtyEntries": 236
+  },
+  "drained": {
+    "channels": 0,
+    "pendingOutbox": 0,
+    "newTaskTerminalCount": 30,
+    "activeNewTasks": 0
+  },
+  "privateEvidence": {
+    "location": "/tmp/pc-async-live-20261014 (contains private data; do not publish)",
+    "filesSha256": {
+      "baseline.json": "4bd1640d3a3e4c338ccd2f7feb0caf638281468b0a86b84cd23a096c432d2e40",
+      "ledger.json": "8a4550d5ca6ad5fbb14cd940984e143cd9c6f9bc1ae90d373242e3e65a81eb59",
+      "real-proof-private.json": "df36c75252e8ccd901b0fed870098113a3dc1bfc7b773f88dfd71d9bd0c51c22",
+      "check.mjs": "5f2bd2656016c1109b61b743acfbff1e1edf0f0a267bd273cfb33f6a116c715b",
+      "start.py": "8b7d64e6be17da78c463fa70f476cf4e308fab5e2c5e626e06a4d8dd519700ab",
+      "final-proof.mjs": "c631276af83444d62f13372032c51f627b6e9be61ac27fe7027058b98b7c2638",
+      "agent.log": "70b72d6059d3fd0f15f80968b03977237f83e8356ebbca63e897e8c108d004e6",
+      "delay-events.jsonl": "c734da6fc8f35def45d8c30c7e4d08b3b83288fd74807b6902b4387ef914b092",
+      "before-private.dump": "b1210f740428c4d9e9e7f302359b1d61ea9233a18bbdb3b1bc757524bbb28153",
+      "after-rc4-failures-private.dump": "50cb77e7e86b055d1535ebebedca582a3cf2abe8d7e40f34cee676c357e1d6a9",
+      "after-rc5-private.dump": "bb696bd4da2bb2762b413d22dbd4f60715f77b1e65337b540edb6c6cf555ba27",
+      "after-rc6-private.dump": "707feb4457594611e8b8eb2a253d8f1c7a58c4b9e83c7cbfee22366809e52e07",
+      "after-rc7-private.dump": "dfb243072f6f65b1ea4021a002461f825b37c35a035087c6b12273e2ba07dc69",
+      "python-regression.log": "5cf2cc1443491e8ae0af3f733ad4a49cc5e02db8c745a1c9d5d3b4fe360dfc44",
+      "python-rc6-regression.log": "0e0be9b3d00d60bf33d3723724bc7dd44e1994b3d43ebe8631be1b08db7cb6bc",
+      "python-rc7-regression.log": "10073027c82ca53462955fc0e9d9992f691358fc38ada4eda84e31478d2da9b2",
+      "node-regression.log": "03ffadf7c570ac1196c5137735def8ea8c54c64e40b785fc2c826437e0dcc6e6",
+      "node-rc7-regression.log": "58d8b48f54be7b0b4363789ea72e6000bbaa7c352d9040904a54936976195c6e"
+    }
+  }
+}

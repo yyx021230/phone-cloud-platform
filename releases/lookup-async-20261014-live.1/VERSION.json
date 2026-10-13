@@ -1,0 +1,12 @@
+{
+  "version": "lookup-async-20261014-live.1",
+  "status": "local-verification-receipt-with-unresolved-failure",
+  "branch": "codex/lookup-async-real-20261014",
+  "candidateTag": "lookup-async-20261014-rc.7",
+  "candidateCommit": "5dc93a47c46ae70dd6ab15111e5a16fc2a03ee1a",
+  "receiptTag": "lookup-async-20261014-live.1",
+  "productionDeployment": false,
+  "report": "../../docs/evidence/LOOKUP_ASYNC_REAL_20261014.json",
+  "reportSha256": "ac319bebd35c3271b50a3182b2fbcff6a259f6448e29058941461842efaa5c07",
+  "candidateManifestSha256": "21f168537165760c0936fbb48c1823316276d3f8289d6398d550a5b82276bcd6"
+}
