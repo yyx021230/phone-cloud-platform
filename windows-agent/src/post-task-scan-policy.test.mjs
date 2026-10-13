@@ -3,7 +3,7 @@ import test from "node:test";
 import { shouldRunPostTaskDeviceScan } from "./post-task-scan-policy.mjs";
 
 test("stateful Alipay lookup commands do not force a full device inventory scan", () => {
-  for (const taskType of ["alipay_name_start", "alipay_name_query", "alipay_name_stop"]) {
+  for (const taskType of ["xhs_data_collect", "alipay_name_start", "alipay_name_query", "alipay_name_stop"]) {
     assert.equal(shouldRunPostTaskDeviceScan(taskType), false, taskType);
   }
 });

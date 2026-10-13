@@ -10,7 +10,7 @@ import {
 } from "./automation-center.mjs";
 
 test("normalizes the four supported automation commands", () => {
-  for (const kind of ["xhs_publish", "alipay_name_start", "alipay_name_query", "alipay_name_stop"]) {
+  for (const kind of ["xhs_publish", "xhs_data_collect", "alipay_name_start", "alipay_name_query", "alipay_name_stop"]) {
     assert.equal(normalizeAutomationKind(kind), kind);
   }
   assert.throws(() => normalizeAutomationKind("screen_control"), /unsupported_automation_kind/);
@@ -28,6 +28,7 @@ test("keeps lookup session active only for non-terminal task states", () => {
 
 test("maps publish and lookup to distinct device locks", () => {
   assert.equal(automationLockType("xhs_publish"), "xhs_publish");
+  assert.equal(automationLockType("xhs_data_collect"), "xhs_data_collect");
   assert.equal(automationLockType("alipay_name_query"), "alipay_name_lookup");
 });
 

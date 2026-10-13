@@ -75,6 +75,7 @@ export async function loadAgentConfig({ agentDir, configPath }) {
     airtestRunnerPath: resolveAgentPath(raw.airtestRunnerPath || path.join(agentDir, "scripts", "xhs_airtest_poco.py"), ""),
     xmlUiAutomatorRunnerPath: resolveAgentPath(raw.xmlUiAutomatorRunnerPath || path.join(agentDir, "scripts", "xhs_xml_uiautomator.py"), ""),
     xhsPublishRunnerPath: resolveAgentPath(raw.xhsPublishRunnerPath || path.join(agentDir, "scripts", "xhs_publish_poco.py"), ""),
+    xhsDataCollectionRunnerPath: resolveAgentPath(raw.xhsDataCollectionRunnerPath || path.join(agentDir, "scripts", "小红书数据同步.py"), ""),
     alipayNameLookupRunnerPath: resolveAgentPath(raw.alipayNameLookupRunnerPath || path.join(agentDir, "scripts", "alipay_name_lookup.py"), ""),
     automationPreflightEnabled: raw.automationPreflightEnabled !== false,
     automationPreflightIntervalSeconds: Math.max(60, Number(raw.automationPreflightIntervalSeconds || 600)),

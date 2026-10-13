@@ -5,6 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { isDeviceSerialInNotificationFallbackScope, loadAgentConfig } from "./config.mjs";
 import { cachedAdbSerials, indexCachedDevices, mergeCachedDeviceScanRow } from "./device-scan-cache.mjs";
+import { runXhsDataCollection } from "./xhs-data-collection.mjs";
 import { galleryImportFileName, parseGalleryImportImage } from "./gallery-import.mjs";
 import { createSerialAdbActivityTracker } from "./serial-adb-activity.mjs";
 import { assertSerialAdbHealthy } from "./serial-adb-health.mjs";
@@ -341,11 +342,12 @@ async function runGuardedInterval(name, fn) {
 }
 
 async function buildHealth(reason, previousHealth = null) {
-  const [adbCheck, logDirCheck, cacheDirCheck, airtestCheck] = await Promise.allSettled([
+  const [adbCheck, logDirCheck, cacheDirCheck, airtestCheck, collectionProtocolCheck] = await Promise.allSettled([
     adbVersion(),
     checkWritableDir(logDir),
     checkWritableDir(cacheDir),
-    checkAirtestStatus()
+    checkAirtestStatus(),
+    run(config.pythonCommand, [config.xhsDataCollectionRunnerPath, "--protocol"], { timeoutMs: 8_000 })
   ]);
   const adbOk = adbCheck.status === "fulfilled";
   const logOk = logDirCheck.status === "fulfilled" && logDirCheck.value.ok;
@@ -365,6 +367,11 @@ async function buildHealth(reason, previousHealth = null) {
       path: config.adbPath,
       version: adbOk ? adbCheck.value : "",
       error: adbOk ? "" : adbCheck.reason.message
+    },
+    xhsDataCollect: {
+      protocol: "xhs_data_collect_v1",
+      ready: adbOk && collectionProtocolCheck.status === "fulfilled"
+        && collectionProtocolCheck.value === "xhs_data_collect_v1"
     },
     airtest: {
       enabled: config.airtestEnabled,
@@ -1057,11 +1064,13 @@ async function runTask(task, options = {}) {
     else if (task.type === "screen_gallery_import") result = await taskScreenGalleryImport(task);
     else if (task.type === "xhs_qr_appium") result = await taskXhsQrAirtestPoco(task);
     else if (task.type === "xhs_publish") result = await taskXhsPublish(task);
+    else if (task.type === "xhs_data_collect") result = await taskXhsDataCollect(task, options);
     else if (["alipay_name_start", "alipay_name_query", "alipay_name_stop"].includes(task.type)) result = await taskAlipayNameLookup(task, options);
     else throw new Error(`unsupported task type: ${task.type}`);
-    await taskEvent(task, "finish", "info", "执行成功", compactTaskResultForEvent(result))
+    const collectionIncomplete = task.type === "xhs_data_collect" && result.collection?.complete !== true;
+    await taskEvent(task, "finish", collectionIncomplete ? "warn" : "info", collectionIncomplete ? "已保存部分采集结果" : "执行成功", compactTaskResultForEvent(result))
       .catch((error) => log("task finish event failed", { taskId: task.taskId, error: error.message }));
-    await taskStatus(task, "succeeded", result);
+    await taskStatus(task, collectionIncomplete ? "failed" : "succeeded", result);
   } catch (error) {
     if (isAutomationTaskCancellation(error)) {
       taskEvent(task, "cancelled", "info", "用户已结束会话，当前自动化任务已停止", { reason: "automation_task_cancelled" })
@@ -1645,6 +1654,29 @@ async function taskXhsQrAirtestPoco(task) {
     throw error;
   } finally {
     await fs.unlink(qr.localPath).catch(() => {});
+  }
+}
+
+async function taskXhsDataCollect(task, options = {}) {
+  if (!(await fileExists(config.xhsDataCollectionRunnerPath))) throw new Error("小红书数据采集脚本不存在，请更新 Windows 管理器");
+  await assertAdbDeviceOnlineFast(task.adbSerial);
+  await ensureXmlUiAutomatorReady(task.adbSerial);
+  await taskEvent(task, "xhs_data_collect", "info", "开始读取最近30天作品列表", { xhsAppSlot: task.payload?.xhsAppSlot, days: 30 });
+  try {
+    return await runXhsDataCollection(task, {
+      config, run, adb, cacheDir, deviceCachePath: deviceScanCachePath(), signal: options.signal
+    });
+  } catch (error) {
+    if (options.signal?.aborted) throw options.signal.reason || error;
+    const runnerReason = String(error.stderr || error.message || "").slice(0, 600);
+    const message = runnerReason.includes("could not prove") ? "无法进入作品分析，请确认账号已登录且数据权限已开通"
+      : runnerReason.includes("stayed blank") ? "作品列表未加载，请稍后重试"
+      : runnerReason.includes("occupied") ? "手机被其他任务占用，采集已停止"
+      : "小红书数据采集失败，已保留诊断信息";
+    error.code = "xhs_data_collection_failed";
+    error.diagnostic = { code: error.code, message, runnerReason, restorationErrors: error.restorationErrors || [] };
+    error.message = message;
+    throw error;
   }
 }
 
@@ -2916,6 +2948,7 @@ function compactTaskResultForStatus(result = {}) {
       log: runnerLog.slice(-80).map((item) => compactEventDetail(item, 3000))
     } : null
   };
+  if (result.collection) compact.collection = result.collection;
   const uiHierarchy = result.uiHierarchy || result.evidence?.uiHierarchy || "";
   const uiSnapshot = result.uiSnapshot || result.evidence?.uiSnapshot || uiHierarchy;
   if (uiSnapshot) compact.uiSnapshot = String(uiSnapshot).slice(0, 8000);

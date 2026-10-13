@@ -2,6 +2,7 @@ function occupancyLabel(lockType, appSlot) {
   if (lockType === "screen_control") return "实时控制";
   if (lockType === "sms_wait") return "等待短信";
   if (lockType === "xhs_qr") return `${appSlot === "app2" ? "小红书 2" : "小红书 1"} 扫码`;
+  if (lockType === "xhs_data_collect") return `${appSlot === "app2" ? "小红书 2" : "小红书 1"} 数据采集`;
   if (lockType === "xhs_publish") return `${appSlot === "app2" ? "小红书 2" : "小红书 1"} 发布`;
   if (lockType === "alipay_name_lookup") return "支付宝查名字";
   return "设备任务";

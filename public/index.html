@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Phone Cloud Platform</title>
-  <link rel="stylesheet" href="./styles.css?v=20260827-lookup-results-v2" />
+  <link rel="stylesheet" href="./styles.css?v=20261013-xhs-data-rc1" />
   </head>
   <body class="booting">
     <div class="boot-loader" aria-label="正在加载 Phone Cloud">
@@ -207,8 +207,11 @@
                   <button data-automation-module="publish" type="button" role="tab" aria-selected="false">
                     <em>02</em><span><b>一键发布</b><small>图文笔记</small></span><i aria-hidden="true">↗</i>
                   </button>
+                  <button data-automation-module="data" type="button" role="tab" aria-selected="false">
+                    <em>03</em><span><b>小红书数据采集</b><small>最近 30 天</small></span><i aria-hidden="true">↗</i>
+                  </button>
                   <button data-automation-module="name" type="button" role="tab" aria-selected="false">
-                    <em>03</em><span><b>查名字</b><small>连续查询</small></span><i aria-hidden="true">↗</i>
+                    <em>04</em><span><b>查名字</b><small>连续查询</small></span><i aria-hidden="true">↗</i>
                   </button>
                 </div>
                 <form id="userXhsTaskForm" class="panel action-rail-card scan-create-card" data-automation-module-panel="scan">
@@ -325,6 +328,20 @@
                   <div id="userPublishTaskList" class="stack scan-task-list"></div>
                 </div>
 
+                <form id="userDataCollectionForm" class="panel action-rail-card automation-form-card xhs-data-console hidden" data-automation-module-panel="data">
+                  <div class="automation-card-head"><div><span class="scan-kicker">CREATOR DATA</span><h2>小红书数据采集</h2><p>读取最近 30 天作品的观看、点赞和评论。</p></div><span class="automation-mode-badge">30 天</span></div>
+                  <label class="scan-field automation-select-field"><span>小红书账号槽位</span><select id="userDataTargetSelect" name="xhsAppSlot" required></select></label>
+                  <p class="hint">自动向下翻页，到达日期边界或列表末尾后结束。遇到未完成笔记会保存为草稿后继续。</p>
+                  <div class="automation-submit-row"><button id="userDataCollectButton" type="submit"><span>开始采集</span><i aria-hidden="true">→</i></button></div>
+                  <p id="userDataCollectionHint" class="hint" aria-live="polite"></p>
+                </form>
+                <section class="panel action-rail-card compact-task-card hidden" data-automation-module-panel="data">
+                  <div class="scan-board-head"><div><span class="scan-kicker">NOTE SNAPSHOT</span><h2>作品数据</h2><p>每次采集保留独立快照。</p></div></div>
+                  <div id="userDataCollectionResult" aria-live="polite"></div>
+                </section>
+                <section class="panel action-rail-card compact-task-card hidden" data-automation-module-panel="data">
+                  <div class="scan-board-head"><div><h2>采集记录</h2></div><em>最新在前</em></div><div id="userDataCollectionTasks"></div>
+                </section>
                 <section class="panel action-rail-card automation-form-card lookup-console-card hidden" data-automation-module-panel="name">
                   <div class="automation-card-head lookup-console-head">
                     <div>
@@ -858,6 +875,6 @@
     </main>
 
     <script type="module" src="./vendor/screen-control.js?v=20260806-ice-ready-wake-v1"></script>
-    <script type="module" src="./app.js?v=20260827-screen-idle-10m-v1"></script>
+    <script type="module" src="./app.js?v=20261013-xhs-data-rc1"></script>
   </body>
 </html>

@@ -3,6 +3,8 @@
 import importlib.util
 import datetime as dt
 import unittest
+import tempfile
+import json
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from unittest.mock import patch
@@ -19,6 +21,35 @@ def xml(*children):
 
 
 class OverlayRecoveryTests(unittest.TestCase):
+    def test_agent_cancellation_marker_stops_before_reading_device_cache(self):
+        with tempfile.TemporaryDirectory() as folder:
+            marker = Path(folder) / "cancelled"
+            marker.write_text("cancelled")
+            with self.assertRaisesRegex(RuntimeError, "automation_task_cancelled"):
+                sync.assert_idle("missing-cache", "TEST_SERIAL", "102", "job-1", "app1", marker)
+
+    def test_inventory_allows_only_the_matching_collection_lock(self):
+        with tempfile.TemporaryDirectory() as folder:
+            cache = Path(folder) / "devices.json"
+            row = {"deviceName": "102", "adb": {"serial": "TEST_SERIAL", "state": "device"}}
+            for occupancy, allowed in (
+                (None, True),
+                ({"kind": "xhs_data_collect", "taskId": "job-1", "appSlot": "app1"}, True),
+                ({"kind": "xhs_data_collect", "taskId": "job-other", "appSlot": "app1"}, False),
+                ({"kind": "xhs_data_collect", "taskId": "job-1", "appSlot": "app2"}, False),
+                ({"kind": "screen_control", "taskId": "job-1", "appSlot": "app1"}, False),
+            ):
+                cache.write_text(json.dumps([{**row, "occupancy": occupancy}]))
+                with self.subTest(occupancy=occupancy):
+                    if allowed:
+                        self.assertEqual(sync.assert_idle(cache, "TEST_SERIAL", "102", "job-1", "app1")["deviceName"], "102")
+                    else:
+                        with self.assertRaisesRegex(RuntimeError, "occupied"):
+                            sync.assert_idle(cache, "TEST_SERIAL", "102", "job-1", "app1")
+            cache.write_text(json.dumps([{**row, "occupancy": {"kind": "xhs_data_collect", "taskId": "job-1", "appSlot": "app1"}}]))
+            with self.assertRaisesRegex(RuntimeError, "occupied"):
+                sync.assert_idle(cache, "TEST_SERIAL", "102")
+
     def draft_prompt(self, buttons):
         return xml('<node package="com.xingin.xhs" text="继续编辑图文笔记吗？" '
                    'bounds="[200,1022][520,1059]"/>', buttons)

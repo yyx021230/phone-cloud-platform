@@ -2,6 +2,8 @@
 import { ScreenInactivityGuard } from "./screen-inactivity-guard.js?v=20260827-screen-idle-10m-v1";
 import { createUserDeviceInventoryGuard, requireUserDeviceInventory } from "./user-device-inventory.js";
 
+import { renderXhsDataResult, renderXhsDataTask, xhsDataTargetsForDevice, xhsDataUnavailableReason } from "./xhs-data-collection-ui.js";
+
 const ONLINE_MS = 90_000;
 
 function readJsonLocalStorage(key, fallback) {
@@ -53,6 +55,11 @@ const state = {
   userPendingXhsTasks: [],
   userXhsSubmitting: false,
   userAutomationModule: localStorage.getItem("phoneCloudUserAutomationModule") || "scan",
+  userDataTasks: [],
+  userDataDetail: null,
+  userDataSelectedJobId: "",
+  userDataSubmitting: false,
+  userDataHint: "",
   userPublishTasks: [],
   userPublishSubmitting: false,
   userLookupSessions: [],
@@ -117,6 +124,7 @@ let latestLoadAllRequestId = 0;
 let latestUserSmsRequestId = 0;
 let latestUserAutomationRefreshRequestId = 0;
 let userAutomationRefreshPromise = null;
+let userDataSessionVersion = 0;
 let userLookupSyncVersion = 0;
 let userLookupRefreshPromise = null;
 let clientUpdateCheckPromise = null;
@@ -239,6 +247,12 @@ const els = {
   userPublishHint: document.getElementById("userPublishHint"),
   userPublishSubmitButton: document.getElementById("userPublishSubmitButton"),
   userPublishTaskList: document.getElementById("userPublishTaskList"),
+  userDataCollectionForm: document.getElementById("userDataCollectionForm"),
+  userDataTargetSelect: document.getElementById("userDataTargetSelect"),
+  userDataCollectButton: document.getElementById("userDataCollectButton"),
+  userDataCollectionHint: document.getElementById("userDataCollectionHint"),
+  userDataCollectionResult: document.getElementById("userDataCollectionResult"),
+  userDataCollectionTasks: document.getElementById("userDataCollectionTasks"),
   userLookupSessionStatus: document.getElementById("userLookupSessionStatus"),
   userLookupStartButton: document.getElementById("userLookupStartButton"),
   userLookupPhoneInput: document.getElementById("userLookupPhoneInput"),
@@ -911,7 +925,7 @@ function renderUserWorkbench() {
   if (els.userXhsList) els.userXhsList.innerHTML = selectedDeviceXhsTasks.length
     ? selectedDeviceXhsTasks.map((task) => renderUserXhsTaskCard(task)).join("")
     : `<div class="empty scan-empty-state">暂无扫码任务。上传二维码后，这里会显示执行步骤和结果。</div>`;
-  if (!["scan", "publish", "name"].includes(state.userAutomationModule)) state.userAutomationModule = "scan";
+  if (!["scan", "publish", "data", "name"].includes(state.userAutomationModule)) state.userAutomationModule = "scan";
   els.userAutomationModuleTabs?.querySelectorAll("[data-automation-module]").forEach((button) => {
     const active = button.dataset.automationModule === state.userAutomationModule;
     button.classList.toggle("active", active);
@@ -939,6 +953,27 @@ function renderUserWorkbench() {
   if (els.userPublishTaskList) els.userPublishTaskList.innerHTML = selectedPublishTasks.length
     ? selectedPublishTasks.map(renderAutomationJobCard).join("")
     : `<div class="empty scan-empty-state">暂无发布记录。</div>`;
+  const dataTargets = xhsDataTargetsForDevice(selectedDevice);
+  if (els.userDataTargetSelect) {
+    const previous = els.userDataTargetSelect.value;
+    els.userDataTargetSelect.innerHTML = dataTargets.map((target) => `<option value="${escapeHtml(target.slot)}">${escapeHtml(target.label)}</option>`).join("") || '<option value="">暂无账号槽位</option>';
+    if (dataTargets.some((target) => target.slot === previous)) els.userDataTargetSelect.value = previous;
+  }
+  const dataUnavailable = xhsDataUnavailableReason(selectedDevice);
+  if (els.userDataCollectButton) {
+    els.userDataCollectButton.disabled = Boolean(dataUnavailable || state.userDataSubmitting);
+    els.userDataCollectButton.innerHTML = `<span>${state.userDataSubmitting ? "正在创建…" : "开始采集"}</span><i aria-hidden="true">→</i>`;
+    els.userDataCollectButton.title = dataUnavailable;
+  }
+  if (els.userDataCollectionHint) els.userDataCollectionHint.textContent = dataUnavailable || state.userDataHint;
+  const dataTasks = state.userDataTasks.filter((task) => task.deviceId === selectedDevice?.deviceId);
+  if (els.userDataCollectionTasks) els.userDataCollectionTasks.innerHTML = dataTasks.map((task) => renderXhsDataTask(task, state.userDataSelectedJobId)).join("") || '<div class="empty scan-empty-state">暂无采集记录。</div>';
+  if (els.userDataCollectionResult) {
+    const previousScroll = els.userDataCollectionResult.querySelector(".xhs-data-table-wrap")?.scrollTop || 0;
+    els.userDataCollectionResult.innerHTML = renderXhsDataResult(state.userDataDetail?.deviceId === selectedDevice?.deviceId ? state.userDataDetail : null);
+    const table = els.userDataCollectionResult.querySelector(".xhs-data-table-wrap");
+    if (table) table.scrollTop = previousScroll;
+  }
   const lookupSession = selectedDevice ? activeLookupSessionForDevice(selectedDevice.deviceId) : null;
   renderLookupSession(lookupSession, selectedDevice);
   renderUserScreenControl(selectedDevice);
@@ -3551,6 +3586,7 @@ async function loadAll() {
   const lookupSyncVersionAtStart = userLookupSyncVersion;
   if (!state.token) {
     state.user = null;
+    clearUserDataSession();
     if (requestId !== latestLoadAllRequestId) return;
     render();
     return;
@@ -3562,6 +3598,7 @@ async function loadAll() {
     if (error.status === 401) {
       state.token = "";
       state.user = null;
+      clearUserDataSession();
       didApplyUserDefaultLanding = false;
       localStorage.removeItem("phoneCloudSessionToken");
       if (requestId !== latestLoadAllRequestId) return;
@@ -3591,12 +3628,14 @@ async function loadAll() {
   if (state.user?.role !== "admin" || usesUserWorkbench) {
     renderUserWorkbench();
     const shouldLoadXhsTasks = isUserScanPanelActive();
+    const dataSessionAtStart = userDataSessionVersion;
     const auxiliaryRequests = Promise.allSettled([
       api("/api/v1/user/phones"),
       api("/api/v1/user/sms-orders"),
       shouldLoadXhsTasks ? api("/api/v1/user/xhs/qr-scan-tasks") : Promise.resolve(null),
       api("/api/v1/user/automation/xhs-publish-tasks"),
-      api("/api/v1/user/automation/alipay-name-sessions")
+      api("/api/v1/user/automation/alipay-name-sessions"),
+      api("/api/v1/user/automation/xhs-data-tasks")
     ]);
     let devices;
     try {
@@ -3622,7 +3661,7 @@ async function loadAll() {
     }
     renderUserWorkbench();
 
-    const [phones, orders, xhs, publish, lookup] = await auxiliaryRequests;
+    const [phones, orders, xhs, publish, lookup, dataTasks] = await auxiliaryRequests;
     if (requestId !== latestLoadAllRequestId) return;
     if (phones.status === "fulfilled") state.userPhones = phones.value.phones || [];
     else console.warn("user phones refresh failed", phones.reason);
@@ -3637,6 +3676,7 @@ async function loadAll() {
     } else if (lookup.status === "rejected") {
       console.warn("user lookup session refresh failed", lookup.reason);
     }
+    if (dataTasks.status === "fulfilled") await applyUserDataTasks(dataTasks.value, dataSessionAtStart);
     prunePendingUserXhsTasks();
     if (isUserSmsPanelActive()) {
       loadUserSmsLibrary().catch((error) => console.warn("user sms library load failed", error));
@@ -3908,15 +3948,18 @@ async function refreshUserXhsTasksOnly(options = {}) {
   if (userAutomationRefreshPromise) return userAutomationRefreshPromise;
   userAutomationRefreshPromise = (async () => {
     const requestId = ++latestUserAutomationRefreshRequestId;
-    const [qrPayload, publishPayload] = await Promise.allSettled([
+    const dataSessionAtStart = userDataSessionVersion;
+    const [qrPayload, publishPayload, dataPayload] = await Promise.allSettled([
       api("/api/v1/user/xhs/qr-scan-tasks"),
-      api("/api/v1/user/automation/xhs-publish-tasks")
+      api("/api/v1/user/automation/xhs-publish-tasks"),
+      state.userAutomationModule === "data" ? api("/api/v1/user/automation/xhs-data-tasks") : Promise.resolve(null)
     ]);
     if (requestId !== latestUserAutomationRefreshRequestId) return;
     if (qrPayload.status === "fulfilled") state.userXhsTasks = qrPayload.value.tasks || [];
     else console.warn("user xhs task refresh failed", qrPayload.reason);
     if (publishPayload.status === "fulfilled") state.userPublishTasks = publishPayload.value.tasks || [];
     else console.warn("user publish task refresh failed", publishPayload.reason);
+    if (dataPayload.status === "fulfilled" && dataPayload.value) await applyUserDataTasks(dataPayload.value, dataSessionAtStart);
     prunePendingUserXhsTasks();
     renderUserWorkbench();
   })();
@@ -4168,6 +4211,7 @@ async function loginWithCredentials(username, password) {
       password: String(password || "")
     })
   });
+  clearUserDataSession();
   state.token = payload.session.token;
   state.user = payload.user;
   localStorage.setItem("phoneCloudSessionToken", state.token);
@@ -4202,6 +4246,7 @@ async function logout() {
   await api("/api/v1/auth/logout", { method: "POST", body: "{}" }).catch(() => {});
   state.token = "";
   state.user = null;
+  clearUserDataSession();
   didApplyUserDefaultLanding = false;
   localStorage.removeItem("phoneCloudSessionToken");
   closeSettingsModal();
@@ -4465,6 +4510,93 @@ els.userAutomationModuleTabs?.addEventListener("click", (event) => {
   state.userAutomationModule = button.dataset.automationModule || "scan";
   localStorage.setItem("phoneCloudUserAutomationModule", state.userAutomationModule);
   renderUserWorkbench();
+});
+
+function clearUserDataSession() {
+  userDataSessionVersion++;
+  state.userDataTasks = [];
+  state.userDataDetail = null;
+  state.userDataSelectedJobId = "";
+  state.userDataHint = "";
+  state.userDataSubmitting = false;
+}
+
+async function loadUserDataDetail(jobId) {
+  const sessionVersion = userDataSessionVersion;
+  const deviceId = state.userSelectedDeviceId;
+  state.userDataSelectedJobId = jobId;
+  const payload = await api(`/api/v1/user/automation/xhs-data-tasks/${encodeURIComponent(jobId)}`);
+  if (sessionVersion !== userDataSessionVersion || state.userDataSelectedJobId !== jobId || state.userSelectedDeviceId !== deviceId) return;
+  state.userDataDetail = payload.task;
+  if (["succeeded", "failed", "cancelled", "expired"].includes(payload.task.status)) {
+    state.userDataHint = payload.task.result?.message || "采集已结束";
+  }
+}
+
+async function applyUserDataTasks(payload, sessionVersion = userDataSessionVersion) {
+  if (sessionVersion !== userDataSessionVersion) return;
+  state.userDataTasks = payload.tasks || [];
+  const tasks = state.userDataTasks.filter((task) => task.deviceId === state.userSelectedDeviceId);
+  const selected = tasks.find((task) => task.jobId === state.userDataSelectedJobId) || tasks[0];
+  if (selected && (state.userDataDetail?.jobId !== selected.jobId || state.userDataDetail?.updatedAt !== selected.updatedAt)) {
+    await loadUserDataDetail(selected.jobId);
+  }
+}
+
+function xhsDataErrorMessage(error) {
+  return ({ device_busy: "手机正在使用中，请稍后采集", device_not_available: "手机未在线或未上架",
+    xhs_data_agent_update_required: "Windows 管理器尚未启用数据采集，请联系管理员更新",
+    xhs_account_slot_not_available: "所选小红书槽位未启用" })[error.message] || error.message;
+}
+
+els.userDataCollectionForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (state.userDataSubmitting) return;
+  const device = state.userDevices.find((item) => item.deviceId === state.userSelectedDeviceId);
+  const reason = xhsDataUnavailableReason(device);
+  if (reason) { state.userDataHint = reason; renderUserWorkbench(); return; }
+  const slot = els.userDataTargetSelect.value;
+  const sessionVersion = userDataSessionVersion;
+  state.userDataSubmitting = true;
+  renderUserWorkbench();
+  try {
+    const payload = await api("/api/v1/user/automation/xhs-data-tasks", {
+      method: "POST", body: JSON.stringify({ deviceId: device.deviceId, xhsAppSlot: slot })
+    });
+    if (sessionVersion !== userDataSessionVersion) return;
+    state.userDataTasks = [payload.task, ...state.userDataTasks.filter((task) => task.jobId !== payload.task.jobId)];
+    state.userDataSelectedJobId = payload.task.jobId;
+    state.userDataDetail = payload.task;
+    state.userDataHint = "采集任务已创建，等待 Windows 管理器领取。";
+  } catch (error) { state.userDataHint = xhsDataErrorMessage(error); }
+  finally { state.userDataSubmitting = false; renderUserWorkbench(); }
+});
+
+els.userDataCollectionTasks?.addEventListener("click", async (event) => {
+  const view = event.target.closest("[data-xhs-data-view]");
+  const cancel = event.target.closest("[data-xhs-data-cancel]");
+  if (!view && !cancel) return;
+  const button = view || cancel;
+  const sessionVersion = userDataSessionVersion;
+  button.disabled = true;
+  try {
+    if (view) await loadUserDataDetail(view.dataset.xhsDataView);
+    if (cancel) {
+      await api(`/api/v1/user/automation/xhs-data-tasks/${encodeURIComponent(cancel.dataset.xhsDataCancel)}/cancel`, { method: "POST", body: "{}" });
+      await applyUserDataTasks(await api("/api/v1/user/automation/xhs-data-tasks"), sessionVersion);
+    }
+  } catch (error) { state.userDataHint = xhsDataErrorMessage(error); }
+  finally { renderUserWorkbench(); }
+});
+
+els.userDataCollectionResult?.addEventListener("click", (event) => {
+  const exportButton = event.target.closest("[data-xhs-data-export]");
+  const job = state.userDataDetail;
+  if (!exportButton || !job?.result?.collection || exportButton.dataset.xhsDataExport !== job.jobId) return;
+  const blob = new Blob([JSON.stringify(job.result.collection, null, 2)], { type: "application/json;charset=utf-8" });
+  const url = URL.createObjectURL(blob); const anchor = document.createElement("a");
+  anchor.href = url; anchor.download = `小红书数据-${job.jobId}.json`; anchor.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 });
 
 els.userPublishImagesInput?.addEventListener("change", () => {

@@ -20,6 +20,7 @@ import { createRuntimeSaveScheduler } from "./runtime-save-scheduler.mjs";
 import { createRealtimeMetrics } from "./realtime-metrics.mjs";
 import { createEvidenceSignedUrl, verifyEvidenceSignedUrl } from "./evidence-signing.mjs";
 import { cleanupEvidenceStorage } from "./evidence-storage.mjs";
+import { hasXhsDataCollectionCapability, sanitizeXhsDataCollection, XHS_DATA_COLLECTION_PROTOCOL, XHS_DATA_COLLECTION_TTL_MS } from "./xhs-data-collection.mjs";
 import { buildDeviceOccupancy } from "./device-occupancy.mjs";
 import {
   automationLockType,
@@ -905,6 +906,59 @@ async function routeApi(req, res, url) {
     return json(res, 200, { ok: true, task: publicUserXhsTask(task) });
   }
 
+  if (url.pathname === "/api/v1/user/automation/xhs-data-tasks" && ["GET", "POST"].includes(req.method)) {
+    const ctx = requireAuth(req, ["user", "admin"]);
+    if (expireAutomationJobs()) runtimeSaveScheduler.mark();
+    if (req.method === "GET") {
+      return json(res, 200, { tasks: state.automationJobs
+        .filter((job) => job.kind === "xhs_data_collect" && job.userId === ctx.userId)
+        .slice(0, 30).map(publicDataCollectionJobSummary) });
+    }
+    const input = await readJson(req);
+    if (!["app1", "app2"].includes(input.xhsAppSlot)) return json(res, 400, { error: "invalid_xhs_app_slot" });
+    const device = state.devices.find((item) => item.deviceId === input.deviceId);
+    if (!device || !isDeviceListed(device) || !hasWindowsAdbBinding(device) || !isAdbOnline(device)) {
+      return json(res, 409, { error: "device_not_available" });
+    }
+    const account = (device.xhsAccounts || []).find((item) => item.appSlot === input.xhsAppSlot && item.enabled !== false);
+    if (!account) return json(res, 409, { error: "xhs_account_slot_not_available" });
+    const agent = state.windowsAgents.find((item) => item.agentId === device.adb.agentId);
+    if (!hasXhsDataCollectionCapability(agent)) return json(res, 409, { error: "xhs_data_agent_update_required" });
+    const conflict = activeDeviceLockForTask(device.deviceId);
+    if (conflict) return json(res, 409, { error: "device_busy", conflict: publicDeviceLock(conflict) });
+    const job = createAutomationJob({ kind: "xhs_data_collect", userId: ctx.userId,
+      deviceId: device.deviceId, xhsAppSlot: account.appSlot, xhsAccountLabel: account.label,
+      xhsAccountId: account.xhsId, xhsAccountName: account.accountName, title: "小红书数据采集" });
+    const lock = acquireAutomationDeviceLock(device, job, ctx, { ttlMs: XHS_DATA_COLLECTION_TTL_MS });
+    const windowsTask = queueAutomationWindowsTask(device, job);
+    const audit = addAudit("user_xhs_data_collect_create", ctx, { jobId: job.jobId, deviceId: job.deviceId, xhsAppSlot: job.xhsAppSlot });
+    await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask, automationJob: job, deviceLock: lock, audit }));
+    return json(res, 201, { ok: true, task: publicAutomationJob(job) });
+  }
+
+  const dataDetailMatch = url.pathname.match(/^\/api\/v1\/user\/automation\/xhs-data-tasks\/([^/]+)$/);
+  if (req.method === "GET" && dataDetailMatch) {
+    const ctx = requireAuth(req, ["user", "admin"]);
+    if (expireAutomationJobs()) runtimeSaveScheduler.mark();
+    const job = state.automationJobs.find((item) => item.jobId === dataDetailMatch[1] && item.userId === ctx.userId && item.kind === "xhs_data_collect");
+    if (!job) return json(res, 404, { error: "automation_job_not_found" });
+    return json(res, 200, { task: publicAutomationJob(job) });
+  }
+
+  const dataCancelMatch = url.pathname.match(/^\/api\/v1\/user\/automation\/xhs-data-tasks\/([^/]+)\/cancel$/);
+  if (req.method === "POST" && dataCancelMatch) {
+    const ctx = requireAuth(req, ["user", "admin"]);
+    const job = state.automationJobs.find((item) => item.jobId === dataCancelMatch[1] && item.userId === ctx.userId && item.kind === "xhs_data_collect");
+    if (!job) return json(res, 404, { error: "automation_job_not_found" });
+    if (!isActiveAutomationStatus(job.status)) return json(res, 409, { error: "automation_job_not_cancellable" });
+    cancelAutomationJob(job, "cancelled");
+    const windowsTask = state.windowsTasks.find((item) => item.taskId === job.windowsTaskId) || null;
+    const deviceLock = state.deviceLocks.find((item) => item.lockId === job.lockId) || null;
+    const audit = addAudit("user_xhs_data_collect_cancel", ctx, { jobId: job.jobId, deviceId: job.deviceId });
+    await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask, automationJob: job, deviceLock, audit }));
+    return json(res, 200, { ok: true, task: publicAutomationJob(job) });
+  }
+
   if (req.method === "GET" && url.pathname === "/api/v1/user/automation/xhs-publish-tasks") {
     const ctx = requireAuth(req, ["user", "admin"]);
     if (expireAutomationJobs()) runtimeSaveScheduler.mark();
@@ -1344,9 +1398,14 @@ async function routeApi(req, res, url) {
     if (isTerminalStatus(task.status)) {
       return json(res, 200, { ok: true, ignored: true, task: publicWindowsTask(task) });
     }
-    task.status = input.status;
     const materializedResult = await materializeTaskResultEvidence(input.result || {}, { taskId: task.taskId, eventId: "result" });
     task.result = sanitizeTaskResult(materializedResult, { includeEvidence: true });
+    task.status = input.status;
+    if (task.type === "xhs_data_collect" && input.status === "succeeded" && task.result.collection?.complete !== true) {
+      task.status = "failed";
+      task.result.errorCode = "recent_window_not_proven";
+      task.result.message = "采集结果尚未证明最近30天完整";
+    }
     task.updatedAt = nowIso();
     if (["succeeded", "failed", "cancelled"].includes(task.status)) {
       task.completedAt = nowIso();
@@ -2303,6 +2362,10 @@ function normalizeAgentHealth(input = {}) {
       version: String(input.adb?.version || "").slice(0, 300),
       error: String(input.adb?.error || "").slice(0, 800)
     },
+    xhsDataCollect: {
+      protocol: input.xhsDataCollect?.protocol === XHS_DATA_COLLECTION_PROTOCOL ? XHS_DATA_COLLECTION_PROTOCOL : "",
+      ready: input.xhsDataCollect?.ready === true
+    },
     airtest: {
       enabled: input.airtest?.enabled !== false,
       ok: Boolean(input.airtest?.ok),
@@ -2850,6 +2913,15 @@ function createXhsQrTask(input = {}) {
   return task;
 }
 
+function publicDataCollectionJobSummary(job) {
+  const task = publicAutomationJob(job);
+  if (task.result?.collection) {
+    const { notes, recovery_events, ...summary } = task.result.collection;
+    task.result = { ...task.result, collection: { ...summary, note_count: notes.length } };
+  }
+  return task;
+}
+
 function createAutomationJob(input = {}) {
   const kind = normalizeAutomationKind(input.kind);
   const createdAt = nowIso();
@@ -3336,6 +3408,7 @@ function queueAutomationWindowsTask(device, job) {
   if (!agentId || !adbSerial || !isAdbOnline(device)) throw badRequest("device_not_available");
   const typeByKind = {
     xhs_publish: "xhs_publish",
+    xhs_data_collect: "xhs_data_collect",
     alipay_name_start: "alipay_name_start",
     alipay_name_query: "alipay_name_query",
     alipay_name_stop: "alipay_name_stop"
@@ -3347,6 +3420,7 @@ function queueAutomationWindowsTask(device, job) {
     type: typeByKind[job.kind],
     payload: {
       automationJobId: job.jobId,
+      ...(job.kind === "xhs_data_collect" ? { deviceName: device.deviceName || device.deviceId, windowDays: 30 } : {}),
       automationSessionId: job.sessionId || "",
       xhsAppSlot: job.xhsAppSlot || "",
       xhsAccountLabel: job.xhsAccountLabel || "",
@@ -3406,7 +3480,7 @@ function syncAutomationJobFromWindowsTask(windowsTask, status, result = {}) {
   }
   if (["succeeded", "failed", "cancelled"].includes(status)) {
     job.completedAt = nowIso();
-    if (job.kind === "xhs_publish") {
+    if (["xhs_publish", "xhs_data_collect"].includes(job.kind)) {
       releaseAutomationLock(job, status);
     } else if (session) {
       session.pendingJobId = "";
@@ -4364,6 +4438,7 @@ function sanitizeTaskResult(input = {}, options = {}) {
     wallMs: Number.isFinite(Number(input.wallMs)) ? Number(input.wallMs) : null,
     timeoutSeconds: Number.isFinite(Number(input.timeoutSeconds)) ? Number(input.timeoutSeconds) : null
   };
+  if (input.collection) result.collection = sanitizeXhsDataCollection(input.collection);
   if (input.uiSnapshot) result.uiSnapshot = String(input.uiSnapshot).slice(0, MAX_STORED_UI_SNAPSHOT_CHARS);
   if (input.uiHierarchy) result.uiHierarchy = String(input.uiHierarchy).slice(0, MAX_STORED_UI_HIERARCHY_CHARS);
   if (input.uiHierarchyUrl) result.uiHierarchyUrl = String(input.uiHierarchyUrl).slice(0, 500);
@@ -4617,6 +4692,7 @@ function publicUserDevice(device, ctx = null) {
     adbOnline,
     agentOnline,
     listingStatus: normalizeDeviceListingStatus(device.listingStatus || "listed"),
+    xhsDataCollectionReady: hasXhsDataCollectionCapability(windowsAgent),
     automationStatus: {
       checkedAt: windowsAgent?.health?.checkedAt || null,
       windowsAgentOnline: windowsAgent ? Date.now() - new Date(windowsAgent.lastSeenAt).getTime() < WINDOWS_AGENT_ONLINE_MS : false,
@@ -5353,7 +5429,8 @@ function expireWindowsTasks() {
   for (const task of state.windowsTasks) {
     if (!["queued", "running", "stalled"].includes(task.status)) continue;
     const anchor = task.status === "running" ? latestTaskActivityAt(task) || task.pickedAt || task.updatedAt : task.createdAt;
-    const ttlMs = task.status === "queued" ? WINDOWS_TASK_QUEUE_TTL_MS : WINDOWS_TASK_TTL_MS;
+    const ttlMs = task.status === "queued" ? WINDOWS_TASK_QUEUE_TTL_MS
+      : task.type === "xhs_data_collect" ? XHS_DATA_COLLECTION_TTL_MS : WINDOWS_TASK_TTL_MS;
     const wasStalled = task.status === "stalled";
     if (task.status === "stalled") {
       const stalledAt = toTime(task.stalledAt || task.updatedAt || task.createdAt);
@@ -5427,14 +5504,15 @@ function expireAutomationJobs() {
   expireDeviceLocks();
   for (const job of state.automationJobs || []) {
     if (!isActiveAutomationStatus(job.status)) continue;
-    const ttlMs = job.kind === "xhs_publish" ? XHS_TASK_TTL_MS : AUTOMATION_SESSION_TTL_MS;
+    const ttlMs = job.kind === "xhs_data_collect" ? XHS_DATA_COLLECTION_TTL_MS
+      : job.kind === "xhs_publish" ? XHS_TASK_TTL_MS : AUTOMATION_SESSION_TTL_MS;
     const anchor = toTime(job.updatedAt || job.createdAt);
     if (!anchor || now - anchor <= ttlMs) continue;
     job.status = "expired";
     job.updatedAt = nowIso();
     job.completedAt = job.updatedAt;
     job.result = { ...(job.result || {}), errorCode: "automation_task_timeout", timeoutSeconds: Math.round(ttlMs / 1000) };
-    if (job.kind === "xhs_publish") releaseAutomationLock(job, "expired");
+    if (["xhs_publish", "xhs_data_collect"].includes(job.kind)) releaseAutomationLock(job, "expired");
     const session = job.sessionId ? state.automationSessions.find((item) => item.sessionId === job.sessionId) : null;
     if (session) finishLookupSession(session, "expired", "automation_session_timeout");
     changed = true;

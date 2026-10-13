@@ -101,7 +101,9 @@ def release_idle_poco(adb_path, serial, guard, events):
     events.append("idle_poco_released")
 
 
-def assert_idle(cache_path, serial, device_name):
+def assert_idle(cache_path, serial, device_name, task_id="", app_slot="", cancel_path=""):
+    if cancel_path and Path(cancel_path).exists():
+        raise RuntimeError("automation_task_cancelled")
     path = Path(cache_path)
     if time.time() - path.stat().st_mtime > 90:
         raise RuntimeError("device inventory cache is stale")
@@ -113,7 +115,11 @@ def assert_idle(cache_path, serial, device_name):
     item = matches[0]
     if str(item.get("deviceName")) != str(device_name):
         raise RuntimeError("target serial does not match the requested device name")
-    if item.get("adb", {}).get("state") != "device" or item.get("occupancy"):
+    occupancy = item.get("occupancy")
+    own_task = bool(task_id and isinstance(occupancy, dict)
+                    and occupancy.get("kind") == "xhs_data_collect"
+                    and occupancy.get("taskId") == task_id and occupancy.get("appSlot") == app_slot)
+    if item.get("adb", {}).get("state") != "device" or (occupancy and not own_task):
         raise RuntimeError("target phone is offline or occupied")
     return item
 
@@ -539,10 +545,10 @@ def refresh_scrolled_webview(adb_path, serial, root, guard, events):
 
 
 def collect(args):
-    device = assert_idle(args.device_cache, args.serial, args.device_name)
+    device = assert_idle(args.device_cache, args.serial, args.device_name, args.task_id, args.app_slot, args.cancel_file)
     if adb(args.adb, args.serial, "get-state", timeout=6).strip() != "device":
         raise RuntimeError("target ADB transport is not online")
-    guard = lambda: assert_idle(args.device_cache, args.serial, args.device_name)
+    guard = lambda: assert_idle(args.device_cache, args.serial, args.device_name, args.task_id, args.app_slot, args.cancel_file)
     accounts = [a for a in device.get("xhsAccounts", []) if isinstance(a, dict)
                 and a.get("appSlot") == args.app_slot and a.get("enabled")]
     if not accounts:
@@ -571,7 +577,7 @@ def collect(args):
     previous_top_date = None
     date_order_valid = True
     for round_index in range(args.max_scrolls + 1):
-        assert_idle(args.device_cache, args.serial, args.device_name)
+        assert_idle(args.device_cache, args.serial, args.device_name, args.task_id, args.app_slot, args.cancel_file)
         assert_no_poco(args.adb, args.serial)
         if not creator_list(root):
             raise RuntimeError("works-analysis list changed unexpectedly")
@@ -641,11 +647,14 @@ def collect(args):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--protocol", action="version", version="xhs_data_collect_v1")
     parser.add_argument("--serial", required=True)
     parser.add_argument("--adb", default="adb")
     parser.add_argument("--device-name", required=True)
     parser.add_argument("--device-cache", required=True)
     parser.add_argument("--app-slot", choices=("app1", "app2"), required=True)
+    parser.add_argument("--cancel-file", default="", help="Agent cancellation marker checked before each operation")
+    parser.add_argument("--task-id", default="", help="Only the matching collection job lock may be shared")
     parser.add_argument("--days", type=int, default=30)
     parser.add_argument("--max-scrolls", type=int, default=30)
     parser.add_argument("--min-scrolls", type=int, default=0)
@@ -662,12 +671,12 @@ def main():
     proximity_disabled = False
     try:
         if original_timeout.isdigit() and int(original_timeout) < 600000:
-            assert_idle(args.device_cache, args.serial, args.device_name)
+            assert_idle(args.device_cache, args.serial, args.device_name, args.task_id, args.app_slot, args.cancel_file)
             adb(args.adb, args.serial, "shell", "settings", "put", "system",
                 "screen_off_timeout", "600000", timeout=8)
             extended_timeout = True
         if original_proximity == "1":
-            guard = lambda: assert_idle(args.device_cache, args.serial, args.device_name)
+            guard = lambda: assert_idle(args.device_cache, args.serial, args.device_name, args.task_id, args.app_slot, args.cancel_file)
             wake_if_asleep(args.adb, args.serial, guard, [])
             if "ScreenOnProximitySensorGuide" in focus(args.adb, args.serial):
                 guard()

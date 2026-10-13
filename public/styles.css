@@ -3308,7 +3308,7 @@ body.screen-idle-modal-open {
 
 .automation-module-tabs {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
   padding: 6px;
   border: 1px solid var(--line);
@@ -7267,7 +7267,7 @@ body.admin-chrome .admin-xhs-task-row .task-screenshot img {
   grid-column: 1 / -1;
   position: relative;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0;
   padding: 0;
   overflow: hidden;
@@ -7689,3 +7689,20 @@ body.admin-chrome .admin-xhs-task-row .task-screenshot img {
   .lookup-result-row { grid-template-columns: 24px minmax(0, 1fr) 76px; }
   .lookup-result-row time { display: none; }
 }
+
+/* Creator list snapshots use the existing automation console typography. */
+.xhs-data-console .scan-field { margin-top: 18px; }
+.xhs-data-result-head, .xhs-data-task-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.xhs-data-task-actions { margin-top: 12px; justify-content: flex-start; }
+.xhs-data-totals { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 18px 0; }
+.xhs-data-totals > div { padding: 12px; border: 1px solid var(--line, #e5e7eb); border-radius: 12px; }
+.xhs-data-totals small, .xhs-data-totals strong { display: block; }
+.xhs-data-totals strong { margin-top: 5px; font-size: 24px; font-variant-numeric: tabular-nums; }
+.xhs-data-table-wrap { overflow: auto; max-height: 480px; margin: 16px 0; }
+.xhs-data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.xhs-data-table th { position: sticky; top: 0; background: var(--panel); text-align: left; }
+.xhs-data-table td, .xhs-data-table th { padding: 12px 8px; border-bottom: 1px solid var(--line, #e5e7eb); }
+.xhs-data-table td:not(:first-child) { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.xhs-data-table td:first-child { min-width: 160px; max-width: 420px; }
+.xhs-data-table td strong, .xhs-data-table td small { display: block; overflow-wrap: anywhere; }
+.xhs-data-table td small { margin-top: 6px; opacity: .65; }

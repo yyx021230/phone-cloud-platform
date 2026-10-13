@@ -9,7 +9,7 @@ const source = fs.readFileSync(path.join(root, "index.mjs"), "utf8");
 const config = fs.readFileSync(path.join(root, "config.mjs"), "utf8");
 
 test("dispatches publish and the three lookup commands", () => {
-  for (const taskType of ["xhs_publish", "alipay_name_start", "alipay_name_query", "alipay_name_stop"]) {
+  for (const taskType of ["xhs_publish", "xhs_data_collect", "alipay_name_start", "alipay_name_query", "alipay_name_stop"]) {
     assert.match(source, new RegExp(`task\\.type === \\"${taskType}\\"|\\[\\"alipay_name_start\\"`));
   }
 });
