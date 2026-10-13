@@ -1,0 +1,15 @@
+{
+  "version": "lookup-async-20261013-rc.3",
+  "candidateTag": "lookup-async-20261013-rc.3",
+  "hash": "SHA256",
+  "selfExcluded": "MANIFEST.json",
+  "files": {
+    "README.md": "3efa4ef6d2f0da674c5dc22539d1f5d1caa05b16e0d63df374647d9210dddb1b",
+    "VERSION.json": "b1e9d7ea0c76b7b73a037b117be175f5b949a2ef1e544bcfef48a00fb20eeace",
+    "server/managed-lookup-isolation.test.mjs": "8240763b22fc5e7c9f8c3c89dba0203c5b69f6cd17a8f5a157e69059bde13c19",
+    "server/managed-lookup-platform.mjs": "30154936a1f8eda5061ef0a06fa8468324e6d5a67315ec2fcd2ec9e5a02e40a5",
+    "server/managed-lookup.mjs": "00b7ba0dce6f73b40218a19efb30d5b10ef19ece35c11c628ce380c042c1a8f1",
+    "verification/device-isolation-postgres.mjs": "d2a47975259fe814c265f0c99f7fdd4427c8ceee0bc80b9b662b774f156d9294",
+    "verification/prepare-local.py": "2af922ac318947f316d8409ac3a70170fa215c9e768f1fc4d9a0c17c0735aa3b"
+  }
+}

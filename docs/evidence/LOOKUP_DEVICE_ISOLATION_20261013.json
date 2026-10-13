@@ -1,0 +1,197 @@
+{
+  "task": "lookup-device-isolation-20261013",
+  "atUtc": "2026-10-13T09:54:34.163487+00:00",
+  "status": "local-candidate",
+  "userIntent": "查到哪个哪个返回: one phone cannot hold back another completed lookup",
+  "branch": "codex/lookup-device-isolation-20261013",
+  "baselineCommit": "03640571411395941103b298f4523a1f3633c420",
+  "candidateTag": "lookup-async-20261013-rc.3",
+  "risk": "R2 managed cloud scheduling/transaction boundary; local implementation only",
+  "rules": {
+    "fullMainReadContextReused": true,
+    "AGENTSAndWorkflowReread": true,
+    "workflowRevision": "2026-09-30",
+    "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+    "mainShaBefore": "6b665f3c93446f99538daa2b1552f42d1dc06c2deb98432c1653ce62e6f385df",
+    "designShaBefore": "943c8c020e313d93d3f006e0f4762d091bfc509c50b0cfaedc58d60f9347c7ec"
+  },
+  "scope": [
+    "server/managed-lookup.mjs",
+    "server/managed-lookup-platform.mjs"
+  ],
+  "cause": "All channel reconciliation and queue admission previously shared one transaction. A device stop exception rolled back other phone results and admissions.",
+  "changes": [
+    "Separate each channel reconciliation/result and each new admission into its own short transaction.",
+    "After each successful commit refresh published reservations; preserve deferred release and max5 admission checks.",
+    "Skip offline idle cleanup without releasing its reservation; exclude failed devices for a bounded current tick, continue other phones, report collected device errors.",
+    "Global owner/store failures and platform SQL-persistence failures halt further dispatch while previous results stay durable.",
+    "No-op ordinary busy/idle/stopping observations do not multiply durable writes.",
+    "Unified queue, same/new-key coalescing, per-device generation and single coordinator remain; no parallel global-state writes or Agent changes."
+  ],
+  "actualVerification": {
+    "environment": "Node v25.9.0; PostgreSQL16.15; local macOS; env -i PATH/HOME/LANG/LC_ALL, synthetic loopback credentials only",
+    "baselineCounterexamples": {
+      "tests": 9,
+      "passed": 1,
+      "failed": 8,
+      "exitCode": 1,
+      "logSha256": "2f74e142e8332acea1ac0b5d80d989c9c15f6a99fde0ffc267a0edad95989ee4"
+    },
+    "managedTargeted": {
+      "command": "node --test --test-reporter=tap server/managed-lookup*.test.mjs",
+      "tests": 33,
+      "passed": 33,
+      "failed": 0,
+      "exitCode": 0,
+      "stage": "before final additional fenced-owner guard/test; final full suite covers it",
+      "logSha256": "38be9e531c77fe677c31961c87c66b63af2d986fe9310565f0a1fac02c04298c"
+    },
+    "fullRegression": {
+      "command": "npm run test:screen",
+      "tests": 630,
+      "passed": 630,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "includesNewIsolationTests": 12,
+      "logSha256": "03d9c0001c3af4a4031b8f4dcf114b5d471114bdbd0bd1dce24139a4964c4500"
+    },
+    "postgresIsolation": {
+      "postgresOnly": true,
+      "independentCommitCounts": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "resultReadableWhileOtherStopPending": true,
+      "deviceErrorRollsBackOnlyItsDevice": true,
+      "reopenPreservesNameAndUnconfirmedReservation": true,
+      "ownerLock": true,
+      "laterSqlFailureKeepsPriorResult": true,
+      "storageFailureStopsNewDispatch": true,
+      "physicalPhoneQueries": 0,
+      "productionConnections": 0
+    },
+    "postgresArchiveRegression": {
+      "archivePrunedTo256": true,
+      "aliasRollback": true,
+      "recentResultFoundOutsideMemory": true,
+      "aliasReopen": true,
+      "fixed600SecondBoundary": true,
+      "originalKeyStillHistorical": true,
+      "stateKeyIsolation": true,
+      "tenantSamePhoneDifferentCanonical": true,
+      "ownerLock": true,
+      "stopUnconfirmedSurvivesArchivePruning": true,
+      "productionConnections": 0
+    },
+    "httpPostgresRegression": {
+      "atUtc": "2026-10-13T09:50:36.041Z",
+      "loopbackOnly": true,
+      "storage": "postgres",
+      "elapsedBeforeFreshKeyRetryMs": 466,
+      "over120Seconds": false,
+      "submittedReusesSameLookupId": true,
+      "actualCloudQueryTasks": 1,
+      "syntheticAgentStarts": 1,
+      "physicalRealPhoneQueries": 0,
+      "readOnlyResultRetries": true,
+      "concurrentFreshKeys": 8,
+      "postgresOrJsonReopenAliases": true,
+      "originalQueryNotRedelivered": true,
+      "lateOriginalResult": "passed",
+      "recentReuse": "passed",
+      "sameKeySyncCompatible": true,
+      "tenantIsolation": "passed",
+      "httpStatusCases": [
+        200,
+        202,
+        400,
+        409,
+        404
+      ],
+      "drained": true,
+      "productionConnections": 0
+    },
+    "syntax": {
+      "command": "npm run check plus node --check for two overlay source files",
+      "exitCode": 0
+    },
+    "smoke": {
+      "command": "npm run test:smoke",
+      "exitCode": 0,
+      "logSha256": "279ce4f8f3bc7e15372f073d42af12d46542a9102f8e9c601a7db51eb4c9842d"
+    },
+    "actual120SecondWaitThisTurn": false,
+    "previous121SecondEvidenceUnchanged": true,
+    "pgAndHttpTiming": "PG proof and HTTP smoke before final added owner-fenced early guard; final630 tests include that guard, no other runtime change afterward",
+    "temporaryPostgresStopped": true,
+    "temporaryLoopbackServersStopped": true,
+    "candidateAssembly": {
+      "immutableManifestChainVerified": true,
+      "assembledFilesComparedWithTestedTree": 320,
+      "allComparedFilesMatch": true
+    }
+  },
+  "setupFailures": [
+    {
+      "stage": "first temporary PostgreSQL start",
+      "cause": "macOS Unix socket path exceeded103 bytes",
+      "resolution": "short task-owned /tmp socket directory; no application change"
+    },
+    {
+      "stage": "archive and HTTP PG fixtures before migration",
+      "cause": "each new temporary database lacked managed lookup tables",
+      "resolution": "explicitly applied existing two migrations to each isolated DB, reran successfully; no production migration or application workaround"
+    }
+  ],
+  "selfReview": {
+    "reviewer": "Codex self-review; no subagents",
+    "decision": "F1 local fix verified; full release still blocked by F2/F3/F5",
+    "reviewed": [
+      "callback vs commit failures",
+      "platform SQL failure marker",
+      "reservation refresh and rollback hooks",
+      "five slots and FIFO fairness",
+      "late/unknown work binding unchanged",
+      "no-op polls and scope/manifest"
+    ]
+  },
+  "codeHashes": {
+    "server/managed-lookup.mjs": "00b7ba0dce6f73b40218a19efb30d5b10ef19ece35c11c628ce380c042c1a8f1",
+    "server/managed-lookup-platform.mjs": "30154936a1f8eda5061ef0a06fa8468324e6d5a67315ec2fcd2ec9e5a02e40a5"
+  },
+  "unchanged": {
+    "baseRc1ManifestFiles": 332,
+    "sdkRc2ManifestVerified": true,
+    "oldTagsMoved": false,
+    "storeSchemaUnchanged": true,
+    "AgentAndFrozenMediaUnchanged": true
+  },
+  "rootPreserved": {
+    "head": "6811aef632eeaaacd6d6ce1effc4afa64bf6d363",
+    "dirtyEntries": 236,
+    "mainSha256": "3dd6365329b18c9a50df97a1f10f95990b9a02342b48873108c0b25c33e22790",
+    "writes": 0
+  },
+  "unverified": [
+    "real five-phone concurrency and49 stable mappings",
+    "natural account limit switching / actual eight-hour cooldown expiry",
+    "actual Windows disconnect/restart and OCR installation",
+    "production migration, proxy, load and other developer integration",
+    "actual database network partition or ambiguous COMMIT response loss"
+  ],
+  "productionConnections": 0,
+  "productionMutations": 0,
+  "realPhoneActions": 0,
+  "feishuMessages": 0,
+  "remotePushes": 0,
+  "rollback": "Restore only two cloud files from immutable rc.1, keep SDK rc.2 and all data/aliases/cooldowns/reservations. This restores known F1; no schema downgrade or media/Agent restart.",
+  "remainingReviewFindings": [
+    "F2 missing authorization check before prepared first query",
+    "F3 cancel/budget race with already received successful result",
+    "F5 old synchronous recommendation in integration document"
+  ]
+}

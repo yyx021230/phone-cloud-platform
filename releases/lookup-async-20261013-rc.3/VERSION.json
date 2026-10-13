@@ -1,0 +1,42 @@
+{
+  "version": "lookup-async-20261013-rc.3",
+  "candidateTag": "lookup-async-20261013-rc.3",
+  "branch": "codex/lookup-device-isolation-20261013",
+  "status": "local-candidate-not-deployed",
+  "candidateKind": "two-file device-transaction isolation overlay; requires immutable async rc.1 + SDK rc.2",
+  "baselineCommit": "03640571411395941103b298f4523a1f3633c420",
+  "baseTags": {
+    "lookup-async-20261013-rc.1": "1d644817d67fc64b3ea6d8620705b3c5422036a3",
+    "lookup-async-20261013-rc.2": "03640571411395941103b298f4523a1f3633c420"
+  },
+  "baseManifestHashes": {
+    "lookup-async-20261013-rc.1": "e688023f831dcccf780408b04f6c48bedb024481b2272194536508c56c5b694c",
+    "lookup-async-20261013-rc.2": "3101f4045cd4233b788c5de1359b5a3aecd7abd96d2e8d830f42e532d4e75172"
+  },
+  "overlayFiles": [
+    "server/managed-lookup.mjs",
+    "server/managed-lookup-platform.mjs"
+  ],
+  "baseFileHashes": {
+    "server/managed-lookup.mjs": "dc9aa043d149f067cca1576133e371794c347544d28fe93d50c8061d7ea86c73",
+    "server/managed-lookup-platform.mjs": "9eb08fbda1c3d0cb21a1bb7cc608ce8df6a066f842d9f7501e0b4a583fa4f784"
+  },
+  "fixedReviewFindings": [
+    "F1"
+  ],
+  "inheritedFixedReviewFindings": [
+    "F4"
+  ],
+  "openReviewFindings": [
+    "F2",
+    "F3",
+    "F5"
+  ],
+  "platformReleaseReady": false,
+  "schemaChanges": false,
+  "agentChanges": false,
+  "mediaChanges": false,
+  "remotePushes": 0,
+  "realPhoneActions": 0,
+  "newProductionDeployment": false
+}
