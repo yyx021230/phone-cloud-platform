@@ -1,0 +1,144 @@
+{
+  "status": "local candidate verified; not deployed",
+  "at": "2026-10-13T03:35:20.702746+00:00",
+  "sourceCommit": "5b22bf1e0ab78a441abd47b1691a8e0c53e2d098",
+  "branch": "codex/lookup-pool-20261013",
+  "candidateTag": "lookup-pool-20261013-rc.1",
+  "checks": [
+    {
+      "check": "smoke",
+      "exitCode": 0,
+      "privateLog": "/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/pc-managed-regression-6nm8b0_q/smoke.log",
+      "tests": null,
+      "logSha256": "a354cbaa13708b644a0472130a86a5601087bfc790ac9d0bc1800a3e5f3a71d7"
+    },
+    {
+      "check": "syntax",
+      "exitCode": 0,
+      "privateLog": "/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/pc-managed-regression-6nm8b0_q/syntax.log",
+      "tests": null,
+      "logSha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+    },
+    {
+      "check": "screen",
+      "exitCode": 0,
+      "privateLog": "/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/pc-managed-regression-6nm8b0_q/screen.log",
+      "tests": 602,
+      "logSha256": "42d087c39433ee09f74bf4f8113d0f8ef84c997c5bee67087f5c56f199665daa"
+    },
+    {
+      "check": "agent",
+      "exitCode": 0,
+      "privateLog": "/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/pc-managed-regression-6nm8b0_q/agent.log",
+      "tests": 290,
+      "logSha256": "8d3fd55946e8af53204d37fc61e3ce20de0067a05514c67a86c6acd2117c05bc"
+    },
+    {
+      "check": "python",
+      "exitCode": 0,
+      "privateLog": "/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/pc-managed-regression-6nm8b0_q/python.log",
+      "tests": 163,
+      "logSha256": "63d142902126bc95d2efbc564eff8770e5420429ac9c8f8a6eab99edc877bf76"
+    },
+    {
+      "check": "sdk-node",
+      "exitCode": 0,
+      "privateLog": "/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/pc-managed-regression-6nm8b0_q/sdk-node.log",
+      "tests": 4,
+      "logSha256": "79e643df1054d900bbf824f933ebecd488558d115ee85072387b1517e46d0625"
+    },
+    {
+      "check": "sdk-python",
+      "exitCode": 0,
+      "privateLog": "/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/pc-managed-regression-6nm8b0_q/sdk-python.log",
+      "tests": 2,
+      "logSha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+    }
+  ],
+  "testCountsOverlap": true,
+  "postgres": {
+    "postgresHttpExit": 0,
+    "postgresAtomicStoreExit": 0,
+    "productionAccess": 0,
+    "root": "/tmp/pc-managed-pg-ougff5ki",
+    "httpLogSha256": "0d03352cf9795bdbb31c6a5dfe50744e988a6d601ca935bcd65b6432568cc096",
+    "storeLogSha256": "791c74ea647f70cf5587cb558b2a91ffa9ec36b471c76e360283ce5bdde33fa3"
+  },
+  "httpCoverage": [
+    "49 synthetic stable mappings",
+    "20 concurrent inputs; max5 auto executions; each phone1",
+    "name/not_found with no task DTO",
+    "same key no duplicate; different phone409",
+    "21st waiter429; cached original result200",
+    "old Agent no claim; stale generation409",
+    "lost ACK response no execution",
+    "manual puzzle other phones continue; two read-only observations original query continuation",
+    "ordinary recovery preserves queryId",
+    "cancel only releases after stop confirmation",
+    "inflight hard crash no redelivery; late report returns original key name",
+    "hard restart cached result preserved"
+  ],
+  "schedulerCoverage": [
+    "per-client FIFO and round robin",
+    "human resume max5/cancel/revocation/unhealthy guard",
+    "offline cancel does not block unrelated phone",
+    "prepare-only migration once;30/60/120s backoff preserved on config save",
+    "queue limits and conflicting keys",
+    "precommit memory task hidden; rollback own additions including mid-lock failure"
+  ],
+  "artifactChecks": {
+    "frozenRuntimeFilesUnchanged": 34,
+    "pythonRunnerSha256": "24a9429c2735454ef854c0b6fa4346fedbb7a50ce264fd9ee4811cc43e7acc0d",
+    "oldPublicContractsUnchanged": 39,
+    "totalPublicOperations": 40,
+    "hmacOperations": 8,
+    "sdkZipMatchesSource": true,
+    "docBuildReproducible": true
+  },
+  "browser": {
+    "environment": "isolated loopback;49 synthetic devices;no real Agent",
+    "adminEntry": true,
+    "concurrencySaveAndReload": "3 then5 persisted",
+    "member51SaveAndReload": true,
+    "rows": 49,
+    "width390DocumentWidth": 390,
+    "poolEnabled": false,
+    "apiSynchronousReferenceRendered": true,
+    "consoleErrors": 0,
+    "screenshot": "lookup-pool-local-preview.jpg",
+    "note": "fixture heartbeat expired during UI test; displayed offline truthfully"
+  },
+  "review": "self review; PG/legacy dispatch admission, ACK/result/stop fencing, tenant compatibility, frozen source hashes; no independent reviewer",
+  "unverified": [
+    "real stable49-device mapping",
+    "real5-phone simultaneous workload and shared resource impact",
+    "OEM and physical Agent crash/cancel",
+    "natural account restriction/8h expiry in pooled mode",
+    "production proxy long request and migration",
+    "production ACTIVE/image/hash/current health",
+    "D-075 live; no production release this round"
+  ],
+  "productionReads": 0,
+  "productionMutations": 0,
+  "realPhoneQueries": 0,
+  "feishuNotifications": 0,
+  "remotePushes": 0,
+  "rootPreserved": {
+    "branch": "codex/sms-notification-library",
+    "head": "6811aef632eeaaacd6d6ce1effc4afa64bf6d363",
+    "dirtyEntries": 236,
+    "mainSha256": "d44137e59e319765f8223a6de1997e5866b284639ef1c70056b4ee5d01c855e1",
+    "parallelChanges": "D-079 automation candidate added in root by another task; not copied or overwritten"
+  },
+  "failuresAndCorrections": [
+    "core phase failures preserved in CORE_RESULTS.json",
+    "two wrong-working-directory commands made no edits and were corrected",
+    "doc builder initially asserted7 path objects instead of8 operations; corrected",
+    "artifact verifier initially treated modified test fixture as frozen runtime and used a missing managed key; corrected",
+    "CUA numeric click failed after draft edit; verified semantic-locator save/reload instead",
+    "final self-review identified precommit in-memory pickup window; added commit admission gate and rollback tests before final regression"
+  ],
+  "inheritedBaselineWarning": "Media patch text contains historical whitespace warnings in composite baseline; frozen runtime and patches preserved unchanged. Incremental diff --check passed.",
+  "ownedLocalTestProcessesStopped": true,
+  "localMockPreviewClosed": true
+}

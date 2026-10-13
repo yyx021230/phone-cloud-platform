@@ -1,3 +1,15 @@
+# lookup-pool-20261013-rc.1 (local candidate, not deployed)
+
+Adds one synchronous phone-only query API returning page-displayed name. Internal49-member pool admits up to5 concurrent automatic tasks; preserves existing account rotation, cooldown and human handover. Adds administrator mapping/configuration/client grants/cancel/original-task recovery, durable PG queue/result archive, managed lease ACK/generation and precommit dispatch admission. Legacy7 external endpoints remain compatible.
+
+Node/Python SDKs add phone-only methods, same-key bounded network retry and190s timeout. Candidate API portal has40 operations/8 HMAC with updated OpenAPI and reproducible ZIP. Feature is disabled by default. Explicit additive two-table migration and matching Agent required; second coordinator rejected. Existing media/control/runner baseline preserved.
+
+Validation: isolated smoke/syntax, Node602, Agent290, Python163, SDK4+2, real loopback HTTP/fake Agent and temporary PostgreSQL16 pass;34 frozen runtime hashes and39 legacy contracts preserved; administration and API browser checks pass. Suites overlap. No production, phone, Feishu or remote Git action. Physical49 mapping/five-phone concurrency/OEM/natural cooldown/proxy/migration still require gray acceptance. See README, VERSION, MANIFEST and verification/RESULTS.json for source binding and rollback limits.
+
+---
+
+Inherited historical portal notes below (not this candidate's version):
+
 # rc.5 业务名称统一
 
 按用户要求：扫码→小红书自动登录；查名字→支付宝查名字；一键发布→小红书一键发布。目录/首页/JSON及OpenAPI标签同步。全部32接口路径/ID/参数/权限不变。9专项、JS语法及页面核对通过；仅本地候选，未推送/发布。回退门户rc.4的4静态文档文件。

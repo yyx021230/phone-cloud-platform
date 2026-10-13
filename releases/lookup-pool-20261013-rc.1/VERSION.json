@@ -1,0 +1,21 @@
+{
+  "version": "lookup-pool-20261013-rc.1",
+  "status": "local-candidate-not-deployed",
+  "branch": "codex/lookup-pool-20261013",
+  "candidateTag": "lookup-pool-20261013-rc.1",
+  "runtimeSourceCommit": "5b22bf1e0ab78a441abd47b1691a8e0c53e2d098",
+  "baseCommit": "238ec809352df34c4455b0c702328493bd17332e",
+  "lastRecordedProduction": "lookup-realname-prompt-20261012-deployed.1",
+  "productionRechecked": false,
+  "migration": "deploy/sql/20261013-managed-lookup.sql",
+  "protocol": "managed_lookup_v1",
+  "managedFeatureDefault": false,
+  "rosterCount": 49,
+  "concurrencyMax": 5,
+  "serverWaitMsDefault": 120000,
+  "serverWaitMsMax": 180000,
+  "sdkTimeoutSeconds": 190,
+  "gatewayTimeoutSecondsRecommended": 210,
+  "realDeviceAcceptance": false,
+  "remotePushes": 0
+}
