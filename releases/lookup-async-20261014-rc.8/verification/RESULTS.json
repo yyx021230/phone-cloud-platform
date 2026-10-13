@@ -1,0 +1,248 @@
+{
+  "version": "lookup-async-20261014-rc.8",
+  "sourceReport": "docs/evidence/LOOKUP_PARTNER_ACCEPTANCE_20261014.json",
+  "sourceReportSha256": "3b10f88612f53398f62391a54e5e11271ffbd411a22685ed5b9c1fcd73135c3d",
+  "tests": {
+    "environment": {
+      "node": "25.9.0",
+      "python": "3.9.6",
+      "postgres": "16"
+    },
+    "rootSyntaxCheck": "passed",
+    "isolatedSmoke": "passed",
+    "fullNodeRegression": {
+      "pass": 654,
+      "fail": 0,
+      "skip": 0
+    },
+    "nodeSdk": {
+      "pass": 27
+    },
+    "pythonSdkExisting": {
+      "pass": 3
+    },
+    "pythonTransportCounterexamples": {
+      "baselinePass": 1,
+      "baselineFailures": 5,
+      "baselineErrors": 3,
+      "fixedPass": 9
+    },
+    "partnerPersistenceExamples": {
+      "pass": 5
+    },
+    "finalDownloadedBundleWire": {
+      "atUtc": "2026-10-13T18:54:02.764Z",
+      "downloadedZipSha256": "654119bc2dde54f7fcd4533687f759d27102b51a7814dee163510252237ee14d",
+      "aliasLimit429PreservesOriginal": true,
+      "actualRetryAfterSeconds": 5,
+      "disabledPool503": true,
+      "version": "lookup-async-20261014-rc.8",
+      "actualHttpPostgres": true,
+      "independentRawHmac": true,
+      "downloadedPythonBundle": true,
+      "partnerProcessRestartBeforeLookupIdSaved": true,
+      "perResultDurableBackfill": true,
+      "maximumSimultaneousQueries": 5,
+      "distinctDevicesAtPeak": 5,
+      "logicalPhones": 6,
+      "actualQueryTasks": 6,
+      "sixthQueuedThenDispatched": true,
+      "heldPhoneDidNotBlockOtherFive": true,
+      "otherFiveFinishedMs": 1177,
+      "heldElapsedMs": 121002,
+      "newKeyRetries": 8,
+      "sameLookupAfterFreshKeys": true,
+      "over120Seconds": true,
+      "sameLookupAfterTwoMinutes": true,
+      "serverRestartPreservesIdentity": true,
+      "duplicateCallbackSafe": true,
+      "terminalStatuses": [
+        "succeeded",
+        "not_found",
+        "failed"
+      ],
+      "authCases": [
+        400,
+        401,
+        404,
+        409
+      ],
+      "drained": true,
+      "physicalPhones": 0,
+      "productionActions": 0
+    },
+    "postgresArchive": {
+      "archivePrunedTo256": true,
+      "aliasRollback": true,
+      "recentResultFoundOutsideMemory": true,
+      "aliasReopen": true,
+      "fixed600SecondBoundary": true,
+      "originalKeyStillHistorical": true,
+      "stateKeyIsolation": true,
+      "tenantSamePhoneDifferentCanonical": true,
+      "ownerLock": true,
+      "stopUnconfirmedSurvivesArchivePruning": true,
+      "productionConnections": 0
+    },
+    "postgresIsolation": {
+      "postgresOnly": true,
+      "independentCommitCounts": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "resultReadableWhileOtherStopPending": true,
+      "deviceErrorRollsBackOnlyItsDevice": true,
+      "reopenPreservesNameAndUnconfirmedReservation": true,
+      "ownerLock": true,
+      "laterSqlFailureKeepsPriorResult": true,
+      "storageFailureStopsNewDispatch": true,
+      "physicalPhoneQueries": 0,
+      "productionConnections": 0
+    },
+    "postgresResultPriority": {
+      "localPostgres": true,
+      "resultVisibleBeforeStopConfirmation": true,
+      "resultDurablyArchived": true,
+      "restartPreservesResultAndReservation": true,
+      "twoMinuteDifferentKeyUsesOriginal": true,
+      "expiredRecentWindowStillBound": true,
+      "pruningPreservesUnconfirmedBinding": true,
+      "stopConfirmationNeverOverwritesName": true,
+      "archivedAliasesSurviveRestart": true,
+      "completionTimeUnchanged": true,
+      "newBusinessAllowedOnlyAfterConfirmedStopAndCacheWindow": true,
+      "syntheticQueryCount": 1,
+      "clockAdvanceUsed": true,
+      "physicalQueries": 0,
+      "productionConnections": 0
+    },
+    "realDevices": {
+      "atUtc": "2026-10-13T18:47:06.293Z",
+      "baselineAgent": "lookup-async-20261014-rc.7",
+      "realRequests": [
+        {
+          "ordinal": 108,
+          "deviceNumbers": [
+            130
+          ],
+          "lookupId": "e27b597e-4639-4030-b2bf-15b92fc7eae0",
+          "queryId": "21a38d99-1c90-47e2-831f-13b8f3d11e0b",
+          "taskId": "be8323f2-eb5f-4ad4-91a0-377acb2c6955",
+          "status": "not_found",
+          "code": "",
+          "hasName": false,
+          "queryTasks": 1,
+          "inputEvents": 1,
+          "inputAt": "2026-10-13T18:44:11.403Z",
+          "completedAt": "2026-10-13T18:44:30.293Z",
+          "notFoundReason": "account_not_real_named",
+          "publicCode": "not_found"
+        },
+        {
+          "ordinal": 67,
+          "deviceNumbers": [
+            118
+          ],
+          "lookupId": "4934d316-cf20-42b4-b599-e94a4b74ac54",
+          "queryId": "cf4b0d4b-4001-4227-87de-277a28093ace",
+          "taskId": "a393c18c-de3d-4977-a458-cb395d658e35",
+          "status": "succeeded",
+          "code": "",
+          "hasName": true,
+          "queryTasks": 1,
+          "inputEvents": 1,
+          "inputAt": "2026-10-13T18:44:23.770Z",
+          "completedAt": "2026-10-13T18:44:25.259Z",
+          "notFoundReason": null,
+          "publicCode": ""
+        },
+        {
+          "ordinal": 165,
+          "deviceNumbers": [
+            118
+          ],
+          "lookupId": "f09e13bb-1230-4c41-9451-94871492e9a5",
+          "queryId": "b003cfae-e617-410f-9967-885131879911",
+          "taskId": "b2aafa66-27e6-4853-9eea-beed4d5b0803",
+          "status": "succeeded",
+          "code": "",
+          "hasName": true,
+          "queryTasks": 1,
+          "inputEvents": 1,
+          "inputAt": "2026-10-13T18:44:37.224Z",
+          "completedAt": "2026-10-13T18:44:38.587Z",
+          "notFoundReason": null,
+          "publicCode": ""
+        },
+        {
+          "ordinal": 191,
+          "deviceNumbers": [
+            130
+          ],
+          "lookupId": "7d214d55-fc3a-4b69-ac67-5c13e281cbf8",
+          "queryId": "9aee445f-139d-4bc7-a02d-e3d64a8863b9",
+          "taskId": "26ead72c-c2aa-45e7-9413-2028d2c2441e",
+          "status": "succeeded",
+          "code": "",
+          "hasName": true,
+          "queryTasks": 1,
+          "inputEvents": 1,
+          "inputAt": "2026-10-13T18:46:09.540Z",
+          "completedAt": "2026-10-13T18:46:20.409Z",
+          "notFoundReason": null,
+          "publicCode": ""
+        }
+      ],
+      "allFourExpectedResults": true,
+      "loadingNotReproducedThisRound": true,
+      "intermittentLoadingRootCauseStillUnconfirmed": true,
+      "poolDisabled": true,
+      "channels": 0,
+      "activeTasks": 0,
+      "pendingOutbox": 0,
+      "cooldowns": [
+        {
+          "deviceNumber": "130",
+          "accountHash": "b1b626a87f11",
+          "limitedAt": "2026-10-13T04:49:01.367Z",
+          "cooldownUntil": "2026-10-13T12:49:01.367Z"
+        },
+        {
+          "deviceNumber": "130",
+          "accountHash": "60cd3aa0c18a",
+          "limitedAt": "2026-10-13T05:53:11.749Z",
+          "cooldownUntil": "2026-10-13T13:53:11.749Z"
+        }
+      ],
+      "productionActions": 0,
+      "observedConcurrentPhysicalQueryIntervals": 2
+    },
+    "pythonRealReadsBeforeFinalHeaderGuard": {
+      "distributedPythonSDK": true,
+      "realExistingRequestsReplayed": 4,
+      "sameKeySameId": true,
+      "getStatusAndNamePresenceMatch": true,
+      "newQueries": 0
+    }
+  },
+  "unverified": [
+    "five physical phones concurrent",
+    "all49 real device mapping",
+    "natural full limit-triggered account rotation in this candidate",
+    "natural 8hour cooldown expiry",
+    "Windows runtime and production rollout",
+    "partner actual business DB backfill",
+    "new asynchronous natural manual puzzle continuation in this round",
+    "long-duration intermittent upstream loading reliability"
+  ],
+  "productionActions": 0,
+  "verification": {
+    "finalAssembledFiles": 346,
+    "allComponentBytesMatchTested": true,
+    "knownRealCredentialsAbsentFromRelease": true,
+    "immutableHistoricalCandidatesPreserved": true
+  }
+}

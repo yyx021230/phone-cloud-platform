@@ -1,0 +1,54 @@
+{
+  "version": "lookup-async-20261014-rc.8",
+  "candidateTag": "lookup-async-20261014-rc.8",
+  "branch": "codex/lookup-partner-acceptance-20261014",
+  "baselineCommit": "e90e4457d9e881d5f9138046eed7f343542ef117",
+  "status": "local-candidate-not-deployed",
+  "baseTag": "lookup-async-20261014-rc.7",
+  "baseManifestSha256": "21f168537165760c0936fbb48c1823316276d3f8289d6398d550a5b82276bcd6",
+  "baseFileHashes": {
+    "OPEN_NAME_LOOKUP_API.md": "dce6179dfe336892a62df3ac23d3041d120e3cfe5bd77b0fd9f3c512f12398df",
+    "public/api-reference.json": "f3b71e22ce536dac8a9fb60bfcc2f81934f69753a74c416614c4850d21c5c79b",
+    "public/downloads/name-lookup-integration.zip": "52ed7387e98cf344364f86a518337a5bcab3a4c05e5363625f0c206309a81db5",
+    "public/downloads/name-lookup-openapi.json": "80d4c9773012d779d6355ea959325c81e81698b5249aa72bc684c75e912e65f5",
+    "public/downloads/name-lookup-sha256.json": "b64f8bf7f8e629e56cc5268200c94f5d97365dc199626835b67155ce4a945e6e",
+    "public/openapi.json": "11337ae174843255aab7fca2eb3abfbccb3d66f8759e6a58ed5e2730bfa4d670",
+    "scripts/build-managed-lookup-docs.py": "3da97bd4662b21ba78688f0a949ce9afc550391227eb8f4500192820e04ad944",
+    "sdk/open_name_lookup/README.md": "1c3cd8e90b2b734f9cf3c37e36f1d4fc44fa2e6dc1889f2817fbd1ce8724cdb1",
+    "sdk/open_name_lookup/node_client.mjs": "07f86ca4ff7bf3848083c8e1d1ecc30b69da67951e554d0121e1efdb4120fa3a",
+    "sdk/open_name_lookup/python_client.py": "e797a5cd6a08b3bd480d41198e87a774e0e4f239bfc81b9b75ef9f9056b22ce4"
+  },
+  "overlayFiles": [
+    "OPEN_NAME_LOOKUP_API.md",
+    "public/api-reference.json",
+    "public/downloads/name-lookup-integration.zip",
+    "public/downloads/name-lookup-openapi.json",
+    "public/downloads/name-lookup-sha256.json",
+    "public/openapi.json",
+    "scripts/build-managed-lookup-docs.py",
+    "sdk/open_name_lookup/README.md",
+    "sdk/open_name_lookup/node_client.mjs",
+    "sdk/open_name_lookup/python_client.py",
+    "sdk/open_name_lookup/PARTNER_HANDOFF.md",
+    "sdk/open_name_lookup/partner_example.py"
+  ],
+  "testFiles": [
+    "verification/partner-http.mjs",
+    "verification/sdk-transport.py",
+    "verification/sdk-transport.test.mjs",
+    "verification/partner-example-test.py",
+    "sdk/open_name_lookup/node_client.transport.test.mjs"
+  ],
+  "platformReleaseReady": false,
+  "apiChanges": false,
+  "schemaChanges": false,
+  "agentChanges": false,
+  "mediaChanges": false,
+  "productionActions": 0,
+  "sdkTransportChanges": true,
+  "physicalDevicesTested": [
+    118,
+    130
+  ],
+  "physicalFiveDeviceAcceptance": false
+}

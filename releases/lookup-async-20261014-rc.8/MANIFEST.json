@@ -1,0 +1,27 @@
+{
+  "version": "lookup-async-20261014-rc.8",
+  "hash": "SHA256",
+  "files": {
+    "OPEN_NAME_LOOKUP_API.md": "677b5ff42ac743a0a37bbdf99e20df558d726d58509a3a037b66484b3ac7cf54",
+    "README.md": "502521cd325b8ca2a8a3a2f44fc43c9adb0695fa2aaa9b8380e35dbd1e4c63d6",
+    "VERSION.json": "58123cbe7d190d40a1d897d884d212303a8fa0ab715bdf742c7250951da447e5",
+    "public/api-reference.json": "ae153b5f93b52744bb141cdfcee26e9fa6cc9014ba673b620c1757b811bbcf81",
+    "public/downloads/name-lookup-integration.zip": "654119bc2dde54f7fcd4533687f759d27102b51a7814dee163510252237ee14d",
+    "public/downloads/name-lookup-openapi.json": "e0d7accd7901bbf07242ea2cb977d303f190cbb63efe328a897b43933b1b0f9b",
+    "public/downloads/name-lookup-sha256.json": "2d3a3e0411df524f11f09c86ffcf58a0b7e6331cd2c04d1f280bedc52688cd8f",
+    "public/openapi.json": "f8a83efe48aec8585a1569c97eefe7f19e025fbb34c432f0b201be4f6850c542",
+    "scripts/build-managed-lookup-docs.py": "8e91df0b11b85bc7bbd023a06a2c1c421625afe79b8e1941a083920446ab2fe0",
+    "sdk/open_name_lookup/PARTNER_HANDOFF.md": "7e61755eb8431ea3a146f10fbdb48f566e5d8ab9ba2a5a01a8f4fb288ffee0ca",
+    "sdk/open_name_lookup/README.md": "4a9228df0a81cf808cacfb5628d5701032715d55dfeb37ab06c8524dffbd7aed",
+    "sdk/open_name_lookup/node_client.mjs": "150aedce47ecef93103dc39adc5a48f32a9e72f6912c419dd22e5acbbde8732f",
+    "sdk/open_name_lookup/node_client.transport.test.mjs": "976cb27e25dbf410148165f0bd8b5a46e41ede243632857a998783ab2176a6b3",
+    "sdk/open_name_lookup/partner_example.py": "83fd56ebf63f3bd0b7251e14eee198aa7b0b44126cd09edc855e0a60db625bc0",
+    "sdk/open_name_lookup/python_client.py": "0c1270b06502ef66f8ecf729e48c9da5644fe65992f62cc575f22440a3b85512",
+    "verification/RESULTS.json": "f4b78723704921e9acd9ffe3a5114438a9514c3422b248b93d9086989cd50a04",
+    "verification/partner-example-test.py": "b0a539feb87af9e32a05736e45d2ef5c38e573ebdae4ae8f85e27f261c18e2e7",
+    "verification/partner-http.mjs": "0dd24c1317e7e008f34d8942ee7fe879bddd12c84e98e853d459cbc1ca0135d0",
+    "verification/prepare-local.py": "c04eb3eed20c497559c2f27d08d9eef7f03af60f68b2991c0233a50bf12b145b",
+    "verification/sdk-transport.py": "5111cc7492a5856971c5ec469bcd609882baff07ebe42b415b9a99b5b7a838d2",
+    "verification/sdk-transport.test.mjs": "89afa82b82201e4f9dbbbd5214505f64ec4022c7f7b4f268aaa5a666381389bb"
+  }
+}
