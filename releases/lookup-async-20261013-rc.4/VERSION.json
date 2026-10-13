@@ -1,0 +1,55 @@
+{
+  "version": "lookup-async-20261013-rc.4",
+  "candidateTag": "lookup-async-20261013-rc.4",
+  "branch": "codex/lookup-result-docs-20261013",
+  "status": "local-candidate-not-deployed",
+  "candidateKind": "result race and integration documentation overlay; requires rc.1 + rc.2 + rc.3",
+  "baselineCommit": "ee60408985b962b475ccc115ebb1a2134e5e8774",
+  "baseTags": {
+    "lookup-async-20261013-rc.1": "1d644817d67fc64b3ea6d8620705b3c5422036a3",
+    "lookup-async-20261013-rc.2": "03640571411395941103b298f4523a1f3633c420",
+    "lookup-async-20261013-rc.3": "ee60408985b962b475ccc115ebb1a2134e5e8774"
+  },
+  "baseManifestHashes": {
+    "lookup-async-20261013-rc.1": "e688023f831dcccf780408b04f6c48bedb024481b2272194536508c56c5b694c",
+    "lookup-async-20261013-rc.2": "3101f4045cd4233b788c5de1359b5a3aecd7abd96d2e8d830f42e532d4e75172",
+    "lookup-async-20261013-rc.3": "6d82d0c71b35c91ae766e462b625dc54ad5dc4fa3f402ea2323a47d81c28d03f"
+  },
+  "overlayFiles": [
+    "server/managed-lookup.mjs",
+    "server/managed-lookup-platform.mjs",
+    "OPEN_NAME_LOOKUP_API.md",
+    "sdk/open_name_lookup/README.md",
+    "scripts/build-managed-lookup-docs.py",
+    "public/api-reference.json",
+    "public/openapi.json",
+    "public/downloads/name-lookup-openapi.json",
+    "public/downloads/name-lookup-integration.zip",
+    "public/downloads/name-lookup-sha256.json"
+  ],
+  "baseFileHashes": {
+    "server/managed-lookup.mjs": "00b7ba0dce6f73b40218a19efb30d5b10ef19ece35c11c628ce380c042c1a8f1",
+    "server/managed-lookup-platform.mjs": "30154936a1f8eda5061ef0a06fa8468324e6d5a67315ec2fcd2ec9e5a02e40a5",
+    "OPEN_NAME_LOOKUP_API.md": "cf813aa2c4de3ea5d5d8757d3f0d5f958ac5c2bdc3ee20b93f17568ec2cfb416",
+    "sdk/open_name_lookup/README.md": "32563f409ea16500eba122938e1bd5a64d42455aa6d28d0ccd9c4fb508efac93",
+    "scripts/build-managed-lookup-docs.py": "79ae1047366a70823c8c1cd4fdb58eb45636f9b22efafbccf7d5d9aa6400b12b"
+  },
+  "fixedReviewFindings": [
+    "F3",
+    "F5"
+  ],
+  "inheritedFixedReviewFindings": [
+    "F1",
+    "F4"
+  ],
+  "acceptedUnfixedReviewFindings": {
+    "F2": "User explicitly retains behavior for the sole integrating system with no planned permission revocation; normal authentication and authorization retained."
+  },
+  "platformReleaseReady": false,
+  "schemaChanges": false,
+  "agentChanges": false,
+  "mediaChanges": false,
+  "remotePushes": 0,
+  "realPhoneActions": 0,
+  "newProductionDeployment": false
+}

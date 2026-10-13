@@ -1,0 +1,174 @@
+{
+  "dateUtc": "2026-10-13T10:10:38.254811+00:00",
+  "task": "F3 completed-result priority / F5 async integration documentation; F2 explicitly accepted unchanged",
+  "branch": "codex/lookup-result-docs-20261013",
+  "baselineCommit": "ee60408985b962b475ccc115ebb1a2134e5e8774",
+  "candidateTag": "lookup-async-20261013-rc.4",
+  "candidateStatus": "local-not-deployed",
+  "workflowRevision": "2026-09-30",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "mainBeforeSha256": "889c543deea5d6c491b9776cf72784375a35d162c08b164878292a3b8f46c36a",
+  "rootMainSha256": "3dd6365329b18c9a50df97a1f10f95990b9a02342b48873108c0b25c33e22790",
+  "rootExistingDirtyEntriesPreserved": 236,
+  "sourceFileHashes": {
+    "OPEN_NAME_LOOKUP_API.md": "dce6179dfe336892a62df3ac23d3041d120e3cfe5bd77b0fd9f3c512f12398df",
+    "README.md": "c09b28223bbe0338a92b588fb5a80bee5075a06c3288da00198fd1b3e242287e",
+    "VERSION.json": "d00add7aea9821c53569e253b4738da8eb438e80c8c60c1be8f3c4e1f7b07379",
+    "public/api-reference.json": "f3b71e22ce536dac8a9fb60bfcc2f81934f69753a74c416614c4850d21c5c79b",
+    "public/downloads/name-lookup-integration.zip": "52ed7387e98cf344364f86a518337a5bcab3a4c05e5363625f0c206309a81db5",
+    "public/downloads/name-lookup-openapi.json": "80d4c9773012d779d6355ea959325c81e81698b5249aa72bc684c75e912e65f5",
+    "public/downloads/name-lookup-sha256.json": "b64f8bf7f8e629e56cc5268200c94f5d97365dc199626835b67155ce4a945e6e",
+    "public/openapi.json": "11337ae174843255aab7fca2eb3abfbccb3d66f8759e6a58ed5e2730bfa4d670",
+    "scripts/build-managed-lookup-docs.py": "3da97bd4662b21ba78688f0a949ce9afc550391227eb8f4500192820e04ad944",
+    "sdk/open_name_lookup/README.md": "1c3cd8e90b2b734f9cf3c37e36f1d4fc44fa2e6dc1889f2817fbd1ce8724cdb1",
+    "server/managed-lookup-platform.mjs": "69f62d9570a8e5cb47f55d93167024052dcfd32602efef2b167f88f51fe598c3",
+    "server/managed-lookup-result-race.test.mjs": "0e6b7c17beb153cf9d3959ef05e6d11788239a9fecbc24759863f14a4cd6a2cc",
+    "server/managed-lookup.mjs": "b429f5e39230cf8029010f633ea5250ae1245afefcbc9054e2353ebfbea1530d",
+    "verification/prepare-local.py": "cfc941146420019835e0f3eddd04f9425ba4ea1d765598f5f130824f069a6af2",
+    "verification/result-race-postgres.mjs": "7e10ebc8aca1c8c81d37bf9c23a8d4295de5c057fcf8fdd4b37c14431032ed5a",
+    "verification/verify-docs.py": "751ca62358dc8bfe8915fdf5912b488feba7f7af123ff335565496e54eeb2146"
+  },
+  "candidateManifestSha256": "7fb8ea0cd2f269e238782bedceae42b14e867c29734c0bf1eddc19e6d334a261",
+  "review": "self-review; no delegated agent",
+  "scope": {
+    "fixed": [
+      "F3",
+      "F5"
+    ],
+    "inheritedFixed": [
+      "F1",
+      "F4"
+    ],
+    "acceptedUnfixed": {
+      "F2": "User explicitly retains first-query revocation recheck gap for sole integrating system with no planned revocation. Normal HMAC/client isolation/submit/result authorization retained."
+    }
+  },
+  "tests": {
+    "oldRc3Counterexamples": {
+      "total": 24,
+      "passed": 2,
+      "failed": 22
+    },
+    "fixedResultRace": {
+      "total": 24,
+      "passed": 24,
+      "laterReadyAndCompletionTimestampAssertionsPassed": true
+    },
+    "fullNodeRegression": {
+      "total": 654,
+      "passed": 654,
+      "failed": 0,
+      "includes24NewCases": true
+    },
+    "postgresResultRace": {
+      "localPostgres": true,
+      "resultVisibleBeforeStopConfirmation": true,
+      "resultDurablyArchived": true,
+      "restartPreservesResultAndReservation": true,
+      "twoMinuteDifferentKeyUsesOriginal": true,
+      "expiredRecentWindowStillBound": true,
+      "pruningPreservesUnconfirmedBinding": true,
+      "stopConfirmationNeverOverwritesName": true,
+      "archivedAliasesSurviveRestart": true,
+      "completionTimeUnchanged": true,
+      "newBusinessAllowedOnlyAfterConfirmedStopAndCacheWindow": true,
+      "syntheticQueryCount": 1,
+      "clockAdvanceUsed": true,
+      "physicalQueries": 0,
+      "productionConnections": 0
+    },
+    "postgresArchiveRegression": {
+      "archivePrunedTo256": true,
+      "aliasRollback": true,
+      "recentResultFoundOutsideMemory": true,
+      "aliasReopen": true,
+      "fixed600SecondBoundary": true,
+      "originalKeyStillHistorical": true,
+      "stateKeyIsolation": true,
+      "tenantSamePhoneDifferentCanonical": true,
+      "ownerLock": true,
+      "stopUnconfirmedSurvivesArchivePruning": true,
+      "productionConnections": 0
+    },
+    "httpSdkSyntheticAgent": {
+      "atUtc": "2026-10-13T10:09:27.849Z",
+      "loopbackOnly": true,
+      "storage": "postgres",
+      "elapsedBeforeFreshKeyRetryMs": 474,
+      "over120Seconds": false,
+      "submittedReusesSameLookupId": true,
+      "actualCloudQueryTasks": 1,
+      "syntheticAgentStarts": 1,
+      "physicalRealPhoneQueries": 0,
+      "readOnlyResultRetries": true,
+      "concurrentFreshKeys": 8,
+      "postgresOrJsonReopenAliases": true,
+      "originalQueryNotRedelivered": true,
+      "lateOriginalResult": "passed",
+      "recentReuse": "passed",
+      "sameKeySyncCompatible": true,
+      "tenantIsolation": "passed",
+      "httpStatusCases": [
+        200,
+        202,
+        400,
+        409,
+        404
+      ],
+      "drained": true,
+      "productionConnections": 0
+    },
+    "zipExtractedSdk": {
+      "total": 21,
+      "passed": 21
+    },
+    "syntax": "root npm run check plus explicit changed modules passed",
+    "smoke": "isolated npm run test:smoke passed",
+    "documentation": {
+      "original40ContractsUnchanged": true,
+      "platformOperations": 42,
+      "hmacOperations": 10,
+      "asyncWireContractsUnchanged": true,
+      "zipHashesMatch": true,
+      "nodeRc2PythonAndSignerUnchanged": true,
+      "deterministicBuild": true
+    }
+  },
+  "hashVerification": {
+    "finalAssemblyMatchesTestedFiles": 334,
+    "unchangedAgentFiles": 118,
+    "unexpectedChangesToBaseFiles": [],
+    "immutableChainVerified": [
+      "rc.1",
+      "rc.2",
+      "rc.3",
+      "rc.4"
+    ]
+  },
+  "failureHistory": [
+    "Old rc.3 fails 22 of 24 new boundary cases; patched cases all pass.",
+    "Initial absolute /var path invocation skipped async-http main guard because import.meta.filename resolved /private/var; exit 0 had no proof and was invalidated. Explicit imported runAsyncHttp executed against isolated PostgreSQL and produced 1 actual synthetic query plus drained proof.",
+    "PG fixture data-column name corrected by schema inspection before execution."
+  ],
+  "notVerified": [
+    "No real phone tests this turn; five devices/49 mapping/natural account limit switching and 8h expiry remain pending.",
+    "No production or external integrating system verification; no deployment.",
+    "No new 121-second wall-clock run: logical clock in PG/unit cases and 474ms HTTP retry; prior rc.1 long-run evidence retained.",
+    "No forced loss of PostgreSQL COMMIT response; existing storage-failure tests retained.",
+    "Windows OCR/real disconnect, no-worker autonomous observation and natural API visual fallback remain pending."
+  ],
+  "cleanup": {
+    "ownPostgresStopped": true,
+    "ownHttpStoppedByFinally": true,
+    "oldLocalServicesUntouched": true
+  },
+  "sideEffects": {
+    "physicalPhoneQueries": 0,
+    "productionConnections": 0,
+    "externalMessages": 0,
+    "pushes": 0,
+    "deployments": 0,
+    "mediaAgentAdbChanges": 0
+  },
+  "rollback": "Not deployed. Later authorized rollback requires pause/drain to verified rc.3 chain; retain results/aliases/reservations/cooldowns. rc.3 retains F3/F5 defects."
+}
