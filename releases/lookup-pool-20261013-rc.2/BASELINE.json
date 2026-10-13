@@ -1,0 +1,11 @@
+{
+  "kind": "minimal-overlay-not-standalone-platform",
+  "baseCandidateTag": "lookup-pool-20261013-rc.1",
+  "baseCandidateCommit": "99255025f748167514add026adeaaa3def9cee4f",
+  "baseRuntimeCommit": "5b22bf1e0ab78a441abd47b1691a8e0c53e2d098",
+  "baseFiles": {
+    "windows-agent/scripts/alipay_name_lookup.py": "24a9429c2735454ef854c0b6fa4346fedbb7a50ce264fd9ee4811cc43e7acc0d",
+    "windows-agent/scripts/automation_runners_test.py": "2ec7184dbfaf1a6a9df6fce24ac88f45ef42e3723c80790803dde23e5683b5ad"
+  },
+  "reason": "Natural real 130 restriction saved8h cooldown; next saved account entered exact Alipay LoginActivity; XML switch-home wait misreported selector_missing. Only classify this boundary; no login/SMS/verification automation."
+}
