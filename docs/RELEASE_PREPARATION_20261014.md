@@ -1,8 +1,10 @@
 # 2026-10-14 组合版本上线准备
 
-当前候选：`platform-core-20261014-rc.6`，提交见同名不可变Git标签，分支 `codex/platform-rc2-local-acceptance-20261014`。云端组件沿用已测rc.2不可变镜像及原VERSION，Agent使用rc.6。**OCR初始化/预算已修复，Windows原生和自动回归通过；最终本地API真机验收正在补齐，尚未上线。**
+当前候选：`platform-core-20261014-rc.7`，提交见同名不可变Git标签，分支 `codex/platform-rc2-local-acceptance-20261014`。Agent继承rc.6；云端新增停止收尾修复，必须新构建rc.7镜像，不能再用rc.2镜像改标。**OCR初始化/预算已修复，Windows原生和自动回归通过；最终本地API真机验收正在补齐，尚未上线。**
 
-## 最新验收状态（rc.6）
+## 最新验收状态（rc.7）
+
+- 118原请求会话ended但通道仍stopping，已修正历史人工状态优先级；9反例旧7失败、33专项/Node709通过，原失败记录保留。云镜像待新构建。
 
 - 新增Windows原生真实卡单/双进程、超时回收、小红书WinRT通过；业务文件哈希与Agent/ADB进程保持，未部署。详见rc.6/verification/RESULTS.json。
 - 本地全量Python315/执行器163/Node700与语法通过；118原拼图、130预算修复后的API结果仍待最终记录。
