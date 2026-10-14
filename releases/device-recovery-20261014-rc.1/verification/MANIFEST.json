@@ -1,0 +1,138 @@
+{
+  "candidate": "device-recovery-20261014-rc.1",
+  "status": "local_candidate_not_deployed",
+  "baseCommit": "4fc768b0fe625c0d7c10cecff11b521b04338fc4",
+  "productionRelease": "lookup-realname-prompt-20261012-deployed.1",
+  "productionObservationDate": "2026-10-14",
+  "runtimeChanges": [
+    {
+      "path": "windows-agent/src/index.mjs",
+      "productionSha256": "0d6a0aa177f38873b6999e18bba24fdecb865469924bc91efe396e91e2bd883b",
+      "candidateSha256": "b4a95137271c90fb04f98971c8f553253f2df9220bacd83f522a1532d7ab4490"
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-admission.mjs",
+      "productionSha256": null,
+      "candidateSha256": "dede33101b9765342ffa50121a8edadf066d519c047646fcca82635ab6cc236f"
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-safety.mjs",
+      "productionSha256": "a5fd1eeca7f955a911beaff66e411e2bc9a5fbf946641f5c744181b14dd0396a",
+      "candidateSha256": "ad7de7d0575476cb807201e88b1c12842d12af0d9864e54809f4b98913c6d355"
+    },
+    {
+      "path": "windows-agent/src/windows-device-install-probe.mjs",
+      "productionSha256": null,
+      "candidateSha256": "c360457e2bcf820fb697a514627fc1c7c1761afe51935d464eb8240719f9401c"
+    }
+  ],
+  "regressionTestSha256": "4d9e50721ffe5083907d8eff3abd28857c3d81a5f4662792626edf76ff6c056f",
+  "frozenBaselineFilesUnchanged": [
+    {
+      "path": "server/screen-gallery-import.mjs",
+      "sha256": "39f7727860372f25959a5ca78145be07dfaf92c3747954afc99c8cd02cd8e697"
+    },
+    {
+      "path": "server/screen-sessions.mjs",
+      "sha256": "811a15aa7ecb87a934ef5f92826ed9031278d87df2387cc20a85098ce91cde09"
+    },
+    {
+      "path": "server/screen-media-auth.mjs",
+      "sha256": "c569931fdbad95338ebc50dee5d04b0f62550733bc627324171ab3590d3668b1"
+    },
+    {
+      "path": "server/screen-relay.mjs",
+      "sha256": "91b706a0cd00ea573997fdea338cad8f37e2c88e62fdbeee24b86ec4a6036c02"
+    },
+    {
+      "path": "server/screen-transport-policy.mjs",
+      "sha256": "331b212c564bc992628712eef81bff6dafe3b0df3f480f64fb808dfe7c41c721"
+    },
+    {
+      "path": "server/screen-backpressure.mjs",
+      "sha256": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4"
+    },
+    {
+      "path": "server/screen-quality.mjs",
+      "sha256": "bfadf379b03fadcf73bedc911649680ac6e3ace77907afee3524b335d4406451"
+    },
+    {
+      "path": "public/screen-inactivity-guard.js",
+      "sha256": "433578679963fc37b6eb2412c641cbaaa81f424f8611b109b28d2ba3b49ec182"
+    },
+    {
+      "path": "public/screen-control.js",
+      "sha256": "9618ae22993d0b1fc5bbffbedf2e9ced52ad5b8ccf46fded85513f39a4bda3ba"
+    },
+    {
+      "path": "public/vendor/screen-control.js",
+      "sha256": "ef4e36d5934050ad85075fb877257e4ec63b30af94becefc69e29bf76b2f44c5"
+    },
+    {
+      "path": "windows-agent/src/screen-webrtc-publisher.pre-20260722-wire-pacing.mjs",
+      "sha256": "d78b425dfdca9e3079cb9505a7b57d5d4d2bc7de3ce5174f52ab9e2c133d820c"
+    },
+    {
+      "path": "windows-agent/src/adb-priority-queue.mjs",
+      "sha256": "0bb8cfd86baaddc8a32d040e5835452f06e1ae5e3b78cbe2aeb0a67a24e5495d"
+    },
+    {
+      "path": "windows-agent/src/screen-control-queue.mjs",
+      "sha256": "27e6e5e39364817b2ee6a8ced3ecae8cee522904a7d4d3b0321bacd697212879"
+    },
+    {
+      "path": "windows-agent/src/screen-webrtc-publisher.mjs",
+      "sha256": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.pre-20260722-pacing-default.mjs",
+      "sha256": "9b28020b8f97e79068d944fd484596cae4e4ab4ae5a53ecf165fc016030b95e0"
+    },
+    {
+      "path": "windows-agent/src/pnp-screen-coordinator.mjs",
+      "sha256": "5eb1551e7dedbef4eed8d941733fa20b4780a362196338c51db4651b78ab9003"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.pre-pli-loop-20260722.mjs",
+      "sha256": "a7d113722291c2be02e3298d4364dc929c0ed3ca567e388272dfd2cea5efcb8b"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.mjs",
+      "sha256": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232"
+    },
+    {
+      "path": "windows-agent/src/screen-video-channel.mjs",
+      "sha256": "9e8c1ccd1439568beca2e99595764aa598893cee576109c514ae503486c1ca25"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.pre-20260722-wire-pacing.mjs",
+      "sha256": "c374bfd2e01376d07bfecb209388c3a1b6a2a34b71218852ad58aa3a9fca8538"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.verify.mjs",
+      "sha256": "cc2678e743981d65d16d54eac928bce407275f5244921e67d56fb4808251beb1"
+    },
+    {
+      "path": "windows-agent/src/screen-backpressure.mjs",
+      "sha256": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4"
+    }
+  ],
+  "frozenHashScope": "2026-10-10 recorded baseline, unchanged in local test overlay; not a new production media verification",
+  "review": {
+    "unchangedTopLevelFunctions": 193,
+    "changedTopLevelFunctions": [
+      "scanAndSync",
+      "requestSafePnpRescanForMissingDevices"
+    ],
+    "removed": [
+      "inspectWindowsDeviceInstallActivity"
+    ],
+    "added": [
+      "performDeviceScanAndSync"
+    ],
+    "scanBodyUnchanged": true,
+    "frozenFilesUnchanged": 22
+  },
+  "rollbackBasePath": "releases/lookup-20261010-rc.2",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+}

@@ -1,0 +1,251 @@
+--- a/windows-agent/src/index.mjs
++++ b/windows-agent/src/index.mjs
+@@ -65,6 +65,8 @@
+   buildRemoveExactPnpArgs
+ } from "./pnp-exact-actions.mjs";
+ import { createGuardedTaskRunner } from "./guarded-task-runner.mjs";
++import { pnpRecoveryAdmissionReason } from "./pnp-recovery-admission.mjs";
++import { createWindowsDeviceInstallProbe } from "./windows-device-install-probe.mjs";
+ import { classifyHumanVerificationXml, createLookupHumanObserver } from "./lookup-human-observer.mjs";
+ import { createPnpRecoveryWakeScheduler } from "./pnp-recovery-wake-scheduler.mjs";
+ import {
+@@ -237,6 +239,7 @@
+     log(`${name} failed`, error?.message || String(error));
+   }
+ });
++const inspectWindowsDeviceInstallActivity = createWindowsDeviceInstallProbe({ run });
+ let pnpRecoveryWakeScheduler = null;
+ pnpRecoveryWakeScheduler = createPnpRecoveryWakeScheduler({
+   retryDelayMs: 1_000,
+@@ -246,15 +249,21 @@
+     // on paper but add exactly the PnP pressure this guard is meant to avoid.
+     const installer = await inspectWindowsDeviceInstallActivity();
+     if (installer.busy) {
+-      pnpRecoveryWakeScheduler.schedule(config.pnpDeviceInstallPollSeconds * 1_000, reason || "device_install_busy");
++      log("pnp recovery wake deferred", {
++        reason: installer.reason, probeState: installer.state,
++        probeDurationMs: installer.durationMs, probeCheckedAt: installer.checkedAt,
++        probeErrorCode: installer.errorCode, probeTimedOut: installer.timedOut,
++        processCount: installer.processes.length, processes: installer.processes.slice(0, 8)
++      });
++      pnpRecoveryWakeScheduler.schedule(config.pnpDeviceInstallPollSeconds * 1_000, installer.reason);
+       return { deferred: true };
+     }
+-    return await runGuardedInterval("scan", () => scanAndSync({
++    return await scanAndSync({
+       forcePnpInventory: true,
+       skipSms: false,
+       skipPreflight: true,
+       reason: reason || "pnp_recovery_followup"
+-    }));
++    });
+   },
+   onError(error, reason) {
+     log("pnp recovery wake failed", { reason, error: error?.message || String(error) });
+@@ -344,7 +353,7 @@
+ );
+
+ setInterval(() => runGuardedInterval("heartbeat", () => heartbeat()), config.heartbeatIntervalSeconds * 1000);
+-setInterval(() => runGuardedInterval("scan", () => scanAndSync()), config.scanIntervalSeconds * 1000);
++setInterval(() => scanAndSync(), config.scanIntervalSeconds * 1000);
+ setInterval(() => runGuardedInterval("task poll", () => pollTask()), config.taskPollIntervalSeconds * 1000);
+ airtestWorkerCleanupTimer = setInterval(
+   () => runGuardedInterval("airtest worker cleanup", () => cleanupIdleAirtestWorkers()),
+@@ -352,7 +361,7 @@
+ );
+
+ await runGuardedInterval("heartbeat", () => heartbeat()).catch((error) => log("startup heartbeat failed", error?.message || String(error)));
+-await runGuardedInterval("scan", () => scanAndSync()).catch((error) => log("startup scan failed", error?.message || String(error)));
++await scanAndSync().catch((error) => log("startup scan failed", error?.message || String(error)));
+ scheduleTaskPoll(100);
+
+ process.stdin.resume();
+@@ -486,6 +495,12 @@
+ }
+
+ async function scanAndSync(options = {}) {
++  // Every caller, including post-task scans, owns the same guard until the
++  // actual scan/recovery/verification settles, even after its timeout report.
++  return runGuardedInterval("scan", () => performDeviceScanAndSync(options));
++}
++
++async function performDeviceScanAndSync(options = {}) {
+   const activeAutomationTask = hasActiveAutomationTask();
+   let devices = [];
+   try {
+@@ -4112,16 +4127,22 @@
+       safety = pnpRecoverySafety.observe(lastDeviceRecoveryObservations, {
+         hostBusy,
+         installerBusy: true,
++        installerUnknown: installer.state === "unknown",
+         inventoryReady,
+         ignoredSerials: recoveryExclusions
+       });
+       lastPnpRecoveryHealth = publicPnpRecoveryHealth(safety);
+       logPnpRecoverySafetyTransition(safety);
+-      pnpRecoveryJournal.record({ type: "deferred", severity: "warning", reason: "device_install_busy" });
++      pnpRecoveryJournal.record({ type: "deferred", severity: "warning", reason: installer.reason });
+       schedulePnpRecoveryStateSave();
+       log("pnp concurrent recovery batch deferred", {
+         serials: batchTargets,
+-        reason: "device_install_busy",
++        reason: installer.reason,
++        probeState: installer.state,
++        probeDurationMs: installer.durationMs,
++        probeCheckedAt: installer.checkedAt,
++        probeErrorCode: installer.errorCode,
++        probeTimedOut: installer.timedOut,
+         processCount: installer.processes.length,
+         processes: installer.processes.slice(0, 8)
+       });
+@@ -4140,7 +4161,24 @@
+
+   const key = String(serial).toUpperCase();
+   const observation = observationsBySerial.get(key);
+-  const previous = normalizePnpRecoveryTargetState(pnpTargetRecoveryAttempts.get(key), serial);
++  const plannedState = pnpTargetRecoveryAttempts.get(key);
++  const previous = normalizePnpRecoveryTargetState(plannedState, serial);
++  function checkAdmission() {
++    const reason = pnpRecoveryAdmissionReason({
++      currentState: pnpTargetRecoveryAttempts.get(key), plannedState,
++      currentObservation: lastDeviceRecoveryObservations.find((item) => item.key === key),
++      plannedObservation: observation, inventoryReady: isPhysicalPnpInventoryReady(),
++      busy: isSerialBusy(serial)
++    });
++    if (!reason) return null;
++    pnpRecoveryJournal.record({ type: "deferred", severity: "warning", serial, reason });
++    schedulePnpRecoveryStateSave();
++    log("pnp target adb recovery deferred", { serial, reason });
++    scheduleNextPnpRecoveryDueWake();
++    return { serial, status: "deferred", reason, actionAttempted: false };
++  }
++  const admission = checkAdmission();
++  if (admission) return admission;
+   const actionPlan = planPnpRecoveryAction({
+     observation,
+     previous,
+@@ -4295,6 +4333,8 @@
+     ? config.pnpTargetResetCooldownSeconds * 1_000
+     : retryAfterMs;
+   if (transportOnly) {
++    const admission = checkAdmission();
++    if (admission) return admission;
+     const attemptedAt = Date.now();
+     try {
+       pnpRecoverySafety.recordAction();
+@@ -4391,6 +4431,8 @@
+   }
+   const attemptedAt = Date.now();
+   try {
++    const admission = checkAdmission();
++    if (admission) return admission;
+     if (isSerialBusy(serial)) {
+       pnpRecoveryJournal.record({ type: "deferred", severity: "warning", serial, state: observation?.state || "unknown", reason: "host_became_busy" });
+       schedulePnpRecoveryStateSave();
+@@ -4848,24 +4890,6 @@
+   );
+ }
+
+-async function inspectWindowsDeviceInstallActivity() {
+-  const script = [
+-    "$rows = @(Get-CimInstance Win32_Process | Where-Object { $_.Name -in @('pnputil.exe','drvinst.exe') })",
+-    "$rows | ForEach-Object { Write-Output ($_.ProcessId.ToString() + \"`t\" + $_.Name + \"`t\" + ([string]$_.CreationDate)) }"
+-  ].join("; ");
+-  const encoded = Buffer.from(script, "utf16le").toString("base64");
+-  try {
+-    const output = await run("powershell.exe", ["-NoProfile", "-NonInteractive", "-EncodedCommand", encoded], { timeoutMs: 10_000 });
+-    const processes = cleanLogText(output).split(/\r?\n/).map((line) => {
+-      const [pid = "", name = "", createdAt = ""] = line.split("\t", 3);
+-      return { pid: Number(pid || 0), name, createdAt };
+-    }).filter((item) => item.pid && item.name);
+-    return { busy: processes.length > 0, processes };
+-  } catch (error) {
+-    return { busy: true, processes: [{ pid: 0, name: "probe_failed", createdAt: cleanLogText(error?.message || error).slice(0, 120) }] };
+-  }
+-}
+-
+ async function discoverPhysicallyPresentAndroidUsbInventory() {
+   try {
+     return { ok: true, rows: await listPhysicallyPresentAndroidUsbInventory(), error: "" };
+--- /dev/null
++++ b/windows-agent/src/pnp-recovery-admission.mjs
+@@ -0,0 +1,18 @@
++import { isPnpRecoveryTargetDue, normalizePnpRecoveryTargetState } from './pnp-recovery-policy.mjs';
++
++// Selection happens before asynchronous probes. Never execute a plan whose
++// state/observation was replaced while awaiting them, even if it is due now.
++export function pnpRecoveryAdmissionReason({
++  currentState, plannedState, currentObservation, plannedObservation,
++  inventoryReady, busy, now = Date.now()
++}) {
++  if (busy) return 'target_busy';
++  if (!inventoryReady) return 'physical_inventory_unavailable';
++  const state = normalizePnpRecoveryTargetState(currentState);
++  if (!isPnpRecoveryTargetDue(state, now)) {
++    return state.inProgress ? 'target_recovery_in_progress' : 'target_recovery_cooldown';
++  }
++  if (currentState !== plannedState) return 'target_recovery_state_changed';
++  if (!currentObservation || currentObservation !== plannedObservation) return 'target_recovery_observation_changed';
++  return '';
++}
+--- a/windows-agent/src/pnp-recovery-safety.mjs
++++ b/windows-agent/src/pnp-recovery-safety.mjs
+@@ -190,7 +190,7 @@
+       : context.hostBusy
+         ? "host_busy"
+         : context.installerBusy
+-          ? "device_install_busy"
++          ? (context.installerUnknown ? "device_install_probe_failed" : "device_install_busy")
+           : budgetExhausted
+             ? "hourly_budget_exhausted"
+             : actionCoolingDown
+--- /dev/null
++++ b/windows-agent/src/windows-device-install-probe.mjs
+@@ -0,0 +1,47 @@
++const marker = 'PC_DEVICE_INSTALL_PROBE_V1';
++const script = [
++  "$ErrorActionPreference = 'Stop'",
++  // Avoid CIM/WMI module startup and remote provider RPC for a local name check.
++  "$rows = @([System.Diagnostics.Process]::GetProcessesByName('pnputil')) + @([System.Diagnostics.Process]::GetProcessesByName('drvinst'))",
++  "$lines = @($rows | ForEach-Object { try { $_.Id.ToString() + \"`t\" + $_.ProcessName + '.exe' } finally { $_.Dispose() } })",
++  `Write-Output '${marker}'`,
++  '$lines | ForEach-Object { Write-Output $_ }'
++].join('; ');
++
++// Share only an in-flight read, never a cached "idle" result across mutations.
++// Unknown remains a blocker; diagnostics do not contain command/error text.
++export function createWindowsDeviceInstallProbe({ run, now = Date.now }) {
++  let pending = null;
++  async function inspect() {
++    const started = now();
++    const finish = (state, reason, processes = [], errorCode = '', timedOut = false) => ({
++      state, busy: state !== 'idle', reason, processes, errorCode, timedOut,
++      durationMs: Math.max(0, now() - started), checkedAt: new Date(now()).toISOString()
++    });
++    try {
++      const output = await run('powershell.exe', [
++        '-NoProfile', '-NonInteractive', '-EncodedCommand', Buffer.from(script, 'utf16le').toString('base64')
++      ], { timeoutMs: 10_000 });
++      const lines = String(output || '').trim().split(/\r?\n/);
++      if (lines.shift() !== marker) return finish('unknown', 'device_install_probe_failed', [], 'invalid_output');
++      const processes = [];
++      for (const line of lines.filter(line => line.trim())) {
++        const [pid, name, createdAt = ''] = line.split('\t');
++        if (!/^[1-9]\d*$/.test(pid) || !/^(pnputil|drvinst)\.exe$/i.test(name)) {
++          return finish('unknown', 'device_install_probe_failed', [], 'invalid_output');
++        }
++        processes.push({ pid: Number(pid), name: name.toLowerCase(), createdAt: createdAt.slice(0, 80) });
++      }
++      return finish(processes.length ? 'busy' : 'idle', processes.length ? 'device_install_busy' : '', processes);
++    } catch (error) {
++      const timedOut = error?.killed === true || error?.code === 'ETIMEDOUT';
++      const code = String(error?.code ?? 'probe_error');
++      const errorCode = /^[A-Z0-9_-]{1,40}$/i.test(code) ? code : 'probe_error';
++      return finish('unknown', 'device_install_probe_failed', [], errorCode, timedOut);
++    }
++  }
++  return () => {
++    if (!pending) pending = Promise.resolve().then(inspect).finally(() => { pending = null; });
++    return pending;
++  };
++}

@@ -1,0 +1,23 @@
+{
+  "version": "device-recovery-20261014-rc.1",
+  "status": "local_candidate_not_deployed",
+  "branch": "codex/device-recovery-fix-20261014",
+  "baseCommit": "4fc768b0fe625c0d7c10cecff11b521b04338fc4",
+  "productionRelease": "lookup-realname-prompt-20261012-deployed.1",
+  "runtimeFiles": [
+    "windows-agent/src/index.mjs",
+    "windows-agent/src/pnp-recovery-admission.mjs",
+    "windows-agent/src/pnp-recovery-safety.mjs",
+    "windows-agent/src/windows-device-install-probe.mjs"
+  ],
+  "privateEvidenceManifestSha256": "ee4431a95911f02cb0403e411f74336b407112f257bd1687c5ccec90d548b833",
+  "rollback": {
+    "sourceCommit": "4fc768b0fe625c0d7c10cecff11b521b04338fc4",
+    "sourceDirectory": "releases/lookup-20261010-rc.2/windows-agent/src",
+    "replace": [
+      "index.mjs",
+      "pnp-recovery-safety.mjs"
+    ],
+    "notes": "Verify hashes before deployment. Original index does not import the two new modules. No config or state migration."
+  }
+}

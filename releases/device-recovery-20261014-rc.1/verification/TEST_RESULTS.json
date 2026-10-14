@@ -1,0 +1,139 @@
+{
+  "candidate": "device-recovery-20261014-rc.1",
+  "nodeVersion": "v25.9.0",
+  "tests": [
+    {
+      "check": "targeted",
+      "command": [
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "verification/recovery-regression.test.mjs"
+      ],
+      "exitCode": 0,
+      "sha256": "3f2956a63994dc87bde0508cfb1ef75a8f917e270122580227725bd05b6445db",
+      "counts": {
+        "tests": 22,
+        "pass": 22,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "check": "syntax",
+      "command": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "exitCode": 0,
+      "sha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+      "counts": {}
+    },
+    {
+      "check": "agent",
+      "command": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "exitCode": 0,
+      "sha256": "9da5ec25f9a0b282b0649035db5b4874867e9f8776f10e1cc59454739abaf6f9",
+      "counts": {
+        "tests": 289,
+        "pass": 289,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "check": "screen",
+      "command": [
+        "npm",
+        "run",
+        "test:screen"
+      ],
+      "exitCode": 0,
+      "sha256": "5bebb5d8f57a928d897f51875620b93bc92fbed918f91a897ec5d5359c6e4649",
+      "counts": {
+        "tests": 594,
+        "pass": 594,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0
+      }
+    }
+  ],
+  "beforeFix": {
+    "tests": 14,
+    "passed": 3,
+    "failed": 11,
+    "scope": "same source-extracted integration cases against production; 8 new probe-module cases not available before fix",
+    "sha256": "490fed59e7964dc27ae06cafe39af223f8fdffcc56466baf2f9c61be49692810"
+  },
+  "windowsReadOnlyProbe": {
+    "operation": "exact candidate probe via existing Windows Node, no files installed; two process-list reads",
+    "samples": [
+      {
+        "state": "idle",
+        "busy": false,
+        "reason": "",
+        "processes": [],
+        "errorCode": "",
+        "timedOut": false,
+        "durationMs": 444,
+        "checkedAt": "2026-10-14T04:02:34.865Z"
+      },
+      {
+        "state": "idle",
+        "busy": false,
+        "reason": "",
+        "processes": [],
+        "errorCode": "",
+        "timedOut": false,
+        "durationMs": 467,
+        "checkedAt": "2026-10-14T04:02:35.333Z"
+      }
+    ],
+    "realBusyCase": "not observed; tested with fake process output"
+  },
+  "review": {
+    "unchangedTopLevelFunctions": 193,
+    "changedTopLevelFunctions": [
+      "scanAndSync",
+      "requestSafePnpRescanForMissingDevices"
+    ],
+    "removed": [
+      "inspectWindowsDeviceInstallActivity"
+    ],
+    "added": [
+      "performDeviceScanAndSync"
+    ],
+    "scanBodyUnchanged": true,
+    "frozenFilesUnchanged": 22
+  },
+  "productionMutations": 0,
+  "realPnpActions": 0,
+  "limitations": [
+    "No deployment or Agent activation",
+    "No real single-device/two-device recovery validation",
+    "No 24-48h stability acceptance",
+    "Physical USB/power/cable cause unresolved",
+    "D-024 collateral policy unchanged",
+    "Existing frontend may display new diagnostic reason codes verbatim; no UI bundle replaced"
+  ],
+  "failedInvestigationAttempts": [
+    "Filtered CIM query still delayed; not adopted",
+    "First read-only probe invocation could not find node on SSH PATH",
+    "Nested encoded command exceeded Windows command-line limit; no probe executed in that attempt"
+  ],
+  "reviewType": "self-review, not independent reviewer",
+  "candidateRuntimeHashes": {
+    "windows-agent/src/index.mjs": "b4a95137271c90fb04f98971c8f553253f2df9220bacd83f522a1532d7ab4490",
+    "windows-agent/src/pnp-recovery-admission.mjs": "dede33101b9765342ffa50121a8edadf066d519c047646fcca82635ab6cc236f",
+    "windows-agent/src/pnp-recovery-safety.mjs": "ad7de7d0575476cb807201e88b1c12842d12af0d9864e54809f4b98913c6d355",
+    "windows-agent/src/windows-device-install-probe.mjs": "c360457e2bcf820fb697a514627fc1c7c1761afe51935d464eb8240719f9401c"
+  }
+}
