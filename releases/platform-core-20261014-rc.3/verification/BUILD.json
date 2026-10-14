@@ -1,0 +1,5 @@
+{
+  "status": "not-rebuilt-for-rc3",
+  "priorBuildEvidence": "platform-core-20261014-rc.2/verification/BUILD.json",
+  "reason": "Agent-only Python source patch; prior image is not labeled rc3"
+}
