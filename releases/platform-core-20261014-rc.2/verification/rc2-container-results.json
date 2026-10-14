@@ -1,0 +1,25 @@
+{
+  "runtime": {
+    "node": "v22.23.3",
+    "arch": "x64",
+    "platform": "linux"
+  },
+  "checks": [
+    {
+      "check": "syntax",
+      "exitCode": 0,
+      "logSha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+    },
+    {
+      "check": "full-node22",
+      "exitCode": 0,
+      "logSha256": "c152ac57fcc7fbace0f98197de502ac5d4fe9a960a3e7c9c709bbc99b22774f5"
+    },
+    {
+      "check": "smoke",
+      "exitCode": 0,
+      "logSha256": "279ce4f8f3bc7e15372f073d42af12d46542a9102f8e9c601a7db51eb4c9842d"
+    }
+  ],
+  "externalNetworkDuringTests": false
+}

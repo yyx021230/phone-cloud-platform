@@ -1,0 +1,225 @@
+{
+  "version": "platform-core-20261014-rc.2",
+  "status": "local-full-regression-and-build-passed-not-deployed",
+  "checks": [
+    {
+      "check": "syntax",
+      "exitCode": 0,
+      "logSha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+    },
+    {
+      "check": "agent",
+      "exitCode": 0,
+      "logSha256": "8f64903cc1b2cf84ab008b67c7d614a36cd31a1bad43a7a1a1f69ac2844214c1"
+    },
+    {
+      "check": "screen",
+      "exitCode": 0,
+      "logSha256": "351bfe9d72a912c548e0f607e4cac4115f873dcd8e567103e4e2fa163c505b83"
+    },
+    {
+      "check": "recovery",
+      "exitCode": 0,
+      "logSha256": "4e539b82474936ccbd590ad557e4e5632e257c94d2e51b728632b0c5ff29213b"
+    },
+    {
+      "check": "lookup-python",
+      "exitCode": 0,
+      "logSha256": "4d1e29dff5a2bedc514b77a6e03061b81e1e872ec93aad4fbcc2fd4f6a3aebb9"
+    },
+    {
+      "check": "runners-python",
+      "exitCode": 0,
+      "logSha256": "566cded6a7173000c1453b0fc50c362b7e604663df7c92fcdcd9e2225b87d24c"
+    },
+    {
+      "check": "sdk-node",
+      "exitCode": 0,
+      "logSha256": "294a67176014aa110b074caa00c00f0178d5601672712914aa18b6d18555cf33"
+    },
+    {
+      "check": "sdk-python",
+      "exitCode": 0,
+      "logSha256": "3c185e05f9f58cf470c989eca74fce836a50b4725e67de939bf27681294f5e93"
+    },
+    {
+      "check": "http-json",
+      "exitCode": 0,
+      "logSha256": "140fb8bbe7f88eda5f11e07c1c796b3c4ba2b453ac29b93e9bf79f79e5cc15bb"
+    }
+  ],
+  "node22": {
+    "runtime": {
+      "node": "v22.23.3",
+      "arch": "x64",
+      "platform": "linux"
+    },
+    "checks": [
+      {
+        "check": "syntax",
+        "exitCode": 0,
+        "logSha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+      },
+      {
+        "check": "full-node22",
+        "exitCode": 0,
+        "logSha256": "c152ac57fcc7fbace0f98197de502ac5d4fe9a960a3e7c9c709bbc99b22774f5"
+      },
+      {
+        "check": "smoke",
+        "exitCode": 0,
+        "logSha256": "279ce4f8f3bc7e15372f073d42af12d46542a9102f8e9c601a7db51eb4c9842d"
+      }
+    ],
+    "externalNetworkDuringTests": false
+  },
+  "postgres": [
+    {
+      "check": "archive",
+      "exitCode": 0,
+      "logSha256": "db5e2131d34f2b62d20133d347bf591b9d1b83dbd99bc244c5a88a0c1aa90baa"
+    },
+    {
+      "check": "isolation",
+      "exitCode": 0,
+      "logSha256": "c9d42d94014860da1731dd3588725c6319a9381d025c6ece47a0cca8508ce97b"
+    },
+    {
+      "check": "race",
+      "exitCode": 0,
+      "logSha256": "381076b405e58f09778814950a18ff51f05fa8e754daab418a1d4ad1f76f5a42"
+    },
+    {
+      "check": "http-121s",
+      "exitCode": 0,
+      "logSha256": "619821f19dad021562395b62104aa0e929cabad4b653853cf0853bd1636c4879"
+    },
+    {
+      "check": "xhs-json-pg-commit-fence-write-failure-restart",
+      "exitCode": 0,
+      "logSha256": "af82abb89634f2ee23f79228bcadf4f5a58d0dbff12bb265bc8ad6764e2101ea"
+    }
+  ],
+  "partner": {
+    "atUtc": "2026-10-14T05:50:09.484Z",
+    "downloadedZipSha256": "654119bc2dde54f7fcd4533687f759d27102b51a7814dee163510252237ee14d",
+    "aliasLimit429PreservesOriginal": true,
+    "actualRetryAfterSeconds": 5,
+    "disabledPool503": true,
+    "version": "lookup-async-20261014-rc.8",
+    "actualHttpPostgres": true,
+    "independentRawHmac": true,
+    "downloadedPythonBundle": true,
+    "partnerProcessRestartBeforeLookupIdSaved": true,
+    "perResultDurableBackfill": true,
+    "maximumSimultaneousQueries": 5,
+    "distinctDevicesAtPeak": 5,
+    "logicalPhones": 6,
+    "actualQueryTasks": 6,
+    "sixthQueuedThenDispatched": true,
+    "heldPhoneDidNotBlockOtherFive": true,
+    "otherFiveFinishedMs": 1175,
+    "heldElapsedMs": 121001,
+    "newKeyRetries": 8,
+    "sameLookupAfterFreshKeys": true,
+    "over120Seconds": true,
+    "sameLookupAfterTwoMinutes": true,
+    "serverRestartPreservesIdentity": true,
+    "duplicateCallbackSafe": true,
+    "terminalStatuses": [
+      "succeeded",
+      "not_found",
+      "failed"
+    ],
+    "authCases": [
+      400,
+      401,
+      404,
+      409
+    ],
+    "drained": true,
+    "physicalPhones": 0,
+    "productionActions": 0
+  },
+  "ocr": {
+    "ok": true,
+    "realInference": true,
+    "privateWorkerReused": true,
+    "childReaped": true,
+    "images": 2,
+    "physicalPhoneQueries": 0
+  },
+  "counts": {
+    "node22Full": 697,
+    "agent": 304,
+    "pythonDiscovery": 296,
+    "pythonRunners": 163,
+    "recovery": 22,
+    "sdkNode": 6,
+    "sdkPython": 9
+  },
+  "physicalPhones": 0,
+  "productionActions": 0,
+  "browser": {
+    "localDocsRendered": true,
+    "modules": 9,
+    "endpoints": 46,
+    "requestExampleFields": [
+      "deviceId",
+      "xhsAppSlot"
+    ],
+    "noBusinessRequests": true
+  },
+  "resolvedInitialFailures": [
+    "Node22 test container initially lacked devDependencies and Dockerfile fixtures (3 failures), harness fixed; production dependencies unchanged",
+    "first XHS Postgres fixture omitted STORAGE_BACKEND and used JSON; corrected and rerun with real table-lock and rollback injections",
+    "Agent lockfile absent in parent bundle; restored exact lock from XHS committed tag"
+  ],
+  "unverified": [
+    "Windows AMD64 native DLL load and inference",
+    "5 physical phones",
+    "new complete 8-hour natural cooldown",
+    "148 mapping",
+    "historical 14 records without name-card evidence remain unconfirmed"
+  ],
+  "logs": {
+    "rc2-agent.log": "8f64903cc1b2cf84ab008b67c7d614a36cd31a1bad43a7a1a1f69ac2844214c1",
+    "rc2-container-dependencies.log": "713ee95b465492bec90c09ea63a57339900199b15dc4bb65b6ad8ccd21952e70",
+    "rc2-container-dev-dependencies.log": "44db5df1c6ecf50bdb0d9035fb64855fc5594e81d05d6317ea26615676c0d3c3",
+    "rc2-container-first-failures.log": "5705db2dcbc974f39ef0f5672397e7be9d998c306b2d67469d2855cf57ce9796",
+    "rc2-container-full-node22.log": "c152ac57fcc7fbace0f98197de502ac5d4fe9a960a3e7c9c709bbc99b22774f5",
+    "rc2-container-smoke.log": "279ce4f8f3bc7e15372f073d42af12d46542a9102f8e9c601a7db51eb4c9842d",
+    "rc2-container-syntax.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "rc2-docker-build.log": "78cb42d83c65a4b34fcfe3e79e2dc9c460765545dfc6fa84599997c053a746e2",
+    "rc2-docs.log": "3f23b747be8166bc91fa6e85a5f47ba2b4372e184d5c9b6b8a7f2ef03a0aef2d",
+    "rc2-final-build.log": "404dd4230022390e7331cd945ace2c7d90f1cc70712d2578f7899c5b90a0a569",
+    "rc2-http-json.log": "140fb8bbe7f88eda5f11e07c1c796b3c4ba2b453ac29b93e9bf79f79e5cc15bb",
+    "rc2-lookup-python.log": "4d1e29dff5a2bedc514b77a6e03061b81e1e872ec93aad4fbcc2fd4f6a3aebb9",
+    "rc2-partner-http.log": "b072b7f19404c1745d9af02c9ff532976baed538859e3cf811edc92ec6d5f27a",
+    "rc2-pg-archive.log": "db5e2131d34f2b62d20133d347bf591b9d1b83dbd99bc244c5a88a0c1aa90baa",
+    "rc2-pg-http-121s.log": "619821f19dad021562395b62104aa0e929cabad4b653853cf0853bd1636c4879",
+    "rc2-pg-isolation.log": "c9d42d94014860da1731dd3588725c6319a9381d025c6ece47a0cca8508ce97b",
+    "rc2-pg-race.log": "381076b405e58f09778814950a18ff51f05fa8e754daab418a1d4ad1f76f5a42",
+    "rc2-pg-xhs.log": "af82abb89634f2ee23f79228bcadf4f5a58d0dbff12bb265bc8ad6764e2101ea",
+    "rc2-recovery.log": "4e539b82474936ccbd590ad557e4e5632e257c94d2e51b728632b0c5ff29213b",
+    "rc2-runners-python.log": "566cded6a7173000c1453b0fc50c362b7e604663df7c92fcdcd9e2225b87d24c",
+    "rc2-screen.log": "351bfe9d72a912c548e0f607e4cac4115f873dcd8e567103e4e2fa163c505b83",
+    "rc2-sdk-node.log": "294a67176014aa110b074caa00c00f0178d5601672712914aa18b6d18555cf33",
+    "rc2-sdk-python.log": "3c185e05f9f58cf470c989eca74fce836a50b4725e67de939bf27681294f5e93",
+    "rc2-syntax.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+  },
+  "build": {
+    "imageId": "sha256:8bdaa45eb1bde9538befc00017bee9182d319a734666b31a47b4b0cde23171ef",
+    "node": "v22.23.3",
+    "architecture": "linux/amd64",
+    "health": "healthy",
+    "containerFilesMatch": 129
+  },
+  "postFullSuiteChange": {
+    "change": "Removed only an extra EOF blank line from public/styles.css to pass git diff --check",
+    "runtimeLogicChanged": false,
+    "targetedUiDocsExitCode": 0,
+    "logSha256": "1fc78f1f7c46a9418e5bf76fad077ed95f3e9c42c6162644e34ad0766266ae89",
+    "finalImageRebuiltAndHealthRechecked": true
+  }
+}

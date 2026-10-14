@@ -1,0 +1,25 @@
+{
+  "captured_at": "2026-10-13",
+  "scope": "unauthenticated GET of deployed public HTML/JS/CSS; no production write",
+  "source_sha256": {
+    "app.js": "c6a6ac8c0a5eb2fb1fcd4a1057abd8d476ebc33570f20eb55b17d71cc0d1b250",
+    "index.html": "988408fea9a82091ac75116d8a3ca81a594f73c686bb59c0fcadaea7d190542c",
+    "styles.css": "115f31e4cb5ccfb11550dcd2978dcf20464ea007b247be6bcf475a4a694fffde"
+  },
+  "preserved_chunks": {
+    "kuaishou-functions": "eb0e856ee9bcd42ea9117ae09f4653b3a70c6640371b8eafb7bf7fb7ecc2c482",
+    "kuaishou-handlers": "9094b835ab600fe383e34a56f0069b8e73c2bbebae74d2d04eeb44931fd438d1",
+    "kuaishou-selectors": "9dbca21d60aa807c47d0c05a7e6628cdb6b45acee1ac9a26738de097ed93f5cf",
+    "kuaishou-panels": "2d7ac103d9ec052216bc15fa7bf835aa80aebd6c351538700c64663915b1a36f",
+    "kuaishou-style": "5667cc38a3138842baf3112afac93b81dd8be9dee63c63a1d699d149ce2809fb"
+  },
+  "modules": [
+    "scan",
+    "publish",
+    "kuaishou",
+    "data",
+    "name"
+  ],
+  "source_private_capture": "/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/xhs-five-modules-20261013-f4_hlakp",
+  "deployment": "not_deployed; candidate backend remains old baseline; only minimal production merge permitted"
+}
