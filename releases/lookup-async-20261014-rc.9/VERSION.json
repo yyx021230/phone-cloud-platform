@@ -1,0 +1,24 @@
+{
+  "version": "lookup-async-20261014-rc.9",
+  "candidateTag": "lookup-async-20261014-rc.9",
+  "branch": "codex/lookup-natural-cooldown-20261014",
+  "baselineCommit": "4e3fe5767ef86efa320e1f858909244518e08df2",
+  "status": "local-candidate-not-deployed",
+  "baseTag": "lookup-async-20261014-rc.8",
+  "baseManifestSha256": "203b8cbb6d581f7929bba297f3b370d17af62119c0c553c3c56c8323ff833fa7",
+  "baseFileHashes": {
+    "windows-agent/scripts/alipay_visual_result.py": "2c92eca1fe65165c1a4caa40934f1572e717f1644083bb904b3dd644cb3302b7"
+  },
+  "overlayFiles": [
+    "windows-agent/scripts/alipay_visual_result.py"
+  ],
+  "testFiles": [
+    "windows-agent/scripts/test_lookup_visual_inline_phone.py"
+  ],
+  "platformReleaseReady": false,
+  "apiChanges": false,
+  "schemaChanges": false,
+  "mediaChanges": false,
+  "productionActions": 0,
+  "realTestStatus": "rc8 natural limit and expired-account reuse observed; inline email/phone failure reproduced; rc9 real retest pending"
+}
