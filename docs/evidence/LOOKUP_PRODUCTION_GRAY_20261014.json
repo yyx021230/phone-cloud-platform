@@ -1,0 +1,169 @@
+{
+  "runId": "lookup-gray-20261014-c34eb51e",
+  "at": "2026-10-14T09:15:50.707Z",
+  "scope": {
+    "devices": [
+      161,
+      162
+    ],
+    "source": "1788934840455.xlsx:Worksheet!B2/B3",
+    "distinctAuthorizedPhones": 2
+  },
+  "restoration": {
+    "configMatches": true,
+    "devicesMatch": true,
+    "grantsMatch": true,
+    "enabled": false,
+    "revision": 3,
+    "channels": 0
+  },
+  "requests": [
+    {
+      "id": "322a0418-e407-4be2-8003-e4f796174b1a",
+      "status": "failed",
+      "code": "lookup_execution_failed",
+      "queryId": "94dd6ad0-086b-404a-973f-3782e13d3ded",
+      "attemptCount": 2,
+      "hasName": false
+    },
+    {
+      "id": "e9542d11-bb7d-4823-bd98-bc6546b4c7ce",
+      "status": "failed",
+      "code": "lookup_execution_failed",
+      "queryId": "9d809599-38ed-479f-a1bd-25db32dbdf09",
+      "attemptCount": 1,
+      "hasName": false
+    },
+    {
+      "id": "47a9dcd2-ca7c-4e4f-ab28-9484f7cd3584",
+      "status": "cancelled",
+      "code": "lookup_cancelled",
+      "queryId": null,
+      "attemptCount": 0,
+      "hasName": false
+    }
+  ],
+  "diagnostics": [
+    {
+      "taskId": "e1cbe7db-cdac-4d28-b1f0-a37847db6b40",
+      "status": "failed",
+      "type": "alipay_name_start",
+      "errorCode": "alipay_lookup_failed",
+      "unconfirmedReason": null,
+      "uiautomatorDumpTimeout": true,
+      "completedAt": "2026-10-14T09:08:49.015Z"
+    },
+    {
+      "taskId": "54fb3231-8f26-4072-a09f-fbbdcfea2573",
+      "status": "failed",
+      "type": "alipay_name_query",
+      "errorCode": "alipay_lookup_failed",
+      "unconfirmedReason": "observation_budget_exhausted",
+      "uiautomatorDumpTimeout": false,
+      "completedAt": "2026-10-14T09:10:20.024Z"
+    },
+    {
+      "taskId": "6a9530c0-e09c-4e4f-93b4-c2d190c101a4",
+      "status": "failed",
+      "type": "alipay_name_query",
+      "errorCode": "alipay_lookup_failed",
+      "unconfirmedReason": "observation_budget_exhausted",
+      "uiautomatorDumpTimeout": false,
+      "completedAt": "2026-10-14T09:12:23.854Z"
+    }
+  ],
+  "activeTestTasks": 0,
+  "health": {
+    "healthz": true,
+    "readyz": true,
+    "totalDevices": 131,
+    "agents": [
+      {
+        "id": "win-bf-202605262318-20260727",
+        "lastSeenAt": "2026-10-14T09:15:35.693Z"
+      },
+      {
+        "id": "windows-desktop-8v8n4pe-v2",
+        "lastSeenAt": "2026-08-10T06:02:47.953Z"
+      },
+      {
+        "id": "windows-desktop-8v8n4pe",
+        "lastSeenAt": "2026-07-03T04:15:49.959Z"
+      },
+      {
+        "id": "local-mac-windows-agent",
+        "lastSeenAt": "2026-07-03T05:36:47.198Z"
+      }
+    ]
+  },
+  "passed": [
+    "Same-key replay retained lookupId for both submissions",
+    "After >=122 seconds, new-key replay of the still-processing request retained lookupId",
+    "162 preparation failure did not prevent 161 progress"
+  ],
+  "failed": [
+    "Both submitted phones ended without a confirmed result",
+    "162 startup uiautomator dump timed out",
+    "161 result-unconfirmed was exposed as terminal failure"
+  ],
+  "testIssue": "The replay loop also retried a request that had already failed; a new queued request was created, then cancelled with zero attempts and no queryId. This is not evidence of failed deduplication for a still-processing request.",
+  "notVerified": [
+    "Successful returned name",
+    "Five physical devices",
+    "Natural limit rotation and eight-hour cooldown",
+    "Public HTTP network path",
+    "Partner system persistence"
+  ],
+  "productionAcceptance": false,
+  "productionVersion": {
+    "release": "platform-core-20261014-deployed.1",
+    "runtimeCommit": "aa3f39934ba192e11d181f47eb6c98be5f7393d6",
+    "imageId": "sha256:90c3a980cf842bdced2512a52726fe501501b3763e27821dafa108102fadb5e9",
+    "containerId": "120ac8c0554859010f4b34bca90f6aff87acea24bd0356964862e70ffe3a5f1b",
+    "containerStartedAt": "2026-10-14T08:16:06.694615332Z",
+    "activeManifestSha256": "c15cda3d0b0dd1fcbc5cb5dbf86239295f09c8edfa0252f2f7d859b485d013fd"
+  },
+  "postflight": {
+    "atUtc": "2026-10-14T09:16:52Z",
+    "agentPidUnchanged": 605432,
+    "adbPidUnchanged": 312588,
+    "agentIndexSha256": "517bfef7f967aa5664dca555a221cebf0772940dd7b2073b1ddc8d7b210d2f03",
+    "scanOk": true,
+    "scanAt": "2026-10-14T09:16:15.323Z",
+    "screenConnected": true,
+    "activeControlSessions": 6,
+    "recoveryBlockedReason": "",
+    "note": "A momentarily idle installer does not establish that device18 recovered. No restart, driver repair, or feature deployment was performed."
+  },
+  "localCandidate": {
+    "version": "device-recovery-pause-20261014-rc.1",
+    "commit": "2421f02ae39bac146940dccadb798a65bf647639",
+    "deployed": false,
+    "fullTestsPassed": 724
+  },
+  "classificationFinding": {
+    "fact": "Python emits local_lookup_result_unconfirmed:observation_budget_exhausted. Agent classifies as alipay_lookup_failed; server only retains recovery for human-resume/storage failures, so managed request reaches terminal failed. New-key retries after a terminal failure may create a new logical request.",
+    "source": [
+      "windows-agent/src/index.mjs:classifyAlipayNameLookupFailure",
+      "server/index.mjs:alipay_name_query failure reconciliation",
+      "server/managed-lookup-async.mjs:active/recent reuse"
+    ],
+    "proposedNextFix": "Extend existing 13.7 result-uncertainty handling to preserve the original query and needs_recovery for this exact failure class; do not classify as not_found or silently query again. Requires local negative test, candidate commit, then separately authorized production validation.",
+    "implemented": false,
+    "upstreamVisualRootCause": "Not determined; no inference that the phone actually displayed a name."
+  },
+  "inputFileSha256": "874c801e6f3eff06cd480c7ab81713b4f822bd54911a7696fa0d192143d31011",
+  "evidenceSha256": {
+    "gray-safe.log": "a41617ea94e87a2479d8f27d136ae99d7e49abd6c57e21b5e80a4c9429d82133",
+    "gray-postflight.json": "2a796cc4423000744521a409728188c0fa8a21f868019dddc561f04eee664fef",
+    "cancel-unstarted-safe.json": "d5d27058cb4fe9f7760568d0bd29c3cd2c3826935abf1823854b3b3d291eea0b",
+    "final-processes.json": "7ec812745d818d643bf0b969aa380480692f559b80bfc8a84e2d200bd8969eba"
+  },
+  "limitations": [
+    "Internal loopback HTTP exercised production HMAC handlers, not public network connectivity.",
+    "No Feishu message sent.",
+    "Only two physical phones, two distinct authorized inputs; 162 preparation failed and dispatcher used161 for the original request.",
+    "Observed task-level query IDs do not independently prove UI input counts; no claim of one input per query.",
+    "Windows pause/PnP gray remains untested; candidate is local only."
+  ]
+}
