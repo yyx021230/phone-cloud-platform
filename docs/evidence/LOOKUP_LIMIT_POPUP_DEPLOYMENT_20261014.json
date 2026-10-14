@@ -1,0 +1,808 @@
+{
+  "version": "lookup-limit-popup-20261014-deployed.1",
+  "status": "deployed-gray-incomplete",
+  "candidateTag": "lookup-limit-popup-20261014-rc.1",
+  "candidateCommit": "3d64dcf0d9c530eae03899d62c4d604afe6411d0",
+  "branch": "codex/lookup-limit-popup-20261014",
+  "baseline": "platform-core-20261014-deployed.1 / rc.7",
+  "scope": [
+    "windows-agent/scripts/alipay_name_lookup.py",
+    "windows-agent/scripts/alipay_visual_result.py"
+  ],
+  "activation": {
+    "at": "2026-10-14T09:44:25.5569589Z",
+    "candidate": "lookup-limit-popup-20261014-rc.1",
+    "commit": "3d64dcf0d9c530eae03899d62c4d604afe6411d0",
+    "files": [
+      {
+        "file": "alipay_name_lookup.py",
+        "beforeSha256": "ba4eeedccae0ed8f69293f7ca4b4c7c4d08d9f80449fdac2bcacc091cb1663bc",
+        "afterSha256": "a1c8c8c2f1819f1f2ddb1188ee86f9776a881731ac15e80614e38d3be212d6f6"
+      },
+      {
+        "file": "alipay_visual_result.py",
+        "beforeSha256": "d6817fdeee26bc801be46cd6391511d62e1004ce46a14a2bfea9eba75613328a",
+        "afterSha256": "9647bf869748f139283a7368270e8160c63b8d0398388465154c78c63ce92ea3"
+      }
+    ],
+    "backup": "D:\\PhoneCloud\\agent\\backups\\lookup-limit-popup-20261014-rc.1",
+    "agentPid": 605432,
+    "adbPid": 312588,
+    "restartedServices": [],
+    "oldLookupProcesses": 0
+  },
+  "cloudAfter": {
+    "at": "2026-10-14T09:56:00.106682+00:00",
+    "activeSha": "381a6a244b0c9de2a1617168f1542933225bf6c4becb32d7a510ed3f470137ec",
+    "version": "lookup-limit-popup-20261014-deployed.1",
+    "runtimeCommit": "aa3f39934ba192e11d181f47eb6c98be5f7393d6",
+    "image": "sha256:90c3a980cf842bdced2512a52726fe501501b3763e27821dafa108102fadb5e9",
+    "container": "120ac8c0554859010f4b34bca90f6aff87acea24bd0356964862e70ffe3a5f1b",
+    "startedAt": "2026-10-14T08:16:06.694615332Z",
+    "composeSha": "8687bf4176f8f0d78ab73380a7ef0fd6b71bf044de5474f172ef5483d3e47435"
+  },
+  "windowsAfter": {
+    "at": "2026-10-14T09:54:56.7286971Z",
+    "processes": [
+      {
+        "ProcessId": 312588,
+        "Name": "adb.exe",
+        "CreationDate": "/Date(1791427470275)/"
+      },
+      {
+        "ProcessId": 605432,
+        "Name": "node.exe",
+        "CreationDate": "/Date(1791965644539)/"
+      }
+    ],
+    "agentIndexSha": "517BFEF7F967AA5664DCA555A221CEBF0772940DD7B2073B1DDC8D7B210D2F03"
+  },
+  "mediaBefore": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "mediaAfter": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "postflight": {
+    "at": "2026-10-14T10:02:44.891Z",
+    "restoration": {
+      "configMatches": true,
+      "devicesMatch": true,
+      "grantsMatch": true,
+      "enabled": false,
+      "revision": 11,
+      "channels": 1
+    },
+    "requests": [
+      {
+        "id": "9921309c-8204-4c68-bbb7-96623f3d0bf4",
+        "status": "cancelled",
+        "code": "lookup_cancelled",
+        "queryId": null,
+        "attemptCount": 1,
+        "hasName": false
+      },
+      {
+        "id": "122f8b58-b844-4689-88e3-cea4dbcd2289",
+        "status": "cancelled",
+        "code": "lookup_cancelled",
+        "queryId": null,
+        "attemptCount": 1,
+        "hasName": false
+      },
+      {
+        "id": "3920490f-9250-4f19-94f5-e71b8ee68578",
+        "status": "waiting_human",
+        "queryId": "69de7b99-b13c-478a-9056-c57c106a681f",
+        "attemptCount": 1,
+        "hasName": false
+      }
+    ],
+    "diagnostics": [
+      {
+        "taskId": "bd76d2c4-c2d5-4d6b-aa39-682f645aad23",
+        "number": 162,
+        "status": "failed",
+        "type": "alipay_name_query",
+        "errorCode": "alipay_human_verification_required",
+        "reason": "poco_alipay_human_verification_required:jigsaw_verification",
+        "createdAt": "2026-10-14T09:54:03.039Z",
+        "completedAt": "2026-10-14T09:54:27.680Z",
+        "steps": [
+          {
+            "at": "2026-10-14T09:54:03.238Z",
+            "step": "",
+            "errorCode": ""
+          },
+          {
+            "at": "2026-10-14T09:54:03.393Z",
+            "step": "",
+            "errorCode": ""
+          },
+          {
+            "at": "2026-10-14T09:54:07.728Z",
+            "step": "poco_reused",
+            "errorCode": ""
+          },
+          {
+            "at": "2026-10-14T09:54:08.627Z",
+            "step": "reuse_existing_search_page",
+            "errorCode": ""
+          },
+          {
+            "at": "2026-10-14T09:54:22.372Z",
+            "step": "input_phone",
+            "errorCode": ""
+          },
+          {
+            "at": "2026-10-14T09:54:25.964Z",
+            "step": "poco_fast_path_failed",
+            "errorCode": ""
+          },
+          {
+            "at": "2026-10-14T09:54:25.964Z",
+            "step": "human_verification_detected",
+            "errorCode": ""
+          },
+          {
+            "at": "2026-10-14T09:54:27.624Z",
+            "step": "",
+            "errorCode": "alipay_human_verification_required"
+          }
+        ],
+        "hasName": false
+      },
+      {
+        "taskId": "a0c6eca8-d0be-4446-8287-e7772fe9138b",
+        "number": 162,
+        "status": "succeeded",
+        "type": "alipay_name_start",
+        "errorCode": "",
+        "createdAt": "2026-10-14T09:52:59.269Z",
+        "completedAt": "2026-10-14T09:54:02.979Z",
+        "steps": [
+          {
+            "at": "2026-10-14T09:52:59.388Z",
+            "step": "",
+            "errorCode": ""
+          },
+          {
+            "at": "2026-10-14T09:52:59.514Z",
+            "step": "",
+            "errorCode": ""
+          },
+          {
+            "at": "2026-10-14T09:54:02.703Z",
+            "step": "launch_alipay",
+            "errorCode": ""
+          },
+          {
+            "at": "2026-10-14T09:54:02.750Z",
+            "step": "open_my_tab",
+            "errorCode": ""
+          },
+          {
+            "at": "2026-10-14T09:54:02.777Z",
+            "step": "open_settings",
+            "errorCode": ""
+          },
+          {
+            "at": "2026-10-14T09:54:02.807Z",
+            "step": "open_saved_account_picker",
+            "errorCode": ""
+          },
+          {
+            "at": "2026-10-14T09:54:02.846Z",
+            "step": "launch_alipay",
+            "errorCode": ""
+          },
+          {
+            "at": "2026-10-14T09:54:02.880Z",
+            "step": "open_search",
+            "errorCode": ""
+          },
+          {
+            "at": "2026-10-14T09:54:02.926Z",
+            "step": "",
+            "errorCode": ""
+          }
+        ],
+        "hasName": false
+      },
+      {
+        "taskId": "d77ae421-27cc-4b81-a1fb-6566ef9b1ba8",
+        "number": 161,
+        "status": "failed",
+        "type": "alipay_name_start",
+        "errorCode": "alipay_account_identity_unverified",
+        "reason": "alipay_account_identity_unverified",
+        "createdAt": "2026-10-14T09:50:09.837Z",
+        "completedAt": "2026-10-14T09:50:19.093Z",
+        "steps": [
+          {
+            "at": "2026-10-14T09:50:10.392Z",
+            "step": "",
+            "errorCode": ""
+          },
+          {
+            "at": "2026-10-14T09:50:10.560Z",
+            "step": "",
+            "errorCode": ""
+          },
+          {
+            "at": "2026-10-14T09:50:15.805Z",
+            "step": "error",
+            "errorCode": ""
+          },
+          {
+            "at": "2026-10-14T09:50:19.030Z",
+            "step": "",
+            "errorCode": "alipay_account_identity_unverified"
+          }
+        ],
+        "hasName": false
+      },
+      {
+        "taskId": "86b38da3-0d26-45a5-9475-dc66042793e6",
+        "number": 162,
+        "status": "failed",
+        "type": "alipay_name_start",
+        "errorCode": "alipay_lookup_failed",
+        "reason": "alipay_my_tab_missing:texts=<redacted>",
+        "createdAt": "2026-10-14T09:47:39.513Z",
+        "completedAt": "2026-10-14T09:48:14.309Z",
+        "steps": [
+          {
+            "at": "2026-10-14T09:47:39.633Z",
+            "step": "",
+            "errorCode": ""
+          },
+          {
+            "at": "2026-10-14T09:47:39.784Z",
+            "step": "",
+            "errorCode": ""
+          },
+          {
+            "at": "2026-10-14T09:48:10.526Z",
+            "step": "launch_alipay",
+            "errorCode": ""
+          },
+          {
+            "at": "2026-10-14T09:48:10.555Z",
+            "step": "error",
+            "errorCode": ""
+          },
+          {
+            "at": "2026-10-14T09:48:14.172Z",
+            "step": "",
+            "errorCode": "alipay_lookup_failed"
+          }
+        ],
+        "hasName": false
+      }
+    ],
+    "activeTestTasks": 0,
+    "health": {
+      "healthz": {
+        "ok": true,
+        "at": "2026-10-14T10:02:44.903Z"
+      },
+      "readyz": {
+        "ok": true,
+        "status": "ok",
+        "at": "2026-10-14T10:02:44.906Z"
+      },
+      "totalDevices": 131,
+      "listed": 125,
+      "agent": [
+        {
+          "lastSeenAt": "2026-10-14T10:02:35.944Z",
+          "screen": {
+            "enabled": true,
+            "connected": true,
+            "activeSessions": 4,
+            "serverJarReady": true
+          },
+          "lastScan": {
+            "ok": true,
+            "at": "2026-10-14T10:02:07.792Z",
+            "error": ""
+          },
+          "recovery": {
+            "observedAt": "2026-10-14T10:02:17.955Z",
+            "adbDeviceCount": 120,
+            "blockedReason": ""
+          }
+        }
+      ]
+    }
+  },
+  "apiRuns": {
+    "gray-safe.log": [
+      {
+        "at": "2026-10-14T09:47:39.365Z",
+        "runId": "lookup-patch-gray-20261014-eb1f7c17",
+        "event": "submitted",
+        "number": 162,
+        "lookupId": "9921309c-8204-4c68-bbb7-96623f3d0bf4",
+        "http": 202
+      },
+      {
+        "at": "2026-10-14T09:47:39.379Z",
+        "runId": "lookup-patch-gray-20261014-eb1f7c17",
+        "event": "same-key",
+        "number": 162,
+        "sameId": true
+      },
+      {
+        "at": "2026-10-14T09:47:39.390Z",
+        "runId": "lookup-patch-gray-20261014-eb1f7c17",
+        "event": "progress",
+        "elapsedSeconds": 0,
+        "number": 162,
+        "lookupId": "9921309c-8204-4c68-bbb7-96623f3d0bf4",
+        "status": "queued",
+        "code": "",
+        "hasName": false,
+        "internalStatus": "queued"
+      },
+      {
+        "at": "2026-10-14T09:47:44.408Z",
+        "runId": "lookup-patch-gray-20261014-eb1f7c17",
+        "event": "progress",
+        "elapsedSeconds": 5,
+        "number": 162,
+        "lookupId": "9921309c-8204-4c68-bbb7-96623f3d0bf4",
+        "status": "processing",
+        "code": "",
+        "hasName": false,
+        "internalStatus": "preparing",
+        "phase": "starting",
+        "sessionId": "26631797-8a68-4c50-8dab-5eed32b773e6"
+      },
+      {
+        "at": "2026-10-14T09:48:19.526Z",
+        "runId": "lookup-patch-gray-20261014-eb1f7c17",
+        "event": "progress",
+        "elapsedSeconds": 40,
+        "number": 162,
+        "lookupId": "9921309c-8204-4c68-bbb7-96623f3d0bf4",
+        "status": "queued",
+        "code": "",
+        "hasName": false,
+        "internalStatus": "queued"
+      },
+      {
+        "at": "2026-10-14T09:49:44.803Z",
+        "runId": "lookup-patch-gray-20261014-eb1f7c17",
+        "event": "two-minute-new-key",
+        "number": 162,
+        "http": 503,
+        "sameId": false
+      },
+      {
+        "at": "2026-10-14T09:49:44.803Z",
+        "runId": "lookup-patch-gray-20261014-eb1f7c17",
+        "event": "error",
+        "code": "active new-key failed"
+      },
+      {
+        "at": "2026-10-14T09:49:44.807Z",
+        "runId": "lookup-patch-gray-20261014-eb1f7c17",
+        "event": "restore-blocked-concurrent-change"
+      },
+      {
+        "at": "2026-10-14T09:49:44.808Z",
+        "runId": "lookup-patch-gray-20261014-eb1f7c17",
+        "event": "receipt",
+        "requests": [
+          {
+            "number": 162,
+            "lookupId": "9921309c-8204-4c68-bbb7-96623f3d0bf4"
+          }
+        ]
+      }
+    ],
+    "gray-161-safe.log": [
+      {
+        "at": "2026-10-14T09:50:09.674Z",
+        "runId": "lookup-patch-gray-20261014-c11f5ab1",
+        "event": "submitted",
+        "number": 161,
+        "lookupId": "122f8b58-b844-4689-88e3-cea4dbcd2289",
+        "http": 202
+      },
+      {
+        "at": "2026-10-14T09:50:09.689Z",
+        "runId": "lookup-patch-gray-20261014-c11f5ab1",
+        "event": "same-key",
+        "number": 161,
+        "sameId": true
+      },
+      {
+        "at": "2026-10-14T09:50:09.700Z",
+        "runId": "lookup-patch-gray-20261014-c11f5ab1",
+        "event": "progress",
+        "elapsedSeconds": 0,
+        "number": 161,
+        "lookupId": "122f8b58-b844-4689-88e3-cea4dbcd2289",
+        "status": "queued",
+        "code": "",
+        "hasName": false,
+        "internalStatus": "queued"
+      },
+      {
+        "at": "2026-10-14T09:50:14.720Z",
+        "runId": "lookup-patch-gray-20261014-c11f5ab1",
+        "event": "progress",
+        "elapsedSeconds": 5,
+        "number": 161,
+        "lookupId": "122f8b58-b844-4689-88e3-cea4dbcd2289",
+        "status": "processing",
+        "code": "",
+        "hasName": false,
+        "internalStatus": "preparing",
+        "phase": "starting",
+        "sessionId": "8cecd73c-47f2-4a24-8556-9158c162fa1c"
+      },
+      {
+        "at": "2026-10-14T09:50:19.738Z",
+        "runId": "lookup-patch-gray-20261014-c11f5ab1",
+        "event": "progress",
+        "elapsedSeconds": 10,
+        "number": 161,
+        "lookupId": "122f8b58-b844-4689-88e3-cea4dbcd2289",
+        "status": "queued",
+        "code": "",
+        "hasName": false,
+        "internalStatus": "queued"
+      },
+      {
+        "at": "2026-10-14T09:52:15.113Z",
+        "runId": "lookup-patch-gray-20261014-c11f5ab1",
+        "event": "two-minute-new-key",
+        "number": 161,
+        "http": 200,
+        "sameId": true,
+        "reused": true
+      },
+      {
+        "at": "2026-10-14T09:52:25.144Z",
+        "runId": "lookup-patch-gray-20261014-c11f5ab1",
+        "event": "progress",
+        "elapsedSeconds": 135,
+        "number": 161,
+        "lookupId": "122f8b58-b844-4689-88e3-cea4dbcd2289",
+        "status": "failed",
+        "code": "lookup_cancelled",
+        "hasName": false,
+        "internalStatus": "cancelled"
+      },
+      {
+        "at": "2026-10-14T09:52:25.153Z",
+        "runId": "lookup-patch-gray-20261014-c11f5ab1",
+        "event": "terminal",
+        "number": 161,
+        "status": "failed",
+        "code": "lookup_cancelled",
+        "hasName": false,
+        "sameIdReplay": true
+      },
+      {
+        "at": "2026-10-14T09:52:25.160Z",
+        "runId": "lookup-patch-gray-20261014-c11f5ab1",
+        "event": "restored",
+        "enabled": false,
+        "revision": 7
+      },
+      {
+        "at": "2026-10-14T09:52:25.161Z",
+        "runId": "lookup-patch-gray-20261014-c11f5ab1",
+        "event": "receipt",
+        "requests": [
+          {
+            "number": 161,
+            "lookupId": "122f8b58-b844-4689-88e3-cea4dbcd2289"
+          }
+        ]
+      }
+    ],
+    "gray-162-retry-safe.log": [
+      {
+        "at": "2026-10-14T09:52:59.126Z",
+        "runId": "lookup-patch-gray-20261014-0866a3c7",
+        "event": "submitted",
+        "number": 162,
+        "lookupId": "3920490f-9250-4f19-94f5-e71b8ee68578",
+        "http": 202
+      },
+      {
+        "at": "2026-10-14T09:52:59.141Z",
+        "runId": "lookup-patch-gray-20261014-0866a3c7",
+        "event": "same-key",
+        "number": 162,
+        "sameId": true
+      },
+      {
+        "at": "2026-10-14T09:52:59.152Z",
+        "runId": "lookup-patch-gray-20261014-0866a3c7",
+        "event": "progress",
+        "elapsedSeconds": 0,
+        "number": 162,
+        "lookupId": "3920490f-9250-4f19-94f5-e71b8ee68578",
+        "status": "queued",
+        "code": "",
+        "hasName": false,
+        "internalStatus": "queued"
+      },
+      {
+        "at": "2026-10-14T09:53:04.170Z",
+        "runId": "lookup-patch-gray-20261014-0866a3c7",
+        "event": "progress",
+        "elapsedSeconds": 5,
+        "number": 162,
+        "lookupId": "3920490f-9250-4f19-94f5-e71b8ee68578",
+        "status": "processing",
+        "code": "",
+        "hasName": false,
+        "internalStatus": "preparing",
+        "phase": "starting",
+        "sessionId": "c35d56cd-330d-4cdd-ba08-4c36e8573566"
+      },
+      {
+        "at": "2026-10-14T09:54:04.364Z",
+        "runId": "lookup-patch-gray-20261014-0866a3c7",
+        "event": "progress",
+        "elapsedSeconds": 65,
+        "number": 162,
+        "lookupId": "3920490f-9250-4f19-94f5-e71b8ee68578",
+        "status": "processing",
+        "code": "",
+        "hasName": false,
+        "internalStatus": "running",
+        "phase": "querying",
+        "sessionId": "c35d56cd-330d-4cdd-ba08-4c36e8573566",
+        "queryId": "69de7b99-b13c-478a-9056-c57c106a681f"
+      },
+      {
+        "at": "2026-10-14T09:54:29.443Z",
+        "runId": "lookup-patch-gray-20261014-0866a3c7",
+        "event": "progress",
+        "elapsedSeconds": 90,
+        "number": 162,
+        "lookupId": "3920490f-9250-4f19-94f5-e71b8ee68578",
+        "status": "processing",
+        "code": "lookup_manual_action_pending",
+        "hasName": false,
+        "internalStatus": "waiting_human",
+        "phase": "human",
+        "sessionId": "c35d56cd-330d-4cdd-ba08-4c36e8573566",
+        "queryId": "69de7b99-b13c-478a-9056-c57c106a681f"
+      },
+      {
+        "at": "2026-10-14T09:54:29.443Z",
+        "runId": "lookup-patch-gray-20261014-0866a3c7",
+        "event": "manual-or-recovery-retained",
+        "number": 162,
+        "lookupId": "3920490f-9250-4f19-94f5-e71b8ee68578",
+        "status": "processing",
+        "code": "lookup_manual_action_pending",
+        "hasName": false,
+        "internalStatus": "waiting_human",
+        "phase": "human",
+        "sessionId": "c35d56cd-330d-4cdd-ba08-4c36e8573566",
+        "queryId": "69de7b99-b13c-478a-9056-c57c106a681f"
+      },
+      {
+        "at": "2026-10-14T09:54:29.450Z",
+        "runId": "lookup-patch-gray-20261014-0866a3c7",
+        "event": "restored",
+        "enabled": false,
+        "revision": 9
+      },
+      {
+        "at": "2026-10-14T09:54:29.451Z",
+        "runId": "lookup-patch-gray-20261014-0866a3c7",
+        "event": "receipt",
+        "requests": [
+          {
+            "number": 162,
+            "lookupId": "3920490f-9250-4f19-94f5-e71b8ee68578"
+          }
+        ]
+      }
+    ]
+  },
+  "passed": [
+    "Production two-file SHA/backup and native Python AST check",
+    "No Agent/ADB/Windows/media/container restart; unchanged observed process/container identities",
+    "D-075 true-host live verification before and after",
+    "Public HTTP signed submission/status and same-key replay",
+    "161 still queued after 125 seconds: new key returns same lookupId, no repeated phone query",
+    "162 second API startup/account identity/search readiness succeeded",
+    "162 real input then jigsaw classified waiting_human, original lookupId/queryId retained",
+    "Pool config/devices/grants restored exactly"
+  ],
+  "failed": [
+    "161 new start on existing restriction has no verified account and stops with alipay_account_identity_unverified before rotation/cooldown",
+    "162 first start failed alipay_my_tab_missing; subsequent read-only capture showed XHS foreground. User confirmed no one using it; exact activity launch later succeeded. Cause of foreground transition is not proven.",
+    "After user completed 162 jigsaw: pool initially disabled too early by test cleanup; reenabled only162, but stable read-only resume evidence still unavailable. Native XML later returned Killed, root cause not proven. Bounded actual observations did not resume original request."
+  ],
+  "notVerified": [
+    "Successful returned name in this run",
+    "Natural restriction then persisted eight-hour cooldown ACK and account switch",
+    "Eight-hour expiry",
+    "Live real-name popup X closure: popup did not reappear on successful startup; offline template evidence is insufficient",
+    "General result-unconfirmed terminal classification remains unchanged",
+    "Five-device concurrency and partner-host network",
+    "Automatic continuation after manual jigsaw is NOT passed; user has already completed it and must not be asked to repeat it without new evidence."
+  ],
+  "preservedManualRequest": {
+    "deviceNumber": 162,
+    "lookupId": "3920490f-9250-4f19-94f5-e71b8ee68578",
+    "queryId": "69de7b99-b13c-478a-9056-c57c106a681f",
+    "status": "waiting_human",
+    "note": "User completed jigsaw; platform still waiting_human, original request preserved for investigation, pool disabled after bounded attempts."
+  },
+  "testControlNotes": [
+    "Initial 162 own queued zero-query request was cancelled before 161 phase, to prevent fallback routing",
+    "161 own queued zero-query request cancelled after proving >=2min new-key dedup, to stop repeated failed preparation",
+    "First run new-key attempt returned 503 because pool had deliberately already been disabled; not a dedup regression",
+    "No old production request/cooldown deleted; no extra phone numbers; no direct notification tests",
+    "Transfer/Windows command-length/ExecutionPolicy/null backup path attempts failed before replacement. Staged short inline commands with verified backups completed deployment; execution policy not changed."
+  ],
+  "serviceRestarts": [],
+  "gitPush": false,
+  "includesRecoveryPauseCandidate": false,
+  "productionAcceptance": false,
+  "humanResume": {
+    "userCompleted": true,
+    "poolRestoredTooEarly": true,
+    "only162ReenabledAt": "2026-10-14T09:57:24.236Z",
+    "originalLookupId": "3920490f-9250-4f19-94f5-e71b8ee68578",
+    "originalQueryId": "69de7b99-b13c-478a-9056-c57c106a681f",
+    "boundedAssistanceUsedExistingClassifierAndHandoverAPI": true,
+    "observations": {
+      "at": "2026-10-14T09:59:46.860Z",
+      "state": "search_ready",
+      "xmlBytes": 15211
+    },
+    "laterRead": {
+      "at": "2026-10-14T10:01:55.284Z",
+      "state": "unknown",
+      "xmlBytes": 8,
+      "hasHierarchy": false,
+      "prefix": "Killed \n",
+      "focusBefore": [
+        "  mCurrentFocus=null\r",
+        "  mCurrentFocus=null\r",
+        "  mCurrentFocus=Window{e59ff8f u0 com.eg.android.AlipayGphone/com.alipay.android.phone.businesscommon.globalsearch.ui.MainSearchActivity type=1}\r"
+      ],
+      "focusAfter": [
+        "  mCurrentFocus=null\r",
+        "  mCurrentFocus=null\r",
+        "  mCurrentFocus=Window{e59ff8f u0 com.eg.android.AlipayGphone/com.alipay.android.phone.businesscommon.globalsearch.ui.MainSearchActivity type=1}\r"
+      ]
+    },
+    "reports": [
+      {
+        "at": "2026-10-14T10:00:16.148Z",
+        "iteration": 0,
+        "state": "search_ready",
+        "http": 200,
+        "ack": {
+          "ok": true,
+          "accepted": true,
+          "resumed": false
+        }
+      },
+      {
+        "at": "2026-10-14T10:00:21.947Z",
+        "iteration": 1,
+        "state": "search_ready",
+        "http": 200,
+        "ack": {
+          "ok": true,
+          "accepted": false,
+          "reason": "probe_stale"
+        }
+      },
+      {
+        "at": "2026-10-14T10:00:25.795Z",
+        "iteration": 2,
+        "state": "unknown",
+        "http": 200,
+        "ack": {
+          "ok": true,
+          "accepted": true,
+          "resumed": false
+        }
+      },
+      {
+        "at": "2026-10-14T10:01:16.624Z",
+        "iteration": 0,
+        "state": "search_ready",
+        "http": 200,
+        "ack": {
+          "ok": true,
+          "accepted": false,
+          "reason": "probe_stale"
+        }
+      },
+      {
+        "at": "2026-10-14T10:01:19.559Z",
+        "iteration": 1,
+        "state": "unknown",
+        "http": 200,
+        "ack": {
+          "ok": true,
+          "accepted": true,
+          "resumed": false
+        }
+      },
+      {
+        "at": "2026-10-14T10:01:22.513Z",
+        "iteration": 2,
+        "state": "unknown",
+        "http": 200,
+        "ack": {
+          "ok": true,
+          "accepted": true,
+          "resumed": false
+        }
+      },
+      {
+        "at": "2026-10-14T10:01:25.458Z",
+        "iteration": 3,
+        "state": "unknown",
+        "http": 200,
+        "ack": {
+          "ok": true,
+          "accepted": true,
+          "resumed": false
+        }
+      },
+      {
+        "at": "2026-10-14T10:01:28.387Z",
+        "iteration": 4,
+        "state": "unknown",
+        "http": 200,
+        "ack": {
+          "ok": true,
+          "accepted": true,
+          "resumed": false
+        }
+      },
+      {
+        "at": "2026-10-14T10:01:31.316Z",
+        "iteration": 5,
+        "state": "unknown",
+        "http": 200,
+        "ack": {
+          "ok": true,
+          "accepted": true,
+          "resumed": false
+        }
+      }
+    ],
+    "newQueryDispatched": false,
+    "finalPoolRestore": {
+      "at": "2026-10-14T10:02:44.599Z",
+      "http": 200,
+      "restored": true,
+      "revision": 11,
+      "reason": "162 human completed but UI hierarchy reads Killed; pause bounded acceptance and preserve request"
+    }
+  },
+  "scopeLimitation": "No additional implementation changes after candidate deployment. New cold-start identity and post-jigsaw observation gaps remain unresolved; do not represent this release as full acceptance."
+}
