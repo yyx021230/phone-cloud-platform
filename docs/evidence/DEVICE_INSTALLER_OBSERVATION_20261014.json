@@ -1,0 +1,128 @@
+{
+  "status": "read-only investigation; production maintenance declined",
+  "productionBaseline": {
+    "release": "platform-core-20261014-deployed.1",
+    "runtimeCommit": "aa3f39934ba192e11d181f47eb6c98be5f7393d6",
+    "receiptCommit": "bdd543134a1b4c64bbdb212d712b79586cb400e2",
+    "agentPid": 605432,
+    "adbPid": 312588
+  },
+  "request": "Restore device availability before production lookup gray",
+  "facts": [
+    "Actual drvinst.exe processes confirmed; not merely failed probe mislabeled as busy",
+    "SetupAPI recorded Error 482 unrelated device stack query-remove timeout and PNP_VetoOutstandingOpen; downstream installations waited for preceding installation",
+    "At 08:35 UTC installers exited without manual action; existing Agent automatically resumed exact recovery",
+    "08:36:06 exact seven-device batch raised ADB online 113 to 120 with collateralLosses=[]",
+    "At 08:36:26 device 18 exact-root recovery created another drvinst.exe PID607056; busy reappeared; 123 subsequently waited",
+    "67 lacked exact safe mapping; separate present-only PnP read did not find its serial, so cannot infer reliable USB target",
+    "Driver-stack/root-handle owner and causal relation to later 123 loss not established; do not assert new code caused it or that shared ADB rebuild guarantees repair"
+  ],
+  "latest": {
+    "at": "2026-10-14T08:38:29.031Z",
+    "online": 119,
+    "physicalCount": 122,
+    "blockedReason": "device_install_busy",
+    "activeScreens": 5,
+    "remaining": [
+      {
+        "number": "123",
+        "state": "adb_interface_ready_transport_missing"
+      },
+      {
+        "number": "67",
+        "state": "usb_composite_no_adb_interface"
+      },
+      {
+        "number": "18",
+        "state": "adb_interface_ready_transport_missing"
+      },
+      {
+        "number": "79",
+        "state": "physically_absent"
+      },
+      {
+        "number": "92",
+        "state": "physically_absent"
+      },
+      {
+        "number": "177",
+        "state": "physically_absent"
+      }
+    ]
+  },
+  "installersFinal": [
+    {
+      "pid": 607056,
+      "name": "drvinst",
+      "started": "2026-10-14T08:36:26.5038349Z"
+    }
+  ],
+  "recoveryEvents": [
+    {
+      "time": "2026-10-14T08:38:54.060Z",
+      "event": "pnp recovery safety",
+      "details": {
+        "blockedReason": "device_install_busy",
+        "adbDeviceCount": 119,
+        "actionableCount": 2
+      }
+    },
+    {
+      "time": "2026-10-14T08:38:54.061Z",
+      "event": "pnp concurrent recovery batch deferred",
+      "details": {
+        "reason": "device_install_busy",
+        "probeState": "busy",
+        "probeDurationMs": 484,
+        "probeTimedOut": false,
+        "processCount": 1
+      }
+    },
+    {
+      "time": "2026-10-14T08:38:56.093Z",
+      "event": "pnp recovery wake deferred",
+      "details": {
+        "reason": "device_install_busy",
+        "probeState": "busy",
+        "probeDurationMs": 568,
+        "probeTimedOut": false,
+        "processCount": 1
+      }
+    }
+  ],
+  "rawEvidenceSha256": {
+    "setupapi.dev.log": "f4e243159de5c786e8bc208b8e0a3119fdc4c72975639f3363fd753a2229ee12",
+    "recovery-log.json": "40afcecad9e3e2ddc01af3a7dd7a9ea296117f296ff33dc83119b256e55a7844",
+    "recovery-log-second.json": "504f4793264e90f0c1bcf1c0af19ff4be61670b68515a4f60789b8c26d4d8733",
+    "recovery-log-final.json": "daab50bb4527f70699b13ddc8a4254adaf874c3592493af684dd264c4e637c15",
+    "pnp67.json": "2367ced3331c96886b60d402e8252f70e8728a004b0a62364c8b8f6944a7b87e",
+    "remaining-final.json": "04e908e5a96ccc5ba8f95cc4fceabca56df1feaa50c3cdb22ecb9d6a441988dd"
+  },
+  "authorization": {
+    "proposed": "One bounded shared ADB rebuild, short Agent interruption, no Windows/Hub restart",
+    "userResponse": "先保持现状，不中断使用",
+    "result": "Not executed; existing automatic behavior left intact; real lookup gray remains paused and pool disabled"
+  },
+  "actions": {
+    "manualDeviceMutations": 0,
+    "businessQueries": 0,
+    "restartAgent": 0,
+    "restartAdb": 0,
+    "restartWindows": 0,
+    "restartHub": 0,
+    "killInstaller": 0,
+    "productionCodeOrConfigEdits": 0,
+    "outboundMessages": 0,
+    "gitPush": false
+  },
+  "limitations": [
+    "No full device recovery claim",
+    "No assumption that every disconnected device can be restored in software",
+    "No root cause fix or new business candidate this turn"
+  ],
+  "diagnosticFailures": [
+    "First command attempted Git status in assembled non-Git runtime; corrected to clean release worktree",
+    "A PowerShell Get-Content line serialized provider metadata and produced oversized diagnostic output; replaced with bounded 4MB Python tail and plain JSON; no production mutation",
+    "Local observation-writing script initially failed Python source encoding parsing; explicit UTF-8 declaration fixed it before any repository write."
+  ]
+}
