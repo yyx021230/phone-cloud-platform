@@ -1,0 +1,179 @@
+{
+  "status": "read-only diagnosis complete; mitigation proposed, not implemented or deployed",
+  "baseline": {
+    "release": "platform-core-20261014-deployed.1",
+    "runtimeCommit": "aa3f39934ba192e11d181f47eb6c98be5f7393d6",
+    "localBranch": "codex/device-installer-observation-20261014",
+    "startHead": "8e6ed2f1b84eaf2cfe362b6f00345099300d3f38",
+    "agentHashes": [
+      {
+        "name": "index.mjs",
+        "sha256": "517BFEF7F967AA5664DCA555A221CEBF0772940DD7B2073B1DDC8D7B210D2F03"
+      },
+      {
+        "name": "pnp-recovery-policy.mjs",
+        "sha256": "5A66A8CCB4DEFBF837C58CB473FD884FFE1763C17256ED6642D91DFE1BE4E850"
+      },
+      {
+        "name": "windows-device-install-probe.mjs",
+        "sha256": "C360457E2BCF820FB697A514627FC1C7C1761AFE51935D464EB8240719F9401C"
+      }
+    ],
+    "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+  },
+  "confirmedChain": [
+    "Agent exact recreate_adb_root on device 18 starts hn_goadb/oem38 driver installation",
+    "SetupAPI overwrites shared WinUSBCoInstaller2.dll and explicitly marks android_winusb package for reconfiguration; unchanged winusb.sys is skipped",
+    "18 driver package and android_winusb package ship same-version but different-SHA coinstaller binaries; System32 hash matches 18 package at read time",
+    "Windows queries removal of many other device interfaces; latest bounded 180 Kernel-PnP 225 events all identify shared adb.exe PID312588 as veto owner",
+    "Four bounded install sections each show Error482 after approximately249seconds; Agent correctly waits for real installer to exit",
+    "Continuous recovery cycle resets history after30seconds and repeats root rebuild; command exit and5second probe do not prove driver install completion"
+  ],
+  "installs": [
+    {
+      "startCST": "2026/10/14 16:15:57.296",
+      "endCST": "2026/10/14 16:20:06.802",
+      "durationSeconds": 249.506,
+      "error482": 1,
+      "queryRemoveCount": 45,
+      "outstandingOpenVetoCount": 44,
+      "sharedPackageReconfiguration": true
+    },
+    {
+      "startCST": "2026/10/14 16:26:41.989",
+      "endCST": "2026/10/14 16:30:50.617",
+      "durationSeconds": 248.628,
+      "error482": 1,
+      "queryRemoveCount": 46,
+      "outstandingOpenVetoCount": 43,
+      "sharedPackageReconfiguration": true
+    },
+    {
+      "startCST": "2026/10/14 16:36:26.501",
+      "endCST": "2026/10/14 16:40:34.944",
+      "durationSeconds": 248.443,
+      "error482": 1,
+      "queryRemoveCount": 44,
+      "outstandingOpenVetoCount": 43,
+      "sharedPackageReconfiguration": true
+    },
+    {
+      "startCST": "2026/10/14 16:46:47.890",
+      "endCST": "2026/10/14 16:50:56.620",
+      "durationSeconds": 248.73,
+      "error482": 1,
+      "queryRemoveCount": 44,
+      "outstandingOpenVetoCount": 43,
+      "sharedPackageReconfiguration": true
+    }
+  ],
+  "eventSample": {
+    "maxEvents": 180,
+    "count": 180,
+    "firstUtc": "2026-10-14T08:27:54.8935774Z",
+    "lastUtc": "2026-10-14T08:48:18.4434261Z",
+    "sharedAdbOwnerCount": 180
+  },
+  "driverFiles": [
+    {
+      "source": "hn_goadb.inf_amd64_79d514ad52b2f0c1",
+      "name": "WinUSBCoInstaller2.dll",
+      "length": 1018520,
+      "version": "6.1.7600.16385 (win7_rtm.090713-1255)",
+      "sha256": "A81C71DA587F8D88F0FE0DB36AF58BC31B8BB52BC75983CF92EA41BCC5DD98CE"
+    },
+    {
+      "source": "hn_goadb.inf_amd64_79d514ad52b2f0c1",
+      "name": "WdfCoInstaller01009.dll",
+      "length": 1737368,
+      "version": "1.9.7600.16385 (win7_rtm.090713-1255)",
+      "sha256": "17FC16ED3F696E8A196F756BCC57B688BAF77F7BCE459AA354FE6134CB35E0AD"
+    },
+    {
+      "source": "System32",
+      "name": "WinUSBCoInstaller2.dll",
+      "length": 1018520,
+      "version": "6.1.7600.16385 (win7_rtm.090713-1255)",
+      "sha256": "A81C71DA587F8D88F0FE0DB36AF58BC31B8BB52BC75983CF92EA41BCC5DD98CE"
+    },
+    {
+      "source": "System32",
+      "name": "WdfCoInstaller01009.dll",
+      "length": 1737368,
+      "version": "1.9.7600.16385 (win7_rtm.090713-1255)",
+      "sha256": "17FC16ED3F696E8A196F756BCC57B688BAF77F7BCE459AA354FE6134CB35E0AD"
+    }
+  ],
+  "otherPackageFiles": [
+    {
+      "relative": "\\android_winusb.inf",
+      "version": null,
+      "sha256": "7EBB6B20ECCEC9A3393730E5FBA401D3A3382D3CA48B30FF5FD4CF911C6F47E9"
+    },
+    {
+      "relative": "\\amd64\\WdfCoInstaller01009.dll",
+      "version": "1.9.7600.16385 (win7_rtm.090713-1255)",
+      "sha256": "AFCD0F4D17D20973B36261DADD09A77DADB7449D68DE3BDE895A052225A16BD8"
+    },
+    {
+      "relative": "\\amd64\\WinUSBCoInstaller2.dll",
+      "version": "6.1.7600.16385 (win7_rtm.090713-1255)",
+      "sha256": "9DC4B6D06B3808621AED86F2EF0D86860E90403E6E0C81B9A97920598E5DCC0A"
+    }
+  ],
+  "latest": {
+    "at": "2026-10-14T08:51:39.946Z",
+    "online": 120,
+    "activeScreens": 4,
+    "blockedReason": "",
+    "remaining": [
+      {
+        "number": "67",
+        "state": "usb_composite_no_adb_interface"
+      },
+      {
+        "number": "18",
+        "state": "adb_interface_ready_transport_missing"
+      },
+      {
+        "number": "79",
+        "state": "physically_absent"
+      },
+      {
+        "number": "92",
+        "state": "physically_absent"
+      },
+      {
+        "number": "177",
+        "state": "physically_absent"
+      }
+    ]
+  },
+  "proposal": [
+    "Retain continuous discovery and normal recovery for other phones; hold destructive rebuild only for target with proven shared-driver conflict until reviewed release",
+    "Keep real/unknown installer guard; do not kill installer or bypass global busy",
+    "Add independently auditable per-device hold/release with in-lock admission recheck, persistence, visibility and no unrelated-device exclusion; no existing hot pause supported by rc7",
+    "Investigate device18 driver repair on separate Windows test host; production driver-package deletion or replacement is not an isolated safe action",
+    "If immediate physical containment is needed, disconnect only positively identified device18 from production; this is unexecuted containment, does not restore18, and current installer must still settle"
+  ],
+  "limits": [
+    "Initial18 transport loss and every other phone drop not explained by this evidence",
+    "Specific origin of Error482 unrelated hung device stack remains unproven; veto owner identification is not proof of sole cause",
+    "No zero-interruption in-place driver repair established; Agent config/state read once at startup, not a runtime hold API",
+    "No code change, no new tests, no production mutation, no ADB/Agent/Windows/USB/media restart, no real business query or notification"
+  ],
+  "diagnosticFailures": [
+    "Expired SSH session reset; authenticated fresh connection through PTY",
+    "Read-only docker exec first used wrong container name and failed; resolved via docker ps then succeeded",
+    "JSON parsing attempted before bounded event probe completed; parsed successfully after completion"
+  ],
+  "rawEvidenceSha256": {
+    "setupapi-final.log": "38909fa2930fcd73d6b67057b0c0769a032031e4b5782b1381a340d7c58bbea9",
+    "events-current.json": "767af220c503cbd3a1a2968c9bab72279b25e7fb6e4bf473983e9231f7faccfd",
+    "driver-files.json": "6033cd9043b0d687e029ad42935ad5e3ac11546db5f18d6c427f9b8d87ecec05",
+    "driver-alternative.json": "02dae41959c4e45a8beb7c1838a3ed08751233ae996135499a5ae6e72a68b55c",
+    "oem38.inf": "50173c1c71d65d4cad34e8df22b5da1b030f8815667e50eda13f1d4268c918e0",
+    "recovery-investigation-final.json": "d3e7572c0804e617fee0258b7cb72436d1c3a1d8fc8486d1da2304dc8c9ce558",
+    "remaining-investigation-final.json": "f77d4935820d3312c1eec43a8512eb8636cb5ece65fe19e3706af1b39ed1c7a4"
+  }
+}
