@@ -1,0 +1,2297 @@
+{
+  "version": "lookup-async-20261014-live.3",
+  "status": "local-followup-completed-unconfirmed-results-retained-not-deployed",
+  "sourceCommit": "d38964eb11f08766e143d1743dc9d13f8b367e6b",
+  "sourceTag": "lookup-async-20261014-rc.11",
+  "baseReceiptCommit": "097c6d957f13e68ebacfda11d71ea3ee12577304",
+  "startedAtUtc": "2026-10-14T02:36:39.524Z",
+  "completedAtUtc": "2026-10-14T02:59:08.378439+00:00",
+  "assertions": {
+    "atUtc": "2026-10-14T02:58:31.413Z",
+    "requests": 18,
+    "suspectRechecks": 14,
+    "suspectsDifferentAccount": 14,
+    "counts": {
+      "failed": 14,
+      "succeeded": 3,
+      "not_found": 1
+    },
+    "allOneQueryAndOneInput": true,
+    "allSameKeyReplay": true,
+    "newKeysAfterMs": 210959,
+    "inflightAliasesSameOriginalId": 2,
+    "humanResumedOriginalSucceeded": true,
+    "otherPhoneCompletedDuringHumanWait": 8,
+    "twoPhysicalDeviceQueryOverlap": true,
+    "originalCooldownsUnchanged": true,
+    "drained": true,
+    "codeChanged": false,
+    "productionActions": 0
+  },
+  "proof": {
+    "atUtc": "2026-10-14T02:58:31.341Z",
+    "sourceCommit": "d38964eb11f08766e143d1743dc9d13f8b367e6b",
+    "sourceTag": "lookup-async-20261014-rc.11",
+    "requests": [
+      {
+        "ordinal": 1,
+        "lookupId": "8e8ffd19-3adf-4af8-8f62-44cabba52676",
+        "queryId": "174baee1-b0f7-44b3-9884-ca3d022f6ecb",
+        "number": 130,
+        "status": "failed",
+        "code": "lookup_execution_failed",
+        "hasName": false,
+        "createdAt": "2026-10-14T02:36:39.576Z",
+        "completedAt": "2026-10-14T02:38:02.442Z",
+        "attempts": [
+          {
+            "number": 130,
+            "sessionId": "3e5cb9ee-45dc-461e-8f2a-cc26febaa5c1",
+            "generation": "dc313e30-6bc0-44ef-bbd1-ac001d3f25a4"
+          }
+        ],
+        "queries": [
+          {
+            "taskId": "1eeb6ac0-1e85-4e2f-8b19-0882d6c171d7",
+            "number": 130,
+            "status": "failed",
+            "createdAt": "2026-10-14T02:37:16.559Z",
+            "updatedAt": "2026-10-14T02:38:02.195Z",
+            "completedAt": "2026-10-14T02:38:02.195Z",
+            "errorCode": "alipay_lookup_failed",
+            "runnerReason": "local_lookup_result_unconfirmed:observation_budget_exhausted",
+            "accountIdentityVerified": true,
+            "accountHash": "b1b626a87f11",
+            "accountSwitched": false,
+            "switchCount": 0,
+            "history": [],
+            "inputCount": 1,
+            "steps": [
+              {
+                "at": "2026-10-14T02:37:21.231Z",
+                "step": "poco_reused",
+                "elapsedMs": 214,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:37:22.339Z",
+                "step": "reuse_existing_search_page",
+                "elapsedMs": 1319,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:37:30.313Z",
+                "step": "input_phone",
+                "elapsedMs": 9294,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:37:31.443Z",
+                "step": "human_verification_detected",
+                "elapsedMs": 10424,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:37:33.822Z",
+                "step": "human_verification_slider_drag",
+                "elapsedMs": 12804,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:37:35.930Z",
+                "step": "human_verification_passed",
+                "elapsedMs": 14911,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:37:35.933Z",
+                "step": "resume_query_after_human_verification",
+                "elapsedMs": 14911,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:37:38.651Z",
+                "step": "submit_search",
+                "elapsedMs": 17633,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:38:01.019Z",
+                "step": "poco_fast_path_failed",
+                "elapsedMs": 40000,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ordinal": 6,
+        "lookupId": "cae4be16-3e3c-4007-a9a1-47a0a0c759a9",
+        "queryId": "02bba7a1-0d2d-40e7-a2dc-cd7299c5ee1f",
+        "number": 130,
+        "status": "failed",
+        "code": "lookup_execution_failed",
+        "hasName": false,
+        "createdAt": "2026-10-14T02:38:04.565Z",
+        "completedAt": "2026-10-14T02:39:29.049Z",
+        "attempts": [
+          {
+            "number": 130,
+            "sessionId": "d3630e91-1ef8-4e9e-98e0-cbd605c0d8fb",
+            "generation": "1c6d219a-8c35-46fc-b2a0-1f508d3bdd94"
+          }
+        ],
+        "queries": [
+          {
+            "taskId": "870eed17-2608-4d42-be27-c39f785c64a7",
+            "number": 130,
+            "status": "failed",
+            "createdAt": "2026-10-14T02:38:43.925Z",
+            "updatedAt": "2026-10-14T02:39:28.837Z",
+            "completedAt": "2026-10-14T02:39:28.837Z",
+            "errorCode": "alipay_lookup_failed",
+            "runnerReason": "local_lookup_result_unconfirmed:observation_budget_exhausted",
+            "accountIdentityVerified": true,
+            "accountHash": "b1b626a87f11",
+            "accountSwitched": false,
+            "switchCount": 0,
+            "history": [],
+            "inputCount": 1,
+            "steps": [
+              {
+                "at": "2026-10-14T02:38:49.116Z",
+                "step": "poco_reused",
+                "elapsedMs": 164,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:38:49.541Z",
+                "step": "reuse_existing_search_page",
+                "elapsedMs": 587,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:39:03.633Z",
+                "step": "input_phone",
+                "elapsedMs": 14678,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:39:05.660Z",
+                "step": "submit_search",
+                "elapsedMs": 16707,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:39:27.662Z",
+                "step": "poco_fast_path_failed",
+                "elapsedMs": 38708,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ordinal": 165,
+        "lookupId": "725ae268-c400-4e55-9818-677d38751a39",
+        "queryId": "613843dc-c241-40b0-b4c2-8e8bfb075fdb",
+        "number": 118,
+        "status": "succeeded",
+        "code": "",
+        "hasName": true,
+        "createdAt": "2026-10-14T02:39:39.818Z",
+        "completedAt": "2026-10-14T02:53:07.385Z",
+        "attempts": [
+          {
+            "number": 118,
+            "sessionId": "70edfb05-546a-4a66-9787-5ab0bee75e0c",
+            "generation": "6cfbe820-658d-4d3b-9997-713ff579e7a9"
+          }
+        ],
+        "queries": [
+          {
+            "taskId": "14dc4c12-eb26-4014-8eec-dad9e129ca50",
+            "number": 118,
+            "status": "failed",
+            "createdAt": "2026-10-14T02:40:29.236Z",
+            "updatedAt": "2026-10-14T02:40:48.023Z",
+            "completedAt": "2026-10-14T02:40:48.023Z",
+            "errorCode": "alipay_human_verification_required",
+            "runnerReason": "poco_alipay_human_verification_required:jigsaw_verification",
+            "accountIdentityVerified": true,
+            "accountHash": "7e2435456c4d",
+            "accountSwitched": false,
+            "switchCount": 0,
+            "history": [],
+            "inputCount": 1,
+            "steps": [
+              {
+                "at": "2026-10-14T02:40:33.886Z",
+                "step": "poco_reused",
+                "elapsedMs": 198,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:40:34.416Z",
+                "step": "reuse_existing_search_page",
+                "elapsedMs": 727,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:40:43.743Z",
+                "step": "input_phone",
+                "elapsedMs": 10054,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:40:46.490Z",
+                "step": "human_verification_detected",
+                "elapsedMs": 12801,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:40:46.491Z",
+                "step": "poco_fast_path_failed",
+                "elapsedMs": 12801,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ordinal": 67,
+        "lookupId": "6e2db263-4c87-406d-bcd2-fcddda8c1058",
+        "queryId": "aabf47dd-d1ec-46c0-965a-357c8c030c76",
+        "number": 130,
+        "status": "succeeded",
+        "code": "",
+        "hasName": true,
+        "createdAt": "2026-10-14T02:42:08.961Z",
+        "completedAt": "2026-10-14T02:43:03.689Z",
+        "attempts": [
+          {
+            "number": 130,
+            "sessionId": "d428ebf8-df05-4f7a-8061-c119494d5b97",
+            "generation": "009ea0f3-c18c-46ab-b37b-f638d42634ce"
+          }
+        ],
+        "queries": [
+          {
+            "taskId": "2ed5abde-dea8-4b21-832c-ea30bfa5476c",
+            "number": 130,
+            "status": "succeeded",
+            "createdAt": "2026-10-14T02:42:46.889Z",
+            "updatedAt": "2026-10-14T02:43:03.527Z",
+            "completedAt": "2026-10-14T02:43:03.527Z",
+            "errorCode": "",
+            "accountIdentityVerified": true,
+            "accountHash": "b1b626a87f11",
+            "accountSwitched": false,
+            "switchCount": 0,
+            "history": [],
+            "inputCount": 1,
+            "steps": [
+              {
+                "at": "2026-10-14T02:42:51.980Z",
+                "step": "poco_reused",
+                "elapsedMs": 188,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:42:53.176Z",
+                "step": "reuse_existing_search_page",
+                "elapsedMs": 1383,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:43:02.214Z",
+                "step": "input_phone",
+                "elapsedMs": 10422,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:43:03.514Z",
+                "step": "masked_real_name_tail_extracted",
+                "elapsedMs": 11722,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ordinal": 8,
+        "lookupId": "2d089e43-f1ad-4916-b7e3-4bf4a75aa03c",
+        "queryId": "6a6f486f-0d49-4902-b080-37695b298832",
+        "number": 130,
+        "status": "failed",
+        "code": "lookup_execution_failed",
+        "hasName": false,
+        "createdAt": "2026-10-14T02:43:05.083Z",
+        "completedAt": "2026-10-14T02:43:47.581Z",
+        "attempts": [
+          {
+            "number": 130,
+            "sessionId": "d428ebf8-df05-4f7a-8061-c119494d5b97",
+            "generation": "009ea0f3-c18c-46ab-b37b-f638d42634ce"
+          }
+        ],
+        "queries": [
+          {
+            "taskId": "c7cf4e31-380c-4597-a663-1abcd78bdd13",
+            "number": 130,
+            "status": "failed",
+            "createdAt": "2026-10-14T02:43:05.189Z",
+            "updatedAt": "2026-10-14T02:43:47.489Z",
+            "completedAt": "2026-10-14T02:43:47.489Z",
+            "errorCode": "alipay_lookup_failed",
+            "runnerReason": "local_lookup_result_unconfirmed:observation_budget_exhausted",
+            "accountIdentityVerified": true,
+            "accountHash": "b1b626a87f11",
+            "accountSwitched": false,
+            "switchCount": 0,
+            "history": [],
+            "inputCount": 1,
+            "steps": [
+              {
+                "at": "2026-10-14T02:43:05.791Z",
+                "step": "poco_reused",
+                "elapsedMs": 228,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:43:06.312Z",
+                "step": "reuse_existing_search_page",
+                "elapsedMs": 746,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:43:09.045Z",
+                "step": "clear_previous_query",
+                "elapsedMs": 3481,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:43:16.103Z",
+                "step": "input_phone",
+                "elapsedMs": 10541,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:43:18.094Z",
+                "step": "submit_search",
+                "elapsedMs": 12531,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:43:46.294Z",
+                "step": "poco_fast_path_failed",
+                "elapsedMs": 40727,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ordinal": 14,
+        "lookupId": "2f454655-803f-48b5-9b27-601049d15684",
+        "queryId": "0fe24e15-02c7-4e52-883d-f1d1dd97b96a",
+        "number": 130,
+        "status": "failed",
+        "code": "lookup_execution_failed",
+        "hasName": false,
+        "createdAt": "2026-10-14T02:43:49.907Z",
+        "completedAt": "2026-10-14T02:45:13.842Z",
+        "attempts": [
+          {
+            "number": 130,
+            "sessionId": "43fe58b7-97e8-42dc-99eb-bb54c6279398",
+            "generation": "53bbeea3-1373-45d1-9c4e-637d40731e1a"
+          }
+        ],
+        "queries": [
+          {
+            "taskId": "5a9d614c-7db3-4d94-a766-b6d266506eab",
+            "number": 130,
+            "status": "failed",
+            "createdAt": "2026-10-14T02:44:27.456Z",
+            "updatedAt": "2026-10-14T02:45:13.821Z",
+            "completedAt": "2026-10-14T02:45:13.821Z",
+            "errorCode": "alipay_lookup_failed",
+            "runnerReason": "local_lookup_result_unconfirmed:observation_budget_exhausted",
+            "accountIdentityVerified": true,
+            "accountHash": "b1b626a87f11",
+            "accountSwitched": false,
+            "switchCount": 0,
+            "history": [],
+            "inputCount": 1,
+            "steps": [
+              {
+                "at": "2026-10-14T02:44:32.199Z",
+                "step": "poco_reused",
+                "elapsedMs": 255,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:44:32.726Z",
+                "step": "reuse_existing_search_page",
+                "elapsedMs": 781,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:44:43.907Z",
+                "step": "input_phone",
+                "elapsedMs": 11960,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:44:45.702Z",
+                "step": "submit_search",
+                "elapsedMs": 13757,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:45:12.697Z",
+                "step": "poco_fast_path_failed",
+                "elapsedMs": 40750,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ordinal": 17,
+        "lookupId": "64555d67-9a0f-4b7c-ad9b-9e0640414572",
+        "queryId": "1b51f2c6-6461-4ea6-90c8-5c60416e7260",
+        "number": 130,
+        "status": "failed",
+        "code": "lookup_execution_failed",
+        "hasName": false,
+        "createdAt": "2026-10-14T02:45:15.104Z",
+        "completedAt": "2026-10-14T02:46:41.866Z",
+        "attempts": [
+          {
+            "number": 130,
+            "sessionId": "28698397-15a7-48d7-b703-4262bedd437e",
+            "generation": "40f4069d-848c-431e-9f98-2e8a9c9a4110"
+          }
+        ],
+        "queries": [
+          {
+            "taskId": "603d43f5-3d61-4f43-8d90-6dae5a7ff4dd",
+            "number": 130,
+            "status": "failed",
+            "createdAt": "2026-10-14T02:45:55.467Z",
+            "updatedAt": "2026-10-14T02:46:41.768Z",
+            "completedAt": "2026-10-14T02:46:41.768Z",
+            "errorCode": "alipay_lookup_failed",
+            "runnerReason": "local_lookup_result_unconfirmed:observation_budget_exhausted",
+            "accountIdentityVerified": true,
+            "accountHash": "b1b626a87f11",
+            "accountSwitched": false,
+            "switchCount": 0,
+            "history": [],
+            "inputCount": 1,
+            "steps": [
+              {
+                "at": "2026-10-14T02:46:00.520Z",
+                "step": "poco_reused",
+                "elapsedMs": 202,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:46:01.329Z",
+                "step": "reuse_existing_search_page",
+                "elapsedMs": 1009,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:46:11.211Z",
+                "step": "input_phone",
+                "elapsedMs": 10891,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:46:13.247Z",
+                "step": "submit_search",
+                "elapsedMs": 12929,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:46:40.569Z",
+                "step": "poco_fast_path_failed",
+                "elapsedMs": 40250,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ordinal": 54,
+        "lookupId": "77d32415-409a-4524-9d65-089facb74cfc",
+        "queryId": "c5b665a0-a179-4e2f-8e47-fd789cef36b2",
+        "number": 130,
+        "status": "failed",
+        "code": "lookup_execution_failed",
+        "hasName": false,
+        "createdAt": "2026-10-14T02:46:43.960Z",
+        "completedAt": "2026-10-14T02:48:09.444Z",
+        "attempts": [
+          {
+            "number": 130,
+            "sessionId": "eb799488-4501-4091-be17-aa392dca2b4e",
+            "generation": "75aea2a2-4973-4e20-b8c1-ee7fc901e664"
+          }
+        ],
+        "queries": [
+          {
+            "taskId": "7da73841-8f15-40b4-8643-5078c7a8590f",
+            "number": 130,
+            "status": "failed",
+            "createdAt": "2026-10-14T02:47:23.018Z",
+            "updatedAt": "2026-10-14T02:48:09.338Z",
+            "completedAt": "2026-10-14T02:48:09.338Z",
+            "errorCode": "alipay_lookup_failed",
+            "runnerReason": "local_lookup_result_unconfirmed:observation_budget_exhausted",
+            "accountIdentityVerified": true,
+            "accountHash": "b1b626a87f11",
+            "accountSwitched": false,
+            "switchCount": 0,
+            "history": [],
+            "inputCount": 1,
+            "steps": [
+              {
+                "at": "2026-10-14T02:47:27.639Z",
+                "step": "poco_reused",
+                "elapsedMs": 176,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:47:28.282Z",
+                "step": "reuse_existing_search_page",
+                "elapsedMs": 820,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:47:39.552Z",
+                "step": "input_phone",
+                "elapsedMs": 12088,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:47:41.922Z",
+                "step": "submit_search",
+                "elapsedMs": 14459,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:48:08.141Z",
+                "step": "poco_fast_path_failed",
+                "elapsedMs": 40676,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ordinal": 55,
+        "lookupId": "f399542d-e566-4f4f-a099-827ffb8755aa",
+        "queryId": "de540784-f1fd-4447-b5cd-7630f1276340",
+        "number": 130,
+        "status": "failed",
+        "code": "lookup_execution_failed",
+        "hasName": false,
+        "createdAt": "2026-10-14T02:48:10.673Z",
+        "completedAt": "2026-10-14T02:49:34.960Z",
+        "attempts": [
+          {
+            "number": 130,
+            "sessionId": "a0da59ce-2162-4ebc-b5f6-20785e1bc326",
+            "generation": "9d0061e6-0212-4afe-81db-4e55304cf843"
+          }
+        ],
+        "queries": [
+          {
+            "taskId": "55d47dfe-5f08-457b-b780-81fc0de0063e",
+            "number": 130,
+            "status": "failed",
+            "createdAt": "2026-10-14T02:48:49.832Z",
+            "updatedAt": "2026-10-14T02:49:34.799Z",
+            "completedAt": "2026-10-14T02:49:34.799Z",
+            "errorCode": "alipay_lookup_failed",
+            "runnerReason": "local_lookup_result_unconfirmed:observation_budget_exhausted",
+            "accountIdentityVerified": true,
+            "accountHash": "b1b626a87f11",
+            "accountSwitched": false,
+            "switchCount": 0,
+            "history": [],
+            "inputCount": 1,
+            "steps": [
+              {
+                "at": "2026-10-14T02:48:54.609Z",
+                "step": "poco_reused",
+                "elapsedMs": 185,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:48:55.057Z",
+                "step": "reuse_existing_search_page",
+                "elapsedMs": 632,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:49:07.479Z",
+                "step": "input_phone",
+                "elapsedMs": 13055,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:49:09.481Z",
+                "step": "submit_search",
+                "elapsedMs": 15057,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:49:33.751Z",
+                "step": "poco_fast_path_failed",
+                "elapsedMs": 39326,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ordinal": 58,
+        "lookupId": "4d5d5b8a-aaa7-410b-ab3c-ea8dcb38e9b9",
+        "queryId": "1a536186-3a2f-42fb-b70c-c9a5737069c7",
+        "number": 130,
+        "status": "failed",
+        "code": "lookup_execution_failed",
+        "hasName": false,
+        "createdAt": "2026-10-14T02:49:35.824Z",
+        "completedAt": "2026-10-14T02:51:01.242Z",
+        "attempts": [
+          {
+            "number": 130,
+            "sessionId": "79f89e5e-715d-42a1-a7ce-0d9d8eb46c0d",
+            "generation": "93eed826-fd20-4238-86a2-5b34e19beeab"
+          }
+        ],
+        "queries": [
+          {
+            "taskId": "09d0d3f7-e05f-455e-8b0a-5df1fcd8fae4",
+            "number": 130,
+            "status": "failed",
+            "createdAt": "2026-10-14T02:50:15.601Z",
+            "updatedAt": "2026-10-14T02:51:01.190Z",
+            "completedAt": "2026-10-14T02:51:01.190Z",
+            "errorCode": "alipay_lookup_failed",
+            "runnerReason": "local_lookup_result_unconfirmed:observation_budget_exhausted",
+            "accountIdentityVerified": true,
+            "accountHash": "b1b626a87f11",
+            "accountSwitched": false,
+            "switchCount": 0,
+            "history": [],
+            "inputCount": 1,
+            "steps": [
+              {
+                "at": "2026-10-14T02:50:20.396Z",
+                "step": "poco_reused",
+                "elapsedMs": 173,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:50:20.830Z",
+                "step": "reuse_existing_search_page",
+                "elapsedMs": 605,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:50:28.789Z",
+                "step": "input_phone",
+                "elapsedMs": 8564,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:50:30.753Z",
+                "step": "submit_search",
+                "elapsedMs": 10529,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:50:59.968Z",
+                "step": "poco_fast_path_failed",
+                "elapsedMs": 39743,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ordinal": 72,
+        "lookupId": "7f71316b-8e92-42d5-a8bc-87a9a7c0dc62",
+        "queryId": "1fd9e4aa-09bc-4974-9ca0-5b6a6a408f01",
+        "number": 130,
+        "status": "failed",
+        "code": "lookup_execution_failed",
+        "hasName": false,
+        "createdAt": "2026-10-14T02:51:02.582Z",
+        "completedAt": "2026-10-14T02:52:30.013Z",
+        "attempts": [
+          {
+            "number": 130,
+            "sessionId": "529e340d-56ff-463c-80f0-612a60b76a77",
+            "generation": "0815c11f-7d22-4699-abfc-cbf54f44da71"
+          }
+        ],
+        "queries": [
+          {
+            "taskId": "df0fbfc3-5886-47a5-a102-f7e130575290",
+            "number": 130,
+            "status": "failed",
+            "createdAt": "2026-10-14T02:51:42.145Z",
+            "updatedAt": "2026-10-14T02:52:29.828Z",
+            "completedAt": "2026-10-14T02:52:29.828Z",
+            "errorCode": "alipay_lookup_failed",
+            "runnerReason": "local_lookup_result_unconfirmed:observation_budget_exhausted",
+            "accountIdentityVerified": true,
+            "accountHash": "b1b626a87f11",
+            "accountSwitched": false,
+            "switchCount": 0,
+            "history": [],
+            "inputCount": 1,
+            "steps": [
+              {
+                "at": "2026-10-14T02:51:48.118Z",
+                "step": "poco_reused",
+                "elapsedMs": 197,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:51:48.735Z",
+                "step": "reuse_existing_search_page",
+                "elapsedMs": 812,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:51:59.111Z",
+                "step": "input_phone",
+                "elapsedMs": 11189,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:52:00.765Z",
+                "step": "submit_search",
+                "elapsedMs": 12844,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:52:28.639Z",
+                "step": "poco_fast_path_failed",
+                "elapsedMs": 40717,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ordinal": 73,
+        "lookupId": "84a5d46e-2a74-4cfc-99ce-6e0251ecf196",
+        "queryId": "2fd0dfb1-e16b-4844-9858-fc15b091c29a",
+        "number": 130,
+        "status": "failed",
+        "code": "lookup_execution_failed",
+        "hasName": false,
+        "createdAt": "2026-10-14T02:52:30.705Z",
+        "completedAt": "2026-10-14T02:53:57.380Z",
+        "attempts": [
+          {
+            "number": 130,
+            "sessionId": "4b4e811e-a244-4034-a9c5-1528fadd2450",
+            "generation": "97a3d08d-c6bd-4f67-a88b-9666f47338d8"
+          }
+        ],
+        "queries": [
+          {
+            "taskId": "9ec3a0d8-c5bd-4814-ae22-bddbdc896450",
+            "number": 130,
+            "status": "failed",
+            "createdAt": "2026-10-14T02:53:11.915Z",
+            "updatedAt": "2026-10-14T02:53:57.175Z",
+            "completedAt": "2026-10-14T02:53:57.175Z",
+            "errorCode": "alipay_lookup_failed",
+            "runnerReason": "local_lookup_result_unconfirmed:observation_budget_exhausted",
+            "accountIdentityVerified": true,
+            "accountHash": "b1b626a87f11",
+            "accountSwitched": false,
+            "switchCount": 0,
+            "history": [],
+            "inputCount": 1,
+            "steps": [
+              {
+                "at": "2026-10-14T02:53:16.882Z",
+                "step": "poco_reused",
+                "elapsedMs": 180,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:53:17.406Z",
+                "step": "reuse_existing_search_page",
+                "elapsedMs": 703,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:53:26.920Z",
+                "step": "input_phone",
+                "elapsedMs": 10215,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:53:28.697Z",
+                "step": "submit_search",
+                "elapsedMs": 11995,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:53:55.894Z",
+                "step": "poco_fast_path_failed",
+                "elapsedMs": 39189,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ordinal": 79,
+        "lookupId": "858246cc-b107-43a8-8230-9470dcfdf8a3",
+        "queryId": "2309121a-5935-485c-a8af-7ab7b63583ea",
+        "number": 118,
+        "status": "failed",
+        "code": "lookup_execution_failed",
+        "hasName": false,
+        "createdAt": "2026-10-14T02:53:08.663Z",
+        "completedAt": "2026-10-14T02:53:50.852Z",
+        "attempts": [
+          {
+            "number": 118,
+            "sessionId": "70edfb05-546a-4a66-9787-5ab0bee75e0c",
+            "generation": "6cfbe820-658d-4d3b-9997-713ff579e7a9"
+          }
+        ],
+        "queries": [
+          {
+            "taskId": "beee135c-31e0-4cae-848d-487c653d7bcf",
+            "number": 118,
+            "status": "failed",
+            "createdAt": "2026-10-14T02:53:08.897Z",
+            "updatedAt": "2026-10-14T02:53:50.803Z",
+            "completedAt": "2026-10-14T02:53:50.803Z",
+            "errorCode": "alipay_lookup_failed",
+            "runnerReason": "local_lookup_result_unconfirmed:observation_budget_exhausted",
+            "accountIdentityVerified": true,
+            "accountHash": "7e2435456c4d",
+            "accountSwitched": false,
+            "switchCount": 0,
+            "history": [],
+            "inputCount": 1,
+            "steps": [
+              {
+                "at": "2026-10-14T02:53:09.843Z",
+                "step": "poco_reused",
+                "elapsedMs": 275,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:53:10.118Z",
+                "step": "reuse_existing_search_page",
+                "elapsedMs": 549,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:53:11.975Z",
+                "step": "clear_previous_query",
+                "elapsedMs": 2402,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:53:23.186Z",
+                "step": "input_phone",
+                "elapsedMs": 13611,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:53:25.367Z",
+                "step": "submit_search",
+                "elapsedMs": 15798,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:53:49.770Z",
+                "step": "poco_fast_path_failed",
+                "elapsedMs": 40197,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ordinal": 89,
+        "lookupId": "e40c082f-7a62-4e50-98c1-032a425e73e2",
+        "queryId": "1adb506f-8cd4-4b31-9d00-cb97f77454fb",
+        "number": 118,
+        "status": "failed",
+        "code": "lookup_execution_failed",
+        "hasName": false,
+        "createdAt": "2026-10-14T02:53:51.514Z",
+        "completedAt": "2026-10-14T02:55:27.913Z",
+        "attempts": [
+          {
+            "number": 118,
+            "sessionId": "70014eb6-74a9-4424-9dd2-01081eb04521",
+            "generation": "740dad36-1556-4440-a04e-970a480ae689"
+          }
+        ],
+        "queries": [
+          {
+            "taskId": "6bfcc9c7-4714-48b4-9056-d67105757fd0",
+            "number": 118,
+            "status": "failed",
+            "createdAt": "2026-10-14T02:54:41.758Z",
+            "updatedAt": "2026-10-14T02:55:27.702Z",
+            "completedAt": "2026-10-14T02:55:27.702Z",
+            "errorCode": "alipay_lookup_failed",
+            "runnerReason": "local_lookup_result_unconfirmed:observation_budget_exhausted",
+            "accountIdentityVerified": true,
+            "accountHash": "7e2435456c4d",
+            "accountSwitched": false,
+            "switchCount": 0,
+            "history": [],
+            "inputCount": 1,
+            "steps": [
+              {
+                "at": "2026-10-14T02:54:46.265Z",
+                "step": "poco_reused",
+                "elapsedMs": 174,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:54:46.789Z",
+                "step": "reuse_existing_search_page",
+                "elapsedMs": 698,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:54:59.816Z",
+                "step": "input_phone",
+                "elapsedMs": 13724,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:55:01.896Z",
+                "step": "submit_search",
+                "elapsedMs": 15805,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:55:26.510Z",
+                "step": "poco_fast_path_failed",
+                "elapsedMs": 40418,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ordinal": 95,
+        "lookupId": "19304938-27d2-46e6-99d7-dce2d60afe3b",
+        "queryId": "d07523b9-f8b0-4a67-9ca5-68ea417bee27",
+        "number": 130,
+        "status": "failed",
+        "code": "lookup_execution_failed",
+        "hasName": false,
+        "createdAt": "2026-10-14T02:53:58.004Z",
+        "completedAt": "2026-10-14T02:55:24.651Z",
+        "attempts": [
+          {
+            "number": 130,
+            "sessionId": "92296960-46fb-4760-ae21-6e66a72213d1",
+            "generation": "6c466108-1c64-4017-bff5-15e34f2ccd8c"
+          }
+        ],
+        "queries": [
+          {
+            "taskId": "2c5b3464-a6dd-48cb-b537-0796154ad0e4",
+            "number": 130,
+            "status": "failed",
+            "createdAt": "2026-10-14T02:54:38.999Z",
+            "updatedAt": "2026-10-14T02:55:24.557Z",
+            "completedAt": "2026-10-14T02:55:24.557Z",
+            "errorCode": "alipay_lookup_failed",
+            "runnerReason": "local_lookup_result_unconfirmed:observation_budget_exhausted",
+            "accountIdentityVerified": true,
+            "accountHash": "b1b626a87f11",
+            "accountSwitched": false,
+            "switchCount": 0,
+            "history": [],
+            "inputCount": 1,
+            "steps": [
+              {
+                "at": "2026-10-14T02:54:44.622Z",
+                "step": "poco_reused",
+                "elapsedMs": 189,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:54:45.144Z",
+                "step": "reuse_existing_search_page",
+                "elapsedMs": 709,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:54:58.923Z",
+                "step": "input_phone",
+                "elapsedMs": 14489,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:55:00.852Z",
+                "step": "submit_search",
+                "elapsedMs": 16418,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:55:23.400Z",
+                "step": "poco_fast_path_failed",
+                "elapsedMs": 38967,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ordinal": 99,
+        "lookupId": "1cee6529-a699-409b-b3b0-0ec2728e7a73",
+        "queryId": "aed81bf6-659d-43ab-880e-1fadafc7bde1",
+        "number": 130,
+        "status": "failed",
+        "code": "lookup_execution_failed",
+        "hasName": false,
+        "createdAt": "2026-10-14T02:55:26.200Z",
+        "completedAt": "2026-10-14T02:56:51.428Z",
+        "attempts": [
+          {
+            "number": 130,
+            "sessionId": "74993ca7-518b-4ea0-8332-b4830337b6cd",
+            "generation": "70bca783-a271-48da-a766-d9cf3b9b6412"
+          }
+        ],
+        "queries": [
+          {
+            "taskId": "6e64d444-65ca-4de5-9bfb-66096f58f76e",
+            "number": 130,
+            "status": "failed",
+            "createdAt": "2026-10-14T02:56:06.028Z",
+            "updatedAt": "2026-10-14T02:56:51.317Z",
+            "completedAt": "2026-10-14T02:56:51.317Z",
+            "errorCode": "alipay_lookup_failed",
+            "runnerReason": "local_lookup_result_unconfirmed:observation_budget_exhausted",
+            "accountIdentityVerified": true,
+            "accountHash": "b1b626a87f11",
+            "accountSwitched": false,
+            "switchCount": 0,
+            "history": [],
+            "inputCount": 1,
+            "steps": [
+              {
+                "at": "2026-10-14T02:56:10.327Z",
+                "step": "poco_reused",
+                "elapsedMs": 173,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:56:11.098Z",
+                "step": "reuse_existing_search_page",
+                "elapsedMs": 942,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:56:22.689Z",
+                "step": "input_phone",
+                "elapsedMs": 12533,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:56:24.616Z",
+                "step": "submit_search",
+                "elapsedMs": 14456,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:56:50.083Z",
+                "step": "poco_fast_path_failed",
+                "elapsedMs": 39926,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ordinal": 191,
+        "lookupId": "d29c26a6-a189-48b0-969a-a559c1eee18f",
+        "queryId": "394fd19a-9df0-4090-a7e8-c9f7aba373ab",
+        "number": 118,
+        "status": "succeeded",
+        "code": "",
+        "hasName": true,
+        "createdAt": "2026-10-14T02:57:04.918Z",
+        "completedAt": "2026-10-14T02:58:12.004Z",
+        "attempts": [
+          {
+            "number": 118,
+            "sessionId": "d8963055-57f4-4241-87a0-7cfddf29b64c",
+            "generation": "a59e08f4-f18b-4a2e-9c38-9d0024721bb7"
+          }
+        ],
+        "queries": [
+          {
+            "taskId": "4eaab0a3-0458-447e-9ea8-cac39c99882a",
+            "number": 118,
+            "status": "succeeded",
+            "createdAt": "2026-10-14T02:57:53.927Z",
+            "updatedAt": "2026-10-14T02:58:11.797Z",
+            "completedAt": "2026-10-14T02:58:11.797Z",
+            "errorCode": "",
+            "accountIdentityVerified": true,
+            "accountHash": "7e2435456c4d",
+            "accountSwitched": false,
+            "switchCount": 0,
+            "history": [],
+            "inputCount": 1,
+            "steps": [
+              {
+                "at": "2026-10-14T02:57:58.530Z",
+                "step": "poco_reused",
+                "elapsedMs": 175,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:57:58.979Z",
+                "step": "reuse_existing_search_page",
+                "elapsedMs": 622,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:58:10.671Z",
+                "step": "input_phone",
+                "elapsedMs": 12314,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:58:11.780Z",
+                "step": "masked_real_name_tail_extracted",
+                "elapsedMs": 13424,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ordinal": 108,
+        "lookupId": "7cb02cbf-995e-4df6-bc8a-76abe4981380",
+        "queryId": "47e78142-e4fa-4b69-b345-b6d417889d5e",
+        "number": 130,
+        "status": "not_found",
+        "code": "",
+        "hasName": false,
+        "createdAt": "2026-10-14T02:57:04.925Z",
+        "completedAt": "2026-10-14T02:57:58.199Z",
+        "attempts": [
+          {
+            "number": 130,
+            "sessionId": "f7bbefa2-c733-4361-9ac7-fc5848dab040",
+            "generation": "42c4c63e-7f66-4e34-b474-2163643bfec7"
+          }
+        ],
+        "queries": [
+          {
+            "taskId": "5f6cd10d-0862-4170-9d6f-d484824f41a1",
+            "number": 130,
+            "status": "succeeded",
+            "createdAt": "2026-10-14T02:57:42.134Z",
+            "updatedAt": "2026-10-14T02:57:58.166Z",
+            "completedAt": "2026-10-14T02:57:58.166Z",
+            "errorCode": "",
+            "accountIdentityVerified": true,
+            "accountHash": "b1b626a87f11",
+            "accountSwitched": false,
+            "switchCount": 0,
+            "history": [],
+            "inputCount": 1,
+            "steps": [
+              {
+                "at": "2026-10-14T02:57:46.751Z",
+                "step": "poco_reused",
+                "elapsedMs": 174,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:57:47.379Z",
+                "step": "reuse_existing_search_page",
+                "elapsedMs": 802,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:57:56.836Z",
+                "step": "input_phone",
+                "elapsedMs": 10257,
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              },
+              {
+                "at": "2026-10-14T02:57:58.154Z",
+                "step": "lookup_no_name_result",
+                "elapsedMs": 11576,
+                "reason": "account_not_real_named",
+                "fromHash": null,
+                "toHash": null,
+                "currentHash": null
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "counts": {
+      "failed": 14,
+      "succeeded": 3,
+      "not_found": 1
+    },
+    "cooldowns": [
+      {
+        "number": 118,
+        "accountHash": "2de63bce79c2",
+        "limitedAt": "2026-10-14T01:34:50.941Z",
+        "cooldownUntil": "2026-10-14T09:34:50.941Z",
+        "durationMs": 28800000,
+        "reason": "frequent_or_abnormal_access",
+        "restrictionHash": "e553a36d9687"
+      },
+      {
+        "number": 130,
+        "accountHash": "b1b626a87f11",
+        "limitedAt": "2026-10-13T04:49:01.367Z",
+        "cooldownUntil": "2026-10-13T12:49:01.367Z",
+        "durationMs": 28800000,
+        "reason": "frequent_or_abnormal_access",
+        "restrictionHash": "28ed8ca3dfe1"
+      },
+      {
+        "number": 130,
+        "accountHash": "60cd3aa0c18a",
+        "limitedAt": "2026-10-13T05:53:11.749Z",
+        "cooldownUntil": "2026-10-13T13:53:11.749Z",
+        "durationMs": 28800000,
+        "reason": "frequent_or_abnormal_access",
+        "restrictionHash": "2958b80cb3ad"
+      },
+      {
+        "number": 130,
+        "accountHash": "a07e3968147d",
+        "limitedAt": "2026-10-14T01:37:22.895Z",
+        "cooldownUntil": "2026-10-14T09:37:22.895Z",
+        "durationMs": 28800000,
+        "reason": "frequent_or_abnormal_access",
+        "restrictionHash": "ee2e841b76e6"
+      }
+    ],
+    "sessions": [
+      {
+        "number": 118,
+        "sessionId": "70edfb05-546a-4a66-9787-5ab0bee75e0c",
+        "status": "ended",
+        "currentHash": "7e2435456c4d",
+        "identityVerified": true,
+        "savedAccounts": [
+          {
+            "hash": "7e2435456c4d",
+            "current": true
+          },
+          {
+            "hash": "2de63bce79c2",
+            "current": false
+          },
+          {
+            "hash": "126c5418b436",
+            "current": false
+          },
+          {
+            "hash": "161ed4a94283",
+            "current": false
+          },
+          {
+            "hash": "c1141d1330bd",
+            "current": false
+          }
+        ]
+      },
+      {
+        "number": 130,
+        "sessionId": "d428ebf8-df05-4f7a-8061-c119494d5b97",
+        "status": "ended",
+        "currentHash": "b1b626a87f11",
+        "identityVerified": true,
+        "savedAccounts": [
+          {
+            "hash": "b1b626a87f11",
+            "current": true
+          },
+          {
+            "hash": "a07e3968147d",
+            "current": false
+          },
+          {
+            "hash": "d51d749d25ff",
+            "current": false
+          },
+          {
+            "hash": "60cd3aa0c18a",
+            "current": false
+          }
+        ]
+      },
+      {
+        "number": 130,
+        "sessionId": "4b4e811e-a244-4034-a9c5-1528fadd2450",
+        "status": "ended",
+        "currentHash": "b1b626a87f11",
+        "identityVerified": true,
+        "savedAccounts": [
+          {
+            "hash": "b1b626a87f11",
+            "current": true
+          },
+          {
+            "hash": "a07e3968147d",
+            "current": false
+          },
+          {
+            "hash": "d51d749d25ff",
+            "current": false
+          },
+          {
+            "hash": "60cd3aa0c18a",
+            "current": false
+          }
+        ]
+      },
+      {
+        "number": 130,
+        "sessionId": "43fe58b7-97e8-42dc-99eb-bb54c6279398",
+        "status": "ended",
+        "currentHash": "b1b626a87f11",
+        "identityVerified": true,
+        "savedAccounts": [
+          {
+            "hash": "b1b626a87f11",
+            "current": true
+          },
+          {
+            "hash": "a07e3968147d",
+            "current": false
+          },
+          {
+            "hash": "d51d749d25ff",
+            "current": false
+          },
+          {
+            "hash": "60cd3aa0c18a",
+            "current": false
+          }
+        ]
+      },
+      {
+        "number": 130,
+        "sessionId": "d3630e91-1ef8-4e9e-98e0-cbd605c0d8fb",
+        "status": "ended",
+        "currentHash": "b1b626a87f11",
+        "identityVerified": true,
+        "savedAccounts": [
+          {
+            "hash": "b1b626a87f11",
+            "current": true
+          },
+          {
+            "hash": "a07e3968147d",
+            "current": false
+          },
+          {
+            "hash": "d51d749d25ff",
+            "current": false
+          },
+          {
+            "hash": "60cd3aa0c18a",
+            "current": false
+          }
+        ]
+      },
+      {
+        "number": 130,
+        "sessionId": "28698397-15a7-48d7-b703-4262bedd437e",
+        "status": "ended",
+        "currentHash": "b1b626a87f11",
+        "identityVerified": true,
+        "savedAccounts": [
+          {
+            "hash": "b1b626a87f11",
+            "current": true
+          },
+          {
+            "hash": "a07e3968147d",
+            "current": false
+          },
+          {
+            "hash": "d51d749d25ff",
+            "current": false
+          },
+          {
+            "hash": "60cd3aa0c18a",
+            "current": false
+          }
+        ]
+      },
+      {
+        "number": 130,
+        "sessionId": "92296960-46fb-4760-ae21-6e66a72213d1",
+        "status": "ended",
+        "currentHash": "b1b626a87f11",
+        "identityVerified": true,
+        "savedAccounts": [
+          {
+            "hash": "b1b626a87f11",
+            "current": true
+          },
+          {
+            "hash": "a07e3968147d",
+            "current": false
+          },
+          {
+            "hash": "d51d749d25ff",
+            "current": false
+          },
+          {
+            "hash": "60cd3aa0c18a",
+            "current": false
+          }
+        ]
+      },
+      {
+        "number": 130,
+        "sessionId": "eb799488-4501-4091-be17-aa392dca2b4e",
+        "status": "ended",
+        "currentHash": "b1b626a87f11",
+        "identityVerified": true,
+        "savedAccounts": [
+          {
+            "hash": "b1b626a87f11",
+            "current": true
+          },
+          {
+            "hash": "a07e3968147d",
+            "current": false
+          },
+          {
+            "hash": "d51d749d25ff",
+            "current": false
+          },
+          {
+            "hash": "60cd3aa0c18a",
+            "current": false
+          }
+        ]
+      },
+      {
+        "number": 118,
+        "sessionId": "70014eb6-74a9-4424-9dd2-01081eb04521",
+        "status": "ended",
+        "currentHash": "7e2435456c4d",
+        "identityVerified": true,
+        "savedAccounts": [
+          {
+            "hash": "7e2435456c4d",
+            "current": true
+          },
+          {
+            "hash": "2de63bce79c2",
+            "current": false
+          },
+          {
+            "hash": "126c5418b436",
+            "current": false
+          },
+          {
+            "hash": "161ed4a94283",
+            "current": false
+          },
+          {
+            "hash": "c1141d1330bd",
+            "current": false
+          }
+        ]
+      },
+      {
+        "number": 130,
+        "sessionId": "3e5cb9ee-45dc-461e-8f2a-cc26febaa5c1",
+        "status": "ended",
+        "currentHash": "b1b626a87f11",
+        "identityVerified": true,
+        "savedAccounts": [
+          {
+            "hash": "b1b626a87f11",
+            "current": true
+          },
+          {
+            "hash": "a07e3968147d",
+            "current": false
+          },
+          {
+            "hash": "d51d749d25ff",
+            "current": false
+          },
+          {
+            "hash": "60cd3aa0c18a",
+            "current": false
+          }
+        ]
+      },
+      {
+        "number": 130,
+        "sessionId": "79f89e5e-715d-42a1-a7ce-0d9d8eb46c0d",
+        "status": "ended",
+        "currentHash": "b1b626a87f11",
+        "identityVerified": true,
+        "savedAccounts": [
+          {
+            "hash": "b1b626a87f11",
+            "current": true
+          },
+          {
+            "hash": "a07e3968147d",
+            "current": false
+          },
+          {
+            "hash": "d51d749d25ff",
+            "current": false
+          },
+          {
+            "hash": "60cd3aa0c18a",
+            "current": false
+          }
+        ]
+      },
+      {
+        "number": 130,
+        "sessionId": "a0da59ce-2162-4ebc-b5f6-20785e1bc326",
+        "status": "ended",
+        "currentHash": "b1b626a87f11",
+        "identityVerified": true,
+        "savedAccounts": [
+          {
+            "hash": "b1b626a87f11",
+            "current": true
+          },
+          {
+            "hash": "a07e3968147d",
+            "current": false
+          },
+          {
+            "hash": "d51d749d25ff",
+            "current": false
+          },
+          {
+            "hash": "60cd3aa0c18a",
+            "current": false
+          }
+        ]
+      },
+      {
+        "number": 130,
+        "sessionId": "74993ca7-518b-4ea0-8332-b4830337b6cd",
+        "status": "ended",
+        "currentHash": "b1b626a87f11",
+        "identityVerified": true,
+        "savedAccounts": [
+          {
+            "hash": "b1b626a87f11",
+            "current": true
+          },
+          {
+            "hash": "a07e3968147d",
+            "current": false
+          },
+          {
+            "hash": "d51d749d25ff",
+            "current": false
+          },
+          {
+            "hash": "60cd3aa0c18a",
+            "current": false
+          }
+        ]
+      },
+      {
+        "number": 130,
+        "sessionId": "529e340d-56ff-463c-80f0-612a60b76a77",
+        "status": "ended",
+        "currentHash": "b1b626a87f11",
+        "identityVerified": true,
+        "savedAccounts": [
+          {
+            "hash": "b1b626a87f11",
+            "current": true
+          },
+          {
+            "hash": "a07e3968147d",
+            "current": false
+          },
+          {
+            "hash": "d51d749d25ff",
+            "current": false
+          },
+          {
+            "hash": "60cd3aa0c18a",
+            "current": false
+          }
+        ]
+      },
+      {
+        "number": 118,
+        "sessionId": "d8963055-57f4-4241-87a0-7cfddf29b64c",
+        "status": "ended",
+        "currentHash": "7e2435456c4d",
+        "identityVerified": true,
+        "savedAccounts": [
+          {
+            "hash": "7e2435456c4d",
+            "current": true
+          },
+          {
+            "hash": "2de63bce79c2",
+            "current": false
+          },
+          {
+            "hash": "126c5418b436",
+            "current": false
+          },
+          {
+            "hash": "161ed4a94283",
+            "current": false
+          },
+          {
+            "hash": "c1141d1330bd",
+            "current": false
+          }
+        ]
+      },
+      {
+        "number": 130,
+        "sessionId": "f7bbefa2-c733-4361-9ac7-fc5848dab040",
+        "status": "ended",
+        "currentHash": "b1b626a87f11",
+        "identityVerified": true,
+        "savedAccounts": [
+          {
+            "hash": "b1b626a87f11",
+            "current": true
+          },
+          {
+            "hash": "a07e3968147d",
+            "current": false
+          },
+          {
+            "hash": "d51d749d25ff",
+            "current": false
+          },
+          {
+            "hash": "60cd3aa0c18a",
+            "current": false
+          }
+        ]
+      }
+    ],
+    "poolEnabled": false,
+    "channels": [],
+    "activeTasks": [],
+    "outbox": 0,
+    "productionActions": 0
+  },
+  "investigation": {
+    "accountSelection": {
+      "number": 118,
+      "targetAccountHash": "7e2435456c4d",
+      "navigation": "back from SMS login; one login-other entry tap; one observed saved-account row tap; home returned; formal API start verified exact current marker",
+      "selectionCount": 1,
+      "loginOtherEntryTapCount": 1,
+      "smsRequested": false,
+      "twoEarlierListDiagnostics": "alipay_my_tab_missing before any account selection; expected home-only helper cannot navigate login surface",
+      "formalStartTaskId": "51c33d8e-f218-4aec-b33e-1c93028ca485",
+      "identityVerified": true
+    },
+    "harnessNotes": [
+      "One read-only SQL diagnostic used nonexistent event_seq; corrected to JSON createdAt, no business change.",
+      "Post-terminal manual screenshot can race session cleanup: ordinal 8 showed an already-cleared input. Exclude it from query-result evidence and use Agent evidence captured before stop.",
+      "Only original-task GET and same-key/new-key idempotency submissions while waiting; no automated captcha action by this test controller."
+    ],
+    "screenReviewOrdinals": [
+      1,
+      6,
+      8,
+      14,
+      17,
+      54,
+      55,
+      58,
+      72,
+      73,
+      79,
+      89,
+      95,
+      99
+    ],
+    "visualVerdict": "All 14 reviewed frames have the exact search input and quick recharge/recommendation content; no visible name/account card. Ordinal72 also has a transfer shortcut with the number, not an account name card. Underlying registration/privacy state remains unproved."
+  },
+  "visualEvidence": [
+    {
+      "ordinal": 1,
+      "number": 130,
+      "lookupId": "8e8ffd19-3adf-4af8-8f62-44cabba52676",
+      "evidenceKind": "agent_failure_before_stop",
+      "captureSha256": "0de5a207a65f983a72efb32513a411f0b3bd15453421d9a30d23624adae31f06",
+      "card": false,
+      "hasName": false,
+      "protected": "",
+      "loading": false,
+      "networkBusy": false,
+      "exactInput": true,
+      "recharge": true,
+      "nameLike": false,
+      "actions": [],
+      "markers": [
+        "全部",
+        "快捷功能"
+      ]
+    },
+    {
+      "ordinal": 6,
+      "number": 130,
+      "lookupId": "cae4be16-3e3c-4007-a9a1-47a0a0c759a9",
+      "evidenceKind": "agent_failure_before_stop",
+      "captureSha256": "fa0fa3ceaa4854ec3053e5ffc8b445de259b9eeee446adffd9d7b4057c18a3ec",
+      "card": false,
+      "hasName": false,
+      "protected": "",
+      "loading": false,
+      "networkBusy": false,
+      "exactInput": true,
+      "recharge": true,
+      "nameLike": false,
+      "actions": [],
+      "markers": [
+        "全部",
+        "快捷功能"
+      ]
+    },
+    {
+      "ordinal": 8,
+      "number": 130,
+      "lookupId": "2d089e43-f1ad-4916-b7e3-4bf4a75aa03c",
+      "evidenceKind": "agent_failure_before_stop",
+      "captureSha256": "973587de53e97eb1d8752b3f503aa0b6333a5971da2cd346feb02e06917f8243",
+      "card": false,
+      "hasName": false,
+      "protected": "",
+      "loading": false,
+      "networkBusy": false,
+      "exactInput": true,
+      "recharge": true,
+      "nameLike": false,
+      "actions": [],
+      "markers": [
+        "全部",
+        "快捷功能"
+      ]
+    },
+    {
+      "ordinal": 14,
+      "number": 130,
+      "lookupId": "2f454655-803f-48b5-9b27-601049d15684",
+      "evidenceKind": "agent_failure_before_stop",
+      "captureSha256": "e7cf6f2bdb23d3ae87d40dbca17c95e061baaac01eb767fe47e6ad08a2249b97",
+      "card": false,
+      "hasName": false,
+      "protected": "",
+      "loading": false,
+      "networkBusy": false,
+      "exactInput": true,
+      "recharge": true,
+      "nameLike": false,
+      "actions": [],
+      "markers": [
+        "全部",
+        "快捷功能"
+      ]
+    },
+    {
+      "ordinal": 17,
+      "number": 130,
+      "lookupId": "64555d67-9a0f-4b7c-ad9b-9e0640414572",
+      "evidenceKind": "agent_failure_before_stop",
+      "captureSha256": "a19f7d3a7e1c76a9047e6931b87a2db80a2f04be4a632159b4a418ac76d88c6a",
+      "card": false,
+      "hasName": false,
+      "protected": "",
+      "loading": false,
+      "networkBusy": false,
+      "exactInput": true,
+      "recharge": true,
+      "nameLike": false,
+      "actions": [],
+      "markers": [
+        "全部",
+        "快捷功能"
+      ]
+    },
+    {
+      "ordinal": 54,
+      "number": 130,
+      "lookupId": "77d32415-409a-4524-9d65-089facb74cfc",
+      "evidenceKind": "agent_failure_before_stop",
+      "captureSha256": "cf38bf0270e01bd9a8d33a1e42d077a18c35c9f7d7ada6246193be7a9be1f01c",
+      "card": false,
+      "hasName": false,
+      "protected": "",
+      "loading": false,
+      "networkBusy": false,
+      "exactInput": true,
+      "recharge": true,
+      "nameLike": false,
+      "actions": [],
+      "markers": [
+        "全部",
+        "快捷功能"
+      ]
+    },
+    {
+      "ordinal": 55,
+      "number": 130,
+      "lookupId": "f399542d-e566-4f4f-a099-827ffb8755aa",
+      "evidenceKind": "agent_failure_before_stop",
+      "captureSha256": "654193c5d05055ae8ea683e75339df700645fa0c0829a0f8dd040f3798157e82",
+      "card": false,
+      "hasName": false,
+      "protected": "",
+      "loading": false,
+      "networkBusy": false,
+      "exactInput": true,
+      "recharge": true,
+      "nameLike": false,
+      "actions": [],
+      "markers": [
+        "全部",
+        "快捷功能"
+      ]
+    },
+    {
+      "ordinal": 58,
+      "number": 130,
+      "lookupId": "4d5d5b8a-aaa7-410b-ab3c-ea8dcb38e9b9",
+      "evidenceKind": "agent_failure_before_stop",
+      "captureSha256": "a17633143415d1b6fd108609f0cdde63d3ae16ad3c7ef62a66cdb3d746c83bee",
+      "card": false,
+      "hasName": false,
+      "protected": "",
+      "loading": false,
+      "networkBusy": false,
+      "exactInput": true,
+      "recharge": true,
+      "nameLike": false,
+      "actions": [],
+      "markers": [
+        "全部",
+        "快捷功能"
+      ]
+    },
+    {
+      "ordinal": 72,
+      "number": 130,
+      "lookupId": "7f71316b-8e92-42d5-a8bc-87a9a7c0dc62",
+      "evidenceKind": "agent_failure_before_stop",
+      "captureSha256": "6b4f039009d86e72b506370ecbc72add2be93f444eca595fe737503b589703e4",
+      "card": false,
+      "hasName": false,
+      "protected": "",
+      "loading": false,
+      "networkBusy": false,
+      "exactInput": true,
+      "recharge": true,
+      "nameLike": false,
+      "actions": [],
+      "markers": [
+        "全部",
+        "快捷功能"
+      ]
+    },
+    {
+      "ordinal": 73,
+      "number": 130,
+      "lookupId": "84a5d46e-2a74-4cfc-99ce-6e0251ecf196",
+      "evidenceKind": "agent_failure_before_stop",
+      "captureSha256": "6b2c20cb23fd5b1b323e2c7c3df97f542d058feb05bcbc6bfc9ddc56fb01d068",
+      "card": false,
+      "hasName": false,
+      "protected": "",
+      "loading": false,
+      "networkBusy": false,
+      "exactInput": true,
+      "recharge": true,
+      "nameLike": false,
+      "actions": [],
+      "markers": [
+        "全部",
+        "快捷功能"
+      ]
+    },
+    {
+      "ordinal": 79,
+      "number": 118,
+      "lookupId": "858246cc-b107-43a8-8230-9470dcfdf8a3",
+      "evidenceKind": "agent_failure_before_stop",
+      "captureSha256": "fac59f4476f1de513b9ea24149f068bf13058d1ee1ec728ea1b6d83ea62d325f",
+      "card": false,
+      "hasName": false,
+      "protected": "",
+      "loading": false,
+      "networkBusy": false,
+      "exactInput": true,
+      "recharge": true,
+      "nameLike": false,
+      "actions": [],
+      "markers": [
+        "全部",
+        "快捷功能",
+        "大家都在搜"
+      ]
+    },
+    {
+      "ordinal": 89,
+      "number": 118,
+      "lookupId": "e40c082f-7a62-4e50-98c1-032a425e73e2",
+      "evidenceKind": "agent_failure_before_stop",
+      "captureSha256": "4729d000b351130bbbb7455474548097552009520618b1a252bb4ec078944049",
+      "card": false,
+      "hasName": false,
+      "protected": "",
+      "loading": false,
+      "networkBusy": false,
+      "exactInput": true,
+      "recharge": true,
+      "nameLike": false,
+      "actions": [],
+      "markers": [
+        "全部",
+        "快捷功能",
+        "大家都在搜"
+      ]
+    },
+    {
+      "ordinal": 95,
+      "number": 130,
+      "lookupId": "19304938-27d2-46e6-99d7-dce2d60afe3b",
+      "evidenceKind": "agent_failure_before_stop",
+      "captureSha256": "521ab15a8b234e9401eed72e600996bc8cd21a335a8861586e6ae33504a766fa",
+      "card": false,
+      "hasName": false,
+      "protected": "",
+      "loading": false,
+      "networkBusy": false,
+      "exactInput": true,
+      "recharge": true,
+      "nameLike": false,
+      "actions": [],
+      "markers": [
+        "全部",
+        "快捷功能"
+      ]
+    },
+    {
+      "ordinal": 99,
+      "number": 130,
+      "lookupId": "1cee6529-a699-409b-b3b0-0ec2728e7a73",
+      "evidenceKind": "agent_failure_before_stop",
+      "captureSha256": "299a634aee6b351160c9da9a44653b97e540182d3969faf2be4286c3e89707aa",
+      "card": false,
+      "hasName": false,
+      "protected": "",
+      "loading": false,
+      "networkBusy": false,
+      "exactInput": true,
+      "recharge": true,
+      "nameLike": false,
+      "actions": [],
+      "markers": [
+        "全部",
+        "快捷功能"
+      ]
+    }
+  ],
+  "restoration": {
+    "atUtc": "2026-10-14T02:59:08.378439+00:00",
+    "originalAgentResumed": 44042,
+    "originalPlatformUnchanged": 46592,
+    "originalPlatformReady": true,
+    "originalAgentHeartbeatAgeSeconds": 4.678439,
+    "originalPlatformTasks": 4,
+    "adbDaemonUnchanged": 26031,
+    "originalConfigSha256": "547e6eaaff47f20ab8faf5482ee4e0bbe99f86938720a16b7921b8db94584c0a",
+    "stayAwakeBaselineRetained": {
+      "118": "2",
+      "130": "0"
+    },
+    "ownedTestPortsClosed": [
+      59304,
+      59305,
+      59306
+    ],
+    "pendingTestTasks": 0,
+    "outbox": 0,
+    "productionActions": 0
+  },
+  "preservation": {
+    "worktreeCleanBeforeReceipt": true,
+    "rootStatusUnchanged": true,
+    "rootDocUnchanged": true,
+    "rootHeadUnchanged": true,
+    "rootStatusEntries": 236
+  },
+  "runtimeIntegrity": {
+    "fileCount": 349,
+    "runtimeManifestSha256": "8616f22e0917c8969fe9bee68350d254ae17f3f043879846ba80d6f42fe7df73",
+    "unchanged": true,
+    "sourceTag": "lookup-async-20261014-rc.11"
+  },
+  "privateEvidenceManifestSha256": "dfa28cee9ea85d0ec5cf5eabc8e9e43d3cd38d4868a2cba6f8d0a714b5fbc386",
+  "databaseBackupSha256": "9592bdd3cad667cde3758c3fc9068caa3f1bf64a610a134ded4e9c8a71a16f81",
+  "automatedRegression": {
+    "rerun": false,
+    "reason": "No runtime/API/SDK/Agent/ADB/media files changed; all349 assembled file hashes match immutable rc.11. Current-turn validation is real HTTP/PG/device evidence and integrity/receipt checks."
+  },
+  "notVerified": [
+    "Why Alipay withheld account cards for these14 numbers; registration or privacy state cannot be inferred",
+    "Newly limited accounts naturally reaching their full8-hour deadline",
+    "Every saved account exhausted",
+    "Five physical phones concurrently and complete49-device mapping",
+    "Windows OCR runtime and production",
+    "Partner system business-table writeback"
+  ],
+  "rollback": "Owned test processes are stopped and original Agent resumed. Reproduce from immutable rc.11; do not overwrite requests, aliases or account cooldown data. No production rollback required.",
+  "productionActions": 0,
+  "pushed": false
+}

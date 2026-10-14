@@ -1,0 +1,12 @@
+{
+  "version": "lookup-async-20261014-live.3",
+  "receiptTag": "lookup-async-20261014-live.3",
+  "sourceTag": "lookup-async-20261014-rc.11",
+  "sourceCommit": "d38964eb11f08766e143d1743dc9d13f8b367e6b",
+  "branch": "codex/lookup-unconfirmed-20261014",
+  "baselineCommit": "097c6d957f13e68ebacfda11d71ea3ee12577304",
+  "status": "local-real-test-followup-not-deployed",
+  "runtimeFilesChanged": 0,
+  "productionActions": 0,
+  "pushed": false
+}
