@@ -1,0 +1,105 @@
+{
+  "version": "lookup-delivery-20261014-rc.1",
+  "nodeFull": {
+    "passed": 720,
+    "failed": 0
+  },
+  "pythonDiscovery": {
+    "passed": 340,
+    "failed": 0
+  },
+  "agentCheckBeforeFinalPreflightGuard": {
+    "passed": 314,
+    "failed": 0
+  },
+  "rootSyntax": "passed",
+  "sdkNode": 6,
+  "sdkPython": 9,
+  "partnerDurableExample": 5,
+  "frozenUnchanged": 24,
+  "partnerPostgres": {
+    "atUtc": "2026-10-14T10:23:37.565Z",
+    "downloadedZipSha256": "6da08f3ec0264b00d2a1d19d388fab4f0a91c314e5466fcf0807e02ea999c63c",
+    "aliasLimit429PreservesOriginal": true,
+    "actualRetryAfterSeconds": 5,
+    "disabledPool503": true,
+    "version": "lookup-delivery-20261014-rc.1",
+    "actualHttpPostgres": true,
+    "storage": "postgres",
+    "independentRawHmac": true,
+    "downloadedPythonBundle": true,
+    "partnerProcessRestartBeforeLookupIdSaved": true,
+    "perResultDurableBackfill": true,
+    "maximumSimultaneousQueries": 5,
+    "distinctDevicesAtPeak": 5,
+    "logicalPhones": 6,
+    "actualQueryTasks": 6,
+    "sixthQueuedThenDispatched": true,
+    "heldPhoneDidNotBlockOtherFive": true,
+    "otherFiveFinishedMs": 1174,
+    "heldElapsedMs": 121003,
+    "newKeyRetries": 8,
+    "sameLookupAfterFreshKeys": true,
+    "over120Seconds": true,
+    "sameLookupAfterTwoMinutes": true,
+    "serverRestartPreservesIdentity": true,
+    "duplicateCallbackSafe": true,
+    "terminalStatuses": [
+      "succeeded",
+      "not_found",
+      "failed"
+    ],
+    "authCases": [
+      400,
+      401,
+      404,
+      409
+    ],
+    "drained": true,
+    "physicalPhones": 0,
+    "productionActions": 0
+  },
+  "unconfirmedRealPostgresHttp": {
+    "loopbackOnly": true,
+    "isolatedCluster": true,
+    "managedHttpWithUnconfirmedRecovery": "passed",
+    "productionConnections": 0
+  },
+  "review": "Self-review only: foreground/current-account proof, no action before cooldown ACK, strict observation fallback after Poco exit, account/control/task/preflight guards, expiring leases and one resume, retained dedup identity. No independent reviewer.",
+  "correctedHarnessFailures": [
+    "First full run lacked Agent node_modules symlink; corrected without dependency updates.",
+    "New recovery test initially used legacy sync endpoint for different-key dedup; corrected to documented async submission; submit replay is 200 and has no code field.",
+    "Postgres local setup initially omitted explicit fixture role and required pre-existing migrations; fresh loopback cluster with both migrations passed.",
+    "Partner proof previously hardcoded old version/Postgres=true; now derives version and actual storage, rerun with isolated PostgreSQL.",
+    "Python initial discovery duplicated 17 imported fixture tests; module import now yields 340 distinct collected tests, not 357."
+  ],
+  "productionEvidence": {
+    "observerAfterCaptcha": "Two genuine search_ready reads at10:16Z rejected probe_out_of_order due concurrent old-Agent unknown observations; no fabricated report or newly submitted query.",
+    "pool": "Only162 re-enabled revision12 for original request; subsequent state in separate evidence, not a successful canary.",
+    "mediaBefore": {
+      "decision": "D-075",
+      "verified": "live",
+      "pid": 2503525,
+      "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+      "bitsPerSecond": 8000000,
+      "packetsPerGroup": 2
+    }
+  },
+  "notVerified": [
+    "Candidate native Windows/account switching after natural restriction",
+    "Candidate post-captcha original-query recovery on162",
+    "Natural8hour cooldown expiry",
+    "Five physical devices",
+    "Candidate production deployment and partner credential enablement"
+  ],
+  "testLogSha256": {
+    "full-reviewed.log": "2c920d37483911dbf5d27501c1c286771fea56e45d9da876bb277b29df272502",
+    "python-final.log": "920de357b70f6365ad79cfef3174404371b8d7df156ac050afcf25f7226ea997",
+    "syntax-final.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "sdk-node.log": "6982402a4db25b9b3a07209c6688248320ac8494938836ea14b2712f875d5ee3",
+    "sdk-python.log": "43c51ed190e9b90e3770b543b598ccee7d30d497c787398474dd478bf1b081ed",
+    "partner-example.log": "86794120640779cb671ba5e0c86a20ba9e34a1c58d875f22e893ed52afef9026",
+    "managed-http-postgres.log": "ac04c5d2208eb633bb497006c354aa407d097cea73d3b30c2cbf754b629eb21f",
+    "partner-postgres.log": "17b4aac8ccb95b4ac873a7a70c66d6172c2da0ae6d1170de00dd2e4b5f21093a"
+  }
+}
