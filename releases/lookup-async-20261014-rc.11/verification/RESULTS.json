@@ -1,0 +1,64 @@
+{
+  "atUtc": "2026-10-14T02:05:15.499985+00:00",
+  "selfReview": true,
+  "baselineNewTests": {
+    "total": 10,
+    "errors": 10
+  },
+  "lookupPythonTests": {
+    "passed": 123,
+    "logSha256": "8ab7e00ae301d481f20ef3f20b345f60e68dcca86d82e2fcbf9efa1a27620646"
+  },
+  "runnerPythonTests": {
+    "passed": 163,
+    "logSha256": "0ec4bb5b6d081bbc97c1090644b3c88d42580b43f5b009d43dc8ff220d207df1"
+  },
+  "realFrameReplay": [
+    {
+      "file": "raw-result-0.png",
+      "sha256": "e5d6ade91607e6c8da9bb603d21249d52db52f54eb1fa48c2ba6a4002a356ca4",
+      "matchedOriginalPhone": true,
+      "hasName": true,
+      "phoneRowConfidence": [
+        0.9998475313186646
+      ]
+    },
+    {
+      "file": "raw-result-1.png",
+      "sha256": "26e280c369be0d2d6a4024e9f477f4ead52d4b7cef6710c592b4aa8926b826e4",
+      "matchedOriginalPhone": true,
+      "hasName": true,
+      "phoneRowConfidence": [
+        0.9998475313186646
+      ]
+    },
+    {
+      "file": "raw-result-2.png",
+      "sha256": "de223dc4b5de5500d435553c864588fcdc792935c25062389a712f69b1cec04e",
+      "matchedOriginalPhone": true,
+      "hasName": true,
+      "phoneRowConfidence": [
+        0.9998475313186646
+      ]
+    },
+    {
+      "file": "raw-result-3.png",
+      "sha256": "d73467797bd61c4f7feeb7c92f8c5743543d7a42cc68ad7286cc46852bad6104",
+      "matchedOriginalPhone": true,
+      "hasName": true,
+      "phoneRowConfidence": [
+        0.9998475313186646
+      ]
+    }
+  ],
+  "integrity": {
+    "baselineFileCount": 348,
+    "changedFiles": [
+      "windows-agent/scripts/alipay_visual_result.py"
+    ],
+    "apiSdkSharedAdbMediaUnchanged": true
+  },
+  "realRetest": "pending",
+  "rc10RealRetest": "2 failed; records retained",
+  "productionActions": 0
+}
