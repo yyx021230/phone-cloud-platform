@@ -1,0 +1,5 @@
+{
+  "status": "agent-only-overlay-cloud-component-reused",
+  "cloudSourceTag": "platform-core-20261014-rc.2",
+  "reason": "No cloud runtime change; retain rc2 Docker label and VERSION.json, do not relabel existing image."
+}

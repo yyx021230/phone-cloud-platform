@@ -1,0 +1,28 @@
+{
+  "version": "platform-core-20261014-rc.5",
+  "status": "local-regression-passed-device-test-pending",
+  "diagnosis": {
+    "actualFramePriorParser": false,
+    "actualFrameNewParser": true,
+    "reason": "lower transfer recommendation counted as a duplicate action inside the name card"
+  },
+  "checks": {
+    "newCases": 8,
+    "oldFailures": 4,
+    "newPassed": 8,
+    "python": 311,
+    "runners": 163,
+    "node": 698
+  },
+  "frozenChanged": false,
+  "windowsNativeVerified": false,
+  "naturalCooldownExpiry": "deferred-by-user",
+  "productionActions": 0,
+  "logs": {
+    "action-scope-before.log": "1454c9319665f5aac1719687edf6d51c20de3ac36260b3ac970df89aeff8f7cd",
+    "action-scope-after.log": "a3368a96609729e1369d057dfefa6cbe072afa751335d84019542cf280c86090",
+    "python-rc5-regression.log": "ae6f93cd5157f481870fd7ebd0895063ec07b24d51d49434a6d02352c01afc92",
+    "runners-rc5.log": "61d843c14c5de5ba709c4f72777b130fb9a381365c5f91e791a0525c933b3e54",
+    "node-rc5-regression.log": "82dae06be0d942dcb525e28b2ff8b71fbf74f10cfa89861083f67d86acfe3e68"
+  }
+}
