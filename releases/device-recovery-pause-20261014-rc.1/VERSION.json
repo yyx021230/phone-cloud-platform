@@ -1,0 +1,27 @@
+{
+  "version": "device-recovery-pause-20261014-rc.1",
+  "branch": "codex/device-recovery-pause-20261014",
+  "baselineCommit": "6ed02b4259648284c6f4b731751824aeb3678fc4",
+  "status": "local-candidate-not-deployed",
+  "baseTag": "platform-core-20261014-rc.7",
+  "baseManifestSha256": "35a461b415d174f07dd9eb1e759a7043ee23bd5f90f7d31ff72430d8d4452f59",
+  "productionBaseline": "platform-core-20261014-deployed.1",
+  "productionRuntimeCommit": "aa3f39934ba192e11d181f47eb6c98be5f7393d6",
+  "overlayFiles": [
+    "public/app.js",
+    "server/index.mjs",
+    "server/recovery-controls.mjs",
+    "server/recovery-controls.test.mjs",
+    "server/recovery-controls.http.test.mjs",
+    "windows-agent/src/index.mjs",
+    "windows-agent/src/pnp-recovery-control.mjs",
+    "windows-agent/src/pnp-recovery-control.test.mjs",
+    "scripts/recovery-controls-ui.test.mjs"
+  ],
+  "productionActions": 0,
+  "releaseGates": [
+    "Separate cloud/Agent deployment window; no restart authorized in current development task",
+    "Native Windows pause ACK, target-only PnP gray and long observation",
+    "Preserve both recovery-control durable files in backup and rollback; old Agent cannot enforce pause"
+  ]
+}

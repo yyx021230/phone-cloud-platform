@@ -1,0 +1,21 @@
+{
+  "version": "device-recovery-pause-20261014-rc.1",
+  "files": {
+    "README.md": "9d3742731542e37a71edfb41c347f764140574658d18ea977a71ae03efb5a162",
+    "RELEASE_NOTES.md": "779c0f49c73da0d90a9c2667f9e4a3267eedc10277ab4b054a129d25c4299c42",
+    "VERSION.json": "48539706886584146a1191b43e556582ca70c6ad9277c665a87de126d6264dc6",
+    "public/app.js": "362ececf1def5d0c1573427c1eef3cb8986149810d33de7a9e07d26153e738f9",
+    "scripts/recovery-controls-ui.test.mjs": "0c989a5108e596399c46e67f57846deb0427dbe9681ee8ecb211c98b93aedab1",
+    "server/index.mjs": "d67883e72c0eb37a702cba5792395a486ce7690b740059c1e4cd4efdcbcff8fb",
+    "server/recovery-controls.http.test.mjs": "28efab991b0970bfa8cd3362091e2ab372c7fe96e17aabc3b8f0f2f6d60a678e",
+    "server/recovery-controls.mjs": "9c778b5152397a339dac5a82f383d455d26c507a71990112027dbab55dec0af5",
+    "server/recovery-controls.test.mjs": "224908ac246283fd0fe9511c3e6d4965dd2bd30f0393d882ff111ebc488dd766",
+    "verification/BUILD.json": "05bd6804fb8a89588e5051b8ab7208083dad58baae37ba2f2ba6f232d1b09060",
+    "verification/FROZEN.json": "6fa1f33192aa4bc76b78f9d2da1dd9149b7bd62e1193c4c2fee4193c3f70c55c",
+    "verification/RESULTS.json": "bee42d231651a5dda062a0a80a69581ea344055d97296801de6ebdaed430326e",
+    "verification/prepare-local.py": "3d45975f55f7f3ec0cb5cf4c6c51addf77e2d01a86a944383c4c41e950379992",
+    "windows-agent/src/index.mjs": "afabd3f97834701613b994c8b7cf166fd9c10ae4c8b86b47b5cfc35321ced3ef",
+    "windows-agent/src/pnp-recovery-control.mjs": "006fe9cd9fa37ddb857b1d2d9f3ecebe6dd387012cc52329157700228e594a37",
+    "windows-agent/src/pnp-recovery-control.test.mjs": "0d9bb2a2bf8bab17230fe050c7a4a9aed7fc2078a2a323c4606f72fd5c9a138f"
+  }
+}
