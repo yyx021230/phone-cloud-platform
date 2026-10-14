@@ -1,0 +1,47 @@
+[
+  {
+    "check": "syntax",
+    "exitCode": 0,
+    "logSha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+  },
+  {
+    "check": "agent",
+    "exitCode": 0,
+    "logSha256": "8f64903cc1b2cf84ab008b67c7d614a36cd31a1bad43a7a1a1f69ac2844214c1"
+  },
+  {
+    "check": "screen",
+    "exitCode": 0,
+    "logSha256": "351bfe9d72a912c548e0f607e4cac4115f873dcd8e567103e4e2fa163c505b83"
+  },
+  {
+    "check": "recovery",
+    "exitCode": 0,
+    "logSha256": "4e539b82474936ccbd590ad557e4e5632e257c94d2e51b728632b0c5ff29213b"
+  },
+  {
+    "check": "lookup-python",
+    "exitCode": 0,
+    "logSha256": "5ca9d130b56784336d5c114e6895fcf5b4d5652ac131f817854df71fc19f38c6"
+  },
+  {
+    "check": "runners-python",
+    "exitCode": 0,
+    "logSha256": "566cded6a7173000c1453b0fc50c362b7e604663df7c92fcdcd9e2225b87d24c"
+  },
+  {
+    "check": "sdk-node",
+    "exitCode": 0,
+    "logSha256": "294a67176014aa110b074caa00c00f0178d5601672712914aa18b6d18555cf33"
+  },
+  {
+    "check": "sdk-python",
+    "exitCode": 0,
+    "logSha256": "3c185e05f9f58cf470c989eca74fce836a50b4725e67de939bf27681294f5e93"
+  },
+  {
+    "check": "http-json",
+    "exitCode": 0,
+    "logSha256": "140fb8bbe7f88eda5f11e07c1c796b3c4ba2b453ac29b93e9bf79f79e5cc15bb"
+  }
+]

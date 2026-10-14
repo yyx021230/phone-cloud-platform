@@ -1,0 +1,77 @@
+{
+  "candidate": "platform-core-20261014-rc.2",
+  "status": "local-build-and-regression-passed-not-deployed",
+  "imageId": "sha256:8bdaa45eb1bde9538befc00017bee9182d319a734666b31a47b4b0cde23171ef",
+  "windowsNativeLoadingVerified": false,
+  "windowsOverlayFiles": [
+    "windows-agent/package-lock.json",
+    "windows-agent/runtime-manifests/wheel-manifest.json",
+    "windows-agent/runtime-manifests/windows-wheel-lock.txt",
+    "windows-agent/scripts/alipay_name_lookup.py",
+    "windows-agent/scripts/alipay_visual_result.py",
+    "windows-agent/scripts/install_lookup_ocr.py",
+    "windows-agent/scripts/lookup_ocr_runtime.py",
+    "windows-agent/scripts/lookup_ocr_worker.py",
+    "windows-agent/scripts/xhs_list_ocr.py",
+    "windows-agent/scripts/xhs_native_ocr.ps1",
+    "windows-agent/scripts/xhs_ocr_digits.png",
+    "windows-agent/scripts/\u5c0f\u7ea2\u4e66\u6570\u636e\u540c\u6b65.py",
+    "windows-agent/src/alipay-poco-fallback-policy.mjs",
+    "windows-agent/src/config.mjs",
+    "windows-agent/src/index.mjs",
+    "windows-agent/src/lookup-status-outbox.mjs",
+    "windows-agent/src/managed-lookup-delivery.mjs",
+    "windows-agent/src/pnp-recovery-admission.mjs",
+    "windows-agent/src/pnp-recovery-safety.mjs",
+    "windows-agent/src/post-task-scan-policy.mjs",
+    "windows-agent/src/windows-device-install-probe.mjs",
+    "windows-agent/src/xhs-data-collection.mjs"
+  ],
+  "files": [
+    {
+      "file": "combined-source.zip",
+      "sha256": "50e17505d972b15ce4c1e6693f03726f0f5200f33593be82e3f4277d931eb05a",
+      "bytes": 2853937,
+      "files": 386
+    },
+    {
+      "file": "cloud-build-context.zip",
+      "sha256": "170345f941cfe019604a69512f197a89aa3aa992971b6e77ae6690f88a3c845d",
+      "bytes": 2042009,
+      "files": 131
+    },
+    {
+      "file": "windows-agent-overlay.zip",
+      "sha256": "26a4a3274a595e71c37508c6c3d029973d9d7368bec667185b8fe97aa06a3e50",
+      "bytes": 234528,
+      "files": 22
+    },
+    {
+      "file": "windows-ocr-wheels.zip",
+      "sha256": "22221ac642f2c5a2b9395414b43b68cbdaa7e3a8ed7db96750497cd13afcc0b0",
+      "bytes": 96414763
+    },
+    {
+      "file": "windows-wheel-lock.txt",
+      "sha256": "841e5a4903669a63dcbf5e0cbd3b32ac0a9f53ca85b190cb7ba3e323ed934c5a",
+      "bytes": 1838
+    },
+    {
+      "file": "wheel-manifest.json",
+      "sha256": "77bb79cbb0ae88818d3b102fc429c468748294f06460340f36c0087a823624d3",
+      "bytes": 8823
+    },
+    {
+      "file": "cloud-image-linux-amd64.tar.gz",
+      "sha256": "3ae4f92abef5baa30b2e14ca88d4fc1f4a30082c77162e848ba67cf35183c2e6",
+      "bytes": 63269718
+    },
+    {
+      "file": "ROLLBACK.json",
+      "sha256": "284fb064616d273b011a5e70f8a0863ed9d279cfc2903db26ad1b1133994f12c",
+      "bytes": 1067
+    }
+  ],
+  "sourceManifestSha256": "902f559425f4be51b4883c93e799c595328d0bf0c9608c3da942d7d3f281b5b9",
+  "productionActions": 0
+}

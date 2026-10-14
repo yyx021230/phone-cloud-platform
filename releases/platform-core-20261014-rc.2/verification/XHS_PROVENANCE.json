@@ -1,0 +1,194 @@
+[
+  {
+    "path": "Dockerfile",
+    "xhsTagSha256": "1ac913fbf47f42512df96337c35ab4561b0191544e97a9b7657521a06efad74d",
+    "candidateSha256": "bcfa1dd23cee59ec94ab26ef301aecedf8a4b5c749591e0ecbf43499e411e7d7",
+    "identicalToXhs": false
+  },
+  {
+    "path": "docs/evidence/xhs-data-automation-20261013-rc2-kuaishou.json",
+    "xhsTagSha256": "f62f73cc9a761d999c6b5383616b1ff9cc4e381e2f7de19e6a9753b149fc38fc",
+    "candidateSha256": "f62f73cc9a761d999c6b5383616b1ff9cc4e381e2f7de19e6a9753b149fc38fc",
+    "identicalToXhs": true
+  },
+  {
+    "path": "public/app.js",
+    "xhsTagSha256": "0dd6c906a9f935048a992f5547ff335cd77f341cb56822dc882522ffdef43e41",
+    "candidateSha256": "508c4a3086ec7cf5e8503f4af305dc7841472fcace9aaa0aa7a2e0906d79f13c",
+    "identicalToXhs": false
+  },
+  {
+    "path": "public/index.html",
+    "xhsTagSha256": "fe672baa88d7398f10d61f6f81bfc426678fbced09300892e25163aaf2b75230",
+    "candidateSha256": "0fdd50833275113a0dc21f069aac261b7bb3c58a37784816bb2d16a349c59a55",
+    "identicalToXhs": false
+  },
+  {
+    "path": "public/styles.css",
+    "xhsTagSha256": "0997409af8edab3597c24b08ba63839173fdf732f57436c00abe41d674ee613b",
+    "candidateSha256": "154e6552ffa4a42b8382060d47e16e0f869a30e75f74a6e2fa63f2df1f560ba3",
+    "identicalToXhs": false
+  },
+  {
+    "path": "public/xhs-data-collection-ui.js",
+    "xhsTagSha256": "7be06e984b25ec61fa4e7004433f92c076c1acbb5a821e6cd979e539d955201f",
+    "candidateSha256": "7be06e984b25ec61fa4e7004433f92c076c1acbb5a821e6cd979e539d955201f",
+    "identicalToXhs": true
+  },
+  {
+    "path": "screen-client/screen-ui.test.mjs",
+    "xhsTagSha256": "bc92b92036d5c204b9b11bb5c9a4640966a75f395d6ddb5bd4729808bb7e1d93",
+    "candidateSha256": "064b432660554d5faa863cb62efa5fc8d821292f19704b62fb70ba33c1f64c0f",
+    "identicalToXhs": false
+  },
+  {
+    "path": "server/automation-center-ui.test.mjs",
+    "xhsTagSha256": "8238fb7a1b47053d0bc9940b7bd24c3ca6ebda6edac1dda627cfc1884b81a83e",
+    "candidateSha256": "7fd502122bce22e8d937f01fbc33ae121b987a2014497775632942a8c8c4b9e7",
+    "identicalToXhs": false
+  },
+  {
+    "path": "server/automation-center.mjs",
+    "xhsTagSha256": "3746829675b451ee9fa4fddbfcbeee178119cbe13ca25b6e041267a5a7c01264",
+    "candidateSha256": "318b78f5ff3406b280fd446930ca449baf6e75e6c91e9238b0afe841950b7ce2",
+    "identicalToXhs": false
+  },
+  {
+    "path": "server/automation-center.test.mjs",
+    "xhsTagSha256": "5d4142cf059432b230969fbfb52b2b2e21d0380436d81add096e6f98d065fb89",
+    "candidateSha256": "d5ee64d618f3cf684f96779eecbfb14d6e0f28ca2db39aedead20150e6e82693",
+    "identicalToXhs": false
+  },
+  {
+    "path": "server/automation-module-preservation.test.mjs",
+    "xhsTagSha256": "ff79666e11c51c292e7948f4a1b7e141b53132f7ee812bebb10845a8d4ba2ac9",
+    "candidateSha256": "ff79666e11c51c292e7948f4a1b7e141b53132f7ee812bebb10845a8d4ba2ac9",
+    "identicalToXhs": true
+  },
+  {
+    "path": "server/device-occupancy.mjs",
+    "xhsTagSha256": "3d6c7d4045cd82cb283d4a35c1473760f2d0a21601b6d9da032649bb19013baf",
+    "candidateSha256": "3d6c7d4045cd82cb283d4a35c1473760f2d0a21601b6d9da032649bb19013baf",
+    "identicalToXhs": true
+  },
+  {
+    "path": "server/index.mjs",
+    "xhsTagSha256": "3e01dfcdad11608931cdfbce7e06707c247b316ea018980647926dbc1ff666d6",
+    "candidateSha256": "158f4ec3c03f18618b40b7fbfd12db04537ff646771ef7fd12c2510ff3bd2334",
+    "identicalToXhs": false
+  },
+  {
+    "path": "server/xhs-data-collection.http.test.mjs",
+    "xhsTagSha256": "c73a06c68368af5632c89ce97472419c429103525b2d2b310414d8d5f7892dcf",
+    "candidateSha256": "a46a8f06a743754af629587a26355a3fdc9d3f637291d1c148c92a42211bc979",
+    "identicalToXhs": false
+  },
+  {
+    "path": "server/xhs-data-collection.mjs",
+    "xhsTagSha256": "17738a1f2f9fb2eb93ba4ba89f4e563f53d9b0a8313087fdfa6a1c620a55a49a",
+    "candidateSha256": "17738a1f2f9fb2eb93ba4ba89f4e563f53d9b0a8313087fdfa6a1c620a55a49a",
+    "identicalToXhs": true
+  },
+  {
+    "path": "server/xhs-data-collection.test.mjs",
+    "xhsTagSha256": "02280f50a591535889265eaf6d68ceea872298377ccc4ce85672b230456b96b4",
+    "candidateSha256": "02280f50a591535889265eaf6d68ceea872298377ccc4ce85672b230456b96b4",
+    "identicalToXhs": true
+  },
+  {
+    "path": "server/xhs-data-ui.test.mjs",
+    "xhsTagSha256": "f8ebbdd3dd84ebd9911b9d22077c37167520bce0e0171d6a4d444564dbfa83fb",
+    "candidateSha256": "f8ebbdd3dd84ebd9911b9d22077c37167520bce0e0171d6a4d444564dbfa83fb",
+    "identicalToXhs": true
+  },
+  {
+    "path": "windows-agent/package-lock.json",
+    "xhsTagSha256": "26340b426015063767d8ef1c2a31be05912e8004c4809f98d3b80b9b81cfeb3a",
+    "candidateSha256": "26340b426015063767d8ef1c2a31be05912e8004c4809f98d3b80b9b81cfeb3a",
+    "identicalToXhs": true
+  },
+  {
+    "path": "windows-agent/scripts/alipay_name_lookup.py",
+    "xhsTagSha256": "9c864ea0ea091878be86dfaadd75b4be04da17062ca8046e87a15fed1a6da336",
+    "candidateSha256": "ac30fc40e7c64f37dfd25105c76655307b92c8d20dca90765e09f3af22f20315",
+    "identicalToXhs": false
+  },
+  {
+    "path": "windows-agent/scripts/test_xhs_data_sync.py",
+    "xhsTagSha256": "2503df786116260c8b177eaa64df45550bc6ac20cb4de97c2eec47b44e13e844",
+    "candidateSha256": "2503df786116260c8b177eaa64df45550bc6ac20cb4de97c2eec47b44e13e844",
+    "identicalToXhs": true
+  },
+  {
+    "path": "windows-agent/scripts/test_xhs_list_ocr.py",
+    "xhsTagSha256": "1637a61ceeff6ceb2ac66bb6d5c571fe13641f04c6c41e8f57f68b7b31a8a585",
+    "candidateSha256": "1637a61ceeff6ceb2ac66bb6d5c571fe13641f04c6c41e8f57f68b7b31a8a585",
+    "identicalToXhs": true
+  },
+  {
+    "path": "windows-agent/scripts/xhs_list_ocr.py",
+    "xhsTagSha256": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+    "candidateSha256": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+    "identicalToXhs": true
+  },
+  {
+    "path": "windows-agent/scripts/xhs_native_ocr.ps1",
+    "xhsTagSha256": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+    "candidateSha256": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+    "identicalToXhs": true
+  },
+  {
+    "path": "windows-agent/scripts/xhs_ocr_digits.png",
+    "xhsTagSha256": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+    "candidateSha256": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+    "identicalToXhs": true
+  },
+  {
+    "path": "windows-agent/scripts/\u5c0f\u7ea2\u4e66\u6570\u636e\u540c\u6b65.py",
+    "xhsTagSha256": "bb459e3570d4201434bbbf05841c8b2b9d3864a3febc25b414780f9d84c710fc",
+    "candidateSha256": "bb459e3570d4201434bbbf05841c8b2b9d3864a3febc25b414780f9d84c710fc",
+    "identicalToXhs": true
+  },
+  {
+    "path": "windows-agent/src/automation-center-wiring.test.mjs",
+    "xhsTagSha256": "1250df1e5a6da0b98dad2b3d8ac52082ea6acc2a1c9e2be02b59144f8b554c2e",
+    "candidateSha256": "f704448b8887fed88717da3e43e674dbdfb5523152f6099a1ba6f02822f1b93c",
+    "identicalToXhs": false
+  },
+  {
+    "path": "windows-agent/src/config.mjs",
+    "xhsTagSha256": "ea836263b5f5e1d052c3e866c05ea7e5e89499c53fb2fab938040ea06471e27a",
+    "candidateSha256": "b233775c589ab22e6662a23bb82e507c9a3f635f1112709bfdae24d854a5d254",
+    "identicalToXhs": false
+  },
+  {
+    "path": "windows-agent/src/index.mjs",
+    "xhsTagSha256": "2b62cbe8308a3f4acf95c0200abf9cb5fff08ff642a6f2971de9fefab2bfdd0a",
+    "candidateSha256": "e190cf4edd1a8898b31831ba39ba90dc925402e863ba72b3526e7185757c7850",
+    "identicalToXhs": false
+  },
+  {
+    "path": "windows-agent/src/post-task-scan-policy.mjs",
+    "xhsTagSha256": "7596422f1abefb7793f3650658f8991d817e87bcb4fb1d2b2b92abde902a263e",
+    "candidateSha256": "a5bd899c70a9d1707fdaddc70b1adf1965260a7ce9d8bb10cccdc2de45842ec1",
+    "identicalToXhs": false
+  },
+  {
+    "path": "windows-agent/src/post-task-scan-policy.test.mjs",
+    "xhsTagSha256": "e9198ced86f76a03a4b71438b93a16a23083a04f22c4dcc1461585a7441766ad",
+    "candidateSha256": "e9198ced86f76a03a4b71438b93a16a23083a04f22c4dcc1461585a7441766ad",
+    "identicalToXhs": true
+  },
+  {
+    "path": "windows-agent/src/xhs-data-collection.mjs",
+    "xhsTagSha256": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+    "candidateSha256": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+    "identicalToXhs": true
+  },
+  {
+    "path": "windows-agent/src/xhs-data-collection.test.mjs",
+    "xhsTagSha256": "7dd50df200bda1df59416a4e30a7f8c31e462c30e0557a9eadd26cd3083661cd",
+    "candidateSha256": "7dd50df200bda1df59416a4e30a7f8c31e462c30e0557a9eadd26cd3083661cd",
+    "identicalToXhs": true
+  }
+]
