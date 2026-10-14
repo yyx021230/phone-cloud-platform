@@ -1,0 +1,46 @@
+{
+  "atUtc": "2026-10-14T01:45:07.393022+00:00",
+  "selfReview": true,
+  "scope": "one pure visual parser; no device action or protocol changes",
+  "baselineNewTests": {
+    "total": 8,
+    "pass": 4,
+    "fail": 3,
+    "error": 1
+  },
+  "lookupPythonTests": {
+    "passed": 104,
+    "logSha256": "4731aa472c889f6448f88e666e787bb8c4f86012fc5e798a33f0d9822e2005fe"
+  },
+  "runnerPythonTests": {
+    "passed": 163,
+    "logSha256": "d6450d83300f4187723119d262d1ea60496c78e1be01669e35e2c163c71e0584"
+  },
+  "rootSyntaxCheck": {
+    "passed": true,
+    "logSha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+  },
+  "realScreenshotReplay": {
+    "source": "real_failed_screenshot",
+    "ordinal": 103,
+    "number": 130,
+    "screenshotSha256": "9acfae3595de96c65a8bf59eace4647551e1daa5c1659c50e5f199c284c28bc1",
+    "oldParser": null,
+    "newParserConfirmedName": true,
+    "matchedOriginalPhone": true,
+    "productionActions": 0
+  },
+  "integrity": {
+    "baselineManifestFileCount": 346,
+    "comparisonExcludesVersionMetadata": true,
+    "changedBaselineFiles": [
+      "windows-agent/scripts/alipay_visual_result.py"
+    ],
+    "apiUnchanged": true,
+    "sdkUnchanged": true,
+    "accountPolicyUnchanged": true,
+    "sharedAdbAndMediaUnchanged": true
+  },
+  "realRetest": "pending",
+  "productionActions": 0
+}
