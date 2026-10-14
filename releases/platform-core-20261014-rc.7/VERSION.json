@@ -1,0 +1,23 @@
+{
+  "version": "platform-core-20261014-rc.7",
+  "branch": "codex/platform-rc2-local-acceptance-20261014",
+  "baselineCommit": "d4aaeafa2b43e28c9d5a202598b57880579f1a07",
+  "status": "local-candidate-not-deployed",
+  "baseTag": "platform-core-20261014-rc.6",
+  "baseManifestSha256": "3f2462cbb01f131a861251b934d89d5b73c5e52cc7f954ba2173a3a557c70b23",
+  "overlayFiles": [
+    "server/managed-lookup-platform.mjs",
+    "server/managed-lookup-result-race.test.mjs"
+  ],
+  "platformReleaseReady": false,
+  "productionActions": 0,
+  "releaseGates": [
+    "new cloud image build and Linux verification",
+    "local 118/130 API final verification",
+    "fresh production drift/D-075 backup and window"
+  ],
+  "deferredByUser": [
+    "natural cooldown expiry",
+    "five physical devices (only two available)"
+  ]
+}

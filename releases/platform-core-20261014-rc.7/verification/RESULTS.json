@@ -1,0 +1,16 @@
+{
+  "version": "platform-core-20261014-rc.7",
+  "nodeScreenFull": 709,
+  "newStopTests": 9,
+  "beforeFailures": 7,
+  "afterPassed": 33,
+  "windowsNative": "inherited-unchanged-rc6",
+  "python": "inherited-unchanged-315-plus-163",
+  "frozenChanged": false,
+  "deployed": false,
+  "logs": {
+    "stopped-before.log": "eb711c319b7c4412281c12427f541746318e8c27817a713421000cba7ba643f9",
+    "stopped-after.log": "917cc85ab0b0eecab06a993f25e0b04d36057a7b56f52d726819502d16dc77cc",
+    "node-rc7.log": "ba52e4903b49ffd4474a19df76a6a0df5a76376bfdf26df3aa7d69810fcd7354"
+  }
+}

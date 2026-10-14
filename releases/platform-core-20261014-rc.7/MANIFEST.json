@@ -1,0 +1,14 @@
+{
+  "version": "platform-core-20261014-rc.7",
+  "files": {
+    "README.md": "25fc406138fd2844692de7e9b6c5473b2aef3e5de445485b1362e6887f9a2870",
+    "RELEASE_NOTES.md": "80aeb25a22b1a05b273acaca1275a39ff215022603239c904d8736c32fa5a2b7",
+    "VERSION.json": "7686dcb593594e614235c6a7913da154db734a246e8a07e9bb6667ad7f1c2748",
+    "server/managed-lookup-platform.mjs": "09f67433be036c41ca493520d0cd77568f1c85a747ca7fee5c789e653c3434b6",
+    "server/managed-lookup-result-race.test.mjs": "07c64889c922e2c303c75c0fbf875fc8344c8d79bd86cd045acc445ac51941d1",
+    "verification/BUILD.json": "05bd6804fb8a89588e5051b8ab7208083dad58baae37ba2f2ba6f232d1b09060",
+    "verification/FROZEN.json": "6fa1f33192aa4bc76b78f9d2da1dd9149b7bd62e1193c4c2fee4193c3f70c55c",
+    "verification/RESULTS.json": "e39c7b7bd9d922fb40a94858165baa5bafa7ce97ecf711039e6f1e700c6a7726",
+    "verification/prepare-local.py": "3d45975f55f7f3ec0cb5cf4c6c51addf77e2d01a86a944383c4c41e950379992"
+  }
+}
