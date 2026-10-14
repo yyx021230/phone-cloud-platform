@@ -1,0 +1,5 @@
+{
+  "status": "not-rebuilt-for-rc4",
+  "priorBuildEvidence": "platform-core-20261014-rc.2/verification/BUILD.json",
+  "reason": "Agent-only Python error classification; no rc4 cloud image"
+}

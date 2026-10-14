@@ -1,0 +1,21 @@
+{
+  "version": "platform-core-20261014-rc.4",
+  "branch": "codex/platform-rc2-local-acceptance-20261014",
+  "baselineCommit": "89612e228520e81cfa1fddd746925838dd9e6019",
+  "status": "local-candidate-not-deployed",
+  "baseTag": "platform-core-20261014-rc.3",
+  "baseManifestSha256": "8791db071dc50076a06b82e3500e5ec62113277d277f6f3178cbd667a1b26988",
+  "overlayFiles": [
+    "windows-agent/scripts/alipay_name_lookup.py",
+    "windows-agent/scripts/test_lookup_blank_card_guard.py",
+    "windows-agent/src/lookup-page-recovery.test.mjs"
+  ],
+  "platformReleaseReady": false,
+  "productionActions": 0,
+  "releaseGates": [
+    "Windows native OCR test environment missing",
+    "two physical device retest in progress",
+    "new full eight-hour natural cooldown pending",
+    "explicit deployment window and fresh production drift/D-075 checks"
+  ]
+}
