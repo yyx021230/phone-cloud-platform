@@ -1,0 +1,22 @@
+{
+  "version": "platform-core-20261014-rc.5",
+  "branch": "codex/platform-rc2-local-acceptance-20261014",
+  "baselineCommit": "37f9c4b725d833214d944c614c1ddd51b725b579",
+  "status": "local-candidate-not-deployed",
+  "baseTag": "platform-core-20261014-rc.4",
+  "baseManifestSha256": "9ba8823a2c377fb3138fe1eecfe97cccc627a76bec9997392285b782b4872a38",
+  "overlayFiles": [
+    "windows-agent/scripts/alipay_visual_result.py",
+    "windows-agent/scripts/test_lookup_visual_action_scope.py"
+  ],
+  "platformReleaseReady": false,
+  "productionActions": 0,
+  "releaseGates": [
+    "Windows native OCR and real-card latency validation",
+    "fresh production drift/D-075 checks and deployment window"
+  ],
+  "deferredByUser": [
+    "natural cooldown expiry",
+    "five physical devices (only two available)"
+  ]
+}
