@@ -1,0 +1,24 @@
+{
+  "version": "lookup-async-20261014-rc.11",
+  "candidateTag": "lookup-async-20261014-rc.11",
+  "branch": "codex/lookup-natural-cooldown-20261014",
+  "baselineCommit": "2e49179f81389e7849b8c0d4a8bb705f2f4ef6ba",
+  "status": "local-candidate-not-deployed",
+  "baseTag": "lookup-async-20261014-rc.10",
+  "baseManifestSha256": "17557b3a45046320a0e3c4ac0114ae212d05a2e56f14f637e72902cd9b6a590a",
+  "baseFileHashes": {
+    "windows-agent/scripts/alipay_visual_result.py": "e9e6af6dc42400a7da571e51fe67efd966dbae7313f0b5999c62b5e1ca30ea5b"
+  },
+  "overlayFiles": [
+    "windows-agent/scripts/alipay_visual_result.py"
+  ],
+  "testFiles": [
+    "windows-agent/scripts/test_lookup_phone_character_confidence.py"
+  ],
+  "platformReleaseReady": false,
+  "apiChanges": false,
+  "schemaChanges": false,
+  "mediaChanges": false,
+  "productionActions": 0,
+  "realTestStatus": "pending"
+}

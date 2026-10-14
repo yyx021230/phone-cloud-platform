@@ -1,0 +1,11 @@
+{
+  "version": "lookup-async-20261014-rc.11",
+  "files": {
+    "README.md": "e20518eaf272d5587eca1fa68cfd227fb01f4974713719e28d0424bcb71b9481",
+    "VERSION.json": "084975cd1b32e99d4ce2416ac8351b8cd3756bf763377a2b9e5ebc41ec3d670a",
+    "verification/RESULTS.json": "8a748968d6426b4fc093d7d5322ed47d445afbc05c535f551a3378bf46e043ff",
+    "verification/prepare-local.py": "c04eb3eed20c497559c2f27d08d9eef7f03af60f68b2991c0233a50bf12b145b",
+    "windows-agent/scripts/alipay_visual_result.py": "32b19892465bc7c07d9b7508836be727e01c7a70a042e7ca194bad8a28b0987f",
+    "windows-agent/scripts/test_lookup_phone_character_confidence.py": "61baca6889d9c39e36ecd061ca07115d36c7489a6669bcaa3889d305c808e906"
+  }
+}
