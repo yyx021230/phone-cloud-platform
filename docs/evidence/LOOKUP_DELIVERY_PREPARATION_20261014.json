@@ -1,0 +1,181 @@
+{
+  "status": "prepared-awaiting-maintenance-approval",
+  "candidate": "lookup-delivery-20261014-rc.1",
+  "candidateCommit": "509bea2ef12f4c26325a8b7bb5098f16fc4c7c98",
+  "branch": "codex/lookup-delivery-20261014",
+  "cloudBuild": {
+    "atUtc": "2026-10-14T10:28:15.208060+00:00",
+    "version": "lookup-delivery-20261014-rc.1",
+    "sourceCommit": "509bea2ef12f4c26325a8b7bb5098f16fc4c7c98",
+    "imageTag": "phone-cloud-platform:lookup-delivery-20261014-rc.1",
+    "imageId": "sha256:772df1abf6bfcb2168249840f9f80f817d352ebb81e2eb698e78ae9af5661d2e",
+    "isolatedNetworkNoneReady": true,
+    "productionUnchanged": true,
+    "productionContainer": "120ac8c0554859010f4b34bca90f6aff87acea24bd0356964862e70ffe3a5f1b",
+    "backup": "/opt/phone-cloud-platform/deploy-backups/lookup-delivery-20261014-rc.1",
+    "verifiedFiles": [
+      "server/automation-center.mjs",
+      "server/lookup-human-handover.mjs",
+      "docs/OPEN_NAME_LOOKUP_API.md",
+      "docs/OPEN_NAME_LOOKUP_PARTNER_HANDOFF.md",
+      "docs/OPEN_NAME_LOOKUP_README.md",
+      "public/api-reference.json",
+      "public/downloads/name-lookup-integration.zip",
+      "public/downloads/name-lookup-openapi.json",
+      "public/downloads/name-lookup-sha256.json",
+      "public/openapi.json"
+    ],
+    "productionRestarts": 0
+  },
+  "windowsPreparation": {
+    "version": "lookup-delivery-20261014-rc.1",
+    "sourceCommit": "509bea2ef12f4c26325a8b7bb5098f16fc4c7c98",
+    "backup": "D:\\PhoneCloud\\agent\\backups\\lookup-delivery-20261014-rc.1",
+    "files": [
+      {
+        "path": "src/index.mjs",
+        "before": "517bfef7f967aa5664dca555a221cebf0772940dd7b2073b1ddc8d7b210d2f03",
+        "after": "33af0161405174e5e1fe7355c6ccf009008a0487e9102f2718997306c345aebe"
+      },
+      {
+        "path": "src/lookup-human-observer.mjs",
+        "before": "94dface8346e7b6908f4fd33c33d90566be59468874aa54d45473ca40537bdb4",
+        "after": "2f770154a085ca9dc06cc886371d9181bd62f472501ea96d9c229698b1580bdf"
+      },
+      {
+        "path": "scripts/alipay_name_lookup.py",
+        "before": "a1c8c8c2f1819f1f2ddb1188ee86f9776a881731ac15e80614e38d3be212d6f6",
+        "after": "563a0ac69c877ee4afb6d6aa032f983b6f2431770fffd6a8124da9cbd3df855b"
+      },
+      {
+        "path": "scripts/alipay_visual_result.py",
+        "before": "9647bf869748f139283a7368270e8160c63b8d0398388465154c78c63ce92ea3",
+        "after": "9647bf869748f139283a7368270e8160c63b8d0398388465154c78c63ce92ea3"
+      }
+    ],
+    "agentPid": 605432,
+    "adbPid": 312588,
+    "runningFilesUnchanged": true,
+    "nativeSyntaxPassed": true,
+    "at": "2026-10-14T10:28:00.9715343Z"
+  },
+  "windowsNativeIsolatedTests": {
+    "python24": "passed",
+    "nodeObserver32": "passed",
+    "realPhoneActions": 0,
+    "logSha256": "bef501e676827953945d376a5a0e148f48302bb7b25a5b3166627839f1684e00"
+  },
+  "integrationBundleSha256": "6da08f3ec0264b00d2a1d19d388fab4f0a91c314e5466fcf0807e02ea999c63c",
+  "productionRestoration": {
+    "configMatches": true,
+    "devicesMatch": true,
+    "grantsMatch": true,
+    "enabled": false,
+    "revision": 13,
+    "channels": 0
+  },
+  "activeTestTasks": 0,
+  "observedHealth": {
+    "healthz": {
+      "ok": true,
+      "at": "2026-10-14T10:28:40.643Z"
+    },
+    "readyz": {
+      "ok": true,
+      "status": "ok",
+      "at": "2026-10-14T10:28:40.651Z",
+      "storage": {
+        "backend": "postgres",
+        "ok": true,
+        "detail": "postgres 已连接，state_key=default，updated_at=2026-10-14T09:00:56.551Z"
+      },
+      "dataDir": {
+        "path": "/app/data",
+        "writable": true,
+        "error": ""
+      },
+      "runtime": {
+        "ok": true,
+        "mode": "redis",
+        "detail": "redis://redis:6379/0"
+      }
+    },
+    "totalDevices": 131,
+    "listed": 125,
+    "agent": [
+      {
+        "lastSeenAt": "2026-10-14T10:28:36.195Z",
+        "screen": {
+          "enabled": true,
+          "connected": true,
+          "activeSessions": 3,
+          "serverJarReady": true
+        },
+        "lastScan": {
+          "ok": true,
+          "at": "2026-10-14T10:28:11.119Z",
+          "error": ""
+        },
+        "recovery": {
+          "observedAt": "2026-10-14T10:28:11.683Z",
+          "adbDeviceCount": 119,
+          "blockedReason": "device_install_busy"
+        }
+      }
+    ]
+  },
+  "original162": {
+    "lookupId": "3920490f-9250-4f19-94f5-e71b8ee68578",
+    "queryId": "69de7b99-b13c-478a-9056-c57c106a681f",
+    "atUtc": "2026-10-14T10:24:37.827Z",
+    "status": "failed",
+    "code": "lookup_manual_wait_expired",
+    "internalStatus": "cancelled",
+    "channels": 0,
+    "resubmitted": false,
+    "explanation": "User completed puzzle; old observer did not resume. Configured30minute human deadline naturally expired; stop confirmed. Kept historical result; no new query."
+  },
+  "poolRestore": {
+    "at": "2026-10-14T10:27:05.172Z",
+    "http": 200,
+    "restored": true,
+    "revision": 13,
+    "reason": "original162 reached configured30minute manual wait; stop confirmed, no new query; restore original disabled pool pending candidate activation"
+  },
+  "approvalRequired": "Cloud business container and shared Windows Agent reload may briefly interrupt3 active control sessions. User previously required no interruption. Explicit maintenance approval pending; no activation executed.",
+  "preparedFailuresCorrected": [
+    "Initial isolated image omitted synthetic startup credentials, readiness failed; disposable container removed. Recreated with generated fixture secrets, network none readiness and10file hashes passed.",
+    "Windows Python-c quoting lost UTF8 quotes; changed to AST parse of bytes, native syntax and24+32tests passed. No production file replacement.",
+    "Windows SFTP closed; legacy SCP uploaded only candidate ZIP and hash verified."
+  ],
+  "productionActions": {
+    "poolConfigure": 2,
+    "actualObservationReports": 2,
+    "querySubmissions": 0,
+    "candidateActivations": 0,
+    "businessServiceRestarts": 0,
+    "windowsAgentRestarts": 0,
+    "adbOrUsbOrMediaRestarts": 0,
+    "externalMessages": 0,
+    "pushes": 0
+  },
+  "mediaBefore": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "scripts": {
+    "activate-cloud.py": "72b3bb0bfb418485df6e8c6e52a9cdc17b9873ca11258c7a7cb00d4bfe0e0e89",
+    "activate-win.ps1": "798200b55f497d982174e976e9033c7d9d928a283c44a7f649f09ee2b7660f81"
+  },
+  "pending": [
+    "Maintenance approval",
+    "Pre-activation fresh occupancy and drift/media checks",
+    "Candidate load and161/162 API canary",
+    "Successful name result and genuine account cooldown/switch verification",
+    "Production final document/partner access handover"
+  ]
+}
