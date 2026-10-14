@@ -1,0 +1,12 @@
+{
+  "version": "lookup-async-20261014-live.2",
+  "receiptTag": "lookup-async-20261014-live.2",
+  "sourceTag": "lookup-async-20261014-rc.11",
+  "sourceCommit": "d38964eb11f08766e143d1743dc9d13f8b367e6b",
+  "branch": "codex/lookup-natural-cooldown-20261014",
+  "baselineTag": "lookup-async-20261014-rc.8",
+  "baselineCommit": "4e3fe5767ef86efa320e1f858909244518e08df2",
+  "status": "local-real-test-partial-not-deployed",
+  "productionActions": 0,
+  "pushed": false
+}
