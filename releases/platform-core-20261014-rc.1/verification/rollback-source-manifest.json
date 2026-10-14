@@ -1,0 +1,25 @@
+{
+  "status": "local-read-only-source-capture-not-final-deployment-backup",
+  "files": {
+    "windows-agent/src/lookup-status-outbox.mjs": "572c48fd13e5db841481328da69611d25c91ec833b3bf7e417a8e340edb31182",
+    "windows-agent/src/alipay-poco-fallback-policy.mjs": "d60111f31169e355131a591aaeb8045510d2ad5c6b12952c38812afc6c42952f",
+    "windows-agent/src/pnp-recovery-safety.mjs": "a5fd1eeca7f955a911beaff66e411e2bc9a5fbf946641f5c744181b14dd0396a",
+    "windows-agent/src/windows-device-install-probe.mjs": null,
+    "windows-agent/scripts/alipay_name_lookup.py": "24a9429c2735454ef854c0b6fa4346fedbb7a50ce264fd9ee4811cc43e7acc0d",
+    "windows-agent/src/index.mjs": "0d6a0aa177f38873b6999e18bba24fdecb865469924bc91efe396e91e2bd883b",
+    "windows-agent/src/pnp-recovery-admission.mjs": null,
+    "cloud/server/index.mjs": "331720968d825f8a7922ce7048e117e5f883a1edddfa48dba559f67041061172",
+    "cloud/server/lookup-human-handover.mjs": "7993e5ed41a13a26aa1d4aa03a2bb2665a4c74a5a0bcdb2fa8244240cd311a02",
+    "cloud/server/postgres-repositories.mjs": "bf6c10cf849cffc6c59c1f79e1fb62daeb548056632917d14bbd781ac8e70d54",
+    "cloud/public/api-docs.html": "d6930845d9f5f9a93b84a59e3de8111b22ea6db5c456a437e31cf34dd5157861",
+    "cloud/public/api-docs.js": "63e8f55692019a243ee7f6aace733d842f6ccd979c01fd7aee3430f95f830b54",
+    "cloud/public/api-reference.json": "caa91c1479d9694f140095e0eab85b37bff48c6c301833fc6a521cbafeef9d79",
+    "cloud/public/downloads/name-lookup-integration.zip": "7e44e797e6acfd4e9b13d0882ad4a6caa2f54885b0710eea2932247bbce4cff2",
+    "cloud/public/downloads/name-lookup-openapi.json": "076015c74331006e399ac770550d696cfc9381dcda5069f5b23f594ea593e149",
+    "cloud/public/downloads/name-lookup-sha256.json": "7a85a17714f3e1c56998ae186b82c210c87797d93605cdcf3213d953fc439251",
+    "cloud/public/index.html": "988408fea9a82091ac75116d8a3ca81a594f73c686bb59c0fcadaea7d190542c",
+    "cloud/public/openapi.json": "c0afb091c3ab74077bfa79570201363d42ab883f23a18791eecfe0a397900ee8"
+  },
+  "databaseBackup": false,
+  "configurationBackup": false
+}

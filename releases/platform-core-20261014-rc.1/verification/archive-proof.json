@@ -1,0 +1,13 @@
+{
+  "archivePrunedTo256": true,
+  "aliasRollback": true,
+  "recentResultFoundOutsideMemory": true,
+  "aliasReopen": true,
+  "fixed600SecondBoundary": true,
+  "originalKeyStillHistorical": true,
+  "stateKeyIsolation": true,
+  "tenantSamePhoneDifferentCanonical": true,
+  "ownerLock": true,
+  "stopUnconfirmedSurvivesArchivePruning": true,
+  "productionConnections": 0
+}

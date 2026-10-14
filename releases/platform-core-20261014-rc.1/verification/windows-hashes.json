@@ -1,0 +1,271 @@
+{
+  "atUtc": "2026-10-14T04:26:05.0303336Z",
+  "files": {
+    "package.json": {
+      "sha256": "753bc70ad3116f3fcf3d18d99ff79b8b9b04efd1af477264101a7d77d7cfa438",
+      "bytes": 721
+    },
+    "scripts/kuaishou_vehicle_lead.py": {
+      "sha256": "d12ec654560d3115254fb2025132c8f32e60544b9523772ee951b891bb3ea3e3",
+      "bytes": 33127
+    },
+    "scripts/xhs_xml_uiautomator.py": {
+      "sha256": "3b27f4c309df6ab095d676ea43316091477792ec11e7634ccb52b70afe117dfb",
+      "bytes": 26159
+    },
+    "scripts/feishu-kuaishou-lead.mjs": {
+      "sha256": "2ac1f28489ac6a130d4a06da29a41cc0e69543fbdd9ad5606f6a4d55506adcc4",
+      "bytes": 25639
+    },
+    "scripts/probe-douyin-qr-flow.mjs": {
+      "sha256": "3f78b4148d3331e7127c776a311af4bdfc0159c38bfb125da3294ec301e4630d",
+      "bytes": 11985
+    },
+    "scripts/alipay_visual_result.py": {
+      "missing": true
+    },
+    "scripts/automation_runners_test.py": {
+      "sha256": "3c54274a6678d88df683d4513191d9f7eadb0571a5f11fdd370e8faea5a6b982",
+      "bytes": 189745
+    },
+    "scripts/xhs_publish_poco.py": {
+      "sha256": "8411a66b4b7dd8adab0cee528c66ec775842bfc7d854d4ecd44e7319732ca4d9",
+      "bytes": 35327
+    },
+    "scripts/xhs_airtest_poco.py": {
+      "sha256": "3fd28f0e13f6af07e9d13361322c41a1b83d57b953f6d3ac0ceb5523a0e16ac2",
+      "bytes": 111392
+    },
+    "scripts/alipay_name_lookup.py": {
+      "sha256": "24a9429c2735454ef854c0b6fa4346fedbb7a50ce264fd9ee4811cc43e7acc0d",
+      "bytes": 242629
+    },
+    "scripts/set-runtime-config.mjs": {
+      "sha256": "2e2b183daeb36d69d3216ba8ad64a447d92e848444ee4a145dae2fe17839bf7f",
+      "bytes": 1041
+    },
+    "scripts/scrcpy-source-probe.mjs": {
+      "sha256": "e38a77ecf12a839fca97aab31af10acdeef8a21455fb2c76aa82ad97001725aa",
+      "bytes": 2347
+    },
+    "src/serial-delay-scheduler.mjs": {
+      "sha256": "ee71bc11573cb0880f6017a4ef1c3ca186bf2441c6e7e167be4c2d3f14ab7ea1",
+      "bytes": 853
+    },
+    "src/screen-webrtc-publisher.pre-20260722-wire-pacing.mjs": {
+      "sha256": "d78b425dfdca9e3079cb9505a7b57d5d4d2bc7de3ce5174f52ab9e2c133d820c",
+      "bytes": 14344
+    },
+    "src/device-scan-cache.mjs": {
+      "sha256": "1526782cd19841841535a790d78c350103aa50f12ae4e0ac5557828afd09e1a5",
+      "bytes": 1220
+    },
+    "src/pnp-recovery-safety.mjs": {
+      "sha256": "a5fd1eeca7f955a911beaff66e411e2bc9a5fbf946641f5c744181b14dd0396a",
+      "bytes": 17773
+    },
+    "src/sms-notification-source.mjs": {
+      "sha256": "c1a9af263945e376ed94e92163794e7f2349e40de2c27371e59d34336df972d2",
+      "bytes": 9531
+    },
+    "src/lookup-page-recovery.mjs": {
+      "sha256": "acab1b3d3e96f17ee54fe393cdbcf31a9210139dd7694a04de1140b80f79daa9",
+      "bytes": 2980
+    },
+    "src/adb-priority-queue.mjs": {
+      "sha256": "0bb8cfd86baaddc8a32d040e5835452f06e1ae5e3b78cbe2aeb0a67a24e5495d",
+      "bytes": 3096
+    },
+    "src/screen-control-queue.mjs": {
+      "sha256": "27e6e5e39364817b2ee6a8ced3ecae8cee522904a7d4d3b0321bacd697212879",
+      "bytes": 3300
+    },
+    "src/guarded-task-runner.mjs": {
+      "sha256": "150e14ea6fcdd6b0bb117d771bce084347cb26442a7674b0963cf9887df1d25f",
+      "bytes": 1496
+    },
+    "src/pnp-recovery-wake-scheduler.mjs": {
+      "sha256": "c0f98f5dac1454eba52317dda13f991cc1d765387b5256c67e892b599be678af",
+      "bytes": 1773
+    },
+    "src/managed-lookup-delivery.mjs": {
+      "missing": true
+    },
+    "src/screen-webrtc-publisher.mjs": {
+      "sha256": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04",
+      "bytes": 19015
+    },
+    "src/recovery-observability.mjs": {
+      "sha256": "72ff0b2a548d78b323cf10d75184d69f51326b6343eb40b49c4d793b514675eb",
+      "bytes": 7717
+    },
+    "src/screen-stream.pre-20260722-pacing-default.mjs": {
+      "sha256": "9b28020b8f97e79068d944fd484596cae4e4ab4ae5a53ecf165fc016030b95e0",
+      "bytes": 53592
+    },
+    "src/device-actor.mjs": {
+      "sha256": "b1d97b76ce1d71d0fa3fd70757311e78f76255661288e9cd5199b6c3cba2a2cf",
+      "bytes": 1505
+    },
+    "src/gallery-task-delivery.mjs": {
+      "sha256": "382c1e5b1519600e60405dae813687d4499c3770356969c0878c5dd934656a71",
+      "bytes": 4826
+    },
+    "src/serial-adb-health.mjs": {
+      "sha256": "efb0f36c5b73511f5366704b30a10c5e0e6caf4fe13a23c328b60dec14c77c0d",
+      "bytes": 600
+    },
+    "src/pnp-recovery-policy.mjs": {
+      "sha256": "5a66a8ccb4defbf837c58cb473fd884ffe1763c17256ed6642d91dfe1be4e850",
+      "bytes": 17220
+    },
+    "src/adb-server-recovery.mjs": {
+      "sha256": "693535b4379089e33b7badeaac2e2665c1b2efb797adba1264e8c431d356fb2f",
+      "bytes": 1713
+    },
+    "src/pnp-screen-coordinator.mjs": {
+      "sha256": "5eb1551e7dedbef4eed8d941733fa20b4780a362196338c51db4651b78ab9003",
+      "bytes": 1923
+    },
+    "src/pnp-recovery-verification.mjs": {
+      "sha256": "0658e51af5e109fa3d78588860f64face9f15c7062b97e575e0201b7c1f2915a",
+      "bytes": 2159
+    },
+    "src/device-recovery-state.mjs": {
+      "sha256": "6315883802f283291f4eab489c6c2975e9dfaee2d035143732a2214f4e723293",
+      "bytes": 4636
+    },
+    "src/runtime-metrics.mjs": {
+      "sha256": "78eab1cba502ade21ee3de1e686b207c3124562e2b67b7d85121c1918255b4d8",
+      "bytes": 1541
+    },
+    "src/gallery-import.mjs": {
+      "sha256": "d0e64f21c1c3e85ca89929f08c7739c6e5ba21600a70b74e2318ba388a425d74",
+      "bytes": 986
+    },
+    "src/atomic-json-writer.mjs": {
+      "sha256": "c7aeda35d9fffed03eca35cfb290456e54d0f96e7078fbda858a4906d22f2294",
+      "bytes": 1211
+    },
+    "src/agent-instance-lock.mjs": {
+      "sha256": "c18e716c1295931d8aad73c3e2df6c4cd10562c52938b1749eff2f47f3e9d0ac",
+      "bytes": 2709
+    },
+    "src/sms-relay-health.mjs": {
+      "sha256": "5f6128ff30906093fceb294fdb25839d0f36e69bbd7c091d80d743af4e6a98c2",
+      "bytes": 3204
+    },
+    "src/lookup-account-policy.mjs": {
+      "sha256": "b598b10ce46363b598e4f71b73ed88d15b0a33fe18732d067445370551a01024",
+      "bytes": 7874
+    },
+    "src/screen-stream.pre-pli-loop-20260722.mjs": {
+      "sha256": "a7d113722291c2be02e3298d4364dc929c0ed3ca567e388272dfd2cea5efcb8b",
+      "bytes": 54526
+    },
+    "src/pnp-recovery-wave.mjs": {
+      "sha256": "cc9a01d0f80cf72f1de0b09288fee61d9c91919b8d59b60ec66aa6fde4b7d83c",
+      "bytes": 3417
+    },
+    "src/sms-subscription-map.mjs": {
+      "sha256": "f7581e9170a22d0a662a448172db8f46d39c15a2ca55c517bd9ed0a84fabd040",
+      "bytes": 1524
+    },
+    "src/alipay-poco-fallback-policy.mjs": {
+      "sha256": "d60111f31169e355131a591aaeb8045510d2ad5c6b12952c38812afc6c42952f",
+      "bytes": 1045
+    },
+    "src/lookup-human-observer.mjs": {
+      "sha256": "94dface8346e7b6908f4fd33c33d90566be59468874aa54d45473ca40537bdb4",
+      "bytes": 4836
+    },
+    "src/index.mjs": {
+      "sha256": "0d6a0aa177f38873b6999e18bba24fdecb865469924bc91efe396e91e2bd883b",
+      "bytes": 265487
+    },
+    "src/config.pre-20260722-pacing-default.mjs": {
+      "sha256": "ade70095493249dfcb9047d950fad7fc258f2fadddd214036ef5318aebdaf7d1",
+      "bytes": 6148
+    },
+    "src/screen-stream.mjs": {
+      "sha256": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "bytes": 93463
+    },
+    "src/pnp-exact-actions.mjs": {
+      "sha256": "2e67e3fb1612ac79499055878caa042fd91c4e42caa28df4621d4cabf7172cab",
+      "bytes": 830
+    },
+    "src/screen-video-channel.mjs": {
+      "sha256": "9e8c1ccd1439568beca2e99595764aa598893cee576109c514ae503486c1ca25",
+      "bytes": 2088
+    },
+    "src/screen-stream.pre-20260722-wire-pacing.mjs": {
+      "sha256": "c374bfd2e01376d07bfecb209388c3a1b6a2a34b71218852ad58aa3a9fca8538",
+      "bytes": 53422
+    },
+    "src/single-flight.mjs": {
+      "sha256": "59f57777a082c0b8ec10786788151eadfec78d99445dd80f5297b2f974b1f6fe",
+      "bytes": 270
+    },
+    "src/serial-reservation.mjs": {
+      "sha256": "97fe332bc4877dc4ac70d613fc8c27f8c86a84072e90b95a277ca108e7895802",
+      "bytes": 627
+    },
+    "src/sms-content-query.mjs": {
+      "sha256": "2ec02795c765aea39edb18f4b4210c765a43297386973c38eb2dfba97958980f",
+      "bytes": 697
+    },
+    "src/pnp-windows-inventory.mjs": {
+      "sha256": "7fef1564a5159238064d207905326f1d8cd9b5f39274fe85ddcd951fdc3cef5d",
+      "bytes": 8299
+    },
+    "src/pnp-missing-device-recovery.mjs": {
+      "sha256": "eddfcf36dd904bf2ca834fb8958d21c55fa62c45139d880399d565b1006825f6",
+      "bytes": 3686
+    },
+    "src/serial-adb-activity.mjs": {
+      "sha256": "4668e7a416feac9860289d1d903849970645f45544eec77c77f26859b67132d9",
+      "bytes": 1694
+    },
+    "src/post-task-scan-policy.mjs": {
+      "sha256": "8f8403522b54d97d4a78b11b5535e7a205909951d8f4261208866f1d394bce33",
+      "bytes": 325
+    },
+    "src/screen-stream.verify.mjs": {
+      "sha256": "cc2678e743981d65d16d54eac928bce407275f5244921e67d56fb4808251beb1",
+      "bytes": 46897
+    },
+    "src/config.mjs": {
+      "sha256": "c6c15fb237af27cb3cdc7e7b54c027b0d9a777dab1f30cdbea01ffbbb0e3de97",
+      "bytes": 21221
+    },
+    "src/worker-shutdown.mjs": {
+      "sha256": "a685d487bbaff8f110bcef00629bdb830ede0fcc70807429b45ea4a4e6829b56",
+      "bytes": 1491
+    },
+    "src/lookup-status-outbox.mjs": {
+      "sha256": "572c48fd13e5db841481328da69611d25c91ec833b3bf7e417a8e340edb31182",
+      "bytes": 3222
+    },
+    "src/screen-backpressure.mjs": {
+      "sha256": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4",
+      "bytes": 850
+    },
+    "src/airtest-worker-lifecycle.mjs": {
+      "sha256": "af10fa43a5d7982b590b44f432ab206d15adf285fe3b617f8b286e13b3d2b374",
+      "bytes": 3660
+    }
+  },
+  "processes": [
+    {
+      "pid": 312588,
+      "name": "adb",
+      "started": "2026-10-08T02:44:30.2758265Z"
+    },
+    {
+      "pid": 379908,
+      "name": "node",
+      "started": "2026-10-11T16:36:37.7856488Z"
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "version": "platform-core-20261014-rc.1",
+  "status": "local-source-regression-passed-release-blocked",
+  "checks": [
+    {
+      "check": "syntax",
+      "exitCode": 0,
+      "logSha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+    },
+    {
+      "check": "agent",
+      "exitCode": 0,
+      "logSha256": "1af9b3e594fdc19b8277f51790c00a790cfbf88cb24de10fc21ced95261310a7"
+    },
+    {
+      "check": "screen",
+      "exitCode": 0,
+      "logSha256": "48bb5cf55adc2a4be9722a06ed1b8c3af8792aaf5903fd574126189185203935"
+    },
+    {
+      "check": "recovery",
+      "exitCode": 0,
+      "logSha256": "2814c41753d54b49b8b4bdd262e946b755b3199f007243424b924fe2d94cde6e"
+    },
+    {
+      "check": "lookup-python",
+      "exitCode": 0,
+      "logSha256": "08e7621f6f7cb183216bb5415e2d55e6358c9b855f4506d81c7bb28ba702b896"
+    },
+    {
+      "check": "runners-python",
+      "exitCode": 0,
+      "logSha256": "504ac8f3f1fd851732e90ec12095d1363fe470bbaa963dafeb31ef64401367eb"
+    },
+    {
+      "check": "sdk-node",
+      "exitCode": 0,
+      "logSha256": "50f6dcbb0a0d45e2baa61def5cb381c5afb42a411d620977dd97973e23b6cc3f"
+    },
+    {
+      "check": "sdk-python",
+      "exitCode": 0,
+      "logSha256": "cbb0e661c85d5f30b2d994d3150d6df67c63f0597c193d5921fda5c42ed43804"
+    },
+    {
+      "check": "http-json",
+      "exitCode": 0,
+      "logSha256": "b729ccb971cf9e9f5111bfd5245426b9bd6154b18581043bf1b02824e2239903"
+    }
+  ],
+  "postgres": [
+    {
+      "check": "archive",
+      "exitCode": 0,
+      "logSha256": "db5e2131d34f2b62d20133d347bf591b9d1b83dbd99bc244c5a88a0c1aa90baa"
+    },
+    {
+      "check": "isolation",
+      "exitCode": 0,
+      "logSha256": "c9d42d94014860da1731dd3588725c6319a9381d025c6ece47a0cca8508ce97b"
+    },
+    {
+      "check": "race",
+      "exitCode": 0,
+      "logSha256": "381076b405e58f09778814950a18ff51f05fa8e754daab418a1d4ad1f76f5a42"
+    },
+    {
+      "check": "http-121s",
+      "exitCode": 0,
+      "logSha256": "4150e193fc5b08c513304892f210f8340499172a70ad0b68bb7468d4a33a418f"
+    }
+  ],
+  "partner": {
+    "exitCode": 0,
+    "logSha256": "f8111e6db5228e9d980139894877bc449c6f9562849597f8cdc6a1553d67573e"
+  },
+  "buildSmoke": {
+    "exitCode": 0,
+    "freshProductionDependencies": true,
+    "dockerImageBuilt": false,
+    "logSha256": "a917e1a72233ca45562168e6d43183ba6b5a2ada4fb720884a1a54c0f0305bca"
+  },
+  "physicalPhoneQueries": 0,
+  "productionMutations": 0,
+  "unverified": [
+    "Node22 Docker build/run",
+    "Windows OCR native loading and cv2 coexistence",
+    "five physical phones",
+    "full new eight-hour natural cooldown",
+    "148 number mapping",
+    "XHS scope and six conflict files"
+  ],
+  "localArtifactStatus": "sources and Windows wheel metadata ready, not a deployable image"
+}
