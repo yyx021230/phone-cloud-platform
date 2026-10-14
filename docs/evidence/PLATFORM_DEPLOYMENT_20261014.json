@@ -1,0 +1,370 @@
+{
+  "schema": 1,
+  "release": {
+    "version": "platform-core-20261014-deployed.1",
+    "status": "deployed-pool-gray-pending",
+    "atUtc": "2026-10-14T08:20:33.691989+00:00",
+    "branch": "codex/platform-rc2-local-acceptance-20261014",
+    "runtimeCandidateTag": "platform-core-20261014-rc.7",
+    "runtimeCandidateCommit": "aa3f39934ba192e11d181f47eb6c98be5f7393d6",
+    "businessSourceTag": "platform-core-20261014-rc.7",
+    "businessSourceCommit": "aa3f39934ba192e11d181f47eb6c98be5f7393d6",
+    "imageId": "sha256:90c3a980cf842bdced2512a52726fe501501b3763e27821dafa108102fadb5e9",
+    "imageTag": "phone-cloud-platform:platform-core-20261014-rc.7",
+    "restartImageId": "sha256:90c3a980cf842bdced2512a52726fe501501b3763e27821dafa108102fadb5e9",
+    "restartImageTag": "phone-cloud-platform:platform-core-20261014-rc.7",
+    "runningContainerId": "120ac8c0554859010f4b34bca90f6aff87acea24bd0356964862e70ffe3a5f1b",
+    "runningContainerPid": 2656177,
+    "hotPatchedRuntimeFiles": [],
+    "activeCompose": [
+      {
+        "path": "/opt/phone-cloud-platform/docker-compose.yml",
+        "sha256": "8687bf4176f8f0d78ab73380a7ef0fd6b71bf044de5474f172ef5483d3e47435"
+      },
+      {
+        "path": "/opt/phone-cloud-platform/staging/platform-api-integration-20261012-rc.3/compose.candidate.json",
+        "sha256": "45f735c99379398e200b9323e4016fd75dc6f1b7a6c0895340b5434f3f02a14e"
+      },
+      {
+        "path": "/opt/phone-cloud-platform/staging/platform-core-20261014-rc.7/compose.candidate.json",
+        "sha256": "378eed4ea3daba1dd3513c6f2f1ec14bf3fefdab0aa4b9c1bb9e73175f919c4d"
+      },
+      {
+        "path": "/opt/phone-cloud-platform/staging/platform-core-20261014-rc.7/compose.coordinator.json",
+        "sha256": "99ad53a185e5a6f603a5adfe0d6c86f2d630f9365ae4dedeaec05a898a767f5d"
+      }
+    ],
+    "agentPid": 605432,
+    "agentFiles": {
+      "windows-agent/package-lock.json": "26340b426015063767d8ef1c2a31be05912e8004c4809f98d3b80b9b81cfeb3a",
+      "windows-agent/runtime-manifests/wheel-manifest.json": "77bb79cbb0ae88818d3b102fc429c468748294f06460340f36c0087a823624d3",
+      "windows-agent/runtime-manifests/windows-wheel-lock.txt": "841e5a4903669a63dcbf5e0cbd3b32ac0a9f53ca85b190cb7ba3e323ed934c5a",
+      "windows-agent/scripts/alipay_name_lookup.py": "ba4eeedccae0ed8f69293f7ca4b4c7c4d08d9f80449fdac2bcacc091cb1663bc",
+      "windows-agent/scripts/alipay_visual_result.py": "d6817fdeee26bc801be46cd6391511d62e1004ce46a14a2bfea9eba75613328a",
+      "windows-agent/scripts/install_lookup_ocr.py": "14f389ad55b0d976f50a2524d7888c1fd19b4a31ebeee7d3670f52216b83934c",
+      "windows-agent/scripts/lookup_ocr_runtime.py": "786aa196b75fc9401c7d7b721f4c21a67cd527a429fe757605bc7bbcebb171ae",
+      "windows-agent/scripts/lookup_ocr_worker.py": "4243c4da4582c1259198842fa3c577ba9ddce8a47e687611b2dec824d9304ccd",
+      "windows-agent/scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+      "windows-agent/scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "windows-agent/scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+      "windows-agent/scripts/小红书数据同步.py": "bb459e3570d4201434bbbf05841c8b2b9d3864a3febc25b414780f9d84c710fc",
+      "windows-agent/src/alipay-poco-fallback-policy.mjs": "0d56fccc2d1b81541668cf2880e3da4b4547b54a34aef92120516bd6e9fd2f09",
+      "windows-agent/src/config.mjs": "b233775c589ab22e6662a23bb82e507c9a3f635f1112709bfdae24d854a5d254",
+      "windows-agent/src/index.mjs": "517bfef7f967aa5664dca555a221cebf0772940dd7b2073b1ddc8d7b210d2f03",
+      "windows-agent/src/lookup-status-outbox.mjs": "43c10101e982b3a6881a2a1d5b7ae691553833d4548bf5f11f5ea51fc49b4dc1",
+      "windows-agent/src/managed-lookup-delivery.mjs": "cfdc56ea307bf82fac3965a75b3d0a2115826e3ebeb1f3c2bfc48e2a74a8bce6",
+      "windows-agent/src/pnp-recovery-admission.mjs": "dede33101b9765342ffa50121a8edadf066d519c047646fcca82635ab6cc236f",
+      "windows-agent/src/pnp-recovery-safety.mjs": "ad7de7d0575476cb807201e88b1c12842d12af0d9864e54809f4b98913c6d355",
+      "windows-agent/src/post-task-scan-policy.mjs": "a5bd899c70a9d1707fdaddc70b1adf1965260a7ce9d8bb10cccdc2de45842ec1",
+      "windows-agent/src/windows-device-install-probe.mjs": "c360457e2bcf820fb697a514627fc1c7c1761afe51935d464eb8240719f9401c",
+      "windows-agent/src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842"
+    },
+    "adbServerPidUnchanged": 312588,
+    "mediaPidUnchanged": 2503525,
+    "previousRelease": "lookup-realname-prompt-20261012-deployed.1",
+    "previousReceiptCommit": "bc2cb6aa6ab214bbd14ed13222d86374f51b416f",
+    "previousRestartImageId": "sha256:97633e241d545dbe895ad003852dfd35eae39cab9bcb54fbee95740b67daa053",
+    "receiptDirectory": "/opt/phone-cloud-platform/deployment-receipts/platform-core-20261014-deployed.1",
+    "rollbackDirectory": "/opt/phone-cloud-platform/deploy-backups/platform-core-20261014-rc.7",
+    "windowsRollbackDirectory": "D:\\PhoneCloud\\agent\\backups\\platform-core-20261014-rc.7",
+    "userAuthorization": "2026-10-14 user: 上线吧; rc.7 deployment; announced control-session interruption",
+    "databaseMigrations": [
+      "20261013-managed-lookup.sql",
+      "20261013-managed-lookup-async.sql"
+    ],
+    "managedLookup": {
+      "coordinatorEnabled": true,
+      "poolEnabled": false,
+      "configuredDevices": 48,
+      "missingMapping": [
+        148
+      ],
+      "concurrency": 5,
+      "clientId": "name-lookup-v1",
+      "productionGrayPending": true
+    },
+    "productionAcceptanceComplete": false,
+    "notVerified": [
+      "production real lookup gray on this release; pending current device/number authorization",
+      "five physical devices (user limited local testing to two)",
+      "new complete eight-hour natural cooldown (user deferred)",
+      "118 intermittent first-search entry cause unresolved",
+      "historical 14 unconfirmed result cards"
+    ],
+    "remoteGitPushed": false,
+    "originalDirtyEntriesPreserved": 236,
+    "rollbackPerformed": false,
+    "noProductionServiceRestart": false,
+    "restartedComponents": [
+      "Windows Agent scheduled task once",
+      "cloud business container twice: disabled coordinator, then enabled coordinator with disabled pool"
+    ],
+    "untouchedComponents": [
+      "Windows host",
+      "ADB daemon",
+      "USB hubs",
+      "media service",
+      "global Airtest Python"
+    ],
+    "apiDocsDeploymentCaveat": "Candidate docs still state new API is not opened; automatic pool remains disabled pending production gray."
+  },
+  "postflight": {
+    "atUtc": "2026-10-14T08:19:20.591692+00:00",
+    "version": "platform-core-20261014-rc.7",
+    "sourceCommit": "aa3f39934ba192e11d181f47eb6c98be5f7393d6",
+    "containerId": "120ac8c0554859010f4b34bca90f6aff87acea24bd0356964862e70ffe3a5f1b",
+    "containerPid": 2656177,
+    "imageId": "sha256:90c3a980cf842bdced2512a52726fe501501b3763e27821dafa108102fadb5e9",
+    "services": {
+      "phone-cloud-platform": {
+        "status": "running",
+        "health": "healthy",
+        "restarts": 0
+      },
+      "phone-cloud-postgres": {
+        "status": "running",
+        "health": "healthy",
+        "restarts": 0
+      },
+      "phone-cloud-redis": {
+        "status": "running",
+        "health": "healthy",
+        "restarts": 0
+      }
+    },
+    "http": {
+      "/healthz": 200,
+      "/readyz": 200,
+      "/api-docs.html": 200,
+      "/api-reference.json": 200,
+      "/openapi.json": 200,
+      "/lookup-pool.html": 200,
+      "/xhs-data-collection-ui.js": 200
+    },
+    "files": {
+      "count": 129,
+      "bad": []
+    },
+    "boundedLogCounts": {
+      "uncaught": 0,
+      "unhandled": 0,
+      "syntaxerror": 0,
+      "fatal": 0,
+      "managed lookup storage/dispatch unavailable": 0
+    },
+    "labels": {
+      "org.opencontainers.image.revision": "aa3f39934ba192e11d181f47eb6c98be5f7393d6",
+      "org.opencontainers.image.version": "platform-core-20261014-rc.7",
+      "phonecloud.deployment.candidate": "platform-core-20261014-rc.7",
+      "phonecloud.deployment.commit": "aa3f39934ba192e11d181f47eb6c98be5f7393d6"
+    }
+  },
+  "httpAcceptance": {
+    "at": "2026-10-14T08:18:39.980Z",
+    "checks": [
+      {
+        "method": "GET",
+        "path": "/healthz",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/readyz",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api-docs.html",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api-reference.json",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/openapi.json",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/lookup-pool.html",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/xhs-data-collection-ui.js",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/downloads/name-lookup-integration.zip",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/devices",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/tasks/00000000-0000-4000-8000-000000000000",
+        "status": 404
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/open/name-lookups/tasks",
+        "status": 400
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/open/name-lookups/devices",
+        "status": 401,
+        "error": "open_api_auth_required"
+      }
+    ],
+    "noBusinessCreated": true
+  },
+  "windowsActivation": {
+    "files": 22,
+    "agentPid": 605432,
+    "adbPid": 312588,
+    "adbStartUnchanged": true,
+    "configHash": "EE61FF30DEBD1B1077A1964EBD3946A0F36D8C4A221777BE219890896C865B52",
+    "taskState": "Running"
+  },
+  "systemOcr": {
+    "identity": "nt authority\\system",
+    "at": 1791965579.890417,
+    "privateOcr": {
+      "ok": true,
+      "ms": 3062,
+      "rowCount": 10
+    },
+    "xhs": {
+      "ok": true,
+      "language": "zh-Hans-CN",
+      "ms": 656
+    },
+    "ok": true
+  },
+  "basePythonAfter": {
+    "python": "3.9.13",
+    "packages": {
+      "rapidocr-onnxruntime": null,
+      "onnxruntime": null,
+      "numpy": "1.26.4",
+      "opencv-python": null,
+      "Pillow": "11.3.0",
+      "six": "1.16.0",
+      "airtest": "1.4.3",
+      "opencv-contrib-python": "4.6.0.66",
+      "opencv-python-headless": null,
+      "opencv-contrib-python-headless": null
+    }
+  },
+  "mediaAfter": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "latestStatus": {
+    "at": "2026-10-14T08:19:55.037Z",
+    "total": 131,
+    "listed": 125,
+    "freshOnline": 116,
+    "listedFreshOnline": 116,
+    "agents": [
+      {
+        "agentId": "win-bf-202605262318-20260727",
+        "lastSeenAt": "2026-10-14T08:19:35.335Z",
+        "protocol": "managed_lookup_v1",
+        "health": "ok",
+        "scan": {
+          "ok": true,
+          "at": "2026-10-14T08:19:05.106Z",
+          "error": ""
+        },
+        "screen": {
+          "enabled": true,
+          "connected": true,
+          "activeSessions": 4,
+          "serverJarReady": true
+        },
+        "xhsDataCollect": {
+          "protocol": "xhs_data_collect_v1",
+          "ready": true
+        },
+        "adbDeviceCount": 116,
+        "recoveryBlockedReason": "device_install_busy"
+      }
+    ],
+    "pool": {
+      "enabled": false,
+      "concurrency": 5,
+      "configured": 48,
+      "ready": 43,
+      "requests": 0,
+      "channels": 0,
+      "revision": 1,
+      "grants": [
+        {
+          "clientId": "name-lookup-v1",
+          "enabled": true,
+          "consentReference": "user-authorized-pool-20261014"
+        }
+      ]
+    }
+  },
+  "preflight": {
+    "previousActiveSha256": "0b7e3f3e931ae79b84b4ee3597b24baaf934826d65d23c74d21def66efc3ce42",
+    "cloudBusinessFilesCompared": 170,
+    "cloudDrift": [],
+    "windowsFilesCompared": 64,
+    "windowsDrift": [],
+    "mediaLiveBefore": true,
+    "mediaPid": 2503525,
+    "activeControlSessionsBeforeSwitch": 6,
+    "liveBusinessTasksBeforeSwitch": 0,
+    "historicalStructuredQueuedRowsRetained": true
+  },
+  "backup": {
+    "postgresBytes": 430133239,
+    "postgresSha256": "c2a1c396fe8c28c20d0de9daf0dbb80a5469e0dc40c0a085619fc7fde77dcf4d",
+    "pgRestoreListVerified": true,
+    "fullRestoreThisTurn": false,
+    "sourceAndConfigurationBackups": true,
+    "oldWindowsAbsenceManifest": true,
+    "neverDropNewTablesOnRollback": true
+  },
+  "operations": {
+    "realQueries": 0,
+    "outboundMessages": 0,
+    "agentRestarts": 1,
+    "cloudContainerRecreates": 2,
+    "mediaRestarts": 0,
+    "adbRestarts": 0,
+    "windowsRestarts": 0,
+    "globalPythonModified": false,
+    "gitPush": false
+  },
+  "checkFailuresAndLimits": [
+    "Early HTTP probes during both bounded startup windows returned ECONNREFUSED; both reached ready within the planned window; no rollback",
+    "First Windows metadata read failed local UTF-8 decoding of PowerShell progress; repeated byte-safe read passed",
+    "Windows evidence fileCount expanded to twenty-two 1 values in PowerShell; actual source list is 22 and all 22 hashes passed",
+    "Production real lookup gray not executed: waiting current test device/number authorization; pool disabled",
+    "Public candidate API description still says new endpoints not opened; pool admission remains disabled; update availability wording when gray opens pool",
+    "No claim that restored control connections prove visual frame quality",
+    "No full production acceptance; existing 118 first-search/root-cause, historical missing cards, 148 mapping and deferred natural cooldown remain"
+  ],
+  "workflow": {
+    "revision": "2026-09-30",
+    "sha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+    "selfReviewed": true,
+    "independentReviewer": false
+  }
+}
