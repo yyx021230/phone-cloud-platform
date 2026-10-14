@@ -1,0 +1,75 @@
+{
+  "version": "lookup-limit-popup-20261014-rc.1",
+  "newTests": 18,
+  "pythonDiscovery": {
+    "passed": 333,
+    "failed": 0
+  },
+  "automationRunners": {
+    "passed": 163,
+    "failed": 0
+  },
+  "agentTargeted": {
+    "passed": 53,
+    "failed": 0
+  },
+  "rootSyntax": "passed",
+  "frozenUnchanged": 24,
+  "beforeFixFirst15Tests": {
+    "passed": 7,
+    "failures": 5,
+    "errors": 3
+  },
+  "offlineReplay": {
+    "161Error": "alipay_account_restriction_switch_required:frequent_or_abnormal_access",
+    "161Frames": 2,
+    "162ExistingTemplate": {
+      "visible": true,
+      "close": [
+        360,
+        1252
+      ],
+      "titleCount": 1,
+      "actionCount": 1,
+      "closeCount": 1
+    },
+    "imageSha256": {
+      "161": "2b4bf3651b077d796063bd24f788738f3251f77908c2f874d8492eeb2647d7d9",
+      "162": "bf885a66bb2c8278216da30c99c25a60ca1d9b16195b02b94517f0a5b90fc1f6"
+    },
+    "scope": "Actual captured frames replayed offline; no live taps, rotation, query or deployment."
+  },
+  "sourceBefore": {
+    "windows-agent/scripts/alipay_name_lookup.py": "ba4eeedccae0ed8f69293f7ca4b4c7c4d08d9f80449fdac2bcacc091cb1663bc",
+    "windows-agent/scripts/alipay_visual_result.py": "d6817fdeee26bc801be46cd6391511d62e1004ce46a14a2bfea9eba75613328a"
+  },
+  "review": "Self-review of diff, native/OCR restriction priority, original error routing and startup preflight ordering. No independent reviewer.",
+  "notVerified": [
+    "Native Windows execution of this patch",
+    "Live automatic account rotation/cooldown for the new card",
+    "Live optional prompt close and successful following lookup",
+    "General result-unconfirmed terminal classification gap from previous gray remains unmodified"
+  ],
+  "productionActions": {
+    "captureOnly": true,
+    "queries": 0,
+    "taps": 0,
+    "accountSwitches": 0,
+    "deployments": 0,
+    "serviceRestarts": 0,
+    "poolConfigWrites": 0,
+    "notifications": 0
+  },
+  "testLogSha256": {
+    "new-before.log": "38b35bab28e35d0c8fb670fb325f2d158db884c0532e8d9ee75e9cf0d4ec645f",
+    "python-final.log": "642f0f36613b7dfd14cc6250b945b88fb4fe93f3829feff7ae4f0a3e09976923",
+    "runners-final.log": "4b438fcf026316686eb54516291d0dc6bee1044b597cd2ebfec9a1fcb5fe2a76",
+    "node-targeted.log": "938a19e4ede567fa8c41d01000c431b7802956f876028fb97e4fa430ce294104",
+    "syntax.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "node-delivery.log": "901b1b7c2bdbc63c5b7666fb60a09aa72809a1b135853093e353932f9815241e"
+  },
+  "standaloneDeliveryAgentTests": {
+    "passed": 53,
+    "failed": 0
+  }
+}
