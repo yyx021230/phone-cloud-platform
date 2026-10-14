@@ -1,8 +1,13 @@
 # 2026-10-14 组合版本上线准备
 
-当前候选：`platform-core-20261014-rc.5`，提交 `9e3716047b8bc9045947b54ad46eb1e7b22f8e81`，分支 `codex/platform-rc2-local-acceptance-20261014`。云端组件沿用已测rc.2不可变镜像及原VERSION，Agent使用rc.5。**自动回归和打包完成；真实OCR超时、拼图接续、Windows原生仍未通过，尚未上线。**
+当前候选：`platform-core-20261014-rc.6`，提交见同名不可变Git标签，分支 `codex/platform-rc2-local-acceptance-20261014`。云端组件沿用已测rc.2不可变镜像及原VERSION，Agent使用rc.6。**OCR初始化/预算已修复，Windows原生和自动回归通过；最终本地API真机验收正在补齐，尚未上线。**
 
-## 最新验收状态（live.1）
+## 最新验收状态（rc.6）
+
+- 新增Windows原生真实卡单/双进程、超时回收、小红书WinRT通过；业务文件哈希与Agent/ADB进程保持，未部署。详见rc.6/verification/RESULTS.json。
+- 本地全量Python315/执行器163/Node700与语法通过；118原拼图、130预算修复后的API结果仍待最终记录。
+
+## 之前验收状态（live.1，历史）
 
 - rc.3限定搜索入口包和前台；rc.4禁止OCR异常重输号码；rc.5修复姓名卡下方转账推荐项误算重复按钮。最新Python311、执行器163、Node698通过。
 - rc.4真实8条7姓名/1未确认，全部1任务/1次输入；124125ms后换3个请求键仍同查询，另一手机在回报延迟期间完成两条。

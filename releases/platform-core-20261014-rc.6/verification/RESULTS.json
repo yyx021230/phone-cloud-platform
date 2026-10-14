@@ -1,0 +1,136 @@
+{
+  "version": "platform-core-20261014-rc.6",
+  "atUtc": "2026-10-14T07:40:56.371638+00:00",
+  "status": "regression-and-windows-native-passed-local-api-pending",
+  "checks": {
+    "python": 315,
+    "runners": 163,
+    "nodeScreenFull": 700,
+    "syntax": true,
+    "budgetRegressionNew": 4,
+    "budgetRegressionOldFailed": 2,
+    "windowsRuntimeTests": 8
+  },
+  "windows": {
+    "platform": "win32",
+    "basePython": "3.9.13",
+    "context": "Administrator SSH, not live Agent",
+    "productionAgentUsed": false,
+    "phoneQueries": 0,
+    "single": {
+      "slot": 0,
+      "samples": [
+        {
+          "elapsedMs": 5954,
+          "rows": 56,
+          "cardConfirmed": true,
+          "samePhone": true,
+          "namePresent": true
+        },
+        {
+          "elapsedMs": 4101,
+          "rows": 56,
+          "cardConfirmed": true,
+          "samePhone": true,
+          "namePresent": true
+        }
+      ],
+      "pid": 603548,
+      "totalMs": 10055,
+      "reaped": true
+    },
+    "twoWorkers": [
+      {
+        "slot": 1,
+        "samples": [
+          {
+            "elapsedMs": 9633,
+            "rows": 56,
+            "cardConfirmed": true,
+            "samePhone": true,
+            "namePresent": true
+          },
+          {
+            "elapsedMs": 6564,
+            "rows": 56,
+            "cardConfirmed": true,
+            "samePhone": true,
+            "namePresent": true
+          }
+        ],
+        "pid": 593404,
+        "totalMs": 16197,
+        "reaped": true
+      },
+      {
+        "slot": 2,
+        "samples": [
+          {
+            "elapsedMs": 9718,
+            "rows": 56,
+            "cardConfirmed": true,
+            "samePhone": true,
+            "namePresent": true
+          },
+          {
+            "elapsedMs": 6539,
+            "rows": 56,
+            "cardConfirmed": true,
+            "samePhone": true,
+            "namePresent": true
+          }
+        ],
+        "pid": 603640,
+        "totalMs": 16257,
+        "reaped": true
+      }
+    ],
+    "xhsWinRT": {
+      "ok": true,
+      "language": "zh-Hans-CN",
+      "allTenDigits": true,
+      "actualApplicationEntry": true
+    },
+    "note": "WinRT passed separately through actual application windows_ocr; initial direct -File test rejected by existing execution policy. No policy changed."
+  },
+  "windowsTimeoutRecovery": {
+    "timeoutMs": 60,
+    "timeoutReaped": true,
+    "nextWorkerMs": 6392,
+    "nextWorkerRows": 56,
+    "nextWorkerReaped": true,
+    "xhsWinRT": {
+      "ok": true,
+      "language": "zh-Hans-CN",
+      "allTenDigits": true,
+      "actualApplicationEntry": true
+    },
+    "runtimeTestsExit": 0
+  },
+  "windowsProductionFilesUnchanged": true,
+  "windowsProductionAgentPid": 379908,
+  "windowsAdbPid": 312588,
+  "productionDeploymentActions": 0,
+  "windowsActions": "new restricted staging only; no live Agent or phone tasks",
+  "frozenChanged": false,
+  "failureHistory": [
+    "Windows rc5 real-frame pipe timeout at20s twice; direct inference4-5s; stack blocked loading numpy DLL after receiver thread began",
+    "Initial native WinRT test bypassed application wrapper and -File was rejected; actual application EncodedCommand path passed without execution-policy changes",
+    "Initial full Node test failed missing existing Agent dependency symlink; corrected isolated test setup and all700passed"
+  ],
+  "evidenceSha256": {
+    "native-after.log": "2ec752f5943a5b555414a577848688dc22bcd46ae8bded4402d969da522c54f8",
+    "native-final.log": "332fb71c7ae583587b693d7eed6c090825ed432433869ab8c55da04842f50d56",
+    "native-diagnose.log": "05024dbeac5bbba35a12192c75f2c71b96d8da85a3f9c96c5f2e566f60230ffc",
+    "native-pipe-stack.log": "a2ab0c5abb50d54368a96e6ba8d15d0dbb3875d7cf3ec567ff3f0b86c97fab47",
+    "windows-before.json": "44fedf151b930f6799c76130297afcdaebd022018a9c36a8708fbbafd4b7772f",
+    "windows-after.json": "0cc34a57bc57e9e416ada047944fea3401253081728f83bfc6c1e101247c38e0",
+    "windows-runtime-tests.log": "398c2f6dba5f47f9e30fd24a84f55f6c90dd985394e2ea7340b9e04fa52bfaf4",
+    "python-full.log": "ceefcc76143df65589483170a4a94d5e76d845dc03ccaa06f4e6a67ffc1988cd",
+    "runners.log": "147d2b297378ddf8cffd57e63f47e77226f1b973980a0c471039b7fe00401b2d",
+    "node-full-final.log": "aec71d8ed8f5e6208eb0c0290cad68965b5f8cb651190a7bb29be58f5ea74ecc",
+    "syntax.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "budget-before.log": "e7a6d318d1401ca918d870de814be9757942c2c9d0ad00182c98189932f2dd68",
+    "budget-after.log": "66d6e314674f6e6ea71cf48674237688347597b068c9457453dcd6ce6dfe124b"
+  }
+}
