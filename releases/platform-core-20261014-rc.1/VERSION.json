@@ -1,0 +1,32 @@
+{
+  "version": "platform-core-20261014-rc.1",
+  "branch": "codex/platform-release-prep-20261014",
+  "baselineCommit": "962a7f7122c110d5b5feadf2ad093ab4c14c5396",
+  "status": "local-integrated-core-candidate-not-deployed",
+  "baseTag": "lookup-async-20261014-rc.12",
+  "baseManifestSha256": "bfd30bb07352f0e80b504db3fcbf69926cd78d939cc8371b960cc8f5e2803dd0",
+  "recoveryTag": "device-recovery-20261014-rc.1",
+  "recoveryManifestSha256": "0e4b851add3f1708f5862e4ef87949aaa47fe4738fcf3d90bed5537ca9566e7b",
+  "overlayFiles": [
+    "windows-agent/src/index.mjs",
+    "windows-agent/src/pnp-recovery-safety.mjs",
+    "windows-agent/src/pnp-recovery-admission.mjs",
+    "windows-agent/src/windows-device-install-probe.mjs",
+    "package-lock.json",
+    "public/assets/login-terminal-bg.png",
+    "docs/OPEN_NAME_LOOKUP_API.md",
+    "docs/OPEN_NAME_LOOKUP_README.md",
+    "docs/OPEN_NAME_LOOKUP_PARTNER_HANDOFF.md",
+    ".dockerignore",
+    "BASELINE.json",
+    "verification/verify-candidate.py",
+    "verification/RESULTS.json"
+  ],
+  "scopePending": [
+    "xhs-data-automation-20261013-rc.5"
+  ],
+  "platformReleaseReady": false,
+  "productionActions": 0,
+  "sourceTestsNodeVersion": "v25.9.0",
+  "targetContainerNodeMajor": 22
+}

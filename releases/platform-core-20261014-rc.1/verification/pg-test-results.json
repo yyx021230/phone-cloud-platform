@@ -1,0 +1,22 @@
+[
+  {
+    "check": "archive",
+    "exitCode": 0,
+    "logSha256": "db5e2131d34f2b62d20133d347bf591b9d1b83dbd99bc244c5a88a0c1aa90baa"
+  },
+  {
+    "check": "isolation",
+    "exitCode": 0,
+    "logSha256": "c9d42d94014860da1731dd3588725c6319a9381d025c6ece47a0cca8508ce97b"
+  },
+  {
+    "check": "race",
+    "exitCode": 0,
+    "logSha256": "381076b405e58f09778814950a18ff51f05fa8e754daab418a1d4ad1f76f5a42"
+  },
+  {
+    "check": "http-121s",
+    "exitCode": 0,
+    "logSha256": "4150e193fc5b08c513304892f210f8340499172a70ad0b68bb7468d4a33a418f"
+  }
+]

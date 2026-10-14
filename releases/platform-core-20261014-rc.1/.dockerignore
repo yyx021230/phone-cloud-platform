@@ -1,0 +1,14 @@
+.git
+node_modules
+**/node_modules
+.env
+.env.*
+**/.env
+**/.env.*
+data
+logs
+backups
+windows-agent
+screen-client
+verification
+*.log

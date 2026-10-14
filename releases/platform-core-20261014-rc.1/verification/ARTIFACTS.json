@@ -1,0 +1,43 @@
+{
+  "candidate": "platform-core-20261014-rc.1",
+  "status": "local-source-and-dependency-artifacts-not-deployed",
+  "dockerImageBuilt": false,
+  "windowsNativeLoadingVerified": false,
+  "windowsOverlayFiles": [
+    "windows-agent/scripts/alipay_name_lookup.py",
+    "windows-agent/scripts/alipay_visual_result.py",
+    "windows-agent/src/index.mjs",
+    "windows-agent/src/pnp-recovery-safety.mjs",
+    "windows-agent/src/pnp-recovery-admission.mjs",
+    "windows-agent/src/windows-device-install-probe.mjs",
+    "windows-agent/src/alipay-poco-fallback-policy.mjs",
+    "windows-agent/src/lookup-status-outbox.mjs",
+    "windows-agent/src/managed-lookup-delivery.mjs"
+  ],
+  "files": [
+    {
+      "path": "core-source.zip",
+      "sha256": "662ece73996fc8b68c0be8309fec11dbe7c0dbc1c04f7d291fbc80dfd5194767",
+      "bytes": 2693173,
+      "files": 359
+    },
+    {
+      "path": "cloud-build-context.zip",
+      "sha256": "8f1ede24695a3aea4f475b9e9deec6f5fa4e32569cd6fab1f63d8385cf51fcb5",
+      "bytes": 2017582,
+      "files": 121
+    },
+    {
+      "path": "windows-agent-overlay.zip",
+      "sha256": "ad8c93c34da222f13bcb41a568137e9a1bf6144b23ad4cd0ba039f0e0c63d5e9",
+      "bytes": 131932,
+      "files": 9
+    },
+    {
+      "path": "windows-ocr-wheels.zip",
+      "sha256": "22221ac642f2c5a2b9395414b43b68cbdaa7e3a8ed7db96750497cd13afcc0b0",
+      "bytes": 96414763,
+      "files": 19
+    }
+  ]
+}

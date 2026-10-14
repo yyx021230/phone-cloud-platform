@@ -1,0 +1,15 @@
+{
+  "container": {
+    "id": "8f399b21be28502239d527bb007282af9b3274ca9362e6a3ebace7b478a5b07d",
+    "image": "sha256:4e484ed7db6da2760c64de1f4481fdb7deb97b7acf4e4182e1658507a1d8b437",
+    "status": "running",
+    "startedAt": "2026-10-11T16:41:45.890652151Z",
+    "health": "healthy",
+    "restarts": 0
+  },
+  "restartImageId": "sha256:97633e241d545dbe895ad003852dfd35eae39cab9bcb54fbee95740b67daa053",
+  "composeHashes": {
+    "/opt/phone-cloud-platform/docker-compose.yml": "8687bf4176f8f0d78ab73380a7ef0fd6b71bf044de5474f172ef5483d3e47435",
+    "/opt/phone-cloud-platform/staging/platform-api-integration-20261012-rc.3/compose.candidate.json": "45f735c99379398e200b9323e4016fd75dc6f1b7a6c0895340b5434f3f02a14e"
+  }
+}

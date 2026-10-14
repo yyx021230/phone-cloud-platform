@@ -1,0 +1,15 @@
+{
+  "python": "3.9.13",
+  "packages": {
+    "rapidocr-onnxruntime": null,
+    "onnxruntime": null,
+    "numpy": "1.26.4",
+    "opencv-python": null,
+    "Pillow": "11.3.0",
+    "six": "1.16.0",
+    "airtest": "1.4.3",
+    "opencv-contrib-python": "4.6.0.66",
+    "opencv-python-headless": null,
+    "opencv-contrib-python-headless": null
+  }
+}

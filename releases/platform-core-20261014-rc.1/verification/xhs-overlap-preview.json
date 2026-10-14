@@ -1,0 +1,59 @@
+{
+  "status": "scope-pending-not-integrated",
+  "files": [
+    {
+      "path": "public/app.js",
+      "mergeExitCode": 8,
+      "conflicts": true,
+      "adopted": false
+    },
+    {
+      "path": "public/index.html",
+      "mergeExitCode": 4,
+      "conflicts": true,
+      "adopted": false
+    },
+    {
+      "path": "public/styles.css",
+      "mergeExitCode": 2,
+      "conflicts": true,
+      "adopted": false
+    },
+    {
+      "path": "server/automation-center.mjs",
+      "mergeExitCode": 2,
+      "conflicts": true,
+      "adopted": false
+    },
+    {
+      "path": "server/device-occupancy.mjs",
+      "mergeExitCode": 0,
+      "conflicts": false,
+      "adopted": false
+    },
+    {
+      "path": "server/index.mjs",
+      "mergeExitCode": 5,
+      "conflicts": true,
+      "adopted": false
+    },
+    {
+      "path": "windows-agent/src/config.mjs",
+      "mergeExitCode": 0,
+      "conflicts": false,
+      "adopted": false
+    },
+    {
+      "path": "windows-agent/src/index.mjs",
+      "mergeExitCode": 3,
+      "conflicts": true,
+      "adopted": false
+    },
+    {
+      "path": "windows-agent/src/post-task-scan-policy.mjs",
+      "mergeExitCode": 0,
+      "conflicts": false,
+      "adopted": false
+    }
+  ]
+}

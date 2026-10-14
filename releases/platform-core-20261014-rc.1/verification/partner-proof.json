@@ -1,0 +1,41 @@
+{
+  "atUtc": "2026-10-14T04:36:00.379Z",
+  "downloadedZipSha256": "654119bc2dde54f7fcd4533687f759d27102b51a7814dee163510252237ee14d",
+  "aliasLimit429PreservesOriginal": true,
+  "actualRetryAfterSeconds": 5,
+  "disabledPool503": true,
+  "version": "lookup-async-20261014-rc.8",
+  "actualHttpPostgres": true,
+  "independentRawHmac": true,
+  "downloadedPythonBundle": true,
+  "partnerProcessRestartBeforeLookupIdSaved": true,
+  "perResultDurableBackfill": true,
+  "maximumSimultaneousQueries": 5,
+  "distinctDevicesAtPeak": 5,
+  "logicalPhones": 6,
+  "actualQueryTasks": 6,
+  "sixthQueuedThenDispatched": true,
+  "heldPhoneDidNotBlockOtherFive": true,
+  "otherFiveFinishedMs": 1196,
+  "heldElapsedMs": 121002,
+  "newKeyRetries": 8,
+  "sameLookupAfterFreshKeys": true,
+  "over120Seconds": true,
+  "sameLookupAfterTwoMinutes": true,
+  "serverRestartPreservesIdentity": true,
+  "duplicateCallbackSafe": true,
+  "terminalStatuses": [
+    "succeeded",
+    "not_found",
+    "failed"
+  ],
+  "authCases": [
+    400,
+    401,
+    404,
+    409
+  ],
+  "drained": true,
+  "physicalPhones": 0,
+  "productionActions": 0
+}
