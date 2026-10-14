@@ -1,0 +1,17 @@
+{
+  "version": "lookup-limit-popup-20261014-rc.1",
+  "status": "local-candidate-not-deployed",
+  "files": {
+    "README.md": "136c33e286793acd82c7f1f251e9bb680caeb493b45ff4a6639028d6022a0f09",
+    "RELEASE_NOTES.md": "c72ccbd76f9500f680738d018389f487344d827b36b51bb22d8e5a3bdcd3c396",
+    "VERSION.json": "64ba88066747659af558983b22a91603777422b609273d593ddde383e9125554",
+    "verification/BUILD.json": "05bd6804fb8a89588e5051b8ab7208083dad58baae37ba2f2ba6f232d1b09060",
+    "verification/FROZEN.json": "6fa1f33192aa4bc76b78f9d2da1dd9149b7bd62e1193c4c2fee4193c3f70c55c",
+    "verification/RESULTS.json": "c428a36496324bc0e2cc868f902315efa3bb2a526f03d5dd7968ec8ea71a1ad5",
+    "verification/prepare-local.py": "3d45975f55f7f3ec0cb5cf4c6c51addf77e2d01a86a944383c4c41e950379992",
+    "windows-agent/scripts/alipay_name_lookup.py": "a1c8c8c2f1819f1f2ddb1188ee86f9776a881731ac15e80614e38d3be212d6f6",
+    "windows-agent/scripts/alipay_visual_result.py": "9647bf869748f139283a7368270e8160c63b8d0398388465154c78c63ce92ea3",
+    "windows-agent/scripts/test_lookup_account_cooldown.py": "34b15d14d26ee7d2e05f44a716334fd502c4a9c43f0dccf63e2c6c2b13eaa101",
+    "windows-agent/scripts/test_lookup_limit_popup.py": "aa6a7368b9f9f883e7300db514983f87b120baa915dee6f2f916afb0e8b68a98"
+  }
+}

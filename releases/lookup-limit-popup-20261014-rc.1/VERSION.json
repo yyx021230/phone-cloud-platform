@@ -1,0 +1,22 @@
+{
+  "version": "lookup-limit-popup-20261014-rc.1",
+  "status": "local-candidate-not-deployed",
+  "branch": "codex/lookup-limit-popup-20261014",
+  "baselineCommit": "fea67c1efd2041873f07b8ff50a7d53961d20fb7",
+  "baseTag": "platform-core-20261014-rc.7",
+  "baseManifestSha256": "35a461b415d174f07dd9eb1e759a7043ee23bd5f90f7d31ff72430d8d4452f59",
+  "productionBaseline": "platform-core-20261014-deployed.1",
+  "productionRuntimeCommit": "aa3f39934ba192e11d181f47eb6c98be5f7393d6",
+  "overlayFiles": [
+    "windows-agent/scripts/alipay_name_lookup.py",
+    "windows-agent/scripts/alipay_visual_result.py",
+    "windows-agent/scripts/test_lookup_account_cooldown.py",
+    "windows-agent/scripts/test_lookup_limit_popup.py"
+  ],
+  "includesDeviceRecoveryPause": false,
+  "productionWrites": 0,
+  "productionReadOnlyCaptureDevices": [
+    161,
+    162
+  ]
+}
