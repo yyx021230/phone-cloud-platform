@@ -1,0 +1,19 @@
+{
+  "version": "platform-core-20261014-rc.6",
+  "files": {
+    "README.md": "4c6ebdddd29e2a5b17ac9f9f47cddbb61522e8bb00b08f3e94a335a31020001a",
+    "RELEASE_NOTES.md": "da9343cfef74fc3f27e0813d3cec2d3489bf7eba23dbeeb0651821c54dbee3b8",
+    "VERSION.json": "0c4b8cc3a386f12aa8db714c4760b7c50762e9270d1a7c8baf058178cc15c18a",
+    "verification/BUILD.json": "eb66e1805d9dc09dd9648b952b5032752a78ae4acd4789039ecf947ac5ec93ad",
+    "verification/FROZEN.json": "6fa1f33192aa4bc76b78f9d2da1dd9149b7bd62e1193c4c2fee4193c3f70c55c",
+    "verification/RESULTS.json": "7f5c4042b07379df8d223abf6ab1050eed8293af390ecf2fb6c4221684e090a8",
+    "verification/prepare-local.py": "3d45975f55f7f3ec0cb5cf4c6c51addf77e2d01a86a944383c4c41e950379992",
+    "windows-agent/scripts/alipay_name_lookup.py": "ba4eeedccae0ed8f69293f7ca4b4c7c4d08d9f80449fdac2bcacc091cb1663bc",
+    "windows-agent/scripts/alipay_visual_result.py": "d6817fdeee26bc801be46cd6391511d62e1004ce46a14a2bfea9eba75613328a",
+    "windows-agent/scripts/lookup_ocr_worker.py": "4243c4da4582c1259198842fa3c577ba9ddce8a47e687611b2dec824d9304ccd",
+    "windows-agent/scripts/test_lookup_ocr_runtime.py": "0c87324890573809b320595df8c355b275af371902c6291c04a3bf8bdc4b17e9",
+    "windows-agent/scripts/test_lookup_query_budget.py": "9ba2b6f03a550b6a433c06b7367e2314d1430086d429f9f61588f241f6765496",
+    "windows-agent/src/index.mjs": "517bfef7f967aa5664dca555a221cebf0772940dd7b2073b1ddc8d7b210d2f03",
+    "windows-agent/src/lookup-page-recovery.test.mjs": "eb0b8b69f3ccbd7bf00dbc27f4345a26a0d38b3a90b8d5543a85ec5d022969a3"
+  }
+}
