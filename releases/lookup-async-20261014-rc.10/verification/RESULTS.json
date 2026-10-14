@@ -1,0 +1,44 @@
+{
+  "atUtc": "2026-10-14T01:57:52.477184+00:00",
+  "selfReview": true,
+  "baselineNewTests": {
+    "total": 9,
+    "pass": 2,
+    "fail": 4,
+    "error": 3
+  },
+  "lookupPythonTests": {
+    "passed": 113,
+    "logSha256": "71d73bea91c65159d571b8e0c91a26338e3c586fa3dcbc688f2e7446020d077d"
+  },
+  "runnerPythonTests": {
+    "passed": 163,
+    "logSha256": "36e54e69a64d9d25cc4b8cab8e7ed49e1187425c306fcdfcb654948d0bb47229"
+  },
+  "realFrameReplay": [
+    {
+      "file": "raw-result-0.png",
+      "loading": true,
+      "networkBusy": false,
+      "result": false
+    },
+    {
+      "file": "raw-result-1.png",
+      "loading": false,
+      "networkBusy": true,
+      "result": false
+    }
+  ],
+  "integrity": {
+    "baselineFileCount": 347,
+    "changedFiles": [
+      "windows-agent/scripts/alipay_name_lookup.py",
+      "windows-agent/scripts/alipay_visual_result.py",
+      "windows-agent/scripts/test_lookup_loading_guard.py"
+    ],
+    "apiSdkSharedAdbMediaUnchanged": true
+  },
+  "realRetest": "pending",
+  "rc9RealRetest": "3 failed; records retained",
+  "productionActions": 0
+}
