@@ -1,0 +1,114 @@
+{
+  "schema": 1,
+  "kind": "read_only_production_audit",
+  "date": "2026-10-14",
+  "localBaseCommit": "341fd758c82aa8368ee428c63e62502bfca26c5a",
+  "productionActiveRelease": "lookup-realname-prompt-20261012-deployed.1",
+  "windowUtc": {
+    "first": "2026-10-13T02:52:46.947Z",
+    "last": "2026-10-14T03:37:15.905Z"
+  },
+  "scanCount": 2807,
+  "onlineMin": 108,
+  "onlineMax": 122,
+  "completedBatches": 109,
+  "actualActions": 121,
+  "deferredBatches": 137,
+  "probeFailedBatches": 129,
+  "collateralBatches": [
+    {
+      "at": "2026-10-13T08:16:15.491Z",
+      "targets": [
+        "120"
+      ],
+      "lost": [
+        "127"
+      ]
+    },
+    {
+      "at": "2026-10-13T09:53:32.347Z",
+      "targets": [
+        "43"
+      ],
+      "lost": [
+        "18"
+      ]
+    },
+    {
+      "at": "2026-10-13T09:56:28.347Z",
+      "targets": [
+        "14"
+      ],
+      "lost": [
+        "107"
+      ]
+    },
+    {
+      "at": "2026-10-13T09:58:19.119Z",
+      "targets": [
+        "18"
+      ],
+      "lost": [
+        "177"
+      ]
+    },
+    {
+      "at": "2026-10-13T10:32:15.561Z",
+      "targets": [
+        "99",
+        "18"
+      ],
+      "lost": [
+        "123"
+      ]
+    },
+    {
+      "at": "2026-10-13T19:24:39.613Z",
+      "targets": [
+        "176"
+      ],
+      "lost": [
+        "123"
+      ]
+    }
+  ],
+  "overlaps": [
+    {
+      "first": "2026-10-13T03:49:24.530Z",
+      "second": "2026-10-13T03:49:28.930Z",
+      "firstTargets": [
+        "123",
+        "140"
+      ],
+      "secondTargets": [
+        "123",
+        "140"
+      ],
+      "sharedTargets": [
+        "123",
+        "140"
+      ]
+    }
+  ],
+  "productionSourceHashes": {
+    "src/index.mjs": "0d6a0aa177f38873b6999e18bba24fdecb865469924bc91efe396e91e2bd883b",
+    "src/device-recovery-state.mjs": "6315883802f283291f4eab489c6c2975e9dfaee2d035143732a2214f4e723293",
+    "src/pnp-missing-device-recovery.mjs": "eddfcf36dd904bf2ca834fb8958d21c55fa62c45139d880399d565b1006825f6",
+    "src/pnp-recovery-policy.mjs": "5a66a8ccb4defbf837c58cb473fd884ffe1763c17256ed6642d91dfe1be4e850",
+    "src/pnp-recovery-safety.mjs": "a5fd1eeca7f955a911beaff66e411e2bc9a5fbf946641f5c744181b14dd0396a",
+    "src/pnp-recovery-verification.mjs": "0658e51af5e109fa3d78588860f64face9f15c7062b97e575e0201b7c1f2915a",
+    "src/pnp-recovery-wake-scheduler.mjs": "c0f98f5dac1454eba52317dda13f991cc1d765387b5256c67e892b599be678af",
+    "src/pnp-screen-coordinator.mjs": "5eb1551e7dedbef4eed8d941733fa20b4780a362196338c51db4651b78ab9003",
+    "src/guarded-task-runner.mjs": "150e14ea6fcdd6b0bb117d771bce084347cb26442a7674b0963cf9887df1d25f",
+    "src/device-scan-cache.mjs": "1526782cd19841841535a790d78c350103aa50f12ae4e0ac5557828afd09e1a5",
+    "src/adb-server-recovery.mjs": "693535b4379089e33b7badeaac2e2665c1b2efb797adba1264e8c431d356fb2f",
+    "src/recovery-observability.mjs": "72ff0b2a548d78b323cf10d75184d69f51326b6343eb40b49c4d793b514675eb",
+    "data/pnp-recovery-state.json": "535b0c0d0b6500f27f7d2f2c05d9f04837fee8d7d59e185dabb63d1c43f64862"
+  },
+  "privateEvidenceFiles": 28,
+  "privateManifestSha256": "59d7cb4166ca06ee50acda05b5a13b345aca35011246b8e3f7542f3f5ad274d9",
+  "rawLogSha256": "cf5fd37b784bdbe9af4b2301edf6c8a5069d8b2dcc6f52f334f82ec425d87954",
+  "productionMutations": 0,
+  "fixImplemented": false,
+  "acceptanceComplete": false
+}
