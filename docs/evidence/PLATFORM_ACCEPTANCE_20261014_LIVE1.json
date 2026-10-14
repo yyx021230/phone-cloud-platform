@@ -1,0 +1,258 @@
+{
+  "recordedAtUtc": "2026-10-14T07:01:26.686097+00:00",
+  "status": "local-candidate-blocked-not-deployed",
+  "candidateTag": "platform-core-20261014-rc.5",
+  "candidateCommit": "9e3716047b8bc9045947b54ad46eb1e7b22f8e81",
+  "branch": "codex/platform-rc2-local-acceptance-20261014",
+  "userScope": {
+    "realDevices": [
+      118,
+      130
+    ],
+    "naturalCooldownExpiry": "do-not-wait; one-time continuation paused",
+    "fivePhysicalDevices": false
+  },
+  "automatedRegression": {
+    "newTests": 8,
+    "newTestsOldImplementationFailures": 4,
+    "pythonPassed": 311,
+    "runnerPassed": 163,
+    "nodePassed": 698,
+    "platform": "macOS arm64 Node25.9.0; prior unchanged cloud Linux amd64 Node22 697 passed"
+  },
+  "rc4RealDeviceEvidence": {
+    "queries": 8,
+    "names": 7,
+    "failed": 1,
+    "oneQueryOneInputForAll": true,
+    "twoMinuteNewRequestKeys": {
+      "actualElapsedMs": 124125,
+      "newKeys": 3,
+      "allOriginalLookupId": true,
+      "heldStatus": "processing",
+      "otherCompletedBeforeRelease": 2,
+      "originalQueryIdUnchanged": true,
+      "realQueryTasks": 1,
+      "realInputEvents": 1,
+      "finalStatus": "succeeded",
+      "hasName": true,
+      "otherPhoneNumbers": [
+        118
+      ]
+    },
+    "failedReason": "local_lookup_result_unconfirmed:observation_budget_exhausted",
+    "coldIsolationFirstAttempt": "other device continued but did not succeed within 2min; warm isolation retest passed"
+  },
+  "rc5RealDeviceEvidence": {
+    "newQueries": 2,
+    "results": [
+      {
+        "ordinal": 94,
+        "device": 130,
+        "status": "failed",
+        "queryTasks": 1,
+        "inputCount": 1,
+        "runnerReasons": [
+          "local_lookup_result_unconfirmed:ocr_reader_timeout"
+        ]
+      },
+      {
+        "ordinal": 96,
+        "device": 118,
+        "status": "waiting_human",
+        "queryTasks": 1,
+        "inputCount": 1,
+        "runnerReasons": [
+          "poco_alipay_human_verification_required:jigsaw_verification"
+        ]
+      }
+    ],
+    "monitor": "bounded 240s; one original request retained waiting_human; no resubmission",
+    "naturalAccountSwitchObserved": false,
+    "pendingLookupPreserved": {
+      "device": 118,
+      "lookupId": "93bb4b42-10d1-4415-900e-dbcbb8743261",
+      "queryId": "25420a08-e7ba-4ede-aea4-cb9099b7262b"
+    },
+    "poolDisabled": true,
+    "activeTasks": 0,
+    "outbox": 0
+  },
+  "cooldownBeforeExpiry": {
+    "devices": [
+      {
+        "number": 118,
+        "selectionHttp": 409,
+        "error": "lookup_account_cooling",
+        "noSwitchTaskCreated": true
+      },
+      {
+        "number": 130,
+        "selectionHttp": 409,
+        "error": "lookup_account_cooling",
+        "noSwitchTaskCreated": true
+      }
+    ],
+    "originalRecordsUnchanged": true,
+    "expiryNotTested": true
+  },
+  "ocr": {
+    "actualFrameParserReplay": {
+      "runtime-rc4": {
+        "cardConfirmed": false,
+        "namePresent": false,
+        "matchedPhone": false
+      },
+      "review-rc5": {
+        "cardConfirmed": true,
+        "namePresent": true,
+        "matchedPhone": true
+      }
+    },
+    "imageSha256": "e85302c7bf1a982f53acd727438569eb2d1a1cf795ebcf74d7ec3cfa6fb02b0a",
+    "originalWorker30sTimeout": true,
+    "afterDrainWorker": {
+      "platform": "darwin-arm64",
+      "nativeWindows": false,
+      "samples": [
+        {
+          "elapsedMs": 12903,
+          "pid": 99320,
+          "rows": 56,
+          "size": [
+            720,
+            1612
+          ],
+          "cardConfirmed": false,
+          "namePresent": false
+        },
+        {
+          "elapsedMs": 7803,
+          "pid": 99320,
+          "rows": 56,
+          "size": [
+            720,
+            1612
+          ],
+          "cardConfirmed": false,
+          "namePresent": false
+        }
+      ],
+      "workerReaped": true
+    },
+    "interpretation": "after-drain original rc4 parser still rejected real card; rc5 parser replay fixes lower shortcut rejection. Offline same-image replay is not two independent live screenshots. Worker performance under true-query remaining deadline and native Windows remain unverified/failed.",
+    "nativeWindowsVerified": false
+  },
+  "artifacts": {
+    "localDirectory": "/Users/yyx/.config/phone-cloud/release-artifacts/platform-core-20261014-rc.5",
+    "manifestSha256": "cd97372331c1241bf748823b33a441962427f4047d97b258aa913302f1b28ad0",
+    "components": {
+      "cloud": {
+        "sourceTag": "platform-core-20261014-rc.2",
+        "sourceCommit": "c8c5159f7425fcfbbb0cec6c93bdaf50b1ce26a0",
+        "imageId": "sha256:8bdaa45eb1bde9538befc00017bee9182d319a734666b31a47b4b0cde23171ef",
+        "imageConfigDigest": "sha256:a96f3dec110df47b88b0775e955369fb0872e85ec94017639d1985afef0c1c01",
+        "containerFilesVerified": 129,
+        "businessFilesMatchingRc5": 128,
+        "metadataVersionRetained": "platform-core-20261014-rc.2",
+        "notRebuiltOrRelabeled": true
+      },
+      "agent": {
+        "sourceTag": "platform-core-20261014-rc.5",
+        "changedSinceRc2": [
+          {
+            "path": "windows-agent/scripts/alipay_name_lookup.py",
+            "from": "ac30fc40e7c64f37dfd25105c76655307b92c8d20dca90765e09f3af22f20315",
+            "to": "a33188cb9449193ca76c01c8f8f4aadee3e56c528423f9d50e75f2618a36c755"
+          },
+          {
+            "path": "windows-agent/scripts/alipay_visual_result.py",
+            "from": "3ddd73029748e6f9eed7d9e928ebf9a031f96221d367a6f1825a5e127c41dd30",
+            "to": "126fe85ad8669e932625e63f90d1f70b8cd8999df9d98ed9921a58076940d5f8"
+          }
+        ],
+        "files": {
+          "windows-agent/package-lock.json": "26340b426015063767d8ef1c2a31be05912e8004c4809f98d3b80b9b81cfeb3a",
+          "windows-agent/runtime-manifests/wheel-manifest.json": "77bb79cbb0ae88818d3b102fc429c468748294f06460340f36c0087a823624d3",
+          "windows-agent/runtime-manifests/windows-wheel-lock.txt": "841e5a4903669a63dcbf5e0cbd3b32ac0a9f53ca85b190cb7ba3e323ed934c5a",
+          "windows-agent/scripts/alipay_name_lookup.py": "a33188cb9449193ca76c01c8f8f4aadee3e56c528423f9d50e75f2618a36c755",
+          "windows-agent/scripts/alipay_visual_result.py": "126fe85ad8669e932625e63f90d1f70b8cd8999df9d98ed9921a58076940d5f8",
+          "windows-agent/scripts/install_lookup_ocr.py": "14f389ad55b0d976f50a2524d7888c1fd19b4a31ebeee7d3670f52216b83934c",
+          "windows-agent/scripts/lookup_ocr_runtime.py": "786aa196b75fc9401c7d7b721f4c21a67cd527a429fe757605bc7bbcebb171ae",
+          "windows-agent/scripts/lookup_ocr_worker.py": "9460c1606302d67812360aecdb890712791c87e2b80d1b450da0e90047903a6c",
+          "windows-agent/scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+          "windows-agent/scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+          "windows-agent/scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+          "windows-agent/scripts/小红书数据同步.py": "bb459e3570d4201434bbbf05841c8b2b9d3864a3febc25b414780f9d84c710fc",
+          "windows-agent/src/alipay-poco-fallback-policy.mjs": "0d56fccc2d1b81541668cf2880e3da4b4547b54a34aef92120516bd6e9fd2f09",
+          "windows-agent/src/config.mjs": "b233775c589ab22e6662a23bb82e507c9a3f635f1112709bfdae24d854a5d254",
+          "windows-agent/src/index.mjs": "e190cf4edd1a8898b31831ba39ba90dc925402e863ba72b3526e7185757c7850",
+          "windows-agent/src/lookup-status-outbox.mjs": "43c10101e982b3a6881a2a1d5b7ae691553833d4548bf5f11f5ea51fc49b4dc1",
+          "windows-agent/src/managed-lookup-delivery.mjs": "cfdc56ea307bf82fac3965a75b3d0a2115826e3ebeb1f3c2bfc48e2a74a8bce6",
+          "windows-agent/src/pnp-recovery-admission.mjs": "dede33101b9765342ffa50121a8edadf066d519c047646fcca82635ab6cc236f",
+          "windows-agent/src/pnp-recovery-safety.mjs": "ad7de7d0575476cb807201e88b1c12842d12af0d9864e54809f4b98913c6d355",
+          "windows-agent/src/post-task-scan-policy.mjs": "a5bd899c70a9d1707fdaddc70b1adf1965260a7ce9d8bb10cccdc2de45842ec1",
+          "windows-agent/src/windows-device-install-probe.mjs": "c360457e2bcf820fb697a514627fc1c7c1761afe51935d464eb8240719f9401c",
+          "windows-agent/src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842"
+        }
+      }
+    },
+    "fileCount": 8,
+    "sourceFiles": 388,
+    "imageAndArchiveHashesVerified": true
+  },
+  "productionPreflight": {
+    "connectionAttempts": 2,
+    "successfulConnections": 0,
+    "reason": "existing cloud and Windows SSH sessions no longer authenticate in BatchMode",
+    "currentDriftAndD075NotRefreshed": true,
+    "mutations": 0,
+    "deployment": false,
+    "push": false
+  },
+  "restoration": {
+    "atUtc": "2026-10-14T06:59:55.236872+00:00",
+    "originalAgentResumed": 44042,
+    "originalPlatformUnchanged": 46592,
+    "originalPlatformReady": true,
+    "originalAgentHeartbeatAgeSeconds": 2.426872,
+    "originalPlatformTasks": 4,
+    "adbDaemonUnchanged": 26031,
+    "originalConfigSha256": "547e6eaaff47f20ab8faf5482ee4e0bbe99f86938720a16b7921b8db94584c0a",
+    "stayAwakeBaselineRetained": {
+      "118": "2",
+      "130": "0"
+    },
+    "ownedTestPortsClosed": [
+      59404,
+      59405,
+      59406
+    ],
+    "pendingTestTasks": 0,
+    "outbox": 0,
+    "productionActions": 0,
+    "preservedPendingBusinessRequests": 1
+  },
+  "finalPrivateBackupSha256": "4ecd6907dc36ba2cce54f981409f9231e6ac72a1d673ff13c4681bfd4d9eb384",
+  "originalRootPreserved": {
+    "statusEntries": 236,
+    "head": "6811aef632eeaaacd6d6ce1effc4afa64bf6d363",
+    "unchanged": true
+  },
+  "review": "self-review; action rows and strict identity/protection/two-frame callers inspected; no media/ADB source changes",
+  "remaining": [
+    "130 actual-query OCR timeout",
+    "118 original query waiting for manual puzzle; local fixture stopped and request saved",
+    "Windows private OCR and XHS WinRT native acceptance",
+    "restore safe SSH login and refresh ACTIVE/hashes/D-075/backup/task drain before deployment"
+  ],
+  "logs": {
+    "action-scope-before.log": "1454c9319665f5aac1719687edf6d51c20de3ac36260b3ac970df89aeff8f7cd",
+    "action-scope-after.log": "a3368a96609729e1369d057dfefa6cbe072afa751335d84019542cf280c86090",
+    "python-rc5-regression.log": "ae6f93cd5157f481870fd7ebd0895063ec07b24d51d49434a6d02352c01afc92",
+    "runners-rc5.log": "61d843c14c5de5ba709c4f72777b130fb9a381365c5f91e791a0525c933b3e54",
+    "node-rc5-regression.log": "82dae06be0d942dcb525e28b2ff8b71fbf74f10cfa89861083f67d86acfe3e68",
+    "ocr-profile-after-drain.log": "104190089633ebdb4f0cfa1423a232cee8f28193b9416f8f35b43589bbec794e"
+  },
+  "commonWorkflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+}
