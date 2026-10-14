@@ -1,0 +1,26 @@
+{
+  "status": "local-candidate-not-deployed",
+  "targeted": {
+    "passed": 15,
+    "failed": 0
+  },
+  "fullRegression": {
+    "command": "env -i PATH=... HOME=... npm run test:screen",
+    "passed": 724,
+    "failed": 0
+  },
+  "syntax": "npm run check passed",
+  "frozenUnchanged": 24,
+  "review": "self-review of server/Agent/UI integration and failures; no independent reviewer",
+  "productionMutationsForFeature": 0,
+  "notRun": [
+    "Native Windows pause and actual PnP suppression",
+    "Production rollout",
+    "Browser visual verification"
+  ],
+  "testLogSha256": {
+    "targeted-final.log": "08ce060095ece0ec5f99b624aa693c4c19739cb08f2289e659cf2e6720ca4e29",
+    "full-regression-final.log": "600f1cf9455a6680e273efa5af7333f6de75e8cdcaae50fe6c4cc1f086e3efb2",
+    "syntax.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+  }
+}

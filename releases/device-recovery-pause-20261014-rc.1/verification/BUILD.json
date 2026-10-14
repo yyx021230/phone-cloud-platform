@@ -1,0 +1,4 @@
+{
+  "status": "new-cloud-build-required",
+  "reason": "Managed adapter stop precedence changed; rc2 cloud image cannot represent rc7. Build receipt stored separately after committed source build."
+}
