@@ -1,0 +1,26 @@
+{
+  "version": "lookup-async-20261014-rc.12",
+  "candidateTag": "lookup-async-20261014-rc.12",
+  "branch": "codex/lookup-account-target-20261014",
+  "baselineCommit": "6f52fdd86704d3f93c556e270eda6b30f070729f",
+  "status": "local-candidate-not-deployed",
+  "baseTag": "lookup-async-20261014-rc.11",
+  "baseManifestSha256": "70a61d8c651d38836717e96c7dec7a7ca18ff25a0c4d327c63db9647359f9b5b",
+  "baseFileHashes": {
+    "windows-agent/scripts/alipay_name_lookup.py": "fbb96b6418c0c7d593de39f58c9bc49a42399e162f088ae4cbf135b9677b68af",
+    "windows-agent/scripts/automation_runners_test.py": "5e2cd5fbbdfd1bb1882f6580540666d5fcebab9e6a7c3a90787fbec66b1ff6a2"
+  },
+  "overlayFiles": [
+    "windows-agent/scripts/alipay_name_lookup.py"
+  ],
+  "testFiles": [
+    "windows-agent/scripts/test_lookup_account_picker_transition.py",
+    "windows-agent/scripts/automation_runners_test.py"
+  ],
+  "platformReleaseReady": false,
+  "apiChanges": false,
+  "schemaChanges": false,
+  "mediaChanges": false,
+  "productionActions": 0,
+  "realTestStatus": "118-and-130-two-switches-each-exact-current-marker-verified"
+}
