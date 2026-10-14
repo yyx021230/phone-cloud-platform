@@ -1,0 +1,44 @@
+{
+  "version": "platform-core-20261014-rc.4",
+  "status": "local-code-validated-real-retest-pending",
+  "sourceBaseline": "89612e228520e81cfa1fddd746925838dd9e6019",
+  "reproduced": {
+    "deviceNumber": 130,
+    "sourceTag": "platform-core-20261014-rc.3",
+    "error": "lookup_ocr_worker_timeout",
+    "queryTasks": 1,
+    "phoneInputEvents": 2,
+    "resultEventuallySucceeded": true
+  },
+  "checks": {
+    "ocrFailureOldImplementation": {
+      "subcases": 6,
+      "failed": 6
+    },
+    "ocrFailureAfter": {
+      "subcases": 6,
+      "passed": 6
+    },
+    "pythonDiscovery": {
+      "passed": 303
+    },
+    "automationRunners": {
+      "passed": 163
+    },
+    "agentRecoveryBoundary": {
+      "passed": 19
+    },
+    "nodeRegression": {
+      "passed": 698,
+      "node": "25.9.0",
+      "platform": "darwin-arm64"
+    }
+  },
+  "notVerified": [
+    "native Windows OCR (no independent host)",
+    "rc4 real-device acceptance pending",
+    "full new eight-hour natural cooldown pending"
+  ],
+  "productionActions": 0,
+  "pushed": false
+}

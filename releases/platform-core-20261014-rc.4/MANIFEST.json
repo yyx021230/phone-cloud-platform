@@ -1,0 +1,15 @@
+{
+  "version": "platform-core-20261014-rc.4",
+  "files": {
+    "README.md": "9a29bf1783a34a1bb53358a4327dbaa1871af017b7f7052c065ed956849fb579",
+    "RELEASE_NOTES.md": "26c13c964d8ea50dcfd908b212600a04c41d0c1f10f1d29386c8a73281f18b45",
+    "VERSION.json": "f390bf5e021c32031f314c16b45ba013c76073d958ca9cd5da4c6dd4ec206f43",
+    "verification/BUILD.json": "acd908f5399600da7181cba346b704ea392592624e883055ded0be947e12abb8",
+    "verification/FROZEN.json": "6fa1f33192aa4bc76b78f9d2da1dd9149b7bd62e1193c4c2fee4193c3f70c55c",
+    "verification/RESULTS.json": "e7ac362aa3963e6b494935cd9324e3ceef98fc8674b181969cb4044daa6310a3",
+    "verification/prepare-local.py": "3d45975f55f7f3ec0cb5cf4c6c51addf77e2d01a86a944383c4c41e950379992",
+    "windows-agent/scripts/alipay_name_lookup.py": "a33188cb9449193ca76c01c8f8f4aadee3e56c528423f9d50e75f2618a36c755",
+    "windows-agent/scripts/test_lookup_blank_card_guard.py": "276537f57362ed18dcac9cb1fef5986e992d81bb0222fb874dc2057e569eda02",
+    "windows-agent/src/lookup-page-recovery.test.mjs": "e921312ab303f928bb0e8a70346e3a1a39d1cda7ace8a453a35de6264cf9a84a"
+  }
+}
