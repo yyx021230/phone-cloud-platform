@@ -1,0 +1,262 @@
+{
+  "atUtc": "2026-10-14T03:26:27Z",
+  "status": "local-candidate-verified-not-deployed",
+  "baseline": "6f52fdd86704d3f93c556e270eda6b30f070729f",
+  "scope": [
+    "lookup account-picker transition and exact saved-account selection"
+  ],
+  "tests": {
+    "oldCodeReproduction": {
+      "cases": 2,
+      "expectedFailures": 2,
+      "observations": [
+        "A delayed intermediate sheet receives 3 entry taps instead of 1",
+        "A moving saved row is tapped at the first-frame position instead of the settled position"
+      ]
+    },
+    "newPickerTests": 13,
+    "lookupPythonTests": 136,
+    "automationRunnerTests": 163,
+    "rootSyntaxCheck": true,
+    "historicalPrivateXmlReplay": {
+      "normalPickerRows": 5,
+      "loginAvatarSheetRejectedAsNormalPicker": true
+    }
+  },
+  "live": {
+    "atUtc": "2026-10-14T03:25:47Z",
+    "actions": [
+      {
+        "device": 118,
+        "ok": true,
+        "attempts": [
+          {
+            "phase": "select",
+            "targetHash": "126c5418b436",
+            "actualHash": "126c5418b436",
+            "identityVerified": true,
+            "savedAccountTapCount": 1,
+            "intermediateEntryTaps": 0,
+            "stableSnapshots": 2,
+            "tapCoordinates": [
+              {
+                "x": 284,
+                "y": 937,
+                "atUtc": "2026-10-14T03:21:55Z"
+              },
+              {
+                "x": 648,
+                "y": 1558,
+                "atUtc": "2026-10-14T03:22:06Z"
+              },
+              {
+                "x": 669,
+                "y": 103,
+                "atUtc": "2026-10-14T03:22:14Z"
+              },
+              {
+                "x": 360,
+                "y": 1317,
+                "atUtc": "2026-10-14T03:22:19Z"
+              },
+              {
+                "x": 360,
+                "y": 1258,
+                "atUtc": "2026-10-14T03:22:33Z"
+              }
+            ],
+            "verified": true
+          },
+          {
+            "phase": "return",
+            "targetHash": "7e2435456c4d",
+            "actualHash": "7e2435456c4d",
+            "identityVerified": true,
+            "savedAccountTapCount": 1,
+            "intermediateEntryTaps": 0,
+            "stableSnapshots": 2,
+            "tapCoordinates": [
+              {
+                "x": 648,
+                "y": 1558,
+                "atUtc": "2026-10-14T03:22:45Z"
+              },
+              {
+                "x": 669,
+                "y": 103,
+                "atUtc": "2026-10-14T03:22:53Z"
+              },
+              {
+                "x": 360,
+                "y": 1317,
+                "atUtc": "2026-10-14T03:22:58Z"
+              },
+              {
+                "x": 286,
+                "y": 737,
+                "atUtc": "2026-10-14T03:23:05Z"
+              },
+              {
+                "x": 648,
+                "y": 1558,
+                "atUtc": "2026-10-14T03:23:14Z"
+              },
+              {
+                "x": 669,
+                "y": 103,
+                "atUtc": "2026-10-14T03:23:22Z"
+              },
+              {
+                "x": 360,
+                "y": 1317,
+                "atUtc": "2026-10-14T03:23:27Z"
+              }
+            ],
+            "verified": true
+          }
+        ],
+        "originHash": "7e2435456c4d"
+      },
+      {
+        "device": 130,
+        "ok": true,
+        "attempts": [
+          {
+            "phase": "select",
+            "targetHash": "60cd3aa0c18a",
+            "actualHash": "60cd3aa0c18a",
+            "identityVerified": true,
+            "savedAccountTapCount": 1,
+            "intermediateEntryTaps": 0,
+            "stableSnapshots": 2,
+            "tapCoordinates": [
+              {
+                "x": 285,
+                "y": 1137,
+                "atUtc": "2026-10-14T03:24:18Z"
+              },
+              {
+                "x": 360,
+                "y": 1258,
+                "atUtc": "2026-10-14T03:24:30Z"
+              },
+              {
+                "x": 648,
+                "y": 1558,
+                "atUtc": "2026-10-14T03:24:35Z"
+              },
+              {
+                "x": 680,
+                "y": 104,
+                "atUtc": "2026-10-14T03:24:39Z"
+              },
+              {
+                "x": 360,
+                "y": 1317,
+                "atUtc": "2026-10-14T03:24:40Z"
+              }
+            ],
+            "verified": true
+          },
+          {
+            "phase": "return",
+            "targetHash": "b1b626a87f11",
+            "actualHash": "b1b626a87f11",
+            "identityVerified": true,
+            "savedAccountTapCount": 1,
+            "intermediateEntryTaps": 0,
+            "stableSnapshots": 2,
+            "tapCoordinates": [
+              {
+                "x": 648,
+                "y": 1558,
+                "atUtc": "2026-10-14T03:25:05Z"
+              },
+              {
+                "x": 680,
+                "y": 104,
+                "atUtc": "2026-10-14T03:25:09Z"
+              },
+              {
+                "x": 360,
+                "y": 1317,
+                "atUtc": "2026-10-14T03:25:11Z"
+              },
+              {
+                "x": 284,
+                "y": 737,
+                "atUtc": "2026-10-14T03:25:17Z"
+              },
+              {
+                "x": 648,
+                "y": 1558,
+                "atUtc": "2026-10-14T03:25:27Z"
+              },
+              {
+                "x": 680,
+                "y": 104,
+                "atUtc": "2026-10-14T03:25:31Z"
+              },
+              {
+                "x": 360,
+                "y": 1317,
+                "atUtc": "2026-10-14T03:25:33Z"
+              }
+            ],
+            "verified": true
+          }
+        ],
+        "originHash": "b1b626a87f11"
+      }
+    ],
+    "queryInputCount": 0,
+    "productionActions": 0
+  },
+  "restoration": {
+    "atUtc": "2026-10-14T03:26:26.834610+00:00",
+    "originalAgentResumed": 44042,
+    "originalPlatformUnchanged": 46592,
+    "originalPlatformReady": true,
+    "originalAgentHeartbeatAgeSeconds": 3.86761,
+    "originalPlatformTasks": 4,
+    "adbDaemonUnchanged": 26031,
+    "originalConfigSha256": "547e6eaaff47f20ab8faf5482ee4e0bbe99f86938720a16b7921b8db94584c0a",
+    "stayAwakeBaselineRetained": {
+      "118": "2",
+      "130": "0"
+    },
+    "ownedTestPortsClosed": [
+      59304,
+      59305,
+      59306
+    ],
+    "pendingTestTasks": 0,
+    "outbox": 0,
+    "productionActions": 0
+  },
+  "review": {
+    "kind": "self-review",
+    "files": [
+      "alipay_name_lookup.py",
+      "test_lookup_account_picker_transition.py",
+      "automation_runners_test.py"
+    ],
+    "conclusion": "Only lookup-specific picker waiting/selection preconditions change; no shared ADB, scheduling, media, API, database or dependencies changed."
+  },
+  "rootExistingChangesPreserved": true,
+  "unverified": [
+    "The exact historical user-reported occurrence was not captured contemporaneously; code paths are reproduced with deterministic fixtures.",
+    "Slow/delayed intermediate-sheet regression is simulated; the 4 live switches used the normal direct picker.",
+    "Logged-out avatar account selector is kept separate and is not added as an automatic login recovery path.",
+    "New natural limits and full 8-hour cooldown expiry were not repeated in this picker-only test.",
+    "Full HTTP/API flow, 5 physical phones, Windows and production were not retested."
+  ],
+  "productionActions": 0,
+  "pushed": false,
+  "privateEvidence": {
+    "fileCount": 76,
+    "manifestSha256": "676d1fdf469c30f28b3958d85932a4ba1c5893616247cabd9f934a19baab79f6",
+    "location": "local-private-evidence-directory",
+    "rawUiCommitted": false
+  }
+}

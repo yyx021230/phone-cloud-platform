@@ -1,0 +1,12 @@
+{
+  "version": "lookup-async-20261014-rc.12",
+  "files": {
+    "README.md": "2679b468e4d9c5f8cc6ed04691e445880b46dbf5df916140522058753cdd7d1c",
+    "VERSION.json": "d50dcd871b2b9f43afbcc5e58fbfba80392df52c756242ffaeddfb9f49c6896b",
+    "verification/RESULTS.json": "f1f77b88430fe29d61a665a8251992c1f31764238cdc6dfd3246770124936ce1",
+    "verification/prepare-local.py": "c04eb3eed20c497559c2f27d08d9eef7f03af60f68b2991c0233a50bf12b145b",
+    "windows-agent/scripts/alipay_name_lookup.py": "db6703817991de3d6bbc28b0533193fe83f47f37c1c3d2744ca9d65fc92f4c3b",
+    "windows-agent/scripts/automation_runners_test.py": "94f8984ab3508746bbdc1f2d167df0d0dfa3aff0468c79856413cd529d61c60a",
+    "windows-agent/scripts/test_lookup_account_picker_transition.py": "6deacd1d1248e7a904d0461a6841c263ed5f3dde84ea7a88844bb8b1da461465"
+  }
+}
