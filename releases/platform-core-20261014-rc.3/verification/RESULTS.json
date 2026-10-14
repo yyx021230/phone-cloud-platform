@@ -1,0 +1,40 @@
+{
+  "version": "platform-core-20261014-rc.3",
+  "status": "local-code-validated-real-retest-pending",
+  "checks": {
+    "newRegressionBefore": {
+      "tests": 5,
+      "failed": 5
+    },
+    "newRegressionAfter": {
+      "tests": 5,
+      "passed": 5
+    },
+    "pythonDiscovery": {
+      "tests": 301,
+      "passed": 301
+    },
+    "automationRunners": {
+      "tests": 163,
+      "passed": 163
+    },
+    "rootCheck": true,
+    "nodeRegression": {
+      "tests": 697,
+      "passed": 697,
+      "node": "25.9.0",
+      "platform": "darwin-arm64"
+    }
+  },
+  "priorNode22Evidence": "platform-core-20261014-rc.2 (697/697 on linux-amd64); not repeated in this Agent-only patch",
+  "changedRuntime": [
+    "windows-agent/scripts/alipay_name_lookup.py"
+  ],
+  "notVerified": [
+    "Windows native OCR unavailable",
+    "patched two-device real acceptance pending",
+    "new eight-hour cooldown expires 2026-10-14T09:34:50.941Z and 09:37:22.895Z"
+  ],
+  "productionActions": 0,
+  "pushed": false
+}

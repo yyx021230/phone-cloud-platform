@@ -1,0 +1,14 @@
+{
+  "version": "platform-core-20261014-rc.3",
+  "files": {
+    "README.md": "4597e9cb66ff56632ebcfd42975e337c52973d6170a09fb7d10dacf9711bcf9e",
+    "RELEASE_NOTES.md": "0851533b5968d79d608f241543ceb1b8872c0375097bd4ed0151cb56a13c48d5",
+    "VERSION.json": "d7d215d4b0c6e20f436241746d03906319a71e85abb90840295f80fc0fe5ff85",
+    "verification/BUILD.json": "ed58601f02d52e75a84ae90da0bc037885a43d7937a2440b0459be5d60e6170e",
+    "verification/FROZEN.json": "6fa1f33192aa4bc76b78f9d2da1dd9149b7bd62e1193c4c2fee4193c3f70c55c",
+    "verification/RESULTS.json": "8bfbc1014e09af6cd7bcbc85bafd067267517602b47f7d99bfa1a696f95b73fa",
+    "verification/prepare-local.py": "3d45975f55f7f3ec0cb5cf4c6c51addf77e2d01a86a944383c4c41e950379992",
+    "windows-agent/scripts/alipay_name_lookup.py": "43f05a7aba2c45af50b39a5a77ebece916f710b333b3f3e41859137d346eed3c",
+    "windows-agent/scripts/test_lookup_search_entry.py": "ee9ee886d99ddc51d666d101bf7b09ada8c9e0c222f0c78b3dc93bb4e3fa3695"
+  }
+}
