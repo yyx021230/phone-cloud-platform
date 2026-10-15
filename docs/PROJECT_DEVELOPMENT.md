@@ -1706,6 +1706,17 @@ rc.8云端镜像e92e3a93已独立构建、133文件hash/HTTP通过；468005107�
 
 交付：[rc.3](../releases/adb-recovery-isolation-20261015-rc.3/README.md)、[结果及失败记录](../releases/adb-recovery-isolation-20261015-rc.3/verification/RESULTS.json)、[更新回退](../releases/adb-recovery-isolation-20261015-rc.3/RELEASE_NOTES.md)。本轮仅1个Agent源码、3个测试与封包/文档；本地commit及不可变tag `adb-recovery-isolation-20261015-rc.3`，未推送/上线，原rc.2及其他工作区改动保留。SYSTEM、SDK/5037、现有授权、preload、启动方式和媒体均未变。
 
+### 7.15.12 rc.3生产准备与重载窗口（2026-10-15 16:20–16:28，尚未切换）
+
+用户授权上线rc.3并继续恢复掉线设备，但明确“不重建ADB、不切身份、不影响正在用的手机，重载Agent前先告知”。本轮在同一干净任务分支从`af34243bc3e712f9ee7d9e189e618b53599b0cec`开始。实际ACTIVE为`lookup-readiness-20261015-deployed.10`/回执`f2c36e98407564b94dca60e2bb7959377d6d885a`，当前/重启镜像均`e92e3a93...`，原Agent634228、共享ADB634172均SYSTEM，唯一5037/SDK路径符合冻结。
+
+- 核对生产server/index、public/app、Agent/index与rc.10组装源码一致；将rc.2依赖和rc.3补丁最小三方合并到rc.10，无冲突，7份恢复运行覆盖文件与受测rc.3完全一致，保留后续查名脚本。由于rc.2云端控制协议未上线，必须云端与Agent配套加载，不允许只拷贝入口而使恢复永远未同步。
+- 最终组合根check、797/797全量、回环HTTP smoke通过；Windows生产宿主机**隔离暂存目录**运行49/49假ADB/PnP测试（Node24.18.0），覆盖原生文件持久化/策略/并发协调，0真实ADB/PnP动作。它不代表真机恢复或驱动验收。媒体宿主机原D-075 live通过，PID2503525/8Mbps/2包不变。
+- 已在云端和Windows备份目标源码、已有恢复状态与Compose/ACTIVE，配置/preload只记hash，不复制授权密钥。已构建候选镜像`sha256:a707c4c9fa25942cbb15029e5058fe1ca61850e49ddfa7066957eb3681757816`，隔离语法校验通过；准备的Compose仅改phone-cloud.image，运行容器未切换，生产源文件未替换。第一次构建误用原始image ID作FROM而被当成仓名，失败后改为校验ID一致的既有tag，重建通过；首次宿主node不在PATH，使用既有host Node后live验证通过。没有隐瞒准备中失败。
+- 16:20直接ADB117在线/1未授权；16:25平台118在线，147/182/126控屏、156查名仍占用。用户要求不影响在用设备，因此停在切换前，已说明云端/Agent重载会断控屏，并请求选择等待全部空闲或156结束后允许三路控屏短断。未获得相应选择前不取消任务、不停Agent、不激活镜像；安装器此时空闲与在线增加来自现场原有流程，不归为本补丁效果。
+
+准备回执及操作/回退：[prepared.1](../releases/adb-recovery-isolation-20261015-prepared.1/PREPARATION.json)、[RUNBOOK](../releases/adb-recovery-isolation-20261015-prepared.1/RUNBOOK.md)。本轮只有备份/暂存/构建和本地版本记录；未上线、未重启任何业务/ADB/Windows/Hub/媒体，未改身份/keys/启动动作，未推送。生产新版本加载、单/双机恢复和稳定观察尚未完成。切换前须再次核对占用/版本/hash与D-075，不使用过期快照。
+
 ## 8. 短信同步与验证码链路
 
 ### 8.1 当前标准流程
@@ -2499,6 +2510,7 @@ npm run test:screen
 
 | 日期 | 编号 | 决策 | 原因 | 状态 |
 |---|---|---|---|---|
+| 2026-10-15 | ADB / rc.3上线准备 | 用户批准部署但不允许影响在用手机；先按deployed.10合并备份，云/Agent配套加载前确认具体窗口，绝不重建ADB或切身份 | 7运行文件与rc.3一致；797全量/49Windows夹具/smoke/live通过；3路控屏和1查名仍在用 | prepared.1，未切换；等待空闲/短断窗口选择 |
 | 2026-10-15 | ADB / 安装器按动作准入 | 延续rc.2扫描/隔离，busy或unknown只延后PnP；唤醒/单机重连继续，PnP命令前再查安装器与占用；不重建ADB | rc.2混批/唤醒反例3过5失败，新版21项定向及797全量通过 | rc.3本地候选；未上线，Windows原生和实际恢复未验 |
 | 2026-10-15 | ADB / 手动恢复边界 | 暂不上线rc.2；共享安装冲突及自动恢复仍活跃时不叠加手工重装；共享维护另获授权且保持SYSTEM | 现场108→113在线来自原Agent，71/143仍缺transport，114消失；4路控屏和2个查名占用 | 只读核对；无手动恢复或生产变更，未完成稳定验收 |
 | 2026-10-15 | ADB / D-024目标隔离与扫描分离 | 按用户要求在本地候选收窄无条件循环：3次实际命令失败或梯级耗尽持久隔离；发现上报与恢复分离，保留SYSTEM与控屏边界 | 旧Agent慢扫描反例、新真实入口假设备验证、实际恢复路径及持久解除修订测试 | rc.2候选；785/785/check/烟测通过；Windows原生与生产灰度未验，未上线 |
@@ -2736,6 +2748,7 @@ npm run test:screen
 
 | 日期 | 变更人 | releaseId/提交 | 变更内容 | 验证结果 |
 |---|---|---|---|---|
+| 2026-10-15 | Codex | adb-recovery-isolation-20261015-prepared.1 | 对齐deployed.10，备份暂存7运行文件，构建a707c4c9镜像、校验Compose唯一image变更并说明重载窗口 | 797/797、49/49Windows假设备、check/smoke/媒体live通过；未更换运行文件/未重载/未推送，生产恢复待验 |
 | 2026-10-15 | Codex | adb-recovery-isolation-20261015-rc.3 | 安装器busy/unknown不再整批阻止ADB重连或恢复唤醒；按目标记录PnP等待并补最后异步复核 | check、21定向及797全量通过；27冻结文件/ADB启动/控屏片段不变；无生产访问/变更/重启/推送 |
 | 2026-10-15 | Codex | adb-manual-recovery-20261015-observation.1 | 记录deployed.10实际基线、安装队列自行收尾后复发与剩余设备分类 | ready200、SYSTEM/原PID保持；113在线/4待授权；未发恢复命令，未上线或重启，无业务回归 |
 | 2026-10-15 | Codex | adb-recovery-isolation-20261015-rc.2 | 15文件最小叠加：合入单台暂停、自动隔离/显式解除、在线检测独立上报；整理驱动处理及回滚方案 | 最终785/785、根check和烟测通过，27冻结文件/两入口片段不变；自审中途错误修复留痕；无生产访问/变更/推送 |

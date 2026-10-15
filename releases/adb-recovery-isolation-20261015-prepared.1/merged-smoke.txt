@@ -1,0 +1,5 @@
+
+> phone-cloud-platform@0.1.0 test:smoke
+> node scripts/smoke-platform.mjs
+
+smoke ok
