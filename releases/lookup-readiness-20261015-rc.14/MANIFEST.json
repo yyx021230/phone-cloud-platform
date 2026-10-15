@@ -1,0 +1,16 @@
+{
+  "version": "lookup-readiness-20261015-rc.14",
+  "files": {
+    "README.md": "45b413de342df009e0ceb3cfb0c189e016fc7f5a1f075edee286b56d25955321",
+    "VERSION.json": "b761763625f3376adcd3f20916064f004dc9d8e938a5c78466c120659263f2d6",
+    "verification/RESULTS.json": "d431ac6662b08ab09baa5bd8c8b981af1b34c9cb1c1714ce21a048ce0889d88f",
+    "verification/prepare-local.py": "296d5a204334d5b96e1df1e93b457ff1a95a32856e117141750568837ff6c5bf",
+    "verification/rc14-before.txt": "42a1570efe38e37412f9db5bdc7d6cba478f8cedb99cc62811242777e38d504c",
+    "verification/rc14-native-initial-harness-error.json": "34658e642f5a945c2ed66233ab38627f2c266dd49c9ef16caaa091b9c30d8735",
+    "verification/rc14-native.json": "844e26dc1d5e070820f7189187028f3579b26e7e347ee46dd192c868d34f6b83",
+    "verification/rc14-python-all.txt": "a5d1c427a9e8ffc080030f30edddc70373acc49a45823a3f35a7533cc41c4295",
+    "verification/rc14-screen-with-deps.txt": "54339e15df804440f956157a93bea1234dd4c00f842f79f2f031110957f2e916",
+    "windows-agent/scripts/alipay_name_lookup.py": "8ba90c21e4d3bf9de7e12d02d0f83e05a7e730ea8f4a26d1b817a45b9cbfaf61",
+    "windows-agent/scripts/test_lookup_cold_access_denied.py": "cb18f8235486fb933eb3c9896e985604824161e22bb25f8d66be05fa50b70de1"
+  }
+}

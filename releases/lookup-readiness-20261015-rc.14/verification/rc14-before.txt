@@ -1,0 +1,65 @@
+FF...F
+======================================================================
+ERROR: test_existing_cooldown_uses_current_marker_then_rotates_without_rerecording (test_lookup_cold_access_denied.ColdAccessDeniedTests) (make='runner')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/pc-lookup-cold-start-rc14/windows-agent/scripts/test_lookup_cold_access_denied.py", line 32, in test_existing_cooldown_uses_current_marker_then_rotates_without_rerecording
+    r.prepare_available_account()
+  File "/tmp/pc-lookup-cold-start-rc14/windows-agent/scripts/alipay_name_lookup.py", line 4171, in prepare_available_account
+    self.identify_cold_search_restriction_account(restriction)
+  File "/tmp/pc-lookup-cold-start-rc14/windows-agent/scripts/alipay_name_lookup.py", line 4104, in identify_cold_search_restriction_account
+    raise RuntimeError("alipay_account_identity_unverified")
+RuntimeError: alipay_account_identity_unverified
+
+======================================================================
+ERROR: test_existing_cooldown_uses_current_marker_then_rotates_without_rerecording (test_lookup_cold_access_denied.ColdAccessDeniedTests) (make='runner')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/pc-lookup-cold-start-rc14/windows-agent/scripts/test_lookup_cold_access_denied.py", line 32, in test_existing_cooldown_uses_current_marker_then_rotates_without_rerecording
+    r.prepare_available_account()
+  File "/tmp/pc-lookup-cold-start-rc14/windows-agent/scripts/alipay_name_lookup.py", line 4172, in prepare_available_account
+    self.assert_known_account()
+  File "/tmp/pc-lookup-cold-start-rc14/windows-agent/scripts/alipay_name_lookup.py", line 4097, in assert_known_account
+    raise RuntimeError("alipay_account_preflight_required")
+RuntimeError: alipay_account_preflight_required
+
+======================================================================
+FAIL: test_current_cooling_and_all_accounts_cooling_never_queries (test_lookup_cold_access_denied.ColdAccessDeniedTests)
+----------------------------------------------------------------------
+RuntimeError: alipay_account_identity_unverified
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/pc-lookup-cold-start-rc14/windows-agent/scripts/test_lookup_cold_access_denied.py", line 68, in test_current_cooling_and_all_accounts_cooling_never_queries
+    with self.assertRaisesRegex(RuntimeError,'alipay_no_available_account'):r.prepare_available_account()
+AssertionError: "alipay_no_available_account" does not match "alipay_account_identity_unverified"
+
+======================================================================
+FAIL: test_current_marker_disagrees_with_cache_or_is_ambiguous_never_rotates (test_lookup_cold_access_denied.ColdAccessDeniedTests)
+----------------------------------------------------------------------
+RuntimeError: alipay_account_identity_unverified
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/pc-lookup-cold-start-rc14/windows-agent/scripts/test_lookup_cold_access_denied.py", line 63, in test_current_marker_disagrees_with_cache_or_is_ambiguous_never_rotates
+    with self.assertRaisesRegex(RuntimeError,'alipay_saved_account_'):r.prepare_available_account()
+AssertionError: "alipay_saved_account_" does not match "alipay_account_identity_unverified"
+
+======================================================================
+FAIL: test_unrecorded_denial_identifies_actual_account_before_cooldown_ack (test_lookup_cold_access_denied.ColdAccessDeniedTests)
+----------------------------------------------------------------------
+RuntimeError: alipay_account_identity_unverified
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/pc-lookup-cold-start-rc14/windows-agent/scripts/test_lookup_cold_access_denied.py", line 19, in test_unrecorded_denial_identifies_actual_account_before_cooldown_ack
+    r.prepare_available_account()
+AssertionError: "restriction_before_search:access_denied" does not match "alipay_account_identity_unverified"
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.007s
+
+FAILED (failures=3, errors=2)

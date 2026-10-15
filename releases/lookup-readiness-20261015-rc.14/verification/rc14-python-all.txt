@@ -1,0 +1,268 @@
+.{"event": {"step": "exit_search_for_account_navigation", "elapsedMs": 3, "reason": "account-list", "attempt": 1, "previousActivity": "MainSearchActivity", "accountSelected": false}}
+{"event": {"step": "exit_search_via_exact_back_button", "elapsedMs": 3, "selector": {"desc": "\u8fd4\u56de", "resource_id": "com.alipay.mobile.antui:id/search_back_button"}, "tap": {"x": 48, "y": 120}}}
+.{"event": {"step": "exit_search_for_account_navigation", "elapsedMs": 0, "reason": "account-list", "attempt": 1, "previousActivity": "MainSearchActivity", "accountSelected": false}}
+.{"event": {"step": "account_navigation_hierarchy_wait", "elapsedMs": 0, "token": "account-switch-returned-home", "attempt": 1, "errorType": "RuntimeError", "accountSelected": true}}
+.{"event": {"step": "poco_instrumentation_launch_started", "instrumentationLaunches": 1}}
+{"event": {"step": "poco_instrumentation_handshake_failed", "sinceLastMs": 0, "elapsedMs": 0, "error": "instrumentation_exited:code=1:{'stdout': '', 'stderr': ''}", "reason": "connection_not_ready", "instrumentationOutput": {"stdout": "", "stderr": ""}}}
+..{"event": {"step": "poco_instrumentation_launch_started", "sinceLastMs": -532, "instrumentationLaunches": 1}}
+{"event": {"step": "poco_instrumentation_handshake_failed", "elapsedMs": 500, "error": "connection_deadline:poco_service_invalid_screen_size:http_status=200:{'stdout': '', 'stderr': ''}", "reason": "poco_service_invalid_screen_size:http_status=200", "instrumentationOutput": {"stdout": "", "stderr": ""}}}
+....{"event": {"step": "alipay_real_name_prompt_live_evidence", "elapsedMs": 0, "title": "\u8bf7\u5b8c\u6210\u5b9e\u540d\u8ba4\u8bc1", "actionCount": 1, "closeCount": 1, "fullHierarchyRequested": false, "authenticationStarted": false, "driver": "poco"}}
+{"event": {"step": "dismiss_alipay_real_name_prompt", "elapsedMs": 0, "title": "\u8bf7\u5b8c\u6210\u5b9e\u540d\u8ba4\u8bc1", "evidence": "exact_live_title_action_and_close", "driver": "poco", "authenticationStarted": false, "fullHierarchyRequested": false}}
+{"event": {"step": "poco_home_search_live_target", "elapsedMs": 0, "selector": {"desc": "\u641c\u7d22\u6846"}, "unique": true, "fullHierarchyDeferred": true, "driver": "poco"}}
+..{"event": {"step": "open_my_tab", "elapsedMs": 0, "selector": {"text": "\u6211\u7684", "resource_id": "com.alipay.android.tablauncher:id/tab_description"}, "tap": {"x": 648, "y": 1550}}}
+{"event": {"step": "dismiss_alipay_fullscreen_ad", "elapsedMs": 0, "tap": {"x": 360, "y": 1254}}}
+{"event": {"step": "account_navigation_overlay_dismissed", "elapsedMs": 0, "attempt": 1, "phase": "after_my_tap"}}
+{"event": {"step": "visual_settings_fallback_failed", "elapsedMs": 0, "attempt": 1, "error": "visual_settings_requires_selected_my_tab"}}
+{"event": {"step": "account_navigation_retry", "elapsedMs": 0, "attempt": 1, "reason": "settings_not_visible"}}
+{"event": {"step": "open_my_tab", "elapsedMs": 0, "selector": {"text": "\u6211\u7684", "resource_id": "com.alipay.android.tablauncher:id/tab_description"}, "tap": {"x": 648, "y": 1550}}}
+{"event": {"step": "open_settings", "elapsedMs": 0, "selector": {"desc": "\u8bbe\u7f6e", "resource_id": "com.alipay.mobile.antui:id/right_text"}, "tap": {"x": 672, "y": 126}}}
+.{"event": {"step": "open_saved_account_picker", "elapsedMs": 13, "method": "responsive_card_segmentation"}}
+{"event": {"step": "open_login_other_account_sheet", "elapsedMs": 13, "selector": {"text": "\u767b\u5f55\u5176\u4ed6\u8d26\u53f7"}, "tap": {"x": 360, "y": 1150}}}
+{"event": {"step": "account_picker_intermediate_sheet_handled", "elapsedMs": 13, "entryTapCount": 1, "evidence": ["\u767b\u5f55\u5176\u4ed6\u8d26\u53f7", "\u9000\u51fa\u767b\u5f55", "\u53d6\u6d88"]}}
+{"event": {"step": "account_picker_stable", "elapsedMs": 13, "savedAccountCount": 2, "snapshots": 2}}
+.{"event": {"step": "clear_previous_query", "elapsedMs": 0, "selector": "exact_search_input", "method": "element_tap_batched_keyevents", "keyCount": 25, "keyDelayMs": 0, "keyDelayMode": "android_default"}}
+..{"event": {"step": "dismiss_coloros_securepay_usb_warning", "elapsedMs": 0, "driver": "unit_xml", "selector": {"package": "com.coloros.securepay", "resourceId": "android:id/button2", "text": "\u5ffd\u7565"}, "usbModeChanged": false, "tap": {"x": 195, "y": 911}}}
+.{"event": {"step": "dismiss_honor_software_update_overlay", "elapsedMs": 0, "driver": "poco_focus_adb_back", "selector": {"package": "com.hihonor.ouc"}, "method": "back", "installStarted": false}}
+.{"event": {"step": "dismiss_alipay_real_name_prompt", "elapsedMs": 0, "driver": "xml_uiautomator_account_switch", "evidence": "exact_title_action_and_center_close", "tap": {"x": 360, "y": 1240}, "authenticationStarted": false}}
+.{"event": {"step": "dismiss_vivo_wlan_risk_overlay", "elapsedMs": 0, "driver": "poco_focus_adb_back", "selector": {"package": "com.vivo.safecenter"}, "method": "back", "networkChanged": false}}
+............{"event": {"step": "poco_input_clear_confirmed", "elapsedMs": 406, "selector": "exact_search_input", "editableLength": 0, "driver": "poco_input_connection"}}
+{"event": {"step": "input_phone", "elapsedMs": 406, "method": "adb_keyevents_after_poco_exact_input", "keyCount": 11, "keyDelayMs": 0, "keyDelayMode": "android_default", "driver": "poco"}}
+{"event": {"step": "submit_search", "elapsedMs": 2406, "selector": "exact_search_confirm", "attempt": 1, "driver": "poco"}}
+{"event": {"step": "human_verification_detected", "elapsedMs": 8126, "evidence": {"title": "\u4e3a\u4fdd\u969c\u60a8\u7684\u6b63\u5e38\u8bbf\u95ee\u8bf7\u8fdb\u884c\u9a8c\u8bc1", "action": "\u8bf7\u62d6\u52a8\u6ed1\u5757\u5b8c\u6210\u62fc\u56fe", "feedback": "", "manual": true}, "token": "result-1", "driver": "poco", "requiresHuman": true, "automatedAttempts": 0, "resubmitsInput": false}}
+.{"event": {"step": "manual_account_list_requested", "elapsedMs": 0, "retryCurrentPhone": false}}
+{"event": {"step": "saved_account_list_ready", "elapsedMs": 0, "currentAccount": "155******36", "savedAccountCount": 3}}
+.{"event": {"step": "alipay_fullscreen_ad_live_evidence", "elapsedMs": 0, "adCount": 1, "closeCount": 1, "fullHierarchyRequested": false, "driver": "poco"}}
+{"event": {"step": "dismiss_alipay_fullscreen_ad", "elapsedMs": 0, "evidence": "exact_live_fullscreen_ad_and_close", "promotedActionTapped": false, "authenticationStarted": false, "fullHierarchyRequested": false, "driver": "poco"}}
+{"event": {"step": "poco_home_search_live_target", "elapsedMs": 0, "selector": {"desc": "\u641c\u7d22\u6846"}, "unique": true, "fullHierarchyDeferred": true, "driver": "poco"}}
+.{"event": {"step": "alipay_fullscreen_ad_live_evidence", "elapsedMs": 0, "adCount": 2, "closeCount": 1, "fullHierarchyRequested": false, "driver": "poco"}}
+{"event": {"step": "alipay_fullscreen_ad_live_evidence", "elapsedMs": 0, "adCount": 1, "closeCount": 0, "fullHierarchyRequested": false, "driver": "poco"}}
+{"event": {"step": "alipay_fullscreen_ad_live_evidence", "elapsedMs": 0, "adCount": 1, "closeCount": 2, "fullHierarchyRequested": false, "driver": "poco"}}
+{"event": {"step": "alipay_fullscreen_ad_live_evidence", "elapsedMs": 0, "adCount": 1, "closeCount": 1, "fullHierarchyRequested": false, "driver": "poco"}}
+.{"event": {"step": "alipay_real_name_prompt_live_evidence", "elapsedMs": 0, "title": "\u8bf7\u5b8c\u6210\u5b9e\u540d\u8ba4\u8bc1", "actionCount": 0, "closeCount": 1, "fullHierarchyRequested": false, "authenticationStarted": false, "driver": "poco"}}
+{"event": {"step": "alipay_real_name_prompt_live_evidence", "elapsedMs": 0, "title": "\u8bf7\u5b8c\u6210\u5b9e\u540d\u8ba4\u8bc1", "actionCount": 1, "closeCount": 0, "fullHierarchyRequested": false, "authenticationStarted": false, "driver": "poco"}}
+{"event": {"step": "alipay_real_name_prompt_live_evidence", "elapsedMs": 0, "title": "\u8bf7\u5b8c\u6210\u5b9e\u540d\u8ba4\u8bc1", "actionCount": 1, "closeCount": 2, "fullHierarchyRequested": false, "authenticationStarted": false, "driver": "poco"}}
+{"event": {"step": "alipay_real_name_prompt_live_evidence", "elapsedMs": 0, "title": "\u8bf7\u5b8c\u6210\u5b9e\u540d\u8ba4\u8bc1", "actionCount": 1, "closeCount": 1, "fullHierarchyRequested": false, "authenticationStarted": false, "driver": "poco"}}
+.{"event": {"step": "alipay_real_name_prompt_live_evidence", "elapsedMs": 0, "title": "\u8bf7\u5b8c\u6210\u5b9e\u540d\u8ba4\u8bc1", "actionCount": 1, "closeCount": 1, "fullHierarchyRequested": false, "authenticationStarted": false, "driver": "poco"}}
+{"event": {"step": "dismiss_alipay_real_name_prompt", "elapsedMs": 0, "title": "\u8bf7\u5b8c\u6210\u5b9e\u540d\u8ba4\u8bc1", "evidence": "exact_live_title_action_and_close", "driver": "poco", "authenticationStarted": false, "fullHierarchyRequested": false}}
+.{"event": {"step": "alipay_local_service_prompt_detected", "elapsedMs": 0, "titleCount": 1, "hintCount": 1, "actionCount": 1, "closeCount": 1, "driver": "poco", "permissionRequested": false}}
+{"event": {"step": "dismiss_alipay_local_service_prompt", "elapsedMs": 0, "driver": "poco", "action": "cancel", "permissionRequested": false, "nextButtonTapped": false, "phoneQueryStarted": false}}
+.{"event": {"step": "alipay_local_service_prompt_detected", "elapsedMs": 0, "titleCount": 1, "hintCount": 1, "actionCount": 1, "closeCount": 1, "driver": "poco", "permissionRequested": false}}
+{"event": {"step": "dismiss_alipay_local_service_prompt", "elapsedMs": 0, "driver": "poco", "action": "cancel", "permissionRequested": false, "nextButtonTapped": false, "phoneQueryStarted": false}}
+.{"event": {"step": "alipay_local_service_prompt_detected", "elapsedMs": 0, "titleCount": 1, "hintCount": 1, "actionCount": 1, "closeCount": 1, "driver": "poco", "permissionRequested": false}}
+.{"event": {"step": "alipay_local_service_prompt_detected", "elapsedMs": 0, "titleCount": 1, "hintCount": 0, "actionCount": 1, "closeCount": 1, "driver": "poco", "permissionRequested": false}}
+{"event": {"step": "alipay_local_service_prompt_detected", "elapsedMs": 0, "titleCount": 1, "hintCount": 1, "actionCount": 0, "closeCount": 1, "driver": "poco", "permissionRequested": false}}
+{"event": {"step": "alipay_local_service_prompt_detected", "elapsedMs": 0, "titleCount": 1, "hintCount": 1, "actionCount": 1, "closeCount": 0, "driver": "poco", "permissionRequested": false}}
+{"event": {"step": "alipay_local_service_prompt_detected", "elapsedMs": 0, "titleCount": 1, "hintCount": 1, "actionCount": 1, "closeCount": 2, "driver": "poco", "permissionRequested": false}}
+{"event": {"step": "alipay_local_service_prompt_detected", "elapsedMs": 0, "titleCount": 1, "hintCount": 1, "actionCount": 1, "closeCount": 1, "driver": "poco", "permissionRequested": false}}
+..{"event": {"step": "manual_account_switch_requested", "elapsedMs": 0, "retryCurrentPhone": false, "targetAccount": "198******91"}}
+{"event": {"step": "account_selected", "elapsedMs": 0, "fromAccount": "155******36", "toAccount": "198******91", "selector": "exact_account_resource"}}
+{"event": {"step": "account_selection_returned_home", "elapsedMs": 0}}
+{"event": {"step": "account_switch_verified", "elapsedMs": 0, "fromAccount": "155******36", "currentAccount": "198******91", "verification": "exact_target_click_and_home_return"}}
+{"event": {"step": "account_switch_search_prepare_deferred", "elapsedMs": 0, "reason": "next_poco_query_prepares_search", "accountSwitchCompleted": true, "retryAccountSwitch": false, "driver": "xml_uiautomator_account_switch"}}
+.{"event": {"step": "manual_account_switch_requested", "elapsedMs": 0, "retryCurrentPhone": false, "targetAccount": "198******91"}}
+{"event": {"step": "reuse_open_account_picker", "elapsedMs": 0, "savedAccountCount": 2}}
+{"event": {"step": "account_selected", "elapsedMs": 0, "fromAccount": "155******36", "toAccount": "198******91", "selector": "exact_account_resource"}}
+{"event": {"step": "account_selection_returned_home", "elapsedMs": 0}}
+{"event": {"step": "account_switch_verified", "elapsedMs": 0, "fromAccount": "155******36", "currentAccount": "198******91", "verification": "exact_target_click_and_home_return"}}
+{"event": {"step": "account_switch_search_prepare_deferred", "elapsedMs": 0, "reason": "next_poco_query_prepares_search", "accountSwitchCompleted": true, "retryAccountSwitch": false, "driver": "xml_uiautomator_account_switch"}}
+.{"event": {"step": "manual_account_switch_requested", "elapsedMs": 0, "retryCurrentPhone": false, "targetAccount": "198******91"}}
+.{"event": {"step": "keep_awake_usb_skipped", "elapsedMs": 0, "reason": "noncritical_adb_shell_unavailable", "errorType": "TimeoutError"}}
+.{"event": {"step": "alipay_account_restriction_detected", "elapsedMs": 0, "phase": "session-start", "driver": "poco", "reason": "device_risk", "title": "\u60a8\u7684\u8bbe\u5907\u53ef\u80fd\u5b58\u5728\u98ce\u9669\uff0c\u8bf7\u68c0\u67e5\u6216\u5207\u6362\u8bbe\u5907", "phoneQueryStarted": false, "accountSwitchRequired": false, "currentAccount": "", "accountIdentityVerified": false}}
+{"event": {"step": "alipay_account_restriction_detected", "elapsedMs": 0, "phase": "input-readback", "driver": "poco", "reason": "device_risk", "title": "\u60a8\u7684\u8bbe\u5907\u53ef\u80fd\u5b58\u5728\u98ce\u9669\uff0c\u8bf7\u68c0\u67e5\u6216\u5207\u6362\u8bbe\u5907", "phoneQueryStarted": true, "accountSwitchRequired": true, "currentAccount": "", "accountIdentityVerified": false}}
+.{"event": {"step": "dismiss_honor_software_update_overlay", "elapsedMs": 0, "driver": "poco", "selector": {"package": "com.hihonor.ouc", "text": "\u7a0d\u540e", "evidence": "exact_title_message_and_three_actions"}, "method": "later", "installStarted": false}}
+.{"event": {"step": "poco_input_clear_confirmed", "elapsedMs": 0, "selector": "exact_search_input", "editableLength": 0, "driver": "poco_input_connection"}}
+{"event": {"step": "input_phone", "elapsedMs": 0, "method": "adb_keyevents_after_poco_exact_input", "keyCount": 11, "keyDelayMs": 0, "keyDelayMode": "android_default", "driver": "poco"}}
+{"event": {"step": "submit_search", "elapsedMs": 0, "selector": "exact_search_confirm", "attempt": 1, "driver": "poco"}}
+.{"event": {"step": "poco_input_clear_confirmed", "elapsedMs": 0, "selector": "exact_search_input", "editableLength": 0, "driver": "poco_input_connection"}}
+{"event": {"step": "input_phone", "elapsedMs": 0, "method": "adb_keyevents_after_poco_exact_input", "keyCount": 11, "keyDelayMs": 0, "keyDelayMode": "android_default", "driver": "poco"}}
+.{"event": {"step": "poco_coloros_securepay_probe_failed", "elapsedMs": 0, "errorType": "TimeoutError", "driver": "poco"}}
+{"event": {"step": "dismiss_coloros_securepay_usb_warning", "elapsedMs": 0, "driver": "poco_focus_adb_back", "selector": {"package": "com.coloros.securepay"}, "method": "back", "usbModeChanged": false}}
+.{"event": {"step": "retry_target_after_coloros_securepay_warning", "elapsedMs": 0, "selector": {"desc": "\u641c\u7d22\u6846"}, "driver": "poco"}}
+{"event": {"step": "open_search", "elapsedMs": 0, "reason": "unit", "driver": "poco"}}
+.{"event": {"step": "dismiss_honor_software_update_overlay", "elapsedMs": 0, "driver": "poco", "selector": {"package": "com.hihonor.ouc", "text": "\u7a0d\u540e", "evidence": "exact_title_message_and_three_actions"}, "method": "later", "installStarted": false}}
+...{"event": {"step": "alipay_login_required_detected", "elapsedMs": 0, "phase": "open-search-session-start", "driver": "poco", "phoneQueryStarted": false, "loginSurface": "carrier_one_tap"}}
+.{"event": {"step": "alipay_login_required_detected", "elapsedMs": 0, "phase": "reuse-foreground", "driver": "poco", "phoneQueryStarted": false, "loginSurface": "sms_code"}}
+.{"event": {"step": "dismiss_coloros_securepay_usb_warning", "elapsedMs": 0, "driver": "poco", "selector": {"package": "com.coloros.securepay", "text": "\u5ffd\u7565", "evidence": "exact_title_and_risk_message"}, "usbModeChanged": false}}
+.{"event": {"step": "dismiss_coloros_securepay_usb_warning", "elapsedMs": 0, "driver": "poco", "selector": {"package": "com.coloros.securepay", "resourceId": "android:id/button2", "text": "\u5ffd\u7565"}, "usbModeChanged": false}}
+.{"event": {"step": "dismiss_alipay_phone_credit_promo", "elapsedMs": 0, "driver": "poco", "evidence": ["\u8bdd\u8d39\u9650\u65f6\u798f\u5229", "1\u5206\u94b1\u51455\u5143\u8bdd\u8d39", "\u7acb\u5373\u9886\u53d6"], "promotedActionTapped": false}}
+..{"event": {"step": "launch_alipay", "elapsedMs": 0, "reason": "test", "detail": "Status: ok", "driver": "poco", "forceStopped": false}}
+.{"event": {"step": "reuse_underlying_alipay_task_before_full_launch", "elapsedMs": 0, "reason": "session-start", "overlayFocus": "mCurrentFocus=Window{abc u0 com.netease.open.pocoservice/.TestActivity}", "driver": "poco_focus_adb", "forceStopped": false}}
+.{"event": {"step": "resume_alipay_home", "elapsedMs": 0, "reason": "unit", "detail": "Status: ok", "driver": "poco_focus_adb", "forceStopped": false, "routeClearedToHome": true}}
+.{"event": {"step": "activate_alipay_home_tab", "elapsedMs": 1, "reason": "unit", "selector": {"name": "com.alipay.android.tablauncher:id/tab_description", "text": "\u9996\u9875"}, "coordinateDerivedFromPoco": true, "driver": "poco"}}
+.{"event": {"step": "dismiss_alipay_real_name_prompt", "elapsedMs": 0, "driver": "poco", "evidence": "exact_title_action_and_close", "authenticationStarted": false}}
+.{"event": {"step": "dismiss_alipay_fullscreen_ad", "elapsedMs": 0, "driver": "poco", "evidence": "exact_fullscreen_ad_and_close", "promotedActionTapped": false}}
+.{"event": {"step": "poco_home_search_live_target", "elapsedMs": 0, "selector": {"desc": "\u641c\u7d22\u6846"}, "unique": true, "fullHierarchyDeferred": true, "driver": "poco"}}
+.{"event": {"step": "dismiss_vivo_wlan_risk_overlay", "elapsedMs": 1, "driver": "poco", "selector": {"package": "com.vivo.safecenter", "resourceId": "android:id/button2", "text": "\u5ffd\u7565\u98ce\u9669", "evidence": "exact_title_message_and_two_actions"}, "method": "ignore_risk", "networkChanged": false}}
+.{"event": {"step": "poco_input_clear_confirmed", "elapsedMs": 0, "selector": "exact_search_input", "editableLength": 0, "driver": "poco_input_connection"}}
+...{"event": {"step": "open_search", "elapsedMs": 0, "reason": "unit", "driver": "poco"}}
+..{"event": {"step": "open_search", "elapsedMs": 0, "reason": "session-start", "driver": "poco"}}
+{"event": {"step": "retry_search_input_after_coloros_securepay_warning", "elapsedMs": 0, "selector": {"name": "com.alipay.mobile.antui:id/search_input_box"}, "driver": "poco"}}
+.{"event": {"step": "poco_open_search_final_restriction_probe_begin", "elapsedMs": 0, "phase": "open-search-session-start", "driver": "poco"}}
+{"event": {"step": "poco_open_search_final_restriction_probe_done", "elapsedMs": 0, "phase": "open-search-session-start", "driver": "poco"}}
+.{"event": {"step": "open_search", "elapsedMs": 0, "reason": "session-start", "driver": "poco"}}
+{"event": {"step": "retry_search_after_late_known_overlay", "elapsedMs": 0, "reason": "session-start", "previousError": "poco_selector_missing:{'name': 'search_input'}; count=0", "driver": "poco", "genericCloseTapped": false}}
+{"event": {"step": "open_search", "elapsedMs": 0, "reason": "session-start-after-late-overlay", "driver": "poco"}}
+.{"event": {"step": "human_verification_detected", "elapsedMs": 0, "evidence": {"title": "\u4e3a\u4fdd\u969c\u60a8\u7684\u6b63\u5e38\u8bbf\u95ee\u8bf7\u8fdb\u884c\u9a8c\u8bc1", "action": "\u8bf7\u62d6\u52a8\u6ed1\u5757\u5b8c\u6210\u62fc\u56fe", "feedback": "", "manual": true}, "token": "test", "driver": "poco", "requiresHuman": true, "automatedAttempts": 0, "resubmitsInput": false}}
+.{"event": {"step": "clear_previous_query", "elapsedMs": 0, "method": "poco_exact_input_adb_keyevents"}}
+{"event": {"step": "poco_input_clear_confirmed", "elapsedMs": 0, "selector": "exact_search_input", "editableLength": 0, "driver": "poco_input_connection"}}
+{"event": {"step": "input_phone", "elapsedMs": 0, "method": "adb_keyevents_after_poco_exact_input", "keyCount": 11, "keyDelayMs": 0, "keyDelayMode": "android_default", "driver": "poco"}}
+{"event": {"step": "masked_real_name_tail_extracted", "elapsedMs": 0, "character": "\u6d4b", "matchMethod": "poco_geometry_plus_exact_account_actions", "driver": "poco"}}
+.{"event": {"step": "open_search", "elapsedMs": 0, "reason": "query", "driver": "poco"}}
+.{"event": {"step": "poco_request_received", "elapsedMs": 0, "operation": "query", "workflow": "alipay_name"}}
+{"event": {"step": "poco_reused", "elapsedMs": 0, "workflow": "alipay_name"}}
+.{"event": {"step": "resume_query_without_reinput", "elapsedMs": 0, "driver": "poco", "resubmitsInput": false}}
+{"event": {"step": "masked_real_name_tail_extracted", "elapsedMs": 0, "character": "\u6d4b", "matchMethod": "poco_geometry_plus_exact_account_actions", "driver": "poco"}}
+.{"event": {"step": "lookup_no_name_result", "elapsedMs": 0, "reason": "account_not_real_named", "matchMethod": "poco_geometry_unverified_account", "driver": "poco"}}
+.{"event": {"step": "alipay_login_required_detected", "elapsedMs": 0, "phase": "reuse-foreground", "driver": "poco_window_focus", "phoneQueryStarted": false, "loginSurface": "login_activity", "activity": "com.ali.user.mobile.loginupgrade.activity.LoginActivity"}}
+.{"event": {"step": "retry_reuse_after_coloros_securepay_warning", "elapsedMs": 0, "driver": "poco"}}
+{"event": {"step": "poco_reuse_focus_observed", "elapsedMs": 0, "searchForeground": false, "alipayForeground": true, "underlyingAlipayTask": false, "driver": "poco"}}
+{"event": {"step": "poco_reuse_restriction_probe_begin", "elapsedMs": 0, "driver": "poco"}}
+{"event": {"step": "poco_reuse_restriction_probe_done", "elapsedMs": 0, "driver": "poco"}}
+{"event": {"step": "reuse_existing_search_page", "elapsedMs": 0, "method": "poco_resume_home_then_open_search"}}
+.{"event": {"step": "retry_reuse_after_vivo_wlan_risk", "elapsedMs": 0, "driver": "poco"}}
+{"event": {"step": "poco_reuse_focus_observed", "elapsedMs": 0, "searchForeground": false, "alipayForeground": true, "underlyingAlipayTask": true, "driver": "poco"}}
+{"event": {"step": "poco_reuse_restriction_probe_begin", "elapsedMs": 0, "driver": "poco"}}
+{"event": {"step": "poco_reuse_restriction_probe_done", "elapsedMs": 0, "driver": "poco"}}
+{"event": {"step": "reuse_existing_search_page", "elapsedMs": 0, "method": "poco_resume_home_then_open_search"}}
+.{"event": {"step": "poco_reuse_focus_observed", "elapsedMs": 0, "searchForeground": false, "alipayForeground": true, "underlyingAlipayTask": true, "driver": "poco"}}
+{"event": {"step": "poco_reuse_restriction_probe_begin", "elapsedMs": 0, "driver": "poco"}}
+{"event": {"step": "poco_reuse_restriction_probe_done", "elapsedMs": 0, "driver": "poco"}}
+{"event": {"step": "reuse_existing_search_page", "elapsedMs": 0, "method": "poco_resume_home_then_open_search"}}
+.{"event": {"step": "poco_reuse_focus_observed", "elapsedMs": 0, "searchForeground": false, "alipayForeground": true, "underlyingAlipayTask": false, "driver": "poco"}}
+{"event": {"step": "poco_home_search_live_target", "elapsedMs": 0, "selector": {"desc": "\u641c\u7d22\u6846"}, "unique": true, "fullHierarchyDeferred": true, "driver": "poco"}}
+{"event": {"step": "reuse_existing_search_page", "elapsedMs": 0, "method": "poco_live_search_from_foreground"}}
+.{"event": {"step": "poco_reuse_focus_observed", "elapsedMs": 0, "searchForeground": false, "alipayForeground": true, "underlyingAlipayTask": false, "driver": "poco"}}
+{"event": {"step": "poco_reuse_restriction_probe_begin", "elapsedMs": 0, "driver": "poco"}}
+{"event": {"step": "poco_reuse_restriction_probe_done", "elapsedMs": 0, "driver": "poco"}}
+{"event": {"step": "reuse_existing_search_page", "elapsedMs": 0, "method": "poco_resume_home_then_open_search"}}
+.{"event": {"step": "poco_reuse_focus_observed", "elapsedMs": 0, "searchForeground": false, "alipayForeground": true, "underlyingAlipayTask": false, "driver": "poco"}}
+{"event": {"step": "poco_reuse_restriction_probe_begin", "elapsedMs": 0, "driver": "poco"}}
+{"event": {"step": "poco_reuse_restriction_probe_done", "elapsedMs": 0, "driver": "poco"}}
+.{"event": {"step": "poco_reuse_focus_observed", "elapsedMs": 0, "searchForeground": false, "alipayForeground": true, "underlyingAlipayTask": false, "driver": "poco"}}
+{"event": {"step": "poco_reuse_restriction_probe_begin", "elapsedMs": 0, "driver": "poco"}}
+{"event": {"step": "poco_reuse_restriction_probe_done", "elapsedMs": 0, "driver": "poco"}}
+.{"event": {"step": "retry_reuse_after_systemui", "elapsedMs": 0, "driver": "poco"}}
+{"event": {"step": "poco_reuse_focus_observed", "elapsedMs": 0, "searchForeground": true, "alipayForeground": true, "underlyingAlipayTask": false, "driver": "poco"}}
+{"event": {"step": "reuse_search_page_by_exact_activity", "elapsedMs": 0, "driver": "poco_focus_adb", "pocoHierarchyDeferred": true}}
+{"event": {"step": "reuse_existing_search_page", "elapsedMs": 0, "method": "exact_activity_start"}}
+.{"event": {"step": "retry_reuse_after_systemui", "elapsedMs": 0, "driver": "poco"}}
+{"event": {"step": "poco_reuse_focus_observed", "elapsedMs": 0, "searchForeground": true, "alipayForeground": true, "underlyingAlipayTask": false, "driver": "poco"}}
+{"event": {"step": "reuse_search_page_by_exact_activity", "elapsedMs": 0, "driver": "poco_focus_adb", "pocoHierarchyDeferred": true}}
+{"event": {"step": "reuse_existing_search_page", "elapsedMs": 0, "method": "exact_activity_start"}}
+.{"event": {"step": "poco_search_ready_focus", "elapsedMs": 0, "searchForeground": false, "underlyingAlipayTask": false, "driver": "poco"}}
+{"event": {"step": "retry_search_ready_after_coloros_securepay_warning", "elapsedMs": 0, "selector": {"name": "com.alipay.mobile.antui:id/search_input_box"}, "driver": "poco"}}
+{"event": {"step": "poco_search_input_probe_begin", "elapsedMs": 0, "driver": "poco"}}
+.{"event": {"step": "poco_input_clear_confirmed", "elapsedMs": 0, "selector": "exact_search_input", "editableLength": 0, "driver": "poco_input_connection"}}
+{"event": {"step": "input_phone", "elapsedMs": 0, "method": "adb_keyevents_after_poco_exact_input", "keyCount": 11, "keyDelayMs": 0, "keyDelayMode": "android_default", "driver": "poco"}}
+{"event": {"step": "resume_query_after_human_verification", "elapsedMs": 0, "recoveryAttempt": 1, "phase": "input-readback", "driver": "poco", "resubmitsInput": false}}
+{"event": {"step": "resume_query_without_reinput", "elapsedMs": 0, "driver": "poco", "resubmitsInput": false}}
+{"event": {"step": "masked_real_name_tail_extracted", "elapsedMs": 0, "character": "\u6d4b", "matchMethod": "poco_geometry_plus_exact_account_actions", "driver": "poco"}}
+.{"event": {"step": "open_search", "elapsedMs": 0, "reason": "session-start", "driver": "poco"}}
+{"event": {"step": "open_search_ready_by_exact_activity", "elapsedMs": 0, "driver": "poco_focus_adb", "pocoHierarchyDeferred": true}}
+.{"event": {"step": "poco_request_received", "elapsedMs": 0, "operation": "start", "workflow": "alipay_name"}}
+{"event": {"step": "poco_reused", "elapsedMs": 0, "workflow": "alipay_name"}}
+.{"event": {"step": "poco_request_received", "elapsedMs": 0, "operation": "start", "workflow": "alipay_name"}}
+{"event": {"step": "poco_reused", "elapsedMs": 0, "workflow": "alipay_name"}}
+{"event": {"step": "lookup_session_ready_on_restriction_page", "elapsedMs": 0, "restrictionReason": "device_risk", "phoneQueryStarted": false, "driver": "poco"}}
+.{"event": {"step": "open_search", "elapsedMs": 1, "reason": "session-start", "driver": "poco"}}
+{"event": {"step": "poco_unrecognized_surface_evidence_unavailable", "elapsedMs": 1, "reason": "session-start", "evidenceError": "'object' object is not callable", "driver": "poco"}}
+{"event": {"step": "poco_unrecognized_surface_after_search", "elapsedMs": 1, "reason": "session-start", "previousError": "poco_selector_missing:{'name': 'search_input'}; count=0", "focus": [], "visibleTexts": [], "driver": "poco", "screenMutationPerformed": false}}
+{"event": {"step": "retry_search_after_home_normalization", "elapsedMs": 1, "reason": "session-start", "previousError": "poco_selector_missing:{'name': 'search_input'}; count=0", "attempt": 1, "driver": "poco_focus_adb", "forceStopped": false}}
+{"event": {"step": "open_search", "elapsedMs": 1, "reason": "session-start", "driver": "poco"}}
+.{"event": {"step": "open_search", "elapsedMs": 1, "reason": "session-start", "driver": "poco"}}
+.{"event": {"step": "poco_request_received", "elapsedMs": 0, "operation": "start", "workflow": "alipay_name"}}
+{"event": {"step": "poco_reused", "elapsedMs": 0, "workflow": "alipay_name"}}
+.{"event": {"step": "poco_request_received", "elapsedMs": 0, "operation": "start", "workflow": "alipay_name"}}
+{"event": {"step": "poco_reused", "elapsedMs": 0, "workflow": "alipay_name"}}
+{"event": {"step": "skip_repeat_keep_awake", "elapsedMs": 0, "startAttachAttempt": 2, "reason": "already_attempted_for_lookup_start"}}
+.{"event": {"step": "poco_request_received", "elapsedMs": 0, "operation": "start", "workflow": "alipay_name"}}
+{"event": {"step": "poco_reused", "elapsedMs": 0, "workflow": "alipay_name"}}
+{"event": {"step": "reuse_search_overlay_recovery_failed", "elapsedMs": 0, "error": "com.vivo.safecenter_resume_alipay_timeout", "errorType": "RuntimeError", "driver": "poco_focus_adb"}}
+.{"event": {"step": "poco_request_received", "elapsedMs": 1, "operation": "start", "workflow": "alipay_name"}}
+{"event": {"step": "poco_reused", "elapsedMs": 1, "workflow": "alipay_name"}}
+{"event": {"step": "reuse_search_transport_failed", "elapsedMs": 1, "error": "poco_rpc_failed:TimeoutError:timed out", "errorType": "RuntimeError", "driver": "poco"}}
+.{"event": {"step": "poco_request_received", "elapsedMs": 0, "operation": "stop", "workflow": "alipay_name"}}
+{"event": {"step": "poco_reused", "elapsedMs": 0, "workflow": "alipay_name"}}
+{"event": {"step": "stop_restriction_probe_unavailable", "elapsedMs": 0, "driver": "poco", "errorType": "AttributeError"}}
+{"event": {"step": "lookup_session_stopped", "elapsedMs": 0, "searchPageKeptWarm": true, "driver": "poco"}}
+.{"event": {"step": "poco_request_received", "elapsedMs": 0, "operation": "stop", "workflow": "alipay_name"}}
+{"event": {"step": "poco_reused", "elapsedMs": 0, "workflow": "alipay_name"}}
+{"event": {"step": "lookup_session_stopped", "elapsedMs": 0, "searchPageKeptWarm": false, "restrictionPageKeptForDiagnosis": true, "restrictionReason": "jigsaw_verification", "driver": "poco"}}
+..{"event": {"step": "human_verification_result_channel_timeout", "elapsedMs": 3, "stage": "initial_snapshot", "token": "result-1", "driver": "poco", "resubmitsInput": false}}
+.{"event": {"step": "poco_input_clear_confirmed", "elapsedMs": 0, "selector": "exact_search_input", "editableLength": 0, "driver": "poco_input_connection"}}
+{"event": {"step": "input_phone", "elapsedMs": 0, "method": "adb_keyevents_after_poco_exact_input", "keyCount": 11, "keyDelayMs": 0, "keyDelayMode": "android_default", "driver": "poco"}}
+.{"event": {"step": "input_phone", "elapsedMs": 120000, "method": "reuse_search_EditText", "keyCount": 11, "keyDelayMs": 0, "keyDelayMode": "android_default", "driver": "xml_uiautomator"}}
+{"event": {"step": "masked_real_name_tail_extracted", "elapsedMs": 120000, "character": "\u6d4b", "matchMethod": "same_accessibility_result_container"}}
+.{"event": {"step": "poco_search_ready_focus", "elapsedMs": 0, "searchForeground": true, "underlyingAlipayTask": false, "driver": "poco"}}
+{"event": {"step": "alipay_local_service_prompt_detected", "elapsedMs": 0, "titleCount": 1, "hintCount": 1, "actionCount": 1, "closeCount": 1, "driver": "poco", "permissionRequested": false}}
+{"event": {"step": "dismiss_alipay_local_service_prompt", "elapsedMs": 0, "driver": "poco", "action": "cancel", "permissionRequested": false, "nextButtonTapped": false, "phoneQueryStarted": false}}
+{"event": {"step": "poco_search_input_probe_begin", "elapsedMs": 0, "driver": "poco"}}
+...{"event": {"step": "restart_alipay_after_honor_update_for_fresh_poco", "elapsedMs": 0, "driver": "poco_focus_adb", "detail": "Status: ok", "updateInstallStarted": false, "phoneQueryStarted": false, "workerReattachRequired": true}}
+.{"event": {"step": "resume_alipay_home", "elapsedMs": 0, "reason": "account-list", "detail": "Status: ok"}}
+.{"event": {"step": "dismiss_honor_software_update_overlay", "elapsedMs": 0, "driver": "poco_focus_adb_back", "selector": {"package": "com.hihonor.ouc"}, "method": "back", "installStarted": false}}
+{"event": {"step": "resume_alipay_over_honor_software_update_overlay", "elapsedMs": 0, "driver": "poco_focus_adb_back", "selector": {"package": "com.hihonor.ouc"}, "method": "resume_existing_alipay_task", "detail": "Status: ok", "forceStopped": false, "installStarted": false}}
+.{"event": {"step": "dismiss_vivo_wlan_risk_overlay", "elapsedMs": 0, "driver": "poco_focus_adb_back", "selector": {"package": "com.vivo.safecenter"}, "method": "back", "networkChanged": false}}
+{"event": {"step": "resume_alipay_over_vivo_wlan_risk_overlay", "elapsedMs": 1, "driver": "poco_focus_adb_back", "selector": {"package": "com.vivo.safecenter"}, "method": "resume_existing_alipay_task", "detail": "Status: ok", "forceStopped": false, "networkChanged": false}}
+.{"event": {"step": "systemui_covering_alipay_detected", "elapsedMs": 0, "driver": "poco_focus_adb", "currentFocus": "mCurrentFocus=Window{a44a02d u0 NotificationShade}", "unlockCredentialEntered": false}}
+{"event": {"step": "alipay_revealed_from_systemui", "elapsedMs": 0, "driver": "poco_focus_adb", "method": "dismiss_keyguard", "unlockCredentialEntered": false}}
+.{"event": {"step": "systemui_covering_alipay_detected", "elapsedMs": 0, "driver": "poco_focus_adb", "currentFocus": "mCurrentFocus=Window{abc u0 com.android.systemui/.shade.NotificationShade}", "unlockCredentialEntered": false}}
+{"event": {"step": "alipay_revealed_from_systemui", "elapsedMs": 0, "driver": "poco_focus_adb", "method": "dismiss_keyguard", "unlockCredentialEntered": false}}
+..{"event": {"step": "coloros_securepay_probe_deferred_to_clean_xml", "elapsedMs": 0, "errorType": "TimeoutError", "driver": "poco_target_missing_xml_probe"}}
+....{"event": {"step": "poco_reuse_focus_observed", "elapsedMs": 0, "searchForeground": true, "alipayForeground": true, "underlyingAlipayTask": false, "driver": "poco"}}
+{"event": {"step": "alipay_local_service_prompt_detected", "elapsedMs": 0, "titleCount": 1, "hintCount": 1, "actionCount": 1, "closeCount": 1, "driver": "poco", "permissionRequested": false}}
+{"event": {"step": "dismiss_alipay_local_service_prompt", "elapsedMs": 0, "driver": "poco", "action": "cancel", "permissionRequested": false, "nextButtonTapped": false, "phoneQueryStarted": false}}
+{"event": {"step": "reuse_existing_search_page", "elapsedMs": 0, "method": "after_local_service_cancel"}}
+..{"event": {"step": "query_result_transition_observe", "elapsedMs": 0, "driver": "poco", "resubmitsInput": false, "phoneQueryStarted": true, "timeoutMs": 0}}
+{"event": {"step": "query_result_transition_unresolved", "elapsedMs": 0, "driver": "poco", "resubmitsInput": false, "phoneQueryStarted": true}}
+.{"event": {"step": "query_result_transition_observe", "elapsedMs": 0, "driver": "poco", "resubmitsInput": false, "phoneQueryStarted": true, "timeoutMs": 2999}}
+{"event": {"step": "masked_real_name_tail_extracted", "elapsedMs": 0, "character": "\u6d4b", "matchMethod": "", "driver": "poco"}}
+.{"event": {"step": "query_result_transition_observe", "elapsedMs": 0, "driver": "poco", "resubmitsInput": false, "phoneQueryStarted": true, "timeoutMs": 2999}}
+.{"event": {"step": "dismiss_vivo_wlan_risk_overlay", "elapsedMs": 0, "driver": "poco_focus_adb_back", "selector": {"package": "com.vivo.safecenter"}, "method": "back", "networkChanged": false}}
+{"event": {"step": "resume_alipay_over_vivo_wlan_risk_overlay", "elapsedMs": 0, "driver": "poco_focus_adb_back", "selector": {"package": "com.vivo.safecenter"}, "method": "resume_existing_alipay_task", "detail": "Status: ok", "forceStopped": false, "networkChanged": false}}
+{"event": {"step": "resume_alipay_over_vivo_wlan_risk_overlay_after_home", "elapsedMs": 0, "driver": "poco_focus_adb_back", "selector": {"package": "com.vivo.safecenter"}, "method": "home_then_resume_existing_alipay_task", "detail": "Status: ok", "forceStopped": false, "networkChanged": false}}
+.{"event": {"step": "dismiss_alipay_canvas_modal_after_blocked_my_tab", "elapsedMs": 0, "token": "accounts", "evidence": "exact_my_tap_then_home_selected_for_six_seconds", "authenticationStarted": false, "accountSelected": false}}
+.{"event": {"step": "open_settings", "elapsedMs": 20, "method": "selected_my_tab_visual_gear", "tap": {"x": 670, "y": 103}, "componentArea": 1517}}
+.{"event": {"step": "human_verification_detected", "elapsedMs": 0, "evidence": {"title": "\u4e3a\u4fdd\u969c\u60a8\u7684\u6b63\u5e38\u8bbf\u95ee\u8bf7\u8fdb\u884c\u9a8c\u8bc1", "action": "\u8bf7\u62d6\u52a8\u6ed1\u5757\u5b8c\u6210\u62fc\u56fe", "feedback": "", "manual": true}, "token": "transition", "driver": "xml_uiautomator"}}
+.{"event": {"step": "clear_previous_query", "elapsedMs": 0}}
+{"event": {"step": "input_phone", "elapsedMs": 0, "method": "reuse_search_EditText", "keyCount": 11, "keyDelayMs": 0, "keyDelayMode": "android_default", "driver": "xml_uiautomator"}}
+{"event": {"step": "masked_real_name_tail_extracted", "elapsedMs": 0, "character": "\u6d4b", "matchMethod": "same_accessibility_result_container"}}
+.{"event": {"step": "dismiss_alipay_phone_credit_promo", "elapsedMs": 0, "driver": "xml_uiautomator_account_switch", "evidence": ["\u8bdd\u8d39\u9650\u65f6\u798f\u5229", "1\u5206\u94b1\u51455\u5143\u8bdd\u8d39", "\u7acb\u5373\u9886\u53d6"], "tap": {"x": 360, "y": 1240}, "promotedActionTapped": false}}
+..{"event": {"step": "clear_previous_query", "elapsedMs": 0, "method": "focused_input_resource"}}
+{"event": {"step": "input_phone", "elapsedMs": 0, "method": "reuse_search_EditText", "keyCount": 11, "keyDelayMs": 0, "keyDelayMode": "android_default", "driver": "xml_uiautomator"}}
+{"event": {"step": "lookup_no_name_result", "elapsedMs": 0, "reason": "account_not_real_named", "matchMethod": "same_accessibility_unverified_account_container"}}
+.{"event": {"step": "human_verification_detected", "elapsedMs": 0, "evidence": {"title": "\u4e3a\u4fdd\u969c\u60a8\u7684\u6b63\u5e38\u8bbf\u95ee\u8bf7\u8fdb\u884c\u9a8c\u8bc1", "action": "\u8bf7\u62d6\u52a8\u6ed1\u5757\u5b8c\u6210\u62fc\u56fe", "feedback": "", "manual": true}, "token": "test", "requiresHuman": true, "automatedAttempts": 0, "resubmitsInput": false, "sliderAreaNodes": []}}
+............{"event": {"step": "account_restriction_surface_cleared", "elapsedMs": 0, "reason": "jigsaw_verification", "attempt": 1}}
+{"event": {"step": "exit_search_for_account_navigation", "elapsedMs": 0, "reason": "list-restriction-cleared", "attempt": 1, "previousActivity": "MainSearchActivity", "accountSelected": false}}
+{"event": {"step": "account_restriction_dismissed_for_switch", "elapsedMs": 0, "reason": "jigsaw_verification", "attempt": 1, "navigationPhase": "home_verification"}}
+.{"event": {"step": "vivo_usb_mode_dialog_detected", "elapsedMs": 0, "driver": "poco_focus_adb_back", "method": "back", "modeSelectionTapped": false, "phoneQueryStarted": false}}
+{"event": {"step": "dismiss_vivo_usb_mode_dialog", "elapsedMs": 3, "driver": "poco_focus_adb_back", "method": "back", "usbModeChanged": false, "modeSelectionTapped": false, "phoneQueryStarted": false}}
+...{"event": {"step": "vivo_usb_mode_dialog_detected", "elapsedMs": 0, "driver": "poco_focus_adb_back", "method": "back", "modeSelectionTapped": false, "phoneQueryStarted": false}}
+.{"event": {"step": "vivo_usb_mode_dialog_detected", "elapsedMs": 0, "driver": "poco_focus_adb_back", "method": "back", "modeSelectionTapped": false, "phoneQueryStarted": false}}
+..{"event": {"step": "vivo_usb_mode_dialog_detected", "elapsedMs": 1, "driver": "poco_focus_adb_back", "method": "back", "modeSelectionTapped": false, "phoneQueryStarted": false}}
+{"event": {"step": "dismiss_vivo_usb_mode_dialog", "elapsedMs": 1, "driver": "poco_focus_adb_back", "method": "back", "usbModeChanged": false, "modeSelectionTapped": false, "phoneQueryStarted": false}}
+{"event": {"step": "alipay_login_required_detected", "elapsedMs": 1, "phase": "reuse-foreground", "driver": "poco_window_focus", "phoneQueryStarted": false, "loginSurface": "login_activity", "activity": "com.ali.user.mobile.loginupgrade.activity.LoginActivity"}}
+.{"event": {"step": "poco_request_received", "elapsedMs": 1, "operation": "start", "workflow": "alipay_name"}}
+{"event": {"step": "poco_reused", "elapsedMs": 8, "workflow": "alipay_name"}}
+...{"event": {"step": "poco_worker_transport_probe_retry", "sinceLastMs": 1143, "attempt": 1, "errorType": "TimeoutError", "observationOnly": true, "taskStarted": false}}
+{"event": {"step": "poco_worker_transport_probe_failed", "sinceLastMs": 250, "attempt": 2, "errorType": "TimeoutError", "observationOnly": true, "taskStarted": false}}
+.{"event": {"step": "dismiss_resolver_system_overlay", "sinceLastMs": 0, "overlay": "oppo_system_update", "method": "back", "dismissed": true, "focus": ["mCurrentFocus=Window{abcd123 u0 com.android.intentresolver/com.android.intentresolver.ChooserActivityLauncher}", "mFocusedApp=ActivityRecord{ef01234 u0 com.android.intentresolver/.ChooserActivityLauncher t309}"]}}
+.{"event": {"step": "choose_slot_begin", "sinceLastMs": 0, "slot": "app2", "labels": ["\u2161\u00b7\u5c0f\u7ea2\u4e66", "II\u00b7\u5c0f\u7ea2\u4e66", "II \u00b7\u5c0f\u7ea2\u4e66", "\u2161 \u00b7\u5c0f\u7ea2\u4e66"]}}
+{"event": {"step": "choose_slot_focus", "sinceLastMs": 2, "resolverActive": true, "focus": ["mCurrentFocus=Window{bfce448 u0 com.android.intentresolver/.ChooserActivityLauncher}", "mFocusedApp=ActivityRecord{9a35b49 u0 com.android.intentresolver/.ChooserActivityLauncher t309}"]}}
+{"event": {"step": "choose_slot_vendor_resolver_defer_to_xml", "sinceLastMs": 0, "elapsedMs": 3}}
+............................................................................................{"event": {"step": "dismiss_alipay_real_name_prompt", "elapsedMs": 0, "driver": "xml_account_preflight_visual", "evidence": "unique_visual_title_action_circle_x_and_home_focus", "tap": {"x": 360, "y": 1252}, "authenticationStarted": false}}
+...{"event": {"step": "dismiss_alipay_real_name_prompt", "elapsedMs": 0, "driver": "xml_account_preflight_visual", "evidence": "unique_visual_title_action_circle_x_and_home_focus", "tap": {"x": 360, "y": 1252}, "authenticationStarted": false}}
+..{"event": {"step": "dismiss_alipay_real_name_prompt", "elapsedMs": 0, "driver": "xml_account_preflight_visual", "evidence": "unique_visual_title_action_circle_x_and_home_focus", "tap": {"x": 360, "y": 1252}, "authenticationStarted": false}}
+{"event": {"step": "alipay_canvas_real_name_prompt_dismissed", "elapsedMs": 3, "observation": 1}}
+.....{"event": {"step": "alipay_account_restriction_detected", "elapsedMs": 0, "phase": "input-clear", "driver": "poco", "reason": "frequent_or_abnormal_access", "title": "\u60a8\u8bf7\u6c42\u6b21\u6570\u8fc7\u4e8e\u9891\u7e41", "phoneQueryStarted": false, "accountSwitchRequired": true, "currentAccount": "A", "accountIdentityVerified": true}}
+...........................{"event": {"step": "poco_request_received", "elapsedMs": 0, "operation": "start", "workflow": "alipay_name"}}
+{"event": {"step": "poco_reused", "elapsedMs": 3, "workflow": "alipay_name"}}
+{"event": {"step": "reuse_search_selector_missing_retry", "elapsedMs": 3, "retryAttempt": 1, "maxRetries": 1, "relaunchesAlipay": false, "driver": "poco"}}
+.......................................................{"event": {"step": "poco_input_clear_confirmed", "elapsedMs": 1, "selector": "exact_search_input", "editableLength": 0, "driver": "poco_input_connection"}}
+{"event": {"step": "submit_search", "elapsedMs": 2, "selector": "exact_search_confirm", "attempt": 1, "driver": "poco"}}
+{"event": {"step": "masked_real_name_tail_extracted", "elapsedMs": 2, "character": "\u7532", "matchMethod": "", "driver": "poco"}}
+.....................{"event": {"step": "poco_worker_transport_probe_failed", "attempt": 1, "errorType": "TypeError", "observationOnly": true, "taskStarted": false}}
+.................................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 560 tests in 4.828s
+
+OK

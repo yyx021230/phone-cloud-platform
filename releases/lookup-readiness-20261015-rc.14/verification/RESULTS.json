@@ -1,0 +1,32 @@
+{
+  "localPython": {
+    "tests": 560,
+    "passed": true
+  },
+  "nodeFull": {
+    "tests": 801,
+    "passed": true
+  },
+  "windowsNativeFixture": {
+    "tests": 31,
+    "passed": true,
+    "realDevice": false,
+    "subprocessAndNetworkBlocked": true
+  },
+  "redBeforeFix": {
+    "tests": 7,
+    "failures": 3,
+    "errors": 2
+  },
+  "initialHarnessIssues": [
+    "assembled temp directory lacked existing node_modules; linked existing dependencies then 801 passed",
+    "socket blocking before unittest.mock import broke ssl class import; preloaded stdlib before blocking, 31 native passed"
+  ],
+  "notVerified": [
+    "115 actual cold-start rotation with candidate",
+    "8h natural cooldown expiry"
+  ],
+  "runtimeFilesChanged": 1,
+  "sharedAgentAdbMediaSourceChanged": false,
+  "productionFilesChanged": false
+}
