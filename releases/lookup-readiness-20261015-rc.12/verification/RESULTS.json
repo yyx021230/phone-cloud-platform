@@ -1,0 +1,34 @@
+{
+  "status": "local-candidate-not-deployed",
+  "oldHttpContractFailedAsExpected": "response leaked four count fields",
+  "oldInflightRegressionFailedAsExpected": "accepted 10 distinct jobs instead of 5",
+  "nodeSuite": {
+    "tests": 108,
+    "failures": 0,
+    "command": "node --test server/lookup-readiness.test.mjs server/lookup-readiness.http.test.mjs server/managed-lookup-async.test.mjs server/managed-lookup*.test.mjs sdk/open_name_lookup/node_client*.test.mjs",
+    "logSha256": "996f0e6ce1a1920bb43fc292a4c8f39662626a5af91413eaab1032c16da29ba4"
+  },
+  "additionalFinalTargeted": {
+    "command": "node --test server/lookup-readiness.test.mjs server/managed-lookup-async.test.mjs",
+    "logSha256": "1e272cc87963195c4e7dceffa1e65c72fdeee048618d6495939ded00e6d2cb78",
+    "passed": true,
+    "tests": 28,
+    "failures": 0
+  },
+  "pythonSdk": {
+    "tests": 4,
+    "failures": 0,
+    "command": "python3 -m unittest sdk.open_name_lookup.python_client_test"
+  },
+  "initialInvocationFailures": [
+    "test invoked from wrong source directory once; rerun from assembled candidate",
+    "Python SDK discover lost package context twice; corrected module invocation passed"
+  ],
+  "rootSyntaxCheck": "npm run check passed",
+  "publicContract": "OpenAPI, portal, documentation and SDK ZIP checksum checks passed",
+  "review": "self-review: API whitelist only; internal readiness threshold unchanged; capacity checked in insertion transaction after dedup; probes excluded; five jobs cover queue/running/human/recovery/unknown; old unprepared clients retain contract",
+  "productionCodeChanged": false,
+  "realDevices": 0,
+  "postgresThisTurn": false,
+  "fullRepositorySuiteThisTurn": false
+}

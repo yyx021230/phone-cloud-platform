@@ -1,0 +1,25 @@
+{
+  "version": "lookup-readiness-20261015-rc.12",
+  "files": {
+    "OPEN_NAME_LOOKUP_API.md": "e90c79396dbf61ea3a5a178d6def03c54673863b868fc40b26afcaf2b495c1a1",
+    "README.md": "4d6e91abda483cb4b5a2319a2540d7edf491d9eb86000bebd6e28e8953499da9",
+    "VERSION.json": "c6289baf9dc1a4c700399d06da540c577c71fa6e3243ef9bacc20d403fb5ecd7",
+    "docs/OPEN_NAME_LOOKUP_API.md": "e90c79396dbf61ea3a5a178d6def03c54673863b868fc40b26afcaf2b495c1a1",
+    "public/api-reference.json": "d7d433a167f979693b9ad87f1fb367f6b1fec213ad0ac5ff5848f0c9c1bbfeb0",
+    "public/downloads/name-lookup-integration.zip": "466556edc19cc6198eca9b1229dcf59c58a047df67bb22bdd5bb832f5f137342",
+    "public/downloads/name-lookup-openapi.json": "f44b756b095d267bfafd76125f68877382c0d06ab2dc2f40387c320cde2b6f3a",
+    "public/downloads/name-lookup-sha256.json": "fdbf1fa20b8867d911cbaefe9d59c2b6215b326e617437200848755d3556a502",
+    "public/openapi.json": "3c480cd3a13576ff0da527a68e7ec09c5708d3b99fe9be50c7fbbb7226834a4f",
+    "scripts/build-managed-lookup-docs.py": "4c879987ce2e24cdb30debd4e479844c22e103064bc21c28b5ca2a7ff1b8e62c",
+    "sdk/open_name_lookup/PARTNER_HANDOFF.md": "ac1cc4e03c8e4be97f90655bf1624157b73e38f71284932f5363a86e967ec468",
+    "sdk/open_name_lookup/README.md": "dcb3eb1e9ea733e8a21390542949dda59a6f95dee2e28c6eca895c77124da4b9",
+    "server/index.mjs": "91b42bebcf97f2619dae206c7d57ea397d48a8bc97369f0fb0ec11dfb7115bab",
+    "server/lookup-readiness.test.mjs": "4a3d9ef0f3a3758478b5198442f59574d4350d353903a3bc09cfa7ee08cc5b05",
+    "server/managed-lookup-async.mjs": "5e8c8181a2295d07ff653fb58639e9c0c5d3d620e058dd2d1c015ef764c29901",
+    "server/managed-lookup-async.test.mjs": "ef7ea65f3f9c02ae5881542f76c69ffced2043142e1e958534cdfe7fe46edc2c",
+    "verification/RESULTS.json": "4b0e02725a6a6973add0045ac27e1df4f5a74f59c5baf0b96b53a4f1cbe967da",
+    "verification/check-public-contract.py": "695a0fa200cc2915fd9a68762f6d481517fae6f2a366e0c869d0e38378b67e92",
+    "verification/prepare-local.py": "296d5a204334d5b96e1df1e93b457ff1a95a32856e117141750568837ff6c5bf",
+    "verification/readiness-http.mjs": "1e589348a3686b8de342cff4ba1caa3d8e928d990b3815c0ec140288d2613ac1"
+  }
+}

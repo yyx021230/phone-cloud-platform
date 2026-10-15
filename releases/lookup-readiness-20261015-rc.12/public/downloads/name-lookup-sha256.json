@@ -1,0 +1,15 @@
+{
+  "version": "lookup-readiness-20261015-rc.12",
+  "status": "local-candidate-not-deployed",
+  "files": {
+    "PARTNER_HANDOFF.md": "ac1cc4e03c8e4be97f90655bf1624157b73e38f71284932f5363a86e967ec468",
+    "partner_example.py": "839fae5abec385ec3feb80f05ddd54361ded5f2eb8ac111e1a70b40790c5e8e2",
+    "README.md": "dcb3eb1e9ea733e8a21390542949dda59a6f95dee2e28c6eca895c77124da4b9",
+    "node_client.mjs": "ad17a1031dfa2676acdb83f370ba0b5d036290dc8ce7aeedea08df361e0a4b53",
+    "python_client.py": "9261c7515450e858b981814b47ffe44e1bd342ed36a458a5eff2742c2c3c5776",
+    "OPEN_NAME_LOOKUP_API.md": "e90c79396dbf61ea3a5a178d6def03c54673863b868fc40b26afcaf2b495c1a1",
+    "sign.mjs": "8aac5bdf144c8dd6c93da3aa34c63c21952270fba139e5b117730b6730c51946",
+    "openapi.json": "f44b756b095d267bfafd76125f68877382c0d06ab2dc2f40387c320cde2b6f3a"
+  },
+  "zipSha256": "466556edc19cc6198eca9b1229dcf59c58a047df67bb22bdd5bb832f5f137342"
+}
