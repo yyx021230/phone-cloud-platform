@@ -1,0 +1,16 @@
+{
+  "version": "lookup-readiness-20261015-rc.3",
+  "status": "local-candidate-not-deployed",
+  "baseTag": "lookup-readiness-20261015-rc.2",
+  "baseManifestSha256": "cf76bfcc4ec041042e9f26d6798295182c04a7368594a9b1fecb3ece361fe18d",
+  "productionBaseline": "lookup-readiness-20261015-deployed.2",
+  "productionReceiptCommit": "3dbb9d2d95feebc7dcb132b54dd1a3bf47606e85",
+  "overlayFiles": [
+    "server/managed-lookup.mjs",
+    "server/lookup-readiness.test.mjs"
+  ],
+  "requiresCloudRestart": true,
+  "requiresWindowsAgentRestart": false,
+  "databaseMigrations": 0,
+  "keepWindowsOverlayCommit": "c559f9604461c1df1d37220d2c0f4e25df85f53c"
+}

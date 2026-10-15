@@ -1,0 +1,11 @@
+{
+  "version": "lookup-readiness-20261015-rc.3",
+  "files": {
+    "README.md": "8f86176a5bc9f8a13c9289fefda30528839a011083138a28a986ab0028508a91",
+    "VERSION.json": "c07b1a29738e22bf7f6d152f8e799d85abc9511c4a2c8199c8cbf09e03b77501",
+    "server/lookup-readiness.test.mjs": "f4f31a49154ef100ddc20bd21edb4f5c7d9fe36a6079052944232ba78c5f7066",
+    "server/managed-lookup.mjs": "cad499b20a9291bb5df2dc5358df5155d975e45eb1d49926baa482ece6971a38",
+    "verification/RESULTS.json": "29c2b6d9c4c774dfe1e207660bbe235ae8a8725d59665d74c2d2f5f1106d8b95",
+    "verification/prepare-local.py": "296d5a204334d5b96e1df1e93b457ff1a95a32856e117141750568837ff6c5bf"
+  }
+}
