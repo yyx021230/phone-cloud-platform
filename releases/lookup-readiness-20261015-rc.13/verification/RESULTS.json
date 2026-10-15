@@ -1,0 +1,60 @@
+{
+  "status": "local-candidate-passed-not-deployed",
+  "rootCheck": true,
+  "fullRegression": {
+    "passed": 801,
+    "failed": 0,
+    "skipped": 0
+  },
+  "python": {
+    "passed": 553,
+    "failed": 0
+  },
+  "windowsNativeFixtures": {
+    "passed": 49,
+    "failed": 0,
+    "realAdbPnpActions": 0
+  },
+  "partnerSimulation": {
+    "partnerElapsedMs": 121001,
+    "partnerFiveAtTwoReady": true,
+    "newReadyPhoneTakesQueuedImmediately": true,
+    "partnerCompletedOutOfOrder": true,
+    "partnerBusinessExecutions": 5,
+    "partnerBusinessEndpointsOnly": true,
+    "loopbackOnly": true,
+    "storage": "json",
+    "realDevices": 0,
+    "productionConnections": 0,
+    "minimumReady": 2,
+    "targetReady": 5,
+    "publicPreparationHasNoCounts": true,
+    "oneReadyRejected": true,
+    "initialProbeQueries": 5,
+    "firstBusinessBeforeOtherThreeProbes": true,
+    "businessQueries": 9,
+    "elapsedBeforeNewKeysMs": 281,
+    "sameIdAfterEightNewKeys": true,
+    "nameAndEmptyCompleted": true,
+    "confirmedLimitTransfersSameLookupToAnotherReadyPhone": true,
+    "cooldownAckValidated": true,
+    "actualAgentAccountPolicy": true,
+    "fiveSimultaneousBusinessDevices": true,
+    "oneHeldBusinessDoesNotBlockOtherFour": true,
+    "restartInvalidatesProof": true,
+    "drained": true
+  },
+  "publicSdkCalls": 175,
+  "additionalSignedInvalidPrepareCalls": 3,
+  "failuresResolved": [
+    "first full run missing existing Agent node_modules; two errors, linked existing dependencies and reran801 passing",
+    "initial source import used unavailable Python tar filter argument; corrected archive path/type checks before extraction; source unchanged"
+  ],
+  "review": "self-review: sole three-way entrypoint merge preserves both route contracts; recovery source exactrc3,27 frozenfiles and3 entrypointsections match; no dependency/migration/ADB identity changes",
+  "notVerified": [
+    "combined production activation",
+    "new five-phone external API acceptance",
+    "natural limit/cooling expiry in this run"
+  ],
+  "realBusinessQueriesThisPreparation": 0
+}

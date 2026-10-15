@@ -1,0 +1,103 @@
+✖ busy installer does not starve reconnect behind PnP at capacity one (6.322292ms)
+✖ unknown installer does not starve reconnect behind PnP at capacity one (0.618833ms)
+✖ mixed busy batch still reconnects its offline phone (0.539458ms)
+✔ installer idle permits both recovery kinds (2.292ms)
+✔ transport-only wave never probes installer (0.594459ms)
+✔ busy or paused transport target cannot use installer bypass (1.864209ms)
+✖ installer becomes busy after selection: PnP defers with zero attempts, reconnect continues (1.415292ms)
+✖ recovery wake still invokes scan while installer remains busy (0.703ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 3
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 90.357708
+
+✖ failing tests:
+
+test at windows-agent/src/installer-admission-agent.test.mjs:47:3
+✖ busy installer does not starve reconnect behind PnP at capacity one (6.322292ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+    assert(r.commands.some(args=>args.join(' ')==='-s ADB reconnect'))
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-adb-installer-test-20261015/windows-agent/src/installer-admission-agent.test.mjs:48:38)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/installer-admission-agent.test.mjs:47:3
+✖ unknown installer does not starve reconnect behind PnP at capacity one (0.618833ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+    assert(r.commands.some(args=>args.join(' ')==='-s ADB reconnect'))
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-adb-installer-test-20261015/windows-agent/src/installer-admission-agent.test.mjs:48:38)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/installer-admission-agent.test.mjs:53:1
+✖ mixed busy batch still reconnects its offline phone (0.539458ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+    assert(r.commands.some(args=>args.join(' ')==='-s ADB reconnect'))
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-adb-installer-test-20261015/windows-agent/src/installer-admission-agent.test.mjs:53:101)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/installer-admission-agent.test.mjs:63:1
+✖ installer becomes busy after selection: PnP defers with zero attempts, reconnect continues (1.415292ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+    assert(!r.commands.some(args=>args[0]==='pnp'))
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-adb-installer-test-20261015/windows-agent/src/installer-admission-agent.test.mjs:64:74)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/installer-admission-agent.test.mjs:66:1
+✖ recovery wake still invokes scan while installer remains busy (0.703ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  0 !== 1
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-adb-installer-test-20261015/windows-agent/src/installer-admission-agent.test.mjs:70:88)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,2183 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/prepare",
+    "http": 200,
+    "status": "preparing",
+    "ready": false,
+    "code": "",
+    "keys": [
+      "expiresAt",
+      "ok",
+      "preparationId",
+      "ready",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 503,
+    "status": "",
+    "code": "lookup_not_ready",
+    "keys": [
+      "code",
+      "ok"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/prepare",
+    "http": 200,
+    "status": "preparing",
+    "ready": false,
+    "code": "",
+    "keys": [
+      "expiresAt",
+      "ok",
+      "preparationId",
+      "ready",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 503,
+    "status": "",
+    "code": "lookup_not_ready",
+    "keys": [
+      "code",
+      "ok"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/prepare",
+    "http": 200,
+    "status": "preparing",
+    "ready": false,
+    "code": "",
+    "keys": [
+      "expiresAt",
+      "ok",
+      "preparationId",
+      "ready",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/prepare",
+    "http": 200,
+    "status": "preparing",
+    "ready": false,
+    "code": "",
+    "keys": [
+      "expiresAt",
+      "ok",
+      "preparationId",
+      "ready",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/prepare",
+    "http": 200,
+    "status": "preparing",
+    "ready": false,
+    "code": "",
+    "keys": [
+      "expiresAt",
+      "ok",
+      "preparationId",
+      "ready",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/prepare",
+    "http": 200,
+    "status": "preparing",
+    "ready": false,
+    "code": "",
+    "keys": [
+      "expiresAt",
+      "ok",
+      "preparationId",
+      "ready",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/prepare",
+    "http": 200,
+    "status": "preparing",
+    "ready": false,
+    "code": "",
+    "keys": [
+      "expiresAt",
+      "ok",
+      "preparationId",
+      "ready",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/prepare",
+    "http": 200,
+    "status": "ready",
+    "ready": true,
+    "code": "",
+    "keys": [
+      "expiresAt",
+      "ok",
+      "preparationId",
+      "ready",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 202,
+    "status": "queued",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 202,
+    "status": "queued",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 202,
+    "status": "queued",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 202,
+    "status": "queued",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 202,
+    "status": "queued",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "queued",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "queued",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "queued",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 429,
+    "status": "",
+    "code": "lookup_inflight_limit",
+    "keys": [
+      "code",
+      "ok"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "queued",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "queued",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "completed",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "name",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "completed",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "name",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "completed",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "name",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "completed",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "name",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "completed",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "name",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 202,
+    "status": "queued",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/prepare",
+    "http": 200,
+    "status": "ready",
+    "ready": true,
+    "code": "",
+    "keys": [
+      "expiresAt",
+      "ok",
+      "preparationId",
+      "ready",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/prepare",
+    "http": 200,
+    "status": "ready",
+    "ready": true,
+    "code": "",
+    "keys": [
+      "expiresAt",
+      "ok",
+      "preparationId",
+      "ready",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/prepare",
+    "http": 200,
+    "status": "ready",
+    "ready": true,
+    "code": "",
+    "keys": [
+      "expiresAt",
+      "ok",
+      "preparationId",
+      "ready",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "completed",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "name",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 202,
+    "status": "queued",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "completed",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "name",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/prepare",
+    "http": 200,
+    "status": "ready",
+    "ready": true,
+    "code": "",
+    "keys": [
+      "expiresAt",
+      "ok",
+      "preparationId",
+      "ready",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 202,
+    "status": "queued",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 202,
+    "status": "queued",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 202,
+    "status": "queued",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 202,
+    "status": "queued",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 202,
+    "status": "queued",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 429,
+    "status": "",
+    "code": "lookup_inflight_limit",
+    "keys": [
+      "code",
+      "ok"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "completed",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "name",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "completed",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "name",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "completed",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "name",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "completed",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "name",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "completed",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "name",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 202,
+    "status": "queued",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "processing",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "completed",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "name",
+      "ok",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/prepare",
+    "http": 200,
+    "status": "preparing",
+    "ready": false,
+    "code": "",
+    "keys": [
+      "expiresAt",
+      "ok",
+      "preparationId",
+      "ready",
+      "status"
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/open/name-lookups/tasks",
+    "http": 200,
+    "status": "completed",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "ok",
+      "reused",
+      "status"
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+    "http": 200,
+    "status": "completed",
+    "code": "",
+    "keys": [
+      "lookupId",
+      "name",
+      "ok",
+      "status"
+    ]
+  }
+]

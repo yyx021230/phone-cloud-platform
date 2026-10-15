@@ -1,0 +1,60 @@
+[
+  {
+    "name": "check",
+    "command": [
+      "npm",
+      "run",
+      "check"
+    ],
+    "exit": 0,
+    "seconds": 1.67
+  },
+  {
+    "name": "full",
+    "command": [
+      "npm",
+      "run",
+      "test:screen"
+    ],
+    "exit": 1,
+    "seconds": 14.57
+  },
+  {
+    "name": "full-with-agent-deps",
+    "command": [
+      "npm",
+      "run",
+      "test:screen"
+    ],
+    "exit": 0,
+    "seconds": 15.05
+  },
+  {
+    "name": "smoke",
+    "command": [
+      "npm",
+      "run",
+      "test:smoke"
+    ],
+    "exit": 0,
+    "seconds": 3.56
+  },
+  {
+    "name": "python",
+    "command": [
+      "python3",
+      "windows-agent/scripts/automation_runners_test.py"
+    ],
+    "exit": 0,
+    "seconds": 1.63
+  },
+  {
+    "name": "contract",
+    "command": [
+      "python3",
+      "verification/check-public-contract.py"
+    ],
+    "exit": 0,
+    "seconds": 0.04
+  }
+]

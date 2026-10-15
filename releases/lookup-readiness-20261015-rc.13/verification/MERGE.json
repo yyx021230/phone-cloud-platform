@@ -1,0 +1,114 @@
+[
+  {
+    "path": "public/app.js",
+    "before": "508c4a3086ec7cf5e8503f4af305dc7841472fcace9aaa0aa7a2e0906d79f13c",
+    "source": "62ba08d7d0afac81d0eeebaca9050911700f830fadd8e84d0a5f53423dd9cf60",
+    "after": "62ba08d7d0afac81d0eeebaca9050911700f830fadd8e84d0a5f53423dd9cf60",
+    "merge": "exact-source"
+  },
+  {
+    "path": "scripts/recovery-controls-ui.test.mjs",
+    "before": null,
+    "source": "5e594bdfd6af6f066a0dc16b0b45f7bc108903d4cd6c10dd13a3ec618ea96b6e",
+    "after": "5e594bdfd6af6f066a0dc16b0b45f7bc108903d4cd6c10dd13a3ec618ea96b6e",
+    "merge": "exact-source"
+  },
+  {
+    "path": "server/index.mjs",
+    "before": "91b42bebcf97f2619dae206c7d57ea397d48a8bc97369f0fb0ec11dfb7115bab",
+    "source": "68e1950a83fc23c066052b73eb2ed4f5a9b86ecb338a9e99f4604c193e6cf2ca",
+    "after": "e13e4271b950b14402868ceaca005e14314ec603c13a095cd2cbb9f832238629",
+    "merge": "three-way-clean"
+  },
+  {
+    "path": "server/recovery-controls.http.test.mjs",
+    "before": null,
+    "source": "e23710f9cd71c42ff02b51ea553e32f424edd5e7fae9cf7b536fa60cfec91d03",
+    "after": "e23710f9cd71c42ff02b51ea553e32f424edd5e7fae9cf7b536fa60cfec91d03",
+    "merge": "exact-source"
+  },
+  {
+    "path": "server/recovery-controls.mjs",
+    "before": null,
+    "source": "0147f3f3c122e9d444bf48666cb6bbaab64a64c585860ca0664afdec44890af8",
+    "after": "0147f3f3c122e9d444bf48666cb6bbaab64a64c585860ca0664afdec44890af8",
+    "merge": "exact-source"
+  },
+  {
+    "path": "server/recovery-controls.test.mjs",
+    "before": null,
+    "source": "224908ac246283fd0fe9511c3e6d4965dd2bd30f0393d882ff111ebc488dd766",
+    "after": "224908ac246283fd0fe9511c3e6d4965dd2bd30f0393d882ff111ebc488dd766",
+    "merge": "exact-source"
+  },
+  {
+    "path": "windows-agent/src/device-scan-agent.test.mjs",
+    "before": null,
+    "source": "41910c55fe547c1a8dcd4fea5ee0a7b8db42e60ec18bc35e6ec8719ef746e6ad",
+    "after": "41910c55fe547c1a8dcd4fea5ee0a7b8db42e60ec18bc35e6ec8719ef746e6ad",
+    "merge": "exact-source"
+  },
+  {
+    "path": "windows-agent/src/device-scan-pipeline.mjs",
+    "before": null,
+    "source": "8ef31ead50d4b1bec3bc648d72d6cbe64fe4cc102c04a5c0d269240295a5a6c4",
+    "after": "8ef31ead50d4b1bec3bc648d72d6cbe64fe4cc102c04a5c0d269240295a5a6c4",
+    "merge": "exact-source"
+  },
+  {
+    "path": "windows-agent/src/device-scan-pipeline.test.mjs",
+    "before": null,
+    "source": "9cd13646b486657c94a3db393a9689e8fdce5f3f5948047a33af2ed5ba368f45",
+    "after": "9cd13646b486657c94a3db393a9689e8fdce5f3f5948047a33af2ed5ba368f45",
+    "merge": "exact-source"
+  },
+  {
+    "path": "windows-agent/src/index.mjs",
+    "before": "1a101a23b7d139fb17a19de95232bb058a72fcf67fa0634b02d3ae24c4741802",
+    "source": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+    "after": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+    "merge": "exact-source"
+  },
+  {
+    "path": "windows-agent/src/installer-admission-agent.test.mjs",
+    "before": null,
+    "source": "c035d11bb1cbf65ccc7eb0fd41d393d2a2526fc6eb31676872de810d8c3f3357",
+    "after": "c035d11bb1cbf65ccc7eb0fd41d393d2a2526fc6eb31676872de810d8c3f3357",
+    "merge": "exact-source"
+  },
+  {
+    "path": "windows-agent/src/pnp-recovery-control.mjs",
+    "before": null,
+    "source": "92e2bcc37d7bc8b9d3e61d4385116db7181530d5fe125c6c2a3210c5142fde0f",
+    "after": "92e2bcc37d7bc8b9d3e61d4385116db7181530d5fe125c6c2a3210c5142fde0f",
+    "merge": "exact-source"
+  },
+  {
+    "path": "windows-agent/src/pnp-recovery-control.test.mjs",
+    "before": null,
+    "source": "7f0896cfd32508d8d5143337e89c823c73a4bf9b93cd363431019729e5ae1ee8",
+    "after": "7f0896cfd32508d8d5143337e89c823c73a4bf9b93cd363431019729e5ae1ee8",
+    "merge": "exact-source"
+  },
+  {
+    "path": "windows-agent/src/recovery-command-path.test.mjs",
+    "before": null,
+    "source": "9f984ae2f3a8edc815bc74aed95180afa4aea870b0c7f09d1426534216f9e12f",
+    "after": "9f984ae2f3a8edc815bc74aed95180afa4aea870b0c7f09d1426534216f9e12f",
+    "merge": "exact-source"
+  },
+  {
+    "path": "windows-agent/src/recovery-isolation.mjs",
+    "before": null,
+    "source": "2fe4305e6ca9afabb72b0406a224786659d88f2d8f3a1351e4a8b2aa475e312f",
+    "after": "2fe4305e6ca9afabb72b0406a224786659d88f2d8f3a1351e4a8b2aa475e312f",
+    "merge": "exact-source"
+  },
+  {
+    "path": "windows-agent/src/recovery-isolation.test.mjs",
+    "before": null,
+    "source": "c35564b700afd37ce9181688f799d109775f36d3e42b750571e60cde135d94d6",
+    "after": "c35564b700afd37ce9181688f799d109775f36d3e42b750571e60cde135d94d6",
+    "merge": "exact-source"
+  }
+]

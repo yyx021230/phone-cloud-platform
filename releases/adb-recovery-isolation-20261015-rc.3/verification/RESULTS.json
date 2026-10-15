@@ -1,0 +1,76 @@
+{
+  "version": "adb-recovery-isolation-20261015-rc.3",
+  "status": "local-tests-passed-not-production-acceptance",
+  "environment": {
+    "os": "macOS",
+    "node": "v25.9.0",
+    "dependencies": "same root/Agent lock hashes; existing modules only",
+    "credentials": "allowlisted environment; fake devices and loopback only"
+  },
+  "tests": [
+    {
+      "command": "npm run check",
+      "exitCode": 0
+    },
+    {
+      "command": "node --test windows-agent/src/installer-admission-agent.test.mjs windows-agent/src/recovery-command-path.test.mjs",
+      "passed": 21,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "command": "npm run test:screen",
+      "passed": 797,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0
+    }
+  ],
+  "failuresBeforeFix": [
+    {
+      "scope": "rc.2 actual scheduler / wake with new behavior fixtures",
+      "passed": 3,
+      "failed": 5,
+      "expectedRegression": true
+    },
+    {
+      "scope": "first full run after fix",
+      "passed": 796,
+      "failed": 1,
+      "reason": "existing source-boundary regex required old persistence/pause adjacency; updated to assert new installer wait before final pause+occupancy checks and no async gap after them; behavior tests unchanged"
+    }
+  ],
+  "review": {
+    "type": "self-review",
+    "frozenFilesMatched": 27,
+    "unchangedSections": [
+      "prefix before wake scheduler",
+      "all screen callbacks and ADB startup/recovery between wake and recovery function",
+      "all code after recovery function"
+    ],
+    "sourceFilesChanged": 1,
+    "testFilesChanged": 3,
+    "productionMutation": false
+  },
+  "notRun": [
+    "Windows-native driver/installer behavior",
+    "production gray/real screen sessions",
+    "driver conflict remediation",
+    "long-term stability"
+  ],
+  "limitations": [
+    "Installer probe remains bounded at10s; no zero-latency claim",
+    "PnP still waits busy/unknown; no force bypass",
+    "source is rc.2 lineage and requires deployed.10+ merge before publication"
+  ],
+  "priorChangesPreserved": [
+    "b684 dirty workspace",
+    "lookup candidate",
+    "rc.2 immutable tag and files"
+  ],
+  "ruleSources": {
+    "sharedWorkflowRevision": "2026-09-30",
+    "sharedWorkflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+  },
+  "evidenceFormatting": "Recorded text logs have trailing spaces/blank final lines normalized; results unchanged. First failed full run is a title/count summary to omit duplicated source dump."
+}
