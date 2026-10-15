@@ -1,0 +1,22 @@
+{
+  "branch": "codex/lookup-recovery-combined-20261015",
+  "head": "e86d414e8f765194132c2ce9cb30da92a92b5957",
+  "status": "",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "authorized": "Deploy rc14, external API gray on selected idle phones; no other controls/ADB/SYSTEM changes; separate local queue-capacity candidate",
+  "runtimeFiles": [
+    "windows-agent/scripts/alipay_name_lookup.py"
+  ],
+  "grayPhones": [
+    115,
+    162,
+    155,
+    156,
+    164
+  ],
+  "businessBudget": 10,
+  "sourceIndices": [
+    90,
+    99
+  ]
+}
