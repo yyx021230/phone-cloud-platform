@@ -1,0 +1,29 @@
+{
+  "version": "lookup-readiness-20261015-rc.3",
+  "at": "2026-10-15T04:34:26.860832+00:00",
+  "localNodeFull": {
+    "passed": 741,
+    "failed": 0,
+    "command": "node --test --test-concurrency=2 screen-client/*.test.mjs server/*.test.mjs scripts/*.test.mjs windows-agent/src/*.test.mjs"
+  },
+  "newTests": 2,
+  "oldBaseline": {
+    "failed": 2,
+    "passed": 13
+  },
+  "runtimeChange": "clear old channel humanSince only after confirmed result and safe return to idle; ongoing human challenge timer unchanged",
+  "python": "unchanged from rc.2; previous 353 and Windows9 / OCR replay retained, not rerun",
+  "failureHistory": [
+    "First temporary assembly lacked root ws dependency, then Agent @yume-chan/adb dependency. Linked existing locked dependency installations; final full suite 741/741. No dependency version changes."
+  ],
+  "logSha256": {
+    "human-timer-old.log": "caef588924675553476ae221caa7b26caa14f48cf28880e5172f46afe63cfc9d",
+    "human-timer-full-fixed.log": "1d1fc25e2f7cb2db6b6da36f0a03a800234fa1433ad18de219ec58330c907e18",
+    "human-timer-check.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+  },
+  "notVerified": [
+    "new timer code production acceptance",
+    "130 physical connectivity",
+    "eight-hour natural cooldown"
+  ]
+}

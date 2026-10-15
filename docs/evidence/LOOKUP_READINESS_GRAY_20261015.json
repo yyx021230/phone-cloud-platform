@@ -1,0 +1,676 @@
+{
+  "version": "lookup-readiness-20261015-deployed.2",
+  "at": "2026-10-15T04:33:25.996146+00:00",
+  "scope": "ten selected idle allowed phones; public signed HTTP API; original authorized sheet; max five active lookups; no global recovery",
+  "devicesAttempted": [
+    60,
+    115,
+    118,
+    130,
+    155,
+    156,
+    162,
+    163,
+    164,
+    165
+  ],
+  "devicesCompletedBusiness": [
+    60,
+    115,
+    118,
+    155,
+    156,
+    162,
+    163,
+    164,
+    165
+  ],
+  "business": {
+    "submitted": 12,
+    "completed": 10,
+    "name": 8,
+    "empty": 2,
+    "failed": 2
+  },
+  "results": [
+    {
+      "at": "2026-10-15T04:32:01.137Z",
+      "event": "result",
+      "index": 0,
+      "lookupId": "df1f565a-431d-4cd2-b663-e1dd327f4b18",
+      "status": "failed",
+      "ok": false,
+      "hasName": null,
+      "code": "lookup_manual_wait_expired",
+      "number": 118,
+      "queryId": "6568e17d-204f-40d2-b0f2-98120a157c45",
+      "ageMs": 1569392
+    },
+    {
+      "at": "2026-10-15T04:32:01.145Z",
+      "event": "result",
+      "index": 1,
+      "lookupId": "83ec3a26-0f7d-4179-a75e-7e14e223b161",
+      "status": "completed",
+      "ok": true,
+      "hasName": true,
+      "number": 162,
+      "queryId": "9796fae0-b10d-46fc-bf2d-4752dd0b5d03",
+      "ageMs": 1569386
+    },
+    {
+      "at": "2026-10-15T04:32:01.152Z",
+      "event": "result",
+      "index": 2,
+      "lookupId": "7d857d1f-f512-4775-9d0d-0ad5b450a077",
+      "status": "completed",
+      "ok": true,
+      "hasName": true,
+      "number": 162,
+      "queryId": "9ed34045-f9ea-4471-a481-b91c532d33bb",
+      "ageMs": 1286576
+    },
+    {
+      "at": "2026-10-15T04:32:01.160Z",
+      "event": "result",
+      "index": 3,
+      "lookupId": "c172b2ec-72c8-4804-b381-29d75b9d3953",
+      "status": "completed",
+      "ok": true,
+      "hasName": true,
+      "number": 164,
+      "queryId": "3b9a0a33-bcee-4073-b40f-5384be437d2b",
+      "ageMs": 1286571
+    },
+    {
+      "at": "2026-10-15T04:32:01.167Z",
+      "event": "result",
+      "index": 4,
+      "lookupId": "8d09b2c3-c7d7-4fbf-ac3c-bbf27d40e000",
+      "status": "completed",
+      "ok": true,
+      "hasName": true,
+      "number": 163,
+      "queryId": "7e8cd260-f1ba-4243-a2c6-439fc072a1ad",
+      "ageMs": 1286564
+    },
+    {
+      "at": "2026-10-15T04:32:01.174Z",
+      "event": "result",
+      "index": 5,
+      "lookupId": "2fc88df6-be72-404b-a230-1be9bf0d6b42",
+      "status": "completed",
+      "ok": true,
+      "hasName": false,
+      "number": 156,
+      "queryId": "4ed6314d-3dca-4950-94cb-d6b19b694d27",
+      "ageMs": 927521
+    },
+    {
+      "at": "2026-10-15T04:32:01.182Z",
+      "event": "result",
+      "index": 6,
+      "lookupId": "23daf6f5-c36a-48df-84de-3ebede9a2e45",
+      "status": "failed",
+      "ok": false,
+      "hasName": null,
+      "code": "lookup_execution_failed",
+      "number": 155,
+      "queryId": "99df5e40-8c04-4fbd-bcea-ef83b56d278d",
+      "ageMs": 927499
+    },
+    {
+      "at": "2026-10-15T04:32:01.189Z",
+      "event": "result",
+      "index": 7,
+      "lookupId": "b353e294-0290-45d8-930f-d87bd28db708",
+      "status": "completed",
+      "ok": true,
+      "hasName": false,
+      "number": 115,
+      "queryId": "ff5696ed-827c-4480-9706-4044316ad7a8",
+      "ageMs": 927494
+    },
+    {
+      "at": "2026-10-15T04:32:01.196Z",
+      "event": "result",
+      "index": 8,
+      "lookupId": "76e1e8ae-ce81-416a-9d1e-57d26c633d68",
+      "status": "completed",
+      "ok": true,
+      "hasName": true,
+      "number": 60,
+      "queryId": "93e55ea5-030a-4d26-bea7-ba6a43abe37a",
+      "ageMs": 927490
+    },
+    {
+      "at": "2026-10-15T04:32:01.203Z",
+      "event": "result",
+      "index": 9,
+      "lookupId": "5e67c807-d962-4bc2-af89-728e0c34ef95",
+      "status": "completed",
+      "ok": true,
+      "hasName": true,
+      "number": 165,
+      "queryId": "43eb54f5-63b6-48b6-bfe5-11a4761cbae1",
+      "ageMs": 927485
+    },
+    {
+      "at": "2026-10-15T04:32:01.210Z",
+      "event": "result",
+      "index": 10,
+      "lookupId": "84beb455-0559-4788-a5eb-60e41e4161e0",
+      "status": "completed",
+      "ok": true,
+      "hasName": true,
+      "number": 155,
+      "queryId": "af5f451f-844c-44cb-822b-19bd3df4db96",
+      "ageMs": 33135
+    },
+    {
+      "at": "2026-10-15T04:32:01.217Z",
+      "event": "result",
+      "index": 11,
+      "lookupId": "9992f054-3d91-495a-a293-edda62b8730f",
+      "status": "completed",
+      "ok": true,
+      "hasName": true,
+      "number": 118,
+      "queryId": "2ca8d1ba-0123-4c3f-9839-8f8c683f8c24",
+      "ageMs": 33128
+    }
+  ],
+  "probes": [
+    {
+      "id": "6e83a4b2-3d1d-42d1-ad21-de3abe74da8f",
+      "number": 118,
+      "status": "failed",
+      "code": "lookup_probe_failed",
+      "hasName": false
+    },
+    {
+      "id": "88c7c68b-fc2d-48f0-a7ce-03dad16e4c43",
+      "number": 118,
+      "status": "failed",
+      "code": "lookup_probe_failed",
+      "hasName": false
+    },
+    {
+      "id": "9524dd57-949e-45fe-a80b-33884a801650",
+      "number": 118,
+      "status": "succeeded",
+      "code": "",
+      "hasName": true
+    },
+    {
+      "id": "6cef4cd7-c4c9-4460-8d46-c2448041272a",
+      "number": 130,
+      "status": "failed",
+      "code": "lookup_probe_failed",
+      "hasName": false
+    },
+    {
+      "id": "1847dd5f-05bd-4d6c-8d63-8e6caa6417fa",
+      "number": 130,
+      "status": "failed",
+      "code": "lookup_probe_failed",
+      "hasName": false
+    },
+    {
+      "id": "75c109db-8ccb-4db5-9af1-b97496e8ddbd",
+      "number": 162,
+      "status": "succeeded",
+      "code": "",
+      "hasName": true
+    },
+    {
+      "id": "be853847-e58a-47c6-9269-5be2213ab666",
+      "number": 164,
+      "status": "succeeded",
+      "code": "",
+      "hasName": true
+    },
+    {
+      "id": "8acb0351-f8e2-481b-8bf1-414617e4bdab",
+      "number": 163,
+      "status": "succeeded",
+      "code": "",
+      "hasName": true
+    },
+    {
+      "id": "c6612cd3-a89e-4897-855d-1420859b97a3",
+      "number": 130,
+      "status": "failed",
+      "code": "lookup_probe_failed",
+      "hasName": false
+    },
+    {
+      "id": "35cdb51f-8714-47fa-8607-008b4015b591",
+      "number": 130,
+      "status": "failed",
+      "code": "lookup_probe_failed",
+      "hasName": false
+    },
+    {
+      "id": "fc7963cf-221c-40f3-a541-608c36d05741",
+      "number": 130,
+      "status": "failed",
+      "code": "lookup_probe_failed",
+      "hasName": false
+    },
+    {
+      "id": "c3d408a9-74a0-4db9-918e-0384f97679a2",
+      "number": 130,
+      "status": "failed",
+      "code": "lookup_probe_failed",
+      "hasName": false
+    },
+    {
+      "id": "f73aa3dc-7376-4cee-bb92-ea94cced7d8f",
+      "number": 156,
+      "status": "succeeded",
+      "code": "",
+      "hasName": true
+    },
+    {
+      "id": "eb1910af-a0c1-4b85-8f0b-5dfe570e25fe",
+      "number": 155,
+      "status": "succeeded",
+      "code": "",
+      "hasName": true
+    },
+    {
+      "id": "edaccec6-1729-4bb8-8e81-c6549a234e27",
+      "number": 115,
+      "status": "succeeded",
+      "code": "",
+      "hasName": true
+    },
+    {
+      "id": "d473cc9f-c411-41be-ba3d-32f054c4572f",
+      "number": 60,
+      "status": "succeeded",
+      "code": "",
+      "hasName": true
+    },
+    {
+      "id": "a9d662fc-d95a-4968-be3f-d0debf022dab",
+      "number": 165,
+      "status": "succeeded",
+      "code": "",
+      "hasName": true
+    },
+    {
+      "id": "097a34f0-a705-4a4d-b3d3-ba83e8e58d3c",
+      "number": 155,
+      "status": "succeeded",
+      "code": "",
+      "hasName": true
+    },
+    {
+      "id": "56b31319-6996-48c7-82f3-d0940c3a1a53",
+      "number": 155,
+      "status": "succeeded",
+      "code": "",
+      "hasName": true
+    },
+    {
+      "id": "bc3b7a6d-0704-4268-8863-31807362b27c",
+      "number": 130,
+      "status": "failed",
+      "code": "lookup_probe_failed",
+      "hasName": false
+    },
+    {
+      "id": "4876fb3d-c9ba-4697-a618-d5318a734014",
+      "number": 118,
+      "status": "succeeded",
+      "code": "",
+      "hasName": true
+    },
+    {
+      "id": "9e1e2d78-5a19-4c8b-adc1-7a1790c9bfb1",
+      "number": 130,
+      "status": "failed",
+      "code": "lookup_probe_failed",
+      "hasName": false
+    },
+    {
+      "id": "27e68dd9-dfea-4853-ad89-d6ff70befb82",
+      "number": 130,
+      "status": "failed",
+      "code": "lookup_probe_failed",
+      "hasName": false
+    }
+  ],
+  "inflightReplay": [
+    {
+      "at": "2026-10-15T04:10:16.628Z",
+      "event": "new-key-replay",
+      "index": 0,
+      "sameLookupId": true,
+      "originalStatus": "processing",
+      "ageMs": 264882
+    },
+    {
+      "at": "2026-10-15T04:19:24.419Z",
+      "event": "new-key-replay",
+      "index": 5,
+      "sameLookupId": true,
+      "originalStatus": "processing",
+      "ageMs": 170766
+    },
+    {
+      "at": "2026-10-15T04:23:10.472Z",
+      "event": "new-key-replay",
+      "index": 7,
+      "sameLookupId": true,
+      "originalStatus": "processing",
+      "ageMs": 396777
+    }
+  ],
+  "contract": [
+    {
+      "at": "2026-10-15T04:06:39.572Z",
+      "event": "same-key-idempotency",
+      "sameLookupId": true
+    },
+    {
+      "at": "2026-10-15T04:06:39.585Z",
+      "event": "invalid-phone",
+      "http": 400
+    },
+    {
+      "at": "2026-10-15T04:06:39.594Z",
+      "event": "conflicting-key",
+      "http": 409
+    },
+    {
+      "at": "2026-10-15T04:06:39.603Z",
+      "event": "missing-result",
+      "http": 404
+    },
+    {
+      "at": "2026-10-15T04:06:39.610Z",
+      "event": "validation-check",
+      "requestCountDelta": 0
+    }
+  ],
+  "fiveConcurrency": {
+    "physicalNumbers": [
+      156,
+      155,
+      115,
+      60,
+      165
+    ],
+    "overlapUtc": [
+      "2026-10-15T04:16:35.523Z",
+      "2026-10-15T04:16:43.098Z"
+    ],
+    "source": [
+      {
+        "id": "d854bd70-be62-4197-99b6-b5b31a10be58",
+        "events": [
+          {
+            "at": "2026-10-15T04:16:34.852Z",
+            "step": ""
+          },
+          {
+            "at": "2026-10-15T04:16:35.030Z",
+            "step": ""
+          },
+          {
+            "at": "2026-10-15T04:16:35.523Z",
+            "step": "poco_reused"
+          },
+          {
+            "at": "2026-10-15T04:16:36.033Z",
+            "step": "reuse_existing_search_page"
+          },
+          {
+            "at": "2026-10-15T04:16:37.977Z",
+            "step": "clear_previous_query"
+          },
+          {
+            "at": "2026-10-15T04:16:47.687Z",
+            "step": "input_phone"
+          },
+          {
+            "at": "2026-10-15T04:16:49.525Z",
+            "step": "submit_search"
+          },
+          {
+            "at": "2026-10-15T04:17:36.162Z",
+            "step": "poco_fast_path_failed"
+          }
+        ]
+      },
+      {
+        "id": "da3bae92-2c2b-4b56-aef3-afa8e61aaa41",
+        "events": [
+          {
+            "at": "2026-10-15T04:16:34.637Z",
+            "step": ""
+          },
+          {
+            "at": "2026-10-15T04:16:34.767Z",
+            "step": ""
+          },
+          {
+            "at": "2026-10-15T04:16:35.099Z",
+            "step": "poco_reused"
+          },
+          {
+            "at": "2026-10-15T04:16:36.087Z",
+            "step": "reuse_existing_search_page"
+          },
+          {
+            "at": "2026-10-15T04:16:38.379Z",
+            "step": "clear_previous_query"
+          },
+          {
+            "at": "2026-10-15T04:16:47.979Z",
+            "step": "poco_fast_path_failed"
+          },
+          {
+            "at": "2026-10-15T04:16:48.027Z",
+            "step": ""
+          },
+          {
+            "at": "2026-10-15T04:16:52.919Z",
+            "step": "poco_reused"
+          }
+        ]
+      },
+      {
+        "id": "693aa4dc-1804-4915-ac78-f81364506429",
+        "events": [
+          {
+            "at": "2026-10-15T04:16:34.539Z",
+            "step": ""
+          },
+          {
+            "at": "2026-10-15T04:16:34.694Z",
+            "step": ""
+          },
+          {
+            "at": "2026-10-15T04:16:35.043Z",
+            "step": "poco_reused"
+          },
+          {
+            "at": "2026-10-15T04:16:35.577Z",
+            "step": "reuse_existing_search_page"
+          },
+          {
+            "at": "2026-10-15T04:16:37.427Z",
+            "step": "clear_previous_query"
+          },
+          {
+            "at": "2026-10-15T04:16:48.418Z",
+            "step": "input_phone"
+          },
+          {
+            "at": "2026-10-15T04:16:50.282Z",
+            "step": "submit_search"
+          },
+          {
+            "at": "2026-10-15T04:17:35.594Z",
+            "step": "poco_fast_path_failed"
+          }
+        ]
+      },
+      {
+        "id": "c1f57513-0c43-4fb5-bc86-cc70436df02d",
+        "events": [
+          {
+            "at": "2026-10-15T04:16:34.448Z",
+            "step": ""
+          },
+          {
+            "at": "2026-10-15T04:16:34.747Z",
+            "step": ""
+          },
+          {
+            "at": "2026-10-15T04:16:35.099Z",
+            "step": "poco_reused"
+          },
+          {
+            "at": "2026-10-15T04:16:35.480Z",
+            "step": "reuse_existing_search_page"
+          },
+          {
+            "at": "2026-10-15T04:16:37.206Z",
+            "step": "clear_previous_query"
+          },
+          {
+            "at": "2026-10-15T04:16:42.113Z",
+            "step": "input_phone"
+          },
+          {
+            "at": "2026-10-15T04:16:43.098Z",
+            "step": "masked_real_name_tail_extracted"
+          },
+          {
+            "at": "2026-10-15T04:16:43.127Z",
+            "step": ""
+          }
+        ]
+      },
+      {
+        "id": "6a5804e4-cb08-4f34-ab9b-db6afc4a1cfe",
+        "events": [
+          {
+            "at": "2026-10-15T04:16:34.348Z",
+            "step": ""
+          },
+          {
+            "at": "2026-10-15T04:16:34.557Z",
+            "step": ""
+          },
+          {
+            "at": "2026-10-15T04:16:35.367Z",
+            "step": "poco_reused"
+          },
+          {
+            "at": "2026-10-15T04:16:36.224Z",
+            "step": "reuse_existing_search_page"
+          },
+          {
+            "at": "2026-10-15T04:16:38.849Z",
+            "step": "clear_previous_query"
+          },
+          {
+            "at": "2026-10-15T04:16:48.500Z",
+            "step": "input_phone"
+          },
+          {
+            "at": "2026-10-15T04:16:49.651Z",
+            "step": "masked_real_name_tail_extracted"
+          },
+          {
+            "at": "2026-10-15T04:16:49.694Z",
+            "step": ""
+          }
+        ]
+      }
+    ]
+  },
+  "restored": {
+    "at": "2026-10-15T04:32:09.892Z",
+    "event": "restored",
+    "revision": 25
+  },
+  "postflight": {
+    "at": "2026-10-15T04:32:38.067Z",
+    "poolEnabled": false,
+    "configRevision": 25,
+    "channels": 0,
+    "counts": {
+      "registered": 48,
+      "executing": 0,
+      "waitingHuman": 0,
+      "queued": 0
+    },
+    "overview": {
+      "windowsAgents": 4,
+      "onlineAgents": 1,
+      "devices": 131,
+      "adbOnline": 121,
+      "agentOnline": 0,
+      "waitingSms": 0,
+      "smsLibraryMessages": 50000,
+      "xhsQueued": 0,
+      "xhsRunning": 0,
+      "xhsStalled": 0,
+      "xhsSuccessRate": null,
+      "deviceLocks": 5,
+      "taskFailureReasons": []
+    },
+    "queue": {
+      "xhsActive": 0,
+      "xhsQueued": 0,
+      "xhsRunning": 0,
+      "xhsStalled": 0,
+      "windowsQueued": 0,
+      "windowsRunning": 2,
+      "windowsStalled": 0
+    }
+  },
+  "issues": [
+    {
+      "number": 130,
+      "status": "unresolved",
+      "evidence": "initial device-not-found; subsequent vivo Clock UI tree missing; rc.2 bring-to-front attempt did not complete and further device-not-found. No global ADB/USB recovery attempted; never ready so no business phone dispatched."
+    },
+    {
+      "numbers": [
+        118,
+        156,
+        115
+      ],
+      "status": "rc.2 deployed; 156 and115 original requests returned empty after recovery",
+      "evidence": "strict empty parser did not accept full recommendation panel; three actual Windows OCR frames passed after fix; 118 original later failed from old human timer, later different business succeeded."
+    },
+    {
+      "number": 118,
+      "status": "cloud fix in local rc.3, not deployed",
+      "evidence": "humanSince carried across successful probe/channel reuse; original business was prematurely cancelled on new puzzle. Two regressions reproduce old behavior."
+    },
+    {
+      "number": 155,
+      "status": "worker exit cause unresolved; later new prepared session and different business succeeded",
+      "evidence": "original task failed poco_query_page_recovery_failed; no name/empty invented."
+    }
+  ],
+  "harnessIssue": "Replay loop mistakenly included one terminal failed request. Same phone reused an earlier completed cached result acbbfe79-a26d-46fc-9174-6c980a2dd33e; read-only inspection found no new request at that time. Excluded terminal failures afterward; this is not counted as an inflight dedup failure.",
+  "notVerified": [
+    "All ten devices full business success (130 blocked)",
+    "New cloud human timer fix production acceptance",
+    "Natural limit transfer and eight-hour cooling expiry this run",
+    "External partner own system end-to-end"
+  ],
+  "productionAcceptanceComplete": false,
+  "privacy": "No phone numbers, names, credentials or raw images in this receipt",
+  "logSha256": "966bef1d704eeb058ef517787be532c290cbb94c8e5ba16d2e5e52d1edf7912e"
+}
