@@ -1,0 +1,21 @@
+{
+  "loopbackOnly": true,
+  "storage": "postgres",
+  "realDevices": 0,
+  "productionConnections": 0,
+  "minimumReady": 2,
+  "targetReady": 5,
+  "initialProbeQueries": 5,
+  "firstBusinessBeforeOtherThreeProbes": true,
+  "businessQueries": 9,
+  "elapsedBeforeNewKeysMs": 297,
+  "sameIdAfterEightNewKeys": true,
+  "nameAndEmptyCompleted": true,
+  "confirmedLimitTransfersSameLookupToAnotherReadyPhone": true,
+  "cooldownAckValidated": true,
+  "actualAgentAccountPolicy": true,
+  "fiveSimultaneousBusinessDevices": true,
+  "oneHeldBusinessDoesNotBlockOtherFour": true,
+  "restartInvalidatesProof": true,
+  "drained": true
+}
