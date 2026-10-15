@@ -1,0 +1,91 @@
+{
+  "status": "local-tests-passed-not-production-acceptance",
+  "version": "adb-recovery-isolation-20261015-rc.2",
+  "date": "2026-10-15",
+  "environment": {
+    "node": "v25.9.0",
+    "os": "macOS",
+    "network": "loopback fixtures only; no production access in this development turn",
+    "dependencies": "existing modules with equal root and Agent lock SHA256; no install/upgrade",
+    "secrets": "allowlisted child environment, temporary fixture credentials only"
+  },
+  "tests": [
+    {
+      "command": "npm run check",
+      "exitCode": 0,
+      "scope": "assembled root syntax"
+    },
+    {
+      "command": "npm run test:screen",
+      "exitCode": 0,
+      "passed": 785,
+      "failed": 0,
+      "skipped": 0,
+      "scope": "final assembled candidate including screen, server, Agent and new behavior tests"
+    },
+    {
+      "command": "npm run test:smoke",
+      "exitCode": 0,
+      "result": "smoke ok",
+      "scope": "loopback HTTP JSON temporary store"
+    }
+  ],
+  "beforeAndDuring": [
+    {
+      "phase": "old production-base real Agent entrypoint with fake stalled metadata",
+      "passed": 0,
+      "failed": 1,
+      "finding": "two fresh inventories not available before deadline; expected regression counterexample"
+    },
+    {
+      "phase": "first scoped tests",
+      "passed": 26,
+      "failed": 1,
+      "finding": "old wiring regex did not include added isolation gate; updated assertion and retained final-command guard checks"
+    },
+    {
+      "phase": "entrypoint self-review",
+      "finding": "moved new pipeline initialization before initial health collection to avoid temporal dead zone; actual Agent entrypoint smoke passes"
+    },
+    {
+      "phase": "first full run before command-path review",
+      "passed": 776,
+      "failed": 0,
+      "finding": "not final acceptance"
+    },
+    {
+      "phase": "direct actual recovery branch tests",
+      "passed": 7,
+      "failed": 2,
+      "finding": "new reconnect branch commandIssued scope bug reproduced and fixed; 9/9 afterward"
+    },
+    {
+      "phase": "new command harness first extraction",
+      "failed": 9,
+      "finding": "fixture initially included surrounding batch code; corrected extraction before evaluating behavioral failures"
+    },
+    {
+      "phase": "rc.1 packaging audit",
+      "finding": "Six verification logs matched repository ignore rules and were omitted from initial commit. rc.2 explicitly tracks these files; business/test sources unchanged. rc.1 tag retained, do not deliver rc.1."
+    }
+  ],
+  "review": {
+    "type": "self-review, no independent reviewer claimed",
+    "outcome": "production-baseline diffs and API->heartbeat->durable isolation->final command boundary reviewed; fixes retested",
+    "frozenFiles": 27,
+    "unchangedEntrypointSections": [
+      "screen-manager callbacks",
+      "ADB startup/recovery command block"
+    ],
+    "authority": "SYSTEM/key/startup unmodified; production actions0"
+  },
+  "unverified": [
+    "Windows-native filesystem and driver/PnP behavior",
+    "production single-phone/two-phone gray",
+    "real simultaneous screen control",
+    "long-duration fleet stability",
+    "driver conflict remediation and rollback execution"
+  ],
+  "priorChanges": "b684 dirty root and separate lookup candidate untouched",
+  "productionChanges": 0
+}

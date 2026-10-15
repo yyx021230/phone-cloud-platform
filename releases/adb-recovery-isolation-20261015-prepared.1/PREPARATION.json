@@ -1,0 +1,113 @@
+{
+  "status": "prepared-awaiting-safe-reload-window-not-deployed",
+  "candidateTag": "adb-recovery-isolation-20261015-rc.3",
+  "candidateCommit": "af34243bc3e712f9ee7d9e189e618b53599b0cec",
+  "baseProductionVersion": "lookup-readiness-20261015-deployed.10",
+  "baseReceiptCommit": "f2c36e98407564b94dca60e2bb7959377d6d885a",
+  "baseBusinessRuntimeCommit": "a5677a2d2823e96417dcfcea3b3015a0cb530a74",
+  "candidateImage": {
+    "imageId": "sha256:a707c4c9fa25942cbb15029e5058fe1ca61850e49ddfa7066957eb3681757816",
+    "baseImageId": "sha256:e92e3a933344eed3e7033dd4a8b3ec8f9a85cae37a03d51d1b9014372296fd0a",
+    "baseTag": "phone-cloud-platform:lookup-readiness-20261015-rc.8",
+    "buildExit": 0,
+    "syntaxExit": 0
+  },
+  "compose": {
+    "pendingCompose": "/opt/phone-cloud-platform/staging/adb-recovery-isolation-20261015-rc3/compose.pending.json",
+    "sha256": "ed8c9e3316298efc3098939336d44e8d24b9aae5ddc36e7fa216e011c7780d40",
+    "changes": [
+      [
+        "phone-cloud",
+        "image"
+      ]
+    ],
+    "image": "sha256:a707c4c9fa25942cbb15029e5058fe1ca61850e49ddfa7066957eb3681757816",
+    "productionActivated": false
+  },
+  "overlayFiles": {
+    "public/app.js": "62ba08d7d0afac81d0eeebaca9050911700f830fadd8e84d0a5f53423dd9cf60",
+    "server/index.mjs": "68e1950a83fc23c066052b73eb2ed4f5a9b86ecb338a9e99f4604c193e6cf2ca",
+    "server/recovery-controls.mjs": "0147f3f3c122e9d444bf48666cb6bbaab64a64c585860ca0664afdec44890af8",
+    "windows-agent/src/device-scan-pipeline.mjs": "8ef31ead50d4b1bec3bc648d72d6cbe64fe4cc102c04a5c0d269240295a5a6c4",
+    "windows-agent/src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+    "windows-agent/src/pnp-recovery-control.mjs": "92e2bcc37d7bc8b9d3e61d4385116db7181530d5fe125c6c2a3210c5142fde0f",
+    "windows-agent/src/recovery-isolation.mjs": "2fe4305e6ca9afabb72b0406a224786659d88f2d8f3a1351e4a8b2aa475e312f"
+  },
+  "cloudBackup": "/opt/phone-cloud-platform/backups/adb-recovery-isolation-20261015-before-rc3",
+  "windowsBackup": "D:\\PhoneCloud\\agent\\backups\\adb-recovery-isolation-20261015-before-rc3",
+  "cloudBackupManifestSha256": "11962641c0b01143e28175650ac4c3c56df049857b29d141b8278f50e69fa58a",
+  "windowsBackupManifestSha256": "cf8eeb1bb35eb0cb92294fc0f1b73d2322c6ba0fa2346d4df23ae9b846fb86f9",
+  "windowSnapshotUtc": "2026-10-15T08:25:54.232Z",
+  "occupied": [
+    {
+      "deviceNumber": "147",
+      "kind": "screen_control"
+    },
+    {
+      "deviceNumber": "182",
+      "kind": "screen_control"
+    },
+    {
+      "deviceNumber": "156",
+      "kind": "alipay_name_lookup"
+    },
+    {
+      "deviceNumber": "126",
+      "kind": "screen_control"
+    }
+  ],
+  "adbServerPid": 634172,
+  "agentPid": 634228,
+  "owner": "NT AUTHORITY\\SYSTEM",
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "tests": {
+    "rootCheck": "passed",
+    "mergedFull": {
+      "passed": 797,
+      "failed": 0,
+      "skipped": 0
+    },
+    "loopbackSmoke": "smoke ok",
+    "nativeWindowsFixtures": {
+      "node": "v24.18.0",
+      "passed": 49,
+      "failed": 0,
+      "skipped": 0,
+      "actualAdbPnpOperations": 0
+    },
+    "imageSyntax": "passed"
+  },
+  "failuresResolved": [
+    "Host node was not on PATH; used existing approved host Node binary and live verifier passed.",
+    "Dockerfile FROM raw image ID was interpreted as a registry name; build failed without affecting running container. Rebuilt using an existing local tag after exact image ID verification."
+  ],
+  "notVerified": [
+    "production candidate loaded",
+    "real target recovery on new code",
+    "long-term stability",
+    "native PnP mutation and driver conflict remediation"
+  ],
+  "actionsDone": [
+    "read-only production version/source/owner/occupancy and media checks",
+    "write isolated stage and backup copies",
+    "build candidate image without running production configuration",
+    "run Windows fixture tests in isolated stage"
+  ],
+  "actionsNotDone": [
+    "running file replacement",
+    "Compose activation",
+    "Agent/cloud/ADB restart",
+    "identity/key/startup change",
+    "driver changes",
+    "new business queries",
+    "remote Git push"
+  ],
+  "windowAuthorization": "User authorized deployment and recovery, forbade ADB rebuild/identity switching, required advance notice before Agent reload and no interruption of active phones. Explicit choice pending for current 3 controls and 1 lookup."
+}

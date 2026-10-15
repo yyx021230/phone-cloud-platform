@@ -1,0 +1,11 @@
+Filtered failure titles and totals from first full run; full source dump omitted.
+✖ real Agent integration has filters, heartbeat delivery, and final guards after both persistence waits (2.085458ms)
+ℹ tests 797
+ℹ suites 0
+ℹ pass 796
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14371.156708
+✖ real Agent integration has filters, heartbeat delivery, and final guards after both persistence waits (2.085458ms)

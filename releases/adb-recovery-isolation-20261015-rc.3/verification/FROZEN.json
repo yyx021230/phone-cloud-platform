@@ -1,0 +1,121 @@
+{
+  "files": [
+    {
+      "path": "public/screen-control.js",
+      "sha256": "9618ae22993d0b1fc5bbffbedf2e9ced52ad5b8ccf46fded85513f39a4bda3ba"
+    },
+    {
+      "path": "public/screen-inactivity-guard.js",
+      "sha256": "433578679963fc37b6eb2412c641cbaaa81f424f8611b109b28d2ba3b49ec182"
+    },
+    {
+      "path": "public/vendor/screen-control.js",
+      "sha256": "ef4e36d5934050ad85075fb877257e4ec63b30af94becefc69e29bf76b2f44c5"
+    },
+    {
+      "path": "public/vendor/worker-Dm9DNeDt.js",
+      "sha256": "1d2f4e9d5377fe41356be079ad925ddb38b10b5035914f2b883ec1696f831687"
+    },
+    {
+      "path": "server/screen-backpressure.mjs",
+      "sha256": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4"
+    },
+    {
+      "path": "server/screen-gallery-import.mjs",
+      "sha256": "39f7727860372f25959a5ca78145be07dfaf92c3747954afc99c8cd02cd8e697"
+    },
+    {
+      "path": "server/screen-media-auth.mjs",
+      "sha256": "c569931fdbad95338ebc50dee5d04b0f62550733bc627324171ab3590d3668b1"
+    },
+    {
+      "path": "server/screen-quality.mjs",
+      "sha256": "bfadf379b03fadcf73bedc911649680ac6e3ace77907afee3524b335d4406451"
+    },
+    {
+      "path": "server/screen-relay.mjs",
+      "sha256": "91b706a0cd00ea573997fdea338cad8f37e2c88e62fdbeee24b86ec4a6036c02"
+    },
+    {
+      "path": "server/screen-sessions.mjs",
+      "sha256": "811a15aa7ecb87a934ef5f92826ed9031278d87df2387cc20a85098ce91cde09"
+    },
+    {
+      "path": "server/screen-transport-policy.mjs",
+      "sha256": "331b212c564bc992628712eef81bff6dafe3b0df3f480f64fb808dfe7c41c721"
+    },
+    {
+      "path": "windows-agent/src/adb-priority-queue.mjs",
+      "sha256": "0bb8cfd86baaddc8a32d040e5835452f06e1ae5e3b78cbe2aeb0a67a24e5495d"
+    },
+    {
+      "path": "windows-agent/src/pnp-screen-coordinator.mjs",
+      "sha256": "5eb1551e7dedbef4eed8d941733fa20b4780a362196338c51db4651b78ab9003"
+    },
+    {
+      "path": "windows-agent/src/screen-backpressure.mjs",
+      "sha256": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4"
+    },
+    {
+      "path": "windows-agent/src/screen-control-queue.mjs",
+      "sha256": "27e6e5e39364817b2ee6a8ced3ecae8cee522904a7d4d3b0321bacd697212879"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.mjs",
+      "sha256": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.pre-20260722-pacing-default.mjs",
+      "sha256": "9b28020b8f97e79068d944fd484596cae4e4ab4ae5a53ecf165fc016030b95e0"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.pre-20260722-wire-pacing.mjs",
+      "sha256": "c374bfd2e01376d07bfecb209388c3a1b6a2a34b71218852ad58aa3a9fca8538"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.pre-pli-loop-20260722.mjs",
+      "sha256": "a7d113722291c2be02e3298d4364dc929c0ed3ca567e388272dfd2cea5efcb8b"
+    },
+    {
+      "path": "windows-agent/src/screen-stream.verify.mjs",
+      "sha256": "cc2678e743981d65d16d54eac928bce407275f5244921e67d56fb4808251beb1"
+    },
+    {
+      "path": "windows-agent/src/screen-video-channel.mjs",
+      "sha256": "9e8c1ccd1439568beca2e99595764aa598893cee576109c514ae503486c1ca25"
+    },
+    {
+      "path": "windows-agent/src/screen-webrtc-publisher.mjs",
+      "sha256": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    {
+      "path": "windows-agent/src/screen-webrtc-publisher.pre-20260722-wire-pacing.mjs",
+      "sha256": "d78b425dfdca9e3079cb9505a7b57d5d4d2bc7de3ce5174f52ab9e2c133d820c"
+    },
+    {
+      "path": "deploy/mediamtx-pacing/production-baseline.json",
+      "sha256": "d5b260558469ee75add1f747de2f7e5ad1604c4c7e897592fc6cdf5b91de8561"
+    },
+    {
+      "path": "deploy/mediamtx-pacing/verify.mjs",
+      "sha256": "2c5ee69ede4587e40b69333373b0956ffed20dfb9eea6467740a5f4704933a84"
+    },
+    {
+      "path": "windows-agent/src/adb-server-recovery.mjs",
+      "sha256": "693535b4379089e33b7badeaac2e2665c1b2efb797adba1264e8c431d356fb2f"
+    },
+    {
+      "path": "windows-agent/src/config.mjs",
+      "sha256": "b233775c589ab22e6662a23bb82e507c9a3f635f1112709bfdae24d854a5d254"
+    }
+  ],
+  "entrypointUnchangedSections": {
+    "screenManagerCallbacks": "4e55e1e68f3b23b8c6b6295ee72f5998fa78c1e67de0ada70ba452883a92bbb0",
+    "adbStartupRecovery": "a4e843d356de5f060f3994dd5e616434a047a5a387a3c92ebf82d85859335d00"
+  },
+  "authPreloadSha256": "9c3aa5affb9243f255f2bf74376ee7bb01c9f9171989f5477146263ee7e2bb4d",
+  "authPreloadIncludedInOverlay": false,
+  "productionSystemIdentityChanged": false,
+  "screenRebuilt": false,
+  "liveMediaVerifiedThisDevelopmentTurn": false
+}

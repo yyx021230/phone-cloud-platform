@@ -1,0 +1,21 @@
+{
+  "version": "adb-recovery-isolation-20261015-rc.3",
+  "files": {
+    "DRIVER_PLAN.md": "cf196f9484c304238c6ccfeffbd55c4ba2f130fc572cf83757dfc85fb23ee6bb",
+    "README.md": "ee90f94af753d09d46e09797e2547e1e1efbc15075bf7410b7a9806fc767a6fd",
+    "RELEASE_NOTES.md": "0a1004864fb5d51823cde4ab6b78e7b3f049e4012a1fb50ab183f9b3d7289242",
+    "VERSION.json": "339d8abad92aa11ff77cc956e9d3ae2f59ee9483a79d049384ffd892f8bacdf2",
+    "verification/FROZEN.json": "3ebc2ded4f79ed832686757839ea02590e09c4e7b6440630b89ec9616f752039",
+    "verification/RESULTS.json": "9356f13951c4aa26b0daaba1b0c254d870355e10567a004d84e412255e0ca888",
+    "verification/before.txt": "c7056e4eef63c7ea8fb37d63bb13492f8a46a03b164ef4c6ea2286737f72cfae",
+    "verification/check.txt": "911e593ec5bbaee54fd78a05e2117732024691fb0c018bb4a1b2316dcbd30e78",
+    "verification/first-full-failure-summary.txt": "dc82db98a8f8840879ba4b921502e3852279bfc6d4eb408e8c948d13efc32614",
+    "verification/full.txt": "25130cf41c728e301c4291d505e5de0fe739921ec27cec9743030eac28c4e5e6",
+    "verification/prepare-local.py": "70bd2e308ce9f9205b0d4bbf7ae986cb0a33761d9461c3204e7f896b858c380f",
+    "verification/targeted.txt": "75ef5bdbcdf90971ea8a3314ac67dc6beb25aa45b94e026181ac696187357363",
+    "windows-agent/src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+    "windows-agent/src/installer-admission-agent.test.mjs": "c035d11bb1cbf65ccc7eb0fd41d393d2a2526fc6eb31676872de810d8c3f3357",
+    "windows-agent/src/pnp-recovery-control.test.mjs": "7f0896cfd32508d8d5143337e89c823c73a4bf9b93cd363431019729e5ae1ee8",
+    "windows-agent/src/recovery-command-path.test.mjs": "9f984ae2f3a8edc815bc74aed95180afa4aea870b0c7f09d1426534216f9e12f"
+  }
+}

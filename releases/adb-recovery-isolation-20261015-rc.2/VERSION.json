@@ -1,0 +1,44 @@
+{
+  "version": "adb-recovery-isolation-20261015-rc.2",
+  "status": "local-candidate-not-deployed",
+  "branch": "codex/adb-recovery-isolation-20261015",
+  "baselineCommit": "fe2ea5972cacbc0408fb1e5e62985e221386337f",
+  "baseTag": "lookup-readiness-20261015-rc.8",
+  "baseManifestSha256": "d32b0d7b22646c950f203d887fc0d92c7698ef69e23acc9943dd78a1ac84b3fe",
+  "productionBaseline": "lookup-readiness-20261015-deployed.8",
+  "productionImage": "sha256:e92e3a933344eed3e7033dd4a8b3ec8f9a85cae37a03d51d1b9014372296fd0a",
+  "overlayFiles": [
+    "public/app.js",
+    "scripts/recovery-controls-ui.test.mjs",
+    "server/index.mjs",
+    "server/recovery-controls.http.test.mjs",
+    "server/recovery-controls.mjs",
+    "server/recovery-controls.test.mjs",
+    "windows-agent/src/device-scan-agent.test.mjs",
+    "windows-agent/src/device-scan-pipeline.mjs",
+    "windows-agent/src/device-scan-pipeline.test.mjs",
+    "windows-agent/src/index.mjs",
+    "windows-agent/src/pnp-recovery-control.mjs",
+    "windows-agent/src/pnp-recovery-control.test.mjs",
+    "windows-agent/src/recovery-command-path.test.mjs",
+    "windows-agent/src/recovery-isolation.mjs",
+    "windows-agent/src/recovery-isolation.test.mjs"
+  ],
+  "productionActions": 0,
+  "requiresCloudRestart": true,
+  "requiresWindowsAgentRestart": true,
+  "requiresAdbRestart": false,
+  "databaseMigrations": 0,
+  "preserveExternalRuntime": [
+    "windows-agent/adb-auth-env.cjs",
+    "ADB_VENDOR_KEYS",
+    "existing adb authorization files",
+    "SYSTEM scheduled task action"
+  ],
+  "releaseGates": [
+    "fresh production baseline compare",
+    "isolated native Windows persistence and target recovery validation",
+    "explicit maintenance window before cloud/Agent load",
+    "D-075 live before and after deployment"
+  ]
+}
