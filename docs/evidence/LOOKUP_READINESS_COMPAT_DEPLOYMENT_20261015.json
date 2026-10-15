@@ -1,0 +1,57 @@
+{
+  "version": "lookup-readiness-20261015-deployed.2",
+  "candidate": "lookup-readiness-20261015-rc.2",
+  "sourceCommit": "c559f9604461c1df1d37220d2c0f4e25df85f53c",
+  "at": "2026-10-15T04:29:05.320956+00:00",
+  "previousVersion": "lookup-readiness-20261015-deployed.1",
+  "windows": {
+    "at": "2026-10-15T04:27:51.3518695Z",
+    "version": "lookup-readiness-20261015-rc.2",
+    "sourceCommit": "c559f9604461c1df1d37220d2c0f4e25df85f53c",
+    "agentPid": 617616,
+    "adbPid": 312588,
+    "sharedRestart": false,
+    "backup": "D:\\PhoneCloud\\agent\\backups\\lookup-readiness-20261015-rc.2",
+    "files": [
+      {
+        "name": "alipay_name_lookup.py",
+        "before": "8367b42388355f0851f641a5ae316974fb0f61926bb313da34b9d0cf3b0e02c8",
+        "after": "99ae04d529fd21fe7836fb686a3ea2c7de8e7583435f0695a922f27e4f8edee0"
+      },
+      {
+        "name": "alipay_visual_result.py",
+        "before": "acdec31675887e5fcf9f9e530a13deea0903b7075b6ed8e6cc0d8fe69d107447",
+        "after": "e624055523976001ed10fc6eb2223f1dde41f2da336a41a2e8cc62e9fd4f7780"
+      }
+    ]
+  },
+  "cloudImageUnchanged": "sha256:73b24327c093d52da3fa8d0b75ed6c164cf66cb47c8f8512ed33e78cd9ef8f39",
+  "cloudRuntimeCommit": "fda9967e0b5e441f750c7bdae94e07be6cd86235",
+  "liveImageIncludesPythonOverlay": false,
+  "nextAgentInstallMustRetainOverlay": true,
+  "readinessAdmissionPausedForSwap": true,
+  "activeLookupTasksBeforeSwap": 0,
+  "targetedIdleWorkersRefreshed": [
+    156,
+    115
+  ],
+  "sharedRestarts": [],
+  "mediaBefore": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "mediaAfter": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "productionAcceptanceComplete": false,
+  "gray": "118 original retry and 130/155 preparation pending; original 156/115 retained; more evidence to follow"
+}
