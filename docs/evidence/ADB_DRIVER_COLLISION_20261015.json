@@ -1,0 +1,265 @@
+{
+  "atUtc": "2026-10-15T06:35:54Z",
+  "status": "investigation-and-maintenance-prepared-not-fixed",
+  "productionVersion": "lookup-readiness-20261015-deployed.8-agent.1",
+  "cloudCandidate": "lookup-readiness-20261015-rc.8",
+  "cloudCandidateLoaded": false,
+  "facts": [
+    {
+      "timeLocal": "13:43:27",
+      "fact": "One Agent scan reports 116/156/157/162 ADB missing. Later PnP recovery on 156 cannot establish causation for this initial loss."
+    },
+    {
+      "timeLocal": "before 14:23",
+      "fact": "162 absent in present-only PnP and three native USB port observations reported NoDeviceConnected. User says phone remained plugged in; physical cause unconfirmed."
+    },
+    {
+      "timeLocal": "14:23:24",
+      "fact": "162 hardware-initiated ADB-only enumeration; composite ADB subsequently appeared with Code18 then stopped/not started."
+    },
+    {
+      "fact": "oem38.inf hn_goadb and oem44.inf vivo install different WinUSBCoInstaller2.dll/WdfCoInstaller01009.dll into the same System32 paths."
+    },
+    {
+      "fact": "SetupAPI explicitly marks the prior package needs reconfiguration, query-removes unrelated devices, records PNP_VetoOutstandingOpen and Error482; waiting installations repeat every minute."
+    },
+    {
+      "timeLocal": "13:58:51 and 14:18:37",
+      "fact": "130 driver installation participates in the same shared-file collision, with four-minute waits and failed installer exits."
+    },
+    {
+      "timeLocal": "14:23:24–14:31",
+      "fact": "162 two USB modes reproduce the opposite shared-DLL replacements; other device installs wait."
+    }
+  ],
+  "inferencesAndLimits": [
+    "Confirmed shared-driver installation collision explains the observed installer queue blockage. It does not prove the cause of the first physical USB disappearance or every ADB fluctuation.",
+    "A scoped device reinstall can still affect unrelated phones through shared co-installers; retrying or killing ADB without driver containment is not a complete repair.",
+    "Binding one phone to inbox ADB is a canary, not proof that all devices and all USB modes are permanently repaired."
+  ],
+  "scopedAction": {
+    "number": 162,
+    "port": 2,
+    "cycle": {
+      "ok": false,
+      "winError": 433,
+      "usbdStatus": 0
+    },
+    "beforeOnline": 116,
+    "afterOnline": 116,
+    "lost": [],
+    "gained": [],
+    "agentRestarted": false,
+    "adbRestarted": false,
+    "hubRestarted": false
+  },
+  "driverFileHashes": {
+    "files": [
+      {
+        "path": "C:\\Windows\\System32\\WinUSBCoInstaller2.dll",
+        "bytes": 1018520,
+        "sha256": "a81c71da587f8d88f0fe0db36af58bc31b8bb52bc75983cf92ea41bcc5dd98ce"
+      },
+      {
+        "path": "C:\\Windows\\System32\\WdfCoInstaller01009.dll",
+        "bytes": 1737368,
+        "sha256": "17fc16ed3f696e8a196f756bcc57b688baf77f7bce459aa354fe6134cb35e0ad"
+      },
+      {
+        "path": "C:\\Windows\\System32\\DriverStore\\FileRepository\\hn_goadb.inf_amd64_79d514ad52b2f0c1\\WdfCoInstaller01009.dll",
+        "bytes": 1737368,
+        "sha256": "17fc16ed3f696e8a196f756bcc57b688baf77f7bce459aa354fe6134cb35e0ad"
+      },
+      {
+        "path": "C:\\Windows\\System32\\DriverStore\\FileRepository\\hn_goadb.inf_amd64_79d514ad52b2f0c1\\WinUSBCoInstaller2.dll",
+        "bytes": 1018520,
+        "sha256": "a81c71da587f8d88f0fe0db36af58bc31b8bb52bc75983cf92ea41bcc5dd98ce"
+      },
+      {
+        "path": "C:\\Windows\\System32\\DriverStore\\FileRepository\\android_winusb.inf_amd64_d03d93db559d4f78\\amd64\\WdfCoInstaller01009.dll",
+        "bytes": 1754040,
+        "sha256": "afcd0f4d17d20973b36261dadd09a77dadb7449d68de3bde895a052225a16bd8"
+      },
+      {
+        "path": "C:\\Windows\\System32\\DriverStore\\FileRepository\\android_winusb.inf_amd64_d03d93db559d4f78\\amd64\\WinUSBCoInstaller2.dll",
+        "bytes": 1035216,
+        "sha256": "9dc4b6d06b3808621aed86f2ef0d86860e90403e6e0c81b9a97920598e5dcc0a"
+      }
+    ]
+  },
+  "backup": {
+    "directory": "D:\\PhoneCloud\\agent\\backups\\adb-driver-162-20261015-prep1",
+    "atUtc": "2026-10-15T06:35:09.995591Z",
+    "operations": [
+      {
+        "action": "export-driver",
+        "inf": "oem38.inf",
+        "rc": 0
+      },
+      {
+        "action": "export-driver",
+        "inf": "oem44.inf",
+        "rc": 0
+      },
+      {
+        "action": "reg-export",
+        "targetIndex": 0,
+        "rc": 0
+      },
+      {
+        "action": "reg-export",
+        "targetIndex": 1,
+        "rc": 0
+      }
+    ],
+    "files": [
+      {
+        "path": "androidwinusb.cat",
+        "bytes": 24942,
+        "sha256": "8f3fdc495b62ab4b4097a9ce356d2330e2645d893e6f7df82c34f984961515ef"
+      },
+      {
+        "path": "androidwinusba64.cat",
+        "bytes": 27076,
+        "sha256": "4712ed86cf5bfad1aa3dee1a9e62c806107e07b47da811a23763e1c332f48162"
+      },
+      {
+        "path": "android_winusb.inf",
+        "bytes": 28011,
+        "sha256": "7ebb6b20eccec9a3393730e5fba401d3a3382d3ca48b30ff5fd4cf911c6f47e9"
+      },
+      {
+        "path": "device-0.reg",
+        "bytes": 4764,
+        "sha256": "59956375e5aa7def1c678e4228adced23e9f959f42f5209c0935ef2416ceecbb"
+      },
+      {
+        "path": "device-1.reg",
+        "bytes": 5120,
+        "sha256": "15250baf3adcbe3e25643926fa9db1a44c75ee02a170c1642d600a40e3d74400"
+      },
+      {
+        "path": "hn_goadb.inf",
+        "bytes": 23459,
+        "sha256": "50173c1c71d65d4cad34e8df22b5da1b030f8815667e50eda13f1d4268c918e0"
+      },
+      {
+        "path": "WdfCoInstaller01009.dll",
+        "bytes": 1737368,
+        "sha256": "17fc16ed3f696e8a196f756bcc57b688baf77f7bce459aa354fe6134cb35e0ad"
+      },
+      {
+        "path": "WinUSBCoInstaller2.dll",
+        "bytes": 1018520,
+        "sha256": "a81c71da587f8d88f0fe0db36af58bc31b8bb52bc75983cf92ea41bcc5dd98ce"
+      },
+      {
+        "path": "amd64\\WdfCoInstaller01009.dll",
+        "bytes": 1754040,
+        "sha256": "afcd0f4d17d20973b36261dadd09a77dadb7449d68de3bde895a052225a16bd8"
+      },
+      {
+        "path": "amd64\\WinUSBCoInstaller2.dll",
+        "bytes": 1035216,
+        "sha256": "9dc4b6d06b3808621aed86f2ef0d86860e90403e6e0c81b9a97920598e5dcc0a"
+      }
+    ],
+    "registryContentIncludedInRepository": false
+  },
+  "nativeCompatibleDriverPreview": {
+    "deviceNumber": 162,
+    "selected": {
+      "index": 0,
+      "provider": "Microsoft",
+      "description": "ADB 设备",
+      "inf": "C:\\Windows\\INF\\winusb.inf",
+      "section": "ADB",
+      "hardwareId": "usb\\class_ff&subclass_42&prot_01"
+    },
+    "infSha256": "9ede409763b992bd39bc2ae048a12d4f4b3fc3890824178f3f3130c1c47e9cc6",
+    "readOnly": true,
+    "installCalled": false
+  },
+  "validation": {
+    "localSelectionTests": {
+      "passed": 3,
+      "failed": 0
+    },
+    "windowsNativeReadOnlyPreview": "passed",
+    "winusbSysAuthenticode": "Valid / Microsoft Windows",
+    "driverRebindTest": "not executed",
+    "fullBusinessRegression": "not repeated; runtime source unchanged",
+    "productionFullAcceptance": false
+  },
+  "lastPlatformSnapshot": {
+    "atUtc": "2026-10-15T06:38:36.048Z",
+    "http": {
+      "/healthz": 200,
+      "/readyz": 200,
+      "/api-docs.html": 200,
+      "/api-reference.json": 200,
+      "/openapi.json": 200,
+      "/downloads/name-lookup-integration.zip": 200
+    },
+    "unsignedPrepare": 401,
+    "adbOnline": 112,
+    "totalDevices": 131,
+    "activeScreens": 4,
+    "queue": {
+      "xhsActive": 0,
+      "xhsQueued": 0,
+      "xhsRunning": 0,
+      "xhsStalled": 0,
+      "windowsQueued": 0,
+      "windowsRunning": 0,
+      "windowsStalled": 0
+    },
+    "poolEnabled": false,
+    "poolRevision": 39,
+    "request162Phase": "unknown",
+    "completedExistingResults": 5,
+    "pendingExistingResults": 1,
+    "newQueries": 0
+  },
+  "maintenanceNeeded": {
+    "approved": false,
+    "proposedMinutes": 10,
+    "possibleInterruptions": [
+      "all ADB connections",
+      "current real-time controls",
+      "Agent-dependent automation",
+      "cloud business service when separately gated"
+    ],
+    "notAuthorized": [
+      "Windows reboot",
+      "USB Hub restart",
+      "media restart",
+      "mass driver replacement",
+      "global driver package deletion"
+    ]
+  },
+  "references": [
+    "https://learn.microsoft.com/en-us/windows-hardware/drivers/install/avoiding-system-restarts-during-device-installations",
+    "https://learn.microsoft.com/en-us/windows-hardware/drivers/usbcon/winusb-installation",
+    "https://learn.microsoft.com/en-us/windows/win32/api/newdev/nf-newdev-diinstalldevice"
+  ],
+  "sharedProcessesAndOverlays": {
+    "atUtc": "2026-10-15T06:38:36.160919Z",
+    "agentPid": 617616,
+    "agentCreated": 1792036166.1709273,
+    "adbPid": 312588,
+    "adbCreated": 1791427470.2758265,
+    "files": {
+      "alipay_name_lookup.py": "bacf75f9a6dcf5e8bbc8033a619a98e5701a960c3cda74bcfdcb406bcaf6afc8",
+      "alipay_visual_result.py": "eb3a4b91df2f7037a9607a405e5c785a6cbcb85dbe5a682586b12619977ab526",
+      "xhs_airtest_poco.py": "e6bdc2d96adf9a7b5e130eac72a0479d7790732831cfda71bf0230923ceccdaa"
+    },
+    "sharedRestarted": false
+  },
+  "rootWorkspace": {
+    "historicalEntries": 236,
+    "finalEntries": 237,
+    "editedByThisTask": false,
+    "details": "Unrelated root workspace preserved; work isolated in task worktree."
+  }
+}
