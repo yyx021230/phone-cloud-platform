@@ -1,0 +1,10 @@
+{
+  "sourceArchivesVerified": 4,
+  "imageArchiveVerified": true,
+  "imageConfigDigest": "sha256:7bad36b7668fb7864131671509612bbc381e1d084a233be5e0df3c994b2948a6",
+  "imageManifestDigests": [
+    "sha256:73b24327c093d52da3fa8d0b75ed6c164cf66cb47c8f8512ed33e78cd9ef8f39"
+  ],
+  "layersVerified": 11,
+  "productionConnections": 0
+}
