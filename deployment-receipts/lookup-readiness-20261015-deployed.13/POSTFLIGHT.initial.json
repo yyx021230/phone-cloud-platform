@@ -1,0 +1,202 @@
+{
+  "at": "2026-10-15T09:05:59.648Z",
+  "agents": [
+    {
+      "id": "win-bf-202605262318-20260727",
+      "lastSeenAt": "2026-10-15T09:05:55.939Z",
+      "lastScan": {
+        "ok": true,
+        "at": "2026-10-15T09:05:56.281Z",
+        "error": ""
+      },
+      "control": {
+        "protocol": "device_recovery_control_v1",
+        "revision": 0,
+        "synced": true,
+        "isolationReset": true,
+        "isolationError": "",
+        "isolated": [],
+        "error": ""
+      },
+      "desired": {
+        "protocol": "device_recovery_control_v1",
+        "revision": 0,
+        "paused": []
+      }
+    },
+    {
+      "id": "windows-desktop-8v8n4pe-v2",
+      "lastSeenAt": "2026-08-10T06:02:47.953Z",
+      "lastScan": {
+        "at": "2026-08-10T06:02:47.612Z",
+        "ok": true,
+        "error": ""
+      },
+      "desired": {
+        "protocol": "device_recovery_control_v1",
+        "revision": 0,
+        "paused": []
+      }
+    },
+    {
+      "id": "windows-desktop-8v8n4pe",
+      "lastSeenAt": "2026-07-03T04:15:49.959Z",
+      "lastScan": {
+        "at": "2026-07-03T04:15:33.635Z",
+        "ok": true,
+        "error": ""
+      },
+      "desired": {
+        "protocol": "device_recovery_control_v1",
+        "revision": 0,
+        "paused": []
+      }
+    },
+    {
+      "id": "local-mac-windows-agent",
+      "lastSeenAt": "2026-07-03T05:36:47.198Z",
+      "lastScan": {
+        "at": "2026-07-03T05:36:21.217Z",
+        "ok": true,
+        "error": ""
+      },
+      "desired": {
+        "protocol": "device_recovery_control_v1",
+        "revision": 0,
+        "paused": []
+      }
+    }
+  ],
+  "online": 118,
+  "total": 131,
+  "occupied": [
+    {
+      "number": "156",
+      "kind": "alipay_name_lookup"
+    }
+  ],
+  "pool": {
+    "config": {
+      "idleMs": 120000,
+      "waitMs": 120000,
+      "enabled": true,
+      "humanLimit": 5,
+      "queueLimit": 10,
+      "concurrency": 2,
+      "humanWaitMs": 1800000,
+      "waiterLimit": 20,
+      "asyncTaskTtlMs": 3600000,
+      "asyncAliasLimit": 50,
+      "asyncQueueWaitMs": 1800000,
+      "clientQueueLimit": 10,
+      "asyncRecentResultMs": 600000
+    },
+    "revision": 44,
+    "channels": [
+      {
+        "number": 156,
+        "phase": "recovery",
+        "requestId": "0761ca1b-b5f6-404d-bb9c-6b793d6c5807"
+      }
+    ],
+    "pending": [
+      {
+        "id": "0761ca1b-b5f6-404d-bb9c-6b793d6c5807",
+        "status": "needs_recovery",
+        "code": "lookup_recovery_required"
+      }
+    ],
+    "targets": [
+      {
+        "number": 51,
+        "enabled": false,
+        "health": {
+          "ready": true,
+          "reason": ""
+        },
+        "unavailable": false
+      },
+      {
+        "number": 52,
+        "enabled": false,
+        "health": {
+          "ready": true,
+          "reason": ""
+        },
+        "unavailable": false
+      },
+      {
+        "number": 54,
+        "enabled": false,
+        "health": {
+          "ready": true,
+          "reason": ""
+        },
+        "unavailable": false
+      },
+      {
+        "number": 156,
+        "enabled": true,
+        "health": {
+          "ready": true,
+          "reason": ""
+        },
+        "unavailable": false
+      },
+      {
+        "number": 155,
+        "enabled": true,
+        "health": {
+          "ready": true,
+          "reason": ""
+        },
+        "unavailable": false
+      },
+      {
+        "number": 115,
+        "enabled": false,
+        "health": {
+          "ready": true,
+          "reason": ""
+        },
+        "unavailable": false
+      },
+      {
+        "number": 164,
+        "enabled": false,
+        "health": {
+          "ready": true,
+          "reason": ""
+        },
+        "unavailable": false
+      },
+      {
+        "number": 163,
+        "enabled": false,
+        "health": {
+          "ready": true,
+          "reason": ""
+        },
+        "unavailable": false
+      },
+      {
+        "number": 154,
+        "enabled": false,
+        "health": {
+          "ready": true,
+          "reason": ""
+        },
+        "unavailable": false
+      },
+      {
+        "number": 162,
+        "enabled": false,
+        "health": {
+          "ready": true,
+          "reason": ""
+        },
+        "unavailable": false
+      }
+    ]
+  }
+}
