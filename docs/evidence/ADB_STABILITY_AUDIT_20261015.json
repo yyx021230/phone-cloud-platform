@@ -1,0 +1,192 @@
+{
+  "schemaVersion": 1,
+  "status": "investigation_confirmed_partial_root_cause_no_production_change",
+  "observedDate": "2026-10-15",
+  "timezone": "Asia/Shanghai",
+  "scope": "ADB / Windows device recovery and availability; no new lookup or maintenance actions",
+  "git": {
+    "branch": "codex/adb-stability-audit-20261015",
+    "base": "1ff4a1085f8bf2cdc8bf998dfcdd0ae2083ebf33",
+    "auditTag": "adb-stability-20261015-audit.1"
+  },
+  "workflow": {
+    "revision": "2026-09-30",
+    "sha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+  },
+  "production": {
+    "version": "lookup-readiness-20261015-deployed.8",
+    "image": "sha256:e92e3a933344eed3e7033dd4a8b3ec8f9a85cae37a03d51d1b9014372296fd0a",
+    "receiptCommit": "a524f483e49a9031b37622f3ddf3503e5619aeea",
+    "adbOwner": "NT AUTHORITY\\SYSTEM",
+    "adbServerPid": 634172,
+    "agentOwner": "NT AUTHORITY\\SYSTEM",
+    "agentPid": 634228,
+    "adbPath": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+    "port": 5037,
+    "serverCreatedUtc": "2026-10-15T06:50:42.370504Z",
+    "actualSourceSha256": {
+      "pnp-recovery-safety.mjs": "ad7de7d0575476cb807201e88b1c12842d12af0d9864e54809f4b98913c6d355",
+      "guarded-task-runner.mjs": "150e14ea6fcdd6b0bb117d771bce084347cb26442a7674b0963cf9887df1d25f",
+      "pnp-recovery-policy.mjs": "5a66a8ccb4defbf837c58cb473fd884ffe1763c17256ed6642d91dfe1be4e850",
+      "device-recovery-state.mjs": "6315883802f283291f4eab489c6c2975e9dfaee2d035143732a2214f4e723293",
+      "index.mjs": "1a101a23b7d139fb17a19de95232bb058a72fcf67fa0634b02d3ae24c4741802",
+      "pnp-windows-inventory.mjs": "7fef1564a5159238064d207905326f1d8cd9b5f39274fe85ddcd951fdc3cef5d",
+      "config.mjs": "b233775c589ab22e6662a23bb82e507c9a3f635f1112709bfdae24d854a5d254"
+    },
+    "activeManifestMatches": {
+      "pnp-recovery-safety.mjs": true,
+      "index.mjs": true,
+      "config.mjs": true
+    }
+  },
+  "samples": [
+    {
+      "atUtc": "2026-10-15T07:25:38Z",
+      "source": "read-only direct ADB after SYSTEM listener verification",
+      "device": 102,
+      "unauthorized": 4,
+      "installerProcesses": 5
+    },
+    {
+      "atUtc": "2026-10-15T07:31:37.869329Z",
+      "source": "read-only direct ADB after SYSTEM listener verification",
+      "device": 105,
+      "unauthorized": 9,
+      "installerProcesses": 4
+    },
+    {
+      "atUtc": "2026-10-15T07:33:25.400Z",
+      "source": "authenticated admin GET; cached device state",
+      "registered": 131,
+      "states": {
+        "device": 105,
+        "adb_interface_ready_transport_missing": 4,
+        "physically_absent": 12,
+        "unauthorized": 9,
+        "adb_interface_pnp_error": 1
+      },
+      "healthHttp": 200,
+      "readyHttp": 200
+    }
+  ],
+  "confirmed": [
+    {
+      "finding": "shared OEM co-installer replacement causes cross-package reconfiguration",
+      "evidence": [
+        "15:14:02 phone59 android_winusb copies WinUSBCoInstaller2.dll and WdfCoInstaller01009.dll into System32; SetupAPI explicitly marks hn_goadb for reconfiguration.",
+        "15:15:16 phone143 hn_goadb copies the same filenames back and marks android_winusb for reconfiguration.",
+        "15:18:03 and 15:22:11 Error482: query-remove timeout in an unrelated device stack.",
+        "15:21:18 phone91 android_winusb again marks hn_goadb; 15:28:05 phone143 repeats inverse replacement."
+      ]
+    },
+    {
+      "finding": "Windows removal requests encounter handles held by current shared ADB",
+      "boundedEventCount": 105,
+      "currentServerPidEventCount": 105,
+      "windowUtc": [
+        "2026-10-15T07:20:01.4955263Z",
+        "2026-10-15T07:31:20.4861847Z"
+      ],
+      "interpretation": "Handle ownership is expected for active transports; event225 alone does not prove leaked handles. No shared server termination performed."
+    },
+    {
+      "finding": "device installation really busy; not solely a UI or probe failure",
+      "evidence": [
+        "5 DrvInst processes at15:25; 4 at15:31; waiting processes survive minutes while SetupAPI records queued installation.",
+        "Queued MI01 instance maps to phone116; other current queued targets include130,143,158.",
+        "Probe implementation checks process names; it does not expose queue age, owner phone or a stall classification."
+      ]
+    },
+    {
+      "finding": "continuous recovery restarts bounded rounds with no final automatic isolation",
+      "configuration": {
+        "pnpRescanAfterMissingScans": 4,
+        "pnpTargetResetAfterMissingScans": 4,
+        "pnpRescanCooldownSeconds": 60,
+        "pnpTargetResetCooldownSeconds": 120,
+        "pnpMissingDeviceTrackingSeconds": 86400,
+        "pnpTargetAbsentRetrySeconds": 1800,
+        "pnpCollateralWatchSeconds": 180,
+        "pnpContinuousRecoveryEnabled": true,
+        "pnpRecoveryCycleCooldownSeconds": 30
+      },
+      "evidence": [
+        "Production pnpContinuousRecoveryEnabled=true and cycle cooldown30seconds.",
+        "Verified actual production pnp-recovery-safety disables hourly budget, circuit and delayed collateral watches in continuous mode.",
+        "Single-phone pause remains local candidate7.15.2, absent in production coordinator; lookup unavailable pool is a different mechanism."
+      ],
+      "qualification": "Existing approved D-024 behavior, not changed in this audit; does not prove every installation was initiated by recovery."
+    },
+    {
+      "finding": "device scan reporting waits for metadata and recovery work",
+      "evidence": [
+        "15:20:10 scan timed out after120000ms; real task guard remains until promise completion;15:20:18 device sync resumed.",
+        "Production scan awaits enrichment/physical inventory/recovery before device sync; heartbeat uses a separate named guard."
+      ],
+      "qualification": "Exact slow substage and cause of brief platform expiry not proven; no claim that installer always blocks heartbeat."
+    },
+    {
+      "finding": "130 is currently incompletely configured at ADB interface",
+      "atUtc": "2026-10-15T07:31:22.575420Z",
+      "pnpProblemCode": 1,
+      "driverInf": null,
+      "qualification": "Read-only native CM device status; not sufficient to diagnose cable or power."
+    }
+  ],
+  "unauthorizedPhones": [
+    "59",
+    "71",
+    "81",
+    "91",
+    "94",
+    "95",
+    "103",
+    "117",
+    "139"
+  ],
+  "notProven": [
+    "Initial USB re-enumeration trigger and hardware/power/cable contribution.",
+    "Causal connection between existing automatic161 exact-port cycle15:13:49 and59 reinstall15:14:02.",
+    "Every historic disappearance being caused by the OEM conflict.",
+    "Current handle exhaustion: tail includes old September29 errors; excluded from today attribution.",
+    "Zero-interruption production driver remediation and sustained fleet stability."
+  ],
+  "proposedNotImplemented": [
+    "Complete production-base integration and local tests of per-phone pause; preserve online discovery and unrelated business.",
+    "Narrow D-024: conflict-evidenced targets stop destructive escalation with persisted reason and explicit release; retain genuine installer busy/unknown guard.",
+    "Report blocker phone, process age and reason, distinguish unauthorized, Windows installation, absent USB and transport failure.",
+    "Separate fresh device snapshot publication from slow enrichment/recovery; preserve single mutation owner and no overlapping timed-out recovery.",
+    "Validate inbox driver binding per supported interface in isolated Windows environment, back up and preview; production maintenance only after concrete scope authorization."
+  ],
+  "actionsNotPerformed": [
+    "restart/kill ADB or Agent",
+    "SYSTEM/Administrator identity switch",
+    "change keys/env/startup",
+    "PnP restart/remove/driver install",
+    "USB/Windows/media restart",
+    "change business config/pool/tasks",
+    "send external message"
+  ],
+  "validation": {
+    "readOnlyWindows": true,
+    "nativePresentPnP": true,
+    "boundedSetupApiAdbAgentLogs": true,
+    "boundedWindowsEvents": true,
+    "productionSourceHashChecked": true,
+    "businessRegressionRun": false,
+    "screenRegressionRun": false,
+    "productionFixVerified": false
+  },
+  "collectionLimitations": [
+    "First two attempts of additional native script failed at Python parse before operations; fixed local collector then succeeded.",
+    "Collector ageSeconds originally used naive UTC.timestamp; corrected locally; creation times unaffected.",
+    "Event query capped120 rows perchannel; absence from tail is not proof an event never happened.",
+    "Raw private snapshots stay outside repository; report excludes serials, phone numbers, query data, tokens and credentials."
+  ],
+  "privateEvidenceDigests": {
+    "snapshot-private.json": "f87ade1575f8f93994feb62f024d1148f860a61c90a84affe3113f30b95ca22a",
+    "native-private.json": "e2fedda3ccde70ccd6df94a0004176f4d1b01a4dfd6a6d1c200ad9d6d65e5240",
+    "platform-final-private.json": "91294903f98e00b4e42f7c015ad82a8eaf9c1e7f578b23daee1bcb01dd3f6ec0",
+    "active-baseline.json": "471d386b3897ce9659f73f52910eebae806c554092d2762499725de20b125480"
+  }
+}
