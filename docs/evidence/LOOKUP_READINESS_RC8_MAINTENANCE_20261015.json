@@ -1,0 +1,675 @@
+{
+  "recordedAtUtc": "2026-10-15T07:01:22Z",
+  "version": "lookup-readiness-20261015-deployed.8",
+  "status": "deployed-gray-incomplete",
+  "branch": "codex/lookup-readiness-deploy-20261015",
+  "sourceCommit": "9d49e66799bfaa3a68d9f57a0fea64052d888ea3",
+  "sourceTag": "lookup-readiness-20261015-rc.8",
+  "driverCommit": "2b0c5fc448adebccb6801a51952c71cc78378616",
+  "authPreloadCommit": "bf4ed5355613c418faa49b501a05248c29379607",
+  "activationCommit": "4307b4750293c6cf2b60380c00951484a4b191d6",
+  "authorization": "User approved current shared Agent/ADB and exact162 maintenance plus drained cloud deployment; no Windows/Hub/media restart or bulk driver changes. User is confirming USB authorization; completion not reported.",
+  "maintenance": {
+    "startUtc": "2026-10-15T06:43:57Z",
+    "serviceReadyApproxUtc": "2026-10-15T06:56:00Z",
+    "estimatedMinutes": 10,
+    "actualApproxMinutes": 13,
+    "notes": "Extra time spent restoring existing ADB authorization identities; maintenance ended. Further shared restarts require a new window."
+  },
+  "cloud": {
+    "activated": true,
+    "version": "lookup-readiness-20261015-deployed.8",
+    "imageId": "sha256:e92e3a933344eed3e7033dd4a8b3ec8f9a85cae37a03d51d1b9014372296fd0a",
+    "gate": {
+      "at": "2026-10-15T06:54:51.707Z",
+      "queue": {
+        "xhsActive": 0,
+        "xhsQueued": 0,
+        "xhsRunning": 0,
+        "xhsStalled": 0,
+        "windowsQueued": 0,
+        "windowsRunning": 0,
+        "windowsStalled": 0
+      },
+      "screens": 4,
+      "enabled": false,
+      "channels": 0,
+      "revision": 39
+    },
+    "filesVerified": 133,
+    "media": {
+      "decision": "D-075",
+      "verified": "live",
+      "pid": 2503525,
+      "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+      "bitsPerSecond": 8000000,
+      "packetsPerGroup": 2
+    },
+    "receiptDirectory": "/opt/phone-cloud-platform/deployment-receipts/lookup-readiness-20261015-deployed.8"
+  },
+  "backup": {
+    "atUtc": "2026-10-15T06:43:46.671915+00:00",
+    "backupDirectory": "/opt/phone-cloud-platform/deploy-backups/lookup-readiness-20261015-prep.8-maintenance1",
+    "previousVersion": "lookup-readiness-20261015-deployed.8-agent.1",
+    "previousImageId": "sha256:a34bcdbbd7059b391d2dd104d5c02f4e48fd47db1ebb47e309ef2eb0a2802320",
+    "containerUnchanged": true,
+    "configs": [
+      {
+        "backup": "env.before",
+        "source": "/opt/phone-cloud-platform/.env",
+        "sha256": "4aa2c0a5a990beaa7436b65fa8678335381d14240ee139e7b45e6f50fbbc68f8"
+      },
+      {
+        "backup": "compose-0.before",
+        "source": "/opt/phone-cloud-platform/docker-compose.yml",
+        "sha256": "8687bf4176f8f0d78ab73380a7ef0fd6b71bf044de5474f172ef5483d3e47435"
+      },
+      {
+        "backup": "compose-1.before",
+        "source": "/opt/phone-cloud-platform/staging/platform-api-integration-20261012-rc.3/compose.candidate.json",
+        "sha256": "45f735c99379398e200b9323e4016fd75dc6f1b7a6c0895340b5434f3f02a14e"
+      },
+      {
+        "backup": "compose-2.before",
+        "source": "/opt/phone-cloud-platform/staging/platform-core-20261014-rc.7/compose.candidate.json",
+        "sha256": "378eed4ea3daba1dd3513c6f2f1ec14bf3fefdab0aa4b9c1bb9e73175f919c4d"
+      },
+      {
+        "backup": "compose-3.before",
+        "source": "/opt/phone-cloud-platform/staging/platform-core-20261014-rc.7/compose.coordinator.json",
+        "sha256": "99ad53a185e5a6f603a5adfe0d6c86f2d630f9365ae4dedeaec05a898a767f5d"
+      },
+      {
+        "backup": "compose-4.before",
+        "source": "/opt/phone-cloud-platform/staging/lookup-delivery-20261014-rc.1/compose.delivery.json",
+        "sha256": "2e4812b1cc488aad42a2ac08741aaeeea3fd2f53effce0c0a10a3a06ac61b01b"
+      },
+      {
+        "backup": "compose-5.before",
+        "source": "/opt/phone-cloud-platform/staging/lookup-readiness-20261015-rc.1/compose.readiness.json",
+        "sha256": "a66295d203cd2525123c9f32b9168bbbb4320e45f6ed92043ff65bb39174e933"
+      },
+      {
+        "backup": "compose-6.before",
+        "source": "/opt/phone-cloud-platform/staging/lookup-readiness-20261015-rc.3/compose.pending.json",
+        "sha256": "f5c40ceaf29d6667f9b610f3285892faad52ca11cab012f397cbfb938161374b"
+      }
+    ],
+    "postgres": {
+      "bytes": 475266192,
+      "sha256": "cab8242f7913fa7dd87e34c7d6568e99f4926c9eb8c519a6f8ae18b59c82094d",
+      "tocEntries": 63,
+      "fullDatabase": true,
+      "restoreTest": false
+    },
+    "imageArchive": {
+      "bytes": 63573504,
+      "sha256": "e8968648f1b2faff3ad2c320dfc670a076fe01338cc50bbb29570c6b8f2b3f94"
+    },
+    "servicesRestarted": 0
+  },
+  "driver": {
+    "instanceId": "USB\\VID_2D95&PID_6013&MI_02\\B&273A64C&13&0002",
+    "selected": {
+      "index": 0,
+      "provider": "Microsoft",
+      "description": "ADB 设备",
+      "inf": "C:\\Windows\\INF\\winusb.inf",
+      "section": "ADB",
+      "hardwareId": "usb\\class_ff&subclass_42&prot_01"
+    },
+    "infSha256": "9ede409763b992bd39bc2ae048a12d4f4b3fc3890824178f3f3130c1c47e9cc6",
+    "readOnly": false,
+    "installCalled": true,
+    "success": true,
+    "winError": 0,
+    "needReboot": false,
+    "atUtc": "2026-10-15T06:44:04.984837Z"
+  },
+  "postflight": {
+    "atUtc": "2026-10-15T06:57:35.483Z",
+    "http": {
+      "/healthz": 200,
+      "/readyz": 200,
+      "/api-docs.html": 200,
+      "/api-reference.json": 200,
+      "/openapi.json": 200,
+      "/downloads/name-lookup-integration.zip": 200
+    },
+    "unsignedPrepare": 401,
+    "overview": {
+      "windowsAgents": 4,
+      "onlineAgents": 1,
+      "devices": 131,
+      "adbOnline": 98,
+      "agentOnline": 0,
+      "waitingSms": 0,
+      "smsLibraryMessages": 50000,
+      "xhsQueued": 0,
+      "xhsRunning": 0,
+      "xhsStalled": 0,
+      "xhsSuccessRate": null,
+      "deviceLocks": 1,
+      "taskFailureReasons": []
+    },
+    "queue": {
+      "xhsActive": 0,
+      "xhsQueued": 0,
+      "xhsRunning": 0,
+      "xhsStalled": 0,
+      "windowsQueued": 0,
+      "windowsRunning": 0,
+      "windowsStalled": 0
+    },
+    "activeScreens": 1,
+    "pool": {
+      "enabled": false,
+      "revision": 39,
+      "channels": [],
+      "targets": [
+        {
+          "number": 155,
+          "enabled": true,
+          "health": {
+            "ready": true,
+            "reason": ""
+          }
+        },
+        {
+          "number": 164,
+          "enabled": true,
+          "health": {
+            "ready": true,
+            "reason": ""
+          }
+        },
+        {
+          "number": 162,
+          "enabled": true,
+          "health": {
+            "ready": true,
+            "reason": ""
+          }
+        },
+        {
+          "number": 130,
+          "enabled": false,
+          "health": {
+            "ready": true,
+            "reason": ""
+          }
+        }
+      ]
+    },
+    "signedHistoricalResults": [
+      {
+        "lookupId": "f84b8db1-4429-434b-9c9d-fcd91943cf61",
+        "status": "completed",
+        "hasName": true
+      },
+      {
+        "lookupId": "3a984884-7e60-4487-85b7-7bffedbbf16f",
+        "status": "failed",
+        "hasName": null,
+        "code": "lookup_processing_timeout"
+      },
+      {
+        "lookupId": "bb8b5531-89eb-48ae-91be-4e6d7e25666b",
+        "status": "completed",
+        "hasName": true
+      },
+      {
+        "lookupId": "4e60b4ec-7529-4049-aaef-2e3b3eed09ea",
+        "status": "completed",
+        "hasName": true
+      },
+      {
+        "lookupId": "161bd56c-7695-4497-8c1d-abbd263dfb0f",
+        "status": "completed",
+        "hasName": false
+      },
+      {
+        "lookupId": "3fc6635e-24d6-41b3-bf63-de714d440058",
+        "status": "completed",
+        "hasName": true
+      }
+    ],
+    "agents": [
+      {
+        "agentId": "win-bf-202605262318-20260727",
+        "lastSeenAt": "2026-10-15T06:57:34.102Z",
+        "hasLookupRuntimeId": true
+      },
+      {
+        "agentId": "windows-desktop-8v8n4pe-v2",
+        "lastSeenAt": "2026-08-10T06:02:47.953Z",
+        "hasLookupRuntimeId": false
+      },
+      {
+        "agentId": "windows-desktop-8v8n4pe",
+        "lastSeenAt": "2026-07-03T04:15:49.959Z",
+        "hasLookupRuntimeId": false
+      },
+      {
+        "agentId": "local-mac-windows-agent",
+        "lastSeenAt": "2026-07-03T05:36:47.198Z",
+        "hasLookupRuntimeId": false
+      }
+    ],
+    "newQueriesStarted": 0
+  },
+  "windows": {
+    "samples162": [
+      {
+        "atUtc": "2026-10-15T06:57:44.111291Z",
+        "rc": 0,
+        "state": "device"
+      },
+      {
+        "atUtc": "2026-10-15T06:57:48.121441Z",
+        "rc": 0,
+        "state": "device"
+      },
+      {
+        "atUtc": "2026-10-15T06:57:52.143112Z",
+        "rc": 0,
+        "state": "device"
+      },
+      {
+        "atUtc": "2026-10-15T06:57:56.165692Z",
+        "rc": 0,
+        "state": "device"
+      },
+      {
+        "atUtc": "2026-10-15T06:58:00.197329Z",
+        "rc": 0,
+        "state": "device"
+      },
+      {
+        "atUtc": "2026-10-15T06:58:04.221359Z",
+        "rc": 0,
+        "state": "device"
+      }
+    ],
+    "files": {
+      "scripts/alipay_name_lookup.py": "bacf75f9a6dcf5e8bbc8033a619a98e5701a960c3cda74bcfdcb406bcaf6afc8",
+      "scripts/alipay_visual_result.py": "eb3a4b91df2f7037a9607a405e5c785a6cbcb85dbe5a682586b12619977ab526",
+      "scripts/xhs_airtest_poco.py": "e6bdc2d96adf9a7b5e130eac72a0479d7790732831cfda71bf0230923ceccdaa",
+      "adb-auth-env.cjs": "9c3aa5affb9243f255f2bf74376ee7bb01c9f9171989f5477146263ee7e2bb4d"
+    },
+    "processes": [
+      {
+        "pid": 634172,
+        "name": "adb.exe",
+        "owner": "NT AUTHORITY\\SYSTEM",
+        "keyPathsConfigured": 2
+      },
+      {
+        "pid": 634228,
+        "name": "node.exe",
+        "owner": "NT AUTHORITY\\SYSTEM",
+        "keyPathsConfigured": 2
+      }
+    ],
+    "states": {
+      "device": 98,
+      "unauthorized": 21
+    },
+    "installerCount": 0
+  },
+  "latestReadOnlySnapshot": {
+    "atUtc": "2026-10-15T07:01:22.538912Z",
+    "states": {
+      "device": 97,
+      "unauthorized": 22
+    },
+    "target162": "device",
+    "binding162": {
+      "InfPath": "winusb.inf",
+      "InfSection": "ADB.NT",
+      "ProviderName": "Microsoft"
+    },
+    "processes": [
+      {
+        "pid": 634172,
+        "name": "adb.exe",
+        "owner": "NT AUTHORITY\\SYSTEM",
+        "keyPathsConfigured": 2
+      },
+      {
+        "pid": 634228,
+        "name": "node.exe",
+        "owner": "NT AUTHORITY\\SYSTEM",
+        "keyPathsConfigured": 2
+      }
+    ],
+    "installerCount": 0,
+    "unauthorizedNumbers": [
+      "59",
+      "69",
+      "71",
+      "75",
+      "81",
+      "82",
+      "88",
+      "91",
+      "94",
+      "95",
+      "102",
+      "103",
+      "117",
+      "139",
+      "141",
+      "151",
+      "157",
+      "158",
+      "161",
+      "165",
+      "176",
+      "177"
+    ],
+    "unmappedUnauthorizedCount": 0
+  },
+  "authRecovery": {
+    "initialRestart": {
+      "device": 96,
+      "unauthorized": 23
+    },
+    "administratorOnlyAttempt": {
+      "device": 30,
+      "unauthorized": 89
+    },
+    "administratorWithSystemKeyAttempt": {
+      "device": 99,
+      "unauthorized": 20,
+      "persistent": false,
+      "reason": "Existing owner policy replaced non-SYSTEM daemon"
+    },
+    "finalSystemPreload": {
+      "agentPid": 634228,
+      "adbPid": 634172,
+      "keyFiles": 2,
+      "privateKeysModified": false,
+      "preloadSha256": "9c3aa5affb9243f255f2bf74376ee7bb01c9f9171989f5477146263ee7e2bb4d",
+      "scheduledTaskModified": true,
+      "taskBackup": "D:\\PhoneCloud\\agent\\backups\\adb-driver-162-20261015-prep1\\AGENT-TASK.before.xml"
+    },
+    "limitation": "Why previously online phones still require authorization is not fully established; no claim that all were fixed by the key preload. No further restarts while user confirms on phones."
+  },
+  "verification": {
+    "screenRegression": {
+      "passed": 747,
+      "failed": 0,
+      "logSha256": "1304979c50f8e2830e34e8573b55549ca217f3b172653e0302a6d0fc11b137aa"
+    },
+    "authPreloadTests": 3,
+    "driverSelectionProtectionTests": 3,
+    "nativeBinding": {
+      "success": true,
+      "needReboot": false,
+      "onlyDevice": 162,
+      "alternateUsbModeTested": false
+    },
+    "productionQuarantineThreeFailureScenario": false,
+    "newBusinessQueries": 0,
+    "privateDataInReport": false,
+    "independentReview": false
+  },
+  "remaining": [
+    "Phone-side USB authorizations pending; latest direct ADB snapshot is authoritative over stale platform device state",
+    "Pool disabled revision39,130 explicitly disabled; no claim of API readiness for new orders",
+    "162 original query failed timeout and safely released; five other historical results retained",
+    "No fresh production test of three-failure quarantine in this window",
+    "Initial physical USB disappearance and155 historical worker exit cause unresolved",
+    "Other OEM-bound phones and alternate162 USB mode not migrated",
+    "New natural limit transfer/eight-hour expiry not covered this run"
+  ],
+  "untouched": [
+    "Windows reboot",
+    "USB Hub restart",
+    "Media restart or pacing changes",
+    "OEM package global deletion",
+    "Production data restore/deletion",
+    "Git push",
+    "Root worktree existing changes"
+  ],
+  "receiptTag": "lookup-readiness-20261015-deployed.8",
+  "readOnlyFollowupSnapshots": [
+    {
+      "atUtc": "2026-10-15T07:01:22.538912Z",
+      "states": {
+        "device": 97,
+        "unauthorized": 22
+      },
+      "target162": "device",
+      "binding162": {
+        "InfPath": "winusb.inf",
+        "InfSection": "ADB.NT",
+        "ProviderName": "Microsoft"
+      },
+      "processes": [
+        {
+          "pid": 634172,
+          "name": "adb.exe",
+          "owner": "NT AUTHORITY\\SYSTEM",
+          "keyPathsConfigured": 2
+        },
+        {
+          "pid": 634228,
+          "name": "node.exe",
+          "owner": "NT AUTHORITY\\SYSTEM",
+          "keyPathsConfigured": 2
+        }
+      ],
+      "installerCount": 0,
+      "unauthorizedNumbers": [
+        "59",
+        "69",
+        "71",
+        "75",
+        "81",
+        "82",
+        "88",
+        "91",
+        "94",
+        "95",
+        "102",
+        "103",
+        "117",
+        "139",
+        "141",
+        "151",
+        "157",
+        "158",
+        "161",
+        "165",
+        "176",
+        "177"
+      ],
+      "unmappedUnauthorizedCount": 0
+    },
+    {
+      "atUtc": "2026-10-15T07:03:03.126543Z",
+      "states": {
+        "device": 98,
+        "unauthorized": 20
+      },
+      "target162": "device",
+      "binding162": {
+        "InfPath": "winusb.inf",
+        "InfSection": "ADB.NT",
+        "ProviderName": "Microsoft"
+      },
+      "processes": [
+        {
+          "pid": 634172,
+          "name": "adb.exe",
+          "owner": "NT AUTHORITY\\SYSTEM",
+          "keyPathsConfigured": 2
+        },
+        {
+          "pid": 634228,
+          "name": "node.exe",
+          "owner": "NT AUTHORITY\\SYSTEM",
+          "keyPathsConfigured": 2
+        }
+      ],
+      "installerCount": 0,
+      "unauthorizedNumbers": [
+        "59",
+        "69",
+        "71",
+        "75",
+        "81",
+        "82",
+        "88",
+        "91",
+        "94",
+        "95",
+        "102",
+        "103",
+        "117",
+        "139",
+        "151",
+        "157",
+        "158",
+        "161",
+        "176",
+        "177"
+      ],
+      "unmappedUnauthorizedCount": 0
+    }
+  ],
+  "postflightFollowup": {
+    "atUtc": "2026-10-15T07:03:03.760Z",
+    "http": {
+      "/healthz": 200,
+      "/readyz": 200,
+      "/api-docs.html": 200,
+      "/api-reference.json": 200,
+      "/openapi.json": 200,
+      "/downloads/name-lookup-integration.zip": 200
+    },
+    "unsignedPrepare": 401,
+    "overview": {
+      "windowsAgents": 4,
+      "onlineAgents": 1,
+      "devices": 131,
+      "adbOnline": 99,
+      "agentOnline": 0,
+      "waitingSms": 0,
+      "smsLibraryMessages": 50000,
+      "xhsQueued": 0,
+      "xhsRunning": 0,
+      "xhsStalled": 0,
+      "xhsSuccessRate": null,
+      "deviceLocks": 2,
+      "taskFailureReasons": []
+    },
+    "queue": {
+      "xhsActive": 0,
+      "xhsQueued": 0,
+      "xhsRunning": 0,
+      "xhsStalled": 0,
+      "windowsQueued": 0,
+      "windowsRunning": 0,
+      "windowsStalled": 0
+    },
+    "activeScreens": 2,
+    "pool": {
+      "enabled": false,
+      "revision": 39,
+      "channels": [],
+      "targets": [
+        {
+          "number": 155,
+          "enabled": true,
+          "health": {
+            "ready": true,
+            "reason": ""
+          }
+        },
+        {
+          "number": 164,
+          "enabled": true,
+          "health": {
+            "ready": true,
+            "reason": ""
+          }
+        },
+        {
+          "number": 162,
+          "enabled": true,
+          "health": {
+            "ready": true,
+            "reason": ""
+          }
+        },
+        {
+          "number": 130,
+          "enabled": false,
+          "health": {
+            "ready": true,
+            "reason": ""
+          }
+        }
+      ]
+    },
+    "signedHistoricalResults": [
+      {
+        "lookupId": "f84b8db1-4429-434b-9c9d-fcd91943cf61",
+        "status": "completed",
+        "hasName": true
+      },
+      {
+        "lookupId": "3a984884-7e60-4487-85b7-7bffedbbf16f",
+        "status": "failed",
+        "hasName": null,
+        "code": "lookup_processing_timeout"
+      },
+      {
+        "lookupId": "bb8b5531-89eb-48ae-91be-4e6d7e25666b",
+        "status": "completed",
+        "hasName": true
+      },
+      {
+        "lookupId": "4e60b4ec-7529-4049-aaef-2e3b3eed09ea",
+        "status": "completed",
+        "hasName": true
+      },
+      {
+        "lookupId": "161bd56c-7695-4497-8c1d-abbd263dfb0f",
+        "status": "completed",
+        "hasName": false
+      },
+      {
+        "lookupId": "3fc6635e-24d6-41b3-bf63-de714d440058",
+        "status": "completed",
+        "hasName": true
+      }
+    ],
+    "agents": [
+      {
+        "agentId": "win-bf-202605262318-20260727",
+        "lastSeenAt": "2026-10-15T07:02:41.005Z",
+        "hasLookupRuntimeId": true
+      },
+      {
+        "agentId": "windows-desktop-8v8n4pe-v2",
+        "lastSeenAt": "2026-08-10T06:02:47.953Z",
+        "hasLookupRuntimeId": false
+      },
+      {
+        "agentId": "windows-desktop-8v8n4pe",
+        "lastSeenAt": "2026-07-03T04:15:49.959Z",
+        "hasLookupRuntimeId": false
+      },
+      {
+        "agentId": "local-mac-windows-agent",
+        "lastSeenAt": "2026-07-03T05:36:47.198Z",
+        "hasLookupRuntimeId": false
+      }
+    ],
+    "newQueriesStarted": 0
+  }
+}
