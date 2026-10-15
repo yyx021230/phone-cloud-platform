@@ -1,0 +1,18 @@
+{
+  "version": "lookup-readiness-20261015-rc.10",
+  "status": "local-candidate-not-deployed",
+  "baseTag": "lookup-readiness-20261015-rc.9",
+  "baseManifestSha256": "3f1230e7ae4a842b80ed3601b96715c17b9e710d1f74c733ffcf74f46953688c",
+  "productionBaseline": "lookup-readiness-20261015-deployed.8",
+  "productionRunnerSha256": "bacf75f9a6dcf5e8bbc8033a619a98e5701a960c3cda74bcfdcb406bcaf6afc8",
+  "overlayFiles": [
+    "windows-agent/scripts/alipay_visual_result.py",
+    "windows-agent/scripts/test_lookup_alipay_info_suggestion.py"
+  ],
+  "requiresCloudRestart": false,
+  "requiresWindowsAgentRestart": false,
+  "requiresAdbRestart": false,
+  "requiresTargetIdleWorkerRefreshBeforeFutureDeployment": true,
+  "databaseMigrations": 0,
+  "productionVisualSha256": "eb3a4b91df2f7037a9607a405e5c785a6cbcb85dbe5a682586b12619977ab526"
+}

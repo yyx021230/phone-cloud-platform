@@ -1,0 +1,27 @@
+{
+  "status": "local-candidate-not-deployed",
+  "oldRegression": {
+    "tests": 5,
+    "failures": 1,
+    "logSha256": "fd783e9e975b4790bd6602b0ffbf3e2b2a1aadcf8109f8bfba4cf5455638f6c7"
+  },
+  "newRegression": {
+    "tests": 5,
+    "failures": 0
+  },
+  "allPython": {
+    "tests": 547,
+    "failures": 0,
+    "logSha256": "d134be4fea6bbefdafe6dfe609472abb2f214fc467116533d452e0a757fad3fd"
+  },
+  "nativeWindows": {
+    "frames": 2,
+    "oldRecognized": false,
+    "candidateRecognized": true,
+    "liveFilesChanged": false
+  },
+  "sharedAdbOrControlCodeChanged": false,
+  "productionCodeChanged": false,
+  "newPatchEndToEndAcceptance": false,
+  "inheritedRc9NativeWindowsTest": false
+}

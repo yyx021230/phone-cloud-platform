@@ -1,0 +1,34 @@
+{
+  "frames": [
+    {
+      "frame": 0,
+      "size": [
+        720,
+        1600
+      ],
+      "screenshotSha256": "78bdaae73ea1c9cea4c540385559bc6b88a715ef40eabab5118f57aa86f555b7",
+      "oldRecognized": false,
+      "candidateRecognized": true,
+      "emptyName": true,
+      "exactNewLabel": true,
+      "foregroundAlipay": true
+    },
+    {
+      "frame": 1,
+      "size": [
+        720,
+        1600
+      ],
+      "screenshotSha256": "78bdaae73ea1c9cea4c540385559bc6b88a715ef40eabab5118f57aa86f555b7",
+      "oldRecognized": false,
+      "candidateRecognized": true,
+      "emptyName": true,
+      "exactNewLabel": true,
+      "foregroundAlipay": true
+    }
+  ],
+  "adbPid": 634172,
+  "owner": "SYSTEM",
+  "candidateSha256": "8f3d696cb031bfb33ab4228e3933cfb6344b426abb912dd75fb7459fa86e9407",
+  "liveFilesChanged": false
+}
