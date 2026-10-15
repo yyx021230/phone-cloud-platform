@@ -1,0 +1,31 @@
+{
+  "atUtc": "2026-10-15T03:26:47.233085+00:00",
+  "scope": "local simulation only, requested by user; no real-device availability required for this round",
+  "runtimeCandidate": "lookup-readiness-20261015-rc.1",
+  "runtimeCommit": "fda9967e0b5e441f750c7bdae94e07be6cd86235",
+  "runtimeManifestSha256": "dd96ccf5776df16cb5e84f2a0eb85e8f5acf53312fc0009c5f271a88470db052",
+  "runtimeChanged": false,
+  "command": "node --test verification/lookup-readiness-simulation-20261015/edge.test.mjs",
+  "passed": 5,
+  "failed": 0,
+  "logicalBusinessNumbers": 100,
+  "physicalDevices": 0,
+  "maximumSimulatedExecutingDevices": 5,
+  "duplicateBusinessQueriesInLoadTest": 0,
+  "changedKeysDuringBothLimited": 40,
+  "cooldownElapsedRealHours": 0,
+  "cooldownBoundary": "simulated clock at 28800000ms-1 and 28800000ms; not real elapsed eight hours",
+  "cases": [
+    "both ready phones consecutively limited; same lookup waits, then resumes after successful reprobe",
+    "all phones offline before dispatch; reconnect alone cannot restore old proof",
+    "ordinary failure cannot impersonate confirmed limit for cross-device replay",
+    "eight-hour cooldown boundary and same-event replay",
+    "100 distinct requests finish independently across five proven simulated devices"
+  ],
+  "logSha256": "f92ac8acf5ff015ef52bb1aa02971d4a41ee971701289aa7b9a1992a44a6d979",
+  "testSha256": "550a5e90d32ac2bbcc7eec05cdb9df5dcdc962bad9c7d8d8cc788ef115ebd264",
+  "productionConnections": 0,
+  "productionMutations": 0,
+  "realQueries": 0,
+  "review": "self-review; tests import immutable rc.1 modules directly"
+}
