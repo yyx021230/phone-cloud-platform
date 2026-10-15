@@ -1,0 +1,24 @@
+{
+  "status": "local-candidate-not-deployed",
+  "oldRegression": {
+    "tests": 5,
+    "failures": 4,
+    "logSha256": "1f2376ea25f02cdef55c64bcf4d3149355d6467ab08ca90298adc12e0924d4f3"
+  },
+  "newRegression": {
+    "tests": 5,
+    "failures": 0
+  },
+  "allPython": {
+    "command": "python3 -m unittest discover -s /tmp/pc-lookup-rc9-local/windows-agent/scripts -p '*test*.py'",
+    "tests": 542,
+    "failures": 0,
+    "logSha256": "36d282f95df7cd872313fd65b98f8a9d814efa7df617754e3f17d7cd5692a06b"
+  },
+  "scope": "Only account-navigation checks reuse existing exact Vivo USB dialog helper, one cancel maximum; repeated dialog fails closed",
+  "sharedAdbOrControlCodeChanged": false,
+  "productionCodeChanged": false,
+  "nativeWindowsTest": false,
+  "newPatchPhysicalAcceptance": false,
+  "sourceBaseSha256": "bacf75f9a6dcf5e8bbc8033a619a98e5701a960c3cda74bcfdcb406bcaf6afc8"
+}

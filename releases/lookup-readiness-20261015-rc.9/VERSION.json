@@ -1,0 +1,17 @@
+{
+  "version": "lookup-readiness-20261015-rc.9",
+  "status": "local-candidate-not-deployed",
+  "baseTag": "lookup-readiness-20261015-rc.8",
+  "baseManifestSha256": "d32b0d7b22646c950f203d887fc0d92c7698ef69e23acc9943dd78a1ac84b3fe",
+  "productionBaseline": "lookup-readiness-20261015-deployed.8",
+  "productionRunnerSha256": "bacf75f9a6dcf5e8bbc8033a619a98e5701a960c3cda74bcfdcb406bcaf6afc8",
+  "overlayFiles": [
+    "windows-agent/scripts/alipay_name_lookup.py",
+    "windows-agent/scripts/test_lookup_account_usb_overlay.py"
+  ],
+  "requiresCloudRestart": false,
+  "requiresWindowsAgentRestart": false,
+  "requiresAdbRestart": false,
+  "requiresTargetIdleWorkerRefreshBeforeFutureDeployment": true,
+  "databaseMigrations": 0
+}
