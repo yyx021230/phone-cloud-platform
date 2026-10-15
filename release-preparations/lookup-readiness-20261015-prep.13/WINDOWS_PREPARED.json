@@ -1,0 +1,73 @@
+{
+  "backup": "D:\\PhoneCloud\\agent\\backups\\lookup-readiness-20261015-prep13",
+  "stage": "D:\\PhoneCloud\\agent\\staging\\lookup-readiness-20261015-rc13",
+  "manifest": {
+    "atUtc": "2026-10-15T08:58:10.579417+00:00",
+    "adbPid": 634172,
+    "agentPid": 634228,
+    "owner": "SYSTEM",
+    "files": {
+      "scripts/alipay_name_lookup.py": {
+        "exists": true,
+        "sha256": "5d3ff1b512c61cc34fba13b4b8600c3e95b698dcd097753d74ce4cfb46cb6b6c"
+      },
+      "scripts/alipay_visual_result.py": {
+        "exists": true,
+        "sha256": "8f3d696cb031bfb33ab4228e3933cfb6344b426abb912dd75fb7459fa86e9407"
+      },
+      "scripts/test_lookup_account_usb_overlay.py": {
+        "exists": false
+      },
+      "scripts/test_lookup_alipay_info_suggestion.py": {
+        "exists": false
+      },
+      "scripts/test_lookup_transfer_shortcuts.py": {
+        "exists": false
+      },
+      "src/device-scan-pipeline.mjs": {
+        "exists": false
+      },
+      "src/index.mjs": {
+        "exists": true,
+        "sha256": "1a101a23b7d139fb17a19de95232bb058a72fcf67fa0634b02d3ae24c4741802"
+      },
+      "src/pnp-recovery-control.mjs": {
+        "exists": false
+      },
+      "src/recovery-isolation.mjs": {
+        "exists": false
+      },
+      "data/pnp-recovery-state.json": {
+        "exists": true,
+        "sha256": "6a5f3fb381755d1ec38cce3b129866a79b786dd9dda7f5a65429f808ef21703c"
+      },
+      "data/device-recovery-control.json": {
+        "exists": false
+      },
+      "data/device-recovery-isolation.json": {
+        "exists": false
+      },
+      "scripts/xhs_airtest_poco.py": {
+        "exists": true,
+        "sha256": "e6bdc2d96adf9a7b5e130eac72a0479d7790732831cfda71bf0230923ceccdaa"
+      }
+    },
+    "configHash": "ee61ff30debd1b1077a1964ebd3946a0f36d8c4a221777be219890896c865b52",
+    "preloadHash": "9c3aa5affb9243f255f2bf74376ee7bb01c9f9171989f5477146263ee7e2bb4d",
+    "staged": {
+      "scripts/alipay_name_lookup.py": "5d3ff1b512c61cc34fba13b4b8600c3e95b698dcd097753d74ce4cfb46cb6b6c",
+      "scripts/alipay_visual_result.py": "81315eddb0b0e921d32a819d8d0ca24aa195f52ec31903014d31dd1023be9966",
+      "src/device-scan-pipeline.mjs": "8ef31ead50d4b1bec3bc648d72d6cbe64fe4cc102c04a5c0d269240295a5a6c4",
+      "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+      "src/pnp-recovery-control.mjs": "92e2bcc37d7bc8b9d3e61d4385116db7181530d5fe125c6c2a3210c5142fde0f",
+      "src/recovery-isolation.mjs": "2fe4305e6ca9afabb72b0406a224786659d88f2d8f3a1351e4a8b2aa475e312f",
+      "scripts/xhs_airtest_poco.py": "e6bdc2d96adf9a7b5e130eac72a0479d7790732831cfda71bf0230923ceccdaa"
+    },
+    "excludedFixtureFiles": [
+      "scripts/test_lookup_account_usb_overlay.py",
+      "scripts/test_lookup_alipay_info_suggestion.py",
+      "scripts/test_lookup_transfer_shortcuts.py"
+    ]
+  },
+  "productionChanged": false
+}
