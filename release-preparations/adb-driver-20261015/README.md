@@ -42,3 +42,7 @@ Windows 的 `oem38.inf`（hn_goadb）和 `oem44.inf`（vivo）都往 System32 �
 最终采用SYSTEM Agent/ADB加 `adb-auth-env.cjs`，计划任务通过 `--require` 读取原有SYSTEM与Administrator两份key路径；未复制/更改/生成密钥。之前仅Administrator身份恢复反而30在线/89未授权，联合密钥的非SYSTEM daemon又被owner策略替换；这些尝试不能隐去。最终15:01为97在线/22未授权，用户正在手机端确认；不重复重启/重装驱动。实时控制实现和参数不变，维护期间共享连接已中断；747投屏回归、3预加载测试通过，但不代替全机真机验收。
 
 需回退预加载时，先取得新的共享维护窗口，核对当前任务动作和preload hash，保存当前任务，恢复宿主备份 `AGENT-TASK.before.xml` 的原动作（去掉本轮--require）后按服务入口恢复；不删除两份已有key。回退可能使部分授权再次不可用，应先评估，不自动执行。驱动回退仍仅限162精确实例，原OEM可能重新引发安装冲突。云回退沿用prep.8，不恢复旧数据库覆盖新结果。当前维护已结束，用户确认期间仅只读核对。
+
+## 15:06新增用户限制：固定SYSTEM，禁止复用切身份步骤
+
+用户明确禁止sys/adm来回切换。当前ADB634172和Agent634228均为SYSTEM；上文Administrator尝试仅为历史失败记录，不再是可执行恢复方案。现有两份旧key由同一SYSTEM进程读取，保留现状，不改key、ADB_VENDOR_KEYS、预加载或计划任务。一般维护许可不包含身份变更，必须针对具体身份/授权/启动变更另外明确授权。Administrator会话先通过系统进程/监听信息确认已有SYSTEM server，无法确认时不得执行可能自动启动server的ADB命令。详见[AGENTS身份锁定规则](../../AGENTS.md)。本轮仅文档约束，没有部署新增程序门禁或重启任何服务。
