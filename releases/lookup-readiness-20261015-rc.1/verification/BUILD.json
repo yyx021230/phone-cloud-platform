@@ -1,0 +1,5 @@
+{
+  "status": "inherited-frozen-build-not-rebuilt",
+  "baseTag": "lookup-delivery-20261014-rc.1",
+  "reason": "Only server/lookup runner/SDK/docs changed; frozen screen assets and media remain byte-identical. No production/native Windows build this round."
+}

@@ -1,0 +1,2 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {runReadinessHttp} from '../verification/readiness-http.mjs';
+test('prepared API actual HTTP, HMAC, leased delivery, five simulated devices and durable reopen',{timeout:30000},async()=>{const p=await runReadinessHttp();assert.ok(p.drained);assert.ok(p.fiveSimultaneousBusinessDevices);assert.ok(p.oneHeldBusinessDoesNotBlockOtherFour);assert.ok(p.confirmedLimitTransfersSameLookupToAnotherReadyPhone);assert.equal(p.businessQueries,9);});
