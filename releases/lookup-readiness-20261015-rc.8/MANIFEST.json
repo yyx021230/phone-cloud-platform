@@ -1,0 +1,17 @@
+{
+  "version": "lookup-readiness-20261015-rc.8",
+  "files": {
+    "README.md": "bbec3d7ff56996033b9829a861d96d0c6072e81f91df3e88d2294a8f1e98501e",
+    "VERSION.json": "99dc867c8dfac1b2bb442e6aed7f5f31f77fc353d5a2e33155fc1022bb0d8f26",
+    "public/lookup-pool.html": "ccac67915ba68b0e20041f2c841e4249b95b1dee63cfca9327d358d3c970cd58",
+    "public/lookup-pool.js": "aa28255ec6dfb6cef1d06494a3468da4ef29c3aaec1b513a3e9571658d9ef6e1",
+    "server/lookup-device-availability.mjs": "a50858ddd06f9310764edf173ba90127502c711f1c25a2b884d3e4ac4842b1d1",
+    "server/lookup-device-availability.test.mjs": "34efe9dc30cc5e4010ff690e1df1c8b94f0bfa7e405ee9d97b8bfa4755fafb3d",
+    "server/lookup-readiness.mjs": "f3e0d61b8f499f480d7739ae2cf7d28977486812b634ca385e77d7846676473f",
+    "server/managed-lookup.mjs": "3ba33e8e8ce4898f307997061d2691903d348090fa7870b2b8a1b2e8eb3a5b7c",
+    "verification/RESULTS.json": "9a32dcef9a8c8cfef81df7a2b55c9fbb3b5812a685b3f065940daa3f082eee8a",
+    "verification/prepare-local.py": "296d5a204334d5b96e1df1e93b457ff1a95a32856e117141750568837ff6c5bf",
+    "windows-agent/scripts/alipay_visual_result.py": "eb3a4b91df2f7037a9607a405e5c785a6cbcb85dbe5a682586b12619977ab526",
+    "windows-agent/scripts/test_lookup_customer_suggestion.py": "70d20edf5166bf14919bd74d65641661001494d43499b22599ec00990f83fc4a"
+  }
+}

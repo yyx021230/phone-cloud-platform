@@ -1,0 +1,22 @@
+{
+  "version": "lookup-readiness-20261015-rc.8",
+  "status": "local-candidate-not-deployed",
+  "baseTag": "lookup-readiness-20261015-rc.7",
+  "baseManifestSha256": "d2f4370d255ee9f5a1dc132b2f3c37429ecd64384f3a041842ee2462bf3f464d",
+  "productionBaseline": "lookup-readiness-20261015-deployed.7",
+  "overlayFiles": [
+    "public/lookup-pool.html",
+    "public/lookup-pool.js",
+    "server/lookup-device-availability.mjs",
+    "server/lookup-device-availability.test.mjs",
+    "server/lookup-readiness.mjs",
+    "server/managed-lookup.mjs",
+    "windows-agent/scripts/alipay_visual_result.py",
+    "windows-agent/scripts/test_lookup_customer_suggestion.py"
+  ],
+  "requiresCloudRestart": true,
+  "requiresWindowsAgentRestart": false,
+  "databaseMigrations": 0,
+  "cloudBaseCommit": "373729203e65714c1985d38cb7c9ffba416b159f",
+  "keepAgentOverlayCommit": "6426495ed734ad8f569bd25c09c4605a1e56ce70"
+}
