@@ -1,0 +1,159 @@
+{
+  "atUtc": "2026-10-15T02:20:55.299Z",
+  "version": "lookup-delivery-20261015-deployed.1",
+  "sourceCommit": "509bea2ef12f4c26325a8b7bb5098f16fc4c7c98",
+  "scope": [
+    161,
+    162
+  ],
+  "grayResult": {
+    "status": "partial-pass",
+    "completedNameResults": 1,
+    "allAccountsCoolingDevice": 161,
+    "cooldownAccountCount": 4,
+    "cooldownHours": 8,
+    "sameIdsAfterTwoMinuteNewKey": [
+      161,
+      162
+    ],
+    "captchaAutoResumeObserved": [
+      161,
+      162
+    ],
+    "coolingDeviceSkippedForNextSubmission": true,
+    "followupDevice": 162,
+    "followupOutcome": "unconfirmed recharge-only page; one operator retry kept lookupId/queryId but remained unconfirmed; test cancelled and stop confirmed",
+    "delayedResume": "162 was search_ready in a diagnostic at 02:01:22Z; automatic resume task created at 02:05:26Z. Delay cause not established. No fabricated observations or manual resume were used for captcha acceptance."
+  },
+  "ids": {
+    "161": {
+      "lookupId": "8f0a6cc5-5e5d-4f0b-9e51-045109ea5e8a",
+      "queryId": "8b6aa91d-5a81-4590-8f3e-54f3e50e1ab7"
+    },
+    "162": {
+      "lookupId": "ce429e5b-c27b-4b52-951e-8edc0511b7ba",
+      "queryId": "129f81fc-7bdf-4a6a-9acf-2c4d899e62d9"
+    },
+    "followup": {
+      "lookupId": "83c1c14d-9462-4e19-a5c8-ebba1bbea5c4",
+      "queryId": "0d2f90e5-1d94-40af-a193-acd4b7f3b346",
+      "operatorRetryAtUtc": "2026-10-15T02:18:15.447Z",
+      "stopRequestedAtUtc": "2026-10-15T02:20:21.177Z"
+    }
+  },
+  "restoration": {
+    "configMatches": true,
+    "devicesMatch": true,
+    "grantsMatch": true,
+    "enabled": false,
+    "revision": 16,
+    "channels": 0
+  },
+  "activeTestTasks": 0,
+  "health": {
+    "healthz": {
+      "ok": true,
+      "at": "2026-10-15T02:20:55.307Z"
+    },
+    "readyz": {
+      "ok": true,
+      "status": "ok",
+      "at": "2026-10-15T02:20:55.311Z",
+      "storage": {
+        "backend": "postgres",
+        "ok": true,
+        "detail": "postgres 已连接，state_key=default，updated_at=2026-10-15T02:01:56.461Z"
+      },
+      "dataDir": {
+        "path": "/app/data",
+        "writable": true,
+        "error": ""
+      },
+      "runtime": {
+        "ok": true,
+        "mode": "redis",
+        "detail": "redis://redis:6379/0"
+      }
+    },
+    "totalDevices": 131,
+    "listed": 125,
+    "agent": [
+      {
+        "lastSeenAt": "2026-10-15T02:20:52.960Z",
+        "screen": {
+          "enabled": true,
+          "connected": true,
+          "activeSessions": 4,
+          "serverJarReady": true
+        },
+        "lastScan": {
+          "ok": true,
+          "at": "2026-10-15T02:20:53.203Z",
+          "error": ""
+        },
+        "recovery": {
+          "observedAt": "2026-10-15T02:20:53.204Z",
+          "adbDeviceCount": 121,
+          "blockedReason": ""
+        }
+      }
+    ]
+  },
+  "publicDocumentation": {
+    "/api-docs.html": {
+      "http": 200,
+      "bytes": 2887,
+      "sha256": "d4e7667066a73159800ce67dd8afdc7a329a3a7f535913606158db3ff20af772"
+    },
+    "/openapi.json": {
+      "http": 200,
+      "bytes": 193722,
+      "sha256": "f6edf241a2c4d438d47e755f27033c1da8eee65cc391f3d2c32fe40c6ef199f4",
+      "version": "lookup-delivery-20261014-rc.1",
+      "asyncRoutes": [
+        "/api/v1/open/name-lookups/tasks",
+        "/api/v1/open/name-lookups/tasks/{lookupId}"
+      ]
+    },
+    "/downloads/name-lookup-integration.zip": {
+      "http": 200,
+      "bytes": 34620,
+      "sha256": "6da08f3ec0264b00d2a1d19d388fab4f0a91c314e5466fcf0807e02ea999c63c"
+    },
+    "bundleFiles": [
+      "OPEN_NAME_LOOKUP_API.md",
+      "PARTNER_HANDOFF.md",
+      "README.md",
+      "SHA256.json",
+      "node_client.mjs",
+      "openapi.json",
+      "partner_example.py",
+      "python_client.py",
+      "sign.mjs"
+    ],
+    "/downloads/name-lookup-openapi.json": {
+      "http": 200,
+      "bytes": 103370,
+      "sha256": "376ed3c26d2585df3db5ac7313f4fa985e425054fda455934db32516e9c45457",
+      "version": "lookup-delivery-20261014-rc.1",
+      "asyncRoutes": [
+        "/api/v1/open/name-lookups/tasks",
+        "/api/v1/open/name-lookups/tasks/{lookupId}"
+      ]
+    },
+    "/downloads/name-lookup-sha256.json": {
+      "http": 200,
+      "bytes": 920,
+      "sha256": "c97d045882b8470ac1ca0224a4280b2186e514fad64448780b6d2ec1bdcf3574"
+    }
+  },
+  "notVerified": [
+    "Natural eight-hour cooldown expiry",
+    "Five physical-device concurrency",
+    "Partner-host integration",
+    "Real-name popup closure not encountered this run",
+    "Cause of delayed automatic captcha resume",
+    "New preparation/readiness and binary-result contract requested 2026-10-15"
+  ],
+  "privacy": "No phone numbers, names, credentials, raw screenshots or raw account identifiers included."
+}
