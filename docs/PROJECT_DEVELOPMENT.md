@@ -1670,7 +1670,7 @@ rc.8云端镜像e92e3a93已独立构建、133文件hash/HTTP通过；468005107�
 
 脱敏取证见[ADB专项回执](evidence/ADB_STABILITY_AUDIT_20261015.json)。本轮仅主文档与证据本地提交，调查标签`adb-stability-20261015-audit.1`，不是修复候选或部署回执；后续修复需本地模拟/投屏回归、独立Windows验证与获准灰度。
 
-### 7.15.9 单台隔离与独立在线上报（2026-10-15，本地rc.1，未上线）
+### 7.15.9 单台隔离与独立在线上报（2026-10-15，本地rc.2，未上线）
 
 用户明确要求按7.15.8方案先完成本地修复、不影响线上使用且禁止切换ADB身份。本轮R2，工作区沿用隔离的ADB任务目录，分支`codex/adb-recovery-isolation-20261015`，基线`fe2ea5972cacbc0408fb1e5e62985e221386337f`，开始时干净。继续使用同版本共同流程（2026-09-30，SHA-256 `0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b`）。最小叠加15个业务/测试文件，以已核对生产源码hash的readiness rc.8组合源码为准；原AGENTS、b684脏工作区和另一查名候选全部保留。
 
@@ -1682,7 +1682,7 @@ rc.8云端镜像e92e3a93已独立构建、133文件hash/HTTP通过；468005107�
 - **驱动后续方案**：现有冲突不会被本软件候选直接修好。先隔离问题目标并确认ACK，再独立Windows验证精确ADB接口的已签名系统兼容绑定、接口GUID、单机和异品牌共存；确认备份/预览后另申请生产单机窗口，不批量卸载OEM，不强杀安装器，不碰SYSTEM身份/既有key/预加载/任务动作。共享占用无法无影响释放时停下报告，普通维护不授权ADB重建。保留首次USB消失的硬件原因未定结论。
 - **未验与交付**：Windows原生持久化/PnP、生产单机/双机灰度、真实控屏并发、长期稳定性及驱动修复/回退未执行。无生产访问或修改、无服务重启、无推送。候选源码组装不能整仓覆盖生产；发布前必须重核ACTIVE/新补丁/镜像/文件hash、D-075实机live与具体维护授权。本轮只是本地候选，不是线上恢复或生产全量验收完成。
 
-交付：[rc.1说明](../releases/adb-recovery-isolation-20261015-rc.1/README.md)、[验证记录](../releases/adb-recovery-isolation-20261015-rc.1/verification/RESULTS.json)、[驱动方案](../releases/adb-recovery-isolation-20261015-rc.1/DRIVER_PLAN.md)、[更新/回滚](../releases/adb-recovery-isolation-20261015-rc.1/RELEASE_NOTES.md)。本地提交及不可变annotated tag `adb-recovery-isolation-20261015-rc.1`；提交号由标签解析，不能与线上deployed.8混淆。
+交付：[rc.2说明](../releases/adb-recovery-isolation-20261015-rc.2/README.md)、[验证记录](../releases/adb-recovery-isolation-20261015-rc.2/verification/RESULTS.json)、[驱动方案](../releases/adb-recovery-isolation-20261015-rc.2/DRIVER_PLAN.md)、[更新/回滚](../releases/adb-recovery-isolation-20261015-rc.2/RELEASE_NOTES.md)。rc.1封包漏跟踪6份被忽略的测试日志，rc.2明确补齐且源码hash不变，旧标签保留但不交付。本地提交及不可变annotated tag `adb-recovery-isolation-20261015-rc.2`；提交号由标签解析，不能与线上deployed.8混淆。
 
 ## 8. 短信同步与验证码链路
 
@@ -2477,7 +2477,7 @@ npm run test:screen
 
 | 日期 | 编号 | 决策 | 原因 | 状态 |
 |---|---|---|---|---|
-| 2026-10-15 | ADB / D-024目标隔离与扫描分离 | 按用户要求在本地候选收窄无条件循环：3次实际命令失败或梯级耗尽持久隔离；发现上报与恢复分离，保留SYSTEM与控屏边界 | 旧Agent慢扫描反例、新真实入口假设备验证、实际恢复路径及持久解除修订测试 | rc.1候选；785/785/check/烟测通过；Windows原生与生产灰度未验，未上线 |
+| 2026-10-15 | ADB / D-024目标隔离与扫描分离 | 按用户要求在本地候选收窄无条件循环：3次实际命令失败或梯级耗尽持久隔离；发现上报与恢复分离，保留SYSTEM与控屏边界 | 旧Agent慢扫描反例、新真实入口假设备验证、实际恢复路径及持久解除修订测试 | rc.2候选；785/785/check/烟测通过；Windows原生与生产灰度未验，未上线 |
 | 2026-10-15 | ADB / D-024专项复核 | 延续SYSTEM冻结；确认OEM共享文件重配置复发，建议问题目标隔离与上报解耦，暂不替换已发布持续恢复策略 | SetupAPI双向覆盖/482、当前ADB事件225、实际配置/source hash、scan120秒；单台暂停仍未上线 | 只读调查，105在线/9待授权为15:33快照；无修复部署、非稳定验收 |
 | 2026-10-15 | ADB / 身份冻结 | 用户禁止sys/adm反复切换；固定SYSTEM/SDK，冻结授权与启动入口，普通维护不包含变更身份 | 15:06实测SYSTEM；之前Administrator尝试造成授权波动 | AGENTS规则已记录；无生产变更，不声称新增技术门禁 |
 | 2026-10-15 | ADB / 单机驱动与rc.8上线 | 延续精确162灰度，获准共享维护后绑定inbox ADB；SYSTEM启动加载两份既有密钥，未授权只等手机确认；排空后发布隔离规则 | 原生单机成功、身份切换失败留痕、133文件与D-075实机核验 | deployed.8；162在线，用户确认授权中，池disabled，非全量验收 |
@@ -2712,7 +2712,7 @@ npm run test:screen
 
 | 日期 | 变更人 | releaseId/提交 | 变更内容 | 验证结果 |
 |---|---|---|---|---|
-| 2026-10-15 | Codex | adb-recovery-isolation-20261015-rc.1 | 15文件最小叠加：合入单台暂停、自动隔离/显式解除、在线检测独立上报；整理驱动处理及回滚方案 | 最终785/785、根check和烟测通过，27冻结文件/两入口片段不变；自审中途错误修复留痕；无生产访问/变更/推送 |
+| 2026-10-15 | Codex | adb-recovery-isolation-20261015-rc.2 | 15文件最小叠加：合入单台暂停、自动隔离/显式解除、在线检测独立上报；整理驱动处理及回滚方案 | 最终785/785、根check和烟测通过，27冻结文件/两入口片段不变；自审中途错误修复留痕；无生产访问/变更/推送 |
 | 2026-10-15 | Codex | adb-stability-20261015-audit.1 | 保存ADB/Agent身份、驱动安装冲突与恢复策略实际证据；列单台隔离、状态上报解耦和驱动灰度建议 | 生产只读源码hash/CM/有界日志/事件、HTTP200；文档与JSON检查，无业务回归或生产改动；物理首次掉线待定 |
 | 2026-10-15 | Codex | adb-system-policy-20261015-doc.1 | 记录用户禁止ADB身份切换；任务及根入口同步规则，保留原改动；旧维护尝试不可复用 | 只读SYSTEM所有者/进程未变、文档diff检查；无服务重启、无业务回归或发布 |
 | 2026-10-15 | Codex | lookup-readiness-20261015-deployed.8 | 发布云端三次失败隔离；162精确inbox驱动绑定；SYSTEM授权预加载与任务入口，未动Windows/Hub/媒体 | 747投屏/3预加载、133hash/HTTP/HMAC/D-075通过；162在线，15:01有22未授权，用户处理；池disabled、0新业务 |

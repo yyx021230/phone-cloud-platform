@@ -1,6 +1,6 @@
 # 更新与回滚
 
-本地候选 `adb-recovery-isolation-20261015-rc.1`，任务分支 `codex/adb-recovery-isolation-20261015`。生产比较基线 `lookup-readiness-20261015-deployed.8`，镜像 `sha256:e92e3a933344eed3e7033dd4a8b3ec8f9a85cae37a03d51d1b9014372296fd0a`，生产回执提交 `a524f483e49a9031b37622f3ddf3503e5619aeea`。完整SHA、最小叠加清单和来源在 VERSION/BASELINE/MANIFEST。
+本地候选 `adb-recovery-isolation-20261015-rc.2`，任务分支 `codex/adb-recovery-isolation-20261015`。生产比较基线 `lookup-readiness-20261015-deployed.8`，镜像 `sha256:e92e3a933344eed3e7033dd4a8b3ec8f9a85cae37a03d51d1b9014372296fd0a`，生产回执提交 `a524f483e49a9031b37622f3ddf3503e5619aeea`。完整SHA、最小叠加清单和来源在 VERSION/BASELINE/MANIFEST。
 
 原行为：异常目标在动作耗尽后进入下一轮；在线状态等待设备信息及恢复结束再上报。
 新行为：暂停/隔离只针对目标手机，命令失败3次或链路耗尽后停止自动升级；在线状态独立上报，恢复保持单执行者和临执行复核。
@@ -31,3 +31,5 @@
 - 回滚源码不回滚SYSTEM身份、既有授权、预加载或计划任务，不重启ADB/Windows/Hub/媒体。回退后核验运行hash、在线/心跳与D-075 live。
 
 回滚包、生产备份与维护回执须在实际发布时重新形成；本轮提供的是方案，不伪造已备份或已演练生产回滚。
+
+rc.2仅修正候选封包：明确纳入被忽略规则排除的6份测试日志；源码与已通过785项测试的文件hash完全一致。rc.1标签保留用于审计，不作为交付版本。

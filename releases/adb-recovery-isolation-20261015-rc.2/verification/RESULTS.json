@@ -1,6 +1,6 @@
 {
   "status": "local-tests-passed-not-production-acceptance",
-  "version": "adb-recovery-isolation-20261015-rc.1",
+  "version": "adb-recovery-isolation-20261015-rc.2",
   "date": "2026-10-15",
   "environment": {
     "node": "v25.9.0",
@@ -63,6 +63,10 @@
       "phase": "new command harness first extraction",
       "failed": 9,
       "finding": "fixture initially included surrounding batch code; corrected extraction before evaluating behavioral failures"
+    },
+    {
+      "phase": "rc.1 packaging audit",
+      "finding": "Six verification logs matched repository ignore rules and were omitted from initial commit. rc.2 explicitly tracks these files; business/test sources unchanged. rc.1 tag retained, do not deliver rc.1."
     }
   ],
   "review": {

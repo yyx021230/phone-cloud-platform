@@ -1,5 +1,5 @@
 {
-  "version": "adb-recovery-isolation-20261015-rc.1",
+  "version": "adb-recovery-isolation-20261015-rc.2",
   "status": "local-candidate-not-deployed",
   "branch": "codex/adb-recovery-isolation-20261015",
   "baselineCommit": "fe2ea5972cacbc0408fb1e5e62985e221386337f",

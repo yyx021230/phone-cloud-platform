@@ -1,0 +1,35 @@
+✖ actual adb_reconnect branch invokes command and returns result (4.530666ms)
+✔ actual adb_reconnect rejects pause arriving during persistence without consuming command (1.392083ms)
+✔ actual adb_reconnect rejects newly online target before command (1.1ms)
+✖ actual adb_reconnect stops fourth issued command after three errors (2.185833ms)
+✔ actual restart_adb_interface branch invokes command and returns result (2.88525ms)
+✔ actual restart_adb_interface rejects pause arriving during persistence without consuming command (1.055667ms)
+✔ actual restart_adb_interface rejects newly online target before command (1.3565ms)
+✔ actual restart_adb_interface stops fourth issued command after three errors (19.064292ms)
+✔ actual exhausted ladder isolates target before another cycle (6.588584ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 7
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 112.801084
+
+✖ failing tests:
+
+test at windows-agent/src/recovery-command-path.test.mjs:19:2
+✖ actual adb_reconnect branch invokes command and returns result (4.530666ms)
+  ReferenceError: Cannot access 'commandIssued' before initialization
+      at Object.recoverSelectedTarget [as recover] (evalmachine.<anonymous>:195:7)
+      at async TestContext.<anonymous> (file://<task-worktree>/releases/adb-recovery-isolation-20261015-rc.1/windows-agent/src/recovery-command-path.test.mjs:19:122)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+
+test at windows-agent/src/recovery-command-path.test.mjs:22:2
+✖ actual adb_reconnect stops fourth issued command after three errors (2.185833ms)
+  ReferenceError: Cannot access 'commandIssued' before initialization
+      at Object.recoverSelectedTarget [as recover] (evalmachine.<anonymous>:195:7)
+      at async TestContext.<anonymous> (file://<task-worktree>/releases/adb-recovery-isolation-20261015-rc.1/windows-agent/src/recovery-command-path.test.mjs:22:157)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7)

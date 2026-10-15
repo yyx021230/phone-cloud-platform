@@ -1,10 +1,10 @@
 {
-  "version": "adb-recovery-isolation-20261015-rc.1",
+  "version": "adb-recovery-isolation-20261015-rc.2",
   "files": {
     "DRIVER_PLAN.md": "cf196f9484c304238c6ccfeffbd55c4ba2f130fc572cf83757dfc85fb23ee6bb",
-    "README.md": "2dfc5f6cb58edaa034150fe3306b1ecb535ce6186c3e4159a57bf8b2899bc748",
-    "RELEASE_NOTES.md": "94d77bf9a8ec904b600a4b808fb758953b419992fd59fd8f1cb30252fe766e96",
-    "VERSION.json": "ec9fb5eaa2415e53dedcf94225958b93bf7672b2bf4801020352de9fdfaa0c17",
+    "README.md": "d9af809088ca789a2be12267d45cdcb26cad4db308e767d147d725013fc5cb30",
+    "RELEASE_NOTES.md": "4865d57c4d137611b9e864a7e0f6cd77d9ad8e2e4925f64fdde5a77d30b9adb7",
+    "VERSION.json": "044fb00d27f54c3e1999e848a4a7b092449217e73977b3307eeb36494d3ad91a",
     "public/app.js": "62ba08d7d0afac81d0eeebaca9050911700f830fadd8e84d0a5f53423dd9cf60",
     "scripts/recovery-controls-ui.test.mjs": "5e594bdfd6af6f066a0dc16b0b45f7bc108903d4cd6c10dd13a3ec618ea96b6e",
     "server/index.mjs": "68e1950a83fc23c066052b73eb2ed4f5a9b86ecb338a9e99f4604c193e6cf2ca",
@@ -13,7 +13,7 @@
     "server/recovery-controls.test.mjs": "224908ac246283fd0fe9511c3e6d4965dd2bd30f0393d882ff111ebc488dd766",
     "verification/BASELINE.json": "079aca880be4fe72fdf2b8dd638329269b0748a25b57136c487d505f23f9a783",
     "verification/FROZEN.json": "3ebc2ded4f79ed832686757839ea02590e09c4e7b6440630b89ec9616f752039",
-    "verification/RESULTS.json": "01f997088aef62177b4c7b74bf66e027791ffcceca3eae7a72edd81d35b43c1f",
+    "verification/RESULTS.json": "4b118076b3ccbf7b156172ec11b00e4737fa060f6340f386973f9b179c7c7c11",
     "verification/agent-command-after-fix.log": "7eeaf41d6cdd205765315c9bedef6b5d68e240d6b8d89682c16d79267cb06208",
     "verification/agent-command-before-fix.log": "803b7e8f50c158b6e3de3680da2920f455951294a9129f537814fd106f07d0b8",
     "verification/baseline-agent-negative.log": "ebd31f14f051409993804dd0504198e3e16f727d153d724743b7b39f7594ace7",

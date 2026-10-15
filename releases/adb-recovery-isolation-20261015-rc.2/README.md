@@ -1,4 +1,4 @@
-# 单台恢复隔离与在线检测解耦 rc.1
+# 单台恢复隔离与在线检测解耦 rc.2
 
 **状态：本地候选，未上线、未推送。** 从已核对生产文件的 `lookup-readiness-20261015-rc.8` 组合源码最小叠加；原根仓业务文件不是生产基线。合入此前未上线的 `device-recovery-pause-20261014-rc.1`，三方合并后保留现行查名与小红书逻辑。
 
@@ -25,7 +25,7 @@
 
 ## 组装与验证
 
-`python3 releases/adb-recovery-isolation-20261015-rc.1/verification/prepare-local.py --out <全新目录>`
+`python3 releases/adb-recovery-isolation-20261015-rc.2/verification/prepare-local.py --out <全新目录>`
 
 脚本校验本候选及父级 manifest，仅组装源码，不启动服务或连接设备。测试依赖沿用相同 package-lock 的本地依赖，没有升级。实际结果与失败记录见 `verification/RESULTS.json`，冻结对照见 `verification/FROZEN.json`。
 
