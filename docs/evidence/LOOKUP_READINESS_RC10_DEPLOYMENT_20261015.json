@@ -1,0 +1,581 @@
+{
+  "version": "lookup-readiness-20261015-deployed.10",
+  "sourceCommit": "a5677a2d2823e96417dcfcea3b3015a0cb530a74",
+  "candidateTag": "lookup-readiness-20261015-rc.10",
+  "branch": "codex/lookup-readiness-deploy-20261015",
+  "status": "authorized-target-gray-passed-not-full-production-acceptance",
+  "productionBaseline": "lookup-readiness-20261015-deployed.8",
+  "windowsApply": {
+    "atUtc": "2026-10-15T07:39:12.902695+00:00",
+    "version": "lookup-readiness-20261015-rc.10",
+    "sourceCommit": "a5677a2d2823e96417dcfcea3b3015a0cb530a74",
+    "files": [
+      {
+        "name": "alipay_name_lookup.py",
+        "before": "bacf75f9a6dcf5e8bbc8033a619a98e5701a960c3cda74bcfdcb406bcaf6afc8",
+        "after": "5d3ff1b512c61cc34fba13b4b8600c3e95b698dcd097753d74ce4cfb46cb6b6c"
+      },
+      {
+        "name": "alipay_visual_result.py",
+        "before": "eb3a4b91df2f7037a9607a405e5c785a6cbcb85dbe5a682586b12619977ab526",
+        "after": "8f3d696cb031bfb33ab4228e3933cfb6344b426abb912dd75fb7459fa86e9407"
+      }
+    ],
+    "backupDirectory": "D:\\PhoneCloud\\agent\\backups\\lookup-readiness-20261015-rc.10",
+    "refreshedIdleWorker": null,
+    "targetWorkerAlreadyExited": true,
+    "deviceNumber": 156,
+    "adbPid": 634172,
+    "agentPid": 634228,
+    "owner": "SYSTEM",
+    "sharedRestart": false
+  },
+  "windowsPostflight": {
+    "adbPid": 634172,
+    "agentPid": 634228,
+    "owner": "SYSTEM",
+    "hashes": {
+      "alipay_name_lookup.py": "5d3ff1b512c61cc34fba13b4b8600c3e95b698dcd097753d74ce4cfb46cb6b6c",
+      "alipay_visual_result.py": "8f3d696cb031bfb33ab4228e3933cfb6344b426abb912dd75fb7459fa86e9407",
+      "xhs_airtest_poco.py": "e6bdc2d96adf9a7b5e130eac72a0479d7790732831cfda71bf0230923ceccdaa"
+    },
+    "workers": []
+  },
+  "cloudPostflight": {
+    "atUtc": "2026-10-15T07:40:37.273Z",
+    "http": {
+      "/healthz": 200,
+      "/readyz": 200,
+      "/api-docs.html": 200,
+      "/api-reference.json": 200,
+      "/openapi.json": 200,
+      "/downloads/name-lookup-integration.zip": 200
+    },
+    "unsignedPrepare": 401,
+    "overview": {
+      "windowsAgents": 4,
+      "onlineAgents": 1,
+      "devices": 131,
+      "adbOnline": 106,
+      "agentOnline": 0,
+      "waitingSms": 0,
+      "smsLibraryMessages": 50000,
+      "xhsQueued": 0,
+      "xhsRunning": 0,
+      "xhsStalled": 0,
+      "xhsSuccessRate": null,
+      "deviceLocks": 2,
+      "taskFailureReasons": []
+    },
+    "queue": {
+      "xhsActive": 0,
+      "xhsQueued": 0,
+      "xhsRunning": 0,
+      "xhsStalled": 0,
+      "windowsQueued": 0,
+      "windowsRunning": 0,
+      "windowsStalled": 0
+    },
+    "activeScreens": 2,
+    "pool": {
+      "enabled": false,
+      "revision": 43,
+      "channels": [],
+      "targets": [
+        {
+          "number": 155,
+          "enabled": true,
+          "health": {
+            "ready": true,
+            "reason": ""
+          }
+        },
+        {
+          "number": 164,
+          "enabled": true,
+          "health": {
+            "ready": true,
+            "reason": ""
+          }
+        },
+        {
+          "number": 162,
+          "enabled": true,
+          "health": {
+            "ready": true,
+            "reason": ""
+          }
+        },
+        {
+          "number": 130,
+          "enabled": false,
+          "health": {
+            "ready": true,
+            "reason": ""
+          }
+        }
+      ]
+    },
+    "signedHistoricalResults": [
+      {
+        "lookupId": "f84b8db1-4429-434b-9c9d-fcd91943cf61",
+        "status": "completed",
+        "hasName": true
+      },
+      {
+        "lookupId": "3a984884-7e60-4487-85b7-7bffedbbf16f",
+        "status": "failed",
+        "hasName": null,
+        "code": "lookup_processing_timeout"
+      },
+      {
+        "lookupId": "bb8b5531-89eb-48ae-91be-4e6d7e25666b",
+        "status": "completed",
+        "hasName": true
+      },
+      {
+        "lookupId": "4e60b4ec-7529-4049-aaef-2e3b3eed09ea",
+        "status": "completed",
+        "hasName": true
+      },
+      {
+        "lookupId": "161bd56c-7695-4497-8c1d-abbd263dfb0f",
+        "status": "completed",
+        "hasName": false
+      },
+      {
+        "lookupId": "3fc6635e-24d6-41b3-bf63-de714d440058",
+        "status": "completed",
+        "hasName": true
+      }
+    ],
+    "agents": [
+      {
+        "agentId": "win-bf-202605262318-20260727",
+        "lastSeenAt": "2026-10-15T07:40:30.958Z",
+        "hasLookupRuntimeId": true
+      },
+      {
+        "agentId": "windows-desktop-8v8n4pe-v2",
+        "lastSeenAt": "2026-08-10T06:02:47.953Z",
+        "hasLookupRuntimeId": false
+      },
+      {
+        "agentId": "windows-desktop-8v8n4pe",
+        "lastSeenAt": "2026-07-03T04:15:49.959Z",
+        "hasLookupRuntimeId": false
+      },
+      {
+        "agentId": "local-mac-windows-agent",
+        "lastSeenAt": "2026-07-03T05:36:47.198Z",
+        "hasLookupRuntimeId": false
+      }
+    ],
+    "newQueriesStarted": 0
+  },
+  "mediaBefore": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "mediaAfter": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "finalApiVerification": {
+    "at": "2026-10-15T07:40:36.627Z",
+    "event": "final-verified",
+    "results": [
+      {
+        "index": 18,
+        "lookupId": "66e5c76c-2aba-4866-bdd6-8236d3fb9ead",
+        "queryId": "c7dbf7bf-8d15-4bc5-ae17-255b9f1ed65d",
+        "status": "completed",
+        "hasName": true,
+        "sameKeyIdRetained": true
+      },
+      {
+        "index": 19,
+        "lookupId": "4f500803-b072-443a-80bf-dbd534a6d40b",
+        "queryId": "e67e5920-dfe3-4a16-b5e3-d1100330ea51",
+        "status": "completed",
+        "hasName": true,
+        "sameKeyIdRetained": true
+      },
+      {
+        "index": 0,
+        "lookupId": "60949ded-f6c6-4455-bf4c-6ac15a4794df",
+        "queryId": "6f8db5dd-499c-4685-8ca6-944a12941651",
+        "status": "completed",
+        "hasName": false,
+        "sameKeyIdRetained": true
+      },
+      {
+        "index": 1,
+        "lookupId": "7222b78a-2dfa-4ac7-807e-e36244b24d1b",
+        "queryId": "b6e13988-e7a6-4053-86ba-3693956acc2e",
+        "status": "completed",
+        "hasName": true,
+        "sameKeyIdRetained": true
+      },
+      {
+        "index": 2,
+        "lookupId": "0b9a2e2e-a8f7-462a-9212-e687bf01e2b9",
+        "queryId": "03c8bc3f-07cf-4b6d-a49b-b43d474be738",
+        "status": "completed",
+        "hasName": true,
+        "sameKeyIdRetained": true
+      },
+      {
+        "index": 3,
+        "lookupId": "9661d91d-98f9-40d6-8049-4e2af392a571",
+        "queryId": "9ec6a6d3-7c21-4856-ac90-cb0259949491",
+        "status": "completed",
+        "hasName": true,
+        "sameKeyIdRetained": true
+      },
+      {
+        "index": 4,
+        "lookupId": "0702b7ee-f5fd-41fc-8188-5a67052e3761",
+        "queryId": "892b940a-1cad-4b96-b34d-b6c8e82d19be",
+        "status": "completed",
+        "hasName": true,
+        "sameKeyIdRetained": true
+      },
+      {
+        "index": 5,
+        "lookupId": "569e5184-a2ad-48c1-a878-e53e8f10e25e",
+        "queryId": "a9b246d0-8ebe-49a6-a3c5-9bc0e62f2445",
+        "status": "completed",
+        "hasName": false,
+        "sameKeyIdRetained": true
+      },
+      {
+        "index": 6,
+        "lookupId": "2c35ef4b-5824-487d-84c3-47327f87b471",
+        "queryId": "53ced92e-357d-4dcb-9660-f202ab9e8f83",
+        "status": "completed",
+        "hasName": true,
+        "sameKeyIdRetained": true
+      },
+      {
+        "index": 7,
+        "lookupId": "597aace3-8a30-4440-aaff-e26b7d5b1dd9",
+        "queryId": "35e26c3d-dadc-40b9-bce8-585e7af8b94a",
+        "status": "completed",
+        "hasName": false,
+        "sameKeyIdRetained": true
+      }
+    ],
+    "poolEnabled": false,
+    "revision": 43,
+    "channels": 0,
+    "requestCountDelta": 0,
+    "device130Enabled": false
+  },
+  "executionEvidence": [
+    {
+      "at": "2026-10-15T07:40:36.871Z",
+      "event": "business-execution",
+      "taskId": "ae3c5d08-e42f-4fb3-bfee-5580efaa22d0",
+      "number": 156,
+      "status": "succeeded",
+      "createdAt": "2026-10-15T07:39:12.630Z",
+      "pickedAt": "2026-10-15T07:39:12.920Z",
+      "completedAt": "2026-10-15T07:39:57.461Z",
+      "errorCode": "",
+      "durationMs": 25084
+    },
+    {
+      "at": "2026-10-15T07:40:36.874Z",
+      "event": "business-execution",
+      "taskId": "88cea639-ba60-4d7f-88c9-9f9bd2f72897",
+      "number": 156,
+      "status": "failed",
+      "createdAt": "2026-10-15T07:24:04.508Z",
+      "pickedAt": "2026-10-15T07:24:04.958Z",
+      "completedAt": "2026-10-15T07:25:06.071Z",
+      "errorCode": "alipay_lookup_result_unconfirmed",
+      "durationMs": 0
+    },
+    {
+      "at": "2026-10-15T07:40:36.876Z",
+      "event": "business-execution",
+      "taskId": "93651597-82b8-4659-b1b2-f74f31646b8b",
+      "number": 162,
+      "status": "succeeded",
+      "createdAt": "2026-10-15T07:24:04.495Z",
+      "pickedAt": "2026-10-15T07:24:05.059Z",
+      "completedAt": "2026-10-15T07:24:15.018Z",
+      "errorCode": "",
+      "durationMs": 9892
+    },
+    {
+      "at": "2026-10-15T07:40:36.877Z",
+      "event": "business-execution",
+      "taskId": "1327de39-4d1a-4926-b5d4-5c8d261c0bc2",
+      "number": 115,
+      "status": "succeeded",
+      "createdAt": "2026-10-15T07:24:04.481Z",
+      "pickedAt": "2026-10-15T07:24:05.155Z",
+      "completedAt": "2026-10-15T07:24:27.383Z",
+      "errorCode": "",
+      "durationMs": 22143
+    },
+    {
+      "at": "2026-10-15T07:40:36.879Z",
+      "event": "business-execution",
+      "taskId": "b69a8288-8e56-4bf6-ab0e-7cc89a91e81b",
+      "number": 155,
+      "status": "succeeded",
+      "createdAt": "2026-10-15T07:24:04.469Z",
+      "pickedAt": "2026-10-15T07:24:05.260Z",
+      "completedAt": "2026-10-15T07:24:16.392Z",
+      "errorCode": "",
+      "durationMs": 11055
+    },
+    {
+      "at": "2026-10-15T07:40:36.881Z",
+      "event": "business-execution",
+      "taskId": "3464171d-5dc0-4485-8ae1-e917a148359e",
+      "number": 164,
+      "status": "succeeded",
+      "createdAt": "2026-10-15T07:24:04.453Z",
+      "pickedAt": "2026-10-15T07:24:05.347Z",
+      "completedAt": "2026-10-15T07:24:21.256Z",
+      "errorCode": "",
+      "durationMs": 15809
+    },
+    {
+      "at": "2026-10-15T07:40:36.884Z",
+      "event": "business-execution",
+      "taskId": "b7b6b39d-e993-46d7-9d7f-bc9d2602dbdb",
+      "number": 156,
+      "status": "succeeded",
+      "createdAt": "2026-10-15T07:23:07.967Z",
+      "pickedAt": "2026-10-15T07:23:08.426Z",
+      "completedAt": "2026-10-15T07:23:28.993Z",
+      "errorCode": "",
+      "durationMs": 20479
+    },
+    {
+      "at": "2026-10-15T07:40:36.887Z",
+      "event": "business-execution",
+      "taskId": "5029fa0b-22e3-441e-b795-9a8915e5809a",
+      "number": 162,
+      "status": "succeeded",
+      "createdAt": "2026-10-15T07:23:07.952Z",
+      "pickedAt": "2026-10-15T07:23:08.544Z",
+      "completedAt": "2026-10-15T07:23:17.723Z",
+      "errorCode": "",
+      "durationMs": 9097
+    },
+    {
+      "at": "2026-10-15T07:40:36.888Z",
+      "event": "business-execution",
+      "taskId": "79bf7296-e8c0-485d-8e7e-39e797dfc24e",
+      "number": 115,
+      "status": "succeeded",
+      "createdAt": "2026-10-15T07:23:07.927Z",
+      "pickedAt": "2026-10-15T07:23:08.647Z",
+      "completedAt": "2026-10-15T07:23:35.178Z",
+      "errorCode": "",
+      "durationMs": 26443
+    },
+    {
+      "at": "2026-10-15T07:40:36.889Z",
+      "event": "business-execution",
+      "taskId": "33e25f85-c4e9-4c80-b67a-935dfd8922b9",
+      "number": 155,
+      "status": "succeeded",
+      "createdAt": "2026-10-15T07:22:35.175Z",
+      "pickedAt": "2026-10-15T07:22:35.584Z",
+      "completedAt": "2026-10-15T07:22:46.089Z",
+      "errorCode": "",
+      "durationMs": 10446
+    },
+    {
+      "at": "2026-10-15T07:40:36.890Z",
+      "event": "business-execution",
+      "taskId": "2ec6585d-9d7a-4082-948c-ebf48e965b9f",
+      "number": 164,
+      "status": "succeeded",
+      "createdAt": "2026-10-15T07:22:35.162Z",
+      "pickedAt": "2026-10-15T07:22:35.688Z",
+      "completedAt": "2026-10-15T07:22:45.099Z",
+      "errorCode": "",
+      "durationMs": 9325
+    },
+    {
+      "at": "2026-10-15T07:40:36.890Z",
+      "event": "lookup-attempt-evidence",
+      "index": 18,
+      "lookupId": "66e5c76c-2aba-4866-bdd6-8236d3fb9ead",
+      "queryId": "c7dbf7bf-8d15-4bc5-ae17-255b9f1ed65d",
+      "attemptCount": 1,
+      "numbers": [
+        164
+      ],
+      "status": "succeeded"
+    },
+    {
+      "at": "2026-10-15T07:40:36.890Z",
+      "event": "lookup-attempt-evidence",
+      "index": 19,
+      "lookupId": "4f500803-b072-443a-80bf-dbd534a6d40b",
+      "queryId": "e67e5920-dfe3-4a16-b5e3-d1100330ea51",
+      "attemptCount": 1,
+      "numbers": [
+        155
+      ],
+      "status": "succeeded"
+    },
+    {
+      "at": "2026-10-15T07:40:36.890Z",
+      "event": "lookup-attempt-evidence",
+      "index": 0,
+      "lookupId": "60949ded-f6c6-4455-bf4c-6ac15a4794df",
+      "queryId": "6f8db5dd-499c-4685-8ca6-944a12941651",
+      "attemptCount": 1,
+      "numbers": [
+        115
+      ],
+      "status": "not_found"
+    },
+    {
+      "at": "2026-10-15T07:40:36.890Z",
+      "event": "lookup-attempt-evidence",
+      "index": 1,
+      "lookupId": "7222b78a-2dfa-4ac7-807e-e36244b24d1b",
+      "queryId": "b6e13988-e7a6-4053-86ba-3693956acc2e",
+      "attemptCount": 1,
+      "numbers": [
+        162
+      ],
+      "status": "succeeded"
+    },
+    {
+      "at": "2026-10-15T07:40:36.891Z",
+      "event": "lookup-attempt-evidence",
+      "index": 2,
+      "lookupId": "0b9a2e2e-a8f7-462a-9212-e687bf01e2b9",
+      "queryId": "03c8bc3f-07cf-4b6d-a49b-b43d474be738",
+      "attemptCount": 1,
+      "numbers": [
+        156
+      ],
+      "status": "succeeded"
+    },
+    {
+      "at": "2026-10-15T07:40:36.891Z",
+      "event": "lookup-attempt-evidence",
+      "index": 3,
+      "lookupId": "9661d91d-98f9-40d6-8049-4e2af392a571",
+      "queryId": "9ec6a6d3-7c21-4856-ac90-cb0259949491",
+      "attemptCount": 1,
+      "numbers": [
+        164
+      ],
+      "status": "succeeded"
+    },
+    {
+      "at": "2026-10-15T07:40:36.891Z",
+      "event": "lookup-attempt-evidence",
+      "index": 4,
+      "lookupId": "0702b7ee-f5fd-41fc-8188-5a67052e3761",
+      "queryId": "892b940a-1cad-4b96-b34d-b6c8e82d19be",
+      "attemptCount": 1,
+      "numbers": [
+        155
+      ],
+      "status": "succeeded"
+    },
+    {
+      "at": "2026-10-15T07:40:36.891Z",
+      "event": "lookup-attempt-evidence",
+      "index": 5,
+      "lookupId": "569e5184-a2ad-48c1-a878-e53e8f10e25e",
+      "queryId": "a9b246d0-8ebe-49a6-a3c5-9bc0e62f2445",
+      "attemptCount": 1,
+      "numbers": [
+        115
+      ],
+      "status": "not_found"
+    },
+    {
+      "at": "2026-10-15T07:40:36.891Z",
+      "event": "lookup-attempt-evidence",
+      "index": 6,
+      "lookupId": "2c35ef4b-5824-487d-84c3-47327f87b471",
+      "queryId": "53ced92e-357d-4dcb-9660-f202ab9e8f83",
+      "attemptCount": 1,
+      "numbers": [
+        162
+      ],
+      "status": "succeeded"
+    },
+    {
+      "at": "2026-10-15T07:40:36.891Z",
+      "event": "lookup-attempt-evidence",
+      "index": 7,
+      "lookupId": "597aace3-8a30-4440-aaff-e26b7d5b1dd9",
+      "queryId": "35e26c3d-dadc-40b9-bce8-585e7af8b94a",
+      "attemptCount": 1,
+      "numbers": [
+        156
+      ],
+      "status": "not_found"
+    }
+  ],
+  "twoMinuteReplayEvidencePath": "LOOKUP_READINESS_POST_SYSTEM_GRAY_20261015.json",
+  "results": {
+    "completed": 10,
+    "withName": 7,
+    "emptyString": 3,
+    "lookupIdAndQueryIdPreserved": true,
+    "clientRetryCreatedNewQueries": false,
+    "explicitAdminRecoveryWindowsTasks": 1,
+    "originalFailedTaskPreserved": true,
+    "physicalInputExactlyOnceForRecovered156Claimed": false
+  },
+  "verification": {
+    "localPython": 547,
+    "nativeAccountMockTests": 5,
+    "native156Frames": 2,
+    "actualPostPatch156ApiCompleted": true,
+    "trueFiveWayOverlapMs": 9671,
+    "noServiceRestart": true,
+    "noKeysOrAdbIdentityChange": true,
+    "gitPushed": false
+  },
+  "notVerified": [
+    "New natural limit cross-device transfer this round",
+    "New full eight-hour cooling expiry this round",
+    "rc9 USB popup code handling newly occurring physical popup",
+    "All49 device mapping/availability and sustained load"
+  ],
+  "failuresRetained": [
+    "156 original query task unconfirmed before patch, then explicit same-request recovery succeeded",
+    "Initial native diagnostic saw null secondary display focus and stopped without action",
+    "First hotpatch guard saw old156 worker already naturally exited; stopped before backup/file mutation, then revalidated absence",
+    "Host shell node unavailable; successful D075 used existing exact Node binary",
+    "Receipt template syntax error before execution; corrected with no prior remote mutation"
+  ],
+  "rollback": {
+    "windowsDirectory": "D:\\PhoneCloud\\agent\\backups\\lookup-readiness-20261015-rc.10",
+    "cloudManifestDirectory": "/opt/phone-cloud-platform/deploy-backups/lookup-readiness-20261015-rc.10",
+    "dataRestoreRequired": false,
+    "scope": "restore only two backed-up scripts at no-running-target guard; never shared restart or discard query/account/cooldown records"
+  },
+  "originalPoolRestoredDisabled": true,
+  "testConfigRevision": 43,
+  "testChannelsRemaining": 0,
+  "productionAcceptanceComplete": false
+}
