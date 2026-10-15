@@ -1,0 +1,35 @@
+{
+  "version": "adb-recovery-isolation-20261015-rc.3",
+  "status": "local-candidate-not-deployed",
+  "branch": "codex/adb-installer-admission-20261015",
+  "baselineCommit": "a3194c0da5005ab191512178b522dd0b8b454d23",
+  "baseTag": "adb-recovery-isolation-20261015-rc.2",
+  "baseManifestSha256": "750d182c6a986f97db550ad47eb55aa7ae3ed92dc969da69ecdfef775da0816b",
+  "lastObservedProduction": "lookup-readiness-20261015-deployed.10",
+  "lastObservedReceiptCommit": "f2c36e98407564b94dca60e2bb7959377d6d885a",
+  "sourceBase": "rc.2 composed on readiness rc.8; deployed.10 merge/hash verification required before release",
+  "overlayFiles": [
+    "windows-agent/src/index.mjs",
+    "windows-agent/src/installer-admission-agent.test.mjs",
+    "windows-agent/src/recovery-command-path.test.mjs",
+    "windows-agent/src/pnp-recovery-control.test.mjs"
+  ],
+  "productionActions": 0,
+  "requiresWindowsAgentRestart": true,
+  "requiresAdbRestart": false,
+  "databaseMigrations": 0,
+  "preserveExternalRuntime": [
+    "SYSTEM owner",
+    "existing SDK path and port5037",
+    "ADB_VENDOR_KEYS",
+    "both existing authorization keys",
+    "adb-auth-env.cjs",
+    "SYSTEM scheduled task action"
+  ],
+  "releaseGates": [
+    "fresh production merge/hash verification",
+    "Windows native target validation",
+    "explicit Agent reload window; no shared ADB rebuild required by this patch",
+    "D-075 live verification for release"
+  ]
+}

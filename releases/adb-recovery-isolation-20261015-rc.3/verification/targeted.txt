@@ -1,0 +1,29 @@
+✔ busy installer does not starve reconnect behind PnP at capacity one (3.478584ms)
+✔ unknown installer does not starve reconnect behind PnP at capacity one (0.973459ms)
+✔ mixed busy batch still reconnects its offline phone (0.836583ms)
+✔ installer idle permits both recovery kinds (0.604166ms)
+✔ transport-only wave never probes installer (0.474292ms)
+✔ busy or paused transport target cannot use installer bypass (0.830083ms)
+✔ installer becomes busy after selection: PnP defers with zero attempts, reconnect continues (0.963667ms)
+✔ recovery wake still invokes scan while installer remains busy (0.508625ms)
+✔ actual adb_reconnect branch invokes command and returns result (5.533042ms)
+✔ actual adb_reconnect rejects pause arriving during persistence without consuming command (1.796125ms)
+✔ actual adb_reconnect rejects newly online target before command (1.407542ms)
+✔ actual adb_reconnect stops fourth issued command after three errors (17.483333ms)
+✔ actual restart_adb_interface branch invokes command and returns result (1.19625ms)
+✔ actual restart_adb_interface rejects pause arriving during persistence without consuming command (0.941125ms)
+✔ actual restart_adb_interface rejects newly online target before command (1.198708ms)
+✔ actual restart_adb_interface stops fourth issued command after three errors (14.257625ms)
+✔ actual exhausted ladder isolates target before another cycle (5.927416ms)
+✔ actual PnP final busy installer defers without failure or held device lock (1.173792ms)
+✔ actual PnP final unknown installer defers without failure or held device lock (1.0255ms)
+✔ actual PnP rechecks phone occupancy after awaited installer read (1.046ms)
+✔ actual PnP rechecks pause after awaited installer read (1.270208ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 129.041833
