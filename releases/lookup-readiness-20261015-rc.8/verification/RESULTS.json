@@ -1,0 +1,45 @@
+{
+  "quarantineOldRegression": {
+    "tests": 6,
+    "failed": 6
+  },
+  "quarantineTargeted": {
+    "tests": 29,
+    "passed": 29
+  },
+  "nodeFullIncludingScreen": {
+    "tests": 747,
+    "passed": 747
+  },
+  "rootCheck": "passed",
+  "pythonDiscovery": {
+    "tests": 374,
+    "passed": 374
+  },
+  "newVisualOldRegression": {
+    "tests": 1,
+    "errors": 1
+  },
+  "windowsNativeVisual": {
+    "tests": 1,
+    "passed": 1
+  },
+  "beforeHashes": {
+    "alipay_visual_result.py": "926177e6ed802f77eca31bd5bc11b88ea33db91fe0c12881b4966ee25d098526"
+  },
+  "initialFailures": [
+    "Two new test fixtures did not model lease cleanup and human resume correctly; corrected and reran old/new comparisons",
+    "Explicit manual reset initially still respected old per-minute probe attempt list; now clears only target attempts within same guarded transaction"
+  ],
+  "logs": {
+    "unavailable-old-corrected.log": "96c1ba22ce7975f94c23a108e53c50440a241dd675985ae1ff57802bf3913c81",
+    "unavailable-new-fixed.log": "acd5aedad70bb9f68cba1f88613bd0fa5c0c7656893fb7004af52d86ed9da40d",
+    "unavailable-check.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "unavailable-full.log": "ffc36989c3a3ba2034b52502528d3fef0cd59e73ad54a733113789d4a8631f8c",
+    "customer-old.log": "a73e29718e311829a9c7b08dee3ce3ddfdd473282c67c58087e86930058236a3",
+    "customer-new.log": "d10ffbd9f0faa72cd6837063279524e199b59fbc3d035051302a1e8dbc4b36ad",
+    "customer-full.log": "090df6ba0e82a19f8605af8850e186c0abfa3420de9166fc8cab61da72c9c6d6",
+    "customer-windows-tests.log": "223e06d17dfb6c32bd67ca7c62b915cb03e0a1189bad193f723662e346b75b55"
+  },
+  "productionAcceptanceComplete": false
+}
