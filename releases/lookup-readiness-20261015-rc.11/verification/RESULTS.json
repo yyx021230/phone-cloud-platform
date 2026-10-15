@@ -1,0 +1,26 @@
+{
+  "status": "local-candidate-not-deployed",
+  "oldRegression": {
+    "tests": 6,
+    "errors": 2
+  },
+  "newRegression": {
+    "tests": 6,
+    "failures": 0
+  },
+  "allPython": {
+    "tests": 553,
+    "failures": 0,
+    "command": "python3 -m unittest discover -s <assembled>/windows-agent/scripts -p '*test*.py'",
+    "logSha256": "4fd4c16b22b77a962fe2ab70126b2e9ef03ee8171b37749c473d6f24c2d42f4a"
+  },
+  "nativeWindows": {
+    "frames": 2,
+    "oldRecognized": false,
+    "candidateRecognized": true,
+    "liveFilesChanged": false
+  },
+  "productionCodeChanged": false,
+  "sharedAdbOrControlCodeChanged": false,
+  "newPatchEndToEndAcceptance": false
+}
