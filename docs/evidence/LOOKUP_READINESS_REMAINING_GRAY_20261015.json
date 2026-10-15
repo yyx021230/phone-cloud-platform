@@ -1,0 +1,649 @@
+{
+  "version": "lookup-readiness-20261015-deployed.8-agent.1",
+  "status": "agent-hotfix-deployed-cloud-quarantine-pending-gray-incomplete",
+  "branch": "codex/lookup-readiness-deploy-20261015",
+  "sourceCommit": "9d49e66799bfaa3a68d9f57a0fea64052d888ea3",
+  "candidateTag": "lookup-readiness-20261015-rc.8",
+  "baseline": {
+    "version": "lookup-readiness-20261015-deployed.3",
+    "cloudSourceCommit": "373729203e65714c1985d38cb7c9ffba416b159f",
+    "cloudImageId": "sha256:a34bcdbbd7059b391d2dd104d5c02f4e48fd47db1ebb47e309ef2eb0a2802320",
+    "cloudRestartImageId": "sha256:a34bcdbbd7059b391d2dd104d5c02f4e48fd47db1ebb47e309ef2eb0a2802320"
+  },
+  "activation": [
+    {
+      "at": "2026-10-15T05:15:50.7516932Z",
+      "version": "lookup-readiness-20261015-rc.4",
+      "sourceCommit": "66e1faffdbfbf72d497b7e93e8f825904f81399a",
+      "agentPid": 617616,
+      "adbPid": 312588,
+      "sharedRestart": false,
+      "backup": "D:\\PhoneCloud\\agent\\backups\\lookup-readiness-20261015-rc.4",
+      "files": {
+        "value": [
+          {
+            "name": "alipay_name_lookup.py",
+            "before": "99ae04d529fd21fe7836fb686a3ea2c7de8e7583435f0695a922f27e4f8edee0",
+            "after": "81cb8d69e6df10098736841eed9c17e3bd421bbf6651a08e138188f7b2f81ec1"
+          },
+          {
+            "name": "xhs_airtest_poco.py",
+            "before": "3fd28f0e13f6af07e9d13361322c41a1b83d57b953f6d3ac0ceb5523a0e16ac2",
+            "after": "e6bdc2d96adf9a7b5e130eac72a0479d7790732831cfda71bf0230923ceccdaa"
+          }
+        ],
+        "Count": 2
+      }
+    },
+    {
+      "at": "2026-10-15T05:24:08.1873135Z",
+      "version": "lookup-readiness-20261015-rc.5",
+      "sourceCommit": "542e136f9b87e89776136b8d930dacc52efb0f7d",
+      "agentPid": 617616,
+      "adbPid": 312588,
+      "sharedRestart": false,
+      "backup": "D:\\PhoneCloud\\agent\\backups\\lookup-readiness-20261015-rc.5",
+      "files": {
+        "value": [
+          {
+            "name": "alipay_name_lookup.py",
+            "before": "81cb8d69e6df10098736841eed9c17e3bd421bbf6651a08e138188f7b2f81ec1",
+            "after": "bd1a7f955fc054c52d91eef8f1c3d8ab0d39c37d182222f026247593f57841a7"
+          }
+        ],
+        "Count": 1
+      }
+    },
+    {
+      "at": "2026-10-15T05:35:14.2670220Z",
+      "version": "lookup-readiness-20261015-rc.6",
+      "sourceCommit": "28a84c40356c097605e810deafe9533b9fdd3c20",
+      "agentPid": 617616,
+      "adbPid": 312588,
+      "sharedRestart": false,
+      "backup": "D:\\PhoneCloud\\agent\\backups\\lookup-readiness-20261015-rc.6",
+      "files": {
+        "value": [
+          {
+            "name": "alipay_name_lookup.py",
+            "before": "bd1a7f955fc054c52d91eef8f1c3d8ab0d39c37d182222f026247593f57841a7",
+            "after": "c759a1e680bd3fc51e5cbf3d0642e7d918ae985c3f39b34887ce962fc82e74aa"
+          }
+        ],
+        "Count": 1
+      }
+    },
+    {
+      "at": "2026-10-15T05:43:09.5190396Z",
+      "version": "lookup-readiness-20261015-rc.7",
+      "sourceCommit": "6426495ed734ad8f569bd25c09c4605a1e56ce70",
+      "agentPid": 617616,
+      "adbPid": 312588,
+      "sharedRestart": false,
+      "backup": "D:\\PhoneCloud\\agent\\backups\\lookup-readiness-20261015-rc.7",
+      "files": {
+        "value": [
+          {
+            "name": "alipay_name_lookup.py",
+            "before": "c759a1e680bd3fc51e5cbf3d0642e7d918ae985c3f39b34887ce962fc82e74aa",
+            "after": "bacf75f9a6dcf5e8bbc8033a619a98e5701a960c3cda74bcfdcb406bcaf6afc8"
+          },
+          {
+            "name": "alipay_visual_result.py",
+            "before": "e624055523976001ed10fc6eb2223f1dde41f2da336a41a2e8cc62e9fd4f7780",
+            "after": "926177e6ed802f77eca31bd5bc11b88ea33db91fe0c12881b4966ee25d098526"
+          }
+        ],
+        "Count": 2
+      }
+    },
+    {
+      "at": "2026-10-15T05:58:36.8465727Z",
+      "version": "lookup-readiness-20261015-rc.8",
+      "sourceCommit": "9d49e66799bfaa3a68d9f57a0fea64052d888ea3",
+      "agentPid": 617616,
+      "adbPid": 312588,
+      "sharedRestart": false,
+      "backup": "D:\\PhoneCloud\\agent\\backups\\lookup-readiness-20261015-rc.8",
+      "files": {
+        "value": [
+          {
+            "name": "alipay_visual_result.py",
+            "before": "926177e6ed802f77eca31bd5bc11b88ea33db91fe0c12881b4966ee25d098526",
+            "after": "eb3a4b91df2f7037a9607a405e5c785a6cbcb85dbe5a682586b12619977ab526"
+          }
+        ],
+        "Count": 1
+      }
+    }
+  ],
+  "cloudCandidatePending": {
+    "version": "lookup-readiness-20261015-rc.8",
+    "requiresMaintenance": true,
+    "autoQuarantineLoaded": false
+  },
+  "candidateImage": {
+    "version": "lookup-readiness-20261015-rc.8",
+    "sourceCommit": "9d49e66799bfaa3a68d9f57a0fea64052d888ea3",
+    "atUtc": "2026-10-15T06:04:57.159212+00:00",
+    "imageId": "sha256:e92e3a933344eed3e7033dd4a8b3ec8f9a85cae37a03d51d1b9014372296fd0a",
+    "imageTag": "phone-cloud-platform:lookup-readiness-20261015-rc.8",
+    "baseImageId": "sha256:a34bcdbbd7059b391d2dd104d5c02f4e48fd47db1ebb47e309ef2eb0a2802320",
+    "filesVerified": 133,
+    "http": {
+      "/healthz": 200,
+      "/readyz": 200,
+      "/api-docs.html": 200,
+      "/api-reference.json": 200,
+      "/openapi.json": 200,
+      "/downloads/name-lookup-integration.zip": 200
+    },
+    "unsignedPrepare": 401,
+    "isolated": "network=none, tmpfs fixture data, no ports, ephemeral generated credentials",
+    "containerRemoved": true,
+    "productionContainerUnchanged": true,
+    "activeReleaseUnchanged": true,
+    "pendingComposeSha256": "1f62d68c0c88a06c59d1a4427b4ce40ca30c7733492ba20bed03daf0e08e2fde",
+    "productionAcceptanceComplete": false,
+    "windowsOverlayRequired": "9d49e66799bfaa3a68d9f57a0fea64052d888ea3"
+  },
+  "backup": {
+    "atUtc": "2026-10-15T06:05:30.488178+00:00",
+    "backupDirectory": "/opt/phone-cloud-platform/deploy-backups/lookup-readiness-20261015-prep.8",
+    "previousVersion": "lookup-readiness-20261015-deployed.8-agent.1",
+    "previousImageId": "sha256:a34bcdbbd7059b391d2dd104d5c02f4e48fd47db1ebb47e309ef2eb0a2802320",
+    "containerUnchanged": true,
+    "configs": [
+      {
+        "backup": "env.before",
+        "source": "/opt/phone-cloud-platform/.env",
+        "sha256": "4aa2c0a5a990beaa7436b65fa8678335381d14240ee139e7b45e6f50fbbc68f8"
+      },
+      {
+        "backup": "compose-0.before",
+        "source": "/opt/phone-cloud-platform/docker-compose.yml",
+        "sha256": "8687bf4176f8f0d78ab73380a7ef0fd6b71bf044de5474f172ef5483d3e47435"
+      },
+      {
+        "backup": "compose-1.before",
+        "source": "/opt/phone-cloud-platform/staging/platform-api-integration-20261012-rc.3/compose.candidate.json",
+        "sha256": "45f735c99379398e200b9323e4016fd75dc6f1b7a6c0895340b5434f3f02a14e"
+      },
+      {
+        "backup": "compose-2.before",
+        "source": "/opt/phone-cloud-platform/staging/platform-core-20261014-rc.7/compose.candidate.json",
+        "sha256": "378eed4ea3daba1dd3513c6f2f1ec14bf3fefdab0aa4b9c1bb9e73175f919c4d"
+      },
+      {
+        "backup": "compose-3.before",
+        "source": "/opt/phone-cloud-platform/staging/platform-core-20261014-rc.7/compose.coordinator.json",
+        "sha256": "99ad53a185e5a6f603a5adfe0d6c86f2d630f9365ae4dedeaec05a898a767f5d"
+      },
+      {
+        "backup": "compose-4.before",
+        "source": "/opt/phone-cloud-platform/staging/lookup-delivery-20261014-rc.1/compose.delivery.json",
+        "sha256": "2e4812b1cc488aad42a2ac08741aaeeea3fd2f53effce0c0a10a3a06ac61b01b"
+      },
+      {
+        "backup": "compose-5.before",
+        "source": "/opt/phone-cloud-platform/staging/lookup-readiness-20261015-rc.1/compose.readiness.json",
+        "sha256": "a66295d203cd2525123c9f32b9168bbbb4320e45f6ed92043ff65bb39174e933"
+      },
+      {
+        "backup": "compose-6.before",
+        "source": "/opt/phone-cloud-platform/staging/lookup-readiness-20261015-rc.3/compose.pending.json",
+        "sha256": "f5c40ceaf29d6667f9b610f3285892faad52ca11cab012f397cbfb938161374b"
+      }
+    ],
+    "postgres": {
+      "bytes": 468005107,
+      "sha256": "c9c6a3e60bb9c48e9d4e6455c80b258feae1133e42d2b94f514a3bd376f57c9e",
+      "tocEntries": 63,
+      "fullDatabase": true,
+      "restoreTest": false
+    },
+    "imageArchive": {
+      "bytes": 63573504,
+      "sha256": "e8968648f1b2faff3ad2c320dfc670a076fe01338cc50bbb29570c6b8f2b3f94"
+    },
+    "servicesRestarted": 0
+  },
+  "runtimeVerification": {
+    "atUtc": "2026-10-15T06:07:32.015887+00:00",
+    "verifiedCloudFiles": 132,
+    "runningContainerUnchanged": true,
+    "cloudPid": 4041411,
+    "cloudStartedAt": "2026-10-15T04:51:55.298875716Z",
+    "services": {
+      "phone-cloud-platform": {
+        "status": "running",
+        "health": "healthy",
+        "restartCount": 0
+      },
+      "phone-cloud-postgres": {
+        "status": "running",
+        "health": "healthy",
+        "restartCount": 0
+      },
+      "phone-cloud-redis": {
+        "status": "running",
+        "health": "healthy",
+        "restartCount": 0
+      }
+    },
+    "composeHashesVerified": true
+  },
+  "windowsVerification": {
+    "atUtc": "2026-10-15T06:07:31.561040Z",
+    "agentPid": 617616,
+    "agentCreated": 1792036166.1709273,
+    "adbPid": 312588,
+    "adbCreated": 1791427470.2758265,
+    "files": {
+      "alipay_name_lookup.py": "bacf75f9a6dcf5e8bbc8033a619a98e5701a960c3cda74bcfdcb406bcaf6afc8",
+      "alipay_visual_result.py": "eb3a4b91df2f7037a9607a405e5c785a6cbcb85dbe5a682586b12619977ab526",
+      "xhs_airtest_poco.py": "e6bdc2d96adf9a7b5e130eac72a0479d7790732831cfda71bf0230923ceccdaa"
+    },
+    "sharedRestarted": false
+  },
+  "mediaLive": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "postflight": {
+    "atUtc": "2026-10-15T06:07:31.427Z",
+    "http": {
+      "/healthz": 200,
+      "/readyz": 200,
+      "/api-docs.html": 200,
+      "/api-reference.json": 200,
+      "/openapi.json": 200,
+      "/downloads/name-lookup-integration.zip": 200
+    },
+    "unsignedPrepare": 401,
+    "overview": {
+      "windowsAgents": 4,
+      "onlineAgents": 1,
+      "devices": 131,
+      "adbOnline": 115,
+      "agentOnline": 0,
+      "waitingSms": 0,
+      "smsLibraryMessages": 50000,
+      "xhsQueued": 0,
+      "xhsRunning": 0,
+      "xhsStalled": 0,
+      "xhsSuccessRate": null,
+      "deviceLocks": 9,
+      "taskFailureReasons": []
+    },
+    "queue": {
+      "xhsActive": 0,
+      "xhsQueued": 0,
+      "xhsRunning": 0,
+      "xhsStalled": 0,
+      "windowsQueued": 0,
+      "windowsRunning": 2,
+      "windowsStalled": 0
+    },
+    "activeScreens": 6,
+    "pool": {
+      "enabled": false,
+      "revision": 39,
+      "channels": [
+        {
+          "number": 162,
+          "phase": "recovery",
+          "requestId": "3a984884-7e60-4487-85b7-7bffedbbf16f"
+        }
+      ],
+      "targets": [
+        {
+          "number": 155,
+          "enabled": true,
+          "health": {
+            "ready": true,
+            "reason": ""
+          }
+        },
+        {
+          "number": 164,
+          "enabled": true,
+          "health": {
+            "ready": true,
+            "reason": ""
+          }
+        },
+        {
+          "number": 162,
+          "enabled": true,
+          "health": {
+            "ready": false,
+            "reason": "device_or_agent_offline"
+          }
+        },
+        {
+          "number": 130,
+          "enabled": false,
+          "health": {
+            "ready": false,
+            "reason": "device_or_agent_offline"
+          }
+        }
+      ]
+    },
+    "signedHistoricalResults": [
+      {
+        "lookupId": "f84b8db1-4429-434b-9c9d-fcd91943cf61",
+        "status": "completed",
+        "hasName": true
+      },
+      {
+        "lookupId": "3a984884-7e60-4487-85b7-7bffedbbf16f",
+        "status": "processing",
+        "hasName": null
+      },
+      {
+        "lookupId": "bb8b5531-89eb-48ae-91be-4e6d7e25666b",
+        "status": "completed",
+        "hasName": true
+      },
+      {
+        "lookupId": "4e60b4ec-7529-4049-aaef-2e3b3eed09ea",
+        "status": "completed",
+        "hasName": true
+      },
+      {
+        "lookupId": "161bd56c-7695-4497-8c1d-abbd263dfb0f",
+        "status": "completed",
+        "hasName": false
+      },
+      {
+        "lookupId": "3fc6635e-24d6-41b3-bf63-de714d440058",
+        "status": "completed",
+        "hasName": true
+      }
+    ],
+    "agents": [
+      {
+        "agentId": "win-bf-202605262318-20260727",
+        "lastSeenAt": "2026-10-15T06:07:27.375Z",
+        "hasLookupRuntimeId": true
+      },
+      {
+        "agentId": "windows-desktop-8v8n4pe-v2",
+        "lastSeenAt": "2026-08-10T06:02:47.953Z",
+        "hasLookupRuntimeId": false
+      },
+      {
+        "agentId": "windows-desktop-8v8n4pe",
+        "lastSeenAt": "2026-07-03T04:15:49.959Z",
+        "hasLookupRuntimeId": false
+      },
+      {
+        "agentId": "local-mac-windows-agent",
+        "lastSeenAt": "2026-07-03T05:36:47.198Z",
+        "hasLookupRuntimeId": false
+      }
+    ],
+    "newQueriesStarted": 0
+  },
+  "gray": {
+    "atUtc": "2026-10-15T06:08:11.452Z",
+    "configRevision": 39,
+    "enabled": false,
+    "channels": [
+      {
+        "number": 162,
+        "phase": "recovery",
+        "lookupId": "3a984884-7e60-4487-85b7-7bffedbbf16f",
+        "sessionId": "29b55745-15ef-4930-b9d7-6cfd5bffacfd"
+      }
+    ],
+    "business": [
+      {
+        "index": 12,
+        "lookupId": "f84b8db1-4429-434b-9c9d-fcd91943cf61",
+        "sameIdAfterNewKeyOverTwoMinutes": true,
+        "status": "succeeded",
+        "code": "",
+        "hasName": true,
+        "queryId": "0e018c35-0f6e-43f9-a0d4-58b72def986f",
+        "number": 155,
+        "attempts": 1
+      },
+      {
+        "index": 13,
+        "lookupId": "3a984884-7e60-4487-85b7-7bffedbbf16f",
+        "sameIdAfterNewKeyOverTwoMinutes": true,
+        "status": "needs_recovery",
+        "code": "lookup_recovery_required",
+        "hasName": false,
+        "queryId": "114090a0-d669-4a0e-a47c-cedd895ab3f0",
+        "number": 162,
+        "attempts": 1
+      },
+      {
+        "index": 14,
+        "lookupId": "bb8b5531-89eb-48ae-91be-4e6d7e25666b",
+        "sameIdAfterNewKeyOverTwoMinutes": true,
+        "status": "succeeded",
+        "code": "",
+        "hasName": true,
+        "queryId": "a484e6d5-6cac-4eb1-af5d-38bb8e1707c3",
+        "number": 164,
+        "attempts": 1
+      },
+      {
+        "index": 15,
+        "lookupId": "4e60b4ec-7529-4049-aaef-2e3b3eed09ea",
+        "sameIdAfterNewKeyOverTwoMinutes": true,
+        "status": "succeeded",
+        "code": "",
+        "hasName": true,
+        "queryId": "ceddc9ca-202f-4edf-9c13-4e5c0f04a68d",
+        "number": 164,
+        "attempts": 1
+      },
+      {
+        "index": 16,
+        "lookupId": "161bd56c-7695-4497-8c1d-abbd263dfb0f",
+        "sameIdAfterNewKeyOverTwoMinutes": true,
+        "status": "not_found",
+        "code": "",
+        "hasName": false,
+        "queryId": "01a4d58c-1f1b-49d3-9703-6db39ed6eda4",
+        "number": 155,
+        "attempts": 1
+      },
+      {
+        "index": 17,
+        "lookupId": "3fc6635e-24d6-41b3-bf63-de714d440058",
+        "sameIdAfterNewKeyOverTwoMinutes": true,
+        "status": "succeeded",
+        "code": "",
+        "hasName": true,
+        "queryId": "7fcc5e34-4b7e-4f0b-89c7-7228522ef856",
+        "number": 164,
+        "attempts": 1
+      }
+    ],
+    "probeResults": [
+      {
+        "lookupId": "d12ba562-2c2f-45d5-b1e7-0e89173f9e4f",
+        "number": 155,
+        "status": "succeeded",
+        "code": ""
+      },
+      {
+        "lookupId": "2b04c5f4-bd17-4c4f-9820-ed384e982365",
+        "number": 130,
+        "status": "failed",
+        "code": "lookup_probe_failed"
+      },
+      {
+        "lookupId": "b3abad5b-f7ba-4be8-9ecd-9fec27bb4fb3",
+        "number": 130,
+        "status": "failed",
+        "code": "lookup_probe_failed"
+      },
+      {
+        "lookupId": "9f954928-dbef-46d9-b043-9df8921e6726",
+        "number": 155,
+        "status": "succeeded",
+        "code": ""
+      },
+      {
+        "lookupId": "bc15e364-d70b-40ed-b94b-244bf4a40c60",
+        "number": 130,
+        "status": "failed",
+        "code": "lookup_probe_failed"
+      },
+      {
+        "lookupId": "317be650-c768-49c1-b99b-fdcd77fa3160",
+        "number": 130,
+        "status": "failed",
+        "code": "lookup_probe_failed"
+      },
+      {
+        "lookupId": "8902a258-66b4-4e08-9eca-b5b7e55fc25b",
+        "number": 130,
+        "status": "failed",
+        "code": "lookup_probe_failed"
+      },
+      {
+        "lookupId": "89ffe65f-c886-4293-b7da-7062cdbeb4ad",
+        "number": 130,
+        "status": "failed",
+        "code": "lookup_probe_failed"
+      },
+      {
+        "lookupId": "5e5046bd-fbf7-4d1c-8336-fdba750ed3ba",
+        "number": 155,
+        "status": "succeeded",
+        "code": ""
+      },
+      {
+        "lookupId": "ade29b6c-d4aa-4c5b-a97c-61842ef7bb86",
+        "number": 130,
+        "status": "failed",
+        "code": "lookup_probe_failed"
+      },
+      {
+        "lookupId": "34e49daf-bc81-49ad-a482-e7376a02a574",
+        "number": 162,
+        "status": "succeeded",
+        "code": ""
+      },
+      {
+        "lookupId": "f5fcfe75-4b87-4c8f-b925-350e0e128a47",
+        "number": 164,
+        "status": "succeeded",
+        "code": ""
+      },
+      {
+        "lookupId": "81f47829-1406-4ded-8e7d-ea85a626ea3c",
+        "number": 130,
+        "status": "failed",
+        "code": "lookup_probe_failed"
+      },
+      {
+        "lookupId": "bff1d283-92a3-46a7-aed3-c0d5078fbc57",
+        "number": 155,
+        "status": "succeeded",
+        "code": ""
+      },
+      {
+        "lookupId": "f131c97d-78a2-4475-8f40-0e803b8c06c4",
+        "number": 164,
+        "status": "succeeded",
+        "code": ""
+      },
+      {
+        "lookupId": "32715df0-074b-4b46-9fc1-6f7baa10ab74",
+        "number": 130,
+        "status": "failed",
+        "code": "lookup_probe_failed"
+      },
+      {
+        "lookupId": "b8732a7d-6025-48be-8b2f-e2167998392f",
+        "number": 155,
+        "status": "succeeded",
+        "code": ""
+      }
+    ],
+    "audits": [],
+    "settingsRestored": true,
+    "fullyDrained": false,
+    "disabled130": true
+  },
+  "cleanup": {
+    "atUtc": "2026-10-15T06:06:43.379Z",
+    "revision": 39,
+    "settingsRestored": true,
+    "poolEnabled": false,
+    "manualDisabledDevices": [
+      130
+    ],
+    "pendingRequestPreserved": "3a984884-7e60-4487-85b7-7bffedbbf16f",
+    "pendingQueryPreserved": "114090a0-d669-4a0e-a47c-cedd895ab3f0",
+    "fullyDrained": false,
+    "forcedLockRelease": false,
+    "newQueriesSubmitted": 0
+  },
+  "summary": {
+    "businessSubmitted": 6,
+    "businessCompleted": 5,
+    "name": 4,
+    "emptyString": 1,
+    "pendingOffline": 1,
+    "newKeyAfterTwoMinutesSameId": 6,
+    "businessQueryBudget": 8,
+    "unusedIndices": [
+      18,
+      19
+    ],
+    "probeRequests": 17,
+    "probeSuccessful": 8,
+    "probeFailed": 9
+  },
+  "findings": {
+    "130": "Launch-associated short device-not-found bursts confirmed (5/24 samples), idle reads successful. Exact-device reconnect and bounded read retries did not eliminate the fault; physical cause unproven. Disabled, no business assigned. Three-failure persistent quarantine is built but cloud reload pending.",
+    "155": "Historical startup exit root cause remains unproven due to truncated diagnostics; no recurrence across five successful readiness probes. First business named; second captcha resumed but customer-info suggestion layout caused unconfirmed. Visual hotfix and exactly scoped idle worker refresh, then formal same-request retry accepted at 05:59:35.421Z; original query now not_found and signed API returns empty string.",
+    "162": "Captcha probe automatically resumed and passed. Business recharge-only screenshot with footer clipboard icon exposed precise visual gap fixed in rc.7; device later offline, formal retry 409 without replay. Original request and reservation preserved; post-fix real result unverified."
+  },
+  "actualSideEffects": {
+    "sharedAgentRestarted": false,
+    "cloudRestartedThisStage": false,
+    "adbRestarted": false,
+    "windowsRestarted": false,
+    "usbHubRestarted": false,
+    "mediaRestarted": false,
+    "target130ReconnectOnce": true,
+    "idle155PocoWorkerRefreshPid": 635192,
+    "administratorOriginalRetry155": 1,
+    "retryIsSeparateFromClientIdempotency": true,
+    "gitPushed": false
+  },
+  "contractChecks": {
+    "sameKeySameId": true,
+    "invalidPhone": 400,
+    "conflictingKey": 409,
+    "unknownLookupId": 404,
+    "newRequestDeltaForContractChecks": 0
+  },
+  "unverified": [
+    "162 offline original result after visual patch",
+    "130 physical connection root cause",
+    "155 historical bootstrap exit root cause",
+    "new natural limit reroute and full eight-hour cooldown this run",
+    "cloud quarantine production behavior pending new maintenance window",
+    "independent review"
+  ],
+  "review": "Self-review of candidate boundaries, exact read-only retries, UI management guard, request/reservation preservation and rollback; not independent review.",
+  "existingWorkPreserved": "Root repository 236 preexisting dirty entries preserved; task worktree clean before receipt edits.",
+  "productionAcceptanceComplete": false
+}
