@@ -1,0 +1,31 @@
+{
+  "version": "lookup-readiness-20261015-rc.13",
+  "sourceCommit": "c27a6d0d342e693ebd6159e6aa457373325ffcec",
+  "atUtc": "2026-10-15T09:05:26.407681+00:00",
+  "startedAtUtc": "2026-10-15T09:05:24.826158+00:00",
+  "agentBefore": 634228,
+  "agentPid": 650400,
+  "adbPid": 634172,
+  "owner": "SYSTEM",
+  "adbStartUnchanged": true,
+  "modifiedFiles": [
+    "scripts/alipay_visual_result.py",
+    "src/device-scan-pipeline.mjs",
+    "src/index.mjs",
+    "src/pnp-recovery-control.mjs",
+    "src/recovery-isolation.mjs"
+  ],
+  "verifiedRuntimeFiles": {
+    "scripts/alipay_name_lookup.py": "5d3ff1b512c61cc34fba13b4b8600c3e95b698dcd097753d74ce4cfb46cb6b6c",
+    "scripts/alipay_visual_result.py": "81315eddb0b0e921d32a819d8d0ca24aa195f52ec31903014d31dd1023be9966",
+    "src/device-scan-pipeline.mjs": "8ef31ead50d4b1bec3bc648d72d6cbe64fe4cc102c04a5c0d269240295a5a6c4",
+    "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+    "src/pnp-recovery-control.mjs": "92e2bcc37d7bc8b9d3e61d4385116db7181530d5fe125c6c2a3210c5142fde0f",
+    "src/recovery-isolation.mjs": "2fe4305e6ca9afabb72b0406a224786659d88f2d8f3a1351e4a8b2aa475e312f",
+    "scripts/xhs_airtest_poco.py": "e6bdc2d96adf9a7b5e130eac72a0479d7790732831cfda71bf0230923ceccdaa"
+  },
+  "taskXmlUnchanged": true,
+  "configUnchanged": true,
+  "preloadUnchanged": true,
+  "statePreserved": true
+}

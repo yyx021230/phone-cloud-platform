@@ -1,0 +1,24 @@
+{
+  "version": "lookup-readiness-20261015-deployed.13",
+  "sourceCommit": "c27a6d0d342e693ebd6159e6aa457373325ffcec",
+  "imageId": "sha256:3102e2fd770ccf6d855e1b2192846965b49d33e3b9a7d9f89b374a8fd6372359",
+  "agentPid": 650400,
+  "adbPid": 634172,
+  "health": {
+    "/healthz": 200,
+    "/readyz": 200,
+    "phone-cloud-postgres": "healthy",
+    "phone-cloud-redis": "healthy"
+  },
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "activeSha256": "98e81f101e95cdc44f9f75abee58d9ea51dff6bf36f977891726f789b0a930a4",
+  "status": "deployed-new-real-api-acceptance-pending",
+  "receiptDirectory": "/opt/phone-cloud-platform/deployment-receipts/lookup-readiness-20261015-deployed.13"
+}
