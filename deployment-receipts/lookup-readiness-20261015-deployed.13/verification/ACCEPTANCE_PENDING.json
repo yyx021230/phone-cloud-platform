@@ -1,0 +1,45 @@
+{
+  "status": "real-api-started-waiting-manual-captcha",
+  "version": "lookup-readiness-20261015-deployed.13",
+  "sourceCommit": "c27a6d0d342e693ebd6159e6aa457373325ffcec",
+  "at": "2026-10-15T09:14:40.516Z",
+  "publicHttpCalls": 42,
+  "publicPreparationResponsesExposeCounts": false,
+  "selectedPhones": [
+    115,
+    155,
+    156,
+    162,
+    164
+  ],
+  "readyPhone": 156,
+  "captchaPhones": [
+    115,
+    155,
+    162,
+    164
+  ],
+  "notificationsSent": 4,
+  "newBusinessQueriesSubmitted": 0,
+  "old156": {
+    "result": "completed",
+    "hasName": false,
+    "sameLookupId": true,
+    "explicitAdminRecovery": 1,
+    "countsAsTransparentRetryAcceptance": false
+  },
+  "productionAcceptanceComplete": false,
+  "pending": [
+    "five concurrent new public submissions",
+    "real queued work taken by newly-ready phone",
+    "121second new-key resubmit with original lookup and no new execution"
+  ],
+  "poolRevision": 45,
+  "poolRestored": false,
+  "reason": "Preserve four original captcha probes until user completes or normal lease expires. No force-cancel/result edits.",
+  "preparedLeaseExpiresAt": "2026-10-15T09:39:06.026Z",
+  "adbPid": 634172,
+  "agentPid": 650400,
+  "testDriverWatchStopped": true,
+  "platformHumanObserverStillActive": true
+}
