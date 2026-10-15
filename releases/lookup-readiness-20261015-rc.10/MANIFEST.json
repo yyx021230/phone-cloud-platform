@@ -1,0 +1,12 @@
+{
+  "version": "lookup-readiness-20261015-rc.10",
+  "files": {
+    "README.md": "d2245ceb656400d7b9c4b6e1f646f020bcf0e7485ab9737787e9cca42ec0e34c",
+    "VERSION.json": "2431b1108a00da33fb40d4029297036280e43246a3a28978b71cfefc16c952b3",
+    "verification/NATIVE_WINDOWS.json": "3128121872694f933dd1a31f0064469211019d74cb68552346e51a358ea9f464",
+    "verification/RESULTS.json": "5707eb99978674d63139e1e295d4a22ba9ef673e007145b7f737b40b225f8b4b",
+    "verification/prepare-local.py": "296d5a204334d5b96e1df1e93b457ff1a95a32856e117141750568837ff6c5bf",
+    "windows-agent/scripts/alipay_visual_result.py": "8f3d696cb031bfb33ab4228e3933cfb6344b426abb912dd75fb7459fa86e9407",
+    "windows-agent/scripts/test_lookup_alipay_info_suggestion.py": "61ad1d9f825f9b1b006bff57428c7ee163f29fabe329d32ab13cc7726a745a62"
+  }
+}
