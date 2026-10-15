@@ -1,0 +1,19 @@
+{
+  "version": "lookup-readiness-20261015-rc.11",
+  "status": "local-candidate-not-deployed",
+  "baseTag": "lookup-readiness-20261015-rc.10",
+  "baseManifestSha256": "4db6237c423d87483a936873afb452f681476f85dab0a9f28b0a8a7332c63f31",
+  "productionBaseline": "lookup-readiness-20261015-deployed.10",
+  "productionSourceCommit": "a5677a2d2823e96417dcfcea3b3015a0cb530a74",
+  "productionActiveSha256": "2167fdb20d30105b872432ee6df9080cf81d5dc38293ccada9bc05d1ecbb452f",
+  "productionVisualSha256": "8f3d696cb031bfb33ab4228e3933cfb6344b426abb912dd75fb7459fa86e9407",
+  "overlayFiles": [
+    "windows-agent/scripts/alipay_visual_result.py",
+    "windows-agent/scripts/test_lookup_transfer_shortcuts.py"
+  ],
+  "requiresCloudRestart": false,
+  "requiresWindowsAgentRestart": false,
+  "requiresAdbRestart": false,
+  "requiresTargetIdleWorkerRefreshBeforeFutureDeployment": true,
+  "databaseMigrations": 0
+}

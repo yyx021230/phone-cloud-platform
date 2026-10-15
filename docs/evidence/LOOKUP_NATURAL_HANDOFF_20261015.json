@@ -461,5 +461,164 @@
     "Source JSON temporary file missing; re-extracted original workbook read-only, hash matches historical authorization",
     "First scheduling call rejected missing thread destination; corrected and verified automation161 active",
     "No natural restriction means no code defect or successful handoff can be claimed"
-  ]
+  ],
+  "continuation": {
+    "asOf": "2026-10-15T08:19:23.917Z",
+    "submitted": 59,
+    "completed": 58,
+    "named": 53,
+    "empty": 5,
+    "pending": 1,
+    "captcha155ResumedSameLookupAndQuery": true,
+    "apiResultsAndSameKey": {
+      "at": "2026-10-15T08:15:39.934Z",
+      "event": "completed-results-verified",
+      "count": 58,
+      "named": 53,
+      "empty": 5,
+      "newRequests": 0,
+      "pending": 1
+    },
+    "original156": {
+      "id": "0761ca1b-b5f6-404d-bb9c-6b793d6c5807",
+      "status": "needs_recovery",
+      "code": "lookup_recovery_required",
+      "hasName": false,
+      "queryId": "8fc204a2-d247-43da-a149-89568a0a9375",
+      "attempts": [
+        {
+          "number": 156,
+          "keys": [
+            "at",
+            "deviceId",
+            "sessionId",
+            "generation",
+            "readinessIdentity"
+          ]
+        }
+      ]
+    },
+    "retryCountThisContinuation": 1,
+    "retryCompleted": false,
+    "preparation": {
+      "ok": true,
+      "preparationId": "533b1504-25ec-4b58-98e4-6e824c987006",
+      "status": "expired",
+      "ready": false,
+      "readyCount": 0,
+      "idleCount": 0,
+      "minimumReady": 2,
+      "targetCount": 5,
+      "expiresAt": "2026-10-15T08:17:42.211Z"
+    },
+    "channels": [
+      {
+        "number": 156,
+        "phase": "recovery",
+        "requestId": "0761ca1b-b5f6-404d-bb9c-6b793d6c5807",
+        "proof": false
+      }
+    ],
+    "rootCause": "Complete transfer-to-phone and recharge shortcut card rejected by recharge-only parser; no observed restriction",
+    "candidate": "lookup-readiness-20261015-rc.11",
+    "candidateLocalTests": 553,
+    "candidateNativeFrames": 2,
+    "candidateDeployed": false,
+    "originalPoolRestored": false,
+    "reasonNotRestored": "Original156 remains needs_recovery; no forced cancellation or lock release",
+    "cooldownEvidence": [
+      {
+        "at": "2026-10-15T08:15:58.011Z",
+        "event": "device-cooldown",
+        "number": 155,
+        "health": {
+          "ready": true,
+          "reason": ""
+        },
+        "occupancy": {
+          "kind": "alipay_name_lookup",
+          "label": "支付宝查名字",
+          "ownerLabel": "Open Name Lookup API",
+          "ownerVisible": true,
+          "startedAt": "2026-10-15T07:47:42.329Z",
+          "appSlot": "",
+          "taskId": "83b327a7-8818-4a9b-a36c-84d5ff885dd4",
+          "sessionId": ""
+        },
+        "rows": []
+      },
+      {
+        "at": "2026-10-15T08:15:58.011Z",
+        "event": "device-cooldown",
+        "number": 156,
+        "health": {
+          "ready": true,
+          "reason": ""
+        },
+        "occupancy": {
+          "kind": "alipay_name_lookup",
+          "label": "支付宝查名字",
+          "ownerLabel": "Open Name Lookup API",
+          "ownerVisible": true,
+          "startedAt": "2026-10-15T07:58:21.613Z",
+          "appSlot": "",
+          "taskId": "57b08553-374d-4064-94e0-58eb4303e4e0",
+          "sessionId": ""
+        },
+        "rows": []
+      },
+      {
+        "at": "2026-10-15T08:15:58.012Z",
+        "event": "device-cooldown",
+        "number": 161,
+        "health": {
+          "ready": false,
+          "reason": "accounts_cooling"
+        },
+        "occupancy": null,
+        "rows": [
+          {
+            "accountHash": "26aa4c3376f1",
+            "limitedAt": "2026-10-15T01:56:11.054Z",
+            "until": "2026-10-15T09:56:11.054Z",
+            "reason": "frequent_or_abnormal_access",
+            "phoneQueryStarted": true,
+            "jobId": "8b6aa91d-5a81-4590-8f3e-54f3e50e1ab7",
+            "remainingMs": 6013042,
+            "durationMs": 28800000
+          },
+          {
+            "accountHash": "5ffa7a966d18",
+            "limitedAt": "2026-10-15T01:58:02.854Z",
+            "until": "2026-10-15T09:58:02.854Z",
+            "reason": "frequent_or_abnormal_access",
+            "phoneQueryStarted": true,
+            "jobId": "8b6aa91d-5a81-4590-8f3e-54f3e50e1ab7",
+            "remainingMs": 6124842,
+            "durationMs": 28800000
+          },
+          {
+            "accountHash": "94860ed4acf5",
+            "limitedAt": "2026-10-15T02:05:21.946Z",
+            "until": "2026-10-15T10:05:21.946Z",
+            "reason": "frequent_or_abnormal_access",
+            "phoneQueryStarted": true,
+            "jobId": "37429d3c-e5b9-4736-b67e-9e2db4f1bfcb",
+            "remainingMs": 6563934,
+            "durationMs": 28800000
+          },
+          {
+            "accountHash": "a07e3968147d",
+            "limitedAt": "2026-10-15T02:08:28.638Z",
+            "until": "2026-10-15T10:08:28.638Z",
+            "reason": "frequent_or_abnormal_access",
+            "phoneQueryStarted": true,
+            "jobId": "784387ce-961e-4722-b248-80a8f5d2824b",
+            "remainingMs": 6750626,
+            "durationMs": 28800000
+          }
+        ]
+      }
+    ]
+  }
 }
