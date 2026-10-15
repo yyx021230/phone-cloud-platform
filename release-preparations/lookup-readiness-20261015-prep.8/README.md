@@ -1,4 +1,6 @@
-# rc.8 云端隔离规则发布准备（未切换）
+# rc.8 云端隔离规则发布材料（已切换，验收未全完成）
+
+以下为14:08准备时快照；“未切换/待窗口”保留为历史，最新执行状态见文末。
 
 候选 `lookup-readiness-20261015-rc.8`，源码 `9d49e66799bfaa3a68d9f57a0fea64052d888ea3`。3次连续准备失败进入查名不可用池、管理员显式重新探测通过后接单；API提交/结果协议不变。29定向、747全量含投屏、root check、374 Python及Windows视觉1通过。自审，无独立审查。
 
@@ -27,3 +29,9 @@
 ## 14:36 前置故障更新
 
 162已重新USB枚举，但ADB驱动安装受两OEM共享co-installer冲突影响，仍不可用。原请求到期后通道unknown，不能强制清锁后部署。详见[驱动维护准备](../adb-driver-20261015/README.md)；该维护尚未批准，云端仍待切换。三次查名失败隔离并不等于暂停Windows自动驱动安装。现有备份须在实际切换前检查新鲜度；Windows旧驱动回绑也可能再次触发冲突，不作无窗口自动回退。
+
+## 15:01已发布：deployed.8
+
+用户新授权共享维护，162原请求已安全超时结束、池disabled/revision39/0通道/0自动化后，于14:55切换到e92e3a93；133文件hash/6 HTTP/401/PG/Redis/Agent新鲜心跳/D-075前后live通过。源9d49e66799bfaa3a68d9f57a0fea64052d888ea3、原rc.8标签不变。正式回执在宿主 `deployment-receipts/lookup-readiness-20261015-deployed.8`；最新备份 `deploy-backups/lookup-readiness-20261015-prep.8-maintenance1` 含475266192字节完整PG、63 TOC项与整份解码校验，未恢复入库。旧rc.3镜像/7层Compose保留。
+
+同时162精确驱动及SYSTEM授权入口变更见[驱动记录](../adb-driver-20261015/README.md)。Windows三Python overlay和新增adb-auth-env.cjs不得被云镜像内旧Agent包覆盖。池仍关闭、130禁用；原6结果5完成1超时失败，本窗口0新查询。用户正在确认USB调试，15:01直接ADB为97在线/22未授权；不能宣布全量恢复或新接口已全面接单。生产三次失败触发、新自然触限转交/8h仍待验。完整[维护证据](../../docs/evidence/LOOKUP_READINESS_RC8_MAINTENANCE_20261015.json)保留共享身份恢复失败和窗口超过估计的事实。

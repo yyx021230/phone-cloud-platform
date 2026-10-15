@@ -1,6 +1,6 @@
-# 162 ADB 驱动冲突：维护准备，未执行替换
+# 162 ADB 驱动维护记录（当前已执行单机替换）
 
-2026-10-15，延续查名 rc.8 收尾和用户要求的 ADB 稳定性排查。当前不是已修复状态；云端三次失败隔离也尚未加载。证据见 [现场记录](../../docs/evidence/ADB_DRIVER_COLLISION_20261015.json)。
+2026-10-15 14:36历史准备基线，延续查名 rc.8 收尾和 ADB 稳定性排查。下文“待批准/未执行”均为维护前记录；最新状态以本节末尾执行回执为准。证据见 [现场记录](../../docs/evidence/ADB_DRIVER_COLLISION_20261015.json)。
 
 ## 原因与边界
 
@@ -34,3 +34,11 @@ Windows 的 `oem38.inf`（hn_goadb）和 `oem44.inf`（vivo）都往 System32 �
 - 162单机成功也不意味着全机驱动冲突已根治。后续若其他OEM驱动继续交替覆盖，另做逐台迁移计划，先单机/两机验证，再明确授权扩大；不在本窗口偷偷批量修改。
 
 微软依据：[共享驱动文件与重启影响](https://learn.microsoft.com/en-us/windows-hardware/drivers/install/avoiding-system-restarts-during-device-installations)、[WinUSB安装](https://learn.microsoft.com/en-us/windows-hardware/drivers/usbcon/winusb-installation)、[指定单设备安装API](https://learn.microsoft.com/en-us/windows/win32/api/newdev/nf-newdev-diinstalldevice)。
+
+## 15:01执行回执与授权入口回退
+
+用户批准本次共享维护。14:44仅162当前MI02绑定Microsoft winusb.inf的ADB节，NeedReboot=false；至15:01在线，安装器0。其他OEM包/手机/162另一模式未更改。云rc.8同时在排空后上线，详细时间、失败尝试和当前未授权清单见[回执](../../docs/evidence/LOOKUP_READINESS_RC8_MAINTENANCE_20261015.json)。
+
+最终采用SYSTEM Agent/ADB加 `adb-auth-env.cjs`，计划任务通过 `--require` 读取原有SYSTEM与Administrator两份key路径；未复制/更改/生成密钥。之前仅Administrator身份恢复反而30在线/89未授权，联合密钥的非SYSTEM daemon又被owner策略替换；这些尝试不能隐去。最终15:01为97在线/22未授权，用户正在手机端确认；不重复重启/重装驱动。实时控制实现和参数不变，维护期间共享连接已中断；747投屏回归、3预加载测试通过，但不代替全机真机验收。
+
+需回退预加载时，先取得新的共享维护窗口，核对当前任务动作和preload hash，保存当前任务，恢复宿主备份 `AGENT-TASK.before.xml` 的原动作（去掉本轮--require）后按服务入口恢复；不删除两份已有key。回退可能使部分授权再次不可用，应先评估，不自动执行。驱动回退仍仅限162精确实例，原OEM可能重新引发安装冲突。云回退沿用prep.8，不恢复旧数据库覆盖新结果。当前维护已结束，用户确认期间仅只读核对。
