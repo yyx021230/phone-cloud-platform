@@ -1,0 +1,32 @@
+{
+  "version": "lookup-readiness-20261015-rc.1",
+  "sourceCommit": "fda9967e0b5e441f750c7bdae94e07be6cd86235",
+  "imageId": "sha256:73b24327c093d52da3fa8d0b75ed6c164cf66cb47c8f8512ed33e78cd9ef8f39",
+  "tag": "phone-cloud-platform:lookup-readiness-20261015-rc.1",
+  "platform": "linux/amd64",
+  "labels": {
+    "org.opencontainers.image.revision": "fda9967e0b5e441f750c7bdae94e07be6cd86235",
+    "org.opencontainers.image.version": "lookup-readiness-20261015-rc.1"
+  },
+  "node": "v22.23.3",
+  "isolation": "network=none; no published ports; ephemeral fixture data and credentials",
+  "environment": "NODE_ENV=test / JSON smoke only; PostgreSQL behavior covered by previous local HTTP regression, not by this smoke",
+  "verifiedContainerFiles": 132,
+  "httpStatuses": {
+    "/healthz": 200,
+    "/readyz": 200,
+    "/api-docs.html": 200,
+    "/api-reference.json": 200,
+    "/openapi.json": 200,
+    "/downloads/name-lookup-integration.zip": 200
+  },
+  "unsignedPrepareStatus": 401,
+  "httpDownloadHashesMatch": true,
+  "productionConnections": 0,
+  "realDeviceQueries": 0,
+  "archive": {
+    "file": "cloud-image-linux-amd64.tar.gz",
+    "sha256": "53bd15860c785451b3a1cba40f247dd3d730e4154e02abb47304251628dd6cee",
+    "bytes": 63267151
+  }
+}
