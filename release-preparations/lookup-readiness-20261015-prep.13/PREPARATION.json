@@ -1,0 +1,45 @@
+{
+  "status": "prepared-awaiting-current-maintenance-window-not-deployed",
+  "candidateTag": "lookup-readiness-20261015-rc.13",
+  "candidateCommit": "c27a6d0d342e693ebd6159e6aa457373325ffcec",
+  "baseVersion": "lookup-readiness-20261015-deployed.10",
+  "baseReceiptCommit": "f2c36e98407564b94dca60e2bb7959377d6d885a",
+  "activeSha256": "2167fdb20d30105b872432ee6df9080cf81d5dc38293ccada9bc05d1ecbb452f",
+  "pendingImage": "sha256:3102e2fd770ccf6d855e1b2192846965b49d33e3b9a7d9f89b374a8fd6372359",
+  "mediaLiveVerifiedBeforePreparation": true,
+  "productionRuntimeChanged": false,
+  "adbActions": 0,
+  "sharedAgentRestarted": false,
+  "databaseMigration": false,
+  "windowsNativeFixtures": 49,
+  "fullRegression": 801,
+  "pythonTests": 553,
+  "publicApiSimulationHoldMs": 121001,
+  "newRealQueries": 0,
+  "maintenanceRequested": {
+    "controls": [
+      147,
+      146,
+      126
+    ],
+    "estimatedMinutes": 5,
+    "cloudAndSharedAgentReload": true,
+    "adbIdentityKeysStartupFrozen": true
+  },
+  "pendingOriginal156": {
+    "lookupId": "0761ca1b-b5f6-404d-bb9c-6b793d6c5807",
+    "status": "needs_recovery",
+    "windowsTaskExecuting": false,
+    "preserved": true
+  },
+  "reviewNotes": [
+    "raw immutable test logs retain harmless trailing whitespace; source diff clean",
+    "deployment stage initially included three Python fixture files and omitted inherited XHS script; corrected staged allowlist before build, 22 runtime/doc files; live files not changed"
+  ],
+  "notVerified": [
+    "combined runtime activated",
+    "new five-phone external API acceptance",
+    "fresh natural limit/cooling completion"
+  ],
+  "pushed": false
+}

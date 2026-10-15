@@ -1,0 +1,8 @@
+{
+  "adbPid": 634172,
+  "agentPid": 634228,
+  "owner": "SYSTEM",
+  "taskXmlSha256": "1874aab1e14a0c3fae27b07d9c688b608e670661c387a9dacd53ed25f6ad6b7c",
+  "preloadSha256": "9c3aa5affb9243f255f2bf74376ee7bb01c9f9171989f5477146263ee7e2bb4d",
+  "configSha256": "ee61ff30debd1b1077a1964ebd3946a0f36d8c4a221777be219890896c865b52"
+}

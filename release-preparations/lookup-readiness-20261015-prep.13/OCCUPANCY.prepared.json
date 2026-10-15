@@ -1,0 +1,50 @@
+{
+  "at": "2026-10-15T09:00:34.090Z",
+  "online": 117,
+  "total": 131,
+  "occupied": [
+    {
+      "number": "147",
+      "kind": "screen_control",
+      "sessionId": "64d7e064-bf94-467e-b2dc-def5c5664cbe",
+      "taskId": ""
+    },
+    {
+      "number": "146",
+      "kind": "screen_control",
+      "sessionId": "c62d4eb8-1a30-4674-aa72-ff342a18cd07",
+      "taskId": ""
+    },
+    {
+      "number": "156",
+      "kind": "alipay_name_lookup",
+      "sessionId": "",
+      "taskId": "57b08553-374d-4064-94e0-58eb4303e4e0"
+    },
+    {
+      "number": "126",
+      "kind": "screen_control",
+      "sessionId": "262f1658-8ce7-443e-9e80-16d4025649f3",
+      "taskId": ""
+    }
+  ],
+  "pool": {
+    "enabled": true,
+    "revision": 44,
+    "channels": [
+      {
+        "number": 156,
+        "phase": "recovery",
+        "requestId": "0761ca1b-b5f6-404d-bb9c-6b793d6c5807"
+      }
+    ],
+    "pending": [
+      {
+        "id": "0761ca1b-b5f6-404d-bb9c-6b793d6c5807",
+        "status": "needs_recovery",
+        "code": "lookup_recovery_required"
+      }
+    ]
+  },
+  "activeTasks": []
+}

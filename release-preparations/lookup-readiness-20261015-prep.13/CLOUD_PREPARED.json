@@ -1,0 +1,22 @@
+{
+  "stage": "/opt/phone-cloud-platform/staging/lookup-readiness-20261015-rc.13",
+  "backup": "/opt/phone-cloud-platform/deploy-backups/lookup-readiness-20261015-prep.13",
+  "manifestHash": "d596e3af713f88d9bd8967fc1ab3642769129a56a360708809fd8edf4a6923a5",
+  "baselineFilesVerified": 21,
+  "runtimeOverlayFiles": 22,
+  "database": {
+    "bytes": 482420700,
+    "sha256": "39fa1d34acf9b2ae14d80abd3b026c864539b2935ed0e4ed21d946dd619e61df",
+    "tocEntries": 63,
+    "decoded": true,
+    "restored": false
+  },
+  "imageArchive": {
+    "bytes": 63594496,
+    "sha256": "538f8a949015b3eb9585ac12c720a981957b9f438bc8c8e76ca30ad97f71a299"
+  },
+  "mediaLivePassed": true,
+  "productionUnchanged": true,
+  "inheritedXhsIncluded": true,
+  "productionChanged": false
+}

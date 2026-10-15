@@ -1,0 +1,25 @@
+{
+  "version": "lookup-readiness-20261015-rc.13",
+  "sourceCommit": "c27a6d0d342e693ebd6159e6aa457373325ffcec",
+  "atUtc": "2026-10-15T08:59:53.859889+00:00",
+  "imageId": "sha256:3102e2fd770ccf6d855e1b2192846965b49d33e3b9a7d9f89b374a8fd6372359",
+  "imageTag": "phone-cloud-platform:lookup-readiness-20261015-rc.13",
+  "baseImageId": "sha256:e92e3a933344eed3e7033dd4a8b3ec8f9a85cae37a03d51d1b9014372296fd0a",
+  "filesVerified": 22,
+  "http": {
+    "/healthz": 200,
+    "/readyz": 200,
+    "/api-docs.html": 200,
+    "/api-reference.json": 200,
+    "/openapi.json": 200,
+    "/downloads/name-lookup-integration.zip": 200
+  },
+  "unsignedPrepare": 401,
+  "isolated": "network=none, tmpfs fixture data, no ports, ephemeral generated credentials",
+  "containerRemoved": true,
+  "productionContainerUnchanged": true,
+  "activeReleaseUnchanged": true,
+  "pendingComposeSha256": "c33ca7e966eeabf1a0e749f28eccd364c01c547735b24d9517d17f02dde5eb76",
+  "productionAcceptanceComplete": false,
+  "windowsOverlayRequired": "c27a6d0d342e693ebd6159e6aa457373325ffcec"
+}
