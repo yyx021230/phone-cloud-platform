@@ -1,0 +1,28 @@
+{
+  "oldRegression": {
+    "tests": 3,
+    "failures": 1,
+    "errors": 1
+  },
+  "newRegression": {
+    "tests": 15,
+    "passed": 15
+  },
+  "pythonDiscovery": {
+    "tests": 368,
+    "passed": 368
+  },
+  "windowsNative": {
+    "tests": 13,
+    "passed": 13
+  },
+  "beforeSha256": "bd1a7f955fc054c52d91eef8f1c3d8ab0d39c37d182222f026247593f57841a7",
+  "controlRegression": "rc.4 741 passed; no additional shared lifecycle/control edits",
+  "realAcceptancePending": true,
+  "logs": {
+    "gap-old.log": "57415312cfdb0fe49f9da73909137cd93a648c4cf98db8708c67be3fcc03f148",
+    "gap-new.log": "e794425aff4cfa63a1007f2dc67cdb779f10540d5400d3efd4519ba298d84939",
+    "gap-full.log": "581d225c5b64f02fe871a675ee19baa43aa87f9b9975330fd99560ecb1b743d6",
+    "gap-windows-tests.log": "06abf0e5c924d70c699dca814d8bd758e0ef3b6230920e721ab8c1985399c7cc"
+  }
+}

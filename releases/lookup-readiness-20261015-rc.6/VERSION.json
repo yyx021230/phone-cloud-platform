@@ -1,0 +1,15 @@
+{
+  "version": "lookup-readiness-20261015-rc.6",
+  "status": "local-candidate-not-deployed",
+  "baseTag": "lookup-readiness-20261015-rc.5",
+  "baseManifestSha256": "da35673509e236f9ff5602d7ecb25912d8851979dfc9dd4a50607f3c9ee57e9b",
+  "productionBaseline": "lookup-readiness-20261015-deployed.5",
+  "overlayFiles": [
+    "windows-agent/scripts/test_lookup_transport_read.py",
+    "windows-agent/scripts/alipay_name_lookup.py",
+    "windows-agent/scripts/test_lookup_transient_gap.py"
+  ],
+  "cloudRuntimeUnchanged": true,
+  "requiresSharedRestart": false,
+  "databaseMigrations": 0
+}
