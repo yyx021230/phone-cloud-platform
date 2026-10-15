@@ -1,0 +1,31 @@
+{
+  "oldRegression": {
+    "tests": 5,
+    "failures": 1,
+    "errors": 3
+  },
+  "newRegression": {
+    "tests": 31,
+    "passed": 31
+  },
+  "pythonDiscovery": {
+    "tests": 373,
+    "passed": 373
+  },
+  "windowsNative": {
+    "tests": 5,
+    "passed": 5
+  },
+  "beforeHashes": {
+    "alipay_name_lookup.py": "c759a1e680bd3fc51e5cbf3d0642e7d918ae985c3f39b34887ce962fc82e74aa",
+    "alipay_visual_result.py": "e624055523976001ed10fc6eb2223f1dde41f2da336a41a2e8cc62e9fd4f7780"
+  },
+  "controlRegression": "rc.4 741 passed; no additional shared lifecycle/control edits",
+  "realAcceptancePending": true,
+  "logs": {
+    "remaining-old.log": "d0e39aedf97771c5e048eeca6423836fd33e091c42202756007c6d6ba5c601f3",
+    "remaining-new.log": "1ddd2406964a9332273c61ff11890c0171e6d7567f1a1d90157f569236063b68",
+    "remaining-full.log": "c770f952b4fc50db03dccf0b223adcfca97638d656e288fd57583af0055d7398",
+    "remaining-windows-tests.log": "3fe68edd4c0fb085181b1c38b098bd9a30f9293138b6756410846957d39b22ee"
+  }
+}
