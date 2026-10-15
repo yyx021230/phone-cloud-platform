@@ -1,0 +1,57 @@
+{
+  "atUtc": "2026-10-15T04:39:34.191008+00:00",
+  "backupDirectory": "/opt/phone-cloud-platform/deploy-backups/lookup-readiness-20261015-prep.3",
+  "previousVersion": "lookup-readiness-20261015-deployed.2",
+  "previousImageId": "sha256:73b24327c093d52da3fa8d0b75ed6c164cf66cb47c8f8512ed33e78cd9ef8f39",
+  "containerUnchanged": true,
+  "configs": [
+    {
+      "backup": "env.before",
+      "source": "/opt/phone-cloud-platform/.env",
+      "sha256": "4aa2c0a5a990beaa7436b65fa8678335381d14240ee139e7b45e6f50fbbc68f8"
+    },
+    {
+      "backup": "compose-0.before",
+      "source": "/opt/phone-cloud-platform/docker-compose.yml",
+      "sha256": "8687bf4176f8f0d78ab73380a7ef0fd6b71bf044de5474f172ef5483d3e47435"
+    },
+    {
+      "backup": "compose-1.before",
+      "source": "/opt/phone-cloud-platform/staging/platform-api-integration-20261012-rc.3/compose.candidate.json",
+      "sha256": "45f735c99379398e200b9323e4016fd75dc6f1b7a6c0895340b5434f3f02a14e"
+    },
+    {
+      "backup": "compose-2.before",
+      "source": "/opt/phone-cloud-platform/staging/platform-core-20261014-rc.7/compose.candidate.json",
+      "sha256": "378eed4ea3daba1dd3513c6f2f1ec14bf3fefdab0aa4b9c1bb9e73175f919c4d"
+    },
+    {
+      "backup": "compose-3.before",
+      "source": "/opt/phone-cloud-platform/staging/platform-core-20261014-rc.7/compose.coordinator.json",
+      "sha256": "99ad53a185e5a6f603a5adfe0d6c86f2d630f9365ae4dedeaec05a898a767f5d"
+    },
+    {
+      "backup": "compose-4.before",
+      "source": "/opt/phone-cloud-platform/staging/lookup-delivery-20261014-rc.1/compose.delivery.json",
+      "sha256": "2e4812b1cc488aad42a2ac08741aaeeea3fd2f53effce0c0a10a3a06ac61b01b"
+    },
+    {
+      "backup": "compose-5.before",
+      "source": "/opt/phone-cloud-platform/staging/lookup-readiness-20261015-rc.1/compose.readiness.json",
+      "sha256": "a66295d203cd2525123c9f32b9168bbbb4320e45f6ed92043ff65bb39174e933"
+    }
+  ],
+  "postgres": {
+    "bytes": 446585904,
+    "sha256": "18da2757adb69f566e173738270e031949e6279b64488711a47b94bc09f2ece3",
+    "tocEntries": 63,
+    "fullDatabase": true,
+    "restoreTest": false,
+    "fullArchiveDecodedToNull": true
+  },
+  "imageArchive": {
+    "bytes": 63559680,
+    "sha256": "caaf22134cd24a5964ea6a38400f50340b86ac7c2de8beb1a3bd923c90ef4119"
+  },
+  "servicesRestarted": 0
+}

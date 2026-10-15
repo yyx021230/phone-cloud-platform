@@ -1,0 +1,9 @@
+{
+  "version": "lookup-readiness-20261015-prep.3",
+  "files": {
+    "BACKUP.json": "121f294bba951dc5c0752c5c3e9fa73fd2dc4dc86e5f585a3f427b49595e2703",
+    "README.md": "9fd924d27beec423be9d270feefc9a86e209d7867bca8e400c59b336e2272e46",
+    "build-and-verify.py": "a4dc45f7ab41e94a227fc99202595feef314f7077a2827449dd236349a6b882b",
+    "IMAGE.json": "72ec62fe90b38a0132cca1d8450f331f36853659dcbe1e4902c932e4bb179637"
+  }
+}
