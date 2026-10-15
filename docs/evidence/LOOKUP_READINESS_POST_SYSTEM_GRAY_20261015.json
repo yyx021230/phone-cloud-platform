@@ -513,5 +513,14 @@
     "out-of-range phone subset index rejected HTTP400 with no query",
     "wrong session endpoint HTTP404 read-only",
     "null secondary display focus caused native diagnostic assertion and zero adb action after guard; corrected to single non-null foreground"
-  ]
+  ],
+  "postCandidateNativeAccountNavigationUnitTest": {
+    "tests": 5,
+    "failures": 0,
+    "errors": 0,
+    "ok": true,
+    "deviceActions": 0,
+    "liveFilesChanged": false
+  },
+  "candidateCommit": "a5677a2d2823e96417dcfcea3b3015a0cb530a74"
 }
