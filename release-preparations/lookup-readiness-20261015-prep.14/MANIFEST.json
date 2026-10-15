@@ -1,0 +1,9 @@
+{
+  "BEGIN.json": "dcec626c03d1ec8e5cfec5e39d29b4f21dcce9eaff62850c65c51b691adba013",
+  "cloud-build-resume.py": "76283f5865bf65a652593b47b735f0f7d34cf47f5ba518999ceedb4079a04ca2",
+  "cloud-prepare.py": "d53d316d9a21936e4b111a4eb33c9aa61d42f58c318597d49939cb34733258e7",
+  "RUNBOOK.md": "5acef91cca7622f38dfe099eb48b687c11fa06504afd5b45fe0a511468b11ffa",
+  "CLOUD_PREPARED.json": "7fa68cd304cc904b5119f03bb5bd2676554990662e83f17dc2a1d0018784e212",
+  "windows-prepare.py": "b04eafbf55276b8c745f0010534523fdf9e3db68307c0b66d2db3fe4a6c7c9be",
+  "WINDOWS_PREPARED.json": "6b4a0b914106d094d2109f2e62ff092d26bcff785ec10535f64341cf6f39ed6c"
+}
