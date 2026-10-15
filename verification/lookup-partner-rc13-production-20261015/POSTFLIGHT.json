@@ -1,0 +1,117 @@
+{
+  "at": "2026-10-15T09:38:16.441Z",
+  "agents": [
+    {
+      "id": "win-bf-202605262318-20260727",
+      "lastSeenAt": "2026-10-15T09:37:56.184Z",
+      "lastScan": {
+        "ok": true,
+        "at": "2026-10-15T09:37:56.540Z",
+        "error": ""
+      },
+      "control": {
+        "protocol": "device_recovery_control_v1",
+        "revision": 0,
+        "synced": true,
+        "isolationReset": true,
+        "isolationError": "",
+        "isolated": [
+          {
+            "serial": "AGQV023324018902",
+            "reason": "recovery_attempts_exhausted",
+            "isolatedAt": "2026-10-15T09:28:59.192Z",
+            "failures": 0
+          }
+        ],
+        "error": ""
+      },
+      "desired": {
+        "protocol": "device_recovery_control_v1",
+        "revision": 0,
+        "paused": []
+      }
+    },
+    {
+      "id": "windows-desktop-8v8n4pe-v2",
+      "lastSeenAt": "2026-08-10T06:02:47.953Z",
+      "lastScan": {
+        "at": "2026-08-10T06:02:47.612Z",
+        "ok": true,
+        "error": ""
+      },
+      "desired": {
+        "protocol": "device_recovery_control_v1",
+        "revision": 0,
+        "paused": []
+      }
+    },
+    {
+      "id": "windows-desktop-8v8n4pe",
+      "lastSeenAt": "2026-07-03T04:15:49.959Z",
+      "lastScan": {
+        "at": "2026-07-03T04:15:33.635Z",
+        "ok": true,
+        "error": ""
+      },
+      "desired": {
+        "protocol": "device_recovery_control_v1",
+        "revision": 0,
+        "paused": []
+      }
+    },
+    {
+      "id": "local-mac-windows-agent",
+      "lastSeenAt": "2026-07-03T05:36:47.198Z",
+      "lastScan": {
+        "at": "2026-07-03T05:36:21.217Z",
+        "ok": true,
+        "error": ""
+      },
+      "desired": {
+        "protocol": "device_recovery_control_v1",
+        "revision": 0,
+        "paused": []
+      }
+    }
+  ],
+  "online": 118,
+  "total": 131,
+  "occupied": [
+    {
+      "number": "125",
+      "kind": "screen_control"
+    },
+    {
+      "number": "95",
+      "kind": "screen_control"
+    },
+    {
+      "number": "157",
+      "kind": "screen_control"
+    },
+    {
+      "number": "146",
+      "kind": "screen_control"
+    }
+  ],
+  "pool": {
+    "config": {
+      "idleMs": 120000,
+      "waitMs": 120000,
+      "enabled": false,
+      "humanLimit": 5,
+      "queueLimit": 1000,
+      "concurrency": 5,
+      "humanWaitMs": 1800000,
+      "waiterLimit": 20,
+      "asyncTaskTtlMs": 3600000,
+      "asyncAliasLimit": 50,
+      "asyncQueueWaitMs": 1800000,
+      "clientQueueLimit": 200,
+      "asyncRecentResultMs": 600000
+    },
+    "revision": 46,
+    "channels": [],
+    "pending": []
+  }
+}

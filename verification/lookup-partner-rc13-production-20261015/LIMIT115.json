@@ -1,0 +1,71 @@
+{
+  "at": "2026-10-15T09:34:13.466Z",
+  "device": {
+    "enabled": true,
+    "health": {
+      "ready": false,
+      "reason": "lookup_device_unavailable",
+      "failures": 3
+    },
+    "unavailable": true
+  },
+  "session": {
+    "status": "ended",
+    "requiresAccountSwitch": true,
+    "limitReason": "access_denied",
+    "cooldowns": [
+      {
+        "limitedAt": "2026-10-15T09:32:08.000Z",
+        "cooldownUntil": "2026-10-15T17:32:08.000Z",
+        "reason": "access_denied",
+        "remainingMs": 28674536,
+        "cooling": true
+      }
+    ],
+    "restrictionHistory": [
+      {
+        "jobId": "3b16d6c8-c295-4faa-871c-b9734f04ccf1",
+        "windowsTaskId": "04e6f811-0290-48c2-a1a4-d18d95befd47",
+        "reason": "access_denied",
+        "phase": "",
+        "phoneQueryStarted": false,
+        "requiresAccountSwitch": true,
+        "status": "confirmed",
+        "errorCode": "alipay_prepared_account_limited",
+        "detectedAt": "",
+        "confirmedAt": "2026-10-15T09:32:09.407Z"
+      },
+      {
+        "jobId": "3b16d6c8-c295-4faa-871c-b9734f04ccf1",
+        "windowsTaskId": "04e6f811-0290-48c2-a1a4-d18d95befd47",
+        "reason": "access_denied",
+        "phase": "page-recovery",
+        "phoneQueryStarted": false,
+        "requiresAccountSwitch": true,
+        "status": "detected",
+        "errorCode": "",
+        "detectedAt": "2026-10-15T09:32:08.043Z",
+        "confirmedAt": ""
+      }
+    ],
+    "lastAccountSwitch": null
+  },
+  "selectedChannels": [
+    {
+      "number": 155,
+      "phase": "idle"
+    },
+    {
+      "number": 164,
+      "phase": "idle"
+    },
+    {
+      "number": 162,
+      "phase": "idle"
+    },
+    {
+      "number": 156,
+      "phase": "idle"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+import fs from 'node:fs/promises';
+const dir='/app/data/test-receipts/lookup-partner-rc13-20261015';
+const before=JSON.parse(await fs.readFile('/app/data/test-receipts/lookup-natural-handoff-20261015/pool-before.json','utf8'));
+const state=JSON.parse(await fs.readFile(dir+'/STATE.json','utf8'));const h={authorization:'Bearer '+process.env.ADMIN_API_TOKEN,'content-type':'application/json'};
+const get=async path=>{const r=await fetch('http://127.0.0.1:8787'+path,{headers:h});if(!r.ok)throw Error('http'+r.status);return r.json()};
+const {pool:p}=await get('/api/v1/admin/lookup-pool');
+if(p.configRevision!==45||before.config.enabled!==false||state.rows.length!==10||state.rows.some(r=>r.status!=='completed'||!r.newKeyChecked))throw Error('restore_gate');
+if(p.requests.some(r=>!['succeeded','not_found','failed','expired','cancelled'].includes(r.status)))throw Error('pending_requests');
+if(p.channels.some(c=>c.phase!=='idle'))throw Error('not_idle');
+const input={...before.config,devices:before.devices,grants:before.grants,expectedConfigRevision:45};
+const r=await fetch('http://127.0.0.1:8787/api/v1/admin/lookup-pool',{method:'PUT',headers:h,body:JSON.stringify(input)});const data=await r.json();if(!r.ok)throw Error('restore_http'+r.status);
+const receipt={at:new Date().toISOString(),beforeRevision:45,restoredRevision:data.configRevision,originalRevision:before.revision,enabled:before.config.enabled,completedBusiness:10,queriesCancelled:0,cooldownsPreserved:true,unavailableIsolationPreserved:true};
+await fs.writeFile(dir+'/POOL_RESTORED.json',JSON.stringify(receipt),{mode:0o600});console.log(JSON.stringify(receipt));
