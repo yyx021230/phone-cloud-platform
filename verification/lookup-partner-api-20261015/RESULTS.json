@@ -1,0 +1,69 @@
+{
+  "partnerElapsedMs": 121004,
+  "partnerFiveAtTwoReady": true,
+  "newReadyPhoneTakesQueuedImmediately": true,
+  "partnerCompletedOutOfOrder": true,
+  "partnerBusinessExecutions": 5,
+  "partnerBusinessEndpointsOnly": true,
+  "loopbackOnly": true,
+  "storage": "json",
+  "realDevices": 0,
+  "productionConnections": 0,
+  "minimumReady": 2,
+  "targetReady": 5,
+  "publicPreparationHasNoCounts": true,
+  "oneReadyRejected": true,
+  "initialProbeQueries": 5,
+  "firstBusinessBeforeOtherThreeProbes": true,
+  "businessQueries": 9,
+  "elapsedBeforeNewKeysMs": 316,
+  "sameIdAfterEightNewKeys": true,
+  "nameAndEmptyCompleted": true,
+  "confirmedLimitTransfersSameLookupToAnotherReadyPhone": true,
+  "cooldownAckValidated": true,
+  "actualAgentAccountPolicy": true,
+  "fiveSimultaneousBusinessDevices": true,
+  "oneHeldBusinessDoesNotBlockOtherFour": true,
+  "restartInvalidatesProof": true,
+  "drained": true,
+  "status": "local-public-api-acceptance-passed",
+  "candidate": "lookup-readiness-20261015-rc.12",
+  "candidateCommit": "980786fcf6c75664514646a5de4348cff61ab9a2",
+  "at": "2026-10-15T08:41:51.765873+00:00",
+  "phases": [
+    {
+      "event": "partner-phase",
+      "phase": "two_processing_three_queued",
+      "publicOnly": true
+    },
+    {
+      "event": "partner-phase",
+      "phase": "timeout_new_keys_keep_original",
+      "elapsedMs": 121004
+    },
+    {
+      "event": "partner-phase",
+      "phase": "new_ready_phone_drains_queue_before_held_jobs_finish",
+      "completed": 5
+    }
+  ],
+  "publicHttpCalls": 171,
+  "canonicalBusinessJobs": 13,
+  "totalSimulatedBusinessExecutions": 14,
+  "extraExecutionReason": "one confirmed-limit cross-device handoff; timeout aliases add zero work",
+  "testSha256": "bdbdb2ea25c8c0bf9e8eabb1a59b4c0cd7f03b13dd9fbe74b0c5926627d1aa45",
+  "rawLogSha256": "6f9cb997de17a234e96b44f5850ad8d369e9c9bebb3b5e2bb86952e70e1d97f6",
+  "runtimeModified": false,
+  "adminRecoveryUsed": false,
+  "databaseResultsPatched": false,
+  "fixture": "temporary loopback JSON platform and fake Agent; admin endpoints used for setup/cleanup only",
+  "limitations": [
+    "not production",
+    "no real phones",
+    "no real PostgreSQL",
+    "natural restriction and full real cooling expiry not covered"
+  ],
+  "publicSdkHttpCalls": 168,
+  "additionalSignedInvalidPrepareCalls": 3,
+  "traceScope": "168 SDK calls; three direct signed invalid-prepare requests separately asserted400"
+}
