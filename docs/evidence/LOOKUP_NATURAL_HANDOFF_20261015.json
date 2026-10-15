@@ -1,0 +1,465 @@
+{
+  "status": "in-progress-awaiting-human-not-natural-limit-pass",
+  "at": "2026-10-15T07:54:59.669Z",
+  "baselineVersion": "lookup-readiness-20261015-deployed.10",
+  "baselineCommit": "f2c36e98407564b94dca60e2bb7959377d6d885a",
+  "branch": "codex/lookup-natural-handoff-20261015",
+  "devices": [
+    155,
+    156
+  ],
+  "budget": 80,
+  "submitted": 15,
+  "completed": 14,
+  "results": [
+    {
+      "id": "9d36ecdb-21b9-4b5c-b1f6-c6a745da4728",
+      "status": "succeeded",
+      "code": "",
+      "hasName": true,
+      "queryId": "7a77b904-51eb-4b1b-8b70-f555abbde19c",
+      "attempts": [
+        {
+          "number": 156,
+          "keys": [
+            "at",
+            "deviceId",
+            "sessionId",
+            "generation",
+            "readinessIdentity"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "b49ba22e-47d5-47a7-ac1c-35bd462fa74b",
+      "status": "succeeded",
+      "code": "",
+      "hasName": true,
+      "queryId": "b1901835-a7b4-4ebe-9ba7-029e01a04ef8",
+      "attempts": [
+        {
+          "number": 155,
+          "keys": [
+            "at",
+            "deviceId",
+            "sessionId",
+            "generation",
+            "readinessIdentity"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "58d949a0-354a-41a8-bb53-53069da5b490",
+      "status": "succeeded",
+      "code": "",
+      "hasName": true,
+      "queryId": "7ff402c4-2deb-4b56-8ba9-5fc090cc9bce",
+      "attempts": [
+        {
+          "number": 155,
+          "keys": [
+            "at",
+            "deviceId",
+            "sessionId",
+            "generation",
+            "readinessIdentity"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "f312105e-c7ba-435c-9044-826e0bd92eac",
+      "status": "succeeded",
+      "code": "",
+      "hasName": true,
+      "queryId": "b05015ef-4b2c-4321-8b3b-3ce0c136b246",
+      "attempts": [
+        {
+          "number": 156,
+          "keys": [
+            "at",
+            "deviceId",
+            "sessionId",
+            "generation",
+            "readinessIdentity"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "967a9cd0-7685-462f-82e0-44afe3d1a77b",
+      "status": "succeeded",
+      "code": "",
+      "hasName": true,
+      "queryId": "8763a494-643b-4977-9e1e-6947456b38c7",
+      "attempts": [
+        {
+          "number": 155,
+          "keys": [
+            "at",
+            "deviceId",
+            "sessionId",
+            "generation",
+            "readinessIdentity"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "230f2aa0-ed51-4b9c-ab36-68dc17df8623",
+      "status": "succeeded",
+      "code": "",
+      "hasName": true,
+      "queryId": "3873088a-e3f7-4289-8c9e-2a7d00f3b5e0",
+      "attempts": [
+        {
+          "number": 156,
+          "keys": [
+            "at",
+            "deviceId",
+            "sessionId",
+            "generation",
+            "readinessIdentity"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4735cb3a-d78b-4839-8719-5d4b16402e4e",
+      "status": "succeeded",
+      "code": "",
+      "hasName": true,
+      "queryId": "6c585368-c756-41bd-9256-1578d8c19ca4",
+      "attempts": [
+        {
+          "number": 155,
+          "keys": [
+            "at",
+            "deviceId",
+            "sessionId",
+            "generation",
+            "readinessIdentity"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a97b4d54-222e-4f2e-8e10-f8bc5a8d8fd0",
+      "status": "succeeded",
+      "code": "",
+      "hasName": true,
+      "queryId": "c3b0a1c1-45de-4a5d-b7cc-e613f64bba56",
+      "attempts": [
+        {
+          "number": 155,
+          "keys": [
+            "at",
+            "deviceId",
+            "sessionId",
+            "generation",
+            "readinessIdentity"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0ece99f2-7599-4548-8926-63e404497a25",
+      "status": "succeeded",
+      "code": "",
+      "hasName": true,
+      "queryId": "457cfae7-f91c-4f6c-b472-963df431f143",
+      "attempts": [
+        {
+          "number": 155,
+          "keys": [
+            "at",
+            "deviceId",
+            "sessionId",
+            "generation",
+            "readinessIdentity"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "8ed889a7-7c43-43c6-8bbb-77932c350f1e",
+      "status": "succeeded",
+      "code": "",
+      "hasName": true,
+      "queryId": "51286923-e9df-4371-ac27-58b389ff2a12",
+      "attempts": [
+        {
+          "number": 156,
+          "keys": [
+            "at",
+            "deviceId",
+            "sessionId",
+            "generation",
+            "readinessIdentity"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d5a535db-b52b-4f50-801c-ccf2d100930e",
+      "status": "succeeded",
+      "code": "",
+      "hasName": true,
+      "queryId": "e46e6b7c-f882-4006-b18b-e7f00ef4e95b",
+      "attempts": [
+        {
+          "number": 155,
+          "keys": [
+            "at",
+            "deviceId",
+            "sessionId",
+            "generation",
+            "readinessIdentity"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "705f40b9-9e80-4156-85de-c78bff7f83c3",
+      "status": "succeeded",
+      "code": "",
+      "hasName": true,
+      "queryId": "e2d5a611-a430-48fe-9034-35133233ed3f",
+      "attempts": [
+        {
+          "number": 156,
+          "keys": [
+            "at",
+            "deviceId",
+            "sessionId",
+            "generation",
+            "readinessIdentity"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4e59cc79-5cbe-4f14-a4fc-b5c0a5439676",
+      "status": "waiting_human",
+      "hasName": false,
+      "queryId": "c1ca8a36-5ae8-4106-ba35-5f0096351cdf",
+      "attempts": [
+        {
+          "number": 155,
+          "keys": [
+            "at",
+            "deviceId",
+            "sessionId",
+            "generation",
+            "readinessIdentity"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "3fa019f2-74be-4cf8-b4d8-20d6ff0c28a1",
+      "status": "succeeded",
+      "code": "",
+      "hasName": true,
+      "queryId": "b14116be-85af-404b-ac07-886e79472a31",
+      "attempts": [
+        {
+          "number": 156,
+          "keys": [
+            "at",
+            "deviceId",
+            "sessionId",
+            "generation",
+            "readinessIdentity"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "9182364a-345e-4cc6-a8ce-477ccd327817",
+      "status": "succeeded",
+      "code": "",
+      "hasName": true,
+      "queryId": "7d5a734a-5bec-4f43-9730-ff4c58e42835",
+      "attempts": [
+        {
+          "number": 156,
+          "keys": [
+            "at",
+            "deviceId",
+            "sessionId",
+            "generation",
+            "readinessIdentity"
+          ]
+        }
+      ]
+    }
+  ],
+  "channels": [
+    {
+      "number": 156,
+      "phase": "idle",
+      "requestId": "",
+      "proof": true
+    },
+    {
+      "number": 155,
+      "phase": "human",
+      "requestId": "4e59cc79-5cbe-4f14-a4fc-b5c0a5439676",
+      "proof": false
+    }
+  ],
+  "preparation": {
+    "ok": true,
+    "preparationId": "533b1504-25ec-4b58-98e4-6e824c987006",
+    "status": "preparing",
+    "ready": false,
+    "readyCount": 1,
+    "idleCount": 1,
+    "minimumReady": 2,
+    "targetCount": 5,
+    "expiresAt": "2026-10-15T08:17:42.211Z"
+  },
+  "cooldownEvidence": [
+    {
+      "at": "2026-10-15T07:54:59.948Z",
+      "event": "device-cooldown",
+      "number": 155,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "occupancy": {
+        "kind": "alipay_name_lookup",
+        "label": "支付宝查名字",
+        "ownerLabel": "Open Name Lookup API",
+        "ownerVisible": true,
+        "startedAt": "2026-10-15T07:47:42.329Z",
+        "appSlot": "",
+        "taskId": "83b327a7-8818-4a9b-a36c-84d5ff885dd4",
+        "sessionId": ""
+      },
+      "rows": []
+    },
+    {
+      "at": "2026-10-15T07:54:59.949Z",
+      "event": "device-cooldown",
+      "number": 156,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "occupancy": {
+        "kind": "alipay_name_lookup",
+        "label": "支付宝查名字",
+        "ownerLabel": "Open Name Lookup API",
+        "ownerVisible": true,
+        "startedAt": "2026-10-15T07:47:42.313Z",
+        "appSlot": "",
+        "taskId": "51134edf-2508-41ad-b176-1aecb524b04d",
+        "sessionId": ""
+      },
+      "rows": []
+    },
+    {
+      "at": "2026-10-15T07:54:59.949Z",
+      "event": "device-cooldown",
+      "number": 161,
+      "health": {
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "occupancy": null,
+      "rows": [
+        {
+          "accountHash": "26aa4c3376f1",
+          "limitedAt": "2026-10-15T01:56:11.054Z",
+          "until": "2026-10-15T09:56:11.054Z",
+          "reason": "frequent_or_abnormal_access",
+          "phoneQueryStarted": true,
+          "jobId": "8b6aa91d-5a81-4590-8f3e-54f3e50e1ab7",
+          "remainingMs": 7271105,
+          "durationMs": 28800000
+        },
+        {
+          "accountHash": "5ffa7a966d18",
+          "limitedAt": "2026-10-15T01:58:02.854Z",
+          "until": "2026-10-15T09:58:02.854Z",
+          "reason": "frequent_or_abnormal_access",
+          "phoneQueryStarted": true,
+          "jobId": "8b6aa91d-5a81-4590-8f3e-54f3e50e1ab7",
+          "remainingMs": 7382905,
+          "durationMs": 28800000
+        },
+        {
+          "accountHash": "94860ed4acf5",
+          "limitedAt": "2026-10-15T02:05:21.946Z",
+          "until": "2026-10-15T10:05:21.946Z",
+          "reason": "frequent_or_abnormal_access",
+          "phoneQueryStarted": true,
+          "jobId": "37429d3c-e5b9-4736-b67e-9e2db4f1bfcb",
+          "remainingMs": 7821997,
+          "durationMs": 28800000
+        },
+        {
+          "accountHash": "a07e3968147d",
+          "limitedAt": "2026-10-15T02:08:28.638Z",
+          "until": "2026-10-15T10:08:28.638Z",
+          "reason": "frequent_or_abnormal_access",
+          "phoneQueryStarted": true,
+          "jobId": "784387ce-961e-4722-b248-80a8f5d2824b",
+          "remainingMs": 8008689,
+          "durationMs": 28800000
+        }
+      ]
+    }
+  ],
+  "humanNotification": [
+    {
+      "at": "2026-10-15T07:54:30.265Z",
+      "event": "human-notification",
+      "number": 155,
+      "status": "sent",
+      "providerCode": 0,
+      "attemptedAt": "2026-10-15T07:51:43.589Z"
+    }
+  ],
+  "system": {
+    "adbPid": 634172,
+    "agentPid": 634228,
+    "owner": "SYSTEM",
+    "hashes": {
+      "alipay_name_lookup.py": "5d3ff1b512c61cc34fba13b4b8600c3e95b698dcd097753d74ce4cfb46cb6b6c",
+      "alipay_visual_result.py": "8f3d696cb031bfb33ab4228e3933cfb6344b426abb912dd75fb7459fa86e9407",
+      "xhs_airtest_poco.py": "e6bdc2d96adf9a7b5e130eac72a0479d7790732831cfda71bf0230923ceccdaa"
+    }
+  },
+  "changes": {
+    "productionCode": false,
+    "adbOrKeys": false,
+    "restarts": false,
+    "temporaryPoolRevision": 44,
+    "originalPoolRestored": false,
+    "reasonNotRestored": "original155 human request retained; no force cancel/lock clearing"
+  },
+  "nativeCrossDeviceHandoffObserved": false,
+  "newNaturalLimitObserved": false,
+  "eightHourExpiryVerified": false,
+  "cooldownFollowup": {
+    "automationId": "161",
+    "scheduledLocal": "2026-10-15 18:10 Asia/Shanghai",
+    "scope": "read-only expiry and eligibility; no new lookup or prepare"
+  },
+  "source": {
+    "sheetSha256": "874c801e6f3eff06cd480c7ab81713b4f822bd54911a7696fa0d192143d31011",
+    "authorizedNumberJsonSha256": "20d3440551746ef8abe6919e5a8b3c7d0c6c12ac555f00f97d61d82fa8c64b95"
+  },
+  "notes": [
+    "156 completed later queued work after155 human; no cross-phone blocking of admitted requests",
+    "Source JSON temporary file missing; re-extracted original workbook read-only, hash matches historical authorization",
+    "First scheduling call rejected missing thread destination; corrected and verified automation161 active",
+    "No natural restriction means no code defect or successful handoff can be claimed"
+  ]
+}
