@@ -1,0 +1,18 @@
+{
+  "version": "lookup-readiness-20261015-rc.4",
+  "status": "local-candidate-not-deployed",
+  "sourceCommit": "66e1faffdbfbf72d497b7e93e8f825904f81399a",
+  "baseTag": "lookup-readiness-20261015-rc.3",
+  "baseManifestSha256": "408e170bfdb12f775f7f3bc856be5bc23c5627497fdf950e11f0af9aa729c795",
+  "productionBaseline": "lookup-readiness-20261015-deployed.3",
+  "productionSourceCommit": "373729203e65714c1985d38cb7c9ffba416b159f",
+  "previousWindowsOverlayCommit": "c559f9604461c1df1d37220d2c0f4e25df85f53c",
+  "overlayFiles": [
+    "windows-agent/scripts/alipay_name_lookup.py",
+    "windows-agent/scripts/xhs_airtest_poco.py",
+    "windows-agent/scripts/test_lookup_transport_read.py"
+  ],
+  "cloudRuntimeUnchanged": true,
+  "requiresSharedRestart": false,
+  "databaseMigrations": 0
+}

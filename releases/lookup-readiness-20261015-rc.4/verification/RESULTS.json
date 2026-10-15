@@ -1,0 +1,42 @@
+{
+  "baseline": {
+    "alipay_name_lookup.py": "99ae04d529fd21fe7836fb686a3ea2c7de8e7583435f0695a922f27e4f8edee0",
+    "xhs_airtest_poco.py": "3fd28f0e13f6af07e9d13361322c41a1b83d57b953f6d3ac0ceb5523a0e16ac2"
+  },
+  "oldRegression": {
+    "tests": 10,
+    "failures": 4,
+    "errors": 2
+  },
+  "newRegression": {
+    "tests": 10,
+    "passed": 10
+  },
+  "pythonDiscovery": {
+    "tests": 363,
+    "passed": 363
+  },
+  "automationRunners": {
+    "tests": 163,
+    "passed": 163
+  },
+  "screenRegression": {
+    "tests": 741,
+    "passed": 741
+  },
+  "windowsNative": {
+    "tests": 10,
+    "passed": 10
+  },
+  "logSha256": {
+    "transport-old.log": "1dbd81a026535f614acf7e15e192c25660cc5aecd26fc6544b480dd4c0c7cbe6",
+    "transport-new.log": "c1d7bce7ee2159c9b317b23e5b4e7178591b314a73259ff166f03fac9eaabc46",
+    "transport-python-full.log": "bf4be228919e6927618ede91e7160fa2a7e9b8d482935361b05cdfa6e4590470",
+    "transport-automation.log": "b4588f78eb912845c2b68cb7fd9aaa6aabf5f81d708ee3fdbdef152bf172e779",
+    "transport-screen.log": "2b166ece995c96e6a20882ddca74770ece64df338f3bbb8d765dc678f2f5e716",
+    "transport-windows-tests.log": "28e714c7fc15ab8101464fdf6a9e8689455d126921087c35e1b661dff69aba69"
+  },
+  "productionPatched": false,
+  "realPhoneAfterPatchTested": false,
+  "review": "Self-review: only exact read commands retry; never repeat input, click or launch; original deadline preserved. Same-service bootstrap read max twice; success still requires response. No control/ADB lifecycle modifications."
+}
