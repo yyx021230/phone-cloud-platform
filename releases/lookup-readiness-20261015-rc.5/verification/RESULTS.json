@@ -1,0 +1,27 @@
+{
+  "oldRegression": {
+    "tests": 2,
+    "errors": 1
+  },
+  "newRegression": {
+    "tests": 2,
+    "passed": 2
+  },
+  "pythonDiscovery": {
+    "tests": 365,
+    "passed": 365
+  },
+  "windowsNative": {
+    "tests": 2,
+    "passed": 2
+  },
+  "unchangedControlRuntime": "rc.4 screen regression 741 passed; no further lifecycle/control changes",
+  "beforeSha256": "81cb8d69e6df10098736841eed9c17e3bd421bbf6651a08e138188f7b2f81ec1",
+  "logs": {
+    "diagnostic-old.log": "0595b94cfa31bc07e07467d7e538405c029a95512307444800c381f5d5c40f74",
+    "diagnostic-new.log": "dec5673ee7ead0e86a249ea046dba60aab31a8206a43fedeb035ab8449b4e26d",
+    "diagnostic-python-full.log": "87cdb0cd696c772c817685dd6f5320ca4cf8e996486962b3c8e0ce12267b883e",
+    "diagnostic-windows-tests.log": "db147cb6a9d4a07fa6279f3e36eb2717b1561eeda9c69dcbfc3fcb81e767bdd4"
+  },
+  "realAcceptancePending": true
+}
