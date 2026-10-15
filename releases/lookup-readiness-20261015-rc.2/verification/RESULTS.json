@@ -1,0 +1,62 @@
+{
+  "version": "lookup-readiness-20261015-rc.2",
+  "status": "candidate-not-deployed",
+  "at": "2026-10-15T04:25:48.385031+00:00",
+  "localPythonFull": {
+    "passed": 353,
+    "failed": 0
+  },
+  "newTests": 9,
+  "windowsNativeSpecialized": {
+    "passed": 9,
+    "failed": 0
+  },
+  "oldBaselineFirstEight": {
+    "passed": 3,
+    "failed": 2,
+    "errors": 3
+  },
+  "nativeOcrReadOnly": [
+    {
+      "number": 118,
+      "imageSha256": "5090e7d17bbe11b7be33308125696ab57745876ebf2913a63b326013f4cf3081",
+      "size": [
+        720,
+        1612
+      ],
+      "emptyRecognized": true
+    },
+    {
+      "number": 156,
+      "imageSha256": "b81aa09bb71677f1f1cb5fca7dcc841fcade346838b727273b3c337aad513dd5",
+      "size": [
+        720,
+        1600
+      ],
+      "emptyRecognized": true
+    },
+    {
+      "number": 115,
+      "imageSha256": "2bd588d8cf9c4aace450ad137e0a9c8d69b4e09fe1dcac08765c4c387973a555",
+      "size": [
+        720,
+        1612
+      ],
+      "emptyRecognized": true
+    }
+  ],
+  "selfReview": "strict fixed vocabulary/grid, no name/low-confidence/network/risk suppression; startup fallback only known clock and no force-stop; retained captcha guard",
+  "sharedRuntimeFilesChanged": 0,
+  "unverified": [
+    "candidate real API recovery and clock cold startup"
+  ],
+  "validationFailures": [
+    "Staging stdin upload hung; used verified small encoded source fragments instead. No live files changed.",
+    "First native OCR staging test needed explicit process-only interpreter path; repeated with existing installed OCR environment."
+  ],
+  "logSha256": {
+    "grayfix-python.log": "56a13abe78d6fccf90db6560bafaea3a27843fd1b8f3dc130a0aa98bd4a1dde5",
+    "grayfix-windows-tests.log": "cd23576cd323962083fac340676ecb9fdeeb206a6675e22c068c8e54674326e6",
+    "grayfix-old-regressions.log": "87c630664bcbf285203bf85ebd23981665b17aa47d04294a4f1f91bd0b0bc30d"
+  }
+}
