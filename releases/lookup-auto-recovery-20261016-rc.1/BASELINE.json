@@ -1,0 +1,16 @@
+{
+  "activeSha256": "ec5321c165ddb6af8fa62701c579ef35669b2c493799f819cf0fb30d005a1b86",
+  "version": "lookup-account-offline-20261016-deployed.1",
+  "runtimeCommit": "64e09fb0affcaeb6560c27aded794fa02dde13da",
+  "runtimeImage": "sha256:63193b6fe578f4de2d818943d6939b04b3d737f617ef27b0440d4873925d26b9",
+  "restartImage": "sha256:63193b6fe578f4de2d818943d6939b04b3d737f617ef27b0440d4873925d26b9",
+  "containerId": "6c8bc2cd7b57f6eb62e0e3477420a9a0671b279615a50a0f16dfbaf09b19f66f",
+  "before": {
+    "server/managed-lookup.mjs": "a4eb98fb10d7a7a4b3c54bc7b47a07a92630beb65eee91600e24fd22755b8d49",
+    "server/managed-lookup-platform.mjs": "1bff94fccdc711f1eed09b7a3e05ce755d6f89100869ee703935aff09fb81ecc"
+  },
+  "lastAcceptanceCommit": "1768a90510701010b8f54cae3f0df54790465f86",
+  "branch": "codex/lookup-auto-recovery-20261016",
+  "startingHead": "1768a90510701010b8f54cae3f0df54790465f86",
+  "workspaceInitiallyClean": true
+}
