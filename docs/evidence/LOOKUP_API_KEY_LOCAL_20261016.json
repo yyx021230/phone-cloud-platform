@@ -1,0 +1,28 @@
+{
+  "candidate": "lookup-api-key-20261016-rc.1",
+  "candidateCommit": "9f6951f19909ff0f5ea479a658ed4746ad8c9aba",
+  "review": "self-review",
+  "sourceEqualsTestedFiles": true,
+  "manifestVerified": true,
+  "reproductionAssembled": true,
+  "codeDocsWhitespaceCheck": "passed",
+  "rawTestLogWhitespace": "first-full-missing-deps.txt contains 3 whitespace-only lines and syntax.txt has an extra final blank line; preserved verbatim as execution evidence; broad diff --check reports these",
+  "browser": {
+    "lookupPages": 11,
+    "waitedForExactHeading": true,
+    "httpTab": "X-API-Key only; Idempotency-Key on POST",
+    "consoleErrors": 0,
+    "screenshot": "/tmp/lookup-api-key-preview-20261016.png"
+  },
+  "productionDeployed": false,
+  "productionKeyGenerated": false,
+  "productionWrites": 0,
+  "pushes": 0,
+  "limits": [
+    "No real phones or production API Key calls",
+    "No PostgreSQL integration this round",
+    "Existing macOS Python LibreSSL warning; HTTP tested, not HTTPS"
+  ],
+  "initialWorkspaceClean": true,
+  "unrelatedChangesPreserved": true
+}
