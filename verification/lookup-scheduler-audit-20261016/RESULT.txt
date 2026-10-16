@@ -1,0 +1,13 @@
+✔ queued work is assigned to newly completed human/probe phone, not prebound (10.156584ms)
+✔ with six enabled devices an unhealthy fifth is replaced by a sixth probe (4.326625ms)
+✔ GAP: six idle minutes retain verified proof and skip fresh probe at assignment (1.273667ms)
+✔ GAP: five waiting humans stop dispatch on two healthy idle phones (4.93475ms)
+✔ GAP: selection uses last use, without priority for just-restored phone (1.157542ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 100.703208
