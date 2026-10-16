@@ -1,0 +1,32 @@
+{
+  "at": "2026-10-16T02:52:24.030Z",
+  "occupied": [
+    {
+      "number": "159",
+      "kind": "screen_control"
+    },
+    {
+      "number": "162",
+      "kind": "screen_control"
+    },
+    {
+      "number": "52",
+      "kind": "screen_control"
+    },
+    {
+      "number": "172",
+      "kind": "screen_control"
+    },
+    {
+      "number": "91",
+      "kind": "screen_control"
+    }
+  ],
+  "activeTasks": [],
+  "pool": {
+    "revision": 52,
+    "enabled": false,
+    "channels": 0,
+    "pending": 0
+  }
+}
