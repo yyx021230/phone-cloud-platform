@@ -1,0 +1,465 @@
+{
+  "at": "2026-10-15T10:26:24.204Z",
+  "rows": [
+    {
+      "index": 90,
+      "lookupId": "0cbbfa92-10fd-4986-9446-f52f8ea95b08",
+      "status": "completed",
+      "internalStatus": "not_found",
+      "queryId": "5534d17e-90fd-4c2c-a939-bde689211281",
+      "attemptCount": 1,
+      "number": 162,
+      "newKeyChecked": true,
+      "retryElapsedMs": 175940,
+      "statusAtRetry": "completed",
+      "executions": [
+        {
+          "taskId": "d8e6abcb-f0b4-49fb-bbe1-51b50e79b29a",
+          "queryId": "5534d17e-90fd-4c2c-a939-bde689211281",
+          "status": "succeeded",
+          "createdAt": "2026-10-15T10:09:38.066Z",
+          "pickedAt": "2026-10-15T10:09:38.417Z",
+          "completedAt": "2026-10-15T10:09:55.198Z",
+          "steps": [
+            {
+              "step": "poco_reused",
+              "at": "2026-10-15T10:09:45.294Z"
+            },
+            {
+              "step": "reuse_existing_search_page",
+              "at": "2026-10-15T10:09:45.810Z"
+            },
+            {
+              "step": "clear_previous_query",
+              "at": "2026-10-15T10:09:47.861Z"
+            },
+            {
+              "step": "input_phone",
+              "at": "2026-10-15T10:09:54.146Z"
+            },
+            {
+              "step": "lookup_no_name_result",
+              "at": "2026-10-15T10:09:55.129Z"
+            }
+          ],
+          "inputPhoneCount": 1
+        }
+      ]
+    },
+    {
+      "index": 91,
+      "lookupId": "a41f13c8-6515-40f9-8050-84a975b78e2f",
+      "status": "completed",
+      "internalStatus": "succeeded",
+      "queryId": "e7bc0bee-0172-4393-b8b5-41a8e40a91d6",
+      "attemptCount": 1,
+      "number": 162,
+      "newKeyChecked": true,
+      "retryElapsedMs": 175965,
+      "statusAtRetry": "completed",
+      "executions": [
+        {
+          "taskId": "47b9f2da-3fee-4dd5-967f-e348f466b35d",
+          "queryId": "e7bc0bee-0172-4393-b8b5-41a8e40a91d6",
+          "status": "succeeded",
+          "createdAt": "2026-10-15T10:10:06.847Z",
+          "pickedAt": "2026-10-15T10:10:07.119Z",
+          "completedAt": "2026-10-15T10:10:17.352Z",
+          "steps": [
+            {
+              "step": "poco_reused",
+              "at": "2026-10-15T10:10:07.835Z"
+            },
+            {
+              "step": "reuse_existing_search_page",
+              "at": "2026-10-15T10:10:08.047Z"
+            },
+            {
+              "step": "clear_previous_query",
+              "at": "2026-10-15T10:10:09.839Z"
+            },
+            {
+              "step": "input_phone",
+              "at": "2026-10-15T10:10:16.322Z"
+            },
+            {
+              "step": "masked_real_name_tail_extracted",
+              "at": "2026-10-15T10:10:17.256Z"
+            }
+          ],
+          "inputPhoneCount": 1
+        }
+      ]
+    },
+    {
+      "index": 92,
+      "lookupId": "2a98bb12-abda-4534-bc27-70925c735b3c",
+      "status": "completed",
+      "internalStatus": "succeeded",
+      "queryId": "47b355f2-3eb2-481f-afec-16162ee5861c",
+      "attemptCount": 1,
+      "number": 162,
+      "newKeyChecked": true,
+      "retryElapsedMs": 175987,
+      "statusAtRetry": "completed",
+      "executions": [
+        {
+          "taskId": "ed18b9a0-bb57-443a-a9f3-0f54a7bf1190",
+          "queryId": "47b355f2-3eb2-481f-afec-16162ee5861c",
+          "status": "succeeded",
+          "createdAt": "2026-10-15T10:09:55.333Z",
+          "pickedAt": "2026-10-15T10:09:55.494Z",
+          "completedAt": "2026-10-15T10:10:06.595Z",
+          "steps": [
+            {
+              "step": "poco_reused",
+              "at": "2026-10-15T10:09:55.983Z"
+            },
+            {
+              "step": "reuse_existing_search_page",
+              "at": "2026-10-15T10:09:56.210Z"
+            },
+            {
+              "step": "clear_previous_query",
+              "at": "2026-10-15T10:09:57.904Z"
+            },
+            {
+              "step": "input_phone",
+              "at": "2026-10-15T10:10:05.601Z"
+            },
+            {
+              "step": "masked_real_name_tail_extracted",
+              "at": "2026-10-15T10:10:06.526Z"
+            }
+          ],
+          "inputPhoneCount": 1
+        }
+      ]
+    },
+    {
+      "index": 93,
+      "lookupId": "6c248f6b-54c2-42cc-982b-d84ea194f7f3",
+      "status": "completed",
+      "internalStatus": "succeeded",
+      "queryId": "8999991b-683e-4d2b-a538-efe36161030c",
+      "attemptCount": 1,
+      "number": 115,
+      "newKeyChecked": true,
+      "retryElapsedMs": 176019,
+      "statusAtRetry": "completed",
+      "executions": [
+        {
+          "taskId": "ebb3253e-133f-4ca1-9ca9-37173d7ca1b6",
+          "queryId": "8999991b-683e-4d2b-a538-efe36161030c",
+          "status": "succeeded",
+          "createdAt": "2026-10-15T10:10:03.091Z",
+          "pickedAt": "2026-10-15T10:10:03.552Z",
+          "completedAt": "2026-10-15T10:10:18.735Z",
+          "steps": [
+            {
+              "step": "poco_reused",
+              "at": "2026-10-15T10:10:04.365Z"
+            },
+            {
+              "step": "reuse_existing_search_page",
+              "at": "2026-10-15T10:10:04.579Z"
+            },
+            {
+              "step": "clear_previous_query",
+              "at": "2026-10-15T10:10:06.906Z"
+            },
+            {
+              "step": "input_phone",
+              "at": "2026-10-15T10:10:17.613Z"
+            },
+            {
+              "step": "masked_real_name_tail_extracted",
+              "at": "2026-10-15T10:10:18.662Z"
+            }
+          ],
+          "inputPhoneCount": 1
+        }
+      ]
+    },
+    {
+      "index": 94,
+      "lookupId": "05587726-1b4f-4408-88e5-b5d97c658bf3",
+      "status": "completed",
+      "internalStatus": "not_found",
+      "queryId": "35bce020-b2ac-4944-a381-98c6594afe96",
+      "attemptCount": 1,
+      "number": 115,
+      "newKeyChecked": true,
+      "retryElapsedMs": 176047,
+      "statusAtRetry": "completed",
+      "executions": [
+        {
+          "taskId": "9af2baf9-550d-4d1f-8073-3b802930fbd6",
+          "queryId": "35bce020-b2ac-4944-a381-98c6594afe96",
+          "status": "succeeded",
+          "createdAt": "2026-10-15T10:09:38.084Z",
+          "pickedAt": "2026-10-15T10:09:38.316Z",
+          "completedAt": "2026-10-15T10:10:02.888Z",
+          "steps": [
+            {
+              "step": "poco_reused",
+              "at": "2026-10-15T10:09:38.832Z"
+            },
+            {
+              "step": "reuse_existing_search_page",
+              "at": "2026-10-15T10:09:39.312Z"
+            },
+            {
+              "step": "clear_previous_query",
+              "at": "2026-10-15T10:09:41.176Z"
+            },
+            {
+              "step": "input_phone",
+              "at": "2026-10-15T10:09:48.935Z"
+            },
+            {
+              "step": "submit_search",
+              "at": "2026-10-15T10:09:50.872Z"
+            },
+            {
+              "step": "lookup_no_name_result",
+              "at": "2026-10-15T10:10:02.813Z"
+            }
+          ],
+          "inputPhoneCount": 1
+        }
+      ]
+    },
+    {
+      "index": 95,
+      "lookupId": "268d1a9f-b55a-43cc-9b76-c29aa9241104",
+      "status": "completed",
+      "internalStatus": "succeeded",
+      "queryId": "b6363cfd-fb7a-479a-b09c-8ad0c392b38c",
+      "attemptCount": 1,
+      "number": 115,
+      "newKeyChecked": true,
+      "retryElapsedMs": 147765,
+      "statusAtRetry": "completed",
+      "executions": [
+        {
+          "taskId": "032c3440-97aa-4497-a007-4e066fdef178",
+          "queryId": "b6363cfd-fb7a-479a-b09c-8ad0c392b38c",
+          "status": "succeeded",
+          "createdAt": "2026-10-15T10:14:21.486Z",
+          "pickedAt": "2026-10-15T10:14:21.559Z",
+          "completedAt": "2026-10-15T10:14:35.312Z",
+          "steps": [
+            {
+              "step": "poco_reused",
+              "at": "2026-10-15T10:14:22.089Z"
+            },
+            {
+              "step": "reuse_existing_search_page",
+              "at": "2026-10-15T10:14:22.486Z"
+            },
+            {
+              "step": "clear_previous_query",
+              "at": "2026-10-15T10:14:24.644Z"
+            },
+            {
+              "step": "input_phone",
+              "at": "2026-10-15T10:14:34.247Z"
+            },
+            {
+              "step": "masked_real_name_tail_extracted",
+              "at": "2026-10-15T10:14:35.240Z"
+            }
+          ],
+          "inputPhoneCount": 1
+        }
+      ]
+    },
+    {
+      "index": 96,
+      "lookupId": "ee3dd269-5742-4d98-840c-44a7537a2610",
+      "status": "completed",
+      "internalStatus": "succeeded",
+      "queryId": "7f818955-0224-4ee3-9072-c46ed0c43fe6",
+      "attemptCount": 1,
+      "number": 115,
+      "newKeyChecked": true,
+      "retryElapsedMs": 147791,
+      "statusAtRetry": "completed",
+      "executions": [
+        {
+          "taskId": "f798982d-30e2-44b7-a179-39e45f92058f",
+          "queryId": "7f818955-0224-4ee3-9072-c46ed0c43fe6",
+          "status": "succeeded",
+          "createdAt": "2026-10-15T10:14:35.502Z",
+          "pickedAt": "2026-10-15T10:14:35.709Z",
+          "completedAt": "2026-10-15T10:14:50.386Z",
+          "steps": [
+            {
+              "step": "poco_reused",
+              "at": "2026-10-15T10:14:36.356Z"
+            },
+            {
+              "step": "reuse_existing_search_page",
+              "at": "2026-10-15T10:14:36.758Z"
+            },
+            {
+              "step": "clear_previous_query",
+              "at": "2026-10-15T10:14:38.625Z"
+            },
+            {
+              "step": "input_phone",
+              "at": "2026-10-15T10:14:49.411Z"
+            },
+            {
+              "step": "masked_real_name_tail_extracted",
+              "at": "2026-10-15T10:14:50.308Z"
+            }
+          ],
+          "inputPhoneCount": 1
+        }
+      ]
+    },
+    {
+      "index": 97,
+      "lookupId": "66b5fee6-4b6e-4e2e-8a29-0304bde2879f",
+      "status": "completed",
+      "internalStatus": "not_found",
+      "queryId": "076d6174-635e-4bf4-8b2d-2b494e450d8c",
+      "attemptCount": 1,
+      "number": 156,
+      "newKeyChecked": true,
+      "retryElapsedMs": 147812,
+      "statusAtRetry": "completed",
+      "executions": [
+        {
+          "taskId": "246bf742-dcdb-44dc-ab90-64f9bc3e3b3c",
+          "queryId": "076d6174-635e-4bf4-8b2d-2b494e450d8c",
+          "status": "succeeded",
+          "createdAt": "2026-10-15T10:14:21.523Z",
+          "pickedAt": "2026-10-15T10:14:21.680Z",
+          "completedAt": "2026-10-15T10:14:45.839Z",
+          "steps": [
+            {
+              "step": "poco_reused",
+              "at": "2026-10-15T10:14:29.025Z"
+            },
+            {
+              "step": "reuse_existing_search_page",
+              "at": "2026-10-15T10:14:29.713Z"
+            },
+            {
+              "step": "clear_previous_query",
+              "at": "2026-10-15T10:14:32.001Z"
+            },
+            {
+              "step": "input_phone",
+              "at": "2026-10-15T10:14:44.313Z"
+            },
+            {
+              "step": "lookup_no_name_result",
+              "at": "2026-10-15T10:14:45.741Z"
+            }
+          ],
+          "inputPhoneCount": 1
+        }
+      ]
+    },
+    {
+      "index": 98,
+      "lookupId": "6e7ac881-7a22-4bd3-8608-b1d62ec7b762",
+      "status": "completed",
+      "internalStatus": "not_found",
+      "queryId": "dcfd27e4-eee9-43b6-842e-87825961224e",
+      "attemptCount": 1,
+      "number": 162,
+      "newKeyChecked": true,
+      "retryElapsedMs": 147846,
+      "statusAtRetry": "completed",
+      "executions": [
+        {
+          "taskId": "b62b17cd-dc7c-41b9-97ee-ae45c7a904f0",
+          "queryId": "dcfd27e4-eee9-43b6-842e-87825961224e",
+          "status": "succeeded",
+          "createdAt": "2026-10-15T10:14:31.250Z",
+          "pickedAt": "2026-10-15T10:14:31.350Z",
+          "completedAt": "2026-10-15T10:14:55.069Z",
+          "steps": [
+            {
+              "step": "poco_reused",
+              "at": "2026-10-15T10:14:31.905Z"
+            },
+            {
+              "step": "reuse_existing_search_page",
+              "at": "2026-10-15T10:14:32.225Z"
+            },
+            {
+              "step": "clear_previous_query",
+              "at": "2026-10-15T10:14:33.975Z"
+            },
+            {
+              "step": "input_phone",
+              "at": "2026-10-15T10:14:43.100Z"
+            },
+            {
+              "step": "submit_search",
+              "at": "2026-10-15T10:14:44.913Z"
+            },
+            {
+              "step": "lookup_no_name_result",
+              "at": "2026-10-15T10:14:54.954Z"
+            }
+          ],
+          "inputPhoneCount": 1
+        }
+      ]
+    },
+    {
+      "index": 99,
+      "lookupId": "9b088e22-b129-44a7-998d-56a34b4214bb",
+      "status": "completed",
+      "internalStatus": "succeeded",
+      "queryId": "c15b3e8c-4874-46ef-b5b1-b375141d1cf9",
+      "attemptCount": 1,
+      "number": 162,
+      "newKeyChecked": true,
+      "retryElapsedMs": 147899,
+      "statusAtRetry": "completed",
+      "executions": [
+        {
+          "taskId": "65dbed83-8d23-4435-99b1-3fee3fab6a03",
+          "queryId": "c15b3e8c-4874-46ef-b5b1-b375141d1cf9",
+          "status": "succeeded",
+          "createdAt": "2026-10-15T10:14:21.505Z",
+          "pickedAt": "2026-10-15T10:14:21.783Z",
+          "completedAt": "2026-10-15T10:14:31.142Z",
+          "steps": [
+            {
+              "step": "poco_reused",
+              "at": "2026-10-15T10:14:22.320Z"
+            },
+            {
+              "step": "reuse_existing_search_page",
+              "at": "2026-10-15T10:14:22.740Z"
+            },
+            {
+              "step": "clear_previous_query",
+              "at": "2026-10-15T10:14:24.442Z"
+            },
+            {
+              "step": "input_phone",
+              "at": "2026-10-15T10:14:30.125Z"
+            },
+            {
+              "step": "masked_real_name_tail_extracted",
+              "at": "2026-10-15T10:14:31.073Z"
+            }
+          ],
+          "inputPhoneCount": 1
+        }
+      ]
+    }
+  ],
+  "pending": [],
+  "channels": []
+}

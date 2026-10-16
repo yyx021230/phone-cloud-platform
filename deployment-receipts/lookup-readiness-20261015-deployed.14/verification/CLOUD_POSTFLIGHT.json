@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-15T10:23:01.682071+00:00",
+  "version": "lookup-readiness-20261015-deployed.14",
+  "activeSha256": "a046d2cf533d0254031563d917eda7cbf70b3ef3a7bb87b1cef092521b1a1c06",
+  "containerId": "337d99ffe8afb9f1b72de15093807bd83a3f28bfa018b433426c73c8c6979176",
+  "startedAt": "2026-10-15T09:04:12.032837893Z",
+  "restartCount": 0,
+  "image": "sha256:3102e2fd770ccf6d855e1b2192846965b49d33e3b9a7d9f89b374a8fd6372359",
+  "runnerHash": "8ba90c21e4d3bf9de7e12d02d0f83e05a7e730ea8f4a26d1b817a45b9cbfaf61",
+  "health": "{\"path\":\"/healthz\",\"http\":200,\"body\":{\"ok\":true,\"at\":\"2026-10-15T10:23:01.616Z\"}}\n{\"path\":\"/readyz\",\"http\":200,\"body\":{\"ok\":true,\"status\":\"ok\",\"at\":\"2026-10-15T10:23:01.632Z\",\"storage\":{\"backend\":\"postgres\",\"ok\":true,\"detail\":\"postgres 已连接，state_key=default，updated_at=2026-10-15T09:05:20.819Z\"},\"dataDir\":{\"path\":\"/app/data\",\"writable\":true,\"error\":\"\"},\"runtime\":{\"ok\":true,\"mode\":\"redis\",\"detail\":\"redis://redis:6379/0\"}}}\n",
+  "mediaVerification": "{\"decision\":\"D-075\",\"verified\":\"live\",\"pid\":2503525,\"binarySha256\":\"d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35\",\"bitsPerSecond\":8000000,\"packetsPerGroup\":2}\n"
+}
