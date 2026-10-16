@@ -1,0 +1,27 @@
+{
+  "downloadSha256": "95ca247988e7a6c7a03ce0d3078f455715335a9f5a575bb987044fc3c933251b",
+  "completed": true,
+  "sameLookupId": true,
+  "hasName": false,
+  "firstRunCalls": [
+    {
+      "method": "POST",
+      "path": "/api/v1/open/name-lookups/prepare"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/open/name-lookups/tasks"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/tasks/c3eeac7f-9ff1-4946-a93c-2385bf4853e7"
+    }
+  ],
+  "secondRunCalls": [
+    {
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/tasks/c3eeac7f-9ff1-4946-a93c-2385bf4853e7"
+    }
+  ],
+  "resumedWithGetOnly": true
+}
