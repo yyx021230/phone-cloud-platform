@@ -1,0 +1,114 @@
+✔ login classification distinguishes actual login Activity, normal home, picker and generic errors (2.055458ms)
+✔ selected target wins over stale current account; unknown and last-known identities are honest (0.119917ms)
+✖ first-account logout is excluded for this round, survives restart, and never increments hard failure circuit (7.148333ms)
+✖ business login loss keeps same task ID and waits for stop ACK before handoff; other phone continues (2.851666ms)
+✔ unknown execution is never replayed merely because an old login observation is present (1.917208ms)
+✔ received result wins a racing login-loss observation and is not replayed (2.196375ms)
+✖ configuration edits preserve logout state; new prepare polling cannot fake readiness (6.62625ms)
+✖ legacy isolation conversion requires all three recent failures to prove login, preserving unrelated circuit (0.106709ms)
+✖ adapter exposes terminal login before failed-start/generic-recovery and hides historical failures behind active work (0.117042ms)
+✖ group notice identifies phone/account, deduplicates scans and restart, never calls captcha login (20.509375ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 4
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 135.037
+
+✖ failing tests:
+
+test at ../../../../../../private/tmp/pc-account-offline-20261016/server/lookup-account-offline.test.mjs:39:1
+✖ first-account logout is excluded for this round, survives restart, and never increments hard failure circuit (7.148333ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'account_login_required'
+  
+      at TestContext.<anonymous> (file:///private/tmp/pc-account-offline-20261016/server/lookup-account-offline.test.mjs:43:9)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'account_login_required',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../../../private/tmp/pc-account-offline-20261016/server/lookup-account-offline.test.mjs:52:1
+✖ business login loss keeps same task ID and waits for stop ACK before handoff; other phone continues (2.851666ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'failed'
+  - 'rerouting'
+  
+      at TestContext.<anonymous> (file:///private/tmp/pc-account-offline-20261016/server/lookup-account-offline.test.mjs:56:9)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'failed',
+    expected: 'rerouting',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../../../private/tmp/pc-account-offline-20261016/server/lookup-account-offline.test.mjs:74:1
+✖ configuration edits preserve logout state; new prepare polling cannot fake readiness (6.62625ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(f.store.snapshot().devices[0].accountOffline)
+  
+      at TestContext.<anonymous> (file:///private/tmp/pc-account-offline-20261016/server/lookup-account-offline.test.mjs:76:36)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at ../../../../../../private/tmp/pc-account-offline-20261016/server/lookup-account-offline.test.mjs:79:1
+✖ legacy isolation conversion requires all three recent failures to prove login, preserving unrelated circuit (0.106709ms)
+  TypeError: a.legacyLoginIsolation is not a function
+      at TestContext.<anonymous> (file:///private/tmp/pc-account-offline-20261016/server/lookup-account-offline.test.mjs:81:17)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7)
+
+test at ../../../../../../private/tmp/pc-account-offline-20261016/server/lookup-account-offline.test.mjs:84:1
+✖ adapter exposes terminal login before failed-start/generic-recovery and hides historical failures behind active work (0.117042ms)
+  TypeError: Cannot read properties of undefined (reading 'reason')
+      at TestContext.<anonymous> (file:///private/tmp/pc-account-offline-20261016/server/lookup-account-offline.test.mjs:86:57)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7)
+
+test at ../../../../../../private/tmp/pc-account-offline-20261016/server/lookup-account-offline.test.mjs:89:1
+✖ group notice identifies phone/account, deduplicates scans and restart, never calls captcha login (20.509375ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /51号手机.*138\*{6}01.*重新授权登录/. Input:
+  
+  '51号手机出现拼图，请人工介入到云手机平台实时控制完成拼图。'
+  
+      at TestContext.<anonymous> (file:///private/tmp/pc-account-offline-20261016/server/lookup-account-offline.test.mjs:92:171)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '51号手机出现拼图，请人工介入到云手机平台实时控制完成拼图。',
+    expected: /51号手机.*138\*{6}01.*重新授权登录/,
+    operator: 'match',
+    diff: 'simple'
+  }

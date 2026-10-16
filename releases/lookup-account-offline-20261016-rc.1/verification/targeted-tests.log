@@ -1,0 +1,24 @@
+✔ login classification distinguishes actual login Activity, normal home, picker and generic errors (0.974875ms)
+✔ selected target wins over stale current account; unknown and last-known identities are honest (0.100584ms)
+✔ first-account logout is excluded for this round, survives restart, and never increments hard failure circuit (9.229875ms)
+✔ business login loss keeps same task ID and waits for stop ACK before handoff; other phone continues (3.09675ms)
+✔ stop ACK, not terminal login alone, releases an active phone reservation (1.955875ms)
+✔ cancellation during login cleanup does not requeue the original phone number (1.76625ms)
+✔ a fresh explicit prepare converts only evidenced legacy login isolation and preserves cooldowns (0.827334ms)
+✔ unknown execution is never replayed merely because an old login observation is present (1.396333ms)
+✔ received result wins a racing login-loss observation and is not replayed (1.410875ms)
+✔ configuration edits preserve logout state; new prepare polling cannot fake readiness (1.256125ms)
+✔ legacy isolation conversion requires all three recent failures to prove login, preserving unrelated circuit (18.562083ms)
+✔ adapter exposes terminal login before failed-start/generic-recovery and hides historical failures behind active work (0.306333ms)
+✔ group notice identifies phone/account, deduplicates scans and restart, never calls captcha login (25.115417ms)
+✔ combined API reference preserves distinct modules and every documented operation (1.773333ms)
+✔ XHS creation examples are executable contracts, with separate result retrieval (0.318209ms)
+✔ prepared docs cover startup and preserve explicit completed/processing/error schemas (0.244709ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 177.20275
