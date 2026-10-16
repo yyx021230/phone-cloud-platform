@@ -1,0 +1,40 @@
+{"phase": "before_hashes_and_media_passed", "files": 2}
+{"phase": "database_backup_decoded", "bytes": 501915755}
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 205B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/phone-cloud-platform:lookup-account-offline-20261016-rc.1
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context:
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 40.58kB done
+#4 DONE 0.0s
+
+#5 [1/2] FROM docker.io/library/phone-cloud-platform:lookup-account-offline-20261016-rc.1@sha256:63193b6fe578f4de2d818943d6939b04b3d737f617ef27b0440d4873925d26b9
+#5 resolve docker.io/library/phone-cloud-platform:lookup-account-offline-20261016-rc.1@sha256:63193b6fe578f4de2d818943d6939b04b3d737f617ef27b0440d4873925d26b9 0.0s done
+#5 DONE 0.3s
+
+#6 [2/2] COPY payload/ /app/
+#6 DONE 3.6s
+
+#7 exporting to image
+#7 exporting layers 0.1s done
+#7 exporting manifest sha256:3220580f844ebdb506d03390fcdcc0496403fd717e3c75fa013c2c606e77c085
+#7 exporting manifest sha256:3220580f844ebdb506d03390fcdcc0496403fd717e3c75fa013c2c606e77c085 done
+#7 exporting config sha256:b55eafb10e4636f9bdde271452f0223fece7a9afb90262b80f7f5eb9a62ae0a1 done
+#7 exporting attestation manifest sha256:87d633cd31f0e45da8368db9bdb4cbb822527a1ccf9965b6290721e9e67f2073 0.0s done
+#7 exporting manifest list sha256:0d4f8ec832312dcd1d3b601e770e82668bab6e7182f90a6713de1d423384cd69 0.0s done
+#7 naming to docker.io/library/phone-cloud-platform:lookup-auto-recovery-20261016-rc.1 done
+#7 unpacking to docker.io/library/phone-cloud-platform:lookup-auto-recovery-20261016-rc.1 0.0s done
+#7 DONE 0.4s
+isolated key scope and HMAC passed
+candidate public assets verified
+{"atUtc": "2026-10-16T07:56:07.053411+00:00", "candidate": "lookup-auto-recovery-20261016-rc.1", "commit": "1d4008e288d06598225041c4cadead025da43164", "runtimeCommit": "1d4008e288d06598225041c4cadead025da43164", "baselineActiveSha256": "ec5321c165ddb6af8fa62701c579ef35669b2c493799f819cf0fb30d005a1b86", "baselineVersion": "lookup-account-offline-20261016-deployed.1", "oldRunningImage": "sha256:63193b6fe578f4de2d818943d6939b04b3d737f617ef27b0440d4873925d26b9", "rollbackImage": "sha256:63193b6fe578f4de2d818943d6939b04b3d737f617ef27b0440d4873925d26b9", "image": "sha256:0d4f8ec832312dcd1d3b601e770e82668bab6e7182f90a6713de1d423384cd69", "tag": "phone-cloud-platform:lookup-auto-recovery-20261016-rc.1", "files": {"server/managed-lookup.mjs": "88434b6bf225418ee9975c3c4b5209f87eafd67aed4e17a7577c45cc957aa64d", "server/managed-lookup-platform.mjs": "87b546402a22ce46af39374caad97f8683a66e581fbb2ee8b91c0aabb056f19f"}, "oldFileHashes": {"server/managed-lookup.mjs": "a4eb98fb10d7a7a4b3c54bc7b47a07a92630beb65eee91600e24fd22755b8d49", "server/managed-lookup-platform.mjs": "1bff94fccdc711f1eed09b7a3e05ce755d6f89100869ee703935aff09fb81ecc"}, "stage": "/opt/phone-cloud-platform/staging/lookup-auto-recovery-20261016-rc.1", "backup": "/opt/phone-cloud-platform/deploy-backups/lookup-auto-recovery-20261016-prep.1", "envBeforeSha256": "bbec406a30f961c430389a8d568e0d676b6683399c59542b1a1bdaf6f354ec43", "databaseBackup": {"bytes": 501915755, "sha256": "fa50731bfafdcb679013299f1e6ef610ef6198d62ef3003c9c120936e96a1bc2", "decoded": true}, "imageBackup": {"bytes": 64718848, "sha256": "0ff70b6c94f7ebd9477e0588e7e4f4c869d19ed59de67d16427b342783e34362"}, "compose": {"path": "/opt/phone-cloud-platform/staging/lookup-auto-recovery-20261016-rc.1/compose.pending.json", "sha256": "5a8de49adecbfb66086ecfd93460f43b6c9dee4e40acf47ca0987aa695dbe096"}, "isolatedReady": true, "isolatedHashes": 37, "keyAndLegacyAuthPassed": true, "media": {"decision": "D-075", "verified": "live", "pid": 2503525, "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35", "bitsPerSecond": 8000000, "packetsPerGroup": 2}, "containerId": "6c8bc2cd7b57f6eb62e0e3477420a9a0671b279615a50a0f16dfbaf09b19f66f", "startedAt": "2026-10-16T07:03:57.649980353Z", "deployed": false, "requiresCloudRestart": true, "requiresAgentRestart": false, "adbTouched": false}
