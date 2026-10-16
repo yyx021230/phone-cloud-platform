@@ -1,0 +1,11 @@
+{
+  "version": "lookup-http-guide-20261016-rc.1",
+  "status": "http-example-bundle",
+  "files": {
+    "README.md": "d6763edebd743eb13d5468a62fafac202f10711322e9cff979c588e4c8d9499b",
+    "lookup.py": "2880153796e33c015ec9ac83ffac8879587b47a96d84ea42de12138a5c4824af",
+    "lookup.mjs": "3eba93f018a10116ddf46f51ba2f802e5e386b9ece96c4b73e47a7d3776f9f6e",
+    "openapi.json": "e9b8ee37bac0e623a010da946766eeb25df4bd82a89bdedf7a3df1f979d67d88"
+  },
+  "zipSha256": "b4e9a7e450dce7930c1054fa819815aa622c37f91bafebae3526a861c41ac73d"
+}
