@@ -1,0 +1,6 @@
+{
+  "server/managed-lookup.mjs": "88434b6bf225418ee9975c3c4b5209f87eafd67aed4e17a7577c45cc957aa64d",
+  "server/managed-lookup-platform.mjs": "87b546402a22ce46af39374caad97f8683a66e581fbb2ee8b91c0aabb056f19f",
+  "server/lookup-automatic-recovery.test.mjs": "7b4465878d18cc40506fdbc12e5843274de3838204a85c7b2f0d89c00e1576a1",
+  "verification/automatic-recovery-http.mjs": "3a5524b6022225872d4ac8d9b1d8652aa1088627dd41136d7dae2891ad40d094"
+}

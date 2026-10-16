@@ -1,0 +1,63 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {createManagedLookupService} from './managed-lookup.mjs';import {initialManagedLookupState} from './managed-lookup-store.mjs';
+function fixture(){
+ let state=initialManagedLookupState(),clock=Date.now(),tail=Promise.resolve();const events=[],obs=new Map(),epochs=new Map(),offline=new Set();
+ const store={snapshot:()=>structuredClone(state),isFenced:()=>false,readRequest:async(id,client)=>structuredClone(state.requests.find(r=>r.lookupId===id&&r.clientId===client)),close:async()=>{},transact(fn){const work=tail.then(async()=>{const next=structuredClone(state),commits=[];const out=await fn(next,{archived:async()=>null,onRollback:()=>{},onCommit:fn=>commits.push(fn)});state=next;commits.forEach(fn=>fn());return out;});tail=work.catch(()=>{});return work;}};
+ const adapter={clientValid:()=>true,validateDevice:()=>{},health:id=>({ready:!offline.has(id)}),canStop:c=>!offline.has(c.deviceId),observe:c=>obs.get(c.deviceId)||{busy:true},readinessIdentity:c=>c.sessionId+':'+(epochs.get(c.deviceId)||'account-1:agent-1'),start:async(c,r)=>{c.sessionId='s-'+c.generation;events.push({kind:'start',device:c.deviceId,id:r.lookupId});obs.set(c.deviceId,{busy:true});},query:async(c,r,tx,options)=>{r.queryId=c.queryId='q-'+r.lookupId+'-'+c.generation;events.push({kind:'query',device:c.deviceId,id:r.lookupId,purpose:r.purpose,options});obs.set(c.deviceId,{busy:true});},stop:async c=>{events.push({kind:'stop',device:c.deviceId});obs.set(c.deviceId,{stopped:true,ready:false});}};
+ let service=createManagedLookupService({store,adapter,now:()=>clock,probePhone:'13800000000'});
+ const configure=(numbers=[51,52,54,55,87,138,152])=>service.configure({enabled:true,devices:numbers.map(n=>({deviceNumber:n,deviceId:'d'+n,enabled:true})),grants:[{clientId:'a',enabled:true,consentReference:'fixture-allowed'}]},'test');
+ const prepare=(key='prepare-key-1')=>service.prepare({clientId:'a',key});
+ const readyStart=async c=>{obs.set(c.deviceId,{ready:true});await service.tick();};
+ const result=async(c,name='名',status='succeeded')=>{obs.set(c.deviceId,{ready:true,result:{resultId:c.queryId||store.snapshot().channels.find(x=>x.deviceId===c.deviceId).queryId,status,name}});await service.tick();};
+ const twoReady=async()=>{await prepare();await service.tick();let cs=store.snapshot().channels.slice(0,2);for(const c of cs)await readyStart(c);for(const c of cs)await result(c);return cs;};
+ return {get service(){return service;},store,adapter,events,obs,epochs,offline,configure,prepare,readyStart,result,twoReady,advance:n=>clock+=n,restart(){service=createManagedLookupService({store,adapter,now:()=>clock,probePhone:'13800000000'});},submit:(key='business-key-1',phoneNumber='13900000000')=>service.submitAsync({clientId:'a',key,phoneNumber})};
+}
+
+import {createManagedLookupAdapter} from './managed-lookup-platform.mjs';
+const failure=(c,id)=>({recovery:true,ready:true,result:{resultId:c.queryId,status:'needs_recovery'},recoveryFailure:{jobId:id,identity:c.sessionId+':account-1:agent-1'}});
+async function running(f){await f.configure([51,52,54]);await f.twoReady();const r=await f.submit();await f.service.tick();return {r,c:f.store.snapshot().channels.find(c=>c.requestId===r.lookupId)};}
+test('terminal ordinary failure automatically resumes original query once; new partner key and other phone are independent',async()=>{
+ const f=fixture(),{r,c}=await running(f);const other=await f.submit('second-business','13900000001');await f.service.tick();const oc=f.store.snapshot().channels.find(c=>c.requestId===other.lookupId);
+ f.obs.set(c.deviceId,failure(c,'failed-1'));await f.service.tick();const q=f.events.filter(e=>e.id===r.lookupId&&e.kind==='query');assert.equal(q.length,2);assert.equal(q[1].options.automaticRecovery,true);assert.equal(q[1].options.verified,true);assert.equal(f.store.snapshot().requests.find(x=>x.lookupId===r.lookupId).queryId,c.queryId);
+ assert.equal((await f.submit('new-partner-request')).lookupId,r.lookupId);await f.service.tick();assert.equal(f.events.filter(e=>e.id===r.lookupId&&e.kind==='query').length,2);
+ await f.result(oc);assert.equal((await f.service.getAsyncResult(other.lookupId,'a')).status,'completed');await f.result(c);assert.equal((await f.service.getAsyncResult(r.lookupId,'a')).status,'completed');
+});
+test('second terminal failure waits for stop ACK then transfers original ID to another ready physical phone',async()=>{
+ const f=fixture(),{r,c}=await running(f);f.obs.set(c.deviceId,failure(c,'failure-one'));await f.service.tick();
+ f.adapter.stop=async c=>{f.events.push({kind:'stop',device:c.deviceId});f.obs.set(c.deviceId,{busy:true});};
+ f.obs.set(c.deviceId,failure(c,'failure-two'));await f.service.tick();await f.service.tick();assert.equal(f.events.filter(e=>e.id===r.lookupId&&e.kind==='query').length,2);assert.equal(f.store.snapshot().channels.find(x=>x.deviceId===c.deviceId).phase,'stopping');
+ f.obs.set(c.deviceId,{stopped:true});await f.service.tick();const next=f.store.snapshot().channels.find(x=>x.requestId===r.lookupId);assert.ok(next);assert.notEqual(next.deviceId,c.deviceId);assert.deepEqual(f.store.snapshot().requests.find(x=>x.lookupId===r.lookupId).recoveryExcludedDevices,[c.deviceId]);await f.result(next,'转');assert.equal((await f.service.getAsyncResult(r.lookupId,'a')).name,'转');
+});
+for(const observation of [{unknown:true},{busy:true},{human:true}])test('uncertain or human execution never enters automatic ordinary retry '+JSON.stringify(observation),async()=>{
+ const f=fixture(),{r,c}=await running(f);f.obs.set(c.deviceId,{...failure(c,'old'),...observation});await f.service.tick();await f.service.tick();assert.equal(f.events.filter(e=>e.id===r.lookupId&&e.kind==='query').length,1);
+});
+test('recovery marker without terminal task proof is not replayed',async()=>{const f=fixture(),{r,c}=await running(f);f.obs.set(c.deviceId,{recovery:true});await f.service.tick();assert.equal(f.events.filter(e=>e.id===r.lookupId&&e.kind==='query').length,1);});
+test('changed account identity bypasses local resume and stops before handoff',async()=>{const f=fixture(),{r,c}=await running(f);f.obs.set(c.deviceId,{...failure(c,'failed'),recoveryFailure:{jobId:'failed',identity:'different-account'}});await f.service.tick();assert.equal(f.events.filter(e=>e.id===r.lookupId&&e.kind==='query').length,1);assert.ok(f.events.some(e=>e.kind==='stop'&&e.device===c.deviceId));await f.service.tick();const next=f.store.snapshot().channels.find(x=>x.requestId===r.lookupId);assert.notEqual(next.deviceId,c.deviceId);});
+test('recovery budget survives restart and cancellation cannot turn into a handoff',async()=>{const f=fixture(),{r,c}=await running(f);f.obs.set(c.deviceId,failure(c,'first'));await f.service.tick();f.restart();f.obs.set(c.deviceId,failure(c,'second'));await f.service.tick();await f.service.cancel(r.lookupId,'test');await f.service.tick();assert.equal(f.events.filter(e=>e.id===r.lookupId&&e.kind==='query').length,2);assert.equal((await f.service.getAsyncResult(r.lookupId,'a')).status,'failed');});
+test('three failing physical phones end with explicit failure after bounded attempts, never fake empty name',async()=>{
+ const f=fixture(),{r,c}=await running(f);const third=f.store.snapshot().channels.find(x=>x.deviceId!=='d51'&&x.deviceId!=='d52');await f.readyStart(third);await f.result(third);
+ for(let i=0;i<3;i++){const current=f.store.snapshot().channels.find(x=>x.requestId===r.lookupId);assert.ok(current);f.obs.set(current.deviceId,failure(current,'first-'+i));await f.service.tick();f.obs.set(current.deviceId,failure(current,'second-'+i));await f.service.tick();await f.service.tick();}
+ const result=await f.service.getAsyncResult(r.lookupId,'a');assert.equal(result.status,'failed');assert.equal(result.code,'lookup_recovery_exhausted');assert.equal('name' in result,false);const row=f.store.snapshot().requests.find(x=>x.lookupId===r.lookupId);assert.equal(row.automaticRecoveries.length,3);assert.equal(row.recoveryExcludedDevices.length,3);assert.equal(row.attempts.length,3);
+});
+test('received name wins over racing recovery failure and is never resubmitted',async()=>{const f=fixture(),{r,c}=await running(f);f.obs.set(c.deviceId,{...failure(c,'failed'),result:{resultId:c.queryId,status:'succeeded',name:'已得'}});await f.service.tick();assert.equal((await f.service.getAsyncResult(r.lookupId,'a')).name,'已得');assert.equal(f.events.filter(e=>e.id===r.lookupId&&e.kind==='query').length,1);});
+test('busy screen, disabled pool and revoked grant never auto-dispatch',async()=>{
+ for(const mode of ['screen','disabled','revoked']){const f=fixture(),{r,c}=await running(f);f.obs.set(c.deviceId,failure(c,'failed'));if(mode==='screen')f.offline.add(c.deviceId);else await f.store.transact(s=>{if(mode==='disabled')s.config.enabled=false;else s.grants[0].enabled=false;});await f.service.tick();assert.equal(f.events.filter(e=>e.id===r.lookupId&&e.kind==='query').length,1);}
+});
+test('adapter requires matching failed query and failed transport task; current account identity is preserved',()=>{
+ const job={jobId:'j',resultId:'q',sessionId:'s',deviceId:'d',kind:'alipay_name_query',status:'failed',windowsTaskId:'t',createdAt:'2026-10-16T01:00:00Z'},task={taskId:'t',status:'failed'};
+ const session={sessionId:'s',deviceId:'d',status:'ready',currentAccount:'138******01',accountIdentityVerified:true,results:[{resultId:'q',status:'needs_recovery'}]};
+ const state={automationJobs:[job],automationSessions:[session],windowsTasks:[task],devices:[{deviceId:'d',adb:{agentId:'a'}}],windowsAgents:[{agentId:'a',lookupRuntimeId:'runtime'}]};const a=createManagedLookupAdapter({state,online:()=>true});const c={sessionId:'s',deviceId:'d',queryId:'q',generation:'g'};
+ assert.equal(a.observe(c).recoveryFailure.jobId,'j');assert.equal(a.observe(c).recoveryFailure.identity,a.readinessIdentity(c));task.status='stalled';assert.equal(a.observe(c).recoveryFailure,undefined);task.status='failed';job.resultId='other';assert.equal(a.observe(c).recoveryFailure,undefined);job.resultId='q';job.kind='alipay_name_start';assert.equal(a.observe(c).recoveryFailure,undefined);
+});
+test('automatic recovery payload selects query_resume, keeps original result and skips intervening probe',async()=>{
+ const session={sessionId:'s',deviceId:'d',userId:'u',status:'ready',currentAccount:'138******01',results:[]},state={automationJobs:[],automationSessions:[session],windowsTasks:[],deviceLocks:[],audit:[],devices:[{deviceId:'d'}]};let input;
+ const api={state,recovery:()=>({phase:'query',resultId:'original-query'}),createJob:x=>{input=x;const job={...x,jobId:'new-job'};state.automationJobs.push(job);return job;},result:()=>({resultId:'original-query'}),queueTask:()=>{const t={taskId:'new-task'};state.windowsTasks.push(t);return t;}};
+ const a=createManagedLookupAdapter(api),tx={onRollback:()=>{},onCommit:()=>{}},c={sessionId:'s',deviceId:'d',clientId:'a'},r={lookupId:'original-lookup',queryId:'original-query',phoneNumber:'13900000000'};
+ await a.query(c,r,tx,{recovery:true,automaticRecovery:true,prepared:true,probePhone:'13800000000',verified:true});assert.equal(input.resultId,'original-query');assert.equal(input.resumeAfterHumanVerification,true);assert.equal(input.restartAfterHumanVerification,false);assert.equal(state.automationJobs[0].preparedLookup.verifiedAccount,session.currentAccount);
+});
+test('automatic recovery waits behind five active slots and resumes when one is free',async()=>{
+ const f=fixture(),{r,c}=await running(f);f.obs.set(c.deviceId,failure(c,'failed'));
+ await f.store.transact(s=>{s.channels=s.channels.filter(x=>x.deviceId===c.deviceId);for(let i=0;i<5;i++)s.channels.push({deviceId:'busy-'+i,generation:'busy-'+i,sessionId:'busy-'+i,phase:'querying',clientId:'a',requestId:''});});
+ await f.service.tick();assert.equal(f.events.filter(e=>e.id===r.lookupId&&e.kind==='query').length,1);
+ await f.store.transact(s=>{s.channels=s.channels.filter(x=>x.deviceId!=='busy-0');});await f.service.tick();assert.equal(f.events.filter(e=>e.id===r.lookupId&&e.kind==='query').length,2);assert.equal(f.service.admin().counts.executing,5);
+});

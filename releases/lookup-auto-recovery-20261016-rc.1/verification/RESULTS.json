@@ -1,0 +1,52 @@
+{
+  "status": "local_candidate_not_deployed",
+  "check": "passed",
+  "full": {
+    "pass": 851,
+    "fail": 0
+  },
+  "newTargeted": {
+    "pass": 14,
+    "fail": 0
+  },
+  "combinedRecoveryAndLogin": {
+    "pass": 27,
+    "fail": 0
+  },
+  "http": {
+    "loopbackOnly": true,
+    "storage": "json",
+    "realDevices": 0,
+    "productionConnections": 0,
+    "minimumReady": 2,
+    "targetReady": 5,
+    "publicPreparationHasNoCounts": true,
+    "oneReadyRejected": true,
+    "initialProbeQueries": 5,
+    "firstBusinessBeforeOtherThreeProbes": true,
+    "businessQueries": 12,
+    "elapsedBeforeNewKeysMs": 279,
+    "sameIdAfterEightNewKeys": true,
+    "nameAndEmptyCompleted": true,
+    "ordinaryRecoveryKeepsOriginalQuery": true,
+    "ordinarySecondFailureTransfersSameLookupAfterStop": true,
+    "loginLossTransfersSameLookupToAnotherReadyPhone": true,
+    "loginExcludedWithoutHardFailureCount": true,
+    "sameStartupKeyDoesNotRetry": true,
+    "newStartupKeyProbesAndRestoresPhone": true,
+    "fiveSimultaneousBusinessDevices": true,
+    "oneHeldBusinessDoesNotBlockOtherFour": true,
+    "restartInvalidatesProof": true,
+    "drained": true
+  },
+  "frozenFilesUnchanged": 193,
+  "initialHttpFixtureFailure": "asserted resultId on Agent payload; actual resultId is cloud-side only. Corrected assertion to compare pool queryId before/after; runtime code unchanged",
+  "productionWrites": 0,
+  "realDeviceQueries": 0,
+  "unverified": [
+    "Postgres transactional recovery integration for this new patch",
+    "production deployment and external real-device acceptance",
+    "actual account-login-loss business handoff"
+  ],
+  "freshReassemblyMatched": true
+}
