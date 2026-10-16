@@ -1063,7 +1063,7 @@ class OverlayRecoveryTests(unittest.TestCase):
         events = []
         with patch.object(sync, "adb", side_effect=[
             "mWakefulness=Dozing", "", "", "mWakefulness=Dozing", "", "",
-            "mWakefulness=Awake",
+            "mWakefulness=Awake", "KeyguardServiceDelegate\nshowing=false\nsecure=false\nKeyguardStateMonitor",
         ]) as adb, patch.object(sync.time, "sleep"):
             self.assertTrue(sync.wake_if_asleep("adb", "serial", lambda: None, events))
         self.assertEqual([call.args[5] for call in adb.call_args_list if call.args[2:4] == ("shell", "input")],

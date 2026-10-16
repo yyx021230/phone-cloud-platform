@@ -168,7 +168,7 @@ def image_navigation_capture(adb_path, serial, guard, events, current):
     image_as_of = dt.date.fromisoformat(next(iter(as_of_values))) if as_of_values else dt.datetime.now(SHANGHAI).date()
     cutoff = image_as_of-dt.timedelta(days=days-1)
     frames = []
-    for _ in range(2):
+    for frame_attempt in range(6):
         guard()
         if focus(adb_path,serial) != current:
             raise RuntimeError("image list reader foreground changed")
@@ -203,11 +203,20 @@ def image_navigation_capture(adb_path, serial, guard, events, current):
             return image_navigation_capture(adb_path,serial,guard,events,current)
         except (RuntimeError,subprocess.TimeoutExpired) as error:
             guard()
+            if str(error).startswith("OCR works-list header is not unique:") and frame_attempt < 5:
+                # A bad header read proves no data. Discard the pair and require
+                # two later, consecutive fresh captures with every field proven.
+                frames.clear()
+                events.append("works_image_header_capture_retried")
+                time.sleep(.2)
+                continue
             raise ImageListReadError(str(error)) from error
         guard()
         if focus(adb_path,serial) != current:
             raise RuntimeError("image list reader foreground changed")
         frames.append(frame)
+        if len(frames) == 2:break
+    if len(frames) != 2:raise ImageListReadError("image list reader could not prove two consecutive fresh frames")
     def signature(frame):
         if frame.get("navigationOnly"):
             return ("filter",sorted(frame["headers"].items()),sorted(frame["navigationLabels"].items()))
@@ -386,6 +395,9 @@ def wake_if_asleep(adb_path, serial, guard, events):
         power = adb(adb_path, serial, "shell", "dumpsys", "power", timeout=8)
     if "mWakefulness=Awake" not in power:
         raise RuntimeError("target display did not wake")
+    # Some OEMs wake the display while leaving the swipe-only keyguard shown.
+    # Reuse the proven nonsecure surface checks before recapturing app content.
+    dismiss_unsecured_keyguard(adb_path,serial,guard,events)
     events.append("screen_woken_after_timeout")
     return True
 
@@ -427,7 +439,8 @@ def dismiss_unsecured_keyguard(adb_path, serial, guard, events):
     adb(adb_path, serial, "shell", "input", "keyevent", "82", timeout=7)
     adb(adb_path, serial, "shell", "wm", "dismiss-keyguard", timeout=7)
     time.sleep(.5)
-    for attempt in range(4):
+    swiped = False
+    for attempt in range(8):
         refreshed = adb(adb_path, serial, "shell", "dumpsys", "window", "policy", timeout=8)
         section = refreshed.split("KeyguardServiceDelegate", 1)[-1].split("KeyguardStateMonitor", 1)[0]
         if re.findall(r"^\s*showing=(true|false)\s*$", section, re.MULTILINE) == ["false"]:
@@ -435,12 +448,16 @@ def dismiss_unsecured_keyguard(adb_path, serial, guard, events):
         if (re.findall(r"^\s*secure=(true|false)\s*$", section, re.MULTILINE) != ["false"]
                 or "mKeyguardOccluded=false" not in refreshed):
             raise RuntimeError("target keyguard requires manual unlock or its security state is unproven")
-        if attempt == 1:
+        if attempt >= 1 and not swiped:
             # These OEMs ignore MENU/dismiss-keyguard on their swipe-only lock.
             # A swipe is allowed only on the still-proven unsecured lock surface.
             current = focus(adb_path, serial)
             if not re.search(r"mCurrentFocus=Window\{[^\n}]*\bu0\s+(?:StatusBar|NotificationShade|com\.android\.systemui[^}]*NotificationShade)[}\s]", current):
-                raise RuntimeError("unsecured keyguard swipe surface is not proven")
+                # Wake/dismiss can leave an old showing=true while the app is
+                # already foreground. Wait for policy; never swipe that app.
+                if attempt == 7:raise RuntimeError("unsecured keyguard swipe surface is not proven")
+                time.sleep(.5)
+                continue
             size = adb(adb_path, serial, "shell", "wm", "size", timeout=7)
             physical = re.findall(r"Physical size: (\d+)x(\d+)", size)
             override = re.findall(r"Override size: (\d+)x(\d+)", size)
@@ -451,7 +468,8 @@ def dismiss_unsecured_keyguard(adb_path, serial, guard, events):
             guard()
             adb(adb_path, serial, "shell", "input", "swipe", str(width//2), str(height*85//100),
                 str(width//2), str(height*30//100), "350", timeout=7)
-        if attempt == 3:
+            swiped = True
+        if attempt == 7:
             raise RuntimeError("unsecured keyguard stayed visible after dismissal")
         time.sleep(.5)
     events.append("unsecured_keyguard_dismissed")
@@ -1015,7 +1033,8 @@ def creator_filter_panel(root):
     boxes = []
     for text in ("数据中心","作品分析","全部笔记","笔记类型","发布时间","排序方式","收起"):
         matches = [n for n in label(root,text) if n.get("package") == XHS_PACKAGE
-                   and n.get("class") in ("android.widget.TextView","android.view.View")]
+                   and n.get("class") in ("android.widget.TextView","android.view.View")
+                   and not any(child is not n and (child.get("text") or "").strip() == text for child in n.iter("node"))]
         if len(matches) != 1:return False
         boxes.append(bounds(matches[0]))
     center,works,all_notes,kind,published,order,close = boxes
@@ -1201,6 +1220,36 @@ def refresh_creator_server_error(adb_path, serial, root, guard, events, attempts
     return True
 
 
+def recover_vivo_browser_permission_redirect(adb_path,serial,root,slot,current,guard,events):
+    """Leave the observed browser permission surface; never press its buttons."""
+    package="com.android.permissioncontroller"
+    if ("xhs_cold_started" not in events or {e.split(":",1)[1] for e in events if e.startswith("collection_slot_requested:")}!={slot}
+            or not re.search(r"mCurrentFocus=Window\{[^\n}]*\bu0\s+com\.android\.permissioncontroller/com\.android\.permissioncontroller\.permission\.ui\.GrantPermissionsActivity[}\s]",current)):
+        return False
+    requested={e.split(":",1)[1] for e in events if e.startswith("clone_user_requested:")}
+    user="0" if slot=="app1" and requested<={"0"} else "999" if slot=="app2" and requested=={"999"} else None
+    if user is None:return False
+    nodes=live_nodes(root)
+    expected={"permission_message":"“浏览器”请求访问您的位置信息",
+              "detail_message":"用于天气、资讯功能，同时部分第三方网页（如导航网站）可能会获取位置信息，第三方网页获取位置信息时，会再次征求您的同意。",
+              "permission_allow_foreground_only_button":"使用应用时允许",
+              "permission_allow_one_time_button":"本次使用时允许","permission_deny_button":"禁止"}
+    if any(len([n for n in nodes if n.get("package")==package and n.get("resource-id")==package+":id/"+key
+                and n.get("text")==text and n.get("enabled")=="true"])!=1 for key,text in expected.items()):return False
+    if "vivo_browser_permission_reopened" in events:raise RuntimeError("browser permission redirect repeated; collection stopped")
+    guard()
+    if adb(adb_path,serial,"shell","getprop","ro.product.manufacturer").strip().upper()!="VIVO":return False
+    guard()
+    if focus(adb_path,serial)!=current:raise RuntimeError("browser permission foreground changed")
+    adb(adb_path,serial,"shell","input","keyevent","3",timeout=7)
+    time.sleep(.4)
+    if focus(adb_path,serial)==current:raise RuntimeError("browser permission stayed foreground after Home")
+    guard();events.append("vivo_browser_permission_reopened")
+    adb(adb_path,serial,"shell","am","start","-W","--user",user,"-n",XHS_PACKAGE+"/.index.v2.IndexActivityV2",timeout=20)
+    time.sleep(.7);assert_requested_foreground(focus(adb_path,serial),events)
+    return True
+
+
 def recover_vivo_browser_redirect(adb_path, serial, slot, current, guard, events):
     # 43's owner app cold-start was followed by a Vivo browser activity. Leave
     # that page intact and attempt the known XHS owner activity exactly once.
@@ -1281,6 +1330,9 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
             root = navigation_capture(adb_path, serial, guard, events)
             continue
         current = focus(adb_path, serial)
+        if recover_vivo_browser_permission_redirect(adb_path,serial,root,slot,current,guard,events):
+            root=navigation_capture(adb_path,serial,guard,events)
+            continue
         if recover_vivo_browser_redirect(adb_path,serial,slot,current,guard,events):
             root = navigation_capture(adb_path,serial,guard,events)
             continue
@@ -1545,6 +1597,16 @@ def tap_filter_label(adb_path, serial, root, value, guard):
     time.sleep(0.5)
 
 
+def recheck_filter_image(adb_path,serial,root,guard,events):
+    """A stale accessibility tree cannot prove whether a filter tap opened it."""
+    if os.name != "nt":return root
+    current=focus(adb_path,serial)
+    if not works_webview_activity(current):return root
+    actual=image_navigation_capture(adb_path,serial,guard,events,current)
+    events.append("works_filter_state_rechecked_by_image")
+    return actual
+
+
 def refresh_scrolled_webview(adb_path, serial, root, guard, events, previous_root=None):
     """Refresh a stale WebView accessibility tree without changing filters."""
     if root.get("data-source") == "windows_native_ocr":
@@ -1552,7 +1614,7 @@ def refresh_scrolled_webview(adb_path, serial, root, guard, events, previous_roo
             raise RuntimeError("image works list changed unexpectedly")
         guard()
         return root
-    if previous_root is not None and creator_list(root) and note_cards(root):
+    if previous_root is not None and not creator_filter_panel(root) and creator_list(root) and note_cards(root):
         previous = [(n[1]["title"], n[1]["published_at_raw"]) for n in note_cards(previous_root)]
         current_cards = [(n[1]["title"], n[1]["published_at_raw"]) for n in note_cards(root)]
         if (previous and current_cards != previous
@@ -1560,7 +1622,7 @@ def refresh_scrolled_webview(adb_path, serial, root, guard, events, previous_roo
             guard()
             events.append("works_list_updated_without_filter_toggle")
             return root
-    if (creator_list(root) and not label(root, "全部笔记") and note_cards(root)
+    if (not creator_filter_panel(root) and creator_list(root) and not label(root, "全部笔记") and note_cards(root)
             and re.search(r"com\.xingin\.xhs/com\.xingin\.xywebview\.activity\.WebViewActivityV2(?:[}\s]|$)", focus(adb_path, serial))):
         guard()
         events.append("works_list_offscreen_header_verified")
@@ -1568,12 +1630,23 @@ def refresh_scrolled_webview(adb_path, serial, root, guard, events, previous_roo
     if not creator_list(root) or not label(root, "全部笔记"):
         raise RuntimeError("works-analysis filter entry is not proven")
     wake_if_asleep(adb_path, serial, guard, events)
-    tap_filter_label(adb_path, serial, root, "全部笔记", guard)
-    expanded = navigation_capture(adb_path, serial, guard, events)
+    if creator_filter_panel(root):
+        expanded=root
+    else:
+        tap_filter_label(adb_path, serial, root, "全部笔记", guard)
+        expanded = navigation_capture(adb_path, serial, guard, events)
     if not all(label(expanded, value) for value in ("笔记类型", "发布时间", "排序方式", "收起")):
-        raise RuntimeError("works-analysis filter panel is not proven")
+        expanded=recheck_filter_image(adb_path,serial,expanded,guard,events)
+        if (expanded.get("data-source") == "windows_native_ocr" and creator_list(expanded)
+                and not label(expanded,"排序方式") and (note_cards(expanded) or label(expanded,"暂无笔记") or label(expanded,"到底了"))):
+            events.append("webview_accessibility_refreshed")
+            return expanded
+        if not all(label(expanded, value) for value in ("笔记类型", "发布时间", "排序方式", "收起")):
+            raise RuntimeError("works-analysis filter panel is not proven")
     tap_filter_label(adb_path, serial, expanded, "收起", guard)
     refreshed = navigation_capture(adb_path, serial, guard, events)
+    if label(refreshed, "排序方式"):
+        refreshed=recheck_filter_image(adb_path,serial,refreshed,guard,events)
     if label(refreshed, "排序方式") or not creator_list(refreshed):
         raise RuntimeError("works-analysis filter panel did not close")
     events.append("webview_accessibility_refreshed")

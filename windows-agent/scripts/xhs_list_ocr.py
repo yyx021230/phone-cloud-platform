@@ -13,12 +13,12 @@ from decimal import Decimal
 
 ICON_PNGS = {'view': 'iVBORw0KGgoAAAANSUhEUgAAAC4AAAAvCAAAAAC5jqdOAAADrklEQVRIDZXB6VMbBRgH4N+b3Q2JOUjCkZBwJQXKUUFto6XodHrhTGfq+MkZp3+eftFvjjpDqUdbKxRtQRlok4KFcIQkJJCDBJLdzevucqX9ts9DDDOIYQYxzCCGGcQwgxhmEMMMYrytXivXqmodFkmwOZvwDmI0qpZye5mDoixDsls9/laPV0AjYpxTs4mdnQrjFNmD4aBXwDlinCmvx5I1SG6nSxKgVo8KRRn2UKTXhTPEOKHuxlcKcAb8rc5mSYRSPcxnM5kCXH2DfgEniHFM3Z7fqtqD4ZBXwCk1n15dU6TOKyEBx4hhULf/3lRbhiJeEY3q+/H4ntAVDQkwEEOnJue22D8WsUNTSKcqcHvDNmgO1//doc5rHQQdMXT5P1fU7mjQCkBZX9ovyWiytw/1igDk5IsEXfjUCx0xNJWFhWrbeEQAoMzHcnXoLL6hj0QA6tpsxhods0NDDKCemKp4ooNWaFaf7nHLSIs19WaTfBP90NSWnxeb73RZABADOHjyShy63gTN0fQb9WLUI1lqxWdxS89NDzRHM8ty7203AGKgvvmD3DnphW55ttB1y0cAOPtzzjMxCF3qtx1hckAEiIHK7zHHlcsE3ZPF6o33JejkxUfSpZvQ1Z8uVkeu2wFioPBdyT/ZDsNPcdwPwMBb32PgHgyZ6bTtvgcgBvLf1AKft8Lw42t81UkwpL9F/xcw5KZSjq+bAWKg8uiV7YMJGH5dUm4PS9ApLx9aR6/DsPDXwYU7DoAYUGLTHLrVBt3LmUL7PQ90xV/WXFdHoSs9SFi+7LEAxADyU0lpdEKEZv/hFl8adwhcP5hdpt67NmiUx0tK/w0XAGIA9cSDsufjYQGa2EyewwPB2u4/GWq+NgSNGp/bs94NWwAQQ1OZf6EEJrotAJS5WLEOHbkHr4oA6omZlDQadUBDDF3ucQKRaLsIQFlZ2qvKEO3usX4RgLz7bM0S+cwHHTF0vP1HCl0fdjZBc/g6l4cjFPRBU00sJBEY7xKgI4ZB3ZhLqW0jfS4LGqml9cVdIfBJtwADMY6piec7ijTQ3+oUcEotpf/bKEsdl3sEHCPGCTW5lCjDGwp4XU1WEapyUN5PbhXhDA93CDhBjDP51bV0FVavz26TIMv54n4NUtvFPjfOEOOckt3YyBwxTpG9rT3cIeIcMRop2d1ctigfKRAl53stPr/HhkbEeMdhoazICgTRbnPbLHgbMcwghhnEMIMYZhDDDGKYQQwziGEGMcwghhn/A0XAixC2vVmbAAAAAElFTkSuQmCC', 'like': 'iVBORw0KGgoAAAANSUhEUgAAACoAAAAvCAAAAACwZQc0AAAC50lEQVQ4EY3B22/bZBgH4N/72WnZojTKRprGDU3jQTdAHC4WpwqDG0CIu0n8f0hwCRIgcYE0qJAg9OBWk7ZqqFAtbrLiOs1Ur0vXNsvn78VpmqXHyM9DjKiIERUxoiJGVMSIihgD3DlsSwVtZPQqAQjaBx3FFBu5GkOIGH3c9re2mnsdFU+lzVQSftNzdzoyNnY9P5EcBYhxTPmP17cVel4zb2oPHImeWHrmzYQgRo9q3l/vaPHkFY1fHvhtvqK3ELsWHyF50NoLYrc+fJ0YR/ipva4Sk7ns2Ih60dqsuxJ6djKXiovDVrP+33Px1m1idPGu/TePv2uOocf7ZxXvzWTRs1dd3aabxOh6ufpXMHG7oKOv/RDvj6JPOnZDJ0aId+65SesdHQMBNAzIhystYoTk2py68Wkcl2tV1okR2v99LVH6AMM8WiBGqPVjM/NFGsM07xEj9OzbTv6ujmEOfyZGyP8a019hKP6BGKFn38j8XR3DyJ+IEXr+3W72yxSG8X8hRmh/7t/kR29jmNVFYoQ6j+a0mc9juNzBH2vE6Hr6/X6qfAuXW5v3idHVflBh45NJXKb+p0fEOLLz2ybn7hiEi7Bb2aQCMY7wk193+Y2yIXCecuefUPIzYvQE1YrPU7OGhrOCrcUape6YxDgmq/O+ypVyOk6T7vKGSJVNnRh98vHSTmBYeR0nyZrtatetGzqI8Yp0VhqBYU3FMNCp266WKU0LgBgDyln2AsPK6+iTNdvVMlZBACDGCcpZ9gLDyuvokTXb1TJFUyBEjJNUdcULDCuvo0vWbFfLFE2BLmKcopxlL8iWpjUAwcbSlpYpmgJHiHGacuxGkC0VBJSz6GkZqyDQQ4wz1MaSpyZmTVQXGiIzOy1wjBhnqdpCQ42XMb8txst5gT5inKPqlaZKo0npj6cEXiHGeWrzvqMgCsWswAAxLqD8xSpmitdwEjEutPsCiQROIUZUxIiKGFERIypiREWMqP4HxBFOHrh5gjwAAAAASUVORK5CYII=', 'comment': 'iVBORw0KGgoAAAANSUhEUgAAADQAAAAvCAAAAACJArZvAAAD0ElEQVRIDZXBy1MTBxwH8O8vG3bzzobIs4AZyqMgDFYIVKyOhQvSA53h0JMX/zAvnnqoVacVOuM42k5TVLDDq4OTdhILCAIhgc2DPHZ/3d3wlISZfD7EqBwxKkeMyhHjHLVQKDCDLIJQJaAEYpzF2fRW7ONONgfR5aluqLXZLPgUMU7jTDy6ssc4Inha2v0OC84ixinZ2L8r+7A4JMlqgVbIp7IqnB2dNSLOIMaJTHhhWxNlX2O17KxCPq1sbm/v5ax1Pa0OnEaMI7y/spQQ/M2fN1hxJL8e+S+uyt1dXsIJYhxJvF3JOJu6m0Scll1dWUtJ3f1enCDGocz8bNbdfUUmnMWJ5b8Ve3+vA8eIUZQLzyTcvT1unKcsLilysFPCEWKYtI3f1509fW6UoswvpWpHGwiHiGFKvlngths+lBYPhbl/wIFDxDBoq9PJS8NthNI48seW+9tGQhExDOnQvNgzLKGcXGgx91W/DUXEMOw+itfcCqC81Zcf5e/8KCKGTg1Po3NURHmF6TCPtwswEUN3MDPnGAjiIn+9Tg4FJZiIoUtNR2tGmnCR6ItYYMwJEzF0+z/uNt6RcZHE1Af3916YiKFLPMi1TIgwbMxstH7tQlEytFo/WAND/vF78a4MEzF08fsITMKQeRZm6rthgyH7apaF7m+qYHgYwT0fTMTQxe8jMAlD/HkUaB53wZB8ugoERnwwPIzgng8mYugSD3ItEyJ0hZdLqmUgKMFwEJrXLB2jNujyj9+Ld2WYiKHb+0FpGJdh2JnbbBpyoSgVitYN1sOQmPpQPemBiRi61K8R/+0ALrL2fPvymAsmYuiyszOu4DVcZHY2de26DSZi6NTwU2ofs6K8/LN3GGsXYCKGYfenRN3tJpQX/W3bN+FHETEMB3MzYu+wiHIOQsu5vutOFBHDwBs/K/W3mlGGFv4z5rzTbEERMUzp2Tdi/zDKiIfC1DvowiFimNR3U3R1BKUpC0vJz242WHCIGKb06zl7MIiSlMUlRR7qEHGEGKadqa26m5dRghZfXlFcX/Y4cIwYBjXyi9oxasd5ubXltbS956oHJ4hhSL966+gfRCGZ1iS5CscKm/+sxlT5SpeHcIIYhviTHU+nYy+dybPV6a/xSh5CLp2IryfiOUttX6sDpxFDp0WfqFa7llUZAEl2ySIS1EI2m9bg7mrziziDGDot8ggGweYVFEXFMfJ+EfDZCWcRw5B4EZVrZY9ss1JhL7YbU1IMUfLXXapxSoRPEcOgZXKCVRAEAqAV1IKmMRFZrVYBJRCjcsSoHDEqR4zK/Q9OQI4QDQLmoQAAAABJRU5ErkJggg=='}
 COMMENT_ICONS_720 = ('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')
-UNIT_GLYPHS = {'万': ('iVBORw0KGgoAAAANSUhEUgAAACAAAAAwCAAAAABVxyezAAABvElEQVQ4EX3BS0tUcQDG4d876XhhNiVammmZY83CI5GErSxzUZu+Rt+siKCIyhZCRleMggobhUo0tbQbhol4Gd/mjOdMIvJ/HpkwmTCZMJkwmTCZMJkwmTCZMJkwmTCZMBkorpbYzwAgA6PzG+znGiADMytblC18bcxn2eUMIAPbJvZuommwgV0OADJVbyZahurYQ6ZqvNh2qYY9ZKqeT3UMiz1kqsZmOwapUoaYTNX9ucYjVLWdylImk9q8/SvbQGJ1rediPWUyqeW7tLeQmF3oHMpSJpOaGz0cHSPxqtg2nKFMJvV+vCc6SOLZdMcFYjKpsamzUT2JR4snzhOT2eHNGzrXkyHxcDnfT0xmx+bv64W+VlJ31gt9xGQq/Lf4cqgrR6J0s6a3QEymorQ4wtXmDIm1W7mom5hMxbe3xStd9aR+PGiJ2onJxJYmPzVdrsuQ+vjkeNRMTAb8ffJLzUAX/z390NuXIyYDM9PztfkoS5kXJHn9xUb/6VpiMnBvKZcvNBLbfrxBprTy82TUSoUMjGS7j9ay4/XnP1vKdkaHaqiQCZMJkwmTCZMJkwmTCZMJkwmTCZMJkwn7BwFcmQFgix01AAAAAElFTkSuQmCC', 'iVBORw0KGgoAAAANSUhEUgAAACAAAAAwCAAAAABVxyezAAABLUlEQVQ4EX3BIZZaQRRF0XPnEI9G8yw6vm1av7bRHZtmDoWPzUgojWYS2JuuD7/CYvV6e8vUZGoyNZmaTE2mJlOTqcnUZGoyNZmazKfofMWADMT5ylcMyMCRxeGyf+VRAjJT9Gw8k5miZ+OZzBQ9G89kpujZeCYzRc/GM5kp+nbPtH9lkJmi8yAbg8wU/duGu/M1G4PMFD0bd9GzMcisREtW0bMxyKxES1bRszHIrERLVtGzMcis9PJzzyp6NgaZm+s5Tjum6NkYZG56cNoxRc/GILM4vmEeRM/GIDMcjhfMg/ieGwaZTx9/zpv35L+3vx/JQgaOh8v2xy8WR4Y3WrKQAbHJd27EYvv7hYUMiJbcicVpx41MTaYmU5OpydRkajI1mZpMTaYmU5Op/QOQmXkBtZ7TOgAAAABJRU5ErkJggg==')}
+UNIT_GLYPHS = {'万': ('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')}
 PACKAGE = "com.xingin.xhs"
 COUNTER = re.compile(r"^\d+(?:\.\d+)?(?:万|亿)?$")
 BASE_DIGIT_COUNTS = (10, 12, 12, 14, 14, 12, 8, 8, 12, 8)
-DIGIT_COUNTS = (86, 57, 46, 37, 40, 35, 26, 25, 26, 22)
-DIGIT_ATLAS_SHA256 = 'a8f0fbe67adce89f037c2427c83865aa07baf384923bcea8b3b0db72af7805c4'
+DIGIT_COUNTS = (86, 57, 46, 37, 40, 37, 28, 25, 26, 22)
+DIGIT_ATLAS_SHA256 = 'da0c0a42892d0dd356965fa44c9521e4398a6e67985545908a133e410de708c2'
 
 
 LIKE_ICONS_720 = ('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')
@@ -202,7 +202,7 @@ def numeric_cell(frame,box,allow_candidate=False):
         height = max(b[3] for b in boxes)
         text = []
         for x,y,w,h in boxes:
-            if h <= height*.22 and w <= height*.22 and y+h > max(b[1]+b[3] for b in boxes)-height*.25:
+            if h <= height*.22 and w <= (max(4,height*.22) if unit else height*.22) and y+h > max(b[1]+b[3] for b in boxes)-height*.25:
                 text.append(".");continue
             if abs(h-height) > max(2,height*.12):
                 raise RuntimeError("OCR numeric glyph heights are inconsistent")
@@ -289,6 +289,22 @@ class WorksListHint(RuntimeError):
         self.box = box
 
 
+def title_has_unread_suffix(frame, box):
+    """Detect at least two full dark glyphs beyond the native title box."""
+    import cv2
+    import numpy as np
+    h,w=frame.shape[:2];x1,y1,x2,y2=box
+    if x2 >= w*.9:return False
+    roi=frame[max(0,y1-2):min(h,y2+2),min(w,x2+4):w-int(w*.02)]
+    if not roi.size:return False
+    low,high=roi.min(axis=2),roi.max(axis=2)
+    ink=((high < 180)&(high.astype(np.int16)-low.astype(np.int16)<40)).astype(np.uint8)*255
+    contours,_=cv2.findContours(ink,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+    glyphs=[cv2.boundingRect(c) for c in contours if cv2.contourArea(c)>w*w*.00006]
+    full=[b for b in glyphs if w*.018 <= b[3] <= w*.08 and b[2] >= w*.009]
+    return len(full)>=2 and max(b[0]+b[2] for b in full)>w*.06
+
+
 def prepare_frame(frame, full, read_counts=True):
     h, w = frame.shape[:2]
     if full.get("width") != w or full.get("height") != h or full.get("language") != "zh-Hans-CN":
@@ -319,7 +335,7 @@ def prepare_frame(frame, full, read_counts=True):
     parsed = [("暂无笔记" if text == "暂无可展示的笔记" else text,b) for text,b in parsed]
     headers = {}
     for text in ("数据中心", "作品分析", "全部笔记"):
-        matches = [(s,b) for s,b in parsed if s == text and b[1] < h*.28]
+        matches = [(s,b) for s,b in parsed if s == text and b[1] < h*(.15 if text == "数据中心" else .28)]
         if len(matches) != 1:
             raise RuntimeError("OCR works-list header is not unique: " + text)
         headers[text] = matches[0][1]
@@ -342,7 +358,7 @@ def prepare_frame(frame, full, read_counts=True):
                   and b[3] < sb[1] and status_text(s) is None and not COUNTER.fullmatch(s)
                   # The list title starts in the same text column as status.
                   # Ignore tiny trailing emoji fragments and clipped header ink.
-                  and b[0] < min(w*.5,sb[0]+w*.05) and w*.022 <= b[3]-b[1] <= w*.08
+                  and b[0] < w*.5 and w*.022 <= b[3]-b[1] <= w*.08
                   and (re.search(r"[\u4e00-\u9fff]",s) or len(re.findall(r"[A-Za-z]",s)) >= 2)]
         if not titles:
             if status_index == 0 and sb[1]-all_notes[3] < w*.25:
@@ -372,6 +388,10 @@ def prepare_frame(frame, full, read_counts=True):
         middle = (icons[0][1]+icons[0][3])/2
         date_box = (int(w*.1), int(middle+w*.006), int(w*.18), int(middle+w*.05))
         if date_box[3] >= h or date_box[1] < all_notes[3]:
+            if (date_box[3] >= h and date_box[1] >= all_notes[3]
+                    and status_index == len(statuses)-1 and sb[1] > h*.84 and not markers):
+                trailing_clip = True
+                continue
             raise RuntimeError("OCR date crop is outside its card")
         number_boxes = []
         for i, icon in enumerate(icons):
@@ -396,6 +416,7 @@ def prepare_frame(frame, full, read_counts=True):
         hint = f"{int(''.join('1' if v else '0' for v in bits.flat),2):016x}"
         rows.append({"title":title,"status":status,"titleBox":tb,"dateBox":date_box,"numberBoxes":number_boxes,
                      "verifiedCounts":verified_counts,"imageHint":hint,
+                     "titleNeedsCrop":tb[0] > w*.34 or title_has_unread_suffix(frame,tb),"titleCropBox":(int(w*.26),max(all_notes[3],tb[1]-int(w*.015)),w-int(w*.02),min(sb[1]-int(w*.01),tb[3]+int(w*.015))),
                      "weakCountFields":weak_fields,
                      "box":(int(w*.03),tb[1],w-1,max(date_box[3],*(b[3] for b in number_boxes)))})
     if not rows and not markers:
@@ -437,7 +458,12 @@ def crop_requests(frame, prepared, directory, dates=True):
                     left = 8+repetition*(gw+gap)
                     copied[8:8+gh,left:left+gw] = glyph
                 original = copied
-            variants = ("color","binary","contrast","small","double","nearest","soft") if name == "date" else ("color","binary","contrast","nearest")
+            variants = (("color","binary","contrast","small","double","nearest","soft") if name == "date"
+                        else ("color","binary","contrast") if "." in displayed and any(u in displayed for u in ("万","亿"))
+                        else ("color","binary","contrast","nearest"))
+            # On the observed 1.3万 ink, the pixelated enlargement lost the dot.
+            # Unit decimals still require two complete nonpixelated readings;
+            # contradictory color/binary/contrast results remain fatal.
             for variant in variants:
                 scale = {"nearest":3,"small":1,"double":2}.get(variant,5)
                 roi = cv2.resize(original,None,fx=scale,fy=scale,
@@ -487,6 +513,45 @@ def crop_requests(frame, prepared, directory, dates=True):
                     images.append({"id":context_id,"path":str(context_path),
                                    "dateContentBox":[left,20,left+width,20+height]})
     return images
+
+
+def title_crop_requests(frame, prepared, directory):
+    import cv2
+    import numpy as np
+    requests=[]
+    for i,row in enumerate(prepared["rows"]):
+        if not row.get("titleNeedsCrop"):continue
+        x1,y1,x2,y2=row["titleCropBox"]
+        if not (0 <= x1 < x2 <= frame.shape[1] and 0 <= y1 < y2 <= frame.shape[0]):raise RuntimeError("OCR split-title region is invalid")
+        original=frame[y1:y2,x1:x2].copy()
+        # Colored emoji can be read as Chinese characters. Title words are dark
+        # neutral ink in this observed layout; omit chromatic decoration only.
+        low,high=original.min(axis=2),original.max(axis=2)
+        original[high.astype(np.int16)-low.astype(np.int16)>30]=255
+        crop=cv2.resize(original,None,fx=3,fy=3,interpolation=cv2.INTER_CUBIC)
+        for variant in ("color","binary"):
+            pixel=crop if variant == "color" else cv2.threshold(cv2.cvtColor(crop,cv2.COLOR_BGR2GRAY),210,255,cv2.THRESH_BINARY)[1]
+            identifier=f"r{i}_title_{variant}";file=Path(directory)/(identifier+".png")
+            if not cv2.imwrite(str(file),pixel):raise RuntimeError("OCR private title crop write failed")
+            requests.append({"id":identifier,"path":str(file)})
+    return requests
+
+
+def resolve_title_crop(row,i,results):
+    values=[]
+    for variant in ("color","binary"):
+        item=results.get(f"r{i}_title_{variant}")
+        if not item or item.get("language") != "zh-Hans-CN" or len(item.get("lines",[])) != 1:
+            raise RuntimeError("OCR split title requires two complete readings")
+        text=compact(item["lines"][0].get("text",""))
+        if not 1 <= len(text) <= 180 or status_text(text) is not None or COUNTER.fullmatch(text):
+            raise RuntimeError("OCR split title is not a proven title")
+        values.append(text)
+    normalized=[re.sub(r"[^\w\u4e00-\u9fff]","",value) for value in values]
+    previous=re.sub(r"[^\w\u4e00-\u9fff]","",row["title"])
+    if not normalized[0] or normalized[0] != normalized[1] or previous not in normalized[0]:
+        raise RuntimeError("OCR split title content disagrees")
+    return values[0]
 
 
 def paired_date_image(image):
@@ -542,6 +607,21 @@ def paired_date_requests(prepared, recognized, directory):
     return requests
 
 
+def count_repetitions(displayed):
+    return 1 if any(unit in displayed for unit in ("万","亿")) else 4 if len(displayed) == 1 else 2
+
+
+def repeated_counter_text(value,repeats):
+    raw=compact(value)
+    if repeats == 1:return counter_text(raw)
+    if not raw.isdecimal() or len(raw)%repeats or len(raw) < repeats:
+        raise RuntimeError("OCR repeated count is incomplete")
+    size=len(raw)//repeats
+    parts=[raw[i*size:(i+1)*size] for i in range(repeats)]
+    if len(set(parts)) != 1:raise RuntimeError("OCR repeated count copies disagree")
+    counter_text(parts[0]);return raw
+
+
 def contextual_count_requests(rows, recognized, directory):
     """Add only static word context to already-copied observed numeral ink."""
     import cv2
@@ -551,7 +631,8 @@ def contextual_count_requests(rows, recognized, directory):
     for i,row in enumerate(rows):
         for field in row.get("weakCountFields",[]):
             prefix = f"r{i}_{('view','like','comment')[field]}"
-            try:equal_variants(indexed,prefix,counter_text)
+            repeats=count_repetitions(row["verifiedCounts"][field])
+            try:equal_variants(indexed,prefix,lambda text:repeated_counter_text(text,repeats))
             except RuntimeError as error:
                 if "two independently processed" not in str(error):continue
             else:continue
@@ -579,11 +660,12 @@ def corroborate_counts(row, i, results):
     counts = row["verifiedCounts"]
     for field in row.get("weakCountFields",[]):
         name = ("view","like","comment")[field]
+        repeats=count_repetitions(counts[field])
         try:
-            corroborated = equal_variants(results,f"r{i}_{name}",counter_text)
+            corroborated = equal_variants(results,f"r{i}_{name}",lambda text:repeated_counter_text(text,repeats))
         except RuntimeError as error:
             raise RuntimeError(f"OCR row {i} {name} unproven: {error}") from error
-        expected = counts[field]*(1 if any(unit in counts[field] for unit in ("万","亿")) else 4 if len(counts[field]) == 1 else 2)
+        expected = counts[field]*repeats
         if corroborated != expected:
             raise RuntimeError("OCR native count disagrees with both numeral-image readings")
     return counts
@@ -607,6 +689,7 @@ def resolve_frame(prepared, images, dates_only=False):
                 continue
             raise RuntimeError(f"OCR row {i} date unproven: {error}") from error
         card = {**row,"date":date}
+        if row.get("titleNeedsCrop"):card["title"]=resolve_title_crop(row,i,results)
         if not dates_only:card["counts"] = corroborate_counts(row,i,results)
         cards.append(card)
     if not cards and prepared.get("rows") and not prepared.get("markers"):
@@ -773,7 +856,7 @@ def read_works_image(png, checkpoint=lambda: None, recent_date=lambda raw: True)
         navigation = filter_navigation_frame(frame,full)
         if navigation is not None:return navigation
         prepared = prepare_frame(frame,full,read_counts=False)
-        crops = crop_requests(frame,prepared,directory)
+        crops = crop_requests(frame,prepared,directory)+title_crop_requests(frame,prepared,directory)
         checkpoint()
         recognized = []
         for offset in range(0,len(crops),64):

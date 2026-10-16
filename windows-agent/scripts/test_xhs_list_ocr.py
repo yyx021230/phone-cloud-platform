@@ -140,7 +140,7 @@ class OcrParsingTests(unittest.TestCase):
                   for field,text in (("date","10-14"),("view","4949")) for variant in ("color","binary")]
         self.assertEqual(ocr.resolve_frame({"rows":[row]},images)["cards"][0]["counts"][0],"49")
         for image in images:
-            if image["id"].startswith("r0_view"):image["lines"][0]["text"] = "40"
+            if image["id"].startswith("r0_view"):image["lines"][0]["text"] = "4040"
         with self.assertRaisesRegex(RuntimeError,"disagrees with both"):
             ocr.resolve_frame({"rows":[row]},images)
         with self.assertRaisesRegex(RuntimeError,"missing"):
@@ -152,7 +152,7 @@ class OcrParsingTests(unittest.TestCase):
                   for field,text in (("date","10-14"),("like","6 6 6 6")) for variant in ("color","binary")]
         self.assertEqual(ocr.resolve_frame({"rows":[row]},images)["cards"][0]["counts"][1],"6")
         for image in images:
-            if image["id"].startswith("r0_like"):image["lines"][0]["text"] = "88"
+            if image["id"].startswith("r0_like"):image["lines"][0]["text"] = "8888"
         with self.assertRaisesRegex(RuntimeError,"disagrees with both"):
             ocr.resolve_frame({"rows":[row]},images)
 

@@ -66,7 +66,7 @@ class KeyguardTests(unittest.TestCase):
     def test_no_swipe_over_other_foreground_or_changed_security(self):
         for changed in [False,True]:
             policies = iter([self.locked, self.locked.replace('secure=false','secure=true') if changed else self.locked, self.locked])
-            def command(_adb,_serial,*args,**kwargs):return next(policies) if args[-1]=='policy' else ''
+            def command(_adb,_serial,*args,**kwargs):return next(policies,self.locked) if args[-1]=='policy' else ''
             with patch.object(sync,'focus',return_value='mCurrentFocus=Window{x u0 com.android.settings/.Settings}'), patch.object(sync,'adb',side_effect=command) as adb, patch.object(sync.time,'sleep'):
                 with self.assertRaises(RuntimeError):sync.dismiss_unsecured_keyguard('adb','serial',lambda:None,[])
             self.assertFalse(any('swipe' in c.args for c in adb.call_args_list))
@@ -383,5 +383,187 @@ class IndexImageNavigationTests(unittest.TestCase):
         with patch.object(o,'read_profile_navigation',side_effect=[{'labels':{'我':(1,2,3,4)}},{'labels':{'我':(2,2,4,4)}}]),patch.object(sync,'focus',return_value=current),patch.object(sync.subprocess,'run',return_value=Mock(returncode=0,stdout=b'png')),patch.object(sync,'adb') as adb:
             with self.assertRaisesRegex(RuntimeError,'changed between captures'):sync.select_image_profile_after_dump_failure('adb','serial',current,lambda:None,['collection_slot_requested:app1'])
             adb.assert_not_called()
+
+class SplitTitleTests(unittest.TestCase):
+    def test_two_crop_readings_can_restore_prefix_but_not_replace_existing_content(self):
+        import xhs_list_ocr as o
+        row={'title':'十月新权益上线!能帮一个是..'}
+        def results(a,b):return {f'r5_title_{v}':{'language':'zh-Hans-CN','lines':[{'text':t}]} for v,t in [('color',a),('binary',b)]}
+        proof=results('秦MAX十月新权益上线!能帮一个是.','秦MAX十月新权益上线!能帮一个是.“')
+        self.assertTrue(o.resolve_title_crop(row,5,proof).startswith('秦MAX'))
+        for values in [results('秦MAX十月新权益上线!能帮一个是.','宋MAX十月新权益上线!能帮一个是.'),results('秦MAX十月价格调整','秦MAX十月价格调整')]:
+            with self.assertRaisesRegex(RuntimeError,'content disagrees'):o.resolve_title_crop(row,5,values)
+        proof['r5_title_binary']['lines']=[]
+        with self.assertRaisesRegex(RuntimeError,'two complete readings'):o.resolve_title_crop(row,5,proof)
+
+class StaleFilterStateTests(unittest.TestCase):
+    def panel(self):
+        import xhs_list_ocr as o
+        frame,full=FilterNavigationTests().observed();return o.hierarchy_for_frame(o.filter_navigation_frame(frame,full))
+    def listing(self):
+        root=self.panel()
+        for node in list(root[0]):
+            if node.get('text') in ['笔记类型','发布时间','排序方式','收起']:root[0].remove(node)
+        root.set('data-source','windows_native_ocr')
+        ET.SubElement(root[0],'node',{'package':'com.xingin.xhs','class':'android.widget.TextView','text':'暂无笔记','bounds':'[300,1000][420,1040]'})
+        return root
+    def test_duplicate_center_parent_is_not_an_extra_filter_header(self):
+        root=self.panel();center=next(n for n in root[0] if n.get('text')=='数据中心');root[0].remove(center)
+        parent=ET.SubElement(root[0],'node',{'package':'com.xingin.xhs','class':'android.view.View','text':'数据中心','bounds':'[0,0][720,170]'});parent.append(center)
+        self.assertTrue(sync.creator_filter_panel(root))
+    def test_already_opened_panel_is_closed_without_toggling_header(self):
+        panel=self.panel();listing=self.listing();events=[]
+        with patch.object(sync,'wake_if_asleep'),patch.object(sync,'navigation_capture',return_value=listing),patch.object(sync,'tap_filter_label') as tap:
+            self.assertIs(sync.refresh_scrolled_webview('adb','serial',panel,lambda:None,events),listing)
+        self.assertEqual([c.args[3] for c in tap.call_args_list],['收起'])
+    def test_stale_native_panel_after_tap_can_be_replaced_only_by_proven_image_list(self):
+        listing=self.listing();listing.set('data-source','xml');actual=self.listing();events=[]
+        with patch.object(sync,'wake_if_asleep'),patch.object(sync,'navigation_capture',return_value=listing),patch.object(sync,'recheck_filter_image',return_value=actual),patch.object(sync,'tap_filter_label') as tap:
+            self.assertIs(sync.refresh_scrolled_webview('adb','serial',listing,lambda:None,events),actual)
+        self.assertEqual([c.args[3] for c in tap.call_args_list],['全部笔记'])
+    def test_unproven_image_or_empty_native_state_does_not_become_empty_success(self):
+        listing=self.listing();listing.set('data-source','xml')
+        with patch.object(sync,'wake_if_asleep'),patch.object(sync,'navigation_capture',return_value=listing),patch.object(sync,'recheck_filter_image',return_value=ET.Element('hierarchy')),patch.object(sync,'tap_filter_label'):
+            with self.assertRaisesRegex(RuntimeError,'panel is not proven'):sync.refresh_scrolled_webview('adb','serial',listing,lambda:None,[])
+
+class CompleteRepeatedCountTests(unittest.TestCase):
+    def test_missing_first_digit_is_not_a_complete_count_vote(self):
+        import xhs_list_ocr as o
+        row={'verifiedCounts':['268','0','0'],'weakCountFields':[0]}
+        def item(text):return {'language':'zh-Hans-CN','lines':[{'text':text}]}
+        values={'r1_view_color':item('68 268'),'r1_view_binary':item('268 268'),'r1_view_contrast':item('268 268')}
+        self.assertEqual(o.corroborate_counts(row,1,values),['268','0','0'])
+        values['r1_view_color']=item('282 282')
+        with self.assertRaisesRegex(RuntimeError,'values disagree'):o.corroborate_counts(row,1,values)
+        values['r1_view_color']=item('68 268');del values['r1_view_contrast']
+        with self.assertRaisesRegex(RuntimeError,'two independently processed'):o.corroborate_counts(row,1,values)
+    def test_repetition_structure_does_not_fill_or_guess_any_digit(self):
+        import xhs_list_ocr as o
+        self.assertEqual(o.repeated_counter_text('268 268',2),'268268')
+        self.assertEqual(o.repeated_counter_text('0 0 0 0',4),'0000')
+        for raw,repeats in [('68268',2),('268269',2),('OO00',4),('000',4),('',2)]:
+            with self.assertRaises(RuntimeError):o.repeated_counter_text(raw,repeats)
+
+class SettlingKeyguardTests(unittest.TestCase):
+    def test_foreground_app_is_never_swiped_while_waiting_for_delayed_unlocked_policy(self):
+        locked=KeyguardTests.locked;policies=iter([locked]*4+[locked.replace('showing=true','showing=false')])
+        def command(_adb,_serial,*args,**kw):return next(policies) if args[-1]=='policy' else ''
+        focuses=iter(['mCurrentFocus=Window{x u0 NotificationShade}'])
+        with patch.object(sync,'adb',side_effect=command) as adb,patch.object(sync,'focus',side_effect=lambda *args:next(focuses,'mCurrentFocus=Window{x u0 com.xingin.xhs/.SplashAdActivity}')),patch.object(sync.time,'sleep'):
+            self.assertTrue(sync.dismiss_unsecured_keyguard('adb','serial',lambda:None,[]))
+        self.assertFalse(any('swipe' in c.args for c in adb.call_args_list))
+    def test_persistently_unproven_surface_stops_without_a_swipe(self):
+        with patch.object(sync,'adb',side_effect=lambda a,b,*args,**kw:KeyguardTests.locked if args[-1]=='policy' else '') as adb,patch.object(sync,'focus',return_value='mCurrentFocus=null'),patch.object(sync.time,'sleep'):
+            with self.assertRaisesRegex(RuntimeError,'swipe surface is not proven'):sync.dismiss_unsecured_keyguard('adb','serial',lambda:None,[])
+        self.assertFalse(any('swipe' in c.args for c in adb.call_args_list))
+
+class FreshHeaderRetryTests(unittest.TestCase):
+    def run_reads(self,readings):
+        import xhs_list_ocr as o
+        from test_xhs_list_ocr import result
+        current='mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}'
+        events=['collection_slot_requested:app1'];reader=Mock(side_effect=readings)
+        with patch.object(o,'read_works_image',reader),patch.object(sync,'focus',return_value=current),patch.object(sync.subprocess,'run',return_value=Mock(returncode=0,stdout=b'png')),patch.object(sync.time,'sleep'):
+            root=sync.image_navigation_capture('adb','serial',lambda:None,events,current)
+        return root,events,reader.call_count
+    def test_header_failure_resets_pair_and_demands_two_later_fresh_successes(self):
+        from test_xhs_list_ocr import result
+        good=result();root,events,calls=self.run_reads([good,RuntimeError('OCR works-list header is not unique: 数据中心'),good,good])
+        self.assertEqual(calls,4);self.assertIn('works_image_header_capture_retried',events)
+    def test_metric_ambiguity_is_not_retried_as_a_header_failure(self):
+        with self.assertRaisesRegex(sync.ImageListReadError,'ambiguous'):self.run_reads([RuntimeError('OCR numeral glyph is unproven or ambiguous')])
+    def test_header_retry_is_bounded_and_never_becomes_empty_data(self):
+        with self.assertRaises(sync.ImageListReadError):self.run_reads([RuntimeError('OCR works-list header is not unique: 数据中心')]*6)
+
+class MissingTitleSuffixTests(unittest.TestCase):
+    def test_two_visible_glyphs_outside_native_box_require_full_title_reading(self):
+        import cv2,numpy as np,xhs_list_ocr as o
+        frame=np.full((1600,720,3),255,np.uint8)
+        cv2.putText(frame,'AB',(530,230),cv2.FONT_HERSHEY_SIMPLEX,1,(30,30,30),2)
+        self.assertTrue(o.title_has_unread_suffix(frame,[193,205,484,233]))
+        frame[:]=255
+        cv2.circle(frame,(540,225),2,(30,30,30),-1)
+        self.assertFalse(o.title_has_unread_suffix(frame,[193,205,484,233]))
+    def test_suffix_proof_still_requires_two_matching_complete_crops(self):
+        import xhs_list_ocr as o
+        row={'title':'奔驰GLC十月新权益上线'}
+        values={f'r0_title_{v}':{'language':'zh-Hans-CN','lines':[{'text':'奔驰GLC十月新权益上线果然没白等!'}]} for v in ['color','binary']}
+        self.assertEqual(o.resolve_title_crop(row,0,values),'奔驰GLC十月新权益上线果然没白等!')
+        values['r0_title_binary']['lines'][0]['text']='奔驰GLC十月新权益上线'
+        with self.assertRaises(RuntimeError):o.resolve_title_crop(row,0,values)
+
+
+class BottomDateClipTests(unittest.TestCase):
+    def test_offscreen_bottom_date_is_deferred_but_never_proves_end(self):
+        import numpy as np,xhs_list_ocr as o
+        from test_xhs_list_ocr import line,result
+        frame=np.full((2400,1080,3),255,np.uint8);frame[254:261,330:500]=(40,30,240)
+        lines=[line(t,b) for t,b in result()['headers'].items()]+[line('首条测试',(300,500,800,550)),line('笔记状态正常',(300,600,700,640)),line('底部测试',(300,2110,800,2150)),line('笔记状态正常',(300,2200,700,2240))]
+        full={'width':1080,'height':2400,'language':'zh-Hans-CN','lines':lines}
+        icons=[[(300,660,340,695),(420,660,460,695),(560,660,600,695)],[(300,2340,340,2380),(420,2340,460,2380),(560,2340,600,2380)]]
+        with patch.object(o,'metric_icons',side_effect=icons):parsed=o.prepare_frame(frame,full,False)
+        self.assertEqual(len(parsed['rows']),1);self.assertTrue(parsed['trailingClip']);self.assertFalse(parsed['markers'])
+        full['lines'].append(line('到底了',(500,2300,580,2330)))
+        with patch.object(o,'metric_icons',side_effect=icons),self.assertRaisesRegex(RuntimeError,'date crop is outside'):o.prepare_frame(frame,full,False)
+
+
+class MidNavigationWakeTests(unittest.TestCase):
+    def test_woken_display_must_also_pass_existing_unsecured_keyguard_proof(self):
+        readings=iter(['mWakefulness=Asleep','', '', 'mWakefulness=Awake'])
+        with patch.object(sync,'adb',side_effect=lambda *a,**kw:next(readings)),patch.object(sync,'dismiss_unsecured_keyguard',return_value=True) as dismiss,patch.object(sync.time,'sleep'):
+            self.assertTrue(sync.wake_if_asleep('adb','serial',lambda:None,[]))
+        self.assertEqual(dismiss.call_count,1)
+    def test_secure_wake_failure_propagates_and_awake_phone_gets_no_dismiss(self):
+        with patch.object(sync,'adb',return_value='mWakefulness=Awake'),patch.object(sync,'dismiss_unsecured_keyguard') as dismiss:
+            self.assertFalse(sync.wake_if_asleep('adb','serial',lambda:None,[]));dismiss.assert_not_called()
+        readings=iter(['mWakefulness=Asleep','','','mWakefulness=Awake'])
+        with patch.object(sync,'adb',side_effect=lambda *a,**kw:next(readings)),patch.object(sync,'dismiss_unsecured_keyguard',side_effect=RuntimeError('secure keyguard')),patch.object(sync.time,'sleep'):
+            with self.assertRaisesRegex(RuntimeError,'secure keyguard'):sync.wake_if_asleep('adb','serial',lambda:None,[])
+
+class DecimalUnitCropTests(unittest.TestCase):
+    def test_unit_decimal_does_not_use_the_pixelated_variant_that_lost_its_dot(self):
+        import tempfile,cv2,xhs_list_ocr as o
+        frame=cv2.imread(str(SCRIPTS/'fixtures/xhs/counts-720.png'))
+        import json
+        sample=next(x for x in json.loads((SCRIPTS/'fixtures/xhs/counts-720.json').read_text()) if x['value']=='1.1万')
+        row={'verifiedCounts':['1.1万','0','0'],'weakCountFields':[0],'numberBoxes':[sample['box']]*3}
+        with tempfile.TemporaryDirectory() as d:requests=o.crop_requests(frame,{'rows':[row]},d,dates=False)
+        self.assertEqual({x['id'] for x in requests},{'r0_view_color','r0_view_binary','r0_view_contrast'})
+        def item(value):return {'language':'zh-Hans-CN','lines':[{'text':value}]}
+        proof={'r0_view_color':item('1，1万'),'r0_view_binary':item('1.1万'),'r0_view_contrast':item('1.1万')}
+        self.assertEqual(o.corroborate_counts(row,0,proof)[0],'1.1万')
+        proof['r0_view_color']=item('1.2万')
+        with self.assertRaisesRegex(RuntimeError,'values disagree'):o.corroborate_counts(row,0,proof)
+
+class BrowserPermissionRedirectTests(unittest.TestCase):
+    current='mCurrentFocus=Window{x u0 com.android.permissioncontroller/com.android.permissioncontroller.permission.ui.GrantPermissionsActivity type=1}'
+    events=['collection_slot_requested:app2','clone_user_requested:999','xhs_cold_started']
+    def fixture(self):return ET.parse(SCRIPTS/'fixtures/xhs/vivo-browser-location-permission.xml').getroot()
+    def test_observed_dialog_uses_home_and_exact_clone_without_permission_taps(self):
+        events=list(self.events)
+        with patch.object(sync,'focus',side_effect=[self.current,'mCurrentFocus=Window{x u0 com.bbk.launcher/.Launcher}','mCurrentFocus=Window{x u999 com.xingin.xhs/.index.v2.IndexActivityV2}']),patch.object(sync,'adb',return_value='vivo') as adb,patch.object(sync.time,'sleep'):
+            self.assertTrue(sync.recover_vivo_browser_permission_redirect('adb','serial',self.fixture(),'app2',self.current,lambda:None,events))
+        actions=[c.args[2:] for c in adb.call_args_list]
+        self.assertEqual(actions[1],('shell','input','keyevent','3'))
+        self.assertEqual(actions[2],('shell','am','start','-W','--user','999','-n','com.xingin.xhs/.index.v2.IndexActivityV2'))
+        self.assertFalse(any('tap' in a or 'grant' in a for a in actions))
+    def test_unknown_permission_or_unproven_clone_has_no_actions(self):
+        root=self.fixture();root[0].set('text','“小红书”请求访问您的位置信息')
+        for frame,events in [(root,self.events),(self.fixture(),self.events[:-1]),(self.fixture(),['collection_slot_requested:app2','xhs_cold_started']),(self.fixture(),self.events+['clone_user_requested:128']),(self.fixture(),self.events+['collection_slot_requested:app1'])]:
+            with patch.object(sync,'adb') as adb:
+                self.assertFalse(sync.recover_vivo_browser_permission_redirect('adb','serial',frame,'app2',self.current,lambda:None,list(events)));adb.assert_not_called()
+    def test_changed_foreground_or_lost_guard_never_sends_home(self):
+        for changed in [True,False]:
+            guard=Mock(side_effect=None if changed else RuntimeError('occupied'))
+            with patch.object(sync,'focus',return_value='other'),patch.object(sync,'adb',return_value='VIVO') as adb:
+                with self.assertRaises(RuntimeError):sync.recover_vivo_browser_permission_redirect('adb','serial',self.fixture(),'app2',self.current,guard,list(self.events))
+            self.assertFalse(any('input' in c.args for c in adb.call_args_list))
+    def test_persistent_or_repeated_overlay_stops_without_tapping_permissions(self):
+        with patch.object(sync,'adb') as adb:
+            with self.assertRaisesRegex(RuntimeError,'repeated'):sync.recover_vivo_browser_permission_redirect('adb','serial',self.fixture(),'app2',self.current,lambda:None,self.events+['vivo_browser_permission_reopened'])
+        adb.assert_not_called()
+        with patch.object(sync,'focus',return_value=self.current),patch.object(sync,'adb',return_value='VIVO') as adb,patch.object(sync.time,'sleep'):
+            with self.assertRaisesRegex(RuntimeError,'stayed foreground'):sync.recover_vivo_browser_permission_redirect('adb','serial',self.fixture(),'app2',self.current,lambda:None,list(self.events))
+        self.assertEqual(sum('input' in c.args for c in adb.call_args_list),1);self.assertFalse(any('start' in c.args for c in adb.call_args_list))
 
 if __name__ == '__main__':unittest.main()
