@@ -1,0 +1,68 @@
+{
+  "runtimeCommit": "1d4008e288d06598225041c4cadead025da43164",
+  "version": "lookup-auto-recovery-20261016-deployed.1",
+  "externalOnlyBusinessCalls": true,
+  "authorizedSourceSha256": "20d3440551746ef8abe6919e5a8b3c7d0c6c12ac555f00f97d61d82fa8c64b95",
+  "freshIndices": [
+    54,
+    103
+  ],
+  "freshCount": 50,
+  "completed": 50,
+  "names": 39,
+  "empty": 11,
+  "cacheHits": 0,
+  "peakBusinessChannels": 5,
+  "peakEvidence": {
+    "at": "2026-10-16T08:26:46.940Z",
+    "numbers": [
+      "156",
+      "162",
+      "115",
+      "164",
+      "155"
+    ]
+  },
+  "original164": {
+    "autoRecoveryStarted": true,
+    "sameQueryId": true,
+    "resumeFailedReason": "poco_rpc_read_timeout",
+    "stopAcknowledged": true,
+    "rerouteEnqueued": true,
+    "final": "lookup_queue_timeout",
+    "queueDeadlineExpiredBeforeDeployment": true,
+    "deadlineModified": false,
+    "successfulCrossDevice": false
+  },
+  "oldPhoneResubmission": {
+    "oldLookupId": "bdd4ff9b-2c3f-411d-8aa7-4007fe22b987",
+    "index": 7,
+    "key": "auto-recovery-terminal-retry-5d654a57-ec41-42bf-bd86-67ff263d1945",
+    "http": 200,
+    "lookupId": "cfd59204-407e-40aa-9782-43143e94e6f0",
+    "reused": false,
+    "status": "completed",
+    "submittedAt": 1792139413.8813791,
+    "code": null,
+    "checkedAt": 1792139458.692109,
+    "hasName": false
+  },
+  "limitHandoff": {
+    "lookupId": "980e1f96-c14c-48d3-b40a-8f08184b38af",
+    "from": 115,
+    "to": 164,
+    "completed": true,
+    "nameEmpty": true,
+    "trigger": "lookup_reroute_confirmed_limit"
+  },
+  "latestAt": "2026-10-16T08:33:09.736Z",
+  "unfinishedAtLatest": [],
+  "notVerified": [
+    "natural ordinary-recovery-exhausted cross-device completion within deadline",
+    "natural account-login-loss during business and same-ID cross-device completion"
+  ],
+  "noAgentRestart": true,
+  "noAdbOrSystemChanges": true,
+  "noAdministrativeRetriesOrDeadlineEdits": true,
+  "productionAcceptanceComplete": false
+}

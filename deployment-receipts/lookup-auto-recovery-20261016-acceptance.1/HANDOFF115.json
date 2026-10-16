@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-16T08:27:57.216Z",
+  "audits": [
+    {
+      "at": "2026-10-16T08:27:18.736Z",
+      "actor": "system",
+      "action": "lookup_reroute_confirmed_limit",
+      "queryId": "d0cbc0bd-59ef-44fb-ba04-4411cd7ed497",
+      "deviceId": "adb:10AF420R0U00B1C",
+      "lookupId": "980e1f96-c14c-48d3-b40a-8f08184b38af"
+    }
+  ]
+}
