@@ -1,0 +1,77 @@
+{
+  "atUtc": "2026-10-16T05:55:19.513570+00:00",
+  "candidate": "lookup-api-key-20261016-rc.2",
+  "commit": "ce5d20b693d84049ca534e8743a3c0cd0aa86566",
+  "runtimeCommit": "9f6951f19909ff0f5ea479a658ed4746ad8c9aba",
+  "baselineActiveSha256": "a749522186e16b7bcd38feeeeceda353afc071dd8f20b58c948e91b3328b1b34",
+  "baselineVersion": "lookup-readiness-20261016-deployed.16",
+  "oldRunningImage": "sha256:b5479d9cfc0d6bf6ab5d2ee748856d4867cf6e21c118ab317709ba501519cda7",
+  "rollbackImage": "sha256:03b6928af85439bb69d2ff11f77d882480fa9496f2ba69370215814556b8aaf1",
+  "image": "sha256:33af4227cdb7a45a2d0544675be1a88f4f2aaebf9bb44f0a1833976ea5fbb931",
+  "tag": "phone-cloud-platform:lookup-api-key-20261016-rc.2",
+  "files": {
+    "server/index.mjs": "4e39bdf1b289499e5826a861cc8254ba5c4a7620a8d75918834095c96757acf6",
+    "server/open-name-lookup-api.mjs": "866055162aa6a127cdb7b71734ad94ba0bc4ece85ca10aad02f6e702a72f0d99",
+    "server/lookup-api-key.mjs": "3e64d42a2008d53907a821d43e04c1cffb698f55b57d4d3ca1a5bc074bec800d",
+    "public/api-docs.css": "45fb3127c805089a9227cc96d9b44a71c00d82f27638623289b3d850a6a349cd",
+    "public/api-reference.json": "50c4424e8b48810610700f4e603604b41240fb5d4e998b5289171c00bc33fdc2",
+    "public/api-docs.html": "1e7ba0490959c92cfa52f5005b693b2ed64fe63bf05dd836ade657bfa2e2a95e",
+    "public/openapi.json": "9f77465d105aa0f2451c4b4757518c4549d8dffc952a8b786a344305d81cea1c",
+    "public/api-docs.js": "0f8e7d9f8b2804d99c6532994379f0385a0b7e0ce7bbb67ac55782e8551fb25e",
+    "public/downloads/lookup.py": "95ca247988e7a6c7a03ce0d3078f455715335a9f5a575bb987044fc3c933251b",
+    "public/downloads/lookup.mjs": "463ac44a509215fe44fa3b2374c1c469ee66fbe2e6a5779ea57ad39fd5ecdb88",
+    "public/downloads/name-lookup-http-guide.md": "c449a56de62f3424b6f1823d46daaebf336d5ecf736a0e39d6691289267c7403",
+    "public/downloads/name-lookup-integration.zip": "daec021f69f23c10f118162f4001272694623cfb487f73d9943145a46316e941",
+    "public/downloads/name-lookup-openapi.json": "6a59c4c5f8bdb9463ada04c771819fa5d2a757a72fb54d0b4b525be3ada65573",
+    "public/downloads/name-lookup-sha256.json": "30eb0bd5e2315bee5a3cf990737b2ac3d1c324ad96d88642007a12e2ac123e7d"
+  },
+  "oldFileHashes": {
+    "server/index.mjs": "e13e4271b950b14402868ceaca005e14314ec603c13a095cd2cbb9f832238629",
+    "server/open-name-lookup-api.mjs": "0c846c1cb1f01ca5a2cd662fc0b81d09568d17d89268b66254e37092664a4eb3",
+    "server/lookup-api-key.mjs": null,
+    "public/api-docs.css": "45fb3127c805089a9227cc96d9b44a71c00d82f27638623289b3d850a6a349cd",
+    "public/api-reference.json": "eac2e8ab8949b8893b7d5ecce0339ee51df66da968e751cc11692c74bec4c90c",
+    "public/api-docs.html": "1e7ba0490959c92cfa52f5005b693b2ed64fe63bf05dd836ade657bfa2e2a95e",
+    "public/openapi.json": "d13111ba2918b7181403ed4affb2bd627f4346da5b8debff0d3c701d8e9b01e1",
+    "public/api-docs.js": "846cfe50880a388d36798a4e29434088cd9e910258253d8479eec4bfff47c2a7",
+    "public/downloads/lookup.py": "2880153796e33c015ec9ac83ffac8879587b47a96d84ea42de12138a5c4824af",
+    "public/downloads/lookup.mjs": "3eba93f018a10116ddf46f51ba2f802e5e386b9ece96c4b73e47a7d3776f9f6e",
+    "public/downloads/name-lookup-http-guide.md": "d6763edebd743eb13d5468a62fafac202f10711322e9cff979c588e4c8d9499b",
+    "public/downloads/name-lookup-integration.zip": "b4e9a7e450dce7930c1054fa819815aa622c37f91bafebae3526a861c41ac73d",
+    "public/downloads/name-lookup-openapi.json": "e9b8ee37bac0e623a010da946766eeb25df4bd82a89bdedf7a3df1f979d67d88",
+    "public/downloads/name-lookup-sha256.json": "54d7c1f7928df969eb098ca27cfed4318fe17fcdff250042d53e367731769ee8"
+  },
+  "stage": "/opt/phone-cloud-platform/staging/lookup-api-key-20261016-rc.2",
+  "backup": "/opt/phone-cloud-platform/deploy-backups/lookup-api-key-20261016-prep.1",
+  "envBeforeSha256": "4aa2c0a5a990beaa7436b65fa8678335381d14240ee139e7b45e6f50fbbc68f8",
+  "databaseBackup": {
+    "bytes": 496043355,
+    "sha256": "e62ce9859f34b98e7e386246289677acb41b535709683df90a2349ccbe9bbd48",
+    "decoded": true
+  },
+  "imageBackup": {
+    "bytes": 64432640,
+    "sha256": "11ecc3e147db61fef98587eacddba0f1cbc2bea815472eaa5ac7c5e146434f84"
+  },
+  "compose": {
+    "path": "/opt/phone-cloud-platform/staging/lookup-api-key-20261016-rc.2/compose.pending.json",
+    "sha256": "f3823f6ec1a5a04257a07aa0ba3de3e041e449038f92e463b6bc9e936465966d"
+  },
+  "isolatedReady": true,
+  "isolatedHashes": 35,
+  "keyAndLegacyAuthPassed": true,
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "containerId": "29ed394c6657988c854fe28059ecd5106179ea0fe84bcbefb714a23bdbaa234a",
+  "startedAt": "2026-10-16T03:00:51.518633969Z",
+  "deployed": false,
+  "requiresCloudRestart": true,
+  "requiresAgentRestart": false,
+  "adbTouched": false
+}
