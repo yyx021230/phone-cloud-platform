@@ -1,0 +1,120 @@
+{
+  "automationId": "161",
+  "status": "read-only-cooldown-expiry-confirmed-not-real-query-acceptance",
+  "branch": "codex/cooldown-readonly-20261016",
+  "baseCommit": "419defa1b9a59891592574e220ab5b9f79594e09",
+  "workflowRevision": "2026-09-30",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "release": {
+    "version": "lookup-readiness-20261015-deployed.14",
+    "runtimeCandidateCommit": "e86d414e8f765194132c2ce9cb30da92a92b5957",
+    "receiptCommit": "23a04c3488595d3a4cbd4d0c3cf9995f40dfb01d",
+    "receiptTag": "lookup-readiness-20261015-deployed.14",
+    "activeSha256": "92a2c93a6f4a813f55305bb3b35d2d259983c003d145b200428537e91eee8615",
+    "runningImage": "sha256:3102e2fd770ccf6d855e1b2192846965b49d33e3b9a7d9f89b374a8fd6372359",
+    "runnerHash": "8ba90c21e4d3bf9de7e12d02d0f83e05a7e730ea8f4a26d1b817a45b9cbfaf61",
+    "restartCount": 0,
+    "containerStartedAt": "2026-10-15T09:04:12.032837893Z"
+  },
+  "observation": {
+    "at": "2026-10-16T01:10:44.920Z",
+    "scheduledAt": "2026-10-15T10:10:00.000Z",
+    "lateInvocation": true,
+    "device": 161,
+    "health": {
+      "ready": true,
+      "reason": ""
+    },
+    "poolEnabled": false,
+    "deviceEnabled": true,
+    "lookupUnavailable": false,
+    "deviceAdbState": "device",
+    "originalRows": [
+      {
+        "accountHash": "26aa4c3376f1",
+        "found": true,
+        "limitedAt": "2026-10-15T01:56:11.054Z",
+        "cooldownUntil": "2026-10-15T09:56:11.054Z",
+        "unchanged": true,
+        "durationMs": 28800000,
+        "remainingMs": 0,
+        "timeReached": true
+      },
+      {
+        "accountHash": "5ffa7a966d18",
+        "found": true,
+        "limitedAt": "2026-10-15T01:58:02.854Z",
+        "cooldownUntil": "2026-10-15T09:58:02.854Z",
+        "unchanged": true,
+        "durationMs": 28800000,
+        "remainingMs": 0,
+        "timeReached": true
+      },
+      {
+        "accountHash": "94860ed4acf5",
+        "found": true,
+        "limitedAt": "2026-10-15T02:05:21.946Z",
+        "cooldownUntil": "2026-10-15T10:05:21.946Z",
+        "unchanged": true,
+        "durationMs": 28800000,
+        "remainingMs": 0,
+        "timeReached": true
+      },
+      {
+        "accountHash": "a07e3968147d",
+        "found": true,
+        "limitedAt": "2026-10-15T02:08:28.638Z",
+        "cooldownUntil": "2026-10-15T10:08:28.638Z",
+        "unchanged": true,
+        "durationMs": 28800000,
+        "remainingMs": 0,
+        "timeReached": true
+      }
+    ],
+    "originalRequests": [
+      {
+        "number": 155,
+        "id": "4e59cc79-5cbe-4f14-a4fc-b5c0a5439676",
+        "queryId": "c1ca8a36-5ae8-4106-ba35-5f0096351cdf",
+        "found": true,
+        "status": "succeeded",
+        "hasName": true,
+        "code": "",
+        "completedAt": "2026-10-15T08:03:22.875Z",
+        "queryIdUnchanged": true
+      },
+      {
+        "number": 156,
+        "id": "0761ca1b-b5f6-404d-bb9c-6b793d6c5807",
+        "queryId": "8fc204a2-d247-43da-a149-89568a0a9375",
+        "found": true,
+        "status": "not_found",
+        "hasName": false,
+        "code": "",
+        "completedAt": "2026-10-15T09:08:19.479Z",
+        "queryIdUnchanged": true
+      }
+    ],
+    "configRevision": 49,
+    "pending": 0,
+    "channels": 0,
+    "readOnly": true,
+    "newQueries": 0,
+    "newPreparations": 0
+  },
+  "publicSessionFieldRead": {
+    "at": "2026-10-16T01:11:05.574Z",
+    "found": false,
+    "rows": []
+  },
+  "remainingMsEvidence": "Calculated from unchanged persisted cooldownUntil and actual server-side Date.now(); current session list did not include161, so public session remainingMs was not directly observed. Pool adapter health is ready:true.",
+  "limitations": [
+    "Invocation occurred next day, not at scheduled expiry boundary",
+    "No new lookup or preparation; no expired-account query success claim",
+    "Pool remains disabled revision49; health eligibility does not mean open admission"
+  ],
+  "productionMutations": 0,
+  "adbCommands": 0,
+  "windowsConnections": 0,
+  "remotePush": false
+}

@@ -23,3 +23,13 @@
 候选`lookup-readiness-20261015-rc.11`仅补该完整三行快捷卡，保留已就绪账号、输入/焦点一致、两连续完整帧和所有未知/风险拒绝条件；不把只有输入框、姓名卡或任意转账控件当空姓名。新6项旧版2错误，新版6通过；累计553 Python通过，Windows原生真实两帧旧版均拒绝、新版均识别，线上运行脚本未替换。当前生产仍deployed.10，SYSTEM Agent634228/ADB634172和三个原脚本哈希不变，无共享重启。打包过程中临时证据文件名误指旧rc10路径，已将候选证据独立保存并从已提交不可变证据恢复旧临时文件；未影响Git旧版本或生产。
 
 准备租约16:17:42已自然过期（ready:false/status:expired），155已释放；156原请求仍保留recovery，池revision44暂未恢复，不取消或改结果来伪装排空。自然触限跨机和完整8小时到期仍未覆盖，16118:10只读复核安排保持。发布须按rc11 README核对基线、备份、单机空闲与显式授权，不重启ADB。启动API合同已核对实际代码/文档：相同准备Idempotency-Key每5秒重复POST /api/v1/open/name-lookups/prepare读取进度；ready:true且status:ready才接新号码（至少2台，不等5台），ok:true只表示调用成功。expired换新准备键，HMAC时间/Nonce每次更新。
+
+## 2026-10-16 09:10 单次只读到期复核
+
+心跳161原定10月15日18:10，实际于次日09:10执行，不能当作到期瞬间采样。基线从旧deployed.10按后续已提交回执核实为deployed.14/e86d414，回执23a04c3；运行3102e2fd镜像加8ba90c21单Python热补、无容器重启，符合已授权发布记录，不是未解释漂移。rc.15仍仅本地候选。
+
+161四个账号仅以历史hash对应：limitedAt/cooldownUntil均逐条匹配原记录，时长全部28800000ms；实际时刻已超过四个截止，按原截止计算remainingMs均0。设备池health已由accounts_cooling变为ready:true，设备在线、未被查名隔离。公共session列表本轮未包含161，未直接取得该接口的remainingMs/cooling字段，计算到期证据与真实pool健康资格分开记录。当前总池disabled/revision49，0待处理/0通道，不代表已开放接单。
+
+155原lookupId 4e59cc79-5cbe-4f14-a4fc-b5c0a5439676已succeeded/有姓名（10月15日16:03:22）；156原lookupId 0761ca1b-b5f6-404d-bb9c-6b793d6c5807已not_found/空字符串（17:08:19），两条queryId与原记录相同。156在后续rc.13阶段另做过管理员恢复，见部署回执，不把本次只读查询或该恢复当成当时全自动成功。
+
+本轮仅云端安全SSH、读取ACTIVE/镜像脚本hash和GET状态；未连接Windows/ADB、未提交新手机号或prepare、未切号、未发飞书、未改池/数据库/配置、未重启/发布/推送。到期后真实查询仍未测试。独立文档分支codex/cooldown-readonly-20261016从419defa开始，原工作区干净，原根仓改动保留；共同流程哈希未变。证据见[evidence/LOOKUP_COOLDOWN_READONLY_20261016.json](evidence/LOOKUP_COOLDOWN_READONLY_20261016.json)。本次检查结束。
