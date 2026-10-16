@@ -1,0 +1,49 @@
+file:///app/verification/account-offline-http.mjs:11
+ const start=async()=>{child=spawn(process.execPath,[path.join(temp,'server/index.mjs')],{cwd:temp,env,stdio:['ignore','ignore','pipe']});child.stderr.on('data',b=>{stderr.push(String(b));if(stderr.length>15)stderr.shift();});for(let i=0;i<200;i++){if(child.exitCode!==null)throw Error('server exited:'+stderr.join('').slice(-1000));try{if((await fetch(base+'/readyz')).ok)return;}catch{}await sleep(25);}throw Error('ready timeout');};
+                                                                                                                                                                                                                                                                                        ^
+
+Error: server exited:/app/node_modules/pg-pool/index.js:45
+    Error.captureStackTrace(err)
+          ^
+
+error: column "data" does not exist
+    at /app/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async loadDataRows (file:///tmp/lookup-ready-http-hAhaAJ/server/postgres-repositories.mjs:402:18)
+    at async Promise.all (index 4)
+    at async Object.loadOverlay (file:///tmp/lookup-ready-http-hAhaAJ/server/postgres-repositories.mjs:370:141)
+    at async file:///tmp/lookup-ready-http-hAhaAJ/server/index.mjs:228:52 {
+  length: 103,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '8',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3665',
+  routine: 'errorMissingColumn'
+}
+
+Node.js v22.23.3
+
+    at start (file:///app/verification/account-offline-http.mjs:11:281)
+    at async runAccountOfflineHttp (file:///app/verification/account-offline-http.mjs:25:2)
+    at async file:///app/verification/account-offline-http.mjs:92:108
+
+Node.js v22.23.3
+Traceback (most recent call last):
+  File "<stdin>", line 22, in <module>
+  File "<stdin>", line 8, in <lambda>
+  File "/usr/lib/python3.10/subprocess.py", line 421, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+  File "/usr/lib/python3.10/subprocess.py", line 526, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['docker', 'run', '--rm', '--network', 'container:a53cb2d486f02db9b3b8e746ba84eb7e004ab557e42463fbbb9d55e083a41929', '--mount', 'type=bind,src=/opt/phone-cloud-platform/staging/lookup-account-offline-20261016-rc.1/account-offline-http.mjs,dst=/app/verification/account-offline-http.mjs,readonly', '--mount', 'type=bind,src=/opt/phone-cloud-platform/staging/lookup-account-offline-20261016-rc.1/test-managed-lookup-delivery.mjs,dst=/app/windows-agent/src/managed-lookup-delivery.mjs,readonly', '--mount', 'type=bind,src=/opt/phone-cloud-platform/staging/lookup-account-offline-20261016-rc.1/test-sql,dst=/app/deploy/sql,readonly', '--env', 'MANAGED_LOOKUP_TEST_DATABASE_URL=postgres://postgres@127.0.0.1:5432/lookup_candidate', '--entrypoint', 'node', 'sha256:63193b6fe578f4de2d818943d6939b04b3d737f617ef27b0440d4873925d26b9', '/app/verification/account-offline-http.mjs']' returned non-zero exit status 1.

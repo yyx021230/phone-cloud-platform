@@ -1,0 +1,26 @@
+node:internal/fs/promises:1028
+  const result = await PromisePrototypeThen(
+                 ^
+
+Error: ENOENT: no such file or directory, lstat '/app/deploy/sql'
+    at async lstat (node:internal/fs/promises:1028:18)
+    at async Promise.all (index 0)
+    at async checkPaths (node:internal/fs/cp/cp:76:39)
+    at async cpFn (node:internal/fs/cp/cp:65:17)
+    at async runAccountOfflineHttp (file:///app/verification/account-offline-http.mjs:7:392)
+    at async file:///app/verification/account-offline-http.mjs:92:108 {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'lstat',
+  path: '/app/deploy/sql'
+}
+
+Node.js v22.23.3
+Traceback (most recent call last):
+  File "<stdin>", line 17, in <module>
+  File "<stdin>", line 7, in <lambda>
+  File "/usr/lib/python3.10/subprocess.py", line 421, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+  File "/usr/lib/python3.10/subprocess.py", line 526, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['docker', 'run', '--rm', '--network', 'container:55183d14a10857ba913fa54e74b95e46466c1ad42043fd96abbbbefb0e408a22', '--mount', 'type=bind,src=/opt/phone-cloud-platform/staging/lookup-account-offline-20261016-rc.1/account-offline-http.mjs,dst=/app/verification/account-offline-http.mjs,readonly', '--mount', 'type=bind,src=/opt/phone-cloud-platform/staging/lookup-account-offline-20261016-rc.1/test-managed-lookup-delivery.mjs,dst=/app/windows-agent/src/managed-lookup-delivery.mjs,readonly', '--env', 'MANAGED_LOOKUP_TEST_DATABASE_URL=postgres://postgres@127.0.0.1:5432/lookup_candidate', '--entrypoint', 'node', 'sha256:63193b6fe578f4de2d818943d6939b04b3d737f617ef27b0440d4873925d26b9', '/app/verification/account-offline-http.mjs']' returned non-zero exit status 1.
