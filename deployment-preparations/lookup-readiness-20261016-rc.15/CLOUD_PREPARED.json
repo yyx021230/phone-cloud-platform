@@ -1,0 +1,58 @@
+{
+  "at": "2026-10-16T01:22:37.459579+00:00",
+  "candidate": "lookup-readiness-20261015-rc.15",
+  "commit": "419defa1b9a59891592574e220ab5b9f79594e09",
+  "baselineActiveSha256": "92a2c93a6f4a813f55305bb3b35d2d259983c003d145b200428537e91eee8615",
+  "baselineVersion": "lookup-readiness-20261015-deployed.14",
+  "oldRunningImage": "sha256:3102e2fd770ccf6d855e1b2192846965b49d33e3b9a7d9f89b374a8fd6372359",
+  "rollbackImage": "sha256:10ae730bf2b3a1c1fc81d3e7b1d091675fad0645deffde6e6256e32c74ffe23d",
+  "image": "sha256:3ff9e5242c72cdf2c461c5c1c43c19c640249e0b5b9189fe973f0d254cda35b1",
+  "tag": "phone-cloud-platform:lookup-readiness-20261015-rc.15",
+  "files": {
+    "OPEN_NAME_LOOKUP_API.md": "b87ebee4b09a6b1f35176dc99f4ca27127cc936c34b300ed5cc8b2c408bfe02c",
+    "docs/OPEN_NAME_LOOKUP_API.md": "b87ebee4b09a6b1f35176dc99f4ca27127cc936c34b300ed5cc8b2c408bfe02c",
+    "docs/OPEN_NAME_LOOKUP_PARTNER_HANDOFF.md": "c415264329e37c3832123fe98e2b2b725e5a9eb20113e5fc217d4bdd44b2b157",
+    "docs/OPEN_NAME_LOOKUP_README.md": "75c25b54d1b995945c54f314fa3319b35461c2214d5f565e6d3b00f8f36b99ee",
+    "public/api-reference.json": "fb342496794659306676612afe9d07dcee8bd445456c5974ac630e04a2f37740",
+    "public/downloads/name-lookup-integration.zip": "e24488a2efdc8aab71dc84757aae480afa1b0d9da6c49f256a4a8b7ffe08e921",
+    "public/downloads/name-lookup-openapi.json": "3b146d5c82617203eced66b8b4e9ce303bb5fd69974074aa7f3bd96b46326452",
+    "public/downloads/name-lookup-sha256.json": "f87e188ef9003c27314543ddd783722991a2aae6c72fa6787ed75d44024a0dc5",
+    "public/lookup-pool.html": "12826f9957ae638cc648eff7ab8d7dee86a321d071172213529c5d0855461c15",
+    "public/lookup-pool.js": "df3d282a2647e0b28fa8d77cb10c521dbf46407e2acd2021ea605a1a4e1b044f",
+    "public/openapi.json": "7721b17b1141f32ffd628be0055aff197d82b24c67646d13d093cd3952a75fb0",
+    "sdk/open_name_lookup/PARTNER_HANDOFF.md": "c415264329e37c3832123fe98e2b2b725e5a9eb20113e5fc217d4bdd44b2b157",
+    "sdk/open_name_lookup/README.md": "75c25b54d1b995945c54f314fa3319b35461c2214d5f565e6d3b00f8f36b99ee",
+    "server/managed-lookup-async.mjs": "2d9a9f277ee481780a0c02fccb8770297d10fcfd83e95c64f5abd34ccd01a10f",
+    "server/managed-lookup.mjs": "8a438de01000fa7624a74d004c0143adf4e63fcb327f1605f9f694dfece9d9ac"
+  },
+  "stage": "/opt/phone-cloud-platform/staging/lookup-readiness-20261015-rc.15",
+  "backup": "/opt/phone-cloud-platform/deploy-backups/lookup-readiness-20261016-prep.15",
+  "databaseBackup": {
+    "bytes": 488266402,
+    "sha256": "19205b2c2f70cf9721328ce380e4e559faf9c275fb05021ff1cad458c34a6a70",
+    "decoded": true
+  },
+  "imageBackup": {
+    "bytes": 64072192,
+    "sha256": "df926695c5311096337b2bc3b9cd2e4e15b9accd06a5b79d4962840bfa3c678e"
+  },
+  "compose": {
+    "path": "/opt/phone-cloud-platform/staging/lookup-readiness-20261015-rc.15/compose.pending.json",
+    "sha256": "ede1c88807ca9698aed508965802e72fc4e920889bc0b0b8f78ba106fdcd7638"
+  },
+  "isolatedReady": true,
+  "isolatedRuntimeHashesPassed": 27,
+  "publicArtifacts200": true,
+  "mediaVerification": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "productionChanged": false,
+  "requiresCloudRestart": true,
+  "requiresAgentRestart": false,
+  "requiresAdbRestart": false
+}
