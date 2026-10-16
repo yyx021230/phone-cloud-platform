@@ -1,0 +1,68 @@
+{
+  "status": "local_candidate_not_deployed",
+  "version": "lookup-account-offline-20261016-rc.1",
+  "date": "2026-10-16",
+  "checks": {
+    "npm_run_check": "passed",
+    "npm_run_test_screen": {
+      "total": 837,
+      "pass": 837,
+      "fail": 0
+    },
+    "targeted": {
+      "total": 16,
+      "pass": 16
+    },
+    "public_lookup_pool_syntax": "passed",
+    "frozen_file_hashes_unchanged": 193,
+    "loopback_http": {
+      "loopbackOnly": true,
+      "storage": "json",
+      "realDevices": 0,
+      "productionConnections": 0,
+      "minimumReady": 2,
+      "targetReady": 5,
+      "publicPreparationHasNoCounts": true,
+      "oneReadyRejected": true,
+      "initialProbeQueries": 5,
+      "firstBusinessBeforeOtherThreeProbes": true,
+      "businessQueries": 9,
+      "elapsedBeforeNewKeysMs": 304,
+      "sameIdAfterEightNewKeys": true,
+      "nameAndEmptyCompleted": true,
+      "loginLossTransfersSameLookupToAnotherReadyPhone": true,
+      "loginExcludedWithoutHardFailureCount": true,
+      "sameStartupKeyDoesNotRetry": true,
+      "newStartupKeyProbesAndRestoresPhone": true,
+      "fiveSimultaneousBusinessDevices": true,
+      "oneHeldBusinessDoesNotBlockOtherFour": true,
+      "restartInvalidatesProof": true,
+      "drained": true
+    },
+    "fresh_reassembly_matches_tested_overlay": true
+  },
+  "initial_failures": {
+    "baseline_reproduction": {
+      "total": 10,
+      "pass": 4,
+      "fail": 6
+    },
+    "first_full": {
+      "total": 834,
+      "pass": 832,
+      "fail": 2,
+      "reason": "outdated documentation assertions: 47 endpoints / 11 HMAC versus deployed 33 endpoints / 3 API Key lookup endpoints"
+    }
+  },
+  "review": "self-review, no delegated/independent reviewer",
+  "production_changes": 0,
+  "real_queries": 0,
+  "real_notifications": 0,
+  "unverified": [
+    "production device acceptance for this candidate",
+    "real Feishu delivery for account-offline notification",
+    "Postgres persistence/restart for new account-offline fields",
+    "new production image and deployment",
+    "120-second real elapsed retry in this iteration"
+  ]
+}
