@@ -1,0 +1,52 @@
+{
+  "atUtc": "2026-10-16T09:12:59.345540+00:00",
+  "version": "lookup-round-stop-20261016-deployed.1",
+  "runtimeCommit": "1940ec1346e4f695a7e33b7e0237f356d4363b20",
+  "image": "sha256:4862080e4d6802a45c6f40bed390a05d99f891cf17c964e4d551f9b087140059",
+  "publicOnlyBusinessCalls": true,
+  "authentication": "same X-API-Key; value not recorded",
+  "authorizedSourceSha256": "20d3440551746ef8abe6919e5a8b3c7d0c6c12ac555f00f97d61d82fa8c64b95",
+  "authorizedSourceIndices": [
+    104,
+    115
+  ],
+  "businessRequests": 12,
+  "completedWithName": 2,
+  "cancelled": 10,
+  "beforeStop": {
+    "queued": 7,
+    "processing": 3,
+    "completed": 0,
+    "failed": 0
+  },
+  "queuedCancelledWithoutAttempt": 7,
+  "runningBusinessStoppedAfterAck": 3,
+  "runningProbesStoppedAfterAck": 2,
+  "stopSeconds": [
+    26.055,
+    11.417
+  ],
+  "stopDuringNewStartHttp": 409,
+  "oldStopDoesNotAffectNewRound": true,
+  "completedResultsRetained": true,
+  "secondRoundQueryCompleted": true,
+  "downloadedPythonStopPassedTwice": true,
+  "samePrepareKeyAfterStopRemainsStopped": true,
+  "finalChannels": 0,
+  "finalUnfinished": 0,
+  "finalActiveTasks": 0,
+  "runtimeHashesPassed": 39,
+  "publicHashesPassed": 10,
+  "adbTouched": false,
+  "agentRestarted": false,
+  "poolRevisionChanged": false,
+  "productionAcceptanceComplete": false,
+  "unverified": [
+    "Production disconnection during stop and cloud restart during stop were covered only in isolated HTTP/PostgreSQL tests; not injected into production",
+    "Historical ordinary recovery exhaustion and business account-login-loss successful cross-device real-device cases remain unobserved in this turn"
+  ],
+  "testHarnessIncidents": [
+    "Startup log parsed before deployment had completed: local JSON parsing error; no runtime patch made",
+    "One prepare response unknown during startup; persisted the same prepare key and retried after ready, no business submitted in the startup window"
+  ]
+}

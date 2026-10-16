@@ -1,0 +1,143 @@
+{
+  "rounds": {
+    "1": {
+      "key": "stop-acceptance-prepare-3809a380-6498-4f2c-9b4f-2aa875e82e1c",
+      "status": "ready",
+      "ready": true,
+      "preparationId": "5f5e8eec-9ea8-4b3d-bce0-a67b7138f031",
+      "stopStatus": "stopped"
+    },
+    "2": {
+      "key": "stop-acceptance-prepare-7a19bf77-034f-4592-ab73-eafeee72a233",
+      "status": "stopped",
+      "ready": false,
+      "preparationId": "0ac0a2ca-e038-4789-9994-83dbe3f7face",
+      "stopStatus": "stopped"
+    }
+  },
+  "rows": [
+    {
+      "index": 104,
+      "round": 1,
+      "key": "round-stop-business-e61a192d-88c7-4146-ac97-01b296f2d38f",
+      "lookupId": "27e6ff10-41c0-48b4-a515-ba07d079e1cf",
+      "status": "completed",
+      "reused": false,
+      "code": null,
+      "hasName": true
+    },
+    {
+      "index": 105,
+      "round": 1,
+      "key": "round-stop-business-4517ac18-257d-4ef7-a105-11513917e32c",
+      "lookupId": "d6cc5ec9-994c-4017-bc4c-ee4741623749",
+      "status": "failed",
+      "reused": false,
+      "code": "lookup_round_stopped"
+    },
+    {
+      "index": 106,
+      "round": 1,
+      "key": "round-stop-business-8f8f1ca6-9e27-4424-9b58-6557cb8d76d8",
+      "lookupId": "a382c8de-fd7f-4868-aa23-c4832b3c5878",
+      "status": "failed",
+      "reused": false,
+      "code": "lookup_round_stopped"
+    },
+    {
+      "index": 107,
+      "round": 1,
+      "key": "round-stop-business-7651a257-3a68-48bf-9c18-447e3627375a",
+      "lookupId": "3fad8ef3-a7e0-4fc9-b3b9-85b546403f0c",
+      "status": "failed",
+      "reused": false,
+      "code": "lookup_round_stopped"
+    },
+    {
+      "index": 108,
+      "round": 1,
+      "key": "round-stop-business-b4aafeff-eee3-4b7c-b60c-9c4098df06e1",
+      "lookupId": "77666e6b-794e-4723-a425-c0b836b00a86",
+      "status": "failed",
+      "reused": false,
+      "code": "lookup_round_stopped"
+    },
+    {
+      "index": 109,
+      "round": 1,
+      "key": "round-stop-business-c095979f-7b8c-4cab-96f7-a57d5e7f66ff",
+      "lookupId": "76477776-201d-4418-ba9a-b90979a7106f",
+      "status": "failed",
+      "reused": false,
+      "code": "lookup_round_stopped"
+    },
+    {
+      "index": 110,
+      "round": 1,
+      "key": "round-stop-business-82fc9823-0e89-4173-a78b-0bed0a6f2732",
+      "lookupId": "dc474e42-ced9-43cf-943d-d1290d04555b",
+      "status": "failed",
+      "reused": false,
+      "code": "lookup_round_stopped"
+    },
+    {
+      "index": 111,
+      "round": 1,
+      "key": "round-stop-business-26d2707e-dbf9-440b-8131-b925b43680ed",
+      "lookupId": "597625a2-f82d-4404-af1d-8511c61d248c",
+      "status": "failed",
+      "reused": false,
+      "code": "lookup_round_stopped"
+    },
+    {
+      "index": 112,
+      "round": 1,
+      "key": "round-stop-business-7cc52c08-5db7-41b2-8aea-7e5677270d8a",
+      "lookupId": "7639ab64-dcbd-4004-a879-b7d64cca9a72",
+      "status": "failed",
+      "reused": false,
+      "code": "lookup_round_stopped"
+    },
+    {
+      "index": 113,
+      "round": 1,
+      "key": "round-stop-business-dfe8380e-d39b-400f-809d-8e417fba7575",
+      "lookupId": "c92f9277-55bc-40f5-8f2a-a082c6292050",
+      "status": "failed",
+      "reused": false,
+      "code": "lookup_round_stopped"
+    },
+    {
+      "index": 114,
+      "round": 1,
+      "key": "round-stop-business-84f98e04-d1ae-4b19-8092-0066c3f654f5",
+      "lookupId": "535ecb3f-3cc2-49ca-aeca-4db967204431",
+      "status": "failed",
+      "reused": false,
+      "code": "lookup_round_stopped"
+    },
+    {
+      "index": 115,
+      "round": 2,
+      "key": "round-stop-business-3d6a016b-9b51-4d71-893a-02ff431bae21",
+      "lookupId": "bda52b19-99d1-4db4-897c-22652e5e38d8",
+      "status": "completed",
+      "reused": false,
+      "code": null,
+      "hasName": true
+    }
+  ],
+  "startedAt": 1792141504.1456661,
+  "budget": 12,
+  "beforeStop": {
+    "queued": 7,
+    "processing": 3,
+    "completed": 0,
+    "failed": 0
+  },
+  "startWhileStopping": {
+    "http": 409,
+    "code": "lookup_round_stopping"
+  },
+  "oldStopDidNotStopNewRound": true
+}
