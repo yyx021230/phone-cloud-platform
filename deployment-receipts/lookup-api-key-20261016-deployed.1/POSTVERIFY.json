@@ -1,0 +1,91 @@
+{
+  "remote": {
+    "at": "2026-10-16T06:05:05.665Z",
+    "devices": 131,
+    "online": 117,
+    "occupancy": [],
+    "agents": [
+      {
+        "lastSeenAt": "2026-10-16T06:05:05.409Z"
+      },
+      {
+        "lastSeenAt": "2026-08-10T06:02:47.953Z"
+      },
+      {
+        "lastSeenAt": "2026-07-03T04:15:49.959Z"
+      },
+      {
+        "lastSeenAt": "2026-07-03T05:36:47.198Z"
+      }
+    ],
+    "revision": 55,
+    "channels": 0,
+    "oldHmacHttp": 404,
+    "oldHmacExpected": 404
+  },
+  "publicChecks": [
+    {
+      "path": "public/api-docs.css",
+      "status": 200,
+      "hashMatches": true
+    },
+    {
+      "path": "public/api-reference.json",
+      "status": 200,
+      "hashMatches": true
+    },
+    {
+      "path": "public/api-docs.html",
+      "status": 200,
+      "hashMatches": true
+    },
+    {
+      "path": "public/openapi.json",
+      "status": 200,
+      "hashMatches": true
+    },
+    {
+      "path": "public/api-docs.js",
+      "status": 200,
+      "hashMatches": true
+    },
+    {
+      "path": "public/downloads/lookup.py",
+      "status": 200,
+      "hashMatches": true
+    },
+    {
+      "path": "public/downloads/lookup.mjs",
+      "status": 200,
+      "hashMatches": true
+    },
+    {
+      "path": "public/downloads/name-lookup-http-guide.md",
+      "status": 200,
+      "hashMatches": true
+    },
+    {
+      "path": "public/downloads/name-lookup-integration.zip",
+      "status": 200,
+      "hashMatches": true
+    },
+    {
+      "path": "public/downloads/name-lookup-openapi.json",
+      "status": 200,
+      "hashMatches": true
+    },
+    {
+      "path": "public/downloads/name-lookup-sha256.json",
+      "status": 200,
+      "hashMatches": true
+    },
+    {
+      "path": "/api/v1/admin/lookup-pool",
+      "mixedOrScopeDenied": true
+    },
+    {
+      "path": "/api/v1/open/name-lookups/tasks/00000000-0000-0000-0000-000000000000",
+      "mixedOrScopeDenied": true
+    }
+  ]
+}
