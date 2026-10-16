@@ -1,0 +1,1025 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "支付宝查名字 API",
+    "version": "lookup-api-key-20261016-rc.1",
+    "description": "三个接口：启动准备、提交手机号、获取结果。设备与账号由平台内部管理。"
+  },
+  "servers": [
+    {
+      "url": "http://47.98.127.132",
+      "description": "当前平台HTTP根地址；其他部署使用管理员交付的BASE_URL"
+    }
+  ],
+  "tags": [
+    {
+      "name": "lookup-user",
+      "description": "支付宝查名字"
+    }
+  ],
+  "paths": {
+    "/api/v1/open/name-lookups/tasks": {
+      "post": {
+        "operationId": "post-api-v1-open-name-lookups-tasks",
+        "summary": "提交手机号",
+        "description": "业务参数只传phoneNumber。立即返回lookupId，保存后通过结果接口查询。默认最多20条未完成请求，平台自动排队分配。",
+        "tags": [
+          "lookup-user"
+        ],
+        "security": [
+          {
+            "LookupApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 160,
+              "pattern": "^[A-Za-z0-9._:-]+$"
+            },
+            "description": "首次发送前持久保存；准备键与业务键分开，重试复用原键"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功读取准备/受理/结果，按status处理",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "lookupId",
+                    "status",
+                    "reused"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "lookupId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "queued",
+                        "processing",
+                        "completed",
+                        "failed"
+                      ]
+                    },
+                    "reused": {
+                      "type": "boolean"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": true,
+                  "lookupId": "00000000-0000-4000-8000-000000000002",
+                  "status": "queued",
+                  "reused": false
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "成功读取准备/受理/结果，按status处理",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "lookupId",
+                    "status",
+                    "reused"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "lookupId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "queued",
+                        "processing",
+                        "completed",
+                        "failed"
+                      ]
+                    },
+                    "reused": {
+                      "type": "boolean"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": true,
+                  "lookupId": "00000000-0000-4000-8000-000000000002",
+                  "status": "queued",
+                  "reused": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "invalid_lookup_phone"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "open_api_auth_required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "managed_lookup_not_authorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "managed_lookup_not_enabled"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "idempotency_conflict"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "lookup_queue_full"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "lookup_pool_disabled"
+                }
+              }
+            }
+          }
+        },
+        "x-route-errors": {
+          "invalid_lookup_phone": 400,
+          "prepare_body_must_be_empty": 400,
+          "idempotency_key_required": 400,
+          "invalid_idempotency_key": 400,
+          "managed_lookup_not_authorized": 403,
+          "managed_lookup_not_enabled": 404,
+          "lookup_task_not_found": 404,
+          "idempotency_conflict": 409,
+          "lookup_preparation_expired": 409,
+          "lookup_queue_full": 429,
+          "lookup_inflight_limit": 429,
+          "lookup_duplicate_limit": 429,
+          "lookup_preparation_key_limit": 429,
+          "lookup_pool_disabled": 503,
+          "lookup_storage_unavailable": 503,
+          "lookup_outcome_unknown": 503,
+          "lookup_not_ready": 503,
+          "lookup_probe_not_configured": 503,
+          "lookup_preparation_capacity": 503,
+          "open_api_auth_required": 401,
+          "invalid_open_api_client": 401,
+          "open_api_timestamp_expired": 401,
+          "invalid_open_api_nonce": 401,
+          "open_api_nonce_replayed": 401,
+          "invalid_open_api_signature": 401
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "phoneNumber"
+                ],
+                "properties": {
+                  "phoneNumber": {
+                    "type": "string",
+                    "pattern": "^1[3-9][0-9]{9}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "example": {
+                "phoneNumber": "13800000000"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/open/name-lookups/tasks/{lookupId}": {
+      "get": {
+        "operationId": "get-api-v1-open-name-lookups-tasks-lookupId",
+        "summary": "获取查询结果",
+        "description": "按lookupId获取单个号码的结果。completed时name是姓名或空字符串；未实名也是空字符串。其他状态继续等待或按code处理异常。",
+        "tags": [
+          "lookup-user"
+        ],
+        "security": [
+          {
+            "LookupApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "lookupId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功读取准备/受理/结果，按status处理",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "required": [
+                        "ok",
+                        "lookupId",
+                        "status"
+                      ],
+                      "properties": {
+                        "ok": {
+                          "type": "boolean",
+                          "enum": [
+                            true
+                          ]
+                        },
+                        "lookupId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "queued",
+                            "processing"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "ok",
+                        "lookupId",
+                        "status",
+                        "name"
+                      ],
+                      "properties": {
+                        "ok": {
+                          "type": "boolean",
+                          "enum": [
+                            true
+                          ]
+                        },
+                        "lookupId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "completed"
+                          ]
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "页面姓名或空字符串；未实名属于空字符串"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "ok",
+                        "lookupId",
+                        "status",
+                        "code"
+                      ],
+                      "properties": {
+                        "ok": {
+                          "type": "boolean",
+                          "enum": [
+                            false
+                          ]
+                        },
+                        "lookupId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "failed"
+                          ]
+                        },
+                        "code": {
+                          "type": "string"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                "example": {
+                  "ok": true,
+                  "lookupId": "00000000-0000-4000-8000-000000000002",
+                  "status": "completed",
+                  "name": "**某"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "open_api_auth_required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "managed_lookup_not_authorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "managed_lookup_not_enabled"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "lookup_storage_unavailable"
+                }
+              }
+            }
+          }
+        },
+        "x-route-errors": {
+          "managed_lookup_not_authorized": 403,
+          "managed_lookup_not_enabled": 404,
+          "lookup_task_not_found": 404,
+          "lookup_storage_unavailable": 503,
+          "open_api_auth_required": 401,
+          "invalid_open_api_client": 401,
+          "open_api_timestamp_expired": 401,
+          "invalid_open_api_nonce": 401,
+          "open_api_nonce_replayed": 401,
+          "invalid_open_api_signature": 401
+        }
+      }
+    },
+    "/api/v1/open/name-lookups/prepare": {
+      "post": {
+        "operationId": "post-api-v1-open-name-lookups-prepare",
+        "summary": "启动准备",
+        "description": "请求体为{}。用同一个准备键每5秒读取一次，ready:true后即可提交手机号。过期后使用新准备键。",
+        "tags": [
+          "lookup-user"
+        ],
+        "security": [
+          {
+            "LookupApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 160,
+              "pattern": "^[A-Za-z0-9._:-]+$"
+            },
+            "description": "首次发送前持久保存；准备键与业务键分开，重试复用原键"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功读取准备/受理/结果，按status处理",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "preparationId",
+                    "status",
+                    "ready",
+                    "expiresAt"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "preparationId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "preparing",
+                        "ready",
+                        "expired"
+                      ]
+                    },
+                    "ready": {
+                      "type": "boolean"
+                    },
+                    "expiresAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": true,
+                  "preparationId": "00000000-0000-4000-8000-000000000001",
+                  "status": "ready",
+                  "ready": true,
+                  "expiresAt": "2026-10-15T10:30:00.000Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "invalid_lookup_phone"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "open_api_auth_required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "managed_lookup_not_authorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "managed_lookup_not_enabled"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "idempotency_conflict"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "lookup_queue_full"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "lookup_pool_disabled"
+                }
+              }
+            }
+          }
+        },
+        "x-route-errors": {
+          "invalid_lookup_phone": 400,
+          "prepare_body_must_be_empty": 400,
+          "idempotency_key_required": 400,
+          "invalid_idempotency_key": 400,
+          "managed_lookup_not_authorized": 403,
+          "managed_lookup_not_enabled": 404,
+          "lookup_task_not_found": 404,
+          "idempotency_conflict": 409,
+          "lookup_preparation_expired": 409,
+          "lookup_queue_full": 429,
+          "lookup_duplicate_limit": 429,
+          "lookup_preparation_key_limit": 429,
+          "lookup_pool_disabled": 503,
+          "lookup_storage_unavailable": 503,
+          "lookup_outcome_unknown": 503,
+          "lookup_not_ready": 503,
+          "lookup_probe_not_configured": 503,
+          "lookup_preparation_capacity": 503,
+          "open_api_auth_required": 401,
+          "invalid_open_api_client": 401,
+          "open_api_timestamp_expired": 401,
+          "invalid_open_api_nonce": 401,
+          "open_api_nonce_replayed": 401,
+          "invalid_open_api_signature": 401
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [],
+                "properties": {},
+                "additionalProperties": false
+              },
+              "example": {}
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "HmacSignature": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Signature",
+        "description": "HMAC-SHA256小写hex；还必须提供X-Client-Id/X-Timestamp/X-Nonce。仅后端使用密钥。"
+      },
+      "LookupApiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "平台单独分配的固定API Key；只用于查名三个接口。旧HMAC兼容，不可混用。"
+      }
+    }
+  },
+  "x-websocket-channels": []
+}

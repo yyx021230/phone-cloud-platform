@@ -1,0 +1,10 @@
+{
+  "version": "lookup-api-key-20261016-rc.1",
+  "files": {
+    "README.md": "bcd37554b3f53240310f2206d85ea3df643ccdab4e6d2c6ad82df2161684a90a",
+    "lookup.py": "95ca247988e7a6c7a03ce0d3078f455715335a9f5a575bb987044fc3c933251b",
+    "lookup.mjs": "463ac44a509215fe44fa3b2374c1c469ee66fbe2e6a5779ea57ad39fd5ecdb88",
+    "openapi.json": "6a59c4c5f8bdb9463ada04c771819fa5d2a757a72fb54d0b4b525be3ada65573"
+  },
+  "zipSha256": "baa4ee4da386cd737725bccc3b361ce2c684fd9c6e6ca65cd47362a5c43d03bb"
+}

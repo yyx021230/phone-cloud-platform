@@ -1,0 +1,13 @@
+{
+  "gitBase": "ae05601170c27624e7443743bcd63afcdfdd2345",
+  "activeSha256": "a749522186e16b7bcd38feeeeceda353afc071dd8f20b58c948e91b3328b1b34",
+  "runtimeVersion": "lookup-readiness-20261016-deployed.16",
+  "documentationVersion": "lookup-http-guide-20261016-deployed.1",
+  "runtimeImage": "sha256:b5479d9cfc0d6bf6ab5d2ee748856d4867cf6e21c118ab317709ba501519cda7",
+  "restartImage": "sha256:03b6928af85439bb69d2ff11f77d882480fa9496f2ba69370215814556b8aaf1",
+  "before": {
+    "server/index.mjs": "e13e4271b950b14402868ceaca005e14314ec603c13a095cd2cbb9f832238629",
+    "server/open-name-lookup-api.mjs": "0c846c1cb1f01ca5a2cd662fc0b81d09568d17d89268b66254e37092664a4eb3"
+  },
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+}
