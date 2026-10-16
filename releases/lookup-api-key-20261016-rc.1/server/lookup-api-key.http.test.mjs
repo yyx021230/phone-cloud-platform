@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {runApiKeyHttp} from '../verification/api-key-http.mjs';
+test('API Key HTTP full flow: auth boundaries, legacy dedup, names/empty, handoff, restart',{timeout:30000},async()=>{const p=await runApiKeyHttp();assert.ok(p.drained&&p.fiveSimultaneousBusinessDevices&&p.confirmedLimitTransfersSameLookupToAnotherReadyPhone);});
+test('API Key HTTP 20 queued: two ready then five, overflow and dedup',{timeout:30000},async()=>{const p=await runApiKeyHttp({queueWindowOnly:true});assert.ok(p.twentyAccepted&&p.twoRunningEighteenQueued&&p.newlyReadyPhonesTakeQueuedJobs&&p.fullWindowDedup&&p.overflow429&&p.drained);assert.equal(p.maximumExecuting,5);});

@@ -1,0 +1,16 @@
+✔ API Key HTTP full flow: auth boundaries, legacy dedup, names/empty, handoff, restart (4915.681125ms)
+✔ API Key HTTP 20 queued: two ready then five, overflow and dedup (4211.096041ms)
+✔ key identifies existing client on exactly three endpoints (2.057166ms)
+✔ key scope excludes legacy, admin, SMS and wrong verbs (0.668291ms)
+✔ rejects missing, malformed, duplicate and unknown keys without leaking input (0.139375ms)
+✔ rejects mixed HMAC even when the other headers are empty (0.278166ms)
+✔ legacy clients remain usable; optional invalid digest does not enable keys (0.317708ms)
+✔ duplicate digest fails closed for both clients (0.17ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9220.775709
