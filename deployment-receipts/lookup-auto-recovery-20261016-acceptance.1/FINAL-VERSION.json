@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-16T08:33:56.732192+00:00",
+  "version": "lookup-auto-recovery-20261016-deployed.1",
+  "runtimeCommit": "1d4008e288d06598225041c4cadead025da43164",
+  "image": "sha256:0d4f8ec832312dcd1d3b601e770e82668bab6e7182f90a6713de1d423384cd69",
+  "runtimeHashesPassed": 37,
+  "restartMatches": true,
+  "composeMatches": true,
+  "containerRestartCount": 0,
+  "activeSha256": "2ba958fb9dc40b866c99a942e2f60a7bc7b5f5f3591b4534e99006334d7a9b38"
+}

@@ -1,0 +1,10 @@
+{
+  "jobId": "b754443f-75d0-4195-b523-b3a1a73d5f76",
+  "status": "failed",
+  "errorCode": null,
+  "resultError": "alipay_lookup_failed",
+  "runnerReason": "poco_rpc_failed:HTTPConnectionPool(host='###.#.#.#', port=#####): Read timed out. (read timeout=#.#)",
+  "resultId": "c6254ad3-6446-4476-aa0f-f4611858ed58",
+  "createdAt": "2026-10-16T08:23:06.407Z",
+  "finishedAt": null
+}

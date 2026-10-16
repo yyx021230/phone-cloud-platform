@@ -1,0 +1,54 @@
+{
+  "request": {
+    "code": "lookup_queue_timeout",
+    "mode": "async",
+    "status": "expired",
+    "archived": true,
+    "attempts": [
+      {
+        "at": "2026-10-16T07:31:20.812Z",
+        "deviceId": "adb:10HFC6F1SU000T4",
+        "sessionId": "025276cf-d906-461a-b97e-078e0b6527dd",
+        "generation": "0096c4d4-d636-4339-a11f-683c5e1eeec0",
+        "readinessIdentity": "a5961590e8a1a86d9a005ba2910e6c8c947f857b0013b343d4926f98ea60c076"
+      }
+    ],
+    "clientId": "name-lookup-v1",
+    "deadline": 1792137668459,
+    "lookupId": "bdd4ff9b-2c3f-411d-8aa7-4007fe22b987",
+    "createdAt": "2026-10-16T07:31:08.459Z",
+    "completedAt": "2026-10-16T08:23:30.515Z",
+    "resultProtocol": "prepared-v1",
+    "consentReference": "user-authorized-pool-20261014",
+    "executionDeadline": 1792139468459,
+    "automaticRecoveries": [
+      {
+        "at": "2026-10-16T08:23:06.438Z",
+        "jobId": "c6254ad3-6446-4476-aa0f-f4611858ed58",
+        "deviceId": "adb:10HFC6F1SU000T4"
+      }
+    ],
+    "recoveryExcludedDevices": [
+      "adb:10HFC6F1SU000T4"
+    ],
+    "hasName": false
+  },
+  "audits": [
+    {
+      "at": "2026-10-16T08:23:06.438Z",
+      "actor": "system",
+      "jobId": "c6254ad3-6446-4476-aa0f-f4611858ed58",
+      "action": "lookup_automatic_recovery",
+      "deviceId": "adb:10HFC6F1SU000T4",
+      "lookupId": "bdd4ff9b-2c3f-411d-8aa7-4007fe22b987"
+    },
+    {
+      "at": "2026-10-16T08:23:30.492Z",
+      "actor": "system",
+      "action": "lookup_reroute_recovery_exhausted",
+      "queryId": "c6254ad3-6446-4476-aa0f-f4611858ed58",
+      "deviceId": "adb:10HFC6F1SU000T4",
+      "lookupId": "bdd4ff9b-2c3f-411d-8aa7-4007fe22b987"
+    }
+  ]
+}
