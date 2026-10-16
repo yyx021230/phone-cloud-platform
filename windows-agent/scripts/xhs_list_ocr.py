@@ -16,8 +16,12 @@ COMMENT_ICONS_720 = ('iVBORw0KGgoAAAANSUhEUgAAACMAAAAhCAAAAAB2ek2OAAACIklEQVQ4EY
 UNIT_GLYPHS = {'万': ('iVBORw0KGgoAAAANSUhEUgAAACAAAAAwCAAAAABVxyezAAABvElEQVQ4EX3BS0tUcQDG4d876XhhNiVammmZY83CI5GErSxzUZu+Rt+siKCIyhZCRleMggobhUo0tbQbhol4Gd/mjOdMIvJ/HpkwmTCZMJkwmTCZMJkwmTCZMJkwmTCZMBkorpbYzwAgA6PzG+znGiADMytblC18bcxn2eUMIAPbJvZuommwgV0OADJVbyZahurYQ6ZqvNh2qYY9ZKqeT3UMiz1kqsZmOwapUoaYTNX9ucYjVLWdylImk9q8/SvbQGJ1rediPWUyqeW7tLeQmF3oHMpSJpOaGz0cHSPxqtg2nKFMJvV+vCc6SOLZdMcFYjKpsamzUT2JR4snzhOT2eHNGzrXkyHxcDnfT0xmx+bv64W+VlJ31gt9xGQq/Lf4cqgrR6J0s6a3QEymorQ4wtXmDIm1W7mom5hMxbe3xStd9aR+PGiJ2onJxJYmPzVdrsuQ+vjkeNRMTAb8ffJLzUAX/z390NuXIyYDM9PztfkoS5kXJHn9xUb/6VpiMnBvKZcvNBLbfrxBprTy82TUSoUMjGS7j9ay4/XnP1vKdkaHaqiQCZMJkwmTCZMJkwmTCZMJkwmTCZMJkwn7BwFcmQFgix01AAAAAElFTkSuQmCC', 'iVBORw0KGgoAAAANSUhEUgAAACAAAAAwCAAAAABVxyezAAABLUlEQVQ4EX3BIZZaQRRF0XPnEI9G8yw6vm1av7bRHZtmDoWPzUgojWYS2JuuD7/CYvV6e8vUZGoyNZmaTE2mJlOTqcnUZGoyNZmazKfofMWADMT5ylcMyMCRxeGyf+VRAjJT9Gw8k5miZ+OZzBQ9G89kpujZeCYzRc/GM5kp+nbPtH9lkJmi8yAbg8wU/duGu/M1G4PMFD0bd9GzMcisREtW0bMxyKxES1bRszHIrERLVtGzMcis9PJzzyp6NgaZm+s5Tjum6NkYZG56cNoxRc/GILM4vmEeRM/GIDMcjhfMg/ieGwaZTx9/zpv35L+3vx/JQgaOh8v2xy8WR4Y3WrKQAbHJd27EYvv7hYUMiJbcicVpx41MTaYmU5OpydRkajI1mZpMTaYmU5Op/QOQmXkBtZ7TOgAAAABJRU5ErkJggg==')}
 PACKAGE = "com.xingin.xhs"
 COUNTER = re.compile(r"^\d+(?:\.\d+)?(?:万|亿)?$")
-DIGIT_COUNTS = (10, 12, 12, 14, 14, 12, 8, 8, 12, 8)
-DIGIT_ATLAS_SHA256 = "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164"
+BASE_DIGIT_COUNTS = (10, 12, 12, 14, 14, 12, 8, 8, 12, 8)
+DIGIT_COUNTS = (86, 57, 46, 37, 40, 35, 26, 25, 26, 22)
+DIGIT_ATLAS_SHA256 = 'a8f0fbe67adce89f037c2427c83865aa07baf384923bcea8b3b0db72af7805c4'
+
+
+LIKE_ICONS_720 = ('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')
 
 
 def compact(value):
@@ -47,6 +51,22 @@ def date_text(value):
     if not match or not 1 <= int(match[1]) <= 12 or not 1 <= int(match[2]) <= 31:
         raise RuntimeError("OCR date is not a proven MM-DD label")
     return match[1] + "-" + match[2]
+
+
+def paired_date_text(value):
+    raw = compact(value).strip(",，、‘’'\"")
+    match = re.fullmatch(r"(\d{4})[-−—‐‑．.·一](\d{4})",raw)
+    if not match or any(part[0] != part[1] or part[2] != part[3] for part in match.groups()):
+        raise RuntimeError("OCR paired date ink is incomplete or inconsistent")
+    return date_text(match[1][0]+match[1][2]+"-"+match[2][0]+match[2][2])
+
+
+RESTRICTED_STATUSES = ("该篇笔记已不可被他人查看", "该篇笔记已不被推荐给未关注用户")
+
+
+def status_text(value):
+    if "笔记状态" in value:return value[value.index("笔记状态"):]
+    return next((text for text in RESTRICTED_STATUSES if value.endswith(text)),None)
 
 
 def counter_text(value):
@@ -83,7 +103,48 @@ def equal_variants(images, prefix, parser):
         if len(primary) >= 2:return primary[0]
         if len(primary) == 1 and any(by_variant.get(v) == primary[0] for v in ("color","nearest")):
             return primary[0]
+        contextual = []
+        for variant in ("binary","contrast","nearest","soft"):
+            item = images.get(prefix + "_context_" + variant)
+            if item is None:continue
+            if item.get("language") != "zh-Hans-CN":
+                raise RuntimeError("OCR contextual date language is unproven")
+            lines = item.get("lines",[])
+            if len(lines) != 1:continue
+            try:contextual.append(date_text(lines[0].get("text","")))
+            except RuntimeError:continue
+        paired = []
+        for variant in ("binary","contrast","soft"):
+            item = images.get(prefix + "_pair_" + variant)
+            if item is None:continue
+            if item.get("language") != "zh-Hans-CN":
+                raise RuntimeError("OCR paired date language is unproven")
+            lines = item.get("lines",[])
+            if len(lines) != 1:continue
+            try:paired.append(paired_date_text(lines[0].get("text","")))
+            except RuntimeError:continue
+        # A single low-resolution reading can confuse 6 with 5. It may be
+        # superseded only by two full-size context readings AND two strictly
+        # segmented glyph-pair readings. Two primary values are never replaced.
+        if (len(primary) == 1 and not any(v in by_variant for v in ("binary","contrast"))
+                and len(contextual) >= 2 and len(paired) >= 2
+                and len(set(contextual+paired)) == 1):
+            return paired[0]
+        contextual.extend(paired)
+        if len(contextual) >= 2:
+            if len(set(contextual)) != 1 or (primary and primary[0] != contextual[0]):
+                raise RuntimeError("OCR contextual date values disagree")
+            return contextual[0]
         raise RuntimeError("OCR crop must have two independently processed numeric/date values")
+    if len(values) < 2:
+        for variant in ("binary","contrast","nearest"):
+            item = images.get(prefix+"_context_"+variant)
+            if item is None:continue
+            if item.get("language") != "zh-Hans-CN":raise RuntimeError("OCR contextual count language is unproven")
+            lines = item.get("lines",[])
+            if len(lines) != 1:continue
+            try:values.append(parser(lines[0].get("text","")))
+            except RuntimeError:continue
     if len(values) < 2:
         raise RuntimeError("OCR crop must have two independently processed numeric/date values")
     if len(set(values)) != 1:
@@ -149,11 +210,14 @@ def numeric_cell(frame,box,allow_candidate=False):
             scored = []
             for digit,number in enumerate(DIGIT_COUNTS):
                 scores = [float(cv2.matchTemplate(glyph,atlas[digit*48:(digit+1)*48,j*32:(j+1)*32],cv2.TM_CCOEFF_NORMED)[0,0]) for j in range(number)]
-                scored.append((max(scores),str(digit)))
+                scored.append((max(scores),str(digit),scores.index(max(scores))))
             scored.sort(reverse=True)
             if scored[0][0] < .965 or scored[0][0]-scored[1][0] < .06:
                 if not allow_candidate or scored[0][0] < .9 or scored[0][0]-scored[1][0] < .12:
                     raise RuntimeError("OCR numeral glyph is unproven or ambiguous")
+                needs_native_proof = True
+            if (scored[0][2] >= BASE_DIGIT_COUNTS[int(scored[0][1])]
+                    and (scored[0][0] < .99 or scored[0][0]-scored[1][0] < .12)):
                 needs_native_proof = True
             text.append(scored[0][1])
         texts.append(counter_text("".join(text)+unit))
@@ -191,6 +255,7 @@ def metric_icons(frame, y1, y2, body_left):
     for name in ("view", "like", "comment"):
         templates = [(ICON_PNGS[name],1080)]
         if name == "comment":templates.extend((icon,720) for icon in COMMENT_ICONS_720)
+        if name == "like":templates.extend((icon,720) for icon in LIKE_ICONS_720)
         candidates = []
         for encoded,reference_width in templates:
             glyph = cv2.imdecode(np.frombuffer(base64.b64decode(encoded), np.uint8), 0)
@@ -218,6 +283,12 @@ def metric_icons(frame, y1, y2, body_left):
     return found
 
 
+class WorksListHint(RuntimeError):
+    def __init__(self, box):
+        super().__init__("OCR works-list filter hint covers the selected tab")
+        self.box = box
+
+
 def prepare_frame(frame, full, read_counts=True):
     h, w = frame.shape[:2]
     if full.get("width") != w or full.get("height") != h or full.get("language") != "zh-Hans-CN":
@@ -231,9 +302,21 @@ def prepare_frame(frame, full, read_counts=True):
     parsed = [(compact(l.get("text", "")), line_box(l)) for l in lines]
     # On the observed 720px layout native OCR joins the adjacent filter icon
     # as a trailing Chinese full stop; normalize only this exact header label.
-    parsed = [("全部笔记" if s == "全部笔记。" and b[1] < h*.28 else s,b) for s,b in parsed]
+    parsed = [("全部笔记" if s in ("全部笔记。", "全部笔记=", "全部笔记_") and b[1] < h*.28 else s,b) for s,b in parsed]
     if any(b[2] > w or b[3] > h for _, b in parsed):
         raise RuntimeError("OCR text lies outside its screenshot")
+    hints = [b for text,b in parsed if text in ("支持多维筛选排序啦", "支持多维筛选扌非序啦")]
+    centers = [b for text,b in parsed if text == "数据中心" and b[1] < h*.15]
+    filters = [b for text,b in parsed if text == "全部笔记" and b[1] < h*.28]
+    if (len(hints) == len(centers) == len(filters) == 1
+            and hints[0][0] < w*.15 and hints[0][2] < w*.5
+            and centers[0][3] < hints[0][1] < hints[0][3] < filters[0][1]
+            and hints[0][3]-hints[0][1] < w*.08):
+        raise WorksListHint(hints[0])
+    # A partial/unproven filter must still block data reading.
+    parsed = [("收起" if text == "^收起" else text,b) for text,b in parsed]
+    # The observed explicit empty-state copy has the same meaning as 暂无笔记.
+    parsed = [("暂无笔记" if text == "暂无可展示的笔记" else text,b) for text,b in parsed]
     headers = {}
     for text in ("数据中心", "作品分析", "全部笔记"):
         matches = [(s,b) for s,b in parsed if s == text and b[1] < h*.28]
@@ -248,16 +331,18 @@ def prepare_frame(frame, full, read_counts=True):
         raise RuntimeError("OCR works list is covered by an unhandled overlay")
     markers = {s:b for s,b in parsed if s in ("到底了", "暂无笔记") and b[1] > all_notes[3]
                and abs((b[0]+b[2])/2-w/2) < w*.12 and b[3]-b[1] < w*.06}
-    statuses = [(s[s.index("笔记状态"):],b) if "笔记状态" in s else (s,b) for s,b in parsed
-                if b[0] >= w*.24 and b[1] > all_notes[3]
-                and ("笔记状态" in s or s == "该篇笔记已不可被他人查看")]
+    statuses = [(status_text(s),b) for s,b in parsed
+                if b[0] >= w*.24 and b[1] > all_notes[3] and status_text(s) is not None]
     statuses.sort(key=lambda row:row[1][1])
     rows = []
     leading_clip = False
     trailing_clip = False
     for status_index,(status, sb) in enumerate(statuses):
         titles = [(s,b) for s,b in parsed if b[0] >= w*.24 and max(all_notes[3],sb[1]-h*.13) < b[1]
-                  and b[3] < sb[1] and "笔记状态" not in s and not COUNTER.fullmatch(s)
+                  and b[3] < sb[1] and status_text(s) is None and not COUNTER.fullmatch(s)
+                  # The list title starts in the same text column as status.
+                  # Ignore tiny trailing emoji fragments and clipped header ink.
+                  and b[0] < min(w*.5,sb[0]+w*.05) and w*.022 <= b[3]-b[1] <= w*.08
                   and (re.search(r"[\u4e00-\u9fff]",s) or len(re.findall(r"[A-Za-z]",s)) >= 2)]
         if not titles:
             if status_index == 0 and sb[1]-all_notes[3] < w*.25:
@@ -336,20 +421,23 @@ def crop_requests(frame, prepared, directory, dates=True):
             if x2 <= x1 or y2 <= y1:
                 raise RuntimeError("OCR crop is empty")
             original = frame[y1:y2,x1:x2]
-            if name != "date" and len(row["verifiedCounts"][("view","like","comment").index(name)]) == 1:
-                # Windows OCR can omit a one-character word. Repeat the same
-                # visible ink twice and require exactly that repeated value.
+            if name != "date":
+                # Windows OCR can omit short numeral words. Repeat only the
+                # observed ink; corroboration requires the entire repeated value.
                 gray = cv2.cvtColor(original,cv2.COLOR_BGR2GRAY)
                 if float(gray.mean()) < 128:original = 255-original;gray = 255-gray
                 ys,xs = np.where(gray < 220)
                 if not len(xs):raise RuntimeError("OCR count crop has no numeral ink")
                 glyph = original[ys.min():ys.max()+1,xs.min():xs.max()+1]
                 gh,gw = glyph.shape[:2];gap = max(4,gw//2)
-                copied = np.full((gh+16,gw*2+gap+16,3),255,np.uint8)
-                copied[8:8+gh,8:8+gw] = glyph
-                copied[8:8+gh,8+gw+gap:8+gw*2+gap] = glyph
+                displayed = row["verifiedCounts"][("view","like","comment").index(name)]
+                repeats = 1 if any(unit in displayed for unit in ("万","亿")) else 4 if len(displayed) == 1 else 2
+                copied = np.full((gh+16,gw*repeats+gap*(repeats-1)+16,3),255,np.uint8)
+                for repetition in range(repeats):
+                    left = 8+repetition*(gw+gap)
+                    copied[8:8+gh,left:left+gw] = glyph
                 original = copied
-            variants = ("color","binary","contrast","small","double","nearest") if name == "date" else ("color","binary","contrast","nearest")
+            variants = ("color","binary","contrast","small","double","nearest","soft") if name == "date" else ("color","binary","contrast","nearest")
             for variant in variants:
                 scale = {"nearest":3,"small":1,"double":2}.get(variant,5)
                 roi = cv2.resize(original,None,fx=scale,fy=scale,
@@ -360,7 +448,7 @@ def crop_requests(frame, prepared, directory, dates=True):
                     # Isolate this ink so colored cover prices cannot become dates.
                     if name == "date":
                         minimum, maximum = roi.min(axis=2), roi.max(axis=2)
-                        white = (minimum > (230 if variant in ("contrast","small","double") else 210)) & (maximum.astype(np.int16)-minimum.astype(np.int16) < 50)
+                        white = (minimum > (190 if variant == "soft" else 230 if variant in ("contrast","small","double") else 210)) & (maximum.astype(np.int16)-minimum.astype(np.int16) < 50)
                         pixel = np.where(white,0,255).astype(np.uint8)
                         # A white cover footer becomes a broad black bar and
                         # can suppress date characters in native OCR. Remove
@@ -378,8 +466,113 @@ def crop_requests(frame, prepared, directory, dates=True):
                 path = Path(directory)/(key+".png")
                 if not cv2.imwrite(str(path),pixel):
                     raise RuntimeError("OCR private crop write failed")
-                images.append({"id":key,"path":str(path)})
+                if variant != "soft":images.append({"id":key,"path":str(path)})
+                if name == "date" and variant in ("binary","contrast","nearest","soft"):
+                    # Static context helps the Chinese OCR identify Latin date digits.
+                    # No date value is rendered; only words wholly inside the original
+                    # observed crop are accepted from this additional recognition.
+                    color = cv2.cvtColor(pixel,cv2.COLOR_GRAY2BGR) if pixel.ndim == 2 else pixel
+                    height,width = color.shape[:2]
+                    scale = height*.55/22
+                    thickness = max(1,round(height/80))
+                    (text_width,_),_ = cv2.getTextSize("DATE:",cv2.FONT_HERSHEY_SIMPLEX,scale,thickness)
+                    left = text_width+40
+                    canvas = np.full((height+40,width+left+20,3),255,np.uint8)
+                    canvas[20:20+height,left:left+width] = color
+                    cv2.putText(canvas,"DATE:",(10,20+min(height-4,round(height*.62))),
+                                cv2.FONT_HERSHEY_SIMPLEX,scale,(0,0,0),thickness,cv2.LINE_AA)
+                    context_id = f"r{i}_date_context_{variant}"
+                    context_path = Path(directory)/(context_id+".png")
+                    if not cv2.imwrite(str(context_path),canvas):raise RuntimeError("OCR private context crop write failed")
+                    images.append({"id":context_id,"path":str(context_path),
+                                   "dateContentBox":[left,20,left+width,20+height]})
     return images
+
+
+def paired_date_image(image):
+    """Duplicate only five proven date glyph components; no character is generated."""
+    import cv2
+    import numpy as np
+    if image is None or image.ndim != 2:return None
+    contours,_ = cv2.findContours((image < 128).astype(np.uint8)*255,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+    boxes = sorted([cv2.boundingRect(c) for c in contours if cv2.contourArea(c) > 8],key=lambda b:b[0])
+    if len(boxes) != 5:return None
+    digits = [boxes[i] for i in (0,1,3,4)]
+    height = max(b[3] for b in digits)
+    dash = boxes[2]
+    top = min(b[1] for b in digits)
+    if (height < image.shape[0]*.25 or height > image.shape[0]*.9
+            or any(abs(b[3]-height) > max(3,height*.2) or not height*.12 <= b[2] <= height*.9 for b in digits)
+            or not height*.2 <= dash[2] <= height*.8 or not dash[3] < height*.25
+            or not top+height*.3 < dash[1]+dash[3]/2 < top+height*.85
+            or any(not 0 < boxes[i+1][0]-(boxes[i][0]+boxes[i][2]) < height*.7 for i in range(4))):
+        return None
+    gap = max(3,round(height*.1))
+    width = sum(b[2]*(1 if i == 2 else 2) for i,b in enumerate(boxes))+gap*14+60
+    canvas = np.full((height+60,width),255,np.uint8)
+    left = 20
+    for i,(x,y,w,h) in enumerate(boxes):
+        glyph = image[y:y+h,x:x+w]
+        offset = 30+y-top if i == 2 else 30
+        for _ in range(1 if i == 2 else 2):
+            canvas[offset:offset+h,left:left+w] = glyph
+            left += w+gap
+        left += gap
+    return canvas
+
+
+def paired_date_requests(prepared, recognized, directory):
+    import cv2
+    indexed = {r.get("id"):r for r in recognized}
+    requests = []
+    for i,_ in enumerate(prepared["rows"]):
+        try:equal_variants(indexed,f"r{i}_date",date_text)
+        except RuntimeError as error:
+            if not any(copy in str(error) for copy in ("two independently processed","contextual date values disagree")):continue
+        else:continue
+        for variant in ("binary","contrast","soft"):
+            source = Path(directory)/f"r{i}_date_{variant}.png"
+            if not source.is_file():continue
+            image = paired_date_image(cv2.imread(str(source),cv2.IMREAD_GRAYSCALE))
+            if image is None:continue
+            identifier = f"r{i}_date_pair_{variant}"
+            file = Path(directory)/(identifier+".png")
+            if not cv2.imwrite(str(file),image):raise RuntimeError("OCR private paired date write failed")
+            requests.append({"id":identifier,"path":str(file)})
+    return requests
+
+
+def contextual_count_requests(rows, recognized, directory):
+    """Add only static word context to already-copied observed numeral ink."""
+    import cv2
+    import numpy as np
+    indexed = {r["id"]:r for r in recognized}
+    requests = []
+    for i,row in enumerate(rows):
+        for field in row.get("weakCountFields",[]):
+            prefix = f"r{i}_{('view','like','comment')[field]}"
+            try:equal_variants(indexed,prefix,counter_text)
+            except RuntimeError as error:
+                if "two independently processed" not in str(error):continue
+            else:continue
+            for variant in ("binary","contrast","nearest"):
+                source = Path(directory)/(prefix+"_"+variant+".png")
+                pixel = cv2.imread(str(source))
+                if pixel is None:raise RuntimeError("OCR private count crop is missing")
+                height,width = pixel.shape[:2]
+                scale = height*.55/22;thickness = max(1,round(height/80))
+                (text_width,_),_ = cv2.getTextSize("COUNT:",cv2.FONT_HERSHEY_SIMPLEX,scale,thickness)
+                left = text_width+40
+                canvas = np.full((height+40,width+left+20,3),255,np.uint8)
+                canvas[20:20+height,left:left+width] = pixel
+                cv2.putText(canvas,"COUNT:",(10,20+round(height*.62)),cv2.FONT_HERSHEY_SIMPLEX,
+                            scale,(0,0,0),thickness,cv2.LINE_AA)
+                identifier = prefix+"_context_"+variant
+                file = Path(directory)/(identifier+".png")
+                if not cv2.imwrite(str(file),canvas):raise RuntimeError("OCR private context count write failed")
+                requests.append({"id":identifier,"path":str(file),
+                                 "countContentBox":[left,20,left+width,20+height]})
+    return requests
 
 
 def corroborate_counts(row, i, results):
@@ -390,7 +583,7 @@ def corroborate_counts(row, i, results):
             corroborated = equal_variants(results,f"r{i}_{name}",counter_text)
         except RuntimeError as error:
             raise RuntimeError(f"OCR row {i} {name} unproven: {error}") from error
-        expected = counts[field]*2 if len(counts[field]) == 1 else counts[field]
+        expected = counts[field]*(1 if any(unit in counts[field] for unit in ("万","亿")) else 4 if len(counts[field]) == 1 else 2)
         if corroborated != expected:
             raise RuntimeError("OCR native count disagrees with both numeral-image readings")
     return counts
@@ -441,6 +634,20 @@ def prepare_count_reading(frame, result, recent_date):
     return {**result,"cards":cards}
 
 
+def context_date_result(result, box):
+    left,top,right,bottom = box
+    if not (0 <= left < right <= result.get("width",0) and 0 <= top < bottom <= result.get("height",0)):
+        raise RuntimeError("OCR contextual date region is invalid")
+    lines = []
+    for line in result.get("lines",[]):
+        words = [w for w in line.get("words",[]) if w.get("width",0) > 0 and w.get("height",0) > 0
+                 and w.get("x",-1) >= left-2 and w.get("y",-1) >= top-2
+                 and w.get("x",-1)+w.get("width",0) <= right+2
+                 and w.get("y",-1)+w.get("height",0) <= bottom+2]
+        if words:lines.append({"text":" ".join(w["text"] for w in words),"words":words})
+    return {**result,"lines":lines}
+
+
 def windows_ocr(images, directory):
     request = Path(directory)/"request.json"
     request.write_text(json.dumps({"images":images}),encoding="utf-8")
@@ -467,7 +674,88 @@ def windows_ocr(images, directory):
         raise RuntimeError("Windows native OCR protocol is unproven")
     if len(payload['images']) != len(images) or {r.get('id') for r in payload['images']} != {r['id'] for r in images}:
         raise RuntimeError("Windows native OCR image identities disagree")
-    return payload["images"]
+    regions = {item["id"]:item.get("dateContentBox",item.get("countContentBox")) for item in images
+               if "dateContentBox" in item or "countContentBox" in item}
+    return [context_date_result(result,regions[result["id"]]) if result["id"] in regions else result
+            for result in payload["images"]]
+
+
+def filter_navigation_frame(frame, full):
+    """Recognize only the opened filter's close action; never read covered cards."""
+    h,w = frame.shape[:2]
+    if (full.get("width") != w or full.get("height") != h or full.get("language") != "zh-Hans-CN"
+            or abs(full.get("textAngle") or 0) > 1):
+        return None
+    aliases = {"全部笔记。":"全部笔记", "全部笔记=":"全部笔记", "全部笔记_":"全部笔记",
+               "扌非序方式":"排序方式", "^收起":"收起"}
+    parsed = [(aliases.get(compact(line.get("text","")),compact(line.get("text",""))),line_box(line))
+              for line in full.get("lines",[])]
+    labels = {}
+    required = ("数据中心","作品分析","全部笔记","笔记类型","发布时间","排序方式","收起")
+    for text in required:
+        boxes = [box for value,box in parsed if value == text]
+        if len(boxes) != 1:return None
+        labels[text] = boxes[0]
+    center,works,all_notes,kind,published,order,close = (labels[text] for text in required)
+    if (any(b[0] < 0 or b[1] < 0 or b[2] > w or b[3] > h for b in labels.values())
+            or not abs((center[0]+center[2])/2-w/2) < w*.2
+            or not center[3] < works[1] < works[3] < all_notes[1] < all_notes[3] < kind[1]
+            or not kind[3] < published[1] < published[3] < order[1] < order[3] < close[1] < h*.9
+            or not all(b[0] < w*.25 for b in (all_notes,kind,published,order))
+            or not close[0] > w*.6 or not selected_works_underline(frame,works)):
+        return None
+    return {"width":w,"height":h,"leadingClip":False,"cards":[],"markers":{},"scope":None,
+            "headers":{text:labels[text] for text in required[:3]},
+            "navigationOnly":True,"navigationLabels":{text:labels[text] for text in required[3:]}}
+
+
+def profile_navigation_anchors(frame, full):
+    """Prove the observed Index bottom bar before suggesting its My tab."""
+    import cv2
+    import numpy as np
+    h,w = frame.shape[:2]
+    if (full.get("width") != w or full.get("height") != h or full.get("language") != "zh-Hans-CN"
+            or abs(full.get("textAngle") or 0) > 1):raise RuntimeError("OCR index dimensions/language are unproven")
+    parsed = [(compact(line.get("text","")),line_box(line)) for line in full.get("lines",[])]
+    if any(text in ("允许","拒绝","同意","不同意","存草稿","立即更新","登录") for text,_ in parsed):
+        raise RuntimeError("OCR index is covered by an unhandled overlay")
+    labels = {}
+    for text,center in (("首页",.1),("我",.9)):
+        matches = [b for value,b in parsed if value == text and h*.86 < b[1] < b[3] < h*.965
+                   and abs((b[0]+b[2])/2-w*center) < w*.075 and w*.025 < b[3]-b[1] < w*.075]
+        if len(matches) != 1:raise RuntimeError("OCR index bottom navigation is unproven")
+        labels[text] = matches[0]
+    home,profile = labels["首页"],labels["我"]
+    if abs(home[1]-profile[1]) > w*.025:raise RuntimeError("OCR index bottom bar is misaligned")
+    y1=max(0,min(home[1],profile[1])-int(w*.025));y2=min(h,max(home[3],profile[3])+int(w*.025))
+    roi=frame[y1:y2,int(w*.42):int(w*.58)]
+    blue,green,red=cv2.split(roi)
+    mask=(red > 180)&(green < 120)&(blue < 150)&(red.astype(np.int16)-green.astype(np.int16)>70)
+    if mask.size == 0 or float(mask.mean()) < .20:raise RuntimeError("OCR index center publish control is unproven")
+    return {"width":w,"height":h,"labels":labels,"band":[y1,y2]}
+
+
+def read_profile_navigation(png, checkpoint=lambda:None):
+    import cv2
+    import numpy as np
+    frame=cv2.imdecode(np.frombuffer(png,np.uint8),cv2.IMREAD_COLOR)
+    if frame is None or not 400 <= frame.shape[1] <= 3000 or not 700 <= frame.shape[0] <= 6000:
+        raise RuntimeError("OCR index screenshot dimensions are invalid")
+    with tempfile.TemporaryDirectory(prefix="phonecloud-xhs-nav-") as directory:
+        file=Path(directory)/"whole.png";file.write_bytes(png);checkpoint()
+        full=windows_ocr([{"id":"whole","path":str(file)}],directory)[0]
+        anchors=profile_navigation_anchors(frame,full);w=anchors["width"];y1,y2=anchors["band"]
+        crop=cv2.resize(frame[y1:y2,int(w*.2):int(w*.4)],None,fx=3,fy=3,interpolation=cv2.INTER_CUBIC)
+        requests=[]
+        for variant in ("color","binary"):
+            pixel=crop if variant == "color" else cv2.threshold(cv2.cvtColor(crop,cv2.COLOR_BGR2GRAY),210,255,cv2.THRESH_BINARY)[1]
+            file=Path(directory)/(variant+".png")
+            if not cv2.imwrite(str(file),pixel):raise RuntimeError("OCR private index crop write failed")
+            requests.append({"id":variant,"path":str(file)})
+        checkpoint();results=windows_ocr(requests,directory)
+        if any(r.get("language") != "zh-Hans-CN" or [compact(l.get("text","")) for l in r.get("lines",[])] != ["市集"] for r in results):
+            raise RuntimeError("OCR index market tab is unproven")
+        checkpoint();return anchors
 
 
 def read_works_image(png, checkpoint=lambda: None, recent_date=lambda raw: True):
@@ -482,6 +770,8 @@ def read_works_image(png, checkpoint=lambda: None, recent_date=lambda raw: True)
         checkpoint()
         full = windows_ocr([{"id":"whole","path":str(full_path)}],directory)[0]
         checkpoint()
+        navigation = filter_navigation_frame(frame,full)
+        if navigation is not None:return navigation
         prepared = prepare_frame(frame,full,read_counts=False)
         crops = crop_requests(frame,prepared,directory)
         checkpoint()
@@ -489,11 +779,17 @@ def read_works_image(png, checkpoint=lambda: None, recent_date=lambda raw: True)
         for offset in range(0,len(crops),64):
             checkpoint()
             recognized.extend(windows_ocr(crops[offset:offset+64],directory))
+        extra_dates = paired_date_requests(prepared,recognized,directory)
+        for offset in range(0,len(extra_dates),64):
+            checkpoint();recognized.extend(windows_ocr(extra_dates[offset:offset+64],directory))
         resolved = prepare_count_reading(frame,resolve_frame(prepared,recognized,dates_only=True),recent_date)
         requests = crop_requests(frame,{"rows":resolved["cards"]},directory,dates=False)
         recognized = []
         for offset in range(0,len(requests),64):
             checkpoint();recognized.extend(windows_ocr(requests[offset:offset+64],directory))
+        extra_counts = contextual_count_requests(resolved["cards"],recognized,directory)
+        for offset in range(0,len(extra_counts),64):
+            checkpoint();recognized.extend(windows_ocr(extra_counts[offset:offset+64],directory))
         indexed = {r["id"]:r for r in recognized}
         if len(indexed) != len(recognized):raise RuntimeError("OCR count crop result identity is duplicated")
         for i,card in enumerate(resolved["cards"]):
@@ -512,6 +808,10 @@ def hierarchy_for_frame(result):
             "bounds":f"[{x1},{y1}][{x2},{y2}]","enabled":"true","clickable":"false",**attrs})
     view = node(root,"数据中心",(0,0,w,h),**{"class":"android.webkit.WebView","scrollable":"true"})
     for text,box in result["headers"].items():node(view,text,box)
+    if result.get("navigationOnly"):
+        root.set("data-source","windows_native_ocr_navigation")
+        for text,box in result["navigationLabels"].items():node(view,text,box)
+        return root
     if result.get("scope"):node(view,result["scope"][0],result["scope"][1])
     for text,box in result["markers"].items():node(view,text,box)
     for card in result["cards"]:

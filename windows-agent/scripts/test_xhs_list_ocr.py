@@ -137,7 +137,7 @@ class OcrParsingTests(unittest.TestCase):
     def test_lower_confidence_count_requires_two_native_values_matching_both_glyph_reads(self):
         row = {"verifiedCounts":["49","0","0"],"weakCountFields":[0]}
         images = [{"id":"r0_"+field+"_"+variant,"language":"zh-Hans-CN","lines":[{"text":text}]}
-                  for field,text in (("date","10-14"),("view","49")) for variant in ("color","binary")]
+                  for field,text in (("date","10-14"),("view","4949")) for variant in ("color","binary")]
         self.assertEqual(ocr.resolve_frame({"rows":[row]},images)["cards"][0]["counts"][0],"49")
         for image in images:
             if image["id"].startswith("r0_view"):image["lines"][0]["text"] = "40"
@@ -149,7 +149,7 @@ class OcrParsingTests(unittest.TestCase):
     def test_native_single_digit_proof_unwraps_only_an_exact_repeated_value(self):
         row = {"verifiedCounts":["1","6","0"],"weakCountFields":[1]}
         images = [{"id":"r0_"+field+"_"+variant,"language":"zh-Hans-CN","lines":[{"text":text}]}
-                  for field,text in (("date","10-14"),("like","6 6")) for variant in ("color","binary")]
+                  for field,text in (("date","10-14"),("like","6 6 6 6")) for variant in ("color","binary")]
         self.assertEqual(ocr.resolve_frame({"rows":[row]},images)["cards"][0]["counts"][1],"6")
         for image in images:
             if image["id"].startswith("r0_like"):image["lines"][0]["text"] = "88"

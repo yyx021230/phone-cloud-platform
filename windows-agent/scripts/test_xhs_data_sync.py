@@ -812,7 +812,7 @@ class OverlayRecoveryTests(unittest.TestCase):
 
     def test_empty_dump_on_logged_out_activity_reports_login_without_tapping(self):
         with patch.object(sync, "adb", return_value="ERROR: could not get idle state.") as adb, \
-                patch.object(sync, "focus", return_value="com.xingin.xhs/com.xingin.login.device.offline.DeviceOfflineRemindActivity}"), \
+                patch.object(sync, "focus", return_value="mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.login.device.offline.DeviceOfflineRemindActivity}"), \
                 patch.object(sync.time, "sleep"):
             with self.assertRaisesRegex(RuntimeError, "manual login is required"):
                 sync.capture("adb", "serial")
@@ -864,10 +864,10 @@ class OverlayRecoveryTests(unittest.TestCase):
 
     def test_logged_out_device_stops_without_login_actions(self):
         with patch.object(sync, "wake_if_asleep", return_value=False), \
-                patch.object(sync, "focus", return_value="com.xingin.xhs/com.xingin.login.device.offline.DeviceOfflineRemindActivity}"), \
+                patch.object(sync, "focus", return_value="mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.login.device.offline.DeviceOfflineRemindActivity}"), \
                 patch.object(sync, "adb") as adb, patch.object(sync, "tap_label") as tap:
             with self.assertRaisesRegex(RuntimeError, "manual login is required"):
-                sync.ensure_creator_list("adb", "serial", xml(), "app1", lambda: None, [])
+                sync.ensure_creator_list("adb", "serial", xml(), "app1", lambda: None, ["collection_slot_requested:app1"])
         adb.assert_not_called()
         tap.assert_not_called()
 

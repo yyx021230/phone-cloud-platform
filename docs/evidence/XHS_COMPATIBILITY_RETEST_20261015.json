@@ -1,0 +1,83 @@
+{
+  "status": "local_candidate_testing_in_progress",
+  "scope": "Original45 failures;41 staged targets; original server/account/busy4 excluded;152both always excluded; visibleworkslist last30Shanghai calendar days; no detail navigation, no deployment",
+  "branch": "codex/xhs-compatibility-fix-20261015",
+  "baselineCommit": "99b4151bdf65d8e1ca4354594f01434fe60eab57",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "stage": "xhs-compat-fix-20261015-v14",
+  "stageManifest": {
+    "collector.py": "154d960d04b4ced6a732e67aab69963723e64b9f8e71bb1de179086176e7e63c",
+    "qa_adb_guard.py": "42bb0d99cc4a31e7a2bfde6744f6e0d62dd0af66e35414183d24c09642aee6f0",
+    "fleet.mjs": "22d266e981c1e162d9e008cc60ad4164619e8795bfed5a912715623d6f4dc6a7",
+    "targets.json": "ec410e80eb2caaef488b0588e8b317ac765574c3570ba107347b14c376471f2d",
+    "candidate.py": "072ec45b76916d13f6c6a5cba04df3f909121761c948e049cb800294c6ab2a31",
+    "xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+    "xhs_list_ocr.py": "924930ac782d0d6565c9e326786ab444b5501b33eb563838e91e4a105e8023a8",
+    "xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+    "xhs_ocr_digits.png": "a8f0fbe67adce89f037c2427c83865aa07baf384923bcea8b3b0db72af7805c4"
+  },
+  "productionBaseline": {
+    "windows-agent/scripts/小红书数据同步.py": "bb459e3570d4201434bbbf05841c8b2b9d3864a3febc25b414780f9d84c710fc",
+    "windows-agent/scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+    "windows-agent/scripts/test_xhs_data_sync.py": "2503df786116260c8b177eaa64df45550bc6ac20cb4de97c2eec47b44e13e844",
+    "windows-agent/scripts/test_xhs_list_ocr.py": "1637a61ceeff6ceb2ac66bb6d5c571fe13641f04c6c41e8f57f68b7b31a8a585",
+    "docs/PROJECT_DEVELOPMENT.md": "db81b66a792eb73824fce79ae0233f69abcc515dafb7be50114af68247d881a4"
+  },
+  "tests": {
+    "python": {
+      "count": 192,
+      "pass": 192
+    },
+    "consumer": {
+      "count": 11,
+      "pass": 11
+    },
+    "rootSyntax": "passed",
+    "windowsOffline": "13 frames:12data+1expectednavigationhint passed;34home+75title targeted positive passed",
+    "golden": "5baseline frames27dates81counts identical"
+  },
+  "verified": [
+    {
+      "phone": "34",
+      "slot": "app1",
+      "stage": "v14",
+      "notes": 0,
+      "complete": true,
+      "settingsRestored": true,
+      "limit": "image-profile fallback not triggered in actual run; proven on saved actual frame and unit tests only"
+    },
+    {
+      "phone": "75",
+      "slot": "app2",
+      "stage": "v14",
+      "notes": 29,
+      "scrolls": 6,
+      "complete": true,
+      "settingsRestored": true,
+      "boundary": "older_than_window_visible",
+      "titleChecks": "no duplicate title/date pair; no clipped/tiny title; screenshot evidence verifies sea-gull title"
+    },
+    {
+      "phone": "47",
+      "slot": "app1",
+      "stage": "v14",
+      "notes": 36,
+      "scrolls": 9,
+      "complete": true,
+      "settingsRestored": true
+    }
+  ],
+  "errata": [
+    "75v7 26notes omitted restricted status card; not final completeness",
+    "75v12/v13 30notes include clipped title pseudo-card; superseded by v14 29",
+    "v10 partial30 notes contained duplicate clipped L6; do not rewrite historical raw outputs"
+  ],
+  "remaining": "v14 batch running from pair index3:80/81 onward; account/server/foreignbusy/USBauth/offline skip with evidence; final count not yet known",
+  "invariants": "Production8files untouched; no sharedADB/Agent/media restart, auth/env/identity/port/startup changes; SYSTEM exactproductionADB5037 metadata before everyQAclient; max2physicalphones;fresh cloud/local occupancy guards; no152actions",
+  "updatedAt": "2026-10-16T02:15:19.069465+00:00",
+  "sourceHashes": {
+    "windows-agent/scripts/小红书数据同步.py": "072ec45b76916d13f6c6a5cba04df3f909121761c948e049cb800294c6ab2a31",
+    "windows-agent/scripts/xhs_list_ocr.py": "924930ac782d0d6565c9e326786ab444b5501b33eb563838e91e4a105e8023a8",
+    "windows-agent/scripts/xhs_ocr_digits.png": "a8f0fbe67adce89f037c2427c83865aa07baf384923bcea8b3b0db72af7805c4"
+  }
+}

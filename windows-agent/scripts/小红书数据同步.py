@@ -80,7 +80,11 @@ def published_date(value, as_of):
 
 def capture(adb_path, serial):
     for attempt in range(2):
-        raw = adb(adb_path, serial, "exec-out", "uiautomator", "dump", "/dev/tty", timeout=15)
+        try:
+            raw = adb(adb_path, serial, "exec-out", "uiautomator", "dump", "/dev/tty", timeout=15)
+        except subprocess.TimeoutExpired:
+            # A stuck /dev/tty dump does not rule out the existing fresh-file path.
+            raw = ""
         start, end = raw.find("<hierarchy"), raw.rfind(HIERARCHY_END)
         if start >= 0 and end >= start:
             return ET.fromstring(raw[start:end + len(HIERARCHY_END)])
@@ -111,6 +115,22 @@ class ImageListReadError(RuntimeError):
     pass
 
 
+def login_activity(current):
+    return bool(re.search(
+        r"mCurrentFocus=Window\{[^\n}]*\bu\d+\s+com\.xingin\.xhs/com\.xingin\.login\."
+        r"(?:halfwelcome\.HalfWelcomeActivity|activity\.WelcomeActivity|device\.offline\.DeviceOfflineRemindActivity)(?:[}\s]|$)",
+        current))
+
+
+def assert_requested_foreground(current, events):
+    slots = {e.split(":", 1)[1] for e in events if e.startswith("collection_slot_requested:")}
+    users = {e.split(":", 1)[1] for e in events if e.startswith("clone_user_requested:")}
+    expected = "0" if slots == {"app1"} else next(iter(users)) if slots == {"app2"} and len(users) == 1 else None
+    if expected is None or not re.search(r"mCurrentFocus=Window\{[^\n}]*\bu" + re.escape(expected)
+                                       + r"\s+com\.xingin\.xhs/", current):
+        raise RuntimeError("Xiaohongshu foreground user does not match the requested slot")
+
+
 def works_webview_activity(current):
     return bool(re.search(r"\bu\d+\s+com\.xingin\.xhs/(?:com\.xingin\.xywebview\.activity\.WebViewActivityV2|"
                           r"\.xywebview\.activity\.WebViewActivityV2)(?:[}\s]|$)", current))
@@ -139,7 +159,7 @@ def image_navigation_capture(adb_path, serial, guard, events, current):
     if (slot not in ("app1","app2") or expected is None or (slot == "app2" and expected not in ("128","999"))
             or actual is None or actual[1] != expected):
         raise RuntimeError("image list reader foreground does not match the requested Android user")
-    from xhs_list_ocr import read_works_image, hierarchy_for_frame
+    from xhs_list_ocr import read_works_image, hierarchy_for_frame, WorksListHint
     windows = {e.split(":",1)[1] for e in events if e.startswith("collection_window_days:")}
     as_of_values = {e.split(":",1)[1] for e in events if e.startswith("collection_scan_as_of:")}
     if len(windows) > 1 or len(as_of_values) > 1:raise RuntimeError("image reader collection window is ambiguous")
@@ -157,6 +177,30 @@ def image_navigation_capture(adb_path, serial, guard, events, current):
             raise RuntimeError("image list reader screenshot failed")
         try:
             frame = read_works_image(screenshot.stdout,guard,lambda raw:published_date(raw,image_as_of) >= cutoff)
+        except WorksListHint as hint:
+            if "works_filter_hint_dismissed" in events:
+                raise ImageListReadError("works-list filter hint stayed visible") from hint
+            guard()
+            if focus(adb_path, serial) != current:
+                raise RuntimeError("image list reader foreground changed")
+            confirmation = subprocess.run([adb_path,"-s",serial,"exec-out","screencap","-p"],capture_output=True,timeout=10)
+            if confirmation.returncode:
+                raise RuntimeError("image list reader screenshot failed")
+            try:
+                read_works_image(confirmation.stdout,guard,lambda raw:published_date(raw,image_as_of) >= cutoff)
+            except WorksListHint as second:
+                if second.box != hint.box:
+                    raise ImageListReadError("works-list filter hint moved") from second
+            else:
+                raise ImageListReadError("works-list filter hint disappeared before confirmation")
+            guard()
+            if focus(adb_path, serial) != current:
+                raise RuntimeError("image list reader foreground changed")
+            x1,y1,x2,y2 = hint.box
+            adb(adb_path,serial,"shell","input","tap",str((x1+x2)//2),str((y1+y2)//2),timeout=7)
+            events.append("works_filter_hint_dismissed")
+            time.sleep(.5)
+            return image_navigation_capture(adb_path,serial,guard,events,current)
         except (RuntimeError,subprocess.TimeoutExpired) as error:
             guard()
             raise ImageListReadError(str(error)) from error
@@ -165,14 +209,42 @@ def image_navigation_capture(adb_path, serial, guard, events, current):
             raise RuntimeError("image list reader foreground changed")
         frames.append(frame)
     def signature(frame):
+        if frame.get("navigationOnly"):
+            return ("filter",sorted(frame["headers"].items()),sorted(frame["navigationLabels"].items()))
         return ([(c["date"],c["counts"],c["status"],c["imageHint"],
                   re.sub(r"[^\w\u4e00-\u9fff]","",c["title"])) for c in frame["cards"]],
                 set(frame["markers"]),frame["leadingClip"],bool(frame.get("trailingClip")),bool(frame.get("scope")))
     if signature(frames[0]) != signature(frames[1]):
         raise ImageListReadError("image list fields changed between two fresh captures")
+    if frames[1].get("navigationOnly"):
+        return hierarchy_for_frame(frames[1])
     if "works_list_image_reader_active" not in events:
         events.append("works_list_image_reader_active")
     return hierarchy_for_frame(frames[1])
+
+
+def select_image_profile_after_dump_failure(adb_path,serial,current,guard,events):
+    """Use two proven Index bottom bars only when XML is unavailable."""
+    if ("image_profile_navigation_selected" in events or not re.search(
+            r"mCurrentFocus=Window\{[^\n}]*\bu\d+\s+com\.xingin\.xhs/(?:com\.xingin\.xhs\.index\.v2\.IndexActivityV2|\.index\.v2\.IndexActivityV2)[}\s]",current)):
+        raise RuntimeError("image profile navigation is unavailable outside the requested Index page")
+    assert_requested_foreground(current,events)
+    from xhs_list_ocr import read_profile_navigation
+    frames=[]
+    for _ in range(2):
+        guard()
+        if focus(adb_path,serial) != current:raise RuntimeError("image profile foreground changed")
+        png=subprocess.run([adb_path,"-s",serial,"exec-out","screencap","-p"],capture_output=True,timeout=10)
+        if png.returncode:raise RuntimeError("image profile screenshot failed")
+        frames.append(read_profile_navigation(png.stdout,guard))
+    if frames[0] != frames[1]:raise RuntimeError("image profile bottom bar changed between captures")
+    guard()
+    if focus(adb_path,serial) != current:raise RuntimeError("image profile foreground changed")
+    x1,y1,x2,y2=frames[1]["labels"]["我"]
+    events.append("image_profile_navigation_selected")
+    adb(adb_path,serial,"shell","input","tap",str((x1+x2)//2),str((y1+y2)//2),timeout=7)
+    time.sleep(.7)
+    return navigation_capture(adb_path,serial,guard,events)
 
 
 def navigation_capture(adb_path, serial, guard, events):
@@ -180,12 +252,18 @@ def navigation_capture(adb_path, serial, guard, events):
         root = capture(adb_path, serial)
     except (RuntimeError,subprocess.TimeoutExpired) as error:
         current = focus(adb_path, serial)
+        if login_activity(current):
+            assert_requested_foreground(current, events)
+            raise RuntimeError("Xiaohongshu account is logged out; manual login is required") from error
         notification = re.search(
             r"com\.xingin\.xhs/(?:com\.xingin\.authorization\.NotificationAuthorizationTranslucentActivity|"
             r"\.authorization\.NotificationAuthorizationTranslucentActivity)(?:[}\s]|$)", current)
         if (os.name == "nt" and works_webview_activity(current)
                 and (isinstance(error,subprocess.TimeoutExpired) or "did not return an XML hierarchy" in str(error))):
             return image_navigation_capture(adb_path,serial,guard,events,current)
+        if (os.name == "nt" and "did not return an XML hierarchy" in str(error)
+                and re.search(r"mCurrentFocus=Window\{[^\n}]*\bu\d+\s+com\.xingin\.xhs/(?:com\.xingin\.xhs\.index\.v2\.IndexActivityV2|\.index\.v2\.IndexActivityV2)[}\s]",current)):
+            return select_image_profile_after_dump_failure(adb_path,serial,current,guard,events)
         if "did not return an XML hierarchy" not in str(error) or not notification:
             raise
         guard()
@@ -193,6 +271,8 @@ def navigation_capture(adb_path, serial, guard, events):
         time.sleep(0.4)
         events.append("inaccessible_notification_prompt_back")
         return capture(adb_path, serial)
+    if creator_filter_panel(root):
+        return root
     if (os.name == "nt" and (creator_list(root) or data_center_tab_header(root))
             and ("works_list_image_reader_active" in events or not note_cards(root))
             and not label(root,"暂无笔记")):
@@ -313,7 +393,8 @@ def wake_if_asleep(adb_path, serial, guard, events):
 def explicit_clone_user(adb_path, serial):
     """Use only brand/profile pairs observed in fleet QA, never guess a user."""
     brand = adb(adb_path, serial, "shell", "getprop", "ro.product.manufacturer").strip().upper()
-    profiles = {"HONOR": ("128", "分身应用"), "XIAOMI": ("999", "XSpace"),
+    profiles = {"HONOR": ("128", "分身应用"), "HUAWEI": ("128", "分身应用"),
+                "XIAOMI": ("999", "XSpace"),
                 "OPPO": ("999", "MultiApp"), "VIVO": ("999", "应用分身")}
     if brand not in profiles:
         return None
@@ -346,10 +427,33 @@ def dismiss_unsecured_keyguard(adb_path, serial, guard, events):
     adb(adb_path, serial, "shell", "input", "keyevent", "82", timeout=7)
     adb(adb_path, serial, "shell", "wm", "dismiss-keyguard", timeout=7)
     time.sleep(.5)
-    refreshed = adb(adb_path, serial, "shell", "dumpsys", "window", "policy", timeout=8)
-    section = refreshed.split("KeyguardServiceDelegate", 1)[-1].split("KeyguardStateMonitor", 1)[0]
-    if re.findall(r"^\s*showing=(true|false)\s*$", section, re.MULTILINE) != ["false"]:
-        raise RuntimeError("unsecured keyguard stayed visible after dismissal")
+    for attempt in range(4):
+        refreshed = adb(adb_path, serial, "shell", "dumpsys", "window", "policy", timeout=8)
+        section = refreshed.split("KeyguardServiceDelegate", 1)[-1].split("KeyguardStateMonitor", 1)[0]
+        if re.findall(r"^\s*showing=(true|false)\s*$", section, re.MULTILINE) == ["false"]:
+            break
+        if (re.findall(r"^\s*secure=(true|false)\s*$", section, re.MULTILINE) != ["false"]
+                or "mKeyguardOccluded=false" not in refreshed):
+            raise RuntimeError("target keyguard requires manual unlock or its security state is unproven")
+        if attempt == 1:
+            # These OEMs ignore MENU/dismiss-keyguard on their swipe-only lock.
+            # A swipe is allowed only on the still-proven unsecured lock surface.
+            current = focus(adb_path, serial)
+            if not re.search(r"mCurrentFocus=Window\{[^\n}]*\bu0\s+(?:StatusBar|NotificationShade|com\.android\.systemui[^}]*NotificationShade)[}\s]", current):
+                raise RuntimeError("unsecured keyguard swipe surface is not proven")
+            size = adb(adb_path, serial, "shell", "wm", "size", timeout=7)
+            physical = re.findall(r"Physical size: (\d+)x(\d+)", size)
+            override = re.findall(r"Override size: (\d+)x(\d+)", size)
+            sizes = override or physical
+            if len(sizes) != 1 or not all(300 <= int(v) <= 5000 for v in sizes[0]):
+                raise RuntimeError("unsecured keyguard screen size is not proven")
+            width, height = map(int, sizes[0])
+            guard()
+            adb(adb_path, serial, "shell", "input", "swipe", str(width//2), str(height*85//100),
+                str(width//2), str(height*30//100), "350", timeout=7)
+        if attempt == 3:
+            raise RuntimeError("unsecured keyguard stayed visible after dismissal")
+        time.sleep(.5)
     events.append("unsecured_keyguard_dismissed")
     return True
 
@@ -536,6 +640,25 @@ def recover_known_overlay(adb_path, serial, root, guard, events):
         if "NotificationAuthorizationTranslucentActivity" in focus(adb_path, serial):
             raise RuntimeError("notification overlay stayed open after Back")
         events.append("notification_prompt_back")
+        return True
+
+    vivo_title = "确定允许“小红书”发送通知吗？"
+    if (re.search(r"mCurrentFocus=Window\{[^\n}]*\bu0\s+com\.vivo\.pushservice[}\s]", current)
+            and any(n.get("package") == "com.vivo.pushservice" for n in label(root, vivo_title))):
+        declines = [n for n in live_nodes(root) if n.get("package") == "com.vivo.pushservice"
+                    and n.get("resource-id") == "android:id/button2"
+                    and n.get("class") == "android.widget.Button" and n.get("clickable") == "true"
+                    and n.get("enabled") == "true"
+                    and any(c.get("text") == "取消" for c in n.iter("node"))]
+        if len(declines) != 1:
+            raise RuntimeError("Vivo notification safe cancel action is not proven")
+        guard()
+        box = bounds(declines[0])
+        adb(adb_path, serial, "shell", "input", "tap", str((box[0]+box[2])//2), str((box[1]+box[3])//2), timeout=7)
+        time.sleep(.5)
+        if label(navigation_capture(adb_path, serial, guard, events), vivo_title):
+            raise RuntimeError("Vivo notification prompt stayed open after cancelling")
+        events.append("vivo_notification_cancelled")
         return True
 
     notification_copy = "打开通知，有热门笔记和互动消息第一时间通知你"
@@ -835,8 +958,8 @@ def recover_known_overlay(adb_path, serial, root, guard, events):
     children = list(panel) if panel is not None else []
     if XHS_PACKAGE in current and len(milestone) == 1 and len(children) == 5:
         subtitle = ("发笔记记录一下此刻吧！✌" if "单篇笔记阅读" in milestone[0].get("text", "")
-                    else "发笔记感谢一下大家的喜爱❤️")
-        if (children[1] is not milestone[0] or children[2].get("text") != subtitle
+                    else ("发笔记感谢一下大家的喜爱❤️", "发笔记让更多人看到你的精彩分享 🙌"))
+        if (children[1] is not milestone[0] or children[2].get("text") not in ((subtitle,) if isinstance(subtitle, str) else subtitle)
                 or children[4].get("text") != "去发布"
                 or any(n.get("package") != XHS_PACKAGE for n in children)):
             raise RuntimeError("reading milestone close layout is not proven")
@@ -881,6 +1004,24 @@ def creator_list(root):
                                      and n.get("class") in ("android.widget.TextView", "android.view.View")
                                      and n.get("text") == value
                                      for n in views[0].iter("node")) for value in ("作品分析", "全部笔记"))
+
+
+def creator_filter_panel(root):
+    """Require the filter's observed header/section/close geometry, not note titles."""
+    if not creator_list(root):return False
+    nodes = live_nodes(root)
+    width = max((bounds(n)[2] for n in nodes),default=0)
+    height = max((bounds(n)[3] for n in nodes),default=0)
+    boxes = []
+    for text in ("数据中心","作品分析","全部笔记","笔记类型","发布时间","排序方式","收起"):
+        matches = [n for n in label(root,text) if n.get("package") == XHS_PACKAGE
+                   and n.get("class") in ("android.widget.TextView","android.view.View")]
+        if len(matches) != 1:return False
+        boxes.append(bounds(matches[0]))
+    center,works,all_notes,kind,published,order,close = boxes
+    return (width > 0 and center[3] < works[1] < works[3] < all_notes[1] < all_notes[3] < kind[1]
+            and kind[3] < published[1] < published[3] < order[1] < order[3] < close[1] < height*.9
+            and all(b[0] < width*.25 for b in (all_notes,kind,published,order)) and close[0] > width*.6)
 
 
 def creator_overview_entry(root):
@@ -1060,6 +1201,25 @@ def refresh_creator_server_error(adb_path, serial, root, guard, events, attempts
     return True
 
 
+def recover_vivo_browser_redirect(adb_path, serial, slot, current, guard, events):
+    # 43's owner app cold-start was followed by a Vivo browser activity. Leave
+    # that page intact and attempt the known XHS owner activity exactly once.
+    if (slot != "app1" or "collection_slot_requested:app1" not in events or "xhs_cold_started" not in events
+            or not re.search(r"mCurrentFocus=Window\{[^\n}]*\bu0\s+com\.vivo\.browser/com\.vivo\.browser\.BrowserActivity[}\s]", current)):
+        return False
+    if "vivo_browser_redirect_reopened" in events:
+        raise RuntimeError("Xiaohongshu redirected to Vivo browser again; collection stopped")
+    guard()
+    adb(adb_path,serial,"shell","input","keyevent","3",timeout=7)
+    guard()
+    events.append("vivo_browser_redirect_reopened")
+    adb(adb_path,serial,"shell","am","start","-W","--user","0","-n",XHS_PACKAGE+"/.index.v2.IndexActivityV2",timeout=20)
+    time.sleep(.7)
+    if not re.search(r"mCurrentFocus=Window\{[^\n}]*\bu0\s+com\.xingin\.xhs/",focus(adb_path,serial)):
+        raise RuntimeError("Xiaohongshu owner foreground was not restored after browser redirect")
+    return True
+
+
 def ensure_creator_list(adb_path, serial, root, slot, guard, events):
     recoveries = 0
     more_attempts = 0
@@ -1074,6 +1234,11 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
             current = focus(adb_path, serial)
             if re.search(r"\bu\d+\s+com\.xingin\.xhs/", current):
                 verify_collection_slot(adb_path, serial, slot, events)
+        if creator_filter_panel(root):
+            tap_filter_label(adb_path,serial,root,"收起",guard)
+            events.append("works_filter_panel_collapsed")
+            root = navigation_capture(adb_path,serial,guard,events)
+            continue
         if creator_list(root):
             return root
         if (label(root, "个人信息保护提示") and any(n.get("package") == XHS_PACKAGE
@@ -1116,7 +1281,16 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
             root = navigation_capture(adb_path, serial, guard, events)
             continue
         current = focus(adb_path, serial)
-        if re.search(r"com\.xingin\.xhs/com\.xingin\.login\.device\.offline\.DeviceOfflineRemindActivity(?:[}\s]|$)", current):
+        if recover_vivo_browser_redirect(adb_path,serial,slot,current,guard,events):
+            root = navigation_capture(adb_path,serial,guard,events)
+            continue
+        if login_activity(current):
+            assert_requested_foreground(current, events)
+            raise RuntimeError("Xiaohongshu account is logged out; manual login is required")
+        if (label(root, "登录后展示自己") and label(root, "微信登录")
+                and (label(root, "手机号登录") or (label(root, "一键登录") and label(root, "其他登录方式")))
+                and re.search(r"mCurrentFocus=Window\{[^\n}]*\bu\d+\s+com\.xingin\.xhs/(?:com\.xingin\.xhs\.index\.v2\.IndexActivityV2|\.index\.v2\.IndexActivityV2)[}\s]", current)):
+            assert_requested_foreground(current, events)
             raise RuntimeError("Xiaohongshu account is logged out; manual login is required")
         if (XHS_PACKAGE in current and label(root, "创作中心") and label(root, "开通数据权限")
                 and not label(root, "最新笔记")):
@@ -1199,7 +1373,8 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
         else:
             time.sleep(0.5)
         root = navigation_capture(adb_path, serial, guard, events)
-    raise RuntimeError("could not prove the Creator Center works-analysis path")
+    image_error = next((e for e in reversed(events) if e.startswith("works_image_probe_unproven:")),"")
+    raise RuntimeError("could not prove the Creator Center works-analysis path" + ("; " + image_error if image_error else ""))
 
 
 def reopen_creator_list(adb_path, serial, root, guard, events, slot="app1"):
@@ -1225,6 +1400,10 @@ def reopen_creator_list(adb_path, serial, root, guard, events, slot="app1"):
     return navigation_capture(adb_path, serial, guard, events)
 
 
+def is_note_status(text):
+    return text.startswith("笔记状态") or text in ("该篇笔记已不可被他人查看", "该篇笔记已不被推荐给未关注用户")
+
+
 def note_cards(root):
     if root.get("data-source") == "windows_native_ocr":
         from xhs_list_ocr import cards_from_hierarchy
@@ -1236,18 +1415,18 @@ def note_cards(root):
             continue
         children = [n for n in node.iter("node") if n in live_nodes(root)]
         texts = [(n.get("text") or "").strip() for n in children]
-        if not any(t.startswith("笔记状态") for t in texts):
+        if not any(is_note_status(t) for t in texts):
             continue
         title = next(((n.get("text") or "").strip() for n in children
                       if bounds(n)[0] >= box[0] + (box[2]-box[0])*0.20
                       and bounds(n)[1] < box[1] + (box[3]-box[1])*0.38
                       and 1 <= len((n.get("text") or "").strip()) <= 180
                       and not re.fullmatch(r"[0-9a-f]{32,64}", (n.get("text") or "").strip())
-                      and not (n.get("text") or "").startswith("笔记状态")), None)
+                      and not is_note_status(n.get("text") or "")), None)
         date = next((t for t in texts if DATE.fullmatch(t)), None)
         if not title or not date:
             continue
-        status = next((t for t in texts if t.startswith("笔记状态")), None)
+        status = next((t for t in texts if is_note_status(t)), None)
         numbers = sorted((bounds(n)[0], count(n.get("text"))) for n in children
                          if count(n.get("text")) is not None and bounds(n)[1] >= box[1] + (box[3]-box[1])*0.58)
         values = [value for _, value in numbers]
@@ -1288,7 +1467,7 @@ def flat_webview_cards(root):
         status_text = (status.get("text") or "").strip()
         values = [count(n.get("text")) for n in metrics]
         if (not 1 <= len(title_text) <= 180 or DATE.fullmatch(title_text) or count(title_text) is not None
-                or not (status_text.startswith("笔记状态") or status_text == "该篇笔记已不可被他人查看")
+                or not is_note_status(status_text)
                 or any(v is None for v in values)):
             continue
         db, tb, sb = bounds(date), bounds(title), bounds(status)
