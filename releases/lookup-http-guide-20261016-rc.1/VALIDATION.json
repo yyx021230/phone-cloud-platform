@@ -1,0 +1,33 @@
+{
+  "python": {
+    "version": "3.9.6",
+    "requests": "2.32.5",
+    "testsPassed": 10,
+    "warning": "macOS LibreSSL urllib3 warning; HTTP mock checks passed; no HTTPS claim"
+  },
+  "node": {
+    "version": "25.9.0",
+    "testsPassed": 13
+  },
+  "directEndpointPythonSnippetsMockExecuted": 3,
+  "directEndpointNodeSnippetsSyntaxChecked": 3,
+  "browser": {
+    "platformEndpointsExactTitles": 33,
+    "lookupNavigationPages": 11,
+    "consoleErrors": 0,
+    "pythonDefaultTab": true,
+    "httpTab": true,
+    "copyButton": true,
+    "mobile390px": {
+      "documentWidth": 390,
+      "menuNavigation": true
+    },
+    "transientToolNavigationTimeout": "One CDP navigation timed out; DOM confirmed target afterwards; 33 exact-title checks completed"
+  },
+  "assetHttp200AndHashMatch": 9,
+  "zipChecksumsPassed": true,
+  "generatorDeterministic": true,
+  "productionCalls": 0,
+  "realPhoneQueries": 0,
+  "deployed": false
+}
