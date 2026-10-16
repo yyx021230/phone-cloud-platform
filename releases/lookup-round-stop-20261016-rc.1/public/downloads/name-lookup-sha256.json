@@ -1,0 +1,11 @@
+{
+  "version": "lookup-round-stop-20261016-rc.1",
+  "files": {
+    "README.md": "bfb732b3ccb192960d0a99025a20b0831d3ed8de4c5b6f394efb1baf6da89993",
+    "lookup.py": "ee16f9f8b38c3a6987ed3b4e594198b3b1c8d2ffa99cb680092901a56bbe08a6",
+    "lookup.mjs": "f8af8a207cf4e07be6d5ebdf3f13b45a04f6faf36873754cd49624cb1574baf3",
+    "stop_lookup.py": "e0d7f72ff6fae836973432804ae42083ee99c136f307483a7e9eb5a198d862ed",
+    "openapi.json": "05b49b790d4577b298b5832aec6a122e1fe5dd1e3d870dc1ad31b2e7c6ffbd06"
+  },
+  "zipSha256": "58c13edd3130bb34223f11de53b53c7fe4d1ce293d8f6166dcb3f9571b367ac5"
+}
