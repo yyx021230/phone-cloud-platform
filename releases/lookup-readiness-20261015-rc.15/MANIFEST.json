@@ -1,0 +1,31 @@
+{
+  "version": "lookup-readiness-20261015-rc.15",
+  "files": {
+    "OPEN_NAME_LOOKUP_API.md": "b87ebee4b09a6b1f35176dc99f4ca27127cc936c34b300ed5cc8b2c408bfe02c",
+    "README.md": "ab39643ee9821605102366198db4dcbb75bc4af5f8b02be7149530a87226f2bc",
+    "VERSION.json": "44bf97f7d503b8238706af22befc22927d79c979e31f6e4d4f3a8beff0fc1672",
+    "docs/OPEN_NAME_LOOKUP_API.md": "b87ebee4b09a6b1f35176dc99f4ca27127cc936c34b300ed5cc8b2c408bfe02c",
+    "docs/OPEN_NAME_LOOKUP_PARTNER_HANDOFF.md": "c415264329e37c3832123fe98e2b2b725e5a9eb20113e5fc217d4bdd44b2b157",
+    "docs/OPEN_NAME_LOOKUP_README.md": "75c25b54d1b995945c54f314fa3319b35461c2214d5f565e6d3b00f8f36b99ee",
+    "public/api-reference.json": "fb342496794659306676612afe9d07dcee8bd445456c5974ac630e04a2f37740",
+    "public/downloads/name-lookup-integration.zip": "e24488a2efdc8aab71dc84757aae480afa1b0d9da6c49f256a4a8b7ffe08e921",
+    "public/downloads/name-lookup-openapi.json": "3b146d5c82617203eced66b8b4e9ce303bb5fd69974074aa7f3bd96b46326452",
+    "public/downloads/name-lookup-sha256.json": "f87e188ef9003c27314543ddd783722991a2aae6c72fa6787ed75d44024a0dc5",
+    "public/lookup-pool.html": "12826f9957ae638cc648eff7ab8d7dee86a321d071172213529c5d0855461c15",
+    "public/lookup-pool.js": "df3d282a2647e0b28fa8d77cb10c521dbf46407e2acd2021ea605a1a4e1b044f",
+    "public/openapi.json": "7721b17b1141f32ffd628be0055aff197d82b24c67646d13d093cd3952a75fb0",
+    "scripts/build-managed-lookup-docs.py": "f0a2cbab0ad0f92979655741f4425414507c700f0fccb911876b86e33fd72d34",
+    "sdk/open_name_lookup/PARTNER_HANDOFF.md": "c415264329e37c3832123fe98e2b2b725e5a9eb20113e5fc217d4bdd44b2b157",
+    "sdk/open_name_lookup/README.md": "75c25b54d1b995945c54f314fa3319b35461c2214d5f565e6d3b00f8f36b99ee",
+    "server/lookup-readiness.http.test.mjs": "c6181acbdbe6fbc0700bbdbade9a72b27c6cd8fb39c63535258969c930ceb22f",
+    "server/lookup-readiness.test.mjs": "5b262f46feec1d9a6be8bea675e3d4c7263be5db8b775b721961467312a87577",
+    "server/managed-lookup-async.mjs": "2d9a9f277ee481780a0c02fccb8770297d10fcfd83e95c64f5abd34ccd01a10f",
+    "server/managed-lookup-async.test.mjs": "f83ad1c0bb6d996049cb746970ed754501bccaef07e07e77b0b11c7a109b777b",
+    "server/managed-lookup.mjs": "8a438de01000fa7624a74d004c0143adf4e63fcb327f1605f9f694dfece9d9ac",
+    "verification/full-regression.txt": "8e179b0d8644cfcfb58b64bd371a5d0f8fdf23701e2df5aff7abe07bd7650876",
+    "verification/prepare-local.py": "296d5a204334d5b96e1df1e93b457ff1a95a32856e117141750568837ff6c5bf",
+    "verification/readiness-http.mjs": "36f05b8899133b94a24995490937d4a3cee76fbe5b98bf4ec6cdff9111627331",
+    "verification/real-elapsed-http.json": "e9e53f338cd6fe980de2118e4ad470a9cc48bc7be2a08e35d44de128fddb674f",
+    "verification/targeted.txt": "3355860b0a8bff034945c923fddb9f632eeb18e7c9c2a851d76d29a12db6b092"
+  }
+}
