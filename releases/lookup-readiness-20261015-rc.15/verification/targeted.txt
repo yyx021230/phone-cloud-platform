@@ -1,0 +1,41 @@
+✔ prepared API actual HTTP, HMAC, leased delivery, five simulated devices and durable reopen (5016.627625ms)
+✔ twenty submissions queue behind two proven phones and refill to five over HTTP (4083.614208ms)
+✔ starts five physical channels; second successful probe immediately admits business while others run (14.6365ms)
+✔ one successful probe is not ready; blank probe cannot pass; human on one phone does not stop another (5.59275ms)
+✔ duplicate start, different start key and concurrent retries do not duplicate probes (1.01925ms)
+✔ two-minute changed business key uses original task; probes never pollute business cache (4.103333ms)
+✔ unregistered/empty results share one completed shape; processing has no fake empty name (3.100208ms)
+✔ account, Agent, offline and process generation invalidate proof; reads and replay remain available (3.802167ms)
+✔ ready idle channels stay warm; lease expiry stops new work and does not refresh on polls (4.139ms)
+✔ old client that never prepares retains old response contract (0.543167ms)
+✔ confirmed limit moves same lookup to another proven phone only after stop; repair is an independent probe (2.43875ms)
+✔ no ready replacement waits without empty result; unknown execution never transfers (5.107125ms)
+✔ received name racing with limit cleanup wins and is never queried again (4.013333ms)
+✔ late result from retired generation cannot complete the replacement query (2.55175ms)
+✔ cancel while confirmed limit is stopping never requeues the original number (2.336625ms)
+✔ a finished probe cannot lend its human-wait timer to a later business query (1.766542ms)
+✔ ordinary result reuse clears a previous business human-wait timer too (1.580875ms)
+✔ five accepted requests use two ready phones; newly proved phones immediately take queued work (4.997084ms)
+✔ parallel admission is capped at five canonical unfinished jobs, with dedup before the cap (4.77975ms)
+✔ human, recovery and unknown requests retain their slot without blocking queued work on a healthy phone (6.750625ms)
+✔ twenty canonical jobs queue on two proven phones, refill to five, and finish independently (36.894334ms)
+✔ lowering admission window preserves accepted jobs, dedup, and one blocked phone while others drain (4.145125ms)
+✔ admission limit validates independently from phone concurrency and survives coordinator recreation (0.452625ms)
+✔ 120-second caller timeout followed by NEW key retains one canonical query (39.375583ms)
+✔ concurrent distinct keys coalesce before dispatch; same key is stable and conflicting input409 (78.52675ms)
+✔ GET is read-only and tenant scoped; grant revocation does not create work (16.808875ms)
+✔ human/recovery/unknown and cancellation with unconfirmed stop retain original phone binding (53.027208ms)
+✔ completed name and explicit not_found reused for fixed10minutes; original alias survives expiry (77.401709ms)
+✔ aliases persist across store reopen and preserve original input fingerprints (22.47025ms)
+✔ same-key terminal errors remain errors; definitively unstarted expired task permits new key (21.451ms)
+✔ alias capacity and disabled pool reject extra identities without task duplication (25.88275ms)
+✔ async queue is not expired by caller120seconds; overall deadline stops before releasing reservations (39.7165ms)
+✔ prepared business limit is per client and serialized with insertion (199.562083ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9203.249458

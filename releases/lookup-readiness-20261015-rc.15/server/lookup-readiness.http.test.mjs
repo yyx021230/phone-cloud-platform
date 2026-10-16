@@ -1,0 +1,4 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {runReadinessHttp} from '../verification/readiness-http.mjs';
+test('prepared API actual HTTP, HMAC, leased delivery, five simulated devices and durable reopen',{timeout:30000},async()=>{const p=await runReadinessHttp();assert.ok(p.drained);assert.ok(p.fiveSimultaneousBusinessDevices);assert.ok(p.oneHeldBusinessDoesNotBlockOtherFour);assert.ok(p.confirmedLimitTransfersSameLookupToAnotherReadyPhone);assert.equal(p.businessQueries,9);});
+
+test('twenty submissions queue behind two proven phones and refill to five over HTTP',{timeout:30000},async()=>{const p=await runReadinessHttp({queueWindowOnly:true});assert.ok(p.twentyAccepted&&p.twoRunningEighteenQueued&&p.newlyReadyPhonesTakeQueuedJobs&&p.fullWindowDedup&&p.overflow429&&p.drained);assert.equal(p.maximumExecuting,5);});
