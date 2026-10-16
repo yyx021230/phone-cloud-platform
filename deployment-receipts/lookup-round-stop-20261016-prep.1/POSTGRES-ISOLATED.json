@@ -1,0 +1,19 @@
+{
+  "loopbackOnly": true,
+  "storage": "postgres",
+  "realDevices": 0,
+  "productionConnections": 0,
+  "apiKeyStop": true,
+  "callerIsolation": true,
+  "queuedCancelled": 5,
+  "runningSafelyStopped": 2,
+  "probesSafelyStopped": 3,
+  "stopAckRequired": true,
+  "restartDuringStop": true,
+  "newStartBlockedUntilStopped": true,
+  "oldStopCannotCancelNewRound": true,
+  "completedResultsRetained": true,
+  "newRoundQueries": true,
+  "stoppedPersistsAfterRestart": true,
+  "drained": true
+}
