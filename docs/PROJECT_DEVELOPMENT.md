@@ -1716,6 +1716,8 @@ rc.8云端镜像e92e3a93已独立构建、133文件hash/HTTP通过；468005107�
 
 2026-10-16 11:29 查名三接口文档已发布：用户明确批准，只更新7静态文件，无服务重启；运行b5479d9c加静态热补、下次启动bc6e3c1f，业务deployed.16/a479fab不变。公开入口?scope=lookup#lookup-flow只列prepare/提交/结果；线上33页面及移动菜单、7文件SHA/HTTP/ZIP通过，旧prepare链接已修复。D-075前后live、容器ID/PID/启动时间不变；不动SYSTEM/ADB/设备池，不新增查名。回执见[文档发布](../deployment-receipts/lookup-public-docs-20261016-deployed.1/README.md)。
 
+2026-10-16 11:57 普通HTTP查名文档已发布：用户明确批准9静态文件；默认Python requests，含三接口独立HTTP请求、完整可运行代码、签名与超时续查。运行b5479d9c加文档补丁，下次镜像03b6928a；业务deployed.16不变。公网9文件SHA/ZIP、浏览器33页面/3代码标签/复制通过；浏览器下载事件未捕获，已独立校验下载字节。容器/媒体PID及启动时间不变，D-075前后live与health/ready通过，不动SYSTEM/ADB，不发查名。[发布回执](../deployment-receipts/lookup-http-guide-20261016-deployed.1/README.md)。
+
 ## 8. 短信同步与验证码链路
 
 ### 8.1 当前标准流程
@@ -2521,6 +2523,7 @@ npm run test:screen
 
 | 日期 | 编号 | 决策 | 原因 | 状态 |
 |---|---|---|---|---|
+| 2026-10-16 | 普通HTTP文档无重启发布 | 用户批准后仅更新9静态文件和下次启动镜像；保留业务版本/原回执 | 直接requests/fetch示例代替SDK初始化片段，保证外部开发可照步骤接入 | e474c91已发布，公网9hash/33页面/D-075通过；无业务查询 |
 | 2026-10-16 | HTTP文档候选发布准备 | 延续普通HTTP接入方案；9静态文件独立备份、基于当前下次镜像增量构建；不替换运行文件 | 新静态发布须绑定已提交版本和本次授权 | e474c91 / 03b6928a已备，29运行及33候选hash、D-075 live通过，未切换 |
 | 2026-10-16 | 对接文档改为普通HTTP完整路径 | 延续三接口契约，替换SDK初始化与未定义变量片段；Python requests完整文件、HTTP原文、持久化续查、排队/错误说明成为公开接入入口 | 用户明确不要SDK初始化，希望开发能直接照文档发HTTP | 本地候选；10 Python/13 Node、3单次签名示例、33页面通过；未切换线上 |
 | 2026-10-16 | 三接口完整客户端示例 | 延续7.15.13三接口契约，新增单文件Node客户端，持久化幂等键/lookupId，120秒等待结束保留原任务 | 用户需要能直接运行的完整代码；pending/执行失败不得伪装为空姓名 | 本地13项模拟及回环HTTP验证通过；未发布、未操作真机 |
@@ -2780,6 +2783,7 @@ npm run test:screen
 
 | 日期 | 变更人 | releaseId/提交 | 变更内容 | 验证结果 |
 |---|---|---|---|---|
+| 2026-10-16 | Codex | lookup-http-guide-20261016-deployed.1 | 发布e474c91文档与HTTP示例，下次镜像03b6928a；不重启任何服务 | 9静态SHA/ZIP、33页面/3代码标签、health/ready及D-075通过；无查名提交 |
 | 2026-10-16 | Codex | lookup-http-guide-20261016-prepared.1 | 9静态文件备份、03b6928a镜像、仅镜像Compose预览；运行容器/ACTIVE保持 | 29运行/33候选hash及D-075 live通过，未发布，待确认 |
 | 2026-10-16 | Codex | lookup-http-guide-20261016-rc.1 | 新增requests完整HTTP例子及持久化续查；文档分步骤、三接口独立HTTP示例、9静态文件与下载包 | 23项本地代码检查、33接口页/11导航页、3Python片段、9资源hash、移动/复制通过；不动业务/Agent/ADB |
 | 2026-10-16 | Codex | lookup-client-example-20261016-rc.1 | examples/name-lookup：完整签名/准备/提交/结果/超时续查示例、使用说明及测试；不改变服务契约 | Node v25.9.0下13/13通过（120秒为虚拟时钟；另测回环HTTP子进程）；语法/diff通过，自审，无生产调用 |
