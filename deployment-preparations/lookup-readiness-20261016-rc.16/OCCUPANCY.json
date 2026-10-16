@@ -1,0 +1,467 @@
+{
+  "at": "2026-10-16T02:45:27.596Z",
+  "revision": 52,
+  "enabled": false,
+  "channels": 0,
+  "pending": 0,
+  "occupied": [
+    {
+      "number": "159",
+      "kind": "screen_control"
+    },
+    {
+      "number": "162",
+      "kind": "screen_control"
+    },
+    {
+      "number": "52",
+      "kind": "screen_control"
+    },
+    {
+      "number": "142",
+      "kind": "screen_control"
+    },
+    {
+      "number": "172",
+      "kind": "screen_control"
+    },
+    {
+      "number": "91",
+      "kind": "screen_control"
+    }
+  ],
+  "candidates": [
+    {
+      "number": 51,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 52,
+      "enabled": true,
+      "health": {
+        "ready": false,
+        "reason": "screen_control_active"
+      },
+      "unavailable": false
+    },
+    {
+      "number": 54,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 55,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 87,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 138,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 152,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 188,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 172,
+      "enabled": true,
+      "health": {
+        "ready": false,
+        "reason": "screen_control_active"
+      },
+      "unavailable": false
+    },
+    {
+      "number": 156,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 155,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 115,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 60,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 58,
+      "enabled": true,
+      "health": {
+        "ready": false,
+        "reason": "device_or_agent_offline"
+      },
+      "unavailable": false
+    },
+    {
+      "number": 164,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 163,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 154,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 6,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 57,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 10,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 183,
+      "enabled": true,
+      "health": {
+        "ready": false,
+        "reason": "device_or_agent_offline"
+      },
+      "unavailable": false
+    },
+    {
+      "number": 82,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 86,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 121,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 146,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 149,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 153,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 181,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 182,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 162,
+      "enabled": true,
+      "health": {
+        "ready": false,
+        "reason": "screen_control_active"
+      },
+      "unavailable": false
+    },
+    {
+      "number": 161,
+      "enabled": true,
+      "health": {
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "unavailable": false
+    },
+    {
+      "number": 142,
+      "enabled": true,
+      "health": {
+        "ready": false,
+        "reason": "screen_control_active"
+      },
+      "unavailable": false
+    },
+    {
+      "number": 74,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 78,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 79,
+      "enabled": true,
+      "health": {
+        "ready": false,
+        "reason": "device_or_agent_offline"
+      },
+      "unavailable": false
+    },
+    {
+      "number": 118,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 130,
+      "enabled": false,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 157,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 147,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 101,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 107,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 165,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 112,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 67,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 53,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 128,
+      "enabled": true,
+      "health": {
+        "ready": false,
+        "reason": "device_or_agent_offline"
+      },
+      "unavailable": false
+    },
+    {
+      "number": 158,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    },
+    {
+      "number": 143,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "unavailable": false
+    }
+  ]
+}

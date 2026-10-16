@@ -1,0 +1,24 @@
+{
+  "status": "prepared-not-run",
+  "candidate": "lookup-readiness-20261016-rc.16",
+  "sourceOffset": 150,
+  "count": 50,
+  "inflightWindow": 20,
+  "finalTwoAfterIdleMs": 245000,
+  "initialDevices": [
+    156,
+    164
+  ],
+  "standbyTargets": [
+    115,
+    155,
+    156,
+    164,
+    161,
+    51,
+    54
+  ],
+  "skipOccupiedOrUnhealthy": true,
+  "publicBusinessRoutesOnly": true,
+  "doNotRunBeforeDeploymentAndFreshOccupancyCheck": true
+}
