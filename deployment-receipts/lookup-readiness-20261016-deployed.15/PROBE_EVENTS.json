@@ -1,0 +1,1039 @@
+{
+  "at": "2026-10-16T01:36:43.122Z",
+  "rows": [
+    {
+      "number": 115,
+      "taskId": "2a90e0d2-344e-4b54-a160-57f52aa5f34c",
+      "type": "alipay_name_start",
+      "status": "failed",
+      "events": [
+        {
+          "step": "",
+          "phase": "start",
+          "code": "",
+          "at": "2026-10-16T01:34:33.930Z"
+        },
+        {
+          "step": "",
+          "phase": "alipay_name",
+          "code": "",
+          "at": "2026-10-16T01:34:35.285Z"
+        },
+        {
+          "step": "error",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:34:42.476Z"
+        },
+        {
+          "step": "",
+          "phase": "finish",
+          "code": "alipay_human_verification_required",
+          "at": "2026-10-16T01:34:46.410Z"
+        }
+      ]
+    },
+    {
+      "number": 115,
+      "taskId": "377b0927-e8d3-43cc-a826-5ad87dc4e323",
+      "type": "alipay_name_stop",
+      "status": "succeeded",
+      "events": [
+        {
+          "step": "",
+          "phase": "start",
+          "code": "",
+          "at": "2026-10-16T01:34:30.914Z"
+        },
+        {
+          "step": "",
+          "phase": "alipay_name",
+          "code": "",
+          "at": "2026-10-16T01:34:31.045Z"
+        },
+        {
+          "step": "poco_reused",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:34:31.307Z"
+        },
+        {
+          "step": "poco_fast_path_failed",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:34:32.431Z"
+        },
+        {
+          "step": "",
+          "phase": "alipay_name",
+          "code": "",
+          "at": "2026-10-16T01:34:32.460Z"
+        },
+        {
+          "step": "",
+          "phase": "finish",
+          "code": "",
+          "at": "2026-10-16T01:34:32.915Z"
+        }
+      ]
+    },
+    {
+      "number": 115,
+      "taskId": "7e168a31-5641-4e45-9283-544192973a72",
+      "type": "alipay_name_query",
+      "status": "failed",
+      "events": [
+        {
+          "step": "poco_fast_path_failed",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:33:43.532Z"
+        },
+        {
+          "step": "",
+          "phase": "alipay_name",
+          "code": "",
+          "at": "2026-10-16T01:33:43.562Z"
+        },
+        {
+          "step": "poco_reused",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:33:48.537Z"
+        },
+        {
+          "step": "poco_fast_path_failed",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:33:52.091Z"
+        },
+        {
+          "step": "",
+          "phase": "alipay_name",
+          "code": "",
+          "at": "2026-10-16T01:33:52.126Z"
+        },
+        {
+          "step": "poco_reused",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:33:56.734Z"
+        },
+        {
+          "step": "launch_alipay",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:33:58.849Z"
+        },
+        {
+          "step": "poco_reused",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:34:04.753Z"
+        },
+        {
+          "step": "open_search",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:34:07.332Z"
+        },
+        {
+          "step": "poco_fast_path_failed",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:34:09.743Z"
+        },
+        {
+          "step": "poco_reused",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:34:14.692Z"
+        },
+        {
+          "step": "reuse_existing_search_page",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:34:15.911Z"
+        },
+        {
+          "step": "input_phone",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:34:26.437Z"
+        },
+        {
+          "step": "poco_fast_path_failed",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:34:28.446Z"
+        },
+        {
+          "step": "",
+          "phase": "finish",
+          "code": "alipay_lookup_failed",
+          "at": "2026-10-16T01:34:30.211Z"
+        }
+      ]
+    },
+    {
+      "number": 115,
+      "taskId": "d58eec46-6096-490e-9698-b4af3de1d576",
+      "type": "alipay_name_start",
+      "status": "succeeded",
+      "events": [
+        {
+          "step": "",
+          "phase": "start",
+          "code": "",
+          "at": "2026-10-16T01:32:32.561Z"
+        },
+        {
+          "step": "",
+          "phase": "alipay_name",
+          "code": "",
+          "at": "2026-10-16T01:32:32.687Z"
+        },
+        {
+          "step": "launch_alipay",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:33:22.139Z"
+        },
+        {
+          "step": "open_my_tab",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:33:22.196Z"
+        },
+        {
+          "step": "open_settings",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:33:22.224Z"
+        },
+        {
+          "step": "open_saved_account_picker",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:33:22.265Z"
+        },
+        {
+          "step": "launch_alipay",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:33:22.304Z"
+        },
+        {
+          "step": "open_search",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:33:22.333Z"
+        },
+        {
+          "step": "",
+          "phase": "finish",
+          "code": "",
+          "at": "2026-10-16T01:33:22.369Z"
+        }
+      ]
+    },
+    {
+      "number": 115,
+      "taskId": "320b25a7-58eb-4557-93c6-217c8a2de91f",
+      "type": "alipay_name_stop",
+      "status": "succeeded",
+      "events": [
+        {
+          "step": "",
+          "phase": "start",
+          "code": "",
+          "at": "2026-10-16T01:32:30.554Z"
+        },
+        {
+          "step": "",
+          "phase": "alipay_name",
+          "code": "",
+          "at": "2026-10-16T01:32:30.660Z"
+        },
+        {
+          "step": "poco_reused",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:32:30.911Z"
+        },
+        {
+          "step": "poco_fast_path_failed",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:32:31.331Z"
+        },
+        {
+          "step": "",
+          "phase": "alipay_name",
+          "code": "",
+          "at": "2026-10-16T01:32:31.362Z"
+        },
+        {
+          "step": "",
+          "phase": "finish",
+          "code": "",
+          "at": "2026-10-16T01:32:31.836Z"
+        }
+      ]
+    },
+    {
+      "number": 164,
+      "taskId": "65681fe0-30da-4b10-986c-8e807bda2706",
+      "type": "alipay_name_query",
+      "status": "failed",
+      "events": [
+        {
+          "step": "",
+          "phase": "start",
+          "code": "",
+          "at": "2026-10-16T01:31:48.221Z"
+        },
+        {
+          "step": "",
+          "phase": "alipay_name",
+          "code": "",
+          "at": "2026-10-16T01:31:48.339Z"
+        },
+        {
+          "step": "poco_reused",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:31:52.214Z"
+        },
+        {
+          "step": "reuse_existing_search_page",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:31:52.810Z"
+        },
+        {
+          "step": "input_phone",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:32:00.367Z"
+        },
+        {
+          "step": "poco_fast_path_failed",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:32:02.411Z"
+        },
+        {
+          "step": "",
+          "phase": "alipay_name",
+          "code": "",
+          "at": "2026-10-16T01:32:02.460Z"
+        },
+        {
+          "step": "poco_reused",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:32:07.161Z"
+        },
+        {
+          "step": "human_verification_detected",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:32:07.752Z"
+        },
+        {
+          "step": "poco_fast_path_failed",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:32:07.767Z"
+        },
+        {
+          "step": "",
+          "phase": "finish",
+          "code": "alipay_human_verification_required",
+          "at": "2026-10-16T01:32:09.194Z"
+        }
+      ]
+    },
+    {
+      "number": 155,
+      "taskId": "fea2e534-188d-4ff4-b997-c0c30b74f903",
+      "type": "alipay_name_query",
+      "status": "failed",
+      "events": [
+        {
+          "step": "",
+          "phase": "start",
+          "code": "",
+          "at": "2026-10-16T01:31:47.713Z"
+        },
+        {
+          "step": "",
+          "phase": "alipay_name",
+          "code": "",
+          "at": "2026-10-16T01:31:47.845Z"
+        },
+        {
+          "step": "poco_reused",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:31:52.736Z"
+        },
+        {
+          "step": "reuse_existing_search_page",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:31:53.509Z"
+        },
+        {
+          "step": "input_phone",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:32:02.945Z"
+        },
+        {
+          "step": "human_verification_detected",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:32:06.784Z"
+        },
+        {
+          "step": "poco_fast_path_failed",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:32:06.784Z"
+        },
+        {
+          "step": "",
+          "phase": "finish",
+          "code": "alipay_human_verification_required",
+          "at": "2026-10-16T01:32:08.468Z"
+        }
+      ]
+    },
+    {
+      "number": 115,
+      "taskId": "1bd9c876-9af7-4b07-9737-697233359b0c",
+      "type": "alipay_name_query",
+      "status": "failed",
+      "events": [
+        {
+          "step": "poco_fast_path_failed",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:31:36.160Z"
+        },
+        {
+          "step": "",
+          "phase": "alipay_name",
+          "code": "",
+          "at": "2026-10-16T01:31:36.189Z"
+        },
+        {
+          "step": "poco_reused",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:31:42.738Z"
+        },
+        {
+          "step": "poco_fast_path_failed",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:31:46.275Z"
+        },
+        {
+          "step": "",
+          "phase": "alipay_name",
+          "code": "",
+          "at": "2026-10-16T01:31:46.325Z"
+        },
+        {
+          "step": "poco_reused",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:31:50.811Z"
+        },
+        {
+          "step": "launch_alipay",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:31:53.149Z"
+        },
+        {
+          "step": "poco_reused",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:31:59.066Z"
+        },
+        {
+          "step": "open_search",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:32:01.553Z"
+        },
+        {
+          "step": "poco_fast_path_failed",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:32:03.922Z"
+        },
+        {
+          "step": "poco_reused",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:32:08.822Z"
+        },
+        {
+          "step": "reuse_existing_search_page",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:32:10.755Z"
+        },
+        {
+          "step": "input_phone",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:32:25.732Z"
+        },
+        {
+          "step": "poco_fast_path_failed",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:32:27.743Z"
+        },
+        {
+          "step": "",
+          "phase": "finish",
+          "code": "alipay_lookup_failed",
+          "at": "2026-10-16T01:32:30.248Z"
+        }
+      ]
+    },
+    {
+      "number": 164,
+      "taskId": "eae4e037-088a-4140-a6e6-f46ee3f7ddd4",
+      "type": "alipay_name_start",
+      "status": "succeeded",
+      "events": [
+        {
+          "step": "",
+          "phase": "start",
+          "code": "",
+          "at": "2026-10-16T01:30:24.621Z"
+        },
+        {
+          "step": "",
+          "phase": "alipay_name",
+          "code": "",
+          "at": "2026-10-16T01:30:24.784Z"
+        },
+        {
+          "step": "launch_alipay",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:31:47.692Z"
+        },
+        {
+          "step": "open_my_tab",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:31:47.726Z"
+        },
+        {
+          "step": "visual_settings_fallback_failed",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:31:47.758Z"
+        },
+        {
+          "step": "open_my_tab",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:31:47.790Z"
+        },
+        {
+          "step": "open_settings",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:31:47.818Z"
+        },
+        {
+          "step": "open_saved_account_picker",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:31:47.865Z"
+        },
+        {
+          "step": "launch_alipay",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:31:47.908Z"
+        },
+        {
+          "step": "open_search",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:31:47.938Z"
+        },
+        {
+          "step": "",
+          "phase": "finish",
+          "code": "",
+          "at": "2026-10-16T01:31:47.972Z"
+        }
+      ]
+    },
+    {
+      "number": 115,
+      "taskId": "d230922d-d00d-4622-843e-fae4a8eba1b4",
+      "type": "alipay_name_start",
+      "status": "succeeded",
+      "events": [
+        {
+          "step": "",
+          "phase": "start",
+          "code": "",
+          "at": "2026-10-16T01:30:24.729Z"
+        },
+        {
+          "step": "",
+          "phase": "alipay_name",
+          "code": "",
+          "at": "2026-10-16T01:30:24.845Z"
+        },
+        {
+          "step": "launch_alipay",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:31:17.845Z"
+        },
+        {
+          "step": "open_my_tab",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:31:17.896Z"
+        },
+        {
+          "step": "open_settings",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:31:17.941Z"
+        },
+        {
+          "step": "open_saved_account_picker",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:31:17.977Z"
+        },
+        {
+          "step": "launch_alipay",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:31:18.012Z"
+        },
+        {
+          "step": "open_search",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:31:18.047Z"
+        },
+        {
+          "step": "",
+          "phase": "finish",
+          "code": "",
+          "at": "2026-10-16T01:31:18.075Z"
+        }
+      ]
+    },
+    {
+      "number": 155,
+      "taskId": "f794cf51-d799-4798-9a37-0e73d8a33353",
+      "type": "alipay_name_start",
+      "status": "succeeded",
+      "events": [
+        {
+          "step": "",
+          "phase": "start",
+          "code": "",
+          "at": "2026-10-16T01:30:24.822Z"
+        },
+        {
+          "step": "",
+          "phase": "alipay_name",
+          "code": "",
+          "at": "2026-10-16T01:30:25.193Z"
+        },
+        {
+          "step": "launch_alipay",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:31:47.227Z"
+        },
+        {
+          "step": "open_my_tab",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:31:47.255Z"
+        },
+        {
+          "step": "open_settings",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:31:47.285Z"
+        },
+        {
+          "step": "open_saved_account_picker",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:31:47.313Z"
+        },
+        {
+          "step": "launch_alipay",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:31:47.341Z"
+        },
+        {
+          "step": "open_search",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:31:47.375Z"
+        },
+        {
+          "step": "",
+          "phase": "finish",
+          "code": "",
+          "at": "2026-10-16T01:31:47.411Z"
+        }
+      ]
+    },
+    {
+      "number": 161,
+      "taskId": "68c26831-d7ca-41a3-8de6-22a86f13d2ec",
+      "type": "alipay_name_query",
+      "status": "failed",
+      "events": [
+        {
+          "step": "account_selected",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:35:42.784Z"
+        },
+        {
+          "step": "account_selection_returned_home",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:35:42.836Z"
+        },
+        {
+          "step": "open_my_tab",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:35:42.875Z"
+        },
+        {
+          "step": "open_settings",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:35:42.911Z"
+        },
+        {
+          "step": "open_saved_account_picker",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:35:42.942Z"
+        },
+        {
+          "step": "launch_alipay",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:35:42.974Z"
+        },
+        {
+          "step": "account_switch_verified",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:35:43.005Z"
+        },
+        {
+          "step": "open_search",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:35:43.042Z"
+        },
+        {
+          "step": "",
+          "phase": "alipay_name",
+          "code": "",
+          "at": "2026-10-16T01:35:43.208Z"
+        },
+        {
+          "step": "poco_reused",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:35:47.075Z"
+        },
+        {
+          "step": "reuse_existing_search_page",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:35:47.533Z"
+        },
+        {
+          "step": "input_phone",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:35:59.800Z"
+        },
+        {
+          "step": "poco_fast_path_failed",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:36:03.894Z"
+        },
+        {
+          "step": "human_verification_detected",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:36:03.898Z"
+        },
+        {
+          "step": "",
+          "phase": "finish",
+          "code": "alipay_human_verification_required",
+          "at": "2026-10-16T01:36:05.264Z"
+        }
+      ]
+    },
+    {
+      "number": 156,
+      "taskId": "a5910962-4984-4959-9807-0a05df22bcfe",
+      "type": "alipay_name_query",
+      "status": "succeeded",
+      "events": [
+        {
+          "step": "",
+          "phase": "start",
+          "code": "",
+          "at": "2026-10-16T01:27:21.867Z"
+        },
+        {
+          "step": "",
+          "phase": "alipay_name",
+          "code": "",
+          "at": "2026-10-16T01:27:22.057Z"
+        },
+        {
+          "step": "poco_reused",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:27:26.400Z"
+        },
+        {
+          "step": "reuse_existing_search_page",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:27:27.103Z"
+        },
+        {
+          "step": "input_phone",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:27:36.828Z"
+        },
+        {
+          "step": "masked_real_name_tail_extracted",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:27:38.202Z"
+        },
+        {
+          "step": "",
+          "phase": "finish",
+          "code": "",
+          "at": "2026-10-16T01:27:38.254Z"
+        }
+      ]
+    },
+    {
+      "number": 161,
+      "taskId": "66f06e43-2663-4df9-b547-c91c48b70b28",
+      "type": "alipay_name_query",
+      "status": "failed",
+      "events": [
+        {
+          "step": "",
+          "phase": "start",
+          "code": "",
+          "at": "2026-10-16T01:27:11.728Z"
+        },
+        {
+          "step": "",
+          "phase": "alipay_name",
+          "code": "",
+          "at": "2026-10-16T01:27:11.823Z"
+        },
+        {
+          "step": "poco_reused",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:27:15.996Z"
+        },
+        {
+          "step": "reuse_existing_search_page",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:27:16.611Z"
+        },
+        {
+          "step": "input_phone",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:27:25.038Z"
+        },
+        {
+          "step": "human_verification_detected",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:27:29.649Z"
+        },
+        {
+          "step": "poco_fast_path_failed",
+          "phase": "airtest",
+          "code": "",
+          "at": "2026-10-16T01:27:29.666Z"
+        },
+        {
+          "step": "",
+          "phase": "finish",
+          "code": "alipay_human_verification_required",
+          "at": "2026-10-16T01:27:31.099Z"
+        }
+      ]
+    },
+    {
+      "number": 161,
+      "taskId": "2f0c8512-f7d2-4df7-b606-ecff8732a447",
+      "type": "alipay_name_start",
+      "status": "succeeded",
+      "events": [
+        {
+          "step": "",
+          "phase": "start",
+          "code": "",
+          "at": "2026-10-16T01:26:14.378Z"
+        },
+        {
+          "step": "",
+          "phase": "alipay_name",
+          "code": "",
+          "at": "2026-10-16T01:26:14.602Z"
+        },
+        {
+          "step": "launch_alipay",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:27:11.235Z"
+        },
+        {
+          "step": "open_my_tab",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:27:11.271Z"
+        },
+        {
+          "step": "open_settings",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:27:11.306Z"
+        },
+        {
+          "step": "open_saved_account_picker",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:27:11.341Z"
+        },
+        {
+          "step": "launch_alipay",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:27:11.371Z"
+        },
+        {
+          "step": "open_search",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:27:11.402Z"
+        },
+        {
+          "step": "",
+          "phase": "finish",
+          "code": "",
+          "at": "2026-10-16T01:27:11.434Z"
+        }
+      ]
+    },
+    {
+      "number": 156,
+      "taskId": "d8d380fb-cf68-4290-83d3-7c611e0c1f23",
+      "type": "alipay_name_start",
+      "status": "succeeded",
+      "events": [
+        {
+          "step": "",
+          "phase": "start",
+          "code": "",
+          "at": "2026-10-16T01:26:14.486Z"
+        },
+        {
+          "step": "",
+          "phase": "alipay_name",
+          "code": "",
+          "at": "2026-10-16T01:26:15.536Z"
+        },
+        {
+          "step": "launch_alipay",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:27:20.866Z"
+        },
+        {
+          "step": "open_my_tab",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:27:20.915Z"
+        },
+        {
+          "step": "open_settings",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:27:20.943Z"
+        },
+        {
+          "step": "open_saved_account_picker",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:27:20.970Z"
+        },
+        {
+          "step": "launch_alipay",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:27:20.998Z"
+        },
+        {
+          "step": "open_search",
+          "phase": "alipay",
+          "code": "",
+          "at": "2026-10-16T01:27:21.027Z"
+        },
+        {
+          "step": "",
+          "phase": "finish",
+          "code": "",
+          "at": "2026-10-16T01:27:21.055Z"
+        }
+      ]
+    }
+  ]
+}

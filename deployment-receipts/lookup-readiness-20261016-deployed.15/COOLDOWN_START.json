@@ -1,0 +1,72 @@
+{
+  "at": "2026-10-16T01:26:44.312Z",
+  "number": 161,
+  "health": {
+    "ready": true,
+    "reason": ""
+  },
+  "cooldowns": [
+    {
+      "accountHash": "26aa4c3376f1",
+      "limitedAt": "2026-10-15T01:56:11.054Z",
+      "cooldownUntil": "2026-10-15T09:56:11.054Z",
+      "remainingMs": 0
+    },
+    {
+      "accountHash": "5ffa7a966d18",
+      "limitedAt": "2026-10-15T01:58:02.854Z",
+      "cooldownUntil": "2026-10-15T09:58:02.854Z",
+      "remainingMs": 0
+    },
+    {
+      "accountHash": "94860ed4acf5",
+      "limitedAt": "2026-10-15T02:05:21.946Z",
+      "cooldownUntil": "2026-10-15T10:05:21.946Z",
+      "remainingMs": 0
+    },
+    {
+      "accountHash": "a07e3968147d",
+      "limitedAt": "2026-10-15T02:08:28.638Z",
+      "cooldownUntil": "2026-10-15T10:08:28.638Z",
+      "remainingMs": 0
+    }
+  ],
+  "sessions": [
+    {
+      "sessionId": "ce1e2af4-d36f-4ec1-b929-f215dfc89960",
+      "status": "starting",
+      "currentAccountHash": null,
+      "accountIdentityVerified": false,
+      "accountCooldowns": [
+        {
+          "accountHash": "26aa4c3376f1",
+          "limitedAt": "2026-10-15T01:56:11.054Z",
+          "cooldownUntil": "2026-10-15T09:56:11.054Z",
+          "cooling": false,
+          "remainingMs": 0
+        },
+        {
+          "accountHash": "5ffa7a966d18",
+          "limitedAt": "2026-10-15T01:58:02.854Z",
+          "cooldownUntil": "2026-10-15T09:58:02.854Z",
+          "cooling": false,
+          "remainingMs": 0
+        },
+        {
+          "accountHash": "94860ed4acf5",
+          "limitedAt": "2026-10-15T02:05:21.946Z",
+          "cooldownUntil": "2026-10-15T10:05:21.946Z",
+          "cooling": false,
+          "remainingMs": 0
+        },
+        {
+          "accountHash": "a07e3968147d",
+          "limitedAt": "2026-10-15T02:08:28.638Z",
+          "cooldownUntil": "2026-10-15T10:08:28.638Z",
+          "cooling": false,
+          "remainingMs": 0
+        }
+      ]
+    }
+  ]
+}
