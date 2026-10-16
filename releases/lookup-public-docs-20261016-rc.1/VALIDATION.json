@@ -1,0 +1,20 @@
+{
+  "localOnly": true,
+  "syntax": "node --check public/api-docs.js passed",
+  "browser": "CUA actual Chromium navigation: 33/33 endpoint headings; no page console errors",
+  "lookupScope": {
+    "operations": 3,
+    "oldSessionAndDeviceOperationsListed": false,
+    "resultState": "completed",
+    "publicReadyCount": false
+  },
+  "downloads": {
+    "http200Assets": 9,
+    "zipFilesWithManifest": 9,
+    "hashesPassed": true
+  },
+  "generatorDeterministic": true,
+  "runtimeServerAgentMediaFilesUnchanged": 281,
+  "businessRequestsSent": 0,
+  "deploymentPerformed": false
+}

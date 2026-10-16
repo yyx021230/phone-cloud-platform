@@ -1,0 +1,15 @@
+{
+  "version": "lookup-public-docs-20261016-rc.1",
+  "status": "versioned-interface-bundle",
+  "files": {
+    "PARTNER_HANDOFF.md": "e42bba3825d51099182aba2a7a6b09ceeaa67813ac25f63835a6663fe532948a",
+    "partner_example.py": "839fae5abec385ec3feb80f05ddd54361ded5f2eb8ac111e1a70b40790c5e8e2",
+    "README.md": "6f63af946568d4c6bfcd8ea4c98bf757fa13f1a5a82d4ff8cd47d8fbcfb1e213",
+    "node_client.mjs": "ad17a1031dfa2676acdb83f370ba0b5d036290dc8ce7aeedea08df361e0a4b53",
+    "python_client.py": "9261c7515450e858b981814b47ffe44e1bd342ed36a458a5eff2742c2c3c5776",
+    "OPEN_NAME_LOOKUP_API.md": "6f63af946568d4c6bfcd8ea4c98bf757fa13f1a5a82d4ff8cd47d8fbcfb1e213",
+    "sign.mjs": "8aac5bdf144c8dd6c93da3aa34c63c21952270fba139e5b117730b6730c51946",
+    "openapi.json": "e9b8ee37bac0e623a010da946766eeb25df4bd82a89bdedf7a3df1f979d67d88"
+  },
+  "zipSha256": "5187bc6ffd822239cf82d5b86146f2f5d9486311e7fd27ba4d0bce6674d03acc"
+}
