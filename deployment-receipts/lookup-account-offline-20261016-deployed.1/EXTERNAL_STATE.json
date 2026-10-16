@@ -1,8 +1,41 @@
 {
   "prepareKey": "account-offline-267ab8ef-e830-44a7-be97-67bd7fa59491",
   "round": 1,
-  "rows": [],
+  "rows": [
+    {
+      "index": 0,
+      "key": "account-offline-business-387a1b7c-570c-4cda-8ea3-f8d0af5f4ca8",
+      "lookupId": "ca3ab4b6-cc4a-4bf5-84a3-ae86bbba84fe",
+      "status": "completed",
+      "code": null,
+      "hasName": false
+    },
+    {
+      "index": 1,
+      "key": "account-offline-business-c6af0e9e-0282-452f-a7ea-668691f4225e",
+      "lookupId": "76b06c13-6eb5-47df-9544-6cef5caa3af1",
+      "status": "completed",
+      "code": null,
+      "hasName": true
+    },
+    {
+      "index": 2,
+      "key": "account-offline-business-2a776514-a964-4f8a-9bf5-7bce3554d874",
+      "lookupId": "459e53bc-47e6-453d-b63a-4a03b7c13e54",
+      "status": "completed",
+      "code": null,
+      "hasName": true
+    },
+    {
+      "index": 3,
+      "key": "account-offline-business-13d29280-1718-428a-90bf-d206c62fa876",
+      "lookupId": "63f44ef5-6704-4eda-bad6-0046745af921",
+      "status": "completed",
+      "code": null,
+      "hasName": true
+    }
+  ],
   "preparationId": "b021b932-2381-4c5a-9abe-20080b9dc66d",
-  "ready": false,
-  "status": "preparing"
+  "ready": true,
+  "status": "ready"
 }

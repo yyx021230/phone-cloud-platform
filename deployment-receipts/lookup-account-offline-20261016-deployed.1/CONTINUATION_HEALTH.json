@@ -1,0 +1,23 @@
+{
+  "atUtc": "2026-10-16T07:24:59.232848+00:00",
+  "version": "lookup-account-offline-20261016-deployed.1",
+  "imageId": "sha256:63193b6fe578f4de2d818943d6939b04b3d737f617ef27b0440d4873925d26b9",
+  "restartImageId": "sha256:63193b6fe578f4de2d818943d6939b04b3d737f617ef27b0440d4873925d26b9",
+  "runtimeCandidateCommit": "64e09fb0affcaeb6560c27aded794fa02dde13da",
+  "container": {
+    "id": "6c8bc2cd7b57f6eb62e0e3477420a9a0671b279615a50a0f16dfbaf09b19f66f",
+    "image": "sha256:63193b6fe578f4de2d818943d6939b04b3d737f617ef27b0440d4873925d26b9",
+    "startedAt": "2026-10-16T07:03:57.649980353Z",
+    "restartCount": 0,
+    "health": "healthy"
+  },
+  "http": {
+    "/healthz": 200,
+    "/readyz": 200
+  },
+  "services": [
+    "phone-cloud-platform Up 21 minutes (healthy)",
+    "phone-cloud-redis Up 5 weeks (healthy)",
+    "phone-cloud-postgres Up 5 weeks (healthy)"
+  ]
+}
