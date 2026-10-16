@@ -1,0 +1,42 @@
+{
+  "at": "2026-10-16T01:25:41.800657+00:00",
+  "startedAt": "2026-10-16T01:24:54.421776+00:00",
+  "version": "lookup-readiness-20261016-deployed.15",
+  "commit": "419defa1b9a59891592574e220ab5b9f79594e09",
+  "image": "sha256:3ff9e5242c72cdf2c461c5c1c43c19c640249e0b5b9189fe973f0d254cda35b1",
+  "containerId": "14f834471b331c98bbb47297477309402de2cb67114b55071a82318768a267f3",
+  "containerStartedAt": "2026-10-16T01:25:05.184051145Z",
+  "activeSha256": "d4c497d5cdfd2058d8755ac5ea5259ad48bfd1d5108d4ab778eb5fc8e979d8ca",
+  "runtimeHashesPassed": 27,
+  "occupancyBefore": {
+    "numbers": [
+      "52",
+      "118",
+      "142",
+      "152",
+      "172",
+      "91"
+    ],
+    "revision": 49
+  },
+  "mediaBefore": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "mediaAfter": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "agentRestarted": false,
+  "adbTouched": false,
+  "databaseRestored": false,
+  "receipt": "/opt/phone-cloud-platform/deployment-receipts/lookup-readiness-20261016-deployed.15"
+}

@@ -1,0 +1,72 @@
+{
+  "at": "2026-10-16T01:35:02.316Z",
+  "number": 161,
+  "health": {
+    "ready": true,
+    "reason": ""
+  },
+  "cooldowns": [
+    {
+      "accountHash": "26aa4c3376f1",
+      "limitedAt": "2026-10-16T01:32:24.093Z",
+      "cooldownUntil": "2026-10-16T09:32:24.093Z",
+      "remainingMs": 28641777
+    },
+    {
+      "accountHash": "5ffa7a966d18",
+      "limitedAt": "2026-10-16T01:34:15.609Z",
+      "cooldownUntil": "2026-10-16T09:34:15.609Z",
+      "remainingMs": 28753293
+    },
+    {
+      "accountHash": "94860ed4acf5",
+      "limitedAt": "2026-10-15T02:05:21.946Z",
+      "cooldownUntil": "2026-10-15T10:05:21.946Z",
+      "remainingMs": 0
+    },
+    {
+      "accountHash": "a07e3968147d",
+      "limitedAt": "2026-10-16T01:30:34.508Z",
+      "cooldownUntil": "2026-10-16T09:30:34.508Z",
+      "remainingMs": 28532192
+    }
+  ],
+  "sessions": [
+    {
+      "sessionId": "ce1e2af4-d36f-4ec1-b929-f215dfc89960",
+      "status": "querying",
+      "currentAccountHash": "a07e3968147d",
+      "accountIdentityVerified": true,
+      "accountCooldowns": [
+        {
+          "accountHash": "26aa4c3376f1",
+          "limitedAt": "2026-10-16T01:32:24.093Z",
+          "cooldownUntil": "2026-10-16T09:32:24.093Z",
+          "cooling": true,
+          "remainingMs": 28641779
+        },
+        {
+          "accountHash": "5ffa7a966d18",
+          "limitedAt": "2026-10-16T01:34:15.609Z",
+          "cooldownUntil": "2026-10-16T09:34:15.609Z",
+          "cooling": true,
+          "remainingMs": 28753295
+        },
+        {
+          "accountHash": "94860ed4acf5",
+          "limitedAt": "2026-10-15T02:05:21.946Z",
+          "cooldownUntil": "2026-10-15T10:05:21.946Z",
+          "cooling": false,
+          "remainingMs": 0
+        },
+        {
+          "accountHash": "a07e3968147d",
+          "limitedAt": "2026-10-16T01:30:34.508Z",
+          "cooldownUntil": "2026-10-16T09:30:34.508Z",
+          "cooling": true,
+          "remainingMs": 28532194
+        }
+      ]
+    }
+  ]
+}
