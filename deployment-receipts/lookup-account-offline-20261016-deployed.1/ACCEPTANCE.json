@@ -1,0 +1,72 @@
+{
+  "status": "partial_waiting_for_118_manual_login",
+  "sourceCommit": "64e09fb0affcaeb6560c27aded794fa02dde13da",
+  "deploymentReceiptCommit": "72a0d40f1cfaf9dd66ada9e804e6e0bf004d3059",
+  "atUtc": "2026-10-16T07:12:35.595Z",
+  "actual": {
+    "realPhoneTargets": [
+      155,
+      118
+    ],
+    "businessSubmitted": 0,
+    "accountOfflineNotices": {
+      "155": {
+        "status": "sent",
+        "providerCode": 0,
+        "accountIdentity": "unknown_explicitly_stated"
+      },
+      "118": {
+        "status": "sent",
+        "providerCode": 0,
+        "account": "175******30"
+      }
+    },
+    "additionalLegacyNotice": {
+      "phone": 55,
+      "reason": "three_preexisting_login_failures",
+      "status": "sent",
+      "phoneActions": 0
+    },
+    "155": {
+      "newStart": "succeeded",
+      "probeNameReturned": true,
+      "offlineMarkerCleared": true,
+      "hardFailures": 0
+    },
+    "118": {
+      "newStart": "succeeded",
+      "naturalLimitAccount": "156******37",
+      "naturalLimitAt": "2026-10-16T07:10:10.210Z",
+      "naturalCooldownUntil": "2026-10-16T15:10:10.210Z",
+      "selectedLoginRequiredAccount": "175******30",
+      "terminalLoginJob": "ebbb0018-4f7a-40a6-8cc1-6ea93f3734ce",
+      "terminalLoginAt": "2026-10-16T07:10:59.960Z",
+      "stopAcknowledged": true,
+      "channelReleased": true,
+      "samePrepareKeyRepeated": true,
+      "noNew118StartThrough": "2026-10-16T07:12:35.595Z",
+      "hardFailures": 0,
+      "lookupUnavailable": false,
+      "softHealthReason": "account_login_required",
+      "sameIncidentNotificationRepeated": false,
+      "loginAccountAddedToCooldown": false
+    },
+    "publicReady": false,
+    "currentGrayPoolRevision": 56,
+    "currentGrayEnabledPhones": [
+      155,
+      118
+    ],
+    "originalPoolRevision": 55,
+    "originalDeviceFlagsBackup": "/app/data/test-receipts/lookup-account-offline-20261016/POOL.before.json"
+  },
+  "remaining": [
+    "118 manual login then fresh prepare key recovery",
+    "fresh first-account login-page failure, rather than switch-only live evidence",
+    "business original-lookupId cross-device handoff in this real-phone run",
+    "restore original pool after scoped acceptance"
+  ],
+  "noProductionAdbOperations": true,
+  "agentRestarted": false,
+  "completeProductionAcceptance": false
+}
