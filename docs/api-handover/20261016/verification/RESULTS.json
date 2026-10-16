@@ -1,0 +1,28 @@
+{
+  "documentVersion": "lookup-api-handover-20261016.1",
+  "productionVersion": "lookup-round-stop-20261016-deployed.1",
+  "runtimeCommit": "1940ec1346e4f695a7e33b7e0237f356d4363b20",
+  "startingHead": "8bdb23b9c0bdec04973f7b9e9bbc492e7c85ad71",
+  "branch": "codex/lookup-api-handover-20261016",
+  "newHttpExampleTests": {
+    "passed": 15,
+    "failed": 0
+  },
+  "jsonExamplesParsed": 12,
+  "apiPathsVerified": 4,
+  "productionSamplesCopiedExactly": true,
+  "runtimeCodeChanged": false,
+  "productionQueriesThisDocumentationTask": 0,
+  "productionConfigurationChanged": false,
+  "currentConfig": {
+    "concurrency": 5,
+    "preparedClientInflightLimit": 20,
+    "asyncQueueWaitMs": 1800000,
+    "asyncTaskTtlMs": 3600000,
+    "asyncRecentResultMs": 600000
+  },
+  "boundaries": [
+    "New http_flow.py validated with simulated HTTP responses; no new production business queries for documentation",
+    "Previously deployed lookup.py/stop_lookup.py and actual production stop workflow have recorded real-device evidence"
+  ]
+}
