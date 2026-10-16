@@ -1,0 +1,79 @@
+{
+  "atUtc": "2026-10-16T09:00:31.870356+00:00",
+  "candidate": "lookup-round-stop-20261016-rc.1",
+  "commit": "1940ec1346e4f695a7e33b7e0237f356d4363b20",
+  "runtimeCommit": "1940ec1346e4f695a7e33b7e0237f356d4363b20",
+  "baselineActiveSha256": "03158c69aedb6b1131b5a629bb7a286b10776d2fb41a2eef74f7576c33bc1314",
+  "baselineVersion": "lookup-auto-recovery-20261016-deployed.1",
+  "oldRunningImage": "sha256:0d4f8ec832312dcd1d3b601e770e82668bab6e7182f90a6713de1d423384cd69",
+  "rollbackImage": "sha256:0d4f8ec832312dcd1d3b601e770e82668bab6e7182f90a6713de1d423384cd69",
+  "image": "sha256:4862080e4d6802a45c6f40bed390a05d99f891cf17c964e4d551f9b087140059",
+  "tag": "phone-cloud-platform:lookup-round-stop-20261016-rc.1",
+  "files": {
+    "server/managed-lookup.mjs": "30e6fd5577acfa89a00e3beee4cbe725ec24c9641f99df798404e3043dc3c2cb",
+    "server/lookup-readiness.mjs": "aa9c43c7b9236357a827de466babf0a14a8cee3d3a21fd5ef1a41bb01f042af3",
+    "server/lookup-api-key.mjs": "11f8f2b9fdecc219f1e172a3c311dd31d9868f8f65a2f69641ef9e77ab53e31d",
+    "server/index.mjs": "9ea06924ae195e857ca195aaaa973f3758b18c52885fcda42026f743f91a0a1b",
+    "public/api-docs.js": "c349d73c41aef45e29eee2dabc838887a5a251b51b108dc7b0a6ef49475c4708",
+    "public/api-reference.json": "8fdd2ff061e53d2dcfa8b263b49568ad3bb8df423e931fe8d19e16388cedc3e3",
+    "public/openapi.json": "e5d5bc7d032209b6dc49e83be2097eaaee47ae5eca6ca7b17af239279d51eddc",
+    "public/downloads/name-lookup-http-guide.md": "bfb732b3ccb192960d0a99025a20b0831d3ed8de4c5b6f394efb1baf6da89993",
+    "public/downloads/lookup.py": "ee16f9f8b38c3a6987ed3b4e594198b3b1c8d2ffa99cb680092901a56bbe08a6",
+    "public/downloads/lookup.mjs": "f8af8a207cf4e07be6d5ebdf3f13b45a04f6faf36873754cd49624cb1574baf3",
+    "public/downloads/name-lookup-openapi.json": "05b49b790d4577b298b5832aec6a122e1fe5dd1e3d870dc1ad31b2e7c6ffbd06",
+    "public/downloads/name-lookup-sha256.json": "3900dae60d682e75fdcdfed06fa3eefd3991869ac022a093a4d53c6c6b4045be",
+    "public/downloads/name-lookup-integration.zip": "58c13edd3130bb34223f11de53b53c7fe4d1ce293d8f6166dcb3f9571b367ac5",
+    "server/lookup-round-stop.mjs": "a19acfa0f4b957976b011751fd4c09efd335c99b7a2bcbdc0149fbd3940ba003",
+    "public/downloads/stop_lookup.py": "e0d7f72ff6fae836973432804ae42083ee99c136f307483a7e9eb5a198d862ed"
+  },
+  "oldFileHashes": {
+    "server/managed-lookup.mjs": "88434b6bf225418ee9975c3c4b5209f87eafd67aed4e17a7577c45cc957aa64d",
+    "server/lookup-readiness.mjs": "fd03fbde4ae8d9b04d7cbd5075214d281220b874fb409f549fbbcc9c058e32a1",
+    "server/lookup-api-key.mjs": "3e64d42a2008d53907a821d43e04c1cffb698f55b57d4d3ca1a5bc074bec800d",
+    "server/index.mjs": "78d4cf5cc0551820e5880e0444f04946cec97eb0ac2c5303ed675c3cf0a908d3",
+    "public/api-docs.js": "0f8e7d9f8b2804d99c6532994379f0385a0b7e0ce7bbb67ac55782e8551fb25e",
+    "public/api-reference.json": "50c4424e8b48810610700f4e603604b41240fb5d4e998b5289171c00bc33fdc2",
+    "public/openapi.json": "9f77465d105aa0f2451c4b4757518c4549d8dffc952a8b786a344305d81cea1c",
+    "public/downloads/name-lookup-http-guide.md": "c449a56de62f3424b6f1823d46daaebf336d5ecf736a0e39d6691289267c7403",
+    "public/downloads/lookup.py": "95ca247988e7a6c7a03ce0d3078f455715335a9f5a575bb987044fc3c933251b",
+    "public/downloads/lookup.mjs": "463ac44a509215fe44fa3b2374c1c469ee66fbe2e6a5779ea57ad39fd5ecdb88",
+    "public/downloads/name-lookup-openapi.json": "6a59c4c5f8bdb9463ada04c771819fa5d2a757a72fb54d0b4b525be3ada65573",
+    "public/downloads/name-lookup-sha256.json": "30eb0bd5e2315bee5a3cf990737b2ac3d1c324ad96d88642007a12e2ac123e7d",
+    "public/downloads/name-lookup-integration.zip": "daec021f69f23c10f118162f4001272694623cfb487f73d9943145a46316e941",
+    "server/lookup-round-stop.mjs": null,
+    "public/downloads/stop_lookup.py": null
+  },
+  "stage": "/opt/phone-cloud-platform/staging/lookup-round-stop-20261016-rc.1",
+  "backup": "/opt/phone-cloud-platform/deploy-backups/lookup-round-stop-20261016-prep.1",
+  "envBeforeSha256": "bbec406a30f961c430389a8d568e0d676b6683399c59542b1a1bdaf6f354ec43",
+  "databaseBackup": {
+    "bytes": 503048369,
+    "sha256": "b54aa89d066575cd493007e541d0e54481049a87c4fafbf7f986214b4d5841a2",
+    "decoded": true
+  },
+  "imageBackup": {
+    "bytes": 64731648,
+    "sha256": "0efb579e4f2d581d0871a61ac753d77d4097c7043add61034711d898bdc0adb0"
+  },
+  "compose": {
+    "path": "/opt/phone-cloud-platform/staging/lookup-round-stop-20261016-rc.1/compose.pending.json",
+    "sha256": "5240bf294415130e75c0da3e41736a3f82454a27fc736b1afe593106b029e4a1"
+  },
+  "isolatedReady": true,
+  "isolatedHashes": 39,
+  "keyAndLegacyAuthPassed": true,
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "containerId": "064bb1f056edf550344614e17a3396d52481d573df1b8e84d14b13e25326bdf1",
+  "startedAt": "2026-10-16T08:21:47.718545395Z",
+  "deployed": false,
+  "requiresCloudRestart": true,
+  "requiresAgentRestart": false,
+  "adbTouched": false
+}
