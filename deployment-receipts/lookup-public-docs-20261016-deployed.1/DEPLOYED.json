@@ -1,0 +1,49 @@
+{
+  "at": "2026-10-16T03:29:45.596258+00:00",
+  "documentationVersion": "lookup-public-docs-20261016-deployed.1",
+  "runtimeVersion": "lookup-readiness-20261016-deployed.16",
+  "commit": "b0a22da6cf48e8b502e1573ee80dfc2974a5909a",
+  "runningImage": "sha256:b5479d9cfc0d6bf6ab5d2ee748856d4867cf6e21c118ab317709ba501519cda7",
+  "restartImage": "sha256:bc6e3c1fea840f8da7ddefa2d802c728e6af4381d9cca7ba4987fd2525a6344a",
+  "containerId": "29ed394c6657988c854fe28059ecd5106179ea0fe84bcbefb714a23bdbaa234a",
+  "containerStartedAt": "2026-10-16T03:00:51.518633969Z",
+  "containerPid": 1381680,
+  "servicesRestarted": false,
+  "files": {
+    "public/api-reference.json": "c856046a28347274dbbd2775528fcb050852c4358270a73831f9ae557e894dec",
+    "public/api-docs.html": "88813b766da6f89fb10303701f7b5520ce896053b4b2b96783d850e184a7633a",
+    "public/openapi.json": "d13111ba2918b7181403ed4affb2bd627f4346da5b8debff0d3c701d8e9b01e1",
+    "public/api-docs.js": "cdd1b13c0d56ad3c7c8e26609064c95fbded993b9c1cde02fa9af1171cae2edc",
+    "public/downloads/name-lookup-integration.zip": "5187bc6ffd822239cf82d5b86146f2f5d9486311e7fd27ba4d0bce6674d03acc",
+    "public/downloads/name-lookup-openapi.json": "e9b8ee37bac0e623a010da946766eeb25df4bd82a89bdedf7a3df1f979d67d88",
+    "public/downloads/name-lookup-sha256.json": "31f07576625dd2d23967da98f42cf17379e63db6969840e42d609d7de74c3f1d"
+  },
+  "mediaBefore": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "mediaAfter": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "health": [
+    {
+      "path": "/healthz",
+      "status": 200
+    },
+    {
+      "path": "/readyz",
+      "status": 200
+    }
+  ],
+  "activeSha256": "937c230d08a00ab06cb8ec1055ea917ac4758bb4f82b2e25a480d332e28b8c3c",
+  "receiptDirectory": "/opt/phone-cloud-platform/deployment-receipts/lookup-public-docs-20261016-deployed.1"
+}
