@@ -1,0 +1,77 @@
+{
+  "status": "partial_49_completed_one_recovery",
+  "atUtc": "2026-10-16T07:38:30.378Z",
+  "branch": "codex/lookup-account-offline-20261016",
+  "baselineHead": "bdf62dfa6a15eaed28d14b93c5d1cddbbd549028",
+  "productionVersion": "lookup-account-offline-20261016-deployed.1",
+  "productionCommit": "64e09fb0affcaeb6560c27aded794fa02dde13da",
+  "image": "sha256:63193b6fe578f4de2d818943d6939b04b3d737f617ef27b0440d4873925d26b9",
+  "actual": {
+    "externalApiOnlyForPrepareSubmitAndResults": true,
+    "authorizedSourceCount": 201,
+    "sourceSha256": "20d3440551746ef8abe6919e5a8b3c7d0c6c12ac555f00f97d61d82fa8c64b95",
+    "sourceIndices": [
+      4,
+      53
+    ],
+    "uniqueSubmitted": 50,
+    "reusedOnInitialSubmit": 0,
+    "completed": 49,
+    "name": 45,
+    "emptyName": 4,
+    "pendingRecovery": 1,
+    "peakObservedBusinessConcurrency": 5,
+    "businessPhoneNumbers": [
+      115,
+      155,
+      156,
+      162,
+      164
+    ],
+    "naturalLimitHandoff": {
+      "lookupId": "f86e9c6a-059b-46bb-9432-91f4e17eabcc",
+      "source": 115,
+      "destination": 155,
+      "stopAcknowledgedAt": "2026-10-16T07:32:56.963Z",
+      "secondAttemptAt": "2026-10-16T07:33:04.347Z",
+      "completedAt": "2026-10-16T07:33:19.314Z",
+      "sameId": true,
+      "returnedName": true
+    },
+    "cooldown": {
+      "number": 115,
+      "account": "166******10",
+      "limitedAt": "2026-10-16T07:32:53.795Z",
+      "until": "2026-10-16T15:32:53.795Z"
+    },
+    "newKeyRetry": {
+      "lookupId": "bdd4ff9b-2c3f-411d-8aa7-4007fe22b987",
+      "afterSeconds": 325.2233238220215,
+      "sameLookupId": true,
+      "attemptCount": 1
+    },
+    "poolRevision": 57,
+    "configChanged": false,
+    "activeAdbOperations": 0,
+    "productionRestarts": 0,
+    "businessCodeChanges": 0,
+    "adminRetryOrCancelUsed": false,
+    "artificialFaultOrLogoutUsed": false,
+    "blockedPhonesReceivedBusiness": false
+  },
+  "remaining": {
+    "164": {
+      "lookupId": "bdd4ff9b-2c3f-411d-8aa7-4007fe22b987",
+      "reason": "alipay_lookup_result_unconfirmed:observation_budget_exhausted",
+      "internalStatus": "needs_recovery",
+      "publicStatus": "processing",
+      "submittedSearch": true,
+      "rootCauseOfMissingResultEvidence": "not established",
+      "automaticRecoveryGapConfirmed": true,
+      "requestRetained": true
+    },
+    "115": "one post-limit preparation failed after about 124s; other phones continued; further re-probe status in evidence",
+    "accountLogoutDuringBusiness": "not naturally observed; prior local and isolated Postgres simulated handoff passed, not substituted for real-device acceptance"
+  },
+  "productionAcceptanceComplete": false
+}
