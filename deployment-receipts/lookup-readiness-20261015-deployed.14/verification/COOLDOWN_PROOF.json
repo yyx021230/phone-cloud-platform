@@ -1,0 +1,110 @@
+{
+  "at": "2026-10-16T01:04:45.173Z",
+  "rows": [
+    {
+      "id": "83a0b908-d5a0-46d7-ad3c-f2cd0345fd04",
+      "status": "ended",
+      "identity": true,
+      "currentMatchesCooling": false,
+      "cooldowns": [
+        {
+          "limitedAt": "2026-10-15T09:32:08.000Z",
+          "cooldownUntil": "2026-10-15T17:32:08.000Z",
+          "reason": "access_denied",
+          "remainingMs": 0,
+          "cooling": false
+        }
+      ]
+    },
+    {
+      "id": "7776c343-6e7f-410e-8365-8cf5f70e7cde",
+      "status": "failed",
+      "identity": false,
+      "currentMatchesCooling": false,
+      "cooldowns": [
+        {
+          "limitedAt": "2026-10-15T09:32:08.000Z",
+          "cooldownUntil": "2026-10-15T17:32:08.000Z",
+          "reason": "access_denied",
+          "remainingMs": 0,
+          "cooling": false
+        }
+      ]
+    },
+    {
+      "id": "12ba7afa-86c1-42e7-9ed2-3a27814793ef",
+      "status": "failed",
+      "identity": false,
+      "currentMatchesCooling": false,
+      "cooldowns": [
+        {
+          "limitedAt": "2026-10-15T09:32:08.000Z",
+          "cooldownUntil": "2026-10-15T17:32:08.000Z",
+          "reason": "access_denied",
+          "remainingMs": 0,
+          "cooling": false
+        }
+      ]
+    },
+    {
+      "id": "ded63a6a-fdb2-4c7b-b6c7-25029acd5ae2",
+      "status": "failed",
+      "identity": false,
+      "currentMatchesCooling": false,
+      "cooldowns": [
+        {
+          "limitedAt": "2026-10-15T09:32:08.000Z",
+          "cooldownUntil": "2026-10-15T17:32:08.000Z",
+          "reason": "access_denied",
+          "remainingMs": 0,
+          "cooling": false
+        }
+      ]
+    },
+    {
+      "id": "7695f3c2-3104-4b26-918b-ee8e7b002a8e",
+      "status": "failed",
+      "identity": false,
+      "currentMatchesCooling": false,
+      "cooldowns": [
+        {
+          "limitedAt": "2026-10-15T09:32:08.000Z",
+          "cooldownUntil": "2026-10-15T17:32:08.000Z",
+          "reason": "access_denied",
+          "remainingMs": 0,
+          "cooling": false
+        }
+      ]
+    },
+    {
+      "id": "688ff851-7c0c-4743-8349-669a06abb913",
+      "status": "ended",
+      "identity": true,
+      "currentMatchesCooling": false,
+      "cooldowns": [
+        {
+          "limitedAt": "2026-10-15T09:32:08.000Z",
+          "cooldownUntil": "2026-10-15T17:32:08.000Z",
+          "reason": "access_denied",
+          "remainingMs": 0,
+          "cooling": false
+        }
+      ]
+    },
+    {
+      "id": "ce56e350-3edf-450f-87db-0fad9a1241c1",
+      "status": "ended",
+      "identity": true,
+      "currentMatchesCooling": false,
+      "cooldowns": [
+        {
+          "limitedAt": "2026-10-15T09:32:08.000Z",
+          "cooldownUntil": "2026-10-15T17:32:08.000Z",
+          "reason": "access_denied",
+          "remainingMs": 0,
+          "cooling": false
+        }
+      ]
+    }
+  ]
+}
