@@ -23,10 +23,10 @@ test at ../../../../../../private/tmp/pc-account-offline-20261016/server/lookup-
 ✖ first-account logout is excluded for this round, survives restart, and never increments hard failure circuit (7.148333ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
   + actual - expected
-  
+
   + undefined
   - 'account_login_required'
-  
+
       at TestContext.<anonymous> (file:///private/tmp/pc-account-offline-20261016/server/lookup-account-offline.test.mjs:43:9)
       at async Test.run (node:internal/test_runner/test:1208:7)
       at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
@@ -42,10 +42,10 @@ test at ../../../../../../private/tmp/pc-account-offline-20261016/server/lookup-
 ✖ business login loss keeps same task ID and waits for stop ACK before handoff; other phone continues (2.851666ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
   + actual - expected
-  
+
   + 'failed'
   - 'rerouting'
-  
+
       at TestContext.<anonymous> (file:///private/tmp/pc-account-offline-20261016/server/lookup-account-offline.test.mjs:56:9)
       at async Test.run (node:internal/test_runner/test:1208:7)
       at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
@@ -60,9 +60,9 @@ test at ../../../../../../private/tmp/pc-account-offline-20261016/server/lookup-
 test at ../../../../../../private/tmp/pc-account-offline-20261016/server/lookup-account-offline.test.mjs:74:1
 ✖ configuration edits preserve logout state; new prepare polling cannot fake readiness (6.62625ms)
   AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
-  
+
     assert.ok(f.store.snapshot().devices[0].accountOffline)
-  
+
       at TestContext.<anonymous> (file:///private/tmp/pc-account-offline-20261016/server/lookup-account-offline.test.mjs:76:36)
       at async Test.run (node:internal/test_runner/test:1208:7)
       at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
@@ -99,9 +99,9 @@ test at ../../../../../../private/tmp/pc-account-offline-20261016/server/lookup-
 test at ../../../../../../private/tmp/pc-account-offline-20261016/server/lookup-account-offline.test.mjs:89:1
 ✖ group notice identifies phone/account, deduplicates scans and restart, never calls captcha login (20.509375ms)
   AssertionError [ERR_ASSERTION]: The input did not match the regular expression /51号手机.*138\*{6}01.*重新授权登录/. Input:
-  
+
   '51号手机出现拼图，请人工介入到云手机平台实时控制完成拼图。'
-  
+
       at TestContext.<anonymous> (file:///private/tmp/pc-account-offline-20261016/server/lookup-account-offline.test.mjs:92:171)
       at async Test.run (node:internal/test_runner/test:1208:7)
       at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
