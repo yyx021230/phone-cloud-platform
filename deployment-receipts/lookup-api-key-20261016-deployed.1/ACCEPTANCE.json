@@ -1,0 +1,22 @@
+{
+  "completed": 7,
+  "withName": 5,
+  "emptyName": 2,
+  "parallelHttpSubmissions": 5,
+  "businessAttemptsEachOne": true,
+  "sampledMaxActiveBusinessPhones": 2,
+  "observations": 18,
+  "freshBusinessRequests": 7,
+  "actualPublishedPythonPassed": true,
+  "sameBusinessResumeGetOnly": true,
+  "completedCacheNewRequestKeySameId": true,
+  "realInFlight121sRetestCovered": false,
+  "knownUnverified": [
+    "Actual five simultaneously querying phones not demonstrated in this small production run",
+    "Natural limit/cooldown/handoff not newly exercised in this authentication release",
+    "155 startup compatibility and 118 login/offline readiness require separate follow-up; business results not falsified"
+  ],
+  "keyDelivery": "user clipboard; no plaintext in evidence",
+  "adbTouched": false,
+  "agentReloaded": false
+}

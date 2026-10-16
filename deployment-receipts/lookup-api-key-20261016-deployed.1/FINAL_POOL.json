@@ -1,0 +1,153 @@
+{
+  "at": "2026-10-16T06:08:54.757Z",
+  "failedInternalTasks": [
+    {
+      "number": "155",
+      "type": "alipay_name_start",
+      "error": "alipay_lookup_failed",
+      "at": "2026-10-16T06:07:37.927Z"
+    },
+    {
+      "number": "118",
+      "type": "alipay_name_query",
+      "error": "alipay_login_required",
+      "at": "2026-10-16T06:08:09.344Z"
+    },
+    {
+      "number": "164",
+      "type": "alipay_name_query",
+      "error": "alipay_human_verification_required",
+      "at": "2026-10-16T06:06:46.119Z"
+    },
+    {
+      "number": "118",
+      "type": "alipay_name_query",
+      "error": "alipay_human_verification_required",
+      "at": "2026-10-16T06:06:33.088Z"
+    },
+    {
+      "number": "115",
+      "type": "alipay_name_start",
+      "error": "alipay_human_verification_required",
+      "at": "2026-10-16T06:05:24.249Z"
+    },
+    {
+      "number": "155",
+      "type": "alipay_name_start",
+      "error": "alipay_page_element_changed",
+      "at": "2026-10-16T06:06:33.569Z"
+    }
+  ],
+  "channels": [
+    {
+      "number": 115,
+      "phase": "idle"
+    },
+    {
+      "number": 162,
+      "phase": "idle"
+    },
+    {
+      "number": 156,
+      "phase": "idle"
+    },
+    {
+      "number": 164,
+      "phase": "idle"
+    },
+    {
+      "number": 155,
+      "phase": "starting"
+    }
+  ],
+  "online": 116,
+  "total": 131,
+  "agentLastSeen": "2026-10-16T06:08:35.369Z",
+  "enabled": [
+    {
+      "number": 51,
+      "health": {
+        "ready": false,
+        "reason": "lookup_device_unavailable",
+        "failures": 3
+      },
+      "failures": 3
+    },
+    {
+      "number": 54,
+      "health": {
+        "ready": false,
+        "reason": "lookup_device_unavailable",
+        "failures": 3
+      },
+      "failures": 3
+    },
+    {
+      "number": 55,
+      "health": {
+        "ready": false,
+        "reason": "lookup_device_unavailable",
+        "failures": 3
+      },
+      "failures": 3
+    },
+    {
+      "number": 156,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "failures": 0
+    },
+    {
+      "number": 155,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "failures": 2
+    },
+    {
+      "number": 115,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "failures": 0
+    },
+    {
+      "number": 164,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "failures": 0
+    },
+    {
+      "number": 162,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "failures": 0
+    },
+    {
+      "number": 161,
+      "health": {
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "failures": 1
+    },
+    {
+      "number": 118,
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "failures": 1
+    }
+  ],
+  "revision": 55,
+  "pendingBusiness": 0
+}
