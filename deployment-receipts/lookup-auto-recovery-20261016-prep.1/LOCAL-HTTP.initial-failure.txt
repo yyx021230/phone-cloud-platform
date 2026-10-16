@@ -1,0 +1,22 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ undefined
+- '1b83f71f-9407-42b7-96b3-e4fcb5f2a07d'
+
+    at runAccountOfflineHttp (file:///private/tmp/pc-lookup-auto-recovery-20261016/verification/automatic-recovery-http.mjs:78:156)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async file:///private/tmp/pc-lookup-auto-recovery-20261016/verification/automatic-recovery-http.mjs:96:108 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: '1b83f71f-9407-42b7-96b3-e4fcb5f2a07d',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v25.9.0
