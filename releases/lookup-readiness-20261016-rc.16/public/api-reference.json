@@ -1,0 +1,4521 @@
+{
+  "version": "lookup-readiness-20261016-rc.16",
+  "updatedAt": "2026-10-16",
+  "baseline": "lookup-realname-prompt-20261012-deployed.1",
+  "status": "实际部署与真机验收范围以同版本发布回执为准",
+  "routerSha256": "e13e4271b950b14402868ceaca005e14314ec603c13a095cd2cbb9f832238629",
+  "sourceRoutesReviewed": 106,
+  "groups": [
+    [
+      "auth",
+      "账户认证",
+      "基础接口"
+    ],
+    [
+      "user",
+      "设备库存",
+      "基础接口"
+    ],
+    [
+      "sms",
+      "短信接码",
+      "业务接口"
+    ],
+    [
+      "lookup-user",
+      "支付宝查名字",
+      "业务接口"
+    ],
+    [
+      "qr-scan",
+      "小红书自动登录",
+      "业务接口"
+    ],
+    [
+      "kuaishou-lead",
+      "快手录入",
+      "业务接口"
+    ],
+    [
+      "xhs-publish",
+      "小红书一键发布",
+      "业务接口"
+    ],
+    [
+      "xhs-data",
+      "小红书数据采集",
+      "业务接口"
+    ],
+    [
+      "screen",
+      "实时控制与相册",
+      "设备工具"
+    ]
+  ],
+  "guides": [
+    {
+      "id": "overview",
+      "title": "平台功能概览",
+      "intro": "平台功能 API",
+      "eyebrow": "PLATFORM API",
+      "paragraphs": [
+        "平台功能按业务独立查阅：短信接码、支付宝查名字、小红书自动登录、快手录入、小红书一键发布、小红书数据采集，以及账户、设备和实时控制工具。支付宝查名字同时列出第三方HMAC开放接口与平台Bearer操作接口。",
+        "启动准备：ready:true后可接单，设备数量及调度由平台内部管理，手机号自动分配；实际部署以同版本发布回执为准。其他平台功能按原分类列出。",
+        "外部系统接入查名字从“查名接入流程”开始；其他平台功能先读“认证与签名”和对应业务说明。页面只展示静态文档，不发送业务请求。"
+      ]
+    },
+    {
+      "id": "authentication",
+      "title": "认证与签名",
+      "intro": "先按接口选择身份，再构造请求",
+      "paragraphs": [
+        "第三方系统对接支付宝查名字，使用 /api/v1/open/name-lookups/* 和独立HMAC-SHA256客户端凭据；不使用网页登录Token。平台操作接口 /api/v1/user/* 使用登录后的Bearer令牌。两套接口的排队、结果字段和恢复语义不同，不可混用。",
+        "平台登录：POST /api/v1/auth/login 返回session.token，后续携带Authorization: Bearer <TOKEN>。权限按用户角色、设备归属和占用校验。401时核对身份与过期时间；429按retryAfterSeconds退避。",
+        "第三方请求必须带X-Client-Id、X-Timestamp（Unix毫秒）、X-Nonce、X-Signature。时钟默认允许5分钟误差；Nonce每次请求新建，8–120字符A–Z/a–z/0–9/._:-；签名为小写hex。",
+        "签名原文是大写METHOD、pathname、timestamp、nonce、SHA256(rawBody)，用四个换行连接且末尾不追加换行。pathname不含域名/查询串。GET使用空字节串；POST签实际发送的UTF-8 JSON原文，{}也纳入摘要，签完不得重新格式化。",
+        "POST prepare/tasks/query须Idempotency-Key；GET tasks/{lookupId}也须HMAC。准备键与业务键分开持久保存；每次请求更新Nonce和签名。",
+        "BASE_URL为管理员交付的根地址，当前平台为http://47.98.127.132，不包含/api/v1。签名不绑定查询串和幂等键，代理应保留pathname和请求原文。真实clientId、独立密钥和设备白名单由管理员另行交付；页面及示例不含凭据。"
+      ],
+      "code": "import crypto from \"node:crypto\";\n\nexport function signedHeaders(secret, clientId, method, pathname, rawBody = \"\") {\n  const timestamp = String(Date.now()); // 毫秒\n  const nonce = crypto.randomUUID();\n  const digest = crypto.createHash(\"sha256\").update(rawBody, \"utf8\").digest(\"hex\");\n  const canonical = [method.toUpperCase(), pathname, timestamp, nonce, digest].join(\"\\n\");\n  return {\n    \"Content-Type\": \"application/json\",\n    \"X-Client-Id\": clientId,\n    \"X-Timestamp\": timestamp,\n    \"X-Nonce\": nonce,\n    \"X-Signature\": crypto.createHmac(\"sha256\", secret).update(canonical).digest(\"hex\")\n  };\n}",
+      "headings": [
+        "选择认证方式",
+        "平台登录",
+        "签名请求头",
+        "签名原文",
+        "幂等与重试",
+        "接入地址与凭据"
+      ]
+    },
+    {
+      "id": "lookup-flow",
+      "title": "支付宝查名接入流程",
+      "intro": "启动准备 → 提交手机号 → 按原lookupId获取姓名",
+      "paragraphs": [
+        "调用POST /api/v1/open/name-lookups/prepare，body为{}，保存准备键并每5秒用同键读取；ready:true即可提交手机号，设备数量及调度由平台内部管理。每轮固定30分钟；过期后保存新准备键重新准备。探测号码由平台配置，不由调用方传入。",
+        "每个clientId默认可同时提交20个单号码请求（管理员可调整），执行与排队合计计数；内部最多5台执行，仅2台就绪时其余排队，其他手机探测通过后自动接后续任务；达到配置上限的新号码返回429 lookup_inflight_limit，不创建任务，等已有任务完成后用原业务键重试。重复号码/请求键先复用原任务、不额外占位。POST /api/v1/open/name-lookups/tasks只传phoneNumber并保存lookupId；另一独立任务GET /tasks/{lookupId}。每个号码完成就返回，只有status=completed才将name写入业务系统；name可以是姓名或空字符串，未实名归空。queued/processing不写空值；failed及HTTP错误是服务异常，不是假无姓名。",
+        "首次提交前持久保存Idempotency-Key；网络重试复用原键，每次Nonce/签名更新。对方等2分钟换键重提同客户同手机号仍返回原lookupId。成功有/无姓名固定10分钟复用；GET和重提不延长期限。每任务最多50个新别名，队列30分钟，总预算60分钟，人工等待30分钟，冷却8小时；离线执行未知时继续对账，不盲目重派。",
+        "只分配已探测且凭据有效的手机。确认触限先持久冷却、结束旧执行，再把原号码转到另一台已就绪手机，lookupId不变；原手机后台切号探测，通过后重入池。无可用手机则排队；执行是否完成不明时保留原任务对账，避免重复。业务与探测合计最多5路；空闲手机的旧就绪证据会过期，有调用需求时重新探测。人工等待上限不阻断正常就绪手机接单，候补从已启用空闲设备中选择，其他在用手机不被抢占。",
+        "本地HTTP/PostgreSQL与模拟设备验证不能替代真机验收。平台上线后配置已授权已知有姓名的探测号，完成真机灰度后再交接。云端与Agent须配套更新；旧客户端未调用prepare时保持旧契约。"
+      ],
+      "sections": [
+        {
+          "title": "Node.js",
+          "language": "Node.js",
+          "code": "const ready = await client.prepareLookup({idempotencyKey: savedPreparationKey});\n// 同准备键每5秒重试，ready.ready为true后提交\nconst accepted = await client.submitLookup(\"13800000000\", {idempotencyKey: savedBusinessKey});\nconst result = await client.getLookupResult(accepted.lookupId);\nif (result.status === \"completed\") saveName(result.name);"
+        },
+        {
+          "title": "Python",
+          "language": "Python",
+          "code": "ready = client.prepare_lookup(idempotency_key=saved_preparation_key)\n# ready[\"ready\"]为True后提交；持久保存两个键和lookupId\naccepted = client.submit_lookup(\"13800000000\", idempotency_key=saved_business_key)\nresult = client.get_lookup_result(accepted[\"lookupId\"])\nif result[\"status\"] == \"completed\":\n    save_name(result[\"name\"])"
+        }
+      ],
+      "headings": [
+        "启动准备",
+        "提交和读取",
+        "超时防重",
+        "内部调度",
+        "验收边界"
+      ]
+    },
+    {
+      "id": "states",
+      "title": "状态与异常处理",
+      "intro": "启动模式与旧兼容模式分别处理",
+      "paragraphs": [
+        "启动模式queued/processing不包含name，completed只返回姓名或空字符串，failed返回ok:false及code、不含name；任务结果读取HTTP200，HTTP认证/网络错误另行处理。未调用prepare的老客户端保持queued/processing/succeeded/not_found/failed。",
+        "会话：starting → ready → querying → ready；自动切号为switching，人工为needs_human_verification，选择账户为choosing_account；停止为stopping，终态为ended/failed/expired。以机器字段做判断，不依赖stage的中文文案。",
+        "查询：queued/running/cancelling为处理中；succeeded/not_found是正常完成；needs_human_verification等待人工；needs_recovery等待原任务恢复；limit_reached/failed/cancelled需要按原因处置。这些状态已在当前部署代码中确认，真机覆盖范围见交付与联调说明。",
+        "session.pending只表示当前作业存在，不代表所有排队任务都完成；还要检查queuedCount和已保存queryId。会话results有500条窗口，始终以单结果接口补取。",
+        "请求超时不表示未执行：先以原ID查询，创建/提交/恢复重试保留原幂等键。HTTP期限建议10–30秒，业务等待设独立总期限；人工等待不应被短HTTP重试循环误判。429使用返回冷却时间，5xx指数退避；409先核对状态。",
+        "本平台业务接口使用HTTP状态和error字符串，没有统一的飞书式数字业务码；成功可能没有ok字段。X-Request-Id由服务器响应头返回，排障可提供此值。JSON时间通常为ISO8601；证据/APK/ZIP是二进制响应。"
+      ],
+      "sections": [
+        {
+          "title": "查询状态与处理动作",
+          "table": {
+            "headers": [
+              "字段/状态",
+              "调用方动作"
+            ],
+            "rows": [
+              [
+                "queued / running / cancelling",
+                "继续轮询原queryId，不创建第二条查询"
+              ],
+              [
+                "succeeded",
+                "保存maskedName/nameTailCharacter和业务引用"
+              ],
+              [
+                "not_found",
+                "保存本次无姓名结果；不是完整实名存在性判断"
+              ],
+              [
+                "humanAction.required=true / needs_human_verification",
+                "等待操作员完成拼图，继续轮询原ID，平台自动接续优先"
+              ],
+              [
+                "queueState.action=retry_current_query / needs_recovery",
+                "普通恢复失败，对原queryId显式resume；同一次HTTP重试沿用恢复键"
+              ],
+              [
+                "queueState.action=end_session_and_select_another_device",
+                "本机可用账户耗尽，结束会话；另选设备须按调用方业务策略"
+              ],
+              [
+                "limit_reached / failed / cancelled",
+                "异常/取消终态，保存原因；不可当成姓名结果"
+              ],
+              [
+                "会话ended / failed / expired",
+                "停止提交，保存结果；不可恢复时终止业务"
+              ]
+            ]
+          }
+        },
+        {
+          "title": "限流、超时与重试",
+          "paragraphs": [
+            "HTTP超时建议10–30秒，整批业务与人工等待另设总期限。401先修认证，400修参数，409先读原状态，429按服务端退避，5xx或断网保留原幂等键并退避。没有自动恢复成功证据时，不自动换queryId重查。SDK不替调用方持久化幂等键，也不自动保证网络重试或会话清理。"
+          ]
+        },
+        {
+          "title": "拼图、切号和冷却的边界",
+          "paragraphs": [
+            "真实拼图需要人工；触限由平台自动切号，普通故障直接恢复搜索路径。冷却从首次限制时间起8小时，切号/回报/新会话不重置。开放会话当前不返回accountCooldowns列表，第三方按queueState处理；详细冷却记录仅平台操作视图可见。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "business-flow",
+      "title": "其他业务调用流程",
+      "intro": "每项业务按自己的任务与结果处理",
+      "paragraphs": [
+        "短信接码、小红书自动登录、快手录入和小红书一键发布继续独立列出。当前这些平台接口使用Bearer，不能复用查名HMAC凭据；第三方如需这些业务权限，由管理员确定专用平台账户及设备范围。",
+        "任务创建受理与执行完成分开。先持久保存响应中的任务/订单ID，再查对应业务状态；禁止将查名queryId、扫码taskId或发布jobId混用。取消/停止也使用所属业务接口。"
+      ],
+      "sections": [
+        {
+          "title": "业务流程索引",
+          "table": {
+            "headers": [
+              "业务",
+              "创建/读取",
+              "完成及异常核对"
+            ],
+            "rows": [
+              [
+                "短信接码",
+                "GET /api/v1/user/phones → POST /api/v1/user/sms-orders → GET /api/v1/user/sms-orders",
+                "按orderId取code/body/status；过期/取消不等于收到短信"
+              ],
+              [
+                "小红书自动登录",
+                "POST /api/v1/user/xhs/qr-scan-tasks → GET同路径任务列表；GET /api/v1/tasks/{taskId}/progress",
+                "按taskId看状态和结果，需人工或失败时读具体错误"
+              ],
+              [
+                "快手录入",
+                "POST /api/v1/user/automation/kuaishou-lead-tasks → GET同路径任务列表",
+                "按任务ID取result，停止使用/{taskId}/stop"
+              ],
+              [
+                "小红书一键发布",
+                "POST /api/v1/user/automation/xhs-publish-tasks → GET同路径任务列表",
+                "受理/ACK不等于发布成功；读最终result，超时先查原任务"
+              ],
+              [
+                "实时控制与相册",
+                "从对应会话创建响应取得连接信息与临时凭据",
+                "按接口权限操作，HMAC查名接口不下发控屏凭据"
+              ]
+            ]
+          }
+        }
+      ],
+      "headings": [
+        "业务身份与权限",
+        "任务关联与结果"
+      ]
+    },
+    {
+      "id": "handover",
+      "title": "交付与联调",
+      "intro": "接入包与交付检查",
+      "paragraphs": [
+        "11个HMAC操作：启动准备+提交+结果、原同步及7个会话兼容操作。下载含OpenAPI、Node/Python SDK、签名、partner_example.py及校验清单。",
+        "管理员另行交付HTTP BASE_URL/clientId/secret及用途授权；不在文档保存真实凭据、探测号码。",
+        "不新增数据库迁移；保留请求别名、结果与冷却。准备证明遇服务/Agent重启或账号变化失效，重新探测，读取原结果不受影响。",
+        "依据同版本发布回执判断实际验证范围，不宣称五台真机或永不出错。"
+      ],
+      "sections": [],
+      "headings": [
+        "可交付资料",
+        "管理员交付项",
+        "已经验证的范围",
+        "仍需联调的项目"
+      ]
+    },
+    {
+      "id": "models",
+      "title": "公共数据模型",
+      "intro": "平台功能的数据模型",
+      "paragraphs": [
+        "开放查名模型与平台操作模型分别列出。开放结果为queryId/maskedName/nameTailCharacter，平台结果可能为resultId/name/realNameTailCharacter，不能混用字段。",
+        "model列稳定字段，result/payload/health允许按任务扩展。分支字段可能省略；例如humanAction只在required=true时提供type/queryId，idempotent只在重放时出现。"
+      ],
+      "headings": [
+        "开放与平台字段分工",
+        "可选字段与扩展"
+      ]
+    },
+    {
+      "id": "errors",
+      "title": "错误与排障",
+      "intro": "根据 HTTP 状态定位问题",
+      "paragraphs": [
+        "按HTTP状态与error字符串处理，不假定有统一数字业务码。各接口列出直接路由及已核对的查名鉴权/校验错误；执行器和存储仍可能产生扩展错误。网络超时先按原ID/幂等键对账，禁止盲目新建任务。"
+      ],
+      "headings": [
+        "按HTTP状态定位问题"
+      ]
+    },
+    {
+      "id": "lookup-legacy",
+      "title": "旧会话模式（兼容）",
+      "intro": "围绕 sessionId 和 queryId 管理异步查询",
+      "paragraphs": [
+        "旧7个会话接口及同步query仅兼容。新合作系统使用启动准备、提交和获取；未调用prepare的老客户端保留原响应，不能混用两种结果解析。",
+        "1. GET devices 选 available=true 的设备；POST sessions 带 Idempotency-Key，保存 sessionId。available不预留设备，409设备占用时换可用设备。",
+        "2. POST sessions/{sessionId}/queries 提交 phoneNumber、clientReference、consentReference。每个业务号码使用独立且稳定的幂等键；同一会话可连续入队，实际按服务端入队顺序单机串行。首次starting、切号switching、人工处理期间允许排队，暂停/停止/终态以实际409和queueState为准。",
+        "3. 保存202或幂等200返回的queryId。每2–5秒轮询会话和单个结果，succeeded/not_found才是正常业务完成。maskedName保持上游脱敏形态，nameTailCharacter可能为空，不等于取得完整实名。",
+        "4. needs_human_verification：平台向已配置的飞书机器人发手机编号提醒，操作员登录云手机平台完成拼图。新版只读确认两次通过后自动关闭对应控屏、重查原号码，沿用原queryId并接回队列。第三方继续轮询，不创建重复查询；旧版/显式恢复须依据resumeAllowed及实际状态，活动控屏不能恢复。通知依赖部署配置，不保证外部机器人投递永不失败。",
+        "5. 首次账户准备阶段人工动作的queryId为空，不调用开放resume；人工结束后等待starting/ready。首次准备的普通恢复故障需要网页重试账户准备或结束会话。",
+        "6. queueState.action=retry_current_query：普通恢复失败，humanAction.required=false，不是拼图。对返回原queryId调用resume并带恢复专用幂等键；启动阶段没有queryId，走网页恢复或结束。若自动恢复已抢先执行而返回409，重新轮询原任务。",
+        "7. 真实触限由平台确认当前账户、记录8小时冷却、自动选择可用账户继续原号码；普通重试不再反复核对账户。全部账户耗尽时 queueState.action=end_session_and_select_another_device，结束会话并选择别的设备。当前生产已验证自然触限切号和跨会话冷却继承；自然8小时到期后再查询、两机/OEM等尚未验收。",
+        "8. 完成或决定放弃后POST end，202后轮询到ended。排队条目会cancelled，当前条目经过cancelling；不要因超时重复创建任务，stopping期间不要反复POST end。查询数据不是跨会话永久存档服务，请自行按queryId保存结果。"
+      ],
+      "sections": [
+        {
+          "title": "第三方最小调用链",
+          "table": {
+            "headers": [
+              "步骤",
+              "接口/动作",
+              "必须保存"
+            ],
+            "rows": [
+              [
+                "选设备",
+                "GET /api/v1/open/name-lookups/devices；选择available=true",
+                "deviceId（手机编号仅供人工定位）"
+              ],
+              [
+                "建会话",
+                "POST /sessions；201新建、200幂等重放",
+                "sessionId、创建幂等键"
+              ],
+              [
+                "入队",
+                "POST /sessions/{sessionId}/queries；202受理、200重放",
+                "queryId、clientReference、consentReference、查询幂等键"
+              ],
+              [
+                "取结果",
+                "每2–5秒GET会话及单结果；JSON响应，当前没有结果Webhook",
+                "按queryId对账，不能按数组位置"
+              ],
+              [
+                "结束",
+                "POST /end一次，202后轮询终态；stopping不反复POST",
+                "最终结果、会话结束状态"
+              ]
+            ]
+          }
+        },
+        {
+          "title": "请求与结果示例",
+          "paragraphs": [
+            "提交号码示例见下方。姓名输出是上游页面已有的掩码名与末字，不承诺返回完整实名。not_found表示本次未提取到姓名，不能据此认定号码没有实名。consentReference不回传，调用方保存自身关联。"
+          ],
+          "code": "{\n  \"phoneNumber\": \"13800000000\",\n  \"clientReference\": \"demo-order-0001\",\n  \"consentReference\": \"demo-consent-0001\"\n}",
+          "language": "JSON"
+        },
+        {
+          "title": "查名接口分工",
+          "paragraphs": [
+            "第三方接入使用下方HMAC接口；平台操作的6个Bearer接口供现有网页/运营操作使用。HMAC允许排队，Bearer提交要求ready且无pending，返回的queryId与平台jobId/resultId也不能混当一套协议。"
+          ]
+        },
+        {
+          "title": "下载完整资料",
+          "paragraphs": [
+            "接入包包含7个开放接口的OpenAPI、独立接入说明、Node.js/Python SDK、签名示例和文件校验清单。SDK使用环境变量或服务端密钥配置，不包含真实凭据。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "xhs-data-flow",
+      "title": "小红书数据采集流程",
+      "intro": "提交采集任务 → 保存 jobId → 获取结果",
+      "paragraphs": [
+        "先登录获取 Bearer，选择已上架、在线、已配置小红书槽位且没有其他任务占用的设备。此模块按 deviceId 与 app1/app2 采集；支付宝查名的内部设备池及 HMAC 凭据不用于此模块。",
+        "POST /api/v1/user/automation/xhs-data-tasks 传 deviceId 与 xhsAppSlot，201 仅表示受理。保存 task.jobId，每 2–5 秒 GET 原任务；运行中不要重复创建。创建响应丢失时，先 GET 列表按设备、槽位、创建时间核对原任务，无法唯一确认时人工处理。此接口不提供查名式的跨请求号防重。",
+        "采集上海时区最近 30 个自然日（含当天）的作品列表数据；只使用列表提供的阅读、点赞、评论数。无法读取的指标返回 null，0 是明确读到的零；没有稳定作品 ID，note_id 为 null，不承诺作为跨系统永久去重键。",
+        "任务 queued/running 时继续读取，succeeded 时检查 result.collection.complete。到达列表底部或明确进入窗口之前才算完整；不完整会标为 failed 并保留已采集部分，不把部分结果当完整结果。列表接口最近 30 条，仅返回数量摘要；GET 详情返回 notes，最多 1000 条。",
+        "执行最长 20 分钟，服务端任务上限 21 分钟。取消用 POST 原 jobId/cancel；取消回执后不再接收迟到成功覆盖，但手机端会协作结束并恢复本任务改动的设备设置，不承诺瞬时停止。",
+        "409 device_busy 等待设备释放；xhs_data_agent_update_required 表示 Agent 未声明能力，升级后再试。失败先检查 task.error/result，登录、验证码等由人工处理后重新创建。此版本不包含外部系统账号映射、定时采集或 Websync 数据库同步。"
+      ],
+      "headings": [
+        "认证与前置条件",
+        "提交、重试与轮询",
+        "数据范围与空值",
+        "完成判定与结果",
+        "取消与超时",
+        "失败处理与范围"
+      ]
+    }
+  ],
+  "models": {
+    "User": [
+      {
+        "name": "userId",
+        "type": "string",
+        "description": "用户ID"
+      },
+      {
+        "name": "username",
+        "type": "string",
+        "description": "用户名"
+      },
+      {
+        "name": "displayName",
+        "type": "string",
+        "description": "显示名"
+      },
+      {
+        "name": "role",
+        "type": "string",
+        "description": "admin/user"
+      },
+      {
+        "name": "enabled",
+        "type": "boolean",
+        "description": "是否启用"
+      },
+      {
+        "name": "createdAt",
+        "type": "string",
+        "description": "创建时间"
+      },
+      {
+        "name": "updatedAt",
+        "type": "string",
+        "description": "更新时间"
+      },
+      {
+        "name": "lastLoginAt",
+        "type": "string|null",
+        "description": "最近登录"
+      }
+    ],
+    "AuthSession": [
+      {
+        "name": "sessionId",
+        "type": "string",
+        "description": "会话ID"
+      },
+      {
+        "name": "token",
+        "type": "string",
+        "description": "登录响应中完整Bearer令牌"
+      },
+      {
+        "name": "role",
+        "type": "string",
+        "description": "admin/user"
+      },
+      {
+        "name": "expiresAt",
+        "type": "string",
+        "description": "过期ISO8601时间"
+      }
+    ],
+    "LookupDevice": [
+      {
+        "name": "deviceId",
+        "type": "string",
+        "description": "平台稳定ID"
+      },
+      {
+        "name": "deviceName",
+        "type": "string",
+        "description": "界面手机编号/名称"
+      },
+      {
+        "name": "available",
+        "type": "boolean",
+        "description": "已上架、ADB在线且没有活动任务锁"
+      },
+      {
+        "name": "listed",
+        "type": "boolean",
+        "description": "是否上架"
+      },
+      {
+        "name": "adbOnline",
+        "type": "boolean",
+        "description": "ADB在线"
+      }
+    ],
+    "OpenLookupSession": [
+      {
+        "name": "sessionId",
+        "type": "string",
+        "description": "稳定会话ID"
+      },
+      {
+        "name": "deviceId",
+        "type": "string",
+        "description": "设备ID"
+      },
+      {
+        "name": "status",
+        "type": "string",
+        "description": "starting/ready/querying/switching/choosing_account/needs_human_verification/stopping/ended/failed/expired"
+      },
+      {
+        "name": "pending",
+        "type": "boolean",
+        "description": "是否存在正在执行或等待领取的作业"
+      },
+      {
+        "name": "queuedCount",
+        "type": "number",
+        "description": "尚未派发查询数"
+      },
+      {
+        "name": "resultCount",
+        "type": "number",
+        "description": "所有结果数"
+      },
+      {
+        "name": "resultsTruncated",
+        "type": "boolean",
+        "description": "会话结果是否被500条窗口截断"
+      },
+      {
+        "name": "successfulCount",
+        "type": "number",
+        "description": "正常完成计数，包含succeeded与not_found；不是返回姓名条数"
+      },
+      {
+        "name": "currentAccount",
+        "type": "string",
+        "description": "当前账户脱敏展示标识，可能为空；不是可跨设备关联的账户主键"
+      },
+      {
+        "name": "results",
+        "type": "OpenLookupResult[]",
+        "description": "最多最近500条结果"
+      },
+      {
+        "name": "queueState",
+        "type": "QueueState",
+        "description": "执行或暂停动作"
+      },
+      {
+        "name": "humanAction",
+        "type": "HumanAction",
+        "description": "人工介入信息"
+      },
+      {
+        "name": "error",
+        "type": "string",
+        "description": "会话错误文本"
+      },
+      {
+        "name": "createdAt",
+        "type": "string",
+        "description": "创建时间"
+      },
+      {
+        "name": "updatedAt",
+        "type": "string",
+        "description": "更新时间"
+      },
+      {
+        "name": "endedAt",
+        "type": "string|null",
+        "description": "结束时间"
+      }
+    ],
+    "OpenLookupResult": [
+      {
+        "name": "queryId",
+        "type": "string",
+        "description": "稳定结果ID，恢复沿用此值"
+      },
+      {
+        "name": "clientReference",
+        "type": "string",
+        "description": "调用方业务关联"
+      },
+      {
+        "name": "queuePosition",
+        "type": "number|null",
+        "description": "等待队列从1起；已派发/终态为空"
+      },
+      {
+        "name": "phoneNumber",
+        "type": "string",
+        "description": "脱敏号码，例138****0000"
+      },
+      {
+        "name": "status",
+        "type": "string",
+        "description": "queued/running/cancelling/succeeded/not_found/needs_human_verification/needs_recovery/limit_reached/failed/cancelled"
+      },
+      {
+        "name": "stage",
+        "type": "string",
+        "description": "当前步骤展示文本，不作为稳定状态枚举"
+      },
+      {
+        "name": "maskedName",
+        "type": "string",
+        "description": "上游展示的脱敏姓名，例**某；不补全完整实名"
+      },
+      {
+        "name": "nameTailCharacter",
+        "type": "string",
+        "description": "可提取的姓名末字，可能为空"
+      },
+      {
+        "name": "accountSwitched",
+        "type": "boolean",
+        "description": "是否发生自动切号"
+      },
+      {
+        "name": "accountSwitchReason",
+        "type": "string",
+        "description": "切号原因"
+      },
+      {
+        "name": "accountSwitchCount",
+        "type": "number",
+        "description": "切换次数"
+      },
+      {
+        "name": "reason",
+        "type": "string",
+        "description": "限制原因或执行错误码"
+      },
+      {
+        "name": "error",
+        "type": "string",
+        "description": "错误文本"
+      },
+      {
+        "name": "createdAt",
+        "type": "string",
+        "description": "创建时间"
+      },
+      {
+        "name": "updatedAt",
+        "type": "string",
+        "description": "更新时间"
+      }
+    ],
+    "HumanAction": [
+      {
+        "name": "required",
+        "type": "boolean",
+        "description": "是否需要人工"
+      },
+      {
+        "name": "type",
+        "type": "string",
+        "description": "需要人工时为manual_jigsaw_verification"
+      },
+      {
+        "name": "reason",
+        "type": "string",
+        "description": "人工原因"
+      },
+      {
+        "name": "queryId",
+        "type": "string",
+        "description": "原查询ID；首次账户准备时为空"
+      },
+      {
+        "name": "resumeAllowed",
+        "type": "boolean",
+        "description": "是否存在可显式恢复的原查询，不代表尚未自动恢复"
+      }
+    ],
+    "QueueState": [
+      {
+        "name": "status",
+        "type": "string",
+        "description": "running/waiting/idle/paused"
+      },
+      {
+        "name": "reason",
+        "type": "string",
+        "description": "暂停原因，其他状态可能省略"
+      },
+      {
+        "name": "action",
+        "type": "string",
+        "description": "retry_current_query 或 end_session_and_select_another_device；非paused可能省略"
+      },
+      {
+        "name": "queryId",
+        "type": "string",
+        "description": "需重试的原查询ID；首次准备时为空"
+      }
+    ],
+    "Sim": [
+      {
+        "name": "subscriptionId",
+        "type": "integer|null",
+        "description": "Android订阅ID"
+      },
+      {
+        "name": "slotIndex",
+        "type": "integer",
+        "description": "0起槽位"
+      },
+      {
+        "name": "carrierName",
+        "type": "string",
+        "description": "运营商"
+      },
+      {
+        "name": "phoneNumber",
+        "type": "string",
+        "description": "号码"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "description": "展示标签"
+      },
+      {
+        "name": "enabled",
+        "type": "boolean",
+        "description": "是否启用"
+      },
+      {
+        "name": "busy",
+        "type": "boolean",
+        "description": "用户设备视图中可返回是否等待接码"
+      }
+    ],
+    "XhsAccount": [
+      {
+        "name": "appSlot",
+        "type": "string",
+        "description": "app1/app2"
+      },
+      {
+        "name": "xhsId",
+        "type": "string",
+        "description": "全平台唯一稳定账号ID"
+      },
+      {
+        "name": "accountName",
+        "type": "string",
+        "description": "可变展示名"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "description": "展示标签"
+      },
+      {
+        "name": "enabled",
+        "type": "boolean",
+        "description": "是否启用"
+      }
+    ],
+    "SmsOrder": [
+      {
+        "name": "orderId",
+        "type": "string",
+        "description": "订单ID"
+      },
+      {
+        "name": "deviceId",
+        "type": "string",
+        "description": "设备ID"
+      },
+      {
+        "name": "phoneNumber",
+        "type": "string",
+        "description": "权限范围内号码"
+      },
+      {
+        "name": "platform",
+        "type": "string",
+        "description": "平台标签"
+      },
+      {
+        "name": "status",
+        "type": "string",
+        "description": "waiting/received/expired/cancelled"
+      },
+      {
+        "name": "code",
+        "type": "string",
+        "description": "验证码"
+      },
+      {
+        "name": "body",
+        "type": "string",
+        "description": "按接口视图脱敏或公开的正文"
+      },
+      {
+        "name": "sender",
+        "type": "string",
+        "description": "发送方"
+      },
+      {
+        "name": "createdAt",
+        "type": "string",
+        "description": "创建时间"
+      },
+      {
+        "name": "startedAt",
+        "type": "string",
+        "description": "匹配起始时间"
+      },
+      {
+        "name": "expiresAt",
+        "type": "string",
+        "description": "过期时间"
+      },
+      {
+        "name": "updatedAt",
+        "type": "string",
+        "description": "更新时间"
+      }
+    ],
+    "SmsMessage": [
+      {
+        "name": "messageId",
+        "type": "string",
+        "description": "云端消息ID"
+      },
+      {
+        "name": "deviceId",
+        "type": "string",
+        "description": "设备ID"
+      },
+      {
+        "name": "messageKey",
+        "type": "string",
+        "description": "设备内稳定业务去重键"
+      },
+      {
+        "name": "smsId",
+        "type": "string",
+        "description": "Android Provider ID"
+      },
+      {
+        "name": "threadId",
+        "type": "string",
+        "description": "会话ID"
+      },
+      {
+        "name": "box",
+        "type": "string",
+        "description": "inbox/sent等"
+      },
+      {
+        "name": "type",
+        "type": "number|null",
+        "description": "Provider类型"
+      },
+      {
+        "name": "address",
+        "type": "string",
+        "description": "发送方"
+      },
+      {
+        "name": "phoneNumber",
+        "type": "string",
+        "description": "SIM号码"
+      },
+      {
+        "name": "body",
+        "type": "string",
+        "description": "正文"
+      },
+      {
+        "name": "code",
+        "type": "string",
+        "description": "提取验证码"
+      },
+      {
+        "name": "platform",
+        "type": "string",
+        "description": "平台标签"
+      },
+      {
+        "name": "messageAt",
+        "type": "string",
+        "description": "短信发生时间"
+      },
+      {
+        "name": "dateSent",
+        "type": "string",
+        "description": "发送时间"
+      },
+      {
+        "name": "read",
+        "type": "boolean",
+        "description": "已读"
+      },
+      {
+        "name": "seen",
+        "type": "boolean",
+        "description": "已查看"
+      },
+      {
+        "name": "status",
+        "type": "string",
+        "description": "Provider状态"
+      },
+      {
+        "name": "locked",
+        "type": "boolean",
+        "description": "锁定"
+      },
+      {
+        "name": "subscriptionId",
+        "type": "integer|null",
+        "description": "SIM订阅ID"
+      },
+      {
+        "name": "slotIndex",
+        "type": "integer|null",
+        "description": "卡槽"
+      },
+      {
+        "name": "source",
+        "type": "string",
+        "description": "数据来源"
+      },
+      {
+        "name": "sourcePackage",
+        "type": "string",
+        "description": "来源应用"
+      },
+      {
+        "name": "sourceAliases",
+        "type": "string[]",
+        "description": "合并来源"
+      },
+      {
+        "name": "createdAt",
+        "type": "string",
+        "description": "创建时间"
+      },
+      {
+        "name": "updatedAt",
+        "type": "string",
+        "description": "更新时间"
+      }
+    ],
+    "UserDevice": [
+      {
+        "name": "deviceId",
+        "type": "string",
+        "description": "稳定设备ID"
+      },
+      {
+        "name": "deviceName",
+        "type": "string",
+        "description": "手机编号/名称"
+      },
+      {
+        "name": "model",
+        "type": "string",
+        "description": "型号"
+      },
+      {
+        "name": "brand",
+        "type": "string",
+        "description": "品牌"
+      },
+      {
+        "name": "manufacturer",
+        "type": "string",
+        "description": "制造商"
+      },
+      {
+        "name": "androidVersion",
+        "type": "string",
+        "description": "系统版本"
+      },
+      {
+        "name": "adbOnline",
+        "type": "boolean",
+        "description": "ADB在线"
+      },
+      {
+        "name": "agentOnline",
+        "type": "boolean",
+        "description": "Android Agent在线"
+      },
+      {
+        "name": "listingStatus",
+        "type": "string",
+        "description": "上架状态"
+      },
+      {
+        "name": "sims",
+        "type": "Sim[]",
+        "description": "SIM配置"
+      },
+      {
+        "name": "xhsAccounts",
+        "type": "XhsAccount[]",
+        "description": "账号配置"
+      },
+      {
+        "name": "occupancy",
+        "type": "object",
+        "description": "当前用户可见的占用"
+      },
+      {
+        "name": "automationStatus",
+        "type": "object",
+        "description": "自动化就绪与组件健康"
+      },
+      {
+        "name": "screenControlConcurrentLookupAllowed",
+        "type": "boolean",
+        "description": "是否允许当前查名会话进入人工控屏"
+      },
+      {
+        "name": "screenControlNeedsHumanAction",
+        "type": "boolean",
+        "description": "是否需要人工控屏"
+      }
+    ],
+    "LookupSession": [
+      {
+        "name": "sessionId",
+        "type": "string",
+        "description": "会话ID"
+      },
+      {
+        "name": "deviceId",
+        "type": "string",
+        "description": "设备ID"
+      },
+      {
+        "name": "status",
+        "type": "string",
+        "description": "starting/ready/querying/switching/choosing_account/needs_human_verification/stopping/ended/failed/expired；还须检查阻塞结果"
+      },
+      {
+        "name": "pendingJobId",
+        "type": "string",
+        "description": "当前作业ID"
+      },
+      {
+        "name": "currentAccount",
+        "type": "string",
+        "description": "当前已验证账户"
+      },
+      {
+        "name": "accountIdentityVerified",
+        "type": "boolean",
+        "description": "当前账户身份是否已核验；普通重试复用已知账户"
+      },
+      {
+        "name": "successfulCount",
+        "type": "number",
+        "description": "正常完成计数，包含succeeded和not_found；不是返回姓名条数"
+      },
+      {
+        "name": "results",
+        "type": "object[]",
+        "description": "网页结果，包含内部resultId和权限范围内号码；与开放视图不同"
+      },
+      {
+        "name": "requiresAccountSwitch",
+        "type": "boolean",
+        "description": "无可用账户需暂停"
+      },
+      {
+        "name": "accountChoices",
+        "type": "object[]",
+        "description": "当前可选账户，含account/current/cooling"
+      },
+      {
+        "name": "accountCooldowns",
+        "type": "AccountCooldown[]",
+        "description": "冷却记录"
+      },
+      {
+        "name": "startupHumanVerification",
+        "type": "object|null",
+        "description": "首次准备阶段验证信息"
+      },
+      {
+        "name": "error",
+        "type": "string",
+        "description": "错误"
+      },
+      {
+        "name": "createdAt",
+        "type": "string",
+        "description": "创建时间"
+      },
+      {
+        "name": "updatedAt",
+        "type": "string",
+        "description": "更新时间"
+      }
+    ],
+    "AccountCooldown": [
+      {
+        "name": "account",
+        "type": "string",
+        "description": "同一设备内受限账户展示标识"
+      },
+      {
+        "name": "limitedAt",
+        "type": "string",
+        "description": "首次检测到限制的ISO8601时间；不是restrictedAt"
+      },
+      {
+        "name": "cooldownUntil",
+        "type": "string",
+        "description": "limitedAt加8小时的自然到期时间，事件重放不重置"
+      },
+      {
+        "name": "reason",
+        "type": "string",
+        "description": "access_denied/device_risk/frequent_or_abnormal_access"
+      },
+      {
+        "name": "remainingMs",
+        "type": "number",
+        "description": "剩余冷却毫秒，最低0"
+      },
+      {
+        "name": "cooling",
+        "type": "boolean",
+        "description": "当前是否仍在冷却"
+      }
+    ],
+    "DeviceLock": [
+      {
+        "name": "lockId",
+        "type": "string",
+        "description": "锁ID"
+      },
+      {
+        "name": "deviceId",
+        "type": "string",
+        "description": "设备ID"
+      },
+      {
+        "name": "taskId",
+        "type": "string",
+        "description": "关联业务任务/会话"
+      },
+      {
+        "name": "lockType",
+        "type": "string",
+        "description": "占用类型"
+      },
+      {
+        "name": "status",
+        "type": "string",
+        "description": "active/released等"
+      },
+      {
+        "name": "expiresAt",
+        "type": "string",
+        "description": "过期时间"
+      },
+      {
+        "name": "createdAt",
+        "type": "string",
+        "description": "创建时间"
+      },
+      {
+        "name": "updatedAt",
+        "type": "string",
+        "description": "更新时间"
+      }
+    ],
+    "WindowsTask": [
+      {
+        "name": "taskId",
+        "type": "string",
+        "description": "任务ID"
+      },
+      {
+        "name": "agentId",
+        "type": "string",
+        "description": "执行Agent"
+      },
+      {
+        "name": "deviceId",
+        "type": "string",
+        "description": "目标设备"
+      },
+      {
+        "name": "adbSerial",
+        "type": "string",
+        "description": "ADB目标"
+      },
+      {
+        "name": "type",
+        "type": "string",
+        "description": "adb_install_apk/adb_grant_permissions/adb_start_agent/adb_collect_diagnostics/adb_restart_server/xhs_qr_appium/xhs_publish/kuaishou_lead/alipay_name_start/alipay_name_query/alipay_name_switch/alipay_name_stop/sms_sync_now；screen_gallery_import由专用入口创建"
+      },
+      {
+        "name": "status",
+        "type": "string",
+        "description": "queued/running/stalled/succeeded/failed/cancelled/expired（按任务路径）"
+      },
+      {
+        "name": "payload",
+        "type": "object",
+        "description": "领取详情中的类型专属载荷，摘要可能省略"
+      },
+      {
+        "name": "result",
+        "type": "object",
+        "description": "执行结果"
+      },
+      {
+        "name": "createdAt",
+        "type": "string",
+        "description": "创建时间"
+      },
+      {
+        "name": "updatedAt",
+        "type": "string",
+        "description": "更新时间"
+      },
+      {
+        "name": "completedAt",
+        "type": "string|null",
+        "description": "完成时间"
+      },
+      {
+        "name": "deliveryToken",
+        "type": "string",
+        "description": "租约领取响应顶层一次性令牌；使用gallery_v2/xhs_publish_v1时出现"
+      },
+      {
+        "name": "deliveryAttempt",
+        "type": "number",
+        "description": "租约交付次数；仅租约响应"
+      }
+    ],
+    "AutomationJob": [
+      {
+        "name": "jobId",
+        "type": "string",
+        "description": "作业ID"
+      },
+      {
+        "name": "kind",
+        "type": "string",
+        "description": "xhs_publish/kuaishou_lead/alipay_name_start/alipay_name_query/alipay_name_switch/alipay_name_stop / xhs_data_collect"
+      },
+      {
+        "name": "deviceId",
+        "type": "string",
+        "description": "目标设备"
+      },
+      {
+        "name": "sessionId",
+        "type": "string",
+        "description": "查名会话ID"
+      },
+      {
+        "name": "status",
+        "type": "string",
+        "description": "作业状态"
+      },
+      {
+        "name": "stage",
+        "type": "string",
+        "description": "当前步骤"
+      },
+      {
+        "name": "result",
+        "type": "object",
+        "description": "任务类型专属结果；发布成功需读实际结果；采集结果为result.collection，见XhsCollection"
+      },
+      {
+        "name": "windowsTaskId",
+        "type": "string",
+        "description": "执行任务ID"
+      },
+      {
+        "name": "createdAt",
+        "type": "string",
+        "description": "创建时间"
+      },
+      {
+        "name": "updatedAt",
+        "type": "string",
+        "description": "更新时间"
+      },
+      {
+        "name": "completedAt",
+        "type": "string|null",
+        "description": "完成时间"
+      }
+    ],
+    "XhsTask": [
+      {
+        "name": "taskId",
+        "type": "string",
+        "description": "扫码任务ID"
+      },
+      {
+        "name": "deviceId",
+        "type": "string",
+        "description": "设备ID"
+      },
+      {
+        "name": "xhsAppSlot",
+        "type": "string",
+        "description": "app1/app2"
+      },
+      {
+        "name": "xhsAccountId",
+        "type": "string",
+        "description": "稳定账号ID快照"
+      },
+      {
+        "name": "xhsAccountName",
+        "type": "string",
+        "description": "展示名快照"
+      },
+      {
+        "name": "status",
+        "type": "string",
+        "description": "queued/running/stalled/succeeded/failed/cancelled/expired"
+      },
+      {
+        "name": "result",
+        "type": "object",
+        "description": "执行结果"
+      },
+      {
+        "name": "progress",
+        "type": "TaskProgress",
+        "description": "步骤进度"
+      },
+      {
+        "name": "events",
+        "type": "TaskEvent[]",
+        "description": "事件"
+      },
+      {
+        "name": "windowsTaskId",
+        "type": "string",
+        "description": "Windows执行任务ID"
+      },
+      {
+        "name": "cancellable",
+        "type": "boolean",
+        "description": "视图给出的可取消标记；接口仍以自身状态校验为准"
+      },
+      {
+        "name": "createdAt",
+        "type": "string",
+        "description": "创建时间"
+      },
+      {
+        "name": "updatedAt",
+        "type": "string",
+        "description": "更新时间"
+      }
+    ],
+    "TaskEvent": [
+      {
+        "name": "eventId",
+        "type": "string",
+        "description": "事件ID"
+      },
+      {
+        "name": "phase",
+        "type": "string",
+        "description": "阶段"
+      },
+      {
+        "name": "level",
+        "type": "string",
+        "description": "info/warn/error"
+      },
+      {
+        "name": "message",
+        "type": "string",
+        "description": "说明"
+      },
+      {
+        "name": "stepId",
+        "type": "string",
+        "description": "步骤ID"
+      },
+      {
+        "name": "stepIndex",
+        "type": "number|null",
+        "description": "步骤序号"
+      },
+      {
+        "name": "errorCode",
+        "type": "string",
+        "description": "错误码"
+      },
+      {
+        "name": "packageName",
+        "type": "string",
+        "description": "应用包名"
+      },
+      {
+        "name": "uiSnapshot",
+        "type": "string",
+        "description": "UI摘要"
+      },
+      {
+        "name": "uiHierarchy",
+        "type": "string",
+        "description": "元素树"
+      },
+      {
+        "name": "screenshot",
+        "type": "object|null",
+        "description": "截图证据"
+      },
+      {
+        "name": "detail",
+        "type": "object",
+        "description": "扩展诊断"
+      },
+      {
+        "name": "createdAt",
+        "type": "string",
+        "description": "创建时间"
+      }
+    ],
+    "TaskProgress": [
+      {
+        "name": "taskId",
+        "type": "string",
+        "description": "任务ID"
+      },
+      {
+        "name": "windowsTaskId",
+        "type": "string",
+        "description": "执行任务ID"
+      },
+      {
+        "name": "status",
+        "type": "string",
+        "description": "任务状态"
+      },
+      {
+        "name": "percent",
+        "type": "number",
+        "description": "估算进度百分比，不证明业务成功"
+      },
+      {
+        "name": "stepId",
+        "type": "string",
+        "description": "步骤ID"
+      },
+      {
+        "name": "stepIndex",
+        "type": "number|null",
+        "description": "序号"
+      },
+      {
+        "name": "message",
+        "type": "string",
+        "description": "说明"
+      },
+      {
+        "name": "elapsedMs",
+        "type": "number|null",
+        "description": "耗时毫秒"
+      },
+      {
+        "name": "updatedAt",
+        "type": "string",
+        "description": "更新时间"
+      }
+    ],
+    "GalleryTask": [
+      {
+        "name": "taskId",
+        "type": "string",
+        "description": "导入任务ID"
+      },
+      {
+        "name": "status",
+        "type": "string",
+        "description": "queued/running/succeeded/failed/cancelled"
+      },
+      {
+        "name": "result",
+        "type": "object",
+        "description": "执行结果"
+      },
+      {
+        "name": "createdAt",
+        "type": "string",
+        "description": "创建时间"
+      },
+      {
+        "name": "updatedAt",
+        "type": "string",
+        "description": "更新时间"
+      }
+    ],
+    "ScreenSession": [
+      {
+        "name": "sessionId",
+        "type": "string",
+        "description": "实时会话ID"
+      },
+      {
+        "name": "deviceId",
+        "type": "string",
+        "description": "设备ID"
+      },
+      {
+        "name": "agentId",
+        "type": "string",
+        "description": "AgentID"
+      },
+      {
+        "name": "status",
+        "type": "string",
+        "description": "connecting/ready/streaming/closed/failed/expired"
+      },
+      {
+        "name": "statusMessage",
+        "type": "string",
+        "description": "状态说明"
+      },
+      {
+        "name": "createdAt",
+        "type": "string",
+        "description": "创建时间"
+      },
+      {
+        "name": "expiresAt",
+        "type": "string",
+        "description": "过期时间"
+      },
+      {
+        "name": "requestedQualityProfile",
+        "type": "string",
+        "description": "申请档位，沿用部署配置"
+      }
+    ],
+    "Phone": [
+      {
+        "name": "phoneNumber",
+        "type": "string",
+        "description": "当前可用号码"
+      },
+      {
+        "name": "carrierName",
+        "type": "string",
+        "description": "运营商"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "description": "SIM展示标签"
+      },
+      {
+        "name": "platform",
+        "type": "string",
+        "description": "小红书"
+      },
+      {
+        "name": "deviceName",
+        "type": "string",
+        "description": "设备展示名；此接口不返回deviceId"
+      }
+    ],
+    "XhsCollection": [
+      {
+        "name": "schema_version",
+        "type": "number",
+        "description": "固定3"
+      },
+      {
+        "name": "window_days",
+        "type": "number",
+        "description": "固定30"
+      },
+      {
+        "name": "window_start_date",
+        "type": "string",
+        "description": "上海日期 YYYY-MM-DD"
+      },
+      {
+        "name": "window_end_date",
+        "type": "string",
+        "description": "上海日期 YYYY-MM-DD，含当天"
+      },
+      {
+        "name": "app_slot",
+        "type": "string",
+        "description": "app1/app2"
+      },
+      {
+        "name": "complete",
+        "type": "boolean",
+        "description": "仅完整覆盖时间窗口才为true"
+      },
+      {
+        "name": "stop_reason",
+        "type": "string",
+        "description": "list_end_visible/older_than_window_visible；其他原因不完整"
+      },
+      {
+        "name": "notes",
+        "type": "XhsCollectionNote[]",
+        "description": "仅详情含作品明细；列表摘要只有note_count"
+      },
+      {
+        "name": "totals",
+        "type": "object",
+        "description": "列表指标合计；任意作品该指标缺失则该总计null"
+      },
+      {
+        "name": "warnings",
+        "type": "string[]",
+        "description": "有限的采集提示"
+      }
+    ],
+    "XhsCollectionNote": [
+      {
+        "name": "title",
+        "type": "string",
+        "description": "作品标题，非稳定唯一标识"
+      },
+      {
+        "name": "published_date",
+        "type": "string",
+        "description": "发布日期 YYYY-MM-DD"
+      },
+      {
+        "name": "note_id",
+        "type": "null",
+        "description": "本版本不提供稳定作品ID"
+      },
+      {
+        "name": "list_view_count",
+        "type": "number|null",
+        "description": "列表阅读数；缺失为null，0表示明确零"
+      },
+      {
+        "name": "list_like_count",
+        "type": "number|null",
+        "description": "列表点赞数"
+      },
+      {
+        "name": "list_comment_count",
+        "type": "number|null",
+        "description": "列表评论数"
+      }
+    ]
+  },
+  "commonErrors": [
+    [
+      "400",
+      "invalid_json / invalid_idempotency_key",
+      "检查JSON和字段格式；查名幂等键为8–160字符 A–Z/a–z/0–9/._:-。"
+    ],
+    [
+      "401",
+      "unauthorized",
+      "Bearer缺失、过期或角色不允许；重新登录或核对接口身份。"
+    ],
+    [
+      "401",
+      "open_api_auth_required / invalid_open_api_client",
+      "检查4个HMAC请求头及管理员交付的客户端ID。"
+    ],
+    [
+      "401",
+      "open_api_timestamp_expired",
+      "使用毫秒Unix时间，默认时钟误差不超过300秒（可配置）。"
+    ],
+    [
+      "401",
+      "invalid_open_api_nonce / open_api_nonce_replayed",
+      "每次HTTP请求生成新的8–120字符Nonce；重试不得复用。"
+    ],
+    [
+      "401",
+      "invalid_open_api_signature",
+      "核对原始UTF-8请求体、pathname和小写十六进制；签名后不可格式化。"
+    ],
+    [
+      "403",
+      "open_name_lookup_user_not_available / open_name_lookup_device_not_allowed",
+      "专用用户须启用、角色为user；deviceId须在当前客户端白名单。"
+    ],
+    [
+      "404",
+      "open_name_lookup_api_not_enabled",
+      "目标部署未启用查名开放接口；联系管理员核对当前环境和开关。"
+    ],
+    [
+      "404",
+      "lookup_session_not_found / lookup_query_not_found",
+      "核对ID和所属clientId，禁止跨客户端读取。"
+    ],
+    [
+      "409",
+      "device_busy / device_not_available",
+      "设备占用或离线；重新列设备选择，防止紧循环。"
+    ],
+    [
+      "409",
+      "idempotency_conflict",
+      "同键的业务参数不同，保留原业务键，不得用随机新键绕过冲突。"
+    ],
+    [
+      "409",
+      "lookup_screen_control_active",
+      "人工控屏未结束；完成验证并关闭控屏，再轮询原queryId。"
+    ],
+    [
+      "409",
+      "lookup_human_verification_not_resumable",
+      "原任务可能已经自动恢复或状态变化；先轮询原查询/会话，不新建号码查询。"
+    ],
+    [
+      "409",
+      "lookup_queue_paused_account_switch_required",
+      "全部可用账户受限或冷却；按queueState结束并选择别的设备。"
+    ],
+    [
+      "413 / 415",
+      "payload_too_large / unsupported_media_type",
+      "核对请求大小和Content-Type；APK用二进制，其余JSON接口用application/json。"
+    ],
+    [
+      "429",
+      "too_many_login_attempts / sms_refresh_too_frequent",
+      "按retryAfterSeconds退避；其它业务限额见接口说明。"
+    ],
+    [
+      "5xx",
+      "服务端错误",
+      "结果可能未知。查询原ID；可幂等请求重试保留原Idempotency-Key，每次重新签名，指数退避并设置总期限。"
+    ],
+    [
+      400,
+      "invalid_lookup_phone",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      400,
+      "idempotency_key_required",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      403,
+      "managed_lookup_not_authorized",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      404,
+      "managed_lookup_not_enabled",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      429,
+      "lookup_queue_full",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      429,
+      "lookup_waiter_limit",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      503,
+      "lookup_pool_disabled",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      503,
+      "lookup_manual_action_pending",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      503,
+      "lookup_recovery_required",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      503,
+      "lookup_outcome_unknown",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      503,
+      "lookup_accounts_cooling",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      503,
+      "lookup_prepare_failed",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      503,
+      "lookup_execution_failed",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      503,
+      "lookup_cancelled",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      503,
+      "lookup_storage_unavailable",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      503,
+      "lookup_manual_wait_expired",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      403,
+      "permission_revoked",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      504,
+      "lookup_queue_timeout",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      504,
+      "lookup_timeout",
+      "设备池响应字段code；重试保留原业务键，人工/未知由平台处理。"
+    ],
+    [
+      404,
+      "lookup_task_not_found",
+      "异步接口错误；业务身份保留，GET失败不触发新查号。"
+    ],
+    [
+      429,
+      "lookup_duplicate_limit",
+      "异步接口错误；业务身份保留，GET失败不触发新查号。"
+    ],
+    [
+      400,
+      "invalid_lookup_prepare_body",
+      "原业务身份保留；准备/读取失败不代表无姓名。"
+    ],
+    [
+      409,
+      "lookup_preparation_expired",
+      "原业务身份保留；准备/读取失败不代表无姓名。"
+    ],
+    [
+      429,
+      "lookup_preparation_key_limit",
+      "原业务身份保留；准备/读取失败不代表无姓名。"
+    ],
+    [
+      503,
+      "lookup_not_ready",
+      "原业务身份保留；准备/读取失败不代表无姓名。"
+    ],
+    [
+      503,
+      "lookup_probe_not_configured",
+      "原业务身份保留；准备/读取失败不代表无姓名。"
+    ],
+    [
+      503,
+      "lookup_preparation_capacity",
+      "原业务身份保留；准备/读取失败不代表无姓名。"
+    ],
+    [
+      400,
+      "prepare_body_must_be_empty",
+      "原业务身份保留；准备/读取失败不代表无姓名。"
+    ],
+    [
+      429,
+      "lookup_inflight_limit",
+      "原业务身份保留；准备/读取失败不代表无姓名。"
+    ]
+  ],
+  "websockets": [],
+  "endpoints": [
+    {
+      "method": "POST",
+      "line": 400,
+      "path": "/api/v1/auth/login",
+      "id": "post-api-v1-auth-login",
+      "group": "auth",
+      "title": "登录平台",
+      "description": "用户名和密码登录；失败次数过多返回 429，成功返回会话令牌及用户。",
+      "auth": "public",
+      "parameters": [
+        {
+          "name": "password",
+          "location": "body",
+          "type": "string",
+          "required": true,
+          "description": "密码；示例使用占位符，不保存在页面"
+        },
+        {
+          "name": "username",
+          "location": "body",
+          "type": "string",
+          "required": true,
+          "description": "登录用户名；按服务端规则规范化"
+        }
+      ],
+      "errors": [
+        "invalid_credentials",
+        "too_many_login_attempts"
+      ],
+      "errorStatuses": {
+        "too_many_login_attempts": [
+          429
+        ],
+        "invalid_credentials": [
+          401
+        ]
+      },
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "ok:boolean,session:AuthSession,user:User",
+      "required": [
+        "username",
+        "password"
+      ]
+    },
+    {
+      "method": "GET",
+      "line": 419,
+      "path": "/api/v1/auth/me",
+      "id": "get-api-v1-auth-me",
+      "group": "auth",
+      "title": "读取当前用户",
+      "description": "读取当前 Bearer 身份。",
+      "auth": "admin,user",
+      "parameters": [],
+      "errors": [],
+      "errorStatuses": {},
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "user:User"
+    },
+    {
+      "method": "POST",
+      "line": 424,
+      "path": "/api/v1/auth/logout",
+      "id": "post-api-v1-auth-logout",
+      "group": "auth",
+      "title": "退出登录",
+      "description": "撤销当前数据库会话；兼容静态令牌不由本接口轮换。",
+      "auth": "admin,user",
+      "parameters": [],
+      "errors": [],
+      "errorStatuses": {},
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "ok:boolean"
+    },
+    {
+      "method": "POST",
+      "line": 433,
+      "path": "/api/v1/auth/password",
+      "id": "post-api-v1-auth-password",
+      "group": "auth",
+      "title": "修改自己的密码",
+      "description": "必须使用真实用户会话，验证旧密码后更新；其他会话被撤销。",
+      "auth": "admin,user",
+      "parameters": [
+        {
+          "name": "currentPassword",
+          "location": "body",
+          "type": "string",
+          "required": true,
+          "description": "当前密码"
+        },
+        {
+          "name": "newPassword",
+          "location": "body",
+          "type": "string",
+          "required": true,
+          "description": "新密码，遵循部署密码长度配置"
+        }
+      ],
+      "errors": [
+        "invalid_current_password",
+        "password_change_requires_user_session"
+      ],
+      "errorStatuses": {
+        "password_change_requires_user_session": [
+          400
+        ],
+        "invalid_current_password": [
+          401
+        ]
+      },
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "ok:boolean",
+      "required": [
+        "currentPassword",
+        "newPassword"
+      ]
+    },
+    {
+      "group": "lookup-user",
+      "auth": "hmac",
+      "managed": true,
+      "scope": "同clientId及显式设备池授权；所有操作均须HMAC",
+      "errors": [
+        "invalid_lookup_phone",
+        "prepare_body_must_be_empty",
+        "idempotency_key_required",
+        "invalid_idempotency_key",
+        "managed_lookup_not_authorized",
+        "managed_lookup_not_enabled",
+        "lookup_task_not_found",
+        "idempotency_conflict",
+        "lookup_preparation_expired",
+        "lookup_queue_full",
+        "lookup_duplicate_limit",
+        "lookup_preparation_key_limit",
+        "lookup_pool_disabled",
+        "lookup_storage_unavailable",
+        "lookup_outcome_unknown",
+        "lookup_not_ready",
+        "lookup_probe_not_configured",
+        "lookup_preparation_capacity",
+        "open_api_auth_required",
+        "invalid_open_api_client",
+        "open_api_timestamp_expired",
+        "invalid_open_api_nonce",
+        "open_api_nonce_replayed",
+        "invalid_open_api_signature"
+      ],
+      "errorStatuses": {
+        "invalid_lookup_phone": [
+          400
+        ],
+        "prepare_body_must_be_empty": [
+          400
+        ],
+        "idempotency_key_required": [
+          400
+        ],
+        "invalid_idempotency_key": [
+          400
+        ],
+        "managed_lookup_not_authorized": [
+          403
+        ],
+        "managed_lookup_not_enabled": [
+          404
+        ],
+        "lookup_task_not_found": [
+          404
+        ],
+        "idempotency_conflict": [
+          409
+        ],
+        "lookup_preparation_expired": [
+          409
+        ],
+        "lookup_queue_full": [
+          429
+        ],
+        "lookup_duplicate_limit": [
+          429
+        ],
+        "lookup_preparation_key_limit": [
+          429
+        ],
+        "lookup_pool_disabled": [
+          503
+        ],
+        "lookup_storage_unavailable": [
+          503
+        ],
+        "lookup_outcome_unknown": [
+          503
+        ],
+        "lookup_not_ready": [
+          503
+        ],
+        "lookup_probe_not_configured": [
+          503
+        ],
+        "lookup_preparation_capacity": [
+          503
+        ],
+        "open_api_auth_required": [
+          401
+        ],
+        "invalid_open_api_client": [
+          401
+        ],
+        "open_api_timestamp_expired": [
+          401
+        ],
+        "invalid_open_api_nonce": [
+          401
+        ],
+        "open_api_nonce_replayed": [
+          401
+        ],
+        "invalid_open_api_signature": [
+          401
+        ]
+      },
+      "line": 402,
+      "id": "post-api-v1-open-name-lookups-prepare",
+      "method": "POST",
+      "path": "/api/v1/open/name-lookups/prepare",
+      "title": "启动查名准备 / 读取准备状态",
+      "description": "body为{}；同准备键轮询复用原轮次。仅ready:true且status:ready代表可提交手机号；不返回设备数量。固定30分钟租期；重复读取不续期。新轮次使用新准备键。就绪可因空闲或设备变化降级；lookup_not_ready时保留业务键重新读取prepare，原任务继续按lookupId读取。",
+      "async": "prepare",
+      "idempotency": "required",
+      "parameters": [],
+      "successCodes": [
+        200
+      ],
+      "response": "ok,preparationId,status,ready,expiresAt",
+      "example": {},
+      "responseExample": {
+        "ok": true,
+        "preparationId": "00000000-0000-4000-8000-000000000001",
+        "status": "ready",
+        "ready": true,
+        "expiresAt": "2026-10-15T10:30:00.000Z"
+      }
+    },
+    {
+      "group": "lookup-user",
+      "auth": "hmac",
+      "managed": true,
+      "scope": "同clientId及显式设备池授权；所有操作均须HMAC",
+      "errors": [
+        "invalid_lookup_phone",
+        "prepare_body_must_be_empty",
+        "idempotency_key_required",
+        "invalid_idempotency_key",
+        "managed_lookup_not_authorized",
+        "managed_lookup_not_enabled",
+        "lookup_task_not_found",
+        "idempotency_conflict",
+        "lookup_preparation_expired",
+        "lookup_queue_full",
+        "lookup_inflight_limit",
+        "lookup_duplicate_limit",
+        "lookup_preparation_key_limit",
+        "lookup_pool_disabled",
+        "lookup_storage_unavailable",
+        "lookup_outcome_unknown",
+        "lookup_not_ready",
+        "lookup_probe_not_configured",
+        "lookup_preparation_capacity",
+        "open_api_auth_required",
+        "invalid_open_api_client",
+        "open_api_timestamp_expired",
+        "invalid_open_api_nonce",
+        "open_api_nonce_replayed",
+        "invalid_open_api_signature"
+      ],
+      "errorStatuses": {
+        "invalid_lookup_phone": [
+          400
+        ],
+        "prepare_body_must_be_empty": [
+          400
+        ],
+        "idempotency_key_required": [
+          400
+        ],
+        "invalid_idempotency_key": [
+          400
+        ],
+        "managed_lookup_not_authorized": [
+          403
+        ],
+        "managed_lookup_not_enabled": [
+          404
+        ],
+        "lookup_task_not_found": [
+          404
+        ],
+        "idempotency_conflict": [
+          409
+        ],
+        "lookup_preparation_expired": [
+          409
+        ],
+        "lookup_queue_full": [
+          429
+        ],
+        "lookup_inflight_limit": [
+          429
+        ],
+        "lookup_duplicate_limit": [
+          429
+        ],
+        "lookup_preparation_key_limit": [
+          429
+        ],
+        "lookup_pool_disabled": [
+          503
+        ],
+        "lookup_storage_unavailable": [
+          503
+        ],
+        "lookup_outcome_unknown": [
+          503
+        ],
+        "lookup_not_ready": [
+          503
+        ],
+        "lookup_probe_not_configured": [
+          503
+        ],
+        "lookup_preparation_capacity": [
+          503
+        ],
+        "open_api_auth_required": [
+          401
+        ],
+        "invalid_open_api_client": [
+          401
+        ],
+        "open_api_timestamp_expired": [
+          401
+        ],
+        "invalid_open_api_nonce": [
+          401
+        ],
+        "open_api_nonce_replayed": [
+          401
+        ],
+        "invalid_open_api_signature": [
+          401
+        ]
+      },
+      "line": 402,
+      "id": "post-api-v1-open-name-lookups-tasks",
+      "method": "POST",
+      "path": "/api/v1/open/name-lookups/tasks",
+      "title": "提交支付宝查名",
+      "description": "准备就绪后只传phoneNumber，保存返回lookupId；同客户同号码在途换键仍复用原任务。同一clientId默认允许20条未完成业务（管理员可调整），内部最多5台执行，其余排队；超出返回429 lookup_inflight_limit且不建任务。重复请求先防重，不额外占位。未准备就绪时拒绝新受理，原任务读取/防重继续。",
+      "async": "submit",
+      "idempotency": "required",
+      "parameters": [
+        {
+          "name": "phoneNumber",
+          "location": "body",
+          "type": "string",
+          "required": true,
+          "description": "11位手机号；不传设备/账号"
+        }
+      ],
+      "successCodes": [
+        200,
+        202
+      ],
+      "response": "ok,lookupId,status,reused",
+      "example": {
+        "phoneNumber": "13800000000"
+      },
+      "responseExample": {
+        "ok": true,
+        "lookupId": "00000000-0000-4000-8000-000000000002",
+        "status": "queued",
+        "reused": false
+      }
+    },
+    {
+      "group": "lookup-user",
+      "auth": "hmac",
+      "managed": true,
+      "scope": "同clientId及显式设备池授权；所有操作均须HMAC",
+      "errors": [
+        "managed_lookup_not_authorized",
+        "managed_lookup_not_enabled",
+        "lookup_task_not_found",
+        "lookup_storage_unavailable",
+        "open_api_auth_required",
+        "invalid_open_api_client",
+        "open_api_timestamp_expired",
+        "invalid_open_api_nonce",
+        "open_api_nonce_replayed",
+        "invalid_open_api_signature"
+      ],
+      "errorStatuses": {
+        "managed_lookup_not_authorized": [
+          403
+        ],
+        "managed_lookup_not_enabled": [
+          404
+        ],
+        "lookup_task_not_found": [
+          404
+        ],
+        "lookup_storage_unavailable": [
+          503
+        ],
+        "open_api_auth_required": [
+          401
+        ],
+        "invalid_open_api_client": [
+          401
+        ],
+        "open_api_timestamp_expired": [
+          401
+        ],
+        "invalid_open_api_nonce": [
+          401
+        ],
+        "open_api_nonce_replayed": [
+          401
+        ],
+        "invalid_open_api_signature": [
+          401
+        ]
+      },
+      "line": 402,
+      "id": "get-api-v1-open-name-lookups-tasks-lookupId",
+      "method": "GET",
+      "path": "/api/v1/open/name-lookups/tasks/{lookupId}",
+      "title": "获取支付宝查名结果",
+      "description": "逐号码独立完成。启动模式completed返回name，姓名或空字符串（包含未实名）。queued/processing没有name，执行失败为failed/code没有name，不写成空姓名。未调用prepare的老客户端保留原五态契约。",
+      "async": "result",
+      "idempotency": "none",
+      "parameters": [
+        {
+          "name": "lookupId",
+          "location": "path",
+          "type": "string",
+          "required": true,
+          "description": "提交返回的原lookupId"
+        }
+      ],
+      "successCodes": [
+        200
+      ],
+      "response": "completed:ok,lookupId,status,name；处理中无name；failed:ok=false,lookupId,status,code",
+      "example": {},
+      "responseExample": {
+        "ok": true,
+        "lookupId": "00000000-0000-4000-8000-000000000002",
+        "status": "completed",
+        "name": "**某"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/open/name-lookups/query",
+      "id": "post-api-v1-open-name-lookups-query",
+      "group": "lookup-user",
+      "title": "传号码直接查名字（设备池）",
+      "description": "本地候选：只传号码，平台从49台登记手机中统一分配，自动执行最多5台。本次HTTP直接等待并返回页面显示姓名；无需deviceId/sessionId/queryId。",
+      "auth": "hmac",
+      "managed": true,
+      "parameters": [
+        {
+          "name": "phoneNumber",
+          "location": "body",
+          "type": "string",
+          "required": true,
+          "description": "中国大陆11位手机号；示例为合成号码"
+        }
+      ],
+      "errors": [
+        "invalid_idempotency_key",
+        "invalid_lookup_phone",
+        "idempotency_key_required",
+        "managed_lookup_not_authorized",
+        "managed_lookup_not_enabled",
+        "idempotency_conflict",
+        "lookup_queue_full",
+        "lookup_waiter_limit",
+        "lookup_pool_disabled",
+        "lookup_manual_action_pending",
+        "lookup_recovery_required",
+        "lookup_outcome_unknown",
+        "lookup_accounts_cooling",
+        "lookup_prepare_failed",
+        "lookup_execution_failed",
+        "lookup_cancelled",
+        "lookup_storage_unavailable",
+        "lookup_manual_wait_expired",
+        "permission_revoked",
+        "lookup_queue_timeout",
+        "lookup_timeout",
+        "open_name_lookup_user_not_available",
+        "open_api_auth_required",
+        "invalid_open_api_client",
+        "open_api_timestamp_expired",
+        "invalid_open_api_nonce",
+        "open_api_nonce_replayed",
+        "invalid_open_api_signature"
+      ],
+      "errorStatuses": {
+        "invalid_idempotency_key": [
+          400
+        ],
+        "invalid_lookup_phone": [
+          400
+        ],
+        "idempotency_key_required": [
+          400
+        ],
+        "managed_lookup_not_authorized": [
+          403
+        ],
+        "managed_lookup_not_enabled": [
+          404
+        ],
+        "idempotency_conflict": [
+          409
+        ],
+        "lookup_queue_full": [
+          429
+        ],
+        "lookup_waiter_limit": [
+          429
+        ],
+        "lookup_pool_disabled": [
+          503
+        ],
+        "lookup_manual_action_pending": [
+          503
+        ],
+        "lookup_recovery_required": [
+          503
+        ],
+        "lookup_outcome_unknown": [
+          503
+        ],
+        "lookup_accounts_cooling": [
+          503
+        ],
+        "lookup_prepare_failed": [
+          503
+        ],
+        "lookup_execution_failed": [
+          503
+        ],
+        "lookup_cancelled": [
+          503
+        ],
+        "lookup_storage_unavailable": [
+          503
+        ],
+        "lookup_manual_wait_expired": [
+          503
+        ],
+        "permission_revoked": [
+          403
+        ],
+        "lookup_queue_timeout": [
+          504
+        ],
+        "lookup_timeout": [
+          504
+        ],
+        "open_name_lookup_user_not_available": [
+          403
+        ],
+        "open_api_auth_required": [
+          401
+        ],
+        "invalid_open_api_client": [
+          401
+        ],
+        "open_api_timestamp_expired": [
+          401
+        ],
+        "invalid_open_api_nonce": [
+          401
+        ],
+        "open_api_nonce_replayed": [
+          401
+        ],
+        "invalid_open_api_signature": [
+          401
+        ]
+      },
+      "successCodes": [
+        200
+      ],
+      "scope": "管理员显式设备池授权",
+      "idempotency": "required",
+      "response": "ok:boolean,name:string",
+      "example": {
+        "phoneNumber": "13800000000"
+      },
+      "responseExample": {
+        "ok": true,
+        "name": "**某"
+      },
+      "line": 394
+    },
+    {
+      "method": "GET",
+      "line": 505,
+      "path": "/api/v1/open/name-lookups/devices",
+      "id": "get-api-v1-open-name-lookups-devices",
+      "group": "lookup-user",
+      "title": "获取可用查名设备",
+      "description": "只返回客户端精确白名单中的已存在设备。available 是瞬时信息，创建会话仍可能发生设备争用。",
+      "auth": "hmac",
+      "parameters": [],
+      "errors": [
+        "invalid_open_api_client",
+        "invalid_open_api_nonce",
+        "invalid_open_api_signature",
+        "open_api_auth_required",
+        "open_api_nonce_replayed",
+        "open_api_timestamp_expired",
+        "open_name_lookup_api_not_enabled",
+        "open_name_lookup_user_not_available"
+      ],
+      "errorStatuses": {
+        "open_name_lookup_user_not_available": [
+          403
+        ],
+        "open_api_auth_required": [
+          401
+        ],
+        "invalid_open_api_client": [
+          401
+        ],
+        "open_api_timestamp_expired": [
+          401
+        ],
+        "invalid_open_api_nonce": [
+          401
+        ],
+        "open_api_nonce_replayed": [
+          401
+        ],
+        "invalid_open_api_signature": [
+          401
+        ],
+        "open_name_lookup_api_not_enabled": [
+          404
+        ]
+      },
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "devices:LookupDevice[]"
+    },
+    {
+      "method": "POST",
+      "line": 520,
+      "path": "/api/v1/open/name-lookups/sessions",
+      "id": "post-api-v1-open-name-lookups-sessions",
+      "group": "lookup-user",
+      "title": "创建查名会话",
+      "description": "占用指定设备并异步准备账户。201 为新建，200 为相同幂等键重放。starting 时可先提交号码。",
+      "auth": "hmac",
+      "parameters": [
+        {
+          "name": "deviceId",
+          "location": "body",
+          "type": "string",
+          "required": true,
+          "description": "平台稳定设备ID，例如 adb:SERIAL-DEMO；不是界面编号"
+        }
+      ],
+      "errors": [
+        "device_busy",
+        "device_not_available",
+        "device_not_found",
+        "device_not_published",
+        "idempotency_conflict",
+        "idempotency_key_required",
+        "invalid_idempotency_key",
+        "invalid_json",
+        "invalid_open_api_client",
+        "invalid_open_api_nonce",
+        "invalid_open_api_signature",
+        "lookup_session_already_active",
+        "open_api_auth_required",
+        "open_api_nonce_replayed",
+        "open_api_timestamp_expired",
+        "open_name_lookup_api_not_enabled",
+        "open_name_lookup_device_not_allowed",
+        "open_name_lookup_user_not_available"
+      ],
+      "errorStatuses": {
+        "open_name_lookup_user_not_available": [
+          403
+        ],
+        "open_name_lookup_device_not_allowed": [
+          403
+        ],
+        "idempotency_conflict": [
+          409
+        ],
+        "device_not_found": [
+          404
+        ],
+        "device_not_published": [
+          409
+        ],
+        "device_not_available": [
+          409
+        ],
+        "device_busy": [
+          409,
+          409
+        ],
+        "lookup_session_already_active": [
+          409
+        ],
+        "open_api_auth_required": [
+          401
+        ],
+        "invalid_open_api_client": [
+          401
+        ],
+        "open_api_timestamp_expired": [
+          401
+        ],
+        "invalid_open_api_nonce": [
+          401
+        ],
+        "open_api_nonce_replayed": [
+          401
+        ],
+        "invalid_open_api_signature": [
+          401
+        ],
+        "open_name_lookup_api_not_enabled": [
+          404
+        ],
+        "invalid_json": [
+          400
+        ],
+        "idempotency_key_required": [
+          400
+        ],
+        "invalid_idempotency_key": [
+          400
+        ]
+      },
+      "successCodes": [
+        200,
+        201
+      ],
+      "scope": "",
+      "response": "ok:boolean,session:OpenLookupSession,idempotent:boolean",
+      "required": [
+        "deviceId"
+      ],
+      "idempotency": "required"
+    },
+    {
+      "method": "GET",
+      "line": 562,
+      "path": "/api/v1/open/name-lookups/sessions/{sessionId}",
+      "id": "get-api-v1-open-name-lookups-sessions-p1",
+      "group": "lookup-user",
+      "title": "查询查名会话",
+      "description": "轮询状态、人工动作和队列。results 最多返回最近 500 条；完整历史通过保存的 queryId 查询。ready 且无阻塞时，此接口也会推进排队查询。",
+      "auth": "hmac",
+      "parameters": [
+        {
+          "name": "sessionId",
+          "location": "path",
+          "type": "string",
+          "required": true,
+          "description": "服务端返回的稳定会话ID"
+        }
+      ],
+      "errors": [
+        "invalid_open_api_client",
+        "invalid_open_api_nonce",
+        "invalid_open_api_signature",
+        "lookup_session_not_found",
+        "open_api_auth_required",
+        "open_api_nonce_replayed",
+        "open_api_timestamp_expired",
+        "open_name_lookup_api_not_enabled"
+      ],
+      "errorStatuses": {
+        "lookup_session_not_found": [
+          404
+        ],
+        "open_api_auth_required": [
+          401
+        ],
+        "invalid_open_api_client": [
+          401
+        ],
+        "open_api_timestamp_expired": [
+          401
+        ],
+        "invalid_open_api_nonce": [
+          401
+        ],
+        "open_api_nonce_replayed": [
+          401
+        ],
+        "invalid_open_api_signature": [
+          401
+        ],
+        "open_name_lookup_api_not_enabled": [
+          404
+        ]
+      },
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "session:OpenLookupSession"
+    },
+    {
+      "method": "POST",
+      "line": 580,
+      "path": "/api/v1/open/name-lookups/sessions/{sessionId}/queries",
+      "id": "post-api-v1-open-name-lookups-sessions-p1-queries",
+      "group": "lookup-user",
+      "title": "提交号码查询",
+      "description": "将号码加入会话队列，返回稳定 queryId。202 表示已受理；同设备按入队顺序串行执行。相同幂等键重放返回 200。",
+      "auth": "hmac",
+      "parameters": [
+        {
+          "name": "sessionId",
+          "location": "path",
+          "type": "string",
+          "required": true,
+          "description": "服务端返回的稳定会话ID"
+        },
+        {
+          "name": "clientReference",
+          "location": "body",
+          "type": "string",
+          "required": true,
+          "description": "调用方业务引用，8–160字符，A–Z/a–z/0–9/._:-"
+        },
+        {
+          "name": "consentReference",
+          "location": "body",
+          "type": "string",
+          "required": true,
+          "description": "调用方授权依据引用，8–160字符，A–Z/a–z/0–9/._:-；保留在调用方审计中"
+        },
+        {
+          "name": "phoneNumber",
+          "location": "body",
+          "type": "string",
+          "required": true,
+          "description": "大陆手机号；查名去除非数字后须为1开头11位"
+        }
+      ],
+      "errors": [
+        "device_not_available",
+        "idempotency_conflict",
+        "idempotency_key_required",
+        "invalid_client_reference",
+        "invalid_consent_reference",
+        "invalid_idempotency_key",
+        "invalid_json",
+        "invalid_open_api_client",
+        "invalid_open_api_nonce",
+        "invalid_open_api_signature",
+        "invalid_phone_number",
+        "lookup_queue_paused_account_switch_required",
+        "lookup_session_not_accepting_queries",
+        "lookup_session_not_found",
+        "open_api_auth_required",
+        "open_api_nonce_replayed",
+        "open_api_timestamp_expired",
+        "open_name_lookup_api_not_enabled"
+      ],
+      "errorStatuses": {
+        "lookup_session_not_found": [
+          404
+        ],
+        "idempotency_conflict": [
+          409
+        ],
+        "lookup_queue_paused_account_switch_required": [
+          409
+        ],
+        "lookup_session_not_accepting_queries": [
+          409
+        ],
+        "device_not_available": [
+          409
+        ],
+        "open_api_auth_required": [
+          401
+        ],
+        "invalid_open_api_client": [
+          401
+        ],
+        "open_api_timestamp_expired": [
+          401
+        ],
+        "invalid_open_api_nonce": [
+          401
+        ],
+        "open_api_nonce_replayed": [
+          401
+        ],
+        "invalid_open_api_signature": [
+          401
+        ],
+        "open_name_lookup_api_not_enabled": [
+          404
+        ],
+        "invalid_json": [
+          400
+        ],
+        "idempotency_key_required": [
+          400
+        ],
+        "invalid_idempotency_key": [
+          400
+        ],
+        "invalid_phone_number": [
+          400
+        ],
+        "invalid_client_reference": [
+          400
+        ],
+        "invalid_consent_reference": [
+          400
+        ]
+      },
+      "successCodes": [
+        200,
+        202
+      ],
+      "scope": "",
+      "response": "ok:boolean,queryId:string,session:OpenLookupSession,idempotent:boolean",
+      "required": [
+        "phoneNumber",
+        "clientReference",
+        "consentReference"
+      ],
+      "idempotency": "required"
+    },
+    {
+      "method": "GET",
+      "line": 632,
+      "path": "/api/v1/open/name-lookups/sessions/{sessionId}/queries/{queryId}",
+      "id": "get-api-v1-open-name-lookups-sessions-p1-queries-p2",
+      "group": "lookup-user",
+      "title": "查询单个号码结果",
+      "description": "按 queryId 取回结果，避免依赖数组顺序或 500 条会话窗口。仅当前客户端可读。",
+      "auth": "hmac",
+      "parameters": [
+        {
+          "name": "sessionId",
+          "location": "path",
+          "type": "string",
+          "required": true,
+          "description": "服务端返回的稳定会话ID"
+        },
+        {
+          "name": "queryId",
+          "location": "path",
+          "type": "string",
+          "required": true,
+          "description": "服务端返回的稳定查名结果ID"
+        }
+      ],
+      "errors": [
+        "invalid_open_api_client",
+        "invalid_open_api_nonce",
+        "invalid_open_api_signature",
+        "lookup_query_not_found",
+        "lookup_session_not_found",
+        "open_api_auth_required",
+        "open_api_nonce_replayed",
+        "open_api_timestamp_expired",
+        "open_name_lookup_api_not_enabled"
+      ],
+      "errorStatuses": {
+        "lookup_session_not_found": [
+          404
+        ],
+        "lookup_query_not_found": [
+          404
+        ],
+        "open_api_auth_required": [
+          401
+        ],
+        "invalid_open_api_client": [
+          401
+        ],
+        "open_api_timestamp_expired": [
+          401
+        ],
+        "invalid_open_api_nonce": [
+          401
+        ],
+        "open_api_nonce_replayed": [
+          401
+        ],
+        "invalid_open_api_signature": [
+          401
+        ],
+        "open_name_lookup_api_not_enabled": [
+          404
+        ]
+      },
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "query:OpenLookupResult"
+    },
+    {
+      "method": "POST",
+      "line": 643,
+      "path": "/api/v1/open/name-lookups/sessions/{sessionId}/resume",
+      "id": "post-api-v1-open-name-lookups-sessions-p1-resume",
+      "group": "lookup-user",
+      "title": "恢复原号码查询",
+      "description": "显式恢复仍阻塞的原号码，主要用于queueState.action=retry_current_query。真实拼图优先由平台自动接续；resumeAllowed仅表示具备原查询，不代表需要立即调用。已自动恢复或查询已完成时重新轮询原queryId，不能重复提交号码。",
+      "auth": "hmac",
+      "parameters": [
+        {
+          "name": "sessionId",
+          "location": "path",
+          "type": "string",
+          "required": true,
+          "description": "服务端返回的稳定会话ID"
+        },
+        {
+          "name": "queryId",
+          "location": "body",
+          "type": "string",
+          "required": true,
+          "description": "服务端返回的稳定查名结果ID"
+        }
+      ],
+      "errors": [
+        "device_not_available",
+        "idempotency_conflict",
+        "idempotency_key_required",
+        "invalid_idempotency_key",
+        "invalid_json",
+        "invalid_open_api_client",
+        "invalid_open_api_nonce",
+        "invalid_open_api_signature",
+        "lookup_human_verification_not_resumable",
+        "lookup_human_verification_query_mismatch",
+        "lookup_screen_control_active",
+        "lookup_session_not_found",
+        "lookup_startup_human_resume_automatic",
+        "open_api_auth_required",
+        "open_api_nonce_replayed",
+        "open_api_timestamp_expired",
+        "open_name_lookup_api_not_enabled"
+      ],
+      "errorStatuses": {
+        "lookup_session_not_found": [
+          404
+        ],
+        "lookup_human_verification_not_resumable": [
+          409
+        ],
+        "lookup_startup_human_resume_automatic": [
+          409
+        ],
+        "lookup_human_verification_query_mismatch": [
+          409
+        ],
+        "idempotency_conflict": [
+          409
+        ],
+        "lookup_screen_control_active": [
+          409
+        ],
+        "device_not_available": [
+          409
+        ],
+        "open_api_auth_required": [
+          401
+        ],
+        "invalid_open_api_client": [
+          401
+        ],
+        "open_api_timestamp_expired": [
+          401
+        ],
+        "invalid_open_api_nonce": [
+          401
+        ],
+        "open_api_nonce_replayed": [
+          401
+        ],
+        "invalid_open_api_signature": [
+          401
+        ],
+        "open_name_lookup_api_not_enabled": [
+          404
+        ],
+        "invalid_json": [
+          400
+        ],
+        "idempotency_key_required": [
+          400
+        ],
+        "invalid_idempotency_key": [
+          400
+        ]
+      },
+      "successCodes": [
+        200,
+        202
+      ],
+      "scope": "",
+      "response": "ok:boolean,queryId:string,session:OpenLookupSession,idempotent:boolean",
+      "idempotency": "required",
+      "required": [
+        "queryId"
+      ]
+    },
+    {
+      "method": "POST",
+      "line": 675,
+      "path": "/api/v1/open/name-lookups/sessions/{sessionId}/end",
+      "id": "post-api-v1-open-name-lookups-sessions-p1-end",
+      "group": "lookup-user",
+      "title": "结束查名会话",
+      "description": "停止当前工作并取消排队查询。202 后轮询到 ended；已 ended/failed/expired 返回 200。stopping 期间不要反复 POST，当前实现可能重新下发停止任务。",
+      "auth": "hmac",
+      "parameters": [
+        {
+          "name": "sessionId",
+          "location": "path",
+          "type": "string",
+          "required": true,
+          "description": "服务端返回的稳定会话ID"
+        }
+      ],
+      "errors": [
+        "invalid_json",
+        "invalid_open_api_client",
+        "invalid_open_api_nonce",
+        "invalid_open_api_signature",
+        "lookup_session_not_found",
+        "open_api_auth_required",
+        "open_api_nonce_replayed",
+        "open_api_timestamp_expired",
+        "open_name_lookup_api_not_enabled",
+        "会话已结束"
+      ],
+      "errorStatuses": {
+        "lookup_session_not_found": [
+          404
+        ],
+        "open_api_auth_required": [
+          401
+        ],
+        "invalid_open_api_client": [
+          401
+        ],
+        "open_api_timestamp_expired": [
+          401
+        ],
+        "invalid_open_api_nonce": [
+          401
+        ],
+        "open_api_nonce_replayed": [
+          401
+        ],
+        "invalid_open_api_signature": [
+          401
+        ],
+        "open_name_lookup_api_not_enabled": [
+          404
+        ],
+        "invalid_json": [
+          400
+        ]
+      },
+      "successCodes": [
+        200,
+        202
+      ],
+      "scope": "",
+      "response": "ok:boolean,session:OpenLookupSession"
+    },
+    {
+      "method": "GET",
+      "line": 850,
+      "path": "/api/v1/tasks/{taskId}/progress",
+      "id": "get-api-v1-tasks-p1-progress",
+      "group": "qr-scan",
+      "title": "扫码任务进度",
+      "description": "用户只能读取自己的扫码任务；管理员可读取，越权按 404 处理。",
+      "auth": "user,admin",
+      "parameters": [
+        {
+          "name": "taskId",
+          "location": "path",
+          "type": "string",
+          "required": true,
+          "description": "任务ID"
+        }
+      ],
+      "errors": [
+        "task_not_found"
+      ],
+      "errorStatuses": {
+        "task_not_found": [
+          404,
+          404
+        ]
+      },
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "progress:TaskProgress"
+    },
+    {
+      "method": "GET",
+      "line": 859,
+      "path": "/api/v1/user/phones",
+      "id": "get-api-v1-user-phones",
+      "group": "sms",
+      "title": "可接码号码列表",
+      "description": "返回当前可用号码、设备与 SIM 关联。",
+      "auth": "user,admin",
+      "parameters": [],
+      "errors": [],
+      "errorStatuses": {},
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "phones:Phone[]"
+    },
+    {
+      "method": "GET",
+      "line": 864,
+      "path": "/api/v1/user/devices",
+      "id": "get-api-v1-user-devices",
+      "group": "user",
+      "title": "设备库存",
+      "description": "返回已上架设备及当前身份可见的短信、占用和自动化信息。",
+      "auth": "user,admin",
+      "parameters": [],
+      "errors": [],
+      "errorStatuses": {},
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "devices:UserDevice[]"
+    },
+    {
+      "method": "POST",
+      "line": 873,
+      "path": "/api/v1/user/devices/{deviceId}/screen-sessions",
+      "id": "post-api-v1-user-devices-p1-screen-sessions",
+      "group": "screen",
+      "title": "创建实时控制会话",
+      "description": "异步建立已有实时控制会话；设备/账户占用检查仍生效。返回浏览器短期凭据和媒体连接信息。",
+      "auth": "user,admin",
+      "parameters": [
+        {
+          "name": "deviceId",
+          "location": "path",
+          "type": "string",
+          "required": true,
+          "description": "平台稳定设备ID，例如 adb:SERIAL-DEMO；不是界面编号"
+        },
+        {
+          "name": "qualityProfile",
+          "location": "body",
+          "type": "string",
+          "required": false,
+          "description": "auto 或部署已有档位ID；默认auto，不改变媒体基线"
+        }
+      ],
+      "errors": [
+        "device_busy",
+        "device_not_found",
+        "invalid_screen_quality_profile",
+        "screen_agent_offline",
+        "screen_capacity_exhausted",
+        "screen_device_offline",
+        "screen_start_failed"
+      ],
+      "errorStatuses": {
+        "invalid_screen_quality_profile": [
+          400
+        ],
+        "screen_capacity_exhausted": [
+          409
+        ],
+        "device_not_found": [
+          404
+        ],
+        "screen_device_offline": [
+          409
+        ],
+        "screen_agent_offline": [
+          409,
+          409
+        ],
+        "device_busy": [
+          409
+        ],
+        "screen_start_failed": [
+          409
+        ]
+      },
+      "successCodes": [
+        201
+      ],
+      "scope": "",
+      "response": "ok:boolean,session:ScreenSession,browserToken:string,media:object"
+    },
+    {
+      "method": "POST",
+      "line": 944,
+      "path": "/api/v1/screen-sessions/{sessionId}/gallery-imports",
+      "id": "post-api-v1-screen-sessions-p1-gallery-imports",
+      "group": "screen",
+      "title": "导入图片到手机相册",
+      "description": "仅允许访问对应实时会话的用户上传图片；同一会话已有活动导入任务时返回 409。",
+      "auth": "user,admin",
+      "parameters": [
+        {
+          "name": "sessionId",
+          "location": "path",
+          "type": "string",
+          "required": true,
+          "description": "服务端返回的稳定会话ID"
+        },
+        {
+          "name": "imageDataUrl",
+          "location": "body",
+          "type": "string",
+          "required": false,
+          "description": "图片 Data URL，data:image/...;base64,...；最大字节沿用服务端配置"
+        }
+      ],
+      "errors": [
+        "screen_device_offline",
+        "screen_gallery_import_busy",
+        "screen_session_not_found"
+      ],
+      "errorStatuses": {
+        "screen_session_not_found": [
+          404
+        ],
+        "screen_device_offline": [
+          409
+        ],
+        "screen_gallery_import_busy": [
+          409
+        ]
+      },
+      "successCodes": [
+        201
+      ],
+      "scope": "",
+      "response": "ok:boolean,task:GalleryTask"
+    },
+    {
+      "method": "GET",
+      "line": 981,
+      "path": "/api/v1/screen-sessions/{sessionId}/gallery-imports/{taskId}",
+      "id": "get-api-v1-screen-sessions-p1-gallery-imports-p2",
+      "group": "screen",
+      "title": "读取相册导入任务",
+      "description": "校验会话、权限与任务归属。",
+      "auth": "user,admin",
+      "parameters": [
+        {
+          "name": "sessionId",
+          "location": "path",
+          "type": "string",
+          "required": true,
+          "description": "服务端返回的稳定会话ID"
+        },
+        {
+          "name": "taskId",
+          "location": "path",
+          "type": "string",
+          "required": true,
+          "description": "任务ID"
+        }
+      ],
+      "errors": [
+        "screen_gallery_import_not_found",
+        "screen_session_not_found"
+      ],
+      "errorStatuses": {
+        "screen_session_not_found": [
+          404
+        ],
+        "screen_gallery_import_not_found": [
+          404
+        ]
+      },
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "task:GalleryTask"
+    },
+    {
+      "method": "GET",
+      "line": 995,
+      "path": "/api/v1/screen-sessions/{sessionId}",
+      "id": "get-api-v1-screen-sessions-p1",
+      "group": "screen",
+      "title": "读取实时会话",
+      "description": "只返回可访问的会话。",
+      "auth": "user,admin",
+      "parameters": [
+        {
+          "name": "sessionId",
+          "location": "path",
+          "type": "string",
+          "required": true,
+          "description": "服务端返回的稳定会话ID"
+        }
+      ],
+      "errors": [
+        "screen_session_not_found"
+      ],
+      "errorStatuses": {
+        "screen_session_not_found": [
+          404
+        ]
+      },
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "session:ScreenSession"
+    },
+    {
+      "method": "DELETE",
+      "line": 1002,
+      "path": "/api/v1/screen-sessions/{sessionId}",
+      "id": "delete-api-v1-screen-sessions-p1",
+      "group": "screen",
+      "title": "关闭实时控制",
+      "description": "请求停止已有会话并释放相应占用。人工验证完成后由现有交接链路判断恢复，不改变控制协议。",
+      "auth": "user,admin",
+      "parameters": [
+        {
+          "name": "sessionId",
+          "location": "path",
+          "type": "string",
+          "required": true,
+          "description": "服务端返回的稳定会话ID"
+        }
+      ],
+      "errors": [
+        "screen_session_not_found"
+      ],
+      "errorStatuses": {
+        "screen_session_not_found": [
+          404
+        ]
+      },
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "ok:boolean,session:ScreenSession"
+    },
+    {
+      "method": "GET",
+      "line": 1014,
+      "path": "/api/v1/user/devices/{deviceId}/sms-library",
+      "id": "get-api-v1-user-devices-p1-sms-library",
+      "group": "sms",
+      "title": "读取设备短信库",
+      "description": "设备必须已上架；按 box/q/slotIndex/codeOnly 过滤，limit 默认20、上限100，offset 默认0。管理员访问记审计。",
+      "auth": "user,admin",
+      "parameters": [
+        {
+          "name": "deviceId",
+          "location": "path",
+          "type": "string",
+          "required": true,
+          "description": "平台稳定设备ID，例如 adb:SERIAL-DEMO；不是界面编号"
+        },
+        {
+          "name": "box",
+          "location": "query",
+          "type": "string",
+          "required": false,
+          "description": "all/inbox/sent/draft/outbox/failed/queued/unknown；默认all"
+        },
+        {
+          "name": "codeOnly",
+          "location": "query",
+          "type": "boolean",
+          "required": false,
+          "description": "query用1/true/yes表示仅验证码短信"
+        },
+        {
+          "name": "limit",
+          "location": "query",
+          "type": "integer",
+          "required": false,
+          "description": "分页条数，默认/上限随接口，见接口说明"
+        },
+        {
+          "name": "offset",
+          "location": "query",
+          "type": "integer",
+          "required": false,
+          "description": "分页偏移，0起，默认0"
+        },
+        {
+          "name": "q",
+          "location": "query",
+          "type": "string",
+          "required": false,
+          "description": "短信正文/发送方/号码的包含匹配；大小写不敏感"
+        },
+        {
+          "name": "slotIndex",
+          "location": "query",
+          "type": "integer",
+          "required": false,
+          "description": "SIM槽位，0起；指定设备接码时与号码/subscriptionId选择匹配SIM"
+        }
+      ],
+      "errors": [
+        "device_not_found"
+      ],
+      "errorStatuses": {
+        "device_not_found": [
+          404,
+          404
+        ]
+      },
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "device:UserDevice,total:number,visibility:string,limit:number,offset:number,messages:SmsMessage[]"
+    },
+    {
+      "method": "POST",
+      "line": 1058,
+      "path": "/api/v1/user/devices/{deviceId}/sms-library/refresh",
+      "id": "post-api-v1-user-devices-p1-sms-library-refresh",
+      "group": "sms",
+      "title": "刷新设备短信库",
+      "description": "异步下发或复用 sms_sync_now，受设备/用户刷新冷却限制；429 返回 retryAfterSeconds。",
+      "auth": "user,admin",
+      "parameters": [
+        {
+          "name": "deviceId",
+          "location": "path",
+          "type": "string",
+          "required": true,
+          "description": "平台稳定设备ID，例如 adb:SERIAL-DEMO；不是界面编号"
+        },
+        {
+          "name": "source",
+          "location": "body",
+          "type": "string",
+          "required": false,
+          "description": "来源标记；短信刷新冷却按现有服务策略执行"
+        }
+      ],
+      "errors": [
+        "device_not_found",
+        "sms_refresh_too_frequent",
+        "sms_refresh_unavailable"
+      ],
+      "errorStatuses": {
+        "device_not_found": [
+          404
+        ],
+        "sms_refresh_unavailable": [
+          409
+        ],
+        "sms_refresh_too_frequent": [
+          429
+        ]
+      },
+      "successCodes": [
+        202
+      ],
+      "scope": "",
+      "response": "ok:boolean,cooldownSeconds:number,task:WindowsTask"
+    },
+    {
+      "method": "GET",
+      "line": 1093,
+      "path": "/api/v1/user/sms-orders",
+      "id": "get-api-v1-user-sms-orders",
+      "group": "sms",
+      "title": "我的接码订单",
+      "description": "最多返回当前用户最近100个订单，等待订单可触发探测。",
+      "auth": "user,admin",
+      "parameters": [],
+      "errors": [],
+      "errorStatuses": {},
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "orders:SmsOrder[]"
+    },
+    {
+      "method": "POST",
+      "line": 1100,
+      "path": "/api/v1/user/sms-orders",
+      "id": "post-api-v1-user-sms-orders",
+      "group": "sms",
+      "title": "创建接码订单",
+      "description": "号码必须可用；每用户同时 waiting 数默认1（可配置）。成功返回201。",
+      "auth": "user,admin",
+      "parameters": [
+        {
+          "name": "deviceId",
+          "location": "body",
+          "type": "string",
+          "required": false,
+          "description": "平台稳定设备ID，例如 adb:SERIAL-DEMO；不是界面编号"
+        },
+        {
+          "name": "phoneNumber",
+          "location": "body",
+          "type": "string",
+          "required": false,
+          "description": "大陆手机号；查名去除非数字后须为1开头11位"
+        },
+        {
+          "name": "platform",
+          "location": "body",
+          "type": "string",
+          "required": false,
+          "description": "接码平台标签，默认按接口为小红书或第三方平台"
+        },
+        {
+          "name": "slotIndex",
+          "location": "body",
+          "type": "integer",
+          "required": false,
+          "description": "SIM槽位，0起；指定设备接码时与号码/subscriptionId选择匹配SIM"
+        },
+        {
+          "name": "subscriptionId",
+          "location": "body",
+          "type": "integer",
+          "required": false,
+          "description": "Android SIM订阅ID"
+        }
+      ],
+      "errors": [
+        "phoneNumber is required",
+        "phone_not_available",
+        "user_waiting_sms_limit_reached"
+      ],
+      "errorStatuses": {
+        "phoneNumber is required": [
+          400
+        ],
+        "user_waiting_sms_limit_reached": [
+          429
+        ],
+        "phone_not_available": [
+          409
+        ]
+      },
+      "successCodes": [
+        201
+      ],
+      "scope": "",
+      "response": "ok:boolean,order:SmsOrder",
+      "example": {
+        "phoneNumber": "13800000000",
+        "platform": "示例平台"
+      }
+    },
+    {
+      "method": "POST",
+      "line": 1149,
+      "path": "/api/v1/user/sms-orders/{orderId}/cancel",
+      "id": "post-api-v1-user-sms-orders-p1-cancel",
+      "group": "sms",
+      "title": "取消我的接码订单",
+      "description": "仅自己的 waiting 订单可取消。",
+      "auth": "user,admin",
+      "parameters": [
+        {
+          "name": "orderId",
+          "location": "path",
+          "type": "string",
+          "required": true,
+          "description": "接码订单ID"
+        }
+      ],
+      "errors": [
+        "sms_order_not_cancellable",
+        "sms_order_not_found"
+      ],
+      "errorStatuses": {
+        "sms_order_not_found": [
+          404
+        ],
+        "sms_order_not_cancellable": [
+          409
+        ]
+      },
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "ok:boolean,order:SmsOrder"
+    },
+    {
+      "method": "GET",
+      "line": 1160,
+      "path": "/api/v1/user/xhs/qr-scan-tasks",
+      "id": "get-api-v1-user-xhs-qr-scan-tasks",
+      "group": "qr-scan",
+      "title": "我的扫码任务",
+      "description": "返回当前用户最近100条扫码任务。",
+      "auth": "user,admin",
+      "parameters": [],
+      "errors": [],
+      "errorStatuses": {},
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "tasks:XhsTask[]"
+    },
+    {
+      "method": "POST",
+      "line": 1166,
+      "path": "/api/v1/user/xhs/qr-scan-tasks",
+      "id": "post-api-v1-user-xhs-qr-scan-tasks",
+      "group": "qr-scan",
+      "title": "创建小红书扫码任务",
+      "description": "上传二维码 Data URL；可选择设备和 app1/app2，省略目标时由服务端挑选可用账号。活动任务数默认上限3（可配置）。",
+      "auth": "user,admin",
+      "parameters": [
+        {
+          "name": "deviceId",
+          "location": "body",
+          "type": "string",
+          "required": false,
+          "description": "平台稳定设备ID，例如 adb:SERIAL-DEMO；不是界面编号"
+        },
+        {
+          "name": "qrImageDataUrl",
+          "location": "body",
+          "type": "string",
+          "required": true,
+          "description": "二维码图片Data URL；默认最大3000000字节（可配置）"
+        },
+        {
+          "name": "xhsAppSlot",
+          "location": "body",
+          "type": "string",
+          "required": false,
+          "description": "app1/app2；默认或服务端可用槽位，不用昵称代替稳定ID"
+        }
+      ],
+      "errors": [
+        "user_active_xhs_task_limit_reached",
+        "xhs_device_not_available"
+      ],
+      "errorStatuses": {
+        "user_active_xhs_task_limit_reached": [
+          429
+        ],
+        "xhs_device_not_available": [
+          409
+        ]
+      },
+      "successCodes": [
+        201
+      ],
+      "scope": "",
+      "response": "ok:boolean,task:XhsTask",
+      "required": [
+        "qrImageDataUrl"
+      ]
+    },
+    {
+      "method": "POST",
+      "line": 1197,
+      "path": "/api/v1/user/xhs/qr-scan-tasks/{taskId}/cancel",
+      "id": "post-api-v1-user-xhs-qr-scan-tasks-p1-cancel",
+      "group": "qr-scan",
+      "title": "取消我的扫码任务",
+      "description": "仅 queued/running 可取消；取消关联 Windows 任务并释放锁。",
+      "auth": "user,admin",
+      "parameters": [
+        {
+          "name": "taskId",
+          "location": "path",
+          "type": "string",
+          "required": true,
+          "description": "任务ID"
+        }
+      ],
+      "errors": [
+        "xhs_task_not_cancellable",
+        "xhs_task_not_found"
+      ],
+      "errorStatuses": {
+        "xhs_task_not_found": [
+          404
+        ],
+        "xhs_task_not_cancellable": [
+          409
+        ]
+      },
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "ok:boolean,task:XhsTask"
+    },
+    {
+      "method": "GET",
+      "line": 1211,
+      "path": "/api/v1/user/automation/xhs-publish-tasks",
+      "id": "get-api-v1-user-automation-xhs-publish-tasks",
+      "group": "xhs-publish",
+      "title": "我的图文发布任务",
+      "description": "返回当前用户最近100个 xhs_publish 作业。",
+      "auth": "user,admin",
+      "parameters": [],
+      "errors": [],
+      "errorStatuses": {},
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "tasks:AutomationJob[]"
+    },
+    {
+      "method": "POST",
+      "line": 1222,
+      "path": "/api/v1/user/automation/xhs-publish-tasks",
+      "id": "post-api-v1-user-automation-xhs-publish-tasks",
+      "group": "xhs-publish",
+      "title": "创建图文发布任务",
+      "description": "标题1–100字符、正文1–2000字符；图片默认最多5张，可配置1–9。201是受理，实际发布结果须轮询。超时不得直接重复发布。",
+      "auth": "user,admin",
+      "parameters": [
+        {
+          "name": "content",
+          "location": "body",
+          "type": "string",
+          "required": true,
+          "description": "图文正文，trim后1–2000字符"
+        },
+        {
+          "name": "deviceId",
+          "location": "body",
+          "type": "string",
+          "required": false,
+          "description": "平台稳定设备ID，例如 adb:SERIAL-DEMO；不是界面编号"
+        },
+        {
+          "name": "imageDataUrls",
+          "location": "body",
+          "type": "string[]",
+          "required": true,
+          "description": "图文发布图片Data URL数组；默认最多5张，可配置1–9"
+        },
+        {
+          "name": "title",
+          "location": "body",
+          "type": "string",
+          "required": true,
+          "description": "图文标题，trim后1–100字符"
+        },
+        {
+          "name": "xhsAppSlot",
+          "location": "body",
+          "type": "string",
+          "required": false,
+          "description": "app1/app2；默认或服务端可用槽位，不用昵称代替稳定ID"
+        }
+      ],
+      "errors": [
+        "publish_content_required",
+        "publish_content_too_long",
+        "publish_image_limit_reached",
+        "publish_image_required",
+        "publish_title_required",
+        "publish_title_too_long",
+        "xhs_device_not_available"
+      ],
+      "errorStatuses": {
+        "publish_title_required": [
+          400
+        ],
+        "publish_title_too_long": [
+          400
+        ],
+        "publish_content_required": [
+          400
+        ],
+        "publish_content_too_long": [
+          400
+        ],
+        "publish_image_required": [
+          400
+        ],
+        "publish_image_limit_reached": [
+          400
+        ],
+        "xhs_device_not_available": [
+          409
+        ]
+      },
+      "successCodes": [
+        201
+      ],
+      "scope": "",
+      "response": "ok:boolean,task:AutomationJob,lock:DeviceLock,windowsTaskId:string",
+      "required": [
+        "title",
+        "content",
+        "imageDataUrls"
+      ]
+    },
+    {
+      "method": "POST",
+      "line": 1263,
+      "path": "/api/v1/user/automation/xhs-publish-tasks/{taskId}/cancel",
+      "id": "post-api-v1-user-automation-xhs-publish-tasks-p1-cancel",
+      "group": "xhs-publish",
+      "title": "取消图文发布任务",
+      "description": "只允许当前用户取消活动作业；取消不证明已经发布的内容被撤回。",
+      "auth": "user,admin",
+      "parameters": [
+        {
+          "name": "taskId",
+          "location": "path",
+          "type": "string",
+          "required": true,
+          "description": "任务ID"
+        }
+      ],
+      "errors": [
+        "automation_job_not_cancellable",
+        "automation_job_not_found"
+      ],
+      "errorStatuses": {
+        "automation_job_not_found": [
+          404
+        ],
+        "automation_job_not_cancellable": [
+          409
+        ]
+      },
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "ok:boolean,task:AutomationJob"
+    },
+    {
+      "method": "GET",
+      "line": 1275,
+      "path": "/api/v1/user/automation/kuaishou-lead-tasks",
+      "id": "get-api-v1-user-automation-kuaishou-lead-tasks",
+      "group": "kuaishou-lead",
+      "title": "我的快手录入任务",
+      "description": "读取当前用户最近100个持续作业。",
+      "auth": "user,admin",
+      "parameters": [],
+      "errors": [],
+      "errorStatuses": {},
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "tasks:AutomationJob[]"
+    },
+    {
+      "method": "POST",
+      "line": 1286,
+      "path": "/api/v1/user/automation/kuaishou-lead-tasks",
+      "id": "post-api-v1-user-automation-kuaishou-lead-tasks",
+      "group": "kuaishou-lead",
+      "title": "启动快手录入",
+      "description": "独占目标设备扫描配置的飞书队列；全系统同一时刻只允许一个活动快手作业。间隔范围30–3600秒，最短不得大于最长，默认240/420。",
+      "auth": "user,admin",
+      "parameters": [
+        {
+          "name": "deviceId",
+          "location": "body",
+          "type": "string",
+          "required": true,
+          "description": "平台稳定设备ID，例如 adb:SERIAL-DEMO；不是界面编号"
+        },
+        {
+          "name": "maxDelaySeconds",
+          "location": "body",
+          "type": "integer",
+          "required": false,
+          "description": "快手最长间隔，30–3600，默认420且不小于最短"
+        },
+        {
+          "name": "minDelaySeconds",
+          "location": "body",
+          "type": "integer",
+          "required": false,
+          "description": "快手最短间隔，30–3600，默认240"
+        }
+      ],
+      "errors": [
+        "device_busy",
+        "device_not_available",
+        "device_not_found",
+        "device_not_published",
+        "invalid_kuaishou_lead_delay_range",
+        "kuaishou_lead_already_active"
+      ],
+      "errorStatuses": {
+        "invalid_kuaishou_lead_delay_range": [
+          400
+        ],
+        "device_not_found": [
+          404
+        ],
+        "device_not_published": [
+          409
+        ],
+        "device_not_available": [
+          409
+        ],
+        "kuaishou_lead_already_active": [
+          409
+        ],
+        "device_busy": [
+          409
+        ]
+      },
+      "successCodes": [
+        201
+      ],
+      "scope": "",
+      "response": "ok:boolean,task:AutomationJob,lock:DeviceLock,windowsTaskId:string",
+      "required": [
+        "deviceId"
+      ]
+    },
+    {
+      "method": "POST",
+      "line": 1328,
+      "path": "/api/v1/user/automation/kuaishou-lead-tasks/{taskId}/stop",
+      "id": "post-api-v1-user-automation-kuaishou-lead-tasks-p1-stop",
+      "group": "kuaishou-lead",
+      "title": "停止快手录入",
+      "description": "取消当前用户的活动持续作业，保留既有结果。",
+      "auth": "user,admin",
+      "parameters": [
+        {
+          "name": "taskId",
+          "location": "path",
+          "type": "string",
+          "required": true,
+          "description": "任务ID"
+        }
+      ],
+      "errors": [
+        "automation_job_not_found",
+        "automation_job_not_stoppable"
+      ],
+      "errorStatuses": {
+        "automation_job_not_found": [
+          404
+        ],
+        "automation_job_not_stoppable": [
+          409
+        ]
+      },
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "ok:boolean,task:AutomationJob"
+    },
+    {
+      "method": "GET",
+      "line": 1340,
+      "path": "/api/v1/user/automation/alipay-name-sessions",
+      "id": "get-api-v1-user-automation-alipay-name-sessions",
+      "group": "lookup-user",
+      "title": "查名会话列表",
+      "description": "当前用户可见自己的最近20条会话；管理员可见所有会话，并带 operatorMode。",
+      "auth": "user,admin",
+      "parameters": [],
+      "errors": [],
+      "errorStatuses": {},
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "sessions:LookupSession[]"
+    },
+    {
+      "method": "POST",
+      "line": 1354,
+      "path": "/api/v1/user/automation/alipay-name-sessions",
+      "id": "post-api-v1-user-automation-alipay-name-sessions",
+      "group": "lookup-user",
+      "title": "启动网页查名会话",
+      "description": "为当前用户占用已上架且 ADB 在线的设备并准备账户；第三方应用应使用开放接口。",
+      "auth": "user,admin",
+      "parameters": [
+        {
+          "name": "deviceId",
+          "location": "body",
+          "type": "string",
+          "required": true,
+          "description": "平台稳定设备ID，例如 adb:SERIAL-DEMO；不是界面编号"
+        }
+      ],
+      "errors": [
+        "device_busy",
+        "device_not_available",
+        "device_not_found",
+        "device_not_published",
+        "lookup_session_already_active"
+      ],
+      "errorStatuses": {
+        "device_not_found": [
+          404
+        ],
+        "device_not_published": [
+          409
+        ],
+        "device_not_available": [
+          409
+        ],
+        "device_busy": [
+          409
+        ],
+        "lookup_session_already_active": [
+          409
+        ]
+      },
+      "successCodes": [
+        201
+      ],
+      "scope": "",
+      "response": "ok:boolean,session:LookupSession",
+      "required": [
+        "deviceId"
+      ]
+    },
+    {
+      "method": "POST",
+      "line": 1379,
+      "path": "/api/v1/user/automation/alipay-name-sessions/{sessionId}/queries",
+      "id": "post-api-v1-user-automation-alipay-name-sessions-p1-queries",
+      "group": "lookup-user",
+      "title": "网页提交单个号码",
+      "description": "仅 ready 且无 pending、无人工/恢复/切号阻塞时受理；与开放接口可排队语义不同。",
+      "auth": "user,admin",
+      "parameters": [
+        {
+          "name": "sessionId",
+          "location": "path",
+          "type": "string",
+          "required": true,
+          "description": "服务端返回的稳定会话ID"
+        },
+        {
+          "name": "phoneNumber",
+          "location": "body",
+          "type": "string",
+          "required": true,
+          "description": "大陆手机号；查名去除非数字后须为1开头11位"
+        }
+      ],
+      "errors": [
+        "device_not_available",
+        "invalid_phone_number",
+        "lookup_human_verification_required",
+        "lookup_no_available_account",
+        "lookup_recovery_required",
+        "lookup_screen_control_active",
+        "lookup_session_not_found",
+        "lookup_session_not_ready"
+      ],
+      "errorStatuses": {
+        "lookup_session_not_found": [
+          404
+        ],
+        "lookup_session_not_ready": [
+          409
+        ],
+        "lookup_no_available_account": [
+          409
+        ],
+        "lookup_recovery_required": [
+          409
+        ],
+        "lookup_human_verification_required": [
+          409
+        ],
+        "invalid_phone_number": [
+          400
+        ],
+        "device_not_available": [
+          409
+        ],
+        "lookup_screen_control_active": [
+          409
+        ]
+      },
+      "successCodes": [
+        202
+      ],
+      "scope": "",
+      "response": "ok:boolean,job:AutomationJob,session:LookupSession",
+      "required": [
+        "phoneNumber"
+      ]
+    },
+    {
+      "method": "POST",
+      "line": 1424,
+      "path": "/api/v1/user/automation/alipay-name-sessions/{sessionId}/resume-after-human-verification",
+      "id": "post-api-v1-user-automation-alipay-name-sessions-p1-resume-after-human-verification",
+      "group": "lookup-user",
+      "title": "网页恢复人工或故障任务",
+      "description": "所有者或管理员可恢复原结果/首次账户准备；活动控屏时返回409。",
+      "auth": "user,admin",
+      "parameters": [
+        {
+          "name": "sessionId",
+          "location": "path",
+          "type": "string",
+          "required": true,
+          "description": "服务端返回的稳定会话ID"
+        }
+      ],
+      "errors": [
+        "device_not_available",
+        "lookup_human_verification_not_resumable",
+        "lookup_human_verification_phone_missing",
+        "lookup_screen_control_active",
+        "lookup_session_not_found"
+      ],
+      "errorStatuses": {
+        "lookup_session_not_found": [
+          404
+        ],
+        "lookup_human_verification_not_resumable": [
+          409
+        ],
+        "lookup_screen_control_active": [
+          409
+        ],
+        "device_not_available": [
+          409
+        ],
+        "lookup_human_verification_phone_missing": [
+          409
+        ]
+      },
+      "successCodes": [
+        202
+      ],
+      "scope": "",
+      "response": "ok:boolean,job:AutomationJob,session:LookupSession"
+    },
+    {
+      "method": "POST",
+      "line": 1481,
+      "path": "/api/v1/user/automation/alipay-name-sessions/{sessionId}/switch-account",
+      "id": "post-api-v1-user-automation-alipay-name-sessions-p1-switch-account",
+      "group": "lookup-user",
+      "title": "网页选择账户",
+      "description": "空请求列出已保存账户；targetAccount 必须来自会话最近一次 accountChoices，不能选当前或冷却账户。仅 ready/choosing_account 可操作。",
+      "auth": "user,admin",
+      "parameters": [
+        {
+          "name": "sessionId",
+          "location": "path",
+          "type": "string",
+          "required": true,
+          "description": "服务端返回的稳定会话ID"
+        },
+        {
+          "name": "targetAccount",
+          "location": "body",
+          "type": "string",
+          "required": false,
+          "description": "从 accountChoices 返回的账户标识；省略则列出可选账户"
+        }
+      ],
+      "errors": [
+        "device_not_available",
+        "invalid_lookup_account_choice",
+        "lookup_account_already_current",
+        "lookup_account_choice_stale",
+        "lookup_account_cooling",
+        "lookup_human_verification_required",
+        "lookup_recovery_required",
+        "lookup_screen_control_active",
+        "lookup_session_not_found",
+        "lookup_session_not_ready"
+      ],
+      "errorStatuses": {
+        "lookup_session_not_found": [
+          404
+        ],
+        "lookup_session_not_ready": [
+          409
+        ],
+        "lookup_recovery_required": [
+          409
+        ],
+        "lookup_human_verification_required": [
+          409
+        ],
+        "invalid_lookup_account_choice": [
+          400
+        ],
+        "lookup_account_choice_stale": [
+          409
+        ],
+        "lookup_account_already_current": [
+          409
+        ],
+        "device_not_available": [
+          409
+        ],
+        "lookup_account_cooling": [
+          409
+        ],
+        "lookup_screen_control_active": [
+          409
+        ]
+      },
+      "successCodes": [
+        202
+      ],
+      "scope": "",
+      "response": "ok:boolean,job:AutomationJob,session:LookupSession"
+    },
+    {
+      "method": "POST",
+      "line": 1537,
+      "path": "/api/v1/user/automation/alipay-name-sessions/{sessionId}/end",
+      "id": "post-api-v1-user-automation-alipay-name-sessions-p1-end",
+      "group": "lookup-user",
+      "title": "网页结束查名",
+      "description": "会话所有者结束查询；终态返回200，停止受理返回202。",
+      "auth": "user,admin",
+      "parameters": [
+        {
+          "name": "sessionId",
+          "location": "path",
+          "type": "string",
+          "required": true,
+          "description": "服务端返回的稳定会话ID"
+        }
+      ],
+      "errors": [
+        "lookup_session_not_found",
+        "会话已结束"
+      ],
+      "errorStatuses": {
+        "lookup_session_not_found": [
+          404
+        ]
+      },
+      "successCodes": [
+        200,
+        202
+      ],
+      "scope": "",
+      "response": "ok:boolean,session:LookupSession"
+    },
+    {
+      "method": "GET",
+      "line": 1263,
+      "path": "/api/v1/user/automation/xhs-data-tasks",
+      "id": "get-api-v1-user-automation-xhs-data-tasks",
+      "group": "xhs-data",
+      "title": "我的采集任务",
+      "description": "返回当前用户最近30个采集任务摘要，result.collection不含notes。",
+      "auth": "user,admin",
+      "parameters": [],
+      "errors": [],
+      "errorStatuses": {},
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "tasks:AutomationJob[]",
+      "idempotency": "none",
+      "responseExample": {
+        "tasks": [
+          {
+            "jobId": "job-demo",
+            "kind": "xhs_data_collect",
+            "deviceId": "adb:SERIAL-DEMO",
+            "xhsAppSlot": "app1",
+            "status": "queued",
+            "result": {},
+            "createdAt": "2026-10-14T01:00:00.000Z"
+          }
+        ]
+      }
+    },
+    {
+      "method": "POST",
+      "line": 1263,
+      "path": "/api/v1/user/automation/xhs-data-tasks",
+      "id": "post-api-v1-user-automation-xhs-data-tasks",
+      "group": "xhs-data",
+      "title": "创建小红书数据采集任务",
+      "description": "只采集最近30日列表数据；201为受理，保存jobId查询结果。无幂等键，响应超时先核对列表，不盲目重提。",
+      "auth": "user,admin",
+      "parameters": [
+        {
+          "name": "deviceId",
+          "type": "string",
+          "required": true,
+          "description": "平台稳定设备ID，不是手机编号",
+          "location": "body"
+        },
+        {
+          "name": "xhsAppSlot",
+          "type": "string",
+          "required": true,
+          "description": "必填app1或app2",
+          "location": "body"
+        }
+      ],
+      "errors": [
+        "invalid_xhs_app_slot",
+        "device_not_available",
+        "xhs_account_slot_not_available",
+        "xhs_data_agent_update_required",
+        "device_busy"
+      ],
+      "errorStatuses": {
+        "invalid_xhs_app_slot": [
+          400
+        ],
+        "device_not_available": [
+          409
+        ],
+        "xhs_account_slot_not_available": [
+          409
+        ],
+        "xhs_data_agent_update_required": [
+          409
+        ],
+        "device_busy": [
+          409
+        ]
+      },
+      "successCodes": [
+        201
+      ],
+      "scope": "",
+      "response": "ok:boolean,task:AutomationJob",
+      "idempotency": "none",
+      "responseExample": {
+        "task": {
+          "jobId": "job-demo",
+          "kind": "xhs_data_collect",
+          "deviceId": "adb:SERIAL-DEMO",
+          "xhsAppSlot": "app1",
+          "status": "queued",
+          "result": {},
+          "createdAt": "2026-10-14T01:00:00.000Z"
+        },
+        "ok": true
+      }
+    },
+    {
+      "method": "GET",
+      "line": 1263,
+      "path": "/api/v1/user/automation/xhs-data-tasks/{jobId}",
+      "id": "get-api-v1-user-automation-xhs-data-tasks-jobId",
+      "group": "xhs-data",
+      "title": "获取采集结果",
+      "description": "返回属于当前用户的任务详情。result.collection.notes含明细；失败可含部分数据。",
+      "auth": "user,admin",
+      "parameters": [
+        {
+          "name": "jobId",
+          "type": "string",
+          "required": true,
+          "description": "创建时返回的task.jobId",
+          "location": "path"
+        }
+      ],
+      "errors": [
+        "automation_job_not_found"
+      ],
+      "errorStatuses": {
+        "automation_job_not_found": [
+          404
+        ]
+      },
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "task:AutomationJob",
+      "idempotency": "none",
+      "responseExample": {
+        "task": {
+          "jobId": "job-demo",
+          "kind": "xhs_data_collect",
+          "deviceId": "adb:SERIAL-DEMO",
+          "xhsAppSlot": "app1",
+          "status": "succeeded",
+          "result": {
+            "collection": {
+              "schema_version": 3,
+              "window_days": 30,
+              "app_slot": "app1",
+              "window_start_date": "2026-09-15",
+              "window_end_date": "2026-10-14",
+              "complete": true,
+              "stop_reason": "list_end_visible",
+              "notes": [
+                {
+                  "title": "示例作品",
+                  "published_date": "2026-10-13",
+                  "note_id": null,
+                  "list_view_count": 12,
+                  "list_like_count": 0,
+                  "list_comment_count": null
+                }
+              ],
+              "totals": {
+                "list_view_count": 12,
+                "list_like_count": 0,
+                "list_comment_count": null
+              }
+            }
+          },
+          "createdAt": "2026-10-14T01:00:00.000Z"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "line": 1263,
+      "path": "/api/v1/user/automation/xhs-data-tasks/{jobId}/cancel",
+      "id": "post-api-v1-user-automation-xhs-data-tasks-jobId-cancel",
+      "group": "xhs-data",
+      "title": "取消采集任务",
+      "description": "仅取消当前用户的活动任务；终态409，其他用户任务404；迟到结果不能覆盖取消。",
+      "auth": "user,admin",
+      "parameters": [
+        {
+          "name": "jobId",
+          "type": "string",
+          "required": true,
+          "description": "创建时返回的task.jobId",
+          "location": "path"
+        }
+      ],
+      "errors": [
+        "automation_job_not_found",
+        "automation_job_not_cancellable"
+      ],
+      "errorStatuses": {
+        "automation_job_not_found": [
+          404
+        ],
+        "automation_job_not_cancellable": [
+          409
+        ]
+      },
+      "successCodes": [
+        200
+      ],
+      "scope": "",
+      "response": "ok:boolean,task:AutomationJob",
+      "idempotency": "none",
+      "responseExample": {
+        "task": {
+          "jobId": "job-demo",
+          "kind": "xhs_data_collect",
+          "deviceId": "adb:SERIAL-DEMO",
+          "xhsAppSlot": "app1",
+          "status": "cancelled",
+          "result": {},
+          "createdAt": "2026-10-14T01:00:00.000Z"
+        },
+        "ok": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "deterministic": true,
+  "unchangedSdkImplementations": true,
+  "hashes": {
+    "public/api-reference.json": "876480b97c55a43d190189f1df8438bb3b9be74a8877c3fb4e4744d875627757",
+    "public/openapi.json": "95e1f42acebedfbac83ec25e21bd3d10c52e015f7969ea20349c5f6f84a5ebf3",
+    "public/downloads/name-lookup-integration.zip": "8c2363be9557624c902d651ba61e41898bebf7a6574bfa27ad1caede9be02c2b",
+    "public/downloads/name-lookup-sha256.json": "e06311688d083c768b448bb41a042b8f98cd8ed05da9831908b2285d6affb410"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "version": "lookup-readiness-20261016-rc.16",
+  "files": {
+    "BASE_HASHES.json": "add2663156a6e9506e9042829bf4f94f459ea37ca7fdc51a83d9288a73b1414c",
+    "OPEN_NAME_LOOKUP_API.md": "5e9b6e5620285acb2345a11e390961ee9916f4c86ebbc6ee6933cb4d568bbc57",
+    "README.md": "8adf3335f0fdea966152130c52b336f21b221928448752bbac4829d800f74f51",
+    "VERSION.json": "c0cf78b519df1b60579c48e1867b6464d5d239febe2f590a00fb743bf84f045c",
+    "docs/OPEN_NAME_LOOKUP_API.md": "5e9b6e5620285acb2345a11e390961ee9916f4c86ebbc6ee6933cb4d568bbc57",
+    "docs/OPEN_NAME_LOOKUP_PARTNER_HANDOFF.md": "68a0e853c82d0ced889913acbbeadd43187e12e13734d59fd882822635b3b59a",
+    "docs/OPEN_NAME_LOOKUP_README.md": "88a16a99ed180a44e3732b656831c3964fac31d650060061bde217b555e54cb8",
+    "public/api-reference.json": "876480b97c55a43d190189f1df8438bb3b9be74a8877c3fb4e4744d875627757",
+    "public/downloads/name-lookup-integration.zip": "8c2363be9557624c902d651ba61e41898bebf7a6574bfa27ad1caede9be02c2b",
+    "public/downloads/name-lookup-openapi.json": "debf6b2d4a8c8ee9ddaa1c4f4eff12b6a769a3d738e99c0a83f0ca19f4bb8ec9",
+    "public/downloads/name-lookup-sha256.json": "e06311688d083c768b448bb41a042b8f98cd8ed05da9831908b2285d6affb410",
+    "public/openapi.json": "95e1f42acebedfbac83ec25e21bd3d10c52e015f7969ea20349c5f6f84a5ebf3",
+    "scripts/build-managed-lookup-docs.py": "67167d0fb32c8102cb102a46caced65931039d1c205634b0a21f581592ebec91",
+    "sdk/open_name_lookup/PARTNER_HANDOFF.md": "68a0e853c82d0ced889913acbbeadd43187e12e13734d59fd882822635b3b59a",
+    "sdk/open_name_lookup/README.md": "88a16a99ed180a44e3732b656831c3964fac31d650060061bde217b555e54cb8",
+    "server/lookup-device-availability.test.mjs": "b413074fe02622c3862fc77b1460871d29a0165d36df8b4172d85d2b46389c4f",
+    "server/lookup-readiness.mjs": "70769b65b7d4f086e7bde19808e44b18f64c5d1d6ec9fca45e6349900c073def",
+    "server/lookup-readiness.test.mjs": "2282721161fed7e6f2fe798ec44b7eb06235f99320429151c374d3050a2654f3",
+    "server/managed-lookup.mjs": "25cea3c65d3a727e043edd74307c73ad8c3628f550a6cd4cf85135ffc8a6cd93",
+    "verification/DOCS.json": "cda2f3127a0dbfc18d08d8cc29b9a2ce285aee245e6d1fabf26772e16c7622dd",
+    "verification/FROZEN.json": "548882b144d650e7246e22d4d3ad70b162fbc68a817506d2723220b21ad2c7d0",
+    "verification/before-fix.txt": "c062deefdd474a81657a62b9fec7e21ee8b2e5faed64d8fdd563b07777f23a43",
+    "verification/check.txt": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "verification/full-regression.txt": "0000071d3d207797822c02dc7ac7340effbd7c1a45ee494c5842ff41aead352a",
+    "verification/prepare-local.py": "296d5a204334d5b96e1df1e93b457ff1a95a32856e117141750568837ff6c5bf",
+    "verification/real-elapsed-http.json": "8c8262c2c769a8ab8958259b8d2ef8fc124b9d7e7a5347ce20a6a14fd8570890",
+    "verification/targeted.txt": "01014138326597aceb243c2876306750fc801070b564f6919e3b23712517aaa3"
+  }
+}
