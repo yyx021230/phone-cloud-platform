@@ -1,14 +1,19 @@
 {
-  "status": "partial_waiting_for_118_manual_login",
+  "status": "live_replacement_and_external_api_passed_partial_acceptance",
   "sourceCommit": "64e09fb0affcaeb6560c27aded794fa02dde13da",
   "deploymentReceiptCommit": "72a0d40f1cfaf9dd66ada9e804e6e0bf004d3059",
-  "atUtc": "2026-10-16T07:12:35.595Z",
+  "atUtc": "2026-10-16T07:24:59.232848Z",
   "actual": {
     "realPhoneTargets": [
+      55,
+      115,
+      118,
       155,
-      118
+      156,
+      162,
+      164
     ],
-    "businessSubmitted": 0,
+    "businessSubmitted": 4,
     "accountOfflineNotices": {
       "155": {
         "status": "sent",
@@ -51,22 +56,65 @@
       "sameIncidentNotificationRepeated": false,
       "loginAccountAddedToCooldown": false
     },
-    "publicReady": false,
-    "currentGrayPoolRevision": 56,
+    "publicReady": true,
+    "currentGrayPoolRevision": 57,
     "currentGrayEnabledPhones": [
+      51,
+      54,
+      55,
+      156,
       155,
+      115,
+      164,
+      162,
+      161,
       118
     ],
     "originalPoolRevision": 55,
-    "originalDeviceFlagsBackup": "/app/data/test-receipts/lookup-account-offline-20261016/POOL.before.json"
+    "originalDeviceFlagsBackup": "/app/data/test-receipts/lookup-account-offline-20261016/POOL.before.json",
+    "originalPoolRestored": true,
+    "samePreparationRetained": true,
+    "readyProbePhones": [
+      115,
+      155,
+      156,
+      162,
+      164
+    ],
+    "businessResult": {
+      "completed": 4,
+      "withName": 3,
+      "emptyName": 1,
+      "eachAttemptCount": 1,
+      "executingPhones": [
+        115,
+        155,
+        162,
+        156
+      ],
+      "sampledConcurrentBusinessPhones": 4
+    },
+    "noNew118TasksThrough": "2026-10-16T07:24:37.470Z",
+    "nextStartup118Recovery": "deferred_by_user_not_a_blocker",
+    "freshFirstAccountLoginFailure": {
+      "phone": 55,
+      "atUtc": "2026-10-16T07:22:00.145Z",
+      "isolated": true,
+      "replacementContinued": true,
+      "notificationDeduplicated": true
+    },
+    "initialGrayTargets": [
+      155,
+      118
+    ]
   },
   "remaining": [
-    "118 manual login then fresh prepare key recovery",
-    "fresh first-account login-page failure, rather than switch-only live evidence",
-    "business original-lookupId cross-device handoff in this real-phone run",
-    "restore original pool after scoped acceptance"
+    "business original-lookupId cross-device handoff after a new live account logout was not naturally triggered; local and isolated Postgres simulations passed",
+    "118 recovery on a future new prepare round after user restores login; deliberately not required to finish the present task",
+    "historical broader production acceptance gaps are not closed by four business lookups"
   ],
   "noProductionAdbOperations": true,
   "agentRestarted": false,
-  "completeProductionAcceptance": false
+  "completeProductionAcceptance": false,
+  "userClarification": "Do not wait for 118 login. Keep its current-round exclusion, notify, and continue probing other available phones. Re-probe 118 on a future startup."
 }
