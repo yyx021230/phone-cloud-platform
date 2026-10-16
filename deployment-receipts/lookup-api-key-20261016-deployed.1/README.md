@@ -13,6 +13,8 @@
 
 ## 回滚
 
+Key交付：已复制到用户Mac剪贴板并核对一致，同时保存到本机macOS钥匙串。服务名为`PhoneCloud API / 47.98.127.132 / name-lookup-v1`，账户为`lookup-api-key-20261016-deployed.1`。这些是存储定位，不是Key；明文不进入仓库/文档/日志。以后优先从本机钥匙串恢复交付，不因为剪贴板被覆盖就重置生产Key。
+
 受限生产备份：/opt/phone-cloud-platform/deploy-backups/lookup-api-key-20261016-prep.1；含.env.before、ACTIVE.before.json、14文件/Compose、旧镜像tar及两次数据库备份。恢复前先核当次ACTIVE/配置与占用、确认维护范围。采用ACTIVE.before.json中的完整Compose链（移除本轮pending覆盖），恢复原客户端配置，仅重建phone-cloud到03b6928a；不得使用根旧业务镜像，不重启Agent/ADB/Windows/USB/媒体。若.env有后续修改先停，不覆盖并行变更。回滚撤回单Key，旧HMAC继续；业务任务已落库，不自动恢复整库以免丢后续数据。核health/ready、旧文件hash、D-075 live与实际镜像，并另记回滚回执。
 
 ## 未验项
