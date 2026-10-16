@@ -1,0 +1,16 @@
+{
+  "public/api-reference.json": "c856046a28347274dbbd2775528fcb050852c4358270a73831f9ae557e894dec",
+  "public/api-docs.html": "88813b766da6f89fb10303701f7b5520ce896053b4b2b96783d850e184a7633a",
+  "public/openapi.json": "d13111ba2918b7181403ed4affb2bd627f4346da5b8debff0d3c701d8e9b01e1",
+  "public/api-docs.js": "cdd1b13c0d56ad3c7c8e26609064c95fbded993b9c1cde02fa9af1171cae2edc",
+  "public/downloads/name-lookup-integration.zip": "5187bc6ffd822239cf82d5b86146f2f5d9486311e7fd27ba4d0bce6674d03acc",
+  "public/downloads/name-lookup-openapi.json": "e9b8ee37bac0e623a010da946766eeb25df4bd82a89bdedf7a3df1f979d67d88",
+  "public/downloads/name-lookup-sha256.json": "31f07576625dd2d23967da98f42cf17379e63db6969840e42d609d7de74c3f1d",
+  "scripts/build-managed-lookup-docs.py": "89d5185c8b2368644d6b22a77c7528ebcdc0b4a755e96636a34228abf03f2bcd",
+  "scripts/simplify-public-lookup-docs.py": "8f9ea97f366f8245642700a50c4a0be6b24fcae979616b81ab841df5f3c3b31b",
+  "sdk/open_name_lookup/PARTNER_HANDOFF.md": "e42bba3825d51099182aba2a7a6b09ceeaa67813ac25f63835a6663fe532948a",
+  "sdk/open_name_lookup/README.md": "6f63af946568d4c6bfcd8ea4c98bf757fa13f1a5a82d4ff8cd47d8fbcfb1e213",
+  "docs/OPEN_NAME_LOOKUP_PARTNER_HANDOFF.md": "e42bba3825d51099182aba2a7a6b09ceeaa67813ac25f63835a6663fe532948a",
+  "docs/OPEN_NAME_LOOKUP_README.md": "6f63af946568d4c6bfcd8ea4c98bf757fa13f1a5a82d4ff8cd47d8fbcfb1e213",
+  "OPEN_NAME_LOOKUP_API.md": "6f63af946568d4c6bfcd8ea4c98bf757fa13f1a5a82d4ff8cd47d8fbcfb1e213"
+}

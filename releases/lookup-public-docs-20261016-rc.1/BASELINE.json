@@ -1,0 +1,24 @@
+{
+  "runtimeVersion": "lookup-readiness-20261016-deployed.16",
+  "runtimeCommit": "a479fab54bfa67147a5391015c34e7b759efa43a",
+  "image": "sha256:b5479d9cfc0d6bf6ab5d2ee748856d4867cf6e21c118ab317709ba501519cda7",
+  "activeSha256": "8e5fc6ffbdaf5c1a95bd2413192c0da7730b1d8acb1926e4aabe56a963e39271",
+  "baseCommit": "64c371b50bdb44f8898a8d29517b820e3c6aeec6",
+  "before": {
+    "public/api-reference.json": "876480b97c55a43d190189f1df8438bb3b9be74a8877c3fb4e4744d875627757",
+    "public/api-docs.html": "d4e7667066a73159800ce67dd8afdc7a329a3a7f535913606158db3ff20af772",
+    "public/openapi.json": "95e1f42acebedfbac83ec25e21bd3d10c52e015f7969ea20349c5f6f84a5ebf3",
+    "public/api-docs.js": "25ea781730ec7454bd12b7d6efa0e844dc98f732522e565d6e9b4997ae1fc764",
+    "public/downloads/name-lookup-integration.zip": "8c2363be9557624c902d651ba61e41898bebf7a6574bfa27ad1caede9be02c2b",
+    "public/downloads/name-lookup-openapi.json": "debf6b2d4a8c8ee9ddaa1c4f4eff12b6a769a3d738e99c0a83f0ca19f4bb8ec9",
+    "public/downloads/name-lookup-sha256.json": "e06311688d083c768b448bb41a042b8f98cd8ed05da9831908b2285d6affb410",
+    "scripts/build-managed-lookup-docs.py": "67167d0fb32c8102cb102a46caced65931039d1c205634b0a21f581592ebec91",
+    "scripts/simplify-public-lookup-docs.py": null,
+    "sdk/open_name_lookup/PARTNER_HANDOFF.md": "68a0e853c82d0ced889913acbbeadd43187e12e13734d59fd882822635b3b59a",
+    "sdk/open_name_lookup/README.md": "88a16a99ed180a44e3732b656831c3964fac31d650060061bde217b555e54cb8",
+    "docs/OPEN_NAME_LOOKUP_PARTNER_HANDOFF.md": "68a0e853c82d0ced889913acbbeadd43187e12e13734d59fd882822635b3b59a",
+    "docs/OPEN_NAME_LOOKUP_README.md": "88a16a99ed180a44e3732b656831c3964fac31d650060061bde217b555e54cb8",
+    "OPEN_NAME_LOOKUP_API.md": "5e9b6e5620285acb2345a11e390961ee9916f4c86ebbc6ee6933cb4d568bbc57"
+  },
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+}
