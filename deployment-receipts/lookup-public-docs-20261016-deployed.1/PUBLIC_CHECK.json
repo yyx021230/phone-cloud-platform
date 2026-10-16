@@ -1,0 +1,42 @@
+{
+  "files": [
+    {
+      "path": "public/api-reference.json",
+      "status": 200,
+      "sha256": "c856046a28347274dbbd2775528fcb050852c4358270a73831f9ae557e894dec"
+    },
+    {
+      "path": "public/api-docs.html",
+      "status": 200,
+      "sha256": "88813b766da6f89fb10303701f7b5520ce896053b4b2b96783d850e184a7633a"
+    },
+    {
+      "path": "public/openapi.json",
+      "status": 200,
+      "sha256": "d13111ba2918b7181403ed4affb2bd627f4346da5b8debff0d3c701d8e9b01e1"
+    },
+    {
+      "path": "public/api-docs.js",
+      "status": 200,
+      "sha256": "cdd1b13c0d56ad3c7c8e26609064c95fbded993b9c1cde02fa9af1171cae2edc"
+    },
+    {
+      "path": "public/downloads/name-lookup-integration.zip",
+      "status": 200,
+      "sha256": "5187bc6ffd822239cf82d5b86146f2f5d9486311e7fd27ba4d0bce6674d03acc"
+    },
+    {
+      "path": "public/downloads/name-lookup-openapi.json",
+      "status": 200,
+      "sha256": "e9b8ee37bac0e623a010da946766eeb25df4bd82a89bdedf7a3df1f979d67d88"
+    },
+    {
+      "path": "public/downloads/name-lookup-sha256.json",
+      "status": 200,
+      "sha256": "31f07576625dd2d23967da98f42cf17379e63db6969840e42d609d7de74c3f1d"
+    }
+  ],
+  "zipManifestPassed": true,
+  "lookupOperations": 3,
+  "businessRequestsSent": 0
+}
