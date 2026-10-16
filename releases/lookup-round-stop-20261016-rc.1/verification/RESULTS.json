@@ -1,0 +1,46 @@
+{
+  "status": "local_candidate_not_deployed",
+  "full": {
+    "pass": 865,
+    "fail": 0
+  },
+  "check": "passed",
+  "focused": {
+    "pass": 59,
+    "newStopTests": 13
+  },
+  "apiKeyAndDocs": {
+    "pass": 10
+  },
+  "pythonExamples": {
+    "pass": 7
+  },
+  "http": {
+    "loopbackOnly": true,
+    "storage": "json",
+    "realDevices": 0,
+    "productionConnections": 0,
+    "apiKeyStop": true,
+    "callerIsolation": true,
+    "queuedCancelled": 5,
+    "runningSafelyStopped": 2,
+    "probesSafelyStopped": 3,
+    "stopAckRequired": true,
+    "restartDuringStop": true,
+    "newStartBlockedUntilStopped": true,
+    "oldStopCannotCancelNewRound": true,
+    "completedResultsRetained": true,
+    "newRoundQueries": true,
+    "stoppedPersistsAfterRestart": true,
+    "drained": true
+  },
+  "frozenFilesUnchanged": 193,
+  "productionRuntimeWrites": 0,
+  "realDeviceQueries": 0,
+  "unverified": [
+    "PostgreSQL transactional stop/restart integration",
+    "production stop ACK and next-round external API real-device acceptance"
+  ],
+  "initialFixtureCorrection": "Offline fixture initially disabled ready phone before submission; moved offline transition after admission. Runtime code unchanged.",
+  "freshReassemblyMatched": true
+}

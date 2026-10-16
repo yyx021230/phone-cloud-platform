@@ -1,0 +1,28 @@
+{
+  "branch": "codex/lookup-round-stop-20261016",
+  "startingHead": "1620cce89694afa54b3f8968099d54014ae40f97",
+  "workspaceInitiallyClean": true,
+  "version": "lookup-auto-recovery-20261016-deployed.1",
+  "runtimeCommit": "1d4008e288d06598225041c4cadead025da43164",
+  "runtimeImage": "sha256:0d4f8ec832312dcd1d3b601e770e82668bab6e7182f90a6713de1d423384cd69",
+  "restartImage": "sha256:0d4f8ec832312dcd1d3b601e770e82668bab6e7182f90a6713de1d423384cd69",
+  "activeSha256": "03158c69aedb6b1131b5a629bb7a286b10776d2fb41a2eef74f7576c33bc1314",
+  "before": {
+    "server/managed-lookup.mjs": "88434b6bf225418ee9975c3c4b5209f87eafd67aed4e17a7577c45cc957aa64d",
+    "server/lookup-readiness.mjs": "fd03fbde4ae8d9b04d7cbd5075214d281220b874fb409f549fbbcc9c058e32a1",
+    "server/lookup-api-key.mjs": "3e64d42a2008d53907a821d43e04c1cffb698f55b57d4d3ca1a5bc074bec800d",
+    "server/index.mjs": "78d4cf5cc0551820e5880e0444f04946cec97eb0ac2c5303ed675c3cf0a908d3",
+    "public/api-docs.js": "0f8e7d9f8b2804d99c6532994379f0385a0b7e0ce7bbb67ac55782e8551fb25e",
+    "public/api-reference.json": "50c4424e8b48810610700f4e603604b41240fb5d4e998b5289171c00bc33fdc2",
+    "public/openapi.json": "9f77465d105aa0f2451c4b4757518c4549d8dffc952a8b786a344305d81cea1c",
+    "public/downloads/name-lookup-http-guide.md": "c449a56de62f3424b6f1823d46daaebf336d5ecf736a0e39d6691289267c7403",
+    "public/downloads/lookup.py": "95ca247988e7a6c7a03ce0d3078f455715335a9f5a575bb987044fc3c933251b",
+    "public/downloads/lookup.mjs": "463ac44a509215fe44fa3b2374c1c469ee66fbe2e6a5779ea57ad39fd5ecdb88",
+    "public/downloads/name-lookup-openapi.json": "6a59c4c5f8bdb9463ada04c771819fa5d2a757a72fb54d0b4b525be3ada65573",
+    "public/downloads/name-lookup-sha256.json": "30eb0bd5e2315bee5a3cf990737b2ac3d1c324ad96d88642007a12e2ac123e7d",
+    "public/downloads/name-lookup-integration.zip": "daec021f69f23c10f118162f4001272694623cfb487f73d9943145a46316e941",
+    "server/lookup-round-stop.mjs": null,
+    "public/downloads/stop_lookup.py": null
+  },
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+}
