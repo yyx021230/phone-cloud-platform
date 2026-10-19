@@ -278,6 +278,41 @@ class RestrictedNoteTests(unittest.TestCase):
 
 class BrowserRedirectTests(unittest.TestCase):
     current='mCurrentFocus=Window{x u0 com.vivo.browser/com.vivo.browser.BrowserActivity type=1}'
+    resolver='mCurrentFocus=Window{x u0 com.android.intentresolver/com.android.intentresolver.DoubleAppResolverActivity type=1}'
+    def test_observed_owner_resolver_defers_slot_proof_to_existing_selector(self):
+        events=['collection_slot_requested:app1','xhs_cold_started']
+        with patch.object(sync,'focus',return_value=self.resolver),patch.object(sync,'adb') as adb,patch.object(sync.time,'sleep'):
+            self.assertTrue(sync.recover_vivo_browser_redirect('adb','serial','app1',self.current,lambda:None,events))
+        self.assertEqual(adb.call_count,2)
+        self.assertIn('vivo_browser_redirect_returned_to_resolver',events)
+        self.assertIn('clone_user_requested:0',events)
+        self.assertNotIn('clone_slot_selected:app1',events)
+        with patch.object(sync,'focus',return_value=self.resolver):
+            with self.assertRaisesRegex(RuntimeError,'slot'):
+                sync.verify_collection_slot('adb','serial','app1',events)
+
+    def test_observed_resolver_is_consumed_by_existing_owner_label_selection(self):
+        root=ET.parse(SCRIPTS/'fixtures/xhs/vivo-browser-returned-resolver-43.xml').getroot()
+        target=ET.Element('hierarchy');events=['collection_slot_requested:app1','xhs_cold_started','vivo_browser_redirect_reopened','clone_user_requested:0','vivo_browser_redirect_returned_to_resolver']
+        owner='mCurrentFocus=Window{x u0 com.xingin.xhs/.index.v2.IndexActivityV2}'
+        selected=[]
+        def tap(_adb,_serial,_root,value,guard):selected.append(value)
+        with patch.object(sync,'focus',side_effect=lambda *_:owner if selected else self.resolver),patch.object(sync,'creator_list',side_effect=lambda r:r is target),patch.object(sync,'creator_filter_panel',return_value=False),patch.object(sync,'recover_known_overlay',return_value=False),patch.object(sync,'tap_label',side_effect=tap),patch.object(sync,'navigation_capture',return_value=target),patch.object(sync,'adb',return_value='mWakefulness=Awake') as adb:
+            self.assertIs(sync.ensure_creator_list('adb','serial',root,'app1',lambda:None,events),target)
+            sync.verify_collection_slot('adb','serial','app1',events)
+        self.assertEqual(selected,['小红书'])
+        self.assertIn('clone_slot_selected:app1',events)
+        self.assertTrue(all(call.args[2:]==('shell','dumpsys','power') for call in adb.call_args_list))
+
+    def test_foreign_or_unknown_post_browser_surface_still_stops(self):
+        for current in [self.resolver.replace('u0','u999'),self.resolver.replace('DoubleAppResolverActivity','OtherActivity'),self.resolver.replace('com.android.intentresolver/','com.android.intentresolver.fake/'),'mCurrentFocus=null']:
+            with self.subTest(current=current),patch.object(sync,'focus',return_value=current),patch.object(sync,'adb') as adb,patch.object(sync.time,'sleep'):
+                events=['collection_slot_requested:app1','xhs_cold_started']
+                with self.assertRaisesRegex(RuntimeError,'owner foreground'):
+                    sync.recover_vivo_browser_redirect('adb','serial','app1',self.current,lambda:None,events)
+                self.assertNotIn('vivo_browser_redirect_returned_to_resolver',events)
+                self.assertEqual(adb.call_count,2)
+
     def test_only_owner_cold_start_can_reopen_once_without_touching_browser_content(self):
         events=['collection_slot_requested:app1','xhs_cold_started']
         with patch.object(sync,'focus',return_value='mCurrentFocus=Window{x u0 com.xingin.xhs/.index.v2.IndexActivityV2}'),patch.object(sync,'adb') as adb,patch.object(sync.time,'sleep'):

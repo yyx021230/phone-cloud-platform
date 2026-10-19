@@ -1265,7 +1265,14 @@ def recover_vivo_browser_redirect(adb_path, serial, slot, current, guard, events
     events.append("vivo_browser_redirect_reopened")
     adb(adb_path,serial,"shell","am","start","-W","--user","0","-n",XHS_PACKAGE+"/.index.v2.IndexActivityV2",timeout=20)
     time.sleep(.7)
-    if not re.search(r"mCurrentFocus=Window\{[^\n}]*\bu0\s+com\.xingin\.xhs/",focus(adb_path,serial)):
+    restored = focus(adb_path,serial)
+    if re.search(r"mCurrentFocus=Window\{[^\n}]*\bu0\s+com\.android\.intentresolver/com\.android\.intentresolver\.DoubleAppResolverActivity[}\s]",restored):
+        # 43 returns to the existing Vivo chooser after this explicit owner
+        # relaunch. Recapture it and let the normal element-based selector run.
+        if "clone_user_requested:0" not in events:events.append("clone_user_requested:0")
+        events.append("vivo_browser_redirect_returned_to_resolver")
+        return True
+    if not re.search(r"mCurrentFocus=Window\{[^\n}]*\bu0\s+com\.xingin\.xhs/",restored):
         raise RuntimeError("Xiaohongshu owner foreground was not restored after browser redirect")
     return True
 

@@ -1,0 +1,542 @@
+{
+  "status": "continued_retest_interrupted_local_candidate_only",
+  "candidateTag": "xhs-compat-20261019-rc.5",
+  "candidateCommit": "resolve immutable annotated tag",
+  "branch": "codex/xhs-compatibility-fix-20261015",
+  "baselineCommit": "3aa37a43138b82f1b002169f25921596d4dcc3a1",
+  "productionSourceCommit": "4078fe238fce5f735be07ea2ebddb63081eefef9",
+  "productionVersion": "xhs-compat-20261019-deployed.1",
+  "candidateFiles": {
+    "windows-agent/scripts/小红书数据同步.py": "a8a4705c7eb735d98a656bbed23ebc277569fb60190258a6fd9bf2061ba2e9c7",
+    "windows-agent/scripts/test_xhs_compatibility_20261015.py": "801ce9104b061d3efca837cb245152f879c0fc25cdd9356c4ba1bb9b3d62f454",
+    "windows-agent/scripts/fixtures/xhs/vivo-browser-returned-resolver-43.xml": "f0c974f941c2f00768563b81133bd70e293995f587eba4a0f3c187b32102ff25"
+  },
+  "scope": "Original45 rows;planned20 new real queue attempts on17phones after skip/carry filtering;single123main then at most2 physical phones,slots sequential.",
+  "counts": {
+    "planned": 20,
+    "createdProductionJobs": 11,
+    "fullyVerifiedTerminalJobs": 10,
+    "passed": 7,
+    "skippedLogin": 1,
+    "compatibilityFailed": 2,
+    "serverCancelledDeviceRestorationUnverified": 1,
+    "notCreated": 9,
+    "successfulRawPhoneSlotRecords": 83
+  },
+  "verifiedResults": [
+    {
+      "name": "123",
+      "slot": "app1",
+      "jobId": "8f7b88ca-69a6-4962-9f8b-1b072ec8c710",
+      "status": "skipped_login",
+      "productionStatus": "failed",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "windowStart": null,
+      "windowEnd": null,
+      "settingsRestored": true,
+      "jobLockReleased": true,
+      "seconds": 26,
+      "finishedAt": "2026-10-19T03:26:16.082586+00:00"
+    },
+    {
+      "name": "14",
+      "slot": "app2",
+      "jobId": "7661462b-9ab2-494a-87f5-9d542a52a953",
+      "status": "passed",
+      "productionStatus": "succeeded",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "windowStart": "2026-09-20",
+      "windowEnd": "2026-10-19",
+      "settingsRestored": true,
+      "jobLockReleased": true,
+      "seconds": 126,
+      "finishedAt": "2026-10-19T03:29:03.248044+00:00"
+    },
+    {
+      "name": "20",
+      "slot": "app1",
+      "jobId": "d9898da1-7286-45b2-bb84-08cf9a309124",
+      "status": "passed",
+      "productionStatus": "succeeded",
+      "notes": 66,
+      "scrolls": 16,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "windowStart": "2026-09-20",
+      "windowEnd": "2026-10-19",
+      "settingsRestored": true,
+      "jobLockReleased": true,
+      "seconds": 239,
+      "finishedAt": "2026-10-19T03:30:55.967373+00:00"
+    },
+    {
+      "name": "28",
+      "slot": "app2",
+      "jobId": "24a641b6-9da8-49a1-9f1c-24cf756de68c",
+      "status": "passed",
+      "productionStatus": "succeeded",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "list_end_visible",
+      "windowStart": "2026-09-20",
+      "windowEnd": "2026-10-19",
+      "settingsRestored": true,
+      "jobLockReleased": true,
+      "seconds": 113,
+      "finishedAt": "2026-10-19T03:30:55.797755+00:00"
+    },
+    {
+      "name": "34",
+      "slot": "app1",
+      "jobId": "b65aaa86-b19b-45f7-a921-6aac7b7cdaac",
+      "status": "passed",
+      "productionStatus": "succeeded",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "list_end_visible",
+      "windowStart": "2026-09-20",
+      "windowEnd": "2026-10-19",
+      "settingsRestored": true,
+      "jobLockReleased": true,
+      "seconds": 70,
+      "finishedAt": "2026-10-19T03:32:05.731551+00:00"
+    },
+    {
+      "name": "43",
+      "slot": "app1",
+      "jobId": "4237ff31-725f-4b09-8f38-e45719339b2e",
+      "status": "failed_compatibility",
+      "productionStatus": "failed",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "windowStart": null,
+      "windowEnd": null,
+      "settingsRestored": true,
+      "jobLockReleased": true,
+      "seconds": 53,
+      "finishedAt": "2026-10-19T03:31:48.708928+00:00"
+    },
+    {
+      "name": "47",
+      "slot": "app1",
+      "jobId": "5ebd4e29-e7b1-4304-8591-ac61c682f0e2",
+      "status": "failed_compatibility",
+      "productionStatus": "failed",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "stopReason": null,
+      "windowStart": null,
+      "windowEnd": null,
+      "settingsRestored": true,
+      "jobLockReleased": true,
+      "seconds": 146,
+      "finishedAt": "2026-10-19T03:34:14.836275+00:00"
+    },
+    {
+      "name": "61",
+      "slot": "app1",
+      "jobId": "f5f84c93-0b3d-4c7c-8850-c1fb488bbaad",
+      "status": "passed",
+      "productionStatus": "succeeded",
+      "notes": 6,
+      "scrolls": 1,
+      "complete": true,
+      "stopReason": "list_end_visible",
+      "windowStart": "2026-09-20",
+      "windowEnd": "2026-10-19",
+      "settingsRestored": true,
+      "jobLockReleased": true,
+      "seconds": 78,
+      "finishedAt": "2026-10-19T03:33:23.498453+00:00"
+    },
+    {
+      "name": "80",
+      "slot": "app1",
+      "jobId": "3fd61aeb-5273-48dd-9fd2-dcefcaf0bb2d",
+      "status": "passed",
+      "productionStatus": "succeeded",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "windowStart": "2026-09-20",
+      "windowEnd": "2026-10-19",
+      "settingsRestored": true,
+      "jobLockReleased": true,
+      "seconds": 85,
+      "finishedAt": "2026-10-19T03:34:48.057025+00:00"
+    },
+    {
+      "name": "98",
+      "slot": "app1",
+      "jobId": "d02e9c6c-614b-4ad9-aa93-24f2eb8d9d8e",
+      "status": "passed",
+      "productionStatus": "succeeded",
+      "notes": 11,
+      "scrolls": 3,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "windowStart": "2026-09-20",
+      "windowEnd": "2026-10-19",
+      "settingsRestored": true,
+      "jobLockReleased": true,
+      "seconds": 128,
+      "finishedAt": "2026-10-19T03:36:22.687055+00:00"
+    }
+  ],
+  "notCreated": [
+    {
+      "name": "98",
+      "slot": "app2",
+      "reason": "host_connection_lost_before_task_creation"
+    },
+    {
+      "name": "114",
+      "slot": "app2",
+      "reason": "host_connection_lost_before_task_creation"
+    },
+    {
+      "name": "123",
+      "slot": "app2",
+      "reason": "host_connection_lost_before_task_creation"
+    },
+    {
+      "name": "131",
+      "slot": "app1",
+      "reason": "host_connection_lost_before_task_creation"
+    },
+    {
+      "name": "141",
+      "slot": "app1",
+      "reason": "host_connection_lost_before_task_creation"
+    },
+    {
+      "name": "141",
+      "slot": "app2",
+      "reason": "host_connection_lost_before_task_creation"
+    },
+    {
+      "name": "142",
+      "slot": "app1",
+      "reason": "host_connection_lost_before_task_creation"
+    },
+    {
+      "name": "155",
+      "slot": "app2",
+      "reason": "host_connection_lost_before_task_creation"
+    },
+    {
+      "name": "186",
+      "slot": "app1",
+      "reason": "host_connection_lost_before_task_creation"
+    }
+  ],
+  "skipAndCarry": {
+    "skipped": [
+      {
+        "name": "6",
+        "slot": "app1",
+        "reason": "skipped_permission"
+      },
+      {
+        "name": "13",
+        "slot": "app1",
+        "reason": "skipped_login"
+      },
+      {
+        "name": "18",
+        "slot": "app1",
+        "reason": "device_adb_interface_ready_transport_missing"
+      },
+      {
+        "name": "25",
+        "slot": "app2",
+        "reason": "skipped_login"
+      },
+      {
+        "name": "27",
+        "slot": "app1",
+        "reason": "skipped_server"
+      },
+      {
+        "name": "32",
+        "slot": "app1",
+        "reason": "known_login_required"
+      },
+      {
+        "name": "43",
+        "slot": "app2",
+        "reason": "skipped_login"
+      },
+      {
+        "name": "74",
+        "slot": "app2",
+        "reason": "explicit_user_skip"
+      },
+      {
+        "name": "75",
+        "slot": "app2",
+        "reason": "device_unauthorized"
+      },
+      {
+        "name": "81",
+        "slot": "app1",
+        "reason": "explicit_user_skip"
+      },
+      {
+        "name": "88",
+        "slot": "app2",
+        "reason": "device_unauthorized"
+      },
+      {
+        "name": "114",
+        "slot": "app1",
+        "reason": "skipped_account"
+      },
+      {
+        "name": "116",
+        "slot": "app1",
+        "reason": "skipped_account"
+      },
+      {
+        "name": "127",
+        "slot": "app1",
+        "reason": "device_physically_absent"
+      },
+      {
+        "name": "127",
+        "slot": "app2",
+        "reason": "device_physically_absent"
+      },
+      {
+        "name": "130",
+        "slot": "app1",
+        "reason": "skipped_login"
+      },
+      {
+        "name": "130",
+        "slot": "app2",
+        "reason": "skipped_login"
+      },
+      {
+        "name": "165",
+        "slot": "app2",
+        "reason": "skipped_server"
+      },
+      {
+        "name": "180",
+        "slot": "app1",
+        "reason": "device_unauthorized"
+      },
+      {
+        "name": "183",
+        "slot": "app1",
+        "reason": "device_usb_present_mtp_only"
+      },
+      {
+        "name": "188",
+        "slot": "app2",
+        "reason": "explicit_user_skip"
+      }
+    ],
+    "carried": [
+      {
+        "name": "13",
+        "slot": "app2",
+        "source": "already_verified_today_before_continuation"
+      },
+      {
+        "name": "107",
+        "slot": "app2",
+        "source": "already_verified_today_before_continuation"
+      },
+      {
+        "name": "154",
+        "slot": "app1",
+        "source": "already_verified_today_before_continuation"
+      },
+      {
+        "name": "154",
+        "slot": "app2",
+        "source": "already_verified_today_before_continuation"
+      }
+    ]
+  },
+  "phone43": {
+    "observedFailure": "Xiaohongshu owner foreground was not restored after browser redirect",
+    "savedFailureFocus": "u0 com.android.intentresolver/com.android.intentresolver.DoubleAppResolverActivity type=1",
+    "evidenceSha256": "cc04a7152af31e33e2b0009ff73bd2596a2ca9f427ad1d27259149a162366f59",
+    "confirmed": "Production source rejects a known Vivo owner chooser after relaunch. Saved failure hierarchy proves chooser existed when diagnostics were captured.",
+    "hypothesis": "The focus at the exact earlier throw was not recorded;real-device replay is still required to prove this exact missing branch caused and fixes that attempt.",
+    "fix": "After the same once-only owner browser relaunch, accept only exactu0 DoubleAppResolverActivity,recapture and reuse existing element-based owner selector. Record requesteduser0;do not mark selected before proof. Foreign/unknown surface stillstops.",
+    "deviceValidation": "Not run after fix;phone-host connection lost",
+    "published": false
+  },
+  "phone47": {
+    "failure": "could not prove Creator Center works-analysis path;OCR numeral glyph is unproven or ambiguous",
+    "storedJpegSha256": "61e603e07981506c4632cc2c56b94c588aebc6c93c2b2968eac46b7f2ca57d3f",
+    "confirmed": "Saved screenshot shows works cards;classification is a reading failure,not login/server error.",
+    "unconfirmed": "Failing row/glyph and original PNG have not been captured;compressed JPEG is not suitable for expanding trusted numeral templates.",
+    "next": "Reserve47 after restoring host;capture original PNG under same identity/occupancy guards,then offline isolate field/glyph;do notlower thresholds or guess counts.",
+    "fixed": false
+  },
+  "phone109": {
+    "jobId": "f7a3f0d4-72da-415a-b8af-0c64a30232a2",
+    "cloudStatus": "cancelled",
+    "cancelHttpStatus": 200,
+    "originalSettings": {
+      "system/screen_off_timeout": "1800000",
+      "global/enable_screen_on_proximity_sensor": "null"
+    },
+    "settingsRestoration": "unverified_after_host_lost",
+    "instruction": "Do not start another109 task until original settings ledger/current values and old job are reconciled. Server cancellation is not a phone-side restoration ACK."
+  },
+  "connection": {
+    "phoneHost": "100.93.121.88",
+    "lastObservedAgentHeartbeat": "2026-10-19T03:36:05.936Z",
+    "tailscaleOnline": false,
+    "sshPort22": "timeout",
+    "alternateHost": {
+      "host": "DESKTOP-8V8N4PE",
+      "lanIPv4": [
+        "172.18.0.1",
+        "192.168.10.107"
+      ],
+      "phoneHostDnsIPv4": [
+        "100.93.121.88"
+      ],
+      "hasAgentFiles": false
+    },
+    "alternateRouteProbes": [
+      {
+        "host": "192.168.20.123",
+        "port": 22,
+        "reachable": false
+      },
+      {
+        "host": "100.93.121.88",
+        "port": 22,
+        "reachable": false
+      }
+    ],
+    "alternatePhoneOperations": 0,
+    "userInputRequested": "RestorephonehostnetworkorprovidecurrentSSH;stillpending"
+  },
+  "cloudTerminalCheck": {
+    "jobs": [
+      {
+        "jobId": "7661462b-9ab2-494a-87f5-9d542a52a953",
+        "status": "succeeded",
+        "updatedAt": "2026-10-19T03:28:58.250Z"
+      },
+      {
+        "jobId": "4237ff31-725f-4b09-8f38-e45719339b2e",
+        "status": "failed",
+        "updatedAt": "2026-10-19T03:31:42.517Z"
+      },
+      {
+        "jobId": "f5f84c93-0b3d-4c7c-8850-c1fb488bbaad",
+        "status": "succeeded",
+        "updatedAt": "2026-10-19T03:33:15.008Z"
+      },
+      {
+        "jobId": "d02e9c6c-614b-4ad9-aa93-24f2eb8d9d8e",
+        "status": "succeeded",
+        "updatedAt": "2026-10-19T03:36:15.193Z"
+      },
+      {
+        "jobId": "5ebd4e29-e7b1-4304-8591-ac61c682f0e2",
+        "status": "failed",
+        "updatedAt": "2026-10-19T03:34:03.960Z"
+      },
+      {
+        "jobId": "8f7b88ca-69a6-4962-9f8b-1b072ec8c710",
+        "status": "failed",
+        "updatedAt": "2026-10-19T03:26:14.467Z"
+      },
+      {
+        "jobId": "3fd61aeb-5273-48dd-9fd2-dcefcaf0bb2d",
+        "status": "succeeded",
+        "updatedAt": "2026-10-19T03:34:41.662Z"
+      },
+      {
+        "jobId": "d9898da1-7286-45b2-bb84-08cf9a309124",
+        "status": "succeeded",
+        "updatedAt": "2026-10-19T03:30:48.097Z"
+      },
+      {
+        "jobId": "24a641b6-9da8-49a1-9f1c-24cf756de68c",
+        "status": "succeeded",
+        "updatedAt": "2026-10-19T03:30:54.340Z"
+      },
+      {
+        "jobId": "f7a3f0d4-72da-415a-b8af-0c64a30232a2",
+        "status": "cancelled",
+        "updatedAt": "2026-10-19T03:39:19.233Z"
+      },
+      {
+        "jobId": "b65aaa86-b19b-45f7-a921-6aac7b7cdaac",
+        "status": "succeeded",
+        "updatedAt": "2026-10-19T03:31:57.424Z"
+      }
+    ],
+    "ownActiveLocks": 0,
+    "windowsHostDirectReachable": false,
+    "phone109SettingsRestoration": "unverified_after_host_lost",
+    "newDispatchStopped": true
+  },
+  "tests": {
+    "pythonPassed": 222,
+    "consumerPassed": 11,
+    "failed": 0,
+    "rootSyntax": "passed",
+    "diff": "passed",
+    "qaExplicitPlanGuard": 9,
+    "review": "Self-reviewonly;onlyoneexistingbrowser-recoverybranchchanged;unknownsurface/slotproof/once-onlyguardretained;notdeployedorreal-deviceverified."
+  },
+  "localTestHistory": {
+    "firstLocalRun": {
+      "total": 222,
+      "failed": 2,
+      "cause": "New fixture expectations were wrong: a proven owner app already satisfies slot proof; ensure_creator_list legitimately reads power. Corrected tests without changing production behavior to fit expectations."
+    },
+    "finalLocalRun": {
+      "total": 222,
+      "failed": 0
+    },
+    "phoneTest": "Not run;hostTailscale/SSH offline",
+    "productionDeployment": false
+  },
+  "preparationGuardFailure": [
+    {
+      "phase": "cloud_readonly_preflight",
+      "target": "123/app1",
+      "error": "Existing SSH master expired; batch fallback auth rejected. Reconnected once using already-authorized credential.",
+      "productionTaskCreated": false,
+      "deviceCommands": 0,
+      "settingsChanges": 0,
+      "journalFirstGuardEntryExcludedFromDeviceCounts": true,
+      "evidence": "postrelease-continue/123-app1-preflight-ssh-blocked.json"
+    }
+  ],
+  "limits": [
+    "Original45 not fully retested;21known skips and4earlier today results are carried,not new successes.",
+    "98clone guarded out before creating anintent/task afterSSHloss;not a failed phone collection or changed settings.",
+    "10completed jobs have matching before/after settings and released locks;cannot claim global0pending or allWinprocesses unchanged afterhostloss.",
+    "No new production source/image/config/permission/key/env/startup/driver/PnP/USB/media changes or service restarts bythis task. Localrc5 isnot published.",
+    "No postdetails/login/terms/data-permission enrollment/appinstall/packet capture/Webimport;152/74/81/188 remainexcluded."
+  ],
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "remotePush": false
+}
