@@ -268,7 +268,13 @@ class PocoPreviewDriver:
         frozen = self.poco.freeze()
         nodes = []
         for kind in NODE_TYPES:
-            for item in list(frozen(type=kind)):
+            query = frozen(type=kind)
+            # Real Poco raises NoSuchNode while iterating an empty proxy;
+            # len(proxy) is its supported zero-match check. Do not swallow
+            # transport failures or skip nodes from a changed live hierarchy.
+            if len(query) == 0:
+                continue
+            for item in list(query):
                 visible = item.attr("visible")
                 enabled = item.attr("enabled")
                 if visible is not True:

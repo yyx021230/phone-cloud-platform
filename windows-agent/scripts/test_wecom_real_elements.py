@@ -72,6 +72,38 @@ class RealElementReplayTests(unittest.TestCase):
             driver.apply('open_menu', expected, self.phone)
         self.assertFalse(poco.effects)
 
+    def test_empty_poco_proxy_is_not_iterated(self):
+        class Proxy:
+            def __init__(self, items):
+                self.items = items
+            def __len__(self):
+                return len(self.items)
+            def __iter__(self):
+                if not self.items:
+                    raise RuntimeError('real Poco empty iteration raises')
+                return iter(self.items)
+        class NativeLikePoco(Poco):
+            def __call__(self, **selector):
+                return Proxy(super().__call__(**selector))
+        poco = NativeLikePoco(self.home)
+        driver = w.PocoPreviewDriver(poco, lambda: w.PACKAGE, lambda: True)
+        self.assertTrue(w.is_home(driver.snapshot()))
+        driver.apply('open_menu', driver.snapshot(), self.phone)
+        self.assertEqual(len(poco.effects), 1)
+
+    def test_proxy_count_failure_is_not_silently_skipped(self):
+        class BrokenProxy:
+            def __len__(self):
+                raise RuntimeError('transport failed')
+        class BrokenPoco(Poco):
+            def __call__(self, **selector):
+                return BrokenProxy()
+        poco = BrokenPoco(self.home)
+        driver = w.PocoPreviewDriver(poco, lambda: w.PACKAGE, lambda: True)
+        result = w.run_preview(driver, self.scenario['request'])
+        self.assertEqual(result['code'], 'executor_error_no_replay')
+        self.assertFalse(poco.effects)
+
 
 if __name__ == '__main__':
     unittest.main()
