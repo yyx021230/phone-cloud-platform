@@ -976,7 +976,8 @@ def recover_known_overlay(adb_path, serial, root, guard, events):
     children = list(panel) if panel is not None else []
     if XHS_PACKAGE in current and len(milestone) == 1 and len(children) == 5:
         subtitle = ("发笔记记录一下此刻吧！✌" if "单篇笔记阅读" in milestone[0].get("text", "")
-                    else ("发笔记感谢一下大家的喜爱❤️", "发笔记让更多人看到你的精彩分享 🙌"))
+                    else ("发笔记感谢一下大家的喜爱❤️", "发笔记让更多人看到你的精彩分享 🙌",
+                          "分享喜悦，获得更多人的关注💗"))
         if (children[1] is not milestone[0] or children[2].get("text") not in ((subtitle,) if isinstance(subtitle, str) else subtitle)
                 or children[4].get("text") != "去发布"
                 or any(n.get("package") != XHS_PACKAGE for n in children)):

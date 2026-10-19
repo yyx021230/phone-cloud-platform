@@ -1,0 +1,194 @@
+{
+  "status": "staging_verified_candidate_not_deployed",
+  "candidateTag": "xhs-compat-20261019-rc.4",
+  "sourceCommit": "resolve immutable annotated tag",
+  "baselineCommit": "313ef3867f74c58b92f8652f583c01c4d4bb26c9",
+  "branch": "codex/xhs-compatibility-fix-20261015",
+  "files": {
+    "windows-agent/scripts/小红书数据同步.py": "7c0aaa75dcaac4086052d3a7206879efa2b6189dcc470da55f56f65f7ae5dc0c",
+    "windows-agent/scripts/test_xhs_compatibility_20261015.py": "5ce6ee221c961089513974f1b86f518ab22cf3c50cce02a16d39f165e6fd3df2",
+    "windows-agent/scripts/fixtures/xhs/milestone-sharing-154.xml": "d7b22d3eb1602f96506d5a8bcc8ad1942ade2a0dbe08029d71ce037241c63d25"
+  },
+  "scope": "Original five blocked rows only, not a new full-fleet test. Outer works list; 30 Shanghai calendar days; no post details.",
+  "fix": "Allow the exact observed new likes milestone subtitle; retain same strict five-child layout, target app identity, close icon bounds and readback. Unknown copy still stops without tapping.",
+  "tests": {
+    "python": 219,
+    "consumer": 11,
+    "failed": 0,
+    "rootSyntaxCheck": "passed",
+    "diffCheck": "passed",
+    "review": "Self-review only: no change to close geometry, known package, publish exclusion, readback or other navigation branches."
+  },
+  "stage": "xhs-compat-fix-20261015-v32",
+  "stageWrapperSha256": "3fb68356e161ac3e46b4a5c7cdbc3d940f4ebc33a9461ce6550f702c20cb60fc",
+  "observedNewSubtitle": {
+    "observedNewSubtitle": [
+      {
+        "folder": "154-app2-1792374596",
+        "file": "002.xml",
+        "sha256": "e132e14b9097b7bdc01aad82a48489b6d3f6f0e2fb1c3e0d0294c8d4106523d4",
+        "expectedSubtitlePresent": true,
+        "nodeCount": 17
+      }
+    ]
+  },
+  "results": [
+    {
+      "name": "154",
+      "slot": "app1",
+      "status": "passed",
+      "notes": 14,
+      "scrolls": 2,
+      "complete": true,
+      "windowStart": "2026-09-20",
+      "windowEnd": "2026-10-19",
+      "settingsRestored": true,
+      "slotProven": true,
+      "metricsComplete": true,
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app1",
+        "xhs_cold_started",
+        "list_reopened_at_newest",
+        "collection_scan_as_of:2026-10-19",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle"
+      ],
+      "stopReason": "older_than_window_visible",
+      "durationSeconds": 93
+    },
+    {
+      "name": "154",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 19,
+      "scrolls": 4,
+      "complete": true,
+      "windowStart": "2026-09-20",
+      "windowEnd": "2026-10-19",
+      "settingsRestored": true,
+      "slotProven": true,
+      "metricsComplete": true,
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app2",
+        "xhs_cold_started",
+        "clone_user_requested:999",
+        "clone_slot_selected:app2",
+        "milestone_close_selected",
+        "growth_center_deferred",
+        "list_reopened_at_newest",
+        "collection_scan_as_of:2026-10-19",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle"
+      ],
+      "stopReason": "older_than_window_visible",
+      "durationSeconds": 141
+    },
+    {
+      "name": "13",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 17,
+      "scrolls": 3,
+      "complete": true,
+      "windowStart": "2026-09-20",
+      "windowEnd": "2026-10-19",
+      "settingsRestored": true,
+      "slotProven": true,
+      "metricsComplete": true,
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app2",
+        "xhs_cold_started",
+        "clone_user_requested:999",
+        "clone_slot_selected:app2",
+        "works_image_probe_unproven:image list fields changed between two fresh captures",
+        "data_center_works_tab_selected",
+        "works_list_image_reader_active",
+        "list_reopened_at_newest",
+        "works_image_header_capture_retried",
+        "works_image_probe_unproven:OCR works list has no proven complete cards or empty/end marker",
+        "collection_scan_as_of:2026-10-19",
+        "proximity_guard_temporarily_disabled"
+      ],
+      "stopReason": "older_than_window_visible",
+      "durationSeconds": 200
+    },
+    {
+      "name": "32",
+      "slot": "app1",
+      "status": "failed",
+      "settingsRestored": true,
+      "durationSeconds": 28,
+      "classification": "skip_manual_login_required"
+    }
+  ],
+  "phone18": {
+    "result": "skip_transport_missing",
+    "lastState": "adb_interface_ready_transport_missing",
+    "realCollection": false,
+    "restorationOrDriverOperations": false
+  },
+  "limits": [
+    "154 main complete14 but did not trigger new milestone on its successful pass;154 clone actual trace contains exact new subtitle and milestone_close_selected, then complete19.",
+    "13 clone complete17 after prior navigation failure; no claim the subtitle patch fixed13 or explained the historical loading root cause.",
+    "32 runner failed intentionally on exact logged-out state; classified skip, no login attempted.",
+    "Extra QA navigation captures were staging-only; not a production queue or whole-fleet acceptance.",
+    "Full rc.4, including earlier OCR and navigation candidates, has not been deployed. Production only contains separately approved107 minimal patch."
+  ],
+  "invariants": {
+    "hashes": {
+      "scripts/小红书数据同步.py": "e4ee2e856a41c9346e88c205b99f9faec371fe869752f0c492454016ffd639c5",
+      "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+      "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+      "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    "productionPending": 0,
+    "stagingPending": 0,
+    "processes": [
+      {
+        "pid": 650400,
+        "owner": "NT AUTHORITY\\SYSTEM",
+        "createdAt": 1792055125.802039
+      }
+    ],
+    "cacheAgeSeconds": 9.710413694381714,
+    "phone18": [
+      {
+        "name": "18",
+        "state": "adb_interface_ready_transport_missing"
+      }
+    ],
+    "adb": {
+      "pid": 634172,
+      "owner": "NT AUTHORITY\\SYSTEM",
+      "exe": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+      "createdAt": 1792047042.3705037,
+      "listen": [
+        [
+          "TCP",
+          "127.0.0.1:5037",
+          "0.0.0.0:0",
+          "LISTENING",
+          "634172"
+        ]
+      ]
+    }
+  },
+  "explicitSkips": [
+    "74",
+    "81",
+    "188",
+    "152"
+  ],
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "remotePush": false,
+  "rollback": "Local source revert point rc.3; no rc.4 production change to roll back;107 production backup stays separate."
+}

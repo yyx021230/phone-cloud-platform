@@ -38,6 +38,22 @@ class ObservedOverlayTests(unittest.TestCase):
             self.assertTrue(sync.recover_known_overlay('adb', 'serial', root, lambda: None, []))
         self.assertEqual(adb.call_args.args[2:], ('shell', 'input', 'tap', '686', '821'))
 
+    def test_154_new_sharing_copy_closes_only_the_proven_top_right_icon(self):
+        root = self.fixture('milestone-sharing-154.xml')
+        events = []
+        with patch.object(sync, 'focus', return_value='mCurrentFocus=Window{x u0 com.xingin.xhs/.index.v2.IndexActivityV2}'), patch.object(sync, 'navigation_capture', return_value=ET.Element('hierarchy')), patch.object(sync.time, 'sleep'), patch.object(sync, 'adb') as adb:
+            self.assertTrue(sync.recover_known_overlay('adb', 'serial', root, lambda: None, events))
+        adb.assert_called_once_with('adb', 'serial', 'shell', 'input', 'tap', '686', '863', timeout=7)
+        self.assertEqual(events, ['milestone_close_selected'])
+
+    def test_154_unknown_copy_is_still_rejected_without_tapping_publish_or_close(self):
+        root = self.fixture('milestone-sharing-154.xml')
+        root[0][2].set('text', '分享喜悦，获得更多人的关注❤️')
+        with patch.object(sync, 'focus', return_value='com.xingin.xhs/.index.v2.IndexActivityV2'), patch.object(sync, 'adb') as adb:
+            with self.assertRaisesRegex(RuntimeError, 'close layout is not proven'):
+                sync.recover_known_overlay('adb', 'serial', root, lambda: None, [])
+        adb.assert_not_called()
+
 class LoginTests(unittest.TestCase):
     def test_halfwelcome_and_welcome_require_exact_slot_foreground(self):
         for user, slot, activity in [('0','app1','halfwelcome.HalfWelcomeActivity'),('999','app2','activity.WelcomeActivity')]:
