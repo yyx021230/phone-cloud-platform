@@ -113,6 +113,16 @@ class OcrCompatibilityTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError,'no proven numeral'):
             ocr.numeric_cell(frame*0+255,samples[0]['box'],allow_candidate=True)
 
+    def test_observed_1080_decimal_unit_keeps_native_corroboration_mandatory(self):
+        import cv2,json,xhs_list_ocr as o
+        frame = cv2.imread(str(SCRIPTS/'fixtures/xhs/counts-1080-47.png'))
+        sample = next(x for x in json.loads((SCRIPTS/'fixtures/xhs/counts-1080-47.json').read_text()) if x['value']=='1.9万')
+        self.assertEqual(o.numeric_cell(frame,sample['box'],allow_candidate=True),('1.9万',True))
+        with self.assertRaisesRegex(RuntimeError,'requires native corroboration'):
+            o.numeric_cell(frame,sample['box'])
+        with self.assertRaisesRegex(RuntimeError,'unproven'):
+            o.corroborate_counts({'verifiedCounts':['1.9万'],'weakCountFields':[0]},0,{})
+
     def test_observed_720_metric_order_and_missing_heart(self):
         import cv2
         import xhs_list_ocr as ocr
@@ -555,6 +565,47 @@ class MissingTitleSuffixTests(unittest.TestCase):
         self.assertEqual(o.resolve_title_crop(row,0,values),'奔驰GLC十月新权益上线果然没白等!')
         values['r0_title_binary']['lines'][0]['text']='奔驰GLC十月新权益上线'
         with self.assertRaises(RuntimeError):o.resolve_title_crop(row,0,values)
+
+
+class CollinearTitleTests(unittest.TestCase):
+    def sample(self):
+        import json
+        data = json.loads((SCRIPTS/'fixtures/xhs/title-collinear-141.json').read_text())
+        return data['row'], {f'r0_title_{k}':v for k,v in data['readings'].items()}
+
+    def test_observed_two_ocr_lines_on_one_visual_baseline_are_complete(self):
+        import xhs_list_ocr as o
+        row, readings = self.sample()
+        self.assertEqual(o.resolve_title_crop(row,0,readings),
+                         o.compact(readings['r0_title_color']['lines'][0]['text']))
+
+    def test_wrapped_or_overlapping_or_outside_crop_lines_remain_unproven(self):
+        import xhs_list_ocr as o
+        for mode in ['wrapped','overlap','outside','missing_words','dimensions','three_lines']:
+            row, readings = self.sample()
+            item = readings['r0_title_binary']
+            with self.subTest(mode=mode):
+                if mode == 'missing_words':item['lines'][1]['words'] = []
+                elif mode == 'dimensions':item['width'] += 1
+                elif mode == 'three_lines':item['lines'].append(item['lines'][0])
+                else:
+                    for word in item['lines'][1]['words']:
+                        if mode == 'wrapped':word['y'] += 20
+                        elif mode == 'overlap':word['x'] -= 1000
+                        else:word['x'] += item['width']
+                with self.assertRaises(RuntimeError):o.resolve_title_crop(row,0,readings)
+
+    def test_collinear_text_still_requires_matching_dual_readings_and_prefix(self):
+        import xhs_list_ocr as o
+        for mode in ['changed_suffix','missing_prefix']:
+            row, readings = self.sample()
+            if mode == 'changed_suffix':
+                line = readings['r0_title_binary']['lines'][1]
+                line['words'][0]['text'] = '变'
+                line['text'] = ' '.join(word['text'] for word in line['words'])
+            else:row['title'] = '另一个标题'
+            with self.subTest(mode=mode), self.assertRaises(RuntimeError):
+                o.resolve_title_crop(row,0,readings)
 
 
 class BottomDateClipTests(unittest.TestCase):

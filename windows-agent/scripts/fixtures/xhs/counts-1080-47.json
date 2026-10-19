@@ -62,5 +62,85 @@
       761
     ],
     "sourceSha256": "25da094dc379c126e0c2e75e09ce7f2607e59f2a05c43f8704c097981ed8dd15"
+  },
+  {
+    "value": "96",
+    "box": [
+      0,
+      240,
+      82,
+      291
+    ],
+    "sourceBox": [
+      336,
+      777,
+      418,
+      828
+    ],
+    "sourceSha256": "6f4f1bd7e06d7f093b2bf852ab6895ef7ae4ae44fab3bc5c911cb76adfcc2256"
+  },
+  {
+    "value": "116",
+    "box": [
+      0,
+      300,
+      89,
+      351
+    ],
+    "sourceBox": [
+      336,
+      1711,
+      425,
+      1762
+    ],
+    "sourceSha256": "6f4f1bd7e06d7f093b2bf852ab6895ef7ae4ae44fab3bc5c911cb76adfcc2256"
+  },
+  {
+    "value": "319",
+    "box": [
+      0,
+      360,
+      96,
+      411
+    ],
+    "sourceBox": [
+      336,
+      1400,
+      432,
+      1451
+    ],
+    "sourceSha256": "6f4f1bd7e06d7f093b2bf852ab6895ef7ae4ae44fab3bc5c911cb76adfcc2256"
+  },
+  {
+    "value": "1.9万",
+    "box": [
+      0,
+      420,
+      117,
+      471
+    ],
+    "sourceBox": [
+      336,
+      854,
+      453,
+      905
+    ],
+    "sourceSha256": "648fff059e303734ea931524c788142f68bc6769696340bbb7b9e5dd5c5f11c3"
+  },
+  {
+    "value": "730",
+    "box": [
+      0,
+      480,
+      101,
+      531
+    ],
+    "sourceBox": [
+      336,
+      1166,
+      437,
+      1217
+    ],
+    "sourceSha256": "648fff059e303734ea931524c788142f68bc6769696340bbb7b9e5dd5c5f11c3"
   }
 ]
