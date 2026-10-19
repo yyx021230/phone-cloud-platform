@@ -1,0 +1,37 @@
+{
+  "status": "installed_waiting_user_login",
+  "version": "windows-tailscale-20261019-setup.1",
+  "baselineCommit": "3d45ee90b9a9b2047019444f441a38e2dda451d9",
+  "host": "192.168.20.139",
+  "hostname": "PC-20261015BZYS",
+  "tailscaleVersion": "1.104.1",
+  "installerSource": "https://pkgs.tailscale.com/stable/tailscale-setup-1.104.1-amd64.msi",
+  "installerBytes": 38718976,
+  "installerSha256": "6da8bcdb0d45a214cae0e8a88c2987ad48dec134bf04dffb9c05f1354c02b0b4",
+  "signature": "Valid / Tailscale Inc.",
+  "installerExit": 0,
+  "service": "Running / Automatic",
+  "backendState": "NeedsLogin",
+  "preferences": {
+    "acceptDns": false,
+    "acceptRoutes": false,
+    "exitNodeConfigured": false,
+    "advertiseRoutes": null
+  },
+  "postInstall": {
+    "agentPid": 14508,
+    "adbServerPid": 8988,
+    "owner": "NT AUTHORITY\\SYSTEM",
+    "adbRestarted": false,
+    "windowsRestarted": false,
+    "existingSshFirewallRuleChanged": false
+  },
+  "pending": [
+    "User authenticates new device into original tailnet",
+    "Enable and verify unattended mode after authentication",
+    "Add narrowly scoped Tailscale SSH firewall allowance for existing management Mac",
+    "Verify Tailscale reachability and SSH host fingerprint/authentication",
+    "Record final new Tailscale address; actual reboot test not authorized"
+  ],
+  "rollback": "Existing LAN SSH unchanged; installation media and MSI log retained. No production Agent/ADB/media changes."
+}
