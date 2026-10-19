@@ -35,11 +35,29 @@ SHANGHAI = dt.timezone(dt.timedelta(hours=8))
 PROFILE_GLYPH_PNG = "iVBORw0KGgoAAAANSUhEUgAAAC8AAAAwCAAAAACkzHw+AAADH0lEQVR4nM2W/U9SURjHvwgiF4lMUMPAKDWzlnM6cTTzpWzZbNbWmrm1tbV+6j9qa+svqOUP9qZllrPR0tTNZgaCYE1QE5BXu17aOfeFCwLabz4bPM8593Of+z3Pec4FRQr/ZUU4XLwq7xVuKpFgbx2IZ3e0QMoB6PbPzwX9K66jg8VptUF/Q24+uR3eXPPFASQcHVAA5BP8NsvtXMji/f5YNLIeSt863WgQ+Mg8h7ea+kxeN7Ile47JesKkpvmLAPPNZ8DL2+YMvrRzWISZGxUMHxVx4ABY+16DfTWky9BvrVXrdHr9cBjqGvFOTQxJ4s9vORAeHVDKeRVfaKJBMk0MZO2AfdOJ5S/2dMVyWzGAXRIor5aBMWE/Xi3y0F43DVkz9BfmUT3IqwcUpP8dG8LIyUJVJ/K/toE6WT7mspg/sJSeZRflz3DKYuM++nMazV9ZlEtPcA2o1qdRRuLbxaknIZT2i4PFEaCxOSt/AT1aADE+jHMH4BkAET78MC4UtlD9S8kaaOT+jr+9qgL5YwGihwHoxkTGgIWtfPl3A6tun/ZBCVDhRTymBfc+DHRU5OGjj0lTxn40AUYvENJi6idgatm73rh7MgqwfA97hQ0NYt4BMH38+Zfys+u/PR6pMPUnq8lxKietwo0CuEZCiY96vMsJcUJts1QJzVgOYIE8rqcWcn53jBUGHAdG2mww5lV6wtpF8YJ+vY1ExvY7j45krr2GfrddlE1R/c3zJqtZkihZwEW+7XZFNs88FI+PzLi5j0SmxsbjEUaZrk8O3D/hoz7hPU29y39Fmb9/wjPTxOkiwAzPry5udxvy9E9o8inFbfeNwIqbhEknPPN78tMfv+T4Ah1UdlvQ+gaYMGkAHwtYsvszFSEJStrIBabnrgU4awA2R3fAzQEqsyw/Xb6To6fEMPD8T0szOV5QXXoBLAWbAh7gnEZ8/wD49FWn5UjXt3WSu5XCOxp4NytG96pkemq58BrBcYbWRcLRJb4vmggu8WWC7z2eVStVfyv11i7qRD34HGNTymOnDDnKu+7aUJsb+D2V+APaYfv/8A/nYfKVUWstFQAAAABJRU5ErkJggg=="
 
 
+def adb_process(adb_path, serial, *args, timeout=12):
+    read_only = (args[:2] == ("shell","dumpsys") and len(args) > 2 and args[2] in ("window","power")
+                 or args[:3] == ("shell","settings","get") or args == ("get-state",)
+                 or args[:3] in (("exec-out","uiautomator","dump"),("shell","uiautomator","dump"))
+                 or args[:2] == ("exec-out","cat") or args == ("exec-out","screencap","-p"))
+    for attempt in range(3):
+        result = subprocess.run(
+            [adb_path, "-s", serial, *args], capture_output=True,
+            timeout=timeout, check=False,
+        )
+        if not result.returncode:
+            return result
+        missing = f"device '{serial}' not found" in result.stderr.decode("utf-8","replace")
+        # These reads can survive a transient USB transport loss (155).
+        # Keep binary output intact; never replay inputs, writes or timeouts.
+        if read_only and missing and attempt < 2:
+            time.sleep(attempt+1)
+            continue
+        return result
+
+
 def adb(adb_path, serial, *args, timeout=12):
-    result = subprocess.run(
-        [adb_path, "-s", serial, *args], capture_output=True,
-        timeout=timeout, check=False,
-    )
+    result = adb_process(adb_path,serial,*args,timeout=timeout)
     if result.returncode:
         detail = result.stderr.decode("utf-8", "replace").strip()[:300]
         raise RuntimeError(f"ADB {args[:3]} failed ({result.returncode}): {detail}")
@@ -168,11 +186,12 @@ def image_navigation_capture(adb_path, serial, guard, events, current):
     image_as_of = dt.date.fromisoformat(next(iter(as_of_values))) if as_of_values else dt.datetime.now(SHANGHAI).date()
     cutoff = image_as_of-dt.timedelta(days=days-1)
     frames = []
-    for frame_attempt in range(6):
+    header_deadline = time.monotonic()+20
+    for frame_attempt in range(12):
         guard()
         if focus(adb_path,serial) != current:
             raise RuntimeError("image list reader foreground changed")
-        screenshot = subprocess.run([adb_path,"-s",serial,"exec-out","screencap","-p"],capture_output=True,timeout=10)
+        screenshot = adb_process(adb_path,serial,"exec-out","screencap","-p",timeout=10)
         if screenshot.returncode:
             raise RuntimeError("image list reader screenshot failed")
         try:
@@ -183,7 +202,7 @@ def image_navigation_capture(adb_path, serial, guard, events, current):
             guard()
             if focus(adb_path, serial) != current:
                 raise RuntimeError("image list reader foreground changed")
-            confirmation = subprocess.run([adb_path,"-s",serial,"exec-out","screencap","-p"],capture_output=True,timeout=10)
+            confirmation = adb_process(adb_path,serial,"exec-out","screencap","-p",timeout=10)
             if confirmation.returncode:
                 raise RuntimeError("image list reader screenshot failed")
             try:
@@ -203,12 +222,13 @@ def image_navigation_capture(adb_path, serial, guard, events, current):
             return image_navigation_capture(adb_path,serial,guard,events,current)
         except (RuntimeError,subprocess.TimeoutExpired) as error:
             guard()
-            if str(error).startswith("OCR works-list header is not unique:") and frame_attempt < 5:
+            if (str(error).startswith("OCR works-list header is not unique:")
+                    and frame_attempt < 11 and time.monotonic() < header_deadline):
                 # A bad header read proves no data. Discard the pair and require
                 # two later, consecutive fresh captures with every field proven.
                 frames.clear()
                 events.append("works_image_header_capture_retried")
-                time.sleep(.2)
+                time.sleep(1)
                 continue
             raise ImageListReadError(str(error)) from error
         guard()
@@ -243,7 +263,7 @@ def select_image_profile_after_dump_failure(adb_path,serial,current,guard,events
     for _ in range(2):
         guard()
         if focus(adb_path,serial) != current:raise RuntimeError("image profile foreground changed")
-        png=subprocess.run([adb_path,"-s",serial,"exec-out","screencap","-p"],capture_output=True,timeout=10)
+        png=adb_process(adb_path,serial,"exec-out","screencap","-p",timeout=10)
         if png.returncode:raise RuntimeError("image profile screenshot failed")
         frames.append(read_profile_navigation(png.stdout,guard))
     if frames[0] != frames[1]:raise RuntimeError("image profile bottom bar changed between captures")
@@ -1182,7 +1202,7 @@ def select_zero_bounds_profile(adb_path, serial, root, current, guard, events):
     if children[0].get("selected") != "true":
         raise RuntimeError("zero-bounds profile footer is not on the verified home tab")
     guard()
-    screenshot = subprocess.run([adb_path, "-s", serial, "exec-out", "screencap", "-p"], capture_output=True, timeout=10)
+    screenshot = adb_process(adb_path,serial,"exec-out","screencap","-p",timeout=10)
     if screenshot.returncode:
         raise RuntimeError("profile image fallback screenshot failed")
     x, y = profile_glyph_position(screenshot.stdout)

@@ -1,0 +1,698 @@
+{
+  "status": "local_candidate_device_checks_complete_pending_release_approval",
+  "candidateTag": "xhs-compat-20261019-rc.7",
+  "candidateCommit": "resolve immutable annotated candidateTag",
+  "branch": "codex/xhs-compatibility-fix-20261015",
+  "parentCodeCommit": "573fdbb4af8bb77994afc0c32ea62188e6a19fbf",
+  "scope": "Original45 phone/slot rows,30Shanghai calendar days,outer Creator works list only. No new full-fleet pass claim;multi-version same-day evidence explicitly distinguished.152 outside45 remains excluded.",
+  "window": [
+    "2026-09-20",
+    "2026-10-19"
+  ],
+  "counts": {
+    "skipped": 19,
+    "passed": 25,
+    "blocked_loading": 1
+  },
+  "passedRawPhoneSlotRecords": 265,
+  "rows": [
+    {
+      "phone": "6",
+      "slot": "app1",
+      "status": "skipped",
+      "reason": "skipped_permission",
+      "evidenceScope": "carried_known_skip;not_a_new_collection"
+    },
+    {
+      "phone": "13",
+      "slot": "app1",
+      "status": "skipped",
+      "reason": "skipped_login",
+      "evidenceScope": "carried_known_skip;not_a_new_collection"
+    },
+    {
+      "phone": "13",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 16,
+      "scrolls": 4,
+      "complete": true,
+      "settingsRestored": true,
+      "reason": "older_than_window_visible",
+      "evidenceScope": "earlier_today_BF_production_queue_deployed.1"
+    },
+    {
+      "slot": "app2",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "settingsRestored": true,
+      "finishedAt": "2026-10-19T03:29:03.248044+00:00",
+      "phone": "14",
+      "status": "passed",
+      "reason": "older_than_window_visible",
+      "evidenceScope": "earlier_today_BF_production_queue_deployed.1"
+    },
+    {
+      "slot": "app1",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-19T07:28:59.078Z",
+      "finishedAt": "2026-10-19T07:30:07.713Z",
+      "phone": "18",
+      "status": "blocked_loading",
+      "reason": "WebView_red_loader_no_text_or_cards;cause_unconfirmed",
+      "stage": "xhs-compat-fix-20261015-v56",
+      "evidenceScope": "new_host_staging;not_production_queue"
+    },
+    {
+      "slot": "app1",
+      "notes": 66,
+      "scrolls": 16,
+      "complete": true,
+      "settingsRestored": true,
+      "finishedAt": "2026-10-19T03:30:55.967373+00:00",
+      "phone": "20",
+      "status": "passed",
+      "reason": "older_than_window_visible",
+      "evidenceScope": "earlier_today_BF_production_queue_deployed.1"
+    },
+    {
+      "phone": "25",
+      "slot": "app2",
+      "status": "skipped",
+      "reason": "skipped_login",
+      "evidenceScope": "carried_known_skip;not_a_new_collection"
+    },
+    {
+      "phone": "27",
+      "slot": "app1",
+      "status": "skipped",
+      "reason": "skipped_server",
+      "evidenceScope": "carried_known_skip;not_a_new_collection"
+    },
+    {
+      "slot": "app2",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "settingsRestored": true,
+      "finishedAt": "2026-10-19T03:30:55.797755+00:00",
+      "phone": "28",
+      "status": "passed",
+      "reason": "list_end_visible",
+      "evidenceScope": "earlier_today_BF_production_queue_deployed.1"
+    },
+    {
+      "phone": "32",
+      "slot": "app1",
+      "status": "skipped",
+      "reason": "known_login_required",
+      "evidenceScope": "carried_known_skip;not_a_new_collection"
+    },
+    {
+      "slot": "app1",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "settingsRestored": true,
+      "finishedAt": "2026-10-19T03:32:05.731551+00:00",
+      "phone": "34",
+      "status": "passed",
+      "reason": "list_end_visible",
+      "evidenceScope": "earlier_today_BF_production_queue_deployed.1"
+    },
+    {
+      "slot": "app1",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "settingsRestored": true,
+      "startedAt": "2026-10-19T06:07:56.997Z",
+      "finishedAt": "2026-10-19T06:09:15.083Z",
+      "phone": "43",
+      "status": "passed",
+      "reason": "older_than_window_visible",
+      "stage": "xhs-compat-fix-20261015-v34",
+      "evidenceScope": "new_host_staging;not_production_queue"
+    },
+    {
+      "phone": "43",
+      "slot": "app2",
+      "status": "skipped",
+      "reason": "skipped_login",
+      "evidenceScope": "carried_known_skip;not_a_new_collection"
+    },
+    {
+      "slot": "app1",
+      "notes": 30,
+      "scrolls": 6,
+      "complete": true,
+      "settingsRestored": true,
+      "startedAt": "2026-10-19T06:39:58.462Z",
+      "finishedAt": "2026-10-19T06:43:15.627Z",
+      "phone": "47",
+      "status": "passed",
+      "reason": "older_than_window_visible",
+      "stage": "xhs-compat-fix-20261015-v44",
+      "evidenceScope": "new_host_staging;not_production_queue"
+    },
+    {
+      "slot": "app1",
+      "notes": 6,
+      "scrolls": 1,
+      "complete": true,
+      "settingsRestored": true,
+      "finishedAt": "2026-10-19T03:33:23.498453+00:00",
+      "phone": "61",
+      "status": "passed",
+      "reason": "list_end_visible",
+      "evidenceScope": "earlier_today_BF_production_queue_deployed.1"
+    },
+    {
+      "phone": "74",
+      "slot": "app2",
+      "status": "skipped",
+      "reason": "explicit_user_skip",
+      "evidenceScope": "carried_known_skip;not_a_new_collection"
+    },
+    {
+      "phone": "75",
+      "slot": "app2",
+      "status": "skipped",
+      "reason": "foreign_occupancy_observed_on_new_host",
+      "evidenceScope": "carried_known_skip;not_a_new_collection"
+    },
+    {
+      "slot": "app1",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "settingsRestored": true,
+      "finishedAt": "2026-10-19T03:34:48.057025+00:00",
+      "phone": "80",
+      "status": "passed",
+      "reason": "older_than_window_visible",
+      "evidenceScope": "earlier_today_BF_production_queue_deployed.1"
+    },
+    {
+      "phone": "81",
+      "slot": "app1",
+      "status": "skipped",
+      "reason": "explicit_user_skip",
+      "evidenceScope": "carried_known_skip;not_a_new_collection"
+    },
+    {
+      "slot": "app2",
+      "notes": 1,
+      "scrolls": 0,
+      "complete": true,
+      "settingsRestored": true,
+      "startedAt": "2026-10-19T06:56:48.839Z",
+      "finishedAt": "2026-10-19T06:57:53.937Z",
+      "phone": "88",
+      "status": "passed",
+      "reason": "older_than_window_visible",
+      "stage": "xhs-compat-fix-20261015-v50",
+      "evidenceScope": "new_host_staging;not_production_queue"
+    },
+    {
+      "slot": "app1",
+      "notes": 11,
+      "scrolls": 3,
+      "complete": true,
+      "settingsRestored": true,
+      "finishedAt": "2026-10-19T03:36:22.687055+00:00",
+      "phone": "98",
+      "status": "passed",
+      "reason": "older_than_window_visible",
+      "evidenceScope": "earlier_today_BF_production_queue_deployed.1"
+    },
+    {
+      "slot": "app2",
+      "notes": 10,
+      "scrolls": 3,
+      "complete": true,
+      "settingsRestored": true,
+      "startedAt": "2026-10-19T06:10:32.689Z",
+      "finishedAt": "2026-10-19T06:12:02.872Z",
+      "phone": "98",
+      "status": "passed",
+      "reason": "older_than_window_visible",
+      "stage": "xhs-compat-fix-20261015-v36",
+      "evidenceScope": "new_host_staging;not_production_queue"
+    },
+    {
+      "phone": "107",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 0,
+      "scrolls": null,
+      "complete": true,
+      "settingsRestored": true,
+      "reason": "older_than_window_visible",
+      "evidenceScope": "earlier_today_BF_production_popup_fix;not_new_host_retest"
+    },
+    {
+      "slot": "app2",
+      "notes": 11,
+      "scrolls": 5,
+      "complete": true,
+      "settingsRestored": true,
+      "startedAt": "2026-10-19T06:15:28.155Z",
+      "finishedAt": "2026-10-19T06:17:30.768Z",
+      "phone": "109",
+      "status": "passed",
+      "reason": "older_than_window_visible",
+      "stage": "xhs-compat-fix-20261015-v36",
+      "evidenceScope": "new_host_staging;not_production_queue"
+    },
+    {
+      "phone": "114",
+      "slot": "app1",
+      "status": "skipped",
+      "reason": "skipped_account",
+      "evidenceScope": "carried_known_skip;not_a_new_collection"
+    },
+    {
+      "phone": "114",
+      "slot": "app2",
+      "status": "skipped",
+      "reason": "foreign_occupancy",
+      "evidenceScope": "new_host_preflight"
+    },
+    {
+      "phone": "116",
+      "slot": "app1",
+      "status": "skipped",
+      "reason": "skipped_account",
+      "evidenceScope": "carried_known_skip;not_a_new_collection"
+    },
+    {
+      "slot": "app1",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "settingsRestored": true,
+      "finishedAt": "2026-10-19T03:26:16.082586+00:00",
+      "phone": "123",
+      "status": "skipped",
+      "reason": "manual_login_required",
+      "evidenceScope": "earlier_today_BF_production_queue_deployed.1"
+    },
+    {
+      "slot": "app2",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "settingsRestored": true,
+      "startedAt": "2026-10-19T06:15:28.155Z",
+      "finishedAt": "2026-10-19T06:16:53.922Z",
+      "phone": "123",
+      "status": "passed",
+      "reason": "older_than_window_visible",
+      "stage": "xhs-compat-fix-20261015-v36",
+      "evidenceScope": "new_host_staging;not_production_queue"
+    },
+    {
+      "phone": "127",
+      "slot": "app1",
+      "status": "skipped",
+      "reason": "device_physically_absent",
+      "evidenceScope": "carried_known_skip;not_a_new_collection"
+    },
+    {
+      "phone": "127",
+      "slot": "app2",
+      "status": "skipped",
+      "reason": "device_physically_absent",
+      "evidenceScope": "carried_known_skip;not_a_new_collection"
+    },
+    {
+      "phone": "130",
+      "slot": "app1",
+      "status": "skipped",
+      "reason": "skipped_login",
+      "evidenceScope": "carried_known_skip;not_a_new_collection"
+    },
+    {
+      "phone": "130",
+      "slot": "app2",
+      "status": "skipped",
+      "reason": "skipped_login",
+      "evidenceScope": "carried_known_skip;not_a_new_collection"
+    },
+    {
+      "slot": "app1",
+      "notes": 29,
+      "scrolls": 6,
+      "complete": true,
+      "settingsRestored": true,
+      "startedAt": "2026-10-19T06:16:53.923Z",
+      "finishedAt": "2026-10-19T06:19:09.114Z",
+      "phone": "131",
+      "status": "passed",
+      "reason": "older_than_window_visible",
+      "stage": "xhs-compat-fix-20261015-v36",
+      "evidenceScope": "new_host_staging;not_production_queue"
+    },
+    {
+      "slot": "app1",
+      "notes": 17,
+      "scrolls": 3,
+      "complete": true,
+      "settingsRestored": true,
+      "startedAt": "2026-10-19T06:32:07.514Z",
+      "finishedAt": "2026-10-19T06:35:26.655Z",
+      "phone": "141",
+      "status": "passed",
+      "reason": "older_than_window_visible",
+      "stage": "xhs-compat-fix-20261015-v42",
+      "evidenceScope": "new_host_staging;not_production_queue"
+    },
+    {
+      "slot": "app2",
+      "notes": 10,
+      "scrolls": 3,
+      "complete": true,
+      "settingsRestored": true,
+      "startedAt": "2026-10-19T06:55:05.531Z",
+      "finishedAt": "2026-10-19T06:57:53.609Z",
+      "phone": "141",
+      "status": "passed",
+      "reason": "older_than_window_visible",
+      "stage": "xhs-compat-fix-20261015-v50",
+      "evidenceScope": "new_host_staging;not_production_queue"
+    },
+    {
+      "slot": "app1",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "settingsRestored": true,
+      "startedAt": "2026-10-19T06:19:09.115Z",
+      "finishedAt": "2026-10-19T06:21:02.961Z",
+      "phone": "142",
+      "status": "passed",
+      "reason": "older_than_window_visible",
+      "stage": "xhs-compat-fix-20261015-v36",
+      "evidenceScope": "new_host_staging;not_production_queue"
+    },
+    {
+      "phone": "154",
+      "slot": "app1",
+      "status": "passed",
+      "notes": 14,
+      "scrolls": 3,
+      "complete": true,
+      "settingsRestored": true,
+      "reason": "older_than_window_visible",
+      "evidenceScope": "earlier_today_BF_v33_deployed.1_gray"
+    },
+    {
+      "phone": "154",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 19,
+      "scrolls": 4,
+      "complete": true,
+      "settingsRestored": true,
+      "reason": "older_than_window_visible",
+      "evidenceScope": "earlier_today_BF_v33_deployed.1_gray"
+    },
+    {
+      "slot": "app2",
+      "notes": 13,
+      "scrolls": 5,
+      "complete": true,
+      "settingsRestored": true,
+      "startedAt": "2026-10-19T07:26:34.047Z",
+      "finishedAt": "2026-10-19T07:28:34.544Z",
+      "phone": "155",
+      "status": "passed",
+      "reason": "older_than_window_visible",
+      "stage": "xhs-compat-fix-20261015-v55",
+      "evidenceScope": "new_host_staging;not_production_queue"
+    },
+    {
+      "phone": "165",
+      "slot": "app2",
+      "status": "skipped",
+      "reason": "skipped_server",
+      "evidenceScope": "carried_known_skip;not_a_new_collection"
+    },
+    {
+      "slot": "app1",
+      "notes": 12,
+      "scrolls": 5,
+      "complete": true,
+      "settingsRestored": true,
+      "startedAt": "2026-10-19T07:28:59.079Z",
+      "finishedAt": "2026-10-19T07:31:00.018Z",
+      "phone": "180",
+      "status": "passed",
+      "reason": "older_than_window_visible",
+      "stage": "xhs-compat-fix-20261015-v56",
+      "evidenceScope": "new_host_staging;not_production_queue"
+    },
+    {
+      "slot": "app1",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "settingsRestored": true,
+      "startedAt": "2026-10-19T06:57:53.937Z",
+      "finishedAt": "2026-10-19T06:59:06.292Z",
+      "phone": "183",
+      "status": "passed",
+      "reason": "older_than_window_visible",
+      "stage": "xhs-compat-fix-20261015-v50",
+      "evidenceScope": "new_host_staging;not_production_queue"
+    },
+    {
+      "slot": "app1",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "settingsRestored": true,
+      "startedAt": "2026-10-19T06:25:19.546Z",
+      "finishedAt": "2026-10-19T06:26:30.788Z",
+      "phone": "186",
+      "status": "passed",
+      "reason": "older_than_window_visible",
+      "stage": "xhs-compat-fix-20261015-v39",
+      "evidenceScope": "new_host_staging;not_production_queue"
+    },
+    {
+      "phone": "188",
+      "slot": "app2",
+      "status": "skipped",
+      "reason": "explicit_user_skip",
+      "evidenceScope": "carried_known_skip;not_a_new_collection"
+    }
+  ],
+  "stageEvidence": {
+    "xhs-compat-fix-20261015-v34": {
+      "candidateSha256": "a8a4705c7eb735d98a656bbed23ebc277569fb60190258a6fd9bf2061ba2e9c7",
+      "ocrSha256": "2fc9b71a40870f78e65c3879c04fea10b7ece89ef9e77a4fdf884e8a8276fa22",
+      "atlasSha256": "da0c0a42892d0dd356965fa44c9521e4398a6e67985545908a133e410de708c2",
+      "receiptSha256": "ed72d916db386c79cfdcae3ae535c4d92560767c4d723bbf5acb00b69b3f69d9"
+    },
+    "xhs-compat-fix-20261015-v36": {
+      "candidateSha256": "a8a4705c7eb735d98a656bbed23ebc277569fb60190258a6fd9bf2061ba2e9c7",
+      "ocrSha256": "2fc9b71a40870f78e65c3879c04fea10b7ece89ef9e77a4fdf884e8a8276fa22",
+      "atlasSha256": "da0c0a42892d0dd356965fa44c9521e4398a6e67985545908a133e410de708c2",
+      "receiptSha256": "6f88b306ef9296ac1db472dbcd90c7bc6f946f49830cfe0dd44f9558d682401d"
+    },
+    "xhs-compat-fix-20261015-v39": {
+      "candidateSha256": "a8a4705c7eb735d98a656bbed23ebc277569fb60190258a6fd9bf2061ba2e9c7",
+      "ocrSha256": "c84a0ef182a4e8bb8b08407e5e68de25efe18854308d760643fc09d2076122f0",
+      "atlasSha256": "0b45bffd3e07ad5e20f712fca2eea964d73d8bbb269134c179fbe988835f0414",
+      "receiptSha256": "ca4f8c241aa049f9e34bb4fa7c6b90b37ab9da5afb46b8e8d6f6c38093c26aef"
+    },
+    "xhs-compat-fix-20261015-v42": {
+      "candidateSha256": "a8a4705c7eb735d98a656bbed23ebc277569fb60190258a6fd9bf2061ba2e9c7",
+      "ocrSha256": "fb7d3dab7b32b7bdebef54dd58fc36ee8e483b4a65b9e470490166c6d7d1f51a",
+      "atlasSha256": "5fd915d214f0c7d19f067c2adaafe569915937f37e65986051db9f9f227598bc",
+      "receiptSha256": "21b4a8f9d0ac6bc84f419e260b315bc53b152943107e9747f46ad80c94769b66"
+    },
+    "xhs-compat-fix-20261015-v44": {
+      "candidateSha256": "a8a4705c7eb735d98a656bbed23ebc277569fb60190258a6fd9bf2061ba2e9c7",
+      "ocrSha256": "5c58501abfc87dce81e49e14f33dfbb4f5f7e11968c56a8c4f19ce3aeae5c249",
+      "atlasSha256": "90e94be3cf74f262032fcd348853d3814ea0885264e57f6df069113842799929",
+      "receiptSha256": "328114c87144b0c4b6badcda2efa633d9505d4b045355a569e3855242b70b52f"
+    },
+    "xhs-compat-fix-20261015-v50": {
+      "candidateSha256": "a8a4705c7eb735d98a656bbed23ebc277569fb60190258a6fd9bf2061ba2e9c7",
+      "ocrSha256": "6baf60af0db4cab055dadca3d3378dce0e4b4cb24d5f35ed457eb7b955b71deb",
+      "atlasSha256": "90e94be3cf74f262032fcd348853d3814ea0885264e57f6df069113842799929",
+      "receiptSha256": "8ea330285e4c556f1668745153b5aaf329a7b6d45a2a4e40d3235df914b11a6e"
+    },
+    "xhs-compat-fix-20261015-v55": {
+      "candidateSha256": "7a1069cdd5235749a2813f6058031f5cc4f88773a853047872f0094fe707d523",
+      "ocrSha256": "5e73a76da45ce1d7ed79dbe4ba1c7e6d35fcc36f5f1ff803e2bc5ce3563ffb97",
+      "atlasSha256": "90e94be3cf74f262032fcd348853d3814ea0885264e57f6df069113842799929",
+      "receiptSha256": "4020c0333a31f529a7a61c0b967742007f10efd5f3da66cf6f50076142957a10"
+    },
+    "xhs-compat-fix-20261015-v56": {
+      "candidateSha256": "7a1069cdd5235749a2813f6058031f5cc4f88773a853047872f0094fe707d523",
+      "ocrSha256": "5e73a76da45ce1d7ed79dbe4ba1c7e6d35fcc36f5f1ff803e2bc5ce3563ffb97",
+      "atlasSha256": "90e94be3cf74f262032fcd348853d3814ea0885264e57f6df069113842799929",
+      "receiptSha256": "825850d0e501bbca13547773bfbe1c5a672b7b786b197e7dd8faf2ad5c167338"
+    }
+  },
+  "candidateFiles": {
+    "windows-agent/scripts/小红书数据同步.py": "7a1069cdd5235749a2813f6058031f5cc4f88773a853047872f0094fe707d523",
+    "windows-agent/scripts/xhs_list_ocr.py": "5e73a76da45ce1d7ed79dbe4ba1c7e6d35fcc36f5f1ff803e2bc5ce3563ffb97",
+    "windows-agent/scripts/xhs_ocr_digits.png": "90e94be3cf74f262032fcd348853d3814ea0885264e57f6df069113842799929",
+    "windows-agent/scripts/test_xhs_compatibility_20261015.py": "841098285466d6c80a0a6d7a951f6ebdd6d1f16adb42525e4f5286c1b4bdbb40",
+    "windows-agent/scripts/fixtures/xhs/date-09-16-155.png": "021f06cfd51999d87ab00e2cf25851ab874cddcb07fab87a2b9a3f8dcee5643c"
+  },
+  "fixes": {
+    "transientTransport": "Only enumerated read commands retry exact target device-not-found,3 total attempts with1/2second waits. Never retry input/settings writes/unknown errors/foreign serial/timeouts;binary bytes retained. Only private XHS executor changed;no shared ADB code.",
+    "transportLiveProof": "v51 window read andv53 UI dump each recovered afterabout1.09seconds;v55 complete13/5 without a further transport fault. No driver/server restart oridentity change.",
+    "header": "Only missing/ambiguous works header:12captures maximum,20second retry-deadline,1second pauses;discard failed pair and still require2freshconsecutive field/foreground/slot proofs. This is a retry-deadline,not a hard total execution cap.",
+    "headerLiveLimit": "180v50 real notification obscured header and caused partial10. v56 complete12/5 but no header-retry event;exact notification-fade branch only regression-tested,not reproduced live in finalrun.",
+    "date": "Full-size binary/contrast conflicts remain fatal. Only conflicting1x/2x dates withno valid full-size primary can use>=2fullcontext dates plus>=2distinctstrictfive-glyph paired masks,allagree,andoneweakreadingmatches. Raw andcontext same mask countonce;valid disagreement stops. StaticDATE prefix is excluded by exactcontentROI and containsno date digits.",
+    "titleAndFont": "Earlier6ffb7d7/573fdbb stage repairs retained;seeOCR_REPAIR andPREFIX evidence. Original digit samples andthresholds preserved.141clone passed10/3 atoriginal7/10second command budgets;20second diagnostic ceilings didnotprove a fix andwere not retained."
+  },
+  "dateEvidence": {
+    "originalPngSha256": "37cbcd6f1af644a465a0b2e3f2dd49bfade6de96599a92ad15d6db17d37f5115",
+    "roi": [
+      72,
+      1381,
+      129,
+      1413
+    ],
+    "small": "09-15",
+    "double": "09-16",
+    "fullBinary": "invalid_or_missing",
+    "fullContrast": "invalid_CJK_digit",
+    "fullContexts": {
+      "binary": "09-16",
+      "contrast": "09-16"
+    },
+    "rawPairs": {
+      "binary": "0099一1166",
+      "contrast": "0099一笮66 invalid;never substituted"
+    },
+    "contextPairs": {
+      "binary": "0099一1166",
+      "contrast": "0099一1166"
+    },
+    "fixtureSha256": "021f06cfd51999d87ab00e2cf25851ab874cddcb07fab87a2b9a3f8dcee5643c",
+    "fullOriginalOfflineCards": 5,
+    "offlineError": null,
+    "singleDeviceAcceptance": {
+      "stage": "v55",
+      "phone": "155/app2",
+      "notes": 13,
+      "scrolls": 5,
+      "complete": true,
+      "settingsRestored": true
+    }
+  },
+  "phone18": {
+    "stage": "v56",
+    "result": "blocked_loading",
+    "screenshotSha256": "45012c7a7a612e35244baea811635dfb8b9819b0c718f17392531edf17716650",
+    "focus": "u0 XHS WebViewActivityV2",
+    "xmlNodes": 13,
+    "xmlNonemptyTexts": 0,
+    "screen": "white background andred loading indicator;no cards",
+    "settingsRestored": true,
+    "cause": "unconfirmed;do not callserver error orzero notes"
+  },
+  "qaOrchestration": {
+    "v49": "Preflight failure was not inspected before subsequent launch. Cooperatively stopped only own v49;141clone/18main cancelled after25/27seconds andsettingsrestored;other4notstarted. v48 original1800000/null reconciled with0writes andownedledgerarchived. Stopmarker retained.",
+    "localGate": "Both private dispatchers now reject anyregistered v34+ original-settings ledger or stoppedstage andverifyexactstagehashes. This is localQA tooling only,no productionAgent feature.",
+    "negativeVerification": "Stoppedv49 refused withno devicecommand. An attempted active-ledger negative test ran afterv51 finished andits assertionfailed;it is not a passing gate test.",
+    "closure": "Final23staging folders+production scanned:0pendingledgers,0owncollectorprocesses. Previous155v36/v48/v50 originalvaluesverified andownedledgersarchived with0settingswrites.109oldjob cancelled with0activelocks."
+  },
+  "verification": {
+    "pythonCommand": "python3 -m unittest discover -s windows-agent/scripts -p 'test_xhs*.py'",
+    "pythonPassed": 242,
+    "consumerCommand": "node --test windows-agent/src/xhs-data-collection.test.mjs",
+    "consumerPassed": 11,
+    "rootNpmCheck": "passed",
+    "gitDiffCheck": "passed",
+    "beforeFix": "New weak-date positive andrequest-generation tests failed onprior OCRsource;strictnegative cases passed.",
+    "priorLocalFailure": "Initial237test run had14testdouble errors frominspectingstderr onsuccess;restored immediate-successreturn,retained oldtests;then237and242passed.",
+    "selfReview": "Only exclusiveXHSread helper/header loop andOCR equal_variants/paired_date_requests changed relative573fdbb;no removedfunction;full-size conflicts,distinct mask accounting,original pixels/ROI,slot/foreground/twofreshframes andcounts unchanged. Self-review only;no independentagent used."
+  },
+  "invariants": {
+    "checkedAtEpoch": 1792395083.4919949,
+    "productionHashes": {
+      "scripts/小红书数据同步.py": "e4ee2e856a41c9346e88c205b99f9faec371fe869752f0c492454016ffd639c5",
+      "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+      "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+      "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+      "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    "sourceDrift": false,
+    "agentPid": 14508,
+    "agentOwner": "NT AUTHORITY\\SYSTEM",
+    "agentCreateTime": 1792388069.5465655,
+    "qaCollectorProcesses": 0,
+    "pendingSettingsLedgers": 0,
+    "stagingFoldersChecked": 23
+  },
+  "adb": {
+    "pid": 8988,
+    "owner": "NT AUTHORITY\\SYSTEM",
+    "path": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+    "port": 5037,
+    "processUnchanged": true
+  },
+  "oldCloudJob": {
+    "oldJobReadback": [
+      {
+        "jobId": "f7a3f0d4-72da-415a-b8af-0c64a30232a2",
+        "httpStatus": 200,
+        "status": "cancelled"
+      }
+    ],
+    "oldJobActiveLocks": 0,
+    "checkedAt": "2026-10-19T07:31:47.751756+00:00"
+  },
+  "production": {
+    "host": "PC-20261015BZYS",
+    "status": "unchanged_older_assets_no_new_deployment",
+    "previousBFDeployment": "xhs-compat-20261019-deployed.1 is historical onBF;not the replacementhost runtimeversion",
+    "baseline": {
+      "scripts/小红书数据同步.py": "e4ee2e856a41c9346e88c205b99f9faec371fe869752f0c492454016ffd639c5",
+      "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+      "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+      "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+      "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    "backup": "D:\\PhoneCloud\\backups\\xhs-compat-20261019-newhost-before-rc7",
+    "backupManifestLimit": "Immutablemanifest originally proposed6ffb7d7;keptunaltered. Originalbackups remain valid becausecurrent3runtimefiles unchanged. Freshproposal.2 willbindfinalcommittedcandidate.",
+    "previewEvidence": "XHS_COMPATIBILITY_RC7_RELEASE_PREVIEW_20261019.json",
+    "serviceRestarts": 0,
+    "driverHubPnpChanges": 0,
+    "sharedAdbIdentityKeyEnvStartupChanges": 0,
+    "mediaControlChanges": 0,
+    "webDatabaseWrites": 0,
+    "packetCapture": false
+  },
+  "limits": [
+    "Finalcandidate exacthash deviceacceptance is155single then18/180pair:2complete,1knownloadingblock. Other25-pass total includes earlier same-day versions/hosts,not a newfull45 finalbinaryrun.",
+    "19skips include carriedlogin/permission/account/server/device/user exclusions andobservedforeignoccupancy;theyare not passes.152always excluded.",
+    "180notification-fade retry branch wasnottriggered infinaldeviceacceptance;boundedmockregression andoriginalfailure imageare the evidence.",
+    "Only title/date/status/threevisiblecounts;displayunits areapproximate,titleOCR maydiffer,andnostablepostID oraccountmapping.",
+    "No newlycreated productionjobs onreplacementhost;staging isnotproductionqueue/DB integration acceptance.",
+    "No push/no newproductionrelease;releaseauthorization mustbindactualcandidate/target perworkflowsection7."
+  ],
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "rootDirtyEntriesPreserved": 237,
+  "remotePush": false
+}

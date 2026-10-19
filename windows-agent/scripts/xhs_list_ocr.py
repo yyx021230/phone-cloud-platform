@@ -99,8 +99,10 @@ def equal_variants(images, prefix, parser):
         # pixelated enlargement can confuse dates; use them only to back up
         # one primary value, never to overturn two agreeing primary values.
         primary = [by_variant[v] for v in ("binary","contrast","small","double") if v in by_variant]
-        if len(set(primary)) > 1:raise RuntimeError("OCR primary date values disagree")
-        if len(primary) >= 2:return primary[0]
+        conflicting_small = len(set(primary)) > 1
+        strong = any(v in by_variant for v in ("binary","contrast"))
+        if conflicting_small and strong:raise RuntimeError("OCR primary date values disagree")
+        if len(primary) >= 2 and not conflicting_small:return primary[0]
         if len(primary) == 1 and any(by_variant.get(v) == primary[0] for v in ("color","nearest")):
             return primary[0]
         contextual = []
@@ -115,21 +117,30 @@ def equal_variants(images, prefix, parser):
             except RuntimeError:continue
         paired = []
         for variant in ("binary","contrast","soft"):
-            item = images.get(prefix + "_pair_" + variant)
-            if item is None:continue
-            if item.get("language") != "zh-Hans-CN":
-                raise RuntimeError("OCR paired date language is unproven")
-            lines = item.get("lines",[])
-            if len(lines) != 1:continue
-            try:paired.append(paired_date_text(lines[0].get("text","")))
-            except RuntimeError:continue
+            mask_values = []
+            for infix in ("_pair_","_pair_context_"):
+                item = images.get(prefix + infix + variant)
+                if item is None:continue
+                if item.get("language") != "zh-Hans-CN":
+                    raise RuntimeError("OCR paired date language is unproven")
+                lines = item.get("lines",[])
+                if len(lines) != 1:continue
+                try:mask_values.append(paired_date_text(lines[0].get("text","")))
+                except RuntimeError:continue
+            if len(set(mask_values)) > 1:
+                raise RuntimeError("OCR contextual date values disagree within one mask")
+            # Raw and contextual readings of the same mask count only once.
+            if mask_values:paired.append(mask_values[0])
         # A single low-resolution reading can confuse 6 with 5. It may be
         # superseded only by two full-size context readings AND two strictly
-        # segmented glyph-pair readings. Two primary values are never replaced.
-        if (len(primary) == 1 and not any(v in by_variant for v in ("binary","contrast"))
+        # segmented glyph-pair masks. Conflicting 1x/2x readings additionally
+        # require one to match this consensus; full-size conflicts remain fatal.
+        if (not strong and (len(primary) == 1 or conflicting_small)
                 and len(contextual) >= 2 and len(paired) >= 2
-                and len(set(contextual+paired)) == 1):
+                and len(set(contextual+paired)) == 1
+                and (not conflicting_small or paired[0] in primary)):
             return paired[0]
+        if conflicting_small:raise RuntimeError("OCR contextual date values disagree")
         contextual.extend(paired)
         if len(contextual) >= 2:
             if len(set(contextual)) != 1 or (primary and primary[0] != contextual[0]):
@@ -627,6 +638,7 @@ def paired_date_image(image):
 
 def paired_date_requests(prepared, recognized, directory):
     import cv2
+    import numpy as np
     indexed = {r.get("id"):r for r in recognized}
     requests = []
     for i,_ in enumerate(prepared["rows"]):
@@ -643,6 +655,21 @@ def paired_date_requests(prepared, recognized, directory):
             file = Path(directory)/(identifier+".png")
             if not cv2.imwrite(str(file),image):raise RuntimeError("OCR private paired date write failed")
             requests.append({"id":identifier,"path":str(file)})
+            # Static context is outside the exact copied glyph-pair region.
+            # It supplies no date digits and cannot add a second mask vote.
+            height,width = image.shape
+            scale = height*.55/22;thickness = max(1,round(height/80))
+            (text_width,_),_ = cv2.getTextSize("DATE:",cv2.FONT_HERSHEY_SIMPLEX,scale,thickness)
+            left = text_width+40
+            canvas = np.full((height+40,width+left+20),255,np.uint8)
+            canvas[20:20+height,left:left+width] = image
+            cv2.putText(canvas,"DATE:",(10,20+round(height*.62)),cv2.FONT_HERSHEY_SIMPLEX,
+                        scale,0,thickness,cv2.LINE_AA)
+            identifier = f"r{i}_date_pair_context_{variant}"
+            file = Path(directory)/(identifier+".png")
+            if not cv2.imwrite(str(file),canvas):raise RuntimeError("OCR private paired date context write failed")
+            requests.append({"id":identifier,"path":str(file),
+                             "dateContentBox":[left,20,left+width,20+height]})
     return requests
 
 

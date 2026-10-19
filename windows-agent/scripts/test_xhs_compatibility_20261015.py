@@ -397,6 +397,77 @@ class AdditionalInkProofTests(unittest.TestCase):
         values['n_binary']=self.item('');del values['n_context_contrast']
         with self.assertRaisesRegex(RuntimeError,'two independently processed'):o.equal_variants(values,'n',o.counter_text)
 
+class ConflictingSmallDateTests(unittest.TestCase):
+    @staticmethod
+    def readings():
+        return {key:AdditionalInkProofTests.item(text) for key,text in {
+            'd_color':'','d_binary':'','d_small':'09-15','d_double':'09-16',
+            'd_context_binary':'09-16','d_context_contrast':'09-16',
+            'd_pair_binary':'0099一1166','d_pair_contrast':'0099一笮66',
+            'd_pair_context_binary':'0099一1166','d_pair_context_contrast':'0099一1166',
+        }.items()}
+
+    def test_conflicting_small_readings_need_two_full_contexts_and_two_mask_pairs(self):
+        import xhs_list_ocr as o
+        for small,double in [('09-15','09-16'),('09-16','09-15')]:
+            values=self.readings();values['d_small']=AdditionalInkProofTests.item(small)
+            values['d_double']=AdditionalInkProofTests.item(double)
+            self.assertEqual(o.equal_variants(values,'d',o.date_text),'09-16')
+
+    def test_missing_distinct_mask_or_context_proof_still_rejects(self):
+        import xhs_list_ocr as o
+        for removed in [('d_context_binary',),('d_pair_context_contrast',),
+                        ('d_pair_contrast','d_pair_context_contrast')]:
+            values=self.readings()
+            for key in removed:del values[key]
+            with self.subTest(removed=removed),self.assertRaises(RuntimeError):
+                o.equal_variants(values,'d',o.date_text)
+
+    def test_strong_primary_conflicts_cannot_be_overridden(self):
+        import xhs_list_ocr as o
+        for extra in [{'d_binary':'09-15'}, {'d_binary':'09-16'},
+                      {'d_binary':'09-15','d_contrast':'09-16'}]:
+            values=self.readings()
+            values.update({key:AdditionalInkProofTests.item(text) for key,text in extra.items()})
+            with self.subTest(extra=extra),self.assertRaisesRegex(RuntimeError,'primary date values disagree'):
+                o.equal_variants(values,'d',o.date_text)
+
+    def test_pair_context_cannot_overturn_valid_pair_or_supply_unproven_language(self):
+        import xhs_list_ocr as o
+        for mutate in ('conflict','language','not_in_weak_readings'):
+            values=self.readings()
+            if mutate=='conflict':values['d_pair_contrast']=AdditionalInkProofTests.item('0099一1155')
+            if mutate=='language':values['d_pair_context_contrast']['language']='en-US'
+            if mutate=='not_in_weak_readings':
+                values['d_small']=AdditionalInkProofTests.item('09-14')
+                values['d_double']=AdditionalInkProofTests.item('09-15')
+            with self.subTest(mutate=mutate),self.assertRaises(RuntimeError):
+                o.equal_variants(values,'d',o.date_text)
+
+    def test_observed_pair_context_keeps_exact_ink_and_excludes_static_prefix(self):
+        import cv2,numpy as np,tempfile
+        import xhs_list_ocr as o
+        frame=cv2.imread(str(SCRIPTS/'fixtures/xhs/date-09-16-155.png'))
+        prepared={'rows':[{'dateBox':[0,0,frame.shape[1],frame.shape[0]],'weakCountFields':[]}]}
+        with tempfile.TemporaryDirectory() as directory:
+            o.crop_requests(frame,prepared,directory)
+            readings={key.replace('d_','r0_date_'):value for key,value in self.readings().items()
+                      if '_pair' not in key}
+            for key,value in readings.items():value['id']=key
+            requests=o.paired_date_requests(prepared,list(readings.values()),directory)
+            for variant in ('binary','contrast'):
+                original=cv2.imread(str(Path(directory)/f'r0_date_{variant}.png'),0)
+                paired=o.paired_date_image(original);self.assertIsNotNone(paired)
+                context=next(item for item in requests if item['id']==f'r0_date_pair_context_{variant}')
+                left,top,right,bottom=context['dateContentBox']
+                image=cv2.imread(context['path'],0)
+                self.assertTrue(np.array_equal(image[top:bottom,left:right],paired))
+                result={'width':image.shape[1],'height':image.shape[0],'lines':[{'words':[
+                    {'text':'DATE:','x':1,'y':top,'width':left-20,'height':20},
+                    {'text':'0099一1166','x':left+20,'y':top+30,'width':right-left-60,'height':40}]}]}
+                filtered=o.context_date_result(result,context['dateContentBox'])
+                self.assertEqual(o.paired_date_text(filtered['lines'][0]['text']),'09-16')
+
 class TitleGeometryTests(unittest.TestCase):
     def test_small_trailing_fragment_does_not_replace_main_title(self):
         import numpy as np
@@ -544,10 +615,23 @@ class FreshHeaderRetryTests(unittest.TestCase):
         from test_xhs_list_ocr import result
         good=result();root,events,calls=self.run_reads([good,RuntimeError('OCR works-list header is not unique: 数据中心'),good,good])
         self.assertEqual(calls,4);self.assertIn('works_image_header_capture_retried',events)
+    def test_notification_banner_can_outlast_the_previous_capture_budget(self):
+        from test_xhs_list_ocr import result
+        bad = RuntimeError('OCR works-list header is not unique: 数据中心')
+        good = result()
+        root,events,calls = self.run_reads([bad]*7+[good,good])
+        self.assertEqual(calls,9)
+        self.assertEqual(events.count('works_image_header_capture_retried'),7)
+
+    def test_header_wait_has_an_elapsed_deadline_even_with_spare_captures(self):
+        bad = RuntimeError('OCR works-list header is not unique: 数据中心')
+        with patch.object(sync.time,'monotonic',side_effect=[0,5,10,15,21]):
+            with self.assertRaises(sync.ImageListReadError):self.run_reads([bad]*20)
+
     def test_metric_ambiguity_is_not_retried_as_a_header_failure(self):
         with self.assertRaisesRegex(sync.ImageListReadError,'ambiguous'):self.run_reads([RuntimeError('OCR numeral glyph is unproven or ambiguous')])
     def test_header_retry_is_bounded_and_never_becomes_empty_data(self):
-        with self.assertRaises(sync.ImageListReadError):self.run_reads([RuntimeError('OCR works-list header is not unique: 数据中心')]*6)
+        with self.assertRaises(sync.ImageListReadError):self.run_reads([RuntimeError('OCR works-list header is not unique: 数据中心')]*12)
 
 class MissingTitleSuffixTests(unittest.TestCase):
     def test_two_visible_glyphs_outside_native_box_require_full_title_reading(self):
@@ -606,6 +690,52 @@ class CollinearTitleTests(unittest.TestCase):
             else:row['title'] = '另一个标题'
             with self.subTest(mode=mode), self.assertRaises(RuntimeError):
                 o.resolve_title_crop(row,0,readings)
+
+
+class TransientReadTransportTests(unittest.TestCase):
+    def test_only_missing_target_window_read_can_wait_and_repeat_the_same_read(self):
+        missing = Mock(returncode=1,stderr=b"adb.exe: device 'serial' not found",stdout=b'')
+        good = Mock(returncode=0,stderr=b'',stdout=b'window')
+        with patch.object(sync.subprocess,'run',side_effect=[missing,good]) as run, patch.object(sync.time,'sleep'):
+            self.assertEqual(sync.adb('adb','serial','shell','dumpsys','window',timeout=8),'window')
+        self.assertEqual(run.call_count,2)
+        self.assertEqual(run.call_args_list[0],run.call_args_list[1])
+
+    def test_missing_window_read_still_stops_after_a_small_finite_budget(self):
+        missing = Mock(returncode=1,stderr=b"adb.exe: device 'serial' not found",stdout=b'')
+        with patch.object(sync.subprocess,'run',return_value=missing) as run, patch.object(sync.time,'sleep'):
+            with self.assertRaisesRegex(RuntimeError,'not found'):
+                sync.adb('adb','serial','shell','dumpsys','window',timeout=8)
+        self.assertLessEqual(run.call_count,3)
+
+    def test_no_input_setting_write_unknown_command_or_foreign_serial_is_retried(self):
+        cases=[(('shell','input','tap','10','20'),b"device 'serial' not found"),
+               (('shell','settings','put','system','screen_off_timeout','600000'),b"device 'serial' not found"),
+               (('shell','am','start','-n','activity'),b"device 'serial' not found"),
+               (('shell','dumpsys','window'),b"device 'other' not found"),
+               (('shell','dumpsys','window'),b'cannot connect to daemon')]
+        for args,stderr in cases:
+            with self.subTest(args=args,stderr=stderr), patch.object(sync.subprocess,'run',return_value=Mock(returncode=1,stderr=stderr,stdout=b'')) as run, patch.object(sync.time,'sleep') as sleep:
+                with self.assertRaises(RuntimeError):sync.adb('adb','serial',*args,timeout=8)
+                self.assertEqual(run.call_count,1);sleep.assert_not_called()
+
+    def test_ui_snapshot_and_binary_reads_keep_bytes_and_retry_only_missing_transport(self):
+        cases=[('exec-out','uiautomator','dump','/dev/tty'),('exec-out','cat','/sdcard/task.xml'),
+               ('exec-out','screencap','-p'),('shell','settings','get','system','screen_off_timeout'),
+               ('get-state',),('shell','dumpsys','power')]
+        for args in cases:
+            missing=Mock(returncode=1,stderr=b"device 'serial' not found",stdout=b'partial')
+            good=Mock(returncode=0,stderr=b'',stdout=b'\x89PNG\x00\xff')
+            with self.subTest(args=args), patch.object(sync.subprocess,'run',side_effect=[missing,good]) as run, patch.object(sync.time,'sleep'):
+                self.assertIs(sync.adb_process('adb','serial',*args,timeout=10),good)
+                self.assertEqual(run.call_count,2)
+                self.assertEqual(run.call_args_list[0],run.call_args_list[1])
+
+    def test_timeout_outcome_never_reissues_a_command(self):
+        with patch.object(sync.subprocess,'run',side_effect=sync.subprocess.TimeoutExpired('adb',8)) as run:
+            with self.assertRaises(sync.subprocess.TimeoutExpired):
+                sync.adb('adb','serial','shell','dumpsys','window',timeout=8)
+        self.assertEqual(run.call_count,1)
 
 
 class ConfirmedCjkTitlePrefixTests(unittest.TestCase):
