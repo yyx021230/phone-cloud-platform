@@ -1420,5 +1420,10 @@
     "sharedServicesRestarted": false,
     "rollback": "No production change. Candidate rollback: base commit99b4151bdf65d8e1ca4354594f01434fe60eab57 and measured8 production file hashes; no rollback action executed."
   },
-  "updatedAt": "2026-10-16T06:43:32.121315+00:00"
+  "updatedAt": "2026-10-16T06:43:32.121315+00:00",
+  "followUpEvidence": {
+    "phone107": "XHS_107_COMPATIBILITY_20261019.json",
+    "latestCandidateTag": "xhs-compat-20261019-rc.3",
+    "note": "Original rc.2 results/source hashes remain historical;107 later navigation-only evidence does not add a successful collection."
+  }
 }
