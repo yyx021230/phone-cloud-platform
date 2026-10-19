@@ -568,8 +568,28 @@ def resolve_title_crop(row,i,results):
         values.append(text)
     normalized=[re.sub(r"[^\w\u4e00-\u9fff]","",value) for value in values]
     previous=re.sub(r"[^\w\u4e00-\u9fff]","",row["title"])
-    if not normalized[0] or normalized[0] != normalized[1] or previous not in normalized[0]:
+    if not normalized[0] or normalized[0] != normalized[1]:
         raise RuntimeError("OCR split title content disagrees")
+    if previous not in normalized[0]:
+        # 155's whole-frame OCR misreads one CJK glyph; both full crops agree.
+        # Require the same original title box and a long otherwise exact prefix.
+        prefix = normalized[0][:len(previous)]
+        changed = [(a,b) for a,b in zip(previous,prefix) if a != b]
+        box, crop = row.get("titleBox",[]), row.get("titleCropBox",[])
+        if (len(previous) < 10 or len(prefix) != len(previous) or len(changed) != 1
+                or not all(re.fullmatch(r"[\u4e00-\u9fff]",char) for char in changed[0])
+                or len(box) != 4 or len(crop) != 4
+                or not (crop[0] <= box[0] < box[2] <= crop[2] and crop[1] <= box[1] < box[3] <= crop[3])):
+            raise RuntimeError("OCR split title content disagrees")
+        for variant in ("color","binary"):
+            item = results[f"r{i}_title_{variant}"]
+            if (item.get("width") != 3*(crop[2]-crop[0]) or item.get("height") != 3*(crop[3]-crop[1])):
+                raise RuntimeError("OCR title correction dimensions are unproven")
+            for line in item["lines"]:
+                bounds = line_box(line)
+                if (bounds[2] > item["width"] or bounds[3] > item["height"]
+                        or compact(line.get("text","")) != compact("".join(word.get("text","") for word in line["words"]))):
+                    raise RuntimeError("OCR title correction word geometry is unproven")
     return values[0]
 
 

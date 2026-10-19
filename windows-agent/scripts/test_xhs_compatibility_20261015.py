@@ -608,6 +608,39 @@ class CollinearTitleTests(unittest.TestCase):
                 o.resolve_title_crop(row,0,readings)
 
 
+class ConfirmedCjkTitlePrefixTests(unittest.TestCase):
+    def sample(self):
+        import json
+        data = json.loads((SCRIPTS/'fixtures/xhs/title-prefix-cjk-155.json').read_text())
+        return data['row'], {f'r0_title_{k}':v for k,v in data['readings'].items()}
+
+    def test_observed_single_cjk_full_frame_misread_requires_crop_consensus(self):
+        import xhs_list_ocr as o
+        row, readings = self.sample()
+        self.assertEqual(o.resolve_title_crop(row,0,readings),
+                         o.compact(readings['r0_title_color']['lines'][0]['text']))
+
+    def test_identity_text_and_geometric_failures_still_reject_correction(self):
+        import xhs_list_ocr as o
+        for mode in ['two_cjk','ascii','short','outside','dimensions','missing_words']:
+            row, readings = self.sample()
+            if mode == 'two_cjk':row['title'] = '另'+row['title'][1:]
+            elif mode == 'ascii':row['title'] = row['title'].replace('ABC','ABD')
+            elif mode == 'short':row['title'] = row['title'][:4]
+            elif mode == 'outside':row['titleBox'][0] = row['titleCropBox'][0]-1
+            elif mode == 'dimensions':readings['r0_title_binary']['width'] += 1
+            else:readings['r0_title_binary']['lines'][0]['words'] = []
+            with self.subTest(mode=mode), self.assertRaises(RuntimeError):
+                o.resolve_title_crop(row,0,readings)
+
+    def test_one_cjk_correction_never_resolves_disagreeing_crop_readings(self):
+        import xhs_list_ocr as o
+        row, readings = self.sample()
+        readings['r0_title_binary']['lines'][0]['text'] += '异'
+        with self.assertRaisesRegex(RuntimeError,'disagrees'):
+            o.resolve_title_crop(row,0,readings)
+
+
 class BottomDateClipTests(unittest.TestCase):
     def test_offscreen_bottom_date_is_deferred_but_never_proves_end(self):
         import numpy as np,xhs_list_ocr as o
