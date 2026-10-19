@@ -2299,6 +2299,77 @@ const AUTOMATIC_RECOVERY_STATES = new Set([
   "adb_offline"
 ]);
 
+function recoveryRequestKey(agentId, serial) {
+  return JSON.stringify([String(agentId), String(serial).toUpperCase()]);
+}
+
+function recoveryControlFeedback(item) {
+  const request = item.recoveryRequest;
+  if (!request) {
+    if (item.agentOnline && item.recoveryIsolated && item.recoveryReleaseRevision > 0 && !item.recoveryControlPending && !item.recoveryIsolationError) {
+      return { tone: "warning", label: "当前仍处于隔离", next: "解除请求已送达；设备仍有故障，请查看下方原因", pending: false };
+    }
+    return null;
+  }
+  if (request.phase === "sending") return { tone: "active", label: "正在提交", next: "正在提交此手机的恢复设置", pending: true };
+  if (request.phase === "unconfirmed") return { tone: "warning", label: "提交结果未确认", next: request.error || "请刷新核对当前状态后再重试", pending: false };
+  if (!item.agentOnline) return { tone: "warning", label: "等待管理器上线", next: "请求已保存，管理器上线后接收", pending: true };
+  if (!item.recoveryControlSynced || !Number.isSafeInteger(item.recoveryAckRevision) || item.recoveryAckRevision < request.revision) {
+    return { tone: "active", label: "请求已提交", next: "等待管理器确认执行", pending: true };
+  }
+  if (item.recoveryControlRevision > request.revision && item.recoveryAckRevision < item.recoveryControlRevision) {
+    return { tone: "active", label: "新设置等待确认", next: "恢复设置已再次更新，等待管理器同步最新设置", pending: true };
+  }
+  if (item.recoveryIsolationError) return { tone: "danger", label: "恢复记录异常", next: "管理器未能读写恢复记录，解除尚未完成", pending: false };
+  if (request.kind === "release") {
+    if (!item.recoveryIsolated && item.recoveryPaused) return { tone: "warning", label: "隔离已解除，恢复仍暂停", next: "当前设置已更新；此手机仍保持暂停", pending: false };
+    if (!item.recoveryIsolated) return { tone: "active", label: "隔离已解除", next: "已继续自动恢复；设备是否上线以当前断点为准", pending: false };
+    if (Date.parse(item.recoveryIsolated.isolatedAt) > Date.parse(request.previousIsolationAt)) {
+      return { tone: "warning", label: "恢复后再次隔离", next: "已尝试恢复，但故障仍在；请查看下方原因", pending: false };
+    }
+    return Date.now() - request.startedAt > 90_000
+      ? { tone: "warning", label: "解除尚未确认", next: "管理器已接收，但隔离状态尚未更新，请核对后重试", pending: false }
+      : { tone: "active", label: "解除结果待确认", next: "管理器已接收，等待隔离状态更新", pending: true };
+  }
+  if ((request.kind === "pause") !== Boolean(item.recoveryPaused)) return { tone: "warning", label: "恢复设置已更新", next: item.recoveryPaused ? "当前此手机已暂停自动恢复" : "当前此手机已继续自动恢复", pending: false };
+  return { tone: "active", label: request.kind === "pause" ? "自动恢复已暂停" : "已继续自动恢复", next: "管理器已确认此手机的设置", pending: false };
+}
+
+async function submitRecoveryControl(toggle) {
+  const { agentId, recoveryToggle: serial } = toggle.dataset;
+  const requests = state.windowsRecoveryRequests ||= new Map();
+  const key = recoveryRequestKey(agentId, serial);
+  const agent = state.agents.find(value => value.agentId === agentId);
+  if (!agent) return;
+  const old = requests.get(key);
+  const health = agent.health?.recoveryControl || {};
+  const isolated = (health.isolated || []).find(value => value.serial === String(serial).toUpperCase());
+  const item = { agentOnline: isOnline(agent.lastSeenAt), recoveryRequest: old, recoveryIsolated: isolated,
+    recoveryControlSynced: health.synced === true, recoveryAckRevision: health.revision,
+    recoveryControlRevision: agent.recoveryControl?.revision, recoveryIsolationError: health.isolationError };
+  if (old && recoveryControlFeedback(item)?.pending) return;
+  const reset = toggle.dataset.resetIsolation === "true";
+  const paused = toggle.dataset.paused === "true";
+  const request = { kind: reset ? "release" : paused ? "pause" : "resume", phase: "sending",
+    startedAt: Date.now(), previousIsolationAt: isolated?.isolatedAt || "", revision: null };
+  requests.set(key, request);
+  renderWindowsRecoveryConsole();
+  try {
+    const payload = await api(`/api/v1/windows-agents/${encodeURIComponent(agentId)}/recovery-control`, {
+      method: "POST", body: JSON.stringify({ adbSerial: serial, paused, resetIsolation: reset, expectedRevision: Number(toggle.dataset.revision) })
+    });
+    if (!Number.isSafeInteger(payload.control?.revision) || payload.control.revision < Number(toggle.dataset.revision)) throw new Error("恢复设置回执不完整，请刷新核对");
+    request.phase = "accepted";
+    request.revision = payload.control.revision;
+  } catch (error) {
+    request.phase = "unconfirmed";
+    request.error = error.message === "recovery_control_revision_conflict"
+      ? "页面状态已更新，请刷新核对后重试" : "请求结果未确认，请刷新核对；系统不会自动重复提交";
+  }
+  await loadAll().catch(() => {});
+  renderWindowsRecoveryConsole();
+}
+
 function renderWindowsRecoveryConsole() {
   if (!els.windowsRecoveryConsole) return;
   const telemetryAgents = state.agents.map((agent) => ({
@@ -2322,6 +2393,11 @@ function renderWindowsRecoveryConsole() {
     recoveryControlPending: agent.health?.recoveryControl?.synced !== true || agent.health?.recoveryControl?.revision !== desired.revision,
     recoveryControlSupported: agent.health?.recoveryControl?.protocol === "device_recovery_control_v1",
     recoveryControlRevision: desired.revision,
+    recoveryControlSynced: agent.health?.recoveryControl?.synced === true,
+    recoveryAckRevision: Number(agent.health?.recoveryControl?.revision ?? -1),
+    recoveryIsolationError: agent.health?.recoveryControl?.isolationError || "",
+    recoveryReleaseRevision: (desired.releases || []).find(value => value.serial === String(item.serial).toUpperCase())?.revision || 0,
+    recoveryRequest: state.windowsRecoveryRequests?.get(recoveryRequestKey(agent.agentId, item.serial)),
     ...item,
     agentId: agent.agentId,
     agentName: agent.agentName || agent.agentId,
@@ -2464,6 +2540,7 @@ function recoveryQueueMatchesFilter(item, filter) {
 
 function renderRecoveryQueueRow(item) {
   const status = recoveryDeviceStatus(item);
+  const feedback = recoveryControlFeedback(item);
   const stateLabel = recoveryStateLabel(item.state);
   const attempts = Math.max(0, Number(item.attempts || 0));
   const maxAttempts = Math.max(1, Number(item.maxAttempts || 5));
@@ -2493,10 +2570,10 @@ function renderRecoveryQueueRow(item) {
         <small>${escapeHtml(item.lastAttemptAt ? `上次动作 ${shortTime(item.lastAttemptAt)}` : "尚未执行恢复动作")}</small>
       </div>
       <div class="recovery-evidence">
-        <button class="ghost-button" type="button" data-recovery-toggle="${escapeHtml(item.serial)}" data-agent-id="${escapeHtml(item.agentId)}" data-revision="${Number(item.recoveryControlRevision || 0)}" data-reset-isolation="${Boolean(item.recoveryIsolated)}" data-paused="${item.recoveryPaused || item.recoveryIsolated ? "false" : "true"}" ${item.recoveryControlSupported && (!item.recoveryIsolated || item.recoveryIsolationReset) ? "" : "disabled"}>
-          ${item.recoveryIsolated ? "解除隔离并继续" : item.recoveryPaused ? "继续自动恢复" : "暂停自动恢复"}
+        <button class="ghost-button" type="button" data-recovery-toggle="${escapeHtml(item.serial)}" data-agent-id="${escapeHtml(item.agentId)}" data-revision="${Number(item.recoveryControlRevision || 0)}" data-reset-isolation="${Boolean(item.recoveryIsolated)}" data-paused="${item.recoveryPaused || item.recoveryIsolated ? "false" : "true"}" ${item.recoveryControlSupported && (!item.recoveryIsolated || item.recoveryIsolationReset) && !feedback?.pending ? "" : "disabled"}>
+          ${feedback?.pending ? "处理中…" : item.recoveryIsolated ? "解除隔离并继续" : item.recoveryPaused ? "继续自动恢复" : "暂停自动恢复"}
         </button>
-        <small>${escapeHtml(!item.recoveryControlSupported ? "管理器升级后可用" : !item.agentOnline || item.recoveryControlPending ? "设置等待管理器确认" : item.recoveryPaused ? "已暂停新恢复动作；已启动的驱动安装仍需收尾" : "只控制此手机的自动恢复，保留在线检测")}</small>
+        <small role="status" aria-live="polite">${escapeHtml(feedback?.next || (!item.recoveryControlSupported ? "管理器升级后可用" : !item.agentOnline || item.recoveryControlPending ? "设置等待管理器确认" : item.recoveryPaused ? "已暂停新恢复动作；已启动的驱动安装仍需收尾" : "只控制此手机的自动恢复，保留在线检测"))}</small>
       </div>
       ${evidence ? `<p class="recovery-evidence" title="${escapeHtml(evidence)}">证据：${escapeHtml(evidence)}</p>` : ""}
     </article>
@@ -2516,6 +2593,8 @@ function recoveryAttemptClass(index, attempts, item) {
 }
 
 function recoveryDeviceStatus(item) {
+  const feedback = recoveryControlFeedback(item);
+  if (feedback) return feedback;
   if (item.recoveryIsolated) return {tone:"warning",label:"自动恢复已隔离",next:"需管理员解除；在线检测继续"};
   if (item.recoveryPaused) return {tone:"warning",label:!item.agentOnline || item.recoveryControlPending ? "暂停待确认" : "自动恢复已暂停",next:item.inProgress ? "已有动作正在收尾" : "在线检测继续"};
   if (!item.agentOnline) return { tone: "danger", label: "主机离线", next: "等待管理器恢复" };
@@ -5654,14 +5733,7 @@ els.windowsList.addEventListener("click", async (event) => {
 els.windowsRecoveryConsole?.addEventListener("click", async (event) => {
   const toggle = event.target.closest("[data-recovery-toggle]");
   if (toggle) {
-    toggle.disabled = true;
-    try {
-      await api(`/api/v1/windows-agents/${encodeURIComponent(toggle.dataset.agentId)}/recovery-control`, {
-        method:"POST", body:JSON.stringify({adbSerial:toggle.dataset.recoveryToggle, paused:toggle.dataset.paused === "true",resetIsolation:toggle.dataset.resetIsolation === "true", expectedRevision:Number(toggle.dataset.revision)})
-      });
-      await loadAll();
-    } catch (error) { alert(error.message); await loadAll().catch(() => {}); }
-    finally { toggle.disabled = false; }
+    await submitRecoveryControl(toggle);
     return;
   }
   const button = event.target.closest("[data-recovery-filter]");

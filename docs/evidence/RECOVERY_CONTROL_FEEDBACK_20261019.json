@@ -1,0 +1,58 @@
+{
+  "status": "local_frontend_candidate_not_deployed",
+  "candidateTag": "recovery-feedback-20261019-rc.1",
+  "commit": "resolve immutable annotated tag",
+  "branch": "codex/recovery-control-feedback-20261019",
+  "baselineCommit": "cdae19d13fc97ab0eb70d4f343bd76ff6a240ea8",
+  "observedProductionFiles": {
+    "public/app.js": "62ba08d7d0afac81d0eeebaca9050911700f830fadd8e84d0a5f53423dd9cf60",
+    "public/index.html": "0fdd50833275113a0dc21f069aac261b7bb3c58a37784816bb2d16a349c59a55"
+  },
+  "candidateFiles": {
+    "public/app.js": "9e298f4d9ebe540196ace7723b15411a244f03b0a751a55f66dc5b8d57445082",
+    "public/index.html": "573c1cc79adde2c8c7364673730dd6aaa5762a214b7698ead153b414f06ec29a",
+    "scripts/recovery-control-feedback.test.mjs": "38fb3e01ba570fa5f3db3e3467fdadae2670619bc72d7c1cb4b90a750ee36c58"
+  },
+  "confirmedFacts": {
+    "phone18ReleaseRevision": 13,
+    "agentConsumedReleaseRevision": 13,
+    "managerSynced": true,
+    "phone18RecoveryAction": {
+      "mode": "restart_adb_interface",
+      "attempt": 1,
+      "at": "2026-10-19T01:28:46.636Z"
+    },
+    "phone18IsolatedAgainAt": "2026-10-19T01:29:34.504Z",
+    "latestIsolationReason": "recovery_attempts_exhausted",
+    "deviceNotOnline": true,
+    "freshReadonlyInventoryLaterAdmittedRootRecreate": true
+  },
+  "unknown": "Why that earlier live plan terminated despite a later fresh topology allowing a second action has not been proven;no driver/hardware root-cause claim. Actual delivery and re-isolation are confirmed,not a missing click request.",
+  "change": "Only frontend progress/result/targeted duplicate-click guard and entry cache version;uses existingAPI andACK. Shows sending/awaitingACK/releasepending/released/re-isolated/persistenceerror/unknownresult. Does not change restoration policy orissue any automatic repeat request.",
+  "tests": {
+    "nodeBehavior": 11,
+    "failed": 0,
+    "syntax": "passed",
+    "diff": "passed",
+    "browser": "Actual extracted console/controller functions in localhost fixture; visible pending,ACK pending,cleared,andre-isolated states;requestcount1;consoleerrors0;not production dashboard or real recovery"
+  },
+  "notPerformed": [
+    "No actual recovery-control POST by this task",
+    "No driver/PnP/USB commands",
+    "No Agent/ADB/recovery-policy/key/environment/startup/media changes",
+    "No frontend deployment or cloudrestart"
+  ],
+  "releasePlan": {
+    "requiresSeparateApproval": "Current explicit deployment authorization only covered107popup;frontendawaits scope approval perAGENTS",
+    "files": [
+      "public/app.js",
+      "public/index.html"
+    ],
+    "preflight": "Recheck measured production hashes and runtime media baseline;backup2files; verify current running image/mount/caching before choosingstatic-only activation",
+    "activation": "Prefer atomic static-fileupdate that survives existing deployment layout;no business/Agent/media/ADBrestart",
+    "rollback": "Restore onlythe2backedupfrontendfiles with knownafterhash;keepdevicecontrols/isolation/PGintact",
+    "mediaHost": "D-075liveverify beforeandafter on actualmediahost;failure stops,noautomaticrepair"
+  },
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "review": "Self-reviewonly; confirmed backendrequestfields unchanged;old/new ACK andotheradminchanges covered"
+}
