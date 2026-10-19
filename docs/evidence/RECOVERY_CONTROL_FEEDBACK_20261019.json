@@ -1,7 +1,7 @@
 {
-  "status": "local_frontend_candidate_not_deployed",
+  "status": "deployed_static_files_verified_without_service_restart",
   "candidateTag": "recovery-feedback-20261019-rc.1",
-  "commit": "resolve immutable annotated tag",
+  "commit": "b04747eae8459d754253e49fca02b45fbdf72dae",
   "branch": "codex/recovery-control-feedback-20261019",
   "baselineCommit": "cdae19d13fc97ab0eb70d4f343bd76ff6a240ea8",
   "observedProductionFiles": {
@@ -40,19 +40,116 @@
     "No actual recovery-control POST by this task",
     "No driver/PnP/USB commands",
     "No Agent/ADB/recovery-policy/key/environment/startup/media changes",
-    "No frontend deployment or cloudrestart"
+    "No cloud/Agent/ADB/media restart; no actual recovery-control POST"
   ],
   "releasePlan": {
-    "requiresSeparateApproval": "Current explicit deployment authorization only covered107popup;frontendawaits scope approval perAGENTS",
+    "requiresSeparateApproval": "User explicitly approved: 上线前端反馈补丁",
     "files": [
       "public/app.js",
       "public/index.html"
     ],
     "preflight": "Recheck measured production hashes and runtime media baseline;backup2files; verify current running image/mount/caching before choosingstatic-only activation",
-    "activation": "Prefer atomic static-fileupdate that survives existing deployment layout;no business/Agent/media/ADBrestart",
+    "activation": "Applied two static files atomically to the existing container; verified derivative image plus appended ACTIVE compose overlay provide the same files on a future managed recreation. Running container image ID is unchanged.",
     "rollback": "Restore onlythe2backedupfrontendfiles with knownafterhash;keepdevicecontrols/isolation/PGintact",
     "mediaHost": "D-075liveverify beforeandafter on actualmediahost;failure stops,noautomaticrepair"
   },
   "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
-  "review": "Self-reviewonly; confirmed backendrequestfields unchanged;old/new ACK andotheradminchanges covered"
+  "review": "Self-reviewonly; confirmed backendrequestfields unchanged;old/new ACK andotheradminchanges covered",
+  "deployment": {
+    "version": "recovery-feedback-20261019-deployed.1",
+    "commit": "b04747eae8459d754253e49fca02b45fbdf72dae",
+    "candidateTag": "recovery-feedback-20261019-rc.1",
+    "status": "deployed_static_files_verified",
+    "beforeFiles": {
+      "public/app.js": "62ba08d7d0afac81d0eeebaca9050911700f830fadd8e84d0a5f53423dd9cf60",
+      "public/index.html": "0fdd50833275113a0dc21f069aac261b7bb3c58a37784816bb2d16a349c59a55"
+    },
+    "files": {
+      "public/app.js": "9e298f4d9ebe540196ace7723b15411a244f03b0a751a55f66dc5b8d57445082",
+      "public/index.html": "573c1cc79adde2c8c7364673730dd6aaa5762a214b7698ead153b414f06ec29a"
+    },
+    "runningImageID": "sha256:4862080e4d6802a45c6f40bed390a05d99f891cf17c964e4d551f9b087140059",
+    "runningContainerID": "ef2e7987798d4f8c66674d4734897fbf955493b1f4bab1a8a3be92d794a09b9b",
+    "runningContainerPID": 1800882,
+    "runningContainerStartedAt": "2026-10-16T09:04:35.527589577Z",
+    "durableImageID": "sha256:7980919cd715cb7d1ebaf819833aab8319121d4292994f13a89a4b066cd751b5",
+    "durableImageTag": "phone-cloud-platform:recovery-feedback-20261019-rc.1",
+    "futureComposeOverlay": "/opt/phone-cloud-platform/staging/recovery-feedback-20261019-rc.1/compose.frontend.json",
+    "futureComposeSha256": "d2041afb6ff7f29c95083fc80d0adc0fdafddd0b66de596574e96712a6a29e58",
+    "activeAfterSha256": "aab1a531e4ef4cb2c1b06ef9ab2903f1092de2512bb8c9f959bbb6753f852bff",
+    "backupDirectory": "/opt/phone-cloud-platform/deploy-backups/recovery-feedback-20261019-deployed.1",
+    "receiptDirectory": "/opt/phone-cloud-platform/deployment-receipts/recovery-feedback-20261019-deployed.1",
+    "liveFileCount": 310,
+    "onlyChangedFiles": [
+      "public/app.js",
+      "public/index.html"
+    ],
+    "http": {
+      "public/index.html": {
+        "status": 200,
+        "sha256": "573c1cc79adde2c8c7364673730dd6aaa5762a214b7698ead153b414f06ec29a",
+        "cacheControl": "no-store"
+      },
+      "public/app.js": {
+        "status": 200,
+        "sha256": "9e298f4d9ebe540196ace7723b15411a244f03b0a751a55f66dc5b8d57445082",
+        "cacheControl": "no-store"
+      }
+    },
+    "health": {
+      "status": 200
+    },
+    "mediaBefore": {
+      "decision": "D-075",
+      "verified": "live",
+      "pid": 2503525,
+      "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+      "bitsPerSecond": 8000000,
+      "packetsPerGroup": 2
+    },
+    "mediaAfter": {
+      "decision": "D-075",
+      "verified": "live",
+      "pid": 2503525,
+      "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+      "bitsPerSecond": 8000000,
+      "packetsPerGroup": 2
+    },
+    "noServiceRestart": true,
+    "realRecoveryRequestsByTask": 0,
+    "authorization": "User: 上线前端反馈补丁"
+  },
+  "observation": {
+    "atUtc": "2026-10-19T01:58:00.221786+00:00",
+    "http": {
+      "public/index.html": {
+        "status": 200,
+        "sha256": "573c1cc79adde2c8c7364673730dd6aaa5762a214b7698ead153b414f06ec29a"
+      },
+      "public/app.js": {
+        "status": 200,
+        "sha256": "9e298f4d9ebe540196ace7723b15411a244f03b0a751a55f66dc5b8d57445082"
+      }
+    },
+    "ready": {
+      "status": 200
+    },
+    "media": {
+      "decision": "D-075",
+      "verified": "live",
+      "pid": 2503525,
+      "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+      "bitsPerSecond": 8000000,
+      "packetsPerGroup": 2
+    },
+    "containerPidUnchanged": true,
+    "rollbackScriptSha256": "b1601b6e85e02409fd93d847839d7da09825554daf6e8f28238d9e4d0e962580",
+    "rollbackSyntax": "passed_not_executed",
+    "activeAfterSha256": "aab1a531e4ef4cb2c1b06ef9ab2903f1092de2512bb8c9f959bbb6753f852bff"
+  },
+  "releaseAttempts": [
+    "First derivative build rejected sha256:ID as a Dockerfile FROM reference; no runtime files changed. Retried with the measured local base tag, guarded by exact image ID.",
+    "A resume guard placeholder failed before mutation; corrected before successful activation."
+  ],
+  "rollback": "Two exact pre-release files, ACTIVE backup, guarded rollback.py (syntax checked, not executed), prior immutable image retained. No device data or recovery policy rollback."
 }
