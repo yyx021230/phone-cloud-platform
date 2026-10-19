@@ -1,0 +1,59 @@
+{
+  "version": "windows-tailscale-20261019-deployed.1",
+  "baselineCommit": "510c81643addc923707d01352dceb647710b036e",
+  "observedAt": "2026-10-19T06:16:22.969518+00:00",
+  "status": "Tailscale and authenticated OpenSSH verified; offsite/reboot test not performed",
+  "host": "PC-20261015BZYS",
+  "lanIp": "192.168.20.139",
+  "tailscaleIp": "100.100.177.27",
+  "managementMacIp": "100.121.26.69",
+  "clientVersion": "1.104.1",
+  "backendState": "Running",
+  "service": "Running / Automatic",
+  "forceDaemon": true,
+  "acceptDns": false,
+  "acceptRoutes": false,
+  "exitNodeConfigured": false,
+  "advertiseRoutes": null,
+  "keyExpiry": "2027-04-17T06:14:23Z",
+  "keyExpiryPolicyChanged": false,
+  "firewall": {
+    "rule": "PhoneCloud-Tailscale-SSH-Management",
+    "direction": "Inbound",
+    "protocol": "TCP",
+    "localPort": 22,
+    "localAddress": "100.100.177.27",
+    "remoteAddress": "100.121.26.69",
+    "interfaceAlias": "Tailscale",
+    "program": "C:\\Program Files\\OpenSSH-Win64\\sshd.exe",
+    "profile": "Any",
+    "oldLanRulePreserved": true,
+    "beforeBackup": "D:\\PhoneCloud-Migration\\firewall-before-tailscale-20261019.wfw"
+  },
+  "verification": {
+    "tailscalePing": "1ms via direct LAN endpoint",
+    "tcp22": true,
+    "hostEd25519Fingerprint": "SHA256:/VHyS4tvVSrB1Xd3uk0lBRaqjsUSiOB9BOeYmUKBHQ8",
+    "fingerprintMatchesLan": true,
+    "sshLoginViaTailscale": true,
+    "remoteHostnameMatched": true,
+    "agentPid": 14508,
+    "agentSingleMainProcess": true,
+    "adbServerPid": 8988,
+    "adbOwner": "NT AUTHORITY\\SYSTEM",
+    "adbServerListenerCount": 1,
+    "configAndPreloadUnchanged": true
+  },
+  "unverified": [
+    "Actual home/offsite network path",
+    "Actual reboot/sign-out persistence; configuration verified without interrupting service"
+  ],
+  "operatorActionsNotTaken": [
+    "No Agent/ADB/Windows/USB/media restart",
+    "No ADB identity/key changes",
+    "No tailnet ACL edits",
+    "No public internet port forwarding",
+    "No disabling node key expiry"
+  ],
+  "rollback": "From retained LAN SSH remove only the dedicated new firewall rule, then disable unattended/Tailscale if requested; do not wholesale import firewall snapshot over later rules."
+}

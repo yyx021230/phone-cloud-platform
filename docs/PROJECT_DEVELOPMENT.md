@@ -2406,6 +2406,8 @@ Windows程序、依赖、配置、状态、日志和原任务XML已在线打包�
 
 2026-10-19用户追加Tailscale远程管理：新机原先未安装，官方1.104.1 amd64 MSI签名与hash校验通过，安装退出0，服务Running/Automatic。当前NeedsLogin，已向用户提供一次性账号登录链接；不接受DNS/子网路由、不设exit node。原LAN SSH规则、Agent PID14508和SYSTEM共享ADB PID8988保持；尚未启用登录后的无人值守或放行Tailscale SSH，远程连通未验。详见[安装阶段回执](../releases/windows-tailscale-20261019-setup.1/README.md)。
 
+2026-10-19 Tailscale接入完成：用户原账号授权后，新机地址100.100.177.27；管理Mac100.121.26.69经该地址完成ping/TCP22/严格原指纹SSH登录及hostname验证。已设无人值守并复读ForceDaemon=true，服务Automatic/Running；新增仅Tailscale接口、精确管理Mac源IP、精确新机IP及sshd程序的TCP22规则，保留原LAN规则和防火墙快照。原Agent14508、SYSTEM ADB8988、配置/preload保持，无原服务重启。当前同公司网的Tailscale直连通过，异地路径与重启实测未执行；节点默认授权2027-04-17到期策略未改。见[接入回执](../releases/windows-tailscale-20261019-deployed.1/README.md)，本结果不表示全量手机在线恢复完成。
+
 ## 14. 测试策略与验收矩阵
 
 ### 14.1 本地自动测试
@@ -2614,6 +2616,7 @@ npm run test:screen
 
 | 日期 | 编号 | 决策 | 原因 | 状态 |
 |---|---|---|---|---|
+| 2026-10-19 | Tailscale只放行精确管理端SSH | 延续最小网络范围与SYSTEM冻结；用户原账号登录后启用无人值守，限定管理Mac到新机22端口，保留LAN回退 | 需要居家远程管理，避免扩大全tailnet或公网访问面 | Tailscale地址SSH认证通过；异地/重启未实测，节点默认到期保留 |
 | 2026-10-19 | 新机Tailscale分阶段接入 | 延续SYSTEM及网络最小范围；用户要求远程管理，新安装官方客户端，登录须用户SSO，不迁移旧设备身份或改业务链路 | 新机需支持公司网外管理，保留LAN回退入口 | 安装/签名/服务通过；NeedsLogin，无人值守和远程SSH待验 |
 | 2026-10-19 | 新机启用后按实际扫描验收 | 延续13.13已验证备份与SYSTEM冻结；原任务启用，身份/密钥不变，授权等待手机端确认，缺失设备分开排查 | 用户要求恢复在线且已澄清无旧盘，不能把旧快照或PnP数量当在线 | 71在线/18待授权，其他设备未完成；D-075/健康/原文件通过，已发布待观察 |
 | 2026-10-19 | 无旧盘按已验证备份继续新机启用 | 用户澄清无旧盘，替换13.13等待旧盘步骤；保留最终增量缺口，保存启动前快照，按原SYSTEM入口恢复，不改身份/配置/授权 | 已完成程序、依赖和原授权恢复，用户持续要求恢复在线；实际备份优先于不一致的小红书旧清单哈希 | 当前任务队列空，任务Disabled注册；准备启动，实际在线待验 |
@@ -2905,6 +2908,7 @@ npm run test:screen
 
 | 日期 | 变更人 | releaseId/提交 | 变更内容 | 验证结果 |
 |---|---|---|---|---|
+| 2026-10-19 | Codex | windows-tailscale-20261019-deployed.1 | 新机Tailscale账号接入、无人值守和精确SSH防火墙规则；保存回执与回退 | ping/TCP22/原指纹/SSH登录通过，ForceDaemon=true；Agent/ADB身份与PID保持，未改业务代码，异地/重启未验 |
 | 2026-10-19 | Codex | windows-tailscale-20261019-setup.1 | 新机安装官方Tailscale，保存SHA256、签名、原服务身份和待登录状态 | MSI退出0/自动服务运行，DNS及子网路由关闭；Agent/ADB保持SYSTEM，等待用户登录，远程SSH未完成 |
 | 2026-10-19 | Codex | windows-migration-20261019-deployed.1 | 新机原SYSTEM服务启用，保存运行身份、平台扫描、原授权与D-075迁机回执；未改业务代码/云端版本 | Agent/ADB单实例、配置及4授权文件保持、健康与D-075通过；71在线，授权/物理缺失/183及业务长测待完成，无最终增量 |
 | 2026-10-19 | Codex | windows-newhost-activation-20261019-rc.1 | 按无旧盘澄清准备从验证备份启用，保存启动前快照、原任务Disabled注册并绑定实际文件基线 | 原SYSTEM动作/config/preload不变，当前队列空；Agent清单29匹配1项实物差异已记录，最终增量缺口保留，尚未启动 |
