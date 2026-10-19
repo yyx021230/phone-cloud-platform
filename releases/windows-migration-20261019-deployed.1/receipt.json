@@ -1,0 +1,727 @@
+{
+  "version": "windows-migration-20261019-deployed.1",
+  "status": "已发布待观察",
+  "candidateCommit": "8c349996885e6a2b539598b870c5524b542a8aa9",
+  "activatedAt": "2026-10-19T05:34:30.299Z",
+  "host": "192.168.20.139",
+  "source": "verified production migration archive",
+  "outerArchiveSha256": "87a6446f1195eaf6333ef695abd08790bc9a1725abd9fb2344fcfa41814ee3ef",
+  "runtimeArchiveSha256": "6e7c0615add126604b0db8f83f7aa90e7b4992bf88af90cd4c43c306816290f8",
+  "agent": {
+    "pid": 14508,
+    "owner": "NT AUTHORITY\\SYSTEM",
+    "task": "PhoneCloud Windows Agent",
+    "taskState": "Running",
+    "originalActionPreserved": true
+  },
+  "adb": {
+    "serverPid": 8988,
+    "owner": "NT AUTHORITY\\SYSTEM",
+    "path": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+    "listener": "127.0.0.1:5037",
+    "listenerCount": 1,
+    "keyFilesMatchOriginalBackup": 4,
+    "system32NewKeyExists": false,
+    "identityChanged": false,
+    "sharedServerRestartedByOperator": false
+  },
+  "cloud": {
+    "unchanged": true,
+    "release": "lookup-round-stop-20261016-deployed.1",
+    "runningImage": "sha256:4862080e4d6802a45c6f40bed390a05d99f891cf17c964e4d551f9b087140059",
+    "nextRestartImage": "sha256:7980919cd715cb7d1ebaf819833aab8319121d4292994f13a89a4b066cd751b5"
+  },
+  "media": {
+    "decision": "D-075",
+    "preAndPostLivePassed": true,
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "configSha256": "ee61ff30debd1b1077a1964ebd3946a0f36d8c4a221777be219890896c865b52",
+  "preloadSha256": "9c3aa5affb9243f255f2bf74376ee7bb01c9f9171989f5477146263ee7e2bb4d",
+  "observations": [
+    {
+      "observedAt": "2026-10-19T05:38:09.443Z",
+      "lastSeenAt": "2026-10-19T05:37:46.069Z",
+      "total": 131,
+      "counts": {
+        "device": 70,
+        "physically_absent": 41,
+        "unauthorized": 18,
+        "adb_interface_ready_transport_missing": 1,
+        "usb_present_mtp_only": 1
+      },
+      "pending": {
+        "physically_absent": [
+          "1",
+          "13",
+          "149",
+          "22",
+          "23",
+          "27",
+          "152",
+          "20",
+          "32",
+          "24",
+          "138",
+          "10",
+          "126",
+          "124",
+          "116",
+          "113",
+          "74",
+          "58",
+          "34",
+          "28",
+          "172",
+          "12",
+          "6",
+          "4",
+          "114",
+          "93",
+          "60",
+          "3",
+          "21",
+          "14",
+          "91",
+          "18",
+          "127",
+          "125",
+          "128",
+          "76",
+          "63",
+          "160",
+          "77",
+          "33",
+          "OPPO-ea0043b6"
+        ],
+        "unauthorized": [
+          "177",
+          "151",
+          "103",
+          "94",
+          "88",
+          "156",
+          "159",
+          "180",
+          "75",
+          "71",
+          "161",
+          "139",
+          "102",
+          "95",
+          "184",
+          "157",
+          "81",
+          "59"
+        ],
+        "adb_interface_ready_transport_missing": [
+          "99"
+        ],
+        "usb_present_mtp_only": [
+          "183"
+        ]
+      },
+      "health": {
+        "/healthz": 200,
+        "/readyz": 200
+      },
+      "agentStatus": "ok",
+      "lastScan": {
+        "ok": true,
+        "at": "2026-10-19T05:38:00.413Z",
+        "error": ""
+      },
+      "runtime": {
+        "processCpuPercent": 11.7,
+        "processRssMb": 207.1,
+        "processHeapUsedMb": 32.6,
+        "hostMemoryUsedPercent": 38.1,
+        "hostFreeMemoryMb": 10024.4,
+        "uptimeSeconds": 211
+      },
+      "screenControl": {
+        "enabled": true,
+        "connected": true,
+        "activeSessions": 2,
+        "serverJarReady": true
+      },
+      "recovery": {
+        "observedAt": "2026-10-19T05:38:00.570Z",
+        "circuitOpen": false,
+        "circuitReason": "",
+        "circuitUntil": "",
+        "blockedReason": "",
+        "physicalCount": 90,
+        "adbDeviceCount": 70,
+        "actionableCount": 1,
+        "newlyLostCount": 1,
+        "unauthorizedCount": 18,
+        "offlineCount": 0,
+        "absentCount": 41,
+        "automaticActionsLastHour": 0,
+        "maxActionsPerHour": 160,
+        "acknowledgedActionableCount": 0,
+        "recoveryMode": "continuous_recovery",
+        "actionReadyAt": "",
+        "postActionWatchCount": 0,
+        "postActionWatchUntil": "",
+        "rescueCanMutate": false,
+        "maxAttemptsPerDevice": 5,
+        "quarantinedCount": 0,
+        "inventoryObservedAt": "2026-10-19T05:37:52.271Z",
+        "inventoryFresh": true,
+        "inventoryError": ""
+      },
+      "recoveryControl": {
+        "synced": true,
+        "error": "",
+        "isolatedCount": 2
+      }
+    },
+    {
+      "observedAt": "2026-10-19T05:38:32.379Z",
+      "lastSeenAt": "2026-10-19T05:38:16.098Z",
+      "total": 131,
+      "counts": {
+        "device": 71,
+        "physically_absent": 41,
+        "unauthorized": 18,
+        "usb_present_mtp_only": 1
+      },
+      "pending": {
+        "physically_absent": [
+          "1",
+          "13",
+          "149",
+          "22",
+          "23",
+          "27",
+          "152",
+          "20",
+          "32",
+          "24",
+          "138",
+          "10",
+          "126",
+          "124",
+          "116",
+          "113",
+          "74",
+          "58",
+          "34",
+          "28",
+          "172",
+          "12",
+          "6",
+          "4",
+          "114",
+          "93",
+          "60",
+          "3",
+          "21",
+          "14",
+          "91",
+          "18",
+          "127",
+          "125",
+          "128",
+          "76",
+          "63",
+          "160",
+          "77",
+          "33",
+          "OPPO-ea0043b6"
+        ],
+        "unauthorized": [
+          "177",
+          "151",
+          "103",
+          "94",
+          "88",
+          "156",
+          "159",
+          "180",
+          "75",
+          "71",
+          "161",
+          "139",
+          "102",
+          "95",
+          "184",
+          "157",
+          "81",
+          "59"
+        ],
+        "usb_present_mtp_only": [
+          "183"
+        ]
+      },
+      "health": {
+        "/healthz": 200,
+        "/readyz": 200
+      },
+      "agentStatus": "ok",
+      "lastScan": {
+        "ok": true,
+        "at": "2026-10-19T05:38:30.424Z",
+        "error": ""
+      },
+      "runtime": {
+        "processCpuPercent": 13.4,
+        "processRssMb": 209.5,
+        "processHeapUsedMb": 71.6,
+        "hostMemoryUsedPercent": 38.1,
+        "hostFreeMemoryMb": 10021.2,
+        "uptimeSeconds": 241
+      },
+      "screenControl": {
+        "enabled": true,
+        "connected": true,
+        "activeSessions": 2,
+        "serverJarReady": true
+      },
+      "recovery": {
+        "observedAt": "2026-10-19T05:38:00.570Z",
+        "circuitOpen": false,
+        "circuitReason": "",
+        "circuitUntil": "",
+        "blockedReason": "",
+        "physicalCount": 90,
+        "adbDeviceCount": 71,
+        "actionableCount": 1,
+        "newlyLostCount": 1,
+        "unauthorizedCount": 18,
+        "offlineCount": 0,
+        "absentCount": 41,
+        "automaticActionsLastHour": 0,
+        "maxActionsPerHour": 160,
+        "acknowledgedActionableCount": 0,
+        "recoveryMode": "continuous_recovery",
+        "actionReadyAt": "",
+        "postActionWatchCount": 0,
+        "postActionWatchUntil": "",
+        "rescueCanMutate": false,
+        "maxAttemptsPerDevice": 5,
+        "quarantinedCount": 0,
+        "inventoryObservedAt": "2026-10-19T05:37:52.271Z",
+        "inventoryFresh": true,
+        "inventoryError": ""
+      },
+      "recoveryControl": {
+        "synced": true,
+        "error": "",
+        "isolatedCount": 2
+      }
+    },
+    {
+      "observedAt": "2026-10-19T05:39:22.126Z",
+      "lastSeenAt": "2026-10-19T05:39:16.116Z",
+      "total": 131,
+      "counts": {
+        "device": 78,
+        "adb_interface_ready_transport_missing": 12,
+        "physically_absent": 23,
+        "usb_present_mtp_only": 2,
+        "usb_composite_no_adb_interface": 1,
+        "unauthorized": 14,
+        "offline": 1
+      },
+      "pending": {
+        "adb_interface_ready_transport_missing": [
+          "147",
+          "181",
+          "177",
+          "143",
+          "189",
+          "156",
+          "159",
+          "162",
+          "163",
+          "176",
+          "182",
+          "157"
+        ],
+        "physically_absent": [
+          "149",
+          "152",
+          "138",
+          "126",
+          "124",
+          "116",
+          "113",
+          "58",
+          "172",
+          "6",
+          "114",
+          "93",
+          "60",
+          "91",
+          "127",
+          "125",
+          "128",
+          "76",
+          "63",
+          "160",
+          "77",
+          "33",
+          "OPPO-ea0043b6"
+        ],
+        "usb_present_mtp_only": [
+          "165",
+          "183"
+        ],
+        "usb_composite_no_adb_interface": [
+          "164"
+        ],
+        "unauthorized": [
+          "151",
+          "103",
+          "94",
+          "88",
+          "180",
+          "75",
+          "71",
+          "161",
+          "139",
+          "102",
+          "95",
+          "184",
+          "81",
+          "59"
+        ],
+        "offline": [
+          "109"
+        ]
+      },
+      "health": {
+        "/healthz": 200,
+        "/readyz": 200
+      },
+      "agentStatus": "ok",
+      "lastScan": {
+        "ok": true,
+        "at": "2026-10-19T05:39:30.405Z",
+        "error": ""
+      },
+      "runtime": {
+        "processCpuPercent": 10.8,
+        "processRssMb": 209.7,
+        "processHeapUsedMb": 69.5,
+        "hostMemoryUsedPercent": 38.2,
+        "hostFreeMemoryMb": 10009.7,
+        "uptimeSeconds": 301
+      },
+      "screenControl": {
+        "enabled": true,
+        "connected": true,
+        "activeSessions": 3,
+        "serverJarReady": true
+      },
+      "recovery": {
+        "observedAt": "2026-10-19T05:39:17.354Z",
+        "circuitOpen": false,
+        "circuitReason": "",
+        "circuitUntil": "",
+        "blockedReason": "",
+        "physicalCount": 90,
+        "adbDeviceCount": 78,
+        "actionableCount": 1,
+        "newlyLostCount": 1,
+        "unauthorizedCount": 14,
+        "offlineCount": 1,
+        "absentCount": 41,
+        "automaticActionsLastHour": 0,
+        "maxActionsPerHour": 160,
+        "acknowledgedActionableCount": 0,
+        "recoveryMode": "continuous_recovery",
+        "actionReadyAt": "",
+        "postActionWatchCount": 0,
+        "postActionWatchUntil": "",
+        "rescueCanMutate": false,
+        "maxAttemptsPerDevice": 5,
+        "quarantinedCount": 0,
+        "inventoryObservedAt": "2026-10-19T05:39:17.352Z",
+        "inventoryFresh": true,
+        "inventoryError": ""
+      },
+      "recoveryControl": {
+        "synced": true,
+        "error": "",
+        "isolatedCount": 2
+      }
+    },
+    {
+      "observedAt": "2026-10-19T05:40:08.719Z",
+      "lastSeenAt": "2026-10-19T05:39:49.889Z",
+      "total": 131,
+      "counts": {
+        "device": 79,
+        "physically_absent": 36,
+        "unauthorized": 14,
+        "offline": 1,
+        "usb_present_mtp_only": 1
+      },
+      "pending": {
+        "physically_absent": [
+          "147",
+          "181",
+          "149",
+          "152",
+          "177",
+          "143",
+          "165",
+          "164",
+          "126",
+          "124",
+          "116",
+          "113",
+          "58",
+          "172",
+          "6",
+          "189",
+          "156",
+          "159",
+          "162",
+          "114",
+          "93",
+          "60",
+          "163",
+          "176",
+          "91",
+          "182",
+          "157",
+          "127",
+          "125",
+          "128",
+          "76",
+          "63",
+          "160",
+          "77",
+          "33",
+          "OPPO-ea0043b6"
+        ],
+        "unauthorized": [
+          "151",
+          "103",
+          "94",
+          "88",
+          "180",
+          "75",
+          "71",
+          "161",
+          "139",
+          "102",
+          "95",
+          "184",
+          "81",
+          "59"
+        ],
+        "offline": [
+          "109"
+        ],
+        "usb_present_mtp_only": [
+          "183"
+        ]
+      },
+      "health": {
+        "/healthz": 200,
+        "/readyz": 200
+      },
+      "agentStatus": "ok",
+      "lastScan": {
+        "ok": true,
+        "at": "2026-10-19T05:40:04.406Z",
+        "error": ""
+      },
+      "runtime": {
+        "processCpuPercent": 10.8,
+        "processRssMb": 189.9,
+        "processHeapUsedMb": 25.6,
+        "hostMemoryUsedPercent": 40.9,
+        "hostFreeMemoryMb": 9570.6,
+        "uptimeSeconds": 331
+      },
+      "screenControl": {
+        "enabled": true,
+        "connected": true,
+        "activeSessions": 3,
+        "serverJarReady": true
+      },
+      "recovery": {
+        "observedAt": "2026-10-19T05:39:44.801Z",
+        "circuitOpen": false,
+        "circuitReason": "",
+        "circuitUntil": "",
+        "blockedReason": "",
+        "physicalCount": 94,
+        "adbDeviceCount": 79,
+        "actionableCount": 1,
+        "newlyLostCount": 1,
+        "unauthorizedCount": 14,
+        "offlineCount": 0,
+        "absentCount": 37,
+        "automaticActionsLastHour": 4,
+        "maxActionsPerHour": 160,
+        "acknowledgedActionableCount": 0,
+        "recoveryMode": "continuous_recovery",
+        "actionReadyAt": "2026-10-19T05:39:34.417Z",
+        "postActionWatchCount": 0,
+        "postActionWatchUntil": "",
+        "rescueCanMutate": false,
+        "maxAttemptsPerDevice": 5,
+        "quarantinedCount": 0,
+        "inventoryObservedAt": "2026-10-19T05:39:44.799Z",
+        "inventoryFresh": true,
+        "inventoryError": ""
+      },
+      "recoveryControl": {
+        "synced": true,
+        "error": "",
+        "isolatedCount": 2
+      }
+    },
+    {
+      "observedAt": "2026-10-19T05:40:28.345Z",
+      "lastSeenAt": "2026-10-19T05:40:16.180Z",
+      "total": 131,
+      "counts": {
+        "device": 81,
+        "physically_absent": 36,
+        "unauthorized": 13,
+        "usb_present_mtp_only": 1
+      },
+      "pending": {
+        "physically_absent": [
+          "147",
+          "181",
+          "149",
+          "152",
+          "177",
+          "143",
+          "165",
+          "164",
+          "126",
+          "124",
+          "116",
+          "113",
+          "58",
+          "172",
+          "6",
+          "189",
+          "156",
+          "159",
+          "162",
+          "114",
+          "93",
+          "60",
+          "163",
+          "176",
+          "91",
+          "182",
+          "157",
+          "127",
+          "125",
+          "128",
+          "76",
+          "63",
+          "160",
+          "77",
+          "33",
+          "OPPO-ea0043b6"
+        ],
+        "unauthorized": [
+          "103",
+          "94",
+          "88",
+          "180",
+          "75",
+          "71",
+          "161",
+          "139",
+          "102",
+          "95",
+          "184",
+          "81",
+          "59"
+        ],
+        "usb_present_mtp_only": [
+          "183"
+        ]
+      },
+      "health": {
+        "/healthz": 200,
+        "/readyz": 200
+      },
+      "agentStatus": "ok",
+      "lastScan": {
+        "ok": true,
+        "at": "2026-10-19T05:40:30.409Z",
+        "error": ""
+      },
+      "runtime": {
+        "processCpuPercent": 12.4,
+        "processRssMb": 189.6,
+        "processHeapUsedMb": 60,
+        "hostMemoryUsedPercent": 39.9,
+        "hostFreeMemoryMb": 9732.9,
+        "uptimeSeconds": 361
+      },
+      "screenControl": {
+        "enabled": true,
+        "connected": true,
+        "activeSessions": 3,
+        "serverJarReady": true
+      },
+      "recovery": {
+        "observedAt": "2026-10-19T05:40:13.903Z",
+        "circuitOpen": false,
+        "circuitReason": "",
+        "circuitUntil": "",
+        "blockedReason": "",
+        "physicalCount": 95,
+        "adbDeviceCount": 81,
+        "actionableCount": 1,
+        "newlyLostCount": 0,
+        "unauthorizedCount": 13,
+        "offlineCount": 1,
+        "absentCount": 36,
+        "automaticActionsLastHour": 4,
+        "maxActionsPerHour": 160,
+        "acknowledgedActionableCount": 0,
+        "recoveryMode": "continuous_recovery",
+        "actionReadyAt": "2026-10-19T05:39:34.417Z",
+        "postActionWatchCount": 0,
+        "postActionWatchUntil": "",
+        "rescueCanMutate": false,
+        "maxAttemptsPerDevice": 5,
+        "quarantinedCount": 0,
+        "inventoryObservedAt": "2026-10-19T05:40:13.901Z",
+        "inventoryFresh": true,
+        "inventoryError": ""
+      },
+      "recoveryControl": {
+        "synced": true,
+        "error": "",
+        "isolatedCount": 2
+      }
+    }
+  ],
+  "caveats": [
+    "No old disk available per user clarification; final delta after warm backup unavailable",
+    "35 listed phones physically absent; 6 additional absent devices unlisted",
+    "183 MTP only, existing recovery isolation retained",
+    "99 transient transport missing recovered without shared ADB restart",
+    "18 unauthorized devices await user confirmation at observation time",
+    "Task autostart registered but reboot not tested",
+    "Screen relay connected and two existing sessions observed; video/control not independently accepted",
+    "Full phone business, capacity and long observation not completed",
+    "One XHS sync script manifest mismatch retained as documented in activation candidate",
+    "Later snapshot 13:40: 81 online, 13 unauthorized, 36 absent (30 listed + 6 unlisted), 183 MTP-only; topology changed during user confirmations",
+    "Existing Agent performed targeted recovery: 109 reconnect, 156/157/177 interface restart failed; no operator global reset. Grouped physical disappearance cause not confirmed"
+  ],
+  "preStartBackup": "D:\\PhoneCloud-Migration\\before-first-start-20261019",
+  "review": "Self-reviewed migration receipts and immutable source preservation; no application source edits"
+}
