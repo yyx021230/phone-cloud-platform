@@ -1,0 +1,216 @@
+{
+  "sourcePngSha256": "1fb2cf1e33fe30ac691af5d7e1418c84f12c5d91f0ef583c310cfc28c9ca07d3",
+  "numberBox": [
+    336,
+    1133,
+    436,
+    1184
+  ],
+  "numberCellSha256": "d2845948dc031e2c1331ffd3c7e655343c6122456ff8508a170f787c349e0bab",
+  "label": "387",
+  "newGlyphLabel": "7",
+  "newGlyphComponentBox": [
+    50,
+    11,
+    15,
+    26
+  ],
+  "nativeReadings": [
+    {
+      "id": "r1_view_color",
+      "texts": [
+        "阝 87 387 '"
+      ]
+    },
+    {
+      "id": "r1_view_binary",
+      "texts": [
+        "587 587"
+      ]
+    },
+    {
+      "id": "r1_view_contrast",
+      "texts": [
+        "387 387"
+      ]
+    },
+    {
+      "id": "r1_view_nearest",
+      "texts": [
+        "387 387"
+      ]
+    }
+  ],
+  "diagnosticContexts": [
+    {
+      "id": "r1_view_context_binary",
+      "texts": [
+        "387 587"
+      ]
+    },
+    {
+      "id": "r1_view_context_contrast",
+      "texts": [
+        "387 387"
+      ]
+    },
+    {
+      "id": "r1_view_context_nearest",
+      "texts": [
+        "387 387"
+      ]
+    }
+  ],
+  "oldGlyphScores": [
+    {
+      "binary": false,
+      "glyphs": [
+        {
+          "index": 0,
+          "box": [
+            9,
+            11,
+            17,
+            26
+          ],
+          "best": [
+            {
+              "digit": 3,
+              "score": 0.9999980926513672,
+              "template": 35
+            },
+            {
+              "digit": 5,
+              "score": 0.755524754524231,
+              "template": 33
+            }
+          ]
+        },
+        {
+          "index": 1,
+          "box": [
+            30,
+            11,
+            17,
+            26
+          ],
+          "best": [
+            {
+              "digit": 8,
+              "score": 0.9999986290931702,
+              "template": 22
+            },
+            {
+              "digit": 3,
+              "score": 0.8237545490264893,
+              "template": 12
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "box": [
+            50,
+            11,
+            15,
+            26
+          ],
+          "best": [
+            {
+              "digit": 7,
+              "score": 0.9885964393615723,
+              "template": 23
+            },
+            {
+              "digit": 2,
+              "score": 0.47117605805397034,
+              "template": 46
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "binary": true,
+      "glyphs": [
+        {
+          "index": 0,
+          "box": [
+            9,
+            11,
+            17,
+            26
+          ],
+          "best": [
+            {
+              "digit": 3,
+              "score": 1.0,
+              "template": 36
+            },
+            {
+              "digit": 5,
+              "score": 0.7418533563613892,
+              "template": 34
+            }
+          ]
+        },
+        {
+          "index": 1,
+          "box": [
+            30,
+            11,
+            17,
+            26
+          ],
+          "best": [
+            {
+              "digit": 8,
+              "score": 1.0,
+              "template": 23
+            },
+            {
+              "digit": 3,
+              "score": 0.8120781779289246,
+              "template": 12
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "box": [
+            50,
+            11,
+            15,
+            26
+          ],
+          "best": [
+            {
+              "digit": 7,
+              "score": 0.9722452163696289,
+              "template": 23
+            },
+            {
+              "digit": 2,
+              "score": 0.4866120219230652,
+              "template": 46
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "priorTrustedCounts": [
+    88,
+    58,
+    48,
+    40,
+    40,
+    37,
+    30,
+    27,
+    26,
+    26
+  ],
+  "priorTrustedTilesSha256": "09a440ec45c51dada826fb5f9d1f14122b543b64819faa509d20153ff0799932",
+  "labelProof": "Existing trusted templates match 3 and 8 at approximately 1.0. Original contrast/nearest and contextual contrast/nearest readings agree on 387387. Native binary 587587 and mixed 387587 are retained as wrong readings and never used as labels."
+}

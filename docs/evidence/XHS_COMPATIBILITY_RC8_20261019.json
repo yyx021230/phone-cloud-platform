@@ -1,0 +1,378 @@
+{
+  "status": "rc8_candidate_single47_pair47180_passed_155_transport_failed_not_released",
+  "sourceHashes": {
+    "小红书数据同步.py": "3674a78dc74a3fb9beef4e83c92c662c262cb182ffdd7dbdab3dc9e6b8aaec73",
+    "xhs_list_ocr.py": "763fbfdfad8710e10b1800a7ee431288c193c3575c3b3c12d30800de2d7972c5",
+    "xhs_ocr_digits.png": "6a65dfb150ecbd4c56140b28fea51e89d11d8187031009447bab0d880164522f"
+  },
+  "local": {
+    "python": {
+      "command": "PYTHONPATH=windows-agent/scripts python3 -m unittest windows-agent/scripts/test_xhs_data_sync.py windows-agent/scripts/test_xhs_list_ocr.py windows-agent/scripts/test_xhs_compatibility_20261015.py",
+      "tests": 250,
+      "passed": 250,
+      "failed": 0
+    },
+    "consumer": {
+      "tests": 11,
+      "passed": 11
+    },
+    "npmRootCheck": "passed",
+    "diffCheck": "passed",
+    "priorInvocationError": "Initialcombinedunittest invocationwithoutPYTHONPATHcouldnotimportxhs_list_ocr;correctedmodulepathandfullsuitepassed;no sourcefix for harness importerror.",
+    "negativeRegressionsBeforeFix": {
+      "activeImageErrorNotRaised": true,
+      "observed387RequiredNative": true,
+      "count": 2
+    },
+    "addedCases": 8,
+    "functionsChangedSinceRc7": {
+      "小红书数据同步.py": [
+        "image_navigation_capture",
+        "navigation_capture"
+      ],
+      "xhs_list_ocr.py": []
+    },
+    "allPriorTrustedDigitTilesUnchanged": true,
+    "numericDateThresholdsUnchanged": true,
+    "transientBodyRetry": {
+      "onlyExactNoCompleteCardsError": true,
+      "same20SecondDeadlineAnd12CaptureBound": true,
+      "resetsPair": true,
+      "requiresTwoLaterFreshSuccessfulFrames": true,
+      "numericErrorNotRetried": true
+    }
+  },
+  "originalFailureFrameSha256": "1fb2cf1e33fe30ac691af5d7e1418c84f12c5d91f0ef583c310cfc28c9ca07d3",
+  "offlineReplay": {
+    "windows": true,
+    "cards": 5,
+    "numericCells": 15,
+    "error": null
+  },
+  "firstCandidateRun": {
+    "stage": "v58",
+    "target": "47/app1",
+    "status": "failed",
+    "reason": "OCR works list has no proven complete cards or empty/end marker",
+    "seconds": 80,
+    "settingsRestored": true,
+    "settingsBefore": {
+      "timeout": "60000",
+      "proximity": "1"
+    },
+    "settingsAfter": {
+      "timeout": "60000",
+      "proximity": "1"
+    },
+    "scope": "Reload blank body;notzero. Added boundedfreshretryinlatercandidate."
+  },
+  "unusedStage": "v59_prepared_but_not_dispatched_after_v58_failure",
+  "candidateTag": "xhs-compat-20261019-rc.8",
+  "branch": "codex/xhs-compatibility-fix-20261015",
+  "parentCommit": "7d39b163bf1bc8ab36b075a9bfbe75e23bc67f91",
+  "stagingResults": [
+    {
+      "name": "47",
+      "slot": "app1",
+      "status": "passed",
+      "notes": 30,
+      "scrolls": 6,
+      "complete": true,
+      "windowStart": "2026-09-20",
+      "windowEnd": "2026-10-19",
+      "stopReason": "older_than_window_visible",
+      "slotProven": true,
+      "metricsComplete": true,
+      "settingsBefore": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsAfter": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 199,
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app1",
+        "xhs_cold_started",
+        "works_image_body_capture_retried",
+        "works_list_image_reader_active",
+        "list_reopened_at_newest",
+        "collection_scan_as_of:2026-10-19",
+        "proximity_guard_temporarily_disabled"
+      ],
+      "warnings": [
+        "list_metric_units_are_displayed_approximations",
+        "creator_list_limited_to_displayed_time_range",
+        "list_read_with_local_image_recognition"
+      ],
+      "stage": "xhs-compat-fix-20261015-v60",
+      "snapshotSha256": "ee17d7ac7f08fa532a9fdb7da282f393f7e3a96fdb1e74c598307c93f56e3f08"
+    },
+    {
+      "name": "180",
+      "slot": "app1",
+      "status": "passed",
+      "notes": 12,
+      "scrolls": 5,
+      "complete": true,
+      "windowStart": "2026-09-20",
+      "windowEnd": "2026-10-19",
+      "stopReason": "older_than_window_visible",
+      "slotProven": true,
+      "metricsComplete": true,
+      "settingsBefore": {
+        "timeout": "30000",
+        "proximity": "null"
+      },
+      "settingsAfter": {
+        "timeout": "30000",
+        "proximity": "null"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 121,
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app1",
+        "unsecured_keyguard_dismissed",
+        "xhs_cold_started",
+        "clone_slot_selected:app1",
+        "list_reopened_at_newest",
+        "collection_scan_as_of:2026-10-19",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_image_reader_active",
+        "list_reopened_at_newest",
+        "works_image_scan_restarted_at_newest"
+      ],
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range",
+        "list_read_with_local_image_recognition"
+      ],
+      "stage": "xhs-compat-fix-20261015-v62",
+      "snapshotSha256": "a474fd2dedaff2c8775d21e53faf53749429a1c2aab11079dcff0e278343b77f"
+    },
+    {
+      "name": "47",
+      "slot": "app1",
+      "status": "passed",
+      "notes": 30,
+      "scrolls": 6,
+      "complete": true,
+      "windowStart": "2026-09-20",
+      "windowEnd": "2026-10-19",
+      "stopReason": "older_than_window_visible",
+      "slotProven": true,
+      "metricsComplete": true,
+      "settingsBefore": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsAfter": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 192,
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app1",
+        "xhs_cold_started",
+        "works_list_image_reader_active",
+        "list_reopened_at_newest",
+        "works_image_body_capture_retried",
+        "collection_scan_as_of:2026-10-19",
+        "proximity_guard_temporarily_disabled"
+      ],
+      "warnings": [
+        "list_metric_units_are_displayed_approximations",
+        "creator_list_limited_to_displayed_time_range",
+        "list_read_with_local_image_recognition"
+      ],
+      "stage": "xhs-compat-fix-20261015-v62",
+      "snapshotSha256": "01ca859f1a54d950ebf2cad13e2eba1380d81eb099f6309d82eeae29791b7b4a"
+    }
+  ],
+  "productionBaseline": {
+    "identity": {
+      "adbPid": 8988,
+      "agentPid": 14508,
+      "owner": "NT AUTHORITY\\SYSTEM",
+      "pendingSettingsLedgers": 0,
+      "activeCollectors": 0,
+      "stagingFoldersChecked": 29
+    },
+    "hashes": {
+      "scripts/小红书数据同步.py": "e4ee2e856a41c9346e88c205b99f9faec371fe869752f0c492454016ffd639c5",
+      "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+      "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+      "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+      "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    }
+  },
+  "cloud": {
+    "activeCollectionLocks": 0,
+    "nonterminalCollectionJobs": 0,
+    "health": {
+      "/healthz": 200,
+      "/readyz": 200
+    }
+  },
+  "media": {
+    "actualHostLiveCheck": "passed",
+    "baselineUnchanged": true,
+    "customBinarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "pacingMbpsPerConnection": 8,
+    "maxPacketsPerGroup": 2,
+    "pid": 2503525
+  },
+  "releasePerformed": false,
+  "remotePush": false,
+  "interruptedPair": {
+    "stage": "v61",
+    "155": {
+      "status": "failed",
+      "reason": "ADB input tap exit255 then device not found",
+      "ocrFrames": 0,
+      "bootUsbReadonly": {
+        "atEpoch": 1792402211.3400495,
+        "values": {
+          "ro.runtime.firstboot": "",
+          "sys.boot_completed": "1",
+          "ro.boot.bootreason": "reboot,coldnt",
+          "sys.boot.reason": "reboot,coldnt",
+          "sys.usb.state": "midi,adb",
+          "sys.usb.config": "midi,adb",
+          "init.svc.adbd": "running",
+          "uptimeSeconds": 653757.44
+        },
+        "readOnly": true,
+        "settingOrRecoveryActions": 0
+      },
+      "windowsPnpEvidence": {
+        "readOnly": true,
+        "events": [],
+        "logStates": [
+          {
+            "readError": true,
+            "log": "System"
+          },
+          {
+            "enabled": false,
+            "log": "Microsoft-Windows-DriverFrameworks-UserMode/Operational"
+          }
+        ],
+        "currentPnp": [
+          {
+            "status": "OK",
+            "name": "USB Composite Device",
+            "id": "USB\\VID_1782&PID_4023\\<selected-device>",
+            "problem": 0
+          }
+        ]
+      },
+      "settingsReconciliation": {
+        "name": "155",
+        "slot": "app2",
+        "taskId": "v3-155-app2-1792401593081",
+        "terminalStatus": "failed",
+        "original": {
+          "system/screen_off_timeout": "1800000",
+          "global/enable_screen_on_proximity_sensor": "null"
+        },
+        "readback": {
+          "system/screen_off_timeout": "1800000",
+          "global/enable_screen_on_proximity_sensor": "null"
+        },
+        "settingsWrites": 0,
+        "ledgerSha256": "01fa1d737b1c19a04ccba14f7bd7cb0ffa90b8afd5c736f0fe77d6cfe48a526f",
+        "retainedCopy": "D:\\PhoneCloud\\staging\\xhs-compat-fix-20261015-v61\\qa-reconciled\\444d7c7643025e0a-v3-155-app2-1792401593081.settings.json",
+        "archivedLedger": "D:\\PhoneCloud\\staging\\xhs-compat-fix-20261015-v61\\cache\\xhs-data-collection\\444d7c7643025e0a-v3-155-app2-1792401593081.settings.json.verified-restored-20261019.json",
+        "settingsRestored": true,
+        "pendingOwnedLedger": false,
+        "atEpoch": 1792401915.4391189
+      },
+      "independentAgentError": {
+        "independentAgentErrors": [
+          {
+            "time": "2026-10-19T09:20:31.432Z",
+            "event": "sms notification fallback device skipped",
+            "deviceNotFound": false,
+            "exit255": false,
+            "readonlyNotificationCommand": true,
+            "errorLength": 180
+          }
+        ],
+        "sameMinuteAsCandidateFailure": true,
+        "rawContentExcluded": true
+      }
+    },
+    "180": {
+      "status": "cancelled_after_peer_restore_audit_failed",
+      "settingsRestored": true
+    },
+    "newAttempts": "155notrerun;freshv62pair47/180;priorfailureisretainedandnotcountedaspass"
+  },
+  "scope": {
+    "physicalPhonesAtOnce": 2,
+    "recentDays": 30,
+    "outerListOnly": true,
+    "skippedAlways": [
+      "152",
+      "74",
+      "81",
+      "188"
+    ],
+    "webDatabaseImports": false,
+    "sharedAdbAgentIdentityKeysEnvironmentStartupChanged": false,
+    "mediaControlChanged": false,
+    "servicesRestarted": false
+  },
+  "remaining": [
+    {
+      "name": "18",
+      "slot": "app1",
+      "status": "loading_unresolved",
+      "source": "Earlier v56 same-day observation;not rerun or claimed fixed by rc8",
+      "cause": "unconfirmed"
+    },
+    {
+      "name": "155",
+      "issue": "Current rc8 v61 failed ADB input255/device-not-found before OCR;independent Agent same-minute read failed;origin remainsunconfirmed. Earlier rc7 successdoesnot make thispassed."
+    }
+  ],
+  "review": {
+    "kind": "self_review",
+    "collectorFunctionsChangedFromRc7": [
+      "image_navigation_capture",
+      "navigation_capture"
+    ],
+    "ocrFunctionsChangedFromRc7": [],
+    "allExistingTrustedDigitTilesUnchanged": true,
+    "addedDigitSamples": {
+      "digit": 7,
+      "variants": [
+        "gray",
+        "binary"
+      ],
+      "indices": [
+        27,
+        28
+      ]
+    },
+    "numericDateThresholdsAndNativeConflictRulesUnchanged": true,
+    "initialBlankHandling": "Same20second/12capturebudget,discardoldpairandrequire2laterfreshsuccessfulframes;neveremptydata",
+    "productionAcceptance": "Notrunforrc8;stagingisnotSYSTEMAgentformalqueue/PGacceptance"
+  },
+  "workflow": {
+    "revision": "2026-09-30",
+    "sha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+    "risk": "R2",
+    "releaseAuthorization": "Currentrepairandtestauthorized;newrc8contentneedsconcreteapprovalundersection7andAGENTSversionbinding;earlierrc7approvalnotexpanded"
+  }
+}

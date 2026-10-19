@@ -844,4 +844,66 @@ class BrowserPermissionRedirectTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError,'stayed foreground'):sync.recover_vivo_browser_permission_redirect('adb','serial',self.fixture(),'app2',self.current,lambda:None,list(self.events))
         self.assertEqual(sum('input' in c.args for c in adb.call_args_list),1);self.assertFalse(any('start' in c.args for c in adb.call_args_list))
 
+class ActiveImageFailureTests(unittest.TestCase):
+    current='mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}'
+    def observed_xml(self):
+        root=ET.parse(SCRIPTS/'fixtures/xhs/works-header-only-47-after-ocr-error.xml').getroot()
+        self.assertTrue(sync.data_center_tab_header(root));self.assertFalse(sync.creator_list(root))
+        self.assertEqual(sync.note_cards(root),[])
+        return root
+
+    def test_established_image_reader_preserves_the_real_error_instead_of_blank_xml(self):
+        root=self.observed_xml();error=sync.ImageListReadError('OCR row 1 view unproven: OCR color/binary values disagree')
+        events=['collection_slot_requested:app1','works_list_image_reader_active']
+        with patch.object(sync.os,'name','nt'),patch.object(sync,'capture',return_value=root),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'image_navigation_capture',side_effect=error),patch.object(sync,'adb') as adb:
+            with self.assertRaises(sync.ImageListReadError) as caught:
+                sync.navigation_capture('adb','serial',lambda:None,events)
+            self.assertIs(caught.exception,error);adb.assert_not_called()
+
+    def test_initial_inaccessible_body_keeps_existing_bounded_loading_path(self):
+        root=self.observed_xml();events=['collection_slot_requested:app1']
+        with patch.object(sync.os,'name','nt'),patch.object(sync,'capture',return_value=root),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'image_navigation_capture',side_effect=sync.ImageListReadError('unproven body')),patch.object(sync,'adb') as adb:
+            self.assertIs(sync.navigation_capture('adb','serial',lambda:None,events),root)
+            adb.assert_not_called()
+        self.assertIn('works_image_probe_unproven:unproven body',events)
+
+class FreshBodyRetryTests(unittest.TestCase):
+    run_reads=FreshHeaderRetryTests.run_reads
+    body_error='OCR works list has no proven complete cards or empty/end marker'
+    def test_blank_reload_resets_pair_and_requires_two_later_fresh_frames(self):
+        from test_xhs_list_ocr import result
+        good=result();root,events,calls=self.run_reads([good,RuntimeError(self.body_error),good,good])
+        self.assertEqual(calls,4);self.assertEqual(events.count('works_image_body_capture_retried'),1)
+        self.assertEqual(len(sync.note_cards(root)),1)
+
+    def test_persistent_blank_reload_stops_without_an_empty_result(self):
+        with self.assertRaisesRegex(sync.ImageListReadError,'no proven complete cards'):
+            self.run_reads([RuntimeError(self.body_error)]*12)
+
+    def test_body_retry_has_the_same_elapsed_deadline(self):
+        with patch.object(sync.time,'monotonic',side_effect=[0,5,10,15,21]):
+            with self.assertRaisesRegex(sync.ImageListReadError,'no proven complete cards'):
+                self.run_reads([RuntimeError(self.body_error)]*20)
+
+class ProvenSevenVariantTests(unittest.TestCase):
+    def test_observed387_is_proven_by_both_ink_variants(self):
+        import cv2,xhs_list_ocr as o
+        frame=cv2.imread(str(SCRIPTS/'fixtures/xhs/number-387-47-v57.png'))
+        box=[0,0,frame.shape[1],frame.shape[0]]
+        self.assertEqual(o.numeric_cell(frame,box,allow_candidate=True),('387',False))
+        self.assertEqual(o.numeric_cell(frame,box),'387')
+
+    def test_all_preexisting_trusted_tiles_remain_byte_identical(self):
+        import cv2,json,hashlib
+        proof=json.loads((SCRIPTS/'fixtures/xhs/font7-47-v57-proof.json').read_text())
+        atlas=cv2.imread(str(SCRIPTS/'xhs_ocr_digits.png'),0)
+        trusted=b''.join(atlas[d*48:(d+1)*48,j*32:(j+1)*32].tobytes() for d,n in enumerate(proof['priorTrustedCounts']) for j in range(n))
+        self.assertEqual(hashlib.sha256(trusted).hexdigest(),proof['priorTrustedTilesSha256'])
+
+    def test_native_conflict_is_still_rejected_when_corroboration_is_required(self):
+        import xhs_list_ocr as o
+        row={'verifiedCounts':['387','0','0'],'weakCountFields':[0]}
+        values={f'r1_view_{v}':AdditionalInkProofTests.item(text) for v,text in [('color',''),('binary','587587'),('contrast','387387'),('nearest','387387')]}
+        with self.assertRaisesRegex(RuntimeError,'values disagree'):o.corroborate_counts(row,1,values)
+
 if __name__ == '__main__':unittest.main()

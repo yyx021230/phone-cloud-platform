@@ -222,12 +222,13 @@ def image_navigation_capture(adb_path, serial, guard, events, current):
             return image_navigation_capture(adb_path,serial,guard,events,current)
         except (RuntimeError,subprocess.TimeoutExpired) as error:
             guard()
-            if (str(error).startswith("OCR works-list header is not unique:")
+            transient_body = str(error) == "OCR works list has no proven complete cards or empty/end marker"
+            if ((str(error).startswith("OCR works-list header is not unique:") or transient_body)
                     and frame_attempt < 11 and time.monotonic() < header_deadline):
-                # A bad header read proves no data. Discard the pair and require
+                # An unproven header/body proves no data. Reset and require
                 # two later, consecutive fresh captures with every field proven.
                 frames.clear()
-                events.append("works_image_header_capture_retried")
+                events.append("works_image_body_capture_retried" if transient_body else "works_image_header_capture_retried")
                 time.sleep(1)
                 continue
             raise ImageListReadError(str(error)) from error
@@ -310,9 +311,9 @@ def navigation_capture(adb_path, serial, guard, events):
             try:
                 return image_navigation_capture(adb_path,serial,guard,events,current)
             except ImageListReadError as error:
-                # A valid XML tab may arrive before its body finishes loading.
-                # Keep the existing bounded wait; blank never proves zero notes.
-                if note_cards(root) or label(root,"到底了"):
+                # Once image reading is established, preserve its real failure.
+                # Only the initial XML tab may still be waiting for its body.
+                if "works_list_image_reader_active" in events or note_cards(root) or label(root,"到底了"):
                     raise
                 marker = "works_image_probe_unproven:" + str(error)
                 if marker not in events:events.append(marker)
