@@ -1,0 +1,312 @@
+{
+  "status": "rc8_attempt5_rolled_back_after_formal_pair_failure",
+  "sourceCommit": "ece70a3b2c47a4d2eb17fbf7e46152e9bb93335a",
+  "candidateTag": "xhs-compat-20261019-rc.8",
+  "releaseVersion": "xhs-compat-20261019-deployed.5",
+  "rollbackTag": "xhs-compat-20261019-rolledback.5",
+  "authorization": "Userconfirmed上线rc.8;sameimmutable3files,singlethenpair,failureonly3filerollback",
+  "release": {
+    "version": "xhs-compat-20261019-deployed.5",
+    "sourceCommit": "ece70a3b2c47a4d2eb17fbf7e46152e9bb93335a",
+    "candidateTag": "xhs-compat-20261019-rc.8",
+    "releasedAtEpoch": 1792403235.382111,
+    "replaceSeconds": 0.062000000001717126,
+    "beforeIdentity": {
+      "adbPid": 8988,
+      "agentPid": 14508,
+      "owner": "NT AUTHORITY\\SYSTEM",
+      "pendingSettingsLedgers": 0,
+      "activeCollectors": 0,
+      "stagingFoldersChecked": 29
+    },
+    "afterIdentity": {
+      "adbPid": 8988,
+      "agentPid": 14508,
+      "owner": "NT AUTHORITY\\SYSTEM",
+      "pendingSettingsLedgers": 0,
+      "activeCollectors": 0,
+      "stagingFoldersChecked": 29
+    },
+    "beforeHashes": {
+      "scripts/小红书数据同步.py": "e4ee2e856a41c9346e88c205b99f9faec371fe869752f0c492454016ffd639c5",
+      "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+      "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+      "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+      "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    "afterHashes": {
+      "scripts/小红书数据同步.py": "3674a78dc74a3fb9beef4e83c92c662c262cb182ffdd7dbdab3dc9e6b8aaec73",
+      "scripts/xhs_list_ocr.py": "763fbfdfad8710e10b1800a7ee431288c193c3575c3b3c12d30800de2d7972c5",
+      "scripts/xhs_ocr_digits.png": "6a65dfb150ecbd4c56140b28fea51e89d11d8187031009447bab0d880164522f",
+      "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+      "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    "changedFiles": [
+      "scripts/xhs_ocr_digits.png",
+      "scripts/xhs_list_ocr.py",
+      "scripts/小红书数据同步.py"
+    ],
+    "backup": "D:\\PhoneCloud\\backups\\xhs-compat-20261019-deployed.5",
+    "rollbackScriptSha256": "9d99a7eaf69372996e47b4accea28ac3c8e07c67279d866a2cdcbf235ddc5db6",
+    "rollbackSyntax": "passed_not_executed",
+    "servicesRestarted": false,
+    "sharedAdbIdentityKeysEnvStartupChanged": false,
+    "mediaControlChanged": false,
+    "publicationGuard": "Fresh cloud collection idle proof and local identities/process/ledger/hash checks; unchanged consumer has no atomic publication barrier."
+  },
+  "formalAttempts": [
+    {
+      "name": "47",
+      "slot": "app1",
+      "startedAt": "2026-10-19T09:48:18.505108+00:00",
+      "runtimeSourceCommit": "ece70a3b2c47a4d2eb17fbf7e46152e9bb93335a",
+      "release": "xhs-compat-20261019-deployed.5",
+      "jobId": "282f11ef-fd8a-4765-866a-5929cb829976",
+      "productionStatus": "succeeded",
+      "notes": 30,
+      "scrolls": 6,
+      "complete": true,
+      "windowStart": "2026-09-20",
+      "windowEnd": "2026-10-19",
+      "stopReason": "older_than_window_visible",
+      "executionMode": "windows_xml_with_native_image_reader",
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app1",
+        "xhs_cold_started",
+        "works_image_body_capture_retried",
+        "works_list_image_reader_active",
+        "list_reopened_at_newest",
+        "collection_scan_as_of:2026-10-19",
+        "proximity_guard_temporarily_disabled"
+      ],
+      "warnings": [
+        "list_metric_units_are_displayed_approximations",
+        "creator_list_limited_to_displayed_time_range",
+        "list_read_with_local_image_recognition"
+      ],
+      "status": "passed",
+      "metricsComplete": true,
+      "totalsComputedFromVisibleNotes": {
+        "list_view_count": 26215,
+        "list_like_count": 52,
+        "list_comment_count": 91
+      },
+      "cleanupConfirmation": {
+        "waitSeconds": 22.22,
+        "observations": 4,
+        "maxCacheAgeSeconds": 26.24420714378357,
+        "staleOwnedOccupancyObserved": true,
+        "pendingLedgerObserved": false,
+        "settingsWrites": 0,
+        "ledgerChanges": 0
+      },
+      "settingsRestored": true,
+      "settingsBefore": {
+        "system/screen_off_timeout": "60000",
+        "global/enable_screen_on_proximity_sensor": "1"
+      },
+      "settingsAfter": {
+        "system/screen_off_timeout": "60000",
+        "global/enable_screen_on_proximity_sensor": "1"
+      },
+      "jobLockReleased": true,
+      "snapshotSha256": "83d143312927aa44bfd0d03f815410b984e0a673da42250fff9055942abad5c0",
+      "seconds": 287,
+      "finishedAt": "2026-10-19T09:53:05.897734+00:00"
+    },
+    {
+      "name": "141",
+      "slot": "app1",
+      "startedAt": "2026-10-19T09:53:19.287582+00:00",
+      "runtimeSourceCommit": "ece70a3b2c47a4d2eb17fbf7e46152e9bb93335a",
+      "release": "xhs-compat-20261019-deployed.5",
+      "jobId": "d4de5251-97f4-443a-8784-483dc7daf8e8",
+      "productionStatus": "failed",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "windowStart": null,
+      "windowEnd": null,
+      "stopReason": null,
+      "executionMode": "",
+      "recoveryEvents": [],
+      "warnings": [],
+      "status": "failed",
+      "reason": "{\"errorCode\": \"xhs_data_collection_failed\", \"message\": \"小红书数据采集失败，已保留诊断信息\"}",
+      "cleanupConfirmation": {
+        "waitSeconds": 2.865,
+        "observations": 1,
+        "maxCacheAgeSeconds": 0.5628769397735596,
+        "staleOwnedOccupancyObserved": false,
+        "pendingLedgerObserved": false,
+        "settingsWrites": 0,
+        "ledgerChanges": 0
+      },
+      "settingsRestored": true,
+      "settingsBefore": {
+        "system/screen_off_timeout": "60000",
+        "global/enable_screen_on_proximity_sensor": "1"
+      },
+      "settingsAfter": {
+        "system/screen_off_timeout": "60000",
+        "global/enable_screen_on_proximity_sensor": "1"
+      },
+      "jobLockReleased": true,
+      "snapshotSha256": null,
+      "seconds": 44,
+      "finishedAt": "2026-10-19T09:54:02.895094+00:00"
+    },
+    {
+      "name": "47",
+      "slot": "app1",
+      "startedAt": "2026-10-19T09:53:19.286704+00:00",
+      "runtimeSourceCommit": "ece70a3b2c47a4d2eb17fbf7e46152e9bb93335a",
+      "release": "xhs-compat-20261019-deployed.5",
+      "jobId": "ac44b821-dc04-45d3-aada-1d93c09401d3",
+      "productionStatus": "cancelled",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "windowStart": null,
+      "windowEnd": null,
+      "stopReason": null,
+      "executionMode": "",
+      "recoveryEvents": [],
+      "warnings": [],
+      "status": "failed",
+      "reason": "{\"errorCode\": \"cancelled\", \"message\": \"自动化任务已取消\"}",
+      "cleanupConfirmation": {
+        "waitSeconds": 20.31,
+        "observations": 3,
+        "maxCacheAgeSeconds": 23.064772367477417,
+        "staleOwnedOccupancyObserved": true,
+        "pendingLedgerObserved": false,
+        "settingsWrites": 0,
+        "ledgerChanges": 0
+      },
+      "settingsRestored": true,
+      "settingsBefore": {
+        "system/screen_off_timeout": "60000",
+        "global/enable_screen_on_proximity_sensor": "1"
+      },
+      "settingsAfter": {
+        "system/screen_off_timeout": "60000",
+        "global/enable_screen_on_proximity_sensor": "1"
+      },
+      "jobLockReleased": true,
+      "snapshotSha256": null,
+      "seconds": 78,
+      "finishedAt": "2026-10-19T09:54:37.225095+00:00"
+    }
+  ],
+  "counts": {
+    "total": 3,
+    "succeeded": 1,
+    "failed": 1,
+    "cancelled": 1
+  },
+  "phone141": {
+    "runnerReason": "{\"error\": \"Command '['D:\\\\\\\\PhoneCloud\\\\\\\\tools\\\\\\\\android-sdk\\\\\\\\platform-tools\\\\\\\\adb.exe', '-s', 'E6FQDEMNQOXSYXU4', 'shell', 'input', 'keyevent', '82']' timed out after 7 seconds\"}\r\n",
+    "restorationErrors": [],
+    "failureForeground": "u0 ScreenOnProximitySensorGuide",
+    "focusedApp": "u999 XHS WebViewActivityV2",
+    "originalSettings": {
+      "system/screen_off_timeout": "60000",
+      "global/enable_screen_on_proximity_sensor": "1"
+    },
+    "settingsRestored": true,
+    "lockReleased": true,
+    "confirmed": "inputkeyevent82timedout7seconds;diagnosticWindowshowsproximityguide;originalenable_screen_on_proximity_sensor=1",
+    "hypothesis": "maininitialwakecaninvokedismiss_unsecured_keyguardbeforeexistingproximityguidehandling;exactprekey82tracepending;donotguessorblindlyretryinput"
+  },
+  "rollback": {
+    "version": "xhs-compat-20261019-deployed.5",
+    "rolledBackAtEpoch": 1792403810.669125,
+    "restoredFiles": [
+      "scripts/小红书数据同步.py",
+      "scripts/xhs_list_ocr.py",
+      "scripts/xhs_ocr_digits.png"
+    ],
+    "hashes": {
+      "scripts/小红书数据同步.py": "e4ee2e856a41c9346e88c205b99f9faec371fe869752f0c492454016ffd639c5",
+      "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+      "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+      "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+      "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    "identity": {
+      "adbPid": 8988,
+      "agentPid": 14508,
+      "owner": "NT AUTHORITY\\SYSTEM",
+      "pendingSettingsLedgers": 0,
+      "activeCollectors": 0,
+      "stagingFoldersChecked": 29
+    },
+    "servicesRestarted": false
+  },
+  "media": {
+    "before": {
+      "decision": "D-075",
+      "verified": "live",
+      "pid": 2503525,
+      "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+      "bitsPerSecond": 8000000,
+      "packetsPerGroup": 2
+    },
+    "after": {
+      "decision": "D-075",
+      "verified": "live",
+      "pid": 2503525,
+      "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+      "bitsPerSecond": 8000000,
+      "packetsPerGroup": 2
+    },
+    "after-rollback5": {
+      "decision": "D-075",
+      "verified": "live",
+      "pid": 2503525,
+      "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+      "bitsPerSecond": 8000000,
+      "packetsPerGroup": 2
+    }
+  },
+  "sequencingRegression": {
+    "command": "python3 /tmp/pc_release_sequence_test_20261019.py",
+    "passed": 3,
+    "failed": 0,
+    "cases": [
+      "preflight exception prevents apply",
+      "failed proof prevents apply",
+      "successful proof invokes apply once after checks"
+    ],
+    "actualCoordinatorUsesTestedFunction": true,
+    "sourceHashes": {
+      "pc_release_sequence_20261019.py": "d3e0f980f8a71680846f633e8ca724398fbacbf4c5cdf7eab430a68665e8b9b1",
+      "pc_release_sequence_test_20261019.py": "be81809b347f9c47f2815e84d65d81e84c9e5f9b72e35201a47eba512aa3118c",
+      "pc-rc8-checked-release-20261019.py": "13a6d81e0238902ad4cec1a72937a643fdf4e4a6badd549008f0e31d77c81318"
+    },
+    "productionRuntimeFeatureAdded": false,
+    "freshnessGate": "unchanged30seconds;Windowsclockanchorbeforeactualcloudidleand20secondcoordinationcap",
+    "rootCauseOfAttempt4": "shellnewlinecontinuedafterPythonassertion;correctedtooneexception-stoppingcoordinatorwithsubprocesscheckTrue"
+  },
+  "attempt4": "Preserved in XHS_COMPATIBILITY_RELEASE_RC8_ATTEMPT4_20261019.json,rolledbackbeforeanyphonejob",
+  "currentProduction": "Exactoldnewhost8hashbaseline;rc8notretainedonline;3formaljobsallterminal/settingsrestored/locksreleased;SYSTEMADB8988Agent14508/no servicechanges",
+  "remaining": [
+    "141proximity/unlockorderinghypothesisrequiresreproduction",
+    "155intermittentADBfailureunresolved",
+    "18persistentloadingunresolved",
+    "180physicallyabsent;152/74/81/188remainexcluded"
+  ],
+  "rootExistingStatusEntries": 237,
+  "remotePush": false
+}
