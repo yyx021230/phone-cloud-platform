@@ -1,0 +1,325 @@
+{
+  "status": "local_candidate_offline_verified_device_qa_continues",
+  "candidateTag": "xhs-compat-20261019-rc.6",
+  "candidateCommit": "resolve annotated tag",
+  "parent": "ab9fdda1bd6616fafbac603bafb394a6f7580c2b",
+  "files": {
+    "windows-agent/scripts/xhs_list_ocr.py": "c84a0ef182a4e8bb8b08407e5e68de25efe18854308d760643fc09d2076122f0",
+    "windows-agent/scripts/xhs_ocr_digits.png": "0b45bffd3e07ad5e20f712fca2eea964d73d8bbb269134c179fbe988835f0414",
+    "windows-agent/scripts/test_xhs_compatibility_20261015.py": "5f6ba056b18d6a5b2e48ba81b41ee8b6c29936eae3f3b4fce512e9941b170fe5",
+    "windows-agent/scripts/fixtures/xhs/counts-1080-47.json": "235aa412488d23b4da1db7c14319ec568ce4257aa76e8ef1178acceb55df5451",
+    "windows-agent/scripts/fixtures/xhs/counts-1080-47.png": "c6bdd1980944c5d8f9616490ffa65ad5312b8d69a57b05293a36675eb803bb86"
+  },
+  "newHost": {
+    "hostname": "PC-20261015BZYS",
+    "registeredAgentUnchanged": true,
+    "plannedTargetSerialMatches": 20,
+    "systemAgentPid": 14508,
+    "systemAdbPid": 8988,
+    "adbPath": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+    "lanRoute": "192.168.20.139",
+    "tailscaleRoute": "100.100.177.27",
+    "hostKeyMatchedBetweenRoutes": true,
+    "discovery": "Local Tailscale status showed new hostname online; old BF host100.93.121.88 offline. No network/service config changed."
+  },
+  "currentHostProductionFiles": {
+    "scripts/小红书数据同步.py": "e4ee2e856a41c9346e88c205b99f9faec371fe869752f0c492454016ffd639c5",
+    "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+    "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+    "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+    "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+    "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+    "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+    "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+  },
+  "currentHostSourceState": "Older107minimal collector plus priorOCR/atlas,not the3rc4 hashes in the earlier BF host release receipt. No current-host asset deployment performed.",
+  "phone109": {
+    "oldJobId": "f7a3f0d4-72da-415a-b8af-0c64a30232a2",
+    "status": "cancelled",
+    "originalSettingsReadback": {
+      "system/screen_off_timeout": "1800000",
+      "global/enable_screen_on_proximity_sensor": "null"
+    },
+    "pendingLedgerCount": 0,
+    "reconciliationWrites": 0
+  },
+  "grayBefore47Fix": {
+    "43app1": {
+      "status": "passed",
+      "notes": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "browserChooserHandbackExercised": false
+    },
+    "98app2": {
+      "status": "passed",
+      "notes": 10,
+      "settingsRestored": true
+    },
+    "47app1": {
+      "status": "failed",
+      "settingsRestored": true,
+      "error": "OCR numeral glyph is unproven or ambiguous"
+    }
+  },
+  "phone47": {
+    "sourcePngSha256": "25da094dc379c126e0c2e75e09ce7f2607e59f2a05c43f8704c097981ed8dd15",
+    "firstGlyphFailure": "4thfullrow view83, secondglyph3 color score0.871875 and binary0.857897, below unchanged0.9 candidatefloor",
+    "initialRepairHistory": "Only3templates cleared glyph error, then existing native corroboration rejected203; retained that failure,expanded only independently proven0/2/9 glyphs.",
+    "newTemplates": {
+      "0": 2,
+      "2": 2,
+      "3": 2,
+      "9": 2
+    },
+    "proof3": {
+      "sourceSha256": "25da094dc379c126e0c2e75e09ce7f2607e59f2a05c43f8704c097981ed8dd15",
+      "sourceBox": [
+        336,
+        1644,
+        419,
+        1695
+      ],
+      "visibleValue": "83",
+      "nativeProof": [
+        "whole native word83",
+        "color COUNT context83",
+        "binary COUNT context83"
+      ],
+      "oldCounts": [
+        86,
+        57,
+        46,
+        37,
+        40,
+        37,
+        28,
+        25,
+        26,
+        22
+      ],
+      "newCounts": [
+        86,
+        57,
+        46,
+        39,
+        40,
+        37,
+        28,
+        25,
+        26,
+        22
+      ],
+      "added": [
+        {
+          "binary": false,
+          "glyphInCell": [
+            31,
+            11,
+            16,
+            26
+          ],
+          "digit": 3,
+          "bestExistingScore": 0.871874988079071
+        },
+        {
+          "binary": true,
+          "glyphInCell": [
+            31,
+            11,
+            16,
+            26
+          ],
+          "digit": 3,
+          "bestExistingScore": 0.9793202877044678
+        }
+      ],
+      "thresholdsChanged": false,
+      "learningFrom93": false,
+      "baselineRegression": "newtest failed83and93,5control passed"
+    },
+    "proofOther": {
+      "newCounts": [
+        88,
+        57,
+        48,
+        39,
+        40,
+        37,
+        28,
+        25,
+        26,
+        24
+      ],
+      "added": [
+        {
+          "sourceBox": [
+            336,
+            710,
+            438,
+            761
+          ],
+          "index": 0,
+          "digit": 2,
+          "binary": false,
+          "bestExistingScore": 0.9891069531440735
+        },
+        {
+          "sourceBox": [
+            336,
+            710,
+            438,
+            761
+          ],
+          "index": 1,
+          "digit": 0,
+          "binary": false,
+          "bestExistingScore": 0.9838425517082214
+        },
+        {
+          "sourceBox": [
+            336,
+            710,
+            438,
+            761
+          ],
+          "index": 0,
+          "digit": 2,
+          "binary": true,
+          "bestExistingScore": 0.9772438406944275
+        },
+        {
+          "sourceBox": [
+            336,
+            710,
+            438,
+            761
+          ],
+          "index": 1,
+          "digit": 0,
+          "binary": true,
+          "bestExistingScore": 0.9699472784996033
+        },
+        {
+          "sourceBox": [
+            336,
+            1955,
+            418,
+            2006
+          ],
+          "index": 0,
+          "digit": 9,
+          "binary": false,
+          "bestExistingScore": 0.9462010264396667
+        },
+        {
+          "sourceBox": [
+            336,
+            1955,
+            418,
+            2006
+          ],
+          "index": 0,
+          "digit": 9,
+          "binary": true,
+          "bestExistingScore": 0.9802616834640503
+        }
+      ],
+      "newAtlasSha256": "0b45bffd3e07ad5e20f712fca2eea964d73d8bbb269134c179fbe988835f0414",
+      "thresholdsChanged": false,
+      "learningFrom93": "digit9 only; its digit3 held out",
+      "proof": "2:color+binary repeated native;0:binary+contrast COUNT context native;9:color+binary93 COUNT context native; first203 native disagreed203/205 so no digit3 learned from it"
+    },
+    "fullWindowsOffline": [
+      {
+        "sourceSha256": "25da094dc379c126e0c2e75e09ce7f2607e59f2a05c43f8704c097981ed8dd15",
+        "cards": 5,
+        "counts": [
+          [
+            "203",
+            "1",
+            "1"
+          ],
+          [
+            "18",
+            "0",
+            "1"
+          ],
+          [
+            "48",
+            "0",
+            "2"
+          ],
+          [
+            "83",
+            "0",
+            "1"
+          ],
+          [
+            "93",
+            "1",
+            "5"
+          ]
+        ],
+        "error": null
+      },
+      {
+        "sourceSha256": "7fbfd8deef04e7bbccf5d1cd968b9045e1e43b027aa201c8f0f3469a5a4ea278",
+        "cards": 5,
+        "counts": [
+          [
+            "203",
+            "1",
+            "1"
+          ],
+          [
+            "18",
+            "0",
+            "1"
+          ],
+          [
+            "48",
+            "0",
+            "2"
+          ],
+          [
+            "83",
+            "0",
+            "1"
+          ],
+          [
+            "93",
+            "1",
+            "5"
+          ]
+        ],
+        "error": null
+      }
+    ],
+    "runtimeLogicThresholdsChanged": false,
+    "postfixPhoneRun": "not started;await existing2phone phase completion"
+  },
+  "tests": {
+    "pythonPassed": 223,
+    "consumerPassed": 11,
+    "rootSyntax": "passed",
+    "diff": "passed",
+    "baselineNewTestFailed83and93": true,
+    "review": "Self-review; only atlas counts/SHA changed in OCR source; existing strict confidence margins, native corroboration, empty-ink failure and date/title guards unchanged."
+  },
+  "remaining": {
+    "141app1": "5notes incomplete:split title requires2complete readings;needs raw replay",
+    "114app2": "foreign active control skipped",
+    "otherAuthorizedTargets": "active v36 max2physical phones, same-device slots sequential;outcomes not yet reconciled"
+  },
+  "scope": [
+    "outer works list only",
+    "30Shanghai calendar days",
+    "152/74/81/188 excluded",
+    "login/permission/account/server/foreign occupancy skip",
+    "no production deployment,Web import,post detail,login,enrollment,install,packet capture,driver/USB/media/control changes or service restarts"
+  ],
+  "remotePush": false,
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+}

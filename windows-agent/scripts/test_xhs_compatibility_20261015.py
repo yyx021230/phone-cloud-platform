@@ -100,6 +100,19 @@ class OcrCompatibilityTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError,'no proven numeral'):
             ocr.numeric_cell(frame*0+255,[0,0,100,30],allow_candidate=True)
 
+    def test_observed_1080_three_matches_in_training_and_independent_cells(self):
+        import cv2
+        import json
+        import xhs_list_ocr as ocr
+        frame = cv2.imread(str(SCRIPTS/'fixtures/xhs/counts-1080-47.png'))
+        samples = json.loads((SCRIPTS/'fixtures/xhs/counts-1080-47.json').read_text())
+        for sample in samples:
+            with self.subTest(value=sample['value']):
+                value, _ = ocr.numeric_cell(frame,sample['box'],allow_candidate=True)
+                self.assertEqual(value,sample['value'])
+        with self.assertRaisesRegex(RuntimeError,'no proven numeral'):
+            ocr.numeric_cell(frame*0+255,samples[0]['box'],allow_candidate=True)
+
     def test_observed_720_metric_order_and_missing_heart(self):
         import cv2
         import xhs_list_ocr as ocr
