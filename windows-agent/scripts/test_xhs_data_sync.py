@@ -266,6 +266,59 @@ class FleetReadingTests(unittest.TestCase):
             adb.assert_not_called()
 
 
+class CreatorGrowthOverlayOrderTests(unittest.TestCase):
+    """107 exposes account and permission hints underneath the growth modal."""
+
+    def prompt(self):
+        return ET.parse(SCRIPT.parent / "fixtures/xhs/creator-growth-account-overlay.xml").getroot()
+
+    def without_prompt(self):
+        root = self.prompt()
+        for node in list(root):
+            if node.get("text") in {"解锁成长中心", "超多创作者权益等你来看"} or node.get("content-desc") in {"稍后再看", "立即看看"}:
+                root.remove(node)
+        return root
+
+    def test_actual_overlay_is_deferred_before_classifying_the_fresh_account_page(self):
+        events = []
+        with patch.object(sync, "wake_if_asleep", return_value=False), \
+                patch.object(sync, "focus", return_value="mCurrentFocus=Window{x u999 com.xingin.xhs/com.xingin.reactnative.ui.XhsReactActivity}"), \
+                patch.object(sync, "capture", return_value=self.without_prompt()), \
+                patch.object(sync.time, "sleep"), patch.object(sync, "adb") as adb:
+            with self.assertRaisesRegex(RuntimeError, "creator account shows abnormal"):
+                sync.ensure_creator_list("adb", "serial", self.prompt(), "app2", lambda: None, events)
+        adb.assert_called_once_with("adb", "serial", "shell", "input", "tap", "198", "1484", timeout=7)
+        self.assertEqual(events, ["growth_center_deferred"])
+
+    def test_fresh_list_after_dismissal_does_not_inherit_the_covered_account_hint(self):
+        listing = xml('<node text="数据中心" bounds="[1,1][90,40]"/>',
+                      '<node text="作品分析" bounds="[1,45][90,80]"/>',
+                      '<node text="全部笔记" bounds="[1,85][90,120]"/>')
+        events = []
+        with patch.object(sync, "wake_if_asleep", return_value=False), \
+                patch.object(sync, "focus", return_value="com.xingin.xhs/XhsReactActivity"), \
+                patch.object(sync, "capture", return_value=listing), patch.object(sync.time, "sleep"), \
+                patch.object(sync, "adb") as adb:
+            self.assertIs(sync.ensure_creator_list("adb", "serial", self.prompt(), "app2", lambda: None, events), listing)
+        self.assertEqual(events, ["growth_center_deferred"])
+        self.assertEqual(adb.call_count, 1)
+
+    def test_undismissed_or_ambiguous_modal_stops_without_tapping_an_underlying_entry(self):
+        for ambiguous in (False, True):
+            root = self.prompt()
+            if ambiguous:
+                button = next(n for n in root if n.get("content-desc") == "稍后再看")
+                root.append(ET.fromstring(ET.tostring(button)))
+            with self.subTest(ambiguous=ambiguous), patch.object(sync, "wake_if_asleep", return_value=False), \
+                    patch.object(sync, "focus", return_value="com.xingin.xhs/XhsReactActivity"), \
+                    patch.object(sync, "capture", return_value=root), patch.object(sync.time, "sleep"), \
+                    patch.object(sync, "adb") as adb, patch.object(sync, "tap_label") as tap:
+                with self.assertRaisesRegex(RuntimeError, "not proven|stayed open"):
+                    sync.ensure_creator_list("adb", "serial", root, "app2", lambda: None, [])
+            self.assertEqual(adb.call_count, 0 if ambiguous else 1)
+            tap.assert_not_called()
+
+
 class OppoCloneTests(unittest.TestCase):
     def chooser(self):
         return xml('<node package="com.android.intentresolver" class="android.widget.CheckBox" resource-id="com.android.intentresolver:id/button_always_multiapp" text="记住我的选择" checked="false" bounds="[32,1420][720,1468]"/>',
