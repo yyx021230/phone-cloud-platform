@@ -1,0 +1,40 @@
+{
+  "status": "prepared_same_authorized_rc8_retry_after_rollback4",
+  "candidateTag": "xhs-compat-20261019-rc.8",
+  "sourceCommit": "ece70a3b2c47a4d2eb17fbf7e46152e9bb93335a",
+  "targetHost": "PC-20261015BZYS",
+  "stage": "D:\\PhoneCloud\\staging\\xhs-release-20261019-proposal.5",
+  "assets": {
+    "scripts/小红书数据同步.py": "3674a78dc74a3fb9beef4e83c92c662c262cb182ffdd7dbdab3dc9e6b8aaec73",
+    "scripts/xhs_list_ocr.py": "763fbfdfad8710e10b1800a7ee431288c193c3575c3b3c12d30800de2d7972c5",
+    "scripts/xhs_ocr_digits.png": "6a65dfb150ecbd4c56140b28fea51e89d11d8187031009447bab0d880164522f"
+  },
+  "actualRuntimeBaseline": {
+    "scripts/小红书数据同步.py": "e4ee2e856a41c9346e88c205b99f9faec371fe869752f0c492454016ffd639c5",
+    "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+    "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+    "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+    "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+    "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+    "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+    "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+  },
+  "backup": "D:\\PhoneCloud\\backups\\xhs-compat-20261019-newhost-before-rc7",
+  "backupManifestOriginalProposedCommit": "6ffb7d733d23e74fbca68d9d61d3b17b9998dea2",
+  "backupManifestKeptUnchanged": true,
+  "apply": "Only3XHSfiles fromthisGitcommit;freshcloud andWindows taskidle+exact8hash+SYSTEM identities required immediatelybeforeapply. Verifytemporary3thenreplaceunderidlewindow,saveUTF8receipt,verifyall8. NoAgent/ADB/driver/media/control restart orkey/env/startup change. Existingconsumer hasnoatomiccrossprocessdeployment barrier;anyforeignchange stops.",
+  "authorization": "Userexplicitlyconfirmed上线rc.8;thisretryusessameimmutableece70a3/3files/Windowshost. Graytarget141isfromoriginalauthorizedcompatibilitypool,replacesphysicallyabsent180;noadditionalaccount/permission/content/Websideeffects.",
+  "acceptance": "Afterversion-specificauthorizedapply:single47main then2physicaldevices47main/141main,max2;sourcehash+settingsrestoration+0ownpending.18loading/155intermittentADBtransport/180physicallyabsentremainunresolvedandnotpasses. No contentpublication/account/login/permission/packet/WebDB sideeffects.",
+  "rollback": "Onlyafteridleandexpectedcandidate3hashcheck,restore3verifiedoldassetbytes;checkall8return tobaseline. Stoponunexpectedsource/identity drift. No servicerecovery actions included.",
+  "automaticRollbackScope": "If authorizedcandidateapplypartiallychangesfilesorversion/gray fails,andruntime3areonlyexpectedold/candidatehashes,useprepared3filebackup;foreignsourcechange requires stopandreport.",
+  "releasePerformed": false,
+  "remotePush": false,
+  "rollbackRehearsal": {
+    "scope": "Onlyisolatedproposalrollback-rehearsal directory;productionuntouched",
+    "restoredFiles": 3,
+    "hashesMatchOriginal": true,
+    "renameRestoreVerified": true
+  },
+  "preparedAtEpoch": 1792403175.7872388,
+  "runtimeFilesChanged": false
+}
