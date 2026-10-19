@@ -59,6 +59,33 @@ class Screen:
         return [n for n in self.nodes if n.visible and n.enabled and predicate(n)]
 
 
+def is_system_status_indicator(node):
+    """Ignore only SystemUI status visuals wholly inside the measured top band.
+
+    Poco includes the separate status-bar window (clock/battery/Wi-Fi activity)
+    in WeCom's hierarchy. Keep every app node, body overlay and unknown text;
+    the action-time full-page and live-target comparisons remain unchanged.
+    """
+    if not node.name.startswith("com.android.systemui:id/"):
+        return False
+    x, y = node.position
+    width, height = node.size
+    if (not all(math.isfinite(v) for v in (x, y, width, height))
+            or not 0 <= x <= 1 or not 0 <= y <= .04
+            or not 0 < width <= 1 or not 0 < height <= .04
+            or y + height / 2 > .04):
+        return False
+    if node.desc:
+        return False
+    if node.kind == "android.widget.TextView":
+        return ((node.name == "com.android.systemui:id/clock"
+                 and re.fullmatch(r"[0-2]?[0-9]:[0-5][0-9]", node.text) is not None)
+                or (node.name == "com.android.systemui:id/battery_percentage_view"
+                    and re.fullmatch(r"(?:100|[0-9]{1,2})%", node.text) is not None))
+    return (node.kind in ("android.widget.ImageView", "android.view.View", "android.view.ViewGroup")
+            and not node.text)
+
+
 def validate_request(request):
     if not isinstance(request, dict) or set(request) - {"phoneNumber", "mode"}:
         raise StopPreview("invalid_request")
@@ -283,6 +310,8 @@ class PocoPreviewDriver:
                             name=item.attr("name") or "", desc=item.attr("contentDescription") or "",
                             enabled=enabled is True,
                             position=tuple(item.get_position()), size=tuple(item.get_size()))
+                if is_system_status_indicator(node):
+                    continue
                 if node not in nodes:
                     nodes.append(node)
                 if len(nodes) > 600:

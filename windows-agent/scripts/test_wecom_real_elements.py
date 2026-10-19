@@ -104,6 +104,59 @@ class RealElementReplayTests(unittest.TestCase):
         self.assertEqual(result['code'], 'executor_error_no_replay')
         self.assertFalse(poco.effects)
 
+    def test_system_clock_battery_and_traffic_change_does_not_block_menu(self):
+        clock = w.Node('android.widget.TextView', text='14:54',
+                       name='com.android.systemui:id/clock', position=(.108,.017), size=(.106,.034))
+        battery = replace(clock, text='100%', name='com.android.systemui:id/battery_percentage_view')
+        traffic = w.Node('android.widget.ImageView', name='com.android.systemui:id/wifi_in',
+                         position=(.779,.017), size=(.039,.012))
+        poco = Poco(replace(self.home, nodes=self.home.nodes + (clock,battery,traffic)))
+        driver = w.PocoPreviewDriver(poco, lambda: w.PACKAGE, lambda: True)
+        before = driver.snapshot()
+        poco.screen = replace(self.home, nodes=self.home.nodes + (replace(clock,text='14:55'),replace(battery,text='99%')))
+        self.assertEqual(driver.snapshot(), before)
+        driver.apply('open_menu', before, self.phone)
+        self.assertEqual(len(poco.effects), 1)
+
+    def test_application_or_body_system_overlay_changes_still_stop(self):
+        status = w.Node('android.widget.ImageView', name='com.android.systemui:id/wifi_in',
+                        position=(.779,.017), size=(.039,.012))
+        for added in (replace(status, name='com.tencent.wework:id/wifi_in'),
+                      replace(status, position=(.8,.4)),
+                      replace(status, size=(.05,.1)),
+                      replace(status, text='安全验证'), replace(status, desc='安全验证'),
+                      w.Node('android.widget.TextView', text='请确认',
+                             name='com.android.systemui:id/unknown_prompt',position=(.5,.017),size=(.1,.034))):
+            with self.subTest(node=added):
+                poco = Poco(self.home)
+                driver = w.PocoPreviewDriver(poco, lambda: w.PACKAGE, lambda: True)
+                before = driver.snapshot()
+                poco.screen = replace(self.home, nodes=self.home.nodes + (added,))
+                with self.assertRaisesRegex(w.StopPreview, 'page_changed_before_action'):
+                    driver.apply('open_menu', before, self.phone)
+                self.assertFalse(poco.effects)
+
+    def test_unknown_clock_text_and_invalid_status_geometry_are_retained(self):
+        clock = w.Node('android.widget.TextView', text='14:54',
+                       name='com.android.systemui:id/clock',position=(.108,.017),size=(.106,.034))
+        for changed in (replace(clock,text='登录'),replace(clock,desc='安全验证'),
+                        replace(clock,size=(.1,float('nan'))),replace(clock,position=(.5,.2))):
+            self.assertFalse(w.is_system_status_indicator(changed))
+
+    def test_status_filter_does_not_bypass_lost_lease_or_changed_target(self):
+        poco = Poco(self.home)
+        driver = w.PocoPreviewDriver(poco, lambda: w.PACKAGE, lambda: True)
+        before = driver.snapshot()
+        driver.lease_valid = lambda: False
+        with self.assertRaisesRegex(w.StopPreview, 'device_lease_lost'):
+            driver.apply('open_menu', before, self.phone)
+        self.assertFalse(poco.effects)
+        driver.lease_valid = lambda: True
+        poco.screen = replace(self.home,nodes=tuple(replace(n,position=(.85,.11)) if n.name==w.OBSERVED_HOME_MENU else n for n in self.home.nodes))
+        with self.assertRaisesRegex(w.StopPreview, 'page_changed_before_action'):
+            driver.apply('open_menu', before, self.phone)
+        self.assertFalse(poco.effects)
+
 
 if __name__ == '__main__':
     unittest.main()
