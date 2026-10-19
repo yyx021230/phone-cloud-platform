@@ -1,0 +1,53 @@
+{
+  "branch": "codex/lookup-idle-timeout-20261019",
+  "startingHead": "650ecf8458cf94d5800e5e09614504600400a1b8",
+  "workspaceInitiallyClean": true,
+  "preservedExistingChanges": "Original lookup-version-management worktree has modified docs/api-handover/20261016/README.md; not read/copied/changed/committed. Root and other worktrees untouched.",
+  "knownDeployedBaseline": "lookup-round-stop-20261016-deployed.1",
+  "runtimeCommit": "1940ec1346e4f695a7e33b7e0237f356d4363b20",
+  "runtimeImage": "sha256:4862080e4d6802a45c6f40bed390a05d99f891cf17c964e4d551f9b087140059",
+  "sourceReconstruction": "Verified recursive committed release chain through lookup-round-stop-20261016-rc.1; old root business code not used.",
+  "currentProductionRechecked": false,
+  "workflowRevision": "2026-09-30",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "before": {
+    "server/lookup-round-idle.mjs": null,
+    "server/managed-lookup.mjs": "30e6fd5577acfa89a00e3beee4cbe725ec24c9641f99df798404e3043dc3c2cb",
+    "server/managed-lookup-async.mjs": "2d9a9f277ee481780a0c02fccb8770297d10fcfd83e95c64f5abd34ccd01a10f",
+    "server/lookup-readiness.mjs": "aa9c43c7b9236357a827de466babf0a14a8cee3d3a21fd5ef1a41bb01f042af3",
+    "server/lookup-round-stop.mjs": "a19acfa0f4b957976b011751fd4c09efd335c99b7a2bcbdc0149fbd3940ba003",
+    "server/lookup-round-idle.test.mjs": null,
+    "server/lookup-readiness.test.mjs": "2282721161fed7e6f2fe798ec44b7eb06235f99320429151c374d3050a2654f3",
+    "public/api-reference.json": "8fdd2ff061e53d2dcfa8b263b49568ad3bb8df423e931fe8d19e16388cedc3e3",
+    "public/openapi.json": "e5d5bc7d032209b6dc49e83be2097eaaee47ae5eca6ca7b17af239279d51eddc",
+    "public/downloads/name-lookup-http-guide.md": "bfb732b3ccb192960d0a99025a20b0831d3ed8de4c5b6f394efb1baf6da89993",
+    "public/downloads/lookup.py": "ee16f9f8b38c3a6987ed3b4e594198b3b1c8d2ffa99cb680092901a56bbe08a6",
+    "public/downloads/lookup.mjs": "f8af8a207cf4e07be6d5ebdf3f13b45a04f6faf36873754cd49624cb1574baf3",
+    "public/downloads/name-lookup-openapi.json": "05b49b790d4577b298b5832aec6a122e1fe5dd1e3d870dc1ad31b2e7c6ffbd06",
+    "public/downloads/name-lookup-sha256.json": "3900dae60d682e75fdcdfed06fa3eefd3991869ac022a093a4d53c6c6b4045be",
+    "public/downloads/name-lookup-integration.zip": "58c13edd3130bb34223f11de53b53c7fe4d1ce293d8f6166dcb3f9571b367ac5",
+    "docs/OPEN_NAME_LOOKUP_API.md": "5e9b6e5620285acb2345a11e390961ee9916f4c86ebbc6ee6933cb4d568bbc57",
+    "docs/OPEN_NAME_LOOKUP_README.md": "88a16a99ed180a44e3732b656831c3964fac31d650060061bde217b555e54cb8",
+    "docs/OPEN_NAME_LOOKUP_PARTNER_HANDOFF.md": "68a0e853c82d0ced889913acbbeadd43187e12e13734d59fd882822635b3b59a",
+    "verification/round-idle-http.mjs": null,
+    "verification/idle-example.test.mjs": null,
+    "verification/stop-example-test.py": "e2d07e022383a78736ba03c8fd2c988ed88159db162a28c8943db133eedf4d42"
+  },
+  "runtimeFiles": [
+    "server/lookup-round-idle.mjs",
+    "server/managed-lookup.mjs",
+    "server/managed-lookup-async.mjs",
+    "server/lookup-readiness.mjs",
+    "server/lookup-round-stop.mjs"
+  ],
+  "publicFiles": [
+    "public/api-reference.json",
+    "public/openapi.json",
+    "public/downloads/name-lookup-http-guide.md",
+    "public/downloads/lookup.py",
+    "public/downloads/lookup.mjs",
+    "public/downloads/name-lookup-openapi.json",
+    "public/downloads/name-lookup-sha256.json",
+    "public/downloads/name-lookup-integration.zip"
+  ]
+}

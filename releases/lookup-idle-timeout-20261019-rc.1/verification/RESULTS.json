@@ -1,0 +1,50 @@
+{
+  "status": "local-validated-not-deployed",
+  "fullRegression": {
+    "passed": 873,
+    "failed": 0,
+    "command": "npm run test:screen"
+  },
+  "focused": {
+    "passed": 53,
+    "newIdleTests": 8
+  },
+  "syntaxCheck": "npm run check passed; all five changed modules node --check passed",
+  "documentationAndNodeExamples": {
+    "passed": 13
+  },
+  "pythonStopExamples": {
+    "passed": 7,
+    "warning": "Local Python3.9 urllib3 LibreSSL warning; tests passed; no HTTPS production calls"
+  },
+  "httpJson": {
+    "loopbackOnly": true,
+    "storage": "json",
+    "realDevices": 0,
+    "productionConnections": 0,
+    "idleBudgetMs": 15000,
+    "defaultBudgetBoundaryUnitMs": 600000,
+    "businessHeldMs": 16000,
+    "businessProtectsRound": true,
+    "pollingDoesNotRenew": true,
+    "automaticStopAckBarrier": true,
+    "restartDuringAutomaticStop": true,
+    "completedResultsRetained": true,
+    "explicitNewRoundQueries": true,
+    "drained": true
+  },
+  "frozenFilesUnchanged": 193,
+  "failuresResolved": [
+    "Initial focused run: 44/45; old fixed-lease test expected immediate new prepare without stop ACK. Updated to require ACK barrier; 53/53 passed."
+  ],
+  "productionConnections": 0,
+  "realDeviceQueries": 0,
+  "postgresNewPolicyTested": false,
+  "nativeWindowsTested": false,
+  "review": "Self-review; no independent reviewer claimed",
+  "dependencies": "Reused installed root and Windows Agent node_modules symlinks; no install/upgrade",
+  "completeHandoverPythonTests": {
+    "passed": 15
+  },
+  "candidateRebuild": "Recursive committed baseline reconstruction and all 21 overlay file hashes verified"
+}

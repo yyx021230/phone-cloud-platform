@@ -1,0 +1,11 @@
+{
+  "version": "lookup-idle-timeout-20261019-rc.1",
+  "files": {
+    "README.md": "b2c824461fc8885da1928b34fab1f3f061699927f583bd69ff75f49b13c3acd4",
+    "lookup.py": "ed8aa0309470d8fc0a216c648649315035dbba8cf6bf22abeab7576fc7a7072e",
+    "lookup.mjs": "aadb28f2260e411bad3187c1041324d50f9b685cd554d40183d73b45feba0a26",
+    "stop_lookup.py": "e0d7f72ff6fae836973432804ae42083ee99c136f307483a7e9eb5a198d862ed",
+    "openapi.json": "b9152cae61a160f81fa423e8f787c34e3be0fb4147cffdfdca4a13638240dad1"
+  },
+  "zipSha256": "acfe2c72998fc5874c53c4b30b8ba204c42d4172865a4f20b4387d938f41a874"
+}
