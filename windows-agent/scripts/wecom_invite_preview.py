@@ -14,6 +14,10 @@ from dataclasses import dataclass
 
 
 WORKFLOW = "wecom-invite-preview-v1"
+# For a dedicated host's already connected PocoAgent. Page readiness is polled
+# by run_preview; do not add another fixed post-click wait in the SDK.
+PREVIEW_POCO_OPTIONS = {"pre_action_wait_for_appearance": 0,
+                        "action_interval": 0, "poll_interval": .25}
 PACKAGE = "com.tencent.wework"
 SEND = "发送添加邀请"
 # Device 67's observed WeCom build exposes the + icon as an unlabeled TextView.
@@ -283,15 +287,26 @@ class PocoPreviewDriver:
         self.poco = poco
         self.foreground = foreground
         self.lease_valid = lease_valid
+        self._read_started = False
+
+    def _guard_foreground(self):
+        if self.foreground() != PACKAGE:
+            raise StopPreview("wrong_foreground_app")
 
     def _guard_host(self):
         if self.lease_valid() is not True:
             raise StopPreview("device_lease_lost")
-        if self.foreground() != PACKAGE:
-            raise StopPreview("wrong_foreground_app")
+        self._guard_foreground()
 
     def snapshot(self):
-        self._guard_host()
+        # Only the first read acquires fresh host validation. Subsequent reads
+        # never touch the UI: every actual mutation below still performs its
+        # own real lease + foreground check immediately before execution.
+        if not self._read_started:
+            self._guard_host()
+            self._read_started = True
+        else:
+            self._guard_foreground()
         frozen = self.poco.freeze()
         nodes = []
         for kind in NODE_TYPES:
@@ -316,8 +331,13 @@ class PocoPreviewDriver:
                     nodes.append(node)
                 if len(nodes) > 600:
                     raise StopPreview("hierarchy_too_large")
-        self._guard_host()
-        return Screen(PACKAGE, tuple(nodes))
+        screen = Screen(PACKAGE, tuple(nodes))
+        # Readiness is an externally visible outcome, so validate it too.
+        # A later run reusing this driver must pass the initial read gate again.
+        if screen.has(SEND):
+            self._guard_host()
+            self._read_started = False
+        return screen
 
     def apply(self, action, expected_screen, phone, check_budget=lambda: None):
         fresh = self.snapshot()

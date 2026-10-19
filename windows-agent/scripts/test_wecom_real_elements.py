@@ -157,6 +157,69 @@ class RealElementReplayTests(unittest.TestCase):
             driver.apply('open_menu', before, self.phone)
         self.assertFalse(poco.effects)
 
+    def test_revoked_lease_during_commit_read_stops_before_click(self):
+        state = {'lease': True}
+        class RevokingPoco(Poco):
+            reads = 0
+            def freeze(self):
+                self.reads += 1
+                if self.reads == 2:
+                    state['lease'] = False
+                return self
+        poco = RevokingPoco(self.home)
+        driver = w.PocoPreviewDriver(poco, lambda: w.PACKAGE, lambda: state['lease'])
+        before = driver.snapshot()
+        with self.assertRaisesRegex(w.StopPreview, 'device_lease_lost'):
+            driver.apply('open_menu', before, self.phone)
+        self.assertFalse(poco.effects)
+
+    def test_foreground_change_during_commit_read_stops_before_click(self):
+        state = {'package': w.PACKAGE}
+        class SwitchingPoco(Poco):
+            reads = 0
+            def freeze(self):
+                self.reads += 1
+                if self.reads == 2:
+                    state['package'] = 'other.application'
+                return self
+        poco = SwitchingPoco(self.home)
+        driver = w.PocoPreviewDriver(poco, lambda: state['package'], lambda: True)
+        before = driver.snapshot()
+        with self.assertRaisesRegex(w.StopPreview, 'wrong_foreground_app'):
+            driver.apply('open_menu', before, self.phone)
+        self.assertFalse(poco.effects)
+
+    def test_lost_lease_during_terminal_capture_cannot_report_ready(self):
+        state = {'lease': True}
+        class RevokingPoco(Poco):
+            def freeze(self):
+                state['lease'] = False
+                return self
+        preview = w.Screen(w.PACKAGE, (w.Node('android.widget.TextView', text=w.SEND),))
+        poco = RevokingPoco(preview)
+        driver = w.PocoPreviewDriver(poco, lambda: w.PACKAGE, lambda: state['lease'])
+        with self.assertRaisesRegex(w.StopPreview, 'device_lease_lost'):
+            driver.snapshot()
+        self.assertFalse(poco.effects)
+
+    def test_initial_read_is_gated_and_read_only_polling_does_not_requery_lease(self):
+        state = {'lease': False, 'calls': 0}
+        def lease():
+            state['calls'] += 1
+            return state['lease']
+        poco = Poco(self.home)
+        driver = w.PocoPreviewDriver(poco, lambda: w.PACKAGE, lease)
+        with self.assertRaisesRegex(w.StopPreview, 'device_lease_lost'):
+            driver.snapshot()
+        state['lease'] = True
+        before = driver.snapshot()
+        for _ in range(5):
+            self.assertEqual(driver.snapshot(), before)
+        self.assertEqual(state['calls'], 2)
+        driver.apply('open_menu', before, self.phone)
+        self.assertEqual(state['calls'], 3)
+        self.assertEqual(len(poco.effects), 1)
+
 
 if __name__ == '__main__':
     unittest.main()
