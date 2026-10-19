@@ -185,8 +185,14 @@ def image_navigation_capture(adb_path, serial, guard, events, current):
     if not 1 <= days <= 180:raise RuntimeError("image reader collection window is invalid")
     image_as_of = dt.date.fromisoformat(next(iter(as_of_values))) if as_of_values else dt.datetime.now(SHANGHAI).date()
     cutoff = image_as_of-dt.timedelta(days=days-1)
+    def signature(frame):
+        if frame.get("navigationOnly"):
+            return ("filter",sorted(frame["headers"].items()),sorted(frame["navigationLabels"].items()))
+        return ([(c["date"],c["counts"],c["status"],c["imageHint"],
+                  re.sub(r"[^\w\u4e00-\u9fff]","",c["title"])) for c in frame["cards"]],
+                set(frame["markers"]),frame["leadingClip"],bool(frame.get("trailingClip")),bool(frame.get("scope")))
     frames = []
-    header_deadline = time.monotonic()+20
+    capture_deadline = time.monotonic()+20
     for frame_attempt in range(12):
         guard()
         if focus(adb_path,serial) != current:
@@ -224,7 +230,7 @@ def image_navigation_capture(adb_path, serial, guard, events, current):
             guard()
             transient_body = str(error) == "OCR works list has no proven complete cards or empty/end marker"
             if ((str(error).startswith("OCR works-list header is not unique:") or transient_body)
-                    and frame_attempt < 11 and time.monotonic() < header_deadline):
+                    and frame_attempt < 11 and time.monotonic() < capture_deadline):
                 # An unproven header/body proves no data. Reset and require
                 # two later, consecutive fresh captures with every field proven.
                 frames.clear()
@@ -236,16 +242,18 @@ def image_navigation_capture(adb_path, serial, guard, events, current):
         if focus(adb_path,serial) != current:
             raise RuntimeError("image list reader foreground changed")
         frames.append(frame)
-        if len(frames) == 2:break
+        if len(frames) == 2:
+            if signature(frames[0]) == signature(frames[1]):break
+            if frame_attempt < 11 and time.monotonic() < capture_deadline:
+                # Lazy thumbnails or live data can settle after the first read.
+                # Keep only the latest proven frame; never join nonconsecutive
+                # captures or accept a field that the OCR reader rejected.
+                frames = frames[-1:]
+                events.append("works_image_fields_capture_retried")
+                time.sleep(1)
+                continue
+            raise ImageListReadError("image list fields changed between two fresh captures")
     if len(frames) != 2:raise ImageListReadError("image list reader could not prove two consecutive fresh frames")
-    def signature(frame):
-        if frame.get("navigationOnly"):
-            return ("filter",sorted(frame["headers"].items()),sorted(frame["navigationLabels"].items()))
-        return ([(c["date"],c["counts"],c["status"],c["imageHint"],
-                  re.sub(r"[^\w\u4e00-\u9fff]","",c["title"])) for c in frame["cards"]],
-                set(frame["markers"]),frame["leadingClip"],bool(frame.get("trailingClip")),bool(frame.get("scope")))
-    if signature(frames[0]) != signature(frames[1]):
-        raise ImageListReadError("image list fields changed between two fresh captures")
     if frames[1].get("navigationOnly"):
         return hierarchy_for_frame(frames[1])
     if "works_list_image_reader_active" not in events:
@@ -399,7 +407,7 @@ def focus(adb_path, serial):
     return next((line for line in reversed(lines) if "mCurrentFocus=null" not in line), "")
 
 
-def wake_if_asleep(adb_path, serial, guard, events):
+def wake_if_asleep(adb_path, serial, guard, events, dismiss_lock=True):
     power = adb(adb_path, serial, "shell", "dumpsys", "power", timeout=8)
     if "mWakefulness=Asleep" not in power and "mWakefulness=Dozing" not in power:
         return False
@@ -418,7 +426,8 @@ def wake_if_asleep(adb_path, serial, guard, events):
         raise RuntimeError("target display did not wake")
     # Some OEMs wake the display while leaving the swipe-only keyguard shown.
     # Reuse the proven nonsecure surface checks before recapturing app content.
-    dismiss_unsecured_keyguard(adb_path,serial,guard,events)
+    if dismiss_lock:
+        dismiss_unsecured_keyguard(adb_path,serial,guard,events)
     events.append("screen_woken_after_timeout")
     return True
 
@@ -1870,14 +1879,15 @@ def main():
             extended_timeout = True
         if original_proximity == "1":
             guard = lambda: assert_idle(args.device_cache, args.serial, args.device_name, args.task_id, args.app_slot, args.cancel_file)
-            wake_if_asleep(args.adb, args.serial, guard, [])
+            # Clear the sensor overlay before the normal startup lock check.
+            wake_if_asleep(args.adb, args.serial, guard, [], dismiss_lock=False)
             if "ScreenOnProximitySensorGuide" in focus(args.adb, args.serial):
                 guard()
                 adb(args.adb, args.serial, "shell", "settings", "put", "global",
                     "enable_screen_on_proximity_sensor", "0", timeout=8)
                 proximity_disabled = True
                 adb(args.adb, args.serial, "shell", "input", "keyevent", "24", timeout=7)
-                wake_if_asleep(args.adb, args.serial, guard, [])
+                wake_if_asleep(args.adb, args.serial, guard, [], dismiss_lock=False)
                 if "ScreenOnProximitySensorGuide" in focus(args.adb, args.serial):
                     raise RuntimeError("proximity guard stayed open")
         result = collect(args)

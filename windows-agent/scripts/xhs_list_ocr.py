@@ -377,6 +377,11 @@ def prepare_frame(frame, full, read_counts=True):
                 continue
             raise RuntimeError("OCR card title is not visible")
         title, tb = max(titles,key=lambda row:row[1][1])
+        if status_index == 0 and tb[1]-all_notes[3] < w*.05:
+            # A native box can retain its left edge while the fixed header
+            # hides top strokes. Keep the preceding page's complete record.
+            leading_clip = True
+            continue
         if not 1 <= len(title) <= 180:
             raise RuntimeError("OCR card title length is invalid")
         y1 = sb[3] + int(w*.012)

@@ -273,8 +273,8 @@ class ImageCaptureGuardTests(unittest.TestCase):
             if change == "counts":second["cards"][0]["counts"][0] = "40"
             elif change == "leadingClip":second[change] = True
             else:second["cards"][0][change] = "ffffffffffffffff"
-            with self.subTest(change=change), self.assertRaises(sync.ImageListReadError):
-                self.capture([result(), second])
+            with self.subTest(change=change), patch.object(sync.time,"sleep"), patch.object(sync.time,"monotonic",return_value=0), self.assertRaises(sync.ImageListReadError):
+                self.capture([result(), second]*6)
 
     def test_agreeing_frames_mark_image_source_and_numeric_fields(self):
         root, events = self.capture([result(), result()])

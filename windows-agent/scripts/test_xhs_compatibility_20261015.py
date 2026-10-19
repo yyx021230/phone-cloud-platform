@@ -885,6 +885,43 @@ class FreshBodyRetryTests(unittest.TestCase):
             with self.assertRaisesRegex(sync.ImageListReadError,'no proven complete cards'):
                 self.run_reads([RuntimeError(self.body_error)]*20)
 
+class FreshFieldSettlingTests(unittest.TestCase):
+    run_reads=FreshHeaderRetryTests.run_reads
+
+    def frames(self):
+        import copy
+        from test_xhs_list_ocr import result
+        loaded=result();loading=copy.deepcopy(loaded)
+        loading['cards'][0]['imageHint']='0000000000000000'
+        return loading,loaded
+
+    def test_loading_thumbnail_requires_two_consecutive_loaded_captures(self):
+        loading,loaded=self.frames()
+        root,events,calls=self.run_reads([loading,loaded,loaded])
+        self.assertEqual(calls,3);self.assertEqual(len(sync.note_cards(root)),1)
+        self.assertEqual(events.count('works_image_fields_capture_retried'),1)
+
+    def test_matching_nonconsecutive_frames_do_not_prove_a_stable_pair(self):
+        loading,loaded=self.frames()
+        root,events,calls=self.run_reads([loading,loaded,loading,loading])
+        self.assertEqual(calls,4);self.assertEqual(events.count('works_image_fields_capture_retried'),2)
+
+    def test_continually_changing_fields_stop_at_the_capture_budget(self):
+        loading,loaded=self.frames()
+        with self.assertRaisesRegex(sync.ImageListReadError,'fields changed'):
+            self.run_reads([loading,loaded]*6)
+
+    def test_changing_fields_have_the_existing_twenty_second_deadline(self):
+        loading,loaded=self.frames()
+        with patch.object(sync.time,'monotonic',side_effect=[0,21]):
+            with self.assertRaisesRegex(sync.ImageListReadError,'fields changed'):
+                self.run_reads([loading,loaded,loaded])
+
+    def test_ambiguous_number_after_a_change_still_stops_immediately(self):
+        loading,loaded=self.frames()
+        with self.assertRaisesRegex(sync.ImageListReadError,'numeral glyph is unproven'):
+            self.run_reads([loading,loaded,RuntimeError('OCR numeral glyph is unproven or ambiguous'),loaded,loaded])
+
 class ProvenSevenVariantTests(unittest.TestCase):
     def test_observed387_is_proven_by_both_ink_variants(self):
         import cv2,xhs_list_ocr as o
@@ -905,5 +942,97 @@ class ProvenSevenVariantTests(unittest.TestCase):
         row={'verifiedCounts':['387','0','0'],'weakCountFields':[0]}
         values={f'r1_view_{v}':AdditionalInkProofTests.item(text) for v,text in [('color',''),('binary','587587'),('contrast','387387'),('nearest','387387')]}
         with self.assertRaisesRegex(RuntimeError,'values disagree'):o.corroborate_counts(row,1,values)
+
+class ProximityWakeOrderingTests(unittest.TestCase):
+    def test_keyguard_deferral_is_explicit_and_other_wake_callers_keep_their_check(self):
+        for deferred in (False,True):
+            powers=iter(['mWakefulness=Asleep','mWakefulness=Awake'])
+            def command(_adb,_serial,*args,**kw):return next(powers) if args==('shell','dumpsys','power') else ''
+            with patch.object(sync,'adb',side_effect=command),patch.object(sync,'dismiss_unsecured_keyguard') as dismiss,patch.object(sync.time,'sleep'):
+                if deferred:sync.wake_if_asleep('adb','serial',lambda:None,[],dismiss_lock=False)
+                else:sync.wake_if_asleep('adb','serial',lambda:None,[])
+            self.assertEqual(dismiss.call_count,0 if deferred else 1)
+
+    def run_main(self,fail_collect=False,secure=False):
+        import tempfile,subprocess,json
+        state={'asleep':True,'guide':True,'showing':True,'timeout':'60000','proximity':'1'};calls=[]
+        def command(_adb,_serial,*args,**kw):
+            cmd=tuple(args);calls.append(cmd)
+            if cmd[:3]==('shell','settings','get'):
+                return state['timeout' if cmd[4]=='screen_off_timeout' else 'proximity']
+            if cmd[:3]==('shell','settings','put'):
+                key='timeout' if cmd[4]=='screen_off_timeout' else 'proximity';state[key]=cmd[5]
+                if key=='proximity':state['guide']=cmd[5]=='1'
+                return ''
+            if cmd==('shell','dumpsys','power'):return 'mWakefulness='+('Asleep' if state['asleep'] else 'Awake')
+            if cmd==('shell','input','keyevent','224'):state['asleep']=False;return ''
+            if cmd==('shell','dumpsys','window'):
+                return 'mCurrentFocus=Window{x u0 '+('ScreenOnProximitySensorGuide' if state['guide'] else 'NotificationShade')+'}'
+            if cmd==('shell','dumpsys','window','policy'):
+                return 'mKeyguardOccluded=false\nKeyguardServiceDelegate\n showing='+str(state['showing']).lower()+'\n secure='+str(secure).lower()+'\nKeyguardStateMonitor\n'
+            if cmd==('shell','input','keyevent','82'):
+                if state['guide']:raise subprocess.TimeoutExpired(['adb','shell','input','keyevent','82'],7)
+                state['showing']=False
+            return ''
+        def collect(args):
+            self.assertFalse(state['guide']);self.assertEqual(state['proximity'],'0')
+            sync.dismiss_unsecured_keyguard('adb','serial',lambda:None,[])
+            if fail_collect:raise RuntimeError('synthetic collect failure')
+            return {'notes':[],'complete':True,'scrolls':0,'warnings':[],'recovery_events':[]}
+        with tempfile.TemporaryDirectory() as tmp:
+            output=Path(tmp)/'output.json';argv=['collector','--serial','serial','--adb','adb','--device-name','141','--device-cache','fake-cache','--app-slot','app1','--output',str(output)]
+            with patch.object(sys,'argv',argv),patch.object(sync,'adb',side_effect=command),patch.object(sync,'assert_idle'),patch.object(sync,'collect',side_effect=collect),patch.object(sync.time,'sleep'),patch('builtins.print'):
+                if secure:
+                    with self.assertRaisesRegex(RuntimeError,'manual unlock'):sync.main()
+                elif fail_collect:
+                    with self.assertRaisesRegex(RuntimeError,'synthetic collect failure'):sync.main()
+                else:self.assertEqual(sync.main(),0)
+            result=json.loads(output.read_text()) if output.exists() else None
+        self.assertEqual(state['timeout'],'60000');self.assertEqual(state['proximity'],'1')
+        return calls,result
+
+    def test_asleep_proximity_guide_is_removed_before_any_menu_dismissal(self):
+        calls,result=self.run_main()
+        disabled=calls.index(('shell','settings','put','global','enable_screen_on_proximity_sensor','0'))
+        menu=calls.index(('shell','input','keyevent','82'));self.assertLess(disabled,menu)
+        self.assertIn('proximity_guard_temporarily_disabled',result['recovery_events'])
+
+    def test_collect_failure_restores_both_exact_original_settings(self):
+        calls,result=self.run_main(fail_collect=True);self.assertIsNone(result)
+        self.assertEqual(calls.count(('shell','settings','put','global','enable_screen_on_proximity_sensor','0')),1)
+        self.assertEqual(calls.count(('shell','settings','put','global','enable_screen_on_proximity_sensor','1')),1)
+
+    def test_secure_lock_still_requires_manual_unlock_and_restores_settings(self):
+        calls,result=self.run_main(secure=True);self.assertIsNone(result)
+        self.assertNotIn(('shell','input','keyevent','82'),calls)
+        self.assertFalse(any(c[:3]==('shell','input','swipe') for c in calls))
+
+class HeaderClippedTitleTests(unittest.TestCase):
+    def prepare(self,case):
+        import json,numpy as np,xhs_list_ocr as o
+        from test_xhs_list_ocr import line
+        proof=json.loads((SCRIPTS/'fixtures/xhs/header-title-geometry-141-proof.json').read_text())
+        data=proof[case];box=data['titleBox'];top=box[1]
+        frame=np.full((proof['height'],proof['width'],3),255,np.uint8)
+        full={'width':720,'height':1600,'language':'zh-Hans-CN','textAngle':0,'lines':[
+            line('数据中心',(250,90,450,120)),line('作品分析',(210,190,360,218)),line('全部笔记',(30,282,150,data['headerBottom'])),
+            line('合成标题甲',box),line('笔记状态正常',(227,top+63,390,top+88)),
+            line('合成标题乙',(193,top+280,640,top+305)),line('笔记状态正常',(227,top+343,390,top+368))]}
+        def icons(_frame,y1,y2,left):return [(194,y1+10,214,y1+30),(280,y1+10,300,y1+30),(390,y1+10,410,y1+30)]
+        with patch.object(o,'selected_works_underline',return_value=True),patch.object(o,'metric_icons',side_effect=icons) as metric:
+            prepared=o.prepare_frame(frame,full,read_counts=False)
+        return prepared,metric.call_count
+
+    def test_observed_clipped_row_with_missing_prefix_is_not_a_second_post(self):
+        result,calls=self.prepare('clippedMissingPrefix')
+        self.assertTrue(result['leadingClip']);self.assertEqual([r['title'] for r in result['rows']],['合成标题乙']);self.assertEqual(calls,1)
+
+    def test_observed_clipped_row_is_rejected_even_when_native_box_includes_prefix(self):
+        result,calls=self.prepare('clippedWithNativePrefix')
+        self.assertTrue(result['leadingClip']);self.assertEqual([r['title'] for r in result['rows']],['合成标题乙']);self.assertEqual(calls,1)
+
+    def test_actual_complete_newest_row_spacing_keeps_both_rows(self):
+        result,calls=self.prepare('completeFirstRow')
+        self.assertFalse(result['leadingClip']);self.assertEqual(len(result['rows']),2);self.assertEqual(calls,2)
 
 if __name__ == '__main__':unittest.main()
