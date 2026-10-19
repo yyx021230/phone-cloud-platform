@@ -1,0 +1,75 @@
+Phone Cloud Windows 更换电脑完整交接清单
+版本：windows-migration-prep-20261019-rc.1
+状态：准备完成待真实新机；不是已迁移或已验收。
+
+一、当前运行事实
+生产Agent和共享ADB均为NT AUTHORITY\SYSTEM；ADB仅使用D:\PhoneCloud\tools\android-sdk\platform-tools\adb.exe。
+云端ACTIVE为lookup-round-stop-20261016-deployed.1，云端数据库、Redis、媒体宿主机不随本次Windows换机迁移。
+源主机为Windows 10 x64 / 19045；便携Node v24.18.0、Python3.9.13，Airtest1.4.3/Poco1.0.94，原生OCR语言zh-Hans-CN。
+当前生产Agent计划任务Action：
+  Command: D:\PhoneCloud\tools\node\node.exe
+  Arguments: --require D:\PhoneCloud\agent\adb-auth-env.cjs D:\PhoneCloud\agent\src\index.mjs
+  WorkingDirectory: D:\PhoneCloud\agent
+主体SYSTEM、最高权限。原XML完整保存在AgentTask.reference.xml；其中LogonType为InteractiveToken，这是原状记录，不能未经核对擅自改成另一启动方式。新机注册/启动尚未验收。
+旧start-agent.cmd、start-agent.ps1和通用install-service.ps1不是当前生产双密钥启动入口，不能当迁机安装器直接运行。
+便携包包含其他历史ADB副本，但当前生产固定路径不变，不得换到canary或Airtest自带ADB。
+Appium当前禁用，配置引用的旧缓存本来不存在。不要为了迁机打开它或触发自动安装。OCR wheel-manifest是历史构建记录，不能代替新机DLL/推理验收。
+
+二、包内容、保密和证据
+windows-runtime-and-data.zip是核心：当前Agent、tools、运行依赖、OCR模型、状态、两份密钥、原任务/USB参考。
+windows-logs.zip是备份时完整日志前缀；不是最后停机时日志。
+usb-driver-packages-reference.zip含4套现有OEM驱动包，仅参考。原主机存在驱动冲突历史，禁止不加区分全部导入。
+HOST_INVENTORY.private.json记录原机网络/路由/运行版本；网络地址不能在新旧机同时照抄。
+PACKAGE_MANIFEST.json列出交付文件大小/SHA256；MANIFEST.private.json列出归档内逐文件大小/SHA256。复制后必须重新校验。
+本地目录已设700、文件600；拷到Windows/移动盘后权限不保证继承，需限制访问。不是加密备份。
+Tailscale、SSH主机私钥和旧机器身份没有复制；新机器使用自己的身份、重新加入现有远程网络。不要复制旧Tailscale状态克隆节点。
+云端DB备份在/opt/phone-cloud-platform/backups/windows-migration-20261019-1022，全量解码已通过但没有独立数据库恢复演练。本次Windows迁机不向在线云库执行还原。
+
+三、新电脑到位即可进行（不接管线上）
+1. 提供连接地址、用户名、Windows版本与D盘情况；确保x64环境，D盘路径可保持原样，建议至少20GiB余量用于暂存与运行，并保留日志增长空间。
+2. 配置可从家中连接的远程通道。新Tailscale节点完成自己的登录/授权；新SSH主机指纹应重新核对，不关闭主机校验来绕过变化。不占用旧电脑仍在使用的IP。
+3. 核对中文语言/OCR组件和设备驱动。Prepare-NewHost.ps1只检测zh-Hans-CN，不安装语言包、不改全局ExecutionPolicy。
+4. 用Prepare-NewHost.ps1做只读预检和独立暂存，再用verify_bundle.py完成归档内逐文件校验。新机已有Agent任务或5037监听时暂存会拒绝，先确认归属，不停止或覆盖未知进程。
+5. 暂存目录是D:\PhoneCloud-Migration-Stage\D\PhoneCloud。它不是最终路径，里面的绝对路径和venv仍指向D:\PhoneCloud，不能在暂存目录直接启动Agent。
+6. 此时手机继续接旧机；不导入计划任务、不启动共享ADB、不将旧PnP映射用于新机恢复。
+
+四、旧电脑关机之前的最终动作（待单独安排切换窗口）
+1. 确认停机/短暂离线范围。云端停止接新自动化任务，让查名轮次/其他任务安全结束并得到实际停止确认；检查小红书、企微、短信和控屏占用，不直接按时间推断任务已结束。
+2. 在许可窗口停止旧Agent，并确保计划任务不会在操作期间自动再拉起；保留原计划任务XML及启用状态。脚本不会替人执行这个步骤。
+3. 执行最终状态采集。必须用旧机附带Python；先把本包元数据和采集脚本放到旧机受限备份目录。示例：
+  D:\PhoneCloud\tools\python39\python.exe capture_final_state.py --bundle "D:\PhoneCloud\migration-backups\migration-kit" --output "D:\PhoneCloud\migration-backups\final-state-YYYYMMDD-HHMM" --operator-confirmed-drained
+采集器拒绝非源机、仍在运行的PhoneCloud Node进程、已存在的输出路径、变化中的状态和与基线不一致的运行文件。只新增受限备份，不停服务、不调用ADB、不复制密钥、不修改业务文件。
+4. 如果运行源码/依赖发生变化，采集器拒绝继续；此时重新做完整备份，不用旧包强行恢复。最终状态包完整快照覆盖config和agent/data，排除旧instance锁，不含新增日志与密钥；旧日志另按需要补存。
+5. 将最终状态ZIP及回执复制到Mac或移动盘并验证SHA256/内部文件后，才把最后数据视为离机保存。仅存旧电脑D盘不算完成。
+6. 需要时补当前Agent任务XML/配置变更说明；若计划任务、授权文件、启动路径在本包后变过，停止使用旧启动记录并重新核对，不擅自覆盖。
+7. 确认旧Agent不会运行、新机也尚未启用，再按用户授权关闭旧电脑。保留旧硬盘、系统和授权文件；不要格式化。
+如果新电脑还没准备好，允许先安排上述安全停机和最后备份，之后保留旧机待迁；不能跳过最后备份就断电。
+
+五、新机恢复与首次启动（本轮仅准备，未执行）
+1. 把校验通过的程序树放到原D:\PhoneCloud，禁止用本地开发worktree整仓覆盖生产备份。不改媒体/编码/控制参数。
+2. 最终状态包是完整data快照，不是简单追加：先保留新机暂存的旧data作为回退参考，再按最终回执预览新增/修改/删除集合，禁止遗留已删除的旧状态。未审查前不直接覆盖。
+3. agent-instance.lock及stale锁不恢复成有效锁；设备编号/serial保留，旧USB端口/PnP映射、恢复计数及旧占用必须按新机实际环境核对。不要让自动恢复用旧端口操作新连接。
+4. 两份现有密钥仅有备份授权。实际恢复到新机时单独确认目标路径/ACL，沿用SYSTEM及既有ADB_VENDOR_KEYS和adb-auth-env.cjs；不生成、替换或换身份来消除手机未授权。新Windows用户名若不是Administrator，不能擅自改那份固定密钥路径或伪造用户配置目录。
+5. 先在新机运行smoke_windows_runtime.py --bundle 包路径。它检查Node依赖、Python DLL、私有OCR模型推理和中文原生OCR；不会启动Agent/ADB、不连接手机、不发业务请求。失败则停在依赖修复，不开启生产。
+6. 保留D-075媒体宿主机基线并按发布要求只读live核验。云端媒体不因Windows迁机被重启或换回官方二进制。
+7. 核对原任务动作、SYSTEM主体及新机启动能力。仅在旧端确认停用、授权恢复与启动步骤明确后启用新端。不要批量导入旧ADB重建、Canary、Restore或历史单设备恢复任务。
+8. 首轮按设备编号接一台、两台，再扩大范围；重新建立物理USB映射。手机显示未授权时在手机确认原有授权，不自动更换密钥/身份或重装驱动。
+
+六、验收标准（每项记录结果，不能用模拟替代）
+- 新Agent单实例SYSTEM；共享5037唯一监听、SYSTEM、固定SDK路径；新旧电脑无双主。
+- 云端能收到新鲜Agent心跳与设备扫描，设备编号/名单/租约不串号，未授权/物理缺失与真正在线分别记录。
+- 单台和两台控屏可看可控；按既有回归确认冻结投屏行为未变，媒体D-075基线核验通过。
+- 查名启动探测、提交/轮询、同号码防重、异常与人工验证恢复按实际授权小范围验证；未授权不开始客户查询。
+- 短信游标和队列不丢不重发；小红书/快手/企微依赖检查及授权范围内验收。企微仍停在发送邀请之前，不能真加人。
+- 新机持续观察内存提交量/页面文件余量、进程数量、在线波动和恢复队列。旧机本次有虚拟内存耗尽，不通过禁用页面文件或复制旧内核状态“优化”。本包不宣称已修复旧机内存根因。
+- 重启后开机自启/恢复必须在独立许可的新机维护窗口验收；本轮尚未执行。
+
+七、回退
+新机依赖、任务、身份、映射或业务验收失败：停止扩大设备范围，不通过全局ADB/Hub重启试错。
+先按维护许可停止新Agent，确认无双主和未完成任务；手机回接旧机原拓扑，核对旧配置/原授权和云端占用，再按原已批准入口恢复旧Agent。
+如果新机已承接新业务，要先安全收尾并保存新机最新状态，比较两端游标/恢复状态；不能直接拿迁机前旧状态覆盖而丢失新结果。
+云端数据库仍保持在线原库，不用早期dump覆盖回滚。旧机保留至新机验收和观察结束。
+
+八、真实未完成项
+新电脑未提供：新机环境/网络、密钥恢复、任务注册/启动、USB拓扑、真机全链路、重启自启、长期稳定性均未验。
+旧机尚未停接任务、停止Agent、关机或采集最终状态。本包只是切换准备完成。

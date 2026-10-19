@@ -1,0 +1,11 @@
+{
+  "tools/windows-migration/capture_final_state.py": "d5269a3b56111beb408ed4937fda333d07a9c61d96ca410ea12fa8879252df98",
+  "tools/windows-migration/test_migration.py": "95d07208466e5f13ceb6d8149dde280786c4a656934b0b6ad40da495224a2c89",
+  "tools/windows-migration/Prepare-NewHost.ps1": "02506adfa6daee9eb7cffb1e8d05ca6dccdaef73ef409555861b336e4739594e",
+  "tools/windows-migration/verify_bundle.py": "567cba1e9543190e4cac4d5fc75d070349e5d35b0c35d07102880c910524d1e1",
+  "tools/windows-migration/smoke_windows_runtime.py": "3c2b9a2bc1030484069346e32d9281bd13e95910b152f347aad2c0b368f5b3a7",
+  "releases/windows-migration-prep-20261019-rc.1/README.md": "a403188d365f1b08be2e9e137931726ec4f8a271ab0aa7a85a09090149c85828",
+  "releases/windows-migration-prep-20261019-rc.1/README-FIRST.txt": "b0c069de40fb22b854b613d8b496f3b62c2b63b851bb93abd0b07ce083403eb2",
+  "releases/windows-migration-prep-20261019-rc.1/CUTOVER_RUNBOOK.txt": "34cbae3c42935691966d2ec03072ca01d4bf5596371695bcf17165858d53d223",
+  "docs/PROJECT_DEVELOPMENT.md": "b6f1d7b289740d6abf8a261a55a34940a270c0e65f9c1f244b8fbce22c6fb9ce"
+}
