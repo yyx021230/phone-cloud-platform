@@ -1,0 +1,39 @@
+{
+  "releaseId": "wecom-invite-preview-20261019-rc.2",
+  "status": "local_candidate_not_deployed",
+  "baseline": "fa327dcda16623ea60f12ead368fd5ba220379fe",
+  "checks": {
+    "newNegativeAndReconstructionTests": 7,
+    "existingWecomTests": 35,
+    "existingRunnerRegression": 20,
+    "pythonAst": true,
+    "nativeWindowsOfflineCli": true,
+    "redactedXmlReplay": "ready_before_send"
+  },
+  "beforeFix": {
+    "xmlReplay": "stopped",
+    "code": "ambiguous_or_missing_element",
+    "stage": "entry"
+  },
+  "afterFix": {
+    "xmlReplay": "ready_before_send",
+    "actions": 6,
+    "sendOrSaveActions": 0
+  },
+  "manualPhone": {
+    "device": 67,
+    "authorizedSearchSubmissions": 1,
+    "invitationSends": 0,
+    "remarkSaves": 0,
+    "endedAt": "send_invitation_confirmation"
+  },
+  "notVerified": [
+    "Live Poco attribute names, native selector resolution and RPC behavior",
+    "Complete script with actual platform lease on phone",
+    "Other WeCom builds/devices",
+    "Modified invitation text persistence"
+  ],
+  "review": "self-review only",
+  "deployment": false,
+  "controlReleaseVerified": true
+}

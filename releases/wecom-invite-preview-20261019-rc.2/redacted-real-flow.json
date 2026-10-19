@@ -1,0 +1,370 @@
+{
+  "request": {
+    "phoneNumber": "19900000001"
+  },
+  "provenance": "Data-minimized reconstruction from device67 UIAutomator XML; phone replaced by synthetic fixture. XML resource IDs are candidate Poco names, not live-Poco acceptance. Never query this fixture phone.",
+  "frames": [
+    {
+      "package": "com.tencent.wework",
+      "nodes": [
+        {
+          "kind": "android.widget.TextView",
+          "text": "消息",
+          "name": "com.tencent.wework:id/nsm",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5,
+            0.065
+          ],
+          "size": [
+            0.09444444444444444,
+            0.02875
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "",
+          "name": "com.tencent.wework:id/nt3",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.9333333333333333,
+            0.065
+          ],
+          "size": [
+            0.13333333333333333,
+            0.06
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "消息",
+          "name": "com.tencent.wework:id/i2e",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.1,
+            0.99125
+          ],
+          "size": [
+            0.2,
+            0.015
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "工作台",
+          "name": "com.tencent.wework:id/i2e",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.7,
+            0.99125
+          ],
+          "size": [
+            0.2,
+            0.015
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "通讯录",
+          "name": "com.tencent.wework:id/i2e",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.9,
+            0.99125
+          ],
+          "size": [
+            0.2,
+            0.015
+          ]
+        }
+      ],
+      "expectAction": "open_menu"
+    },
+    {
+      "package": "com.tencent.wework",
+      "nodes": [
+        {
+          "kind": "android.widget.TextView",
+          "text": "发起群聊",
+          "name": "com.tencent.wework:id/i2e",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.7097222222222223,
+            0.1375
+          ],
+          "size": [
+            0.28888888888888886,
+            0.03
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "添加客户",
+          "name": "com.tencent.wework:id/i2e",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.7097222222222223,
+            0.27875
+          ],
+          "size": [
+            0.28888888888888886,
+            0.03
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "扫一扫",
+          "name": "com.tencent.wework:id/i2e",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.6861111111111111,
+            0.42
+          ],
+          "size": [
+            0.24166666666666667,
+            0.03
+          ]
+        }
+      ],
+      "expectAction": "open_add"
+    },
+    {
+      "package": "com.tencent.wework",
+      "nodes": [
+        {
+          "kind": "android.widget.TextView",
+          "text": "添加客户",
+          "name": "com.tencent.wework:id/ns7",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.22777777777777777,
+            0.065
+          ],
+          "size": [
+            0.18888888888888888,
+            0.02875
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "面对面添加",
+          "name": "com.tencent.wework:id/oor",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.31666666666666665,
+            0.1440625
+          ],
+          "size": [
+            0.2222222222222222,
+            0.026875
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "搜索手机号添加",
+          "name": "com.tencent.wework:id/oor",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.3611111111111111,
+            0.2190625
+          ],
+          "size": [
+            0.3111111111111111,
+            0.026875
+          ]
+        }
+      ],
+      "expectAction": "open_search"
+    },
+    {
+      "package": "com.tencent.wework",
+      "nodes": [
+        {
+          "kind": "android.widget.EditText",
+          "text": "手机号",
+          "name": "com.tencent.wework:id/lon",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5777777777777777,
+            0.065
+          ],
+          "size": [
+            0.8444444444444444,
+            0.02875
+          ]
+        }
+      ],
+      "expectAction": "enter_phone"
+    },
+    {
+      "package": "com.tencent.wework",
+      "nodes": [
+        {
+          "kind": "android.widget.EditText",
+          "text": "19900000001",
+          "name": "com.tencent.wework:id/lon",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5111111111111111,
+            0.065
+          ],
+          "size": [
+            0.7111111111111111,
+            0.02875
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "网络查找手机/邮箱：19900000001",
+          "name": "",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5347222222222222,
+            0.1296875
+          ],
+          "size": [
+            0.6916666666666667,
+            0.026875
+          ]
+        }
+      ],
+      "expectAction": "search"
+    },
+    {
+      "package": "com.tencent.wework",
+      "nodes": [
+        {
+          "kind": "android.widget.TextView",
+          "text": "个人信息",
+          "name": "com.tencent.wework:id/ns7",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.22777777777777777,
+            0.065
+          ],
+          "size": [
+            0.18888888888888888,
+            0.02875
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "设置备注和描述",
+          "name": "com.tencent.wework:id/csu",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.23333333333333334,
+            0.34125
+          ],
+          "size": [
+            0.3111111111111111,
+            0.0625
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "电话",
+          "name": "com.tencent.wework:id/l3k",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.12222222222222222,
+            0.40125
+          ],
+          "size": [
+            0.08888888888888889,
+            0.05625
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "19900000001",
+          "name": "",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5888888888888889,
+            0.40125
+          ],
+          "size": [
+            0.7555555555555555,
+            0.05625
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "添加为联系人",
+          "name": "com.tencent.wework:id/k5",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5,
+            0.9625
+          ],
+          "size": [
+            0.9333333333333333,
+            0.06
+          ]
+        }
+      ],
+      "expectAction": "open_preview"
+    },
+    {
+      "package": "com.tencent.wework",
+      "nodes": [
+        {
+          "kind": "android.widget.TextView",
+          "text": "发送添加邀请",
+          "name": "com.tencent.wework:id/fed",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5,
+            0.8175
+          ],
+          "size": [
+            0.6666666666666666,
+            0.06
+          ]
+        }
+      ],
+      "expectAction": null
+    }
+  ]
+}

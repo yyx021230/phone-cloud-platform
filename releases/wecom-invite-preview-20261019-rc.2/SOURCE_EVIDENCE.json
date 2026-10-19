@@ -1,0 +1,56 @@
+{
+  "device": 67,
+  "hostIdentityVerified": "SYSTEM SDK ADB listener; SYSTEM Agent index; second Administrator Node is fleet.mjs, not another Agent index",
+  "sources": [
+    {
+      "stage": "open_menu",
+      "source": "05-home.private.xml",
+      "sha256": "44aa63aeeb8dd9cf3d2e9e9ed081712adc179853fff864b3a06a65b37c543333",
+      "retainedNodes": 5
+    },
+    {
+      "stage": "open_add",
+      "source": "06-menu.private.xml",
+      "sha256": "2aeb687fabae1f361ca2049d382e29e92e11a1713ac26c5293b964879168ef1c",
+      "retainedNodes": 3
+    },
+    {
+      "stage": "open_search",
+      "source": "04-add.private.xml",
+      "sha256": "18e29a60d1c6b11bda76ababe6a9c4fda0ddc49923258418e8e532980c720d5c",
+      "retainedNodes": 3
+    },
+    {
+      "stage": "enter_phone",
+      "source": "07-search-empty.private.xml",
+      "sha256": "30390071dca1103a10798d1a6628a6b793d96204f5773568c47f3cbbebf9fd14",
+      "retainedNodes": 1
+    },
+    {
+      "stage": "search",
+      "source": "03-search-filled.private.xml",
+      "sha256": "cee5aeb36d3b134cd9650282e1f8116ac0347d9666185e144de4c10edcbfd741",
+      "retainedNodes": 2
+    },
+    {
+      "stage": "open_preview",
+      "source": "02-profile.private.xml",
+      "sha256": "cd6c262b52e1460a415fb0e9c7e87d0aea5b6f6c7cb72ed7214664dbc854f988",
+      "retainedNodes": 5
+    },
+    {
+      "stage": "preview",
+      "source": "01-preview.private.xml",
+      "sha256": "0a3d9ae90c25952695a58c06473453c0daa031c133da7b2ab383ccefde6a4fae",
+      "retainedNodes": 1
+    }
+  ],
+  "uiTextEntryAnomaly": "CUA typeText produced different digits; mismatch caught before search; cleared once and pasted authorized phone, exact readback verified before one search. No control code changed.",
+  "phoneSearches": 1,
+  "invitationSends": 0,
+  "remarksSaved": 0,
+  "apkInstalls": 0,
+  "adbClientStarts": 0,
+  "adbRestarts": 0,
+  "rawXmlPrivateOnly": true
+}

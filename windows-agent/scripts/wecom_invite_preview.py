@@ -16,6 +16,9 @@ from dataclasses import dataclass
 WORKFLOW = "wecom-invite-preview-v1"
 PACKAGE = "com.tencent.wework"
 SEND = "发送添加邀请"
+# Device 67's observed WeCom build exposes the + icon as an unlabeled TextView.
+# Unknown resource names remain unsupported; no screenshot-coordinate fallback.
+OBSERVED_HOME_MENU = "com.tencent.wework:id/nt3"
 NODE_TYPES = ("android.widget.TextView", "android.widget.Button",
               "android.widget.ImageView", "android.widget.ImageButton",
               "android.widget.EditText", "android.view.View",
@@ -113,9 +116,11 @@ def resolve_action(action, screen, phone):
     if screen.has(SEND):
         raise StopPreview("send_boundary_reached")
     if action == "open_menu" and is_home(screen):
-        return unique(screen.matching(lambda n: n.kind in (
-            "android.widget.ImageView", "android.widget.ImageButton", "android.widget.Button")
-            and any(n.labeled(v) for v in ("+", "更多", "添加"))
+        return unique(screen.matching(lambda n: (
+            (n.kind in ("android.widget.ImageView", "android.widget.ImageButton", "android.widget.Button")
+             and any(n.labeled(v) for v in ("+", "更多", "添加")))
+            or (n.kind == "android.widget.TextView" and n.name == OBSERVED_HOME_MENU
+                and not n.text and not n.desc))
             and n.position[0] > 0.75 and n.position[1] < 0.18))
     if action == "open_add" and is_menu(screen):
         return unique(screen.matching(lambda n: n.labeled("添加客户")))
@@ -288,7 +293,7 @@ class PocoPreviewDriver:
             selector = {"type": node.kind, "text": node.text}
         elif node.desc:
             selector = {"type": node.kind, "contentDescription": node.desc}
-        elif action == "enter_phone" and node.name:
+        elif action in ("enter_phone", "open_menu") and node.name:
             selector = {"type": node.kind, "name": node.name}
         else:
             raise StopPreview("element_has_no_stable_selector")
