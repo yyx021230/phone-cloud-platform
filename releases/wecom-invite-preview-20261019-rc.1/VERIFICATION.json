@@ -1,0 +1,55 @@
+{
+  "releaseId": "wecom-invite-preview-20261019-rc.1",
+  "status": "local_candidate_not_deployed",
+  "baseCommit": "650ecf8458cf94d5800e5e09614504600400a1b8",
+  "branch": "codex/wecom-invite-preview-20261019",
+  "dateAsiaShanghai": "2026-10-19",
+  "pythonVersion": "3.9.6",
+  "checks": [
+    {
+      "command": "python3 -B windows-agent/scripts/test_wecom_invite_preview.py",
+      "passed": 35,
+      "failed": 0,
+      "environment": "local synthetic only"
+    },
+    {
+      "command": "python3 -B windows-agent/scripts/automation_runners_test.py",
+      "passed": 20,
+      "failed": 0,
+      "environment": "existing mock runners"
+    },
+    {
+      "command": "python3 -B windows-agent/scripts/wecom_invite_preview.py --simulate releases/wecom-invite-preview-20261019-rc.1/synthetic-flow.json",
+      "exitCode": 0,
+      "status": "ready_before_send",
+      "invitationSent": false,
+      "remarkSaved": false,
+      "actions": 6
+    },
+    {
+      "command": "ast.parse both new Python files",
+      "passed": true
+    }
+  ],
+  "intermediateFailure": {
+    "test": "test_slow_loading_does_not_repeat_navigation",
+    "firstRunPassed": 30,
+    "firstRunFailed": 1,
+    "reason": "Fixture alternated blank/preview forever, so two consecutive preview observations were impossible. Changed to one delay per stage; final tests also include input-after-load waiting."
+  },
+  "review": "self-review: allowlisted navigation, no send/save mode, before-action lease/foreground/page/content/budget revalidation, no retry after uncertain action, strict target match, redacted results",
+  "notVerified": [
+    "67 real Poco attributes and native selector behavior",
+    "Windows native runner",
+    "platform job/lease integration",
+    "other WeCom versions/devices"
+  ],
+  "production": {
+    "newDeviceActions": 0,
+    "invitationsSent": 0,
+    "filesChanged": 0,
+    "deployments": 0,
+    "pushes": 0
+  },
+  "scope": "Standalone preview script + adapter + offline CLI. Not registered in Agent or API. Existing source and dependencies unchanged."
+}
