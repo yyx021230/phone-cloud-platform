@@ -1,0 +1,613 @@
+{
+  "status": "second_rc7_rollout_rolled_back_47_compatibility_fix_in_progress",
+  "releaseVersion": "xhs-compat-20261019-deployed.3",
+  "rollbackTag": "xhs-compat-20261019-rolledback.3",
+  "sourceCommit": "eb1dc7f8f2d8b75b3c312a1a378c6b0528bfa985",
+  "candidateTag": "xhs-compat-20261019-rc.7",
+  "branch": "codex/xhs-compatibility-fix-20261015",
+  "authorization": "Original上线rc.7 plus current重新检查再继续推进;sameimmutable source/host/3files,retrywithfreshintent/backup",
+  "comparison": {
+    "baselineJobId": "c3ff1747-e18b-41d5-b000-6533f78a48c0",
+    "baselineStatus": "failed",
+    "baselineRunnerError": "OCR metric icon is not proven: like",
+    "baselineSettingsRestored": true,
+    "baselineLockReleased": true,
+    "readonlyReads": 12,
+    "allReadonlyReadsPassed": true,
+    "imageSha256": "088e9a8cd062abc75b5aef1638a9bf8ec979609103d56ae336bde0b977514bf2",
+    "candidateReplayError": null,
+    "candidateReplayCards": 6,
+    "candidateReplayContext": "offline Windows OCR throughunchanged rc7assets;not theformalSYSTEMqueue",
+    "priorFailureCause": "unconfirmed;baselineiconfailure isdifferent anddoesnot explain earlierADB255",
+    "inputFunctionsCompared": {
+      "swipe": {
+        "presentInBoth": true,
+        "sameAst": true
+      },
+      "dismiss_unsecured_keyguard": {
+        "presentInBoth": true,
+        "sameAst": false
+      },
+      "wake_if_asleep": {
+        "presentInBoth": true,
+        "sameAst": false
+      },
+      "start_xhs": {
+        "presentInBoth": true,
+        "sameAst": true
+      },
+      "tap_label": {
+        "presentInBoth": true,
+        "sameAst": true
+      },
+      "adb": {
+        "presentInBoth": true,
+        "sameAst": false
+      }
+    }
+  },
+  "release": {
+    "version": "xhs-compat-20261019-deployed.3",
+    "sourceCommit": "eb1dc7f8f2d8b75b3c312a1a378c6b0528bfa985",
+    "candidateTag": "xhs-compat-20261019-rc.7",
+    "releasedAtEpoch": 1792398477.9284222,
+    "replaceSeconds": 0.06199999999989814,
+    "beforeIdentity": {
+      "adbPid": 8988,
+      "agentPid": 14508,
+      "owner": "NT AUTHORITY\\SYSTEM",
+      "pendingSettingsLedgers": 0,
+      "activeCollectors": 0,
+      "stagingFoldersChecked": 23
+    },
+    "afterIdentity": {
+      "adbPid": 8988,
+      "agentPid": 14508,
+      "owner": "NT AUTHORITY\\SYSTEM",
+      "pendingSettingsLedgers": 0,
+      "activeCollectors": 0,
+      "stagingFoldersChecked": 23
+    },
+    "beforeHashes": {
+      "scripts/小红书数据同步.py": "e4ee2e856a41c9346e88c205b99f9faec371fe869752f0c492454016ffd639c5",
+      "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+      "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+      "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+      "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    "afterHashes": {
+      "scripts/小红书数据同步.py": "7a1069cdd5235749a2813f6058031f5cc4f88773a853047872f0094fe707d523",
+      "scripts/xhs_list_ocr.py": "5e73a76da45ce1d7ed79dbe4ba1c7e6d35fcc36f5f1ff803e2bc5ce3563ffb97",
+      "scripts/xhs_ocr_digits.png": "90e94be3cf74f262032fcd348853d3814ea0885264e57f6df069113842799929",
+      "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+      "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    "changedFiles": [
+      "scripts/xhs_ocr_digits.png",
+      "scripts/xhs_list_ocr.py",
+      "scripts/小红书数据同步.py"
+    ],
+    "backup": "D:\\PhoneCloud\\backups\\xhs-compat-20261019-deployed.3",
+    "rollbackScriptSha256": "b4f07c835f9c828f0b15701c977ad89cfacd3340d16d2f4b9d4b5e65707f0606",
+    "rollbackSyntax": "passed_not_executed",
+    "servicesRestarted": false,
+    "sharedAdbIdentityKeysEnvStartupChanged": false,
+    "mediaControlChanged": false,
+    "publicationGuard": "Fresh cloud collection idle proof and local identities/process/ledger/hash checks; unchanged consumer has no atomic publication barrier."
+  },
+  "rollback": {
+    "version": "xhs-compat-20261019-deployed.3",
+    "rolledBackAtEpoch": 1792399628.8912933,
+    "restoredFiles": [
+      "scripts/小红书数据同步.py",
+      "scripts/xhs_list_ocr.py",
+      "scripts/xhs_ocr_digits.png"
+    ],
+    "hashes": {
+      "scripts/小红书数据同步.py": "e4ee2e856a41c9346e88c205b99f9faec371fe869752f0c492454016ffd639c5",
+      "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+      "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+      "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+      "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    "identity": {
+      "adbPid": 8988,
+      "agentPid": 14508,
+      "owner": "NT AUTHORITY\\SYSTEM",
+      "pendingSettingsLedgers": 0,
+      "activeCollectors": 0,
+      "stagingFoldersChecked": 23
+    },
+    "servicesRestarted": false
+  },
+  "formalAttempts": [
+    {
+      "phone": "155",
+      "slot": "app2",
+      "jobId": "c3ff1747-e18b-41d5-b000-6533f78a48c0",
+      "status": "failed",
+      "notes": null,
+      "complete": null,
+      "source": "observed_old_baseline",
+      "runnerReason": "{\"error\": \"OCR metric icon is not proven: like\"}\r\n",
+      "createdAt": "2026-10-19T08:22:10.601Z",
+      "finishedAt": "2026-10-19T08:23:44.522Z"
+    },
+    {
+      "phone": "155",
+      "slot": "app2",
+      "jobId": "2b46226e-361b-4416-9079-8a116f8e6c92",
+      "status": "succeeded",
+      "notes": 13,
+      "complete": true,
+      "source": "rc7",
+      "runnerReason": null,
+      "createdAt": "2026-10-19T08:28:22.422Z",
+      "finishedAt": "2026-10-19T08:30:43.030Z"
+    },
+    {
+      "phone": "47",
+      "slot": "app1",
+      "jobId": "a3da491f-a644-4e52-8840-dddb77290f0b",
+      "status": "cancelled",
+      "notes": null,
+      "complete": null,
+      "source": "rc7",
+      "runnerReason": null,
+      "createdAt": "2026-10-19T08:31:04.090Z",
+      "finishedAt": "2026-10-19T08:33:40.135Z"
+    },
+    {
+      "phone": "180",
+      "slot": "app1",
+      "jobId": "48f5bfdd-bbf8-48ea-a487-826272726bb7",
+      "status": "succeeded",
+      "notes": 12,
+      "complete": true,
+      "source": "rc7",
+      "runnerReason": null,
+      "createdAt": "2026-10-19T08:31:04.098Z",
+      "finishedAt": "2026-10-19T08:33:22.289Z"
+    },
+    {
+      "phone": "47",
+      "slot": "app1",
+      "jobId": "70fe86e5-d426-47c9-aa66-c0c08097a9b6",
+      "status": "failed",
+      "notes": null,
+      "complete": null,
+      "source": "rc7",
+      "runnerReason": "{\"error\": \"works-analysis filter entry is not proven\"}\r\n",
+      "createdAt": "2026-10-19T08:39:20.884Z",
+      "finishedAt": "2026-10-19T08:43:14.176Z"
+    },
+    {
+      "phone": "180",
+      "slot": "app1",
+      "jobId": "c6924d97-42e3-40cc-9c34-510f1f18c02a",
+      "status": "succeeded",
+      "notes": 12,
+      "complete": true,
+      "source": "rc7",
+      "runnerReason": null,
+      "createdAt": "2026-10-19T08:39:20.912Z",
+      "finishedAt": "2026-10-19T08:41:42.029Z"
+    }
+  ],
+  "counts": {
+    "total": 6,
+    "succeeded": 3,
+    "failed": 2,
+    "cancelledByQA": 1,
+    "rc7AttemptsExcludingOldBaseline": 5
+  },
+  "qaTiming": {
+    "initialProblem": "6cleanupchecks with2secondpauses,about15seconds observed after180API terminal;inventoryupdates about30seconds apart.180realresult succeeded butQAfailed toconfirmcleanup inbudget andcancelled47.",
+    "old180LaterVerification": {
+      "jobId": "48f5bfdd-bbf8-48ea-a487-826272726bb7",
+      "phone": "180",
+      "slot": "app1",
+      "productionStatus": "succeeded",
+      "result": "passed_after_delayed_cleanup_confirmation",
+      "notes": 12,
+      "scrolls": 5,
+      "complete": true,
+      "settingsRestored": true,
+      "jobLockReleased": true,
+      "cleanupConfirmation": {
+        "waitSeconds": 0.546,
+        "observations": 1,
+        "maxCacheAgeSeconds": 4.075220108032227,
+        "staleOwnedOccupancyObserved": false,
+        "pendingLedgerObserved": false,
+        "settingsWrites": 0,
+        "ledgerChanges": 0
+      },
+      "snapshotSha256": "ee59c10e54dbedebafd698ab7857a33f1ef3465e8410d14baac411dde76cd6b6",
+      "oldHarnessResultRetained": true,
+      "settingsWrites": 0,
+      "ledgerChanges": 0
+    },
+    "fix": "PrivateQA only:90second observationdeadline,3secondinterval;requiresactual ownledger/cache/cloudlockclear andbefore/aftervalues equal;foreignoccupancy/source/identity drift stops. No ledger orsettings writes.",
+    "regression": {
+      "helperSha256": "234cf68380d18c0897cdede79ef85f09db73048f1ef7b3f3205da184c1a8bb5b",
+      "tests": [
+        {
+          "name": "30secondstaleownedcache_waits_without_cancelling",
+          "status": "passed",
+          "waitSeconds": 30.0,
+          "observations": 11
+        },
+        {
+          "name": "45secondowncloudlease_waits",
+          "status": "passed",
+          "waitSeconds": 45.0,
+          "observations": 16
+        },
+        {
+          "name": "realpendingledger_never_discarded",
+          "status": "passed",
+          "rejected": "target_cleanup_not_confirmed_within_deadline",
+          "waitSeconds": 90.0
+        },
+        {
+          "name": "foreigncacheoccupation_stops_immediately",
+          "status": "passed",
+          "rejected": "foreign_occupancy_during_cleanup",
+          "waitSeconds": 0.0
+        },
+        {
+          "name": "foreigncloudlock_stops_immediately",
+          "status": "passed",
+          "rejected": "foreign_occupancy_during_cleanup",
+          "waitSeconds": 0.0
+        },
+        {
+          "name": "idle_fastpath",
+          "status": "passed",
+          "waitSeconds": 0.0,
+          "observations": 1
+        }
+      ],
+      "source": "def wait_task_cleanup(probe, *, monotonic, sleep, timeout=90, interval=3):\n    \"\"\"Observe terminal-task cleanup; never writes settings or clears a ledger.\"\"\"\n    deadline = monotonic() + timeout\n    observations = []\n    while True:\n        current = probe()\n        observations.append(current)\n        if current['foreignOccupancy'] or current['foreignCloudLock']:\n            raise RuntimeError('foreign_occupancy_during_cleanup')\n        if not current['pendingLedgerCount'] and not current['ownOccupancy'] and not current['ownCloudLock']:\n            return current, observations\n        remaining = deadline - monotonic()\n        if remaining <= 0:\n            raise RuntimeError('target_cleanup_not_confirmed_within_deadline')\n        sleep(min(interval, remaining))\n",
+      "scope": "PrivateQA helper only;productioncollector/Agent unchanged;no livecalls inthese6tests"
+    },
+    "newPair": {
+      "47": "failed dueactualfilterentry error,settingsrestored/lockreleased",
+      "180": "succeeded12notes,settingsrestored/lockreleased"
+    },
+    "firstCaseEvidenceLimit": "Oldtool didnotretain everyhistoricalcache/ledger sample;cache-timing explanation supported bycadence and latercleanreadback,not a captured oldoccupancyobject. Newtool nowretains every observation.",
+    "runtimeChanged": false
+  },
+  "phone47": {
+    "formalFailure": "works-analysis filter entry is not proven",
+    "stagingReproduced": "v57sameassets,failed158seconds,settingsrestored;observationwrapperonly,no logicchange",
+    "failureFrameSha256": "1fb2cf1e33fe30ac691af5d7e1418c84f12c5d91f0ef583c310cfc28c9ca07d3",
+    "focus": "u0 XHS WebViewActivityV2",
+    "wakefulness": "Awake",
+    "returnedXml": {
+      "nodes": 29,
+      "dataHeader": true,
+      "creatorList": false,
+      "allNotes": 0,
+      "cards": 0
+    },
+    "actualFailureChain": [
+      "native row1view proofs conflict",
+      "ImageListReadError swallowed despiteworks_list_image_reader_active",
+      "returnsheader-onlyXML",
+      "refresh_scrolled_webview throwsgenericfilterentry error"
+    ],
+    "actualEvents": [
+      "collection_window_days:30",
+      "collection_slot_requested:app1",
+      "xhs_cold_started",
+      "list_reopened_at_newest",
+      "works_image_probe_unproven:image list fields changed between two fresh captures",
+      "works_list_image_reader_active",
+      "collection_scan_as_of:2026-10-19",
+      "works_image_probe_unproven:OCR row 1 view unproven: OCR color/binary values disagree"
+    ],
+    "countProof": {
+      "box": [
+        336,
+        1133,
+        436,
+        1184
+      ],
+      "imagePrediction": "387",
+      "native": [
+        {
+          "id": "r1_view_color",
+          "texts": [
+            "阝 87 387 '"
+          ]
+        },
+        {
+          "id": "r1_view_binary",
+          "texts": [
+            "587 587"
+          ]
+        },
+        {
+          "id": "r1_view_contrast",
+          "texts": [
+            "387 387"
+          ]
+        },
+        {
+          "id": "r1_view_nearest",
+          "texts": [
+            "387 387"
+          ]
+        }
+      ],
+      "diagnosticContextOnly": [
+        {
+          "id": "r1_view_context_binary",
+          "texts": [
+            "387 587"
+          ]
+        },
+        {
+          "id": "r1_view_context_contrast",
+          "texts": [
+            "387 387"
+          ]
+        },
+        {
+          "id": "r1_view_context_nearest",
+          "texts": [
+            "387 387"
+          ]
+        }
+      ],
+      "glyphScores": [
+        {
+          "binary": false,
+          "glyphs": [
+            {
+              "index": 0,
+              "box": [
+                9,
+                11,
+                17,
+                26
+              ],
+              "best": [
+                {
+                  "digit": 3,
+                  "score": 0.9999980926513672,
+                  "template": 35
+                },
+                {
+                  "digit": 5,
+                  "score": 0.755524754524231,
+                  "template": 33
+                }
+              ]
+            },
+            {
+              "index": 1,
+              "box": [
+                30,
+                11,
+                17,
+                26
+              ],
+              "best": [
+                {
+                  "digit": 8,
+                  "score": 0.9999986290931702,
+                  "template": 22
+                },
+                {
+                  "digit": 3,
+                  "score": 0.8237545490264893,
+                  "template": 12
+                }
+              ]
+            },
+            {
+              "index": 2,
+              "box": [
+                50,
+                11,
+                15,
+                26
+              ],
+              "best": [
+                {
+                  "digit": 7,
+                  "score": 0.9885964393615723,
+                  "template": 23
+                },
+                {
+                  "digit": 2,
+                  "score": 0.47117605805397034,
+                  "template": 46
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "binary": true,
+          "glyphs": [
+            {
+              "index": 0,
+              "box": [
+                9,
+                11,
+                17,
+                26
+              ],
+              "best": [
+                {
+                  "digit": 3,
+                  "score": 1.0,
+                  "template": 36
+                },
+                {
+                  "digit": 5,
+                  "score": 0.7418533563613892,
+                  "template": 34
+                }
+              ]
+            },
+            {
+              "index": 1,
+              "box": [
+                30,
+                11,
+                17,
+                26
+              ],
+              "best": [
+                {
+                  "digit": 8,
+                  "score": 1.0,
+                  "template": 23
+                },
+                {
+                  "digit": 3,
+                  "score": 0.8120781779289246,
+                  "template": 12
+                }
+              ]
+            },
+            {
+              "index": 2,
+              "box": [
+                50,
+                11,
+                15,
+                26
+              ],
+              "best": [
+                {
+                  "digit": 7,
+                  "score": 0.9722452163696289,
+                  "template": 23
+                },
+                {
+                  "digit": 2,
+                  "score": 0.4866120219230652,
+                  "template": 46
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "otherRows": [
+        {
+          "row": 0,
+          "value": [
+            "90",
+            "0",
+            "1"
+          ]
+        },
+        {
+          "row": 1,
+          "error": "OCR row 1 view unproven: OCR color/binary values disagree"
+        },
+        {
+          "row": 2,
+          "value": [
+            "545",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "row": 3,
+          "value": [
+            "506",
+            "0",
+            "2"
+          ]
+        },
+        {
+          "row": 4,
+          "value": [
+            "225",
+            "1",
+            "0"
+          ]
+        }
+      ]
+    },
+    "postTaskBlackFrameSha256": "ca2e7ef708be4e086e78c6921ab25cbd9b871744c1c983089c7de250f7104528",
+    "postTaskBlackFrameLimit": "Capturedaftertask cleanup;not proofthatdisplay wasasleep atfailure. Errorhook capturedAwake andvisiblelist.",
+    "nextFix": "Extend existingD079trustedfont mechanism onlyforindependentlyproven7gray/binarysamples;retain allthresholds/oldglyphs;propagate activeimageread failure insteadofdowngrading toblankXML soexistingpartialresultpathworks. Notyetimplemented inthisrecord."
+  },
+  "currentProduction": {
+    "state": "old_newhost_baseline_restored",
+    "final": {
+      "hashes": {
+        "scripts/小红书数据同步.py": "e4ee2e856a41c9346e88c205b99f9faec371fe869752f0c492454016ffd639c5",
+        "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+        "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+        "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+        "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+        "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+        "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+        "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+      },
+      "identity": {
+        "adbPid": 8988,
+        "agentPid": 14508,
+        "owner": "NT AUTHORITY\\SYSTEM",
+        "pendingSettingsLedgers": 0,
+        "activeCollectors": 0,
+        "stagingFoldersChecked": 24
+      },
+      "checkedAtEpoch": 1792400588.5747457
+    },
+    "media": {
+      "before": {
+        "decision": "D-075",
+        "verified": "live",
+        "pid": 2503525,
+        "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+        "bitsPerSecond": 8000000,
+        "packetsPerGroup": 2
+      },
+      "after": {
+        "decision": "D-075",
+        "verified": "live",
+        "pid": 2503525,
+        "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+        "bitsPerSecond": 8000000,
+        "packetsPerGroup": 2
+      },
+      "after-rollback": {
+        "decision": "D-075",
+        "verified": "live",
+        "pid": 2503525,
+        "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+        "bitsPerSecond": 8000000,
+        "packetsPerGroup": 2
+      }
+    }
+  },
+  "prior155ADCFailure": "Notreproduced inthisretry;12read checks andnewformal15513notes passed. BaselineOCRfailure doesnotexplain ordisproveearlier255 rootcause;unconfirmed.",
+  "limits": [
+    "Thisisnot asuccessful rc7productionacceptance:47realfailed and3filesrolledback.155and180 successesretained.",
+    "No userdata0fill,postdetails,login,enrollment,APKinstall,packetcapture,Webimport,sharedADB/Agent/media/control/key/env/startup/driver/Hub changes.",
+    "152/74/81/188 excluded;original237dirtyentriespreserved;no remoteGitpush.",
+    "Candidate code unchanged inthisphase;onlyprivateQA timing andobservability helperschanged,documentedwithhashes."
+  ],
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+}
