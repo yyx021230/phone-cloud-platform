@@ -71,13 +71,17 @@ public final class NativeTreeAudit {
             call(wrapper, "connect"); connected = true;
             wrapper.getClass().getMethod("setCompressedLayoutHierarchy", boolean.class).invoke(wrapper, false);
             Object automation = call(wrapper, "getUiAutomation");
+            // WebView may initialize its accessibility provider after connect.
+            // Compare this bounded settled read with the immediate-read evidence.
+            Thread.sleep(2000);
             for (int i = 0; i < 3 && root == null; i++) {
                 root = call(automation, "getRootInActiveWindow");
                 if (root == null) Thread.sleep(300);
             }
             if (root == null || !PKG.equals(String.valueOf(call(root, "getPackageName"))))
                 throw new IllegalStateException("XHS root required");
-            StringBuilder out = new StringBuilder("<audit diagnostic-only=\"true\">");
+            if (!(Boolean)call(root, "refresh")) throw new IllegalStateException("root refresh failed");
+            StringBuilder out = new StringBuilder("<audit diagnostic-only=\"true\" settle-ms=\"2000\">");
             for (String label : new String[]{"数据中心", "作品分析", "全部笔记", "观看"}) {
                 List<?> found = (List<?>)root.getClass().getMethod("findAccessibilityNodeInfosByText", String.class).invoke(root, label);
                 if (found.size() > 100) {
