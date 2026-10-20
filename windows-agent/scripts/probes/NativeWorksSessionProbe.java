@@ -23,7 +23,8 @@ public final class NativeWorksSessionProbe {
             }
         }
         if (!required.isEmpty() || target == null || !"true".equals(target.value("clickable"))
-                || !"true".equals(target.value("enabled"))) throw new IllegalStateException("overview tabs unproven");
+                || !"true".equals(target.value("enabled"))) throw new IllegalStateException(
+                    "overview tabs unproven; missing=" + new TreeSet<>(required) + "; target=" + (target != null));
         return target;
     }
     static void findHeader(NativeNavigationAction.Node root, List<NativeNavigationAction.Node> all,
@@ -85,8 +86,13 @@ public final class NativeWorksSessionProbe {
             NativeTreeAudit.call(wrapper, "connect"); connected = true;
             wrapper.getClass().getMethod("setCompressedLayoutHierarchy", boolean.class).invoke(wrapper, false);
             Object automation = NativeTreeAudit.call(wrapper, "getUiAutomation");
+            Thread.sleep(2000);
             Object root = NativeNavigationAction.freshRoot(() -> NativeTreeAudit.call(automation, "getRootInActiveWindow"));
+            if (!(Boolean)NativeTreeAudit.call(root, "refresh")) {
+                NativeTreeAudit.call(root, "recycle"); throw new IllegalStateException("overview root refresh failed");
+            }
             open(root); out.append("<action completed=\"true\"/>");
+            System.err.println("native_works_action_completed");
             // No action retries, swipes or clicks inside posts.
             for (int i = 0; i < 3; i++) {
                 Thread.sleep(i == 0 ? 1000 : 2000);
