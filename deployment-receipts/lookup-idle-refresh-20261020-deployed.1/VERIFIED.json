@@ -1,0 +1,130 @@
+{
+  "atUtc": "2026-10-20T03:28:35.051331+00:00",
+  "publicFiles": [
+    {
+      "path": "/api-reference.json",
+      "status": 200,
+      "sha256": "27bbbefa56669e9132d452d54caae6b916052833e7e297e4b8e6cb04f8b6b115"
+    },
+    {
+      "path": "/openapi.json",
+      "status": 200,
+      "sha256": "e6fcb7b16f5dc4a19a421ca2633dc0a2a12008cd4ece765d5eff2576cb2aafe5"
+    },
+    {
+      "path": "/downloads/name-lookup-http-guide.md",
+      "status": 200,
+      "sha256": "16390b37ef619934443041dae87cb917124b285862c10d7e1e4ee0ee24204468"
+    },
+    {
+      "path": "/downloads/lookup.py",
+      "status": 200,
+      "sha256": "ed8aa0309470d8fc0a216c648649315035dbba8cf6bf22abeab7576fc7a7072e"
+    },
+    {
+      "path": "/downloads/lookup.mjs",
+      "status": 200,
+      "sha256": "aadb28f2260e411bad3187c1041324d50f9b685cd554d40183d73b45feba0a26"
+    },
+    {
+      "path": "/downloads/name-lookup-openapi.json",
+      "status": 200,
+      "sha256": "3eb1d5e5363536923ebae3472ccbfdbd4775b4a3cd33a512c2158f4e5354fbf4"
+    },
+    {
+      "path": "/downloads/name-lookup-sha256.json",
+      "status": 200,
+      "sha256": "075d9c5c6c718c3316c8887bed21fa05cf05100d4892dd8072d03f89579fc9e7"
+    },
+    {
+      "path": "/downloads/name-lookup-integration.zip",
+      "status": 200,
+      "sha256": "157369e4c55927190bab05e9bfa90142fd47ee21c0b5dec9e3f9f74f5466192c"
+    }
+  ],
+  "health": {
+    "/healthz": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "at": "2026-10-20T03:28:09.311Z"
+      }
+    },
+    "/readyz": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "status": "ok",
+        "at": "2026-10-20T03:28:09.366Z",
+        "storage": {
+          "backend": "postgres",
+          "ok": true,
+          "detail": "postgres 已连接，state_key=default，updated_at=2026-10-20T03:28:00.366Z"
+        },
+        "dataDir": {
+          "path": "/app/data",
+          "writable": true,
+          "error": ""
+        },
+        "runtime": {
+          "ok": true,
+          "mode": "redis",
+          "detail": "redis://redis:6379/0"
+        }
+      }
+    }
+  },
+  "state": {
+    "pool": {
+      "revision": 58,
+      "registered": 48,
+      "enabled": 48,
+      "concurrency": 5,
+      "channels": 0,
+      "pending": 0
+    },
+    "devices": {
+      "total": 131,
+      "listed": 125,
+      "adbStates": {
+        "device": 118,
+        "physically_absent": 10,
+        "usb_composite_no_adb_interface": 1,
+        "unauthorized": 2
+      },
+      "controls": [
+        "159",
+        "152"
+      ]
+    },
+    "activeAgentTasks": 0,
+    "agents": [
+      {
+        "lastSeenAt": "2026-10-20T03:28:26.500Z",
+        "enabled": true
+      },
+      {
+        "lastSeenAt": "2026-08-10T06:02:47.953Z",
+        "enabled": false
+      },
+      {
+        "lastSeenAt": "2026-07-03T04:15:49.959Z",
+        "enabled": false
+      },
+      {
+        "lastSeenAt": "2026-07-03T05:36:47.198Z",
+        "enabled": false
+      }
+    ]
+  },
+  "newBusinessSubmitted": 0,
+  "newPrepareSubmitted": 0,
+  "runtime": {
+    "version": "lookup-idle-refresh-20261020-deployed.1",
+    "imageMatches": true,
+    "containerHealth": "healthy",
+    "restartCount": 0,
+    "boundedLogLines": 200,
+    "errorKeywordLines": 0
+  }
+}

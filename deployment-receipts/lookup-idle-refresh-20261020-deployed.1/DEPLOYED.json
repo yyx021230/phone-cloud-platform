@@ -1,0 +1,49 @@
+{
+  "atUtc": "2026-10-20T03:27:50.569636+00:00",
+  "startedAtUtc": "2026-10-20T03:27:03.854689+00:00",
+  "version": "lookup-idle-refresh-20261020-deployed.1",
+  "commit": "74b245e05ea5c0a6ef666c8cbed189e9fcdf1066",
+  "runtimeCommit": "74b245e05ea5c0a6ef666c8cbed189e9fcdf1066",
+  "image": "sha256:c84f493d20543095b8c4ba0546b36f42873f2db5110dd6ecb1a2b473662e0f1c",
+  "previousImage": "sha256:7980919cd715cb7d1ebaf819833aab8319121d4292994f13a89a4b066cd751b5",
+  "containerId": "8741c5c83f4e2fde3838a3a1c685aedf95f040b1ee083a248297d26ad651f078",
+  "containerStartedAt": "2026-10-20T03:27:15.282075689Z",
+  "activeSha256": "ba7aca07930358a82d4ec5300ba89f3dead3da7440a98b1425dfb17601c9d3a9",
+  "runtimeHashesPassed": 41,
+  "occupancyBefore": {
+    "numbers": [
+      "152",
+      "164",
+      "124",
+      "172",
+      "159",
+      "155"
+    ],
+    "revision": 58,
+    "channels": 0,
+    "pending": 0
+  },
+  "mediaBefore": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "mediaAfter": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "agentRestarted": false,
+  "adbTouched": false,
+  "databaseRestored": false,
+  "environmentUnchanged": true,
+  "freshBackupBytes": 531138009,
+  "freshBackupSha256": "35576cda8b4a125b0c9aa1bdf191852152c25478182045304372f4f641d0439d",
+  "receipt": "/opt/phone-cloud-platform/deployment-receipts/lookup-idle-refresh-20261020-deployed.1"
+}
