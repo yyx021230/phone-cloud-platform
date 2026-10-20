@@ -1140,6 +1140,38 @@ def refresh_creator_server_error(adb_path, serial, root, guard, events, attempts
     return True
 
 
+def recover_vivo_store_update(adb_path, serial, root, slot, current, guard, events):
+    """Dismiss only165's observed Vivo update page and verify the original slot."""
+    package = "com.bbk.appstore"
+    if ("xhs_cold_started" not in events
+            or {e.split(":", 1)[1] for e in events if e.startswith("collection_slot_requested:")} != {slot}
+            or not re.search(r"mCurrentFocus=Window\{[^\n}]*\bu0\s+com\.bbk\.appstore/com\.bbk\.appstore\.ui\.manage\.ManageUpdateActivity(?:[}\s]|$)", current)):
+        return False
+    nodes = live_nodes(root)
+    title = [n for n in nodes if n.get("package") == package and n.get("text") == "应用更新"
+             and n.get("resource-id") == package + ":id/originui_vtoolbar_normal_title_rom14_0"]
+    back = [n for n in nodes if n.get("package") == package and n.get("content-desc") == "返回"
+            and n.get("resource-id") == package + ":id/originui_vtoolbar_navigation_view_btn_rom14_0"
+            and n.get("class") == "android.widget.ImageButton"
+            and n.get("clickable") == "true" and n.get("enabled") == "true"]
+    if len(title) != 1 or len(back) != 1 or not any(
+            n.get("package") == package and n.get("text") == "点击“更新”会下载并安装最新版本" for n in nodes):
+        return False
+    if "vivo_store_update_back" in events:
+        raise RuntimeError("Vivo application update page repeated; collection stopped")
+    guard()
+    if adb(adb_path, serial, "shell", "getprop", "ro.product.manufacturer").strip().upper() != "VIVO":
+        return False
+    if focus(adb_path, serial) != current:
+        raise RuntimeError("Vivo application update foreground changed")
+    guard()
+    adb(adb_path, serial, "shell", "input", "keyevent", "4", timeout=7)
+    time.sleep(.5)
+    assert_requested_foreground(focus(adb_path, serial), events)
+    events.append("vivo_store_update_back")
+    return True
+
+
 def recover_vivo_browser_permission_redirect(adb_path,serial,root,slot,current,guard,events):
     """Leave the observed browser permission surface; never press its buttons."""
     package="com.android.permissioncontroller"
@@ -1315,6 +1347,9 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
             root = navigation_capture(adb_path, serial, guard, events)
             continue
         current = focus(adb_path, serial)
+        if recover_vivo_store_update(adb_path,serial,root,slot,current,guard,events):
+            root = navigation_capture(adb_path,serial,guard,events)
+            continue
         if recover_vivo_browser_permission_redirect(adb_path,serial,root,slot,current,guard,events):
             root=navigation_capture(adb_path,serial,guard,events)
             continue
