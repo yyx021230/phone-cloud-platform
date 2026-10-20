@@ -1720,7 +1720,9 @@ def refresh_scrolled_webview(adb_path, serial, root, guard, events, previous_roo
     if previous_root is not None and not creator_filter_panel(root) and creator_list(root) and note_cards(root):
         previous = [(n[1]["title"], n[1]["published_at_raw"]) for n in note_cards(previous_root)]
         current_cards = [(n[1]["title"], n[1]["published_at_raw"]) for n in note_cards(root)]
-        if (previous and current_cards != previous
+        # Clipping can remove old rows without exposing new content (47).
+        # Require a genuinely new native identity before skipping the refresh.
+        if (previous and set(current_cards) - set(previous)
                 and re.search(r"com\.xingin\.xhs/com\.xingin\.xywebview\.activity\.WebViewActivityV2(?:[}\s]|$)", focus(adb_path, serial))):
             guard()
             events.append("works_list_updated_without_filter_toggle")

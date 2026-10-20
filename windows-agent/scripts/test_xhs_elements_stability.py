@@ -97,4 +97,24 @@ class LateOverviewTests(unittest.TestCase):
     sync.ensure_creator_list('adb','serial',empty,'app1',lambda:None,['collection_slot_requested:app1'])
   self.assertEqual(reads.call_count,14);adb.assert_not_called()
 
+class NativeSubsetRefreshTests(unittest.TestCase):
+ def test_retained_47_clipped_subset_must_refresh_before_next_scroll(self):
+  previous=ET.parse(S/'fixtures/xhs/works-47-before-subset.xml').getroot()
+  current=ET.parse(S/'fixtures/xhs/works-47-stale-subset.xml').getroot()
+  panel=ET.parse(S/'fixtures/xhs/filter-panel-elements.xml').getroot()
+  self.assertEqual(len(sync.note_cards(previous)),5);self.assertEqual(len(sync.note_cards(current)),1)
+  self.assertTrue({v['title'] for _,v in sync.note_cards(current)} < {v['title'] for _,v in sync.note_cards(previous)})
+  events=[]
+  with patch.object(sync,'focus',return_value=LateOverviewTests.current),patch.object(sync,'wake_if_asleep'),patch.object(sync,'navigation_capture',side_effect=[panel,previous]),patch.object(sync,'tap_filter_label') as tap:
+   self.assertIs(sync.refresh_scrolled_webview('adb','serial',current,lambda:None,events,previous),previous)
+  self.assertEqual([c.args[3] for c in tap.call_args_list],['全部笔记','收起']);self.assertIn('webview_accessibility_refreshed',events);self.assertNotIn('works_list_updated_without_filter_toggle',events)
+ def test_changed_counts_without_new_identity_do_not_prove_a_new_page(self):
+  import copy
+  previous=ElementCompletenessStabilityTests().listing();current=copy.deepcopy(previous)
+  next(n for n in current.iter('node') if n.get('text')=='252').set('text','253')
+  panel=ET.parse(S/'fixtures/xhs/filter-panel-elements.xml').getroot();events=[]
+  with patch.object(sync,'focus',return_value=LateOverviewTests.current),patch.object(sync,'wake_if_asleep'),patch.object(sync,'navigation_capture',side_effect=[panel,current]),patch.object(sync,'tap_filter_label') as tap:
+   sync.refresh_scrolled_webview('adb','serial',current,lambda:None,events,previous)
+  self.assertEqual(tap.call_count,2);self.assertNotIn('works_list_updated_without_filter_toggle',events)
+
 if __name__=='__main__':unittest.main()
