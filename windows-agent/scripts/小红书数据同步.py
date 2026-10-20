@@ -1153,7 +1153,7 @@ def close_restored_ai_page(adb_path, serial, root, current, guard, events):
 
 
 def select_zero_bounds_profile(adb_path, serial, root, current, guard, events):
-    """Use the live home drawer when only footer nodes lack coordinates."""
+    """Fail closed when the verified footer exposes no element coordinates."""
     if not re.search(r"com\.xingin\.xhs/com\.xingin\.xhs\.index\.v2\.IndexActivityV2(?:[}\s]|$)", current):
         return None
     if not all(label(root, value) for value in ("关注", "发现", "搜索")):
@@ -1174,36 +1174,8 @@ def select_zero_bounds_profile(adb_path, serial, root, current, guard, events):
         raise RuntimeError("zero-bounds profile footer is not uniquely proven")
     if children[0].get("selected") != "true":
         raise RuntimeError("zero-bounds profile footer is not on the verified home tab")
-    # 14/20/140/182 expose the normal home drawer even when all five footer
-    # nodes have zero bounds. Never infer footer coordinates from screen size.
-    def menu_box(page):
-        menus = [n for n in label(page, "菜单") if n.get("package") == XHS_PACKAGE
-                 and n.get("class") == "android.widget.ImageView"
-                 and n.get("clickable") == "true" and n.get("enabled") == "true"]
-        windows = [n for n in page if n.get("package") == XHS_PACKAGE and bounds(n)]
-        if len(menus) != 1 or len(windows) != 1:return None
-        box, window = bounds(menus[0]), bounds(windows[0])
-        if not (window[0] <= box[0] < box[2] <= window[2]*.2
-                and window[1] <= box[1] < box[3] <= window[3]*.2):return None
-        return box
-    original_box = menu_box(root)
     guard()
-    if original_box is None:
-        raise ElementListReadError("profile element has zero bounds and no proven live menu")
-    assert_requested_foreground(current, events)
-    if focus(adb_path, serial) != current:
-        raise ElementListReadError("home menu foreground changed before readback")
-    fresh = navigation_capture(adb_path, serial, guard, events)
-    if (menu_box(fresh) != original_box or not all(label(fresh, v) for v in ("关注", "发现", "搜索"))
-            or focus(adb_path, serial) != current):
-        raise ElementListReadError("home menu element changed before selection")
-    tap_label(adb_path, serial, fresh, "菜单", guard)
-    result = navigation_capture(adb_path, serial, guard, events)
-    assert_requested_foreground(focus(adb_path, serial), events)
-    if not (label(result, "我的草稿") and (label(result, "创作者中心") or label(result, "创作中心"))):
-        raise ElementListReadError("home menu did not expose the Creator Center drawer")
-    events.append("zero_bounds_footer_bypassed_via_native_home_menu")
-    return result
+    raise ElementListReadError("profile element has zero bounds; element-only navigation unavailable")
 
 
 def refresh_creator_server_error(adb_path, serial, root, guard, events, attempts):
@@ -1682,9 +1654,8 @@ def element_page_signature(root):
     cards = note_cards(root)
     if not cards:
         return ((),bool(label(root,"暂无笔记")),bool(label(root,"到底了"))) if label(root,"暂无笔记") or label(root,"到底了") else None
-    identities = [(item["title"], item["published_at_raw"]) for _, item in cards]
-    if len(set(identities)) != len(identities):
-        raise ElementListReadError("visible element rows have ambiguous duplicate title/date")
+    # A signature proves stable visible fields, not a stable note ID. Keep
+    # every row here; collect rejects ambiguous identities inside its window.
     views = [n for n in live_nodes(root) if n.get("package") == XHS_PACKAGE
              and n.get("class") == "android.webkit.WebView" and n.get("text") == "数据中心"]
     filters = label(root,"全部笔记")
@@ -1936,6 +1907,10 @@ def collect(args):
         discovered = 0
         cards = note_cards(root)
         card_dates = [published_date(item["published_at_raw"], as_of) for _, item in cards]
+        identities = [(item["title"], item["published_at_raw"])
+                      for (_, item), date in zip(cards, card_dates) if date >= cutoff]
+        if len(set(identities)) != len(identities):
+            raise ElementListReadError("visible in-window element rows have ambiguous duplicate title/date")
         if any(later > earlier for earlier, later in zip(card_dates, card_dates[1:])):
             date_order_valid = False
         if card_dates and previous_top_date is not None and card_dates[0] > previous_top_date:

@@ -47,9 +47,12 @@ class NativeReadingTests(unittest.TestCase):
   r=listing();next(n for n in r.iter('node') if n.get('text')=='37').set('text','')
   self.assertEqual(len(sync.note_cards(r)),4)
   with self.assertRaisesRegex(sync.ElementListReadError,'incomplete'):sync.element_page_signature(r)
- def test_a_duplicate_visible_row_is_ambiguous(self):
-  r=listing();card=sync.note_cards(r)[0][0];parents={c:p for p in r.iter() for c in p};parents[card].append(copy.deepcopy(card))
-  with self.assertRaisesRegex(sync.ElementListReadError,'ambiguous'):sync.element_page_signature(r)
+ def test_signature_retains_duplicate_rows_for_later_window_identity_check(self):
+  r=listing();cards=sync.note_cards(r);title=cards[0][1]['title']
+  for n in cards[1][0].iter('node'):
+   if n.get('text')==cards[1][1]['title']:n.set('text',title)
+  signature=sync.element_page_signature(r)
+  self.assertEqual(len(signature[0]),5);self.assertEqual(signature[0][0][:2],signature[0][1][:2])
  def test_foreign_package_in_a_row_is_rejected(self):
   r=listing();next(n for n in r.iter('node') if n.get('text')=='37').set('package','other')
   with self.assertRaisesRegex(sync.ElementListReadError,'another package'):sync.element_page_signature(r)
@@ -161,6 +164,21 @@ class ElementCollectionTests(unittest.TestCase):
   for n in first.iter('node'):
    if n.get('text')=='10-19':n.set('text','08-31')
   r=self.collect(first);self.assertTrue(r['complete']);self.assertEqual(r['notes'],[]);self.assertEqual(r['stop_reason'],'older_than_window_visible')
+ def duplicate_listing(self, date):
+  root=listing();cards=sync.note_cards(root);title=cards[0][1]['title']
+  for row,item in cards:
+   for n in row.iter('node'):
+    if n.get('text')==item['title']:n.set('text',title)
+    if n.get('text')==item['published_at_raw']:n.set('text',date)
+  return root
+ def test_old_duplicate_titles_are_only_boundary_evidence_not_output_rows(self):
+  result=self.collect(ET.parse(S/'fixtures/xhs/works-duplicate-old-titles.xml').getroot())
+  self.assertTrue(result['complete']);self.assertEqual(result['notes'],[])
+  self.assertEqual(result['stop_reason'],'older_than_window_visible')
+  self.assertEqual(result['scan_rounds'][0]['visible_cards'],6)
+ def test_duplicate_titles_inside_window_still_stop_before_deduplication(self):
+  with self.assertRaisesRegex(sync.ElementListReadError,'ambiguous'):
+   self.collect(self.duplicate_listing('10-19'))
  def test_unchanged_element_page_cannot_be_declared_complete_at_scroll_limit(self):
   first=listing();r=self.collect(first,[copy.deepcopy(first)])
   self.assertFalse(r['complete']);self.assertEqual(len(r['notes']),5);self.assertIn('recent_window_not_proven',r['warnings'])
