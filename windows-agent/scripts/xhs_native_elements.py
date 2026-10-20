@@ -77,6 +77,7 @@ class ExistingNativeElementSession:
         self.focus, self.guard, self.spawn = focus, guard, spawn
         self.rpc_dump, self.choose_port, self.sleep = rpc_dump, choose_port, sleep
         self.port = None
+        self.forward_created = False
         self.process = None
         self.owned_pids = set()
         self.original = None
@@ -116,8 +117,9 @@ class ExistingNativeElementSession:
         port = self.choose_port()
         if type(port) is not int or not 1024 <= port <= 65535:
             raise NativeElementError('native local endpoint is invalid')
-        self.command('forward', '--no-rebind', 'tcp:'+str(port), 'tcp:10081')
         self.port = port
+        self.command('forward', '--no-rebind', 'tcp:'+str(port), 'tcp:10081')
+        self.forward_created = True
         try:
             self.command('shell', 'am', 'start', '--user', '0', '-n', PACKAGE+'/.TestActivity')
         finally:
@@ -188,8 +190,10 @@ class ExistingNativeElementSession:
                 expected = (self.serial, 'tcp:'+str(self.port), 'tcp:10081')
                 matches = [tuple(line.split()) for line in self.command('forward', '--list').splitlines()
                            if len(line.split()) == 3 and line.split()[1] == 'tcp:'+str(self.port)]
-                if matches == [expected]:
+                if matches == [expected] and self.forward_created:
                     self.command('forward', '--remove', 'tcp:'+str(self.port))
+                elif matches == [expected]:
+                    errors.append('native forward creation outcome unproven; mapping preserved')
                 elif matches:
                     errors.append('native forward changed; foreign mapping preserved')
             except Exception:

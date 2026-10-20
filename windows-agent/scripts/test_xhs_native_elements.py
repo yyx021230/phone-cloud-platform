@@ -88,6 +88,20 @@ class ExistingServiceTests(unittest.TestCase):
         self.assertEqual(self.port,23456)
         self.assertNotIn(('forward','--remove','tcp:23456'),self.calls)
 
+    def test_unknown_forward_creation_is_not_retried_or_reported_clean(self):
+        original=self.session.run
+        def failed(adb,serial,*args,**kw):
+            value=original(adb,serial,*args,**kw)
+            if args[:2]==('forward','--no-rebind'):
+                raise native.subprocess.TimeoutExpired('adb',8)
+            return value
+        self.session.run=failed
+        with self.assertRaises(native.subprocess.TimeoutExpired):self.session.start()
+        with self.assertRaisesRegex(native.NativeElementError,'creation outcome unproven'):self.session.close()
+        self.assertEqual(sum(c[:2]==('forward','--no-rebind') for c in self.calls),1)
+        self.assertNotIn(('forward','--remove','tcp:23456'),self.calls)
+        self.spawn.assert_not_called()
+
     def test_foreground_change_stops_without_another_hierarchy_rpc(self):
         self.session.start();self.current='mCurrentFocus=Window{x u0 other.app/.Activity}'
         with self.assertRaisesRegex(native.NativeElementError,'foreground changed'):self.session.dump()
