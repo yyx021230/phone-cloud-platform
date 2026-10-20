@@ -1577,5 +1577,29 @@ class NativeLongTitleTests(unittest.TestCase):
         self.assertIsNone(sync.element_page_signature(root))
 
 
+class VivoBrowserFirstUseTests(unittest.TestCase):
+    current="mCurrentFocus=Window{x u0 com.vivo.browser/com.vivo.browser.StartActivity}"
+    restored="mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xhs.index.v2.IndexActivityV2}"
+    def page(self):return ET.parse(Path(__file__).parent/'fixtures/xhs/vivo-browser-first-use.xml').getroot()
+    def test_first_use_page_is_left_intact_without_accepting_or_declining(self):
+        events=['collection_slot_requested:app1','xhs_cold_started']
+        with patch.object(sync,'focus',side_effect=[self.current,self.restored]),patch.object(sync,'adb') as adb,patch.object(sync.time,'sleep'):
+            self.assertTrue(sync.recover_vivo_browser_redirect('adb','serial','app1',self.current,lambda:None,events,self.page()))
+        self.assertEqual([c.args[2:5] for c in adb.call_args_list],[('shell','input','keyevent'),('shell','am','start')])
+        self.assertEqual(adb.call_args_list[0].args[-1],'3')
+        self.assertFalse(any('tap' in c.args for c in adb.call_args_list))
+    def test_missing_title_foreign_package_other_user_or_repeated_redirect_stops(self):
+        for kind in ('title','foreign','user','repeat','focus'):
+            root=self.page();current=self.current;events=['collection_slot_requested:app1','xhs_cold_started']
+            if kind=='title':sync.label(root,'欢迎使用 vivo 浏览器')[0].set('text','other')
+            if kind=='foreign':list(root.iter('node'))[-1].set('package','other')
+            if kind=='user':current=current.replace('u0 ','u999 ')
+            if kind=='repeat':events.append('vivo_browser_redirect_reopened')
+            with self.subTest(kind=kind),patch.object(sync,'focus',return_value='other' if kind=='focus' else current),patch.object(sync,'adb') as adb:
+                if kind in ('repeat','focus'):
+                    with self.assertRaises(RuntimeError):sync.recover_vivo_browser_redirect('adb','serial','app1',current,lambda:None,events,root)
+                else:self.assertFalse(sync.recover_vivo_browser_redirect('adb','serial','app1',current,lambda:None,events,root))
+                adb.assert_not_called()
+
 if __name__ == "__main__":
     unittest.main()

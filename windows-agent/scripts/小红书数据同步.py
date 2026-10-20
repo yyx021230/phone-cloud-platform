@@ -1258,12 +1258,27 @@ def recover_vivo_browser_permission_redirect(adb_path,serial,root,slot,current,g
     return True
 
 
-def recover_vivo_browser_redirect(adb_path, serial, slot, current, guard, events):
+def recover_vivo_browser_redirect(adb_path, serial, slot, current, guard, events, root=None):
     # 43's owner app cold-start was followed by a Vivo browser activity. Leave
     # that page intact and attempt the known XHS owner activity exactly once.
+    browser_activity = re.search(r"mCurrentFocus=Window\{[^\n}]*\bu0\s+com\.vivo\.browser/com\.vivo\.browser\.BrowserActivity[}\s]", current)
+    welcome = False
+    if root is not None and re.search(r"mCurrentFocus=Window\{[^\n}]*\bu0\s+com\.vivo\.browser/[\w.$]+[}\s]", current):
+        nodes = live_nodes(root)
+        def exact(field, text):
+            return len([n for n in nodes if n.get("package") == "com.vivo.browser"
+                        and n.get("resource-id") == "com.vivo.browser:id/" + field
+                        and n.get("text") == text and n.get("class") == "android.widget.TextView"]) == 1
+        welcome = (all(n.get("package") == "com.vivo.browser" for n in nodes)
+                   and exact("alertTitle", "欢迎使用 vivo 浏览器")
+                   and exact("vbutton_title", "同意") and exact("vbutton_title", "不同意")
+                   and len([n for n in nodes if n.get("resource-id") == "com.vivo.browser:id/privacyState"
+                            and n.get("text", "").startswith("感谢您信任并使用vivo浏览器，本应用将在获得您的明确授权后，")]) == 1)
     if (slot != "app1" or "collection_slot_requested:app1" not in events or "xhs_cold_started" not in events
-            or not re.search(r"mCurrentFocus=Window\{[^\n}]*\bu0\s+com\.vivo\.browser/com\.vivo\.browser\.BrowserActivity[}\s]", current)):
+            or not (browser_activity or welcome)):
         return False
+    if welcome and focus(adb_path, serial) != current:
+        raise RuntimeError("browser first-use foreground changed")
     if "vivo_browser_redirect_reopened" in events:
         raise RuntimeError("Xiaohongshu redirected to Vivo browser again; collection stopped")
     guard()
@@ -1419,7 +1434,7 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
         if recover_vivo_browser_permission_redirect(adb_path,serial,root,slot,current,guard,events):
             root=navigation_capture(adb_path,serial,guard,events)
             continue
-        if recover_vivo_browser_redirect(adb_path,serial,slot,current,guard,events):
+        if recover_vivo_browser_redirect(adb_path,serial,slot,current,guard,events,root):
             root = navigation_capture(adb_path,serial,guard,events)
             continue
         if login_activity(current):
