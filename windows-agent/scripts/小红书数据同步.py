@@ -290,6 +290,10 @@ def navigation_capture(adb_path, serial, guard, events):
         root = capture(adb_path, serial)
     except (RuntimeError,subprocess.TimeoutExpired) as error:
         current = focus(adb_path, serial)
+        if (not current and (isinstance(error,subprocess.TimeoutExpired)
+                             or "did not return an XML hierarchy" in str(error))
+                and wake_focusless_display(adb_path, serial, guard, events)):
+            return capture(adb_path, serial)
         if login_activity(current):
             assert_requested_foreground(current, events)
             raise RuntimeError("Xiaohongshu account is logged out; manual login is required") from error
@@ -430,6 +434,47 @@ def wake_if_asleep(adb_path, serial, guard, events, dismiss_lock=True):
         dismiss_unsecured_keyguard(adb_path,serial,guard,events)
     events.append("screen_woken_after_timeout")
     return True
+
+
+def default_display_state(window_dump):
+    # Vivo may have an awake virtual display while the physical panel is off.
+    # Never substitute display90000 (or an ambiguous dump) for display0.
+    sections = re.split(r"(?m)^[ \t]*Display: mDisplayId=", window_dump)[1:]
+    matches = [part for part in sections if re.match(r"0(?:[ \t]|$)", part)]
+    if len(matches) != 1:return None
+    states = re.findall(r"\bmAwake=(true|false)\s+mScreenOnEarly=(true|false)\s+mScreenOnFully=(true|false)\b", matches[0])
+    return states[0] if len(states) == 1 else None
+
+
+def default_display_unlit(policy):
+    return default_display_state(policy) == ("true", "false", "false")
+
+
+def wake_focusless_display(adb_path, serial, guard, events):
+    slots = {e.split(":",1)[1] for e in events if e.startswith("collection_slot_requested:")}
+    users = {e.split(":",1)[1] for e in events if e.startswith("clone_user_requested:")}
+    marker = "focusless_default_display_wake_attempted"
+    if (len(slots) != 1 or not slots <= {"app1","app2"} or marker in events
+            or (slots == {"app2"} and (len(users) != 1 or not users <= {"128","999"}))):
+        return False
+    guard()
+    if focus(adb_path, serial):return False
+    policy = adb(adb_path, serial, "shell", "dumpsys", "window", timeout=8)
+    if not default_display_unlit(policy):return False
+    power = adb(adb_path, serial, "shell", "dumpsys", "power", timeout=8)
+    if len(re.findall(r"(?m)^[ \t]*mWakefulness=Awake[ \t]*$",power)) != 1:return False
+    guard()
+    if focus(adb_path, serial):return False
+    events.append(marker)
+    adb(adb_path, serial, "shell", "input", "keyevent", "224", timeout=7)
+    for _ in range(4):
+        time.sleep(.4)
+        policy = adb(adb_path, serial, "shell", "dumpsys", "window", timeout=8)
+        if default_display_state(policy) == ("true", "true", "true"):
+            dismiss_unsecured_keyguard(adb_path, serial, guard, events)
+            events.append("focusless_default_display_woken")
+            return True
+    raise RuntimeError("default display stayed unlit after one confirmed wake attempt")
 
 
 def explicit_clone_user(adb_path, serial):

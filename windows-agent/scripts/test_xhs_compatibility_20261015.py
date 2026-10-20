@@ -1082,4 +1082,57 @@ class StalledMoreLoadingTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError,'could not prove'):sync.ensure_creator_list('adb','serial',self.loading(),'app1',lambda:None,['collection_slot_requested:app1'])
         tap.assert_not_called();adb.assert_not_called()
 
+class FocuslessDisplayTests(unittest.TestCase):
+    # These sections are from `dumpsys window`; `window policy` omits them.
+    off = '  Display: mDisplayId=90000 (organized)\n    mAwake=true mScreenOnEarly=true mScreenOnFully=true\n  Display: mDisplayId=0 (organized)\n    mAwake=true mScreenOnEarly=false mScreenOnFully=false\n'
+    on = off.replace('mScreenOnEarly=false mScreenOnFully=false','mScreenOnEarly=true mScreenOnFully=true')
+    events = ['collection_slot_requested:app2','clone_user_requested:999']
+
+    def test_virtual_display_does_not_hide_the_default_screen_off_state(self):
+        self.assertTrue(sync.default_display_unlit(self.off))
+        self.assertFalse(sync.default_display_unlit(self.on))
+        self.assertFalse(sync.default_display_unlit(self.off.replace('mDisplayId=0 ','mDisplayId=1 ')))
+        self.assertFalse(sync.default_display_unlit(self.off+self.off))
+
+    def test_focusless_awake_default_panel_is_woken_once_and_checked(self):
+        calls=[];policies=iter([self.off,self.on])
+        def command(_adb,_serial,*args,**kw):
+            calls.append(args)
+            if args==('shell','dumpsys','window'):return next(policies)
+            if args==('shell','dumpsys','power'):return 'mWakefulness=Awake'
+            return ''
+        events=list(self.events)
+        with patch.object(sync,'adb',side_effect=command),patch.object(sync,'focus',return_value=''),patch.object(sync,'dismiss_unsecured_keyguard') as unlock,patch.object(sync.time,'sleep'):
+            self.assertTrue(sync.wake_focusless_display('adb','serial',lambda:None,events))
+        self.assertEqual([c for c in calls if c[:2]==('shell','input')],[('shell','input','keyevent','224')])
+        self.assertNotIn(('shell','dumpsys','window','policy'),calls)
+        unlock.assert_called_once()
+        self.assertIn('focusless_default_display_woken',events)
+
+    def test_uncertain_active_or_already_attempted_states_never_send_a_key(self):
+        cases=[(self.on,'','mWakefulness=Awake',self.events),(self.off,'mCurrentFocus=Window{x u0 com.android.settings/.Settings}','mWakefulness=Awake',self.events),(self.off,'','mWakefulness=Asleep',self.events),(self.off,'','mWakefulness=Awake',self.events+['focusless_default_display_wake_attempted']),(self.off,'','mWakefulness=Awake',[])]
+        for policy,current,power,events in cases:
+            calls=[]
+            def command(_adb,_serial,*args,**kw):
+                calls.append(args)
+                return policy if args==('shell','dumpsys','window') else power
+            with patch.object(sync,'adb',side_effect=command),patch.object(sync,'focus',return_value=current),patch.object(sync.time,'sleep'):
+                self.assertFalse(sync.wake_focusless_display('adb','serial',lambda:None,list(events)))
+            self.assertFalse(any(c[:2]==('shell','input') for c in calls))
+
+    def test_panel_that_does_not_light_stops_without_a_second_key(self):
+        calls=[]
+        def command(_adb,_serial,*args,**kw):
+            calls.append(args)
+            return self.off if args==('shell','dumpsys','window') else 'mWakefulness=Awake'
+        with patch.object(sync,'adb',side_effect=command),patch.object(sync,'focus',return_value=''),patch.object(sync.time,'sleep'):
+            with self.assertRaisesRegex(RuntimeError,'default display stayed unlit'):sync.wake_focusless_display('adb','serial',lambda:None,list(self.events))
+        self.assertEqual(sum(c[:2]==('shell','input') for c in calls),1)
+
+    def test_xml_failure_with_empty_focus_recaptures_only_after_confirmed_wake(self):
+        ready=ET.Element('hierarchy');events=list(self.events)
+        with patch.object(sync,'capture',side_effect=[RuntimeError('UIAutomator did not return an XML hierarchy'),ready]) as capture,patch.object(sync,'focus',return_value=''),patch.object(sync,'wake_focusless_display',return_value=True) as wake:
+            self.assertIs(sync.navigation_capture('adb','serial',lambda:None,events),ready)
+        self.assertEqual(capture.call_count,2);wake.assert_called_once()
+
 if __name__ == '__main__':unittest.main()
