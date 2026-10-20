@@ -1,0 +1,20 @@
+{
+  "loopbackOnly": true,
+  "storage": "postgres",
+  "realDevices": 0,
+  "productionConnections": 0,
+  "idleBudgetMs": 15000,
+  "defaultBudgetBoundaryUnitMs": 900000,
+  "businessHeldMs": 16000,
+  "businessProtectsRound": true,
+  "pollingDoesNotRenew": true,
+  "automaticStopAckBarrier": true,
+  "restartDuringAutomaticStop": true,
+  "completedResultsRetained": true,
+  "explicitNewRoundQueries": true,
+  "drained": true,
+  "testedImage": "sha256:51f86f3eb8b87e0467f83e9833c1a7bd1fdb75ffda987e01009a25d9d830e4c5",
+  "candidateImage": "sha256:c84f493d20543095b8c4ba0546b36f42873f2db5110dd6ecb1a2b473662e0f1c",
+  "runtimeFilesIdentical": true,
+  "documentationOnlyCorrection": true
+}
