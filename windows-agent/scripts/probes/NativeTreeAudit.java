@@ -12,6 +12,36 @@ public final class NativeTreeAudit {
     static Object call(Object value, String method) throws Exception {
         return NativeElementsProbe.call(value, method);
     }
+    static int normalMissing, freshRecovered;
+    /** Diagnostic comparison only; asks the same native provider for the exact child ID. */
+    static final class FreshNode implements NativeElementsProbe.Node {
+        final Object raw;
+        final NativeElementsProbe.AndroidNode delegate;
+        FreshNode(Object raw) { this.raw = raw; delegate = new NativeElementsProbe.AndroidNode(raw); }
+        public boolean visible() throws Exception { return delegate.visible(); }
+        public int children() throws Exception { return delegate.children(); }
+        public String value(String key) throws Exception { return delegate.value(key); }
+        public void close() throws Exception { delegate.close(); }
+        public NativeElementsProbe.Node child(int index) throws Exception {
+            Object child = raw.getClass().getMethod("getChild", int.class).invoke(raw, index);
+            if (child == null) {
+                normalMissing++;
+                Class<?> clientClass = Class.forName("android.view.accessibility.AccessibilityInteractionClient");
+                Object client = clientClass.getMethod("getInstance").invoke(null);
+                long id = (Long)raw.getClass().getMethod("getChildId", int.class).invoke(raw, index);
+                child = clientClass.getMethod("findAccessibilityNodeInfoByAccessibilityId",
+                    int.class, int.class, long.class, boolean.class, int.class, Class.forName("android.os.Bundle"))
+                    .invoke(client, call(raw, "getConnectionId"), call(raw, "getWindowId"), id, true, 0, null);
+                if (child != null) {
+                    if ((Long)call(child, "getSourceNodeId") != id) {
+                        call(child, "recycle"); throw new IllegalStateException("native child identity mismatch");
+                    }
+                    freshRecovered++;
+                }
+            }
+            return child == null ? null : new FreshNode(child);
+        }
+    }
     static final class Audit {
         final long deadline = System.nanoTime() + 10_000_000_000L;
         int visited, missing;
@@ -97,8 +127,10 @@ public final class NativeTreeAudit {
             }
             Audit audit = new Audit();
             Object owned = root; root = null;
-            out.append(audit.read(new NativeElementsProbe.AndroidNode(owned)));
-            out.append("<summary visited=\"").append(audit.visited).append("\" missing=\"").append(audit.missing).append("\"/></audit>");
+            out.append(audit.read(new FreshNode(owned)));
+            out.append("<summary visited=\"").append(audit.visited).append("\" missing=\"").append(audit.missing)
+                .append("\" normal-missing=\"").append(normalMissing).append("\" fresh-recovered=\"").append(freshRecovered)
+                .append("\"/></audit>");
             result = out.toString(); code = 0;
         } catch (Exception error) {
             System.err.println("native_audit_failed:" + error.getClass().getSimpleName() + ":" + error.getMessage());
