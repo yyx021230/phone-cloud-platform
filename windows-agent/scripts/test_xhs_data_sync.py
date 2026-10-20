@@ -1365,6 +1365,18 @@ class OverlayRecoveryTests(unittest.TestCase):
         adb.assert_not_called()
 
 
+class NativeTenLikesMilestoneTests(unittest.TestCase):
+    def test_observed_ten_likes_sheet_uses_only_the_proven_close_icon(self):
+        root = ET.parse(SCRIPT.parent / "fixtures/xhs/milestone-ten-likes.xml").getroot()
+        with patch.object(sync, "focus", return_value="mCurrentFocus=com.xingin.xhs/IndexActivityV2"), \
+                patch.object(sync, "adb") as adb, patch.object(sync, "navigation_capture", return_value=xml()), \
+                patch.object(sync.time, "sleep"):
+            events = []
+            self.assertTrue(sync.recover_known_overlay("adb", "serial", root, lambda: None, events))
+            adb.assert_called_once_with("adb", "serial", "shell", "input", "tap", "686", "821", timeout=7)
+            self.assertEqual(events, ["milestone_close_selected"])
+
+
 class NativeLongTitleTests(unittest.TestCase):
     def test_real_native_row_keeps_long_title_and_all_six_fields(self):
         root = ET.parse(SCRIPT.parent / "fixtures/xhs/works-long-native-title.xml").getroot()
