@@ -1618,5 +1618,29 @@ class NativeNavigationIntegrationTests(unittest.TestCase):
         with patch.object(sync,'adb',return_value='VIVO'),patch.object(sync,'native_index_navigation'),patch.object(sync,'navigation_capture',return_value=xml()),patch.object(sync,'focus',return_value=self.current):
             with self.assertRaisesRegex(sync.ElementListReadError,'did not expose'):sync.tap_index_menu('adb','serial',xml(),lambda:None,events)
 
+class NativeMoreRecoveryTests(unittest.TestCase):
+    current='mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}'
+    def center(self):
+        return xml(*[f'<node package="com.xingin.xhs" text="{t}" bounds="[0,{i*100}][100,{i*100+50}]"/>' for i,t in enumerate(('创作中心','最新笔记','更多','观看'))])
+    def test_failed_more_native_read_uses_one_proven_overview_entry_before_scan(self):
+        center=self.center();overview=xml();works=xml('<node text="全部笔记" bounds="[0,0][100,100]"/>');events=['collection_slot_requested:app1','creator_more_selected']
+        with patch.object(sync,'focus',return_value=self.current),patch.object(sync,'capture',side_effect=[RuntimeError('UIAutomator did not return an XML hierarchy'),center,overview,works]),patch.object(sync,'creator_more_label',return_value='更多'),patch.object(sync,'creator_overview_entry',return_value=True),patch.object(sync,'open_works_tab',return_value=True),patch.object(sync,'tap_label') as tap,patch.object(sync,'adb') as adb:
+            self.assertIs(sync.navigation_capture('adb','serial',lambda:None,events),works)
+        adb.assert_called_once_with('adb','serial','shell','input','keyevent','4',timeout=7)
+        self.assertEqual(tap.call_args.args[3],'观看');self.assertIn('works_native_more_reopened_via_overview',events)
+    def test_unknown_origin_or_midscan_or_repeated_failure_does_not_navigate(self):
+        for extras in ([],['creator_more_selected','collection_scan_as_of:2026-10-20'],['creator_more_selected','works_native_more_recovery_attempted']):
+            events=['collection_slot_requested:app1']+extras
+            with self.subTest(events=events),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'capture',side_effect=RuntimeError('UIAutomator did not return an XML hierarchy')),patch.object(sync,'adb') as adb:
+                with self.assertRaises(sync.ElementListReadError):sync.navigation_capture('adb','serial',lambda:None,events)
+                adb.assert_not_called()
+    def test_abnormal_or_unproven_return_page_stops_without_overview_click(self):
+        for abnormal in (False,True):
+            center=self.center() if abnormal else xml()
+            if abnormal:center.append(ET.fromstring('<node text="账号异常" bounds="[0,500][100,550]"/>'))
+            with self.subTest(abnormal=abnormal),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'capture',return_value=center),patch.object(sync,'adb') as adb,patch.object(sync,'tap_label') as tap:
+                with self.assertRaises(RuntimeError):sync.recover_inaccessible_more('adb','serial',self.current,lambda:None,['collection_slot_requested:app1','creator_more_selected'])
+                tap.assert_not_called();self.assertEqual(adb.call_count,1)
+
 if __name__ == "__main__":
     unittest.main()

@@ -203,6 +203,9 @@ def navigation_capture(adb_path, serial, guard, events):
         if works_webview_activity(current) and (isinstance(error,subprocess.TimeoutExpired)
                 or "did not return an XML hierarchy" in str(error)):
             assert_requested_foreground(current, events)
+            if ("creator_more_selected" in events and "works_native_more_recovery_attempted" not in events
+                    and not any(e.startswith("collection_scan_as_of:") for e in events)):
+                return recover_inaccessible_more(adb_path, serial, current, guard, events)
             raise ElementListReadError("UI elements unavailable after fresh hierarchy reads") from error
         if "did not return an XML hierarchy" not in str(error) or not notification:
             raise
@@ -1368,6 +1371,29 @@ def reopen_blank_more(adb_path, serial, root, guard, events):
     return navigation_capture(adb_path, serial, guard, events)
 
 
+def recover_inaccessible_more(adb_path, serial, current, guard, events):
+    """One pre-scan retry through the proven overview when More loses nodes."""
+    guard()
+    if not works_webview_activity(current) or focus(adb_path, serial) != current:
+        raise ElementListReadError("inaccessible works foreground changed")
+    events.append("works_native_more_recovery_attempted")
+    adb(adb_path, serial, "shell", "input", "keyevent", "4", timeout=7)
+    center = capture(adb_path, serial)
+    assert_requested_foreground(focus(adb_path, serial), events)
+    require_creator_service_available(center)
+    if label(center, "账号异常"):
+        raise RuntimeError("creator account shows abnormal status; collection skipped")
+    if not (label(center, "创作中心") and label(center, "最新笔记")
+            and creator_more_label(center) and creator_overview_entry(center)):
+        raise ElementListReadError("inaccessible More did not return to proven Creator Center")
+    tap_label(adb_path, serial, center, "观看", guard)
+    overview = navigation_capture(adb_path, serial, guard, events)
+    if not open_works_tab(adb_path, serial, overview, guard, events):
+        raise ElementListReadError("overview works tab is unavailable after inaccessible More")
+    events.append("works_native_more_reopened_via_overview")
+    return navigation_capture(adb_path, serial, guard, events)
+
+
 def require_creator_service_available(root):
     # 132/app2: a complete error page, not an empty note list. The user asks
     # to skip server errors; do not press either offered navigation action.
@@ -1513,6 +1539,7 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
             if more_attempts >= 2 and label(root, "账号异常"):
                 raise RuntimeError("creator account abnormal; More did not open works analysis")
             tap_label(adb_path, serial, root, creator_more_label(root), guard)
+            events.append("creator_more_selected")
             more_attempts += 1
             time.sleep(1)
         elif creator_overview_entry(root):
