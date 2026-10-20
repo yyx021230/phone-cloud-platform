@@ -1,0 +1,549 @@
+{
+  "status": "local_elements_only_candidate_141_both_slots_blocked_not_released",
+  "date": "2026-10-20",
+  "candidateTag": "xhs-compat-20261020-rc.11",
+  "branch": "codex/xhs-elements-only-20261020",
+  "sourceCommit": "25cf796368ede220c69fd39ad462ffbfc03ffa02",
+  "collectorLogicCommit": "268f65e0cedb1416de3d464ae79d899cea46d61b",
+  "ancestor": "325867b5b7601faf3c0e3cab94f8dfcb480fe703",
+  "productionReleasePerformed": false,
+  "remotePush": false,
+  "userRequirement": "Only native UI elements; no OCR, screenshot reading, image navigation or guessed zero when UI fields are missing.",
+  "decision": "Extends D-079 list-only/30-day/slot/occupancy/draft rules; supersedes image fallback for the new candidate. rc.10 is historical and no longer the proposed candidate under this requirement. Production has not changed.",
+  "scope": [
+    "123/app2",
+    "141/app1",
+    "141/app2"
+  ],
+  "exclusions": {
+    "18": "User requested keep current state; no further phone UI or system component changes.",
+    "152": "Always skipped.",
+    "74/81/188": "Earlier explicit skip retained.",
+    "6": "No corresponding configured XHS slot; zero phone calls.",
+    "123/app1": "Outside corresponding configured target; zero phone calls."
+  },
+  "behavior": [
+    "Collector has no recognition imports, screencap commands or image navigation; historical OCR libraries remain unused by this runtime.",
+    "Reject synthetic image-derived trees; read only native XML with bounded fresh hierarchy retries, unique temporary file cleanup and one compressed fallback.",
+    "Accept missing selected-tab text only with unique native Data Center, other tabs, scope/filter geometry and fully populated native rows.",
+    "Two consecutive agreeing fresh element frames, newest-list proof and inter-page title/date overlap are required.",
+    "Missing title/date/status or any of viewing/like/comment fields in a fully visible row is not silently discarded. Header-clipped rows require later native proof.",
+    "Initial unavailable hierarchy fails; a later unavailable frame retains proved records as incomplete with elements_unproven. No guessed zeros.",
+    "Schema3 and existing consumer contract unchanged; displayed 万/亿 remain approximate and there is no stable post ID."
+  ],
+  "correctionToPriorExplanation": {
+    "retained141NativeXML": {
+      "nodes": 195,
+      "textNodes": 119,
+      "completeRowsParsed": 5
+    },
+    "finding": "The blanket claim that141 cannot expose element data was incorrect. A retained native frame exposes post fields. The current live141 runs cannot obtain a complete usable hierarchy; this is a separate failure, not proof of permanent incapability."
+  },
+  "window": {
+    "start": "2026-09-21",
+    "end": "2026-10-20",
+    "timezone": "Asia/Shanghai",
+    "days": 30
+  },
+  "latestCollectorAcceptance": [
+    {
+      "phone": "123",
+      "slot": "app2",
+      "status": "complete",
+      "notes": 0,
+      "scrolls": 0,
+      "latestVisibleDate": "2026-08-31",
+      "boundary": "older_than_window_visible",
+      "repeatPasses": 2
+    },
+    {
+      "phone": "141",
+      "slot": "app1",
+      "status": "failed_native_elements_unavailable",
+      "notes": null
+    },
+    {
+      "phone": "141",
+      "slot": "app2",
+      "status": "failed_native_elements_unavailable",
+      "notes": null
+    }
+  ],
+  "acceptanceTotals": {
+    "attempts": 6,
+    "passed": 2,
+    "failed": 4,
+    "distinctFinalSlots": 3,
+    "finalSlotsComplete": 1,
+    "finalSlotsBlocked": 2
+  },
+  "additionalDiagnosticSessions": 2,
+  "attempts": [
+    {
+      "name": "141",
+      "slot": "app2",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "windowStart": null,
+      "windowEnd": null,
+      "stopReason": null,
+      "metricsComplete": null,
+      "slotProven": null,
+      "settingsRestored": true,
+      "durationSeconds": 108,
+      "stage": "xhs-elements-20261020-v1",
+      "purpose": "collector_acceptance",
+      "androidUser": "999",
+      "packagePresent": true,
+      "failure": "UI elements unavailable after fresh hierarchy reads"
+    },
+    {
+      "name": "141",
+      "slot": "app2",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "windowStart": null,
+      "windowEnd": null,
+      "stopReason": null,
+      "metricsComplete": null,
+      "slotProven": null,
+      "settingsRestored": true,
+      "durationSeconds": 115,
+      "stage": "xhs-elements-20261020-v2",
+      "purpose": "collector_acceptance",
+      "androidUser": "999",
+      "packagePresent": true,
+      "failure": "UI elements unavailable after fresh hierarchy reads"
+    },
+    {
+      "name": "123",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "windowStart": "2026-09-21",
+      "windowEnd": "2026-10-20",
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "slotProven": true,
+      "settingsRestored": true,
+      "durationSeconds": 73,
+      "stage": "xhs-elements-20261020-v3",
+      "purpose": "collector_acceptance",
+      "androidUser": "999",
+      "packagePresent": true,
+      "latestVisibleDate": "2026-08-31",
+      "nativeVisibleCards": 6,
+      "reader": "ui_elements_only"
+    },
+    {
+      "name": "123",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "windowStart": "2026-09-21",
+      "windowEnd": "2026-10-20",
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "slotProven": true,
+      "settingsRestored": true,
+      "durationSeconds": 69,
+      "stage": "xhs-elements-20261020-v4",
+      "purpose": "collector_acceptance",
+      "androidUser": "999",
+      "packagePresent": true,
+      "latestVisibleDate": "2026-08-31",
+      "nativeVisibleCards": 6,
+      "reader": "ui_elements_only"
+    },
+    {
+      "name": "141",
+      "slot": "app1",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "windowStart": null,
+      "windowEnd": null,
+      "stopReason": null,
+      "metricsComplete": null,
+      "slotProven": null,
+      "settingsRestored": true,
+      "durationSeconds": 110,
+      "stage": "xhs-elements-20261020-v4",
+      "purpose": "collector_acceptance",
+      "androidUser": "0",
+      "packagePresent": true,
+      "failure": "UI elements unavailable after fresh hierarchy reads"
+    },
+    {
+      "name": "141",
+      "slot": "app2",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "windowStart": null,
+      "windowEnd": null,
+      "stopReason": null,
+      "metricsComplete": null,
+      "slotProven": null,
+      "settingsRestored": true,
+      "durationSeconds": 108,
+      "stage": "xhs-elements-20261020-v4",
+      "purpose": "collector_acceptance",
+      "androidUser": "999",
+      "packagePresent": true,
+      "failure": "UI elements unavailable after fresh hierarchy reads"
+    },
+    {
+      "name": "141",
+      "slot": "app1",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "windowStart": null,
+      "windowEnd": null,
+      "stopReason": null,
+      "metricsComplete": null,
+      "slotProven": null,
+      "settingsRestored": true,
+      "durationSeconds": 118,
+      "stage": "xhs-elements-20261020-v5",
+      "purpose": "additional_existing_native_service_diagnostic",
+      "androidUser": "0",
+      "packagePresent": true,
+      "failure": "UI elements unavailable after fresh hierarchy reads"
+    },
+    {
+      "name": "141",
+      "slot": "app1",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "windowStart": null,
+      "windowEnd": null,
+      "stopReason": null,
+      "metricsComplete": null,
+      "slotProven": null,
+      "settingsRestored": true,
+      "durationSeconds": 133,
+      "stage": "xhs-elements-20261020-v6",
+      "purpose": "additional_existing_native_service_diagnostic",
+      "androidUser": "0",
+      "packagePresent": true,
+      "failure": "UI elements unavailable after fresh hierarchy reads"
+    }
+  ],
+  "stageManifests": [
+    {
+      "stage": "xhs-elements-20261020-v1",
+      "sourceCommit": "d0820da5dd276211ca01f07843f24e26247a98f0",
+      "manifestSHA256": "0c5a9a0aca21fc0f30456e4dbae3086ded1fced4237dd8e6fcd935c21425bda5",
+      "resultJournalSHA256": "6bd314620304373e6da11b5c16927758eac38cfc4ae7e4f4efde5ab8fb79d936",
+      "candidateSHA256": "be663da81c7cba7acbc1fb3060125ed7833bfd0565af4e40e0040b0054c11a57",
+      "recognitionAssets": 0
+    },
+    {
+      "stage": "xhs-elements-20261020-v2",
+      "sourceCommit": "268f65e0cedb1416de3d464ae79d899cea46d61b",
+      "manifestSHA256": "840b31044e9b197d95dd90773f973571b9879a7fdac03b20f9f21fcb6932b773",
+      "resultJournalSHA256": "4ec566966c981275cc19185f4d356a579b36872cd275f83dde2cc30eee915e6b",
+      "candidateSHA256": "d73c18bd098fcedf3ee11ade69e930b952d53724d4412fcad2c85aabd7b5e5fa",
+      "recognitionAssets": 0
+    },
+    {
+      "stage": "xhs-elements-20261020-v3",
+      "sourceCommit": "268f65e0cedb1416de3d464ae79d899cea46d61b",
+      "manifestSHA256": "5bb8d58d7f984eb661724b95751375710af5e3b6bff65c3a28ff4630bca726b8",
+      "resultJournalSHA256": "97ff1aa5c8d04f6266e4b27fe1fbb8aa45f14775a41b5e55952902a1f72b8038",
+      "candidateSHA256": "d73c18bd098fcedf3ee11ade69e930b952d53724d4412fcad2c85aabd7b5e5fa",
+      "recognitionAssets": 0
+    },
+    {
+      "stage": "xhs-elements-20261020-v4",
+      "sourceCommit": "268f65e0cedb1416de3d464ae79d899cea46d61b",
+      "manifestSHA256": "0d6e499258ebab70317433e5f95e599e52e8b84f8a0a905dd05930e475674655",
+      "resultJournalSHA256": "352ce83c12d0df19a16bdb42162bd0b526bfdfac4895a8d1fd0634f7fd6643e4",
+      "candidateSHA256": "d73c18bd098fcedf3ee11ade69e930b952d53724d4412fcad2c85aabd7b5e5fa",
+      "recognitionAssets": 0
+    },
+    {
+      "stage": "xhs-elements-20261020-v5",
+      "sourceCommit": "52489ea6dd6db079cd2319d50159ea6fdc063247",
+      "manifestSHA256": "a281a4c53819cd70c428d119119c62de2025b02e564a28b688d68e828076c152",
+      "resultJournalSHA256": "744e6ea70d63604219ca1c0ab76e9f5a6178e246b3ed4c1660d08eba88a00f19",
+      "candidateSHA256": "d73c18bd098fcedf3ee11ade69e930b952d53724d4412fcad2c85aabd7b5e5fa",
+      "recognitionAssets": 0
+    },
+    {
+      "stage": "xhs-elements-20261020-v6",
+      "sourceCommit": "25cf796368ede220c69fd39ad462ffbfc03ffa02",
+      "manifestSHA256": "1dc3192333f7d6378e9306a7229648bca4a5f818d564a443d3fdd3fbe01819e3",
+      "resultJournalSHA256": "d5eeac9e35536d0d273d22a908b8f4c76d442df6abeac1a339dbaf36c103acaa",
+      "candidateSHA256": "d73c18bd098fcedf3ee11ade69e930b952d53724d4412fcad2c85aabd7b5e5fa",
+      "recognitionAssets": 0
+    }
+  ],
+  "phone141Evidence": {
+    "controlledV4": "Correct XHS u0 WebView focus, default display fully on and powerAwake while temporary600000ms timeout still active. Native hierarchy commands returned Killed. Root cause not confirmed.",
+    "postRestoreAsleepDumps": "Excluded from capability conclusions.",
+    "webviewCause": "unconfirmed",
+    "memoryCause": "unconfirmed",
+    "rootEscalationAttempted": false,
+    "webviewDevtoolsSockets": 0,
+    "existingNativeServiceProbe": {
+      "packageAlreadyInstalled": true,
+      "newInstallOrPermissionChange": false,
+      "scope": "141/app1 only",
+      "frameworkAutoInstallerUsed": false,
+      "hierarchyRPCOnly": true,
+      "firstSessionNodes": 71,
+      "heldConnectionFrames": [
+        {
+          "frame": 0,
+          "nodes": 71,
+          "allNotes": 0,
+          "noteStatuses": 0
+        },
+        {
+          "frame": 1,
+          "nodes": 71,
+          "allNotes": 0,
+          "noteStatuses": 0
+        },
+        {
+          "frame": 2,
+          "nodes": 71,
+          "allNotes": 0,
+          "noteStatuses": 0
+        },
+        {
+          "frame": 3,
+          "nodes": 71,
+          "allNotes": 0,
+          "noteStatuses": 0
+        },
+        {
+          "frame": 4,
+          "nodes": 71,
+          "allNotes": 0,
+          "noteStatuses": 0
+        },
+        {
+          "frame": 5,
+          "nodes": 71,
+          "allNotes": 0,
+          "noteStatuses": 0
+        },
+        {
+          "frame": 6,
+          "nodes": 71,
+          "allNotes": 0,
+          "noteStatuses": 0
+        },
+        {
+          "frame": 7,
+          "nodes": 71,
+          "allNotes": 0,
+          "noteStatuses": 0
+        },
+        {
+          "frame": 8,
+          "nodes": 71,
+          "allNotes": 0,
+          "noteStatuses": 0
+        },
+        {
+          "frame": 9,
+          "nodes": 71,
+          "allNotes": 0,
+          "noteStatuses": 0
+        }
+      ],
+      "actualPostFieldsRead": false,
+      "integratedIntoCollector": false,
+      "shippedInProposedBundle": false,
+      "cleanup": {
+        "existingServiceProcessStopped": true,
+        "ownedForwardsRemoved": [
+          54003,
+          50712
+        ],
+        "ownedAdbInstrumentationChildren": [],
+        "imagesByStage": [
+          {
+            "stage": "xhs-elements-20261020-v1",
+            "pngFiles": 0,
+            "screenshotCommands": 0,
+            "sourceRecognitionAssets": 0
+          },
+          {
+            "stage": "xhs-elements-20261020-v2",
+            "pngFiles": 0,
+            "screenshotCommands": 0,
+            "sourceRecognitionAssets": 0
+          },
+          {
+            "stage": "xhs-elements-20261020-v3",
+            "pngFiles": 0,
+            "screenshotCommands": 0,
+            "sourceRecognitionAssets": 0
+          },
+          {
+            "stage": "xhs-elements-20261020-v4",
+            "pngFiles": 0,
+            "screenshotCommands": 0,
+            "sourceRecognitionAssets": 0
+          },
+          {
+            "stage": "xhs-elements-20261020-v5",
+            "pngFiles": 0,
+            "screenshotCommands": 0,
+            "sourceRecognitionAssets": 0
+          },
+          {
+            "stage": "xhs-elements-20261020-v6",
+            "pngFiles": 0,
+            "screenshotCommands": 0,
+            "sourceRecognitionAssets": 0
+          }
+        ]
+      }
+    }
+  },
+  "tests": {
+    "python": {
+      "command": "python3 -m unittest discover -s windows-agent/scripts -p 'test_xhs*.py'",
+      "passed": 279,
+      "includesNativeElementTests": 29,
+      "includesQAProbeTests": 17,
+      "historicalUnusedOCRLibraryRegressionRetained": true,
+      "logSHA256": "9a00bffb910c406e1970fd228b941a6d1a49aeaf993ea3df2f7d9dcb25a2d110"
+    },
+    "node": {
+      "command": "node --test windows-agent/src/xhs-data-collection.test.mjs scripts/xhs-slot-retest-plan.test.mjs",
+      "passed": 16,
+      "consumer": 11,
+      "slotPlanner": 5
+    },
+    "rootCheck": {
+      "command": "npm run check",
+      "passed": true,
+      "logSHA256": "e796754c754647f56f14c8e43771c9ce6c97e6ded885d6565bda5d12b9385444"
+    },
+    "diffCheck": true,
+    "review": "Self review; no independent agent review. No shared control/ADB/Agent/media source changed. Static tests do not imply live141 or fleet/production acceptance."
+  },
+  "safetyAfter": {
+    "allEightOriginalSettingsRestored": true,
+    "pendingLedgers": 0,
+    "activeOwnedCollectors": 0,
+    "priorStagesChecked": 13,
+    "olderStagesChecked": 39,
+    "nativeResources": {
+      "existingServiceProcessStopped": true,
+      "ownedForwardsRemoved": [
+        54003,
+        50712
+      ],
+      "ownedAdbInstrumentationChildren": [],
+      "imagesByStage": [
+        {
+          "stage": "xhs-elements-20261020-v1",
+          "pngFiles": 0,
+          "screenshotCommands": 0,
+          "sourceRecognitionAssets": 0
+        },
+        {
+          "stage": "xhs-elements-20261020-v2",
+          "pngFiles": 0,
+          "screenshotCommands": 0,
+          "sourceRecognitionAssets": 0
+        },
+        {
+          "stage": "xhs-elements-20261020-v3",
+          "pngFiles": 0,
+          "screenshotCommands": 0,
+          "sourceRecognitionAssets": 0
+        },
+        {
+          "stage": "xhs-elements-20261020-v4",
+          "pngFiles": 0,
+          "screenshotCommands": 0,
+          "sourceRecognitionAssets": 0
+        },
+        {
+          "stage": "xhs-elements-20261020-v5",
+          "pngFiles": 0,
+          "screenshotCommands": 0,
+          "sourceRecognitionAssets": 0
+        },
+        {
+          "stage": "xhs-elements-20261020-v6",
+          "pngFiles": 0,
+          "screenshotCommands": 0,
+          "sourceRecognitionAssets": 0
+        }
+      ]
+    },
+    "sharedProcessIdentity": {
+      "adbPid": 8988,
+      "adbOwner": "NT AUTHORITY\\SYSTEM",
+      "adbExe": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+      "adbCreatedAt": 1792388072.8168414,
+      "agentPid": 14508,
+      "agentOwner": "NT AUTHORITY\\SYSTEM",
+      "agentCreatedAt": 1792388069.5465655
+    },
+    "productionEightFilesUnchanged": {
+      "scripts/小红书数据同步.py": "e4ee2e856a41c9346e88c205b99f9faec371fe869752f0c492454016ffd639c5",
+      "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+      "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+      "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+      "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    "mediaLive": {
+      "decision": "D-075",
+      "verified": "live",
+      "pid": 2503525,
+      "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+      "bitsPerSecond": 8000000,
+      "packetsPerGroup": 2
+    },
+    "rootPreexistingStatusEntriesPreserved": 237,
+    "sharedADBIdentityKeysEnvironmentStartupChanged": false,
+    "globalRestartOrUSBDriverOperation": false,
+    "webDBWrite": false,
+    "phone18UiActions": 0
+  },
+  "proposedReleaseBundle": {
+    "localIgnoredFilename": "rc11-elements-only.tar",
+    "SHA256": "f4e71fa74193354d6bfcb4181ab9215c1cea16f2d62af4e184463d7b5c384b88",
+    "sourceCommit": "25cf796368ede220c69fd39ad462ffbfc03ffa02",
+    "files": {
+      "windows-agent/scripts/小红书数据同步.py": "d73c18bd098fcedf3ee11ade69e930b952d53724d4412fcad2c85aabd7b5e5fa"
+    },
+    "fileCount": 1,
+    "notDeployed": true,
+    "releaseApproval": "A future release must bind the committed candidate and actual production hash baseline. Existing production data/old files are not deleted; no Agent/ADB/media restart."
+  },
+  "limitations": [
+    "141/app1 and141/app2 are not fixed under the elements-only requirement. Do not report zero notes or full compatibility.",
+    "18 remains unresolved and on hold. No component update or further UI testing.",
+    "123 positive result contains no within-window notes; real nonzero live native scrolling not proved by this run. Retained native fixtures and simulations do not replace that live acceptance.",
+    "Staging on the Windows host is not acceptance of the production SYSTEM queue, fleet coverage, browser or database integration."
+  ]
+}
