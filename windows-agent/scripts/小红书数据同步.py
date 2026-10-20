@@ -1270,6 +1270,16 @@ def reopen_blank_more(adb_path, serial, root, guard, events):
     return navigation_capture(adb_path, serial, guard, events)
 
 
+def require_creator_service_available(root):
+    # 132/app2: a complete error page, not an empty note list. The user asks
+    # to skip server errors; do not press either offered navigation action.
+    if (not creator_list(root)
+            and label(root, "工程薯正在努力抢修，你还可以:")
+            and label(root, "返回上一页") and label(root, "刷新试试")
+            and all(n.get("package") == XHS_PACKAGE for n in live_nodes(root))):
+        raise RuntimeError("Creator Center service is unavailable; collection skipped")
+
+
 def ensure_creator_list(adb_path, serial, root, slot, guard, events):
     recoveries = 0
     more_attempts = 0
@@ -1286,6 +1296,7 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
             current = focus(adb_path, serial)
             if re.search(r"\bu\d+\s+com\.xingin\.xhs/", current):
                 verify_collection_slot(adb_path, serial, slot, events)
+        require_creator_service_available(root)
         if creator_filter_panel(root):
             tap_filter_label(adb_path,serial,root,"收起",guard)
             events.append("works_filter_panel_collapsed")
@@ -1666,6 +1677,7 @@ def wait_creator_content(adb_path, serial, root, guard, events):
             guard()
             if wake_if_asleep(adb_path, serial, guard, events):
                 root = navigation_capture(adb_path, serial, guard, events)
+            require_creator_service_available(root)
             try:
                 signature = element_page_signature(root)
             except ElementListReadError:

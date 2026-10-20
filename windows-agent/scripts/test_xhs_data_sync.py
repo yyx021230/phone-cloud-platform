@@ -1378,6 +1378,35 @@ class OverlayRecoveryTests(unittest.TestCase):
         adb.assert_not_called()
 
 
+class CreatorRepairingServiceTests(unittest.TestCase):
+    def fixture(self):
+        return ET.parse(SCRIPT.parent / "fixtures/xhs/creator-repairing-service-error.xml").getroot()
+
+    def test_observed_service_error_stops_navigation_without_refresh_or_back(self):
+        with patch.object(sync, "wake_if_asleep", return_value=False), \
+                patch.object(sync, "focus", return_value="com.xingin.xhs"), \
+                patch.object(sync, "navigation_capture", side_effect=lambda *a: self.fixture()), \
+                patch.object(sync.time, "sleep"), patch.object(sync, "adb") as adb:
+            with self.assertRaisesRegex(RuntimeError, "Creator Center service is unavailable"):
+                sync.ensure_creator_list("adb", "serial", self.fixture(), "app1", lambda: None, [])
+        adb.assert_not_called()
+
+    def test_observed_service_error_stops_list_wait_without_reopening(self):
+        with patch.object(sync, "wake_if_asleep", return_value=False), \
+                patch.object(sync, "navigation_capture", side_effect=lambda *a: self.fixture()), \
+                patch.object(sync.time, "sleep"), patch.object(sync, "adb") as adb:
+            with self.assertRaisesRegex(RuntimeError, "Creator Center service is unavailable"):
+                sync.wait_creator_content("adb", "serial", self.fixture(), lambda: None, [])
+        adb.assert_not_called()
+
+    def test_incomplete_or_foreign_service_labels_do_not_match(self):
+        for kind in ("missing_action", "foreign_package"):
+            root = self.fixture()
+            node = next(n for n in root.iter("node") if n.get("text") == "刷新试试")
+            node.set("text" if kind == "missing_action" else "package", "不同内容")
+            sync.require_creator_service_available(root)
+
+
 class NativeClippedRowRoundingTests(unittest.TestCase):
     def fixture(self):
         return ET.parse(SCRIPT.parent / "fixtures/xhs/works-clipped-row-rounding.xml").getroot()
