@@ -1617,6 +1617,16 @@ class NativeNavigationIntegrationTests(unittest.TestCase):
         self.assertEqual(action.call_args.args[0],'menu');tap.assert_not_called()
         with patch.object(sync,'adb',return_value='VIVO'),patch.object(sync,'native_index_navigation'),patch.object(sync,'navigation_capture',return_value=xml()),patch.object(sync,'focus',return_value=self.current):
             with self.assertRaisesRegex(sync.ElementListReadError,'did not expose'):sync.tap_index_menu('adb','serial',xml(),lambda:None,events)
+    def test_profile_transition_reads_again_without_replaying_native_action(self):
+        root=ZeroBoundsProfileTests().footer();selected=ZeroBoundsProfileTests().footer('true');events=['collection_slot_requested:app2','clone_user_requested:999']
+        with patch.object(sync,'native_index_navigation') as action,patch.object(sync,'navigation_capture',side_effect=[xml(),selected]) as capture,patch.object(sync,'focus',return_value=self.current),patch.object(sync.time,'sleep'):
+            self.assertIs(sync.select_zero_bounds_profile('adb','serial',root,self.current,lambda:None,events),selected)
+        action.assert_called_once();self.assertEqual(capture.call_count,2)
+    def test_profile_readback_stops_when_activity_changes(self):
+        root=ZeroBoundsProfileTests().footer();events=['collection_slot_requested:app2','clone_user_requested:999']
+        with patch.object(sync,'native_index_navigation') as action,patch.object(sync,'navigation_capture',return_value=xml()) as capture,patch.object(sync,'focus',return_value=self.current.replace('com.xingin.xhs.index.v2.IndexActivityV2','com.xingin.xhs.note.NoteDetailActivity')):
+            with self.assertRaisesRegex(sync.ElementListReadError,'left the index page'):sync.select_zero_bounds_profile('adb','serial',root,self.current,lambda:None,events)
+        action.assert_called_once();capture.assert_called_once()
 
 class NativeMoreRecoveryTests(unittest.TestCase):
     current='mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}'

@@ -1203,12 +1203,19 @@ def select_zero_bounds_profile(adb_path, serial, root, current, guard, events):
         raise RuntimeError("zero-bounds profile footer is not on the verified home tab")
     guard()
     native_index_navigation("profile", adb_path, serial, guard, events)
-    fresh = navigation_capture(adb_path, serial, guard, events)
-    assert_requested_foreground(focus(adb_path, serial), events)
-    if len([n for n in fresh.iter("node") if n.get("package") == XHS_PACKAGE
-            and n.get("content-desc") == "我" and n.get("selected") == "true"]) != 1:
-        raise ElementListReadError("native profile action did not select the own-profile tab")
-    return fresh
+    for attempt in range(4):
+        fresh = navigation_capture(adb_path, serial, guard, events)
+        foreground = focus(adb_path, serial)
+        assert_requested_foreground(foreground, events)
+        if not re.search(r"com\.xingin\.xhs/(?:com\.xingin\.xhs\.index\.v2\.IndexActivityV2|\.index\.v2\.IndexActivityV2)(?:[}\s]|$)", foreground):
+            raise ElementListReadError("native profile readback left the index page")
+        if len([n for n in fresh.iter("node") if n.get("package") == XHS_PACKAGE
+                and n.get("content-desc") == "我" and n.get("selected") == "true"]) == 1:
+            return fresh
+        if attempt < 3:
+            guard()
+            time.sleep(0.5)
+    raise ElementListReadError("native profile action did not select the own-profile tab")
 
 
 def refresh_creator_server_error(adb_path, serial, root, guard, events, attempts):
