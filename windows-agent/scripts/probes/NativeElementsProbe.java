@@ -117,6 +117,22 @@ public final class NativeElementsProbe {
             return xml.append("</hierarchy>").toString();
         }
     }
+    static Node uniqueDataCenter(java.util.List<Node> nodes) throws Exception {
+        Node target=null;
+        try {
+            if(nodes.size()>100)throw new IllegalStateException("native query budget");
+            for(Node node:nodes) {
+                if(node!=null && node.visible() && "com.xingin.xhs".equals(node.value("package"))
+                        && "android.webkit.WebView".equals(node.value("class")) && "数据中心".equals(node.value("text"))) {
+                    if(target!=null)throw new IllegalStateException("ambiguous data center WebView");
+                    target=node;
+                }
+            }
+            if(target==null)throw new IllegalStateException("data center WebView query empty");
+        } catch(Exception e) {for(Node node:nodes)if(node!=null)node.close();throw e;}
+        for(Node node:nodes)if(node!=null && node!=target)node.close();
+        return target;
+    }
     interface RootSource { Node root() throws Exception; }
     static String readFresh(RootSource source, int attempts) throws Exception {
         for (int i = 0; i < attempts; i++) {
@@ -143,8 +159,17 @@ public final class NativeElementsProbe {
             xml = readFresh(() -> {
                 Object root = call(automation, "getRootInActiveWindow");
                 if (root == null) return null;
-                if (!(Boolean) call(root, "refresh")) { call(root, "recycle"); return null; }
-                return new AndroidNode(root);
+                try {
+                    if (!(Boolean) call(root, "refresh")) return null;
+                    if (!"com.xingin.xhs".equals(String.valueOf(call(root,"getPackageName"))))
+                        throw new IllegalStateException("foreground package is not XHS");
+                    java.util.List<?> found=(java.util.List<?>)root.getClass().getMethod("findAccessibilityNodeInfosByText",String.class).invoke(root,"数据中心");
+                    java.util.List<Node> candidates=new java.util.ArrayList<>();
+                    for(Object node:found)candidates.add(node==null?null:new AndroidNode(node));
+                    // Scope only to the unique data-center WebView. Every
+                    // child inside it still has to be readable and complete.
+                    return uniqueDataCenter(candidates);
+                } finally { call(root,"recycle"); }
             }, 3);
             code = 0;
         } catch (Exception error) {

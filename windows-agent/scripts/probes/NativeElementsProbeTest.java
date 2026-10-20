@@ -6,12 +6,13 @@ public final class NativeElementsProbeTest {
     static class N implements NativeElementsProbe.Node {
         boolean visible = true, closed;
         String rectangle = "[1,2][100,200]";
+        String type="android.view.View";
         String text = "标题 & <测> \"😀\"\n", pkg = "com.xingin.xhs";
         List<N> kids = new ArrayList<>();
         public boolean visible() { return visible; }
         public int children() { if (!visible) throw new AssertionError("invisible subtree traversed"); return kids.size(); }
         public NativeElementsProbe.Node child(int i) { return kids.get(i); }
-        public String value(String k) { return k.equals("package") ? pkg : k.equals("text") ? text : k.equals("bounds") ? rectangle : ""; }
+        public String value(String k) { return k.equals("class") ? type : k.equals("package") ? pkg : k.equals("text") ? text : k.equals("bounds") ? rectangle : ""; }
         public void close() { closed = true; }
     }
     interface Run { void go() throws Exception; }
@@ -35,6 +36,11 @@ public final class NativeElementsProbeTest {
         int[] tries={0};N fresh=new N();String recovered=NativeElementsProbe.readFresh(() -> ++tries[0]<3?null:fresh,3);if(tries[0]!=3 || !recovered.contains("<node "))throw new AssertionError();tests++;
         tries[0]=0;rejects(() -> NativeElementsProbe.readFresh(() -> {tries[0]++;return null;},3));if(tries[0]!=3)throw new AssertionError();tests++;
         tries[0]=0;rejects(() -> NativeElementsProbe.readFresh(() -> {tries[0]++;N n=new N();n.pkg="other";return n;},3));if(tries[0]!=1)throw new AssertionError();tests++;
+        N web=new N();web.type="android.webkit.WebView";web.text="数据中心";N title=new N();title.text="数据中心";
+        if(NativeElementsProbe.uniqueDataCenter(Arrays.asList(title,web))!=web||!title.closed||web.closed)throw new AssertionError();tests++;
+        N web2=new N();web2.type=web.type;web2.text=web.text;rejects(()->NativeElementsProbe.uniqueDataCenter(Arrays.asList(web,web2)));if(!web.closed||!web2.closed)throw new AssertionError();tests++;
+        rejects(()->NativeElementsProbe.uniqueDataCenter(Arrays.asList(new N())));tests++;
+        N badWeb=new N();badWeb.type="android.webkit.WebView";badWeb.text="数据中心";badWeb.kids.add(null);rejects(()->new NativeElementsProbe.Reader().read(NativeElementsProbe.uniqueDataCenter(Arrays.asList(badWeb))));tests++;
         System.out.println("NativeElementsProbe tests passed: " + tests);
     }
 }

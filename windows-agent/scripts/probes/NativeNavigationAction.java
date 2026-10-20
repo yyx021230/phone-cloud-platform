@@ -8,6 +8,9 @@ public final class NativeNavigationAction {
         int children() throws Exception;
         Node child(int i) throws Exception;
         boolean refresh() throws Exception;
+        List<Node> query(String text) throws Exception;
+        Node parent() throws Exception;
+        Node inputFocus() throws Exception;
         boolean click() throws Exception;
         void close() throws Exception;
     }
@@ -34,6 +37,12 @@ public final class NativeNavigationAction {
         public int children() throws Exception {return (Integer)call("getChildCount");}
         public Node child(int i) throws Exception {Object c=n.getClass().getMethod("getChild",int.class).invoke(n,i);return c==null?null:new AndroidNode(c);}
         public boolean refresh() throws Exception {return (Boolean)call("refresh");}
+        public List<Node> query(String text) throws Exception {
+            List<?> found=(List<?>)n.getClass().getMethod("findAccessibilityNodeInfosByText",String.class).invoke(n,text);
+            List<Node> out=new ArrayList<>();for(Object item:found)out.add(new AndroidNode(item));return out;
+        }
+        public Node parent() throws Exception {Object p=call("getParent");return p==null?null:new AndroidNode(p);}
+        public Node inputFocus() throws Exception {Object f=n.getClass().getMethod("findFocus",int.class).invoke(n,1);return f==null?null:new AndroidNode(f);}
         public boolean click() throws Exception {return (Boolean)n.getClass().getMethod("performAction",int.class).invoke(n,16);}
         public void close() throws Exception {call("recycle");}
     }
@@ -50,6 +59,24 @@ public final class NativeNavigationAction {
             int count=n.children();if(count<0||count>2000)throw new IllegalStateException("child budget");
             List<Node> cs=new ArrayList<>();children.put(n,cs);
             for(int i=0;i<count;i++){Node child=n.child(i);cs.add(child);walk(child,depth+1);}
+        }
+        void queryNavigation(Node root,String action) throws Exception {
+            if(root==null)throw new IllegalStateException("missing native root");
+            all.add(root);
+            if(!"com.xingin.xhs".equals(root.value("package"))||!root.visible())throw new IllegalStateException("foreign or hidden root");
+            Node focused=root.inputFocus();if(focused!=null)all.add(focused);
+            List<Node> me=root.query("我");if(me.size()>100)throw new IllegalStateException("query budget");
+            all.addAll(me);List<Node> matches=new ArrayList<>();
+            for(Node n:me)if("com.xingin.xhs".equals(n.value("package"))&&"android.view.ViewGroup".equals(n.value("class"))&&label(n,"我")&&actionable(n))matches.add(n);
+            if(matches.size()!=1)throw new IllegalStateException("profile query is ambiguous");
+            if(action.equals("profile")){
+                // Feed children are irrelevant to this navigation proof. The
+                // complete five-item footer must still be traversable.
+                walk(matches.get(0).parent(),0);
+            }else if(action.equals("menu")){
+                List<Node> menus=root.query("菜单");if(menus.size()>100)throw new IllegalStateException("query budget");all.addAll(menus);
+            }else throw new IllegalArgumentException("unsupported action");
+            for(Node n:all)if(!"com.xingin.xhs".equals(n.value("package")))throw new IllegalStateException("foreign query node");
         }
         boolean label(Node n,String s) throws Exception {return n.visible()&&(s.equals(n.value("desc"))||s.equals(n.value("text")));}
         boolean actionable(Node n) throws Exception {return n.visible()&&"true".equals(n.value("clickable"))&&"true".equals(n.value("enabled"));}
@@ -93,7 +120,7 @@ public final class NativeNavigationAction {
             Object automation=wrapper.getClass().getMethod("getUiAutomation").invoke(wrapper);
             Object root=automation.getClass().getMethod("getRootInActiveWindow").invoke(automation);
             try(Selection selection=new Selection()){
-                selection.walk(root==null?null:new AndroidNode(root),0);selection.perform(args[0]);
+                selection.queryNavigation(root==null?null:new AndroidNode(root),args[0]);selection.perform(args[0]);
             }
             code=0;
         }catch(Exception e){System.err.println("native_navigation_unproven:"+e.getClass().getSimpleName()+":"+e.getMessage());}
