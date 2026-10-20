@@ -70,6 +70,19 @@ class NativeReadingTests(unittest.TestCase):
 
 class ElementCaptureTests(unittest.TestCase):
  current='mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}'
+ def test_failed_uncompressed_modes_can_use_a_fresh_compressed_element_tree(self):
+  def read(a,b,*args,**kw):
+   if '--compressed' in args:return ET.tostring(listing(),encoding='unicode')
+   if args[:3]==('shell','uiautomator','dump'):raise RuntimeError('native dump exited137')
+   return ''
+  with patch.object(sync,'adb',side_effect=read) as adb,patch.object(sync,'focus',return_value=self.current),patch.object(sync.time,'sleep'):
+   r=sync.capture('adb','serial')
+  self.assertEqual(len(sync.note_cards(r)),5)
+  calls=[c.args[2:] for c in adb.call_args_list];self.assertEqual(sum('--compressed' in c for c in calls),1)
+  self.assertEqual(calls[-2][:3],('shell','rm','-f'));self.assertFalse(any('screencap' in c for c in calls))
+ def test_failure_of_all_native_modes_remains_a_hierarchy_error(self):
+  with patch.object(sync,'adb',return_value=''),patch.object(sync,'focus',return_value=self.current),patch.object(sync.time,'sleep'):
+   with self.assertRaisesRegex(RuntimeError,'did not return an XML'):sync.capture('adb','serial')
  def test_loaded_elements_are_used_even_with_an_old_image_mode_event(self):
   r=listing();real=builtins.__import__
   def native_only(name,*args,**kw):

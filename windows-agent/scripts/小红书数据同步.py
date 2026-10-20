@@ -124,6 +124,15 @@ def capture(adb_path, serial):
         pass
     finally:
         adb(adb_path, serial, "shell", "rm", "-f", path, timeout=8)
+    # 141 returned exit137 on an uncompressed dump. After both native paths
+    # fail, try a fresh compressed hierarchy without changing device settings.
+    try:
+        raw = adb(adb_path, serial, "exec-out", "uiautomator", "dump", "--compressed", "/dev/tty", timeout=15)
+        start, end = raw.find("<hierarchy"), raw.rfind(HIERARCHY_END)
+        if start >= 0 and end >= start:
+            return ET.fromstring(raw[start:end + len(HIERARCHY_END)])
+    except (RuntimeError,subprocess.TimeoutExpired):
+        pass
     raise RuntimeError("UIAutomator did not return an XML hierarchy")
 
 
