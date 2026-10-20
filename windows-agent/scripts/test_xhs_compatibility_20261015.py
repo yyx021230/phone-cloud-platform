@@ -196,7 +196,7 @@ class FilterNavigationTests(unittest.TestCase):
         self.assertTrue(data['navigationOnly']);self.assertEqual(data['cards'],[]);self.assertEqual(data['markers'],{})
         root=ocr.hierarchy_for_frame(data)
         self.assertEqual(root.get('data-source'),'windows_native_ocr_navigation')
-        self.assertEqual(sync.note_cards(root),[])
+        with self.assertRaises(sync.ElementListReadError):sync.note_cards(root)
         self.assertTrue(sync.label(root,'收起'))
         self.assertFalse(sync.label(root,'重置'))
 
@@ -212,16 +212,14 @@ class FilterNavigationTests(unittest.TestCase):
             if mutation=='underline':pixels[:]=255
             self.assertIsNone(ocr.filter_navigation_frame(pixels,candidate))
 
-    def test_active_image_mode_keeps_proven_xml_filter_navigation(self):
+    def test_synthetic_filter_tree_is_rejected_by_element_navigation(self):
         import xhs_list_ocr as ocr
         frame,full=self.observed();root=ocr.hierarchy_for_frame(ocr.filter_navigation_frame(frame,full))
-        with patch.object(sync.os,'name','nt'),patch.object(sync,'capture',return_value=root),patch.object(sync,'image_navigation_capture') as image:
-            self.assertIs(sync.navigation_capture('adb','serial',lambda:None,['works_list_image_reader_active']),root)
-        image.assert_not_called()
+        with patch.object(sync,'capture',return_value=root),self.assertRaises(sync.ElementListReadError):
+            sync.navigation_capture('adb','serial',lambda:None,[])
 
     def test_ensure_closes_only_the_panel_before_accepting_a_list(self):
-        import xhs_list_ocr as ocr
-        frame,full=self.observed();root=ocr.hierarchy_for_frame(ocr.filter_navigation_frame(frame,full))
+        root=ET.parse(SCRIPTS/'fixtures/xhs/filter-panel-elements.xml').getroot()
         listing=ET.fromstring('<hierarchy><node text="数据中心" bounds="[0,0][700,100]"/><node text="作品分析" bounds="[0,100][700,200]"/><node text="全部笔记" bounds="[0,200][700,300]"/></hierarchy>')
         with patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync,'tap_filter_label') as tap,patch.object(sync,'navigation_capture',return_value=listing):
             self.assertIs(sync.ensure_creator_list('adb','serial',root,'app1',lambda:None,[]),listing)
@@ -490,44 +488,6 @@ class TitleGeometryTests(unittest.TestCase):
             parsed=o.prepare_frame(frame,full,read_counts=False)
         self.assertTrue(parsed['leadingClip']);self.assertEqual(len(parsed['rows']),1);self.assertEqual(parsed['rows'][0]['title'],'第二篇标题')
 
-class IndexImageNavigationTests(unittest.TestCase):
-    def observed(self):
-        import cv2
-        from test_xhs_list_ocr import line
-        frame=cv2.imread(str(SCRIPTS/'fixtures/xhs/index-navigation.png'))
-        full={'width':1080,'height':2400,'language':'zh-Hans-CN','lines':[line('首页',(58,2182,157,2231)),line('我',(951,2184,994,2227))]}
-        return frame,full
-    def test_exact_bottom_anchors_and_center_red_control_are_required(self):
-        import xhs_list_ocr as o
-        frame,full=self.observed();r=o.profile_navigation_anchors(frame,full);self.assertEqual(r['labels']['我'],(951,2184,994,2227))
-        frame[:,450:630]=255
-        with self.assertRaisesRegex(RuntimeError,'center publish control'):o.profile_navigation_anchors(frame,full)
-        frame,full=self.observed();full['lines'][1]['words'][0]['y']=1500
-        with self.assertRaisesRegex(RuntimeError,'bottom navigation'):o.profile_navigation_anchors(frame,full)
-    def test_overlay_copy_blocks_index_navigation(self):
-        import xhs_list_ocr as o
-        from test_xhs_list_ocr import line
-        frame,full=self.observed();full['lines'].append(line('存草稿',(400,1200,600,1250)))
-        with self.assertRaisesRegex(RuntimeError,'unhandled overlay'):o.profile_navigation_anchors(frame,full)
-    def test_two_identical_frames_select_only_my_and_reject_repeat_or_wrong_user(self):
-        import xhs_list_ocr as o
-        current='mCurrentFocus=Window{x u0 com.xingin.xhs/.index.v2.IndexActivityV2}'
-        _,full=self.observed();frame={'labels':{'我':(951,2184,994,2227)}}
-        events=['collection_slot_requested:app1']
-        with patch.object(o,'read_profile_navigation',return_value=frame),patch.object(sync,'focus',return_value=current),patch.object(sync.subprocess,'run',return_value=Mock(returncode=0,stdout=b'png')),patch.object(sync,'adb') as adb,patch.object(sync,'navigation_capture',return_value=ET.Element('hierarchy')),patch.object(sync.time,'sleep'):
-            sync.select_image_profile_after_dump_failure('adb','serial',current,lambda:None,events)
-            self.assertEqual(adb.call_args.args[2:],('shell','input','tap','972','2205'))
-            with self.assertRaises(RuntimeError):sync.select_image_profile_after_dump_failure('adb','serial',current,lambda:None,events)
-            self.assertEqual(adb.call_count,1)
-        with patch.object(sync,'adb') as adb:
-            with self.assertRaisesRegex(RuntimeError,'requested slot'):sync.select_image_profile_after_dump_failure('adb','serial',current,lambda:None,['collection_slot_requested:app2','clone_user_requested:999'])
-            adb.assert_not_called()
-    def test_changed_bottom_bar_never_triggers_a_tap(self):
-        import xhs_list_ocr as o
-        current='mCurrentFocus=Window{x u0 com.xingin.xhs/.index.v2.IndexActivityV2}'
-        with patch.object(o,'read_profile_navigation',side_effect=[{'labels':{'我':(1,2,3,4)}},{'labels':{'我':(2,2,4,4)}}]),patch.object(sync,'focus',return_value=current),patch.object(sync.subprocess,'run',return_value=Mock(returncode=0,stdout=b'png')),patch.object(sync,'adb') as adb:
-            with self.assertRaisesRegex(RuntimeError,'changed between captures'):sync.select_image_profile_after_dump_failure('adb','serial',current,lambda:None,['collection_slot_requested:app1'])
-            adb.assert_not_called()
 
 class SplitTitleTests(unittest.TestCase):
     def test_two_crop_readings_can_restore_prefix_but_not_replace_existing_content(self):
@@ -541,35 +501,6 @@ class SplitTitleTests(unittest.TestCase):
         proof['r5_title_binary']['lines']=[]
         with self.assertRaisesRegex(RuntimeError,'two complete readings'):o.resolve_title_crop(row,5,proof)
 
-class StaleFilterStateTests(unittest.TestCase):
-    def panel(self):
-        import xhs_list_ocr as o
-        frame,full=FilterNavigationTests().observed();return o.hierarchy_for_frame(o.filter_navigation_frame(frame,full))
-    def listing(self):
-        root=self.panel()
-        for node in list(root[0]):
-            if node.get('text') in ['笔记类型','发布时间','排序方式','收起']:root[0].remove(node)
-        root.set('data-source','windows_native_ocr')
-        ET.SubElement(root[0],'node',{'package':'com.xingin.xhs','class':'android.widget.TextView','text':'暂无笔记','bounds':'[300,1000][420,1040]'})
-        return root
-    def test_duplicate_center_parent_is_not_an_extra_filter_header(self):
-        root=self.panel();center=next(n for n in root[0] if n.get('text')=='数据中心');root[0].remove(center)
-        parent=ET.SubElement(root[0],'node',{'package':'com.xingin.xhs','class':'android.view.View','text':'数据中心','bounds':'[0,0][720,170]'});parent.append(center)
-        self.assertTrue(sync.creator_filter_panel(root))
-    def test_already_opened_panel_is_closed_without_toggling_header(self):
-        panel=self.panel();listing=self.listing();events=[]
-        with patch.object(sync,'wake_if_asleep'),patch.object(sync,'navigation_capture',return_value=listing),patch.object(sync,'tap_filter_label') as tap:
-            self.assertIs(sync.refresh_scrolled_webview('adb','serial',panel,lambda:None,events),listing)
-        self.assertEqual([c.args[3] for c in tap.call_args_list],['收起'])
-    def test_stale_native_panel_after_tap_can_be_replaced_only_by_proven_image_list(self):
-        listing=self.listing();listing.set('data-source','xml');actual=self.listing();events=[]
-        with patch.object(sync,'wake_if_asleep'),patch.object(sync,'navigation_capture',return_value=listing),patch.object(sync,'recheck_filter_image',return_value=actual),patch.object(sync,'tap_filter_label') as tap:
-            self.assertIs(sync.refresh_scrolled_webview('adb','serial',listing,lambda:None,events),actual)
-        self.assertEqual([c.args[3] for c in tap.call_args_list],['全部笔记'])
-    def test_unproven_image_or_empty_native_state_does_not_become_empty_success(self):
-        listing=self.listing();listing.set('data-source','xml')
-        with patch.object(sync,'wake_if_asleep'),patch.object(sync,'navigation_capture',return_value=listing),patch.object(sync,'recheck_filter_image',return_value=ET.Element('hierarchy')),patch.object(sync,'tap_filter_label'):
-            with self.assertRaisesRegex(RuntimeError,'panel is not proven'):sync.refresh_scrolled_webview('adb','serial',listing,lambda:None,[])
 
 class CompleteRepeatedCountTests(unittest.TestCase):
     def test_missing_first_digit_is_not_a_complete_count_vote(self):
@@ -602,36 +533,6 @@ class SettlingKeyguardTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError,'swipe surface is not proven'):sync.dismiss_unsecured_keyguard('adb','serial',lambda:None,[])
         self.assertFalse(any('swipe' in c.args for c in adb.call_args_list))
 
-class FreshHeaderRetryTests(unittest.TestCase):
-    def run_reads(self,readings):
-        import xhs_list_ocr as o
-        from test_xhs_list_ocr import result
-        current='mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}'
-        events=['collection_slot_requested:app1'];reader=Mock(side_effect=readings)
-        with patch.object(o,'read_works_image',reader),patch.object(sync,'focus',return_value=current),patch.object(sync.subprocess,'run',return_value=Mock(returncode=0,stdout=b'png')),patch.object(sync.time,'sleep'):
-            root=sync.image_navigation_capture('adb','serial',lambda:None,events,current)
-        return root,events,reader.call_count
-    def test_header_failure_resets_pair_and_demands_two_later_fresh_successes(self):
-        from test_xhs_list_ocr import result
-        good=result();root,events,calls=self.run_reads([good,RuntimeError('OCR works-list header is not unique: 数据中心'),good,good])
-        self.assertEqual(calls,4);self.assertIn('works_image_header_capture_retried',events)
-    def test_notification_banner_can_outlast_the_previous_capture_budget(self):
-        from test_xhs_list_ocr import result
-        bad = RuntimeError('OCR works-list header is not unique: 数据中心')
-        good = result()
-        root,events,calls = self.run_reads([bad]*7+[good,good])
-        self.assertEqual(calls,9)
-        self.assertEqual(events.count('works_image_header_capture_retried'),7)
-
-    def test_header_wait_has_an_elapsed_deadline_even_with_spare_captures(self):
-        bad = RuntimeError('OCR works-list header is not unique: 数据中心')
-        with patch.object(sync.time,'monotonic',side_effect=[0,5,10,15,21]):
-            with self.assertRaises(sync.ImageListReadError):self.run_reads([bad]*20)
-
-    def test_metric_ambiguity_is_not_retried_as_a_header_failure(self):
-        with self.assertRaisesRegex(sync.ImageListReadError,'ambiguous'):self.run_reads([RuntimeError('OCR numeral glyph is unproven or ambiguous')])
-    def test_header_retry_is_bounded_and_never_becomes_empty_data(self):
-        with self.assertRaises(sync.ImageListReadError):self.run_reads([RuntimeError('OCR works-list header is not unique: 数据中心')]*12)
 
 class MissingTitleSuffixTests(unittest.TestCase):
     def test_two_visible_glyphs_outside_native_box_require_full_title_reading(self):
@@ -721,7 +622,7 @@ class TransientReadTransportTests(unittest.TestCase):
 
     def test_ui_snapshot_and_binary_reads_keep_bytes_and_retry_only_missing_transport(self):
         cases=[('exec-out','uiautomator','dump','/dev/tty'),('exec-out','cat','/sdcard/task.xml'),
-               ('exec-out','screencap','-p'),('shell','settings','get','system','screen_off_timeout'),
+               ('shell','settings','get','system','screen_off_timeout'),
                ('get-state',),('shell','dumpsys','power')]
         for args in cases:
             missing=Mock(returncode=1,stderr=b"device 'serial' not found",stdout=b'partial')
@@ -844,83 +745,8 @@ class BrowserPermissionRedirectTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError,'stayed foreground'):sync.recover_vivo_browser_permission_redirect('adb','serial',self.fixture(),'app2',self.current,lambda:None,list(self.events))
         self.assertEqual(sum('input' in c.args for c in adb.call_args_list),1);self.assertFalse(any('start' in c.args for c in adb.call_args_list))
 
-class ActiveImageFailureTests(unittest.TestCase):
-    current='mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}'
-    def observed_xml(self):
-        root=ET.parse(SCRIPTS/'fixtures/xhs/works-header-only-47-after-ocr-error.xml').getroot()
-        self.assertTrue(sync.data_center_tab_header(root));self.assertFalse(sync.creator_list(root))
-        self.assertEqual(sync.note_cards(root),[])
-        return root
 
-    def test_established_image_reader_preserves_the_real_error_instead_of_blank_xml(self):
-        root=self.observed_xml();error=sync.ImageListReadError('OCR row 1 view unproven: OCR color/binary values disagree')
-        events=['collection_slot_requested:app1','works_list_image_reader_active']
-        with patch.object(sync.os,'name','nt'),patch.object(sync,'capture',return_value=root),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'image_navigation_capture',side_effect=error),patch.object(sync,'adb') as adb:
-            with self.assertRaises(sync.ImageListReadError) as caught:
-                sync.navigation_capture('adb','serial',lambda:None,events)
-            self.assertIs(caught.exception,error);adb.assert_not_called()
 
-    def test_initial_inaccessible_body_keeps_existing_bounded_loading_path(self):
-        root=self.observed_xml();events=['collection_slot_requested:app1']
-        with patch.object(sync.os,'name','nt'),patch.object(sync,'capture',return_value=root),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'image_navigation_capture',side_effect=sync.ImageListReadError('unproven body')),patch.object(sync,'adb') as adb:
-            self.assertIs(sync.navigation_capture('adb','serial',lambda:None,events),root)
-            adb.assert_not_called()
-        self.assertIn('works_image_probe_unproven:unproven body',events)
-
-class FreshBodyRetryTests(unittest.TestCase):
-    run_reads=FreshHeaderRetryTests.run_reads
-    body_error='OCR works list has no proven complete cards or empty/end marker'
-    def test_blank_reload_resets_pair_and_requires_two_later_fresh_frames(self):
-        from test_xhs_list_ocr import result
-        good=result();root,events,calls=self.run_reads([good,RuntimeError(self.body_error),good,good])
-        self.assertEqual(calls,4);self.assertEqual(events.count('works_image_body_capture_retried'),1)
-        self.assertEqual(len(sync.note_cards(root)),1)
-
-    def test_persistent_blank_reload_stops_without_an_empty_result(self):
-        with self.assertRaisesRegex(sync.ImageListReadError,'no proven complete cards'):
-            self.run_reads([RuntimeError(self.body_error)]*12)
-
-    def test_body_retry_has_the_same_elapsed_deadline(self):
-        with patch.object(sync.time,'monotonic',side_effect=[0,5,10,15,21]):
-            with self.assertRaisesRegex(sync.ImageListReadError,'no proven complete cards'):
-                self.run_reads([RuntimeError(self.body_error)]*20)
-
-class FreshFieldSettlingTests(unittest.TestCase):
-    run_reads=FreshHeaderRetryTests.run_reads
-
-    def frames(self):
-        import copy
-        from test_xhs_list_ocr import result
-        loaded=result();loading=copy.deepcopy(loaded)
-        loading['cards'][0]['imageHint']='0000000000000000'
-        return loading,loaded
-
-    def test_loading_thumbnail_requires_two_consecutive_loaded_captures(self):
-        loading,loaded=self.frames()
-        root,events,calls=self.run_reads([loading,loaded,loaded])
-        self.assertEqual(calls,3);self.assertEqual(len(sync.note_cards(root)),1)
-        self.assertEqual(events.count('works_image_fields_capture_retried'),1)
-
-    def test_matching_nonconsecutive_frames_do_not_prove_a_stable_pair(self):
-        loading,loaded=self.frames()
-        root,events,calls=self.run_reads([loading,loaded,loading,loading])
-        self.assertEqual(calls,4);self.assertEqual(events.count('works_image_fields_capture_retried'),2)
-
-    def test_continually_changing_fields_stop_at_the_capture_budget(self):
-        loading,loaded=self.frames()
-        with self.assertRaisesRegex(sync.ImageListReadError,'fields changed'):
-            self.run_reads([loading,loaded]*6)
-
-    def test_changing_fields_have_the_existing_twenty_second_deadline(self):
-        loading,loaded=self.frames()
-        with patch.object(sync.time,'monotonic',side_effect=[0,21]):
-            with self.assertRaisesRegex(sync.ImageListReadError,'fields changed'):
-                self.run_reads([loading,loaded,loaded])
-
-    def test_ambiguous_number_after_a_change_still_stops_immediately(self):
-        loading,loaded=self.frames()
-        with self.assertRaisesRegex(sync.ImageListReadError,'numeral glyph is unproven'):
-            self.run_reads([loading,loaded,RuntimeError('OCR numeral glyph is unproven or ambiguous'),loaded,loaded])
 
 class ProvenSevenVariantTests(unittest.TestCase):
     def test_observed387_is_proven_by_both_ink_variants(self):

@@ -364,34 +364,9 @@ class ZeroBoundsProfileTests(unittest.TestCase):
         return xml('<node>'+nodes+'</node>', '<node text="关注" bounds="[260,106][447,194]"/>',
                    '<node text="发现" bounds="[447,106][634,194]"/>', '<node text="搜索" bounds="[955,100][1055,200]"/>')
 
-    def image(self, locations, scale=1.0, inverse=False):
-        import cv2
-        import numpy as np
-        import base64
-        glyph = cv2.imdecode(np.frombuffer(base64.b64decode(sync.PROFILE_GLYPH_PNG), np.uint8), cv2.IMREAD_GRAYSCALE)
-        frame = np.full((int(2248*scale), int(1080*scale)), 0 if inverse else 255, dtype=np.uint8)
-        glyph = cv2.resize(glyph, None, fx=scale, fy=scale, interpolation=cv2.INTER_AREA)
-        if inverse:glyph = 255-glyph
-        for x, y in locations:frame[y:y+glyph.shape[0], x:x+glyph.shape[1]] = glyph
-        return cv2.imencode('.png', frame)[1].tobytes()
 
-    def test_glyph_match_is_confined_to_the_footer_and_supports_screen_scale_and_dark_theme(self):
-        self.assertEqual(sync.profile_glyph_position(self.image([(948,2162)])), (971,2186))
-        self.assertEqual(sync.profile_glyph_position(self.image([(948,2162)], inverse=True)), (971,2186))
-        self.assertEqual(sync.profile_glyph_position(self.image([(632,1441)], scale=2/3)), (647,1457))
 
-    def test_blank_or_multiple_glyphs_do_not_produce_a_tap_position(self):
-        for png in (self.image([]), self.image([(100,100)]), self.image([(948,2050)]), self.image([(868,2162),(948,2162)])):
-            with self.assertRaises(RuntimeError):sync.profile_glyph_position(png)
 
-    def test_verified_footer_uses_image_position_then_requires_the_selected_personal_tab(self):
-        events = []
-        with patch.object(sync.subprocess, "run", return_value=unittest.mock.Mock(returncode=0, stdout=b'png')), patch.object(sync, "profile_glyph_position", return_value=(971,2186)), \
-                patch.object(sync, "focus", return_value=self.current), patch.object(sync, "capture", return_value=self.footer("true")), patch.object(sync.time, "sleep"), patch.object(sync, "adb") as adb:
-            result = sync.select_zero_bounds_profile("adb", "serial", self.footer(), self.current, lambda: None, events)
-        self.assertIsNotNone(result)
-        adb.assert_called_once_with("adb", "serial", "shell", "input", "tap", "971", "2186", timeout=7)
-        self.assertEqual(events, ["profile_zero_bounds_image_selected"])
 
     def test_changed_footer_or_occupied_phone_stops_before_screenshot_or_tap(self):
         for kind in ("unknown_footer", "occupied", "other_activity"):
@@ -404,24 +379,7 @@ class ZeroBoundsProfileTests(unittest.TestCase):
                     with self.assertRaises(RuntimeError):sync.select_zero_bounds_profile("adb", "serial", root, self.current, guard, [])
                 run.assert_not_called();adb.assert_not_called()
 
-    def test_image_tap_without_a_confirmed_personal_tab_is_not_recovered(self):
-        with patch.object(sync.subprocess, "run", return_value=unittest.mock.Mock(returncode=0, stdout=b'png')), patch.object(sync, "profile_glyph_position", return_value=(971,2186)), \
-                patch.object(sync, "focus", return_value=self.current), patch.object(sync, "capture", return_value=self.footer()), patch.object(sync.time, "sleep"), patch.object(sync, "adb"):
-            with self.assertRaisesRegex(RuntimeError, "did not confirm"):
-                sync.select_zero_bounds_profile("adb", "serial", self.footer(), self.current, lambda: None, [])
 
-    def test_personal_tab_confirmation_waits_for_the_observed_milestone_overlay(self):
-        popup = xml('<node package="com.xingin.xhs" text="恭喜你🎉单篇笔记阅读超过1万啦" bounds="[171,1363][909,1421]"/>')
-        with patch.object(sync.subprocess, "run", return_value=unittest.mock.Mock(returncode=0, stdout=b'png')), \
-                patch.object(sync, "profile_glyph_position", return_value=(971,2186)), \
-                patch.object(sync, "focus", return_value=self.current), \
-                patch.object(sync, "navigation_capture", side_effect=[popup, self.footer("true")]), \
-                patch.object(sync, "recover_known_overlay", return_value=True) as recover, \
-                patch.object(sync.time, "sleep"), patch.object(sync, "adb"):
-            events = []
-            self.assertIsNotNone(sync.select_zero_bounds_profile("adb", "serial", self.footer(), self.current, lambda: None, events))
-        recover.assert_called_once()
-        self.assertEqual(events, ["profile_zero_bounds_image_selected"])
 
 
 class CreatorServerErrorTests(unittest.TestCase):
@@ -1135,12 +1093,7 @@ class OverlayRecoveryTests(unittest.TestCase):
                         '<node text="作品分析" bounds="[1,45][90,80]"/>'
                         '<node package="com.xingin.xhs" text="全部笔记" bounds="[1,85][90,120]"/>'
                         '</node>')
-        panel = xml('<node bounds="[0,0][720,1612]">'
-                    '<node text="笔记类型" bounds="[1,1][90,40]"/>'
-                    '<node text="发布时间" bounds="[1,45][90,80]"/>'
-                    '<node text="排序方式" bounds="[1,85][90,120]"/>'
-                    '<node package="com.xingin.xhs" text="收起" bounds="[1,125][90,160]"/>'
-                    '</node>')
+        panel = ET.parse(SCRIPT.parent/'fixtures/xhs/filter-panel-elements.xml').getroot()
         events = []
         with patch.object(sync, "wake_if_asleep"), patch.object(sync, "tap_filter_label") as tap, \
                 patch.object(sync, "capture", side_effect=[panel, list_root]):

@@ -6,14 +6,13 @@ This bounded probe reads list cards without opening notes. It writes a local
 JSON snapshot only and does not publish, change accounts, or write to the Web
 database. The list is reopened at its newest note and scanned for the last
 30 days (or the configured window), not all history.
+Only Android UI elements are read; no screenshot/OCR reader or image navigation.
 An exact unfinished-note prompt is handled by saving the existing draft,
 as authorized by the user, before continuing navigation.
 """
 
 import argparse
-import base64
 import datetime as dt
-import difflib
 from decimal import Decimal
 import json
 import os
@@ -31,15 +30,14 @@ COUNT = re.compile(r"^(\d+(?:\.\d+)?)(万|亿)?$")
 DATE = re.compile(r"^(?:\d{2}-\d{2}|\d{4}-\d{2}-\d{2})$")
 XHS_PACKAGE = "com.xingin.xhs"
 SHANGHAI = dt.timezone(dt.timedelta(hours=8))
-# Only the verified bottom-profile glyph; no phone screenshot/user content.
-PROFILE_GLYPH_PNG = "iVBORw0KGgoAAAANSUhEUgAAAC8AAAAwCAAAAACkzHw+AAADH0lEQVR4nM2W/U9SURjHvwgiF4lMUMPAKDWzlnM6cTTzpWzZbNbWmrm1tbV+6j9qa+svqOUP9qZllrPR0tTNZgaCYE1QE5BXu17aOfeFCwLabz4bPM8593Of+z3Pec4FRQr/ZUU4XLwq7xVuKpFgbx2IZ3e0QMoB6PbPzwX9K66jg8VptUF/Q24+uR3eXPPFASQcHVAA5BP8NsvtXMji/f5YNLIeSt863WgQ+Mg8h7ea+kxeN7Ile47JesKkpvmLAPPNZ8DL2+YMvrRzWISZGxUMHxVx4ABY+16DfTWky9BvrVXrdHr9cBjqGvFOTQxJ4s9vORAeHVDKeRVfaKJBMk0MZO2AfdOJ5S/2dMVyWzGAXRIor5aBMWE/Xi3y0F43DVkz9BfmUT3IqwcUpP8dG8LIyUJVJ/K/toE6WT7mspg/sJSeZRflz3DKYuM++nMazV9ZlEtPcA2o1qdRRuLbxaknIZT2i4PFEaCxOSt/AT1aADE+jHMH4BkAET78MC4UtlD9S8kaaOT+jr+9qgL5YwGihwHoxkTGgIWtfPl3A6tun/ZBCVDhRTymBfc+DHRU5OGjj0lTxn40AUYvENJi6idgatm73rh7MgqwfA97hQ0NYt4BMH38+Zfys+u/PR6pMPUnq8lxKietwo0CuEZCiY96vMsJcUJts1QJzVgOYIE8rqcWcn53jBUGHAdG2mww5lV6wtpF8YJ+vY1ExvY7j45krr2GfrddlE1R/c3zJqtZkihZwEW+7XZFNs88FI+PzLi5j0SmxsbjEUaZrk8O3D/hoz7hPU29y39Fmb9/wjPTxOkiwAzPry5udxvy9E9o8inFbfeNwIqbhEknPPN78tMfv+T4Ah1UdlvQ+gaYMGkAHwtYsvszFSEJStrIBabnrgU4awA2R3fAzQEqsyw/Xb6To6fEMPD8T0szOV5QXXoBLAWbAh7gnEZ8/wD49FWn5UjXt3WSu5XCOxp4NytG96pkemq58BrBcYbWRcLRJb4vmggu8WWC7z2eVStVfyv11i7qRD34HGNTymOnDDnKu+7aUJsb+D2V+APaYfv/8A/nYfKVUWstFQAAAABJRU5ErkJggg=="
+
 
 
 def adb_process(adb_path, serial, *args, timeout=12):
     read_only = (args[:2] == ("shell","dumpsys") and len(args) > 2 and args[2] in ("window","power")
                  or args[:3] == ("shell","settings","get") or args == ("get-state",)
                  or args[:3] in (("exec-out","uiautomator","dump"),("shell","uiautomator","dump"))
-                 or args[:2] == ("exec-out","cat") or args == ("exec-out","screencap","-p"))
+                 or args[:2] == ("exec-out","cat"))
     for attempt in range(3):
         result = subprocess.run(
             [adb_path, "-s", serial, *args], capture_output=True,
@@ -129,8 +127,13 @@ def capture(adb_path, serial):
     raise RuntimeError("UIAutomator did not return an XML hierarchy")
 
 
-class ImageListReadError(RuntimeError):
+class ElementListReadError(RuntimeError):
     pass
+
+
+def require_element_tree(root):
+    if root.get("data-source", "xml") != "xml":
+        raise ElementListReadError("only native UI element hierarchies are allowed")
 
 
 def login_activity(current):
@@ -166,125 +169,8 @@ def data_center_tab_header(root):
     return True
 
 
-def image_navigation_capture(adb_path, serial, guard, events, current):
-    slots = {e.split(":",1)[1] for e in events if e.startswith("collection_slot_requested:")}
-    requested = {e.split(":",1)[1] for e in events if e.startswith("clone_user_requested:")}
-    if len(slots) != 1 or not works_webview_activity(current):
-        raise RuntimeError("image list reader has no proven collection slot/activity")
-    slot = next(iter(slots))
-    expected = "0" if slot == "app1" else next(iter(requested)) if len(requested) == 1 else None
-    actual = re.search(r"\bu(\d+)\s+com\.xingin\.xhs/",current)
-    if (slot not in ("app1","app2") or expected is None or (slot == "app2" and expected not in ("128","999"))
-            or actual is None or actual[1] != expected):
-        raise RuntimeError("image list reader foreground does not match the requested Android user")
-    from xhs_list_ocr import read_works_image, hierarchy_for_frame, WorksListHint
-    windows = {e.split(":",1)[1] for e in events if e.startswith("collection_window_days:")}
-    as_of_values = {e.split(":",1)[1] for e in events if e.startswith("collection_scan_as_of:")}
-    if len(windows) > 1 or len(as_of_values) > 1:raise RuntimeError("image reader collection window is ambiguous")
-    days = int(next(iter(windows))) if windows else 30
-    if not 1 <= days <= 180:raise RuntimeError("image reader collection window is invalid")
-    image_as_of = dt.date.fromisoformat(next(iter(as_of_values))) if as_of_values else dt.datetime.now(SHANGHAI).date()
-    cutoff = image_as_of-dt.timedelta(days=days-1)
-    def signature(frame):
-        if frame.get("navigationOnly"):
-            return ("filter",sorted(frame["headers"].items()),sorted(frame["navigationLabels"].items()))
-        return ([(c["date"],c["counts"],c["status"],c["imageHint"],
-                  re.sub(r"[^\w\u4e00-\u9fff]","",c["title"])) for c in frame["cards"]],
-                set(frame["markers"]),frame["leadingClip"],bool(frame.get("trailingClip")),bool(frame.get("scope")))
-    frames = []
-    capture_deadline = time.monotonic()+20
-    for frame_attempt in range(12):
-        guard()
-        if focus(adb_path,serial) != current:
-            raise RuntimeError("image list reader foreground changed")
-        screenshot = adb_process(adb_path,serial,"exec-out","screencap","-p",timeout=10)
-        if screenshot.returncode:
-            raise RuntimeError("image list reader screenshot failed")
-        try:
-            frame = read_works_image(screenshot.stdout,guard,lambda raw:published_date(raw,image_as_of) >= cutoff)
-            if frame.get("bodyAnchorRecoveryCount") and "works_body_anchor_crop_recovered" not in events:
-                events.append("works_body_anchor_crop_recovered")
-        except WorksListHint as hint:
-            if "works_filter_hint_dismissed" in events:
-                raise ImageListReadError("works-list filter hint stayed visible") from hint
-            guard()
-            if focus(adb_path, serial) != current:
-                raise RuntimeError("image list reader foreground changed")
-            confirmation = adb_process(adb_path,serial,"exec-out","screencap","-p",timeout=10)
-            if confirmation.returncode:
-                raise RuntimeError("image list reader screenshot failed")
-            try:
-                read_works_image(confirmation.stdout,guard,lambda raw:published_date(raw,image_as_of) >= cutoff)
-            except WorksListHint as second:
-                if second.box != hint.box:
-                    raise ImageListReadError("works-list filter hint moved") from second
-            else:
-                raise ImageListReadError("works-list filter hint disappeared before confirmation")
-            guard()
-            if focus(adb_path, serial) != current:
-                raise RuntimeError("image list reader foreground changed")
-            x1,y1,x2,y2 = hint.box
-            adb(adb_path,serial,"shell","input","tap",str((x1+x2)//2),str((y1+y2)//2),timeout=7)
-            events.append("works_filter_hint_dismissed")
-            time.sleep(.5)
-            return image_navigation_capture(adb_path,serial,guard,events,current)
-        except (RuntimeError,subprocess.TimeoutExpired) as error:
-            guard()
-            transient_body = str(error) == "OCR works list has no proven complete cards or empty/end marker"
-            if ((str(error).startswith("OCR works-list header is not unique:") or transient_body)
-                    and frame_attempt < 11 and time.monotonic() < capture_deadline):
-                # An unproven header/body proves no data. Reset and require
-                # two later, consecutive fresh captures with every field proven.
-                frames.clear()
-                events.append("works_image_body_capture_retried" if transient_body else "works_image_header_capture_retried")
-                time.sleep(1)
-                continue
-            raise ImageListReadError(str(error)) from error
-        guard()
-        if focus(adb_path,serial) != current:
-            raise RuntimeError("image list reader foreground changed")
-        frames.append(frame)
-        if len(frames) == 2:
-            if signature(frames[0]) == signature(frames[1]):break
-            if frame_attempt < 11 and time.monotonic() < capture_deadline:
-                # Lazy thumbnails or live data can settle after the first read.
-                # Keep only the latest proven frame; never join nonconsecutive
-                # captures or accept a field that the OCR reader rejected.
-                frames = frames[-1:]
-                events.append("works_image_fields_capture_retried")
-                time.sleep(1)
-                continue
-            raise ImageListReadError("image list fields changed between two fresh captures")
-    if len(frames) != 2:raise ImageListReadError("image list reader could not prove two consecutive fresh frames")
-    if frames[1].get("navigationOnly"):
-        return hierarchy_for_frame(frames[1])
-    if "works_list_image_reader_active" not in events:
-        events.append("works_list_image_reader_active")
-    return hierarchy_for_frame(frames[1])
 
 
-def select_image_profile_after_dump_failure(adb_path,serial,current,guard,events):
-    """Use two proven Index bottom bars only when XML is unavailable."""
-    if ("image_profile_navigation_selected" in events or not re.search(
-            r"mCurrentFocus=Window\{[^\n}]*\bu\d+\s+com\.xingin\.xhs/(?:com\.xingin\.xhs\.index\.v2\.IndexActivityV2|\.index\.v2\.IndexActivityV2)[}\s]",current)):
-        raise RuntimeError("image profile navigation is unavailable outside the requested Index page")
-    assert_requested_foreground(current,events)
-    from xhs_list_ocr import read_profile_navigation
-    frames=[]
-    for _ in range(2):
-        guard()
-        if focus(adb_path,serial) != current:raise RuntimeError("image profile foreground changed")
-        png=adb_process(adb_path,serial,"exec-out","screencap","-p",timeout=10)
-        if png.returncode:raise RuntimeError("image profile screenshot failed")
-        frames.append(read_profile_navigation(png.stdout,guard))
-    if frames[0] != frames[1]:raise RuntimeError("image profile bottom bar changed between captures")
-    guard()
-    if focus(adb_path,serial) != current:raise RuntimeError("image profile foreground changed")
-    x1,y1,x2,y2=frames[1]["labels"]["我"]
-    events.append("image_profile_navigation_selected")
-    adb(adb_path,serial,"shell","input","tap",str((x1+x2)//2),str((y1+y2)//2),timeout=7)
-    time.sleep(.7)
-    return navigation_capture(adb_path,serial,guard,events)
 
 
 def navigation_capture(adb_path, serial, guard, events):
@@ -302,12 +188,10 @@ def navigation_capture(adb_path, serial, guard, events):
         notification = re.search(
             r"com\.xingin\.xhs/(?:com\.xingin\.authorization\.NotificationAuthorizationTranslucentActivity|"
             r"\.authorization\.NotificationAuthorizationTranslucentActivity)(?:[}\s]|$)", current)
-        if (os.name == "nt" and works_webview_activity(current)
-                and (isinstance(error,subprocess.TimeoutExpired) or "did not return an XML hierarchy" in str(error))):
-            return image_navigation_capture(adb_path,serial,guard,events,current)
-        if (os.name == "nt" and "did not return an XML hierarchy" in str(error)
-                and re.search(r"mCurrentFocus=Window\{[^\n}]*\bu\d+\s+com\.xingin\.xhs/(?:com\.xingin\.xhs\.index\.v2\.IndexActivityV2|\.index\.v2\.IndexActivityV2)[}\s]",current)):
-            return select_image_profile_after_dump_failure(adb_path,serial,current,guard,events)
+        if works_webview_activity(current) and (isinstance(error,subprocess.TimeoutExpired)
+                or "did not return an XML hierarchy" in str(error)):
+            assert_requested_foreground(current, events)
+            raise ElementListReadError("UI elements unavailable after fresh hierarchy reads") from error
         if "did not return an XML hierarchy" not in str(error) or not notification:
             raise
         guard()
@@ -315,22 +199,7 @@ def navigation_capture(adb_path, serial, guard, events):
         time.sleep(0.4)
         events.append("inaccessible_notification_prompt_back")
         return capture(adb_path, serial)
-    if creator_filter_panel(root):
-        return root
-    if (os.name == "nt" and (creator_list(root) or data_center_tab_header(root))
-            and ("works_list_image_reader_active" in events or not note_cards(root))
-            and not label(root,"暂无笔记")):
-        current = focus(adb_path,serial)
-        if works_webview_activity(current):
-            try:
-                return image_navigation_capture(adb_path,serial,guard,events,current)
-            except ImageListReadError as error:
-                # Once image reading is established, preserve its real failure.
-                # Only the initial XML tab may still be waiting for its body.
-                if "works_list_image_reader_active" in events or note_cards(root) or label(root,"到底了"):
-                    raise
-                marker = "works_image_probe_unproven:" + str(error)
-                if marker not in events:events.append(marker)
+    require_element_tree(root)
     return root
 
 
@@ -1090,16 +959,31 @@ def recover_known_overlay(adb_path, serial, root, guard, events):
 
 
 def creator_list(root):
+    require_element_tree(root)
     if label(root, "数据中心") and label(root, "作品分析") and label(root, "全部笔记"):
         return True
     # Some WebViews scroll their header off-screen but retain the same
     # data-center WebView and exact tab/filter fields in its hierarchy.
     views = [n for n in live_nodes(root) if n.get("package") == XHS_PACKAGE
              and n.get("class") == "android.webkit.WebView" and n.get("text") == "数据中心"]
-    return len(views) == 1 and all(any(n.get("package") == XHS_PACKAGE
+    if len(views) == 1 and all(any(n.get("package") == XHS_PACKAGE
                                      and n.get("class") in ("android.widget.TextView", "android.view.View")
                                      and n.get("text") == value
-                                     for n in views[0].iter("node")) for value in ("作品分析", "全部笔记"))
+                                     for n in views[0].iter("node")) for value in ("作品分析", "全部笔记")):
+        return True
+    # 141 omits the selected tab's label while exposing the actual note rows.
+    # Require the unique data-center view, fixed filter/scope, other three tabs,
+    # and structured complete rows; an overview/loading shell is insufficient.
+    if len(views) != 1:return False
+    view = views[0]
+    height = bounds(view)[3]
+    for value in ("账号概览", "粉丝数据", "收入数据", "全部笔记"):
+        matches = [n for n in label(view,value) if n.get("package") == XHS_PACKAGE
+                   and bounds(n)[3] < height*.28]
+        if len(matches) != 1:return False
+    scopes = [n for n in live_nodes(view) if n.get("package") == XHS_PACKAGE
+              and n.get("text","").startswith("仅统计") and bounds(n)[3] < height*.28]
+    return len(scopes) == 1 and bool(structured_note_cards(view))
 
 
 def creator_filter_panel(root):
@@ -1201,43 +1085,10 @@ def close_restored_ai_page(adb_path, serial, root, current, guard, events):
     return True
 
 
-def profile_glyph_position(png):
-    """Match the verified profile glyph only inside the observed footer region."""
-    try:
-        import cv2
-        import numpy as np
-    except ImportError as error:
-        raise RuntimeError("profile image fallback requires the existing OpenCV runtime") from error
-    frame = cv2.imdecode(np.frombuffer(png, dtype=np.uint8), cv2.IMREAD_GRAYSCALE)
-    template = cv2.imdecode(np.frombuffer(base64.b64decode(PROFILE_GLYPH_PNG), dtype=np.uint8), cv2.IMREAD_GRAYSCALE)
-    if frame is None or template is None or frame.shape[0] < 700 or frame.shape[1] < 400:
-        raise RuntimeError("profile image fallback did not receive a usable screenshot")
-    height, width = frame.shape
-    left, top, bottom = int(width * .80), int(height * .95), int(height * .995)
-    region = frame[top:bottom, left:width]
-    matches = []
-    for step in range(13, 30):
-        scale = width / 1080 * step / 20
-        glyph = cv2.resize(template, None, fx=scale, fy=scale, interpolation=cv2.INTER_AREA)
-        gh, gw = glyph.shape
-        if gh >= region.shape[0] or gw >= region.shape[1]:
-            continue
-        for variant in (glyph, 255-glyph):
-            scores = cv2.matchTemplate(region, variant, cv2.TM_CCOEFF_NORMED)
-            ys, xs = np.where(scores >= .92)
-            for y, x in zip(ys, xs):
-                matches.append((float(scores[y, x]), left + int(x) + gw//2, top + int(y) + gh//2, max(gw, gh)))
-    if not matches:
-        raise RuntimeError("profile glyph not proven in the footer screenshot")
-    matches.sort(reverse=True)
-    best = matches[0]
-    if any(abs(m[1]-best[1]) + abs(m[2]-best[2]) > max(m[3], best[3]) for m in matches[1:]):
-        raise RuntimeError("profile glyph matches multiple footer locations")
-    return best[1], best[2]
 
 
 def select_zero_bounds_profile(adb_path, serial, root, current, guard, events):
-    """140's footer is visible, but all five accessibility bounds are zero."""
+    """Fail closed when the verified footer exposes no element coordinates."""
     if not re.search(r"com\.xingin\.xhs/com\.xingin\.xhs\.index\.v2\.IndexActivityV2(?:[}\s]|$)", current):
         return None
     if not all(label(root, value) for value in ("关注", "发现", "搜索")):
@@ -1259,25 +1110,7 @@ def select_zero_bounds_profile(adb_path, serial, root, current, guard, events):
     if children[0].get("selected") != "true":
         raise RuntimeError("zero-bounds profile footer is not on the verified home tab")
     guard()
-    screenshot = adb_process(adb_path,serial,"exec-out","screencap","-p",timeout=10)
-    if screenshot.returncode:
-        raise RuntimeError("profile image fallback screenshot failed")
-    x, y = profile_glyph_position(screenshot.stdout)
-    if focus(adb_path, serial) != current:
-        raise RuntimeError("profile image fallback foreground changed")
-    guard()
-    adb(adb_path, serial, "shell", "input", "tap", str(x), str(y), timeout=7)
-    time.sleep(.5)
-    refreshed = navigation_capture(adb_path, serial, guard, events)
-    if any(n.get("text", "").startswith(("恭喜你🎉", "嗨👋今天是你加入小红书的")) for n in live_nodes(refreshed)):
-        recover_known_overlay(adb_path, serial, refreshed, guard, events)
-        refreshed = navigation_capture(adb_path, serial, guard, events)
-    if (not re.search(r"com\.xingin\.xhs/com\.xingin\.xhs\.index\.v2\.IndexActivityV2(?:[}\s]|$)", focus(adb_path, serial))
-            or not any(n.get("package") == XHS_PACKAGE and n.get("content-desc") == "我"
-                       and n.get("selected") == "true" for n in refreshed.iter("node"))):
-        raise RuntimeError("profile image fallback did not confirm the selected personal tab")
-    events.append("profile_zero_bounds_image_selected")
-    return refreshed
+    raise ElementListReadError("profile element has zero bounds; element-only navigation unavailable")
 
 
 def refresh_creator_server_error(adb_path, serial, root, guard, events, attempts):
@@ -1568,8 +1401,7 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
         else:
             time.sleep(0.5)
         root = navigation_capture(adb_path, serial, guard, events)
-    image_error = next((e for e in reversed(events) if e.startswith("works_image_probe_unproven:")),"")
-    raise RuntimeError("could not prove the Creator Center works-analysis path" + ("; " + image_error if image_error else ""))
+    raise ElementListReadError("could not prove the Creator Center works-analysis path from UI elements")
 
 
 def reopen_creator_list(adb_path, serial, root, guard, events, slot="app1"):
@@ -1600,9 +1432,19 @@ def is_note_status(text):
 
 
 def note_cards(root):
-    if root.get("data-source") == "windows_native_ocr":
-        from xhs_list_ocr import cards_from_hierarchy
-        return cards_from_hierarchy(root)
+    require_element_tree(root)
+    cards = structured_note_cards(root)
+    if not cards:cards = flat_webview_cards(root)
+    views = [n for n in live_nodes(root) if n.get("package") == XHS_PACKAGE
+             and n.get("class") == "android.webkit.WebView" and n.get("text") == "数据中心"]
+    filters = label(root,"全部笔记")
+    if len(views) == len(filters) == 1:
+        top,bottom = bounds(filters[0])[3],bounds(views[0])[3]
+        cards = [(n,item) for n,item in cards if top <= bounds(n)[1] < bounds(n)[3] <= bottom]
+    return cards
+
+
+def structured_note_cards(root):
     cards = []
     for node in live_nodes(root):
         box = bounds(node)
@@ -1625,14 +1467,12 @@ def note_cards(root):
         numbers = sorted((bounds(n)[0], count(n.get("text"))) for n in children
                          if count(n.get("text")) is not None and bounds(n)[1] >= box[1] + (box[3]-box[1])*0.58)
         values = [value for _, value in numbers]
-        if len(values) < 3:
+        if len(values) != 3:
             continue
         cards.append((node, {"title": title, "published_at_raw": date, "status_raw": status,
                              "list_view_count": values[0] if len(values) > 0 else None,
                              "list_like_count": values[1] if len(values) > 1 else None,
                              "list_comment_count": values[2] if len(values) > 2 else None}))
-    if not cards:
-        cards = flat_webview_cards(root)
     return cards
 
 
@@ -1681,14 +1521,75 @@ def flat_webview_cards(root):
     return cards
 
 
+def element_page_signature(root):
+    """Prove complete visible element rows, excluding only clipped edge rows."""
+    require_element_tree(root)
+    if not creator_list(root) or creator_filter_panel(root):return None
+    cards = note_cards(root)
+    if not cards:
+        return ((),bool(label(root,"暂无笔记")),bool(label(root,"到底了"))) if label(root,"暂无笔记") or label(root,"到底了") else None
+    views = [n for n in live_nodes(root) if n.get("package") == XHS_PACKAGE
+             and n.get("class") == "android.webkit.WebView" and n.get("text") == "数据中心"]
+    filters = label(root,"全部笔记")
+    if len(views) == len(filters) == 1:
+        top,bottom = bounds(filters[0])[3],bounds(views[0])[3]
+        statuses = [n for n in live_nodes(views[0]) if is_note_status(n.get("text",""))]
+        gaps = []
+        for row,item in cards:
+            if any(n.get("package") != XHS_PACKAGE for n in row.iter("node")
+                   if n in live_nodes(root)):
+                raise ElementListReadError("element row contains another package")
+            box = bounds(row)
+            matches = [n for n in statuses if box[1] <= bounds(n)[1] < bounds(n)[3] <= box[3]]
+            if len(matches) != 1:raise ElementListReadError("element row status is missing or ambiguous")
+            sb = bounds(matches[0]);gaps.append((sb[1]-box[1],box[3]-sb[3]))
+        title_gap = sorted(g[0] for g in gaps)[len(gaps)//2]
+        metric_gap = sorted(g[1] for g in gaps)[len(gaps)//2]
+        for status in statuses:
+            sb = bounds(status)
+            if any(bounds(row)[1] <= sb[1] < sb[3] <= bounds(row)[3] for row,_ in cards):continue
+            if sb[1]-title_gap < top or sb[3]+metric_gap > bottom:continue
+            raise ElementListReadError("a fully visible element row has incomplete title/date/metrics")
+    return (tuple((v["title"],v["published_at_raw"],v["status_raw"],v["list_view_count"],v["list_like_count"],v["list_comment_count"]) for _,v in cards),
+            bool(label(root,"暂无笔记")),bool(label(root,"到底了")))
+
+
+def verify_newest_element_position(root):
+    cards = note_cards(root)
+    filters = label(root,"全部笔记")
+    views = [n for n in live_nodes(root) if n.get("package") == XHS_PACKAGE
+             and n.get("class") == "android.webkit.WebView" and n.get("text") == "数据中心"]
+    if cards and len(filters) == len(views) == 1:
+        top = bounds(filters[0])[3];width = bounds(views[0])[2]-bounds(views[0])[0]
+        raw = structured_note_cards(root)
+        if (any(bounds(n)[1] < top for n,_ in raw)
+                or not top <= bounds(cards[0][0])[1] <= top+width*.12):
+            raise ElementListReadError("newest list position is not proven by elements")
+
+
+def verify_element_overlap(previous_root, root):
+    previous = {(v["title"],v["published_at_raw"]) for _,v in note_cards(previous_root)}
+    raw = structured_note_cards(root) or flat_webview_cards(root)
+    current = {(v["title"],v["published_at_raw"]) for _,v in raw}
+    if previous and not previous.intersection(current):
+        raise ElementListReadError("element page continuity is unproven after scroll")
+
+
 def wait_creator_content(adb_path, serial, root, guard, events):
     """A rendered tab header is not proof that its note request has finished."""
+    previous = None
     for pass_index in range(2):
         for _ in range(6):
+            guard()
             if wake_if_asleep(adb_path, serial, guard, events):
                 root = navigation_capture(adb_path, serial, guard, events)
-            if note_cards(root) or label(root, "到底了") or label(root, "暂无笔记"):
+            try:
+                signature = element_page_signature(root)
+            except ElementListReadError:
+                signature = None
+            if signature is not None and signature == previous:
                 return root
+            previous = signature
             time.sleep(0.6)
             root = navigation_capture(adb_path, serial, guard, events)
         if pass_index == 0 and creator_list(root):
@@ -1701,8 +1602,8 @@ def wait_creator_content(adb_path, serial, root, guard, events):
             if label(root, "创作中心") and label(root, "最新笔记") and creator_more_label(root):
                 tap_label(adb_path, serial, root, creator_more_label(root), guard)
                 root = navigation_capture(adb_path, serial, guard, events)
-    image_error = next((e for e in reversed(events) if e.startswith("works_image_probe_unproven:")),"")
-    raise RuntimeError("works-analysis note list stayed blank; collection aborted" + ("; " + image_error if image_error else ""))
+            previous = None
+    raise ElementListReadError("works-analysis UI elements stayed incomplete or unstable; collection aborted")
 
 
 def swipe(adb_path, serial, root, guard, events):
@@ -1740,23 +1641,11 @@ def tap_filter_label(adb_path, serial, root, value, guard):
     time.sleep(0.5)
 
 
-def recheck_filter_image(adb_path,serial,root,guard,events):
-    """A stale accessibility tree cannot prove whether a filter tap opened it."""
-    if os.name != "nt":return root
-    current=focus(adb_path,serial)
-    if not works_webview_activity(current):return root
-    actual=image_navigation_capture(adb_path,serial,guard,events,current)
-    events.append("works_filter_state_rechecked_by_image")
-    return actual
 
 
 def refresh_scrolled_webview(adb_path, serial, root, guard, events, previous_root=None):
     """Refresh a stale WebView accessibility tree without changing filters."""
-    if root.get("data-source") == "windows_native_ocr":
-        if not creator_list(root) or not works_webview_activity(focus(adb_path,serial)):
-            raise RuntimeError("image works list changed unexpectedly")
-        guard()
-        return root
+    require_element_tree(root)
     if previous_root is not None and not creator_filter_panel(root) and creator_list(root) and note_cards(root):
         previous = [(n[1]["title"], n[1]["published_at_raw"]) for n in note_cards(previous_root)]
         current_cards = [(n[1]["title"], n[1]["published_at_raw"]) for n in note_cards(root)]
@@ -1778,20 +1667,22 @@ def refresh_scrolled_webview(adb_path, serial, root, guard, events, previous_roo
     else:
         tap_filter_label(adb_path, serial, root, "全部笔记", guard)
         expanded = navigation_capture(adb_path, serial, guard, events)
-    if not all(label(expanded, value) for value in ("笔记类型", "发布时间", "排序方式", "收起")):
-        expanded=recheck_filter_image(adb_path,serial,expanded,guard,events)
-        if (expanded.get("data-source") == "windows_native_ocr" and creator_list(expanded)
-                and not label(expanded,"排序方式") and (note_cards(expanded) or label(expanded,"暂无笔记") or label(expanded,"到底了"))):
-            events.append("webview_accessibility_refreshed")
-            return expanded
-        if not all(label(expanded, value) for value in ("笔记类型", "发布时间", "排序方式", "收起")):
-            raise RuntimeError("works-analysis filter panel is not proven")
+    for _ in range(3):
+        if creator_filter_panel(expanded):break
+        guard()
+        time.sleep(.5)
+        expanded = navigation_capture(adb_path,serial,guard,events)
+    if not creator_filter_panel(expanded):
+        raise ElementListReadError("works-analysis filter panel elements are not proven")
     tap_filter_label(adb_path, serial, expanded, "收起", guard)
     refreshed = navigation_capture(adb_path, serial, guard, events)
-    if label(refreshed, "排序方式"):
-        refreshed=recheck_filter_image(adb_path,serial,refreshed,guard,events)
-    if label(refreshed, "排序方式") or not creator_list(refreshed):
-        raise RuntimeError("works-analysis filter panel did not close")
+    for _ in range(3):
+        if not creator_filter_panel(refreshed) and creator_list(refreshed):break
+        guard()
+        time.sleep(.5)
+        refreshed = navigation_capture(adb_path,serial,guard,events)
+    if creator_filter_panel(refreshed) or label(refreshed,"排序方式") or not creator_list(refreshed):
+        raise ElementListReadError("works-analysis filter panel closure is not proven by elements")
     events.append("webview_accessibility_refreshed")
     return refreshed
 
@@ -1805,13 +1696,14 @@ def collect(args):
                 and a.get("appSlot") == args.app_slot and a.get("enabled")]
     if not accounts:
         raise RuntimeError("requested Xiaohongshu app slot is not enabled")
-    events = ["collection_window_days:" + str(args.days)]
+    events = ["collection_window_days:" + str(args.days), "collection_reader:ui_elements_only"]
     release_idle_poco(args.adb, args.serial, guard, events)
     root = start_xhs(args.adb, args.serial, args.app_slot, guard, events)
     root = ensure_creator_list(args.adb, args.serial, root, args.app_slot, guard, events)
     verify_collection_slot(args.adb, args.serial, args.app_slot, events)
     root = wait_creator_content(args.adb, args.serial,
                                 reopen_creator_list(args.adb, args.serial, root, guard, events, args.app_slot), guard, events)
+    verify_newest_element_position(root)
     as_of = dt.datetime.now(SHANGHAI).date()
     events.append("collection_scan_as_of:" + as_of.isoformat())
     # Include today as the first calendar date in the requested day count.
@@ -1827,9 +1719,6 @@ def collect(args):
               "notes": [], "scrolls": 0, "complete": False, "recovery_events": events,
               "scan_rounds": [], "warnings": []}
     seen = {}
-    image_seen = {}
-    scan_source = root.get("data-source","xml")
-    newest_page = True
     stagnant = 0
     previous_top_date = None
     date_order_valid = True
@@ -1838,10 +1727,14 @@ def collect(args):
         assert_no_poco(args.adb, args.serial)
         if not creator_list(root):
             raise RuntimeError("works-analysis list changed unexpectedly")
-        if newest_page and root.get("data-leading-clip") == "true":
-            raise ImageListReadError("newest image list has an unreadable leading card")
+        require_element_tree(root)
+        if element_page_signature(root) is None:
+            raise ElementListReadError("works-analysis element rows are incomplete")
+        if ("list_metric_units_are_displayed_approximations" not in result["warnings"]
+                and any(COUNT.fullmatch(n.get("text","").strip())
+                        and n.get("text","").strip().endswith(("万","亿")) for n in live_nodes(root))):
+            result["warnings"].append("list_metric_units_are_displayed_approximations")
         discovered = 0
-        round_image_keys = set()
         cards = note_cards(root)
         card_dates = [published_date(item["published_at_raw"], as_of) for _, item in cards]
         if any(later > earlier for earlier, later in zip(card_dates, card_dates[1:])):
@@ -1851,33 +1744,12 @@ def collect(args):
         if card_dates:
             previous_top_date = card_dates[0]
         for _, item in cards:
-            hint = item.pop("_image_hint",None)
-            boundary_only = item.pop("_boundary_only",False)
-            if boundary_only and published_date(item["published_at_raw"],as_of) >= cutoff:
-                raise ImageListReadError("image date boundary does not match the requested collection window")
-            displayed_unit = item.pop("_displayed_unit",False)
-            if displayed_unit and "list_metric_units_are_displayed_approximations" not in result["warnings"]:
-                result["warnings"].append("list_metric_units_are_displayed_approximations")
             identity = (item["title"], item["published_at_raw"])
-            if hint is not None:
-                if not re.fullmatch(r"[0-9a-f]{16}",hint):raise ImageListReadError("image overlap hint is unproven")
-                values = tuple(item[k] for k in ("list_view_count","list_like_count","list_comment_count"))
-                normalized = re.sub(r"[^\w\u4e00-\u9fff]","",item["title"])
-                matches = [key for key,(old_hint,old_date,old_values,old_title) in image_seen.items()
-                           if old_date == item["published_at_raw"]
-                           and bin(int(old_hint,16)^int(hint,16)).count("1") <= 3
-                           and difflib.SequenceMatcher(None,normalized,old_title).ratio() >= .94]
-                if len(matches) > 1:raise ImageListReadError("image note overlap identity is ambiguous")
-                identity = matches[0] if matches else ("image",item["published_at_raw"],hint,normalized)
-                if identity in round_image_keys:
-                    raise ImageListReadError("two visible image notes have an ambiguous identity")
-                round_image_keys.add(identity)
-                image_seen[identity] = (hint,item["published_at_raw"],values,normalized)
             if identity in seen:
                 saved = seen[identity]
                 if saved is not None:
                     for field in ("list_view_count", "list_like_count", "list_comment_count"):
-                        if item[field] is not None and (hint is not None or saved[field] is None):
+                        if item[field] is not None and saved[field] is None:
                             saved[field] = item[field]
                 continue
             discovered += 1
@@ -1909,26 +1781,17 @@ def collect(args):
         if stagnant >= args.stagnant_rounds or round_index >= args.max_scrolls:
             break
         swipe(args.adb, args.serial, root, guard, events)
-        newest_page = False
         result["scrolls"] += 1
         previous_root = root
         try:
             root = refresh_scrolled_webview(args.adb, args.serial, navigation_capture(args.adb, args.serial, guard, events), guard, events, previous_root)
             root = wait_creator_content(args.adb, args.serial, root, guard, events)
-        except ImageListReadError as error:
-            events.append("works_image_scan_stopped:" + str(error))
-            result["stop_reason"] = "image_list_read_unproven"
-            result["warnings"].append("image_list_read_unproven")
+            verify_element_overlap(previous_root, root)
+        except ElementListReadError as error:
+            events.append("works_elements_scan_stopped:" + str(error))
+            result["stop_reason"] = "elements_unproven"
+            result["warnings"].append("elements_unproven")
             break
-        if root.get("data-source","xml") != scan_source:
-            if scan_source != "xml" or root.get("data-source") != "windows_native_ocr":
-                raise RuntimeError("works list reader changed unexpectedly")
-            root = wait_creator_content(args.adb,args.serial,reopen_creator_list(args.adb,args.serial,root,guard,events,args.app_slot),guard,events)
-            result["notes"].clear();result["scan_rounds"].clear();seen.clear();image_seen.clear()
-            scan_source = "windows_native_ocr";stagnant = 0;previous_top_date = None;date_order_valid = True
-            newest_page = True
-            result["list_scope_raw"] = next((n.get("text") for n in live_nodes(root) if (n.get("text") or "").startswith("仅统计")),None)
-            events.append("works_image_scan_restarted_at_newest")
     if not result["complete"]:
         result["warnings"].append("recent_window_not_proven")
     if not date_order_valid:
@@ -1940,8 +1803,6 @@ def collect(args):
         result["warnings"].append("creator_list_limited_to_displayed_time_range")
     if not result["account_bound"]:
         result["warnings"].append("app_slot_has_no_bound_xhs_account")
-    if "works_list_image_reader_active" in events:
-        result["warnings"].append("list_read_with_local_image_recognition")
     return result
 
 
