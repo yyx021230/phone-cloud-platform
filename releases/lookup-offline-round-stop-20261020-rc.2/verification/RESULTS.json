@@ -1,0 +1,72 @@
+{
+  "fullRegression": {
+    "passed": 926,
+    "failed": 0
+  },
+  "targeted": {
+    "passed": 26,
+    "failed": 0
+  },
+  "rootCheck": true,
+  "frozenHashes": 192,
+  "productionConnected": false,
+  "realDevices": 0,
+  "httpHandoffJson": {
+    "storage": "json",
+    "loopbackOnly": true,
+    "simulatedDevices": 5,
+    "realDevices": 0,
+    "productionConnections": 0,
+    "realOfflineGraceMs": 30574,
+    "oldBusinessCompleted": 5,
+    "oldBusinessCancelled": 0,
+    "offlineBusinessReassigned": 2,
+    "canonicalIdsAndAliasesPreserved": true,
+    "newBusinessCompleted": 6,
+    "maxExecuting": 5,
+    "leasedPayloadAndAckRejected": true,
+    "lateReportsIgnored": true,
+    "restartRetainsQuarantine": true,
+    "newRoundReadyWithoutOfflinePhones": true,
+    "reconnectionCleanupAckBeforeReuse": true,
+    "finalChannels": 0
+  },
+  "httpHandoffPostgres": {
+    "storage": "postgres",
+    "loopbackOnly": true,
+    "simulatedDevices": 5,
+    "realDevices": 0,
+    "productionConnections": 0,
+    "realOfflineGraceMs": 30577,
+    "oldBusinessCompleted": 5,
+    "oldBusinessCancelled": 0,
+    "offlineBusinessReassigned": 2,
+    "canonicalIdsAndAliasesPreserved": true,
+    "newBusinessCompleted": 6,
+    "maxExecuting": 5,
+    "leasedPayloadAndAckRejected": true,
+    "lateReportsIgnored": true,
+    "restartRetainsQuarantine": true,
+    "newRoundReadyWithoutOfflinePhones": true,
+    "reconnectionCleanupAckBeforeReuse": true,
+    "finalChannels": 0
+  },
+  "httpStopJson": {
+    "storage": "json",
+    "loopbackOnly": true,
+    "simulatedDevices": 5,
+    "realDevices": 0,
+    "productionConnections": 0,
+    "realOfflineGraceMs": 30388,
+    "oldBusinessCompleted": 3,
+    "oldBusinessCancelled": 2,
+    "newBusinessCompleted": 6,
+    "maxExecuting": 5,
+    "leasedPayloadAndAckRejected": true,
+    "lateReportsIgnored": true,
+    "restartRetainsQuarantine": true,
+    "newRoundReadyWithoutOfflinePhones": true,
+    "reconnectionCleanupAckBeforeReuse": true,
+    "finalChannels": 0
+  }
+}

@@ -1,0 +1,140 @@
+✖ active offline query retains lookup ID and moves to a healthy ready phone after fencing (10.448459ms)
+✔ short offline observation resets on reconnect, without replaying the business (2.427417ms)
+✖ handoff cleanup survives restart; late old results never complete the reassigned query (2.723875ms)
+✖ manual stop wins over offline handoff, and its cleanup cannot hold the next round (2.686083ms)
+✖ business waiting on all offline devices does not trigger the fifteen minute idle stop (2.528542ms)
+✖ fifteen minutes after handed-off result the round ends despite old offline reservation (3.242833ms)
+✖ fence persistence failure never reassigns the original business (1.827708ms)
+✖ already received result wins over a disconnect and is never replayed (1.917916ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 1
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 115.484375
+
+✖ failing tests:
+
+test at ../../../../../../private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-handoff.test.mjs:19:1
+✖ active offline query retains lookup ID and moves to a healthy ready phone after fencing (10.448459ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to: 'd51'
+      at TestContext.<anonymous> (file:///private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-handoff.test.mjs:22:25)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'd51',
+    expected: 'd51',
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../../../private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-handoff.test.mjs:30:1
+✖ handoff cleanup survives restart; late old results never complete the reassigned query (2.723875ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + 'completed'
+  - 'processing'
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-handoff.test.mjs:32:125)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'completed',
+    expected: 'processing',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../../../private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-handoff.test.mjs:38:1
+✖ manual stop wins over offline handoff, and its cleanup cannot hold the next round (2.686083ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  false !== true
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-handoff.test.mjs:40:9)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../../../private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-handoff.test.mjs:44:1
+✖ business waiting on all offline devices does not trigger the fifteen minute idle stop (2.528542ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + 'processing'
+  - 'queued'
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-handoff.test.mjs:46:9)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'processing',
+    expected: 'queued',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../../../private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-handoff.test.mjs:48:1
+✖ fifteen minutes after handed-off result the round ends despite old offline reservation (3.242833ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + 'stopping'
+  - 'stopped'
+          ^
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-handoff.test.mjs:50:96)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'stopping',
+    expected: 'stopped',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../../../private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-handoff.test.mjs:53:1
+✖ fence persistence failure never reassigns the original business (1.827708ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-handoff.test.mjs:54:156)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /managed_lookup_device_errors/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at ../../../../../../private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-handoff.test.mjs:57:1
+✖ already received result wins over a disconnect and is never replayed (1.917916ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + 'unknown'
+  - 'quarantined'
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-handoff.test.mjs:59:165)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'unknown',
+    expected: 'quarantined',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
