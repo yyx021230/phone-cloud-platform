@@ -1,0 +1,23 @@
+{
+  "observedAt": "2026-10-20T08:55:07.646Z",
+  "productionVersion": "lookup-idle-refresh-20261020-deployed.1",
+  "roundIdleSince": "2026-10-20T07:46:10.877Z",
+  "roundStopRequestedAt": "2026-10-20T08:01:10.930Z",
+  "activeBusiness": 0,
+  "channels": [
+    {
+      "number": 60,
+      "phase": "idle",
+      "roundStopRequested": true,
+      "adbState": "physically_absent"
+    },
+    {
+      "number": 115,
+      "phase": "human",
+      "roundStopRequested": true,
+      "adbState": "physically_absent"
+    }
+  ],
+  "conclusion": "Round stop remains pending because both reserved phones are absent and canStop requires online. New prepare is rejected by lookup_round_stopping. No forced release or production change performed.",
+  "unfixed": true
+}

@@ -1,0 +1,25 @@
+✔ card shows current puzzle and startup verification as human actions (2.950166ms)
+✔ card identifies precise login failure without leaking account or diagnostics (1.184459ms)
+✔ account restriction and account picker are not mislabelled login or human verification (0.144083ms)
+✔ pending verified resume replaces historical puzzle label (0.138375ms)
+✔ pending current work wins over prior failed job in the same session (5.084083ms)
+✔ stopping takes precedence over old puzzle and login actions (0.076708ms)
+✔ terminal or uncertain sessions do not display stale puzzle as an actionable request (0.058125ms)
+✔ old query or another session cannot change the current idle state (0.047167ms)
+✔ starting, running, idle and recovery have distinct nonhuman descriptions (0.084542ms)
+✔ screen-control ownership and lookup human indicator coexist without changing the control lock (0.163583ms)
+✔ renderer escapes all dynamic strings and rejects unknown states (0.132458ms)
+✔ renderer uses explicit words for human actions and no action badge for automatic states (0.0645ms)
+✔ returns the named owner and slot to administrators (2.211875ms)
+✔ shows another user's display name to a normal user (0.204541ms)
+✔ identifies the current user without exposing an account name (0.16625ms)
+✔ shows administrative and system occupancy without exposing account details (0.96575ms)
+✔ marks an unresolvable owner as unknown (0.075375ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 162.498334

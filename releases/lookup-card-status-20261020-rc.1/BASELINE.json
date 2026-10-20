@@ -1,0 +1,18 @@
+{
+  "parentCandidate": "lookup-retained-capacity-20261020-rc.1",
+  "parentCommit": "af1bee059267bd9a95b278f0452c6e6fd18f9bd7",
+  "productionVersion": "lookup-idle-refresh-20261020-deployed.1",
+  "inheritedProductionUiCommit": "b04747eae8459d754253e49fca02b45fbdf72dae",
+  "before": {
+    "public/index.html": "573c1cc79adde2c8c7364673730dd6aaa5762a214b7698ead153b414f06ec29a",
+    "public/styles.css": "e702fa8c7050d9c8b79521d01a76555b8ee60dac337bd6093ff8cc77822d76fc",
+    "public/app.js": "9e298f4d9ebe540196ace7723b15411a244f03b0a751a55f66dc5b8d57445082",
+    "server/device-occupancy.mjs": "3d6c7d4045cd82cb283d4a35c1473760f2d0a21601b6d9da032649bb19013baf",
+    "server/index.mjs": "9ea06924ae195e857ca195aaaa973f3758b18c52885fcda42026f743f91a0a1b",
+    "public/lookup-card-status.js": null,
+    "server/device-lookup-card-status.test.mjs": null,
+    "screen-client/screen-ui.test.mjs": "064b432660554d5faa863cb62efa5fc8d821292f19704b62fb70ba33c1f64c0f",
+    "server/automation-center-ui.test.mjs": "7fd502122bce22e8d937f01fbc33ae121b987a2014497775632942a8c8c4b9e7",
+    "scripts/recovery-controls-ui.test.mjs": "5e594bdfd6af6f066a0dc16b0b45f7bc108903d4cd6c10dd13a3ec618ea96b6e"
+  }
+}

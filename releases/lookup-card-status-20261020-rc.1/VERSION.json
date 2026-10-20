@@ -1,0 +1,16 @@
+{
+  "version": "lookup-card-status-20261020-rc.1",
+  "status": "local_candidate",
+  "branch": "codex/lookup-card-status-20261020",
+  "parentCommit": "af1bee059267bd9a95b278f0452c6e6fd18f9bd7",
+  "runtimeAllowlist": [
+    "server/device-occupancy.mjs",
+    "server/index.mjs",
+    "public/app.js",
+    "public/index.html",
+    "public/lookup-card-status.js",
+    "public/styles.css"
+  ],
+  "inherits": "lookup-retained-capacity-20261020-rc.1",
+  "deployed": false
+}

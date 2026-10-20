@@ -1,0 +1,12 @@
+{
+  "server/device-lookup-card-status.test.mjs": "025461ec4f80ca3bfe903a864eb94ad21a30333e97666e0a83bdfe8852d1e121",
+  "server/device-occupancy.mjs": "b13d17b34643369880a424d3724d2447b83c7035535be74502bd2dc09ff2ee2f",
+  "server/index.mjs": "a1b26fcc8471f21167e7d157c82c19af4d8a7e54055af6df3614398ad9016839",
+  "public/app.js": "5bd2f00cbb6038c740b4b8b82b2c10f2cf26330947ab81de29a9b72b2f78480b",
+  "public/index.html": "264d1b4641d36a69688cbc068b76cfe8e4bd7bb499c61b936654f4e969ade2de",
+  "public/lookup-card-status.js": "8f858abaea1294ba0016ed622c2b9b48df945c0c4f181ab10da018c0decfe5c6",
+  "public/styles.css": "ea46847aa8a1c4814c1cfe4dd8f79347b1f2cd3b09bcc2901b32d8ac82962d40",
+  "screen-client/screen-ui.test.mjs": "e361a0ab512db2c91d9f757b19225add50569f4ecc6bf6af9ffd058a8d7fdc5d",
+  "server/automation-center-ui.test.mjs": "32fd25ae956a0681b46b87149babfb9b9b9fda4995576c67b8640d0440a70fb7",
+  "scripts/recovery-controls-ui.test.mjs": "898ec8f92d023f691a1d86b487a0a85a40fc915f0ecb7fbbac45d68ea2c1c336"
+}
