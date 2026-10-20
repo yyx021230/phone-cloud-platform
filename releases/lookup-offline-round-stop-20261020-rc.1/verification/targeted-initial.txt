@@ -1,0 +1,38 @@
+✔ round ends after offline grace while its phone stays reserved; healthy phones start the next round (25.126375ms)
+✔ temporary disconnect resets the grace and never detaches or clears a phone lock (4.997375ms)
+✔ offline idle and puzzle sessions cannot block idle-expiry stop forever (6.212792ms)
+✔ next-round stop never rebinds quarantined channels from the old round (5.924ms)
+✔ reconnected quarantined phone waits for real cleanup ACK before reuse (4.232958ms)
+✔ failed durable fencing remains fail-closed and does not block another phone cleanup (3.079625ms)
+✔ received successful result is retained while an offline completed channel is quarantined (7.606167ms)
+✔ online unknown execution still requires stop ACK and is never detached by a timer (3.271542ms)
+✔ idle round expires at exactly fifteen minutes despite polling and new prepare keys (9.303875ms)
+✔ business pending for over thirty minutes retains the round; final completion starts a full fifteen minutes (12.360125ms)
+✔ queued, manual wait, recovery and unknown business are not idle; probes alone are (7.142458ms)
+✔ accepted new work resets idle but cached retries, GET and prepare never keep a finished round alive (5.161542ms)
+✔ restart preserves idle deadline and automatic stop waits for genuine ACK without touching another caller (7.225ms)
+✔ manual stop during business is immediate and never renewed by the idle policy (5.673208ms)
+✔ legacy active lease migrates once; expired idle never revives, but accepted work remains protected (3.278541ms)
+✔ automatic cleanup is not blocked by exhausted user stop-key quota or revoked authorization (2.72875ms)
+✔ five-minute refresh cycles never renew fifteen-minute round expiry (9.281792ms)
+✔ round stop cancels queue and probes, waits for stop ACK, never dispatches more (25.079917ms)
+✔ received results before or racing with stop remain retrievable (5.45175ms)
+✔ stopping is not stopped until real acknowledgment; offline does not block other caller (6.9955ms)
+✔ same stop key after restart is stable and delayed old stop cannot stop a new round (5.1915ms)
+✔ stop before probes start completes immediately and old prepare polling never reactivates (3.412042ms)
+✔ bad or cross-client preparation and stop keys never mutate an active round (1.700709ms)
+✔ unknown execution remains reserved and restart cannot bypass stop (5.692125ms)
+✔ stop cancels confirmed-limit reroute and recovery, never launches another query (3.102041ms)
+✔ manual recovery and human resumption cannot bypass a round stop (3.142917ms)
+✔ global pool disabled still permits stopping own existing round (4.156708ms)
+✔ concurrent stop retries and prepare polls cannot reopen the stopped generation (0.325542ms)
+✔ a missing execution binding is not falsely acknowledged as safely stopped (0.990667ms)
+✔ legacy submit for a prepared stopped caller cannot bypass the stop gate (0.45725ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 189.375584

@@ -1,0 +1,106 @@
+✖ round ends after offline grace while its phone stays reserved; healthy phones start the next round (9.704834ms)
+✔ temporary disconnect resets the grace and never detaches or clears a phone lock (2.08125ms)
+✖ offline idle and puzzle sessions cannot block idle-expiry stop forever (2.340417ms)
+✖ next-round stop never rebinds quarantined channels from the old round (2.228208ms)
+✖ reconnected quarantined phone waits for real cleanup ACK before reuse (1.910792ms)
+✖ failed durable fencing remains fail-closed and does not block another phone cleanup (1.68775ms)
+✖ received successful result is retained while an offline completed channel is quarantined (2.629875ms)
+✔ online unknown execution still requires stop ACK and is never detached by a timer (2.387667ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 2
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 93.925541
+
+✖ failing tests:
+
+test at ../../../../../../private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-round-stop.test.mjs:20:1
+✖ round ends after offline grace while its phone stays reserved; healthy phones start the next round (9.704834ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  false !== true
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-round-stop.test.mjs:25:37)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../../../private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-round-stop.test.mjs:38:1
+✖ offline idle and puzzle sessions cannot block idle-expiry stop forever (2.340417ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + 'stopping'
+  - 'stopped'
+          ^
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-round-stop.test.mjs:41:9)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'stopping',
+    expected: 'stopped',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../../../private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-round-stop.test.mjs:46:1
+✖ next-round stop never rebinds quarantined channels from the old round (2.228208ms)
+  Error: lookup_round_stopping
+      at error (file:///private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-readiness.mjs:10:50)
+      at Object.prepare (file:///private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-readiness.mjs:44:103)
+      at file:///private/tmp/pc-lookup-offline-round-stop-20261020/server/managed-lookup.mjs:189:24
+      at file:///private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-round-stop.test.mjs:5:301 {
+    statusCode: 409
+  }
+
+test at ../../../../../../private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-round-stop.test.mjs:52:1
+✖ reconnected quarantined phone waits for real cleanup ACK before reuse (1.910792ms)
+  Error: lookup_round_stopping
+      at error (file:///private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-readiness.mjs:10:50)
+      at Object.prepare (file:///private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-readiness.mjs:44:103)
+      at file:///private/tmp/pc-lookup-offline-round-stop-20261020/server/managed-lookup.mjs:189:24
+      at file:///private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-round-stop.test.mjs:5:301 {
+    statusCode: 409
+  }
+
+test at ../../../../../../private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-round-stop.test.mjs:61:1
+✖ failed durable fencing remains fail-closed and does not block another phone cleanup (1.68775ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-round-stop.test.mjs:64:2)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /managed_lookup_device_errors/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at ../../../../../../private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-round-stop.test.mjs:68:1
+✖ received successful result is retained while an offline completed channel is quarantined (2.629875ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  false !== true
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-lookup-offline-round-stop-20261020/server/lookup-offline-round-stop.test.mjs:72:127)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

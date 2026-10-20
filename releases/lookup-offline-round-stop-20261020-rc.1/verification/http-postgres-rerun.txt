@@ -1,0 +1,39 @@
+file:///private/tmp/pc-lookup-offline-round-stop-20261020/verification/offline-round-http.mjs:12
+ const start=async()=>{child=spawn(process.execPath,[path.join(temp,'server/index.mjs')],{cwd:temp,env,stdio:['ignore','ignore','pipe']});child.stderr.on('data',b=>{stderr.push(String(b));if(stderr.length>15)stderr.shift();});for(let i=0;i<200;i++){if(child.exitCode!==null)throw Error('server exited:'+stderr.join('').slice(-1000));try{if((await fetch(base+'/readyz')).ok)return;}catch{}await sleep(25);}throw Error('ready timeout');};
+                                                                                                                                                                                                                                                                                        ^
+
+Error: server exited:e_modules/pg/lib/client.js:652
+          Error.captureStackTrace(err)
+                ^
+
+error: relation "phone_cloud_managed_lookup" does not exist
+    at /Users/yyx/ztqc/phone-cloud-platform/node_modules/pg/lib/client.js:652:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async createManagedLookupStore (file:///private/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/lookup-ready-http-d43A1v/server/managed-lookup-store.mjs:23:17)
+    at async file:///private/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/lookup-ready-http-d43A1v/server/index.mjs:271:17 {
+  length: 125,
+  severity: 'ERROR',
+  code: '42P01',
+  detail: undefined,
+  hint: undefined,
+  position: '18',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '1452',
+  routine: 'parserOpenTable'
+}
+
+Node.js v25.9.0
+
+    at start (file:///private/tmp/pc-lookup-offline-round-stop-20261020/verification/offline-round-http.mjs:12:281)
+    at async runOfflineRoundHttp (file:///private/tmp/pc-lookup-offline-round-stop-20261020/verification/offline-round-http.mjs:58:3)
+    at async file:///Users/yyx/.codex/worktrees/lookup-idle-timeout-20261019/phone-cloud-platform/[eval1]:5:14
+
+Node.js v25.9.0

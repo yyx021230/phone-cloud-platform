@@ -1,0 +1,15 @@
+file:///Users/yyx/.codex/worktrees/lookup-idle-timeout-20261019/phone-cloud-platform/[eval1]:1
+import fs from "node:fs";import os from "node:os";import {runOfflineRoundHttp} from "/tmp/pc-lookup-offline-round-stop-20261020/verification/offline-round-http.mjs"; const p=JSON.parse(fs.readFileSync("/tmp/pc-offline-stop-pg-locator.json")); console.log(JSON.stringify(await runOfflineRoundHttp({databaseUrl:`postgresql://${encodeURIComponent(os.userInfo().username)}@127.0.0.1:${p.port}/postgres`}))));
+                                                                                                                                                                                                                                                                                                                                                                                                                  ^
+
+SyntaxError: Unexpected token ')'
+    at compileSourceTextModule (node:internal/modules/esm/utils:354:16)
+    at ModuleLoader.createModuleWrap (node:internal/modules/esm/loader:231:12)
+    at ModuleLoader.eval (node:internal/modules/esm/loader:270:23)
+    at node:internal/process/execution:79:24
+    at asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:11)
+    at Object.runEntryPointWithESMLoader (node:internal/modules/run_main:123:19)
+    at evalModuleEntryPoint (node:internal/process/execution:78:47)
+    at node:internal/main/eval_string:37:3
+
+Node.js v25.9.0

@@ -1,0 +1,15 @@
+{
+  "checked": [
+    "public/openapi.json",
+    "public/downloads/name-lookup-openapi.json",
+    "public/api-reference.json",
+    "docs/OPEN_NAME_LOOKUP_README.md",
+    "docs/OPEN_NAME_LOOKUP_API.md",
+    "docs/OPEN_NAME_LOOKUP_PARTNER_HANDOFF.md",
+    "public/downloads/name-lookup-http-guide.md"
+  ],
+  "zipMembers": 5,
+  "hashesConsistent": true,
+  "externalSchemaUnchanged": true,
+  "newStopSemanticsDocumented": true
+}

@@ -1,0 +1,28 @@
+{
+  "parentCandidate": "lookup-card-status-20261020-rc.1",
+  "parentCommit": "8884ae3201ffdbba9362e4662c8409b2d373b580",
+  "productionVersion": "lookup-idle-refresh-20261020-deployed.1",
+  "workflowRevision": "2026-09-30",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "before": {
+    "server/managed-lookup.mjs": "74ef81288a5dfd50f5f2d56e20204503f0a0b5018e6043bf830327dc1a0c83fb",
+    "server/managed-lookup-platform.mjs": "87b546402a22ce46af39374caad97f8683a66e581fbb2ee8b91c0aabb056f19f",
+    "server/lookup-round-stop.mjs": "2d5f59143706f4d8da3d00000dd6028276b35ebfcd549e7bcff4ba21aea76ed8",
+    "docs/OPEN_NAME_LOOKUP_README.md": "030bd40371a1081d6bc4144ac799fcffc9bed6353579018119f3a0a048587a89",
+    "docs/OPEN_NAME_LOOKUP_API.md": "fce42d6dfcd89f04c9af64cd925053a73055b87754dfea9cb2230348a3b853a2",
+    "docs/OPEN_NAME_LOOKUP_PARTNER_HANDOFF.md": "885a1ad45a01cab9c5521f032f4e18ad529c8750e867c63c6cad2b7bbb180ec8",
+    "public/api-reference.json": "27bbbefa56669e9132d452d54caae6b916052833e7e297e4b8e6cb04f8b6b115",
+    "public/openapi.json": "e6fcb7b16f5dc4a19a421ca2633dc0a2a12008cd4ece765d5eff2576cb2aafe5",
+    "public/downloads/name-lookup-openapi.json": "3eb1d5e5363536923ebae3472ccbfdbd4775b4a3cd33a512c2158f4e5354fbf4",
+    "public/downloads/name-lookup-http-guide.md": "16390b37ef619934443041dae87cb917124b285862c10d7e1e4ee0ee24204468",
+    "public/downloads/name-lookup-integration.zip": "157369e4c55927190bab05e9bfa90142fd47ee21c0b5dec9e3f9f74f5466192c",
+    "public/downloads/name-lookup-sha256.json": "075d9c5c6c718c3316c8887bed21fa05cf05100d4892dd8072d03f89579fc9e7",
+    "server/lookup-offline-fence.test.mjs": null,
+    "server/lookup-offline-round-stop.test.mjs": null
+  },
+  "productionReadHashes": {
+    "server/managed-lookup-platform.mjs": "87b546402a22ce46af39374caad97f8683a66e581fbb2ee8b91c0aabb056f19f",
+    "server/lookup-round-stop.mjs": "2d5f59143706f4d8da3d00000dd6028276b35ebfcd549e7bcff4ba21aea76ed8",
+    "server/managed-lookup.mjs": "1f356a8c2b3c1821fc6609233bd6deda225aec9ac451e5b97b234cc8fbed3640"
+  }
+}
