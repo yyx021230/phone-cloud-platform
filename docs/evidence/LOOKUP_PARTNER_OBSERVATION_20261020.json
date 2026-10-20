@@ -1,0 +1,224 @@
+{
+  "atUtc": "2026-10-20T10:08:30.356Z",
+  "readOnly": true,
+  "submittedByObserver": 0,
+  "businessCount": 20,
+  "statusCounts": {
+    "not_found": 5,
+    "succeeded": 15
+  },
+  "businessDurationsMs": [
+    8906,
+    10215,
+    12289,
+    14859,
+    15615,
+    17931,
+    25005,
+    25749,
+    26083,
+    26521,
+    27918,
+    33782,
+    34107,
+    36443,
+    42259,
+    44581,
+    54394,
+    207853,
+    236796,
+    315743
+  ],
+  "unfinished": [],
+  "crossDevice": [
+    {
+      "id": "8e468c82-b84b-4338-857a-6811a4afece8",
+      "status": "not_found",
+      "code": "",
+      "completedAt": "2026-10-20T10:06:04.487Z",
+      "phones": [
+        "112",
+        "6",
+        "172"
+      ]
+    },
+    {
+      "id": "fbc4677d-c327-4319-87ee-6cb05373a95c",
+      "status": "not_found",
+      "code": "",
+      "completedAt": "2026-10-20T10:07:52.550Z",
+      "phones": [
+        "67",
+        "53",
+        "172"
+      ]
+    },
+    {
+      "id": "4d8d1645-e3ca-43b1-8f5e-919c161fe207",
+      "status": "not_found",
+      "code": "",
+      "completedAt": "2026-10-20T10:06:33.770Z",
+      "phones": [
+        "74",
+        "172"
+      ]
+    }
+  ],
+  "currentRound": {
+    "id": "856d450c-74f9-49f6-9aa8-69e1e197ac66",
+    "keyCount": 2,
+    "idleSince": 1792490872686,
+    "stoppingRounds": 0
+  },
+  "counts": {
+    "registered": 48,
+    "executing": 3,
+    "waitingHuman": 4,
+    "queued": 0
+  },
+  "channels": [
+    {
+      "number": "172",
+      "phase": "idle",
+      "hasProof": true
+    },
+    {
+      "number": "158",
+      "phase": "querying",
+      "hasProof": false
+    },
+    {
+      "number": "118",
+      "phase": "idle",
+      "hasProof": true
+    },
+    {
+      "number": "163",
+      "phase": "human",
+      "hasProof": false
+    },
+    {
+      "number": "115",
+      "phase": "human",
+      "hasProof": false
+    },
+    {
+      "number": "87",
+      "phase": "querying",
+      "hasProof": false
+    },
+    {
+      "number": "161",
+      "phase": "human",
+      "hasProof": false
+    },
+    {
+      "number": "138",
+      "phase": "human",
+      "hasProof": false
+    },
+    {
+      "number": "188",
+      "phase": "starting",
+      "hasProof": false
+    }
+  ],
+  "taskErrors": {
+    "alipay_human_verification_required": 14,
+    "alipay_lookup_failed": 12,
+    "alipay_ui_hierarchy_unavailable": 3,
+    "alipay_lookup_result_unconfirmed": 8,
+    "alipay_prepared_account_limited": 1,
+    "task_failed": 1,
+    "alipay_login_required": 2,
+    "alipay_account_identity_unverified": 1
+  },
+  "audits": [
+    {
+      "action": "lookup_surplus_idle_stop",
+      "number": "107",
+      "at": "2026-10-20T10:02:35.895Z"
+    },
+    {
+      "action": "lookup_surplus_idle_stop",
+      "number": "181",
+      "at": "2026-10-20T10:03:36.943Z"
+    },
+    {
+      "action": "lookup_surplus_idle_stop",
+      "number": "57",
+      "at": "2026-10-20T10:03:52.186Z"
+    },
+    {
+      "action": "lookup_automatic_recovery",
+      "number": "112",
+      "at": "2026-10-20T10:04:05.176Z"
+    },
+    {
+      "action": "lookup_automatic_recovery",
+      "number": "67",
+      "at": "2026-10-20T10:04:06.924Z"
+    },
+    {
+      "action": "lookup_automatic_recovery",
+      "number": "74",
+      "at": "2026-10-20T10:04:12.173Z"
+    },
+    {
+      "action": "lookup_reroute_recovery_exhausted",
+      "number": "112",
+      "at": "2026-10-20T10:05:11.465Z"
+    },
+    {
+      "action": "lookup_reroute_recovery_exhausted",
+      "number": "67",
+      "at": "2026-10-20T10:05:13.963Z"
+    },
+    {
+      "action": "lookup_reroute_recovery_exhausted",
+      "number": "74",
+      "at": "2026-10-20T10:05:17.714Z"
+    },
+    {
+      "action": "lookup_reroute_confirmed_limit",
+      "number": "6",
+      "at": "2026-10-20T10:05:29.225Z"
+    },
+    {
+      "action": "lookup_automatic_recovery",
+      "number": "53",
+      "at": "2026-10-20T10:06:16.496Z"
+    },
+    {
+      "action": "lookup_reroute_recovery_exhausted",
+      "number": "53",
+      "at": "2026-10-20T10:07:21.536Z"
+    }
+  ],
+  "healthReasons": {
+    "lookup_device_unavailable": 4,
+    "account_login_required": 9,
+    "screen_control_active": 2,
+    "device_or_agent_offline": 3,
+    "accounts_cooling": 1
+  },
+  "version": "lookup-offline-round-stop-20261020-deployed.1",
+  "sourceCommit": "59ce44eb871754fb34924836a5c0538919b8cc72",
+  "observationStartedUtc": "2026-10-20T10:06:34.488Z",
+  "newAliasKeysThisRound": 0,
+  "canonicalAliasTargetsThisRound": 0,
+  "boundedCloudErrors": {
+    "managed_lookup_device_errors": 0,
+    "managed_lookup_persistence_failed": 0,
+    "SyntaxError": 0,
+    "ReferenceError": 0,
+    "UnhandledPromiseRejection": 0
+  },
+  "notes": [
+    "17 business results within 55 seconds; three cross-device results took 207853,236796,315743 ms.",
+    "Two prepare keys map to one current preparation; no new alias keys observed, so client timeout/new-key dedup was not newly exercised.",
+    "Confirmed-limit and exhausted-recovery cross-device handoffs observed; no new physical-offline handoff or round-stop event induced.",
+    "API result states observed; visible name correctness was not independently checked on phone screens.",
+    "Read-only observation. No production writes, business submissions, device commands, messages, service restarts or changes to ADB/SYSTEM."
+  ]
+}
