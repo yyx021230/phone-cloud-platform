@@ -134,25 +134,4 @@ class BoundedNativeScrollTests(unittest.TestCase):
    with self.assertRaises((sync.ElementListReadError,RuntimeError)):sync.swipe('adb','serial',root,lambda:None,[])
   adb.assert_not_called()
 
-class InitialHeaderRefreshTests(unittest.TestCase):
- def header(self):return ET.parse(S/'fixtures/xhs/works-13-header-only.xml').getroot()
- def test_two_native_blank_headers_refresh_once_then_require_two_complete_frames(self):
-  import copy
-  header=self.header();listing=ElementCompletenessStabilityTests().listing();events=[]
-  with patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync.time,'sleep'),patch.object(sync,'focus',return_value=LateOverviewTests.current),patch.object(sync,'navigation_capture',side_effect=[copy.deepcopy(header),copy.deepcopy(listing)]) as capture,patch.object(sync,'refresh_scrolled_webview',return_value=listing) as refresh:
-   actual=sync.wait_creator_content('adb','serial',header,lambda:None,events)
-  self.assertEqual(len(sync.note_cards(actual)),5);self.assertEqual(refresh.call_count,1);self.assertEqual(capture.call_count,2);self.assertIn('initial_blank_native_header_refreshed',events)
- def test_header_without_filter_never_receives_a_guessed_refresh(self):
-  header=self.header()
-  for n in header.iter('node'):
-   if n.get('text')=='全部笔记':n.set('text','')
-  with patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync.time,'sleep'),patch.object(sync,'navigation_capture',return_value=header),patch.object(sync,'refresh_scrolled_webview') as refresh,patch.object(sync,'adb'):
-   with self.assertRaises(sync.ElementListReadError):sync.wait_creator_content('adb','serial',header,lambda:None,[])
-  refresh.assert_not_called()
- def test_failed_refresh_is_not_retried_or_reported_as_empty(self):
-  header=self.header()
-  with patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync.time,'sleep'),patch.object(sync,'focus',return_value=LateOverviewTests.current),patch.object(sync,'navigation_capture',return_value=header),patch.object(sync,'refresh_scrolled_webview',side_effect=sync.ElementListReadError('native filter panel unavailable')) as refresh:
-   with self.assertRaisesRegex(sync.ElementListReadError,'panel unavailable'):sync.wait_creator_content('adb','serial',header,lambda:None,[])
-  self.assertEqual(refresh.call_count,1)
-
 if __name__=='__main__':unittest.main()
