@@ -636,6 +636,36 @@ def recover_known_overlay(adb_path, serial, root, guard, events):
     parents = {child: parent for parent in root.iter() for child in parent}
     values = [(node.get("text") or "").strip() for node in nodes]
 
+    # 141's observed MIUI ANR dialog: allow one non-destructive wait for
+    # this exact XHS user. Never press aerr_close or repeat a failed action.
+    anr = re.search(r"mCurrentFocus=Window\{[^\n}]*\bu(\d+)\s+Application Not Responding: com\.xingin\.xhs[}\s]", current)
+    if anr and label(root, "小红书没有响应"):
+        slots = {e.split(":", 1)[1] for e in events if e.startswith("collection_slot_requested:")}
+        users = {e.split(":", 1)[1] for e in events if e.startswith("clone_user_requested:")}
+        expected = "0" if slots == {"app1"} else next(iter(users)) if slots == {"app2"} and len(users) == 1 else None
+        if expected != anr.group(1):
+            raise RuntimeError("XHS ANR dialog user does not match the requested slot")
+        if "xhs_anr_wait_selected" in events:
+            raise RuntimeError("XHS remains unresponsive after one wait; collection stopped")
+        live = live_nodes(root)
+        titles = [n for n in live if n.get("resource-id") == "miui:id/alertTitle" and n.get("text") == "小红书没有响应"]
+        waits = [n for n in live if n.get("resource-id") == "android:id/aerr_wait" and n.get("text") == "等待"
+                 and n.get("class") == "android.widget.Button" and n.get("clickable") == "true" and n.get("enabled") == "true"]
+        closes = [n for n in live if n.get("resource-id") == "android:id/aerr_close" and n.get("text") == "确定"]
+        if (len(titles) != 1 or len(waits) != 1 or len(closes) != 1
+                or any(n.get("package") != "android" for n in live)
+                or parents.get(waits[0]) is None or parents.get(waits[0]) is not parents.get(closes[0])):
+            raise RuntimeError("XHS ANR wait element is not uniquely proven")
+        guard()
+        if focus(adb_path, serial) != current:
+            raise RuntimeError("XHS ANR foreground changed before wait")
+        events.append("xhs_anr_wait_selected")
+        x1, y1, x2, y2 = bounds(waits[0])
+        adb(adb_path, serial, "shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2), timeout=7)
+        time.sleep(1)
+        assert_requested_foreground(focus(adb_path, serial), events)
+        return True
+
     def press_back():
         guard()
         adb(adb_path, serial, "shell", "input", "keyevent", "4", timeout=7)
