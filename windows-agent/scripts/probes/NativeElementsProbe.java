@@ -1,5 +1,5 @@
-import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /** Diagnostic only: a bounded native hierarchy read; no screenshots or inputs. */
 public final class NativeElementsProbe {
@@ -64,6 +64,18 @@ public final class NativeElementsProbe {
     static final class Reader {
         final long deadline = System.nanoTime() + 12_000_000_000L;
         int visited;
+        int[] clip;
+        static int[] box(String value) {
+            Matcher m = Pattern.compile("\\[(-?\\d+),(-?\\d+)\\]\\[(-?\\d+),(-?\\d+)\\]").matcher(value);
+            if (!m.matches()) throw new IllegalStateException("invalid native bounds");
+            return new int[]{Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)), Integer.parseInt(m.group(4))};
+        }
+        String clipped(String value) {
+            int[] b = box(value);
+            int l = Math.max(clip[0], b[0]), t = Math.max(clip[1], b[1]);
+            int r = Math.min(clip[2], b[2]), bottom = Math.min(clip[3], b[3]);
+            return l >= r || t >= bottom ? "[0,0][0,0]" : "["+l+","+t+"]["+r+","+bottom+"]";
+        }
         final StringBuilder xml = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\"?><hierarchy data-source=\"xml\">");
         void visit(Node node, int depth, int index) throws Exception {
             if (node == null) throw new IllegalStateException("native child missing; snapshot incomplete");
@@ -73,7 +85,11 @@ public final class NativeElementsProbe {
                 // Do not recurse through invisible subtrees for the stock NAF annotation.
                 if (!node.visible()) return;
                 xml.append("<node index=\"").append(index).append("\" visible-to-user=\"true\"");
-                for (String attr : ATTRS) xml.append(' ').append(attr).append("=\"").append(escaped(node.value(attr))).append('"');
+                for (String attr : ATTRS) {
+                    String value = node.value(attr);
+                    xml.append(' ').append(attr).append("=\"").append(escaped(attr.equals("bounds") ? clipped(value) : value)).append('"');
+                    if (xml.length() > 1_000_000) throw new IllegalStateException("native snapshot size bound exceeded");
+                }
                 xml.append('>');
                 int count = node.children();
                 if (count < 0 || count > 2500) throw new IllegalStateException("native child count invalid");
@@ -85,6 +101,11 @@ public final class NativeElementsProbe {
             if (root == null) throw new IllegalStateException("native root missing");
             if (!"com.xingin.xhs".equals(root.value("package"))) {
                 root.close(); throw new IllegalStateException("foreground package is not XHS");
+            }
+            clip = box(root.value("bounds"));
+            clip[0] = Math.max(0, clip[0]); clip[1] = Math.max(0, clip[1]);
+            if (clip[2] <= clip[0] || clip[3] <= clip[1] || clip[2] > 10000 || clip[3] > 10000) {
+                root.close(); throw new IllegalStateException("native window bounds unavailable");
             }
             visit(root, 0, 0);
             if (xml.indexOf("<node ") < 0) throw new IllegalStateException("native root invisible");

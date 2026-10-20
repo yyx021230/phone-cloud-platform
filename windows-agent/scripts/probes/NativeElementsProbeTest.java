@@ -5,12 +5,13 @@ import java.nio.charset.StandardCharsets;
 public final class NativeElementsProbeTest {
     static class N implements NativeElementsProbe.Node {
         boolean visible = true, closed;
+        String rectangle = "[1,2][100,200]";
         String text = "标题 & <测> \"😀\"\n", pkg = "com.xingin.xhs";
         List<N> kids = new ArrayList<>();
         public boolean visible() { return visible; }
         public int children() { if (!visible) throw new AssertionError("invisible subtree traversed"); return kids.size(); }
         public NativeElementsProbe.Node child(int i) { return kids.get(i); }
-        public String value(String k) { return k.equals("package") ? pkg : k.equals("text") ? text : k.equals("bounds") ? "[1,2][100,200]" : ""; }
+        public String value(String k) { return k.equals("package") ? pkg : k.equals("text") ? text : k.equals("bounds") ? rectangle : ""; }
         public void close() { closed = true; }
     }
     interface Run { void go() throws Exception; }
@@ -28,6 +29,9 @@ public final class NativeElementsProbeTest {
         rejects(() -> NativeElementsProbe.escaped("bad\u0000")); tests++;
         N invisible = new N(); invisible.visible=false;rejects(() -> new NativeElementsProbe.Reader().read(invisible)); tests++;
         rejects(() -> new NativeElementsProbe.Reader().read(null)); tests++;
+        N clippedRoot = new N(), outside = new N(), partly = new N(); outside.rectangle="[1,201][100,300]";partly.rectangle="[-2,-3][100,60]";clippedRoot.kids.add(outside);clippedRoot.kids.add(partly);
+        String clippedXML = new NativeElementsProbe.Reader().read(clippedRoot);if (!clippedXML.contains("bounds=\"[0,0][0,0]\"") || !clippedXML.contains("bounds=\"[1,2][100,60]\""))throw new AssertionError();tests++;
+        N large = new N();large.text=String.join("", Collections.nCopies(1000001,"x"));rejects(() -> new NativeElementsProbe.Reader().read(large));tests++;
         System.out.println("NativeElementsProbe tests passed: " + tests);
     }
 }
