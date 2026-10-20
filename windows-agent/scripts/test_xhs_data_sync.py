@@ -1365,6 +1365,33 @@ class OverlayRecoveryTests(unittest.TestCase):
         adb.assert_not_called()
 
 
+class NativeClippedRowRoundingTests(unittest.TestCase):
+    def fixture(self):
+        return ET.parse(SCRIPT.parent / "fixtures/xhs/works-clipped-row-rounding.xml").getroot()
+
+    def test_actual_complete_row_bounds_override_rounded_spacing_estimate(self):
+        root = self.fixture()
+        # Filter ends at y314; the complete raw row starts at y312. Median
+        # status spacing incorrectly estimates its top as y314 instead.
+        self.assertIsNotNone(sync.element_page_signature(root))
+        self.assertEqual([item["published_at_raw"] for _, item in sync.note_cards(root)],
+                         ["09-24", "09-23", "09-22", "09-21", "09-20"])
+
+    def test_clipped_row_proof_does_not_hide_an_unrelated_incomplete_visible_row(self):
+        root = self.fixture()
+        target = next(n for n in root.iter("node")
+                      if n.get("class") == "android.widget.TextView" and n.get("text") == "09-23")
+        parents = {child: parent for parent in root.iter() for child in parent}
+        row = parents[target]
+        while row is not None and not any(sync.is_note_status(n.get("text", "")) for n in row.iter("node")):
+            row = parents.get(row)
+        self.assertIsNotNone(row)
+        status = next(n for n in row.iter("node") if sync.is_note_status(n.get("text", "")))
+        status.set("text", "")
+        with self.assertRaises(sync.ElementListReadError):
+            sync.element_page_signature(root)
+
+
 class NativeTenLikesMilestoneTests(unittest.TestCase):
     def test_observed_ten_likes_sheet_uses_only_the_proven_close_icon(self):
         root = ET.parse(SCRIPT.parent / "fixtures/xhs/milestone-ten-likes.xml").getroot()

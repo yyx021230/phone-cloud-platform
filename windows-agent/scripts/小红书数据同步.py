@@ -1591,6 +1591,14 @@ def element_page_signature(root):
     if len(views) == len(filters) == 1:
         top,bottom = bounds(filters[0])[3],bounds(views[0])[3]
         statuses = [n for n in live_nodes(views[0]) if is_note_status(n.get("text",""))]
+        # Native row spacing rounds independently (94: actual top312,
+        # filter314, median estimate314). A fully parsed raw row proves its
+        # own clipping more accurately than another row's estimated margins.
+        visible = set(live_nodes(root))
+        raw_complete = structured_note_cards(root) or flat_webview_cards(root)
+        clipped_rows = [bounds(row) for row,_ in raw_complete
+                        if (bounds(row)[1] < top or bounds(row)[3] > bottom)
+                        and all(n.get("package") == XHS_PACKAGE for n in row.iter("node") if n in visible)]
         gaps = []
         for row,item in cards:
             if any(n.get("package") != XHS_PACKAGE for n in row.iter("node")
@@ -1605,6 +1613,7 @@ def element_page_signature(root):
         for status in statuses:
             sb = bounds(status)
             if any(bounds(row)[1] <= sb[1] < sb[3] <= bounds(row)[3] for row,_ in cards):continue
+            if any(box[1] <= sb[1] < sb[3] <= box[3] for box in clipped_rows):continue
             if sb[1]-title_gap < top or sb[3]+metric_gap > bottom:continue
             raise ElementListReadError("a fully visible element row has incomplete title/date/metrics")
         # A missing status also makes the parser drop a row. Use the native
@@ -1622,6 +1631,7 @@ def element_page_signature(root):
             for date in dates:
                 box = bounds(date)
                 if any(bounds(row)[1] <= box[1] < box[3] <= bounds(row)[3] for row,_ in cards):continue
+                if any(row[1] <= box[1] < box[3] <= row[3] for row in clipped_rows):continue
                 if box[1]-before < top or box[3]+after > bottom:continue
                 raise ElementListReadError("a fully visible dated element row has incomplete status/title/metrics")
     return (tuple((v["title"],v["published_at_raw"],v["status_raw"],v["list_view_count"],v["list_like_count"],v["list_comment_count"]) for _,v in cards),
