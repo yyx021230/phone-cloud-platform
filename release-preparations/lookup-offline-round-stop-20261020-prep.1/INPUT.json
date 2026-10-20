@@ -1,0 +1,47 @@
+{
+  "candidate": "lookup-offline-round-stop-20261020-rc.2",
+  "commit": "59ce44eb871754fb34924836a5c0538919b8cc72",
+  "files": {
+    "server/managed-lookup.mjs": "2fcbc4db86ee999d9f7b101cef658ef472dd62c374cefe4670e64433fa9f51ae",
+    "server/lookup-readiness.mjs": "d89a7b34fb3682706a70de140ade39fa014c36bb9db080bb273aa7e03725da1a",
+    "server/device-occupancy.mjs": "b13d17b34643369880a424d3724d2447b83c7035535be74502bd2dc09ff2ee2f",
+    "server/index.mjs": "a1b26fcc8471f21167e7d157c82c19af4d8a7e54055af6df3614398ad9016839",
+    "public/app.js": "5bd2f00cbb6038c740b4b8b82b2c10f2cf26330947ab81de29a9b72b2f78480b",
+    "public/index.html": "264d1b4641d36a69688cbc068b76cfe8e4bd7bb499c61b936654f4e969ade2de",
+    "public/lookup-card-status.js": "8f858abaea1294ba0016ed622c2b9b48df945c0c4f181ab10da018c0decfe5c6",
+    "public/styles.css": "ea46847aa8a1c4814c1cfe4dd8f79347b1f2cd3b09bcc2901b32d8ac82962d40",
+    "server/lookup-round-stop.mjs": "f13558828d2050529513d27e7085e8633cea56628982a5a63711bd3f7dcc21aa",
+    "server/managed-lookup-platform.mjs": "07601b7f866210d0248823d4594e48dceb084c062c5a2c44a80422dc531f0b2d",
+    "public/api-reference.json": "5ce9d1634413059e4ee1ed119af78a80e866552439034d279e35ce0389ae44b4",
+    "public/downloads/name-lookup-http-guide.md": "47df78087a7aee9b786dc676b934f710d571c310db80a0fb9f62ad9e965d196b",
+    "public/downloads/name-lookup-integration.zip": "2c8bc9ee67467526ce619a72427c872843829258eb03525b94c88af1acad936b",
+    "public/downloads/name-lookup-openapi.json": "2f8a4062b24eb56a7d7877068e1b5fa4b80f57879ed6ddf84c9abe5efcb2a7cd",
+    "public/downloads/name-lookup-sha256.json": "b3008f82db7db4d514196ca185f7417144fbc5d80e6b9c11dffd21b75941ecc8",
+    "public/openapi.json": "5d3a463dea3bc445dd238377630f89cfa03130a29809c863fa0c6ad6f90a7f68"
+  },
+  "before": {
+    "server/managed-lookup.mjs": "1f356a8c2b3c1821fc6609233bd6deda225aec9ac451e5b97b234cc8fbed3640",
+    "server/lookup-readiness.mjs": "8101fb9717b8b7cb76d811007818651dcca1cc8a892a0eadc3ffcee056e49e0f",
+    "server/device-occupancy.mjs": "3d6c7d4045cd82cb283d4a35c1473760f2d0a21601b6d9da032649bb19013baf",
+    "server/index.mjs": "9ea06924ae195e857ca195aaaa973f3758b18c52885fcda42026f743f91a0a1b",
+    "public/app.js": "9e298f4d9ebe540196ace7723b15411a244f03b0a751a55f66dc5b8d57445082",
+    "public/index.html": "573c1cc79adde2c8c7364673730dd6aaa5762a214b7698ead153b414f06ec29a",
+    "public/lookup-card-status.js": null,
+    "public/styles.css": "e702fa8c7050d9c8b79521d01a76555b8ee60dac337bd6093ff8cc77822d76fc",
+    "server/lookup-round-stop.mjs": "2d5f59143706f4d8da3d00000dd6028276b35ebfcd549e7bcff4ba21aea76ed8",
+    "server/managed-lookup-platform.mjs": "87b546402a22ce46af39374caad97f8683a66e581fbb2ee8b91c0aabb056f19f",
+    "public/api-reference.json": "27bbbefa56669e9132d452d54caae6b916052833e7e297e4b8e6cb04f8b6b115",
+    "public/downloads/name-lookup-http-guide.md": "16390b37ef619934443041dae87cb917124b285862c10d7e1e4ee0ee24204468",
+    "public/downloads/name-lookup-integration.zip": "157369e4c55927190bab05e9bfa90142fd47ee21c0b5dec9e3f9f74f5466192c",
+    "public/downloads/name-lookup-openapi.json": "3eb1d5e5363536923ebae3472ccbfdbd4775b4a3cd33a512c2158f4e5354fbf4",
+    "public/downloads/name-lookup-sha256.json": "075d9c5c6c718c3316c8887bed21fa05cf05100d4892dd8072d03f89579fc9e7",
+    "public/openapi.json": "e6fcb7b16f5dc4a19a421ca2633dc0a2a12008cd4ece765d5eff2576cb2aafe5"
+  },
+  "includedCandidates": [
+    "lookup-retained-capacity-20261020-rc.1",
+    "lookup-card-status-20261020-rc.1",
+    "lookup-offline-round-stop-20261020-rc.1",
+    "lookup-offline-round-stop-20261020-rc.2"
+  ],
+  "productionBaseline": "lookup-idle-refresh-20261020-deployed.1"
+}

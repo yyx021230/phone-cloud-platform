@@ -1,0 +1,20 @@
+{
+  "atUtc": "2026-10-20T09:39:25.493466+00:00",
+  "allowed": "User approved current two-minute cloud maintenance window including new screen connections",
+  "currentScreenNumbers": [
+    "132",
+    "142",
+    "156",
+    "118"
+  ],
+  "windowControlDisconnectAuthorized": true,
+  "activeBusinessStillBlocks": true,
+  "untouched": [
+    "Agent",
+    "ADB",
+    "SYSTEM",
+    "Windows",
+    "USB",
+    "media"
+  ]
+}
