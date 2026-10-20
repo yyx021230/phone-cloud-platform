@@ -112,6 +112,18 @@ public final class NativeElementsProbe {
             return xml.append("</hierarchy>").toString();
         }
     }
+    interface RootSource { Node root() throws Exception; }
+    static String readFresh(RootSource source, int attempts) throws Exception {
+        for (int i = 0; i < attempts; i++) {
+            try { return new Reader().read(source.root()); }
+            catch (IllegalStateException error) {
+                String reason = error.getMessage();
+                if (i + 1 == attempts || !(reason.startsWith("native child missing") || reason.equals("native root missing"))) throw error;
+                Thread.sleep(300);
+            }
+        }
+        throw new IllegalArgumentException("no native read attempts");
+    }
     public static void main(String[] args) {
         Object wrapper = null;
         boolean connected = false;
@@ -123,8 +135,12 @@ public final class NativeElementsProbe {
             call(wrapper, "connect"); connected = true;
             wrapper.getClass().getMethod("setCompressedLayoutHierarchy", boolean.class).invoke(wrapper, false);
             Object automation = call(wrapper, "getUiAutomation");
-            Object root = call(automation, "getRootInActiveWindow");
-            xml = new Reader().read(root == null ? null : new AndroidNode(root));
+            xml = readFresh(() -> {
+                Object root = call(automation, "getRootInActiveWindow");
+                if (root == null) return null;
+                if (!(Boolean) call(root, "refresh")) { call(root, "recycle"); return null; }
+                return new AndroidNode(root);
+            }, 3);
             code = 0;
         } catch (Exception error) {
             System.err.println("native_elements_unproven:" + error.getClass().getSimpleName() + ":" + error.getMessage());

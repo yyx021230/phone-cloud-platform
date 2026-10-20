@@ -32,6 +32,9 @@ public final class NativeElementsProbeTest {
         N clippedRoot = new N(), outside = new N(), partly = new N(); outside.rectangle="[1,201][100,300]";partly.rectangle="[-2,-3][100,60]";clippedRoot.kids.add(outside);clippedRoot.kids.add(partly);
         String clippedXML = new NativeElementsProbe.Reader().read(clippedRoot);if (!clippedXML.contains("bounds=\"[0,0][0,0]\"") || !clippedXML.contains("bounds=\"[1,2][100,60]\""))throw new AssertionError();tests++;
         N large = new N();large.text=String.join("", Collections.nCopies(1000001,"x"));rejects(() -> new NativeElementsProbe.Reader().read(large));tests++;
+        int[] tries={0};N fresh=new N();String recovered=NativeElementsProbe.readFresh(() -> ++tries[0]<3?null:fresh,3);if(tries[0]!=3 || !recovered.contains("<node "))throw new AssertionError();tests++;
+        tries[0]=0;rejects(() -> NativeElementsProbe.readFresh(() -> {tries[0]++;return null;},3));if(tries[0]!=3)throw new AssertionError();tests++;
+        tries[0]=0;rejects(() -> NativeElementsProbe.readFresh(() -> {tries[0]++;N n=new N();n.pkg="other";return n;},3));if(tries[0]!=1)throw new AssertionError();tests++;
         System.out.println("NativeElementsProbe tests passed: " + tests);
     }
 }
