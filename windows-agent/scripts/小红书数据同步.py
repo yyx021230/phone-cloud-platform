@@ -1174,7 +1174,15 @@ def tap_index_menu(adb_path, serial, root, guard, events):
         return tap_label(adb_path, serial, root, "菜单", guard)
     native_index_navigation("menu", adb_path, serial, guard, events)
     fresh = navigation_capture(adb_path, serial, guard, events)
-    assert_requested_foreground(focus(adb_path, serial), events)
+    foreground = focus(adb_path, serial)
+    assert_requested_foreground(foreground, events)
+    # 113 displayed the already-supported update dialog immediately after
+    # the native action. Defer it once, then prove the drawer.
+    if (re.search(r"com\.xingin\.xhs/com\.xingin\.update\.UpdateDialogActivity(?:[}\s]|$)", foreground)
+            and label(fresh, "免流量升级") and label(fresh, "立即安装")
+            and recover_known_overlay(adb_path, serial, fresh, guard, events)):
+        fresh = navigation_capture(adb_path, serial, guard, events)
+        assert_requested_foreground(focus(adb_path, serial), events)
     if not (label(fresh, "我的草稿") and (label(fresh, "创作者中心") or label(fresh, "创作中心"))):
         raise ElementListReadError("native menu did not expose the Creator Center drawer")
 

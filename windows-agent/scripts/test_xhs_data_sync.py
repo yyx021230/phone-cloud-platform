@@ -1627,6 +1627,20 @@ class NativeNavigationIntegrationTests(unittest.TestCase):
         with patch.object(sync,'native_index_navigation') as action,patch.object(sync,'navigation_capture',return_value=xml()) as capture,patch.object(sync,'focus',return_value=self.current.replace('com.xingin.xhs.index.v2.IndexActivityV2','com.xingin.xhs.note.NoteDetailActivity')):
             with self.assertRaisesRegex(sync.ElementListReadError,'left the index page'):sync.select_zero_bounds_profile('adb','serial',root,self.current,lambda:None,events)
         action.assert_called_once();capture.assert_called_once()
+    def test_menu_update_dialog_uses_existing_defer_then_proves_drawer(self):
+        popup=ET.parse(Path(__file__).parent/'fixtures/xhs/native-menu-update-popup.xml').getroot()
+        drawer=xml('<node text="我的草稿" bounds="[0,0][100,100]"/>','<node text="创作者中心" bounds="[0,200][100,300]"/>')
+        update=self.current.replace('com.xingin.xhs.index.v2.IndexActivityV2','com.xingin.update.UpdateDialogActivity')
+        events=['collection_slot_requested:app2','clone_user_requested:999']
+        with patch.object(sync,'adb',return_value='VIVO'),patch.object(sync,'native_index_navigation') as action,patch.object(sync,'navigation_capture',side_effect=[popup,drawer]),patch.object(sync,'focus',side_effect=[update,update,self.current,self.current]),patch.object(sync,'tap_label') as tap:
+            sync.tap_index_menu('adb','serial',xml(),lambda:None,events)
+        action.assert_called_once();tap.assert_called_once();self.assertEqual(tap.call_args.args[3],'稍后再说');self.assertIn('xhs_update_deferred',events)
+    def test_menu_update_still_open_does_not_repeat_defer_or_native_action(self):
+        popup=ET.parse(Path(__file__).parent/'fixtures/xhs/native-menu-update-popup.xml').getroot()
+        update=self.current.replace('com.xingin.xhs.index.v2.IndexActivityV2','com.xingin.update.UpdateDialogActivity')
+        with patch.object(sync,'adb',return_value='VIVO'),patch.object(sync,'native_index_navigation') as action,patch.object(sync,'navigation_capture',return_value=popup),patch.object(sync,'focus',return_value=update),patch.object(sync,'tap_label') as tap:
+            with self.assertRaisesRegex(RuntimeError,'update stayed open'):sync.tap_index_menu('adb','serial',xml(),lambda:None,['collection_slot_requested:app2','clone_user_requested:999'])
+        action.assert_called_once();tap.assert_called_once()
 
 class NativeMoreRecoveryTests(unittest.TestCase):
     current='mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}'
