@@ -26,17 +26,30 @@ public final class NativeWorksSessionProbe {
                 || !"true".equals(target.value("enabled"))) throw new IllegalStateException("overview tabs unproven");
         return target;
     }
+    static void findHeader(NativeNavigationAction.Node root, List<NativeNavigationAction.Node> all,
+                           int depth, long deadline) throws Exception {
+        if (depth > 24 || all.size() > 600 || System.nanoTime() > deadline)
+            throw new IllegalStateException("header traversal budget");
+        if (!"com.xingin.xhs".equals(root.value("package"))) throw new IllegalStateException("foreign header tree");
+        if (!root.visible()) return;
+        int count = root.children();
+        if (count < 0 || count > 600) throw new IllegalStateException("header child budget");
+        for (int i = 0; i < count; i++) {
+            NativeNavigationAction.Node child = root.child(i);
+            // Missing children are not usable data. This traversal proves only
+            // the unique visible header action; the later audit records gaps.
+            if (child == null) continue;
+            all.add(child);
+            findHeader(child, all, depth + 1, deadline);
+        }
+    }
     static void open(Object root) throws Exception {
         NativeNavigationAction.AndroidNode r = new NativeNavigationAction.AndroidNode(root);
         List<NativeNavigationAction.Node> all = new ArrayList<>();
         try {
             if (!"com.xingin.xhs".equals(r.value("package")) || !r.visible())
                 throw new IllegalStateException("XHS root required");
-            for (String label : new String[]{"账号概览", "作品分析", "粉丝数据", "收入数据", "全部笔记"}) {
-                List<NativeNavigationAction.Node> found = r.query(label);
-                all.addAll(found);
-                if (all.size() > 40) throw new IllegalStateException("tab query budget");
-            }
+            findHeader(r, all, 0, System.nanoTime() + 8_000_000_000L);
             NativeNavigationAction.Node n = target(all);
             if (!n.refresh() || target(all) != n) throw new IllegalStateException("works tab changed");
             int[] bounds = NativeElementsProbe.Reader.box(new NativeElementsProbe.AndroidNode(

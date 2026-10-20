@@ -2,6 +2,7 @@ import java.util.*;
 public final class NativeWorksSessionProbeTest {
     static final class N implements NativeNavigationAction.Node {
         String text, pkg = "com.xingin.xhs"; boolean visible = true, clickable = true;
+        List<NativeNavigationAction.Node> kids = new ArrayList<>();
         N(String text) { this.text = text; }
         public String value(String key) {
             if (key.equals("package")) return pkg;
@@ -14,8 +15,8 @@ public final class NativeWorksSessionProbeTest {
         public boolean visible() { return visible; }
         public boolean refresh() { throw new AssertionError(); }
         public boolean click() { throw new AssertionError(); }
-        public int children() { throw new AssertionError(); }
-        public NativeNavigationAction.Node child(int i) { throw new AssertionError(); }
+        public int children() { return kids.size(); }
+        public NativeNavigationAction.Node child(int i) { return kids.get(i); }
         public List<NativeNavigationAction.Node> query(String s) { throw new AssertionError(); }
         public NativeNavigationAction.Node parent() { throw new AssertionError(); }
         public NativeNavigationAction.Node inputFocus() { throw new AssertionError(); }
@@ -38,6 +39,12 @@ public final class NativeWorksSessionProbeTest {
         NativeElementsProbeTest.rejects(() -> NativeWorksSessionProbe.target(foreign)); tests++;
         List<NativeNavigationAction.Node> disabled = tabs(); ((N)disabled.get(1)).clickable = false;
         NativeElementsProbeTest.rejects(() -> NativeWorksSessionProbe.target(disabled)); tests++;
+        N root = new N(""); root.kids.add(null); root.kids.addAll(tabs());
+        List<NativeNavigationAction.Node> walked = new ArrayList<>();
+        NativeWorksSessionProbe.findHeader(root, walked, 0, System.nanoTime() + 1_000_000_000L);
+        if (walked.size() != 4 || NativeWorksSessionProbe.target(walked) != walked.get(1)) throw new AssertionError();
+        tests++;
+        NativeElementsProbeTest.rejects(() -> NativeWorksSessionProbe.findHeader(root, new ArrayList<>(), 0, 0)); tests++;
         System.out.println("NativeWorksSessionProbe tests passed: " + tests);
     }
 }
