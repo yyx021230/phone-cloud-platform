@@ -1445,6 +1445,13 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
         else:
             time.sleep(0.5)
         root = navigation_capture(adb_path, serial, guard, events)
+    #165's final permitted read completed the overview after earlier loading
+    #frames. Process that proven tab transition once rather than discard it.
+    if data_center_tab_header(root) and open_works_tab(adb_path, serial, root, guard, events):
+        root = navigation_capture(adb_path, serial, guard, events)
+        root = wait_creator_content(adb_path, serial, root, guard, events)
+        events.append("works_tab_completed_at_navigation_limit")
+        return root
     raise ElementListReadError("could not prove the Creator Center works-analysis path from UI elements")
 
 
@@ -1572,6 +1579,9 @@ def element_page_signature(root):
     cards = note_cards(root)
     if not cards:
         return ((),bool(label(root,"暂无笔记")),bool(label(root,"到底了"))) if label(root,"暂无笔记") or label(root,"到底了") else None
+    identities = [(item["title"], item["published_at_raw"]) for _, item in cards]
+    if len(set(identities)) != len(identities):
+        raise ElementListReadError("visible element rows have ambiguous duplicate title/date")
     views = [n for n in live_nodes(root) if n.get("package") == XHS_PACKAGE
              and n.get("class") == "android.webkit.WebView" and n.get("text") == "数据中心"]
     filters = label(root,"全部笔记")
@@ -1594,6 +1604,23 @@ def element_page_signature(root):
             if any(bounds(row)[1] <= sb[1] < sb[3] <= bounds(row)[3] for row,_ in cards):continue
             if sb[1]-title_gap < top or sb[3]+metric_gap > bottom:continue
             raise ElementListReadError("a fully visible element row has incomplete title/date/metrics")
+        # A missing status also makes the parser drop a row. Use the native
+        #left date column as a second anchor, with margins from complete rows.
+        width = bounds(views[0])[2] - bounds(views[0])[0]
+        dates = [n for n in live_nodes(views[0]) if n.get("package") == XHS_PACKAGE
+                 and DATE.fullmatch(n.get("text", ""))
+                 and bounds(n)[0] < bounds(views[0])[0] + width*.25]
+        margins = [(bounds(date)[1]-bounds(row)[1], bounds(row)[3]-bounds(date)[3])
+                   for row,_ in cards for date in dates
+                   if bounds(row)[1] <= bounds(date)[1] < bounds(date)[3] <= bounds(row)[3]]
+        if margins:
+            before = sorted(x[0] for x in margins)[len(margins)//2]
+            after = sorted(x[1] for x in margins)[len(margins)//2]
+            for date in dates:
+                box = bounds(date)
+                if any(bounds(row)[1] <= box[1] < box[3] <= bounds(row)[3] for row,_ in cards):continue
+                if box[1]-before < top or box[3]+after > bottom:continue
+                raise ElementListReadError("a fully visible dated element row has incomplete status/title/metrics")
     return (tuple((v["title"],v["published_at_raw"],v["status_raw"],v["list_view_count"],v["list_like_count"],v["list_comment_count"]) for _,v in cards),
             bool(label(root,"暂无笔记")),bool(label(root,"到底了")))
 

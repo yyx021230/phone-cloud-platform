@@ -53,4 +53,48 @@ class VivoStoreUpdateTests(unittest.TestCase):
   with patch.object(sync,'adb',return_value='other') as adb:
    self.assertFalse(sync.recover_vivo_store_update('adb','serial',self.fixture(),'app2',self.current,lambda:None,self.events()))
   self.assertEqual(adb.call_count,1)
+class ElementCompletenessStabilityTests(unittest.TestCase):
+ def listing(self):return ET.parse(S/'fixtures/xhs/works-elements-141.xml').getroot()
+ def test_missing_status_in_a_fully_visible_row_is_rejected(self):
+  r=self.listing();row=sync.note_cards(r)[2][0]
+  for n in row.iter('node'):
+   if sync.is_note_status(n.get('text','')):n.set('text','')
+  self.assertEqual(len(sync.note_cards(r)),4)
+  with self.assertRaisesRegex(sync.ElementListReadError,'dated element row'):sync.element_page_signature(r)
+ def test_same_title_date_on_distinct_visible_rows_is_not_silently_deduplicated(self):
+  r=self.listing();cards=sync.note_cards(r);first=cards[0][1]['title'];second=cards[1][1]['title']
+  for n in cards[1][0].iter('node'):
+   if n.get('text')==second:n.set('text',first)
+  with self.assertRaisesRegex(sync.ElementListReadError,'duplicate title/date'):sync.element_page_signature(r)
+ def test_same_title_on_different_dates_is_unambiguous(self):
+  r=self.listing();cards=sync.note_cards(r);first=cards[0][1]['title'];second=cards[1][1]['title']
+  for n in cards[1][0].iter('node'):
+   if n.get('text')==second:n.set('text',first)
+   if sync.DATE.fullmatch(n.get('text','')):n.set('text','10-18')
+  self.assertIsNotNone(sync.element_page_signature(r))
+ def test_clipped_leading_date_remains_excluded(self):
+  r=self.listing()
+  view=next(n for n in r.iter('node') if n.get('class')=='android.webkit.WebView')
+  ET.SubElement(view,'node',{'package':sync.XHS_PACKAGE,'text':'10-20','bounds':'[30,310][170,330]'})
+  self.assertIsNotNone(sync.element_page_signature(r))
+
+class LateOverviewTests(unittest.TestCase):
+ current='mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}'
+ def test_last_navigation_read_can_finish_its_proven_works_tab_transition(self):
+  from contextlib import ExitStack
+  import copy
+  empty=ET.Element('hierarchy');overview=ET.parse(S/'fixtures/xhs/vivo-overview-elements.xml').getroot();listing=ElementCompletenessStabilityTests().listing();events=['collection_slot_requested:app1','xhs_cold_started']
+  with ExitStack() as stack:
+   stack.enter_context(patch.object(sync,'wake_if_asleep',return_value=False));stack.enter_context(patch.object(sync,'recover_known_overlay',return_value=False));stack.enter_context(patch.object(sync,'focus',return_value=self.current));stack.enter_context(patch.object(sync.time,'sleep'))
+   reads=stack.enter_context(patch.object(sync,'navigation_capture',side_effect=[empty]*13+[overview,listing,copy.deepcopy(listing)]));adb=stack.enter_context(patch.object(sync,'adb'))
+   result=sync.ensure_creator_list('adb','serial',empty,'app1',lambda:None,events)
+  self.assertTrue(sync.creator_list(result));self.assertIn('works_tab_completed_at_navigation_limit',events);self.assertEqual(reads.call_count,16)
+  self.assertEqual([c.args[2:5] for c in adb.call_args_list],[('shell','input','tap')])
+ def test_unknown_final_page_does_not_extend_navigation(self):
+  empty=ET.Element('hierarchy')
+  with patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync,'recover_known_overlay',return_value=False),patch.object(sync,'focus',return_value=self.current),patch.object(sync.time,'sleep'),patch.object(sync,'navigation_capture',return_value=empty) as reads,patch.object(sync,'adb') as adb:
+   with self.assertRaisesRegex(sync.ElementListReadError,'could not prove'):
+    sync.ensure_creator_list('adb','serial',empty,'app1',lambda:None,['collection_slot_requested:app1'])
+  self.assertEqual(reads.call_count,14);adb.assert_not_called()
+
 if __name__=='__main__':unittest.main()
