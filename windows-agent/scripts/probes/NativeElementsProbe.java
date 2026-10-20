@@ -93,7 +93,12 @@ public final class NativeElementsProbe {
                 xml.append('>');
                 int count = node.children();
                 if (count < 0 || count > 2500) throw new IllegalStateException("native child count invalid");
-                for (int i = 0; i < count; i++) visit(node.child(i), depth + 1, i);
+                for (int i = 0; i < count; i++) {
+                    Node child = node.child(i);
+                    if (child == null) throw new IllegalStateException("native child missing; snapshot incomplete; parentClass=" + node.value("class")
+                        + "; parentTextChars=" + node.value("text").length() + "; depth=" + depth + "; child=" + i + "/" + count);
+                    visit(child, depth + 1, i);
+                }
                 xml.append("</node>");
             } finally { node.close(); }
         }
