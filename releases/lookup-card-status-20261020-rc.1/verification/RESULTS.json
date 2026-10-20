@@ -1,0 +1,36 @@
+{
+  "observedAt": "2026-10-20T09:00:15.367852+00:00",
+  "state": "local_candidate_not_deployed",
+  "fullRegression": {
+    "passed": 900,
+    "failed": 0,
+    "log": "full-tests-rerun.txt"
+  },
+  "targeted": {
+    "passed": 17,
+    "includesNewTests": 12
+  },
+  "syntax": "passed",
+  "frozenUnchanged": 192,
+  "testOnlyCacheVersionUpdate": "screen-client/screen-ui.test.mjs",
+  "visual": {
+    "fixtures": 6,
+    "desktopWidth": 1280,
+    "mobileWidth": 390,
+    "checked": [
+      "current human warning text",
+      "account login distinct from switch",
+      "stop does not show old puzzle",
+      "hints wrap without ellipsis",
+      "existing card styles retained"
+    ],
+    "limitation": "local synthetic cards, not production browser or real-phone verification"
+  },
+  "initialFailure": "Seven failures: stale exact cache-version assertions (4), inherited recovery UI VM missing helper (1), missing local windows-agent dependency symlink (2). Updated only test harness/version expectations and reused existing installed dependencies; rerun 900 passed.",
+  "notVerified": [
+    "live phone card state transitions",
+    "new candidate production endpoints",
+    "Postgres integration for this candidate"
+  ],
+  "productionMutation": false
+}
