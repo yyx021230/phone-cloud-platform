@@ -176,6 +176,42 @@ class ElementCollectionTests(unittest.TestCase):
  def test_raw_overlapping_element_rows_can_prove_continuity(self):
   first=listing();second=listing();sync.verify_element_overlap(first,second)
 
+class LongNativeWindowTests(unittest.TestCase):
+ def run_main(self,limit=None):
+  import tempfile,sys,json
+  pages=[]
+  for page in range(32):
+   root=listing()
+   for offset,(row,item) in enumerate(sync.note_cards(root)):
+    index=page+offset
+    next(n for n in row.iter("node") if n.get("text")==item["title"]).set("text",f"连续原生帖子{index}")
+    next(n for n in row.iter("node") if n.get("text")==item["published_at_raw"]).set("text","09-20" if index>=35 else "10-19")
+   pages.append(root)
+  first=pages[0]
+  class FixedDateTime(dt.datetime):
+   @classmethod
+   def now(cls,tz=None):return cls(2026,10,20,12,tzinfo=sync.SHANGHAI)
+  with tempfile.TemporaryDirectory() as tmp,ExitStack() as stack:
+   output=Path(tmp)/"result.json"
+   argv=['collector','--serial','serial','--device-name','test','--device-cache','fake','--app-slot','app1','--output',str(output)]
+   if limit is not None:argv+=['--max-scrolls',str(limit)]
+   stack.enter_context(patch.object(sys,'argv',argv));stack.enter_context(patch.object(sync.dt,'datetime',FixedDateTime));stack.enter_context(patch('builtins.print'))
+   for name in ('release_idle_poco','verify_collection_slot','assert_no_poco','swipe'):stack.enter_context(patch.object(sync,name))
+   stack.enter_context(patch.object(sync,'assert_idle',return_value={'xhsAccounts':[{'appSlot':'app1','enabled':True,'xhsId':'test'}]}))
+   stack.enter_context(patch.object(sync,'adb',side_effect=lambda a,b,*args,**kw: 'device' if args==('get-state',) else '1800000'));stack.enter_context(patch.object(sync,'start_xhs',return_value=first))
+   stack.enter_context(patch.object(sync,'ensure_creator_list',side_effect=lambda a,b,r,*rest:r));stack.enter_context(patch.object(sync,'reopen_creator_list',return_value=first))
+   stack.enter_context(patch.object(sync,'wait_creator_content',side_effect=lambda a,b,r,*rest:r));stack.enter_context(patch.object(sync,'refresh_scrolled_webview',side_effect=lambda a,b,r,*rest:r))
+   stack.enter_context(patch.object(sync,'navigation_capture',side_effect=pages[1:]))
+   code=sync.main();result=json.loads(output.read_text())
+  return code,result
+ def test_default_scan_continues_past_thirty_swipes_to_proven_date_boundary(self):
+  code,result=self.run_main();self.assertEqual(code,0);self.assertTrue(result['complete']);self.assertEqual(result['scrolls'],31)
+  self.assertEqual(result['stop_reason'],'older_than_window_visible');self.assertEqual(len(result['notes']),35)
+ def test_explicit_smaller_budget_still_preserves_incomplete_data(self):
+  code,result=self.run_main(30);self.assertEqual(code,2);self.assertFalse(result['complete']);self.assertEqual(result['scrolls'],30)
+  self.assertEqual(result['stop_reason'],'scroll_budget_exhausted');self.assertEqual(len(result['notes']),35)
+
+
 class ZeroBoundsElementTests(unittest.TestCase):
  def test_no_pixel_matching_or_tap_when_footer_has_zero_bounds(self):
   from test_xhs_data_sync import ZeroBoundsProfileTests

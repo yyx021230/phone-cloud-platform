@@ -1949,7 +1949,11 @@ def collect(args):
             result["stop_reason"] = "list_end_visible"
             break
         stagnant = stagnant + 1 if discovered == 0 else 0
-        if stagnant >= args.stagnant_rounds or round_index >= args.max_scrolls:
+        if stagnant >= args.stagnant_rounds:
+            result["stop_reason"] = "list_stagnant"
+            break
+        if round_index >= args.max_scrolls:
+            result["stop_reason"] = "scroll_budget_exhausted"
             break
         swipe(args.adb, args.serial, root, guard, events)
         result["scrolls"] += 1
@@ -1988,7 +1992,7 @@ def main():
     parser.add_argument("--cancel-file", default="", help="Agent cancellation marker checked before each operation")
     parser.add_argument("--task-id", default="", help="Only the matching collection job lock may be shared")
     parser.add_argument("--days", type=int, default=30)
-    parser.add_argument("--max-scrolls", type=int, default=30)
+    parser.add_argument("--max-scrolls", type=int, default=60)
     parser.add_argument("--min-scrolls", type=int, default=0)
     parser.add_argument("--stagnant-rounds", type=int, default=3)
     parser.add_argument("--output", required=True)
