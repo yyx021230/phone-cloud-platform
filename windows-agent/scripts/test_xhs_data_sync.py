@@ -1365,5 +1365,30 @@ class OverlayRecoveryTests(unittest.TestCase):
         adb.assert_not_called()
 
 
+class NativeLongTitleTests(unittest.TestCase):
+    def test_real_native_row_keeps_long_title_and_all_six_fields(self):
+        root = ET.parse(SCRIPT.parent / "fixtures/xhs/works-long-native-title.xml").getroot()
+        cards = sync.note_cards(root)
+        long_rows = [item for _, item in cards if len(item["title"]) > 180]
+        self.assertEqual(len(long_rows), 1)
+        self.assertEqual(len(long_rows[0]["title"]), 444)
+        self.assertEqual(long_rows[0]["published_at_raw"], "09-22")
+        self.assertEqual(long_rows[0]["status_raw"], "笔记状态正常")
+        self.assertEqual([long_rows[0][key] for key in
+                          ("list_view_count", "list_like_count", "list_comment_count")], [11, 0, 0])
+        self.assertIsNotNone(sync.element_page_signature(root))
+
+    def test_flat_native_layout_preserves_long_text_without_truncation(self):
+        root = FleetReadingTests().flat_list()
+        text = "原生长文本" * 100
+        root[2][1].set("text", text)
+        self.assertEqual(sync.note_cards(root)[0][1]["title"], text)
+
+    def test_oversized_native_title_cannot_silently_omit_a_visible_row(self):
+        root = FleetReadingTests().flat_list()
+        root[2][1].set("text", "超" * 4097)
+        self.assertIsNone(sync.element_page_signature(root))
+
+
 if __name__ == "__main__":
     unittest.main()

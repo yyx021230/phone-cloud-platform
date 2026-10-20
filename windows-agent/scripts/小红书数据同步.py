@@ -30,6 +30,9 @@ COUNT = re.compile(r"^(\d+(?:\.\d+)?)(万|亿)?$")
 DATE = re.compile(r"^(?:\d{2}-\d{2}|\d{4}-\d{2}-\d{2})$")
 XHS_PACKAGE = "com.xingin.xhs"
 SHANGHAI = dt.timezone(dt.timedelta(hours=8))
+# The list can expose full note text as its title (79/app2: 444 characters).
+# Preserve that native value; geometry and the other five fields prove the row.
+MAX_NATIVE_TITLE_CHARS = 4096
 
 
 
@@ -1508,7 +1511,7 @@ def structured_note_cards(root):
         title = next(((n.get("text") or "").strip() for n in children
                       if bounds(n)[0] >= box[0] + (box[2]-box[0])*0.20
                       and bounds(n)[1] < box[1] + (box[3]-box[1])*0.38
-                      and 1 <= len((n.get("text") or "").strip()) <= 180
+                      and 1 <= len((n.get("text") or "").strip()) <= MAX_NATIVE_TITLE_CHARS
                       and not re.fullmatch(r"[0-9a-f]{32,64}", (n.get("text") or "").strip())
                       and not is_note_status(n.get("text") or "")), None)
         date = next((t for t in texts if DATE.fullmatch(t)), None)
@@ -1552,7 +1555,7 @@ def flat_webview_cards(root):
         title_text = (title.get("text") or "").strip()
         status_text = (status.get("text") or "").strip()
         values = [count(n.get("text")) for n in metrics]
-        if (not 1 <= len(title_text) <= 180 or DATE.fullmatch(title_text) or count(title_text) is not None
+        if (not 1 <= len(title_text) <= MAX_NATIVE_TITLE_CHARS or DATE.fullmatch(title_text) or count(title_text) is not None
                 or not is_note_status(status_text)
                 or any(v is None for v in values)):
             continue
