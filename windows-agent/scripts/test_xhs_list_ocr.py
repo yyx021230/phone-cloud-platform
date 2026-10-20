@@ -440,6 +440,19 @@ class MissingBodyAnchorTests(unittest.TestCase):
             self.assertIs(ocr.refine_missing_body_anchors(np.zeros((1600,720,3),np.uint8),whole,directory,lambda:None),whole)
         native.assert_not_called()
 
+    def test_title_hidden_by_the_fixed_header_keeps_existing_leading_clip_handling(self):
+        whole=self.whole();whole['lines']=[l for l in whole['lines'] if ocr.line_box(l)[1]<900 and ocr.line_box(l)[1]!=360]
+        first=next(l for l in whole['lines'] if ocr.status_text(l['text']))
+        first['words'][0].update(y=330,height=24)
+        frame=np.full((1600,720,3),255,np.uint8)
+        with tempfile.TemporaryDirectory() as directory,patch.object(ocr,'windows_ocr') as native:
+            repaired=ocr.refine_missing_body_anchors(frame,whole,directory,lambda:None)
+        self.assertIs(repaired,whole);native.assert_not_called()
+        def icons(frame,y1,y2,left):return [(195,y1,220,y1+22),(296,y1,320,y1+22),(375,y1,400,y1+22)]
+        with patch.object(ocr,'selected_works_underline',return_value=True),patch.object(ocr,'metric_icons',side_effect=icons),patch.object(ocr,'title_has_unread_suffix',return_value=False):
+            prepared=ocr.prepare_frame(frame,repaired,read_counts=False)
+        self.assertTrue(prepared['leadingClip']);self.assertEqual(len(prepared['rows']),2)
+
     def test_disagreement_foreign_dimensions_missing_status_and_duplicate_results_still_fail(self):
         for case in ('title','language','dimensions','status','duplicate'):
             def invalid(requests,directory):

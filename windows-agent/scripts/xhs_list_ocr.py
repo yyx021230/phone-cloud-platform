@@ -339,7 +339,10 @@ def refine_missing_body_anchors(frame, full, directory, checkpoint):
     requests,plans = [],[]
     for status,sb in statuses:
         if sb[0] >= w*.24 and title_candidates(parsed,sb,top,w,h):continue
-        box = (int(w*.24),max(top+1,int(sb[1]-w*.15)),w-int(w*.015),sb[3]+3)
+        # A title band behind the fixed header is not recoverable. Keep the
+        # existing leading-clip handling and read that post on its full page.
+        if int(sb[1]-w*.15) <= top:continue
+        box = (int(w*.24),int(sb[1]-w*.15),w-int(w*.015),sb[3]+3)
         x1,y1,x2,y2 = box
         if not (0 <= x1 < x2 <= w and top < y1 < y2 < h):raise RuntimeError("OCR body anchor crop is outside its card")
         if plans and y1 <= plans[-1]["box"][3]:raise RuntimeError("OCR body anchor crops overlap")
