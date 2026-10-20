@@ -1007,6 +1007,10 @@ class ProximityWakeOrderingTests(unittest.TestCase):
         self.assertNotIn(('shell','input','keyevent','82'),calls)
         self.assertFalse(any(c[:3]==('shell','input','swipe') for c in calls))
 
+    def test_setting_that_already_removed_the_guide_needs_no_volume_key(self):
+        calls,_=self.run_main()
+        self.assertNotIn(('shell','input','keyevent','24'),calls)
+
 class HeaderClippedTitleTests(unittest.TestCase):
     def prepare(self,case):
         import json,numpy as np,xhs_list_ocr as o
@@ -1034,5 +1038,48 @@ class HeaderClippedTitleTests(unittest.TestCase):
     def test_actual_complete_newest_row_spacing_keeps_both_rows(self):
         result,calls=self.prepare('completeFirstRow')
         self.assertFalse(result['leadingClip']);self.assertEqual(len(result['rows']),2);self.assertEqual(calls,2)
+
+class StalledMoreLoadingTests(unittest.TestCase):
+    current = 'mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}'
+
+    def loading(self):
+        return ET.parse(SCRIPTS/'fixtures/xhs/blank-works-loading-18.xml').getroot()
+
+    def overview(self):
+        root=ET.Element('hierarchy')
+        for index,text in enumerate(['创作中心','最新笔记','更多','近 7 日数据','观看']):
+            ET.SubElement(root,'node',{'package':sync.XHS_PACKAGE,'class':'android.widget.TextView','text':text,'bounds':f'[10,{index*100+10}][200,{index*100+80}]'})
+        return root
+
+    def test_more_spinner_returns_to_proven_center_and_uses_existing_overview_route(self):
+        ready=ET.Element('hierarchy')
+        for index,text in enumerate(['数据中心','作品分析','全部笔记']):
+            ET.SubElement(ready,'node',{'package':sync.XHS_PACKAGE,'text':text,'bounds':f'[10,{index*100+10}][200,{index*100+80}]'})
+        blank=self.loading();events=['collection_slot_requested:app1'];guard=Mock()
+        with patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'recover_known_overlay',return_value=False),patch.object(sync,'open_works_tab',return_value=False),patch.object(sync,'tap_label') as tap,patch.object(sync,'adb') as adb,patch.object(sync,'navigation_capture',side_effect=[blank,blank,blank,self.overview(),ready]),patch.object(sync.time,'sleep'):
+            self.assertIs(sync.ensure_creator_list('adb','serial',self.overview(),'app1',guard,events),ready)
+        self.assertEqual([c.args[3] for c in tap.call_args_list],['更多','观看'])
+        adb.assert_called_once_with('adb','serial','shell','input','keyevent','4',timeout=7)
+        self.assertIn('works_blank_more_reopened_via_overview',events)
+        guard.assert_called_once()
+
+    def test_loading_signature_rejects_titles_foreign_package_and_unbounded_spinner(self):
+        self.assertTrue(sync.blank_works_loading(self.loading()))
+        for mutate in ('text','package','bounds'):
+            root=self.loading();node=next(n for n in root.iter('node') if n.get('class')=='android.widget.ImageView')
+            node.set(mutate,{'text':'合成笔记标题','package':'com.android.settings','bounds':'[0,0][1080,2132]'}[mutate])
+            self.assertFalse(sync.blank_works_loading(root))
+
+    def test_wrong_slot_foreground_and_missing_center_never_select_another_entry(self):
+        for current,center in [(self.current.replace('u0 ','u999 '),self.overview()),(self.current,ET.Element('hierarchy'))]:
+            with patch.object(sync,'focus',return_value=current),patch.object(sync,'navigation_capture',return_value=center),patch.object(sync,'tap_label') as tap,patch.object(sync,'adb') as adb,patch.object(sync.time,'sleep'):
+                with self.assertRaises(RuntimeError):sync.reopen_blank_more('adb','serial',self.loading(),lambda:None,['collection_slot_requested:app1'])
+            tap.assert_not_called()
+            self.assertEqual(adb.call_count,0 if 'u999 ' in current else 1)
+
+    def test_unknown_blank_page_without_a_more_attempt_never_gets_back_or_taps(self):
+        with patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'recover_known_overlay',return_value=False),patch.object(sync,'open_works_tab',return_value=False),patch.object(sync,'navigation_capture',return_value=self.loading()),patch.object(sync,'tap_label') as tap,patch.object(sync,'adb') as adb,patch.object(sync.time,'sleep'):
+            with self.assertRaisesRegex(RuntimeError,'could not prove'):sync.ensure_creator_list('adb','serial',self.loading(),'app1',lambda:None,['collection_slot_requested:app1'])
+        tap.assert_not_called();adb.assert_not_called()
 
 if __name__ == '__main__':unittest.main()

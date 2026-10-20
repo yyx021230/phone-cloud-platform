@@ -1307,6 +1307,45 @@ def recover_vivo_browser_redirect(adb_path, serial, slot, current, guard, events
     return True
 
 
+def blank_works_loading(root):
+    """The observed empty full-screen WebView with a small central spinner."""
+    nodes = live_nodes(root)
+    if not nodes or any(n.get("package") != XHS_PACKAGE or n.get("text", "").strip()
+                        or n.get("content-desc", "").strip() for n in nodes):
+        return False
+    width = max(bounds(n)[2] for n in nodes)
+    height = max(bounds(n)[3] for n in nodes)
+    views = [n for n in nodes if n.get("class") == "android.webkit.WebView"
+             and n.get("enabled") == "true" and bounds(n) == (0, 0, width, height)
+             and not list(n)]
+    spinners = [bounds(n) for n in nodes if n.get("class") == "android.widget.ImageView"
+                and n.get("clickable") == "false" and n.get("enabled") == "true"]
+    if len(views) != 1 or len(spinners) != 1:return False
+    x1,y1,x2,y2 = spinners[0]
+    return (width*.05 <= x2-x1 <= width*.12 and height*.02 <= y2-y1 <= height*.08
+            and width*.45 <= (x1+x2)/2 <= width*.55
+            and height*.45 <= (y1+y2)/2 <= height*.58)
+
+
+def reopen_blank_more(adb_path, serial, root, guard, events):
+    """Leave the proven stalled More route once and use the existing overview."""
+    if not blank_works_loading(root):raise RuntimeError("stalled works loading layout is not proven")
+    current = focus(adb_path, serial)
+    assert_requested_foreground(current, events)
+    if not works_webview_activity(current):raise RuntimeError("stalled works WebView foreground is not proven")
+    guard()
+    if focus(adb_path, serial) != current:raise RuntimeError("stalled works foreground changed")
+    adb(adb_path, serial, "shell", "input", "keyevent", "4", timeout=7)
+    time.sleep(.5)
+    center = navigation_capture(adb_path, serial, guard, events)
+    if not (creator_overview_entry(center) and label(center, "最新笔记") and creator_more_label(center)):
+        raise RuntimeError("stalled works page could not return to proven Creator Center")
+    assert_requested_foreground(focus(adb_path, serial), events)
+    tap_label(adb_path, serial, center, "观看", guard)
+    events.append("works_blank_more_reopened_via_overview")
+    return navigation_capture(adb_path, serial, guard, events)
+
+
 def ensure_creator_list(adb_path, serial, root, slot, guard, events):
     recoveries = 0
     more_attempts = 0
@@ -1314,6 +1353,8 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
     shell_reopens = 0
     chat_backs = 0
     server_refreshes = 0
+    blank_passes = 0
+    blank_reopened = False
     for _ in range(14):
         if wake_if_asleep(adb_path, serial, guard, events):
             root = navigation_capture(adb_path, serial, guard, events)
@@ -1328,6 +1369,16 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
             continue
         if creator_list(root):
             return root
+        if more_attempts and blank_works_loading(root):
+            blank_passes += 1
+            if blank_passes >= 3:
+                if blank_reopened:raise RuntimeError("works-analysis page stayed loading after overview fallback")
+                root = reopen_blank_more(adb_path, serial, root, guard, events)
+                blank_reopened = True
+                blank_passes = 0
+                continue
+        else:
+            blank_passes = 0
         if (label(root, "个人信息保护提示") and any(n.get("package") == XHS_PACKAGE
                 and n.get("text", "").startswith("欢迎使用小红书！") for n in root.iter("node"))
                 and label(root, "同意") and label(root, "不同意")):
@@ -1886,7 +1937,14 @@ def main():
                 adb(args.adb, args.serial, "shell", "settings", "put", "global",
                     "enable_screen_on_proximity_sensor", "0", timeout=8)
                 proximity_disabled = True
-                adb(args.adb, args.serial, "shell", "input", "keyevent", "24", timeout=7)
+                # The setting change itself can remove the guide. Observe its
+                # settled state before sending the otherwise unnecessary key.
+                for _ in range(3):
+                    if "ScreenOnProximitySensorGuide" not in focus(args.adb, args.serial):break
+                    time.sleep(.3)
+                if "ScreenOnProximitySensorGuide" in focus(args.adb, args.serial):
+                    guard()
+                    adb(args.adb, args.serial, "shell", "input", "keyevent", "24", timeout=7)
                 wake_if_asleep(args.adb, args.serial, guard, [], dismiss_lock=False)
                 if "ScreenOnProximitySensorGuide" in focus(args.adb, args.serial):
                     raise RuntimeError("proximity guard stayed open")
