@@ -96,7 +96,7 @@ class ElementCaptureTests(unittest.TestCase):
   adb.assert_not_called()
  def test_webview_hierarchy_failure_never_falls_back_to_screenshot(self):
   for error in (RuntimeError('UIAutomator did not return an XML hierarchy'),sync.subprocess.TimeoutExpired('adb',15)):
-   with patch.object(sync,'capture',side_effect=error),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'adb') as adb:
+   with patch.object(sync,'native_window_capture',side_effect=RuntimeError('native elements command failed: native_elements_unproven:missing')),patch.object(sync,'capture',side_effect=error),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'adb') as adb:
     with self.assertRaisesRegex(sync.ElementListReadError,'UI elements unavailable'):sync.navigation_capture('adb','serial',lambda:None,['collection_slot_requested:app1'])
     adb.assert_not_called()
  def test_wrong_foreground_slot_is_stopped_on_hierarchy_failure(self):

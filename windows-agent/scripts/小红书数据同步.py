@@ -185,7 +185,24 @@ def data_center_tab_header(root):
 
 
 
+def native_window_capture(adb_path, serial, current, guard, events):
+    from xhs_native_window import read
+    assert_requested_foreground(current, events)
+    assert_no_poco(adb_path, serial)
+    root = read(adb_path, serial, adb_process, lambda: focus(adb_path, serial), guard, current)
+    require_element_tree(root)
+    if "native_window_elements_enabled" not in events:
+        events.append("native_window_elements_enabled")
+    return root
+
+
 def navigation_capture(adb_path, serial, guard, events):
+    # Once stock export fails, use the complete native reader on this WebView.
+    # Every read still proves foreground user, occupancy and native node identity.
+    if "native_window_elements_enabled" in events:
+        current = focus(adb_path, serial)
+        if works_webview_activity(current):
+            return native_window_capture(adb_path, serial, current, guard, events)
     try:
         root = capture(adb_path, serial)
     except (RuntimeError,subprocess.TimeoutExpired) as error:
@@ -203,6 +220,17 @@ def navigation_capture(adb_path, serial, guard, events):
         if works_webview_activity(current) and (isinstance(error,subprocess.TimeoutExpired)
                 or "did not return an XML hierarchy" in str(error)):
             assert_requested_foreground(current, events)
+            try:
+                return native_window_capture(adb_path, serial, current, guard, events)
+            except (RuntimeError, subprocess.TimeoutExpired) as native_error:
+                if not (isinstance(native_error, subprocess.TimeoutExpired)
+                        or str(native_error).startswith("native elements command failed: native_elements_unproven:")):
+                    raise
+                # Preserve the existing bounded entry recovery only before scanning.
+                # Recheck occupancy/slot first; an incomplete snapshot is never accepted.
+                guard()
+                assert_requested_foreground(focus(adb_path, serial), events)
+                events.append("native_window_elements_rejected:" + type(native_error).__name__)
             if ("creator_more_selected" in events and "works_native_more_recovery_attempted" not in events
                     and not any(e.startswith("collection_scan_as_of:") for e in events)):
                 return recover_inaccessible_more(adb_path, serial, current, guard, events)

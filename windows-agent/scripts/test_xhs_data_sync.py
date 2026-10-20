@@ -1648,14 +1648,14 @@ class NativeMoreRecoveryTests(unittest.TestCase):
         return xml(*[f'<node package="com.xingin.xhs" text="{t}" bounds="[0,{i*100}][100,{i*100+50}]"/>' for i,t in enumerate(('创作中心','最新笔记','更多','观看'))])
     def test_failed_more_native_read_uses_one_proven_overview_entry_before_scan(self):
         center=self.center();overview=xml();works=xml('<node text="全部笔记" bounds="[0,0][100,100]"/>');events=['collection_slot_requested:app1','creator_more_selected']
-        with patch.object(sync,'focus',return_value=self.current),patch.object(sync,'capture',side_effect=[RuntimeError('UIAutomator did not return an XML hierarchy'),center,overview,works]),patch.object(sync,'creator_more_label',return_value='更多'),patch.object(sync,'creator_overview_entry',return_value=True),patch.object(sync,'open_works_tab',return_value=True),patch.object(sync,'tap_label') as tap,patch.object(sync,'adb') as adb:
+        with patch.object(sync,'focus',return_value=self.current),patch.object(sync,'native_window_capture',side_effect=RuntimeError('native elements command failed: native_elements_unproven:missing')),patch.object(sync,'capture',side_effect=[RuntimeError('UIAutomator did not return an XML hierarchy'),center,overview,works]),patch.object(sync,'creator_more_label',return_value='更多'),patch.object(sync,'creator_overview_entry',return_value=True),patch.object(sync,'open_works_tab',return_value=True),patch.object(sync,'tap_label') as tap,patch.object(sync,'adb') as adb:
             self.assertIs(sync.navigation_capture('adb','serial',lambda:None,events),works)
         adb.assert_called_once_with('adb','serial','shell','input','keyevent','4',timeout=7)
         self.assertEqual(tap.call_args.args[3],'观看');self.assertIn('works_native_more_reopened_via_overview',events)
     def test_unknown_origin_or_midscan_or_repeated_failure_does_not_navigate(self):
         for extras in ([],['creator_more_selected','collection_scan_as_of:2026-10-20'],['creator_more_selected','works_native_more_recovery_attempted']):
             events=['collection_slot_requested:app1']+extras
-            with self.subTest(events=events),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'capture',side_effect=RuntimeError('UIAutomator did not return an XML hierarchy')),patch.object(sync,'adb') as adb:
+            with self.subTest(events=events),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'native_window_capture',side_effect=RuntimeError('native elements command failed: native_elements_unproven:missing')),patch.object(sync,'capture',side_effect=RuntimeError('UIAutomator did not return an XML hierarchy')),patch.object(sync,'adb') as adb:
                 with self.assertRaises(sync.ElementListReadError):sync.navigation_capture('adb','serial',lambda:None,events)
                 adb.assert_not_called()
     def test_abnormal_or_unproven_return_page_stops_without_overview_click(self):
