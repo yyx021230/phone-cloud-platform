@@ -60,6 +60,11 @@ public final class NativeTreeAudit {
                 out.append("<node index=\"").append(index).append("\"");
                 for (String key : NativeElementsProbe.ATTRS)
                     out.append(' ').append(key).append("=\"").append(esc(node.value(key))).append('"');
+                if (node instanceof FreshNode) {
+                    Object raw = ((FreshNode)node).raw;
+                    for (String key : new String[]{"getConnectionId", "getWindowId", "getSourceNodeId"})
+                        out.append(' ').append(key).append("=\"").append(esc(call(raw, key))).append('"');
+                }
                 out.append('>');
                 int count = node.children();
                 if (count < 0 || count > 1500) throw new IllegalStateException("audit child count exceeded");
@@ -96,10 +101,11 @@ public final class NativeTreeAudit {
         String result = null;
         int code = 1;
         try {
-            if (args.length != 0) throw new IllegalArgumentException("no arguments");
+            if (args.length > 1 || (args.length == 1 && !"compressed".equals(args[0])))
+                throw new IllegalArgumentException("only optional compressed mode accepted");
             wrapper = Class.forName("com.android.uiautomator.core.UiAutomationShellWrapper").getConstructor().newInstance();
             call(wrapper, "connect"); connected = true;
-            wrapper.getClass().getMethod("setCompressedLayoutHierarchy", boolean.class).invoke(wrapper, false);
+            wrapper.getClass().getMethod("setCompressedLayoutHierarchy", boolean.class).invoke(wrapper, args.length == 1);
             Object automation = call(wrapper, "getUiAutomation");
             // WebView may initialize its accessibility provider after connect.
             // Compare this bounded settled read with the immediate-read evidence.
@@ -111,7 +117,8 @@ public final class NativeTreeAudit {
             if (root == null || !PKG.equals(String.valueOf(call(root, "getPackageName"))))
                 throw new IllegalStateException("XHS root required");
             if (!(Boolean)call(root, "refresh")) throw new IllegalStateException("root refresh failed");
-            StringBuilder out = new StringBuilder("<audit diagnostic-only=\"true\" settle-ms=\"2000\">");
+            StringBuilder out = new StringBuilder("<audit diagnostic-only=\"true\" settle-ms=\"2000\" compressed=\"")
+                .append(args.length == 1).append("\">");
             for (String label : new String[]{"数据中心", "作品分析", "全部笔记", "观看"}) {
                 List<?> found = (List<?>)root.getClass().getMethod("findAccessibilityNodeInfosByText", String.class).invoke(root, label);
                 if (found.size() > 100) {
