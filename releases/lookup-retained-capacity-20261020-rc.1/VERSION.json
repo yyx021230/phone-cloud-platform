@@ -1,0 +1,13 @@
+{
+  "candidate": "lookup-retained-capacity-20261020-rc.1",
+  "status": "local-candidate-not-deployed",
+  "parentCandidate": "lookup-idle-refresh-20261020-rc.2",
+  "runtimeFiles": [
+    "server/managed-lookup.mjs",
+    "server/lookup-readiness.mjs"
+  ],
+  "productionActions": 0,
+  "databaseMigration": false,
+  "externalApiChanged": false,
+  "agentChanged": false
+}

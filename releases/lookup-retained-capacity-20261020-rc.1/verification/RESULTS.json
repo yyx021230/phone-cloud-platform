@@ -1,0 +1,51 @@
+{
+  "atUtc": "2026-10-20T07:36:01.927750+00:00",
+  "candidate": "lookup-retained-capacity-20261020-rc.1",
+  "runtimeSourceHashes": {
+    "server/managed-lookup.mjs": "74ef81288a5dfd50f5f2d56e20204503f0a0b5018e6043bf830327dc1a0c83fb",
+    "server/lookup-readiness.mjs": "d89a7b34fb3682706a70de140ade39fa014c36bb9db080bb273aa7e03725da1a"
+  },
+  "baselineRegression": {
+    "newInitialCases": 6,
+    "passed": 1,
+    "failed": 5
+  },
+  "targeted": {
+    "tests": 10,
+    "passed": 10,
+    "failed": 0
+  },
+  "fullRegression": {
+    "tests": 888,
+    "passed": 888,
+    "failed": 0
+  },
+  "syntaxCheck": true,
+  "frozenHashesPassed": 193,
+  "recursiveAssemblyHashVerified": true,
+  "loopbackHttp": {
+    "loopbackOnly": true,
+    "storage": "json",
+    "simulatedDevices": 8,
+    "realDevices": 0,
+    "productionConnections": 0,
+    "humanStandbys": 3,
+    "retainedReady": 5,
+    "surplusStopAckRequired": true,
+    "restartDuringStop": true,
+    "businessSubmitted": 20,
+    "businessExecutions": 20,
+    "maxConcurrentBusinessObserved": 5,
+    "changedKeyReused": true,
+    "newDeviceStarts": 8,
+    "explicitStopDrained": true
+  },
+  "review": "self-reviewed",
+  "productionModified": false,
+  "notVerified": [
+    "New candidate real-device acceptance",
+    "New candidate isolated Postgres fault injection",
+    "Native Windows acceptance"
+  ],
+  "preExistingChangesPreserved": true
+}

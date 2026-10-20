@@ -1,0 +1,11 @@
+{
+  "parentCandidate": "lookup-idle-refresh-20261020-rc.2",
+  "parentCommit": "74b245e05ea5c0a6ef666c8cbed189e9fcdf1066",
+  "productionVersionObserved": "lookup-idle-refresh-20261020-deployed.1",
+  "productionImageObserved": "sha256:c84f493d20543095b8c4ba0546b36f42873f2db5110dd6ecb1a2b473662e0f1c",
+  "before": {
+    "server/managed-lookup.mjs": "1f356a8c2b3c1821fc6609233bd6deda225aec9ac451e5b97b234cc8fbed3640",
+    "server/lookup-readiness.mjs": "8101fb9717b8b7cb76d811007818651dcca1cc8a892a0eadc3ffcee056e49e0f",
+    "server/lookup-retained-capacity.test.mjs": null
+  }
+}

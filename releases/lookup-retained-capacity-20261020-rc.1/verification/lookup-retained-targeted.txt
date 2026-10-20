@@ -1,0 +1,18 @@
+✔ recovered phones shrink to five; preserve recovery priority and release only after ACK (21.61425ms)
+✔ five active business queries are never stopped to retain recovered spare phones (28.676917ms)
+✔ human and unknown reservations remain protected while healthy phones continue (16.422833ms)
+✔ five-minute refresh retains the selected five without restarting discarded standbys (19.304208ms)
+✔ restart keeps surplus stop reservations until ACK; stale proofs cannot admit business (14.36325ms)
+✔ surplus stop failure rolls back only that phone and does not erase results (14.1385ms)
+✔ normal five stay warm; unavailable stop leaves reservation and can be retried safely (16.31225ms)
+✔ lowered concurrency drains only surplus idle sessions within the lower stop budget (16.271458ms)
+✔ legacy eight after process restart re-probe and eventually release unproven leftovers (20.32075ms)
+✔ a stopped surplus phone is available as a future replacement after a real failure (14.782292ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 312.568417
