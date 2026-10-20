@@ -1641,6 +1641,16 @@ class NativeMoreRecoveryTests(unittest.TestCase):
             with self.subTest(abnormal=abnormal),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'capture',return_value=center),patch.object(sync,'adb') as adb,patch.object(sync,'tap_label') as tap:
                 with self.assertRaises(RuntimeError):sync.recover_inaccessible_more('adb','serial',self.current,lambda:None,['collection_slot_requested:app1','creator_more_selected'])
                 tap.assert_not_called();self.assertEqual(adb.call_count,1)
+    def test_overview_loading_shell_waits_for_real_tab_without_reclicking_entry(self):
+        center=self.center();shell=xml();overview=xml();works=xml()
+        with patch.object(sync,'focus',return_value=self.current),patch.object(sync,'capture',side_effect=[center,shell,overview,works]),patch.object(sync,'creator_more_label',return_value='更多'),patch.object(sync,'creator_overview_entry',return_value=True),patch.object(sync,'open_works_tab',side_effect=[False,True]) as tab,patch.object(sync,'tap_label') as tap,patch.object(sync,'adb'),patch.object(sync.time,'sleep'):
+            self.assertIs(sync.recover_inaccessible_more('adb','serial',self.current,lambda:None,['collection_slot_requested:app1','creator_more_selected']),works)
+        self.assertEqual(tab.call_count,2);tap.assert_called_once()
+    def test_overview_never_exposes_tab_has_bounded_reads_and_no_extra_input(self):
+        with patch.object(sync,'focus',return_value=self.current),patch.object(sync,'capture',side_effect=[self.center()]+[xml() for _ in range(6)]) as capture,patch.object(sync,'creator_more_label',return_value='更多'),patch.object(sync,'creator_overview_entry',return_value=True),patch.object(sync,'open_works_tab',return_value=False) as tab,patch.object(sync,'tap_label') as tap,patch.object(sync,'adb') as adb,patch.object(sync.time,'sleep'):
+            with self.assertRaisesRegex(sync.ElementListReadError,'overview works tab is unavailable'):
+                sync.recover_inaccessible_more('adb','serial',self.current,lambda:None,['collection_slot_requested:app1','creator_more_selected'])
+        self.assertEqual(capture.call_count,7);self.assertEqual(tab.call_count,6);tap.assert_called_once();adb.assert_called_once()
 
 if __name__ == "__main__":
     unittest.main()

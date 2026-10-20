@@ -1167,7 +1167,7 @@ def native_index_navigation(action, adb_path, serial, guard, events):
 
 
 def tap_index_menu(adb_path, serial, root, guard, events):
-    # Vivo's live XML menu coordinates opened a different surface (14/93).
+    # Vivo's live XML menu coordinates opened a different surface (93).
     # Use the exact native node action on the proven own-profile page.
     guard()
     if adb(adb_path, serial, "shell", "getprop", "ro.product.manufacturer", timeout=8).strip().upper() != "VIVO":
@@ -1388,10 +1388,22 @@ def recover_inaccessible_more(adb_path, serial, current, guard, events):
         raise ElementListReadError("inaccessible More did not return to proven Creator Center")
     tap_label(adb_path, serial, center, "观看", guard)
     overview = navigation_capture(adb_path, serial, guard, events)
-    if not open_works_tab(adb_path, serial, overview, guard, events):
-        raise ElementListReadError("overview works tab is unavailable after inaccessible More")
-    events.append("works_native_more_reopened_via_overview")
-    return navigation_capture(adb_path, serial, guard, events)
+    for attempt in range(6):
+        guard()
+        foreground = focus(adb_path, serial)
+        assert_requested_foreground(foreground, events)
+        if not works_webview_activity(foreground):
+            raise ElementListReadError("overview foreground changed after inaccessible More")
+        require_creator_service_available(overview)
+        if label(overview, "账号异常"):
+            raise RuntimeError("creator account shows abnormal status; collection skipped")
+        if open_works_tab(adb_path, serial, overview, guard, events):
+            events.append("works_native_more_reopened_via_overview")
+            return navigation_capture(adb_path, serial, guard, events)
+        if attempt < 5:
+            time.sleep(0.5)
+            overview = navigation_capture(adb_path, serial, guard, events)
+    raise ElementListReadError("overview works tab is unavailable after inaccessible More")
 
 
 def require_creator_service_available(root):
