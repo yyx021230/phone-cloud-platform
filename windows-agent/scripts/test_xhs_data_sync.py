@@ -1378,6 +1378,38 @@ class OverlayRecoveryTests(unittest.TestCase):
         adb.assert_not_called()
 
 
+class FlatFooterNativeTests(unittest.TestCase):
+    def fixture(self):
+        return ET.parse(SCRIPT.parent / "fixtures/xhs/works-flat-footer.xml").getroot()
+
+    def test_actual_footer_does_not_discard_last_complete_native_row(self):
+        root = self.fixture()
+        self.assertEqual([v["published_at_raw"] for _, v in sync.note_cards(root)],
+                         ["07-31", "07-27", "07-24", "07-21"])
+        signature = sync.element_page_signature(root)
+        self.assertTrue(signature[2])
+        self.assertEqual(len(signature[0]), 4)
+
+    def test_misplaced_foreign_or_unknown_extra_field_is_not_a_footer(self):
+        for kind in ("misplaced", "foreign", "unknown"):
+            root = self.fixture()
+            footer = next(n for n in root.iter("node") if n.get("text") == "到底了")
+            if kind == "misplaced":footer.set("bounds", "[486,1650][594,1692]")
+            elif kind == "foreign":footer.set("package", "com.other.app")
+            else:footer.set("text", "未知字段")
+            with self.subTest(kind=kind), self.assertRaises(sync.ElementListReadError):
+                sync.element_page_signature(root)
+
+    def test_note_title_equal_to_footer_is_still_a_title(self):
+        root = self.fixture()
+        view = next(n for n in root.iter("node") if n.get("class") == "android.webkit.WebView")
+        date = next(n for n in view if n.get("text") == "07-21")
+        title = list(view)[list(view).index(date)+1]
+        title.set("text", "到底了")
+        self.assertEqual(sync.note_cards(root)[-1][1]["title"], "到底了")
+        self.assertIsNotNone(sync.element_page_signature(root))
+
+
 class VivoFrameworkUsbTests(unittest.TestCase):
     def fixture(self):
         return ET.parse(SCRIPT.parent / "fixtures/xhs/vivo-framework-usb-cancel.xml").getroot()

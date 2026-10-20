@@ -1607,6 +1607,15 @@ def flat_webview_cards(root):
         if DATE.fullmatch(text):
             groups.append([node])
         elif groups and text:
+            # 144 exposes the end marker directly after six native fields.
+            # Only a same-package footer below the whole row is excluded;
+            # a note title reading "到底了" remains the second field.
+            if (text == "到底了" and len(groups[-1]) == 6
+                    and node in live_nodes(root) and node.get("package") == XHS_PACKAGE
+                    and node.get("class") == "android.widget.TextView"
+                    and all(bounds(n) for n in groups[-1])
+                    and bounds(node)[1] >= max(bounds(n)[3] for n in groups[-1])):
+                continue
             groups[-1].append(node)
     cards = []
     visible = set(live_nodes(root))
