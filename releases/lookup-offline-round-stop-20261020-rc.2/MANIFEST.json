@@ -1,0 +1,16 @@
+{
+  "docs/OPEN_NAME_LOOKUP_API.md": "fa20421f54b983fd248c450d62a0c7ace2a4cd7bf1db8d643f388ec787e7753d",
+  "docs/OPEN_NAME_LOOKUP_PARTNER_HANDOFF.md": "60440b41ea6885a2ee1c8d495687186e2092807a62bf25e3547e2e09b2607641",
+  "docs/OPEN_NAME_LOOKUP_README.md": "29005145413bb05ff41fc6e4398467ec8fe7a58629721f63117f0b00d4b0ed6a",
+  "public/api-reference.json": "5ce9d1634413059e4ee1ed119af78a80e866552439034d279e35ce0389ae44b4",
+  "public/downloads/name-lookup-http-guide.md": "47df78087a7aee9b786dc676b934f710d571c310db80a0fb9f62ad9e965d196b",
+  "public/downloads/name-lookup-integration.zip": "2c8bc9ee67467526ce619a72427c872843829258eb03525b94c88af1acad936b",
+  "public/downloads/name-lookup-openapi.json": "2f8a4062b24eb56a7d7877068e1b5fa4b80f57879ed6ddf84c9abe5efcb2a7cd",
+  "public/downloads/name-lookup-sha256.json": "b3008f82db7db4d514196ca185f7417144fbc5d80e6b9c11dffd21b75941ecc8",
+  "public/openapi.json": "5d3a463dea3bc445dd238377630f89cfa03130a29809c863fa0c6ad6f90a7f68",
+  "server/lookup-offline-fence.test.mjs": "678ae2ae87455851ab823cb8fce6f09aff6911d5eff24a67b47733914bbe3a9d",
+  "server/lookup-offline-handoff.test.mjs": "8f2792e7cc849249c7b2c105cbbcb6dce775375a8040b0069a66ddb28a5b0d11",
+  "server/lookup-round-stop.mjs": "f13558828d2050529513d27e7085e8633cea56628982a5a63711bd3f7dcc21aa",
+  "server/managed-lookup-platform.mjs": "07601b7f866210d0248823d4594e48dceb084c062c5a2c44a80422dc531f0b2d",
+  "server/managed-lookup.mjs": "2fcbc4db86ee999d9f7b101cef658ef472dd62c374cefe4670e64433fa9f51ae"
+}

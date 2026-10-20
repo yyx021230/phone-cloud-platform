@@ -1,0 +1,34 @@
+✔ durable offline fence cancels payload and ACK, retains results and physical lock (3.128792ms)
+✔ fence only touches this session/generation; unrelated work is preserved (0.870916ms)
+✔ rollback restores exact session, jobs and task leases after persistence failure (0.9465ms)
+✔ missing or mismatched generation cannot declare a cancellation fence (0.3455ms)
+✔ orphan leased and handover-pending tasks are fenced even without an active job (0.332166ms)
+✔ business handoff fences only the old attempt with its own reason, without a round stop (0.313417ms)
+✔ offline detection includes stale Agent heartbeat but not screen occupancy or cooling (0.154709ms)
+✔ active offline query retains lookup ID and moves to a healthy ready phone after fencing (13.005541ms)
+✔ short offline observation resets on reconnect, without replaying the business (2.980083ms)
+✔ handoff cleanup survives restart; late old results never complete the reassigned query (4.131084ms)
+✔ manual stop wins over offline handoff, and its cleanup cannot hold the next round (3.4335ms)
+✔ business waiting on all offline devices does not trigger the fifteen minute idle stop (5.982292ms)
+✔ fifteen minutes after handed-off result the round ends despite old offline reservation (6.17375ms)
+✔ fence persistence failure never reassigns the original business (2.625292ms)
+✔ already received result wins over a disconnect and is never replayed (2.099708ms)
+✔ handoff preserves the original total deadline rather than expiring a started query at its initial queue deadline (2.055667ms)
+✔ round ends after offline grace while its phone stays reserved; healthy phones start the next round (15.211959ms)
+✔ temporary disconnect resets the grace and never detaches or clears a phone lock (2.651792ms)
+✔ offline idle and puzzle sessions cannot block idle-expiry stop forever (4.558625ms)
+✔ next-round stop never rebinds quarantined channels from the old round (6.887834ms)
+✔ reconnected quarantined phone waits for real cleanup ACK before reuse (4.369042ms)
+✔ failed durable fencing remains fail-closed and does not block another phone cleanup (2.010375ms)
+✔ received successful result is retained while an offline completed channel is quarantined (2.960708ms)
+✔ online unknown execution still requires stop ACK and is never detached by a timer (4.151792ms)
+✔ a second disconnect cancels pending cleanup without consuming a new-round execution slot forever (2.935ms)
+✔ settled offline quarantine does not keep writing transactions or rebinding across polls (4.24125ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 169.869667

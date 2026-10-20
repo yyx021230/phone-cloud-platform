@@ -1,0 +1,11 @@
+{
+  "version": "lookup-offline-round-stop-20261020-rc.2",
+  "files": {
+    "README.md": "47df78087a7aee9b786dc676b934f710d571c310db80a0fb9f62ad9e965d196b",
+    "lookup.mjs": "aadb28f2260e411bad3187c1041324d50f9b685cd554d40183d73b45feba0a26",
+    "lookup.py": "ed8aa0309470d8fc0a216c648649315035dbba8cf6bf22abeab7576fc7a7072e",
+    "openapi.json": "2f8a4062b24eb56a7d7877068e1b5fa4b80f57879ed6ddf84c9abe5efcb2a7cd",
+    "stop_lookup.py": "e0d7f72ff6fae836973432804ae42083ee99c136f307483a7e9eb5a198d862ed"
+  },
+  "zipSha256": "2c8bc9ee67467526ce619a72427c872843829258eb03525b94c88af1acad936b"
+}

@@ -1,0 +1,11 @@
+waiting for server to start.... done
+server started
+BEGIN
+CREATE TABLE
+CREATE TABLE
+COMMIT
+BEGIN
+CREATE TABLE
+CREATE INDEX
+CREATE INDEX
+COMMIT

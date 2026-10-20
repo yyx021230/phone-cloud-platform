@@ -1,0 +1,2722 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Phone Cloud 平台功能 API",
+    "version": "lookup-offline-round-stop-20261020-rc.2",
+    "description": "启动准备、提交手机号、获取结果三个查名接口；其他平台功能按各自分类查阅。"
+  },
+  "servers": [
+    {
+      "url": "http://47.98.127.132",
+      "description": "当前平台HTTP根地址；其他部署使用管理员交付的BASE_URL"
+    }
+  ],
+  "tags": [
+    {
+      "name": "auth",
+      "description": "账户认证 · 基础接口"
+    },
+    {
+      "name": "user",
+      "description": "设备库存 · 基础接口"
+    },
+    {
+      "name": "sms",
+      "description": "短信接码 · 业务接口"
+    },
+    {
+      "name": "lookup-user",
+      "description": "支付宝查名字 · 业务接口"
+    },
+    {
+      "name": "qr-scan",
+      "description": "小红书自动登录 · 业务接口"
+    },
+    {
+      "name": "kuaishou-lead",
+      "description": "快手录入 · 业务接口"
+    },
+    {
+      "name": "xhs-publish",
+      "description": "小红书一键发布 · 业务接口"
+    },
+    {
+      "name": "screen",
+      "description": "实时控制与相册 · 设备工具"
+    },
+    {
+      "name": "xhs-data",
+      "description": "小红书数据采集"
+    }
+  ],
+  "paths": {
+    "/api/v1/open/name-lookups/tasks": {
+      "post": {
+        "operationId": "post-api-v1-open-name-lookups-tasks",
+        "summary": "提交手机号",
+        "description": "业务参数只传phoneNumber。立即返回lookupId，保存后通过结果接口查询。默认最多20条未完成请求，平台自动排队分配。\n\n查询执行中手机持续离线30秒：平台隔离旧手机执行，保留原lookupId和手机号，自动转交其他已探测就绪的在线手机；没有可用手机时继续排队，原任务总时限不延长，调用方继续读取原lookupId，无需重新提交。只有显式调用结束接口，或没有未完成业务且连续空闲15分钟时，才结束本轮并取消未完成工作。离线手机不会无限阻塞stopping，重连后先清理旧执行并重新探测。",
+        "tags": [
+          "lookup-user"
+        ],
+        "security": [
+          {
+            "LookupApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 160,
+              "pattern": "^[A-Za-z0-9._:-]+$"
+            },
+            "description": "首次发送前持久保存；准备键与业务键分开，重试复用原键"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功读取准备/受理/结果，按status处理",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "lookupId",
+                    "status",
+                    "reused"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "lookupId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "queued",
+                        "processing",
+                        "completed",
+                        "failed"
+                      ]
+                    },
+                    "reused": {
+                      "type": "boolean"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": true,
+                  "lookupId": "00000000-0000-4000-8000-000000000002",
+                  "status": "queued",
+                  "reused": false
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "成功读取准备/受理/结果，按status处理",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "lookupId",
+                    "status",
+                    "reused"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "lookupId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "queued",
+                        "processing",
+                        "completed",
+                        "failed"
+                      ]
+                    },
+                    "reused": {
+                      "type": "boolean"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": true,
+                  "lookupId": "00000000-0000-4000-8000-000000000002",
+                  "status": "queued",
+                  "reused": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "invalid_lookup_phone"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "open_api_auth_required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "managed_lookup_not_authorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "managed_lookup_not_enabled"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "idempotency_conflict"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "lookup_queue_full"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "lookup_pool_disabled"
+                }
+              }
+            }
+          }
+        },
+        "x-route-errors": {
+          "invalid_lookup_phone": 400,
+          "prepare_body_must_be_empty": 400,
+          "idempotency_key_required": 400,
+          "invalid_idempotency_key": 400,
+          "managed_lookup_not_authorized": 403,
+          "managed_lookup_not_enabled": 404,
+          "lookup_task_not_found": 404,
+          "idempotency_conflict": 409,
+          "lookup_preparation_expired": 409,
+          "lookup_queue_full": 429,
+          "lookup_inflight_limit": 429,
+          "lookup_duplicate_limit": 429,
+          "lookup_preparation_key_limit": 429,
+          "lookup_pool_disabled": 503,
+          "lookup_storage_unavailable": 503,
+          "lookup_outcome_unknown": 503,
+          "lookup_not_ready": 503,
+          "lookup_probe_not_configured": 503,
+          "lookup_preparation_capacity": 503,
+          "open_api_auth_required": 401,
+          "invalid_open_api_client": 401,
+          "open_api_timestamp_expired": 401,
+          "invalid_open_api_nonce": 401,
+          "open_api_nonce_replayed": 401,
+          "invalid_open_api_signature": 401
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "phoneNumber"
+                ],
+                "properties": {
+                  "phoneNumber": {
+                    "type": "string",
+                    "pattern": "^1[3-9][0-9]{9}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "example": {
+                "phoneNumber": "13800000000"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/open/name-lookups/tasks/{lookupId}": {
+      "get": {
+        "operationId": "get-api-v1-open-name-lookups-tasks-lookupId",
+        "summary": "获取查询结果",
+        "description": "按lookupId获取单个号码的结果。completed时name是姓名或空字符串；未实名也是空字符串。其他状态继续等待或按code处理异常。",
+        "tags": [
+          "lookup-user"
+        ],
+        "security": [
+          {
+            "LookupApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "lookupId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功读取准备/受理/结果，按status处理",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "required": [
+                        "ok",
+                        "lookupId",
+                        "status"
+                      ],
+                      "properties": {
+                        "ok": {
+                          "type": "boolean",
+                          "enum": [
+                            true
+                          ]
+                        },
+                        "lookupId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "queued",
+                            "processing"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "ok",
+                        "lookupId",
+                        "status",
+                        "name"
+                      ],
+                      "properties": {
+                        "ok": {
+                          "type": "boolean",
+                          "enum": [
+                            true
+                          ]
+                        },
+                        "lookupId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "completed"
+                          ]
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "页面姓名或空字符串；未实名属于空字符串"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "ok",
+                        "lookupId",
+                        "status",
+                        "code"
+                      ],
+                      "properties": {
+                        "ok": {
+                          "type": "boolean",
+                          "enum": [
+                            false
+                          ]
+                        },
+                        "lookupId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "failed"
+                          ]
+                        },
+                        "code": {
+                          "type": "string"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                "example": {
+                  "ok": true,
+                  "lookupId": "00000000-0000-4000-8000-000000000002",
+                  "status": "completed",
+                  "name": "**某"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "open_api_auth_required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "managed_lookup_not_authorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "managed_lookup_not_enabled"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "lookup_storage_unavailable"
+                }
+              }
+            }
+          }
+        },
+        "x-route-errors": {
+          "managed_lookup_not_authorized": 403,
+          "managed_lookup_not_enabled": 404,
+          "lookup_task_not_found": 404,
+          "lookup_storage_unavailable": 503,
+          "open_api_auth_required": 401,
+          "invalid_open_api_client": 401,
+          "open_api_timestamp_expired": 401,
+          "invalid_open_api_nonce": 401,
+          "open_api_nonce_replayed": 401,
+          "invalid_open_api_signature": 401
+        }
+      }
+    },
+    "/api/v1/open/name-lookups/prepare": {
+      "post": {
+        "operationId": "post-api-v1-open-name-lookups-prepare",
+        "summary": "启动准备",
+        "description": "请求体为{}。用同一个准备键每5秒读取一次，ready:true后即可提交手机号。过期后使用新准备键。 本轮没有未完成业务查询，并连续15分钟没有新受理查询时自动结束。排队、执行、人工等待、恢复和未知执行仍属未完成业务，不会因空闲计时中断；最后一条业务结束后重新计15分钟。只启动未提交业务时，从启动开始计时；后台探测不续期。GET、prepare轮询（含换准备键）、同键重试和命中已有任务/缓存的重提均不续期。 空闲到期走安全停止：可能短暂expired，随后stopping。在线手机等待停止确认；本轮已请求结束时，持续掉线30秒的手机在旧任务撤销并持久化后单独隔离，不再阻塞整轮结束。隔离不代表手机已经停止，恢复连接后仍须确认旧会话清理，才可重新接单。确认stopped后，由调用方用新的准备键显式启动。已完成结果继续保留。 手机连续空闲满5分钟后暂停接收业务，优先保留原健康会话重新探测，通过后再接单；原手机异常、账户掉线、冷却、被控屏占用或需人工处理时，使用其他可用候补。后台重新探测不延长整轮15分钟空闲期限；有排队、执行或异常接续中的业务时不按空闲关闭。",
+        "tags": [
+          "lookup-user"
+        ],
+        "security": [
+          {
+            "LookupApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 160,
+              "pattern": "^[A-Za-z0-9._:-]+$"
+            },
+            "description": "首次发送前持久保存；准备键与业务键分开，重试复用原键"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功读取准备/受理/结果，按status处理",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "preparationId",
+                    "status",
+                    "ready",
+                    "expiresAt"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "preparationId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "preparing",
+                        "ready",
+                        "expired",
+                        "stopping",
+                        "stopped"
+                      ]
+                    },
+                    "ready": {
+                      "type": "boolean"
+                    },
+                    "expiresAt": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "date-time",
+                      "description": "当前空闲截止时间（UTC ISO 8601）；有未完成业务时为null，表示空闲计时暂停。以status和ready判断状态，不把null当已过期。"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": true,
+                  "preparationId": "00000000-0000-4000-8000-000000000001",
+                  "status": "ready",
+                  "ready": true,
+                  "expiresAt": "2026-10-15T10:30:00.000Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "invalid_lookup_phone"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "open_api_auth_required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "managed_lookup_not_authorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "managed_lookup_not_enabled"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "idempotency_conflict"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "lookup_queue_full"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "lookup_pool_disabled"
+                }
+              }
+            }
+          }
+        },
+        "x-route-errors": {
+          "invalid_lookup_phone": 400,
+          "prepare_body_must_be_empty": 400,
+          "idempotency_key_required": 400,
+          "invalid_idempotency_key": 400,
+          "managed_lookup_not_authorized": 403,
+          "managed_lookup_not_enabled": 404,
+          "lookup_task_not_found": 404,
+          "idempotency_conflict": 409,
+          "lookup_preparation_expired": 409,
+          "lookup_queue_full": 429,
+          "lookup_duplicate_limit": 429,
+          "lookup_preparation_key_limit": 429,
+          "lookup_pool_disabled": 503,
+          "lookup_storage_unavailable": 503,
+          "lookup_outcome_unknown": 503,
+          "lookup_not_ready": 503,
+          "lookup_probe_not_configured": 503,
+          "lookup_preparation_capacity": 503,
+          "open_api_auth_required": 401,
+          "invalid_open_api_client": 401,
+          "open_api_timestamp_expired": 401,
+          "invalid_open_api_nonce": 401,
+          "open_api_nonce_replayed": 401,
+          "invalid_open_api_signature": 401,
+          "lookup_round_stopping": 409
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [],
+                "properties": {},
+                "additionalProperties": false
+              },
+              "example": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/open/name-lookups/stop": {
+      "post": {
+        "operationId": "post-api-v1-open-name-lookups-stop",
+        "summary": "结束本轮任务",
+        "description": "结束同一API Key所属客户的本轮准备和查询。停止探测与分配、取消排队；在线手机等待停止确认，本轮已请求结束时，持续掉线30秒的手机撤销旧任务并持久化后单独隔离。本轮结束不代表隔离手机已停止，该手机重连清理并确认后才能复用；已完成结果保留。只在stopped:true后使用新准备键开始下一轮。\n\n查询执行中手机持续离线30秒：平台隔离旧手机执行，保留原lookupId和手机号，自动转交其他已探测就绪的在线手机；没有可用手机时继续排队，原任务总时限不延长，调用方继续读取原lookupId，无需重新提交。只有显式调用结束接口，或没有未完成业务且连续空闲15分钟时，才结束本轮并取消未完成工作。离线手机不会无限阻塞stopping，重连后先清理旧执行并重新探测。",
+        "tags": [
+          "lookup-user"
+        ],
+        "security": [
+          {
+            "LookupApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 160,
+              "pattern": "^[A-Za-z0-9._:-]+$"
+            },
+            "description": "首次发送前持久保存；准备键与业务键分开，重试复用原键"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "停止已确认",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "preparationId",
+                    "status",
+                    "stopped"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "preparationId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "stopped"
+                      ]
+                    },
+                    "stopped": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": true,
+                  "preparationId": "00000000-0000-4000-8000-000000000001",
+                  "status": "stopped",
+                  "stopped": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "invalid_idempotency_key"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "invalid_lookup_api_key"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "managed_lookup_not_authorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "lookup_preparation_not_found"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "idempotency_conflict"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "lookup_stop_key_limit"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "HTTP请求失败，保留原任务身份",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "code"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": false,
+                  "code": "lookup_storage_unavailable"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "已停止新探测和分配，正在等待运行任务安全停止",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "preparationId",
+                    "status",
+                    "stopped"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "preparationId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "stopping"
+                      ]
+                    },
+                    "stopped": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "ok": true,
+                  "preparationId": "00000000-0000-4000-8000-000000000001",
+                  "status": "stopping",
+                  "stopped": false
+                }
+              }
+            }
+          }
+        },
+        "x-route-errors": {
+          "invalid_idempotency_key": 400,
+          "stop_body_requires_preparation_id": 400,
+          "invalid_preparation_id": 400,
+          "invalid_lookup_api_key": 401,
+          "managed_lookup_not_authorized": 403,
+          "lookup_preparation_not_found": 404,
+          "idempotency_conflict": 409,
+          "lookup_stop_key_limit": 429,
+          "lookup_storage_unavailable": 503
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "preparationId"
+                ],
+                "properties": {
+                  "preparationId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80,
+                    "pattern": "^[A-Za-z0-9-]+$",
+                    "description": "启动prepare响应中的编号；用于限定要结束的轮次，旧请求不会误停新一轮。"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "example": {
+                "preparationId": "00000000-0000-4000-8000-000000000001"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "HmacSignature": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Signature",
+        "description": "HMAC-SHA256小写hex；还必须提供X-Client-Id/X-Timestamp/X-Nonce。仅后端使用密钥。"
+      },
+      "LookupApiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "平台单独分配的固定API Key；只用于查名三个接口。旧HMAC兼容，不可混用。"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "平台模型列常用稳定字段，result/health/payload允许按任务类型扩展。",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "用户ID"
+          },
+          "username": {
+            "type": "string",
+            "description": "用户名"
+          },
+          "displayName": {
+            "type": "string",
+            "description": "显示名"
+          },
+          "role": {
+            "type": "string",
+            "description": "admin/user"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "创建时间"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "更新时间"
+          },
+          "lastLoginAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "最近登录"
+          }
+        }
+      },
+      "AuthSession": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "平台模型列常用稳定字段，result/health/payload允许按任务类型扩展。",
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "description": "会话ID"
+          },
+          "token": {
+            "type": "string",
+            "description": "登录响应中完整Bearer令牌"
+          },
+          "role": {
+            "type": "string",
+            "description": "admin/user"
+          },
+          "expiresAt": {
+            "type": "string",
+            "description": "过期ISO8601时间"
+          }
+        }
+      },
+      "LookupDevice": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "平台模型列常用稳定字段，result/health/payload允许按任务类型扩展。",
+        "properties": {
+          "deviceId": {
+            "type": "string",
+            "description": "平台稳定ID"
+          },
+          "deviceName": {
+            "type": "string",
+            "description": "界面手机编号/名称"
+          },
+          "available": {
+            "type": "boolean",
+            "description": "已上架、ADB在线且没有活动任务锁"
+          },
+          "listed": {
+            "type": "boolean",
+            "description": "是否上架"
+          },
+          "adbOnline": {
+            "type": "boolean",
+            "description": "ADB在线"
+          }
+        }
+      },
+      "OpenLookupSession": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "平台模型列常用稳定字段，result/health/payload允许按任务类型扩展。",
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "description": "稳定会话ID"
+          },
+          "deviceId": {
+            "type": "string",
+            "description": "设备ID"
+          },
+          "status": {
+            "type": "string",
+            "description": "starting/ready/querying/switching/choosing_account/needs_human_verification/stopping/ended/failed/expired"
+          },
+          "pending": {
+            "type": "boolean",
+            "description": "是否存在正在执行或等待领取的作业"
+          },
+          "queuedCount": {
+            "type": "number",
+            "description": "尚未派发查询数"
+          },
+          "resultCount": {
+            "type": "number",
+            "description": "所有结果数"
+          },
+          "resultsTruncated": {
+            "type": "boolean",
+            "description": "会话结果是否被500条窗口截断"
+          },
+          "successfulCount": {
+            "type": "number",
+            "description": "正常完成计数，包含succeeded与not_found；不是返回姓名条数"
+          },
+          "currentAccount": {
+            "type": "string",
+            "description": "当前账户脱敏展示标识，可能为空；不是可跨设备关联的账户主键"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OpenLookupResult"
+            },
+            "description": "最多最近500条结果"
+          },
+          "queueState": {
+            "$ref": "#/components/schemas/QueueState",
+            "description": "执行或暂停动作"
+          },
+          "humanAction": {
+            "$ref": "#/components/schemas/HumanAction",
+            "description": "人工介入信息"
+          },
+          "error": {
+            "type": "string",
+            "description": "会话错误文本"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "创建时间"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "更新时间"
+          },
+          "endedAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "结束时间"
+          }
+        }
+      },
+      "OpenLookupResult": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "平台模型列常用稳定字段，result/health/payload允许按任务类型扩展。",
+        "properties": {
+          "queryId": {
+            "type": "string",
+            "description": "稳定结果ID，恢复沿用此值"
+          },
+          "clientReference": {
+            "type": "string",
+            "description": "调用方业务关联"
+          },
+          "queuePosition": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "等待队列从1起；已派发/终态为空"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "脱敏号码，例138****0000"
+          },
+          "status": {
+            "type": "string",
+            "description": "queued/running/cancelling/succeeded/not_found/needs_human_verification/needs_recovery/limit_reached/failed/cancelled"
+          },
+          "stage": {
+            "type": "string",
+            "description": "当前步骤展示文本，不作为稳定状态枚举"
+          },
+          "maskedName": {
+            "type": "string",
+            "description": "上游展示的脱敏姓名，例**某；不补全完整实名"
+          },
+          "nameTailCharacter": {
+            "type": "string",
+            "description": "可提取的姓名末字，可能为空"
+          },
+          "accountSwitched": {
+            "type": "boolean",
+            "description": "是否发生自动切号"
+          },
+          "accountSwitchReason": {
+            "type": "string",
+            "description": "切号原因"
+          },
+          "accountSwitchCount": {
+            "type": "number",
+            "description": "切换次数"
+          },
+          "reason": {
+            "type": "string",
+            "description": "限制原因或执行错误码"
+          },
+          "error": {
+            "type": "string",
+            "description": "错误文本"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "创建时间"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "更新时间"
+          }
+        }
+      },
+      "HumanAction": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "平台模型列常用稳定字段，result/health/payload允许按任务类型扩展。",
+        "properties": {
+          "required": {
+            "type": "boolean",
+            "description": "是否需要人工"
+          },
+          "type": {
+            "type": "string",
+            "description": "需要人工时为manual_jigsaw_verification"
+          },
+          "reason": {
+            "type": "string",
+            "description": "人工原因"
+          },
+          "queryId": {
+            "type": "string",
+            "description": "原查询ID；首次账户准备时为空"
+          },
+          "resumeAllowed": {
+            "type": "boolean",
+            "description": "是否存在可显式恢复的原查询，不代表尚未自动恢复"
+          }
+        }
+      },
+      "QueueState": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "平台模型列常用稳定字段，result/health/payload允许按任务类型扩展。",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "running/waiting/idle/paused"
+          },
+          "reason": {
+            "type": "string",
+            "description": "暂停原因，其他状态可能省略"
+          },
+          "action": {
+            "type": "string",
+            "description": "retry_current_query 或 end_session_and_select_another_device；非paused可能省略"
+          },
+          "queryId": {
+            "type": "string",
+            "description": "需重试的原查询ID；首次准备时为空"
+          }
+        }
+      },
+      "Sim": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "平台模型列常用稳定字段，result/health/payload允许按任务类型扩展。",
+        "properties": {
+          "subscriptionId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Android订阅ID"
+          },
+          "slotIndex": {
+            "type": "integer",
+            "description": "0起槽位"
+          },
+          "carrierName": {
+            "type": "string",
+            "description": "运营商"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "号码"
+          },
+          "label": {
+            "type": "string",
+            "description": "展示标签"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "busy": {
+            "type": "boolean",
+            "description": "用户设备视图中可返回是否等待接码"
+          }
+        }
+      },
+      "XhsAccount": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "平台模型列常用稳定字段，result/health/payload允许按任务类型扩展。",
+        "properties": {
+          "appSlot": {
+            "type": "string",
+            "description": "app1/app2"
+          },
+          "xhsId": {
+            "type": "string",
+            "description": "全平台唯一稳定账号ID"
+          },
+          "accountName": {
+            "type": "string",
+            "description": "可变展示名"
+          },
+          "label": {
+            "type": "string",
+            "description": "展示标签"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "是否启用"
+          }
+        }
+      },
+      "SmsOrder": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "平台模型列常用稳定字段，result/health/payload允许按任务类型扩展。",
+        "properties": {
+          "orderId": {
+            "type": "string",
+            "description": "订单ID"
+          },
+          "deviceId": {
+            "type": "string",
+            "description": "设备ID"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "权限范围内号码"
+          },
+          "platform": {
+            "type": "string",
+            "description": "平台标签"
+          },
+          "status": {
+            "type": "string",
+            "description": "waiting/received/expired/cancelled"
+          },
+          "code": {
+            "type": "string",
+            "description": "验证码"
+          },
+          "body": {
+            "type": "string",
+            "description": "按接口视图脱敏或公开的正文"
+          },
+          "sender": {
+            "type": "string",
+            "description": "发送方"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "创建时间"
+          },
+          "startedAt": {
+            "type": "string",
+            "description": "匹配起始时间"
+          },
+          "expiresAt": {
+            "type": "string",
+            "description": "过期时间"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "更新时间"
+          }
+        }
+      },
+      "SmsMessage": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "平台模型列常用稳定字段，result/health/payload允许按任务类型扩展。",
+        "properties": {
+          "messageId": {
+            "type": "string",
+            "description": "云端消息ID"
+          },
+          "deviceId": {
+            "type": "string",
+            "description": "设备ID"
+          },
+          "messageKey": {
+            "type": "string",
+            "description": "设备内稳定业务去重键"
+          },
+          "smsId": {
+            "type": "string",
+            "description": "Android Provider ID"
+          },
+          "threadId": {
+            "type": "string",
+            "description": "会话ID"
+          },
+          "box": {
+            "type": "string",
+            "description": "inbox/sent等"
+          },
+          "type": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Provider类型"
+          },
+          "address": {
+            "type": "string",
+            "description": "发送方"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "SIM号码"
+          },
+          "body": {
+            "type": "string",
+            "description": "正文"
+          },
+          "code": {
+            "type": "string",
+            "description": "提取验证码"
+          },
+          "platform": {
+            "type": "string",
+            "description": "平台标签"
+          },
+          "messageAt": {
+            "type": "string",
+            "description": "短信发生时间"
+          },
+          "dateSent": {
+            "type": "string",
+            "description": "发送时间"
+          },
+          "read": {
+            "type": "boolean",
+            "description": "已读"
+          },
+          "seen": {
+            "type": "boolean",
+            "description": "已查看"
+          },
+          "status": {
+            "type": "string",
+            "description": "Provider状态"
+          },
+          "locked": {
+            "type": "boolean",
+            "description": "锁定"
+          },
+          "subscriptionId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "SIM订阅ID"
+          },
+          "slotIndex": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "卡槽"
+          },
+          "source": {
+            "type": "string",
+            "description": "数据来源"
+          },
+          "sourcePackage": {
+            "type": "string",
+            "description": "来源应用"
+          },
+          "sourceAliases": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "合并来源"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "创建时间"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "更新时间"
+          }
+        }
+      },
+      "UserDevice": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "平台模型列常用稳定字段，result/health/payload允许按任务类型扩展。",
+        "properties": {
+          "deviceId": {
+            "type": "string",
+            "description": "稳定设备ID"
+          },
+          "deviceName": {
+            "type": "string",
+            "description": "手机编号/名称"
+          },
+          "model": {
+            "type": "string",
+            "description": "型号"
+          },
+          "brand": {
+            "type": "string",
+            "description": "品牌"
+          },
+          "manufacturer": {
+            "type": "string",
+            "description": "制造商"
+          },
+          "androidVersion": {
+            "type": "string",
+            "description": "系统版本"
+          },
+          "adbOnline": {
+            "type": "boolean",
+            "description": "ADB在线"
+          },
+          "agentOnline": {
+            "type": "boolean",
+            "description": "Android Agent在线"
+          },
+          "listingStatus": {
+            "type": "string",
+            "description": "上架状态"
+          },
+          "sims": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Sim"
+            },
+            "description": "SIM配置"
+          },
+          "xhsAccounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/XhsAccount"
+            },
+            "description": "账号配置"
+          },
+          "occupancy": {
+            "type": "object",
+            "description": "当前用户可见的占用"
+          },
+          "automationStatus": {
+            "type": "object",
+            "description": "自动化就绪与组件健康"
+          },
+          "screenControlConcurrentLookupAllowed": {
+            "type": "boolean",
+            "description": "是否允许当前查名会话进入人工控屏"
+          },
+          "screenControlNeedsHumanAction": {
+            "type": "boolean",
+            "description": "是否需要人工控屏"
+          }
+        }
+      },
+      "LookupSession": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "平台模型列常用稳定字段，result/health/payload允许按任务类型扩展。",
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "description": "会话ID"
+          },
+          "deviceId": {
+            "type": "string",
+            "description": "设备ID"
+          },
+          "status": {
+            "type": "string",
+            "description": "starting/ready/querying/switching/choosing_account/needs_human_verification/stopping/ended/failed/expired；还须检查阻塞结果"
+          },
+          "pendingJobId": {
+            "type": "string",
+            "description": "当前作业ID"
+          },
+          "currentAccount": {
+            "type": "string",
+            "description": "当前已验证账户"
+          },
+          "accountIdentityVerified": {
+            "type": "boolean",
+            "description": "当前账户身份是否已核验；普通重试复用已知账户"
+          },
+          "successfulCount": {
+            "type": "number",
+            "description": "正常完成计数，包含succeeded和not_found；不是返回姓名条数"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "网页结果，包含内部resultId和权限范围内号码；与开放视图不同"
+          },
+          "requiresAccountSwitch": {
+            "type": "boolean",
+            "description": "无可用账户需暂停"
+          },
+          "accountChoices": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "当前可选账户，含account/current/cooling"
+          },
+          "accountCooldowns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountCooldown"
+            },
+            "description": "冷却记录"
+          },
+          "startupHumanVerification": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "首次准备阶段验证信息"
+          },
+          "error": {
+            "type": "string",
+            "description": "错误"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "创建时间"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "更新时间"
+          }
+        }
+      },
+      "AccountCooldown": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "平台模型列常用稳定字段，result/health/payload允许按任务类型扩展。",
+        "properties": {
+          "account": {
+            "type": "string",
+            "description": "同一设备内受限账户展示标识"
+          },
+          "limitedAt": {
+            "type": "string",
+            "description": "首次检测到限制的ISO8601时间；不是restrictedAt"
+          },
+          "cooldownUntil": {
+            "type": "string",
+            "description": "limitedAt加8小时的自然到期时间，事件重放不重置"
+          },
+          "reason": {
+            "type": "string",
+            "description": "access_denied/device_risk/frequent_or_abnormal_access"
+          },
+          "remainingMs": {
+            "type": "number",
+            "description": "剩余冷却毫秒，最低0"
+          },
+          "cooling": {
+            "type": "boolean",
+            "description": "当前是否仍在冷却"
+          }
+        }
+      },
+      "DeviceLock": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "平台模型列常用稳定字段，result/health/payload允许按任务类型扩展。",
+        "properties": {
+          "lockId": {
+            "type": "string",
+            "description": "锁ID"
+          },
+          "deviceId": {
+            "type": "string",
+            "description": "设备ID"
+          },
+          "taskId": {
+            "type": "string",
+            "description": "关联业务任务/会话"
+          },
+          "lockType": {
+            "type": "string",
+            "description": "占用类型"
+          },
+          "status": {
+            "type": "string",
+            "description": "active/released等"
+          },
+          "expiresAt": {
+            "type": "string",
+            "description": "过期时间"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "创建时间"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "更新时间"
+          }
+        }
+      },
+      "WindowsTask": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "平台模型列常用稳定字段，result/health/payload允许按任务类型扩展。",
+        "properties": {
+          "taskId": {
+            "type": "string",
+            "description": "任务ID"
+          },
+          "agentId": {
+            "type": "string",
+            "description": "执行Agent"
+          },
+          "deviceId": {
+            "type": "string",
+            "description": "目标设备"
+          },
+          "adbSerial": {
+            "type": "string",
+            "description": "ADB目标"
+          },
+          "type": {
+            "type": "string",
+            "description": "adb_install_apk/adb_grant_permissions/adb_start_agent/adb_collect_diagnostics/adb_restart_server/xhs_qr_appium/xhs_publish/kuaishou_lead/alipay_name_start/alipay_name_query/alipay_name_switch/alipay_name_stop/sms_sync_now；screen_gallery_import由专用入口创建"
+          },
+          "status": {
+            "type": "string",
+            "description": "queued/running/stalled/succeeded/failed/cancelled/expired（按任务路径）"
+          },
+          "payload": {
+            "type": "object",
+            "description": "领取详情中的类型专属载荷，摘要可能省略"
+          },
+          "result": {
+            "type": "object",
+            "description": "执行结果"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "创建时间"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "更新时间"
+          },
+          "completedAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "完成时间"
+          },
+          "deliveryToken": {
+            "type": "string",
+            "description": "租约领取响应顶层一次性令牌；使用gallery_v2/xhs_publish_v1时出现"
+          },
+          "deliveryAttempt": {
+            "type": "number",
+            "description": "租约交付次数；仅租约响应"
+          }
+        }
+      },
+      "AutomationJob": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "平台模型列常用稳定字段，result/health/payload允许按任务类型扩展。",
+        "properties": {
+          "jobId": {
+            "type": "string",
+            "description": "作业ID"
+          },
+          "kind": {
+            "type": "string",
+            "description": "xhs_publish/kuaishou_lead/alipay_name_start/alipay_name_query/alipay_name_switch/alipay_name_stop"
+          },
+          "deviceId": {
+            "type": "string",
+            "description": "目标设备"
+          },
+          "sessionId": {
+            "type": "string",
+            "description": "查名会话ID"
+          },
+          "status": {
+            "type": "string",
+            "description": "作业状态"
+          },
+          "stage": {
+            "type": "string",
+            "description": "当前步骤"
+          },
+          "result": {
+            "type": "object",
+            "description": "任务类型专属结果；发布成功需读实际结果"
+          },
+          "windowsTaskId": {
+            "type": "string",
+            "description": "执行任务ID"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "创建时间"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "更新时间"
+          },
+          "completedAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "完成时间"
+          }
+        }
+      },
+      "XhsTask": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "平台模型列常用稳定字段，result/health/payload允许按任务类型扩展。",
+        "properties": {
+          "taskId": {
+            "type": "string",
+            "description": "扫码任务ID"
+          },
+          "deviceId": {
+            "type": "string",
+            "description": "设备ID"
+          },
+          "xhsAppSlot": {
+            "type": "string",
+            "description": "app1/app2"
+          },
+          "xhsAccountId": {
+            "type": "string",
+            "description": "稳定账号ID快照"
+          },
+          "xhsAccountName": {
+            "type": "string",
+            "description": "展示名快照"
+          },
+          "status": {
+            "type": "string",
+            "description": "queued/running/stalled/succeeded/failed/cancelled/expired"
+          },
+          "result": {
+            "type": "object",
+            "description": "执行结果"
+          },
+          "progress": {
+            "$ref": "#/components/schemas/TaskProgress",
+            "description": "步骤进度"
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskEvent"
+            },
+            "description": "事件"
+          },
+          "windowsTaskId": {
+            "type": "string",
+            "description": "Windows执行任务ID"
+          },
+          "cancellable": {
+            "type": "boolean",
+            "description": "视图给出的可取消标记；接口仍以自身状态校验为准"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "创建时间"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "更新时间"
+          }
+        }
+      },
+      "TaskEvent": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "平台模型列常用稳定字段，result/health/payload允许按任务类型扩展。",
+        "properties": {
+          "eventId": {
+            "type": "string",
+            "description": "事件ID"
+          },
+          "phase": {
+            "type": "string",
+            "description": "阶段"
+          },
+          "level": {
+            "type": "string",
+            "description": "info/warn/error"
+          },
+          "message": {
+            "type": "string",
+            "description": "说明"
+          },
+          "stepId": {
+            "type": "string",
+            "description": "步骤ID"
+          },
+          "stepIndex": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "步骤序号"
+          },
+          "errorCode": {
+            "type": "string",
+            "description": "错误码"
+          },
+          "packageName": {
+            "type": "string",
+            "description": "应用包名"
+          },
+          "uiSnapshot": {
+            "type": "string",
+            "description": "UI摘要"
+          },
+          "uiHierarchy": {
+            "type": "string",
+            "description": "元素树"
+          },
+          "screenshot": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "截图证据"
+          },
+          "detail": {
+            "type": "object",
+            "description": "扩展诊断"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "创建时间"
+          }
+        }
+      },
+      "TaskProgress": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "平台模型列常用稳定字段，result/health/payload允许按任务类型扩展。",
+        "properties": {
+          "taskId": {
+            "type": "string",
+            "description": "任务ID"
+          },
+          "windowsTaskId": {
+            "type": "string",
+            "description": "执行任务ID"
+          },
+          "status": {
+            "type": "string",
+            "description": "任务状态"
+          },
+          "percent": {
+            "type": "number",
+            "description": "估算进度百分比，不证明业务成功"
+          },
+          "stepId": {
+            "type": "string",
+            "description": "步骤ID"
+          },
+          "stepIndex": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "序号"
+          },
+          "message": {
+            "type": "string",
+            "description": "说明"
+          },
+          "elapsedMs": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "耗时毫秒"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "更新时间"
+          }
+        }
+      },
+      "GalleryTask": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "平台模型列常用稳定字段，result/health/payload允许按任务类型扩展。",
+        "properties": {
+          "taskId": {
+            "type": "string",
+            "description": "导入任务ID"
+          },
+          "status": {
+            "type": "string",
+            "description": "queued/running/succeeded/failed/cancelled"
+          },
+          "result": {
+            "type": "object",
+            "description": "执行结果"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "创建时间"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "更新时间"
+          }
+        }
+      },
+      "ScreenSession": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "平台模型列常用稳定字段，result/health/payload允许按任务类型扩展。",
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "description": "实时会话ID"
+          },
+          "deviceId": {
+            "type": "string",
+            "description": "设备ID"
+          },
+          "agentId": {
+            "type": "string",
+            "description": "AgentID"
+          },
+          "status": {
+            "type": "string",
+            "description": "connecting/ready/streaming/closed/failed/expired"
+          },
+          "statusMessage": {
+            "type": "string",
+            "description": "状态说明"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "创建时间"
+          },
+          "expiresAt": {
+            "type": "string",
+            "description": "过期时间"
+          },
+          "requestedQualityProfile": {
+            "type": "string",
+            "description": "申请档位，沿用部署配置"
+          }
+        }
+      },
+      "Phone": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "平台模型列常用稳定字段，result/health/payload允许按任务类型扩展。",
+        "properties": {
+          "phoneNumber": {
+            "type": "string",
+            "description": "当前可用号码"
+          },
+          "carrierName": {
+            "type": "string",
+            "description": "运营商"
+          },
+          "label": {
+            "type": "string",
+            "description": "SIM展示标签"
+          },
+          "platform": {
+            "type": "string",
+            "description": "小红书"
+          },
+          "deviceName": {
+            "type": "string",
+            "description": "设备展示名；此接口不返回deviceId"
+          }
+        }
+      },
+      "XhsCollection": {
+        "type": "object",
+        "properties": {
+          "schema_version": {
+            "description": "固定3",
+            "type": "number",
+            "const": 3
+          },
+          "window_days": {
+            "description": "固定30",
+            "type": "number",
+            "const": 30
+          },
+          "window_start_date": {
+            "description": "上海日期 YYYY-MM-DD",
+            "type": "string"
+          },
+          "window_end_date": {
+            "description": "上海日期 YYYY-MM-DD，含当天",
+            "type": "string"
+          },
+          "app_slot": {
+            "description": "app1/app2",
+            "type": "string"
+          },
+          "complete": {
+            "description": "仅完整覆盖时间窗口才为true",
+            "type": "boolean"
+          },
+          "stop_reason": {
+            "description": "list_end_visible/older_than_window_visible；其他原因不完整",
+            "type": "string"
+          },
+          "notes": {
+            "description": "仅详情含作品明细；列表摘要只有note_count",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/XhsCollectionNote"
+            }
+          },
+          "totals": {
+            "description": "列表指标合计；任意作品该指标缺失则该总计null",
+            "type": "object"
+          },
+          "warnings": {
+            "description": "有限的采集提示",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "XhsCollectionNote": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "description": "作品标题，非稳定唯一标识",
+            "type": "string"
+          },
+          "published_date": {
+            "description": "发布日期 YYYY-MM-DD",
+            "type": "string"
+          },
+          "note_id": {
+            "description": "本版本不提供稳定作品ID",
+            "type": "null"
+          },
+          "list_view_count": {
+            "description": "列表阅读数；缺失为null，0表示明确零",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "list_like_count": {
+            "description": "列表点赞数",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "list_comment_count": {
+            "description": "列表评论数",
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "x-websocket-channels": []
+}
