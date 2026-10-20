@@ -1,0 +1,143 @@
+{
+  "atUtc": "2026-10-20T09:41:40.331067+00:00",
+  "publicFiles": [
+    {
+      "path": "/app.js",
+      "status": 200,
+      "sha256": "5bd2f00cbb6038c740b4b8b82b2c10f2cf26330947ab81de29a9b72b2f78480b"
+    },
+    {
+      "path": "/index.html",
+      "status": 200,
+      "sha256": "264d1b4641d36a69688cbc068b76cfe8e4bd7bb499c61b936654f4e969ade2de"
+    },
+    {
+      "path": "/lookup-card-status.js",
+      "status": 200,
+      "sha256": "8f858abaea1294ba0016ed622c2b9b48df945c0c4f181ab10da018c0decfe5c6"
+    },
+    {
+      "path": "/styles.css",
+      "status": 200,
+      "sha256": "ea46847aa8a1c4814c1cfe4dd8f79347b1f2cd3b09bcc2901b32d8ac82962d40"
+    },
+    {
+      "path": "/api-reference.json",
+      "status": 200,
+      "sha256": "5ce9d1634413059e4ee1ed119af78a80e866552439034d279e35ce0389ae44b4"
+    },
+    {
+      "path": "/downloads/name-lookup-http-guide.md",
+      "status": 200,
+      "sha256": "47df78087a7aee9b786dc676b934f710d571c310db80a0fb9f62ad9e965d196b"
+    },
+    {
+      "path": "/downloads/name-lookup-integration.zip",
+      "status": 200,
+      "sha256": "2c8bc9ee67467526ce619a72427c872843829258eb03525b94c88af1acad936b"
+    },
+    {
+      "path": "/downloads/name-lookup-openapi.json",
+      "status": 200,
+      "sha256": "2f8a4062b24eb56a7d7877068e1b5fa4b80f57879ed6ddf84c9abe5efcb2a7cd"
+    },
+    {
+      "path": "/downloads/name-lookup-sha256.json",
+      "status": 200,
+      "sha256": "b3008f82db7db4d514196ca185f7417144fbc5d80e6b9c11dffd21b75941ecc8"
+    },
+    {
+      "path": "/openapi.json",
+      "status": 200,
+      "sha256": "5d3a463dea3bc445dd238377630f89cfa03130a29809c863fa0c6ad6f90a7f68"
+    }
+  ],
+  "health": {
+    "ok": true,
+    "at": "2026-10-20T09:41:40.043Z"
+  },
+  "ready": {
+    "ok": true,
+    "status": "ok",
+    "at": "2026-10-20T09:41:40.053Z",
+    "storage": {
+      "backend": "postgres",
+      "ok": true,
+      "detail": "postgres 已连接，state_key=default，updated_at=2026-10-20T09:41:29.220Z"
+    },
+    "dataDir": {
+      "path": "/app/data",
+      "writable": true,
+      "error": ""
+    },
+    "runtime": {
+      "ok": true,
+      "mode": "redis",
+      "detail": "redis://redis:6379/0"
+    }
+  },
+  "deviceCounts": {
+    "total": 131,
+    "listed": 125,
+    "online": 118
+  },
+  "agents": [
+    {
+      "enabled": true,
+      "lastSeenAt": "2026-10-20T09:41:29.651Z"
+    },
+    {
+      "enabled": false,
+      "lastSeenAt": "2026-08-10T06:02:47.953Z"
+    },
+    {
+      "enabled": false,
+      "lastSeenAt": "2026-07-03T04:15:49.959Z"
+    },
+    {
+      "enabled": false,
+      "lastSeenAt": "2026-07-03T05:36:47.198Z"
+    }
+  ],
+  "pool": {
+    "enabled": true,
+    "revision": 58,
+    "registered": 48,
+    "concurrency": 5,
+    "channels": 0,
+    "pending": 0,
+    "stoppingRounds": 0
+  },
+  "externalOldPreparation": {
+    "tested": true,
+    "http": 200,
+    "status": "stopped",
+    "ready": false,
+    "samePreparation": true
+  },
+  "screenNumbers": [],
+  "container": {
+    "image": "sha256:0207e744371caa1adc2b926274355f8536d4cff883195fc91bb9b18c677f25ca",
+    "healthy": "healthy",
+    "restartCount": 0
+  },
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "boundedErrorCounts": {
+    "SyntaxError": 0,
+    "ReferenceError": 0,
+    "UnhandledPromiseRejection": 0,
+    "managed_lookup_persistence_failed": 0,
+    "managed_lookup_device_errors": 0
+  },
+  "agentRestarted": false,
+  "adbTouched": false,
+  "newBusinessSubmitted": 0,
+  "newPreparationSubmitted": 0
+}
