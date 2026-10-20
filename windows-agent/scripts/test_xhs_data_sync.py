@@ -1577,5 +1577,45 @@ class NativeLongTitleTests(unittest.TestCase):
         self.assertIsNone(sync.element_page_signature(root))
 
 
+class NativeHomeMenuTests(unittest.TestCase):
+    current = "mCurrentFocus=Window{x u999 com.xingin.xhs/com.xingin.xhs.index.v2.IndexActivityV2}"
+
+    def page(self):
+        return ET.parse(Path(__file__).parent / 'fixtures/xhs/home-zero-footer-live-menu.xml').getroot()
+
+    def drawer(self):
+        return xml('<node package="com.xingin.xhs" text="我的草稿" bounds="[0,100][100,150]"/>',
+                   '<node package="com.xingin.xhs" text="创作者中心" bounds="[0,200][100,250]"/>')
+
+    def test_zero_footer_uses_only_fresh_live_menu_and_proves_drawer(self):
+        root=self.page(); events=['collection_slot_requested:app2','clone_user_requested:999']
+        with patch.object(sync,'focus',return_value=self.current), patch.object(sync,'navigation_capture',side_effect=[self.page(),self.drawer()]), patch.object(sync,'adb') as adb, patch.object(sync.time,'sleep'):
+            result=sync.select_zero_bounds_profile('adb','serial',root,self.current,lambda:None,events)
+        self.assertTrue(sync.label(result,'创作者中心'))
+        adb.assert_called_once_with('adb','serial','shell','input','tap','54','99',timeout=7)
+        self.assertIn('zero_bounds_footer_bypassed_via_native_home_menu',events)
+
+    def test_changed_foreground_or_menu_never_taps(self):
+        for kind in ('focus','geometry','foreign','duplicate','missing_header','wrong_user'):
+            root=self.page();fresh=self.page();events=['collection_slot_requested:app2','clone_user_requested:999']
+            menu=sync.label(fresh,'菜单')[0]
+            if kind=='geometry':menu.set('bounds','[200,60][260,120]')
+            if kind=='foreign':menu.set('package','com.other')
+            if kind=='duplicate':fresh.append(ET.fromstring(ET.tostring(menu)))
+            if kind=='missing_header':
+                for node in sync.label(fresh,'发现'):node.set('text','other');node.set('content-desc','other')
+            if kind=='wrong_user':events=['collection_slot_requested:app1']
+            with self.subTest(kind=kind),patch.object(sync,'focus',return_value='other' if kind=='focus' else self.current),patch.object(sync,'navigation_capture',return_value=fresh),patch.object(sync,'adb') as adb:
+                with self.assertRaises(RuntimeError):sync.select_zero_bounds_profile('adb','serial',root,self.current,lambda:None,events)
+                adb.assert_not_called()
+
+    def test_unproven_destination_is_not_retried(self):
+        events=['collection_slot_requested:app2','clone_user_requested:999']
+        with patch.object(sync,'focus',return_value=self.current),patch.object(sync,'navigation_capture',side_effect=[self.page(),xml('<node text="评论" bounds="[0,0][100,100]"/>')]),patch.object(sync,'adb') as adb,patch.object(sync.time,'sleep'):
+            with self.assertRaisesRegex(sync.ElementListReadError,'did not expose'):sync.select_zero_bounds_profile('adb','serial',self.page(),self.current,lambda:None,events)
+        self.assertEqual(adb.call_count,1)
+        self.assertNotIn('zero_bounds_footer_bypassed_via_native_home_menu',events)
+
+
 if __name__ == "__main__":
     unittest.main()

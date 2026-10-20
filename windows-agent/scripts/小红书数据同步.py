@@ -1153,7 +1153,7 @@ def close_restored_ai_page(adb_path, serial, root, current, guard, events):
 
 
 def select_zero_bounds_profile(adb_path, serial, root, current, guard, events):
-    """Fail closed when the verified footer exposes no element coordinates."""
+    """Use the live home drawer when only footer nodes lack coordinates."""
     if not re.search(r"com\.xingin\.xhs/com\.xingin\.xhs\.index\.v2\.IndexActivityV2(?:[}\s]|$)", current):
         return None
     if not all(label(root, value) for value in ("关注", "发现", "搜索")):
@@ -1174,8 +1174,36 @@ def select_zero_bounds_profile(adb_path, serial, root, current, guard, events):
         raise RuntimeError("zero-bounds profile footer is not uniquely proven")
     if children[0].get("selected") != "true":
         raise RuntimeError("zero-bounds profile footer is not on the verified home tab")
+    # 14/20/140/182 expose the normal home drawer even when all five footer
+    # nodes have zero bounds. Never infer footer coordinates from screen size.
+    def menu_box(page):
+        menus = [n for n in label(page, "菜单") if n.get("package") == XHS_PACKAGE
+                 and n.get("class") == "android.widget.ImageView"
+                 and n.get("clickable") == "true" and n.get("enabled") == "true"]
+        windows = [n for n in page if n.get("package") == XHS_PACKAGE and bounds(n)]
+        if len(menus) != 1 or len(windows) != 1:return None
+        box, window = bounds(menus[0]), bounds(windows[0])
+        if not (window[0] <= box[0] < box[2] <= window[2]*.2
+                and window[1] <= box[1] < box[3] <= window[3]*.2):return None
+        return box
+    original_box = menu_box(root)
     guard()
-    raise ElementListReadError("profile element has zero bounds; element-only navigation unavailable")
+    if original_box is None:
+        raise ElementListReadError("profile element has zero bounds and no proven live menu")
+    assert_requested_foreground(current, events)
+    if focus(adb_path, serial) != current:
+        raise ElementListReadError("home menu foreground changed before readback")
+    fresh = navigation_capture(adb_path, serial, guard, events)
+    if (menu_box(fresh) != original_box or not all(label(fresh, v) for v in ("关注", "发现", "搜索"))
+            or focus(adb_path, serial) != current):
+        raise ElementListReadError("home menu element changed before selection")
+    tap_label(adb_path, serial, fresh, "菜单", guard)
+    result = navigation_capture(adb_path, serial, guard, events)
+    assert_requested_foreground(focus(adb_path, serial), events)
+    if not (label(result, "我的草稿") and (label(result, "创作者中心") or label(result, "创作中心"))):
+        raise ElementListReadError("home menu did not expose the Creator Center drawer")
+    events.append("zero_bounds_footer_bypassed_via_native_home_menu")
+    return result
 
 
 def refresh_creator_server_error(adb_path, serial, root, guard, events, attempts):
