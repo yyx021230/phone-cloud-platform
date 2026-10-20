@@ -1,0 +1,19 @@
+{
+  "version": "lookup-offline-round-stop-20261020-rc.1",
+  "branch": "codex/lookup-offline-round-stop-20261020",
+  "parentCommit": "8884ae3201ffdbba9362e4662c8409b2d373b580",
+  "state": "local_candidate_not_deployed",
+  "runtimeAllowlist": [
+    "server/lookup-round-stop.mjs",
+    "server/managed-lookup-platform.mjs",
+    "server/managed-lookup.mjs",
+    "public/api-reference.json",
+    "public/downloads/name-lookup-http-guide.md",
+    "public/downloads/name-lookup-integration.zip",
+    "public/downloads/name-lookup-openapi.json",
+    "public/downloads/name-lookup-sha256.json",
+    "public/openapi.json"
+  ],
+  "productionBaseline": "lookup-idle-refresh-20261020-deployed.1",
+  "dataMigration": false
+}

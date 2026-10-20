@@ -1,0 +1,45 @@
+✔ durable offline fence cancels payload and ACK, retains results and physical lock (3.713209ms)
+✔ fence only touches this session/generation; unrelated work is preserved (0.743584ms)
+✔ rollback restores exact session, jobs and task leases after persistence failure (0.399125ms)
+✔ missing or mismatched generation cannot declare a cancellation fence (0.268875ms)
+✔ orphan leased and handover-pending tasks are fenced even without an active job (0.098583ms)
+✔ round ends after offline grace while its phone stays reserved; healthy phones start the next round (16.773292ms)
+✔ temporary disconnect resets the grace and never detaches or clears a phone lock (3.051834ms)
+✔ offline idle and puzzle sessions cannot block idle-expiry stop forever (3.014875ms)
+✔ next-round stop never rebinds quarantined channels from the old round (3.3045ms)
+✔ reconnected quarantined phone waits for real cleanup ACK before reuse (3.0745ms)
+✔ failed durable fencing remains fail-closed and does not block another phone cleanup (1.978625ms)
+✔ received successful result is retained while an offline completed channel is quarantined (2.981666ms)
+✔ online unknown execution still requires stop ACK and is never detached by a timer (2.233833ms)
+✔ a second disconnect cancels pending cleanup without consuming a new-round execution slot forever (3.652ms)
+✔ settled offline quarantine does not keep writing transactions or rebinding across polls (4.473542ms)
+✔ idle round expires at exactly fifteen minutes despite polling and new prepare keys (3.925291ms)
+✔ business pending for over thirty minutes retains the round; final completion starts a full fifteen minutes (9.311792ms)
+✔ queued, manual wait, recovery and unknown business are not idle; probes alone are (5.216958ms)
+✔ accepted new work resets idle but cached retries, GET and prepare never keep a finished round alive (4.379458ms)
+✔ restart preserves idle deadline and automatic stop waits for genuine ACK without touching another caller (3.602459ms)
+✔ manual stop during business is immediate and never renewed by the idle policy (2.447042ms)
+✔ legacy active lease migrates once; expired idle never revives, but accepted work remains protected (1.575875ms)
+✔ automatic cleanup is not blocked by exhausted user stop-key quota or revoked authorization (1.387667ms)
+✔ five-minute refresh cycles never renew fifteen-minute round expiry (4.148709ms)
+✔ round stop cancels queue and probes, waits for stop ACK, never dispatches more (21.007833ms)
+✔ received results before or racing with stop remain retrievable (3.841792ms)
+✔ stopping is not stopped until real acknowledgment; offline does not block other caller (3.542708ms)
+✔ same stop key after restart is stable and delayed old stop cannot stop a new round (3.140084ms)
+✔ stop before probes start completes immediately and old prepare polling never reactivates (1.30625ms)
+✔ bad or cross-client preparation and stop keys never mutate an active round (0.878916ms)
+✔ unknown execution remains reserved and restart cannot bypass stop (3.024542ms)
+✔ stop cancels confirmed-limit reroute and recovery, never launches another query (2.8855ms)
+✔ manual recovery and human resumption cannot bypass a round stop (1.980084ms)
+✔ global pool disabled still permits stopping own existing round (1.883708ms)
+✔ concurrent stop retries and prepare polls cannot reopen the stopped generation (0.28425ms)
+✔ a missing execution binding is not falsely acknowledged as safely stopped (0.470125ms)
+✔ legacy submit for a prepared stopped caller cannot bypass the stop gate (0.190625ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 37
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 150.901542

@@ -1,0 +1,82 @@
+{
+  "time": "2026-10-20T09:16:28.907920+00:00",
+  "oldCodeReproduction": {
+    "passed": 2,
+    "failed": 6,
+    "tests": 8
+  },
+  "targeted": {
+    "passed": 37,
+    "failed": 0
+  },
+  "regression": {
+    "passed": 915,
+    "failed": 0
+  },
+  "rootCheck": "passed",
+  "jsonHttp": {
+    "storage": "json",
+    "loopbackOnly": true,
+    "simulatedDevices": 5,
+    "realDevices": 0,
+    "productionConnections": 0,
+    "realOfflineGraceMs": 30297,
+    "oldBusinessCompleted": 3,
+    "oldBusinessCancelled": 2,
+    "newBusinessCompleted": 6,
+    "maxExecuting": 5,
+    "leasedPayloadAndAckRejected": true,
+    "lateReportsIgnored": true,
+    "restartRetainsQuarantine": true,
+    "newRoundReadyWithoutOfflinePhones": true,
+    "reconnectionCleanupAckBeforeReuse": true,
+    "finalChannels": 0
+  },
+  "postgresHttp": {
+    "storage": "postgres",
+    "loopbackOnly": true,
+    "simulatedDevices": 5,
+    "realDevices": 0,
+    "productionConnections": 0,
+    "realOfflineGraceMs": 30286,
+    "oldBusinessCompleted": 3,
+    "oldBusinessCancelled": 2,
+    "newBusinessCompleted": 6,
+    "maxExecuting": 5,
+    "leasedPayloadAndAckRejected": true,
+    "lateReportsIgnored": true,
+    "restartRetainsQuarantine": true,
+    "newRoundReadyWithoutOfflinePhones": true,
+    "reconnectionCleanupAckBeforeReuse": true,
+    "finalChannels": 0
+  },
+  "frozenFilesUnchanged": 192,
+  "inheritedTestCacheException": "screen-client/screen-ui.test.mjs already updated in parent candidate",
+  "contract": {
+    "checked": [
+      "public/openapi.json",
+      "public/downloads/name-lookup-openapi.json",
+      "public/api-reference.json",
+      "docs/OPEN_NAME_LOOKUP_README.md",
+      "docs/OPEN_NAME_LOOKUP_API.md",
+      "docs/OPEN_NAME_LOOKUP_PARTNER_HANDOFF.md",
+      "public/downloads/name-lookup-http-guide.md"
+    ],
+    "zipMembers": 5,
+    "hashesConsistent": true,
+    "externalSchemaUnchanged": true,
+    "newStopSemanticsDocumented": true
+  },
+  "verificationCorrections": [
+    "First PostgreSQL launcher contained an extra closing parenthesis; corrected without runtime code changes.",
+    "Fresh isolated PostgreSQL initially lacked two existing managed-lookup schema files; applied them to this local fixture only, then HTTP passed."
+  ],
+  "review": "self_review",
+  "productionMutations": 0,
+  "realDevicesTested": 0,
+  "notVerified": [
+    "production deployment and real phone reconnect",
+    "new native Windows live behavior"
+  ],
+  "productionState": "current live stop defect remains until authorized deployment"
+}
