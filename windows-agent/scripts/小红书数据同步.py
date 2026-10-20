@@ -1152,8 +1152,32 @@ def close_restored_ai_page(adb_path, serial, root, current, guard, events):
 
 
 
+def native_index_navigation(action, adb_path, serial, guard, events):
+    from xhs_native_navigation import perform
+    current = focus(adb_path, serial)
+    assert_requested_foreground(current, events)
+    if not re.search(r"com\.xingin\.xhs/(?:com\.xingin\.xhs\.index\.v2\.IndexActivityV2|\.index\.v2\.IndexActivityV2)(?:[}\s]|$)", current):
+        raise ElementListReadError("native navigation requires the requested XHS index page")
+    assert_no_poco(adb_path, serial)
+    perform(action, adb_path, serial, adb_process, lambda: focus(adb_path, serial), guard, current)
+    events.append("native_accessibility_action:" + action)
+
+
+def tap_index_menu(adb_path, serial, root, guard, events):
+    # Vivo's live XML menu coordinates opened a different surface (14/93).
+    # Use the exact native node action on the proven own-profile page.
+    guard()
+    if adb(adb_path, serial, "shell", "getprop", "ro.product.manufacturer", timeout=8).strip().upper() != "VIVO":
+        return tap_label(adb_path, serial, root, "菜单", guard)
+    native_index_navigation("menu", adb_path, serial, guard, events)
+    fresh = navigation_capture(adb_path, serial, guard, events)
+    assert_requested_foreground(focus(adb_path, serial), events)
+    if not (label(fresh, "我的草稿") and (label(fresh, "创作者中心") or label(fresh, "创作中心"))):
+        raise ElementListReadError("native menu did not expose the Creator Center drawer")
+
+
 def select_zero_bounds_profile(adb_path, serial, root, current, guard, events):
-    """Fail closed when the verified footer exposes no element coordinates."""
+    """Select only the proven native own-profile node; never infer coordinates."""
     if not re.search(r"com\.xingin\.xhs/com\.xingin\.xhs\.index\.v2\.IndexActivityV2(?:[}\s]|$)", current):
         return None
     if not all(label(root, value) for value in ("关注", "发现", "搜索")):
@@ -1175,7 +1199,13 @@ def select_zero_bounds_profile(adb_path, serial, root, current, guard, events):
     if children[0].get("selected") != "true":
         raise RuntimeError("zero-bounds profile footer is not on the verified home tab")
     guard()
-    raise ElementListReadError("profile element has zero bounds; element-only navigation unavailable")
+    native_index_navigation("profile", adb_path, serial, guard, events)
+    fresh = navigation_capture(adb_path, serial, guard, events)
+    assert_requested_foreground(focus(adb_path, serial), events)
+    if len([n for n in fresh.iter("node") if n.get("package") == XHS_PACKAGE
+            and n.get("content-desc") == "我" and n.get("selected") == "true"]) != 1:
+        raise ElementListReadError("native profile action did not select the own-profile tab")
+    return fresh
 
 
 def refresh_creator_server_error(adb_path, serial, root, guard, events, attempts):
@@ -1503,7 +1533,7 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
         elif label(root, "创作中心"):
             time.sleep(0.5)
         elif label(root, "菜单") and label(root, "已选定笔记"):
-            tap_label(adb_path, serial, root, "菜单", guard)
+            tap_index_menu(adb_path, serial, root, guard, events)
         elif label(root, "我") and any(n.get("package") == XHS_PACKAGE for n in live_nodes(root)):
             screen_bottom = max((bounds(n)[3] for n in live_nodes(root)), default=0)
             if any(bounds(n)[1] > screen_bottom * 0.75 for n in label(root, "我")):
@@ -1521,7 +1551,7 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
             node for node in label(root, "菜单") if node.get("package") == XHS_PACKAGE
             and node.get("clickable") == "true" and node.get("enabled") == "true"
         ]) == 1:
-            tap_label(adb_path, serial, root, "菜单", guard)
+            tap_index_menu(adb_path, serial, root, guard, events)
             events.append("index_menu_opened_without_bottom_tab")
         else:
             time.sleep(0.5)
@@ -1662,15 +1692,18 @@ def flat_webview_cards(root):
     return cards
 
 
-def element_page_signature(root):
+def element_page_signature(root, allow_duplicate_rows=False):
     """Prove complete visible element rows, excluding only clipped edge rows."""
     require_element_tree(root)
     if not creator_list(root) or creator_filter_panel(root):return None
     cards = note_cards(root)
     if not cards:
         return ((),bool(label(root,"暂无笔记")),bool(label(root,"到底了"))) if label(root,"暂无笔记") or label(root,"到底了") else None
-    # A signature proves stable visible fields, not a stable note ID. Keep
-    # every row here; collect rejects ambiguous identities inside its window.
+    # Window-aware callers retain every row, then reject ambiguous identities
+    # inside the requested window. Other callers keep the strict default.
+    identities = [(item["title"], item["published_at_raw"]) for _, item in cards]
+    if not allow_duplicate_rows and len(set(identities)) != len(identities):
+        raise ElementListReadError("visible element rows have ambiguous duplicate title/date")
     views = [n for n in live_nodes(root) if n.get("package") == XHS_PACKAGE
              and n.get("class") == "android.webkit.WebView" and n.get("text") == "数据中心"]
     filters = label(root,"全部笔记")
@@ -1755,7 +1788,7 @@ def wait_creator_content(adb_path, serial, root, guard, events):
                 root = navigation_capture(adb_path, serial, guard, events)
             require_creator_service_available(root)
             try:
-                signature = element_page_signature(root)
+                signature = element_page_signature(root, allow_duplicate_rows=True)
             except ElementListReadError:
                 signature = None
             if signature is not None and signature == previous:
@@ -1913,7 +1946,7 @@ def collect(args):
         if not creator_list(root):
             raise RuntimeError("works-analysis list changed unexpectedly")
         require_element_tree(root)
-        if element_page_signature(root) is None:
+        if element_page_signature(root, allow_duplicate_rows=True) is None:
             raise ElementListReadError("works-analysis element rows are incomplete")
         if ("list_metric_units_are_displayed_approximations" not in result["warnings"]
                 and any(COUNT.fullmatch(n.get("text","").strip())

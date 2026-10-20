@@ -51,7 +51,7 @@ class NativeReadingTests(unittest.TestCase):
   r=listing();cards=sync.note_cards(r);title=cards[0][1]['title']
   for n in cards[1][0].iter('node'):
    if n.get('text')==cards[1][1]['title']:n.set('text',title)
-  signature=sync.element_page_signature(r)
+  signature=sync.element_page_signature(r,allow_duplicate_rows=True)
   self.assertEqual(len(signature[0]),5);self.assertEqual(signature[0][0][:2],signature[0][1][:2])
  def test_foreign_package_in_a_row_is_rejected(self):
   r=listing();next(n for n in r.iter('node') if n.get('text')=='37').set('package','other')
@@ -234,8 +234,8 @@ class ZeroBoundsElementTests(unittest.TestCase):
  def test_no_pixel_matching_or_tap_when_footer_has_zero_bounds(self):
   from test_xhs_data_sync import ZeroBoundsProfileTests
   r=ZeroBoundsProfileTests().footer();current=ZeroBoundsProfileTests.current
-  with patch.object(sync,'adb') as adb,patch.object(sync,'adb_process') as process:
-   with self.assertRaisesRegex(sync.ElementListReadError,'zero bounds'):sync.select_zero_bounds_profile('adb','serial',r,current,lambda:None,[])
+  with patch.object(sync,'adb') as adb,patch.object(sync,'adb_process') as process,patch.object(sync,'native_index_navigation',side_effect=sync.ElementListReadError('native element action rejected')):
+   with self.assertRaisesRegex(sync.ElementListReadError,'native element action rejected'):sync.select_zero_bounds_profile('adb','serial',r,current,lambda:None,[])
   adb.assert_not_called();process.assert_not_called()
 
 if __name__=='__main__':unittest.main()

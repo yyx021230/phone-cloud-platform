@@ -790,7 +790,7 @@ class OverlayRecoveryTests(unittest.TestCase):
         events = []
         with patch.object(sync, "wake_if_asleep", return_value=False), patch.object(sync, "recover_known_overlay", return_value=False), \
                 patch.object(sync, "focus", return_value="com.xingin.xhs/com.xingin.xhs.index.v2.IndexActivityV2}"), \
-                patch.object(sync, "capture", return_value=ready), patch.object(sync, "tap_label") as tap:
+                patch.object(sync, "capture", return_value=ready), patch.object(sync, "adb", return_value="Xiaomi"), patch.object(sync, "tap_label") as tap:
             self.assertIs(sync.ensure_creator_list("adb", "serial", root, "app1", lambda: None, events), ready)
         tap.assert_called_once_with("adb", "serial", root, "菜单", unittest.mock.ANY)
         self.assertEqual(events, ["index_menu_opened_without_bottom_tab"])
@@ -1600,6 +1600,23 @@ class VivoBrowserFirstUseTests(unittest.TestCase):
                     with self.assertRaises(RuntimeError):sync.recover_vivo_browser_redirect('adb','serial','app1',current,lambda:None,events,root)
                 else:self.assertFalse(sync.recover_vivo_browser_redirect('adb','serial','app1',current,lambda:None,events,root))
                 adb.assert_not_called()
+
+class NativeNavigationIntegrationTests(unittest.TestCase):
+    current="mCurrentFocus=Window{x u999 com.xingin.xhs/com.xingin.xhs.index.v2.IndexActivityV2}"
+    def test_zero_footer_selects_native_profile_then_requires_selected_state(self):
+        root=ZeroBoundsProfileTests().footer();selected=ZeroBoundsProfileTests().footer('true');events=['collection_slot_requested:app2','clone_user_requested:999']
+        with patch.object(sync,'native_index_navigation') as action,patch.object(sync,'navigation_capture',return_value=selected),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'adb') as adb:
+            self.assertIs(sync.select_zero_bounds_profile('adb','serial',root,self.current,lambda:None,events),selected)
+        self.assertEqual(action.call_args.args[0],'profile');adb.assert_not_called()
+        with patch.object(sync,'native_index_navigation'),patch.object(sync,'navigation_capture',return_value=root),patch.object(sync,'focus',return_value=self.current):
+            with self.assertRaisesRegex(sync.ElementListReadError,'did not select'):sync.select_zero_bounds_profile('adb','serial',root,self.current,lambda:None,events)
+    def test_vivo_menu_uses_native_action_and_requires_creator_drawer(self):
+        drawer=xml('<node text="我的草稿" bounds="[0,0][100,100]"/>','<node text="创作者中心" bounds="[0,200][100,300]"/>');events=['collection_slot_requested:app2','clone_user_requested:999']
+        with patch.object(sync,'adb',return_value='VIVO'),patch.object(sync,'native_index_navigation') as action,patch.object(sync,'navigation_capture',return_value=drawer),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'tap_label') as tap:
+            sync.tap_index_menu('adb','serial',xml(),lambda:None,events)
+        self.assertEqual(action.call_args.args[0],'menu');tap.assert_not_called()
+        with patch.object(sync,'adb',return_value='VIVO'),patch.object(sync,'native_index_navigation'),patch.object(sync,'navigation_capture',return_value=xml()),patch.object(sync,'focus',return_value=self.current):
+            with self.assertRaisesRegex(sync.ElementListReadError,'did not expose'):sync.tap_index_menu('adb','serial',xml(),lambda:None,events)
 
 if __name__ == "__main__":
     unittest.main()
