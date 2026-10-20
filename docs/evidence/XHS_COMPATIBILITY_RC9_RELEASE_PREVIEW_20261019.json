@@ -5,7 +5,7 @@
     "reference": "docs/evidence/XHS_COMPATIBILITY_RC9_20261019.json",
     "productionDeduplicationOrNumericDateThresholdsRelaxed": false
   },
-  "status": "prepared_rc9_candidate_awaiting_specific_version_authorization",
+  "status": "blocked_by_20261020_slot_retest_not_release_ready",
   "candidateTag": "xhs-compat-20261019-rc.9",
   "sourceCommit": "8a1e1fae4ca350edf9074c9c436368dad86aaf9a",
   "targetHost": "PC-20261015BZYS",
@@ -42,5 +42,14 @@
     "renameRestoreVerified": true
   },
   "preparedAtEpoch": 1792407630.0012114,
-  "runtimeFilesChanged": false
+  "runtimeFilesChanged": false,
+  "previousPreparationStatus": "prepared_rc9_candidate_awaiting_specific_version_authorization",
+  "latestRetestEvidence": "docs/evidence/XHS_SLOT_RETEST_20261020.json",
+  "latestRetestBlockers": [
+    "141/app1 inputkey24 timeout",
+    "141/app2 inputtap timeout",
+    "123/app2 UIhierarchy unavailable",
+    "18/app1 persistentloader"
+  ],
+  "preparedWindowsPackageKeptUnchanged": true
 }
