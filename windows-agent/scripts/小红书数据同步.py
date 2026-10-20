@@ -1649,6 +1649,8 @@ def verify_element_overlap(previous_root, root):
 def wait_creator_content(adb_path, serial, root, guard, events):
     """A rendered tab header is not proof that its note request has finished."""
     previous = None
+    blank_frames = 0
+    refreshed_blank_header = False
     for pass_index in range(2):
         for _ in range(6):
             guard()
@@ -1660,6 +1662,17 @@ def wait_creator_content(adb_path, serial, root, guard, events):
                 signature = None
             if signature is not None and signature == previous:
                 return root
+            blank_frames = blank_frames + 1 if signature is None and not note_cards(root) else 0
+            #13 exposes a full, selected works header before its native body
+            #gets stuck. Rebuild accessibility through the proven filter once.
+            if (blank_frames >= 2 and not refreshed_blank_header and data_center_tab_header(root)
+                    and creator_list(root) and len(label(root, "全部笔记")) == 1
+                    and works_webview_activity(focus(adb_path, serial))):
+                refreshed_blank_header = True
+                root = refresh_scrolled_webview(adb_path, serial, root, guard, events)
+                events.append("initial_blank_native_header_refreshed")
+                previous = None
+                continue
             previous = signature
             time.sleep(0.6)
             root = navigation_capture(adb_path, serial, guard, events)
