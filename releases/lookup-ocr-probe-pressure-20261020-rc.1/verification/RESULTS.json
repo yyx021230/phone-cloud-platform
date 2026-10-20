@@ -1,0 +1,54 @@
+{
+  "state": "local_verified_not_deployed",
+  "nodeRegression": {
+    "passed": 932,
+    "failed": 0
+  },
+  "lookupPython": {
+    "passed": 265,
+    "failed": 0
+  },
+  "automationRunners": {
+    "passed": 163,
+    "failed": 0
+  },
+  "targetedCloud": {
+    "passed": 56,
+    "failed": 0
+  },
+  "syntax": "npm run check passed",
+  "outOfScopeHashes": 189,
+  "baselineReproduction": {
+    "eightRedactedFramesRejected": true,
+    "newCloudHandoffTestsInitiallyFailed": 3,
+    "newProbePreferenceTestInitiallyFailed": 1
+  },
+  "simulatedBatch": {
+    "submitted": 20,
+    "readerFailures": 3,
+    "completed": 20,
+    "maxExecuting": 5,
+    "businessQueryAttempts": 23,
+    "duplicateSamePhoneAttempts": 0,
+    "healthyReadyAtEnd": 5
+  },
+  "initialFailuresResolved": [
+    "Two old Python assertions expected reader timeout when the overall budget had elapsed; updated to explicit budget exhaustion with no-input invariant preserved.",
+    "New batch assertion used internal succeeded instead of public completed; fixed test expectation."
+  ],
+  "notVerified": [
+    "Windows native OCR throughput on these screenshots",
+    "New production real-phone acceptance",
+    "Reduction of upstream captcha rate",
+    "New isolated PostgreSQL run (no schema change)"
+  ],
+  "productionActions": {
+    "readsOnly": true,
+    "queriesSubmitted": 0,
+    "phoneCommands": 0,
+    "serviceRestarts": 0,
+    "notificationsSent": 0,
+    "published": false,
+    "pushed": false
+  }
+}

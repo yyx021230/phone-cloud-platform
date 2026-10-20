@@ -1,0 +1,18 @@
+{
+  "version": "lookup-ocr-probe-pressure-20261020-rc.1",
+  "state": "local_candidate_not_deployed",
+  "branch": "codex/lookup-ocr-probe-pressure-20261020",
+  "parentCommit": "3d6fc4ca64b42d80d333fe5e9b9951de506ec845",
+  "productionVersion": "lookup-offline-round-stop-20261020-deployed.1",
+  "productionSourceCommit": "59ce44eb871754fb34924836a5c0538919b8cc72",
+  "runtimeAllowlist": [
+    "server/managed-lookup.mjs",
+    "server/managed-lookup-platform.mjs",
+    "server/lookup-readiness.mjs",
+    "windows-agent/scripts/alipay_name_lookup.py",
+    "windows-agent/scripts/alipay_visual_result.py"
+  ],
+  "dataMigration": false,
+  "newPersistentOptionalField": "devices[].lastReadinessSuccessAt",
+  "externalContractChanged": false
+}
