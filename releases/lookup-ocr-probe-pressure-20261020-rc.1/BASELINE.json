@@ -1,0 +1,28 @@
+{
+  "parentCandidate": "lookup-offline-round-stop-20261020-rc.2",
+  "parentCommit": "3d6fc4ca64b42d80d333fe5e9b9951de506ec845",
+  "productionImage": "sha256:0207e744371caa1adc2b926274355f8536d4cff883195fc91bb9b18c677f25ca",
+  "workflowRevision": "2026-09-30",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "before": {
+    "server/managed-lookup.mjs": "2fcbc4db86ee999d9f7b101cef658ef472dd62c374cefe4670e64433fa9f51ae",
+    "server/managed-lookup-platform.mjs": "07601b7f866210d0248823d4594e48dceb084c062c5a2c44a80422dc531f0b2d",
+    "server/lookup-readiness.mjs": "d89a7b34fb3682706a70de140ade39fa014c36bb9db080bb273aa7e03725da1a",
+    "server/lookup-automatic-recovery.test.mjs": "7b4465878d18cc40506fdbc12e5843274de3838204a85c7b2f0d89c00e1576a1",
+    "server/lookup-readiness.test.mjs": "bee075f31bfcc4ab0edcf0035679bf3b29e96b9fb80864fe3d100e474b006e24",
+    "windows-agent/scripts/alipay_name_lookup.py": "8ba90c21e4d3bf9de7e12d02d0f83e05a7e730ea8f4a26d1b817a45b9cbfaf61",
+    "windows-agent/scripts/alipay_visual_result.py": "81315eddb0b0e921d32a819d8d0ca24aa195f52ec31903014d31dd1023be9966",
+    "windows-agent/scripts/test_lookup_query_budget.py": "9ba2b6f03a550b6a433c06b7367e2314d1430086d429f9f61588f241f6765496",
+    "windows-agent/scripts/test_lookup_recharge_recommendations.py": null,
+    "windows-agent/scripts/test_lookup_visual_budget.py": null,
+    "windows-agent/scripts/fixtures/lookup_recharge_recommendations.json": null
+  },
+  "productionReadHashes": {
+    "server/managed-lookup.mjs": "2fcbc4db86ee999d9f7b101cef658ef472dd62c374cefe4670e64433fa9f51ae",
+    "server/managed-lookup-platform.mjs": "07601b7f866210d0248823d4594e48dceb084c062c5a2c44a80422dc531f0b2d",
+    "server/lookup-readiness.mjs": "d89a7b34fb3682706a70de140ade39fa014c36bb9db080bb273aa7e03725da1a",
+    "windows-agent/scripts/alipay_name_lookup.py": "8ba90c21e4d3bf9de7e12d02d0f83e05a7e730ea8f4a26d1b817a45b9cbfaf61",
+    "windows-agent/scripts/alipay_visual_result.py": "81315eddb0b0e921d32a819d8d0ca24aa195f52ec31903014d31dd1023be9966"
+  },
+  "productionEvidence": "Cloud three runtime hashes and Windows two lookup hashes read through existing safe SSH; match assembled baseline. No writes or ADB commands."
+}
