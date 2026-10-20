@@ -1315,8 +1315,7 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
         if open_works_tab(adb_path, serial, root, guard, events):
             root = navigation_capture(adb_path, serial, guard, events)
             continue
-        if (label(root, "账号异常") and label(root, "开通数据权限")
-                and label(root, "创作中心") and not label(root, "最新笔记")):
+        if label(root, "账号异常") and label(root, "创作中心"):
             # 107 exposes these labels underneath the known growth offer.
             # Reclassify a fresh page only after its proven safe dismissal.
             if (recoveries < 3 and label(root, "解锁成长中心")
@@ -1324,7 +1323,7 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
                 recoveries += 1
                 root = navigation_capture(adb_path, serial, guard, events)
                 continue
-            raise RuntimeError("creator account shows abnormal status and no latest-notes entry")
+            raise RuntimeError("creator account shows abnormal status; collection skipped")
         if label(root, "数据中心") and label(root, "作品分析") and not label(root, "全部笔记"):
             shell_passes += 1
             if shell_passes <= 2:

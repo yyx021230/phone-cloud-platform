@@ -1141,7 +1141,7 @@ class OverlayRecoveryTests(unittest.TestCase):
                 sync.ensure_creator_list("adb", "serial", root, "app1", lambda: None, [])
         adb.assert_not_called()
 
-    def test_abnormal_creator_account_reports_inert_more_entry(self):
+    def test_abnormal_creator_account_skips_even_when_more_entry_exists(self):
         root = xml('<node bounds="[0,0][720,1612]">'
                    '<node text="账号异常" bounds="[10,10][150,50]"/>'
                    '<node text="创作中心" bounds="[10,60][150,100]"/>'
@@ -1153,9 +1153,22 @@ class OverlayRecoveryTests(unittest.TestCase):
                 patch.object(sync, "tap_label") as tap, \
                 patch.object(sync, "capture", return_value=root), \
                 patch.object(sync.time, "sleep"):
-            with self.assertRaisesRegex(RuntimeError, "More did not open works analysis"):
+            with self.assertRaisesRegex(RuntimeError, "abnormal status"):
                 sync.ensure_creator_list("adb", "serial", root, "app1", lambda: None, [])
-        self.assertEqual(tap.call_count, 2)
+        tap.assert_not_called()
+
+    def test_abnormal_creator_account_without_permission_cta_still_skips(self):
+        root = xml('<node package="com.xingin.xhs" text="创作中心" bounds="[0,0][720,1500]">'
+                   '<node package="com.xingin.xhs" text="账号异常" bounds="[40,220][180,260]"/>'
+                   '<node package="com.xingin.xhs" text="近 7 日数据" bounds="[40,500][220,560]"/>'
+                   '</node>')
+        with patch.object(sync, "wake_if_asleep", return_value=False), \
+                patch.object(sync, "focus", return_value="com.xingin.xhs"), \
+                patch.object(sync, "capture", return_value=root), patch.object(sync.time, "sleep"), \
+                patch.object(sync, "adb") as adb:
+            with self.assertRaisesRegex(RuntimeError, "abnormal status"):
+                sync.ensure_creator_list("adb", "serial", root, "app1", lambda: None, [])
+        adb.assert_not_called()
 
     def test_header_only_webview_is_reopened_before_failing(self):
         shell = xml('<node><node text="数据中心" bounds="[1,1][90,40]"/>'
