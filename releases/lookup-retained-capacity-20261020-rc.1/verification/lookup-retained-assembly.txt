@@ -1,0 +1,24 @@
+{"version": "lookup-readiness-20261015-rc.1", "assembledFiles": 398, "productionActions": 0}
+{"version": "lookup-readiness-20261015-rc.2", "overlayCount": 3, "productionActions": 0}
+{"version": "lookup-readiness-20261015-rc.3", "overlayCount": 2, "productionActions": 0}
+{"version": "lookup-readiness-20261015-rc.4", "overlayCount": 3, "productionActions": 0}
+{"version": "lookup-readiness-20261015-rc.5", "overlayCount": 2, "productionActions": 0}
+{"version": "lookup-readiness-20261015-rc.6", "overlayCount": 3, "productionActions": 0}
+{"version": "lookup-readiness-20261015-rc.7", "overlayCount": 3, "productionActions": 0}
+{"version": "lookup-readiness-20261015-rc.8", "overlayCount": 8, "productionActions": 0}
+{"version": "lookup-readiness-20261015-rc.9", "overlayCount": 2, "productionActions": 0}
+{"version": "lookup-readiness-20261015-rc.10", "overlayCount": 2, "productionActions": 0}
+{"version": "lookup-readiness-20261015-rc.11", "overlayCount": 2, "productionActions": 0}
+{"version": "lookup-readiness-20261015-rc.12", "overlayCount": 16, "productionActions": 0}
+{"version": "lookup-readiness-20261015-rc.13", "overlayCount": 28, "productionActions": 0}
+{"version": "lookup-readiness-20261015-rc.14", "overlayCount": 2, "productionActions": 0}
+{"version": "lookup-readiness-20261015-rc.15", "overlayCount": 20, "productionActions": 0}
+{"version": "lookup-readiness-20261016-rc.16", "overlayCount": 16, "productionActions": 0}
+Assembled API Key candidate; no production connections or dependencies installed
+Assembled local account-offline candidate; no production connections or dependency installation
+Assembled automatic-recovery candidate; no production connections or dependency installation
+Assembled round-stop candidate; no dependency installation or production access
+Assembled idle-timeout candidate; no production or dependency installation
+Assembled same-device refresh candidate; no production or dependency installation
+Assembled same-device refresh candidate; no production or dependency installation
+Assembled bounded retained-capacity candidate; no production or dependency installation
