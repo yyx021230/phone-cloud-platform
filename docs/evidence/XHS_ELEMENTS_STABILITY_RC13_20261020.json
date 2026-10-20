@@ -1,7 +1,7 @@
 {
   "status": "local_candidate_native_blockers_remain_not_released",
   "date": "2026-10-20",
-  "candidateTag": "xhs-compat-20261020-rc.12",
+  "candidateTag": "xhs-compat-20261020-rc.13",
   "branch": "codex/xhs-elements-stability-20261020",
   "sourceCommit": "d98262848d1a533ecd0bf9e7f6d0ea06948b2086",
   "collectorLogicCommit": "f30638508e72085e76d086f4bec9179d7a856118",
@@ -1860,7 +1860,7 @@
   "releasePreview": {
     "status": "local_review_material_not_deployed",
     "sourceCommit": "d98262848d1a533ecd0bf9e7f6d0ea06948b2086",
-    "plannedTag": "xhs-compat-20261020-rc.12",
+    "plannedTag": "xhs-compat-20261020-rc.13",
     "productionTarget": "scripts/小红书数据同步.py",
     "previousProductionSHA256": "e4ee2e856a41c9346e88c205b99f9faec371fe869752f0c492454016ffd639c5",
     "candidateSHA256": "2af4806b07fff577b617a2e79cb9869a78ffddc1996d84d9b34826961c64ea46",
@@ -1891,13 +1891,19 @@
   ],
   "workspacePreservation": {
     "preexistingRootStatusEntries": 237,
-    "expectedFinalRootStatusEntries": 239,
+    "expectedFinalRootStatusEntries": 238,
     "addedOwnedReportCopies": [
-      "docs/XHS_ELEMENTS_STABILITY_RC12_20261020.md",
-      "docs/evidence/XHS_ELEMENTS_STABILITY_RC12_20261020.json"
+      "docs/XHS_ELEMENTS_STABILITY_RC13_20261020.md",
+      "docs/evidence/XHS_ELEMENTS_STABILITY_RC13_20261020.json"
     ],
     "rootCollectorUnchanged": true,
     "rootMainDoc": "Only own D079 state/section plus decision/change entries; before and after hashes retained privately",
-    "rootCommitPerformed": false
+    "rootCommitPerformed": false,
+    "statusAggregationNote": "Two owned report files add one porcelain status row: docs/evidence/ was already an untracked directory in the baseline."
+  },
+  "documentationCorrection": {
+    "previousImmutableTag": "xhs-compat-20261020-rc.12",
+    "previousCommit": "91ba5c190d16ea6014ce58ec24511c7c2bc89dfb",
+    "correction": "Final root porcelain status count is238, not239; evidence directory was already aggregated in the237 baseline. Collector and test outcomes unchanged."
   }
 }
