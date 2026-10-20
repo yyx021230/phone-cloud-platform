@@ -1,0 +1,48 @@
+{
+  "status": "local-validated-not-deployed",
+  "baselineCommit": "538fac3470fa155820fb0db1385c5b1adb11d3e4",
+  "fullRegression": {
+    "passed": 878,
+    "failed": 0,
+    "command": "npm run test:screen"
+  },
+  "focused": {
+    "passed": 58,
+    "newCases": 5,
+    "changedBoundaryTest": true
+  },
+  "checkPassed": true,
+  "documentationNodeTests": 13,
+  "pythonStopTests": 7,
+  "handoverPythonTests": 15,
+  "httpJson": {
+    "loopbackOnly": true,
+    "storage": "json",
+    "realDevices": 0,
+    "productionConnections": 0,
+    "idleBudgetMs": 15000,
+    "defaultBudgetBoundaryUnitMs": 900000,
+    "businessHeldMs": 16002,
+    "businessProtectsRound": true,
+    "pollingDoesNotRenew": true,
+    "automaticStopAckBarrier": true,
+    "restartDuringAutomaticStop": true,
+    "completedResultsRetained": true,
+    "explicitNewRoundQueries": true,
+    "drained": true
+  },
+  "frozenFilesUnchanged": 193,
+  "failuresResolved": [
+    "First full regression: 804 loaded, 787 passed, 17 failed; assembly had no installed ws/pg dependency links. HTTP startup also failed for missing ws. Linked existing verified node_modules for root and Agent without installing/upgrading, then full 878 and HTTP passed."
+  ],
+  "productionMutations": 0,
+  "realDeviceTests": 0,
+  "nativeWindowsNewPolicyTested": false,
+  "postgresNewPolicyTested": false,
+  "review": "Self-review only",
+  "warning": "Python3.9 urllib3 LibreSSL warning; mock tests passed",
+  "runtimeDeltaFromParent": [
+    "server/lookup-readiness.mjs",
+    "server/lookup-round-idle.mjs"
+  ]
+}
