@@ -1,0 +1,26 @@
+{
+  "parent": "lookup-idle-timeout-20261019-rc.1",
+  "startingHead": "538fac3470fa155820fb0db1385c5b1adb11d3e4",
+  "branch": "codex/lookup-idle-refresh-20261020",
+  "before": {
+    "server/lookup-readiness.mjs": "e5eca4e20efbe5797801a5c5e167246b8d7eda6092956e0a20f073e554b93d0b",
+    "server/lookup-round-idle.mjs": "d1d12bbec65f6dd335866a160fb943ddd2902d3f57a780d2949eb42a5ec07511",
+    "server/lookup-readiness.test.mjs": "42e96fb60b6c293dc52794a599fea8032420c62e828cbd58a2c9bd833f254b44",
+    "server/lookup-round-idle.test.mjs": "409df1767c35ce215eb7760e8092cbe19aa474a09a5cda118281ca60377634d2",
+    "verification/round-idle-http.mjs": "0a03317b9d2474bf3e8a240649f844ed37cde3581f39759982b2261eea22544b",
+    "verification/idle-example.test.mjs": "1c4d6154603ea351feda21e96d8e7b832afb434cc7d106eea0932a6614f61ffb",
+    "verification/stop-example-test.py": "a331750b18b674c8a4bd2d6d3ba47473c6e8099a5d60054b48c0273339c83890",
+    "public/api-reference.json": "dd1285ca571bf6b47ee3fa84cc0060f2aba941989b681067c651e0f6c60bf0e7",
+    "public/openapi.json": "c9f9a32db5c6d286533de27ee930ffbcd9b86bb043dd979ad9decfd00e883101",
+    "public/downloads/lookup.py": "ed8aa0309470d8fc0a216c648649315035dbba8cf6bf22abeab7576fc7a7072e",
+    "public/downloads/lookup.mjs": "aadb28f2260e411bad3187c1041324d50f9b685cd554d40183d73b45feba0a26",
+    "public/downloads/name-lookup-http-guide.md": "b2c824461fc8885da1928b34fab1f3f061699927f583bd69ff75f49b13c3acd4",
+    "public/downloads/name-lookup-integration.zip": "acfe2c72998fc5874c53c4b30b8ba204c42d4172865a4f20b4387d938f41a874",
+    "public/downloads/name-lookup-openapi.json": "b9152cae61a160f81fa423e8f787c34e3be0fb4147cffdfdca4a13638240dad1",
+    "public/downloads/name-lookup-sha256.json": "96c7cbe9f0d3e00a335d404c61315919d50680a31b89a341d48530d7ee938f85",
+    "docs/OPEN_NAME_LOOKUP_PARTNER_HANDOFF.md": "7bac4ce65461edf64dae24c36d759be6f9f6d4ba24b10a76e8e3331b5d5868f2",
+    "docs/OPEN_NAME_LOOKUP_API.md": "4c95e7a4911966b95e0f5863e9025dda7c50b79f2871947efcd13d074d67df55",
+    "docs/OPEN_NAME_LOOKUP_README.md": "589b73a26550b4bf31fcaf38a9b818962b283eae34ca79fa339a57f0126266c7"
+  },
+  "productionMutation": false
+}
