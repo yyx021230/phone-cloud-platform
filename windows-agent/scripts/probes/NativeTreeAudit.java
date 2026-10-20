@@ -12,12 +12,34 @@ public final class NativeTreeAudit {
     static Object call(Object value, String method) throws Exception {
         return NativeElementsProbe.call(value, method);
     }
-    static int normalMissing, freshRecovered;
+    static int normalMissing, freshRecovered, currentWindowRecovered;
+    static boolean useCurrentWindow;
+    static boolean canRoute(int window, int connection, int nodeWindow, int nodeConnection,
+                            long host, long source, long child) {
+        return window >= 0 && connection >= 0 && nodeWindow >= 0 && window != nodeWindow
+            && nodeConnection == connection && host >= 0
+            && (source & 0xffffffffL) == host && (child & 0xffffffffL) == host;
+    }
     /** Diagnostic comparison only; asks the same native provider for the exact child ID. */
     static final class FreshNode implements NativeElementsProbe.Node {
         final Object raw;
         final NativeElementsProbe.AndroidNode delegate;
-        FreshNode(Object raw) { this.raw = raw; delegate = new NativeElementsProbe.AndroidNode(raw); }
+        final int activeWindow, connection;
+        final long webHost;
+        FreshNode(Object raw) throws Exception {
+            this(raw, (Integer)call(raw, "getWindowId"), (Integer)call(raw, "getConnectionId"), -1);
+        }
+        FreshNode(Object raw, int activeWindow, int connection, long webHost) {
+            this.raw = raw; delegate = new NativeElementsProbe.AndroidNode(raw);
+            this.activeWindow = activeWindow; this.connection = connection; this.webHost = webHost;
+        }
+        Object lookup(long id, int window) throws Exception {
+            Class<?> type = Class.forName("android.view.accessibility.AccessibilityInteractionClient");
+            Object client = type.getMethod("getInstance").invoke(null);
+            return type.getMethod("findAccessibilityNodeInfoByAccessibilityId",
+                int.class, int.class, long.class, boolean.class, int.class, Class.forName("android.os.Bundle"))
+                .invoke(client, connection, window, id, true, 0, null);
+        }
         public boolean visible() throws Exception { return delegate.visible(); }
         public int children() throws Exception { return delegate.children(); }
         public String value(String key) throws Exception { return delegate.value(key); }
@@ -26,12 +48,14 @@ public final class NativeTreeAudit {
             Object child = raw.getClass().getMethod("getChild", int.class).invoke(raw, index);
             if (child == null) {
                 normalMissing++;
-                Class<?> clientClass = Class.forName("android.view.accessibility.AccessibilityInteractionClient");
-                Object client = clientClass.getMethod("getInstance").invoke(null);
                 long id = (Long)raw.getClass().getMethod("getChildId", int.class).invoke(raw, index);
-                child = clientClass.getMethod("findAccessibilityNodeInfoByAccessibilityId",
-                    int.class, int.class, long.class, boolean.class, int.class, Class.forName("android.os.Bundle"))
-                    .invoke(client, call(raw, "getConnectionId"), call(raw, "getWindowId"), id, true, 0, null);
+                int nodeWindow = (Integer)call(raw, "getWindowId");
+                child = lookup(id, nodeWindow);
+                if (child == null && useCurrentWindow && canRoute(activeWindow, connection, nodeWindow,
+                        (Integer)call(raw, "getConnectionId"), webHost, (Long)call(raw, "getSourceNodeId"), id)) {
+                    child = lookup(id, activeWindow);
+                    if (child != null) currentWindowRecovered++;
+                }
                 if (child != null) {
                     if ((Long)call(child, "getSourceNodeId") != id) {
                         call(child, "recycle"); throw new IllegalStateException("native child identity mismatch");
@@ -39,7 +63,9 @@ public final class NativeTreeAudit {
                     freshRecovered++;
                 }
             }
-            return child == null ? null : new FreshNode(child);
+            long host = "android.webkit.WebView".equals(value("class"))
+                ? (Long)call(raw, "getSourceNodeId") & 0xffffffffL : webHost;
+            return child == null ? null : new FreshNode(child, activeWindow, connection, host);
         }
     }
     static final class Audit {
@@ -101,11 +127,13 @@ public final class NativeTreeAudit {
         String result = null;
         int code = 1;
         try {
-            if (args.length > 1 || (args.length == 1 && !"compressed".equals(args[0])))
-                throw new IllegalArgumentException("only optional compressed mode accepted");
+            if (args.length > 1 || (args.length == 1 && !"compressed".equals(args[0]) && !"current-window".equals(args[0])))
+                throw new IllegalArgumentException("unknown diagnostic mode");
+            useCurrentWindow = args.length == 1 && "current-window".equals(args[0]);
+            boolean compressed = args.length == 1 && "compressed".equals(args[0]);
             wrapper = Class.forName("com.android.uiautomator.core.UiAutomationShellWrapper").getConstructor().newInstance();
             call(wrapper, "connect"); connected = true;
-            wrapper.getClass().getMethod("setCompressedLayoutHierarchy", boolean.class).invoke(wrapper, args.length == 1);
+            wrapper.getClass().getMethod("setCompressedLayoutHierarchy", boolean.class).invoke(wrapper, compressed);
             Object automation = call(wrapper, "getUiAutomation");
             // WebView may initialize its accessibility provider after connect.
             // Compare this bounded settled read with the immediate-read evidence.
@@ -118,7 +146,7 @@ public final class NativeTreeAudit {
                 throw new IllegalStateException("XHS root required");
             if (!(Boolean)call(root, "refresh")) throw new IllegalStateException("root refresh failed");
             StringBuilder out = new StringBuilder("<audit diagnostic-only=\"true\" settle-ms=\"2000\" compressed=\"")
-                .append(args.length == 1).append("\">");
+                .append(compressed).append("\" current-window=\"").append(useCurrentWindow).append("\">");
             for (String label : new String[]{"数据中心", "作品分析", "全部笔记", "观看"}) {
                 List<?> found = (List<?>)root.getClass().getMethod("findAccessibilityNodeInfosByText", String.class).invoke(root, label);
                 if (found.size() > 100) {
@@ -137,6 +165,7 @@ public final class NativeTreeAudit {
             out.append(audit.read(new FreshNode(owned)));
             out.append("<summary visited=\"").append(audit.visited).append("\" missing=\"").append(audit.missing)
                 .append("\" normal-missing=\"").append(normalMissing).append("\" fresh-recovered=\"").append(freshRecovered)
+                .append("\" current-window-recovered=\"").append(currentWindowRecovered)
                 .append("\"/></audit>");
             result = out.toString(); code = 0;
         } catch (Exception error) {

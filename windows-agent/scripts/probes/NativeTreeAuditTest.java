@@ -17,6 +17,13 @@ public final class NativeTreeAuditTest {
         NativeElementsProbeTest.N large = new NativeElementsProbeTest.N();
         for (int i = 0; i < 1501; i++) large.kids.add(null);
         NativeElementsProbeTest.rejects(() -> new NativeTreeAudit.Audit().read(large)); tests++;
+        long source = (31L << 32) | 1788, child = (47L << 32) | 1788;
+        if (!NativeTreeAudit.canRoute(8621, 533, 8587, 533, 1788, source, child)) throw new AssertionError(); tests++;
+        if (NativeTreeAudit.canRoute(8621, 533, 8587, 534, 1788, source, child)) throw new AssertionError(); tests++;
+        if (NativeTreeAudit.canRoute(8621, 533, 8587, 533, 1789, source, child)) throw new AssertionError(); tests++;
+        if (NativeTreeAudit.canRoute(8621, 533, 8621, 533, 1788, source, child)) throw new AssertionError(); tests++;
+        if (NativeTreeAudit.canRoute(8621, 533, 8587, 533, 1788, source, child + 1)) throw new AssertionError(); tests++;
+        if (NativeTreeAudit.canRoute(-1, 533, 8587, 533, 1788, source, child)) throw new AssertionError(); tests++;
         System.out.println("NativeTreeAudit tests passed: " + tests);
     }
 }
