@@ -202,6 +202,8 @@ def image_navigation_capture(adb_path, serial, guard, events, current):
             raise RuntimeError("image list reader screenshot failed")
         try:
             frame = read_works_image(screenshot.stdout,guard,lambda raw:published_date(raw,image_as_of) >= cutoff)
+            if frame.get("bodyAnchorRecoveryCount") and "works_body_anchor_crop_recovered" not in events:
+                events.append("works_body_anchor_crop_recovered")
         except WorksListHint as hint:
             if "works_filter_hint_dismissed" in events:
                 raise ImageListReadError("works-list filter hint stayed visible") from hint

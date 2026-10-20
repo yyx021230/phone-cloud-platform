@@ -395,5 +395,63 @@ class ImageCollectionTests(unittest.TestCase):
             self.collect(old, [image], ocr.hierarchy_for_frame(clipped))
 
 
+class MissingBodyAnchorTests(unittest.TestCase):
+    def native_line(self,text,box):
+        item=line(text,box);item['words'][0]['text']=text;return item
+
+    def whole(self):
+        # Real 141/app2 geometry, with all note text replaced by synthetic text.
+        rows=[self.native_line(t,b) for t,b in [('数据中心',(299,111,421,139)),('作品分析',(218,198,326,225)),('全部笔记',(32,283,144,309))]]
+        for i,y in enumerate([422,629,836,1040,1251]):
+            rows.append(self.native_line('笔记状态正常',(165 if i==3 else 194,y,363,y+24)))
+            if i<3:rows.append(self.native_line('合成原始标题'+str(i),(193,y-62,650,y-33)))
+        return {'width':720,'height':1600,'language':'zh-Hans-CN','textAngle':0,'lines':rows}
+
+    def crops(self,requests,directory):
+        out=[]
+        for request in requests:
+            parts=request['id'].split('_');index=int(parts[-2]);y=932 if index==0 else 1143
+            image=cv2.imread(request['path']);h,w=image.shape[:2]
+            title='合成修复标题甲' if index==0 else '合成修复标题乙'
+            title_y=982 if index==0 else 1190;status_y=1043 if index==0 else 1251
+            def crop_line(text,box):
+                x1,y1,x2,y2=box
+                return self.native_line(text,((x1-172)*3,(y1-y)*3,(x2-172)*3,(y2-y)*3))
+            out.append({'id':request['id'],'width':w,'height':h,'language':'zh-Hans-CN','lines':[crop_line(title,(193,title_y,650,title_y+27)),crop_line('笔记状态正常',(194,status_y,363,status_y+23))]})
+        return out
+
+    def test_missing_whole_frame_titles_and_a_left_shifted_status_are_recovered_from_ink(self):
+        frame=np.full((1600,720,3),255,np.uint8);whole=self.whole();original=json.dumps(whole,ensure_ascii=False)
+        def icons(frame,y1,y2,left):return [(195,y1,220,y1+22),(296,y1,320,y1+22),(375,y1,400,y1+22)]
+        with patch.object(ocr,'selected_works_underline',return_value=True),patch.object(ocr,'metric_icons',side_effect=icons),patch.object(ocr,'title_has_unread_suffix',return_value=False):
+            with self.assertRaisesRegex(RuntimeError,'title is not visible'):ocr.prepare_frame(frame,whole,read_counts=False)
+            with tempfile.TemporaryDirectory() as directory,patch.object(ocr,'windows_ocr',side_effect=self.crops) as native:
+                repaired=ocr.refine_missing_body_anchors(frame,whole,directory,lambda:None)
+            prepared=ocr.prepare_frame(frame,repaired,read_counts=False)
+        self.assertEqual(len(prepared['rows']),5)
+        self.assertEqual([r['title'] for r in prepared['rows']][-2:],['合成修复标题甲','合成修复标题乙'])
+        self.assertEqual(repaired['bodyAnchorRecoveryCount'],2)
+        self.assertEqual(native.call_count,1)
+        self.assertEqual(json.dumps(whole,ensure_ascii=False),original)
+
+    def test_complete_native_anchors_do_not_invoke_an_extra_ocr(self):
+        whole=self.whole();whole['lines']=[l for l in whole['lines'] if ocr.line_box(l)[1]<900]
+        with tempfile.TemporaryDirectory() as directory,patch.object(ocr,'windows_ocr') as native:
+            self.assertIs(ocr.refine_missing_body_anchors(np.zeros((1600,720,3),np.uint8),whole,directory,lambda:None),whole)
+        native.assert_not_called()
+
+    def test_disagreement_foreign_dimensions_missing_status_and_duplicate_results_still_fail(self):
+        for case in ('title','language','dimensions','status','duplicate'):
+            def invalid(requests,directory):
+                results=self.crops(requests,directory)
+                if case=='title':results[1]['lines'][0]=self.native_line('另一个合成标题',(63,150,1434,231))
+                if case=='language':results[1]['language']='en-US'
+                if case=='dimensions':results[1]['width']+=1
+                if case=='status':results[1]['lines']=results[1]['lines'][:1]
+                if case=='duplicate':results[-1]=results[0]
+                return results
+            with tempfile.TemporaryDirectory() as directory,patch.object(ocr,'windows_ocr',side_effect=invalid),self.assertRaises(RuntimeError):
+                ocr.refine_missing_body_anchors(np.zeros((1600,720,3),np.uint8),self.whole(),directory,lambda:None)
+
 if __name__ == "__main__":
     unittest.main()

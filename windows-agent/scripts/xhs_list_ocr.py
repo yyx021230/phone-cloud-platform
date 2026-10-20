@@ -316,6 +316,84 @@ def title_has_unread_suffix(frame, box):
     return len(full)>=2 and max(b[0]+b[2] for b in full)>w*.06
 
 
+def title_candidates(parsed, status_box, header_bottom, width, height):
+    return [(s,b) for s,b in parsed if b[0] >= width*.24 and max(header_bottom,status_box[1]-height*.13) < b[1]
+            and b[3] < status_box[1] and status_text(s) is None and not COUNTER.fullmatch(s)
+            and b[0] < width*.5 and width*.022 <= b[3]-b[1] <= width*.08
+            and (re.search(r"[\u4e00-\u9fff]",s) or len(re.findall(r"[A-Za-z]",s)) >= 2)]
+
+
+def refine_missing_body_anchors(frame, full, directory, checkpoint):
+    """Recover only missing title/status anchors from two original-pixel crops."""
+    import cv2
+    h,w = frame.shape[:2]
+    if full.get("width") != w or full.get("height") != h or full.get("language") != "zh-Hans-CN":return full
+    if len(full.get("lines",[])) > 800:raise RuntimeError("OCR frame line budget exceeded")
+    parsed = [(compact(l.get("text","")),line_box(l)) for l in full.get("lines",[])]
+    filters = [b for s,b in parsed if s in ("全部笔记","全部笔记。","全部笔记=","全部笔记_") and b[1] < h*.28]
+    if len(filters) != 1:return full
+    top = filters[0][3]
+    statuses = sorted([(status_text(s),b) for s,b in parsed if status_text(s) == "笔记状态正常"
+                       and w*.2 <= b[0] < w*.5 and top < b[1] < b[3] < h-20],key=lambda item:item[1][1])
+    if len(statuses) > 16:raise RuntimeError("OCR works-list card budget exceeded")
+    requests,plans = [],[]
+    for status,sb in statuses:
+        if sb[0] >= w*.24 and title_candidates(parsed,sb,top,w,h):continue
+        box = (int(w*.24),max(top+1,int(sb[1]-w*.15)),w-int(w*.015),sb[3]+3)
+        x1,y1,x2,y2 = box
+        if not (0 <= x1 < x2 <= w and top < y1 < y2 < h):raise RuntimeError("OCR body anchor crop is outside its card")
+        if plans and y1 <= plans[-1]["box"][3]:raise RuntimeError("OCR body anchor crops overlap")
+        image = cv2.resize(frame[y1:y2,x1:x2],None,fx=3,fy=3,interpolation=cv2.INTER_CUBIC)
+        index = len(plans)
+        for variant in ("color","binary"):
+            # This contrast preserves the thin strokes missed by whole-frame
+            # OCR on 141. The normalized title text must agree in both reads.
+            pixel = image if variant == "color" else cv2.threshold(cv2.cvtColor(image,cv2.COLOR_BGR2GRAY),185,255,cv2.THRESH_BINARY)[1]
+            identifier = f"body_anchor_{index}_{variant}";file = Path(directory)/(identifier+".png")
+            if not cv2.imwrite(str(file),pixel):raise RuntimeError("OCR private body crop write failed")
+            requests.append({"id":identifier,"path":str(file)})
+        plans.append({"box":box,"statusBox":sb,"status":status})
+    if not plans:return full
+    checkpoint()
+    results = windows_ocr(requests,directory)
+    indexed = {r.get("id"):r for r in results}
+    if len(results) != len(requests) or set(indexed) != {r["id"] for r in requests}:
+        raise RuntimeError("OCR body anchor crop identity is missing or duplicated")
+    lines = list(full["lines"])
+    for index,plan in enumerate(plans):
+        x1,y1,x2,y2 = plan["box"];sb = plan["statusBox"];variants = []
+        for variant in ("color","binary"):
+            item = indexed[f"body_anchor_{index}_{variant}"]
+            if (item.get("language") != "zh-Hans-CN" or item.get("width") != 3*(x2-x1)
+                    or item.get("height") != 3*(y2-y1) or len(item.get("lines",[])) > 8):
+                raise RuntimeError("OCR body anchor crop dimensions/language disagree")
+            mapped = []
+            for native in item.get("lines",[]):
+                b = line_box(native)
+                if (b[2] > item["width"] or b[3] > item["height"] or compact(native.get("text","")) !=
+                        compact("".join(word.get("text","") for word in native["words"]))):
+                    raise RuntimeError("OCR body anchor word geometry disagrees")
+                words = [{**word,"x":x1+word["x"]/3,"y":y1+word["y"]/3,
+                          "width":word["width"]/3,"height":word["height"]/3} for word in native["words"]]
+                mapped.append({**native,"words":words})
+            candidates = [(compact(n.get("text","")),line_box(n)) for n in mapped]
+            title_boxes = {b for _,b in title_candidates(candidates,sb,top,w,h) if b[1] > y1}
+            title_lines = [n for n in mapped if line_box(n) in title_boxes]
+            status_lines = [n for n in mapped if status_text(compact(n.get("text",""))) == plan["status"]
+                            and line_box(n)[0] >= w*.24 and abs(line_box(n)[1]-sb[1]) < w*.025]
+            if len(title_lines) != 1 or len(status_lines) != 1:raise RuntimeError("OCR body anchor title/status is ambiguous")
+            variants.append((title_lines[0],status_lines[0]))
+        normalize = lambda text:re.sub(r"[^\w\u4e00-\u9fff]","",compact(text))
+        titles = [normalize(v[0].get("text","")) for v in variants]
+        if not titles[0] or titles[0] != titles[1]:raise RuntimeError("OCR body anchor titles disagree")
+        if any(abs(a-b) > w*.02 for a,b in zip(line_box(variants[0][0]),line_box(variants[1][0]))):
+            raise RuntimeError("OCR body anchor title positions disagree")
+        lines = [n for n in lines if not (line_box(n)[0] >= w*.2 and y1 <= line_box(n)[1] and line_box(n)[3] <= y2)]
+        lines.extend(variants[0])
+    checkpoint()
+    return {**full,"lines":lines,"bodyAnchorRecoveryCount":len(plans)}
+
+
 def prepare_frame(frame, full, read_counts=True):
     h, w = frame.shape[:2]
     if full.get("width") != w or full.get("height") != h or full.get("language") != "zh-Hans-CN":
@@ -365,12 +443,7 @@ def prepare_frame(frame, full, read_counts=True):
     leading_clip = False
     trailing_clip = False
     for status_index,(status, sb) in enumerate(statuses):
-        titles = [(s,b) for s,b in parsed if b[0] >= w*.24 and max(all_notes[3],sb[1]-h*.13) < b[1]
-                  and b[3] < sb[1] and status_text(s) is None and not COUNTER.fullmatch(s)
-                  # The list title starts in the same text column as status.
-                  # Ignore tiny trailing emoji fragments and clipped header ink.
-                  and b[0] < w*.5 and w*.022 <= b[3]-b[1] <= w*.08
-                  and (re.search(r"[\u4e00-\u9fff]",s) or len(re.findall(r"[A-Za-z]",s)) >= 2)]
+        titles = title_candidates(parsed,sb,all_notes[3],w,h)
         if not titles:
             if status_index == 0 and sb[1]-all_notes[3] < w*.25:
                 leading_clip = True
@@ -926,6 +999,7 @@ def read_works_image(png, checkpoint=lambda: None, recent_date=lambda raw: True)
         checkpoint()
         navigation = filter_navigation_frame(frame,full)
         if navigation is not None:return navigation
+        full = refine_missing_body_anchors(frame,full,directory,checkpoint)
         prepared = prepare_frame(frame,full,read_counts=False)
         crops = crop_requests(frame,prepared,directory)+title_crop_requests(frame,prepared,directory)
         checkpoint()
@@ -948,6 +1022,7 @@ def read_works_image(png, checkpoint=lambda: None, recent_date=lambda raw: True)
         if len(indexed) != len(recognized):raise RuntimeError("OCR count crop result identity is duplicated")
         for i,card in enumerate(resolved["cards"]):
             if not card.get("boundaryOnly"):card["counts"] = corroborate_counts(card,i,indexed)
+        if full.get("bodyAnchorRecoveryCount"):resolved["bodyAnchorRecoveryCount"] = full["bodyAnchorRecoveryCount"]
         checkpoint()
         return resolved
 
