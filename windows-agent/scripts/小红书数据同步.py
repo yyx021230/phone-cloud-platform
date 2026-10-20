@@ -1692,7 +1692,19 @@ def swipe(adb_path, serial, root, guard, events):
     container = max(containers, key=lambda n: (bounds(n)[2]-bounds(n)[0]) * (bounds(n)[3]-bounds(n)[1]))
     x1, y1, x2, y2 = bounds(container)
     x = x1 + (x2-x1) * 3 // 4
-    start_y, end_y = y1 + (y2-y1) * 4 // 5, y1 + (y2-y1) * 3 // 10
+    start_y = y1 + (y2-y1) * 4 // 5
+    cards = note_cards(root)
+    if not cards:
+        raise ElementListReadError("cannot size a continuous scroll without complete native rows")
+    rows = sorted((bounds(row) for row,_ in cards), key=lambda box: box[1])
+    height = sorted(box[3]-box[1] for box in rows)[len(rows)//2]
+    # A WebView may expose only part of the loaded list. Keep overlap within
+    # the rows actually read, including when just one complete row remains.
+    step = int(min((y2-y1)*.25, height*2,
+                   max(height*.5, (rows[-1][1]-rows[0][1])*.5)))
+    if step <= 0:
+        raise ElementListReadError("native row geometry cannot prove a scroll distance")
+    end_y = max(y1+1, start_y-step)
     wake_if_asleep(adb_path, serial, guard, events)
     guard()
     adb(adb_path, serial, "shell", "input", "swipe", str(x), str(start_y), str(x), str(end_y), "550", timeout=8)

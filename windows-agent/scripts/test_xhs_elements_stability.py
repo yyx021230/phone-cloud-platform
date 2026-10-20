@@ -117,4 +117,21 @@ class NativeSubsetRefreshTests(unittest.TestCase):
    sync.refresh_scrolled_webview('adb','serial',current,lambda:None,events,previous)
   self.assertEqual(tap.call_count,2);self.assertNotIn('works_list_updated_without_filter_toggle',events)
 
+class BoundedNativeScrollTests(unittest.TestCase):
+ def test_47_scroll_keeps_overlap_within_observed_rows(self):
+  for name in ('works-47-before-subset.xml','works-47-stale-subset.xml'):
+   root=ET.parse(S/'fixtures/xhs'/name).getroot();cards=sync.note_cards(root)
+   with patch.object(sync,'focus',return_value=LateOverviewTests.current),patch.object(sync,'wake_if_asleep'),patch.object(sync.time,'sleep'),patch.object(sync,'adb') as adb:
+    sync.swipe('adb','serial',root,lambda:None,[])
+   args=adb.call_args.args;distance=int(args[6])-int(args[8]);rows=[sync.bounds(n) for n,_ in cards]
+   self.assertGreater(distance,0)
+   self.assertLessEqual(distance, max((b[3]-b[1]) for b in rows)*2)
+   # On the retained stale subset, never traverse even one complete row.
+   if len(cards)==1:self.assertLess(distance,rows[0][3]-rows[0][1])
+ def test_scroll_does_not_guess_when_native_rows_are_missing(self):
+  root=ElementCompletenessStabilityTests().listing()
+  with patch.object(sync,'note_cards',return_value=[]),patch.object(sync,'adb') as adb:
+   with self.assertRaises((sync.ElementListReadError,RuntimeError)):sync.swipe('adb','serial',root,lambda:None,[])
+  adb.assert_not_called()
+
 if __name__=='__main__':unittest.main()

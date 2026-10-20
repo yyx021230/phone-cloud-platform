@@ -89,7 +89,7 @@ class FleetReadingTests(unittest.TestCase):
         with patch.object(sync, "focus", return_value="com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}"), patch.object(sync, "wake_if_asleep", return_value=False), patch.object(sync.time, "sleep"), patch.object(sync, "adb") as adb:
             events = []
             sync.swipe("adb", "serial", root, lambda: None, events)
-        adb.assert_called_once_with("adb", "serial", "shell", "input", "swipe", "810", "1812", "810", "679", "550", timeout=8)
+        adb.assert_called_once_with("adb", "serial", "shell", "input", "swipe", "810", "1812", "810", "1694", "550", timeout=8)
         self.assertEqual(events, ["works_webview_scroll_flag_fallback"])
 
     def test_non_list_or_another_foreground_cannot_use_the_scrollable_flag_fallback(self):
