@@ -1378,6 +1378,33 @@ class OverlayRecoveryTests(unittest.TestCase):
         adb.assert_not_called()
 
 
+class NativeFlatTabHeaderTests(unittest.TestCase):
+    def fixture(self):
+        return ET.parse(SCRIPT.parent / "fixtures/xhs/data-center-flat-tabs.xml").getroot()
+
+    def test_observed_direct_webview_tabs_open_only_the_works_label(self):
+        with patch.object(sync, "focus", return_value="com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}"), \
+                patch.object(sync.time, "sleep"), patch.object(sync, "adb") as adb:
+            events = []
+            self.assertTrue(sync.open_works_tab("adb", "serial", self.fixture(), lambda: None, events))
+            adb.assert_called_once_with("adb", "serial", "shell", "input", "tap", "405", "316", timeout=7)
+            self.assertEqual(events, ["data_center_works_tab_selected"])
+
+    def test_flat_header_rejects_scattered_foreign_or_duplicate_labels(self):
+        for kind in ("scattered", "foreign", "duplicate"):
+            root = self.fixture()
+            view = next(n for n in root.iter("node") if n.get("class") == "android.webkit.WebView")
+            node = next(n for n in view if n.get("text") == "粉丝数据")
+            if kind == "scattered":node.set("bounds", "[594,900][756,951]")
+            elif kind == "foreign":node.set("package", "com.other.app")
+            else:view.append(ET.fromstring(ET.tostring(node)))
+            with self.subTest(kind=kind), patch.object(sync, "focus", return_value="com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}"), \
+                    patch.object(sync, "adb") as adb:
+                with self.assertRaises(RuntimeError):
+                    sync.open_works_tab("adb", "serial", root, lambda: None, [])
+            adb.assert_not_called()
+
+
 class ReviewingNoteStatusTests(unittest.TestCase):
     def test_observed_reviewing_note_retains_native_status_and_visible_zero_counts(self):
         root = ET.parse(SCRIPT.parent / "fixtures/xhs/works-reviewing-note.xml").getroot()

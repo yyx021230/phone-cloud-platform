@@ -1047,8 +1047,28 @@ def open_works_tab(adb_path, serial, root, guard, events):
         raise RuntimeError("data-center works tab header is not proven")
     views = [n for n in live_nodes(root) if n.get("package") == XHS_PACKAGE
              and n.get("class") == "android.webkit.WebView" and n.get("text") == "数据中心"]
+    row_height = bounds(row)[3] - bounds(row)[1] if bounds(row) else None
+    if len(views) == 1 and row is views[0]:
+        # 144 exposes the four tab labels directly under the full WebView.
+        # Prove the actual header row instead of using the whole page height.
+        flat_tabs = []
+        for title in ("账号概览", "作品分析", "粉丝数据", "收入数据"):
+            matches = [n for n in row if n.get("package") == XHS_PACKAGE
+                       and n.get("class") == "android.widget.TextView"
+                       and n.get("text") == title and n.get("enabled") == "true"
+                       and n in live_nodes(root)]
+            if len(matches) != 1:
+                raise RuntimeError("flat data-center tab header is not uniquely proven")
+            flat_tabs.append(matches[0])
+        boxes = [bounds(n) for n in flat_tabs]
+        if (flat_tabs[1] is not tabs[0]
+                or max(b[1] for b in boxes)-min(b[1] for b in boxes) > 6
+                or max(b[3] for b in boxes)-min(b[3] for b in boxes) > 6
+                or not all(left[2] < right[0] for left,right in zip(boxes,boxes[1:]))):
+            raise RuntimeError("flat data-center tab row geometry is not proven")
+        row_height = max(b[3] for b in boxes)-min(b[1] for b in boxes)
     if (len(views) != 1 or not bounds(row) or bounds(tabs[0])[3] > bounds(views[0])[3] * 0.25
-            or bounds(row)[3] - bounds(row)[1] > bounds(views[0])[3] * 0.20):
+            or row_height > bounds(views[0])[3] * 0.20):
         raise RuntimeError("data-center works tab is outside the header")
     x1, y1, x2, y2 = bounds(tabs[0])
     guard()
