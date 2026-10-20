@@ -20,6 +20,8 @@ public final class NativeNavigationActionTest {
   try(NativeNavigationAction.Selection s=new NativeNavigationAction.Selection()){s.queryNavigation(r,"profile");s.perform("profile");}if(target.clicks!=1)throw new AssertionError("irrelevant feed child blocked native query");count++;
   r=tree();target=r.kids.get(0).kids.get(4);target.parent=r.kids.get(0);target.parent.kids.set(1,null);r.queries.put("我",Arrays.asList(target));failed=false;
   try(NativeNavigationAction.Selection s=new NativeNavigationAction.Selection()){s.queryNavigation(r,"profile");s.perform("profile");}catch(IllegalStateException e){failed=true;}if(!failed||target.clicks!=0)throw new AssertionError("incomplete footer accepted");count++;
+  int[] reads={0};Object marker=new Object();if(NativeNavigationAction.freshRoot(()->++reads[0]<3?null:marker)!=marker||reads[0]!=3)throw new AssertionError();count++;
+  reads[0]=0;failed=false;try{NativeNavigationAction.freshRoot(()->{reads[0]++;return null;});}catch(IllegalStateException e){failed=true;}if(!failed||reads[0]!=3)throw new AssertionError();count++;
   System.out.println("NativeNavigationAction tests passed: "+count);
  }
 }

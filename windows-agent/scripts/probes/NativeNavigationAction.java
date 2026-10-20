@@ -110,6 +110,11 @@ public final class NativeNavigationAction {
         }
         public void close() throws Exception {Exception failure=null;for(Node n:all)try{n.close();}catch(Exception e){failure=e;}if(failure!=null)throw failure;}
     }
+    interface RootSource {Object get() throws Exception;}
+    static Object freshRoot(RootSource source) throws Exception {
+        for(int i=0;i<3;i++) {Object root=source.get();if(root!=null)return root;if(i<2)Thread.sleep(300);}
+        throw new IllegalStateException("missing native root after bounded readback");
+    }
     public static void main(String[] args){
         Object wrapper=null;boolean connected=false;int code=1;
         try{
@@ -118,7 +123,9 @@ public final class NativeNavigationAction {
             wrapper.getClass().getMethod("connect").invoke(wrapper);connected=true;
             wrapper.getClass().getMethod("setCompressedLayoutHierarchy",boolean.class).invoke(wrapper,false);
             Object automation=wrapper.getClass().getMethod("getUiAutomation").invoke(wrapper);
-            Object root=automation.getClass().getMethod("getRootInActiveWindow").invoke(automation);
+            try {automation.getClass().getMethod("waitForIdle",long.class,long.class).invoke(automation,300L,2000L);}
+            catch(java.lang.reflect.InvocationTargetException e){if(!(e.getCause() instanceof java.util.concurrent.TimeoutException))throw e;}
+            Object root=freshRoot(()->automation.getClass().getMethod("getRootInActiveWindow").invoke(automation));
             try(Selection selection=new Selection()){
                 selection.queryNavigation(root==null?null:new AndroidNode(root),args[0]);selection.perform(args[0]);
             }
