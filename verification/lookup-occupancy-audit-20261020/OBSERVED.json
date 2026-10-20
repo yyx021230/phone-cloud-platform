@@ -1,0 +1,357 @@
+{
+  "at": "2026-10-20T07:24:19.529Z",
+  "preparations": [
+    {
+      "preparationId": "3800f305-a2fd-46da-b43e-f26f60811783",
+      "createdAt": 1792480723860,
+      "idleSince": 1792480921060,
+      "expiresAt": 1792481821060,
+      "probeDemand": false
+    }
+  ],
+  "channels": [
+    {
+      "number": 172,
+      "phase": "idle",
+      "sessionId": "f1d7af92-a9c6-4d91-a58b-cd9727674b67",
+      "preparationId": "3800f305-a2fd-46da-b43e-f26f60811783",
+      "idleAt": 1792480905274,
+      "proof": {
+        "verifiedAt": 1792480878246,
+        "lastSuccessAt": 1792480905274
+      },
+      "health": {
+        "ready": true,
+        "reason": ""
+      }
+    },
+    {
+      "number": 158,
+      "phase": "idle",
+      "sessionId": "88e7acb6-dfbf-4ff5-8414-51cca688a707",
+      "preparationId": "3800f305-a2fd-46da-b43e-f26f60811783",
+      "idleAt": 1792480913527,
+      "proof": {
+        "verifiedAt": 1792480896292,
+        "lastSuccessAt": 1792480913527
+      },
+      "health": {
+        "ready": true,
+        "reason": ""
+      }
+    },
+    {
+      "number": 60,
+      "phase": "idle",
+      "sessionId": "9ebea788-653e-482f-99f3-5da7921b9800",
+      "preparationId": "3800f305-a2fd-46da-b43e-f26f60811783",
+      "idleAt": 1792480883276,
+      "proof": {
+        "verifiedAt": 1792480853406,
+        "lastSuccessAt": 1792480883276
+      },
+      "health": {
+        "ready": true,
+        "reason": ""
+      }
+    },
+    {
+      "number": 130,
+      "phase": "idle",
+      "sessionId": "5e281081-ebfa-49c4-add5-337d17dbba9d",
+      "preparationId": "3800f305-a2fd-46da-b43e-f26f60811783",
+      "idleAt": 1792480921033,
+      "proof": {
+        "verifiedAt": 1792480837885,
+        "lastSuccessAt": 1792480921033
+      },
+      "health": {
+        "ready": true,
+        "reason": ""
+      }
+    },
+    {
+      "number": 161,
+      "phase": "idle",
+      "sessionId": "d8a1e40f-99f8-4cda-b320-e9722792d79a",
+      "preparationId": "3800f305-a2fd-46da-b43e-f26f60811783",
+      "idleAt": 1792480919784,
+      "proof": {
+        "verifiedAt": 1792480906030,
+        "lastSuccessAt": 1792480919784
+      },
+      "health": {
+        "ready": true,
+        "reason": ""
+      }
+    },
+    {
+      "number": 118,
+      "phase": "idle",
+      "sessionId": "24b32c3f-3161-4226-bae6-ebb49996e3d1",
+      "preparationId": "3800f305-a2fd-46da-b43e-f26f60811783",
+      "idleAt": 1792480934294,
+      "priority": 1792480934293,
+      "proof": {
+        "verifiedAt": 1792480934293,
+        "lastSuccessAt": 1792480934293
+      },
+      "health": {
+        "ready": true,
+        "reason": ""
+      }
+    },
+    {
+      "number": 156,
+      "phase": "idle",
+      "sessionId": "e73b7709-5a48-4072-93b8-d76f3893e919",
+      "preparationId": "3800f305-a2fd-46da-b43e-f26f60811783",
+      "idleAt": 1792480910552,
+      "proof": {
+        "verifiedAt": 1792480910551,
+        "lastSuccessAt": 1792480910551
+      },
+      "health": {
+        "ready": true,
+        "reason": ""
+      }
+    },
+    {
+      "number": 162,
+      "phase": "idle",
+      "sessionId": "7007885e-e314-4b0e-a9be-4bc930513298",
+      "preparationId": "3800f305-a2fd-46da-b43e-f26f60811783",
+      "idleAt": 1792480988715,
+      "priority": 1792480988713,
+      "proof": {
+        "verifiedAt": 1792480988713,
+        "lastSuccessAt": 1792480988713
+      },
+      "health": {
+        "ready": true,
+        "reason": ""
+      }
+    }
+  ],
+  "recentRequests": [
+    {
+      "lookupId": "bd9206ee-3f5a-4318-a104-eaf5bf411ca2",
+      "purpose": "readiness_probe",
+      "status": "succeeded",
+      "code": "",
+      "createdAt": "2026-10-20T07:18:43.987Z",
+      "completedAt": "2026-10-20T07:21:18.247Z",
+      "attempts": [
+        {
+          "number": 172,
+          "at": "2026-10-20T07:18:44.024Z"
+        }
+      ]
+    },
+    {
+      "lookupId": "4171aff9-ceb2-4457-905a-6363a2a7fb42",
+      "purpose": "readiness_probe",
+      "status": "succeeded",
+      "code": "",
+      "createdAt": "2026-10-20T07:18:44.057Z",
+      "completedAt": "2026-10-20T07:21:36.293Z",
+      "attempts": [
+        {
+          "number": 158,
+          "at": "2026-10-20T07:18:44.071Z"
+        }
+      ]
+    },
+    {
+      "lookupId": "a995dd5d-f44b-4a38-9754-5049d7a1fddb",
+      "purpose": "readiness_probe",
+      "status": "failed",
+      "code": "lookup_account_login_required",
+      "createdAt": "2026-10-20T07:18:44.117Z",
+      "completedAt": "2026-10-20T07:19:02.523Z",
+      "attempts": [
+        {
+          "number": 143,
+          "at": "2026-10-20T07:18:44.128Z"
+        }
+      ]
+    },
+    {
+      "lookupId": "1ff21020-b074-434b-a352-7350b6b2beb9",
+      "purpose": "readiness_probe",
+      "status": "failed",
+      "code": "lookup_probe_failed",
+      "createdAt": "2026-10-20T07:18:44.163Z",
+      "completedAt": "2026-10-20T07:19:19.287Z",
+      "attempts": [
+        {
+          "number": 165,
+          "at": "2026-10-20T07:18:44.182Z"
+        }
+      ]
+    },
+    {
+      "lookupId": "9e617827-65a8-4148-8c2d-95e1a622ec7d",
+      "purpose": "readiness_probe",
+      "status": "succeeded",
+      "code": "",
+      "createdAt": "2026-10-20T07:18:44.214Z",
+      "completedAt": "2026-10-20T07:20:53.407Z",
+      "attempts": [
+        {
+          "number": 60,
+          "at": "2026-10-20T07:18:44.225Z"
+        }
+      ]
+    },
+    {
+      "lookupId": "af1dd389-b4a6-462f-a2e7-8c9e8b07997a",
+      "purpose": "readiness_probe",
+      "status": "succeeded",
+      "code": "",
+      "createdAt": "2026-10-20T07:19:02.806Z",
+      "completedAt": "2026-10-20T07:20:37.886Z",
+      "attempts": [
+        {
+          "number": 130,
+          "at": "2026-10-20T07:19:02.820Z"
+        }
+      ]
+    },
+    {
+      "lookupId": "3bd7c39d-a2b2-4b02-af03-fb2754ebef8b",
+      "purpose": "readiness_probe",
+      "status": "succeeded",
+      "code": "",
+      "createdAt": "2026-10-20T07:19:19.320Z",
+      "completedAt": "2026-10-20T07:21:46.031Z",
+      "attempts": [
+        {
+          "number": 161,
+          "at": "2026-10-20T07:19:19.334Z"
+        }
+      ]
+    },
+    {
+      "lookupId": "e65306b0-5262-4865-a42b-f577a0d8b5be",
+      "purpose": "readiness_probe",
+      "status": "succeeded",
+      "code": "",
+      "createdAt": "2026-10-20T07:19:57.604Z",
+      "completedAt": "2026-10-20T07:22:14.294Z",
+      "attempts": [
+        {
+          "number": 118,
+          "at": "2026-10-20T07:19:57.620Z"
+        }
+      ]
+    },
+    {
+      "lookupId": "d841e80c-1700-4f89-b694-58a01fd6d6ea",
+      "purpose": "readiness_probe",
+      "status": "failed",
+      "code": "lookup_account_login_required",
+      "createdAt": "2026-10-20T07:20:14.397Z",
+      "completedAt": "2026-10-20T07:21:09.515Z",
+      "attempts": [
+        {
+          "number": 55,
+          "at": "2026-10-20T07:20:14.409Z"
+        }
+      ]
+    },
+    {
+      "lookupId": "90e30909-9181-4675-99d7-a7fa1019936c",
+      "purpose": "readiness_probe",
+      "status": "succeeded",
+      "code": "",
+      "createdAt": "2026-10-20T07:20:22.666Z",
+      "completedAt": "2026-10-20T07:21:50.552Z",
+      "attempts": [
+        {
+          "number": 156,
+          "at": "2026-10-20T07:20:22.680Z"
+        }
+      ]
+    },
+    {
+      "lookupId": "973e0e43-d538-4314-abd3-04581e77dc16",
+      "purpose": "readiness_probe",
+      "status": "succeeded",
+      "code": "",
+      "createdAt": "2026-10-20T07:20:41.688Z",
+      "completedAt": "2026-10-20T07:23:08.715Z",
+      "attempts": [
+        {
+          "number": 162,
+          "at": "2026-10-20T07:20:41.700Z"
+        }
+      ]
+    },
+    {
+      "lookupId": "cb1041d5-24b6-4f2e-b6e6-d8c0ba6d6c2b",
+      "status": "succeeded",
+      "code": "",
+      "createdAt": "2026-10-20T07:21:12.310Z",
+      "completedAt": "2026-10-20T07:21:23.276Z",
+      "attempts": [
+        {
+          "number": 60,
+          "at": "2026-10-20T07:21:12.562Z"
+        }
+      ]
+    },
+    {
+      "lookupId": "28a86939-f518-46ea-bb1a-caaf5495f915",
+      "status": "succeeded",
+      "code": "",
+      "createdAt": "2026-10-20T07:21:30.624Z",
+      "completedAt": "2026-10-20T07:21:45.274Z",
+      "attempts": [
+        {
+          "number": 172,
+          "at": "2026-10-20T07:21:30.809Z"
+        }
+      ]
+    },
+    {
+      "lookupId": "cdd2a4c6-ddcd-420d-a973-ff94a3450e35",
+      "status": "succeeded",
+      "code": "",
+      "createdAt": "2026-10-20T07:21:40.143Z",
+      "completedAt": "2026-10-20T07:21:53.527Z",
+      "attempts": [
+        {
+          "number": 158,
+          "at": "2026-10-20T07:21:40.315Z"
+        }
+      ]
+    },
+    {
+      "lookupId": "d5e9e279-ba60-46e2-8281-84e0fcd524b2",
+      "status": "succeeded",
+      "code": "",
+      "createdAt": "2026-10-20T07:21:48.959Z",
+      "completedAt": "2026-10-20T07:21:59.784Z",
+      "attempts": [
+        {
+          "number": 161,
+          "at": "2026-10-20T07:21:49.067Z"
+        }
+      ]
+    },
+    {
+      "lookupId": "f7fa30d5-94bb-4461-b76f-36c8523f0ff1",
+      "status": "succeeded",
+      "code": "",
+      "createdAt": "2026-10-20T07:21:50.409Z",
+      "completedAt": "2026-10-20T07:22:01.033Z",
+      "attempts": [
+        {
+          "number": 130,
+          "at": "2026-10-20T07:21:50.585Z"
+        }
+      ]
+    }
+  ]
+}
