@@ -1378,6 +1378,41 @@ class OverlayRecoveryTests(unittest.TestCase):
         adb.assert_not_called()
 
 
+class VivoFrameworkUsbTests(unittest.TestCase):
+    def fixture(self):
+        return ET.parse(SCRIPT.parent / "fixtures/xhs/vivo-framework-usb-cancel.xml").getroot()
+
+    def test_observed_framework_usb_mode_dialog_only_cancels(self):
+        events = []
+        with patch.object(sync, "focus", return_value="mCurrentFocus=com.vivo.frameworkui/UsbDialog"), \
+                patch.object(sync, "navigation_capture", return_value=xml()), \
+                patch.object(sync, "adb") as adb, patch.object(sync.time, "sleep"):
+            self.assertTrue(sync.recover_known_overlay("adb", "serial", self.fixture(), lambda: None, events))
+        adb.assert_called_once_with("adb", "serial", "shell", "input", "tap", "360", "1466", timeout=7)
+        self.assertEqual(events, ["vivo_usb_cancelled"])
+
+    def test_usb_mode_cancel_rejects_changed_labels_foreign_button_or_focus(self):
+        for kind in ("authorization", "foreign", "duplicate", "focus"):
+            root = self.fixture()
+            button = next(n for n in root.iter("node") if n.get("resource-id") == "android:id/button2")
+            if kind == "authorization":next(n for n in root.iter("node") if n.get("text") == "USB 已连接").set("text", "允许USB调试吗？")
+            elif kind == "foreign":button.set("package", "com.other.app")
+            elif kind == "duplicate":root.append(ET.fromstring(ET.tostring(button)))
+            focus = "mCurrentFocus=com.other.app" if kind == "focus" else "mCurrentFocus=com.vivo.frameworkui/UsbDialog"
+            with self.subTest(kind=kind), patch.object(sync, "focus", return_value=focus), patch.object(sync, "adb") as adb:
+                with self.assertRaises(RuntimeError):
+                    sync.recover_known_overlay("adb", "serial", root, lambda: None, [])
+            adb.assert_not_called()
+
+    def test_usb_mode_dialog_must_disappear_after_cancel(self):
+        with patch.object(sync, "focus", return_value="mCurrentFocus=com.vivo.frameworkui/UsbDialog"), \
+                patch.object(sync, "navigation_capture", side_effect=lambda *a: self.fixture()), \
+                patch.object(sync, "adb") as adb, patch.object(sync.time, "sleep"):
+            with self.assertRaisesRegex(RuntimeError, "stayed open"):
+                sync.recover_known_overlay("adb", "serial", self.fixture(), lambda: None, [])
+        self.assertEqual(adb.call_count, 1)
+
+
 class NativeFlatTabHeaderTests(unittest.TestCase):
     def fixture(self):
         return ET.parse(SCRIPT.parent / "fixtures/xhs/data-center-flat-tabs.xml").getroot()

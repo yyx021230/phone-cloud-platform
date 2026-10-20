@@ -807,6 +807,39 @@ def recover_known_overlay(adb_path, serial, root, guard, events):
         events.append("honor_update_deferred")
         return True
 
+    # 176 uses OriginOS framework UI and puts Cancel in a button child.
+    # This is only the observed USB mode selector; never authorize debugging.
+    usb_package = "com.vivo.frameworkui"
+    visible = live_nodes(root)
+    if any(n.get("package") == usb_package for n in visible):
+        titles = [n for n in visible if n.get("resource-id") == usb_package + ":id/alertTitle"
+                  and n.get("text") == "USB 已连接"]
+        buttons = [n for n in visible if n.get("resource-id") == "android:id/button2"
+                   and n.get("package") == usb_package and n.get("class") == "android.widget.Button"
+                   and n.get("content-desc") == "取消" and n.get("clickable") == "true"
+                   and n.get("enabled") == "true"
+                   and len([c for c in n.iter("node") if c in visible
+                            and c.get("resource-id") == usb_package + ":id/vbutton_title"
+                            and c.get("text") == "取消"]) == 1]
+        panels = [n for n in visible if n.get("resource-id") == usb_package + ":id/parentPanel"]
+        values = {(n.get("text") or "").strip() for n in visible if (n.get("text") or "").strip()}
+        if (not ("VivoUsbDialog" in current or re.search(r"\bcom\.vivo\.frameworkui[}/\s]", current))
+                or any(n.get("package") != usb_package for n in visible)
+                or values != {"USB 已连接", "仅充电", "传输照片", "管理文件", "连接车辆", "取消"}
+                or len(titles) != 1 or len(buttons) != 1 or len(panels) != 1
+                or titles[0] not in panels[0].iter("node") or buttons[0] not in panels[0].iter("node")
+                or bounds(buttons[0])[1] <= max(bounds(n)[3] for n in visible if n.get("text") in ("仅充电", "传输照片", "管理文件", "连接车辆"))):
+            raise RuntimeError("Vivo USB mode selector safe cancel action not proven")
+        x1, y1, x2, y2 = bounds(buttons[0])
+        guard()
+        adb(adb_path, serial, "shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2), timeout=7)
+        time.sleep(0.4)
+        after = navigation_capture(adb_path, serial, guard, events)
+        if any(n.get("package") == usb_package for n in live_nodes(after)):
+            raise RuntimeError("Vivo USB mode selector stayed open after cancel")
+        events.append("vivo_usb_cancelled")
+        return True
+
     if "VivoUsbDialog" in current or any((node.get("text") or "").strip() == "USB 已连接" for node in nodes):
         titles = [node for node in nodes if node.get("package") == "android"
                   and node.get("resource-id") == "android:id/alertTitle"
