@@ -1378,6 +1378,18 @@ class OverlayRecoveryTests(unittest.TestCase):
         adb.assert_not_called()
 
 
+class ReviewingNoteStatusTests(unittest.TestCase):
+    def test_observed_reviewing_note_retains_native_status_and_visible_zero_counts(self):
+        root = ET.parse(SCRIPT.parent / "fixtures/xhs/works-reviewing-note.xml").getroot()
+        rows = [item for _, item in sync.note_cards(root) if item["status_raw"] == "笔记审核中"]
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["published_at_raw"], "10-20")
+        self.assertEqual(rows[0]["status_raw"], "笔记审核中")
+        self.assertEqual([rows[0][key] for key in
+                          ("list_view_count", "list_like_count", "list_comment_count")], [0, 0, 0])
+        self.assertIsNotNone(sync.element_page_signature(root))
+
+
 class CreatorRepairingServiceTests(unittest.TestCase):
     def fixture(self):
         return ET.parse(SCRIPT.parent / "fixtures/xhs/creator-repairing-service-error.xml").getroot()

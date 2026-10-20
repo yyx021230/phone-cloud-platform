@@ -1492,7 +1492,7 @@ def reopen_creator_list(adb_path, serial, root, guard, events, slot="app1"):
 
 
 def is_note_status(text):
-    return text.startswith("笔记状态") or text in ("该篇笔记已不可被他人查看", "该篇笔记已不被推荐给未关注用户")
+    return text.startswith("笔记状态") or text in ("笔记审核中", "该篇笔记已不可被他人查看", "该篇笔记已不被推荐给未关注用户")
 
 
 def note_cards(root):
