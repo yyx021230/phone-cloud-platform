@@ -1,0 +1,8 @@
+{
+  "parent": "lookup-idle-refresh-20261020-rc.1",
+  "parentCommit": "deb9723c80e9a8cd6240ca393417fb0668b787e3",
+  "before": {
+    "docs/OPEN_NAME_LOOKUP_API.md": "0b7a45bc810d2de54ae22a7a35207b3a56fe32d28e75883c5c064338b74bf67c"
+  },
+  "runtimeUnchanged": true
+}
