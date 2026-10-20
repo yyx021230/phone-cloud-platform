@@ -1,0 +1,12 @@
+{
+  "releaseId": "wecom-remarks-preview-20261020-rc.1",
+  "baseCommit": "360bf9997d17553fdc821fcb89ba4fa2d1241c24",
+  "files": {
+    "windows-agent/scripts/wecom_invite_preview.py": "11bd468f1ca57ae193ea3e41f7911aebe404d1e7ad8f63898ccab8f5eb8d2f67",
+    "windows-agent/scripts/wecom_remark_preview.py": "bcfadd95c6ad69b5b957d49e37f450ff1f1b0911411047dc7393dedf746d8207",
+    "windows-agent/scripts/test_wecom_remark_preview.py": "ed510d39a12b55312bc4420dc51bf0ea3766a8cd76ebfd6cbc5e30f8980b11c1",
+    "docs/PROJECT_DEVELOPMENT.md": "190b621815b59233b0e125fa77b46727735883b92cbc7dd2a0d164c12db6dfb2",
+    "releases/wecom-remarks-preview-20261020-rc.1/README.md": "8b3f79954ed62f34e3c7981c61ffcefd42f24ba32fd9948fd91e0f548afe6a20",
+    "releases/wecom-remarks-preview-20261020-rc.1/VERIFICATION.json": "68b2966cc3d307b1160c992127024d753bb042cd5714f7b22a50ec9e9e47df74"
+  }
+}

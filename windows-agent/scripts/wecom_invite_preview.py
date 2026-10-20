@@ -23,6 +23,7 @@ SEND = "发送添加邀请"
 # Device 67's observed WeCom build exposes the + icon as an unlabeled TextView.
 # Unknown resource names remain unsupported; no screenshot-coordinate fallback.
 OBSERVED_HOME_MENU = "com.tencent.wework:id/nt3"
+OBSERVED_PROFILE_DESCRIPTION = "com.tencent.wework:id/csu"
 NODE_TYPES = ("android.widget.TextView", "android.widget.Button",
               "android.widget.ImageView", "android.widget.ImageButton",
               "android.widget.EditText", "android.view.View",
@@ -136,7 +137,13 @@ def editor(screen):
 
 
 def profile_matches(screen, phone):
-    return (screen.has("个人信息") and screen.has("设置备注和描述")
+    # On 67, saving a description replaces the empty settings row with this
+    # exact native description row. Keep full target-number verification.
+    has_remark_entry = screen.has("设置备注和描述") or (
+        screen.has("设置标签") and len(screen.matching(lambda n:
+            n.kind == "android.widget.TextView" and n.text == "描述"
+            and n.name == OBSERVED_PROFILE_DESCRIPTION)) == 1)
+    return (screen.has("个人信息") and has_remark_entry
             and any(n.visible and re.sub(r"[\s-]", "", n.text) in (phone, "电话" + phone)
                     for n in screen.nodes))
 
