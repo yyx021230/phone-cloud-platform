@@ -1,0 +1,40 @@
+{
+  "candidateOnly": true,
+  "node": "v25.9.0",
+  "fullRegression": {
+    "pass": 952,
+    "fail": 0,
+    "skip": 0,
+    "command": "node --test --test-reporter=tap --test-concurrency=2 screen-client/*.test.mjs server/*.test.mjs scripts/*.test.mjs windows-agent/src/*.test.mjs",
+    "note": "Final 952-test run includes final target guards and corrected four-human capacity counterexample"
+  },
+  "finalGuardRecheck": {
+    "pass": 44,
+    "fail": 0,
+    "note": "After adding session/device guards to fresh target revalidation and screen ID to confirmedAt retention"
+  },
+  "rootSyntaxCheck": true,
+  "smoke": true,
+  "httpJson": "http-json.json",
+  "httpPostgres": "http-postgres-121s.json",
+  "frozenFiles": 361,
+  "parentCounterexamples": {
+    "expectedFailures": 2,
+    "evidence": "parent-repro.txt"
+  },
+  "testCorrections": [
+    "Legacy surplus fixtures explicitly inject pre-upgrade surplus; new scheduler cannot create it. Stop ACK, offline fencing, active control and restart assertions retained.",
+    "Old HTTP fixture raised its 800ms local timeout to 3000ms; managed observation now acknowledges evidence before coordinator resumes.",
+    "Cache-version assertions updated to new frontend asset version.",
+    "Initial HTTP fixture inflight cap and screen session export corrected; no product behavior changed to mask these failures."
+  ],
+  "notVerified": [
+    "Production/real-phone CAPTCHA latency, natural account switching and cooldown",
+    "Windows native runtime execution of new Agent observer",
+    "Visual browser check of new card state; DOM patch behavior tested in VM",
+    "Production D-075 live check or release image build (no deployment this turn)"
+  ],
+  "localPostgres": "Isolated PG16 on loopback only; stopped after test; no production data used",
+  "assemblyVerified": true,
+  "httpJsonRunsFromPackagedAssembly": true
+}

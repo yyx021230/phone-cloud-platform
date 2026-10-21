@@ -1,0 +1,9 @@
+{
+  "mainBeforeSha256": "055b679882299f9d019704b3d67860bb8050f496397c404d0f2c795881131a91",
+  "workflowRevision": "2026-09-30",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "startBranch": "codex/lookup-scheduling-20261021",
+  "startHead": "f38dff473dff2f28732ffc4a7e03367a14f44ae0",
+  "initialWorktreeChanges": [],
+  "rootDirtyWorkspace": "preserved; no edits"
+}

@@ -1,0 +1,15 @@
+{
+  "excludedSections": [
+    "human observer setup",
+    "observeLookupHumanVerification"
+  ],
+  "allOtherIndexCodeIdentical": true,
+  "protectedSha256": "1bcd85e3c5fa36e6bc16f0904ab9798621bfc1b4c7ac5acf55879cb9807d6685",
+  "observerChanges": [
+    "detached bounded readonly observation, at most 3 in flight",
+    "30s per-worker retry backoff, never retry pending/stopping worker"
+  ],
+  "screenRuntimeAndAdbFiles": "See FROZEN.json; unchanged",
+  "newProductionAdbCommands": 0,
+  "productionActionsThisTurn": 0
+}
