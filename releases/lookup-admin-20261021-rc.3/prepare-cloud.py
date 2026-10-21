@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Stage/build/backup only. Never activate, retag latest, restart or touch Agent/ADB."""
-import pathlib,json,subprocess,hashlib,os,secrets,time
+import pathlib,json,subprocess,hashlib,os,secrets,time,sys
 root=pathlib.Path('/opt/phone-cloud-platform');stage=pathlib.Path(__file__).resolve().parent
 baseline='sha256:a9e487ecb04afa22def7c926541a06be5593191066652881388d017e54022dab'
 def run(args,**kw):return subprocess.check_output(args,text=True,**kw).strip()
@@ -20,20 +20,6 @@ with open(backup/'previous-image.tar.gz','wb') as out:
 for p in backup.iterdir():p.chmod(0o600)
 tag='phone-cloud-platform:lookup-admin-20261021-rc.3'
 with open(stage/'build.log','w') as log:subprocess.run(['nice','-n','10','docker','build','--pull=false','-t',tag,str(stage)],stdout=log,stderr=subprocess.STDOUT,check=True)
-image=run(['docker','image','inspect',tag,'--format','{{.Id}}']);smoke='pc-lookup-admin-rc3-smoke';environment=os.environ.copy()
-for k in ['ADMIN_PASSWORD','ADMIN_API_TOKEN','WINDOWS_AGENT_TOKEN','DEVICE_AGENT_TOKEN','SCREEN_MEDIA_AUTH_SECRET']:environment[k]=secrets.token_urlsafe(32)
-args=['docker','run','-d','--name',smoke,'--network','none','--memory','512m','--cpus','0.5','--tmpfs','/app/data:rw,size=128m','-e','STORAGE_BACKEND=json','-e','DATABASE_URL=','-e','REDIS_URL=','-e','MANAGED_NAME_LOOKUP_ENABLED=true','-e','OPEN_NAME_LOOKUP_API_ENABLED=true','-e','OPEN_NAME_LOOKUP_CLIENTS_JSON=[]','-e','LOOKUP_HUMAN_FEISHU_WEBHOOK=','-e','LOOKUP_HUMAN_FEISHU_WEBHOOK_FILE=']
-for k in ['ADMIN_PASSWORD','ADMIN_API_TOKEN','WINDOWS_AGENT_TOKEN','DEVICE_AGENT_TOKEN','SCREEN_MEDIA_AUTH_SECRET']:args+=['-e',k]
-args+=[tag]
-try:
- run(args,env=environment)
- code="(async()=>{for(const p of ['/healthz','/readyz','/lookup-admin.html','/lookup-admin.js','/lookup-admin.css','/api/v1/admin/lookup-pool/console']){const r=await fetch('http://127.0.0.1:8787'+p,{headers:{Authorization:'Bearer '+process.env.ADMIN_API_TOKEN}});if(r.status!==200)throw Error(p+':'+r.status);}const r=await fetch('http://127.0.0.1:8787/api/v1/admin/lookup-pool/console');if(r.status!==401)throw Error('auth');console.log('smoke passed')})().catch(e=>{console.error(e.message);process.exit(1)})"
- for i in range(20):
-  r=subprocess.run(['docker','exec',smoke,'node','-e',code],capture_output=True,text=True)
-  if r.returncode==0:break
-  time.sleep(1)
- else:raise RuntimeError('isolated smoke failed: '+r.stderr[:300])
-finally:subprocess.run(['docker','rm','-f',smoke],stdout=subprocess.DEVNULL,check=False)
-assert run(['docker','inspect','phone-cloud-platform','--format','{{.Image}}'])==baseline
-receipt={'candidate':'lookup-admin-20261021-rc.3','sourceCommit':(stage/'SOURCE_COMMIT').read_text().strip(),'status':'prepared-not-activated','imageTag':tag,'imageId':image,'previousImage':baseline,'cloudFiles':cloud,'media':media,'backup':str(backup),'backupFiles':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in backup.iterdir()},'isolatedSmoke':'passed','productionServiceRestarted':False,'agentChanged':False,'adbChanged':False,'preparedAtUtc':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime())}
-(stage/'PREPARATION_RECEIPT.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt))
+# Production mode requires structured PostgreSQL. Use only the disposable
+# network-isolated database; never borrow production data or credentials.
+subprocess.run([sys.executable,str(stage/'complete-preparation.py')],check=True)
