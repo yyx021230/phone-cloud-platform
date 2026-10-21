@@ -1,0 +1,30 @@
+{
+  "windowsCandidateParser": [
+    {
+      "number": "112",
+      "notFound": true,
+      "nameEmpty": true
+    },
+    {
+      "number": "53",
+      "notFound": true,
+      "nameEmpty": true
+    },
+    {
+      "number": "138",
+      "notFound": true,
+      "nameEmpty": true
+    },
+    {
+      "number": "172",
+      "notFound": true,
+      "nameEmpty": true
+    },
+    {
+      "number": "165",
+      "notFound": true,
+      "nameEmpty": true
+    }
+  ],
+  "deviceActions": 0
+}

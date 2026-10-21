@@ -1,0 +1,86 @@
+{
+  "status": "pending-deployment-not-applied",
+  "capability": "lookupHumanControl",
+  "users": [
+    {
+      "displayName": "王苗",
+      "username": "wm123",
+      "userId": "6a1552ec-16e4-4894-978c-efd04897d93d",
+      "expectedRole": "user",
+      "expectedEnabled": true,
+      "lookupHumanControl": true
+    },
+    {
+      "displayName": "陈宣先",
+      "username": "cxx123",
+      "userId": "0f00f9b6-20b4-4d3e-a7e6-784be3eeda7d",
+      "expectedRole": "user",
+      "expectedEnabled": true,
+      "lookupHumanControl": true
+    },
+    {
+      "displayName": "万珍",
+      "username": "wz",
+      "userId": "3e1441c3-2f31-4bae-8d20-64efe7da59a9",
+      "expectedRole": "user",
+      "expectedEnabled": true,
+      "lookupHumanControl": true
+    },
+    {
+      "displayName": "陈晓玲",
+      "username": "cxl123",
+      "userId": "976a4606-68ae-4520-98a4-8edb5c02ba76",
+      "expectedRole": "user",
+      "expectedEnabled": true,
+      "lookupHumanControl": true
+    },
+    {
+      "displayName": "黄仁霞",
+      "username": "hrx123",
+      "userId": "d83f423d-8f40-45fc-9471-95316e16863d",
+      "expectedRole": "user",
+      "expectedEnabled": true,
+      "lookupHumanControl": true
+    },
+    {
+      "displayName": "芬芬",
+      "username": "ff123",
+      "userId": "5c0b791b-a187-4631-9f74-88ab3d5b1a8b",
+      "expectedRole": "user",
+      "expectedEnabled": true,
+      "lookupHumanControl": true
+    },
+    {
+      "displayName": "文煜",
+      "username": "wy123",
+      "userId": "8362208f-8500-4efd-92e7-672d91ccd87e",
+      "expectedRole": "user",
+      "expectedEnabled": true,
+      "lookupHumanControl": true
+    },
+    {
+      "displayName": "万琦",
+      "username": "wq123",
+      "userId": "1c090ca8-0358-4b36-b3f2-937212e31dce",
+      "expectedRole": "user",
+      "expectedEnabled": true,
+      "lookupHumanControl": true
+    },
+    {
+      "displayName": "周娟",
+      "username": "zj123",
+      "userId": "4bef39e5-3323-4a88-a28b-42a5a9e19764",
+      "expectedRole": "user",
+      "expectedEnabled": true,
+      "lookupHumanControl": true
+    },
+    {
+      "displayName": "潘雪梅",
+      "username": "pxm123",
+      "userId": "764ec6d4-0b2c-4a18-af11-8f3a2400c7d6",
+      "expectedRole": "user",
+      "expectedEnabled": true,
+      "lookupHumanControl": true
+    }
+  ]
+}
