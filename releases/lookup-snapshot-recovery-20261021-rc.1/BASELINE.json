@@ -1,0 +1,7 @@
+{
+  "sourceCommit": "59ce44eb871754fb34924836a5c0538919b8cc72",
+  "image": "sha256:0207e744371caa1adc2b926274355f8536d4cff883195fc91bb9b18c677f25ca",
+  "before": {
+    "server/index.mjs": "a1b26fcc8471f21167e7d157c82c19af4d8a7e54055af6df3614398ad9016839"
+  }
+}

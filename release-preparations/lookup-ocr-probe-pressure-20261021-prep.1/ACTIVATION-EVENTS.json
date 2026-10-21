@@ -1,0 +1,25 @@
+{
+  "exitCode": 255,
+  "windowsUpdated": true,
+  "events": [
+    {
+      "phase": "switching_cloud_only",
+      "atUtc": "2026-10-21T00:59:59.475505+00:00",
+      "occupied": {
+        "numbers": [
+          "152",
+          "172",
+          "6",
+          "61"
+        ],
+        "revision": 58,
+        "channels": 0,
+        "pending": 0
+      }
+    },
+    {
+      "phase": "cloud_stopped_wait_windows",
+      "atUtc": "2026-10-21T01:00:10.320092+00:00"
+    }
+  ]
+}
