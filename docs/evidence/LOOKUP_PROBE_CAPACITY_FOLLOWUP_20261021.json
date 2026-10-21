@@ -1,0 +1,81 @@
+{
+  "at": "2026-10-21T02:41:12.318Z",
+  "config": {
+    "concurrency": 5,
+    "humanLimit": 5,
+    "humanWaitMs": 1800000
+  },
+  "counts": {
+    "registered": 48,
+    "executing": 2,
+    "waitingHuman": 5,
+    "queued": 18
+  },
+  "businessStatus": {
+    "succeeded": 157,
+    "not_found": 49,
+    "failed": 3,
+    "cancelled": 4,
+    "running": 2,
+    "queued": 18
+  },
+  "probeStatus": {
+    "succeeded": 29,
+    "failed": 14,
+    "waiting_human": 5
+  },
+  "probePhones": 23,
+  "businessPhones": 13,
+  "channels": [
+    {
+      "number": 115,
+      "phase": "human",
+      "humanSince": 1792549258084,
+      "purpose": "readiness_probe",
+      "requestStatus": "waiting_human"
+    },
+    {
+      "number": 188,
+      "phase": "human",
+      "humanSince": 1792549293122,
+      "purpose": "readiness_probe",
+      "requestStatus": "waiting_human"
+    },
+    {
+      "number": 161,
+      "phase": "human",
+      "humanSince": 1792549295894,
+      "purpose": "readiness_probe",
+      "requestStatus": "waiting_human"
+    },
+    {
+      "number": 156,
+      "phase": "querying",
+      "humanSince": null,
+      "purpose": "business",
+      "requestStatus": "running"
+    },
+    {
+      "number": 87,
+      "phase": "querying",
+      "humanSince": null,
+      "purpose": "business",
+      "requestStatus": "running"
+    },
+    {
+      "number": 181,
+      "phase": "human",
+      "humanSince": 1792550032193,
+      "purpose": "readiness_probe",
+      "requestStatus": "waiting_human"
+    },
+    {
+      "number": 182,
+      "phase": "human",
+      "humanSince": 1792550095586,
+      "purpose": "readiness_probe",
+      "requestStatus": "waiting_human"
+    }
+  ],
+  "scope": "Read-only snapshot; last 65 minute request counts, not entire round; no phone screen or completion timing proof."
+}
