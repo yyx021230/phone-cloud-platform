@@ -1,0 +1,15 @@
+{
+  "productionRelease": "lookup-scheduling-20261021-deployed.1",
+  "productionSource": "9d2276884f26e6c436bc4ccd80bb3c8d18be3771",
+  "productionImage": "sha256:a9e487ecb04afa22def7c926541a06be5593191066652881388d017e54022dab",
+  "parentCandidate": "lookup-admin-20261021-rc.1",
+  "workflowRevision": "2026-09-30",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "snapshotColumnType": "json",
+  "before": {
+    "server/lookup-admin-console.mjs": "ca3ce3599efca38b0687b7e3fc263dbeae0cf7637268da3983286b32b5ce5aef",
+    "server/lookup-admin-console.test.mjs": "1897a433381b4eb998cdf0e2e97ea608f15447946ba4f35fcb9bcf463e2de361"
+  },
+  "candidateOnly": true,
+  "parentCandidateSource": "ca36e78d971b2185575c703268158245eb929634"
+}

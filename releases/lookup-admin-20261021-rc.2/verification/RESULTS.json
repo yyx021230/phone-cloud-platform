@@ -1,0 +1,10 @@
+{
+  "candidate": "lookup-admin-20261021-rc.2",
+  "nodeFullPassed": 1029,
+  "nodeLogSha256": "ff7e049227afe90ba0b24e82b45d33cf4bf3be70db4829cee98080eb36484e9d",
+  "rootSyntax": "passed",
+  "rc2Targeted": 14,
+  "parentTests": "../lookup-admin-20261021-rc.1/verification/RESULTS.json",
+  "productionChanged": false,
+  "realDevices": 0
+}
