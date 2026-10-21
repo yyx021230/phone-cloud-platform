@@ -1,0 +1,1653 @@
+{
+  "scope": "read-only production API and bounded PostgreSQL READ ONLY; no phone actions",
+  "productionRelease": "lookup-ocr-snapshot-20261021-deployed.1",
+  "localCandidate": "lookup-scheduling-20261021-rc.1",
+  "localCandidateCommit": "c7a35ab01691f8f8bf6099cb2168aab5d5cfb6cb",
+  "snapshots": [
+    {
+      "at": "2026-10-21T03:15:40.478Z",
+      "windowStart": "2026-10-21T03:05:00Z",
+      "health": {
+        "ok": true
+      },
+      "ready": {
+        "ok": true,
+        "status": "ok"
+      },
+      "counts": {
+        "registered": 48,
+        "executing": 5,
+        "waitingHuman": 4,
+        "queued": 16
+      },
+      "channels": [
+        {
+          "number": 162,
+          "phase": "human",
+          "purpose": "readiness_probe",
+          "humanAgeSeconds": 1413,
+          "card": "human_required",
+          "latestJob": [
+            {
+              "jobId": "bd72c8e9-ec43-4c6d-a8a7-c52ed19cdaaf",
+              "sessionId": "87bf10c6-fba4-401c-b7ae-8d82e393f783",
+              "kind": "alipay_name_query",
+              "status": "failed",
+              "createdAt": "2026-10-21T02:51:42.517Z",
+              "updatedAt": "2026-10-21T02:52:07.393Z",
+              "completedAt": "2026-10-21T02:52:07.393Z",
+              "resumeAfterHumanVerification": false,
+              "number": 162,
+              "errorCode": "alipay_human_verification_required",
+              "reasonCategory": "poco_alipay_human_verification_required",
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T02:51:48.221Z",
+                  "stepId": "reuse_existing_search_page"
+                },
+                {
+                  "createdAt": "2026-10-21T02:52:01.687Z",
+                  "stepId": "input_phone"
+                },
+                {
+                  "createdAt": "2026-10-21T02:52:05.373Z",
+                  "stepId": "human_verification_detected"
+                },
+                {
+                  "createdAt": "2026-10-21T02:52:05.397Z",
+                  "stepId": "poco_fast_path_failed"
+                },
+                {
+                  "createdAt": "2026-10-21T02:52:07.271Z",
+                  "stepId": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "number": 58,
+          "phase": "human",
+          "purpose": "readiness_probe",
+          "humanAgeSeconds": 921,
+          "card": "human_required",
+          "latestJob": [
+            {
+              "jobId": "6fdb6eca-5cfc-4500-a8ca-4399351deaca",
+              "sessionId": "68fec763-a28b-42c0-9828-72f4029d1677",
+              "kind": "alipay_name_query",
+              "status": "failed",
+              "createdAt": "2026-10-21T02:59:57.973Z",
+              "updatedAt": "2026-10-21T03:00:19.279Z",
+              "completedAt": "2026-10-21T03:00:19.279Z",
+              "resumeAfterHumanVerification": false,
+              "number": 58,
+              "errorCode": "alipay_human_verification_required",
+              "reasonCategory": "poco_alipay_human_verification_required",
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T03:00:03.455Z",
+                  "stepId": "reuse_existing_search_page"
+                },
+                {
+                  "createdAt": "2026-10-21T03:00:12.777Z",
+                  "stepId": "input_phone"
+                },
+                {
+                  "createdAt": "2026-10-21T03:00:17.483Z",
+                  "stepId": "human_verification_detected"
+                },
+                {
+                  "createdAt": "2026-10-21T03:00:17.484Z",
+                  "stepId": "poco_fast_path_failed"
+                },
+                {
+                  "createdAt": "2026-10-21T03:00:19.165Z",
+                  "stepId": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "number": 10,
+          "phase": "human",
+          "purpose": "readiness_probe",
+          "humanAgeSeconds": 411,
+          "card": "human_required",
+          "latestJob": [
+            {
+              "jobId": "8084dfbd-2bef-420d-9cc1-1238ae8eba81",
+              "sessionId": "1ac0383d-8e0f-48cb-a8e0-716845945dff",
+              "kind": "alipay_name_query",
+              "status": "failed",
+              "createdAt": "2026-10-21T03:08:25.829Z",
+              "updatedAt": "2026-10-21T03:08:48.970Z",
+              "completedAt": "2026-10-21T03:08:48.970Z",
+              "resumeAfterHumanVerification": false,
+              "number": 10,
+              "errorCode": "alipay_human_verification_required",
+              "reasonCategory": "poco_query_resume_failed",
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T03:08:42.004Z",
+                  "stepId": ""
+                },
+                {
+                  "createdAt": "2026-10-21T03:08:46.912Z",
+                  "stepId": "poco_reused"
+                },
+                {
+                  "createdAt": "2026-10-21T03:08:47.470Z",
+                  "stepId": "human_verification_detected"
+                },
+                {
+                  "createdAt": "2026-10-21T03:08:47.471Z",
+                  "stepId": "poco_fast_path_failed"
+                },
+                {
+                  "createdAt": "2026-10-21T03:08:48.872Z",
+                  "stepId": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "number": 182,
+          "phase": "human",
+          "purpose": "readiness_probe",
+          "humanAgeSeconds": 291,
+          "card": "human_required",
+          "latestJob": [
+            {
+              "jobId": "8875f79f-77d7-4b7b-9bfc-311ca22535d4",
+              "sessionId": "2c6000aa-2d2e-47ac-a5ed-08111cffbcc8",
+              "kind": "alipay_name_query",
+              "status": "failed",
+              "createdAt": "2026-10-21T03:10:34.797Z",
+              "updatedAt": "2026-10-21T03:10:48.903Z",
+              "completedAt": "2026-10-21T03:10:48.903Z",
+              "resumeAfterHumanVerification": false,
+              "number": 182,
+              "errorCode": "alipay_human_verification_required",
+              "reasonCategory": "poco_alipay_human_verification_required",
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T03:10:38.152Z",
+                  "stepId": "reuse_existing_search_page"
+                },
+                {
+                  "createdAt": "2026-10-21T03:10:44.638Z",
+                  "stepId": "input_phone"
+                },
+                {
+                  "createdAt": "2026-10-21T03:10:46.982Z",
+                  "stepId": "poco_fast_path_failed"
+                },
+                {
+                  "createdAt": "2026-10-21T03:10:46.983Z",
+                  "stepId": "human_verification_detected"
+                },
+                {
+                  "createdAt": "2026-10-21T03:10:48.538Z",
+                  "stepId": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "number": 53,
+          "phase": "querying",
+          "purpose": "business",
+          "humanAgeSeconds": null,
+          "card": "running",
+          "latestJob": [
+            {
+              "jobId": "000a6d80-01cd-4bb1-8b6b-040795d6c797",
+              "sessionId": "d1b9f432-2e9f-460d-b5fd-88a0a737311b",
+              "kind": "alipay_name_query",
+              "status": "running",
+              "createdAt": "2026-10-21T03:15:38.947Z",
+              "updatedAt": "2026-10-21T03:15:39.745Z",
+              "completedAt": null,
+              "resumeAfterHumanVerification": false,
+              "number": 53,
+              "errorCode": "",
+              "reasonCategory": "",
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T03:15:39.078Z",
+                  "stepId": ""
+                },
+                {
+                  "createdAt": "2026-10-21T03:15:39.175Z",
+                  "stepId": ""
+                },
+                {
+                  "createdAt": "2026-10-21T03:15:39.550Z",
+                  "stepId": "poco_reused"
+                },
+                {
+                  "createdAt": "2026-10-21T03:15:39.745Z",
+                  "stepId": "reuse_existing_search_page"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "number": 112,
+          "phase": "querying",
+          "purpose": "business",
+          "humanAgeSeconds": null,
+          "card": "running",
+          "latestJob": [
+            {
+              "jobId": "c2b095ba-d77e-440a-ad9c-c059e41acd22",
+              "sessionId": "c9f5cce4-d415-4aa8-a10e-59cafc855258",
+              "kind": "alipay_name_query",
+              "status": "running",
+              "createdAt": "2026-10-21T03:15:38.709Z",
+              "updatedAt": "2026-10-21T03:15:40.252Z",
+              "completedAt": null,
+              "resumeAfterHumanVerification": false,
+              "number": 112,
+              "errorCode": "",
+              "reasonCategory": "",
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T03:15:38.823Z",
+                  "stepId": ""
+                },
+                {
+                  "createdAt": "2026-10-21T03:15:40.252Z",
+                  "stepId": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "number": 57,
+          "phase": "querying",
+          "purpose": "readiness_probe",
+          "humanAgeSeconds": null,
+          "card": "running",
+          "latestJob": [
+            {
+              "jobId": "6a349e7f-77e5-4ea0-80b5-4a039912891a",
+              "sessionId": "1e1fc8aa-53e4-4ebf-9c67-eceabfc633e1",
+              "kind": "alipay_name_query",
+              "status": "running",
+              "createdAt": "2026-10-21T03:15:26.351Z",
+              "updatedAt": "2026-10-21T03:15:31.157Z",
+              "completedAt": null,
+              "resumeAfterHumanVerification": false,
+              "number": 57,
+              "errorCode": "",
+              "reasonCategory": "",
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T03:15:26.569Z",
+                  "stepId": ""
+                },
+                {
+                  "createdAt": "2026-10-21T03:15:26.719Z",
+                  "stepId": ""
+                },
+                {
+                  "createdAt": "2026-10-21T03:15:30.648Z",
+                  "stepId": "poco_reused"
+                },
+                {
+                  "createdAt": "2026-10-21T03:15:31.157Z",
+                  "stepId": "reuse_existing_search_page"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "number": 115,
+          "phase": "starting",
+          "purpose": "readiness_probe",
+          "humanAgeSeconds": null,
+          "card": "preparing",
+          "latestJob": [
+            {
+              "jobId": "bbbbdfca-5b8c-4c71-9611-821823f8a72b",
+              "sessionId": "596ba1c1-759e-416e-842e-960ee07f879e",
+              "kind": "alipay_name_start",
+              "status": "running",
+              "createdAt": "2026-10-21T03:14:51.379Z",
+              "updatedAt": "2026-10-21T03:14:51.700Z",
+              "completedAt": null,
+              "resumeAfterHumanVerification": false,
+              "number": 115,
+              "errorCode": "",
+              "reasonCategory": "",
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T03:14:51.577Z",
+                  "stepId": ""
+                },
+                {
+                  "createdAt": "2026-10-21T03:14:51.699Z",
+                  "stepId": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "number": 165,
+          "phase": "starting",
+          "purpose": "readiness_probe",
+          "humanAgeSeconds": null,
+          "card": "preparing",
+          "latestJob": [
+            {
+              "jobId": "68df15c9-04cf-4d39-a3f9-f8315ccbcfed",
+              "sessionId": "8e05cc90-f352-4cec-ab19-76762f8dd603",
+              "kind": "alipay_name_start",
+              "status": "running",
+              "createdAt": "2026-10-21T03:15:29.730Z",
+              "updatedAt": "2026-10-21T03:15:30.456Z",
+              "completedAt": null,
+              "resumeAfterHumanVerification": false,
+              "number": 165,
+              "errorCode": "",
+              "reasonCategory": "",
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T03:15:30.265Z",
+                  "stepId": ""
+                },
+                {
+                  "createdAt": "2026-10-21T03:15:30.456Z",
+                  "stepId": ""
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "recentBusinessCount": 97,
+      "recentStatus": {
+        "succeeded": 68,
+        "not_found": 11,
+        "running": 2,
+        "queued": 16
+      },
+      "recentDistribution": [
+        {
+          "number": 57,
+          "attempts": 2
+        },
+        {
+          "number": 138,
+          "attempts": 23
+        },
+        {
+          "number": 118,
+          "attempts": 23
+        },
+        {
+          "number": 67,
+          "attempts": 3
+        },
+        {
+          "number": 188,
+          "attempts": 11
+        },
+        {
+          "number": 115,
+          "attempts": 6
+        },
+        {
+          "number": 165,
+          "attempts": 3
+        },
+        {
+          "number": 53,
+          "attempts": 8
+        },
+        {
+          "number": 112,
+          "attempts": 8
+        }
+      ],
+      "roundStops": [
+        {
+          "status": "stopped",
+          "completedAt": "2026-10-16T09:09:08.444Z"
+        },
+        {
+          "status": "stopped",
+          "completedAt": "2026-10-16T09:12:13.069Z"
+        },
+        {
+          "status": "stopped",
+          "completedAt": "2026-10-19T09:21:48.419Z"
+        },
+        {
+          "status": "stopped",
+          "completedAt": "2026-10-20T03:27:49.917Z"
+        },
+        {
+          "status": "stopped",
+          "completedAt": "2026-10-20T09:33:54.648Z"
+        },
+        {
+          "status": "stopped",
+          "completedAt": "2026-10-20T10:26:30.234Z"
+        }
+      ],
+      "hashes": {
+        "server/index.mjs": "57a83933ab0e70b8c0f9643c649b70dcfc68f8ca8fcfb25688fa8db9d49f14c4",
+        "server/managed-lookup.mjs": "a1b8aad75c99ab054c30bf0faf9d16089cf703c7591616cc871ece5d712d8d01",
+        "server/lookup-readiness.mjs": "2a1807ed1a59f1db37acf5b1fee3acb42da64969a3b9685ba5b114efbe852273",
+        "public/app.js": "5bd2f00cbb6038c740b4b8b82b2c10f2cf26330947ab81de29a9b72b2f78480b"
+      }
+    },
+    {
+      "at": "2026-10-21T03:16:03.571Z",
+      "windowStart": "2026-10-21T03:05:00Z",
+      "health": {
+        "ok": true
+      },
+      "ready": {
+        "ok": true,
+        "status": "ok"
+      },
+      "counts": {
+        "registered": 48,
+        "executing": 5,
+        "waitingHuman": 4,
+        "queued": 17
+      },
+      "channels": [
+        {
+          "number": 162,
+          "phase": "human",
+          "purpose": "readiness_probe",
+          "humanAgeSeconds": 1436,
+          "card": "human_required",
+          "latestJob": [
+            {
+              "jobId": "bd72c8e9-ec43-4c6d-a8a7-c52ed19cdaaf",
+              "sessionId": "87bf10c6-fba4-401c-b7ae-8d82e393f783",
+              "kind": "alipay_name_query",
+              "status": "failed",
+              "createdAt": "2026-10-21T02:51:42.517Z",
+              "updatedAt": "2026-10-21T02:52:07.393Z",
+              "completedAt": "2026-10-21T02:52:07.393Z",
+              "resumeAfterHumanVerification": false,
+              "number": 162,
+              "errorCode": "alipay_human_verification_required",
+              "reasonCategory": "poco_alipay_human_verification_required",
+              "reasonSubcategory": "poco_alipay_human_verification_required:jigsaw_verification",
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T02:51:48.221Z",
+                  "stepId": "reuse_existing_search_page"
+                },
+                {
+                  "createdAt": "2026-10-21T02:52:01.687Z",
+                  "stepId": "input_phone"
+                },
+                {
+                  "createdAt": "2026-10-21T02:52:05.373Z",
+                  "stepId": "human_verification_detected"
+                },
+                {
+                  "createdAt": "2026-10-21T02:52:05.397Z",
+                  "stepId": "poco_fast_path_failed"
+                },
+                {
+                  "createdAt": "2026-10-21T02:52:07.271Z",
+                  "stepId": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "number": 58,
+          "phase": "human",
+          "purpose": "readiness_probe",
+          "humanAgeSeconds": 944,
+          "card": "human_required",
+          "latestJob": [
+            {
+              "jobId": "6fdb6eca-5cfc-4500-a8ca-4399351deaca",
+              "sessionId": "68fec763-a28b-42c0-9828-72f4029d1677",
+              "kind": "alipay_name_query",
+              "status": "failed",
+              "createdAt": "2026-10-21T02:59:57.973Z",
+              "updatedAt": "2026-10-21T03:00:19.279Z",
+              "completedAt": "2026-10-21T03:00:19.279Z",
+              "resumeAfterHumanVerification": false,
+              "number": 58,
+              "errorCode": "alipay_human_verification_required",
+              "reasonCategory": "poco_alipay_human_verification_required",
+              "reasonSubcategory": "poco_alipay_human_verification_required:jigsaw_verification",
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T03:00:03.455Z",
+                  "stepId": "reuse_existing_search_page"
+                },
+                {
+                  "createdAt": "2026-10-21T03:00:12.777Z",
+                  "stepId": "input_phone"
+                },
+                {
+                  "createdAt": "2026-10-21T03:00:17.483Z",
+                  "stepId": "human_verification_detected"
+                },
+                {
+                  "createdAt": "2026-10-21T03:00:17.484Z",
+                  "stepId": "poco_fast_path_failed"
+                },
+                {
+                  "createdAt": "2026-10-21T03:00:19.165Z",
+                  "stepId": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "number": 10,
+          "phase": "human",
+          "purpose": "readiness_probe",
+          "humanAgeSeconds": 434,
+          "card": "human_required",
+          "latestJob": [
+            {
+              "jobId": "8084dfbd-2bef-420d-9cc1-1238ae8eba81",
+              "sessionId": "1ac0383d-8e0f-48cb-a8e0-716845945dff",
+              "kind": "alipay_name_query",
+              "status": "failed",
+              "createdAt": "2026-10-21T03:08:25.829Z",
+              "updatedAt": "2026-10-21T03:08:48.970Z",
+              "completedAt": "2026-10-21T03:08:48.970Z",
+              "resumeAfterHumanVerification": false,
+              "number": 10,
+              "errorCode": "alipay_human_verification_required",
+              "reasonCategory": "poco_query_resume_failed",
+              "reasonSubcategory": "poco_query_resume_failed:poco_alipay_human_verification_required",
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T03:08:42.004Z",
+                  "stepId": ""
+                },
+                {
+                  "createdAt": "2026-10-21T03:08:46.912Z",
+                  "stepId": "poco_reused"
+                },
+                {
+                  "createdAt": "2026-10-21T03:08:47.470Z",
+                  "stepId": "human_verification_detected"
+                },
+                {
+                  "createdAt": "2026-10-21T03:08:47.471Z",
+                  "stepId": "poco_fast_path_failed"
+                },
+                {
+                  "createdAt": "2026-10-21T03:08:48.872Z",
+                  "stepId": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "number": 182,
+          "phase": "human",
+          "purpose": "readiness_probe",
+          "humanAgeSeconds": 315,
+          "card": "human_required",
+          "latestJob": [
+            {
+              "jobId": "8875f79f-77d7-4b7b-9bfc-311ca22535d4",
+              "sessionId": "2c6000aa-2d2e-47ac-a5ed-08111cffbcc8",
+              "kind": "alipay_name_query",
+              "status": "failed",
+              "createdAt": "2026-10-21T03:10:34.797Z",
+              "updatedAt": "2026-10-21T03:10:48.903Z",
+              "completedAt": "2026-10-21T03:10:48.903Z",
+              "resumeAfterHumanVerification": false,
+              "number": 182,
+              "errorCode": "alipay_human_verification_required",
+              "reasonCategory": "poco_alipay_human_verification_required",
+              "reasonSubcategory": "poco_alipay_human_verification_required:jigsaw_verification",
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T03:10:38.152Z",
+                  "stepId": "reuse_existing_search_page"
+                },
+                {
+                  "createdAt": "2026-10-21T03:10:44.638Z",
+                  "stepId": "input_phone"
+                },
+                {
+                  "createdAt": "2026-10-21T03:10:46.982Z",
+                  "stepId": "poco_fast_path_failed"
+                },
+                {
+                  "createdAt": "2026-10-21T03:10:46.983Z",
+                  "stepId": "human_verification_detected"
+                },
+                {
+                  "createdAt": "2026-10-21T03:10:48.538Z",
+                  "stepId": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "number": 53,
+          "phase": "querying",
+          "purpose": "business",
+          "humanAgeSeconds": null,
+          "card": "running",
+          "latestJob": [
+            {
+              "jobId": "000a6d80-01cd-4bb1-8b6b-040795d6c797",
+              "sessionId": "d1b9f432-2e9f-460d-b5fd-88a0a737311b",
+              "kind": "alipay_name_query",
+              "status": "running",
+              "createdAt": "2026-10-21T03:15:38.947Z",
+              "updatedAt": "2026-10-21T03:15:49.288Z",
+              "completedAt": null,
+              "resumeAfterHumanVerification": false,
+              "number": 53,
+              "errorCode": "",
+              "reasonCategory": "",
+              "reasonSubcategory": "",
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T03:15:39.550Z",
+                  "stepId": "poco_reused"
+                },
+                {
+                  "createdAt": "2026-10-21T03:15:39.745Z",
+                  "stepId": "reuse_existing_search_page"
+                },
+                {
+                  "createdAt": "2026-10-21T03:15:41.280Z",
+                  "stepId": "clear_previous_query"
+                },
+                {
+                  "createdAt": "2026-10-21T03:15:47.327Z",
+                  "stepId": "input_phone"
+                },
+                {
+                  "createdAt": "2026-10-21T03:15:49.287Z",
+                  "stepId": "submit_search"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "number": 112,
+          "phase": "querying",
+          "purpose": "business",
+          "humanAgeSeconds": null,
+          "card": "running",
+          "latestJob": [
+            {
+              "jobId": "8a8ba722-fe0d-4df8-85ef-c8d5daf18ba4",
+              "sessionId": "c9f5cce4-d415-4aa8-a10e-59cafc855258",
+              "kind": "alipay_name_query",
+              "status": "running",
+              "createdAt": "2026-10-21T03:15:51.201Z",
+              "updatedAt": "2026-10-21T03:15:53.876Z",
+              "completedAt": null,
+              "resumeAfterHumanVerification": false,
+              "number": 112,
+              "errorCode": "",
+              "reasonCategory": "",
+              "reasonSubcategory": "",
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T03:15:51.378Z",
+                  "stepId": ""
+                },
+                {
+                  "createdAt": "2026-10-21T03:15:51.507Z",
+                  "stepId": ""
+                },
+                {
+                  "createdAt": "2026-10-21T03:15:51.876Z",
+                  "stepId": "poco_reused"
+                },
+                {
+                  "createdAt": "2026-10-21T03:15:52.123Z",
+                  "stepId": "reuse_existing_search_page"
+                },
+                {
+                  "createdAt": "2026-10-21T03:15:53.876Z",
+                  "stepId": "clear_previous_query"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "number": 57,
+          "phase": "querying",
+          "purpose": "business",
+          "humanAgeSeconds": null,
+          "card": "running",
+          "latestJob": [
+            {
+              "jobId": "639814d8-7436-49da-999c-1a5cf9196d95",
+              "sessionId": "1e1fc8aa-53e4-4ebf-9c67-eceabfc633e1",
+              "kind": "alipay_name_query",
+              "status": "running",
+              "createdAt": "2026-10-21T03:15:58.957Z",
+              "updatedAt": "2026-10-21T03:16:02.154Z",
+              "completedAt": null,
+              "resumeAfterHumanVerification": false,
+              "number": 57,
+              "errorCode": "",
+              "reasonCategory": "",
+              "reasonSubcategory": "",
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T03:15:59.544Z",
+                  "stepId": ""
+                },
+                {
+                  "createdAt": "2026-10-21T03:15:59.711Z",
+                  "stepId": ""
+                },
+                {
+                  "createdAt": "2026-10-21T03:16:00.141Z",
+                  "stepId": "poco_reused"
+                },
+                {
+                  "createdAt": "2026-10-21T03:16:00.536Z",
+                  "stepId": "reuse_existing_search_page"
+                },
+                {
+                  "createdAt": "2026-10-21T03:16:02.153Z",
+                  "stepId": "clear_previous_query"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "number": 115,
+          "phase": "starting",
+          "purpose": "readiness_probe",
+          "humanAgeSeconds": null,
+          "card": "preparing",
+          "latestJob": [
+            {
+              "jobId": "bbbbdfca-5b8c-4c71-9611-821823f8a72b",
+              "sessionId": "596ba1c1-759e-416e-842e-960ee07f879e",
+              "kind": "alipay_name_start",
+              "status": "running",
+              "createdAt": "2026-10-21T03:14:51.379Z",
+              "updatedAt": "2026-10-21T03:14:51.700Z",
+              "completedAt": null,
+              "resumeAfterHumanVerification": false,
+              "number": 115,
+              "errorCode": "",
+              "reasonCategory": "",
+              "reasonSubcategory": "",
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T03:14:51.577Z",
+                  "stepId": ""
+                },
+                {
+                  "createdAt": "2026-10-21T03:14:51.699Z",
+                  "stepId": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "number": 165,
+          "phase": "starting",
+          "purpose": "readiness_probe",
+          "humanAgeSeconds": null,
+          "card": "preparing",
+          "latestJob": [
+            {
+              "jobId": "68df15c9-04cf-4d39-a3f9-f8315ccbcfed",
+              "sessionId": "8e05cc90-f352-4cec-ab19-76762f8dd603",
+              "kind": "alipay_name_start",
+              "status": "running",
+              "createdAt": "2026-10-21T03:15:29.730Z",
+              "updatedAt": "2026-10-21T03:15:30.456Z",
+              "completedAt": null,
+              "resumeAfterHumanVerification": false,
+              "number": 165,
+              "errorCode": "",
+              "reasonCategory": "",
+              "reasonSubcategory": "",
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T03:15:30.265Z",
+                  "stepId": ""
+                },
+                {
+                  "createdAt": "2026-10-21T03:15:30.456Z",
+                  "stepId": ""
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "recentBusinessCount": 101,
+      "recentStatus": {
+        "succeeded": 70,
+        "not_found": 11,
+        "running": 3,
+        "queued": 17
+      },
+      "recentDistribution": [
+        {
+          "number": 57,
+          "attempts": 4
+        },
+        {
+          "number": 138,
+          "attempts": 23
+        },
+        {
+          "number": 118,
+          "attempts": 23
+        },
+        {
+          "number": 67,
+          "attempts": 3
+        },
+        {
+          "number": 188,
+          "attempts": 11
+        },
+        {
+          "number": 115,
+          "attempts": 6
+        },
+        {
+          "number": 165,
+          "attempts": 3
+        },
+        {
+          "number": 53,
+          "attempts": 8
+        },
+        {
+          "number": 112,
+          "attempts": 9
+        }
+      ],
+      "roundStops": [
+        {
+          "status": "stopped",
+          "completedAt": "2026-10-16T09:09:08.444Z"
+        },
+        {
+          "status": "stopped",
+          "completedAt": "2026-10-16T09:12:13.069Z"
+        },
+        {
+          "status": "stopped",
+          "completedAt": "2026-10-19T09:21:48.419Z"
+        },
+        {
+          "status": "stopped",
+          "completedAt": "2026-10-20T03:27:49.917Z"
+        },
+        {
+          "status": "stopped",
+          "completedAt": "2026-10-20T09:33:54.648Z"
+        },
+        {
+          "status": "stopped",
+          "completedAt": "2026-10-20T10:26:30.234Z"
+        }
+      ],
+      "hashes": {
+        "server/index.mjs": "57a83933ab0e70b8c0f9643c649b70dcfc68f8ca8fcfb25688fa8db9d49f14c4",
+        "server/managed-lookup.mjs": "a1b8aad75c99ab054c30bf0faf9d16089cf703c7591616cc871ece5d712d8d01",
+        "server/lookup-readiness.mjs": "2a1807ed1a59f1db37acf5b1fee3acb42da64969a3b9685ba5b114efbe852273",
+        "public/app.js": "5bd2f00cbb6038c740b4b8b82b2c10f2cf26330947ab81de29a9b72b2f78480b"
+      }
+    },
+    {
+      "at": "2026-10-21T03:16:26.126Z",
+      "windowStart": "2026-10-21T03:05:00Z",
+      "health": {
+        "ok": true
+      },
+      "ready": {
+        "ok": true,
+        "status": "ok"
+      },
+      "counts": {
+        "registered": 48,
+        "executing": 5,
+        "waitingHuman": 4,
+        "queued": 17
+      },
+      "channels": [
+        {
+          "number": 162,
+          "phase": "human",
+          "purpose": "readiness_probe",
+          "humanAgeSeconds": 1459,
+          "card": "human_required",
+          "latestJob": [
+            {
+              "jobId": "bd72c8e9-ec43-4c6d-a8a7-c52ed19cdaaf",
+              "sessionId": "87bf10c6-fba4-401c-b7ae-8d82e393f783",
+              "kind": "alipay_name_query",
+              "status": "failed",
+              "createdAt": "2026-10-21T02:51:42.517Z",
+              "updatedAt": "2026-10-21T02:52:07.393Z",
+              "completedAt": "2026-10-21T02:52:07.393Z",
+              "resumeAfterHumanVerification": false,
+              "number": 162,
+              "errorCode": "alipay_human_verification_required",
+              "reasonCategory": "poco_alipay_human_verification_required",
+              "reasonSubcategory": "poco_alipay_human_verification_required:jigsaw_verification",
+              "diagnosticSignals": [],
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T02:51:48.221Z",
+                  "stepId": "reuse_existing_search_page"
+                },
+                {
+                  "createdAt": "2026-10-21T02:52:01.687Z",
+                  "stepId": "input_phone"
+                },
+                {
+                  "createdAt": "2026-10-21T02:52:05.373Z",
+                  "stepId": "human_verification_detected"
+                },
+                {
+                  "createdAt": "2026-10-21T02:52:05.397Z",
+                  "stepId": "poco_fast_path_failed"
+                },
+                {
+                  "createdAt": "2026-10-21T02:52:07.271Z",
+                  "stepId": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "number": 58,
+          "phase": "human",
+          "purpose": "readiness_probe",
+          "humanAgeSeconds": 967,
+          "card": "human_required",
+          "latestJob": [
+            {
+              "jobId": "6fdb6eca-5cfc-4500-a8ca-4399351deaca",
+              "sessionId": "68fec763-a28b-42c0-9828-72f4029d1677",
+              "kind": "alipay_name_query",
+              "status": "failed",
+              "createdAt": "2026-10-21T02:59:57.973Z",
+              "updatedAt": "2026-10-21T03:00:19.279Z",
+              "completedAt": "2026-10-21T03:00:19.279Z",
+              "resumeAfterHumanVerification": false,
+              "number": 58,
+              "errorCode": "alipay_human_verification_required",
+              "reasonCategory": "poco_alipay_human_verification_required",
+              "reasonSubcategory": "poco_alipay_human_verification_required:jigsaw_verification",
+              "diagnosticSignals": [],
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T03:00:03.455Z",
+                  "stepId": "reuse_existing_search_page"
+                },
+                {
+                  "createdAt": "2026-10-21T03:00:12.777Z",
+                  "stepId": "input_phone"
+                },
+                {
+                  "createdAt": "2026-10-21T03:00:17.483Z",
+                  "stepId": "human_verification_detected"
+                },
+                {
+                  "createdAt": "2026-10-21T03:00:17.484Z",
+                  "stepId": "poco_fast_path_failed"
+                },
+                {
+                  "createdAt": "2026-10-21T03:00:19.165Z",
+                  "stepId": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "number": 10,
+          "phase": "human",
+          "purpose": "readiness_probe",
+          "humanAgeSeconds": 457,
+          "card": "human_required",
+          "latestJob": [
+            {
+              "jobId": "8084dfbd-2bef-420d-9cc1-1238ae8eba81",
+              "sessionId": "1ac0383d-8e0f-48cb-a8e0-716845945dff",
+              "kind": "alipay_name_query",
+              "status": "failed",
+              "createdAt": "2026-10-21T03:08:25.829Z",
+              "updatedAt": "2026-10-21T03:08:48.970Z",
+              "completedAt": "2026-10-21T03:08:48.970Z",
+              "resumeAfterHumanVerification": false,
+              "number": 10,
+              "errorCode": "alipay_human_verification_required",
+              "reasonCategory": "poco_query_resume_failed",
+              "reasonSubcategory": "poco_query_resume_failed:poco_alipay_human_verification_required",
+              "diagnosticSignals": [],
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T03:08:42.004Z",
+                  "stepId": ""
+                },
+                {
+                  "createdAt": "2026-10-21T03:08:46.912Z",
+                  "stepId": "poco_reused"
+                },
+                {
+                  "createdAt": "2026-10-21T03:08:47.470Z",
+                  "stepId": "human_verification_detected"
+                },
+                {
+                  "createdAt": "2026-10-21T03:08:47.471Z",
+                  "stepId": "poco_fast_path_failed"
+                },
+                {
+                  "createdAt": "2026-10-21T03:08:48.872Z",
+                  "stepId": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "number": 182,
+          "phase": "human",
+          "purpose": "readiness_probe",
+          "humanAgeSeconds": 337,
+          "card": "human_required",
+          "latestJob": [
+            {
+              "jobId": "8875f79f-77d7-4b7b-9bfc-311ca22535d4",
+              "sessionId": "2c6000aa-2d2e-47ac-a5ed-08111cffbcc8",
+              "kind": "alipay_name_query",
+              "status": "failed",
+              "createdAt": "2026-10-21T03:10:34.797Z",
+              "updatedAt": "2026-10-21T03:10:48.903Z",
+              "completedAt": "2026-10-21T03:10:48.903Z",
+              "resumeAfterHumanVerification": false,
+              "number": 182,
+              "errorCode": "alipay_human_verification_required",
+              "reasonCategory": "poco_alipay_human_verification_required",
+              "reasonSubcategory": "poco_alipay_human_verification_required:jigsaw_verification",
+              "diagnosticSignals": [],
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T03:10:38.152Z",
+                  "stepId": "reuse_existing_search_page"
+                },
+                {
+                  "createdAt": "2026-10-21T03:10:44.638Z",
+                  "stepId": "input_phone"
+                },
+                {
+                  "createdAt": "2026-10-21T03:10:46.982Z",
+                  "stepId": "poco_fast_path_failed"
+                },
+                {
+                  "createdAt": "2026-10-21T03:10:46.983Z",
+                  "stepId": "human_verification_detected"
+                },
+                {
+                  "createdAt": "2026-10-21T03:10:48.538Z",
+                  "stepId": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "number": 53,
+          "phase": "querying",
+          "purpose": "business",
+          "humanAgeSeconds": null,
+          "card": "running",
+          "latestJob": [
+            {
+              "jobId": "e3adaeb8-e85f-4608-bf1b-d989f7cdda6c",
+              "sessionId": "d1b9f432-2e9f-460d-b5fd-88a0a737311b",
+              "kind": "alipay_name_query",
+              "status": "running",
+              "createdAt": "2026-10-21T03:16:08.463Z",
+              "updatedAt": "2026-10-21T03:16:21.077Z",
+              "completedAt": null,
+              "resumeAfterHumanVerification": false,
+              "number": 53,
+              "errorCode": "",
+              "reasonCategory": "",
+              "reasonSubcategory": "",
+              "diagnosticSignals": [],
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T03:16:09.553Z",
+                  "stepId": "poco_reused"
+                },
+                {
+                  "createdAt": "2026-10-21T03:16:09.795Z",
+                  "stepId": "reuse_existing_search_page"
+                },
+                {
+                  "createdAt": "2026-10-21T03:16:11.455Z",
+                  "stepId": "clear_previous_query"
+                },
+                {
+                  "createdAt": "2026-10-21T03:16:18.724Z",
+                  "stepId": "input_phone"
+                },
+                {
+                  "createdAt": "2026-10-21T03:16:21.077Z",
+                  "stepId": "submit_search"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "number": 112,
+          "phase": "querying",
+          "purpose": "business",
+          "humanAgeSeconds": null,
+          "card": "idle",
+          "latestJob": [
+            {
+              "jobId": "8a8ba722-fe0d-4df8-85ef-c8d5daf18ba4",
+              "sessionId": "c9f5cce4-d415-4aa8-a10e-59cafc855258",
+              "kind": "alipay_name_query",
+              "status": "succeeded",
+              "createdAt": "2026-10-21T03:15:51.201Z",
+              "updatedAt": "2026-10-21T03:16:25.771Z",
+              "completedAt": "2026-10-21T03:16:25.771Z",
+              "resumeAfterHumanVerification": false,
+              "number": 112,
+              "errorCode": "",
+              "reasonCategory": "",
+              "reasonSubcategory": "",
+              "diagnosticSignals": [],
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T03:15:53.876Z",
+                  "stepId": "clear_previous_query"
+                },
+                {
+                  "createdAt": "2026-10-21T03:16:05.690Z",
+                  "stepId": "input_phone"
+                },
+                {
+                  "createdAt": "2026-10-21T03:16:07.184Z",
+                  "stepId": "submit_search"
+                },
+                {
+                  "createdAt": "2026-10-21T03:16:25.709Z",
+                  "stepId": "masked_real_name_tail_extracted"
+                },
+                {
+                  "createdAt": "2026-10-21T03:16:25.739Z",
+                  "stepId": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "number": 57,
+          "phase": "querying",
+          "purpose": "business",
+          "humanAgeSeconds": null,
+          "card": "running",
+          "latestJob": [
+            {
+              "jobId": "21dcccde-f06d-4c9b-98f2-69454d6df1cc",
+              "sessionId": "1e1fc8aa-53e4-4ebf-9c67-eceabfc633e1",
+              "kind": "alipay_name_query",
+              "status": "running",
+              "createdAt": "2026-10-21T03:16:22.234Z",
+              "updatedAt": "2026-10-21T03:16:25.211Z",
+              "completedAt": null,
+              "resumeAfterHumanVerification": false,
+              "number": 57,
+              "errorCode": "",
+              "reasonCategory": "",
+              "reasonSubcategory": "",
+              "diagnosticSignals": [],
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T03:16:22.698Z",
+                  "stepId": ""
+                },
+                {
+                  "createdAt": "2026-10-21T03:16:22.855Z",
+                  "stepId": ""
+                },
+                {
+                  "createdAt": "2026-10-21T03:16:23.240Z",
+                  "stepId": "poco_reused"
+                },
+                {
+                  "createdAt": "2026-10-21T03:16:23.564Z",
+                  "stepId": "reuse_existing_search_page"
+                },
+                {
+                  "createdAt": "2026-10-21T03:16:25.211Z",
+                  "stepId": "clear_previous_query"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "number": 115,
+          "phase": "starting",
+          "purpose": "readiness_probe",
+          "humanAgeSeconds": null,
+          "card": "preparing",
+          "latestJob": [
+            {
+              "jobId": "bbbbdfca-5b8c-4c71-9611-821823f8a72b",
+              "sessionId": "596ba1c1-759e-416e-842e-960ee07f879e",
+              "kind": "alipay_name_start",
+              "status": "running",
+              "createdAt": "2026-10-21T03:14:51.379Z",
+              "updatedAt": "2026-10-21T03:14:51.700Z",
+              "completedAt": null,
+              "resumeAfterHumanVerification": false,
+              "number": 115,
+              "errorCode": "",
+              "reasonCategory": "",
+              "reasonSubcategory": "",
+              "diagnosticSignals": [],
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T03:14:51.577Z",
+                  "stepId": ""
+                },
+                {
+                  "createdAt": "2026-10-21T03:14:51.699Z",
+                  "stepId": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "number": 165,
+          "phase": "starting",
+          "purpose": "readiness_probe",
+          "humanAgeSeconds": null,
+          "card": "preparing",
+          "latestJob": [
+            {
+              "jobId": "68df15c9-04cf-4d39-a3f9-f8315ccbcfed",
+              "sessionId": "8e05cc90-f352-4cec-ab19-76762f8dd603",
+              "kind": "alipay_name_start",
+              "status": "running",
+              "createdAt": "2026-10-21T03:15:29.730Z",
+              "updatedAt": "2026-10-21T03:15:30.456Z",
+              "completedAt": null,
+              "resumeAfterHumanVerification": false,
+              "number": 165,
+              "errorCode": "",
+              "reasonCategory": "",
+              "reasonSubcategory": "",
+              "diagnosticSignals": [],
+              "lastSteps": [
+                {
+                  "createdAt": "2026-10-21T03:15:30.265Z",
+                  "stepId": ""
+                },
+                {
+                  "createdAt": "2026-10-21T03:15:30.456Z",
+                  "stepId": ""
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "recentBusinessCount": 104,
+      "recentStatus": {
+        "succeeded": 73,
+        "not_found": 11,
+        "running": 3,
+        "queued": 17
+      },
+      "recentDistribution": [
+        {
+          "number": 57,
+          "attempts": 6
+        },
+        {
+          "number": 138,
+          "attempts": 23
+        },
+        {
+          "number": 118,
+          "attempts": 23
+        },
+        {
+          "number": 67,
+          "attempts": 3
+        },
+        {
+          "number": 188,
+          "attempts": 11
+        },
+        {
+          "number": 115,
+          "attempts": 6
+        },
+        {
+          "number": 165,
+          "attempts": 3
+        },
+        {
+          "number": 53,
+          "attempts": 9
+        },
+        {
+          "number": 112,
+          "attempts": 9
+        }
+      ],
+      "roundStops": [
+        {
+          "status": "stopped",
+          "completedAt": "2026-10-16T09:09:08.444Z"
+        },
+        {
+          "status": "stopped",
+          "completedAt": "2026-10-16T09:12:13.069Z"
+        },
+        {
+          "status": "stopped",
+          "completedAt": "2026-10-19T09:21:48.419Z"
+        },
+        {
+          "status": "stopped",
+          "completedAt": "2026-10-20T03:27:49.917Z"
+        },
+        {
+          "status": "stopped",
+          "completedAt": "2026-10-20T09:33:54.648Z"
+        },
+        {
+          "status": "stopped",
+          "completedAt": "2026-10-20T10:26:30.234Z"
+        }
+      ],
+      "hashes": {
+        "server/index.mjs": "57a83933ab0e70b8c0f9643c649b70dcfc68f8ca8fcfb25688fa8db9d49f14c4",
+        "server/managed-lookup.mjs": "a1b8aad75c99ab054c30bf0faf9d16089cf703c7591616cc871ece5d712d8d01",
+        "server/lookup-readiness.mjs": "2a1807ed1a59f1db37acf5b1fee3acb42da64969a3b9685ba5b114efbe852273",
+        "public/app.js": "5bd2f00cbb6038c740b4b8b82b2c10f2cf26330947ab81de29a9b72b2f78480b"
+      }
+    }
+  ],
+  "retainedFailures": [
+    {
+      "lookupId": "6b0d0b35-008d-4d8c-82bf-c80c2a589348",
+      "status": "cancelled",
+      "code": "lookup_recovery_exhausted",
+      "createdAt": "2026-10-21T02:47:45.325Z",
+      "completedAt": "2026-10-21T02:52:42.367Z",
+      "attempts": [
+        {
+          "number": 112,
+          "at": "2026-10-21T02:49:14.864Z"
+        },
+        {
+          "number": 118,
+          "at": "2026-10-21T02:50:23.492Z"
+        },
+        {
+          "number": 58,
+          "at": "2026-10-21T02:51:35.025Z"
+        }
+      ],
+      "errorCodes": [
+        "alipay_lookup_result_unconfirmed"
+      ],
+      "reasonCategories": [
+        "local_lookup_result_unconfirmed"
+      ],
+      "observationBudgetExhausted": true
+    },
+    {
+      "lookupId": "8c46d6cd-cadb-4967-a47f-1c17aa933c19",
+      "status": "cancelled",
+      "code": "lookup_recovery_exhausted",
+      "createdAt": "2026-10-21T02:48:51.510Z",
+      "completedAt": "2026-10-21T02:57:15.234Z",
+      "attempts": [
+        {
+          "number": 10,
+          "at": "2026-10-21T02:53:47.854Z"
+        },
+        {
+          "number": 53,
+          "at": "2026-10-21T02:54:58.383Z"
+        },
+        {
+          "number": 57,
+          "at": "2026-10-21T02:56:10.518Z"
+        }
+      ],
+      "errorCodes": [
+        "alipay_lookup_result_unconfirmed"
+      ],
+      "reasonCategories": [
+        "local_lookup_result_unconfirmed"
+      ],
+      "observationBudgetExhausted": true
+    },
+    {
+      "lookupId": "71cad2ae-7c69-4f40-a45b-f65e680e766e",
+      "status": "cancelled",
+      "code": "lookup_recovery_exhausted",
+      "createdAt": "2026-10-21T02:55:59.494Z",
+      "completedAt": "2026-10-21T03:04:19.138Z",
+      "attempts": [
+        {
+          "number": 138,
+          "at": "2026-10-21T02:56:59.789Z"
+        },
+        {
+          "number": 118,
+          "at": "2026-10-21T03:00:38.417Z"
+        },
+        {
+          "number": 165,
+          "at": "2026-10-21T03:01:49.289Z"
+        }
+      ],
+      "errorCodes": [
+        "alipay_lookup_result_unconfirmed"
+      ],
+      "reasonCategories": [
+        "local_lookup_result_unconfirmed",
+        "poco_query_resume_failed"
+      ],
+      "observationBudgetExhausted": true
+    },
+    {
+      "lookupId": "0890ced0-7057-4660-ad90-9368c3a38cfe",
+      "status": "failed",
+      "code": "lookup_execution_failed",
+      "createdAt": "2026-10-21T03:00:15.575Z",
+      "completedAt": "2026-10-21T03:02:23.773Z",
+      "attempts": [
+        {
+          "number": 112,
+          "at": "2026-10-21T03:02:02.567Z"
+        }
+      ],
+      "errorCodes": [
+        "alipay_lookup_failed"
+      ],
+      "reasonCategories": [
+        "poco_query_page_recovery_failed"
+      ],
+      "observationBudgetExhausted": false
+    },
+    {
+      "lookupId": "06c820be-e597-4ae6-9b08-e34b59f2d539",
+      "status": "cancelled",
+      "code": "lookup_recovery_exhausted",
+      "createdAt": "2026-10-21T03:03:49.291Z",
+      "completedAt": "2026-10-21T03:08:48.854Z",
+      "attempts": [
+        {
+          "number": 53,
+          "at": "2026-10-21T03:05:16.753Z"
+        },
+        {
+          "number": 112,
+          "at": "2026-10-21T03:06:29.090Z"
+        },
+        {
+          "number": 57,
+          "at": "2026-10-21T03:07:45.081Z"
+        }
+      ],
+      "errorCodes": [
+        "alipay_lookup_result_unconfirmed"
+      ],
+      "reasonCategories": [
+        "local_lookup_result_unconfirmed"
+      ],
+      "observationBudgetExhausted": true
+    }
+  ],
+  "watchedJobs": [
+    {
+      "jobId": "bbbbdfca-5b8c-4c71-9611-821823f8a72b",
+      "sessionId": "596ba1c1-759e-416e-842e-960ee07f879e",
+      "kind": "alipay_name_start",
+      "status": "running",
+      "createdAt": "2026-10-21T03:14:51.379Z",
+      "updatedAt": "2026-10-21T03:14:51.700Z",
+      "completedAt": null,
+      "resumeAfterHumanVerification": false,
+      "number": 115,
+      "errorCode": "",
+      "reasonCategory": "",
+      "reasonSubcategory": "",
+      "diagnosticSignals": [],
+      "lastSteps": [
+        {
+          "createdAt": "2026-10-21T03:14:51.577Z",
+          "stepId": ""
+        },
+        {
+          "createdAt": "2026-10-21T03:14:51.699Z",
+          "stepId": ""
+        }
+      ]
+    },
+    {
+      "jobId": "4617f37d-596f-4134-923f-01e3bcb0781d",
+      "sessionId": "1e1fc8aa-53e4-4ebf-9c67-eceabfc633e1",
+      "kind": "alipay_name_start",
+      "status": "succeeded",
+      "createdAt": "2026-10-21T03:14:37.116Z",
+      "updatedAt": "2026-10-21T03:15:26.320Z",
+      "completedAt": "2026-10-21T03:15:26.320Z",
+      "resumeAfterHumanVerification": false,
+      "number": 57,
+      "errorCode": "",
+      "reasonCategory": "",
+      "reasonSubcategory": "",
+      "diagnosticSignals": [],
+      "lastSteps": [
+        {
+          "createdAt": "2026-10-21T03:15:25.724Z",
+          "stepId": "open_settings"
+        },
+        {
+          "createdAt": "2026-10-21T03:15:25.753Z",
+          "stepId": "open_saved_account_picker"
+        },
+        {
+          "createdAt": "2026-10-21T03:15:26.053Z",
+          "stepId": "launch_alipay"
+        },
+        {
+          "createdAt": "2026-10-21T03:15:26.231Z",
+          "stepId": "open_search"
+        },
+        {
+          "createdAt": "2026-10-21T03:15:26.262Z",
+          "stepId": ""
+        }
+      ]
+    },
+    {
+      "jobId": "bfe574cc-67a6-40f1-b118-72e97a6aff7c",
+      "sessionId": "97045bd3-5074-4a91-980a-6db9368b9312",
+      "kind": "alipay_name_start",
+      "status": "failed",
+      "createdAt": "2026-10-21T03:13:16.586Z",
+      "updatedAt": "2026-10-21T03:15:20.611Z",
+      "completedAt": "2026-10-21T03:15:20.611Z",
+      "resumeAfterHumanVerification": false,
+      "number": 67,
+      "errorCode": "alipay_lookup_failed",
+      "reasonCategory": "{\"event\"",
+      "reasonSubcategory": "{\"event\": {\"step\"",
+      "diagnosticSignals": [],
+      "lastSteps": [
+        {
+          "createdAt": "2026-10-21T03:13:16.789Z",
+          "stepId": ""
+        },
+        {
+          "createdAt": "2026-10-21T03:13:16.927Z",
+          "stepId": ""
+        },
+        {
+          "createdAt": "2026-10-21T03:15:20.459Z",
+          "stepId": ""
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "No exact user CAPTCHA completion timestamps or phone-page reads; humanAge is time in backend state, not detection latency.",
+    "Request lists are retained runtime views, not complete historical totals.",
+    "First detail SQL used a nonexistent session_id column; read-only transaction aborted, then used bounded kind/created_at query.",
+    "No Windows/ADB/SYSTEM interaction; no code deployment or recovery action."
+  ]
+}
