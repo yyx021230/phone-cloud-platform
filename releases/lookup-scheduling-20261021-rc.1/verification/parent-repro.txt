@@ -1,0 +1,46 @@
+✖ zero business and four puzzles never expand physical reservations (10.559542ms)
+✖ confirmed account limit repairs original phone before opening unused standby (19.885ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 133.511166
+
+✖ failing tests:
+
+test at server/lookup-scheduling.test.mjs:18:1
+✖ zero business and four puzzles never expand physical reservations (10.559542ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  7 !== 5
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-scheduling-parent-repro-20261021/server/lookup-scheduling.test.mjs:21:32)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 7,
+    expected: 5,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at server/lookup-scheduling.test.mjs:51:1
+✖ confirmed account limit repairs original phone before opening unused standby (19.885ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+    assert.ok(f.events.filter(e=>e.kind==='start'&&e.device===c.deviceId).length===2)
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-scheduling-parent-repro-20261021/server/lookup-scheduling.test.mjs:54:9)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
