@@ -1,0 +1,274 @@
+{
+  "snapshots": [
+    {
+      "at": "2026-10-21T02:55:29.421Z",
+      "counts": {
+        "registered": 48,
+        "executing": 5,
+        "waitingHuman": 4,
+        "queued": 17
+      },
+      "channels": [
+        {
+          "number": 53,
+          "phase": "querying",
+          "purpose": "business",
+          "cardState": "running",
+          "humanSince": null,
+          "resumeJobs": []
+        },
+        {
+          "number": 57,
+          "phase": "human",
+          "purpose": "readiness_probe",
+          "cardState": "human_required",
+          "humanSince": 1792551030456,
+          "resumeJobs": []
+        },
+        {
+          "number": 138,
+          "phase": "human",
+          "purpose": "readiness_probe",
+          "cardState": "human_required",
+          "humanSince": 1792551104778,
+          "resumeJobs": []
+        },
+        {
+          "number": 162,
+          "phase": "human",
+          "purpose": "readiness_probe",
+          "cardState": "human_required",
+          "humanSince": 1792551127553,
+          "resumeJobs": []
+        },
+        {
+          "number": 165,
+          "phase": "human",
+          "purpose": "readiness_probe",
+          "cardState": "human_required",
+          "humanSince": 1792551176666,
+          "resumeJobs": []
+        },
+        {
+          "number": 182,
+          "phase": "starting",
+          "purpose": "readiness_probe",
+          "cardState": "preparing",
+          "humanSince": null,
+          "resumeJobs": []
+        },
+        {
+          "number": 112,
+          "phase": "starting",
+          "purpose": "readiness_probe",
+          "cardState": "preparing",
+          "humanSince": null,
+          "resumeJobs": []
+        },
+        {
+          "number": 181,
+          "phase": "starting",
+          "purpose": "readiness_probe",
+          "cardState": "preparing",
+          "humanSince": null,
+          "resumeJobs": []
+        },
+        {
+          "number": 67,
+          "phase": "starting",
+          "purpose": "readiness_probe",
+          "cardState": "preparing",
+          "humanSince": null,
+          "resumeJobs": []
+        }
+      ]
+    },
+    {
+      "at": "2026-10-21T02:56:07.514Z",
+      "counts": {
+        "registered": 48,
+        "executing": 5,
+        "waitingHuman": 3,
+        "queued": 16
+      },
+      "channels": [
+        {
+          "number": 57,
+          "phase": "querying",
+          "purpose": "business",
+          "cardState": "running",
+          "humanSince": null,
+          "resumeJobs": [
+            {
+              "status": "succeeded",
+              "createdAt": "2026-10-21T02:55:45.308Z",
+              "completedAt": "2026-10-21T02:56:00.248Z"
+            }
+          ]
+        },
+        {
+          "number": 138,
+          "phase": "querying",
+          "purpose": "business",
+          "cardState": "running",
+          "humanSince": null,
+          "resumeJobs": [
+            {
+              "status": "succeeded",
+              "createdAt": "2026-10-21T02:55:45.487Z",
+              "completedAt": "2026-10-21T02:55:58.357Z"
+            }
+          ]
+        },
+        {
+          "number": 162,
+          "phase": "human",
+          "purpose": "readiness_probe",
+          "cardState": "human_required",
+          "humanSince": 1792551127553,
+          "resumeJobs": []
+        },
+        {
+          "number": 165,
+          "phase": "human",
+          "purpose": "readiness_probe",
+          "cardState": "human_required",
+          "humanSince": 1792551176666,
+          "resumeJobs": []
+        },
+        {
+          "number": 182,
+          "phase": "querying",
+          "purpose": "business",
+          "cardState": "running",
+          "humanSince": null,
+          "resumeJobs": []
+        },
+        {
+          "number": 112,
+          "phase": "querying",
+          "purpose": "readiness_probe",
+          "cardState": "running",
+          "humanSince": null,
+          "resumeJobs": []
+        },
+        {
+          "number": 67,
+          "phase": "human",
+          "purpose": "readiness_probe",
+          "cardState": "human_required",
+          "humanSince": 1792551336140,
+          "resumeJobs": []
+        },
+        {
+          "number": 163,
+          "phase": "starting",
+          "purpose": "readiness_probe",
+          "cardState": "preparing",
+          "humanSince": null,
+          "resumeJobs": []
+        }
+      ]
+    }
+  ],
+  "earlierHumanOutcomes": [
+    {
+      "number": 115,
+      "originalHumanAt": "2026-10-21T02:20:58.011Z",
+      "resumeJobs": [],
+      "stops": [
+        {
+          "kind": "alipay_name_stop",
+          "status": "succeeded",
+          "at": "2026-10-21T02:49:44.301Z",
+          "completedAt": "2026-10-21T02:49:50.175Z",
+          "resume": false,
+          "errorCode": ""
+        }
+      ]
+    },
+    {
+      "number": 188,
+      "originalHumanAt": "2026-10-21T02:21:32.945Z",
+      "resumeJobs": [],
+      "stops": [
+        {
+          "kind": "alipay_name_stop",
+          "status": "succeeded",
+          "at": "2026-10-21T02:49:50.324Z",
+          "completedAt": "2026-10-21T02:49:59.905Z",
+          "resume": false,
+          "errorCode": ""
+        }
+      ]
+    },
+    {
+      "number": 161,
+      "originalHumanAt": "2026-10-21T02:21:35.787Z",
+      "resumeJobs": [],
+      "stops": [
+        {
+          "kind": "alipay_name_stop",
+          "status": "succeeded",
+          "at": "2026-10-21T02:50:00.074Z",
+          "completedAt": "2026-10-21T02:50:07.717Z",
+          "resume": false,
+          "errorCode": ""
+        }
+      ]
+    },
+    {
+      "number": 181,
+      "originalHumanAt": "2026-10-21T02:33:52.066Z",
+      "resumeJobs": [
+        {
+          "kind": "alipay_name_query",
+          "status": "succeeded",
+          "at": "2026-10-21T02:46:38.759Z",
+          "completedAt": "2026-10-21T02:46:52.942Z",
+          "resume": true,
+          "errorCode": ""
+        }
+      ],
+      "stops": [
+        {
+          "kind": "alipay_name_stop",
+          "status": "succeeded",
+          "at": "2026-10-21T02:48:08.474Z",
+          "completedAt": "2026-10-21T02:48:11.390Z",
+          "resume": false,
+          "errorCode": ""
+        }
+      ]
+    },
+    {
+      "number": 182,
+      "originalHumanAt": "2026-10-21T02:34:55.354Z",
+      "resumeJobs": [
+        {
+          "kind": "alipay_name_query",
+          "status": "succeeded",
+          "at": "2026-10-21T02:43:37.802Z",
+          "completedAt": "2026-10-21T02:43:47.573Z",
+          "resume": true,
+          "errorCode": ""
+        }
+      ],
+      "stops": [
+        {
+          "kind": "alipay_name_stop",
+          "status": "succeeded",
+          "at": "2026-10-21T02:49:16.818Z",
+          "completedAt": "2026-10-21T02:49:18.840Z",
+          "resume": false,
+          "errorCode": ""
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "No new observation leases or phone operations issued",
+    "Actual user-completion timestamps unavailable; time since first challenge is not completion latency",
+    "Missing archived request rows prevent assigning a stop cause to 115/188/161"
+  ]
+}
