@@ -929,5 +929,38 @@
     "roundIdleSince": [
       null
     ]
+  },
+  "classificationCodeVerification": {
+    "automationCenterSha256": "7c9de128f64f142988f12d5dcdd1138c510ab76e90a4ac6b0b423076896fa7cd",
+    "input": {
+      "kind": "alipay_name_query",
+      "status": "failed",
+      "resumeAfterHumanVerification": false,
+      "restartAfterHumanVerification": false,
+      "lookupId": "362dd13d-c04e-4277-85f3-17dbda8f89e3",
+      "result": {
+        "errorCode": "alipay_lookup_failed",
+        "diagnostic": {
+          "runnerReason": "poco_query_page_recovery_failed"
+        }
+      },
+      "resultId": ""
+    },
+    "cases": [
+      {
+        "label": "actual_worker_exit",
+        "needsRecovery": false
+      },
+      {
+        "label": "same_failure_human_resume",
+        "needsRecovery": true
+      },
+      {
+        "label": "unconfirmed_result",
+        "needsRecovery": true
+      }
+    ],
+    "execution": "local pure function extracted from live verified source",
+    "productionWrites": false
   }
 }
