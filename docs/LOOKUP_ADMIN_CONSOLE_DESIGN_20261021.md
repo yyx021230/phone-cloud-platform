@@ -1,6 +1,10 @@
 # 支付宝查名字管理后台设计
 
-## 当前采用：v3 全部账号与失败截图
+## 当前采用：v4 简洁布局收尾
+
+保持v3功能与一页结构，仅收尾交互：账号表有固定表头和明确滚动提示，不把页面无限拉长；筛选可一键清除；统计区分已知账号与尚未读取的手机；查询记录按最新时间排列。列表支持键盘滚动和焦点提示，仍为演示数据。真实账号状态、历史截图、采集与鉴权接口尚未接入，不改变查名调度或线上。
+
+## v3 全部账号与失败截图（继续沿用）
 
 延续v2一页简版，新增常驻的“全部手机与账号”，替换v2把完整名单放到详情的安排。不是只列本轮五台：名单中的每台手机都能找到，每个已知账号各占一行。完整后台仍为设计，未接生产。
 
@@ -233,7 +237,7 @@
 - `docs/prototypes/lookup-admin-20261021.html` SHA-256 `d2fac1f44511ee0d7ee2816ed643db5796ad34ac6d60e5b0456c3cb806595e9f`
 - `docs/prototypes/lookup-admin-20261021-desktop.jpg` SHA-256 `c99172329fc567998e4537c6c2a2f78fd6b666745b4ef961fff35172402d95cc`
 
-### v3 实际检查与文件哈希
+### v3 实际检查与文件哈希（对应v3标签）
 
 - 起点：`ab9072be83c00dc3b30ea0004a69a93caa7f2d49`，分支`codex/lookup-admin-design-20261021`；起始工作区干净。
 - 内联JS `node --check`通过；浏览器遍历6页，确认48个不同手机均可见。按冷却筛出172/161的3个账号，161详情显示2个账号并区分有图入口/未留存。
@@ -246,3 +250,13 @@
 - `docs/prototypes/lookup-admin-20261021.html`：SHA-256 `e8cd060b72bbde02a1c6654ca22f17e7c274635507a5bd9b548abb22cc8e3050`。
 - `docs/prototypes/lookup-admin-20261021-desktop.jpg`：SHA-256 `23af665996f2ac11e3d9c31ea957f64af596d13f2c0be3f23b29daa92aded53a`。
 - `docs/prototypes/lookup-admin-20261021-accounts.jpg`：SHA-256 `ea70d0240705a05857c508b99a80e699fe88e0516935786333fa68b8fa79dc05`。
+
+### v4 实际验证与版本
+
+起点`e2f6d152e1a67d95df31a89c308c68a62e387c3c`，设计分支保持独立。搜索161得到1台2账号，清除筛选后恢复48台/14个演示已知账号/39台未读取；记录时间按降序显示。浏览器键盘PageDown滚动账号表439.5px，表头仍固定在容器顶部1px；390px窄屏整页无溢出，warn/error为空。内联JS语法与差异检查通过。首次立即读取滚动值为0，待浏览器完成滚动后已核实，未把未完成滚动当成失败或通过。
+
+仅原型和文档/预览，无运行时测试或生产访问。旧候选与根仓工作保留，未推送/上线；v4标签独立，不移动历史标签，设计回退可审阅本次提交后单独revert。
+
+- `docs/prototypes/lookup-admin-20261021.html` SHA-256 `a4e5073a1167b36d1daf10ee621980e62ca28f1acb2ce71cb8410b14d595dec8`
+- `docs/prototypes/lookup-admin-20261021-desktop.jpg` SHA-256 `19ebb07ced1d983439b23aea4ae9507908d1db759c10debf88ba02bd7f382026`
+- `docs/prototypes/lookup-admin-20261021-accounts.jpg` SHA-256 `48418b9113f2f9dc575fff9dacbb43bc0d08574949aa4f0f2c1099d97795d291`
