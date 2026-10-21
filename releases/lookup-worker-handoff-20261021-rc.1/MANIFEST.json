@@ -1,0 +1,7 @@
+{
+  "server/automation-center.mjs": "76e197e2b01b2f625d068cede5b9b2e4d224598e50531072b8cf9313bb83ecae",
+  "server/managed-lookup-platform.mjs": "e0c95c607d50944f56a07b033d4548faa466f22ce92bff496186058f3c678a05",
+  "server/managed-lookup.mjs": "1151d4b009c5c973a96c6025879cc3e02cb0ecdc6d60dee674b0285cdf5a597a",
+  "server/lookup-automatic-recovery.test.mjs": "00542d101107df77e120d9dc5729f8bee5c8aa31b1f8bcd37ff00d2c3d0ca1fe",
+  "verification/worker-handoff-http.mjs": "98947d6912ddc4c619da929eed3d196a1c17b1164dba8f9919bb4cdd28b10c5c"
+}
