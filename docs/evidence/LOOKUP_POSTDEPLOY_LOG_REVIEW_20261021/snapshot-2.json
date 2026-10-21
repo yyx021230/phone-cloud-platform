@@ -1,0 +1,166 @@
+{
+  "at": "2026-10-21T04:04:56.251Z",
+  "health": true,
+  "ready": true,
+  "total": 131,
+  "listed": 125,
+  "freshOnline": 117,
+  "adbStates": {
+    "device": 117,
+    "usb_composite_no_adb_interface": 1,
+    "physically_absent": 12,
+    "unauthorized": 1
+  },
+  "controls": [
+    "155",
+    "159",
+    "154",
+    "124",
+    "54"
+  ],
+  "counts": {
+    "registered": 48,
+    "executing": 1,
+    "waitingHuman": 0,
+    "queued": 0
+  },
+  "channels": [
+    {
+      "number": 115,
+      "phase": "idle",
+      "sessionStatus": "ready",
+      "observation": null,
+      "purpose": "business",
+      "humanWaitMs": null
+    },
+    {
+      "number": 58,
+      "phase": "idle",
+      "sessionStatus": "ready",
+      "observation": null,
+      "purpose": "business",
+      "humanWaitMs": null
+    },
+    {
+      "number": 182,
+      "phase": "idle",
+      "sessionStatus": "ready",
+      "observation": null,
+      "purpose": "business",
+      "humanWaitMs": null
+    },
+    {
+      "number": 172,
+      "phase": "idle",
+      "sessionStatus": "ready",
+      "observation": null,
+      "purpose": "business",
+      "humanWaitMs": null
+    },
+    {
+      "number": 112,
+      "phase": "querying",
+      "sessionStatus": "querying",
+      "observation": null,
+      "requestStatus": "running",
+      "purpose": "readiness_probe",
+      "humanWaitMs": null
+    }
+  ],
+  "recentCounts": {
+    "readiness_probe:succeeded:": 6,
+    "readiness_probe:cancelled:lookup_probe_human_replaced": 4,
+    "readiness_probe:failed:lookup_probe_failed": 3,
+    "readiness_probe:running:": 1
+  },
+  "unfinished": [
+    {
+      "purpose": "readiness_probe",
+      "status": "running",
+      "ageSec": 70,
+      "attempts": 1
+    }
+  ],
+  "archivedSinceDeploy": [
+    {
+      "purpose": "readiness_probe",
+      "status": "cancelled",
+      "code": "lookup_probe_human_replaced",
+      "count": 5
+    },
+    {
+      "purpose": "readiness_probe",
+      "status": "failed",
+      "code": "lookup_probe_failed",
+      "count": 3
+    },
+    {
+      "purpose": "readiness_probe",
+      "status": "succeeded",
+      "code": "",
+      "count": 6
+    }
+  ],
+  "taskStatsSinceDeploy": [
+    {
+      "type": "alipay_name_query",
+      "status": "failed",
+      "count": 7,
+      "latest": "2026-10-21T04:01:29.021Z"
+    },
+    {
+      "type": "alipay_name_query",
+      "status": "running",
+      "count": 1,
+      "latest": "2026-10-21T04:04:55.814Z"
+    },
+    {
+      "type": "alipay_name_query",
+      "status": "succeeded",
+      "count": 6,
+      "latest": "2026-10-21T04:02:00.862Z"
+    },
+    {
+      "type": "alipay_name_start",
+      "status": "failed",
+      "count": 3,
+      "latest": "2026-10-21T04:03:46.199Z"
+    },
+    {
+      "type": "alipay_name_start",
+      "status": "succeeded",
+      "count": 5,
+      "latest": "2026-10-21T04:04:43.163Z"
+    },
+    {
+      "type": "alipay_name_stop",
+      "status": "succeeded",
+      "count": 6,
+      "latest": "2026-10-21T04:03:37.955Z"
+    }
+  ],
+  "rounds": [
+    {
+      "opened": true,
+      "keys": [
+        "clientId",
+        "createdAt",
+        "expiresAt",
+        "idleSince",
+        "idlePolicy",
+        "loginEpoch",
+        "probeDemand",
+        "idleTimeoutMs",
+        "preparationId",
+        "probeAttempts",
+        "admissionOpenedAt"
+      ]
+    }
+  ],
+  "agents": [
+    {
+      "lastSeenAt": "2026-10-21T04:04:47.881Z",
+      "heartbeatAgeSec": 8
+    }
+  ]
+}

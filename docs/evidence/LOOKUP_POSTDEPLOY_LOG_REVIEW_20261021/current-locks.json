@@ -1,0 +1,57 @@
+[
+  {
+    "number": 115,
+    "phase": "idle",
+    "locks": [
+      {
+        "status": "expired",
+        "expiresAt": "2026-10-21T03:50:38.350Z",
+        "updatedAt": "2026-10-21T03:55:37.510Z"
+      }
+    ]
+  },
+  {
+    "number": 58,
+    "phase": "querying",
+    "locks": [
+      {
+        "status": "active",
+        "expiresAt": "2026-10-21T04:08:11.175Z",
+        "updatedAt": "2026-10-21T03:58:11.175Z"
+      }
+    ]
+  },
+  {
+    "number": 182,
+    "phase": "idle",
+    "locks": [
+      {
+        "status": "active",
+        "expiresAt": "2026-10-21T04:08:13.432Z",
+        "updatedAt": "2026-10-21T03:58:13.432Z"
+      }
+    ]
+  },
+  {
+    "number": 172,
+    "phase": "idle",
+    "locks": [
+      {
+        "status": "active",
+        "expiresAt": "2026-10-21T04:10:45.545Z",
+        "updatedAt": "2026-10-21T04:00:45.545Z"
+      }
+    ]
+  },
+  {
+    "number": 112,
+    "phase": "human",
+    "locks": [
+      {
+        "status": "active",
+        "expiresAt": "2026-10-21T04:13:46.400Z",
+        "updatedAt": "2026-10-21T04:03:46.400Z"
+      }
+    ]
+  }
+]

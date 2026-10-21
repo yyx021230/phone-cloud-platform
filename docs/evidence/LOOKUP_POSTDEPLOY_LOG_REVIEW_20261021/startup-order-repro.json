@@ -1,0 +1,7 @@
+{
+  "kind": "local_actual_function_with_mock_state",
+  "beforeManagedCoordinator": "expired",
+  "afterManagedCoordinator": "active",
+  "startupDiagnosticsBeforeCoordinator": true,
+  "productionChanged": false
+}

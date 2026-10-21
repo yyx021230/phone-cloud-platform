@@ -1,0 +1,86 @@
+[
+  {
+    "number": "161",
+    "sessionStatus": "ended",
+    "matchingLocks": [
+      {
+        "status": "expired",
+        "type": "alipay_name_lookup",
+        "ownerMatch": true,
+        "updatedAt": "2026-10-21T03:55:37.514Z",
+        "expiresAt": "2026-10-21T03:38:00.702Z"
+      }
+    ],
+    "deviceAgentMatchesSession": null
+  },
+  {
+    "number": "182",
+    "sessionStatus": "ready",
+    "matchingLocks": [
+      {
+        "status": "active",
+        "type": "alipay_name_lookup",
+        "ownerMatch": true,
+        "updatedAt": "2026-10-21T03:58:13.432Z",
+        "expiresAt": "2026-10-21T04:08:13.432Z"
+      }
+    ],
+    "deviceAgentMatchesSession": null
+  },
+  {
+    "number": "58",
+    "sessionStatus": "ready",
+    "matchingLocks": [
+      {
+        "status": "active",
+        "type": "alipay_name_lookup",
+        "ownerMatch": true,
+        "updatedAt": "2026-10-21T03:58:11.175Z",
+        "expiresAt": "2026-10-21T04:08:11.175Z"
+      }
+    ],
+    "deviceAgentMatchesSession": null
+  },
+  {
+    "number": "165",
+    "sessionStatus": "ended",
+    "matchingLocks": [
+      {
+        "status": "expired",
+        "type": "alipay_name_lookup",
+        "ownerMatch": true,
+        "updatedAt": "2026-10-21T03:55:37.514Z",
+        "expiresAt": "2026-10-21T03:32:38.944Z"
+      }
+    ],
+    "deviceAgentMatchesSession": null
+  },
+  {
+    "number": "138",
+    "sessionStatus": "ended",
+    "matchingLocks": [
+      {
+        "status": "expired",
+        "type": "alipay_name_lookup",
+        "ownerMatch": true,
+        "updatedAt": "2026-10-21T03:55:37.513Z",
+        "expiresAt": "2026-10-21T03:49:41.348Z"
+      }
+    ],
+    "deviceAgentMatchesSession": null
+  },
+  {
+    "number": "53",
+    "sessionStatus": "ended",
+    "matchingLocks": [
+      {
+        "status": "expired",
+        "type": "alipay_name_lookup",
+        "ownerMatch": true,
+        "updatedAt": "2026-10-21T03:55:37.513Z",
+        "expiresAt": "2026-10-21T03:42:58.507Z"
+      }
+    ],
+    "deviceAgentMatchesSession": null
+  }
+]

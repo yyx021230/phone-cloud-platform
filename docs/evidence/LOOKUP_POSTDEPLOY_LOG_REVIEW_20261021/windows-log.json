@@ -1,0 +1,145 @@
+{
+  "at": "2026-10-21T04:03:12.0310731Z",
+  "logUpdated": "2026-10-21T04:03:11.8207863Z",
+  "adbPath": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+  "counts": {
+    "sms notification fallback device skipped": 18,
+    "forced airtest device cleanup completed": 16,
+    "task picked": 24,
+    "sms library synced": 360,
+    "airtest worker event": 290,
+    "Airtest/Poco worker probe failed; rebuilding before task": 1,
+    "sms notification fallback cycle completed": 145,
+    "starting": 1,
+    "sms notification fallback device result": 50,
+    "pnp global rescan blocked by policy": 6,
+    "battery refresh skipped": 1,
+    "sms subscription map returned no rows": 4,
+    "Airtest/Poco worker probe passed": 28,
+    "tasks dispatched": 21,
+    "screen control preempted sms notification fallback": 1,
+    "Airtest/Poco worker admitted": 26,
+    "post-task device scan skipped": 24,
+    "pnp physical adb candidates": 6,
+    "health": 1,
+    "airtest lookup warm lease renewed": 10,
+    "task poll wake failed": 1,
+    "pnp recovery safety": 1,
+    "airtest forward cleanup completed": 21,
+    "synced devices": 16,
+    "forcing stuck airtest worker to stop": 16,
+    "automation remains on demand after screen control": 10,
+    "airtest lookup warm lease cleared": 1,
+    "automation resume scheduled for active lookup session": 2,
+    "airtest worker stop completed": 21,
+    "sms library device sync failed": 35,
+    "automation paused for screen control": 10,
+    "sms notification trusted package profile updated": 116,
+    "sms library background sync already running": 5
+  },
+  "adbPid": 8988,
+  "recent": [
+    {
+      "at": "2026-10-21T04:00:17.913Z",
+      "message": "automation resume scheduled for active lookup session"
+    },
+    {
+      "at": "2026-10-21T04:00:29.595Z",
+      "message": "post-task device scan skipped"
+    },
+    {
+      "at": "2026-10-21T04:00:29.965Z",
+      "message": "airtest lookup warm lease cleared"
+    },
+    {
+      "at": "2026-10-21T04:00:35.460Z",
+      "message": "post-task device scan skipped"
+    },
+    {
+      "at": "2026-10-21T04:00:35.785Z",
+      "message": "sms notification fallback device skipped"
+    },
+    {
+      "at": "2026-10-21T04:00:38.120Z",
+      "message": "sms notification fallback device skipped"
+    },
+    {
+      "at": "2026-10-21T04:00:38.627Z",
+      "message": "airtest lookup warm lease renewed"
+    },
+    {
+      "at": "2026-10-21T04:00:38.658Z",
+      "message": "post-task device scan skipped"
+    },
+    {
+      "at": "2026-10-21T04:00:45.095Z",
+      "message": "post-task device scan skipped"
+    },
+    {
+      "at": "2026-10-21T04:00:49.019Z",
+      "message": "battery refresh skipped"
+    },
+    {
+      "at": "2026-10-21T04:00:50.039Z",
+      "message": "sms notification fallback device skipped"
+    },
+    {
+      "at": "2026-10-21T04:01:11.227Z",
+      "message": "sms notification fallback device skipped"
+    },
+    {
+      "at": "2026-10-21T04:01:11.284Z",
+      "message": "sms library device sync failed"
+    },
+    {
+      "at": "2026-10-21T04:01:11.825Z",
+      "message": "Airtest/Poco worker probe failed; rebuilding before task"
+    },
+    {
+      "at": "2026-10-21T04:01:22.428Z",
+      "message": "airtest lookup warm lease renewed"
+    },
+    {
+      "at": "2026-10-21T04:01:22.473Z",
+      "message": "post-task device scan skipped"
+    },
+    {
+      "at": "2026-10-21T04:01:28.703Z",
+      "message": "post-task device scan skipped"
+    },
+    {
+      "at": "2026-10-21T04:01:45.419Z",
+      "message": "airtest lookup warm lease renewed"
+    },
+    {
+      "at": "2026-10-21T04:01:45.449Z",
+      "message": "post-task device scan skipped"
+    },
+    {
+      "at": "2026-10-21T04:02:00.507Z",
+      "message": "airtest lookup warm lease renewed"
+    },
+    {
+      "at": "2026-10-21T04:02:00.560Z",
+      "message": "post-task device scan skipped"
+    },
+    {
+      "at": "2026-10-21T04:02:11.349Z",
+      "message": "sms notification fallback device skipped"
+    },
+    {
+      "at": "2026-10-21T04:02:13.680Z",
+      "message": "sms notification fallback device skipped"
+    },
+    {
+      "at": "2026-10-21T04:02:15.990Z",
+      "message": "sms notification fallback device skipped"
+    },
+    {
+      "at": "2026-10-21T04:02:28.741Z",
+      "message": "sms notification fallback device skipped"
+    }
+  ],
+  "tailLimit": 6000,
+  "adbOwner": "NT AUTHORITY\\SYSTEM"
+}
