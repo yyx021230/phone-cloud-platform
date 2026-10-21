@@ -1,0 +1,24 @@
+{
+  "candidate": "lookup-admin-20261021-rc.3",
+  "nodeFullPassed": 1029,
+  "nodeFullLogSha256": "2ea6af90cf860fcaa30738395e15b3b1f4f855829dede994b239ead25d556c25",
+  "assembly": "all layers and production diff verified",
+  "syntax": "passed",
+  "browser": {
+    "actualLocalHttp": true,
+    "devices": 48,
+    "requestRows": 65,
+    "accountSearch": true,
+    "requestPagination": true,
+    "failureDetail": true,
+    "imageDecoded": true,
+    "imageFixture": "synthetic 1px PNG, not real phone",
+    "preservedCsp": true,
+    "viewport390NoPageOverflow": true,
+    "consoleErrors": 0
+  },
+  "inheritedPythonAndHttpEvidence": "../lookup-admin-20261021-rc.1/verification/RESULTS.json",
+  "productionServiceChanged": false,
+  "realDevices": 0,
+  "correctedPriorClaim": "rc.2 packaged tests were 1028, not 1029; final rc.3 actually 1029"
+}
