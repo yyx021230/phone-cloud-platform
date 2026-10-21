@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-21T04:03:32.498731+00:00",
+  "lines": 12000,
+  "from": "2026-10-21T04:00:54.978Z",
+  "until": "2026-10-21T04:03:32.252Z",
+  "httpStatusCounts": {
+    "401": 931,
+    "200": 1547,
+    "201": 36
+  },
+  "humanProbeRoutes": {
+    "GET:200": 52
+  },
+  "probeMaxMs": 1.0,
+  "errors": {
+    "GET /api/v1/devices/:id/commands/next 401": 546,
+    "GET /api/v1/devices/:id/activation-windows 401": 273,
+    "POST /api/v1/devices/heartbeat 401": 77,
+    "POST /api/v1/sms-events 401": 35
+  }
+}

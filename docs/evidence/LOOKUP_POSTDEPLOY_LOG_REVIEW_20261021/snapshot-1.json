@@ -1,0 +1,158 @@
+{
+  "at": "2026-10-21T04:02:15.034Z",
+  "health": true,
+  "ready": true,
+  "total": 131,
+  "listed": 125,
+  "freshOnline": 117,
+  "adbStates": {
+    "device": 117,
+    "usb_composite_no_adb_interface": 1,
+    "physically_absent": 12,
+    "unauthorized": 1
+  },
+  "controls": [
+    "159",
+    "154",
+    "54"
+  ],
+  "counts": {
+    "registered": 48,
+    "executing": 0,
+    "waitingHuman": 1,
+    "queued": 0
+  },
+  "channels": [
+    {
+      "number": 161,
+      "phase": "human",
+      "sessionStatus": "ready",
+      "observation": null,
+      "requestStatus": "waiting_human",
+      "purpose": "readiness_probe",
+      "humanWaitMs": 45729
+    },
+    {
+      "number": 115,
+      "phase": "idle",
+      "sessionStatus": "ready",
+      "observation": null,
+      "purpose": "business",
+      "humanWaitMs": null
+    },
+    {
+      "number": 58,
+      "phase": "idle",
+      "sessionStatus": "ready",
+      "observation": null,
+      "purpose": "business",
+      "humanWaitMs": null
+    },
+    {
+      "number": 182,
+      "phase": "idle",
+      "sessionStatus": "ready",
+      "observation": null,
+      "purpose": "business",
+      "humanWaitMs": null
+    },
+    {
+      "number": 172,
+      "phase": "idle",
+      "sessionStatus": "ready",
+      "observation": null,
+      "purpose": "business",
+      "humanWaitMs": null
+    }
+  ],
+  "recentCounts": {
+    "readiness_probe:succeeded:": 6,
+    "readiness_probe:cancelled:lookup_probe_human_replaced": 3,
+    "readiness_probe:failed:lookup_probe_failed": 2,
+    "readiness_probe:waiting_human:": 1
+  },
+  "unfinished": [
+    {
+      "purpose": "readiness_probe",
+      "status": "waiting_human",
+      "ageSec": 65,
+      "attempts": 1
+    }
+  ],
+  "archivedSinceDeploy": [
+    {
+      "purpose": "readiness_probe",
+      "status": "cancelled",
+      "code": "lookup_probe_human_replaced",
+      "count": 4
+    },
+    {
+      "purpose": "readiness_probe",
+      "status": "failed",
+      "code": "lookup_probe_failed",
+      "count": 2
+    },
+    {
+      "purpose": "readiness_probe",
+      "status": "succeeded",
+      "code": "",
+      "count": 6
+    }
+  ],
+  "taskStatsSinceDeploy": [
+    {
+      "type": "alipay_name_query",
+      "status": "failed",
+      "count": 7,
+      "latest": "2026-10-21T04:01:29.021Z"
+    },
+    {
+      "type": "alipay_name_query",
+      "status": "succeeded",
+      "count": 6,
+      "latest": "2026-10-21T04:02:00.862Z"
+    },
+    {
+      "type": "alipay_name_start",
+      "status": "failed",
+      "count": 2,
+      "latest": "2026-10-21T04:00:45.390Z"
+    },
+    {
+      "type": "alipay_name_start",
+      "status": "succeeded",
+      "count": 4,
+      "latest": "2026-10-21T04:01:45.743Z"
+    },
+    {
+      "type": "alipay_name_stop",
+      "status": "succeeded",
+      "count": 5,
+      "latest": "2026-10-21T04:00:35.752Z"
+    }
+  ],
+  "rounds": [
+    {
+      "opened": true,
+      "keys": [
+        "clientId",
+        "createdAt",
+        "expiresAt",
+        "idleSince",
+        "idlePolicy",
+        "loginEpoch",
+        "probeDemand",
+        "idleTimeoutMs",
+        "preparationId",
+        "probeAttempts",
+        "admissionOpenedAt"
+      ]
+    }
+  ],
+  "agents": [
+    {
+      "lastSeenAt": "2026-10-21T04:01:47.844Z",
+      "heartbeatAgeSec": 27
+    }
+  ]
+}

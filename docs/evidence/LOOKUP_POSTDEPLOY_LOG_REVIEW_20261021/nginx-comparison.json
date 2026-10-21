@@ -1,0 +1,59 @@
+[
+  {
+    "file": "sms-code-center.access.log",
+    "tailLimit": 50000,
+    "matched": 22897,
+    "from": "2026-10-21T11:39:55+08:00",
+    "until": "2026-10-21T12:05:19+08:00",
+    "unauthorizedRoutes": [
+      {
+        "period": "before",
+        "route": "activation_windows",
+        "count": 1496
+      },
+      {
+        "period": "before",
+        "route": "device_commands",
+        "count": 2988
+      },
+      {
+        "period": "before",
+        "route": "device_heartbeat",
+        "count": 405
+      },
+      {
+        "period": "before",
+        "route": "sms_events",
+        "count": 183
+      },
+      {
+        "period": "after",
+        "route": "activation_windows",
+        "count": 994
+      },
+      {
+        "period": "after",
+        "route": "device_commands",
+        "count": 1988
+      },
+      {
+        "period": "after",
+        "route": "sms_events",
+        "count": 123
+      },
+      {
+        "period": "after",
+        "route": "device_heartbeat",
+        "count": 270
+      }
+    ]
+  },
+  {
+    "file": "nightshift.access.log",
+    "tailLimit": 50000,
+    "matched": 0,
+    "from": null,
+    "until": null,
+    "unauthorizedRoutes": []
+  }
+]

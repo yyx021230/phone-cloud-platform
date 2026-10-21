@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-21T04:05:56.574Z",
+  "rounds": [
+    {
+      "createdAt": 1792547109007,
+      "expiresAt": 1792555545272,
+      "idleSince": 1792554645272,
+      "idleTimeoutMs": 900000,
+      "admissionOpenedAt": 1792554966669,
+      "probeDemand": false
+    }
+  ]
+}
