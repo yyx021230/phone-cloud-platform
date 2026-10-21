@@ -1,0 +1,18 @@
+{
+  "server/lookup-admin-console.mjs": "ca3ce3599efca38b0687b7e3fc263dbeae0cf7637268da3983286b32b5ce5aef",
+  "server/managed-lookup.http.test.mjs": "cdd557668a922671f3008f7221136bdd06e80e46b295ed2667ded94ab5c132ab",
+  "server/lookup-admin-console.http.test.mjs": "c9a496c91d3951995910fa4ed0126df9b6401c5ec6d879a599ad3d795d6cec6e",
+  "server/managed-lookup-store.mjs": "5332f9f0070c27ba098701149c996a63dfce782a4cb33fd2c50e443c29914b04",
+  "server/index.mjs": "ba40304f4e9dfe4a8b8898767a6476436c79fb30c52f75e98da5b2dcfce82c4e",
+  "server/managed-lookup.mjs": "951d79a8de66d50d693292f4fcd39c3b2cbbc2fdd00bf225581458937de03cc9",
+  "server/automation-center-ui.test.mjs": "df4bf0c8fa9fe1e7fd1ca79cc14c5e51c08539dabd8484441c767bd51fd32d55",
+  "server/lookup-admin-console.test.mjs": "1897a433381b4eb998cdf0e2e97ea608f15447946ba4f35fcb9bcf463e2de361",
+  "public/index.html": "e114d8ff9999831bb34cd7970e943be57dcde86a8c2671784656b381ca722132",
+  "public/lookup-admin.js": "af95538267a9df8dc8b2bd3c1bbf2cd71911b63081aaf066dc75869c7a2f08f4",
+  "public/lookup-admin.css": "bf14d0406c94257e19be1216264569a831182b782b2abc7771f3aba1d44c1eed",
+  "public/lookup-admin.html": "ce3c519ce79d75b7a65ca292026a2b3dd4881e906d6916a95d49cf677f538e8e",
+  "public/app.js": "a864f2f6874f3d4a536e0065f205d22992ab01e6524b56c28f249890dac895d1",
+  "screen-client/screen-ui.test.mjs": "ffe204478a6e6f0cf77613a87fb99bf6a8f874be125051ea12c0853a3ecb6f28",
+  "verification/admin-console-preview.mjs": "5b21d032daa3f9bfd37e5c099075f34ad52782da4227a29b94a2f395900de9c7",
+  "verification/admin-console-postgres.mjs": "26d05b7530416c6d95d1eba89bcc32acddf2c8c45b301a899944aed43490ca61"
+}
