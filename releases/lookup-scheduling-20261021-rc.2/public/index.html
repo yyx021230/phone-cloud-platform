@@ -1,0 +1,958 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Phone Cloud Platform</title>
+  <link rel="stylesheet" href="./styles.css?v=20261020-lookup-card-rc1" />
+  </head>
+  <body class="booting">
+    <div class="boot-loader" aria-label="正在加载 Phone Cloud">
+      <div class="boot-progress"><i></i></div>
+      <div class="boot-mark">
+        <span>PC</span>
+        <b></b>
+      </div>
+      <strong>Phone Cloud</strong>
+      <small>正在同步会话和设备状态</small>
+    </div>
+    <section id="loginScreen" class="login-screen" aria-label="Phone Cloud 登录">
+      <div class="login-brand">
+        <span>PC</span>
+        <div>
+          <strong>Phone Cloud</strong>
+          <small>手机云控与自动化工作台</small>
+        </div>
+      </div>
+      <form id="loginForm" class="login-card">
+        <div>
+          <p class="login-kicker">PHONE CLOUD ACCESS</p>
+          <h1>登录平台</h1>
+          <p>设备状态、短信库、扫码任务统一管理。</p>
+        </div>
+        <label>
+          <span>账号</span>
+          <input id="loginUsernameInput" autocomplete="username" placeholder="请输入账号" required />
+        </label>
+        <label>
+          <span>密码</span>
+          <input id="loginPasswordInput" type="password" autocomplete="current-password" placeholder="请输入密码" required />
+        </label>
+        <button type="submit">进入工作台</button>
+        <div class="login-security-note">安全连接 · 操作审计 · 权限隔离</div>
+        <div class="login-live-status" aria-label="系统状态">
+          <span><i></i>Windows 管理器在线</span>
+          <span><i></i>ADB 设备同步中</span>
+        </div>
+        <p id="loginHint" class="hint"></p>
+      </form>
+    </section>
+
+    <aside class="sidebar">
+      <div class="brand">
+        <span>PC</span>
+        <div>
+          <strong>Phone Cloud</strong>
+          <small>ADB Operations</small>
+        </div>
+      </div>
+      <nav>
+        <span class="nav-section-label">工作台</span>
+        <button data-page-button="user-workbench" data-role-page="user" type="button">用户工作台</button>
+        <button class="active" data-page-button="dashboard" type="button">总览</button>
+        <span class="nav-section-label">资源管理</span>
+        <button data-page-button="users" data-role-page="admin" type="button">用户账号</button>
+        <button data-page-button="windows" type="button">Windows 管理器</button>
+        <button data-page-button="devices" type="button">手机设备</button>
+        <button data-page-button="sms" type="button">短信接收</button>
+        <button data-page-button="xhs" type="button">小红书扫码</button>
+        <span class="nav-section-label">系统维护</span>
+        <button data-page-button="workflow-scripts" type="button">自动化脚本</button>
+        <button data-page-button="release" type="button">APK 发布</button>
+        <button data-page-button="diagnostics" type="button">诊断检查</button>
+        <button data-page-button="audit" type="button">审计日志</button>
+        <button data-settings-open type="button">设置</button>
+      </nav>
+      <div class="auth-box">
+        <div class="auth-status">
+          <strong id="authUserName">未登录</strong>
+          <small id="authUserRole">请登录平台账号</small>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div id="userTopBrand" class="topbar-brand hidden">
+          <span>PC</span>
+          <div>
+            <strong>Phone Cloud</strong>
+            <small>用户工作台</small>
+          </div>
+        </div>
+        <div id="defaultTopTitle">
+          <h1 id="pageTitle">总览</h1>
+          <p id="pageSummary">平台、Windows 管理器和手机状态</p>
+        </div>
+        <div id="userTopMetrics" class="user-top-metrics hidden" aria-label="设备库存统计">
+          <div><span>手机总数</span><strong id="userTopTotalDevices">0</strong></div>
+          <div><span>可用</span><strong id="userTopAvailableDevices">0</strong></div>
+          <div><span>在线</span><strong id="userTopOnlineDevices">0</strong></div>
+          <div><span>执行中</span><strong id="userTopBusyDevices">0</strong></div>
+        </div>
+        <div id="userTopIdentity" class="user-top-identity hidden">
+          <span id="userTopIdentityText">测试用户 · 普通用户</span>
+          <b id="userTopAvatar">测</b>
+        </div>
+        <button id="userTopAdminButton" class="top-settings-button user-top-admin-button hidden" type="button">管理后台</button>
+        <button id="topSettingsButton" class="top-settings-button hidden" type="button">设置</button>
+        <div class="topbar-actions">
+          <a class="ghost-button api-docs-entry" href="./api-docs.html" target="_blank" rel="noopener noreferrer" aria-label="打开 API 文档（新窗口）"><span aria-hidden="true">&lt;/&gt;</span> API 文档</a>
+          <a class="ghost-button" href="./lookup-pool.html">查名设备池</a>
+          <button id="refreshButton" type="button">刷新</button>
+        </div>
+      </header>
+
+      <section class="page" data-page="dashboard">
+        <div id="overviewGrid" class="metric-grid"></div>
+      </section>
+
+      <section class="page hidden user-workbench" data-page="user-workbench">
+        <div id="userDeviceInventoryView" class="user-device-inventory-view module-panel device-column">
+          <a class="ghost-button api-docs-entry api-docs-inventory-entry" href="./api-docs.html" target="_blank" rel="noopener noreferrer" aria-label="打开 API 文档（新窗口）"><span aria-hidden="true">&lt;/&gt;</span> API 文档</a>
+          <div class="user-inventory-head toolbar">
+            <div>
+              <h2>设备库存</h2>
+              <p id="userInventorySummary">正在读取手机池状态</p>
+            </div>
+            <div class="toolbar-actions">
+              <button id="userInventoryRefreshButton" class="ghost-button" type="button">刷新</button>
+            </div>
+          </div>
+          <div class="user-device-toolbar inventory-filters">
+            <input id="userDeviceSearchInput" class="search" placeholder="搜索设备名 / 设备 ID / 手机号 / 小红书账号" />
+            <select id="userDeviceStatusSelect" aria-label="状态筛选">
+              <option value="all">状态：全部</option>
+              <option value="online">在线</option>
+              <option value="available">可用</option>
+              <option value="busy">执行中</option>
+              <option value="unauthorized">未授权</option>
+              <option value="offline">未连接</option>
+            </select>
+            <select id="userDeviceBrandSelect" aria-label="品牌筛选">
+              <option value="">品牌：全部</option>
+            </select>
+            <select id="userDeviceAndroidSelect" aria-label="系统筛选">
+              <option value="">Android：全部</option>
+            </select>
+            <button id="userDeviceClearFiltersButton" class="ghost-button" type="button">重置筛选</button>
+          </div>
+          <div class="filter-strip status-tabs user-filter-chips" id="userDeviceFilterChips" aria-label="设备筛选">
+            <button class="filter-chip is-active active" data-user-device-filter="all" type="button">全部</button>
+            <button class="filter-chip" data-user-device-filter="online" type="button">在线</button>
+            <button class="filter-chip" data-user-device-filter="available" type="button">可用</button>
+            <button class="filter-chip" data-user-device-filter="busy" type="button"><i class="dot running"></i>执行中</button>
+            <button class="filter-chip" data-user-device-filter="unauthorized" type="button">未授权</button>
+            <button class="filter-chip" data-user-device-filter="offline" type="button">未连接</button>
+          </div>
+          <div id="userDeviceList" class="user-device-grid device-grid"></div>
+        </div>
+
+        <div id="userDeviceDetailView" class="user-device-detail-view hidden">
+          <div class="device-detail-page">
+            <div class="device-detail-titlebar">
+              <button id="userDeviceBackButton" class="ghost-button back-button prominent-back-button" type="button">返回设备库存</button>
+              <div class="user-detail-title-block">
+                <div class="user-detail-heading-row">
+                  <h2 id="userDeviceTitle">手机详情</h2>
+                  <div id="userDeviceSwitcher" class="user-device-switcher">
+                    <button id="userDeviceSwitcherButton" class="user-device-switcher-button" type="button" aria-haspopup="dialog" aria-controls="userDeviceSwitcherPanel" aria-expanded="false">
+                      <span>切换手机</span>
+                      <i aria-hidden="true">⌄</i>
+                    </button>
+                    <div id="userDeviceSwitcherPanel" class="user-device-switcher-panel" role="dialog" aria-label="切换手机" hidden>
+                      <div class="user-device-switcher-head">
+                        <div>
+                          <strong>切换手机</strong>
+                          <small id="userDeviceSwitcherCount">0 台</small>
+                        </div>
+                        <kbd>ESC</kbd>
+                      </div>
+                      <label class="user-device-switcher-search">
+                        <span aria-hidden="true"></span>
+                        <input id="userDeviceSwitcherSearch" type="search" autocomplete="off" placeholder="搜索编号 / 型号 / 手机号 / 账号" aria-label="搜索要切换的手机" />
+                      </label>
+                      <div id="userDeviceSwitcherList" class="user-device-switcher-list" role="listbox" aria-label="手机列表"></div>
+                    </div>
+                  </div>
+                </div>
+                <p id="userDeviceDetailMeta">这台手机的 ADB 短信库、验证码接收和小红书扫码任务。</p>
+              </div>
+              <div id="userDeviceStatusPills" class="device-detail-statusbar">
+                <span id="userDeviceDetailStatus" class="status-pill">未选择</span>
+              </div>
+            </div>
+
+            <section class="device-profile-panel">
+              <div id="userDeviceDetail" class="stack"></div>
+            </section>
+
+            <div id="userDetailTabs" class="detail-switch" role="tablist" aria-label="手机详情模块">
+              <button class="active" data-user-detail-tab="sms" type="button">短信库</button>
+              <button data-user-detail-tab="scan" type="button">自动化</button>
+              <button data-user-detail-tab="screen" type="button">实时控制</button>
+            </div>
+
+            <div class="device-detail-layout">
+              <section class="panel user-sms-library-panel sms-first-panel" data-user-detail-panel="sms">
+                <div class="section-head sms-library-head">
+                  <div>
+                    <h2>短信库（本机短信）</h2>
+                    <p id="userDeviceSmsHint">选择一台在线手机后查看。</p>
+                  </div>
+                  <button id="userDeviceSmsRefreshButton" class="ghost-button" type="button">刷新</button>
+                </div>
+                <div class="sms-library-toolbar">
+                  <input id="userSmsSearchInput" placeholder="搜索发件人 / 内容 / 验证码" />
+                  <select id="userSmsSimFilter" aria-label="短信 SIM 筛选">
+                    <option value="">全部 SIM</option>
+                  </select>
+                  <label class="toggle-row">
+                    <input id="userSmsCodeOnlyToggle" type="checkbox" />
+                    <span>仅验证码</span>
+                  </label>
+                </div>
+                <div id="userDeviceSmsList" class="sms-library-table"></div>
+                <div id="userSmsPagination" class="sms-pagination"></div>
+              </section>
+
+              <aside class="user-detail-action-rail scan-workspace" data-user-detail-panel="scan">
+                <div id="userAutomationModuleTabs" class="automation-module-tabs" role="tablist" aria-label="自动化模块">
+                  <button class="active" data-automation-module="scan" type="button" role="tab" aria-selected="true">
+                    <em>01</em><span><b>扫码任务</b><small>二维码登录</small></span><i aria-hidden="true">↗</i>
+                  </button>
+                  <button data-automation-module="publish" type="button" role="tab" aria-selected="false">
+                    <em>02</em><span><b>一键发布</b><small>图文笔记</small></span><i aria-hidden="true">↗</i>
+                  </button>
+                  <button data-automation-module="kuaishou" type="button" role="tab" aria-selected="false">
+                    <em>03</em><span><b>快手录入</b><small>飞书队列</small></span><i aria-hidden="true">↗</i>
+                  </button>
+                  <button data-automation-module="data" type="button" role="tab" aria-selected="false">
+                    <em>04</em><span><b>小红书数据采集</b><small>最近 30 天</small></span><i aria-hidden="true">↗</i>
+                  </button>
+                  <button data-automation-module="name" type="button" role="tab" aria-selected="false">
+                    <em>05</em><span><b>查名字</b><small>连续查询</small></span><i aria-hidden="true">↗</i>
+                  </button>
+                </div>
+                <form id="userXhsTaskForm" class="panel action-rail-card scan-create-card" data-automation-module-panel="scan">
+                  <div class="scan-create-hero">
+                    <div>
+                      <span class="scan-kicker">QR LOGIN</span>
+                      <h2>提交扫码任务</h2>
+                      <p>选择这台手机绑定的账号槽位，上传二维码后自动推送到手机执行。</p>
+                    </div>
+                    <strong>小红书</strong>
+                  </div>
+                  <div class="scan-flow-strip" aria-hidden="true">
+                    <span>选账号</span>
+                    <i></i>
+                    <span>传二维码</span>
+                    <i></i>
+                    <span>等结果</span>
+                  </div>
+                  <div class="scan-create-grid">
+                    <section class="scan-create-section scan-target-section">
+                      <div class="scan-section-label">
+                        <span>01</span>
+                        <strong>任务目标</strong>
+                      </div>
+                      <div id="userAutomationTargetCards" class="scan-target-board"></div>
+                      <label class="scan-field">
+                        <span>任务目标</span>
+                        <select name="target" id="userAutomationTargetSelect"></select>
+                      </label>
+                    </section>
+                    <section class="scan-create-section scan-upload-section">
+                      <div class="scan-section-label">
+                        <span>02</span>
+                        <strong>二维码图片</strong>
+                      </div>
+                      <label class="scan-upload-card">
+                        <input id="userQrImageInput" name="qrImage" type="file" accept="image/png,image/jpeg,image/webp" />
+                        <div id="userQrPreview" class="scan-qr-preview">
+                          <span class="scan-upload-icon">QR</span>
+                          <span class="scan-upload-copy">
+                            <strong>点击选择二维码</strong>
+                            <small>支持 PNG / JPEG / WebP，提交后自动推送到手机相册。</small>
+                          </span>
+                        </div>
+                      </label>
+                    </section>
+                  </div>
+                  <div class="scan-submit-bar">
+                    <div>
+                      <strong>准备发起自动化</strong>
+                      <span>提交后进入右侧任务进度，设备占用期间不会重复派发。</span>
+                    </div>
+                    <button class="scan-submit-button" type="submit">提交扫码任务</button>
+                  </div>
+                  <p id="userXhsHint" class="hint scan-hint"></p>
+                </form>
+                <div class="panel action-rail-card compact-task-card scan-task-board" data-automation-module-panel="scan">
+                  <div class="scan-board-head">
+                    <div>
+                      <h2>任务进度</h2>
+                      <p>查看当前手机的扫码队列、最新步骤和失败原因。</p>
+                    </div>
+                  </div>
+                  <div id="userXhsList" class="stack scan-task-list"></div>
+                </div>
+
+                <form id="userPublishForm" class="panel action-rail-card automation-form-card publish-compose-card hidden" data-automation-module-panel="publish">
+                  <div class="automation-card-head publish-compose-head">
+                    <div>
+                      <span class="scan-kicker">XHS · CONTENT STUDIO</span>
+                      <h2>一键发布图文</h2>
+                      <p>在这里完成素材编排，设备会按元素定位路径自动发布。</p>
+                    </div>
+                    <span class="automation-mode-badge"><i></i> 小红书</span>
+                  </div>
+                  <div class="publish-route-strip" aria-hidden="true">
+                    <span class="is-ready"><b>01</b> 选择账号</span><i></i>
+                    <span><b>02</b> 编排素材</span><i></i>
+                    <span><b>03</b> 自动发布</span>
+                  </div>
+                  <div class="publish-compose-grid">
+                    <section class="publish-compose-section publish-account-section">
+                      <div class="automation-section-title"><span>01</span><div><strong>发布身份</strong><small>选择本次使用的小红书分身</small></div></div>
+                      <label class="scan-field automation-select-field">
+                        <span>账号槽位</span>
+                        <select id="userPublishTargetSelect" name="target"></select>
+                      </label>
+                      <div class="publish-safety-note"><i>✓</i><span><strong>元素定位模式</strong><small>执行到最终发布并返回真实结果</small></span></div>
+                    </section>
+                    <section class="publish-compose-section publish-media-section">
+                      <div class="automation-section-title"><span>02</span><div><strong>图片素材</strong><small>按选择顺序写入手机相册</small></div></div>
+                      <label id="userPublishImageUpload" class="scan-upload-card automation-image-upload">
+                        <input id="userPublishImagesInput" name="images" type="file" multiple accept="image/png,image/jpeg,image/webp" />
+                        <div class="publish-upload-visual" aria-hidden="true"><i></i><i></i><b>＋</b></div>
+                        <div class="publish-upload-copy"><strong>选择发布图片</strong><small id="userPublishImagesMeta">支持 1–5 张 PNG / JPEG / WebP</small></div>
+                        <em>最多 5 张</em>
+                      </label>
+                    </section>
+                  </div>
+                  <section class="publish-compose-section publish-copy-section">
+                    <div class="automation-section-title"><span>03</span><div><strong>笔记文案</strong><small>标题与正文会原样输入手机</small></div></div>
+                    <div class="publish-copy-grid">
+                      <label class="scan-field automation-text-field"><span>标题 <small id="userPublishTitleCount">0 / 100</small></span><input id="userPublishTitleInput" name="title" maxlength="100" placeholder="一句话说清这篇笔记" /></label>
+                      <label class="scan-field automation-text-field"><span>正文 <small id="userPublishContentCount">0 / 2000</small></span><textarea id="userPublishContentInput" name="content" maxlength="2000" rows="7" placeholder="输入正文、话题或行动引导…"></textarea></label>
+                    </div>
+                  </section>
+                  <div class="automation-submit-row publish-command-bar">
+                    <div><strong>准备发起发布</strong><p id="userPublishHint" class="hint">提交后将独占这台设备，完成后自动释放。</p></div>
+                    <button id="userPublishSubmitButton" class="scan-submit-button" type="submit"><span>开始发布</span><i aria-hidden="true">→</i></button>
+                  </div>
+                </form>
+                <div class="panel action-rail-card compact-task-card automation-side-board publish-history-board hidden" data-automation-module-panel="publish">
+                  <div class="scan-board-head"><div><span class="scan-kicker">LIVE QUEUE</span><h2>发布记录</h2><p>当前设备的任务进度与失败原因。</p></div><em>实时</em></div>
+                  <div id="userPublishTaskList" class="stack scan-task-list"></div>
+                </div>
+
+                <section class="panel action-rail-card automation-form-card kuaishou-lead-card hidden" data-automation-module-panel="kuaishou">
+                  <div class="automation-card-head">
+                    <div>
+                      <span class="scan-kicker">KUAISHOU · FEISHU QUEUE</span>
+                      <h2>快手录入</h2>
+                      <p>持续扫描飞书中的未处理行和“推送失败（提交前）”行，直到你主动停止。</p>
+                    </div>
+                    <span class="automation-mode-badge"><i></i> 持续任务</span>
+                  </div>
+                  <div id="userKuaishouStatus" class="lookup-session-status" data-state="idle"><i></i><div><strong>尚未启动</strong><span>选择间隔范围后启动飞书队列</span></div></div>
+                  <div class="kuaishou-delay-grid">
+                    <label class="scan-field automation-text-field"><span>最短间隔（秒）</span><input id="userKuaishouMinDelay" type="number" min="30" max="3600" step="1" value="240" /></label>
+                    <label class="scan-field automation-text-field"><span>最长间隔（秒）</span><input id="userKuaishouMaxDelay" type="number" min="30" max="3600" step="1" value="420" /></label>
+                  </div>
+                  <div class="kuaishou-safety-note">
+                    <span><i>✓</i> 空白数据按表格从上到下处理</span>
+                    <span><i>✓</i> 仅提交前失败会自动重试</span>
+                    <span><i>✓</i> 结果待确认绝不重复提交</span>
+                  </div>
+                  <div class="automation-submit-row">
+                    <div><strong>独占当前设备运行</strong><p id="userKuaishouHint" class="hint">飞书暂时没有新数据时也会继续等待。</p></div>
+                    <div class="kuaishou-command-buttons">
+                      <button id="userKuaishouStartButton" class="scan-submit-button" type="button"><span>启动快手录入</span><i aria-hidden="true">→</i></button>
+                      <button id="userKuaishouStopButton" class="danger-outline" type="button" disabled>停止任务</button>
+                    </div>
+                  </div>
+                </section>
+                <div class="panel action-rail-card compact-task-card automation-side-board kuaishou-history-board hidden" data-automation-module-panel="kuaishou">
+                  <div class="scan-board-head"><div><span class="scan-kicker">CONTINUOUS QUEUE</span><h2>运行记录</h2><p>显示当前设备的扫描状态、累计结果和下一次检查时间。</p></div><em>实时</em></div>
+                  <div id="userKuaishouTaskList" class="stack scan-task-list"></div>
+                </div>
+
+                <form id="userDataCollectionForm" class="panel action-rail-card automation-form-card xhs-data-console hidden" data-automation-module-panel="data">
+                  <div class="automation-card-head"><div><span class="scan-kicker">CREATOR DATA</span><h2>小红书数据采集</h2><p>读取最近 30 天作品的观看、点赞和评论。</p></div><span class="automation-mode-badge">30 天</span></div>
+                  <label class="scan-field automation-select-field"><span>小红书账号槽位</span><select id="userDataTargetSelect" name="xhsAppSlot" required></select></label>
+                  <p class="hint">自动向下翻页，到达日期边界或列表末尾后结束。遇到未完成笔记会保存为草稿后继续。</p>
+                  <div class="automation-submit-row"><button id="userDataCollectButton" type="submit"><span>开始采集</span><i aria-hidden="true">→</i></button></div>
+                  <p id="userDataCollectionHint" class="hint" aria-live="polite"></p>
+                </form>
+                <section class="panel action-rail-card compact-task-card hidden" data-automation-module-panel="data">
+                  <div class="scan-board-head"><div><span class="scan-kicker">NOTE SNAPSHOT</span><h2>作品数据</h2><p>每次采集保留独立快照。</p></div></div>
+                  <div id="userDataCollectionResult" aria-live="polite"></div>
+                </section>
+                <section class="panel action-rail-card compact-task-card hidden" data-automation-module-panel="data">
+                  <div class="scan-board-head"><div><h2>采集记录</h2></div><em>最新在前</em></div><div id="userDataCollectionTasks"></div>
+                </section>
+                <section class="panel action-rail-card automation-form-card lookup-console-card hidden" data-automation-module-panel="name">
+                  <div class="automation-card-head lookup-console-head">
+                    <div>
+                      <span class="scan-kicker">ALIPAY · SESSION CONSOLE</span>
+                      <h2>连续查名字</h2>
+                      <p>一次启动，持续复用支付宝搜索页，不再重复走完整路径。</p>
+                    </div>
+                    <span class="automation-mode-badge"><i></i> 长会话</span>
+                  </div>
+                  <div class="lookup-pipeline" aria-hidden="true">
+                    <span><i>1</i><b>检查账户</b><small>识别账户并检查冷却</small></span>
+                    <em></em>
+                    <span><i>2</i><b>连续查询</b><small>仅替换手机号码</small></span>
+                    <em></em>
+                    <span><i>3</i><b>账户冷却</b><small>明确限制后冷却八小时</small></span>
+                  </div>
+                  <div class="lookup-console-grid">
+                    <section class="lookup-session-panel">
+                      <div class="automation-section-title"><span>A</span><div><strong>会话控制</strong><small>一台设备同一时间仅运行一个会话</small></div></div>
+                      <div id="userLookupSessionStatus" class="lookup-session-status" data-state="idle"><i></i><div><strong>尚未开始</strong><span>点击开始建立查询会话</span></div></div>
+                      <div class="lookup-session-facts">
+                        <span><small>当前账号</small><strong id="userLookupCurrentAccount">启动后识别</strong></span>
+                        <span><small>异常策略</small><strong>2 <em>次重试</em></strong></span>
+                      </div>
+                      <div class="lookup-session-actions">
+                        <button id="userLookupStartButton" class="scan-submit-button" type="button"><span>启动查询会话</span><i aria-hidden="true">→</i></button>
+                        <button id="userLookupSwitchButton" class="secondary-outline" type="button" disabled>选择切换账号</button>
+                        <button id="userLookupEndButton" class="danger-outline" type="button" disabled>结束会话</button>
+                      </div>
+                      <div id="userLookupAccountChooser" class="lookup-account-chooser" hidden>
+                        <div><span>选择目标账号</span><small>账号来自当前手机支付宝</small></div>
+                        <div id="userLookupAccountList" class="lookup-account-list"></div>
+                      </div>
+                      <section id="userLookupCooldownPanel" class="lookup-cooldown-panel" hidden aria-labelledby="userLookupCooldownTitle">
+                        <h4 id="userLookupCooldownTitle">账户冷却记录 <small>触发限制起 8 小时</small></h4>
+                        <div class="lookup-cooldown-scroll" tabindex="0" role="region" aria-label="账户冷却时间表，可横向滚动">
+                          <table><thead><tr><th scope="col">账户</th><th scope="col">上限触发时间</th><th scope="col">冷却结束／状态</th></tr></thead><tbody id="userLookupCooldownRows"></tbody></table>
+                        </div>
+                        <p>到期后可再次尝试，不代表支付宝已解除限制。全部冷却时不再下发查询。</p>
+                      </section>
+                    </section>
+                    <section class="lookup-query-panel">
+                      <div class="automation-section-title"><span>B</span><div><strong>号码查询台</strong><small>查询成功后直接输入下一个号码</small></div></div>
+                      <label class="lookup-phone-label" for="userLookupPhoneInput">手机号码</label>
+                      <div class="lookup-phone-station">
+                        <span>+86</span>
+                        <input id="userLookupPhoneInput" inputmode="numeric" maxlength="11" placeholder="请输入 11 位手机号" disabled />
+                        <button id="userLookupQueryButton" type="button" disabled>查询名字 <i aria-hidden="true">↗</i></button>
+                      </div>
+                      <div id="userLookupHumanResumePanel" class="lookup-human-resume" hidden>
+                        <div><strong>当前号码等待人工验证</strong><small>发起者或管理员进入实时控屏完成拼图。系统自动检测，结束这次控屏、清空搜索框并重查原号码，无需再点确认。</small></div>
+                        <button id="userLookupRecoveryRetryButton" type="button" hidden>重试当前号码</button>
+                      </div>
+                      <div class="lookup-query-notes">
+                        <span><i>✓</i> 查询后保持当前页面</span>
+                        <span><i>✓</i> 异常时才重走完整路径</span>
+                      </div>
+                      <p id="userLookupHint" class="hint"></p>
+                    </section>
+                  </div>
+                </section>
+                <div class="panel action-rail-card compact-task-card automation-side-board lookup-results-board hidden" data-automation-module-panel="name">
+                  <div class="scan-board-head"><div><span class="scan-kicker">RESULT STREAM</span><h2>返回信息</h2><p>当前会话结果持续保留。</p></div><em>最新在前</em></div>
+                  <div class="lookup-result-columns" aria-hidden="true"><span>#</span><span>手机号 / 姓名</span><span>尾字 / 复制</span><span>时间</span></div>
+                  <div id="userLookupResultList" class="lookup-result-list"></div>
+                </div>
+              </aside>
+
+              <section id="userScreenControlWorkspace" class="panel screen-control-workspace" data-user-detail-panel="screen">
+                <div class="screen-control-head">
+                  <div>
+                    <span class="scan-kicker">LIVE CONTROL</span>
+                    <h2>实时控制</h2>
+                    <p>画面与操作分区，点击或滑动屏幕即可直接控制手机。</p>
+                  </div>
+                  <span id="userScreenStatus" class="screen-status" data-state="idle">等待连接</span>
+                </div>
+                <div class="screen-control-layout">
+                  <div class="screen-viewer-column">
+                    <div class="screen-viewer-label">
+                      <span>实时画面</span>
+                      <small>点击、拖动直接控制</small>
+                    </div>
+                  <div class="screen-device-shell">
+                    <video id="userScreenVideo" muted autoplay playsinline tabindex="0" aria-label="手机实时画面，点击后可直接使用键盘输入" aria-keyshortcuts="Control+A Control+V Backspace Enter"></video>
+                    <textarea id="userScreenKeyboardBridge" class="screen-keyboard-bridge" tabindex="-1" aria-label="手机键盘输入"></textarea>
+                    <div id="userScreenPlaceholder" class="screen-placeholder">
+                      <strong>手机画面尚未连接</strong>
+                      <span>点击“开始投屏”建立安全控制会话</span>
+                    </div>
+                    <div id="userScreenOverlay" class="screen-viewer-overlay" data-state="idle" hidden aria-live="polite">
+                      <div class="screen-viewer-overlay-content">
+                        <span id="userScreenOverlaySpinner" class="screen-viewer-spinner" aria-hidden="true"></span>
+                        <strong id="userScreenOverlayTitle">正在连接手机画面</strong>
+                        <span id="userScreenOverlayDetail" class="screen-viewer-overlay-detail"></span>
+                        <button id="userScreenReconnectButton" class="screen-viewer-reconnect" type="button" hidden>重新连接</button>
+                      </div>
+                    </div>
+                  </div>
+                  <nav class="screen-navigation" aria-label="手机系统导航">
+                    <button data-screen-key="back" type="button" title="返回" aria-label="返回">‹</button>
+                    <button data-screen-key="home" type="button" title="主页" aria-label="主页">○</button>
+                    <button data-screen-key="overview" type="button" title="最近任务" aria-label="最近任务">□</button>
+                  </nav>
+                  </div>
+                  <aside class="screen-operations-column" aria-label="实时控制操作">
+                    <section class="screen-operation-section screen-session-section">
+                      <div class="screen-operation-heading">
+                        <span class="screen-operation-label">控制会话</span>
+                        <span class="screen-session-summary">实时控制</span>
+                      </div>
+                      <div class="screen-session-actions">
+                        <button id="userScreenStartButton" class="screen-primary-action" type="button">开始投屏</button>
+                        <button id="userScreenWakeButton" class="ghost-button screen-wake-button" type="button">唤醒屏幕</button>
+                        <button id="userScreenStopButton" class="ghost-button screen-stop-button" type="button" disabled>结束控制</button>
+                      </div>
+                      <p id="userScreenHint" class="screen-control-hint">投屏会独占这台手机，结束后才能继续扫码任务。</p>
+                    </section>
+                    <section class="screen-operation-section" aria-live="polite">
+                      <span class="screen-operation-label">导入图库</span>
+                      <div id="userScreenGalleryImport" class="screen-gallery-import">
+                        <div class="screen-gallery-import-head">
+                          <span aria-hidden="true">▧</span>
+                          <div>
+                            <strong>导入图片到手机相册</strong>
+                            <small>支持 PNG、JPEG 或 WebP</small>
+                          </div>
+                        </div>
+                        <div id="userScreenGalleryPasteZone" class="screen-gallery-paste-zone" contenteditable="true" role="textbox" aria-label="图片粘贴输入框" data-placeholder="点击这里后按 Ctrl+V 粘贴图片" tabindex="0">
+                          <span class="screen-gallery-paste-zone-icon" aria-hidden="true">▧</span>
+                          <span class="screen-gallery-paste-zone-copy">
+                            <strong>在此粘贴图片</strong>
+                            <small>点击输入框后，按 Ctrl + V</small>
+                          </span>
+                          <kbd>Ctrl + V</kbd>
+                        </div>
+                        <div id="userScreenGalleryDraft" class="screen-gallery-draft" hidden>
+                          <img id="userScreenGalleryPreview" alt="待上传图片预览" />
+                          <div>
+                            <strong id="userScreenGalleryFileName">未选择图片</strong>
+                            <small id="userScreenGalleryFileMeta"></small>
+                          </div>
+                          <button id="userScreenGalleryClearButton" class="ghost-button" type="button" disabled>移除</button>
+                        </div>
+                        <div class="screen-gallery-import-actions">
+                          <label class="ghost-button screen-gallery-select-button" for="userScreenGalleryFileInput">
+                            <span class="screen-gallery-action-icon" aria-hidden="true">↑</span>
+                            <span>选择图片</span>
+                            <input id="userScreenGalleryFileInput" type="file" accept="image/png,image/jpeg,image/webp" disabled />
+                          </label>
+                          <button id="userScreenGalleryPasteButton" class="ghost-button screen-gallery-paste-button" type="button" disabled>
+                            <span class="screen-gallery-action-icon" aria-hidden="true">⌘</span>
+                            <span>粘贴图片</span>
+                          </button>
+                          <button id="userScreenGalleryConfirmButton" class="screen-gallery-confirm-button" type="button" disabled>
+                            <span>导入到手机相册</span>
+                            <span class="screen-gallery-action-arrow" aria-hidden="true">→</span>
+                          </button>
+                        </div>
+                        <span id="userScreenGalleryImportStatus" class="screen-gallery-import-status">选择或粘贴图片后会展开预览，确认后才导入手机相册。</span>
+                      </div>
+                    </section>
+                  </aside>
+                </div>
+              </section>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <div id="userScreenIdleModal" class="screen-idle-modal" hidden>
+        <div class="screen-idle-backdrop" aria-hidden="true"></div>
+        <section class="screen-idle-dialog" role="alertdialog" aria-modal="true" aria-labelledby="userScreenIdleTitle" aria-describedby="userScreenIdleDescription">
+          <div class="screen-idle-accent" aria-hidden="true"></div>
+          <div class="screen-idle-dialog-body">
+            <div id="userScreenIdleCountdownRing" class="screen-idle-countdown" aria-hidden="true">
+              <div>
+                <strong id="userScreenIdleCountdown">10</strong>
+                <span>秒</span>
+              </div>
+            </div>
+            <div class="screen-idle-copy">
+              <span class="screen-idle-eyebrow"><i aria-hidden="true"></i>会话保护</span>
+              <h2 id="userScreenIdleTitle">仍在使用这台手机吗？</h2>
+              <p id="userScreenIdleDescription">已连续 10 分钟没有检测到操作。为避免设备被长时间占用，将自动断开当前投屏连接。</p>
+              <div class="screen-idle-notice">
+                <span aria-hidden="true">⌁</span>
+                <strong><b id="userScreenIdleInlineCountdown">10</b> 秒后自动断开并释放手机</strong>
+              </div>
+            </div>
+          </div>
+          <div class="screen-idle-progress" aria-hidden="true"><i id="userScreenIdleProgress"></i></div>
+          <div class="screen-idle-actions">
+            <button id="userScreenIdleContinueButton" class="screen-idle-continue" type="button">继续控制</button>
+            <button id="userScreenIdleDisconnectButton" class="screen-idle-disconnect" type="button">立即断开</button>
+          </div>
+          <p class="screen-idle-footnote">未选择时默认断开，当前手机将重新回到可用设备池。</p>
+        </section>
+      </div>
+
+      <div id="settingsModal" class="settings-modal hidden" role="dialog" aria-modal="true" aria-labelledby="settingsDisplayName">
+        <button class="settings-backdrop" data-settings-close type="button" aria-label="关闭设置"></button>
+        <div class="settings-dialog">
+          <button id="settingsCloseButton" class="settings-close-button" data-settings-close type="button" aria-label="关闭设置">×</button>
+          <div class="settings-page">
+          <section class="panel settings-hero">
+            <div class="settings-avatar" id="settingsAvatar">测</div>
+            <div>
+              <h2 id="settingsDisplayName">账号设置</h2>
+              <p id="settingsAccountMeta">查看账号信息和当前登录会话。</p>
+            </div>
+          </section>
+
+          <div class="settings-grid">
+            <section class="panel settings-card">
+              <div class="settings-card-head">
+                <span>ACCOUNT</span>
+                <h2>账号信息</h2>
+              </div>
+              <div id="settingsAccountFacts" class="settings-facts"></div>
+            </section>
+
+            <section class="panel settings-card">
+              <div class="settings-card-head">
+                <span>ACCESS</span>
+                <h2>权限说明</h2>
+              </div>
+              <div class="settings-session-box">
+                <strong>密码由管理员统一维护</strong>
+                <span>如需修改密码，请联系平台管理员在用户账号页处理。</span>
+              </div>
+            </section>
+
+            <section class="panel settings-card">
+              <div class="settings-card-head">
+                <span>SESSION</span>
+                <h2>登录会话</h2>
+              </div>
+              <div class="settings-session-box">
+                <strong>当前浏览器</strong>
+                <span>退出后需要重新输入账号密码。</span>
+              </div>
+              <button id="settingsLogoutButton" class="danger-button" type="button">退出登录</button>
+            </section>
+          </div>
+        </div>
+        </div>
+      </div>
+
+      <section class="page hidden" data-page="users">
+        <div class="split">
+          <form id="userCreateForm" class="panel">
+            <h2>创建用户账号</h2>
+            <label>
+              <span>账号</span>
+              <input name="username" autocomplete="off" required />
+            </label>
+            <label>
+              <span>显示名</span>
+              <input name="displayName" autocomplete="off" />
+            </label>
+            <label>
+              <span>密码</span>
+              <input name="password" type="password" autocomplete="new-password" required />
+            </label>
+            <label>
+              <span>角色</span>
+              <select name="role">
+                <option value="user">普通用户</option>
+                <option value="admin">管理员</option>
+              </select>
+            </label>
+            <button type="submit">创建账号</button>
+            <p id="userCreateHint" class="hint"></p>
+          </form>
+          <div class="panel">
+            <h2>账号列表</h2>
+            <div id="userList" class="stack"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page hidden" data-page="windows">
+        <div class="section-head">
+          <div>
+            <h2>Windows 管理器</h2>
+            <p>Windows 主动连接平台，不开放公网端口；上线前每台管理器都应绑定独立 token。</p>
+          </div>
+          <button id="agentCreateButton" type="button">登记管理器</button>
+        </div>
+        <div id="agentTokenNotice" class="agent-token-notice hidden"></div>
+        <div id="windowsRecoveryConsole"></div>
+        <div id="windowsList" class="stack"></div>
+        <div class="panel below-split">
+          <h2>最近 ADB 任务</h2>
+          <div id="windowsTaskList" class="stack"></div>
+        </div>
+      </section>
+
+      <section class="page hidden admin-devices-page" data-page="devices">
+        <div class="section-head admin-page-intro">
+          <div>
+            <h2>手机设备</h2>
+            <p>新接入手机默认待确认，管理员核对 SIM、账号槽位和自动化状态后再上架给用户。</p>
+          </div>
+          <div class="row-actions">
+            <button data-device-bulk-listing="listed" type="button">批量上架</button>
+            <button data-device-bulk-listing="unlisted" type="button">批量下架</button>
+          </div>
+        </div>
+        <div id="deviceListingToolbar" class="listing-toolbar"></div>
+        <div id="deviceList" class="device-grid"></div>
+      </section>
+
+      <section class="page hidden" data-page="sms">
+        <div class="split">
+          <form id="smsOrderForm" class="panel">
+            <h2>创建短信接收订单</h2>
+            <label>
+              <span>手机号</span>
+              <input name="phoneNumber" placeholder="+8613800000000" required />
+            </label>
+            <label>
+              <span>平台</span>
+              <input name="platform" value="小红书" />
+            </label>
+            <button type="submit">开始等待验证码</button>
+            <p id="smsHint" class="hint"></p>
+          </form>
+          <div class="panel">
+            <h2>订单和短信</h2>
+            <div id="smsList" class="stack"></div>
+          </div>
+        </div>
+        <div class="panel below-split">
+          <div class="section-head">
+            <div>
+              <h2>手机短信库</h2>
+              <p>Windows 管理器通过 ADB 同步系统短信。</p>
+            </div>
+          </div>
+          <form id="smsLibraryForm" class="inline-form-grid">
+            <label>
+              <span>手机</span>
+              <select id="smsLibraryDeviceSelect" name="deviceId"></select>
+            </label>
+            <label>
+              <span>类型</span>
+              <select id="smsLibraryBoxSelect" name="box">
+                <option value="all">全部</option>
+                <option value="inbox">收件箱</option>
+                <option value="sent">已发送</option>
+                <option value="draft">草稿</option>
+                <option value="outbox">发件箱</option>
+              </select>
+            </label>
+            <label>
+              <span>搜索</span>
+              <input id="smsLibrarySearchInput" name="q" placeholder="号码、发件人或正文" />
+            </label>
+            <button type="submit">查询</button>
+          </form>
+          <div id="smsLibraryList" class="stack sms-library-list"></div>
+        </div>
+      </section>
+
+      <section class="page hidden" data-page="release">
+        <div class="split">
+          <form id="releaseForm" class="panel">
+            <h2>发布手机 Agent APK</h2>
+            <label>
+              <span>版本名</span>
+              <input name="versionName" placeholder="0.1.0" required />
+            </label>
+            <label>
+              <span>版本号</span>
+              <input name="versionCode" type="number" min="1" value="1" required />
+            </label>
+            <label>
+              <span>APK 文件</span>
+              <input name="apkFile" type="file" accept=".apk,application/vnd.android.package-archive" />
+            </label>
+            <label>
+              <span>外部下载地址</span>
+              <input name="downloadUrl" placeholder="可选；不上传文件时填写" />
+            </label>
+            <label>
+              <span>发布说明</span>
+              <input name="releaseNotes" placeholder="本次更新内容" />
+            </label>
+            <button type="submit">保存发布</button>
+            <p id="releaseHint" class="hint"></p>
+          </form>
+          <div class="panel">
+            <h2>当前发布版</h2>
+            <div id="releaseDetail" class="stack"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page hidden" data-page="xhs">
+        <div class="split">
+          <form id="xhsTaskForm" class="panel">
+            <h2>创建小红书扫码任务</h2>
+            <label>
+              <span>选择手机</span>
+              <select name="deviceId" id="xhsDeviceSelect"></select>
+            </label>
+            <label>
+              <span>小红书账号</span>
+              <select name="xhsAppSlot" id="xhsSlotSelect"></select>
+            </label>
+            <label>
+              <span>二维码图片</span>
+              <input name="qrImage" type="file" accept="image/png,image/jpeg,image/webp" />
+            </label>
+            <button type="submit">创建扫码任务</button>
+            <p id="xhsHint" class="hint"></p>
+          </form>
+          <div class="panel">
+            <h2>扫码任务</h2>
+            <div id="xhsList" class="stack"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page hidden" data-page="workflow-scripts">
+        <div class="section-head">
+          <div>
+            <h2>自动化脚本配置</h2>
+            <p>管理员维护小红书扫码默认脚本；新建任务会冻结当前配置到 Windows 任务里。</p>
+          </div>
+        </div>
+        <div class="script-config-layout">
+          <form id="workflowScriptForm" class="panel script-config-form">
+            <div class="script-config-title">
+              <div>
+                <span>DEFAULT SCRIPT</span>
+                <h2>xhs_qr_default</h2>
+                <p id="workflowScriptMeta">正在读取配置</p>
+              </div>
+              <label class="script-toggle">
+                <input id="workflowScriptEnabled" name="enabled" type="checkbox" />
+                <strong>启用</strong>
+              </label>
+            </div>
+
+            <div class="script-form-grid">
+              <label>
+                <span>确认页等待时间 ms</span>
+                <input id="workflowConfirmWaitMs" name="confirmWaitMs" type="number" min="1000" step="500" />
+              </label>
+              <label>
+                <span>总超时 ms</span>
+                <input id="workflowTimeoutTotalMs" name="timeoutTotalMs" type="number" min="30000" step="5000" />
+              </label>
+              <label>
+                <span>重启小红书超时 ms</span>
+                <input id="workflowTimeoutRestartMs" name="timeoutRestartMs" type="number" min="5000" step="1000" />
+              </label>
+              <label>
+                <span>进入我的页超时 ms</span>
+                <input id="workflowTimeoutProfileMs" name="timeoutProfileMs" type="number" min="3000" step="1000" />
+              </label>
+              <label>
+                <span>扫码页超时 ms</span>
+                <input id="workflowTimeoutScannerMs" name="timeoutScannerMs" type="number" min="3000" step="1000" />
+              </label>
+              <label>
+                <span>相册页超时 ms</span>
+                <input id="workflowTimeoutAlbumMs" name="timeoutAlbumMs" type="number" min="3000" step="1000" />
+              </label>
+              <label>
+                <span>选择二维码超时 ms</span>
+                <input id="workflowTimeoutSelectImageMs" name="timeoutSelectImageMs" type="number" min="5000" step="1000" />
+              </label>
+              <label>
+                <span>确认登录超时 ms</span>
+                <input id="workflowTimeoutLoginConfirmMs" name="timeoutLoginConfirmMs" type="number" min="5000" step="1000" />
+              </label>
+            </div>
+
+            <label>
+              <span>登录确认页关键词（一行一个）</span>
+              <textarea id="workflowLoginKeywords" name="loginConfirmKeywords" rows="6"></textarea>
+            </label>
+            <label>
+              <span>普通小红书确认按钮（一行一个）</span>
+              <textarea id="workflowOrdinaryButtons" name="ordinaryConfirmButtons" rows="4"></textarea>
+            </label>
+            <label>
+              <span>千帆 / 专业号 / 商家确认按钮（一行一个）</span>
+              <textarea id="workflowPlatformButtons" name="platformConfirmButtons" rows="4"></textarea>
+            </label>
+            <label>
+              <span>完整步骤脚本 steps JSON</span>
+              <textarea id="workflowScriptSteps" class="script-steps-editor" name="steps" rows="18" spellcheck="false"></textarea>
+            </label>
+
+            <div class="script-submit-bar">
+              <p id="workflowScriptHint" class="hint"></p>
+              <button type="submit">保存脚本配置</button>
+            </div>
+          </form>
+
+          <aside class="panel script-config-preview">
+            <h2>下发规则</h2>
+            <div id="workflowScriptPreview" class="script-preview-stack"></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="page hidden" data-page="audit">
+        <div class="section-head">
+          <div>
+            <h2>审计日志</h2>
+            <p>记录管理操作、Windows 心跳、设备同步和任务创建。</p>
+          </div>
+        </div>
+        <div id="auditList" class="stack"></div>
+      </section>
+
+      <section class="page hidden" data-page="diagnostics">
+        <div class="section-head">
+          <div>
+            <h2>诊断检查</h2>
+            <p>上线前检查配置、存储、APK、Windows 管理器、Airtest/Poco 和兼容 Agent。</p>
+          </div>
+        </div>
+        <div id="diagnosticsSummary" class="diagnostics-summary"></div>
+        <div id="diagnosticsChecks" class="check-grid"></div>
+        <section class="panel realtime-diagnostics-panel">
+          <div class="section-head">
+            <div>
+              <h2>实时控制监控</h2>
+              <p>每 5 秒采样一次视频、浏览器播放和控制链路，不包含画面内容或输入内容。</p>
+            </div>
+          </div>
+          <div id="realtimeDiagnostics" class="realtime-diagnostics"></div>
+        </section>
+        <div class="panel diagnostics-panel">
+          <h2>运行信息</h2>
+          <div id="diagnosticsDetail" class="kv-grid"></div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./vendor/screen-control.js?v=20260828-receiver-feedback-v1"></script>
+    <script type="module" src="./app.js?v=20261021-scheduling-rc2"></script>
+  </body>
+</html>

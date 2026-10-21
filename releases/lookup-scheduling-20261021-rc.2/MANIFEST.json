@@ -1,0 +1,17 @@
+{
+  "public/app.js": "88ae575783d31f0bdeb14e9c5150da7168d1aefa7ec97e54a38b98cc3254a0fd",
+  "public/index.html": "6eb21ed9000cc5f77afba3b522cf0dcf6149a86a37ea4da5a6a0c2562c9c45e6",
+  "public/lookup-card-status.js": "419c865557401c9b431bef2a30c48b332f39d266f2addfa462fd21beb9c7a780",
+  "screen-client/screen-ui.test.mjs": "619c2b2f83099bedfc3112b4dc33b59ac202077cd97fc0e48f74499b8e37edf9",
+  "server/automation-center-ui.test.mjs": "aa1e34c2dfece31269b28abae9166739e7216cd4434a8797ae4d59d95c177be8",
+  "server/device-lookup-card-status.test.mjs": "84a72d1fd44f25bcb37b0f065bd68103e7d8c7bd22aa1920da40e5437c73d3ad",
+  "server/device-occupancy.mjs": "90d9f2bd4e9b5b2807ad2d7905d538f5d7ff2fe19fda629396d635a67fa9aeb0",
+  "server/lookup-card-accuracy.test.mjs": "f4b1daccf0a54c02b4c2c4ce68e63a10e6d529705d570c2b5dd891d126b35d01",
+  "server/lookup-human-handover.mjs": "f02ce0dedd5bcfcba1209a9d3f05f8836d0b431107ae38fc3e1e3ca3545d44c9",
+  "server/managed-lookup.mjs": "35f43ac2e8b8b9fbdd0058830725206393af1eb3f7ddd46cdd04d048c434d4f0",
+  "verification/scheduling-http.mjs": "a91bdf1163899ffeb39e89e9c353686cf290a2f10f5f605ee1afa39f8157a083",
+  "windows-agent/src/index.mjs": "4d383bedf195739005abafe52779b7414d3aa2e3217fca45f359746de5e3bd23",
+  "windows-agent/src/lookup-human-observer.mjs": "f9d327e786802c5781e7eea046f4bf0dfa81d3ec67f63066e99345148a1ab4b2",
+  "windows-agent/src/lookup-human-observer.test.mjs": "1e1b586a88df0e24a7e4e3948402cca4da748ab92cc4fde3de188950a5f2a176",
+  "windows-agent/src/lookup-observer-power.test.mjs": "3a827d15bccaff6f0c94ca283f79802b652edeb10369ec342b55f29f03e2c30d"
+}
