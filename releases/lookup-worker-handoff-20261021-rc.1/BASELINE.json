@@ -1,0 +1,18 @@
+{
+  "productionRelease": "lookup-ocr-snapshot-20261021-deployed.1",
+  "productionSource": "1ec44cf2bbf15583821f941efe2b711b0ecb455d",
+  "productionImage": "sha256:0db4c7eddb1a6ddb4c629882c220e5ee2287640c6520fa26bebf1c890bdf2225",
+  "workflowRevision": "2026-09-30",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "before": {
+    "server/automation-center.mjs": "7c9de128f64f142988f12d5dcdd1138c510ab76e90a4ac6b0b423076896fa7cd",
+    "server/managed-lookup-platform.mjs": "11f9a28bfe06fd32a763bef5d9188b89674439354ac7e0bd3eba95b31b63c2b6",
+    "server/managed-lookup.mjs": "a1b8aad75c99ab054c30bf0faf9d16089cf703c7591616cc871ece5d712d8d01",
+    "server/lookup-automatic-recovery.test.mjs": "37193608cde817e52875d989ab1c9bb7d80f38d2d80bbfe170e96797875b61b8",
+    "verification/worker-handoff-http.mjs": null
+  },
+  "snapshotIndexSha256": "57a83933ab0e70b8c0f9643c649b70dcfc68f8ca8fcfb25688fa8db9d49f14c4",
+  "snapshotColumnType": "json",
+  "parentCandidate": "lookup-ocr-probe-pressure-20261020-rc.1",
+  "snapshotOverlay": "lookup-snapshot-recovery-20261021-rc.1"
+}

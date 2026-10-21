@@ -1,0 +1,31 @@
+✔ terminal ordinary failure automatically resumes original query once; new partner key and other phone are independent (9.743791ms)
+✔ second terminal failure waits for stop ACK then transfers original ID to another ready physical phone (5.048ms)
+✔ uncertain or human execution never enters automatic ordinary retry {"unknown":true} (2.6225ms)
+✔ uncertain or human execution never enters automatic ordinary retry {"busy":true} (3.021875ms)
+✔ uncertain or human execution never enters automatic ordinary retry {"human":true} (2.198875ms)
+✔ recovery marker without terminal task proof is not replayed (1.999459ms)
+✔ changed account identity bypasses local resume and stops before handoff (2.832667ms)
+✔ recovery budget survives restart and cancellation cannot turn into a handoff (3.053667ms)
+✔ three failing physical phones end with explicit failure after bounded attempts, never fake empty name (6.414959ms)
+✔ received name wins over racing recovery failure and is never resubmitted (2.782833ms)
+✔ busy screen, disabled pool and revoked grant never auto-dispatch (6.024375ms)
+✔ adapter requires matching failed query and failed transport task; current account identity is preserved (0.453834ms)
+✔ automatic recovery payload selects query_resume, keeps original result and skips intervening probe (0.406958ms)
+✔ automatic recovery waits behind five active slots and resumes when one is free (2.610166ms)
+✔ exhausted visual reader hands original query off without another full-minute read: local_lookup_result_unconfirmed:ocr_reader_timeout (4.773625ms)
+✔ exhausted visual reader hands original query off without another full-minute read: local_lookup_result_unconfirmed:observation_budget_exhausted (3.548458ms)
+✔ adapter exposes only whitelisted bounded visual reasons from matching terminal evidence (0.121834ms)
+✔ 20 submissions survive three exhausted readers while healthy phones drain queue and replacements fill five (38.269792ms)
+✔ ordinary page recovery exhausted worker failure reaches recovery classification without a human-resume flag (0.1905ms)
+✔ real failure shape flows through classifier and adapter with a bounded recovery reason (0.128375ms)
+✔ exhausted worker stops without local replay; other phone runs and new key keeps original ID through ACK and late result (4.583125ms)
+✔ worker handoff cancelled while awaiting stop ACK never resubmits (5.356583ms)
+✔ three exhausted workers terminate with bounded explicit failure, never empty-name success (5.640292ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 197.24825

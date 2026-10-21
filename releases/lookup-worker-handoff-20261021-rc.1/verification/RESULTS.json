@@ -1,0 +1,114 @@
+{
+  "candidate": "lookup-worker-handoff-20261021-rc.1",
+  "branch": "codex/lookup-worker-handoff-20261021",
+  "baseHead": "b0138433c282b1eacad6b4df18ee954171ee27b9",
+  "testedAt": "2026-10-21T02:20:03.813697+00:00",
+  "status": "local_verified_not_deployed",
+  "risk": "R2: lookup failure classification and cross-device handoff; no protocol/schema/Agent changes",
+  "tests": {
+    "red": {
+      "total": 23,
+      "passed": 18,
+      "failed": 5,
+      "expected": "five new bug regressions fail on production baseline"
+    },
+    "focused": {
+      "passed": 23,
+      "failed": 0
+    },
+    "full": {
+      "command": "node --test --test-concurrency=2 screen-client/*.test.mjs server/*.test.mjs scripts/*.test.mjs windows-agent/src/*.test.mjs",
+      "passed": 937,
+      "failed": 0,
+      "skipped": 0
+    },
+    "check": {
+      "npmRunCheck": true,
+      "changedModuleSyntax": true
+    },
+    "assembly": {
+      "manifestVerified": true,
+      "outOfScopeHashesPreserved": 334,
+      "jsonSnapshotIndexPreserved": true
+    },
+    "httpJson": {
+      "storage": "json",
+      "loopbackOnly": true,
+      "simulatedDevices": 5,
+      "realDevices": 0,
+      "productionConnections": 0,
+      "completed": 20,
+      "businessAttempts": 21,
+      "maxExecuting": 5,
+      "otherRequestsCompleteBeforeStopAck": 19,
+      "retryElapsedMs": 1388,
+      "changedKeyKeepsOriginalId": true,
+      "noLocalReplay": true,
+      "handoffWaitsForStopAck": true,
+      "reassignedToDifferentPhone": true,
+      "lateReportIgnored": true,
+      "restartRetainsResultAndAlias": true,
+      "nextRoundReady": true,
+      "finalChannels": 0
+    },
+    "httpPostgres": {
+      "storage": "postgres",
+      "loopbackOnly": true,
+      "simulatedDevices": 5,
+      "realDevices": 0,
+      "productionConnections": 0,
+      "completed": 20,
+      "businessAttempts": 21,
+      "maxExecuting": 5,
+      "otherRequestsCompleteBeforeStopAck": 19,
+      "retryElapsedMs": 121001,
+      "changedKeyKeepsOriginalId": true,
+      "noLocalReplay": true,
+      "handoffWaitsForStopAck": true,
+      "reassignedToDifferentPhone": true,
+      "lateReportIgnored": true,
+      "restartRetainsResultAndAlias": true,
+      "nextRoundReady": true,
+      "finalChannels": 0
+    }
+  },
+  "testSetupCorrections": [
+    "Initial HTTP harness assumed clientReference existed in Agent payload; corrected synthetic phone-to-submission mapping. No application change for this test issue.",
+    "Initial empty local PostgreSQL omitted pre-existing managed lookup migrations; applied managed-lookup/async SQL only to owned test database and retained JSON snapshot type, then reran successfully."
+  ],
+  "boundaries": [
+    "terminal matching job/task required",
+    "wait real stop ACK",
+    "one original external lookupId across handoff and new key",
+    "no same-device local retry after page recovery exhaustion",
+    "cancellation suppresses handoff",
+    "late result cannot overwrite completed replacement",
+    "three failing phones remain bounded",
+    "independent phones continue; maximum five"
+  ],
+  "notVerified": [
+    "new branch on production real phones",
+    "underlying worker/transport exit root cause"
+  ],
+  "productionActions": 0,
+  "productionConnectionsThisImplementation": 0,
+  "deployed": false,
+  "pushed": false,
+  "logs": {
+    "red": {
+      "sha256": "d3a997c0b11d028ecc048000ec6fad2d8124d75d3eacf9f02d5e95c46625f4bf"
+    },
+    "focused": {
+      "sha256": "648a92c01398112b5fcd96e3b2dd340c0a4e9ed5ad589ea50fb84ef2cff20bfd"
+    },
+    "full": {
+      "sha256": "2486e01a2259c75c304029df4829756432549b3ad24c4563a1c14da1abc07488"
+    },
+    "check": {
+      "sha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+    },
+    "assembly": {
+      "sha256": "5ae23ee616bb2c44a7e329317403fbd868b9aa28de47a7c0890135079a348c9c"
+    }
+  }
+}
