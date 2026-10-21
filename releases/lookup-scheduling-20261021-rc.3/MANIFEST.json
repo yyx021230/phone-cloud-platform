@@ -1,0 +1,16 @@
+{
+  "public/api-reference.json": "8d420da8afc14ba68c0c58f348cc844ad28dc34c5e6d3eca3b40d4305e2f0639",
+  "public/downloads/name-lookup-http-guide.md": "0437c0dc795885430ad1a62bef8b1599b24a34c724ffb5e2513d31d797a1b356",
+  "public/downloads/name-lookup-integration.zip": "8b6671151bce01bc8cf8d369382d6363b66df0a815ac8491effd5546e7fb520d",
+  "public/downloads/name-lookup-openapi.json": "0553994fbc5ccc91e33752035f512f828c10d389a7c55c47607e9e1819848600",
+  "public/downloads/name-lookup-sha256.json": "ffba83e072a89ac89f22096bee21e7ee4566bcba903d6d43f9d0b796064ab16f",
+  "public/openapi.json": "540e1e16e6af6c90027c2cb4d95cf0018bfc5b5bed6474647f7fbf9ed74ccc1a",
+  "server/lookup-device-availability.test.mjs": "fe472511c85733707dbef86771df065b27d3509a1f9398e8dccfddea99b65ae6",
+  "server/lookup-readiness.mjs": "c12eaf61f28ea38a3e491bddb55f2a2c1637075b759827bba33e92602359f248",
+  "server/lookup-readiness.test.mjs": "142cc5c4fbaaa69765d100ed5e701aff76ea567c8e787db6b3de0514025211ae",
+  "server/lookup-round-idle.test.mjs": "d00bf947b1aa80482f9c8040ce44fc4fed5ed8b0149eeaae38e2fe59a507cd96",
+  "server/managed-lookup.mjs": "7a8d8a866df6c90bfdbd0862f73a9c6722702e11ccdd190f0b8f1cc96d8552d1",
+  "verification/api-key-http.mjs": "c5946f8abdf7aab8bd06399a9479f89f6228b9f29e0b7249773ce7e8aa7c9f51",
+  "verification/readiness-http.mjs": "cf642e0830c8db30206f2df40645aa213e3c8ca6f6fd84a21af9473f1afbe07d",
+  "verification/scheduling-http.mjs": "82942874269d4e1d87d95ff97f6ed451ed34f12dc1581875e6ebb6d7c0f13590"
+}
