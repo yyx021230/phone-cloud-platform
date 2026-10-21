@@ -1,0 +1,6 @@
+{
+  "parentCandidate": "lookup-admin-20261021-rc.2",
+  "before": {
+    "public/lookup-admin.js": "af95538267a9df8dc8b2bd3c1bbf2cd71911b63081aaf066dc75869c7a2f08f4"
+  }
+}
