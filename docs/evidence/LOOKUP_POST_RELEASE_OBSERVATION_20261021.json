@@ -338,5 +338,596 @@
     "roundExpiresAt": [
       "2026-10-21T02:12:54.986Z"
     ]
+  },
+  "followupBatchSamples": [
+    {
+      "at": "2026-10-21T02:08:15.778Z",
+      "businessCount": 74,
+      "businessStatuses": {
+        "succeeded": 47,
+        "not_found": 16,
+        "failed": 1,
+        "running": 3,
+        "queued": 7
+      },
+      "batch": {
+        "total": 20,
+        "statuses": {
+          "not_found": 2,
+          "succeeded": 7,
+          "failed": 1,
+          "running": 3,
+          "queued": 7
+        },
+        "timeSeconds": {
+          "median": 40.359,
+          "max": 58.213
+        },
+        "waitingSeconds": {
+          "median": 14.053,
+          "max": 52.117
+        },
+        "multipleAttempts": [
+          {
+            "id": "8e2dfebf-0dde-4770-b435-799caaad7afb",
+            "status": "succeeded",
+            "code": "",
+            "purpose": "business",
+            "createdAt": "2026-10-21T02:07:17.760Z",
+            "completedAt": "2026-10-21T02:08:11.274Z",
+            "seconds": 53.514,
+            "attempts": [
+              {
+                "at": "2026-10-21T02:07:28.790Z",
+                "number": "74",
+                "sessionId": "452a1800-1f48-4104-b030-0ccef8e318da"
+              },
+              {
+                "at": "2026-10-21T02:07:56.563Z",
+                "number": "165",
+                "sessionId": "94573e9c-9617-4461-8535-d0a2a5a7c8fc"
+              }
+            ],
+            "queryId": "85c32d50-5758-4259-9b48-098c1286e614"
+          }
+        ]
+      },
+      "channels": [
+        {
+          "number": 10,
+          "phase": "querying"
+        },
+        {
+          "number": 154,
+          "phase": "stopping"
+        },
+        {
+          "number": 162,
+          "phase": "human"
+        },
+        {
+          "number": 165,
+          "phase": "querying"
+        },
+        {
+          "number": 181,
+          "phase": "querying"
+        },
+        {
+          "number": 112,
+          "phase": "starting"
+        }
+      ],
+      "pending": [
+        {
+          "id": "32f87898-08bf-4eaa-903d-48a78f93200a",
+          "status": "running",
+          "number": "181",
+          "createdAt": "2026-10-21T02:07:18.783Z"
+        },
+        {
+          "id": "14b74b8e-06c1-4ca7-ba48-d5109baa192f",
+          "status": "running",
+          "number": "10",
+          "createdAt": "2026-10-21T02:07:19.008Z"
+        },
+        {
+          "id": "23a94fa4-c61e-40b1-89e7-9beb67c7a5b8",
+          "status": "running",
+          "number": "165",
+          "createdAt": "2026-10-21T02:07:19.199Z"
+        },
+        {
+          "id": "e9a366b3-cf24-4e1f-902d-a4de2f9eb23d",
+          "status": "queued",
+          "number": "?",
+          "createdAt": "2026-10-21T02:07:19.423Z"
+        },
+        {
+          "id": "b4a9cfb1-cf1c-44b3-8dac-3265bc215db3",
+          "status": "queued",
+          "number": "?",
+          "createdAt": "2026-10-21T02:07:19.624Z"
+        },
+        {
+          "id": "145d83ec-9eb7-40b1-b4e0-6f91fe8aec63",
+          "status": "queued",
+          "number": "?",
+          "createdAt": "2026-10-21T02:07:19.842Z"
+        },
+        {
+          "id": "0818a4aa-9d8b-49dc-9006-c68fe6b52fc7",
+          "status": "queued",
+          "number": "?",
+          "createdAt": "2026-10-21T02:07:20.040Z"
+        },
+        {
+          "id": "12b9f4f5-c3e1-405b-b8b0-1430a140e31a",
+          "status": "queued",
+          "number": "?",
+          "createdAt": "2026-10-21T02:07:20.261Z"
+        },
+        {
+          "id": "d31fdb90-b869-4a84-a99c-3b53ee45c08d",
+          "status": "queued",
+          "number": "?",
+          "createdAt": "2026-10-21T02:07:20.459Z"
+        },
+        {
+          "id": "c928fb1b-5e5d-4b30-9841-b14526cfc2fd",
+          "status": "queued",
+          "number": "?",
+          "createdAt": "2026-10-21T02:07:20.663Z"
+        }
+      ],
+      "stopping": 0,
+      "roundIdleSince": [
+        null
+      ]
+    },
+    {
+      "at": "2026-10-21T02:08:37.912Z",
+      "businessCount": 85,
+      "businessStatuses": {
+        "succeeded": 50,
+        "not_found": 17,
+        "failed": 1,
+        "rerouting": 1,
+        "running": 2,
+        "queued": 14
+      },
+      "batch": {
+        "total": 31,
+        "statuses": {
+          "not_found": 3,
+          "succeeded": 10,
+          "failed": 1,
+          "rerouting": 1,
+          "running": 2,
+          "queued": 14
+        },
+        "timeSeconds": {
+          "median": 50.159,
+          "max": 69.364
+        },
+        "waitingSeconds": {
+          "median": 26.414,
+          "max": 68.786
+        },
+        "multipleAttempts": [
+          {
+            "id": "8e2dfebf-0dde-4770-b435-799caaad7afb",
+            "status": "succeeded",
+            "code": "",
+            "purpose": "business",
+            "createdAt": "2026-10-21T02:07:17.760Z",
+            "completedAt": "2026-10-21T02:08:11.274Z",
+            "seconds": 53.514,
+            "attempts": [
+              {
+                "at": "2026-10-21T02:07:28.790Z",
+                "number": "74",
+                "sessionId": "452a1800-1f48-4104-b030-0ccef8e318da"
+              },
+              {
+                "at": "2026-10-21T02:07:56.563Z",
+                "number": "165",
+                "sessionId": "94573e9c-9617-4461-8535-d0a2a5a7c8fc"
+              }
+            ],
+            "queryId": "85c32d50-5758-4259-9b48-098c1286e614"
+          }
+        ]
+      },
+      "channels": [
+        {
+          "number": 10,
+          "phase": "stopping"
+        },
+        {
+          "number": 162,
+          "phase": "human"
+        },
+        {
+          "number": 165,
+          "phase": "querying"
+        },
+        {
+          "number": 181,
+          "phase": "querying"
+        },
+        {
+          "number": 112,
+          "phase": "starting"
+        },
+        {
+          "number": 156,
+          "phase": "starting"
+        }
+      ],
+      "pending": [
+        {
+          "id": "b4a9cfb1-cf1c-44b3-8dac-3265bc215db3",
+          "status": "rerouting",
+          "number": "10",
+          "createdAt": "2026-10-21T02:07:19.624Z"
+        },
+        {
+          "id": "145d83ec-9eb7-40b1-b4e0-6f91fe8aec63",
+          "status": "running",
+          "number": "165",
+          "createdAt": "2026-10-21T02:07:19.842Z"
+        },
+        {
+          "id": "0818a4aa-9d8b-49dc-9006-c68fe6b52fc7",
+          "status": "running",
+          "number": "181",
+          "createdAt": "2026-10-21T02:07:20.040Z"
+        },
+        {
+          "id": "12b9f4f5-c3e1-405b-b8b0-1430a140e31a",
+          "status": "queued",
+          "number": "?",
+          "createdAt": "2026-10-21T02:07:20.261Z"
+        },
+        {
+          "id": "d31fdb90-b869-4a84-a99c-3b53ee45c08d",
+          "status": "queued",
+          "number": "?",
+          "createdAt": "2026-10-21T02:07:20.459Z"
+        },
+        {
+          "id": "c928fb1b-5e5d-4b30-9841-b14526cfc2fd",
+          "status": "queued",
+          "number": "?",
+          "createdAt": "2026-10-21T02:07:20.663Z"
+        },
+        {
+          "id": "f1584a0f-fe44-4af8-b9b6-8c6c8a4c9eb0",
+          "status": "queued",
+          "number": "?",
+          "createdAt": "2026-10-21T02:08:19.940Z"
+        },
+        {
+          "id": "beaa35eb-cbde-4299-85fd-038ca53752a6",
+          "status": "queued",
+          "number": "?",
+          "createdAt": "2026-10-21T02:08:20.165Z"
+        },
+        {
+          "id": "04d37bbc-907b-4f50-8706-2d386be4985c",
+          "status": "queued",
+          "number": "?",
+          "createdAt": "2026-10-21T02:08:20.339Z"
+        },
+        {
+          "id": "3e8ad646-e9d5-46fd-8448-64087c3cf6db",
+          "status": "queued",
+          "number": "?",
+          "createdAt": "2026-10-21T02:08:20.547Z"
+        },
+        {
+          "id": "6af69f08-8931-4ef5-91ae-a43473d92f38",
+          "status": "queued",
+          "number": "?",
+          "createdAt": "2026-10-21T02:08:20.720Z"
+        },
+        {
+          "id": "4e3b830c-aaad-429d-98e2-3a0220d16d12",
+          "status": "queued",
+          "number": "?",
+          "createdAt": "2026-10-21T02:08:20.895Z"
+        },
+        {
+          "id": "47aa7971-7fe1-4ec3-9555-bbb36c60ba93",
+          "status": "queued",
+          "number": "?",
+          "createdAt": "2026-10-21T02:08:21.069Z"
+        },
+        {
+          "id": "05ba25c7-6b32-4179-9248-764c85b24dab",
+          "status": "queued",
+          "number": "?",
+          "createdAt": "2026-10-21T02:08:21.236Z"
+        },
+        {
+          "id": "e62655d0-0cf2-40b8-9c59-ce1c3c69952e",
+          "status": "queued",
+          "number": "?",
+          "createdAt": "2026-10-21T02:08:21.390Z"
+        },
+        {
+          "id": "d2993c3d-7188-4d95-81a4-068e224f856f",
+          "status": "queued",
+          "number": "?",
+          "createdAt": "2026-10-21T02:08:21.547Z"
+        },
+        {
+          "id": "666ce7eb-8e45-404e-9dec-bbaaee677d73",
+          "status": "queued",
+          "number": "?",
+          "createdAt": "2026-10-21T02:08:21.730Z"
+        }
+      ],
+      "stopping": 0,
+      "roundIdleSince": [
+        null
+      ]
+    }
+  ],
+  "confirmedBusinessFailure": {
+    "deviceNumber": 154,
+    "lookupId": "362dd13d-c04e-4277-85f3-17dbda8f89e3",
+    "status": "failed",
+    "code": "lookup_execution_failed",
+    "attempts": 1,
+    "elapsedSeconds": 58.213,
+    "runnerReasonCategory": "poco_query_page_recovery_failed; worker exit in verify_worker_adb_transport",
+    "stopAcknowledgedAt": "2026-10-21T02:08:28.191Z",
+    "rootTransportCauseConfirmed": false,
+    "crossDeviceContinuationOccurred": false
+  },
+  "lastBatchSample": {
+    "at": "2026-10-21T02:09:07.929Z",
+    "businessCount": 85,
+    "businessStatuses": {
+      "succeeded": 53,
+      "not_found": 17,
+      "failed": 1,
+      "running": 2,
+      "queued": 12
+    },
+    "batch": {
+      "total": 20,
+      "statuses": {
+        "not_found": 3,
+        "succeeded": 13,
+        "failed": 1,
+        "running": 2,
+        "queued": 1
+      },
+      "timeSeconds": {
+        "median": 53.514,
+        "max": 94.797
+      },
+      "waitingSeconds": {
+        "median": 40.217,
+        "max": 97.146
+      },
+      "multipleAttempts": [
+        {
+          "id": "8e2dfebf-0dde-4770-b435-799caaad7afb",
+          "status": "succeeded",
+          "code": "",
+          "purpose": "business",
+          "createdAt": "2026-10-21T02:07:17.760Z",
+          "completedAt": "2026-10-21T02:08:11.274Z",
+          "seconds": 53.514,
+          "attempts": [
+            {
+              "at": "2026-10-21T02:07:28.790Z",
+              "number": "74",
+              "sessionId": "452a1800-1f48-4104-b030-0ccef8e318da"
+            },
+            {
+              "at": "2026-10-21T02:07:56.563Z",
+              "number": "165",
+              "sessionId": "94573e9c-9617-4461-8535-d0a2a5a7c8fc"
+            }
+          ],
+          "queryId": "85c32d50-5758-4259-9b48-098c1286e614"
+        },
+        {
+          "id": "b4a9cfb1-cf1c-44b3-8dac-3265bc215db3",
+          "status": "running",
+          "code": "",
+          "purpose": "business",
+          "createdAt": "2026-10-21T02:07:19.624Z",
+          "seconds": null,
+          "attempts": [
+            {
+              "at": "2026-10-21T02:08:24.593Z",
+              "number": "10",
+              "sessionId": "28116bba-74ff-47e0-b9bd-5027e2332421"
+            },
+            {
+              "at": "2026-10-21T02:08:40.074Z",
+              "number": "181",
+              "sessionId": "a526c590-2565-4d29-a877-8aab80c7f8ba"
+            },
+            {
+              "at": "2026-10-21T02:08:55.101Z",
+              "number": "165",
+              "sessionId": "94573e9c-9617-4461-8535-d0a2a5a7c8fc"
+            }
+          ],
+          "queryId": "03bc93d6-31ce-4b71-8e8d-6827bda56c91"
+        }
+      ]
+    },
+    "channels": [
+      {
+        "number": 162,
+        "phase": "human"
+      },
+      {
+        "number": 165,
+        "phase": "querying"
+      },
+      {
+        "number": 112,
+        "phase": "querying"
+      },
+      {
+        "number": 156,
+        "phase": "starting"
+      },
+      {
+        "number": 182,
+        "phase": "starting"
+      },
+      {
+        "number": 154,
+        "phase": "starting"
+      }
+    ],
+    "pending": [
+      {
+        "id": "b4a9cfb1-cf1c-44b3-8dac-3265bc215db3",
+        "status": "running",
+        "number": "165",
+        "createdAt": "2026-10-21T02:07:19.624Z"
+      },
+      {
+        "id": "d31fdb90-b869-4a84-a99c-3b53ee45c08d",
+        "status": "running",
+        "number": "112",
+        "createdAt": "2026-10-21T02:07:20.459Z"
+      },
+      {
+        "id": "c928fb1b-5e5d-4b30-9841-b14526cfc2fd",
+        "status": "queued",
+        "number": "?",
+        "createdAt": "2026-10-21T02:07:20.663Z"
+      }
+    ],
+    "stopping": 0,
+    "roundIdleSince": [
+      null
+    ]
+  },
+  "finalAtTurnEnd": {
+    "at": "2026-10-21T02:09:46.725Z",
+    "businessCount": 85,
+    "businessStatuses": {
+      "succeeded": 54,
+      "not_found": 19,
+      "failed": 1,
+      "running": 3,
+      "queued": 8
+    },
+    "batch": {
+      "total": 20,
+      "statuses": {
+        "not_found": 5,
+        "succeeded": 14,
+        "failed": 1
+      },
+      "timeSeconds": {
+        "median": 59.744,
+        "max": 143.702
+      },
+      "waitingSeconds": {
+        "median": 48.53,
+        "max": 113.697
+      },
+      "multipleAttempts": [
+        {
+          "id": "8e2dfebf-0dde-4770-b435-799caaad7afb",
+          "status": "succeeded",
+          "code": "",
+          "purpose": "business",
+          "createdAt": "2026-10-21T02:07:17.760Z",
+          "completedAt": "2026-10-21T02:08:11.274Z",
+          "seconds": 53.514,
+          "attempts": [
+            {
+              "at": "2026-10-21T02:07:28.790Z",
+              "number": "74",
+              "sessionId": "452a1800-1f48-4104-b030-0ccef8e318da"
+            },
+            {
+              "at": "2026-10-21T02:07:56.563Z",
+              "number": "165",
+              "sessionId": "94573e9c-9617-4461-8535-d0a2a5a7c8fc"
+            }
+          ],
+          "queryId": "85c32d50-5758-4259-9b48-098c1286e614"
+        },
+        {
+          "id": "b4a9cfb1-cf1c-44b3-8dac-3265bc215db3",
+          "status": "not_found",
+          "code": "",
+          "purpose": "business",
+          "createdAt": "2026-10-21T02:07:19.624Z",
+          "completedAt": "2026-10-21T02:09:43.326Z",
+          "seconds": 143.702,
+          "attempts": [
+            {
+              "at": "2026-10-21T02:08:24.593Z",
+              "number": "10",
+              "sessionId": "28116bba-74ff-47e0-b9bd-5027e2332421"
+            },
+            {
+              "at": "2026-10-21T02:08:40.074Z",
+              "number": "181",
+              "sessionId": "a526c590-2565-4d29-a877-8aab80c7f8ba"
+            },
+            {
+              "at": "2026-10-21T02:08:55.101Z",
+              "number": "165",
+              "sessionId": "94573e9c-9617-4461-8535-d0a2a5a7c8fc"
+            },
+            {
+              "at": "2026-10-21T02:09:29.864Z",
+              "number": "112",
+              "sessionId": "d1fbc631-514e-494d-ba4f-f8b2d830d550"
+            }
+          ],
+          "queryId": "ef90f2a5-6269-4b8c-9cd2-569609922ec3"
+        }
+      ]
+    },
+    "channels": [
+      {
+        "number": 162,
+        "phase": "human"
+      },
+      {
+        "number": 112,
+        "phase": "querying"
+      },
+      {
+        "number": 156,
+        "phase": "querying"
+      },
+      {
+        "number": 182,
+        "phase": "querying"
+      },
+      {
+        "number": 154,
+        "phase": "starting"
+      },
+      {
+        "number": 74,
+        "phase": "starting"
+      }
+    ],
+    "pending": [],
+    "stopping": 0,
+    "roundIdleSince": [
+      null
+    ]
   }
 }
