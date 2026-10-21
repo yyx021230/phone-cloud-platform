@@ -1,0 +1,17 @@
+{
+  "atUtc": "2026-10-21T03:54:50.7268911Z",
+  "oldPid": 14508,
+  "newPid": 24968,
+  "owner": "NT AUTHORITY\\SYSTEM",
+  "adbPidUnchanged": 8988,
+  "files": [
+    "src\\index.mjs",
+    "src\\lookup-human-observer.mjs"
+  ],
+  "hashes": [
+    "4d383bedf195739005abafe52779b7414d3aa2e3217fca45f359746de5e3bd23",
+    "f9d327e786802c5781e7eea046f4bf0dfa81d3ec67f63066e99345148a1ab4b2"
+  ],
+  "candidate": "lookup-scheduling-20261021-rc.3",
+  "rolledBack": false
+}

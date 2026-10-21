@@ -1,0 +1,149 @@
+{
+  "runtime": {
+    "at": "2026-10-21T03:56:30.224Z",
+    "health": true,
+    "ready": true,
+    "total": 131,
+    "listed": 125,
+    "onlineFresh": 117,
+    "adbStatuses": {
+      "device": 117,
+      "usb_composite_no_adb_interface": 1,
+      "physically_absent": 12,
+      "unauthorized": 1
+    },
+    "occupancy": [
+      {
+        "number": "53",
+        "kind": "alipay_name_lookup"
+      },
+      {
+        "number": "165",
+        "kind": "alipay_name_lookup"
+      },
+      {
+        "number": "161",
+        "kind": "alipay_name_lookup"
+      },
+      {
+        "number": "138",
+        "kind": "alipay_name_lookup"
+      },
+      {
+        "number": "115",
+        "kind": "alipay_name_lookup"
+      }
+    ],
+    "channels": [
+      {
+        "number": 165,
+        "phase": "human"
+      },
+      {
+        "number": 161,
+        "phase": "idle"
+      },
+      {
+        "number": 53,
+        "phase": "human"
+      },
+      {
+        "number": 138,
+        "phase": "human"
+      },
+      {
+        "number": 115,
+        "phase": "idle"
+      }
+    ],
+    "requestStates": {
+      "succeeded": 185,
+      "not_found": 53,
+      "failed": 15,
+      "cancelled": 3,
+      "waiting_human": 3
+    },
+    "preservation": {
+      "compared": 257,
+      "missing": 3,
+      "changedFinal": 0,
+      "recoveredFromArchive": 3,
+      "actualMissing": 0,
+      "inflight": [
+        {
+          "before": "waiting_human",
+          "after": "cancelled"
+        }
+      ]
+    },
+    "agentKeys": [
+      "agents"
+    ],
+    "agents": [
+      {
+        "lastSeenAt": "2026-10-21T03:56:17.801Z",
+        "updatedAt": "2026-10-21T03:56:17.801Z",
+        "taskCounts": {
+          "succeeded": 2987,
+          "failed": 623,
+          "cancelled": 63
+        }
+      },
+      {
+        "lastSeenAt": "2026-08-10T06:02:47.953Z",
+        "updatedAt": "2026-08-10T06:02:53.534Z",
+        "taskCounts": {}
+      },
+      {
+        "lastSeenAt": "2026-07-03T04:15:49.959Z",
+        "updatedAt": "2026-07-03T04:19:28.480Z",
+        "taskCounts": {}
+      },
+      {
+        "lastSeenAt": "2026-07-03T05:36:47.198Z",
+        "updatedAt": "2026-07-03T05:36:47.198Z",
+        "taskCounts": {}
+      }
+    ],
+    "snapshot": [
+      {
+        "table_name": "phone_cloud_state",
+        "column_name": "data",
+        "data_type": "json"
+      }
+    ]
+  },
+  "image": "sha256:a9e487ecb04afa22def7c926541a06be5593191066652881388d017e54022dab",
+  "containerId": "75b081146ecb8a601507881b3b1367d60c60d0b76300005cb3e952d98a467559",
+  "pid": 954599,
+  "startedAt": "2026-10-21T03:54:55.143010934Z",
+  "envUnchanged": true,
+  "mountsUnchanged": true,
+  "hashes": {
+    "server/managed-lookup-platform.mjs": "28636ae0b751afd78ad4b6bd7867c23436fb250b25720525d36c564385e70137",
+    "server/lookup-readiness.mjs": "c12eaf61f28ea38a3e491bddb55f2a2c1637075b759827bba33e92602359f248",
+    "server/automation-center.mjs": "76e197e2b01b2f625d068cede5b9b2e4d224598e50531072b8cf9313bb83ecae",
+    "server/lookup-human-handover.mjs": "f02ce0dedd5bcfcba1209a9d3f05f8836d0b431107ae38fc3e1e3ca3545d44c9",
+    "server/device-occupancy.mjs": "90d9f2bd4e9b5b2807ad2d7905d538f5d7ff2fe19fda629396d635a67fa9aeb0",
+    "server/index.mjs": "b65511f817b4ceb6a28091eb27ccfa6de63bd10ba36bb7f45ffb04f57a536f07",
+    "server/managed-lookup.mjs": "7a8d8a866df6c90bfdbd0862f73a9c6722702e11ccdd190f0b8f1cc96d8552d1",
+    "public/index.html": "6eb21ed9000cc5f77afba3b522cf0dcf6149a86a37ea4da5a6a0c2562c9c45e6",
+    "public/lookup-card-status.js": "419c865557401c9b431bef2a30c48b332f39d266f2addfa462fd21beb9c7a780",
+    "public/api-reference.json": "8d420da8afc14ba68c0c58f348cc844ad28dc34c5e6d3eca3b40d4305e2f0639",
+    "public/openapi.json": "540e1e16e6af6c90027c2cb4d95cf0018bfc5b5bed6474647f7fbf9ed74ccc1a",
+    "public/app.js": "88ae575783d31f0bdeb14e9c5150da7168d1aefa7ec97e54a38b98cc3254a0fd",
+    "public/downloads/name-lookup-http-guide.md": "0437c0dc795885430ad1a62bef8b1599b24a34c724ffb5e2513d31d797a1b356",
+    "public/downloads/name-lookup-integration.zip": "8b6671151bce01bc8cf8d369382d6363b66df0a815ac8491effd5546e7fb520d",
+    "public/downloads/name-lookup-openapi.json": "0553994fbc5ccc91e33752035f512f828c10d389a7c55c47607e9e1819848600",
+    "public/downloads/name-lookup-sha256.json": "ffba83e072a89ac89f22096bee21e7ee4566bcba903d6d43f9d0b796064ab16f"
+  },
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "checksAt": "2026-10-21T03:56:30.422278+00:00"
+}

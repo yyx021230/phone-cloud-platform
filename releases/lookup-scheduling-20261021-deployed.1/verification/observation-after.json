@@ -1,0 +1,45 @@
+{
+  "at": "2026-10-21T03:57:45.628Z",
+  "counts": {
+    "registered": 48,
+    "executing": 0,
+    "waitingHuman": 3,
+    "queued": 0
+  },
+  "channels": [
+    {
+      "number": 165,
+      "phase": "human",
+      "observation": null
+    },
+    {
+      "number": 161,
+      "phase": "idle",
+      "observation": null
+    },
+    {
+      "number": 53,
+      "phase": "human",
+      "observation": null
+    },
+    {
+      "number": 138,
+      "phase": "human",
+      "observation": null
+    },
+    {
+      "number": 115,
+      "phase": "idle",
+      "observation": null
+    }
+  ],
+  "preparations": [
+    {
+      "admissionOpenedAt": 1792554966669
+    }
+  ],
+  "freshOnline": 117,
+  "controls": [
+    "138"
+  ]
+}
