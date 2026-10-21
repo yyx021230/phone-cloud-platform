@@ -1,0 +1,122 @@
+{
+  "candidate": "lookup-scheduling-20261021-rc.3",
+  "commit": "9d2276884f26e6c436bc4ccd80bb3c8d18be3771",
+  "atUtc": "2026-10-21T03:47:55.614358+00:00",
+  "activeBefore": "lookup-ocr-snapshot-20261021-deployed.1",
+  "containerBefore": "fda5829002775bbb1821c086769a5848f27141d9be602bdf33983295c0446036",
+  "imageBefore": "sha256:0db4c7eddb1a6ddb4c629882c220e5ee2287640c6520fa26bebf1c890bdf2225",
+  "backup": "/opt/phone-cloud-platform/deploy-backups/lookup-scheduling-20261021-prep.1",
+  "staging": "/opt/phone-cloud-platform/staging/lookup-scheduling-20261021-rc.3",
+  "backupFiles": {
+    "compose-00.backup": {
+      "sha256": "8687bf4176f8f0d78ab73380a7ef0fd6b71bf044de5474f172ef5483d3e47435",
+      "bytes": 1803
+    },
+    "compose-18.backup": {
+      "sha256": "d2041afb6ff7f29c95083fc80d0adc0fdafddd0b66de596574e96712a6a29e58",
+      "bytes": 121
+    },
+    "compose-05.backup": {
+      "sha256": "a66295d203cd2525123c9f32b9168bbbb4320e45f6ed92043ff65bb39174e933",
+      "bytes": 423
+    },
+    "postgres.dump": {
+      "sha256": "10db33e8bde90ccc6fea6d6339e8c7c36e5c30022418ef2005e6bca7ad775ce4",
+      "bytes": 605723519
+    },
+    "compose-17.backup": {
+      "sha256": "5240bf294415130e75c0da3e41736a3f82454a27fc736b1afe593106b029e4a1",
+      "bytes": 121
+    },
+    "postgres-contents.txt": {
+      "sha256": "f05235200c5d10ed5cd4591471d3d55cae948d221bb7b30314d910c9e23391d4",
+      "bytes": 5579
+    },
+    "compose-10.backup": {
+      "sha256": "ede1c88807ca9698aed508965802e72fc4e920889bc0b0b8f78ba106fdcd7638",
+      "bytes": 309
+    },
+    "compose-01.backup": {
+      "sha256": "45f735c99379398e200b9323e4016fd75dc6f1b7a6c0895340b5434f3f02a14e",
+      "bytes": 536
+    },
+    "compose-14.backup": {
+      "sha256": "f3823f6ec1a5a04257a07aa0ba3de3e041e449038f92e463b6bc9e936465966d",
+      "bytes": 118
+    },
+    "compose-19.backup": {
+      "sha256": "62b5e28d971d9e8b7b2cdbae9ec930d94f459b04c368581897e72d8ee2865e49",
+      "bytes": 123
+    },
+    "compose-11.backup": {
+      "sha256": "d0c25199840f5a36acb4e8c12b6c252396f2cae9a152e5e9ae6dc1ee8bb77436",
+      "bytes": 309
+    },
+    "compose-04.backup": {
+      "sha256": "2e4812b1cc488aad42a2ac08741aaeeea3fd2f53effce0c0a10a3a06ac61b01b",
+      "bytes": 305
+    },
+    "compose-02.backup": {
+      "sha256": "378eed4ea3daba1dd3513c6f2f1ec14bf3fefdab0aa4b9c1bb9e73175f919c4d",
+      "bytes": 380
+    },
+    "compose-15.backup": {
+      "sha256": "7f3601809eae0e23a48b4690ee3c70e81b569256471dd8699ac14ce7cd9a5de2",
+      "bytes": 126
+    },
+    "compose-06.backup": {
+      "sha256": "f5c40ceaf29d6667f9b610f3285892faad52ca11cab012f397cbfb938161374b",
+      "bytes": 307
+    },
+    "compose-12.backup": {
+      "sha256": "987bdbefc20f68805b3d8f0498ec645ad85d5f6e5fa19a13d85386640ed8c0fa",
+      "bytes": 122
+    },
+    "rollback-image.tar.gz": {
+      "sha256": "46b6b51da41ed1d70c0e4318ad4b4ce6c261e8bdb574ec4893ce0d8ee5ef00e9",
+      "bytes": 65281340
+    },
+    "compose-09.backup": {
+      "sha256": "219af8cfef1f124b39a7d58fd2bb44f59c2c82f1b5ade1301bbc9af0f2f5c9b8",
+      "bytes": 309
+    },
+    "compose-20.backup": {
+      "sha256": "caac8029057751f549235d389b84079aa97eb5bb38dff1526783e1d02a6e5933",
+      "bytes": 129
+    },
+    "compose-03.backup": {
+      "sha256": "99ad53a185e5a6f603a5adfe0d6c86f2d630f9365ae4dedeaec05a898a767f5d",
+      "bytes": 128
+    },
+    "compose-07.backup": {
+      "sha256": "1f62d68c0c88a06c59d1a4427b4ce40ca30c7733492ba20bed03daf0e08e2fde",
+      "bytes": 307
+    },
+    "compose-08.backup": {
+      "sha256": "c33ca7e966eeabf1a0e749f28eccd364c01c547735b24d9517d17f02dde5eb76",
+      "bytes": 309
+    },
+    "compose-16.backup": {
+      "sha256": "5a8de49adecbfb66086ecfd93460f43b6c9dee4e40acf47ca0987aa695dbe096",
+      "bytes": 124
+    },
+    "ACTIVE_PLATFORM_RELEASE.json": {
+      "sha256": "a4acbb0717247d47a9a22e70afada7700c892e8f3edab9ce29be9dea53353f78",
+      "bytes": 38286
+    },
+    "compose-21.backup": {
+      "sha256": "142f87106f19a593fd4ba61b8c0bdf8679d19bebe26b4014cb12cfea37de9faf",
+      "bytes": 128
+    },
+    "compose-22.backup": {
+      "sha256": "8815a4121ad58caf1970683ce5246f4a08a699f3191d3ccf350a7c18c06ce970",
+      "bytes": 123
+    },
+    "compose-13.backup": {
+      "sha256": "b216af8c4e68d641818e9539d4c1b55a3b4429ab904228ae0fb2bf38e6e9123b",
+      "bytes": 121
+    }
+  },
+  "switched": false,
+  "servicesRestarted": false
+}

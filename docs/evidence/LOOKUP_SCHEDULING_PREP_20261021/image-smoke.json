@@ -1,0 +1,33 @@
+{
+  "ok": true,
+  "checkedHashes": 16,
+  "checks": [
+    {
+      "path": "/healthz",
+      "status": 200
+    },
+    {
+      "path": "/readyz",
+      "status": 200
+    },
+    {
+      "path": "/api-docs.html",
+      "status": 200
+    },
+    {
+      "path": "/lookup-card-status.js",
+      "status": 200
+    },
+    {
+      "path": "/downloads/name-lookup-http-guide.md",
+      "status": 200
+    },
+    {
+      "path": "/downloads/name-lookup-integration.zip",
+      "status": 200
+    }
+  ],
+  "mode": "isolated-json-test",
+  "productionNetwork": false,
+  "productionData": false
+}

@@ -1,0 +1,46 @@
+{
+  "status": "prepared_not_deployed",
+  "candidate": "lookup-scheduling-20261021-rc.3",
+  "sourceCommit": "9d2276884f26e6c436bc4ccd80bb3c8d18be3771",
+  "image": "sha256:a9e487ecb04afa22def7c926541a06be5593191066652881388d017e54022dab",
+  "imageVerification": {
+    "ok": true,
+    "checkedHashes": 16,
+    "checks": [
+      {
+        "path": "/healthz",
+        "status": 200
+      },
+      {
+        "path": "/readyz",
+        "status": 200
+      },
+      {
+        "path": "/api-docs.html",
+        "status": 200
+      },
+      {
+        "path": "/lookup-card-status.js",
+        "status": 200
+      },
+      {
+        "path": "/downloads/name-lookup-http-guide.md",
+        "status": 200
+      },
+      {
+        "path": "/downloads/name-lookup-integration.zip",
+        "status": 200
+      }
+    ],
+    "mode": "isolated-json-test",
+    "productionNetwork": false,
+    "productionData": false
+  },
+  "windowsTests": 40,
+  "productionUnchanged": true,
+  "maintenanceRequired": [
+    "cloud",
+    "shared Windows Agent"
+  ],
+  "adbChanged": false
+}

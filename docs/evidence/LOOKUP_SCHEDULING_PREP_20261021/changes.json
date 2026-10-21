@@ -1,0 +1,74 @@
+{
+  "server/managed-lookup-platform.mjs": {
+    "after": "28636ae0b751afd78ad4b6bd7867c23436fb250b25720525d36c564385e70137",
+    "before": "11f9a28bfe06fd32a763bef5d9188b89674439354ac7e0bd3eba95b31b63c2b6"
+  },
+  "server/lookup-readiness.mjs": {
+    "after": "c12eaf61f28ea38a3e491bddb55f2a2c1637075b759827bba33e92602359f248",
+    "before": "2a1807ed1a59f1db37acf5b1fee3acb42da64969a3b9685ba5b114efbe852273"
+  },
+  "server/automation-center.mjs": {
+    "after": "76e197e2b01b2f625d068cede5b9b2e4d224598e50531072b8cf9313bb83ecae",
+    "before": "7c9de128f64f142988f12d5dcdd1138c510ab76e90a4ac6b0b423076896fa7cd"
+  },
+  "server/lookup-human-handover.mjs": {
+    "after": "f02ce0dedd5bcfcba1209a9d3f05f8836d0b431107ae38fc3e1e3ca3545d44c9",
+    "before": "ba8175250d2dafd446b6a6bcc39319c2f71a93cb6f36a70cc4f1137e878233db"
+  },
+  "server/device-occupancy.mjs": {
+    "after": "90d9f2bd4e9b5b2807ad2d7905d538f5d7ff2fe19fda629396d635a67fa9aeb0",
+    "before": "b13d17b34643369880a424d3724d2447b83c7035535be74502bd2dc09ff2ee2f"
+  },
+  "server/index.mjs": {
+    "after": "b65511f817b4ceb6a28091eb27ccfa6de63bd10ba36bb7f45ffb04f57a536f07",
+    "before": "57a83933ab0e70b8c0f9643c649b70dcfc68f8ca8fcfb25688fa8db9d49f14c4"
+  },
+  "server/managed-lookup.mjs": {
+    "after": "7a8d8a866df6c90bfdbd0862f73a9c6722702e11ccdd190f0b8f1cc96d8552d1",
+    "before": "a1b8aad75c99ab054c30bf0faf9d16089cf703c7591616cc871ece5d712d8d01"
+  },
+  "public/index.html": {
+    "after": "6eb21ed9000cc5f77afba3b522cf0dcf6149a86a37ea4da5a6a0c2562c9c45e6",
+    "before": "264d1b4641d36a69688cbc068b76cfe8e4bd7bb499c61b936654f4e969ade2de"
+  },
+  "public/lookup-card-status.js": {
+    "after": "419c865557401c9b431bef2a30c48b332f39d266f2addfa462fd21beb9c7a780",
+    "before": "8f858abaea1294ba0016ed622c2b9b48df945c0c4f181ab10da018c0decfe5c6"
+  },
+  "public/api-reference.json": {
+    "after": "8d420da8afc14ba68c0c58f348cc844ad28dc34c5e6d3eca3b40d4305e2f0639",
+    "before": "5ce9d1634413059e4ee1ed119af78a80e866552439034d279e35ce0389ae44b4"
+  },
+  "public/openapi.json": {
+    "after": "540e1e16e6af6c90027c2cb4d95cf0018bfc5b5bed6474647f7fbf9ed74ccc1a",
+    "before": "5d3a463dea3bc445dd238377630f89cfa03130a29809c863fa0c6ad6f90a7f68"
+  },
+  "public/app.js": {
+    "after": "88ae575783d31f0bdeb14e9c5150da7168d1aefa7ec97e54a38b98cc3254a0fd",
+    "before": "5bd2f00cbb6038c740b4b8b82b2c10f2cf26330947ab81de29a9b72b2f78480b"
+  },
+  "public/downloads/name-lookup-http-guide.md": {
+    "after": "0437c0dc795885430ad1a62bef8b1599b24a34c724ffb5e2513d31d797a1b356",
+    "before": "47df78087a7aee9b786dc676b934f710d571c310db80a0fb9f62ad9e965d196b"
+  },
+  "public/downloads/name-lookup-integration.zip": {
+    "after": "8b6671151bce01bc8cf8d369382d6363b66df0a815ac8491effd5546e7fb520d",
+    "before": "2c8bc9ee67467526ce619a72427c872843829258eb03525b94c88af1acad936b"
+  },
+  "public/downloads/name-lookup-openapi.json": {
+    "after": "0553994fbc5ccc91e33752035f512f828c10d389a7c55c47607e9e1819848600",
+    "before": "2f8a4062b24eb56a7d7877068e1b5fa4b80f57879ed6ddf84c9abe5efcb2a7cd"
+  },
+  "public/downloads/name-lookup-sha256.json": {
+    "after": "ffba83e072a89ac89f22096bee21e7ee4566bcba903d6d43f9d0b796064ab16f",
+    "before": "b3008f82db7db4d514196ca185f7417144fbc5d80e6b9c11dffd21b75941ecc8"
+  },
+  "windows-agent/src/lookup-human-observer.mjs": {
+    "after": "f9d327e786802c5781e7eea046f4bf0dfa81d3ec67f63066e99345148a1ab4b2",
+    "before": "2f770154a085ca9dc06cc886371d9181bd62f472501ea96d9c229698b1580bdf"
+  },
+  "windows-agent/src/index.mjs": {
+    "after": "4d383bedf195739005abafe52779b7414d3aa2e3217fca45f359746de5e3bd23",
+    "before": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9"
+  }
+}

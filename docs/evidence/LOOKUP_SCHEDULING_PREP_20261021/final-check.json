@@ -1,0 +1,77 @@
+{
+  "usage": {
+    "at": "2026-10-21T03:50:02.927Z",
+    "health": true,
+    "ready": true,
+    "total": 131,
+    "occupancy": [
+      {
+        "number": "188",
+        "kind": "screen_control"
+      },
+      {
+        "number": "154",
+        "kind": "screen_control"
+      },
+      {
+        "number": "159",
+        "kind": "screen_control"
+      },
+      {
+        "number": "161",
+        "kind": "alipay_name_lookup"
+      },
+      {
+        "number": "162",
+        "kind": "alipay_name_lookup"
+      },
+      {
+        "number": "165",
+        "kind": "alipay_name_lookup"
+      },
+      {
+        "number": "138",
+        "kind": "alipay_name_lookup"
+      },
+      {
+        "number": "53",
+        "kind": "alipay_name_lookup"
+      },
+      {
+        "number": "58",
+        "kind": "alipay_name_lookup"
+      },
+      {
+        "number": "124",
+        "kind": "screen_control"
+      },
+      {
+        "number": "115",
+        "kind": "alipay_name_lookup"
+      },
+      {
+        "number": "54",
+        "kind": "screen_control"
+      },
+      {
+        "number": "172",
+        "kind": "screen_control"
+      }
+    ],
+    "requestStates": {
+      "succeeded": 185,
+      "not_found": 55,
+      "failed": 15,
+      "waiting_human": 2,
+      "cancelled": 1
+    }
+  },
+  "candidateImage": "sha256:a9e487ecb04afa22def7c926541a06be5593191066652881388d017e54022dab",
+  "productionPid": 777523,
+  "productionStartedAt": "2026-10-21T01:15:53.687672878Z",
+  "productionRunning": true,
+  "productionHealth": "healthy",
+  "activeVersion": "lookup-ocr-snapshot-20261021-deployed.1",
+  "activeCommit": "1ec44cf2bbf15583821f941efe2b711b0ecb455d",
+  "switched": false
+}

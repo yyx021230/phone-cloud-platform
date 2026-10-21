@@ -1,0 +1,23 @@
+{
+  "restarted": false,
+  "mockTestsPassed": true,
+  "syntaxPassed": true,
+  "stage": "D:\\PhoneCloud\\staging\\lookup-scheduling-20261021-rc.3",
+  "files": [
+    {
+      "before": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+      "file": "src\\index.mjs",
+      "after": "4d383bedf195739005abafe52779b7414d3aa2e3217fca45f359746de5e3bd23"
+    },
+    {
+      "before": "2f770154a085ca9dc06cc886371d9181bd62f472501ea96d9c229698b1580bdf",
+      "file": "src\\lookup-human-observer.mjs",
+      "after": "f9d327e786802c5781e7eea046f4bf0dfa81d3ec67f63066e99345148a1ab4b2"
+    }
+  ],
+  "commit": "9d2276884f26e6c436bc4ccd80bb3c8d18be3771",
+  "backup": "D:\\PhoneCloud\\agent\\backups\\lookup-scheduling-20261021-prep.1",
+  "timeUtc": "2026-10-21T03:47:10.5233151Z",
+  "candidate": "lookup-scheduling-20261021-rc.3",
+  "productionFilesReplaced": false
+}

@@ -1,0 +1,102 @@
+{
+  "version": "lookup-ocr-snapshot-20261021-deployed.1",
+  "commit": "1ec44cf2bbf15583821f941efe2b711b0ecb455d",
+  "image": "sha256:0db4c7eddb1a6ddb4c629882c220e5ee2287640c6520fa26bebf1c890bdf2225",
+  "restartImage": "sha256:0db4c7eddb1a6ddb4c629882c220e5ee2287640c6520fa26bebf1c890bdf2225",
+  "containerId": "fda5829002775bbb1821c086769a5848f27141d9be602bdf33983295c0446036",
+  "containerPid": 777523,
+  "compose": [
+    {
+      "path": "/opt/phone-cloud-platform/docker-compose.yml",
+      "matches": true
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/platform-api-integration-20261012-rc.3/compose.candidate.json",
+      "matches": true
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/platform-core-20261014-rc.7/compose.candidate.json",
+      "matches": true
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/platform-core-20261014-rc.7/compose.coordinator.json",
+      "matches": true
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-delivery-20261014-rc.1/compose.delivery.json",
+      "matches": true
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-readiness-20261015-rc.1/compose.readiness.json",
+      "matches": true
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-readiness-20261015-rc.3/compose.pending.json",
+      "matches": true
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-readiness-20261015-rc.8/compose.pending.json",
+      "matches": true
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-readiness-20261015-rc.13/compose.pending.json",
+      "matches": true
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-readiness-20261015-rc.14/compose.pending.json",
+      "matches": true
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-readiness-20261015-rc.15/compose.pending.json",
+      "matches": true
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-readiness-20261016-rc.16/compose.pending.json",
+      "matches": true
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-public-docs-20261016-rc.1/compose.pending.json",
+      "matches": true
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-http-guide-20261016-rc.1/compose.pending.json",
+      "matches": true
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-api-key-20261016-rc.2/compose.pending.json",
+      "matches": true
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-account-offline-20261016-rc.1/compose.pending.json",
+      "matches": true
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-auto-recovery-20261016-rc.1/compose.pending.json",
+      "matches": true
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-round-stop-20261016-rc.1/compose.pending.json",
+      "matches": true
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/recovery-feedback-20261019-rc.1/compose.frontend.json",
+      "matches": true
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-idle-refresh-20261020-rc.2/compose.pending.json",
+      "matches": true
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-offline-round-stop-20261020-rc.2/compose.pending.json",
+      "matches": true
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-snapshot-recovery-20261021-rc.1/compose.pending.json",
+      "matches": true
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-ocr-snapshot-20261021-rc.1/compose.pending.json",
+      "matches": true
+    }
+  ]
+}

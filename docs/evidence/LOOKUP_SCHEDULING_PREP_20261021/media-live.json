@@ -1,0 +1,8 @@
+{
+  "decision": "D-075",
+  "verified": "live",
+  "pid": 2503525,
+  "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+  "bitsPerSecond": 8000000,
+  "packetsPerGroup": 2
+}
