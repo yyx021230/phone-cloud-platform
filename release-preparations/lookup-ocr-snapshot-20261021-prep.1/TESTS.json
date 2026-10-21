@@ -1,0 +1,26 @@
+{
+  "atUtc": "2026-10-21T01:18:50.685315+00:00",
+  "runtimeCandidateCommit": "1ec44cf2bbf15583821f941efe2b711b0ecb455d",
+  "syntaxCheck": true,
+  "fullRegression": {
+    "passed": 932,
+    "failed": 0,
+    "concurrency": 2
+  },
+  "isolatedHttp": {
+    "passed": 1
+  },
+  "earlierFailures": [
+    {
+      "kind": "test assembly omitted Agent node_modules",
+      "resolved": "linked already installed unchanged Agent dependencies; no dependency install or upgrade"
+    },
+    {
+      "kind": "unbounded parallel suite HTTP 800ms fixture returned 504 instead of 503",
+      "result": "931/932",
+      "resolved": "unchanged case passed independently; all 932 passed with test concurrency=2"
+    }
+  ],
+  "productionNewQueries": 0,
+  "pythonSourceUnchangedFromValidatedLookupCandidate": true
+}

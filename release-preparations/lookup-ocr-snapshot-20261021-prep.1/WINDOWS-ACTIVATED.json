@@ -1,0 +1,16 @@
+{
+  "atUtc": "2026-10-21T01:15:53.019118+00:00",
+  "mode": "apply",
+  "agentPid": 14508,
+  "adbPid": 8988,
+  "owner": "SYSTEM",
+  "workers": 0,
+  "files": {
+    "windows-agent/scripts/alipay_name_lookup.py": "059a2f56fe5152cb1c4303235e87a6d000541541a387de388c4b6aa7a576d955",
+    "windows-agent/scripts/alipay_visual_result.py": "08faff5a5e712341c8c14cd5014d8232939b5f5a7e3d0c5af5f19714f1094b97"
+  },
+  "backup": "D:\\PhoneCloud\\agent\\backups\\lookup-ocr-probe-pressure-20261021-prep1",
+  "agentRestarted": false,
+  "adbTouched": false,
+  "aclPreserved": true
+}

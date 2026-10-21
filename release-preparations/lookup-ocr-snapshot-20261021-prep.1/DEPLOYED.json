@@ -1,0 +1,63 @@
+{
+  "atUtc": "2026-10-21T01:17:00.610486+00:00",
+  "startedAtUtc": "2026-10-21T01:15:40.163636+00:00",
+  "version": "lookup-ocr-snapshot-20261021-deployed.1",
+  "commit": "1ec44cf2bbf15583821f941efe2b711b0ecb455d",
+  "runtimeCommit": "1ec44cf2bbf15583821f941efe2b711b0ecb455d",
+  "image": "sha256:0db4c7eddb1a6ddb4c629882c220e5ee2287640c6520fa26bebf1c890bdf2225",
+  "previousImage": "sha256:6e55d42ab1589f99af42878651bf13570775d276e02b2b5004c50a37daaf3c81",
+  "containerId": "fda5829002775bbb1821c086769a5848f27141d9be602bdf33983295c0446036",
+  "containerStartedAt": "2026-10-21T01:15:53.687672878Z",
+  "activeSha256": "69f036b19704f091230669a86f3589b7e457ca0e4620f32c2994f147680f21cf",
+  "runtimeHashesPassed": 45,
+  "occupancyBefore": {
+    "numbers": [
+      "152",
+      "147",
+      "172",
+      "6"
+    ],
+    "revision": 58,
+    "channels": 0,
+    "pending": 0
+  },
+  "mediaBefore": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "mediaAfter": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "agentRestarted": false,
+  "adbTouched": false,
+  "databaseRestored": false,
+  "environmentUnchanged": true,
+  "windows": {
+    "atUtc": "2026-10-21T01:15:53.019118+00:00",
+    "mode": "apply",
+    "agentPid": 14508,
+    "adbPid": 8988,
+    "owner": "SYSTEM",
+    "workers": 0,
+    "files": {
+      "windows-agent/scripts/alipay_name_lookup.py": "059a2f56fe5152cb1c4303235e87a6d000541541a387de388c4b6aa7a576d955",
+      "windows-agent/scripts/alipay_visual_result.py": "08faff5a5e712341c8c14cd5014d8232939b5f5a7e3d0c5af5f19714f1094b97"
+    },
+    "backup": "D:\\PhoneCloud\\agent\\backups\\lookup-ocr-probe-pressure-20261021-prep1",
+    "agentRestarted": false,
+    "adbTouched": false,
+    "aclPreserved": true
+  },
+  "freshBackupBytes": 554096890,
+  "freshBackupSha256": "d3bd27e84457ceb29462a1009eb7bdd3334af6f10e79c7106b15aebd91d28552",
+  "receipt": "/opt/phone-cloud-platform/deployment-receipts/lookup-ocr-snapshot-20261021-deployed.1"
+}

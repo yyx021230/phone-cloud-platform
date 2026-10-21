@@ -1,0 +1,38 @@
+{
+  "atUtc": "2026-10-21T01:10:01.902521+00:00",
+  "version": "lookup-snapshot-recovery-20261021-deployed.1",
+  "commit": "3c890de89623cfd29d5367fcb0773b79288cf74f",
+  "image": "sha256:6e55d42ab1589f99af42878651bf13570775d276e02b2b5004c50a37daaf3c81",
+  "containerId": "1463d7cae71db40e7998855bb3a9da73f9e88cf12e316495b5934c321f72ef20",
+  "restartCount": 0,
+  "runtimeHashesPassed": 44,
+  "migration": {
+    "rows": 1,
+    "textBytes": 147521984,
+    "columnType": "json",
+    "unchangedDigest": true
+  },
+  "mediaBefore": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "mediaAfter": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "agentPid": 14508,
+  "adbPid": 8988,
+  "agentRestarted": false,
+  "adbTouched": false,
+  "originalLookupCandidateDeployed": false,
+  "receipt": "/opt/phone-cloud-platform/deployment-receipts/lookup-snapshot-recovery-20261021-deployed.1",
+  "activeSha256": "7cb0fe73c12e1cf7801db2cda1422eb661e6f6f5961215ed7ac8c8bcd6f91461"
+}
