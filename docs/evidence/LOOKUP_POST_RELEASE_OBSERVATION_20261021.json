@@ -1,0 +1,342 @@
+{
+  "scope": "read-only partner traffic observation",
+  "baselineCommit": "a8fdc5b0d607ace684f0a1bfe912ab4faeec1fb7",
+  "release": "lookup-ocr-snapshot-20261021-deployed.1",
+  "initial": {
+    "at": "2026-10-21T02:05:08.363Z",
+    "businessCount": 54,
+    "businessStatuses": {
+      "succeeded": 40,
+      "not_found": 14
+    },
+    "businessTime": {
+      "min": 9.961,
+      "median": 153.848,
+      "p95": 261.499,
+      "max": 296.785
+    },
+    "businessOver120": 33,
+    "businessMultiAttempt": [
+      {
+        "id": "eaa86e03-2510-4999-8cad-ba10db37a9e5",
+        "status": "not_found",
+        "code": "",
+        "purpose": "business",
+        "createdAt": "2026-10-21T01:46:43.882Z",
+        "completedAt": "2026-10-21T01:50:16.961Z",
+        "seconds": 213.079,
+        "attempts": [
+          {
+            "at": "2026-10-21T01:49:03.498Z",
+            "number": "130",
+            "sessionId": "505cabbe-e7c5-4deb-a392-8f3699e09854"
+          },
+          {
+            "at": "2026-10-21T01:49:27.010Z",
+            "number": "156",
+            "sessionId": "5a7a03f5-738c-43af-850a-b24bb27f5a0a"
+          }
+        ],
+        "queryId": "5421077d-8efc-45e7-885f-2bf5b4cb6d07"
+      },
+      {
+        "id": "0df2fd30-13ac-4f5f-b9f7-491b82d90a83",
+        "status": "succeeded",
+        "code": "",
+        "purpose": "business",
+        "createdAt": "2026-10-21T01:48:58.012Z",
+        "completedAt": "2026-10-21T01:53:54.797Z",
+        "seconds": 296.785,
+        "attempts": [
+          {
+            "at": "2026-10-21T01:52:30.672Z",
+            "number": "156",
+            "sessionId": "5a7a03f5-738c-43af-850a-b24bb27f5a0a"
+          },
+          {
+            "at": "2026-10-21T01:53:45.808Z",
+            "number": "112",
+            "sessionId": "46666277-0f60-49d1-9987-2894f4eb22a7"
+          }
+        ],
+        "queryId": "873b8a45-0f73-431b-b53d-7ebe985f8173"
+      },
+      {
+        "id": "fc28f4c6-7ad9-416c-a038-7aaaaddc3c71",
+        "status": "succeeded",
+        "code": "",
+        "purpose": "business",
+        "createdAt": "2026-10-21T01:53:04.892Z",
+        "completedAt": "2026-10-21T01:53:45.773Z",
+        "seconds": 40.881,
+        "attempts": [
+          {
+            "at": "2026-10-21T01:53:10.505Z",
+            "number": "107",
+            "sessionId": "aabbbeb0-28ca-4939-816a-79173f2c7afb"
+          },
+          {
+            "at": "2026-10-21T01:53:30.015Z",
+            "number": "112",
+            "sessionId": "46666277-0f60-49d1-9987-2894f4eb22a7"
+          }
+        ],
+        "queryId": "2424b150-62a8-46d9-9f8c-c0212c7ae25d"
+      }
+    ],
+    "probeCount": 27,
+    "probeStatuses": {
+      "succeeded": 10,
+      "waiting_human": 1,
+      "failed": 15,
+      "running": 1
+    }
+  },
+  "timing": {
+    "at": "2026-10-21T02:06:15.759Z",
+    "businessCount": 54,
+    "businessStatus": {
+      "succeeded": 40,
+      "not_found": 14
+    },
+    "waitSeconds": {
+      "median": 139.616,
+      "p95": 237.594,
+      "max": 261.37
+    },
+    "executionIncludingRecoverySeconds": {
+      "median": 14.218,
+      "p95": 35.268,
+      "max": 84.125
+    },
+    "businessDeviceAttempts": {
+      "107": 6,
+      "112": 20,
+      "130": 11,
+      "156": 20
+    },
+    "probeFailures": {
+      "lookup_account_login_required": 7,
+      "lookup_probe_failed": 7,
+      "lookup_execution_failed": 1
+    },
+    "channels": [
+      {
+        "number": 10,
+        "phase": "idle",
+        "idleAgeSeconds": 189.343,
+        "proofAgeSeconds": 189.344
+      },
+      {
+        "number": 154,
+        "phase": "idle",
+        "idleAgeSeconds": 115.484,
+        "proofAgeSeconds": 115.486
+      },
+      {
+        "number": 162,
+        "phase": "human",
+        "idleAgeSeconds": null,
+        "proofAgeSeconds": null
+      },
+      {
+        "number": 182,
+        "phase": "idle",
+        "idleAgeSeconds": 284.171,
+        "proofAgeSeconds": 284.172
+      },
+      {
+        "number": 165,
+        "phase": "idle",
+        "idleAgeSeconds": 198.077,
+        "proofAgeSeconds": 198.078
+      },
+      {
+        "number": 74,
+        "phase": "idle",
+        "idleAgeSeconds": 137.939,
+        "proofAgeSeconds": 137.941
+      },
+      {
+        "number": 181,
+        "phase": "querying",
+        "idleAgeSeconds": null,
+        "proofAgeSeconds": null
+      }
+    ],
+    "preparations": [
+      {
+        "startedAt": "2026-10-21T01:45:09.007Z",
+        "idleSince": "2026-10-21T01:57:54.986Z",
+        "expiresAt": "2026-10-21T02:12:54.986Z",
+        "probeDemand": false
+      }
+    ],
+    "nonterminal": [
+      {
+        "id": "dae4cdbc-a053-4dc7-abed-6de8f16ff497",
+        "status": "waiting_human",
+        "purpose": "readiness_probe",
+        "createdAt": "2026-10-21T01:45:09.424Z",
+        "seconds": null,
+        "attempts": [
+          {
+            "at": "2026-10-21T01:45:09.436Z",
+            "number": "162",
+            "sessionId": "b7059be9-f4a8-4634-8728-8c58a99d51b9"
+          }
+        ],
+        "queryId": "43eb328d-8134-440e-852d-ed0a03fec57b"
+      },
+      {
+        "id": "ff2b900e-890f-4b80-a4e5-f790120c3e3b",
+        "status": "running",
+        "purpose": "readiness_probe",
+        "createdAt": "2026-10-21T02:02:29.465Z",
+        "seconds": null,
+        "attempts": [
+          {
+            "at": "2026-10-21T02:02:29.477Z",
+            "number": "181",
+            "sessionId": "a526c590-2565-4d29-a877-8aab80c7f8ba"
+          }
+        ],
+        "queryId": "ee84e3a9-d7e2-462e-a0c2-22fd49cd416f"
+      }
+    ],
+    "stopping": 0
+  },
+  "finalSample": {
+    "at": "2026-10-21T02:06:37.815Z",
+    "businessCount": 54,
+    "businessStatus": {
+      "succeeded": 40,
+      "not_found": 14
+    },
+    "businessPending": 0,
+    "channels": [
+      {
+        "number": 10,
+        "phase": "idle",
+        "idleAt": 1792548186416,
+        "proofLastSuccess": 1792548186415
+      },
+      {
+        "number": 154,
+        "phase": "idle",
+        "idleAt": 1792548260275,
+        "proofLastSuccess": 1792548260273
+      },
+      {
+        "number": 162,
+        "phase": "human"
+      },
+      {
+        "number": 182,
+        "phase": "querying",
+        "idleAt": 1792548091588
+      },
+      {
+        "number": 165,
+        "phase": "idle",
+        "idleAt": 1792548177682,
+        "proofLastSuccess": 1792548177681
+      },
+      {
+        "number": 74,
+        "phase": "idle",
+        "idleAt": 1792548237820,
+        "proofLastSuccess": 1792548237818
+      },
+      {
+        "number": 181,
+        "phase": "human"
+      }
+    ],
+    "nonterminal": [
+      {
+        "purpose": "readiness_probe",
+        "status": "waiting_human",
+        "number": "162",
+        "createdAt": "2026-10-21T01:45:09.424Z"
+      },
+      {
+        "purpose": "readiness_probe",
+        "status": "waiting_human",
+        "number": "181",
+        "createdAt": "2026-10-21T02:02:29.465Z"
+      },
+      {
+        "purpose": "readiness_probe",
+        "status": "running",
+        "number": "182",
+        "createdAt": "2026-10-21T02:06:31.714Z"
+      }
+    ],
+    "stopping": 0,
+    "roundExpiresAt": [
+      "2026-10-21T02:12:54.986Z"
+    ]
+  },
+  "newBusinessSubmitted": 0,
+  "newPreparationSubmitted": 0,
+  "productionChanged": false,
+  "adbTouched": false,
+  "lastSample": {
+    "at": "2026-10-21T02:07:12.324Z",
+    "businessCount": 54,
+    "businessStatus": {
+      "succeeded": 40,
+      "not_found": 14
+    },
+    "businessPending": 0,
+    "channels": [
+      {
+        "number": 10,
+        "phase": "idle",
+        "idleAt": 1792548186416,
+        "proofLastSuccess": 1792548186415
+      },
+      {
+        "number": 154,
+        "phase": "idle",
+        "idleAt": 1792548260275,
+        "proofLastSuccess": 1792548260273
+      },
+      {
+        "number": 162,
+        "phase": "human"
+      },
+      {
+        "number": 165,
+        "phase": "idle",
+        "idleAt": 1792548177682,
+        "proofLastSuccess": 1792548177681
+      },
+      {
+        "number": 74,
+        "phase": "idle",
+        "idleAt": 1792548237820,
+        "proofLastSuccess": 1792548237818
+      },
+      {
+        "number": 181,
+        "phase": "idle",
+        "idleAt": 1792548425222,
+        "proofLastSuccess": 1792548425220
+      }
+    ],
+    "nonterminal": [
+      {
+        "purpose": "readiness_probe",
+        "status": "waiting_human",
+        "number": "162",
+        "createdAt": "2026-10-21T01:45:09.424Z"
+      }
+    ],
+    "stopping": 0,
+    "roundExpiresAt": [
+      "2026-10-21T02:12:54.986Z"
+    ]
+  }
+}
