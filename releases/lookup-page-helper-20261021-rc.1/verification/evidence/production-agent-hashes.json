@@ -1,0 +1,10 @@
+[
+  {
+    "file": "src/index.mjs",
+    "sha256": "4d383bedf195739005abafe52779b7414d3aa2e3217fca45f359746de5e3bd23"
+  },
+  {
+    "file": "scripts/alipay_visual_result.py",
+    "sha256": "08faff5a5e712341c8c14cd5014d8232939b5f5a7e3d0c5af5f19714f1094b97"
+  }
+]
