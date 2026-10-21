@@ -1,0 +1,12 @@
+{
+  "version": "lookup-snapshot-recovery-20261021-rc.1",
+  "status": "local_recovery_candidate_not_deployed",
+  "runtimeFiles": [
+    "server/index.mjs"
+  ],
+  "baselineCommit": "59ce44eb871754fb34924836a5c0538919b8cc72",
+  "databaseMigration": "phone_cloud_state.data jsonb -> json; explicit separate approval required",
+  "externalApiChanged": false,
+  "windowsChanges": false,
+  "adbTouched": false
+}
