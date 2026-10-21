@@ -1,0 +1,202 @@
+{
+  "scope": "readonly live screenshots through existing SYSTEM-owned ADB smart socket, no adb executable/client startup, no taps/slides/UIAutomator/new tasks",
+  "ownerCheck": {
+    "adbListenPid": 8988,
+    "adbOwner": "NT AUTHORITY\\SYSTEM",
+    "adbPath": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+    "port": 5037,
+    "agentPid": 14508,
+    "agentOwner": "NT AUTHORITY\\SYSTEM"
+  },
+  "screens": [
+    {
+      "number": 162,
+      "at": "2026-10-21T03:20:18.961Z",
+      "sha256": "dacad2e5575da451953fe898c6668cf7b8abe40b37ec57b44208638df62d738b",
+      "visualFinding": "Screenshot entirely black; later power read reports Asleep. No visual proof of CAPTCHA completion."
+    },
+    {
+      "number": 10,
+      "at": "2026-10-21T03:20:19.265Z",
+      "sha256": "21bb32aca0035c17e1bfde08e3ec6c98d3a28c6e616156c83905ef6ff689cbe0",
+      "visualFinding": "Alipay normal search results, visible result cards; no visible CAPTCHA."
+    },
+    {
+      "number": 67,
+      "at": "2026-10-21T03:20:19.626Z",
+      "sha256": "e747f110a6b367942e41bdfb60b735c649262f9398fb843f03a6dc8872a1507a",
+      "visualFinding": "Alipay search suggestions/results and keyboard; no visible CAPTCHA."
+    },
+    {
+      "number": 115,
+      "at": "2026-10-21T03:20:20.046Z",
+      "sha256": "7484f6016005fd0b2fcf91113b21a6f82daa7d38671b8da14ce9f6a5875bcfd7",
+      "visualFinding": "Visible Alipay CAPTCHA with puzzle and slider; human-required is correct."
+    }
+  ],
+  "power": [
+    {
+      "number": 162,
+      "at": "2026-10-21T03:21:29.611Z",
+      "powerLines": [
+        "mWakefulness=Asleep",
+        "mIsPowered=true",
+        "mIsPowered=true"
+      ]
+    },
+    {
+      "number": 10,
+      "at": "2026-10-21T03:21:29.684Z",
+      "powerLines": [
+        "mWakefulness=Awake",
+        "mIsPowered=true",
+        "mIsPowered=true"
+      ]
+    }
+  ],
+  "cardApi": {
+    "at": "2026-10-21T03:21:29.526Z",
+    "counts": {
+      "registered": 48,
+      "executing": 5,
+      "waitingHuman": 4,
+      "queued": 9
+    },
+    "devices": [
+      {
+        "number": 162,
+        "online": true,
+        "screenControlBusy": false
+      },
+      {
+        "number": 10,
+        "online": true,
+        "screenControlBusy": false,
+        "card": "running"
+      },
+      {
+        "number": 67,
+        "online": true,
+        "screenControlBusy": false,
+        "card": "running"
+      },
+      {
+        "number": 115,
+        "online": true,
+        "screenControlBusy": false,
+        "card": "human_required"
+      }
+    ]
+  },
+  "snapshots": [
+    {
+      "at": "2026-10-21T03:19:22.991Z",
+      "counts": {
+        "registered": 48,
+        "executing": 5,
+        "waitingHuman": 4,
+        "queued": 14
+      },
+      "channels": [
+        {
+          "number": 162,
+          "phase": "human",
+          "card": "human_required",
+          "humanAgeSeconds": 1635
+        },
+        {
+          "number": 10,
+          "phase": "human",
+          "card": "human_required",
+          "humanAgeSeconds": 634
+        },
+        {
+          "number": 115,
+          "phase": "human",
+          "card": "human_required",
+          "humanAgeSeconds": 136
+        },
+        {
+          "number": 67,
+          "phase": "human",
+          "card": "human_required",
+          "humanAgeSeconds": 32
+        }
+      ]
+    },
+    {
+      "at": "2026-10-21T03:20:32.603Z",
+      "counts": {
+        "registered": 48,
+        "executing": 5,
+        "waitingHuman": 4,
+        "queued": 16
+      },
+      "channels": [
+        {
+          "number": 162,
+          "phase": "human",
+          "card": "human_required",
+          "humanAgeSeconds": 1705
+        },
+        {
+          "number": 10,
+          "phase": "human",
+          "card": "human_required",
+          "humanAgeSeconds": 703
+        },
+        {
+          "number": 115,
+          "phase": "human",
+          "card": "human_required",
+          "humanAgeSeconds": 206
+        },
+        {
+          "number": 67,
+          "phase": "querying",
+          "card": "resuming",
+          "humanAgeSeconds": 102
+        }
+      ]
+    }
+  ],
+  "confirmedResumes": [
+    {
+      "number": 10,
+      "jobs": [
+        {
+          "kind": "alipay_name_query",
+          "status": "succeeded",
+          "createdAt": "2026-10-21T03:21:05.108Z",
+          "completedAt": "2026-10-21T03:21:18.895Z",
+          "resumeAfterHumanVerification": true
+        }
+      ]
+    },
+    {
+      "number": 67,
+      "jobs": [
+        {
+          "kind": "alipay_name_query",
+          "status": "succeeded",
+          "createdAt": "2026-10-21T03:20:26.455Z",
+          "completedAt": "2026-10-21T03:20:42.113Z",
+          "resumeAfterHumanVerification": true
+        }
+      ]
+    }
+  ],
+  "productionHashes": {
+    "server/index.mjs": "57a83933ab0e70b8c0f9643c649b70dcfc68f8ca8fcfb25688fa8db9d49f14c4",
+    "server/managed-lookup.mjs": "a1b8aad75c99ab054c30bf0faf9d16089cf703c7591616cc871ece5d712d8d01",
+    "server/lookup-readiness.mjs": "2a1807ed1a59f1db37acf5b1fee3acb42da64969a3b9685ba5b114efbe852273",
+    "public/app.js": "5bd2f00cbb6038c740b4b8b82b2c10f2cf26330947ab81de29a9b72b2f78480b"
+  },
+  "limits": [
+    "Screenshots containing personal information are kept locally only and not copied into repository/report.",
+    "Actual user CAPTCHA completion time is unknown; screenshot-to-resume measures an observed lower bound, not total detection latency.",
+    "No per-poll observation telemetry; cannot allocate all 46 seconds to a single gate or prove WeakSet failure on device 10.",
+    "Card evidence is current platform API presentation state, not a measurement of the user browser DOM refresh delay.",
+    "First Windows diagnostic command and bare node PATH lookup failed; subsequent reads used exact existing executable and succeeded. No repair/restart performed."
+  ]
+}
