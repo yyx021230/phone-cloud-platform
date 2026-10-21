@@ -1,0 +1,20 @@
+{
+  "tasks": [
+    {
+      "user": "SYSTEM",
+      "name": "PhoneCloud Windows Agent",
+      "state": "Running"
+    }
+  ],
+  "testTail": [
+    "1..40",
+    "# tests 40",
+    "# suites 0",
+    "# pass 40",
+    "# fail 0",
+    "# cancelled 0",
+    "# skipped 0",
+    "# todo 0",
+    "# duration_ms 87.1992"
+  ]
+}

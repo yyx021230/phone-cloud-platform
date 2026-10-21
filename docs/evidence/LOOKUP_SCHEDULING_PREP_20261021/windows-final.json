@@ -1,0 +1,14 @@
+{
+  "adbPid": 8988,
+  "adbOwner": "NT AUTHORITY\\SYSTEM",
+  "adbPath": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+  "agentPid": 14508,
+  "agentOwner": "NT AUTHORITY\\SYSTEM",
+  "hashes": {
+    "src\\lookup-human-observer.mjs": "2f770154a085ca9dc06cc886371d9181bd62f472501ea96d9c229698b1580bdf",
+    "adb-auth-env.cjs": "9c3aa5affb9243f255f2bf74376ee7bb01c9f9171989f5477146263ee7e2bb4d",
+    "start-agent.cmd": "e0d8fc8589335fcd605ab33c6d9f7418e6997fe807a23f0ca79036affb826a0e",
+    "start-agent.ps1": "dcec1c42e1bb197d3cf339f07e54515f60015c6c6806372d0d07640cba60db58",
+    "src\\index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9"
+  }
+}
