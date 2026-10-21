@@ -1,0 +1,11 @@
+{
+  "atUtc": "2026-10-21T01:23:55.189050+00:00",
+  "source": "production preswitch backup in isolated localhost PostgreSQL16",
+  "migrationTextHashUnchanged": true,
+  "readinessHttp": 200,
+  "startupSeconds": 15.394,
+  "snapshotBytesAfterStartup": 260474829,
+  "externalNetworkDenied": true,
+  "newPhoneTasks": 0,
+  "productionChanges": false
+}

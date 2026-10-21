@@ -1,0 +1,14 @@
+{
+  "atUtc": "2026-10-21T01:21:57.211883+00:00",
+  "version": "lookup-ocr-snapshot-20261021-deployed.1",
+  "runtimeCommit": "1ec44cf2bbf15583821f941efe2b711b0ecb455d",
+  "receiptCommit": "e68229aa56f0b8253ab6dea08fca7259cc71187b",
+  "receiptTag": "lookup-ocr-snapshot-20261021-deployed.1",
+  "activeBeforeSha256": "69f036b19704f091230669a86f3589b7e457ca0e4620f32c2994f147680f21cf",
+  "activeAfterSha256": "a4acbb0717247d47a9a22e70afada7700c892e8f3edab9ce29be9dea53353f78",
+  "image": "sha256:0db4c7eddb1a6ddb4c629882c220e5ee2287640c6520fa26bebf1c890bdf2225",
+  "rollbackImage": "sha256:6e55d42ab1589f99af42878651bf13570775d276e02b2b5004c50a37daaf3c81",
+  "windowsRollbackDirectory": "D:\\PhoneCloud\\agent\\backups\\lookup-ocr-probe-pressure-20261021-prep1",
+  "metadataOnly": true,
+  "serviceRestarted": false
+}

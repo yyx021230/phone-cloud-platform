@@ -1,0 +1,26 @@
+{
+  "atUtc": "2026-10-21T01:23:52.336466+00:00",
+  "backupRestoreCompleted": true,
+  "attempts": [
+    {
+      "attempt": 1,
+      "outcome": "fixture_failed",
+      "reason": "macOS sandbox profile requires localhost or * address, rejected numeric host before app startup"
+    },
+    {
+      "attempt": 2,
+      "outcome": "fixture_failed",
+      "reason": "isolated app default development token too short for media signing; no production secrets imported"
+    },
+    {
+      "attempt": 3,
+      "outcome": "passed",
+      "result": "CLONE-RESULTS.json"
+    }
+  ],
+  "corrections": [
+    "sandbox outbound allowlist uses localhost:55439 only",
+    "generate synthetic ephemeral signing and service tokens in memory"
+  ],
+  "productionChanges": false
+}

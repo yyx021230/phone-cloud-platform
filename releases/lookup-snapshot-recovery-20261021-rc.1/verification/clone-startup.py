@@ -1,5 +1,5 @@
 from pathlib import Path
-import subprocess,os,json,time,urllib.request,datetime,shutil
+import subprocess,os,json,time,urllib.request,datetime,shutil,secrets
 os.umask(0o077)
 r=Path(__file__).resolve().parents[1];pg='/opt/homebrew/opt/postgresql@16/bin/';db=[pg+'psql','-X','-h','127.0.0.1','-p','55439','-d','recovery_clone','-v','ON_ERROR_STOP=1','-A','-t']
 def sql(s):return subprocess.check_output(db+['-c',s],text=True).strip()
@@ -8,8 +8,10 @@ subprocess.run(db+['-f',str(r/'migrate.sql')],check=True,stdout=subprocess.DEVNU
 assert sql('select md5(data::text) from phone_cloud_state order by state_key')==before
 app=Path('/tmp/pc-snapshot-recovery-app-20261021');assert not (app/'.env').exists()
 data=Path('/tmp/pc-snapshot-recovery-clone-data');data.mkdir(mode=0o700)
-profile='(version 1)(allow default)(deny network-outbound)(allow network-outbound (remote ip "127.0.0.1:55439"))'
+profile='(version 1)(allow default)(deny network-outbound)(allow network-outbound (remote ip "localhost:55439"))'
 env={'PATH':os.environ['PATH'],'HOME':str(data),'HOST':'127.0.0.1','PORT':'18839','NODE_ENV':'test','STORAGE_BACKEND':'postgres','DATABASE_URL':'postgresql://127.0.0.1:55439/recovery_clone?user='+os.environ['USER'],'STRUCTURED_WRITES':'true','STRUCTURED_TABLE_SYNC':'false','POSTGRES_BOOTSTRAP_FROM_JSON':'false','DATA_DIR':str(data),'OPEN_NAME_LOOKUP_API_ENABLED':'false','REDIS_URL':''}
+for key in ['ADMIN_API_TOKEN','WINDOWS_AGENT_TOKEN','DEVICE_AGENT_TOKEN','EVIDENCE_SIGNING_SECRET']:
+ env[key]=secrets.token_hex(32)
 log=Path('/tmp/pc-snapshot-recovery-clone-app.log');started=time.monotonic();ready=False
 with log.open('w') as f:
  proc=subprocess.Popen(['/usr/bin/sandbox-exec','-p',profile,shutil.which('node'),'--max-old-space-size=4096','server/index.mjs'],cwd=app,env=env,stdout=f,stderr=f)
