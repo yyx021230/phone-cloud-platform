@@ -1,0 +1,80 @@
+{
+  "candidateOnly": true,
+  "fullRegression": {
+    "passed": 962,
+    "failed": 0,
+    "skipped": 0
+  },
+  "newFocused": {
+    "passed": 10,
+    "failed": 0
+  },
+  "parentBeforeFix": {
+    "failed": 9,
+    "note": "Nine original new cases fail against rc.1; consistent duplicate wakefulness case added afterwards."
+  },
+  "initialExistingFixtureFailures": {
+    "failed": 2,
+    "correction": "Human fixture now has fresh detection timestamp; observer payload assertion includes bounded enum telemetry. Other assertions retained."
+  },
+  "syntaxCheck": "passed",
+  "isolatedJsonSmoke": "passed",
+  "httpJson": {
+    "storage": "json",
+    "loopbackOnly": true,
+    "simulatedDevices": 5,
+    "realDevices": 0,
+    "productionConnections": 0,
+    "completed": 50,
+    "businessAttempts": 52,
+    "maxExecuting": 5,
+    "humanObserverHttpResumed": true,
+    "screenOffCardVerified": true,
+    "firstClearRequiresRecheck": true,
+    "cardEndpointAuthenticated": true,
+    "otherRequestsCompleteBeforeStopAck": 49,
+    "retryElapsedMs": 8032,
+    "changedKeyKeepsOriginalId": true,
+    "noLocalReplay": true,
+    "handoffWaitsForStopAck": true,
+    "reassignedToDifferentPhone": true,
+    "lateReportIgnored": true,
+    "restartRetainsResultAndAlias": true,
+    "nextRoundReady": true,
+    "finalChannels": 0
+  },
+  "httpPostgres": {
+    "storage": "postgres",
+    "loopbackOnly": true,
+    "simulatedDevices": 5,
+    "realDevices": 0,
+    "productionConnections": 0,
+    "completed": 50,
+    "businessAttempts": 52,
+    "maxExecuting": 5,
+    "humanObserverHttpResumed": true,
+    "screenOffCardVerified": true,
+    "firstClearRequiresRecheck": true,
+    "cardEndpointAuthenticated": true,
+    "otherRequestsCompleteBeforeStopAck": 49,
+    "retryElapsedMs": 6686,
+    "changedKeyKeepsOriginalId": true,
+    "noLocalReplay": true,
+    "handoffWaitsForStopAck": true,
+    "reassignedToDifferentPhone": true,
+    "lateReportIgnored": true,
+    "restartRetainsResultAndAlias": true,
+    "nextRoundReady": true,
+    "finalChannels": 0
+  },
+  "postgresStopped": true,
+  "actual121SecondRetry": "Inherited rc.1 evidence, not repeated in rc.2; current HTTP waits recorded in result files.",
+  "selfReview": "Power before/after page read; busy/restart/late ownership gates; card evidence freshness; stop/login precedence; no phone/name/raw error telemetry.",
+  "notVerified": [
+    "Windows native power observer load and compatibility",
+    "Real puzzle completion-to-card latency",
+    "Browser visual acceptance",
+    "Real natural limit, cooldown, concurrent controls"
+  ],
+  "productionAccessThisTurn": false
+}

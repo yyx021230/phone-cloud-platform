@@ -1,0 +1,18 @@
+✔ stale old puzzle without fresh observation is checking rather than asking to solve again (1.523625ms)
+✔ screen off has its own card state and never asks for another puzzle (0.157917ms)
+✔ first positive observation is checking; second is verified waiting; actual present stays human (0.055833ms)
+✔ screen off resets clear streak and carries only bounded enum telemetry (0.352583ms)
+✔ sleeping phone reports screen_off without reading or claiming a cleared page (1.3635ms)
+✔ wakefulness must remain awake across the page read (0.105ms)
+✔ unknown or failed power read is never a confirmed page or a fake puzzle (0.20075ms)
+✔ awake result and real puzzle retain distinct bounded telemetry (0.138833ms)
+✔ busy phones are not touched and report a distinct reason (0.059291ms)
+✔ consistent wakefulness groups are accepted, transition or contradictory groups are not (0.100708ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 69.410667

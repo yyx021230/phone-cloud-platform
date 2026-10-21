@@ -1,0 +1,200 @@
+✖ stale old puzzle without fresh observation is checking rather than asking to solve again (5.176292ms)
+✖ screen off has its own card state and never asks for another puzzle (0.144083ms)
+✖ first positive observation is checking; second is verified waiting; actual present stays human (0.079292ms)
+✖ screen off resets clear streak and carries only bounded enum telemetry (0.623209ms)
+✖ sleeping phone reports screen_off without reading or claiming a cleared page (1.7245ms)
+✖ wakefulness must remain awake across the page read (0.161333ms)
+✖ unknown or failed power read is never a confirmed page or a fake puzzle (0.135125ms)
+✖ awake result and real puzzle retain distinct bounded telemetry (0.144375ms)
+✖ busy phones are not touched and report a distinct reason (0.108791ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 0
+ℹ fail 9
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 90.3595
+
+✖ failing tests:
+
+test at server/lookup-card-accuracy.test.mjs:3:1
+✖ stale old puzzle without fresh observation is checking rather than asking to solve again (5.176292ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + 'human_required'
+  - 'checking'
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-lookup-state-accuracy-20261021/server/lookup-card-accuracy.test.mjs:3:124)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.start (node:internal/test_runner/test:1096:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'human_required',
+    expected: 'checking',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at server/lookup-card-accuracy.test.mjs:4:1
+✖ screen off has its own card state and never asks for another puzzle (0.144083ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + 'human_required'
+  - 'screen_off'
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-lookup-state-accuracy-20261021/server/lookup-card-accuracy.test.mjs:4:153)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'human_required',
+    expected: 'screen_off',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at server/lookup-card-accuracy.test.mjs:5:1
+✖ first positive observation is checking; second is verified waiting; actual present stays human (0.079292ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + 'human_required'
+  - 'checking'
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-lookup-state-accuracy-20261021/server/lookup-card-accuracy.test.mjs:5:115)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'human_required',
+    expected: 'checking',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at server/lookup-card-accuracy.test.mjs:6:1
+✖ screen off resets clear streak and carries only bounded enum telemetry (0.623209ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + 'unknown'
+  - 'screen_off'
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-lookup-state-accuracy-20261021/server/lookup-card-accuracy.test.mjs:9:9)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'unknown',
+    expected: 'screen_off',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/lookup-observer-power.test.mjs:8:1
+✖ sleeping phone reports screen_off without reading or claiming a cleared page (1.7245ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + 'search_ready'
+  - 'screen_off'
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-lookup-state-accuracy-20261021/windows-agent/src/lookup-observer-power.test.mjs:8:154)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'search_ready',
+    expected: 'screen_off',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/lookup-observer-power.test.mjs:9:1
+✖ wakefulness must remain awake across the page read (0.161333ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + 'search_ready'
+  - 'screen_off'
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-lookup-state-accuracy-20261021/windows-agent/src/lookup-observer-power.test.mjs:9:149)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'search_ready',
+    expected: 'screen_off',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/lookup-observer-power.test.mjs:10:1
+✖ unknown or failed power read is never a confirmed page or a fake puzzle (0.135125ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + 'search_ready'
+  - 'unknown'
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-lookup-state-accuracy-20261021/windows-agent/src/lookup-observer-power.test.mjs:10:232)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'search_ready',
+    expected: 'unknown',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/lookup-observer-power.test.mjs:11:1
+✖ awake result and real puzzle retain distinct bounded telemetry (0.144375ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + undefined
+  - 'search_ready'
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-lookup-state-accuracy-20261021/windows-agent/src/lookup-observer-power.test.mjs:11:201)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'search_ready',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/lookup-observer-power.test.mjs:12:1
+✖ busy phones are not touched and report a distinct reason (0.108791ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + undefined
+  - 'device_busy'
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-lookup-state-accuracy-20261021/windows-agent/src/lookup-observer-power.test.mjs:12:113)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'device_busy',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,10 @@
+{
+  "comparedTo": "lookup-scheduling-20261021-rc.1",
+  "excludedSection": "lookupHumanObserver initializer only",
+  "allOtherIndexCodeIdentical": true,
+  "protectedSha256": "21fbca710b4307ea433c9862216a7e7b518addd8c489f89434caf1dc14c3596e",
+  "newReadOnlyCommand": "existing guarded adb helper: shell dumpsys power; 2000 ms timeout; before and after positive page read",
+  "sharedAdbIdentityKeysPathsLifecycleControlChanged": false,
+  "productionActionsThisTurn": 0,
+  "frozenFiles": 332
+}

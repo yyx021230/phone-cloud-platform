@@ -1,0 +1,29 @@
+{
+  "productionRelease": "lookup-ocr-snapshot-20261021-deployed.1",
+  "productionSource": "1ec44cf2bbf15583821f941efe2b711b0ecb455d",
+  "productionImage": "sha256:0db4c7eddb1a6ddb4c629882c220e5ee2287640c6520fa26bebf1c890bdf2225",
+  "workflowRevision": "2026-09-30",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "before": {
+    "public/app.js": "a3c27ad775fc5d9af6679878343239c54cd3dc66f5461f6b7ef5b3eaf426e10d",
+    "public/index.html": "d08d7038af16fe623b2e7d490ad6036970bed581c90d579fd0ef44c22e5fa55e",
+    "public/lookup-card-status.js": "f8d9c1fe8e45aad192a2cfa516eaa3dc65e2838fd701151ebc12dc8540607ce5",
+    "screen-client/screen-ui.test.mjs": "d16ca3fb615c475f268e665895d26354d3ec570baa5882e3c07ff522643c4db0",
+    "server/automation-center-ui.test.mjs": "71ec182184c5ef65efc58856da261b7ef3749147a2c65d8aff3aacdf91ea87ed",
+    "server/device-lookup-card-status.test.mjs": "ac03c7b259643dcca68c8ada9c80fe90761ae56ff47d5361fdb2c5df19e001b5",
+    "server/device-occupancy.mjs": "a316dfbd537a088b522b7bb98c5f5d9d1fedf1afc28b7fd053067020b8617841",
+    "server/lookup-card-accuracy.test.mjs": null,
+    "server/lookup-human-handover.mjs": "39815c8aeb40e9a89a5667eca917d78a0feef173b2ad2a653d2705eaf8e3e16f",
+    "server/managed-lookup.mjs": "9652d1d86822617e54ced09c6b668cc19a8bda4548ab7beed00ffa8f1beff1a3",
+    "verification/scheduling-http.mjs": "4dd927834fafe6075681752a536234dd08fcaed0d06f222d6609b282487b8603",
+    "windows-agent/src/index.mjs": "ebd815d5bd8161383c4751b07f3fed3d211cd23fb6e31bd0ca7c42790e5c3275",
+    "windows-agent/src/lookup-human-observer.mjs": "ab04b92d50c0157f254baa6715204bb87786177c02e701fd61db746f43f31a35",
+    "windows-agent/src/lookup-human-observer.test.mjs": "98fc50c9f43d91b16192a824a869ebdbec775edf8562f7888ebb9814aab7f8f1",
+    "windows-agent/src/lookup-observer-power.test.mjs": null
+  },
+  "snapshotIndexSha256": "57a83933ab0e70b8c0f9643c649b70dcfc68f8ca8fcfb25688fa8db9d49f14c4",
+  "snapshotColumnType": "json",
+  "parentCandidate": "lookup-scheduling-20261021-rc.1",
+  "parentCandidateCommit": "c7a35ab01691f8f8bf6099cb2168aab5d5cfb6cb",
+  "candidateOnly": true
+}
