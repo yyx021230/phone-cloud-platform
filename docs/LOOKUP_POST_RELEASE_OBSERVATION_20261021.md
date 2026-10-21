@@ -47,3 +47,13 @@ health/ready、PG/Redis正常，131总设备/117在线（实时样本）。容�
 10:09:07累计85条业务：53姓名、17空名、1执行失败、14未完成（2执行/12排队）。第一批追加20条已16正常完成、1失败、3未完成；10号的一条请求连续触限转181、再转165，保留原lookupId；112正在接业务，156/182/154在准备补位。可用容量仍受触限和准备过程影响，未达到持续满五台稳定执行。
 
 10:09:46本次完整跟踪的追加20条已终结：14姓名、5空名、1失败（154）；端到端中位59.744秒，最大143.702秒。异常请求10→181→165→112，原lookupId最后返回无姓名，共4次设备分配，未据此断言每次都是同一种触限原因。此刻累计85条中54姓名/19空名/1失败/11仍在处理（3执行/8排队），这些是另追加的11条，不混入20条终态统计。观察到这里结束本次有界调查，没有开启后台监控。
+
+## 用户追问后的代码复核
+
+用户指出已有自动跨机逻辑。再次核对线上ACTIVE与实际三个运行文件hash：managed-lookup.mjs a1b8aad7、managed-lookup-platform.mjs 11f9a28b、index.mjs 57a83933均与已发布源一致，没有漏部署跨机逻辑。
+
+精确断点在automation-center.mjs的lookupHumanRecoveryUnresolved：失败任务只有resumeAfterHumanVerification=true，或alipay_lookup_result_unconfirmed/error前缀local_lookup_result_unconfirmed，才进入needs_recovery。154真实job为alipay_name_query/failed，resumeAfterHumanVerification=false、restartAfterHumanVerification=false、errorCode=alipay_lookup_failed、runnerReason前缀poco_query_page_recovery_failed，分类返回false。Agent内部页面恢复不等于云端job的resumeAfterHumanVerification标记。
+
+随后index写普通failed；adapter.observe仅对needs_recovery提供recoveryFailure；managed-lookup.mjs因o.recovery不成立跳过已有“恢复一次/停止ACK/原ID转交”分支，在默认matchesQuery失败路径执行finish(...lookup_execution_failed)，之后即使停止ACK也因请求已终态不再入队。不是缺少整套跨机实现，而是现有错误分类没有接入这一终态执行器失败场景。
+
+从生产只读取原函数，在本地对脱敏job作纯函数验证：真实worker退出false；同一错误仅将resumeAfterHumanVerification置true则true；替换为已支持的unconfirmed错误则true。没有改动生产/业务代码，没有把单函数验证冒充全链路回归。后续候选须区分任务终态、停止确认和未知执行状态，不能把所有failed无条件重查。
