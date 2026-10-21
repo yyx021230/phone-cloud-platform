@@ -1,0 +1,111 @@
+{
+  "atUtc": "2026-10-21T01:17:29.066716+00:00",
+  "publicFiles": [
+    {
+      "path": "/api-reference.json",
+      "status": 200,
+      "sha256": "5ce9d1634413059e4ee1ed119af78a80e866552439034d279e35ce0389ae44b4"
+    },
+    {
+      "path": "/api-docs.html",
+      "status": 200,
+      "sha256": "1e7ba0490959c92cfa52f5005b693b2ed64fe63bf05dd836ade657bfa2e2a95e"
+    },
+    {
+      "path": "/api-docs.js",
+      "status": 200,
+      "sha256": "c349d73c41aef45e29eee2dabc838887a5a251b51b108dc7b0a6ef49475c4708"
+    },
+    {
+      "path": "/downloads/lookup.py",
+      "status": 200,
+      "sha256": "ed8aa0309470d8fc0a216c648649315035dbba8cf6bf22abeab7576fc7a7072e"
+    }
+  ],
+  "health": {
+    "ok": true,
+    "at": "2026-10-21T01:17:28.825Z"
+  },
+  "ready": {
+    "ok": true,
+    "status": "ok",
+    "at": "2026-10-21T01:17:28.840Z",
+    "storage": {
+      "backend": "postgres",
+      "ok": true,
+      "detail": "postgres 已连接，state_key=default，updated_at=2026-10-21T01:17:09.849Z"
+    },
+    "dataDir": {
+      "path": "/app/data",
+      "writable": true,
+      "error": ""
+    },
+    "runtime": {
+      "ok": true,
+      "mode": "redis",
+      "detail": "redis://redis:6379/0"
+    }
+  },
+  "deviceCounts": {
+    "total": 131,
+    "listed": 125,
+    "online": 116
+  },
+  "agents": [
+    {
+      "enabled": true,
+      "lastSeenAt": "2026-10-21T01:17:07.050Z"
+    },
+    {
+      "enabled": false,
+      "lastSeenAt": "2026-08-10T06:02:47.953Z"
+    },
+    {
+      "enabled": false,
+      "lastSeenAt": "2026-07-03T04:15:49.959Z"
+    },
+    {
+      "enabled": false,
+      "lastSeenAt": "2026-07-03T05:36:47.198Z"
+    }
+  ],
+  "pool": {
+    "enabled": true,
+    "revision": 58,
+    "registered": 48,
+    "concurrency": 5,
+    "channels": 0,
+    "pending": 0,
+    "stoppingRounds": 0
+  },
+  "externalOldPreparation": {
+    "tested": false,
+    "reason": "read-only postflight; no prepare submitted"
+  },
+  "screenNumbers": [],
+  "container": {
+    "image": "sha256:0db4c7eddb1a6ddb4c629882c220e5ee2287640c6520fa26bebf1c890bdf2225",
+    "healthy": "healthy",
+    "restartCount": 0
+  },
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "boundedErrorCounts": {
+    "total size of jsonb object elements": 0,
+    "SyntaxError": 0,
+    "ReferenceError": 0,
+    "UnhandledPromiseRejection": 0,
+    "managed_lookup_persistence_failed": 0,
+    "managed_lookup_device_errors": 0
+  },
+  "agentRestarted": false,
+  "adbTouched": false,
+  "newBusinessSubmitted": 0,
+  "newPreparationSubmitted": 0
+}
