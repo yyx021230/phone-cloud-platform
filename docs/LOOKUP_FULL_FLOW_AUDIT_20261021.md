@@ -104,3 +104,11 @@
 ## 10. 核对入口
 
 线上组装基线 `/tmp/pc-admission-rc3-packaged` 对应部署回执及当前ACTIVE；关键实现：server/lookup-readiness.mjs、managed-lookup.mjs、managed-lookup-async.mjs、lookup-account-cooldown.mjs、lookup-account-offline.mjs、lookup-device-availability.mjs、lookup-round-idle.mjs、lookup-round-stop.mjs、lookup-human-handover.mjs；Windows lookup-account-policy.mjs、lookup-human-observer.mjs及alipay_name_lookup.py。引用的是当前生产包，不是根仓旧业务。
+
+## 11. 15:12业务容量复核
+
+线上仍是scheduling-deployed.1；第6节的缺口已有post-human/2e9b73f本地候选，尚未部署。15:12:15：112号在查业务，163/162正在查内部测试号码，172/53正在启动准备，共5个预约；业务19排队。并非配置降为2台，而是业务可用设备减少，其他槽仍在准备。162在15:11:46还显示真实拼图，29秒后已进入探测，不能一概归为拼图后未接续。
+
+健康优先分类：20隔离、10账号掉线、8账号全冷却、2离线、2准备退避、1控屏、5基础健康。161/58连续账号身份无法确认、153执行器/启动失败，成为比14:35新增的3台隔离。旧规则三次失败后不会计时自动恢复；这些不是都能归为硬件故障。172刚触限后重探，163此前读取超时，53此前结果观察耗尽。近15分钟保留记录38姓名成功、7无姓名、2取消，不等于本轮逐条真机结果审计。
+
+本轮只读取在线版本、管理接口和45分钟内最多700条查名任务，无生产写入。未修改代码/配置/池/锁/账号/ADB或SYSTEM，未启动号码查询。已有两个候选不自动清理20台历史隔离；需逐类确认原因，不能直接全池解禁。

@@ -1,0 +1,295 @@
+{
+  "at": "2026-10-21T07:12:15.913Z",
+  "counts": {
+    "registered": 48,
+    "executing": 5,
+    "waitingHuman": 0,
+    "queued": 19
+  },
+  "enabled": 48,
+  "concurrency": 5,
+  "health": {
+    "lookup_device_unavailable": 20,
+    "account_login_required": 10,
+    "screen_control_active": 1,
+    "accounts_cooling": 8,
+    "ready": 5,
+    "device_or_agent_offline": 2,
+    "preparation_backoff": 2
+  },
+  "channels": [
+    {
+      "number": "112",
+      "phase": "querying",
+      "purpose": "business",
+      "observation": null
+    },
+    {
+      "number": "163",
+      "phase": "querying",
+      "purpose": "readiness_probe",
+      "observation": null
+    },
+    {
+      "number": "162",
+      "phase": "querying",
+      "purpose": "readiness_probe",
+      "observation": null
+    },
+    {
+      "number": "172",
+      "phase": "starting",
+      "purpose": "readiness_probe",
+      "observation": null
+    },
+    {
+      "number": "53",
+      "phase": "starting",
+      "purpose": "readiness_probe",
+      "observation": null
+    }
+  ],
+  "pendingBusiness": {
+    "running": 1,
+    "queued": 19
+  },
+  "completedBusinessLast15Min": {
+    "cancelled": 2,
+    "not_found": 7,
+    "succeeded": 38
+  },
+  "lastBusinessResults": [
+    {
+      "status": "succeeded",
+      "code": "",
+      "at": "2026-10-21T07:12:09.559Z",
+      "number": "112"
+    },
+    {
+      "status": "succeeded",
+      "code": "",
+      "at": "2026-10-21T07:11:56.030Z",
+      "number": "112"
+    },
+    {
+      "status": "succeeded",
+      "code": "",
+      "at": "2026-10-21T07:11:40.703Z",
+      "number": "112"
+    },
+    {
+      "status": "succeeded",
+      "code": "",
+      "at": "2026-10-21T07:11:09.951Z",
+      "number": "172"
+    },
+    {
+      "status": "succeeded",
+      "code": "",
+      "at": "2026-10-21T07:11:00.194Z",
+      "number": "172"
+    }
+  ],
+  "unavailable": [
+    {
+      "number": 51,
+      "count": 3,
+      "at": 1792120233804,
+      "lastFailure": []
+    },
+    {
+      "number": 52,
+      "count": 3,
+      "at": 1792490894333,
+      "lastFailure": []
+    },
+    {
+      "number": 54,
+      "count": 3,
+      "at": 1792120249804,
+      "lastFailure": []
+    },
+    {
+      "number": 87,
+      "count": 3,
+      "at": 1792551192190,
+      "lastFailure": []
+    },
+    {
+      "number": 152,
+      "count": 3,
+      "at": 1792551054998,
+      "lastFailure": []
+    },
+    {
+      "number": 156,
+      "count": 3,
+      "at": 1792551202519,
+      "lastFailure": []
+    },
+    {
+      "number": 155,
+      "count": 3,
+      "at": 1792401235949,
+      "lastFailure": []
+    },
+    {
+      "number": 58,
+      "count": 3,
+      "at": 1792566202600,
+      "lastFailure": [
+        {
+          "at": "2026-10-21T07:03:22.360Z",
+          "reason": "account_identity_unverified"
+        }
+      ]
+    },
+    {
+      "number": 164,
+      "count": 3,
+      "at": 1792548815736,
+      "lastFailure": []
+    },
+    {
+      "number": 154,
+      "count": 3,
+      "at": 1792551036209,
+      "lastFailure": []
+    },
+    {
+      "number": 57,
+      "count": 3,
+      "at": 1792555426348,
+      "lastFailure": []
+    },
+    {
+      "number": 86,
+      "count": 3,
+      "at": 1792547242590,
+      "lastFailure": []
+    },
+    {
+      "number": 146,
+      "count": 3,
+      "at": 1792551142344,
+      "lastFailure": []
+    },
+    {
+      "number": 149,
+      "count": 3,
+      "at": 1792547307928,
+      "lastFailure": []
+    },
+    {
+      "number": 153,
+      "count": 3,
+      "at": 1792566468893,
+      "lastFailure": [
+        {
+          "at": "2026-10-21T07:07:48.740Z",
+          "reason": "task_failed"
+        }
+      ]
+    },
+    {
+      "number": 161,
+      "count": 3,
+      "at": 1792566006492,
+      "lastFailure": [
+        {
+          "at": "2026-10-21T07:00:06.414Z",
+          "reason": "account_identity_unverified"
+        }
+      ]
+    },
+    {
+      "number": 142,
+      "count": 3,
+      "at": 1792548802729,
+      "lastFailure": []
+    },
+    {
+      "number": 118,
+      "count": 3,
+      "at": 1792552958882,
+      "lastFailure": []
+    },
+    {
+      "number": 130,
+      "count": 3,
+      "at": 1792548086097,
+      "lastFailure": []
+    },
+    {
+      "number": 157,
+      "count": 3,
+      "at": 1792563655153,
+      "lastFailure": []
+    }
+  ],
+  "recentFailures": [
+    {
+      "number": "162",
+      "kind": "alipay_name_start",
+      "at": "2026-10-21T07:11:21.867Z",
+      "reason": "alipay_human_verification_required"
+    },
+    {
+      "number": "172",
+      "kind": "alipay_name_query",
+      "at": "2026-10-21T07:11:19.894Z",
+      "reason": "alipay_prepared_account_limited"
+    },
+    {
+      "number": "163",
+      "kind": "alipay_name_query",
+      "at": "2026-10-21T07:09:55.103Z",
+      "reason": "read_timeout"
+    },
+    {
+      "number": "158",
+      "kind": "alipay_name_start",
+      "at": "2026-10-21T07:07:07.881Z",
+      "reason": "alipay_human_verification_required"
+    },
+    {
+      "number": "153",
+      "kind": "alipay_name_start",
+      "at": "2026-10-21T07:07:48.740Z",
+      "reason": "task_failed"
+    },
+    {
+      "number": "182",
+      "kind": "alipay_name_start",
+      "at": "2026-10-21T07:06:24.904Z",
+      "reason": "alipay_human_verification_required"
+    },
+    {
+      "number": "53",
+      "kind": "alipay_name_query",
+      "at": "2026-10-21T07:06:40.584Z",
+      "reason": "result_observation_exhausted"
+    },
+    {
+      "number": "153",
+      "kind": "alipay_name_stop",
+      "at": "2026-10-21T07:06:33.804Z",
+      "reason": "task_failed"
+    },
+    {
+      "number": "112",
+      "kind": "alipay_name_query",
+      "at": "2026-10-21T07:05:22.912Z",
+      "reason": "result_observation_exhausted"
+    },
+    {
+      "number": "153",
+      "kind": "alipay_name_query",
+      "at": "2026-10-21T07:05:20.429Z",
+      "reason": "worker_exited"
+    }
+  ],
+  "productionVersion": "lookup-scheduling-20261021-deployed.1",
+  "productionSource": "9d2276884f26e6c436bc4ccd80bb3c8d18be3771",
+  "productionChanged": false
+}
