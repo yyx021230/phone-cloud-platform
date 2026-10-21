@@ -1,0 +1,122 @@
+{
+  "candidate": "lookup-admin-20261021-rc.1",
+  "productionChanged": false,
+  "realDevices": 0,
+  "nodeFullPassed": 1028,
+  "targetedAfterReviewPassed": 52,
+  "pythonPassed": [
+    279,
+    8,
+    163
+  ],
+  "logs": {
+    "fullNode": {
+      "sha256": "261999aac2bd7092a824ae41991484228bcfc2e5da6043cdff0331e15a3421c7"
+    },
+    "targetedAfterReview": {
+      "sha256": "f44c0acf92b9f9f4fc1d9c08fa7e8b8615447837692544c149a7a7b89074b1d2"
+    },
+    "syntax": {
+      "sha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+    },
+    "lookupPython": {
+      "sha256": "67ba41aa915cfda1751c160245f7e6813b2ba8b74c56beb03d6483c22f06cfc9"
+    },
+    "postHumanPython": {
+      "sha256": "5f2d26d588673ba457b4ecde98a85ce309f1764dd8f632d49313efefaf170dc1"
+    },
+    "legacyPython": {
+      "sha256": "e9c283841fecf02c717efb89640595414624270e953570e040e5e29f867be3c3"
+    },
+    "httpJson50": {
+      "sha256": "65f82b807421a46974a139130e0c8fe30dd6157a60c119e5119c5773b3f86cb6"
+    },
+    "httpPostgres50": {
+      "sha256": "62738836688d40de472abeeea3f7a6695ac82dce7c55fe25439eefb071af43e7"
+    },
+    "adminPostgres": {
+      "sha256": "5cadb06d63440130c0084893eb011832e7fb5dbb7a26ab30bcefd38f5bc6114c"
+    }
+  },
+  "http": {
+    "httpJson50": {
+      "storage": "json",
+      "loopbackOnly": true,
+      "simulatedDevices": 5,
+      "realDevices": 0,
+      "productionConnections": 0,
+      "completed": 50,
+      "zeroReadyAcceptsAll50": true,
+      "zeroReadyDispatched": 0,
+      "firstReadyStillRequired": true,
+      "businessAttempts": 57,
+      "oldAgentGuardBlocked": true,
+      "postHumanLimitDurableCooldown": true,
+      "postHumanLoginRoundExcluded": true,
+      "protectedOriginalQueryCrossDevice": true,
+      "helperGrantRevokeHttp": true,
+      "helperCannotEscalate": true,
+      "helperOnlyHumanCard": true,
+      "pageSamePhoneObservationPayload": true,
+      "maxExecuting": 5,
+      "humanObserverHttpResumed": true,
+      "screenOffCardVerified": true,
+      "firstClearRequiresRecheck": true,
+      "cardEndpointAuthenticated": true,
+      "otherRequestsCompleteBeforeStopAck": 49,
+      "retryElapsedMs": 9763,
+      "changedKeyKeepsOriginalId": true,
+      "noLocalReplay": true,
+      "handoffWaitsForStopAck": true,
+      "reassignedToDifferentPhone": true,
+      "lateReportIgnored": true,
+      "restartRetainsResultAndAlias": true,
+      "nextRoundReady": true,
+      "finalChannels": 0
+    },
+    "httpPostgres50": {
+      "storage": "postgres",
+      "loopbackOnly": true,
+      "simulatedDevices": 5,
+      "realDevices": 0,
+      "productionConnections": 0,
+      "completed": 50,
+      "zeroReadyAcceptsAll50": true,
+      "zeroReadyDispatched": 0,
+      "firstReadyStillRequired": true,
+      "businessAttempts": 57,
+      "oldAgentGuardBlocked": true,
+      "postHumanLimitDurableCooldown": true,
+      "postHumanLoginRoundExcluded": true,
+      "protectedOriginalQueryCrossDevice": true,
+      "helperGrantRevokeHttp": true,
+      "helperCannotEscalate": true,
+      "helperOnlyHumanCard": true,
+      "pageSamePhoneObservationPayload": true,
+      "maxExecuting": 5,
+      "humanObserverHttpResumed": true,
+      "screenOffCardVerified": true,
+      "firstClearRequiresRecheck": true,
+      "cardEndpointAuthenticated": true,
+      "otherRequestsCompleteBeforeStopAck": 49,
+      "retryElapsedMs": 121001,
+      "changedKeyKeepsOriginalId": true,
+      "noLocalReplay": true,
+      "handoffWaitsForStopAck": true,
+      "reassignedToDifferentPhone": true,
+      "lateReportIgnored": true,
+      "restartRetainsResultAndAlias": true,
+      "nextRoundReady": true,
+      "finalChannels": 0
+    },
+    "adminPostgres": {
+      "storage": "isolated-postgres",
+      "archiveRows": 65,
+      "liveOverlap": 12,
+      "paginationExact": true,
+      "archivedDetail": true,
+      "noStateWrites": true,
+      "productionConnections": 0
+    }
+  }
+}

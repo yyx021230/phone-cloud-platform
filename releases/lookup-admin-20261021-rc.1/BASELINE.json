@@ -1,0 +1,29 @@
+{
+  "productionRelease": "lookup-scheduling-20261021-deployed.1",
+  "productionSource": "9d2276884f26e6c436bc4ccd80bb3c8d18be3771",
+  "productionImage": "sha256:a9e487ecb04afa22def7c926541a06be5593191066652881388d017e54022dab",
+  "parentCandidate": "lookup-post-human-20261021-rc.1",
+  "workflowRevision": "2026-09-30",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "snapshotColumnType": "json",
+  "before": {
+    "server/lookup-admin-console.mjs": null,
+    "server/managed-lookup.http.test.mjs": "41f8ca90ccd08311aa4165d314eddcb866c160a35dd02c7288d30e67b811401b",
+    "server/lookup-admin-console.http.test.mjs": null,
+    "server/managed-lookup-store.mjs": "10f4e1ffec12a322e42990e7517ccf22c16ea12e7b2ccfad59a844f54f9ffcac",
+    "server/index.mjs": "53c61e17efc7d8195a5ac238a825547353680aa1a46e93d58900cf9add0eb25f",
+    "server/managed-lookup.mjs": "f70a01b32bcd003fda5b67a65c042c27bccbe2824b90137d6a22af601330b555",
+    "server/automation-center-ui.test.mjs": "aa1e34c2dfece31269b28abae9166739e7216cd4434a8797ae4d59d95c177be8",
+    "server/lookup-admin-console.test.mjs": null,
+    "public/index.html": "6eb21ed9000cc5f77afba3b522cf0dcf6149a86a37ea4da5a6a0c2562c9c45e6",
+    "public/lookup-admin.js": null,
+    "public/lookup-admin.css": null,
+    "public/lookup-admin.html": null,
+    "public/app.js": "88ae575783d31f0bdeb14e9c5150da7168d1aefa7ec97e54a38b98cc3254a0fd",
+    "screen-client/screen-ui.test.mjs": "619c2b2f83099bedfc3112b4dc33b59ac202077cd97fc0e48f74499b8e37edf9",
+    "verification/admin-console-preview.mjs": null,
+    "verification/admin-console-postgres.mjs": null
+  },
+  "candidateOnly": true,
+  "parentCandidateSource": "ca36e78d971b2185575c703268158245eb929634"
+}
