@@ -1,0 +1,112 @@
+{
+  "candidate": "lookup-post-human-20261021-rc.1",
+  "productionChanged": false,
+  "realDevices": 0,
+  "checks": {
+    "node": {
+      "passed": 1015,
+      "logSha256": "fe9d763c45e81d439d2b67d0c2933e1e4aa78418ec7f0e40afa664568dd0972c"
+    },
+    "lookupPython": {
+      "passed": 279,
+      "logSha256": "537288b04ae93db622c1101a4d0765a294d941ae694e8e57d6779ad1e39142cb"
+    },
+    "postHumanPython": {
+      "passed": 8,
+      "logSha256": "5f2d26d588673ba457b4ecde98a85ce309f1764dd8f632d49313efefaf170dc1"
+    },
+    "legacyPython": {
+      "passed": 163,
+      "logSha256": "c577201fdabb5ceebda7ea81b267fe0fc7f7398774f27284e5962d5acbaf7c0d"
+    }
+  },
+  "rootSyntaxCheck": "passed",
+  "http": {
+    "json": {
+      "storage": "json",
+      "loopbackOnly": true,
+      "simulatedDevices": 5,
+      "realDevices": 0,
+      "productionConnections": 0,
+      "completed": 50,
+      "zeroReadyAcceptsAll50": true,
+      "zeroReadyDispatched": 0,
+      "firstReadyStillRequired": true,
+      "businessAttempts": 57,
+      "oldAgentGuardBlocked": true,
+      "postHumanLimitDurableCooldown": true,
+      "postHumanLoginRoundExcluded": true,
+      "protectedOriginalQueryCrossDevice": true,
+      "helperGrantRevokeHttp": true,
+      "helperCannotEscalate": true,
+      "helperOnlyHumanCard": true,
+      "pageSamePhoneObservationPayload": true,
+      "maxExecuting": 5,
+      "humanObserverHttpResumed": true,
+      "screenOffCardVerified": true,
+      "firstClearRequiresRecheck": true,
+      "cardEndpointAuthenticated": true,
+      "otherRequestsCompleteBeforeStopAck": 49,
+      "retryElapsedMs": 10187,
+      "changedKeyKeepsOriginalId": true,
+      "noLocalReplay": true,
+      "handoffWaitsForStopAck": true,
+      "reassignedToDifferentPhone": true,
+      "lateReportIgnored": true,
+      "restartRetainsResultAndAlias": true,
+      "nextRoundReady": true,
+      "finalChannels": 0
+    },
+    "postgres": {
+      "storage": "postgres",
+      "loopbackOnly": true,
+      "simulatedDevices": 5,
+      "realDevices": 0,
+      "productionConnections": 0,
+      "completed": 50,
+      "zeroReadyAcceptsAll50": true,
+      "zeroReadyDispatched": 0,
+      "firstReadyStillRequired": true,
+      "businessAttempts": 57,
+      "oldAgentGuardBlocked": true,
+      "postHumanLimitDurableCooldown": true,
+      "postHumanLoginRoundExcluded": true,
+      "protectedOriginalQueryCrossDevice": true,
+      "helperGrantRevokeHttp": true,
+      "helperCannotEscalate": true,
+      "helperOnlyHumanCard": true,
+      "pageSamePhoneObservationPayload": true,
+      "maxExecuting": 5,
+      "humanObserverHttpResumed": true,
+      "screenOffCardVerified": true,
+      "firstClearRequiresRecheck": true,
+      "cardEndpointAuthenticated": true,
+      "otherRequestsCompleteBeforeStopAck": 49,
+      "retryElapsedMs": 121002,
+      "changedKeyKeepsOriginalId": true,
+      "noLocalReplay": true,
+      "handoffWaitsForStopAck": true,
+      "reassignedToDifferentPhone": true,
+      "lateReportIgnored": true,
+      "restartRetainsResultAndAlias": true,
+      "nextRoundReady": true,
+      "finalChannels": 0
+    }
+  },
+  "scopeFrozenFiles": 452,
+  "selfReview": true,
+  "independentReview": false,
+  "failuresBeforeFinalPass": [
+    "Initial legacy HTTP fake Agent lacked the new capability; fixture updated without weakening the gate.",
+    "A local foreground-regex edit had an unescaped slash and its old source assertion needed updating; corrected, then final full regression passed.",
+    "New probe test used errorCode instead of the existing request code field; fixed fixture assertion.",
+    "Protected HTTP simulation omitted required phoneQueryStarted, so real durable-limit confirmation correctly refused it; fixture corrected.",
+    "Login round exclusion is stored as an evidence object, not a boolean; fixture assertion corrected."
+  ],
+  "unverified": [
+    "Production/native Windows execution of this candidate",
+    "Real post-puzzle page transitions and UI freshness latency",
+    "Real notification delivery and account switching",
+    "General preparation failure reclassification outside the new post-human unknown branch"
+  ]
+}
