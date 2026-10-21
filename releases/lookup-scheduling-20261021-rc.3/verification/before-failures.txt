@@ -1,0 +1,75 @@
+✖ opened round accepts at one and zero ready, queues without unsafe dispatch, and resumes after probe (10.585208ms)
+✖ opened latch survives process restart but does not lend stale phone proof (8.378625ms)
+✖ opened round keeps capacity limits, stop fencing and new round first-two requirement (2.268333ms)
+✖ legacy opened round can infer admission from same-round accepted prepared business only (1.4505ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 108.33075
+
+✖ failing tests:
+
+test at server/lookup-readiness.test.mjs:300:1
+✖ opened round accepts at one and zero ready, queues without unsafe dispatch, and resumes after probe (10.585208ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  false !== true
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-lookup-admission-20261021/server/lookup-readiness.test.mjs:302:39)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at server/lookup-readiness.test.mjs:308:1
+✖ opened latch survives process restart but does not lend stale phone proof (8.378625ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+    assert.ok(Number.isFinite(f.store.snapshot().preparations[0].admissionOpenedAt))
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-lookup-admission-20261021/server/lookup-readiness.test.mjs:309:73)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at server/lookup-readiness.test.mjs:312:1
+✖ opened round keeps capacity limits, stop fencing and new round first-two requirement (2.268333ms)
+  Error: lookup_not_ready
+      at error (file:///private/tmp/pc-lookup-admission-20261021/server/lookup-readiness.mjs:10:50)
+      at Object.assertAdmission (file:///private/tmp/pc-lookup-admission-20261021/server/lookup-readiness.mjs:145:71)
+      at file:///private/tmp/pc-lookup-admission-20261021/server/managed-lookup-async.mjs:53:20
+      at async file:///private/tmp/pc-lookup-admission-20261021/server/lookup-readiness.test.mjs:5:295 {
+    statusCode: 503
+  }
+
+test at server/lookup-readiness.test.mjs:317:1
+✖ legacy opened round can infer admission from same-round accepted prepared business only (1.4505ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  false !== true
+
+      at TestContext.<anonymous> (file:///private/tmp/pc-lookup-admission-20261021/server/lookup-readiness.test.mjs:318:252)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

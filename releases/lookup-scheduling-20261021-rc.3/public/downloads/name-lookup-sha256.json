@@ -1,0 +1,11 @@
+{
+  "version": "lookup-scheduling-20261021-rc.3",
+  "files": {
+    "README.md": "0437c0dc795885430ad1a62bef8b1599b24a34c724ffb5e2513d31d797a1b356",
+    "lookup.mjs": "aadb28f2260e411bad3187c1041324d50f9b685cd554d40183d73b45feba0a26",
+    "lookup.py": "ed8aa0309470d8fc0a216c648649315035dbba8cf6bf22abeab7576fc7a7072e",
+    "openapi.json": "0553994fbc5ccc91e33752035f512f828c10d389a7c55c47607e9e1819848600",
+    "stop_lookup.py": "e0d7f72ff6fae836973432804ae42083ee99c136f307483a7e9eb5a198d862ed"
+  },
+  "zipSha256": "8b6671151bce01bc8cf8d369382d6363b66df0a815ac8491effd5546e7fb520d"
+}

@@ -1,0 +1,268 @@
+TAP version 13
+# Subtest: starts five physical channels; second successful probe immediately admits business while others run
+ok 1 - starts five physical channels; second successful probe immediately admits business while others run
+  ---
+  duration_ms: 13.315042
+  type: 'test'
+  ...
+# Subtest: one successful probe is not ready; blank probe cannot pass; human on one phone does not stop another
+ok 2 - one successful probe is not ready; blank probe cannot pass; human on one phone does not stop another
+  ---
+  duration_ms: 4.333834
+  type: 'test'
+  ...
+# Subtest: duplicate start, different start key and concurrent retries do not duplicate probes
+ok 3 - duplicate start, different start key and concurrent retries do not duplicate probes
+  ---
+  duration_ms: 1.457625
+  type: 'test'
+  ...
+# Subtest: two-minute changed business key uses original task; probes never pollute business cache
+ok 4 - two-minute changed business key uses original task; probes never pollute business cache
+  ---
+  duration_ms: 3.612375
+  type: 'test'
+  ...
+# Subtest: unregistered/empty results share one completed shape; processing has no fake empty name
+ok 5 - unregistered/empty results share one completed shape; processing has no fake empty name
+  ---
+  duration_ms: 4.4755
+  type: 'test'
+  ...
+# Subtest: account, Agent, offline and process generation invalidate proof; reads and replay remain available
+ok 6 - account, Agent, offline and process generation invalidate proof; reads and replay remain available
+  ---
+  duration_ms: 2.94125
+  type: 'test'
+  ...
+# Subtest: ready idle channels stay warm; lease expiry stops new work and does not refresh on polls
+ok 7 - ready idle channels stay warm; lease expiry stops new work and does not refresh on polls
+  ---
+  duration_ms: 6.204125
+  type: 'test'
+  ...
+# Subtest: old client that never prepares retains old response contract
+ok 8 - old client that never prepares retains old response contract
+  ---
+  duration_ms: 1.062875
+  type: 'test'
+  ...
+# Subtest: confirmed limit moves same lookup to another proven phone only after stop; repair is an independent probe
+ok 9 - confirmed limit moves same lookup to another proven phone only after stop; repair is an independent probe
+  ---
+  duration_ms: 3.366459
+  type: 'test'
+  ...
+# Subtest: no ready replacement waits without empty result; unknown execution never transfers
+ok 10 - no ready replacement waits without empty result; unknown execution never transfers
+  ---
+  duration_ms: 5.433917
+  type: 'test'
+  ...
+# Subtest: received name racing with limit cleanup wins and is never queried again
+ok 11 - received name racing with limit cleanup wins and is never queried again
+  ---
+  duration_ms: 4.900292
+  type: 'test'
+  ...
+# Subtest: late result from retired generation cannot complete the replacement query
+ok 12 - late result from retired generation cannot complete the replacement query
+  ---
+  duration_ms: 2.690667
+  type: 'test'
+  ...
+# Subtest: cancel while confirmed limit is stopping never requeues the original number
+ok 13 - cancel while confirmed limit is stopping never requeues the original number
+  ---
+  duration_ms: 2.166042
+  type: 'test'
+  ...
+# Subtest: a finished probe cannot lend its human-wait timer to a later business query
+ok 14 - a finished probe cannot lend its human-wait timer to a later business query
+  ---
+  duration_ms: 2.813
+  type: 'test'
+  ...
+# Subtest: ordinary result reuse clears a previous business human-wait timer too
+ok 15 - ordinary result reuse clears a previous business human-wait timer too
+  ---
+  duration_ms: 2.589041
+  type: 'test'
+  ...
+# Subtest: five accepted requests use two ready phones; newly proved phones immediately take queued work
+ok 16 - five accepted requests use two ready phones; newly proved phones immediately take queued work
+  ---
+  duration_ms: 6.31275
+  type: 'test'
+  ...
+# Subtest: parallel admission is capped at five canonical unfinished jobs, with dedup before the cap
+ok 17 - parallel admission is capped at five canonical unfinished jobs, with dedup before the cap
+  ---
+  duration_ms: 4.844292
+  type: 'test'
+  ...
+# Subtest: human, recovery and unknown requests retain their slot without blocking queued work on a healthy phone
+ok 18 - human, recovery and unknown requests retain their slot without blocking queued work on a healthy phone
+  ---
+  duration_ms: 11.94875
+  type: 'test'
+  ...
+# Subtest: twenty canonical jobs queue on two proven phones, refill to five, and finish independently
+ok 19 - twenty canonical jobs queue on two proven phones, refill to five, and finish independently
+  ---
+  duration_ms: 79.184542
+  type: 'test'
+  ...
+# Subtest: lowering admission window preserves accepted jobs, dedup, and one blocked phone while others drain
+ok 20 - lowering admission window preserves accepted jobs, dedup, and one blocked phone while others drain
+  ---
+  duration_ms: 9.895583
+  type: 'test'
+  ...
+# Subtest: admission limit validates independently from phone concurrency and survives coordinator recreation
+ok 21 - admission limit validates independently from phone concurrency and survives coordinator recreation
+  ---
+  duration_ms: 0.798709
+  type: 'test'
+  ...
+# Subtest: five-minute idle boundary refreshes original phones without stop/start or substitute
+ok 22 - five-minute idle boundary refreshes original phones without stop/start or substitute
+  ---
+  duration_ms: 18.573916
+  type: 'test'
+  ...
+# Subtest: successful named and empty queries refresh freshness; unknown and human do not
+ok 23 - successful named and empty queries refresh freshness; unknown and human do not
+  ---
+  duration_ms: 3.860166
+  type: 'test'
+  ...
+# Subtest: expiry never duplicates a running request, new-key retry or pending stop
+ok 24 - expiry never duplicates a running request, new-key retry or pending stop
+  ---
+  duration_ms: 2.895625
+  type: 'test'
+  ...
+# Subtest: three retained humans do not block queued business on healthy phones and do cap new probes
+ok 25 - three retained humans do not block queued business on healthy phones and do cap new probes
+  ---
+  duration_ms: 9.737292
+  type: 'test'
+  ...
+# Subtest: manual recovery gets exactly one priority dispatch, then normal fairness
+ok 26 - manual recovery gets exactly one priority dispatch, then normal fairness
+  ---
+  duration_ms: 4.276584
+  type: 'test'
+  ...
+# Subtest: expired recovered proof loses priority and cannot receive business before new probe
+ok 27 - expired recovered proof loses priority and cannot receive business before new probe
+  ---
+  duration_ms: 3.743125
+  type: 'test'
+  ...
+# Subtest: fresh unused substitute wins over retrying an unhealthy fifth; all active slots stay bounded
+ok 28 - fresh unused substitute wins over retrying an unhealthy fifth; all active slots stay bounded
+  ---
+  duration_ms: 15.469667
+  type: 'test'
+  ...
+# Subtest: standby selection skips disabled, unhealthy, occupied and isolated phones
+ok 29 - standby selection skips disabled, unhealthy, occupied and isolated phones
+  ---
+  duration_ms: 16.134417
+  type: 'test'
+  ...
+# Subtest: unknown executions reserve capacity; standby probes do not create a sixth execution
+ok 30 - unknown executions reserve capacity; standby probes do not create a sixth execution
+  ---
+  duration_ms: 10.834666
+  type: 'test'
+  ...
+# Subtest: after backoff, never-tried standby wins over the recovered failed phone
+ok 31 - after backoff, never-tried standby wins over the recovered failed phone
+  ---
+  duration_ms: 6.055209
+  type: 'test'
+  ...
+# Subtest: human limit still prevents legacy callers from opening unprepared channels
+ok 32 - human limit still prevents legacy callers from opening unprepared channels
+  ---
+  duration_ms: 0.5965
+  type: 'test'
+  ...
+# Subtest: idle refresh does not turn an account, transport or control fault into a reusable proof
+ok 33 - idle refresh does not turn an account, transport or control fault into a reusable proof
+  ---
+  duration_ms: 30.899208
+  type: 'test'
+  ...
+# Subtest: a refresh waiting for manual verification does not block standby or healthy business
+ok 34 - a refresh waiting for manual verification does not block standby or healthy business
+  ---
+  duration_ms: 12.990292
+  type: 'test'
+  ...
+# Subtest: idle refresh preserves accepted queued IDs and rejects late results from previous probe
+ok 35 - idle refresh preserves accepted queued IDs and rejects late results from previous probe
+  ---
+  duration_ms: 3.537875
+  type: 'test'
+  ...
+# Subtest: in-flight business is not interrupted at five minutes and successful completion resets freshness
+ok 36 - in-flight business is not interrupted at five minutes and successful completion resets freshness
+  ---
+  duration_ms: 2.068333
+  type: 'test'
+  ...
+# Subtest: recent successful idle phones are preferred for probing but history never grants ready
+ok 37 - recent successful idle phones are preferred for probing but history never grants ready
+  ---
+  duration_ms: 4.841834
+  type: 'test'
+  ...
+# Subtest: stale future offline or quarantined success hints cannot override eligibility
+ok 38 - stale future offline or quarantined success hints cannot override eligibility
+  ---
+  duration_ms: 2.0345
+  type: 'test'
+  ...
+# Subtest: opened round accepts at one and zero ready, queues without unsafe dispatch, and resumes after probe
+ok 39 - opened round accepts at one and zero ready, queues without unsafe dispatch, and resumes after probe
+  ---
+  duration_ms: 6.068208
+  type: 'test'
+  ...
+# Subtest: opened latch survives process restart but does not lend stale phone proof
+ok 40 - opened latch survives process restart but does not lend stale phone proof
+  ---
+  duration_ms: 1.126791
+  type: 'test'
+  ...
+# Subtest: opened round keeps capacity limits, stop fencing and new round first-two requirement
+ok 41 - opened round keeps capacity limits, stop fencing and new round first-two requirement
+  ---
+  duration_ms: 2.5045
+  type: 'test'
+  ...
+# Subtest: legacy opened round can infer admission from same-round accepted prepared business only
+ok 42 - legacy opened round can infer admission from same-round accepted prepared business only
+  ---
+  duration_ms: 1.220625
+  type: 'test'
+  ...
+# Subtest: idle sessions briefly offline re-probe on reconnect before queued business dispatch
+ok 43 - idle sessions briefly offline re-probe on reconnect before queued business dispatch
+  ---
+  duration_ms: 2.881125
+  type: 'test'
+  ...
+1..43
+# tests 43
+# suites 0
+# pass 43
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 423.712166

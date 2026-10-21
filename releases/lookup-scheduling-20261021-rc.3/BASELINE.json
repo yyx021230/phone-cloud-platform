@@ -1,0 +1,28 @@
+{
+  "productionRelease": "lookup-ocr-snapshot-20261021-deployed.1",
+  "productionSource": "1ec44cf2bbf15583821f941efe2b711b0ecb455d",
+  "productionImage": "sha256:0db4c7eddb1a6ddb4c629882c220e5ee2287640c6520fa26bebf1c890bdf2225",
+  "workflowRevision": "2026-09-30",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "before": {
+    "public/api-reference.json": "5ce9d1634413059e4ee1ed119af78a80e866552439034d279e35ce0389ae44b4",
+    "public/downloads/name-lookup-http-guide.md": "47df78087a7aee9b786dc676b934f710d571c310db80a0fb9f62ad9e965d196b",
+    "public/downloads/name-lookup-integration.zip": "2c8bc9ee67467526ce619a72427c872843829258eb03525b94c88af1acad936b",
+    "public/downloads/name-lookup-openapi.json": "2f8a4062b24eb56a7d7877068e1b5fa4b80f57879ed6ddf84c9abe5efcb2a7cd",
+    "public/downloads/name-lookup-sha256.json": "b3008f82db7db4d514196ca185f7417144fbc5d80e6b9c11dffd21b75941ecc8",
+    "public/openapi.json": "5d3a463dea3bc445dd238377630f89cfa03130a29809c863fa0c6ad6f90a7f68",
+    "server/lookup-device-availability.test.mjs": "b413074fe02622c3862fc77b1460871d29a0165d36df8b4172d85d2b46389c4f",
+    "server/lookup-readiness.mjs": "7aa4c7dfe14394bc4cde0d33b91f4b354742c29ad514a2226b32d9c335ba1982",
+    "server/lookup-readiness.test.mjs": "54fbf2746f0c8b518b258f3ebf87b0d02672a1c44d56bfa00f80565122f41c22",
+    "server/lookup-round-idle.test.mjs": "852e3691d95c8f7ebfa1a0f821118897551de946d8c9a3b5d62525f4f7d9dec2",
+    "server/managed-lookup.mjs": "35f43ac2e8b8b9fbdd0058830725206393af1eb3f7ddd46cdd04d048c434d4f0",
+    "verification/api-key-http.mjs": "c52a97e05d086a6bb027a30ef4481f3136a3c3cad99d44839947d7817f2cce4e",
+    "verification/readiness-http.mjs": "36f05b8899133b94a24995490937d4a3cee76fbe5b98bf4ec6cdff9111627331",
+    "verification/scheduling-http.mjs": "a91bdf1163899ffeb39e89e9c353686cf290a2f10f5f605ee1afa39f8157a083"
+  },
+  "snapshotIndexSha256": "57a83933ab0e70b8c0f9643c649b70dcfc68f8ca8fcfb25688fa8db9d49f14c4",
+  "snapshotColumnType": "json",
+  "parentCandidate": "lookup-scheduling-20261021-rc.2",
+  "parentCandidateCommit": "9821fa9ddf387a733dfb59789fa23cf4663d89c3",
+  "candidateOnly": true
+}
