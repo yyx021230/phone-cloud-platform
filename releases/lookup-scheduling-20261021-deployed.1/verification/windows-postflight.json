@@ -1,0 +1,17 @@
+{
+  "at": "2026-10-21T03:57:07.5028087Z",
+  "adbPid": 8988,
+  "adbOwner": "NT AUTHORITY\\SYSTEM",
+  "adbPath": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+  "agentPid": 24968,
+  "agentOwner": "NT AUTHORITY\\SYSTEM",
+  "agentInstances": 1,
+  "hashes": {
+    "src\\lookup-human-observer.mjs": "f9d327e786802c5781e7eea046f4bf0dfa81d3ec67f63066e99345148a1ab4b2",
+    "adb-auth-env.cjs": "9c3aa5affb9243f255f2bf74376ee7bb01c9f9171989f5477146263ee7e2bb4d",
+    "start-agent.cmd": "e0d8fc8589335fcd605ab33c6d9f7418e6997fe807a23f0ca79036affb826a0e",
+    "start-agent.ps1": "dcec1c42e1bb197d3cf339f07e54515f60015c6c6806372d0d07640cba60db58",
+    "src\\index.mjs": "4d383bedf195739005abafe52779b7414d3aa2e3217fca45f359746de5e3bd23"
+  },
+  "scanCacheUtc": "2026-10-21T03:56:47.6030062Z"
+}

@@ -1,0 +1,12 @@
+{
+  "patterns": {
+    "lookup human observation failed": 0,
+    "lookup human observation report failed": 0,
+    "heartbeat failed": 0,
+    "scan failed": 0,
+    "lookup terminal report remains pending": 0,
+    "already_running": 0
+  },
+  "lines": 400,
+  "lastLogUtc": "2026-10-21T03:58:04.1484631Z"
+}

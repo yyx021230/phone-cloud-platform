@@ -1,0 +1,13 @@
+{
+  "lines": 200,
+  "patterns": {
+    "startup warnings": 0,
+    "listening": 0,
+    "FATAL": 0,
+    "uncaught": 0,
+    "heap out of memory": 0,
+    "managed lookup storage/dispatch unavailable": 0,
+    "saveState during shutdown": 0,
+    "shutdown timeout": 0
+  }
+}

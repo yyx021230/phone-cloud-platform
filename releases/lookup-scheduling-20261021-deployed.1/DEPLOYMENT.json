@@ -1,0 +1,73 @@
+{
+  "version": "lookup-scheduling-20261021-deployed.1",
+  "atUtc": "2026-10-21T03:57:31.924960+00:00",
+  "sourceCommit": "9d2276884f26e6c436bc4ccd80bb3c8d18be3771",
+  "candidateTag": "lookup-scheduling-20261021-rc.3",
+  "previousVersion": "lookup-ocr-snapshot-20261021-deployed.1",
+  "previousCommit": "1ec44cf2bbf15583821f941efe2b711b0ecb455d",
+  "previousImage": "sha256:0db4c7eddb1a6ddb4c629882c220e5ee2287640c6520fa26bebf1c890bdf2225",
+  "image": "sha256:a9e487ecb04afa22def7c926541a06be5593191066652881388d017e54022dab",
+  "containerId": "75b081146ecb8a601507881b3b1367d60c60d0b76300005cb3e952d98a467559",
+  "containerPid": 954599,
+  "agentPid": 24968,
+  "adbPidUnchanged": 8988,
+  "agentOwner": "NT AUTHORITY\\SYSTEM",
+  "maintenance": {
+    "approvedWindowMinutes": 5,
+    "includesNewControls": true,
+    "controlsAtStart": [
+      "154",
+      "159",
+      "155",
+      "124",
+      "54",
+      "172"
+    ],
+    "startedAt": "2026-10-21T03:54:11.409Z",
+    "readyAt": "2026-10-21T03:56:01.112Z"
+  },
+  "backup": "/opt/phone-cloud-platform/deploy-backups/lookup-scheduling-20261021-prep.1",
+  "windowsBackup": "D:\\PhoneCloud\\agent\\backups\\lookup-scheduling-20261021-prep.1",
+  "cloudFiles": {
+    "server/managed-lookup-platform.mjs": "28636ae0b751afd78ad4b6bd7867c23436fb250b25720525d36c564385e70137",
+    "server/lookup-readiness.mjs": "c12eaf61f28ea38a3e491bddb55f2a2c1637075b759827bba33e92602359f248",
+    "server/automation-center.mjs": "76e197e2b01b2f625d068cede5b9b2e4d224598e50531072b8cf9313bb83ecae",
+    "server/lookup-human-handover.mjs": "f02ce0dedd5bcfcba1209a9d3f05f8836d0b431107ae38fc3e1e3ca3545d44c9",
+    "server/device-occupancy.mjs": "90d9f2bd4e9b5b2807ad2d7905d538f5d7ff2fe19fda629396d635a67fa9aeb0",
+    "server/index.mjs": "b65511f817b4ceb6a28091eb27ccfa6de63bd10ba36bb7f45ffb04f57a536f07",
+    "server/managed-lookup.mjs": "7a8d8a866df6c90bfdbd0862f73a9c6722702e11ccdd190f0b8f1cc96d8552d1",
+    "public/index.html": "6eb21ed9000cc5f77afba3b522cf0dcf6149a86a37ea4da5a6a0c2562c9c45e6",
+    "public/lookup-card-status.js": "419c865557401c9b431bef2a30c48b332f39d266f2addfa462fd21beb9c7a780",
+    "public/api-reference.json": "8d420da8afc14ba68c0c58f348cc844ad28dc34c5e6d3eca3b40d4305e2f0639",
+    "public/openapi.json": "540e1e16e6af6c90027c2cb4d95cf0018bfc5b5bed6474647f7fbf9ed74ccc1a",
+    "public/app.js": "88ae575783d31f0bdeb14e9c5150da7168d1aefa7ec97e54a38b98cc3254a0fd",
+    "public/downloads/name-lookup-http-guide.md": "0437c0dc795885430ad1a62bef8b1599b24a34c724ffb5e2513d31d797a1b356",
+    "public/downloads/name-lookup-integration.zip": "8b6671151bce01bc8cf8d369382d6363b66df0a815ac8491effd5546e7fb520d",
+    "public/downloads/name-lookup-openapi.json": "0553994fbc5ccc91e33752035f512f828c10d389a7c55c47607e9e1819848600",
+    "public/downloads/name-lookup-sha256.json": "ffba83e072a89ac89f22096bee21e7ee4566bcba903d6d43f9d0b796064ab16f"
+  },
+  "windowsFiles": {
+    "windows-agent/src/lookup-human-observer.mjs": "f9d327e786802c5781e7eea046f4bf0dfa81d3ec67f63066e99345148a1ab4b2",
+    "windows-agent/src/index.mjs": "4d383bedf195739005abafe52779b7414d3aa2e3217fca45f359746de5e3bd23"
+  },
+  "environmentUnchanged": true,
+  "mountsUnchanged": true,
+  "databaseMigration": false,
+  "snapshotType": "json",
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "productionAcceptanceComplete": false,
+  "notVerified": [
+    "new real-number API run",
+    "real CAPTCHA completion latency",
+    "natural account limit and cooldown",
+    "long-term observation"
+  ],
+  "rollbackPerformed": false
+}
