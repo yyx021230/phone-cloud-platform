@@ -1,0 +1,44 @@
+{
+  "preflight": {
+    "adbOwner": "NT AUTHORITY\\SYSTEM",
+    "filesVerified": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "stage": "D:\\PhoneCloud\\staging\\lookup-admin-20261021-rc.3",
+    "agentPid": 24968,
+    "runtimeChanged": false,
+    "agentOwner": "NT AUTHORITY\\SYSTEM",
+    "adbPid": 8988
+  },
+  "staging": {
+    "stage": "D:\\PhoneCloud\\staging\\lookup-admin-20261021-rc.3",
+    "adbChanged": false,
+    "files": {
+      "src/lookup-human-observer.mjs": "dbd77ffb69215d26610a814d1c4013e89a3d1a7b81ea509c9570d7035808a8a5",
+      "src/lookup-post-human-state.mjs": "11be7e62af4193387a0ebeef09f8130abb9577d94d1ddef8c816513c7e3a0580",
+      "src/lookup-account-policy.mjs": "51f9a5a3368554efbd8d07e2e420f70da7086e1b592c5959cada4752c9301c98",
+      "scripts/alipay_visual_result.py": "1360d60420dd0c8d298a5c9aa6b702b0213230fbf46276283b782a50213f19ff",
+      "scripts/alipay_name_lookup.py": "0810e70fb86e030420e6c061c1da1587ff40cd559c6950ee301f4f7c41fafa57",
+      "scripts/alipay_post_human_state.py": "8e0290dfa7c0ac2b28efbcebd1e056259a5e311243cebdce121015562e224efc",
+      "src/index.mjs": "1d057629c452e0ce392f0cbc79a1ad3645cc90c5175dca980151dfb1d4a6d2a8"
+    },
+    "nativeNodeSyntax": "passed",
+    "agentRestarted": false,
+    "status": "staged-not-activated",
+    "candidate": "lookup-admin-20261021-rc.3",
+    "zipSha256": "3656e9ddf41930655a7af1205b4bd9b58bc51e04e5059e261ecbe449ec10fc01"
+  },
+  "postflight": {
+    "runtimeAndBackupsVerified": true,
+    "adbCalled": false,
+    "agentReloaded": false,
+    "pythonFiles": 3,
+    "nativePython39Syntax": "passed"
+  }
+}
