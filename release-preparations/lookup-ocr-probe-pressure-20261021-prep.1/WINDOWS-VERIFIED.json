@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "platform": "Windows",
+  "parserFixtures": 8,
+  "nativeInference": "synthetic_digits",
+  "seconds": 2.736,
+  "phoneCommands": 0,
+  "liveScriptsChanged": false
+}
