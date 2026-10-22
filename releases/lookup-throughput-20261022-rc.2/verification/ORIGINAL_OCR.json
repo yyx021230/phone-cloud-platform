@@ -1,0 +1,133 @@
+{
+  "offlineOnly": true,
+  "actualAdbCalls": 0,
+  "realDeviceQueries": 0,
+  "cases": [
+    {
+      "case": 1,
+      "category": "named",
+      "twoActualOcrFrames": true,
+      "milliseconds": 2773
+    },
+    {
+      "case": 2,
+      "category": "named",
+      "twoActualOcrFrames": true,
+      "milliseconds": 2069
+    },
+    {
+      "case": 3,
+      "category": "empty",
+      "twoActualOcrFrames": true,
+      "milliseconds": 2520
+    },
+    {
+      "case": 4,
+      "category": "empty",
+      "twoActualOcrFrames": true,
+      "milliseconds": 2360
+    },
+    {
+      "case": 5,
+      "category": "empty",
+      "twoActualOcrFrames": true,
+      "milliseconds": 2250
+    },
+    {
+      "case": 6,
+      "category": "empty",
+      "twoActualOcrFrames": true,
+      "milliseconds": 1925
+    },
+    {
+      "case": 7,
+      "category": "empty",
+      "twoActualOcrFrames": true,
+      "milliseconds": 1970
+    },
+    {
+      "case": 8,
+      "category": "empty",
+      "twoActualOcrFrames": true,
+      "milliseconds": 2033
+    },
+    {
+      "case": 9,
+      "category": "named",
+      "twoActualOcrFrames": true,
+      "milliseconds": 2139
+    },
+    {
+      "case": 10,
+      "category": "empty",
+      "twoActualOcrFrames": true,
+      "milliseconds": 2073
+    },
+    {
+      "case": 11,
+      "category": "empty",
+      "twoActualOcrFrames": true,
+      "milliseconds": 1952
+    },
+    {
+      "case": 12,
+      "category": "empty",
+      "twoActualOcrFrames": true,
+      "milliseconds": 2244
+    },
+    {
+      "case": 13,
+      "category": "empty",
+      "twoActualOcrFrames": true,
+      "milliseconds": 2490
+    },
+    {
+      "case": 14,
+      "category": "empty",
+      "twoActualOcrFrames": true,
+      "milliseconds": 1861
+    },
+    {
+      "case": 15,
+      "category": "empty",
+      "twoActualOcrFrames": true,
+      "milliseconds": 2014
+    },
+    {
+      "case": 16,
+      "category": "empty",
+      "twoActualOcrFrames": true,
+      "milliseconds": 2189
+    },
+    {
+      "case": 17,
+      "category": "named",
+      "twoActualOcrFrames": true,
+      "milliseconds": 2359
+    },
+    {
+      "case": 18,
+      "category": "named",
+      "twoActualOcrFrames": true,
+      "milliseconds": 2967
+    },
+    {
+      "case": 19,
+      "category": "empty",
+      "twoActualOcrFrames": true,
+      "milliseconds": 3355
+    },
+    {
+      "case": 20,
+      "category": "named",
+      "twoActualOcrFrames": true,
+      "milliseconds": 1935
+    },
+    {
+      "case": 21,
+      "category": "named",
+      "twoActualOcrFrames": true,
+      "milliseconds": 1910
+    }
+  ]
+}
