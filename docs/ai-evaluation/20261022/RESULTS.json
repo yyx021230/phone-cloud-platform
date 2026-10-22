@@ -1,0 +1,183 @@
+{
+  "date": "2026-10-22",
+  "timezone": "Asia/Shanghai",
+  "stage": "local_screenshot_evaluation_only",
+  "requestedModel": "gpt-6.1-sol",
+  "apiMode": "responses",
+  "scenarioCount": 16,
+  "uniqueImages": 15,
+  "providerInferenceRequests": 20,
+  "positiveScenarios": [
+    {
+      "deviceNumber": 112,
+      "pass": true,
+      "cardCount": 1,
+      "independentReadCount": 2,
+      "elapsedMs": 16565,
+      "evidenceSha256": "75b8edab809bef72dc494f5abbf1935c6829f5acf28a6c7fd3a33029bfb61c41"
+    },
+    {
+      "deviceNumber": 162,
+      "pass": true,
+      "cardCount": 1,
+      "independentReadCount": 2,
+      "elapsedMs": 17925,
+      "evidenceSha256": "1d6244130a123e58ba4f3f3e7bdedeff635acdb76ee626d1034e4c5805859eb0"
+    },
+    {
+      "deviceNumber": 156,
+      "pass": true,
+      "cardCount": 2,
+      "independentReadCount": 2,
+      "elapsedMs": 31085,
+      "evidenceSha256": "ec7b3284443b1387b74730e3104ec3751d93801d8a16269fd6483876b7468244"
+    },
+    {
+      "deviceNumber": 181,
+      "pass": true,
+      "cardCount": 2,
+      "independentReadCount": 2,
+      "elapsedMs": 32367,
+      "evidenceSha256": "34981c6ad9ab5577bf93f3d92a2e4e71b7a136a7ecd5eea10d60d6b1c1f099e5"
+    }
+  ],
+  "negativeScenarios": [
+    {
+      "id": "limit",
+      "pass": true,
+      "code": "lookup_ai_unconfirmed",
+      "state": "limited",
+      "cards": 0,
+      "calls": 1,
+      "elapsedMs": 3178,
+      "evidenceSha256": "3e735c679a53a9e27b497637e7ece030c75c4d4eff3d4d0cc58d1fefe393e121"
+    },
+    {
+      "id": "login",
+      "pass": true,
+      "code": "lookup_ai_unconfirmed",
+      "state": "login",
+      "cards": 0,
+      "calls": 1,
+      "elapsedMs": 4388,
+      "evidenceSha256": "1deda91d93c704775920fb0be1718a779c0933bdb3d6a95bce69484d0002dd38"
+    },
+    {
+      "id": "home",
+      "pass": true,
+      "code": "lookup_ai_unconfirmed",
+      "state": "other",
+      "cards": 0,
+      "calls": 1,
+      "elapsedMs": 3726,
+      "evidenceSha256": "5588b4b17a76745938e104c6cb6704e6009dbd3c43a0b74a20518f8fd02657b3"
+    },
+    {
+      "id": "other_app",
+      "pass": true,
+      "code": "lookup_ai_unconfirmed",
+      "state": "other",
+      "cards": 0,
+      "calls": 1,
+      "elapsedMs": 5964,
+      "evidenceSha256": "e7b352d83a5e350f4ba80921ccc4a9dff4742bbfe9f7ce51b0d4dbcec4b7baa0"
+    },
+    {
+      "id": "account_picker",
+      "pass": true,
+      "code": "lookup_ai_unconfirmed",
+      "state": "other",
+      "cards": 0,
+      "calls": 1,
+      "elapsedMs": 4839,
+      "evidenceSha256": "2365148f62899ea3ed0112f7c0662eb2819d55fb2b7cd52e31faec6bbb417ae5"
+    },
+    {
+      "id": "black_screen",
+      "pass": true,
+      "code": "lookup_ai_unconfirmed",
+      "state": "other",
+      "cards": 0,
+      "calls": 1,
+      "elapsedMs": 4582,
+      "evidenceSha256": "dacad2e5575da451953fe898c6668cf7b8abe40b37ec57b44208638df62d738b"
+    },
+    {
+      "id": "captcha",
+      "pass": true,
+      "code": "lookup_ai_unconfirmed",
+      "state": "verification",
+      "cards": 0,
+      "calls": 1,
+      "elapsedMs": 3479,
+      "evidenceSha256": "926ad0d398c8351c015e99f6b28df77747fd2bcaf8b730d0ab10aff7ddb25b79"
+    },
+    {
+      "id": "usb_overlay",
+      "pass": true,
+      "code": "lookup_ai_unconfirmed",
+      "state": "limited",
+      "cards": 0,
+      "calls": 1,
+      "elapsedMs": 24939,
+      "evidenceSha256": "82d87b58f199c7a8cb5762e72092d46a3d995382c9cfdc87009e710c86aef3ee"
+    },
+    {
+      "id": "empty_shortcuts",
+      "pass": true,
+      "code": "lookup_ai_unconfirmed",
+      "state": "other",
+      "cards": 0,
+      "calls": 1,
+      "elapsedMs": 5258,
+      "evidenceSha256": "f19743fa7d244df616f0d1aba1b1497a9f4d55f3deafa0ce81d04d4f47daccb1"
+    },
+    {
+      "id": "empty_recharge",
+      "pass": true,
+      "code": "lookup_ai_unconfirmed",
+      "state": "other",
+      "cards": 0,
+      "calls": 1,
+      "elapsedMs": 5328,
+      "evidenceSha256": "5fdfe4f246aae5a235a45024a20efa6e501f94d723bd6006bf3dbc0244e546b9"
+    },
+    {
+      "id": "unverified",
+      "pass": true,
+      "code": "lookup_ai_unconfirmed",
+      "state": "result",
+      "cards": 1,
+      "calls": 1,
+      "elapsedMs": 6802,
+      "evidenceSha256": "ff6b69b75b16cd0d2d2b005085b6b2c13140881a786d46bb8cac08f2433654f4"
+    },
+    {
+      "id": "wrong_order_phone",
+      "pass": true,
+      "code": "lookup_ai_unconfirmed",
+      "state": "result",
+      "cards": 2,
+      "calls": 1,
+      "elapsedMs": 11728,
+      "evidenceSha256": "34981c6ad9ab5577bf93f3d92a2e4e71b7a136a7ecd5eea10d60d6b1c1f099e5"
+    }
+  ],
+  "localBoundaryTests": {
+    "passed": 18,
+    "failed": 0
+  },
+  "draftReaderSha256": "f84eede1792aabc8bd2e5413c866eb60bbc9190498d1cb7fbe8b525bd237d1a5",
+  "positiveHarnessSha256": "da1b1e3518834583c59d3096568866cd2c7fedfb06d92692b850966fd948dc6c",
+  "negativeHarnessSha256": "d1e1005b8bbd2d224292891f43bfbbd793d53fa14e2c0be295863b40419e159e",
+  "boundaryTestSha256": "d1b8a54f152cb6fb5e66cecb61e75d528f8e60e15ef37c3d90477586b03b5c27",
+  "productionRuntimeChanged": false,
+  "productionOrdersChangedByThisEvaluation": false,
+  "agentOrAdbChanged": false,
+  "knownLimitations": [
+    "USB safety overlay classified limited; must not drive account cooldown or switching",
+    "Recharge-only no-name screens classified other; no confirmed empty result from AI",
+    "Two independent API readings used the same screenshot, not two real-time phone frames",
+    "No production scheduling, stop ACK, late result, restart or result write-back acceptance"
+  ]
+}
