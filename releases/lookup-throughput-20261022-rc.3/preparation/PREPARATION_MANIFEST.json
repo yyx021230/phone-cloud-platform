@@ -21,6 +21,12 @@
   },
   "runbook": {
     "path": "docs/LOOKUP_RELEASE_PREPARATION_20261022.md",
-    "sha256": "d1be0df5baf6016cb12ea668ea44fb3b556cbb48eb8a4f8ad5cf7dbd21877ad8"
+    "sha256": "711f0d15a749515a35cd61bb49567aa9be732c98da3563f16b34c24564885a45"
+  },
+  "helperGrantPlan": {
+    "path": "releases/lookup-page-helper-20261021-rc.1/HELPER_GRANTS.json",
+    "sha256": "f6c4df061315f61aff59aa3a0ab41829017893e2ffb221bc9988877781a609d6",
+    "count": 10,
+    "applied": false
   }
 }
