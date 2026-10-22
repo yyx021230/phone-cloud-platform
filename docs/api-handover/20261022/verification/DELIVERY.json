@@ -1,0 +1,34 @@
+{
+  "originalDirectory": "/Users/yyx/.codex/worktrees/lookup-version-management/phone-cloud-platform/docs/api-handover/20261016",
+  "versionedDirectory": "/Users/yyx/.codex/worktrees/lookup-idle-timeout-20261019/phone-cloud-platform/docs/api-handover/20261022",
+  "originalBranch": "codex/lookup-api-handover-20261016",
+  "originalHead": "650ecf8458cf94d5800e5e09614504600400a1b8",
+  "originalPreexistingEdits": "README had 4 removed lines; current file used as source, no deleted content restored; not committed on original branch",
+  "beforeHashes": {
+    "README.md": "1de3dcc47d03468f312c3ff5b3e2f690e6a9ad4f75ba389c288479d6b0f27647",
+    "http_flow.py": "1297901d4d6bfe364f28884e323584bafeabcb8cdce8a551e3d8f29184fd31de",
+    "lookup.py": "ee16f9f8b38c3a6987ed3b4e594198b3b1c8d2ffa99cb680092901a56bbe08a6",
+    "lookup.mjs": "f8af8a207cf4e07be6d5ebdf3f13b45a04f6faf36873754cd49624cb1574baf3",
+    "stop_lookup.py": "e0d7f72ff6fae836973432804ae42083ee99c136f307483a7e9eb5a198d862ed",
+    "openapi.json": "05b49b790d4577b298b5832aec6a122e1fe5dd1e3d870dc1ad31b2e7c6ffbd06",
+    "SHA256SUMS.json": "d74e006b893b76308ae8601fdf425cb8afbbdb26571dd8542f7d48eefa4a48fe",
+    "支付宝查名字API对接资料.zip": "7cd9cbb3d2ddc302073b24a6b67c80c0a9649d1b93bc507783a1c474e8e42187",
+    "verification/test_http_flow.py": "605a3ff9532c3bf8368a0d605136f86969dee3a1a6d4cfed144697a04fa98aa0",
+    "verification/RESULTS.json": "303382985f900c6b4af12bf44c5aa1952e480e827c3af2a5dd9997e87324a28b"
+  },
+  "afterHashes": {
+    "README.md": "9cf58fba5171cd30de418252dbfe22bd589b4a7b498cabad1482cc6694a92e9d",
+    "http_flow.py": "6ac43dd7eda2d9366207446f0138a6d5281fc16fcd12b53b7e1f7591ae0eb69e",
+    "lookup.py": "4d25a7b23c11df237ff58f2a791f006c3aeb6a7f05c01a7f53feda7c3227bd59",
+    "lookup.mjs": "c6c04722cd2ecd76ca7a81b72b82b1ee95ec0b8a26ab75795dc75632a4fde246",
+    "stop_lookup.py": "e0d7f72ff6fae836973432804ae42083ee99c136f307483a7e9eb5a198d862ed",
+    "openapi.json": "61994d7b8f70b0947925cade48948e3ccaf09612c108d828df758aa97cd3ebce",
+    "SHA256SUMS.json": "8990e6922a91e4c8b8cc0d40fcdbbe361f9f984cff4a9d862476627e809563b9",
+    "支付宝查名字API对接资料.zip": "35e7c6ba28b98cd5a94d74bcdf505be205b687462f79dd54c727bd30e8bf5811",
+    "verification/test_http_flow.py": "795e20d9821503dd4f9a1ccea264ff3680878e53c19768d442b763c5e89bfea1",
+    "verification/RESULTS.json": "02dbcd4398e17c492eff3163e2a498dd58171f073c2142e8377fb9461b649521"
+  },
+  "filesMatched": 10,
+  "originalBranchChanged": false,
+  "productionChanged": false
+}
