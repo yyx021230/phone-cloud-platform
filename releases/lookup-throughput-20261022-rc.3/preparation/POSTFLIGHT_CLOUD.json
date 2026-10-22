@@ -1,0 +1,12 @@
+{
+  "checkedAtUtc": "2026-10-22T02:17:27.073232+00:00",
+  "version": "lookup-scheduling-20261021-deployed.1",
+  "image": "sha256:a9e487ecb04afa22def7c926541a06be5593191066652881388d017e54022dab",
+  "composeFilesUnchanged": 24,
+  "runtimeHashesUnchanged": 16,
+  "health": {
+    "healthz": "200",
+    "readyz": "200"
+  },
+  "status": "not-activated"
+}

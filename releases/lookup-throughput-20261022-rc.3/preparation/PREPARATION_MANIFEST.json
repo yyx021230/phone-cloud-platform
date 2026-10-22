@@ -1,0 +1,26 @@
+{
+  "sourceCommit": "9a4362fe2bf3a8e5a48e430519dd23fde135e3fb",
+  "status": "prepared-not-activated",
+  "files": {
+    "COMPOSE_PREVIEW.json": "f34dec3c934aaab2e74f8077da4d25e925fae6e1dc035282e195cf06eb5087a5",
+    "Dockerfile": "dc6c36215be79b9f21137ddb99659bb41b19bdda0a177bd02996832bf10f0239",
+    "POSTFLIGHT_CLOUD.json": "f3fe16b81cd06263262c837cf076e949609e62a28de37bd968dc9083195d4ce1",
+    "POSTFLIGHT_WINDOWS.json": "7c769ea9a3492d611ad8a74487acd6bdbd646e5d52d1fbc574b62960a0b2935c",
+    "PREPARATION_RECEIPT.json": "867034f6a58431282dffb8a45ea3dbeb5f13b5ad8f69de127caddb8b1b0c7da8",
+    "RESTORE_FIRST_ATTEMPT.json": "10df35eb797621710672e980f910afeddf2b82c3c4ca7dc2a9d63e9139523d31",
+    "RESTORE_RECEIPT.json": "e1b8d3ba3ab8539620345dbaf61ace6a14d69ed71d896dfa4bdec34197e6948b",
+    "STAGING_PLAN.json": "d7e0854d91fb973adf499c0382fee4f3fa60d4a0bb98bb479e2f38d7f7b5e811",
+    "WINDOWS_OCR_RESULT.json": "1b7f1b863a7b6c3060772133644a8da9ceddec3795e8af8a1e944e5b82db3d5e",
+    "WINDOWS_PLAN.json": "757bf0f473077a8b6e400dc20064128f2dc8da45c42a96f478d961f02827ad8c",
+    "WINDOWS_PREPARATION.json": "214173757e13809772922b740a966e285594775e4cdb0b0fe71c122d1e4254e8",
+    "complete-preparation.py": "37fe9bcfaba1016ff44649d690f96dab3e5084fe6774c6d4e665abd0e39506fa",
+    "prepare-cloud.py": "295e15a382a6c372f5d24f5f96b9b7a6f709c1faa53a37fb0ae64c123fb26de9",
+    "verify-native-ocr.py": "833b4fbe84f798660e23481b3f522b4e18bff181b83a77eb2c9456e986758d84",
+    "verify-restore.py": "387a48f307c1c323141e31b2d1cafac0178736e434bb7c4f934170004232cc1c",
+    "verify-windows.ps1": "90bee991c8edd8984c5b954ecdfd894cd838f60ff285cdcb5ea5d66a7b9b1b8d"
+  },
+  "runbook": {
+    "path": "docs/LOOKUP_RELEASE_PREPARATION_20261022.md",
+    "sha256": "d1be0df5baf6016cb12ea668ea44fb3b556cbb48eb8a4f8ad5cf7dbd21877ad8"
+  }
+}
