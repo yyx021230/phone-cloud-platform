@@ -1,0 +1,56 @@
+{
+  "candidate": "lookup-ai-vision-20261022-rc.1",
+  "sourceCommit": "fef7ff801c4fa8c391f0ae35a9f47ed6db3e8e76",
+  "status": "prepared-not-activated",
+  "imageTag": "phone-cloud-platform:lookup-ai-vision-20261022-rc.1",
+  "imageId": "sha256:35cba1db05e126adf48acaa63241772854b7069559fd054459d74699a49a74ff",
+  "previousImage": "sha256:350e2f56909b2a17d5a863a1aef8dcc8e7360c1693422b2ba5198b8dc4457dd2",
+  "cloudFiles": {
+    "server/index.mjs": {
+      "before": "c757af48a1af32b97e1ca42a43a40c5af714798570eb9c703216b1e2d5b24161",
+      "after": "4d18647672686c188086db15675f714db42c218c10d9f2ae8f65990b89073c43"
+    },
+    "server/managed-lookup.mjs": {
+      "before": "48e1081af382f1198d1067d6577ae3043950fb10e6bb4beead3ec22aff12f15c",
+      "after": "b2dcb20129218265e50775fb6728fffeb9461a45ec75fd1a595bd5b27c3abb46"
+    },
+    "server/managed-lookup-platform.mjs": {
+      "before": "18854d027d0a4622812a1feea58f9e17ab2545fc129587464a1d476747927d94",
+      "after": "0af2122462ce3cc7b7c0c1233f05fe3e89dbd44d23e24139134bec7762438752"
+    },
+    "server/device-occupancy.mjs": {
+      "before": "bb151a8e8990155f8946581c83f372a5a9ca3bceda7f5ccf64e59fcb9423628f",
+      "after": "3e785c605151865d133e4d4b11dc7f9387e8eafb60ef91fcae90cac107629ec7"
+    },
+    "server/lookup-ai-vision.mjs": {
+      "before": null,
+      "after": "3a22a22946d690e0a16519e6752a0ad3ebb1376ca129b16776a4245b39e8f583"
+    },
+    "server/lookup-ai-recovery.mjs": {
+      "before": null,
+      "after": "5e9f3273aab55632517a89ca277e9f3f9d6954101861157d451161fcaf5415f0"
+    }
+  },
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "backup": "/opt/phone-cloud-staging/lookup-ai-vision-20261022-rc.1/rollback",
+  "backupFiles": {
+    "database.dump": "ddcf7c389be56c0a27565b32cf3b5e40d01ba52fb310a7cadb9178ec5c9ea128",
+    "compose-baseline.json": "f0207abf2a69e052e7d5a5668ff1859898bbbcc62f714ed724b2bbde8e0c5783",
+    "previous-image.tar.gz": "1e731332936a7b8e128b996c0f6926a1c5bc5ae883ce494cda63ec681703ad7f",
+    "ACTIVE_PLATFORM_RELEASE.json": "801b929705d3e9144cabfdf26bf7a9c1619bff278ec9a45c0dcf6c6cdd3d22e2",
+    "source/server/index.mjs": "e13e4271b950b14402868ceaca005e14314ec603c13a095cd2cbb9f832238629",
+    "source/server/device-occupancy.mjs": "05d8755117ef4574a7c42c6d1020961e429d18c410faebc677b8517930bd7142"
+  },
+  "isolatedSmoke": "passed using production mode and disposable PostgreSQL",
+  "productionServiceRestarted": false,
+  "agentChanged": false,
+  "adbChanged": false,
+  "preparedAtUtc": "2026-10-22T08:54:05Z"
+}
