@@ -1,0 +1,139 @@
+{
+  "version": "lookup-throughput-20261022-rc.4",
+  "status": "local-verified-not-deployed",
+  "nodeFull": {
+    "passed": 1053,
+    "failed": 0
+  },
+  "readinessUnit": 51,
+  "httpRegression": 4,
+  "nodeExamples": 4,
+  "pythonExamples": 1,
+  "syntaxCheck": "passed",
+  "docContractsAndZip": "passed",
+  "jsonHttp": {
+    "parsedCardLayouts": 21,
+    "parsedBusinessResults": 50,
+    "namedResults": 16,
+    "emptyResults": 34,
+    "allParsedResultsMatchPublicHttp": true,
+    "storage": "json",
+    "loopbackOnly": true,
+    "simulatedDevices": 5,
+    "realDevices": 0,
+    "productionConnections": 0,
+    "completed": 50,
+    "zeroReadyRejects30NewRequests": true,
+    "zeroReadyRetains50AcceptedRequests": true,
+    "unavailableRetryHeader30": true,
+    "zeroReadyDispatched": 0,
+    "firstReadyStillRequired": true,
+    "businessAttempts": 57,
+    "oldAgentGuardBlocked": true,
+    "postHumanLimitDurableCooldown": true,
+    "postHumanLoginRoundExcluded": true,
+    "protectedOriginalQueryCrossDevice": true,
+    "helperGrantRevokeHttp": true,
+    "helperCannotEscalate": true,
+    "helperOnlyHumanCard": true,
+    "pageSamePhoneObservationPayload": true,
+    "maxExecuting": 5,
+    "humanObserverHttpResumed": true,
+    "screenOffCardVerified": true,
+    "firstClearRequiresRecheck": true,
+    "cardEndpointAuthenticated": true,
+    "otherRequestsCompleteBeforeStopAck": 49,
+    "retryElapsedMs": 121001,
+    "firstQueueDeadlineElapsed": true,
+    "originalTotalDeadlinePreserved": true,
+    "changedKeyKeepsOriginalId": true,
+    "noLocalReplay": true,
+    "handoffWaitsForStopAck": true,
+    "reassignedToDifferentPhone": true,
+    "lateReportIgnored": true,
+    "restartRetainsResultAndAlias": true,
+    "nextRoundReady": true,
+    "finalChannels": 0
+  },
+  "postgresHttp": {
+    "parsedCardLayouts": 21,
+    "parsedBusinessResults": 50,
+    "namedResults": 16,
+    "emptyResults": 34,
+    "allParsedResultsMatchPublicHttp": true,
+    "storage": "postgres",
+    "loopbackOnly": true,
+    "simulatedDevices": 5,
+    "realDevices": 0,
+    "productionConnections": 0,
+    "completed": 50,
+    "zeroReadyRejects30NewRequests": true,
+    "zeroReadyRetains50AcceptedRequests": true,
+    "unavailableRetryHeader30": true,
+    "zeroReadyDispatched": 0,
+    "firstReadyStillRequired": true,
+    "businessAttempts": 57,
+    "oldAgentGuardBlocked": true,
+    "postHumanLimitDurableCooldown": true,
+    "postHumanLoginRoundExcluded": true,
+    "protectedOriginalQueryCrossDevice": true,
+    "helperGrantRevokeHttp": true,
+    "helperCannotEscalate": true,
+    "helperOnlyHumanCard": true,
+    "pageSamePhoneObservationPayload": true,
+    "maxExecuting": 5,
+    "humanObserverHttpResumed": true,
+    "screenOffCardVerified": true,
+    "firstClearRequiresRecheck": true,
+    "cardEndpointAuthenticated": true,
+    "otherRequestsCompleteBeforeStopAck": 49,
+    "retryElapsedMs": 65001,
+    "firstQueueDeadlineElapsed": true,
+    "originalTotalDeadlinePreserved": true,
+    "changedKeyKeepsOriginalId": true,
+    "noLocalReplay": true,
+    "handoffWaitsForStopAck": true,
+    "reassignedToDifferentPhone": true,
+    "lateReportIgnored": true,
+    "restartRetainsResultAndAlias": true,
+    "nextRoundReady": true,
+    "finalChannels": 0
+  },
+  "outOfScopeHashes": 474,
+  "productionActions": 0,
+  "failuresBeforeFinal": [
+    {
+      "kind": "expected-parent-red-test",
+      "detail": "rc.3 accepts new number at zero availability; rejection assertion fails"
+    },
+    {
+      "kind": "old-contract-test-expectations",
+      "detail": "7 unit tests expected zero-ready acceptance; 4 HTTP tests expected old exact prepare keys. Updated to assert new rejection and preserved original tasks; final suite passes."
+    },
+    {
+      "kind": "test-clock",
+      "detail": "synthetic clock lagged real completedAt; advance fixture clock before recent-result replay, no production clock change."
+    },
+    {
+      "kind": "isolated-http-setup",
+      "detail": "fresh assembled directory lacked dependency symlink; reused existing local dependencies, no install."
+    },
+    {
+      "kind": "http-race-expectation",
+      "detail": "some 50 requests assigned before simulated offline; accept processing for these, require no-capacity feedback for queued originals."
+    },
+    {
+      "kind": "isolated-pg-setup",
+      "detail": "fresh local DB lacked explicit managed tables; applied existing schema locally before actual run."
+    },
+    {
+      "kind": "package-hash-gate",
+      "detail": "first rc.4 assembly kept old test file after hash in inherited diff; gate rejected; updated changed entries and fresh assembly passed."
+    }
+  ],
+  "boundaries": [
+    "Synthetic devices and phone numbers; no production or real phones",
+    "Windows and ADB/SYSTEM untouched",
+    "Existing rc.3 staged image does not contain rc.4; new image and maintenance approval still required"
+  ]
+}
