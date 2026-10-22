@@ -1868,7 +1868,7 @@ def reopen_loading_data_center(adb_path, serial, root, guard, events):
     if not works_webview_activity(current):
         raise ElementListReadError("data-center loading foreground changed before retry")
     require_creator_service_available(root)
-    if label(root, "账号异常"):
+    if not creator_list(root) and label(root, "账号异常"):
         raise RuntimeError("creator account shows abnormal status; collection skipped")
     guard()
     if focus(adb_path, serial) != current:
@@ -1911,13 +1911,13 @@ def wait_data_center_loading(adb_path, serial, root, guard, events, require_cont
             for _ in range(int(DATA_CENTER_LOAD_SECONDS / DATA_CENTER_POLL_SECONDS) + 2):
                 guard()
                 require_creator_service_available(root)
-                if label(root, "账号异常"):
+                if not creator_list(root) and label(root, "账号异常"):
                     raise RuntimeError("creator account shows abnormal status; collection skipped")
                 if wake_if_asleep(adb_path, serial, guard, events):
                     root = navigation_capture(adb_path, serial, guard, events)
                     previous = None
                     require_creator_service_available(root)
-                    if label(root, "账号异常"):
+                    if not creator_list(root) and label(root, "账号异常"):
                         raise RuntimeError("creator account shows abnormal status; collection skipped")
                 current = focus(adb_path, serial)
                 assert_requested_foreground(current, events)

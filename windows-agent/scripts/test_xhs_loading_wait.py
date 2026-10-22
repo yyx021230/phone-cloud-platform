@@ -148,6 +148,15 @@ class LoadingWaitTests(unittest.TestCase):
             self.run_wait(root)
         self.adb.assert_not_called()
 
+    def test_note_title_named_account_abnormal_is_not_a_status_page(self):
+        root = copy.deepcopy(self.good)
+        title = sync.note_cards(root)[0][1]['title']
+        next(n for n in root.iter('node') if n.get('text') == title).set('text', '账号异常')
+        with patch.object(sync, 'navigation_capture', return_value=copy.deepcopy(root)):
+            result = self.run_wait(root, content=True)
+        self.assertEqual(sync.note_cards(result)[0][1]['title'], '账号异常')
+        self.adb.assert_not_called()
+
     def test_reader_failure_is_not_swallowed_as_loading(self):
         with patch.object(sync, 'navigation_capture', side_effect=RuntimeError('native cleanup unproven')):
             with self.assertRaisesRegex(RuntimeError, 'cleanup unproven'):
