@@ -1506,7 +1506,10 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
             continue
         if creator_list(root):
             return root
-        if label(root, "数据中心") or (more_attempts and blank_works_loading(root)):
+        # Creator Center also labels its overview entry “数据中心”. Keep the
+        # proven native home on the existing entry/overlay/account checks below.
+        if ((label(root, "数据中心") and not creator_overview_entry(root))
+                or (more_attempts and blank_works_loading(root))):
             return wait_data_center_loading(adb_path, serial, root, guard, events)
         if (label(root, "个人信息保护提示") and any(n.get("package") == XHS_PACKAGE
                 and n.get("text", "").startswith("欢迎使用小红书！") for n in root.iter("node"))

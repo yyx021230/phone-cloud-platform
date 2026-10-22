@@ -187,5 +187,59 @@ class LoadingWaitTests(unittest.TestCase):
         self.assertEqual(capture.call_count, 1)
         self.adb.assert_not_called()
 
+class CreatorHomeRoutingTests(unittest.TestCase):
+    def setUp(self):
+        self.stack = ExitStack()
+        self.addCleanup(self.stack.close)
+        self.stack.enter_context(patch.object(sync.time, 'sleep'))
+        self.stack.enter_context(patch.object(sync, 'wake_if_asleep', return_value=False))
+        self.stack.enter_context(patch.object(sync, 'recover_known_overlay', return_value=False))
+        self.stack.enter_context(patch.object(sync, 'focus', return_value=
+            'mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.reactnative.ui.XhsReactActivity}'))
+        self.adb = self.stack.enter_context(patch.object(sync, 'adb'))
+        self.tap = self.stack.enter_context(patch.object(sync, 'tap_label'))
+        self.ready = fixture('works-elements-141.xml')
+        self.read = self.stack.enter_context(patch.object(sync, 'navigation_capture', return_value=self.ready))
+        self.events = ['collection_slot_requested:app1']
+
+    def navigate(self, root):
+        return sync.ensure_creator_list('adb', 'serial', root, 'app1', lambda: None, self.events)
+
+    def test_observed_creator_homes_use_existing_overview_entry(self):
+        # Native failure evidence from 173/app1 and 182/app1, with private text redacted.
+        for phone in ('173', '182'):
+            with self.subTest(phone=phone):
+                root = fixture('creator-home-data-label-' + phone + '.xml')
+                self.assertTrue(sync.creator_overview_entry(root))
+                self.assertTrue(sync.label(root, '数据中心'))
+                self.assertFalse(sync.creator_list(root))
+                self.tap.reset_mock()
+                self.assertIs(self.navigate(root), self.ready)
+                self.tap.assert_called_once_with('adb', 'serial', root, '观看', unittest.mock.ANY)
+        self.adb.assert_not_called()
+
+    def test_creator_home_account_abnormal_still_stops_before_entry(self):
+        root = fixture('creator-home-data-label-173.xml')
+        next(n for n in root.iter('node') if n.get('text') == '账号正常').set('text', '账号异常')
+        with self.assertRaisesRegex(RuntimeError, 'account shows abnormal'):
+            self.navigate(root)
+        self.tap.assert_not_called()
+        self.adb.assert_not_called()
+        self.read.assert_not_called()
+
+    def test_unproven_native_page_with_data_center_label_remains_rejected(self):
+        root = fixture('creator-home-data-label-173.xml')
+        for n in root.iter('node'):
+            for attr in ('text', 'content-desc'):
+                if n.get(attr) == '近 7 日数据':
+                    n.set(attr, '未知页面')
+        self.assertFalse(sync.creator_overview_entry(root))
+        with self.assertRaisesRegex(sync.ElementListReadError, 'foreground changed'):
+            self.navigate(root)
+        self.tap.assert_not_called()
+        self.adb.assert_not_called()
+        self.read.assert_not_called()
+
+
 if __name__ == '__main__':
     unittest.main()
