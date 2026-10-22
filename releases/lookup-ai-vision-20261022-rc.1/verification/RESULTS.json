@@ -1,0 +1,94 @@
+{
+  "candidate": "lookup-ai-vision-20261022-rc.1",
+  "status": "local-verified-not-activated",
+  "nodeFull": {
+    "passed": 1117,
+    "failed": 0
+  },
+  "aiSpecificTests": 64,
+  "syntax": "passed",
+  "frozenFiles": 404,
+  "jsonHttp": {
+    "storage": "json",
+    "businessRequests": 50,
+    "modelCalls": 50,
+    "names": 16,
+    "empty": 34,
+    "maxExecuting": 5,
+    "maxModels": 2,
+    "elapsedBeforeNewKeyMs": 121000,
+    "requestedHoldMs": 121000,
+    "originalIdsPreserved": true,
+    "oneInitialInputPerNumber": true,
+    "oneObservationRetryPerNumber": true,
+    "allResultsKeptAcrossRestart": true,
+    "stopAndNextRound": true,
+    "physicalReservationsDrained": true,
+    "realPhones": 0,
+    "productionActions": 0
+  },
+  "postgresHttp": {
+    "storage": "postgres",
+    "businessRequests": 50,
+    "modelCalls": 50,
+    "names": 16,
+    "empty": 34,
+    "maxExecuting": 5,
+    "maxModels": 2,
+    "elapsedBeforeNewKeyMs": 200,
+    "requestedHoldMs": 200,
+    "originalIdsPreserved": true,
+    "oneInitialInputPerNumber": true,
+    "oneObservationRetryPerNumber": true,
+    "allResultsKeptAcrossRestart": true,
+    "stopAndNextRound": true,
+    "physicalReservationsDrained": true,
+    "realPhones": 0,
+    "productionActions": 0
+  },
+  "realHardTimeout": {
+    "actualHardTimeoutMs": 120009,
+    "readerTimeoutMs": 120000,
+    "completedOnce": true,
+    "realNetwork": false
+  },
+  "realModelReader": {
+    "runtimeReader": true,
+    "providerCalls": 3,
+    "results": [
+      {
+        "id": "history-01",
+        "kind": "name",
+        "matched": true,
+        "elapsedMs": 11305
+      },
+      {
+        "id": "history-05",
+        "kind": "unverified",
+        "matched": true,
+        "elapsedMs": 8893
+      },
+      {
+        "id": "recharge_only_blank",
+        "kind": "no_name",
+        "matched": true,
+        "elapsedMs": 5919
+      }
+    ]
+  },
+  "productionPhoneAcceptance": false,
+  "firstPassFailures": [
+    "startup VM fixture lacked new config/reader stubs",
+    "test assembly lacked Windows Agent dependencies",
+    "timing assertion too early under full-suite load",
+    "first local HTTP design stopped every phone after each AI result and hit existing probe budget; fixed to reuse verified same-account normal results"
+  ],
+  "sourceLogs": {
+    "pc-ai-full-final.tap": "715566ffb20d527169a06d85a2d6201752e7c328b9ce974e80f0af1a667f8ca1",
+    "pc-ai-check-final.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "pc-ai-http-json-measured.log": "da8d30cef3145f92f13db5c5325381fa9232859aebf76d52aec5ed7ceaf1566a",
+    "pc-ai-http-pg2.log": "fc9f2d31a1786df371eb674a20ca08dd67a1c7f22ff7535a37be96d261e81eb5",
+    "pc-ai-timeout.log": "7c93bf9a0096ddf4b996e28121db453867e81b24bed65715823e5650a467a520",
+    "pc-ai-runtime-model-recheck.json": "c26ab55d4a35a2dd65df6554813756cde330dc7256fca8c65dc9ae39f8aca13f"
+  }
+}

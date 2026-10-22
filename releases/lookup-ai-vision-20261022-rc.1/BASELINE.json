@@ -1,0 +1,20 @@
+{
+  "parentRelease": "lookup-throughput-20261022-rc.4",
+  "parentCommit": "95725513b622611f82cebb3c84b8e01485a0887b",
+  "productionRelease": "lookup-throughput-20261022-deployed.1",
+  "imageId": "sha256:350e2f56909b2a17d5a863a1aef8dcc8e7360c1693422b2ba5198b8dc4457dd2",
+  "before": {
+    "server/index.mjs": "c757af48a1af32b97e1ca42a43a40c5af714798570eb9c703216b1e2d5b24161",
+    "server/managed-lookup.mjs": "48e1081af382f1198d1067d6577ae3043950fb10e6bb4beead3ec22aff12f15c",
+    "server/managed-lookup-platform.mjs": "18854d027d0a4622812a1feea58f9e17ab2545fc129587464a1d476747927d94",
+    "server/device-occupancy.mjs": "bb151a8e8990155f8946581c83f372a5a9ca3bceda7f5ccf64e59fcb9423628f",
+    "server/lookup-ai-vision.mjs": null,
+    "server/lookup-ai-recovery.mjs": null,
+    "server/lookup-ai-flow.test.mjs": null,
+    "server/lookup-ai-vision.test.mjs": null,
+    "server/lookup-ai-adapter.test.mjs": null,
+    "server/lookup-startup-ownership.test.mjs": "e603cab2c31ad909556a937856ef2bd72f031f0e64ee52cf3f6c1fad7156874b",
+    "verification/ai-http.mjs": null,
+    "verification/ai-timeout.mjs": null
+  }
+}

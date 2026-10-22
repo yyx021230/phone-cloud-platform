@@ -1,0 +1,5 @@
+import {createLookupAiRecovery} from '../server/lookup-ai-recovery.mjs';import {aiVisionConfig} from '../server/lookup-ai-vision.mjs';import assert from 'node:assert/strict';
+const cfg=await aiVisionConfig({LOOKUP_AI_VISION_ENABLED:'true',LOOKUP_AI_VISION_BASE_URL:'http://127.0.0.1',LOOKUP_AI_VISION_API_KEY:'synthetic'});assert.equal(cfg.timeoutMs,120000);
+let claimed=false,done,called=0;const started=Date.now(),finished=new Promise(r=>done=r);
+const pump=createLookupAiRecovery({service:{aiCandidates:()=>claimed?[]:[{lookupId:'one',evidenceId:'e'}],claimAiReading:async()=>{claimed=true;return true;},finishAiReading:async(b,result)=>{called++;done(result);}},reader:{enabled:true,read:async()=>new Promise(()=>{})},loadEvidence:async()=>Buffer.from('fixture')});
+pump.pump();const result=await finished;const elapsed=Date.now()-started;assert.equal(result.reason,'timeout');assert.ok(elapsed>=120000&&elapsed<130000);assert.equal(called,1);pump.close();console.log(JSON.stringify({actualHardTimeoutMs:elapsed,readerTimeoutMs:cfg.timeoutMs,completedOnce:true,realNetwork:false}));
