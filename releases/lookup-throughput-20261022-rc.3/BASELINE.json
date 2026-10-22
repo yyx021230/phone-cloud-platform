@@ -1,0 +1,9 @@
+{
+  "parentRelease": "lookup-throughput-20261022-rc.2",
+  "parentCommit": "7120363d3c5e9414b4eeaa0a3d5705e719c85732",
+  "before": {
+    "server/managed-lookup.mjs": "e6e7152b7570de1133cd6e9c04934ae12ef74afb0b7f9afb6aee1d97b83b6429",
+    "server/lookup-reroute-deadline.test.mjs": null,
+    "verification/ocr-result-http.mjs": "8af65edfe2a72164973960dbac47c6e3669362486349fff557f1818f49e9b015"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "node": {
+    "passed": 1050,
+    "failed": 0,
+    "skipped": 0
+  },
+  "targeted": {
+    "passed": 139,
+    "failed": 0
+  },
+  "newBoundaryCases": 8,
+  "rc2BeforeFix": {
+    "passed": 3,
+    "failed": 4
+  },
+  "rootCheck": "passed",
+  "python": "unchanged from rc.2; not rerun this turn",
+  "scope": "local simulated devices, loopback HTTP and isolated database only"
+}

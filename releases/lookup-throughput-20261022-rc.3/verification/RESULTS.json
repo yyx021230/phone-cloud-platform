@@ -1,0 +1,60 @@
+{
+  "release": "lookup-throughput-20261022-rc.3",
+  "status": "local_candidate_not_deployed",
+  "parentCommit": "7120363d3c5e9414b4eeaa0a3d5705e719c85732",
+  "nodePassed": 1050,
+  "nodeFailed": 0,
+  "targetedPassed": 139,
+  "newBoundaryCases": 8,
+  "rootCheck": "passed",
+  "httpCasesPerStorage": 50,
+  "httpStorage": [
+    "json",
+    "postgres"
+  ],
+  "syntheticDevices": 5,
+  "maxExecuting": 5,
+  "otherRequestsCompleteBeforeStopAck": 49,
+  "postgresRetryElapsedMs": 121001,
+  "firstQueueDeadlineElapsed": true,
+  "originalTotalDeadlinePreserved": true,
+  "sameCanonicalQueryId": true,
+  "noReplayBeforeStopAck": true,
+  "lateResultsIgnored": true,
+  "restartKeepsResultAndAlias": true,
+  "overlayFiles": 3,
+  "runtimeFiles": 1,
+  "outOfScopeHashesUnchanged": 488,
+  "testedAndPackagedHashesIdentical": true,
+  "priorFailures": [
+    {
+      "stage": "rc2_counterexamples",
+      "tests": 7,
+      "failed": 4,
+      "passed": 3,
+      "reason": "limit, login, executor, human-wait handoff retained initial queue deadline",
+      "resolved": true
+    },
+    {
+      "stage": "first_local_postgres_start",
+      "reason": "temporary cluster listened on default 5432 while fixture expected 55439; connection refused before business scenario",
+      "resolved": "explicit loopback test port; fresh database rerun passed"
+    }
+  ],
+  "pythonRegression": "inherited rc.2, unchanged and not rerun; Python executed by both 50-case HTTP scenarios",
+  "realDeviceQueries": 0,
+  "productionConnections": 0,
+  "productionChanges": 0,
+  "pushes": 0,
+  "unverified": [
+    "Windows native OCR",
+    "real device state transitions",
+    "production queue latency improvement"
+  ],
+  "review": "self-reviewed minimal diff and caller lifecycle; ACK, cancellation, original total TTL and generation guards retained",
+  "evidenceHashes": {
+    "REGRESSION_SUMMARY.json": "cc0acb4892ac3b16811da492356c07e589dde09cd916450763bf84a2ed28e32b",
+    "HTTP_JSON.json": "29f21c75e51df85b14d0408948b7bd8eb100365ed17518c65cf4b762252efff7",
+    "HTTP_POSTGRES.json": "5ea9f5984703aade456aba20ecad5cbb6a1b481dd50434a852236d634383a11e"
+  }
+}
