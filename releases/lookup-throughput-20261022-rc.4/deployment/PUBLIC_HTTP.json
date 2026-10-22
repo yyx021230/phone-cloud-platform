@@ -1,0 +1,102 @@
+[
+  {
+    "path": "public/index.html",
+    "status": 200,
+    "sha256": "e114d8ff9999831bb34cd7970e943be57dcde86a8c2671784656b381ca722132",
+    "cacheControl": "no-store"
+  },
+  {
+    "path": "public/lookup-admin.js",
+    "status": 200,
+    "sha256": "0e6011f03959f8455fe235af3e407917160efbd4d13a6fd87d14dc11d78b1e7c",
+    "cacheControl": "no-store"
+  },
+  {
+    "path": "public/lookup-admin.css",
+    "status": 200,
+    "sha256": "bf14d0406c94257e19be1216264569a831182b782b2abc7771f3aba1d44c1eed",
+    "cacheControl": "no-store"
+  },
+  {
+    "path": "public/lookup-admin.html",
+    "status": 200,
+    "sha256": "ce3c519ce79d75b7a65ca292026a2b3dd4881e906d6916a95d49cf677f538e8e",
+    "cacheControl": "no-store"
+  },
+  {
+    "path": "public/app.js",
+    "status": 200,
+    "sha256": "a864f2f6874f3d4a536e0065f205d22992ab01e6524b56c28f249890dac895d1",
+    "cacheControl": "no-store"
+  },
+  {
+    "path": "public/api-reference.json",
+    "status": 200,
+    "sha256": "f819c1f0eb57807723f5802634aeeab79ee21e3da992a31a9c603e6c5b9437e5",
+    "cacheControl": "no-store"
+  },
+  {
+    "path": "public/openapi.json",
+    "status": 200,
+    "sha256": "af41a5cbd7d1ae03c79bd6eab126ed9a927904729c2e6128e34de8e91c230f4e",
+    "cacheControl": "no-store"
+  },
+  {
+    "path": "public/api-docs.js",
+    "status": 200,
+    "sha256": "d0197594fe7587f28bac647c983e6f07a0ba8b0f77d40572461a1256ae59f938",
+    "cacheControl": "no-store"
+  },
+  {
+    "path": "public/downloads/lookup.py",
+    "status": 200,
+    "sha256": "4d25a7b23c11df237ff58f2a791f006c3aeb6a7f05c01a7f53feda7c3227bd59",
+    "cacheControl": "no-store"
+  },
+  {
+    "path": "public/downloads/lookup.mjs",
+    "status": 200,
+    "sha256": "c6c04722cd2ecd76ca7a81b72b82b1ee95ec0b8a26ab75795dc75632a4fde246",
+    "cacheControl": "no-store"
+  },
+  {
+    "path": "public/downloads/name-lookup-http-guide.md",
+    "status": 200,
+    "sha256": "eee0de179189091b837dc27d121145f30a04edf76e7d04b412c91a4fd76848ad",
+    "cacheControl": "no-store"
+  },
+  {
+    "path": "public/downloads/name-lookup-integration.zip",
+    "status": 200,
+    "sha256": "f79cafededc8df81c2275af05067ea9e6100ca29e3467f3b0bcb295689e24b6c",
+    "cacheControl": "no-store"
+  },
+  {
+    "path": "public/downloads/name-lookup-openapi.json",
+    "status": 200,
+    "sha256": "61994d7b8f70b0947925cade48948e3ccaf09612c108d828df758aa97cd3ebce",
+    "cacheControl": "no-store"
+  },
+  {
+    "path": "public/downloads/name-lookup-sha256.json",
+    "status": 200,
+    "sha256": "2daa07a70741aadaadf77fe9aa97cb6283546ddaabd640f012203ac214b237bf",
+    "cacheControl": "no-store"
+  },
+  {
+    "path": "/healthz",
+    "status": 200
+  },
+  {
+    "path": "/readyz",
+    "status": 200
+  },
+  {
+    "path": "/api/v1/admin/lookup-pool/console",
+    "status": 401
+  },
+  {
+    "path": "/api/v1/open/name-lookups/tasks/not-a-real-id",
+    "status": 401
+  }
+]
