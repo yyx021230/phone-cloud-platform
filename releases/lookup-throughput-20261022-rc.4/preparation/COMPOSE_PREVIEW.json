@@ -1,0 +1,8 @@
+{
+  "onlyImageChanges": true,
+  "service": "phone-cloud",
+  "candidateImage": "phone-cloud-platform:lookup-throughput-20261022-rc.4",
+  "baseComposeCount": 24,
+  "candidateComposeSha256": "bbbbc75b6bd570ac32f95573ff5a82b01013bdbb711356302217793a61c94ae6",
+  "activated": false
+}

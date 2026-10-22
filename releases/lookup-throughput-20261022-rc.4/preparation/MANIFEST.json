@@ -1,0 +1,15 @@
+{
+  "TASK_PREFLIGHT.json": "c4ede1d4fbaf857d54c201877ec53b82e5bca03b04fa7e353b6fe51164904807",
+  "verify-compose.py": "9c3144989a7b3f1aee3264b88cc1dc4e38377401f257f6b41c42ae8a5a45cfe3",
+  "OCCUPANCY.json": "88ebd1adf287f11e77c63b6b73521e8f989c422114f54ca9d46c501105dc922d",
+  "occupancy.mjs": "b572ad4f59fda76e64dd68d7cc425a319bd7f10107977c5f58c1cdb6ce364ae5",
+  "PREPARATION_RECEIPT.json": "bcea9e820dd7dcbaf621903834cd4f813633aa5f1552886f4584ead1e92bc00d",
+  "Dockerfile": "c3b1943f2736557d4024a503352aafa2a4ca56559b3dbd7a2295c8047429b766",
+  "verify-windows.ps1": "90bee991c8edd8984c5b954ecdfd894cd838f60ff285cdcb5ea5d66a7b9b1b8d",
+  "WINDOWS_PLAN.json": "4363228a49d8f5c51d94e8ce5bc8af19973616d4a4c31464bdf856efbf3abafb",
+  "README.md": "b982966cf781bb9ce2b306b61b83208be526404b44b74493d1c5517a574bcbd4",
+  "WINDOWS_PREPARATION.json": "56d9550594d86e8275daa8fec2e483e91107ddc38fea58e3f32251f99595643b",
+  "COMPOSE_PREVIEW.json": "d20e9435e385baea164c77b68e1698c243a8b9319eacdaec1665877964fd8815",
+  "prepare-cloud.py": "de99bc03577a9ff3e234000b3abd26d046ee6aec4d987a64a4d7034e20de77ee",
+  "complete-preparation.py": "c1f3ee1c19d1cb38c2330a1785723ceb6b1a0a1ddf3687cdebc3fa5c399aa9a5"
+}

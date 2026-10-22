@@ -1,0 +1,33 @@
+{
+  "agentReloaded": false,
+  "sourceCommit": "95725513b622611f82cebb3c84b8e01485a0887b",
+  "agentOwner": "NT AUTHORITY\\SYSTEM",
+  "stage": "D:\\PhoneCloud\\staging\\lookup-throughput-20261022-rc.4-prep.1",
+  "after": {
+    "src/lookup-human-observer.mjs": "dbd77ffb69215d26610a814d1c4013e89a3d1a7b81ea509c9570d7035808a8a5",
+    "src/lookup-post-human-state.mjs": "11be7e62af4193387a0ebeef09f8130abb9577d94d1ddef8c816513c7e3a0580",
+    "src/lookup-account-policy.mjs": "51f9a5a3368554efbd8d07e2e420f70da7086e1b592c5959cada4752c9301c98",
+    "scripts/alipay_visual_result.py": "a0779dcd1dc1c00d2861735feb9dc935e807df6f54a6b369612e44dfbdff400a",
+    "scripts/alipay_name_lookup.py": "04f157355eb7ed9cdefe0fa5c897245654210b9293c9b24f1c73a76ed95faf98",
+    "scripts/alipay_post_human_state.py": "8e0290dfa7c0ac2b28efbcebd1e056259a5e311243cebdce121015562e224efc",
+    "src/index.mjs": "1d057629c452e0ce392f0cbc79a1ad3645cc90c5175dca980151dfb1d4a6d2a8"
+  },
+  "before": {
+    "src/lookup-human-observer.mjs": "f9d327e786802c5781e7eea046f4bf0dfa81d3ec67f63066e99345148a1ab4b2",
+    "src/lookup-post-human-state.mjs": null,
+    "src/lookup-account-policy.mjs": "ba61800675325ca6dee9a384250b68d5191ccf187603112e72a3ffbafe9021d3",
+    "scripts/alipay_visual_result.py": "08faff5a5e712341c8c14cd5014d8232939b5f5a7e3d0c5af5f19714f1094b97",
+    "scripts/alipay_name_lookup.py": "059a2f56fe5152cb1c4303235e87a6d000541541a387de388c4b6aa7a576d955",
+    "scripts/alipay_post_human_state.py": null,
+    "src/index.mjs": "4d383bedf195739005abafe52779b7414d3aa2e3217fca45f359746de5e3bd23"
+  },
+  "python39Syntax": "passed",
+  "adbPath": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+  "status": "staged-not-activated",
+  "nodeSyntax": "passed",
+  "candidate": "lookup-throughput-20261022-rc.4",
+  "adbPid": 8988,
+  "adbOwner": "NT AUTHORITY\\SYSTEM",
+  "agentPid": 24968,
+  "adbCalled": false
+}
