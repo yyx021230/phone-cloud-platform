@@ -1,0 +1,10 @@
+{
+  "readmeResponseExamplesChecked": 15,
+  "checks": "required fields, enum, primitive types, oneOf, additional properties, UUID/date formats; four paths; published sample bytes; ZIP contents and SHA256",
+  "pythonFlowTestsPassed": 22,
+  "pythonSyntaxFiles": 3,
+  "productionChanges": false,
+  "realPhoneQueries": 0,
+  "sourceRelease": "lookup-throughput-20261022-deployed.1",
+  "warning": "Python3.9 environment emits existing urllib3 LibreSSL warning; tests passed"
+}
