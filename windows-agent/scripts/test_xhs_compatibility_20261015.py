@@ -882,12 +882,12 @@ class StalledMoreLoadingTests(unittest.TestCase):
         for index,text in enumerate(['数据中心','作品分析','全部笔记']):
             ET.SubElement(ready,'node',{'package':sync.XHS_PACKAGE,'text':text,'bounds':f'[10,{index*100+10}][200,{index*100+80}]'})
         blank=self.loading();events=['collection_slot_requested:app1'];guard=Mock()
-        with patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'recover_known_overlay',return_value=False),patch.object(sync,'open_works_tab',return_value=False),patch.object(sync,'tap_label') as tap,patch.object(sync,'adb') as adb,patch.object(sync,'navigation_capture',side_effect=[blank,blank,blank,self.overview(),ready]),patch.object(sync.time,'sleep'):
+        with patch.object(sync,'DATA_CENTER_LOAD_SECONDS',1),patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'recover_known_overlay',return_value=False),patch.object(sync,'open_works_tab',return_value=False),patch.object(sync,'tap_label') as tap,patch.object(sync,'adb') as adb,patch.object(sync,'navigation_capture',side_effect=[blank,blank,blank,self.overview(),ready]),patch.object(sync.time,'sleep'):
             self.assertIs(sync.ensure_creator_list('adb','serial',self.overview(),'app1',guard,events),ready)
         self.assertEqual([c.args[3] for c in tap.call_args_list],['更多','观看'])
         adb.assert_called_once_with('adb','serial','shell','input','keyevent','4',timeout=7)
-        self.assertIn('works_blank_more_reopened_via_overview',events)
-        guard.assert_called_once()
+        self.assertIn('data_center_loading_reopen:1',events)
+        self.assertGreater(guard.call_count,1)
 
     def test_loading_signature_rejects_titles_foreign_package_and_unbounded_spinner(self):
         self.assertTrue(sync.blank_works_loading(self.loading()))

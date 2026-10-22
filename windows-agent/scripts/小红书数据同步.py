@@ -33,6 +33,9 @@ SHANGHAI = dt.timezone(dt.timedelta(hours=8))
 # The list can expose full note text as its title (79/app2: 444 characters).
 # Preserve that native value; geometry and the other five fields prove the row.
 MAX_NATIVE_TITLE_CHARS = 4096
+DATA_CENTER_LOAD_SECONDS = 45
+DATA_CENTER_POLL_SECONDS = 2
+DATA_CENTER_MAX_REOPENS = 2
 
 
 
@@ -232,6 +235,7 @@ def navigation_capture(adb_path, serial, guard, events):
                 assert_requested_foreground(focus(adb_path, serial), events)
                 events.append("native_window_elements_rejected:" + type(native_error).__name__)
             if ("creator_more_selected" in events and "works_native_more_recovery_attempted" not in events
+                    and "data_center_loading_active" not in events
                     and not any(e.startswith("collection_scan_as_of:") for e in events)):
                 return recover_inaccessible_more(adb_path, serial, current, guard, events)
             raise ElementListReadError("UI elements unavailable after fresh hierarchy reads") from error
@@ -1121,12 +1125,14 @@ def creator_more_label(root):
     return next((value for value in ("更多", "更多笔记") if label(root, value)), "")
 
 
-def open_works_tab(adb_path, serial, root, guard, events):
+def open_works_tab(adb_path, serial, root, guard, events, expected_foreground=None):
     """The observed data-center WebView marks its tab label non-clickable."""
     if not (label(root, "数据中心") and label(root, "账号概览") and not label(root, "全部笔记")):
         return False
     if not re.search(r"com\.xingin\.xhs/com\.xingin\.xywebview\.activity\.WebViewActivityV2(?:[}\s]|$)", focus(adb_path, serial)):
         return False
+    if expected_foreground is not None and focus(adb_path, serial) != expected_foreground:
+        raise ElementListReadError("data-center tab foreground changed")
     parents = {child: parent for parent in root.iter() for child in parent}
     tabs = [n for n in label(root, "作品分析") if n.get("package") == XHS_PACKAGE
             and (n.get("class") == "android.widget.TextView"
@@ -1166,6 +1172,8 @@ def open_works_tab(adb_path, serial, root, guard, events):
         raise RuntimeError("data-center works tab is outside the header")
     x1, y1, x2, y2 = bounds(tabs[0])
     guard()
+    if expected_foreground is not None and focus(adb_path, serial) != expected_foreground:
+        raise ElementListReadError("data-center tab foreground changed before tap")
     adb(adb_path, serial, "shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2), timeout=7)
     time.sleep(0.5)
     events.append("data_center_works_tab_selected")
@@ -1446,6 +1454,8 @@ def reopen_blank_more(adb_path, serial, root, guard, events):
 
 def recover_inaccessible_more(adb_path, serial, current, guard, events):
     """One pre-scan retry through the proven overview when More loses nodes."""
+    if data_center_reopen_count(events) >= DATA_CENTER_MAX_REOPENS:
+        raise ElementListReadError("data-center loading retry budget exhausted")
     guard()
     if not works_webview_activity(current) or focus(adb_path, serial) != current:
         raise ElementListReadError("inaccessible works foreground changed")
@@ -1461,22 +1471,9 @@ def recover_inaccessible_more(adb_path, serial, current, guard, events):
         raise ElementListReadError("inaccessible More did not return to proven Creator Center")
     tap_label(adb_path, serial, center, "观看", guard)
     overview = navigation_capture(adb_path, serial, guard, events)
-    for attempt in range(6):
-        guard()
-        foreground = focus(adb_path, serial)
-        assert_requested_foreground(foreground, events)
-        if not works_webview_activity(foreground):
-            raise ElementListReadError("overview foreground changed after inaccessible More")
-        require_creator_service_available(overview)
-        if label(overview, "账号异常"):
-            raise RuntimeError("creator account shows abnormal status; collection skipped")
-        if open_works_tab(adb_path, serial, overview, guard, events):
-            events.append("works_native_more_reopened_via_overview")
-            return navigation_capture(adb_path, serial, guard, events)
-        if attempt < 5:
-            time.sleep(0.5)
-            overview = navigation_capture(adb_path, serial, guard, events)
-    raise ElementListReadError("overview works tab is unavailable after inaccessible More")
+    root = wait_data_center_loading(adb_path, serial, overview, guard, events)
+    events.append("works_native_more_reopened_via_overview")
+    return root
 
 
 def require_creator_service_available(root):
@@ -1492,12 +1489,8 @@ def require_creator_service_available(root):
 def ensure_creator_list(adb_path, serial, root, slot, guard, events):
     recoveries = 0
     more_attempts = 0
-    shell_passes = 0
-    shell_reopens = 0
     chat_backs = 0
     server_refreshes = 0
-    blank_passes = 0
-    blank_reopened = False
     for _ in range(14):
         if wake_if_asleep(adb_path, serial, guard, events):
             root = navigation_capture(adb_path, serial, guard, events)
@@ -1513,16 +1506,8 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
             continue
         if creator_list(root):
             return root
-        if more_attempts and blank_works_loading(root):
-            blank_passes += 1
-            if blank_passes >= 3:
-                if blank_reopened:raise RuntimeError("works-analysis page stayed loading after overview fallback")
-                root = reopen_blank_more(adb_path, serial, root, guard, events)
-                blank_reopened = True
-                blank_passes = 0
-                continue
-        else:
-            blank_passes = 0
+        if label(root, "数据中心") or (more_attempts and blank_works_loading(root)):
+            return wait_data_center_loading(adb_path, serial, root, guard, events)
         if (label(root, "个人信息保护提示") and any(n.get("package") == XHS_PACKAGE
                 and n.get("text", "").startswith("欢迎使用小红书！") for n in root.iter("node"))
                 and label(root, "同意") and label(root, "不同意")):
@@ -1530,9 +1515,6 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
         if label(root, "服务器出错") and refresh_creator_server_error(adb_path, serial, root, guard, events, server_refreshes):
             server_refreshes += 1
             time.sleep(1)
-            root = navigation_capture(adb_path, serial, guard, events)
-            continue
-        if open_works_tab(adb_path, serial, root, guard, events):
             root = navigation_capture(adb_path, serial, guard, events)
             continue
         if label(root, "账号异常") and label(root, "创作中心"):
@@ -1544,26 +1526,6 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
                 root = navigation_capture(adb_path, serial, guard, events)
                 continue
             raise RuntimeError("creator account shows abnormal status; collection skipped")
-        if label(root, "数据中心") and label(root, "作品分析") and not label(root, "全部笔记"):
-            shell_passes += 1
-            if shell_passes <= 2:
-                time.sleep(0.8)
-            elif shell_reopens < 2:
-                guard()
-                adb(adb_path, serial, "shell", "input", "keyevent", "4", timeout=7)
-                center = navigation_capture(adb_path, serial, guard, events)
-                if not (label(center, "创作中心") and label(center, "最新笔记")
-                        and creator_more_label(center)):
-                    raise RuntimeError("works-analysis shell could not return to Creator Center")
-                tap_label(adb_path, serial, center, creator_more_label(center), guard)
-                shell_reopens += 1
-                shell_passes = 0
-                events.append("works_analysis_shell_reopened")
-                time.sleep(0.8)
-            else:
-                raise RuntimeError("works-analysis WebView remained inaccessible after reopening")
-            root = navigation_capture(adb_path, serial, guard, events)
-            continue
         if recoveries < 3 and recover_known_overlay(adb_path, serial, root, guard, events):
             recoveries += 1
             root = navigation_capture(adb_path, serial, guard, events)
@@ -1668,11 +1630,8 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
         else:
             time.sleep(0.5)
         root = navigation_capture(adb_path, serial, guard, events)
-    #165's final permitted read completed the overview after earlier loading
-    #frames. Process that proven tab transition once rather than discard it.
-    if data_center_tab_header(root) and open_works_tab(adb_path, serial, root, guard, events):
-        root = navigation_capture(adb_path, serial, guard, events)
-        root = wait_creator_content(adb_path, serial, root, guard, events)
+    if data_center_tab_header(root):
+        root = wait_data_center_loading(adb_path, serial, root, guard, events, require_content=True)
         events.append("works_tab_completed_at_navigation_limit")
         return root
     raise ElementListReadError("could not prove the Creator Center works-analysis path from UI elements")
@@ -1890,36 +1849,121 @@ def verify_element_overlap(previous_root, root):
         raise ElementListReadError("element page continuity is unproven after scroll")
 
 
-def wait_creator_content(adb_path, serial, root, guard, events):
-    """A rendered tab header is not proof that its note request has finished."""
-    previous = None
-    for pass_index in range(2):
-        for _ in range(6):
-            guard()
-            if wake_if_asleep(adb_path, serial, guard, events):
-                root = navigation_capture(adb_path, serial, guard, events)
-            require_creator_service_available(root)
-            try:
-                signature = element_page_signature(root, allow_duplicate_rows=True)
-            except ElementListReadError:
-                signature = None
-            if signature is not None and signature == previous:
-                return root
-            previous = signature
-            time.sleep(0.6)
-            root = navigation_capture(adb_path, serial, guard, events)
-        if pass_index == 0 and creator_list(root):
-            # The embedded page occasionally remains blank after loading.
-            # Reopen this known page once; never treat blank as zero notes.
-            guard()
-            adb(adb_path, serial, "shell", "input", "keyevent", "4", timeout=7)
-            time.sleep(0.4)
-            root = navigation_capture(adb_path, serial, guard, events)
-            if label(root, "创作中心") and label(root, "最新笔记") and creator_more_label(root):
-                tap_label(adb_path, serial, root, creator_more_label(root), guard)
-                root = navigation_capture(adb_path, serial, guard, events)
+def data_center_reopen_count(events):
+    return sum(e.startswith("data_center_loading_reopen:")
+               or e == "works_native_more_recovery_attempted" for e in events)
+
+
+def reopen_loading_data_center(adb_path, serial, root, guard, events):
+    """Retry only a proven data page, before scanning, with a task-wide budget."""
+    if any(e.startswith("collection_scan_as_of:") for e in events):
+        raise ElementListReadError("cannot reopen the data center during list scanning")
+    if data_center_reopen_count(events) >= DATA_CENTER_MAX_REOPENS:
+        raise ElementListReadError("data-center loading retry budget exhausted")
+    if not (label(root, "数据中心") or blank_works_loading(root)):
+        raise ElementListReadError("data-center loading page is not proven for retry")
+    guard()
+    current = focus(adb_path, serial)
+    assert_requested_foreground(current, events)
+    if not works_webview_activity(current):
+        raise ElementListReadError("data-center loading foreground changed before retry")
+    require_creator_service_available(root)
+    if label(root, "账号异常"):
+        raise RuntimeError("creator account shows abnormal status; collection skipped")
+    guard()
+    if focus(adb_path, serial) != current:
+        raise ElementListReadError("data-center loading foreground changed before Back")
+    events.append("data_center_loading_reopen:" + str(data_center_reopen_count(events) + 1))
+    adb(adb_path, serial, "shell", "input", "keyevent", "4", timeout=7)
+    center = navigation_capture(adb_path, serial, guard, events)
+    guard()
+    assert_requested_foreground(focus(adb_path, serial), events)
+    require_creator_service_available(center)
+    if label(center, "账号异常"):
+        raise RuntimeError("creator account shows abnormal status; collection skipped")
+    more = creator_more_label(center)
+    if label(center, "创作中心") and label(center, "最新笔记") and more:
+        entry = "观看" if blank_works_loading(root) and creator_overview_entry(center) else more
+    elif creator_overview_entry(center):
+        entry = "观看"
+    else:
+        raise ElementListReadError("loading retry did not return to proven Creator Center")
+    tap_label(adb_path, serial, center, entry, guard)
+    return navigation_capture(adb_path, serial, guard, events)
+
+
+def wait_data_center_loading(adb_path, serial, root, guard, events, require_content=False):
+    """Time-based reads; only proven entry recovery can spend the shared budget.
+
+    A running native read keeps its own bounded timeout. The 45-second budget
+    stops starting further reads; it is not a hard timeout for subprocess cleanup.
+    """
+    marker = "data_center_loading_active"
+    if marker in events:
+        raise ElementListReadError("nested data-center loading recovery is forbidden")
+    phase = "content" if require_content else "entry"
+    events.append(marker)
+    try:
+        while True:
+            deadline = time.monotonic() + DATA_CENTER_LOAD_SECONDS
             previous = None
-    raise ElementListReadError("works-analysis UI elements stayed incomplete or unstable; collection aborted")
+            selected = False
+            for _ in range(int(DATA_CENTER_LOAD_SECONDS / DATA_CENTER_POLL_SECONDS) + 2):
+                guard()
+                require_creator_service_available(root)
+                if label(root, "账号异常"):
+                    raise RuntimeError("creator account shows abnormal status; collection skipped")
+                if wake_if_asleep(adb_path, serial, guard, events):
+                    root = navigation_capture(adb_path, serial, guard, events)
+                    previous = None
+                    require_creator_service_available(root)
+                    if label(root, "账号异常"):
+                        raise RuntimeError("creator account shows abnormal status; collection skipped")
+                current = focus(adb_path, serial)
+                assert_requested_foreground(current, events)
+                if login_activity(current):
+                    raise RuntimeError("Xiaohongshu account is logged out; manual login is required")
+                if not works_webview_activity(current):
+                    raise ElementListReadError("data-center loading foreground changed")
+                if creator_list(root):
+                    if not require_content:
+                        events.append("data_center_loading_ready:" + phase)
+                        return root
+                    try:
+                        signature = element_page_signature(root, allow_duplicate_rows=True)
+                    except ElementListReadError:
+                        signature = None
+                    if signature is not None and signature == previous:
+                        events.append("data_center_loading_ready:" + phase)
+                        return root
+                    previous = signature
+                else:
+                    previous = None
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    break
+                if (not creator_list(root) and not selected and data_center_tab_header(root)
+                        and not any(e.startswith("collection_scan_as_of:") for e in events)):
+                    selected = open_works_tab(adb_path, serial, root, guard, events, expected_foreground=current)
+                    if selected:
+                        root = navigation_capture(adb_path, serial, guard, events)
+                        continue
+                guard()
+                time.sleep(min(DATA_CENTER_POLL_SECONDS, remaining))
+                if time.monotonic() >= deadline:
+                    break
+                root = navigation_capture(adb_path, serial, guard, events)
+            events.append("data_center_load_timeout:" + phase)
+            if (any(e.startswith("collection_scan_as_of:") for e in events)
+                    or data_center_reopen_count(events) >= DATA_CENTER_MAX_REOPENS):
+                raise ElementListReadError("data-center loading timed out; UI elements stayed incomplete or unstable")
+            root = reopen_loading_data_center(adb_path, serial, root, guard, events)
+    finally:
+        events.remove(marker)
+
+
+def wait_creator_content(adb_path, serial, root, guard, events):
+    return wait_data_center_loading(adb_path, serial, root, guard, events, require_content=True)
 
 
 def swipe(adb_path, serial, root, guard, events):

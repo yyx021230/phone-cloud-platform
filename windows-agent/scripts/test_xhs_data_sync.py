@@ -1179,8 +1179,8 @@ class OverlayRecoveryTests(unittest.TestCase):
         listing = xml('<node><node text="数据中心" bounds="[1,1][90,40]"/>'
                       '<node text="作品分析" bounds="[1,45][90,80]"/>'
                       '<node text="全部笔记" bounds="[1,85][90,120]"/></node>')
-        events = []
-        with patch.object(sync, "wake_if_asleep", return_value=False), \
+        events = ["collection_slot_requested:app1"]
+        with patch.object(sync, "DATA_CENTER_LOAD_SECONDS", 1), patch.object(sync, "focus", return_value="mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}"), patch.object(sync, "wake_if_asleep", return_value=False), \
                 patch.object(sync, "adb") as adb, \
                 patch.object(sync, "tap_label") as tap, \
                 patch.object(sync, "capture", side_effect=[shell, shell, center, listing]), \
@@ -1189,7 +1189,8 @@ class OverlayRecoveryTests(unittest.TestCase):
         self.assertIs(result, listing)
         adb.assert_called_once_with("adb", "serial", "shell", "input", "keyevent", "4", timeout=7)
         self.assertEqual(tap.call_args.args[3], "更多")
-        self.assertEqual(events, ["works_analysis_shell_reopened"])
+        self.assertIn("data_center_loading_reopen:1", events)
+        self.assertNotIn("data_center_loading_active", events)
 
     def test_transient_empty_ui_dump_retries_once(self):
         with patch.object(sync, "adb", side_effect=["UI hierarchy unavailable", "<hierarchy></hierarchy>"]) as adb, \
@@ -1647,8 +1648,8 @@ class NativeMoreRecoveryTests(unittest.TestCase):
     def center(self):
         return xml(*[f'<node package="com.xingin.xhs" text="{t}" bounds="[0,{i*100}][100,{i*100+50}]"/>' for i,t in enumerate(('创作中心','最新笔记','更多','观看'))])
     def test_failed_more_native_read_uses_one_proven_overview_entry_before_scan(self):
-        center=self.center();overview=xml();works=xml('<node text="全部笔记" bounds="[0,0][100,100]"/>');events=['collection_slot_requested:app1','creator_more_selected']
-        with patch.object(sync,'focus',return_value=self.current),patch.object(sync,'native_window_capture',side_effect=RuntimeError('native elements command failed: native_elements_unproven:missing')),patch.object(sync,'capture',side_effect=[RuntimeError('UIAutomator did not return an XML hierarchy'),center,overview,works]),patch.object(sync,'creator_more_label',return_value='更多'),patch.object(sync,'creator_overview_entry',return_value=True),patch.object(sync,'open_works_tab',return_value=True),patch.object(sync,'tap_label') as tap,patch.object(sync,'adb') as adb:
+        center=self.center();overview=ET.parse(Path(__file__).parent/"fixtures/xhs/data-center-loading-header-25.xml").getroot();works=ET.parse(Path(__file__).parent/"fixtures/xhs/works-elements-141.xml").getroot();events=['collection_slot_requested:app1','creator_more_selected']
+        with patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync.time,'sleep'),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'native_window_capture',side_effect=RuntimeError('native elements command failed: native_elements_unproven:missing')),patch.object(sync,'capture',side_effect=[RuntimeError('UIAutomator did not return an XML hierarchy'),center,overview,works]),patch.object(sync,'creator_more_label',return_value='更多'),patch.object(sync,'creator_overview_entry',return_value=True),patch.object(sync,'open_works_tab',return_value=True),patch.object(sync,'tap_label') as tap,patch.object(sync,'adb') as adb:
             self.assertIs(sync.navigation_capture('adb','serial',lambda:None,events),works)
         adb.assert_called_once_with('adb','serial','shell','input','keyevent','4',timeout=7)
         self.assertEqual(tap.call_args.args[3],'观看');self.assertIn('works_native_more_reopened_via_overview',events)
@@ -1666,15 +1667,15 @@ class NativeMoreRecoveryTests(unittest.TestCase):
                 with self.assertRaises(RuntimeError):sync.recover_inaccessible_more('adb','serial',self.current,lambda:None,['collection_slot_requested:app1','creator_more_selected'])
                 tap.assert_not_called();self.assertEqual(adb.call_count,1)
     def test_overview_loading_shell_waits_for_real_tab_without_reclicking_entry(self):
-        center=self.center();shell=xml();overview=xml();works=xml()
-        with patch.object(sync,'focus',return_value=self.current),patch.object(sync,'capture',side_effect=[center,shell,overview,works]),patch.object(sync,'creator_more_label',return_value='更多'),patch.object(sync,'creator_overview_entry',return_value=True),patch.object(sync,'open_works_tab',side_effect=[False,True]) as tab,patch.object(sync,'tap_label') as tap,patch.object(sync,'adb'),patch.object(sync.time,'sleep'):
+        center=self.center();shell=xml();overview=ET.parse(Path(__file__).parent/'fixtures/xhs/data-center-loading-header-25.xml').getroot();works=ET.parse(Path(__file__).parent/'fixtures/xhs/works-elements-141.xml').getroot()
+        with patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'capture',side_effect=[center,shell,overview,works]),patch.object(sync,'creator_more_label',return_value='更多'),patch.object(sync,'creator_overview_entry',return_value=True),patch.object(sync,'open_works_tab',return_value=True) as tab,patch.object(sync,'tap_label') as tap,patch.object(sync,'adb'),patch.object(sync.time,'sleep'):
             self.assertIs(sync.recover_inaccessible_more('adb','serial',self.current,lambda:None,['collection_slot_requested:app1','creator_more_selected']),works)
-        self.assertEqual(tab.call_count,2);tap.assert_called_once()
+        self.assertEqual(tab.call_count,1);tap.assert_called_once()
     def test_overview_never_exposes_tab_has_bounded_reads_and_no_extra_input(self):
-        with patch.object(sync,'focus',return_value=self.current),patch.object(sync,'capture',side_effect=[self.center()]+[xml() for _ in range(6)]) as capture,patch.object(sync,'creator_more_label',return_value='更多'),patch.object(sync,'creator_overview_entry',return_value=True),patch.object(sync,'open_works_tab',return_value=False) as tab,patch.object(sync,'tap_label') as tap,patch.object(sync,'adb') as adb,patch.object(sync.time,'sleep'):
-            with self.assertRaisesRegex(sync.ElementListReadError,'overview works tab is unavailable'):
+        with patch.object(sync,'DATA_CENTER_LOAD_SECONDS',1),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'capture',side_effect=[self.center()]+[xml() for _ in range(3)]) as capture,patch.object(sync,'creator_more_label',return_value='更多'),patch.object(sync,'creator_overview_entry',return_value=True),patch.object(sync,'open_works_tab',return_value=False) as tab,patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync,'tap_label') as tap,patch.object(sync,'adb') as adb,patch.object(sync.time,'sleep'):
+            with self.assertRaisesRegex(sync.ElementListReadError,'loading page is not proven'):
                 sync.recover_inaccessible_more('adb','serial',self.current,lambda:None,['collection_slot_requested:app1','creator_more_selected'])
-        self.assertEqual(capture.call_count,7);self.assertEqual(tab.call_count,6);tap.assert_called_once();adb.assert_called_once()
+        self.assertEqual(capture.call_count,4);tab.assert_not_called();tap.assert_called_once();adb.assert_called_once()
 
 if __name__ == "__main__":
     unittest.main()

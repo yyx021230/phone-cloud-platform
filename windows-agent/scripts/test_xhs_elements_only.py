@@ -112,8 +112,8 @@ class ElementCaptureTests(unittest.TestCase):
 
 class ElementFreshnessTests(unittest.TestCase):
  def wait(self,first,following):
-  with patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync,'navigation_capture',side_effect=following) as capture,patch.object(sync.time,'sleep'),patch.object(sync,'adb'):
-   value=sync.wait_creator_content('adb','serial',first,lambda:None,[])
+  with patch.object(sync,'focus',return_value='mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}'),patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync,'navigation_capture',side_effect=following) as capture,patch.object(sync.time,'sleep'),patch.object(sync,'adb'):
+   value=sync.wait_creator_content('adb','serial',first,lambda:None,['collection_slot_requested:app1'])
   return value,capture.call_count
  def test_loading_then_two_complete_fresh_element_reads_are_required(self):
   good=listing();value,reads=self.wait(list_shell(),[good,copy.deepcopy(good)])
@@ -126,8 +126,8 @@ class ElementFreshnessTests(unittest.TestCase):
   _,reads=self.wait(good,[bad,good,copy.deepcopy(good)]);self.assertEqual(reads,3)
  def test_persistent_loading_is_bounded_and_does_not_return_an_empty_result(self):
   r=list_shell()
-  with patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync,'navigation_capture',return_value=r) as capture,patch.object(sync.time,'sleep'),patch.object(sync,'adb'):
-   with self.assertRaisesRegex(sync.ElementListReadError,'incomplete or unstable'):sync.wait_creator_content('adb','serial',r,lambda:None,[])
+  with patch.object(sync,'DATA_CENTER_LOAD_SECONDS',1),patch.object(sync,'focus',return_value='mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}'),patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync,'navigation_capture',return_value=r) as capture,patch.object(sync.time,'sleep'),patch.object(sync,'adb'):
+   with self.assertRaisesRegex(sync.ElementListReadError,'incomplete or unstable'):sync.wait_creator_content('adb','serial',r,lambda:None,['collection_slot_requested:app1','collection_scan_as_of:2026-10-22'])
   self.assertLessEqual(capture.call_count,14)
  def test_occupancy_stops_before_another_read(self):
   with patch.object(sync,'navigation_capture') as capture:
