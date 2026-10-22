@@ -1,0 +1,17 @@
+...................................................................................................{"event": {"step": "dismiss_alipay_real_name_prompt", "elapsedMs": 0, "driver": "xml_account_preflight_visual", "evidence": "unique_visual_title_action_circle_x_and_home_focus", "tap": {"x": 360, "y": 1252}, "authenticationStarted": false}}
+...{"event": {"step": "dismiss_alipay_real_name_prompt", "elapsedMs": 0, "driver": "xml_account_preflight_visual", "evidence": "unique_visual_title_action_circle_x_and_home_focus", "tap": {"x": 360, "y": 1252}, "authenticationStarted": false}}
+..{"event": {"step": "dismiss_alipay_real_name_prompt", "elapsedMs": 0, "driver": "xml_account_preflight_visual", "evidence": "unique_visual_title_action_circle_x_and_home_focus", "tap": {"x": 360, "y": 1252}, "authenticationStarted": false}}
+{"event": {"step": "alipay_canvas_real_name_prompt_dismissed", "elapsedMs": 0, "observation": 1}}
+.....{"event": {"step": "alipay_account_restriction_detected", "elapsedMs": 0, "phase": "input-clear", "driver": "poco", "reason": "frequent_or_abnormal_access", "title": "\u60a8\u8bf7\u6c42\u6b21\u6570\u8fc7\u4e8e\u9891\u7e41", "phoneQueryStarted": false, "accountSwitchRequired": true, "currentAccount": "A", "accountIdentityVerified": true}}
+...........................{"event": {"step": "poco_request_received", "elapsedMs": 0, "operation": "start", "workflow": "alipay_name"}}
+{"event": {"step": "poco_reused", "elapsedMs": 0, "workflow": "alipay_name"}}
+{"event": {"step": "reuse_search_selector_missing_retry", "elapsedMs": 0, "retryAttempt": 1, "maxRetries": 1, "relaunchesAlipay": false, "driver": "poco"}}
+...................................................................{"event": {"step": "poco_input_clear_confirmed", "elapsedMs": 1, "selector": "exact_search_input", "editableLength": 0, "driver": "poco_input_connection"}}
+{"event": {"step": "submit_search", "elapsedMs": 1, "selector": "exact_search_confirm", "attempt": 1, "driver": "poco"}}
+{"event": {"step": "masked_real_name_tail_extracted", "elapsedMs": 1, "character": "\u7532", "matchMethod": "", "driver": "poco"}}
+...................................{"event": {"step": "poco_worker_transport_probe_failed", "attempt": 1, "errorType": "TypeError", "observationOnly": true, "taskStarted": false}}
+.................................................
+----------------------------------------------------------------------
+Ran 287 tests in 2.918s
+
+OK
