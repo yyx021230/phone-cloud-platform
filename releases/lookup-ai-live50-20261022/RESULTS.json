@@ -1,0 +1,32 @@
+{
+  "source": "2026-10-22 afternoon first 50 in original creation order out of 69 authorized business numbers",
+  "externalApiOnly": true,
+  "prepareId": "18237cfc-8ab7-42c8-b88c-e3ef472172a9",
+  "submitted": 50,
+  "completed": 43,
+  "names": 33,
+  "empty": 10,
+  "userStopped": 7,
+  "stoppedCode": "lookup_round_stopped",
+  "falseEmptyIndices": [
+    14,
+    17
+  ],
+  "reusedPreviousIds": 0,
+  "maxObservedPhysicalOccupancy": 5,
+  "maxObservedPublicInflight": 20,
+  "publicRoundStatus": "stopped",
+  "afterStopCounts": {
+    "enabled": 48,
+    "occupied": 0,
+    "ready": 0,
+    "human": 0,
+    "queued": 0,
+    "running": 0
+  },
+  "productionVersion": "lookup-ai-vision-20261022-deployed.1",
+  "productionPatchApplied": false,
+  "changes": "Only authorized normal API prepare/submit/result/stop; read-only admin/database observation; two isolated real model diagnostic replays",
+  "notComplete": "User stopped before 50 results; 2 false empty results remain unmodified",
+  "sensitiveData": "Phones/names/key excluded; original private state remains outside Git"
+}

@@ -1,0 +1,61 @@
+{
+  "status": "local-verified-not-deployed",
+  "fullRegression": {
+    "pass": 1124,
+    "fail": 0
+  },
+  "targetedAdapter": {
+    "pass": 26,
+    "fail": 0,
+    "newCases": 7
+  },
+  "beforeFix": "Production-shaped event-only screenshot case failed as expected",
+  "syntax": "passed",
+  "nativeEventHttp": {
+    "storage": "json",
+    "businessRequests": 50,
+    "modelCalls": 50,
+    "names": 16,
+    "empty": 34,
+    "maxExecuting": 5,
+    "maxModels": 2,
+    "elapsedBeforeNewKeyMs": 201,
+    "requestedHoldMs": 200,
+    "originalIdsPreserved": true,
+    "oneInitialInputPerNumber": true,
+    "oneObservationRetryPerNumber": true,
+    "allResultsKeptAcrossRestart": true,
+    "stopAndNextRound": true,
+    "physicalReservationsDrained": true,
+    "realPhones": 0,
+    "productionActions": 0
+  },
+  "realScreenshotDiagnosticReplay": [
+    {
+      "index": 14,
+      "kind": "name",
+      "hasName": true,
+      "matchesAfternoon": true,
+      "elapsedMs": 9079,
+      "reason": "",
+      "evidenceSha256": "4820909317c74a64b1317fafa6160d60da72ac50bc78f7a8b8afb74a4bcd5d9b",
+      "productionDataModified": false
+    },
+    {
+      "index": 17,
+      "kind": "name",
+      "hasName": true,
+      "matchesAfternoon": true,
+      "elapsedMs": 10872,
+      "reason": "",
+      "evidenceSha256": "a6b01207ea6a79be0044a18fec80143a8057730a0ea995e183aeab8689bb10d0",
+      "productionDataModified": false
+    }
+  ],
+  "frozenFilesUnchanged": 404,
+  "unverified": [
+    "Patched code production external API full flow",
+    "Patched code isolated PostgreSQL native event replay; existing PostgreSQL persistence path unchanged"
+  ],
+  "productionWritesByPatch": false
+}
