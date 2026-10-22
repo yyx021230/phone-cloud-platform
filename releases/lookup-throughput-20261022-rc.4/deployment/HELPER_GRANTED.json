@@ -1,0 +1,19 @@
+{
+  "userIds": [
+    "6a1552ec-16e4-4894-978c-efd04897d93d",
+    "0f00f9b6-20b4-4d3e-a7e6-784be3eeda7d",
+    "3e1441c3-2f31-4bae-8d20-64efe7da59a9",
+    "976a4606-68ae-4520-98a4-8edb5c02ba76",
+    "d83f423d-8f40-45fc-9471-95316e16863d",
+    "5c0b791b-a187-4631-9f74-88ab3d5b1a8b",
+    "8362208f-8500-4efd-92e7-672d91ccd87e",
+    "1c090ca8-0358-4b36-b3f2-937212e31dce",
+    "4bef39e5-3323-4a88-a28b-42a5a9e19764",
+    "764ec6d4-0b2c-4a18-af11-8f3a2400c7d6"
+  ],
+  "count": 10,
+  "lookupHumanControl": true,
+  "rolesUnchanged": true,
+  "atUtc": "2026-10-22T03:00:21Z",
+  "backup": "/opt/phone-cloud-staging/lookup-throughput-20261022-rc.4-prep.1/rollback/helper-capabilities.before.json"
+}

@@ -1,0 +1,19 @@
+{
+  "status": "cloud-active-awaiting-final-verification",
+  "atUtc": "2026-10-22T03:00:14Z",
+  "sourceCommit": "95725513b622611f82cebb3c84b8e01485a0887b",
+  "imageId": "sha256:350e2f56909b2a17d5a863a1aef8dcc8e7360c1693422b2ba5198b8dc4457dd2",
+  "containerId": "a17e1f4e84a1241ff72d8a2066f9aeb3d5cc2e795a1d26a20a5bf0afae28a454",
+  "containerPid": 2461778,
+  "restartCount": 0,
+  "runtimeHashCount": 26,
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "databaseMigrated": false
+}

@@ -1,0 +1,19 @@
+{
+  "lineCount": 2000,
+  "boundedAt2000": true,
+  "http401Mentions": 226,
+  "http500Mentions": 0,
+  "fatalOrUnhandled": 0,
+  "agent": [
+    {
+      "heartbeatAgeMs": 25654,
+      "lookupPostHumanProtocol": 1,
+      "deviceCount": 138,
+      "taskCounts": {
+        "succeeded": 4120,
+        "failed": 828,
+        "cancelled": 52
+      }
+    }
+  ]
+}
