@@ -1,0 +1,221 @@
+{
+  "nativePython": "3.9.13",
+  "offlineOnly": true,
+  "adbCalls": 0,
+  "deviceQueries": 0,
+  "systemIdentityChanged": false,
+  "cases": [
+    {
+      "case": 1,
+      "expected": "named",
+      "categories": [
+        "named",
+        "named"
+      ],
+      "passed": true,
+      "milliseconds": 5015
+    },
+    {
+      "case": 2,
+      "expected": "named",
+      "categories": [
+        "named",
+        "named"
+      ],
+      "passed": true,
+      "milliseconds": 3235
+    },
+    {
+      "case": 3,
+      "expected": "empty",
+      "categories": [
+        "empty",
+        "empty"
+      ],
+      "passed": true,
+      "milliseconds": 4672
+    },
+    {
+      "case": 4,
+      "expected": "empty",
+      "categories": [
+        "empty",
+        "empty"
+      ],
+      "passed": true,
+      "milliseconds": 4515
+    },
+    {
+      "case": 5,
+      "expected": "unverified",
+      "categories": [
+        "unverified",
+        "unverified"
+      ],
+      "passed": true,
+      "milliseconds": 4703
+    },
+    {
+      "case": 6,
+      "expected": "empty",
+      "categories": [
+        "empty",
+        "empty"
+      ],
+      "passed": true,
+      "milliseconds": 3547
+    },
+    {
+      "case": 7,
+      "expected": "empty",
+      "categories": [
+        "empty",
+        "empty"
+      ],
+      "passed": true,
+      "milliseconds": 4297
+    },
+    {
+      "case": 8,
+      "expected": "empty",
+      "categories": [
+        "empty",
+        "empty"
+      ],
+      "passed": true,
+      "milliseconds": 3688
+    },
+    {
+      "case": 9,
+      "expected": "named",
+      "categories": [
+        "named",
+        "named"
+      ],
+      "passed": true,
+      "milliseconds": 3968
+    },
+    {
+      "case": 10,
+      "expected": "empty",
+      "categories": [
+        "empty",
+        "empty"
+      ],
+      "passed": true,
+      "milliseconds": 3313
+    },
+    {
+      "case": 11,
+      "expected": "empty",
+      "categories": [
+        "empty",
+        "empty"
+      ],
+      "passed": true,
+      "milliseconds": 4562
+    },
+    {
+      "case": 12,
+      "expected": "unverified",
+      "categories": [
+        "unverified",
+        "unverified"
+      ],
+      "passed": true,
+      "milliseconds": 4579
+    },
+    {
+      "case": 13,
+      "expected": "empty",
+      "categories": [
+        "empty",
+        "empty"
+      ],
+      "passed": true,
+      "milliseconds": 5625
+    },
+    {
+      "case": 14,
+      "expected": "empty",
+      "categories": [
+        "empty",
+        "empty"
+      ],
+      "passed": true,
+      "milliseconds": 3531
+    },
+    {
+      "case": 15,
+      "expected": "empty",
+      "categories": [
+        "empty",
+        "empty"
+      ],
+      "passed": true,
+      "milliseconds": 3562
+    },
+    {
+      "case": 16,
+      "expected": "empty",
+      "categories": [
+        "empty",
+        "empty"
+      ],
+      "passed": true,
+      "milliseconds": 4407
+    },
+    {
+      "case": 17,
+      "expected": "named",
+      "categories": [
+        "named",
+        "named"
+      ],
+      "passed": true,
+      "milliseconds": 4296
+    },
+    {
+      "case": 18,
+      "expected": "named",
+      "categories": [
+        "named",
+        "named"
+      ],
+      "passed": true,
+      "milliseconds": 7641
+    },
+    {
+      "case": 19,
+      "expected": "empty",
+      "categories": [
+        "empty",
+        "empty"
+      ],
+      "passed": true,
+      "milliseconds": 5406
+    },
+    {
+      "case": 20,
+      "expected": "named",
+      "categories": [
+        "named",
+        "named"
+      ],
+      "passed": true,
+      "milliseconds": 3938
+    },
+    {
+      "case": 21,
+      "expected": "named",
+      "categories": [
+        "named",
+        "named"
+      ],
+      "passed": true,
+      "milliseconds": 3125
+    }
+  ],
+  "passed": 21,
+  "total": 21
+}

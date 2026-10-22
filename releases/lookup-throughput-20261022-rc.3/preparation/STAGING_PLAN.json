@@ -1,0 +1,105 @@
+{
+  "candidate": "lookup-throughput-20261022-rc.3",
+  "sourceCommit": "9a4362fe2bf3a8e5a48e430519dd23fde135e3fb",
+  "productionVersion": "lookup-scheduling-20261021-deployed.1",
+  "stageCloud": "/opt/phone-cloud-staging/lookup-throughput-20261022-rc.3-prep.1",
+  "stageWindows": "D:\\PhoneCloud\\staging\\lookup-throughput-20261022-rc.3-prep.1",
+  "cloudFiles": {
+    "server/lookup-admin-console.mjs": {
+      "before": null,
+      "after": "ac2e514bf0ed121325fb333c41bca266a2fafdfeb67e423d9f3ab4298f2b9b9b"
+    },
+    "server/managed-lookup-platform.mjs": {
+      "before": "28636ae0b751afd78ad4b6bd7867c23436fb250b25720525d36c564385e70137",
+      "after": "18854d027d0a4622812a1feea58f9e17ab2545fc129587464a1d476747927d94"
+    },
+    "server/device-lock-compatibility.mjs": {
+      "before": "7c7510c17a0a80b3e347820e11d00137332cbc7739fcdac3236225a375a4e146",
+      "after": "48ea2fa99c4bea2d7bbc865d65f0e7572d6e914e0e86a1806022abb81700b9c3"
+    },
+    "server/lookup-human-handover.mjs": {
+      "before": "f02ce0dedd5bcfcba1209a9d3f05f8836d0b431107ae38fc3e1e3ca3545d44c9",
+      "after": "7065e3da5454ec65a06a11767c18058108300cc07b5380d479b4e87a18d97862"
+    },
+    "server/managed-lookup-store.mjs": {
+      "before": "10f4e1ffec12a322e42990e7517ccf22c16ea12e7b2ccfad59a844f54f9ffcac",
+      "after": "5332f9f0070c27ba098701149c996a63dfce782a4cb33fd2c50e443c29914b04"
+    },
+    "server/device-occupancy.mjs": {
+      "before": "90d9f2bd4e9b5b2807ad2d7905d538f5d7ff2fe19fda629396d635a67fa9aeb0",
+      "after": "bb151a8e8990155f8946581c83f372a5a9ca3bceda7f5ccf64e59fcb9423628f"
+    },
+    "server/index.mjs": {
+      "before": "b65511f817b4ceb6a28091eb27ccfa6de63bd10ba36bb7f45ffb04f57a536f07",
+      "after": "ba40304f4e9dfe4a8b8898767a6476436c79fb30c52f75e98da5b2dcfce82c4e"
+    },
+    "server/managed-lookup.mjs": {
+      "before": "7a8d8a866df6c90bfdbd0862f73a9c6722702e11ccdd190f0b8f1cc96d8552d1",
+      "after": "c3e43bb28c7e63f5e6cf33a2e79cfbd0c25c875687fb48497abf4921b99f3196"
+    },
+    "server/lookup-failure-domain.mjs": {
+      "before": null,
+      "after": "124aa31e82d19a8d1c7261cf81df1320eb79308c4872f052b27f5a1c5e53cdb6"
+    },
+    "public/index.html": {
+      "before": "6eb21ed9000cc5f77afba3b522cf0dcf6149a86a37ea4da5a6a0c2562c9c45e6",
+      "after": "e114d8ff9999831bb34cd7970e943be57dcde86a8c2671784656b381ca722132"
+    },
+    "public/lookup-admin.js": {
+      "before": null,
+      "after": "0e6011f03959f8455fe235af3e407917160efbd4d13a6fd87d14dc11d78b1e7c"
+    },
+    "public/lookup-admin.css": {
+      "before": null,
+      "after": "bf14d0406c94257e19be1216264569a831182b782b2abc7771f3aba1d44c1eed"
+    },
+    "public/lookup-admin.html": {
+      "before": null,
+      "after": "ce3c519ce79d75b7a65ca292026a2b3dd4881e906d6916a95d49cf677f538e8e"
+    },
+    "public/app.js": {
+      "before": "88ae575783d31f0bdeb14e9c5150da7168d1aefa7ec97e54a38b98cc3254a0fd",
+      "after": "a864f2f6874f3d4a536e0065f205d22992ab01e6524b56c28f249890dac895d1"
+    },
+    "server/lookup-device-availability.mjs": {
+      "before": "a50858ddd06f9310764edf173ba90127502c711f1c25a2b884d3e4ac4842b1d1",
+      "after": "769601e37dd7a984cb28fc1a87f5d863057889f75f48194d02c7daf6e8049209"
+    },
+    "server/lookup-readiness.mjs": {
+      "before": "c12eaf61f28ea38a3e491bddb55f2a2c1637075b759827bba33e92602359f248",
+      "after": "e4915350abbec06ba4d133229647eeb8c57183e9d8f1f127bbcd4444a0af9423"
+    }
+  },
+  "windowsFiles": {
+    "src/lookup-post-human-state.mjs": {
+      "before": null,
+      "after": "11be7e62af4193387a0ebeef09f8130abb9577d94d1ddef8c816513c7e3a0580"
+    },
+    "src/lookup-account-policy.mjs": {
+      "before": "ba61800675325ca6dee9a384250b68d5191ccf187603112e72a3ffbafe9021d3",
+      "after": "51f9a5a3368554efbd8d07e2e420f70da7086e1b592c5959cada4752c9301c98"
+    },
+    "src/lookup-human-observer.mjs": {
+      "before": "f9d327e786802c5781e7eea046f4bf0dfa81d3ec67f63066e99345148a1ab4b2",
+      "after": "dbd77ffb69215d26610a814d1c4013e89a3d1a7b81ea509c9570d7035808a8a5"
+    },
+    "src/index.mjs": {
+      "before": "4d383bedf195739005abafe52779b7414d3aa2e3217fca45f359746de5e3bd23",
+      "after": "1d057629c452e0ce392f0cbc79a1ad3645cc90c5175dca980151dfb1d4a6d2a8"
+    },
+    "scripts/alipay_visual_result.py": {
+      "before": "08faff5a5e712341c8c14cd5014d8232939b5f5a7e3d0c5af5f19714f1094b97",
+      "after": "a0779dcd1dc1c00d2861735feb9dc935e807df6f54a6b369612e44dfbdff400a"
+    },
+    "scripts/alipay_post_human_state.py": {
+      "before": null,
+      "after": "8e0290dfa7c0ac2b28efbcebd1e056259a5e311243cebdce121015562e224efc"
+    },
+    "scripts/alipay_name_lookup.py": {
+      "before": "059a2f56fe5152cb1c4303235e87a6d000541541a387de388c4b6aa7a576d955",
+      "after": "04f157355eb7ed9cdefe0fa5c897245654210b9293c9b24f1c73a76ed95faf98"
+    }
+  },
+  "noActivation": true,
+  "noAdbCalls": true
+}

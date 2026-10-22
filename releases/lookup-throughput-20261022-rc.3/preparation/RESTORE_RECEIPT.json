@@ -1,0 +1,11 @@
+{
+  "candidate": "lookup-throughput-20261022-rc.3",
+  "fullDatabaseRestore": "passed",
+  "tableCount": 16,
+  "databaseImage": "sha256:09e4f20b14ddb3dfe3a0c825b206032aaf8f28300ba2070c0b60fc1c10c6abc7",
+  "network": "none",
+  "memoryLimit": "2g",
+  "previousAttempt": "512MiB isolated cgroup OOM; no production OOM",
+  "productionDatabaseModified": false,
+  "restoredDataRemovedAfterCheck": true
+}

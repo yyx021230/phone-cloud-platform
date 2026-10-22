@@ -1,0 +1,94 @@
+{
+  "candidate": "lookup-throughput-20261022-rc.3",
+  "sourceCommit": "9a4362fe2bf3a8e5a48e430519dd23fde135e3fb",
+  "status": "prepared-not-activated",
+  "imageTag": "phone-cloud-platform:lookup-throughput-20261022-rc.3",
+  "imageId": "sha256:b122d05241b729b19569871c813cc779da63fa2c695c1e2addd48af6531e70ea",
+  "previousImage": "sha256:a9e487ecb04afa22def7c926541a06be5593191066652881388d017e54022dab",
+  "cloudFiles": {
+    "server/lookup-admin-console.mjs": {
+      "before": null,
+      "after": "ac2e514bf0ed121325fb333c41bca266a2fafdfeb67e423d9f3ab4298f2b9b9b"
+    },
+    "server/managed-lookup-platform.mjs": {
+      "before": "28636ae0b751afd78ad4b6bd7867c23436fb250b25720525d36c564385e70137",
+      "after": "18854d027d0a4622812a1feea58f9e17ab2545fc129587464a1d476747927d94"
+    },
+    "server/device-lock-compatibility.mjs": {
+      "before": "7c7510c17a0a80b3e347820e11d00137332cbc7739fcdac3236225a375a4e146",
+      "after": "48ea2fa99c4bea2d7bbc865d65f0e7572d6e914e0e86a1806022abb81700b9c3"
+    },
+    "server/lookup-human-handover.mjs": {
+      "before": "f02ce0dedd5bcfcba1209a9d3f05f8836d0b431107ae38fc3e1e3ca3545d44c9",
+      "after": "7065e3da5454ec65a06a11767c18058108300cc07b5380d479b4e87a18d97862"
+    },
+    "server/managed-lookup-store.mjs": {
+      "before": "10f4e1ffec12a322e42990e7517ccf22c16ea12e7b2ccfad59a844f54f9ffcac",
+      "after": "5332f9f0070c27ba098701149c996a63dfce782a4cb33fd2c50e443c29914b04"
+    },
+    "server/device-occupancy.mjs": {
+      "before": "90d9f2bd4e9b5b2807ad2d7905d538f5d7ff2fe19fda629396d635a67fa9aeb0",
+      "after": "bb151a8e8990155f8946581c83f372a5a9ca3bceda7f5ccf64e59fcb9423628f"
+    },
+    "server/index.mjs": {
+      "before": "b65511f817b4ceb6a28091eb27ccfa6de63bd10ba36bb7f45ffb04f57a536f07",
+      "after": "ba40304f4e9dfe4a8b8898767a6476436c79fb30c52f75e98da5b2dcfce82c4e"
+    },
+    "server/managed-lookup.mjs": {
+      "before": "7a8d8a866df6c90bfdbd0862f73a9c6722702e11ccdd190f0b8f1cc96d8552d1",
+      "after": "c3e43bb28c7e63f5e6cf33a2e79cfbd0c25c875687fb48497abf4921b99f3196"
+    },
+    "server/lookup-failure-domain.mjs": {
+      "before": null,
+      "after": "124aa31e82d19a8d1c7261cf81df1320eb79308c4872f052b27f5a1c5e53cdb6"
+    },
+    "public/index.html": {
+      "before": "6eb21ed9000cc5f77afba3b522cf0dcf6149a86a37ea4da5a6a0c2562c9c45e6",
+      "after": "e114d8ff9999831bb34cd7970e943be57dcde86a8c2671784656b381ca722132"
+    },
+    "public/lookup-admin.js": {
+      "before": null,
+      "after": "0e6011f03959f8455fe235af3e407917160efbd4d13a6fd87d14dc11d78b1e7c"
+    },
+    "public/lookup-admin.css": {
+      "before": null,
+      "after": "bf14d0406c94257e19be1216264569a831182b782b2abc7771f3aba1d44c1eed"
+    },
+    "public/lookup-admin.html": {
+      "before": null,
+      "after": "ce3c519ce79d75b7a65ca292026a2b3dd4881e906d6916a95d49cf677f538e8e"
+    },
+    "public/app.js": {
+      "before": "88ae575783d31f0bdeb14e9c5150da7168d1aefa7ec97e54a38b98cc3254a0fd",
+      "after": "a864f2f6874f3d4a536e0065f205d22992ab01e6524b56c28f249890dac895d1"
+    },
+    "server/lookup-device-availability.mjs": {
+      "before": "a50858ddd06f9310764edf173ba90127502c711f1c25a2b884d3e4ac4842b1d1",
+      "after": "769601e37dd7a984cb28fc1a87f5d863057889f75f48194d02c7daf6e8049209"
+    },
+    "server/lookup-readiness.mjs": {
+      "before": "c12eaf61f28ea38a3e491bddb55f2a2c1637075b759827bba33e92602359f248",
+      "after": "e4915350abbec06ba4d133229647eeb8c57183e9d8f1f127bbcd4444a0af9423"
+    }
+  },
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "backup": "/opt/phone-cloud-staging/lookup-throughput-20261022-rc.3-prep.1/rollback",
+  "backupFiles": {
+    "database.dump": "79ab9ccaa307545fd2411111bf0d44e4c0989ff2b93cb3e3136f89b41bc3596d",
+    "compose-baseline.json": "2c205f67ff45a97045682ef8d270aa06db5d7664a05bef2ad5e32247dc23c5e2",
+    "previous-image.tar.gz": "9504aa1d011ae3126b4a0505bf2634dd7b62dc10d1e5c629461a2dbe36c84890",
+    "ACTIVE_PLATFORM_RELEASE.json": "e2d9aa6bd262c4af3a540c3931aa0a6ce0288ebc060726a299d6816426b45bdc"
+  },
+  "isolatedSmoke": "passed using production mode and disposable PostgreSQL",
+  "productionServiceRestarted": false,
+  "agentChanged": false,
+  "adbChanged": false,
+  "preparedAtUtc": "2026-10-22T02:14:20Z"
+}

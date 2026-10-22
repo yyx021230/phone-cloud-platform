@@ -1,0 +1,12 @@
+{
+  "candidate": "lookup-throughput-20261022-rc.3",
+  "result": "failed",
+  "isolatedMemoryLimitMiB": 512,
+  "reason": "PostgreSQL killed by test container memory cgroup during COPY of full snapshot",
+  "kernelEvidenceTimeLocal": "2026-10-22T10:16:20+08:00",
+  "productionDatabaseChanged": false,
+  "productionServiceRestarted": false,
+  "testContainerRemoved": true,
+  "nextAttemptMemoryLimitMiB": 2048,
+  "hostAvailableBeforeRetryMiB": 4167
+}
