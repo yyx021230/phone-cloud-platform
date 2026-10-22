@@ -1,0 +1,135 @@
+{
+  "status": "local_candidate_not_deployed",
+  "node": {
+    "tests": 1041,
+    "passed": 1041,
+    "command": "node --test --test-concurrency=1 screen-client/*.test.mjs server/*.test.mjs scripts/*.test.mjs windows-agent/src/*.test.mjs"
+  },
+  "python": {
+    "lookup": 287,
+    "runners": 163,
+    "postHuman": 8,
+    "passed": true
+  },
+  "syntaxCheck": true,
+  "offlineOriginalScreenshots": {
+    "count": 21,
+    "named": 7,
+    "explicitUnverified": 2,
+    "noNameLayouts": 12,
+    "allMatchedReviewedCategory": true,
+    "runtime": "local macOS RapidOCR; not Windows native or live device",
+    "twoGuardedFrameRedactedTests": 21
+  },
+  "frozenFileHashes": 470,
+  "productionMutations": 0,
+  "realPhoneQueries": 0,
+  "adbCommands": 0,
+  "pushes": 0,
+  "failuresAndRetests": [
+    {
+      "stage": "new tests on old implementation",
+      "result": "head-of-line, manual timeout cancellation and cold restriction compatibility reproduced"
+    },
+    {
+      "stage": "Python implementation",
+      "result": "long inline-row test geometry and old navigation-label threshold assertion corrected; final 287 passed"
+    },
+    {
+      "stage": "concurrent full Node run",
+      "passed": 1040,
+      "failed": 1,
+      "reason": "legacy synchronous HTTP 1-second result expectation; isolated repeat passed, final serial full suite 1041 passed"
+    },
+    {
+      "stage": "first local Postgres attempt",
+      "result": "URI without local username rejected; explicit local OS role fixed; no production access"
+    }
+  ],
+  "unverified": [
+    "final candidate Windows native OCR",
+    "real-device recovery and original 29 queries",
+    "production queue P50/P95 improvement",
+    "production rollout and D-075 live pre/post on release"
+  ],
+  "jsonHttp": {
+    "storage": "json",
+    "loopbackOnly": true,
+    "simulatedDevices": 5,
+    "realDevices": 0,
+    "productionConnections": 0,
+    "completed": 50,
+    "zeroReadyAcceptsAll50": true,
+    "zeroReadyDispatched": 0,
+    "firstReadyStillRequired": true,
+    "businessAttempts": 57,
+    "oldAgentGuardBlocked": true,
+    "postHumanLimitDurableCooldown": true,
+    "postHumanLoginRoundExcluded": true,
+    "protectedOriginalQueryCrossDevice": true,
+    "helperGrantRevokeHttp": true,
+    "helperCannotEscalate": true,
+    "helperOnlyHumanCard": true,
+    "pageSamePhoneObservationPayload": true,
+    "maxExecuting": 5,
+    "humanObserverHttpResumed": true,
+    "screenOffCardVerified": true,
+    "firstClearRequiresRecheck": true,
+    "cardEndpointAuthenticated": true,
+    "otherRequestsCompleteBeforeStopAck": 49,
+    "retryElapsedMs": 9746,
+    "changedKeyKeepsOriginalId": true,
+    "noLocalReplay": true,
+    "handoffWaitsForStopAck": true,
+    "reassignedToDifferentPhone": true,
+    "lateReportIgnored": true,
+    "restartRetainsResultAndAlias": true,
+    "nextRoundReady": true,
+    "finalChannels": 0
+  },
+  "postgresHttp": {
+    "storage": "postgres",
+    "loopbackOnly": true,
+    "simulatedDevices": 5,
+    "realDevices": 0,
+    "productionConnections": 0,
+    "completed": 50,
+    "zeroReadyAcceptsAll50": true,
+    "zeroReadyDispatched": 0,
+    "firstReadyStillRequired": true,
+    "businessAttempts": 57,
+    "oldAgentGuardBlocked": true,
+    "postHumanLimitDurableCooldown": true,
+    "postHumanLoginRoundExcluded": true,
+    "protectedOriginalQueryCrossDevice": true,
+    "helperGrantRevokeHttp": true,
+    "helperCannotEscalate": true,
+    "helperOnlyHumanCard": true,
+    "pageSamePhoneObservationPayload": true,
+    "maxExecuting": 5,
+    "humanObserverHttpResumed": true,
+    "screenOffCardVerified": true,
+    "firstClearRequiresRecheck": true,
+    "cardEndpointAuthenticated": true,
+    "otherRequestsCompleteBeforeStopAck": 49,
+    "retryElapsedMs": 121001,
+    "changedKeyKeepsOriginalId": true,
+    "noLocalReplay": true,
+    "handoffWaitsForStopAck": true,
+    "reassignedToDifferentPhone": true,
+    "lateReportIgnored": true,
+    "restartRetainsResultAndAlias": true,
+    "nextRoundReady": true,
+    "finalChannels": 0
+  },
+  "logs": {
+    "node-full.txt": "537b63d12d3acebb40b93e0316305a783847f50c1ad07547728180d937414f75",
+    "node-initial-failure.txt": "a69970656319bab7016ae0215d8a4dacc99a7ff0dd432621b9c9dfeb2bda856c",
+    "http-isolated-recheck.txt": "5f3fd91ee5b8ef2d5e6cd46be878c03d15d990ae453fb7b22de827ed6b29d79f",
+    "python-lookup.txt": "5a29a3ba29db73011e9facaba2359ba3da99fe8cc0479e1d260ed416c4acc683",
+    "python-runners.txt": "1def2505fe59699f94d4487f35f5c876871841a9dd97023a963eb64e158b1057",
+    "python-posthuman.txt": "5f2d26d588673ba457b4ecde98a85ce309f1764dd8f632d49313efefaf170dc1",
+    "syntax-check.txt": "911e593ec5bbaee54fd78a05e2117732024691fb0c018bb4a1b2316dcbd30e78"
+  },
+  "logNormalization": "Only trailing whitespace and extra terminal blank lines removed from stored log copies; original local logs preserved."
+}

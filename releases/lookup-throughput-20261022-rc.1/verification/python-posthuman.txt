@@ -1,0 +1,6 @@
+.{"event": {"step": "alipay_account_restriction_detected", "elapsedMs": 0, "phase": "post-human-check", "driver": "poco", "reason": "frequent_or_abnormal_access", "title": "\u60a8\u8bf7\u6c42\u6b21\u6570\u8fc7\u4e8e\u9891\u7e41", "phoneQueryStarted": true, "accountSwitchRequired": true, "currentAccount": "A", "accountIdentityVerified": true}}
+.......
+----------------------------------------------------------------------
+Ran 8 tests in 0.005s
+
+OK

@@ -1,0 +1,26 @@
+{
+  "parentCandidate": "lookup-admin-20261021-rc.3",
+  "parentCommit": "4fa7a1cc37f7d0ddcf24b12965e5dd7c7a8391e0",
+  "productionRelease": "lookup-scheduling-20261021-deployed.1",
+  "productionSource": "9d2276884f26e6c436bc4ccd80bb3c8d18be3771",
+  "productionImage": "sha256:a9e487ecb04afa22def7c926541a06be5593191066652881388d017e54022dab",
+  "before": {
+    "server/lookup-automatic-recovery.test.mjs": "d59cfe7499f0e0cd06e10b5a7e2b9774dde0636a2319c650187b28877f7eaea4",
+    "server/lookup-device-availability.mjs": "a50858ddd06f9310764edf173ba90127502c711f1c25a2b884d3e4ac4842b1d1",
+    "server/lookup-device-availability.test.mjs": "fe472511c85733707dbef86771df065b27d3509a1f9398e8dccfddea99b65ae6",
+    "server/lookup-failure-domain.mjs": "0da8eace8950ec3c56d114392d31f4185968eb88b4cb430a9da208474fb7241e",
+    "server/lookup-preparation-classification.test.mjs": null,
+    "server/lookup-readiness.mjs": "c12eaf61f28ea38a3e491bddb55f2a2c1637075b759827bba33e92602359f248",
+    "server/lookup-readiness.test.mjs": "142cc5c4fbaaa69765d100ed5e701aff76ea567c8e787db6b3de0514025211ae",
+    "server/managed-lookup-platform.mjs": "160bab2865c3b43b985d0252cc7c542c83d492ac58ab8cfc9f6a0e49862f77e0",
+    "server/managed-lookup.mjs": "951d79a8de66d50d693292f4fcd39c3b2cbbc2fdd00bf225581458937de03cc9",
+    "public/lookup-admin.js": "a41eb217089392407d90b3ed15f21cccf6807dd78667b75f1820cb5d696e17f6",
+    "windows-agent/scripts/alipay_name_lookup.py": "0810e70fb86e030420e6c061c1da1587ff40cd559c6950ee301f4f7c41fafa57",
+    "windows-agent/scripts/alipay_visual_result.py": "1360d60420dd0c8d298a5c9aa6b702b0213230fbf46276283b782a50213f19ff",
+    "windows-agent/scripts/fixtures/lookup-20261021-redacted-replay.json": null,
+    "windows-agent/scripts/test_lookup_alipay_info_suggestion.py": "61ad1d9f825f9b1b006bff57428c7ee163f29fabe329d32ab13cc7726a745a62",
+    "windows-agent/scripts/test_lookup_cold_access_denied.py": "cb18f8235486fb933eb3c9896e985604824161e22bb25f8d66be05fa50b70de1",
+    "windows-agent/scripts/test_lookup_cold_restriction.py": "f28a943b52aea3bfa6bb5288e367cc5701c33518bcf48d2aa819fe56df3254e0",
+    "windows-agent/scripts/test_lookup_daily_replay.py": null
+  }
+}
