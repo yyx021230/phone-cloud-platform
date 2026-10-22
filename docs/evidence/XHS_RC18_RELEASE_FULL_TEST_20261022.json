@@ -1,0 +1,312 @@
+{
+  "status": "deployed_pending_official_acceptance",
+  "version": "xhs-compat-20261022-deployed.2",
+  "sourceCommit": "d56fa36c0c5207d00fbc8e679bd5e3935f72e450",
+  "candidateTag": "xhs-compat-20261022-rc.18",
+  "releaseReceipt": {
+    "version": "xhs-compat-20261022-deployed.2",
+    "sourceCommit": "d56fa36c0c5207d00fbc8e679bd5e3935f72e450",
+    "candidateTag": "xhs-compat-20261022-rc.18",
+    "mode": "apply",
+    "changedFiles": [
+      "scripts/小红书数据同步.py"
+    ],
+    "beforeHashes": {
+      "scripts/小红书数据同步.py": "9e6b1d8d695dbff4716464a10d482cca70968a4d33e1db3b7d6149464982d41b",
+      "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+      "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+      "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "1d057629c452e0ce392f0cbc79a1ad3645cc90c5175dca980151dfb1d4a6d2a8",
+      "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04",
+      "scripts/xhs_native_navigation.py": "a1e04af69daf72371591b8238c5de17320a514471f8a13499257e03d748e7a3c",
+      "scripts/native/xhs-native-navigation.jar": "910f03a9c4cd6963b89ce1dd4bf4a6ad21b6f888029970401134fdcf820af754",
+      "scripts/xhs_native_window.py": "b06c715c4e31d8d37190a5a5111c808c29ddb1cab5cf7470f9d18fbb1c27ad87",
+      "scripts/native/xhs-native-window.jar": "15b043f5f78c17855b08d354dc5af4004216bc7ce14b5d03fa9e05f72e8d57c7"
+    },
+    "afterHashes": {
+      "scripts/小红书数据同步.py": "3b1778ffa3837798d3c80f69072fa128f29233107c13bb50ac9529d51aee0187",
+      "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+      "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+      "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "1d057629c452e0ce392f0cbc79a1ad3645cc90c5175dca980151dfb1d4a6d2a8",
+      "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04",
+      "scripts/xhs_native_navigation.py": "a1e04af69daf72371591b8238c5de17320a514471f8a13499257e03d748e7a3c",
+      "scripts/native/xhs-native-navigation.jar": "910f03a9c4cd6963b89ce1dd4bf4a6ad21b6f888029970401134fdcf820af754",
+      "scripts/xhs_native_window.py": "b06c715c4e31d8d37190a5a5111c808c29ddb1cab5cf7470f9d18fbb1c27ad87",
+      "scripts/native/xhs-native-window.jar": "15b043f5f78c17855b08d354dc5af4004216bc7ce14b5d03fa9e05f72e8d57c7"
+    },
+    "beforeIdentity": {
+      "adbPid": 8988,
+      "agentPid": 5176,
+      "pendingLedgers": 0,
+      "activeCollectors": 0
+    },
+    "afterIdentity": {
+      "adbPid": 8988,
+      "agentPid": 5176,
+      "pendingLedgers": 0,
+      "activeCollectors": 0
+    },
+    "atEpoch": 1792643047.583148,
+    "servicesRestarted": false,
+    "backup": "D:\\PhoneCloud\\backups\\xhs-compat-20261022-deployed.2",
+    "guard": "Fresh cloud collection-idle and local hash/process/ledger checks; collector switched last; no atomic server-side publication barrier added"
+  },
+  "baselinePaths": 12,
+  "rollbackRehearsal": "one file replace then restore, unrelated sentinel preserved",
+  "initialPlan": {
+    "at": "2026-10-22T04:24:02.650564+00:00",
+    "boundSlots": 145,
+    "eligibleSlots": 124,
+    "skips": [
+      {
+        "name": "185",
+        "slot": "app1",
+        "reason": "explicit_hold"
+      },
+      {
+        "name": "154",
+        "slot": "app1",
+        "reason": "occupied"
+      },
+      {
+        "name": "154",
+        "slot": "app2",
+        "reason": "occupied"
+      },
+      {
+        "name": "108",
+        "slot": "app1",
+        "reason": "occupied"
+      },
+      {
+        "name": "152",
+        "slot": "app1",
+        "reason": "explicit_hold"
+      },
+      {
+        "name": "155",
+        "slot": "app1",
+        "reason": "explicit_hold"
+      },
+      {
+        "name": "155",
+        "slot": "app2",
+        "reason": "explicit_hold"
+      },
+      {
+        "name": "18",
+        "slot": "app1",
+        "reason": "explicit_hold"
+      },
+      {
+        "name": "18",
+        "slot": "app2",
+        "reason": "explicit_hold"
+      },
+      {
+        "name": "4",
+        "slot": "app1",
+        "reason": "occupied"
+      },
+      {
+        "name": "109",
+        "slot": "app1",
+        "reason": "offline"
+      },
+      {
+        "name": "109",
+        "slot": "app2",
+        "reason": "offline"
+      },
+      {
+        "name": "81",
+        "slot": "app1",
+        "reason": "explicit_hold"
+      },
+      {
+        "name": "114",
+        "slot": "app1",
+        "reason": "occupied"
+      },
+      {
+        "name": "114",
+        "slot": "app2",
+        "reason": "occupied"
+      },
+      {
+        "name": "35",
+        "slot": "app1",
+        "reason": "offline"
+      },
+      {
+        "name": "127",
+        "slot": "app1",
+        "reason": "offline"
+      },
+      {
+        "name": "127",
+        "slot": "app2",
+        "reason": "offline"
+      },
+      {
+        "name": "116",
+        "slot": "app1",
+        "reason": "offline"
+      },
+      {
+        "name": "128",
+        "slot": "app1",
+        "reason": "offline"
+      },
+      {
+        "name": "63",
+        "slot": "app1",
+        "reason": "offline"
+      }
+    ],
+    "eligibleKeys": [
+      "34/app1",
+      "187/app1",
+      "173/app1",
+      "173/app2",
+      "182/app1",
+      "141/app1",
+      "141/app2",
+      "32/app1",
+      "172/app1",
+      "140/app1",
+      "140/app2",
+      "106/app1",
+      "106/app2",
+      "162/app1",
+      "162/app2",
+      "165/app1",
+      "165/app2",
+      "132/app1",
+      "132/app2",
+      "43/app1",
+      "139/app1",
+      "139/app2",
+      "158/app1",
+      "158/app2",
+      "176/app1",
+      "131/app1",
+      "131/app2",
+      "113/app1",
+      "113/app2",
+      "129/app1",
+      "118/app1",
+      "118/app2",
+      "88/app1",
+      "88/app2",
+      "117/app2",
+      "87/app1",
+      "87/app2",
+      "142/app1",
+      "20/app1",
+      "163/app1",
+      "163/app2",
+      "143/app1",
+      "157/app1",
+      "157/app2",
+      "130/app1",
+      "130/app2",
+      "121/app1",
+      "121/app2",
+      "102/app1",
+      "101/app2",
+      "86/app1",
+      "86/app2",
+      "98/app1",
+      "98/app2",
+      "95/app1",
+      "95/app2",
+      "91/app1",
+      "91/app2",
+      "93/app1",
+      "93/app2",
+      "62/app1",
+      "59/app1",
+      "59/app2",
+      "82/app1",
+      "82/app2",
+      "96/app1",
+      "96/app2",
+      "71/app1",
+      "71/app2",
+      "186/app1",
+      "186/app2",
+      "111/app1",
+      "111/app2",
+      "150/app1",
+      "150/app2",
+      "13/app2",
+      "181/app1",
+      "25/app2",
+      "144/app1",
+      "153/app1",
+      "153/app2",
+      "177/app1",
+      "14/app2",
+      "47/app1",
+      "156/app1",
+      "156/app2",
+      "184/app1",
+      "184/app2",
+      "180/app1",
+      "180/app2",
+      "151/app1",
+      "151/app2",
+      "112/app1",
+      "112/app2",
+      "107/app2",
+      "126/app2",
+      "123/app2",
+      "125/app1",
+      "125/app2",
+      "94/app1",
+      "94/app2",
+      "120/app1",
+      "120/app2",
+      "119/app2",
+      "97/app1",
+      "97/app2",
+      "92/app1",
+      "92/app2",
+      "99/app1",
+      "99/app2",
+      "90/app1",
+      "90/app2",
+      "78/app1",
+      "78/app2",
+      "79/app1",
+      "79/app2",
+      "75/app1",
+      "75/app2",
+      "80/app1",
+      "138/app2",
+      "164/app1",
+      "164/app2",
+      "183/app1",
+      "183/app2"
+    ]
+  },
+  "actualTests": {
+    "previousTurnPython": 365,
+    "previousTurnNode": 11,
+    "previousTurnRootSyntax": true,
+    "thisTurnOfflineOrchestration": 3,
+    "thisTurnPreflight": true
+  },
+  "devicesPassed": [],
+  "notClaiming": [
+    "full_pool_pass",
+    "daily_95_percent",
+    "rc18_device_acceptance_before_results"
+  ]
+}
