@@ -1,0 +1,91 @@
+{
+  "status": "deployed-awaiting-real-phone-observation",
+  "snapshot": {
+    "at": "2026-10-22T09:10:14.691Z",
+    "health": true,
+    "ready": true,
+    "total": 139,
+    "freshOnline": 122,
+    "controls": [
+      "145"
+    ],
+    "counts": {
+      "enabled": 48,
+      "occupied": 0,
+      "ready": 0,
+      "human": 0,
+      "queued": 0,
+      "running": 0
+    },
+    "activeTasks": [
+      {
+        "taskId": "c844d367-2b74-44dd-8040-da0d374385d5",
+        "type": "sms_sync_now",
+        "status": "running",
+        "ageSec": 142
+      }
+    ],
+    "agents": [
+      {
+        "heartbeatAgeSec": 8,
+        "protocol": 1
+      }
+    ]
+  },
+  "modelConfig": {
+    "enabled": true,
+    "model": "gpt-6.1-sol",
+    "timeoutMs": 120000,
+    "keyLoaded": true
+  },
+  "publicHttp": {
+    "apiDocs": 200,
+    "health": 200
+  },
+  "windowsReadOnly": {
+    "processes": [
+      {
+        "path": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+        "pid": 8988,
+        "owner": "NT AUTHORITY\\SYSTEM"
+      },
+      {
+        "path": "D:\\PhoneCloud\\tools\\node\\node.exe",
+        "pid": 5176,
+        "owner": "NT AUTHORITY\\SYSTEM"
+      }
+    ],
+    "listenerOwners": [
+      8988
+    ]
+  },
+  "container": {
+    "health": "healthy",
+    "restarts": 0,
+    "runningAndRestartImageMatch": true
+  },
+  "boundedLogs": {
+    "atUtc": "2026-10-22T09:10:14.875085Z",
+    "tailLines": 150,
+    "since": "4m",
+    "errorMatches": 0,
+    "warningMatches": 0
+  },
+  "readyProbe": {
+    "transientFailures": 1,
+    "code": "ENOENT on unlink of millisecond-named write probe",
+    "followupSuccesses": 3,
+    "hypothesis": "Concurrent readiness checks share a same-millisecond temporary path; existing canWriteToDir implementation confirmed, exact simultaneous invocation not traced.",
+    "scope": "Recorded; no unrelated health-check patch deployed"
+  },
+  "notTested": [
+    "New production phone queries through AI fallback",
+    "Long-running production observation"
+  ],
+  "priorFailures": [
+    "First activation blocked by active task before any cutover",
+    "Immediate post-start probe ran before HTTP listener was ready",
+    "First Windows verification output decode failed; repeated read-only verification succeeded"
+  ],
+  "productionAcceptanceComplete": false
+}

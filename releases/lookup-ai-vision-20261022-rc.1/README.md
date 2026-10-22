@@ -1,6 +1,6 @@
 # lookup-ai-vision-20261022-rc.1
 
-状态：本地候选，未切换。用户已授权上线本功能；影响控屏的云端维护窗口仍须在准备完成后确认。分支 `codex/lookup-ai-vision-candidate-20261022`，开始HEAD `b7f44a6099dbafce37a1acdd4232ffbd384c40ef`，开始工作区干净。
+状态：2026-10-22 17:09:06已发布待观察，版本`lookup-ai-vision-20261022-deployed.1`。用户已明确批准本次2分钟窗口内全部控屏短暂断开；实际[部署回执](deployment/README.md)另存。分支 `codex/lookup-ai-vision-candidate-20261022`，开始HEAD `b7f44a6099dbafce37a1acdd4232ffbd384c40ef`，开始工作区干净。
 
 ## 本轮行为
 
