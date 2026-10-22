@@ -1,0 +1,12 @@
+{
+  "parentCandidate": "lookup-throughput-20261022-rc.1",
+  "parentCommit": "9fbc723901faff9bc7eb88becef9b1d69c60dcf9",
+  "before": {
+    "windows-agent/scripts/alipay_name_lookup.py": "bb931be31fd46186029009b91441f6f13c09e44e9decba19455593fe17c3e592",
+    "windows-agent/scripts/alipay_visual_result.py": "4aaa8aaa9c2a97c124cdcd75ede50b201eea02cbf8c24bf1b255286ccb07f7e3",
+    "windows-agent/scripts/test_lookup_card_boundaries.py": null,
+    "server/lookup-readiness.test.mjs": "848de062bb13dbb41d21a07e03f724cd849efd8132b22a103fe4fe6bb8257dd1",
+    "verification/replay-result.py": null,
+    "verification/ocr-result-http.mjs": null
+  }
+}

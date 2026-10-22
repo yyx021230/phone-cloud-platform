@@ -1,0 +1,90 @@
+{
+  "release": "lookup-throughput-20261022-rc.2",
+  "status": "local_candidate_not_deployed",
+  "parentCommit": "9fbc723901faff9bc7eb88becef9b1d69c60dcf9",
+  "node": {
+    "passed": 1042,
+    "failed": 0,
+    "skipped": 0,
+    "serial": true,
+    "finalAssembledTree": true
+  },
+  "python": {
+    "lookup": {
+      "passed": 297,
+      "failed": 0
+    },
+    "runner": {
+      "passed": 163,
+      "failed": 0
+    },
+    "postHuman": {
+      "passed": 8,
+      "failed": 0
+    }
+  },
+  "queueSuite": {
+    "passed": 48,
+    "subsequentRequests": 50,
+    "deviceCounts": [
+      10,
+      10,
+      10,
+      10,
+      10
+    ],
+    "maxExecuting": 5,
+    "excludedOldestRetained": true
+  },
+  "originalOcr": {
+    "images": 21,
+    "actualFrames": 42,
+    "report": "ORIGINAL_OCR.json"
+  },
+  "negativeSecondFrameCases": 126,
+  "associationTests": 9,
+  "httpReports": [
+    "HTTP_JSON.json",
+    "HTTP_POSTGRES.json"
+  ],
+  "rootCheck": "passed",
+  "overlayFiles": 6,
+  "unchangedFileHashes": 484,
+  "verifiedIdenticalTestedAndPackagedFiles": true,
+  "priorFailures": [
+    {
+      "stage": "independent_rc1_counterexamples",
+      "count": 7,
+      "resolution": "cross-card associations and multiple native candidates rejected"
+    },
+    {
+      "stage": "first_postgres_http_run",
+      "kind": "test_expectation",
+      "resolution": "derive expected public empty result from unverified classification; new database rerun passed"
+    },
+    {
+      "stage": "xml_stricter_bounds_first",
+      "runnerErrors": 1,
+      "resolution": "minimal four-label result container with partial bounds retains structural association"
+    },
+    {
+      "stage": "xml_stricter_container_second",
+      "runnerErrors": 2,
+      "resolution": "exclude search input from minimal result labels as well as phone evidence; original runner fixtures unchanged"
+    }
+  ],
+  "realDevices": 0,
+  "productionConnections": 0,
+  "productionMutations": 0,
+  "unverified": [
+    "Windows native OCR",
+    "real-device input and live page transitions",
+    "production queue P50/P95 improvement",
+    "new unknown layouts"
+  ],
+  "evidenceHashes": {
+    "HTTP_JSON.json": "a5254aa7ef2f204bd1544ce340afaf8c1e03fe4c0aa7b2ff3583fafeb1055911",
+    "HTTP_POSTGRES.json": "221888847821ae94ab6a8cfd9832c6bbe284869aa102f6e95a5f08f016950d49",
+    "ORIGINAL_OCR.json": "c19133463f50469ab10858f74076601a473fcdb6338e545872806020b100f059"
+  }
+}

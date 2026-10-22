@@ -1,0 +1,8 @@
+{
+  "windows-agent/scripts/alipay_name_lookup.py": "04f157355eb7ed9cdefe0fa5c897245654210b9293c9b24f1c73a76ed95faf98",
+  "windows-agent/scripts/alipay_visual_result.py": "a0779dcd1dc1c00d2861735feb9dc935e807df6f54a6b369612e44dfbdff400a",
+  "windows-agent/scripts/test_lookup_card_boundaries.py": "00cbdca12e089123962eeeec51c1e6d8b90ada228f1ec647bb217ceeaf9303f3",
+  "server/lookup-readiness.test.mjs": "e330bf760513034d82911521e09880fbe17d3195a003dd3ba982793f94307373",
+  "verification/replay-result.py": "64f1aff3179005a19d560ffac667c0047c20cbfb404574f5ff09d1146fa22135",
+  "verification/ocr-result-http.mjs": "8af65edfe2a72164973960dbac47c6e3669362486349fff557f1818f49e9b015"
+}
