@@ -1,0 +1,13 @@
+{
+  "version": "lookup-ai-vision-20261022-deployed.1",
+  "sourceCommit": "fef7ff801c4fa8c391f0ae35a9f47ed6db3e8e76",
+  "imageId": "sha256:35cba1db05e126adf48acaa63241772854b7069559fd054459d74699a49a74ff",
+  "runtimeChanges": {
+    "server/managed-lookup-platform.mjs": {
+      "before": "0af2122462ce3cc7b7c0c1233f05fe3e89dbd44d23e24139134bec7762438752",
+      "after": "672a1326c422faf65ccd53ce9ef8d2c8d734932d54c769967f89dc15890b79ae"
+    }
+  },
+  "deployed": false,
+  "frozenFilesUnchanged": 404
+}

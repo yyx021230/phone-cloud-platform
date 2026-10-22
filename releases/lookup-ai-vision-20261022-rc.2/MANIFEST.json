@@ -1,0 +1,5 @@
+{
+  "server/lookup-ai-adapter.test.mjs": "e7368e60eddf0b9ca0a709862522334431fc43f6f23a2435ee67a3617ae76056",
+  "server/managed-lookup-platform.mjs": "672a1326c422faf65ccd53ce9ef8d2c8d734932d54c769967f89dc15890b79ae",
+  "verification/ai-http-native-events.mjs": "53ea07cd8bdb866d708b66558b39e081a36ac870947c6cf95698de33b03da88f"
+}
