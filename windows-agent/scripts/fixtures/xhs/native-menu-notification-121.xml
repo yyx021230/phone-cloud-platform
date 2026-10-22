@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<hierarchy rotation="0">
+  <node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="com.xingin.xhs" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[95,580][625,1087]">
+    <node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="com.xingin.xhs" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[95,580][625,1087]">
+      <node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="com.xingin.xhs" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[95,580][625,1087]">
+        <node index="0" text="" resource-id="com.xingin.xhs:id/0_resource_name_obfuscated" class="android.widget.FrameLayout" package="com.xingin.xhs" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[95,580][625,1087]">
+          <node index="0" text="" resource-id="" class="android.widget.LinearLayout" package="com.xingin.xhs" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[95,610][625,1087]">
+            <node index="0" text="" resource-id="com.xingin.xhs:id/0_resource_name_obfuscated" class="android.widget.ImageView" package="com.xingin.xhs" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[241,610][479,848]" />
+            <node index="1" text="打开通知推送，有新内容和新消息时，第一时间提醒你" resource-id="com.xingin.xhs:id/0_resource_name_obfuscated" class="android.widget.TextView" package="com.xingin.xhs" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[186,864][534,929]" />
+            <node index="2" text="确认" resource-id="com.xingin.xhs:id/0_resource_name_obfuscated" class="android.widget.TextView" package="com.xingin.xhs" content-desc="" checkable="false" checked="false" clickable="true" enabled="true" focusable="true" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[191,969][529,1037]" />
+          </node>
+          <node NAF="true" index="1" text="" resource-id="com.xingin.xhs:id/0_resource_name_obfuscated" class="android.widget.ImageView" package="com.xingin.xhs" content-desc="" checkable="false" checked="false" clickable="true" enabled="true" focusable="true" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[565,580][625,640]" />
+        </node>
+      </node>
+    </node>
+  </node>
+</hierarchy>

@@ -1643,6 +1643,63 @@ class NativeNavigationIntegrationTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError,'update stayed open'):sync.tap_index_menu('adb','serial',xml(),lambda:None,['collection_slot_requested:app2','clone_user_requested:999'])
         action.assert_called_once();tap.assert_called_once()
 
+class NativeMenuNotificationTests(unittest.TestCase):
+    current = 'mCurrentFocus=Window{x u999 com.xingin.xhs/com.xingin.xhs.index.v2.IndexActivityV2}'
+    notification = current.replace('com.xingin.xhs.index.v2.IndexActivityV2',
+        'com.xingin.authorization.NotificationAuthorizationTranslucentActivity')
+
+    def setUp(self):
+        self.popup = ET.parse(Path(__file__).parent/'fixtures/xhs/native-menu-notification-121.xml').getroot()
+        self.drawer = xml('<node text="我的草稿" bounds="[0,0][100,100]"/>',
+                          '<node text="创作者中心" bounds="[0,200][100,300]"/>')
+        self.events = ['collection_slot_requested:app2', 'clone_user_requested:999']
+
+    def test_observed_late_notification_is_closed_once_then_drawer_proven(self):
+        with patch.object(sync, 'adb', return_value='VIVO') as adb, \
+                patch.object(sync, 'native_index_navigation') as action, \
+                patch.object(sync, 'navigation_capture', side_effect=[self.popup, self.drawer]), \
+                patch.object(sync, 'focus', side_effect=[self.notification]*3+[self.current]*2), \
+                patch.object(sync.time, 'sleep'):
+            sync.tap_index_menu('adb', 'serial', xml(), lambda: None, self.events)
+        action.assert_called_once()
+        self.assertEqual([c.args[2:] for c in adb.call_args_list if 'keyevent' in c.args],
+                         [('shell', 'input', 'keyevent', '4')])
+        self.assertIn('notification_prompt_back', self.events)
+
+    def test_notification_stays_open_stops_without_replaying_menu_or_back(self):
+        with patch.object(sync, 'adb', return_value='VIVO') as adb, \
+                patch.object(sync, 'native_index_navigation') as action, \
+                patch.object(sync, 'navigation_capture', return_value=self.popup), \
+                patch.object(sync, 'focus', return_value=self.notification), \
+                patch.object(sync.time, 'sleep'):
+            with self.assertRaisesRegex(RuntimeError, 'notification overlay stayed open'):
+                sync.tap_index_menu('adb', 'serial', xml(), lambda: None, self.events)
+        action.assert_called_once()
+        self.assertEqual(sum('keyevent' in c.args for c in adb.call_args_list), 1)
+
+    def test_user_or_activity_change_before_back_stops_without_input(self):
+        for changed in (self.notification.replace('u999 ', 'u0 '), self.current):
+            with self.subTest(changed=changed), patch.object(sync, 'adb', return_value='VIVO') as adb, \
+                    patch.object(sync, 'native_index_navigation') as action, \
+                    patch.object(sync, 'navigation_capture', return_value=self.popup), \
+                    patch.object(sync, 'focus', side_effect=[self.notification]*2+[changed]):
+                with self.assertRaisesRegex(RuntimeError, 'foreground'):
+                    sync.tap_index_menu('adb', 'serial', xml(), lambda: None, self.events)
+                action.assert_called_once()
+                self.assertFalse(any('keyevent' in c.args for c in adb.call_args_list))
+
+    def test_closed_notification_without_drawer_is_still_rejected(self):
+        with patch.object(sync, 'adb', return_value='VIVO') as adb, \
+                patch.object(sync, 'native_index_navigation') as action, \
+                patch.object(sync, 'navigation_capture', side_effect=[self.popup, xml()]), \
+                patch.object(sync, 'focus', side_effect=[self.notification]*3+[self.current]*2), \
+                patch.object(sync.time, 'sleep'):
+            with self.assertRaisesRegex(sync.ElementListReadError, 'did not expose'):
+                sync.tap_index_menu('adb', 'serial', xml(), lambda: None, self.events)
+        action.assert_called_once()
+        self.assertEqual(sum('keyevent' in c.args for c in adb.call_args_list), 1)
+
+
 class NativeMoreRecoveryTests(unittest.TestCase):
     current='mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}'
     def center(self):

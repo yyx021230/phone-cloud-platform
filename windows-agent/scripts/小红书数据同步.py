@@ -1249,6 +1249,20 @@ def tap_index_menu(adb_path, serial, root, guard, events):
             and recover_known_overlay(adb_path, serial, fresh, guard, events)):
         fresh = navigation_capture(adb_path, serial, guard, events)
         assert_requested_foreground(focus(adb_path, serial), events)
+    elif re.search(r"com\.xingin\.xhs/(?:com\.xingin\.authorization\.NotificationAuthorizationTranslucentActivity|"
+                   r"\.authorization\.NotificationAuthorizationTranslucentActivity)(?:[}\s]|$)", foreground):
+        # 121/app2: the known notification prompt can arrive after the menu
+        # action. Close it once; do not replay the menu or accept a hidden drawer.
+        def notification_guard():
+            guard()
+            current = focus(adb_path, serial)
+            assert_requested_foreground(current, events)
+            if current != foreground:
+                raise ElementListReadError("menu notification foreground changed before Back")
+        if not recover_known_overlay(adb_path, serial, fresh, notification_guard, events):
+            raise ElementListReadError("menu notification recovery was not proven")
+        fresh = navigation_capture(adb_path, serial, guard, events)
+        assert_requested_foreground(focus(adb_path, serial), events)
     if not (label(fresh, "我的草稿") and (label(fresh, "创作者中心") or label(fresh, "创作中心"))):
         raise ElementListReadError("native menu did not expose the Creator Center drawer")
 
