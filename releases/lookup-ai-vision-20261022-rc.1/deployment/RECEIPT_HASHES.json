@@ -1,0 +1,9 @@
+{
+  "docs/PROJECT_DEVELOPMENT.md": "20b0a776b625df6c8dfe02dc636fb70cfd38b0433869a356bf6c6a9ccb4606b0",
+  "releases/lookup-ai-vision-20261022-rc.1/README.md": "c6ef74aa02d41ece9e01c4eb45f97ebfa3d80008322303453d797c5412f2f415",
+  "releases/lookup-ai-vision-20261022-rc.1/deployment/CLOUD_ACTIVATED.json": "5be7ae7a6dd2dd029a32892470e6ba874a813c84e3e0f9e17ada2028d81e7be0",
+  "releases/lookup-ai-vision-20261022-rc.1/deployment/MAINTENANCE_STARTED.json": "848c583275f9a533a41d8f06d14b33a2f501a9921f5a4e82974202d03c6b9ea1",
+  "releases/lookup-ai-vision-20261022-rc.1/deployment/POSTFLIGHT.json": "c159b5458d0b08e1d4b7ef9c2f8f4a5567fe7135430f1e3c65069dad8bcb208a",
+  "releases/lookup-ai-vision-20261022-rc.1/deployment/README.md": "4a8d1aa192136f1c5bde49bffea6d6e000e79331e6c571592b190faef0ab818b",
+  "releases/lookup-ai-vision-20261022-rc.1/deployment/activate-cloud.py": "b4a61b319ee22f1feba94694d4e29509682d3134ab2a6441a1b1655d2b61b92a"
+}

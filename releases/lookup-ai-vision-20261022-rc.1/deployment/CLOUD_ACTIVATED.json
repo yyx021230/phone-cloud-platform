@@ -1,0 +1,29 @@
+{
+  "version": "lookup-ai-vision-20261022-deployed.1",
+  "atUtc": "2026-10-22T09:09:06Z",
+  "runtimeCandidateCommit": "fef7ff801c4fa8c391f0ae35a9f47ed6db3e8e76",
+  "imageId": "sha256:35cba1db05e126adf48acaa63241772854b7069559fd054459d74699a49a74ff",
+  "restartImageId": "sha256:35cba1db05e126adf48acaa63241772854b7069559fd054459d74699a49a74ff",
+  "runningContainerId": "aefaea11000ae678ad95853a309e91ed7eae3e5c53cf91764dd255363a2dadd7",
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "controlsInterrupted": [
+    "145",
+    "182",
+    "161",
+    "95",
+    "62",
+    "144"
+  ],
+  "ready": true,
+  "sourceDirectory": "/opt/phone-cloud-staging/lookup-ai-vision-20261022-rc.1",
+  "agentChanged": false,
+  "adbChanged": false,
+  "productionAcceptanceComplete": false
+}
