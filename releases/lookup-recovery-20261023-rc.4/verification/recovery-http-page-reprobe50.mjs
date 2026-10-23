@@ -1,0 +1,96 @@
+// Actual loopback HTTP with native Agent event-only screenshot transport; no real phones.
+import fs from 'node:fs/promises';import os from 'node:os';import path from 'node:path';import net from 'node:net';import crypto from 'node:crypto';import assert from 'node:assert/strict';import {spawn,execFile} from 'node:child_process';import {promisify} from 'node:util';import {once} from 'node:events';
+import http from 'node:http';import pg from 'pg';
+import {MANAGED_LOOKUP_PROTOCOL} from '../server/managed-lookup-store.mjs';import {hydrateManagedLookupTask} from '../windows-agent/src/managed-lookup-delivery.mjs';
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const runFile=promisify(execFile);
+async function runnerBridge(root,mode,extra=[]){const {stdout}=await runFile('python3',[path.join(root,'windows-agent/scripts/test_lookup_usb_recovery_flow.py'),'--bridge-'+mode,...extra],{timeout:15000});return JSON.parse(stdout.trim().split('\n').at(-1));}
+
+export async function runMixedHttp({databaseUrl='',holdMs=121000}={}){
+ const root=path.resolve(import.meta.dirname,'..'),temp=await fs.mkdtemp(path.join(os.tmpdir(),'lookup-ready-http-'));await fs.cp(path.join(root,'server'),path.join(temp,'server'),{recursive:true,filter:p=>!p.endsWith('.test.mjs')});await fs.symlink(path.join(root,'node_modules'),path.join(temp,'node_modules'),'dir');if(databaseUrl){assert.equal(new URL(databaseUrl).hostname,'127.0.0.1');await fs.cp(path.join(root,'deploy/sql'),path.join(temp,'deploy/sql'),{recursive:true});}
+ const socket=net.createServer().listen(0,'127.0.0.1');await once(socket,'listening');const port=socket.address().port;await new Promise(r=>socket.close(r));const base=`http://127.0.0.1:${port}`,admin=crypto.randomUUID(),secret=crypto.randomUUID(),probe='13800000000';let child,worker,run=true,releaseProbes=false,probeCount=0,businessCount=0,starts=0,workerError;const held=[],businesses=[],stderr=[];let probeResumes=0;
+ const apiKey='pclk_'+crypto.randomBytes(32).toString('base64url'), otherKey='pclk_'+crypto.randomBytes(32).toString('base64url'); const clients=[{clientId:'ready-client',secret,username:'ready_user',deviceIds:['adb:READY-51'],apiKeySha256:crypto.createHash('sha256').update(apiKey).digest('hex')},{clientId:'other-client',secret,username:'other_user',deviceIds:['adb:READY-51'],apiKeySha256:crypto.createHash('sha256').update(otherKey).digest('hex')}];
+ let modelCalls=0,activeModels=0,maxModels=0,modelResponses=0;const modelPending=[];
+ const model=http.createServer(async(req,res)=>{let raw='';for await(const b of req)raw+=b;const input=JSON.parse(raw),url=input.input[0].content.find(x=>x.type==='input_image').image_url,phone=Buffer.from(url.split(',')[1],'base64').toString('utf8').match(/199\d{8}/)?.[0];assert.ok(phone);modelCalls++;activeModels++;maxModels=Math.max(maxModels,activeModels);if(phone.endsWith('01'))await sleep(1200);
+ const named=Number(phone.slice(-2))%3===0,v={outcome:named?'name':'no_name',searchPhone:phone,blocked:false,completeResult:true,cards:named?[{displayName:'测试(*甲)',phone,accountLine:phone,transfer:true,addFriend:true,unverified:false,box:[.1,.2,.95,.5],nameBox:[.2,.22,.8,.27],phoneBox:[.2,.3,.8,.35]}]:[],shortcuts:named?[]:[{label:'手机充值',phone,box:[.1,.2,.9,.4]}],headers:named?[]:['快捷功能'],emptyMarker:'',emptyBoundary:named?'unknown':'blank_space'};
+ res.writeHead(200,{'Content-Type':'application/json'});res.end(JSON.stringify({status:'completed',output:[{type:'message',content:[{type:'output_text',text:JSON.stringify(v)}]}]}));activeModels--;modelResponses++;
+ });model.listen(0,'127.0.0.1');await once(model,'listening');
+ const env={LOOKUP_AI_VISION_ENABLED:'true',LOOKUP_AI_VISION_BASE_URL:'http://127.0.0.1:'+model.address().port,LOOKUP_AI_VISION_API_KEY:'synthetic-model-key',PATH:process.env.PATH,HOME:process.env.HOME,NODE_ENV:'test',HOST:'127.0.0.1',PORT:String(port),DATA_DIR:path.join(temp,'data'),STORAGE_BACKEND:databaseUrl?'postgres':'json',STRUCTURED_WRITES:'true',DATABASE_URL:databaseUrl,REDIS_URL:'',ADMIN_PASSWORD:crypto.randomUUID(),ADMIN_API_TOKEN:admin,WINDOWS_AGENT_TOKEN:crypto.randomUUID(),DEVICE_AGENT_TOKEN:crypto.randomUUID(),SCREEN_MEDIA_AUTH_SECRET:crypto.randomUUID(),OPEN_NAME_LOOKUP_API_ENABLED:'true',MANAGED_NAME_LOOKUP_ENABLED:'true',OPEN_NAME_LOOKUP_CLIENTS_JSON:JSON.stringify(clients),LOOKUP_READINESS_PROBE_PHONE:probe,LOOKUP_HUMAN_FEISHU_WEBHOOK:'',LOOKUP_HUMAN_FEISHU_WEBHOOK_FILE:''};
+ const start=async()=>{child=spawn(process.execPath,[path.join(temp,'server/index.mjs')],{cwd:temp,env,stdio:['ignore','ignore','pipe']});child.stderr.on('data',b=>{stderr.push(String(b));if(stderr.length>15)stderr.shift();});for(let i=0;i<200;i++){if(child.exitCode!==null)throw Error('server exited:'+stderr.join('').slice(-1000));try{if((await fetch(base+'/readyz')).ok)return;}catch{}await sleep(25);}throw Error('ready timeout');};
+ const api=async(method,p,token,body)=>{const res=await fetch(base+p,{method,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)}),b=await res.json();assert.ok(res.status<300,`${method} ${p}: ${res.status} ${b.error||b.code}`);return b;};
+ // The external side uses ordinary HTTP, with no SDK or HMAC.
+ const request=async(method,p,body,key,credential=apiKey)=>{
+  const res=await fetch(base+p,{method,headers:{'X-API-Key':credential,'Content-Type':'application/json',...(key?{'Idempotency-Key':key}:{})},body:body===undefined?undefined:JSON.stringify(body)});
+  const data=await res.json();if(!res.ok)throw Object.assign(new Error(data.code||data.error),{status:res.status,code:data.code||data.error});return data;
+ };
+ const a={prepareLookup:o=>request('POST','/api/v1/open/name-lookups/prepare',{},o.idempotencyKey),submitLookup:(phoneNumber,o)=>request('POST','/api/v1/open/name-lookups/tasks',{phoneNumber},o.idempotencyKey),getLookupResult:id=>request('GET','/api/v1/open/name-lookups/tasks/'+id)};
+ const preparePublic=async options=>{const p=await a.prepareLookup(options);assert.equal(typeof p.acceptingRequests,'boolean');assert.equal('readyCount' in p,false);if(p.code){assert.equal(p.code,'lookup_no_available_device');assert.equal(p.retryAfterSeconds,30);}assert.equal(p.ready,p.status==='ready');return p;};let token;const account={currentAccount:'synthetic-account',accountIdentityVerified:true,savedAccounts:[{account:'synthetic-account',current:true}]};const finish=(t,result={})=>api('POST',`/api/v1/windows-agent-tasks/${t.taskId}/status`,token,{status:'succeeded',managedLookupGeneration:t.payload.managedLookup.generation,result:{...account,...result}});
+ const inventory={agent:{agentId:'readiness-fake',managedLookupProtocol:MANAGED_LOOKUP_PROTOCOL,lookupRuntimeId:crypto.randomUUID(),health:{airtest:{enabled:true,ok:true}}},devices:[51,52,54,55,87].map(n=>({adbSerial:'READY-'+n,state:'device',deviceName:String(n)}))};
+ const sync=()=>api('POST','/api/v1/windows-agents/readiness-fake/devices/sync',token,inventory);
+ const wait=async fn=>{for(let i=0;i<7000;i++){if(workerError)throw workerError;const x=await fn();if(x)return x;await sleep(30);}throw Error('condition timeout');};
+
+ const pool=async()=>(await api('GET','/api/v1/admin/lookup-pool',admin)).pool;
+ const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/ZfcAAAAASUVORK5CYII=','base64');
+ let holdBusiness=true;const queries=new Map(),attempts=new Map(),firstDevices=new Map(),handoffs=new Set(),localResumes=new Set(),stopTasks=[];let maxExecuting=0,maxReserved=0;
+ async function fail(t){const number=t.payload.phoneNumber;queries.set(number,(queries.get(number)||0)+Number(!t.payload.resumeAfterHumanVerification));attempts.set(number,(attempts.get(number)||0)+1);
+ const kind=Number(number.slice(-2))%5,attempt=attempts.get(number);
+ if(attempt===1)firstDevices.set(number,t.deviceId);
+ if(attempt>1&&[1,2,3].includes(kind)){
+  if(kind===1){assert.equal(t.deviceId,firstDevices.get(number));assert.equal(t.payload.resumeAfterHumanVerification,true);assert.equal(t.payload.preparedLookup?.observationOnlyResume,false);const recovered=await runnerBridge(root,'resume',['--phone',number,...(Number(number.slice(-2))%3===0?[]:['--empty'])]);assert.equal(recovered.inputCalls,1);localResumes.add(number);await finish(t,recovered.result);return;}
+  else{assert.notEqual(t.deviceId,firstDevices.get(number));assert.ok(stopTasks.some(x=>x.deviceId===firstDevices.get(number)));handoffs.add(number);}
+  const named=Number(number.slice(-2))%3===0;
+  await finish(t,{alipayDisplayName:named?'测试(*甲)':'',realNameTailCharacter:named?'甲':'',notFound:!named});return;
+ }
+ const result={...account,errorCode:'alipay_lookup_result_unconfirmed',diagnostic:{runnerReason:'result_cards_not_accessible'},screenshot:{dataUrl:'data:image/png;base64,'+Buffer.concat([png,Buffer.from(number)]).toString('base64'),capturedAt:new Date().toISOString()}};
+ if(kind===1)result.diagnostic.runnerReason=Number(number.slice(-2))%2?'local_lookup_result_unconfirmed:input_changed':'local_lookup_result_unconfirmed:post_human_input_changed';
+ if(kind===2){result.errorCode='task_failed';result.message='server_error';result.uiSnapshot='Killed';}
+ if(kind===3)result.diagnostic.runnerReason='local_lookup_result_unconfirmed:foreground_changed';
+ const bytes=Buffer.concat([png,Buffer.from(number)]).length;
+ await api('POST',`/api/v1/windows-agent-tasks/${t.taskId}/events`,token,{phase:'finish',level:'error',message:'synthetic native transport',screenshot:result.screenshot});
+ result.screenshot={mimeType:'image/png',sizeBytes:bytes,capturedAt:result.screenshot.capturedAt,hasDataUrl:false};
+ await api('POST',`/api/v1/windows-agent-tasks/${t.taskId}/status`,token,{status:'failed',managedLookupGeneration:t.payload.managedLookup.generation,result});}
+ function work(){worker=(async()=>{let last=0;while(run){if(Date.now()-last>2000){await sync();last=Date.now();}
+ const {task}=await api('GET',`/api/v1/windows-agents/readiness-fake/tasks/next?managedLookupDelivery=${MANAGED_LOOKUP_PROTOCOL}&activeTaskIds=${encodeURIComponent(held.map(t=>t.taskId).join(','))}`,token);
+ if(task){const x=await hydrateManagedLookupTask(task,{request:(p,o={})=>api(o.method||'GET',p,token,o.body)});assert.ok(x.acknowledged);const t=x.task;
+ const capacity=await pool();maxExecuting=Math.max(maxExecuting,capacity.counts.executing);maxReserved=Math.max(maxReserved,capacity.channels.length);assert.ok(maxExecuting<=5&&maxReserved<=5);
+ if(t.type==='alipay_name_start'){const usb=await runnerBridge(root,'usb');assert.equal(usb.closed,true);assert.equal(usb.continuedToSettings,true);starts++;await finish(t,usb.accountPrepared);}
+ else if(t.type==='alipay_name_query'){if(t.payload.phoneNumber===probe){probeCount++;if(!t.payload.resumeAfterHumanVerification){await api('POST',`/api/v1/windows-agent-tasks/${t.taskId}/status`,token,{status:'failed',managedLookupGeneration:t.payload.managedLookup.generation,result:{...account,errorCode:'alipay_lookup_result_unconfirmed',diagnostic:{runnerReason:'local_lookup_result_unconfirmed:post_human_input_changed'}}});}else{assert.equal(t.payload.preparedLookup?.observationOnlyResume,false);const recovered=await runnerBridge(root,'resume',['--phone',probe]);assert.equal(recovered.inputCalls,1);probeResumes++;await finish(t,recovered.result);}}else{businessCount++;businesses.push(t);if(holdBusiness)held.push(t);else await fail(t);}}
+ else if(t.type==='alipay_name_stop'){stopTasks.push(t);await finish(t);}else throw Error('unexpected task');
+ }await sleep(20);}})().catch(e=>workerError=e);}
+ const stopPublic=p=>request('POST','/api/v1/open/name-lookups/stop',{preparationId:p.preparationId},'stop-'+p.preparationId);
+ try{
+ await start();await api('POST','/api/v1/users',admin,{username:'ready_user',password:crypto.randomUUID(),role:'user'});({token}=await api('POST','/api/v1/windows-agents',admin,{agentId:'readiness-fake'}));await sync();
+ for(const n of [51,52,54,55,87])await api('PUT','/api/v1/devices/'+encodeURIComponent('adb:READY-'+n),admin,{deviceName:String(n),listingStatus:'listed'});
+ const preview=(await api('POST','/api/v1/admin/lookup-pool/preview',admin,{})).devices.filter(d=>d.matches===1);
+ await api('PUT','/api/v1/admin/lookup-pool',admin,{enabled:true,concurrency:5,asyncQueueWaitMs:1800000,asyncTaskTtlMs:3600000,preparedClientInflightLimit:100,devices:preview.map(d=>({...d,enabled:true})),grants:[{clientId:'ready-client',enabled:true,consentReference:'synthetic-consent'}]});
+ // Seed an old round only in this fresh, isolated database with its server
+ // stopped. No production URLs, admin reset endpoint or runtime bypass exists.
+ const exitedFixture=once(child,'exit');child.kill('SIGTERM');await exitedFixture;
+ let db;const file=path.join(temp,'data/managed-lookup.json');
+ if(databaseUrl){db=new pg.Client({connectionString:databaseUrl});await db.connect();}
+ try{
+  const state=db?(await db.query("select data from phone_cloud_managed_lookup where state_key='default'")).rows[0].data:JSON.parse(await fs.readFile(file,'utf8'));
+  const time=Date.now(),preparationId=crypto.randomUUID();state.preparations=[{clientId:'ready-client',preparationId,createdAt:time,idlePolicy:1,admissionPolicy:1,idleTimeoutMs:900000,idleSince:time,expiresAt:time+900000,probeAttempts:[],probeDemand:true}];
+  for(const d of state.devices.filter(d=>[54,55,87].includes(d.deviceNumber)))d.preparationIssue={domain:'page',code:'alipay_page_element_changed',at:time-3600000,rounds:[{clientId:'ready-client',preparationId,count:2}]};
+  if(db)await db.query("update phone_cloud_managed_lookup set data=$1::jsonb where state_key='default'",[JSON.stringify(state)]);else await fs.writeFile(file,JSON.stringify(state));
+ }finally{await db?.end();}
+ await start();await sync();
+ const prep=await preparePublic({idempotencyKey:'ai-startup-round'});work();await wait(async()=>(await preparePublic({idempotencyKey:'ai-startup-round'})).ready);
+ const initialReady=(await pool()).channels.filter(c=>c.readinessProof).length;assert.ok(initialReady>=2&&initialReady<5);
+
+ const submitted=await Promise.all(Array.from({length:50},(_,i)=>a.submitLookup('1990000'+String(i+1).padStart(4,'0'),{idempotencyKey:'ai-business-'+i})));
+ await wait(()=>held.length===5);const recoveredPool=await pool();const pageRetries=recoveredPool.requests.filter(r=>r.pageReprobe);assert.equal(pageRetries.length,3);for(let i=1;i<pageRetries.length;i++)assert.ok(Date.parse(pageRetries[i].createdAt)-Date.parse(pageRetries[i-1].createdAt)>=60000);assert.equal(recoveredPool.channels.length,5);const started=Date.now();await sleep(holdMs);
+ const retryElapsedMs=Date.now()-started;assert.ok(retryElapsedMs>=holdMs);
+ const repeat=await a.submitLookup('19900000001',{idempotencyKey:'ai-after-timeout-new-key'});assert.equal(repeat.lookupId,submitted[0].lookupId);assert.equal(modelCalls,0);assert.equal(businessCount,5);
+ holdBusiness=false;for(const t of held.splice(0))await fail(t);
+ await wait(async()=>{const p=await pool();assert.ok(!p.requests.some(r=>r.purpose!=='readiness_probe'&&['failed','expired','cancelled'].includes(r.status)),'unexpected business terminal failure');return p.requests.filter(r=>r.purpose!=='readiness_probe'&&['succeeded','not_found'].includes(r.status)).length===50;});
+ for(let i=0;i<50;i++){const result=await a.getLookupResult(submitted[i].lookupId);assert.deepEqual(Object.keys(result).sort(),['lookupId','name','ok','status']);assert.equal(result.status,'completed');assert.equal(result.name,(i+1)%3===0?'测试(*甲)':'');assert.equal(queries.get('1990000'+String(i+1).padStart(4,'0')),[2,3].includes((i+1)%5)?2:1);}
+ assert.equal(localResumes.size,10);assert.equal(handoffs.size,20);assert.equal(modelCalls,20);assert.equal(modelResponses,20);assert.ok(maxModels<=5);assert.equal(attempts.size,50);assert.ok([...attempts.values()].every(n=>n===2));
+ await stopPublic(prep);await wait(async()=>!(await pool()).channels.length);assert.equal((await preparePublic({idempotencyKey:'ai-startup-round'})).status,'stopped');
+ run=false;await worker;if(workerError)throw workerError;const exited=once(child,'exit');child.kill('SIGTERM');await exited;await start();await sync();
+ assert.equal((await a.getLookupResult(submitted[2].lookupId)).name,'测试(*甲)');assert.equal((await a.getLookupResult(submitted[1].lookupId)).name,'');
+ run=true;work();const next=await preparePublic({idempotencyKey:'ai-next-round'});assert.notEqual(next.preparationId,prep.preparationId);await wait(async()=>(await preparePublic({idempotencyKey:'ai-next-round'})).ready);await stopPublic(next);await wait(async()=>!(await pool()).channels.length);
+ return {storage:databaseUrl?'postgres':'json',initialReady,legacyPageReprobes:pageRetries.length,pageReprobeSpacingMs:pageRetries.slice(1).map((r,i)=>Date.parse(r.createdAt)-Date.parse(pageRetries[i].createdAt)),maxReserved,businessRequests:50,modelCalls,names:16,empty:34,maxExecuting,maxModels,elapsedBeforeNewKeyMs:retryElapsedMs,requestedHoldMs:holdMs,originalIdsPreserved:true,samePhoneResumes:localResumes.size,probeSamePhoneRecoveries:probeResumes,pythonRunnerUsbFlows:starts,pythonRunnerInputRecoveries:localResumes.size,simulatedDeviceIO:true,fencedHandoffs:handoffs.size,sampledResultsKeptAcrossRestart:2,stopAndNextRound:true,physicalReservationsDrained:true,realPhones:0,productionActions:0};
+ }finally{run=false;await worker?.catch(()=>{});if(child?.exitCode===null){const ex=once(child,'exit');child.kill('SIGTERM');const timer=setTimeout(()=>child.kill('SIGKILL'),2500);await ex;clearTimeout(timer);}model.closeAllConnections();await new Promise(r=>model.close(r));await fs.rm(temp,{recursive:true,force:true});}
+}
+if(process.argv[1]===import.meta.filename)console.log(JSON.stringify(await runMixedHttp({holdMs:Number(process.env.AI_HTTP_HOLD_MS||121000),databaseUrl:process.env.MANAGED_LOOKUP_TEST_DATABASE_URL||''})));
