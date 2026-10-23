@@ -1,0 +1,1204 @@
+{
+  "firstAttempt": {
+    "total": 56,
+    "passed": 55,
+    "failed": 1
+  },
+  "retestedCases": [
+    "s046"
+  ],
+  "unchangedInputPairsVerified": 55,
+  "total": 56,
+  "passed": 56,
+  "failed": 0,
+  "historicalImages": 45,
+  "syntheticImages": 11,
+  "expectedClose": 3,
+  "expectedNoAction": 53,
+  "actualClose": 3,
+  "falseClose": 0,
+  "missedClose": 0,
+  "modelRequests": 56,
+  "latencyMs": {
+    "min": 3843,
+    "median": 5779.0,
+    "max": 17276
+  },
+  "phoneActions": 0,
+  "productionChanges": 0,
+  "cases": [
+    {
+      "id": "s001",
+      "category": "captcha",
+      "synthetic": false,
+      "pixelSha256": "1b79180fae7f8cb517bb0121dca381942c493afd509b905282cc29340e68a54b",
+      "imageSha256": "926ad0d398c8351c015e99f6b28df77747fd2bcaf8b730d0ab10aff7ddb25b79",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s001",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 13191,
+        "candidateCount": 26,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "protected",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s002",
+      "category": "account_picker",
+      "synthetic": false,
+      "pixelSha256": "d3bc4631fdc33449815e53c0442a899800ba905791a8dbee6b5e1dcdf91f252f",
+      "imageSha256": "2365148f62899ea3ed0112f7c0662eb2819d55fb2b7cd52e31faec6bbb417ae5",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s002",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 14637,
+        "candidateCount": 24,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s003",
+      "category": "black",
+      "synthetic": false,
+      "pixelSha256": "75539be371fae5bd5197cda297749095b17048c282150626bcd9de7db8d7b8e6",
+      "imageSha256": "dacad2e5575da451953fe898c6668cf7b8abe40b37ec57b44208638df62d738b",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s003",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 3843,
+        "candidateCount": 1,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "uncertain",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s004",
+      "category": "login",
+      "synthetic": false,
+      "pixelSha256": "31bbd80a5ce7ae8fe939314be1760ce51769b7a5ca8c22f45071debabd2d7370",
+      "imageSha256": "1deda91d93c704775920fb0be1718a779c0933bdb3d6a95bce69484d0002dd38",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s004",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 4783,
+        "candidateCount": 24,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "protected",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s005",
+      "category": "risk",
+      "synthetic": false,
+      "pixelSha256": "06f5b57cdb6d9ccf7c04eaf957026354c4750bfe5349e12c194f8ce9a3527db7",
+      "imageSha256": "3e735c679a53a9e27b497637e7ece030c75c4d4eff3d4d0cc58d1fefe393e121",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s005",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 5703,
+        "candidateCount": 15,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "protected",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s006",
+      "category": "usb",
+      "synthetic": false,
+      "pixelSha256": "4270672561bd7c4a7d7a2bf036f7f855f09f2809498fa1877eb9f3af9dfbe0d8",
+      "imageSha256": "82d87b58f199c7a8cb5762e72092d46a3d995382c9cfdc87009e710c86aef3ee",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s006",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 8138,
+        "candidateCount": 25,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "protected",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s007",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "6806e2da40bafee85b292dd78ddc53d216ae15e14f4c8fc2a2046ba944b8bcc5",
+      "imageSha256": "75b8edab809bef72dc494f5abbf1935c6829f5acf28a6c7fd3a33029bfb61c41",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s007",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 5895,
+        "candidateCount": 31,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s008",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "b5035279c8417446008d6b2917d71382d9f690d76cb095554962a2112a1f3533",
+      "imageSha256": "e7b352d83a5e350f4ba80921ccc4a9dff4742bbfe9f7ce51b0d4dbcec4b7baa0",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s008",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 17276,
+        "candidateCount": 62,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s009",
+      "category": "home_background_banner",
+      "synthetic": false,
+      "pixelSha256": "69f86486d4a9de187cd2b6783d39c9fb4fdbf3d2bc94c24167f1b19d36907627",
+      "imageSha256": "5588b4b17a76745938e104c6cb6704e6009dbd3c43a0b74a20518f8fd02657b3",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s009",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 10510,
+        "candidateCount": 45,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s010",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "43c0efb00e989040398560f051c8b48ea96d92befd39452a1e6808a06eaeeced",
+      "imageSha256": "1d6244130a123e58ba4f3f3e7bdedeff635acdb76ee626d1034e4c5805859eb0",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s010",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 6831,
+        "candidateCount": 27,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s011",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "84a98de499fbfe712816500fbfe3cff712e1262fe3fd6c93c2a606c2e7fa1130",
+      "imageSha256": "568a097b981c286a8e5966bd2c04b8e9a9a50d1e4d5a03d595b8b6afbac07cb6",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s011",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 6182,
+        "candidateCount": 28,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s012",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "6b60c076aaaf84cd2612ee1b818cde92d4753f8f6e997142775920e55944c231",
+      "imageSha256": "34981c6ad9ab5577bf93f3d92a2e4e71b7a136a7ecd5eea10d60d6b1c1f099e5",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s012",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 6468,
+        "candidateCount": 38,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s013",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "eb886b6ebf20e65b8c3e3483114b7627360f8e288358529d89bb9b40cd9fc0ec",
+      "imageSha256": "ec7b3284443b1387b74730e3104ec3751d93801d8a16269fd6483876b7468244",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s013",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 5388,
+        "candidateCount": 33,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s014",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "bd1e45eb9770ccc80ae41c2234e2929e2cdae4248eed3dfde4154f2aec117322",
+      "imageSha256": "c1546fac8eb02f38cf953f1e893c07cf67232a2452535f1b2f7038f9396152e2",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s014",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 6461,
+        "candidateCount": 24,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s015",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "672525e94b0c723f2af2c5361203aafd62b0a0bff3896f30cf487b7bb51bb4dc",
+      "imageSha256": "530eb596f3652ab659d9ea2d6bfe1601edb852dd2444aa5e890db42478f73c4f",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s015",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 6195,
+        "candidateCount": 40,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s018",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "7e7b64410cffbda9a080c7d6f155b83b28b73d7b990e0393f9358116b422af67",
+      "imageSha256": "47467fa4f6bb3ba451dcae058b8da10c48004cd864b8324ea82d76d37aa7eeca",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s018",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 7427,
+        "candidateCount": 24,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s019",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "8328c920f9b0217fc9a113ddaf94d45b14737126bc71c0218638d1e77b7d18ee",
+      "imageSha256": "d482a1daad027ee7ddb66f2c73d519c470d023f28177848f1d278d0802131456",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s019",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 6592,
+        "candidateCount": 22,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s020",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "a2f3f500a4f75c83042bf771dddc6dc3935ebce840f40ca1f86a7b188a812ba2",
+      "imageSha256": "1d52999f9bcf8358ab883f28709cfb4b848fe2df8a20be83a020673e94b1a6c2",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s020",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 11285,
+        "candidateCount": 29,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s021",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "4cbe640104101fc88a2719459c5c72f9e905b9830faf1a26dd70e749d19e0fc7",
+      "imageSha256": "96e641b635be3062d6823a9595418d04b85ea449deb4322be4b43146bd2f2972",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s021",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 8820,
+        "candidateCount": 32,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s022",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "0e6c08c62947e1a2d1c3bf13d7bcb10dd29500ca515fd83f462509d3447532f6",
+      "imageSha256": "0170e0dc78ca8b5e8df498c7fa444fdcc14b7e946df9ef05d64ec6d5e544727d",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s022",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 5995,
+        "candidateCount": 26,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s023",
+      "category": "usb",
+      "synthetic": false,
+      "pixelSha256": "297441397175c915ee87f599a61059abe46b9a41c5caf72b850ed901964a83df",
+      "imageSha256": "83d5727d71bb0f66ad739d53938fcdccea46f0f38dc987bb11121553bc16635f",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s023",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 9789,
+        "candidateCount": 26,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "protected",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s024",
+      "category": "account_picker",
+      "synthetic": false,
+      "pixelSha256": "7e455ba522e9184c1393e4b982fb8ec076cfc4f3bb33a0403caf710b2633b890",
+      "imageSha256": "151e138ddf803f0dc3c2b2449123ae9e877fe4d974e5c00bc0d1b22aa1ee5126",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s024",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 4848,
+        "candidateCount": 26,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s025",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "61f20ddf30011033ca9a073385104f85023563710a4087cddcfe46bb6da066c1",
+      "imageSha256": "5b3ceee57a170b4885e4e3b158676ccc3fe3eff99d8c7f32d40a37cce960d44d",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s025",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 5446,
+        "candidateCount": 69,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s026",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "8fdfe77ce04d0f206b0d28ffd659b2e049f7afd53c4b39f4220ce32a36cdd7cf",
+      "imageSha256": "0a8477c3f86b0c5ac16d103b42bdaf2ad3ad5593715ff21b9ecaab4bf96ee16a",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s026",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 8118,
+        "candidateCount": 30,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s027",
+      "category": "login",
+      "synthetic": false,
+      "pixelSha256": "256683151f23f7755ea2ce4151cb39840d0db0458e27f60818c5b0452b8afee0",
+      "imageSha256": "6f04947f95d9dbcfe7b8150de0895a5add071ccb107227a6f2dd209e720a74ac",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s027",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 4616,
+        "candidateCount": 14,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "protected",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s028",
+      "category": "risk",
+      "synthetic": false,
+      "pixelSha256": "7604da42eb63091a68718a906817c0d6be51163b43610c7aa327fd892a27a57c",
+      "imageSha256": "b5a61b59d591722f338b47fa8f97ece2bb72ba07ce426d5328957435c7242c1f",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s028",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 5330,
+        "candidateCount": 15,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "protected",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s029",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "62f8b214226f14d936d7b8a54735dfc394008ec938023375e32a47047925e918",
+      "imageSha256": "df090b505b94ae8b10bedad2933da9c279fccbc0ac9c547d1cbd193adb716560",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s029",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 6240,
+        "candidateCount": 70,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s030",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "a26a6c4752f7a10d63ebe0f8281d7b149fa244cfeb0458377be69b7e93286903",
+      "imageSha256": "baba977eff226db219ed46903f7b99d345f91df749d7ae5132720e01789bdf62",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s030",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 5018,
+        "candidateCount": 26,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s031",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "3064b71373b429883e74741ffaff775898254c0e9a46469d893bf21acb61487f",
+      "imageSha256": "986123d0c307ed56bea5df9270ec18a73e482222247bc7dd23370b4b440d04a7",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s031",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 6363,
+        "candidateCount": 72,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s032",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "86887292e2b7ac2f3168e264e5556b76a7a7421e03e3f096c29575a76c267ccb",
+      "imageSha256": "21dfebe97981d64fbe1c1dfc61147135ce09a193455d2354ff23893c7c3667b0",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s032",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 5064,
+        "candidateCount": 74,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s033",
+      "category": "usb",
+      "synthetic": false,
+      "pixelSha256": "9f83ce893ef1bc70adc5958b119a0025c38e5ab4914775397214ffb73b9ef7ae",
+      "imageSha256": "b532614f4f7edf880b55c1124c6df288b8346d4fb4fcf17784ff609e26045008",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s033",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 8275,
+        "candidateCount": 44,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "protected",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s034",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "dae635a0d5a7c74b486b3bb4f31151040dd7e2e7a06ae679fb7a77e0212e8199",
+      "imageSha256": "ef15b614482f24a3484eb085161be8f86f19b452a405f60755a32284fed007c3",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s034",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 8237,
+        "candidateCount": 27,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s035",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "83b18edc6fdf17b38bcd6529480cd82b822abae11997a9b6bb26e05f9212ee0a",
+      "imageSha256": "1dcac673021015a5f70f3b560bd514fad2359940ae91651c368620111dbd3ebb",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s035",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 5109,
+        "candidateCount": 23,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s036",
+      "category": "synthetic_result",
+      "synthetic": true,
+      "pixelSha256": "637133b6aa6499953fc238b4ace24969619e9a53c1efe7d8e342b62a6f4ee83b",
+      "imageSha256": "0043b07488ae808106b55c65b2e6bf0b419ba8e24dbcefd5495138f79829dc32",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s036",
+        "synthetic": true,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 4190,
+        "candidateCount": 18,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s037",
+      "category": "synthetic_result",
+      "synthetic": true,
+      "pixelSha256": "94aedb98bba9cd57311f2c68faba6153752bec63295eb85158e50877cf1f1d74",
+      "imageSha256": "5dee7bc69525383ae3e2bbd04c8a2e8d7d063616a84fb3bd6074eaa97db56041",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s037",
+        "synthetic": true,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 4307,
+        "candidateCount": 14,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s038",
+      "category": "synthetic_result",
+      "synthetic": true,
+      "pixelSha256": "eda2c71d99dfd09b3abc43d1c3593217f73b3ec96a26c5d7954727bfcc84c2fc",
+      "imageSha256": "2db879adfa6b5a0c1aa22da8d52db7f9e1a2cc21ad099e6fb0a70fb1f3df50cd",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s038",
+        "synthetic": true,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 4347,
+        "candidateCount": 18,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s039",
+      "category": "synthetic_result",
+      "synthetic": true,
+      "pixelSha256": "a2d06bb861ac8b5ffbcd6cfb40536e60752cda69e1a0f957b17d64aac9448e96",
+      "imageSha256": "1690b75eb015c9f3bb8fe845d21310443a2b4ca0cc31a4e3305525b10eafaa3c",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s039",
+        "synthetic": true,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 5340,
+        "candidateCount": 13,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s040",
+      "category": "synthetic_result",
+      "synthetic": true,
+      "pixelSha256": "b99c71b7b1ec5d5eab8cfdedf0f57388ca0ef0fa5a1b500f8b56d730946e73cc",
+      "imageSha256": "4c349c30285dad6a402de3aad973e89b756802ef912b2adc15ce4c9a1f9e5081",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s040",
+        "synthetic": true,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 3929,
+        "candidateCount": 12,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s041",
+      "category": "synthetic_result",
+      "synthetic": true,
+      "pixelSha256": "ed94e540882b4028c5cc9d63d8c374ddf76abed9017df34d51810b4b19fe8301",
+      "imageSha256": "4bf8778790dc89f5def23c151d2c25edf2d88c692f9e72c8f1e5db2baf225cec",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s041",
+        "synthetic": true,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 4212,
+        "candidateCount": 16,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s042",
+      "category": "synthetic_result",
+      "synthetic": true,
+      "pixelSha256": "9c9a2ad60695f33a1c19aff5c332ae2ee0c88b1e86bd101afd4fe0526fb8b658",
+      "imageSha256": "ce5cc598ace5587017b7300b784c855a5cc9eb9ef3645a9a2d157ed2222ae29d",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s042",
+        "synthetic": true,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 4169,
+        "candidateCount": 14,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s043",
+      "category": "synthetic_result",
+      "synthetic": true,
+      "pixelSha256": "ca3870eb734081a5a986b4b01010f93233843d9bd770262affc4f49ef6847440",
+      "imageSha256": "57cb1f81a7759ccba8724728b2229872049cd3f757ff42806e467f3edffc6466",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s043",
+        "synthetic": true,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 3942,
+        "candidateCount": 12,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s044",
+      "category": "synthetic_result",
+      "synthetic": true,
+      "pixelSha256": "a5d7e4a2920c74645728493d7a27a09a95d7c9ad506cd64a0cf14727bd3121ba",
+      "imageSha256": "e8abd6fdfeeb176127189a0f2c8e0e3f176e1aa1f9b19c98d8627f4a435dddd9",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s044",
+        "synthetic": true,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 4839,
+        "candidateCount": 15,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s045",
+      "category": "synthetic_result",
+      "synthetic": true,
+      "pixelSha256": "3da40e2ac6bb306ca77e115390e429560c5e692d25ac524c654525c4213e8ff3",
+      "imageSha256": "39c565294f8b31b7126739a92d1c6686b5cc6d5f579f243b3ea3d07fbee9788d",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s045",
+        "synthetic": true,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 4702,
+        "candidateCount": 18,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s046",
+      "category": "synthetic_result",
+      "synthetic": true,
+      "pixelSha256": "04cf6e5eb97f7b118da472612517423ec703a057baa6de18488a57d103a7b5ae",
+      "imageSha256": "9a98ca662b72c4ef486c110e04c07df3774431215250d62066a0855e9153fc7c",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s046",
+        "synthetic": true,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 4253,
+        "candidateCount": 14,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s047",
+      "category": "advertisement",
+      "synthetic": false,
+      "pixelSha256": "277e14f1a9276d87e96cba0b7fab6d589a4631cefbede7380da37858a6a811f1",
+      "imageSha256": "2510d191683acff7ab9e86a903efcd55f1bd9f92c9d3ac0385e4a187915385b5",
+      "expectedAction": "close",
+      "result": {
+        "id": "s047",
+        "synthetic": false,
+        "expected": "close",
+        "passed": true,
+        "elapsedMs": 7025,
+        "candidateCount": 22,
+        "model": "gpt-6.1-sol",
+        "action": "close",
+        "frameId": "304d937a1ba51f1e3d89e5c5eb1054129ef0ae9d0b194fc50d451946a97aa97c",
+        "candidateId": "b0",
+        "box": [
+          330.1,
+          1222.8,
+          390.7,
+          1283
+        ],
+        "point": [
+          360,
+          1253
+        ],
+        "overlayType": "advertisement",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s048",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "9c61985a3a542eea869e17f855f23c35b69ce4101a6eff661f9970255b217e54",
+      "imageSha256": "c8683f7424586e4afc9117ecafa5048d69e76ec6c5351c3dad71a4f0ff8f8cbd",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s048",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 5634,
+        "candidateCount": 21,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s049",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "02efd2e6e5e82b64d8c9d8dd8da0f83395009cce49596c1f7601ec40736a2a2e",
+      "imageSha256": "867361329fa26f804dbf16f8c9ef88c9d2f246356a0268ba173f3b51111a8195",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s049",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 5482,
+        "candidateCount": 30,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s050",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "e6ab50e2ebb8e612c9691cd69964b5ab62a8f9042089a2d0262625b70e8d2088",
+      "imageSha256": "6e435c4c58f34185270af74f628045d369df4b9d048f0373df80842bdd6c914e",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s050",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 5993,
+        "candidateCount": 23,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s051",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "13f3d7be342d4c801fd48618bfe928383a07cf95ba408b2240b57e1d43ddfbef",
+      "imageSha256": "c4133cb828060f8fa567087483864133a06f60e0a9e7149ecbf8e35272157b71",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s051",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 7882,
+        "candidateCount": 22,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s052",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "d0d97256b5b1f938d147a333e9f1838417700963f74ccb8b79e0f673fe2a1752",
+      "imageSha256": "e0e207ca459dac333d3fc65c3591887eadcaaee5277e9a9beab7b8ad3d7c41cc",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s052",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 8992,
+        "candidateCount": 31,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s053",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "3120cb314366ba3f7a65ed3ea19ee02ff67e7cb1699bc4c46d139dee4ccdc724",
+      "imageSha256": "b0c8cc04a4cbb7cf3484920941b6f568f42d2ca433656dd45f00c8b6382f60c8",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s053",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 5624,
+        "candidateCount": 23,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s054",
+      "category": "optional_realname",
+      "synthetic": false,
+      "pixelSha256": "ba5efe580804cecfb00d114aaad18354d12fa988a34f1b2e83d5048b8047bd48",
+      "imageSha256": "190fd14570e1fdfa6b791975868408efef3dc9eb332a999923197738e8912e72",
+      "expectedAction": "close",
+      "result": {
+        "id": "s054",
+        "synthetic": false,
+        "expected": "close",
+        "passed": true,
+        "elapsedMs": 5405,
+        "candidateCount": 34,
+        "model": "gpt-6.1-sol",
+        "action": "close",
+        "frameId": "1f85a7ce41f732c0221f7f3c3042ec24449aba208b815cb6f666bfc169cd4a80",
+        "candidateId": "b5",
+        "box": [
+          330.1,
+          1222.5,
+          389.8,
+          1282.4
+        ],
+        "point": [
+          360,
+          1252
+        ],
+        "overlayType": "optional_realname",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s055",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "99097f65aa33d62ee874cfec320499a73ea4c466d8f76ab6a67dcde0ce2be8d1",
+      "imageSha256": "f4c788e311e69cb6c2851235a54c42e296617f3e3bfd644d8e14b91ee8a2cb52",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s055",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 6711,
+        "candidateCount": 24,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s056",
+      "category": "result_or_navigation",
+      "synthetic": false,
+      "pixelSha256": "a5e6693e1c2f475421e8d311b9df5343dd07839188aad0b9e29f406af4ed6382",
+      "imageSha256": "9630faca061cf142e90de33dd185d4606a2b80a244794378c53cf731e951a679",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s056",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 5855,
+        "candidateCount": 22,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s057",
+      "category": "account_picker",
+      "synthetic": false,
+      "pixelSha256": "1f38e345cec6737416ed1f83ee3b1c2827bd09c3da8e4deded09362bc67e5637",
+      "imageSha256": "c12f19e03af0510a77ac738808c39a15a08827335b6445420f1a84578edc5856",
+      "expectedAction": "no_action",
+      "result": {
+        "id": "s057",
+        "synthetic": false,
+        "expected": "no_action",
+        "passed": true,
+        "elapsedMs": 5219,
+        "candidateCount": 27,
+        "model": "gpt-6.1-sol",
+        "action": "no_action",
+        "reason": "none",
+        "phoneActions": 0
+      }
+    },
+    {
+      "id": "s058",
+      "category": "optional_realname",
+      "synthetic": false,
+      "pixelSha256": "ef1135baa133b04ce749ffdaf2d440ea27281cbdafb14773a05b49fac9948adc",
+      "imageSha256": "5003dd3af461db84c2e6b172062c82b6b33b27af029a2575a0f8a61f3ae885ce",
+      "expectedAction": "close",
+      "result": {
+        "id": "s058",
+        "synthetic": false,
+        "expected": "close",
+        "passed": true,
+        "elapsedMs": 4586,
+        "candidateCount": 8,
+        "model": "gpt-6.1-sol",
+        "action": "close",
+        "frameId": "1657d7492debacaa379bfe868ac89c30f78a24c4c62c97db685b2b0d501c7f48",
+        "candidateId": "b0",
+        "box": [
+          325.4,
+          1220,
+          395.4,
+          1288.1
+        ],
+        "point": [
+          360,
+          1254
+        ],
+        "overlayType": "optional_realname",
+        "phoneActions": 0
+      }
+    }
+  ],
+  "sourceHashes": {
+    "selector.test.mjs": "987d0ca863d4e2838fd4e422fbf57ad3b097049d52dab69f9943763695db1071",
+    "prepare-input.py": "454d4cf042752bbf48223b3fdc3f932b83ed6d26a1f6c9ced4f8ecace63afc2e",
+    "run-corpus.mjs": "ce379abbd5c30b962d7668131a245329dd2c95fd2eed5f5d8f0e1ade066e6d09",
+    "selector.mjs": "f6129646d8fcd7579c8f9cc2a999dd21f34ee23e3a1e528d10737386cca0fed4",
+    "report-corpus.py": "63519c0ba12920e41177c868a67c865dea90e817b5632e8a4e1182e81ac676c4",
+    "detect-corpus.py": "a9a9dee23b79eff1e488e995c269466171464507c6a669ebd16a318c2a75508a",
+    "test_prepare_input.py": "e0cf26dc53b91cab94aeae56537a7bd003d8be29d5c70ef0a02c320be9d70bab",
+    "run-local.mjs": "271a3325ec71ec1e9c1b8a14c4d4a0b8fc943ab6afbe7fd185dd553db362d2ad"
+  },
+  "modelSha256": "11c6cbb77f22569fab22d86c76407a83ec81ab89dbfe28279854822d6e3fb00c",
+  "boundary": "Saved-image detection/selection only. No phone/production/ADB/SYSTEM actions.",
+  "regression": {
+    "node": 33,
+    "pythonInputPreparation": 3
+  },
+  "firstFailure": "s046 detector letterbox region clipped to zero height on 720x520 image. Frame validator rejected it before model request. Invalid/degenerate boxes now dropped before labeling; preserve other candidate IDs. First 55 passed image pairs/candidates unchanged; s046 rerun passed."
+}
