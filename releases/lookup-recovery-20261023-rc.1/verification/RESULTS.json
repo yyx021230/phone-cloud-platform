@@ -1,0 +1,118 @@
+{
+  "at": "2026-10-23T01:09:19.910468+00:00",
+  "status": "local_candidate_only",
+  "rootCheck": true,
+  "nodeRegression": {
+    "passed": 1140,
+    "failed": 0,
+    "includesScreenRegression": true
+  },
+  "agentCheck": {
+    "passed": 393,
+    "failed": 0,
+    "overlapsNodeRegression": true
+  },
+  "pythonLookup": {
+    "passed": 301,
+    "failed": 0
+  },
+  "focusedAdapterRecovery": {
+    "passed": 70,
+    "failed": 0,
+    "includedInNodeRegression": true
+  },
+  "mixedJson": {
+    "storage": "json",
+    "businessRequests": 50,
+    "modelCalls": 20,
+    "names": 16,
+    "empty": 34,
+    "maxExecuting": 5,
+    "maxModels": 1,
+    "elapsedBeforeNewKeyMs": 121000,
+    "requestedHoldMs": 121000,
+    "originalIdsPreserved": true,
+    "samePhoneResumes": 10,
+    "fencedHandoffs": 20,
+    "allResultsKeptAcrossRestart": true,
+    "stopAndNextRound": true,
+    "physicalReservationsDrained": true,
+    "realPhones": 0,
+    "productionActions": 0
+  },
+  "mixedPostgres": {
+    "storage": "postgres",
+    "businessRequests": 50,
+    "modelCalls": 20,
+    "names": 16,
+    "empty": 34,
+    "maxExecuting": 5,
+    "maxModels": 1,
+    "elapsedBeforeNewKeyMs": 121001,
+    "requestedHoldMs": 121000,
+    "originalIdsPreserved": true,
+    "samePhoneResumes": 10,
+    "fencedHandoffs": 20,
+    "allResultsKeptAcrossRestart": true,
+    "stopAndNextRound": true,
+    "physicalReservationsDrained": true,
+    "realPhones": 0,
+    "productionActions": 0
+  },
+  "nativeEventJson": {
+    "storage": "json",
+    "businessRequests": 50,
+    "modelCalls": 50,
+    "names": 16,
+    "empty": 34,
+    "maxExecuting": 5,
+    "maxModels": 2,
+    "elapsedBeforeNewKeyMs": 1001,
+    "requestedHoldMs": 1000,
+    "originalIdsPreserved": true,
+    "oneInitialInputPerNumber": true,
+    "oneObservationRetryPerNumber": true,
+    "allResultsKeptAcrossRestart": true,
+    "stopAndNextRound": true,
+    "physicalReservationsDrained": true,
+    "realPhones": 0,
+    "productionActions": 0
+  },
+  "scopedRuntimeFiles": 5,
+  "frozenFileHashesVerified": 400,
+  "packagedAssemblyVerified": true,
+  "publicContractChanged": false,
+  "realPhones": 0,
+  "realModelCalls": 0,
+  "productionWrites": 0,
+  "priorFailures": [
+    {
+      "stage": "initial_node",
+      "failures": 2,
+      "cause": "Missing link to already installed windows-agent dependencies; no source/dependency upgrade",
+      "resolution": "Added isolated runtime link, full 1140 pass"
+    },
+    {
+      "stage": "initial_python",
+      "failures": 1,
+      "cause": "Existing test expected old identity_unverified for explicit device_risk",
+      "resolution": "Updated only device_risk expectation, full 301 pass"
+    },
+    {
+      "stage": "initial_postgres",
+      "cause": "Old structured preparation SQL created tables without repository data columns",
+      "resolution": "Fresh isolated DB, canonical application initialization plus two managed migrations, 50 HTTP pass"
+    }
+  ],
+  "unverified": [
+    "Windows native runtime and real-phone candidate acceptance",
+    "Production AI/model and real batch after deployment",
+    "52 continuous account-picker instability root cause",
+    "60 search-home transition failure root cause",
+    "Origin of executor Killed"
+  ],
+  "workflow": {
+    "path": "/Users/yyx/ztqc/PROJECT_WORKFLOW.md",
+    "sha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+  }
+}

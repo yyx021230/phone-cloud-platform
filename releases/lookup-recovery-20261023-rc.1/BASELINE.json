@@ -1,0 +1,46 @@
+{
+  "productionRelease": "lookup-ai-vision-20261022-deployed.1",
+  "sourceCommit": "fef7ff801c4fa8c391f0ae35a9f47ed6db3e8e76",
+  "imageId": "sha256:35cba1db05e126adf48acaa63241772854b7069559fd054459d74699a49a74ff",
+  "taskStartCommit": "f78f0d90e51e8b640224b7b8d0ab4288edf56761",
+  "branch": "codex/lookup-recovery-20261023",
+  "runtimeChanges": {
+    "server/lookup-failure-domain.mjs": {
+      "before": "124aa31e82d19a8d1c7261cf81df1320eb79308c4872f052b27f5a1c5e53cdb6",
+      "after": "f1c97c1dc7a5d60c1daee42c23c76c67080a82cb40b0102eda4605efb9f63597"
+    },
+    "server/managed-lookup-platform.mjs": {
+      "before": "0af2122462ce3cc7b7c0c1233f05fe3e89dbd44d23e24139134bec7762438752",
+      "after": "d8e6199507077b330702464b2b436e0b027dac272e8fb998bb65495dceb30a67"
+    },
+    "server/managed-lookup.mjs": {
+      "before": "b2dcb20129218265e50775fb6728fffeb9461a45ec75fd1a595bd5b27c3abb46",
+      "after": "5ed84e7df6ae34aecd54000237ecc7ef75db93d76d57eb5a56026e90b5031722"
+    },
+    "windows-agent/src/index.mjs": {
+      "before": "1d057629c452e0ce392f0cbc79a1ad3645cc90c5175dca980151dfb1d4a6d2a8",
+      "after": "36396aaec09e6222c2c52d647362a0a58f790c7aec2081dfc2685f1b0a1fcb67"
+    },
+    "windows-agent/scripts/alipay_name_lookup.py": {
+      "before": "04f157355eb7ed9cdefe0fa5c897245654210b9293c9b24f1c73a76ed95faf98",
+      "after": "c8cc924cf4de0773a73e43fccb68bd4423a2e13069d5112d7e61f4aca8e6e6ab"
+    }
+  },
+  "before": {
+    "server/lookup-ai-adapter.test.mjs": "a56aa6b7d32d72a39e4645da2669913b85919f6bbd0b3ea6b6fd2ed5c7f94db7",
+    "server/lookup-automatic-recovery.test.mjs": "e12736467c46e39e32fbf0ce06fb63ebf7ae96347ebc9be24c388b6799f448bd",
+    "server/lookup-failure-domain.mjs": "124aa31e82d19a8d1c7261cf81df1320eb79308c4872f052b27f5a1c5e53cdb6",
+    "server/managed-lookup-platform.mjs": "0af2122462ce3cc7b7c0c1233f05fe3e89dbd44d23e24139134bec7762438752",
+    "server/managed-lookup.mjs": "b2dcb20129218265e50775fb6728fffeb9461a45ec75fd1a595bd5b27c3abb46",
+    "windows-agent/src/automation-center-wiring.test.mjs": "1deafe148f2d060861093a21303e1bc43a24374fd3c00038aad254e36aab3236",
+    "windows-agent/src/index.mjs": "1d057629c452e0ce392f0cbc79a1ad3645cc90c5175dca980151dfb1d4a6d2a8",
+    "windows-agent/scripts/alipay_name_lookup.py": "04f157355eb7ed9cdefe0fa5c897245654210b9293c9b24f1c73a76ed95faf98",
+    "windows-agent/scripts/test_lookup_account_cooldown.py": "34b15d14d26ee7d2e05f44a716334fd502c4a9c43f0dccf63e2c6c2b13eaa101",
+    "windows-agent/scripts/test_lookup_cold_access_denied.py": "174a707f9c808f810e1c22f9d6ceb8d826d888358a354f327461e6145cfb4364",
+    "windows-agent/scripts/test_lookup_overnight_compat.py": null,
+    "verification/ai-http-native-events.mjs": null,
+    "verification/recovery-http-mixed50.mjs": null,
+    "verification/postgres-http.py": null
+  },
+  "deployed": false
+}
