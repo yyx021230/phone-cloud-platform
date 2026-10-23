@@ -576,6 +576,74 @@ def select_honor_owner(adb_path, serial, root, current, slot, guard, events):
     return True
 
 
+def vivo_startup_launcher(window_dump):
+    """Prove the physical display's idle owner launcher, never a virtual display."""
+    sections = re.split(r"(?m)^[ \t]*Display: mDisplayId=", window_dump)[1:]
+    physical = [part for part in sections if re.match(r"0(?:[ \t]|$)", part)]
+    if len(physical) != 1 or default_display_state(window_dump) not in (
+            ("true", "true", "true"), ("true", "false", "false")):
+        return False
+    current = re.findall(r"(?m)^\s*mCurrentFocus=(.+)$", physical[0])
+    focused = re.findall(r"(?m)^\s*mFocusedApp=(.+)$", physical[0])
+    launcher = r"\bu0\s+com\.bbk\.launcher2/(?:com\.bbk\.launcher2\.Launcher|\.Launcher)(?:[}\s]|$)"
+    if (len(current) != 1 or len(focused) != 1 or not re.search(launcher, focused[0])
+            or (current[0].strip() != "null" and not re.search(launcher, current[0]))):
+        return False
+    if window_dump.count("KeyguardServiceDelegate") != 1:
+        return False
+    delegate = window_dump.split("KeyguardServiceDelegate", 1)[1].split("KeyguardStateMonitor", 1)[0]
+    return (re.findall(r"(?m)^\s*showing=(true|false)\s*$", delegate) == ["false"]
+            and re.findall(r"(?m)^\s*secure=(true|false)\s*$", delegate) == ["false"])
+
+
+def retry_startup_elements(adb_path, serial, slot, clone_user, activity, guard, events):
+    """One startup-only recovery after native export failed; no scanning replay."""
+    marker = "startup_elements_retry_attempted"
+    if ({e.split(":", 1)[1] for e in events if e.startswith("collection_slot_requested:")} != {slot}
+            or marker in events or "xhs_cold_started" not in events
+            or any(e.startswith("collection_scan_as_of:") for e in events)
+            or not re.fullmatch(r"com\.xingin\.xhs/[A-Za-z0-9_.$]+", activity)):
+        return None
+    guard()
+    current = focus(adb_path, serial)
+    expected_user = "0" if slot == "app1" else clone_user
+    if expected_user not in ("0", "128", "999"):
+        return None
+    if re.search(r"\bu" + expected_user + r"\s+com\.xingin\.xhs/", current):
+        # The app became foreground while the previous export was failing.
+        assert_requested_foreground(current, events)
+        events.append(marker)
+        time.sleep(.8)
+        guard()
+        assert_requested_foreground(focus(adb_path, serial), events)
+        return navigation_capture(adb_path, serial, guard, events)
+    if adb(adb_path, serial, "shell", "getprop", "ro.product.manufacturer").strip().upper() != "VIVO":
+        return None
+    if not vivo_startup_launcher(adb(adb_path, serial, "shell", "dumpsys", "window", timeout=8)):
+        return None
+    if slot == "app2" and explicit_clone_user(adb_path, serial) != clone_user:
+        raise RuntimeError("Xiaohongshu startup retry clone profile changed")
+    guard()
+    if not vivo_startup_launcher(adb(adb_path, serial, "shell", "dumpsys", "window", timeout=8)):
+        raise RuntimeError("Xiaohongshu startup retry foreground changed")
+    events.append(marker)
+    guard()
+    adb(adb_path, serial, "shell", "input", "keyevent", "224", timeout=7)
+    time.sleep(.7)
+    guard()
+    if not vivo_startup_launcher(adb(adb_path, serial, "shell", "dumpsys", "window", timeout=8)):
+        raise RuntimeError("Xiaohongshu startup retry foreground changed")
+    user_args = ("--user", clone_user) if clone_user else ()
+    guard()
+    adb(adb_path, serial, "shell", "am", "start", "-W", *user_args, "-n", activity, timeout=20)
+    time.sleep(.7)
+    guard()
+    assert_requested_foreground(focus(adb_path, serial), events)
+    root = navigation_capture(adb_path, serial, guard, events)
+    events.append("startup_elements_retry_recovered")
+    return root
+
+
 def start_xhs(adb_path, serial, slot, guard, events):
     """Cold-start the app and choose only the caller's explicit clone slot."""
     guard()
@@ -602,7 +670,14 @@ def start_xhs(adb_path, serial, slot, guard, events):
     if clone_user:
         events.append("clone_user_requested:" + clone_user)
     time.sleep(0.7)
-    root = navigation_capture(adb_path, serial, guard, events)
+    try:
+        root = navigation_capture(adb_path, serial, guard, events)
+    except RuntimeError as error:
+        if str(error) != "UIAutomator did not return an XML hierarchy":
+            raise
+        root = retry_startup_elements(adb_path, serial, slot, clone_user, activity, guard, events)
+        if root is None:
+            raise
     for _ in range(5):
         current = focus(adb_path, serial)
         if any(marker in current for marker in ("com.bbk.updater", "VivoUsbDialog", "UsbDetailsActivity")):

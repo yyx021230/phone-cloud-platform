@@ -1,0 +1,128 @@
+{
+  "status": "local_candidate_not_deployed",
+  "tag": "xhs-compat-20261023-rc.20",
+  "baseCommit": "9b1a078a1e74b9a3a7042c34739cd0d7479ec41e",
+  "candidateSHA256": "73074515d5e6c56c48cd712c276f86de138c585710ebb8bd0341f9e08e97b907",
+  "rollbackSHA256": "3b1778ffa3837798d3c80f69072fa128f29233107c13bb50ac9529d51aee0187",
+  "tests": {
+    "python": 377,
+    "node": 11,
+    "rootSyntax": true,
+    "startupFocused": 8
+  },
+  "currentProductionSHA256": "3b1778ffa3837798d3c80f69072fa128f29233107c13bb50ac9529d51aee0187",
+  "freshCloudBaseline": "4d18647672686c188086db15675f714db42c218c10d9f2ae8f65990b89073c43",
+  "realDeviceSource": "rc18 d56fa36; not candidate rc20",
+  "attempts": [
+    {
+      "name": "111",
+      "slot": "app1",
+      "status": "failed_compatibility",
+      "seconds": 35,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    },
+    {
+      "name": "111",
+      "slot": "app2",
+      "status": "failed_compatibility",
+      "seconds": 27,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    },
+    {
+      "name": "121",
+      "slot": "app2",
+      "status": "skipped_occupied",
+      "seconds": 0
+    },
+    {
+      "name": "123",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 0,
+      "seconds": 91,
+      "complete": true,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    },
+    {
+      "name": "111",
+      "slot": "app1",
+      "status": "passed",
+      "notes": 16,
+      "seconds": 171,
+      "complete": true,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    },
+    {
+      "name": "111",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 6,
+      "seconds": 95,
+      "complete": true,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    },
+    {
+      "name": "132",
+      "slot": "app1",
+      "status": "passed",
+      "notes": 73,
+      "seconds": 771,
+      "complete": true,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    },
+    {
+      "name": "132",
+      "slot": "app2",
+      "status": "skipped_server_error",
+      "seconds": 89,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    }
+  ],
+  "finalReconciliation": {
+    "at": "2026-10-23T02:59:40.866916+00:00",
+    "ownedJobs": 7,
+    "ownedActiveLocks": 0,
+    "allJobsTerminal": true,
+    "allSettingsRestored": true
+  },
+  "runtimeHashesMatched": 12,
+  "globalPendingLedgers": 0,
+  "loadingAudit": {
+    "date": "2026-10-22",
+    "executedSlots": 123,
+    "incompleteSuccessfulResults": 0,
+    "exhaustedLoadingFailures": 0,
+    "recoveredSlots": [
+      {
+        "slot": "150/app2",
+        "timeouts": 1,
+        "reopens": 1,
+        "notes": 5
+      },
+      {
+        "slot": "47/app1",
+        "timeouts": 2,
+        "reopens": 2,
+        "notes": 29
+      }
+    ],
+    "18": "explicit hold; unresolved"
+  },
+  "rootPreexistingStatusPreserved": true,
+  "localRollbackRehearsal": true,
+  "independentReviewer": false
+}
