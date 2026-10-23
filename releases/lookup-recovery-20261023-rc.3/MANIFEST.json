@@ -1,0 +1,10 @@
+{
+  "server/managed-lookup.mjs": "da5a52d9d036922cf3c3a7574760e93bc47a0bd7a89f779bfacae8c941b8d4f8",
+  "server/lookup-automatic-recovery.test.mjs": "ec7768aa447f0049e9b7194e73ad9f185d0fd987618e62af5fa326d07e68f24e",
+  "windows-agent/src/index.mjs": "8cc4b6cb01929a4eed20d9397071333f792b8d4beb5f268cdb2fba22d2418e27",
+  "windows-agent/scripts/alipay_name_lookup.py": "243add51fe70772cbf1cab9fcc8c3b51bfc577588f7c5c671cb340a8fbc185a9",
+  "windows-agent/scripts/automation_runners_test.py": "ef1798ab274fd7e9b32253b7082768aad997d8402967b7583791c8a72f808a37",
+  "windows-agent/scripts/test_lookup_overnight_compat.py": "305c0192356ec60f2e0bfce7b10fecf67c80e11169431a4c53647aa7bb3266d8",
+  "windows-agent/scripts/test_lookup_usb_recovery_flow.py": "86cbf7c473ac224fd8fac2ad4413c73225fc255b69bb7908cc69236b7f98dc66",
+  "verification/recovery-http-mixed50.mjs": "500ec4c33f7f26aabe452bd3784fbc44293516438a97324048420a165440174a"
+}

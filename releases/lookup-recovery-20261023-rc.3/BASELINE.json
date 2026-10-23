@@ -1,0 +1,100 @@
+{
+  "productionRelease": "lookup-ai-vision-20261022-deployed.1",
+  "sourceCommit": "fef7ff801c4fa8c391f0ae35a9f47ed6db3e8e76",
+  "imageId": "sha256:35cba1db05e126adf48acaa63241772854b7069559fd054459d74699a49a74ff",
+  "parentCandidate": "lookup-recovery-20261023-rc.2",
+  "parentCommit": "c8a5bc5b900466b8f72fd43ee7210b5d4850d576",
+  "startingHead": "75dee7ae5beb3829539b686f2b838bede3f9359a",
+  "branch": "codex/lookup-usb-recovery-20261023",
+  "deployed": false,
+  "before": {
+    "server/managed-lookup.mjs": "0fa8b24b2935e48a702a571c5fe6d77ef40fb5caf1bb8c0f269979be0c5c5934",
+    "server/lookup-automatic-recovery.test.mjs": "f5fba034cc4d59ff0d760c8c5913488c3d5bad6f5103d096436792d40df67e51",
+    "windows-agent/src/index.mjs": "36396aaec09e6222c2c52d647362a0a58f790c7aec2081dfc2685f1b0a1fcb67",
+    "windows-agent/scripts/alipay_name_lookup.py": "c8cc924cf4de0773a73e43fccb68bd4423a2e13069d5112d7e61f4aca8e6e6ab",
+    "windows-agent/scripts/automation_runners_test.py": "94f8984ab3508746bbdc1f2d167df0d0dfa3aff0468c79856413cd529d61c60a",
+    "windows-agent/scripts/test_lookup_overnight_compat.py": "72e4e8e670e5f4b333d0a5ccf82356f2b0a3498efe47420e3932ada7b7062f7f",
+    "windows-agent/scripts/test_lookup_usb_recovery_flow.py": null,
+    "verification/recovery-http-mixed50.mjs": "29c09f93daa7fbb94dc7d4a4835c81d9d57cffdeb4777d0f8de8d35a89c78d50"
+  },
+  "runtimeChanges": {
+    "server/managed-lookup.mjs": {
+      "before": "0fa8b24b2935e48a702a571c5fe6d77ef40fb5caf1bb8c0f269979be0c5c5934",
+      "after": "da5a52d9d036922cf3c3a7574760e93bc47a0bd7a89f779bfacae8c941b8d4f8"
+    },
+    "windows-agent/src/index.mjs": {
+      "before": "36396aaec09e6222c2c52d647362a0a58f790c7aec2081dfc2685f1b0a1fcb67",
+      "after": "8cc4b6cb01929a4eed20d9397071333f792b8d4beb5f268cdb2fba22d2418e27"
+    },
+    "windows-agent/scripts/alipay_name_lookup.py": {
+      "before": "c8cc924cf4de0773a73e43fccb68bd4423a2e13069d5112d7e61f4aca8e6e6ab",
+      "after": "243add51fe70772cbf1cab9fcc8c3b51bfc577588f7c5c671cb340a8fbc185a9"
+    }
+  },
+  "cumulativeProductionChanges": {
+    "public/api-docs.html": {
+      "before": "1e7ba0490959c92cfa52f5005b693b2ed64fe63bf05dd836ade657bfa2e2a95e",
+      "after": "322cb59f3281babe976d60ee041fbb78f228758711fe16bc76d7c2297e220c32"
+    },
+    "public/api-docs.js": {
+      "before": "d0197594fe7587f28bac647c983e6f07a0ba8b0f77d40572461a1256ae59f938",
+      "after": "f61a477d104bec3062a921109203585616ccb5273642a78a17c07f9182d326f6"
+    },
+    "public/api-reference.json": {
+      "before": "f819c1f0eb57807723f5802634aeeab79ee21e3da992a31a9c603e6c5b9437e5",
+      "after": "6595654fe10a1138fc0fcaa835caf9c98025348a7a5dbc28f23d9dfc2ceeb4a3"
+    },
+    "public/downloads/name-lookup-http-guide.md": {
+      "before": "eee0de179189091b837dc27d121145f30a04edf76e7d04b412c91a4fd76848ad",
+      "after": "85926fe72442b5a619801e0e231deb742f0dfa07d35db217d9254fda6ca89b93"
+    },
+    "public/downloads/name-lookup-integration.zip": {
+      "before": "f79cafededc8df81c2275af05067ea9e6100ca29e3467f3b0bcb295689e24b6c",
+      "after": "5a50452432e902aa43c44098410b185c6d753f9e0e072a8fe5624723a15dc2a4"
+    },
+    "public/downloads/name-lookup-openapi.json": {
+      "before": "61994d7b8f70b0947925cade48948e3ccaf09612c108d828df758aa97cd3ebce",
+      "after": "aa72efd78ffc0cdebaed80636caed97284dd14c76b2163ce295b7816bdd7ed31"
+    },
+    "public/downloads/name-lookup-sha256.json": {
+      "before": "2daa07a70741aadaadf77fe9aa97cb6283546ddaabd640f012203ac214b237bf",
+      "after": "1aad6f4cc3f47b839f7196531d1342eb3e038a678e96809047c70b8937dda705"
+    },
+    "public/openapi.json": {
+      "before": "af41a5cbd7d1ae03c79bd6eab126ed9a927904729c2e6128e34de8e91c230f4e",
+      "after": "2857d3cafae10512192a3ca01088925c658bd9ebb7f1e375c3cd682d8874e33c"
+    },
+    "server/index.mjs": {
+      "before": "4d18647672686c188086db15675f714db42c218c10d9f2ae8f65990b89073c43",
+      "after": "bd7d0a4e80864fe18f433ec821dd3dd20bcb87be70a9abe8c202f90cedaef039"
+    },
+    "server/lookup-failure-domain.mjs": {
+      "before": "124aa31e82d19a8d1c7261cf81df1320eb79308c4872f052b27f5a1c5e53cdb6",
+      "after": "f1c97c1dc7a5d60c1daee42c23c76c67080a82cb40b0102eda4605efb9f63597"
+    },
+    "server/managed-lookup-async.mjs": {
+      "before": "d7cfd3f0604ac8e9ac1e128a8fb65bf5dba98fa92692cf1820bb6c7de8a373d9",
+      "after": "bcbb78728f6312d2535d3bd70e71c68f3ffc42c75886f782283ddd756346c3b7"
+    },
+    "server/managed-lookup-platform.mjs": {
+      "before": "0af2122462ce3cc7b7c0c1233f05fe3e89dbd44d23e24139134bec7762438752",
+      "after": "d8e6199507077b330702464b2b436e0b027dac272e8fb998bb65495dceb30a67"
+    },
+    "server/managed-lookup-store.mjs": {
+      "before": "5332f9f0070c27ba098701149c996a63dfce782a4cb33fd2c50e443c29914b04",
+      "after": "941a62bc3daf4ee1c3805437e0477121989896aef84839493a123173ac67ac37"
+    },
+    "server/managed-lookup.mjs": {
+      "before": "b2dcb20129218265e50775fb6728fffeb9461a45ec75fd1a595bd5b27c3abb46",
+      "after": "da5a52d9d036922cf3c3a7574760e93bc47a0bd7a89f779bfacae8c941b8d4f8"
+    },
+    "windows-agent/scripts/alipay_name_lookup.py": {
+      "before": "04f157355eb7ed9cdefe0fa5c897245654210b9293c9b24f1c73a76ed95faf98",
+      "after": "243add51fe70772cbf1cab9fcc8c3b51bfc577588f7c5c671cb340a8fbc185a9"
+    },
+    "windows-agent/src/index.mjs": {
+      "before": "1d057629c452e0ce392f0cbc79a1ad3645cc90c5175dca980151dfb1d4a6d2a8",
+      "after": "8cc4b6cb01929a4eed20d9397071333f792b8d4beb5f268cdb2fba22d2418e27"
+    }
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "at": "2026-10-23T01:45:23.254639+00:00",
+  "status": "local_candidate_pending_live_acceptance",
+  "nodeRegression": {
+    "passed": 1146,
+    "failed": 0
+  },
+  "pythonLookup": {
+    "passed": 310,
+    "failed": 0
+  },
+  "pythonAutomationRunners": {
+    "passed": 163,
+    "failed": 0
+  },
+  "agentCheck": {
+    "passed": 393,
+    "failed": 0,
+    "overlapsNodeRegression": true
+  },
+  "rootCheck": true,
+  "windowsIsolated": {
+    "passed": 9,
+    "failed": 0,
+    "python": "existing Python39",
+    "simulatedDeviceIO": true,
+    "runnerSha256": "243add51fe70772cbf1cab9fcc8c3b51bfc577588f7c5c671cb340a8fbc185a9",
+    "productionAgentFilesChanged": false
+  },
+  "jsonHttp": {
+    "storage": "json",
+    "businessRequests": 50,
+    "modelCalls": 20,
+    "names": 16,
+    "empty": 34,
+    "maxExecuting": 5,
+    "maxModels": 1,
+    "elapsedBeforeNewKeyMs": 121000,
+    "requestedHoldMs": 121000,
+    "originalIdsPreserved": true,
+    "samePhoneResumes": 10,
+    "probeSamePhoneRecoveries": 35,
+    "pythonRunnerUsbFlows": 26,
+    "pythonRunnerInputRecoveries": 10,
+    "simulatedDeviceIO": true,
+    "fencedHandoffs": 20,
+    "allResultsKeptAcrossRestart": true,
+    "stopAndNextRound": true,
+    "physicalReservationsDrained": true,
+    "realPhones": 0,
+    "productionActions": 0
+  },
+  "postgresHttp": {
+    "storage": "postgres",
+    "businessRequests": 50,
+    "modelCalls": 20,
+    "names": 16,
+    "empty": 34,
+    "maxExecuting": 5,
+    "maxModels": 1,
+    "elapsedBeforeNewKeyMs": 121001,
+    "requestedHoldMs": 121000,
+    "originalIdsPreserved": true,
+    "samePhoneResumes": 10,
+    "probeSamePhoneRecoveries": 35,
+    "pythonRunnerUsbFlows": 26,
+    "pythonRunnerInputRecoveries": 10,
+    "simulatedDeviceIO": true,
+    "fencedHandoffs": 20,
+    "allResultsKeptAcrossRestart": true,
+    "stopAndNextRound": true,
+    "physicalReservationsDrained": true,
+    "realPhones": 0,
+    "productionActions": 0
+  },
+  "packagedHashes": {
+    "manifest": 8,
+    "frozen": 407,
+    "match": true
+  },
+  "review": "Self-review of scoped diff and caller chain; no independent reviewer claimed. Shared lifecycle/ADB/media unchanged. Public API unchanged; earlier rc.2 direct-name history preserved.",
+  "failuresAndResolutions": [
+    {
+      "stage": "USB/risk red tests",
+      "result": "6 tests:3 failures+1 error on old code",
+      "resolution": "Guard closure with actual Alipay foreground, single risk back/recheck;9 final flow tests passed"
+    },
+    {
+      "stage": "probe red tests",
+      "result": "Both new state-recovery probe cases failed on old logic",
+      "resolution": "Permit one exact-identity state resume;first correction still failed because probe attempts lacked readinessIdentity; limited probe fallback to channel.queryIdentity fixed it;32 recovery tests passed"
+    }
+  ],
+  "productionChanges": 0,
+  "productionQueries": 0,
+  "realModelCalls": 0,
+  "candidateDeployed": false,
+  "remaining": [
+    "Real external API through actual Windows Agent and phones after authorized candidate loading",
+    "Initial cause of all observed search-page/input changes still needs continuous device evidence",
+    "Original 52/60 UI timing and Killed origin remain unconfirmed"
+  ],
+  "logs": {
+    "node": "/tmp/pc-usb-node-final.log",
+    "python": "/tmp/pc-usb-python-final.log",
+    "runners": "/tmp/pc-usb-runners.log",
+    "windows": "/tmp/pc-usb-windows-final.log",
+    "httpJson": "/tmp/pc-usb-chain-json.log",
+    "httpPostgres": "/tmp/pc-usb-chain-pg.log"
+  }
+}
