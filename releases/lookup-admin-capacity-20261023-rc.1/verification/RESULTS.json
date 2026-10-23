@@ -1,0 +1,46 @@
+{
+  "status": "local_candidate_not_deployed",
+  "tag": "lookup-admin-capacity-20261023-rc.1",
+  "fullNode": {
+    "passed": 1230,
+    "failed": 0,
+    "testConcurrency": 4
+  },
+  "syntaxCheck": true,
+  "initialFullFailure": {
+    "failed": 1,
+    "scope": "unchanged Agent timing test",
+    "isolatedRerunPassed": true
+  },
+  "http": {
+    "businessRequests": 50,
+    "maxSimultaneousPhones": 8,
+    "realPhones": 0,
+    "productionActions": 0
+  },
+  "postgres": {
+    "archiveRows": 600,
+    "overlapRows": 20,
+    "uniqueBusiness": 601,
+    "todayNew": 301,
+    "jsonMatches": true,
+    "configRestartPreserved": true
+  },
+  "browser": {
+    "embeddedEntry": true,
+    "addAndPersistPhone": true,
+    "concurrency8Saved": true,
+    "duplicateRejected": true,
+    "desktopAnd390Px": true,
+    "consoleErrors": 0,
+    "artifactsDirectory": "/Users/yyx/.codex/artifacts/lookup-admin-capacity-20261023"
+  },
+  "hashes": {
+    "bounded-full": "d20d58d198a7def9511ccf61dcb7c04b293d0cb0325f1af7afb27f87d7c14cfb",
+    "final-check": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "agent-recheck": "98c8b2c53ce2dda8cefce82e2c63f180185c7fdfd566a463a449d74268f82141",
+    "cache-tests": "be12a73d1b11588f4fde5eef267e0bfd58eb37aeb7c10d86c5c2180c42bdb112",
+    "targeted": "b4467e3e7f7e09ca7dc717c760b80ac27296077610c68781cf25fdf2da5ccafc",
+    "final-targeted": "57312707fd65d7a7a5602dab2d7dcf39204e12561bd7beae064fe4a496ce6521"
+  }
+}
