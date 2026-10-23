@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-23T09:37:54.622Z",
+  "roundStartedAt": "2026-10-23T06:09:12.233Z",
+  "businessTotal": 558,
+  "businessStatuses": {
+    "not_found": 95,
+    "succeeded": 443,
+    "running": 2,
+    "queued": 18
+  },
+  "prepareKeyCount": 23,
+  "physicalOccupancy": 5,
+  "newPhoneQueriesByThisTask": 0,
+  "newFailures": "No terminal business failure in this round at snapshot; repeated login/preparation issues remain on old release."
+}

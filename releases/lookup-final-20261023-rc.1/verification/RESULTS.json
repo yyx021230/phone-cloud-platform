@@ -45,7 +45,8 @@
   "initialFailures": [
     "Postgres fixture reused username then missing migration tables; fresh isolated database initialized and passed",
     "Windows first staging omitted replay fixtures/PNG; two tests lacked focus mock on Windows; fixtures included and mocks corrected, full 532 passed",
-    "One saved-image upstream AI invocation unavailable; one bounded recheck correctly rejected conflicting name cards"
+    "One saved-image upstream AI invocation unavailable; one bounded recheck correctly rejected conflicting name cards",
+    "First Docker build used bare image ID in FROM, treated as registry reference; corrected to verified local baseline tag, added minimal build context; build and isolated smoke passed"
   ],
   "productionWrites": false,
   "newPhoneQueries": 0,
@@ -54,5 +55,18 @@
     "Account picker two-frame live timing",
     "Actual OCR target click and post-close confirmation",
     "Natural cooldown and restriction on deployed combined candidate"
-  ]
+  ],
+  "imageSmoke": "passed",
+  "productionHealthAfterPreparation": {
+    "health": 200,
+    "ready": 200
+  },
+  "testOnlyXhsRetest": 117,
+  "logHashes": {
+    "pc-final-node.log": "ff0d833bd57d2bca21913e4bfb46178962f2ddbed434e5dfc1567943270cdcb0",
+    "pc-final-python.log": "4c5528a0dd9d448593337c5193527ecd41147f742e7c5a8737fcbf1b06dcabae",
+    "pc-final-agent.log": "14275819700868c3c824ed4e4908ce519cf307c8aa01106deabd96dab2cd81b7",
+    "pc-final-win-unit-final.log": "07da5c470582d1f97f5144505554c9395cac36779d945eb0d27183c8ae5d5dcb",
+    "pc-final-cloud-build-final.log": "404bd1688ec4de3939e87e262c8f2057e9e1c4149a6d4098d93c65abfa3fd835"
+  }
 }
