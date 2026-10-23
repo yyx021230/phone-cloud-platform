@@ -21,6 +21,13 @@ backup=stage/'rollback';backup.mkdir(mode=0o700,exist_ok=False)
 for f in files:
  if (root/f).exists():
   target=backup/'source'/f;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes((root/f).read_bytes())
+# Host source is not the deployed runtime baseline. Preserve it separately,
+# and back up the exact verified container files for rollback.
+for f,h in files.items():
+ if h['before'] is None:continue
+ target=backup/'runtime'/f;target.parent.mkdir(parents=True,exist_ok=True)
+ subprocess.run(['docker','cp','phone-cloud-platform:/app/'+f,str(target)],check=True)
+ assert sha(target)==h['before'],'runtime backup drift: '+f
 pending={'services':{'phone-cloud':{'image':'phone-cloud-platform:lookup-final-20261023-rc.1'}}}
 (stage/'compose.pending.json').write_text(json.dumps(pending,indent=2)+'\n')
 old=json.loads(run(args+['config','--format','json']));new=json.loads(run(args+['-f',str(stage/'compose.pending.json'),'config','--format','json']))

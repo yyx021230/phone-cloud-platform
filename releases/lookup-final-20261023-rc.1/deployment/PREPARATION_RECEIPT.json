@@ -1,0 +1,147 @@
+{
+  "candidate": "lookup-final-20261023-rc.1",
+  "sourceCommit": "2f185140556ec01419f9b67eddd171271032f226",
+  "status": "prepared-not-activated",
+  "imageTag": "phone-cloud-platform:lookup-final-20261023-rc.1",
+  "imageId": "sha256:c10e071b3f4811c626b28075bba364e8dc96e05dc9c8402d0f760673f7e63f8c",
+  "previousImage": "sha256:7ecf126b7c6b254eb8e8f6c6b16e57bd7fe1927219771894a8b4dcec3a7ba745",
+  "cloudFiles": {
+    "server/lookup-admin-console.mjs": {
+      "before": "ac2e514bf0ed121325fb333c41bca266a2fafdfeb67e423d9f3ab4298f2b9b9b",
+      "after": "ffd7a650bf079543a90d581d0280e73dd344c30f6650dea8cfeabbdb6f776669"
+    },
+    "server/managed-lookup-platform.mjs": {
+      "before": "d8e6199507077b330702464b2b436e0b027dac272e8fb998bb65495dceb30a67",
+      "after": "597d279cc946391504db5ce5b55fbc4b2f6f65dfc77c11adfadee919c52e71c5"
+    },
+    "server/lookup-ai-vision.mjs": {
+      "before": "3a22a22946d690e0a16519e6752a0ad3ebb1376ca129b16776a4245b39e8f583",
+      "after": "fc864eae1517bbc418bb5d5595a24dc1d5e6eda05db6f6982faad4c88c3cdf44"
+    },
+    "server/lookup-readiness.mjs": {
+      "before": "b0858286d5a29f4800dbfb89ccd18f581d32da24c4caeb3d87cd4929c59aee3a",
+      "after": "05ae676fc7d4332f4a99388239d99b1a6da9820d486bd6192795a23cfa558c0d"
+    },
+    "server/managed-lookup-store.mjs": {
+      "before": "941a62bc3daf4ee1c3805437e0477121989896aef84839493a123173ac67ac37",
+      "after": "78e79206181fd3e4fb3529175b08fa67c5c1431f9600f35de8e5c1e4087f75c6"
+    },
+    "server/lookup-admin-statistics.mjs": {
+      "before": null,
+      "after": "89360238846308959a70edf770b555fc5d99a80495affb2b66b31bd002d70008"
+    },
+    "server/device-occupancy.mjs": {
+      "before": "3e785c605151865d133e4d4b11dc7f9387e8eafb60ef91fcae90cac107629ec7",
+      "after": "ac2bc7c45599bf0dbad046e5dfa12bb10d5fda291552c5ef10cf3fda99cedea5"
+    },
+    "server/index.mjs": {
+      "before": "bd7d0a4e80864fe18f433ec821dd3dd20bcb87be70a9abe8c202f90cedaef039",
+      "after": "7409f9a22a90edfc8d6fa9f709e2cdbadad713df0ac9960ebc9ef92924c2c696"
+    },
+    "server/managed-lookup.mjs": {
+      "before": "ee534947540b49f921808865c621be56345ccbad2b28d73ed304e0dddb9b5bc6",
+      "after": "819d5d72713ebf41c6590c99b5523fc3a30177eab2203629de45b5cf51d269c5"
+    },
+    "server/lookup-failure-domain.mjs": {
+      "before": "f1c97c1dc7a5d60c1daee42c23c76c67080a82cb40b0102eda4605efb9f63597",
+      "after": "88d8d21506dcccd8f81efde9e6bac22d4c66867c560d55d24064dca8e94ad333"
+    },
+    "public/index.html": {
+      "before": "e114d8ff9999831bb34cd7970e943be57dcde86a8c2671784656b381ca722132",
+      "after": "185aded6485a64a9f905389b09c8cc18530540a5a01691e8305c5728333bd7ee"
+    },
+    "public/lookup-admin.js": {
+      "before": "b09af393be439f393e43dd8e90d94aa72642401295105eabf2a6a2fec68e117f",
+      "after": "f2f4b05f36c993403e299e7bfbb61d35ec5b09dd92b75b1735259948f3070854"
+    },
+    "public/api-reference.json": {
+      "before": "6595654fe10a1138fc0fcaa835caf9c98025348a7a5dbc28f23d9dfc2ceeb4a3",
+      "after": "c8f4d183eded629a3c857568de5e8f34206dae39e970485c325435bd5e8560fc"
+    },
+    "public/lookup-admin.css": {
+      "before": "bf14d0406c94257e19be1216264569a831182b782b2abc7771f3aba1d44c1eed",
+      "after": "94000299289d4be0a354fd4fb1095df6229d0412b1bf1057c2c2486de02b84d8"
+    },
+    "public/lookup-admin.html": {
+      "before": "ce3c519ce79d75b7a65ca292026a2b3dd4881e906d6916a95d49cf677f538e8e",
+      "after": "0504f8c50efa14d7c47c89073da56df35eb67f95936d7f52234e09edc426a9b8"
+    },
+    "public/lookup-pool.html": {
+      "before": "12826f9957ae638cc648eff7ab8d7dee86a321d071172213529c5d0855461c15",
+      "after": "fcd0b8af95e38ee1ccdc9306bb7017396ef1d2eac68180b1954aa630e19999a8"
+    },
+    "public/lookup-pool.js": {
+      "before": "768764f71e59478926e520bc4e0a9df57778c30c37005de4083cd73bec482940",
+      "after": "37318793b4491ffd5c29570916f1ec6fd58106933c6916716a4cdf1fa26d1184"
+    },
+    "public/lookup-pool.css": {
+      "before": "a574b6271dc07b5367548d7c952dfe43c9501bbdb8af55d8a4f3788341ecd3b6",
+      "after": "1b4781315f76a2526f92aa6231d90a5849f8c4020cd8509c83a8b03e2e4a7ca0"
+    },
+    "public/app.js": {
+      "before": "a864f2f6874f3d4a536e0065f205d22992ab01e6524b56c28f249890dac895d1",
+      "after": "98e828b9288cd4ec6b82850d526ada380ae9b21892c6a0c695bd2b5e6feeb7c7"
+    },
+    "public/downloads/name-lookup-http-guide.md": {
+      "before": "85926fe72442b5a619801e0e231deb742f0dfa07d35db217d9254fda6ca89b93",
+      "after": "9780a1977f77cf47dd0098b7c95f4601c7060b4846513ce8ecc1719f862b5210"
+    },
+    "public/downloads/name-lookup-integration.zip": {
+      "before": "5a50452432e902aa43c44098410b185c6d753f9e0e072a8fe5624723a15dc2a4",
+      "after": "bc1d3e7bca15e5a4541cc0cb9503c4fbf08e18eed82b86d5e313534cfa93ba95"
+    },
+    "public/downloads/name-lookup-sha256.json": {
+      "before": "1aad6f4cc3f47b839f7196531d1342eb3e038a678e96809047c70b8937dda705",
+      "after": "17ecde13df3a469c79075a51062a9e4519ac69c76c6152ef6ffa8ac6aa7ae3ca"
+    }
+  },
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "backup": "/opt/phone-cloud-staging/lookup-final-20261023-rc.1/rollback",
+  "backupFiles": {
+    "database.dump": "88824e4b858df8e28cc1fc9b9080bb512cd5c3512325ddb0b5aea8a60766679d",
+    "compose-baseline.json": "7a885c7c515c14f7dbaac679830526b6cac585c336505751701b7c894b9272ce",
+    "previous-image.tar.gz": "197735cd7122aef6c1df63ff7bb9d99cfc115a8550adfcf832d3f656546156a0",
+    "ACTIVE_PLATFORM_RELEASE.json": "c7cc0ea92fd09498189aea2b0a7100e09ab0421da1ef25173c375c0494575abb",
+    "source/server/index.mjs": "e13e4271b950b14402868ceaca005e14314ec603c13a095cd2cbb9f832238629",
+    "source/server/device-occupancy.mjs": "05d8755117ef4574a7c42c6d1020961e429d18c410faebc677b8517930bd7142",
+    "source/public/app.js": "62ba08d7d0afac81d0eeebaca9050911700f830fadd8e84d0a5f53423dd9cf60",
+    "source/public/index.html": "2740d298da28cd8ccebf71c7698d631932f3e466d492d7471dd7d82d84072791",
+    "source/public/api-reference.json": "0c6558ccbeb06bb59618fcb5f46670c92be0d8e2fb2b71719406b26c031ee3b5",
+    "source/public/downloads/name-lookup-sha256.json": "68cb926d397234918cc6f651218b9cd79d4d4c227abd38daaaedef35156b98d7",
+    "source/public/downloads/name-lookup-integration.zip": "be85b3edf70034b630c15ebfef9ed489b03b15983907338a7ae2a2c10c898b91",
+    "runtime/server/lookup-admin-console.mjs": "ac2e514bf0ed121325fb333c41bca266a2fafdfeb67e423d9f3ab4298f2b9b9b",
+    "runtime/server/managed-lookup-platform.mjs": "d8e6199507077b330702464b2b436e0b027dac272e8fb998bb65495dceb30a67",
+    "runtime/server/lookup-ai-vision.mjs": "3a22a22946d690e0a16519e6752a0ad3ebb1376ca129b16776a4245b39e8f583",
+    "runtime/server/lookup-readiness.mjs": "b0858286d5a29f4800dbfb89ccd18f581d32da24c4caeb3d87cd4929c59aee3a",
+    "runtime/server/managed-lookup-store.mjs": "941a62bc3daf4ee1c3805437e0477121989896aef84839493a123173ac67ac37",
+    "runtime/server/device-occupancy.mjs": "3e785c605151865d133e4d4b11dc7f9387e8eafb60ef91fcae90cac107629ec7",
+    "runtime/server/index.mjs": "bd7d0a4e80864fe18f433ec821dd3dd20bcb87be70a9abe8c202f90cedaef039",
+    "runtime/server/managed-lookup.mjs": "ee534947540b49f921808865c621be56345ccbad2b28d73ed304e0dddb9b5bc6",
+    "runtime/server/lookup-failure-domain.mjs": "f1c97c1dc7a5d60c1daee42c23c76c67080a82cb40b0102eda4605efb9f63597",
+    "runtime/public/index.html": "e114d8ff9999831bb34cd7970e943be57dcde86a8c2671784656b381ca722132",
+    "runtime/public/lookup-admin.js": "b09af393be439f393e43dd8e90d94aa72642401295105eabf2a6a2fec68e117f",
+    "runtime/public/api-reference.json": "6595654fe10a1138fc0fcaa835caf9c98025348a7a5dbc28f23d9dfc2ceeb4a3",
+    "runtime/public/lookup-admin.css": "bf14d0406c94257e19be1216264569a831182b782b2abc7771f3aba1d44c1eed",
+    "runtime/public/lookup-admin.html": "ce3c519ce79d75b7a65ca292026a2b3dd4881e906d6916a95d49cf677f538e8e",
+    "runtime/public/lookup-pool.html": "12826f9957ae638cc648eff7ab8d7dee86a321d071172213529c5d0855461c15",
+    "runtime/public/lookup-pool.js": "768764f71e59478926e520bc4e0a9df57778c30c37005de4083cd73bec482940",
+    "runtime/public/lookup-pool.css": "a574b6271dc07b5367548d7c952dfe43c9501bbdb8af55d8a4f3788341ecd3b6",
+    "runtime/public/app.js": "a864f2f6874f3d4a536e0065f205d22992ab01e6524b56c28f249890dac895d1",
+    "runtime/public/downloads/name-lookup-http-guide.md": "85926fe72442b5a619801e0e231deb742f0dfa07d35db217d9254fda6ca89b93",
+    "runtime/public/downloads/name-lookup-integration.zip": "5a50452432e902aa43c44098410b185c6d753f9e0e072a8fe5624723a15dc2a4",
+    "runtime/public/downloads/name-lookup-sha256.json": "1aad6f4cc3f47b839f7196531d1342eb3e038a678e96809047c70b8937dda705"
+  },
+  "isolatedSmoke": "passed using production mode and disposable PostgreSQL",
+  "productionServiceRestarted": false,
+  "agentChanged": false,
+  "adbChanged": false,
+  "preparedAtUtc": "2026-10-23T09:40:01Z",
+  "runtimeBackupVerified": true
+}
