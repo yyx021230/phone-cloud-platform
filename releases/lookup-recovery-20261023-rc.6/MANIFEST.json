@@ -1,0 +1,6 @@
+{
+  "windows-agent/scripts/alipay_name_lookup.py": "c68a7778b88a978dac08fd74e10298a088e7913fdb4c62858d7e17108e35d5a2",
+  "windows-agent/scripts/test_lookup_usb_recovery_flow.py": "63cdec23f30625ff1a8f1dc47b51b64ed6e454931403ea7b70ee5d551328068c",
+  "verification/startup-risk-http.mjs": "c1926c6f909db15ebcb679271b3718c077f9470cb396161fab316979b02ea9af",
+  "verification/risk-event.py": "ce967bfb449dcbcc79f29c189d144ad53cf78f9676bfeec2d2135bfc2f80bc5e"
+}

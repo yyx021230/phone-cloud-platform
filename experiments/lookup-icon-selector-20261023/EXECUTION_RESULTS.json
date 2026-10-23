@@ -1,0 +1,30 @@
+{
+  "tag": "lookup-icon-selector-20261023-exp.3",
+  "selectorTests": 40,
+  "beforeFailures": 7,
+  "annotationTests": 3,
+  "savedModelCorpus": {
+    "total": 56,
+    "passed": 56,
+    "newModelCalls": 0,
+    "promptUnchanged": true
+  },
+  "replay": {
+    "savedDecisions": 56,
+    "recordedSyntheticTaps": 3,
+    "noAction": 53,
+    "rejectedMappings": 12,
+    "staleRejected": 3,
+    "realModelCalls": 0,
+    "realPhoneActions": 0,
+    "productionChanges": 0
+  },
+  "sourceSha256": {
+    "selector.mjs": "476b4b107dd42c6cc8259abb61c41d5954e95bc28a2715e1ef4509cbac43fe46",
+    "selector.test.mjs": "032cdebbb6f96a3ec0c0e42ae9c998293c455d675690f997425ec642cf1b36fc",
+    "prepare-input.py": "454d4cf042752bbf48223b3fdc3f932b83ed6d26a1f6c9ced4f8ecace63afc2e",
+    "replay-execution.mjs": "d56a209b13143e1344dfc8438197939fda772d6cffcf89b9aa58dc595779f923"
+  },
+  "realPhoneAcceptance": false,
+  "runtimeIntegration": false
+}

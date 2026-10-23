@@ -1,0 +1,303 @@
+{
+  "candidate": "lookup-recovery-20261023-rc.6",
+  "branch": "codex/lookup-release-audit-20261023",
+  "startingHead": "89ed65e896fc64627c08ecd5f68a2a25ec2f2a9d",
+  "deployed": false,
+  "overallVisualReleaseReady": false,
+  "node": {
+    "passed": 1160,
+    "failed": 0,
+    "serial": true
+  },
+  "pythonDiscovery": {
+    "executed": 498,
+    "failed": 0
+  },
+  "automationRunners": {
+    "executed": 163,
+    "failed": 0
+  },
+  "agentCheck": {
+    "executed": 393,
+    "failed": 0,
+    "overlapsNodeFullSuite": true,
+    "agentRuntimeHashUnchangedFromAuditedRc5": true
+  },
+  "rootCheck": "passed",
+  "smoke": "passed",
+  "selector": {
+    "passed": 40,
+    "newRegressionFailuresBeforeFix": 7,
+    "realModelCallsThisStage": 0
+  },
+  "annotation": {
+    "passed": 3
+  },
+  "coordinateReplay": {
+    "savedDecisions": 56,
+    "recordedSyntheticTaps": 3,
+    "noAction": 53,
+    "rejectedMappings": 12,
+    "staleRejected": 3,
+    "realModelCalls": 0,
+    "realPhoneActions": 0,
+    "productionChanges": 0
+  },
+  "windowsIsolated": {
+    "riskAndRecoveryTests": 12,
+    "overlayTests": 25,
+    "deviceIO": "mocked",
+    "realPhoneActions": 0
+  },
+  "http": [
+    {
+      "storage": "json",
+      "initialReady": 2,
+      "legacyPageReprobes": 3,
+      "pageReprobeSpacingMs": [
+        60054,
+        60183
+      ],
+      "maxReserved": 5,
+      "businessRequests": 50,
+      "modelCalls": 20,
+      "names": 16,
+      "empty": 34,
+      "maxExecuting": 5,
+      "maxModels": 1,
+      "elapsedBeforeNewKeyMs": 121003,
+      "requestedHoldMs": 121000,
+      "originalIdsPreserved": true,
+      "samePhoneResumes": 10,
+      "probeSamePhoneRecoveries": 35,
+      "pythonRunnerOverlayFlows": 26,
+      "pythonRunnerInputRecoveries": 10,
+      "simulatedDeviceIO": true,
+      "fencedHandoffs": 20,
+      "sampledResultsKeptAcrossRestart": 2,
+      "stopAndNextRound": true,
+      "physicalReservationsDrained": true,
+      "realPhones": 0,
+      "productionActions": 0
+    },
+    {
+      "storage": "postgres",
+      "initialReady": 2,
+      "legacyPageReprobes": 3,
+      "pageReprobeSpacingMs": [
+        60182,
+        60008
+      ],
+      "maxReserved": 5,
+      "businessRequests": 50,
+      "modelCalls": 20,
+      "names": 16,
+      "empty": 34,
+      "maxExecuting": 5,
+      "maxModels": 1,
+      "elapsedBeforeNewKeyMs": 121003,
+      "requestedHoldMs": 121000,
+      "originalIdsPreserved": true,
+      "samePhoneResumes": 10,
+      "probeSamePhoneRecoveries": 35,
+      "pythonRunnerOverlayFlows": 26,
+      "pythonRunnerInputRecoveries": 10,
+      "simulatedDeviceIO": true,
+      "fencedHandoffs": 20,
+      "sampledResultsKeptAcrossRestart": 2,
+      "stopAndNextRound": true,
+      "physicalReservationsDrained": true,
+      "realPhones": 0,
+      "productionActions": 0
+    }
+  ],
+  "riskHttp": {
+    "nativeRunnerRiskEvent": true,
+    "verifiedAccountCooldownPersisted": true,
+    "exactCooldownMs": 28800000,
+    "sameDeviceRepreparedWithCooldown": true,
+    "businessCompleted": 6,
+    "stopped": true,
+    "realPhones": 0
+  },
+  "historyHttp": {
+    "storage": "json",
+    "businessRequests": 51,
+    "modelCalls": 51,
+    "names": 16,
+    "empty": 35,
+    "positiveHistoryHits": 56,
+    "oldHistoryAfterRestart": true,
+    "archivedOnlyHistory": false,
+    "emptyNewKeyRequeries": true,
+    "sameEmptyKeyRetainsOriginal": true,
+    "maxExecuting": 5,
+    "maxModels": 2,
+    "elapsedBeforeNewKeyMs": 121001,
+    "requestedHoldMs": 121000,
+    "originalIdsPreserved": true,
+    "oneInitialInputPerCanonicalQuery": true,
+    "oneObservationRetryPerCanonicalQuery": true,
+    "allResultsKeptAcrossRestart": true,
+    "stopAndNextRound": true,
+    "physicalReservationsDrained": true,
+    "realPhones": 0,
+    "productionActions": 0
+  },
+  "historyHttpScope": "Executed on rc.5 reconstruction; all cloud runtime files identical to final rc.6; no actual phones.",
+  "callerExamples": [
+    "partner-example-test.py passed",
+    "stop-example-test.py passed",
+    "unavailable-example-test.py passed"
+  ],
+  "package": {
+    "manifestFiles": 4,
+    "frozenFiles": 446,
+    "cumulativeProductionRuntimeFiles": 20,
+    "reassembledAndVerified": true
+  },
+  "testCounting": "Counts are runner executions; overlapping suites/imported fixtures must not be summed as unique cases.",
+  "firstFailures": [
+    {
+      "stage": "node and smoke",
+      "reason": "New isolated test directory linked to a package directory without dependencies. Existing validated dependency directories were linked; no install or version upgrade; full rerun passed."
+    },
+    {
+      "stage": "selector",
+      "reason": "7 new counterexamples failed against old executor. Stop during model wait, stale-after-read, stop-during-tap and input geometry checks fixed; 40 pass."
+    },
+    {
+      "stage": "risk",
+      "reason": "Old rc.5 risk-back branch resumed normal preparation; new requirement counterexample failed. Risk retained until current account verified; final 12 relevant cases pass."
+    },
+    {
+      "stage": "coordinate replay harness",
+      "reason": "Source JPEG/file SHA was incorrectly compared with normalized PNG. Correct earlier PNG-input hashes and candidates are now verified; final replay passes."
+    },
+    {
+      "stage": "Windows test transport",
+      "reason": "First stdin upload waited for EOF and timed out. Only the exact test upload PowerShell process was stopped; SCP transfer used instead. No production process stopped."
+    },
+    {
+      "stage": "Windows fixture packaging",
+      "reason": "Overlay test helper omitted from initial temporary archive, 1 import error. Added existing helper; 25 overlay tests then pass, 12 risk tests already passed."
+    }
+  ],
+  "unverified": [
+    "Actual Agent integration for OmniParser plus model-selected close clicks; experiment is deliberately excluded from runtime manifest.",
+    "Screenshot/input rotation and exact-pixel staleness on actual phone, device lock and cancellation across real Agent lifecycle.",
+    "Windows detector dependency/weight provisioning and resource contention under five actual devices.",
+    "Final candidate real-phone external API single-device then dual-device acceptance, including new startup risk branch.",
+    "Fresh production image build, new release-time backup/restore validation and maintenance scope authorization."
+  ],
+  "productionRuntimeMutations": 0,
+  "adbOrSystemChanges": false,
+  "realPhoneActions": 0,
+  "pushed": false,
+  "logs": {
+    "root-check.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/root-check.log",
+      "sha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+    },
+    "full-node.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/full-node.log",
+      "sha256": "d3cfbebab5b6745681b7552fe5ffd6791a6df17ca0f984315a139ccbda0d31e8"
+    },
+    "smoke.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/smoke.log",
+      "sha256": "a7d5a05a904b7dfcfb0bd9572e1efbdd85020ff65854e855c0b7cfbab330434e"
+    },
+    "rc6-root-check.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/rc6-root-check.log",
+      "sha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+    },
+    "rc6-full-node.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/rc6-full-node.log",
+      "sha256": "7258f6fea6e9eff6ed739f7158e7d62e43b2fcb91bd066c4f78f3094ec03c8e3"
+    },
+    "rc6-python.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/rc6-python.log",
+      "sha256": "ca72a1e52f636e2d8e3de96b593345200c97578a39a67c70d937130f56ecf6f0"
+    },
+    "rc6-runners.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/rc6-runners.log",
+      "sha256": "5ce9a0bc3f5e1d783361a2d78a31174c666eda94fcf5859627bf77d2a54b9527"
+    },
+    "rc6-smoke.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/rc6-smoke.log",
+      "sha256": "279ce4f8f3bc7e15372f073d42af12d46542a9102f8e9c601a7db51eb4c9842d"
+    },
+    "agent-check.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/agent-check.log",
+      "sha256": "9961a682568c3aec20158d4f06862b9558ed2e15b88b9614b8c0243ab17122e2"
+    },
+    "selector-before.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/selector-before.log",
+      "sha256": "f6a70d6d7d752fecde374d84f3ebc3e8bf741606e1adeb343df187f6bf0ceb33"
+    },
+    "selector-final.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/selector-final.log",
+      "sha256": "ced212a23cfc5cda5ca37cffc666f39930538cf060992c264548f9cddee98b5b"
+    },
+    "annotation.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/annotation.log",
+      "sha256": "661587f0d3807b030bd6b666f15d89f57c3ba16d80047b61552e7a9b7935a851"
+    },
+    "coordinate-replay.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/coordinate-replay.log",
+      "sha256": "eec2ef80bab4a52e102cb96a252bfca6c02b536af9f03b29c2d9e67f2d57594e"
+    },
+    "coordinate-replay-final.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/coordinate-replay-final.log",
+      "sha256": "da8cf3797dc156e7222d035dcf53064fde4b8ee4662bb92a60a4926d3e612960"
+    },
+    "risk-before.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/risk-before.log",
+      "sha256": "dd159543dabaac092d10d0a20ab36fd4e9ea7c73eba80cea4bda501859dbae52"
+    },
+    "rc6-risk-final.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/rc6-risk-final.log",
+      "sha256": "c5e27198a0d6470b3705a84e20450e3e2e30b8a56ca17aed8a1f73144ffa50ab"
+    },
+    "rc6-http-json.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/rc6-http-json.log",
+      "sha256": "bbd232239efcb270ddc5999d58cf4da5234b4cce8a2515e3683cbbd95ea78a0e"
+    },
+    "rc6-http-postgres.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/rc6-http-postgres.log",
+      "sha256": "9b9a0572516673504fec8667e99c95152055aaa09b8f38f58f816028708085ee"
+    },
+    "startup-risk-http.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/startup-risk-http.log",
+      "sha256": "c1e3e32bda66403398fa650c3b1bbbc001cc5e283784ee670d2ca7b030c72bfe"
+    },
+    "history-http.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/history-http.log",
+      "sha256": "a6bc68f4fbd4e9d34bde81266f43cd239597fb85efd71b3c3c1d576df626bc95"
+    },
+    "windows-isolated-final.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/windows-isolated-final.log",
+      "sha256": "52fb0a1ed1dac77ebbd1393b24a16405322aec80ab46dc48842cfbd84049a76a"
+    },
+    "windows-overlay-retest.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/windows-overlay-retest.log",
+      "sha256": "ee33bec58fe1013821019017c35224c3a98dfc7d491cbe7c76ae058a26dedd78"
+    },
+    "package-rc6-final.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/package-rc6-final.log",
+      "sha256": "d014af8d3b10d03a5089b442248bcb3a5f0646b6051692546b69e891253cdde7"
+    },
+    "caller-example.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/caller-example.log",
+      "sha256": "bc8e6cb14ecaa458caee4f3b488fa22e61ccf9bcc2a1353da3ad3f85e41c89e1"
+    },
+    "stop-example.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/stop-example.log",
+      "sha256": "e98ee06ea260fce257cc2f74400c78b1ee8b8fe78c3bdddd76c7a7f63759bd56"
+    },
+    "unavailable-example.log": {
+      "path": "/tmp/pc-release-audit-results-20261023/unavailable-example.log",
+      "sha256": "3ab314675367e61eef98f45f0f081b006dd70c28060132daa68a698b28386674"
+    }
+  }
+}

@@ -27,9 +27,9 @@ export function validateChoice(value,frame){
  return {action:'close',frameId:frame.frameId,candidateId:c.id,box:[...c.box],point:[Math.round((x+r)/2),Math.round((y+b)/2)],overlayType:value.overlayType};
 }
 export async function selectClose(frame,config,{fetchImpl=fetch,signal}={}){
- let timer;const ctl=new AbortController();const abort=()=>ctl.abort();signal?.addEventListener('abort',abort,{once:true});if(signal?.aborted)abort();
+ let timer;const ctl=new AbortController();let resolveCancelled;const cancelled=new Promise(resolve=>{resolveCancelled=resolve;});const abort=()=>{ctl.abort();resolveCancelled(reject('cancelled'));};signal?.addEventListener('abort',abort,{once:true});if(signal?.aborted)abort();
  const timeoutMs=Math.min(config.timeoutMs||120000,120000);
- const deadline=new Promise(resolve=>{timer=setTimeout(()=>{abort();resolve(reject('timeout'));},timeoutMs);});
+ const deadline=new Promise(resolve=>{timer=setTimeout(()=>{ctl.abort();resolve(reject('timeout'));},timeoutMs);});
  try{
   if(!config.enabled||!config.apiKey||Date.now()-frame.createdAt>120000||ctl.signal.aborted)return reject('disabled_or_stale');
   const u=new URL(config.baseUrl);if(!['http:','https:'].includes(u.protocol)||u.username||u.password||u.search||u.hash)return reject('invalid_config');
@@ -42,7 +42,7 @@ export async function selectClose(frame,config,{fetchImpl=fetch,signal}={}){
    if(ctl.signal.aborted)return reject('cancelled');
    return validateChoice(JSON.parse(contents.filter(x=>x.type==='output_text').map(x=>x.text).join('')),frame);
   };
-  return await Promise.race([run().catch(()=>reject(ctl.signal.aborted?'cancelled':'unavailable')),deadline]);
+  return await Promise.race([run().catch(()=>reject(ctl.signal.aborted?'cancelled':'unavailable')),deadline,cancelled]);
  }catch{return reject('invalid_config');}finally{clearTimeout(timer);signal?.removeEventListener('abort',abort);}
 }
 // Local adapter contract: callbacks must run under exclusive per-device task
@@ -55,7 +55,11 @@ export async function executeSelection(frame,choice,{withDeviceLock,observe,tap,
  return withDeviceLock(frame.binding,async()=>{
   if(signal?.aborted||Date.now()-frame.createdAt>120000)return reject('cancelled_or_stale');
   const before=await observe();
+  // The read can itself outlive the frame or receive a stop request.
+  if(signal?.aborted||Date.now()-frame.createdAt>120000)return reject('cancelled_or_stale');
   if(!before||before.protected!==false||before.foreground!=='alipay'||!['deviceId','taskId','generation'].every(k=>before.binding?.[k]===frame.binding[k]))return reject('protected_or_owner_changed');
+  const geometry=before.inputGeometry;
+  if(!geometry||geometry.coordinateSpace!=='native-screen'||geometry.width!==frame.width||geometry.height!==frame.height||geometry.rotation!==0)return reject('input_geometry_unverified');
   // Conservative local prototype: exact pixels. A changed clock may reject a
   // legitimate action; tolerate that rather than silently clicking stale data.
   if(!png(before.image)||digest(before.image)!==digest(frame.image))return reject('page_changed');
@@ -64,7 +68,9 @@ export async function executeSelection(frame,choice,{withDeviceLock,observe,tap,
   if(attemptedFrames.has(frame))return reject('already_attempted');
   attemptedFrames.add(frame);
   await tap(checked.point);
+  if(signal?.aborted)return {action:'tapped',outcome:'cancelled',resume:false};
   const after=await observe();
+  if(signal?.aborted||Date.now()-frame.createdAt>120000)return {action:'tapped',outcome:'cancelled_or_stale',resume:false};
   if(!after||!['deviceId','taskId','generation'].every(k=>after.binding?.[k]===frame.binding[k]))return {action:'tapped',outcome:'owner_changed',resume:false};
   if(after.protected!==false)return {action:'tapped',outcome:'protected_page',resume:false};
   if(after.foreground!=='alipay'||after.expectedPage!==true||after.overlayGone!==true)return {action:'tapped',outcome:'unverified',resume:false};
