@@ -1,0 +1,109 @@
+{
+  "candidate": "lookup-probe-ai-20261023-rc.1",
+  "branch": "codex/lookup-probe-ai-20261023",
+  "status": "local-verified-not-deployed",
+  "runtimeChanged": [
+    "server/managed-lookup.mjs"
+  ],
+  "productionBase": "lookup-recovery-20261023-deployed.1",
+  "newRegression": {
+    "before": {
+      "passed": 0,
+      "failed": 22
+    },
+    "after": {
+      "passed": 22,
+      "failed": 0
+    }
+  },
+  "relatedRegression": {
+    "passed": 232,
+    "failed": 0
+  },
+  "fullNode": {
+    "passed": 1182,
+    "failed": 0
+  },
+  "check": "passed",
+  "packageFrozenFiles": 371,
+  "http": [
+    {
+      "storage": "json",
+      "businessRequests": 50,
+      "probeAiCallsBeforeBusiness": 5,
+      "modelCalls": 60,
+      "names": 16,
+      "empty": 34,
+      "maxExecuting": 5,
+      "maxModels": 2,
+      "elapsedBeforeNewKeyMs": 121001,
+      "requestedHoldMs": 121000,
+      "originalIdsPreserved": true,
+      "oneInitialInputPerNumber": true,
+      "oneObservationRetryPerNumber": true,
+      "allResultsKeptAcrossRestart": true,
+      "stopAndNextRound": true,
+      "physicalReservationsDrained": true,
+      "realPhones": 0,
+      "productionActions": 0
+    },
+    {
+      "storage": "postgres",
+      "businessRequests": 50,
+      "probeAiCallsBeforeBusiness": 5,
+      "modelCalls": 60,
+      "names": 16,
+      "empty": 34,
+      "maxExecuting": 5,
+      "maxModels": 2,
+      "elapsedBeforeNewKeyMs": 121000,
+      "requestedHoldMs": 121000,
+      "originalIdsPreserved": true,
+      "oneInitialInputPerNumber": true,
+      "oneObservationRetryPerNumber": true,
+      "allResultsKeptAcrossRestart": true,
+      "stopAndNextRound": true,
+      "physicalReservationsDrained": true,
+      "realPhones": 0,
+      "productionActions": 0
+    }
+  ],
+  "savedImageModelReplay": {
+    "model": "gpt-6.1-sol",
+    "realSavedImages": 2,
+    "newPhoneQueries": 0,
+    "results": [
+      {
+        "label": "182-probe",
+        "kind": "name",
+        "hasName": true,
+        "matchedExpectedPhone": true,
+        "evidenceSha256": "08e403d21aaaeba4c5e7f1ba93d6c9460e767f0849418732194ccb49a1c0fa22",
+        "elapsedMs": 12401,
+        "reason": ""
+      },
+      {
+        "label": "155-probe",
+        "kind": "name",
+        "hasName": true,
+        "matchedExpectedPhone": true,
+        "evidenceSha256": "87dc56351293e1e17e2ce671ab988e2df3fdf078f20ea710a9d2f1ac4c183d88",
+        "elapsedMs": 10204,
+        "reason": ""
+      }
+    ]
+  },
+  "productionPhoneQueries": 0,
+  "productionMutations": 0,
+  "knownTestSetupFailures": [
+    "initial fixture missing consentReference; corrected before meaningful baseline",
+    "Postgres initial role omitted then managed tables absent; corrected only isolated test DB",
+    "full regression lacked existing Windows node_modules link; linked existing dependencies and reran all",
+    "saved JPEGs initially passed as PNG, reader rejected before inference; retried with actual JPEG MIME"
+  ],
+  "notVerified": [
+    "Deployed probe-AI readiness transition on live phones",
+    "All real OEM popup and natural cooldown branches"
+  ],
+  "rollback": "Restore only managed-lookup.mjs from exact deployed.1 source/image; no schema or Agent change; requires release authorization."
+}

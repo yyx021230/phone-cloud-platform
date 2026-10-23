@@ -1,0 +1,8 @@
+{
+  "productionVersion": "lookup-recovery-20261023-deployed.1",
+  "source": "f97306eddf74cc8d2f212fc4027095201bd1433d",
+  "startingHead": "a87315f4826dc0bf3bb793bcd0652889893cbfe7",
+  "before": {
+    "server/managed-lookup.mjs": "ee534947540b49f921808865c621be56345ccbad2b28d73ed304e0dddb9b5bc6"
+  }
+}
