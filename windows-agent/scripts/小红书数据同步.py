@@ -596,6 +596,71 @@ def vivo_startup_launcher(window_dump):
             and re.findall(r"(?m)^\s*secure=(true|false)\s*$", delegate) == ["false"])
 
 
+def vivo_startup_surface(window_dump, expected_user):
+    """Classify only the unlocked physical screen after our one startup retry."""
+    if expected_user not in ("0", "999"):
+        return "unproven"
+    sections = re.split(r"(?m)^[ \t]*Display: mDisplayId=", window_dump)[1:]
+    physical = [part for part in sections if re.match(r"0(?:[ \t]|$)", part)]
+    if len(physical) != 1 or window_dump.count("KeyguardServiceDelegate") != 1:
+        return "unproven"
+    delegate = window_dump.split("KeyguardServiceDelegate", 1)[1].split("KeyguardStateMonitor", 1)[0]
+    if (re.findall(r"(?m)^\s*showing=(true|false)\s*$", delegate) != ["false"]
+            or re.findall(r"(?m)^\s*secure=(true|false)\s*$", delegate) != ["false"]):
+        return "unproven"
+    current = re.findall(r"(?m)^\s*mCurrentFocus=(.+)$", physical[0])
+    focused = re.findall(r"(?m)^\s*mFocusedApp=(.+)$", physical[0])
+    if len(current) != 1 or len(focused) != 1:
+        return "unproven"
+    target = r"\bu" + expected_user + r"\s+com\.xingin\.xhs/[A-Za-z0-9_.$]+(?:[}\s]|$)"
+    selector = (r"\bu0\s+com\.android\.intentresolver/(?:com\.android\.intentresolver\."
+                r"|\.)DoubleAppResolverActivity(?:[}\s]|$)")
+    launcher = r"\bu0\s+com\.bbk\.launcher2/(?:com\.bbk\.launcher2\.Launcher|\.Launcher)(?:[}\s]|$)"
+    state = default_display_state(window_dump)
+    if state == ("true", "true", "true"):
+        if re.search(target, current[0]) and re.search(target, focused[0]):
+            return "target"
+        if re.search(selector, current[0]) and re.search(selector, focused[0]):
+            return "selector"
+    if state in (("true", "true", "true"), ("true", "true", "false"), ("true", "false", "false")):
+        if (current[0].strip() == "null" and any(re.search(pattern, focused[0]) for pattern in (launcher, target, selector))
+                or re.search(launcher, current[0]) and re.search(launcher, focused[0])):
+            return "pending"
+    return "unproven"
+
+
+def capture_vivo_startup_retry(adb_path, serial, slot, clone_user, guard, events):
+    # am start -W may return at the OEM selector, or before input focus exists.
+    # Ten-second polling budget; individual ADB reads have their own timeout.
+    # Never send another launch/key while waiting.
+    expected_user = "0" if slot == "app1" else clone_user
+    deadline = time.monotonic() + 10
+    for _ in range(20):
+        guard()
+        surface = vivo_startup_surface(adb(adb_path, serial, "shell", "dumpsys", "window", timeout=8), expected_user)
+        if surface == "unproven":
+            raise RuntimeError("Xiaohongshu startup retry surface is unproven; no further input")
+        if surface in ("target", "selector"):
+            if slot == "app2" and explicit_clone_user(adb_path, serial) != clone_user:
+                raise RuntimeError("Xiaohongshu startup retry clone profile changed")
+            guard()
+            events.append("startup_elements_retry_" + surface + "_ready")
+            try:
+                root = navigation_capture(adb_path, serial, guard, events)
+            except (RuntimeError, subprocess.TimeoutExpired) as error:
+                raise RuntimeError("Xiaohongshu startup retry native read failed after " + surface + ": " + str(error)) from error
+            guard()
+            after = vivo_startup_surface(adb(adb_path, serial, "shell", "dumpsys", "window", timeout=8), expected_user)
+            if after != surface:
+                raise RuntimeError("Xiaohongshu startup retry surface changed during native read")
+            events.append("startup_elements_retry_recovered")
+            return root
+        if time.monotonic() >= deadline:
+            break
+        time.sleep(.5)
+    raise RuntimeError("Xiaohongshu startup retry foreground remained pending; no additional launch")
+
+
 def retry_startup_elements(adb_path, serial, slot, clone_user, activity, guard, events):
     """One startup-only recovery after native export failed; no scanning replay."""
     marker = "startup_elements_retry_attempted"
@@ -636,12 +701,7 @@ def retry_startup_elements(adb_path, serial, slot, clone_user, activity, guard, 
     user_args = ("--user", clone_user) if clone_user else ()
     guard()
     adb(adb_path, serial, "shell", "am", "start", "-W", *user_args, "-n", activity, timeout=20)
-    time.sleep(.7)
-    guard()
-    assert_requested_foreground(focus(adb_path, serial), events)
-    root = navigation_capture(adb_path, serial, guard, events)
-    events.append("startup_elements_retry_recovered")
-    return root
+    return capture_vivo_startup_retry(adb_path, serial, slot, clone_user, guard, events)
 
 
 def start_xhs(adb_path, serial, slot, guard, events):
