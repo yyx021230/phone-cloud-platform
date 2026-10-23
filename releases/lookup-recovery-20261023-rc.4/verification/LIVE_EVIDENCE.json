@@ -1,0 +1,72 @@
+{
+  "observedAt": "2026-10-23T02:25:53.029Z",
+  "productionRelease": "lookup-ai-vision-20261022-deployed.1",
+  "source": "fef7ff801c4fa8c391f0ae35a9f47ed6db3e8e76",
+  "enabled": 48,
+  "primaryHealthCategories": {
+    "preparation_failed_round": [
+      51,
+      52,
+      54,
+      138,
+      152,
+      172,
+      155,
+      115,
+      58,
+      164,
+      163,
+      154,
+      6,
+      86,
+      182,
+      162,
+      161,
+      142,
+      130,
+      157,
+      53,
+      158
+    ],
+    "account_login_required": [
+      55,
+      183,
+      82,
+      121,
+      74,
+      78,
+      79,
+      118,
+      147,
+      101,
+      112,
+      143
+    ],
+    "eligible": [
+      87,
+      57
+    ],
+    "lookup_device_unavailable": [
+      188,
+      153
+    ],
+    "accounts_cooling": [
+      156,
+      60,
+      10,
+      181,
+      107,
+      165,
+      67
+    ],
+    "device_or_agent_offline": [
+      146,
+      149,
+      128
+    ]
+  },
+  "roundStartedAtUtc": "2026-10-22T11:05:29.909000+00:00",
+  "readinessHash": "a41da36d6e8fd2ba240a30a8923b179b02dfd31775e72333ed19c6ad943b080b",
+  "availabilityHash": "769601e37dd7a984cb28fc1a87f5d863057889f75f48194d02c7daf6e8049209",
+  "productionActions": 0
+}

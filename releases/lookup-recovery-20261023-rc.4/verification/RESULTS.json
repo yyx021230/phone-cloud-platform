@@ -1,0 +1,115 @@
+{
+  "candidate": "lookup-recovery-20261023-rc.4",
+  "deployed": false,
+  "rootCheck": "passed",
+  "nodeRegression": {
+    "passed": 1156,
+    "failed": 0
+  },
+  "newPageReprobeTests": {
+    "passed": 10,
+    "failed": 0,
+    "includedInFullRegression": true
+  },
+  "oldBaselineNewTests": {
+    "testedCases": 9,
+    "passed": 3,
+    "failed": 6,
+    "note": "Before final tenth test; confirmed old implementation never starts blocked-page reprobes and keeps only two devices."
+  },
+  "http": [
+    {
+      "storage": "json",
+      "initialReady": 2,
+      "legacyPageReprobes": 3,
+      "pageReprobeSpacingMs": [
+        60127,
+        60026
+      ],
+      "maxReserved": 5,
+      "businessRequests": 50,
+      "modelCalls": 20,
+      "names": 16,
+      "empty": 34,
+      "maxExecuting": 5,
+      "maxModels": 1,
+      "elapsedBeforeNewKeyMs": 121001,
+      "requestedHoldMs": 121000,
+      "originalIdsPreserved": true,
+      "samePhoneResumes": 10,
+      "probeSamePhoneRecoveries": 35,
+      "pythonRunnerUsbFlows": 26,
+      "pythonRunnerInputRecoveries": 10,
+      "simulatedDeviceIO": true,
+      "fencedHandoffs": 20,
+      "stopAndNextRound": true,
+      "physicalReservationsDrained": true,
+      "realPhones": 0,
+      "productionActions": 0,
+      "sampledResultsKeptAcrossRestart": 2
+    },
+    {
+      "storage": "postgres",
+      "initialReady": 3,
+      "legacyPageReprobes": 3,
+      "pageReprobeSpacingMs": [
+        60034,
+        60002
+      ],
+      "maxReserved": 5,
+      "businessRequests": 50,
+      "modelCalls": 20,
+      "names": 16,
+      "empty": 34,
+      "maxExecuting": 5,
+      "maxModels": 1,
+      "elapsedBeforeNewKeyMs": 121001,
+      "requestedHoldMs": 121000,
+      "originalIdsPreserved": true,
+      "samePhoneResumes": 10,
+      "probeSamePhoneRecoveries": 33,
+      "pythonRunnerUsbFlows": 24,
+      "pythonRunnerInputRecoveries": 10,
+      "simulatedDeviceIO": true,
+      "fencedHandoffs": 20,
+      "stopAndNextRound": true,
+      "physicalReservationsDrained": true,
+      "realPhones": 0,
+      "productionActions": 0,
+      "sampledResultsKeptAcrossRestart": 2
+    }
+  ],
+  "firstHttpAttempt": {
+    "passed": false,
+    "queueWaitMs": 300000,
+    "jsonObservedCompleted": 18,
+    "jsonObservedExpired": 32,
+    "postgres": "interrupted alongside JSON after insufficient test queue deadline confirmed",
+    "resolution": "Test-only queue limit aligned to production 1800000ms and task TTL to 3600000ms; both complete scenarios rerun successfully; no runtime change for this failure."
+  },
+  "reportingCorrection": "Inherited HTTP output claimed allResultsKeptAcrossRestart; actual checks cover all 50 before restart and two samples after restart. Candidate output field corrected to sampledResultsKeptAcrossRestart:2 only, without changing test actions. Saved HTTP results above reflect actual coverage.",
+  "package": {
+    "manifestFiles": 9,
+    "unchangedFiles": 501,
+    "cumulativeProductionFiles": 20,
+    "verified": true
+  },
+  "productionActions": 0,
+  "realPhones": 0,
+  "externalMessages": 0,
+  "windowsAgentChangesThisStage": false,
+  "adbOrSystemChanges": false,
+  "unverified": [
+    "Real phone full-chain acceptance after candidate deployment",
+    "Physical causes of previously observed input loss and device instability",
+    "Production post-deployment throughput improvement"
+  ],
+  "logs": {
+    "regression": "/tmp/pc-reprobe-all-final.log",
+    "targeted": "/tmp/pc-reprobe-newtests-final.log",
+    "json": "/tmp/pc-reprobe-http-json-final.log",
+    "postgres": "/tmp/pc-reprobe-http-pg-final.log",
+    "firstJsonFailure": "/tmp/pc-reprobe-http-json-first-failure.log",
+    "firstPostgresInterrupted": "/tmp/pc-reprobe-http-pg-first-interrupted.log"
+  }
+}
