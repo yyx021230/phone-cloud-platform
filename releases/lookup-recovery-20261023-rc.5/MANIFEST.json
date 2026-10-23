@@ -1,0 +1,8 @@
+{
+  "windows-agent/scripts/alipay_name_lookup.py": "0c5e8df97385dd676fff4816e8aca3387a92e8197490d8789649d3baa3107a71",
+  "windows-agent/scripts/automation_runners_test.py": "6e88c204d5e25f9add7dd410a8425cdb87a992d898cc83d064901659973c52d8",
+  "windows-agent/scripts/test_lookup_overlay_guard.py": "4562463ed087afa2adc0e9c86036b4705e490ff303d7e8f977b0e394bd1933bd",
+  "server/lookup-overlay-failure-domain.test.mjs": "d96ac608983405862c4c6794d4a4fb004b1e27446036d1b916c9fde4340aadbe",
+  "verification/recovery-http-overlay50.mjs": "ff0fea80c5b55081044b722871681eaab8261eab087d8d2a6e4fcb08315b1ddf",
+  "verification/postgres-overlay-http.py": "0e2d357b13bfc2e6e2095d22e2c6276eda1fdb6bb4032b012b76d3ac4055d41d"
+}

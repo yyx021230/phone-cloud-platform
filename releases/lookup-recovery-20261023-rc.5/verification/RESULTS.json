@@ -1,0 +1,152 @@
+{
+  "candidate": "lookup-recovery-20261023-rc.5",
+  "deployed": false,
+  "rootCheck": "passed",
+  "nodeRegression": {
+    "passed": 1160,
+    "failed": 0,
+    "concurrency": 1
+  },
+  "pythonDiscovery": {
+    "passed": 335,
+    "failed": 0,
+    "newOverlayCasesIncluded": 25
+  },
+  "automationRunners": {
+    "passed": 163,
+    "failed": 0
+  },
+  "packagedOverlaySuite": {
+    "passed": 25,
+    "failed": 0,
+    "overlapsDiscovery": true
+  },
+  "http": [
+    {
+      "storage": "json",
+      "initialReady": 2,
+      "legacyPageReprobes": 3,
+      "pageReprobeSpacingMs": [
+        60173,
+        60081
+      ],
+      "maxReserved": 5,
+      "businessRequests": 50,
+      "modelCalls": 20,
+      "names": 16,
+      "empty": 34,
+      "maxExecuting": 5,
+      "maxModels": 1,
+      "elapsedBeforeNewKeyMs": 121001,
+      "requestedHoldMs": 121000,
+      "originalIdsPreserved": true,
+      "samePhoneResumes": 10,
+      "probeSamePhoneRecoveries": 35,
+      "pythonRunnerOverlayFlows": 26,
+      "pythonRunnerInputRecoveries": 10,
+      "simulatedDeviceIO": true,
+      "fencedHandoffs": 20,
+      "sampledResultsKeptAcrossRestart": 2,
+      "stopAndNextRound": true,
+      "physicalReservationsDrained": true,
+      "realPhones": 0,
+      "productionActions": 0
+    },
+    {
+      "storage": "postgres",
+      "initialReady": 2,
+      "legacyPageReprobes": 3,
+      "pageReprobeSpacingMs": [
+        60048,
+        60106
+      ],
+      "maxReserved": 5,
+      "businessRequests": 50,
+      "modelCalls": 20,
+      "names": 16,
+      "empty": 34,
+      "maxExecuting": 5,
+      "maxModels": 1,
+      "elapsedBeforeNewKeyMs": 121001,
+      "requestedHoldMs": 121000,
+      "originalIdsPreserved": true,
+      "samePhoneResumes": 10,
+      "probeSamePhoneRecoveries": 33,
+      "pythonRunnerOverlayFlows": 24,
+      "pythonRunnerInputRecoveries": 10,
+      "simulatedDeviceIO": true,
+      "fencedHandoffs": 20,
+      "sampledResultsKeptAcrossRestart": 2,
+      "stopAndNextRound": true,
+      "physicalReservationsDrained": true,
+      "realPhones": 0,
+      "productionActions": 0
+    }
+  ],
+  "package": {
+    "manifestFiles": 6,
+    "unchangedFiles": 508,
+    "cumulativeProductionFiles": 20,
+    "assembledAndHashVerified": true
+  },
+  "realImageChecks": {
+    "177": "Existing exact Canvas detector matched sanitized fixture",
+    "164": "Existing exact Canvas detector matched saved task image, unique close at 360,1252",
+    "161": "Existing exact real-name detector did not match coupon ad; no generic close click"
+  },
+  "firstFailures": [
+    {
+      "stage": "Python",
+      "reason": "Overlay interception initially ran during normal waiting/expected picker transitions; tightened mismatch/known-cover conditions; final suites passed."
+    },
+    {
+      "stage": "Node",
+      "reason": "Initial default parallel run had missing isolated Agent dependencies and timing failures; linked existing dependency tree, no upgrades. Subsequent concurrency4 run had one device scan timing failure under concurrent HTTP load; final serial full run passed."
+    },
+    {
+      "stage": "HTTP",
+      "reason": "Fake startup account identity case differed from probe identity, correctly rejected readiness. Test fixture corrected; final full results recorded separately."
+    },
+    {
+      "stage": "automation runner fixtures",
+      "reason": "Existing assertion lacked new safe search callback, and late-ad fake tree sequence lacked newly required before/after observations. Fixtures updated, original navigation/close assertions retained."
+    }
+  ],
+  "beforeRegression": {
+    "initialCases": 19,
+    "passed": 2,
+    "failed": 6,
+    "errors": 11,
+    "note": "Only four full-flow comparisons demonstrate old late/post-input overlays failing search entry/readback; missing-new-method errors are not runtime regression proof."
+  },
+  "boundaries": {
+    "productionActions": 0,
+    "realPhones": 0,
+    "externalModelCalls": 0,
+    "externalMessages": 0,
+    "sharedAgentRuntimeChangedThisStage": false,
+    "adbOrSystemChanges": false,
+    "mediaOrScreenChanges": false
+  },
+  "unverified": [
+    "Candidate Windows native execution and real-phone external API full chain",
+    "Whether 161/164 same-task elements were absent versus late arrival/route omission",
+    "All unknown popup layouts and post-deployment capacity improvement"
+  ],
+  "logs": {
+    "node": "/tmp/pc-overlay-node-final.log",
+    "python": "/tmp/pc-overlay-python-final.log",
+    "runners": "/tmp/pc-overlay-runners-final.log",
+    "package": "/tmp/pc-overlay-package-tests.log",
+    "json": "/tmp/pc-overlay-http-json-final.log",
+    "postgres": "/tmp/pc-overlay-http-pg-final.log"
+  },
+  "logSha256": {
+    "node": "f587b6e1f7f121efe75de5eaa11d3bb5a454f60246e9dd9a159459a218a5fda7",
+    "python": "c2f79d0fa0c61a516fdf958435cf1fb59eed5c728e71c1fe59aea6bf170ca65a",
+    "runners": "942f5074ad46b9c1beebb8b71a55ceab03cf00982d802e1010a88e25a989ef37",
+    "package": "c734dcb3065fbb13649950f758f24d207f631e9e42afb81b873d51faf5d8fc37",
+    "json": "d7d632c04f8757340dc9a418d6e2e9534cf293ac0b9f5e767456d76743db2d9d",
+    "postgres": "bc6116289b577cefdfe9212dbcbb56aff004a3d1498ee890ae1aa380f6a2e925"
+  }
+}
