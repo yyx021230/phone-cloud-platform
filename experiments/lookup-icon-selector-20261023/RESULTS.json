@@ -1,0 +1,107 @@
+{
+  "status": "local experiment, not production-wired",
+  "parent": "f93765d54406bed29994604974cf175cec2535b3",
+  "simulatedTests": 33,
+  "realModelRequests": 6,
+  "configuredModel": "gpt-6.1-sol",
+  "results": [
+    {
+      "label": "177",
+      "model": "gpt-6.1-sol",
+      "elapsedMs": 11074,
+      "action": "close",
+      "frameId": "a0d9f1cb88b639086c77ab81646fb693be9c05a71041b595b9d9b85f8c1b6a05",
+      "candidateId": "b0",
+      "box": [
+        325.4,
+        1220,
+        395.4,
+        1288.1
+      ],
+      "point": [
+        360,
+        1254
+      ],
+      "overlayType": "optional_realname",
+      "phoneActions": 0
+    },
+    {
+      "label": "164",
+      "model": "gpt-6.1-sol",
+      "elapsedMs": 6149,
+      "action": "close",
+      "frameId": "66c21c04ed8b438858e099a12ad31dfdb41a27fd8dbcb57e82e3a5ff17a4de81",
+      "candidateId": "b5",
+      "box": [
+        330.1,
+        1222.5,
+        389.8,
+        1282.4
+      ],
+      "point": [
+        360,
+        1252
+      ],
+      "overlayType": "optional_realname",
+      "phoneActions": 0
+    },
+    {
+      "label": "161",
+      "model": "gpt-6.1-sol",
+      "elapsedMs": 7710,
+      "action": "close",
+      "frameId": "97ad832ad713a04ffaa094532fb86f09539df32b4ca0f5acefe9df3c7e5f0f3c",
+      "candidateId": "b0",
+      "box": [
+        330.1,
+        1222.8,
+        390.7,
+        1283
+      ],
+      "point": [
+        360,
+        1253
+      ],
+      "overlayType": "advertisement",
+      "phoneActions": 0
+    },
+    {
+      "label": "130",
+      "model": "gpt-6.1-sol",
+      "elapsedMs": 5032,
+      "action": "no_action",
+      "reason": "protected",
+      "phoneActions": 0
+    },
+    {
+      "label": "54",
+      "model": "gpt-6.1-sol",
+      "elapsedMs": 7510,
+      "action": "no_action",
+      "reason": "protected",
+      "phoneActions": 0
+    },
+    {
+      "label": "146",
+      "model": "gpt-6.1-sol",
+      "elapsedMs": 7091,
+      "action": "no_action",
+      "reason": "protected",
+      "phoneActions": 0
+    }
+  ],
+  "phoneActions": 0,
+  "productionChanges": 0,
+  "limits": [
+    "Only six saved screenshots; no real phone close/reobserve acceptance",
+    "Detection boxes chosen successfully does not prove all popup variants",
+    "Production ownership/transport/timeout integration not wired",
+    "Conservative exact-pixel pre-click check may reject frames whose clock or animation changed"
+  ],
+  "sourceHashes": {
+    "selector.test.mjs": "987d0ca863d4e2838fd4e422fbf57ad3b097049d52dab69f9943763695db1071",
+    "prepare-input.py": "a087e8560034de8f0fb054adaedfd3d941c4f4a95fe1d76c61cbad130d314ad9",
+    "selector.mjs": "f6129646d8fcd7579c8f9cc2a999dd21f34ee23e3a1e528d10737386cca0fed4",
+    "run-local.mjs": "271a3325ec71ec1e9c1b8a14c4d4a0b8fc943ab6afbe7fd185dd553db362d2ad"
+  }
+}
