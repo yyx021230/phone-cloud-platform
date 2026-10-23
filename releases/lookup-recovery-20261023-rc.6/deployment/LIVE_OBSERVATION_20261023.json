@@ -1,0 +1,14 @@
+{
+  "observedAt": "2026-10-23T06:18:28.643Z",
+  "evidenceSha256": {
+    "audit-detail.json": "84ad832cc46fa62178afb0b6fba2562948f554faa4d8920a5bcb6ec1c1a0b861",
+    "version-observed.json": "266e80e1ac1bbbbb2276bc0e6a5ef831e6cded9454b1f571f887efe39f52525e",
+    "health-observed.json": "d3961acc6c383cb947e078069e2ed4af48cd71e8b4bd6206c8e4eac7497d2efc",
+    "155-probe.png": "87dc56351293e1e17e2ce671ab988e2df3fdf078f20ea710a9d2f1ac4c183d88",
+    "53-input.png": "e754c2346d3139333960d279ef8a22ad0d36ee2bd88116c8a1af1501e2779151",
+    "86-start.png": "5798930f8985fb1d8b4a27658279787636f81d9c1d8328981bc5c5d3d631b43a",
+    "53-ai-empty.png": "9d5d3caf26f60653d5a7ef5e309b2087482cad93d08d653c2790eddb9a7d52da"
+  },
+  "noProductionWrites": true,
+  "productionAcceptanceComplete": false
+}
