@@ -1,0 +1,53 @@
+{
+  "atUtc": "2026-10-23T06:04:02Z",
+  "image": "sha256:7ecf126b7c6b254eb8e8f6c6b16e57bd7fe1927219771894a8b4dcec3a7ba745",
+  "status": "running",
+  "health": "healthy",
+  "restartCount": 0,
+  "oomKilled": false,
+  "endpoints": {
+    "/healthz": {
+      "http": 200,
+      "body": {
+        "ok": true,
+        "at": "2026-10-23T06:04:02.842Z"
+      }
+    },
+    "/readyz": {
+      "http": 200,
+      "body": {
+        "ok": true,
+        "status": "ok",
+        "at": "2026-10-23T06:04:02.859Z",
+        "storage": {
+          "backend": "postgres",
+          "ok": true,
+          "detail": "postgres \u5df2\u8fde\u63a5\uff0cstate_key=default\uff0cupdated_at=2026-10-23T06:02:16.859Z"
+        },
+        "dataDir": {
+          "path": "/app/data",
+          "writable": true,
+          "error": ""
+        },
+        "runtime": {
+          "ok": true,
+          "mode": "redis",
+          "detail": "redis://redis:6379/0"
+        }
+      }
+    }
+  },
+  "boundedLogs": {
+    "sinceUtc": "2026-10-23T06:00:00Z",
+    "maxLines": 300,
+    "observedLines": 301,
+    "errorWarningKeywordLines": 0,
+    "knownCodes": {
+      "ECONNREFUSED": 0,
+      "ECONNRESET": 0,
+      "ETIMEDOUT": 0,
+      "lookup_storage_unavailable": 0,
+      "evidence_missing": 0
+    }
+  }
+}

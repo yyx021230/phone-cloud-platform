@@ -1,0 +1,22 @@
+{
+  "atUtc": "2026-10-23T05:59:59Z",
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "occupancy": {
+    "at": "2026-10-23T05:59:59.684Z",
+    "controls": [
+      "6",
+      "147",
+      "52",
+      "152"
+    ],
+    "noActiveBusiness": true
+  },
+  "authorization": "User explicitly approved this five-minute control interruption window including new control connections; no ADB/SYSTEM change"
+}

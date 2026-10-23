@@ -1,0 +1,53 @@
+{
+  "atUtc": "2026-10-23T06:03:24Z",
+  "publicHttp": [
+    {
+      "path": "/healthz",
+      "http": 200,
+      "bytes": 43,
+      "sha256": "5881e8cc64f79e08eb475048b903c053e6485481c15972f84c40493b08b300fe"
+    },
+    {
+      "path": "/api-docs.html",
+      "http": 200,
+      "bytes": 2872,
+      "sha256": "322cb59f3281babe976d60ee041fbb78f228758711fe16bc76d7c2297e220c32"
+    },
+    {
+      "path": "/api-docs.js",
+      "http": 200,
+      "bytes": 34155,
+      "sha256": "f61a477d104bec3062a921109203585616ccb5273642a78a17c07f9182d326f6"
+    },
+    {
+      "path": "/api-reference.json",
+      "http": 200,
+      "bytes": 151982,
+      "sha256": "6595654fe10a1138fc0fcaa835caf9c98025348a7a5dbc28f23d9dfc2ceeb4a3"
+    },
+    {
+      "path": "/downloads/name-lookup-http-guide.md",
+      "http": 200,
+      "bytes": 13000,
+      "sha256": "85926fe72442b5a619801e0e231deb742f0dfa07d35db217d9254fda6ca89b93"
+    }
+  ],
+  "preservedCompletedResults": [
+    {
+      "lookupId": "44b3c877-034b-47fa-baca-23d2d17cea25",
+      "http": 200,
+      "status": "completed",
+      "nameIsString": true,
+      "nameNonEmpty": true
+    },
+    {
+      "lookupId": "54e63065-6d09-47e2-832f-cd2593ee186d",
+      "http": 200,
+      "status": "completed",
+      "nameIsString": true,
+      "nameNonEmpty": true
+    }
+  ],
+  "newQueriesSubmitted": 0,
+  "prepareCalled": false
+}

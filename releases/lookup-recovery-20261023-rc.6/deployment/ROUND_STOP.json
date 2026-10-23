@@ -1,0 +1,81 @@
+{
+  "requestedByUser": true,
+  "normalPublicStopEndpoint": true,
+  "authentication": "existing client HMAC, secret only in process memory",
+  "responses": [
+    {
+      "at": "2026-10-23T05:57:58.023Z",
+      "http": 202,
+      "ok": true,
+      "preparationId": "7ce9d8bb-5e52-4be1-bf2f-95e37b8f4166",
+      "status": "stopping",
+      "stopped": false
+    },
+    {
+      "at": "2026-10-23T05:58:03.264Z",
+      "http": 202,
+      "ok": true,
+      "preparationId": "7ce9d8bb-5e52-4be1-bf2f-95e37b8f4166",
+      "status": "stopping",
+      "stopped": false
+    },
+    {
+      "at": "2026-10-23T05:58:08.383Z",
+      "http": 202,
+      "ok": true,
+      "preparationId": "7ce9d8bb-5e52-4be1-bf2f-95e37b8f4166",
+      "status": "stopping",
+      "stopped": false
+    },
+    {
+      "at": "2026-10-23T05:58:15.837Z",
+      "http": 202,
+      "ok": true,
+      "preparationId": "7ce9d8bb-5e52-4be1-bf2f-95e37b8f4166",
+      "status": "stopping",
+      "stopped": false
+    },
+    {
+      "at": "2026-10-23T05:58:20.986Z",
+      "http": 202,
+      "ok": true,
+      "preparationId": "7ce9d8bb-5e52-4be1-bf2f-95e37b8f4166",
+      "status": "stopping",
+      "stopped": false
+    },
+    {
+      "at": "2026-10-23T05:58:26.029Z",
+      "http": 202,
+      "ok": true,
+      "preparationId": "7ce9d8bb-5e52-4be1-bf2f-95e37b8f4166",
+      "status": "stopping",
+      "stopped": false
+    },
+    {
+      "at": "2026-10-23T05:58:31.178Z",
+      "http": 202,
+      "ok": true,
+      "preparationId": "7ce9d8bb-5e52-4be1-bf2f-95e37b8f4166",
+      "status": "stopping",
+      "stopped": false
+    },
+    {
+      "at": "2026-10-23T05:58:36.271Z",
+      "http": 202,
+      "ok": true,
+      "preparationId": "7ce9d8bb-5e52-4be1-bf2f-95e37b8f4166",
+      "status": "stopping",
+      "stopped": false
+    },
+    {
+      "at": "2026-10-23T05:58:41.310Z",
+      "http": 200,
+      "ok": true,
+      "preparationId": "7ce9d8bb-5e52-4be1-bf2f-95e37b8f4166",
+      "status": "stopped",
+      "stopped": true
+    }
+  ],
+  "forcedUnlock": false,
+  "newQueriesSubmitted": 0
+}

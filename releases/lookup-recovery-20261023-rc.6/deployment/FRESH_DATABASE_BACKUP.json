@@ -1,0 +1,8 @@
+{
+  "atUtc": "2026-10-23T05:59:15Z",
+  "backup": "/opt/phone-cloud-staging/lookup-recovery-20261023-rc.6/rollback/database-before-maintenance.dump",
+  "bytes": 884869999,
+  "sha256": "b88be40648daeb46e193a6768a362377fed42dda42343fe991b426b72375c481",
+  "archiveListing": "passed",
+  "fullRestorePerformed": false
+}
