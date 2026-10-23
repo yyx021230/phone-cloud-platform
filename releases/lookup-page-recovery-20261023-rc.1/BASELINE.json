@@ -1,0 +1,33 @@
+{
+  "productionVersion": "lookup-recovery-20261023-deployed.1",
+  "productionSource": "f97306eddf74cc8d2f212fc4027095201bd1433d",
+  "productionImage": "sha256:7ecf126b7c6b254eb8e8f6c6b16e57bd7fe1927219771894a8b4dcec3a7ba745",
+  "parentCandidate": "lookup-probe-ai-20261023-rc.1",
+  "parentSource": "ae9a4d21dad30fde054884502275fc2e1b5c6308",
+  "startingHead": "8bb57f5228b342ad6911b55c6136cef4a81d7e3b",
+  "before": {
+    "server/managed-lookup.mjs": "5a1ea7d5f1a648b5eb0c12ec57e3613841a6e1f2dbbc995d5c3b5a7cef4c70a9",
+    "server/managed-lookup-platform.mjs": "d8e6199507077b330702464b2b436e0b027dac272e8fb998bb65495dceb30a67",
+    "server/lookup-failure-domain.mjs": "f1c97c1dc7a5d60c1daee42c23c76c67080a82cb40b0102eda4605efb9f63597",
+    "windows-agent/scripts/alipay_name_lookup.py": "c68a7778b88a978dac08fd74e10298a088e7913fdb4c62858d7e17108e35d5a2",
+    "windows-agent/scripts/alipay_visual_result.py": "a0779dcd1dc1c00d2861735feb9dc935e807df6f54a6b369612e44dfbdff400a",
+    "windows-agent/scripts/lookup_page_actions.py": null,
+    "server/lookup-automatic-recovery.test.mjs": "ec7768aa447f0049e9b7194e73ad9f185d0fd987618e62af5fa326d07e68f24e",
+    "windows-agent/scripts/test_lookup_page_actions.py": null,
+    "windows-agent/scripts/test_lookup_visual_pending.py": "8827af8aad7a4ceeb37aaf2ceb255c09da71bc3b1d4115c37b099b74acbf6be6",
+    "windows-agent/scripts/automation_runners_test.py": "6e88c204d5e25f9add7dd410a8425cdb87a992d898cc83d064901659973c52d8",
+    "verification/page-actions-runner.py": null,
+    "verification/page-recovery-http.mjs": null,
+    "windows-agent/src/index.mjs": "8cc4b6cb01929a4eed20d9397071333f792b8d4beb5f268cdb2fba22d2418e27",
+    "windows-agent/src/lookup-page-recovery.test.mjs": "d5d910e59b017747e223975c27d526cbbcdadbc296cbc2803c41bb4eb4933613"
+  },
+  "runtimeFiles": [
+    "server/managed-lookup.mjs",
+    "server/managed-lookup-platform.mjs",
+    "server/lookup-failure-domain.mjs",
+    "windows-agent/scripts/alipay_name_lookup.py",
+    "windows-agent/scripts/alipay_visual_result.py",
+    "windows-agent/scripts/lookup_page_actions.py",
+    "windows-agent/src/index.mjs"
+  ]
+}

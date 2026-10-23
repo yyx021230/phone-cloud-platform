@@ -1,0 +1,21 @@
+{
+  "storage": "json",
+  "businessRequests": 50,
+  "probeAiCallsBeforeBusiness": 5,
+  "modelCalls": 59,
+  "names": 16,
+  "empty": 34,
+  "maxExecuting": 5,
+  "maxModels": 2,
+  "elapsedBeforeNewKeyMs": 121001,
+  "requestedHoldMs": 121000,
+  "originalIdsPreserved": true,
+  "normalNumbersInputOnce": true,
+  "networkFailureCrossPhoneSameId": true,
+  "networkErrorNotSentToModel": true,
+  "allResultsKeptAcrossRestart": true,
+  "stopAndNextRound": true,
+  "physicalReservationsDrained": true,
+  "realPhones": 0,
+  "productionActions": 0
+}
