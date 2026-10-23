@@ -1,0 +1,11 @@
+{
+  "parentSha256": "3ef9b4e5157bf5c94ab6338869a396a51d7075608bd371e74f10516986678770",
+  "candidateSha256": "ad1f3ecb26ca817be7ddf495c166194f1f1d572185a5b94e84d73fc134af278c",
+  "allowedChanges": [
+    "one lookup trace import",
+    "taskAlipayNameLookup only"
+  ],
+  "remainingBytesIdentical": true,
+  "controlAdbSchedulingLifecycleChanged": false,
+  "parentPostHuman45SecondBudgetPreserved": true
+}
