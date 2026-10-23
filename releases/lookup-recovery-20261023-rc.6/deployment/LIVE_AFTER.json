@@ -1,0 +1,35 @@
+{
+  "at": "2026-10-23T06:02:45.654Z",
+  "health": true,
+  "ready": true,
+  "total": 139,
+  "freshOnline": 121,
+  "controls": [],
+  "counts": {
+    "enabled": 42,
+    "occupied": 0,
+    "ready": 0,
+    "human": 0,
+    "queued": 0,
+    "running": 0
+  },
+  "rounds": [
+    {
+      "id": "7ce9d8bb-5e52-4be1-bf2f-95e37b8f4166",
+      "createdAt": 1792729919484,
+      "opened": 1792730412598,
+      "stopRequestedAt": 1792735077999,
+      "stoppedAt": 1792735118755,
+      "idleSince": null,
+      "idleTimeoutMs": 900000
+    }
+  ],
+  "channels": [],
+  "activeTasks": [],
+  "agents": [
+    {
+      "heartbeatAgeSec": 14,
+      "protocol": 1
+    }
+  ]
+}

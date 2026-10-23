@@ -1,0 +1,29 @@
+{
+  "at": "2026-10-23T06:05:56.306Z",
+  "health": true,
+  "ready": true,
+  "total": 139,
+  "freshOnline": 121,
+  "controls": [
+    "152",
+    "82",
+    "147",
+    "52"
+  ],
+  "counts": {
+    "enabled": 42,
+    "occupied": 0,
+    "ready": 0,
+    "human": 0,
+    "queued": 0,
+    "running": 0
+  },
+  "channels": [],
+  "activeTasks": [],
+  "agents": [
+    {
+      "heartbeatAgeSec": 25,
+      "protocol": 1
+    }
+  ]
+}

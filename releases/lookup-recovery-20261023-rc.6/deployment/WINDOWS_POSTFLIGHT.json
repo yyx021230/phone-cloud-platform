@@ -1,0 +1,15 @@
+{
+  "adbOwner": "NT AUTHORITY\\SYSTEM",
+  "taskPrincipalUnchanged": true,
+  "adbPid": 8988,
+  "adbPath": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+  "files": {
+    "scripts/alipay_name_lookup.py": "c68a7778b88a978dac08fd74e10298a088e7913fdb4c62858d7e17108e35d5a2",
+    "src/index.mjs": "8cc4b6cb01929a4eed20d9397071333f792b8d4beb5f268cdb2fba22d2418e27"
+  },
+  "agentInstances": 1,
+  "atUtc": "2026-10-23T06:02:17.9066473Z",
+  "taskActionsUnchanged": true,
+  "agentOwner": "NT AUTHORITY\\SYSTEM",
+  "agentPid": 21840
+}

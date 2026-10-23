@@ -1,0 +1,17 @@
+{
+  "recordedAtUtc": "2026-10-23T05:58:53.807117+00:00",
+  "candidate": "lookup-recovery-20261023-rc.6",
+  "runtimeCommit": "f97306eddf74cc8d2f212fc4027095201bd1433d",
+  "preparationCommit": "0cfd5dd3605ae6654b4b11929cb4382ae9f4a032",
+  "maintenanceAuthorization": "用户明确允许本轮结束后约5分钟维护，接受窗口内控屏短暂断开，包含新接入连接。",
+  "additionalAuthorization": "用户随后明确要求直接结束任务；仅通过标准停止接口结束当前preparationId，等待停止确认和占用释放。",
+  "roundId": "7ce9d8bb-5e52-4be1-bf2f-95e37b8f4166",
+  "protected": [
+    "ADB process/identity/keys/path/port",
+    "SYSTEM identity",
+    "Windows OS",
+    "USB",
+    "media"
+  ],
+  "noFurtherApprovalRequiredForThisWindow": true
+}

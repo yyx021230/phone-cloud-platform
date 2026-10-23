@@ -1,0 +1,23 @@
+{
+  "version": "lookup-recovery-20261023-deployed.1",
+  "atUtc": "2026-10-23T06:02:45Z",
+  "sourceCommit": "f97306eddf74cc8d2f212fc4027095201bd1433d",
+  "imageId": "sha256:7ecf126b7c6b254eb8e8f6c6b16e57bd7fe1927219771894a8b4dcec3a7ba745",
+  "changedCloudFiles": 18,
+  "windowsFiles": 2,
+  "agentPid": 21840,
+  "adbPid": 8988,
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "activeSha256": "0fccabf15e97a0d501df34038b14df0f0d184f1f92b7d88686bc9a4f9de0cf85",
+  "previousVersion": "lookup-ai-vision-20261022-deployed.1",
+  "rollbackDirectory": "/opt/phone-cloud-staging/lookup-recovery-20261023-rc.6/rollback",
+  "productionAcceptanceComplete": false,
+  "iconExperimentIncluded": false
+}
