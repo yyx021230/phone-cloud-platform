@@ -1,0 +1,12 @@
+{
+  "PREPARATION_RECEIPT.json": "ff0a2571ef481a1f40e5439e5f1e281c81256acecd4805235b0c671f9ec896bf",
+  "PRODUCTION_DIFF.json": "bda750b4d43d89698bac522e0559bfd51b92e018f021fdf5a94afad83e2ebed0",
+  "Dockerfile": "e761a3ee4df75a91c2311af4a47e1416d9fa16c9b461320d776dfabaad4f253f",
+  "finalize-cloud.py": "569b87638209d46eef44200a543d449a3b9e10f09d21189261ae311550adec21",
+  "README.md": "19801e0f87886f74fdaa2ed31bbe8bcc51ac12d849284267ec638731c6c4b8b7",
+  "LIVE_APPROVAL.json": "e6997c8b4bd120c037dfc0fdf14cdd7cd8e0e04f22380ac3f77be489a6853513",
+  "SOURCE_COMMIT": "4bbd9b876b383f046a4ac5afe579f06d48c10bf7345a6a891c2f209636aabb97",
+  "activate-cloud.py": "89c974cbc0df22640947703298f1a60195054c9c3cfc2ceb92d46e8c1eec9b81",
+  "prepare-cloud.py": "93110cbf6d7e0f54bae3898f04713b13ebb96df50ebe55aa0d5df1753c818ac0",
+  "complete-preparation.py": "4635ea6421b04e7222fbc4a6657adf81dae5683212c30cc3806ee969c128a58b"
+}

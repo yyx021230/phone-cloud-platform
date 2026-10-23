@@ -1,0 +1,34 @@
+{
+  "candidate": "lookup-probe-ai-20261023-rc.1",
+  "sourceCommit": "ae9a4d21dad30fde054884502275fc2e1b5c6308",
+  "status": "prepared-not-activated",
+  "imageTag": "phone-cloud-platform:lookup-probe-ai-20261023-rc.1",
+  "imageId": "sha256:020c325d7c577859236d6eb9d3c395e4ee5fda55f8838e7ecbe717aa084b60c2",
+  "previousImage": "sha256:7ecf126b7c6b254eb8e8f6c6b16e57bd7fe1927219771894a8b4dcec3a7ba745",
+  "cloudFiles": {
+    "server/managed-lookup.mjs": {
+      "before": "ee534947540b49f921808865c621be56345ccbad2b28d73ed304e0dddb9b5bc6",
+      "after": "5a1ea7d5f1a648b5eb0c12ec57e3613841a6e1f2dbbc995d5c3b5a7cef4c70a9"
+    }
+  },
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "backup": "/opt/phone-cloud-staging/lookup-probe-ai-20261023-rc.1/rollback",
+  "backupFiles": {
+    "database.dump": "67289be1ef5843ac3d4617cc8574cc14978ef8bf1acbc4566a7fdafadbe2e085",
+    "compose-baseline.json": "7a885c7c515c14f7dbaac679830526b6cac585c336505751701b7c894b9272ce",
+    "previous-image.tar.gz": "5a69df1562f91553a711fe28d147553839caff35d9183a58b859246c83aa56bc",
+    "ACTIVE_PLATFORM_RELEASE.json": "c7cc0ea92fd09498189aea2b0a7100e09ab0421da1ef25173c375c0494575abb"
+  },
+  "isolatedSmoke": "passed using production mode and disposable PostgreSQL",
+  "productionServiceRestarted": false,
+  "agentChanged": false,
+  "adbChanged": false,
+  "preparedAtUtc": "2026-10-23T06:42:59Z"
+}
