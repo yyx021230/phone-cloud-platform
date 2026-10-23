@@ -1,0 +1,11 @@
+{
+  "version": "lookup-final-20261023-rc.1",
+  "files": {
+    "README.md": "9780a1977f77cf47dd0098b7c95f4601c7060b4846513ce8ecc1719f862b5210",
+    "lookup.mjs": "c6c04722cd2ecd76ca7a81b72b82b1ee95ec0b8a26ab75795dc75632a4fde246",
+    "lookup.py": "4d25a7b23c11df237ff58f2a791f006c3aeb6a7f05c01a7f53feda7c3227bd59",
+    "openapi.json": "aa72efd78ffc0cdebaed80636caed97284dd14c76b2163ce295b7816bdd7ed31",
+    "stop_lookup.py": "e0d7f72ff6fae836973432804ae42083ee99c136f307483a7e9eb5a198d862ed"
+  },
+  "zipSha256": "bc1d3e7bca15e5a4541cc0cb9503c4fbf08e18eed82b86d5e313534cfa93ba95"
+}
