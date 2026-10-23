@@ -1,0 +1,222 @@
+{
+  "at": "2026-10-23T06:57:41.861Z",
+  "start": "2026-10-23T06:09:12.233Z",
+  "prepareKeys": 3,
+  "physicalOccupied": 5,
+  "channels": [
+    {
+      "device": 53,
+      "phase": "querying",
+      "requestId": "ddc1ccd4-3e82-4dde-8ae8-98e500d1438b"
+    },
+    {
+      "device": 164,
+      "phase": "querying",
+      "requestId": "8dc55e58-d249-484f-bff3-300dc2ad8057"
+    },
+    {
+      "device": 161,
+      "phase": "querying",
+      "requestId": "4983c6de-71fb-4714-8739-3b3b7ec68704"
+    },
+    {
+      "device": 157,
+      "phase": "querying",
+      "requestId": "1ce29934-8f86-4365-9990-86a3626a322b"
+    },
+    {
+      "device": 115,
+      "phase": "starting",
+      "requestId": "e7e1393b-97b9-48db-95a9-073e689a2f13"
+    }
+  ],
+  "partner": {
+    "count": 100,
+    "states": {
+      "not_found": 11,
+      "succeeded": 70,
+      "running": 3,
+      "queued": 16
+    },
+    "names": 70,
+    "ai": {
+      "empty": 1,
+      "none": 87,
+      "name": 12
+    },
+    "failedCodes": {},
+    "queueSec": {
+      "n": 84,
+      "median": 261.0,
+      "p90": 439,
+      "max": 566
+    },
+    "totalSec": {
+      "n": 81,
+      "median": 307,
+      "p90": 542,
+      "max": 598
+    },
+    "multipleAttempts": [
+      {
+        "id": "c74f57a4-a9a7-42e6-b06a-b9fbcd795eba",
+        "status": "succeeded",
+        "devices": [
+          161,
+          53
+        ]
+      },
+      {
+        "id": "fc4204ea-0579-41da-9e24-7d66e402b195",
+        "status": "succeeded",
+        "devices": [
+          115,
+          112
+        ]
+      },
+      {
+        "id": "e1b0ac5a-1e51-45d7-9b7b-22a715db4f98",
+        "status": "succeeded",
+        "devices": [
+          157,
+          161
+        ]
+      },
+      {
+        "id": "d7621e64-734e-4021-b850-9a59b1506d2a",
+        "status": "succeeded",
+        "devices": [
+          53,
+          112
+        ]
+      },
+      {
+        "id": "3b312060-d3e8-46d2-8a13-36ed2c09eed7",
+        "status": "succeeded",
+        "devices": [
+          112,
+          161
+        ]
+      },
+      {
+        "id": "84e1e527-f45c-401f-98a3-426628354a7e",
+        "status": "succeeded",
+        "devices": [
+          115,
+          53
+        ]
+      },
+      {
+        "id": "8f727287-2fac-4eb2-97fb-a4fe7eb820e1",
+        "status": "succeeded",
+        "devices": [
+          161,
+          112
+        ]
+      }
+    ]
+  },
+  "probes": {
+    "count": 72,
+    "states": {
+      "failed": 52,
+      "succeeded": 18,
+      "running": 1,
+      "preparing": 1
+    },
+    "names": 18,
+    "ai": {
+      "none": 72
+    },
+    "failedCodes": {
+      "lookup_probe_failed": 19,
+      "lookup_account_login_required": 19,
+      "lookup_accounts_cooling": 1,
+      "lookup_probe_page_unsupported": 13
+    },
+    "queueSec": {
+      "n": 72,
+      "median": 0.0,
+      "p90": 0,
+      "max": 0
+    },
+    "totalSec": {
+      "n": 70,
+      "median": 74.5,
+      "p90": 196,
+      "max": 345
+    },
+    "multipleAttempts": []
+  },
+  "selftest": {
+    "returned": 50,
+    "history": 40,
+    "newPhysical": 10
+  },
+  "evidenceFiles": {
+    "issue-182-3fe08138.jpg": "74f28563d5a31a335980e57f2ebfd7c094b08d754aa976e10f8af5896f42e9f0",
+    "issue-163-fe0eaf56.jpg": "664b639ffa40e5e014053b328d2caf909778e57d739a79cc567627bba603ee6a",
+    "issue-161-f50dc454.jpg": "11eb2ce4fe31d1b52ead0e64df00c7adcf871cd3f3009c67f27e01a73faa2b73",
+    "issue-121-c83f4483.jpg": "74edf7d2ee4654193d645d581c3aa5acd2299d16772b4253320be2652dac53da",
+    "issue-138-2e403c1e.jpg": "1fc7083c092fa1362f222e72c6344507e91362f99bde9fa945cfd75a7b0a99b3",
+    "issue-172-bf875ba9.jpg": "801cf4e5c69d31fa8e32e460e2eb71f67f3769c8c746b971ca613f127084f4e1",
+    "issue-172-c199a476.jpg": "1f0e5ead15d6273dd058852b2277254c57cff130079d18e42c9ba5b15a81444e",
+    "issue-152-ff0d5478.jpg": "e91a1983d6ece9e1a0d225fd942a2a81d18462c66c84f6688793e7bc89247ccd",
+    "issue-182-56d1d3cd.jpg": "1d38e1a60fd74c84e9dc8f019288373e40e1b9e948ddeded4005cc71f1b4bd21",
+    "issue-152-60098e96.jpg": "a8feafa0440fc9343f7e874093c16298e4908b784910124880becefccbdde5dd",
+    "issue-155-d1975b4b.jpg": "fb34a28ffcd01e4151b45d4f71cb5959a278a1d2b80f2793a785236b8af3dfd9",
+    "issue-112-f628b765.jpg": "9280c14cdb5527415b15ec0168d075c247788529c7c29be0cef2bc1295847cc4",
+    "issue-164-e9b2b1c6.jpg": "9219a4f8af82d7e62a074eecc0ed00cf152e7ae9c2c2393da96a9123e6baabe3",
+    "empty-112-84fa8081.jpg": "84afa7be1521aaaa1ff9fe0fc2de2b5ff2e0673c38c9ca38e42005392eaeb751",
+    "issue-112-b426cae2.jpg": "dc266cd9c3a80105914e592102e89b7f903d2b6d16035c54ff7b2bdafdeb99ee",
+    "issue-112-e2b13837.jpg": "b75c9f29852c58e87d68544a06707cc13c90e1fb05e407f7d8ccba9ffaaedd38",
+    "issue-112-de919e3b.jpg": "a97bb8a9c277739e43d57ac40b012c79a094e2ee85d0dcd66bd7b0fad6aa75aa",
+    "issue-155-64d69f32.jpg": "518c2c34bb6c284d789bd7b20f8d7e41d15a2bb8e589a886ce5d30411e28bcf2",
+    "issue-86-624205f2.jpg": "cd03a235b9cf980f7f8be0379a1f549ca3cc353bba74a3ba936971823a0963ee",
+    "issue-172-36dcdb25.jpg": "91d1de93fcb3259b0da368a7c25f52c66be2b6d0d9797c2a3cdb97f9b3d54de4",
+    "issue-161-4146f139.jpg": "ce9cb3abad6322637e985a381fef12808f6c1c0afde1d82bef168c5850b68890",
+    "issue-161-2471fdd3.jpg": "a77dddbcc68d4167ce9c787443edc856c42432e05284d1b79ccad549d87428af",
+    "issue-163-aef10d9a.jpg": "72c90273d3076cfe377c351d9ce1b674b4bcedc03ba46940614f96f35973a3b7",
+    "issue-54-766c752a.jpg": "aa7763de0b245dc29bda8d0bfab816dbbd2367853915c64386efad218c926b3e",
+    "issue-164-c11d28aa.jpg": "bd90ec2b86962f75b5ddcb0bd01b6c5083e903c3e62161bbc264973ad98c777a",
+    "issue-161-79d72533.jpg": "f8f33475600a285f1fb8db6f23dfb5d7c96c3d10a6d471637887ab7345b4e110",
+    "issue-161-232669c4.jpg": "f5391b6c28fadee86266ecb42ae88bca80f1ae6ede432a0255c6fed83e7e8fe0",
+    "empty-53-39edc1c4.jpg": "9d5d3caf26f60653d5a7ef5e309b2087482cad93d08d653c2790eddb9a7d52da",
+    "issue-142-34f3e9f6.jpg": "b060cdde5c943ac9d1ba2010b42f984a8261286bdef964b80d760a6979222f93",
+    "issue-163-e3dd9f9c.jpg": "2fcd0c99ce952355b58b4b8fbb15fb02f5deb90bdd56fb3e4d8059b4428d1026",
+    "issue-138-363732e1.jpg": "26e88b6243d05762226d80dea4eb3ae6dc7a33e6737ca860cc0bc70632117816",
+    "issue-51-fea2cd4c.jpg": "646183677d0e3ec96404c5ae7cf142a5e4cc4c913d03992d9dc44df9246f2f5b"
+  },
+  "pickerReplay": [
+    {
+      "jobId": "fea2cd4c-3d31-48f3-8969-1032c44b9f9a",
+      "rows": 5,
+      "currentCount": 1,
+      "snapshotAccepted": true,
+      "reasons": [],
+      "xmlSha256": "01817e2714c15b8754a78d33af3a40e911dec42315a7b8beb3f88da5a371768f"
+    },
+    {
+      "jobId": "766c752a-6354-4845-94ae-95b53d4282a2",
+      "rows": 5,
+      "currentCount": 1,
+      "snapshotAccepted": true,
+      "reasons": [],
+      "xmlSha256": "cf58e8a49c6b692825b60dadb2d0d38f142804e8f7dbc2c319c01a09cf0d1758"
+    },
+    {
+      "jobId": "34f3e9f6-d5c8-4520-97f2-d0fab010f7cf",
+      "rows": 5,
+      "currentCount": 1,
+      "snapshotAccepted": true,
+      "reasons": [],
+      "xmlSha256": "48d20f7d1d827467adb1b6ed11d2e47c7b3a4865e1c89a2d633fc9837650e600"
+    }
+  ],
+  "runtimeLedger": {
+    "checked": 51,
+    "matched": 50,
+    "staleEntry": "server/device-occupancy.mjs",
+    "actualMatchesCommittedRc6": true
+  }
+}
