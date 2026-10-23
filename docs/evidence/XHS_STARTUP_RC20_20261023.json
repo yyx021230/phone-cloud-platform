@@ -1,5 +1,5 @@
 {
-  "status": "deployed_then_rolled_back_single_canary_failed",
+  "status": "rc21_deployed_after_rc20_rollback",
   "tag": "xhs-compat-20261023-rc.20",
   "baseCommit": "9b1a078a1e74b9a3a7042c34739cd0d7479ec41e",
   "candidateSHA256": "73074515d5e6c56c48cd712c276f86de138c585710ebb8bd0341f9e08e97b907",
@@ -10,7 +10,7 @@
     "rootSyntax": true,
     "startupFocused": 8
   },
-  "currentProductionSHA256": "3b1778ffa3837798d3c80f69072fa128f29233107c13bb50ac9529d51aee0187",
+  "currentProductionSHA256": "0f17e54d9ec84949f987682d44ba4886c1bc8a3b1a8bcb5a4bc3ec42595bc83e",
   "freshCloudBaseline": "4d18647672686c188086db15675f714db42c218c10d9f2ae8f65990b89073c43",
   "realDeviceSource": "attempts field retains pre-deployment rc18 reproduction; rc20Acceptance is the only rc20 acceptance",
   "attempts": [
@@ -420,5 +420,152 @@
     "newCandidateLiveTest": false,
     "externalCloudAndAgentChangeReviewed": true,
     "sharedServicesRestartedByUs": false
+  },
+  "rc21Deployment": {
+    "status": "deployed_targeted_validation_complete_with_transport_block",
+    "version": "xhs-compat-20261023-deployed.3",
+    "sourceCommit": "bbf87e9fc3e38278ca84682dcb58fbe526d9547b",
+    "candidateTag": "xhs-compat-20261023-rc.21",
+    "runtimeSHA256": "0f17e54d9ec84949f987682d44ba4886c1bc8a3b1a8bcb5a4bc3ec42595bc83e",
+    "rollbackSHA256": "3b1778ffa3837798d3c80f69072fa128f29233107c13bb50ac9529d51aee0187",
+    "backup": "D:\\PhoneCloud\\backups\\xhs-compat-20261023-deployed.3",
+    "changedRuntimeFiles": [
+      "scripts/小红书数据同步.py"
+    ],
+    "servicesRestarted": false,
+    "attempts": [
+      {
+        "name": "111",
+        "slot": "app1",
+        "phase": "single",
+        "status": "passed",
+        "notes": 16,
+        "scrolls": 5,
+        "seconds": 173,
+        "complete": true,
+        "stopReason": "older_than_window_visible",
+        "settingsRestored": true,
+        "ownLockAcquired": true,
+        "ownLockReleased": true,
+        "startedAt": "2026-10-23T07:50:41.330467+00:00",
+        "finishedAt": "2026-10-23T07:53:34.187487+00:00"
+      },
+      {
+        "name": "123",
+        "slot": "app2",
+        "phase": "pair",
+        "status": "blocked_verification",
+        "seconds": 54,
+        "settingsRestored": false,
+        "ownLockAcquired": true,
+        "startedAt": "2026-10-23T07:53:39.899310+00:00",
+        "finishedAt": "2026-10-23T07:54:34.034374+00:00"
+      },
+      {
+        "name": "111",
+        "slot": "app2",
+        "phase": "pair",
+        "status": "cancelled",
+        "seconds": 91,
+        "settingsRestored": true,
+        "ownLockAcquired": true,
+        "ownLockReleased": true,
+        "startedAt": "2026-10-23T07:53:39.899784+00:00",
+        "finishedAt": "2026-10-23T07:55:10.790250+00:00"
+      },
+      {
+        "name": "121",
+        "slot": "app2",
+        "phase": "pair",
+        "status": "passed",
+        "notes": 0,
+        "scrolls": 0,
+        "seconds": 108,
+        "complete": true,
+        "stopReason": "older_than_window_visible",
+        "settingsRestored": true,
+        "ownLockAcquired": true,
+        "ownLockReleased": true,
+        "startedAt": "2026-10-23T07:56:21.074728+00:00",
+        "finishedAt": "2026-10-23T07:58:08.680516+00:00"
+      },
+      {
+        "name": "111",
+        "slot": "app2",
+        "phase": "pair",
+        "status": "passed",
+        "notes": 6,
+        "scrolls": 1,
+        "seconds": 108,
+        "complete": true,
+        "stopReason": "older_than_window_visible",
+        "settingsRestored": true,
+        "ownLockAcquired": true,
+        "ownLockReleased": true,
+        "startedAt": "2026-10-23T07:56:21.073462+00:00",
+        "finishedAt": "2026-10-23T07:58:09.438517+00:00"
+      },
+      {
+        "name": "132",
+        "slot": "app1",
+        "phase": "remaining",
+        "status": "passed",
+        "notes": 79,
+        "scrolls": 34,
+        "seconds": 896,
+        "complete": true,
+        "stopReason": "older_than_window_visible",
+        "settingsRestored": true,
+        "ownLockAcquired": true,
+        "ownLockReleased": true,
+        "startedAt": "2026-10-23T07:58:10.183909+00:00",
+        "finishedAt": "2026-10-23T08:13:05.800216+00:00"
+      },
+      {
+        "name": "132",
+        "slot": "app2",
+        "phase": "remaining",
+        "status": "passed",
+        "notes": 19,
+        "scrolls": 7,
+        "seconds": 219,
+        "complete": true,
+        "stopReason": "older_than_window_visible",
+        "settingsRestored": true,
+        "ownLockAcquired": true,
+        "ownLockReleased": true,
+        "startedAt": "2026-10-23T08:13:05.803911+00:00",
+        "finishedAt": "2026-10-23T08:16:45.241626+00:00"
+      }
+    ],
+    "uniqueSlots": 6,
+    "passedSlots": 5,
+    "completeNotes": 120,
+    "transportBlockedSlots": [
+      "123/app2"
+    ],
+    "cancelledAttempts": 1,
+    "cancelledCause": "batch peer cancelled after 123 transport made cleanup unproven; separate verified retry retained",
+    "123Reconciliation": {
+      "originalTaskRemainsFailed": true,
+      "settingsRestoredAfterReconnect": true,
+      "ledgerRetainedByRename": true,
+      "phoneSettingsWritten": false
+    },
+    "startupRetryLiveTriggered": false,
+    "notification121": "notification_prompt_back before native_accessibility_action:menu; late-after-menu branch not triggered",
+    "loadingTimeoutsInSuccessfulJobs": 0,
+    "allSuccessfulWindowsComplete": true,
+    "finalReconciliation": {
+      "at": "2026-10-23T08:16:52.909195+00:00",
+      "ownedJobs": 7,
+      "ownedActiveLocks": 0,
+      "allJobsTerminal": true,
+      "allSettingsRestored": true
+    },
+    "runtimeHashesMatched": 12,
+    "globalPendingLedgers": 0,
+    "cloudHashUnchanged": true,
+    "daily95PercentProven": false
   }
 }
