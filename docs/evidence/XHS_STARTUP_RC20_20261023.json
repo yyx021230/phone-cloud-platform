@@ -1,5 +1,5 @@
 {
-  "status": "local_candidate_not_deployed",
+  "status": "deployed_then_rolled_back_single_canary_failed",
   "tag": "xhs-compat-20261023-rc.20",
   "baseCommit": "9b1a078a1e74b9a3a7042c34739cd0d7479ec41e",
   "candidateSHA256": "73074515d5e6c56c48cd712c276f86de138c585710ebb8bd0341f9e08e97b907",
@@ -12,7 +12,7 @@
   },
   "currentProductionSHA256": "3b1778ffa3837798d3c80f69072fa128f29233107c13bb50ac9529d51aee0187",
   "freshCloudBaseline": "4d18647672686c188086db15675f714db42c218c10d9f2ae8f65990b89073c43",
-  "realDeviceSource": "rc18 d56fa36; not candidate rc20",
+  "realDeviceSource": "attempts field retains pre-deployment rc18 reproduction; rc20Acceptance is the only rc20 acceptance",
   "attempts": [
     {
       "name": "111",
@@ -124,5 +124,63 @@
   },
   "rootPreexistingStatusPreserved": true,
   "localRollbackRehearsal": true,
-  "independentReviewer": false
+  "independentReviewer": false,
+  "sourceCommit": "c8e51abbc9c1342a9f06497d8bf648daf221fb0c",
+  "rc20Acceptance": {
+    "deployment": {
+      "version": "xhs-compat-20261023-deployed.2",
+      "sourceCommit": "c8e51abbc9c1342a9f06497d8bf648daf221fb0c",
+      "candidateTag": "xhs-compat-20261023-rc.20",
+      "changedFiles": [
+        "scripts/小红书数据同步.py"
+      ],
+      "atEpoch": 1792725734.3572032,
+      "servicesRestarted": false,
+      "backup": "D:\\PhoneCloud\\backups\\xhs-compat-20261023-deployed.2"
+    },
+    "attempts": [
+      {
+        "name": "111",
+        "slot": "app1",
+        "status": "failed_compatibility",
+        "seconds": 57,
+        "settingsRestored": true,
+        "ownLockAcquired": true,
+        "ownLockReleased": true,
+        "startedAt": "2026-10-23T03:22:24.423964+00:00",
+        "finishedAt": "2026-10-23T03:23:21.146024+00:00"
+      }
+    ],
+    "failureReason": "Xiaohongshu foreground user does not match the requested slot",
+    "nativeEvidence": {
+      "sha256": "f482c569a3a869656b37a0a272b57605630cfe004835e2e32cb3f1e207e94788",
+      "nullRoot": true,
+      "currentFocus": "null",
+      "focusedApp": "owner Vivo Launcher",
+      "doesNotProveWrongAccount": true
+    },
+    "pairAndRemaining": "not started; single gate failed",
+    "recoveryBranchCoverage": "not proven by failure result; no success-event trail returned",
+    "notificationBranchCoverage": "not tested",
+    "rollback": {
+      "mode": "rollback",
+      "changedFiles": [
+        "scripts/小红书数据同步.py"
+      ],
+      "atEpoch": 1792725824.6535778,
+      "servicesRestarted": false,
+      "backup": "D:\\PhoneCloud\\backups\\xhs-compat-20261023-deployed.2"
+    },
+    "finalReconciliation": {
+      "at": "2026-10-23T03:24:02.743447+00:00",
+      "ownedJobs": 1,
+      "ownedActiveLocks": 0,
+      "allJobsTerminal": true,
+      "allSettingsRestored": true
+    },
+    "runtimeHashesMatched": 12,
+    "globalPendingLedgers": 0,
+    "identityUnchanged": true,
+    "initialStagingFailure": "local path escaping failed; accidental apply reached backup preparation but no production replacement. Original hashes verified, partial backup and intent retained; staged file then independently preflighted before successful deployment."
+  }
 }
