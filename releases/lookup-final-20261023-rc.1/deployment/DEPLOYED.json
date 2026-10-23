@@ -1,0 +1,23 @@
+{
+  "version": "lookup-final-20261023-deployed.1",
+  "atUtc": "2026-10-23T09:57:27Z",
+  "sourceCommit": "2f185140556ec01419f9b67eddd171271032f226",
+  "imageId": "sha256:c10e071b3f4811c626b28075bba364e8dc96e05dc9c8402d0f760673f7e63f8c",
+  "changedCloudFiles": 22,
+  "windowsFiles": 5,
+  "agentPid": 27236,
+  "adbPid": 8988,
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "activeSha256": "42d4d451e80b40b6d476acb3b78a70e438541b96815f825e0417c65aae65cacb",
+  "previousVersion": "lookup-recovery-20261023-deployed.1",
+  "rollbackDirectory": "/opt/phone-cloud-staging/lookup-final-20261023-rc.1/rollback",
+  "productionAcceptanceComplete": false,
+  "iconExperimentIncluded": false
+}

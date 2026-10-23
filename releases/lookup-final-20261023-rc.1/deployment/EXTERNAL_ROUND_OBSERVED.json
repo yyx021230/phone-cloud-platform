@@ -1,0 +1,32 @@
+{
+  "at": "2026-10-23T09:59:49.916Z",
+  "rounds": [
+    {
+      "id": "38836e41-2d17-4026-9f0c-1eb2111130bb",
+      "createdAt": 1792749540110,
+      "opened": null,
+      "stopRequestedAt": null,
+      "stoppedAt": null,
+      "idleSince": 1792749540110,
+      "idleTimeoutMs": 900000
+    }
+  ],
+  "counts": {
+    "registered": 48,
+    "available": 12,
+    "unavailable": 30,
+    "probing": 5,
+    "enabled": 42,
+    "occupied": 5,
+    "ready": 0,
+    "human": 0,
+    "queued": 0,
+    "running": 0
+  },
+  "agents": [
+    {
+      "heartbeatAgeSec": 19,
+      "protocol": 1
+    }
+  ]
+}

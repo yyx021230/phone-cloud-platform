@@ -1,5 +1,6 @@
 {
   "authorization": "User approved this five-minute maintenance window including current and newly connected controls, temporary admission/dispatch pause, cloud and Agent reload; preserve queue/results; no ADB/SYSTEM/Windows/USB/media changes",
   "candidate": "lookup-final-20261023-rc.1",
-  "status": "approved-not-yet-executed"
+  "status": "approved-not-yet-executed",
+  "followup": "User subsequently instructed ending all remaining work in this round; invoke normal stop API, preserve completed results, cancel queued requests and wait for physical stop acknowledgment."
 }

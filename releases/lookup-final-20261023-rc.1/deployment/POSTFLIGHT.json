@@ -1,0 +1,127 @@
+{
+  "at": "2026-10-23T09:58:20.470Z",
+  "health": true,
+  "ready": true,
+  "poolEnabled": true,
+  "configRevision": 103,
+  "concurrency": 5,
+  "channels": 0,
+  "roundStoppedAt": 1792749307893,
+  "roundStops": [
+    {
+      "status": "stopped",
+      "preparationId": "5f5e8eec-9ea8-4b3d-bce0-a67b7138f031"
+    },
+    {
+      "status": "stopped",
+      "preparationId": "0ac0a2ca-e038-4789-9994-83dbe3f7face"
+    },
+    {
+      "status": "stopped",
+      "preparationId": "8c9ea7aa-84ca-465f-b800-b1def2d3bcfa"
+    },
+    {
+      "status": "stopped",
+      "preparationId": "22e6195c-4723-418b-8391-5ef00a60952d"
+    },
+    {
+      "status": "stopped",
+      "preparationId": "3800f305-a2fd-46da-b43e-f26f60811783"
+    },
+    {
+      "status": "stopped",
+      "preparationId": "856d450c-74f9-49f6-9aa8-69e1e197ac66"
+    },
+    {
+      "status": "stopped",
+      "preparationId": "6e7291d7-1e32-4b2b-95eb-793cc3885226"
+    },
+    {
+      "status": "stopped",
+      "preparationId": "c870abc9-10c6-43ac-903b-c43e00441cb0"
+    },
+    {
+      "status": "stopped",
+      "preparationId": "5af11b61-a528-4247-8dbf-5f3468c7ffc3"
+    },
+    {
+      "status": "stopped",
+      "preparationId": "18237cfc-8ab7-42c8-b88c-e3ef472172a9"
+    },
+    {
+      "status": "stopped",
+      "preparationId": "01c073bc-dc3e-4243-9192-663d969b6f70"
+    },
+    {
+      "status": "stopped",
+      "preparationId": "e1f588ec-aa66-4d17-b7f9-560afaede935"
+    },
+    {
+      "status": "stopped",
+      "preparationId": "7ce9d8bb-5e52-4be1-bf2f-95e37b8f4166"
+    },
+    {
+      "status": "stopped",
+      "preparationId": "bbfef4d8-6e89-4d6f-a9e8-c2e644fd6fb6"
+    }
+  ],
+  "counts": {
+    "registered": 48,
+    "available": 12,
+    "unavailable": 30,
+    "probing": 0,
+    "enabled": 42,
+    "occupied": 0,
+    "ready": 0,
+    "human": 0,
+    "queued": 0,
+    "running": 0
+  },
+  "overviewKeys": [
+    "asOf",
+    "revision",
+    "enabled",
+    "concurrency",
+    "devices",
+    "counts",
+    "rounds",
+    "statistics"
+  ],
+  "statistics": {
+    "day": {
+      "date": "2026-10-23",
+      "timeZone": "Asia/Shanghai",
+      "start": "2026-10-22T16:00:00.000Z",
+      "end": "2026-10-23T16:00:00.000Z"
+    },
+    "all": {
+      "submitted": 5947,
+      "completed": 5947,
+      "named": 4719,
+      "empty": 1120,
+      "failed": 39,
+      "cancelled": 69
+    },
+    "today": {
+      "submitted": 2714,
+      "completed": 2714,
+      "named": 2160,
+      "empty": 510,
+      "failed": 21,
+      "cancelled": 23,
+      "devicesUsed": 16
+    },
+    "retention": "stored_business_requests",
+    "counting": "canonical_lookup_id_excludes_probes_and_replays"
+  },
+  "deviceTotal": 141,
+  "freshOnline": 127,
+  "agents": [
+    {
+      "heartbeatAgeSec": 20,
+      "protocol": 1
+    }
+  ],
+  "activeTasks": [],
+  "pendingBusiness": 0
+}
