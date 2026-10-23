@@ -1,0 +1,93 @@
+{
+  "at": "2026-10-23T01:18:54.551466+00:00",
+  "status": "local_candidate_only",
+  "nodeRegression": {
+    "passed": 1144,
+    "failed": 0
+  },
+  "focusedAsyncAndRace": {
+    "passed": 47,
+    "failed": 0,
+    "includedInFullRegression": true
+  },
+  "rootCheck": true,
+  "jsonHttp": {
+    "storage": "json",
+    "businessRequests": 51,
+    "modelCalls": 51,
+    "names": 16,
+    "empty": 35,
+    "positiveHistoryHits": 56,
+    "oldHistoryAfterRestart": true,
+    "archivedOnlyHistory": false,
+    "emptyNewKeyRequeries": true,
+    "sameEmptyKeyRetainsOriginal": true,
+    "maxExecuting": 5,
+    "maxModels": 2,
+    "elapsedBeforeNewKeyMs": 121000,
+    "requestedHoldMs": 121000,
+    "originalIdsPreserved": true,
+    "oneInitialInputPerCanonicalQuery": true,
+    "oneObservationRetryPerCanonicalQuery": true,
+    "allResultsKeptAcrossRestart": true,
+    "stopAndNextRound": true,
+    "physicalReservationsDrained": true,
+    "realPhones": 0,
+    "productionActions": 0
+  },
+  "postgresHttp": {
+    "storage": "postgres",
+    "businessRequests": 51,
+    "modelCalls": 51,
+    "names": 16,
+    "empty": 35,
+    "positiveHistoryHits": 56,
+    "oldHistoryAfterRestart": true,
+    "archivedOnlyHistory": true,
+    "emptyNewKeyRequeries": true,
+    "sameEmptyKeyRetainsOriginal": true,
+    "maxExecuting": 5,
+    "maxModels": 2,
+    "elapsedBeforeNewKeyMs": 121000,
+    "requestedHoldMs": 121000,
+    "originalIdsPreserved": true,
+    "oneInitialInputPerCanonicalQuery": true,
+    "oneObservationRetryPerCanonicalQuery": true,
+    "allResultsKeptAcrossRestart": true,
+    "stopAndNextRound": true,
+    "physicalReservationsDrained": true,
+    "realPhones": 0,
+    "productionActions": 0
+  },
+  "documentation": "JSON/OpenAPI optional name/ZIP inner and outer SHA checks passed",
+  "frozenHashes": 397,
+  "agentChangesThisStage": false,
+  "databaseMigration": false,
+  "realPhones": 0,
+  "realModelCalls": 0,
+  "productionActions": 0,
+  "priorFailures": [
+    {
+      "stage": "red tests",
+      "cause": "Old ten-minute positive/negative caching does not satisfy new policy; new tests failed as expected"
+    },
+    {
+      "stage": "initial focused run",
+      "cause": "Test mixed wall clock and fake clock; future date correctly rejected",
+      "resolution": "Fixture uses its own request timestamp, 47 passed"
+    },
+    {
+      "stage": "initial full regression",
+      "passed": 1143,
+      "failed": 1,
+      "cause": "Old test required empty-cache reuse at zero capacity",
+      "resolution": "Updated to required policy: original result remains readable, new-key empty requires capacity; 1144 passed"
+    }
+  ],
+  "unverified": [
+    "Production and real-device rollout",
+    "Global cross-client historical results are intentionally not exposed",
+    "Historical names are reused as requested; this does not revalidate their current accuracy"
+  ],
+  "review": "Self-review; preserve auth/client scope, same-key semantics, unfinished dedup, stop fence, queue bounds. Rollback must first drain queued waitForLookupId requests."
+}

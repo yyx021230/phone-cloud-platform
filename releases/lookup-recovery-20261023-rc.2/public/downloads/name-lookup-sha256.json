@@ -1,0 +1,11 @@
+{
+  "version": "lookup-recovery-20261023-rc.2",
+  "files": {
+    "README.md": "85926fe72442b5a619801e0e231deb742f0dfa07d35db217d9254fda6ca89b93",
+    "lookup.mjs": "c6c04722cd2ecd76ca7a81b72b82b1ee95ec0b8a26ab75795dc75632a4fde246",
+    "lookup.py": "4d25a7b23c11df237ff58f2a791f006c3aeb6a7f05c01a7f53feda7c3227bd59",
+    "openapi.json": "aa72efd78ffc0cdebaed80636caed97284dd14c76b2163ce295b7816bdd7ed31",
+    "stop_lookup.py": "e0d7f72ff6fae836973432804ae42083ee99c136f307483a7e9eb5a198d862ed"
+  },
+  "zipSha256": "5a50452432e902aa43c44098410b185c6d753f9e0e072a8fe5624723a15dc2a4"
+}
