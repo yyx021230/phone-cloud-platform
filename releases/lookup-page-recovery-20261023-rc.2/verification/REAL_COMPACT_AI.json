@@ -1,0 +1,12 @@
+{
+  "kind": "name",
+  "nameMatchesExpected": true,
+  "phoneMatches": true,
+  "rejectionCode": "",
+  "reason": "",
+  "elapsedMs": 11006,
+  "evidenceSha256": "dc114cdd11376ee3e6516e64abfb2503b2c02266e8048f4b59bb51bb769306ce",
+  "model": "gpt-6.1-sol",
+  "candidateReader": true,
+  "phoneActions": 0
+}

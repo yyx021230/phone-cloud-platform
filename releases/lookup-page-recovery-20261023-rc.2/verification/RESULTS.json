@@ -1,0 +1,67 @@
+{
+  "status": "local_candidate_not_deployed",
+  "tag": "lookup-page-recovery-20261023-rc.2",
+  "finalAssembled": {
+    "node": {
+      "passed": 1225,
+      "failed": 0
+    },
+    "pythonDiscovery": {
+      "passed": 532,
+      "failed": 0
+    },
+    "rootCheck": true
+  },
+  "additionalEarlierChecks": {
+    "agentCheckPassed": 397,
+    "automationRunnersPassed": 163
+  },
+  "http": {
+    "runs": 3,
+    "businessFixturesPerRun": 50,
+    "realWait121SecondsRuns": 2,
+    "realPhoneQueries": 0,
+    "deviceIo": "simulated",
+    "modelResponses": "simulated"
+  },
+  "savedImageModelCalls": 1,
+  "savedImageOcrCount": 42,
+  "windowsNativeNewCandidateAcceptance": false,
+  "productionDeployment": false,
+  "adbOrSystemChanges": false,
+  "testLogHashes": {
+    "packaged-node": {
+      "sha256": "b0b48990a170cda5380f1f35638046896639bed3907795188ea792b63fbd46ff",
+      "localPath": "/tmp/pc-lookup-complete-packaged-node.log"
+    },
+    "packaged-python": {
+      "sha256": "d12d9ae682fa3511856de7d6f8c8df6913944a7b94a2f9c3d271387d3b695fde",
+      "localPath": "/tmp/pc-lookup-complete-packaged-python.log"
+    },
+    "packaged-check": {
+      "sha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+      "localPath": "/tmp/pc-lookup-complete-packaged-check.log"
+    },
+    "agent-final": {
+      "sha256": "461cd880f6cb86f718788aaea99326cf37f2839e42457fc983a7d565e0311942",
+      "localPath": "/tmp/pc-lookup-complete-agent-final.log"
+    },
+    "runner-second": {
+      "sha256": "a528716bc40c2b09a430bcfb0125398ec2b1dbd69f37e11d9d19b211a957d01e",
+      "localPath": "/tmp/pc-lookup-complete-runner-second.log"
+    },
+    "picker-final": {
+      "sha256": "1f11b6e880045ee35de832b81b45d06257342e13b5c79bbf0034379d4ca220b9",
+      "localPath": "/tmp/pc-lookup-complete-picker-final.log"
+    }
+  },
+  "receipts": [
+    "HTTP_JSON_121S.json",
+    "HTTP_PG_121S.json",
+    "HTTP_RECOVERY_CARD.json",
+    "REAL_COMPACT_AI.json",
+    "SAVED_RESULT_OCR.json",
+    "AGENT_SCOPE.json",
+    "FROZEN.json"
+  ]
+}
