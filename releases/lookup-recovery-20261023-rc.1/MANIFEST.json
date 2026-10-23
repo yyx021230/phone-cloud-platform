@@ -1,0 +1,16 @@
+{
+  "server/lookup-ai-adapter.test.mjs": "3633fc6dac08ae58048838cd04163bd909c905b006691cd51841063d80050c0f",
+  "server/lookup-automatic-recovery.test.mjs": "f5fba034cc4d59ff0d760c8c5913488c3d5bad6f5103d096436792d40df67e51",
+  "server/lookup-failure-domain.mjs": "f1c97c1dc7a5d60c1daee42c23c76c67080a82cb40b0102eda4605efb9f63597",
+  "server/managed-lookup-platform.mjs": "d8e6199507077b330702464b2b436e0b027dac272e8fb998bb65495dceb30a67",
+  "server/managed-lookup.mjs": "5ed84e7df6ae34aecd54000237ecc7ef75db93d76d57eb5a56026e90b5031722",
+  "windows-agent/src/automation-center-wiring.test.mjs": "bf99779b693a6a150232bafaeee7d4f8709da115b01e45ec2859dcc9ca546cd3",
+  "windows-agent/src/index.mjs": "36396aaec09e6222c2c52d647362a0a58f790c7aec2081dfc2685f1b0a1fcb67",
+  "windows-agent/scripts/alipay_name_lookup.py": "c8cc924cf4de0773a73e43fccb68bd4423a2e13069d5112d7e61f4aca8e6e6ab",
+  "windows-agent/scripts/test_lookup_account_cooldown.py": "7c1b043ccef5bfd9c2445727e646b80c61699a7bb39558b6be01a171b816f42a",
+  "windows-agent/scripts/test_lookup_cold_access_denied.py": "c38a1163c253f54c9e7a948a527c0a13aa2a97b36e09c93a0622d8b629e5990d",
+  "windows-agent/scripts/test_lookup_overnight_compat.py": "72e4e8e670e5f4b333d0a5ccf82356f2b0a3498efe47420e3932ada7b7062f7f",
+  "verification/ai-http-native-events.mjs": "53ea07cd8bdb866d708b66558b39e081a36ac870947c6cf95698de33b03da88f",
+  "verification/recovery-http-mixed50.mjs": "29c09f93daa7fbb94dc7d4a4835c81d9d57cffdeb4777d0f8de8d35a89c78d50",
+  "verification/postgres-http.py": "18ba811f5b6cb8044d134688a1fd843008b8d19f33455bc6c9302a6fd4d9622f"
+}
