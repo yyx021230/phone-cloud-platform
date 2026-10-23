@@ -1,0 +1,25 @@
+{
+  "model": "gpt-6.1-sol",
+  "realSavedImages": 2,
+  "newPhoneQueries": 0,
+  "results": [
+    {
+      "label": "182-probe",
+      "kind": "name",
+      "hasName": true,
+      "matchedExpectedPhone": true,
+      "evidenceSha256": "08e403d21aaaeba4c5e7f1ba93d6c9460e767f0849418732194ccb49a1c0fa22",
+      "elapsedMs": 12401,
+      "reason": ""
+    },
+    {
+      "label": "155-probe",
+      "kind": "name",
+      "hasName": true,
+      "matchedExpectedPhone": true,
+      "evidenceSha256": "87dc56351293e1e17e2ce671ab988e2df3fdf078f20ea710a9d2f1ac4c183d88",
+      "elapsedMs": 10204,
+      "reason": ""
+    }
+  ]
+}
