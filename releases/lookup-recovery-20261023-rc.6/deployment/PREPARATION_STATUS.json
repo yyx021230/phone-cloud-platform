@@ -1,0 +1,28 @@
+{
+  "status": "prepared-not-activated",
+  "candidateCommit": "f97306eddf74cc8d2f212fc4027095201bd1433d",
+  "candidateTag": "lookup-recovery-20261023-rc.6",
+  "branch": "codex/lookup-rc6-deploy-20261023",
+  "cloudImage": "sha256:7ecf126b7c6b254eb8e8f6c6b16e57bd7fe1927219771894a8b4dcec3a7ba745",
+  "initialFailures": [
+    "Windows script execution policy rejected first staging verification; retried with per-process policy only, no machine policy change.",
+    "Docker BuildKit rejected raw image ID FROM reference; changed to exact preverified existing image tag. No production activation occurred."
+  ],
+  "verified": [
+    "Production baseline and 18 cloud file hashes matched",
+    "D-075 live verified",
+    "Database pg_dump custom archive and pg_restore --list passed",
+    "Previous image export and SHA256 captured",
+    "Isolated PostgreSQL candidate startup/API/auth smoke passed",
+    "Windows 2-file before/after hashes, backup, native syntax verified",
+    "ADB listener PID 8988 and Agent PID 5176 owned by SYSTEM unchanged"
+  ],
+  "notVerified": [
+    "Full database restore rehearsal not performed in this preparation",
+    "No physical-phone acceptance of rc.6 yet",
+    "Icon semantic executor not wired; not shipped"
+  ],
+  "productionRestarted": false,
+  "agentChanged": false,
+  "adbChanged": false
+}

@@ -1,0 +1,15 @@
+{
+  "candidate": "lookup-recovery-20261023-rc.6",
+  "sourceCommit": "f97306eddf74cc8d2f212fc4027095201bd1433d",
+  "windowsFiles": {
+    "scripts/alipay_name_lookup.py": {
+      "before": "04f157355eb7ed9cdefe0fa5c897245654210b9293c9b24f1c73a76ed95faf98",
+      "after": "c68a7778b88a978dac08fd74e10298a088e7913fdb4c62858d7e17108e35d5a2"
+    },
+    "src/index.mjs": {
+      "before": "1d057629c452e0ce392f0cbc79a1ad3645cc90c5175dca980151dfb1d4a6d2a8",
+      "after": "8cc4b6cb01929a4eed20d9397071333f792b8d4beb5f268cdb2fba22d2418e27"
+    }
+  },
+  "validationHelpers": {}
+}
