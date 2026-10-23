@@ -1,0 +1,58 @@
+{
+  "node": {
+    "passed": 1230,
+    "failed": 0
+  },
+  "pythonLocal": {
+    "passed": 532
+  },
+  "agentCheck": {
+    "passed": 397
+  },
+  "runnerSubset": {
+    "passed": 163,
+    "overlapsOtherCounts": true
+  },
+  "windowsPython": {
+    "passed": 532,
+    "elapsedSeconds": 4.266
+  },
+  "windowsNativeOcr": {
+    "runs": 2,
+    "target": [
+      194,
+      1400
+    ],
+    "elapsedMs": [
+      7484,
+      3438
+    ],
+    "phoneActions": 0
+  },
+  "httpFullFlow": {
+    "backends": [
+      "json",
+      "postgres"
+    ],
+    "businessPerRun": 50,
+    "maxSimulatedPhysicalDevices": 8,
+    "realElapsedRetryWaitMs": [
+      121001,
+      121002
+    ],
+    "realPhones": 0
+  },
+  "initialFailures": [
+    "Postgres fixture reused username then missing migration tables; fresh isolated database initialized and passed",
+    "Windows first staging omitted replay fixtures/PNG; two tests lacked focus mock on Windows; fixtures included and mocks corrected, full 532 passed",
+    "One saved-image upstream AI invocation unavailable; one bounded recheck correctly rejected conflicting name cards"
+  ],
+  "productionWrites": false,
+  "newPhoneQueries": 0,
+  "pending": [
+    "Candidate real-device full-flow acceptance after authorized maintenance",
+    "Account picker two-frame live timing",
+    "Actual OCR target click and post-close confirmation",
+    "Natural cooldown and restriction on deployed combined candidate"
+  ]
+}

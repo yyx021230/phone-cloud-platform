@@ -1,0 +1,28 @@
+[
+  {
+    "jobId": "ae6ce7ae-863d-416e-8297-328fef8d4854",
+    "rows": 5,
+    "currentCount": 1,
+    "snapshotAccepted": true,
+    "reasons": [],
+    "xmlSha256": "cf58e8a49c6b692825b60dadb2d0d38f142804e8f7dbc2c319c01a09cf0d1758"
+  },
+  {
+    "jobId": "b28b1183-6297-4d08-9844-4f9e6eb17d2d",
+    "rows": 5,
+    "currentCount": 1,
+    "snapshotAccepted": true,
+    "reasons": [],
+    "xmlSha256": "968bcc0dbbb63435748c3d9946d3afe6ed043728505dc62ba8a407ae81703ee1"
+  },
+  {
+    "jobId": "e89811ee-8b65-4891-a3e4-2d238aa828ef",
+    "rows": 0,
+    "currentCount": 0,
+    "snapshotAccepted": false,
+    "reasons": [
+      "identity:alipay_saved_account_candidate_missing"
+    ],
+    "xmlSha256": "714f5b68e93cb82ac9647b74ff86ecfcfaafeedb4973122fc49e31a27e8205c8"
+  }
+]

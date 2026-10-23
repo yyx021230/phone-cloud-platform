@@ -1,0 +1,18 @@
+{
+  "parentCandidate": "lookup-admin-capacity-20261023-rc.1",
+  "parentSource": "f4f54ab79db59fe75188f51c39046e9acb6c0759",
+  "before": {
+    "public/downloads/name-lookup-http-guide.md": "85926fe72442b5a619801e0e231deb742f0dfa07d35db217d9254fda6ca89b93",
+    "public/downloads/name-lookup-integration.zip": "5a50452432e902aa43c44098410b185c6d753f9e0e072a8fe5624723a15dc2a4",
+    "public/downloads/name-lookup-sha256.json": "1aad6f4cc3f47b839f7196531d1342eb3e038a678e96809047c70b8937dda705",
+    "windows-agent/scripts/test_xhs_data_sync.py": "2503df786116260c8b177eaa64df45550bc6ac20cb4de97c2eec47b44e13e844"
+  },
+  "runtimeFiles": [
+    "public/downloads/name-lookup-http-guide.md",
+    "public/downloads/name-lookup-integration.zip",
+    "public/downloads/name-lookup-sha256.json"
+  ],
+  "productionVersion": "lookup-recovery-20261023-deployed.1",
+  "productionSource": "f97306eddf74cc8d2f212fc4027095201bd1433d",
+  "productionImage": "sha256:7ecf126b7c6b254eb8e8f6c6b16e57bd7fe1927219771894a8b4dcec3a7ba745"
+}
