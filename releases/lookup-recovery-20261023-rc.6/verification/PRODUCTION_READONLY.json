@@ -1,0 +1,35 @@
+{
+  "atUtc": "2026-10-23T04:29:22.163848+00:00",
+  "productionRelease": "lookup-ai-vision-20261022-deployed.1",
+  "actualImage": "sha256:35cba1db05e126adf48acaa63241772854b7069559fd054459d74699a49a74ff",
+  "restartImage": "sha256:35cba1db05e126adf48acaa63241772854b7069559fd054459d74699a49a74ff",
+  "cloudFilesMatched": 18,
+  "windowsFilesMatched": 2,
+  "candidateBaselineMatched": true,
+  "health": "healthy",
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "adbServer": [
+    {
+      "path": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+      "pid": 8988,
+      "owner": "NT AUTHORITY\\SYSTEM"
+    }
+  ],
+  "note": "Read-only runtime verification. Separate Windows temporary test files were created; production files and services were not changed.",
+  "productionRuntimeMutations": 0,
+  "http": {
+    "healthz": {
+      "ok": true
+    },
+    "readyz": {
+      "ok": true
+    }
+  }
+}
