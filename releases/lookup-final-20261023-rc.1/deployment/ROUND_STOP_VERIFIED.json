@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-23T09:58:51.217Z",
+  "trackedBeforePause": 15,
+  "presentInCurrentState": 15,
+  "statuses": {
+    "not_found": 1,
+    "cancelled": 14
+  },
+  "allTerminal": true,
+  "noUnauthenticatedAdminAccess": true,
+  "poolEnabled": true,
+  "roundStopped": true
+}
