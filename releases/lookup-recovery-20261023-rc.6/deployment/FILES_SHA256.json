@@ -1,0 +1,16 @@
+{
+  ".dockerignore": "2ff77a250623c0dd033f3adce25c4b87cb2cbda7b02f4e189adba0be3612ca6b",
+  "Dockerfile": "196bc0106613778eb25eca95a21915996db1e99ed1340c947d80142a15806587",
+  "PREPARATION_RECEIPT.json": "72948dac9cfa47a4951e5e9852be4f9df60a38d038e91cb7aea9973e3f62bf64",
+  "PREPARATION_STATUS.json": "066b069f26a116f680ea2f1979aa49a6930f751a67a0467d426003c7ce54a7cd",
+  "README.md": "73191d67e99c25d38e58e9a654be7b640fcbb20140379440352d593eca87c0da",
+  "WINDOWS_PLAN.json": "14d8f365c92f7aa986067c5f1fad62ca120f5940928929446329ea3553fdc202",
+  "WINDOWS_PREPARATION.json": "000e6a0d858c931953659622b8a7267b2d9df9a96f304140f7674d81c61b3197",
+  "activate-cloud.py": "42c260a4f29ccb90fd4a2744ba679485ef6c219c8ca90b24c906006b5781010a",
+  "activate-windows.ps1": "7c9cda596a26e89c1fa3e308d43eb01ce6c2a51921593040e5c0e8669a017000",
+  "complete-preparation.py": "b1e22b4efbb07d8758ddfb4e82ac6a2cc8741bfcdb10e5de38c5750fe828c608",
+  "finalize-cloud.py": "fc7335f5d7ca38aed8197f70087f75bc53ff952f69b3aff64ce661ff5ee655ea",
+  "prepare-cloud.py": "be2c963f2e6dce0f7950235a92feebf354fe83ab7835c9aa114da550f84cd0c7",
+  "resume-build.py": "aa0033b83a909cf004f3b6a92c26d57b2b3d4e6d2e683a178ad90329f89904e5",
+  "verify-windows.ps1": "90bee991c8edd8984c5b954ecdfd894cd838f60ff285cdcb5ea5d66a7b9b1b8d"
+}
