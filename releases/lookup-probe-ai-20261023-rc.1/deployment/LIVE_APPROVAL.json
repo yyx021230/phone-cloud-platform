@@ -1,0 +1,43 @@
+{
+  "at": "2026-10-23T06:43:35.587Z",
+  "controls": [
+    "1",
+    "113",
+    "157",
+    "61",
+    "52"
+  ],
+  "channels": [
+    {
+      "device": 53,
+      "phase": "idle"
+    },
+    {
+      "device": 161,
+      "phase": "querying"
+    },
+    {
+      "device": 115,
+      "phase": "idle"
+    },
+    {
+      "device": 164,
+      "phase": "idle"
+    },
+    {
+      "device": 54,
+      "phase": "starting"
+    }
+  ],
+  "activeBusiness": 0,
+  "activeTasks": [
+    {
+      "type": "alipay_name_start",
+      "status": "running"
+    },
+    {
+      "type": "alipay_name_query",
+      "status": "running"
+    }
+  ]
+}

@@ -3722,3 +3722,7 @@ npm run test:screen
 ### 2026-10-23 变更记录补记：探测 AI 兜底候选
 
 新增7.15.58、lookup-probe-ai-20261023-rc.1单文件覆盖、22项专项及HTTP/PG验证/真实旧图读取回执；保留所有既有版本，线上仍deployed.1，未推送或发布。
+
+### 2026-10-23 探测AI发布准备补记（未切换）
+
+用户授权上线ae9a4d2。基于线上7ecf126b构建单文件镜像020c325d，旧镜像/原文件/ACTIVE/Compose/数据库备份及隔离PG镜像烟测通过；D-075真实宿主机live通过。无客户业务但仍有探测和5路控屏，等待本次约2分钟中断窗口确认，激活门槛保留原轮并避开正在执行任务。未动Agent/ADB/SYSTEM，尚未生效。见releases/lookup-probe-ai-20261023-rc.1/deployment/README.md。
