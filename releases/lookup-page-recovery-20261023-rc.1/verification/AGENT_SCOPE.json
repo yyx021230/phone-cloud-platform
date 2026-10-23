@@ -1,0 +1,12 @@
+{
+  "singleExpressionChange": true,
+  "function": "taskAlipayNameLookup",
+  "changedOperation": "post_human_check",
+  "beforeTimeoutMs": 12000,
+  "afterTimeoutMs": 45000,
+  "allOtherBytesIdentical": true,
+  "screenControlCodeChanged": false,
+  "adbIdentityConfigChanged": false,
+  "lifecycleChanged": false,
+  "productionReloadPerformed": false
+}

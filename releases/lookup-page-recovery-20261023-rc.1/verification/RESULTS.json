@@ -1,0 +1,72 @@
+{
+  "candidate": "lookup-page-recovery-20261023-rc.1",
+  "branch": "codex/lookup-page-recovery-20261023",
+  "startingHead": "8bb57f5228b342ad6911b55c6136cef4a81d7e3b",
+  "status": "local-verified-not-deployed",
+  "productionBaseline": "lookup-recovery-20261023-deployed.1",
+  "runtimeFiles": [
+    "server/managed-lookup.mjs",
+    "server/managed-lookup-platform.mjs",
+    "server/lookup-failure-domain.mjs",
+    "windows-agent/scripts/alipay_name_lookup.py",
+    "windows-agent/scripts/alipay_visual_result.py",
+    "windows-agent/scripts/lookup_page_actions.py",
+    "windows-agent/src/index.mjs"
+  ],
+  "newNetworkRegressionBefore": {
+    "failed": 3
+  },
+  "final": {
+    "nodePassed": 1185,
+    "nodeFailed": 0,
+    "pythonDiscoveryPassed": 514,
+    "pythonDiscoveryFailed": 0,
+    "automationRunnersPassed": 163,
+    "automationRunnersFailed": 0,
+    "agentCheckPassed": 393,
+    "agentCheckFailed": 0,
+    "rootCheck": "passed",
+    "countsOverlap": true
+  },
+  "unchangedFileHashes": 362,
+  "sharedAgentChange": "One post_human_check timeout expression only: 12s -> 45s; all other bytes identical. See AGENT_SCOPE.json.",
+  "httpReceipts": [
+    "HTTP_JSON_121S.json",
+    "HTTP_PG_121S.json",
+    "HTTP_RUNNER_BRIDGE.json"
+  ],
+  "savedImagesOcr": {
+    "total": 32,
+    "knownTargets": 5,
+    "noTarget": 27,
+    "realPhoneClicks": 0
+  },
+  "realOcrRunnerReceipt": "BOUNDED_REAL_OCR.json",
+  "observedTestFailures": [
+    "Three old-code network regressions failed before correction.",
+    "Prior tests prohibited all taps or expected blind Back; updated to assert the specifically allowed refresh/OCR actions and no unsafe actions.",
+    "Fresh local PostgreSQL required explicit local role and the managed lookup schemas; corrected only the isolated test DB.",
+    "System Python failed the existing isolated OCR runtime guard; used a temporary local venv with existing OCR dependencies.",
+    "Real saved-image isolated OCR timed out with the initial 8-second post-human budget. Aligned the dedicated task and bounded overlay budgets; final real-image runner replay and full regression passed."
+  ],
+  "unverified": [
+    "New version on live Windows OCR/runtime and physical phones.",
+    "Exact live timing cause of unstable account-picker samples.",
+    "Reduced pre-AI reread delay and misleading card phase labels remain separate follow-up work."
+  ],
+  "productionPhoneQueries": 0,
+  "productionMutations": 0,
+  "externalModelCalls": 0,
+  "remotePush": false,
+  "deployed": false,
+  "localTestPostgresStopped": true,
+  "review": "self-review, no independent subagent",
+  "logHashes": {
+    "node": "751a8eb7d380be4bdfe6de086c2d29f2a94518e4bdaa9cff137eb78687af6f61",
+    "python": "2633a646d15cc81e215cdac6ffe13d2bc0ae02f50caea07a31e638b941578972",
+    "runner": "dd0b925f4d0b8b3b57c7f66908035ab28440b4f305415bf92b37e000995c90dc",
+    "agent": "3b72228a27ce5bacb62eba94d734a2c0123cf36bf589fd19988a1b6519d3b67c",
+    "rootCheck": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "package": "3fcfe0a1fe4b62a36cbcee2c64a70b2e32331c1128103f3463342a75153cc098"
+  }
+}
