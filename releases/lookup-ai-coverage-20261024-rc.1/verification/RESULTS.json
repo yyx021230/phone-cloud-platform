@@ -1,0 +1,64 @@
+{
+  "candidate": "lookup-ai-coverage-20261024-rc.1",
+  "status": "local-validation-completed-production-grey-pending",
+  "rootNodeRegression": {
+    "passed": 1262,
+    "failed": 0,
+    "includesAgent": 397
+  },
+  "pythonLocal": {
+    "discovery": 541,
+    "runnerSuite": 163
+  },
+  "pythonWindows": {
+    "discovery": 541,
+    "runnerSuite": 163
+  },
+  "http": {
+    "stores": [
+      "json",
+      "postgres"
+    ],
+    "requestsPerStore": 50,
+    "holdMs": 121000,
+    "phones": 0,
+    "realHttp": true
+  },
+  "savedImageAi": {
+    "passed": 8,
+    "total": 8,
+    "reasoning": "medium",
+    "readsPerPositiveImage": "2, or at most 3 on disagreement",
+    "overallDeadlineMs": 120000,
+    "maxObservedMs": 45507,
+    "realPhoneActions": 0
+  },
+  "runtimeFiles": 8,
+  "frozenFilesUnchanged": 363,
+  "failuresDuringDevelopment": [
+    "Old image low-reasoning model misread similar Chinese character, including repeat agreement; medium reasoning plus glyph-focused prompt and bounded consensus passed the final 8 checks. This does not prove general perfect accuracy.",
+    "Shutdown test used fixed 20ms sleep and sometimes closed before model promise started. It now waits for explicit reader entry; timeout tests retain their own short deadlines.",
+    "Legacy runner test expected GuideActivity to reach hierarchy after new exact login-focus guard. Text-only login branch fixture now uses ordinary Alipay focus; exact GuideActivity coverage remains in dedicated tests.",
+    "Initial Windows harness command/encoding failed; test-only UTF-8 invocation passed, no production environment change."
+  ],
+  "notVerified": [
+    "New production phone execution on this candidate",
+    "Natural USB warning dismissal on a live phone",
+    "Actual slow phone UIAutomator root cause beyond bounded dump budget",
+    "All possible account/popup/image formats",
+    "Historical 156 handoff candidate availability at each tick"
+  ],
+  "productionChanged": false,
+  "logsSha256": {
+    "regression-final.log": "c5f9367ae23e87e245738140031a5ac2bf4de9807254089d4a078084d0a8a1e1",
+    "check-release.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "python-full2.log": "6dd1d0c871aca5be3e1b52a3bdceb6fca62b5c5026d156f1080e6599c0d2c545",
+    "python-runners-final2.log": "b96e77342bcf11cb12f25963ce1b3773d1e7312223bd34cd5d1d9d4f095f1290",
+    "windows-unit-utf8.log": "3ce8dc221e88311aa6702662831c81ae55781048930d2a96ebae2e8820abc7f8",
+    "windows-runners-final.log": "b5a4e7b5fa3f2a59edcc8fe6be998672f9381363a1ee62a2faf4c84359a711a9",
+    "node-release.log": "1a57da33613001fbc7b7ee3ed3449f5e68c69106666fe9c5b172d429bbeb0de7",
+    "python-runners-final.log": "b39a5d7d237e6d6045e6b56cabe24e857bec1c35c80c8e2fcad6ce73427a0e02",
+    "assembly-release.log": "d8cf92d0e449f50489bd3e0f2f88906cc45dac63641f3705aa19301b9c092480",
+    "assembly-release-final.log": "d8cf92d0e449f50489bd3e0f2f88906cc45dac63641f3705aa19301b9c092480"
+  }
+}
