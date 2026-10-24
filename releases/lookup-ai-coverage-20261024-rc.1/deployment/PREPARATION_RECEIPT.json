@@ -1,0 +1,66 @@
+{
+  "candidate": "lookup-ai-coverage-20261024-rc.1",
+  "sourceCommit": "af6ade7a475c715d372304d368d110dd2aa82924",
+  "status": "prepared-not-activated",
+  "imageTag": "phone-cloud-platform:lookup-ai-coverage-20261024-rc.1",
+  "imageId": "sha256:f0a1bd0e58551ef3cb7f6039df9fc87c9ce871c834a8c053a31872b35e0fe6c9",
+  "previousImage": "sha256:c10e071b3f4811c626b28075bba364e8dc96e05dc9c8402d0f760673f7e63f8c",
+  "cloudFiles": {
+    "server/managed-lookup-platform.mjs": {
+      "before": "597d279cc946391504db5ce5b55fbc4b2f6f65dfc77c11adfadee919c52e71c5",
+      "after": "a85366d0af61b2ba852ea27235bc16ed38c0961b6c0e3af54d153c2849b5f921"
+    },
+    "server/lookup-ai-vision.mjs": {
+      "before": "fc864eae1517bbc418bb5d5595a24dc1d5e6eda05db6f6982faad4c88c3cdf44",
+      "after": "c69613f81c692c32eca3fe995b3c7f8ed49cef34bdab7e8cecb7a9080cdaa552"
+    },
+    "server/lookup-ai-recovery.mjs": {
+      "before": "5e9f3273aab55632517a89ca277e9f3f9d6954101861157d451161fcaf5415f0",
+      "after": "5d5acf90a7fbf70f22940372bb9d8e62db896b1813b37c4a1ea150fbea60962e"
+    },
+    "server/lookup-human-handover.mjs": {
+      "before": "7065e3da5454ec65a06a11767c18058108300cc07b5380d479b4e87a18d97862",
+      "after": "feb3da78d297ff4d4a97d0d6265fed0ff213d6fe8d0f8024dd6e62bf9eb9cbcf"
+    },
+    "server/index.mjs": {
+      "before": "7409f9a22a90edfc8d6fa9f709e2cdbadad713df0ac9960ebc9ef92924c2c696",
+      "after": "a765c82399486126eca7b7499175a523f2dd68a6b1ce9816f6935d10c2569891"
+    },
+    "server/managed-lookup.mjs": {
+      "before": "819d5d72713ebf41c6590c99b5523fc3a30177eab2203629de45b5cf51d269c5",
+      "after": "3283480e04ffac5447bd1c41d3a20128736f6f3e608efa8771de4f2ec54e5ff6"
+    },
+    "server/lookup-failure-domain.mjs": {
+      "before": "88d8d21506dcccd8f81efde9e6bac22d4c66867c560d55d24064dca8e94ad333",
+      "after": "75d4b940322d16cc10a136f18412bfc80a3ce7e4d17516ee8dcb0dcdff666908"
+    }
+  },
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "backup": "/opt/phone-cloud-platform/deploy-candidates/lookup-ai-coverage-20261024-rc.1/rollback",
+  "backupFiles": {
+    "database.dump": "ad7df3400fea27e88d63c49685f1157bc89a4c8d6b651ca3edbc8184bc8cea46",
+    "compose-baseline.json": "db9f620d1896634b3e96f2861ef46994d0b1fe9a6b684e53a1676e6ae964feb7",
+    "previous-image.tar.gz": "83d7293574efc735236a5bb943b97a328fe7be32186a708e6283ebd2fd3eb410",
+    "ACTIVE_PLATFORM_RELEASE.json": "42d4d451e80b40b6d476acb3b78a70e438541b96815f825e0417c65aae65cacb",
+    "source/server/index.mjs": "e13e4271b950b14402868ceaca005e14314ec603c13a095cd2cbb9f832238629",
+    "runtime/server/managed-lookup.mjs": "819d5d72713ebf41c6590c99b5523fc3a30177eab2203629de45b5cf51d269c5",
+    "runtime/server/lookup-failure-domain.mjs": "88d8d21506dcccd8f81efde9e6bac22d4c66867c560d55d24064dca8e94ad333",
+    "runtime/server/lookup-human-handover.mjs": "7065e3da5454ec65a06a11767c18058108300cc07b5380d479b4e87a18d97862",
+    "runtime/server/index.mjs": "7409f9a22a90edfc8d6fa9f709e2cdbadad713df0ac9960ebc9ef92924c2c696",
+    "runtime/server/lookup-ai-recovery.mjs": "5e9f3273aab55632517a89ca277e9f3f9d6954101861157d451161fcaf5415f0",
+    "runtime/server/lookup-ai-vision.mjs": "fc864eae1517bbc418bb5d5595a24dc1d5e6eda05db6f6982faad4c88c3cdf44",
+    "runtime/server/managed-lookup-platform.mjs": "597d279cc946391504db5ce5b55fbc4b2f6f65dfc77c11adfadee919c52e71c5"
+  },
+  "isolatedSmoke": "passed using production mode and disposable PostgreSQL",
+  "productionServiceRestarted": false,
+  "agentChanged": false,
+  "adbChanged": false,
+  "preparedAtUtc": "2026-10-24T05:57:23Z"
+}

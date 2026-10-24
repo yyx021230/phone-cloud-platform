@@ -1,0 +1,15 @@
+{
+  "sourceCommit": "af6ade7a475c715d372304d368d110dd2aa82924",
+  "activationScriptParsed": true,
+  "files": {
+    "scripts/alipay_name_lookup.py": {
+      "before": "c73e025e17b2a2376a1684bc32ad32facf88dfa5c8e566f1fac67bd47e4c5524",
+      "after": "46e149d9bb1cf44c0860d2d55ee73a41fd661b6b8b16f0432f2cc13c7ed4539c"
+    }
+  },
+  "status": "prepared-not-activated",
+  "candidate": "lookup-ai-coverage-20261024-rc.1",
+  "adbPid": 20316,
+  "agentPid": 27236,
+  "adbUnchanged": true
+}
