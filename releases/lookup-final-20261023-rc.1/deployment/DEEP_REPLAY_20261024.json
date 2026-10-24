@@ -1,0 +1,100 @@
+{
+  "productionSource": "2f185140556ec01419f9b67eddd171271032f226",
+  "mode": "offline_saved_evidence_replay",
+  "realDeviceActions": 0,
+  "remoteModelCalls": 0,
+  "python": {
+    "149": {
+      "nativeMatched": false,
+      "closeReturned": false,
+      "ocrCalls": 0,
+      "adbCalls": 0,
+      "actualIgnoreId": "android:id/button3",
+      "parsedWindow": "com.coloros.securepay"
+    },
+    "86": {
+      "focusLoginDetected": false,
+      "xmlProtected": false,
+      "pocoSameTexts": "poco_alipay_login_required",
+      "adbCalls": 0
+    },
+    "picker_dump_2.5s": {
+      "result": "stable",
+      "elapsedSeconds": 5.45,
+      "dumpCalls": 2,
+      "readCalls": 2,
+      "tapCalls": 0,
+      "lastEvent": {
+        "step": "account_picker_stable",
+        "savedAccountCount": 2,
+        "snapshots": 2
+      }
+    },
+    "picker_dump_7.5s": {
+      "result": "alipay_account_picker_not_stable",
+      "elapsedSeconds": 24.0,
+      "dumpCalls": 7,
+      "readCalls": 0,
+      "tapCalls": 0,
+      "lastEvent": {
+        "step": "account_picker_sampling_finished",
+        "sampleReason": "sample_timeout",
+        "sampleCount": 0
+      }
+    },
+    "51": {
+      "hasExactIntermediateSheet": true,
+      "savedRows": 0,
+      "validPickerSnapshot": false
+    },
+    "52": {
+      "hasExactIntermediateSheet": true,
+      "savedRows": 0,
+      "validPickerSnapshot": false
+    },
+    "54": {
+      "hasExactIntermediateSheet": true,
+      "savedRows": 0,
+      "validPickerSnapshot": false
+    }
+  },
+  "coordinator": {
+    "samePrepareKeyPreservesLoginBlock": true,
+    "newPrepareKeySameRoundReleasesLoginBlock": true,
+    "ocrTimeoutClassifiedAsDevice": true,
+    "threeProbeFailuresPersistPastOneDay": true,
+    "productionCalls": 0
+  },
+  "ocrSingleSavedFrame": {
+    "source": "original_saved_149_image",
+    "localSeconds": 2.07,
+    "size": [
+      720,
+      1604
+    ],
+    "matched": true,
+    "box": [
+      160.0,
+      1381.0,
+      230.0,
+      1421.0
+    ],
+    "center": [
+      195,
+      1401
+    ],
+    "phoneActions": 0,
+    "remoteModelCalls": 0
+  },
+  "postHuman86": "login_required",
+  "scriptHashes": {
+    "replay-deep.py": "e76798948b70cb555f07cbd9d594ca192f074c6cdd0ee275bac22647d1b7c2f9",
+    "replay-coordinator.mjs": "a603e133c2279b1b15f2138b69137d3430eb744e7bdae51cc9e5ba1ac18595f0"
+  },
+  "limits": [
+    "Not a live phone test",
+    "7.5s transport is synthetic, not measured phone latency",
+    "OCR single saved image only",
+    "No historical per-tick eligibility snapshot"
+  ]
+}
