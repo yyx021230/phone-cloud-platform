@@ -1,0 +1,35 @@
+{
+  "nodeFullRegression": {
+    "pass": 1282,
+    "fail": 0,
+    "includesScreenAndAgent": true
+  },
+  "newFocused": {
+    "pass": 7,
+    "fail": 0
+  },
+  "parentFocused": {
+    "pass": 4,
+    "fail": 3
+  },
+  "rootCheck": "passed",
+  "python": "unchanged from rc.3; prior 553+163 passes not rerun",
+  "comparedUnchangedFiles": 428,
+  "http": "50 loopback HTTP requests, 121001 ms real timeout, simulated phones/model; rc.3 server identical to rc.4",
+  "phone": "22 unique business numbers, 4 real probe submissions, 1 observation-only resume; 4 devices, max 2 concurrent native operations",
+  "review": "self-review only; two runtime changes confined to lookup recovery, no shared ADB/control function changed",
+  "developmentFailures": [
+    "First attempted npm test does not exist; no tests executed by that command. Corrected to npm run test:screen in rc.4 assembly.",
+    "Initial before/after test adapter assumed onRecovery metadata existed on old code, causing unrelated fixture errors. Made it backwards-compatible; genuine parent failures 3, new 7/7."
+  ],
+  "logSha256": {
+    "rc4-regression-final.log": "d5e299f732ee69641f3b40bedad51f3c1250b78920005eefcf209c56cfb7c0b6",
+    "rc4-focused-final.log": "b2ffa046d63244638830af2aa7461645897f7e07102a8b3038ab2a2b1819e7fb",
+    "old-recovery-final.log": "c8be1f7eb86b4960659862505c4bf41a70c56ee0e18de498d0744ec5d2ba7d34",
+    "rc4-check.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "resident-batch-sanitized.log": "e3a449895387a2aee027125c30d2e7d0a1678246aa3fabd67e37a172dd91b457",
+    "recovery156-sanitized.log": "c9d0b6fe4dacad945e957380bbc651ad36a75f8078ba4a8878e20f0257cdd189",
+    "final-canary-sanitized.log": "fa9afa81abd17a1e3cd216d0e2e170bd5478473e122e302b8fe2380c4ba5aa48",
+    "http50.json": "3c9439e2f579ea1dd4a439c9521c429176fc68abcc96f1713159c53e4faae6ae"
+  }
+}

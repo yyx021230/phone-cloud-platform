@@ -1,0 +1,13 @@
+{
+  "parent": "lookup-ai-coverage-20261025-rc.3",
+  "parentCommit": "1bd4b82db523747aed69309aa932ec8e0c71c72d",
+  "production": {
+    "release": "lookup-final-20261023-deployed.1",
+    "source": "2f185140556ec01419f9b67eddd171271032f226",
+    "image": "c10e071b3f4811c626b28075bba364e8dc96e05dc9c8402d0f760673f7e63f8c"
+  },
+  "before": {
+    "windows-agent/src/lookup-page-recovery.mjs": "acab1b3d3e96f17ee54fe393cdbcf31a9210139dd7694a04de1140b80f79daa9",
+    "windows-agent/src/index.mjs": "ad1f3ecb26ca817be7ddf495c166194f1f1d572185a5b94e84d73fc134af278c"
+  }
+}

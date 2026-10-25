@@ -1,0 +1,25 @@
+{
+  "atUtc": "2026-10-25T13:31:50.499900+00:00",
+  "activeVersion": "lookup-final-20261023-deployed.1",
+  "runtimeCandidateCommit": "2f185140556ec01419f9b67eddd171271032f226",
+  "image": "sha256:c10e071b3f4811c626b28075bba364e8dc96e05dc9c8402d0f760673f7e63f8c",
+  "restartCount": 0,
+  "health": 200,
+  "ready": 200,
+  "windows": {
+    "adbOwner": "SYSTEM",
+    "agentPid": 27236,
+    "productionRunnerSha256": "c73e025e17b2a2376a1684bc32ad32facf88dfa5c8e566f1fac67bd47e4c5524",
+    "candidateProcesses": 0,
+    "agentOwner": "SYSTEM",
+    "adbPath": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+    "adbPid": 20316
+  },
+  "testDeviceOccupancies": 0,
+  "productionLookupChannels": 0,
+  "sharedServiceRestarts": 0,
+  "mediaOperations": 0,
+  "gitPushes": 0,
+  "newProductionApiSubmissions": 0,
+  "productionPlatformDataOrConfigMutations": 0
+}
