@@ -1,0 +1,25 @@
+{
+  "parent": "lookup-ai-coverage-20261024-rc.1",
+  "parentCommit": "af6ade7a475c715d372304d368d110dd2aa82924",
+  "before": {
+    "server/lookup-readiness.mjs": "05ae676fc7d4332f4a99388239d99b1a6da9820d486bd6192795a23cfa558c0d",
+    "server/lookup-account-offline.test.mjs": "65f2244eae07c8783a8445f0e5511c847790ec8ce6cb0afbd73a75c565d19ee1",
+    "server/managed-lookup.mjs": "3283480e04ffac5447bd1c41d3a20128736f6f3e608efa8771de4f2ec54e5ff6",
+    "server/lookup-ai-vision.mjs": "c69613f81c692c32eca3fe995b3c7f8ed49cef34bdab7e8cecb7a9080cdaa552",
+    "server/lookup-ai-vision.test.mjs": "774e25a24544ed856ab5d2c40c9ae41bfcf72aaa2a483b906f933a5e53d81c36",
+    "docs/OPEN_NAME_LOOKUP_API.md": "df0b8405b357d6d8a5c54cb8f40de5410855c959c60a963f1b4be8414be7d15e",
+    "OPEN_NAME_LOOKUP_API.md": "5e9b6e5620285acb2345a11e390961ee9916f4c86ebbc6ee6933cb4d568bbc57",
+    "docs/OPEN_NAME_LOOKUP_README.md": "29005145413bb05ff41fc6e4398467ec8fe7a58629721f63117f0b00d4b0ed6a",
+    "docs/OPEN_NAME_LOOKUP_PARTNER_HANDOFF.md": "60440b41ea6885a2ee1c8d495687186e2092807a62bf25e3547e2e09b2607641",
+    "sdk/open_name_lookup/README.md": "88a16a99ed180a44e3732b656831c3964fac31d650060061bde217b555e54cb8",
+    "sdk/open_name_lookup/PARTNER_HANDOFF.md": "68a0e853c82d0ced889913acbbeadd43187e12e13734d59fd882822635b3b59a",
+    "public/downloads/name-lookup-http-guide.md": "9780a1977f77cf47dd0098b7c95f4601c7060b4846513ce8ecc1719f862b5210",
+    "public/api-reference.json": "c8f4d183eded629a3c857568de5e8f34206dae39e970485c325435bd5e8560fc",
+    "public/openapi.json": "2857d3cafae10512192a3ca01088925c658bd9ebb7f1e375c3cd682d8874e33c",
+    "public/downloads/name-lookup-openapi.json": "aa72efd78ffc0cdebaed80636caed97284dd14c76b2163ce295b7816bdd7ed31",
+    "public/downloads/name-lookup-integration.zip": "bc1d3e7bca15e5a4541cc0cb9503c4fbf08e18eed82b86d5e313534cfa93ba95",
+    "public/downloads/name-lookup-sha256.json": "17ecde13df3a469c79075a51062a9e4519ac69c76c6152ef6ffa8ac6aa7ae3ca",
+    "server/lookup-prepare-lifecycle.test.mjs": null,
+    "server/lookup-double-card.fixture.json": null
+  }
+}

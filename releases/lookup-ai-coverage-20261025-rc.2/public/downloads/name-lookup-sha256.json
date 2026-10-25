@@ -1,0 +1,11 @@
+{
+  "version": "lookup-ai-coverage-20261025-rc.2",
+  "files": {
+    "README.md": "531ed0824f18f13606c2b9605557dc2e3f8d25c3c2bd63ce637d2af1543bedf5",
+    "lookup.mjs": "c6c04722cd2ecd76ca7a81b72b82b1ee95ec0b8a26ab75795dc75632a4fde246",
+    "lookup.py": "4d25a7b23c11df237ff58f2a791f006c3aeb6a7f05c01a7f53feda7c3227bd59",
+    "openapi.json": "2cf855866e5f30f05b6f7610f61235f15dbc15135a8d529b7e8f31dfcac4e438",
+    "stop_lookup.py": "e0d7f72ff6fae836973432804ae42083ee99c136f307483a7e9eb5a198d862ed"
+  },
+  "zipSha256": "8dd4d70b25dd62491aecbc4fbc8dbe1e56a76b83f53dfc3a807fb4965660e413"
+}
