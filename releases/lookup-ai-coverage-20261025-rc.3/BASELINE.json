@@ -1,0 +1,15 @@
+{
+  "parent": "lookup-ai-coverage-20261025-rc.2",
+  "parentCommit": "097418709c6bfd4ed3ff354e62fa8ea53bb85e67",
+  "before": {
+    "windows-agent/scripts/lookup-native-double-card.fixture.json": null,
+    "windows-agent/scripts/alipay_visual_result.py": "5f7678a4e83ae1ea99af1bc68601079e4ed49b478222c7792fa558425feca022",
+    "windows-agent/scripts/alipay_name_lookup.py": "46e149d9bb1cf44c0860d2d55ee73a41fd661b6b8b16f0432f2cc13c7ed4539c",
+    "windows-agent/scripts/test_lookup_stable_unparsed_handoff.py": null
+  },
+  "production": {
+    "release": "lookup-final-20261023-deployed.1",
+    "source": "2f185140556ec01419f9b67eddd171271032f226",
+    "image": "c10e071b3f4811c626b28075bba364e8dc96e05dc9c8402d0f760673f7e63f8c"
+  }
+}

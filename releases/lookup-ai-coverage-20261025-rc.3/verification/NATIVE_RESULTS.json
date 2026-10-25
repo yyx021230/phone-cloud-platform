@@ -1,0 +1,100 @@
+{
+  "at": "2026-10-25T12:20:58Z",
+  "candidate": "lookup-ai-coverage-20261025-rc.3",
+  "productionChanged": false,
+  "productionApiRequestsSubmitted": 0,
+  "nativePhoneSubmissions": 3,
+  "distinctAuthorizedNumbers": 2,
+  "devices": [
+    149,
+    156
+  ],
+  "tests": {
+    "node": {
+      "passed": 1275,
+      "failed": 0
+    },
+    "pythonDiscovery": {
+      "passed": 553,
+      "failed": 0
+    },
+    "pythonRunners": {
+      "passed": 163,
+      "failed": 0
+    },
+    "rootCheck": true
+  },
+  "native": {
+    "149": {
+      "accountStartMs": 55419,
+      "usbWarningsDismissedDuringStart": 2,
+      "usbWarningsDismissedBeforeInput": 1,
+      "queryMs": 12269,
+      "outcome": "captcha_correctly_detected",
+      "workerExited": true
+    },
+    "156": {
+      "accountStartMs": 54791,
+      "rc2ProbeMs": 58983,
+      "rc2OcrFrames": 10,
+      "rc2OcrPhaseMs": 37813,
+      "rc2AiMs": 29675,
+      "rc2AiReads": 2,
+      "rc2ExactVisibleNameMatched": true,
+      "rc3OriginalQueryObservationMs": 14284,
+      "rc3OcrFrames": 2,
+      "rc3OcrPhaseMs": 9125,
+      "rc3AiMs": 23620,
+      "rc3AiReads": 2,
+      "rc3ExactVisibleNameMatched": true,
+      "originalQueryResubmitted": false,
+      "newBusinessQueryMs": 14950,
+      "newBusinessExactVisibleNameMatched": true,
+      "newBusinessDriver": "poco_native_elements",
+      "workerExited": true
+    }
+  },
+  "safety": {
+    "adbPidBeforeAfter": [
+      20316,
+      20316
+    ],
+    "agentPidBeforeAfter": [
+      27236,
+      27236
+    ],
+    "adbOwner": "NT AUTHORITY\\SYSTEM",
+    "agentOwner": "NT AUTHORITY\\SYSTEM",
+    "adbServerRestarted": false,
+    "candidateProcessesRemaining": 0,
+    "productionRunnerSha256": "c73e025e17b2a2376a1684bc32ad32facf88dfa5c8e566f1fac67bd47e4c5524",
+    "healthz": 200,
+    "readyz": 200,
+    "containerRestarts": 0,
+    "controlDevicesBefore": [
+      52,
+      146,
+      173,
+      125,
+      98
+    ],
+    "controlDevicesAfter": [
+      52,
+      146,
+      98
+    ]
+  },
+  "privateEvidence": {
+    "149BeforeImageSha256": "2be9c2c9a04fbfbb4be70b76876b87fbac4655899f27357e1161f78225ae4320",
+    "156OriginalResultImageSha256": "8e620ab19a408feab88df0dbc2d47d5026e321c4b8b408cca6a5ac5112f689c9",
+    "156ResumedResultImageSha256": "267fcfc5094ce54eff89f0fac9dcc54a4cd6119e9e0ae6938438d969b4a212c0",
+    "156BusinessResultImageSha256": "05ddadf7e6d60b24173a2b55676cdb4b43a7185c28c7f0c63d2b9dbd71c98674"
+  },
+  "notVerified": [
+    "production API to native Agent candidate end-to-end",
+    "five-device concurrency",
+    "natural account limit and eight-hour cooldown",
+    "all historical transport-isolated devices",
+    "all popup types"
+  ]
+}

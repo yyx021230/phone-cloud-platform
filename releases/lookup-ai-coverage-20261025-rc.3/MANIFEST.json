@@ -1,0 +1,6 @@
+{
+  "windows-agent/scripts/alipay_name_lookup.py": "b37b77fa1956640e7bcfeca00d9706ed809a29f848df4aa1afafef461cdb4bd9",
+  "windows-agent/scripts/alipay_visual_result.py": "3f1a6315150fe7424724122947b418d2c4b8f4448db4d4d4372bf99749542e30",
+  "windows-agent/scripts/lookup-native-double-card.fixture.json": "f78e67a7375b9e0a1efeecc2625ad65b9a8e64e1ff8ab83b0596494790687228",
+  "windows-agent/scripts/test_lookup_stable_unparsed_handoff.py": "814488517aa5c29be9a277f8a3653fa85e81089d260ea3d299e12ba921541ecb"
+}
