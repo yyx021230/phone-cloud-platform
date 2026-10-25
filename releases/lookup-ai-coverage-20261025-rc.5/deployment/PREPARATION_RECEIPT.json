@@ -1,0 +1,124 @@
+{
+  "candidate": "lookup-ai-coverage-20261026-rc5",
+  "sourceCommit": "efdd05fecc4dbd5c196c0341e1c1e1beca794c27",
+  "status": "prepared-not-activated",
+  "imageTag": "phone-cloud-platform:lookup-ai-coverage-20261026-rc5",
+  "imageId": "sha256:1ea4b9ef3105a52ec3db2d10cd67340ad87be855924ef3a1f230faf5b01565ff",
+  "previousImage": "sha256:c10e071b3f4811c626b28075bba364e8dc96e05dc9c8402d0f760673f7e63f8c",
+  "cloudFiles": {
+    "server/managed-lookup-platform.mjs": {
+      "before": "597d279cc946391504db5ce5b55fbc4b2f6f65dfc77c11adfadee919c52e71c5",
+      "after": "a85366d0af61b2ba852ea27235bc16ed38c0961b6c0e3af54d153c2849b5f921"
+    },
+    "server/lookup-ai-vision.mjs": {
+      "before": "fc864eae1517bbc418bb5d5595a24dc1d5e6eda05db6f6982faad4c88c3cdf44",
+      "after": "2c978067c2a2ef845bc8f1bc8de85adcfb70d423d5cca271befe0407899dbe0a"
+    },
+    "server/lookup-ai-recovery.mjs": {
+      "before": "5e9f3273aab55632517a89ca277e9f3f9d6954101861157d451161fcaf5415f0",
+      "after": "5d5acf90a7fbf70f22940372bb9d8e62db896b1813b37c4a1ea150fbea60962e"
+    },
+    "server/lookup-human-handover.mjs": {
+      "before": "7065e3da5454ec65a06a11767c18058108300cc07b5380d479b4e87a18d97862",
+      "after": "feb3da78d297ff4d4a97d0d6265fed0ff213d6fe8d0f8024dd6e62bf9eb9cbcf"
+    },
+    "server/index.mjs": {
+      "before": "7409f9a22a90edfc8d6fa9f709e2cdbadad713df0ac9960ebc9ef92924c2c696",
+      "after": "a765c82399486126eca7b7499175a523f2dd68a6b1ce9816f6935d10c2569891"
+    },
+    "server/managed-lookup.mjs": {
+      "before": "819d5d72713ebf41c6590c99b5523fc3a30177eab2203629de45b5cf51d269c5",
+      "after": "57c9f882a1ca248241534e505cb1f73982b1a396d085a8e19384f3ae87e5120d"
+    },
+    "server/lookup-failure-domain.mjs": {
+      "before": "88d8d21506dcccd8f81efde9e6bac22d4c66867c560d55d24064dca8e94ad333",
+      "after": "75d4b940322d16cc10a136f18412bfc80a3ce7e4d17516ee8dcb0dcdff666908"
+    },
+    "server/lookup-readiness.mjs": {
+      "before": "05ae676fc7d4332f4a99388239d99b1a6da9820d486bd6192795a23cfa558c0d",
+      "after": "41da6e878b73c4cafac2856e8e60b3afa9de21ff9ca87a3e987d792795b74730"
+    },
+    "public/api-reference.json": {
+      "before": "c8f4d183eded629a3c857568de5e8f34206dae39e970485c325435bd5e8560fc",
+      "after": "0a99fc58d7d2be7f429c265e3ea50a3f72966e8b1ab09f1d59b8f7473e57fb94"
+    },
+    "public/openapi.json": {
+      "before": "2857d3cafae10512192a3ca01088925c658bd9ebb7f1e375c3cd682d8874e33c",
+      "after": "9735311397875d991bcd279e82908a3efca2aa8ceb3c26691ddce39a18c44a58"
+    },
+    "public/downloads/name-lookup-http-guide.md": {
+      "before": "9780a1977f77cf47dd0098b7c95f4601c7060b4846513ce8ecc1719f862b5210",
+      "after": "531ed0824f18f13606c2b9605557dc2e3f8d25c3c2bd63ce637d2af1543bedf5"
+    },
+    "public/downloads/name-lookup-integration.zip": {
+      "before": "bc1d3e7bca15e5a4541cc0cb9503c4fbf08e18eed82b86d5e313534cfa93ba95",
+      "after": "8dd4d70b25dd62491aecbc4fbc8dbe1e56a76b83f53dfc3a807fb4965660e413"
+    },
+    "public/downloads/name-lookup-openapi.json": {
+      "before": "aa72efd78ffc0cdebaed80636caed97284dd14c76b2163ce295b7816bdd7ed31",
+      "after": "2cf855866e5f30f05b6f7610f61235f15dbc15135a8d529b7e8f31dfcac4e438"
+    },
+    "public/downloads/name-lookup-sha256.json": {
+      "before": "17ecde13df3a469c79075a51062a9e4519ac69c76c6152ef6ffa8ac6aa7ae3ca",
+      "after": "133e59e60c859baa052bc29664bf51f55f100060a746573ae6b9e283e183901c"
+    },
+    "docs/OPEN_NAME_LOOKUP_PARTNER_HANDOFF.md": {
+      "before": "885a1ad45a01cab9c5521f032f4e18ad529c8750e867c63c6cad2b7bbb180ec8",
+      "after": "27f2ec610de3ba9f10a0ace69fc938ae1140e828ac579a796d5a694d0b21db34"
+    },
+    "docs/OPEN_NAME_LOOKUP_API.md": {
+      "before": "fce42d6dfcd89f04c9af64cd925053a73055b87754dfea9cb2230348a3b853a2",
+      "after": "8f2b4b145bf6215efd5891a9cbf32c78625e2cd40b93c6e43a51d815b089062e"
+    },
+    "docs/OPEN_NAME_LOOKUP_README.md": {
+      "before": "030bd40371a1081d6bc4144ac799fcffc9bed6353579018119f3a0a048587a89",
+      "after": "eca121e9bf51e119549159f36491ec9ab60dd61a4581ceabeead7b9d28b5c76c"
+    }
+  },
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "backup": "/opt/phone-cloud-platform/staging/lookup-ai-coverage-20261026-rc5/rollback",
+  "backupFiles": {
+    "database.dump": "d855cbbc1e821f02ba5066d0a2e364f7086000b3450855ee5a668094d8207b90",
+    "compose-baseline.json": "db9f620d1896634b3e96f2861ef46994d0b1fe9a6b684e53a1676e6ae964feb7",
+    "previous-image.tar.gz": "5521c7bb75532ca5b42ea10e6547d931abdeef02ef3918ce338442c95d1a5cb4",
+    "ACTIVE_PLATFORM_RELEASE.json": "42d4d451e80b40b6d476acb3b78a70e438541b96815f825e0417c65aae65cacb",
+    "source/server/index.mjs": "e13e4271b950b14402868ceaca005e14314ec603c13a095cd2cbb9f832238629",
+    "source/docs/OPEN_NAME_LOOKUP_API.md": "e3683b39afcda0a83f542b6c8ac5e35fb31c615045f2ee2e513568b4ff78ac25",
+    "source/docs/OPEN_NAME_LOOKUP_README.md": "a92e8fedcbb9c93f986874f9e4da89c04e97a28fa8384361beb6440833782666",
+    "source/docs/OPEN_NAME_LOOKUP_PARTNER_HANDOFF.md": "244bfc917660e892c9ef40dd468471c3d3477e15caeaf45715c959c85a991e07",
+    "source/public/api-reference.json": "0c6558ccbeb06bb59618fcb5f46670c92be0d8e2fb2b71719406b26c031ee3b5",
+    "source/public/openapi.json": "501d3f32f841c441ee3350543810a263afe32cd3c17a8abd61550d56bd9358e9",
+    "source/public/downloads/name-lookup-sha256.json": "68cb926d397234918cc6f651218b9cd79d4d4c227abd38daaaedef35156b98d7",
+    "source/public/downloads/name-lookup-integration.zip": "be85b3edf70034b630c15ebfef9ed489b03b15983907338a7ae2a2c10c898b91",
+    "source/public/downloads/name-lookup-openapi.json": "939cbffb58b7810eeeddb3e4118691fe37d932f84d53e1a561cf159de1d16837",
+    "runtime/server/managed-lookup.mjs": "819d5d72713ebf41c6590c99b5523fc3a30177eab2203629de45b5cf51d269c5",
+    "runtime/server/lookup-failure-domain.mjs": "88d8d21506dcccd8f81efde9e6bac22d4c66867c560d55d24064dca8e94ad333",
+    "runtime/server/lookup-human-handover.mjs": "7065e3da5454ec65a06a11767c18058108300cc07b5380d479b4e87a18d97862",
+    "runtime/server/index.mjs": "7409f9a22a90edfc8d6fa9f709e2cdbadad713df0ac9960ebc9ef92924c2c696",
+    "runtime/server/lookup-ai-recovery.mjs": "5e9f3273aab55632517a89ca277e9f3f9d6954101861157d451161fcaf5415f0",
+    "runtime/server/lookup-ai-vision.mjs": "fc864eae1517bbc418bb5d5595a24dc1d5e6eda05db6f6982faad4c88c3cdf44",
+    "runtime/server/managed-lookup-platform.mjs": "597d279cc946391504db5ce5b55fbc4b2f6f65dfc77c11adfadee919c52e71c5",
+    "runtime/server/lookup-readiness.mjs": "05ae676fc7d4332f4a99388239d99b1a6da9820d486bd6192795a23cfa558c0d",
+    "runtime/docs/OPEN_NAME_LOOKUP_API.md": "fce42d6dfcd89f04c9af64cd925053a73055b87754dfea9cb2230348a3b853a2",
+    "runtime/docs/OPEN_NAME_LOOKUP_README.md": "030bd40371a1081d6bc4144ac799fcffc9bed6353579018119f3a0a048587a89",
+    "runtime/docs/OPEN_NAME_LOOKUP_PARTNER_HANDOFF.md": "885a1ad45a01cab9c5521f032f4e18ad529c8750e867c63c6cad2b7bbb180ec8",
+    "runtime/public/api-reference.json": "c8f4d183eded629a3c857568de5e8f34206dae39e970485c325435bd5e8560fc",
+    "runtime/public/openapi.json": "2857d3cafae10512192a3ca01088925c658bd9ebb7f1e375c3cd682d8874e33c",
+    "runtime/public/downloads/name-lookup-http-guide.md": "9780a1977f77cf47dd0098b7c95f4601c7060b4846513ce8ecc1719f862b5210",
+    "runtime/public/downloads/name-lookup-sha256.json": "17ecde13df3a469c79075a51062a9e4519ac69c76c6152ef6ffa8ac6aa7ae3ca",
+    "runtime/public/downloads/name-lookup-integration.zip": "bc1d3e7bca15e5a4541cc0cb9503c4fbf08e18eed82b86d5e313534cfa93ba95",
+    "runtime/public/downloads/name-lookup-openapi.json": "aa72efd78ffc0cdebaed80636caed97284dd14c76b2163ce295b7816bdd7ed31"
+  },
+  "isolatedSmoke": "passed using production mode and disposable PostgreSQL",
+  "productionServiceRestarted": false,
+  "agentChanged": false,
+  "adbChanged": false,
+  "preparedAtUtc": "2026-10-25T16:21:13Z"
+}

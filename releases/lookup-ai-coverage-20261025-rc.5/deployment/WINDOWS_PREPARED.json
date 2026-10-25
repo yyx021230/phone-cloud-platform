@@ -1,0 +1,28 @@
+{
+  "adbPid": 20316,
+  "identities": "SYSTEM",
+  "adbCommandCount": 0,
+  "files": {
+    "scripts/alipay_name_lookup.py": {
+      "before": "c73e025e17b2a2376a1684bc32ad32facf88dfa5c8e566f1fac67bd47e4c5524",
+      "after": "30e0c828d981f1e9fd9c62d6b6e48141c7c13ae25c5e899d68992ce04d2df024"
+    },
+    "scripts/alipay_visual_result.py": {
+      "before": "5f7678a4e83ae1ea99af1bc68601079e4ed49b478222c7792fa558425feca022",
+      "after": "3f1a6315150fe7424724122947b418d2c4b8f4448db4d4d4372bf99749542e30"
+    },
+    "src/lookup-page-recovery.mjs": {
+      "before": "acab1b3d3e96f17ee54fe393cdbcf31a9210139dd7694a04de1140b80f79daa9",
+      "after": "c3ae74f3dbcf699a329f249b40f8c7c6218c0ddf092c7bdbacb30c9564157be1"
+    },
+    "src/index.mjs": {
+      "before": "ad1f3ecb26ca817be7ddf495c166194f1f1d572185a5b94e84d73fc134af278c",
+      "after": "eafc722b93788d82bc788ed79f963b17224b2d8c30528bfbfbcedb83fe9a9dd2"
+    }
+  },
+  "sourceCommit": "efdd05fecc4dbd5c196c0341e1c1e1beca794c27",
+  "serviceRestarted": false,
+  "atUtc": "2026-10-25T16:18:40.1557685Z",
+  "status": "prepared-not-activated",
+  "agentPid": 27236
+}
