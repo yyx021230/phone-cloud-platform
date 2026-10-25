@@ -1,0 +1,364 @@
+{
+  "date": "2026-10-25",
+  "stage": "local_candidate_native_partially_verified_not_deployed",
+  "checks": {
+    "nodeRegression": {
+      "pass": 1287,
+      "fail": 0
+    },
+    "pythonDiscovery": {
+      "pass": 568,
+      "fail": 0
+    },
+    "pythonRunners": {
+      "pass": 163,
+      "fail": 0
+    },
+    "newFocusedWindows": {
+      "pass": 8,
+      "fail": 0
+    },
+    "oldCandidateCounterexample": {
+      "pass": 3,
+      "fail": 5
+    },
+    "rootCheck": true,
+    "newFocusedWindowsFinal": {
+      "pass": 15,
+      "fail": 0
+    },
+    "resumeOverlayFocused": {
+      "pass": 24,
+      "fail": 0
+    },
+    "resumeOverlayParent": {
+      "pass": 0,
+      "fail": 6,
+      "error": 1
+    },
+    "agentRecoveryFocused": {
+      "pass": 29,
+      "fail": 0
+    },
+    "agentRecoveryParent": {
+      "pass": 26,
+      "fail": 3
+    }
+  },
+  "native": {
+    "6": {
+      "startSeconds": 40.343,
+      "startOk": true,
+      "errorCode": "",
+      "workerExited": true,
+      "steps": [
+        "wake_display_ready",
+        "launch_alipay",
+        "open_my_tab",
+        "open_settings",
+        "open_saved_account_picker",
+        "account_picker_sample",
+        "account_picker_sample",
+        "account_picker_stable",
+        "launch_alipay",
+        "open_search",
+        "lookup_account_ready"
+      ],
+      "probe": {
+        "seconds": 18.875,
+        "errorCode": "poco_alipay_human_verification_required",
+        "workerExited": true,
+        "imageSha256": "0ad978a54a8940e43a851f2fc495e87f5e202f1d537867cf41ac9ded822456d4"
+      },
+      "restrictionHandoff": {
+        "classificationReplay": {
+          "classification": "alipay_access_denied_account_switch_required",
+          "result": {
+            "code": "alipay_prepared_account_limited",
+            "limitReason": "access_denied",
+            "identityPreserved": true
+          },
+          "records": 1,
+          "executions": 1,
+          "cooldownHours": 8,
+          "storage": "isolated-memory-only",
+          "productionWrites": 0
+        },
+        "target": 156,
+        "sameLogicalId": true,
+        "samePhone": true,
+        "stages": [
+          {
+            "operation": "query",
+            "observationOnly": false,
+            "stage": "",
+            "seconds": 20.313,
+            "inputs": 1,
+            "searchSubmits": 0,
+            "ok": true,
+            "hasName": true,
+            "label": "rc5-handoff-6-to156-agent-recovery-1"
+          }
+        ],
+        "named": true,
+        "productionCooldownWrites": 0
+      }
+    },
+    "54": {
+      "startSeconds": 104.954,
+      "startOk": true,
+      "errorCode": "",
+      "workerExited": true,
+      "steps": [
+        "keep_awake_usb_skipped",
+        "wake_display_ready",
+        "launch_alipay",
+        "dismiss_coloros_securepay_usb_warning",
+        "coloros_securepay_usb_warning_closed",
+        "open_my_tab",
+        "open_settings",
+        "open_saved_account_picker",
+        "account_picker_sample",
+        "open_login_other_account_sheet",
+        "account_picker_intermediate_sheet_handled",
+        "account_picker_sample",
+        "account_picker_sample",
+        "account_picker_stable",
+        "launch_alipay",
+        "open_search",
+        "lookup_account_ready"
+      ],
+      "probe": {
+        "seconds": 23.359,
+        "errorCode": "poco_alipay_human_verification_required",
+        "workerExited": true,
+        "imageSha256": "dcf3597cfaf273c0dacc50a7fef1eada37d6ba74378424f0c1ba0743a8ae52f7"
+      },
+      "finalResume": {
+        "seconds": 25.328,
+        "named": true,
+        "inputCount": 0,
+        "usbCloses": 1,
+        "workerExited": true,
+        "imageSha256": "463198ac620a512f0cb0e74bb17300cbf1b069f64267aec31c71849ce41d887f"
+      }
+    },
+    "86": {
+      "startSeconds": 27.938,
+      "startOk": false,
+      "errorCode": "alipay_my_tab_missing",
+      "workerExited": true,
+      "steps": [
+        "wake_display_ready",
+        "launch_alipay",
+        "error"
+      ],
+      "rc5": {
+        "seconds": 16.594,
+        "errorCode": "poco_alipay_login_required",
+        "workerExited": true,
+        "steps": [
+          "wake_display_ready",
+          "launch_alipay",
+          "page_mismatch_overlay_detected",
+          "notification_shade_collapsed",
+          "alipay_login_required_detected",
+          "error"
+        ],
+        "inputs": 0
+      }
+    },
+    "163": {
+      "startSeconds": 105.297,
+      "startOk": true,
+      "errorCode": "",
+      "workerExited": true,
+      "steps": [
+        "wake_display_ready",
+        "launch_alipay",
+        "open_my_tab",
+        "open_settings",
+        "open_saved_account_picker",
+        "account_picker_sample",
+        "account_picker_sample",
+        "account_picker_stable",
+        "account_picker_sample",
+        "account_picker_sample",
+        "account_picker_stable",
+        "reuse_open_account_picker",
+        "account_selected",
+        "account_selection_returned_home",
+        "open_my_tab",
+        "open_settings",
+        "open_saved_account_picker",
+        "account_picker_sample",
+        "account_picker_sample",
+        "account_picker_stable",
+        "launch_alipay",
+        "account_switch_verified",
+        "account_switch_search_prepare_deferred",
+        "open_search",
+        "lookup_account_ready"
+      ],
+      "probe": {
+        "seconds": 23.75,
+        "errorCode": "poco_alipay_human_verification_required",
+        "workerExited": true,
+        "imageSha256": "627171fdbffafaba056272566714c47746c855138b770cefc2b2343ab8f55b50"
+      },
+      "selectedNaturalExpiredAccount": {
+        "limitedAt": "2026-10-25T06:46:31.437Z",
+        "cooldownUntil": "2026-10-25T14:46:31.437Z",
+        "remainingMs": 0,
+        "cooling": false
+      },
+      "naturalExpiryFollowupQuery": "named_result_verified_after_user_completed_captcha",
+      "submittedSearchResume": {
+        "stages": [
+          {
+            "operation": "query_resume",
+            "observationOnly": true,
+            "stage": "",
+            "seconds": 20.281,
+            "inputs": 0,
+            "searchSubmits": 0,
+            "ok": false,
+            "hasName": false,
+            "label": "rc5-five-03-d163-agent-recovery-1"
+          }
+        ],
+        "aiKind": "name",
+        "aiElapsedMs": 23682,
+        "imageSha256": "157834b119ed950b53061678bd82fc8244378c0c36f41e9cd353a788ff608292"
+      }
+    },
+    "182": {
+      "startSeconds": 83.421,
+      "startOk": true,
+      "errorCode": "",
+      "workerExited": true,
+      "steps": [
+        "wake_display_ready",
+        "launch_alipay",
+        "open_my_tab",
+        "open_settings",
+        "open_saved_account_picker",
+        "account_picker_sample",
+        "account_picker_sample",
+        "account_picker_stable",
+        "account_picker_sample",
+        "account_picker_sample",
+        "account_picker_stable",
+        "reuse_open_account_picker",
+        "account_selected",
+        "account_selection_returned_home",
+        "open_my_tab",
+        "open_settings",
+        "open_saved_account_picker",
+        "account_picker_sample",
+        "account_picker_sample",
+        "account_picker_stable",
+        "launch_alipay",
+        "account_switch_verified",
+        "account_switch_search_prepare_deferred",
+        "open_search",
+        "lookup_account_ready"
+      ],
+      "probe": {
+        "seconds": 11.859,
+        "errorCode": "poco_alipay_human_verification_required",
+        "workerExited": true,
+        "imageSha256": "f997a8b105313d624ad1636f24e328fcfd900340c24d02b7b1fc5ae2f8cf7f3a"
+      },
+      "selectedNaturalExpiredAccount": {
+        "limitedAt": "2026-10-25T06:31:32.350Z",
+        "cooldownUntil": "2026-10-25T14:31:32.350Z",
+        "remainingMs": 0,
+        "cooling": false
+      },
+      "naturalExpiryFollowupQuery": "named_result_verified_after_user_completed_captcha"
+    },
+    "112": {
+      "observationSeconds": 18.266,
+      "inputs": 0,
+      "networkRefreshes": 1,
+      "stillUnconfirmed": true,
+      "osDefaultNetwork": "cellular_validated",
+      "cause": "unproven; OS connectivity does not prove Alipay backend response"
+    }
+  },
+  "productionBusinessInputs": 0,
+  "newBusinessNumbers": 10,
+  "newCodeChanges": [
+    "windows-agent/scripts/alipay_name_lookup.py",
+    "windows-agent/src/index.mjs"
+  ],
+  "notVerified": [
+    "full combined candidate external API -> native Agent -> persistent cooldown and automatic handoff -> cards/notifications",
+    "112 Alipay network failure root cause",
+    "54 transient transport timeout root cause",
+    "52 occupied, skipped",
+    "6 previous return-to-desktop root cause",
+    "final combined image/current backups/D-075 live preflight"
+  ],
+  "failuresDuringVerification": [
+    "First bundled Python interpreter lacked cv2: discovery 527 with 4 import errors; rerun existing system Python with installed deps 561 passed. No dependency changed.",
+    "Read-only network harness first run had stderr decoding failure; rerun with robust decoding; no settings changed.",
+    "Manual-resume harness initially used observation-only before search had been submitted. Corrected harness resumed existing input without retyping; this is distinct from the confirmed submitted-search retry defect."
+  ],
+  "businessFinal": {
+    "names": 9,
+    "empty": 1,
+    "pending": 0,
+    "nativePeakConcurrency": 5,
+    "devices": [
+      6,
+      156,
+      162,
+      163,
+      182
+    ],
+    "productionApiBatch": false,
+    "handoffController": "isolated",
+    "note": "actual native results plus actual AI; platform dispatch/persistence not production end-to-end"
+  },
+  "postflight": {
+    "adbOwner": "SYSTEM",
+    "agentPid": 27236,
+    "productionRunnerSha256": "c73e025e17b2a2376a1684bc32ad32facf88dfa5c8e566f1fac67bd47e4c5524",
+    "candidateProcesses": 0,
+    "agentOwner": "SYSTEM",
+    "adbPath": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+    "adbPid": 20316,
+    "health": 200,
+    "ready": 200,
+    "lookupChannels": 0,
+    "productionActive": "lookup-final-20261023-deployed.1",
+    "imageId": "sha256:c10e071b3f4811c626b28075bba364e8dc96e05dc9c8402d0f760673f7e63f8c"
+  },
+  "runtimeComparison": {
+    "parent": "rc.4",
+    "equalFiles": 508,
+    "changed": [
+      {
+        "file": "windows-agent/scripts/alipay_name_lookup.py"
+      },
+      {
+        "file": "windows-agent/src/lookup-page-recovery.test.mjs"
+      },
+      {
+        "file": "windows-agent/src/index.mjs"
+      }
+    ]
+  },
+  "evidenceLogs": {
+    "rc5-node-final.log": "113eaa50a605ad0c11179a84498deba8f3f11e849632fc27c03e136121dcd8a6",
+    "rc5-python-final2.log": "8558aa5c76505a36af1c4953866db08f6d6b6e2b69e4e64853e82e90f7254eaf",
+    "rc5-runners.log": "8bdef6a6d22b83b56ed879008830ab2b29a6c0c3bfcfe6382397b3e589f0a1d2",
+    "rc5-check-final2.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "rc5-windows-final2.log": "a6f0131bbc2761c023914a5233235f0edf2405d61a848c6354ee34fc8e1ad16b",
+    "rc5-resume-overlay-parent.log": "a2b40c1250a314daf295b7c06c1b5cb03ff1d77ed82807ebb5dcf62b0551b7c3",
+    "rc5-resume-overlay-focused.log": "ae7dd87c368a1ebc29316ac55b100544605a0f3c28aca316c4447ffcc259d103",
+    "rc5-postsubmit-parent.log": "9317fda1a4c18cbc8e0940a75cfdcba489e8d26b2d9905b389b2b0a2b3e4de90"
+  }
+}

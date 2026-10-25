@@ -1,0 +1,14 @@
+{
+  "parent": "lookup-ai-coverage-20261025-rc.4",
+  "parentCommit": "fc55221353274ca61f55c47371f62d62e633833e",
+  "production": {
+    "release": "lookup-final-20261023-deployed.1",
+    "source": "2f185140556ec01419f9b67eddd171271032f226",
+    "image": "c10e071b3f4811c626b28075bba364e8dc96e05dc9c8402d0f760673f7e63f8c"
+  },
+  "before": {
+    "windows-agent/scripts/alipay_name_lookup.py": "b37b77fa1956640e7bcfeca00d9706ed809a29f848df4aa1afafef461cdb4bd9",
+    "windows-agent/src/index.mjs": "5ef56e55d2ff2ad42400b3f157ed5de41ef3c710031187af7390ac05a7f9576a",
+    "windows-agent/src/lookup-page-recovery.test.mjs": "011eb51aea9581d70e21e5b4007f942a4be5bbe74f9af76422de1a664f6a9e34"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "windows-agent/scripts/alipay_name_lookup.py": "30e0c828d981f1e9fd9c62d6b6e48141c7c13ae25c5e899d68992ce04d2df024",
+  "windows-agent/scripts/test_lookup_prepare_notification_shade.py": "6b181006d0b40912668fb9b539d431908196d18ef3f510e90cbe5a442f15ecc8",
+  "windows-agent/scripts/test_lookup_resume_overlay.py": "827ae31b688be209d28fd6b6096e8088ec8d48cbeebb8487f35825be3d52364b",
+  "windows-agent/src/index.mjs": "eafc722b93788d82bc788ed79f963b17224b2d8c30528bfbfbcedb83fe9a9dd2",
+  "windows-agent/src/lookup-page-recovery.test.mjs": "775c8a03c522b2892b103eb4a4c9c7b5f3f9065e36c78e64178cf3bf9354cb1f"
+}
