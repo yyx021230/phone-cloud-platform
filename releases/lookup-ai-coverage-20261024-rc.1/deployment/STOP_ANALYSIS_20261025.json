@@ -1,0 +1,117 @@
+{
+  "observedAtUtc": "2026-10-25T11:22:25.901Z",
+  "production": "lookup-final-20261023-deployed.1",
+  "runtimeBeforeHashesMatched": 7,
+  "lookupEnabled": true,
+  "activeChannels": 0,
+  "activeBusiness": 0,
+  "stop": {
+    "preparationId": "2e468e53-704c-4b10-9303-314fd3729ee4",
+    "createdAt": 1792797000390,
+    "expiresAt": 1792925802079,
+    "idleSince": 1792924902079,
+    "idleTimeoutMs": 900000,
+    "stopRequestedAt": 1792925802249,
+    "stoppedAt": 1792925812307,
+    "autoStopReason": "idle_timeout",
+    "stopPreviousExpiresAt": 1792925802079,
+    "admissionOpenedAt": 1792797142667
+  },
+  "lastAcceptedBusinessAtUtc": "2026-10-25T09:47:30.252Z",
+  "lastCompletedBusinessAtUtc": "2026-10-25T10:41:42.026Z",
+  "last20Business": {
+    "succeeded": 2,
+    "queueTimeout": 18,
+    "timedOutAttemptsEach": 0
+  },
+  "queueWindowCapacity": {
+    "windowUtc": [
+      "2026-10-25T09:46:00Z",
+      "2026-10-25T10:17:31Z"
+    ],
+    "probes": [
+      {
+        "status": "failed",
+        "code": "lookup_account_login_required",
+        "n": 212,
+        "first_done": "2026-10-25T09:46:07.170Z",
+        "last_done": "2026-10-25T10:17:29.040Z"
+      },
+      {
+        "status": "failed",
+        "code": "lookup_accounts_cooling",
+        "n": 6,
+        "first_done": "2026-10-25T09:46:23.981Z",
+        "last_done": "2026-10-25T10:06:11.916Z"
+      },
+      {
+        "status": "failed",
+        "code": "lookup_probe_failed",
+        "n": 13,
+        "first_done": "2026-10-25T09:47:10.652Z",
+        "last_done": "2026-10-25T10:15:37.683Z"
+      }
+    ],
+    "accountStartJobs": 232,
+    "groups": {
+      "poco_alipay_login_required": {
+        "count": 214,
+        "devices": [
+          115,
+          121,
+          101,
+          79,
+          143,
+          183,
+          55,
+          74
+        ]
+      },
+      "alipay_no_available_account": {
+        "count": 1,
+        "devices": [
+          130
+        ]
+      },
+      "alipay_my_tab_missing:texts=<redacted>": {
+        "count": 4,
+        "devices": [
+          86,
+          183,
+          53
+        ]
+      },
+      "succeeded": {
+        "count": 6,
+        "devices": [
+          74,
+          128,
+          60,
+          112
+        ]
+      },
+      "alipay_account_picker_not_stable": {
+        "count": 6,
+        "devices": [
+          52,
+          54,
+          142,
+          51
+        ]
+      },
+      "alipay_known_overlay_close_unverified:coloros_usb": {
+        "count": 1,
+        "devices": [
+          149
+        ]
+      }
+    }
+  },
+  "limitations": [
+    "API intake attempts rejected before acceptance are not counted by last accepted request.",
+    "Preparation keys retain no timestamps; this read cannot attribute the repeated login probes to exact external prepare calls.",
+    "Login/USB/account-picker errors here are recorded classifications, not fresh phone screenshots."
+  ],
+  "productionChanges": false,
+  "adbCommands": 0
+}
