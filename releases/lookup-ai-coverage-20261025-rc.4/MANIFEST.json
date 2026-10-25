@@ -1,0 +1,5 @@
+{
+  "windows-agent/src/lookup-page-recovery.mjs": "c3ae74f3dbcf699a329f249b40f8c7c6218c0ddf092c7bdbacb30c9564157be1",
+  "windows-agent/src/index.mjs": "5ef56e55d2ff2ad42400b3f157ed5de41ef3c710031187af7390ac05a7f9576a",
+  "windows-agent/src/lookup-preinput-reattach.test.mjs": "9efcf64ba4176db9067e5c13261dc899eaeb716244c0c202ab6aad7d6d7d2e38"
+}
