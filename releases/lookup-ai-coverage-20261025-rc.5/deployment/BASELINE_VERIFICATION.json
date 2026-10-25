@@ -1,0 +1,111 @@
+{
+  "cloud-preflight-hashes.json": {
+    "server/managed-lookup-platform.mjs": {
+      "expected": "597d279cc946391504db5ce5b55fbc4b2f6f65dfc77c11adfadee919c52e71c5",
+      "actual": "597d279cc946391504db5ce5b55fbc4b2f6f65dfc77c11adfadee919c52e71c5",
+      "match": true
+    },
+    "server/lookup-ai-vision.mjs": {
+      "expected": "fc864eae1517bbc418bb5d5595a24dc1d5e6eda05db6f6982faad4c88c3cdf44",
+      "actual": "fc864eae1517bbc418bb5d5595a24dc1d5e6eda05db6f6982faad4c88c3cdf44",
+      "match": true
+    },
+    "server/lookup-ai-recovery.mjs": {
+      "expected": "5e9f3273aab55632517a89ca277e9f3f9d6954101861157d451161fcaf5415f0",
+      "actual": "5e9f3273aab55632517a89ca277e9f3f9d6954101861157d451161fcaf5415f0",
+      "match": true
+    },
+    "server/lookup-human-handover.mjs": {
+      "expected": "7065e3da5454ec65a06a11767c18058108300cc07b5380d479b4e87a18d97862",
+      "actual": "7065e3da5454ec65a06a11767c18058108300cc07b5380d479b4e87a18d97862",
+      "match": true
+    },
+    "server/index.mjs": {
+      "expected": "7409f9a22a90edfc8d6fa9f709e2cdbadad713df0ac9960ebc9ef92924c2c696",
+      "actual": "7409f9a22a90edfc8d6fa9f709e2cdbadad713df0ac9960ebc9ef92924c2c696",
+      "match": true
+    },
+    "server/managed-lookup.mjs": {
+      "expected": "819d5d72713ebf41c6590c99b5523fc3a30177eab2203629de45b5cf51d269c5",
+      "actual": "819d5d72713ebf41c6590c99b5523fc3a30177eab2203629de45b5cf51d269c5",
+      "match": true
+    },
+    "server/lookup-failure-domain.mjs": {
+      "expected": "88d8d21506dcccd8f81efde9e6bac22d4c66867c560d55d24064dca8e94ad333",
+      "actual": "88d8d21506dcccd8f81efde9e6bac22d4c66867c560d55d24064dca8e94ad333",
+      "match": true
+    },
+    "server/lookup-readiness.mjs": {
+      "expected": "05ae676fc7d4332f4a99388239d99b1a6da9820d486bd6192795a23cfa558c0d",
+      "actual": "05ae676fc7d4332f4a99388239d99b1a6da9820d486bd6192795a23cfa558c0d",
+      "match": true
+    },
+    "public/api-reference.json": {
+      "expected": "c8f4d183eded629a3c857568de5e8f34206dae39e970485c325435bd5e8560fc",
+      "actual": "c8f4d183eded629a3c857568de5e8f34206dae39e970485c325435bd5e8560fc",
+      "match": true
+    },
+    "public/openapi.json": {
+      "expected": "2857d3cafae10512192a3ca01088925c658bd9ebb7f1e375c3cd682d8874e33c",
+      "actual": "2857d3cafae10512192a3ca01088925c658bd9ebb7f1e375c3cd682d8874e33c",
+      "match": true
+    },
+    "public/downloads/name-lookup-http-guide.md": {
+      "expected": "9780a1977f77cf47dd0098b7c95f4601c7060b4846513ce8ecc1719f862b5210",
+      "actual": "9780a1977f77cf47dd0098b7c95f4601c7060b4846513ce8ecc1719f862b5210",
+      "match": true
+    },
+    "public/downloads/name-lookup-integration.zip": {
+      "expected": "bc1d3e7bca15e5a4541cc0cb9503c4fbf08e18eed82b86d5e313534cfa93ba95",
+      "actual": "bc1d3e7bca15e5a4541cc0cb9503c4fbf08e18eed82b86d5e313534cfa93ba95",
+      "match": true
+    },
+    "public/downloads/name-lookup-openapi.json": {
+      "expected": "aa72efd78ffc0cdebaed80636caed97284dd14c76b2163ce295b7816bdd7ed31",
+      "actual": "aa72efd78ffc0cdebaed80636caed97284dd14c76b2163ce295b7816bdd7ed31",
+      "match": true
+    },
+    "public/downloads/name-lookup-sha256.json": {
+      "expected": "17ecde13df3a469c79075a51062a9e4519ac69c76c6152ef6ffa8ac6aa7ae3ca",
+      "actual": "17ecde13df3a469c79075a51062a9e4519ac69c76c6152ef6ffa8ac6aa7ae3ca",
+      "match": true
+    },
+    "docs/OPEN_NAME_LOOKUP_PARTNER_HANDOFF.md": {
+      "expected": "885a1ad45a01cab9c5521f032f4e18ad529c8750e867c63c6cad2b7bbb180ec8",
+      "actual": "885a1ad45a01cab9c5521f032f4e18ad529c8750e867c63c6cad2b7bbb180ec8",
+      "match": true
+    },
+    "docs/OPEN_NAME_LOOKUP_API.md": {
+      "expected": "fce42d6dfcd89f04c9af64cd925053a73055b87754dfea9cb2230348a3b853a2",
+      "actual": "fce42d6dfcd89f04c9af64cd925053a73055b87754dfea9cb2230348a3b853a2",
+      "match": true
+    },
+    "docs/OPEN_NAME_LOOKUP_README.md": {
+      "expected": "030bd40371a1081d6bc4144ac799fcffc9bed6353579018119f3a0a048587a89",
+      "actual": "030bd40371a1081d6bc4144ac799fcffc9bed6353579018119f3a0a048587a89",
+      "match": true
+    }
+  },
+  "windows-preflight-hashes.json": {
+    "scripts/alipay_name_lookup.py": {
+      "expected": "c73e025e17b2a2376a1684bc32ad32facf88dfa5c8e566f1fac67bd47e4c5524",
+      "match": true,
+      "actual": "c73e025e17b2a2376a1684bc32ad32facf88dfa5c8e566f1fac67bd47e4c5524"
+    },
+    "scripts/alipay_visual_result.py": {
+      "expected": "5f7678a4e83ae1ea99af1bc68601079e4ed49b478222c7792fa558425feca022",
+      "match": true,
+      "actual": "5f7678a4e83ae1ea99af1bc68601079e4ed49b478222c7792fa558425feca022"
+    },
+    "src/lookup-page-recovery.mjs": {
+      "expected": "acab1b3d3e96f17ee54fe393cdbcf31a9210139dd7694a04de1140b80f79daa9",
+      "match": true,
+      "actual": "acab1b3d3e96f17ee54fe393cdbcf31a9210139dd7694a04de1140b80f79daa9"
+    },
+    "src/index.mjs": {
+      "expected": "ad1f3ecb26ca817be7ddf495c166194f1f1d572185a5b94e84d73fc134af278c",
+      "match": true,
+      "actual": "ad1f3ecb26ca817be7ddf495c166194f1f1d572185a5b94e84d73fc134af278c"
+    }
+  }
+}

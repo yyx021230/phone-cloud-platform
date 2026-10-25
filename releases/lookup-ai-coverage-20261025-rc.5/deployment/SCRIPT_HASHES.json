@@ -1,0 +1,7 @@
+{
+  "activate-windows.ps1": "a6340116625505d1830abb34832ee79567aa2d9d0717bcd199c37ca39d34b856",
+  "finalize-cloud.py": "348260874ba737fb4f508756732cc22a297b04f35e93398d87cf9082b587f409",
+  "activate-cloud.py": "4bf697846b4a85baed7c10056ceee0eaa32b6313c3616e846d4c35bfa6a59e7a",
+  "prepare-cloud.py": "c983d0cb0c3e281e0f54ea05544068567901624dcc16f7bacd3882b290d8e8c7",
+  "complete-preparation.py": "40123fed350ef30d5f3d4a8317444c6ba1e15c601122e4105dc69f18dede1f61"
+}
