@@ -1,0 +1,71 @@
+{
+  "windowUtc": [
+    "2026-10-25T09:46:00Z",
+    "2026-10-25T10:17:31Z"
+  ],
+  "jobsReviewed": 549,
+  "requestsReviewed": 534,
+  "hour17Business": {
+    "succeeded": 7,
+    "notFound": 2,
+    "queueTimeout": 36
+  },
+  "last20": {
+    "named": 2,
+    "queueTimeoutNoAttempt": 18
+  },
+  "loginStartFailures": 214,
+  "loginDevices": [
+    55,
+    74,
+    79,
+    101,
+    115,
+    121,
+    143,
+    183
+  ],
+  "loginJobIntervalDeviceMinutes": 109.5,
+  "fiveSlotTheoreticalWindowMinutes": 157.58,
+  "intervalSharePercent": 69.5,
+  "intervalCaveat": "Created-to-completed clipped intervals include scheduling/transport/evidence, not CPU or pure execution time; no per-tick historical readiness snapshots.",
+  "prepareReplay": {
+    "sameKeyKeepsLoginExclusion": true,
+    "retainedKeys": 1000,
+    "nextNewRound": {
+      "code": "lookup_preparation_key_limit",
+      "status": 429
+    },
+    "phoneActions": 0,
+    "productionChanges": 0,
+    "newKeyReopensLoginBlockedDeviceWithinExistingRound": true
+  },
+  "currentPersistentIsolationCount": 9,
+  "newImageFinding": {
+    "device": 156,
+    "jobId": "bebafb3b-d30f-433b-b379-b0f23e0e502f",
+    "capturedAtUtc": "2026-10-25T10:32:52.626Z",
+    "observed": "Two readable same-phone same-masked-name personal cards; no visible blocker.",
+    "aiElapsedMs": 13794,
+    "productionOutcome": "probe_not_confirmed",
+    "exactRejectionUnknown": true,
+    "imageSha256": "8d3ca5651ec58a02dc05e50f1c401780275c5927ed8d314a7b668b43f2753121"
+  },
+  "sampleImageHashes": {
+    "101": "c3a8f6db02c8e8d3a7b465ad5479eecd3adf5aa78a9071b8f586a52e164b0c0d",
+    "86": "b695287a89e303ce243ee1b46b114ca1b950a7b22cbb13591252fec56d950e2c",
+    "52": "e1ee344fdcbfd4816967a1ea0c9a729b4dc39fdc7b22661e06182854bf120685",
+    "149": "1250dec521d76d439e59bd143f7dfcc7b33cc9ef22892f15fffd6e792f49da3f",
+    "112": "9af3cf7fdac188013f1c498123dd2c67e4b85ded30d95fbc48423131673c210a"
+  },
+  "productionWrites": 0,
+  "phoneActions": 0,
+  "newModelRequests": 0,
+  "adbCommands": 0,
+  "notProven": [
+    "Exact external prepare invocation timestamps/keys: retained key records have no time and nginx access log is empty.",
+    "Every historical eligible device per tick: no retained eligibility snapshot.",
+    "All 9 isolated phones are currently safe to reuse: not tested.",
+    "New 156 sample passes candidate: not tested in this read-only investigation."
+  ]
+}
