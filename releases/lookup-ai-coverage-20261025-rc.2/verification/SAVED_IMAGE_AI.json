@@ -1,0 +1,30 @@
+[
+  {
+    "sample": "156-two-cards-1",
+    "kind": "name",
+    "exactNameMatched": true,
+    "elapsedMs": 37769,
+    "diagnostics": {
+      "stage": "model_validation",
+      "upstreamStatus": 200,
+      "reads": 2,
+      "responseHeadersMs": 14782,
+      "responseBodyMs": 14787
+    },
+    "evidenceSha256": "8d3ca5651ec58a02dc05e50f1c401780275c5927ed8d314a7b668b43f2753121"
+  },
+  {
+    "sample": "156-two-cards-2",
+    "kind": "name",
+    "exactNameMatched": true,
+    "elapsedMs": 39215,
+    "diagnostics": {
+      "stage": "model_validation",
+      "upstreamStatus": 200,
+      "reads": 2,
+      "responseHeadersMs": 17639,
+      "responseBodyMs": 17643
+    },
+    "evidenceSha256": "8d3ca5651ec58a02dc05e50f1c401780275c5927ed8d314a7b668b43f2753121"
+  }
+]

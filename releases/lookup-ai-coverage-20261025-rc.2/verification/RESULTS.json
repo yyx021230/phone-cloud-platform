@@ -1,0 +1,73 @@
+{
+  "status": "local-candidate-not-deployed",
+  "baseline": "lookup-final-20261023-deployed.1 / 2f18514 / c10e071b",
+  "node": {
+    "passed": 1275,
+    "failed": 0,
+    "includesAgent": 397
+  },
+  "python": {
+    "discovery": 541,
+    "runner": 163,
+    "failed": 0
+  },
+  "docs": {
+    "tests": 4,
+    "downloadHashes": "verified"
+  },
+  "http": {
+    "stores": [
+      "json",
+      "postgres"
+    ],
+    "businessPerStore": 50,
+    "actualHoldMs": [
+      121001,
+      121000
+    ],
+    "maxDeviceConcurrency": 5,
+    "newKeysWhileLoginExcluded": 21,
+    "oldAliasesSeededPerStore": 1000,
+    "phones": 0,
+    "models": "loopback fake",
+    "passed": true
+  },
+  "savedImage": {
+    "candidateChecks": 2,
+    "exactNameChecksPassed": 2,
+    "parentCandidateChecks": 1,
+    "maxCandidateMs": 39215,
+    "realPhoneActions": 0,
+    "productionResultsChanged": false
+  },
+  "assembly": {
+    "runtimeFiles": 9,
+    "frozenUnchanged": 358,
+    "rebuiltFromPinnedParents": true
+  },
+  "review": "self-reviewed runtime diff, state/epoch, replay TTL, rate/tenant boundaries, image binding/deadline/read cap; not independent review",
+  "failuresDuringDevelopment": [
+    "Initial regression/HTTP dependency symlink pointed at a reviewed source tree without node_modules; 19 module/dependent startup failures. Corrected only isolated test symlinks to existing lock-matching dependencies; final full regression passed.",
+    "Initial HTTP harness absolute /tmp entrypoint did not match canonical /private/tmp import filename and produced no result; not counted as executed. Main guard now resolves realpath, both complete JSON receipts verified.",
+    "Initial test harness creation used the runtime cwd instead of repository path; no candidate/source mutation from that failed creation. Corrected and rerun.",
+    "New lifecycle regressions against old parent failed all five expected policy cases; final six lifecycle checks pass."
+  ],
+  "notVerified": [
+    "Candidate production phone execution and long-running throughput",
+    "Natural phone USB dismissal/account switch on this combined version",
+    "Recovery of nine historical RPC/worker/transport isolated devices; not re-enabled",
+    "Exact historical reason for old 156 AI rejection; original old raw output absent",
+    "Production rc.2 image/backup/maintenance window not prepared or approved"
+  ],
+  "logsSha256": {
+    "regression-final.log": "aacc055d486b98f7711bbe71a24dc24817a7bde6502fc8c3be3a96343b773450",
+    "lifecycle-final.log": "4b4d9fbce6bc26107bfefb7148615b7769ab799f858a315e17179d6f01826d90",
+    "before-fix.log": "9d0150e176be7d624d83747d92d7160eeabad2d7c637ecb0e6b24f02da9196c9",
+    "ai-first.log": "287a0feb6bd946cf94630c92ccfedefcf737f8a6c6ccd0a95a24863adac9064d",
+    "python-discovery.log": "9666911082f2ac277b409a8fbe0d973b1ee4d1b294b8f632ad1abd1c6edfc9bf",
+    "python-runners.log": "4ebf13c769bcfe74b5dcae797141013032cfcb61e602c17996b4aaf754460c62",
+    "check.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "docs-tests.log": "5b5389cb117dd76594dd02cb93afcb12c92cedf0412000697360dc83d846afc4",
+    "final-assembly.log": "cd1c50f5d0cd5f7e8918aa459ec72b5a65143c7589ca225c0064a49bfd12e20f"
+  }
+}

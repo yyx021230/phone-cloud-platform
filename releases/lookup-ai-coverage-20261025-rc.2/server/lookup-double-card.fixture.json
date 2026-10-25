@@ -1,0 +1,204 @@
+[
+  {
+    "blocked": false,
+    "cards": [
+      {
+        "accountLine": "test***@example.com(19900000000)",
+        "addFriend": true,
+        "box": [
+          0.056,
+          0.249,
+          0.944,
+          0.353
+        ],
+        "displayName": "样例(**甲)",
+        "nameBox": [
+          0.21,
+          0.255,
+          0.404,
+          0.277
+        ],
+        "phone": "19900000000",
+        "phoneBox": [
+          0.21,
+          0.281,
+          0.743,
+          0.302
+        ],
+        "transfer": true,
+        "unverified": false
+      },
+      {
+        "accountLine": "19900000000",
+        "addFriend": true,
+        "box": [
+          0.056,
+          0.388,
+          0.944,
+          0.486
+        ],
+        "displayName": "样例(**甲)",
+        "nameBox": [
+          0.21,
+          0.389,
+          0.404,
+          0.41
+        ],
+        "phone": "19900000000",
+        "phoneBox": [
+          0.251,
+          0.415,
+          0.465,
+          0.434
+        ],
+        "transfer": true,
+        "unverified": false
+      }
+    ],
+    "completeResult": true,
+    "emptyBoundary": "unknown",
+    "emptyMarker": "",
+    "headers": [
+      "可能想找的人",
+      "快捷功能",
+      "大家都在搜"
+    ],
+    "outcome": "name",
+    "peopleHeaderBox": [
+      0.056,
+      0.2,
+      0.31,
+      0.222
+    ],
+    "searchPhone": "19900000000",
+    "shortcuts": [
+      {
+        "box": [
+          0.056,
+          0.567,
+          0.944,
+          0.652
+        ],
+        "label": "转账",
+        "phone": "19900000000"
+      },
+      {
+        "box": [
+          0.056,
+          0.658,
+          0.944,
+          0.74
+        ],
+        "label": "手机充值",
+        "phone": "19900000000"
+      }
+    ],
+    "shortcutsHeaderBox": [
+      0.056,
+      0.522,
+      0.225,
+      0.544
+    ]
+  },
+  {
+    "blocked": false,
+    "cards": [
+      {
+        "accountLine": "test***@example.com(19900000000)",
+        "addFriend": true,
+        "box": [
+          0.056,
+          0.249,
+          0.944,
+          0.353
+        ],
+        "displayName": "样例(**甲)",
+        "nameBox": [
+          0.21,
+          0.255,
+          0.403,
+          0.278
+        ],
+        "phone": "19900000000",
+        "phoneBox": [
+          0.251,
+          0.282,
+          0.743,
+          0.302
+        ],
+        "transfer": true,
+        "unverified": false
+      },
+      {
+        "accountLine": "19900000000",
+        "addFriend": true,
+        "box": [
+          0.056,
+          0.389,
+          0.944,
+          0.486
+        ],
+        "displayName": "样例(**甲)",
+        "nameBox": [
+          0.21,
+          0.389,
+          0.403,
+          0.412
+        ],
+        "phone": "19900000000",
+        "phoneBox": [
+          0.251,
+          0.416,
+          0.467,
+          0.434
+        ],
+        "transfer": true,
+        "unverified": false
+      }
+    ],
+    "completeResult": true,
+    "emptyBoundary": "unknown",
+    "emptyMarker": "",
+    "headers": [
+      "可能想找的人",
+      "快捷功能",
+      "大家都在搜"
+    ],
+    "outcome": "name",
+    "peopleHeaderBox": [
+      0.054,
+      0.2,
+      0.306,
+      0.222
+    ],
+    "searchPhone": "19900000000",
+    "shortcuts": [
+      {
+        "box": [
+          0.056,
+          0.567,
+          0.944,
+          0.651
+        ],
+        "label": "转账",
+        "phone": "19900000000"
+      },
+      {
+        "box": [
+          0.056,
+          0.654,
+          0.944,
+          0.739
+        ],
+        "label": "手机充值",
+        "phone": "19900000000"
+      }
+    ],
+    "shortcutsHeaderBox": [
+      0.054,
+      0.522,
+      0.225,
+      0.544
+    ]
+  }
+]
