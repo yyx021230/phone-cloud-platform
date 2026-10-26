@@ -33,5 +33,14 @@
     "adbOwner": "SYSTEM",
     "agentPid": 27236,
     "adbPid": 20316
+  },
+  "latestIncidentUpdate": {
+    "atAsiaShanghai": "2026-10-26T09:45:00+08:00",
+    "userReport": "User now also cannot open platform; earlier availability report is historical",
+    "readOnlyChecks": "Local ports 22/80/51800 time out; Windows secure SSH available",
+    "localOrchestrationDefect": "Pause timeout did not block subsequent stop SSH attempt because shell commands were newline-separated without failure guard",
+    "remoteOutcome": "Pause and stop remain unknown; local SSH cancellation is not proof of remote nonexecution",
+    "action": "Suspend candidate deployment; obtain instance console and reconcile receipts/container state; prioritize original service recovery",
+    "restored": false
   }
 }
