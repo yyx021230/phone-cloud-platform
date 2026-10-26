@@ -123,14 +123,18 @@ test("collection API enforces ownership, locks and completion, preserves result 
   // Batch uses the real formal HTTP endpoint/lock, with only the Agent result simulated.
   const clients = validateClients([{ clientId: "fixture", username: "fixture_a", password: "fixture-user-only", secret: "s".repeat(32),
     targets: [{ deviceId: device.deviceId, appSlot: "app1", xhsId: "fixture_xhs", accountName: "Fixture" }] }]);
-  const batch = new BatchEngine({ store: memoryStore(), clients, clock: () => Date.parse("2026-10-13T02:00:00+08:00"),
+  const batch = new BatchEngine({ store: memoryStore(), clients,
     platforms: new Map([["fixture", createPlatformClient({ baseUrl: base, username: "fixture_a", password: "fixture-user-only" })]]) });
   const run = await batch.create("fixture", "integration-001"); await batch.tick();
   const batchPicked = (await request("GET", "/api/v1/windows-agents/fixture-agent/tasks/next", agent)).task;
   assert.equal(batchPicked.type, "xhs_data_collect");
   await request("POST", route, b, input, 409);
+  const batchDay = new Date(Date.now() + 8 * 3600_000).toISOString().slice(0, 10);
+  const batchSnapshot = { ...snapshot, window_end_date: batchDay,
+    window_start_date: new Date(Date.parse(batchDay) - 29 * 86400_000).toISOString().slice(0, 10),
+    notes: snapshot.notes.map(note => ({ ...note, published_date: batchDay })) };
   await request("POST", `/api/v1/windows-agent-tasks/${batchPicked.taskId}/status`, agent,
-    { status: "succeeded", result: { collection: snapshot } });
+    { status: "succeeded", result: { collection: batchSnapshot } });
   await batch.tick();
   const collected = await batch.results("fixture", run.runId);
   assert.equal(collected.complete, true); assert.equal(collected.items[0].xhsId, "fixture_xhs");

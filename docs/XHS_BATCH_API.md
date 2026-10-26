@@ -1,6 +1,6 @@
 # 小红书每日数据同步：批次任务与开放 API
 
-状态：**本地候选 `xhs-batch-20261026-rc.1`，未上线、未启用生产定时任务**。
+状态：**本地候选 `xhs-batch-20261026-rc.2`，未上线、未启用生产定时任务**。
 用户已确认：北京时间每天 **02:00** 启动，通过开放 API 查询结果。沿用 D-079 的近 30 天创作者中心外层列表、纯元素采集。
 
 ## 1. 行为与范围
@@ -114,6 +114,7 @@ Python 3.9+ 无第三方依赖客户端见 [sdk/xhs_batch_client.py](../sdk/xhs_
 - [prepare-platform-patch.mjs](../deploy/xhs-batch/prepare-platform-patch.mjs) 只接受上述 hash，生成账号快照响应字段和 expectedXhsId 条件检查两处最小补丁；检测到线上变化立即停止重新审阅。其他快手、查名、控制及媒体内容逐字保留。
 - R2 自审：范围、客户端隔离、条件绑定、持久 intent、重启、未知结果不重发、同机串行/全局五台、停止与回退逐项检查。未委派其他 agent，不冒充独立双人审查。
 - 本轮实际验证：17 项批次测试（含临时真实 PostgreSQL、实际服务进程/重启、Python SDK、模拟平台）；10 项既有自动化/采集及隔离平台 HTTP 回归；根 `npm run check`、新增入口语法和 diff 检查。生产基线补丁反向恢复逐字一致，六种非采集公开模型保持一致。没有生产/真机测试，不证明每日 95% 或持续负载 SLA。
+- 候选更正：rc.1 最终合并回归为 26/27；真实 HTTP 任务领取日期与旧测试样本 10 月 13 日不一致，日期校验正确拒绝。rc.1 标签保留但不用于发布，rc.2 将该模拟数据日期对齐真实测试任务，并重新完成合并回归；运行代码未为测试放宽日期检查。
 - 本地环境：Node 25.9.0、Python 3.9.6、PostgreSQL 16.15。实际合并回归命令为 `XHS_BATCH_TEST_DATABASE_URL=<临时本机测试库> node --test --test-concurrency=1 server/xhs-batch/*.test.mjs server/automation-center.test.mjs server/xhs-data-collection.test.mjs server/xhs-data-collection.http.test.mjs`，27/27、0 跳过；另定向复核身份不匹配保留占用与派发截止检查。未运行冻结媒体全量回归，Agent/媒体代码无变化。数据库专项未设置测试 URL 时会明确跳过，不可宣称测过 PG。
 
 发布前还须：绑定已提交 tag；复核最新线上 hash 和部署拓扑；创建/确认专用普通账号及 100 项白名单、受限密钥文件；备份目标表和两个云端文件；在授权窗口完成 D-075 live 前置核验、业务任务/控屏排空以及云端两文件加载计划，再进行单机→双机→100 项灰度。涉及云端进程加载，不能宣称完全无中断；不重启 Windows、ADB 或媒体。
