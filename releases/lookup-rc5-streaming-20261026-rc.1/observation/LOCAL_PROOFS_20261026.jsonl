@@ -1,0 +1,3 @@
+{"case":"pending_scheduler_after_pool_close","reproduced":true,"error":"Cannot use a pool after calling end on the pool","retryRearmed":true}
+{"case":"ready_read_blocked_by_snapshot_truncate","blocked":true,"sqlstate":"57014","afterRollbackRows":1}
+{"case":"audit_latest_query_index_plan","before":["Limit","Sort","Seq Scan"],"after":["Limit","Index Scan"],"rows":50000,"productionModified":false}

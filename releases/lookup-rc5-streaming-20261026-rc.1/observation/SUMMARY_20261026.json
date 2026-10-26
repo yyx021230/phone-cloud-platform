@@ -1,0 +1,59 @@
+{
+  "at": "2026-10-26T03:07:41.372Z",
+  "roundStart": "2026-10-26T02:53:00.160Z",
+  "businessTotal": 91,
+  "businessStatus": {
+    "succeeded": 57,
+    "not_found": 15,
+    "running": 5,
+    "queued": 14
+  },
+  "names": 57,
+  "probes": 13,
+  "probeStatus": {
+    "failed": 5,
+    "succeeded": 7,
+    "cancelled": 1
+  },
+  "channels": [
+    {
+      "device": 57,
+      "phase": "querying"
+    },
+    {
+      "device": 172,
+      "phase": "querying"
+    },
+    {
+      "device": 156,
+      "phase": "querying"
+    },
+    {
+      "device": 161,
+      "phase": "querying"
+    },
+    {
+      "device": 182,
+      "phase": "querying"
+    }
+  ],
+  "ai": {
+    "business": 9,
+    "probe": 2,
+    "reasonCounts": {
+      "name": 11
+    }
+  },
+  "completedQueueMedianSeconds": 143.8,
+  "completedQueueMaxSeconds": 187.6,
+  "completedExecutionMedianSeconds": 31.9,
+  "businessAttemptsByDevice": {
+    "57": 16,
+    "87": 5,
+    "163": 4,
+    "156": 28,
+    "172": 14,
+    "161": 7,
+    "182": 5
+  }
+}
