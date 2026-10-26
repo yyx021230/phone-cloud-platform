@@ -1,0 +1,47 @@
+{
+  "baseImage": "sha256:c10e071b3f4811c626b28075bba364e8dc96e05dc9c8402d0f760673f7e63f8c",
+  "baseRelease": "lookup-final-20261023-deployed.1",
+  "files": {
+    "server/snapshot-copy.mjs": {
+      "before": null,
+      "after": "568f9de4c607e835a6547d1f81815e5c43faa20ed98b37b006182a21c8a6f2f6"
+    },
+    "server/index.mjs": {
+      "before": "7409f9a22a90edfc8d6fa9f709e2cdbadad713df0ac9960ebc9ef92924c2c696",
+      "after": "f5f8148d3e97fb8d6b7e61159597f71b214ffc5f8186137945d6d463cca86502"
+    },
+    "server/postgres-repositories.mjs": {
+      "before": "319c5527acceb41fc687dd2a6b4fc7468170d61a793d62757a5d657afe4c6b4e",
+      "after": "ecbea083a248f9ef98410bea3da6ebf1c02f832fcab4deba2b1b8996ef6a0706"
+    },
+    "server/vendor/pg-copy-streams/copy-from.js": {
+      "before": null,
+      "after": "51157fabab8ada619de12388714d57fa298310a9fc3d2948a9d16554d8d20637"
+    },
+    "server/vendor/pg-copy-streams/package.json": {
+      "before": null,
+      "after": "742c921f6ebcf2f293960a54c58c6b53843d31ca6bc87534e18161fcf1529035"
+    },
+    "server/vendor/pg-copy-streams/message-formats.js": {
+      "before": null,
+      "after": "ff07a7c22a37ff5940442ec5d5fbd73874dce90b8357e668d863ccfd51ca25a6"
+    },
+    "server/vendor/pg-copy-streams/NOTICE.md": {
+      "before": null,
+      "after": "b08f2fe6aa18f19efa4ef069a0e9dd487b183056abee64146f838bbd015c9a26"
+    }
+  },
+  "databaseMigration": false,
+  "windowsChanged": false,
+  "tests": {
+    "unit": 3,
+    "scoped": 134,
+    "all": {
+      "pass": 1286,
+      "fail": 1,
+      "baselineSameFailure": "post-human exact original reference, rc.5 pending feature"
+    },
+    "smoke": "passed",
+    "startup": "367598042 bytes / 4141ms / ready / original lock semantics / no startup snapshot rewrite / graceful exit 0"
+  }
+}
