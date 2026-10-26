@@ -292,8 +292,12 @@ def assert_idle(cache_path, serial, device_name, task_id="", app_slot="", cancel
 
 
 def live_nodes(root):
-    return [n for n in root.iter("node") if bounds(n) and
-            bounds(n)[2] > bounds(n)[0] and bounds(n)[3] > bounds(n)[1]]
+    visible = []
+    for node in root.iter("node"):
+        box = bounds(node)
+        if box and box[2] > box[0] and box[3] > box[1]:
+            visible.append(node)
+    return visible
 
 
 def label(root, value):
@@ -1831,11 +1835,13 @@ def note_cards(root):
 
 def structured_note_cards(root):
     cards = []
-    for node in live_nodes(root):
+    nodes = live_nodes(root)
+    visible = set(nodes)
+    for node in nodes:
         box = bounds(node)
         if box[2]-box[0] < 400 or not 140 <= box[3]-box[1] <= 320:
             continue
-        children = [n for n in node.iter("node") if n in live_nodes(root)]
+        children = [n for n in node.iter("node") if n in visible]
         texts = [(n.get("text") or "").strip() for n in children]
         if not any(is_note_status(t) for t in texts):
             continue
@@ -1869,6 +1875,7 @@ def flat_webview_cards(root):
                 and n.get("class") == "android.webkit.WebView" and n.get("text") == "数据中心"]
     if len(webviews) != 1:
         return []
+    visible = set(live_nodes(root))
     groups = []
     for node in webviews[0]:
         text = (node.get("text") or "").strip()
@@ -1879,14 +1886,13 @@ def flat_webview_cards(root):
             # Only a same-package footer below the whole row is excluded;
             # a note title reading "到底了" remains the second field.
             if (text == "到底了" and len(groups[-1]) == 6
-                    and node in live_nodes(root) and node.get("package") == XHS_PACKAGE
+                    and node in visible and node.get("package") == XHS_PACKAGE
                     and node.get("class") == "android.widget.TextView"
                     and all(bounds(n) for n in groups[-1])
                     and bounds(node)[1] >= max(bounds(n)[3] for n in groups[-1])):
                 continue
             groups[-1].append(node)
     cards = []
-    visible = set(live_nodes(root))
     for group in groups:
         if len(group) != 6 or any(n not in visible or n.get("package") != XHS_PACKAGE
                                   or n.get("class") != "android.widget.TextView" for n in group):
@@ -1944,7 +1950,7 @@ def element_page_signature(root, allow_duplicate_rows=False):
         gaps = []
         for row,item in cards:
             if any(n.get("package") != XHS_PACKAGE for n in row.iter("node")
-                   if n in live_nodes(root)):
+                   if n in visible):
                 raise ElementListReadError("element row contains another package")
             box = bounds(row)
             matches = [n for n in statuses if box[1] <= bounds(n)[1] < bounds(n)[3] <= box[3]]
