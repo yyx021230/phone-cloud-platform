@@ -1,0 +1,18 @@
+{
+  "node": {
+    "passed": 1334,
+    "failed": 0,
+    "skipped": 0,
+    "logSha256": "6b929e72a2aabf1524a4eefe3429f5f63af09e69daf11d465b3092efe453d916"
+  },
+  "nodeAiReader": {
+    "passed": 81
+  },
+  "nodeAiReadinessBridge": {
+    "passed": 53
+  },
+  "staticCheck": "passed",
+  "pythonAndWindows": "unchanged since rc.2; prior 583 Python and 52 native checks, not rerun for cloud-only rc.3",
+  "deployed": false,
+  "pushed": false
+}

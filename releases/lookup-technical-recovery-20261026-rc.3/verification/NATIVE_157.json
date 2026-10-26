@@ -1,0 +1,215 @@
+{
+  "stages": [
+    {
+      "label": "native157-rc3-start",
+      "ok": true,
+      "hasName": false,
+      "seconds": 62.484,
+      "error": "",
+      "workerExited": true,
+      "timeout": false,
+      "steps": [
+        {
+          "step": "wake_display_ready",
+          "seconds": 2.125
+        },
+        {
+          "step": "launch_alipay",
+          "seconds": 9.297
+        },
+        {
+          "step": "open_my_tab",
+          "seconds": 23.547
+        },
+        {
+          "step": "open_settings",
+          "seconds": 33.609
+        },
+        {
+          "step": "open_saved_account_picker",
+          "seconds": 38.297
+        },
+        {
+          "step": "account_picker_sample",
+          "seconds": 41.656
+        },
+        {
+          "step": "account_picker_sample",
+          "seconds": 44.5
+        },
+        {
+          "step": "account_picker_stable",
+          "seconds": 44.5
+        },
+        {
+          "step": "resume_verified_account_home",
+          "seconds": 44.89
+        },
+        {
+          "step": "return_verified_account_home_tab",
+          "seconds": 52.375
+        },
+        {
+          "step": "open_search",
+          "seconds": 56.437
+        },
+        {
+          "step": "lookup_account_ready",
+          "seconds": 62.437
+        }
+      ]
+    },
+    {
+      "label": "native157-rc3-query",
+      "ok": false,
+      "hasName": false,
+      "seconds": 21.297,
+      "error": "poco_alipay_human_verification_required",
+      "workerExited": true,
+      "timeout": false,
+      "steps": [
+        {
+          "step": "poco_instrumentation_launch_started",
+          "seconds": 1.406
+        },
+        {
+          "step": "poco_instrumentation_connected",
+          "seconds": 2.89
+        },
+        {
+          "step": "poco_request_received",
+          "seconds": 3.609
+        },
+        {
+          "step": "poco_reused",
+          "seconds": 3.734
+        },
+        {
+          "step": "poco_reuse_focus_observed",
+          "seconds": 3.844
+        },
+        {
+          "step": "reuse_search_page_by_exact_activity",
+          "seconds": 4.297
+        },
+        {
+          "step": "reuse_existing_search_page",
+          "seconds": 4.297
+        },
+        {
+          "step": "poco_search_ready_focus",
+          "seconds": 4.422
+        },
+        {
+          "step": "poco_search_input_probe_begin",
+          "seconds": 4.547
+        },
+        {
+          "step": "poco_input_clear_confirmed",
+          "seconds": 6.859
+        },
+        {
+          "step": "query_input_throttle_wait",
+          "seconds": 6.859
+        },
+        {
+          "step": "poco_search_ready_focus",
+          "seconds": 14.172
+        },
+        {
+          "step": "poco_search_input_probe_begin",
+          "seconds": 15.25
+        },
+        {
+          "step": "input_phone",
+          "seconds": 16.062
+        },
+        {
+          "step": "human_verification_detected",
+          "seconds": 19.703
+        },
+        {
+          "step": "poco_fast_path_failed",
+          "seconds": 19.703
+        }
+      ]
+    },
+    {
+      "label": "native157-rc3-resume",
+      "ok": true,
+      "hasName": true,
+      "seconds": 22.828,
+      "error": "",
+      "workerExited": true,
+      "timeout": false,
+      "steps": [
+        {
+          "step": "poco_instrumentation_launch_started",
+          "seconds": 1.312
+        },
+        {
+          "step": "poco_instrumentation_connected",
+          "seconds": 2.766
+        },
+        {
+          "step": "poco_request_received",
+          "seconds": 3.312
+        },
+        {
+          "step": "poco_reused",
+          "seconds": 3.422
+        },
+        {
+          "step": "resume_query_without_reinput",
+          "seconds": 3.422
+        },
+        {
+          "step": "poco_search_ready_focus",
+          "seconds": 4.094
+        },
+        {
+          "step": "poco_search_input_probe_begin",
+          "seconds": 4.234
+        },
+        {
+          "step": "resume_existing_input_focused",
+          "seconds": 5.0
+        },
+        {
+          "step": "submit_search",
+          "seconds": 6.187
+        },
+        {
+          "step": "lookup_visual_result_probe",
+          "seconds": 10.734
+        },
+        {
+          "step": "lookup_visual_frame_read",
+          "seconds": 16.594
+        },
+        {
+          "step": "lookup_visual_frame_read",
+          "seconds": 20.812
+        },
+        {
+          "step": "masked_real_name_tail_extracted",
+          "seconds": 21.484
+        }
+      ]
+    }
+  ],
+  "sameOriginalQueryResumed": true,
+  "resumeInputPhoneEvents": 0,
+  "screenshotVerified": true,
+  "resultPath": "Windows native OCR, not AI fallback",
+  "productionExternalApiUsed": false,
+  "userObservationConnectionPreserved": true,
+  "postflight": {
+    "adbOwner": "SYSTEM",
+    "productionRunnerSha": "30e0c828d981f1e9fd9c62d6b6e48141c7c13ae25c5e899d68992ce04d2df024",
+    "agentPid": 14540,
+    "ownWorkers": 0,
+    "agentOwner": "SYSTEM",
+    "adbPid": 20316
+  }
+}
