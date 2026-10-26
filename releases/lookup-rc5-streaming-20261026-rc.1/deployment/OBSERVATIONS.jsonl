@@ -1,0 +1,15 @@
+{"utc": "2026-10-26T02:50:42Z", "running": true, "oom": false, "restarts": 0, "rssKiB": 1601084, "memoryKiB": {"MemAvailable": 2854252, "SwapTotal": 0}, "health": {"healthz": 0, "readyz": 0}}
+{"utc": "2026-10-26T02:50:46Z", "running": true, "oom": false, "restarts": 0, "rssKiB": 1782508, "memoryKiB": {"MemAvailable": 2628292, "SwapTotal": 0}, "health": {"healthz": 0, "readyz": 0}}
+{"utc": "2026-10-26T02:50:50Z", "running": true, "oom": false, "restarts": 0, "rssKiB": 1927644, "memoryKiB": {"MemAvailable": 2549040, "SwapTotal": 0}, "health": {"healthz": 0, "readyz": 0}}
+{"utc": "2026-10-26T02:50:54Z", "running": true, "oom": false, "restarts": 0, "rssKiB": 2045704, "memoryKiB": {"MemAvailable": 2408172, "SwapTotal": 0}, "health": {"healthz": 0, "readyz": 0}}
+{"utc": "2026-10-26T02:50:58Z", "running": true, "oom": false, "restarts": 0, "rssKiB": 2043476, "memoryKiB": {"MemAvailable": 2414556, "SwapTotal": 0}, "health": {"healthz": 0, "readyz": 0}}
+{"utc": "2026-10-26T02:51:41Z", "running": true, "oom": false, "restarts": 0, "rssKiB": 2000736, "memoryKiB": {"MemAvailable": 2338904, "SwapTotal": 0}, "health": {"healthz": 0, "readyz": 0}}
+{"utc": "2026-10-26T02:51:45Z", "running": true, "oom": false, "restarts": 0, "rssKiB": 1999220, "memoryKiB": {"MemAvailable": 2326192, "SwapTotal": 0}, "health": {"healthz": 0, "readyz": 0}}
+{"utc": "2026-10-26T02:51:49Z", "running": true, "oom": false, "restarts": 0, "rssKiB": 1999156, "memoryKiB": {"MemAvailable": 2343396, "SwapTotal": 0}, "health": {"healthz": 0, "readyz": 0}}
+{"utc": "2026-10-26T02:51:53Z", "running": true, "oom": false, "restarts": 0, "rssKiB": 2001300, "memoryKiB": {"MemAvailable": 2262508, "SwapTotal": 0}, "health": {"healthz": 0, "readyz": 0}}
+{"utc": "2026-10-26T02:51:57Z", "running": true, "oom": false, "restarts": 0, "rssKiB": 869024, "memoryKiB": {"MemAvailable": 3544684, "SwapTotal": 0}, "health": {"healthz": 0, "readyz": 0}}
+{"utc": "2026-10-26T02:52:38Z", "running": true, "oom": false, "restarts": 0, "rssKiB": 992508, "memoryKiB": {"MemAvailable": 2425000, "SwapTotal": 0}, "health": {"healthz": 200, "readyz": 0}}
+{"utc": "2026-10-26T02:52:47Z", "running": true, "oom": false, "restarts": 0, "rssKiB": 993276, "memoryKiB": {"MemAvailable": 2108216, "SwapTotal": 0}, "health": {"healthz": 200, "readyz": 0}}
+{"utc": "2026-10-26T02:52:57Z", "running": true, "oom": false, "restarts": 0, "rssKiB": 1033444, "memoryKiB": {"MemAvailable": 3362212, "SwapTotal": 0}, "health": {"healthz": 200, "readyz": 0}}
+{"utc": "2026-10-26T02:53:06Z", "running": true, "oom": false, "restarts": 0, "rssKiB": 994172, "memoryKiB": {"MemAvailable": 2188724, "SwapTotal": 0}, "health": {"healthz": 200, "readyz": 0}}
+{"utc": "2026-10-26T02:53:18Z", "running": true, "oom": false, "restarts": 0, "rssKiB": 993020, "memoryKiB": {"MemAvailable": 3414644, "SwapTotal": 0}, "health": {"healthz": 200, "readyz": 0}}
