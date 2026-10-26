@@ -2292,7 +2292,7 @@ Windows候选暂存与4原文件备份、hash、激活脚本语法通过，Agent
 
 ### 7.15.76 rc.5获准维护后连接阻塞（2026-10-26 09:34，未确认切换）
 
-用户批准本次5分钟控屏短断窗口后进入预检。云端原SSH失效、新SSH在banner交换超时，HTTP health无有效响应；从Windows访问云端同样失败。Windows安全登录恢复后只读确认Agent27236/ADB20316仍在，未替换文件或重载。不能把连接失败直接定性为服务器宕机，云端原因尚未取得证据。
+用户后续确认平台可正常打开，故仅能确认本机/Windows到云端访问路径故障，不能断言平台不可用；Windows四原文件与SYSTEM进程再次核对保持。用户批准本次5分钟控屏短断窗口后进入预检。云端原SSH失效、新SSH在banner交换超时，HTTP health无有效响应；从Windows访问云端同样失败。Windows安全登录恢复后只读确认Agent27236/ADB20316仍在，未替换文件或重载。不能把连接失败直接定性为服务器宕机，云端原因尚未取得证据。
 
 暂停查名的SSH尝试30秒无输出、无本地MAINTENANCE_PAUSE回执，远端是否落地未确认；随后尚在连接等待的stop SSH已取消，无停服成功回执。没有调用Windows激活、新云镜像启动或ACTIVE finalize，不能宣布已上线。恢复连接后须先核对镜像/容器/ACTIVE/维护enabled和回执，按实况解除可能暂停或继续，不能盲目重发。已有镜像/备份保留，发布授权与当前实际中断范围继续核实；ADB/SYSTEM/密钥/USB/Windows/媒体不动。详见[阻塞记录](../releases/lookup-ai-coverage-20261025-rc.5/deployment/BLOCKED_20261026.md)。
 
