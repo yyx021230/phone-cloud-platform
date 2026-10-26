@@ -42,6 +42,7 @@ if sys.argv[1] == 'prepare':
     assert run(['docker','image','inspect','phone-cloud-platform:lookup-final-20261023-rc.1','--format','{{.Id}}']) == manifest['baseImage']
     media = json.loads(run(media_cmd)); assert media['verified'] == 'live'
     (stage/'Dockerfile').write_text('FROM phone-cloud-platform:lookup-final-20261023-rc.1\nCOPY payload/ /app/\n')
+    (stage/'.dockerignore').write_text('*\n!Dockerfile\n!payload/\n!payload/**\n')
     with (stage/'build.log').open('w') as log:
         subprocess.run(['docker','build','--pull=false','-t',tag,str(stage)],stdout=log,stderr=subprocess.STDOUT,check=True)
     image = run(['docker','image','inspect',tag,'--format','{{.Id}}'])
