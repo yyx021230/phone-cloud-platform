@@ -1,0 +1,10 @@
+{
+  "readOnly": true,
+  "files": {
+    "server/lookup-failure-domain.mjs": "75d4b940322d16cc10a136f18412bfc80a3ce7e4d17516ee8dcb0dcdff666908",
+    "server/lookup-device-availability.mjs": "4931dcae9b71601583c814a78d6439db23b6bcddc4ebbec29ff769f9b1e3b02f",
+    "server/lookup-readiness.mjs": "41da6e878b73c4cafac2856e8e60b3afa9de21ff9ca87a3e987d792795b74730",
+    "server/managed-lookup.mjs": "57c9f882a1ca248241534e505cb1f73982b1a396d085a8e19384f3ae87e5120d"
+  },
+  "matchedBaseline": true
+}

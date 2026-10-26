@@ -1,0 +1,12 @@
+{
+  "release": "lookup-rc5-streaming-20261026-deployed.1",
+  "source": "64148f3cfd1793f423a1b9d7097746a6ba79fec1",
+  "image": "sha256:5ab68ecbc67dfd4815f3ec93b0d3dd6265acd6a5d044867c3e04904636e80649",
+  "files": {
+    "server/lookup-failure-domain.mjs": "75d4b940322d16cc10a136f18412bfc80a3ce7e4d17516ee8dcb0dcdff666908",
+    "server/lookup-device-availability.mjs": "4931dcae9b71601583c814a78d6439db23b6bcddc4ebbec29ff769f9b1e3b02f",
+    "server/lookup-readiness.mjs": "41da6e878b73c4cafac2856e8e60b3afa9de21ff9ca87a3e987d792795b74730",
+    "server/managed-lookup.mjs": "57c9f882a1ca248241534e505cb1f73982b1a396d085a8e19384f3ae87e5120d",
+    "windows-agent/scripts/alipay_name_lookup.py": "30e0c828d981f1e9fd9c62d6b6e48141c7c13ae25c5e899d68992ce04d2df024"
+  }
+}
