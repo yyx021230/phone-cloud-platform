@@ -1,0 +1,35 @@
+{
+  "original": {
+    "kind": "unconfirmed",
+    "rejectionCode": "model_unconfirmed",
+    "elapsedMs": 47933,
+    "reads": 2,
+    "firstCardFullPhoneMatches": true,
+    "secondCardClipped": true,
+    "firstCardTops": [
+      0.1175,
+      0.115
+    ]
+  },
+  "candidate": {
+    "kind": "name",
+    "matchesVisibleFirstCard": true,
+    "elapsedMs": 44536,
+    "reads": 2
+  },
+  "knownNoName": {
+    "at": "2026-10-26T08:52:35.127Z",
+    "kind": "no_name",
+    "hasName": false,
+    "elapsedMs": 5932,
+    "diagnostics": {
+      "stage": "model_validation",
+      "upstreamStatus": 200,
+      "reads": 1,
+      "responseHeadersMs": 5930,
+      "responseBodyMs": 5931
+    }
+  },
+  "rawModelResponsesCommitted": false,
+  "originalProductionResultsModified": false
+}

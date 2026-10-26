@@ -1,0 +1,30 @@
+{
+  "version": "lookup-technical-recovery-20261026-rc.3",
+  "status": "local-candidate-not-deployed",
+  "parentCommit": "83ab5634015603295959e7e6fb145c2a97fbd471",
+  "baseline": "lookup-rc5-streaming-20261026-deployed.1",
+  "payload": {
+    "server/lookup-device-availability.mjs": "16d4d30f56c8e6fd6707a7af4a257192243e142c489c164d1e46608e9e1f0779",
+    "server/lookup-failure-domain.mjs": "45524e2e2219af992da8c8eaaacbf8b49f49744838f8ef2117b00de1d12b5042",
+    "server/lookup-readiness.mjs": "03fc1ef4ca62d084159dc7702b8fff61b4db571fa9cf1d4843079a9fc9f07480",
+    "server/managed-lookup.mjs": "592ce01ffaf4d5ae562b70842f496e7708ee0c0fb3ebc810a57bd9eb71f448ed",
+    "windows-agent/scripts/alipay_name_lookup.py": "aa24614b28fae8fa867dff6186b19334b3e8c5a6dade8603e067aeeee3d05a68",
+    "server/lookup-ai-vision.mjs": "5ed350d73dd90fe0d799604b466f2fc00a314c31428c05e0707d5bf7429e11e2"
+  },
+  "tests": {
+    "server/lookup-device-availability.test.mjs": "0044523a8099a72c4fc2ec313d718593807d9b70e749acec6237b099456527aa",
+    "server/lookup-probe-ai.test.mjs": "777dfbbe2a582e868548f9e4039ace958c6acc60c687a20c73f7e3e19ccbc6b0",
+    "server/lookup-technical-domain.test.mjs": "78568b4d13d2a1b44c3e32ad7efad1fb7d43b5eec10685bd4a30f84c19f1482a",
+    "windows-agent/scripts/test_lookup_prepare_technical_recovery.py": "8d58bf3f421ef2398016f98aa11fd6c5e75a52706b5051ed1ee1bc625381441a",
+    "windows-agent/scripts/test_lookup_switch_login.py": "e9be135a8cd2022fc8cd78316b32b47476d5915addedfba9cf581462b17b84f1",
+    "server/lookup-ai-vision.test.mjs": "204581a0b613a5970068cbb2dd380c01ea7ac5f58ef16cfb1afce2a7f9b173d3",
+    "server/lookup-ai-headerless.test.mjs": "4f31ba73d9d11e165441b797463f5fc88f935109d6e3f537e707a7d871f920fc",
+    "server/lookup-ai-headerless.fixture.json": "6dbe58532b32faf6096069df4fdf0ba2c38f73d4813284a305b31aead98ec45a"
+  },
+  "remainingAcceptance": [
+    "new headerless AI and probe bridge simulated; production integrated acceptance pending",
+    "compact-card rejection other than headerless layout unresolved",
+    "new circuit recovery/cross-device/cooldown real-phone acceptance pending",
+    "new recovery fields isolated PostgreSQL replay pending"
+  ]
+}
