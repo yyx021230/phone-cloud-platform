@@ -66,3 +66,15 @@ test("platform POST is never replayed on timeout, redirect, 401 or invalid respo
   await assert.rejects(admin.submit({ deviceId: "a", appSlot: "app1" }), /ordinary_user_required/);
   assert.equal(adminCalls, 1);
 });
+
+test("old platform capability is rejected before any phone task is submitted", async () => {
+  const calls = [];
+  const p = createPlatformClient({ baseUrl: "http://127.0.0.1:8787", username: "fixture", password: "fixture",
+    fetchImpl: async (url, options) => {
+      calls.push([options.method, url.pathname]);
+      return new Response(JSON.stringify(url.pathname.endsWith("/auth/login")
+        ? { session: { token: "fixture" }, user: { role: "user" } } : { tasks: [] }));
+    } });
+  await assert.rejects(p.devices(), /platform_batch_contract_required/);
+  assert.equal(calls.filter(([m, p]) => m === "POST" && !p.endsWith("/auth/login")).length, 0);
+});

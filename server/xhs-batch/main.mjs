@@ -12,7 +12,8 @@ const stat = await fs.stat(process.env.XHS_BATCH_CONFIG_FILE);
 if (process.platform !== "win32" && (stat.mode & 0o077)) throw new Error("batch_config_must_be_private");
 const config = JSON.parse(await fs.readFile(process.env.XHS_BATCH_CONFIG_FILE, "utf8"));
 const clients = validateClients(config.clients);
-const pool = new pg.Pool({ connectionString: process.env.XHS_BATCH_DATABASE_URL, max: 2 });
+const pool = new pg.Pool({ connectionString: process.env.XHS_BATCH_DATABASE_URL, max: 2,
+  connectionTimeoutMillis: 5000, query_timeout: 10000, statement_timeout: 10000 });
 const store = await createBatchStore(pool);
 const platforms = new Map(clients.map(c => [c.clientId, createPlatformClient({ baseUrl: config.platformBaseUrl, username: c.username, password: c.password })]));
 const engine = new BatchEngine({ store, clients, platforms });

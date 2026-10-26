@@ -17,6 +17,7 @@ export async function createBatchStore(pool) {
   };
   return {
     assertHealthy,
+    async ping() { await query("select 1"); },
     async get(key) {
       return (await query("select data from phone_cloud_xhs_batch_records where record_key=$1", [key])).rows[0]?.data ?? null;
     },

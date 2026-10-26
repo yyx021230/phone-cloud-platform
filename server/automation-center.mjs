@@ -32,6 +32,7 @@ export function publicAutomationJob(job = {}) {
     ...(job.kind === "xhs_data_collect" ? {
       xhsAccountId: String(job.xhsAccountId || ""),
       xhsAccountName: String(job.xhsAccountName || ""),
+      clientRequestId: String(job.clientRequestId || ""),
       accountIdentitySource: "platform_binding_snapshot"
     } : {}),
     title: String(job.title || ""),

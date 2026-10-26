@@ -84,13 +84,20 @@ export class BatchEngine {
     if (!run || run.clientId !== id) throw batchError("batch_not_found", 404);
     return run;
   }
-  stop(id, runId) { return this.serial(async () => {
+  async stop(id, runId) {
     const run = await this.owned(id, runId);
+    const marker = await this.store.get(`stop/${runId}`) || { requestedAt: iso(this.clock()) };
+    await this.save(`stop/${runId}`, marker);
+    return { ...this.summary(run), stopRequestedAt: marker.requestedAt };
+  }
+  async applyStop(run) {
+    const marker = await this.store.get(`stop/${run.runId}`);
+    if (!marker) return false;
     for (const item of run.items) if (item.status === "queued") { item.status = "skipped"; item.reason = "batch_stopped"; }
-    run.stoppedAt = iso(this.clock());
+    run.stoppedAt = marker.requestedAt;
     if (!run.items.some(i => inflight.has(i.status))) { run.status = "completed"; run.completedAt = run.stoppedAt; }
-    await this.save(`run/${runId}`, run); return this.summary(run);
-  }); }
+    return true;
+  }
   async results(id, runId, offset = 0, limit = 10) {
     if (!Number.isInteger(offset) || offset < 0 || !Number.isInteger(limit) || limit < 1 || limit > 20) throw batchError("invalid_pagination");
     const run = await this.owned(id, runId), items = [];
@@ -98,7 +105,8 @@ export class BatchEngine {
       const result = item.hasResult ? await this.store.get(`result/${runId}/${item.itemId}`) : null;
       items.push({ ...item, data: result?.data ?? null });
     }
-    return { ...this.summary(run), items, offset, nextOffset: offset + limit < run.items.length ? offset + limit : null };
+    const stop = await this.store.get(`stop/${runId}`);
+    return { ...this.summary(run), stopRequestedAt: stop?.requestedAt || null, items, offset, nextOffset: offset + limit < run.items.length ? offset + limit : null };
   }
   reconcile(id, runId, itemId, jobId) { return this.serial(async () => {
     const run = await this.owned(id, runId), item = run.items.find(x => x.itemId === itemId);
@@ -130,6 +138,16 @@ export class BatchEngine {
       const platform = this.platforms.get(run.clientId);
       for (const item of run.items) {
         if (item.status === "submitting") { item.status = "unknown"; item.reason = "submission_interrupted_no_replay"; }
+        if (item.status === "unknown" && item.clientRequestId && platform?.submission) {
+          let found;
+          try { found = await platform.submission(item.clientRequestId); } catch {}
+          if (found && this.matches(item, found) && found.clientRequestId === item.clientRequestId
+            && typeof found.jobId === "string" && found.jobId
+            && Number.isFinite(Date.parse(found.createdAt))
+            && Math.abs(Date.parse(found.createdAt) - Date.parse(item.submittedAt)) <= 60_000) {
+            item.jobId = found.jobId; item.status = "running"; item.reason = "submission_recovered";
+          }
+        }
         if (item.status !== "running" || !platform) continue;
         item.needsAttention = now - Date.parse(item.submittedAt) > 30 * 60_000;
         let job;
@@ -161,9 +179,11 @@ export class BatchEngine {
     }
     const occupied = new Set(runs.flatMap(r => r.items.filter(i => inflight.has(i.status)).map(i => i.deviceId)));
     for (const run of runs.reverse()) {
+      await this.applyStop(run);
       const client = this.clients.get(run.clientId), platform = this.platforms.get(run.clientId);
       let devices;
-      try { devices = platform ? await platform.devices() : null; } catch { devices = null; }
+      try { devices = platform && run.items.some(i => i.status === "queued") ? await platform.devices() : null; }
+      catch (error) { devices = null; run.lastError = /^[a-z_]{1,100}$/.test(error.message) ? error.message : "inventory_unavailable"; }
       for (const item of run.items) {
         if (item.status !== "queued") continue;
         if (!client || !client.targets.some(t => itemKey(t) === itemKey(item) && t.xhsId === item.xhsId)) {
@@ -179,7 +199,9 @@ export class BatchEngine {
         if (!device.adbOnline || device.automationStatus?.windowsAgentOnline === false) { item.status = "skipped"; item.reason = "device_offline"; continue; }
         if (device.xhsDataCollectionReady !== true) { item.status = "skipped"; item.reason = "agent_update_required"; continue; }
         if (device.busy || device.occupancy || device.screenControlBusy) { item.reason = "device_busy_waiting"; continue; }
+        if (await this.applyStop(run)) break;
         item.status = "submitting"; item.submittedAt = iso(this.clock()); item.reason = "";
+        item.clientRequestId ||= `batch:${run.runId}:${item.itemId}`;
         await this.save(`run/${run.runId}`, run); // Durable intent before the only POST.
         this.store.assertHealthy();
         try {

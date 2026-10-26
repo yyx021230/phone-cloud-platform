@@ -14,6 +14,7 @@ export function createBatchHandler({ engine, store, clients, clock = Date.now })
     try {
       if (req.url === "/healthz" && req.method === "GET") {
         store.assertHealthy(); if (engine.fault) throw new Error("unhealthy");
+        await store.ping?.();
         return send(200, { ok: true, version: "xhs-batch-v1" });
       }
       const client = map.get(req.headers["x-client-id"]);

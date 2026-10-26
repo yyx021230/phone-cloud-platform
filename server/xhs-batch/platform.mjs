@@ -41,8 +41,17 @@ export function createPlatformClient({ baseUrl, username, password, fetchImpl = 
     }
   }
   return {
-    devices: async () => (await request("GET", "/api/v1/user/devices")).devices,
-    submit: async target => (await request("POST", route, { deviceId: target.deviceId, xhsAppSlot: target.appSlot, expectedXhsId: target.xhsId })).task,
+    devices: async () => {
+      const { batchContract: c } = await request("GET", route);
+      if (c?.version !== 1 || c.expectedXhsId !== true || c.identitySnapshot !== true || c.submissionLookup !== true) throw new PlatformError("platform_batch_contract_required", 409);
+      return (await request("GET", "/api/v1/user/devices")).devices;
+    },
+    submission: async reference => {
+      const { tasks } = await request("GET", `${route}?clientRequestId=${encodeURIComponent(reference)}`);
+      if (!Array.isArray(tasks) || tasks.length > 1) throw new PlatformError("submission_lookup_ambiguous");
+      return tasks[0] || null;
+    },
+    submit: async target => (await request("POST", route, { deviceId: target.deviceId, xhsAppSlot: target.appSlot, expectedXhsId: target.xhsId, clientRequestId: target.clientRequestId })).task,
     job: async id => (await request("GET", `${route}/${encodeURIComponent(id)}`)).task
   };
 }

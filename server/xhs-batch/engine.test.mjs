@@ -12,6 +12,7 @@ function fixture(count = 8) {
   const jobs = new Map(), posts = [];
   const platform = { devices: async () => structuredClone(devices), job: async id => structuredClone(jobs.get(id)), submit: async item => {
     posts.push(item.deviceId); const job = { jobId: `j${posts.length}`, kind: "xhs_data_collect", deviceId: item.deviceId,
+      clientRequestId: item.clientRequestId,
       xhsAppSlot: item.appSlot, xhsAccountId: item.xhsId, xhsAccountName: item.accountName,
       accountIdentitySource: "platform_binding_snapshot", status: "running", createdAt: new Date(now).toISOString() };
     jobs.set(job.jobId, job); return job;
@@ -136,4 +137,65 @@ test("stop prevents remaining dispatch and retains an in-flight task until its a
   f.finish(); await f.engine.tick();
   const result = await f.engine.results("test", run.runId);
   assert.equal(result.status, "completed"); assert.equal(result.items[1].reason, "batch_stopped");
+});
+
+test("stop acknowledgment persists while submit is blocked and prevents next phone", async () => {
+  const f = fixture(4), original = f.platform.submit;
+  let release, entered;
+  const started = new Promise(resolve => { entered = resolve; });
+  const blocked = new Promise(resolve => { release = resolve; });
+  f.platform.submit = async item => { entered(); await blocked; return original(item); };
+  const run = await f.engine.create("test", "manual-stop-race"); const ticking = f.engine.tick(); await started;
+  const ack = await Promise.race([f.engine.stop("test", run.runId), new Promise((_, reject) => setTimeout(() => reject(new Error("stop blocked behind network")), 250))]);
+  assert.ok(ack.stopRequestedAt); assert.ok(await f.store.get(`stop/${run.runId}`));
+  release(); await ticking; assert.equal(f.posts.length, 1);
+  f.finish(); await f.makeEngine().tick();
+  const result = await f.engine.results("test", run.runId);
+  assert.equal(result.counts.skipped, 3); assert.equal(result.status, "completed");
+});
+
+test("lost POST reply recovers by exact reference without a second POST", async () => {
+  const f = fixture(2), original = f.platform.submit;
+  f.platform.submit = async item => { await original(item); throw new Error("reply lost after acceptance"); };
+  f.platform.submission = async ref => [...f.jobs.values()].find(job => job.clientRequestId === ref) || null;
+  const run = await f.engine.create("test", "manual-recovery"); await f.engine.tick(); f.finish();
+  await f.engine.stop("test", run.runId); await f.makeEngine().tick();
+  const result = await f.engine.results("test", run.runId);
+  assert.equal(f.posts.length, 1); assert.equal(result.items[0].status, "succeeded");
+});
+
+test("wrong account submission lookup never releases the phone", async () => {
+  const f = fixture(2), original = f.platform.submit;
+  f.platform.submit = async item => { await original(item); throw new Error("lost"); };
+  f.platform.submission = async () => ({ ...f.jobs.get("j1"), xhsAccountId: "wrong" });
+  const run = await f.engine.create("test", "manual-recovery"); await f.engine.tick(); await f.makeEngine().tick();
+  assert.equal(f.posts.length, 1); assert.equal((await f.engine.results("test", run.runId)).items[0].status, "unknown");
+});
+
+test("100 slots finish across restarts with five-phone cap, one POST each, and intact pages", async () => {
+  const f = fixture(100), run = await f.engine.create("test", "fleet-100-slots");
+  const seen = new Set(); let peak = 0;
+  const original = f.platform.submit;
+  f.platform.submit = async item => {
+    assert.ok(!seen.has(item.xhsId)); seen.add(item.xhsId);
+    assert.ok(![...f.jobs.values()].some(j => j.status === "running" && j.deviceId === item.deviceId));
+    const job = await original(item);
+    peak = Math.max(peak, [...f.jobs.values()].filter(j => j.status === "running").length);
+    assert.ok(peak <= 5); return job;
+  };
+  for (let n = 0; n < 24; n++) { await f.makeEngine().tick(); f.finish(); }
+  const all = [];
+  for (let offset = 0; offset !== null;) { const page = await f.engine.results("test", run.runId, offset, 7); all.push(...page.items); offset = page.nextOffset; }
+  assert.equal(peak, 5); assert.equal(f.posts.length, 100); assert.equal(all.length, 100);
+  assert.equal(new Set(all.map(i => i.xhsId)).size, 100); assert.ok(all.every(i => i.status === "succeeded"));
+});
+
+test("failed result persistence cannot turn an account into success", async () => {
+  const f = fixture(2), run = await f.engine.create("test", "result-storage-fail");
+  await f.engine.tick(); f.finish(); const set = f.store.set;
+  f.store.set = async (key, value) => { if (key.startsWith("result/")) throw new Error("write failed"); return set(key, value); };
+  await assert.rejects(f.engine.tick(), /write failed/);
+  assert.equal((await f.store.get(`run/${run.runId}`)).items[0].status, "running"); assert.equal(f.posts.length, 1);
+  f.store.set = set; await f.makeEngine().tick();
+  assert.equal((await f.engine.results("test", run.runId)).items[0].status, "succeeded");
 });

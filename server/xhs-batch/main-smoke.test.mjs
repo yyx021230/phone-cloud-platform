@@ -11,7 +11,7 @@ import crypto from "node:crypto";
 import { signRequest } from "./http.mjs";
 import pg from "pg";
 
-test("real service + PostgreSQL + Python SDK + simulated platform, restart keeps job/result", { skip: !process.env.XHS_BATCH_TEST_DATABASE_URL, timeout: 40_000 }, async t => {
+test("real service + PostgreSQL + Python SDK recovers accepted task after lost reply and restart", { skip: !process.env.XHS_BATCH_TEST_DATABASE_URL, timeout: 40_000 }, async t => {
   const dbUrl = new URL(process.env.XHS_BATCH_TEST_DATABASE_URL);
   assert.equal(dbUrl.hostname, "127.0.0.1"); assert.ok(dbUrl.pathname.startsWith("/xhs_batch_test_"));
   const pool = new pg.Pool({ connectionString: dbUrl.href });
@@ -21,17 +21,26 @@ test("real service + PostgreSQL + Python SDK + simulated platform, restart keeps
   const today = new Date(Date.now() + 8 * 3600_000).toISOString().slice(0, 10);
   const startDay = new Date(Date.parse(today) - 29 * 86400_000).toISOString().slice(0, 10);
   const platform = http.createServer(async (req, res) => {
-    for await (const _ of req) { /* drain fixture body */ }
+    const chunks = []; for await (const chunk of req) chunks.push(chunk);
+    const input = chunks.length ? JSON.parse(Buffer.concat(chunks).toString()) : {};
     res.setHeader("content-type", "application/json");
     if (req.url.endsWith("/auth/login")) return res.end(JSON.stringify({ session: { token: "fixture" }, user: { role: "user" } }));
+    if (req.method === "GET" && req.url.endsWith("/xhs-data-tasks")) return res.end(JSON.stringify({ batchContract: {
+      version: 1, expectedXhsId: true, identitySnapshot: true, submissionLookup: true }, tasks: [] }));
+    if (req.method === "GET" && req.url.includes("/xhs-data-tasks?clientRequestId=")) {
+      const reference = new URL(req.url, "http://localhost").searchParams.get("clientRequestId");
+      return res.end(JSON.stringify({ tasks: job?.clientRequestId === reference ? [job] : [] }));
+    }
     if (req.url.endsWith("/user/devices")) return res.end(JSON.stringify({ devices: [{ deviceId: "smoke", adbOnline: true, xhsDataCollectionReady: true,
       xhsAccounts: [{ appSlot: "app1", xhsId: "fixture_xhs", accountName: "Fixture" }] }] }));
     if (req.method === "POST") {
       posts++; job = { jobId: "fixture-job", kind: "xhs_data_collect", deviceId: "smoke", xhsAppSlot: "app1", xhsAccountId: "fixture_xhs",
+        clientRequestId: input.clientRequestId,
         xhsAccountName: "Fixture", accountIdentitySource: "platform_binding_snapshot", status: "succeeded", createdAt: new Date().toISOString(),
         result: { collection: { schema_version: 3, window_days: 30, app_slot: "app1", window_start_date: startDay, window_end_date: today,
           complete: true, stop_reason: "list_end_visible", notes: [{ title: "Fixture note", published_date: today, list_view_count: 12, list_like_count: 0, list_comment_count: 1 }] } } };
       res.statusCode = 201;
+      return res.end("deliberately-truncated-reply");
     }
     res.end(JSON.stringify({ task: job }));
   });
@@ -67,8 +76,9 @@ test("real service + PostgreSQL + Python SDK + simulated platform, restart keeps
       "x-signature": signRequest(secret, "GET", target, timestamp, nonce) } });
     return response.json();
   }
-  for (let n = 0; n < 65 && !(await detail()).items[0].jobId; n++) await new Promise(resolve => setTimeout(resolve, 200));
+  for (let n = 0; n < 65 && (await detail()).items[0].status !== "unknown"; n++) await new Promise(resolve => setTimeout(resolve, 200));
   assert.equal(posts, 1);
+  assert.equal((await detail()).items[0].status, "unknown");
   await stop(); await boot();
   let result;
   for (let n = 0; n < 65; n++) { result = await detail(); if (result.complete) break; await new Promise(resolve => setTimeout(resolve, 200)); }

@@ -69,8 +69,14 @@ test("collection API enforces ownership, locks and completion, preserves result 
   await request("POST", route, a, { ...input, xhsAppSlot: "wrong" }, 400);
   await request("POST", route, a, input, 409);
   await sync(true);
+  assert.equal((await request("GET", route, a)).batchContract.submissionLookup, true);
   await request("POST", route, a, { ...input, expectedXhsId: "binding-changed" }, 409);
-  const created = (await request("POST", route, a, input, 201)).task;
+  const reference = "fixture-submission-001";
+  const created = (await request("POST", route, a, { ...input, clientRequestId: reference }, 201)).task;
+  assert.equal(created.clientRequestId, reference);
+  await request("POST", route, a, { ...input, clientRequestId: reference }, 409);
+  assert.equal((await request("GET", `${route}?clientRequestId=${reference}`, a)).tasks[0].jobId, created.jobId);
+  assert.equal((await request("GET", `${route}?clientRequestId=${reference}`, b)).tasks.length, 0);
   assert.equal(created.kind, "xhs_data_collect");
   assert.equal(created.xhsAccountId, "fixture_xhs");
   assert.equal(created.xhsAccountName, "Fixture");
@@ -118,6 +124,7 @@ test("collection API enforces ownership, locks and completion, preserves result 
   assert.equal(incomplete.result.collection.notes.length, 1);
   await stop(); await start();
   const restored = (await request("GET", `${route}/${created.jobId}`, a)).task;
+  assert.equal((await request("GET", `${route}?clientRequestId=${reference}`, a)).tasks[0].jobId, created.jobId);
   assert.equal(restored.result.collection.notes[0].title, "Fixture note");
 
   // Batch uses the real formal HTTP endpoint/lock, with only the Agent result simulated.
