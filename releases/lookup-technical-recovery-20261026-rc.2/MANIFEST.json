@@ -1,0 +1,26 @@
+{
+  "version": "lookup-technical-recovery-20261026-rc.2",
+  "status": "local-and-single-device-tested-not-deployed",
+  "parentCommit": "708492fb821415b79a852d3a9f5452176ece803a",
+  "baseline": "lookup-rc5-streaming-20261026-deployed.1",
+  "payload": {
+    "server/lookup-device-availability.mjs": "16d4d30f56c8e6fd6707a7af4a257192243e142c489c164d1e46608e9e1f0779",
+    "server/lookup-failure-domain.mjs": "45524e2e2219af992da8c8eaaacbf8b49f49744838f8ef2117b00de1d12b5042",
+    "server/lookup-readiness.mjs": "03fc1ef4ca62d084159dc7702b8fff61b4db571fa9cf1d4843079a9fc9f07480",
+    "server/managed-lookup.mjs": "592ce01ffaf4d5ae562b70842f496e7708ee0c0fb3ebc810a57bd9eb71f448ed",
+    "windows-agent/scripts/alipay_name_lookup.py": "aa24614b28fae8fa867dff6186b19334b3e8c5a6dade8603e067aeeee3d05a68"
+  },
+  "tests": {
+    "server/lookup-device-availability.test.mjs": "0044523a8099a72c4fc2ec313d718593807d9b70e749acec6237b099456527aa",
+    "server/lookup-probe-ai.test.mjs": "c4280d9958681c9453de7169ebaae38e921e86dae92f54dc9dbd02a6306c7f50",
+    "server/lookup-technical-domain.test.mjs": "78568b4d13d2a1b44c3e32ad7efad1fb7d43b5eec10685bd4a30f84c19f1482a",
+    "windows-agent/scripts/test_lookup_prepare_technical_recovery.py": "8d58bf3f421ef2398016f98aa11fd6c5e75a52706b5051ed1ee1bc625381441a",
+    "windows-agent/scripts/test_lookup_switch_login.py": "e9be135a8cd2022fc8cd78316b32b47476d5915addedfba9cf581462b17b84f1"
+  },
+  "remainingAcceptance": [
+    "late Canvas-over-ad branch not naturally re-triggered after patch",
+    "157 model_unconfirmed unresolved",
+    "other-device compatibility and new isolation/cross-device recovery not live-tested",
+    "isolated PostgreSQL replay of new recovery fields not performed"
+  ]
+}

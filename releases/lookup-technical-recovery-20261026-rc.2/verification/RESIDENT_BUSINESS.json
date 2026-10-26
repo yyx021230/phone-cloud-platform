@@ -1,0 +1,69 @@
+{
+  "count": 3,
+  "distinctBusinessNumbers": 3,
+  "oneBusinessNumberRepeatsReadinessProbe": true,
+  "screenshots": "Privately inspected all three: one recharge/recommendation-only page; two matching masked-name cards. No raw numbers or names committed.",
+  "workerExited": true,
+  "rows": [
+    {
+      "request": "technical161-business-0",
+      "device": 161,
+      "seconds": 22.25,
+      "ok": true,
+      "hasName": false,
+      "notFound": true,
+      "inputCount": 1,
+      "startupCount": 0,
+      "accountPickerCount": 0,
+      "ocrFrames": 2,
+      "frameMs": [
+        3047,
+        1922
+      ],
+      "throttleMs": [
+        3660
+      ],
+      "screenshotVerified": true
+    },
+    {
+      "request": "technical161-business-1",
+      "device": 161,
+      "seconds": 25.875,
+      "ok": true,
+      "hasName": true,
+      "notFound": false,
+      "inputCount": 1,
+      "startupCount": 0,
+      "accountPickerCount": 0,
+      "ocrFrames": 2,
+      "frameMs": [
+        2553,
+        2233
+      ],
+      "throttleMs": [
+        7349
+      ],
+      "screenshotVerified": true
+    },
+    {
+      "request": "technical161-business-2",
+      "device": 161,
+      "seconds": 22.281,
+      "ok": true,
+      "hasName": true,
+      "notFound": false,
+      "inputCount": 1,
+      "startupCount": 0,
+      "accountPickerCount": 0,
+      "ocrFrames": 2,
+      "frameMs": [
+        2589,
+        2317
+      ],
+      "throttleMs": [
+        3645
+      ],
+      "screenshotVerified": true
+    }
+  ]
+}

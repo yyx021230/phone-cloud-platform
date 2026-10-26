@@ -1,0 +1,40 @@
+{
+  "node": {
+    "pass": 1307,
+    "fail": 0,
+    "skip": 0
+  },
+  "python": {
+    "pass": 583,
+    "fail": 0
+  },
+  "windowsPython": {
+    "pass": 52,
+    "fail": 0
+  },
+  "staticCheck": "npm run check passed",
+  "nativeDevice": 161,
+  "readinessQueries": 1,
+  "businessQueries": 3,
+  "businessNamed": 2,
+  "businessEmpty": 1,
+  "businessScreenshotsAllChecked": true,
+  "samePhoneQueryReusedForProbeAndBusiness": true,
+  "modelCalls": 0,
+  "deployment": false,
+  "push": false,
+  "sharedAdbOrAgentRestart": false,
+  "sourceHashes": {
+    "server/lookup-device-availability.mjs": "16d4d30f56c8e6fd6707a7af4a257192243e142c489c164d1e46608e9e1f0779",
+    "server/lookup-failure-domain.mjs": "45524e2e2219af992da8c8eaaacbf8b49f49744838f8ef2117b00de1d12b5042",
+    "server/lookup-readiness.mjs": "03fc1ef4ca62d084159dc7702b8fff61b4db571fa9cf1d4843079a9fc9f07480",
+    "server/managed-lookup.mjs": "592ce01ffaf4d5ae562b70842f496e7708ee0c0fb3ebc810a57bd9eb71f448ed",
+    "windows-agent/scripts/alipay_name_lookup.py": "aa24614b28fae8fa867dff6186b19334b3e8c5a6dade8603e067aeeee3d05a68"
+  },
+  "localLogHashes": {
+    "rc2-node-final.log": "de62bb3397ac7f19edd032ec5b88498fc1ef6fdde978df8b16a3b804814513c8",
+    "rc2-python-final.log": "ce0457316e78c90e289c340b1c221079e8bbde1a39b1a7ebc9e36d6ea8f3c912",
+    "rc2-windows-final-tests.log": "faff82fd85f27dfe3ddcf58281aa0baffa23f42cb80d10ed2761d9bfdb4c6235",
+    "rc2-check.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+  }
+}

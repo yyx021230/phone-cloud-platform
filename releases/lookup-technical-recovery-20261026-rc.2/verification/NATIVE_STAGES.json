@@ -1,0 +1,513 @@
+[
+  {
+    "stage": "native-start",
+    "device": 161,
+    "seconds": 27.563,
+    "ok": false,
+    "hasName": false,
+    "errorCode": "alipay_known_overlay_close_unverified",
+    "workerExited": true,
+    "steps": [
+      {
+        "step": "wake_display_ready",
+        "seconds": 2.235
+      },
+      {
+        "step": "launch_alipay",
+        "seconds": 9.688
+      },
+      {
+        "step": "page_mismatch_overlay_detected",
+        "seconds": 26.985
+      },
+      {
+        "step": "error",
+        "seconds": 27.531
+      }
+    ],
+    "commandTiming": {}
+  },
+  {
+    "stage": "native-start-rc2",
+    "device": 161,
+    "seconds": 71.344,
+    "ok": true,
+    "hasName": false,
+    "errorCode": "",
+    "workerExited": true,
+    "steps": [
+      {
+        "step": "wake_display_ready",
+        "seconds": 1.922
+      },
+      {
+        "step": "dismiss_alipay_real_name_prompt",
+        "seconds": 4.016
+      },
+      {
+        "step": "alipay_canvas_real_name_prompt_dismissed",
+        "seconds": 8.469
+      },
+      {
+        "step": "launch_alipay",
+        "seconds": 13.281
+      },
+      {
+        "step": "open_my_tab",
+        "seconds": 28.422
+      },
+      {
+        "step": "open_settings",
+        "seconds": 37.906
+      },
+      {
+        "step": "open_saved_account_picker",
+        "seconds": 42.313
+      },
+      {
+        "step": "account_picker_sample",
+        "seconds": 45.797
+      },
+      {
+        "step": "account_picker_sample",
+        "seconds": 48.656
+      },
+      {
+        "step": "account_picker_stable",
+        "seconds": 48.656
+      },
+      {
+        "step": "launch_alipay",
+        "seconds": 50.219
+      },
+      {
+        "step": "open_search",
+        "seconds": 65.203
+      },
+      {
+        "step": "lookup_account_ready",
+        "seconds": 71.328
+      }
+    ],
+    "commandTiming": {}
+  },
+  {
+    "stage": "native-probe-rc2",
+    "device": 161,
+    "seconds": 18.891,
+    "ok": false,
+    "hasName": false,
+    "errorCode": "poco_alipay_human_verification_required",
+    "workerExited": true,
+    "steps": [
+      {
+        "step": "poco_instrumentation_launch_started",
+        "seconds": 1.313
+      },
+      {
+        "step": "poco_instrumentation_connected",
+        "seconds": 2.797
+      },
+      {
+        "step": "poco_request_received",
+        "seconds": 3.469
+      },
+      {
+        "step": "poco_reused",
+        "seconds": 3.61
+      },
+      {
+        "step": "poco_reuse_focus_observed",
+        "seconds": 3.735
+      },
+      {
+        "step": "reuse_search_page_by_exact_activity",
+        "seconds": 4.313
+      },
+      {
+        "step": "reuse_existing_search_page",
+        "seconds": 4.313
+      },
+      {
+        "step": "poco_search_ready_focus",
+        "seconds": 4.422
+      },
+      {
+        "step": "poco_search_input_probe_begin",
+        "seconds": 4.532
+      },
+      {
+        "step": "poco_input_clear_confirmed",
+        "seconds": 6.797
+      },
+      {
+        "step": "query_input_throttle_wait",
+        "seconds": 6.797
+      },
+      {
+        "step": "poco_search_ready_focus",
+        "seconds": 11.907
+      },
+      {
+        "step": "poco_search_input_probe_begin",
+        "seconds": 12.375
+      },
+      {
+        "step": "input_phone",
+        "seconds": 13.5
+      },
+      {
+        "step": "human_verification_detected",
+        "seconds": 17.266
+      },
+      {
+        "step": "poco_fast_path_failed",
+        "seconds": 17.266
+      }
+    ],
+    "commandTiming": {}
+  },
+  {
+    "stage": "native-probe-resume-rc2",
+    "device": 161,
+    "seconds": 58.781,
+    "ok": false,
+    "hasName": false,
+    "errorCode": "HTTPConnectionPool(host='127.0.0.1', port=30162)",
+    "workerExited": true,
+    "steps": [
+      {
+        "step": "poco_instrumentation_launch_started",
+        "seconds": 1.422
+      },
+      {
+        "step": "poco_instrumentation_connected",
+        "seconds": 2.765
+      },
+      {
+        "step": "poco_request_received",
+        "seconds": 3.343
+      },
+      {
+        "step": "poco_reused",
+        "seconds": 3.468
+      },
+      {
+        "step": "resume_query_without_reinput",
+        "seconds": 3.468
+      },
+      {
+        "step": "resume_result_observation_only",
+        "seconds": 4.047
+      },
+      {
+        "step": "lookup_visual_result_probe",
+        "seconds": 8.625
+      },
+      {
+        "step": "lookup_visual_frame_read",
+        "seconds": 13.593
+      },
+      {
+        "step": "lookup_visual_pending_wait",
+        "seconds": 13.859
+      },
+      {
+        "step": "lookup_visual_frame_read",
+        "seconds": 17.078
+      },
+      {
+        "step": "lookup_visual_frame_read",
+        "seconds": 21.531
+      },
+      {
+        "step": "lookup_visual_frame_read",
+        "seconds": 25.812
+      },
+      {
+        "step": "lookup_visual_frame_read",
+        "seconds": 29.781
+      },
+      {
+        "step": "lookup_visual_frame_read",
+        "seconds": 34.468
+      },
+      {
+        "step": "lookup_visual_frame_read",
+        "seconds": 38.093
+      },
+      {
+        "step": "lookup_visual_frame_read",
+        "seconds": 42.422
+      },
+      {
+        "step": "lookup_visual_frame_read",
+        "seconds": 47.0
+      },
+      {
+        "step": "lookup_visual_frame_read",
+        "seconds": 50.797
+      },
+      {
+        "step": "lookup_visual_frame_read",
+        "seconds": 55.265
+      },
+      {
+        "step": "poco_fast_path_failed",
+        "seconds": 57.437
+      }
+    ],
+    "commandTiming": {}
+  },
+  {
+    "stage": "native-probe-resume-submit-rc2",
+    "device": 161,
+    "seconds": 22.328,
+    "ok": true,
+    "hasName": true,
+    "errorCode": "",
+    "workerExited": true,
+    "steps": [
+      {
+        "step": "poco_instrumentation_launch_started",
+        "seconds": 1.39
+      },
+      {
+        "step": "poco_instrumentation_connected",
+        "seconds": 2.562
+      },
+      {
+        "step": "poco_request_received",
+        "seconds": 3.265
+      },
+      {
+        "step": "poco_reused",
+        "seconds": 3.39
+      },
+      {
+        "step": "resume_query_without_reinput",
+        "seconds": 3.39
+      },
+      {
+        "step": "poco_search_ready_focus",
+        "seconds": 4.265
+      },
+      {
+        "step": "poco_search_input_probe_begin",
+        "seconds": 4.375
+      },
+      {
+        "step": "resume_existing_input_focused",
+        "seconds": 5.093
+      },
+      {
+        "step": "submit_search",
+        "seconds": 6.812
+      },
+      {
+        "step": "lookup_visual_result_probe",
+        "seconds": 11.39
+      },
+      {
+        "step": "lookup_visual_frame_read",
+        "seconds": 15.89
+      },
+      {
+        "step": "lookup_visual_frame_read",
+        "seconds": 20.468
+      },
+      {
+        "step": "masked_real_name_tail_extracted",
+        "seconds": 20.968
+      }
+    ],
+    "commandTiming": {
+      "other": {
+        "count": 3,
+        "ms": 219
+      },
+      "focus": {
+        "count": 5,
+        "ms": 559
+      },
+      "input": {
+        "count": 2,
+        "ms": 261
+      },
+      "screenshot": {
+        "count": 2,
+        "ms": 908
+      }
+    }
+  },
+  {
+    "stage": "native-warm-start-rc2",
+    "device": 161,
+    "seconds": 57.016,
+    "ok": false,
+    "hasName": false,
+    "errorCode": "selector_missing",
+    "workerExited": true,
+    "steps": [
+      {
+        "step": "wake_display_ready",
+        "seconds": 1.828
+      },
+      {
+        "step": "launch_alipay",
+        "seconds": 6.328
+      },
+      {
+        "step": "open_my_tab",
+        "seconds": 20.235
+      },
+      {
+        "step": "open_settings",
+        "seconds": 29.125
+      },
+      {
+        "step": "open_saved_account_picker",
+        "seconds": 33.485
+      },
+      {
+        "step": "account_picker_sample",
+        "seconds": 36.875
+      },
+      {
+        "step": "account_picker_sample",
+        "seconds": 39.703
+      },
+      {
+        "step": "account_picker_stable",
+        "seconds": 39.703
+      },
+      {
+        "step": "resume_verified_account_home",
+        "seconds": 40.125
+      },
+      {
+        "step": "error",
+        "seconds": 56.985
+      }
+    ],
+    "commandTiming": {
+      "other": {
+        "count": 20,
+        "ms": 2918
+      },
+      "input": {
+        "count": 6,
+        "ms": 813
+      },
+      "focus": {
+        "count": 34,
+        "ms": 3971
+      },
+      "xml_dump": {
+        "count": 13,
+        "ms": 38252
+      },
+      "xml_read": {
+        "count": 13,
+        "ms": 1011
+      },
+      "navigation": {
+        "count": 3,
+        "ms": 1729
+      },
+      "screenshot": {
+        "count": 4,
+        "ms": 2330
+      }
+    }
+  },
+  {
+    "stage": "native-warm-home-retest-rc2",
+    "device": 161,
+    "seconds": 59.094,
+    "ok": true,
+    "hasName": false,
+    "errorCode": "",
+    "workerExited": true,
+    "steps": [
+      {
+        "step": "wake_display_ready",
+        "seconds": 1.86
+      },
+      {
+        "step": "launch_alipay",
+        "seconds": 6.704
+      },
+      {
+        "step": "open_my_tab",
+        "seconds": 21.469
+      },
+      {
+        "step": "open_settings",
+        "seconds": 30.297
+      },
+      {
+        "step": "open_saved_account_picker",
+        "seconds": 34.704
+      },
+      {
+        "step": "account_picker_sample",
+        "seconds": 38.079
+      },
+      {
+        "step": "account_picker_sample",
+        "seconds": 40.907
+      },
+      {
+        "step": "account_picker_stable",
+        "seconds": 40.907
+      },
+      {
+        "step": "resume_verified_account_home",
+        "seconds": 41.297
+      },
+      {
+        "step": "return_verified_account_home_tab",
+        "seconds": 48.641
+      },
+      {
+        "step": "open_search",
+        "seconds": 54.11
+      },
+      {
+        "step": "lookup_account_ready",
+        "seconds": 59.079
+      }
+    ],
+    "commandTiming": {
+      "other": {
+        "count": 19,
+        "ms": 2893
+      },
+      "input": {
+        "count": 8,
+        "ms": 1111
+      },
+      "focus": {
+        "count": 36,
+        "ms": 4001
+      },
+      "screenshot": {
+        "count": 5,
+        "ms": 2897
+      },
+      "xml_dump": {
+        "count": 12,
+        "ms": 40430
+      },
+      "xml_read": {
+        "count": 12,
+        "ms": 928
+      },
+      "navigation": {
+        "count": 3,
+        "ms": 1464
+      }
+    }
+  }
+]
