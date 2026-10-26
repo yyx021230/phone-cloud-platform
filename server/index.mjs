@@ -922,6 +922,9 @@ async function routeApi(req, res, url) {
     }
     const account = (device.xhsAccounts || []).find((item) => item.appSlot === input.xhsAppSlot && item.enabled !== false);
     if (!account) return json(res, 409, { error: "xhs_account_slot_not_available" });
+    if (input.expectedXhsId !== undefined && input.expectedXhsId !== account.xhsId) {
+      return json(res, 409, { error: "xhs_account_binding_changed" });
+    }
     const agent = state.windowsAgents.find((item) => item.agentId === device.adb.agentId);
     if (!hasXhsDataCollectionCapability(agent)) return json(res, 409, { error: "xhs_data_agent_update_required" });
     const conflict = activeDeviceLockForTask(device.deviceId);

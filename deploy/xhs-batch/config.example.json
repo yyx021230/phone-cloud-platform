@@ -1,0 +1,16 @@
+{
+  "platformBaseUrl": "http://127.0.0.1:8787",
+  "clients": [{
+    "clientId": "operations",
+    "secret": "REPLACE_WITH_A_UNIQUE_RANDOM_SECRET_OF_AT_LEAST_32_CHARACTERS",
+    "username": "DEDICATED_ORDINARY_PLATFORM_USER",
+    "password": "SET_OUTSIDE_THE_REPOSITORY",
+    "targets": [{
+      "deviceId": "STABLE_PLATFORM_DEVICE_ID",
+      "deviceName": "DISPLAY_NAME",
+      "appSlot": "app1",
+      "xhsId": "BOUND_XHS_ID",
+      "accountName": "BOUND_XHS_NAME"
+    }]
+  }]
+}

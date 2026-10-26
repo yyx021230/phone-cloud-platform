@@ -29,6 +29,11 @@ export function publicAutomationJob(job = {}) {
     deviceId: String(job.deviceId || ""),
     xhsAppSlot: String(job.xhsAppSlot || ""),
     xhsAccountLabel: String(job.xhsAccountLabel || ""),
+    ...(job.kind === "xhs_data_collect" ? {
+      xhsAccountId: String(job.xhsAccountId || ""),
+      xhsAccountName: String(job.xhsAccountName || ""),
+      accountIdentitySource: "platform_binding_snapshot"
+    } : {}),
     title: String(job.title || ""),
     content: String(job.content || ""),
     phoneNumber: String(job.phoneNumber || ""),

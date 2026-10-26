@@ -7,6 +7,9 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import { BatchEngine, validateClients } from "./xhs-batch/engine.mjs";
+import { createPlatformClient } from "./xhs-batch/platform.mjs";
+import { memoryStore } from "./xhs-batch/fixtures.mjs";
 
 test("collection API enforces ownership, locks and completion, preserves result on restart", { timeout: 30_000 }, async (t) => {
   const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
@@ -66,8 +69,12 @@ test("collection API enforces ownership, locks and completion, preserves result 
   await request("POST", route, a, { ...input, xhsAppSlot: "wrong" }, 400);
   await request("POST", route, a, input, 409);
   await sync(true);
+  await request("POST", route, a, { ...input, expectedXhsId: "binding-changed" }, 409);
   const created = (await request("POST", route, a, input, 201)).task;
   assert.equal(created.kind, "xhs_data_collect");
+  assert.equal(created.xhsAccountId, "fixture_xhs");
+  assert.equal(created.xhsAccountName, "Fixture");
+  assert.equal(created.accountIdentitySource, "platform_binding_snapshot");
   await request("POST", route, b, input, 409);
   await request("POST", `${route}/${created.jobId}/cancel`, b, {}, 404);
   await request("GET", `${route}/${created.jobId}`, b, undefined, 404);
@@ -112,4 +119,20 @@ test("collection API enforces ownership, locks and completion, preserves result 
   await stop(); await start();
   const restored = (await request("GET", `${route}/${created.jobId}`, a)).task;
   assert.equal(restored.result.collection.notes[0].title, "Fixture note");
+
+  // Batch uses the real formal HTTP endpoint/lock, with only the Agent result simulated.
+  const clients = validateClients([{ clientId: "fixture", username: "fixture_a", password: "fixture-user-only", secret: "s".repeat(32),
+    targets: [{ deviceId: device.deviceId, appSlot: "app1", xhsId: "fixture_xhs", accountName: "Fixture" }] }]);
+  const batch = new BatchEngine({ store: memoryStore(), clients, clock: () => Date.parse("2026-10-13T02:00:00+08:00"),
+    platforms: new Map([["fixture", createPlatformClient({ baseUrl: base, username: "fixture_a", password: "fixture-user-only" })]]) });
+  const run = await batch.create("fixture", "integration-001"); await batch.tick();
+  const batchPicked = (await request("GET", "/api/v1/windows-agents/fixture-agent/tasks/next", agent)).task;
+  assert.equal(batchPicked.type, "xhs_data_collect");
+  await request("POST", route, b, input, 409);
+  await request("POST", `/api/v1/windows-agent-tasks/${batchPicked.taskId}/status`, agent,
+    { status: "succeeded", result: { collection: snapshot } });
+  await batch.tick();
+  const collected = await batch.results("fixture", run.runId);
+  assert.equal(collected.complete, true); assert.equal(collected.items[0].xhsId, "fixture_xhs");
+  assert.equal(collected.items[0].data.notes[0].list_view_count, 12);
 });
