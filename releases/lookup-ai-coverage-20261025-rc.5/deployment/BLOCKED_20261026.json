@@ -1,0 +1,23 @@
+{
+  "status": "deployment_blocked_before_confirmed_cutover",
+  "atAsiaShanghai": "2026-10-26T09:36:28.345663+08:00",
+  "candidateSource": "efdd05fecc4dbd5c196c0341e1c1e1beca794c27",
+  "preparedCommit": "ec51f1be8c328446f06a89710bb8532f69221f34",
+  "maintenanceAuthorized": true,
+  "authorization": "User allowed this five-minute window including current/new control connections",
+  "cloudPauseAttempt": "SSH timed out before output; no MAINTENANCE_PAUSE receipt; remote outcome unconfirmed",
+  "cloudStopAttempt": "pending local SSH cancelled; no stop receipt; no confirmed activation",
+  "windowsActivationInvoked": false,
+  "newCloudImageStartInvoked": false,
+  "activeFinalizeInvoked": false,
+  "windowsReadOnlyRecovery": "New secure SSH session established; original Agent27236 and ADB20316 present",
+  "cloudConnectivity": [
+    "fresh direct SSH banner exchange timed out",
+    "public HTTP health returned no valid HTTP response",
+    "Windows to cloud SSH and HTTP failed"
+  ],
+  "passwordsWritten": false,
+  "adbCommands": 0,
+  "sharedProcessRestartCommands": 0,
+  "next": "Restore cloud access, inspect active image/container/maintenance enabled/revision/receipts before retry; do not blindly repeat stop or pause; refresh backup and window if required"
+}
