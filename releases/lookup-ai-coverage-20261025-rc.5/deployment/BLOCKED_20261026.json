@@ -19,5 +19,19 @@
   "passwordsWritten": false,
   "adbCommands": 0,
   "sharedProcessRestartCommands": 0,
-  "next": "Restore cloud access, inspect active image/container/maintenance enabled/revision/receipts before retry; do not blindly repeat stop or pause; refresh backup and window if required"
+  "next": "Restore cloud access, inspect active image/container/maintenance enabled/revision/receipts before retry; do not blindly repeat stop or pause; refresh backup and window if required",
+  "userReport": "Platform opens normally for user",
+  "followup": "Direct and existing SOCKS proxy SSH both time out before authentication; Windows cloud HTTP root and health time out, SSH banner read times out; await cloud console or working SSH route",
+  "windowsAfterBlock": {
+    "oldFilesMatch": {
+      "scripts/alipay_name_lookup.py": true,
+      "scripts/alipay_visual_result.py": true,
+      "src/lookup-page-recovery.mjs": true,
+      "src/index.mjs": true
+    },
+    "agentOwner": "SYSTEM",
+    "adbOwner": "SYSTEM",
+    "agentPid": 27236,
+    "adbPid": 20316
+  }
 }
