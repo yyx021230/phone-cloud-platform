@@ -1,0 +1,22 @@
+{
+  "source": "e16fc3333ea6ce6401083694909e1eef47da8d9c",
+  "newTests": {
+    "pass": 5,
+    "fail": 0
+  },
+  "regression": {
+    "pass": 1286,
+    "fail": 1,
+    "baselineSameFailure": "post-human exact original query reference, pending feature rc.5"
+  },
+  "check": "passed",
+  "httpSmoke": "passed",
+  "largeBytes": 722648918,
+  "maxRssKiB": 1118912,
+  "startupBytes": 612678137,
+  "bootMs": 9764,
+  "ready": true,
+  "shutdownExit": 0,
+  "persistedSmsCount": 100000,
+  "limitation": "first shutdown test exceeded 30s while concurrent regression and high WAL IO; isolated rerun completed within 90s. No production success claimed."
+}

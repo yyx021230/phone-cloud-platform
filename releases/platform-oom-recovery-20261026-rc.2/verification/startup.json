@@ -1,0 +1,27 @@
+[
+  {
+    "phase": "boot",
+    "seedBytes": 612678137,
+    "bootMs": 9764,
+    "ready": true,
+    "lock": {
+      "status": "released",
+      "reason": "server_restart"
+    },
+    "startupSnapshotUpdated": false
+  },
+  {
+    "seedBytes": 612678137,
+    "bootMs": 9764,
+    "ready": true,
+    "lock": {
+      "status": "released",
+      "reason": "server_restart"
+    },
+    "startupSnapshotUpdated": false,
+    "shutdown": {
+      "code": 0,
+      "signal": null
+    }
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "readMs": 2167,
+    "readRssKiB": 1118912
+  },
+  {
+    "mode": "new",
+    "bytes": 722648918,
+    "durationMs": 11208,
+    "maxRssKiB": 1118912,
+    "rows": {
+      "version": "1",
+      "n": 120000,
+      "first": "0",
+      "last": "119999"
+    }
+  }
+]
