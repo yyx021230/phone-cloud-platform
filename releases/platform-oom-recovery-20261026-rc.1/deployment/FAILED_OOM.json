@@ -1,0 +1,6 @@
+{
+  "atUtc": "2026-10-26T02:05:54Z",
+  "restartCount": 1,
+  "imageId": "sha256:4b70c53b28628088c4bfc707b002884959f7dfd98b51c72783926134a011c255",
+  "result": "global OOM despite bounded COPY; production resource validation failed"
+}
