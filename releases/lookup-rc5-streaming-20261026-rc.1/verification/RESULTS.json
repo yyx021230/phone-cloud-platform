@@ -1,0 +1,26 @@
+{
+  "featureSource": "efdd05fecc4dbd5c196c0341e1c1e1beca794c27",
+  "storageSource": "e16fc3333ea6ce6401083694909e1eef47da8d9c",
+  "combinedSource": "64148f3",
+  "nodeRegressions": {
+    "pass": 1287,
+    "fail": 0
+  },
+  "check": "passed",
+  "httpSmoke": "passed",
+  "storageSpecificTests": {
+    "pass": 5,
+    "largeRoundtripBytes": 722648918,
+    "startupBytes": 612678137,
+    "shutdownExit": 0
+  },
+  "windowsCandidate": "unchanged four files verified against existing native test receipt; production live/candidate/backup hashes rechecked",
+  "windowsNativeTestsFromPreviousPreparation": 15,
+  "windowsIdentityReadOnly": {
+    "agentPid": 27236,
+    "adbPid": 20316,
+    "owner": "NT AUTHORITY\\SYSTEM",
+    "adbPath": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe"
+  },
+  "productionCombinedAcceptanceComplete": false
+}
