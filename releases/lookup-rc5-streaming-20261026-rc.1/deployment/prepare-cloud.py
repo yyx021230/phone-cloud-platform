@@ -1,0 +1,49 @@
+"""Inactive candidate build/backups only. No service restarts or phone actions."""
+import pathlib,json,subprocess,hashlib,os,sys,copy,fcntl
+os.umask(0o077)
+root=pathlib.Path('/opt/phone-cloud-platform');stage=pathlib.Path(__file__).resolve().parent
+lock=(root/'.deployment.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+run=lambda a:subprocess.check_output(a,text=True).strip()
+def sha(p):
+ h=hashlib.sha256()
+ with pathlib.Path(p).open('rb') as f:
+  for chunk in iter(lambda:f.read(1048576),b''):h.update(chunk)
+ return h.hexdigest()
+active=json.loads((root/'ACTIVE_PLATFORM_RELEASE.json').read_text());baseline='sha256:4669b7578e593091e9128c78b9fa8c29868d529f2cc7f4e89fc1b491ddab13fe'
+assert active['version']=='platform-oom-recovery-20261026-deployed.1' and active['imageId']==active['restartImageId']==baseline
+assert run(['docker','inspect','phone-cloud-platform','--format','{{.Image}}'])==baseline
+assert run(['docker','image','inspect','phone-cloud-platform:oom-recovery-20261026-rc2','--format','{{.Id}}'])==baseline
+files={f:h for f,h in json.loads((stage/'PRODUCTION_DIFF.json').read_text()).items() if f.startswith(('server/','public/','docs/'))}
+code="const fs=require('fs'),c=require('crypto');for(const[f,h]of Object.entries("+json.dumps(files)+")){const p='/app/'+f;const a=fs.existsSync(p)?c.createHash('sha256').update(fs.readFileSync(p)).digest('hex'):null;if(a!==h.before)throw Error('baseline drift: '+f)}"
+run(['docker','exec','phone-cloud-platform','node','-e',code])
+media=json.loads(run(['/tmp/phonecloud-node-v22.22.3-linux-x64/node-v22.22.3-linux-x64/bin/node',str(root/'deploy/mediamtx-pacing/verify.mjs'),'--live']));assert media['verified']=='live'
+args=['docker','compose','-p','phone-cloud-platform']
+for row in active['activeCompose']:
+ assert sha(row['path'])==row['sha256'];args+=['-f',row['path']]
+(stage/'Dockerfile').write_text('FROM phone-cloud-platform:oom-recovery-20261026-rc2\nCOPY payload/ /app/\n')
+(stage/'.dockerignore').write_text('*\n!Dockerfile\n!payload/\n!payload/**\n')
+backup=stage/'rollback';backup.mkdir(mode=0o700,exist_ok=False)
+(backup/'ACTIVE_PLATFORM_RELEASE.json').write_bytes((root/'ACTIVE_PLATFORM_RELEASE.json').read_bytes())
+for f in files:
+ if (root/f).exists():
+  target=backup/'source'/f;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes((root/f).read_bytes())
+# Host source is not the deployed runtime baseline. Preserve it separately,
+# and back up the exact verified container files for rollback.
+for f,h in files.items():
+ if h['before'] is None:continue
+ target=backup/'runtime'/f;target.parent.mkdir(parents=True,exist_ok=True)
+ subprocess.run(['docker','cp','phone-cloud-platform:/app/'+f,str(target)],check=True)
+ assert sha(target)==h['before'],'runtime backup drift: '+f
+pending={'services':{'phone-cloud':{'image':'phone-cloud-platform:lookup-rc5-streaming-20261026-rc1'}}}
+(stage/'compose.pending.json').write_text(json.dumps(pending,indent=2)+'\n')
+old=json.loads(run(args+['config','--format','json']));new=json.loads(run(args+['-f',str(stage/'compose.pending.json'),'config','--format','json']))
+expected=copy.deepcopy(old);svc=expected['services']['phone-cloud'];svc['image']=pending['services']['phone-cloud']['image'];assert new==expected,'compose changes out of scope'
+(backup/'compose-baseline.json').write_text(json.dumps(active['activeCompose'],indent=2)+'\n')
+pg=dict(x.split('=',1) for x in json.loads(run(['docker','inspect','phone-cloud-postgres','--format','{{json .Config.Env}}'])) if '=' in x)
+with open(backup/'database.dump','wb') as out:subprocess.run(['docker','exec','phone-cloud-postgres','pg_dump','-U',pg.get('POSTGRES_USER','postgres'),'-d',pg.get('POSTGRES_DB','postgres'),'-Fc'],stdout=out,check=True)
+with open(backup/'database.dump','rb') as inp:subprocess.run(['docker','exec','-i','phone-cloud-postgres','pg_restore','--list'],stdin=inp,stdout=subprocess.DEVNULL,check=True)
+(backup/'PINNED_IMAGE.json').write_text(json.dumps({'imageId':baseline,'imageTag':'phone-cloud-platform:oom-recovery-20261026-rc2','retained':True})+'\n')
+for p in backup.rglob('*'):
+ if p.is_file():p.chmod(0o600)
+with open(stage/'build.log','w') as log:subprocess.run(['nice','-n','10','docker','build','--pull=false','-t','phone-cloud-platform:lookup-rc5-streaming-20261026-rc1',str(stage)],stdout=log,stderr=subprocess.STDOUT,check=True)
+subprocess.run([sys.executable,str(stage/'complete-preparation.py')],check=True)

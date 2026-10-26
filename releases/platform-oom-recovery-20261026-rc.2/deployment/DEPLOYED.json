@@ -1,0 +1,109 @@
+{
+  "version": "platform-oom-recovery-20261026-deployed.1",
+  "atUtc": "2026-10-26T02:20:00Z",
+  "sourceCommit": "e16fc3333ea6ce6401083694909e1eef47da8d9c",
+  "candidateTag": "platform-oom-recovery-20261026-rc.2",
+  "imageId": "sha256:4669b7578e593091e9128c78b9fa8c29868d529f2cc7f4e89fc1b491ddab13fe",
+  "previousRelease": "lookup-final-20261023-deployed.1",
+  "previousImageId": "sha256:c10e071b3f4811c626b28075bba364e8dc96e05dc9c8402d0f760673f7e63f8c",
+  "replacedFailedImageId": "sha256:4b70c53b28628088c4bfc707b002884959f7dfd98b51c72783926134a011c255",
+  "containerId": "9405c0b361b329365ae287b2c0f2ae7f8adf9087bcc0dfaffb1a3b75bd02bf06",
+  "containerPid": 1000414,
+  "restartCount": 0,
+  "health": {
+    "healthz": 200,
+    "readyz": 200
+  },
+  "files": {
+    "server/index.mjs": {
+      "before": "7409f9a22a90edfc8d6fa9f709e2cdbadad713df0ac9960ebc9ef92924c2c696",
+      "after": "505a13a2fbc228dd45a7db933fa13c589667282a5a252ced880bbde4b1032077"
+    },
+    "server/postgres-repositories.mjs": {
+      "before": "319c5527acceb41fc687dd2a6b4fc7468170d61a793d62757a5d657afe4c6b4e",
+      "after": "ecbea083a248f9ef98410bea3da6ebf1c02f832fcab4deba2b1b8996ef6a0706"
+    },
+    "server/snapshot-stream.mjs": {
+      "before": null,
+      "after": "6a28e2a09ec78a3b8f5cc3203bc054db732dcc503ee198f25a94d8f09af47f73"
+    },
+    "server/vendor/pg-copy-streams/NOTICE.md": {
+      "before": null,
+      "after": "b08f2fe6aa18f19efa4ef069a0e9dd487b183056abee64146f838bbd015c9a26"
+    },
+    "server/vendor/pg-copy-streams/copy-from.js": {
+      "before": null,
+      "after": "51157fabab8ada619de12388714d57fa298310a9fc3d2948a9d16554d8d20637"
+    },
+    "server/vendor/pg-copy-streams/copy-to.js": {
+      "before": null,
+      "after": "355bdad15df14e4353b89a6e2bb1402f3bd8712c59fe1e42c024300f65f262be"
+    },
+    "server/vendor/pg-copy-streams/message-formats.js": {
+      "before": null,
+      "after": "ff07a7c22a37ff5940442ec5d5fbd73874dce90b8357e668d863ccfd51ca25a6"
+    },
+    "server/vendor/pg-copy-streams/obuf.js": {
+      "before": null,
+      "after": "bcf089cd07a34eb6aab6e5ece2841034fd256db3febbca34fd96b902c4df5659"
+    },
+    "server/vendor/pg-copy-streams/package.json": {
+      "before": null,
+      "after": "742c921f6ebcf2f293960a54c58c6b53843d31ca6bc87534e18161fcf1529035"
+    },
+    "server/vendor/stream-json/Assembler.js": {
+      "before": null,
+      "after": "a341b21d86a9c005e5433eadb6c33d4708d611c8bc624ee383463c0fb6d2e32b"
+    },
+    "server/vendor/stream-json/LICENSE": {
+      "before": null,
+      "after": "f0cafa4717146b30d7b5aeb4ff96cd5e9dafb03b97d2038d904d8b1e7a0400f3"
+    },
+    "server/vendor/stream-json/NOTICE.md": {
+      "before": null,
+      "after": "9294e2d281a4f91e43ad820141faec622a37c07c8afd103c4c85f4c1e1354816"
+    },
+    "server/vendor/stream-json/Parser.js": {
+      "before": null,
+      "after": "83866088a1805b0370fbf80a3906377c81d80e6d35521c5716e870212c3ce927"
+    },
+    "server/vendor/stream-json/package.json": {
+      "before": null,
+      "after": "d83a7ff5f26b3cad3b3fe4a6858a55e7065209674fd4ffc6c7a2524a013e0f33"
+    },
+    "server/vendor/stream-json/utils/Utf8Stream.js": {
+      "before": null,
+      "after": "56b1c98d9d7be72b86acacea6b76e24edd9ca40b01773f60797999c02a26b0f6"
+    }
+  },
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "backup": {
+    "bytes": 2062922163,
+    "sha256": "da86e549f83fdbdf7017197d1525aff3d45ddea2635a204e70d072a0e65ed560",
+    "atUtc": "2026-10-26T02:16:07Z"
+  },
+  "rollbackDirectory": "/opt/phone-cloud-platform/staging/platform-oom-recovery-20261026-rc2/rollback",
+  "hostConfigChanged": false,
+  "swapAdded": false,
+  "databaseMigration": false,
+  "agentChanged": false,
+  "adbChanged": false,
+  "pendingFeatureRc5Deployed": false,
+  "productionAcceptanceComplete": false,
+  "readOnlyActualSnapshot": {
+    "readOnly": true,
+    "ms": 17104,
+    "maxRssKiB": 1551348,
+    "fields": 19,
+    "windowsTasks": 5002,
+    "automationJobs": 5000,
+    "smsMessages": 50033
+  }
+}

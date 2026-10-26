@@ -1,0 +1,73 @@
+--- /tmp/pc-incident-20261026/production-index.mjs	2026-10-26 09:50:39
++++ /Users/yyx/.codex/worktrees/lookup-ai-vision-20261022/phone-cloud-platform/releases/platform-oom-recovery-20261026-rc.2/server/index.mjs	2026-10-26 10:09:07
+@@ -1,3 +1,4 @@
++import { spoolSnapshot, writeSpooledSnapshot, loadStreamedSnapshot } from './snapshot-stream.mjs';
+ import {aiVisionConfig,createAiVisionReader} from './lookup-ai-vision.mjs';
+ import {createLookupAiRecovery} from './lookup-ai-recovery.mjs';
+ import {buildLookupAdminOverview,requestDetail,jobDetail,jobEvidence,lookupJob,parseLookupCursor} from './lookup-admin-console.mjs';
+@@ -399,8 +400,14 @@
+ // not survive a process restart. Persisted screen locks therefore cannot be
+ // resumed after a restart; release them now and let the Agent inventory stop
+ // any leftover scrcpy / ffmpeg worker on reconnect.
++const startupScreenLocks = state.deviceLocks.filter(lock => lock.lockType === "screen_control" && lock.status === "active");
+ if (releaseOrphanedScreenLocksAfterRestart()) {
+-  await saveState();
++  if (structuredRepos) {
++    // Preserve existing release semantics; persist only the changed lock rows.
++    for (const deviceLock of startupScreenLocks) await structuredRepos.persistTaskMutation({ deviceLock });
++  } else {
++    await saveState();
++  }
+ }
+ 
+ server.listen(PORT, HOST, () => {
+@@ -8420,8 +8427,8 @@
+ async function loadPostgresState() {
+   const pool = await getPostgresPool();
+   await initPostgresStorage(pool);
+-  const result = await pool.query("select data from phone_cloud_state where state_key = $1", [POSTGRES_STATE_KEY]);
+-  if (result.rows[0]?.data) return withStateDefaults(result.rows[0].data);
++  const loaded = await loadStreamedSnapshot(pool, POSTGRES_STATE_KEY);
++  if (loaded) return withStateDefaults(loaded);
+ 
+   if (POSTGRES_BOOTSTRAP_FROM_JSON) {
+     try {
+@@ -8441,30 +8448,28 @@
+ async function savePostgresSnapshot(snapshot) {
+   const pool = await getPostgresPool();
+   await initPostgresStorage(pool);
+-  const client = await pool.connect();
+-  const serialized = stringifyPostgresJson(snapshot);
++  const encoded = spoolSnapshot(snapshot, stringifyPostgresJson);
++  let client;
+   try {
++    client = await pool.connect();
+     await client.query("begin");
+     // This table intentionally stores a single full-state snapshot. Updating a
+     // large jsonb row repeatedly creates dead TOAST tuples faster than autovacuum
+     // can reclaim them. Replacing the one-row table keeps the relation small
+     // until the state is fully split into structured tables.
+     await client.query("truncate table phone_cloud_state");
+-    await client.query(
+-      `insert into phone_cloud_state (state_key, data, updated_at)
+-       values ($1, $2::json, now())`,
+-      [POSTGRES_STATE_KEY, serialized]
+-    );
++    await writeSpooledSnapshot(client, POSTGRES_STATE_KEY, encoded);
+     if (STRUCTURED_TABLE_SYNC) {
+       await syncStructuredTables(client, snapshot);
+     }
+     await client.query("commit");
+-    return Buffer.byteLength(serialized);
++    return encoded.bytes;
+   } catch (error) {
+-    await client.query("rollback").catch(() => {});
++    await client?.query("rollback").catch(() => {});
+     throw error;
+   } finally {
+-    client.release();
++    client?.release();
++    encoded.dispose();
+   }
+ }
+ 
