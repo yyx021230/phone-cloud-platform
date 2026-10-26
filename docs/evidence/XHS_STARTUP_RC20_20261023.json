@@ -567,5 +567,30 @@
     "globalPendingLedgers": 0,
     "cloudHashUnchanged": true,
     "daily95PercentProven": false
+  },
+  "oct26ReadOnlyFollowup": {
+    "at": "2026-10-26T02:48:00.390Z",
+    "status": "blocked_before_dispatch_device_physically_absent",
+    "target": "123/app2",
+    "targetBindingUnchanged": true,
+    "cloudAndWindowsCacheAgree": true,
+    "lastSeenAt": "2026-10-23T08:49:32.921Z",
+    "newJobsCreated": 0,
+    "adbClientCommands": 0,
+    "phoneActions": 0,
+    "deploymentPerformed": false,
+    "collectorSHA256": "0f17e54d9ec84949f987682d44ba4886c1bc8a3b1a8bcb5a4bc3ec42595bc83e",
+    "runtimeChangedSinceOct23": [
+      "src/index.mjs"
+    ],
+    "cloudSourceChangedSinceOct23": true,
+    "cloudSourceSHA256": "505a13a2fbc228dd45a7db933fa13c589667282a5a252ced880bbde4b1032077",
+    "systemIdentityVerified": true,
+    "agentPid": 27236,
+    "adbPid": 20316,
+    "globalPendingLedgers": 0,
+    "otherTargetsInventory": "111/121/132 online and free at read; no new live collection",
+    "sourceReviewPendingBeforeFutureDispatch": true,
+    "rootPreexistingStatusPreserved": true
   }
 }
