@@ -1,0 +1,21 @@
+{
+  "status": "prepared",
+  "sourceCommit": "f1d5023b995f87e75b9986eb267707e9bf032e2e",
+  "imageId": "sha256:4b70c53b28628088c4bfc707b002884959f7dfd98b51c72783926134a011c255",
+  "imageTag": "phone-cloud-platform:oom-recovery-20261026-rc1",
+  "baseImage": "sha256:c10e071b3f4811c626b28075bba364e8dc96e05dc9c8402d0f760673f7e63f8c",
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "backup": {
+    "atUtc": "2026-10-26T02:01:59Z",
+    "bytes": 2062922163,
+    "sha256": "fdb977094152e5c0ebfe89e07b10c47a2ba6ff433568ed79637ea685b64b08b8"
+  },
+  "activeSha256": "42d4d451e80b40b6d476acb3b78a70e438541b96815f825e0417c65aae65cacb"
+}
