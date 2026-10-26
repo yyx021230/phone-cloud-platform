@@ -1,0 +1,1 @@
+Vendored unmodified Parser.js, Assembler.js, utils/Utf8Stream.js and package metadata from stream-json 1.9.1 (npm), BSD-3-Clause. LICENSE is included. These entry points use Node built-ins only; stream-chain is not imported. No dependency installation occurs at runtime.

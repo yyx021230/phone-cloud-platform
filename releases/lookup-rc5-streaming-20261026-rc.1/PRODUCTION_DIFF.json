@@ -1,0 +1,86 @@
+{
+  "server/managed-lookup-platform.mjs": {
+    "before": "597d279cc946391504db5ce5b55fbc4b2f6f65dfc77c11adfadee919c52e71c5",
+    "after": "a85366d0af61b2ba852ea27235bc16ed38c0961b6c0e3af54d153c2849b5f921"
+  },
+  "server/lookup-ai-vision.mjs": {
+    "before": "fc864eae1517bbc418bb5d5595a24dc1d5e6eda05db6f6982faad4c88c3cdf44",
+    "after": "2c978067c2a2ef845bc8f1bc8de85adcfb70d423d5cca271befe0407899dbe0a"
+  },
+  "server/lookup-ai-recovery.mjs": {
+    "before": "5e9f3273aab55632517a89ca277e9f3f9d6954101861157d451161fcaf5415f0",
+    "after": "5d5acf90a7fbf70f22940372bb9d8e62db896b1813b37c4a1ea150fbea60962e"
+  },
+  "server/lookup-readiness.mjs": {
+    "before": "05ae676fc7d4332f4a99388239d99b1a6da9820d486bd6192795a23cfa558c0d",
+    "after": "41da6e878b73c4cafac2856e8e60b3afa9de21ff9ca87a3e987d792795b74730"
+  },
+  "server/lookup-human-handover.mjs": {
+    "before": "7065e3da5454ec65a06a11767c18058108300cc07b5380d479b4e87a18d97862",
+    "after": "feb3da78d297ff4d4a97d0d6265fed0ff213d6fe8d0f8024dd6e62bf9eb9cbcf"
+  },
+  "server/index.mjs": {
+    "before": "505a13a2fbc228dd45a7db933fa13c589667282a5a252ced880bbde4b1032077",
+    "after": "b42951d9bec95d368dd381a920a18f53329cab53f85ee5056e3a0d3aa3c8f397"
+  },
+  "server/managed-lookup.mjs": {
+    "before": "819d5d72713ebf41c6590c99b5523fc3a30177eab2203629de45b5cf51d269c5",
+    "after": "57c9f882a1ca248241534e505cb1f73982b1a396d085a8e19384f3ae87e5120d"
+  },
+  "server/lookup-failure-domain.mjs": {
+    "before": "88d8d21506dcccd8f81efde9e6bac22d4c66867c560d55d24064dca8e94ad333",
+    "after": "75d4b940322d16cc10a136f18412bfc80a3ce7e4d17516ee8dcb0dcdff666908"
+  },
+  "docs/OPEN_NAME_LOOKUP_PARTNER_HANDOFF.md": {
+    "before": "885a1ad45a01cab9c5521f032f4e18ad529c8750e867c63c6cad2b7bbb180ec8",
+    "after": "27f2ec610de3ba9f10a0ace69fc938ae1140e828ac579a796d5a694d0b21db34"
+  },
+  "docs/OPEN_NAME_LOOKUP_API.md": {
+    "before": "fce42d6dfcd89f04c9af64cd925053a73055b87754dfea9cb2230348a3b853a2",
+    "after": "8f2b4b145bf6215efd5891a9cbf32c78625e2cd40b93c6e43a51d815b089062e"
+  },
+  "docs/OPEN_NAME_LOOKUP_README.md": {
+    "before": "030bd40371a1081d6bc4144ac799fcffc9bed6353579018119f3a0a048587a89",
+    "after": "eca121e9bf51e119549159f36491ec9ab60dd61a4581ceabeead7b9d28b5c76c"
+  },
+  "public/api-reference.json": {
+    "before": "c8f4d183eded629a3c857568de5e8f34206dae39e970485c325435bd5e8560fc",
+    "after": "0a99fc58d7d2be7f429c265e3ea50a3f72966e8b1ab09f1d59b8f7473e57fb94"
+  },
+  "public/openapi.json": {
+    "before": "2857d3cafae10512192a3ca01088925c658bd9ebb7f1e375c3cd682d8874e33c",
+    "after": "9735311397875d991bcd279e82908a3efca2aa8ceb3c26691ddce39a18c44a58"
+  },
+  "public/downloads/name-lookup-http-guide.md": {
+    "before": "9780a1977f77cf47dd0098b7c95f4601c7060b4846513ce8ecc1719f862b5210",
+    "after": "531ed0824f18f13606c2b9605557dc2e3f8d25c3c2bd63ce637d2af1543bedf5"
+  },
+  "public/downloads/name-lookup-integration.zip": {
+    "before": "bc1d3e7bca15e5a4541cc0cb9503c4fbf08e18eed82b86d5e313534cfa93ba95",
+    "after": "8dd4d70b25dd62491aecbc4fbc8dbe1e56a76b83f53dfc3a807fb4965660e413"
+  },
+  "public/downloads/name-lookup-openapi.json": {
+    "before": "aa72efd78ffc0cdebaed80636caed97284dd14c76b2163ce295b7816bdd7ed31",
+    "after": "2cf855866e5f30f05b6f7610f61235f15dbc15135a8d529b7e8f31dfcac4e438"
+  },
+  "public/downloads/name-lookup-sha256.json": {
+    "before": "17ecde13df3a469c79075a51062a9e4519ac69c76c6152ef6ffa8ac6aa7ae3ca",
+    "after": "133e59e60c859baa052bc29664bf51f55f100060a746573ae6b9e283e183901c"
+  },
+  "windows-agent/scripts/alipay_name_lookup.py": {
+    "before": "c73e025e17b2a2376a1684bc32ad32facf88dfa5c8e566f1fac67bd47e4c5524",
+    "after": "30e0c828d981f1e9fd9c62d6b6e48141c7c13ae25c5e899d68992ce04d2df024"
+  },
+  "windows-agent/scripts/alipay_visual_result.py": {
+    "before": "5f7678a4e83ae1ea99af1bc68601079e4ed49b478222c7792fa558425feca022",
+    "after": "3f1a6315150fe7424724122947b418d2c4b8f4448db4d4d4372bf99749542e30"
+  },
+  "windows-agent/src/lookup-page-recovery.mjs": {
+    "before": "acab1b3d3e96f17ee54fe393cdbcf31a9210139dd7694a04de1140b80f79daa9",
+    "after": "c3ae74f3dbcf699a329f249b40f8c7c6218c0ddf092c7bdbacb30c9564157be1"
+  },
+  "windows-agent/src/index.mjs": {
+    "before": "ad1f3ecb26ca817be7ddf495c166194f1f1d572185a5b94e84d73fc134af278c",
+    "after": "eafc722b93788d82bc788ed79f963b17224b2d8c30528bfbfbcedb83fe9a9dd2"
+  }
+}
