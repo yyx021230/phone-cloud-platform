@@ -1,0 +1,17 @@
+{
+  "before": {
+    "enabled": true,
+    "revision": 103,
+    "controls": [
+      "60",
+      "69",
+      "118",
+      "124",
+      "152"
+    ],
+    "channels": 0,
+    "atUtc": "2026-10-26T02:48:49.421Z"
+  },
+  "pausedRevision": 104,
+  "pausedAtUtc": "2026-10-26T02:48:49.472Z"
+}

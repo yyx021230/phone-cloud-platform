@@ -1,0 +1,21 @@
+[
+  {
+    "path": "/",
+    "status": 200,
+    "ms": 55
+  },
+  {
+    "path": "/healthz",
+    "status": 200,
+    "ms": 47
+  },
+  {
+    "path": "/readyz",
+    "error": "HTTPError"
+  },
+  {
+    "path": "/api-docs.html",
+    "status": 200,
+    "ms": 87
+  }
+]

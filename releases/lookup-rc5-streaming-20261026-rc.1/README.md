@@ -5,3 +5,5 @@
 功能源码efdd05fe / lookup-ai-coverage-20261025-rc.5；存储e16fc333 / platform-oom-recovery-20261026-rc.2。index机械应用已审查31行存储差异，无冲突，独立组合全量1287通过、check/HTTP smoke通过。Windows4文件完全沿用此前15项Windows专项及既有真机回执，非新一轮生产验收。完整内存验证见存储候选722MB读写/613MB启动退出；生产530MB读取17秒且恢复后无OOM。
 
 发布构建基于已恢复镜像，备份当前数据库与精确文件，保持Compose只有image差异。维护前核对实际业务与控屏、暂停接单派发并保留原队列；只重载云端和原SYSTEM Agent任务。不动ADB/PID20316、SYSTEM、Windows、USB、媒体或宿主机配置。回退到4669b757与原4个Agent文件，绝不能直接回到存在OOM的旧业务镜像或用旧数据库覆盖新结果。维护窗口按当前占用另核。
+
+2026-10-26 10:52更新：本组合已上线为 `lookup-rc5-streaming-20261026-deployed.1`，运行/下次启动均5ab68ecb，Agent14540、ADB20316。详见 [部署结果与未闭环项](deployment/DEPLOYED.md)，准备阶段记录保留为历史，不再代表当前未发布状态。

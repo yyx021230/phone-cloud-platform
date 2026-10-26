@@ -1,0 +1,65 @@
+{
+  "agents": [
+    {
+      "enabled": true,
+      "heartbeatAgeSeconds": 13,
+      "devices": 139,
+      "adbStates": {
+        "device": 122,
+        "physically_absent": 12,
+        "unauthorized": 3,
+        "usb_present_mtp_only": 2
+      },
+      "taskCounts": {
+        "running": 5,
+        "failed": 2267,
+        "succeeded": 2727,
+        "cancelled": 1
+      }
+    },
+    {
+      "enabled": false,
+      "heartbeatAgeSeconds": 6641458,
+      "devices": 50,
+      "adbStates": {
+        "missing": 50
+      },
+      "taskCounts": {}
+    },
+    {
+      "enabled": false,
+      "heartbeatAgeSeconds": 9931076,
+      "devices": 2,
+      "adbStates": {
+        "device": 2
+      },
+      "taskCounts": {}
+    },
+    {
+      "enabled": false,
+      "heartbeatAgeSeconds": 9926219,
+      "devices": 4,
+      "adbStates": {
+        "missing": 4
+      },
+      "taskCounts": {}
+    }
+  ],
+  "lookup": {
+    "enabled": true,
+    "concurrency": 5,
+    "counts": {
+      "registered": 48,
+      "available": 23,
+      "unavailable": 19,
+      "probing": 5,
+      "enabled": 42,
+      "occupied": 5,
+      "ready": 0,
+      "human": 0,
+      "queued": 0,
+      "running": 0
+    },
+    "activeRounds": 1
+  }
+}
