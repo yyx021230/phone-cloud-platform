@@ -2219,6 +2219,85 @@ def refresh_scrolled_webview(adb_path, serial, root, guard, events, previous_roo
     return refreshed
 
 
+def capture_element_pair(adb_path, serial, guard, events):
+    from xhs_native_window import read
+    current = focus(adb_path, serial)
+    assert_requested_foreground(current, events)
+    assert_no_poco(adb_path, serial)
+    try:
+        return read(adb_path, serial, adb_process, lambda: focus(adb_path, serial), guard, current, pair=True)
+    finally:
+        guard()
+        after = focus(adb_path, serial)
+        assert_requested_foreground(after, events)
+        if login_activity(after):
+            raise RuntimeError("Xiaohongshu account is logged out; manual login is required")
+        if not works_webview_activity(after):
+            raise ElementListReadError("native pair foreground changed")
+
+
+def stable_pair_signature(trees):
+    signatures = []
+    for root in trees:
+        require_creator_service_available(root)
+        try:
+            signature = element_page_signature(root, allow_duplicate_rows=True)
+        except ElementListReadError:
+            return None
+        if signature is None:
+            return None
+        signatures.append(signature)
+    return signatures[0] if len(signatures) == 2 and signatures[0] == signatures[1] else None
+
+
+def probe_element_pair(adb_path, serial, root, guard, events):
+    """Enable only after two fresh native trees agree with the proven stock page."""
+    from xhs_native_window import NativePairUnavailable
+    guard()
+    sdk = adb(adb_path, serial, "shell", "getprop", "ro.build.version.sdk", timeout=8).strip()
+    if not sdk.isdigit() or int(sdk) < 24:
+        events.append("native_pair_sdk_unsupported")
+        return False
+    try:
+        trees = capture_element_pair(adb_path, serial, guard, events)
+    except NativePairUnavailable:
+        events.append("native_pair_probe_unavailable")
+        return False
+    signature = stable_pair_signature(trees)
+    if signature is not None and signature == element_page_signature(root, allow_duplicate_rows=True):
+        events.append("native_pair_elements_enabled")
+        return True
+    events.append("native_pair_probe_mismatch")
+    return False
+
+
+def read_scrolled_content(adb_path, serial, previous_root, guard, events, fast_pair):
+    """Keep continuity and two-snapshot checks; use the old path on unproven progress."""
+    from xhs_native_window import NativePairUnavailable
+    if fast_pair:
+        try:
+            trees = capture_element_pair(adb_path, serial, guard, events)
+        except NativePairUnavailable:
+            fast_pair = False
+            events.append("native_pair_disabled_after_rejection")
+        else:
+            signature = stable_pair_signature(trees)
+            previous = {(v["title"], v["published_at_raw"]) for _, v in note_cards(previous_root)}
+            current = {(v["title"], v["published_at_raw"]) for _, v in note_cards(trees[1])}
+            # Unchanged/clipped old content still requires the proven refresh path.
+            if signature is not None and current - previous:
+                verify_element_overlap(previous_root, trees[0])
+                verify_element_overlap(previous_root, trees[1])
+                return trees[1], True, fast_pair
+            # Do not repeatedly pay for two rejected reads on a slow/stale OEM.
+            # The established refresh/loading path remains authoritative here.
+            fast_pair = False
+            events.append("native_pair_disabled_after_unstable_or_stale_page")
+    root = refresh_scrolled_webview(adb_path, serial, navigation_capture(adb_path, serial, guard, events), guard, events, previous_root)
+    root = wait_creator_content(adb_path, serial, root, guard, events)
+    return root, False, fast_pair
+
+
 def collect(args):
     device = assert_idle(args.device_cache, args.serial, args.device_name, args.task_id, args.app_slot, args.cancel_file)
     if adb(args.adb, args.serial, "get-state", timeout=6).strip() != "device":
@@ -2229,13 +2308,17 @@ def collect(args):
     if not accounts:
         raise RuntimeError("requested Xiaohongshu app slot is not enabled")
     events = ["collection_window_days:" + str(args.days), "collection_reader:ui_elements_only"]
+    entry_started = time.monotonic()
     release_idle_poco(args.adb, args.serial, guard, events)
     root = start_xhs(args.adb, args.serial, args.app_slot, guard, events)
     root = ensure_creator_list(args.adb, args.serial, root, args.app_slot, guard, events)
     verify_collection_slot(args.adb, args.serial, args.app_slot, events)
+    events.append("collection_entry_ms:" + str(round((time.monotonic() - entry_started) * 1000)))
+    newest_started = time.monotonic()
     root = wait_creator_content(args.adb, args.serial,
                                 reopen_creator_list(args.adb, args.serial, root, guard, events, args.app_slot), guard, events)
     verify_newest_element_position(root)
+    events.append("collection_newest_ready_ms:" + str(round((time.monotonic() - newest_started) * 1000)))
     as_of = dt.datetime.now(SHANGHAI).date()
     events.append("collection_scan_as_of:" + as_of.isoformat())
     # Include today as the first calendar date in the requested day count.
@@ -2254,6 +2337,10 @@ def collect(args):
     stagnant = 0
     previous_top_date = None
     date_order_valid = True
+    fast_probe_attempted = False
+    fast_pair = False
+    page_read_ms = 0
+    fast_pages = 0
     for round_index in range(args.max_scrolls + 1):
         assert_idle(args.device_cache, args.serial, args.device_name, args.task_id, args.app_slot, args.cancel_file)
         assert_no_poco(args.adb, args.serial)
@@ -2320,18 +2407,26 @@ def collect(args):
         if round_index >= args.max_scrolls:
             result["stop_reason"] = "scroll_budget_exhausted"
             break
+        if not fast_probe_attempted:
+            fast_probe_attempted = True
+            probe_started = time.monotonic()
+            fast_pair = probe_element_pair(args.adb, args.serial, root, guard, events)
+            events.append("native_pair_probe_ms:" + str(round((time.monotonic() - probe_started) * 1000)))
         swipe(args.adb, args.serial, root, guard, events)
         result["scrolls"] += 1
         previous_root = root
+        reading_started = time.monotonic()
         try:
-            root = refresh_scrolled_webview(args.adb, args.serial, navigation_capture(args.adb, args.serial, guard, events), guard, events, previous_root)
-            root = wait_creator_content(args.adb, args.serial, root, guard, events)
+            root, used_pair, fast_pair = read_scrolled_content(args.adb, args.serial, previous_root, guard, events, fast_pair)
+            fast_pages += int(used_pair)
             verify_element_overlap(previous_root, root)
         except ElementListReadError as error:
             events.append("works_elements_scan_stopped:" + str(error))
             result["stop_reason"] = "elements_unproven"
             result["warnings"].append("elements_unproven")
             break
+        finally:
+            page_read_ms += round((time.monotonic() - reading_started) * 1000)
     if not result["complete"]:
         result["warnings"].append("recent_window_not_proven")
     if not date_order_valid:
@@ -2343,6 +2438,7 @@ def collect(args):
         result["warnings"].append("creator_list_limited_to_displayed_time_range")
     if not result["account_bound"]:
         result["warnings"].append("app_slot_has_no_bound_xhs_account")
+    events.extend(["scan_page_read_ms:" + str(page_read_ms), "native_pair_fast_pages:" + str(fast_pages)])
     return result
 
 

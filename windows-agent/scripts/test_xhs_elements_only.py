@@ -155,6 +155,7 @@ class ElementCollectionTests(unittest.TestCase):
    stack.enter_context(patch.object(sync,'ensure_creator_list',side_effect=lambda a,b,r,*rest:r));stack.enter_context(patch.object(sync,'reopen_creator_list',return_value=first))
    stack.enter_context(patch.object(sync,'wait_creator_content',side_effect=lambda a,b,r,*rest:r));stack.enter_context(patch.object(sync,'refresh_scrolled_webview',side_effect=lambda a,b,r,*rest:r))
    stack.enter_context(patch.object(sync,'navigation_capture',side_effect=following or []))
+   stack.enter_context(patch.object(sync,'probe_element_pair',return_value=False))
    return sync.collect(args)
  def test_post_swipe_element_failure_preserves_prior_notes_as_incomplete(self):
   r=self.collect(listing(),[sync.ElementListReadError('missing elements')])
@@ -195,7 +196,7 @@ class ElementCollectionTests(unittest.TestCase):
   first=listing();second=listing();sync.verify_element_overlap(first,second)
 
 class LongNativeWindowTests(unittest.TestCase):
- def run_main(self,limit=None):
+ def run_main(self,limit=None,fast=False):
   import tempfile,sys,json
   pages=[]
   for page in range(32):
@@ -220,6 +221,8 @@ class LongNativeWindowTests(unittest.TestCase):
    stack.enter_context(patch.object(sync,'ensure_creator_list',side_effect=lambda a,b,r,*rest:r));stack.enter_context(patch.object(sync,'reopen_creator_list',return_value=first))
    stack.enter_context(patch.object(sync,'wait_creator_content',side_effect=lambda a,b,r,*rest:r));stack.enter_context(patch.object(sync,'refresh_scrolled_webview',side_effect=lambda a,b,r,*rest:r))
    stack.enter_context(patch.object(sync,'navigation_capture',side_effect=pages[1:]))
+   stack.enter_context(patch.object(sync,'probe_element_pair',return_value=fast))
+   stack.enter_context(patch.object(sync,'capture_element_pair',side_effect=[(r,copy.deepcopy(r)) for r in pages[1:]]))
    code=sync.main();result=json.loads(output.read_text())
   return code,result
  def test_default_scan_continues_past_thirty_swipes_to_proven_date_boundary(self):
@@ -228,6 +231,11 @@ class LongNativeWindowTests(unittest.TestCase):
  def test_explicit_smaller_budget_still_preserves_incomplete_data(self):
   code,result=self.run_main(30);self.assertEqual(code,2);self.assertFalse(result['complete']);self.assertEqual(result['scrolls'],30)
   self.assertEqual(result['stop_reason'],'scroll_budget_exhausted');self.assertEqual(len(result['notes']),35)
+ def test_fast_path_keeps_all_35_notes_and_31_page_overlap_checks(self):
+  _,slow=self.run_main();code,fast=self.run_main(fast=True)
+  self.assertEqual(code,0);self.assertTrue(fast['complete']);self.assertEqual(fast['notes'],slow['notes'])
+  self.assertEqual(fast['scan_rounds'],slow['scan_rounds']);self.assertEqual(fast['scrolls'],31)
+  self.assertIn('native_pair_fast_pages:31',fast['recovery_events'])
 
 
 class ZeroBoundsElementTests(unittest.TestCase):
