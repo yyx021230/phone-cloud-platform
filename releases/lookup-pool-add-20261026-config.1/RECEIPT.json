@@ -1,0 +1,246 @@
+{
+  "version": "lookup-pool-add-20261026-config.1",
+  "at": "2026-10-26T05:52:00.238Z",
+  "productionVersion": "lookup-rc5-streaming-20261026-deployed.1",
+  "runtimeSource": "64148f3cfd1793f423a1b9d7097746a6ba79fec1",
+  "image": "sha256:5ab68ecbc67dfd4815f3ec93b0d3dd6265acd6a5d044867c3e04904636e80649",
+  "revisionBefore": 105,
+  "revisionAfter": 106,
+  "totalBefore": 48,
+  "totalAfter": 51,
+  "enabledBefore": 42,
+  "enabledAfter": 45,
+  "addedNumbers": [
+    191,
+    116,
+    176
+  ],
+  "concurrency": 5,
+  "existingRowsUnchanged": true,
+  "grantsUnchanged": true,
+  "configUnchanged": true,
+  "databaseReadbackVerified": true,
+  "targets": [
+    {
+      "deviceNumber": 191,
+      "enabled": true,
+      "health": {
+        "ready": false,
+        "reason": "device_or_agent_offline"
+      }
+    },
+    {
+      "deviceNumber": 116,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      }
+    },
+    {
+      "deviceNumber": 176,
+      "enabled": true,
+      "health": {
+        "ready": true,
+        "reason": ""
+      }
+    }
+  ],
+  "beforeDevices": [
+    {
+      "number": 51,
+      "enabled": true
+    },
+    {
+      "number": 52,
+      "enabled": true
+    },
+    {
+      "number": 54,
+      "enabled": true
+    },
+    {
+      "number": 55,
+      "enabled": true
+    },
+    {
+      "number": 87,
+      "enabled": true
+    },
+    {
+      "number": 138,
+      "enabled": true
+    },
+    {
+      "number": 152,
+      "enabled": true
+    },
+    {
+      "number": 188,
+      "enabled": true
+    },
+    {
+      "number": 172,
+      "enabled": true
+    },
+    {
+      "number": 156,
+      "enabled": true
+    },
+    {
+      "number": 155,
+      "enabled": true
+    },
+    {
+      "number": 115,
+      "enabled": true
+    },
+    {
+      "number": 60,
+      "enabled": true
+    },
+    {
+      "number": 58,
+      "enabled": false
+    },
+    {
+      "number": 164,
+      "enabled": true
+    },
+    {
+      "number": 163,
+      "enabled": true
+    },
+    {
+      "number": 154,
+      "enabled": true
+    },
+    {
+      "number": 6,
+      "enabled": true
+    },
+    {
+      "number": 57,
+      "enabled": true
+    },
+    {
+      "number": 10,
+      "enabled": false
+    },
+    {
+      "number": 183,
+      "enabled": true
+    },
+    {
+      "number": 82,
+      "enabled": false
+    },
+    {
+      "number": 86,
+      "enabled": true
+    },
+    {
+      "number": 121,
+      "enabled": true
+    },
+    {
+      "number": 146,
+      "enabled": true
+    },
+    {
+      "number": 149,
+      "enabled": true
+    },
+    {
+      "number": 153,
+      "enabled": true
+    },
+    {
+      "number": 181,
+      "enabled": true
+    },
+    {
+      "number": 182,
+      "enabled": true
+    },
+    {
+      "number": 162,
+      "enabled": false
+    },
+    {
+      "number": 161,
+      "enabled": true
+    },
+    {
+      "number": 142,
+      "enabled": true
+    },
+    {
+      "number": 74,
+      "enabled": true
+    },
+    {
+      "number": 78,
+      "enabled": false
+    },
+    {
+      "number": 79,
+      "enabled": true
+    },
+    {
+      "number": 118,
+      "enabled": false
+    },
+    {
+      "number": 130,
+      "enabled": true
+    },
+    {
+      "number": 157,
+      "enabled": true
+    },
+    {
+      "number": 147,
+      "enabled": true
+    },
+    {
+      "number": 101,
+      "enabled": true
+    },
+    {
+      "number": 107,
+      "enabled": true
+    },
+    {
+      "number": 165,
+      "enabled": true
+    },
+    {
+      "number": 112,
+      "enabled": true
+    },
+    {
+      "number": 67,
+      "enabled": true
+    },
+    {
+      "number": 53,
+      "enabled": true
+    },
+    {
+      "number": 128,
+      "enabled": true
+    },
+    {
+      "number": 158,
+      "enabled": true
+    },
+    {
+      "number": 143,
+      "enabled": true
+    }
+  ],
+  "codeDeployed": false,
+  "serviceRestarted": false,
+  "manualQueriesSubmitted": 0
+}
