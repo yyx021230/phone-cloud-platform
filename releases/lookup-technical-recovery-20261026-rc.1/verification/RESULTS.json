@@ -1,0 +1,32 @@
+{
+  "localNode": {
+    "command": "node --test screen-client/*.test.mjs server/*.test.mjs scripts/*.test.mjs windows-agent/src/*.test.mjs",
+    "passed": 1307,
+    "failed": 0,
+    "skipped": 0
+  },
+  "localPython": {
+    "command": "python3 -m unittest discover -s windows-agent/scripts -p 'test_*.py'",
+    "passed": 575,
+    "failed": 0
+  },
+  "staticCheck": "npm run check passed",
+  "testedRuntime": "production-equivalent assembled rc.5 streaming runtime + five payload files",
+  "livePhoneActions": 0,
+  "modelCalls": 0,
+  "productionMutations": 0,
+  "firstRunFailures": [
+    "Malformed login fixture fixed to use blockedRounds; targeted rerun passed",
+    "Old foreign-app Home test expected success; tightened arrival guard now expects selector_missing; full Python rerun passed"
+  ],
+  "limitations": [
+    "Windows native navigation not run",
+    "157 visible-name model_unconfirmed unresolved",
+    "isolated PostgreSQL new recovery fields not independently replayed"
+  ],
+  "localLogHashes": {
+    "full-regression.log": "9ca335528d84652f69628609c7ce90aaaceab4be55417891febd63d0f54bae75",
+    "python-regression.log": "03ec358f3880934ddbcf3a5854153333d8ed19168153e3f54531558f21cd9e6b",
+    "static-check.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+  }
+}
