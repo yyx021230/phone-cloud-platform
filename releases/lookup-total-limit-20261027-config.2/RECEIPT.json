@@ -1,0 +1,31 @@
+{
+  "atUtc": "2026-10-27T05:47:57.849714+00:00",
+  "reason": "Correct previous interpretation: user requires processing plus queued total 20",
+  "beforeConfigRevision": 111,
+  "afterConfigRevision": 112,
+  "change": {
+    "queueLimit": {
+      "before": 20,
+      "after": 1000
+    },
+    "preparedClientInflightLimit": {
+      "before": 40,
+      "after": 20
+    }
+  },
+  "scope": "per API client existing unfinished-request admission; includes queued, processing and other pending recovery states; excludes readiness probes and completed results",
+  "concurrencyUnchanged": 7,
+  "queuedAtReadback": 15,
+  "executingAtReadback": 6,
+  "devicesAndGrantsUnchanged": true,
+  "requestsCancelled": false,
+  "restarted": false,
+  "adbOrSystemChanged": false,
+  "postgresReadback": {
+    "queue_limit": "1000",
+    "total_limit": "20",
+    "concurrency": "7",
+    "revision": "112"
+  },
+  "privateBackupSha256": "69fe06ea9ca1c92eb0720d37699a010b9a5925607afa6dde7b70885a33a163ec"
+}

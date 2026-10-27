@@ -4112,3 +4112,12 @@ npm run test:screen
 ### 2026-10-27 变更记录补记：排队配置111
 
 生产configRevision110→111，queueLimit=20，API与Postgres只读回读确认。并发7、每客户未完成上限40、每客户队列上限200、名单和授权均保持；切换前后排队均32，无订单被取消。仅管理员单字段配置，无发布/重启/ADB或SYSTEM操作；rc.4候选未上线。变更预览、私有备份哈希及精确回退见[配置回执](../releases/lookup-queue-limit-20261027-config.1/README.md)。未主动提交真实号码测429，不将配置回读称真机全流程验收。
+
+
+### 2026-10-27 决策日志补记：更正20条为查询中与排队合计
+
+用户明确“查询中+排队总共20个”，否决本日配置111的单队列容量解释。采用既有preparedClientInflightLimit=20，每客户未完成业务含排队/执行/待恢复等，总量达到20暂停新号码受理；探测及完成结果不计入。撤回误设queueLimit=20到原1000，手机并发仍7，不取消既有订单。
+
+### 2026-10-27 变更记录补记：未完成总量配置112
+
+configRevision111→112：preparedClientInflightLimit40→20、queueLimit20→1000。API与Postgres回读一致，名单/授权及其他配置保持。更正此前理解错误，原回执保留并以本决策替代；[更正回执](../releases/lookup-total-limit-20261027-config.2/README.md)含预览/备份哈希和验证边界。无代码发布、重启、取消订单或ADB/SYSTEM变更，rc.4仍本地候选。
