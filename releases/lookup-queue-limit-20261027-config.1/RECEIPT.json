@@ -1,0 +1,31 @@
+{
+  "atUtc": "2026-10-27T05:38:14.829605+00:00",
+  "operation": "PUT /api/v1/admin/lookup-pool",
+  "authorization": "User requested queued phone-number capacity of 20; not device concurrency",
+  "beforeConfigRevision": 110,
+  "afterConfigRevision": 111,
+  "change": {
+    "queueLimit": {
+      "before": 1000,
+      "after": 20
+    }
+  },
+  "queueLimit": 20,
+  "concurrencyUnchanged": 7,
+  "preparedClientInflightLimitUnchanged": 40,
+  "clientQueueLimitUnchanged": 200,
+  "queuedBefore": 32,
+  "queuedAfter": 32,
+  "executingAfter": 5,
+  "devicesAndGrantsUnchanged": true,
+  "existingRequestsCancelled": false,
+  "serviceRestarted": false,
+  "adbOrSystemChanged": false,
+  "privateBackupSha256": "d910f23e3b8fb2e4283442cf1029bd9dd2f65f2c0624b7631cd9323eec112d70",
+  "rollbackQueueLimit": 1000,
+  "postgresReadback": {
+    "queue_limit": "20",
+    "concurrency": "7",
+    "revision": "111"
+  }
+}
