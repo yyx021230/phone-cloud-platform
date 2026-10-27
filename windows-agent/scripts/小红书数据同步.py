@@ -816,6 +816,8 @@ def recover_known_overlay(adb_path, serial, root, guard, events):
 
     if ("NotificationAuthorizationTranslucentActivity" in current or
             ("com.vivo.pushservice" in current and "type=2038" in current)):
+        if "creator_late_notification_retry" in events:
+            raise ElementListReadError("notification overlay recurred after bounded navigation recovery")
         press_back()
         if "NotificationAuthorizationTranslucentActivity" in focus(adb_path, serial):
             raise RuntimeError("notification overlay stayed open after Back")
@@ -1650,13 +1652,13 @@ def creator_navigation_state(root):
     return "/".join(present) + ";profile_selected=" + ",".join(selected)
 
 
-def ensure_creator_list(adb_path, serial, root, slot, guard, events):
+def ensure_creator_list(adb_path, serial, root, slot, guard, events, _notification_retry=False):
     recoveries = 0
     more_attempts = 0
     chat_backs = 0
     server_refreshes = 0
     states = []
-    for _ in range(14):
+    for _ in range(6 if _notification_retry else 14):
         states.append(creator_navigation_state(root))
         if wake_if_asleep(adb_path, serial, guard, events):
             root = navigation_capture(adb_path, serial, guard, events)
@@ -1803,6 +1805,28 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
         root = wait_data_center_loading(adb_path, serial, root, guard, events, require_content=True)
         events.append("works_tab_completed_at_navigation_limit")
         return root
+    # The last capture is not processed by the exhausted loop. A late XHS
+    # notification activity must get its own bounded dismissal/readback, even
+    # when earlier unrelated overlays consumed the generic recovery budget.
+    current = focus(adb_path, serial)
+    notification = re.search(
+        r"mCurrentFocus=Window\{[^\n}]*\bu\d+\s+com\.xingin\.xhs/(?:"
+        r"com\.xingin\.authorization\.NotificationAuthorizationTranslucentActivity|"
+        r"\.authorization\.NotificationAuthorizationTranslucentActivity)(?:[}\s]|$)", current)
+    if notification and not _notification_retry:
+        assert_requested_foreground(current, events)
+        def notification_guard():
+            guard()
+            fresh = focus(adb_path, serial)
+            assert_requested_foreground(fresh, events)
+            if fresh != current:
+                raise ElementListReadError("late notification foreground changed before Back")
+        if recover_known_overlay(adb_path, serial, root, notification_guard, events):
+            events.append("creator_late_notification_retry")
+            guard()
+            assert_requested_foreground(focus(adb_path, serial), events)
+            root = navigation_capture(adb_path, serial, guard, events)
+            return ensure_creator_list(adb_path, serial, root, slot, guard, events, _notification_retry=True)
     raise ElementListReadError("could not prove the Creator Center works-analysis path from UI elements; states="
                                + json.dumps(states[-4:] + [creator_navigation_state(root)], ensure_ascii=False))
 
