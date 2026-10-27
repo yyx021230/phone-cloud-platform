@@ -2416,6 +2416,35 @@ def probe_element_pair(adb_path, serial, root, guard, events):
 
 def read_scrolled_content(adb_path, serial, previous_root, guard, events, fast_pair):
     """Keep continuity and two-snapshot checks; use the old path on unproven progress."""
+    if "collection_verification_pass" in events:
+        guard()
+        current_focus = focus(adb_path, serial)
+        assert_requested_foreground(current_focus, events)
+        if not works_webview_activity(current_focus):
+            raise ElementListReadError("verification foreground is not the works list")
+        root = navigation_capture(adb_path, serial, guard, events)
+        guard()
+        if focus(adb_path, serial) != current_focus:
+            raise ElementListReadError("verification foreground changed during read")
+        require_creator_service_available(root)
+        try:
+            signature = element_page_signature(root, allow_duplicate_rows=True)
+        except ElementListReadError:
+            signature = None
+        previous = {(v["title"], v["published_at_raw"]) for _, v in note_cards(previous_root)}
+        current = {(v["title"], v["published_at_raw"]) for _, v in note_cards(root)}
+        # The primary scan already double-read every row. This independent
+        # audit reads each newly exposed page once; the complete ordered audit
+        # still has to match that primary scan before any result is complete.
+        if root.get("native-window-reader") == "1" and signature is not None and current - previous:
+            verify_element_overlap(previous_root, root)
+            events.append("verification_fresh_page_accepted")
+            return root, False, False
+        # A stale/partial tree is not evidence. Reuse this first read only as
+        # input to the existing refresh and two-fresh-read stability path.
+        events.append("verification_page_stability_fallback")
+        root = refresh_scrolled_webview(adb_path, serial, root, guard, events, previous_root)
+        return wait_creator_content(adb_path, serial, root, guard, events), False, False
     if fast_pair:
         from xhs_native_window import NativePairUnavailable
         try:
@@ -2441,6 +2470,32 @@ def read_scrolled_content(adb_path, serial, previous_root, guard, events, fast_p
     return root, False, fast_pair
 
 
+def verification_entry(args, guard, events):
+    """Reuse only a freshly proven same-slot list from the completed primary scan."""
+    prior = getattr(args, "verified_entry_events", ())
+    if ("native_window_elements_enabled" not in prior
+            or {e for e in prior if e.startswith("collection_slot_requested:")} != {"collection_slot_requested:" + args.app_slot}):
+        return None
+    carried = [e for e in prior if e.startswith(("collection_slot_requested:", "clone_user_requested:"))
+               or e == "native_window_elements_enabled"]
+    guard()
+    current = focus(args.adb, args.serial)
+    assert_requested_foreground(current, carried)
+    if not works_webview_activity(current):
+        return None
+    verify_collection_slot(args.adb, args.serial, args.app_slot, carried)
+    root = navigation_capture(args.adb, args.serial, guard, carried)
+    guard()
+    if focus(args.adb, args.serial) != current:
+        raise ElementListReadError("verification entry foreground changed")
+    require_creator_service_available(root)
+    if root.get("native-window-reader") != "1" or not creator_list(root) or creator_filter_panel(root):
+        return None
+    events.extend(carried)
+    events.append("verification_existing_list_reused")
+    return root
+
+
 def collect_once(args):
     device = assert_idle(args.device_cache, args.serial, args.device_name, args.task_id, args.app_slot, args.cancel_file)
     if adb(args.adb, args.serial, "get-state", timeout=6).strip() != "device":
@@ -2455,9 +2510,11 @@ def collect_once(args):
         events.append("collection_verification_pass")
         events.extend(["data_center_loading_reopen:budget_carried"] * getattr(args, "used_loading_reopens", 0))
     entry_started = time.monotonic()
-    release_idle_poco(args.adb, args.serial, guard, events)
-    root = start_xhs(args.adb, args.serial, args.app_slot, guard, events)
-    root = ensure_creator_list(args.adb, args.serial, root, args.app_slot, guard, events)
+    root = verification_entry(args, guard, events) if getattr(args, "verification_pass", False) else None
+    if root is None:
+        release_idle_poco(args.adb, args.serial, guard, events)
+        root = start_xhs(args.adb, args.serial, args.app_slot, guard, events)
+        root = ensure_creator_list(args.adb, args.serial, root, args.app_slot, guard, events)
     verify_collection_slot(args.adb, args.serial, args.app_slot, events)
     events.append("collection_entry_ms:" + str(round((time.monotonic() - entry_started) * 1000)))
     newest_started = time.monotonic()
@@ -2614,6 +2671,7 @@ def collect(args):
     first["stop_reason"] = "verification_unproven"
     verification_args = argparse.Namespace(**vars(args))
     verification_args.verification_pass = True
+    verification_args.verified_entry_events = tuple(first["recovery_events"])
     verification_args.used_loading_reopens = data_center_reopen_count(first["recovery_events"])
     started = time.monotonic()
     try:
@@ -2632,6 +2690,9 @@ def collect(args):
         "collection_primary_count:" + str(len(a)), "collection_verification_count:" + str(len(b)),
         "collection_verification_scrolls:" + str(second["scrolls"]),
         "collection_verification_ms:" + str(round((time.monotonic() - started) * 1000)),
+        "collection_verification_fresh_pages:" + str(second["recovery_events"].count("verification_fresh_page_accepted")),
+        "collection_verification_fallback_pages:" + str(second["recovery_events"].count("verification_page_stability_fallback")),
+        "collection_verification_entry_reused:" + str("verification_existing_list_reused" in second["recovery_events"]).lower(),
         "collection_verification_stop:" + str(second["stop_reason"])]
     # Counts/status may legitimately change during the second pass. Identity,
     # order, scope and the proven boundary must not be inferred from a union.
