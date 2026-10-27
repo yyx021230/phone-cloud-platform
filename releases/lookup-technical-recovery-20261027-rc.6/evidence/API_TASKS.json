@@ -1,0 +1,243 @@
+{
+  "tasks": [
+    {
+      "taskId": "5d6b9198-4409-4fca-b06f-e97fade4a03a",
+      "device": "154",
+      "type": "alipay_name_start",
+      "purpose": "account_preparation",
+      "startedAt": "2026-10-27T07:14:37.743Z",
+      "status": "succeeded",
+      "hasName": false,
+      "endedAt": "2026-10-27T07:15:54.670Z"
+    },
+    {
+      "taskId": "f0a3dbad-264a-4510-8480-8ba7c690e317",
+      "device": "142",
+      "type": "alipay_name_start",
+      "purpose": "account_preparation",
+      "startedAt": "2026-10-27T07:14:38.250Z",
+      "status": "succeeded",
+      "hasName": false,
+      "endedAt": "2026-10-27T07:16:35.070Z"
+    },
+    {
+      "taskId": "ee9be1b8-8136-4b95-8108-2bb5bf17af7c",
+      "device": "154",
+      "type": "alipay_name_query",
+      "purpose": "probe",
+      "startedAt": "2026-10-27T07:15:54.796Z",
+      "status": "succeeded",
+      "hasName": true,
+      "endedAt": "2026-10-27T07:16:41.257Z"
+    },
+    {
+      "taskId": "052b2c57-36fb-4754-b400-085bfe5aa741",
+      "device": "142",
+      "type": "alipay_name_query",
+      "purpose": "probe",
+      "startedAt": "2026-10-27T07:16:35.416Z",
+      "status": "succeeded",
+      "hasName": true,
+      "endedAt": "2026-10-27T07:17:21.999Z"
+    },
+    {
+      "taskId": "08780ee4-13cb-4b4c-aac5-9d6e8e5b3eef",
+      "device": "142",
+      "type": "alipay_name_query",
+      "purpose": "business",
+      "startedAt": "2026-10-27T07:17:22.588Z",
+      "status": "succeeded",
+      "hasName": false,
+      "endedAt": "2026-10-27T07:18:50.389Z"
+    },
+    {
+      "taskId": "2265fa16-2717-451d-9d85-3483962d522e",
+      "device": "154",
+      "type": "alipay_name_stop",
+      "purpose": "cleanup",
+      "startedAt": "2026-10-27T07:18:52.780Z",
+      "status": "succeeded",
+      "hasName": false,
+      "endedAt": "2026-10-27T07:19:14.385Z"
+    },
+    {
+      "taskId": "56ecf2c4-1ee7-4d81-a1d0-53821d448fa5",
+      "device": "142",
+      "type": "alipay_name_stop",
+      "purpose": "cleanup",
+      "startedAt": "2026-10-27T07:18:53.286Z",
+      "status": "succeeded",
+      "hasName": false,
+      "endedAt": "2026-10-27T07:19:12.285Z"
+    }
+  ],
+  "external": [
+    {
+      "operation": "prepare",
+      "http": 200,
+      "status": "preparing"
+    },
+    {
+      "operation": "submit",
+      "http": 202,
+      "status": "queued"
+    },
+    {
+      "operation": "stop",
+      "http": 202,
+      "status": "stopping"
+    }
+  ],
+  "readerCalls": [
+    {
+      "taskId": "ee9be1b8-8136-4b95-8108-2bb5bf17af7c",
+      "operation": "query",
+      "observationOnlyResume": false,
+      "recoverUnexpectedPage": false,
+      "workerExited": true,
+      "steps": [
+        "poco_instrumentation_launch_started",
+        "poco_instrumentation_connected",
+        "poco_request_received",
+        "poco_reused",
+        "poco_reuse_focus_observed",
+        "reuse_search_page_by_exact_activity",
+        "reuse_existing_search_page",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "poco_input_clear_confirmed",
+        "query_input_throttle_wait",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "input_phone",
+        "submit_search",
+        "lookup_visual_result_probe",
+        "lookup_visual_frame_read",
+        "lookup_visual_frame_read",
+        "masked_real_name_tail_extracted"
+      ],
+      "ok": true
+    },
+    {
+      "taskId": "052b2c57-36fb-4754-b400-085bfe5aa741",
+      "operation": "query",
+      "observationOnlyResume": false,
+      "recoverUnexpectedPage": false,
+      "workerExited": true,
+      "steps": [
+        "poco_instrumentation_launch_started",
+        "poco_instrumentation_waiting",
+        "poco_instrumentation_connected",
+        "poco_request_received",
+        "poco_reused",
+        "poco_reuse_focus_observed",
+        "reuse_search_page_by_exact_activity",
+        "reuse_existing_search_page",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "poco_input_clear_confirmed",
+        "query_input_throttle_wait",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "input_phone",
+        "submit_search",
+        "lookup_visual_result_probe",
+        "lookup_visual_frame_read",
+        "lookup_visual_frame_read",
+        "masked_real_name_tail_extracted"
+      ],
+      "ok": true
+    },
+    {
+      "taskId": "08780ee4-13cb-4b4c-aac5-9d6e8e5b3eef",
+      "operation": "query",
+      "observationOnlyResume": false,
+      "recoverUnexpectedPage": false,
+      "workerExited": true,
+      "steps": [
+        "poco_instrumentation_launch_started",
+        "poco_instrumentation_waiting",
+        "poco_instrumentation_connected",
+        "poco_request_received",
+        "poco_reused",
+        "poco_reuse_focus_observed",
+        "reuse_search_page_by_exact_activity",
+        "reuse_existing_search_page",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "clear_previous_query",
+        "poco_input_clear_confirmed",
+        "query_input_throttle_wait",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "input_phone",
+        "submit_search",
+        "lookup_visual_result_probe",
+        "lookup_visual_frame_read",
+        "lookup_visual_frame_read",
+        "poco_fast_path_failed"
+      ],
+      "ok": false
+    },
+    {
+      "taskId": "08780ee4-13cb-4b4c-aac5-9d6e8e5b3eef",
+      "operation": "query_resume",
+      "observationOnlyResume": true,
+      "allowEmptyInputRecovery": false,
+      "recoverUnexpectedPage": false,
+      "workerExited": true,
+      "steps": [
+        "poco_instrumentation_launch_started",
+        "poco_instrumentation_waiting",
+        "poco_instrumentation_connected",
+        "poco_request_received",
+        "poco_reused",
+        "resume_query_without_reinput",
+        "resume_result_observation_only",
+        "lookup_visual_result_probe",
+        "lookup_visual_frame_read",
+        "lookup_visual_frame_read",
+        "lookup_no_name_result"
+      ],
+      "ok": true
+    },
+    {
+      "taskId": "56ecf2c4-1ee7-4d81-a1d0-53821d448fa5",
+      "operation": "stop",
+      "observationOnlyResume": false,
+      "recoverUnexpectedPage": false,
+      "workerExited": true,
+      "steps": [
+        "poco_instrumentation_launch_started",
+        "poco_instrumentation_waiting",
+        "poco_instrumentation_connected",
+        "poco_request_received",
+        "poco_reused",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "clear_previous_query",
+        "lookup_session_stopped"
+      ],
+      "ok": true
+    },
+    {
+      "taskId": "2265fa16-2717-451d-9d85-3483962d522e",
+      "operation": "stop",
+      "observationOnlyResume": false,
+      "recoverUnexpectedPage": false,
+      "workerExited": true,
+      "steps": [
+        "poco_instrumentation_launch_started",
+        "poco_instrumentation_connected",
+        "poco_request_received",
+        "poco_reused",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "clear_previous_query",
+        "lookup_session_stopped"
+      ],
+      "ok": true
+    }
+  ],
+  "stopped": true
+}

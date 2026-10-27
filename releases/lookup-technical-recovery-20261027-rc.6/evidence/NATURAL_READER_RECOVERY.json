@@ -1,0 +1,22 @@
+{
+  "atUtc": "2026-10-27T07:21:13.195035+00:00",
+  "type": "natural-post-submit-RPC-timeout",
+  "injected": false,
+  "sameTask": true,
+  "singleBusiness": true,
+  "inputCount": 1,
+  "submitCount": 1,
+  "readerReattachCount": 1,
+  "observationOnly": true,
+  "allowEmptyInputRecovery": false,
+  "resumeInputOrRestart": false,
+  "initialNativeSeconds": 42.64,
+  "resumeNativeSeconds": 29.265,
+  "apiStatus": "completed",
+  "nameEmpty": true,
+  "originalAndResumeScreenshotsVisuallyReviewed": true,
+  "visiblePage": "phone recharge shortcut and recommendations; no name card",
+  "roundStopped": true,
+  "harnessInjectedAcceptance": false,
+  "harnessAcceptanceExplanation": "Original Boolean requires injection, which was not reached. Independent natural-case assertions above passed."
+}
