@@ -1,0 +1,461 @@
+{
+  "date": "2026-10-27",
+  "timezone": "Asia/Shanghai",
+  "method": "existing signed-in administrator browser UI /lookup-pool.html",
+  "status": "saved_and_reloaded",
+  "before": {
+    "rows": [
+      {
+        "enabled": true,
+        "number": "051"
+      },
+      {
+        "enabled": true,
+        "number": "052"
+      },
+      {
+        "enabled": true,
+        "number": "054"
+      },
+      {
+        "enabled": true,
+        "number": "055"
+      },
+      {
+        "enabled": true,
+        "number": "087"
+      },
+      {
+        "enabled": true,
+        "number": "138"
+      },
+      {
+        "enabled": true,
+        "number": "152"
+      },
+      {
+        "enabled": true,
+        "number": "188"
+      },
+      {
+        "enabled": true,
+        "number": "172"
+      },
+      {
+        "enabled": true,
+        "number": "156"
+      },
+      {
+        "enabled": true,
+        "number": "155"
+      },
+      {
+        "enabled": true,
+        "number": "115"
+      },
+      {
+        "enabled": true,
+        "number": "060"
+      },
+      {
+        "enabled": false,
+        "number": "058"
+      },
+      {
+        "enabled": true,
+        "number": "164"
+      },
+      {
+        "enabled": true,
+        "number": "163"
+      },
+      {
+        "enabled": true,
+        "number": "154"
+      },
+      {
+        "enabled": true,
+        "number": "006"
+      },
+      {
+        "enabled": true,
+        "number": "057"
+      },
+      {
+        "enabled": false,
+        "number": "010"
+      },
+      {
+        "enabled": true,
+        "number": "183"
+      },
+      {
+        "enabled": false,
+        "number": "082"
+      },
+      {
+        "enabled": true,
+        "number": "086"
+      },
+      {
+        "enabled": true,
+        "number": "121"
+      },
+      {
+        "enabled": true,
+        "number": "146"
+      },
+      {
+        "enabled": true,
+        "number": "149"
+      },
+      {
+        "enabled": true,
+        "number": "153"
+      },
+      {
+        "enabled": true,
+        "number": "181"
+      },
+      {
+        "enabled": true,
+        "number": "182"
+      },
+      {
+        "enabled": false,
+        "number": "162"
+      },
+      {
+        "enabled": true,
+        "number": "161"
+      },
+      {
+        "enabled": true,
+        "number": "142"
+      },
+      {
+        "enabled": true,
+        "number": "074"
+      },
+      {
+        "enabled": false,
+        "number": "078"
+      },
+      {
+        "enabled": true,
+        "number": "079"
+      },
+      {
+        "enabled": false,
+        "number": "118"
+      },
+      {
+        "enabled": true,
+        "number": "130"
+      },
+      {
+        "enabled": true,
+        "number": "157"
+      },
+      {
+        "enabled": true,
+        "number": "147"
+      },
+      {
+        "enabled": true,
+        "number": "101"
+      },
+      {
+        "enabled": true,
+        "number": "107"
+      },
+      {
+        "enabled": true,
+        "number": "165"
+      },
+      {
+        "enabled": true,
+        "number": "112"
+      },
+      {
+        "enabled": true,
+        "number": "067"
+      },
+      {
+        "enabled": true,
+        "number": "053"
+      },
+      {
+        "enabled": true,
+        "number": "128"
+      },
+      {
+        "enabled": true,
+        "number": "158"
+      },
+      {
+        "enabled": true,
+        "number": "143"
+      },
+      {
+        "enabled": true,
+        "number": "191"
+      },
+      {
+        "enabled": true,
+        "number": "116"
+      },
+      {
+        "enabled": true,
+        "number": "176"
+      }
+    ],
+    "concurrency": 7,
+    "inflightLimit": 40,
+    "waitSeconds": 120
+  },
+  "after": {
+    "rows": [
+      {
+        "enabled": true,
+        "number": "006"
+      },
+      {
+        "enabled": false,
+        "number": "010"
+      },
+      {
+        "enabled": true,
+        "number": "051"
+      },
+      {
+        "enabled": true,
+        "number": "052"
+      },
+      {
+        "enabled": true,
+        "number": "053"
+      },
+      {
+        "enabled": true,
+        "number": "054"
+      },
+      {
+        "enabled": true,
+        "number": "057"
+      },
+      {
+        "enabled": false,
+        "number": "058"
+      },
+      {
+        "enabled": true,
+        "number": "060"
+      },
+      {
+        "enabled": true,
+        "number": "067"
+      },
+      {
+        "enabled": true,
+        "number": "074"
+      },
+      {
+        "enabled": false,
+        "number": "078"
+      },
+      {
+        "enabled": true,
+        "number": "079"
+      },
+      {
+        "enabled": true,
+        "number": "086"
+      },
+      {
+        "enabled": true,
+        "number": "087"
+      },
+      {
+        "enabled": true,
+        "number": "101"
+      },
+      {
+        "enabled": true,
+        "number": "107"
+      },
+      {
+        "enabled": true,
+        "number": "112"
+      },
+      {
+        "enabled": true,
+        "number": "115"
+      },
+      {
+        "enabled": true,
+        "number": "116"
+      },
+      {
+        "enabled": false,
+        "number": "118"
+      },
+      {
+        "enabled": true,
+        "number": "128"
+      },
+      {
+        "enabled": true,
+        "number": "130"
+      },
+      {
+        "enabled": true,
+        "number": "138"
+      },
+      {
+        "enabled": true,
+        "number": "142"
+      },
+      {
+        "enabled": true,
+        "number": "146"
+      },
+      {
+        "enabled": true,
+        "number": "147"
+      },
+      {
+        "enabled": true,
+        "number": "149"
+      },
+      {
+        "enabled": true,
+        "number": "152"
+      },
+      {
+        "enabled": true,
+        "number": "153"
+      },
+      {
+        "enabled": true,
+        "number": "154"
+      },
+      {
+        "enabled": true,
+        "number": "155"
+      },
+      {
+        "enabled": true,
+        "number": "156"
+      },
+      {
+        "enabled": true,
+        "number": "157"
+      },
+      {
+        "enabled": true,
+        "number": "158"
+      },
+      {
+        "enabled": true,
+        "number": "159"
+      },
+      {
+        "enabled": true,
+        "number": "161"
+      },
+      {
+        "enabled": false,
+        "number": "162"
+      },
+      {
+        "enabled": true,
+        "number": "163"
+      },
+      {
+        "enabled": true,
+        "number": "164"
+      },
+      {
+        "enabled": true,
+        "number": "165"
+      },
+      {
+        "enabled": true,
+        "number": "172"
+      },
+      {
+        "enabled": true,
+        "number": "176"
+      },
+      {
+        "enabled": true,
+        "number": "181"
+      },
+      {
+        "enabled": true,
+        "number": "182"
+      },
+      {
+        "enabled": true,
+        "number": "183"
+      },
+      {
+        "enabled": true,
+        "number": "188"
+      },
+      {
+        "enabled": true,
+        "number": "191"
+      },
+      {
+        "enabled": true,
+        "number": "192"
+      }
+    ],
+    "verified": {
+      "count": 49,
+      "enabled": 44,
+      "removed": [
+        {
+          "enabled": true,
+          "number": "055"
+        },
+        {
+          "enabled": false,
+          "number": "082"
+        },
+        {
+          "enabled": true,
+          "number": "121"
+        },
+        {
+          "enabled": true,
+          "number": "143"
+        }
+      ],
+      "added": [
+        {
+          "enabled": true,
+          "number": "159"
+        },
+        {
+          "enabled": true,
+          "number": "192"
+        }
+      ],
+      "otherChanges": []
+    }
+  },
+  "preservedSettings": {
+    "concurrency": 7,
+    "preparedClientInflightLimit": 40,
+    "waitSeconds": 120
+  },
+  "limitations": [
+    "SSH existing session authentication failed; no current ACTIVE/image or database direct verification",
+    "Browser reload confirms persisted application configuration; new devices not actively queried for acceptance"
+  ],
+  "codeDeployed": false,
+  "servicesRestarted": false
+}
