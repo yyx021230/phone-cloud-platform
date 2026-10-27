@@ -13,6 +13,7 @@
 ## 验证与临时应用
 
 - 本地测试检查范围、保留原配置、拒绝覆盖与 gzip 字节一致性；媒体鉴权、会话和 relay 回归另执行。首次 relay 测试因本 worktree 缺少 `ws` 未运行，连接既有依赖后重测通过，不升级依赖。
+- 隔离验证必须显式设置独立的 client_body、proxy、fastcgi、uwsgi、scgi 五类临时路径；仅设置 `-p` 不足以隔离 Debian Nginx 的绝对默认路径。本轮初次验证遗漏此项，15:46:44–15:48:49 产生31条目录权限错误；随后生产配置校验恢复 www-data 所有者，修正隔离路径后重测通过，恢复后无新增同类错误。这次执行失误与15:07/15:14的既有响应超时分开记录。
 - 隔离 Nginx 1.18 实际代理测试：446150 字节库存样本压缩为 54365 字节，解压字节及 SHA256 完全一致；identity、gzip;q=0 和 `/webrtc/` 反例保持原文。
 - 发布前后在媒体宿主机运行现有 `verify.mjs --live`，必须通过 D-075。宿主无 Node PATH，使用现有容器文件系统的 musl loader + Node 在宿主执行，保持宿主 `/proc` / systemctl 可见；不是容器内 repository-only 验证。
 - 临时应用前校验实际文件哈希并备份；修改后 `nginx -t`，失败立即恢复文件；通过后仅 graceful reload Nginx。应用服务、媒体、Windows 和 ADB 不重启。
