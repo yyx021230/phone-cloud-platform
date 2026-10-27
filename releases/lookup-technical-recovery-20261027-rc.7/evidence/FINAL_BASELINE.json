@@ -1,0 +1,10 @@
+{
+  "version": "lookup-rc5-streaming-20261026-deployed.1",
+  "image": "sha256:5ab68ecbc67dfd4815f3ec93b0d3dd6265acd6a5d044867c3e04904636e80649",
+  "restarts": 0,
+  "running": true,
+  "health": {
+    "ready": true,
+    "status": 200
+  }
+}

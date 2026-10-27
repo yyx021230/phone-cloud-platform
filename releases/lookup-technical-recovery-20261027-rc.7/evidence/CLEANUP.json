@@ -1,0 +1,18 @@
+{
+  "devices": [
+    {
+      "number": "112",
+      "online": true,
+      "ownLeaseRemaining": false
+    },
+    {
+      "number": "154",
+      "online": true,
+      "ownLeaseRemaining": false
+    }
+  ],
+  "testWorkerCount": 0,
+  "agentPid": 14540,
+  "adbPid": 20316,
+  "owner": "SYSTEM"
+}

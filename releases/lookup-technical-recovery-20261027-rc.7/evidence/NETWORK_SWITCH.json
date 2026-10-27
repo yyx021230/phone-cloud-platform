@@ -1,0 +1,26 @@
+{
+  "isolation": "local HTTP + candidate Agent task/account functions + staged Windows runners",
+  "networkPhone": 112,
+  "networkErrorNatural": true,
+  "accountRestrictionRule": "user-confirmed business semantics after successful refresh and persistent same error page",
+  "refreshPixel": [
+    360,
+    603
+  ],
+  "screenshotSize": [
+    720,
+    1612
+  ],
+  "refreshToRestrictionSeconds": 5.609,
+  "automaticPrepareIncludingSwitchSeconds": 96.766,
+  "automaticPrepareWithin120Seconds": true,
+  "samePhoneNaturalAdvertisementDismissed": true,
+  "extraColdStartAfterVerifiedSwitch": false,
+  "cooldownPersistedToIsolatedTestStore": true,
+  "productionCooldownChanged": false,
+  "newAccountProbeSucceededAfterHuman": true,
+  "businessSubmitted": false,
+  "roundStopped": true,
+  "testHarnessFailure": "mutable held-device list removed a released human-waiting phone; fixed immutable observer scope and exact-lease preflight for next run",
+  "serviceRootCauseProven": false
+}

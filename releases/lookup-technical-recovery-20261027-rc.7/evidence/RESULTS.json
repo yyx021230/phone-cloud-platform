@@ -1,0 +1,35 @@
+{
+  "status": "local-candidate-tested-not-deployed",
+  "javascript": {
+    "serialRegression": 1348,
+    "newAgentIntegration": 6,
+    "failed": 0
+  },
+  "python": {
+    "discovery": 600,
+    "runners": 163,
+    "failed": 0
+  },
+  "windowsTargeted": {
+    "passed": 43,
+    "failed": 0
+  },
+  "staticCheckPassed": true,
+  "realNetworkRestrictionAndAutomaticSwitchAccepted": true,
+  "realControlledBeforeInputRecoveryAndHttpFinishAccepted": true,
+  "realDeviceAllRemainingScenariosComplete": false,
+  "initialLocalHarnessRunIncomplete": true,
+  "initialHarnessFailure": "mutable test inventory dropped released human-waiting device; immutable scope/lease preflight fixed and complete run repeated",
+  "intentionalRedBeforeFix": 2,
+  "remainingAcceptance": [
+    "Natural recurrence of the 154 pre-input RPC timeout under final candidate was not observed; controlled failure exercised the full real-device path instead.",
+    "Network-page limitation during a prepared business request did not recur naturally this run; real probe rotation succeeded, business handoff mapping covered by Agent integration tests.",
+    "Final-candidate real PocoService crash dialog and exact device-specific automatic-switch timing on 154 were not newly reproduced.",
+    "New eight-hour cooldown expiry was not awaited; no timestamps shortened.",
+    "Local real HTTP bridge does not exercise the shared production Agent main loop/outbox/cancellation latency.",
+    "No production deployment or push."
+  ],
+  "productionChanged": false,
+  "productionAdbAndAgentOwner": "SYSTEM",
+  "testLeasesAndWorkersReleased": true
+}

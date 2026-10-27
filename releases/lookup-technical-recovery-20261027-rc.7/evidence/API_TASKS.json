@@ -1,0 +1,79 @@
+[
+  {
+    "taskId": "10e14e71-4300-4626-84fc-47b753111118",
+    "device": "154",
+    "type": "alipay_name_start",
+    "purpose": "account_preparation",
+    "startedAt": "2026-10-27T07:58:06.629Z",
+    "endedAt": "2026-10-27T07:59:26.330Z",
+    "status": "succeeded",
+    "code": null,
+    "hasName": false
+  },
+  {
+    "taskId": "317eae1a-08c9-43d3-a89b-7e079cded4f2",
+    "device": "112",
+    "type": "alipay_name_start",
+    "purpose": "account_preparation",
+    "startedAt": "2026-10-27T07:58:07.109Z",
+    "endedAt": "2026-10-27T07:59:09.280Z",
+    "status": "succeeded",
+    "code": null,
+    "hasName": false
+  },
+  {
+    "taskId": "dcfe6182-cb59-401a-8904-3611d9671026",
+    "device": "112",
+    "type": "alipay_name_query",
+    "purpose": "probe",
+    "startedAt": "2026-10-27T07:59:10.360Z",
+    "endedAt": "2026-10-27T07:59:57.225Z",
+    "status": "succeeded",
+    "code": null,
+    "hasName": true
+  },
+  {
+    "taskId": "b16f9aeb-e8e3-47d9-99e7-19c7eb54f8b1",
+    "device": "154",
+    "type": "alipay_name_query",
+    "purpose": "probe",
+    "startedAt": "2026-10-27T07:59:27.642Z",
+    "endedAt": "2026-10-27T08:00:33.713Z",
+    "status": "succeeded",
+    "code": null,
+    "hasName": true
+  },
+  {
+    "taskId": "4f73a3d3-9b38-4c0c-8e81-a48cd857f864",
+    "device": "112",
+    "type": "alipay_name_query",
+    "purpose": "business",
+    "startedAt": "2026-10-27T08:00:35.403Z",
+    "endedAt": "2026-10-27T08:01:13.547Z",
+    "status": "succeeded",
+    "code": null,
+    "hasName": false
+  },
+  {
+    "taskId": "f6397257-2c21-46d0-959a-97df07718be9",
+    "device": "154",
+    "type": "alipay_name_stop",
+    "purpose": "cleanup",
+    "startedAt": "2026-10-27T08:01:15.800Z",
+    "endedAt": "2026-10-27T08:01:38.440Z",
+    "status": "succeeded",
+    "code": null,
+    "hasName": false
+  },
+  {
+    "taskId": "5ef765e0-1efd-407f-bde2-588cedead368",
+    "device": "112",
+    "type": "alipay_name_stop",
+    "purpose": "cleanup",
+    "startedAt": "2026-10-27T08:01:16.258Z",
+    "endedAt": "2026-10-27T08:01:31.965Z",
+    "status": "succeeded",
+    "code": null,
+    "hasName": false
+  }
+]
