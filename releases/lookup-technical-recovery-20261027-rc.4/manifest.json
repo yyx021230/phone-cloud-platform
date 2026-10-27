@@ -1,0 +1,52 @@
+{
+  "version": "lookup-technical-recovery-20261027-rc.4",
+  "status": "local-candidate-not-deployed",
+  "branch": "codex/lookup-preparation-recovery-20261027",
+  "parentCommit": "6b038ee355cd2f4c37bb31c09ecf5733cb7eb12e",
+  "inherits": "lookup-technical-recovery-20261026-rc.3",
+  "baseline": "lookup-rc5-streaming-20261026-deployed.1",
+  "baselineSource": "64148f3cfd1793f423a1b9d7097746a6ba79fec1",
+  "baselineImage": "sha256:5ab68ecbc67dfd4815f3ec93b0d3dd6265acd6a5d044867c3e04904636e80649",
+  "payload": {
+    "server/lookup-device-availability.mjs": "16d4d30f56c8e6fd6707a7af4a257192243e142c489c164d1e46608e9e1f0779",
+    "server/lookup-failure-domain.mjs": "0ef65eaeec84512d6a38ed9c0a4e6b9113fd6d863d46d069f13cf53e6bb7e11c",
+    "server/lookup-readiness.mjs": "03fc1ef4ca62d084159dc7702b8fff61b4db571fa9cf1d4843079a9fc9f07480",
+    "server/managed-lookup.mjs": "592ce01ffaf4d5ae562b70842f496e7708ee0c0fb3ebc810a57bd9eb71f448ed",
+    "windows-agent/scripts/alipay_name_lookup.py": "443a6cafb7244cf60a34c0028a7d177ed67b25243c0d4b4951d96f5dec0a701b",
+    "server/lookup-ai-vision.mjs": "5ed350d73dd90fe0d799604b466f2fc00a314c31428c05e0707d5bf7429e11e2",
+    "server/lookup-admin-console.mjs": "8c513bbd876b7d28c24fe695e2aed5940e33be25ba10336cb29dd97dba7c9230",
+    "public/lookup-admin.js": "a73862010010a141d1d43ab731bd769fb4305c4edc0bfcbfbc48b7902d3a4962",
+    "public/lookup-pool.js": "d87e587c9466cc71e87caf08d95f8f5da315996ce4d7a993ed18b90ce58a5e45",
+    "windows-agent/src/index.mjs": "a27748c994f6f146f6057ff42f83221416c693781dc2dc169f861d9b0769e183",
+    "windows-agent/src/lookup-page-recovery.mjs": "16174859c8a3448331c1ec625d46d62d047683640918ea6f18ea97da4704b374",
+    "windows-agent/src/lookup-recovery-trace.mjs": "a4817215806bbac5ef13094ddbfae9c3b3824ca0f07932bc081b931150dd84d4",
+    "windows-agent/scripts/lookup_page_actions.py": "e281eaf4d7396a8f4ba4a6f18bee47131005ddfa8db90cc94c46cb2f3c4811cc"
+  },
+  "tests": {
+    "server/lookup-device-availability.test.mjs": "0044523a8099a72c4fc2ec313d718593807d9b70e749acec6237b099456527aa",
+    "server/lookup-probe-ai.test.mjs": "777dfbbe2a582e868548f9e4039ace958c6acc60c687a20c73f7e3e19ccbc6b0",
+    "server/lookup-technical-domain.test.mjs": "e259977237bcb16f00e2acf26407226496e23a962b5ee7e8a1d6a874babb7ed7",
+    "windows-agent/scripts/test_lookup_prepare_technical_recovery.py": "8d58bf3f421ef2398016f98aa11fd6c5e75a52706b5051ed1ee1bc625381441a",
+    "windows-agent/scripts/test_lookup_switch_login.py": "e9be135a8cd2022fc8cd78316b32b47476d5915addedfba9cf581462b17b84f1",
+    "server/lookup-ai-vision.test.mjs": "204581a0b613a5970068cbb2dd380c01ea7ac5f58ef16cfb1afce2a7f9b173d3",
+    "server/lookup-ai-headerless.test.mjs": "4f31ba73d9d11e165441b797463f5fc88f935109d6e3f537e707a7d871f920fc",
+    "server/lookup-ai-headerless.fixture.json": "6dbe58532b32faf6096069df4fdf0ba2c38f73d4813284a305b31aead98ec45a",
+    "server/lookup-admin-console.test.mjs": "48d62d01bae4bb82f3f968ce52a19aaebee30d2fff2744eb51bb1ac72176d893",
+    "windows-agent/src/lookup-page-recovery.test.mjs": "9972749f7eb5271021f163c70ae9d5206670c8c3af59997a3fcc264d3e6f6166",
+    "windows-agent/src/lookup-recovery-trace.test.mjs": "fe1a98fd1b13224aa1bf76ebde99bb624f7be37f74c54d31af976413495fac72",
+    "windows-agent/scripts/test_lookup_page_actions.py": "1200472e69c73b841d1a53ee148802163a41f6fc4dc7a0dd6045739bced1a99d",
+    "windows-agent/scripts/test_lookup_poco_crash_overlay.py": "8993846a65c98566b1f7c2c7f03c6603f26ff86528d2c78e3cdc7a6c943ecc51"
+  },
+  "remainingAcceptance": [
+    "Actual public-API business submission/result/dedup/handoff with staged Windows runners: blocked by real CAPTCHA; zero business submitted this turn",
+    "Natural limit/account switch/cooldown and true device handoff not accepted this turn",
+    "Other compact-card rejection and model disagreement beyond rc.3 narrow layout remain unresolved",
+    "Production rollout is not authorized for this stage"
+  ],
+  "verification": {
+    "verification/recovery-http-page-reprobe50.mjs": "47d2e3b92dcbf545f9814670f3fc0c1089f9a73ec30579836b3d6adad92c729a",
+    "verification/recovery-http-device-reprobe50.mjs": "e924db9fd385efe00a2a71b027c1a7ad87c21e2706743682038a88327e677e58",
+    "verification/postgres-page-reprobe-http.py": "60ec8f9c270e99faf70d3741d0bddca866e69fedc074aa36efdf022dc6e090a7",
+    "verification/postgres-device-reprobe-http.py": "937e77394e24e349a71f41ad515f0331e4435fd6d6a228e98d37c718652ee076"
+  }
+}

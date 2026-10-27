@@ -1,0 +1,38 @@
+{
+  "rootCheck": "passed",
+  "javascriptRegression": {
+    "passed": 1344,
+    "failed": 0,
+    "skipped": 0,
+    "includesExistingScreenRegression": true
+  },
+  "agentCheck": {
+    "passed": 415,
+    "subsetOfJavascriptRegression": true
+  },
+  "python": {
+    "passed": 755
+  },
+  "windowsPython": {
+    "passed": 432,
+    "overlapsPythonSuite": true
+  },
+  "httpSimulation": {
+    "runs": 2,
+    "businessEach": 50,
+    "realPhones": 0,
+    "database": "isolated PostgreSQL",
+    "changedIdempotencyKeyAfterMs": 121001
+  },
+  "realBusinessAcceptance": "blocked: human verification required",
+  "privateLogHashes": {
+    "check-final-2.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "regression-final.log": "f708eb8bea301ee91fe0c27a5e9153cb5a1760a2c2ade26044daad278f960ecd",
+    "agent-check-final.log": "7e5072134a7f2f1cb18705a6b02302e8ee9b0d17dc6c0c652178f46553e36de7",
+    "python-full-final.log": "8030013980d37709481ff4f267ad9e7926b4bc9d93ff4976a72fe81ba391c306",
+    "windows-python-tests-final-candidate.log": "7cedffeb0d98bb43beda4413af297bd5fc33f1130add24d8dd1ecf3e24cb745a",
+    "targeted-2.log": "0e58d88292273e793b67fe4110b98731f074dd7d1c415913862bb96cb91ef605",
+    "postgres-reprobe-final.log": "f899a42658f64b54ca6e0c4ecde32b2d396ee3d4d958d56667e000123e1797f7",
+    "postgres-device-reprobe.log": "7c474a26cbb13916f45a8b112467ee0175508be84b8a30904e2142caec26af50"
+  }
+}

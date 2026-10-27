@@ -1,0 +1,28 @@
+{
+  "version": "lookup-rc5-streaming-20261026-deployed.1",
+  "source": "64148f3cfd1793f423a1b9d7097746a6ba79fec1",
+  "image": "sha256:5ab68ecbc67dfd4815f3ec93b0d3dd6265acd6a5d044867c3e04904636e80649",
+  "productionFileHashes": {
+    "server/lookup-device-availability.mjs": "4931dcae9b71601583c814a78d6439db23b6bcddc4ebbec29ff769f9b1e3b02f",
+    "server/lookup-failure-domain.mjs": "75d4b940322d16cc10a136f18412bfc80a3ce7e4d17516ee8dcb0dcdff666908",
+    "server/lookup-readiness.mjs": "41da6e878b73c4cafac2856e8e60b3afa9de21ff9ca87a3e987d792795b74730",
+    "server/managed-lookup.mjs": "57c9f882a1ca248241534e505cb1f73982b1a396d085a8e19384f3ae87e5120d",
+    "server/lookup-ai-vision.mjs": "2c978067c2a2ef845bc8f1bc8de85adcfb70d423d5cca271befe0407899dbe0a",
+    "server/lookup-admin-console.mjs": "ffd7a650bf079543a90d581d0280e73dd344c30f6650dea8cfeabbdb6f776669",
+    "public/lookup-admin.js": "f2f4b05f36c993403e299e7bfbb61d35ec5b09dd92b75b1735259948f3070854",
+    "public/lookup-pool.js": "37318793b4491ffd5c29570916f1ec6fd58106933c6916716a4cdf1fa26d1184",
+    "windows-agent/src/index.mjs": "eafc722b93788d82bc788ed79f963b17224b2d8c30528bfbfbcedb83fe9a9dd2",
+    "windows-agent/src/lookup-page-recovery.mjs": "c3ae74f3dbcf699a329f249b40f8c7c6218c0ddf092c7bdbacb30c9564157be1",
+    "windows-agent/src/lookup-recovery-trace.mjs": "78c1986687a288f200c6a32b8705ebe4ae25bc3191316d20b7aec13201cda2ef",
+    "windows-agent/scripts/alipay_name_lookup.py": "30e0c828d981f1e9fd9c62d6b6e48141c7c13ae25c5e899d68992ce04d2df024",
+    "windows-agent/scripts/lookup_page_actions.py": "5ba57a26a64b21c0989de4fee19ec60561cdef5a41203b066d40ee54ff429267"
+  },
+  "adbPid": 20316,
+  "adbOwner": "SYSTEM",
+  "agentPid": 14540,
+  "agentOwner": "SYSTEM",
+  "ownStagedWorkers": 0,
+  "ownTestLeasesReleased": true,
+  "deployed": false,
+  "pushed": false
+}
