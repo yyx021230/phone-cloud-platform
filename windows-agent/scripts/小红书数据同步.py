@@ -36,6 +36,9 @@ MAX_NATIVE_TITLE_CHARS = 4096
 DATA_CENTER_LOAD_SECONDS = 45
 DATA_CENTER_POLL_SECONDS = 2
 DATA_CENTER_MAX_REOPENS = 2
+# Real47/180 trials rejected this probe; retain experiments but do not pay
+# its staging/read cost in the production collection path.
+NATIVE_PAIR_PROBE_ENABLED = False
 
 
 
@@ -1655,6 +1658,7 @@ def creator_navigation_state(root):
 def ensure_creator_list(adb_path, serial, root, slot, guard, events, _notification_retry=False):
     recoveries = 0
     more_attempts = 0
+    overview_opened = "creator_overview_reopened" in events
     chat_backs = 0
     server_refreshes = 0
     states = []
@@ -1677,7 +1681,7 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events, _notificati
         # Creator Center also labels its overview entry “数据中心”. Keep the
         # proven native home on the existing entry/overlay/account checks below.
         if ((label(root, "数据中心") and not creator_overview_entry(root))
-                or (more_attempts and blank_works_loading(root))):
+                or ((more_attempts or overview_opened) and blank_works_loading(root))):
             return wait_data_center_loading(adb_path, serial, root, guard, events)
         if (label(root, "个人信息保护提示") and any(n.get("package") == XHS_PACKAGE
                 and n.get("text", "").startswith("欢迎使用小红书！") for n in root.iter("node"))
@@ -1753,6 +1757,12 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events, _notificati
         elif label(root, "笔记分析详情"):
             guard()
             adb(adb_path, serial, "shell", "input", "keyevent", "4", timeout=7)
+        elif creator_overview_entry(root):
+            tap_label(adb_path, serial, root, "观看", guard)
+            overview_opened = True
+            events.append("creator_overview_selected" if label(root, "最新笔记")
+                          else "creator_overview_opened_without_latest_notes")
+            time.sleep(0.8)
         elif label(root, "创作中心") and label(root, "最新笔记") and creator_more_label(root):
             if more_attempts >= 2 and label(root, "账号异常"):
                 raise RuntimeError("creator account abnormal; More did not open works analysis")
@@ -1760,10 +1770,6 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events, _notificati
             events.append("creator_more_selected")
             more_attempts += 1
             time.sleep(1)
-        elif creator_overview_entry(root):
-            tap_label(adb_path, serial, root, "观看", guard)
-            events.append("creator_overview_opened_without_latest_notes")
-            time.sleep(0.8)
         elif label(root, "创作者中心") and label(root, "我的草稿"):
             tap_label(adb_path, serial, root, "创作者中心", guard)
         elif label(root, "我的草稿") and any(
@@ -1839,15 +1845,15 @@ def reopen_creator_list(adb_path, serial, root, guard, events, slot="app1"):
     adb(adb_path, serial, "shell", "input", "keyevent", "4", timeout=7)
     time.sleep(0.4)
     root = navigation_capture(adb_path, serial, guard, events)
-    if label(root, "创作中心") and label(root, "最新笔记") and creator_more_label(root):
-        tap_label(adb_path, serial, root, creator_more_label(root), guard)
-    elif creator_overview_entry(root):
+    if creator_overview_entry(root):
         tap_label(adb_path, serial, root, "观看", guard)
         events.append("creator_overview_reopened")
         root = navigation_capture(adb_path, serial, guard, events)
         root = ensure_creator_list(adb_path, serial, root, slot, guard, events)
         events.append("list_reopened_at_newest")
         return root
+    elif label(root, "创作中心") and label(root, "最新笔记") and creator_more_label(root):
+        tap_label(adb_path, serial, root, creator_more_label(root), guard)
     else:
         raise RuntimeError("could not prove list returned to Creator Center")
     events.append("list_reopened_at_newest")
@@ -2187,6 +2193,12 @@ def swipe(adb_path, serial, root, guard, events):
     # the rows actually read, including when just one complete row remains.
     step = int(min((y2-y1)*.25, height*2,
                    max(height*.5, (rows[-1][1]-rows[0][1])*.5)))
+    # With four or more disjoint complete rows, retain the last two visible
+    # row starts as overlap and advance at most three median row heights.
+    # Thin/clipped subsets keep the original smaller step. Actual post-scroll
+    # continuity still requires fresh complete elements before accepting data.
+    if len(rows) >= 4 and all(a[3] <= b[1] for a, b in zip(rows, rows[1:])):
+        step = int(min((y2-y1)*.40, height*3, rows[-2][1]-rows[0][1]))
     if step <= 0:
         raise ElementListReadError("native row geometry cannot prove a scroll distance")
     end_y = max(y1+1, start_y-step)
@@ -2311,8 +2323,8 @@ def probe_element_pair(adb_path, serial, root, guard, events):
 
 def read_scrolled_content(adb_path, serial, previous_root, guard, events, fast_pair):
     """Keep continuity and two-snapshot checks; use the old path on unproven progress."""
-    from xhs_native_window import NativePairUnavailable
     if fast_pair:
+        from xhs_native_window import NativePairUnavailable
         try:
             trees = capture_element_pair(adb_path, serial, guard, events)
         except NativePairUnavailable:
@@ -2379,6 +2391,8 @@ def collect(args):
     fast_pair = False
     page_read_ms = 0
     fast_pages = 0
+    if not NATIVE_PAIR_PROBE_ENABLED:
+        events.append("native_pair_probe_disabled_pending_validation")
     for round_index in range(args.max_scrolls + 1):
         assert_idle(args.device_cache, args.serial, args.device_name, args.task_id, args.app_slot, args.cancel_file)
         assert_no_poco(args.adb, args.serial)
@@ -2445,7 +2459,7 @@ def collect(args):
         if round_index >= args.max_scrolls:
             result["stop_reason"] = "scroll_budget_exhausted"
             break
-        if not fast_probe_attempted:
+        if not fast_probe_attempted and NATIVE_PAIR_PROBE_ENABLED:
             fast_probe_attempted = True
             probe_started = time.monotonic()
             fast_pair = probe_element_pair(args.adb, args.serial, root, guard, events)

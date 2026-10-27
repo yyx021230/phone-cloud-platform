@@ -221,9 +221,12 @@ class LongNativeWindowTests(unittest.TestCase):
    stack.enter_context(patch.object(sync,'ensure_creator_list',side_effect=lambda a,b,r,*rest:r));stack.enter_context(patch.object(sync,'reopen_creator_list',return_value=first))
    stack.enter_context(patch.object(sync,'wait_creator_content',side_effect=lambda a,b,r,*rest:r));stack.enter_context(patch.object(sync,'refresh_scrolled_webview',side_effect=lambda a,b,r,*rest:r))
    stack.enter_context(patch.object(sync,'navigation_capture',side_effect=pages[1:]))
-   stack.enter_context(patch.object(sync,'probe_element_pair',return_value=fast))
+   stack.enter_context(patch.object(sync,'NATIVE_PAIR_PROBE_ENABLED',fast))
+   probe=stack.enter_context(patch.object(sync,'probe_element_pair',return_value=fast))
    stack.enter_context(patch.object(sync,'capture_element_pair',side_effect=[(r,copy.deepcopy(r)) for r in pages[1:]]))
    code=sync.main();result=json.loads(output.read_text())
+   if fast:probe.assert_called_once()
+   else:probe.assert_not_called()
   return code,result
  def test_default_scan_continues_past_thirty_swipes_to_proven_date_boundary(self):
   code,result=self.run_main();self.assertEqual(code,0);self.assertTrue(result['complete']);self.assertEqual(result['scrolls'],31)
