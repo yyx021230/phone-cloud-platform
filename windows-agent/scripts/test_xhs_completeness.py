@@ -185,6 +185,16 @@ class IndependentPassTests(unittest.TestCase):
         a['stop_reason']=b['stop_reason']='list_end_visible'
         self.assertTrue(self.collect(a,b)[0]['complete'])
 
+    def test_public_api_event_limit_preserves_final_proof_on_long_lists(self):
+        first=result();first['recovery_events']=['page observation']*150
+        out,_=self.collect(first,result())
+        public_events=out['recovery_events'][:100]
+        self.assertIn('collection_integrity:verified_two_pass',public_events)
+        for prefix in ['collection_primary_sha256:','collection_verification_sha256:',
+                       'collection_primary_count:','collection_verification_count:',
+                       'collection_verification_stop:']:
+            self.assertTrue(any(e.startswith(prefix) for e in public_events),prefix)
+
 
 class VerificationStrideTests(unittest.TestCase):
     def distance(self, events):

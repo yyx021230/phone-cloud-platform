@@ -2620,17 +2620,19 @@ def collect(args):
         second = collect_once(verification_args)
     except ElementListReadError:
         first["warnings"].append("verification_elements_unproven")
-        first["recovery_events"].append("collection_integrity:verification_elements_unproven")
+        first["recovery_events"].insert(0, "collection_integrity:verification_elements_unproven")
         return first
     identities = lambda result: [(n["title"], n["published_date"]) for n in result["notes"]]
     a, b = identities(first), identities(second)
     digest = lambda values: hashlib.sha256(json.dumps(values, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
-    first["recovery_events"].extend([
+    # The existing public API retains only the first 100 events. Keep the
+    # final completeness evidence ahead of verbose per-page observations.
+    first["recovery_events"][0:0] = [
         "collection_primary_sha256:" + digest(a), "collection_verification_sha256:" + digest(b),
         "collection_primary_count:" + str(len(a)), "collection_verification_count:" + str(len(b)),
         "collection_verification_scrolls:" + str(second["scrolls"]),
         "collection_verification_ms:" + str(round((time.monotonic() - started) * 1000)),
-        "collection_verification_stop:" + str(second["stop_reason"])])
+        "collection_verification_stop:" + str(second["stop_reason"])]
     # Counts/status may legitimately change during the second pass. Identity,
     # order, scope and the proven boundary must not be inferred from a union.
     valid_stops = {"older_than_window_visible", "list_end_visible"}
@@ -2638,11 +2640,11 @@ def collect(args):
             or a != b or len(set(a)) != len(a)
             or any(first[k] != second[k] for k in ("app_slot", "window_start_date", "window_end_date", "list_scope_raw"))):
         first["warnings"].append("two_pass_identity_or_boundary_unproven")
-        first["recovery_events"].append("collection_integrity:two_pass_mismatch")
+        first["recovery_events"].insert(0, "collection_integrity:two_pass_mismatch")
         return first
     first["complete"] = True
     first["stop_reason"] = first_stop
-    first["recovery_events"].append("collection_integrity:verified_two_pass")
+    first["recovery_events"].insert(0, "collection_integrity:verified_two_pass")
     return first
 
 
