@@ -18,8 +18,11 @@ class PairScanTests(unittest.TestCase):
     def setUp(self):
         self.before = ET.parse(S/'fixtures/xhs/works-elements-141.xml').getroot()
         self.after = copy.deepcopy(self.before)
-        title = sync.note_cards(self.after)[-1][1]['title']
-        next(n for n in self.after.iter('node') if n.get('text') == title).set('text', 'new synthetic note')
+        cards = sync.note_cards(self.before)
+        # A real downward advance retains the previous tail before new rows.
+        for index, (row, item) in enumerate(sync.note_cards(self.after)):
+            title = cards[index+1][1]['title'] if index+1 < len(cards) else 'new synthetic note'
+            next(n for n in row.iter('node') if n.get('text') == item['title']).set('text', title)
         self.events = ['collection_slot_requested:app1']
 
     def read(self, enabled=True):

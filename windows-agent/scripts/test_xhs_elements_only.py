@@ -68,7 +68,7 @@ class NativeReadingTests(unittest.TestCase):
    r=listing();r.set('data-source',kind)
    with self.assertRaises(sync.ElementListReadError):sync.note_cards(r)
  def test_only_explicit_empty_element_state_can_be_empty(self):
-  r=list_shell();ET.SubElement(r[0],'node',{'text':'暂无笔记','bounds':'[300,900][420,950]'})
+  r=list_shell();ET.SubElement(r[0],'node',{'package':sync.XHS_PACKAGE,'class':'android.widget.TextView','text':'暂无笔记','bounds':'[300,900][420,950]'})
   self.assertIsNotNone(sync.element_page_signature(r));self.assertEqual(sync.note_cards(r),[])
 
 class ElementCaptureTests(unittest.TestCase):
@@ -156,7 +156,8 @@ class ElementCollectionTests(unittest.TestCase):
    stack.enter_context(patch.object(sync,'wait_creator_content',side_effect=lambda a,b,r,*rest:r));stack.enter_context(patch.object(sync,'refresh_scrolled_webview',side_effect=lambda a,b,r,*rest:r))
    stack.enter_context(patch.object(sync,'navigation_capture',side_effect=following or []))
    stack.enter_context(patch.object(sync,'probe_element_pair',return_value=False))
-   return sync.collect(args)
+   stack.enter_context(patch.object(sync,'prove_native_list_start',side_effect=lambda a,b,r,*rest:r))
+   return sync.collect_once(args)
  def test_post_swipe_element_failure_preserves_prior_notes_as_incomplete(self):
   r=self.collect(listing(),[sync.ElementListReadError('missing elements')])
   self.assertFalse(r['complete']);self.assertEqual(len(r['notes']),5);self.assertEqual(r['stop_reason'],'elements_unproven');self.assertIn('collection_reader:ui_elements_only',r['recovery_events'])
@@ -220,12 +221,13 @@ class LongNativeWindowTests(unittest.TestCase):
    stack.enter_context(patch.object(sync,'adb',side_effect=lambda a,b,*args,**kw: 'device' if args==('get-state',) else '1800000'));stack.enter_context(patch.object(sync,'start_xhs',return_value=first))
    stack.enter_context(patch.object(sync,'ensure_creator_list',side_effect=lambda a,b,r,*rest:r));stack.enter_context(patch.object(sync,'reopen_creator_list',return_value=first))
    stack.enter_context(patch.object(sync,'wait_creator_content',side_effect=lambda a,b,r,*rest:r));stack.enter_context(patch.object(sync,'refresh_scrolled_webview',side_effect=lambda a,b,r,*rest:r))
-   stack.enter_context(patch.object(sync,'navigation_capture',side_effect=pages[1:]))
+   stack.enter_context(patch.object(sync,'navigation_capture',side_effect=pages[1:]*2))
    stack.enter_context(patch.object(sync,'NATIVE_PAIR_PROBE_ENABLED',fast))
    probe=stack.enter_context(patch.object(sync,'probe_element_pair',return_value=fast))
-   stack.enter_context(patch.object(sync,'capture_element_pair',side_effect=[(r,copy.deepcopy(r)) for r in pages[1:]]))
+   stack.enter_context(patch.object(sync,'capture_element_pair',side_effect=[(r,copy.deepcopy(r)) for r in pages[1:]]*2))
+   stack.enter_context(patch.object(sync,'prove_native_list_start',side_effect=lambda a,b,r,*rest:r))
    code=sync.main();result=json.loads(output.read_text())
-   if fast:probe.assert_called_once()
+   if fast:self.assertEqual(probe.call_count,2)
    else:probe.assert_not_called()
   return code,result
  def test_default_scan_continues_past_thirty_swipes_to_proven_date_boundary(self):
