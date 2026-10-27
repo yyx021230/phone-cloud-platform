@@ -1,0 +1,20 @@
+[
+  {
+    "device": 161,
+    "visible": true,
+    "close": [
+      360,
+      1252
+    ],
+    "singleTitleActionClose": true
+  },
+  {
+    "device": 182,
+    "visible": true,
+    "close": [
+      450,
+      1541
+    ],
+    "singleTitleActionClose": true
+  }
+]

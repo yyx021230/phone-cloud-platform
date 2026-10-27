@@ -1,0 +1,63 @@
+{
+  "transport": "SSH to isolated Windows scripts; actual task and account-policy functions",
+  "candidateApi": "local loopback HTTP; actual account/task functions; staged Windows Python; shared production Agent not restarted",
+  "tasks": [
+    {
+      "device": "142",
+      "type": "alipay_name_start",
+      "purpose": "account_preparation",
+      "status": "succeeded",
+      "code": null,
+      "seconds": 117.769
+    },
+    {
+      "device": "138",
+      "type": "alipay_name_start",
+      "purpose": "account_preparation",
+      "status": "failed",
+      "code": "alipay_lookup_failed",
+      "seconds": 36.511
+    },
+    {
+      "device": "138",
+      "type": "alipay_name_start",
+      "purpose": "account_preparation",
+      "status": "succeeded",
+      "code": null,
+      "seconds": 73.222
+    },
+    {
+      "device": "142",
+      "type": "alipay_name_query",
+      "purpose": "probe",
+      "status": "failed",
+      "code": "alipay_human_verification_required",
+      "seconds": 33.546
+    },
+    {
+      "device": "142",
+      "type": "alipay_name_stop",
+      "purpose": "cleanup",
+      "status": "succeeded",
+      "code": null,
+      "seconds": 19.887
+    },
+    {
+      "device": "138",
+      "type": "alipay_name_stop",
+      "purpose": "cleanup",
+      "status": "succeeded",
+      "code": null,
+      "seconds": 17.153
+    }
+  ],
+  "ready": false,
+  "businessSubmitted": 0,
+  "stopped": true,
+  "blocker": "real CAPTCHA on 142; 161 also encountered real CAPTCHA earlier",
+  "limitations": [
+    "No completed real-phone business API round",
+    "No natural cooldown/handoff acceptance",
+    "Final fresh-observation fix verified in fixture; later actual preparation succeeded, but exact popup was not naturally retriggered"
+  ]
+}

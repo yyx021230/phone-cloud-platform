@@ -1,0 +1,30 @@
+{
+  "storage": "postgres",
+  "initialReady": 2,
+  "legacyPageReprobes": 3,
+  "pageReprobeSpacingMs": [
+    60065,
+    60118
+  ],
+  "maxReserved": 5,
+  "businessRequests": 50,
+  "modelCalls": 26,
+  "names": 16,
+  "empty": 34,
+  "maxExecuting": 5,
+  "maxModels": 1,
+  "elapsedBeforeNewKeyMs": 121001,
+  "requestedHoldMs": 121000,
+  "originalIdsPreserved": true,
+  "samePhoneResumes": 10,
+  "probeSamePhoneRecoveries": 35,
+  "pythonRunnerUsbFlows": 26,
+  "pythonRunnerInputRecoveries": 10,
+  "simulatedDeviceIO": true,
+  "fencedHandoffs": 20,
+  "sampledResultsKeptAcrossRestart": 2,
+  "stopAndNextRound": true,
+  "physicalReservationsDrained": true,
+  "realPhones": 0,
+  "productionActions": 0
+}
