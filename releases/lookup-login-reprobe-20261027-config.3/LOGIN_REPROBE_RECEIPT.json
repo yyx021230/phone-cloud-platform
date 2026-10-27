@@ -1,0 +1,24 @@
+{
+  "applied": true,
+  "at": "2026-10-27T06:54:02.047Z",
+  "from": 114,
+  "to": 115,
+  "removed": [
+    78
+  ],
+  "enabled": [
+    118
+  ],
+  "loginReprobe": [
+    79,
+    86,
+    101,
+    115,
+    118,
+    147,
+    183
+  ],
+  "total": 48,
+  "concurrency": 8,
+  "inflightLimit": 20
+}

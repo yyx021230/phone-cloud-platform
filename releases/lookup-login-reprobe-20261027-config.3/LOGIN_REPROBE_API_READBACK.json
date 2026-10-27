@@ -1,0 +1,42 @@
+{
+  "configRevision": 115,
+  "removed78": true,
+  "118enabled": true,
+  "reprobePermission": [
+    {
+      "number": 79,
+      "blockedRounds": 0,
+      "channel": null
+    },
+    {
+      "number": 86,
+      "blockedRounds": 0,
+      "channel": null
+    },
+    {
+      "number": 101,
+      "blockedRounds": 0,
+      "channel": null
+    },
+    {
+      "number": 115,
+      "blockedRounds": 0,
+      "channel": "starting"
+    },
+    {
+      "number": 118,
+      "blockedRounds": 0,
+      "channel": null
+    },
+    {
+      "number": 147,
+      "blockedRounds": 0,
+      "channel": null
+    },
+    {
+      "number": 183,
+      "blockedRounds": 0,
+      "channel": null
+    }
+  ]
+}
