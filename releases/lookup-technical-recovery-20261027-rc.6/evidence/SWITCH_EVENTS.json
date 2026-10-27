@@ -1,0 +1,300 @@
+{
+  "device": 154,
+  "case": "verified account switch cold-start regression",
+  "productionChanged": false,
+  "steps": [
+    {
+      "operation": "list_accounts",
+      "ok": true,
+      "seconds": 55.75,
+      "workerExited": true,
+      "error": "",
+      "taskId": "incident-c3bb517f-f797-4418-b10b-e4d8bcbb82a8",
+      "events": [
+        {
+          "step": "manual_account_list_requested",
+          "elapsed": 0.266,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "resume_alipay_home",
+          "elapsed": 0.781,
+          "reason": "account-list",
+          "forceStopped": null
+        },
+        {
+          "step": "exit_search_for_account_navigation",
+          "elapsed": 5.61,
+          "reason": "account-list",
+          "forceStopped": null
+        },
+        {
+          "step": "exit_search_via_exact_back_button",
+          "elapsed": 11.781,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "exit_search_for_account_navigation",
+          "elapsed": 14.938,
+          "reason": "account-list",
+          "forceStopped": null
+        },
+        {
+          "step": "exit_search_via_exact_back_button",
+          "elapsed": 20.672,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "open_my_tab",
+          "elapsed": 33.938,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "open_settings",
+          "elapsed": 43.594,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "open_saved_account_picker",
+          "elapsed": 48.813,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "account_picker_sample",
+          "elapsed": 52.5,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "account_picker_sample",
+          "elapsed": 55.703,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "account_picker_stable",
+          "elapsed": 55.703,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "saved_account_list_ready",
+          "elapsed": 55.703,
+          "reason": null,
+          "forceStopped": null
+        }
+      ]
+    },
+    {
+      "operation": "switch",
+      "ok": true,
+      "seconds": 62.75,
+      "workerExited": true,
+      "error": "",
+      "taskId": "incident-be12e644-89bd-45d5-8131-46e35057c7de",
+      "events": [
+        {
+          "step": "manual_account_switch_requested",
+          "elapsed": 0.391,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "account_picker_sample",
+          "elapsed": 3.422,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "account_picker_sample",
+          "elapsed": 6.5,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "account_picker_stable",
+          "elapsed": 6.5,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "reuse_open_account_picker",
+          "elapsed": 6.5,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "account_selected",
+          "elapsed": 6.719,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "account_selection_returned_home",
+          "elapsed": 20.235,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "page_mismatch_overlay_detected",
+          "elapsed": 27.797,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "dismiss_alipay_fullscreen_ad",
+          "elapsed": 28.547,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "page_mismatch_overlay_cleared",
+          "elapsed": 32.407,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "account_navigation_overlay_dismissed",
+          "elapsed": 32.407,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "open_my_tab",
+          "elapsed": 37.125,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "open_settings",
+          "elapsed": 46.563,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "open_saved_account_picker",
+          "elapsed": 51.266,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "account_picker_sample",
+          "elapsed": 54.782,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "account_picker_sample",
+          "elapsed": 57.657,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "account_picker_stable",
+          "elapsed": 57.657,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "resume_verified_account_home",
+          "elapsed": 58.063,
+          "reason": "account-switch-complete",
+          "forceStopped": false
+        },
+        {
+          "step": "account_switch_verified",
+          "elapsed": 62.719,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "account_switch_search_prepare_deferred",
+          "elapsed": 62.719,
+          "reason": "next_poco_query_prepares_search",
+          "forceStopped": null
+        }
+      ]
+    },
+    {
+      "operation": "query",
+      "ok": false,
+      "seconds": 16.828,
+      "workerExited": true,
+      "error": "poco_rpc_failed:HTTPConnectionPool(host='127.0.0.1', port=16509): Read timed out. (read timeout=2.0)",
+      "taskId": "incident-3c014019-5dfa-4d29-aba8-a4458f2f23ad",
+      "events": [
+        {
+          "step": "poco_instrumentation_launch_started",
+          "elapsed": 6.562,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "poco_instrumentation_connected",
+          "elapsed": 8.437,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "poco_request_received",
+          "elapsed": 9.141,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "poco_reused",
+          "elapsed": 9.297,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "poco_reuse_focus_observed",
+          "elapsed": 9.453,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "poco_reuse_restriction_probe_begin",
+          "elapsed": 9.672,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "poco_reuse_restriction_probe_done",
+          "elapsed": 9.797,
+          "reason": null,
+          "forceStopped": null
+        },
+        {
+          "step": "resume_alipay_home",
+          "elapsed": 10.234,
+          "reason": "reuse-foreground-no-home-search",
+          "forceStopped": false
+        },
+        {
+          "step": "activate_alipay_home_tab",
+          "elapsed": 11.453,
+          "reason": "reuse-foreground-no-home-search",
+          "forceStopped": null
+        },
+        {
+          "step": "poco_fast_path_failed",
+          "elapsed": 14.609,
+          "reason": null,
+          "forceStopped": null
+        }
+      ]
+    }
+  ],
+  "targetHadNaturalExpiredCooldown": true,
+  "switchUnderProduction120Seconds": true,
+  "querySucceeded": false,
+  "queryHasName": false,
+  "matchedPhone": false
+}

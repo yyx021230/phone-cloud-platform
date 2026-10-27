@@ -1,0 +1,38 @@
+{
+  "status": "local-candidate-not-deployed",
+  "tests": {
+    "staticCheck": "passed",
+    "javascriptSerial": {
+      "total": 1348,
+      "passed": 1348
+    },
+    "python": {
+      "lookup": 597,
+      "runner": 163,
+      "total": 760
+    },
+    "windowsTargeted": 46,
+    "targetedAgentRecovery": 35
+  },
+  "failuresRetained": [
+    "Initial focused Python and Agent tests failed before fix as expected.",
+    "First Python suite omitted fixture directory: 7 fixture errors; copied existing fixtures and reran.",
+    "PowerShell interpreted normal unittest stderr as NativeCommandError; captured stream in Python and reran.",
+    "npm run regression does not exist; used actual test:screen entry.",
+    "Parallel JS run:1347 passed/1 HTTP assertion failed. The unchanged HTTP case passed independently; full serial1348 passed. Scheduling sensitivity suspected, not confirmed root cause."
+  ],
+  "realAcceptance": {
+    "network112": "two real refresh attempts remain network unavailable; bounded backoff and no false name/limit",
+    "switch154": "manual list then selected real expired account, full-screen ad closed, warm return verified; next pre-input RPC timed out",
+    "api142154": "both prepared; one business naturally timed out after submit, same-task reader resume returned evidence-consistent empty, stop completed"
+  },
+  "notVerified": [
+    "Natural reproduction of154 pre-input timeout after rc6 fix; marker/case and policy proved by local/Windows tests.",
+    "Automatic limit-switch preparation total budget, not substituted by separate list/switch durations.",
+    "112 underlying network root cause and successful refresh recovery.",
+    "Repeat natural142 PocoService system dialog with final candidate.",
+    "Production Agent main loop/outbox/cancellation and production API acceptance."
+  ],
+  "productionDeployment": false,
+  "pushed": false
+}

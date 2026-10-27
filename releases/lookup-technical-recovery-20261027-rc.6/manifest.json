@@ -1,0 +1,82 @@
+{
+  "version": "lookup-technical-recovery-20261027-rc.6",
+  "status": "local-candidate-not-deployed",
+  "branch": "codex/lookup-preparation-recovery-20261027",
+  "parentCommit": "3de305a78ead3e253074cb7fe183b7f990124580",
+  "inherits": "lookup-technical-recovery-20261027-rc.5",
+  "baseline": "lookup-rc5-streaming-20261026-deployed.1",
+  "baselineSource": "64148f3cfd1793f423a1b9d7097746a6ba79fec1",
+  "baselineImage": "sha256:5ab68ecbc67dfd4815f3ec93b0d3dd6265acd6a5d044867c3e04904636e80649",
+  "remainingAcceptance": [
+    "Verified-switch warm return: real 154 retest blocked by newly confirmed CAPTCHA; production 120-second deadline not yet validated after this fix",
+    "142 result-reader RPC timeout and 112 network error refresh need exact fault-path real-device replay; simulation is not physical acceptance",
+    "154 natural 8-hour cooldown expiry not reached; other compact-card rejection/model disagreement remain unresolved",
+    "Native local API bridge omits production shared Agent main loop/outbox/cancellation; cannot claim production external API acceptance",
+    "No rollout or push authorized in this stage"
+  ],
+  "verification": {
+    "verification/recovery-http-page-reprobe50.mjs": "47d2e3b92dcbf545f9814670f3fc0c1089f9a73ec30579836b3d6adad92c729a",
+    "verification/recovery-http-device-reprobe50.mjs": "e924db9fd385efe00a2a71b027c1a7ad87c21e2706743682038a88327e677e58",
+    "verification/postgres-page-reprobe-http.py": "60ec8f9c270e99faf70d3741d0bddca866e69fedc074aa36efdf022dc6e090a7",
+    "verification/postgres-device-reprobe-http.py": "937e77394e24e349a71f41ad515f0331e4435fd6d6a228e98d37c718652ee076",
+    "verification/recovery-http-transport50.mjs": "bb72c0dcf4b01e70e8241e1f4f5a51b469d69ae0d978e675bc8e8026ee79a293",
+    "verification/postgres-transport-http.py": "5a7867177c57720652a7e3667ba53010547e2b86b2f50dc7e094cb64f7d41a18"
+  },
+  "validation": {
+    "javascriptPassed": 1347,
+    "pythonPassed": 755,
+    "windowsPassed": 432,
+    "isolatedPostgresHttpCases": 50,
+    "realDeviceFaultAcceptanceComplete": false,
+    "productionDeployed": false
+  },
+  "payload": {
+    "public/lookup-admin.js": "a73862010010a141d1d43ab731bd769fb4305c4edc0bfcbfbc48b7902d3a4962",
+    "public/lookup-pool.js": "d87e587c9466cc71e87caf08d95f8f5da315996ce4d7a993ed18b90ce58a5e45",
+    "server/lookup-admin-console.mjs": "8c513bbd876b7d28c24fe695e2aed5940e33be25ba10336cb29dd97dba7c9230",
+    "server/lookup-ai-vision.mjs": "5ed350d73dd90fe0d799604b466f2fc00a314c31428c05e0707d5bf7429e11e2",
+    "server/lookup-device-availability.mjs": "16d4d30f56c8e6fd6707a7af4a257192243e142c489c164d1e46608e9e1f0779",
+    "server/lookup-failure-domain.mjs": "f4509ee463479559725636a49bae1743af813eda21be4fa59f824b09aed0c575",
+    "server/lookup-readiness.mjs": "03fc1ef4ca62d084159dc7702b8fff61b4db571fa9cf1d4843079a9fc9f07480",
+    "server/managed-lookup.mjs": "592ce01ffaf4d5ae562b70842f496e7708ee0c0fb3ebc810a57bd9eb71f448ed",
+    "windows-agent/scripts/alipay_name_lookup.py": "7fd0485e2068ae985ba4434412d38ee467c6c100626c6197c7723f776f9087ec",
+    "windows-agent/scripts/lookup_page_actions.py": "e281eaf4d7396a8f4ba4a6f18bee47131005ddfa8db90cc94c46cb2f3c4811cc",
+    "windows-agent/src/index.mjs": "a27748c994f6f146f6057ff42f83221416c693781dc2dc169f861d9b0769e183",
+    "windows-agent/src/lookup-page-recovery.mjs": "c15f74dad44d9199f0113fed9583fc331af7fc23e89242d20ab45357afacd499",
+    "windows-agent/src/lookup-recovery-trace.mjs": "a4817215806bbac5ef13094ddbfae9c3b3824ca0f07932bc081b931150dd84d4"
+  },
+  "tests": {
+    "server/lookup-admin-console.test.mjs": "48d62d01bae4bb82f3f968ce52a19aaebee30d2fff2744eb51bb1ac72176d893",
+    "server/lookup-ai-headerless.fixture.json": "6dbe58532b32faf6096069df4fdf0ba2c38f73d4813284a305b31aead98ec45a",
+    "server/lookup-ai-headerless.test.mjs": "4f31ba73d9d11e165441b797463f5fc88f935109d6e3f537e707a7d871f920fc",
+    "server/lookup-ai-vision.test.mjs": "204581a0b613a5970068cbb2dd380c01ea7ac5f58ef16cfb1afce2a7f9b173d3",
+    "server/lookup-device-availability.test.mjs": "0044523a8099a72c4fc2ec313d718593807d9b70e749acec6237b099456527aa",
+    "server/lookup-probe-ai.test.mjs": "777dfbbe2a582e868548f9e4039ace958c6acc60c687a20c73f7e3e19ccbc6b0",
+    "server/lookup-technical-domain.test.mjs": "2c5ca22ff0b005dd5b39f74ede5c1d8a0c258831a93f750e6aa7c85e3ee70960",
+    "windows-agent/scripts/test_lookup_navigation_read_timeout.py": "6690e7c22f7a35561d600a14d620dc86f0a0701d8cc432b1086cd935c82e4431",
+    "windows-agent/scripts/test_lookup_page_actions.py": "1200472e69c73b841d1a53ee148802163a41f6fc4dc7a0dd6045739bced1a99d",
+    "windows-agent/scripts/test_lookup_poco_crash_overlay.py": "8993846a65c98566b1f7c2c7f03c6603f26ff86528d2c78e3cdc7a6c943ecc51",
+    "windows-agent/scripts/test_lookup_prepare_technical_recovery.py": "220fcd0fb0e69e02b20e6e94d7a8cc4f26567da40ac6b08fe718f7bc47f12ff7",
+    "windows-agent/scripts/test_lookup_switch_login.py": "e9be135a8cd2022fc8cd78316b32b47476d5915addedfba9cf581462b17b84f1",
+    "windows-agent/src/lookup-page-recovery.test.mjs": "50b873375488e3a1602668b5175aa2da2de792103fc9da79d9bdc789d2d9c6cc",
+    "windows-agent/src/lookup-recovery-trace.test.mjs": "fe1a98fd1b13224aa1bf76ebde99bb624f7be37f74c54d31af976413495fac72"
+  },
+  "checks": {
+    "verification/postgres-device-reprobe-http.py": "937e77394e24e349a71f41ad515f0331e4435fd6d6a228e98d37c718652ee076",
+    "verification/postgres-page-reprobe-http.py": "60ec8f9c270e99faf70d3741d0bddca866e69fedc074aa36efdf022dc6e090a7",
+    "verification/postgres-transport-http.py": "5a7867177c57720652a7e3667ba53010547e2b86b2f50dc7e094cb64f7d41a18",
+    "verification/recovery-http-device-reprobe50.mjs": "e924db9fd385efe00a2a71b027c1a7ad87c21e2706743682038a88327e677e58",
+    "verification/recovery-http-page-reprobe50.mjs": "47d2e3b92dcbf545f9814670f3fc0c1089f9a73ec30579836b3d6adad92c729a",
+    "verification/recovery-http-transport50.mjs": "bb72c0dcf4b01e70e8241e1f4f5a51b469d69ae0d978e675bc8e8026ee79a293"
+  },
+  "evidence": {
+    "API_TASKS.json": "acb9f6952eb09a32f945bed2f80a9993b5ae712b4898010e4bf32e0d9c4fc3e2",
+    "CLEANUP.json": "1d5ffbb515d24dc293d43e31db933de660750639354d23d09332d632514d838c",
+    "NATURAL_READER_RECOVERY.json": "231ef37e1ebdcd8f3a04f826ad06830401f31853763021e722d6a9299bfd2bfb",
+    "PRODUCTION_BASELINE_READ.json": "1a86129275401abdefffe4549bba5f9943f2ae566c6c98014fce43a07678396b",
+    "PRODUCTION_WINDOWS_READ.json": "3a1752bd261e74b99082fb2a862860123345b1813e0b76d952fc858e1567979e",
+    "RESULTS.json": "dd86c124d11d38c1623ae6655c9b145bda23b8575ac6579feef0c439b709ccd5",
+    "SWITCH_EVENTS.json": "c883e4e1b4d8d24e7d3c9b60476ac1060206a7a8d514e3a880d50a4cc127cb2f",
+    "private-evidence-hashes.json": "2b54aaf4e567422802b199473e72398883ed5c9096273f6ce569356eadff8fdb"
+  }
+}
