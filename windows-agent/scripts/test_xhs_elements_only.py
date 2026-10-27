@@ -247,3 +247,8 @@ class ZeroBoundsElementTests(unittest.TestCase):
   adb.assert_not_called();process.assert_not_called()
 
 if __name__=='__main__':unittest.main()
+
+class NavigationDiagnosticTests(unittest.TestCase):
+ def test_only_known_landmarks_are_reported(self):
+  r=ET.fromstring('<hierarchy><node text="我" selected="true" bounds="[1,1][20,20]"/><node text="菜单" bounds="[1,1][20,20]"/><node text="private account title" bounds="[1,1][20,20]"/></hierarchy>')
+  self.assertEqual(sync.creator_navigation_state(r),'我/菜单;profile_selected=true')

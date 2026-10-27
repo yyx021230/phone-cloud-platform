@@ -1639,12 +1639,25 @@ def require_creator_service_available(root):
         raise RuntimeError("Creator Center service is unavailable; collection skipped")
 
 
+def creator_navigation_state(root):
+    """Bounded diagnostics: UI landmarks only, never account or note text."""
+    names = ("我", "菜单", "已选定笔记", "我的草稿", "创作者中心", "创作中心",
+             "最新笔记", "更多", "更多笔记", "近 7 日数据", "观看", "数据中心",
+             "作品分析", "全部笔记", "开通数据权限", "账号异常")
+    present = [name for name in names if label(root, name)]
+    profile = label(root, "我")
+    selected = sorted(set(n.get("selected", "unknown") for n in profile))
+    return "/".join(present) + ";profile_selected=" + ",".join(selected)
+
+
 def ensure_creator_list(adb_path, serial, root, slot, guard, events):
     recoveries = 0
     more_attempts = 0
     chat_backs = 0
     server_refreshes = 0
+    states = []
     for _ in range(14):
+        states.append(creator_navigation_state(root))
         if wake_if_asleep(adb_path, serial, guard, events):
             root = navigation_capture(adb_path, serial, guard, events)
         if any(event.startswith("clone_user_requested:") for event in events):
@@ -1790,7 +1803,8 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
         root = wait_data_center_loading(adb_path, serial, root, guard, events, require_content=True)
         events.append("works_tab_completed_at_navigation_limit")
         return root
-    raise ElementListReadError("could not prove the Creator Center works-analysis path from UI elements")
+    raise ElementListReadError("could not prove the Creator Center works-analysis path from UI elements; states="
+                               + json.dumps(states[-4:] + [creator_navigation_state(root)], ensure_ascii=False))
 
 
 def reopen_creator_list(adb_path, serial, root, guard, events, slot="app1"):
