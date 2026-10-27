@@ -62,6 +62,20 @@ class OverlapScrollTests(unittest.TestCase):
   for rows in [[(330,510)],[(330,510),(520,700)],[(330,510),(520,700),(710,890)],[(330,510),(350,530),(540,720),(730,910)]]:
    d=self.distance(rows);height=180;span=rows[-1][0]-rows[0][0]
    self.assertLessEqual(d,min(height*2,max(height*.5,span*.5)))
+ def test_observed_47_and_141_edge_rounding_still_preserves_two_row_starts(self):
+  for name in ('works-47-before-subset.xml','works-elements-141.xml'):
+   r=ET.parse(S/'fixtures/xhs'/name).getroot();boxes=[sync.bounds(n) for n,_ in sync.note_cards(r)];rows=[(b[1],b[3]) for b in boxes]
+   # Use each retained viewport itself, not a fabricated larger screen.
+   with patch.object(sync,'focus',return_value=CURRENT),patch.object(sync,'wake_if_asleep'),patch.object(sync.time,'sleep'),patch.object(sync,'adb') as adb:
+    sync.swipe('adb','s',r,lambda:None,[])
+   a=adb.call_args.args;distance=int(a[6])-int(a[8]);height=sorted(b[3]-b[1] for b in boxes)[len(boxes)//2]
+   self.assertLessEqual(distance,rows[-2][0]-rows[0][0]);self.assertLessEqual(distance,height*3)
+   old=min((max(b[3] for b in boxes))*.25,height*2,max(height*.5,(rows[-1][0]-rows[0][0])*.5))
+   self.assertGreater(distance,old)
+ def test_edge_overlap_beyond_tiny_rounding_keeps_old_small_step(self):
+  for overlap in (10,30,100):
+   rows=[(330+i*(180-overlap),510+i*(180-overlap)) for i in range(5)]
+   self.assertLessEqual(self.distance(rows),360)
  def test_occupancy_blocks_the_swipe(self):
   with patch.object(sync,'focus',return_value=CURRENT),patch.object(sync,'wake_if_asleep'),patch.object(sync,'adb') as adb:
    with self.assertRaisesRegex(RuntimeError,'occupied'):

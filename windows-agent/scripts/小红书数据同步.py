@@ -2193,11 +2193,14 @@ def swipe(adb_path, serial, root, guard, events):
     # the rows actually read, including when just one complete row remains.
     step = int(min((y2-y1)*.25, height*2,
                    max(height*.5, (rows[-1][1]-rows[0][1])*.5)))
-    # With four or more disjoint complete rows, retain the last two visible
+    # With four or more complete rows, retain the last two visible
     # row starts as overlap and advance at most three median row heights.
     # Thin/clipped subsets keep the original smaller step. Actual post-scroll
     # continuity still requires fresh complete elements before accepting data.
-    if len(rows) >= 4 and all(a[3] <= b[1] for a, b in zip(rows, rows[1:])):
+    # Observed47/141 native boxes overlap2-5px at row edges. Allow only
+    # this tiny rounding envelope; substantial/nested row overlap stays slow.
+    edge_tolerance = min(8, height*.03)
+    if len(rows) >= 4 and all(a[3] <= b[1] + edge_tolerance for a, b in zip(rows, rows[1:])):
         step = int(min((y2-y1)*.40, height*3, rows[-2][1]-rows[0][1]))
     if step <= 0:
         raise ElementListReadError("native row geometry cannot prove a scroll distance")
