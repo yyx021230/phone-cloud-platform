@@ -1,0 +1,159 @@
+{
+  "version": "lookup-technical-recovery-20261027-rc.8",
+  "status": "local-candidate-not-deployed",
+  "branch": "codex/lookup-preparation-recovery-20261027",
+  "parentCommit": "6aa0e7e8a538eacfb1f51619cd47a365435a0560",
+  "inherits": "lookup-technical-recovery-20261027-rc.7",
+  "baseline": {
+    "version": "lookup-rc5-streaming-20261026-deployed.1",
+    "source": "64148f3cfd1793f423a1b9d7097746a6ba79fec1",
+    "image": "sha256:5ab68ecbc67dfd4815f3ec93b0d3dd6265acd6a5d044867c3e04904636e80649",
+    "files": {
+      "server/lookup-device-availability.mjs": "4931dcae9b71601583c814a78d6439db23b6bcddc4ebbec29ff769f9b1e3b02f",
+      "server/lookup-failure-domain.mjs": "75d4b940322d16cc10a136f18412bfc80a3ce7e4d17516ee8dcb0dcdff666908",
+      "server/lookup-readiness.mjs": "41da6e878b73c4cafac2856e8e60b3afa9de21ff9ca87a3e987d792795b74730",
+      "server/managed-lookup.mjs": "57c9f882a1ca248241534e505cb1f73982b1a396d085a8e19384f3ae87e5120d",
+      "server/lookup-ai-vision.mjs": "2c978067c2a2ef845bc8f1bc8de85adcfb70d423d5cca271befe0407899dbe0a",
+      "server/lookup-admin-console.mjs": "ffd7a650bf079543a90d581d0280e73dd344c30f6650dea8cfeabbdb6f776669",
+      "public/lookup-admin.js": "f2f4b05f36c993403e299e7bfbb61d35ec5b09dd92b75b1735259948f3070854",
+      "public/lookup-pool.js": "37318793b4491ffd5c29570916f1ec6fd58106933c6916716a4cdf1fa26d1184",
+      "windows-agent/src/index.mjs": "eafc722b93788d82bc788ed79f963b17224b2d8c30528bfbfbcedb83fe9a9dd2",
+      "windows-agent/src/lookup-page-recovery.mjs": "c3ae74f3dbcf699a329f249b40f8c7c6218c0ddf092c7bdbacb30c9564157be1",
+      "windows-agent/src/lookup-recovery-trace.mjs": "78c1986687a288f200c6a32b8705ebe4ae25bc3191316d20b7aec13201cda2ef",
+      "windows-agent/scripts/alipay_name_lookup.py": "30e0c828d981f1e9fd9c62d6b6e48141c7c13ae25c5e899d68992ce04d2df024",
+      "windows-agent/scripts/lookup_page_actions.py": "5ba57a26a64b21c0989de4fee19ec60561cdef5a41203b066d40ee54ff429267",
+      "windows-agent/scripts/xhs_airtest_poco.py": "e6bdc2d96adf9a7b5e130eac72a0479d7790732831cfda71bf0230923ceccdaa"
+    },
+    "verifiedAgainstProductionAfterTests": true,
+    "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+  },
+  "validation": {
+    "status": "local-candidate-tested-not-deployed",
+    "productFiles": 15,
+    "tests": {
+      "javascriptAllSerial": 1366,
+      "agentSeparate": 434,
+      "pythonDiscovery": 604,
+      "pythonRunners": 163,
+      "windowsTargeted": 23,
+      "staticCheck": true,
+      "finalFailures": 0,
+      "countsOverlap": true
+    },
+    "realDevice": {
+      "firstPassNaturalVisualAfterTimeouts": 2,
+      "firstPassProbeRecoverySeconds": [
+        33.115,
+        29.142
+      ],
+      "finalBusinessResumeSeconds": 26.936,
+      "controlledForcedCleanupConfirmed": true,
+      "naturalCleanupUnconfirmedCount": 1,
+      "lateReadConfirms154PocoExited": true,
+      "localApiStopped": true,
+      "sameTaskNoReinput": true
+    },
+    "priorFailures": [
+      "Initial worker-shutdown static pattern expected old single cleanup call; test updated for both protocol branches.",
+      "Initial full real path exposed generic preflight 300ms stop gap; workflow-scoped cleanup added and retested.",
+      "Second real path force-stop ACK timeout blocked rebuild; actual-state confirmation added, final controlled ACK-loss full path passed.",
+      "Parallel regression legacy idle fixture mixed frozen and wall clock; changed test-only timestamps to injected clock, 9 targeted and all 1366 serial passed.",
+      "Cloud SSH control socket expired during staging; safe login restored before any subsequent phone admission."
+    ],
+    "remainingAcceptance": [
+      "One natural 154 pidof cleanup confirmation failed in the final stop path; rebuild blocked, later read found no Poco processes. Transient command latency cause remains unproven.",
+      "Exact initial Poco RPC/Android scheduling or forwarding stall remains unproven; shell/pid evidence narrows but does not eliminate transport intermittency.",
+      "Local HTTP real-device bridge does not run the production shared Agent main loop, durable outbox or real control interruption/cancellation timing.",
+      "Archived job detail 404 and missing historical failure screenshots are not repaired by this reader candidate.",
+      "Inherited rc.7 remaining natural network-restriction business cross-device and new eight-hour-expiry scenarios were not repeated here.",
+      "Forced cleanup ACK loss in final pass is controlled fault injection on real isolated workers; do not claim natural recurrence of exactly that lost ACK."
+    ],
+    "productionChanged": false,
+    "productionAdbAndAgentOwner": "SYSTEM",
+    "productionBaselineSource": "64148f3cfd1793f423a1b9d7097746a6ba79fec1",
+    "selfReview": {
+      "risk": "R2 shared worker lifecycle; authorized isolated real-device testing",
+      "reviewed": [
+        "error boundary after submitted input",
+        "workflow scope",
+        "cleanup confirmation and deadline",
+        "lookup stop barrier and restart rejection",
+        "screen/XML existing protocol and budget",
+        "single-serial Poco forwards only",
+        "error stage PII minimization",
+        "inherited runtime and release hashes"
+      ],
+      "reviewType": "self-review; not independent reviewer or deployment authorization"
+    },
+    "testLeasesAndWorkersReleased": true
+  },
+  "payload": {
+    "public/lookup-admin.js": "a73862010010a141d1d43ab731bd769fb4305c4edc0bfcbfbc48b7902d3a4962",
+    "public/lookup-pool.js": "d87e587c9466cc71e87caf08d95f8f5da315996ce4d7a993ed18b90ce58a5e45",
+    "server/lookup-admin-console.mjs": "8c513bbd876b7d28c24fe695e2aed5940e33be25ba10336cb29dd97dba7c9230",
+    "server/lookup-ai-vision.mjs": "5ed350d73dd90fe0d799604b466f2fc00a314c31428c05e0707d5bf7429e11e2",
+    "server/lookup-device-availability.mjs": "16d4d30f56c8e6fd6707a7af4a257192243e142c489c164d1e46608e9e1f0779",
+    "server/lookup-failure-domain.mjs": "f4509ee463479559725636a49bae1743af813eda21be4fa59f824b09aed0c575",
+    "server/lookup-readiness.mjs": "03fc1ef4ca62d084159dc7702b8fff61b4db571fa9cf1d4843079a9fc9f07480",
+    "server/managed-lookup.mjs": "592ce01ffaf4d5ae562b70842f496e7708ee0c0fb3ebc810a57bd9eb71f448ed",
+    "windows-agent/scripts/alipay_name_lookup.py": "07bc870698663b4c63c071a8743b182972658db1d37b015eb79417c01cec87b2",
+    "windows-agent/scripts/lookup_page_actions.py": "e281eaf4d7396a8f4ba4a6f18bee47131005ddfa8db90cc94c46cb2f3c4811cc",
+    "windows-agent/scripts/xhs_airtest_poco.py": "8abb00385d12ce99dc5995ae1424f226a5e9f887461c920594e68d27f44fd4e1",
+    "windows-agent/src/index.mjs": "884bc370558e6b0b3f2d0d46dee309da4467757b613c0da03576de8f9b34df74",
+    "windows-agent/src/lookup-page-recovery.mjs": "c15f74dad44d9199f0113fed9583fc331af7fc23e89242d20ab45357afacd499",
+    "windows-agent/src/lookup-reader-lifecycle.mjs": "9ea791d3db7c185c889c142393c3255c69fe581291fa7d6b81a880c6fbd62860",
+    "windows-agent/src/lookup-recovery-trace.mjs": "7e26269618903b610784dca34331672d3e6d2d7fd0962039b3ed8c36231edd9d"
+  },
+  "tests": {
+    "server/lookup-admin-console.test.mjs": "48d62d01bae4bb82f3f968ce52a19aaebee30d2fff2744eb51bb1ac72176d893",
+    "server/lookup-ai-headerless.fixture.json": "6dbe58532b32faf6096069df4fdf0ba2c38f73d4813284a305b31aead98ec45a",
+    "server/lookup-ai-headerless.test.mjs": "4f31ba73d9d11e165441b797463f5fc88f935109d6e3f537e707a7d871f920fc",
+    "server/lookup-ai-vision.test.mjs": "204581a0b613a5970068cbb2dd380c01ea7ac5f58ef16cfb1afce2a7f9b173d3",
+    "server/lookup-device-availability.test.mjs": "0044523a8099a72c4fc2ec313d718593807d9b70e749acec6237b099456527aa",
+    "server/lookup-probe-ai.test.mjs": "777dfbbe2a582e868548f9e4039ace958c6acc60c687a20c73f7e3e19ccbc6b0",
+    "server/lookup-round-idle.test.mjs": "8949564032ef08621cfd0e61ba17b16b037e6b53d510308bf2a997c98a1a561d",
+    "server/lookup-technical-domain.test.mjs": "2c5ca22ff0b005dd5b39f74ede5c1d8a0c258831a93f750e6aa7c85e3ee70960",
+    "windows-agent/scripts/test_lookup_navigation_read_timeout.py": "6690e7c22f7a35561d600a14d620dc86f0a0701d8cc432b1086cd935c82e4431",
+    "windows-agent/scripts/test_lookup_page_actions.py": "0edc072c28289f946ea341e8679b86905c850602f3d45b31d111ef6157fc274c",
+    "windows-agent/scripts/test_lookup_poco_crash_overlay.py": "8993846a65c98566b1f7c2c7f03c6603f26ff86528d2c78e3cdc7a6c943ecc51",
+    "windows-agent/scripts/test_lookup_prepare_technical_recovery.py": "220fcd0fb0e69e02b20e6e94d7a8cc4f26567da40ac6b08fe718f7bc47f12ff7",
+    "windows-agent/scripts/test_lookup_reader_boundary.py": "a25a82d951479f9437a291ff44197252662835059842fa9c1894100d3f997c71",
+    "windows-agent/scripts/test_lookup_switch_login.py": "e9be135a8cd2022fc8cd78316b32b47476d5915addedfba9cf581462b17b84f1",
+    "windows-agent/src/lookup-network-restriction.test.mjs": "66c774f09fcf97a13640ff79dce82d268eccc9e3cae034eff6e7e2a07a61893a",
+    "windows-agent/src/lookup-page-recovery.test.mjs": "50b873375488e3a1602668b5175aa2da2de792103fc9da79d9bdc789d2d9c6cc",
+    "windows-agent/src/lookup-reader-lifecycle.test.mjs": "d077fffad40df141691da3dfd42d510928b74b3045193e4a47ceb6a42cdc9d66",
+    "windows-agent/src/lookup-recovery-trace.test.mjs": "fe1a98fd1b13224aa1bf76ebde99bb624f7be37f74c54d31af976413495fac72",
+    "windows-agent/src/worker-shutdown.test.mjs": "c7df9e4e8f1962daaf0e891bb313add1e8e636ca846ee0d94d0663cd5365981a"
+  },
+  "checks": {
+    "verification/controlled-navigation-worker.py": "0a1fd0303416c5dc7030486ac10799c882989a4e1636a9b116f3f18ab7c1068a",
+    "verification/fault-acceptance-http.mjs": "86915a927548c9b16756355d40ae5df3ae2cb13eba27db9e38a6692496955fb3",
+    "verification/fault-hold.py": "5bc078733ac4930ebe5d1c7c481e38a3bbf8a4a2db87fa2a527e859ca7b6034b",
+    "verification/fault-observe.py": "e851e753d7700862187afb17d8e33a73130666150a10d97966b6c8b4c866ad33",
+    "verification/fault-worker.py": "61479f7860fc0a8af3dff0d143869ed9073ea4353fc5558d3a022bd669f05261",
+    "verification/postgres-device-reprobe-http.py": "937e77394e24e349a71f41ad515f0331e4435fd6d6a228e98d37c718652ee076",
+    "verification/postgres-page-reprobe-http.py": "60ec8f9c270e99faf70d3741d0bddca866e69fedc074aa36efdf022dc6e090a7",
+    "verification/postgres-transport-http.py": "5a7867177c57720652a7e3667ba53010547e2b86b2f50dc7e094cb64f7d41a18",
+    "verification/recovery-http-device-reprobe50.mjs": "e924db9fd385efe00a2a71b027c1a7ad87c21e2706743682038a88327e677e58",
+    "verification/recovery-http-page-reprobe50.mjs": "47d2e3b92dcbf545f9814670f3fc0c1089f9a73ec30579836b3d6adad92c729a",
+    "verification/recovery-http-transport50.mjs": "bb72c0dcf4b01e70e8241e1f4f5a51b469d69ae0d978e675bc8e8026ee79a293",
+    "verification/remote-host.mjs": "abf016594464a74c5d7700b9d013710f354ce766475f0e8c372fd848df80910a"
+  },
+  "evidence": {
+    "CLEANUP.json": "07024dc812fdc1d8eccbba08d9464ceac877558190a3de46b38a2d037ae3ab61",
+    "FINAL_API.json": "f5069d2edbeb4b8ec9c848970f53c6a776466c07bc1fbb74507e1a554fee7492",
+    "FIRST_PASS.json": "4b000de0e9b5454c1a46282e585ef1180856c1a6e120c3562bbe690c4d7204ec",
+    "INITIAL_BASELINE.json": "cf1e8e19e94cd5c09fed963819a509bcbfe1dc45e54a4bc796cec9c29124da94",
+    "LATE_154_READ.json": "42730da4be639ce3406284703d676d00191cf9f239468f80b8d1d0d3363c299b",
+    "PRODUCTION_FILES.json": "78de38b7f9aa345cc92711f8b76a6cabbbce11cca3e3237d033b45f444c402f4",
+    "RESULTS.json": "a56bb6a893ebec80c610be8de4c925712c803c0bf593717fa0899ce1669d2bba",
+    "SECOND_PASS.json": "95a6603a05d3541c51ac046d74ad082ee249264f2d8bc9e7ec537c4302b5b18b",
+    "WINDOWS_UNIT.json": "d36c99c39e23d70fd2b8bea1952e6b8689054aece08fcfd6f02c49e7df55fa44",
+    "private-evidence-hashes.json": "f11eed0999055ea8efe7d93f1c0a2ac1ea5a65d5547614ec5030a9a7fabc3263",
+    "regression-log-hashes.json": "e0d04390c4652a99b71cd716658fd50578f4af89d588a2d5764a939f79734146"
+  },
+  "files": {
+    "README.md": "a170b55fa33629d989a34d632ec5e070a5c546978ca962abc8d697a3b4901958",
+    "BASELINE.json": "1b446aeac7ca98c511a559dac9d523b5c0d01c389fbc301e823cfaf95e2a5085"
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "stage": "before-preflight-scope-refinement",
+  "ready": true,
+  "stopped": true,
+  "sameTaskRecoveries": [
+    {
+      "device": "142",
+      "purpose": "probe",
+      "kind": "natural-post-frame-timeout",
+      "status": "succeeded",
+      "hasName": true,
+      "inputCount": 1,
+      "submitCount": 1,
+      "calls": [
+        {
+          "operation": "post_human_check",
+          "ok": true,
+          "seconds": 12.171,
+          "observationOnlyResume": false,
+          "recoverUnexpectedPage": false,
+          "steps": []
+        },
+        {
+          "operation": "query",
+          "ok": false,
+          "seconds": 23.957,
+          "observationOnlyResume": false,
+          "recoverUnexpectedPage": false,
+          "steps": [
+            "poco_request_received",
+            "poco_reused",
+            "poco_reuse_focus_observed",
+            "reuse_search_page_by_exact_activity",
+            "reuse_existing_search_page",
+            "poco_search_ready_focus",
+            "poco_search_input_probe_begin",
+            "clear_previous_query",
+            "poco_input_clear_confirmed",
+            "query_input_throttle_wait",
+            "poco_search_ready_focus",
+            "poco_search_input_probe_begin",
+            "input_phone",
+            "submit_search",
+            "lookup_visual_result_probe",
+            "lookup_visual_frame_read",
+            "lookup_reader_failure",
+            "poco_fast_path_failed"
+          ]
+        },
+        {
+          "operation": "query_resume",
+          "ok": true,
+          "seconds": 33.115,
+          "observationOnlyResume": true,
+          "recoverUnexpectedPage": false,
+          "steps": [
+            "poco_request_received",
+            "poco_reused",
+            "resume_query_without_reinput",
+            "resume_result_observation_only",
+            "lookup_visual_result_probe",
+            "lookup_visual_frame_read",
+            "lookup_visual_frame_read",
+            "masked_real_name_tail_extracted"
+          ]
+        }
+      ]
+    },
+    {
+      "device": "154",
+      "purpose": "probe",
+      "kind": "natural-post-frame-timeout",
+      "status": "succeeded",
+      "hasName": true,
+      "inputCount": 1,
+      "submitCount": 1,
+      "calls": [
+        {
+          "operation": "post_human_check",
+          "ok": true,
+          "seconds": 12.016,
+          "observationOnlyResume": false,
+          "recoverUnexpectedPage": false,
+          "steps": []
+        },
+        {
+          "operation": "query",
+          "ok": false,
+          "seconds": 42.478,
+          "observationOnlyResume": false,
+          "recoverUnexpectedPage": false,
+          "steps": [
+            "poco_request_received",
+            "poco_reused",
+            "poco_reuse_focus_observed",
+            "reuse_search_page_by_exact_activity",
+            "reuse_existing_search_page",
+            "poco_search_ready_focus",
+            "poco_search_input_probe_begin",
+            "clear_previous_query",
+            "poco_input_clear_confirmed",
+            "query_input_throttle_wait",
+            "poco_search_ready_focus",
+            "poco_search_input_probe_begin",
+            "input_phone",
+            "submit_search",
+            "lookup_visual_result_probe",
+            "lookup_visual_frame_read",
+            "lookup_visual_frame_read",
+            "lookup_reader_failure",
+            "poco_fast_path_failed"
+          ]
+        },
+        {
+          "operation": "query_resume",
+          "ok": true,
+          "seconds": 29.142,
+          "observationOnlyResume": true,
+          "recoverUnexpectedPage": false,
+          "steps": [
+            "poco_request_received",
+            "poco_reused",
+            "resume_query_without_reinput",
+            "resume_result_observation_only",
+            "lookup_visual_result_probe",
+            "lookup_visual_frame_read",
+            "lookup_visual_frame_read",
+            "masked_real_name_tail_extracted"
+          ]
+        }
+      ]
+    },
+    {
+      "device": "142",
+      "purpose": "business",
+      "kind": "controlled-post-frame-timeout",
+      "status": "succeeded",
+      "hasName": false,
+      "inputCount": 1,
+      "submitCount": 1,
+      "calls": [
+        {
+          "operation": "query",
+          "ok": false,
+          "seconds": 31.238,
+          "observationOnlyResume": false,
+          "recoverUnexpectedPage": false,
+          "steps": [
+            "poco_request_received",
+            "poco_reused",
+            "poco_reuse_focus_observed",
+            "reuse_search_page_by_exact_activity",
+            "reuse_existing_search_page",
+            "poco_search_ready_focus",
+            "poco_search_input_probe_begin",
+            "clear_previous_query",
+            "poco_input_clear_confirmed",
+            "query_input_throttle_wait",
+            "poco_search_ready_focus",
+            "poco_search_input_probe_begin",
+            "input_phone",
+            "submit_search",
+            "lookup_visual_result_probe",
+            "lookup_visual_frame_read",
+            "test_injected_visual_after_timeout",
+            "lookup_reader_failure",
+            "poco_fast_path_failed"
+          ]
+        },
+        {
+          "operation": "query_resume",
+          "ok": true,
+          "seconds": 24.774,
+          "observationOnlyResume": true,
+          "recoverUnexpectedPage": false,
+          "steps": [
+            "poco_request_received",
+            "poco_reused",
+            "resume_query_without_reinput",
+            "resume_result_observation_only",
+            "lookup_visual_result_probe",
+            "lookup_visual_frame_read",
+            "lookup_visual_frame_read",
+            "lookup_no_name_result"
+          ]
+        }
+      ]
+    }
+  ],
+  "businessScreenshotReviewed": "mobile-topup and recommendations only, no name card",
+  "important": "Four preflight stops still used legacy 300ms policy; one later adb_probe timeout; fixed after this pass. One missing stop summary was a lease-blocked request, not success."
+}

@@ -1,0 +1,206 @@
+{
+  "test": "local external HTTP -> actual candidate Agent task/account functions -> persistent Windows test worker -> real phones",
+  "phones": [
+    "142",
+    "154"
+  ],
+  "ready": true,
+  "businessCount": 1,
+  "businessCompleted": true,
+  "hasName": false,
+  "emptyScreenshotReview": "mobile-topup/recommendations only, no name card",
+  "sameLookupId": true,
+  "sameTaskId": true,
+  "inputCount": 1,
+  "submitCount": 1,
+  "resumeSeconds": 26.936,
+  "resumeObservationOnly": true,
+  "appRestart": false,
+  "queueAndRoundStopped": true,
+  "tasks": [
+    {
+      "device": "154",
+      "type": "alipay_name_start",
+      "purpose": "account_preparation",
+      "status": "succeeded",
+      "hasName": false,
+      "startedAt": "2026-10-27T09:27:15.977Z",
+      "endedAt": "2026-10-27T09:28:26.478Z"
+    },
+    {
+      "device": "142",
+      "type": "alipay_name_start",
+      "purpose": "account_preparation",
+      "status": "succeeded",
+      "hasName": false,
+      "startedAt": "2026-10-27T09:27:16.528Z",
+      "endedAt": "2026-10-27T09:29:14.793Z"
+    },
+    {
+      "device": "154",
+      "type": "alipay_name_query",
+      "purpose": "probe",
+      "status": "succeeded",
+      "hasName": true,
+      "startedAt": "2026-10-27T09:28:27.754Z",
+      "endedAt": "2026-10-27T09:29:10.749Z"
+    },
+    {
+      "device": "142",
+      "type": "alipay_name_query",
+      "purpose": "probe",
+      "status": "succeeded",
+      "hasName": true,
+      "startedAt": "2026-10-27T09:29:15.813Z",
+      "endedAt": "2026-10-27T09:29:58.183Z"
+    },
+    {
+      "device": "142",
+      "type": "alipay_name_query",
+      "purpose": "business",
+      "status": "succeeded",
+      "hasName": false,
+      "startedAt": "2026-10-27T09:30:01.371Z",
+      "endedAt": "2026-10-27T09:31:30.866Z"
+    },
+    {
+      "device": "154",
+      "type": "alipay_name_stop",
+      "purpose": "cleanup",
+      "status": "succeeded",
+      "hasName": false,
+      "startedAt": "2026-10-27T09:31:33.776Z",
+      "endedAt": "2026-10-27T09:32:00.792Z"
+    },
+    {
+      "device": "142",
+      "type": "alipay_name_stop",
+      "purpose": "cleanup",
+      "status": "succeeded",
+      "hasName": false,
+      "startedAt": "2026-10-27T09:31:35.252Z",
+      "endedAt": "2026-10-27T09:32:06.140Z"
+    }
+  ],
+  "readerCalls": [
+    {
+      "operation": "query",
+      "ok": false,
+      "seconds": 38.599,
+      "observationOnlyResume": false,
+      "recoverUnexpectedPage": false,
+      "steps": [
+        "poco_request_received",
+        "poco_reused",
+        "poco_reuse_focus_observed",
+        "reuse_search_page_by_exact_activity",
+        "reuse_existing_search_page",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "clear_previous_query",
+        "poco_input_clear_confirmed",
+        "query_input_throttle_wait",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "input_phone",
+        "submit_search",
+        "lookup_visual_result_probe",
+        "lookup_visual_frame_read",
+        "test_injected_visual_after_timeout",
+        "lookup_reader_failure",
+        "poco_fast_path_failed"
+      ]
+    },
+    {
+      "operation": "query_resume",
+      "ok": true,
+      "seconds": 26.936,
+      "observationOnlyResume": true,
+      "recoverUnexpectedPage": false,
+      "steps": [
+        "poco_request_received",
+        "poco_reused",
+        "resume_query_without_reinput",
+        "resume_result_observation_only",
+        "lookup_visual_result_probe",
+        "lookup_visual_frame_read",
+        "lookup_visual_frame_read",
+        "lookup_no_name_result"
+      ]
+    }
+  ],
+  "workerStops": [
+    {
+      "at": "2026-10-27T09:30:14.282Z",
+      "exited": true,
+      "forced": true,
+      "cleanupConfirmed": true,
+      "reason": "lookup_reader_poco_probe_failed",
+      "elapsedMs": 5717
+    },
+    {
+      "at": "2026-10-27T09:30:56.559Z",
+      "exited": true,
+      "forced": false,
+      "cleanupConfirmed": true,
+      "reason": "lookup_query_app_recovery",
+      "elapsedMs": 1741
+    },
+    {
+      "at": "2026-10-27T09:31:44.324Z",
+      "exited": true,
+      "forced": false,
+      "cleanupConfirmed": true,
+      "reason": "lookup_reader_poco_probe_failed",
+      "elapsedMs": 970
+    },
+    {
+      "at": "2026-10-27T09:31:51.953Z",
+      "exited": true,
+      "forced": true,
+      "cleanupConfirmed": false,
+      "reason": "lookup_reader_poco_probe_failed",
+      "elapsedMs": 9055
+    },
+    {
+      "at": "2026-10-27T09:32:05.738Z",
+      "exited": true,
+      "forced": false,
+      "cleanupConfirmed": true,
+      "reason": "lookup_query_app_recovery",
+      "elapsedMs": 1242
+    }
+  ],
+  "injections": [
+    "test lookup probe failure injected",
+    "test graceful exit held for forced-cleanup branch",
+    "test lost cleanup ACK injected"
+  ],
+  "cleanupAdapterReceipts": [
+    {
+      "stopped": true,
+      "seconds": 1.741,
+      "http": 200
+    },
+    {
+      "stopped": true,
+      "seconds": 0,
+      "http": 200
+    },
+    {
+      "stopped": true,
+      "seconds": 1.243,
+      "http": 200
+    },
+    {
+      "stopped": true,
+      "seconds": 0.001,
+      "http": 200
+    },
+    {
+      "http": 500,
+      "blocked": true
+    }
+  ],
+  "blockedFinalDuplicateStopExplanation": "Paired initial test leases close together. After both stop tasks completed, a redundant cleanup request for the second already-released lease can receive 500/blocked; it is not recorded as a successful stop."
+}

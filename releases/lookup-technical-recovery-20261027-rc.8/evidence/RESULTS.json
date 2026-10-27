@@ -1,0 +1,60 @@
+{
+  "status": "local-candidate-tested-not-deployed",
+  "productFiles": 15,
+  "tests": {
+    "javascriptAllSerial": 1366,
+    "agentSeparate": 434,
+    "pythonDiscovery": 604,
+    "pythonRunners": 163,
+    "windowsTargeted": 23,
+    "staticCheck": true,
+    "finalFailures": 0,
+    "countsOverlap": true
+  },
+  "realDevice": {
+    "firstPassNaturalVisualAfterTimeouts": 2,
+    "firstPassProbeRecoverySeconds": [
+      33.115,
+      29.142
+    ],
+    "finalBusinessResumeSeconds": 26.936,
+    "controlledForcedCleanupConfirmed": true,
+    "naturalCleanupUnconfirmedCount": 1,
+    "lateReadConfirms154PocoExited": true,
+    "localApiStopped": true,
+    "sameTaskNoReinput": true
+  },
+  "priorFailures": [
+    "Initial worker-shutdown static pattern expected old single cleanup call; test updated for both protocol branches.",
+    "Initial full real path exposed generic preflight 300ms stop gap; workflow-scoped cleanup added and retested.",
+    "Second real path force-stop ACK timeout blocked rebuild; actual-state confirmation added, final controlled ACK-loss full path passed.",
+    "Parallel regression legacy idle fixture mixed frozen and wall clock; changed test-only timestamps to injected clock, 9 targeted and all 1366 serial passed.",
+    "Cloud SSH control socket expired during staging; safe login restored before any subsequent phone admission."
+  ],
+  "remainingAcceptance": [
+    "One natural 154 pidof cleanup confirmation failed in the final stop path; rebuild blocked, later read found no Poco processes. Transient command latency cause remains unproven.",
+    "Exact initial Poco RPC/Android scheduling or forwarding stall remains unproven; shell/pid evidence narrows but does not eliminate transport intermittency.",
+    "Local HTTP real-device bridge does not run the production shared Agent main loop, durable outbox or real control interruption/cancellation timing.",
+    "Archived job detail 404 and missing historical failure screenshots are not repaired by this reader candidate.",
+    "Inherited rc.7 remaining natural network-restriction business cross-device and new eight-hour-expiry scenarios were not repeated here.",
+    "Forced cleanup ACK loss in final pass is controlled fault injection on real isolated workers; do not claim natural recurrence of exactly that lost ACK."
+  ],
+  "productionChanged": false,
+  "productionAdbAndAgentOwner": "SYSTEM",
+  "productionBaselineSource": "64148f3cfd1793f423a1b9d7097746a6ba79fec1",
+  "selfReview": {
+    "risk": "R2 shared worker lifecycle; authorized isolated real-device testing",
+    "reviewed": [
+      "error boundary after submitted input",
+      "workflow scope",
+      "cleanup confirmation and deadline",
+      "lookup stop barrier and restart rejection",
+      "screen/XML existing protocol and budget",
+      "single-serial Poco forwards only",
+      "error stage PII minimization",
+      "inherited runtime and release hashes"
+    ],
+    "reviewType": "self-review; not independent reviewer or deployment authorization"
+  },
+  "testLeasesAndWorkersReleased": true
+}

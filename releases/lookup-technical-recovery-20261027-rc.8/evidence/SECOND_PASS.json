@@ -1,0 +1,30 @@
+{
+  "stage": "before-lost-cleanup-ack-refinement",
+  "stops": [
+    {
+      "at": "2026-10-27T09:22:33.281Z",
+      "exited": true,
+      "forced": false,
+      "cleanupConfirmed": true,
+      "reason": "lookup_query_app_recovery",
+      "elapsedMs": 1042
+    },
+    {
+      "at": "2026-10-27T09:23:21.396Z",
+      "exited": true,
+      "forced": true,
+      "cleanupConfirmed": false,
+      "reason": "lookup_reader_poco_probe_failed",
+      "elapsedMs": 7080
+    },
+    {
+      "at": "2026-10-27T09:23:22.625Z",
+      "exited": true,
+      "forced": false,
+      "cleanupConfirmed": true,
+      "reason": "lookup_query_app_recovery",
+      "elapsedMs": 1687
+    }
+  ],
+  "finding": "Real targeted force-stop ACK timeout led to cleanupConfirmed=false; candidate blocked worker rebuild. Added fresh absence/forward verification after command failure; final validation separate."
+}

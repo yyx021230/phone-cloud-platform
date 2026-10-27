@@ -1,0 +1,65 @@
+{
+  "cloud": [
+    {
+      "file": "server/lookup-device-availability.mjs",
+      "match": true
+    },
+    {
+      "file": "server/lookup-failure-domain.mjs",
+      "match": true
+    },
+    {
+      "file": "server/lookup-readiness.mjs",
+      "match": true
+    },
+    {
+      "file": "server/managed-lookup.mjs",
+      "match": true
+    },
+    {
+      "file": "server/lookup-ai-vision.mjs",
+      "match": true
+    },
+    {
+      "file": "server/lookup-admin-console.mjs",
+      "match": true
+    },
+    {
+      "file": "public/lookup-admin.js",
+      "match": true
+    },
+    {
+      "file": "public/lookup-pool.js",
+      "match": true
+    }
+  ],
+  "windows": [
+    {
+      "match": true,
+      "file": "src\\index.mjs"
+    },
+    {
+      "match": true,
+      "file": "src\\lookup-page-recovery.mjs"
+    },
+    {
+      "match": true,
+      "file": "src\\lookup-recovery-trace.mjs"
+    },
+    {
+      "match": true,
+      "file": "scripts\\alipay_name_lookup.py"
+    },
+    {
+      "match": true,
+      "file": "scripts\\lookup_page_actions.py"
+    },
+    {
+      "match": true,
+      "file": "scripts\\xhs_airtest_poco.py"
+    }
+  ],
+  "adbPid": 20316,
+  "agentPid": 14540,
+  "owner": "SYSTEM"
+}
