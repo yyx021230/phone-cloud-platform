@@ -1,0 +1,103 @@
+{
+  "javascript": {
+    "passed": 1347,
+    "includesScreenRegression": true
+  },
+  "python": {
+    "unitTests": 592,
+    "runnerTests": 163,
+    "passed": 755
+  },
+  "windows": {
+    "passed": 432,
+    "overlapsLocalTests": true,
+    "utf8Mode": true,
+    "initialDefaultEncodingFixtureErrors": 8
+  },
+  "isolatedPostgresHttp": {
+    "storage": "postgres",
+    "initialReady": 3,
+    "legacyDeviceReprobes": 3,
+    "deviceReprobeSpacingMs": [
+      60267,
+      60229
+    ],
+    "maxReserved": 5,
+    "businessRequests": 50,
+    "modelCalls": 26,
+    "names": 16,
+    "empty": 34,
+    "maxExecuting": 5,
+    "maxModels": 1,
+    "elapsedBeforeNewKeyMs": 121000.15970799999,
+    "requestedHoldMs": 121000,
+    "originalIdsPreserved": true,
+    "samePhoneResumes": 10,
+    "probeSamePhoneRecoveries": 35,
+    "pythonRunnerUsbFlows": 26,
+    "pythonRunnerInputRecoveries": 10,
+    "simulatedDeviceIO": true,
+    "fencedHandoffs": 20,
+    "transportSamePhoneContinuationThenHandoffs": 10,
+    "sampledResultsKeptAcrossRestart": 2,
+    "stopAndNextRound": true,
+    "physicalReservationsDrained": true,
+    "realPhones": 0,
+    "productionActions": 0
+  },
+  "realApiBeforeUserStoppedNormalBatch": {
+    "businessCount": 20,
+    "statuses": {
+      "not_found": 4,
+      "succeeded": 9,
+      "cancelled": 7
+    },
+    "channelsRemaining": 0,
+    "roundStops": 1
+  },
+  "switchIncident": {
+    "device": 154,
+    "case": "verified account switch cold-start regression",
+    "productionChanged": false,
+    "steps": [
+      {
+        "operation": "list_accounts",
+        "ok": false,
+        "seconds": 13.109,
+        "workerExited": true,
+        "error": "poco_alipay_human_verification_required",
+        "events": [
+          {
+            "step": "manual_account_list_requested",
+            "elapsed": 0.328,
+            "reason": null,
+            "forceStopped": null
+          },
+          {
+            "step": "resume_alipay_home",
+            "elapsed": 0.938,
+            "reason": "account-list",
+            "forceStopped": null
+          },
+          {
+            "step": "error",
+            "elapsed": 13.094,
+            "reason": null,
+            "forceStopped": null
+          }
+        ]
+      }
+    ],
+    "testBlocked": "AssertionError"
+  },
+  "postflight": {
+    "productionFilesChecked": 13,
+    "productionFilesUnchanged": true,
+    "ownWindowsWorkers": 0,
+    "adbPid": 20316,
+    "agentPid": 14540,
+    "owner": "SYSTEM",
+    "imageUnchanged": true
+  },
+  "notDeployed": true
+}
