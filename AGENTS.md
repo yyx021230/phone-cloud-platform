@@ -34,3 +34,10 @@
 - 上线新版本或执行数据库迁移。
 
 更新时至少填写文档末尾的“变更记录”和“决策日志”。
+
+## Nginx 测试隔离（2026-10-27 故障后约束）
+
+- `nginx -t/-T` 会创建/改属主临时目录，不当作纯只读命令。禁止在生产宿主以 root 运行仅用 `-p` 隔离的临时 Nginx 配置；编译时绝对路径不受 `-p` 隔离。
+- 独立测试必须采用非特权、无 capability 的身份，并显式隔离 client_body/proxy/fastcgi/uwsgi/scgi 五类临时路径、pid、lock、日志和监听端点。使用 `deploy/nginx-isolation/verify.py` 的受限合成测试；新增场景须保持这些边界并有失败反例。
+- 前后比对生产目录 uid/gid/mode/inode；漂移即停止并报告，禁止自动 chown/chmod/reload“修正”。不放宽目录权限，不通过 ADB/Agent/Hub 重启掩盖入口心跳失败。
+- 若本分支尚未包含该保护工具，先从已审核的 `nginx-isolation-20261027-rc.1` 候选取得并核对内容；不得照旧临时脚本继续。此规则不等于系统级拦截所有管理员命令。

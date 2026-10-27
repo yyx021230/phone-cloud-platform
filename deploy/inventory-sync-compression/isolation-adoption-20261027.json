@@ -1,0 +1,110 @@
+{
+  "version": "inventory-isolation-adoption-20261027-rc.1",
+  "branch": "codex/inventory-test-isolation-20261027",
+  "baseCommit": "678db3855dd5800f14100a76180dee757e146fde",
+  "at": "2026-10-27T08:32:03.212251+00:00",
+  "adoption": {
+    "canonicalEntry": "deploy/nginx-isolation/verify.py",
+    "reviewedSourceCommit": "cb731921fc44347ea9b0e609e17e6ed4e46b5f66",
+    "reviewedSourceTag": "nginx-isolation-20261027-rc.1",
+    "sha256": "fbf5ccfbb61d6646aca69420a9f7bedf07c3600bd3b715e6207e9f972f22afcd",
+    "localLegacyEntry": "/private/tmp/pc-invsync-isolated.py",
+    "legacyBeforeSha256": "fb3a251bb02f825553a4b36a7b90d6c7e2632e87f79a21c27099e08f71976372",
+    "legacyAfterSha256": "fbf5ccfbb61d6646aca69420a9f7bedf07c3600bd3b715e6207e9f972f22afcd",
+    "execution": "same standalone guard bytes, no automatic SSH or production fixture read",
+    "productionChanges": false,
+    "sharedExistingWorktreeFilesChanged": false
+  },
+  "unitTests": 13,
+  "realTests": {
+    "root": {
+      "at": "2026-10-27T08:30:16.635627+00:00",
+      "exitCode": 2,
+      "sourceSha256": "fbf5ccfbb61d6646aca69420a9f7bedf07c3600bd3b715e6207e9f972f22afcd",
+      "result": {
+        "passed": false,
+        "error": "ROOT_FORBIDDEN: use an unprivileged test identity",
+        "function": "require_unprivileged",
+        "line": 36
+      }
+    },
+    "www-data": {
+      "at": "2026-10-27T08:30:16.776903+00:00",
+      "exitCode": 2,
+      "sourceSha256": "fbf5ccfbb61d6646aca69420a9f7bedf07c3600bd3b715e6207e9f972f22afcd",
+      "result": {
+        "passed": false,
+        "error": "PRODUCTION_WRITE_ACCESS_FORBIDDEN",
+        "function": "require_no_production_write_access",
+        "line": 61
+      }
+    },
+    "nobody": {
+      "at": "2026-10-27T08:30:17.465022+00:00",
+      "exitCode": 0,
+      "sourceSha256": "fbf5ccfbb61d6646aca69420a9f7bedf07c3600bd3b715e6207e9f972f22afcd",
+      "result": {
+        "cases": [
+          {
+            "acceptEncoding": "gzip",
+            "byteIdentical": true,
+            "decodedBytes": 288015,
+            "gzip": true,
+            "requestBytes": 66700,
+            "responseBytes": 1613,
+            "route": "/inventory-fixture",
+            "status": 200
+          },
+          {
+            "acceptEncoding": "identity",
+            "byteIdentical": true,
+            "decodedBytes": 288015,
+            "gzip": false,
+            "requestBytes": 66700,
+            "responseBytes": 288015,
+            "route": "/inventory-fixture",
+            "status": 200
+          },
+          {
+            "acceptEncoding": "gzip;q=0",
+            "byteIdentical": true,
+            "decodedBytes": 288015,
+            "gzip": false,
+            "requestBytes": 66700,
+            "responseBytes": 288015,
+            "route": "/inventory-fixture",
+            "status": 200
+          },
+          {
+            "acceptEncoding": "gzip",
+            "byteIdentical": true,
+            "decodedBytes": 288015,
+            "gzip": false,
+            "requestBytes": 66700,
+            "responseBytes": 288015,
+            "route": "/unrelated-fixture",
+            "status": 200
+          }
+        ],
+        "cleanupComplete": true,
+        "productionConfigLoaded": false,
+        "productionDirectoryMetadataUnchanged": true,
+        "productionDirectoryWritable": false,
+        "productionRequests": 0,
+        "requestBodySpillExercised": true,
+        "tcpListeners": 0,
+        "uid": 65534
+      }
+    }
+  },
+  "productionMetadataAndPidsUnchanged": true,
+  "noProductionConfigOrPermissionChange": true,
+  "noProductionReloadRestart": true,
+  "noWindowsAdbPhoneAction": true,
+  "noCompressionRelease": true,
+  "localSourceOnly": true,
+  "review": "self-review; imported exact reviewed source; no independent new-agent review",
+  "unverified": "No app full suite or phone collection repeated: these paths were not changed. Guard does not enforce all administrator commands.",
+  "evidenceDirectory": "/Users/yyx/ztqc/phone-cloud-platform/windows-agent/data/nginx-isolation-adoption-20261027",
+  "sharedPreservation": "Shared root 241 entries (prior240 plus reviewed nginx-isolation folder) not written; owned worktree only; actual legacy temp entry intentionally replaced after hash/idle check."
+}
