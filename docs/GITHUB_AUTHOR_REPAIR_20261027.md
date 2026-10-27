@@ -1,6 +1,6 @@
 # GitHub提交身份修复（2026-10-27）
 
-状态：邮箱已修正，历史修复分支待默认分支纳入；不代表贡献图已经补齐。不涉及生产发布。
+状态：邮箱已修正，历史修复分支已按用户明确授权快进合入GitHub默认main；贡献图等待GitHub刷新。不涉及生产发布。
 
 ## 范围与方法
 
@@ -29,3 +29,10 @@ GitHub只有关联到账号、位于默认分支或gh-pages等符合条件的提
 GitHub HTTP私有账号接口当前无有效登录，返回401；SSH已验证账号且可推送，公开提交API可用于核验作者。未修改账号设置、全局邮箱、默认分支或线上服务。
 
 参考：[GitHub邮箱规则](https://docs.github.com/en/account-and-profile/reference/email-addresses-reference)、[贡献缺失规则](https://docs.github.com/en/account-and-profile/how-tos/contribution-settings/troubleshooting-missing-contributions)。
+
+
+## main纳入回执
+
+2026-10-27用户明确选择“现在合入main，保留旧分支和标签”。实际普通push已成功将GitHub main从0034b939快进到d37f5b0，无force；原候选分支770560a、rc.8原标签对象6088be1及产品d3ca8c4不变。修正历史325条全部为main祖先；公开提交API已验证最新修正提交的author和committer均关联yyx021230。原日期保留，贡献图是否刷新和具体数量仍由GitHub计算，不以推送成功冒充界面刷新。
+
+本回执文档再同步修复分支和main；不存在代码行为修改。后续可在原候选分支继续开发，使用已修正的仓库local邮箱，再正常合并main，无需再次复制历史。GitLab保持原状，生产、现有部署回执、不可变标签及其他工作区均未改动；未执行线上部署或服务操作。
