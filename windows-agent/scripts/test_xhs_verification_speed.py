@@ -33,12 +33,21 @@ class VerificationReadTests(unittest.TestCase):
         self.assertIn('verification_fresh_page_accepted',events)
         self.assertEqual(out[1:],(False,False)) # Not a native pair/probe read.
 
-    def test_stale_or_non_native_page_uses_original_refresh_and_double_read(self):
-        for after in [native('ABCDE'),page(list('CDEFG'))]:
+    def test_stale_page_uses_original_refresh_and_double_read(self):
+        for after in [native('ABCDE'),page(list('ABCDE'))]:
             with self.subTest():
                 _,events,capture,refresh,stable=self.read(after)
                 capture.assert_called_once();refresh.assert_called_once();stable.assert_called_once()
                 self.assertIn('verification_page_stability_fallback',events)
+
+    def test_fresh_stock_uiautomator_elements_use_the_same_audit_proofs(self):
+        _,events,capture,refresh,stable=self.read(page(list('CDEFG')))
+        capture.assert_called_once();refresh.assert_not_called();stable.assert_not_called()
+        self.assertIn('verification_fresh_page_accepted',events)
+
+    def test_non_element_source_is_rejected(self):
+        after=page(list('CDEFG'));after.set('data-source','image')
+        with self.assertRaises(sync.ElementListReadError):self.read(after)
 
     def test_partial_native_page_cannot_skip_stability(self):
         after=native('CDEFG')
@@ -77,6 +86,10 @@ class VerificationReadTests(unittest.TestCase):
 
 
 class VerificationEntryTests(unittest.TestCase):
+    def setUp(self):
+        self.poco=patch.object(sync,'assert_no_poco').start()
+        self.addCleanup(patch.stopall)
+
     def args(self,slot='app1'):
         return argparse.Namespace(adb='adb',serial='serial',app_slot=slot,
             verified_entry_events=['collection_slot_requested:'+slot,'native_window_elements_enabled',
@@ -102,6 +115,15 @@ class VerificationEntryTests(unittest.TestCase):
         with patch.object(sync,'navigation_capture') as capture:
             self.assertIsNone(sync.verification_entry(args,Mock(),[]))
         capture.assert_not_called()
+
+    def test_stock_element_list_reuses_entry_without_fallback_reader_flag(self):
+        args=self.args();args.verified_entry_events.remove('native_window_elements_enabled')
+        events=[];root=page(list('ABCDE'))
+        with patch.object(sync,'focus',return_value=FOCUS),patch.object(sync,'navigation_capture',return_value=root):
+            self.assertIs(sync.verification_entry(args,Mock(),events),root)
+        self.poco.assert_called_once()
+        self.assertIn('verification_existing_list_reused',events)
+        self.assertNotIn('native_window_elements_enabled',events)
 
     def test_wrong_foreground_slot_never_reuses_entry(self):
         with patch.object(sync,'focus',return_value=FOCUS),patch.object(sync,'navigation_capture') as capture:

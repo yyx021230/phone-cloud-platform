@@ -2436,10 +2436,12 @@ def read_scrolled_content(adb_path, serial, previous_root, guard, events, fast_p
         # The primary scan already double-read every row. This independent
         # audit reads each newly exposed page once; the complete ordered audit
         # still has to match that primary scan before any result is complete.
-        if root.get("native-window-reader") == "1" and signature is not None and current - previous:
+        if signature is not None and current - previous:
             verify_element_overlap(previous_root, root)
             events.append("verification_fresh_page_accepted")
             return root, False, False
+        # Both stock UIAutomator and the fallback native reader produce fresh
+        # element XML through navigation_capture; neither is a cached file.
         # A stale/partial tree is not evidence. Reuse this first read only as
         # input to the existing refresh and two-fresh-read stability path.
         events.append("verification_page_stability_fallback")
@@ -2473,8 +2475,7 @@ def read_scrolled_content(adb_path, serial, previous_root, guard, events, fast_p
 def verification_entry(args, guard, events):
     """Reuse only a freshly proven same-slot list from the completed primary scan."""
     prior = getattr(args, "verified_entry_events", ())
-    if ("native_window_elements_enabled" not in prior
-            or {e for e in prior if e.startswith("collection_slot_requested:")} != {"collection_slot_requested:" + args.app_slot}):
+    if {e for e in prior if e.startswith("collection_slot_requested:")} != {"collection_slot_requested:" + args.app_slot}:
         return None
     carried = [e for e in prior if e.startswith(("collection_slot_requested:", "clone_user_requested:"))
                or e == "native_window_elements_enabled"]
@@ -2484,12 +2485,14 @@ def verification_entry(args, guard, events):
     if not works_webview_activity(current):
         return None
     verify_collection_slot(args.adb, args.serial, args.app_slot, carried)
+    assert_no_poco(args.adb, args.serial)
     root = navigation_capture(args.adb, args.serial, guard, carried)
     guard()
     if focus(args.adb, args.serial) != current:
         raise ElementListReadError("verification entry foreground changed")
     require_creator_service_available(root)
-    if root.get("native-window-reader") != "1" or not creator_list(root) or creator_filter_panel(root):
+    require_element_tree(root)
+    if not creator_list(root) or creator_filter_panel(root):
         return None
     events.extend(carried)
     events.append("verification_existing_list_reused")
