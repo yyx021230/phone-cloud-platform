@@ -1,0 +1,32 @@
+{
+  "device": 154,
+  "controlledFault": true,
+  "fault": "input-before-navigation-RPC-read-timeout",
+  "sameTaskIdPreserved": true,
+  "workerCalls": [
+    {
+      "operation": "query",
+      "pageRecoveryStage": null,
+      "workerExited": true,
+      "ok": false,
+      "seconds": 12.39
+    },
+    {
+      "operation": "query",
+      "pageRecoveryStage": "reattach_before_input",
+      "workerExited": true,
+      "ok": true,
+      "seconds": 37.891
+    }
+  ],
+  "inputCount": 1,
+  "submitCount": 1,
+  "appRestartCount": 0,
+  "twoRealProbesPassed": true,
+  "businessCount": 1,
+  "businessCompleted": true,
+  "businessReturnedEmpty": true,
+  "businessScreenshotChecked": "recharge shortcut and recommendation section only; no name card",
+  "stopCompleted": true,
+  "productionExternalApiAcceptance": false
+}
