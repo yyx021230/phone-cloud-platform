@@ -1,0 +1,74 @@
+{
+  "testedCandidate": "lookup-technical-recovery-20261027-rc.4",
+  "candidateCommit": "26d4f373bf2c1f80f0ae3821104cdd30b9aba22f",
+  "at": "2026-10-27T04:53:16.518Z",
+  "tasks": [
+    {
+      "device": "161",
+      "type": "alipay_name_start",
+      "purpose": "account_preparation",
+      "status": "succeeded",
+      "code": null,
+      "hasName": false,
+      "seconds": 68.078
+    },
+    {
+      "device": "138",
+      "type": "alipay_name_start",
+      "purpose": "account_preparation",
+      "status": "succeeded",
+      "code": null,
+      "hasName": false,
+      "seconds": 73.295
+    },
+    {
+      "device": "161",
+      "type": "alipay_name_query",
+      "purpose": "probe",
+      "status": "succeeded",
+      "code": null,
+      "hasName": true,
+      "seconds": 49.292
+    },
+    {
+      "device": "138",
+      "type": "alipay_name_query",
+      "purpose": "probe",
+      "status": "failed",
+      "code": "alipay_human_verification_required",
+      "hasName": false,
+      "seconds": 28.243
+    },
+    {
+      "device": "138",
+      "type": "alipay_name_stop",
+      "purpose": "cleanup",
+      "status": "succeeded",
+      "code": null,
+      "hasName": false,
+      "seconds": 15.827
+    },
+    {
+      "device": "161",
+      "type": "alipay_name_stop",
+      "purpose": "cleanup",
+      "status": "succeeded",
+      "code": null,
+      "hasName": false,
+      "seconds": 14.566
+    }
+  ],
+  "ready": false,
+  "businessSubmitted": 0,
+  "stopped": true,
+  "ownTestLeasesReleased": true,
+  "production13HashesUnchanged": true,
+  "adbPid": 20316,
+  "adbOwner": "SYSTEM",
+  "agentPid": 14540,
+  "agentOwner": "SYSTEM",
+  "testWorkers": 0,
+  "sharedAgentReplaced": false,
+  "blockedBy": "138 real CAPTCHA; no two-ready admission",
+  "nativeReceiptSha256": "88f0ea47a8353673aac38fadb6ffe8194042be3bb6eef963018ebdccf4fe661a"
+}
