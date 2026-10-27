@@ -13,7 +13,7 @@ POPUP=INDEX.replace('com.xingin.xhs.index.v2.IndexActivityV2','com.xingin.author
 
 class LateNotificationTests(unittest.TestCase):
  def run_boundary(self,mode='ok'):
-  blank=ET.fromstring('<hierarchy/>');ready=ET.parse(S/'fixtures/xhs/works-elements-141.xml').getroot()
+  blank=ET.parse(S/'fixtures/xhs/notification-47-systemui-only.xml').getroot();ready=ET.parse(S/'fixtures/xhs/works-elements-141.xml').getroot()
   state={'captures':0,'closed':False,'popupReads':0};events=['collection_slot_requested:app1'];calls=[]
   def capture(*args):
    state['captures']+=1
