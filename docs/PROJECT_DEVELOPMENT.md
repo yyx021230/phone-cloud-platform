@@ -4268,3 +4268,7 @@ GitHub main实际从0034b939快进至d37f5b0；修复分支和325条邮箱修正
 ### 2026-10-28 整合决策与变更：LOOKUP_INTAKE_AUDIT
 保留入队数量历史审计，不将其中临时 40 条设置覆盖用户后续查询中加排队共 20 条要求；本次不写线上配置。
 历史分支说明存档于 `module-history/LOOKUP_INTAKE_AUDIT.md`，不改变当前生产状态。
+
+### 2026-10-28 整合决策与变更：LOOKUP_MANUAL_RESULT
+保留受控人工结果工具、单元测试与操作审计；本轮不调用工具、不改任何真实查询结果。
+历史分支说明存档于 `module-history/LOOKUP_MANUAL_RESULT.md`，不改变当前生产状态。
