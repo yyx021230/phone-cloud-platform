@@ -39,6 +39,9 @@ def main():
     active_raw = (ROOT / "ACTIVE_PLATFORM_RELEASE.json").read_bytes()
     active = json.loads(active_raw)
     baseline = manifest["baselineImage"]
+    assert hashlib.sha256(active_raw).hexdigest() == manifest["baselineActiveSha256"], "ACTIVE baseline drift"
+    compose_rows = manifest["baselineCompose"]
+    assert active["activeCompose"] == [row["path"] for row in compose_rows], "compose chain drift"
     assert active["version"] == manifest["baselineVersion"]
     assert active["imageId"] == active["restartImageId"] == baseline
     assert run(["docker", "inspect", "phone-cloud-platform", "--format", "{{.Image}} "]) == baseline
@@ -57,7 +60,7 @@ def main():
     media = json.loads(run(media_command, timeout=25))
     assert media["verified"] == "live" and media["bitsPerSecond"] == 8000000 and media["packetsPerGroup"] == 2
     args = ["docker", "compose", "-p", "phone-cloud-platform"]
-    for row in active["activeCompose"]:
+    for row in compose_rows:
         assert sha(row["path"]) == row["sha256"], "compose baseline drift"
         args += ["-f", row["path"]]
     override = STAGE / "compose.pending.json"
@@ -72,8 +75,8 @@ def main():
     backup = STAGE / "rollback"
     backup.mkdir(mode=0o700, exist_ok=False)
     (backup / "ACTIVE_PLATFORM_RELEASE.json").write_bytes(active_raw)
-    (backup / "compose-baseline.json").write_text(json.dumps(active["activeCompose"], indent=2) + "\n")
-    for row in active["activeCompose"]:
+    (backup / "compose-baseline.json").write_text(json.dumps(compose_rows, indent=2) + "\n")
+    for row in compose_rows:
         target = backup / "compose" / Path(row["path"]).relative_to("/")
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(Path(row["path"]).read_bytes())
