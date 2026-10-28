@@ -194,7 +194,7 @@ for ledger in folder.glob('*.settings.json'):
    adb(['shell','settings','put',scope,key,value]);assert adb(['shell','settings','get',scope,key])==value
  ledger.unlink();recovered+=1
 print(json.dumps({'recovered':recovered,'pending':len(list(folder.glob('*.settings.json')))}))
-'''.replace('CONFIG',repr(c)),timeout=80)
+'''.replace('c=CONFIG','c='+repr(c)),timeout=80)
                 save('settings-final-'+c['deviceName']+'.json',recovery)
             except Exception as e:
                 save('settings-final-'+c['deviceName']+'.json',{'recoveryUnproven':True,'error':str(e)[:300]})
