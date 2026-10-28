@@ -22,6 +22,14 @@ import uuid
 ROOT=Path(__file__).resolve().parents[2]
 
 
+def staging_source(stage, blobs):
+    # ASCII source over Windows SSH stdin; decoded file names/content stay UTF-8.
+    return ('from pathlib import Path\nimport base64,json\np=Path('+ascii(stage)+');p.mkdir()\n'
+            'for name,value in '+ascii(blobs)+'.items():\n'
+            ' f=p/name;f.parent.mkdir(parents=True,exist_ok=True);f.write_bytes(base64.b64decode(value))\n'
+            'print(json.dumps({"staged":True}))')
+
+
 def settings_recovery_source(c):
     return '''from pathlib import Path
 import json,subprocess,os
@@ -44,7 +52,7 @@ for ledger in folder.glob('*.settings.json'):
    adb(['shell','settings','put',scope,key,value]);assert adb(['shell','settings','get',scope,key])==value
  ledger.unlink();recovered+=1
 print(json.dumps({'recovered':recovered,'pending':len(list(folder.glob('*.settings.json')))}))
-'''.replace('__QA_CONFIG_LITERAL__',repr(c),1)
+'''.replace('__QA_CONFIG_LITERAL__',ascii(c),1)
 
 
 def main():
@@ -182,7 +190,7 @@ console.log(JSON.stringify(targets.map((t,i)=>{const locks=values[1].body.locks.
         configs[c['jobId']]=c;save('config-'+t['deviceName']+'-private.json',c)
         blobs={name:base64.b64encode(p.read_bytes()).decode() for name,p in files.items()}
         blobs['config.json']=base64.b64encode(json.dumps(c).encode()).decode();blobs['task.json']=base64.b64encode(json.dumps(task).encode()).decode()
-        q.win('from pathlib import Path\nimport base64,json\np=Path('+repr(stage)+');p.mkdir()\nfor name,value in '+repr(blobs)+'.items():\n f=p/name;f.parent.mkdir(parents=True,exist_ok=True);f.write_bytes(base64.b64decode(value))\nprint(json.dumps({"staged":True}))',timeout=20)
+        q.win(staging_source(stage,blobs),timeout=20)
         # Wait for the real Agent inventory to show our screen session; never synthesize it.
         for _ in range(70):
             state=q.win("from pathlib import Path\nimport json,time\np=Path("+repr(c['inventoryPath'])+");j=json.loads(p.read_text(encoding='utf-8-sig'));ds=j if isinstance(j,list) else j['devices'];d=next(d for d in ds if d['deviceId']=="+repr(c['deviceId'])+");print(json.dumps({'age':time.time()-p.stat().st_mtime,'occupancy':d.get('occupancy')}))")

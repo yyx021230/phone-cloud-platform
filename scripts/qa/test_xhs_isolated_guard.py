@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 from xhs_isolated_guard import validate, validate_file
 from xhs_isolated_runner import GuardedCommands, read_proof
-from xhs_candidate_live import settings_recovery_source
+from xhs_candidate_live import settings_recovery_source, staging_source
 
 
 class LeaseBoundary(unittest.TestCase):
@@ -202,6 +202,16 @@ class LeaseBoundary(unittest.TestCase):
                 p.write_text(json.dumps([self.d]))
                 return proof()
             with self.assertRaisesRegex(RuntimeError,'qa_inventory_stale'):validate_file(c,proof_after_file_replacement)
+
+    def test_ascii_staging_preserves_unicode_names_and_binary_content(self):
+        import base64,contextlib,io
+        with tempfile.TemporaryDirectory() as tmp:
+            stage=Path(tmp)/'隔离候选';name='scripts/小红书数据同步.py';data='中文内容'.encode()+b'\x00\xff'
+            source=staging_source(str(stage),{name:base64.b64encode(data).decode()})
+            self.assertTrue(source.isascii())
+            with contextlib.redirect_stdout(io.StringIO()):exec(source,{})
+            self.assertEqual((stage/name).read_bytes(),data)
+        self.assertTrue(settings_recovery_source({'stage':'隔离','accountName':'中文'}).isascii())
 
     def test_recovery_generated_script_compiles_and_restores_exact_ledger(self):
         import contextlib,io
