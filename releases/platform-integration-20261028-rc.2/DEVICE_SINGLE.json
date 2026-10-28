@@ -1,0 +1,55 @@
+{
+  "status": "single_device_passed; dual_and_five_device_pending",
+  "phase": "live-fadc543fd105",
+  "device": "47",
+  "candidateRuntimeSource": "baca5721214658b46f24c974c9147490b0bafada",
+  "qaSource": "5706e4e8d4f21d7b635cc862510681fe11e67fb7",
+  "productionDeployed": false,
+  "path": "signed local HTTP batch API -> local real platform ordinary account -> original Windows consumer and isolated real-device collector -> original status handler -> real PostgreSQL batch result/pagination -> restart/re-read",
+  "syntheticParts": [
+    "local Agent transport adapter",
+    "local platform ordinary user and Agent credentials"
+  ],
+  "realParts": [
+    "phone UI and collector",
+    "Windows consumer result validation/settings recovery",
+    "HTTP services",
+    "PostgreSQL persistence"
+  ],
+  "notes": 34,
+  "windowDays": 30,
+  "complete": true,
+  "stopReason": "older_than_window_visible",
+  "twoPass": {
+    "collection_integrity": "verified_two_pass",
+    "collection_primary_count": "34",
+    "collection_verification_count": "34",
+    "collection_primary_sha256": "b52192ba0a701cb592520f6d42b0bbc4395e48204a6686901bda78efbb6b46e3",
+    "collection_verification_sha256": "b52192ba0a701cb592520f6d42b0bbc4395e48204a6686901bda78efbb6b46e3"
+  },
+  "apiIdentityAndFieldsCompared": true,
+  "restartResultsEqual": true,
+  "settingsRestored": true,
+  "pendingSettingsLedgers": 0,
+  "leaseProofRequests": 1287,
+  "cloudSnapshots": 517,
+  "transientReadFailures": 1,
+  "elapsedSeconds": 535.569,
+  "identityUnchanged": true,
+  "reverseListenerRemaining": 0,
+  "limits": [
+    "isolated adapter is not deployed production HTTP acceptance",
+    "timing includes per-command remote lease guarding; not a production speed benchmark",
+    "production shared file comparison must be independently attested in final receipt"
+  ],
+  "testedWorkspaceVsImageSource": {
+    "manifestFiles": 642,
+    "identicalFiles": 639,
+    "differences": [
+      "VERSION.json",
+      "docs/INVENTORY_RESPONSE_20261028.md",
+      "docs/PROJECT_DEVELOPMENT.md"
+    ],
+    "runtimeFilesMatch": true
+  }
+}
