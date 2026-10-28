@@ -22,6 +22,31 @@ import uuid
 ROOT=Path(__file__).resolve().parents[2]
 
 
+def settings_recovery_source(c):
+    return '''from pathlib import Path
+import json,subprocess,os
+if not __debug__:raise RuntimeError('qa_optimized_python_is_forbidden')
+c=__QA_CONFIG_LITERAL__
+p=Path(c['stage']);folder=p/'cache/xhs-data-collection'
+env=dict(os.environ,XHS_QA_CONFIG=str(p/'config.json'),PYTHONIOENCODING='utf-8')
+def adb(args):
+ r=subprocess.run([c['pythonPath'],str(p/'xhs_isolated_runner.py'),'--qa-adb']+args,capture_output=True,timeout=15,env=env)
+ if r.returncode:raise RuntimeError('guarded_settings_recovery_failed')
+ return r.stdout.decode('utf-8').strip()
+recovered=0
+for ledger in folder.glob('*.settings.json'):
+ data=json.loads(ledger.read_text());assert data['serial']==c['serial'] and data['taskId']==c['windowsTaskId']
+ for item in data['settings']:
+  scope,key,value=item['scope'],item['key'],item['original']
+  assert (scope,key) in [('system','screen_off_timeout'),('global','enable_screen_on_proximity_sensor')]
+  if not value.isdigit():continue
+  if adb(['shell','settings','get',scope,key])!=value:
+   adb(['shell','settings','put',scope,key,value]);assert adb(['shell','settings','get',scope,key])==value
+ ledger.unlink();recovered+=1
+print(json.dumps({'recovered':recovered,'pending':len(list(folder.glob('*.settings.json')))}))
+'''.replace('__QA_CONFIG_LITERAL__',repr(c),1)
+
+
 def main():
     if not __debug__ or os.environ.get('PYTHONOPTIMIZE'):
         raise RuntimeError('qa_optimized_python_is_forbidden')
@@ -54,7 +79,7 @@ def main():
         row=json.loads(api.stdout.readline());assert 'error' not in row,row
         return row.get('result',row)
     assert json.loads(api.stdout.readline())['ready']
-    configs={};keepers={};proof_count=0;proof_failures=[]
+    configs={};keepers={};proof_count=0;proof_failures=[];proof_cache={};proof_stop=threading.Event();snapshot_count=0
     cloud_api=q.qa.API.replace('15000','2000')
     def cloud_state(t,session=None):
         code=cloud_api+'''const t=TARGET;
@@ -66,9 +91,7 @@ const session=values[3]?.body.session||null;
 console.log(JSON.stringify({devices,locks,lockExpiryValid:locks.every(x=>Date.parse(x.expiresAt)>Date.now()),sessionExpiryValid:!!session&&Date.parse(session.expiresAt)>Date.now(),lookupReserved:values[2].body.pool.channels.some(x=>x.deviceId===t.deviceId),session}));'''
         code=code.replace('TARGET',json.dumps(t)).replace('SESSION',",api('/api/v1/screen-sessions/"+session+"')" if session else '')
         return q.cloud(code,timeout=5)
-    def prove(c):
-        nonlocal proof_count
-        started=time.time();s=cloud_state(c,c['sessionId']);proof_count+=1
+    def validate_cloud(c,s):
         assert len(s['devices'])==1 and not s['lookupReserved'],'qa_target_changed_or_lookup_reserved'
         d=s['devices'][0];assert d['adb']['state']=='device','qa_device_offline'
         assert len(s['locks'])==1 and s['lockExpiryValid'] and s['sessionExpiryValid'],'qa_not_unique_live_lock'
@@ -78,16 +101,44 @@ console.log(JSON.stringify({devices,locks,lockExpiryValid:locks.every(x=>Date.pa
         assert (d.get('occupancy') or {}).get('sessionId')==c['sessionId'],'qa_device_occupancy_changed'
         a=next(a for a in d['xhsAccounts'] if a['appSlot']==c['appSlot'])
         assert a['xhsId']==c['xhsId'] and a['accountName']==c['accountName'] and a['enabled'],'qa_account_changed'
-        return {**{k:c[k] for k in ('deviceId','serial','deviceName','appSlot','xhsId','accountName','jobId','sessionId','lockId','ownerUserId')},'allowed':True,'checkedAt':started,'activeLockCount':1,'sessionAlive':True,'lookupReserved':False}
+        return {**{k:c[k] for k in ('deviceId','serial','deviceName','appSlot','xhsId','accountName','jobId','sessionId','lockId','ownerUserId')},'allowed':True,'activeLockCount':1,'sessionAlive':True,'lookupReserved':False}
+    def prove(c):
+        return validate_cloud(c,cloud_state(c,c['sessionId']))
+    def refresh_proofs():
+        nonlocal snapshot_count
+        while not proof_stop.is_set():
+            current=list(configs.values())
+            if current:
+                started=time.monotonic()
+                try:
+                    code=cloud_api+'''const targets=TARGETS;
+const values=await Promise.all([api('/api/v1/devices'),api('/api/v1/device-locks'),api('/api/v1/admin/lookup-pool'),...targets.map(t=>api('/api/v1/screen-sessions/'+t.sessionId))]);
+if(values.slice(0,3).some(x=>x.status!==200))throw Error('state_read_failed');
+console.log(JSON.stringify(targets.map((t,i)=>{const locks=values[1].body.locks.filter(x=>x.deviceId===t.deviceId&&x.status==='active');const session=values[3+i].body.session||null;return {devices:values[0].body.devices.filter(d=>d.deviceId===t.deviceId&&d.adb?.serial===t.serial),locks,session,lookupReserved:values[2].body.pool.channels.some(x=>x.deviceId===t.deviceId),lockExpiryValid:locks.every(x=>Date.parse(x.expiresAt)>Date.now()),sessionExpiryValid:!!session&&Date.parse(session.expiresAt)>Date.now()};})));'''.replace('TARGETS',json.dumps([{k:c[k] for k in ('deviceId','serial','sessionId')} for c in current]))
+                    states=q.cloud(code,timeout=4);snapshot_count+=1
+                    for c,s in zip(current,states):
+                        try:proof_cache[c['jobId']]={'at':started,'proof':validate_cloud(c,s)}
+                        except (AssertionError,KeyError,StopIteration) as e:proof_cache[c['jobId']]={'denied':str(e) or 'identity_changed'}
+                except Exception as e:
+                    proof_failures.append(type(e).__name__+':'+str(e)[:100])
+                if snapshot_count%20==0:save('proof-stats.json',{'snapshots':snapshot_count,'guardRequests':proof_count,'transientReadFailures':len(proof_failures)})
+            proof_stop.wait(.75)
+    proof_thread=threading.Thread(target=refresh_proofs,daemon=True);proof_thread.start()
     class Handler(http.server.BaseHTTPRequestHandler):
         def log_message(self,*args): pass
         def do_POST(self):
+            nonlocal proof_count
             try:
                 assert self.path=='/guard' and int(self.headers.get('Content-Length','0'))<=256
                 req=json.loads(self.rfile.read(int(self.headers['Content-Length'])))
                 c=configs[req['jobId']];assert self.headers.get('Authorization')=='Bearer '+c['brokerToken']
                 assert isinstance(req.get('nonce'),str) and len(req['nonce'])==32
-                result=prove(c);result['nonce']=req['nonce'];status=200
+                proof_count+=1;cached=proof_cache.get(c['jobId'])
+                if cached and 'denied' in cached:raise RuntimeError('qa_lease_lost:'+cached['denied'])
+                if not cached or time.monotonic()-cached['at']>2.5:
+                    result={'allowed':False};status=503
+                else:
+                    result=dict(cached['proof'],brokerProofAgeSeconds=time.monotonic()-cached['at'],nonce=req['nonce']);status=200
             except Exception as e:
                 proof_failures.append(type(e).__name__+':'+str(e)[:200]);result={'allowed':False};status=409
             self.send_response(status);self.send_header('Content-Type','application/json');self.end_headers();self.wfile.write(json.dumps(result).encode())
@@ -95,12 +146,13 @@ console.log(JSON.stringify({devices,locks,lockExpiryValid:locks.every(x=>Date.pa
     threading.Thread(target=broker.serve_forever,daemon=True).start()
     remote_port=q.win("import socket,json\ns=socket.socket();s.bind(('127.0.0.1',0));print(json.dumps(s.getsockname()[1]));s.close()")
     forward=f'127.0.0.1:{remote_port}:127.0.0.1:{broker.server_port}'
+    save('forward.json',{'spec':forward,'remotePort':remote_port,'localPort':broker.server_port})
     tunnel_command=q.qa.WINDOWS[:-1]+['-O','forward','-R',forward,q.qa.WINDOWS[-1]]
     tunnel=subprocess.run(tunnel_command,capture_output=True,timeout=10)
     (folder/'tunnel.log').write_bytes(tunnel.stderr)
     leases=[];run_id=None;results=[]
     def stage_and_run(t,task):
-        c=dict(t,jobId=task['payload']['automationJobId'])
+        c=dict(t,jobId=task['payload']['automationJobId'],windowsTaskId=task['taskId'])
         initial=cloud_state(t);assert not initial['locks'] and not initial['lookupReserved'] and not initial['devices'][0].get('occupancy'),'qa_target_became_busy'
         created=q.request('/api/v1/user/devices/'+t['deviceId']+'/screen-sessions','POST',{})
         assert created['status']==201,created.get('body',{}).get('error')
@@ -167,6 +219,20 @@ console.log(JSON.stringify({devices,locks,lockExpiryValid:locks.every(x=>Date.pa
             if data['complete']:break
             time.sleep(1)
         pages=[api_call({'op':'result','runId':run_id,'offset':i}) for i in range(len(targets))]
+        for r,page in zip(results,pages):
+            # Match identity independently of completion/order; raw notes are
+            # compared with the existing API's documented field normalization.
+            matching=[p['items'][0] for p in pages if p.get('items') and p['items'][0]['xhsId']==r['target']['xhsId']]
+            assert len(matching)==1,'api_account_identity_missing'
+            item=matching[0];assert item['accountName']==r['target']['accountName']
+            if r['answer']['ok']:
+                raw=r['answer']['result']['collection'];actual=item['data']
+                assert item['status']=='succeeded' and actual['complete'] and raw['complete'],'api_collection_not_complete'
+                assert len(raw['notes'])==len(actual['notes']),'api_note_count_changed'
+                for src,dst in zip(raw['notes'],actual['notes']):
+                    assert dst['title']==src['title'][:180]
+                    for key in ('published_date','list_view_count','list_like_count','list_comment_count'):assert dst[key]==src[key],'api_note_field_changed'
+            else:assert item['status']!='succeeded','failed_candidate_was_reported_success'
         save('api-pages-private.json',pages);api_call({'op':'restart'})
         restored=[api_call({'op':'result','runId':run_id,'offset':i}) for i in range(len(targets))]
         assert [p['items'] for p in pages]==[p['items'] for p in restored],'persisted results changed on restart'
@@ -177,27 +243,7 @@ console.log(JSON.stringify({devices,locks,lockExpiryValid:locks.every(x=>Date.pa
         for c in configs.values():
             try:
                 prove(c)
-                recovery=q.win('''from pathlib import Path
-import json,subprocess,os
-c=CONFIG
-p=Path(c['stage']);folder=p/'cache/xhs-data-collection'
-env=dict(os.environ,XHS_QA_CONFIG=str(p/'config.json'),PYTHONIOENCODING='utf-8')
-def adb(args):
- r=subprocess.run([c['pythonPath'],str(p/'xhs_isolated_runner.py'),'--qa-adb']+args,capture_output=True,timeout=15,env=env)
- if r.returncode:raise RuntimeError('guarded_settings_recovery_failed')
- return r.stdout.decode('utf-8').strip()
-recovered=0
-for ledger in folder.glob('*.settings.json'):
- data=json.loads(ledger.read_text());assert data['serial']==c['serial']
- for item in data['settings']:
-  scope,key,value=item['scope'],item['key'],item['original']
-  assert (scope,key) in [('system','screen_off_timeout'),('global','enable_screen_on_proximity_sensor')]
-  if not value.isdigit():continue
-  if adb(['shell','settings','get',scope,key])!=value:
-   adb(['shell','settings','put',scope,key,value]);assert adb(['shell','settings','get',scope,key])==value
- ledger.unlink();recovered+=1
-print(json.dumps({'recovered':recovered,'pending':len(list(folder.glob('*.settings.json')))}))
-'''.replace('CONFIG',repr(c)),timeout=80)
+                recovery=q.win(settings_recovery_source(c),timeout=80)
                 save('settings-final-'+c['deviceName']+'.json',recovery)
             except Exception as e:
                 save('settings-final-'+c['deviceName']+'.json',{'recoveryUnproven':True,'error':str(e)[:300]})
@@ -213,15 +259,17 @@ print(json.dumps({'recovered':recovered,'pending':len(list(folder.glob('*.settin
         api.stdin.close()
         try:api.wait(timeout=30)
         except subprocess.TimeoutExpired:api.terminate();api.wait(timeout=10)
-        broker.shutdown()
-        subprocess.run(q.qa.WINDOWS[:-1]+['-O','cancel','-R',forward,q.qa.WINDOWS[-1]],capture_output=True,timeout=10)
+        proof_stop.set();proof_thread.join(timeout=5);broker.shutdown()
+        cancelled=subprocess.run(q.qa.WINDOWS[:-1]+['-O','cancel','-R',forward,q.qa.WINDOWS[-1]],capture_output=True,timeout=10)
+        forwarding=q.win('import psutil,json\nprint(json.dumps({"remainingListeners":sum(1 for c in psutil.net_connections(kind="tcp") if c.status=="LISTEN" and c.laddr.port=='+str(remote_port)+')}))')
+        save('forward-cleanup.json',{'returncode':cancelled.returncode,'stderr':cancelled.stderr.decode(errors='replace'),**forwarding})
         for p in keepers.values():
             try:p.wait(timeout=10)
             except subprocess.TimeoutExpired:p.terminate()
         save('identity-after.json',q.attest())
         summary={'phase':phase,'results':[{'name':r['target']['deviceName'],'model':r['target']['model'],'ok':r['answer']['ok'],'notes':len(r['answer'].get('result',{}).get('collection',{}).get('notes',[])),
-                  'complete':r['answer'].get('result',{}).get('collection',{}).get('complete'), 'pendingLedgers':r['pendingLedgers'],'elapsedSeconds':r['elapsedSeconds'],'error':r['answer'].get('error')} for r in results],
-                 'proofs':proof_count,'proofFailures':proof_failures,'productionSharedFilesChanged':False}
+                  'complete':r['answer'].get('result',{}).get('collection',{}).get('complete'), 'pendingLedgers':r['pendingLedgers'],'settingsRestored':r['answer'].get('settingsRestored',False),'elapsedSeconds':r['elapsedSeconds'],'error':r['answer'].get('error')} for r in results],
+                 'proofs':proof_count,'cloudSnapshots':snapshot_count,'proofFailures':proof_failures,'productionSharedFilesChanged':False}
         save('summary.json',summary);print(json.dumps(summary,ensure_ascii=False),flush=True)
 
 
