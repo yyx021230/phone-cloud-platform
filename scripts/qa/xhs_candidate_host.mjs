@@ -1,12 +1,29 @@
 // Separate QA process. Imports only the collection consumer, never shared Agent startup.
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import {createHash} from 'node:crypto';
 import {execFile} from 'node:child_process';
 import {runXhsDataCollection} from './xhs-data-collection.mjs';
 const c=JSON.parse(await fs.readFile(process.argv[2],'utf8'));
 const task=JSON.parse(await fs.readFile(process.argv[3],'utf8'));
 const env={...process.env,PYTHONIOENCODING:'utf-8',XHS_QA_CONFIG:process.argv[2]};
-const run=(file,args,o={})=>new Promise((resolve,reject)=>execFile(file,args,{env,windowsHide:true,timeout:o.timeoutMs||30000,maxBuffer:o.maxBuffer||1024*1024,signal:o.signal},(error,stdout,stderr)=>{
+const run=(file,args,o={})=>new Promise((resolve,reject)=>execFile(file,args,{env,windowsHide:true,timeout:o.timeoutMs||30000,maxBuffer:o.maxBuffer||1024*1024,signal:o.signal},async(error,stdout,stderr)=>{
+  // Preserve this isolated collector's raw output before the unchanged consumer
+  // deletes its transient file. Never copy shared files or arbitrary output paths.
+  const at=args.indexOf('--output');
+  if(file===c.pythonPath&&args[0]===path.join(c.stage,'xhs_isolated_runner.py')&&at>=0){
+    const source=path.resolve(args[at+1]),owned=path.resolve(c.stage,'cache','xhs-data-collection')+path.sep;
+    if(!source.startsWith(owned)){reject(new Error('qa_evidence_path_outside_stage'));return;}
+    try{
+      if((await fs.stat(source)).size>16*1024*1024)throw Error('output_too_large');
+      const bytes=await fs.readFile(source);if(bytes.length>16*1024*1024)throw Error('output_too_large');
+      const output=JSON.parse(bytes.toString('utf8'));
+      await fs.writeFile(path.join(c.stage,'collector-output-private.json'),bytes,{mode:0o600});
+      await fs.writeFile(path.join(c.stage,'collector-output-meta.json'),JSON.stringify({
+        exitCode:error?.code??0,signal:error?.signal??null,sha256:createHash('sha256').update(bytes).digest('hex'),
+        bytes:bytes.length,complete:output.complete,stopReason:output.stop_reason,notes:output.notes?.length}),{mode:0o600});
+    }catch(e){if(e.code!=='ENOENT'){reject(new Error('qa_evidence_copy_failed'));return;}}
+  }
   if(error){error.stdout=stdout;error.stderr=stderr;reject(error);}else resolve(stdout);
 }));
 const config={pythonCommand:c.pythonPath,xhsDataCollectionRunnerPath:path.join(c.stage,'xhs_isolated_runner.py'),adbPath:c.adbPath};
