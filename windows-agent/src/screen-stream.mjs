@@ -12,6 +12,7 @@ import { createScreenControlQueue } from "./screen-control-queue.mjs";
 import { createVideoBackpressureGate } from "./screen-backpressure.mjs";
 import { openScreenVideoChannel } from "./screen-video-channel.mjs";
 import { createScreenWebRtcPublisher, h264ProfileLevelId } from "./screen-webrtc-publisher.mjs";
+import { adbSerialProfile } from "./adb-serial-identity.mjs";
 
 const execFileAsync = promisify(execFile);
 const REMOTE_SERVER_PATH = "/data/local/tmp/phone-cloud-scrcpy-server-v3.3.4.jar";
@@ -129,21 +130,21 @@ export function createScreenScrcpyOptions({ requestedOptions = {}, maxSize, conf
 }
 
 export function screenControlIsolationEnabled(config = {}, serial = "") {
-  const deviceValue = config.screenDeviceProfiles?.[serial]?.isolateControl;
+  const deviceValue = adbSerialProfile(config.screenDeviceProfiles, serial)?.isolateControl;
   return typeof deviceValue === "boolean" ? deviceValue : config.screenIsolateControlEnabled === true;
 }
 
 export function screenSourceRecoveryEnabled(config = {}, serial = "", requestedOptions = {}) {
   const requestedValue = requestedOptions.sourceRecoveryEnabled;
   if (typeof requestedValue === "boolean") return requestedValue;
-  const deviceValue = config.screenDeviceProfiles?.[serial]?.sourceRecovery;
+  const deviceValue = adbSerialProfile(config.screenDeviceProfiles, serial)?.sourceRecovery;
   return typeof deviceValue === "boolean" ? deviceValue : config.screenSourceRecoveryEnabled === true;
 }
 
 export function screenViewerKeyframeResetEnabled(config = {}, serial = "", requestedOptions = {}) {
   const requestedValue = requestedOptions.viewerKeyframeResetEnabled;
   if (typeof requestedValue === "boolean") return requestedValue;
-  const deviceValue = config.screenDeviceProfiles?.[serial]?.viewerKeyframeReset;
+  const deviceValue = adbSerialProfile(config.screenDeviceProfiles, serial)?.viewerKeyframeReset;
   return typeof deviceValue === "boolean" ? deviceValue : config.screenViewerKeyframeResetEnabled === true;
 }
 
@@ -193,7 +194,7 @@ export function screenSourceRecoveryDelayMs(attempt) {
 // policy may explicitly override selected fields, but the Agent-wide encoder
 // capability ceiling is still enforced when scrcpy starts.
 export function applyScreenDeviceProfile({ requestedOptions = {}, config = {}, serial = "" }) {
-  const profile = config.screenDeviceProfiles?.[serial];
+  const profile = adbSerialProfile(config.screenDeviceProfiles, serial);
   if (!profile || typeof profile !== "object") return { ...requestedOptions };
   const options = { ...requestedOptions };
   const hotFields = new Set(
@@ -220,7 +221,7 @@ export function applyScreenDeviceProfile({ requestedOptions = {}, config = {}, s
 // normal aggregate bandwidth budget.
 export function resolveScreenTransportPacingBitRate({ requestedOptions = {}, config = {}, serial = "" }) {
   const requestedPacing = Number(requestedOptions.transportPacingBitRate);
-  const profilePacing = Number(config.screenDeviceProfiles?.[serial]?.transportPacingBitRate);
+  const profilePacing = Number(adbSerialProfile(config.screenDeviceProfiles, serial)?.transportPacingBitRate);
   const configuredPacing = Number(config.screenTransportPacingBitRate || 12_000_000);
   const requestedVideoBitRate = Number(requestedOptions.videoBitRate || 0);
   const selectedPacing = Number.isFinite(requestedPacing) && requestedPacing > 0
@@ -237,7 +238,7 @@ export function resolveScreenTransportPacingBitRate({ requestedOptions = {}, con
 // groups while every other session retains the established eight-packet path.
 export function resolveScreenTransportPacketsPerBurst({ requestedOptions = {}, config = {}, serial = "" }) {
   const requestedValue = Number(requestedOptions.transportPacketsPerBurst);
-  const profileValue = Number(config.screenDeviceProfiles?.[serial]?.transportPacketsPerBurst);
+  const profileValue = Number(adbSerialProfile(config.screenDeviceProfiles, serial)?.transportPacketsPerBurst);
   const configuredValue = Number(config.screenTransportPacketsPerBurst || 2);
   const selected = Number.isFinite(requestedValue) && requestedValue > 0
     ? requestedValue
@@ -249,7 +250,7 @@ export function resolveScreenTransportPacketsPerBurst({ requestedOptions = {}, c
 // enabled device profile may enter the temporary mid/max tiers, and the Go
 // publisher decides when to move tiers from its real pending-byte backlog.
 export function resolveScreenTransportAdaptivePacing({ requestedOptions = {}, config = {}, serial = "", baselineBitRate = 12_000_000 }) {
-  const deviceValue = config.screenDeviceProfiles?.[serial]?.transportAdaptivePacing;
+  const deviceValue = adbSerialProfile(config.screenDeviceProfiles, serial)?.transportAdaptivePacing;
   const enabled = typeof requestedOptions.transportAdaptivePacing === "boolean"
     ? requestedOptions.transportAdaptivePacing
     : (typeof deviceValue === "boolean" ? deviceValue : config.screenTransportAdaptivePacingEnabled === true);
@@ -281,7 +282,7 @@ export function resolveScreenTransportAdaptivePacing({ requestedOptions = {}, co
 // the proven drain rate. A loss burst switches two-packet writes to one-packet
 // writes without creating a source-side queue; recovery is deliberately slow.
 export function resolveScreenTransportReceiverFeedback({ requestedOptions = {}, config = {}, serial = "" }) {
-  const deviceValue = config.screenDeviceProfiles?.[serial]?.transportReceiverFeedback;
+  const deviceValue = adbSerialProfile(config.screenDeviceProfiles, serial)?.transportReceiverFeedback;
   const enabled = typeof requestedOptions.transportReceiverFeedback === "boolean"
     ? requestedOptions.transportReceiverFeedback
     : (typeof deviceValue === "boolean" ? deviceValue : config.screenTransportReceiverFeedbackEnabled === true);
@@ -466,6 +467,7 @@ class ScreenStreamManager {
     this.config = options.config;
     this.agentDir = options.agentDir;
     this.log = options.log || (() => {});
+    this.resolveSerial = options.resolveSerial || ((serial) => serial);
     this.preemptSerial = options.preemptSerial || (async () => {});
     this.reserveSerial = options.reserveSerial || (() => true);
     this.releaseSerial = options.releaseSerial || (() => {});
@@ -624,7 +626,7 @@ class ScreenStreamManager {
 
   async startSession(message) {
     const sessionId = String(message.sessionId || "");
-    const serial = String(message.adbSerial || "");
+    let serial = String(message.adbSerial || "");
     if (this.isStartCancelled(sessionId)) {
       this.log("screen start ignored after prior stop", { sessionId, serial });
       return;
@@ -650,6 +652,17 @@ class ScreenStreamManager {
       this.sendStatus(sessionId, "failed", "Windows 管理器实时控制并发已满，请稍后重试");
       return;
     }
+    try {
+      // Resolve before *any* preemption/reservation so all lifecycle callbacks,
+      // CLI commands and scrcpy share the same observed device identity.
+      serial = await phase("resolve_adb_serial", () => this.resolveSerial(serial));
+      adbSerialProfile(this.config.screenDeviceProfiles, serial);
+    } catch (error) {
+      this.log("screen serial resolution failed", { sessionId, serial, code: error?.code, error: error?.message });
+      this.sendStatus(sessionId, "failed", friendlyScreenError(error));
+      return;
+    }
+    if (this.isStartCancelled(sessionId)) return;
     await phase("wait_closing_session", () => this.waitForClosingSession(serial));
     if ([...this.sessions.values()].some((item) => item.serial === serial)) {
       this.sendStatus(sessionId, "failed", "这台手机正在执行其他控制任务");
@@ -739,11 +752,11 @@ class ScreenStreamManager {
     };
     session.videoBackpressure = createVideoBackpressureGate();
     this.sessions.set(sessionId, session);
-    if (this.config.screenDeviceProfiles?.[serial]) {
+    if (adbSerialProfile(this.config.screenDeviceProfiles, serial)) {
       this.log("screen device profile applied", {
         sessionId,
         serial,
-        profile: this.config.screenDeviceProfiles[serial],
+        profile: adbSerialProfile(this.config.screenDeviceProfiles, serial),
         effectiveOptions: session.requestedOptions
       });
     }

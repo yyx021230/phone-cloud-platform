@@ -23,6 +23,7 @@ import {
 } from "./gallery-task-delivery.mjs";
 import { createSerialAdbActivityTracker } from "./serial-adb-activity.mjs";
 import { assertSerialAdbHealthy } from "./serial-adb-health.mjs";
+import { resolveOnlineAdbSerial } from "./adb-serial-identity.mjs";
 import { createSerialDelayScheduler } from "./serial-delay-scheduler.mjs";
 import { isSerialReservedForBackgroundWork, shouldScheduleSmsBackground } from "./serial-reservation.mjs";
 import { shouldRunPostTaskDeviceScan } from "./post-task-scan-policy.mjs";
@@ -313,6 +314,7 @@ screenStreamManager = createScreenStreamManager({
   config,
   agentDir,
   log,
+  resolveSerial: (serial) => resolveOnlineAdbSerial(serial, lastDevices),
   preemptSerial(serial) {
     return preemptSmsSyncForScreen(serial);
   },
