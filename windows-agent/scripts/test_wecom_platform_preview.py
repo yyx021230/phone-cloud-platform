@@ -90,6 +90,14 @@ class HostGuardTests(unittest.TestCase):
                 self.assertEqual(restarts,[restart])
                 self.assertLess(calls.index(restart),calls.index('am start -n com.netease.open.pocoservice/.TestActivity'))
 
+    def test_driver_runs_normal_wake_guard_before_reading_page(self):
+        from test_wecom_invite_preview import HOME,Poco
+        events=[];poco=Poco(HOME);freeze=poco.freeze
+        def observed_freeze():events.append('READ');return freeze()
+        poco.freeze=observed_freeze
+        driver=host.PreviewRemarkEntryDriver(poco,lambda:host.w.PACKAGE,lambda:True,lambda:events.append('WAKE_GUARD'))
+        driver.snapshot();self.assertEqual(events[:2],['WAKE_GUARD','READ']);self.assertFalse(poco.effects)
+
     def test_only_preclick_remark_navigation_reobserves_same_phone_and_clicks_once(self):
         from dataclasses import replace
         from test_wecom_invite_preview import PROFILE,PHONE,Poco,text

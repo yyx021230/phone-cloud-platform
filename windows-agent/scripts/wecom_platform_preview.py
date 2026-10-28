@@ -50,6 +50,14 @@ def validate_config(value):
 
 
 class PreviewRemarkEntryDriver(remarks.PocoRemarkDriver):
+    def __init__(self, poco, foreground, lease_valid, wake_if_needed=lambda: None):
+        super().__init__(poco, foreground, lease_valid)
+        self.wake_if_needed=wake_if_needed
+
+    def snapshot(self):
+        self.wake_if_needed()
+        return super().snapshot()
+
     def apply(self, action, expected_screen, phone, check_budget=lambda: None, context=None):
         if action != "open_remark":
             return super().apply(action, expected_screen, phone, check_budget, context=context)
@@ -305,7 +313,9 @@ def run_host(value):
             startup_click(poco,package,lambda page:all(page.has(v) for v in ("取消","仅限充电","传输文件","传输照片")),lambda n:n.labeled("取消"))
             mutate("am start --user %d -a android.intent.action.MAIN -c android.intent.category.LAUNCHER -n "%selected_user+launch)
             package,user,activity=foreground_info()
-        driver=PreviewRemarkEntryDriver(poco,foreground,lease_valid)
+        wake_guard=startup.ScreenWakeGuard(lambda:shell("dumpsys power"),lease_valid,
+            lambda:mutate("input keyevent 224"),lambda:mutate("wm dismiss-keyguard"),check_budget=budget)
+        driver=PreviewRemarkEntryDriver(poco,foreground,lease_valid,wake_guard.ensure_awake)
         wait_for_wecom_foreground(poco, 18)
         until=min(deadline,time.monotonic()+60); home=False; update_dismissed=False
         for _ in range(20):

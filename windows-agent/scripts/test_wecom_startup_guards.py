@@ -101,5 +101,36 @@ class InitialInviteReturnTests(unittest.TestCase):
             self.assertFalse(g.is_observed_25_invite_foreground(number,user,fg))
 
 
+class ScreenWakeTests(unittest.TestCase):
+    def test_awake_and_unrecognized_state_never_sends_keys(self):
+        for state in ('mWakefulness=Awake','unknown'):
+            calls=[];guard=g.ScreenWakeGuard(lambda:state,lambda:True,lambda:calls.append('WAKE'),lambda:calls.append('DISMISS'))
+            self.assertFalse(guard.ensure_awake());self.assertFalse(calls)
+
+    def test_only_sleeping_display_gets_one_normal_wake_and_os_dismissal(self):
+        for state in ('Asleep','Dozing'):
+            calls=[];guard=g.ScreenWakeGuard(lambda:'mWakefulness='+state,lambda:True,lambda:calls.append('WAKE'),lambda:calls.append('DISMISS'))
+            self.assertTrue(guard.ensure_awake());self.assertEqual(calls,['WAKE','DISMISS']);self.assertEqual(guard.count,1)
+
+    def test_lost_lease_before_or_after_wake_stops_further_operations(self):
+        for leases,expected in (([False],[]),([True,False],['WAKE'])):
+            values=iter(leases);calls=[];guard=g.ScreenWakeGuard(lambda:'mWakefulness=Asleep',lambda:next(values),lambda:calls.append('WAKE'),lambda:calls.append('DISMISS'))
+            with self.assertRaises(w.StopPreview):guard.ensure_awake()
+            self.assertEqual(calls,expected)
+
+    def test_unknown_wake_delivery_is_not_replayed_or_followed_by_dismissal(self):
+        calls=[]
+        def unknown():calls.append('WAKE');raise TimeoutError()
+        guard=g.ScreenWakeGuard(lambda:'mWakefulness=Asleep',lambda:True,unknown,lambda:calls.append('DISMISS'))
+        with self.assertRaises(TimeoutError):guard.ensure_awake()
+        self.assertEqual(calls,['WAKE'])
+
+    def test_repeated_sleep_has_three_wake_limit_without_settings_changes(self):
+        calls=[];guard=g.ScreenWakeGuard(lambda:'mWakefulness=Asleep',lambda:True,lambda:calls.append('WAKE'),lambda:calls.append('DISMISS'))
+        for _ in range(3):self.assertTrue(guard.ensure_awake())
+        with self.assertRaisesRegex(w.StopPreview,'repeated_display_sleep'):guard.ensure_awake()
+        self.assertEqual(calls,['WAKE','DISMISS']*3)
+
+
 if __name__ == '__main__':
     unittest.main()

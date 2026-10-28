@@ -102,3 +102,22 @@ def is_observed_25_invite_foreground(device_number, android_user, current):
     return (device_number=='25' and android_user==0 and current[0]=='com.tencent.wework' and current[1]==0 and current[2] in (
             'com.tencent.wework/.friends.controller.WechatContactSendVerifyActivity',
             'com.tencent.wework/.contact.controller.WechatContactInfoActivity'))
+
+
+class ScreenWakeGuard:
+    """The previously verified host's bounded normal wake, without settings edits."""
+    def __init__(self, read_power, lease_valid, wake, dismiss, check_budget=lambda: None):
+        self.read_power,self.lease_valid,self.wake,self.dismiss=read_power,lease_valid,wake,dismiss
+        self.check_budget=check_budget;self.count=0
+
+    def ensure_awake(self):
+        self.check_budget()
+        if not re.search(r'mWakefulness=(?:Asleep|Dozing)\b',self.read_power()):
+            return False
+        if self.count>=3:raise w.StopPreview('repeated_display_sleep')
+        if self.lease_valid() is not True:raise w.StopPreview('device_lease_lost')
+        self.check_budget();self.count+=1
+        self.wake()  # Unknown delivery propagates, never replayed here.
+        if self.lease_valid() is not True:raise w.StopPreview('device_lease_lost')
+        self.check_budget();self.dismiss()  # Normal OS request; no PIN/password bypass.
+        return True
