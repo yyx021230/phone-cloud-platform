@@ -22,6 +22,18 @@ import uuid
 ROOT=Path(__file__).resolve().parents[2]
 
 
+def wait_cached_proof(cache, job_id, clock=time.monotonic, sleep=time.sleep):
+    deadline=clock()+5
+    while clock()<deadline:
+        cached=cache.get(job_id)
+        if cached and 'denied' in cached:
+            raise RuntimeError('qa_lease_lost:'+cached['denied'])
+        if cached and 0<=clock()-cached['at']<=2.5:
+            return cached['proof']
+        sleep(min(.2,max(0,deadline-clock())))
+    raise RuntimeError('qa_fresh_lease_proof_unavailable')
+
+
 def staging_source(stage, blobs):
     # ASCII source over Windows SSH stdin; decoded file names/content stay UTF-8.
     return ('from pathlib import Path\nimport base64,json\np=Path('+ascii(stage)+');p.mkdir()\n'
@@ -111,7 +123,7 @@ console.log(JSON.stringify({devices,locks,lockExpiryValid:locks.every(x=>Date.pa
         assert a['xhsId']==c['xhsId'] and a['accountName']==c['accountName'] and a['enabled'],'qa_account_changed'
         return {**{k:c[k] for k in ('deviceId','serial','deviceName','appSlot','xhsId','accountName','jobId','sessionId','lockId','ownerUserId')},'allowed':True,'activeLockCount':1,'sessionAlive':True,'lookupReserved':False}
     def prove(c):
-        return validate_cloud(c,cloud_state(c,c['sessionId']))
+        return wait_cached_proof(proof_cache,c['jobId'])
     def refresh_proofs():
         nonlocal snapshot_count
         while not proof_stop.is_set():
