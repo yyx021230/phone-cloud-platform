@@ -27,6 +27,17 @@ class HostGuardTests(unittest.TestCase):
             with self.subTest(change=change),patch.object(host,"adb_identity",side_effect=AssertionError("no network")):
                 with self.assertRaises((host.SafeStop,host.w.StopPreview)):host.run_host(dict(self.config(),**change))
 
+    def test_explicit_main_and_clone_are_separate_bound_users(self):
+        for slot,user in [('main',0),('clone',999)]:
+            value=dict(self.config('155'),appSlot=slot,androidUser=user)
+            self.assertEqual(host.validate_config(value)['androidUser'],user)
+
+    def test_slot_and_user_mismatch_never_contacts_phone(self):
+        for change in [dict(appSlot='main',androidUser=999),dict(appSlot='clone',androidUser=0),dict(appSlot='auto'),dict(appSlot=None),dict(appSlot={})]:
+            with self.subTest(change=change),patch.object(host,'adb_identity',side_effect=AssertionError('no network')):
+                with self.assertRaises(host.SafeStop):host.run_host(dict(self.config('155'),**change))
+        with self.assertRaises(host.SafeStop):host.validate_config(dict(self.config('25'),appSlot='clone',androidUser=999))
+
     def test_lost_lease_stops_before_any_phone_command(self):
         with patch.object(host,"adb_identity",return_value=1),patch.object(host,"lease_valid",return_value=False),patch.object(host,"shell",side_effect=AssertionError("no shell")):
             with self.assertRaisesRegex(host.SafeStop,"device_lease_lost"):host.run_host(self.config())
@@ -68,7 +79,7 @@ class HostGuardTests(unittest.TestCase):
         self.assertNotIn("input keyevent 224",calls)
 
     def test_observed_25_and_155_restart_only_bound_slot_before_poco_other_phones_do_not(self):
-        for number,user in [('25',0),('155',999),('23',0)]:
+        for number,user in [('25',0),('155',999),('23',0),('155',0)]:
             calls=[];count=[0];clock=[0]
             def now():clock[0]+=.5;return clock[0]
             def shell(cmd,keep=False):
@@ -81,10 +92,12 @@ class HostGuardTests(unittest.TestCase):
                 if keep:return SimpleNamespace(close=lambda:None)
                 return ''
             with patch.object(host,'adb_identity',return_value=1),patch.object(host,'lease_valid',return_value=True),patch.object(host,'shell',side_effect=shell),patch.object(host,'host',return_value='12345'),patch.object(host,'health',return_value=False),patch.object(host,'connection',return_value=SimpleNamespace(close=lambda:None)),patch.object(host,'command'),patch.object(host.time,'monotonic',side_effect=now),patch.object(host.time,'sleep'):
-                with self.assertRaisesRegex(host.SafeStop,'poco_not_ready'):host.run_host(self.config(number))
+                value=self.config(number)
+                if (number,user)==('155',0):value.update(appSlot='main',androidUser=0)
+                with self.assertRaisesRegex(host.SafeStop,'poco_not_ready'):host.run_host(value)
             restarts=[cmd for cmd in calls if cmd.startswith('am force-stop --user ') and cmd.endswith(' com.tencent.wework')]
             self.assertFalse(any('pm clear' in cmd for cmd in calls))
-            if number=='23':self.assertFalse(restarts)
+            if (number,user) in [('23',0),('155',0)]:self.assertFalse(restarts)
             else:
                 restart='am force-stop --user %d com.tencent.wework'%user
                 self.assertEqual(restarts,[restart])

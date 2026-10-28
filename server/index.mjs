@@ -1,5 +1,5 @@
 import { sendInventorySyncResponse } from "./inventory-sync-response.mjs";
-import { WECOM_PREVIEW_KIND, previewTarget, previewRequest, publicPreview, previewLease, createPreviewSubmissionGate } from "./wecom-preview.mjs";
+import { WECOM_PREVIEW_KIND, WECOM_PREVIEW_DEVICES, previewTarget, previewSlots, previewJobSlot, previewRequest, publicPreview, previewLease, createPreviewSubmissionGate } from "./wecom-preview.mjs";
 import { spoolSnapshot, writeSpooledSnapshot, loadStreamedSnapshot } from './snapshot-stream.mjs';
 import {aiVisionConfig,createAiVisionReader} from './lookup-ai-vision.mjs';
 import {createLookupAiRecovery} from './lookup-ai-recovery.mjs';
@@ -430,7 +430,7 @@ async function routeApi(req, res, url) {
     for (const device of state.devices) {
       try {
         const target = previewTarget(device);
-        devices.push({ deviceId: device.deviceId, ...target,
+        devices.push({ deviceId: device.deviceId, ...target, appSlots: previewSlots(device),
           available: isDeviceListed(device) && isAdbOnline(device) && !activeDeviceLockForTask(device.deviceId) });
       } catch { /* Only the eight verified physical devices are exposed. */ }
     }
@@ -444,7 +444,7 @@ async function routeApi(req, res, url) {
     return wecomSubmissionGate(`${ctx.userId}:${input.requestId}`, async () => {
       const existing = state.automationJobs.find(j => j.kind === WECOM_PREVIEW_KIND && j.userId === ctx.userId && j.wecomRequestId === input.requestId);
       if (existing) {
-        if (existing.deviceId !== input.deviceId || existing.phoneNumber !== input.phoneNumber) return json(res, 409, { error: "wecom_request_id_conflict" });
+        if (existing.deviceId !== input.deviceId || existing.phoneNumber !== input.phoneNumber || previewJobSlot(existing) !== (input.appSlot ?? WECOM_PREVIEW_DEVICES[existing.wecomDeviceNumber]?.defaultAppSlot)) return json(res, 409, { error: "wecom_request_id_conflict" });
         return json(res, 200, { reused: true, task: publicPreview(existing) });
       }
       if (state.automationJobs.filter(j => j.kind === WECOM_PREVIEW_KIND && isActiveAutomationStatus(j.status)).length >= 2) {
@@ -452,11 +452,11 @@ async function routeApi(req, res, url) {
       }
       const device = repos.devices.findById(input.deviceId);
       if (!device) return json(res, 404, { error: "device_not_found" });
-      const target = previewTarget(device);
+      const target = previewTarget(device, input.appSlot);
       if (!isDeviceListed(device) || !isAdbOnline(device) || !device.adb?.agentId) return json(res, 409, { error: "device_not_available" });
       if (activeDeviceLockForTask(device.deviceId)) return json(res, 409, { error: "device_busy" });
       const job = createAutomationJob({ kind: WECOM_PREVIEW_KIND, userId: ctx.userId, deviceId: device.deviceId, phoneNumber: input.phoneNumber });
-      Object.assign(job, { wecomRequestId: input.requestId, wecomDeviceNumber: target.deviceNumber, wecomAndroidUser: target.androidUser });
+      Object.assign(job, { wecomRequestId: input.requestId, wecomDeviceNumber: target.deviceNumber, wecomAppSlot: target.appSlot, wecomAndroidUser: target.androidUser });
       const lock = acquireAutomationDeviceLock(device, job, ctx, { ttlMs: 300_000 });
       const windowsTask = queueAutomationWindowsTask(device, job);
       const audit = addAudit("wecom_preview_create", ctx, { jobId: job.jobId, deviceId: job.deviceId, mode: "preview_only" });
@@ -489,7 +489,7 @@ async function routeApi(req, res, url) {
     const locks = task && state.deviceLocks.filter(l => l.deviceId === task.deviceId && l.status === "active" && Date.parse(l.expiresAt) > Date.now());
     const valid = locks?.length === 1 && previewLease(task, job, locks[0], device, decodeURIComponent(wecomLease[1]));
     return json(res, 200, { valid: Boolean(valid), ...(valid ? { taskId: task.taskId, deviceId: device.deviceId, serial: task.adbSerial,
-      deviceNumber: job.wecomDeviceNumber, androidUser: job.wecomAndroidUser, expiresAt: locks[0].expiresAt } : {}) });
+      deviceNumber: job.wecomDeviceNumber, appSlot: previewJobSlot(job), androidUser: job.wecomAndroidUser, expiresAt: locks[0].expiresAt } : {}) });
   }
 
   if(req.method==='POST'&&url.pathname==='/api/v1/open/name-lookups/prepare'){
@@ -2088,7 +2088,7 @@ async function routeApi(req, res, url) {
     const task = state.windowsTasks.find((item) => (
       item.agentId === agentId
       && item.status === "queued"
-      && (item.type !== WECOM_PREVIEW_KIND || url.searchParams.get("wecomPreview") === "wecom-preview-v1")
+      && (item.type !== WECOM_PREVIEW_KIND || url.searchParams.get("wecomPreview") === "wecom-preview-v2")
       && !pendingWecomCommits.has(item)
       && !pendingXhsCollectionCommits.has(item)
       && (!isManagedLookupTask(item) || (managedDeliveryV1 && canDeliverManagedLookupTask(item)))
@@ -4687,7 +4687,7 @@ function queueAutomationWindowsTask(device, job) {
     type: typeByKind[job.kind],
     payload: {
       automationJobId: job.jobId,
-      ...(job.kind === WECOM_PREVIEW_KIND ? { deviceNumber: job.wecomDeviceNumber, androidUser: job.wecomAndroidUser, previewOnly: true } : {}),
+      ...(job.kind === WECOM_PREVIEW_KIND ? { deviceNumber: job.wecomDeviceNumber, ...(job.wecomAppSlot === undefined ? {} : { appSlot: job.wecomAppSlot }), androidUser: job.wecomAndroidUser, previewOnly: true } : {}),
       ...(job.kind === "xhs_data_collect" ? { deviceName: device.deviceName || device.deviceId, windowDays: 30 } : {}),
       automationSessionId: job.sessionId || "",
       ...(state.automationSessions.find(s=>s.sessionId===job.sessionId)?.managedLookupGeneration ? {managedLookup:{protocol:MANAGED_LOOKUP_PROTOCOL,generation:state.automationSessions.find(s=>s.sessionId===job.sessionId).managedLookupGeneration}} : {}),

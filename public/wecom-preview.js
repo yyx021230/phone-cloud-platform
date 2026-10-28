@@ -1,9 +1,23 @@
+import { wecomStatusLabel } from "./wecom-automation-ui.js?v=20261028-slots-rc3";
 const root = "/api/v1/user/automation";
 const form = document.querySelector("#previewForm");
 const devices = document.querySelector("#device");
 const submit = document.querySelector("#submit");
 const feedback = document.querySelector("#feedback");
 const history = document.querySelector("#history");
+const appSlot = document.querySelector("#appSlot");
+let inventoryRows = [];
+let slotDevice = "";
+function renderSlots() {
+  const device = inventoryRows.find(d => d.deviceId === devices.value);
+  const selected = slotDevice === devices.value ? appSlot.value : device?.appSlot;
+  slotDevice = devices.value;
+  appSlot.replaceChildren();
+  for (const target of device?.appSlots || []) {
+    const option = text("option", target.appSlot === "clone" ? "分身" : "主应用"); option.value = target.appSlot; appSlot.append(option);
+  }
+  if ([...appSlot.options].some(o => o.value === selected)) appSlot.value = selected;
+}
 let requestInFlight = false;
 let accepted = null;
 let unresolved = null;
@@ -22,22 +36,23 @@ async function api(path, data) {
 }
 
 function text(tag, value) { const element = document.createElement(tag); element.textContent = value; return element; }
-const labels = { queued: "等待设备领取", running: "正在执行", stalled: "状态待核对", failed: "已停止，请核对原因", expired: "已超时", succeeded: "已到发送前，未发送邀请" };
 
 async function refresh() {
   const [inventory, list] = await Promise.all([api("/wecom-preview-devices"), api("/wecom-preview-tasks")]);
   const selected = devices.value;
+  inventoryRows = inventory.devices;
   devices.replaceChildren(text("option", "选择空闲手机")); devices.firstChild.value = "";
   for (const device of inventory.devices) {
     const option = text("option", `${device.deviceNumber}号${device.androidUser === 999 ? " · 分身" : ""} · ${device.available ? "可用" : "占用或离线"}`);
     option.value = device.deviceId; option.disabled = !device.available; devices.append(option);
   }
   devices.value = selected;
+  renderSlots();
   history.replaceChildren();
   if (!list.tasks.length) history.append(text("p", "暂无预览任务"));
   for (const task of list.tasks) {
     const row = document.createElement("article"); row.className = "wecom-preview-task";
-    row.append(text("b", `${task.deviceNumber}号 · ${labels[task.status] || task.status}`));
+    row.append(text("b", `${task.deviceNumber}号 · ${task.appSlot === "clone" ? "分身" : "主应用"} · ${wecomStatusLabel(task)}`));
     row.append(text("p", task.result.code || "所有操作都停在发送前"));
     row.append(text("small", `${new Date(task.createdAt).toLocaleString()} · ${task.jobId}`)); history.append(row);
   }
@@ -46,14 +61,14 @@ async function refresh() {
     if (found) { accepted = found.jobId; unresolved = null; }
   }
   const own = accepted && list.tasks.find(task => task.jobId === accepted);
-  if (own) feedback.textContent = `${own.deviceNumber}号：${labels[own.status] || own.status}${own.result.code ? `（${own.result.code}）` : ""}`;
+  if (own) feedback.textContent = `${own.deviceNumber}号：${wecomStatusLabel(own)}${own.result.code ? `（${own.result.code}）` : ""}`;
   submit.disabled = requestInFlight || Boolean(unresolved) || Boolean(own && ["queued", "running", "stalled"].includes(own.status));
 }
 
 form.addEventListener("submit", async event => {
   event.preventDefault(); if (requestInFlight || unresolved) return;
   requestInFlight = true; submit.disabled = true;
-  const input = { deviceId: devices.value, phoneNumber: document.querySelector("#phone").value, requestId: Array.from(crypto.getRandomValues(new Uint8Array(16)), byte => byte.toString(16).padStart(2, "0")).join("") };
+  const input = { deviceId: devices.value, appSlot: appSlot.value, phoneNumber: document.querySelector("#phone").value, requestId: Array.from(crypto.getRandomValues(new Uint8Array(16)), byte => byte.toString(16).padStart(2, "0")).join("") };
   feedback.textContent = "正在提交…";
   try { const body = await api("/wecom-preview-tasks", input); accepted = body.task.jobId; }
   catch (error) {
@@ -63,5 +78,6 @@ form.addEventListener("submit", async event => {
   try { await refresh(); } catch (error) { feedback.textContent = error.message; }
 });
 document.querySelector("#refresh").addEventListener("click", () => refresh().catch(error => { feedback.textContent = error.message; }));
+devices.addEventListener("change", renderSlots);
 await refresh().catch(error => { feedback.textContent = error.message; });
 setInterval(() => { if (!document.hidden) refresh().catch(() => {}); }, 5000);

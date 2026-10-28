@@ -3,16 +3,29 @@ import fs from "node:fs";
 export const WECOM_PREVIEW_KIND = "wecom_customer_preview";
 export const WECOM_PREVIEW_DEVICES = Object.freeze(JSON.parse(fs.readFileSync(new URL("./wecom-preview-devices.json", import.meta.url), "utf8")));
 
-export function previewTarget(device) {
+export function previewTarget(device, appSlot) {
   const number = String(device?.deviceName || "");
   if (!Object.hasOwn(WECOM_PREVIEW_DEVICES, number)) throw problem("wecom_device_not_allowed", 403);
   const serial = String(device?.adb?.serial || "");
   if (!/^[A-Za-z0-9_.:-]+$/.test(serial) || device.deviceId !== `adb:${serial}` || serial !== WECOM_PREVIEW_DEVICES[number].serial) throw problem("wecom_device_mapping_unconfirmed", 409);
-  return { deviceNumber: number, androidUser: WECOM_PREVIEW_DEVICES[number].androidUser };
+  const entry = WECOM_PREVIEW_DEVICES[number];
+  const selected = appSlot === undefined ? entry.defaultAppSlot : appSlot;
+  if (!["main", "clone"].includes(selected)) throw problem("invalid_wecom_app_slot", 400);
+  if (!Object.hasOwn(entry.appSlots, selected)) throw problem("wecom_app_slot_not_configured", 409);
+  return { deviceNumber: number, appSlot: selected, androidUser: entry.appSlots[selected] };
 }
 
+export function previewSlots(device) {
+  const target = previewTarget(device);
+  return Object.keys(WECOM_PREVIEW_DEVICES[target.deviceNumber].appSlots).map(slot => previewTarget(device, slot));
+}
+
+// Records created before slots were introduced retain their original user.
+export function previewJobSlot(job) { return job.wecomAppSlot ?? (job.wecomAndroidUser === 0 ? "main" : "clone"); }
+
 export function previewRequest(input) {
-  if (!input || Object.keys(input).some(k => !["deviceId", "phoneNumber", "requestId"].includes(k))) throw problem("invalid_wecom_preview_fields", 400);
+  if (!input || Object.keys(input).some(k => !["deviceId", "phoneNumber", "requestId", "appSlot"].includes(k))) throw problem("invalid_wecom_preview_fields", 400);
+  if (Object.hasOwn(input, "appSlot") && !["main", "clone"].includes(input.appSlot)) throw problem("invalid_wecom_app_slot", 400);
   if (typeof input.phoneNumber !== "string" || !/^1[3-9]\d{9}$/.test(input.phoneNumber)) throw problem("invalid_phone_number", 400);
   if (typeof input.deviceId !== "string" || !input.deviceId.startsWith("adb:")) throw problem("device_required", 400);
   if (typeof input.requestId !== "string" || !/^[A-Za-z0-9_-]{8,100}$/.test(input.requestId)) throw problem("invalid_request_id", 400);
@@ -21,7 +34,7 @@ export function previewRequest(input) {
 
 export function publicPreview(job) {
   return { jobId: job.jobId, deviceId: job.deviceId, deviceNumber: job.wecomDeviceNumber,
-    androidUser: job.wecomAndroidUser, requestId: job.wecomRequestId, status: job.status,
+    appSlot: previewJobSlot(job), androidUser: job.wecomAndroidUser, requestId: job.wecomRequestId, status: job.status,
     createdAt: job.createdAt, updatedAt: job.updatedAt, completedAt: job.completedAt,
     result: { status: job.result?.previewStatus || "", code: job.result?.previewCode || "",
       invitationSent: false, remarkSaveStatus: job.result?.remarkSaveStatus || "not_attempted" } };
@@ -29,12 +42,13 @@ export function publicPreview(job) {
 
 export function previewLease(task, job, lock, device, agentId, now = Date.now()) {
   try {
-    const target = previewTarget(device);
+    const target = previewTarget(device, previewJobSlot(job));
     return Boolean(task?.type === WECOM_PREVIEW_KIND && task.agentId === agentId && task.status === "running"
       && task.deviceId === device.deviceId && task.adbSerial === device.adb.serial
       && job?.kind === WECOM_PREVIEW_KIND && job.status === "running" && job.windowsTaskId === task.taskId
       && job.deviceId === device.deviceId && task.payload?.automationJobId === job.jobId
       && target.deviceNumber === job.wecomDeviceNumber && target.androidUser === job.wecomAndroidUser
+      && (job.wecomAppSlot === undefined ? task.payload?.appSlot === undefined : task.payload?.appSlot === target.appSlot)
       && task.payload?.deviceNumber === target.deviceNumber && task.payload?.androidUser === target.androidUser
       && lock?.status === "active" && lock.lockType === WECOM_PREVIEW_KIND && lock.taskId === job.jobId
       && lock.deviceId === job.deviceId && lock.ownerUserId === job.userId && lock.lockId === job.lockId

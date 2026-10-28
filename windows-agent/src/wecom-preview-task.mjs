@@ -8,6 +8,7 @@ export async function runWecomPreviewTask(task, { config, agentDir, signal, spaw
   if (signal?.aborted) throw signal.reason || new Error("automation_task_cancelled");
   const payload = { taskId: task.taskId, deviceId: task.deviceId, serial: task.adbSerial,
     deviceNumber: task.payload.deviceNumber, androidUser: task.payload.androidUser,
+    ...(task.payload.appSlot === undefined ? {} : { appSlot: task.payload.appSlot }),
     phoneNumber: task.payload.phoneNumber, previewOnly: true,
     agentId: config.agentId, serverBaseUrl: config.serverBaseUrl, agentToken: config.agentToken };
   return new Promise((resolve, reject) => {

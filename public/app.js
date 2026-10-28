@@ -1,3 +1,4 @@
+import { createWecomAutomationPanel } from "./wecom-automation-ui.js?v=20261028-slots-rc3";
 import { renderLookupCardStatus } from "./lookup-card-status.js?v=20261021-scheduling-rc2";
 
 import { ScreenInactivityGuard } from "./screen-inactivity-guard.js?v=20260902-screen-idle-10m-baseline-v2";
@@ -789,6 +790,8 @@ function renderOverview() {
   `).join("");
 }
 
+const wecomPanel = createWecomAutomationPanel({ context: () => ({ token: state.token, userId: state.user?.userId, role: state.user?.role, deviceId: state.userSelectedDeviceId }) });
+
 function renderUserWorkbench() {
   if (!els.userDeviceList) return;
   const devicesLoading = Boolean(state.userDevicesLoading);
@@ -974,7 +977,7 @@ function renderUserWorkbench() {
   if (els.userXhsList) els.userXhsList.innerHTML = selectedDeviceXhsTasks.length
     ? selectedDeviceXhsTasks.map((task) => renderUserXhsTaskCard(task)).join("")
     : `<div class="empty scan-empty-state">暂无扫码任务。上传二维码后，这里会显示执行步骤和结果。</div>`;
-  if (!["scan", "publish", "kuaishou", "data", "name"].includes(state.userAutomationModule)) state.userAutomationModule = "scan";
+  if (!["scan", "publish", "kuaishou", "data", "name", "wecom"].includes(state.userAutomationModule)) state.userAutomationModule = "scan";
   els.userAutomationModuleTabs?.querySelectorAll("[data-automation-module]").forEach((button) => {
     const active = button.dataset.automationModule === state.userAutomationModule;
     button.classList.toggle("active", active);
@@ -1003,6 +1006,7 @@ function renderUserWorkbench() {
     ? selectedPublishTasks.map(renderAutomationJobCard).join("")
     : `<div class="empty scan-empty-state">暂无发布记录。</div>`;
   renderKuaishouLead(selectedDevice);
+  wecomPanel.render();
   const dataTargets = xhsDataTargetsForDevice(selectedDevice);
   if (els.userDataTargetSelect) {
     const previous = els.userDataTargetSelect.value;
@@ -4051,6 +4055,7 @@ async function loadAll() {
   if (state.user?.role !== "admin" || usesUserWorkbench) {
     renderUserWorkbench();
     const shouldLoadXhsTasks = isUserScanPanelActive();
+    if (shouldLoadXhsTasks && state.userAutomationModule === "wecom") wecomPanel.refresh();
     const dataSessionAtStart = userDataSessionVersion;
     const auxiliaryRequests = Promise.allSettled([
       api("/api/v1/user/phones"),
@@ -4373,6 +4378,7 @@ async function refreshUserXhsTasksOnly(options = {}) {
   if (!options.force && !shouldFastRefreshUserXhsTasks()) return;
   if (userAutomationRefreshPromise) return userAutomationRefreshPromise;
   userAutomationRefreshPromise = (async () => {
+    if (state.userAutomationModule === "wecom") wecomPanel.refresh();
     const requestId = ++latestUserAutomationRefreshRequestId;
     const dataSessionAtStart = userDataSessionVersion;
     const [qrPayload, publishPayload, kuaishouPayload, dataPayload] = await Promise.allSettled([
@@ -4939,6 +4945,7 @@ els.userAutomationModuleTabs?.addEventListener("click", (event) => {
   state.userAutomationModule = button.dataset.automationModule || "scan";
   localStorage.setItem("phoneCloudUserAutomationModule", state.userAutomationModule);
   renderUserWorkbench();
+  if (state.userAutomationModule === "wecom") wecomPanel.refresh();
 });
 
 function clearUserDataSession() {

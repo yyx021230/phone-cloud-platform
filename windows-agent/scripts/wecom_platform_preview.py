@@ -31,10 +31,12 @@ DEVICES = json.loads(Path(__file__).with_name("wecom_preview_devices.json").read
 def validate_config(value):
     allowed = {"taskId", "deviceId", "serial", "deviceNumber", "androidUser", "phoneNumber",
                "previewOnly", "agentId", "serverBaseUrl", "agentToken"}
-    if not isinstance(value, dict) or set(value) != allowed or value.get("previewOnly") is not True:
+    if not isinstance(value, dict) or set(value) not in (allowed, allowed | {"appSlot"}) or value.get("previewOnly") is not True:
         raise SafeStop("invalid_preview_config")
     entry = DEVICES.get(value.get("deviceNumber"))
-    if (not entry or type(value.get("androidUser")) is not int or value["androidUser"] != entry["androidUser"]
+    slot = value.get("appSlot", entry["defaultAppSlot"] if entry else None)
+    if (not entry or not isinstance(slot, str) or slot not in entry["appSlots"]
+        or type(value.get("androidUser")) is not int or value["androidUser"] != entry["appSlots"][slot]
         or value.get("serial") != entry["serial"] or value.get("deviceId") != "adb:" + entry["serial"]):
         raise SafeStop("device_not_authorized")
     for key in ("taskId", "agentId"):
@@ -93,6 +95,7 @@ def lease_valid():
         return (proof.get("valid") is True and proof.get("taskId") == config["taskId"]
             and proof.get("deviceId") == config["deviceId"] and proof.get("serial") == SERIAL
             and proof.get("deviceNumber") == config["deviceNumber"] and proof.get("androidUser") == selected_user
+            and ("appSlot" not in config or proof.get("appSlot") == config["appSlot"])
             and datetime.datetime.fromisoformat(proof["expiresAt"].replace("Z","+00:00")).timestamp() > time.time()+3)
     except Exception: return False
 
@@ -249,7 +252,7 @@ def run_host(value):
         # Observed 25 contact stacks and 155 clone sidebar survive warm launch.
         # Cold-start only this fixed, exclusively leased slot BEFORE Poco is
         # created; restarting it after RPC setup can invalidate that reader.
-        if config["deviceNumber"] in ("25", "155"):
+        if (config["deviceNumber"], selected_user) in (("25", 0), ("155", 999)):
             response=mutate("am force-stop --user %d com.tencent.wework"%selected_user)
             if any(marker in response for marker in ("Error","Exception","Permission Denial")):
                 raise SafeStop("wecom_clone_restart_rejected")

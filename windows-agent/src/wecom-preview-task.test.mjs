@@ -28,6 +28,13 @@ test("uncertain remark state remains blocked without replay",async()=>{
   const result=await runWecomPreviewTask(task,{config,agentDir:"/fixture",spawnChild:fixture.spawnChild});
   assert.equal(result.previewStatus,"blocked");assert.equal(result.remarkSaveStatus,"unknown");
 });
+test("explicit main and clone choice is carried on stdin without an Android-user fallback",async()=>{
+  for(const [appSlot,androidUser] of [["main",0],["clone",999]]) {
+    const fixture=childFixture({previewStatus:"ready_before_send",previewCode:"stopped_before_send",invitationSent:false});
+    await runWecomPreviewTask({...task,payload:{...task.payload,deviceNumber:"155",appSlot,androidUser}},{config,agentDir:"/fixture",spawnChild:fixture.spawnChild});
+    const payload=JSON.parse(fixture.values().input);assert.equal(payload.appSlot,appSlot);assert.equal(payload.androidUser,androidUser);
+  }
+});
 test("claimed send success, invalid statuses and nonzero exits fail closed",async()=>{
   for (const [output,exit] of [[{previewStatus:"ready_before_send",previewCode:"sent",invitationSent:true},0],[{previewStatus:"sent",previewCode:"sent",invitationSent:false},0],[{},2]]) {
     const fixture=childFixture(output,exit);await assert.rejects(runWecomPreviewTask(task,{config,agentDir:"/fixture",spawnChild:fixture.spawnChild}),/outcome_unknown/);

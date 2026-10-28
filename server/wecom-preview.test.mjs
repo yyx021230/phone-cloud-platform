@@ -17,8 +17,19 @@ test("only eight fixed physical identities and the verified Android users are al
 test("API rejects all sending flags, arbitrary slots and invalid inputs", () => {
   const input = { deviceId: `adb:${pool["25"].serial}`, phoneNumber: "13800138000", requestId: "request_test_001" };
   assert.deepEqual(previewRequest(input), input);
+  assert.equal(previewRequest({ ...input, appSlot: "clone" }).appSlot, "clone");
+  for (const appSlot of [null, "", "auto", 999, {}, "app2"]) assert.throws(() => previewRequest({ ...input, appSlot }), /invalid_wecom_app_slot/);
   for (const extra of [{ send: true }, { mode: "send" }, { androidUser: 999 }, { maxRetries: 5 }]) assert.throws(() => previewRequest({ ...input, ...extra }), /invalid_wecom_preview_fields/);
   for (const phoneNumber of ["10086", "138 0013 8000", 13800138000, "11800138000"]) assert.throws(() => previewRequest({ ...input, phoneNumber }), /invalid_phone_number/);
+});
+
+test("configured slots bind Android user; an unconfigured clone never falls back to main", () => {
+  const device = number => ({ deviceName: number, deviceId: `adb:${pool[number].serial}`, adb: { serial: pool[number].serial } });
+  assert.equal(previewTarget(device("155")).appSlot,"clone");
+  assert.equal(previewTarget(device("155"),"main").androidUser,0);
+  assert.equal(previewTarget(device("155"),"clone").androidUser,999);
+  assert.throws(()=>previewTarget(device("25"),"clone"),/slot_not_configured/);
+  assert.throws(()=>previewTarget(device("155"),null),/invalid_wecom_app_slot/);
 });
 
 test("live lease must agree with task, job, owner, physical phone, clone and lock expiry", () => {
@@ -32,6 +43,11 @@ test("live lease must agree with task, job, owner, physical phone, clone and loc
   for (const change of [{ status: "failed" }, { wecomAndroidUser: 0 }, { windowsTaskId: "other" }]) assert.equal(valid(task,{ ...job, ...change }), false);
   for (const change of [{ status: "released" }, { ownerUserId: "other" }, { lockType: "screen_control" }, { expiresAt: new Date(0).toISOString() }]) assert.equal(valid(task,job,{ ...lock, ...change }), false);
   assert.equal(valid(task,job,lock,device,"other"), false);
+  const slottedJob={...job,wecomAppSlot:"clone"};
+  const slottedTask={...task,payload:{...task.payload,appSlot:"clone"}};
+  assert.equal(valid(slottedTask,slottedJob),true);
+  assert.equal(valid({...slottedTask,payload:{...slottedTask.payload,appSlot:"main"}},slottedJob),false);
+  assert.equal(valid({...slottedTask,payload:{...slottedTask.payload,androidUser:0}},{...slottedJob,wecomAndroidUser:0}),false);
 });
 
 test("duplicate submission waits for persistence; a blocked phone does not block another key", async () => {

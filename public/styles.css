@@ -3570,7 +3570,7 @@ body.screen-idle-modal-open {
 
 .automation-module-tabs {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
   padding: 6px;
   border: 1px solid var(--line);
@@ -7550,7 +7550,7 @@ body.admin-chrome .admin-xhs-task-row .task-screenshot img {
   grid-column: 1 / -1;
   position: relative;
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0;
   padding: 0;
   overflow: hidden;
