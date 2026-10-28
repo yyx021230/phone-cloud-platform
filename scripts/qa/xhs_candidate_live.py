@@ -22,6 +22,13 @@ import uuid
 ROOT=Path(__file__).resolve().parents[2]
 
 
+def validate_target_names(names):
+    if (not 1<=len(names)<=5 or len(set(names))!=len(names)
+            or set(names)&{'18','152','155','185'}
+            or any(not name.isascii() or not name.isdigit() for name in names)):
+        raise ValueError('qa_requires_one_to_five_unique_approved_targets')
+
+
 def shared_runtime_hashes(q):
     names=['scripts/小红书数据同步.py','scripts/xhs_native_window.py','scripts/xhs_native_navigation.py',
            'scripts/native/xhs-native-window.jar','scripts/native/xhs-native-pair.jar',
@@ -90,7 +97,7 @@ def main():
     if not __debug__ or os.environ.get('PYTHONOPTIMIZE'):
         raise RuntimeError('qa_optimized_python_is_forbidden')
     names=sys.argv[1:]
-    assert 1<=len(names)<=2 and len(set(names))==len(names) and not set(names)&{'18','152','155','185'}
+    validate_target_names(names)
     spec=importlib.util.spec_from_file_location('access',os.environ['XHS_QA_ACCESS_FILE'])
     access=importlib.util.module_from_spec(spec);spec.loader.exec_module(access);q=access.q
     phase='live-'+uuid.uuid4().hex[:12]
