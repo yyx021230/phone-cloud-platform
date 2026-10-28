@@ -10,7 +10,7 @@ services:
     read_only: true
     cap_drop: [ALL]
     security_opt: [no-new-privileges:true]
-    tmpfs: [/tmp:size=16m,mode=1777]
+    tmpfs: ["/tmp:size=16m,mode=1777"]
     environment:
       XHS_BATCH_HOST: 0.0.0.0
       XHS_BATCH_PORT: "8791"
