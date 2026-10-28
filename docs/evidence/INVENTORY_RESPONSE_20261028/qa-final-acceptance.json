@@ -1,0 +1,2988 @@
+{
+  "status": "isolated_single_pair_five_acceptance_passed_not_deployed",
+  "branch": "codex/xhs-inventory-transport-20261028",
+  "sourceHead": "511417f964fe19972542175d143da9585a0af1a9",
+  "scope": "isolated local batch HTTP and platform APIs; real phones under exclusive production screen leases; not production batch deployment",
+  "phoneReader": "elements_only",
+  "nativePairProbeEnabled": false,
+  "unitTestsPassed": 27,
+  "phases": [
+    {
+      "phase": "live-172a7890b3a2",
+      "results": [],
+      "proofRequests": 0,
+      "cloudSnapshots": 8,
+      "transientProofReadFailures": 1,
+      "apiPaginationAndRestartEqual": false,
+      "stopApiAcknowledged": null,
+      "identityUnchanged": true,
+      "sharedHashesBefore": null,
+      "sharedHashesAfter": null,
+      "sharedHashesUnchanged": null,
+      "forwardCleanup": {
+        "returncode": 0,
+        "stderr": "",
+        "remainingListeners": 0
+      }
+    },
+    {
+      "phase": "live-1b0376a4f2e8",
+      "results": [
+        {
+          "name": "47",
+          "model": "M2010J19SC",
+          "ok": false,
+          "notes": 0,
+          "complete": null,
+          "pendingLedgers": 0,
+          "settingsRestored": true,
+          "elapsedSeconds": 217.06,
+          "slot": "app1",
+          "failureCategory": "qa_lease_not_fresh",
+          "stopReason": null,
+          "windowStart": null,
+          "windowEnd": null,
+          "integrity": null,
+          "primaryCount": null,
+          "verificationCount": null,
+          "primaryDigest": null,
+          "verificationDigest": null,
+          "scrolls": null,
+          "verificationScrolls": null,
+          "settingsEvidence": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            }
+          ],
+          "scanRounds": []
+        }
+      ],
+      "proofRequests": 511,
+      "cloudSnapshots": 235,
+      "transientProofReadFailures": 0,
+      "apiPaginationAndRestartEqual": true,
+      "stopApiAcknowledged": null,
+      "identityUnchanged": true,
+      "sharedHashesBefore": null,
+      "sharedHashesAfter": null,
+      "sharedHashesUnchanged": null,
+      "forwardCleanup": {
+        "returncode": 0,
+        "stderr": "",
+        "remainingListeners": 0
+      }
+    },
+    {
+      "phase": "live-29b3ecafbc93",
+      "results": [],
+      "proofRequests": 0,
+      "cloudSnapshots": 1,
+      "transientProofReadFailures": 0,
+      "apiPaginationAndRestartEqual": false,
+      "stopApiAcknowledged": null,
+      "identityUnchanged": true,
+      "sharedHashesBefore": null,
+      "sharedHashesAfter": null,
+      "sharedHashesUnchanged": null,
+      "forwardCleanup": {
+        "returncode": 0,
+        "stderr": "",
+        "remainingListeners": 0
+      }
+    },
+    {
+      "phase": "live-7ca4467b4841",
+      "results": [
+        {
+          "name": "129",
+          "model": "V2357A",
+          "ok": true,
+          "notes": 0,
+          "complete": true,
+          "pendingLedgers": 0,
+          "settingsRestored": true,
+          "elapsedSeconds": 159.98,
+          "slot": "app1",
+          "failureCategory": null,
+          "stopReason": "older_than_window_visible",
+          "windowStart": "2026-09-29",
+          "windowEnd": "2026-10-28",
+          "integrity": "verified_two_pass",
+          "primaryCount": "0",
+          "verificationCount": "0",
+          "primaryDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "verificationDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "scrolls": 0,
+          "verificationScrolls": "0",
+          "settingsEvidence": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            }
+          ],
+          "scanRounds": [
+            {
+              "round": 0,
+              "visible_cards": 6,
+              "new_cards": 6,
+              "end_marker": false,
+              "older_than_window_visible": true,
+              "top_date": "2026-09-11"
+            }
+          ]
+        },
+        {
+          "name": "180",
+          "model": "V2442A",
+          "ok": true,
+          "notes": 10,
+          "complete": true,
+          "pendingLedgers": 0,
+          "settingsRestored": true,
+          "elapsedSeconds": 239.23,
+          "slot": "app1",
+          "failureCategory": null,
+          "stopReason": "older_than_window_visible",
+          "windowStart": "2026-09-29",
+          "windowEnd": "2026-10-28",
+          "integrity": "verified_two_pass",
+          "primaryCount": "10",
+          "verificationCount": "10",
+          "primaryDigest": "a61daff28ebb478f26d92697d3682288c356f2f56bd8d50cc1f9f683f4bb4470",
+          "verificationDigest": "a61daff28ebb478f26d92697d3682288c356f2f56bd8d50cc1f9f683f4bb4470",
+          "scrolls": 2,
+          "verificationScrolls": "3",
+          "settingsEvidence": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            }
+          ],
+          "scanRounds": [
+            {
+              "round": 0,
+              "visible_cards": 6,
+              "new_cards": 6,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-26"
+            },
+            {
+              "round": 1,
+              "visible_cards": 6,
+              "new_cards": 4,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-13"
+            },
+            {
+              "round": 2,
+              "visible_cards": 5,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": true,
+              "top_date": "2026-10-01"
+            }
+          ]
+        }
+      ],
+      "proofRequests": 1012,
+      "cloudSnapshots": 224,
+      "transientProofReadFailures": 0,
+      "apiPaginationAndRestartEqual": true,
+      "stopApiAcknowledged": null,
+      "identityUnchanged": true,
+      "sharedHashesBefore": {
+        "scripts/小红书数据同步.py": "0f17e54d9ec84949f987682d44ba4886c1bc8a3b1a8bcb5a4bc3ec42595bc83e",
+        "scripts/xhs_native_window.py": "b06c715c4e31d8d37190a5a5111c808c29ddb1cab5cf7470f9d18fbb1c27ad87",
+        "scripts/xhs_native_navigation.py": "a1e04af69daf72371591b8238c5de17320a514471f8a13499257e03d748e7a3c",
+        "scripts/native/xhs-native-window.jar": "15b043f5f78c17855b08d354dc5af4004216bc7ce14b5d03fa9e05f72e8d57c7",
+        "scripts/native/xhs-native-pair.jar": null,
+        "scripts/native/xhs-native-navigation.jar": "910f03a9c4cd6963b89ce1dd4bf4a6ad21b6f888029970401134fdcf820af754",
+        "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+        "src/index.mjs": "eafc722b93788d82bc788ed79f963b17224b2d8c30528bfbfbcedb83fe9a9dd2",
+        "config.json": "ee61ff30debd1b1077a1964ebd3946a0f36d8c4a221777be219890896c865b52"
+      },
+      "sharedHashesAfter": {
+        "scripts/小红书数据同步.py": "0f17e54d9ec84949f987682d44ba4886c1bc8a3b1a8bcb5a4bc3ec42595bc83e",
+        "scripts/xhs_native_window.py": "b06c715c4e31d8d37190a5a5111c808c29ddb1cab5cf7470f9d18fbb1c27ad87",
+        "scripts/xhs_native_navigation.py": "a1e04af69daf72371591b8238c5de17320a514471f8a13499257e03d748e7a3c",
+        "scripts/native/xhs-native-window.jar": "15b043f5f78c17855b08d354dc5af4004216bc7ce14b5d03fa9e05f72e8d57c7",
+        "scripts/native/xhs-native-pair.jar": null,
+        "scripts/native/xhs-native-navigation.jar": "910f03a9c4cd6963b89ce1dd4bf4a6ad21b6f888029970401134fdcf820af754",
+        "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+        "src/index.mjs": "eafc722b93788d82bc788ed79f963b17224b2d8c30528bfbfbcedb83fe9a9dd2",
+        "config.json": "ee61ff30debd1b1077a1964ebd3946a0f36d8c4a221777be219890896c865b52"
+      },
+      "sharedHashesUnchanged": true,
+      "forwardCleanup": {
+        "returncode": 0,
+        "stderr": "",
+        "remainingListeners": 0
+      }
+    },
+    {
+      "phase": "live-7f74d116bc57",
+      "results": [
+        {
+          "name": "140",
+          "model": "MI_8",
+          "ok": true,
+          "notes": 32,
+          "complete": true,
+          "pendingLedgers": 0,
+          "settingsRestored": true,
+          "elapsedSeconds": 408.23,
+          "slot": "app1",
+          "failureCategory": null,
+          "stopReason": "older_than_window_visible",
+          "windowStart": "2026-09-29",
+          "windowEnd": "2026-10-28",
+          "integrity": "verified_two_pass",
+          "primaryCount": "32",
+          "verificationCount": "32",
+          "primaryDigest": "18c6e70ebfeb96b606bc2923bee9bfdb0a2fffa5453f831c9ab6599c4db2b4f3",
+          "verificationDigest": "18c6e70ebfeb96b606bc2923bee9bfdb0a2fffa5453f831c9ab6599c4db2b4f3",
+          "scrolls": 11,
+          "verificationScrolls": "17",
+          "settingsEvidence": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            }
+          ],
+          "scanRounds": [
+            {
+              "round": 0,
+              "visible_cards": 5,
+              "new_cards": 5,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-27"
+            },
+            {
+              "round": 1,
+              "visible_cards": 5,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-26"
+            },
+            {
+              "round": 2,
+              "visible_cards": 4,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-21"
+            },
+            {
+              "round": 3,
+              "visible_cards": 4,
+              "new_cards": 2,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-19"
+            },
+            {
+              "round": 4,
+              "visible_cards": 4,
+              "new_cards": 2,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-15"
+            },
+            {
+              "round": 5,
+              "visible_cards": 5,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-14"
+            },
+            {
+              "round": 6,
+              "visible_cards": 4,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-12"
+            },
+            {
+              "round": 7,
+              "visible_cards": 4,
+              "new_cards": 2,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-12"
+            },
+            {
+              "round": 8,
+              "visible_cards": 4,
+              "new_cards": 2,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-10"
+            },
+            {
+              "round": 9,
+              "visible_cards": 5,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-10"
+            },
+            {
+              "round": 10,
+              "visible_cards": 4,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-09"
+            },
+            {
+              "round": 11,
+              "visible_cards": 4,
+              "new_cards": 2,
+              "end_marker": false,
+              "older_than_window_visible": true,
+              "top_date": "2026-10-09"
+            }
+          ]
+        }
+      ],
+      "proofRequests": 1163,
+      "cloudSnapshots": 388,
+      "transientProofReadFailures": 0,
+      "apiPaginationAndRestartEqual": true,
+      "stopApiAcknowledged": true,
+      "identityUnchanged": true,
+      "sharedHashesBefore": {
+        "scripts/小红书数据同步.py": "0f17e54d9ec84949f987682d44ba4886c1bc8a3b1a8bcb5a4bc3ec42595bc83e",
+        "scripts/xhs_native_window.py": "b06c715c4e31d8d37190a5a5111c808c29ddb1cab5cf7470f9d18fbb1c27ad87",
+        "scripts/xhs_native_navigation.py": "a1e04af69daf72371591b8238c5de17320a514471f8a13499257e03d748e7a3c",
+        "scripts/native/xhs-native-window.jar": "15b043f5f78c17855b08d354dc5af4004216bc7ce14b5d03fa9e05f72e8d57c7",
+        "scripts/native/xhs-native-pair.jar": null,
+        "scripts/native/xhs-native-navigation.jar": "910f03a9c4cd6963b89ce1dd4bf4a6ad21b6f888029970401134fdcf820af754",
+        "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+        "src/index.mjs": "eafc722b93788d82bc788ed79f963b17224b2d8c30528bfbfbcedb83fe9a9dd2",
+        "config.json": "ee61ff30debd1b1077a1964ebd3946a0f36d8c4a221777be219890896c865b52"
+      },
+      "sharedHashesAfter": {
+        "scripts/小红书数据同步.py": "0f17e54d9ec84949f987682d44ba4886c1bc8a3b1a8bcb5a4bc3ec42595bc83e",
+        "scripts/xhs_native_window.py": "b06c715c4e31d8d37190a5a5111c808c29ddb1cab5cf7470f9d18fbb1c27ad87",
+        "scripts/xhs_native_navigation.py": "a1e04af69daf72371591b8238c5de17320a514471f8a13499257e03d748e7a3c",
+        "scripts/native/xhs-native-window.jar": "15b043f5f78c17855b08d354dc5af4004216bc7ce14b5d03fa9e05f72e8d57c7",
+        "scripts/native/xhs-native-pair.jar": null,
+        "scripts/native/xhs-native-navigation.jar": "910f03a9c4cd6963b89ce1dd4bf4a6ad21b6f888029970401134fdcf820af754",
+        "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+        "src/index.mjs": "eafc722b93788d82bc788ed79f963b17224b2d8c30528bfbfbcedb83fe9a9dd2",
+        "config.json": "ee61ff30debd1b1077a1964ebd3946a0f36d8c4a221777be219890896c865b52"
+      },
+      "sharedHashesUnchanged": true,
+      "forwardCleanup": {
+        "returncode": 0,
+        "stderr": "",
+        "remainingListeners": 0
+      }
+    },
+    {
+      "phase": "live-82ecb6ec8fc8",
+      "results": [
+        {
+          "name": "129",
+          "model": "V2357A",
+          "ok": true,
+          "notes": 0,
+          "complete": true,
+          "pendingLedgers": 0,
+          "settingsRestored": true,
+          "elapsedSeconds": 163.42,
+          "slot": "app1",
+          "failureCategory": null,
+          "stopReason": "older_than_window_visible",
+          "windowStart": "2026-09-29",
+          "windowEnd": "2026-10-28",
+          "integrity": "verified_two_pass",
+          "primaryCount": "0",
+          "verificationCount": "0",
+          "primaryDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "verificationDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "scrolls": 0,
+          "verificationScrolls": "0",
+          "settingsEvidence": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            }
+          ],
+          "scanRounds": [
+            {
+              "round": 0,
+              "visible_cards": 6,
+              "new_cards": 6,
+              "end_marker": false,
+              "older_than_window_visible": true,
+              "top_date": "2026-09-11"
+            }
+          ]
+        },
+        {
+          "name": "102",
+          "model": "V2357A",
+          "ok": true,
+          "notes": 6,
+          "complete": true,
+          "pendingLedgers": 0,
+          "settingsRestored": true,
+          "elapsedSeconds": 177.9,
+          "slot": "app1",
+          "failureCategory": null,
+          "stopReason": "older_than_window_visible",
+          "windowStart": "2026-09-29",
+          "windowEnd": "2026-10-28",
+          "integrity": "verified_two_pass",
+          "primaryCount": "6",
+          "verificationCount": "6",
+          "primaryDigest": "f7496605f1b16211e8b2fe578c19f6fdcac094075be11047009984f11eda3b58",
+          "verificationDigest": "f7496605f1b16211e8b2fe578c19f6fdcac094075be11047009984f11eda3b58",
+          "scrolls": 1,
+          "verificationScrolls": "1",
+          "settingsEvidence": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "1800000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "1800000"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "1800000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            }
+          ],
+          "scanRounds": [
+            {
+              "round": 0,
+              "visible_cards": 6,
+              "new_cards": 6,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-13"
+            },
+            {
+              "round": 1,
+              "visible_cards": 6,
+              "new_cards": 4,
+              "end_marker": false,
+              "older_than_window_visible": true,
+              "top_date": "2026-10-08"
+            }
+          ]
+        },
+        {
+          "name": "180",
+          "model": "V2442A",
+          "ok": true,
+          "notes": 10,
+          "complete": true,
+          "pendingLedgers": 0,
+          "settingsRestored": true,
+          "elapsedSeconds": 233.55,
+          "slot": "app1",
+          "failureCategory": null,
+          "stopReason": "older_than_window_visible",
+          "windowStart": "2026-09-29",
+          "windowEnd": "2026-10-28",
+          "integrity": "verified_two_pass",
+          "primaryCount": "10",
+          "verificationCount": "10",
+          "primaryDigest": "a61daff28ebb478f26d92697d3682288c356f2f56bd8d50cc1f9f683f4bb4470",
+          "verificationDigest": "a61daff28ebb478f26d92697d3682288c356f2f56bd8d50cc1f9f683f4bb4470",
+          "scrolls": 2,
+          "verificationScrolls": "3",
+          "settingsEvidence": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            }
+          ],
+          "scanRounds": [
+            {
+              "round": 0,
+              "visible_cards": 6,
+              "new_cards": 6,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-26"
+            },
+            {
+              "round": 1,
+              "visible_cards": 6,
+              "new_cards": 4,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-13"
+            },
+            {
+              "round": 2,
+              "visible_cards": 5,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": true,
+              "top_date": "2026-10-01"
+            }
+          ]
+        },
+        {
+          "name": "140",
+          "model": "MI_8",
+          "ok": true,
+          "notes": 32,
+          "complete": true,
+          "pendingLedgers": 0,
+          "settingsRestored": true,
+          "elapsedSeconds": 411.17,
+          "slot": "app1",
+          "failureCategory": null,
+          "stopReason": "older_than_window_visible",
+          "windowStart": "2026-09-29",
+          "windowEnd": "2026-10-28",
+          "integrity": "verified_two_pass",
+          "primaryCount": "32",
+          "verificationCount": "32",
+          "primaryDigest": "18c6e70ebfeb96b606bc2923bee9bfdb0a2fffa5453f831c9ab6599c4db2b4f3",
+          "verificationDigest": "18c6e70ebfeb96b606bc2923bee9bfdb0a2fffa5453f831c9ab6599c4db2b4f3",
+          "scrolls": 11,
+          "verificationScrolls": "16",
+          "settingsEvidence": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            }
+          ],
+          "scanRounds": [
+            {
+              "round": 0,
+              "visible_cards": 5,
+              "new_cards": 5,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-27"
+            },
+            {
+              "round": 1,
+              "visible_cards": 5,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-26"
+            },
+            {
+              "round": 2,
+              "visible_cards": 4,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-21"
+            },
+            {
+              "round": 3,
+              "visible_cards": 4,
+              "new_cards": 2,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-19"
+            },
+            {
+              "round": 4,
+              "visible_cards": 4,
+              "new_cards": 2,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-15"
+            },
+            {
+              "round": 5,
+              "visible_cards": 5,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-14"
+            },
+            {
+              "round": 6,
+              "visible_cards": 4,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-12"
+            },
+            {
+              "round": 7,
+              "visible_cards": 4,
+              "new_cards": 2,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-12"
+            },
+            {
+              "round": 8,
+              "visible_cards": 4,
+              "new_cards": 2,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-10"
+            },
+            {
+              "round": 9,
+              "visible_cards": 5,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-10"
+            },
+            {
+              "round": 10,
+              "visible_cards": 4,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-09"
+            },
+            {
+              "round": 11,
+              "visible_cards": 4,
+              "new_cards": 2,
+              "end_marker": false,
+              "older_than_window_visible": true,
+              "top_date": "2026-10-09"
+            }
+          ]
+        },
+        {
+          "name": "141",
+          "model": "220233L2C",
+          "ok": true,
+          "notes": 20,
+          "complete": true,
+          "pendingLedgers": 0,
+          "settingsRestored": true,
+          "elapsedSeconds": 554.14,
+          "slot": "app1",
+          "failureCategory": null,
+          "stopReason": "older_than_window_visible",
+          "windowStart": "2026-09-29",
+          "windowEnd": "2026-10-28",
+          "integrity": "verified_two_pass",
+          "primaryCount": "20",
+          "verificationCount": "20",
+          "primaryDigest": "b9e37be2cd1cd464391d9d31a555e406a795e2441da8bdfc2627b55f9d3eaf7e",
+          "verificationDigest": "b9e37be2cd1cd464391d9d31a555e406a795e2441da8bdfc2627b55f9d3eaf7e",
+          "scrolls": 5,
+          "verificationScrolls": "8",
+          "settingsEvidence": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            }
+          ],
+          "scanRounds": [
+            {
+              "round": 0,
+              "visible_cards": 5,
+              "new_cards": 5,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-27"
+            },
+            {
+              "round": 1,
+              "visible_cards": 5,
+              "new_cards": 4,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-27"
+            },
+            {
+              "round": 2,
+              "visible_cards": 5,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-23"
+            },
+            {
+              "round": 3,
+              "visible_cards": 5,
+              "new_cards": 4,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-19"
+            },
+            {
+              "round": 4,
+              "visible_cards": 5,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-10"
+            },
+            {
+              "round": 5,
+              "visible_cards": 5,
+              "new_cards": 4,
+              "end_marker": false,
+              "older_than_window_visible": true,
+              "top_date": "2026-10-10"
+            }
+          ]
+        }
+      ],
+      "proofRequests": 4205,
+      "cloudSnapshots": 530,
+      "transientProofReadFailures": 0,
+      "apiPaginationAndRestartEqual": true,
+      "stopApiAcknowledged": true,
+      "identityUnchanged": true,
+      "sharedHashesBefore": {
+        "scripts/小红书数据同步.py": "0f17e54d9ec84949f987682d44ba4886c1bc8a3b1a8bcb5a4bc3ec42595bc83e",
+        "scripts/xhs_native_window.py": "b06c715c4e31d8d37190a5a5111c808c29ddb1cab5cf7470f9d18fbb1c27ad87",
+        "scripts/xhs_native_navigation.py": "a1e04af69daf72371591b8238c5de17320a514471f8a13499257e03d748e7a3c",
+        "scripts/native/xhs-native-window.jar": "15b043f5f78c17855b08d354dc5af4004216bc7ce14b5d03fa9e05f72e8d57c7",
+        "scripts/native/xhs-native-pair.jar": null,
+        "scripts/native/xhs-native-navigation.jar": "910f03a9c4cd6963b89ce1dd4bf4a6ad21b6f888029970401134fdcf820af754",
+        "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+        "src/index.mjs": "eafc722b93788d82bc788ed79f963b17224b2d8c30528bfbfbcedb83fe9a9dd2",
+        "config.json": "ee61ff30debd1b1077a1964ebd3946a0f36d8c4a221777be219890896c865b52"
+      },
+      "sharedHashesAfter": {
+        "scripts/小红书数据同步.py": "0f17e54d9ec84949f987682d44ba4886c1bc8a3b1a8bcb5a4bc3ec42595bc83e",
+        "scripts/xhs_native_window.py": "b06c715c4e31d8d37190a5a5111c808c29ddb1cab5cf7470f9d18fbb1c27ad87",
+        "scripts/xhs_native_navigation.py": "a1e04af69daf72371591b8238c5de17320a514471f8a13499257e03d748e7a3c",
+        "scripts/native/xhs-native-window.jar": "15b043f5f78c17855b08d354dc5af4004216bc7ce14b5d03fa9e05f72e8d57c7",
+        "scripts/native/xhs-native-pair.jar": null,
+        "scripts/native/xhs-native-navigation.jar": "910f03a9c4cd6963b89ce1dd4bf4a6ad21b6f888029970401134fdcf820af754",
+        "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+        "src/index.mjs": "eafc722b93788d82bc788ed79f963b17224b2d8c30528bfbfbcedb83fe9a9dd2",
+        "config.json": "ee61ff30debd1b1077a1964ebd3946a0f36d8c4a221777be219890896c865b52"
+      },
+      "sharedHashesUnchanged": true,
+      "forwardCleanup": {
+        "returncode": 0,
+        "stderr": "",
+        "remainingListeners": 0
+      }
+    },
+    {
+      "phase": "live-8bb61fd0f884",
+      "results": [
+        {
+          "name": "129",
+          "model": "V2357A",
+          "ok": false,
+          "notes": 0,
+          "complete": null,
+          "pendingLedgers": 0,
+          "settingsRestored": true,
+          "elapsedSeconds": 31.22,
+          "slot": "app1",
+          "failureCategory": "ModuleNotFoundError",
+          "stopReason": null,
+          "windowStart": null,
+          "windowEnd": null,
+          "integrity": null,
+          "primaryCount": null,
+          "verificationCount": null,
+          "primaryDigest": null,
+          "verificationDigest": null,
+          "scrolls": null,
+          "verificationScrolls": null,
+          "settingsEvidence": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            }
+          ],
+          "scanRounds": []
+        },
+        {
+          "name": "180",
+          "model": "V2442A",
+          "ok": false,
+          "notes": 0,
+          "complete": null,
+          "pendingLedgers": 0,
+          "settingsRestored": true,
+          "elapsedSeconds": 33.31,
+          "slot": "app1",
+          "failureCategory": "ModuleNotFoundError",
+          "stopReason": null,
+          "windowStart": null,
+          "windowEnd": null,
+          "integrity": null,
+          "primaryCount": null,
+          "verificationCount": null,
+          "primaryDigest": null,
+          "verificationDigest": null,
+          "scrolls": null,
+          "verificationScrolls": null,
+          "settingsEvidence": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            }
+          ],
+          "scanRounds": []
+        }
+      ],
+      "proofRequests": 183,
+      "cloudSnapshots": 60,
+      "transientProofReadFailures": 0,
+      "apiPaginationAndRestartEqual": true,
+      "stopApiAcknowledged": null,
+      "identityUnchanged": true,
+      "sharedHashesBefore": null,
+      "sharedHashesAfter": null,
+      "sharedHashesUnchanged": null,
+      "forwardCleanup": {
+        "returncode": 0,
+        "stderr": "",
+        "remainingListeners": 0
+      }
+    },
+    {
+      "phase": "live-906960a85557",
+      "results": [
+        {
+          "name": "180",
+          "model": "V2442A",
+          "ok": true,
+          "notes": 10,
+          "complete": true,
+          "pendingLedgers": 0,
+          "settingsRestored": true,
+          "elapsedSeconds": 240.64,
+          "slot": "app1",
+          "failureCategory": null,
+          "stopReason": "older_than_window_visible",
+          "windowStart": "2026-09-29",
+          "windowEnd": "2026-10-28",
+          "integrity": "verified_two_pass",
+          "primaryCount": "10",
+          "verificationCount": "10",
+          "primaryDigest": "a61daff28ebb478f26d92697d3682288c356f2f56bd8d50cc1f9f683f4bb4470",
+          "verificationDigest": "a61daff28ebb478f26d92697d3682288c356f2f56bd8d50cc1f9f683f4bb4470",
+          "scrolls": 2,
+          "verificationScrolls": "3",
+          "settingsEvidence": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            }
+          ],
+          "scanRounds": [
+            {
+              "round": 0,
+              "visible_cards": 6,
+              "new_cards": 6,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-26"
+            },
+            {
+              "round": 1,
+              "visible_cards": 6,
+              "new_cards": 4,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-13"
+            },
+            {
+              "round": 2,
+              "visible_cards": 5,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": true,
+              "top_date": "2026-10-01"
+            }
+          ]
+        }
+      ],
+      "proofRequests": 599,
+      "cloudSnapshots": 234,
+      "transientProofReadFailures": 0,
+      "apiPaginationAndRestartEqual": true,
+      "stopApiAcknowledged": null,
+      "identityUnchanged": true,
+      "sharedHashesBefore": {
+        "scripts/小红书数据同步.py": "0f17e54d9ec84949f987682d44ba4886c1bc8a3b1a8bcb5a4bc3ec42595bc83e",
+        "scripts/xhs_native_window.py": "b06c715c4e31d8d37190a5a5111c808c29ddb1cab5cf7470f9d18fbb1c27ad87",
+        "scripts/xhs_native_navigation.py": "a1e04af69daf72371591b8238c5de17320a514471f8a13499257e03d748e7a3c",
+        "scripts/native/xhs-native-window.jar": "15b043f5f78c17855b08d354dc5af4004216bc7ce14b5d03fa9e05f72e8d57c7",
+        "scripts/native/xhs-native-pair.jar": null,
+        "scripts/native/xhs-native-navigation.jar": "910f03a9c4cd6963b89ce1dd4bf4a6ad21b6f888029970401134fdcf820af754",
+        "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+        "src/index.mjs": "eafc722b93788d82bc788ed79f963b17224b2d8c30528bfbfbcedb83fe9a9dd2",
+        "config.json": "ee61ff30debd1b1077a1964ebd3946a0f36d8c4a221777be219890896c865b52"
+      },
+      "sharedHashesAfter": {
+        "scripts/小红书数据同步.py": "0f17e54d9ec84949f987682d44ba4886c1bc8a3b1a8bcb5a4bc3ec42595bc83e",
+        "scripts/xhs_native_window.py": "b06c715c4e31d8d37190a5a5111c808c29ddb1cab5cf7470f9d18fbb1c27ad87",
+        "scripts/xhs_native_navigation.py": "a1e04af69daf72371591b8238c5de17320a514471f8a13499257e03d748e7a3c",
+        "scripts/native/xhs-native-window.jar": "15b043f5f78c17855b08d354dc5af4004216bc7ce14b5d03fa9e05f72e8d57c7",
+        "scripts/native/xhs-native-pair.jar": null,
+        "scripts/native/xhs-native-navigation.jar": "910f03a9c4cd6963b89ce1dd4bf4a6ad21b6f888029970401134fdcf820af754",
+        "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+        "src/index.mjs": "eafc722b93788d82bc788ed79f963b17224b2d8c30528bfbfbcedb83fe9a9dd2",
+        "config.json": "ee61ff30debd1b1077a1964ebd3946a0f36d8c4a221777be219890896c865b52"
+      },
+      "sharedHashesUnchanged": true,
+      "forwardCleanup": {
+        "returncode": 0,
+        "stderr": "",
+        "remainingListeners": 0
+      }
+    },
+    {
+      "phase": "live-9641a7c2b3f8",
+      "results": [
+        {
+          "name": "140",
+          "model": "MI_8",
+          "ok": false,
+          "notes": 0,
+          "complete": null,
+          "pendingLedgers": 0,
+          "settingsRestored": true,
+          "elapsedSeconds": 353.22,
+          "slot": "app1",
+          "failureCategory": "xhs_data_collection_output_mismatch",
+          "stopReason": null,
+          "windowStart": null,
+          "windowEnd": null,
+          "integrity": null,
+          "primaryCount": null,
+          "verificationCount": null,
+          "primaryDigest": null,
+          "verificationDigest": null,
+          "scrolls": null,
+          "verificationScrolls": null,
+          "settingsEvidence": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            }
+          ],
+          "scanRounds": []
+        },
+        {
+          "name": "141",
+          "model": "220233L2C",
+          "ok": true,
+          "notes": 20,
+          "complete": true,
+          "pendingLedgers": 0,
+          "settingsRestored": true,
+          "elapsedSeconds": 614.65,
+          "slot": "app1",
+          "failureCategory": null,
+          "stopReason": "older_than_window_visible",
+          "windowStart": "2026-09-29",
+          "windowEnd": "2026-10-28",
+          "integrity": "verified_two_pass",
+          "primaryCount": "20",
+          "verificationCount": "20",
+          "primaryDigest": "b9e37be2cd1cd464391d9d31a555e406a795e2441da8bdfc2627b55f9d3eaf7e",
+          "verificationDigest": "b9e37be2cd1cd464391d9d31a555e406a795e2441da8bdfc2627b55f9d3eaf7e",
+          "scrolls": 5,
+          "verificationScrolls": "8",
+          "settingsEvidence": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            }
+          ],
+          "scanRounds": [
+            {
+              "round": 0,
+              "visible_cards": 5,
+              "new_cards": 5,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-27"
+            },
+            {
+              "round": 1,
+              "visible_cards": 5,
+              "new_cards": 4,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-27"
+            },
+            {
+              "round": 2,
+              "visible_cards": 5,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-23"
+            },
+            {
+              "round": 3,
+              "visible_cards": 5,
+              "new_cards": 4,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-19"
+            },
+            {
+              "round": 4,
+              "visible_cards": 5,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-10"
+            },
+            {
+              "round": 5,
+              "visible_cards": 5,
+              "new_cards": 4,
+              "end_marker": false,
+              "older_than_window_visible": true,
+              "top_date": "2026-10-10"
+            }
+          ]
+        },
+        {
+          "name": "102",
+          "model": "V2357A",
+          "ok": true,
+          "notes": 6,
+          "complete": true,
+          "pendingLedgers": 0,
+          "settingsRestored": true,
+          "elapsedSeconds": 186.83,
+          "slot": "app1",
+          "failureCategory": null,
+          "stopReason": "older_than_window_visible",
+          "windowStart": "2026-09-29",
+          "windowEnd": "2026-10-28",
+          "integrity": "verified_two_pass",
+          "primaryCount": "6",
+          "verificationCount": "6",
+          "primaryDigest": "f7496605f1b16211e8b2fe578c19f6fdcac094075be11047009984f11eda3b58",
+          "verificationDigest": "f7496605f1b16211e8b2fe578c19f6fdcac094075be11047009984f11eda3b58",
+          "scrolls": 1,
+          "verificationScrolls": "1",
+          "settingsEvidence": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "1800000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "1800000"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "1800000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            }
+          ],
+          "scanRounds": [
+            {
+              "round": 0,
+              "visible_cards": 6,
+              "new_cards": 6,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-13"
+            },
+            {
+              "round": 1,
+              "visible_cards": 6,
+              "new_cards": 4,
+              "end_marker": false,
+              "older_than_window_visible": true,
+              "top_date": "2026-10-08"
+            }
+          ]
+        },
+        {
+          "name": "129",
+          "model": "V2357A",
+          "ok": true,
+          "notes": 0,
+          "complete": true,
+          "pendingLedgers": 0,
+          "settingsRestored": true,
+          "elapsedSeconds": 165.79,
+          "slot": "app1",
+          "failureCategory": null,
+          "stopReason": "older_than_window_visible",
+          "windowStart": "2026-09-29",
+          "windowEnd": "2026-10-28",
+          "integrity": "verified_two_pass",
+          "primaryCount": "0",
+          "verificationCount": "0",
+          "primaryDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "verificationDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "scrolls": 0,
+          "verificationScrolls": "0",
+          "settingsEvidence": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            }
+          ],
+          "scanRounds": [
+            {
+              "round": 0,
+              "visible_cards": 6,
+              "new_cards": 6,
+              "end_marker": false,
+              "older_than_window_visible": true,
+              "top_date": "2026-09-11"
+            }
+          ]
+        },
+        {
+          "name": "180",
+          "model": "V2442A",
+          "ok": true,
+          "notes": 10,
+          "complete": true,
+          "pendingLedgers": 0,
+          "settingsRestored": true,
+          "elapsedSeconds": 248.77,
+          "slot": "app1",
+          "failureCategory": null,
+          "stopReason": "older_than_window_visible",
+          "windowStart": "2026-09-29",
+          "windowEnd": "2026-10-28",
+          "integrity": "verified_two_pass",
+          "primaryCount": "10",
+          "verificationCount": "10",
+          "primaryDigest": "a61daff28ebb478f26d92697d3682288c356f2f56bd8d50cc1f9f683f4bb4470",
+          "verificationDigest": "a61daff28ebb478f26d92697d3682288c356f2f56bd8d50cc1f9f683f4bb4470",
+          "scrolls": 3,
+          "verificationScrolls": "3",
+          "settingsEvidence": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            }
+          ],
+          "scanRounds": [
+            {
+              "round": 0,
+              "visible_cards": 6,
+              "new_cards": 6,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-26"
+            },
+            {
+              "round": 1,
+              "visible_cards": 5,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-13"
+            },
+            {
+              "round": 2,
+              "visible_cards": 2,
+              "new_cards": 1,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-01"
+            },
+            {
+              "round": 3,
+              "visible_cards": 6,
+              "new_cards": 4,
+              "end_marker": false,
+              "older_than_window_visible": true,
+              "top_date": "2026-10-01"
+            }
+          ]
+        }
+      ],
+      "proofRequests": 4103,
+      "cloudSnapshots": 610,
+      "transientProofReadFailures": 4,
+      "apiPaginationAndRestartEqual": true,
+      "stopApiAcknowledged": null,
+      "identityUnchanged": true,
+      "sharedHashesBefore": {
+        "scripts/小红书数据同步.py": "0f17e54d9ec84949f987682d44ba4886c1bc8a3b1a8bcb5a4bc3ec42595bc83e",
+        "scripts/xhs_native_window.py": "b06c715c4e31d8d37190a5a5111c808c29ddb1cab5cf7470f9d18fbb1c27ad87",
+        "scripts/xhs_native_navigation.py": "a1e04af69daf72371591b8238c5de17320a514471f8a13499257e03d748e7a3c",
+        "scripts/native/xhs-native-window.jar": "15b043f5f78c17855b08d354dc5af4004216bc7ce14b5d03fa9e05f72e8d57c7",
+        "scripts/native/xhs-native-pair.jar": null,
+        "scripts/native/xhs-native-navigation.jar": "910f03a9c4cd6963b89ce1dd4bf4a6ad21b6f888029970401134fdcf820af754",
+        "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+        "src/index.mjs": "eafc722b93788d82bc788ed79f963b17224b2d8c30528bfbfbcedb83fe9a9dd2",
+        "config.json": "ee61ff30debd1b1077a1964ebd3946a0f36d8c4a221777be219890896c865b52"
+      },
+      "sharedHashesAfter": {
+        "scripts/小红书数据同步.py": "0f17e54d9ec84949f987682d44ba4886c1bc8a3b1a8bcb5a4bc3ec42595bc83e",
+        "scripts/xhs_native_window.py": "b06c715c4e31d8d37190a5a5111c808c29ddb1cab5cf7470f9d18fbb1c27ad87",
+        "scripts/xhs_native_navigation.py": "a1e04af69daf72371591b8238c5de17320a514471f8a13499257e03d748e7a3c",
+        "scripts/native/xhs-native-window.jar": "15b043f5f78c17855b08d354dc5af4004216bc7ce14b5d03fa9e05f72e8d57c7",
+        "scripts/native/xhs-native-pair.jar": null,
+        "scripts/native/xhs-native-navigation.jar": "910f03a9c4cd6963b89ce1dd4bf4a6ad21b6f888029970401134fdcf820af754",
+        "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+        "src/index.mjs": "eafc722b93788d82bc788ed79f963b17224b2d8c30528bfbfbcedb83fe9a9dd2",
+        "config.json": "ee61ff30debd1b1077a1964ebd3946a0f36d8c4a221777be219890896c865b52"
+      },
+      "sharedHashesUnchanged": true,
+      "forwardCleanup": {
+        "returncode": 0,
+        "stderr": "",
+        "remainingListeners": 0
+      }
+    },
+    {
+      "phase": "live-a0318f9b5952",
+      "results": [
+        {
+          "name": "47",
+          "model": "M2010J19SC",
+          "ok": false,
+          "notes": 0,
+          "complete": null,
+          "pendingLedgers": 0,
+          "settingsRestored": null,
+          "elapsedSeconds": 467.08,
+          "slot": "app1",
+          "failureCategory": "qa_execution_error_private_evidence",
+          "stopReason": null,
+          "windowStart": null,
+          "windowEnd": null,
+          "integrity": null,
+          "primaryCount": null,
+          "verificationCount": null,
+          "primaryDigest": null,
+          "verificationDigest": null,
+          "scrolls": null,
+          "verificationScrolls": null,
+          "settingsEvidence": [],
+          "scanRounds": []
+        }
+      ],
+      "proofRequests": 667,
+      "cloudSnapshots": null,
+      "transientProofReadFailures": 1,
+      "apiPaginationAndRestartEqual": true,
+      "stopApiAcknowledged": null,
+      "identityUnchanged": true,
+      "sharedHashesBefore": null,
+      "sharedHashesAfter": null,
+      "sharedHashesUnchanged": null,
+      "forwardCleanup": null
+    },
+    {
+      "phase": "live-e91fddc09c62",
+      "results": [
+        {
+          "name": "47",
+          "model": "M2010J19SC",
+          "ok": false,
+          "notes": 0,
+          "complete": null,
+          "pendingLedgers": 0,
+          "settingsRestored": null,
+          "elapsedSeconds": 0.62,
+          "slot": "app1",
+          "failureCategory": "qa_lease_not_fresh",
+          "stopReason": null,
+          "windowStart": null,
+          "windowEnd": null,
+          "integrity": null,
+          "primaryCount": null,
+          "verificationCount": null,
+          "primaryDigest": null,
+          "verificationDigest": null,
+          "scrolls": null,
+          "verificationScrolls": null,
+          "settingsEvidence": [],
+          "scanRounds": []
+        }
+      ],
+      "proofRequests": 12,
+      "cloudSnapshots": null,
+      "transientProofReadFailures": 0,
+      "apiPaginationAndRestartEqual": true,
+      "stopApiAcknowledged": null,
+      "identityUnchanged": true,
+      "sharedHashesBefore": null,
+      "sharedHashesAfter": null,
+      "sharedHashesUnchanged": null,
+      "forwardCleanup": null
+    },
+    {
+      "phase": "live-fadc543fd105",
+      "results": [
+        {
+          "name": "47",
+          "model": "M2010J19SC",
+          "ok": true,
+          "notes": 34,
+          "complete": true,
+          "pendingLedgers": 0,
+          "settingsRestored": true,
+          "elapsedSeconds": 535.57,
+          "slot": "app1",
+          "failureCategory": null,
+          "stopReason": "older_than_window_visible",
+          "windowStart": "2026-09-29",
+          "windowEnd": "2026-10-28",
+          "integrity": "verified_two_pass",
+          "primaryCount": "34",
+          "verificationCount": "34",
+          "primaryDigest": "b52192ba0a701cb592520f6d42b0bbc4395e48204a6686901bda78efbb6b46e3",
+          "verificationDigest": "b52192ba0a701cb592520f6d42b0bbc4395e48204a6686901bda78efbb6b46e3",
+          "scrolls": 11,
+          "verificationScrolls": "16",
+          "settingsEvidence": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            }
+          ],
+          "scanRounds": [
+            {
+              "round": 0,
+              "visible_cards": 5,
+              "new_cards": 5,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-28"
+            },
+            {
+              "round": 1,
+              "visible_cards": 5,
+              "new_cards": 4,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-22"
+            },
+            {
+              "round": 2,
+              "visible_cards": 3,
+              "new_cards": 1,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-21"
+            },
+            {
+              "round": 3,
+              "visible_cards": 5,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-21"
+            },
+            {
+              "round": 4,
+              "visible_cards": 5,
+              "new_cards": 4,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-15"
+            },
+            {
+              "round": 5,
+              "visible_cards": 5,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-14"
+            },
+            {
+              "round": 6,
+              "visible_cards": 5,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-14"
+            },
+            {
+              "round": 7,
+              "visible_cards": 4,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-12"
+            },
+            {
+              "round": 8,
+              "visible_cards": 5,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-09"
+            },
+            {
+              "round": 9,
+              "visible_cards": 3,
+              "new_cards": 1,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-09"
+            },
+            {
+              "round": 10,
+              "visible_cards": 5,
+              "new_cards": 3,
+              "end_marker": false,
+              "older_than_window_visible": false,
+              "top_date": "2026-10-09"
+            },
+            {
+              "round": 11,
+              "visible_cards": 5,
+              "new_cards": 4,
+              "end_marker": false,
+              "older_than_window_visible": true,
+              "top_date": "2026-10-02"
+            }
+          ]
+        }
+      ],
+      "proofRequests": 1287,
+      "cloudSnapshots": 517,
+      "transientProofReadFailures": 1,
+      "apiPaginationAndRestartEqual": true,
+      "stopApiAcknowledged": null,
+      "identityUnchanged": true,
+      "sharedHashesBefore": null,
+      "sharedHashesAfter": null,
+      "sharedHashesUnchanged": null,
+      "forwardCleanup": {
+        "returncode": 0,
+        "stderr": "",
+        "remainingListeners": 0
+      }
+    }
+  ],
+  "stopDatabaseEvidence": [
+    {
+      "phase": "live-fadc543fd105",
+      "runStatus": "completed",
+      "itemCounts": {
+        "succeeded": 1
+      },
+      "stopPersisted": true,
+      "stopRequestedAt": "2026-10-28T03:35:30.839Z",
+      "activeItems": 0
+    },
+    {
+      "phase": "live-906960a85557",
+      "runStatus": "completed",
+      "itemCounts": {
+        "succeeded": 1
+      },
+      "stopPersisted": true,
+      "stopRequestedAt": "2026-10-28T03:45:45.914Z",
+      "activeItems": 0
+    },
+    {
+      "phase": "live-7ca4467b4841",
+      "runStatus": "completed",
+      "itemCounts": {
+        "succeeded": 2
+      },
+      "stopPersisted": true,
+      "stopRequestedAt": "2026-10-28T03:51:13.238Z",
+      "activeItems": 0
+    },
+    {
+      "phase": "live-9641a7c2b3f8",
+      "runStatus": "completed",
+      "itemCounts": {
+        "succeeded": 4,
+        "failed": 1
+      },
+      "stopPersisted": true,
+      "stopRequestedAt": "2026-10-28T04:03:49.975Z",
+      "activeItems": 0
+    },
+    {
+      "phase": "live-7f74d116bc57",
+      "runStatus": "completed",
+      "itemCounts": {
+        "succeeded": 1
+      },
+      "stopPersisted": true,
+      "stopRequestedAt": "2026-10-28T04:11:58.282Z",
+      "activeItems": 0
+    },
+    {
+      "phase": "live-82ecb6ec8fc8",
+      "runStatus": "completed",
+      "itemCounts": {
+        "succeeded": 5
+      },
+      "stopPersisted": true,
+      "stopRequestedAt": "2026-10-28T04:22:56.346Z",
+      "activeItems": 0
+    }
+  ],
+  "completedPhaseCleanup": {
+    "concurrencyEvidence": {
+      "live-1b0376a4f2e8": {
+        "targetCount": 1,
+        "allCollectorsOverlapSeconds": 200.03826117515564
+      },
+      "live-7ca4467b4841": {
+        "targetCount": 2,
+        "allCollectorsOverlapSeconds": 155.35096645355225
+      },
+      "live-7f74d116bc57": {
+        "targetCount": 1,
+        "allCollectorsOverlapSeconds": 402.873295545578
+      },
+      "live-82ecb6ec8fc8": {
+        "targetCount": 5,
+        "allCollectorsOverlapSeconds": 158.0534725189209
+      },
+      "live-8bb61fd0f884": {
+        "targetCount": 2,
+        "allCollectorsOverlapSeconds": 27.358545541763306
+      },
+      "live-906960a85557": {
+        "targetCount": 1,
+        "allCollectorsOverlapSeconds": 237.14567041397095
+      },
+      "live-9641a7c2b3f8": {
+        "targetCount": 5,
+        "allCollectorsOverlapSeconds": 155.94773387908936
+      },
+      "live-fadc543fd105": {
+        "targetCount": 1,
+        "allCollectorsOverlapSeconds": 520.3778414726257
+      }
+    },
+    "closedPhaseCount": 13,
+    "windows": {
+      "targets": [
+        {
+          "phase": "live-7f74d116bc57",
+          "phone": "140",
+          "candidateProcesses": [],
+          "pendingLedgers": 0,
+          "collectorFirstStart": 1793160306.6084416,
+          "collectorFinalEnd": 1793160709.4817371,
+          "settingsReads": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            }
+          ],
+          "rawOutputMeta": {
+            "exitCode": 0,
+            "signal": null,
+            "sha256": "5f92052bd6f5b85f66a443851248caa17ffcbdf1f5554282135f87e45676b059",
+            "bytes": 15372,
+            "complete": true,
+            "stopReason": "older_than_window_visible",
+            "notes": 32
+          }
+        },
+        {
+          "phase": "live-29b3ecafbc93",
+          "phone": "47",
+          "candidateProcesses": [],
+          "pendingLedgers": 0,
+          "collectorFirstStart": null,
+          "collectorFinalEnd": null,
+          "settingsReads": null,
+          "rawOutputMeta": null
+        },
+        {
+          "phase": "live-906960a85557",
+          "phone": "180",
+          "candidateProcesses": [],
+          "pendingLedgers": 0,
+          "collectorFirstStart": 1793158894.1347282,
+          "collectorFinalEnd": 1793159131.2803986,
+          "settingsReads": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            }
+          ],
+          "rawOutputMeta": null
+        },
+        {
+          "phase": "live-1b0376a4f2e8",
+          "phone": "47",
+          "candidateProcesses": [],
+          "pendingLedgers": 0,
+          "collectorFirstStart": 1793157224.9154937,
+          "collectorFinalEnd": 1793157424.953755,
+          "settingsReads": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            }
+          ],
+          "rawOutputMeta": null
+        },
+        {
+          "phase": "live-e91fddc09c62",
+          "phone": "47",
+          "candidateProcesses": [],
+          "pendingLedgers": 0,
+          "collectorFirstStart": null,
+          "collectorFinalEnd": null,
+          "settingsReads": null,
+          "rawOutputMeta": null
+        },
+        {
+          "phase": "live-9641a7c2b3f8",
+          "phone": "102",
+          "candidateProcesses": [],
+          "pendingLedgers": 0,
+          "collectorFirstStart": 1793159584.2940462,
+          "collectorFinalEnd": 1793159767.5870373,
+          "settingsReads": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "1800000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "1800000"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "1800000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            }
+          ],
+          "rawOutputMeta": null
+        },
+        {
+          "phase": "live-9641a7c2b3f8",
+          "phone": "180",
+          "candidateProcesses": [],
+          "pendingLedgers": 0,
+          "collectorFirstStart": 1793159584.33483,
+          "collectorFinalEnd": 1793159830.0703528,
+          "settingsReads": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            }
+          ],
+          "rawOutputMeta": null
+        },
+        {
+          "phase": "live-9641a7c2b3f8",
+          "phone": "129",
+          "candidateProcesses": [],
+          "pendingLedgers": 0,
+          "collectorFirstStart": 1793159584.7537417,
+          "collectorFinalEnd": 1793159745.4510682,
+          "settingsReads": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            }
+          ],
+          "rawOutputMeta": null
+        },
+        {
+          "phase": "live-9641a7c2b3f8",
+          "phone": "140",
+          "candidateProcesses": [],
+          "pendingLedgers": 0,
+          "collectorFirstStart": 1793159568.1090949,
+          "collectorFinalEnd": 1793159916.390049,
+          "settingsReads": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            }
+          ],
+          "rawOutputMeta": null
+        },
+        {
+          "phase": "live-9641a7c2b3f8",
+          "phone": "141",
+          "candidateProcesses": [],
+          "pendingLedgers": 0,
+          "collectorFirstStart": 1793159589.5033343,
+          "collectorFinalEnd": 1793160195.2560074,
+          "settingsReads": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            }
+          ],
+          "rawOutputMeta": null
+        },
+        {
+          "phase": "live-172a7890b3a2",
+          "phone": "47",
+          "candidateProcesses": [],
+          "pendingLedgers": 0,
+          "collectorFirstStart": null,
+          "collectorFinalEnd": null,
+          "settingsReads": null,
+          "rawOutputMeta": null
+        },
+        {
+          "phase": "live-7ca4467b4841",
+          "phone": "180",
+          "candidateProcesses": [],
+          "pendingLedgers": 0,
+          "collectorFirstStart": 1793159224.9648232,
+          "collectorFinalEnd": 1793159460.1931977,
+          "settingsReads": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            }
+          ],
+          "rawOutputMeta": null
+        },
+        {
+          "phase": "live-7ca4467b4841",
+          "phone": "129",
+          "candidateProcesses": [],
+          "pendingLedgers": 0,
+          "collectorFirstStart": 1793159225.0834563,
+          "collectorFinalEnd": 1793159380.4344227,
+          "settingsReads": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            }
+          ],
+          "rawOutputMeta": null
+        },
+        {
+          "phase": "live-8bb61fd0f884",
+          "phone": "180",
+          "candidateProcesses": [],
+          "pendingLedgers": 0,
+          "collectorFirstStart": 1793158625.0660262,
+          "collectorFinalEnd": 1793158655.1541026,
+          "settingsReads": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            }
+          ],
+          "rawOutputMeta": null
+        },
+        {
+          "phase": "live-8bb61fd0f884",
+          "phone": "129",
+          "candidateProcesses": [],
+          "pendingLedgers": 0,
+          "collectorFirstStart": 1793158625.3353598,
+          "collectorFinalEnd": 1793158652.6939054,
+          "settingsReads": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            }
+          ],
+          "rawOutputMeta": null
+        },
+        {
+          "phase": "live-fadc543fd105",
+          "phone": "47",
+          "candidateProcesses": [],
+          "pendingLedgers": 0,
+          "collectorFirstStart": 1793158003.9191751,
+          "collectorFinalEnd": 1793158524.2970166,
+          "settingsReads": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            }
+          ],
+          "rawOutputMeta": null
+        },
+        {
+          "phase": "live-a0318f9b5952",
+          "phone": "47",
+          "candidateProcesses": [],
+          "pendingLedgers": 0,
+          "collectorFirstStart": null,
+          "collectorFinalEnd": null,
+          "settingsReads": null,
+          "rawOutputMeta": null
+        },
+        {
+          "phase": "live-82ecb6ec8fc8",
+          "phone": "102",
+          "candidateProcesses": [],
+          "pendingLedgers": 0,
+          "collectorFirstStart": 1793160814.1335466,
+          "collectorFinalEnd": 1793160988.3717494,
+          "settingsReads": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "1800000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "1800000"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "1800000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            }
+          ],
+          "rawOutputMeta": {
+            "exitCode": 0,
+            "signal": null,
+            "sha256": "80fbea6b1ddd365ece7713e2635ee48a5fdf7c742830a35af84a0abd27f3ede7",
+            "bytes": 4331,
+            "complete": true,
+            "stopReason": "older_than_window_visible",
+            "notes": 6
+          }
+        },
+        {
+          "phase": "live-82ecb6ec8fc8",
+          "phone": "180",
+          "candidateProcesses": [],
+          "pendingLedgers": 0,
+          "collectorFirstStart": 1793160814.538179,
+          "collectorFinalEnd": 1793161044.0107753,
+          "settingsReads": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            }
+          ],
+          "rawOutputMeta": {
+            "exitCode": 0,
+            "signal": null,
+            "sha256": "d2c11b05ca7d6bb4d9341e9daf023be7e3b4ed00bb55c5f56abc06751e369a38",
+            "bytes": 6085,
+            "complete": true,
+            "stopReason": "older_than_window_visible",
+            "notes": 10
+          }
+        },
+        {
+          "phase": "live-82ecb6ec8fc8",
+          "phone": "129",
+          "candidateProcesses": [],
+          "pendingLedgers": 0,
+          "collectorFirstStart": 1793160815.0632334,
+          "collectorFinalEnd": 1793160973.9156783,
+          "settingsReads": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "null"
+            }
+          ],
+          "rawOutputMeta": {
+            "exitCode": 0,
+            "signal": null,
+            "sha256": "144dc48d9ecba6b21108f4964a586bb0295cd0aacd746d7a4719c11eeadae0d2",
+            "bytes": 2353,
+            "complete": true,
+            "stopReason": "older_than_window_visible",
+            "notes": 0
+          }
+        },
+        {
+          "phase": "live-82ecb6ec8fc8",
+          "phone": "140",
+          "candidateProcesses": [],
+          "pendingLedgers": 0,
+          "collectorFirstStart": 1793160815.5765967,
+          "collectorFinalEnd": 1793161222.154565,
+          "settingsReads": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "600000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            }
+          ],
+          "rawOutputMeta": {
+            "exitCode": 0,
+            "signal": null,
+            "sha256": "cc64dbc55b67bfbac74d8caab0e180b32a16c4795f53b21dc2cb38de41dae651",
+            "bytes": 15372,
+            "complete": true,
+            "stopReason": "older_than_window_visible",
+            "notes": 32
+          }
+        },
+        {
+          "phase": "live-82ecb6ec8fc8",
+          "phone": "141",
+          "candidateProcesses": [],
+          "pendingLedgers": 0,
+          "collectorFirstStart": 1793160815.8622057,
+          "collectorFinalEnd": 1793161364.6492822,
+          "settingsReads": [
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            },
+            {
+              "scope": "system",
+              "key": "screen_off_timeout",
+              "value": "60000"
+            },
+            {
+              "scope": "global",
+              "key": "enable_screen_on_proximity_sensor",
+              "value": "1"
+            }
+          ],
+          "rawOutputMeta": {
+            "exitCode": 0,
+            "signal": null,
+            "sha256": "6218cc300ec8815edcca34fa2fc8f1633173c62c83d9baca4ea0a3ac3397904d",
+            "bytes": 10142,
+            "complete": true,
+            "stopReason": "older_than_window_visible",
+            "notes": 20
+          }
+        }
+      ],
+      "remainingOldForwardListeners": []
+    },
+    "cloud": {
+      "activeOwnedLocks": 0,
+      "sessions": [
+        {
+          "phase": "live-7f74d116bc57",
+          "phone": "140",
+          "httpStatus": 200,
+          "status": "closed"
+        },
+        {
+          "phase": "live-29b3ecafbc93",
+          "phone": "47",
+          "httpStatus": 200,
+          "status": "closed"
+        },
+        {
+          "phase": "live-906960a85557",
+          "phone": "180",
+          "httpStatus": 200,
+          "status": "closed"
+        },
+        {
+          "phase": "live-1b0376a4f2e8",
+          "phone": "47",
+          "httpStatus": 200,
+          "status": "closed"
+        },
+        {
+          "phase": "live-e91fddc09c62",
+          "phone": "47",
+          "httpStatus": 200,
+          "status": "closed"
+        },
+        {
+          "phase": "live-9641a7c2b3f8",
+          "phone": "102",
+          "httpStatus": 200,
+          "status": "closed"
+        },
+        {
+          "phase": "live-9641a7c2b3f8",
+          "phone": "180",
+          "httpStatus": 200,
+          "status": "closed"
+        },
+        {
+          "phase": "live-9641a7c2b3f8",
+          "phone": "129",
+          "httpStatus": 200,
+          "status": "closed"
+        },
+        {
+          "phase": "live-9641a7c2b3f8",
+          "phone": "140",
+          "httpStatus": 200,
+          "status": "closed"
+        },
+        {
+          "phase": "live-9641a7c2b3f8",
+          "phone": "141",
+          "httpStatus": 200,
+          "status": "closed"
+        },
+        {
+          "phase": "live-172a7890b3a2",
+          "phone": "47",
+          "httpStatus": 200,
+          "status": "closed"
+        },
+        {
+          "phase": "live-7ca4467b4841",
+          "phone": "180",
+          "httpStatus": 200,
+          "status": "closed"
+        },
+        {
+          "phase": "live-7ca4467b4841",
+          "phone": "129",
+          "httpStatus": 200,
+          "status": "closed"
+        },
+        {
+          "phase": "live-8bb61fd0f884",
+          "phone": "180",
+          "httpStatus": 200,
+          "status": "closed"
+        },
+        {
+          "phase": "live-8bb61fd0f884",
+          "phone": "129",
+          "httpStatus": 200,
+          "status": "closed"
+        },
+        {
+          "phase": "live-fadc543fd105",
+          "phone": "47",
+          "httpStatus": 200,
+          "status": "closed"
+        },
+        {
+          "phase": "live-a0318f9b5952",
+          "phone": "47",
+          "httpStatus": 200,
+          "status": "closed"
+        },
+        {
+          "phase": "live-82ecb6ec8fc8",
+          "phone": "102",
+          "httpStatus": 200,
+          "status": "closed"
+        },
+        {
+          "phase": "live-82ecb6ec8fc8",
+          "phone": "180",
+          "httpStatus": 200,
+          "status": "closed"
+        },
+        {
+          "phase": "live-82ecb6ec8fc8",
+          "phone": "129",
+          "httpStatus": 200,
+          "status": "closed"
+        },
+        {
+          "phase": "live-82ecb6ec8fc8",
+          "phone": "140",
+          "httpStatus": 200,
+          "status": "closed"
+        },
+        {
+          "phase": "live-82ecb6ec8fc8",
+          "phone": "141",
+          "httpStatus": 200,
+          "status": "closed"
+        }
+      ]
+    },
+    "localOldApiProcesses": [],
+    "fiveCollectorOverlapSeconds": 155.94773387908936,
+    "sharedSshMasterExited": false
+  },
+  "d075Live": {
+    "hostNamespace": true,
+    "existingNode": true,
+    "existingMuslLoaders": 1,
+    "copiedOrInstalledFiles": false,
+    "verifierHashes": {
+      "verify.mjs": "2c5ee69ede4587e40b69333373b0956ffed20dfb9eea6467740a5f4704933a84",
+      "production-baseline.json": "d5b260558469ee75add1f747de2f7e5ad1604c4c7e897592fc6cdf5b91de8561",
+      "enable.conf.example": "f8066357d386bd71938735de0fabc572a017ec8c6efdc1eaf232718648b70d66"
+    },
+    "nodeVersion": "v22.23.3",
+    "versionExitCode": 0,
+    "exitCode": 0,
+    "stdout": "{\"decision\":\"D-075\",\"verified\":\"live\",\"pid\":2503525,\"binarySha256\":\"d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35\",\"bitsPerSecond\":8000000,\"packetsPerGroup\":2}",
+    "stderr": ""
+  },
+  "localHttpReplay": {
+    "phase": "replay-cb5352f45c73",
+    "kind": "local_HTTP_replay_of_completed_real_results",
+    "sourcePhase": "live-9641a7c2b3f8",
+    "newPhoneActions": 0,
+    "fastItemVisibleWhileSlowPending": true,
+    "paginationAndRestartEqual": true,
+    "stopApiAcknowledged": true,
+    "stopPersisted": true,
+    "completedCounts": {
+      "total": 2,
+      "succeeded": 2
+    }
+  },
+  "fiveLoadSample": {
+    "cloud": {
+      "cpuPercentOneCore": 80.26,
+      "logicalCpus": 4,
+      "loadAvg": [
+        1.52880859375,
+        1.54443359375,
+        1.47998046875
+      ]
+    },
+    "windows": {
+      "cpuPercent": 36.3,
+      "logicalCpus": 16,
+      "availableMemoryBytes": 6154899456
+    }
+  },
+  "sourceHashes": {
+    "scripts/qa/xhs_candidate_live.py": "82d1810905e64e5fff49015bc96e024f29583f1a58af32b608f678dffab0a8de",
+    "scripts/qa/xhs_isolated_runner.py": "a8223ad8588cbaaf8303098d193f18009eadec0b42d227d6a946ff32b074c186",
+    "scripts/qa/xhs_isolated_guard.py": "52c6807a9b01ec412e4eaa0000e3d7e847a9a5dc98e086823310bf37d8d90ca7",
+    "scripts/qa/xhs_candidate_host.mjs": "18de11f4f63da4a2ed6b8b9709d9fbb474d2d75a65ff34cff6a20dc162860b77",
+    "scripts/qa/xhs_candidate_api.mjs": "bc37512290a8023e44cd6142c199ee755fb02902a046a93fa656cda0df0be06e",
+    "scripts/qa/xhs_result_replay.py": "c0f256966e482db89673f41b08dc874fecd4491767ab069b867215606d9a572e",
+    "windows-agent/scripts/小红书数据同步.py": "cbf038e297f3b67c8b4b681bf93b22e6026c7683d263d1c4fc62b56897de63e0",
+    "windows-agent/scripts/xhs_native_window.py": "1b15e62ccad9e1d3fc4b81bbe8b5a1adb57f7f913b57472ba54283415e0ba772",
+    "windows-agent/scripts/xhs_native_navigation.py": "a1e04af69daf72371591b8238c5de17320a514471f8a13499257e03d748e7a3c",
+    "windows-agent/scripts/native/xhs-native-window.jar": "15b043f5f78c17855b08d354dc5af4004216bc7ce14b5d03fa9e05f72e8d57c7",
+    "windows-agent/scripts/native/xhs-native-pair.jar": "9e696792b37dd269803d230ef1e97754bf895b1d2b852e8d23ae838c757cbed3",
+    "windows-agent/scripts/native/xhs-native-navigation.jar": "910f03a9c4cd6963b89ce1dd4bf4a6ad21b6f888029970401134fdcf820af754",
+    "windows-agent/src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842"
+  },
+  "productionDeploymentPerformed": false,
+  "scheduleEnabledByThisWork": false,
+  "acceptedFinalPhase": "live-82ecb6ec8fc8",
+  "testedQaTag": "xhs-isolated-qa-20261028-rc.11",
+  "finalRuntime": {
+    "localQaServiceProcesses": [],
+    "systemIdentityUnchangedSinceStart": true,
+    "identity": {
+      "adbPid": 20316,
+      "adbOwner": "NT AUTHORITY\\SYSTEM",
+      "adbExe": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+      "adbCreatedAt": 1792768226.628511,
+      "agentPid": 14540,
+      "agentOwner": "NT AUTHORITY\\SYSTEM",
+      "agentCreatedAt": 1792983000.7756207
+    },
+    "cloudHashes": {
+      "indexSha": "b42951d9bec95d368dd381a920a18f53329cab53f85ee5056e3a0d3aa3c8f397",
+      "modelSha": "76e197e2b01b2f625d068cede5b9b2e4d224598e50531072b8cf9313bb83ecae"
+    },
+    "cloudHashesUnchanged": true,
+    "finalFiveConcurrency": {
+      "targetCount": 5,
+      "allCollectorsOverlapSeconds": 158.0534725189209
+    }
+  },
+  "finalActiveImage": {
+    "activeSha256": "aae3ffc930d4f4a92d8ed2ad5507a3db86d37f91a1495bebbe3471bafcbc2e4f",
+    "activeBytes": 60268,
+    "imageId": "sha256:5ab68ecbc67dfd4815f3ec93b0d3dd6265acd6a5d044867c3e04904636e80649",
+    "activeUnchanged": true,
+    "imageUnchanged": true
+  },
+  "localTestPostgresStopped": true,
+  "limitations": [
+    "Latest real-device coverage is five app1 slots, not all 100 approved slots or a daily 95 percent success-rate proof.",
+    "The first five-device run had one 140 output mismatch; raw output was removed by the original consumer. Its underlying incomplete-scan cause remains unproven. Later targeted and same-group five-device runs completed.",
+    "Production batch API, migrations and daily schedule are not enabled; inventory compression improvement on the production network awaits deployment acceptance.",
+    "Timings include isolated QA guards and cannot be treated as production throughput.",
+    "Native pair probe remains disabled, exactly matching the candidate."
+  ]
+}
