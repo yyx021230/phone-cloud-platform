@@ -1,9 +1,12 @@
 {
-  "version": "platform-integration-20261028-rc.1",
+  "version": "platform-integration-20261028-rc.2",
   "status": "candidate-not-deployed",
   "baseCommit": "ac109ce288e0bc6be34104370309f1bb9465c9d2",
   "lookupCandidate": "lookup-technical-recovery-20261027-rc.8",
   "xhsCollectionCandidate": "xhs-completeness-20261027-rc.4",
   "xhsBatchSource": "b912b6d7b70b8ff2f21e8a25ef45d97fc6311fa7",
-  "productionUnchanged": true
+  "productionUnchanged": true,
+  "readinessBaseCommit": "b85ed14b9e93e8a4ac65916b744e31c02a4e8775",
+  "httpPreparationCommit": "2b47cf4250e5cb25f3a116782208ab20613bc32e",
+  "inventoryResponseSource": "b18857d95d4cbf24069bfeac60b5674f3e4b45a3"
 }
