@@ -1,0 +1,42 @@
+✔ actual platform: authenticated sync alone negotiates gzip; Agent fetch decodes it (225.636958ms)
+✔ gzip negotiation respects opt-out and rejects malformed/ambiguous values (0.675875ms)
+✔ compressed response preserves every UTF8 byte, fields, lock and identity state (3.472333ms)
+✔ identity/disabled gzip and small or oversized payloads keep original JSON (1.238125ms)
+✔ compression errors, sync throws and larger output fall back exactly once (1.676792ms)
+✔ deadline does not release native capacity early; late callbacks cannot send twice (18.626ms)
+✔ client disconnect during compression prevents any late response write (0.671792ms)
+✔ limited link: identity misses client budget, gzip finishes and decodes without lost data (1467.551333ms)
+✔ five physical phones maximum, two slots serial, complete zero is real data (4.475667ms)
+✔ busy phone waits, then dispatches when idle; deadline skips without a POST (0.597541ms)
+✔ only exact bound slot/ID is dispatched; offline and changed bindings are skipped (0.201ms)
+✔ unknown POST never replayed after restart and blocks the other slot and next batch (0.5455ms)
+✔ persisted submit intent with missing reply is recovered as unknown, not a new task (0.153875ms)
+✔ failed intent durability prevents dispatch; engine fails closed (0.234375ms)
+✔ Shanghai schedule disabled by default, once/day across restart, no backfill outside window (0.53575ms)
+✔ partial data stays failed, wrong account data is never returned (0.261ms)
+✔ known-job polling outage never frees concurrency or resubmits (0.212416ms)
+✔ busy 409 is safe to retry; 500 outcome stays unknown (0.243333ms)
+✔ unknown outcome can only attach an existing job with exact account/slot/time (0.310375ms)
+✔ client isolation, limits, duplicate account config and removed allowlist (0.162958ms)
+✔ stop prevents remaining dispatch and retains an in-flight task until its actual terminal (0.186291ms)
+✔ stop acknowledgment persists while submit is blocked and prevents next phone (0.566292ms)
+✔ lost POST reply recovers by exact reference without a second POST (0.161458ms)
+✔ wrong account submission lookup never releases the phone (0.121208ms)
+✔ 100 slots finish across restarts with five-phone cap, one POST each, and intact pages (29.458375ms)
+✔ failed result persistence cannot turn an account into success (0.3455ms)
+✔ signed HTTP API: durable nonce, tampering, ownership, schedule, idempotent creation and pagination (28.718875ms)
+✔ platform POST is never replayed on timeout, redirect, 401 or invalid response (0.89675ms)
+✔ public HTTP platform URLs keep ordinary-user login, contract checks and submission identity (0.894792ms)
+✔ old platform capability is rejected before any phone task is submitted (0.156709ms)
+✔ batch refuses invalid listener configuration before reading private config or connecting DB (311.69ms)
+✔ real service + PostgreSQL + Python SDK recovers accepted task after lost reply and restart (20498.348667ms)
+✔ PostgreSQL migration, exclusive lease, restart, nonce and result persistence (44.891167ms)
+✔ collection API enforces ownership, locks and completion, preserves result on restart (484.216959ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 23989.649583

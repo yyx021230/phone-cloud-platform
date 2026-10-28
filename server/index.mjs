@@ -1,3 +1,4 @@
+import { sendInventorySyncResponse } from "./inventory-sync-response.mjs";
 import { spoolSnapshot, writeSpooledSnapshot, loadStreamedSnapshot } from './snapshot-stream.mjs';
 import {aiVisionConfig,createAiVisionReader} from './lookup-ai-vision.mjs';
 import {createLookupAiRecovery} from './lookup-ai-recovery.mjs';
@@ -1936,7 +1937,7 @@ async function routeApi(req, res, url) {
     syncAdbDevices(agent, input.devices || []);
     addAudit("windows_agent_devices_sync", ctx, { agentId, count: agent.devices.length });
     runtimeSaveScheduler.mark();
-    return json(res, 200, { ok: true, agent: publicWindowsAgent(agent), devices: state.devices.map(publicDevice) });
+    return await sendInventorySyncResponse(req, res, { ok: true, agent: publicWindowsAgent(agent), devices: state.devices.map(publicDevice) });
   }
 
   const humanProbeMatch = url.pathname.match(/^\/api\/v1\/windows-agents\/([^/]+)\/lookup-human-verifications$/);

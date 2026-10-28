@@ -1,0 +1,47 @@
+✔ actual platform: authenticated sync alone negotiates gzip; Agent fetch decodes it (231.901458ms)
+✔ gzip negotiation respects opt-out and rejects malformed/ambiguous values (0.780625ms)
+✔ compressed response preserves every UTF8 byte, fields, lock and identity state (4.203375ms)
+✔ identity/disabled gzip and small or oversized payloads keep original JSON (1.406459ms)
+✔ compression errors, sync throws and larger output fall back exactly once (1.92125ms)
+✔ deadline does not release native capacity early; late callbacks cannot send twice (18.881416ms)
+✔ client disconnect during compression prevents any late response write (0.77925ms)
+✔ limited link: identity misses client budget, gzip finishes and decodes without lost data (1470.26425ms)
+✔ round-trips the session id and browser video packet (1.113958ms)
+✔ rejects malformed agent video packets (0.14425ms)
+✔ rejects a duplicate Agent relay without disconnecting the active relay (12.878458ms)
+✔ preserves the numeric scrcpy codec id for the browser decoder (0.101208ms)
+✔ accepts a wakeup key control message (0.071667ms)
+✔ accepts bounded WHEP reader generations (0.08175ms)
+✔ accepts explicit text plus direct keyboard edit controls (0.0685ms)
+✔ rejects unsafe or oversized screen text (0.063875ms)
+✔ rate limiting only coalesces move events and preserves touch boundaries (0.069625ms)
+✔ relays an authorized Agent control acknowledgement to the browser (4.425375ms)
+✔ replays codec configuration and keyframe when the browser connects late (22.702583ms)
+✔ forwards an explicit high quality profile to the Agent (0.797541ms)
+✔ isolates Agent video, browser video, and browser control sockets (13.829208ms)
+✔ collects authenticated Agent and browser playback metrics without forwarding them as controls (1.46ms)
+✔ relays direct WebRTC offer and answer without a media server URL (23.748375ms)
+✔ collection API enforces ownership, locks and completion, preserves result on restart (458.709209ms)
+✔ collection schema preserves zero and missing counts without exposing unrecognized fields (1.290875ms)
+✔ invalid dates, excessive notes and unsupported window are rejected (0.209917ms)
+✔ unproven boundary cannot become a complete snapshot (0.065125ms)
+✔ old or unhealthy agents cannot receive collection jobs (0.05825ms)
+✔ actual Agent status serialization carries every collected note and zero count (3.252958ms)
+✔ collector maps a full snapshot and removes the task-private JSON (4.123917ms)
+✔ exit 2 retains incomplete data instead of treating the result as empty (1.864ms)
+✔ image-derived results expose their execution mode without changing the snapshot (1.4875ms)
+✔ cancellation restores only this phone's temporary settings and preserves cancellation (1.370375ms)
+✔ foreign account-slot output is rejected, and stale output cannot be reused (1.886667ms)
+✔ an app2 label without a proven clone selection cannot return a successful snapshot (1.121417ms)
+✔ cancellation writes a cooperative marker before force-killing the Python runner (6.607ms)
+✔ a lost transport retains the exact original settings and blocks a new baseline on that phone (1.690875ms)
+✔ successful restoration removes the pre-execution settings ledger (1.523833ms)
+✔ a settings write that returns success without applying keeps the recovery ledger (1.318375ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 39
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2775.917625
