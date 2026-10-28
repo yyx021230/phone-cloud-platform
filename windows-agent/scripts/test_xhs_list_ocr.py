@@ -137,10 +137,10 @@ class OcrParsingTests(unittest.TestCase):
     def test_lower_confidence_count_requires_two_native_values_matching_both_glyph_reads(self):
         row = {"verifiedCounts":["49","0","0"],"weakCountFields":[0]}
         images = [{"id":"r0_"+field+"_"+variant,"language":"zh-Hans-CN","lines":[{"text":text}]}
-                  for field,text in (("date","10-14"),("view","49")) for variant in ("color","binary")]
+                  for field,text in (("date","10-14"),("view","4949")) for variant in ("color","binary")]
         self.assertEqual(ocr.resolve_frame({"rows":[row]},images)["cards"][0]["counts"][0],"49")
         for image in images:
-            if image["id"].startswith("r0_view"):image["lines"][0]["text"] = "40"
+            if image["id"].startswith("r0_view"):image["lines"][0]["text"] = "4040"
         with self.assertRaisesRegex(RuntimeError,"disagrees with both"):
             ocr.resolve_frame({"rows":[row]},images)
         with self.assertRaisesRegex(RuntimeError,"missing"):
@@ -149,10 +149,10 @@ class OcrParsingTests(unittest.TestCase):
     def test_native_single_digit_proof_unwraps_only_an_exact_repeated_value(self):
         row = {"verifiedCounts":["1","6","0"],"weakCountFields":[1]}
         images = [{"id":"r0_"+field+"_"+variant,"language":"zh-Hans-CN","lines":[{"text":text}]}
-                  for field,text in (("date","10-14"),("like","6 6")) for variant in ("color","binary")]
+                  for field,text in (("date","10-14"),("like","6 6 6 6")) for variant in ("color","binary")]
         self.assertEqual(ocr.resolve_frame({"rows":[row]},images)["cards"][0]["counts"][1],"6")
         for image in images:
-            if image["id"].startswith("r0_like"):image["lines"][0]["text"] = "88"
+            if image["id"].startswith("r0_like"):image["lines"][0]["text"] = "8888"
         with self.assertRaisesRegex(RuntimeError,"disagrees with both"):
             ocr.resolve_frame({"rows":[row]},images)
 
@@ -244,156 +244,80 @@ class OcrParsingTests(unittest.TestCase):
         self.assertTrue(all(not p.exists() for p in paths))
 
 
-class ImageCaptureGuardTests(unittest.TestCase):
-    current = "mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}"
-
-    def test_wrong_user_missing_slot_and_unknown_clone_never_capture(self):
-        for events, current in (([], self.current), (["collection_slot_requested:app2", "clone_user_requested:999"], self.current),
-                                (["collection_slot_requested:app2", "clone_user_requested:666"], self.current.replace("u0", "u666"))):
-            with self.subTest(events=events), patch.object(sync.subprocess, "run") as run, self.assertRaises(RuntimeError):
-                sync.image_navigation_capture("adb", "serial", lambda: None, events, current)
-            run.assert_not_called()
-
-    def test_occupancy_cancel_and_foreground_change_stop_before_capture(self):
-        for guard, focus in ((Mock(side_effect=RuntimeError("occupied")), self.current), (lambda: None, "changed")):
-            with patch.object(sync, "focus", return_value=focus), patch.object(sync.subprocess, "run") as run, self.assertRaises(RuntimeError):
-                sync.image_navigation_capture("adb", "serial", guard, ["collection_slot_requested:app1"], self.current)
-            run.assert_not_called()
-
-    def capture(self, frames, events=None):
-        events = ["collection_slot_requested:app1"] if events is None else events
-        with patch.object(sync, "focus", return_value=self.current), patch.object(sync.subprocess, "run", return_value=SimpleNamespace(returncode=0, stdout=b"png")) as run, patch.object(ocr, "read_works_image", side_effect=frames):
-            root = sync.image_navigation_capture("adb", "serial", lambda: None, events, self.current)
-        self.assertEqual(run.call_count, 2)
-        return root, events
-
-    def test_two_fresh_frames_must_agree_on_fields_and_leading_clip(self):
-        for change in ("counts", "leadingClip", "imageHint"):
-            second = copy.deepcopy(result())
-            if change == "counts":second["cards"][0]["counts"][0] = "40"
-            elif change == "leadingClip":second[change] = True
-            else:second["cards"][0][change] = "ffffffffffffffff"
-            with self.subTest(change=change), self.assertRaises(sync.ImageListReadError):
-                self.capture([result(), second])
-
-    def test_agreeing_frames_mark_image_source_and_numeric_fields(self):
-        root, events = self.capture([result(), result()])
-        self.assertEqual(root.get("data-source"), "windows_native_ocr")
-        self.assertIn("works_list_image_reader_active", events)
-        self.assertEqual(sync.note_cards(root)[0][1]["list_view_count"], 49)
-
-    def test_non_webview_hierarchy_failure_does_not_try_image_reader(self):
-        with patch.object(sync.os, "name", "nt"), patch.object(sync, "capture", side_effect=RuntimeError("UIAutomator did not return an XML hierarchy")), patch.object(sync, "focus", return_value="u0 other.app/.WebViewActivityV2"), patch.object(sync, "image_navigation_capture") as image:
-            with self.assertRaises(RuntimeError):sync.navigation_capture("adb", "serial", lambda: None, [])
-        image.assert_not_called()
-
-    def test_confirmed_webview_xml_timeout_can_use_guarded_image_reader(self):
-        with patch.object(sync.os, "name", "nt"), patch.object(sync, "capture", side_effect=subprocess.TimeoutExpired("adb", 15)), patch.object(sync, "focus", return_value=self.current), patch.object(sync, "image_navigation_capture", return_value="proven") as image:
-            self.assertEqual(sync.navigation_capture("adb", "serial", lambda: None, ["collection_slot_requested:app1"]), "proven")
-        image.assert_called_once()
-
-    def test_active_image_mode_allows_xml_navigation_and_loading_headers(self):
-        for root in (sync.ET.fromstring('<hierarchy><node text="创作中心"/></hierarchy>'),
-                     sync.ET.fromstring('<hierarchy><node text="数据中心"/><node text="作品分析"/></hierarchy>')):
-            with patch.object(sync.os, "name", "nt"), patch.object(sync, "capture", return_value=root), patch.object(sync, "image_navigation_capture") as image:
-                self.assertIs(sync.navigation_capture("adb","serial",lambda:None,["works_list_image_reader_active"]),root)
-            image.assert_not_called()
-
-    def test_empty_xml_works_tab_tries_images_but_retains_bounded_loading_wait(self):
-        root = sync.ET.fromstring('<hierarchy><node text="数据中心" bounds="[0,0][300,80]"/><node text="作品分析" bounds="[0,80][200,120]"/><node text="全部笔记" bounds="[0,120][200,160]"/></hierarchy>')
-        with patch.object(sync.os,"name","nt"),patch.object(sync,"capture",return_value=root),patch.object(sync,"focus",return_value=self.current),patch.object(sync,"image_navigation_capture",side_effect=sync.ImageListReadError("no proven cards")) as image:
-            self.assertIs(sync.navigation_capture("adb","serial",lambda:None,[]),root)
-        image.assert_called_once()
-        self.assertEqual(sync.note_cards(root),[])
-
-    def test_partial_data_center_xml_header_can_try_images_without_claiming_a_list(self):
-        header = '<node package="com.xingin.xhs" class="android.webkit.WebView" text="数据中心" bounds="[0,0][1080,2400]">'
-        header += ''.join(f'<node package="com.xingin.xhs" class="android.widget.TextView" text="{text}" bounds="[{x},200][{x+150},250]"/>' for x,text in zip((20,300,550,800),("账号概览","作品分析","粉丝数据","收入数据"))) + '</node>'
-        root = sync.ET.fromstring('<hierarchy>'+header+'</hierarchy>')
-        self.assertTrue(sync.data_center_tab_header(root))
-        self.assertFalse(sync.creator_list(root))
-        with patch.object(sync.os,"name","nt"),patch.object(sync,"capture",return_value=root),patch.object(sync,"focus",return_value=self.current),patch.object(sync,"image_navigation_capture",return_value="verified") as image:
-            self.assertEqual(sync.navigation_capture("adb","serial",lambda:None,[]),"verified")
-        image.assert_called_once()
-        root[0].append(copy.deepcopy(root[0][1]))
-        self.assertFalse(sync.data_center_tab_header(root))
 
 
-class ImageCollectionTests(unittest.TestCase):
-    def collect(self, first, following=None, reopened=None):
-        args = SimpleNamespace(adb="adb", serial="serial", device_name="test", task_id="test",
-                               app_slot="app1", device_cache="unused", cancel_file="", days=30,
-                               max_scrolls=2, min_scrolls=0, stagnant_rounds=3)
-        def start(*arguments):
-            arguments[-1].extend(["collection_slot_requested:app1", "works_list_image_reader_active"])
-            return first
-        with ExitStack() as stack:
-            for name in ("release_idle_poco", "verify_collection_slot", "assert_no_poco", "swipe"):
-                stack.enter_context(patch.object(sync, name))
-            stack.enter_context(patch.object(sync, "assert_idle", return_value={"xhsAccounts": [{"appSlot": "app1", "enabled": True}]}))
-            stack.enter_context(patch.object(sync, "adb", return_value="device"))
-            stack.enter_context(patch.object(sync, "start_xhs", side_effect=start))
-            stack.enter_context(patch.object(sync, "ensure_creator_list", side_effect=lambda a,b,r,*rest:r))
-            stack.enter_context(patch.object(sync, "wait_creator_content", side_effect=lambda a,b,r,*rest:r))
-            stack.enter_context(patch.object(sync, "reopen_creator_list", side_effect=[first]+([reopened] if reopened is not None else [])))
-            stack.enter_context(patch.object(sync, "refresh_scrolled_webview", side_effect=lambda a,b,r,*rest:r))
-            stack.enter_context(patch.object(sync, "navigation_capture", side_effect=following or []))
-            if first.get("data-source") != "windows_native_ocr":
-                real_cards = sync.note_cards
-                stack.enter_context(patch.object(sync, "note_cards", side_effect=lambda r:real_cards(r) if r.get("data-source") else [(None,{"title":"old XML item","published_at_raw":"10-14","status_raw":"正常","list_view_count":1,"list_like_count":0,"list_comment_count":0})]))
-            return sync.collect(args)
 
-    def test_unreadable_newest_card_is_not_a_complete_scan(self):
-        first = result();first["leadingClip"] = True
-        with self.assertRaisesRegex(sync.ImageListReadError, "leading card"):
-            self.collect(ocr.hierarchy_for_frame(first))
 
-    def test_boundary_only_card_is_excluded_and_cannot_hide_a_recent_count(self):
-        first = result();first["cards"][0].update(date="09-14",counts=[None,None,None],boundaryOnly=True)
-        collected = self.collect(ocr.hierarchy_for_frame(first))
-        self.assertTrue(collected["complete"])
-        self.assertEqual(collected["notes"],[])
-        first["cards"][0]["date"] = "10-14"
-        with self.assertRaisesRegex(sync.ImageListReadError,"requested collection window"):
-            self.collect(ocr.hierarchy_for_frame(first))
+class MissingBodyAnchorTests(unittest.TestCase):
+    def native_line(self,text,box):
+        item=line(text,box);item['words'][0]['text']=text;return item
 
-    def test_image_error_after_swipe_keeps_prior_notes_as_incomplete(self):
-        first = result();first["markers"] = {}
-        collected = self.collect(ocr.hierarchy_for_frame(first), [sync.ImageListReadError("unproven glyph")])
-        self.assertFalse(collected["complete"])
-        self.assertEqual(collected["stop_reason"], "image_list_read_unproven")
-        self.assertEqual(len(collected["notes"]), 1)
-        self.assertNotIn("_image_hint", collected["notes"][0])
-        self.assertNotIn("_displayed_unit", collected["notes"][0])
+    def whole(self):
+        # Real 141/app2 geometry, with all note text replaced by synthetic text.
+        rows=[self.native_line(t,b) for t,b in [('数据中心',(299,111,421,139)),('作品分析',(218,198,326,225)),('全部笔记',(32,283,144,309))]]
+        for i,y in enumerate([422,629,836,1040,1251]):
+            rows.append(self.native_line('笔记状态正常',(165 if i==3 else 194,y,363,y+24)))
+            if i<3:rows.append(self.native_line('合成原始标题'+str(i),(193,y-62,650,y-33)))
+        return {'width':720,'height':1600,'language':'zh-Hans-CN','textAngle':0,'lines':rows}
 
-    def test_overlap_is_not_duplicated_and_two_ambiguous_visible_notes_fail(self):
-        first = result();first["markers"] = {}
-        collected = self.collect(ocr.hierarchy_for_frame(first), [ocr.hierarchy_for_frame(result())])
-        self.assertTrue(collected["complete"])
-        self.assertEqual(len(collected["notes"]), 1)
-        duplicate = result();duplicate["cards"].append(copy.deepcopy(duplicate["cards"][0]))
-        with self.assertRaisesRegex(sync.ImageListReadError, "two visible"):
-            self.collect(ocr.hierarchy_for_frame(duplicate))
+    def crops(self,requests,directory):
+        out=[]
+        for request in requests:
+            parts=request['id'].split('_');index=int(parts[-2]);y=932 if index==0 else 1143
+            image=cv2.imread(request['path']);h,w=image.shape[:2]
+            title='合成修复标题甲' if index==0 else '合成修复标题乙'
+            title_y=982 if index==0 else 1190;status_y=1043 if index==0 else 1251
+            def crop_line(text,box):
+                x1,y1,x2,y2=box
+                return self.native_line(text,((x1-172)*3,(y1-y)*3,(x2-172)*3,(y2-y)*3))
+            out.append({'id':request['id'],'width':w,'height':h,'language':'zh-Hans-CN','lines':[crop_line(title,(193,title_y,650,title_y+27)),crop_line('笔记状态正常',(194,status_y,363,status_y+23))]})
+        return out
 
-    def test_changed_counts_in_an_overlapping_post_do_not_create_another_post(self):
-        first = result();first["markers"] = {}
-        second = result();second["cards"][0]["counts"][0] = "50"
-        collected = self.collect(ocr.hierarchy_for_frame(first),[ocr.hierarchy_for_frame(second)])
-        self.assertEqual(len(collected["notes"]),1)
-        self.assertEqual(collected["notes"][0]["list_view_count"],50)
+    def test_missing_whole_frame_titles_and_a_left_shifted_status_are_recovered_from_ink(self):
+        frame=np.full((1600,720,3),255,np.uint8);whole=self.whole();original=json.dumps(whole,ensure_ascii=False)
+        def icons(frame,y1,y2,left):return [(195,y1,220,y1+22),(296,y1,320,y1+22),(375,y1,400,y1+22)]
+        with patch.object(ocr,'selected_works_underline',return_value=True),patch.object(ocr,'metric_icons',side_effect=icons),patch.object(ocr,'title_has_unread_suffix',return_value=False):
+            with self.assertRaisesRegex(RuntimeError,'title is not visible'):ocr.prepare_frame(frame,whole,read_counts=False)
+            with tempfile.TemporaryDirectory() as directory,patch.object(ocr,'windows_ocr',side_effect=self.crops) as native:
+                repaired=ocr.refine_missing_body_anchors(frame,whole,directory,lambda:None)
+            prepared=ocr.prepare_frame(frame,repaired,read_counts=False)
+        self.assertEqual(len(prepared['rows']),5)
+        self.assertEqual([r['title'] for r in prepared['rows']][-2:],['合成修复标题甲','合成修复标题乙'])
+        self.assertEqual(repaired['bodyAnchorRecoveryCount'],2)
+        self.assertEqual(native.call_count,1)
+        self.assertEqual(json.dumps(whole,ensure_ascii=False),original)
 
-    def test_xml_to_image_restart_removes_mixed_notes_and_rechecks_newest(self):
-        old = ocr.hierarchy_for_frame(result());old.attrib.pop("data-source");
-        for n in list(old[0]):
-            if n.get("text") == "到底了":old[0].remove(n)
-        image = ocr.hierarchy_for_frame(result())
-        collected = self.collect(old, [image], image)
-        self.assertEqual([n["title"] for n in collected["notes"]], ["合成测试作品"])
-        self.assertIn("works_image_scan_restarted_at_newest", collected["recovery_events"])
-        clipped = result();clipped["leadingClip"] = True
-        with self.assertRaisesRegex(sync.ImageListReadError, "leading card"):
-            self.collect(old, [image], ocr.hierarchy_for_frame(clipped))
+    def test_complete_native_anchors_do_not_invoke_an_extra_ocr(self):
+        whole=self.whole();whole['lines']=[l for l in whole['lines'] if ocr.line_box(l)[1]<900]
+        with tempfile.TemporaryDirectory() as directory,patch.object(ocr,'windows_ocr') as native:
+            self.assertIs(ocr.refine_missing_body_anchors(np.zeros((1600,720,3),np.uint8),whole,directory,lambda:None),whole)
+        native.assert_not_called()
 
+    def test_title_hidden_by_the_fixed_header_keeps_existing_leading_clip_handling(self):
+        whole=self.whole();whole['lines']=[l for l in whole['lines'] if ocr.line_box(l)[1]<900 and ocr.line_box(l)[1]!=360]
+        first=next(l for l in whole['lines'] if ocr.status_text(l['text']))
+        first['words'][0].update(y=330,height=24)
+        frame=np.full((1600,720,3),255,np.uint8)
+        with tempfile.TemporaryDirectory() as directory,patch.object(ocr,'windows_ocr') as native:
+            repaired=ocr.refine_missing_body_anchors(frame,whole,directory,lambda:None)
+        self.assertIs(repaired,whole);native.assert_not_called()
+        def icons(frame,y1,y2,left):return [(195,y1,220,y1+22),(296,y1,320,y1+22),(375,y1,400,y1+22)]
+        with patch.object(ocr,'selected_works_underline',return_value=True),patch.object(ocr,'metric_icons',side_effect=icons),patch.object(ocr,'title_has_unread_suffix',return_value=False):
+            prepared=ocr.prepare_frame(frame,repaired,read_counts=False)
+        self.assertTrue(prepared['leadingClip']);self.assertEqual(len(prepared['rows']),2)
+
+    def test_disagreement_foreign_dimensions_missing_status_and_duplicate_results_still_fail(self):
+        for case in ('title','language','dimensions','status','duplicate'):
+            def invalid(requests,directory):
+                results=self.crops(requests,directory)
+                if case=='title':results[1]['lines'][0]=self.native_line('另一个合成标题',(63,150,1434,231))
+                if case=='language':results[1]['language']='en-US'
+                if case=='dimensions':results[1]['width']+=1
+                if case=='status':results[1]['lines']=results[1]['lines'][:1]
+                if case=='duplicate':results[-1]=results[0]
+                return results
+            with tempfile.TemporaryDirectory() as directory,patch.object(ocr,'windows_ocr',side_effect=invalid),self.assertRaises(RuntimeError):
+                ocr.refine_missing_body_anchors(np.zeros((1600,720,3),np.uint8),self.whole(),directory,lambda:None)
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,80 @@
+{
+  "status": "local_title_prefix_candidate_offline_verified_real_transport_blocked",
+  "parentCommit": "6ffb7d733d23e74fbca68d9d61d3b17b9998dea2",
+  "files": {
+    "windows-agent/scripts/xhs_list_ocr.py": "6baf60af0db4cab055dadca3d3378dce0e4b4cb24d5f35ed457eb7b955b71deb",
+    "windows-agent/scripts/test_xhs_compatibility_20261015.py": "13ba3e2eafc982f473b2e30ecf0c202deef5b7efd4933000ea8113a8b4dcb310",
+    "windows-agent/scripts/fixtures/xhs/title-prefix-cjk-155.json": "4373bd2ff0652a237f92d342f4ce3557da51a0a62b4037d04addaccb260b4594"
+  },
+  "scope": "Only bounded whole-frame title prefix correction in resolve_title_crop; no numeral/template/native/ADB timeout change",
+  "evidence": {
+    "phone": "155/app2",
+    "sourcePngSha256": "ec213809a880d70a37a73d6443bf210ec5e8132b7116b8d458e4d37364b88f82",
+    "cause": "whole-frameOCRmisread oneCJK glyph訕 foractual敲; two fullcropnative readings agreed on敲; previous exactprefix gate rejected valid full title",
+    "rule": "Two complete normalized crop readings already identical; original>=10characters differs in exactlyoneCJK atprefix position, allASCII/digits exact; originaltitlebox inside exactrequestedcrop and bothnativecrop dimensions/wordpositions match. Otherprefixesretain exactcontainment.",
+    "negativeCases": [
+      "twoCJKchanges",
+      "ASCIIidentitychange",
+      "shortprefix",
+      "wrongtitlebox",
+      "cropdimensionsmismatch",
+      "missingwordpositions",
+      "dualreadingsdisagree"
+    ],
+    "offlineCards": 6,
+    "deviceAfterFix": "v48failed18seconds duringdumpsyswindow: targetdevice temporarily notfound;settingsrestored;thisdidnotreachtitleparserandisnotnewOCRfailure"
+  },
+  "realResultsSincePriorCodeCommit": {
+    "47app1": {
+      "source": "6ffb7d7 /v44",
+      "status": "passed",
+      "notes": 30,
+      "scrolls": 6,
+      "settingsRestored": true
+    },
+    "141app1": {
+      "source": "v42priorcombinedtitlecode",
+      "status": "passed",
+      "notes": 17,
+      "scrolls": 3,
+      "settingsRestored": true
+    },
+    "141app2Diagnostic": {
+      "source": "6ffb7d7 + QA-only20s input/screenshotceilings",
+      "status": "passed",
+      "notes": 10,
+      "scrolls": 2,
+      "settingsRestored": true,
+      "actualOverOldBudget": 0,
+      "maxInputMilliseconds": 6891,
+      "productionTimeoutChanged": false,
+      "limit": "Causal effectof20s ceiling notproved; retestoriginalbounds, do notclaim a timeoutfix."
+    }
+  },
+  "tests": {
+    "python": 230,
+    "consumer": 11,
+    "rootSyntax": "prior unchangedNodecode passed",
+    "diff": "passed",
+    "newPositivePrefixCaseFailedBeforeFix": true,
+    "selfReview": "ASTonlyresolve_title_cropchanged; exactdualreadings/digitASCIIidentity/rowgeometry preserved; narrowexceptiontothe former exactwhole-frame-prefixrule. Noindependentreviewer."
+  },
+  "formerHardwareSkips": {
+    "nowReadyOriginalSerialMatched": [
+      "18/app1",
+      "88/app2",
+      "180/app1",
+      "183/app1"
+    ],
+    "planned": "metadataonly;willretestsameoriginal45scope,max2physical",
+    "stillSkipped": [
+      "75/app2 foreignoccupancy",
+      "127/app1 absent",
+      "127/app2 absent",
+      "152/74/81/188 explicitskip"
+    ],
+    "recoveryActionsByThisTask": 0
+  },
+  "production": "Unchanged oldernewhostassets. No deployment,service/ADB/driver/USB/media/control/key/env/startup/permission changes.",
+  "remotePush": false
+}

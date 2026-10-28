@@ -1,0 +1,381 @@
+{
+  "status": "local_code_verified_exact_candidate_device_retest_pending",
+  "parentCommit": "3567c38345f033ebb02b753da9fa121116c827ba",
+  "files": {
+    "windows-agent/scripts/xhs_list_ocr.py": "5c58501abfc87dce81e49e14f33dfbb4f5f7e11968c56a8c4f19ce3aeae5c249",
+    "windows-agent/scripts/xhs_ocr_digits.png": "90e94be3cf74f262032fcd348853d3814ea0885264e57f6df069113842799929",
+    "windows-agent/scripts/test_xhs_compatibility_20261015.py": "7ee6952b77abc2c7ddd6bbc0542b255518c5ecb40cac0e5f7c72828bfa71388f",
+    "windows-agent/scripts/fixtures/xhs/counts-1080-47.json": "0ffc86b07340bafa2e9a8b566c52e7a5f1706d08edaed71b4fb065cec80ed422",
+    "windows-agent/scripts/fixtures/xhs/counts-1080-47.png": "4da240ae39093dafa67c428b3d08997a2d951135ead480924989e8bffbebf856",
+    "windows-agent/scripts/fixtures/xhs/title-collinear-141.json": "dae47c9af8388a45248b65ed684f47fba98010881eec73b64ee60cc7d57c918f"
+  },
+  "runtimeAssets": {
+    "collector.py": "eb1b2fbf62894dc908963e965c19162a25585eef55244ffdaa69dc2fbb088da8",
+    "qa_adb_guard.py": "42bb0d99cc4a31e7a2bfde6744f6e0d62dd0af66e35414183d24c09642aee6f0",
+    "fleet.mjs": "22d266e981c1e162d9e008cc60ad4164619e8795bfed5a912715623d6f4dc6a7",
+    "targets.json": "e04c6ea2254ba8959fdad0817b31f83bda009f7fd762b7c593f6df78f3860c48",
+    "candidate.py": "a8a4705c7eb735d98a656bbed23ebc277569fb60190258a6fd9bf2061ba2e9c7",
+    "xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+    "xhs_list_ocr.py": "5c58501abfc87dce81e49e14f33dfbb4f5f7e11968c56a8c4f19ce3aeae5c249",
+    "xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+    "xhs_ocr_digits.png": "90e94be3cf74f262032fcd348853d3814ea0885264e57f6df069113842799929"
+  },
+  "newAfterRc6": "8numeral variants plus2Wanunit variants, bounded same-baseline native title join; total16numeral variants relativedeployedrc4",
+  "title141": {
+    "rawSha256": "715ed8eb625d565de23af6fa9aa4625eecdba0ccdeb5815999256f0cc2dbc090",
+    "cause": "one visible title aroundemoji gap is1nativecolorline but2nativebinarylines atsamebaseline, oldlen1 guard rejected",
+    "bounds": "atmost2fragments, exact3x requestedcrop dimensions, positioned words, withinframe, nonoverlapx, similar heights, samebaseline, text equals ownwords;dual complete normalized readings and prefix retained",
+    "offlineFullCards": 5,
+    "v42RealPhone": {
+      "status": "passed",
+      "notes": 17,
+      "scrolls": 3,
+      "settingsRestored": true
+    },
+    "fixture": "Originalnativepositions withgeneric substitutedtitle words,no accountdata"
+  },
+  "phone47": {
+    "rc6Real": "initialfontfix then later96 numeral failed; settingsrestored",
+    "v41Real": {
+      "status": "partial",
+      "notes": 24,
+      "scrolls": 5,
+      "reason": "same native title fragmentation",
+      "settingsRestored": true
+    },
+    "subsequentOffline": "Titlefix progressed to1.9Wan missingunittemplate, then730 native confused3with5; allfailures kept andresolved without changingruntime thresholds",
+    "latestRawSha256": "648fff059e303734ea931524c788142f68bc6769696340bbb7b9e5dd5c5f11c3",
+    "latestOfflineFullCards": 5,
+    "unitNativeProof": "1.9Wan remains always nativecorroborated: binary+contrast agree; color middle-dot invalidreading not converted",
+    "additionalGlyphProofs": {
+      "47-six-glyph-proof.json": {
+        "sourceSha256": "6f4f1bd7e06d7f093b2bf852ab6895ef7ae4ae44fab3bc5c911cb76adfcc2256",
+        "records": [
+          {
+            "binary": false,
+            "sourceInCell": [
+              29,
+              12,
+              18,
+              26
+            ],
+            "digit": 6,
+            "scoreBefore": 0.9163895845413208
+          },
+          {
+            "binary": true,
+            "sourceInCell": [
+              29,
+              12,
+              18,
+              26
+            ],
+            "digit": 6,
+            "scoreBefore": 0.9746212363243103
+          }
+        ],
+        "counts": [
+          88,
+          57,
+          48,
+          39,
+          40,
+          37,
+          30,
+          25,
+          26,
+          24
+        ],
+        "nativeProof": "binary/contrast/nearest each complete6666; color incomplete666 retained asnotproof",
+        "thresholdsChanged": false,
+        "heldOut116": true
+      },
+      "47-later-one-nine-glyph-proof.json": {
+        "records": [
+          {
+            "sourceSha256": "25da094dc379c126e0c2e75e09ce7f2607e59f2a05c43f8704c097981ed8dd15",
+            "box": [
+              504,
+              721,
+              512,
+              747
+            ],
+            "digit": 1,
+            "binary": false
+          },
+          {
+            "sourceSha256": "6f4f1bd7e06d7f093b2bf852ab6895ef7ae4ae44fab3bc5c911cb76adfcc2256",
+            "box": [
+              379,
+              1411,
+              396,
+              1437
+            ],
+            "digit": 9,
+            "binary": false
+          },
+          {
+            "sourceSha256": "6f4f1bd7e06d7f093b2bf852ab6895ef7ae4ae44fab3bc5c911cb76adfcc2256",
+            "box": [
+              379,
+              1411,
+              396,
+              1437
+            ],
+            "digit": 9,
+            "binary": true
+          }
+        ],
+        "newCounts": [
+          88,
+          58,
+          48,
+          39,
+          40,
+          37,
+          30,
+          25,
+          26,
+          26
+        ],
+        "thresholdsChanged": false,
+        "nativeCorroborationFor116and5": "retained and actually passed;no templates added for them"
+      },
+      "47-unit-wan-glyph-proof.json": {
+        "records": [
+          {
+            "binary": false,
+            "boxInCell": [
+              51,
+              11,
+              30,
+              29
+            ],
+            "unit": "万",
+            "bestOldScore": 0.9454860687255859
+          },
+          {
+            "binary": true,
+            "boxInCell": [
+              51,
+              11,
+              30,
+              29
+            ],
+            "unit": "万",
+            "bestOldScore": 0.943133533000946
+          }
+        ],
+        "counts": {
+          "万": 8
+        },
+        "runtimeThresholdsChanged": false,
+        "nativeProof": "Actual1.9万 binary andcontrast fullvalues agree;nativecolor middle-dot isretained asinvalid,notnormalized",
+        "unitNativeProofStillRequired": true
+      },
+      "47-boundary-final-glyph-proof.json": {
+        "records": [
+          {
+            "digit": 7,
+            "binary": false,
+            "cellBox": [
+              336,
+              1166,
+              437,
+              1217
+            ],
+            "glyphBox": [
+              8,
+              11,
+              16,
+              26
+            ]
+          },
+          {
+            "digit": 7,
+            "binary": true,
+            "cellBox": [
+              336,
+              1166,
+              437,
+              1217
+            ],
+            "glyphBox": [
+              8,
+              11,
+              16,
+              26
+            ]
+          },
+          {
+            "digit": 3,
+            "binary": true,
+            "cellBox": [
+              336,
+              1166,
+              437,
+              1217
+            ],
+            "glyphBox": [
+              27,
+              11,
+              17,
+              26
+            ]
+          }
+        ],
+        "counts": [
+          88,
+          58,
+          48,
+          40,
+          40,
+          37,
+          30,
+          27,
+          26,
+          26
+        ],
+        "thresholdsChanged": false,
+        "noAddedSamples": "4/0/5/8/2 othercells intentionally retained; originalnative checks pass, no need expandthose",
+        "proof3": {
+          "sourceSha256": "648fff059e303734ea931524c788142f68bc6769696340bbb7b9e5dd5c5f11c3",
+          "colorThree": [
+            {
+              "index": 35,
+              "score": 0.9908313751220703,
+              "equalPixels": false,
+              "maxPixelDifference": 31
+            },
+            {
+              "index": 36,
+              "score": 0.9598392248153687,
+              "equalPixels": false,
+              "maxPixelDifference": 232
+            }
+          ],
+          "wholeNative730": [
+            {
+              "text": "@ 730 0 0 D 8",
+              "words": [
+                {
+                  "text": "@",
+                  "x": 292,
+                  "y": 1176,
+                  "width": 38,
+                  "height": 29
+                },
+                {
+                  "text": "730",
+                  "x": 344,
+                  "y": 1177,
+                  "width": 58,
+                  "height": 26
+                },
+                {
+                  "text": "0",
+                  "x": 445,
+                  "y": 1174,
+                  "width": 38,
+                  "height": 34
+                },
+                {
+                  "text": "0",
+                  "x": 504,
+                  "y": 1177,
+                  "width": 17,
+                  "height": 26
+                },
+                {
+                  "text": "D",
+                  "x": 565,
+                  "y": 1172,
+                  "width": 38,
+                  "height": 38
+                },
+                {
+                  "text": "8",
+                  "x": 624,
+                  "y": 1177,
+                  "width": 17,
+                  "height": 26
+                }
+              ]
+            }
+          ],
+          "nativeRepeatedNearest730": "730730 supported; other variants wrong750/incomplete retained, not used as output",
+          "binaryDerivation": "Same original3 ink; color matches preexisting trusted3 at0.990831, nativewhole730 and independently resizednearest730730 agree, humanoriginal730 confirmed. Repeated binary750 is retained as wrong evidence, never output. No claim of identical pixels."
+        }
+      }
+    },
+    "rejectedLearning": "No3learnedfrom native750. The actual730color3 matches preexistingtrusted3 at0.990831, wholeChineseNative730 and independently resized nearest730730 plus manualraw confirmitslabel; only binary variant added. Wrongnative750 and3355 saved asfailures.",
+    "otherWeakFields": "0/1858/18/195/2 retain existing nativecorroboration; verified fullpipelinepasses, no unnecessary templateaddition"
+  },
+  "review": {
+    "changedAstItems": [
+      "UNIT_GLYPHS",
+      "DIGIT_COUNTS",
+      "DIGIT_ATLAS_SHA256",
+      "resolve_title_crop"
+    ],
+    "allOtherOcrFunctionsUnchanged": true,
+    "allExistingDigitTemplatesRetained": true,
+    "oldCountsRc6": [
+      88,
+      57,
+      48,
+      39,
+      40,
+      37,
+      28,
+      25,
+      26,
+      24
+    ],
+    "newCounts": [
+      88,
+      58,
+      48,
+      40,
+      40,
+      37,
+      30,
+      27,
+      26,
+      26
+    ],
+    "oldUnitTemplatesRetained": true,
+    "unitTemplateAdditions": {
+      "万": 2
+    },
+    "runtimeLogicReview": "Only bounded collinear native title-fragment join. Numeric thresholds, native corroboration, date, slot, occupancy, cancellation and persistence code unchanged."
+  },
+  "tests": {
+    "python": 227,
+    "consumer": 11,
+    "rootSyntax": "passed",
+    "diff": "passed",
+    "baselineTitlePositiveTest": "failed beforechange, passedafter; allnegativecases retained",
+    "independentReviewer": false
+  },
+  "settingsRecovery": {
+    "109": "oldcancelledtaskoriginal1800000/null matched,0writes,no ledger",
+    "155": "afterUSBtransient original1800000/null matched; onlyown matchingledger archived withSHA,no settingwrite",
+    "186": "cooperativecancellation closedsettings, nextrealtestpassed0"
+  },
+  "exactNewCandidateRealPlan": [
+    "47/app1",
+    "141/app2",
+    "155/app2"
+  ],
+  "concurrency": "2physicalphones max,slotsserial perphone",
+  "currentProduction": "Newhost remains107minimal e4ee andolderOCR/atlas; BF rc4receipt is historical, not newhostversion; no runtime assets deployed",
+  "skips": [
+    "114/app2 foreignactivecontrol",
+    "152/74/81/188 explicit exclusion",
+    "login/account/server/permission cases carried"
+  ],
+  "scope": "D079 outerlist and30Shanghai calendar days. No postdetails,accountlogin/enrollment,Webimport,appinstall,packetcapture,key/env/startup/ADB/driver/USB/media/control/service changes.",
+  "failedPreparation": "EmptyoptionalOCRlist inofflinewrapper mistakenlyinvoked native, fixedguard; no phone/language failure. SeparateexistingEnglishengineattempt yieldedno proof, no installation/helper mutation andnot used fortraining.",
+  "remotePush": false
+}

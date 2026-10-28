@@ -1,0 +1,286 @@
+{
+  "row": {
+    "title": "测试!示例ABC数据读取",
+    "titleCropBox": [
+      187,
+      1102,
+      706,
+      1147
+    ]
+  },
+  "readings": {
+    "color": {
+      "id": "r3_title_color",
+      "width": 1557,
+      "height": 135,
+      "language": "zh-Hans-CN",
+      "textAngle": 0,
+      "lines": [
+        {
+          "text": "测 试 ！ 示 例 ABC 数 据 读 取 保 留 外 列 表 ． “",
+          "words": [
+            {
+              "text": "测",
+              "x": 20,
+              "y": 31,
+              "width": 71,
+              "height": 75
+            },
+            {
+              "text": "试",
+              "x": 98,
+              "y": 32,
+              "width": 76,
+              "height": 74
+            },
+            {
+              "text": "！",
+              "x": 191,
+              "y": 38,
+              "width": 11,
+              "height": 62
+            },
+            {
+              "text": "示",
+              "x": 262,
+              "y": 32,
+              "width": 71,
+              "height": 74
+            },
+            {
+              "text": "例",
+              "x": 341,
+              "y": 31,
+              "width": 71,
+              "height": 75
+            },
+            {
+              "text": "ABC",
+              "x": 422,
+              "y": 38,
+              "width": 143,
+              "height": 62
+            },
+            {
+              "text": "数",
+              "x": 588,
+              "y": 31,
+              "width": 75,
+              "height": 75
+            },
+            {
+              "text": "据",
+              "x": 668,
+              "y": 30,
+              "width": 75,
+              "height": 75
+            },
+            {
+              "text": "读",
+              "x": 749,
+              "y": 32,
+              "width": 75,
+              "height": 74
+            },
+            {
+              "text": "取",
+              "x": 829,
+              "y": 32,
+              "width": 74,
+              "height": 74
+            },
+            {
+              "text": "保",
+              "x": 1013,
+              "y": 30,
+              "width": 74,
+              "height": 76
+            },
+            {
+              "text": "留",
+              "x": 1092,
+              "y": 31,
+              "width": 72,
+              "height": 75
+            },
+            {
+              "text": "外",
+              "x": 1172,
+              "y": 64,
+              "width": 74,
+              "height": 9
+            },
+            {
+              "text": "列",
+              "x": 1253,
+              "y": 31,
+              "width": 74,
+              "height": 75
+            },
+            {
+              "text": "表",
+              "x": 1334,
+              "y": 33,
+              "width": 74,
+              "height": 73
+            },
+            {
+              "text": "．",
+              "x": 1416,
+              "y": 87,
+              "width": 13,
+              "height": 13
+            },
+            {
+              "text": "“",
+              "x": 1434,
+              "y": 87,
+              "width": 31,
+              "height": 13
+            }
+          ]
+        }
+      ]
+    },
+    "binary": {
+      "id": "r3_title_binary",
+      "width": 1557,
+      "height": 135,
+      "language": "zh-Hans-CN",
+      "textAngle": 0,
+      "lines": [
+        {
+          "text": "测 试 ！ 示 例 ABC 数 据 读 取",
+          "words": [
+            {
+              "text": "测",
+              "x": 20,
+              "y": 31,
+              "width": 71,
+              "height": 75
+            },
+            {
+              "text": "试",
+              "x": 98,
+              "y": 32,
+              "width": 75,
+              "height": 74
+            },
+            {
+              "text": "！",
+              "x": 191,
+              "y": 38,
+              "width": 11,
+              "height": 62
+            },
+            {
+              "text": "示",
+              "x": 262,
+              "y": 32,
+              "width": 72,
+              "height": 74
+            },
+            {
+              "text": "例",
+              "x": 341,
+              "y": 30,
+              "width": 71,
+              "height": 76
+            },
+            {
+              "text": "ABC",
+              "x": 422,
+              "y": 38,
+              "width": 142,
+              "height": 62
+            },
+            {
+              "text": "数",
+              "x": 588,
+              "y": 31,
+              "width": 75,
+              "height": 75
+            },
+            {
+              "text": "据",
+              "x": 668,
+              "y": 30,
+              "width": 75,
+              "height": 75
+            },
+            {
+              "text": "读",
+              "x": 749,
+              "y": 32,
+              "width": 75,
+              "height": 74
+            },
+            {
+              "text": "取",
+              "x": 829,
+              "y": 32,
+              "width": 74,
+              "height": 74
+            }
+          ]
+        },
+        {
+          "text": "保 留 外 列 表 ． “",
+          "words": [
+            {
+              "text": "保",
+              "x": 1013,
+              "y": 30,
+              "width": 74,
+              "height": 76
+            },
+            {
+              "text": "留",
+              "x": 1092,
+              "y": 31,
+              "width": 72,
+              "height": 75
+            },
+            {
+              "text": "外",
+              "x": 1172,
+              "y": 64,
+              "width": 74,
+              "height": 9
+            },
+            {
+              "text": "列",
+              "x": 1253,
+              "y": 31,
+              "width": 74,
+              "height": 75
+            },
+            {
+              "text": "表",
+              "x": 1334,
+              "y": 34,
+              "width": 73,
+              "height": 72
+            },
+            {
+              "text": "．",
+              "x": 1416,
+              "y": 87,
+              "width": 13,
+              "height": 13
+            },
+            {
+              "text": "“",
+              "x": 1434,
+              "y": 87,
+              "width": 30,
+              "height": 13
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "sourcePngSha256": "715ed8eb625d565de23af6fa9aa4625eecdba0ccdeb5815999256f0cc2dbc090",
+  "sanitization": "Title words replaced; original native word geometry and line segmentation retained."
+}

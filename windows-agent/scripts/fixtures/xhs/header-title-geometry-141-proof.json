@@ -1,0 +1,43 @@
+{
+  "width": 720,
+  "height": 1600,
+  "purpose": "Fixed-header clipping proof independent of native OCR left edge; source PNGs remain private. No title/cover pixels or complete post text in this fixture.",
+  "clippedMissingPrefix": {
+    "sourcePngSha256": "3cbe877d55317f40f5970e23b6afb1a9f7a40d16bc733694779bb54d43685f9f",
+    "headerBottom": 306,
+    "titleBox": [
+      220,
+      337,
+      640,
+      359
+    ]
+  },
+  "clippedWithNativePrefix": {
+    "sourcePngSha256": "e3aa815c16bc1f7916790a17ba8e823299bc2c675976bb524f4e3ddefed08037",
+    "headerBottom": 306,
+    "titleBox": [
+      194,
+      337,
+      640,
+      356
+    ]
+  },
+  "completeFirstRow": {
+    "sourcePngSha256": "eda6bbb07bcbfa10cf958f2132b7bd99756407f8d3345b22d68df198a67ccdbe",
+    "headerBottom": 307,
+    "titleBox": [
+      193,
+      360,
+      623,
+      385
+    ]
+  },
+  "duplicateFullCardSourceSha256": "cbcba787a0fa4a2e80b29478324072b5d022e3a9a4560e06574dde0acc33d0d1",
+  "duplicateFullTitleBox": [
+    194,
+    1340,
+    640,
+    1365
+  ],
+  "evidence": "v70 returns same date and three metrics twice under different OCR titles; partial first row is31px below header vs53px for normal newest row. v65 only checking left-prefix ink failed to cover v70."
+}

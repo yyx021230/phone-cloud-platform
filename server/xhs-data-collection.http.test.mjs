@@ -8,6 +8,10 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import { BatchEngine, validateClients } from "./xhs-batch/engine.mjs";
+import { createPlatformClient } from "./xhs-batch/platform.mjs";
+import { memoryStore } from "./xhs-batch/fixtures.mjs";
+
 
 test("collection API enforces ownership, locks and completion, preserves result on restart", { timeout: 30_000 }, async (t) => {
   const databaseUrl = process.env.XHS_COLLECTION_TEST_DATABASE_URL || "";
@@ -72,6 +76,9 @@ test("collection API enforces ownership, locks and completion, preserves result 
   await request("POST", route, a, { ...input, xhsAppSlot: "wrong" }, 400);
   await request("POST", route, a, input, 409);
   await sync(true);
+  assert.equal((await request("GET", route, a)).batchContract.submissionLookup, true);
+  await request("POST", route, a, { ...input, expectedXhsId: "binding-changed" }, 409);
+  const reference = "fixture-submission-001";
   let created;
   if (databaseUrl) {
     const database = new pg.Client({ connectionString: databaseUrl });
@@ -79,7 +86,7 @@ test("collection API enforces ownership, locks and completion, preserves result 
     try {
       await database.query("BEGIN");
       await database.query("LOCK TABLE phone_cloud_automation_jobs IN ACCESS EXCLUSIVE MODE");
-      const creation = request("POST", route, a, input, 201);
+      const creation = request("POST", route, a, { ...input, clientRequestId: reference }, 201);
       // Wait until the server transaction actually blocks on our table lock.
       for (let attempt = 0; attempt < 100; attempt++) {
         const waiting = await database.query("SELECT 1 FROM pg_stat_activity WHERE datname = current_database() AND wait_event_type = 'Lock' AND pid <> pg_backend_pid()");
@@ -93,9 +100,17 @@ test("collection API enforces ownership, locks and completion, preserves result 
       created = (await creation).task;
     } finally { await database.query("ROLLBACK"); await database.end(); }
   } else {
-    created = (await request("POST", route, a, input, 201)).task;
+    created = (await request("POST", route, a, { ...input, clientRequestId: reference }, 201)).task;
   }
   assert.equal(created.kind, "xhs_data_collect");
+  assert.equal(created.clientRequestId, reference);
+  await request("POST", route, a, { ...input, clientRequestId: reference }, 409);
+  assert.equal((await request("GET", `${route}?clientRequestId=${reference}`, a)).tasks[0].jobId, created.jobId);
+  assert.equal((await request("GET", `${route}?clientRequestId=${reference}`, b)).tasks.length, 0);
+  assert.equal(created.kind, "xhs_data_collect");
+  assert.equal(created.xhsAccountId, "fixture_xhs");
+  assert.equal(created.xhsAccountName, "Fixture");
+  assert.equal(created.accountIdentitySource, "platform_binding_snapshot");
   await request("POST", route, b, input, 409);
   await request("POST", `${route}/${created.jobId}/cancel`, b, {}, 404);
   await request("GET", `${route}/${created.jobId}`, b, undefined, 404);
@@ -155,5 +170,26 @@ test("collection API enforces ownership, locks and completion, preserves result 
   }
   await stop(); await start();
   const restored = (await request("GET", `${route}/${created.jobId}`, a)).task;
+  assert.equal((await request("GET", `${route}?clientRequestId=${reference}`, a)).tasks[0].jobId, created.jobId);
   assert.equal(restored.result.collection.notes[0].title, "Fixture note");
+
+  // Batch uses the real formal HTTP endpoint/lock, with only the Agent result simulated.
+  const clients = validateClients([{ clientId: "fixture", username: "fixture_a", password: "fixture-user-only", secret: "s".repeat(32),
+    targets: [{ deviceId: device.deviceId, appSlot: "app1", xhsId: "fixture_xhs", accountName: "Fixture" }] }]);
+  const batch = new BatchEngine({ store: memoryStore(), clients,
+    platforms: new Map([["fixture", createPlatformClient({ baseUrl: base, username: "fixture_a", password: "fixture-user-only" })]]) });
+  const run = await batch.create("fixture", "integration-001"); await batch.tick();
+  const batchPicked = (await request("GET", "/api/v1/windows-agents/fixture-agent/tasks/next", agent)).task;
+  assert.equal(batchPicked.type, "xhs_data_collect");
+  await request("POST", route, b, input, 409);
+  const batchDay = new Date(Date.now() + 8 * 3600_000).toISOString().slice(0, 10);
+  const batchSnapshot = { ...snapshot, window_end_date: batchDay,
+    window_start_date: new Date(Date.parse(batchDay) - 29 * 86400_000).toISOString().slice(0, 10),
+    notes: snapshot.notes.map(note => ({ ...note, published_date: batchDay })) };
+  await request("POST", `/api/v1/windows-agent-tasks/${batchPicked.taskId}/status`, agent,
+    { status: "succeeded", result: { collection: batchSnapshot } });
+  await batch.tick();
+  const collected = await batch.results("fixture", run.runId);
+  assert.equal(collected.complete, true); assert.equal(collected.items[0].xhsId, "fixture_xhs");
+  assert.equal(collected.items[0].data.notes[0].list_view_count, 12);
 });

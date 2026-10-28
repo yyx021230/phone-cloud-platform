@@ -1,0 +1,68 @@
+{
+  "version": "xhs-data-automation-20261013-rc.5",
+  "branch": "codex/xhs-data-automation-20261013",
+  "parentCommit": "bac14c4ebea433bff1c0c3a30de6f73b9b5e6e63",
+  "gitCommit": "Resolve the immutable annotated tag; manifest excludes its own hash.",
+  "status": "local_candidate_not_deployed",
+  "productionBaseline": {
+    "agentIndexSha256": "0d6a0aa177f38873b6999e18bba24fdecb865469924bc91efe396e91e2bd883b",
+    "candidateWholeRepositoryDeployable": false
+  },
+  "files": {
+    "windows-agent/scripts/小红书数据同步.py": "bb459e3570d4201434bbbf05841c8b2b9d3864a3febc25b414780f9d84c710fc",
+    "windows-agent/scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+    "windows-agent/scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+    "windows-agent/scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+    "windows-agent/scripts/test_xhs_list_ocr.py": "1637a61ceeff6ceb2ac66bb6d5c571fe13641f04c6c41e8f57f68b7b31a8a585",
+    "windows-agent/src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+    "windows-agent/src/xhs-data-collection.test.mjs": "7dd50df200bda1df59416a4e30a7f8c31e462c30e0557a9eadd26cd3083661cd",
+    "public/xhs-data-collection-ui.js": "7be06e984b25ec61fa4e7004433f92c076c1acbb5a821e6cd979e539d955201f",
+    "server/xhs-data-ui.test.mjs": "f8ebbdd3dd84ebd9911b9d22077c37167520bce0e0171d6a4d444564dbfa83fb",
+    "docs/PROJECT_DEVELOPMENT.md": "4e58dfc27778fb8434cbabbeb914ae60d0e0eafb47437e1c3064c0c64aceb0a2",
+    "docs/XHS_DATA_AUTOMATION_RC_20261013.md": "d3cff772aa5f87db2989a16122c526c033e7a6d76b3ee2848c1a95d8d87f543a",
+    "docs/evidence/xhs-data-automation-20261013-rc5-fleet.json": "b9ce403b844c1b554b4d306512572a3b2dadf6cde4f427469dc853331627a35e"
+  },
+  "tests": {
+    "rootCheck": true,
+    "screenTests": 536,
+    "agentTests": 278,
+    "pythonTests": 152,
+    "compileDiff": true,
+    "golden": {
+      "pass": true,
+      "screenshots": 10,
+      "dates": 53,
+      "counters": 159,
+      "files": {
+        "xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+        "xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+        "xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164"
+      }
+    },
+    "finalGrayFolders": [
+      "xhs-fleet-v51-20261014",
+      "xhs-fleet-v52-20261014"
+    ],
+    "phaseAuthorizedRows": 20,
+    "diagnosticProbeSettingsRestored": true,
+    "productionDeployment": false
+  },
+  "rollback": {
+    "sourceTag": "xhs-data-automation-20261013-rc.4",
+    "restoreModified": [
+      "windows-agent/scripts/小红书数据同步.py",
+      "windows-agent/src/xhs-data-collection.mjs",
+      "windows-agent/src/xhs-data-collection.test.mjs",
+      "public/xhs-data-collection-ui.js",
+      "server/xhs-data-ui.test.mjs"
+    ],
+    "removeOnlyNewOcrFiles": [
+      "windows-agent/scripts/xhs_list_ocr.py",
+      "windows-agent/scripts/xhs_native_ocr.ps1",
+      "windows-agent/scripts/xhs_ocr_digits.png",
+      "windows-agent/scripts/test_xhs_list_ocr.py"
+    ],
+    "scope": "Owned candidate only; no production rollback/deployment performed; preserve audit docs and private evidence."
+  },
+  "review": "Diff self-review complete with stated unsupported formats/environment blocks; not independent human or production approval."
+}

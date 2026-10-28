@@ -1,0 +1,21 @@
+[Unit]
+Description=Phone Cloud XHS daily batch collection
+After=network-online.target
+
+[Service]
+Type=simple
+# Set service user and paths in a deployment-specific drop-in.
+User=phone-cloud
+WorkingDirectory=/opt/phone-cloud-xhs-batch
+EnvironmentFile=/etc/phone-cloud/xhs-batch.env
+ExecStart=/usr/bin/node server/xhs-batch/main.mjs
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=90
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,952 @@
+{
+  "status": "slot_retest_complete_with_unresolved_issues",
+  "asOfShanghaiDate": "2026-10-20",
+  "scope": "Only21phones named in previous problem reply, each app1/app2 reviewed; not all131 devices or final-version whole-fleet acceptance.",
+  "sourceCollectorCommit": "8a1e1fae4ca350edf9074c9c436368dad86aaf9a",
+  "sourceCollectorTag": "xhs-compat-20261019-rc.9",
+  "qaPlannerCommit": "27320f80b8066d4b6d136eda6363c6920a98631e",
+  "qaBranch": "codex/xhs-slot-retest-20261020",
+  "counts": {
+    "phonesReviewed": 21,
+    "slotsReviewed": 42,
+    "configuredAvailableCandidates": 17,
+    "collectorAttempts": 16,
+    "passed": 7,
+    "ui_read_failed": 1,
+    "login_required": 4,
+    "blocked_loading": 1,
+    "package_absent": 1,
+    "account_abnormal": 1,
+    "input_timeout": 2,
+    "initialEmptySlots": 10,
+    "initialUserExcludedSlots": 8,
+    "initialUnavailableSlots": 5,
+    "initialBusy155Slots": 2
+  },
+  "qualification": "Default enabled app1/app2 entries and device-wide xhsInstalled are insufficient. Require exactly one enabled stable-ID account in that exact slot, matching current cloud/cache device identity and binding, idle/online status, and positive package proof in Android user0 or exact verified clone profile before collector/settings work.",
+  "plan": [
+    {
+      "name": "6",
+      "slot": "app1",
+      "eligible": false,
+      "reason": "no_enabled_bound_xhs_in_this_slot"
+    },
+    {
+      "name": "6",
+      "slot": "app2",
+      "eligible": false,
+      "reason": "no_enabled_bound_xhs_in_this_slot"
+    },
+    {
+      "name": "13",
+      "slot": "app1",
+      "eligible": false,
+      "reason": "no_enabled_bound_xhs_in_this_slot"
+    },
+    {
+      "name": "13",
+      "slot": "app2",
+      "eligible": true,
+      "reason": "bound_slot_requires_package_proof"
+    },
+    {
+      "name": "18",
+      "slot": "app1",
+      "eligible": true,
+      "reason": "bound_slot_requires_package_proof"
+    },
+    {
+      "name": "18",
+      "slot": "app2",
+      "eligible": true,
+      "reason": "bound_slot_requires_package_proof"
+    },
+    {
+      "name": "25",
+      "slot": "app1",
+      "eligible": false,
+      "reason": "no_enabled_bound_xhs_in_this_slot"
+    },
+    {
+      "name": "25",
+      "slot": "app2",
+      "eligible": true,
+      "reason": "bound_slot_requires_package_proof"
+    },
+    {
+      "name": "27",
+      "slot": "app1",
+      "eligible": false,
+      "reason": "no_enabled_bound_xhs_in_this_slot"
+    },
+    {
+      "name": "27",
+      "slot": "app2",
+      "eligible": false,
+      "reason": "no_enabled_bound_xhs_in_this_slot"
+    },
+    {
+      "name": "32",
+      "slot": "app1",
+      "eligible": true,
+      "reason": "bound_slot_requires_package_proof"
+    },
+    {
+      "name": "32",
+      "slot": "app2",
+      "eligible": false,
+      "reason": "no_enabled_bound_xhs_in_this_slot"
+    },
+    {
+      "name": "43",
+      "slot": "app1",
+      "eligible": true,
+      "reason": "bound_slot_requires_package_proof"
+    },
+    {
+      "name": "43",
+      "slot": "app2",
+      "eligible": false,
+      "reason": "no_enabled_bound_xhs_in_this_slot"
+    },
+    {
+      "name": "74",
+      "slot": "app1",
+      "eligible": false,
+      "reason": "explicit_user_skip"
+    },
+    {
+      "name": "74",
+      "slot": "app2",
+      "eligible": false,
+      "reason": "explicit_user_skip"
+    },
+    {
+      "name": "75",
+      "slot": "app1",
+      "eligible": false,
+      "reason": "device_unavailable:physically_absent"
+    },
+    {
+      "name": "75",
+      "slot": "app2",
+      "eligible": false,
+      "reason": "device_unavailable:physically_absent"
+    },
+    {
+      "name": "81",
+      "slot": "app1",
+      "eligible": false,
+      "reason": "explicit_user_skip"
+    },
+    {
+      "name": "81",
+      "slot": "app2",
+      "eligible": false,
+      "reason": "explicit_user_skip"
+    },
+    {
+      "name": "114",
+      "slot": "app1",
+      "eligible": true,
+      "reason": "bound_slot_requires_package_proof"
+    },
+    {
+      "name": "114",
+      "slot": "app2",
+      "eligible": true,
+      "reason": "bound_slot_requires_package_proof"
+    },
+    {
+      "name": "116",
+      "slot": "app1",
+      "eligible": false,
+      "reason": "device_unavailable:physically_absent"
+    },
+    {
+      "name": "116",
+      "slot": "app2",
+      "eligible": false,
+      "reason": "no_enabled_bound_xhs_in_this_slot"
+    },
+    {
+      "name": "123",
+      "slot": "app1",
+      "eligible": false,
+      "reason": "no_enabled_bound_xhs_in_this_slot"
+    },
+    {
+      "name": "123",
+      "slot": "app2",
+      "eligible": true,
+      "reason": "bound_slot_requires_package_proof"
+    },
+    {
+      "name": "127",
+      "slot": "app1",
+      "eligible": false,
+      "reason": "device_unavailable:physically_absent"
+    },
+    {
+      "name": "127",
+      "slot": "app2",
+      "eligible": false,
+      "reason": "device_unavailable:physically_absent"
+    },
+    {
+      "name": "130",
+      "slot": "app1",
+      "eligible": true,
+      "reason": "bound_slot_requires_package_proof"
+    },
+    {
+      "name": "130",
+      "slot": "app2",
+      "eligible": true,
+      "reason": "bound_slot_requires_package_proof"
+    },
+    {
+      "name": "141",
+      "slot": "app1",
+      "eligible": true,
+      "reason": "bound_slot_requires_package_proof"
+    },
+    {
+      "name": "141",
+      "slot": "app2",
+      "eligible": true,
+      "reason": "bound_slot_requires_package_proof"
+    },
+    {
+      "name": "152",
+      "slot": "app1",
+      "eligible": false,
+      "reason": "explicit_user_skip"
+    },
+    {
+      "name": "152",
+      "slot": "app2",
+      "eligible": false,
+      "reason": "explicit_user_skip"
+    },
+    {
+      "name": "155",
+      "slot": "app1",
+      "eligible": false,
+      "reason": "foreign_occupancy"
+    },
+    {
+      "name": "155",
+      "slot": "app2",
+      "eligible": false,
+      "reason": "foreign_occupancy"
+    },
+    {
+      "name": "165",
+      "slot": "app1",
+      "eligible": true,
+      "reason": "bound_slot_requires_package_proof"
+    },
+    {
+      "name": "165",
+      "slot": "app2",
+      "eligible": true,
+      "reason": "bound_slot_requires_package_proof"
+    },
+    {
+      "name": "180",
+      "slot": "app1",
+      "eligible": true,
+      "reason": "bound_slot_requires_package_proof"
+    },
+    {
+      "name": "180",
+      "slot": "app2",
+      "eligible": true,
+      "reason": "bound_slot_requires_package_proof"
+    },
+    {
+      "name": "188",
+      "slot": "app1",
+      "eligible": false,
+      "reason": "explicit_user_skip"
+    },
+    {
+      "name": "188",
+      "slot": "app2",
+      "eligible": false,
+      "reason": "explicit_user_skip"
+    }
+  ],
+  "results": [
+    {
+      "name": "13",
+      "slot": "app2",
+      "notes": 21,
+      "scrolls": 4,
+      "complete": true,
+      "windowStart": "2026-09-21",
+      "windowEnd": "2026-10-20",
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "slotProven": true,
+      "settingsBefore": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsAfter": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 173,
+      "stage": "xhs-slot-retest-20261020-v1",
+      "category": "passed",
+      "rawStatus": "passed",
+      "collectorAttempted": true,
+      "configuredSlot": true,
+      "androidUser": "999",
+      "packagePresent": true,
+      "reason": "older_than_window_visible",
+      "snapshotFileSha256": "c71491eb9cd08709c40a6934a5561bcdbac201fff1d9a921dc23861b4b9c50fa"
+    },
+    {
+      "name": "18",
+      "slot": "app1",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "windowStart": null,
+      "windowEnd": null,
+      "stopReason": null,
+      "metricsComplete": null,
+      "slotProven": null,
+      "settingsBefore": {
+        "timeout": "120000",
+        "proximity": "1"
+      },
+      "settingsAfter": {
+        "timeout": "120000",
+        "proximity": "1"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 73,
+      "stage": "xhs-slot-retest-20261020-v3",
+      "category": "blocked_loading",
+      "rawStatus": "failed",
+      "collectorAttempted": true,
+      "configuredSlot": true,
+      "androidUser": "0",
+      "packagePresent": true,
+      "reason": "{\"error\": \"could not prove the Creator Center works-analysis path\"}"
+    },
+    {
+      "name": "18",
+      "slot": "app2",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "windowStart": null,
+      "windowEnd": null,
+      "stopReason": null,
+      "metricsComplete": null,
+      "slotProven": null,
+      "settingsBefore": null,
+      "settingsAfter": null,
+      "settingsRestored": null,
+      "durationSeconds": 0,
+      "stage": "xhs-slot-retest-20261020-v3",
+      "category": "package_absent",
+      "rawStatus": "skipped_slot_preflight",
+      "collectorAttempted": false,
+      "configuredSlot": true,
+      "androidUser": "999",
+      "packagePresent": false,
+      "reason": "package_absent_in_requested_user"
+    },
+    {
+      "name": "25",
+      "slot": "app2",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "windowStart": null,
+      "windowEnd": null,
+      "stopReason": null,
+      "metricsComplete": null,
+      "slotProven": null,
+      "settingsBefore": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsAfter": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 27,
+      "stage": "xhs-slot-retest-20261020-v3",
+      "category": "login_required",
+      "rawStatus": "failed",
+      "collectorAttempted": true,
+      "configuredSlot": true,
+      "androidUser": "999",
+      "packagePresent": true,
+      "reason": "{\"error\": \"Xiaohongshu account is logged out; manual login is required\"}"
+    },
+    {
+      "name": "32",
+      "slot": "app1",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "windowStart": null,
+      "windowEnd": null,
+      "stopReason": null,
+      "metricsComplete": null,
+      "slotProven": null,
+      "settingsBefore": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsAfter": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 23,
+      "stage": "xhs-slot-retest-20261020-v3",
+      "category": "login_required",
+      "rawStatus": "failed",
+      "collectorAttempted": true,
+      "configuredSlot": true,
+      "androidUser": "0",
+      "packagePresent": true,
+      "reason": "{\"error\": \"Xiaohongshu account is logged out; manual login is required\"}"
+    },
+    {
+      "name": "43",
+      "slot": "app1",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "windowStart": "2026-09-21",
+      "windowEnd": "2026-10-20",
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "slotProven": true,
+      "settingsBefore": {
+        "timeout": "1800000",
+        "proximity": "null"
+      },
+      "settingsAfter": {
+        "timeout": "1800000",
+        "proximity": "null"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 107,
+      "stage": "xhs-slot-retest-20261020-v2",
+      "category": "passed",
+      "rawStatus": "passed",
+      "collectorAttempted": true,
+      "configuredSlot": true,
+      "androidUser": "0",
+      "packagePresent": true,
+      "reason": "older_than_window_visible",
+      "snapshotFileSha256": "5e793035eb7e744c3ac432854f1a16d7ac3c774fcc5399806cc97f79a65029ac"
+    },
+    {
+      "name": "114",
+      "slot": "app1",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "windowStart": null,
+      "windowEnd": null,
+      "stopReason": null,
+      "metricsComplete": null,
+      "slotProven": null,
+      "settingsBefore": {
+        "timeout": "300000",
+        "proximity": "null"
+      },
+      "settingsAfter": {
+        "timeout": "300000",
+        "proximity": "null"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 46,
+      "stage": "xhs-slot-retest-20261020-v3",
+      "category": "account_abnormal",
+      "rawStatus": "failed",
+      "collectorAttempted": true,
+      "configuredSlot": true,
+      "androidUser": "0",
+      "packagePresent": true,
+      "reason": "{\"error\": \"creator account shows abnormal status and no latest-notes entry\"}"
+    },
+    {
+      "name": "114",
+      "slot": "app2",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "windowStart": "2026-09-21",
+      "windowEnd": "2026-10-20",
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "slotProven": true,
+      "settingsBefore": {
+        "timeout": "300000",
+        "proximity": "null"
+      },
+      "settingsAfter": {
+        "timeout": "300000",
+        "proximity": "null"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 129,
+      "stage": "xhs-slot-retest-20261020-v3",
+      "category": "passed",
+      "rawStatus": "passed",
+      "collectorAttempted": true,
+      "configuredSlot": true,
+      "androidUser": "999",
+      "packagePresent": true,
+      "reason": "older_than_window_visible",
+      "snapshotFileSha256": "05e1fd2861b552625f63828bed28cba5b3fa3c92201977105381df5a1bceef73"
+    },
+    {
+      "name": "123",
+      "slot": "app2",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "windowStart": null,
+      "windowEnd": null,
+      "stopReason": null,
+      "metricsComplete": null,
+      "slotProven": null,
+      "settingsBefore": {
+        "timeout": "1800000",
+        "proximity": "null"
+      },
+      "settingsAfter": {
+        "timeout": "1800000",
+        "proximity": "null"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 23,
+      "stage": "xhs-slot-retest-20261020-v2",
+      "category": "ui_read_failed",
+      "rawStatus": "failed",
+      "collectorAttempted": true,
+      "configuredSlot": true,
+      "androidUser": "999",
+      "packagePresent": true,
+      "reason": "{\"error\": \"UIAutomator did not return an XML hierarchy\"}"
+    },
+    {
+      "name": "130",
+      "slot": "app1",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "windowStart": null,
+      "windowEnd": null,
+      "stopReason": null,
+      "metricsComplete": null,
+      "slotProven": null,
+      "settingsBefore": {
+        "timeout": "1800000",
+        "proximity": "null"
+      },
+      "settingsAfter": {
+        "timeout": "1800000",
+        "proximity": "null"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 23,
+      "stage": "xhs-slot-retest-20261020-v3",
+      "category": "login_required",
+      "rawStatus": "failed",
+      "collectorAttempted": true,
+      "configuredSlot": true,
+      "androidUser": "0",
+      "packagePresent": true,
+      "reason": "{\"error\": \"Xiaohongshu account is logged out; manual login is required\"}"
+    },
+    {
+      "name": "130",
+      "slot": "app2",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "windowStart": null,
+      "windowEnd": null,
+      "stopReason": null,
+      "metricsComplete": null,
+      "slotProven": null,
+      "settingsBefore": {
+        "timeout": "1800000",
+        "proximity": "null"
+      },
+      "settingsAfter": {
+        "timeout": "1800000",
+        "proximity": "null"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 25,
+      "stage": "xhs-slot-retest-20261020-v3",
+      "category": "login_required",
+      "rawStatus": "failed",
+      "collectorAttempted": true,
+      "configuredSlot": true,
+      "androidUser": "999",
+      "packagePresent": true,
+      "reason": "{\"error\": \"Xiaohongshu account is logged out; manual login is required\"}"
+    },
+    {
+      "name": "141",
+      "slot": "app1",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "windowStart": null,
+      "windowEnd": null,
+      "stopReason": null,
+      "metricsComplete": null,
+      "slotProven": null,
+      "settingsBefore": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsAfter": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 28,
+      "stage": "xhs-slot-retest-20261020-v3",
+      "category": "input_timeout",
+      "rawStatus": "failed",
+      "collectorAttempted": true,
+      "configuredSlot": true,
+      "androidUser": "0",
+      "packagePresent": true,
+      "reason": "{\"error\": \"Command '['D:\\\\\\\\PhoneCloud\\\\\\\\tools\\\\\\\\android-sdk\\\\\\\\platform-tools\\\\\\\\adb.exe', '-s', '<serial>', 'shell', 'input', 'keyevent', '24']' timed out after 7 seconds\"}"
+    },
+    {
+      "name": "141",
+      "slot": "app2",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "windowStart": null,
+      "windowEnd": null,
+      "stopReason": null,
+      "metricsComplete": null,
+      "slotProven": null,
+      "settingsBefore": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsAfter": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 54,
+      "stage": "xhs-slot-retest-20261020-v3",
+      "category": "input_timeout",
+      "rawStatus": "failed",
+      "collectorAttempted": true,
+      "configuredSlot": true,
+      "androidUser": "999",
+      "packagePresent": true,
+      "reason": "{\"error\": \"Command '['D:\\\\\\\\PhoneCloud\\\\\\\\tools\\\\\\\\android-sdk\\\\\\\\platform-tools\\\\\\\\adb.exe', '-s', '<serial>', 'shell', 'input', 'tap', '648', '1431']' timed out after 7 seconds\"}"
+    },
+    {
+      "name": "165",
+      "slot": "app1",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "windowStart": "2026-09-21",
+      "windowEnd": "2026-10-20",
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "slotProven": true,
+      "settingsBefore": {
+        "timeout": "1800000",
+        "proximity": "null"
+      },
+      "settingsAfter": {
+        "timeout": "1800000",
+        "proximity": "null"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 152,
+      "stage": "xhs-slot-retest-20261020-v3",
+      "category": "passed",
+      "rawStatus": "passed",
+      "collectorAttempted": true,
+      "configuredSlot": true,
+      "androidUser": "0",
+      "packagePresent": true,
+      "reason": "older_than_window_visible",
+      "snapshotFileSha256": "62c9576f7226c4c41420e7fbd9e38040ed53fe8f4f48dbea937555210909f333"
+    },
+    {
+      "name": "165",
+      "slot": "app2",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "windowStart": "2026-09-21",
+      "windowEnd": "2026-10-20",
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "slotProven": true,
+      "settingsBefore": {
+        "timeout": "1800000",
+        "proximity": "null"
+      },
+      "settingsAfter": {
+        "timeout": "1800000",
+        "proximity": "null"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 128,
+      "stage": "xhs-slot-retest-20261020-v3",
+      "category": "passed",
+      "rawStatus": "passed",
+      "collectorAttempted": true,
+      "configuredSlot": true,
+      "androidUser": "999",
+      "packagePresent": true,
+      "reason": "older_than_window_visible",
+      "snapshotFileSha256": "d4a06894463b8ad57299ec001acbcae4593e1299acd84ebd0e6c6094242077e3"
+    },
+    {
+      "name": "180",
+      "slot": "app1",
+      "notes": 12,
+      "scrolls": 5,
+      "complete": true,
+      "windowStart": "2026-09-21",
+      "windowEnd": "2026-10-20",
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "slotProven": true,
+      "settingsBefore": {
+        "timeout": "30000",
+        "proximity": "null"
+      },
+      "settingsAfter": {
+        "timeout": "30000",
+        "proximity": "null"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 123,
+      "stage": "xhs-slot-retest-20261020-v3",
+      "category": "passed",
+      "rawStatus": "passed",
+      "collectorAttempted": true,
+      "configuredSlot": true,
+      "androidUser": "0",
+      "packagePresent": true,
+      "reason": "older_than_window_visible",
+      "snapshotFileSha256": "61ce02ff7a1f714c44f7f6a99efee492911f8185d5182f3bc859cf057a569872"
+    },
+    {
+      "name": "180",
+      "slot": "app2",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "windowStart": "2026-09-21",
+      "windowEnd": "2026-10-20",
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "slotProven": true,
+      "settingsBefore": {
+        "timeout": "30000",
+        "proximity": "null"
+      },
+      "settingsAfter": {
+        "timeout": "30000",
+        "proximity": "null"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 113,
+      "stage": "xhs-slot-retest-20261020-v3",
+      "category": "passed",
+      "rawStatus": "passed",
+      "collectorAttempted": true,
+      "configuredSlot": true,
+      "androidUser": "999",
+      "packagePresent": true,
+      "reason": "older_than_window_visible",
+      "snapshotFileSha256": "5bcb3dee9c8424e21a9514cbcc3218cc33fe672931fb63be0d6a2dffc110f3b3"
+    }
+  ],
+  "adbClientCallsByPhone": {
+    "13": 174,
+    "43": 107,
+    "123": 28,
+    "25": 31,
+    "18": 85,
+    "32": 30,
+    "114": 198,
+    "130": 48,
+    "141": 46,
+    "165": 292,
+    "180": 253
+  },
+  "phone6": {
+    "configuredSlots": 0,
+    "collectorRuns": 0,
+    "qaAdbClientCalls": 0,
+    "previousPermissionLabelRemovedFromCurrentProblems": true,
+    "deviceWideInstalledFlagWasTrueButNotUsedAsSlotQualification": true
+  },
+  "phone18app2": {
+    "configured": true,
+    "androidUser": "999",
+    "packagePresent": false,
+    "collectorRuns": 0,
+    "temporarySettingsWrites": 0
+  },
+  "unresolved": [
+    {
+      "phone": "18",
+      "slot": "app1",
+      "issue": "Persistent white page/red loader observed in saved diagnostic, cause unconfirmed; not zero posts."
+    },
+    {
+      "phone": "123",
+      "slot": "app2",
+      "issue": "UI hierarchy unavailable; saved post-failure diagnostic black/focusnull does not prove state at initial exception."
+    },
+    {
+      "phone": "141",
+      "slot": "app1",
+      "issue": "input keyevent24 timeout7seconds; no blind input replay."
+    },
+    {
+      "phone": "141",
+      "slot": "app2",
+      "issue": "input tap timeout7seconds; no blind input replay."
+    }
+  ],
+  "historicalTitleLimit": "English model word OCR mismatch in141 last10/19 validation remains a known source limitation; today141 did not return a collection, so no new title accuracy pass.",
+  "rc9ReleaseReadiness": "BLOCKED by current141 input timeouts and123 hierarchy failure; prior single/pair passes do not establish current release readiness. No rc9 release performed.",
+  "manifests": {
+    "xhs-slot-retest-20261020-v1": {
+      "qa_adb_guard.py": "4dd6674f2a91c4da6f3af687f3360ea5f5d061dbee9a5c769e60acf0b005ab03",
+      "qa_slot_probe.py": "9d973eeefb98a13920d75ce2abc2c806aee48dc4f1d471516575251c06701a15",
+      "collector.py": "b553d7d5f78c096b920af6c71347ca2465347d67eb939e746016647948a1ec61",
+      "fleet.mjs": "0ff973636f7b8b63c862690cb6e99f2361c9c747abd8cda03b56afd34fdced41",
+      "targets.json": "9a1d19be32a5155bb372c65850ef6565be0210db5860cabf71d6dc64d4c8098a",
+      "xhs-slot-retest-plan.mjs": "848447cfb436d957edc2b05cd0ad5b784dd58366574a457ad7c62021b7e2c042",
+      "candidate.py": "5843403d02f9e5f9b0a996b108ba033461c7df0ec335b8b0b74a810fcc609510",
+      "xhs_list_ocr.py": "e5a015f4d90920c023bae25195ae386e75e958c8c4458447fe2c508de345d644",
+      "xhs_ocr_digits.png": "6a65dfb150ecbd4c56140b28fea51e89d11d8187031009447bab0d880164522f",
+      "xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842"
+    },
+    "xhs-slot-retest-20261020-v2": {
+      "qa_adb_guard.py": "4dd6674f2a91c4da6f3af687f3360ea5f5d061dbee9a5c769e60acf0b005ab03",
+      "qa_slot_probe.py": "9d973eeefb98a13920d75ce2abc2c806aee48dc4f1d471516575251c06701a15",
+      "collector.py": "b553d7d5f78c096b920af6c71347ca2465347d67eb939e746016647948a1ec61",
+      "fleet.mjs": "0ff973636f7b8b63c862690cb6e99f2361c9c747abd8cda03b56afd34fdced41",
+      "targets.json": "50f72e90c3d576221b086fbfa1331b8fadca0b9c09250ada82301a707d1c8c7f",
+      "xhs-slot-retest-plan.mjs": "848447cfb436d957edc2b05cd0ad5b784dd58366574a457ad7c62021b7e2c042",
+      "candidate.py": "5843403d02f9e5f9b0a996b108ba033461c7df0ec335b8b0b74a810fcc609510",
+      "xhs_list_ocr.py": "e5a015f4d90920c023bae25195ae386e75e958c8c4458447fe2c508de345d644",
+      "xhs_ocr_digits.png": "6a65dfb150ecbd4c56140b28fea51e89d11d8187031009447bab0d880164522f",
+      "xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842"
+    },
+    "xhs-slot-retest-20261020-v3": {
+      "qa_adb_guard.py": "4dd6674f2a91c4da6f3af687f3360ea5f5d061dbee9a5c769e60acf0b005ab03",
+      "qa_slot_probe.py": "9d973eeefb98a13920d75ce2abc2c806aee48dc4f1d471516575251c06701a15",
+      "collector.py": "b553d7d5f78c096b920af6c71347ca2465347d67eb939e746016647948a1ec61",
+      "fleet.mjs": "0ff973636f7b8b63c862690cb6e99f2361c9c747abd8cda03b56afd34fdced41",
+      "targets.json": "e95b6aca155d90ee569a7dc2fdd8208dd9a061df3a72577778f59bcdf1830ff7",
+      "xhs-slot-retest-plan.mjs": "848447cfb436d957edc2b05cd0ad5b784dd58366574a457ad7c62021b7e2c042",
+      "candidate.py": "5843403d02f9e5f9b0a996b108ba033461c7df0ec335b8b0b74a810fcc609510",
+      "xhs_list_ocr.py": "e5a015f4d90920c023bae25195ae386e75e958c8c4458447fe2c508de345d644",
+      "xhs_ocr_digits.png": "6a65dfb150ecbd4c56140b28fea51e89d11d8187031009447bab0d880164522f",
+      "xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842"
+    }
+  },
+  "journalSha256": {
+    "xhs-slot-retest-20261020-v1": "1d1477c8643ee6635638f12184e1c882503429eed119a8e569a8b8b6b8a995d9",
+    "xhs-slot-retest-20261020-v2": "8d100e419388a885c76ea757b1763870673840cadadb0c2e4d1e21e285d9879b",
+    "xhs-slot-retest-20261020-v3": "4d07a46a807868a25996be1914cb1aef76cef1c6a42fcee417dfcf07dfa29fe9"
+  },
+  "runtimeAfter": {
+    "identity": {
+      "adbPid": 8988,
+      "adbOwner": "NT AUTHORITY\\SYSTEM",
+      "adbExe": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+      "adbCreatedAt": 1792388072.8168414,
+      "agentPid": 14508,
+      "agentOwner": "NT AUTHORITY\\SYSTEM",
+      "agentCreatedAt": 1792388069.5465655
+    },
+    "hashes": {
+      "scripts/小红书数据同步.py": "e4ee2e856a41c9346e88c205b99f9faec371fe869752f0c492454016ffd639c5",
+      "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+      "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+      "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+      "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    "pending": [],
+    "activeOwnedCollectors": [],
+    "stagesChecked": 3,
+    "oldStagesChecked": 39,
+    "atEpoch": 1792460050.043098
+  },
+  "mediaLiveAfter": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "validation": {
+    "qaPlannerTestsPassed": 5,
+    "collectorPythonRegression": "262 passed10/19 on same collector/OCR bytes; not rerun10/20",
+    "consumerRegression": "11 passed10/19 unchanged; not rerun10/20",
+    "review": "Self review of qualification, exact-slot package preflight, per-command SYSTEM/SDK identity guard, explicit target list, per-phone serialization and settings restoration. No independent agent review."
+  },
+  "invariants": {
+    "all16AttemptSettingsRestored": true,
+    "pendingSettingsLedgers": 0,
+    "activeOwnedCollectors": 0,
+    "maxPhysicalPhonesAtOnce": 2,
+    "production8FilesUnchanged": true,
+    "agentAdbIdentityUnchanged": true,
+    "restarts": 0,
+    "productionReleasePerformed": false,
+    "remotePush": false,
+    "WebDbWrites": 0,
+    "alwaysExcluded": [
+      "74",
+      "81",
+      "152",
+      "188"
+    ],
+    "rootPreexistingStatusEntries": 237
+  },
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "qaArchiveTag": "xhs-slot-retest-20261020-rc.1"
+}

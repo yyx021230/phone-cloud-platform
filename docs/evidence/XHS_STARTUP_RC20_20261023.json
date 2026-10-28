@@ -1,0 +1,596 @@
+{
+  "status": "rc21_deployed_after_rc20_rollback",
+  "tag": "xhs-compat-20261023-rc.20",
+  "baseCommit": "9b1a078a1e74b9a3a7042c34739cd0d7479ec41e",
+  "candidateSHA256": "73074515d5e6c56c48cd712c276f86de138c585710ebb8bd0341f9e08e97b907",
+  "rollbackSHA256": "3b1778ffa3837798d3c80f69072fa128f29233107c13bb50ac9529d51aee0187",
+  "tests": {
+    "python": 377,
+    "node": 11,
+    "rootSyntax": true,
+    "startupFocused": 8
+  },
+  "currentProductionSHA256": "0f17e54d9ec84949f987682d44ba4886c1bc8a3b1a8bcb5a4bc3ec42595bc83e",
+  "freshCloudBaseline": "4d18647672686c188086db15675f714db42c218c10d9f2ae8f65990b89073c43",
+  "realDeviceSource": "attempts field retains pre-deployment rc18 reproduction; rc20Acceptance is the only rc20 acceptance",
+  "attempts": [
+    {
+      "name": "111",
+      "slot": "app1",
+      "status": "failed_compatibility",
+      "seconds": 35,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    },
+    {
+      "name": "111",
+      "slot": "app2",
+      "status": "failed_compatibility",
+      "seconds": 27,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    },
+    {
+      "name": "121",
+      "slot": "app2",
+      "status": "skipped_occupied",
+      "seconds": 0
+    },
+    {
+      "name": "123",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 0,
+      "seconds": 91,
+      "complete": true,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    },
+    {
+      "name": "111",
+      "slot": "app1",
+      "status": "passed",
+      "notes": 16,
+      "seconds": 171,
+      "complete": true,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    },
+    {
+      "name": "111",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 6,
+      "seconds": 95,
+      "complete": true,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    },
+    {
+      "name": "132",
+      "slot": "app1",
+      "status": "passed",
+      "notes": 73,
+      "seconds": 771,
+      "complete": true,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    },
+    {
+      "name": "132",
+      "slot": "app2",
+      "status": "skipped_server_error",
+      "seconds": 89,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    }
+  ],
+  "finalReconciliation": {
+    "at": "2026-10-23T02:59:40.866916+00:00",
+    "ownedJobs": 7,
+    "ownedActiveLocks": 0,
+    "allJobsTerminal": true,
+    "allSettingsRestored": true
+  },
+  "runtimeHashesMatched": 12,
+  "globalPendingLedgers": 0,
+  "loadingAudit": {
+    "date": "2026-10-22",
+    "executedSlots": 123,
+    "incompleteSuccessfulResults": 0,
+    "exhaustedLoadingFailures": 0,
+    "recoveredSlots": [
+      {
+        "slot": "150/app2",
+        "timeouts": 1,
+        "reopens": 1,
+        "notes": 5
+      },
+      {
+        "slot": "47/app1",
+        "timeouts": 2,
+        "reopens": 2,
+        "notes": 29
+      }
+    ],
+    "18": "explicit hold; unresolved"
+  },
+  "rootPreexistingStatusPreserved": true,
+  "localRollbackRehearsal": true,
+  "independentReviewer": false,
+  "sourceCommit": "c8e51abbc9c1342a9f06497d8bf648daf221fb0c",
+  "rc20Acceptance": {
+    "deployment": {
+      "version": "xhs-compat-20261023-deployed.2",
+      "sourceCommit": "c8e51abbc9c1342a9f06497d8bf648daf221fb0c",
+      "candidateTag": "xhs-compat-20261023-rc.20",
+      "changedFiles": [
+        "scripts/小红书数据同步.py"
+      ],
+      "atEpoch": 1792725734.3572032,
+      "servicesRestarted": false,
+      "backup": "D:\\PhoneCloud\\backups\\xhs-compat-20261023-deployed.2"
+    },
+    "attempts": [
+      {
+        "name": "111",
+        "slot": "app1",
+        "status": "failed_compatibility",
+        "seconds": 57,
+        "settingsRestored": true,
+        "ownLockAcquired": true,
+        "ownLockReleased": true,
+        "startedAt": "2026-10-23T03:22:24.423964+00:00",
+        "finishedAt": "2026-10-23T03:23:21.146024+00:00"
+      }
+    ],
+    "failureReason": "Xiaohongshu foreground user does not match the requested slot",
+    "nativeEvidence": {
+      "sha256": "f482c569a3a869656b37a0a272b57605630cfe004835e2e32cb3f1e207e94788",
+      "nullRoot": true,
+      "currentFocus": "null",
+      "focusedApp": "owner Vivo Launcher",
+      "doesNotProveWrongAccount": true
+    },
+    "pairAndRemaining": "not started; single gate failed",
+    "recoveryBranchCoverage": "not proven by failure result; no success-event trail returned",
+    "notificationBranchCoverage": "not tested",
+    "rollback": {
+      "mode": "rollback",
+      "changedFiles": [
+        "scripts/小红书数据同步.py"
+      ],
+      "atEpoch": 1792725824.6535778,
+      "servicesRestarted": false,
+      "backup": "D:\\PhoneCloud\\backups\\xhs-compat-20261023-deployed.2"
+    },
+    "finalReconciliation": {
+      "at": "2026-10-23T03:24:02.743447+00:00",
+      "ownedJobs": 1,
+      "ownedActiveLocks": 0,
+      "allJobsTerminal": true,
+      "allSettingsRestored": true
+    },
+    "runtimeHashesMatched": 12,
+    "globalPendingLedgers": 0,
+    "identityUnchanged": true,
+    "initialStagingFailure": "local path escaping failed; accidental apply reached backup preparation but no production replacement. Original hashes verified, partial backup and intent retained; staged file then independently preflighted before successful deployment."
+  },
+  "rc21Candidate": {
+    "status": "local_candidate_not_deployed",
+    "tag": "xhs-compat-20261023-rc.21",
+    "baseCommit": "2fea30805437a13071e3055f16961118797fad2f",
+    "candidateSHA256": "0f17e54d9ec84949f987682d44ba4886c1bc8a3b1a8bcb5a4bc3ec42595bc83e",
+    "confirmedDefect": "rc20 retry asserts XHS focus before Vivo selector handling; 0.7 second delay rejects legitimate transient null focus",
+    "allHistoricalEmptyRootCausesProven": false,
+    "oldCodeCounterexamples": 2,
+    "tests": {
+      "python": 384,
+      "node": 11,
+      "startup": 15,
+      "rootSyntax": true
+    },
+    "nativeReplay": [
+      {
+        "slot": "111/app1",
+        "sourceSHA256": "78204c68d90870d958b7fce6cb37f7ed2699d18b06b0f4bbad835e36edaa26a3",
+        "counts": {
+          "unproven": 1,
+          "pending": 2,
+          "selector": 2,
+          "target": 13
+        },
+        "timeline": [
+          {
+            "epoch": 1792741095.8213713,
+            "surface": "unproven"
+          },
+          {
+            "epoch": 1792741097.5219507,
+            "surface": "pending"
+          },
+          {
+            "epoch": 1792741099.271509,
+            "surface": "selector"
+          },
+          {
+            "epoch": 1792741100.9219823,
+            "surface": "selector"
+          },
+          {
+            "epoch": 1792741102.6203115,
+            "surface": "pending"
+          },
+          {
+            "epoch": 1792741104.257291,
+            "surface": "target"
+          },
+          {
+            "epoch": 1792741106.0027676,
+            "surface": "target"
+          },
+          {
+            "epoch": 1792741107.746287,
+            "surface": "target"
+          },
+          {
+            "epoch": 1792741109.4430296,
+            "surface": "target"
+          },
+          {
+            "epoch": 1792741111.1365623,
+            "surface": "target"
+          },
+          {
+            "epoch": 1792741112.6256704,
+            "surface": "target"
+          },
+          {
+            "epoch": 1792741114.204276,
+            "surface": "target"
+          },
+          {
+            "epoch": 1792741115.7157197,
+            "surface": "target"
+          },
+          {
+            "epoch": 1792741117.2177787,
+            "surface": "target"
+          },
+          {
+            "epoch": 1792741118.7079978,
+            "surface": "target"
+          },
+          {
+            "epoch": 1792741120.150096,
+            "surface": "target"
+          },
+          {
+            "epoch": 1792741121.6141348,
+            "surface": "target"
+          },
+          {
+            "epoch": 1792741123.0728745,
+            "surface": "target"
+          }
+        ]
+      },
+      {
+        "slot": "111/app2",
+        "sourceSHA256": "511cbf71733dbfbab2e69d8354461db50555db2fed51c837e0bf7f05d2f11f4e",
+        "counts": {
+          "unproven": 2,
+          "selector": 2,
+          "pending": 2,
+          "target": 12
+        },
+        "timeline": [
+          {
+            "epoch": 1792741310.4261882,
+            "surface": "unproven"
+          },
+          {
+            "epoch": 1792741312.0761857,
+            "surface": "unproven"
+          },
+          {
+            "epoch": 1792741313.6593528,
+            "surface": "selector"
+          },
+          {
+            "epoch": 1792741315.1006289,
+            "surface": "selector"
+          },
+          {
+            "epoch": 1792741316.7298965,
+            "surface": "pending"
+          },
+          {
+            "epoch": 1792741318.289577,
+            "surface": "target"
+          },
+          {
+            "epoch": 1792741320.401957,
+            "surface": "target"
+          },
+          {
+            "epoch": 1792741322.1710413,
+            "surface": "target"
+          },
+          {
+            "epoch": 1792741324.3212526,
+            "surface": "target"
+          },
+          {
+            "epoch": 1792741326.4093537,
+            "surface": "target"
+          },
+          {
+            "epoch": 1792741327.8805032,
+            "surface": "target"
+          },
+          {
+            "epoch": 1792741329.5019996,
+            "surface": "target"
+          },
+          {
+            "epoch": 1792741331.0191708,
+            "surface": "target"
+          },
+          {
+            "epoch": 1792741332.4748878,
+            "surface": "target"
+          },
+          {
+            "epoch": 1792741333.9145246,
+            "surface": "target"
+          },
+          {
+            "epoch": 1792741335.529829,
+            "surface": "target"
+          },
+          {
+            "epoch": 1792741337.0940192,
+            "surface": "pending"
+          },
+          {
+            "epoch": 1792741338.8472602,
+            "surface": "target"
+          }
+        ]
+      }
+    ],
+    "productionAttempts": [
+      {
+        "name": "111",
+        "slot": "app2",
+        "status": "skipped_unready",
+        "seconds": 1
+      },
+      {
+        "name": "111",
+        "slot": "app1",
+        "status": "passed",
+        "notes": 16,
+        "seconds": 179,
+        "settingsRestored": true,
+        "ownLockReleased": true
+      },
+      {
+        "name": "123",
+        "slot": "app2",
+        "status": "blocked_verification",
+        "seconds": 54,
+        "settingsRestored": false
+      },
+      {
+        "name": "111",
+        "slot": "app2",
+        "status": "passed",
+        "notes": 6,
+        "seconds": 113,
+        "settingsRestored": true,
+        "ownLockReleased": true
+      }
+    ],
+    "productionAttemptVersion": "rc18, not rc21",
+    "transportFailure123": {
+      "originalTaskRemainsFailed": true,
+      "laterSettingsVerified": true,
+      "ledgerRetainedByRename": true,
+      "phoneSettingsWritten": false
+    },
+    "finalReconciliation": {
+      "at": "2026-10-23T07:45:19.241380+00:00",
+      "ownedJobs": 3,
+      "ownedActiveLocks": 0,
+      "allJobsTerminal": true,
+      "allSettingsRestored": true
+    },
+    "runtimeHashesMatched": 12,
+    "globalPendingLedgers": 0,
+    "localRollbackRehearsal": true,
+    "newCandidateLiveTest": false,
+    "externalCloudAndAgentChangeReviewed": true,
+    "sharedServicesRestartedByUs": false
+  },
+  "rc21Deployment": {
+    "status": "deployed_targeted_validation_complete_with_transport_block",
+    "version": "xhs-compat-20261023-deployed.3",
+    "sourceCommit": "bbf87e9fc3e38278ca84682dcb58fbe526d9547b",
+    "candidateTag": "xhs-compat-20261023-rc.21",
+    "runtimeSHA256": "0f17e54d9ec84949f987682d44ba4886c1bc8a3b1a8bcb5a4bc3ec42595bc83e",
+    "rollbackSHA256": "3b1778ffa3837798d3c80f69072fa128f29233107c13bb50ac9529d51aee0187",
+    "backup": "D:\\PhoneCloud\\backups\\xhs-compat-20261023-deployed.3",
+    "changedRuntimeFiles": [
+      "scripts/小红书数据同步.py"
+    ],
+    "servicesRestarted": false,
+    "attempts": [
+      {
+        "name": "111",
+        "slot": "app1",
+        "phase": "single",
+        "status": "passed",
+        "notes": 16,
+        "scrolls": 5,
+        "seconds": 173,
+        "complete": true,
+        "stopReason": "older_than_window_visible",
+        "settingsRestored": true,
+        "ownLockAcquired": true,
+        "ownLockReleased": true,
+        "startedAt": "2026-10-23T07:50:41.330467+00:00",
+        "finishedAt": "2026-10-23T07:53:34.187487+00:00"
+      },
+      {
+        "name": "123",
+        "slot": "app2",
+        "phase": "pair",
+        "status": "blocked_verification",
+        "seconds": 54,
+        "settingsRestored": false,
+        "ownLockAcquired": true,
+        "startedAt": "2026-10-23T07:53:39.899310+00:00",
+        "finishedAt": "2026-10-23T07:54:34.034374+00:00"
+      },
+      {
+        "name": "111",
+        "slot": "app2",
+        "phase": "pair",
+        "status": "cancelled",
+        "seconds": 91,
+        "settingsRestored": true,
+        "ownLockAcquired": true,
+        "ownLockReleased": true,
+        "startedAt": "2026-10-23T07:53:39.899784+00:00",
+        "finishedAt": "2026-10-23T07:55:10.790250+00:00"
+      },
+      {
+        "name": "121",
+        "slot": "app2",
+        "phase": "pair",
+        "status": "passed",
+        "notes": 0,
+        "scrolls": 0,
+        "seconds": 108,
+        "complete": true,
+        "stopReason": "older_than_window_visible",
+        "settingsRestored": true,
+        "ownLockAcquired": true,
+        "ownLockReleased": true,
+        "startedAt": "2026-10-23T07:56:21.074728+00:00",
+        "finishedAt": "2026-10-23T07:58:08.680516+00:00"
+      },
+      {
+        "name": "111",
+        "slot": "app2",
+        "phase": "pair",
+        "status": "passed",
+        "notes": 6,
+        "scrolls": 1,
+        "seconds": 108,
+        "complete": true,
+        "stopReason": "older_than_window_visible",
+        "settingsRestored": true,
+        "ownLockAcquired": true,
+        "ownLockReleased": true,
+        "startedAt": "2026-10-23T07:56:21.073462+00:00",
+        "finishedAt": "2026-10-23T07:58:09.438517+00:00"
+      },
+      {
+        "name": "132",
+        "slot": "app1",
+        "phase": "remaining",
+        "status": "passed",
+        "notes": 79,
+        "scrolls": 34,
+        "seconds": 896,
+        "complete": true,
+        "stopReason": "older_than_window_visible",
+        "settingsRestored": true,
+        "ownLockAcquired": true,
+        "ownLockReleased": true,
+        "startedAt": "2026-10-23T07:58:10.183909+00:00",
+        "finishedAt": "2026-10-23T08:13:05.800216+00:00"
+      },
+      {
+        "name": "132",
+        "slot": "app2",
+        "phase": "remaining",
+        "status": "passed",
+        "notes": 19,
+        "scrolls": 7,
+        "seconds": 219,
+        "complete": true,
+        "stopReason": "older_than_window_visible",
+        "settingsRestored": true,
+        "ownLockAcquired": true,
+        "ownLockReleased": true,
+        "startedAt": "2026-10-23T08:13:05.803911+00:00",
+        "finishedAt": "2026-10-23T08:16:45.241626+00:00"
+      }
+    ],
+    "uniqueSlots": 6,
+    "passedSlots": 5,
+    "completeNotes": 120,
+    "transportBlockedSlots": [
+      "123/app2"
+    ],
+    "cancelledAttempts": 1,
+    "cancelledCause": "batch peer cancelled after 123 transport made cleanup unproven; separate verified retry retained",
+    "123Reconciliation": {
+      "originalTaskRemainsFailed": true,
+      "settingsRestoredAfterReconnect": true,
+      "ledgerRetainedByRename": true,
+      "phoneSettingsWritten": false
+    },
+    "startupRetryLiveTriggered": false,
+    "notification121": "notification_prompt_back before native_accessibility_action:menu; late-after-menu branch not triggered",
+    "loadingTimeoutsInSuccessfulJobs": 0,
+    "allSuccessfulWindowsComplete": true,
+    "finalReconciliation": {
+      "at": "2026-10-23T08:16:52.909195+00:00",
+      "ownedJobs": 7,
+      "ownedActiveLocks": 0,
+      "allJobsTerminal": true,
+      "allSettingsRestored": true
+    },
+    "runtimeHashesMatched": 12,
+    "globalPendingLedgers": 0,
+    "cloudHashUnchanged": true,
+    "daily95PercentProven": false
+  },
+  "oct26ReadOnlyFollowup": {
+    "at": "2026-10-26T02:48:00.390Z",
+    "status": "blocked_before_dispatch_device_physically_absent",
+    "target": "123/app2",
+    "targetBindingUnchanged": true,
+    "cloudAndWindowsCacheAgree": true,
+    "lastSeenAt": "2026-10-23T08:49:32.921Z",
+    "newJobsCreated": 0,
+    "adbClientCommands": 0,
+    "phoneActions": 0,
+    "deploymentPerformed": false,
+    "collectorSHA256": "0f17e54d9ec84949f987682d44ba4886c1bc8a3b1a8bcb5a4bc3ec42595bc83e",
+    "runtimeChangedSinceOct23": [
+      "src/index.mjs"
+    ],
+    "cloudSourceChangedSinceOct23": true,
+    "cloudSourceSHA256": "505a13a2fbc228dd45a7db933fa13c589667282a5a252ced880bbde4b1032077",
+    "systemIdentityVerified": true,
+    "agentPid": 27236,
+    "adbPid": 20316,
+    "globalPendingLedgers": 0,
+    "otherTargetsInventory": "111/121/132 online and free at read; no new live collection",
+    "sourceReviewPendingBeforeFutureDispatch": true,
+    "rootPreexistingStatusPreserved": true
+  }
+}

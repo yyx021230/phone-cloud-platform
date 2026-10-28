@@ -1,0 +1,95 @@
+{
+  "status": "local_candidate_navigation_verified_collection_skipped",
+  "candidateTag": "xhs-compat-20261019-rc.3",
+  "candidateCommit": "resolve immutable annotated tag",
+  "branch": "codex/xhs-compatibility-fix-20261015",
+  "baselineCommit": "7068f25ffa0ac09f4af84522e1458fb685a20436",
+  "baselineTag": "xhs-compat-20261016-rc.2",
+  "preparedOn": "2026-10-19",
+  "deviceEvidenceDate": "2026-10-16",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "sourceHashes": {
+    "windows-agent/scripts/小红书数据同步.py": "ab12f129cfc958439901eb316e47475035e65322e0a6e2b23d9e941996cd621b",
+    "windows-agent/scripts/test_xhs_data_sync.py": "286caa7583252811cf3d455498430fb9148ce772b5d74dfe8cf1ed2356a06ab4",
+    "windows-agent/scripts/fixtures/xhs/creator-growth-account-overlay.xml": "2179be2b5d82fdacc12511ea5eb9fe23175b047e448049a72b0a281c3ba694d2"
+  },
+  "stageManifest": {
+    "candidate.py": "ab12f129cfc958439901eb316e47475035e65322e0a6e2b23d9e941996cd621b",
+    "navigation-qa.py": "0a22e4bb3bb1f82a97b2b2114699b68bd5fc2e858f20342ee94bbf4f008b1807",
+    "target-plan.json": "d34216500eb220ca500cf1dd6c64e6bc9d5ed5fc7d681bdf822ff9dfc4f19057"
+  },
+  "deviceTest": {
+    "scope": "single current-page navigation, no full collection",
+    "phone": "107",
+    "slot": "app2",
+    "events": [
+      "collection_slot_requested:app2",
+      "clone_user_requested:999",
+      "clone_slot_selected:app2",
+      "growth_center_deferred"
+    ],
+    "collection": false,
+    "growthPresentBefore": true,
+    "growthPresentAfter": false,
+    "accountAbnormalAfter": true,
+    "permissionHintAfter": true,
+    "latestNotesAfter": false,
+    "error": "creator account shows abnormal status and no latest-notes entry",
+    "outcome": "stopped"
+  },
+  "deviceTestLimit": "Current-page ensure_creator_list only;not full collect/main/consumer/production queue. No data snapshot, no zero-post claim. No permissions enrolled. QA driver contains no settings calls.",
+  "artifacts": {
+    "175046-current.png": "bffc90bf43823a5f38b58fd2baa757618eeeae018c5bd5d5ec1f97192c18ba98",
+    "initial-modal.xml": "ad51a68abe5be6508aedef0c974cd118793cb42b4fa0003696b0051f69345c04",
+    "v29-after-navigation.png": "526d961bac98c8955dcdbfe783d588348315191362c8f8c2ec68d4df1de35fd0",
+    "v29-navigation-00.xml": "0efdf6a711799056c92e4fdf54215522c02c5c8010b9008371ed668bb81ae3cd",
+    "v29-navigation-03.xml": "0259f4aa93647575e68d5ba185a570655f9caa7e00e0d28b1d6f093103a39d18",
+    "v29-navigation-result.json": "185008731384acc4f48294d049f6e40d259d1b2408278a0f2f7de2532ed8ee54"
+  },
+  "checks": {
+    "python": {
+      "command": "python3 -m unittest discover -s windows-agent/scripts -p 'test_xhs*.py'",
+      "passed": 217,
+      "failed": 0
+    },
+    "consumer": {
+      "command": "node --test windows-agent/src/xhs-data-collection.test.mjs",
+      "passed": 11,
+      "failed": 0
+    },
+    "rootSyntaxCheck": "passed",
+    "diffCheck": "passed",
+    "oldBaselineReplay": "new regression reproduces early account exit without dismissing modal; mocked ADB only",
+    "review": "self-review only"
+  },
+  "scopeInvariants": {
+    "productionDeployment": false,
+    "remotePush": false,
+    "productionFileWrites": false,
+    "sharedAgentCodeChanges": false,
+    "adbIdentityKeyEnvironmentStartupChanges": false,
+    "sharedServiceRestarts": false,
+    "frozenControlMediaChanges": false,
+    "additionalDeviceRetests": [],
+    "explicitSkips": [
+      "74",
+      "81",
+      "188",
+      "152"
+    ]
+  },
+  "unverified": [
+    "No complete107 data collection; actual page still shows account abnormal and permission hint without latest notes",
+    "No new two-device/full-fleet/production-queue/PG acceptance",
+    "Final remote8-file hash/Agent identity/global pending-ledger review not completed after SSH session loss; rc.2 historical values are not current verification"
+  ],
+  "previous45CountsUnchanged": {
+    "passed": 21,
+    "skipped": 19,
+    "blocked": 5
+  },
+  "rollback": {
+    "candidateCodeAndTests": "7068f25ffa0ac09f4af84522e1458fb685a20436",
+    "production": "No production changes performed; do not perform production rollback."
+  }
+}

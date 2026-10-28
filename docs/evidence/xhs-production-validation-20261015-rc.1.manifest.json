@@ -1,0 +1,97 @@
+{
+  "recordId": "xhs-production-validation-20261015-rc.1",
+  "status": "local-docs-only-record; production inventory checked with failures and skips; not a business release",
+  "branch": "codex/xhs-production-full-test-20261015",
+  "annotatedTag": "xhs-production-validation-20261015-rc.1",
+  "gitCommit": "resolve immutable annotatedTag after commit; exact commit and tag object saved in private version receipt",
+  "createdAtUtc": "2026-10-15T06:31:28.936014+00:00",
+  "documentationBaselineCommit": "c91028ccc3325617fd03eff51324c27bd21851b6",
+  "sharedBaseline": {
+    "branch": "codex/sms-notification-library",
+    "head": "6811aef632eeaaacd6d6ce1effc4afa64bf6d363",
+    "mainDocSha256Before": "539296963836ba16016a2d9cbbeb4ec2eaf039628aaa815a5ac6c7b82663307d",
+    "existingDirtyWorkPreserved": true
+  },
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "productionBaseline": {
+    "startVersion": "lookup-readiness-20261015-deployed.1",
+    "startImage": "sha256:73b24327c093d52da3fa8d0b75ed6c164cf66cb47c8f8512ed33e78cd9ef8f39",
+    "startCloudHashes": {
+      "server/index.mjs": "1febfac64d90ddc4795b040e06abdf42949b0bfeed44e6630f0b38d4e03cdaee",
+      "server/automation-center.mjs": "7c9de128f64f142988f12d5dcdd1138c510ab76e90a4ac6b0b423076896fa7cd",
+      "server/xhs-data-collection.mjs": "17738a1f2f9fb2eb93ba4ba89f4e563f53d9b0a8313087fdfa6a1c620a55a49a",
+      "public/xhs-data-collection-ui.js": "7be06e984b25ec61fa4e7004433f92c076c1acbb5a821e6cd979e539d955201f",
+      "public/app.js": "508c4a3086ec7cf5e8503f4af305dc7841472fcace9aaa0aa7a2e0906d79f13c",
+      "public/index.html": "0fdd50833275113a0dc21f069aac261b7bb3c58a37784816bb2d16a349c59a55"
+    },
+    "endVersion": "lookup-readiness-20261015-deployed.8-agent.1",
+    "endImage": "sha256:a34bcdbbd7059b391d2dd104d5c02f4e48fd47db1ebb47e309ef2eb0a2802320",
+    "endBusinessSourceCommit": "373729203e65714c1985d38cb7c9ffba416b159f",
+    "endRuntimeCandidateCommit": "9d49e66799bfaa3a68d9f57a0fea64052d888ea3"
+  },
+  "result": {
+    "plannedPhones": 125,
+    "plannedSlots": 250,
+    "passedPhones": 60,
+    "passedSlots": 90,
+    "noteRecords": 1336,
+    "skippedSlots": 113,
+    "failedSlots": 45,
+    "excluded152": 2,
+    "submittedPlatformJobs": 202
+  },
+  "filesSha256": {
+    "docs/PROJECT_DEVELOPMENT.md": "db81b66a792eb73824fce79ae0233f69abcc515dafb7be50114af68247d881a4",
+    "docs/XHS_PRODUCTION_FULL_TEST_20261015.md": "ab81aba178bccb3368868a2d1e679f2154d624419fedb04789cecafdaf0f67d0",
+    "docs/evidence/xhs-production-full-test-20261015.json": "8a65e44bc30ae82b6a37e7d6378e170a836a780797e9a00a06fbb80283caf6ab"
+  },
+  "privateEvidenceSha256": {
+    "local-xhs-node.log": "a36beacddadae2a8ff4d4de2223ff6fd9772caac89b87075c0479640e65e1c2d",
+    "local-xhs-node-retry.log": "e880b23e4e907d3900a58e986c22b4bdb8bccf8ec601b3e10ad0f8abed55e68c",
+    "local-xhs-python.log": "b1695f8438fa1c9562f65628a51c8f65f63c49af7bd79bcae68467cfc383e6d5",
+    "qa-recovery-guard-tests.log": "4a35d1d86e13932b2470f7139b638561191d6c6d20ed16ad5634bce2d7c37a81",
+    "qa-terminal-read-guard-tests.json": "901edaa5ad96d2249b04e9b07ebf5ec69b374d147b4b402b56a03af14da37ffa",
+    "final-audit-summary.json": "ae1fae7d89940fad23a0f6ce870aca0d6646d89c0a8f3cba4ec78e20f5081c66",
+    "document-review-checks.json": "736878e1fde4035d60f49ea607f5055d98c10d5f7177f3d0b1ee64586ce5eae7",
+    "results.jsonl": "f77f501b37163fa4bc04a620f26829d13e5df3404f521162b3ef9510f4cc6c72",
+    "当天采集结果-20261015.json": "038ebe66ab4fec8ba8d18610379cbfc4423942e856d113d4aa2580602d41ce58",
+    "102-clone-preflight-correction.json": "78bf9467c3dba07ee88cd509bc4642f24bb1297d0d219002cf8a3fa0fbc03b9b",
+    "shared-main-only-this-turn.patch": "50e3900e58a4341c0a3bd46ddf1b0413faf9c1c7f97e7ebf78782ee3ab7fe1f1"
+  },
+  "verification": {
+    "atUtc": "2026-10-15T06:28:47.379061+00:00",
+    "persistedJobs": 202,
+    "allOwnedJobsTerminal": true,
+    "activeOwnedLocks": 0,
+    "passedCollectionsCompared": 90,
+    "allComparedCollectionsEqual": true,
+    "pendingOwnedSettingsLedgers": 0,
+    "otherPendingSettingsLedgers": 0,
+    "cloudHashesUnchanged": true,
+    "windowsHashesUnchanged": true,
+    "agentAndAdbIdentityUnchanged": true,
+    "healthStatus": 200,
+    "readyStatus": 200,
+    "activeVersion": "lookup-readiness-20261015-deployed.8-agent.1",
+    "imageId": "sha256:a34bcdbbd7059b391d2dd104d5c02f4e48fd47db1ebb47e309ef2eb0a2802320"
+  },
+  "review": "self-review; all 250 sanitized rows validated; no independent second reviewer claimed",
+  "release": "No production code edits, deployment, push, direct SQL mutation, migration or restart initiated by this task. Existing API tasks and snapshots were persisted normally. External release changes are recorded separately.",
+  "rollback": "No business release to roll back. Original settings recovered from exact owned ledgers; recovery receipts retained. Keep test history; do not delete production data. Docs-only commit can be reverted without changing runtime.",
+  "recoveryEvidenceSha256": {
+    "114-settings-recovery-main.json": "45e8417a57549cb4ca166f1db9ca3438636eaf706c14ad6dc2ba82dd8522381c",
+    "114-settings-recovery.json": "92f1c0301f1645e8bdd168e0f1dda8024bd82f3cb089edba7c3e728be2ec65ad",
+    "116-app1-491b998d-0575-4eb4-8eba-cf18474dfe9e-settings-recovery.json": "008178ab903bd3dea3e21293d2f02c0341ae50853454de6e23919f2a72719e54",
+    "123-app1-96356bad-1fe1-42c0-abfd-04b002d642d1-settings-recovery.json": "65aed34595c609f63cea47054957727586a1070fe88e3f27847d25bb6c6f30e1",
+    "123-app2-5c12b343-51da-46fb-aa1c-8ce553cdaf18-settings-recovery.json": "c27fecf22f6cc7a7e89ac6dca45a366434a4d24d1b7de9036216d0675752bf8b",
+    "127-app1-8b3b32fa-958c-479d-8cac-0626d2956c3f-settings-recovery.json": "e07a72f37cbf31d431e24dcc4bae0c85cf23cda470ed3c34d5a10fad0c85adfb",
+    "127-app2-79f0b30d-30ed-4389-b75d-f2a1ae79773c-settings-recovery.json": "2a5beaad0a10982b34e56a32c9507a30ad06dfada84e9ab9046656727ad19b2e",
+    "130-app1-46eac112-f9b9-45ca-9cfc-b202b69b13bd-settings-recovery.json": "ce60d50671800c859028e67c356604f1cb5858ece1d3a3be4845dde0297a740b",
+    "130-app2-521c1ba7-19d4-48b7-8696-d7944e42c3e8-settings-recovery.json": "4306438c637ab14607e855e6eb414df0b123de37b5f5e79e2097f6334d4fb0d7"
+  },
+  "qaControllerSha256": {
+    "availability-controller.py": "d17f204426df991136e1be3aca0887676101a2115ac1a2248d53eedc3fba2fff",
+    "resume4-controller.py": "d17f204426df991136e1be3aca0887676101a2115ac1a2248d53eedc3fba2fff",
+    "resume5-controller.py": "d17f204426df991136e1be3aca0887676101a2115ac1a2248d53eedc3fba2fff"
+  }
+}

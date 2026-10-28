@@ -1324,18 +1324,25 @@ async function routeApi(req, res, url) {
     const ctx = requireAuth(req, ["user", "admin"]);
     if (expireAutomationJobs()) runtimeSaveScheduler.mark();
     if (req.method === "GET") {
-      return json(res, 200, { tasks: state.automationJobs
-        .filter((job) => job.kind === "xhs_data_collect" && job.userId === ctx.userId)
+      const reference = url.searchParams.get("clientRequestId");
+      if (reference !== null && !/^[A-Za-z0-9_.:-]{8,120}$/.test(reference)) return json(res, 400, { error: "invalid_collection_reference" });
+      return json(res, 200, { batchContract: { version: 1, expectedXhsId: true, identitySnapshot: true, submissionLookup: true }, tasks: state.automationJobs
+        .filter((job) => job.kind === "xhs_data_collect" && job.userId === ctx.userId && (reference === null || job.clientRequestId === reference))
         .slice(0, 30).map(publicDataCollectionJobSummary) });
     }
     const input = await readJson(req);
     if (!["app1", "app2"].includes(input.xhsAppSlot)) return json(res, 400, { error: "invalid_xhs_app_slot" });
+    if (input.clientRequestId !== undefined && (typeof input.clientRequestId !== "string" || !/^[A-Za-z0-9_.:-]{8,120}$/.test(input.clientRequestId))) return json(res, 400, { error: "invalid_collection_reference" });
+    if (input.clientRequestId && state.automationJobs.some(job => job.kind === "xhs_data_collect" && job.userId === ctx.userId && job.clientRequestId === input.clientRequestId)) return json(res, 409, { error: "collection_reference_already_used" });
     const device = state.devices.find((item) => item.deviceId === input.deviceId);
     if (!device || !isDeviceListed(device) || !hasWindowsAdbBinding(device) || !isAdbOnline(device)) {
       return json(res, 409, { error: "device_not_available" });
     }
     const account = (device.xhsAccounts || []).find((item) => item.appSlot === input.xhsAppSlot && item.enabled !== false);
     if (!account) return json(res, 409, { error: "xhs_account_slot_not_available" });
+    if (input.expectedXhsId !== undefined && input.expectedXhsId !== account.xhsId) {
+      return json(res, 409, { error: "xhs_account_binding_changed" });
+    }
     const agent = state.windowsAgents.find((item) => item.agentId === device.adb.agentId);
     if (!hasXhsDataCollectionCapability(agent)) return json(res, 409, { error: "xhs_data_agent_update_required" });
     const conflict = activeDeviceLockForTask(device.deviceId);
@@ -1343,6 +1350,7 @@ async function routeApi(req, res, url) {
     const job = createAutomationJob({ kind: "xhs_data_collect", userId: ctx.userId,
       deviceId: device.deviceId, xhsAppSlot: account.appSlot, xhsAccountLabel: account.label,
       xhsAccountId: account.xhsId, xhsAccountName: account.accountName, title: "小红书数据采集" });
+    if (input.clientRequestId) job.clientRequestId = input.clientRequestId;
     const lock = acquireAutomationDeviceLock(device, job, ctx, { ttlMs: XHS_DATA_COLLECTION_TTL_MS });
     const windowsTask = queueAutomationWindowsTask(device, job);
     const audit = addAudit("user_xhs_data_collect_create", ctx, { jobId: job.jobId, deviceId: job.deviceId, xhsAppSlot: job.xhsAppSlot });

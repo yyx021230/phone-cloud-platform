@@ -1,0 +1,1429 @@
+{
+  "status": "local_candidate_retest_finished_with_explicit_blockers",
+  "candidateTag": "xhs-compat-20261016-rc.2",
+  "candidateCommit": "resolve immutable annotated tag",
+  "branch": "codex/xhs-compatibility-fix-20261015",
+  "baselineCommit": "99b4151bdf65d8e1ca4354594f01434fe60eab57",
+  "previousCandidateCommit": "91b3d3e0ae623197f45747136017e17710a51183",
+  "previousCandidateTag": "xhs-compat-20261016-rc.1",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "localBaselineFiles": {
+    "windows-agent/scripts/小红书数据同步.py": "bb459e3570d4201434bbbf05841c8b2b9d3864a3febc25b414780f9d84c710fc",
+    "windows-agent/scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+    "windows-agent/scripts/test_xhs_data_sync.py": "2503df786116260c8b177eaa64df45550bc6ac20cb4de97c2eec47b44e13e844",
+    "windows-agent/scripts/test_xhs_list_ocr.py": "1637a61ceeff6ceb2ac66bb6d5c571fe13641f04c6c41e8f57f68b7b31a8a585",
+    "docs/PROJECT_DEVELOPMENT.md": "db81b66a792eb73824fce79ae0233f69abcc515dafb7be50114af68247d881a4"
+  },
+  "productionBaselineHashes": {
+    "scripts/小红书数据同步.py": "bb459e3570d4201434bbbf05841c8b2b9d3864a3febc25b414780f9d84c710fc",
+    "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+    "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+    "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+    "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+    "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+    "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+    "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+  },
+  "sourceHashes": {
+    "windows-agent/scripts/小红书数据同步.py": "b41513f2f9ec28f372e9afc3fbe713d953b20781e2f423727992b9474259242a",
+    "windows-agent/scripts/xhs_list_ocr.py": "2fc9b71a40870f78e65c3879c04fea10b7ece89ef9e77a4fdf884e8a8276fa22",
+    "windows-agent/scripts/xhs_ocr_digits.png": "da0c0a42892d0dd356965fa44c9521e4398a6e67985545908a133e410de708c2",
+    "windows-agent/scripts/test_xhs_compatibility_20261015.py": "622ffca122934ea837d631710fb1339e66576b8459a45f70cd71c227ddb2077d",
+    "windows-agent/scripts/test_xhs_list_ocr.py": "f9e232dad6f067da29f0b81fd691d7b5319cb7303d2e08d4fa7c005ad01776f1",
+    "windows-agent/scripts/test_xhs_data_sync.py": "e650ea320fa17c3d9b08539feada854ace701e9640ba9b529a34f4f5bf03156f",
+    "windows-agent/scripts/fixtures/xhs/counts-720.json": "39443bd4b64d165d543f67da7070ba938bab68c08b032804be324b7e35a353fd",
+    "windows-agent/scripts/fixtures/xhs/counts-720.png": "bcfae52bfdb0114956a2f87e327d34c0b3aef16bfb4d08ffb99f5b5f2c8f7073",
+    "windows-agent/scripts/fixtures/xhs/vivo-browser-location-permission.xml": "5344d70e0bb1fb87e5c0a9616b098dcf45b86acb5c9791fad211b3d0e75609a1"
+  },
+  "stageManifest": {
+    "collector.py": "154d960d04b4ced6a732e67aab69963723e64b9f8e71bb1de179086176e7e63c",
+    "qa_adb_guard.py": "42bb0d99cc4a31e7a2bfde6744f6e0d62dd0af66e35414183d24c09642aee6f0",
+    "fleet.mjs": "22d266e981c1e162d9e008cc60ad4164619e8795bfed5a912715623d6f4dc6a7",
+    "targets.json": "ec410e80eb2caaef488b0588e8b317ac765574c3570ba107347b14c376471f2d",
+    "candidate.py": "b41513f2f9ec28f372e9afc3fbe713d953b20781e2f423727992b9474259242a",
+    "xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+    "xhs_list_ocr.py": "2fc9b71a40870f78e65c3879c04fea10b7ece89ef9e77a4fdf884e8a8276fa22",
+    "xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+    "xhs_ocr_digits.png": "da0c0a42892d0dd356965fa44c9521e4398a6e67985545908a133e410de708c2"
+  },
+  "counts": {
+    "passed": 21,
+    "skipped": 19,
+    "blocked": 5
+  },
+  "categories": {
+    "skipped_permission": 1,
+    "skipped_login": 5,
+    "blocked_loading": 5,
+    "passed": 21,
+    "skipped_server": 2,
+    "skipped_user": 3,
+    "skipped_account": 3,
+    "skipped_device": 4,
+    "skipped_busy": 1
+  },
+  "results": [
+    {
+      "phone": "6",
+      "slot": "app1",
+      "status": "skipped_permission",
+      "reason": "账号未开通数据权限",
+      "stage": "xhs-compat-fix-20261015-v1",
+      "startedAt": "2026-10-15T10:15:27.198Z",
+      "finishedAt": "2026-10-15T10:15:57.615Z",
+      "settingsRestored": true,
+      "receiptSha256": "b4be0b13f0fbefb0527251f4ff7f7d3f71a7b93a0168d8409bf61f574818fbdd",
+      "recoveryEvents": [],
+      "executedSourceHashes": {
+        "candidate.py": "52d614e5de86a9e4020825a170f0d94cc018e0d676ee367de54028b281656dbd",
+        "xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+        "xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164"
+      }
+    },
+    {
+      "phone": "13",
+      "slot": "app1",
+      "status": "skipped_login",
+      "reason": "未登录，等待人工登录",
+      "stage": "xhs-compat-fix-20261015-v7",
+      "startedAt": "2026-10-16T01:13:47.257Z",
+      "finishedAt": "2026-10-16T01:14:16.994Z",
+      "settingsRestored": true,
+      "receiptSha256": "cf3a934e81e3df00268d4b80f80d95f471b2a9a4f054bb4d2874474c102a4419",
+      "recoveryEvents": [],
+      "executedSourceHashes": {
+        "candidate.py": "fba766cbc712a4e83f81923f74b249477fd1c275ca4dfce81307bb6d4f1463f1",
+        "xhs_list_ocr.py": "20a9bd9457ae929b5478e8cc75a3ce57ce9aeb54330eefda4663521006f2a364",
+        "xhs_ocr_digits.png": "22169bc382d98b0601f74fff3d98fe5068dbfd3b014538dbf73dc90ae3f4716d"
+      }
+    },
+    {
+      "phone": "13",
+      "slot": "app2",
+      "status": "blocked_loading",
+      "reason": "页面未提供可证明的作品列表；加载原因未确认，不计0篇",
+      "stage": "xhs-compat-fix-20261015-v26",
+      "startedAt": "2026-10-16T06:28:45.012Z",
+      "finishedAt": "2026-10-16T06:30:59.330Z",
+      "settingsRestored": true,
+      "receiptSha256": "dd632c1ea560910afeb136b9b0952495bba795d322adeb277179153142064a44",
+      "recoveryEvents": [],
+      "executedSourceHashes": {
+        "candidate.py": "cd68dcb8c9e0cd7d2a3fc097374dcd10fd1c30bae4d677ced101e23de98cd793",
+        "xhs_list_ocr.py": "86b922c0d69cbc6e64b0808c69c9c592c3ee630df785a0309d805957f75c391c",
+        "xhs_ocr_digits.png": "da0c0a42892d0dd356965fa44c9521e4398a6e67985545908a133e410de708c2"
+      }
+    },
+    {
+      "phone": "14",
+      "slot": "app2",
+      "status": "passed",
+      "reason": "",
+      "stage": "xhs-compat-fix-20261015-v11",
+      "startedAt": "2026-10-16T01:55:23.093Z",
+      "finishedAt": "2026-10-16T01:57:35.463Z",
+      "settingsRestored": true,
+      "receiptSha256": "30c8139469fe87fa488f8c3a2463689689e23bd74834747c9be736f006746576",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "windowStart": "2026-09-17",
+      "windowEnd": "2026-10-16",
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range",
+        "list_read_with_local_image_recognition"
+      ],
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app2",
+        "xhs_cold_started",
+        "clone_user_requested:999",
+        "clone_slot_selected:app2",
+        "profile_zero_bounds_image_selected",
+        "creator_overview_opened_without_latest_notes",
+        "works_image_probe_unproven:OCR works-list header is not unique: 全部笔记",
+        "data_center_works_tab_selected",
+        "works_image_probe_unproven:OCR works list has no proven complete cards or empty/end marker",
+        "data_center_works_tab_selected",
+        "works_list_image_reader_active",
+        "creator_overview_reopened",
+        "data_center_works_tab_selected",
+        "list_reopened_at_newest",
+        "collection_scan_as_of:2026-10-16",
+        "proximity_guard_temporarily_disabled"
+      ],
+      "executedSourceHashes": {
+        "candidate.py": "5fb48a7c58a5a1b7aa0113cc1ebf3f304237fc442575f39927b5d6f3d20fd462",
+        "xhs_list_ocr.py": "2cb099e485445aa594e5c9585b4dda2eff23d8d7187c7048ab883bd1f4346a26",
+        "xhs_ocr_digits.png": "a8f0fbe67adce89f037c2427c83865aa07baf384923bcea8b3b0db72af7805c4"
+      }
+    },
+    {
+      "phone": "18",
+      "slot": "app1",
+      "status": "blocked_loading",
+      "reason": "页面未提供可证明的作品列表；加载原因未确认，不计0篇",
+      "stage": "xhs-compat-fix-20261015-v25",
+      "startedAt": "2026-10-16T06:21:01.388Z",
+      "finishedAt": "2026-10-16T06:22:20.499Z",
+      "settingsRestored": true,
+      "receiptSha256": "0609ba3474bb6023f7fb980918b05e1671148610c9f5d79006bb630a2467fde1",
+      "recoveryEvents": [],
+      "executedSourceHashes": {
+        "candidate.py": "d6c2dbf139f6a584d7e1d343c06fb73fdc25922025efbc9f8126845debb43f78",
+        "xhs_list_ocr.py": "86b922c0d69cbc6e64b0808c69c9c592c3ee630df785a0309d805957f75c391c",
+        "xhs_ocr_digits.png": "da0c0a42892d0dd356965fa44c9521e4398a6e67985545908a133e410de708c2"
+      }
+    },
+    {
+      "phone": "20",
+      "slot": "app1",
+      "status": "passed",
+      "reason": "",
+      "stage": "xhs-compat-fix-20261015-v18",
+      "startedAt": "2026-10-16T03:01:55.111Z",
+      "finishedAt": "2026-10-16T03:06:23.622Z",
+      "settingsRestored": true,
+      "receiptSha256": "91a4b9caf638735d800a2d1ab5540d5662c1445fd0e1c9b9e4ffcc93125605b9",
+      "notes": 73,
+      "scrolls": 18,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "windowStart": "2026-09-17",
+      "windowEnd": "2026-10-16",
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range"
+      ],
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app1",
+        "unsecured_keyguard_dismissed",
+        "xhs_cold_started",
+        "profile_zero_bounds_image_selected",
+        "works_image_probe_unproven:OCR works-list header is not unique: 全部笔记",
+        "data_center_works_tab_selected",
+        "list_reopened_at_newest",
+        "collection_scan_as_of:2026-10-16",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle"
+      ],
+      "executedSourceHashes": {
+        "candidate.py": "c9c9e46225631876cb9a6bfeec4c0c3a5c7a6a3a7054ac00228622086bc9aed9",
+        "xhs_list_ocr.py": "fb39a3a0b15f81e5e798b3f841208779c138fc0bd6600e9f0467c4847833522e",
+        "xhs_ocr_digits.png": "da0c0a42892d0dd356965fa44c9521e4398a6e67985545908a133e410de708c2"
+      }
+    },
+    {
+      "phone": "25",
+      "slot": "app2",
+      "status": "skipped_login",
+      "reason": "未登录，等待人工登录",
+      "stage": "xhs-compat-fix-20261015-v14",
+      "startedAt": "2026-10-16T02:25:27.968Z",
+      "finishedAt": "2026-10-16T02:25:51.898Z",
+      "settingsRestored": true,
+      "receiptSha256": "ef25e1af487360aecd6b1c9462fa48454f725ab69cc676e8ed1b9041a3962f92",
+      "recoveryEvents": [],
+      "executedSourceHashes": {
+        "candidate.py": "072ec45b76916d13f6c6a5cba04df3f909121761c948e049cb800294c6ab2a31",
+        "xhs_list_ocr.py": "924930ac782d0d6565c9e326786ab444b5501b33eb563838e91e4a105e8023a8",
+        "xhs_ocr_digits.png": "a8f0fbe67adce89f037c2427c83865aa07baf384923bcea8b3b0db72af7805c4"
+      }
+    },
+    {
+      "phone": "27",
+      "slot": "app1",
+      "status": "skipped_server",
+      "reason": "前轮明确小红书服务端错误，按用户要求不复测",
+      "evidence": "2026-10-15 production full test; intentionally not retried"
+    },
+    {
+      "phone": "28",
+      "slot": "app2",
+      "status": "passed",
+      "reason": "",
+      "stage": "xhs-compat-fix-20261015-v13",
+      "startedAt": "2026-10-16T02:03:12.007Z",
+      "finishedAt": "2026-10-16T02:04:57.575Z",
+      "settingsRestored": true,
+      "receiptSha256": "5005d5d43028c36f985f9affefe6c391f38702ea2d477392f1c4f9b256bff1b0",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "list_end_visible",
+      "metricsComplete": true,
+      "windowStart": "2026-09-17",
+      "windowEnd": "2026-10-16",
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range",
+        "app_slot_has_no_bound_xhs_account",
+        "list_read_with_local_image_recognition"
+      ],
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app2",
+        "xhs_cold_started",
+        "clone_user_requested:999",
+        "clone_slot_selected:app2",
+        "creator_overview_opened_without_latest_notes",
+        "works_image_probe_unproven:OCR works-list header is not unique: 全部笔记",
+        "data_center_works_tab_selected",
+        "works_list_image_reader_active",
+        "creator_overview_reopened",
+        "data_center_works_tab_selected",
+        "list_reopened_at_newest",
+        "collection_scan_as_of:2026-10-16"
+      ],
+      "executedSourceHashes": {
+        "candidate.py": "5fb48a7c58a5a1b7aa0113cc1ebf3f304237fc442575f39927b5d6f3d20fd462",
+        "xhs_list_ocr.py": "05d7cc550aa72b791cddb0d50138c65d645469fadf0b0d08a8a9bcf2f4384e49",
+        "xhs_ocr_digits.png": "a8f0fbe67adce89f037c2427c83865aa07baf384923bcea8b3b0db72af7805c4"
+      }
+    },
+    {
+      "phone": "32",
+      "slot": "app1",
+      "status": "blocked_loading",
+      "reason": "页面未提供可证明的作品列表；加载原因未确认，不计0篇",
+      "stage": "xhs-compat-fix-20261015-v25",
+      "startedAt": "2026-10-16T06:23:17.955Z",
+      "finishedAt": "2026-10-16T06:24:48.148Z",
+      "settingsRestored": true,
+      "receiptSha256": "fba0b6cd6a7977340afc96a4ff694f3811c63df22cb9e9cfcf26f2cc9e659140",
+      "recoveryEvents": [],
+      "executedSourceHashes": {
+        "candidate.py": "d6c2dbf139f6a584d7e1d343c06fb73fdc25922025efbc9f8126845debb43f78",
+        "xhs_list_ocr.py": "86b922c0d69cbc6e64b0808c69c9c592c3ee630df785a0309d805957f75c391c",
+        "xhs_ocr_digits.png": "da0c0a42892d0dd356965fa44c9521e4398a6e67985545908a133e410de708c2"
+      }
+    },
+    {
+      "phone": "34",
+      "slot": "app1",
+      "status": "passed",
+      "reason": "",
+      "stage": "xhs-compat-fix-20261015-v14",
+      "startedAt": "2026-10-16T02:10:43.744Z",
+      "finishedAt": "2026-10-16T02:11:36.083Z",
+      "settingsRestored": true,
+      "receiptSha256": "cb9d40e6e760610fbcdeeaf47effe59bcdec20bc633123dc962c07cb65a2137d",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "list_end_visible",
+      "metricsComplete": true,
+      "windowStart": "2026-09-17",
+      "windowEnd": "2026-10-16",
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range",
+        "list_read_with_local_image_recognition"
+      ],
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app1",
+        "unsecured_keyguard_dismissed",
+        "xhs_cold_started",
+        "creator_overview_opened_without_latest_notes",
+        "works_image_probe_unproven:OCR works-list header is not unique: 全部笔记",
+        "data_center_works_tab_selected",
+        "works_image_probe_unproven:OCR works list has no proven complete cards or empty/end marker",
+        "creator_overview_reopened",
+        "data_center_works_tab_selected",
+        "list_reopened_at_newest",
+        "works_list_image_reader_active",
+        "collection_scan_as_of:2026-10-16"
+      ],
+      "executedSourceHashes": {
+        "candidate.py": "072ec45b76916d13f6c6a5cba04df3f909121761c948e049cb800294c6ab2a31",
+        "xhs_list_ocr.py": "924930ac782d0d6565c9e326786ab444b5501b33eb563838e91e4a105e8023a8",
+        "xhs_ocr_digits.png": "a8f0fbe67adce89f037c2427c83865aa07baf384923bcea8b3b0db72af7805c4"
+      }
+    },
+    {
+      "phone": "43",
+      "slot": "app1",
+      "status": "passed",
+      "reason": "",
+      "stage": "xhs-compat-fix-20261015-v13",
+      "startedAt": "2026-10-16T02:05:37.490Z",
+      "finishedAt": "2026-10-16T02:06:46.107Z",
+      "settingsRestored": true,
+      "receiptSha256": "b11b2bc0e670b3f9a083288864502c9c183fbb9720def8cbbe15c5312d60044f",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "windowStart": "2026-09-17",
+      "windowEnd": "2026-10-16",
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range"
+      ],
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app1",
+        "unsecured_keyguard_dismissed",
+        "xhs_cold_started",
+        "clone_slot_selected:app1",
+        "creator_overview_opened_without_latest_notes",
+        "works_image_probe_unproven:OCR works-list header is not unique: 全部笔记",
+        "data_center_works_tab_selected",
+        "creator_overview_reopened",
+        "data_center_works_tab_selected",
+        "list_reopened_at_newest",
+        "collection_scan_as_of:2026-10-16"
+      ],
+      "executedSourceHashes": {
+        "candidate.py": "5fb48a7c58a5a1b7aa0113cc1ebf3f304237fc442575f39927b5d6f3d20fd462",
+        "xhs_list_ocr.py": "05d7cc550aa72b791cddb0d50138c65d645469fadf0b0d08a8a9bcf2f4384e49",
+        "xhs_ocr_digits.png": "a8f0fbe67adce89f037c2427c83865aa07baf384923bcea8b3b0db72af7805c4"
+      }
+    },
+    {
+      "phone": "43",
+      "slot": "app2",
+      "status": "skipped_login",
+      "reason": "未登录，等待人工登录",
+      "stage": "xhs-compat-fix-20261015-v13",
+      "startedAt": "2026-10-16T02:06:47.465Z",
+      "finishedAt": "2026-10-16T02:07:14.869Z",
+      "settingsRestored": true,
+      "receiptSha256": "1a0da42c4ea8d9070e2f4aa6bcb7c57ac7a3b09e5b8a371083a762b76151cbfe",
+      "recoveryEvents": [],
+      "executedSourceHashes": {
+        "candidate.py": "5fb48a7c58a5a1b7aa0113cc1ebf3f304237fc442575f39927b5d6f3d20fd462",
+        "xhs_list_ocr.py": "05d7cc550aa72b791cddb0d50138c65d645469fadf0b0d08a8a9bcf2f4384e49",
+        "xhs_ocr_digits.png": "a8f0fbe67adce89f037c2427c83865aa07baf384923bcea8b3b0db72af7805c4"
+      }
+    },
+    {
+      "phone": "47",
+      "slot": "app1",
+      "status": "passed",
+      "reason": "",
+      "stage": "xhs-compat-fix-20261015-v14",
+      "startedAt": "2026-10-16T02:12:00.321Z",
+      "finishedAt": "2026-10-16T02:14:41.306Z",
+      "settingsRestored": true,
+      "receiptSha256": "dcbe6092cf45a071e332c7efeb9b8f4c2c1e4e308e4bd9c36c1b07d8d8268a86",
+      "notes": 36,
+      "scrolls": 9,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "windowStart": "2026-09-17",
+      "windowEnd": "2026-10-16",
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range"
+      ],
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app1",
+        "xhs_cold_started",
+        "list_reopened_at_newest",
+        "collection_scan_as_of:2026-10-16",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_image_probe_unproven:OCR numeral glyph is unproven or ambiguous",
+        "webview_accessibility_refreshed",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "webview_accessibility_refreshed",
+        "works_list_updated_without_filter_toggle",
+        "proximity_guard_temporarily_disabled"
+      ],
+      "executedSourceHashes": {
+        "candidate.py": "072ec45b76916d13f6c6a5cba04df3f909121761c948e049cb800294c6ab2a31",
+        "xhs_list_ocr.py": "924930ac782d0d6565c9e326786ab444b5501b33eb563838e91e4a105e8023a8",
+        "xhs_ocr_digits.png": "a8f0fbe67adce89f037c2427c83865aa07baf384923bcea8b3b0db72af7805c4"
+      }
+    },
+    {
+      "phone": "61",
+      "slot": "app1",
+      "status": "passed",
+      "reason": "",
+      "stage": "xhs-compat-fix-20261015-v13",
+      "startedAt": "2026-10-16T02:06:47.465Z",
+      "finishedAt": "2026-10-16T02:07:42.801Z",
+      "settingsRestored": true,
+      "receiptSha256": "4d5ddc3bf2801c35dfa31adfd396478018a8300bcb607152914df1390f3962ca",
+      "notes": 1,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "list_end_visible",
+      "metricsComplete": true,
+      "windowStart": "2026-09-17",
+      "windowEnd": "2026-10-16",
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range",
+        "app_slot_has_no_bound_xhs_account"
+      ],
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app1",
+        "unsecured_keyguard_dismissed",
+        "xhs_cold_started",
+        "clone_slot_selected:app1",
+        "list_reopened_at_newest",
+        "collection_scan_as_of:2026-10-16"
+      ],
+      "executedSourceHashes": {
+        "candidate.py": "5fb48a7c58a5a1b7aa0113cc1ebf3f304237fc442575f39927b5d6f3d20fd462",
+        "xhs_list_ocr.py": "05d7cc550aa72b791cddb0d50138c65d645469fadf0b0d08a8a9bcf2f4384e49",
+        "xhs_ocr_digits.png": "a8f0fbe67adce89f037c2427c83865aa07baf384923bcea8b3b0db72af7805c4"
+      }
+    },
+    {
+      "phone": "74",
+      "slot": "app2",
+      "status": "skipped_user",
+      "reason": "用户本轮明确跳过；待手机端USB调试授权，不操作"
+    },
+    {
+      "phone": "75",
+      "slot": "app2",
+      "status": "passed",
+      "reason": "",
+      "stage": "xhs-compat-fix-20261015-v28",
+      "startedAt": "2026-10-16T06:38:49.028Z",
+      "finishedAt": "2026-10-16T06:41:13.143Z",
+      "settingsRestored": true,
+      "receiptSha256": "3806b545cc384a2f8621ad5852cb996a56407712e71f9b4c75d66764125460e1",
+      "notes": 31,
+      "scrolls": 6,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "windowStart": "2026-09-17",
+      "windowEnd": "2026-10-16",
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range",
+        "list_read_with_local_image_recognition"
+      ],
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app2",
+        "xhs_cold_started",
+        "clone_user_requested:999",
+        "clone_slot_selected:app2",
+        "list_reopened_at_newest",
+        "works_list_image_reader_active",
+        "collection_scan_as_of:2026-10-16"
+      ],
+      "executedSourceHashes": {
+        "candidate.py": "b41513f2f9ec28f372e9afc3fbe713d953b20781e2f423727992b9474259242a",
+        "xhs_list_ocr.py": "2fc9b71a40870f78e65c3879c04fea10b7ece89ef9e77a4fdf884e8a8276fa22",
+        "xhs_ocr_digits.png": "da0c0a42892d0dd356965fa44c9521e4398a6e67985545908a133e410de708c2"
+      }
+    },
+    {
+      "phone": "80",
+      "slot": "app1",
+      "status": "passed",
+      "reason": "",
+      "stage": "xhs-compat-fix-20261015-v14",
+      "startedAt": "2026-10-16T02:15:19.790Z",
+      "finishedAt": "2026-10-16T02:16:34.097Z",
+      "settingsRestored": true,
+      "receiptSha256": "7eb5548bdc48d6368b810c2d73e961cc96540985a5bfe4e5c2d2448b4c40cef6",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "windowStart": "2026-09-17",
+      "windowEnd": "2026-10-16",
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range"
+      ],
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app1",
+        "unsecured_keyguard_dismissed",
+        "xhs_cold_started",
+        "clone_slot_selected:app1",
+        "creator_overview_opened_without_latest_notes",
+        "works_image_probe_unproven:OCR works-list header is not unique: 全部笔记",
+        "data_center_works_tab_selected",
+        "creator_overview_reopened",
+        "data_center_works_tab_selected",
+        "list_reopened_at_newest",
+        "collection_scan_as_of:2026-10-16"
+      ],
+      "executedSourceHashes": {
+        "candidate.py": "072ec45b76916d13f6c6a5cba04df3f909121761c948e049cb800294c6ab2a31",
+        "xhs_list_ocr.py": "924930ac782d0d6565c9e326786ab444b5501b33eb563838e91e4a105e8023a8",
+        "xhs_ocr_digits.png": "a8f0fbe67adce89f037c2427c83865aa07baf384923bcea8b3b0db72af7805c4"
+      }
+    },
+    {
+      "phone": "81",
+      "slot": "app1",
+      "status": "skipped_user",
+      "reason": "用户本轮明确跳过；待手机端USB调试授权，不操作"
+    },
+    {
+      "phone": "88",
+      "slot": "app2",
+      "status": "passed",
+      "reason": "",
+      "stage": "xhs-compat-fix-20261015-v15",
+      "startedAt": "2026-10-16T02:43:04.831Z",
+      "finishedAt": "2026-10-16T02:44:07.825Z",
+      "settingsRestored": true,
+      "receiptSha256": "93b24d4584f9478dfbf40f82e484f23370b8f003e4f7c976cc54ebf46a9421e7",
+      "notes": 1,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "windowStart": "2026-09-17",
+      "windowEnd": "2026-10-16",
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range"
+      ],
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app2",
+        "unsecured_keyguard_dismissed",
+        "xhs_cold_started",
+        "clone_user_requested:999",
+        "clone_slot_selected:app2",
+        "list_reopened_at_newest",
+        "works_image_probe_unproven:OCR works list has no proven complete cards or empty/end marker",
+        "collection_scan_as_of:2026-10-16"
+      ],
+      "executedSourceHashes": {
+        "candidate.py": "072ec45b76916d13f6c6a5cba04df3f909121761c948e049cb800294c6ab2a31",
+        "xhs_list_ocr.py": "89d48cb9e8a7bc778c886e65fe960c5df44618cd268c8756e505a6b34a057225",
+        "xhs_ocr_digits.png": "15181d5f37f1b82b54e337258d64f94d949474eeaef72f00c6a7b9806f40fdca"
+      }
+    },
+    {
+      "phone": "98",
+      "slot": "app1",
+      "status": "passed",
+      "reason": "",
+      "stage": "xhs-compat-fix-20261015-v15",
+      "startedAt": "2026-10-16T02:36:18.684Z",
+      "finishedAt": "2026-10-16T02:38:47.098Z",
+      "settingsRestored": true,
+      "receiptSha256": "7bae97623760af5f932820da3531835359317f3692a855158a11d52f8719f014",
+      "notes": 13,
+      "scrolls": 5,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "windowStart": "2026-09-17",
+      "windowEnd": "2026-10-16",
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range",
+        "list_read_with_local_image_recognition"
+      ],
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app1",
+        "unsecured_keyguard_dismissed",
+        "xhs_cold_started",
+        "clone_slot_selected:app1",
+        "list_reopened_at_newest",
+        "works_image_probe_unproven:image list fields changed between two fresh captures",
+        "collection_scan_as_of:2026-10-16",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_image_reader_active",
+        "list_reopened_at_newest",
+        "works_image_scan_restarted_at_newest"
+      ],
+      "executedSourceHashes": {
+        "candidate.py": "072ec45b76916d13f6c6a5cba04df3f909121761c948e049cb800294c6ab2a31",
+        "xhs_list_ocr.py": "89d48cb9e8a7bc778c886e65fe960c5df44618cd268c8756e505a6b34a057225",
+        "xhs_ocr_digits.png": "15181d5f37f1b82b54e337258d64f94d949474eeaef72f00c6a7b9806f40fdca"
+      }
+    },
+    {
+      "phone": "98",
+      "slot": "app2",
+      "status": "passed",
+      "reason": "",
+      "stage": "xhs-compat-fix-20261015-v17",
+      "startedAt": "2026-10-16T02:51:39.686Z",
+      "finishedAt": "2026-10-16T02:53:47.205Z",
+      "settingsRestored": true,
+      "receiptSha256": "2f217722e83968dbcf142783578c6aaf97457bca591e2a944bae4c9c66da3f4b",
+      "notes": 11,
+      "scrolls": 5,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "windowStart": "2026-09-17",
+      "windowEnd": "2026-10-16",
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range",
+        "list_read_with_local_image_recognition"
+      ],
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app2",
+        "xhs_cold_started",
+        "clone_user_requested:999",
+        "clone_slot_selected:app2",
+        "list_reopened_at_newest",
+        "works_image_probe_unproven:OCR metric icon is not proven: view",
+        "collection_scan_as_of:2026-10-16",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_image_reader_active",
+        "list_reopened_at_newest",
+        "works_image_scan_restarted_at_newest"
+      ],
+      "executedSourceHashes": {
+        "candidate.py": "c9c9e46225631876cb9a6bfeec4c0c3a5c7a6a3a7054ac00228622086bc9aed9",
+        "xhs_list_ocr.py": "ab784fc514a0fd516b091efca2493dd293d6937243493c89e493105c65301e6f",
+        "xhs_ocr_digits.png": "da0c0a42892d0dd356965fa44c9521e4398a6e67985545908a133e410de708c2"
+      }
+    },
+    {
+      "phone": "107",
+      "slot": "app2",
+      "status": "skipped_account",
+      "reason": "前轮账号异常，按用户要求不复测",
+      "evidence": "2026-10-15 production full test; intentionally not retried"
+    },
+    {
+      "phone": "109",
+      "slot": "app2",
+      "status": "passed",
+      "reason": "",
+      "stage": "xhs-compat-fix-20261015-v15",
+      "startedAt": "2026-10-16T02:44:09.773Z",
+      "finishedAt": "2026-10-16T02:46:21.081Z",
+      "settingsRestored": true,
+      "receiptSha256": "24d6d04470f918d6bd589ca14a24641f0911d45c375193dd7590f8bf7b681823",
+      "notes": 12,
+      "scrolls": 5,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "windowStart": "2026-09-17",
+      "windowEnd": "2026-10-16",
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range",
+        "list_read_with_local_image_recognition"
+      ],
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app2",
+        "unsecured_keyguard_dismissed",
+        "xhs_cold_started",
+        "clone_user_requested:999",
+        "clone_slot_selected:app2",
+        "list_reopened_at_newest",
+        "collection_scan_as_of:2026-10-16",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_image_reader_active",
+        "list_reopened_at_newest",
+        "works_image_scan_restarted_at_newest"
+      ],
+      "executedSourceHashes": {
+        "candidate.py": "072ec45b76916d13f6c6a5cba04df3f909121761c948e049cb800294c6ab2a31",
+        "xhs_list_ocr.py": "89d48cb9e8a7bc778c886e65fe960c5df44618cd268c8756e505a6b34a057225",
+        "xhs_ocr_digits.png": "15181d5f37f1b82b54e337258d64f94d949474eeaef72f00c6a7b9806f40fdca"
+      }
+    },
+    {
+      "phone": "114",
+      "slot": "app1",
+      "status": "skipped_account",
+      "reason": "账号异常，无最新笔记入口",
+      "stage": "xhs-compat-fix-20261015-v15",
+      "startedAt": "2026-10-16T02:40:50.256Z",
+      "finishedAt": "2026-10-16T02:41:31.867Z",
+      "settingsRestored": true,
+      "receiptSha256": "518c2ccc27d1274a11d353a0df8e5a044a6143c41b0d724036981bac450d6777",
+      "recoveryEvents": [],
+      "executedSourceHashes": {
+        "candidate.py": "072ec45b76916d13f6c6a5cba04df3f909121761c948e049cb800294c6ab2a31",
+        "xhs_list_ocr.py": "89d48cb9e8a7bc778c886e65fe960c5df44618cd268c8756e505a6b34a057225",
+        "xhs_ocr_digits.png": "15181d5f37f1b82b54e337258d64f94d949474eeaef72f00c6a7b9806f40fdca"
+      }
+    },
+    {
+      "phone": "114",
+      "slot": "app2",
+      "status": "passed",
+      "reason": "",
+      "stage": "xhs-compat-fix-20261015-v15",
+      "startedAt": "2026-10-16T02:41:32.865Z",
+      "finishedAt": "2026-10-16T02:43:03.464Z",
+      "settingsRestored": true,
+      "receiptSha256": "fb709c6a1f0ab6c62d9995eeb798f16bdf3cb0975b514d32162e24a8b50cf7b2",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "windowStart": "2026-09-17",
+      "windowEnd": "2026-10-16",
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range"
+      ],
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app2",
+        "xhs_cold_started",
+        "clone_user_requested:999",
+        "clone_slot_selected:app2",
+        "creator_overview_opened_without_latest_notes",
+        "works_image_probe_unproven:OCR works-list header is not unique: 全部笔记",
+        "data_center_works_tab_selected",
+        "creator_overview_reopened",
+        "data_center_works_tab_selected",
+        "list_reopened_at_newest",
+        "collection_scan_as_of:2026-10-16"
+      ],
+      "executedSourceHashes": {
+        "candidate.py": "072ec45b76916d13f6c6a5cba04df3f909121761c948e049cb800294c6ab2a31",
+        "xhs_list_ocr.py": "89d48cb9e8a7bc778c886e65fe960c5df44618cd268c8756e505a6b34a057225",
+        "xhs_ocr_digits.png": "15181d5f37f1b82b54e337258d64f94d949474eeaef72f00c6a7b9806f40fdca"
+      }
+    },
+    {
+      "phone": "116",
+      "slot": "app1",
+      "status": "skipped_account",
+      "reason": "账号异常，无最新笔记入口",
+      "stage": "xhs-compat-fix-20261015-v14",
+      "startedAt": "2026-10-16T02:25:27.968Z",
+      "finishedAt": "2026-10-16T02:26:16.094Z",
+      "settingsRestored": true,
+      "receiptSha256": "6193bf25ee457d76139f3d6f38bbc92e879ae9f5e2a725080907bf56be7d72e3",
+      "recoveryEvents": [],
+      "executedSourceHashes": {
+        "candidate.py": "072ec45b76916d13f6c6a5cba04df3f909121761c948e049cb800294c6ab2a31",
+        "xhs_list_ocr.py": "924930ac782d0d6565c9e326786ab444b5501b33eb563838e91e4a105e8023a8",
+        "xhs_ocr_digits.png": "a8f0fbe67adce89f037c2427c83865aa07baf384923bcea8b3b0db72af7805c4"
+      }
+    },
+    {
+      "phone": "123",
+      "slot": "app1",
+      "status": "skipped_device",
+      "reason": "上线后ADB closed/设备短暂消失，连接不稳定；两槽位停止采集",
+      "settingsRestored": true,
+      "recoveryAudit": "123原设置1800000/null重新只读确认一致，0写入；staging恢复账本已关闭",
+      "stage": "xhs-compat-fix-20261015-v25",
+      "startedAt": "2026-10-16T06:15:09.427Z",
+      "finishedAt": "2026-10-16T06:15:14.087Z",
+      "initialRestoreAuditUnconfirmed": true
+    },
+    {
+      "phone": "123",
+      "slot": "app2",
+      "status": "skipped_device",
+      "reason": "上线后ADB closed/设备短暂消失，连接不稳定；两槽位停止采集",
+      "settingsRestored": null,
+      "recoveryAudit": "分身未执行"
+    },
+    {
+      "phone": "127",
+      "slot": "app1",
+      "status": "passed",
+      "reason": "",
+      "stage": "xhs-compat-fix-20261015-v22",
+      "startedAt": "2026-10-16T06:03:50.072Z",
+      "finishedAt": "2026-10-16T06:07:31.691Z",
+      "settingsRestored": true,
+      "receiptSha256": "d44ef0754504ca747e73794b86d1fe68c9d21c62bd68e9e544d7ba9b271c9278",
+      "notes": 59,
+      "scrolls": 11,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "windowStart": "2026-09-17",
+      "windowEnd": "2026-10-16",
+      "warnings": [
+        "list_metric_units_are_displayed_approximations",
+        "creator_list_limited_to_displayed_time_range",
+        "list_read_with_local_image_recognition"
+      ],
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app1",
+        "xhs_cold_started",
+        "clone_slot_selected:app1",
+        "list_reopened_at_newest",
+        "works_list_image_reader_active",
+        "collection_scan_as_of:2026-10-16"
+      ],
+      "executedSourceHashes": {
+        "candidate.py": "6c9c80d4720ce85e433a036f74085b0df3cb8092232f3d57b13fea3b085af2c8",
+        "xhs_list_ocr.py": "2ecb8d33dc1f5b3e30ee077b5a85b28a76b6e8bfcf8033a4f9db618fe47b1ea3",
+        "xhs_ocr_digits.png": "da0c0a42892d0dd356965fa44c9521e4398a6e67985545908a133e410de708c2"
+      }
+    },
+    {
+      "phone": "127",
+      "slot": "app2",
+      "status": "passed",
+      "reason": "",
+      "stage": "xhs-compat-fix-20261015-v25",
+      "startedAt": "2026-10-16T06:18:09.543Z",
+      "finishedAt": "2026-10-16T06:21:00.159Z",
+      "settingsRestored": true,
+      "receiptSha256": "f07a8e31d1ea76da7199b7a84e2e0dde9fa9dfed7a5737410d14bd6050cd800e",
+      "notes": 38,
+      "scrolls": 7,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "windowStart": "2026-09-17",
+      "windowEnd": "2026-10-16",
+      "warnings": [
+        "list_metric_units_are_displayed_approximations",
+        "creator_list_limited_to_displayed_time_range",
+        "list_read_with_local_image_recognition"
+      ],
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app2",
+        "xhs_cold_started",
+        "clone_user_requested:999",
+        "clone_slot_selected:app2",
+        "list_reopened_at_newest",
+        "works_list_image_reader_active",
+        "collection_scan_as_of:2026-10-16"
+      ],
+      "executedSourceHashes": {
+        "candidate.py": "d6c2dbf139f6a584d7e1d343c06fb73fdc25922025efbc9f8126845debb43f78",
+        "xhs_list_ocr.py": "86b922c0d69cbc6e64b0808c69c9c592c3ee630df785a0309d805957f75c391c",
+        "xhs_ocr_digits.png": "da0c0a42892d0dd356965fa44c9521e4398a6e67985545908a133e410de708c2"
+      }
+    },
+    {
+      "phone": "130",
+      "slot": "app1",
+      "status": "skipped_login",
+      "reason": "未登录，等待人工登录",
+      "stage": "xhs-compat-fix-20261015-v15",
+      "startedAt": "2026-10-16T02:36:18.684Z",
+      "finishedAt": "2026-10-16T02:36:36.987Z",
+      "settingsRestored": true,
+      "receiptSha256": "8690bb0ec870a92c009388bf4f5f0d45a7a5411bf0de4c48de19b59937a56814",
+      "recoveryEvents": [],
+      "executedSourceHashes": {
+        "candidate.py": "072ec45b76916d13f6c6a5cba04df3f909121761c948e049cb800294c6ab2a31",
+        "xhs_list_ocr.py": "89d48cb9e8a7bc778c886e65fe960c5df44618cd268c8756e505a6b34a057225",
+        "xhs_ocr_digits.png": "15181d5f37f1b82b54e337258d64f94d949474eeaef72f00c6a7b9806f40fdca"
+      }
+    },
+    {
+      "phone": "130",
+      "slot": "app2",
+      "status": "skipped_login",
+      "reason": "未登录，等待人工登录",
+      "stage": "xhs-compat-fix-20261015-v15",
+      "startedAt": "2026-10-16T02:38:48.104Z",
+      "finishedAt": "2026-10-16T02:39:10.752Z",
+      "settingsRestored": true,
+      "receiptSha256": "086233e58bce43f6bcda43a262b3bdd4a2c248366f491e9872227b100b9e07be",
+      "recoveryEvents": [],
+      "executedSourceHashes": {
+        "candidate.py": "072ec45b76916d13f6c6a5cba04df3f909121761c948e049cb800294c6ab2a31",
+        "xhs_list_ocr.py": "89d48cb9e8a7bc778c886e65fe960c5df44618cd268c8756e505a6b34a057225",
+        "xhs_ocr_digits.png": "15181d5f37f1b82b54e337258d64f94d949474eeaef72f00c6a7b9806f40fdca"
+      }
+    },
+    {
+      "phone": "131",
+      "slot": "app1",
+      "status": "passed",
+      "reason": "",
+      "stage": "xhs-compat-fix-20261015-v15",
+      "startedAt": "2026-10-16T02:26:21.108Z",
+      "finishedAt": "2026-10-16T02:29:36.858Z",
+      "settingsRestored": true,
+      "receiptSha256": "74f5638395666bbb2d40c82e9ce3d1f4d20d6ac1de6f3ffe9fb7d8e54b57eb85",
+      "notes": 33,
+      "scrolls": 9,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "windowStart": "2026-09-17",
+      "windowEnd": "2026-10-16",
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range",
+        "list_read_with_local_image_recognition"
+      ],
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app1",
+        "unsecured_keyguard_dismissed",
+        "xhs_cold_started",
+        "clone_slot_selected:app1",
+        "list_reopened_at_newest",
+        "works_image_probe_unproven:image list fields changed between two fresh captures",
+        "collection_scan_as_of:2026-10-16",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_image_reader_active",
+        "list_reopened_at_newest",
+        "works_image_scan_restarted_at_newest"
+      ],
+      "executedSourceHashes": {
+        "candidate.py": "072ec45b76916d13f6c6a5cba04df3f909121761c948e049cb800294c6ab2a31",
+        "xhs_list_ocr.py": "89d48cb9e8a7bc778c886e65fe960c5df44618cd268c8756e505a6b34a057225",
+        "xhs_ocr_digits.png": "15181d5f37f1b82b54e337258d64f94d949474eeaef72f00c6a7b9806f40fdca"
+      }
+    },
+    {
+      "phone": "141",
+      "slot": "app1",
+      "status": "passed",
+      "reason": "",
+      "stage": "xhs-compat-fix-20261015-v17",
+      "startedAt": "2026-10-16T02:51:39.686Z",
+      "finishedAt": "2026-10-16T02:55:15.213Z",
+      "settingsRestored": true,
+      "receiptSha256": "6e5d64a6c292f23deb65c6944ddea81481fe91f22d4374f81cd582d0e0b42e0e",
+      "notes": 22,
+      "scrolls": 4,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "windowStart": "2026-09-17",
+      "windowEnd": "2026-10-16",
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range",
+        "list_read_with_local_image_recognition"
+      ],
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app1",
+        "xhs_cold_started",
+        "works_image_probe_unproven:OCR works-list header is not unique: 全部笔记",
+        "data_center_works_tab_selected",
+        "works_list_image_reader_active",
+        "list_reopened_at_newest",
+        "works_image_probe_unproven:OCR works list has no proven complete cards or empty/end marker",
+        "collection_scan_as_of:2026-10-16",
+        "proximity_guard_temporarily_disabled"
+      ],
+      "executedSourceHashes": {
+        "candidate.py": "c9c9e46225631876cb9a6bfeec4c0c3a5c7a6a3a7054ac00228622086bc9aed9",
+        "xhs_list_ocr.py": "ab784fc514a0fd516b091efca2493dd293d6937243493c89e493105c65301e6f",
+        "xhs_ocr_digits.png": "da0c0a42892d0dd356965fa44c9521e4398a6e67985545908a133e410de708c2"
+      }
+    },
+    {
+      "phone": "141",
+      "slot": "app2",
+      "status": "passed",
+      "reason": "",
+      "stage": "xhs-compat-fix-20261015-v15",
+      "startedAt": "2026-10-16T02:46:22.542Z",
+      "finishedAt": "2026-10-16T02:49:21.589Z",
+      "settingsRestored": true,
+      "receiptSha256": "28b1109e4992864c624530074baee65ed9fe48d5e9d0aeab8aef49d62f29dee5",
+      "notes": 5,
+      "scrolls": 1,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "windowStart": "2026-09-17",
+      "windowEnd": "2026-10-16",
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range"
+      ],
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app2",
+        "xhs_cold_started",
+        "clone_user_requested:999",
+        "clone_slot_selected:app2",
+        "celebration_back",
+        "works_filter_hint_dismissed",
+        "works_filter_panel_collapsed",
+        "list_reopened_at_newest",
+        "works_image_probe_unproven:OCR works list has no proven complete cards or empty/end marker",
+        "collection_scan_as_of:2026-10-16",
+        "works_list_updated_without_filter_toggle",
+        "proximity_guard_temporarily_disabled"
+      ],
+      "executedSourceHashes": {
+        "candidate.py": "072ec45b76916d13f6c6a5cba04df3f909121761c948e049cb800294c6ab2a31",
+        "xhs_list_ocr.py": "89d48cb9e8a7bc778c886e65fe960c5df44618cd268c8756e505a6b34a057225",
+        "xhs_ocr_digits.png": "15181d5f37f1b82b54e337258d64f94d949474eeaef72f00c6a7b9806f40fdca"
+      }
+    },
+    {
+      "phone": "142",
+      "slot": "app1",
+      "status": "skipped_busy",
+      "reason": "前轮占用/执行器冲突，按用户要求跳过",
+      "evidence": "2026-10-15 production full test; intentionally not retried"
+    },
+    {
+      "phone": "154",
+      "slot": "app1",
+      "status": "blocked_loading",
+      "reason": "页面未提供可证明的作品列表；加载原因未确认，不计0篇",
+      "stage": "xhs-compat-fix-20261015-v25",
+      "startedAt": "2026-10-16T06:18:09.543Z",
+      "finishedAt": "2026-10-16T06:20:19.057Z",
+      "settingsRestored": true,
+      "receiptSha256": "e7ebd4cc270ea38537a3dc2b1fafb66d4d4ac99c12c9e47b2492dd32d7a389e5",
+      "recoveryEvents": [],
+      "executedSourceHashes": {
+        "candidate.py": "d6c2dbf139f6a584d7e1d343c06fb73fdc25922025efbc9f8126845debb43f78",
+        "xhs_list_ocr.py": "86b922c0d69cbc6e64b0808c69c9c592c3ee630df785a0309d805957f75c391c",
+        "xhs_ocr_digits.png": "da0c0a42892d0dd356965fa44c9521e4398a6e67985545908a133e410de708c2"
+      }
+    },
+    {
+      "phone": "154",
+      "slot": "app2",
+      "status": "blocked_loading",
+      "reason": "页面未提供可证明的作品列表；加载原因未确认，不计0篇",
+      "stage": "xhs-compat-fix-20261015-v25",
+      "startedAt": "2026-10-16T06:21:01.388Z",
+      "finishedAt": "2026-10-16T06:23:16.940Z",
+      "settingsRestored": true,
+      "receiptSha256": "efde538c5c0f008b0716d4c8a2b379eb3145450fd2293b1f63e8a84ab8ed758a",
+      "recoveryEvents": [],
+      "executedSourceHashes": {
+        "candidate.py": "d6c2dbf139f6a584d7e1d343c06fb73fdc25922025efbc9f8126845debb43f78",
+        "xhs_list_ocr.py": "86b922c0d69cbc6e64b0808c69c9c592c3ee630df785a0309d805957f75c391c",
+        "xhs_ocr_digits.png": "da0c0a42892d0dd356965fa44c9521e4398a6e67985545908a133e410de708c2"
+      }
+    },
+    {
+      "phone": "155",
+      "slot": "app2",
+      "status": "passed",
+      "reason": "",
+      "stage": "xhs-compat-fix-20261015-v14",
+      "startedAt": "2026-10-16T02:20:50.713Z",
+      "finishedAt": "2026-10-16T02:23:11.737Z",
+      "settingsRestored": true,
+      "receiptSha256": "f2acbaa0a7a409594f2e8bfb135d083c464a6ea097534b48f485b0b3515fcceb",
+      "notes": 12,
+      "scrolls": 5,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "windowStart": "2026-09-17",
+      "windowEnd": "2026-10-16",
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range",
+        "list_read_with_local_image_recognition"
+      ],
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app2",
+        "xhs_cold_started",
+        "clone_user_requested:999",
+        "clone_slot_selected:app2",
+        "list_reopened_at_newest",
+        "collection_scan_as_of:2026-10-16",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_image_reader_active",
+        "list_reopened_at_newest",
+        "works_image_scan_restarted_at_newest"
+      ],
+      "executedSourceHashes": {
+        "candidate.py": "072ec45b76916d13f6c6a5cba04df3f909121761c948e049cb800294c6ab2a31",
+        "xhs_list_ocr.py": "924930ac782d0d6565c9e326786ab444b5501b33eb563838e91e4a105e8023a8",
+        "xhs_ocr_digits.png": "a8f0fbe67adce89f037c2427c83865aa07baf384923bcea8b3b0db72af7805c4"
+      }
+    },
+    {
+      "phone": "165",
+      "slot": "app2",
+      "status": "skipped_server",
+      "reason": "前轮明确小红书服务端错误，按用户要求不复测",
+      "evidence": "2026-10-15 production full test; intentionally not retried"
+    },
+    {
+      "phone": "180",
+      "slot": "app1",
+      "status": "passed",
+      "reason": "",
+      "stage": "xhs-compat-fix-20261015-v14",
+      "startedAt": "2026-10-16T02:23:13.518Z",
+      "finishedAt": "2026-10-16T02:25:26.478Z",
+      "settingsRestored": true,
+      "receiptSha256": "892e06829caedeedc44533f54abce8d9e01d3ad0bda93f9b14c239529e2a3966",
+      "notes": 10,
+      "scrolls": 5,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "windowStart": "2026-09-17",
+      "windowEnd": "2026-10-16",
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range",
+        "list_read_with_local_image_recognition"
+      ],
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app1",
+        "unsecured_keyguard_dismissed",
+        "xhs_cold_started",
+        "vivo_usb_cancelled",
+        "clone_slot_selected:app1",
+        "list_reopened_at_newest",
+        "collection_scan_as_of:2026-10-16",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "works_list_image_reader_active",
+        "list_reopened_at_newest",
+        "works_image_scan_restarted_at_newest"
+      ],
+      "executedSourceHashes": {
+        "candidate.py": "072ec45b76916d13f6c6a5cba04df3f909121761c948e049cb800294c6ab2a31",
+        "xhs_list_ocr.py": "924930ac782d0d6565c9e326786ab444b5501b33eb563838e91e4a105e8023a8",
+        "xhs_ocr_digits.png": "a8f0fbe67adce89f037c2427c83865aa07baf384923bcea8b3b0db72af7805c4"
+      }
+    },
+    {
+      "phone": "183",
+      "slot": "app1",
+      "status": "skipped_device",
+      "reason": "USB仅MTP、ADB不可用"
+    },
+    {
+      "phone": "186",
+      "slot": "app1",
+      "status": "skipped_device",
+      "reason": "物理离线"
+    },
+    {
+      "phone": "188",
+      "slot": "app2",
+      "status": "skipped_user",
+      "reason": "用户本轮明确跳过；待手机端USB调试授权，不操作"
+    }
+  ],
+  "excludedOutside45": [
+    {
+      "phone": "152",
+      "slots": [
+        "app1",
+        "app2"
+      ],
+      "reason": "用户明确始终跳过，无本轮操作"
+    }
+  ],
+  "tests": {
+    "python": {
+      "count": 214,
+      "pass": 214,
+      "command": "python3 -m unittest discover -s windows-agent/scripts -p 'test_xhs*.py'"
+    },
+    "consumer": {
+      "count": 11,
+      "pass": 11
+    },
+    "rootSyntax": "passed",
+    "diffWhitespace": "passed",
+    "windowsOfflineFinal": "v25 OCR:21 data frames +1 expected filter hint; retained v27 reader functions AST identical after removing failed route experiment;3 loading skeleton images were experimental only",
+    "golden": {
+      "stage": "v25",
+      "frames": 5,
+      "datesIdentical": 27,
+      "countsIdentical": 81,
+      "status": "passed"
+    },
+    "singlePhoneThenTwoPhone": "v14 34 single then75/47 pair;v23/v24/v26 13clone single before154 pair;v28 final75 single;123 flapped and caused abort, baseline later verified unchanged",
+    "failureHistory": [
+      "Initial tests with incorrect mocks were fixed, earlier failed runs preserved",
+      "v21 suffix crop rejected emoji disagreement; corrected chromatic decoration handling and v22 saved-frame proof",
+      "v21/v22 loading identity gate rejected status-bar estimated angle on154; v23 uses independently proven upright geometry and no body ink/text",
+      "SSH transport interrupted v18 receipts; recovered exact same outputs with no resubmission of20"
+    ]
+  },
+  "browserPermission75": {
+    "v27": "failed on observed owner browser location permission surface",
+    "resolverFact": "both old and explicit launcher resolver point to XHS; resolver hypothesis disproved",
+    "v28": "31 notes6scroll complete;new route not triggered in real retry;actual saved XML +4 positive/negative mock tests only;Home once then requested-user Index;no permission buttons"
+  },
+  "lateRecoveryAudit123": {
+    "status": "verified_unchanged_original_settings",
+    "values": [
+      "1800000",
+      "null"
+    ],
+    "taskId": "v3-123-app1-1792131309427",
+    "baselineSha256": "bf7d61115364bb39ad6a3c202a0f6c3e77027094122759d6017eb56f662db0a0",
+    "verifiedAtEpoch": 1792131446.527886,
+    "writesToPhone": 0
+  },
+  "rejectedRouteExperiment": {
+    "collector": {
+      "before": "cd68dcb8c9e0cd7d2a3fc097374dcd10fd1c30bae4d677ced101e23de98cd793",
+      "after": "80885f74db77794d056c957df5d7be4e6c08959deed5658ea96743204ab36fff"
+    },
+    "ocr": {
+      "before": "86b922c0d69cbc6e64b0808c69c9c592c3ee630df785a0309d805957f75c391c",
+      "after": "2fc9b71a40870f78e65c3879c04fea10b7ece89ef9e77a4fdf884e8a8276fa22",
+      "remainingFunctionsASTIdentical": true,
+      "removed": [
+        "creator_loading_skeleton",
+        "read_creator_loading"
+      ]
+    },
+    "noPassedRealCaseUsedExperimentalRoute": true,
+    "decision": "Rejected delivery of public route after no-query and observed static-UI parameter experiments both failed to expose list. Original UI path retained."
+  },
+  "rendererDiagnostics": [
+    {
+      "phone": "13",
+      "slot": "app2",
+      "appVersion": "9.27.1",
+      "webviewVersions": [
+        "97.0.4692.98"
+      ],
+      "systemNetworkValidated": true,
+      "matchingAppProcesses": 5,
+      "standardizedErrorMarkers": {},
+      "rawLogsReturned": false
+    },
+    {
+      "phone": "154",
+      "slot": "app1",
+      "appVersion": "9.44.1",
+      "webviewVersions": [
+        "138.0.7204.179"
+      ],
+      "systemNetworkValidated": true,
+      "matchingAppProcesses": 6,
+      "standardizedErrorMarkers": {},
+      "rawLogsReturned": false
+    },
+    {
+      "phone": "18",
+      "slot": "app1",
+      "appVersion": "9.33.4",
+      "webviewVersions": [
+        "83.0.4103.101"
+      ],
+      "systemNetworkValidated": true,
+      "matchingAppProcesses": 5,
+      "standardizedErrorMarkers": {},
+      "rawLogsReturned": false
+    },
+    {
+      "phone": "32",
+      "slot": "app1",
+      "appVersion": "9.33.4",
+      "webviewVersions": [
+        "87.0.4280.101"
+      ],
+      "systemNetworkValidated": true,
+      "matchingAppProcesses": 6,
+      "standardizedErrorMarkers": {},
+      "rawLogsReturned": false
+    },
+    {
+      "phone": "127",
+      "status": "diagnostic_unavailable",
+      "error": "Traceback (most recent call last):\r\n  File \"<string>\", line 1, in <module>\r\n  File \"<string>\", line 10, in <module>\r\n  File \"<string>\", line 9, in read\r\nAssertionError: metadata re"
+    }
+  ],
+  "invariants": {
+    "agent": [
+      {
+        "pid": 650400,
+        "owner": "NT AUTHORITY\\SYSTEM",
+        "exe": "D:\\PhoneCloud\\tools\\node\\node.exe",
+        "createdAt": 1792055125.802039
+      }
+    ],
+    "activeOwnedStaging": [],
+    "pendingSettings": [],
+    "adb": {
+      "pid": 634172,
+      "owner": "NT AUTHORITY\\SYSTEM",
+      "exe": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+      "createdAt": 1792047042.3705037,
+      "listen": [
+        [
+          "TCP",
+          "127.0.0.1:5037",
+          "0.0.0.0:0",
+          "LISTENING",
+          "634172"
+        ]
+      ]
+    },
+    "production8FilesUnchanged": true,
+    "sharedServicesRestarted": false,
+    "authKeyEnvStartupChanged": false,
+    "explicitSkipsAfterUserReplyRespected": [
+      "74",
+      "81",
+      "188",
+      "152"
+    ],
+    "observedAt": "2026-10-16T06:42:55.079866+00:00"
+  },
+  "qaSchedulingException": {
+    "date": "2026-10-16",
+    "event": "One read-only phone13 focus/policy/screenshot probe was dispatched just after starting127clone+154main; no input or settings change, but this exceeds intended2physical-phone own-probe plan if overlapping. No more extra physical-phone probes during pairs. Collection jobs remain max2.",
+    "severity": "QA orchestration deviation, not production code change"
+  },
+  "errata": [
+    "75 old26 omitted restricted cards; old30 included clipped/duplicate artifacts; final v14/v15 29 supersedes",
+    "20 historical76 is not today; final v18 actual73",
+    "rc1 productionBaseline field incorrectly included local tests/docs; renamed localBaselineFiles; productionBaselineHashes are the actual8 remote files",
+    "Early snapshot used nonexistent screen-publisher.mjs; corrected screen-webrtc-publisher.mjs metadata snapshot confirms all8 unchanged"
+  ],
+  "limits": [
+    "Complete means list window and displayed metrics proved; OCR title wording/emoji may be imperfect or truncated by app",
+    "Displayed 万/亿 counts are approximations; decimal conversion is not an exact hidden count",
+    "No stable post ID; image hints only deduplicate within one run; no cross-run database key",
+    "Each real result identifies its tested stage; not all45 rerun with finalv28",
+    "Home-image fallback proved on saved real frame and negative mocks, not triggered in34 actual v14 run",
+    "Vivo browser permission branch proved with actual v27 XML and4 safety mock tests;v28 75 full31/6 did not trigger it;not claimed as real branch acceptance",
+    "No account/permission/cache/app updates; loading cause remains unknown when no list is exposed",
+    "No production queue/PG ingestion or production release acceptance in this candidate round"
+  ],
+  "deployment": {
+    "deployed": false,
+    "pushed": false,
+    "databaseWritten": false,
+    "sharedServicesRestarted": false,
+    "rollback": "No production change. Candidate rollback: base commit99b4151bdf65d8e1ca4354594f01434fe60eab57 and measured8 production file hashes; no rollback action executed."
+  },
+  "updatedAt": "2026-10-16T06:43:32.121315+00:00",
+  "followUpEvidence": {
+    "phone107": "XHS_107_COMPATIBILITY_20261019.json",
+    "latestCandidateTag": "xhs-compat-20261019-rc.3",
+    "note": "Original rc.2 results/source hashes remain historical;107 later navigation-only evidence does not add a successful collection."
+  }
+}

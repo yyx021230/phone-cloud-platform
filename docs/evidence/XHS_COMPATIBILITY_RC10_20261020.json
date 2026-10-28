@@ -1,0 +1,1134 @@
+{
+  "status": "local_candidate_three_slots_verified_phone18_on_hold_not_released",
+  "date": "2026-10-20",
+  "candidateTag": "xhs-compat-20261020-rc.10",
+  "branch": "codex/xhs-compatibility-fix-20261020",
+  "sourceCommit": "bd2c32c87425cadbe23e8859d3a349767c789573",
+  "sourceAncestor": "8a1e1fae4ca350edf9074c9c436368dad86aaf9a",
+  "productionReleasePerformed": false,
+  "remotePush": false,
+  "scope": [
+    "18/app1",
+    "123/app2",
+    "141/app1",
+    "141/app2"
+  ],
+  "finalRetestScope": [
+    "123/app2",
+    "141/app1",
+    "141/app2"
+  ],
+  "phone18": {
+    "userDecision": "18号先保留现状",
+    "currentIssue": "More and aggregate-view entry both remain blank/red loading; not zero notes.",
+    "webviewVersion": "83.0.4103.101",
+    "oldWebviewRootCause": "unconfirmed hypothesis",
+    "componentUpdatePerformed": false,
+    "furtherPhoneUiActionsAfterHold": 0,
+    "backupApkSha256": "d95db1de61d20dcba8bd4fd3a35ed87c56e3c94d63bab24bcd4488bfe8b45740"
+  },
+  "changes": [
+    "Observe guide disappearance after original proximity setting change before optional volume24; no input replay or increased deadline.",
+    "One WAKEUP224 only under explicit slot, null focus, powerAwake and positively unlit default display0; positive full-on proof, existing keyguard rules.",
+    "Paired original-pixel color/binary185 body crops recover missing title/shifted status anchors; exact identity/language/geometry/title agreement.",
+    "Do not repair a title hidden by fixed header; preserve original leadingClip and two-frame/date/count/cover safeguards.",
+    "Exact stalled More view may return once to proven Creator Center aggregate view; actual18 still loads via both entries."
+  ],
+  "attempts": [
+    {
+      "name": "18",
+      "slot": "app1",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "windowStart": null,
+      "windowEnd": null,
+      "stopReason": null,
+      "metricsComplete": null,
+      "slotProven": null,
+      "settingsBefore": {
+        "timeout": "120000",
+        "proximity": "1"
+      },
+      "settingsAfter": {
+        "timeout": "120000",
+        "proximity": "1"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 70,
+      "recoveryEvents": null,
+      "warnings": null,
+      "stage": "xhs-slot-retest-20261020-v4",
+      "androidUser": "0",
+      "packagePresent": true
+    },
+    {
+      "name": "123",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "windowStart": "2026-09-21",
+      "windowEnd": "2026-10-20",
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "slotProven": true,
+      "settingsBefore": {
+        "timeout": "1800000",
+        "proximity": "null"
+      },
+      "settingsAfter": {
+        "timeout": "1800000",
+        "proximity": "null"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 118,
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app2",
+        "xhs_cold_started",
+        "clone_user_requested:999",
+        "clone_slot_selected:app2",
+        "creator_overview_opened_without_latest_notes",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_probe_unproven:OCR works-list header is not unique: 全部笔记",
+        "data_center_works_tab_selected",
+        "creator_overview_reopened",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "data_center_works_tab_selected",
+        "list_reopened_at_newest",
+        "collection_scan_as_of:2026-10-20"
+      ],
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range"
+      ],
+      "stage": "xhs-slot-retest-20261020-v5",
+      "androidUser": "999",
+      "packagePresent": true,
+      "snapshotFileSha256": "558ef15a59714b662da275cda767fc1507b0544b1410dc0334befcd002e095f2"
+    },
+    {
+      "name": "141",
+      "slot": "app1",
+      "status": "passed",
+      "notes": 21,
+      "scrolls": 4,
+      "complete": true,
+      "windowStart": "2026-09-21",
+      "windowEnd": "2026-10-20",
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "slotProven": true,
+      "settingsBefore": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsAfter": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 193,
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app1",
+        "xhs_cold_started",
+        "celebration_back",
+        "works_list_image_reader_active",
+        "list_reopened_at_newest",
+        "works_image_fields_capture_retried",
+        "collection_scan_as_of:2026-10-20",
+        "proximity_guard_temporarily_disabled"
+      ],
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range",
+        "list_read_with_local_image_recognition"
+      ],
+      "stage": "xhs-slot-retest-20261020-v6",
+      "androidUser": "0",
+      "packagePresent": true,
+      "snapshotFileSha256": "99267852edfa42fc8d0a0b0b5c8e53fc953ff3999465525c15eedd21e265ef0b"
+    },
+    {
+      "name": "141",
+      "slot": "app2",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "windowStart": null,
+      "windowEnd": null,
+      "stopReason": null,
+      "metricsComplete": null,
+      "slotProven": null,
+      "settingsBefore": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsAfter": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 132,
+      "recoveryEvents": null,
+      "warnings": null,
+      "stage": "xhs-slot-retest-20261020-v6",
+      "androidUser": "999",
+      "packagePresent": true
+    },
+    {
+      "name": "18",
+      "slot": "app1",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "complete": null,
+      "windowStart": null,
+      "windowEnd": null,
+      "stopReason": null,
+      "metricsComplete": null,
+      "slotProven": null,
+      "settingsBefore": {
+        "timeout": "120000",
+        "proximity": "1"
+      },
+      "settingsAfter": {
+        "timeout": "120000",
+        "proximity": "1"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 60,
+      "recoveryEvents": null,
+      "warnings": null,
+      "stage": "xhs-slot-retest-20261020-v8",
+      "androidUser": "0",
+      "packagePresent": true
+    },
+    {
+      "name": "141",
+      "slot": "app2",
+      "status": "partial",
+      "notes": 5,
+      "scrolls": 1,
+      "complete": false,
+      "windowStart": "2026-09-21",
+      "windowEnd": "2026-10-20",
+      "stopReason": "image_list_read_unproven",
+      "metricsComplete": true,
+      "slotProven": true,
+      "settingsBefore": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsAfter": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 136,
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app2",
+        "xhs_cold_started",
+        "clone_user_requested:999",
+        "clone_slot_selected:app2",
+        "works_image_header_capture_retried",
+        "works_image_body_capture_retried",
+        "works_body_anchor_crop_recovered",
+        "works_list_image_reader_active",
+        "list_reopened_at_newest",
+        "works_image_body_capture_retried",
+        "collection_scan_as_of:2026-10-20",
+        "works_image_scan_stopped:OCR body anchor title/status is ambiguous",
+        "proximity_guard_temporarily_disabled"
+      ],
+      "warnings": [
+        "image_list_read_unproven",
+        "recent_window_not_proven",
+        "creator_list_limited_to_displayed_time_range",
+        "list_read_with_local_image_recognition"
+      ],
+      "stage": "xhs-slot-retest-20261020-v10",
+      "androidUser": "999",
+      "packagePresent": true,
+      "snapshotFileSha256": "6707e3d31bb96d777dea5fb12ca5399bba1b8f5dfa6f111b13d2a0cc2fe5f027"
+    },
+    {
+      "name": "141",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 15,
+      "scrolls": 3,
+      "complete": true,
+      "windowStart": "2026-09-21",
+      "windowEnd": "2026-10-20",
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "slotProven": true,
+      "settingsBefore": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsAfter": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 153,
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app2",
+        "xhs_cold_started",
+        "clone_user_requested:999",
+        "clone_slot_selected:app2",
+        "list_reopened_at_newest",
+        "works_image_body_capture_retried",
+        "works_body_anchor_crop_recovered",
+        "works_list_image_reader_active",
+        "collection_scan_as_of:2026-10-20",
+        "proximity_guard_temporarily_disabled"
+      ],
+      "warnings": [
+        "list_metric_units_are_displayed_approximations",
+        "creator_list_limited_to_displayed_time_range",
+        "list_read_with_local_image_recognition"
+      ],
+      "stage": "xhs-slot-retest-20261020-v12",
+      "androidUser": "999",
+      "packagePresent": true,
+      "snapshotFileSha256": "7325d2f8a6292acc361689016ae4220e42b7eb67cf2fc5825eaf5fd1ec9328a5"
+    },
+    {
+      "name": "123",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "windowStart": "2026-09-21",
+      "windowEnd": "2026-10-20",
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "slotProven": true,
+      "settingsBefore": {
+        "timeout": "1800000",
+        "proximity": "null"
+      },
+      "settingsAfter": {
+        "timeout": "1800000",
+        "proximity": "null"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 102,
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app2",
+        "xhs_cold_started",
+        "clone_user_requested:999",
+        "clone_slot_selected:app2",
+        "creator_overview_opened_without_latest_notes",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_probe_unproven:OCR works-list header is not unique: 全部笔记",
+        "data_center_works_tab_selected",
+        "creator_overview_reopened",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "data_center_works_tab_selected",
+        "list_reopened_at_newest",
+        "collection_scan_as_of:2026-10-20"
+      ],
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range"
+      ],
+      "stage": "xhs-slot-retest-20261020-v13",
+      "androidUser": "999",
+      "packagePresent": true,
+      "snapshotFileSha256": "c11e83cea38fab6caa9f6ac778167b10bafff8264191650a846877692924bf62"
+    },
+    {
+      "name": "141",
+      "slot": "app1",
+      "status": "passed",
+      "notes": 21,
+      "scrolls": 4,
+      "complete": true,
+      "windowStart": "2026-09-21",
+      "windowEnd": "2026-10-20",
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "slotProven": true,
+      "settingsBefore": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsAfter": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 179,
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app1",
+        "xhs_cold_started",
+        "works_image_header_capture_retried",
+        "works_list_image_reader_active",
+        "list_reopened_at_newest",
+        "works_image_fields_capture_retried",
+        "collection_scan_as_of:2026-10-20"
+      ],
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range",
+        "list_read_with_local_image_recognition"
+      ],
+      "stage": "xhs-slot-retest-20261020-v13",
+      "androidUser": "0",
+      "packagePresent": true,
+      "snapshotFileSha256": "b45ea3f60b42b40bd81103b56f2d86be671ccde2a3ad37f576d0dc417bf5df96"
+    },
+    {
+      "name": "141",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 15,
+      "scrolls": 3,
+      "complete": true,
+      "windowStart": "2026-09-21",
+      "windowEnd": "2026-10-20",
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "slotProven": true,
+      "settingsBefore": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsAfter": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 160,
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app2",
+        "xhs_cold_started",
+        "clone_user_requested:999",
+        "clone_slot_selected:app2",
+        "works_body_anchor_crop_recovered",
+        "works_image_fields_capture_retried",
+        "works_list_image_reader_active",
+        "list_reopened_at_newest",
+        "works_image_body_capture_retried",
+        "works_image_fields_capture_retried",
+        "collection_scan_as_of:2026-10-20"
+      ],
+      "warnings": [
+        "list_metric_units_are_displayed_approximations",
+        "creator_list_limited_to_displayed_time_range",
+        "list_read_with_local_image_recognition"
+      ],
+      "stage": "xhs-slot-retest-20261020-v13",
+      "androidUser": "999",
+      "packagePresent": true,
+      "snapshotFileSha256": "c89241874d640f81e5a498aee315ddfd1c274921bda922b25cce374924754d7b"
+    }
+  ],
+  "finalSingle": [
+    {
+      "name": "141",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 15,
+      "scrolls": 3,
+      "complete": true,
+      "windowStart": "2026-09-21",
+      "windowEnd": "2026-10-20",
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "slotProven": true,
+      "settingsBefore": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsAfter": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 153,
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app2",
+        "xhs_cold_started",
+        "clone_user_requested:999",
+        "clone_slot_selected:app2",
+        "list_reopened_at_newest",
+        "works_image_body_capture_retried",
+        "works_body_anchor_crop_recovered",
+        "works_list_image_reader_active",
+        "collection_scan_as_of:2026-10-20",
+        "proximity_guard_temporarily_disabled"
+      ],
+      "warnings": [
+        "list_metric_units_are_displayed_approximations",
+        "creator_list_limited_to_displayed_time_range",
+        "list_read_with_local_image_recognition"
+      ],
+      "stage": "xhs-slot-retest-20261020-v12",
+      "androidUser": "999",
+      "packagePresent": true,
+      "snapshotFileSha256": "7325d2f8a6292acc361689016ae4220e42b7eb67cf2fc5825eaf5fd1ec9328a5"
+    }
+  ],
+  "finalPair": [
+    {
+      "name": "123",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "windowStart": "2026-09-21",
+      "windowEnd": "2026-10-20",
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "slotProven": true,
+      "settingsBefore": {
+        "timeout": "1800000",
+        "proximity": "null"
+      },
+      "settingsAfter": {
+        "timeout": "1800000",
+        "proximity": "null"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 102,
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app2",
+        "xhs_cold_started",
+        "clone_user_requested:999",
+        "clone_slot_selected:app2",
+        "creator_overview_opened_without_latest_notes",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_probe_unproven:OCR works-list header is not unique: 全部笔记",
+        "data_center_works_tab_selected",
+        "creator_overview_reopened",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "works_image_header_capture_retried",
+        "data_center_works_tab_selected",
+        "list_reopened_at_newest",
+        "collection_scan_as_of:2026-10-20"
+      ],
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range"
+      ],
+      "stage": "xhs-slot-retest-20261020-v13",
+      "androidUser": "999",
+      "packagePresent": true,
+      "snapshotFileSha256": "c11e83cea38fab6caa9f6ac778167b10bafff8264191650a846877692924bf62"
+    },
+    {
+      "name": "141",
+      "slot": "app1",
+      "status": "passed",
+      "notes": 21,
+      "scrolls": 4,
+      "complete": true,
+      "windowStart": "2026-09-21",
+      "windowEnd": "2026-10-20",
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "slotProven": true,
+      "settingsBefore": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsAfter": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 179,
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app1",
+        "xhs_cold_started",
+        "works_image_header_capture_retried",
+        "works_list_image_reader_active",
+        "list_reopened_at_newest",
+        "works_image_fields_capture_retried",
+        "collection_scan_as_of:2026-10-20"
+      ],
+      "warnings": [
+        "creator_list_limited_to_displayed_time_range",
+        "list_read_with_local_image_recognition"
+      ],
+      "stage": "xhs-slot-retest-20261020-v13",
+      "androidUser": "0",
+      "packagePresent": true,
+      "snapshotFileSha256": "b45ea3f60b42b40bd81103b56f2d86be671ccde2a3ad37f576d0dc417bf5df96"
+    },
+    {
+      "name": "141",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 15,
+      "scrolls": 3,
+      "complete": true,
+      "windowStart": "2026-09-21",
+      "windowEnd": "2026-10-20",
+      "stopReason": "older_than_window_visible",
+      "metricsComplete": true,
+      "slotProven": true,
+      "settingsBefore": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsAfter": {
+        "timeout": "60000",
+        "proximity": "1"
+      },
+      "settingsRestored": true,
+      "durationSeconds": 160,
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app2",
+        "xhs_cold_started",
+        "clone_user_requested:999",
+        "clone_slot_selected:app2",
+        "works_body_anchor_crop_recovered",
+        "works_image_fields_capture_retried",
+        "works_list_image_reader_active",
+        "list_reopened_at_newest",
+        "works_image_body_capture_retried",
+        "works_image_fields_capture_retried",
+        "collection_scan_as_of:2026-10-20"
+      ],
+      "warnings": [
+        "list_metric_units_are_displayed_approximations",
+        "creator_list_limited_to_displayed_time_range",
+        "list_read_with_local_image_recognition"
+      ],
+      "stage": "xhs-slot-retest-20261020-v13",
+      "androidUser": "999",
+      "packagePresent": true,
+      "snapshotFileSha256": "c89241874d640f81e5a498aee315ddfd1c274921bda922b25cce374924754d7b"
+    }
+  ],
+  "singlePairConsistency": {
+    "singleNotes": 15,
+    "pairNotes": 15,
+    "sameDateAndRawTitleSequence": false,
+    "sameMetricTriples": false,
+    "sameDateSequence": true,
+    "titleGlyphDifferences": [
+      {
+        "row": 13,
+        "singleGlyph": "赢",
+        "pairGlyph": "贏",
+        "dateAndMetricsSame": true,
+        "resolved": false
+      }
+    ],
+    "metricDifferences": [
+      {
+        "row": 1,
+        "singleViews": 253,
+        "pairViews": 254
+      },
+      {
+        "row": 2,
+        "singleViews": 136,
+        "pairViews": 137
+      },
+      {
+        "row": 4,
+        "singleViews": 649,
+        "pairViews": 658
+      }
+    ],
+    "metricChangesVerifiedAgainstEachSourceImage": true,
+    "rawTitleExactAccuracyPassed": false,
+    "sourceImageSha256": {
+      "v12/glyph.png": "0de455c072ad4cbfdeffd478a04855bf30da85e094c75b09a5d3d5cc3a5b97e7",
+      "v12/first.png": "0c9cf1606600956e70ec86682f68813946d31046b36eec336399dee5383a75a4",
+      "v13/glyph.png": "5e3c411fca50aebf60edaa9f6f18f85174036a801d29883c0825ada9d2c45368",
+      "v13/first.png": "3d4c4ce724d324f0471aa1cffadf80d1dd61690280e4277c082472291e614e7d"
+    }
+  },
+  "historicalFailuresKept": {
+    "v4": "rc9 18/app1 persistent loading",
+    "v6": "rc9 141/app2 title anchor missing",
+    "v8": "49383a4 18/app1 both entries loading",
+    "v10": "ddbf0ab 141/app2 partial5/1scroll, ambiguous hidden header title; fixed bybd2c32c"
+  },
+  "limitations": [
+    "18 unresolved and held by human decision.",
+    "123 default-display recovery branch verified with retained actual dump and unit cases; this branch was not observed triggered in this round.",
+    "Earlier141 7-second input timeout not reproduced in later runs; success does not prove permanent transport resolution.",
+    "One Chinese glyph赢/贏 differs between single/pair at row13 (same date/counts); English model words remain imperfect (Latin l/I/|). Verbatim title accuracy unresolved; no guessed corrections.",
+    "Displayed 万 metrics are approximations; no per-post detail, stable note ID or Web DB import.",
+    "Standalone staging uses same production consumer but is not production SYSTEM queue or whole-fleet acceptance."
+  ],
+  "validation": {
+    "pythonTestsPassed": 276,
+    "nodeTestsPassed": 16,
+    "nodeBreakdown": {
+      "collectionConsumer": 11,
+      "slotPlanner": 5
+    },
+    "rootNpmCheck": "passed earlier in continuous task; JS bytes unchanged",
+    "diffCheck": "passed before final documentation commit",
+    "review": "Self review of all task diff and guard/restore/slot/input/crop failure paths; no independent reviewer or subagent."
+  },
+  "sourceFilesSha256": {
+    "windows-agent/scripts/小红书数据同步.py": "2d4ad82f53ac83337f270292ca36c4c7fe9116605706e05143bbe701fc2523c0",
+    "windows-agent/scripts/xhs_list_ocr.py": "4cc3d8ae042c6951b65ec93cc755e57cbed0440393b4c841bda20f76def3a516",
+    "windows-agent/scripts/xhs_ocr_digits.png": "6a65dfb150ecbd4c56140b28fea51e89d11d8187031009447bab0d880164522f",
+    "windows-agent/scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+    "windows-agent/src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842"
+  },
+  "manifests": {
+    "xhs-slot-retest-20261020-v4": {
+      "qa_adb_guard.py": "4dd6674f2a91c4da6f3af687f3360ea5f5d061dbee9a5c769e60acf0b005ab03",
+      "qa_slot_probe.py": "9d973eeefb98a13920d75ce2abc2c806aee48dc4f1d471516575251c06701a15",
+      "collector.py": "7d8449c83fbcdf57c919fb03b8dc9e216a090247007f5d73ba458d376120ab1d",
+      "fleet.mjs": "0ff973636f7b8b63c862690cb6e99f2361c9c747abd8cda03b56afd34fdced41",
+      "targets.json": "73064be971ff66e889affab351e5260fdc435f4b7fd8911f6b07297d783459fb",
+      "xhs-slot-retest-plan.mjs": "848447cfb436d957edc2b05cd0ad5b784dd58366574a457ad7c62021b7e2c042",
+      "candidate.py": "5843403d02f9e5f9b0a996b108ba033461c7df0ec335b8b0b74a810fcc609510",
+      "xhs_list_ocr.py": "e5a015f4d90920c023bae25195ae386e75e958c8c4458447fe2c508de345d644",
+      "xhs_ocr_digits.png": "6a65dfb150ecbd4c56140b28fea51e89d11d8187031009447bab0d880164522f",
+      "xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842"
+    },
+    "xhs-slot-retest-20261020-v5": {
+      "qa_adb_guard.py": "4dd6674f2a91c4da6f3af687f3360ea5f5d061dbee9a5c769e60acf0b005ab03",
+      "qa_slot_probe.py": "9d973eeefb98a13920d75ce2abc2c806aee48dc4f1d471516575251c06701a15",
+      "collector.py": "7d8449c83fbcdf57c919fb03b8dc9e216a090247007f5d73ba458d376120ab1d",
+      "fleet.mjs": "0ff973636f7b8b63c862690cb6e99f2361c9c747abd8cda03b56afd34fdced41",
+      "targets.json": "4f9498651c04dcbb0136636ecc6e2e2a804cccbd26bd505bb8d9041456fcc4a5",
+      "xhs-slot-retest-plan.mjs": "848447cfb436d957edc2b05cd0ad5b784dd58366574a457ad7c62021b7e2c042",
+      "candidate.py": "5843403d02f9e5f9b0a996b108ba033461c7df0ec335b8b0b74a810fcc609510",
+      "xhs_list_ocr.py": "e5a015f4d90920c023bae25195ae386e75e958c8c4458447fe2c508de345d644",
+      "xhs_ocr_digits.png": "6a65dfb150ecbd4c56140b28fea51e89d11d8187031009447bab0d880164522f",
+      "xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842"
+    },
+    "xhs-slot-retest-20261020-v6": {
+      "qa_adb_guard.py": "4dd6674f2a91c4da6f3af687f3360ea5f5d061dbee9a5c769e60acf0b005ab03",
+      "qa_slot_probe.py": "9d973eeefb98a13920d75ce2abc2c806aee48dc4f1d471516575251c06701a15",
+      "collector.py": "7d8449c83fbcdf57c919fb03b8dc9e216a090247007f5d73ba458d376120ab1d",
+      "fleet.mjs": "0ff973636f7b8b63c862690cb6e99f2361c9c747abd8cda03b56afd34fdced41",
+      "targets.json": "8b7769fe77313d402d32f6b787912a8a718e9b8c8bae317b6fbcb8bbf627b578",
+      "xhs-slot-retest-plan.mjs": "848447cfb436d957edc2b05cd0ad5b784dd58366574a457ad7c62021b7e2c042",
+      "candidate.py": "5843403d02f9e5f9b0a996b108ba033461c7df0ec335b8b0b74a810fcc609510",
+      "xhs_list_ocr.py": "e5a015f4d90920c023bae25195ae386e75e958c8c4458447fe2c508de345d644",
+      "xhs_ocr_digits.png": "6a65dfb150ecbd4c56140b28fea51e89d11d8187031009447bab0d880164522f",
+      "xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842"
+    },
+    "xhs-slot-retest-20261020-v8": {
+      "qa_adb_guard.py": "4dd6674f2a91c4da6f3af687f3360ea5f5d061dbee9a5c769e60acf0b005ab03",
+      "qa_slot_probe.py": "9d973eeefb98a13920d75ce2abc2c806aee48dc4f1d471516575251c06701a15",
+      "collector.py": "7d8449c83fbcdf57c919fb03b8dc9e216a090247007f5d73ba458d376120ab1d",
+      "fleet.mjs": "0ff973636f7b8b63c862690cb6e99f2361c9c747abd8cda03b56afd34fdced41",
+      "targets.json": "73064be971ff66e889affab351e5260fdc435f4b7fd8911f6b07297d783459fb",
+      "xhs-slot-retest-plan.mjs": "848447cfb436d957edc2b05cd0ad5b784dd58366574a457ad7c62021b7e2c042",
+      "candidate.py": "b97b328fc33ea551f247256fe79476a9d5d7f3909d6f0bef935b4280275fa5b4",
+      "xhs_list_ocr.py": "e5a015f4d90920c023bae25195ae386e75e958c8c4458447fe2c508de345d644",
+      "xhs_ocr_digits.png": "6a65dfb150ecbd4c56140b28fea51e89d11d8187031009447bab0d880164522f",
+      "xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842"
+    },
+    "xhs-slot-retest-20261020-v10": {
+      "qa_adb_guard.py": "4dd6674f2a91c4da6f3af687f3360ea5f5d061dbee9a5c769e60acf0b005ab03",
+      "qa_slot_probe.py": "9d973eeefb98a13920d75ce2abc2c806aee48dc4f1d471516575251c06701a15",
+      "collector.py": "7d8449c83fbcdf57c919fb03b8dc9e216a090247007f5d73ba458d376120ab1d",
+      "fleet.mjs": "0ff973636f7b8b63c862690cb6e99f2361c9c747abd8cda03b56afd34fdced41",
+      "targets.json": "d4788b4eada4baf1357071a96a0ea51a9416d6abb7fcce6d435977493bb57301",
+      "xhs-slot-retest-plan.mjs": "848447cfb436d957edc2b05cd0ad5b784dd58366574a457ad7c62021b7e2c042",
+      "candidate.py": "2d4ad82f53ac83337f270292ca36c4c7fe9116605706e05143bbe701fc2523c0",
+      "xhs_list_ocr.py": "c2fee58a6bc064708db5079e24de08ada0d4a9d0ef08dea937d4ee636acf877c",
+      "xhs_ocr_digits.png": "6a65dfb150ecbd4c56140b28fea51e89d11d8187031009447bab0d880164522f",
+      "xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842"
+    },
+    "xhs-slot-retest-20261020-v12": {
+      "qa_adb_guard.py": "4dd6674f2a91c4da6f3af687f3360ea5f5d061dbee9a5c769e60acf0b005ab03",
+      "qa_slot_probe.py": "9d973eeefb98a13920d75ce2abc2c806aee48dc4f1d471516575251c06701a15",
+      "collector.py": "7d8449c83fbcdf57c919fb03b8dc9e216a090247007f5d73ba458d376120ab1d",
+      "fleet.mjs": "0ff973636f7b8b63c862690cb6e99f2361c9c747abd8cda03b56afd34fdced41",
+      "targets.json": "d4788b4eada4baf1357071a96a0ea51a9416d6abb7fcce6d435977493bb57301",
+      "xhs-slot-retest-plan.mjs": "848447cfb436d957edc2b05cd0ad5b784dd58366574a457ad7c62021b7e2c042",
+      "candidate.py": "2d4ad82f53ac83337f270292ca36c4c7fe9116605706e05143bbe701fc2523c0",
+      "xhs_list_ocr.py": "4cc3d8ae042c6951b65ec93cc755e57cbed0440393b4c841bda20f76def3a516",
+      "xhs_ocr_digits.png": "6a65dfb150ecbd4c56140b28fea51e89d11d8187031009447bab0d880164522f",
+      "xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842"
+    },
+    "xhs-slot-retest-20261020-v13": {
+      "qa_adb_guard.py": "4dd6674f2a91c4da6f3af687f3360ea5f5d061dbee9a5c769e60acf0b005ab03",
+      "qa_slot_probe.py": "9d973eeefb98a13920d75ce2abc2c806aee48dc4f1d471516575251c06701a15",
+      "collector.py": "7d8449c83fbcdf57c919fb03b8dc9e216a090247007f5d73ba458d376120ab1d",
+      "fleet.mjs": "0ff973636f7b8b63c862690cb6e99f2361c9c747abd8cda03b56afd34fdced41",
+      "targets.json": "629f8b1831df8e8d87bc78abbf58114bb31e7a7ea6a8911a43b83fd834d0cb6d",
+      "xhs-slot-retest-plan.mjs": "848447cfb436d957edc2b05cd0ad5b784dd58366574a457ad7c62021b7e2c042",
+      "candidate.py": "2d4ad82f53ac83337f270292ca36c4c7fe9116605706e05143bbe701fc2523c0",
+      "xhs_list_ocr.py": "4cc3d8ae042c6951b65ec93cc755e57cbed0440393b4c841bda20f76def3a516",
+      "xhs_ocr_digits.png": "6a65dfb150ecbd4c56140b28fea51e89d11d8187031009447bab0d880164522f",
+      "xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842"
+    }
+  },
+  "journalSha256": {
+    "xhs-slot-retest-20261020-v4": "3547c739b94ebe6cc11752c7d4124a09074e1987ae03ffb4657ad923aff49cb4",
+    "xhs-slot-retest-20261020-v5": "f824d063a6c96ea118fabb28150a311915f47781ef108b24817ed4d0eb91cac7",
+    "xhs-slot-retest-20261020-v6": "f60bed74b9d95ba244af6478f4407093ae5cd53d111a7598f628ad65d0bf922f",
+    "xhs-slot-retest-20261020-v8": "49b3ef438b5a8833ba6a9dccf0e2e76774aaac38fb895095f56296c1b5c30e11",
+    "xhs-slot-retest-20261020-v10": "5771d8bf5fe01afe7296401bb552bcccaa218e4034b225f14c2ed54476f83ea7",
+    "xhs-slot-retest-20261020-v12": "64b92b9ea4322118bad06934e9e2e987abd08d5f5bf6f1843bf6fa28b4ad4034",
+    "xhs-slot-retest-20261020-v13": "d93e7d0535fe0023b1a7cf62657a303c806382c3c55f4c0a41c35934f412cbe5"
+  },
+  "adbClientCallsByPhone": {
+    "18": 160,
+    "123": 251,
+    "141": 847
+  },
+  "runtimeAfter": {
+    "hashes": {
+      "scripts/小红书数据同步.py": "e4ee2e856a41c9346e88c205b99f9faec371fe869752f0c492454016ffd639c5",
+      "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+      "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+      "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+      "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    "pending": [],
+    "activeOwnedCollectors": [],
+    "stagesChecked": 13,
+    "oldStagesChecked": 39,
+    "journals": [
+      {
+        "stage": "xhs-slot-retest-20261020-v1",
+        "name": "13",
+        "slot": "app2",
+        "settingsRestored": true,
+        "status": "passed"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v10",
+        "name": "141",
+        "slot": "app2",
+        "settingsRestored": true,
+        "status": "partial"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v12",
+        "name": "141",
+        "slot": "app2",
+        "settingsRestored": true,
+        "status": "passed"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v13",
+        "name": "123",
+        "slot": "app2",
+        "settingsRestored": true,
+        "status": "passed"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v13",
+        "name": "141",
+        "slot": "app1",
+        "settingsRestored": true,
+        "status": "passed"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v13",
+        "name": "141",
+        "slot": "app2",
+        "settingsRestored": true,
+        "status": "passed"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v2",
+        "name": "123",
+        "slot": "app2",
+        "settingsRestored": true,
+        "status": "failed"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v2",
+        "name": "43",
+        "slot": "app1",
+        "settingsRestored": true,
+        "status": "passed"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v3",
+        "name": "25",
+        "slot": "app2",
+        "settingsRestored": true,
+        "status": "failed"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v3",
+        "name": "32",
+        "slot": "app1",
+        "settingsRestored": true,
+        "status": "failed"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v3",
+        "name": "18",
+        "slot": "app1",
+        "settingsRestored": true,
+        "status": "failed"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v3",
+        "name": "18",
+        "slot": "app2",
+        "settingsRestored": null,
+        "status": "skipped_slot_preflight"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v3",
+        "name": "114",
+        "slot": "app1",
+        "settingsRestored": true,
+        "status": "failed"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v3",
+        "name": "130",
+        "slot": "app1",
+        "settingsRestored": true,
+        "status": "failed"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v3",
+        "name": "130",
+        "slot": "app2",
+        "settingsRestored": true,
+        "status": "failed"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v3",
+        "name": "141",
+        "slot": "app1",
+        "settingsRestored": true,
+        "status": "failed"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v3",
+        "name": "141",
+        "slot": "app2",
+        "settingsRestored": true,
+        "status": "failed"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v3",
+        "name": "114",
+        "slot": "app2",
+        "settingsRestored": true,
+        "status": "passed"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v3",
+        "name": "180",
+        "slot": "app1",
+        "settingsRestored": true,
+        "status": "passed"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v3",
+        "name": "165",
+        "slot": "app1",
+        "settingsRestored": true,
+        "status": "passed"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v3",
+        "name": "180",
+        "slot": "app2",
+        "settingsRestored": true,
+        "status": "passed"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v3",
+        "name": "165",
+        "slot": "app2",
+        "settingsRestored": true,
+        "status": "passed"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v4",
+        "name": "18",
+        "slot": "app1",
+        "settingsRestored": true,
+        "status": "failed"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v5",
+        "name": "123",
+        "slot": "app2",
+        "settingsRestored": true,
+        "status": "passed"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v6",
+        "name": "141",
+        "slot": "app1",
+        "settingsRestored": true,
+        "status": "passed"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v6",
+        "name": "141",
+        "slot": "app2",
+        "settingsRestored": true,
+        "status": "failed"
+      },
+      {
+        "stage": "xhs-slot-retest-20261020-v8",
+        "name": "18",
+        "slot": "app1",
+        "settingsRestored": true,
+        "status": "failed"
+      }
+    ],
+    "cacheAgeSeconds": 27.63376212120056,
+    "atEpoch": 1792463063.1295936,
+    "identity": {
+      "adbPid": 8988,
+      "adbOwner": "NT AUTHORITY\\SYSTEM",
+      "adbExe": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+      "adbCreatedAt": 1792388072.8168414,
+      "agentPid": 14508,
+      "agentOwner": "NT AUTHORITY\\SYSTEM",
+      "agentCreatedAt": 1792388069.5465655
+    }
+  },
+  "mediaLiveAfter": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "invariants": {
+    "all10AttemptSettingsRestored": true,
+    "pendingLedgers": 0,
+    "activeOwnedCollectors": 0,
+    "production8FilesUnchanged": true,
+    "systemAgentAndAdbUnchanged": true,
+    "maxPhysicalPhones": 2,
+    "samePhoneSlotsSerial": true,
+    "phone6Calls": 0,
+    "phone152Calls": 0,
+    "alwaysExcluded": [
+      "74",
+      "81",
+      "152",
+      "188"
+    ],
+    "restarts": 0,
+    "webDbWrites": 0,
+    "rootPreexistingStatusEntries": 237
+  },
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "phone123ZeroPostsProof": {
+    "newestVisibleDate": "2026-08-31",
+    "windowStart": "2026-09-21",
+    "stopReason": "older_than_window_visible",
+    "worksListXmlSha256": "1293217b477d1624c4a6250bf85c20eb7f1bad0f0665e3eeb0f8666fa996e807",
+    "overviewZerosNotUsedAsEvidence": true
+  },
+  "localBundle": {
+    "name": "rc10-local-candidate.tar",
+    "sha256": "15596eacd10c7c6881bc2fff92cf7c47a58cda47ac9009d2737d7d89cd97c196",
+    "files": [
+      "windows-agent/scripts/小红书数据同步.py",
+      "windows-agent/scripts/xhs_list_ocr.py",
+      "windows-agent/scripts/xhs_ocr_digits.png"
+    ],
+    "runtimeApplied": false,
+    "rollbackBoundary": "No production change in this task. Existing actual baseline8 retained; a later release must reverify backup, rollback rehearsal and obtain version-specific authorization."
+  },
+  "stageSourceCommits": {
+    "xhs-slot-retest-20261020-v4": "8a1e1fae4ca350edf9074c9c436368dad86aaf9a",
+    "xhs-slot-retest-20261020-v5": "8a1e1fae4ca350edf9074c9c436368dad86aaf9a",
+    "xhs-slot-retest-20261020-v6": "8a1e1fae4ca350edf9074c9c436368dad86aaf9a",
+    "xhs-slot-retest-20261020-v8": "49383a4cc9051b150b28d6210f7a7a1e981b8807",
+    "xhs-slot-retest-20261020-v10": "ddbf0abaf977efa2c089094d17a62973bc2a6af1",
+    "xhs-slot-retest-20261020-v12": "bd2c32c87425cadbe23e8859d3a349767c789573",
+    "xhs-slot-retest-20261020-v13": "bd2c32c87425cadbe23e8859d3a349767c789573"
+  },
+  "codePhaseCommits": [
+    "d7323c06742008e8e0d84a6cf56bcbac67067521",
+    "49383a4cc9051b150b28d6210f7a7a1e981b8807",
+    "ddbf0abaf977efa2c089094d17a62973bc2a6af1",
+    "bd2c32c87425cadbe23e8859d3a349767c789573"
+  ]
+}

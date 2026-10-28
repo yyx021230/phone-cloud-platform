@@ -4,6 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "start:xhs-batch": "node server/xhs-batch/main.mjs",
+    "test:xhs-batch": "node --test --test-concurrency=1 server/xhs-batch/*.test.mjs",
     "start": "node server/index.mjs",
     "start:local": "node scripts/start-local.mjs",
     "start:windows-agent": "node windows-agent/src/index.mjs",

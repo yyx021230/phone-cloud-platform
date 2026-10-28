@@ -1,0 +1,1229 @@
+{
+  "status": "local_candidate_not_deployed",
+  "tag": "xhs-compat-20261020-rc.15",
+  "branch": "codex/xhs-elements-remaining-20261020",
+  "sourceCommit": "b4dce5753bf64d7e56f553e86c4c4d7a180f84d2",
+  "baseCommit": "22697362f988a14dc35a28637d3577f075a162dd",
+  "window": [
+    "2026-09-21",
+    "2026-10-20"
+  ],
+  "scopeSlots": 19,
+  "counts": {
+    "native_hierarchy_unavailable": 4,
+    "account_abnormal": 1,
+    "complete": 10,
+    "offline": 1,
+    "external_foreground_interference": 1,
+    "adb_transport_unavailable": 2
+  },
+  "latestCompleteNotes": 222,
+  "slots": [
+    {
+      "name": "13",
+      "slot": "app2",
+      "manufacturer": "Xiaomi",
+      "previousIssue": "native_hierarchy_unavailable",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:27:57.891Z",
+      "finishedAt": "2026-10-20T08:30:04.169Z",
+      "stage": "xhs-elements-fleet-20261020-v41",
+      "sourceCommit": "5b2755b734a1b940c138b1bdd5ff122bd6c86f7f",
+      "journalSHA256": "d10e816e67eaca8c19b93109d797a74772760fc47eddf92fbd89f35f01316638",
+      "category": "native_hierarchy_unavailable",
+      "description": "入口可达，原生元素树仍无法稳定完整读取"
+    },
+    {
+      "name": "14",
+      "slot": "app2",
+      "manufacturer": "Xiaomi",
+      "previousIssue": "native_bounds_zero",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:00:24.311Z",
+      "finishedAt": "2026-10-20T08:01:06.253Z",
+      "stage": "xhs-elements-fleet-20261020-v35",
+      "sourceCommit": "96118c48a173c93b9c7089d85d0353cf46131b10",
+      "journalSHA256": "e30d33bddec70c68fc2467023e58df04a167769d46a81c8315514207ba79f266",
+      "category": "account_abnormal",
+      "description": "原生导航成功，创作者中心账号异常，停止"
+    },
+    {
+      "name": "20",
+      "slot": "app1",
+      "manufacturer": "Xiaomi",
+      "previousIssue": "native_bounds_zero",
+      "status": "passed",
+      "notes": 78,
+      "scrolls": 39,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:08:10.775Z",
+      "finishedAt": "2026-10-20T08:19:41.119Z",
+      "stage": "xhs-elements-fleet-20261020-v38",
+      "sourceCommit": "0689a6f3f9b51bffb4e92d6f0af68422b362cf51",
+      "journalSHA256": "2db1cb0a0be1d1b0b9a877bfdb67d2fb192321b11382a71fe7e0b6804fcb5ed9",
+      "category": "complete",
+      "description": "完整采集通过"
+    },
+    {
+      "name": "82",
+      "slot": "app2",
+      "manufacturer": "vivo",
+      "previousIssue": "milestone_layout",
+      "category": "offline",
+      "description": "设备离线；已有弹窗修复未能真机验收"
+    },
+    {
+      "name": "88",
+      "slot": "app1",
+      "manufacturer": "vivo",
+      "previousIssue": "browser_first_use_consent",
+      "status": "passed",
+      "notes": 0,
+      "scrolls": 0,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:49:18.757Z",
+      "finishedAt": "2026-10-20T08:50:28.339Z",
+      "stage": "xhs-elements-fleet-20261020-v47",
+      "sourceCommit": "b4dce5753bf64d7e56f553e86c4c4d7a180f84d2",
+      "journalSHA256": "502d1bb715e557b477c0233cf5f83dd8565ec9aeaabe5b36613561f3a8120d98",
+      "category": "complete",
+      "description": "完整采集通过"
+    },
+    {
+      "name": "93",
+      "slot": "app2",
+      "manufacturer": "vivo",
+      "previousIssue": "unexpected_detail_navigation",
+      "status": "passed",
+      "notes": 0,
+      "scrolls": 0,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:22:26.556Z",
+      "finishedAt": "2026-10-20T08:23:43.722Z",
+      "stage": "xhs-elements-fleet-20261020-v40",
+      "sourceCommit": "5eef4aeca72e2d23f6746d6624a240e5b7868fff",
+      "journalSHA256": "e1f93403a61d8e2196cce0584c20863572b8b7b17819e4c556c604514fc25b5c",
+      "category": "complete",
+      "description": "完整采集通过"
+    },
+    {
+      "name": "95",
+      "slot": "app1",
+      "manufacturer": "vivo",
+      "previousIssue": "target_foreground_unproven",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:34:20.290Z",
+      "finishedAt": "2026-10-20T08:36:19.103Z",
+      "stage": "xhs-elements-fleet-20261020-v44",
+      "sourceCommit": "cd585371b6611948b2e5069602e26c262eb24421",
+      "journalSHA256": "c084679b90e15aa1ed1e2c1a6c1c139d52ca8801bb43be856b2c6daf14352f1c",
+      "category": "external_foreground_interference",
+      "description": "进入数据页后读取失败；只读核对前台为企业微信，来源未确认"
+    },
+    {
+      "name": "111",
+      "slot": "app1",
+      "manufacturer": "vivo",
+      "previousIssue": "native_hierarchy_unavailable",
+      "status": "passed",
+      "notes": 14,
+      "scrolls": 4,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:48:52.607Z",
+      "finishedAt": "2026-10-20T08:50:48.134Z",
+      "stage": "xhs-elements-fleet-20261020-v47",
+      "sourceCommit": "b4dce5753bf64d7e56f553e86c4c4d7a180f84d2",
+      "journalSHA256": "502d1bb715e557b477c0233cf5f83dd8565ec9aeaabe5b36613561f3a8120d98",
+      "category": "complete",
+      "description": "完整采集通过"
+    },
+    {
+      "name": "111",
+      "slot": "app2",
+      "manufacturer": "vivo",
+      "previousIssue": "native_hierarchy_unavailable",
+      "status": "passed",
+      "notes": 10,
+      "scrolls": 3,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:50:48.135Z",
+      "finishedAt": "2026-10-20T08:52:30.153Z",
+      "stage": "xhs-elements-fleet-20261020-v47",
+      "sourceCommit": "b4dce5753bf64d7e56f553e86c4c4d7a180f84d2",
+      "journalSHA256": "502d1bb715e557b477c0233cf5f83dd8565ec9aeaabe5b36613561f3a8120d98",
+      "category": "complete",
+      "description": "完整采集通过"
+    },
+    {
+      "name": "113",
+      "slot": "app1",
+      "manufacturer": "vivo",
+      "previousIssue": "external_app_overlay",
+      "status": "passed",
+      "notes": 65,
+      "scrolls": 28,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:40:35.165Z",
+      "finishedAt": "2026-10-20T08:48:16.905Z",
+      "stage": "xhs-elements-fleet-20261020-v46",
+      "sourceCommit": "b4dce5753bf64d7e56f553e86c4c4d7a180f84d2",
+      "journalSHA256": "7452dad8798c376ba0fa7c2197d4959192e4f3f544b9572b141ca290a7495eef",
+      "category": "complete",
+      "description": "完整采集通过"
+    },
+    {
+      "name": "119",
+      "slot": "app2",
+      "manufacturer": "vivo",
+      "previousIssue": "keyguard_unproven",
+      "status": "passed",
+      "notes": 0,
+      "scrolls": 0,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:53:01.743Z",
+      "finishedAt": "2026-10-20T08:54:16.570Z",
+      "stage": "xhs-elements-fleet-20261020-v48",
+      "sourceCommit": "b4dce5753bf64d7e56f553e86c4c4d7a180f84d2",
+      "journalSHA256": "c7905c28f83a7caf4911fa604cff08c51b6506e08270396e9408412d99d178b8",
+      "category": "complete",
+      "description": "完整采集通过",
+      "stabilityNote": "Final b4dce57 retest passed; earlier same-source pre-menu foreground guard stopped once; exact transient cause unproven."
+    },
+    {
+      "name": "140",
+      "slot": "app1",
+      "manufacturer": "Xiaomi",
+      "previousIssue": "native_bounds_zero",
+      "status": "passed",
+      "notes": 40,
+      "scrolls": 21,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:22:26.556Z",
+      "finishedAt": "2026-10-20T08:27:28.562Z",
+      "stage": "xhs-elements-fleet-20261020-v40",
+      "sourceCommit": "5eef4aeca72e2d23f6746d6624a240e5b7868fff",
+      "journalSHA256": "e1f93403a61d8e2196cce0584c20863572b8b7b17819e4c556c604514fc25b5c",
+      "category": "complete",
+      "description": "完整采集通过"
+    },
+    {
+      "name": "140",
+      "slot": "app2",
+      "manufacturer": "Xiaomi",
+      "previousIssue": "native_bounds_zero",
+      "status": "passed",
+      "notes": 15,
+      "scrolls": 7,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:30:22.890Z",
+      "finishedAt": "2026-10-20T08:32:27.873Z",
+      "stage": "xhs-elements-fleet-20261020-v42",
+      "sourceCommit": "5b2755b734a1b940c138b1bdd5ff122bd6c86f7f",
+      "journalSHA256": "772b25f7548b44c3978257d4fdc366908a17d5a8b95703309d94eae3030aa4d1",
+      "category": "complete",
+      "description": "完整采集通过"
+    },
+    {
+      "name": "141",
+      "slot": "app1",
+      "manufacturer": "Xiaomi",
+      "previousIssue": "native_hierarchy_unavailable",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:34:20.290Z",
+      "finishedAt": "2026-10-20T08:36:54.496Z",
+      "stage": "xhs-elements-fleet-20261020-v44",
+      "sourceCommit": "cd585371b6611948b2e5069602e26c262eb24421",
+      "journalSHA256": "c084679b90e15aa1ed1e2c1a6c1c139d52ca8801bb43be856b2c6daf14352f1c",
+      "category": "native_hierarchy_unavailable",
+      "description": "入口可达，原生元素树仍无法稳定完整读取"
+    },
+    {
+      "name": "141",
+      "slot": "app2",
+      "manufacturer": "Xiaomi",
+      "previousIssue": "native_hierarchy_unavailable",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:37:32.684Z",
+      "finishedAt": "2026-10-20T08:39:57.847Z",
+      "stage": "xhs-elements-fleet-20261020-v45",
+      "sourceCommit": "cd585371b6611948b2e5069602e26c262eb24421",
+      "journalSHA256": "aec4ced1c113bcdf7fdfafdb48e2188868b722a717e5af54d3d5ef16ab46d027",
+      "category": "native_hierarchy_unavailable",
+      "description": "入口可达，原生元素树仍无法稳定完整读取"
+    },
+    {
+      "name": "155",
+      "slot": "app1",
+      "manufacturer": "vivo",
+      "previousIssue": "adb_transport_unavailable",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:55:31.881Z",
+      "finishedAt": "2026-10-20T08:56:19.419Z",
+      "stage": "xhs-elements-fleet-20261020-v49",
+      "sourceCommit": "b4dce5753bf64d7e56f553e86c4c4d7a180f84d2",
+      "journalSHA256": "90a22464e7270ac478ad522051ee76ac5a875e6b54f772b949df01ba87c638b6",
+      "category": "adb_transport_unavailable",
+      "description": "本轮ADB连接丢失，停止；以恢复回执为准",
+      "settingsProof": "supplemental_readback_0_writes",
+      "originalJournalStillReportsUnproven": true
+    },
+    {
+      "name": "173",
+      "slot": "app2",
+      "manufacturer": "Xiaomi",
+      "previousIssue": "duplicate_native_title_date",
+      "status": "passed",
+      "notes": 0,
+      "scrolls": 0,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T07:50:19.950Z",
+      "finishedAt": "2026-10-20T07:51:28.447Z",
+      "stage": "xhs-elements-fleet-20261020-v30",
+      "sourceCommit": "fc59b91716d328a1ad353a25b771e2111261adc1",
+      "journalSHA256": "a1ba284a312fe9f6cdc78878566bf128a83a42c7df163075816a61a40c4afbbb",
+      "category": "complete",
+      "description": "完整采集通过"
+    },
+    {
+      "name": "182",
+      "slot": "app1",
+      "manufacturer": "HUAWEI",
+      "previousIssue": "native_bounds_zero",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:33:05.607Z",
+      "finishedAt": "2026-10-20T08:34:03.131Z",
+      "stage": "xhs-elements-fleet-20261020-v43",
+      "sourceCommit": "cd585371b6611948b2e5069602e26c262eb24421",
+      "journalSHA256": "c228472861c83f7a8f21a51260156d37c9193056192c292864517cf38d6d34c3",
+      "category": "native_hierarchy_unavailable",
+      "description": "入口可达，原生元素树仍无法稳定完整读取"
+    },
+    {
+      "name": "185",
+      "slot": "app1",
+      "manufacturer": "OPPO",
+      "previousIssue": "adb_transport_unavailable",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:58:55.953Z",
+      "finishedAt": "2026-10-20T08:59:16.612Z",
+      "stage": "xhs-elements-fleet-20261020-v50",
+      "sourceCommit": "b4dce5753bf64d7e56f553e86c4c4d7a180f84d2",
+      "journalSHA256": "1ebcf382c8fef51dcb774fcbaf4ba48b22b1e411dacc55f5594d71a25bb2e40f",
+      "category": "adb_transport_unavailable",
+      "description": "本轮ADB连接丢失，停止；以恢复回执为准",
+      "settingsProof": "supplemental_readback_0_writes",
+      "originalJournalStillReportsUnproven": true
+    }
+  ],
+  "attempts": [
+    {
+      "name": "113",
+      "slot": "app1",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T07:43:33.914Z",
+      "finishedAt": "2026-10-20T07:45:02.159Z",
+      "stage": "xhs-elements-fleet-20261020-v28",
+      "sourceCommit": "22697362f988a14dc35a28637d3577f075a162dd",
+      "journalSHA256": "410c98a4b198a2ef7f2767db3a7ec9c24e6828950b12d6b307894102340a3923"
+    },
+    {
+      "name": "14",
+      "slot": "app2",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T07:45:54.383Z",
+      "finishedAt": "2026-10-20T07:46:29.260Z",
+      "stage": "xhs-elements-fleet-20261020-v29",
+      "sourceCommit": "51c7923801b6e7b70e8c317e2cfd9d5d3a1edf44",
+      "journalSHA256": "a0bfc0a9410b32081dbd5f34e91cc9754fb56b4dabacbc82547fb5fc4be81534"
+    },
+    {
+      "name": "173",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 0,
+      "scrolls": 0,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T07:50:19.950Z",
+      "finishedAt": "2026-10-20T07:51:28.447Z",
+      "stage": "xhs-elements-fleet-20261020-v30",
+      "sourceCommit": "fc59b91716d328a1ad353a25b771e2111261adc1",
+      "journalSHA256": "a1ba284a312fe9f6cdc78878566bf128a83a42c7df163075816a61a40c4afbbb"
+    },
+    {
+      "name": "14",
+      "slot": "app2",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T07:52:32.794Z",
+      "finishedAt": "2026-10-20T07:52:59.193Z",
+      "stage": "xhs-elements-fleet-20261020-v31",
+      "sourceCommit": "fc59b91716d328a1ad353a25b771e2111261adc1",
+      "journalSHA256": "13e5aa9648cdee722fd0d851a4636ff85b172bff8b20f63797c0b5bcf6b888c8"
+    },
+    {
+      "name": "13",
+      "slot": "app2",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T07:54:15.129Z",
+      "finishedAt": "2026-10-20T07:55:54.198Z",
+      "stage": "xhs-elements-fleet-20261020-v32",
+      "sourceCommit": "fc59b91716d328a1ad353a25b771e2111261adc1",
+      "journalSHA256": "b5f13e7e15030a5862ac153c762ec588b556418326744b24b6c4a889d1f936fe"
+    },
+    {
+      "name": "111",
+      "slot": "app1",
+      "status": "passed",
+      "notes": 14,
+      "scrolls": 5,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T07:54:15.129Z",
+      "finishedAt": "2026-10-20T07:56:20.307Z",
+      "stage": "xhs-elements-fleet-20261020-v32",
+      "sourceCommit": "fc59b91716d328a1ad353a25b771e2111261adc1",
+      "journalSHA256": "b5f13e7e15030a5862ac153c762ec588b556418326744b24b6c4a889d1f936fe"
+    },
+    {
+      "name": "14",
+      "slot": "app2",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T07:57:04.078Z",
+      "finishedAt": "2026-10-20T07:57:28.815Z",
+      "stage": "xhs-elements-fleet-20261020-v33",
+      "sourceCommit": "77ab1ce1f83f91caff02e4ca0f219e78923bb278",
+      "journalSHA256": "ddb573dae56f9ac6fd9fd609465426f55646b5d7b9878ef3232366caa5b46fea"
+    },
+    {
+      "name": "13",
+      "slot": "app2",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T07:58:17.753Z",
+      "finishedAt": "2026-10-20T07:59:52.653Z",
+      "stage": "xhs-elements-fleet-20261020-v34",
+      "sourceCommit": "77ab1ce1f83f91caff02e4ca0f219e78923bb278",
+      "journalSHA256": "1a68167bc714fdf6a240b74ff87a4896912c20b85c0aa638b0b5565e49f063f3"
+    },
+    {
+      "name": "14",
+      "slot": "app2",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:00:24.311Z",
+      "finishedAt": "2026-10-20T08:01:06.253Z",
+      "stage": "xhs-elements-fleet-20261020-v35",
+      "sourceCommit": "96118c48a173c93b9c7089d85d0353cf46131b10",
+      "journalSHA256": "e30d33bddec70c68fc2467023e58df04a167769d46a81c8315514207ba79f266"
+    },
+    {
+      "name": "88",
+      "slot": "app1",
+      "status": "passed",
+      "notes": 0,
+      "scrolls": 0,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:02:31.047Z",
+      "finishedAt": "2026-10-20T08:03:46.394Z",
+      "stage": "xhs-elements-fleet-20261020-v36",
+      "sourceCommit": "96118c48a173c93b9c7089d85d0353cf46131b10",
+      "journalSHA256": "3b25fea89b5b7a1df67f1df94a341e9cf22a794aba895d40f8ff2ce378cc4d11"
+    },
+    {
+      "name": "119",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 0,
+      "scrolls": 0,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:05:31.935Z",
+      "finishedAt": "2026-10-20T08:06:49.223Z",
+      "stage": "xhs-elements-fleet-20261020-v37",
+      "sourceCommit": "96118c48a173c93b9c7089d85d0353cf46131b10",
+      "journalSHA256": "e8ebac07b6a5ce46354808a251730109bfad086b1a15d7ebe906ee19bbd478b3"
+    },
+    {
+      "name": "111",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 10,
+      "scrolls": 3,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:05:31.935Z",
+      "finishedAt": "2026-10-20T08:07:18.113Z",
+      "stage": "xhs-elements-fleet-20261020-v37",
+      "sourceCommit": "96118c48a173c93b9c7089d85d0353cf46131b10",
+      "journalSHA256": "e8ebac07b6a5ce46354808a251730109bfad086b1a15d7ebe906ee19bbd478b3"
+    },
+    {
+      "name": "20",
+      "slot": "app1",
+      "status": "passed",
+      "notes": 78,
+      "scrolls": 39,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:08:10.775Z",
+      "finishedAt": "2026-10-20T08:19:41.119Z",
+      "stage": "xhs-elements-fleet-20261020-v38",
+      "sourceCommit": "0689a6f3f9b51bffb4e92d6f0af68422b362cf51",
+      "journalSHA256": "2db1cb0a0be1d1b0b9a877bfdb67d2fb192321b11382a71fe7e0b6804fcb5ed9"
+    },
+    {
+      "name": "13",
+      "slot": "app2",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:19:55.687Z",
+      "finishedAt": "2026-10-20T08:21:40.125Z",
+      "stage": "xhs-elements-fleet-20261020-v39",
+      "sourceCommit": "5eef4aeca72e2d23f6746d6624a240e5b7868fff",
+      "journalSHA256": "0d1a5beeb179b794283dc86ec2cc95889eeb7d4cfce13e3a097713877c0881a7"
+    },
+    {
+      "name": "93",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 0,
+      "scrolls": 0,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:22:26.556Z",
+      "finishedAt": "2026-10-20T08:23:43.722Z",
+      "stage": "xhs-elements-fleet-20261020-v40",
+      "sourceCommit": "5eef4aeca72e2d23f6746d6624a240e5b7868fff",
+      "journalSHA256": "e1f93403a61d8e2196cce0584c20863572b8b7b17819e4c556c604514fc25b5c"
+    },
+    {
+      "name": "140",
+      "slot": "app1",
+      "status": "passed",
+      "notes": 40,
+      "scrolls": 21,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:22:26.556Z",
+      "finishedAt": "2026-10-20T08:27:28.562Z",
+      "stage": "xhs-elements-fleet-20261020-v40",
+      "sourceCommit": "5eef4aeca72e2d23f6746d6624a240e5b7868fff",
+      "journalSHA256": "e1f93403a61d8e2196cce0584c20863572b8b7b17819e4c556c604514fc25b5c"
+    },
+    {
+      "name": "13",
+      "slot": "app2",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:27:57.891Z",
+      "finishedAt": "2026-10-20T08:30:04.169Z",
+      "stage": "xhs-elements-fleet-20261020-v41",
+      "sourceCommit": "5b2755b734a1b940c138b1bdd5ff122bd6c86f7f",
+      "journalSHA256": "d10e816e67eaca8c19b93109d797a74772760fc47eddf92fbd89f35f01316638"
+    },
+    {
+      "name": "182",
+      "slot": "app1",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:30:22.890Z",
+      "finishedAt": "2026-10-20T08:30:36.753Z",
+      "stage": "xhs-elements-fleet-20261020-v42",
+      "sourceCommit": "5b2755b734a1b940c138b1bdd5ff122bd6c86f7f",
+      "journalSHA256": "772b25f7548b44c3978257d4fdc366908a17d5a8b95703309d94eae3030aa4d1"
+    },
+    {
+      "name": "140",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 15,
+      "scrolls": 7,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:30:22.890Z",
+      "finishedAt": "2026-10-20T08:32:27.873Z",
+      "stage": "xhs-elements-fleet-20261020-v42",
+      "sourceCommit": "5b2755b734a1b940c138b1bdd5ff122bd6c86f7f",
+      "journalSHA256": "772b25f7548b44c3978257d4fdc366908a17d5a8b95703309d94eae3030aa4d1"
+    },
+    {
+      "name": "182",
+      "slot": "app1",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:33:05.607Z",
+      "finishedAt": "2026-10-20T08:34:03.131Z",
+      "stage": "xhs-elements-fleet-20261020-v43",
+      "sourceCommit": "cd585371b6611948b2e5069602e26c262eb24421",
+      "journalSHA256": "c228472861c83f7a8f21a51260156d37c9193056192c292864517cf38d6d34c3"
+    },
+    {
+      "name": "95",
+      "slot": "app1",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:34:20.290Z",
+      "finishedAt": "2026-10-20T08:36:19.103Z",
+      "stage": "xhs-elements-fleet-20261020-v44",
+      "sourceCommit": "cd585371b6611948b2e5069602e26c262eb24421",
+      "journalSHA256": "c084679b90e15aa1ed1e2c1a6c1c139d52ca8801bb43be856b2c6daf14352f1c"
+    },
+    {
+      "name": "141",
+      "slot": "app1",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:34:20.290Z",
+      "finishedAt": "2026-10-20T08:36:54.496Z",
+      "stage": "xhs-elements-fleet-20261020-v44",
+      "sourceCommit": "cd585371b6611948b2e5069602e26c262eb24421",
+      "journalSHA256": "c084679b90e15aa1ed1e2c1a6c1c139d52ca8801bb43be856b2c6daf14352f1c"
+    },
+    {
+      "name": "113",
+      "slot": "app1",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:37:32.684Z",
+      "finishedAt": "2026-10-20T08:38:00.568Z",
+      "stage": "xhs-elements-fleet-20261020-v45",
+      "sourceCommit": "cd585371b6611948b2e5069602e26c262eb24421",
+      "journalSHA256": "aec4ced1c113bcdf7fdfafdb48e2188868b722a717e5af54d3d5ef16ab46d027"
+    },
+    {
+      "name": "141",
+      "slot": "app2",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:37:32.684Z",
+      "finishedAt": "2026-10-20T08:39:57.847Z",
+      "stage": "xhs-elements-fleet-20261020-v45",
+      "sourceCommit": "cd585371b6611948b2e5069602e26c262eb24421",
+      "journalSHA256": "aec4ced1c113bcdf7fdfafdb48e2188868b722a717e5af54d3d5ef16ab46d027"
+    },
+    {
+      "name": "113",
+      "slot": "app1",
+      "status": "passed",
+      "notes": 65,
+      "scrolls": 28,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:40:35.165Z",
+      "finishedAt": "2026-10-20T08:48:16.905Z",
+      "stage": "xhs-elements-fleet-20261020-v46",
+      "sourceCommit": "b4dce5753bf64d7e56f553e86c4c4d7a180f84d2",
+      "journalSHA256": "7452dad8798c376ba0fa7c2197d4959192e4f3f544b9572b141ca290a7495eef"
+    },
+    {
+      "name": "119",
+      "slot": "app2",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:48:52.607Z",
+      "finishedAt": "2026-10-20T08:49:18.757Z",
+      "stage": "xhs-elements-fleet-20261020-v47",
+      "sourceCommit": "b4dce5753bf64d7e56f553e86c4c4d7a180f84d2",
+      "journalSHA256": "502d1bb715e557b477c0233cf5f83dd8565ec9aeaabe5b36613561f3a8120d98"
+    },
+    {
+      "name": "88",
+      "slot": "app1",
+      "status": "passed",
+      "notes": 0,
+      "scrolls": 0,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:49:18.757Z",
+      "finishedAt": "2026-10-20T08:50:28.339Z",
+      "stage": "xhs-elements-fleet-20261020-v47",
+      "sourceCommit": "b4dce5753bf64d7e56f553e86c4c4d7a180f84d2",
+      "journalSHA256": "502d1bb715e557b477c0233cf5f83dd8565ec9aeaabe5b36613561f3a8120d98"
+    },
+    {
+      "name": "111",
+      "slot": "app1",
+      "status": "passed",
+      "notes": 14,
+      "scrolls": 4,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:48:52.607Z",
+      "finishedAt": "2026-10-20T08:50:48.134Z",
+      "stage": "xhs-elements-fleet-20261020-v47",
+      "sourceCommit": "b4dce5753bf64d7e56f553e86c4c4d7a180f84d2",
+      "journalSHA256": "502d1bb715e557b477c0233cf5f83dd8565ec9aeaabe5b36613561f3a8120d98"
+    },
+    {
+      "name": "111",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 10,
+      "scrolls": 3,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:50:48.135Z",
+      "finishedAt": "2026-10-20T08:52:30.153Z",
+      "stage": "xhs-elements-fleet-20261020-v47",
+      "sourceCommit": "b4dce5753bf64d7e56f553e86c4c4d7a180f84d2",
+      "journalSHA256": "502d1bb715e557b477c0233cf5f83dd8565ec9aeaabe5b36613561f3a8120d98"
+    },
+    {
+      "name": "119",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 0,
+      "scrolls": 0,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "startedAt": "2026-10-20T08:53:01.743Z",
+      "finishedAt": "2026-10-20T08:54:16.570Z",
+      "stage": "xhs-elements-fleet-20261020-v48",
+      "sourceCommit": "b4dce5753bf64d7e56f553e86c4c4d7a180f84d2",
+      "journalSHA256": "c7905c28f83a7caf4911fa604cff08c51b6506e08270396e9408412d99d178b8"
+    },
+    {
+      "name": "155",
+      "slot": "app1",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": null,
+      "startedAt": "2026-10-20T08:55:31.881Z",
+      "finishedAt": "2026-10-20T08:56:19.419Z",
+      "stage": "xhs-elements-fleet-20261020-v49",
+      "sourceCommit": "b4dce5753bf64d7e56f553e86c4c4d7a180f84d2",
+      "journalSHA256": "90a22464e7270ac478ad522051ee76ac5a875e6b54f772b949df01ba87c638b6"
+    },
+    {
+      "name": "185",
+      "slot": "app1",
+      "status": "failed",
+      "notes": null,
+      "scrolls": null,
+      "stopReason": null,
+      "settingsRestored": null,
+      "startedAt": "2026-10-20T08:58:55.953Z",
+      "finishedAt": "2026-10-20T08:59:16.612Z",
+      "stage": "xhs-elements-fleet-20261020-v50",
+      "sourceCommit": "b4dce5753bf64d7e56f553e86c4c4d7a180f84d2",
+      "journalSHA256": "1ebcf382c8fef51dcb774fcbaf4ba48b22b1e411dacc55f5594d71a25bb2e40f"
+    }
+  ],
+  "audit": {
+    "stages": [
+      {
+        "stage": "xhs-elements-fleet-20261020-v28",
+        "sourceCommit": "22697362f988a14dc35a28637d3577f075a162dd",
+        "scope": [
+          "113/app1"
+        ],
+        "candidateSha256": "e88b8e239623b0a4b4f2497bbe7d1e24d718276182fae53576bd515d7378fcf4",
+        "collectorObserverSha256": "565268e9f741afd565181a71af060fba09d7d588f41ac8753b560e0116b8a445",
+        "journalSha256": "410c98a4b198a2ef7f2767db3a7ec9c24e6828950b12d6b307894102340a3923",
+        "attempts": 1
+      },
+      {
+        "stage": "xhs-elements-fleet-20261020-v29",
+        "sourceCommit": "51c7923801b6e7b70e8c317e2cfd9d5d3a1edf44",
+        "scope": [
+          "14/app2"
+        ],
+        "candidateSha256": "9e62f08f9c4f0f33f5d99a7b18dc358584f0f8831e9f56e69228ce84471ea52c",
+        "collectorObserverSha256": "565268e9f741afd565181a71af060fba09d7d588f41ac8753b560e0116b8a445",
+        "journalSha256": "a0bfc0a9410b32081dbd5f34e91cc9754fb56b4dabacbc82547fb5fc4be81534",
+        "attempts": 1
+      },
+      {
+        "stage": "xhs-elements-fleet-20261020-v30",
+        "sourceCommit": "fc59b91716d328a1ad353a25b771e2111261adc1",
+        "scope": [
+          "173/app2"
+        ],
+        "candidateSha256": "6ccd0663fdbc76d2d73f2093db75950928ce10433802397ac9085b248e415c1f",
+        "collectorObserverSha256": "565268e9f741afd565181a71af060fba09d7d588f41ac8753b560e0116b8a445",
+        "journalSha256": "a1ba284a312fe9f6cdc78878566bf128a83a42c7df163075816a61a40c4afbbb",
+        "attempts": 1
+      },
+      {
+        "stage": "xhs-elements-fleet-20261020-v31",
+        "sourceCommit": "fc59b91716d328a1ad353a25b771e2111261adc1",
+        "scope": [
+          "14/app2"
+        ],
+        "candidateSha256": "6ccd0663fdbc76d2d73f2093db75950928ce10433802397ac9085b248e415c1f",
+        "collectorObserverSha256": "65e82cddb0f081b5a584d8bbc98efe604e52485e38b4e76ea4e812193f19bb83",
+        "journalSha256": "13e5aa9648cdee722fd0d851a4636ff85b172bff8b20f63797c0b5bcf6b888c8",
+        "attempts": 1
+      },
+      {
+        "stage": "xhs-elements-fleet-20261020-v32",
+        "sourceCommit": "fc59b91716d328a1ad353a25b771e2111261adc1",
+        "scope": [
+          "13/app2",
+          "111/app1"
+        ],
+        "candidateSha256": "6ccd0663fdbc76d2d73f2093db75950928ce10433802397ac9085b248e415c1f",
+        "collectorObserverSha256": "565268e9f741afd565181a71af060fba09d7d588f41ac8753b560e0116b8a445",
+        "journalSha256": "b5f13e7e15030a5862ac153c762ec588b556418326744b24b6c4a889d1f936fe",
+        "attempts": 2
+      },
+      {
+        "stage": "xhs-elements-fleet-20261020-v33",
+        "sourceCommit": "77ab1ce1f83f91caff02e4ca0f219e78923bb278",
+        "scope": [
+          "14/app2"
+        ],
+        "candidateSha256": "6ccd0663fdbc76d2d73f2093db75950928ce10433802397ac9085b248e415c1f",
+        "collectorObserverSha256": "63cb3a178ee8cc3d5fe0580daca1bd874706570cf3efb4bcae30b2849da36cbe",
+        "journalSha256": "ddb573dae56f9ac6fd9fd609465426f55646b5d7b9878ef3232366caa5b46fea",
+        "attempts": 1
+      },
+      {
+        "stage": "xhs-elements-fleet-20261020-v34",
+        "sourceCommit": "77ab1ce1f83f91caff02e4ca0f219e78923bb278",
+        "scope": [
+          "13/app2"
+        ],
+        "candidateSha256": "6ccd0663fdbc76d2d73f2093db75950928ce10433802397ac9085b248e415c1f",
+        "collectorObserverSha256": "5918ebf50b89cbabc15a3fa8afd396edb2752eabd4e4081d2b70a90af0fee6a9",
+        "journalSha256": "1a68167bc714fdf6a240b74ff87a4896912c20b85c0aa638b0b5565e49f063f3",
+        "attempts": 1
+      },
+      {
+        "stage": "xhs-elements-fleet-20261020-v35",
+        "sourceCommit": "96118c48a173c93b9c7089d85d0353cf46131b10",
+        "scope": [
+          "14/app2"
+        ],
+        "candidateSha256": "2ad4eae35f899a78d58d3067fd74210c0ea63ea45c88d4a74ff096e9c86ddf01",
+        "collectorObserverSha256": "7a8343972f7cabd91426f795be846598d612600b3395b154e8a88c12e00a5e32",
+        "journalSha256": "e30d33bddec70c68fc2467023e58df04a167769d46a81c8315514207ba79f266",
+        "attempts": 1
+      },
+      {
+        "stage": "xhs-elements-fleet-20261020-v36",
+        "sourceCommit": "96118c48a173c93b9c7089d85d0353cf46131b10",
+        "scope": [
+          "88/app1"
+        ],
+        "candidateSha256": "2ad4eae35f899a78d58d3067fd74210c0ea63ea45c88d4a74ff096e9c86ddf01",
+        "collectorObserverSha256": "565268e9f741afd565181a71af060fba09d7d588f41ac8753b560e0116b8a445",
+        "journalSha256": "3b25fea89b5b7a1df67f1df94a341e9cf22a794aba895d40f8ff2ce378cc4d11",
+        "attempts": 1
+      },
+      {
+        "stage": "xhs-elements-fleet-20261020-v37",
+        "sourceCommit": "96118c48a173c93b9c7089d85d0353cf46131b10",
+        "scope": [
+          "119/app2",
+          "111/app2"
+        ],
+        "candidateSha256": "2ad4eae35f899a78d58d3067fd74210c0ea63ea45c88d4a74ff096e9c86ddf01",
+        "collectorObserverSha256": "565268e9f741afd565181a71af060fba09d7d588f41ac8753b560e0116b8a445",
+        "journalSha256": "e8ebac07b6a5ce46354808a251730109bfad086b1a15d7ebe906ee19bbd478b3",
+        "attempts": 2
+      },
+      {
+        "stage": "xhs-elements-fleet-20261020-v38",
+        "sourceCommit": "0689a6f3f9b51bffb4e92d6f0af68422b362cf51",
+        "scope": [
+          "20/app1"
+        ],
+        "candidateSha256": "9e637ca0bbda6f689d99fbda4e387b4055830bbe5b3c06a489db573951a777e0",
+        "collectorObserverSha256": "565268e9f741afd565181a71af060fba09d7d588f41ac8753b560e0116b8a445",
+        "journalSha256": "2db1cb0a0be1d1b0b9a877bfdb67d2fb192321b11382a71fe7e0b6804fcb5ed9",
+        "attempts": 1
+      },
+      {
+        "stage": "xhs-elements-fleet-20261020-v39",
+        "sourceCommit": "5eef4aeca72e2d23f6746d6624a240e5b7868fff",
+        "scope": [
+          "13/app2"
+        ],
+        "candidateSha256": "e8307fc089329005f88e69d42dc5ebbf0f781824de4d4b1ff89dfc521e1baddf",
+        "collectorObserverSha256": "565268e9f741afd565181a71af060fba09d7d588f41ac8753b560e0116b8a445",
+        "journalSha256": "0d1a5beeb179b794283dc86ec2cc95889eeb7d4cfce13e3a097713877c0881a7",
+        "attempts": 1
+      },
+      {
+        "stage": "xhs-elements-fleet-20261020-v40",
+        "sourceCommit": "5eef4aeca72e2d23f6746d6624a240e5b7868fff",
+        "scope": [
+          "93/app2",
+          "140/app1"
+        ],
+        "candidateSha256": "e8307fc089329005f88e69d42dc5ebbf0f781824de4d4b1ff89dfc521e1baddf",
+        "collectorObserverSha256": "565268e9f741afd565181a71af060fba09d7d588f41ac8753b560e0116b8a445",
+        "journalSha256": "e1f93403a61d8e2196cce0584c20863572b8b7b17819e4c556c604514fc25b5c",
+        "attempts": 2
+      },
+      {
+        "stage": "xhs-elements-fleet-20261020-v41",
+        "sourceCommit": "5b2755b734a1b940c138b1bdd5ff122bd6c86f7f",
+        "scope": [
+          "13/app2"
+        ],
+        "candidateSha256": "08d2cd7ced7c9e484dfda11de375f10feb9c13f25942a38d17084f14613acae9",
+        "collectorObserverSha256": "565268e9f741afd565181a71af060fba09d7d588f41ac8753b560e0116b8a445",
+        "journalSha256": "d10e816e67eaca8c19b93109d797a74772760fc47eddf92fbd89f35f01316638",
+        "attempts": 1
+      },
+      {
+        "stage": "xhs-elements-fleet-20261020-v42",
+        "sourceCommit": "5b2755b734a1b940c138b1bdd5ff122bd6c86f7f",
+        "scope": [
+          "140/app2",
+          "182/app1"
+        ],
+        "candidateSha256": "08d2cd7ced7c9e484dfda11de375f10feb9c13f25942a38d17084f14613acae9",
+        "collectorObserverSha256": "565268e9f741afd565181a71af060fba09d7d588f41ac8753b560e0116b8a445",
+        "journalSha256": "772b25f7548b44c3978257d4fdc366908a17d5a8b95703309d94eae3030aa4d1",
+        "attempts": 2
+      },
+      {
+        "stage": "xhs-elements-fleet-20261020-v43",
+        "sourceCommit": "cd585371b6611948b2e5069602e26c262eb24421",
+        "scope": [
+          "182/app1"
+        ],
+        "candidateSha256": "e1cd24c4f28d7cf8ac8f0c64a8f8e0521e601498016e89132993fac43f0e1c95",
+        "collectorObserverSha256": "565268e9f741afd565181a71af060fba09d7d588f41ac8753b560e0116b8a445",
+        "journalSha256": "c228472861c83f7a8f21a51260156d37c9193056192c292864517cf38d6d34c3",
+        "attempts": 1
+      },
+      {
+        "stage": "xhs-elements-fleet-20261020-v44",
+        "sourceCommit": "cd585371b6611948b2e5069602e26c262eb24421",
+        "scope": [
+          "141/app1",
+          "95/app1"
+        ],
+        "candidateSha256": "e1cd24c4f28d7cf8ac8f0c64a8f8e0521e601498016e89132993fac43f0e1c95",
+        "collectorObserverSha256": "565268e9f741afd565181a71af060fba09d7d588f41ac8753b560e0116b8a445",
+        "journalSha256": "c084679b90e15aa1ed1e2c1a6c1c139d52ca8801bb43be856b2c6daf14352f1c",
+        "attempts": 2
+      },
+      {
+        "stage": "xhs-elements-fleet-20261020-v45",
+        "sourceCommit": "cd585371b6611948b2e5069602e26c262eb24421",
+        "scope": [
+          "141/app2",
+          "113/app1"
+        ],
+        "candidateSha256": "e1cd24c4f28d7cf8ac8f0c64a8f8e0521e601498016e89132993fac43f0e1c95",
+        "collectorObserverSha256": "565268e9f741afd565181a71af060fba09d7d588f41ac8753b560e0116b8a445",
+        "journalSha256": "aec4ced1c113bcdf7fdfafdb48e2188868b722a717e5af54d3d5ef16ab46d027",
+        "attempts": 2
+      },
+      {
+        "stage": "xhs-elements-fleet-20261020-v46",
+        "sourceCommit": "b4dce5753bf64d7e56f553e86c4c4d7a180f84d2",
+        "scope": [
+          "113/app1"
+        ],
+        "candidateSha256": "9e4e598ab93316cc1b5935052bdfab7cec010e4494afb7c75463ac6eb8128a56",
+        "collectorObserverSha256": "565268e9f741afd565181a71af060fba09d7d588f41ac8753b560e0116b8a445",
+        "journalSha256": "7452dad8798c376ba0fa7c2197d4959192e4f3f544b9572b141ca290a7495eef",
+        "attempts": 1
+      },
+      {
+        "stage": "xhs-elements-fleet-20261020-v47",
+        "sourceCommit": "b4dce5753bf64d7e56f553e86c4c4d7a180f84d2",
+        "scope": [
+          "111/app1",
+          "111/app2",
+          "88/app1",
+          "119/app2"
+        ],
+        "candidateSha256": "9e4e598ab93316cc1b5935052bdfab7cec010e4494afb7c75463ac6eb8128a56",
+        "collectorObserverSha256": "565268e9f741afd565181a71af060fba09d7d588f41ac8753b560e0116b8a445",
+        "journalSha256": "502d1bb715e557b477c0233cf5f83dd8565ec9aeaabe5b36613561f3a8120d98",
+        "attempts": 4
+      },
+      {
+        "stage": "xhs-elements-fleet-20261020-v48",
+        "sourceCommit": "b4dce5753bf64d7e56f553e86c4c4d7a180f84d2",
+        "scope": [
+          "119/app2"
+        ],
+        "candidateSha256": "9e4e598ab93316cc1b5935052bdfab7cec010e4494afb7c75463ac6eb8128a56",
+        "collectorObserverSha256": "c8d3fd24c2d97286101113b7884c7678ee8697d30ef74f2c5be608fdb1a94099",
+        "journalSha256": "c7905c28f83a7caf4911fa604cff08c51b6506e08270396e9408412d99d178b8",
+        "attempts": 1
+      },
+      {
+        "stage": "xhs-elements-fleet-20261020-v49",
+        "sourceCommit": "b4dce5753bf64d7e56f553e86c4c4d7a180f84d2",
+        "scope": [
+          "155/app1"
+        ],
+        "candidateSha256": "9e4e598ab93316cc1b5935052bdfab7cec010e4494afb7c75463ac6eb8128a56",
+        "collectorObserverSha256": "c8d3fd24c2d97286101113b7884c7678ee8697d30ef74f2c5be608fdb1a94099",
+        "journalSha256": "90a22464e7270ac478ad522051ee76ac5a875e6b54f772b949df01ba87c638b6",
+        "attempts": 1
+      },
+      {
+        "stage": "xhs-elements-fleet-20261020-v50",
+        "sourceCommit": "b4dce5753bf64d7e56f553e86c4c4d7a180f84d2",
+        "scope": [
+          "185/app1"
+        ],
+        "candidateSha256": "9e4e598ab93316cc1b5935052bdfab7cec010e4494afb7c75463ac6eb8128a56",
+        "collectorObserverSha256": "c8d3fd24c2d97286101113b7884c7678ee8697d30ef74f2c5be608fdb1a94099",
+        "journalSha256": "1ebcf382c8fef51dcb774fcbaf4ba48b22b1e411dacc55f5594d71a25bb2e40f",
+        "attempts": 1
+      }
+    ],
+    "attempts": 32,
+    "uniqueSlots": 18,
+    "uniquePhones": 15,
+    "rawStatuses": {
+      "failed": 18,
+      "passed": 14
+    },
+    "xmlFrames": 575,
+    "commands": {
+      "all": 3293
+    },
+    "images": [],
+    "maxPhysicalConcurrencyPerStage": 2,
+    "maxPhysicalConcurrencyGlobal": 2,
+    "settingsVerifiedAttempts": 32,
+    "excludedAttempts": 0,
+    "excludedGuardedAdbCalls": 0,
+    "guardedAdbCallRecords": 3355,
+    "completeOutputsAudited": 14,
+    "completeOutputNoteRows": 246
+  },
+  "diagnostics": {
+    "readOnlyDiagnosticGuardedCalls": 59,
+    "diagnosticCommandPrefixes": {
+      "shell pm list": 15,
+      "get-state": 11,
+      "shell dumpsys window": 16,
+      "shell dumpsys power": 8,
+      "shell cat /proc/net/unix": 3,
+      "shell ps -A": 3,
+      "shell dumpsys webviewupdate": 3
+    },
+    "excludedDiagnosticCalls": 0,
+    "temporaryNativeJarPushesRemovedAndVerified": 20,
+    "diagnosticSourceHashes": {
+      "xhs-elements-remaining-20261020-diag1/qa-adb-calls.jsonl": "36da77f2aac94272497c8a693967898a9c9a559cf4bec7738b72b5f26ac10340",
+      "xhs-elements-remaining-20261020-diag1/qa_adb_guard.py": "540605c5ab38bf0f2d16f0c26dcd1d8cfa5f473db7a09a764e84d0e07951abde",
+      "xhs-elements-remaining-20261020-diag1/qa_slot_probe.py": "9d973eeefb98a13920d75ce2abc2c806aee48dc4f1d471516575251c06701a15",
+      "xhs-elements-remaining-20261020-diag1/targets.json": "348c970d6a5d4a06d4047f955475273bcef3cd46be5e1addf964be53c4c0a022",
+      "xhs-elements-remaining-20261020-diag2/qa-adb-calls.jsonl": "78cac5f5069f10f5e670895d8568e8cc3b9f3da7cc4b25e1e7e7539248d64e9b",
+      "xhs-elements-remaining-20261020-diag2/qa_adb_guard.py": "540605c5ab38bf0f2d16f0c26dcd1d8cfa5f473db7a09a764e84d0e07951abde",
+      "xhs-elements-remaining-20261020-diag2/qa_slot_probe.py": "9d973eeefb98a13920d75ce2abc2c806aee48dc4f1d471516575251c06701a15",
+      "xhs-elements-remaining-20261020-diag2/targets.json": "b500b89db87698c6b168550e082263403109e7e455bba8fc98d93ced6244e90f"
+    }
+  },
+  "postflight": {
+    "identity": {
+      "adbPid": 8988,
+      "adbOwner": "NT AUTHORITY\\SYSTEM",
+      "adbExe": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+      "adbCreatedAt": 1792388072.8168414,
+      "agentPid": 14508,
+      "agentOwner": "NT AUTHORITY\\SYSTEM",
+      "agentCreatedAt": 1792388069.5465655
+    },
+    "production8HashesUnchanged": true,
+    "pendingLedgers": 0,
+    "activeCollectors": 0,
+    "stagesChecked": 81,
+    "oldStagesChecked": 39,
+    "allSettingsVerifiedIncludingSupplementalProof": true,
+    "media": {
+      "decision": "D-075",
+      "verified": "live",
+      "pid": 2503525,
+      "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+      "bitsPerSecond": 8000000,
+      "packetsPerGroup": 2
+    },
+    "rootStatusEntries": 239
+  },
+  "candidateFileHashes": {
+    "scripts/小红书数据同步.py": "9e4e598ab93316cc1b5935052bdfab7cec010e4494afb7c75463ac6eb8128a56",
+    "scripts/xhs_native_navigation.py": "a1e04af69daf72371591b8238c5de17320a514471f8a13499257e03d748e7a3c",
+    "scripts/native/xhs-native-navigation.jar": "910f03a9c4cd6963b89ce1dd4bf4a6ad21b6f888029970401134fdcf820af754"
+  },
+  "productionFileHashes": {
+    "scripts/小红书数据同步.py": "e4ee2e856a41c9346e88c205b99f9faec371fe869752f0c492454016ffd639c5",
+    "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+    "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+    "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+    "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+    "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+    "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+    "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+  },
+  "supplementalSettingsProofs": [
+    {
+      "phone": "155",
+      "slot": "app1",
+      "taskId": "v3-155-app1-1792486531881",
+      "stage": "xhs-elements-fleet-20261020-v49",
+      "originalLedgerSha256": "a1a56b5d54ffaa0850153af311976ae5145f6e59e2c917e75d2e18502bb0e1ff",
+      "journalSha256": "90a22464e7270ac478ad522051ee76ac5a875e6b54f772b949df01ba87c638b6",
+      "settings": [
+        {
+          "scope": "system",
+          "key": "screen_off_timeout",
+          "original": "1800000",
+          "current": "1800000"
+        },
+        {
+          "scope": "global",
+          "key": "enable_screen_on_proximity_sensor",
+          "original": "null",
+          "current": "null"
+        }
+      ],
+      "settingsRestored": true,
+      "settingsWrites": 0,
+      "checkedAtEpoch": 1792486674.2505996
+    },
+    {
+      "phone": "185",
+      "slot": "app1",
+      "taskId": "v3-185-app1-1792486735953",
+      "stage": "xhs-elements-fleet-20261020-v50",
+      "originalLedgerSha256": "b30db254c9b46bab851165e048357e86be4fc11667cf45b9576c0c5aa07d6392",
+      "journalSha256": "1ebcf382c8fef51dcb774fcbaf4ba48b22b1e411dacc55f5594d71a25bb2e40f",
+      "settings": [
+        {
+          "scope": "system",
+          "key": "screen_off_timeout",
+          "original": "1800000",
+          "current": "1800000"
+        },
+        {
+          "scope": "global",
+          "key": "enable_screen_on_proximity_sensor",
+          "original": "null",
+          "current": "null"
+        }
+      ],
+      "settingsRestored": true,
+      "settingsWrites": 0,
+      "checkedAtEpoch": 1792486835.929095
+    }
+  ],
+  "localTests": {
+    "python": 335,
+    "node": 16,
+    "nativeNavigationJava": 18,
+    "nativeReadDiagnosticJava": 17,
+    "rootCheck": true
+  },
+  "limitations": [
+    "Results include intermediate committed sources; per-slot source is recorded. No claim of final-source whole-fleet production acceptance.",
+    "119 final retest passed after one pre-menu foreground failure; intermittent cause not established.",
+    "13,141 both slots,182 native hierarchy remains incomplete. WebView versions do not prove root cause.",
+    "113 upgrade popup branch validated from real XML and local tests; popup did not recur in successful v46.",
+    "182 bounded profile readback tested locally; successful navigation in v43 did not require a second profile read.",
+    "14 v29 coordinate trial opened AI introduction; no message sent, route reverted; later native navigation reached abnormal account.",
+    "Self review only; no independent reviewer or deployment approval."
+  ]
+}

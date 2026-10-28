@@ -89,7 +89,7 @@ class FleetReadingTests(unittest.TestCase):
         with patch.object(sync, "focus", return_value="com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}"), patch.object(sync, "wake_if_asleep", return_value=False), patch.object(sync.time, "sleep"), patch.object(sync, "adb") as adb:
             events = []
             sync.swipe("adb", "serial", root, lambda: None, events)
-        adb.assert_called_once_with("adb", "serial", "shell", "input", "swipe", "810", "1812", "810", "679", "550", timeout=8)
+        adb.assert_called_once_with("adb", "serial", "shell", "input", "swipe", "810", "1812", "810", "1694", "550", timeout=8)
         self.assertEqual(events, ["works_webview_scroll_flag_fallback"])
 
     def test_non_list_or_another_foreground_cannot_use_the_scrollable_flag_fallback(self):
@@ -266,6 +266,59 @@ class FleetReadingTests(unittest.TestCase):
             adb.assert_not_called()
 
 
+class CreatorGrowthOverlayOrderTests(unittest.TestCase):
+    """107 exposes account and permission hints underneath the growth modal."""
+
+    def prompt(self):
+        return ET.parse(SCRIPT.parent / "fixtures/xhs/creator-growth-account-overlay.xml").getroot()
+
+    def without_prompt(self):
+        root = self.prompt()
+        for node in list(root):
+            if node.get("text") in {"解锁成长中心", "超多创作者权益等你来看"} or node.get("content-desc") in {"稍后再看", "立即看看"}:
+                root.remove(node)
+        return root
+
+    def test_actual_overlay_is_deferred_before_classifying_the_fresh_account_page(self):
+        events = []
+        with patch.object(sync, "wake_if_asleep", return_value=False), \
+                patch.object(sync, "focus", return_value="mCurrentFocus=Window{x u999 com.xingin.xhs/com.xingin.reactnative.ui.XhsReactActivity}"), \
+                patch.object(sync, "capture", return_value=self.without_prompt()), \
+                patch.object(sync.time, "sleep"), patch.object(sync, "adb") as adb:
+            with self.assertRaisesRegex(RuntimeError, "creator account shows abnormal"):
+                sync.ensure_creator_list("adb", "serial", self.prompt(), "app2", lambda: None, events)
+        adb.assert_called_once_with("adb", "serial", "shell", "input", "tap", "198", "1484", timeout=7)
+        self.assertEqual(events, ["growth_center_deferred"])
+
+    def test_fresh_list_after_dismissal_does_not_inherit_the_covered_account_hint(self):
+        listing = xml('<node text="数据中心" bounds="[1,1][90,40]"/>',
+                      '<node text="作品分析" bounds="[1,45][90,80]"/>',
+                      '<node text="全部笔记" bounds="[1,85][90,120]"/>')
+        events = []
+        with patch.object(sync, "wake_if_asleep", return_value=False), \
+                patch.object(sync, "focus", return_value="com.xingin.xhs/XhsReactActivity"), \
+                patch.object(sync, "capture", return_value=listing), patch.object(sync.time, "sleep"), \
+                patch.object(sync, "adb") as adb:
+            self.assertIs(sync.ensure_creator_list("adb", "serial", self.prompt(), "app2", lambda: None, events), listing)
+        self.assertEqual(events, ["growth_center_deferred"])
+        self.assertEqual(adb.call_count, 1)
+
+    def test_undismissed_or_ambiguous_modal_stops_without_tapping_an_underlying_entry(self):
+        for ambiguous in (False, True):
+            root = self.prompt()
+            if ambiguous:
+                button = next(n for n in root if n.get("content-desc") == "稍后再看")
+                root.append(ET.fromstring(ET.tostring(button)))
+            with self.subTest(ambiguous=ambiguous), patch.object(sync, "wake_if_asleep", return_value=False), \
+                    patch.object(sync, "focus", return_value="com.xingin.xhs/XhsReactActivity"), \
+                    patch.object(sync, "capture", return_value=root), patch.object(sync.time, "sleep"), \
+                    patch.object(sync, "adb") as adb, patch.object(sync, "tap_label") as tap:
+                with self.assertRaisesRegex(RuntimeError, "not proven|stayed open"):
+                    sync.ensure_creator_list("adb", "serial", root, "app2", lambda: None, [])
+            self.assertEqual(adb.call_count, 0 if ambiguous else 1)
+            tap.assert_not_called()
+
+
 class OppoCloneTests(unittest.TestCase):
     def chooser(self):
         return xml('<node package="com.android.intentresolver" class="android.widget.CheckBox" resource-id="com.android.intentresolver:id/button_always_multiapp" text="记住我的选择" checked="false" bounds="[32,1420][720,1468]"/>',
@@ -311,34 +364,9 @@ class ZeroBoundsProfileTests(unittest.TestCase):
         return xml('<node>'+nodes+'</node>', '<node text="关注" bounds="[260,106][447,194]"/>',
                    '<node text="发现" bounds="[447,106][634,194]"/>', '<node text="搜索" bounds="[955,100][1055,200]"/>')
 
-    def image(self, locations, scale=1.0, inverse=False):
-        import cv2
-        import numpy as np
-        import base64
-        glyph = cv2.imdecode(np.frombuffer(base64.b64decode(sync.PROFILE_GLYPH_PNG), np.uint8), cv2.IMREAD_GRAYSCALE)
-        frame = np.full((int(2248*scale), int(1080*scale)), 0 if inverse else 255, dtype=np.uint8)
-        glyph = cv2.resize(glyph, None, fx=scale, fy=scale, interpolation=cv2.INTER_AREA)
-        if inverse:glyph = 255-glyph
-        for x, y in locations:frame[y:y+glyph.shape[0], x:x+glyph.shape[1]] = glyph
-        return cv2.imencode('.png', frame)[1].tobytes()
 
-    def test_glyph_match_is_confined_to_the_footer_and_supports_screen_scale_and_dark_theme(self):
-        self.assertEqual(sync.profile_glyph_position(self.image([(948,2162)])), (971,2186))
-        self.assertEqual(sync.profile_glyph_position(self.image([(948,2162)], inverse=True)), (971,2186))
-        self.assertEqual(sync.profile_glyph_position(self.image([(632,1441)], scale=2/3)), (647,1457))
 
-    def test_blank_or_multiple_glyphs_do_not_produce_a_tap_position(self):
-        for png in (self.image([]), self.image([(100,100)]), self.image([(948,2050)]), self.image([(868,2162),(948,2162)])):
-            with self.assertRaises(RuntimeError):sync.profile_glyph_position(png)
 
-    def test_verified_footer_uses_image_position_then_requires_the_selected_personal_tab(self):
-        events = []
-        with patch.object(sync.subprocess, "run", return_value=unittest.mock.Mock(returncode=0, stdout=b'png')), patch.object(sync, "profile_glyph_position", return_value=(971,2186)), \
-                patch.object(sync, "focus", return_value=self.current), patch.object(sync, "capture", return_value=self.footer("true")), patch.object(sync.time, "sleep"), patch.object(sync, "adb") as adb:
-            result = sync.select_zero_bounds_profile("adb", "serial", self.footer(), self.current, lambda: None, events)
-        self.assertIsNotNone(result)
-        adb.assert_called_once_with("adb", "serial", "shell", "input", "tap", "971", "2186", timeout=7)
-        self.assertEqual(events, ["profile_zero_bounds_image_selected"])
 
     def test_changed_footer_or_occupied_phone_stops_before_screenshot_or_tap(self):
         for kind in ("unknown_footer", "occupied", "other_activity"):
@@ -351,24 +379,7 @@ class ZeroBoundsProfileTests(unittest.TestCase):
                     with self.assertRaises(RuntimeError):sync.select_zero_bounds_profile("adb", "serial", root, self.current, guard, [])
                 run.assert_not_called();adb.assert_not_called()
 
-    def test_image_tap_without_a_confirmed_personal_tab_is_not_recovered(self):
-        with patch.object(sync.subprocess, "run", return_value=unittest.mock.Mock(returncode=0, stdout=b'png')), patch.object(sync, "profile_glyph_position", return_value=(971,2186)), \
-                patch.object(sync, "focus", return_value=self.current), patch.object(sync, "capture", return_value=self.footer()), patch.object(sync.time, "sleep"), patch.object(sync, "adb"):
-            with self.assertRaisesRegex(RuntimeError, "did not confirm"):
-                sync.select_zero_bounds_profile("adb", "serial", self.footer(), self.current, lambda: None, [])
 
-    def test_personal_tab_confirmation_waits_for_the_observed_milestone_overlay(self):
-        popup = xml('<node package="com.xingin.xhs" text="恭喜你🎉单篇笔记阅读超过1万啦" bounds="[171,1363][909,1421]"/>')
-        with patch.object(sync.subprocess, "run", return_value=unittest.mock.Mock(returncode=0, stdout=b'png')), \
-                patch.object(sync, "profile_glyph_position", return_value=(971,2186)), \
-                patch.object(sync, "focus", return_value=self.current), \
-                patch.object(sync, "navigation_capture", side_effect=[popup, self.footer("true")]), \
-                patch.object(sync, "recover_known_overlay", return_value=True) as recover, \
-                patch.object(sync.time, "sleep"), patch.object(sync, "adb"):
-            events = []
-            self.assertIsNotNone(sync.select_zero_bounds_profile("adb", "serial", self.footer(), self.current, lambda: None, events))
-        recover.assert_called_once()
-        self.assertEqual(events, ["profile_zero_bounds_image_selected"])
 
 
 class CreatorServerErrorTests(unittest.TestCase):
@@ -779,7 +790,7 @@ class OverlayRecoveryTests(unittest.TestCase):
         events = []
         with patch.object(sync, "wake_if_asleep", return_value=False), patch.object(sync, "recover_known_overlay", return_value=False), \
                 patch.object(sync, "focus", return_value="com.xingin.xhs/com.xingin.xhs.index.v2.IndexActivityV2}"), \
-                patch.object(sync, "capture", return_value=ready), patch.object(sync, "tap_label") as tap:
+                patch.object(sync, "capture", return_value=ready), patch.object(sync, "adb", return_value="Xiaomi"), patch.object(sync, "tap_label") as tap:
             self.assertIs(sync.ensure_creator_list("adb", "serial", root, "app1", lambda: None, events), ready)
         tap.assert_called_once_with("adb", "serial", root, "菜单", unittest.mock.ANY)
         self.assertEqual(events, ["index_menu_opened_without_bottom_tab"])
@@ -812,7 +823,7 @@ class OverlayRecoveryTests(unittest.TestCase):
 
     def test_empty_dump_on_logged_out_activity_reports_login_without_tapping(self):
         with patch.object(sync, "adb", return_value="ERROR: could not get idle state.") as adb, \
-                patch.object(sync, "focus", return_value="com.xingin.xhs/com.xingin.login.device.offline.DeviceOfflineRemindActivity}"), \
+                patch.object(sync, "focus", return_value="mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.login.device.offline.DeviceOfflineRemindActivity}"), \
                 patch.object(sync.time, "sleep"):
             with self.assertRaisesRegex(RuntimeError, "manual login is required"):
                 sync.capture("adb", "serial")
@@ -864,10 +875,10 @@ class OverlayRecoveryTests(unittest.TestCase):
 
     def test_logged_out_device_stops_without_login_actions(self):
         with patch.object(sync, "wake_if_asleep", return_value=False), \
-                patch.object(sync, "focus", return_value="com.xingin.xhs/com.xingin.login.device.offline.DeviceOfflineRemindActivity}"), \
+                patch.object(sync, "focus", return_value="mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.login.device.offline.DeviceOfflineRemindActivity}"), \
                 patch.object(sync, "adb") as adb, patch.object(sync, "tap_label") as tap:
             with self.assertRaisesRegex(RuntimeError, "manual login is required"):
-                sync.ensure_creator_list("adb", "serial", xml(), "app1", lambda: None, [])
+                sync.ensure_creator_list("adb", "serial", xml(), "app1", lambda: None, ["collection_slot_requested:app1"])
         adb.assert_not_called()
         tap.assert_not_called()
 
@@ -1063,7 +1074,7 @@ class OverlayRecoveryTests(unittest.TestCase):
         events = []
         with patch.object(sync, "adb", side_effect=[
             "mWakefulness=Dozing", "", "", "mWakefulness=Dozing", "", "",
-            "mWakefulness=Awake",
+            "mWakefulness=Awake", "KeyguardServiceDelegate\nshowing=false\nsecure=false\nKeyguardStateMonitor",
         ]) as adb, patch.object(sync.time, "sleep"):
             self.assertTrue(sync.wake_if_asleep("adb", "serial", lambda: None, events))
         self.assertEqual([call.args[5] for call in adb.call_args_list if call.args[2:4] == ("shell", "input")],
@@ -1082,14 +1093,9 @@ class OverlayRecoveryTests(unittest.TestCase):
                         '<node text="作品分析" bounds="[1,45][90,80]"/>'
                         '<node package="com.xingin.xhs" text="全部笔记" bounds="[1,85][90,120]"/>'
                         '</node>')
-        panel = xml('<node bounds="[0,0][720,1612]">'
-                    '<node text="笔记类型" bounds="[1,1][90,40]"/>'
-                    '<node text="发布时间" bounds="[1,45][90,80]"/>'
-                    '<node text="排序方式" bounds="[1,85][90,120]"/>'
-                    '<node package="com.xingin.xhs" text="收起" bounds="[1,125][90,160]"/>'
-                    '</node>')
+        panel = ET.parse(SCRIPT.parent/'fixtures/xhs/filter-panel-elements.xml').getroot()
         events = []
-        with patch.object(sync, "focus", return_value="com.xingin.xhs"), patch.object(sync, "wake_if_asleep"), patch.object(sync, "tap_filter_label") as tap, \
+        with patch.object(sync, "wake_if_asleep"), patch.object(sync, "tap_filter_label") as tap, \
                 patch.object(sync, "capture", side_effect=[panel, list_root]):
             result = sync.refresh_scrolled_webview("adb", "serial", list_root, lambda: None, events)
         self.assertIs(result, list_root)
@@ -1135,7 +1141,7 @@ class OverlayRecoveryTests(unittest.TestCase):
                 sync.ensure_creator_list("adb", "serial", root, "app1", lambda: None, [])
         adb.assert_not_called()
 
-    def test_abnormal_creator_account_reports_inert_more_entry(self):
+    def test_abnormal_creator_account_skips_even_when_more_entry_exists(self):
         root = xml('<node bounds="[0,0][720,1612]">'
                    '<node text="账号异常" bounds="[10,10][150,50]"/>'
                    '<node text="创作中心" bounds="[10,60][150,100]"/>'
@@ -1147,9 +1153,22 @@ class OverlayRecoveryTests(unittest.TestCase):
                 patch.object(sync, "tap_label") as tap, \
                 patch.object(sync, "capture", return_value=root), \
                 patch.object(sync.time, "sleep"):
-            with self.assertRaisesRegex(RuntimeError, "More did not open works analysis"):
+            with self.assertRaisesRegex(RuntimeError, "abnormal status"):
                 sync.ensure_creator_list("adb", "serial", root, "app1", lambda: None, [])
-        self.assertEqual(tap.call_count, 2)
+        tap.assert_not_called()
+
+    def test_abnormal_creator_account_without_permission_cta_still_skips(self):
+        root = xml('<node package="com.xingin.xhs" text="创作中心" bounds="[0,0][720,1500]">'
+                   '<node package="com.xingin.xhs" text="账号异常" bounds="[40,220][180,260]"/>'
+                   '<node package="com.xingin.xhs" text="近 7 日数据" bounds="[40,500][220,560]"/>'
+                   '</node>')
+        with patch.object(sync, "wake_if_asleep", return_value=False), \
+                patch.object(sync, "focus", return_value="com.xingin.xhs"), \
+                patch.object(sync, "capture", return_value=root), patch.object(sync.time, "sleep"), \
+                patch.object(sync, "adb") as adb:
+            with self.assertRaisesRegex(RuntimeError, "abnormal status"):
+                sync.ensure_creator_list("adb", "serial", root, "app1", lambda: None, [])
+        adb.assert_not_called()
 
     def test_header_only_webview_is_reopened_before_failing(self):
         shell = xml('<node><node text="数据中心" bounds="[1,1][90,40]"/>'
@@ -1160,8 +1179,8 @@ class OverlayRecoveryTests(unittest.TestCase):
         listing = xml('<node><node text="数据中心" bounds="[1,1][90,40]"/>'
                       '<node text="作品分析" bounds="[1,45][90,80]"/>'
                       '<node text="全部笔记" bounds="[1,85][90,120]"/></node>')
-        events = []
-        with patch.object(sync, "focus", return_value="com.xingin.xhs"), patch.object(sync, "wake_if_asleep", return_value=False), \
+        events = ["collection_slot_requested:app1"]
+        with patch.object(sync, "DATA_CENTER_LOAD_SECONDS", 1), patch.object(sync, "focus", return_value="mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}"), patch.object(sync, "wake_if_asleep", return_value=False), \
                 patch.object(sync, "adb") as adb, \
                 patch.object(sync, "tap_label") as tap, \
                 patch.object(sync, "capture", side_effect=[shell, shell, center, listing]), \
@@ -1170,7 +1189,8 @@ class OverlayRecoveryTests(unittest.TestCase):
         self.assertIs(result, listing)
         adb.assert_called_once_with("adb", "serial", "shell", "input", "keyevent", "4", timeout=7)
         self.assertEqual(tap.call_args.args[3], "更多")
-        self.assertEqual(events, ["works_analysis_shell_reopened"])
+        self.assertIn("data_center_loading_reopen:1", events)
+        self.assertNotIn("data_center_loading_active", events)
 
     def test_transient_empty_ui_dump_retries_once(self):
         with patch.object(sync, "adb", side_effect=["UI hierarchy unavailable", "<hierarchy></hierarchy>"]) as adb, \
@@ -1358,6 +1378,361 @@ class OverlayRecoveryTests(unittest.TestCase):
             self.assertFalse(sync.recover_known_overlay("adb", "serial", root, lambda: None, []))
         adb.assert_not_called()
 
+
+class FlatFooterNativeTests(unittest.TestCase):
+    def fixture(self):
+        return ET.parse(SCRIPT.parent / "fixtures/xhs/works-flat-footer.xml").getroot()
+
+    def test_actual_footer_does_not_discard_last_complete_native_row(self):
+        root = self.fixture()
+        self.assertEqual([v["published_at_raw"] for _, v in sync.note_cards(root)],
+                         ["07-31", "07-27", "07-24", "07-21"])
+        signature = sync.element_page_signature(root)
+        self.assertTrue(signature[2])
+        self.assertEqual(len(signature[0]), 4)
+
+    def test_misplaced_foreign_or_unknown_extra_field_is_not_a_footer(self):
+        for kind in ("misplaced", "foreign", "unknown"):
+            root = self.fixture()
+            footer = next(n for n in root.iter("node") if n.get("text") == "到底了")
+            if kind == "misplaced":footer.set("bounds", "[486,1650][594,1692]")
+            elif kind == "foreign":footer.set("package", "com.other.app")
+            else:footer.set("text", "未知字段")
+            with self.subTest(kind=kind), self.assertRaises(sync.ElementListReadError):
+                sync.element_page_signature(root)
+
+    def test_note_title_equal_to_footer_is_still_a_title(self):
+        root = self.fixture()
+        view = next(n for n in root.iter("node") if n.get("class") == "android.webkit.WebView")
+        date = next(n for n in view if n.get("text") == "07-21")
+        title = list(view)[list(view).index(date)+1]
+        title.set("text", "到底了")
+        self.assertEqual(sync.note_cards(root)[-1][1]["title"], "到底了")
+        self.assertIsNotNone(sync.element_page_signature(root))
+
+
+class VivoFrameworkUsbTests(unittest.TestCase):
+    def fixture(self):
+        return ET.parse(SCRIPT.parent / "fixtures/xhs/vivo-framework-usb-cancel.xml").getroot()
+
+    def test_observed_framework_usb_mode_dialog_only_cancels(self):
+        events = []
+        with patch.object(sync, "focus", return_value="mCurrentFocus=com.vivo.frameworkui/UsbDialog"), \
+                patch.object(sync, "navigation_capture", return_value=xml()), \
+                patch.object(sync, "adb") as adb, patch.object(sync.time, "sleep"):
+            self.assertTrue(sync.recover_known_overlay("adb", "serial", self.fixture(), lambda: None, events))
+        adb.assert_called_once_with("adb", "serial", "shell", "input", "tap", "360", "1466", timeout=7)
+        self.assertEqual(events, ["vivo_usb_cancelled"])
+
+    def test_usb_mode_cancel_rejects_changed_labels_foreign_button_or_focus(self):
+        for kind in ("authorization", "foreign", "duplicate", "focus"):
+            root = self.fixture()
+            button = next(n for n in root.iter("node") if n.get("resource-id") == "android:id/button2")
+            if kind == "authorization":next(n for n in root.iter("node") if n.get("text") == "USB 已连接").set("text", "允许USB调试吗？")
+            elif kind == "foreign":button.set("package", "com.other.app")
+            elif kind == "duplicate":root.append(ET.fromstring(ET.tostring(button)))
+            focus = "mCurrentFocus=com.other.app" if kind == "focus" else "mCurrentFocus=com.vivo.frameworkui/UsbDialog"
+            with self.subTest(kind=kind), patch.object(sync, "focus", return_value=focus), patch.object(sync, "adb") as adb:
+                with self.assertRaises(RuntimeError):
+                    sync.recover_known_overlay("adb", "serial", root, lambda: None, [])
+            adb.assert_not_called()
+
+    def test_usb_mode_dialog_must_disappear_after_cancel(self):
+        with patch.object(sync, "focus", return_value="mCurrentFocus=com.vivo.frameworkui/UsbDialog"), \
+                patch.object(sync, "navigation_capture", side_effect=lambda *a: self.fixture()), \
+                patch.object(sync, "adb") as adb, patch.object(sync.time, "sleep"):
+            with self.assertRaisesRegex(RuntimeError, "stayed open"):
+                sync.recover_known_overlay("adb", "serial", self.fixture(), lambda: None, [])
+        self.assertEqual(adb.call_count, 1)
+
+
+class NativeFlatTabHeaderTests(unittest.TestCase):
+    def fixture(self):
+        return ET.parse(SCRIPT.parent / "fixtures/xhs/data-center-flat-tabs.xml").getroot()
+
+    def test_observed_direct_webview_tabs_open_only_the_works_label(self):
+        with patch.object(sync, "focus", return_value="com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}"), \
+                patch.object(sync.time, "sleep"), patch.object(sync, "adb") as adb:
+            events = []
+            self.assertTrue(sync.open_works_tab("adb", "serial", self.fixture(), lambda: None, events))
+            adb.assert_called_once_with("adb", "serial", "shell", "input", "tap", "405", "316", timeout=7)
+            self.assertEqual(events, ["data_center_works_tab_selected"])
+
+    def test_flat_header_rejects_scattered_foreign_or_duplicate_labels(self):
+        for kind in ("scattered", "foreign", "duplicate"):
+            root = self.fixture()
+            view = next(n for n in root.iter("node") if n.get("class") == "android.webkit.WebView")
+            node = next(n for n in view if n.get("text") == "粉丝数据")
+            if kind == "scattered":node.set("bounds", "[594,900][756,951]")
+            elif kind == "foreign":node.set("package", "com.other.app")
+            else:view.append(ET.fromstring(ET.tostring(node)))
+            with self.subTest(kind=kind), patch.object(sync, "focus", return_value="com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}"), \
+                    patch.object(sync, "adb") as adb:
+                with self.assertRaises(RuntimeError):
+                    sync.open_works_tab("adb", "serial", root, lambda: None, [])
+            adb.assert_not_called()
+
+
+class ReviewingNoteStatusTests(unittest.TestCase):
+    def test_observed_reviewing_note_retains_native_status_and_visible_zero_counts(self):
+        root = ET.parse(SCRIPT.parent / "fixtures/xhs/works-reviewing-note.xml").getroot()
+        rows = [item for _, item in sync.note_cards(root) if item["status_raw"] == "笔记审核中"]
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["published_at_raw"], "10-20")
+        self.assertEqual(rows[0]["status_raw"], "笔记审核中")
+        self.assertEqual([rows[0][key] for key in
+                          ("list_view_count", "list_like_count", "list_comment_count")], [0, 0, 0])
+        self.assertIsNotNone(sync.element_page_signature(root))
+
+
+class CreatorRepairingServiceTests(unittest.TestCase):
+    def fixture(self):
+        return ET.parse(SCRIPT.parent / "fixtures/xhs/creator-repairing-service-error.xml").getroot()
+
+    def test_observed_service_error_stops_navigation_without_refresh_or_back(self):
+        with patch.object(sync, "wake_if_asleep", return_value=False), \
+                patch.object(sync, "focus", return_value="com.xingin.xhs"), \
+                patch.object(sync, "navigation_capture", side_effect=lambda *a: self.fixture()), \
+                patch.object(sync.time, "sleep"), patch.object(sync, "adb") as adb:
+            with self.assertRaisesRegex(RuntimeError, "Creator Center service is unavailable"):
+                sync.ensure_creator_list("adb", "serial", self.fixture(), "app1", lambda: None, [])
+        adb.assert_not_called()
+
+    def test_observed_service_error_stops_list_wait_without_reopening(self):
+        with patch.object(sync, "wake_if_asleep", return_value=False), \
+                patch.object(sync, "navigation_capture", side_effect=lambda *a: self.fixture()), \
+                patch.object(sync.time, "sleep"), patch.object(sync, "adb") as adb:
+            with self.assertRaisesRegex(RuntimeError, "Creator Center service is unavailable"):
+                sync.wait_creator_content("adb", "serial", self.fixture(), lambda: None, [])
+        adb.assert_not_called()
+
+    def test_incomplete_or_foreign_service_labels_do_not_match(self):
+        for kind in ("missing_action", "foreign_package"):
+            root = self.fixture()
+            node = next(n for n in root.iter("node") if n.get("text") == "刷新试试")
+            node.set("text" if kind == "missing_action" else "package", "不同内容")
+            sync.require_creator_service_available(root)
+
+
+class NativeClippedRowRoundingTests(unittest.TestCase):
+    def fixture(self):
+        return ET.parse(SCRIPT.parent / "fixtures/xhs/works-clipped-row-rounding.xml").getroot()
+
+    def test_actual_complete_row_bounds_override_rounded_spacing_estimate(self):
+        root = self.fixture()
+        # Filter ends at y314; the complete raw row starts at y312. Median
+        # status spacing incorrectly estimates its top as y314 instead.
+        self.assertIsNotNone(sync.element_page_signature(root))
+        self.assertEqual([item["published_at_raw"] for _, item in sync.note_cards(root)],
+                         ["09-24", "09-23", "09-22", "09-21", "09-20"])
+
+    def test_clipped_row_proof_does_not_hide_an_unrelated_incomplete_visible_row(self):
+        root = self.fixture()
+        target = next(n for n in root.iter("node")
+                      if n.get("class") == "android.widget.TextView" and n.get("text") == "09-23")
+        parents = {child: parent for parent in root.iter() for child in parent}
+        row = parents[target]
+        while row is not None and not any(sync.is_note_status(n.get("text", "")) for n in row.iter("node")):
+            row = parents.get(row)
+        self.assertIsNotNone(row)
+        status = next(n for n in row.iter("node") if sync.is_note_status(n.get("text", "")))
+        status.set("text", "")
+        with self.assertRaises(sync.ElementListReadError):
+            sync.element_page_signature(root)
+
+
+class NativeTenLikesMilestoneTests(unittest.TestCase):
+    def test_observed_ten_likes_sheet_uses_only_the_proven_close_icon(self):
+        root = ET.parse(SCRIPT.parent / "fixtures/xhs/milestone-ten-likes.xml").getroot()
+        with patch.object(sync, "focus", return_value="mCurrentFocus=com.xingin.xhs/IndexActivityV2"), \
+                patch.object(sync, "adb") as adb, patch.object(sync, "navigation_capture", return_value=xml()), \
+                patch.object(sync.time, "sleep"):
+            events = []
+            self.assertTrue(sync.recover_known_overlay("adb", "serial", root, lambda: None, events))
+            adb.assert_called_once_with("adb", "serial", "shell", "input", "tap", "686", "821", timeout=7)
+            self.assertEqual(events, ["milestone_close_selected"])
+
+
+class NativeLongTitleTests(unittest.TestCase):
+    def test_real_native_row_keeps_long_title_and_all_six_fields(self):
+        root = ET.parse(SCRIPT.parent / "fixtures/xhs/works-long-native-title.xml").getroot()
+        cards = sync.note_cards(root)
+        long_rows = [item for _, item in cards if len(item["title"]) > 180]
+        self.assertEqual(len(long_rows), 1)
+        self.assertEqual(len(long_rows[0]["title"]), 444)
+        self.assertEqual(long_rows[0]["published_at_raw"], "09-22")
+        self.assertEqual(long_rows[0]["status_raw"], "笔记状态正常")
+        self.assertEqual([long_rows[0][key] for key in
+                          ("list_view_count", "list_like_count", "list_comment_count")], [11, 0, 0])
+        self.assertIsNotNone(sync.element_page_signature(root))
+
+    def test_flat_native_layout_preserves_long_text_without_truncation(self):
+        root = FleetReadingTests().flat_list()
+        text = "原生长文本" * 100
+        root[2][1].set("text", text)
+        self.assertEqual(sync.note_cards(root)[0][1]["title"], text)
+
+    def test_oversized_native_title_cannot_silently_omit_a_visible_row(self):
+        root = FleetReadingTests().flat_list()
+        root[2][1].set("text", "超" * 4097)
+        self.assertIsNone(sync.element_page_signature(root))
+
+
+class VivoBrowserFirstUseTests(unittest.TestCase):
+    current="mCurrentFocus=Window{x u0 com.vivo.browser/com.vivo.browser.StartActivity}"
+    restored="mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xhs.index.v2.IndexActivityV2}"
+    def page(self):return ET.parse(Path(__file__).parent/'fixtures/xhs/vivo-browser-first-use.xml').getroot()
+    def test_first_use_page_is_left_intact_without_accepting_or_declining(self):
+        events=['collection_slot_requested:app1','xhs_cold_started']
+        with patch.object(sync,'focus',side_effect=[self.current,self.restored]),patch.object(sync,'adb') as adb,patch.object(sync.time,'sleep'):
+            self.assertTrue(sync.recover_vivo_browser_redirect('adb','serial','app1',self.current,lambda:None,events,self.page()))
+        self.assertEqual([c.args[2:5] for c in adb.call_args_list],[('shell','input','keyevent'),('shell','am','start')])
+        self.assertEqual(adb.call_args_list[0].args[-1],'3')
+        self.assertFalse(any('tap' in c.args for c in adb.call_args_list))
+    def test_missing_title_foreign_package_other_user_or_repeated_redirect_stops(self):
+        for kind in ('title','foreign','user','repeat','focus'):
+            root=self.page();current=self.current;events=['collection_slot_requested:app1','xhs_cold_started']
+            if kind=='title':sync.label(root,'欢迎使用 vivo 浏览器')[0].set('text','other')
+            if kind=='foreign':list(root.iter('node'))[-1].set('package','other')
+            if kind=='user':current=current.replace('u0 ','u999 ')
+            if kind=='repeat':events.append('vivo_browser_redirect_reopened')
+            with self.subTest(kind=kind),patch.object(sync,'focus',return_value='other' if kind=='focus' else current),patch.object(sync,'adb') as adb:
+                if kind in ('repeat','focus'):
+                    with self.assertRaises(RuntimeError):sync.recover_vivo_browser_redirect('adb','serial','app1',current,lambda:None,events,root)
+                else:self.assertFalse(sync.recover_vivo_browser_redirect('adb','serial','app1',current,lambda:None,events,root))
+                adb.assert_not_called()
+
+class NativeNavigationIntegrationTests(unittest.TestCase):
+    current="mCurrentFocus=Window{x u999 com.xingin.xhs/com.xingin.xhs.index.v2.IndexActivityV2}"
+    def test_zero_footer_selects_native_profile_then_requires_selected_state(self):
+        root=ZeroBoundsProfileTests().footer();selected=ZeroBoundsProfileTests().footer('true');events=['collection_slot_requested:app2','clone_user_requested:999']
+        with patch.object(sync,'native_index_navigation') as action,patch.object(sync,'navigation_capture',return_value=selected),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'adb') as adb:
+            self.assertIs(sync.select_zero_bounds_profile('adb','serial',root,self.current,lambda:None,events),selected)
+        self.assertEqual(action.call_args.args[0],'profile');adb.assert_not_called()
+        with patch.object(sync,'native_index_navigation'),patch.object(sync,'navigation_capture',return_value=root),patch.object(sync,'focus',return_value=self.current):
+            with self.assertRaisesRegex(sync.ElementListReadError,'did not select'):sync.select_zero_bounds_profile('adb','serial',root,self.current,lambda:None,events)
+    def test_vivo_menu_uses_native_action_and_requires_creator_drawer(self):
+        drawer=xml('<node text="我的草稿" bounds="[0,0][100,100]"/>','<node text="创作者中心" bounds="[0,200][100,300]"/>');events=['collection_slot_requested:app2','clone_user_requested:999']
+        with patch.object(sync,'adb',return_value='VIVO'),patch.object(sync,'native_index_navigation') as action,patch.object(sync,'navigation_capture',return_value=drawer),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'tap_label') as tap:
+            sync.tap_index_menu('adb','serial',xml(),lambda:None,events)
+        self.assertEqual(action.call_args.args[0],'menu');tap.assert_not_called()
+        with patch.object(sync,'adb',return_value='VIVO'),patch.object(sync,'native_index_navigation'),patch.object(sync,'navigation_capture',return_value=xml()),patch.object(sync,'focus',return_value=self.current):
+            with self.assertRaisesRegex(sync.ElementListReadError,'did not expose'):sync.tap_index_menu('adb','serial',xml(),lambda:None,events)
+    def test_profile_transition_reads_again_without_replaying_native_action(self):
+        root=ZeroBoundsProfileTests().footer();selected=ZeroBoundsProfileTests().footer('true');events=['collection_slot_requested:app2','clone_user_requested:999']
+        with patch.object(sync,'native_index_navigation') as action,patch.object(sync,'navigation_capture',side_effect=[xml(),selected]) as capture,patch.object(sync,'focus',return_value=self.current),patch.object(sync.time,'sleep'):
+            self.assertIs(sync.select_zero_bounds_profile('adb','serial',root,self.current,lambda:None,events),selected)
+        action.assert_called_once();self.assertEqual(capture.call_count,2)
+    def test_profile_readback_stops_when_activity_changes(self):
+        root=ZeroBoundsProfileTests().footer();events=['collection_slot_requested:app2','clone_user_requested:999']
+        with patch.object(sync,'native_index_navigation') as action,patch.object(sync,'navigation_capture',return_value=xml()) as capture,patch.object(sync,'focus',return_value=self.current.replace('com.xingin.xhs.index.v2.IndexActivityV2','com.xingin.xhs.note.NoteDetailActivity')):
+            with self.assertRaisesRegex(sync.ElementListReadError,'left the index page'):sync.select_zero_bounds_profile('adb','serial',root,self.current,lambda:None,events)
+        action.assert_called_once();capture.assert_called_once()
+    def test_menu_update_dialog_uses_existing_defer_then_proves_drawer(self):
+        popup=ET.parse(Path(__file__).parent/'fixtures/xhs/native-menu-update-popup.xml').getroot()
+        drawer=xml('<node text="我的草稿" bounds="[0,0][100,100]"/>','<node text="创作者中心" bounds="[0,200][100,300]"/>')
+        update=self.current.replace('com.xingin.xhs.index.v2.IndexActivityV2','com.xingin.update.UpdateDialogActivity')
+        events=['collection_slot_requested:app2','clone_user_requested:999']
+        with patch.object(sync,'adb',return_value='VIVO'),patch.object(sync,'native_index_navigation') as action,patch.object(sync,'navigation_capture',side_effect=[popup,drawer]),patch.object(sync,'focus',side_effect=[update,update,self.current,self.current]),patch.object(sync,'tap_label') as tap:
+            sync.tap_index_menu('adb','serial',xml(),lambda:None,events)
+        action.assert_called_once();tap.assert_called_once();self.assertEqual(tap.call_args.args[3],'稍后再说');self.assertIn('xhs_update_deferred',events)
+    def test_menu_update_still_open_does_not_repeat_defer_or_native_action(self):
+        popup=ET.parse(Path(__file__).parent/'fixtures/xhs/native-menu-update-popup.xml').getroot()
+        update=self.current.replace('com.xingin.xhs.index.v2.IndexActivityV2','com.xingin.update.UpdateDialogActivity')
+        with patch.object(sync,'adb',return_value='VIVO'),patch.object(sync,'native_index_navigation') as action,patch.object(sync,'navigation_capture',return_value=popup),patch.object(sync,'focus',return_value=update),patch.object(sync,'tap_label') as tap:
+            with self.assertRaisesRegex(RuntimeError,'update stayed open'):sync.tap_index_menu('adb','serial',xml(),lambda:None,['collection_slot_requested:app2','clone_user_requested:999'])
+        action.assert_called_once();tap.assert_called_once()
+
+class NativeMenuNotificationTests(unittest.TestCase):
+    current = 'mCurrentFocus=Window{x u999 com.xingin.xhs/com.xingin.xhs.index.v2.IndexActivityV2}'
+    notification = current.replace('com.xingin.xhs.index.v2.IndexActivityV2',
+        'com.xingin.authorization.NotificationAuthorizationTranslucentActivity')
+
+    def setUp(self):
+        self.popup = ET.parse(Path(__file__).parent/'fixtures/xhs/native-menu-notification-121.xml').getroot()
+        self.drawer = xml('<node text="我的草稿" bounds="[0,0][100,100]"/>',
+                          '<node text="创作者中心" bounds="[0,200][100,300]"/>')
+        self.events = ['collection_slot_requested:app2', 'clone_user_requested:999']
+
+    def test_observed_late_notification_is_closed_once_then_drawer_proven(self):
+        with patch.object(sync, 'adb', return_value='VIVO') as adb, \
+                patch.object(sync, 'native_index_navigation') as action, \
+                patch.object(sync, 'navigation_capture', side_effect=[self.popup, self.drawer]), \
+                patch.object(sync, 'focus', side_effect=[self.notification]*3+[self.current]*2), \
+                patch.object(sync.time, 'sleep'):
+            sync.tap_index_menu('adb', 'serial', xml(), lambda: None, self.events)
+        action.assert_called_once()
+        self.assertEqual([c.args[2:] for c in adb.call_args_list if 'keyevent' in c.args],
+                         [('shell', 'input', 'keyevent', '4')])
+        self.assertIn('notification_prompt_back', self.events)
+
+    def test_notification_stays_open_stops_without_replaying_menu_or_back(self):
+        with patch.object(sync, 'adb', return_value='VIVO') as adb, \
+                patch.object(sync, 'native_index_navigation') as action, \
+                patch.object(sync, 'navigation_capture', return_value=self.popup), \
+                patch.object(sync, 'focus', return_value=self.notification), \
+                patch.object(sync.time, 'sleep'):
+            with self.assertRaisesRegex(RuntimeError, 'notification overlay stayed open'):
+                sync.tap_index_menu('adb', 'serial', xml(), lambda: None, self.events)
+        action.assert_called_once()
+        self.assertEqual(sum('keyevent' in c.args for c in adb.call_args_list), 1)
+
+    def test_user_or_activity_change_before_back_stops_without_input(self):
+        for changed in (self.notification.replace('u999 ', 'u0 '), self.current):
+            with self.subTest(changed=changed), patch.object(sync, 'adb', return_value='VIVO') as adb, \
+                    patch.object(sync, 'native_index_navigation') as action, \
+                    patch.object(sync, 'navigation_capture', return_value=self.popup), \
+                    patch.object(sync, 'focus', side_effect=[self.notification]*2+[changed]):
+                with self.assertRaisesRegex(RuntimeError, 'foreground'):
+                    sync.tap_index_menu('adb', 'serial', xml(), lambda: None, self.events)
+                action.assert_called_once()
+                self.assertFalse(any('keyevent' in c.args for c in adb.call_args_list))
+
+    def test_closed_notification_without_drawer_is_still_rejected(self):
+        with patch.object(sync, 'adb', return_value='VIVO') as adb, \
+                patch.object(sync, 'native_index_navigation') as action, \
+                patch.object(sync, 'navigation_capture', side_effect=[self.popup, xml()]), \
+                patch.object(sync, 'focus', side_effect=[self.notification]*3+[self.current]*2), \
+                patch.object(sync.time, 'sleep'):
+            with self.assertRaisesRegex(sync.ElementListReadError, 'did not expose'):
+                sync.tap_index_menu('adb', 'serial', xml(), lambda: None, self.events)
+        action.assert_called_once()
+        self.assertEqual(sum('keyevent' in c.args for c in adb.call_args_list), 1)
+
+
+class NativeMoreRecoveryTests(unittest.TestCase):
+    current='mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}'
+    def center(self):
+        return xml(*[f'<node package="com.xingin.xhs" text="{t}" bounds="[0,{i*100}][100,{i*100+50}]"/>' for i,t in enumerate(('创作中心','最新笔记','更多','观看'))])
+    def test_failed_more_native_read_uses_one_proven_overview_entry_before_scan(self):
+        center=self.center();overview=ET.parse(Path(__file__).parent/"fixtures/xhs/data-center-loading-header-25.xml").getroot();works=ET.parse(Path(__file__).parent/"fixtures/xhs/works-elements-141.xml").getroot();events=['collection_slot_requested:app1','creator_more_selected']
+        with patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync.time,'sleep'),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'native_window_capture',side_effect=RuntimeError('native elements command failed: native_elements_unproven:missing')),patch.object(sync,'capture',side_effect=[RuntimeError('UIAutomator did not return an XML hierarchy'),center,overview,works]),patch.object(sync,'creator_more_label',return_value='更多'),patch.object(sync,'creator_overview_entry',return_value=True),patch.object(sync,'open_works_tab',return_value=True),patch.object(sync,'tap_label') as tap,patch.object(sync,'adb') as adb:
+            self.assertIs(sync.navigation_capture('adb','serial',lambda:None,events),works)
+        adb.assert_called_once_with('adb','serial','shell','input','keyevent','4',timeout=7)
+        self.assertEqual(tap.call_args.args[3],'观看');self.assertIn('works_native_more_reopened_via_overview',events)
+    def test_unknown_origin_or_midscan_or_repeated_failure_does_not_navigate(self):
+        for extras in ([],['creator_more_selected','collection_scan_as_of:2026-10-20'],['creator_more_selected','works_native_more_recovery_attempted']):
+            events=['collection_slot_requested:app1']+extras
+            with self.subTest(events=events),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'native_window_capture',side_effect=RuntimeError('native elements command failed: native_elements_unproven:missing')),patch.object(sync,'capture',side_effect=RuntimeError('UIAutomator did not return an XML hierarchy')),patch.object(sync,'adb') as adb:
+                with self.assertRaises(sync.ElementListReadError):sync.navigation_capture('adb','serial',lambda:None,events)
+                adb.assert_not_called()
+    def test_abnormal_or_unproven_return_page_stops_without_overview_click(self):
+        for abnormal in (False,True):
+            center=self.center() if abnormal else xml()
+            if abnormal:center.append(ET.fromstring('<node text="账号异常" bounds="[0,500][100,550]"/>'))
+            with self.subTest(abnormal=abnormal),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'capture',return_value=center),patch.object(sync,'adb') as adb,patch.object(sync,'tap_label') as tap:
+                with self.assertRaises(RuntimeError):sync.recover_inaccessible_more('adb','serial',self.current,lambda:None,['collection_slot_requested:app1','creator_more_selected'])
+                tap.assert_not_called();self.assertEqual(adb.call_count,1)
+    def test_overview_loading_shell_waits_for_real_tab_without_reclicking_entry(self):
+        center=self.center();shell=xml();overview=ET.parse(Path(__file__).parent/'fixtures/xhs/data-center-loading-header-25.xml').getroot();works=ET.parse(Path(__file__).parent/'fixtures/xhs/works-elements-141.xml').getroot()
+        with patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'capture',side_effect=[center,shell,overview,works]),patch.object(sync,'creator_more_label',return_value='更多'),patch.object(sync,'creator_overview_entry',return_value=True),patch.object(sync,'open_works_tab',return_value=True) as tab,patch.object(sync,'tap_label') as tap,patch.object(sync,'adb'),patch.object(sync.time,'sleep'):
+            self.assertIs(sync.recover_inaccessible_more('adb','serial',self.current,lambda:None,['collection_slot_requested:app1','creator_more_selected']),works)
+        self.assertEqual(tab.call_count,1);tap.assert_called_once()
+    def test_overview_never_exposes_tab_has_bounded_reads_and_no_extra_input(self):
+        with patch.object(sync,'DATA_CENTER_LOAD_SECONDS',1),patch.object(sync,'focus',return_value=self.current),patch.object(sync,'capture',side_effect=[self.center()]+[xml() for _ in range(3)]) as capture,patch.object(sync,'creator_more_label',return_value='更多'),patch.object(sync,'creator_overview_entry',return_value=True),patch.object(sync,'open_works_tab',return_value=False) as tab,patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync,'tap_label') as tap,patch.object(sync,'adb') as adb,patch.object(sync.time,'sleep'):
+            with self.assertRaisesRegex(sync.ElementListReadError,'loading page is not proven'):
+                sync.recover_inaccessible_more('adb','serial',self.current,lambda:None,['collection_slot_requested:app1','creator_more_selected'])
+        self.assertEqual(capture.call_count,4);tab.assert_not_called();tap.assert_called_once();adb.assert_called_once()
 
 if __name__ == "__main__":
     unittest.main()

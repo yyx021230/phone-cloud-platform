@@ -1,0 +1,9 @@
+<hierarchy>
+  <node text="" class="android.widget.LinearLayout" resource-id="com.xingin.xhs:id/0_resource_name_obfuscated" package="com.xingin.xhs" clickable="false" enabled="true" bounds="[0,829][720,1570]">
+    <node text="" class="android.widget.ImageView" resource-id="com.xingin.xhs:id/0_resource_name_obfuscated" package="com.xingin.xhs" clickable="true" enabled="true" bounds="[652,829][720,897]" />
+    <node text="恭喜你🎉累计获得100个赞和收藏啦" class="android.widget.TextView" resource-id="com.xingin.xhs:id/0_resource_name_obfuscated" package="com.xingin.xhs" clickable="false" enabled="true" bounds="[75,927][644,969]" />
+    <node text="分享喜悦，获得更多人的关注💗" class="android.widget.TextView" resource-id="com.xingin.xhs:id/0_resource_name_obfuscated" package="com.xingin.xhs" clickable="false" enabled="true" bounds="[160,985][559,1018]" />
+    <node text="" class="android.widget.ImageView" resource-id="com.xingin.xhs:id/0_resource_name_obfuscated" package="com.xingin.xhs" clickable="false" enabled="true" bounds="[192,1070][528,1406]" />
+    <node text="去发布" class="android.widget.TextView" resource-id="com.xingin.xhs:id/0_resource_name_obfuscated" package="com.xingin.xhs" clickable="true" enabled="true" bounds="[32,1474][688,1554]" />
+  </node>
+</hierarchy>

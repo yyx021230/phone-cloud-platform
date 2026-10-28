@@ -1,0 +1,258 @@
+{
+  "status": "rolled_back_after_single_device_acceptance_failed",
+  "releaseVersion": "xhs-compat-20261019-deployed.2",
+  "rollbackTag": "xhs-compat-20261019-rolledback.2",
+  "sourceCommit": "eb1dc7f8f2d8b75b3c312a1a378c6b0528bfa985",
+  "candidateTag": "xhs-compat-20261019-rc.7",
+  "branch": "codex/xhs-compatibility-fix-20261015",
+  "documentationCommit": "resolve immutable rollbackTag",
+  "targetHost": "PC-20261015BZYS",
+  "authorization": {
+    "answer": "上线 rc.7",
+    "scope": "Only3XHS assets, single then2-phone acceptance;failure permits onlythese3-file rollback,no service/ADB/media restart.",
+    "atDate": "2026-10-19"
+  },
+  "release": {
+    "version": "xhs-compat-20261019-deployed.2",
+    "sourceCommit": "eb1dc7f8f2d8b75b3c312a1a378c6b0528bfa985",
+    "candidateTag": "xhs-compat-20261019-rc.7",
+    "releasedAtEpoch": 1792395806.0251708,
+    "replaceSeconds": 0.04700000000048021,
+    "beforeIdentity": {
+      "adbPid": 8988,
+      "agentPid": 14508,
+      "owner": "NT AUTHORITY\\SYSTEM",
+      "pendingSettingsLedgers": 0,
+      "activeCollectors": 0,
+      "stagingFoldersChecked": 23
+    },
+    "afterIdentity": {
+      "adbPid": 8988,
+      "agentPid": 14508,
+      "owner": "NT AUTHORITY\\SYSTEM",
+      "pendingSettingsLedgers": 0,
+      "activeCollectors": 0,
+      "stagingFoldersChecked": 23
+    },
+    "beforeHashes": {
+      "scripts/小红书数据同步.py": "e4ee2e856a41c9346e88c205b99f9faec371fe869752f0c492454016ffd639c5",
+      "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+      "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+      "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+      "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    "afterHashes": {
+      "scripts/小红书数据同步.py": "7a1069cdd5235749a2813f6058031f5cc4f88773a853047872f0094fe707d523",
+      "scripts/xhs_list_ocr.py": "5e73a76da45ce1d7ed79dbe4ba1c7e6d35fcc36f5f1ff803e2bc5ce3563ffb97",
+      "scripts/xhs_ocr_digits.png": "90e94be3cf74f262032fcd348853d3814ea0885264e57f6df069113842799929",
+      "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+      "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    "changedFiles": [
+      "scripts/xhs_ocr_digits.png",
+      "scripts/xhs_list_ocr.py",
+      "scripts/小红书数据同步.py"
+    ],
+    "backup": "D:\\PhoneCloud\\backups\\xhs-compat-20261019-deployed.2",
+    "rollbackScriptSha256": "b4f07c835f9c828f0b15701c977ad89cfacd3340d16d2f4b9d4b5e65707f0606",
+    "rollbackSyntax": "passed_not_executed",
+    "servicesRestarted": false,
+    "sharedAdbIdentityKeysEnvStartupChanged": false,
+    "mediaControlChanged": false,
+    "publicationGuard": "Fresh cloud collection idle proof and local identities/process/ledger/hash checks; unchanged consumer has no atomic publication barrier."
+  },
+  "rollback": {
+    "version": "xhs-compat-20261019-deployed.2",
+    "rolledBackAtEpoch": 1792396149.0021393,
+    "restoredFiles": [
+      "scripts/小红书数据同步.py",
+      "scripts/xhs_list_ocr.py",
+      "scripts/xhs_ocr_digits.png"
+    ],
+    "hashes": {
+      "scripts/小红书数据同步.py": "e4ee2e856a41c9346e88c205b99f9faec371fe869752f0c492454016ffd639c5",
+      "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+      "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+      "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+      "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    "identity": {
+      "adbPid": 8988,
+      "agentPid": 14508,
+      "owner": "NT AUTHORITY\\SYSTEM",
+      "pendingSettingsLedgers": 0,
+      "activeCollectors": 0,
+      "stagingFoldersChecked": 23
+    },
+    "servicesRestarted": false
+  },
+  "productionAcceptance": {
+    "single": {
+      "phone": "155",
+      "slot": "app2",
+      "jobId": "0ecfe7bf-c5f2-4336-9f20-201024966592",
+      "windowsTaskId": "914fdf01-a478-41db-82db-246027013cc1",
+      "status": "failed",
+      "createdAt": "2026-10-19T07:45:10.436Z",
+      "finishedAt": "2026-10-19T07:46:09.144Z",
+      "collectionOutput": null,
+      "notes": null,
+      "runnerFailure": "ADB ('shell', 'input', 'swipe') failed (255), empty stderr",
+      "restorationFailure": "Following settings get returned exacttarget device notfound;restoration ledger retained.",
+      "harnessFailure": "target_cleanup_not_complete;single gate failed andpaired dispatch blocked",
+      "rootCause": "Transient ADB loss is evidenced byfollowing device-not-found andlateronline readback. Whythe swipe returned255 andwhytransport disappeared remainunconfirmed;not provena newOCR/code regression.",
+      "settingsFinallyRestored": true,
+      "ownLockReleased": true
+    },
+    "pair": [
+      {
+        "phone": "47",
+        "slot": "app1",
+        "status": "not_created_single_gate_failed"
+      },
+      {
+        "phone": "180",
+        "slot": "app1",
+        "status": "not_created_single_gate_failed"
+      }
+    ],
+    "productionJobsCreated": 1,
+    "passed": 0,
+    "failed": 1,
+    "notCreated": 2,
+    "sourceHashChecks": "Before andafter exact8-file checks;3candidatefiles were deployed atformaljob time.",
+    "priorCandidateGray": "Earlierstaging15513notes and18012notes are separate pre-release evidence;theydo not make thisfailedformal task passed."
+  },
+  "originalSettingsReconciliation": {
+    "phone": "155",
+    "slot": "app2",
+    "jobId": "0ecfe7bf-c5f2-4336-9f20-201024966592",
+    "windowsTaskId": "914fdf01-a478-41db-82db-246027013cc1",
+    "originalSettings": {
+      "system/screen_off_timeout": "1800000",
+      "global/enable_screen_on_proximity_sensor": "null"
+    },
+    "readback": {
+      "system/screen_off_timeout": "1800000",
+      "global/enable_screen_on_proximity_sensor": "null"
+    },
+    "reconciliationSettingsWrites": 0,
+    "ledgerSha256": "e97e8d2548c9e20e4ee503ba07bc0321b80b208ec8dda72e272e3220cd2e8e3d",
+    "method": "Checked originalbefore file +exacttask/serial/schema +terminalfailedjob +idlecloud/cache +no collector +SYSTEM identities;copiedledger byte-identically into releasebackup andrenamedonly ownedcacheledger asverified-restored. No deletionor guessedbaseline.",
+    "originalSettingsRestored": true,
+    "ownLockReleased": true
+  },
+  "currentProduction": {
+    "state": "pre_rc7_baseline_restored",
+    "hashes": {
+      "scripts/小红书数据同步.py": "e4ee2e856a41c9346e88c205b99f9faec371fe869752f0c492454016ffd639c5",
+      "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+      "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+      "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+      "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    "agentPid": 14508,
+    "adbPid": 8988,
+    "owner": "NT AUTHORITY\\SYSTEM",
+    "sdkAdbPath": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+    "pendingSettingsLedgers": 0,
+    "activeCollectors": 0,
+    "stagingFoldersChecked": 23,
+    "healthStatus": 200,
+    "readyStatus": 200,
+    "agentHeartbeat": [
+      {
+        "agentId": "win-bf-202605262318-20260727",
+        "lastSeenAt": "2026-10-19T07:50:16.987Z",
+        "dataCollectionHealth": {
+          "protocol": "xhs_data_collect_v1",
+          "ready": true
+        }
+      }
+    ],
+    "ownActiveLocks": 0,
+    "mediaLive": {
+      "before": {
+        "decision": "D-075",
+        "verified": "live",
+        "pid": 2503525,
+        "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+        "bitsPerSecond": 8000000,
+        "packetsPerGroup": 2
+      },
+      "after": {
+        "decision": "D-075",
+        "verified": "live",
+        "pid": 2503525,
+        "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+        "bitsPerSecond": 8000000,
+        "packetsPerGroup": 2
+      },
+      "after-rollback": {
+        "decision": "D-075",
+        "verified": "live",
+        "pid": 2503525,
+        "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+        "bitsPerSecond": 8000000,
+        "packetsPerGroup": 2
+      }
+    },
+    "limits": "Newhost baseline is itsobservedolder107 assets,not formerBFdeployed.1. Thisrollback restored exactly thenewhostpre-release files."
+  },
+  "review": {
+    "applySha256": "520429cb2520abac9c0eabdecd2771c60c4bda52acc46ffe165a0c3d1b51c633",
+    "rollbackSha256": "84763e902f52022bf74e603bbdb99e40610504751f1d6a54d9b970f06eab2269",
+    "sourceVersion": "eb1dc7f8f2d8b75b3c312a1a378c6b0528bfa985",
+    "localPreparationFailure": {
+      "caught": "Overlapping template placeholder replacement caused local SyntaxError",
+      "runtimeFilesChanged": false,
+      "remoteApplyUploaded": false,
+      "fixed": "Replace longer placeholders first;local compilation then Windows preflight passed"
+    },
+    "selfReview": "Exact3-file allowlist,all8baseline hashes,knownSYSTEM identities,activecollection/ledger checks,prepared3payload hash/compile proof,backup copies androllback ledger before replacement;per-file concurrent-edit checks and guarded partial restore;persistUTF8receipt. No service/driver/USB/key/env/startup/media/control operations. Unchangedconsumer hasnoatomicdeployment barrier.",
+    "replaceSecondsSemantics": "0.047seconds includes3renames pluslocalpostflightidentity/hashchecks,not a standalone rename-only benchmark",
+    "remoteRollback": "Syntaxchecked,not executed;3file byte/rename restore rehearsed inisolatedproposal directory beforeauthorization."
+  },
+  "verification": {
+    "codeTestsReusedFromSameImmutableSource": {
+      "python": 242,
+      "consumer": 11,
+      "rootSyntax": "passed",
+      "diff": "passed",
+      "note": "Executed andrecorded inprecedingcandidatephase;no sourcecodechange thisreleasephase,no claimofnewtestrun."
+    },
+    "windowsPreflightOnly": "passed;runtimehash/identity/idle/backup/compilechecks beforeactualapply",
+    "rollbackSourceScript": "actual WindowsCRLFfile SHA matchedrelease receipt andcompiled beforeexecution",
+    "rollbackExecution": "passed;3files restored and8hashes exactly matchpre-release baseline",
+    "rollbackScriptSourceSha256LF": "84763e902f52022bf74e603bbdb99e40610504751f1d6a54d9b970f06eab2269",
+    "rollbackScriptWindowsFileSha256CRLF": "b4f07c835f9c828f0b15701c977ad89cfacd3340d16d2f4b9d4b5e65707f0606",
+    "media": "Actualmediahost liveverified before/afterrelease/afterrollback;PID/custombinary/8Mbps/2packets unchanged",
+    "selfReview": "Self-review only;no independentsubagent. Scope exact3assets;failure gate respected,other2tasks notcreated."
+  },
+  "limits": [
+    "rc.7 isnot currentproduction afterthisrollback. Candidate tag remainsimmutable anditslocalcodeisunchanged.",
+    "No newlysuccessfulproduction collection. Previous25pass/19skip/1loading summary wasearlier multi-stage evidence;155thisformal taskfailed andmustnot becounted aspassed.",
+    "No assertionthat155USBhardware orSYSTEMkeys causedthe failure. No automaticinput replay,sharedADB rebuild,driver/Hub/PnP orpermission change attempted.",
+    "18loading remainsunresolved;152/74/81/188 remainexcluded andnone operated thisrelease.",
+    "Only1authorized formalcollection wascreated. No postdetail/login/terms/permissionenrollment/contentpublication/WebDBimport/packetcapture.",
+    "Backup andfullownedledgerretained;root237existingdirtyentriespreserved;no remotepush."
+  ],
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "backup": "D:\\PhoneCloud\\backups\\xhs-compat-20261019-deployed.2",
+  "remotePush": false,
+  "servicesRestarted": false,
+  "sharedAdbKeyEnvStartupChanged": false,
+  "mediaControlChanged": false
+}

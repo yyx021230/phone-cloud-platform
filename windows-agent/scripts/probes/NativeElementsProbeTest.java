@@ -1,0 +1,46 @@
+import java.util.*;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+public final class NativeElementsProbeTest {
+    static class N implements NativeElementsProbe.Node {
+        boolean visible = true, closed;
+        String rectangle = "[1,2][100,200]";
+        String type="android.view.View";
+        String text = "标题 & <测> \"😀\"\n", pkg = "com.xingin.xhs";
+        List<N> kids = new ArrayList<>();
+        public boolean visible() { return visible; }
+        public int children() { if (!visible) throw new AssertionError("invisible subtree traversed"); return kids.size(); }
+        public NativeElementsProbe.Node child(int i) { return kids.get(i); }
+        public String value(String k) { return k.equals("class") ? type : k.equals("package") ? pkg : k.equals("text") ? text : k.equals("bounds") ? rectangle : ""; }
+        public void close() { closed = true; }
+    }
+    interface Run { void go() throws Exception; }
+    static void rejects(Run f) throws Exception { try { f.go(); } catch (IllegalStateException | IllegalArgumentException expected) { return; } throw new AssertionError("accepted incomplete snapshot"); }
+    public static void main(String[] args) throws Exception {
+        int tests = 0;
+        N root = new N(); N hidden = new N(); hidden.visible = false; hidden.kids.add(null); root.kids.add(hidden);
+        String xml = new NativeElementsProbe.Reader().read(root);
+        String text = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8))).getElementsByTagName("node").item(0).getAttributes().getNamedItem("text").getNodeValue();
+        if (!text.equals(root.text) || !root.closed || !hidden.closed) throw new AssertionError(); tests++;
+        N missing = new N(); missing.kids.add(null); rejects(() -> new NativeElementsProbe.Reader().read(missing)); if (!missing.closed) throw new AssertionError(); tests++;
+        N foreign = new N(); foreign.pkg = "other"; rejects(() -> new NativeElementsProbe.Reader().read(foreign)); tests++;
+        N deep = new N(), end = deep; for (int i=0;i<82;i++) { N n=new N();end.kids.add(n);end=n; } rejects(() -> new NativeElementsProbe.Reader().read(deep)); tests++;
+        N wide = new N(); for(int i=0;i<2501;i++)wide.kids.add(new N());rejects(() -> new NativeElementsProbe.Reader().read(wide)); tests++;
+        rejects(() -> NativeElementsProbe.escaped("bad\u0000")); tests++;
+        N invisible = new N(); invisible.visible=false;rejects(() -> new NativeElementsProbe.Reader().read(invisible)); tests++;
+        rejects(() -> new NativeElementsProbe.Reader().read(null)); tests++;
+        N clippedRoot = new N(), outside = new N(), partly = new N(); outside.rectangle="[1,201][100,300]";partly.rectangle="[-2,-3][100,60]";clippedRoot.kids.add(outside);clippedRoot.kids.add(partly);
+        String clippedXML = new NativeElementsProbe.Reader().read(clippedRoot);if (!clippedXML.contains("bounds=\"[0,0][0,0]\"") || !clippedXML.contains("bounds=\"[1,2][100,60]\""))throw new AssertionError();tests++;
+        N large = new N();large.text=String.join("", Collections.nCopies(1000001,"x"));rejects(() -> new NativeElementsProbe.Reader().read(large));tests++;
+        int[] tries={0};N fresh=new N();String recovered=NativeElementsProbe.readFresh(() -> ++tries[0]<3?null:fresh,3);if(tries[0]!=3 || !recovered.contains("<node "))throw new AssertionError();tests++;
+        tries[0]=0;rejects(() -> NativeElementsProbe.readFresh(() -> {tries[0]++;return null;},3));if(tries[0]!=3)throw new AssertionError();tests++;
+        tries[0]=0;rejects(() -> NativeElementsProbe.readFresh(() -> {tries[0]++;N n=new N();n.pkg="other";return n;},3));if(tries[0]!=1)throw new AssertionError();tests++;
+        N web=new N();web.type="android.webkit.WebView";web.text="数据中心";N title=new N();title.text="数据中心";
+        if(NativeElementsProbe.uniqueDataCenter(Arrays.asList(title,web))!=web||!title.closed||web.closed)throw new AssertionError();tests++;
+        N web2=new N();web2.type=web.type;web2.text=web.text;rejects(()->NativeElementsProbe.uniqueDataCenter(Arrays.asList(web,web2)));if(!web.closed||!web2.closed)throw new AssertionError();tests++;
+        rejects(()->NativeElementsProbe.uniqueDataCenter(Arrays.asList(new N())));tests++;
+        N badWeb=new N();badWeb.type="android.webkit.WebView";badWeb.text="数据中心";badWeb.kids.add(null);rejects(()->new NativeElementsProbe.Reader().read(NativeElementsProbe.uniqueDataCenter(Arrays.asList(badWeb))));tests++;
+        System.out.println("NativeElementsProbe tests passed: " + tests);
+    }
+}

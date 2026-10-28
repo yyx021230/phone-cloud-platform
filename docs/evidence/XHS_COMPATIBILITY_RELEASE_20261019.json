@@ -1,0 +1,301 @@
+{
+  "status": "deployed_and_production_task_verified",
+  "version": "xhs-compat-20261019-deployed.1",
+  "sourceCommit": "4078fe238fce5f735be07ea2ebddb63081eefef9",
+  "candidateTag": "xhs-compat-20261019-rc.4",
+  "branch": "codex/xhs-compatibility-fix-20261015",
+  "sourceFiles": {
+    "scripts/小红书数据同步.py": "7c0aaa75dcaac4086052d3a7206879efa2b6189dcc470da55f56f65f7ae5dc0c",
+    "scripts/xhs_list_ocr.py": "2fc9b71a40870f78e65c3879c04fea10b7ece89ef9e77a4fdf884e8a8276fa22",
+    "scripts/xhs_ocr_digits.png": "da0c0a42892d0dd356965fa44c9521e4398a6e67985545908a133e410de708c2"
+  },
+  "beforeHashes": {
+    "scripts/小红书数据同步.py": "e4ee2e856a41c9346e88c205b99f9faec371fe869752f0c492454016ffd639c5",
+    "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+    "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+    "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+    "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+    "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+    "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+    "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+  },
+  "afterHashes": {
+    "scripts/小红书数据同步.py": "7c0aaa75dcaac4086052d3a7206879efa2b6189dcc470da55f56f65f7ae5dc0c",
+    "scripts/xhs_list_ocr.py": "2fc9b71a40870f78e65c3879c04fea10b7ece89ef9e77a4fdf884e8a8276fa22",
+    "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+    "scripts/xhs_ocr_digits.png": "da0c0a42892d0dd356965fa44c9521e4398a6e67985545908a133e410de708c2",
+    "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+    "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+    "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+    "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+  },
+  "backup": "D:\\PhoneCloud\\backups\\xhs-compat-20261019-deployed.1",
+  "rollbackScriptSHA256": "231e2e5b8e188286fda040de5176a44ca9b8ee0b398c6340131397fd2c33b790",
+  "rollbackSyntax": "passed_not_executed",
+  "replaceSeconds": 0.0,
+  "releaseIdentityBefore": {
+    "adbPID": 1086632,
+    "agentPID": 650400,
+    "owner": "NT AUTHORITY\\SYSTEM",
+    "pendingSettings": 0,
+    "activeCollectors": 0
+  },
+  "releaseIdentityAfter": {
+    "adbPID": 1086632,
+    "agentPID": 650400,
+    "owner": "NT AUTHORITY\\SYSTEM",
+    "pendingSettings": 0,
+    "activeCollectors": 0
+  },
+  "localTests": {
+    "pythonPassed": 219,
+    "consumerPassed": 11,
+    "failed": 0,
+    "syntax": "passed",
+    "diff": "passed"
+  },
+  "review": "Self-review of full actual production-to-rc4 diff; caller/consumer/native OCR protocol unchanged; matching atlas required. Exact overlay/slot evidence and readback retained, unknown status fails closed; no new device permission/auth/recovery/media changes.",
+  "gray": {
+    "stage": "v33",
+    "single": [
+      "154/app1"
+    ],
+    "thenPair": [
+      "13/app2",
+      "154/app2"
+    ],
+    "results": [
+      {
+        "name": "154",
+        "slot": "app1",
+        "status": "passed",
+        "notes": 14,
+        "scrolls": 3,
+        "complete": true,
+        "windowStart": "2026-09-20",
+        "windowEnd": "2026-10-19",
+        "stopReason": "older_than_window_visible",
+        "settingsRestored": true,
+        "durationSeconds": 89,
+        "recoveryEvents": [
+          "collection_window_days:30",
+          "collection_slot_requested:app1",
+          "xhs_cold_started",
+          "list_reopened_at_newest",
+          "collection_scan_as_of:2026-10-19",
+          "works_list_updated_without_filter_toggle",
+          "works_list_updated_without_filter_toggle",
+          "works_list_updated_without_filter_toggle"
+        ]
+      },
+      {
+        "name": "154",
+        "slot": "app2",
+        "status": "passed",
+        "notes": 19,
+        "scrolls": 4,
+        "complete": true,
+        "windowStart": "2026-09-20",
+        "windowEnd": "2026-10-19",
+        "stopReason": "older_than_window_visible",
+        "settingsRestored": true,
+        "durationSeconds": 100,
+        "recoveryEvents": [
+          "collection_window_days:30",
+          "collection_slot_requested:app2",
+          "xhs_cold_started",
+          "clone_user_requested:999",
+          "clone_slot_selected:app2",
+          "list_reopened_at_newest",
+          "collection_scan_as_of:2026-10-19",
+          "works_list_updated_without_filter_toggle",
+          "works_list_updated_without_filter_toggle",
+          "works_list_updated_without_filter_toggle",
+          "works_list_updated_without_filter_toggle"
+        ]
+      },
+      {
+        "name": "13",
+        "slot": "app2",
+        "status": "passed",
+        "notes": 16,
+        "scrolls": 3,
+        "complete": true,
+        "windowStart": "2026-09-20",
+        "windowEnd": "2026-10-19",
+        "stopReason": "older_than_window_visible",
+        "settingsRestored": true,
+        "durationSeconds": 175,
+        "recoveryEvents": [
+          "collection_window_days:30",
+          "collection_slot_requested:app2",
+          "xhs_cold_started",
+          "clone_user_requested:999",
+          "clone_slot_selected:app2",
+          "works_image_header_capture_retried",
+          "works_image_probe_unproven:image list fields changed between two fresh captures",
+          "data_center_works_tab_selected",
+          "works_list_image_reader_active",
+          "list_reopened_at_newest",
+          "works_image_header_capture_retried",
+          "works_image_probe_unproven:OCR works list has no proven complete cards or empty/end marker",
+          "collection_scan_as_of:2026-10-19",
+          "proximity_guard_temporarily_disabled"
+        ]
+      }
+    ],
+    "exactStageHashes": {
+      "collector.py": "eb1b2fbf62894dc908963e965c19162a25585eef55244ffdaa69dc2fbb088da8",
+      "qa_adb_guard.py": "42bb0d99cc4a31e7a2bfde6744f6e0d62dd0af66e35414183d24c09642aee6f0",
+      "fleet.mjs": "22d266e981c1e162d9e008cc60ad4164619e8795bfed5a912715623d6f4dc6a7",
+      "targets.json": "b096e2a8da6aae8a4fb0d10c08026a0a851c2ebde47f0b6cd4fd8fae2f349d32",
+      "candidate.py": "7c0aaa75dcaac4086052d3a7206879efa2b6189dcc470da55f56f65f7ae5dc0c",
+      "xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "xhs_list_ocr.py": "2fc9b71a40870f78e65c3879c04fea10b7ece89ef9e77a4fdf884e8a8276fa22",
+      "xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "xhs_ocr_digits.png": "da0c0a42892d0dd356965fa44c9521e4398a6e67985545908a133e410de708c2"
+    }
+  },
+  "productionTask": {
+    "jobId": "d595a596-084e-4073-9972-dd45ffb6b574",
+    "phone": "13",
+    "slot": "app2",
+    "status": "succeeded",
+    "notes": 16,
+    "complete": true,
+    "scrolls": 4,
+    "stopReason": "older_than_window_visible",
+    "windowStart": "2026-09-20",
+    "windowEnd": "2026-10-19",
+    "recoveryEvents": [
+      "collection_window_days:30",
+      "collection_slot_requested:app2",
+      "xhs_cold_started",
+      "clone_user_requested:999",
+      "clone_slot_selected:app2",
+      "list_reopened_at_newest",
+      "works_image_header_capture_retried",
+      "works_image_header_capture_retried",
+      "works_image_probe_unproven:image list fields changed between two fresh captures",
+      "collection_scan_as_of:2026-10-19",
+      "works_list_image_reader_active",
+      "list_reopened_at_newest",
+      "works_image_header_capture_retried",
+      "works_image_header_capture_retried",
+      "works_image_probe_unproven:OCR works list has no proven complete cards or empty/end marker",
+      "works_image_scan_restarted_at_newest",
+      "proximity_guard_temporarily_disabled"
+    ],
+    "settingsRestored": true,
+    "jobLockReleased": true
+  },
+  "postflight": {
+    "hashes": {
+      "scripts/小红书数据同步.py": "7c0aaa75dcaac4086052d3a7206879efa2b6189dcc470da55f56f65f7ae5dc0c",
+      "scripts/xhs_list_ocr.py": "2fc9b71a40870f78e65c3879c04fea10b7ece89ef9e77a4fdf884e8a8276fa22",
+      "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "scripts/xhs_ocr_digits.png": "da0c0a42892d0dd356965fa44c9521e4398a6e67985545908a133e410de708c2",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+      "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    "backupsVerified": true,
+    "rollbackSyntax": "passed_not_executed",
+    "agent": [
+      {
+        "pid": 650400,
+        "owner": "NT AUTHORITY\\SYSTEM",
+        "createdAt": 1792055125.802039
+      }
+    ],
+    "activeCollectors": [],
+    "productionPending": 0,
+    "stagingPending": 0,
+    "cacheAgeSeconds": 8.813849925994873,
+    "adb": {
+      "pid": 1086632,
+      "owner": "NT AUTHORITY\\SYSTEM",
+      "exe": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+      "createdAt": 1792376533.0591636,
+      "listen": [
+        [
+          "TCP",
+          "127.0.0.1:5037",
+          "0.0.0.0:0",
+          "LISTENING",
+          "1086632"
+        ]
+      ]
+    },
+    "cloudUnchanged": true,
+    "mediaBefore": {
+      "decision": "D-075",
+      "verified": "live",
+      "pid": 2503525,
+      "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+      "bitsPerSecond": 8000000,
+      "packetsPerGroup": 2
+    },
+    "mediaAfter": {
+      "decision": "D-075",
+      "verified": "live",
+      "pid": 2503525,
+      "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+      "bitsPerSecond": 8000000,
+      "packetsPerGroup": 2
+    },
+    "cloudFileHashes": {
+      "public/app.js": "9e298f4d9ebe540196ace7723b15411a244f03b0a751a55f66dc5b8d57445082",
+      "public/index.html": "573c1cc79adde2c8c7364673730dd6aaa5762a214b7698ead153b414f06ec29a",
+      "server/index.mjs": "9ea06924ae195e857ca195aaaa973f3758b18c52885fcda42026f743f91a0a1b",
+      "server/recovery-controls.mjs": "0147f3f3c122e9d444bf48666cb6bbaab64a64c585860ca0664afdec44890af8",
+      "server/windows-task-dispatch.mjs": "bcf1f67baee52972d59df3f12134548db21489e9b9b4e07b600202bf3de0d8cd",
+      "server/automation-center.mjs": "7c9de128f64f142988f12d5dcdd1138c510ab76e90a4ac6b0b423076896fa7cd"
+    },
+    "atUtc": "2026-10-19T02:59:44.458902+00:00"
+  },
+  "publishedScope": "Three Windows XHS collector/OCR/atlas files only; no full repository replacement. Existing native OCR bridge and consumer unchanged. No cloud source/image/config write.",
+  "publicationGuard": "Checked cloud collection locks, local processes/settings and hashes before fast three-file replacement; unchanged consumer does not implement a deployment barrier.",
+  "workflowRevision": "2026-09-30",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "authorization": "User: 把小红书新增的兼容修复也上线吧。",
+  "limits": [
+    "Staging and one production task are scoped acceptance, not a new full-fleet test or long-term all-phone guarantee.",
+    "New overlay branch was observed and closed in prior v32 on154clone; a repeat without that overlay does not prove it reappeared.",
+    "Only outer works list and30 Shanghai calendar days; displayed count units remain approximate, OCR titles may have errors; no stable note IDs or Web database import.",
+    "No Agent/ADB/Windows/media/USB service restart, driver/PnP changes, authorization key/environment/startup changes, account login, data-permission enrollment, app install, packet capture or post-detail access.",
+    "SYSTEM ADB PID1086632 was already present before this release; earlier turn634172 is historical, no claim that it stayed unchanged across the two turns."
+  ],
+  "remoteGitPush": false,
+  "databaseMigration": false,
+  "rollbackPerformed": false,
+  "runtimeProcess": [
+    {
+      "pid": 161352,
+      "owner": "NT AUTHORITY\\SYSTEM",
+      "elapsedSeconds": 148,
+      "script": "D:\\PhoneCloud\\agent\\scripts\\小红书数据同步.py",
+      "sha256": "7c0aaa75dcaac4086052d3a7206879efa2b6189dcc470da55f56f65f7ae5dc0c"
+    }
+  ],
+  "countComparison": {
+    "earlierRawRecords": 17,
+    "latestRawRecords": 16,
+    "earlierDistinctTitleDatePairs": 16,
+    "latestDistinctTitleDatePairs": 16,
+    "oldDistinctPairsMissingNow": 0,
+    "newDistinctPairs": 0,
+    "earlierSameTitleDateCount": 1,
+    "sameTitleDateExtraRecordAlsoHadSameMetrics": true,
+    "interpretation": "One identical title/date/count record repeated in v32;v33 has one. No missing distinct title/date pair. Stable note IDs unavailable,so cannot prove whether earlier two rows represented one actual post;do not label16 deduplicated true total or17 proven distinct posts."
+  },
+  "transportReceiptRecovery": {
+    "initialApplyExit": 0,
+    "localDecoderError": "Windows stdout used legacy codepage; UTF-8 decode failed after the script successfully wrote deployment receipt",
+    "rerunApply": false,
+    "recovered": "Read persisted UTF-8 receipt using explicit UTF-8 transport wrapper, rechecked all8 actual runtime hashes",
+    "afterHashMatches": true
+  },
+  "replaceTimerNote": "Windows monotonic timer reported0.0s for the local rename loop; this is not a claim of literally zero-duration activation."
+}

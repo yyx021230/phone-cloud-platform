@@ -1,0 +1,396 @@
+{
+  "status": "deployed_full_test_paused_confirmed_regression",
+  "version": "xhs-compat-20261022-deployed.1",
+  "sourceCommit": "09a113b50293fbd1ebf433655dd876ce0a508b5d",
+  "candidateTag": "xhs-compat-20261022-rc.17",
+  "releaseReceipt": {
+    "version": "xhs-compat-20261022-deployed.1",
+    "sourceCommit": "09a113b50293fbd1ebf433655dd876ce0a508b5d",
+    "candidateTag": "xhs-compat-20261022-rc.17",
+    "mode": "apply",
+    "changedFiles": [
+      "scripts/xhs_native_navigation.py",
+      "scripts/native/xhs-native-navigation.jar",
+      "scripts/xhs_native_window.py",
+      "scripts/native/xhs-native-window.jar",
+      "scripts/小红书数据同步.py"
+    ],
+    "beforeHashes": {
+      "scripts/小红书数据同步.py": "e4ee2e856a41c9346e88c205b99f9faec371fe869752f0c492454016ffd639c5",
+      "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+      "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+      "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "1d057629c452e0ce392f0cbc79a1ad3645cc90c5175dca980151dfb1d4a6d2a8",
+      "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04",
+      "scripts/xhs_native_navigation.py": null,
+      "scripts/native/xhs-native-navigation.jar": null,
+      "scripts/xhs_native_window.py": null,
+      "scripts/native/xhs-native-window.jar": null
+    },
+    "afterHashes": {
+      "scripts/小红书数据同步.py": "9e6b1d8d695dbff4716464a10d482cca70968a4d33e1db3b7d6149464982d41b",
+      "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+      "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+      "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "1d057629c452e0ce392f0cbc79a1ad3645cc90c5175dca980151dfb1d4a6d2a8",
+      "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04",
+      "scripts/xhs_native_navigation.py": "a1e04af69daf72371591b8238c5de17320a514471f8a13499257e03d748e7a3c",
+      "scripts/native/xhs-native-navigation.jar": "910f03a9c4cd6963b89ce1dd4bf4a6ad21b6f888029970401134fdcf820af754",
+      "scripts/xhs_native_window.py": "b06c715c4e31d8d37190a5a5111c808c29ddb1cab5cf7470f9d18fbb1c27ad87",
+      "scripts/native/xhs-native-window.jar": "15b043f5f78c17855b08d354dc5af4004216bc7ce14b5d03fa9e05f72e8d57c7"
+    },
+    "beforeIdentity": {
+      "adbPid": 8988,
+      "agentPid": 5176,
+      "pendingLedgers": 0,
+      "activeCollectors": 0
+    },
+    "afterIdentity": {
+      "adbPid": 8988,
+      "agentPid": 5176,
+      "pendingLedgers": 0,
+      "activeCollectors": 0
+    },
+    "atEpoch": 1792641179.5879848,
+    "servicesRestarted": false,
+    "backup": "D:\\PhoneCloud\\backups\\xhs-compat-20261022-deployed.1",
+    "guard": "Fresh cloud collection-idle and local hash/process/ledger checks; collector switched last; no atomic server-side publication barrier added"
+  },
+  "rollbackRehearsal": "isolated restore 1/remove 4/preserve unrelated passed",
+  "scope": {
+    "boundSlots": 145,
+    "explicitHoldSlots": 7,
+    "initialOccupiedSlots": 6,
+    "initialOfflineSlots": 8,
+    "initialEligibleSlots": 124,
+    "initialEligiblePhones": 76,
+    "initialSkips": [
+      {
+        "name": "185",
+        "slot": "app1",
+        "reason": "explicit_hold"
+      },
+      {
+        "name": "154",
+        "slot": "app1",
+        "reason": "occupied"
+      },
+      {
+        "name": "154",
+        "slot": "app2",
+        "reason": "occupied"
+      },
+      {
+        "name": "108",
+        "slot": "app1",
+        "reason": "occupied"
+      },
+      {
+        "name": "152",
+        "slot": "app1",
+        "reason": "explicit_hold"
+      },
+      {
+        "name": "155",
+        "slot": "app1",
+        "reason": "explicit_hold"
+      },
+      {
+        "name": "155",
+        "slot": "app2",
+        "reason": "explicit_hold"
+      },
+      {
+        "name": "18",
+        "slot": "app1",
+        "reason": "explicit_hold"
+      },
+      {
+        "name": "18",
+        "slot": "app2",
+        "reason": "explicit_hold"
+      },
+      {
+        "name": "4",
+        "slot": "app1",
+        "reason": "occupied"
+      },
+      {
+        "name": "184",
+        "slot": "app1",
+        "reason": "occupied"
+      },
+      {
+        "name": "184",
+        "slot": "app2",
+        "reason": "occupied"
+      },
+      {
+        "name": "109",
+        "slot": "app1",
+        "reason": "offline"
+      },
+      {
+        "name": "109",
+        "slot": "app2",
+        "reason": "offline"
+      },
+      {
+        "name": "81",
+        "slot": "app1",
+        "reason": "explicit_hold"
+      },
+      {
+        "name": "35",
+        "slot": "app1",
+        "reason": "offline"
+      },
+      {
+        "name": "127",
+        "slot": "app1",
+        "reason": "offline"
+      },
+      {
+        "name": "127",
+        "slot": "app2",
+        "reason": "offline"
+      },
+      {
+        "name": "116",
+        "slot": "app1",
+        "reason": "offline"
+      },
+      {
+        "name": "128",
+        "slot": "app1",
+        "reason": "offline"
+      },
+      {
+        "name": "63",
+        "slot": "app1",
+        "reason": "offline"
+      }
+    ]
+  },
+  "api": "POST /api/v1/user/automation/xhs-data-tasks",
+  "maxConcurrentPhones": 2,
+  "samePhoneSlotsSerial": true,
+  "authorization": "User requested hot update and full retest, then explicitly selected data-collection task API",
+  "deployed": true,
+  "wholeFleetPassed": false,
+  "daily95PercentProven": false,
+  "actualBaselinePathCount": 12,
+  "latestSlotResults": [
+    {
+      "name": "86",
+      "slot": "app2",
+      "phase": "single",
+      "status": "passed",
+      "notes": 43,
+      "scrolls": 19,
+      "seconds": 406,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    },
+    {
+      "name": "113",
+      "slot": "app2",
+      "phase": "pair",
+      "status": "skipped_server_error",
+      "notes": null,
+      "scrolls": null,
+      "seconds": 84,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    },
+    {
+      "name": "130",
+      "slot": "app2",
+      "phase": "pair",
+      "status": "passed",
+      "notes": 36,
+      "scrolls": 15,
+      "seconds": 330,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    },
+    {
+      "name": "96",
+      "slot": "app1",
+      "phase": "pair",
+      "status": "passed",
+      "notes": 19,
+      "scrolls": 7,
+      "seconds": 210,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    },
+    {
+      "name": "34",
+      "slot": "app1",
+      "phase": "fleet",
+      "status": "skipped_account_abnormal",
+      "notes": null,
+      "scrolls": null,
+      "seconds": 46,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    },
+    {
+      "name": "173",
+      "slot": "app1",
+      "phase": "fleet",
+      "status": "failed_compatibility",
+      "notes": null,
+      "scrolls": null,
+      "seconds": 62,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    },
+    {
+      "name": "187",
+      "slot": "app1",
+      "phase": "fleet",
+      "status": "passed",
+      "notes": 15,
+      "scrolls": 5,
+      "seconds": 166,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    },
+    {
+      "name": "173",
+      "slot": "app2",
+      "phase": "fleet",
+      "status": "passed",
+      "notes": 0,
+      "scrolls": 0,
+      "seconds": 89,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    },
+    {
+      "name": "182",
+      "slot": "app1",
+      "phase": "fleet",
+      "status": "failed_compatibility",
+      "notes": null,
+      "scrolls": null,
+      "seconds": 35,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    },
+    {
+      "name": "32",
+      "slot": "app1",
+      "phase": "fleet",
+      "status": "skipped_account_abnormal",
+      "notes": null,
+      "scrolls": null,
+      "seconds": 57,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    },
+    {
+      "name": "172",
+      "slot": "app1",
+      "phase": "fleet",
+      "status": "passed",
+      "notes": 1,
+      "scrolls": 0,
+      "seconds": 92,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    },
+    {
+      "name": "140",
+      "slot": "app1",
+      "phase": "fleet",
+      "status": "cancelled",
+      "notes": null,
+      "scrolls": null,
+      "seconds": 59,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    },
+    {
+      "name": "141",
+      "slot": "app1",
+      "phase": "fleet",
+      "status": "cancelled",
+      "notes": null,
+      "scrolls": null,
+      "seconds": 215,
+      "settingsRestored": true,
+      "ownLockAcquired": true,
+      "ownLockReleased": true
+    }
+  ],
+  "attempts": 14,
+  "testedSlots": 13,
+  "counts": {
+    "passed": 6,
+    "skipped_server_error": 1,
+    "skipped_account_abnormal": 2,
+    "failed_compatibility": 2,
+    "cancelled": 2
+  },
+  "completeNotes": 114,
+  "activeOwnedTasks": 0,
+  "activeOwnedLocks": 0,
+  "pendingSettingsLedgers": 0,
+  "allAttemptSettingsRestored": true,
+  "officialCanary": {
+    "single": "86/app2",
+    "initialPair": [
+      "113/app2",
+      "130/app2"
+    ],
+    "initialPairOutcome": "113 server error; 130 cancelled and cleanly reconciled before a single replacement attempt",
+    "replacementPair": [
+      "96/app1",
+      "130/app2"
+    ],
+    "replacementPairPassed": true
+  },
+  "latestPlan": {
+    "boundSlots": 145,
+    "eligibleSlots": 126,
+    "heldSlots": 7,
+    "occupiedSlots": 4,
+    "offlineSlots": 8
+  },
+  "pauseReason": "173/app1 and 182/app1 Creator Center native home data label intercepted by loading gate",
+  "candidateFix": "xhs-compat-20261022-rc.18",
+  "candidateDeployed": false,
+  "rc18Candidate": {
+    "tag": "xhs-compat-20261022-rc.18",
+    "deployed": false,
+    "collectorSha256": "3b1778ffa3837798d3c80f69072fa128f29233107c13bb50ac9529d51aee0187",
+    "pythonTests": 365,
+    "nodeTests": 11,
+    "rootSyntaxCheck": true,
+    "newTests": 3,
+    "observedFixtures": 2,
+    "oldSourceReproductionErrors": 2,
+    "deviceValidation": "not run for rc18",
+    "review": "self review; no independent reviewer",
+    "rollbackRehearsal": "single file replace/restore and unrelated preservation passed"
+  }
+}

@@ -1,0 +1,259 @@
+{
+  "row": {
+    "titleBox": [
+      194,
+      794,
+      522,
+      821
+    ],
+    "titleCropBox": [
+      187,
+      784,
+      706,
+      831
+    ],
+    "title": "测测訕验!示例ABC数据行,"
+  },
+  "readings": {
+    "color": {
+      "id": "r2_title_color",
+      "width": 1557,
+      "height": 141,
+      "language": "zh-Hans-CN",
+      "textAngle": 0,
+      "lines": [
+        {
+          "text": "测 测 校 验 ！ 示 例 ABC 数 据 行 ， 同 步 了",
+          "words": [
+            {
+              "text": "测",
+              "x": 22,
+              "y": 33,
+              "width": 67,
+              "height": 73
+            },
+            {
+              "text": "测",
+              "x": 102,
+              "y": 33,
+              "width": 67,
+              "height": 73
+            },
+            {
+              "text": "校",
+              "x": 181,
+              "y": 30,
+              "width": 73,
+              "height": 76
+            },
+            {
+              "text": "验",
+              "x": 261,
+              "y": 30,
+              "width": 72,
+              "height": 75
+            },
+            {
+              "text": "！",
+              "x": 350,
+              "y": 38,
+              "width": 14,
+              "height": 62
+            },
+            {
+              "text": "示",
+              "x": 422,
+              "y": 33,
+              "width": 72,
+              "height": 73
+            },
+            {
+              "text": "例",
+              "x": 502,
+              "y": 31,
+              "width": 73,
+              "height": 75
+            },
+            {
+              "text": "ABC",
+              "x": 581,
+              "y": 38,
+              "width": 151,
+              "height": 62
+            },
+            {
+              "text": "数",
+              "x": 740,
+              "y": 32,
+              "width": 72,
+              "height": 71
+            },
+            {
+              "text": "据",
+              "x": 819,
+              "y": 33,
+              "width": 74,
+              "height": 73
+            },
+            {
+              "text": "行",
+              "x": 900,
+              "y": 29,
+              "width": 74,
+              "height": 77
+            },
+            {
+              "text": "，",
+              "x": 990,
+              "y": 86,
+              "width": 15,
+              "height": 25
+            },
+            {
+              "text": "同",
+              "x": 1062,
+              "y": 34,
+              "width": 72,
+              "height": 72
+            },
+            {
+              "text": "步",
+              "x": 1142,
+              "y": 30,
+              "width": 73,
+              "height": 76
+            },
+            {
+              "text": "了",
+              "x": 1226,
+              "y": 35,
+              "width": 67,
+              "height": 71
+            }
+          ]
+        }
+      ]
+    },
+    "binary": {
+      "id": "r2_title_binary",
+      "width": 1557,
+      "height": 141,
+      "language": "zh-Hans-CN",
+      "textAngle": 0,
+      "lines": [
+        {
+          "text": "测 测 校 验 ！ 示 例 ABC 数 据 行 ， 同 步 了",
+          "words": [
+            {
+              "text": "测",
+              "x": 22,
+              "y": 33,
+              "width": 67,
+              "height": 73
+            },
+            {
+              "text": "测",
+              "x": 102,
+              "y": 33,
+              "width": 67,
+              "height": 73
+            },
+            {
+              "text": "校",
+              "x": 181,
+              "y": 30,
+              "width": 73,
+              "height": 76
+            },
+            {
+              "text": "验",
+              "x": 261,
+              "y": 29,
+              "width": 72,
+              "height": 76
+            },
+            {
+              "text": "！",
+              "x": 351,
+              "y": 38,
+              "width": 13,
+              "height": 62
+            },
+            {
+              "text": "示",
+              "x": 422,
+              "y": 33,
+              "width": 72,
+              "height": 73
+            },
+            {
+              "text": "例",
+              "x": 502,
+              "y": 30,
+              "width": 74,
+              "height": 76
+            },
+            {
+              "text": "ABC",
+              "x": 580,
+              "y": 38,
+              "width": 152,
+              "height": 62
+            },
+            {
+              "text": "数",
+              "x": 740,
+              "y": 31,
+              "width": 72,
+              "height": 72
+            },
+            {
+              "text": "据",
+              "x": 819,
+              "y": 33,
+              "width": 75,
+              "height": 73
+            },
+            {
+              "text": "行",
+              "x": 900,
+              "y": 29,
+              "width": 74,
+              "height": 77
+            },
+            {
+              "text": "，",
+              "x": 990,
+              "y": 87,
+              "width": 15,
+              "height": 24
+            },
+            {
+              "text": "同",
+              "x": 1062,
+              "y": 34,
+              "width": 72,
+              "height": 72
+            },
+            {
+              "text": "步",
+              "x": 1142,
+              "y": 31,
+              "width": 73,
+              "height": 75
+            },
+            {
+              "text": "了",
+              "x": 1226,
+              "y": 35,
+              "width": 67,
+              "height": 71
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "sourcePngSha256": "ec213809a880d70a37a73d6443bf210ec5e8132b7116b8d458e4d37364b88f82",
+  "sanitization": "Actualwordgeometry retained; all title words substitutedwithgenerictext; original singleCJKprefixmisreadpattern retained."
+}
