@@ -13,7 +13,7 @@ class LeaseBoundary(unittest.TestCase):
     def setUp(self):
         self.c = dict(deviceId='d', serial='s', deviceName='47', appSlot='app1', xhsId='x', accountName='name',
                       jobId='j', sessionId='session', lockId='lock', ownerUserId='owner', adbPath='fixture-adb')
-        self.p = dict(self.c, allowed=True, checkedAt=100, activeLockCount=1, sessionAlive=True, lookupReserved=False)
+        self.p = dict(self.c, allowed=True, localObservedAt=100, roundTripSeconds=.2, activeLockCount=1, sessionAlive=True, lookupReserved=False)
         self.d = dict(deviceId='d', deviceName='47', adb={'serial': 's', 'state': 'device'},
                       occupancy={'kind': 'screen_control', 'sessionId': 'session'},
                       xhsAccounts=[{'appSlot': 'app1', 'xhsId': 'x', 'accountName': 'name', 'enabled': True}])
@@ -29,7 +29,7 @@ class LeaseBoundary(unittest.TestCase):
             with self.subTest(key=key), self.assertRaises(RuntimeError): validate(self.c, p, [self.d], 1, 101)
 
     def test_stale_future_revoked_and_shared_proofs(self):
-        for delta in ({'checkedAt': 90}, {'checkedAt': 102}, {'allowed': False}, {'activeLockCount': 2},
+        for delta in ({'localObservedAt': 90}, {'localObservedAt': 102}, {'roundTripSeconds':4}, {'allowed': False}, {'activeLockCount': 2},
                       {'sessionAlive': False}, {'lookupReserved': True}):
             with self.subTest(delta=delta), self.assertRaises(RuntimeError): validate(self.c, dict(self.p, **delta), [self.d], 1, 101)
 
@@ -63,7 +63,7 @@ class LeaseBoundary(unittest.TestCase):
             child = Child(); calls = []
             def proof():
                 calls.append(1)
-                return dict(self.p, checkedAt=time.time(), allowed=len(calls) == 1)
+                return dict(self.p, localObservedAt=time.monotonic(), allowed=len(calls) == 1)
             command = GuardedCommands(self.c, proof, identity=lambda c: None, popen=lambda *a, **k: child)
             with self.assertRaises(RuntimeError): command.run(['fixture-adb', '-s', 's', 'shell', 'input', 'tap', '1', '2'])
             self.assertTrue(child.killed)
@@ -109,7 +109,7 @@ class LeaseBoundary(unittest.TestCase):
             def spawn(*a,**k):
                 child=subprocess.Popen(*a,**k);children.append(child);return child
             def prove():
-                calls.append(1);return dict(self.p,checkedAt=time.time(),allowed=len(calls)==1)
+                calls.append(1);return dict(self.p,localObservedAt=time.monotonic(),allowed=len(calls)==1)
             command=GuardedCommands(self.c,prove,identity=lambda c:None,popen=spawn)
             with self.assertRaises(RuntimeError):command.run([str(binary),'-s','s','get-state'])
             self.assertEqual(len(children),1);self.assertIsNotNone(children[0].poll())
