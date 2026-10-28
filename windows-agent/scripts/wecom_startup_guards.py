@@ -95,3 +95,9 @@ def dismiss_miui_proximity(read_screen, foreground, lease_valid, read_policy,
             return True
         sleep(.25)
     raise w.StopPreview('system_overlay_dismissal_not_confirmed')
+
+
+def is_observed_25_invite_foreground(device_number, android_user, current):
+    # Initial navigation only: never proof that a NEW request is ready to send.
+    return (device_number=='25' and android_user==0 and current==
+            ('com.tencent.wework',0,'com.tencent.wework/.friends.controller.WechatContactSendVerifyActivity'))

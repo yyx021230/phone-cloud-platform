@@ -93,5 +93,13 @@ class StartupGuardTests(unittest.TestCase):
             self.assertEqual(keys, ['UP'] if mode == 'transport' else [])
 
 
+class InitialInviteReturnTests(unittest.TestCase):
+    def test_only_25_main_observed_activity_allows_initial_return(self):
+        current=('com.tencent.wework',0,'com.tencent.wework/.friends.controller.WechatContactSendVerifyActivity')
+        self.assertTrue(g.is_observed_25_invite_foreground('25',0,current))
+        for number,user,fg in (('155',999,current),('23',0,current),('25',999,current),('25',0,('other',0,current[2])),('25',0,(current[0],999,current[2])),('25',0,(current[0],0,'com.tencent.wework/.OtherActivity'))):
+            self.assertFalse(g.is_observed_25_invite_foreground(number,user,fg))
+
+
 if __name__ == '__main__':
     unittest.main()

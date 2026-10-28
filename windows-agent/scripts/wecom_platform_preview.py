@@ -305,11 +305,14 @@ def run_host(value):
             try:test_search=w.editor(page).text in ("","手机号",config["phoneNumber"])
             except w.StopPreview:pass
             global_search=(foreground_info()[2].endswith("/.contact.controller.globalsearch.GlobalSearchActivityV2") and len(page.matching(lambda n:n.kind=="android.widget.EditText" and n.name=="com.tencent.wework:id/lnx"))==1)
-            known=(page.has(w.SEND) or w.profile_matches(page,config["phoneNumber"]) or w.is_add_page(page) or w.is_menu(page) or test_search or global_search)
+            invitation_return=startup.is_observed_25_invite_foreground(config["deviceNumber"],selected_user,foreground_info())
+            known=(invitation_return or page.has(w.SEND) or w.profile_matches(page,config["phoneNumber"]) or w.is_add_page(page) or w.is_menu(page) or test_search or global_search)
             if not known:
                 # A blank startup frame may settle; no writes on unknown pages.
                 time.sleep(.3); continue
             if driver.snapshot()!=page or foreground()!=w.PACKAGE: raise SafeStop("home_navigation_page_changed")
+            if invitation_return and not startup.is_observed_25_invite_foreground(config["deviceNumber"],selected_user,foreground_info()):
+                raise SafeStop("initial_invite_activity_changed")
             mutate("input keyevent 4"); time.sleep(.3)
         if not home:raise SafeStop("home_not_confirmed")
         remaining=min(120,deadline-time.monotonic()-10)
