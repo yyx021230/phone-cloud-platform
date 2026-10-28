@@ -6,14 +6,15 @@ import time
 import unittest
 from pathlib import Path
 from xhs_isolated_guard import validate
-from xhs_isolated_runner import GuardedCommands
+from xhs_isolated_runner import GuardedCommands, read_proof
+from xhs_candidate_live import settings_recovery_source
 
 
 class LeaseBoundary(unittest.TestCase):
     def setUp(self):
         self.c = dict(deviceId='d', serial='s', deviceName='47', appSlot='app1', xhsId='x', accountName='name',
                       jobId='j', sessionId='session', lockId='lock', ownerUserId='owner', adbPath='fixture-adb')
-        self.p = dict(self.c, allowed=True, localObservedAt=100, roundTripSeconds=.2, activeLockCount=1, sessionAlive=True, lookupReserved=False)
+        self.p = dict(self.c, allowed=True, localObservedAt=100, roundTripSeconds=.2, brokerProofAgeSeconds=0, activeLockCount=1, sessionAlive=True, lookupReserved=False)
         self.d = dict(deviceId='d', deviceName='47', adb={'serial': 's', 'state': 'device'},
                       occupancy={'kind': 'screen_control', 'sessionId': 'session'},
                       xhsAccounts=[{'appSlot': 'app1', 'xhsId': 'x', 'accountName': 'name', 'enabled': True}])
@@ -29,9 +30,11 @@ class LeaseBoundary(unittest.TestCase):
             with self.subTest(key=key), self.assertRaises(RuntimeError): validate(self.c, p, [self.d], 1, 101)
 
     def test_stale_future_revoked_and_shared_proofs(self):
-        for delta in ({'localObservedAt': 90}, {'localObservedAt': 102}, {'roundTripSeconds':4}, {'allowed': False}, {'activeLockCount': 2},
+        for delta in ({'localObservedAt': 90}, {'localObservedAt': 102}, {'roundTripSeconds':4}, {'brokerProofAgeSeconds':2}, {'allowed': False}, {'activeLockCount': 2},
                       {'sessionAlive': False}, {'lookupReserved': True}):
             with self.subTest(delta=delta), self.assertRaises(RuntimeError): validate(self.c, dict(self.p, **delta), [self.d], 1, 101)
+        missing=dict(self.p);missing.pop('brokerProofAgeSeconds')
+        with self.assertRaises(RuntimeError):validate(self.c,missing,[self.d],1,101)
 
     def test_real_inventory_cannot_be_replaced_by_fake_xhs_occupancy(self):
         for occupancy in (None, {'kind': 'xhs_data_collect', 'taskId': 'j', 'appSlot': 'app1'},
@@ -113,6 +116,41 @@ class LeaseBoundary(unittest.TestCase):
             command=GuardedCommands(self.c,prove,identity=lambda c:None,popen=spawn)
             with self.assertRaises(RuntimeError):command.run([str(binary),'-s','s','get-state'])
             self.assertEqual(len(children),1);self.assertIsNotNone(children[0].poll())
+
+    def test_transient_proof_waits_but_conflict_and_replay_never_retry(self):
+        import io,urllib.error
+        c=dict(self.c,brokerUrl='http://127.0.0.1:1',brokerToken='fixture');calls=[]
+        def open_after_one_failure(req,**kw):
+            calls.append(1)
+            if len(calls)==1:raise urllib.error.HTTPError(req.full_url,503,'unavailable',{},None)
+            return io.BytesIO(json.dumps({'nonce':json.loads(req.data)['nonce'],'allowed':True}).encode())
+        p=read_proof(c,open_after_one_failure,sleep=lambda _:None)
+        self.assertTrue(p['allowed']);self.assertEqual(len(calls),2)
+        def conflict(req,**kw):raise urllib.error.HTTPError(req.full_url,409,'lost',{},None)
+        with self.assertRaises(urllib.error.HTTPError):read_proof(c,conflict,sleep=lambda _:self.fail('must not retry'))
+        with self.assertRaises(RuntimeError):read_proof(c,lambda *a,**k:io.BytesIO(b'{"nonce":"old"}'),sleep=lambda _:self.fail('must not retry'))
+
+    def test_recovery_generated_script_compiles_and_restores_exact_ledger(self):
+        import contextlib,io
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory(prefix='CONFIG-test-') as tmp:
+            folder=Path(tmp)/'cache/xhs-data-collection';folder.mkdir(parents=True)
+            ledger=folder/'own.settings.json'
+            ledger.write_text(json.dumps({'serial':'fixture','taskId':'task','settings':[
+                {'scope':'system','key':'screen_off_timeout','original':'30000'},
+                {'scope':'global','key':'enable_screen_on_proximity_sensor','original':'null'}]}))
+            c={'stage':tmp,'serial':'fixture','windowsTaskId':'task','pythonPath':'fixture-python'}
+            code=settings_recovery_source(c);compile(code,'recovery-fixture','exec')
+            self.assertIn('XHS_QA_CONFIG=',code);self.assertNotIn('__QA_CONFIG_LITERAL__',code)
+            current=['600000'];calls=[]
+            def run(args,**kwargs):
+                self.assertEqual(kwargs['env']['XHS_QA_CONFIG'],str(Path(tmp)/'config.json'))
+                calls.append(args)
+                if args[-4]=='put':current[0]=args[-1]
+                return subprocess.CompletedProcess(args,0,current[0].encode(),b'')
+            with patch('subprocess.run',run),contextlib.redirect_stdout(io.StringIO()):exec(code,{})
+            self.assertFalse(ledger.exists());self.assertEqual(len(calls),3)
+            self.assertTrue(all('enable_screen_on_proximity_sensor' not in a for a in calls))
 
 
 if __name__ == '__main__': unittest.main()

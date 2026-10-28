@@ -15,7 +15,10 @@ def validate(config, proof, inventory, age, now=None):
     if not 0 <= age <= 90:
         raise RuntimeError('qa_inventory_stale')
     if (not proof.get('allowed') or not 0 <= now - proof.get('localObservedAt', -100) <= 3
-            or not 0 <= proof.get('roundTripSeconds', -1) <= 3):
+            or not 0 <= proof.get('roundTripSeconds', -1) <= 3
+            or not 0 <= proof.get('brokerProofAgeSeconds', -1)
+            or not 0 <= (proof.get('brokerProofAgeSeconds', -1) + proof.get('roundTripSeconds', -1)
+                         + now - proof.get('localObservedAt', -100)) <= 3):
         raise RuntimeError('qa_lease_not_fresh')
     if any(proof.get(k) != config[k] for k in required):
         raise RuntimeError('qa_lease_identity_changed')

@@ -14,10 +14,30 @@ import subprocess
 import sys
 import time
 import urllib.request
+import urllib.error
 import uuid
 from pathlib import Path
 from types import SimpleNamespace
 from xhs_isolated_guard import validate_file
+
+
+def read_proof(c, opener=urllib.request.urlopen, sleep=time.sleep):
+    deadline=time.monotonic()+5
+    while True:
+        nonce=uuid.uuid4().hex;started=time.monotonic()
+        request=urllib.request.Request(c['brokerUrl']+'/guard',data=json.dumps({'jobId':c['jobId'],'nonce':nonce}).encode(),
+                                       headers={'Authorization':'Bearer '+c['brokerToken'],'Content-Type':'application/json'})
+        try:
+            with opener(request,timeout=min(2,max(.1,deadline-started))) as r: proof=json.load(r)
+            if proof.get('nonce')!=nonce:raise RuntimeError('qa_broker_reply_nonce_mismatch')
+            proof['localObservedAt']=time.monotonic();proof['roundTripSeconds']=proof['localObservedAt']-started
+            return proof
+        except urllib.error.HTTPError as error:
+            if error.code!=503:raise  # A real ownership conflict is never retried.
+        except (urllib.error.URLError,TimeoutError,OSError):
+            pass
+        if time.monotonic()>=deadline:raise RuntimeError('qa_fresh_lease_proof_unavailable')
+        sleep(.2)  # No device operation is started while awaiting a fresh proof.
 
 
 def attest(config):
@@ -37,6 +57,14 @@ class GuardedCommands:
     def __init__(self, config, prove, identity=attest, popen=subprocess.Popen):
         self.config, self.prove, self.identity, self.popen = config, prove, identity, popen
         self.paths = set()
+
+    def trace(self, event, **fields):
+        if not self.config.get('stage'):return
+        try:
+            p=Path(self.config['stage'])/'qa-trace.jsonl'
+            if p.exists() and p.stat().st_size>2*1024*1024:return
+            with p.open('a',encoding='utf-8') as f:f.write(json.dumps({'at':time.time(),'event':event,**fields})+'\n')
+        except OSError:pass
 
     def allowed(self, args):
         a = tuple(args)
@@ -85,7 +113,9 @@ class GuardedCommands:
             raise RuntimeError('qa_process_outside_exact_adb_target')
         if not self.allowed(args[3:]):
             raise RuntimeError('qa_adb_command_not_allowlisted')
+        started=time.monotonic();self.trace('command_start',operation=' '.join(args[3:6]))
         self.guard()
+        self.trace('command_authorized',guardMs=round((time.monotonic()-started)*1000))
         child = self.popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         deadline = time.monotonic() + timeout
         try:
@@ -107,24 +137,14 @@ class GuardedCommands:
             if child.poll() is None:
                 child.kill()  # Only this adapter's exact ADB client, never the server.
                 child.communicate()
+            self.trace('command_end',elapsedMs=round((time.monotonic()-started)*1000))
 
 
 def main():
     c = json.loads(Path(os.environ['XHS_QA_CONFIG']).read_text(encoding='utf-8'))
     if not c['brokerUrl'].startswith('http://127.0.0.1:'):
         raise RuntimeError('qa_broker_must_be_loopback_tunnel')
-    def prove():
-        nonce=uuid.uuid4().hex;started=time.monotonic()
-        request = urllib.request.Request(c['brokerUrl'] + '/guard', data=json.dumps({'jobId': c['jobId'], 'nonce': nonce}).encode(),
-                                         headers={'Authorization': 'Bearer ' + c['brokerToken'], 'Content-Type': 'application/json'})
-        with urllib.request.urlopen(request, timeout=3) as r:
-            proof=json.load(r)
-        if proof.get('nonce')!=nonce:
-            raise RuntimeError('qa_broker_reply_nonce_mismatch')
-        proof['localObservedAt']=time.monotonic()
-        proof['roundTripSeconds']=proof['localObservedAt']-started
-        return proof
-    commands = GuardedCommands(c, prove)
+    commands = GuardedCommands(c, lambda:read_proof(c))
     if sys.argv[1:2] == ['--qa-adb']:
         r = commands.run([c['adbPath'], '-s', c['serial']] + sys.argv[2:], timeout=8)
         sys.stdout.buffer.write(r.stdout); sys.stderr.buffer.write(r.stderr)
@@ -149,6 +169,13 @@ def main():
     # A module-local facade, not an assignment on the shared stdlib module.
     # The pinned native helper receives collector.adb_process as its run callback.
     collector.subprocess = SimpleNamespace(run=commands.run, TimeoutExpired=subprocess.TimeoutExpired)
+    for name in ('collect_once','ensure_creator_list','wait_data_center_loading','read_scrolled_content'):
+        fn=getattr(collector,name)
+        def traced(*args,_fn=fn,_name=name,**kwargs):
+            commands.trace('phase_start',phase=_name)
+            try:return _fn(*args,**kwargs)
+            finally:commands.trace('phase_end',phase=_name)
+        setattr(collector,name,traced)
     collector.main()
 
 

@@ -10,16 +10,34 @@ const run=(file,args,o={})=>new Promise((resolve,reject)=>execFile(file,args,{en
   if(error){error.stdout=stdout;error.stderr=stderr;reject(error);}else resolve(stdout);
 }));
 const config={pythonCommand:c.pythonPath,xhsDataCollectionRunnerPath:path.join(c.stage,'xhs_isolated_runner.py'),adbPath:c.adbPath};
-const adb=(serial,args,o)=>{
+const settingReads=[];
+const adb=async(serial,args,o)=>{
   if(serial!==c.serial)throw Error('qa_consumer_target_mismatch');
-  return run(c.pythonPath,[config.xhsDataCollectionRunnerPath,'--qa-adb',...args],{...o,timeoutMs:12000});
+  const output=await run(c.pythonPath,[config.xhsDataCollectionRunnerPath,'--qa-adb',...args],{...o,timeoutMs:16000});
+  if(args[0]==='shell'&&args[1]==='settings'&&args[2]==='get'){
+    settingReads.push({scope:args[3],key:args[4],value:output.trim()});
+    await fs.writeFile(path.join(c.stage,'settings-evidence.json'),JSON.stringify(settingReads)).catch(()=>{});
+  }
+  return output;
+};
+const verifySettings=async()=>{
+  for(const [scope,key] of [['system','screen_off_timeout'],['global','enable_screen_on_proximity_sensor']]){
+    const original=settingReads.find(r=>r.scope===scope&&r.key===key);
+    if(!original)throw Error('qa_settings_baseline_missing');
+    const final=(await adb(c.serial,['shell','settings','get',scope,key],{})).trim();
+    if(final!==original.value)throw Error('qa_settings_restore_mismatch');
+  }
+  return true;
 };
 const controller=new AbortController();
 process.once('SIGTERM',()=>controller.abort(new Error('qa_stopped')));
 const start=Date.now();
 try{
   const result=await runXhsDataCollection(task,{config,run,adb,signal:controller.signal,cacheDir:path.join(c.stage,'cache'),deviceCachePath:c.inventoryPath});
-  console.log(JSON.stringify({ok:true,result,elapsedMs:Date.now()-start}));
+  await verifySettings();
+  console.log(JSON.stringify({ok:true,result,settingsRestored:true,settingsEvidence:settingReads,elapsedMs:Date.now()-start}));
 }catch(error){
-  console.log(JSON.stringify({ok:false,error:error.message,stderr:String(error.stderr||'').slice(-2500),restorationErrors:error.restorationErrors||[],elapsedMs:Date.now()-start}));
+  let settingsRestored=false;
+  try{settingsRestored=await verifySettings();}catch{}
+  console.log(JSON.stringify({ok:false,error:error.message,stderr:String(error.stderr||'').slice(-2500),restorationErrors:error.restorationErrors||[],settingsRestored,settingsEvidence:settingReads,elapsedMs:Date.now()-start}));
 }
