@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 from xhs_isolated_guard import validate, validate_file
 from xhs_isolated_runner import GuardedCommands, read_proof
-from xhs_candidate_live import settings_recovery_source, staging_source, wait_cached_proof
+from xhs_candidate_live import settings_recovery_source, staging_source, wait_cached_proof, candidate_files
 
 
 class LeaseBoundary(unittest.TestCase):
@@ -97,7 +97,7 @@ class LeaseBoundary(unittest.TestCase):
     def test_pinned_reader_has_no_alternative_process_entry(self):
         import ast
         root=Path(__file__).resolve().parents[2]
-        for name in ('小红书数据同步.py','xhs_native_window.py'):
+        for name in ('小红书数据同步.py','xhs_native_window.py','xhs_native_navigation.py'):
             tree=ast.parse((root/'windows-agent/scripts'/name).read_text())
             calls=[n for n in ast.walk(tree) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute)
                    and isinstance(n.func.value,ast.Name) and n.func.value.id in ('os','subprocess')
@@ -202,6 +202,46 @@ class LeaseBoundary(unittest.TestCase):
                 p.write_text(json.dumps([self.d]))
                 return proof()
             with self.assertRaisesRegex(RuntimeError,'qa_inventory_stale'):validate_file(c,proof_after_file_replacement)
+
+    def test_staged_dependency_closure_reaches_guard_with_all_native_assets(self):
+        import ast,importlib.util,shutil
+        files=candidate_files()
+        tree=ast.parse(files['scripts/小红书数据同步.py'].read_text())
+        imports={n.module for n in ast.walk(tree) if isinstance(n,ast.ImportFrom) and (n.module or '').startswith('xhs_')}
+        self.assertTrue(all('scripts/'+name+'.py' in files for name in imports))
+        class AtGuard(Exception):pass
+        def guard():raise AtGuard()
+        def never(*a,**k):self.fail('fixture must never invoke ADB')
+        with tempfile.TemporaryDirectory() as tmp:
+            for name,src in files.items():
+                dst=Path(tmp)/name;dst.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(src,dst)
+            for name in ('xhs_native_window','xhs_native_navigation'):
+                spec=importlib.util.spec_from_file_location('fixture_'+name,Path(tmp)/'scripts'/(name+'.py'))
+                mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
+                if name.endswith('window'):
+                    for pair in (False,True):
+                        with self.subTest(pair=pair),self.assertRaises(AtGuard):
+                            mod.read('adb','s',never,never,guard,'u0 com.xingin.xhs/.xywebview.activity.WebViewActivityV2}',pair=pair)
+                else:
+                    with self.assertRaises(AtGuard):mod.perform('menu','adb','s',never,never,guard,'focus')
+
+    def test_native_commands_bind_asset_hash_remote_name_and_action(self):
+        import hashlib
+        files=candidate_files();config=dict(self.c)
+        specs=[('nativeAsset','nativeAssetSha256','xhs-native-window.jar','pc-xhs-elements-','20 /system/bin/app_process /system/bin NativeWindowReader'),
+               ('nativePairAsset','nativePairSha256','xhs-native-pair.jar','pc-xhs-elements-','20 /system/bin/app_process /system/bin NativeWindowPair'),
+               ('nativeNavigationAsset','nativeNavigationSha256','xhs-native-navigation.jar','pc-xhs-nav-','15 /system/bin/app_process /system/bin NativeNavigationAction menu')]
+        for pathkey,hashkey,asset,prefix,cmd in specs:
+            p=files['scripts/native/'+asset];config[pathkey]=str(p);config[hashkey]=hashlib.sha256(p.read_bytes()).hexdigest()
+            guard=GuardedCommands(config,lambda:None);remote='/data/local/tmp/'+prefix+'a'*32+'.jar'
+            shell='CLASSPATH='+remote+':/system/framework/uiautomator.jar /system/bin/timeout '+cmd
+            self.assertFalse(guard.allowed(['shell',shell]));self.assertFalse(guard.allowed(['shell','rm','-f',remote]))
+            self.assertTrue(guard.allowed(['push',str(p),remote]));self.assertTrue(guard.allowed(['shell',shell]))
+            self.assertFalse(guard.allowed(['shell',shell+';reboot']));self.assertFalse(guard.allowed(['shell',shell.replace('menu','publish')+' x']))
+            self.assertTrue(guard.allowed(['shell','rm','-f',remote]))
+            wrong=dict(config);wrong[hashkey]='0'*64
+            self.assertFalse(GuardedCommands(wrong,lambda:None).allowed(['push',str(p),remote]))
+            if pathkey=='nativePairAsset':self.assertFalse(guard.allowed(['shell',shell.replace('NativeWindowPair','NativeWindowReader')]))
 
     def test_controller_uses_fresh_pooled_proof_and_preserves_expiry(self):
         now=[10.0];cache={'j':{'at':6.0,'proof':{'id':'old'}}};slept=[]

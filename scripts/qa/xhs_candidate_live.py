@@ -22,6 +22,25 @@ import uuid
 ROOT=Path(__file__).resolve().parents[2]
 
 
+def shared_runtime_hashes(q):
+    names=['scripts/小红书数据同步.py','scripts/xhs_native_window.py','scripts/xhs_native_navigation.py',
+           'scripts/native/xhs-native-window.jar','scripts/native/xhs-native-pair.jar',
+           'scripts/native/xhs-native-navigation.jar','src/xhs-data-collection.mjs','src/index.mjs','config.json']
+    return q.win('from pathlib import Path\nimport json,hashlib\nr=Path("D:/PhoneCloud/agent")\n'
+                 'print(json.dumps({name:hashlib.sha256((r/name).read_bytes()).hexdigest() if (r/name).exists() else None for name in '+ascii(names)+'}))')
+
+
+def candidate_files():
+    files={name:ROOT/'scripts/qa'/source for name,source in {
+        'xhs_isolated_guard.py':'xhs_isolated_guard.py','xhs_isolated_runner.py':'xhs_isolated_runner.py',
+        'host.mjs':'xhs_candidate_host.mjs'}.items()}
+    files['xhs-data-collection.mjs']=ROOT/'windows-agent/src/xhs-data-collection.mjs'
+    for name in ('小红书数据同步.py','xhs_native_window.py','xhs_native_navigation.py',
+                 'native/xhs-native-window.jar','native/xhs-native-pair.jar','native/xhs-native-navigation.jar'):
+        files['scripts/'+name]=ROOT/'windows-agent/scripts'/name
+    return files
+
+
 def wait_cached_proof(cache, job_id, clock=time.monotonic, sleep=time.sleep):
     deadline=clock()+5
     while clock()<deadline:
@@ -79,6 +98,7 @@ def main():
     def save(name,value):
         p=folder/name;p.write_text(json.dumps(value,ensure_ascii=False,indent=2));p.chmod(0o600)
     identity=q.attest();save('identity-before.json',identity)
+    shared_before=shared_runtime_hashes(q);save('shared-hashes-before.json',shared_before)
     inventory=q.request('/api/v1/devices')['body']['devices']
     approved=json.loads(Path(os.environ['XHS_QA_TARGETS_FILE']).read_text())['targets']
     targets=[]
@@ -192,13 +212,15 @@ console.log(JSON.stringify(targets.map((t,i)=>{const locks=values[1].body.locks.
         c.update(stage=stage,adbPath=identity['adbExe'],adbPid=identity['adbPid'],agentPid=identity['agentPid'],agentCreatedAt=identity['agentCreatedAt'],
                  inventoryPath='D:/PhoneCloud/agent/data/device-scan-cache.json',pythonPath='D:/PhoneCloud/tools/python39/python.exe',
                  brokerUrl=f'http://127.0.0.1:{remote_port}',brokerToken=uuid.uuid4().hex+uuid.uuid4().hex)
-        files={'xhs_isolated_guard.py':ROOT/'scripts/qa/xhs_isolated_guard.py','xhs_isolated_runner.py':ROOT/'scripts/qa/xhs_isolated_runner.py',
-               'host.mjs':ROOT/'scripts/qa/xhs_candidate_host.mjs','xhs-data-collection.mjs':ROOT/'windows-agent/src/xhs-data-collection.mjs',
-               'scripts/小红书数据同步.py':ROOT/'windows-agent/scripts/小红书数据同步.py','scripts/xhs_native_window.py':ROOT/'windows-agent/scripts/xhs_native_window.py',
-               'scripts/native/xhs-native-window.jar':ROOT/'windows-agent/scripts/native/xhs-native-window.jar'}
+        files=candidate_files()
         c.update(collectorPath=stage+'/scripts/小红书数据同步.py',collectorSha256=hashlib.sha256(files['scripts/小红书数据同步.py'].read_bytes()).hexdigest(),
                  nativeHelperSha256=hashlib.sha256(files['scripts/xhs_native_window.py'].read_bytes()).hexdigest(),nativeAsset=stage+'/scripts/native/xhs-native-window.jar',
-                 nativeAssetSha256=hashlib.sha256(files['scripts/native/xhs-native-window.jar'].read_bytes()).hexdigest())
+                 nativeAssetSha256=hashlib.sha256(files['scripts/native/xhs-native-window.jar'].read_bytes()).hexdigest(),
+                 nativePairAsset=stage+'/scripts/native/xhs-native-pair.jar',
+                 nativePairSha256=hashlib.sha256(files['scripts/native/xhs-native-pair.jar'].read_bytes()).hexdigest(),
+                 nativeNavigationAsset=stage+'/scripts/native/xhs-native-navigation.jar',
+                 nativeNavigationSha256=hashlib.sha256(files['scripts/native/xhs-native-navigation.jar'].read_bytes()).hexdigest(),
+                 nativeNavigationHelperSha256=hashlib.sha256(files['scripts/xhs_native_navigation.py'].read_bytes()).hexdigest())
         configs[c['jobId']]=c;save('config-'+t['deviceName']+'-private.json',c)
         blobs={name:base64.b64encode(p.read_bytes()).decode() for name,p in files.items()}
         blobs['config.json']=base64.b64encode(json.dumps(c).encode()).decode();blobs['task.json']=base64.b64encode(json.dumps(task).encode()).decode()
@@ -287,9 +309,10 @@ console.log(JSON.stringify(targets.map((t,i)=>{const locks=values[1].body.locks.
             try:p.wait(timeout=10)
             except subprocess.TimeoutExpired:p.terminate()
         save('identity-after.json',q.attest())
+        shared_after=shared_runtime_hashes(q);save('shared-hashes-after.json',shared_after)
         summary={'phase':phase,'results':[{'name':r['target']['deviceName'],'model':r['target']['model'],'ok':r['answer']['ok'],'notes':len(r['answer'].get('result',{}).get('collection',{}).get('notes',[])),
                   'complete':r['answer'].get('result',{}).get('collection',{}).get('complete'), 'pendingLedgers':r['pendingLedgers'],'settingsRestored':r['answer'].get('settingsRestored',False),'elapsedSeconds':r['elapsedSeconds'],'error':r['answer'].get('error')} for r in results],
-                 'proofs':proof_count,'cloudSnapshots':snapshot_count,'proofFailures':proof_failures,'productionSharedFilesChanged':False}
+                 'proofs':proof_count,'cloudSnapshots':snapshot_count,'proofFailures':proof_failures,'productionSharedFilesChanged':shared_before!=shared_after}
         save('summary.json',summary);print(json.dumps(summary,ensure_ascii=False),flush=True)
 
 
