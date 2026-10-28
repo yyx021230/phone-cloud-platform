@@ -4264,3 +4264,7 @@ GitHub main实际从0034b939快进至d37f5b0；修复分支和325条邮箱修正
 ### 2026-10-28 整合决策与变更：NGINX_ISOLATION
 保护代码与规则已由小红书提速分支合入；补齐原保护分支历史与隔离验证回执。本次仅本地单测。
 历史分支说明存档于 `module-history/NGINX_ISOLATION.md`，不改变当前生产状态。
+
+### 2026-10-28 整合决策与变更：LOOKUP_INTAKE_AUDIT
+保留入队数量历史审计，不将其中临时 40 条设置覆盖用户后续查询中加排队共 20 条要求；本次不写线上配置。
+历史分支说明存档于 `module-history/LOOKUP_INTAKE_AUDIT.md`，不改变当前生产状态。
