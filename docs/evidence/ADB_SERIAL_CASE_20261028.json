@@ -1,0 +1,153 @@
+{
+  "task": "ADB serial case identity / phone 191",
+  "date": "2026-10-28",
+  "status": "local_candidate_not_deployed",
+  "scope": "Fix stale transport spelling and misleading shell error; local merge requested, no deployment or restart authorized.",
+  "baseline": {
+    "branch": "codex/adb-serial-case-20261028",
+    "commit": "e273dded2f8c8bf043d3c55af4e1503fdd2ef2ea",
+    "source": "Current platform integration committed candidate, not the old shared dirty checkout",
+    "node": "v25.9.0",
+    "workflowDate": "2026-09-30",
+    "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+  },
+  "evidence": {
+    "productionReadOnlyObservation": {
+      "observedAt": "2026-10-28T15:56:00+08:00",
+      "timePrecision": "minute",
+      "deviceNumber": 191,
+      "actualAdbSerial": "6c00a33b",
+      "failedSelector": "6C00A33B",
+      "existingServerDeviceCount": 128,
+      "lowercaseShellRoundTripMs": 117,
+      "uppercaseFailureMs": 1,
+      "uppercaseError": "device not found",
+      "previousFailures": "screen preparation failed in 27–95 ms after uppercase requests, not the 3000 ms shell deadline",
+      "healthModuleSha256": "efb0f36c5b73511f5366704b30a10c5e0e6caf4fe13a23c328b60dec14c77c0d",
+      "classification": "This specific fault is proven identity mismatch; it does not establish the cause of every previous shell or USB fault."
+    },
+    "code": "syncAdbDevices matches case-insensitively but retained the previous adbSerial spelling; shell-health collapsed all exceptions into an unresponsive-channel message.",
+    "reproduction": "The isolated HTTP sync regression failed before the fix: expected testab12 but obtained TESTAB12."
+  },
+  "behavior": [
+    "Online state=device observations update the stored ADB selector; stable platform deviceId remains unchanged; PnP-only missing observations do not overwrite known online spelling.",
+    "Screen admission resolves against the current local discovery snapshot before any preemption/reservation/preparation; every later callback receives the observed spelling.",
+    "Unknown/offline/unauthorized/ambiguous identities are rejected without recovery actions; no guessed lowercase fallback and no extra ADB scan.",
+    "Unique per-device profile aliases keep the existing object and all values; conflicting aliases fail closed.",
+    "Shell errors distinguish missing transport, unauthorized, offline, timeout and other command failures; original cause retained, no raw command output exposed in public error."
+  ],
+  "compatibility": {
+    "databaseSchema": "unchanged; no migration or historical deviceId rename/deduplication",
+    "protocol": "unchanged; serial field semantics corrected, existing screen status format retained",
+    "cloudOnly": "Future online sync corrects stale downlink spelling; old Agent remains compatible but retains old error classification.",
+    "agentOnly": "Local discovery resolution tolerates stale cloud spelling for screen admission.",
+    "releaseClosure": [
+      "server/index.mjs",
+      "windows-agent/src/index.mjs",
+      "windows-agent/src/screen-stream.mjs",
+      "windows-agent/src/serial-adb-health.mjs",
+      "windows-agent/src/adb-serial-identity.mjs"
+    ],
+    "deploymentWarning": "The new adb-serial-identity.mjs module must accompany the two importing Agent files; do not copy index/screen-stream alone."
+  },
+  "validation": [
+    {
+      "command": "node --test server/adb-serial-identity.http.test.mjs windows-agent/src/adb-serial-identity.test.mjs windows-agent/src/screen-serial-identity.test.mjs windows-agent/src/serial-adb-health.test.mjs",
+      "pass": 31,
+      "fail": 0,
+      "scope": "Isolated JSON/loopback mock relay; no real Agent, phones or upstream calls."
+    },
+    {
+      "command": "npm run check; node --check windows-agent/src/adb-serial-identity.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:screen",
+      "pass": 1476,
+      "fail": 0,
+      "skipped": 0,
+      "durationMs": 20404.446125,
+      "log": "/private/tmp/pc-serial-case-20261028.mpiyVI/test-screen-final.log",
+      "environment": "env -i with PATH/HOME/TMPDIR only plus PYTHONDONTWRITEBYTECODE=1, DATABASE_URL='', REDIS_URL='', STORAGE_BACKEND=json; no .env in isolated checkout."
+    },
+    {
+      "command": "node deploy/mediamtx-pacing/verify.mjs --repository",
+      "exitCode": 0,
+      "liveVerified": false
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --exit-code -- deploy/mediamtx-pacing windows-agent/whip-publisher screen-client public package.json package-lock.json windows-agent/package.json windows-agent/package-lock.json",
+      "exitCode": 0
+    }
+  ],
+  "testDevelopmentFailures": [
+    "Initial new screen fixture asserted state instead of the existing status wire field; five fixture assertions failed. Corrected tests only; production status contract unchanged."
+  ],
+  "review": {
+    "kind": "self-review",
+    "result": "Scope, callback identity, cancellation before reservation, active alias exclusion, unrelated-session preservation, per-device policy parity and dependency closure reviewed.",
+    "independentMergeReview": "Requested from the authorized integration owner; pending receipt."
+  },
+  "notVerified": [
+    "No production release or fresh phone 191 screen/control acceptance after this fix.",
+    "No PostgreSQL persistence/restart or long-duration Windows hardware validation; HTTP regression uses isolated JSON.",
+    "No media host --live run during this local-only change; repository verification is not a production check."
+  ],
+  "preserved": [
+    "Shared original dirty checkout and integration owner changes untouched.",
+    "D-075 cloud viewer 8 Mbps / 2 packets, original+NACK shared budget, custom media binary/drop-in unchanged.",
+    "No edits to encoding, input mapping, scrcpy execution, control queue, reconnect policy, SYSTEM identity, ADB binary/keys/environment/launcher, USB/PnP/Hub."
+  ],
+  "rollback": "Local candidate can be reverted as a scoped commit without reverting unrelated integration changes. Future production activation needs current baseline, complete release/backout package and explicit window; no production rollback performed here.",
+  "files": [
+    {
+      "file": "server/index.mjs",
+      "beforeSha256": "999bef9821e57ec9729f14ca5d8bb19ec2099f8ab6c0d64f445d9cd2433218da",
+      "afterSha256": "27e3553df89babc67f5b6a467bc60942d0ba0715eca76716ff33df520bd698a2"
+    },
+    {
+      "file": "server/adb-serial-identity.http.test.mjs",
+      "beforeSha256": null,
+      "afterSha256": "29d53a233945eabcd6c72a65653ef3f09ab082cee30617eeab3746a75c4a9df3"
+    },
+    {
+      "file": "windows-agent/src/index.mjs",
+      "beforeSha256": "884bc370558e6b0b3f2d0d46dee309da4467757b613c0da03576de8f9b34df74",
+      "afterSha256": "dd93631bd5c6a0f8dbcc56e827ceaea7b071dc978cb09d7c827e134267f5de03"
+    },
+    {
+      "file": "windows-agent/src/screen-stream.mjs",
+      "beforeSha256": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "afterSha256": "2a2dc815a6b9068b4ca9f234102fdb97eb8785474f587bb31eaf4b2707dbb569"
+    },
+    {
+      "file": "windows-agent/src/serial-adb-health.mjs",
+      "beforeSha256": "efb0f36c5b73511f5366704b30a10c5e0e6caf4fe13a23c328b60dec14c77c0d",
+      "afterSha256": "ea6066d526ce12c6a1fd7d4e15b19f012ace259dbf7461549d951c40afb46334"
+    },
+    {
+      "file": "windows-agent/src/serial-adb-health.test.mjs",
+      "beforeSha256": "ea673d061fa111eaaf465710345f3d671d8c32348ddda875f4938fdcf5f46a07",
+      "afterSha256": "60610e6c35b29241f61f5bf3366527763973634b6e875219af1bad8040c0c39c"
+    },
+    {
+      "file": "windows-agent/src/adb-serial-identity.mjs",
+      "beforeSha256": null,
+      "afterSha256": "9474bf4c3db8d144eda0eaa6c40a1ba912a0c0c53460747b8e638d79d79ba09f"
+    },
+    {
+      "file": "windows-agent/src/adb-serial-identity.test.mjs",
+      "beforeSha256": null,
+      "afterSha256": "660bb901ad45343a34b1901c6f18bc99d7a3907cadeeb3f43375bb3da8a37848"
+    },
+    {
+      "file": "windows-agent/src/screen-serial-identity.test.mjs",
+      "beforeSha256": null,
+      "afterSha256": "255c8ce906079a2eebe4e301f276004b47188f9794729a78096661d31130676c"
+    }
+  ]
+}

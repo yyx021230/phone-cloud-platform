@@ -27,3 +27,7 @@ for(const prefix of ['', 'poco_query_resume_observation_failed:'])test('exhauste
 test('empty successful read is not proof of transport failure',()=>{
  for(const reason of ['local_lookup_result_unconfirmed:adb_read_empty','local_lookup_result_unconfirmed:visual_card_not_proven','selector_missing:adb_read_unavailable'])assert.equal(lookupFailureDomain({result:{errorCode:'alipay_lookup_result_unconfirmed',diagnostic:{runnerReason:reason}}}),'page');
 });
+
+test('legacy missing-person error is a page recovery only for the exact query failure',()=>{const result={errorCode:'alipay_person_result_not_found',diagnostic:{runnerReason:'alipay_lookup_failed_after_recovery:alipay_person_result_not_found:texts=[]'}};assert.equal(lookupFailureDomain({kind:'alipay_name_query',result}),'page');for(const job of [{kind:'alipay_name_start',result},{kind:'alipay_name_query',result:{...result,diagnostic:{runnerReason:'unrelated'}}}])assert.notEqual(lookupFailureDomain(job),'page');});
+
+for(const cause of ['timeout','device_unavailable','command_failed'])test('reader preflight transport failure cannot become image AI: '+cause,()=>{const j={kind:'alipay_name_query',result:{errorCode:'alipay_lookup_failed',diagnostic:{runnerReason:'poco_worker_bootstrap_failed:adb_probe:'+cause}}};assert.equal(lookupFailureDomain(j),'device');assert.equal(lookupTerminalResultReason(j),'');});

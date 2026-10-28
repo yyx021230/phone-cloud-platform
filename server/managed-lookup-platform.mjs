@@ -54,7 +54,7 @@ export function createManagedLookupAdapter(api){
       const before=structuredClone(session);tx.onRollback(()=>{for(const k of Object.keys(session))delete session[k];Object.assign(session,before);});
       const existing=session.results?.find(x=>x.resultId===c.queryId);
       if(!existing||existing.status!=='needs_recovery')throw managedLookupError('lookup_ai_state_changed',409);
-      api.result(session,job,{status:r.status,name:r.name,realNameTailCharacter:r.name?.match(/[（(]\*+(?:·\*+)*([\u3400-\u9fff])[）)]$/u)?.[1]||'',stage:r.name?'已取得姓名':'未取得姓名',errorCode:'',aiResolution:{source:'query_compatibility_screenshot',at:r.completedAt,evidenceId:binding.evidenceId}});
+      api.result(session,job,{status:r.status,name:r.name,realNameTailCharacter:r.name?.match(/[（(]\*+(?:·\*+)*([\u3400-\u9fff])[）)]$/u)?.[1]||'',stage:r.status==='failed'?'结果证据不足，未确认姓名':r.name?'已取得姓名':'未取得姓名',errorCode:r.status==='failed'?r.code||'lookup_result_unconfirmed':'',aiResolution:{source:'query_compatibility_screenshot',at:r.completedAt,evidenceId:binding.evidenceId}});
       session.updatedAt=r.completedAt;
       await persist(tx,{automationSession:session});
     },

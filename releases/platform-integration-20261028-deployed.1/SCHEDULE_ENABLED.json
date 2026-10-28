@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-28T05:57:22.603201+00:00",
+  "status": 200,
+  "body": {
+    "schedule": {
+      "enabled": true,
+      "time": "02:00",
+      "windowMinutes": 240,
+      "concurrency": 5,
+      "timezone": "Asia/Shanghai"
+    }
+  }
+}

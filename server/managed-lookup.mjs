@@ -22,6 +22,7 @@ const at=()=>new Date().toISOString();
 function aiDiagnostics(result) {
   const source=result.diagnostics||{},out={};
   if([1,2,3].includes(source.reads))out.reads=source.reads;
+  if([1,2].includes(source.transientRetries))out.transientRetries=source.transientRetries;
   if(['evidence_loading','model_reading','input_validation','model_request','model_body','model_validation'].includes(source.stage))out.stage=source.stage;
   for(const key of ['evidenceLoadMs','responseHeadersMs','responseBodyMs'])if(Number.isFinite(source[key])&&source[key]>=0)out[key]=Math.min(120000,Math.round(source[key]));
   if(Number.isInteger(source.upstreamStatus)&&source.upstreamStatus>=100&&source.upstreamStatus<=599)out.upstreamStatus=source.upstreamStatus;
@@ -504,7 +505,10 @@ export function createManagedLookupService({store,adapter,now=Date.now,probePhon
           audit(s,'lookup_ai_probe_recorded','system',{lookupId:r.lookupId,deviceId:c.deviceId,jobId:binding.jobId,evidenceId:binding.evidenceId,ready});
           return true;
         }
-        r.name=named?result.name:'';finish(r,named?'succeeded':'not_found');
+        const provenEmpty=['no_name','unverified'].includes(result.kind)&&result.evidenceSha256===binding.evidenceSha256&&result.matchedPhone===r.phoneNumber;
+        // Technical/model ambiguity is not a completed empty lookup. Preserve
+        // the existing failed envelope and original ID; never poison history.
+        r.name=named?result.name:'';finish(r,named?'succeeded':provenEmpty?'not_found':'failed',named||provenEmpty?'':'lookup_result_unconfirmed');
         r.aiVision={...r.aiVision,status:'completed',completedAt:at(),model:'gpt-6.1-sol',evidenceSha256:binding.evidenceSha256,reason:named?'name':result.reason||'empty',readKind:['name','no_name','unverified','unconfirmed'].includes(result.kind)?result.kind:'unconfirmed',rejectionCode:['model_unconfirmed','card_actions_or_compact_boundary','result_contract_rejected','name_verification_mismatch'].includes(result.rejectionCode)?result.rejectionCode:'',elapsedMs:result.elapsedMs,diagnostics:aiDiagnostics(result)};
         await adapter.recordAiResult(c,r,tx,binding);
         // Restore only this process's existing, previously probed account proof.

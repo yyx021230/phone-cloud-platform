@@ -60,6 +60,30 @@ class BlankCardGuardTests(unittest.TestCase):
         self.assertEqual(r.adb.call_count, 2)
         self.assertEqual(r.focus.call_count, 4)
 
+    def test_identical_png_reuses_ocr_only_within_one_query(self):
+        r, poco = self.fixture()
+        r.adb.side_effect = None
+        r.adb.return_value = b"\x89PNG\r\n\x1a\nfixture-full-frame"
+        with mock.patch.object(visual, "recognize", return_value=([], (720, 1600))) as ocr, \
+                mock.patch.object(visual, "protection", return_value=""), \
+                mock.patch.object(visual, "parse_rows", return_value=RESULT), \
+                mock.patch.object(lookup.time, "sleep"):
+            for _ in range(2):
+                self.assertEqual(r.poco_visual_result_readonly(poco, PHONE, lookup.time.perf_counter()+30), RESULT)
+        self.assertEqual(ocr.call_count, 2)
+        self.assertEqual(r.adb.call_count, 4)
+        self.assertEqual(r.focus.call_count, 8)
+
+    def test_any_png_byte_change_requires_second_ocr(self):
+        r, poco = self.fixture()
+        r.adb.side_effect = [b"\x89PNG\r\n\x1a\nframe-a", b"\x89PNG\r\n\x1a\nframe-b"]
+        with mock.patch.object(visual, "recognize", return_value=([], (720, 1600))) as ocr, \
+                mock.patch.object(visual, "protection", return_value=""), \
+                mock.patch.object(visual, "parse_rows", return_value=RESULT), \
+                mock.patch.object(lookup.time, "sleep"):
+            self.assertEqual(r.poco_visual_result_readonly(poco, PHONE, lookup.time.perf_counter()+30), RESULT)
+        self.assertEqual(ocr.call_count, 2)
+
     def test_changed_frame_or_missing_card_fails_instead_of_returning_empty(self):
         for values in [[RESULT, {**RESULT, "realNameTailCharacter": "乙"}], [None]]:
             r, poco = self.fixture()

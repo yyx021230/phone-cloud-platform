@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-28T05:46:32.202557+00:00",
+  "schemaSha256": "4e7fbdbd9c3e3d95ea401b221ec64a348860601f773e97839cde3cc75fdb9bcf",
+  "schemaApplied": true,
+  "serviceCreated": true,
+  "scheduleEnabled": false,
+  "overlayCommit": "44580fc",
+  "overlaySha256": "d1fd7413c7459b7554ea34c699ffaa4e7f8b97602b56d5d16b7d36404b0d876c"
+}

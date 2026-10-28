@@ -1,3 +1,4 @@
+import {lookupLegacyResultMissing} from './lookup-failure-domain.mjs';
 const ACTIVE_STATUSES = new Set(["queued", "running", "stalled"]);
 const LOOKUP_RESTRICTION_REASONS = new Set([
   "access_denied",
@@ -68,6 +69,7 @@ export function lookupHumanRecoveryUnresolved(job = {}, status = "", options = {
     && options.limitReached !== true
     && (job.resumeAfterHumanVerification === true
       || lookupPageRecoveryExhausted(job)
+      || lookupLegacyResultMissing(job)
       || job.kind === "alipay_name_query" && (
         job.result?.errorCode === "alipay_lookup_result_unconfirmed"
         || /^local_lookup_result_unconfirmed:/.test(String(job.result?.diagnostic?.runnerReason || ""))

@@ -3535,6 +3535,9 @@ function syncAdbDevices(agent, devices) {
     }
     item.deviceId = String(input.deviceId || item.deviceId || (input.state === "device" ? `adb:${adbSerial}` : ""));
     item.state = String(input.state || "unknown");
+    // Matching a historical/PnP identity must not retain its spelling as the
+    // executable ADB selector. Only an online ADB observation can correct it.
+    if (item.state === "device") item.adbSerial = adbSerial;
     item.model = String(input.model || item.model || "");
     item.manufacturer = String(input.manufacturer || item.manufacturer || "");
     item.brand = String(input.brand || item.brand || "");
