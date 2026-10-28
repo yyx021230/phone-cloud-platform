@@ -107,41 +107,30 @@ class AccountDrawerTests(unittest.TestCase):
                        dict(position=(.25,.4)),dict(size=(float('nan'),.02))):
             self.assertFalse(g.is_wecom_account_drawer(replace(DRAWER,nodes=(replace(DRAWER.nodes[0],**change),)+DRAWER.nodes[1:])))
 
-    def test_one_back_after_fresh_page_and_lease_no_account_click(self):
-        keys=[]
-        self.assertTrue(g.dismiss_wecom_account_drawer(lambda:DRAWER,lambda:w.PACKAGE,lambda:True,lambda:keys.append('BACK')))
-        self.assertEqual(keys,['BACK'])
-        self.assertFalse(g.dismiss_wecom_account_drawer(lambda:HOME,lambda:w.PACKAGE,lambda:True,lambda:keys.append('BACK')))
-        self.assertEqual(keys,['BACK'])
-
-    def test_changed_foreground_lease_or_page_and_uncertain_back_do_not_retry(self):
-        for package,lease,changed in (('other',True,False),(w.PACKAGE,False,False),(w.PACKAGE,True,True)):
-            keys=[];pages=iter([DRAWER,HOME if changed else DRAWER])
-            with self.assertRaises(w.StopPreview):g.dismiss_wecom_account_drawer(lambda:next(pages),lambda:package,lambda:lease,lambda:keys.append('BACK'))
-            self.assertFalse(keys)
-        keys=[]
-        def unknown():keys.append('BACK');raise TimeoutError()
-        with self.assertRaises(TimeoutError):g.dismiss_wecom_account_drawer(lambda:DRAWER,lambda:w.PACKAGE,lambda:True,unknown)
-        self.assertEqual(keys,['BACK'])
 
 
-class DrawerRelaunchTests(unittest.TestCase):
-    def test_only_observed_launcher_reopens_same_clone_once(self):
-        calls=[]
-        self.assertTrue(g.restore_wecom_after_drawer(lambda:('com.bbk.launcher2',0,'com.bbk.launcher2/.Launcher'),lambda:True,lambda:calls.append('REOPEN'),999))
-        self.assertEqual(calls,['REOPEN'])
-        self.assertFalse(g.restore_wecom_after_drawer(lambda:(w.PACKAGE,999,'same'),lambda:True,lambda:calls.append('REOPEN'),999))
-        self.assertEqual(calls,['REOPEN'])
+class DrawerRestartTests(unittest.TestCase):
+    def test_restart_only_observed_clone_once(self):
+        calls=[];fg=('com.tencent.wework',999,'com.tencent.wework/.launch.WwMainActivity')
+        self.assertTrue(g.restart_observed_wecom_clone_drawer(lambda:DRAWER,lambda:fg,lambda:True,lambda:calls.append('RESTART_999'),999))
+        self.assertEqual(calls,['RESTART_999'])
+        for page,user in ((HOME,999),(DRAWER,0)):
+            self.assertFalse(g.restart_observed_wecom_clone_drawer(lambda:page,lambda:fg,lambda:True,lambda:calls.append('RESTART_999'),user))
+        self.assertEqual(calls,['RESTART_999'])
 
-    def test_other_apps_users_lost_lease_and_unknown_delivery_do_not_retry(self):
-        for fg,user,lease in ((('other',0,'other'),999,True),(('com.bbk.launcher2',0,'com.bbk.launcher2/.Launcher'),0,True),(('com.bbk.launcher2',0,'com.bbk.launcher2/.Launcher'),999,False)):
-            calls=[]
-            with self.assertRaises(w.StopPreview):g.restore_wecom_after_drawer(lambda:fg,lambda:lease,lambda:calls.append('REOPEN'),user)
+    def test_page_foreground_and_lease_changes_never_restart(self):
+        fg=('com.tencent.wework',999,'com.tencent.wework/.launch.WwMainActivity')
+        for current,lease,changed in ((('other',999,'other'),True,False),(fg,False,False),(fg,True,True)):
+            calls=[];pages=iter([DRAWER,HOME if changed else DRAWER])
+            with self.assertRaises(w.StopPreview):
+                g.restart_observed_wecom_clone_drawer(lambda:next(pages),lambda:current,lambda:lease,lambda:calls.append('RESTART'),999)
             self.assertFalse(calls)
+
+    def test_unknown_restart_delivery_is_never_replayed(self):
         calls=[]
-        def unknown():calls.append('REOPEN');raise TimeoutError()
-        with self.assertRaises(TimeoutError):g.restore_wecom_after_drawer(lambda:('com.bbk.launcher2',0,'com.bbk.launcher2/.Launcher'),lambda:True,unknown,999)
-        self.assertEqual(calls,['REOPEN'])
+        def unknown():calls.append('RESTART');raise TimeoutError()
+        with self.assertRaises(TimeoutError):g.restart_observed_wecom_clone_drawer(lambda:DRAWER,lambda:('com.tencent.wework',999,'com.tencent.wework/.launch.WwMainActivity'),lambda:True,unknown,999)
+        self.assertEqual(calls,['RESTART'])
 
 
 if __name__ == '__main__':

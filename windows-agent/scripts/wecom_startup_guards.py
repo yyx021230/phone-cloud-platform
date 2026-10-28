@@ -119,30 +119,19 @@ def is_wecom_account_drawer(screen):
     return True
 
 
-def dismiss_wecom_account_drawer(read_screen, foreground, lease_valid, press_back,
-                                 check_budget=lambda: None):
-    observed = read_screen()
-    if not is_wecom_account_drawer(observed):
+
+def restart_observed_wecom_clone_drawer(read_screen, read_foreground, lease_valid,
+                                         restart_same_slot, android_user,
+                                         check_budget=lambda: None):
+    observed=read_screen()
+    if android_user!=999 or not is_wecom_account_drawer(observed):
         return False
     w.guard(observed)
     check_budget()
-    if read_screen() != observed:
-        raise w.StopPreview("account_drawer_page_changed_before_back")
-    if foreground() != w.PACKAGE or lease_valid() is not True:
-        raise w.StopPreview("account_drawer_lease_or_foreground_lost")
+    if read_screen()!=observed:
+        raise w.StopPreview('account_drawer_page_changed_before_restart')
+    if read_foreground()!=('com.tencent.wework',999,'com.tencent.wework/.launch.WwMainActivity') or lease_valid() is not True:
+        raise w.StopPreview('account_drawer_lease_or_foreground_lost')
     check_budget()
-    press_back()  # One normal Back, never click/change the selected account.
-    return True
-
-
-def restore_wecom_after_drawer(read_foreground, lease_valid, reopen, android_user):
-    """155 Back may finish its clone activity; reopen only from observed launcher."""
-    current = read_foreground()
-    if current[0] == w.PACKAGE and current[1] == android_user:
-        return False
-    if android_user != 999 or current != ('com.bbk.launcher2',0,'com.bbk.launcher2/.Launcher'):
-        raise w.StopPreview('account_drawer_foreground_changed')
-    if lease_valid() is not True:
-        raise w.StopPreview('device_lease_lost')
-    reopen()  # Same resolved launcher component and Android user; no account UI.
+    restart_same_slot()  # Only the already leased clone; never retry unknown delivery.
     return True

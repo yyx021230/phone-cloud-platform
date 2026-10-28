@@ -294,13 +294,16 @@ def run_host(value):
                 if drawer_dismissed: raise SafeStop("account_drawer_not_closed")
                 if foreground_info()[2] != "com.tencent.wework/.launch.WwMainActivity":
                     raise SafeStop("account_drawer_activity_changed")
-                startup.dismiss_wecom_account_drawer(driver.snapshot, foreground, lease_valid,
-                    lambda:mutate("input keyevent 4"), check_budget=budget)
+                def restart_same_clone():
+                    for cmd in ("am force-stop --user 999 com.tencent.wework",
+                                "am start --user 999 -a android.intent.action.MAIN -c android.intent.category.LAUNCHER -n "+launch):
+                        response=mutate(cmd)
+                        if any(marker in response for marker in ("Error","Exception","Permission Denial")):
+                            raise SafeStop("wecom_clone_restart_rejected")
+                startup.restart_observed_wecom_clone_drawer(driver.snapshot, foreground_info,
+                    lease_valid, restart_same_clone, selected_user, check_budget=budget)
                 drawer_dismissed=True
-                time.sleep(.3)
-                if startup.restore_wecom_after_drawer(foreground_info, lease_valid,
-                    lambda:mutate("am start --user %d -a android.intent.action.MAIN -c android.intent.category.LAUNCHER -n "%selected_user+launch), selected_user):
-                    wait_for_wecom_foreground(poco, 12)
+                wait_for_wecom_foreground(poco, 18)
                 continue
             if w.is_home(page) and not w.is_menu(page):
                 second=driver.snapshot();w.guard(second)
