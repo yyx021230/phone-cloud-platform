@@ -4,7 +4,7 @@ import { createWecomPanelModel, wecomStatusLabel } from "../public/wecom-automat
 
 const ctx={userId:"fixture-admin",role:"admin",token:"fixture-token"};
 const inventory={devices:[{deviceId:"adb:fixture155",available:true,appSlot:"clone",appSlots:[{appSlot:"main",androidUser:0},{appSlot:"clone",androidUser:999}]},{deviceId:"adb:fixture25",available:true,appSlot:"main",appSlots:[{appSlot:"main",androidUser:0}]}]};
-const input={deviceId:"adb:fixture155",appSlot:"clone",phoneNumber:"13800138000",requestId:"fixture_request_001"};
+const input={deviceId:"adb:fixture155",appSlot:"clone",phoneNumber:"13800138000",requestId:"fixture_request_001",remarkName:"本地备注",description:"仅用于本地模拟"};
 function storageFixture(){const saved=new Map();return {saved,getItem:k=>saved.get(k),setItem:(k,v)=>saved.set(k,v)};}
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
 
@@ -23,7 +23,7 @@ test("timeout keeps original request across reload and blocks both slots of that
   };
   const first=createWecomPanelModel({storage,request});await first.refresh(ctx);
   await assert.rejects(first.submit(ctx,input),/timeout/);assert.equal(posts,1);
-  const disk=[...storage.saved.values()].join("");assert.ok(!disk.includes(input.phoneNumber));assert.ok(!disk.includes(ctx.token));
+  const disk=[...storage.saved.values()].join("");assert.ok(!disk.includes(input.phoneNumber));assert.ok(!disk.includes(ctx.token));assert.ok(!disk.includes(input.remarkName));assert.ok(!disk.includes(input.description));
   const second=createWecomPanelModel({storage,request});await second.refresh(ctx);
   await assert.rejects(second.submit(ctx,{...input,appSlot:"main",requestId:"fixture_new_key_002"}),/原任务/);assert.equal(posts,1);
   await second.submit(ctx,{...input,deviceId:"adb:fixture25",appSlot:"main",requestId:"fixture_other_003"});assert.equal(posts,2);

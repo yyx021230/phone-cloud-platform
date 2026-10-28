@@ -1,4 +1,4 @@
-import { wecomStatusLabel } from "./wecom-automation-ui.js?v=20261028-slots-rc3";
+import { wecomStatusLabel } from "./wecom-automation-ui.js?v=20261028-remarks-rc4";
 const root = "/api/v1/user/automation";
 const form = document.querySelector("#previewForm");
 const devices = document.querySelector("#device");
@@ -68,7 +68,7 @@ async function refresh() {
 form.addEventListener("submit", async event => {
   event.preventDefault(); if (requestInFlight || unresolved) return;
   requestInFlight = true; submit.disabled = true;
-  const input = { deviceId: devices.value, appSlot: appSlot.value, phoneNumber: document.querySelector("#phone").value, requestId: Array.from(crypto.getRandomValues(new Uint8Array(16)), byte => byte.toString(16).padStart(2, "0")).join("") };
+  const input = { remarkName: document.querySelector("#remarkName").value, description: document.querySelector("#description").value, deviceId: devices.value, appSlot: appSlot.value, phoneNumber: document.querySelector("#phone").value, requestId: Array.from(crypto.getRandomValues(new Uint8Array(16)), byte => byte.toString(16).padStart(2, "0")).join("") };
   feedback.textContent = "正在提交…";
   try { const body = await api("/wecom-preview-tasks", input); accepted = body.task.jobId; }
   catch (error) {

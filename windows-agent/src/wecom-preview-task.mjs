@@ -9,6 +9,8 @@ export async function runWecomPreviewTask(task, { config, agentDir, signal, spaw
   const payload = { taskId: task.taskId, deviceId: task.deviceId, serial: task.adbSerial,
     deviceNumber: task.payload.deviceNumber, androidUser: task.payload.androidUser,
     ...(task.payload.appSlot === undefined ? {} : { appSlot: task.payload.appSlot }),
+    ...(task.payload.remarkName === undefined ? {} : { remarkName: task.payload.remarkName }),
+    ...(task.payload.description === undefined ? {} : { description: task.payload.description }),
     phoneNumber: task.payload.phoneNumber, previewOnly: true,
     agentId: config.agentId, serverBaseUrl: config.serverBaseUrl, agentToken: config.agentToken };
   return new Promise((resolve, reject) => {

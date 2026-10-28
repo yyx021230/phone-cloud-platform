@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { createHash } from "node:crypto";
 // Preview is deliberately a separate task kind. There is no send option.
 export const WECOM_PREVIEW_KIND = "wecom_customer_preview";
 export const WECOM_PREVIEW_DEVICES = Object.freeze(JSON.parse(fs.readFileSync(new URL("./wecom-preview-devices.json", import.meta.url), "utf8")));
@@ -23,13 +24,30 @@ export function previewSlots(device) {
 // Records created before slots were introduced retain their original user.
 export function previewJobSlot(job) { return job.wecomAppSlot ?? (job.wecomAndroidUser === 0 ? "main" : "clone"); }
 
+export function previewRemarkInput(input) {
+  const normalize = (key, fallback, limit) => {
+    if (input[key] === undefined) return fallback;
+    if (typeof input[key] !== "string") throw problem("invalid_wecom_" + key, 400);
+    const value = (key === "description" ? input[key].replace(/\r\n?/g, "\n") : input[key]).trim();
+    const forbidden = key === "description" ? /[\u0000-\u0009\u000b-\u001f\u007f-\u009f\ud800-\udfff]/u : /[\u0000-\u001f\u007f-\u009f\ud800-\udfff]/u;
+    if ([...value].length > limit || forbidden.test(value)) throw problem("invalid_wecom_" + key, 400);
+    return value || fallback;
+  };
+  return { remarkName: normalize("remarkName", "测试客户", 20), description: normalize("description", "接口联调测试", 120) };
+}
+export function previewJobRemarks(job) { return previewRemarkInput({ remarkName: job.wecomRemarkName, description: job.wecomDescription }); }
+export function previewRemarkFingerprint(job) {
+  const value = previewJobRemarks(job);
+  return createHash("sha256").update(JSON.stringify([value.remarkName, value.description])).digest("hex");
+}
+
 export function previewRequest(input) {
-  if (!input || Object.keys(input).some(k => !["deviceId", "phoneNumber", "requestId", "appSlot"].includes(k))) throw problem("invalid_wecom_preview_fields", 400);
+  if (!input || Object.keys(input).some(k => !["deviceId", "phoneNumber", "requestId", "appSlot", "remarkName", "description"].includes(k))) throw problem("invalid_wecom_preview_fields", 400);
   if (Object.hasOwn(input, "appSlot") && !["main", "clone"].includes(input.appSlot)) throw problem("invalid_wecom_app_slot", 400);
   if (typeof input.phoneNumber !== "string" || !/^1[3-9]\d{9}$/.test(input.phoneNumber)) throw problem("invalid_phone_number", 400);
   if (typeof input.deviceId !== "string" || !input.deviceId.startsWith("adb:")) throw problem("device_required", 400);
   if (typeof input.requestId !== "string" || !/^[A-Za-z0-9_-]{8,100}$/.test(input.requestId)) throw problem("invalid_request_id", 400);
-  return input;
+  return { ...input, ...previewRemarkInput(input) };
 }
 
 export function publicPreview(job) {
@@ -43,12 +61,14 @@ export function publicPreview(job) {
 export function previewLease(task, job, lock, device, agentId, now = Date.now()) {
   try {
     const target = previewTarget(device, previewJobSlot(job));
+    const requested = previewJobRemarks(job), delivered = previewRemarkInput(task?.payload || {});
     return Boolean(task?.type === WECOM_PREVIEW_KIND && task.agentId === agentId && task.status === "running"
       && task.deviceId === device.deviceId && task.adbSerial === device.adb.serial
       && job?.kind === WECOM_PREVIEW_KIND && job.status === "running" && job.windowsTaskId === task.taskId
       && job.deviceId === device.deviceId && task.payload?.automationJobId === job.jobId
       && target.deviceNumber === job.wecomDeviceNumber && target.androidUser === job.wecomAndroidUser
       && (job.wecomAppSlot === undefined ? task.payload?.appSlot === undefined : task.payload?.appSlot === target.appSlot)
+      && requested.remarkName === delivered.remarkName && requested.description === delivered.description
       && task.payload?.deviceNumber === target.deviceNumber && task.payload?.androidUser === target.androidUser
       && lock?.status === "active" && lock.lockType === WECOM_PREVIEW_KIND && lock.taskId === job.jobId
       && lock.deviceId === job.deviceId && lock.ownerUserId === job.userId && lock.lockId === job.lockId

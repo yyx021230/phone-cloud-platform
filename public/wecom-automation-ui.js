@@ -71,6 +71,7 @@ export function createWecomAutomationPanel({ context, document: doc = document, 
   const form = doc.getElementById("userWecomForm");
   if (!form) return { render() {}, refresh: async () => {} };
   const slot = doc.getElementById("userWecomSlot"), phone = doc.getElementById("userWecomPhone");
+  const remarkName = doc.getElementById("userWecomRemarkName"), description = doc.getElementById("userWecomDescription");
   const button = doc.getElementById("userWecomSubmit"), hint = doc.getElementById("userWecomHint"), history = doc.getElementById("userWecomTasks");
   const selectedSlots = new Map();
   let message = "", displayedSession = "", displayedDevice = "";
@@ -79,15 +80,15 @@ export function createWecomAutomationPanel({ context, document: doc = document, 
       headers: { Authorization: `Bearer ${ctx.token}`, "Content-Type": "application/json" },
       ...(input ? { body: JSON.stringify(input) } : {}), signal: AbortSignal.timeout(15000) });
     const data = await response.json();
-    if (!response.ok) throw Object.assign(new Error(data.error || "请求失败"), { definiteResponse: response.status < 500 });
+    if (!response.ok) throw Object.assign(new Error(({invalid_wecom_remarkName:"备注名最多20字，不能包含换行或控制字符",invalid_wecom_description:"描述最多120字，不能包含控制字符"})[data.error] || data.error || "请求失败"), { definiteResponse: response.status < 500 });
     return data;
   } });
   function text(tag, value) { const node = doc.createElement(tag); node.textContent = value; return node; }
   function render() {
     const ctx = context(); model.session(ctx);
     const identity = ctx.userId && ctx.token ? ctx.userId : "";
-    if (displayedSession !== identity) { displayedSession = identity; message = ""; phone.value = ""; selectedSlots.clear(); }
-    if (displayedDevice !== ctx.deviceId) { displayedDevice = ctx.deviceId; phone.value = ""; message = ""; }
+    if (displayedSession !== identity) { displayedSession = identity; message = ""; phone.value = ""; remarkName.value = ""; description.value = ""; selectedSlots.clear(); }
+    if (displayedDevice !== ctx.deviceId) { displayedDevice = ctx.deviceId; phone.value = ""; remarkName.value = ""; description.value = ""; message = ""; }
     const state = model.snapshot(), device = state.devices.find(d => d.deviceId === ctx.deviceId);
     const options = device?.appSlots || [];
     const pending = state.pending[ctx.deviceId];
@@ -102,6 +103,7 @@ export function createWecomAutomationPanel({ context, document: doc = document, 
     button.disabled = ctx.role !== "admin" || !state.loaded || !device?.available || !slot.value || Boolean(pending || active);
     slot.disabled = Boolean(pending || active) || !options.length;
     phone.disabled = Boolean(pending || active) || ctx.role !== "admin";
+    remarkName.disabled = phone.disabled; description.disabled = phone.disabled;
     hint.textContent = ctx.role !== "admin" ? "此阶段仅管理员可运行企微预览。" : pending ? (original ? `原任务：${wecomStatusLabel(original)}。同一台手机请等待当前任务结束。` : "提交结果暂未确认，正在查找原请求，请勿重新提交。") : !state.loaded ? (message || "请刷新读取企微应用和任务状态。") : !device ? "这台手机不在本轮8台范围内。" : message || (!device.available ? "手机占用或离线，请空闲后再试。" : "只搜索并核对备注，停在发送邀请前。");
     history.replaceChildren();
     const tasks = state.tasks.filter(t => t.deviceId === ctx.deviceId);
@@ -115,9 +117,9 @@ export function createWecomAutomationPanel({ context, document: doc = document, 
   slot.addEventListener("change", () => { selectedSlots.set(context().deviceId, slot.value); });
   form.addEventListener("submit", async event => {
     event.preventDefault(); const ctx = context();
-    const input = { deviceId: ctx.deviceId, appSlot: slot.value, phoneNumber: phone.value, requestId: crypto.randomUUID() };
+    const input = { deviceId: ctx.deviceId, appSlot: slot.value, phoneNumber: phone.value, remarkName: remarkName.value, description: description.value, requestId: crypto.randomUUID() };
     const work = model.submit(ctx, input); render();
-    try { const task = await work; if (task) { phone.value = ""; message = "原任务已创建，等待设备执行。"; } }
+    try { const task = await work; if (task) { phone.value = ""; remarkName.value = ""; description.value = ""; message = ""; } }
     catch (error) { message = error.definiteResponse ? error.message : "提交未确认，请刷新查询原请求，不要重复提交。"; }
     render(); await refresh();
   });

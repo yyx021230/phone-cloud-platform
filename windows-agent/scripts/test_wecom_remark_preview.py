@@ -17,11 +17,11 @@ def remark(name='', description='添加更多备注信息'):
                  w.Node('android.widget.EditText', name=r.DESCRIPTION_ID, text=description))
 
 
-def scenario(name='', description='添加更多备注信息'):
+def scenario(name='', description='添加更多备注信息', requested_name=r.DEFAULT_REMARK, requested_description=r.DEFAULT_DESCRIPTION):
     pages = PATH[:6] + [remark(name, description)]
     actions = ['open_menu','open_add','open_search','enter_phone','search','open_remark']
-    final_name = r.DEFAULT_REMARK if name in r.EMPTY_VALUES[r.NAME_ID] else name
-    final_desc = r.DEFAULT_DESCRIPTION if description in r.EMPTY_VALUES[r.DESCRIPTION_ID] else description
+    final_name = requested_name if name in r.EMPTY_VALUES[r.NAME_ID] else name
+    final_desc = requested_description if description in r.EMPTY_VALUES[r.DESCRIPTION_ID] else description
     if name in r.EMPTY_VALUES[r.NAME_ID]:
         pages.append(remark(final_name, description));actions.append('fill_remark')
     if description in r.EMPTY_VALUES[r.DESCRIPTION_ID]:
@@ -34,8 +34,8 @@ def scenario(name='', description='添加更多备注信息'):
 
 
 class Driver:
-    def __init__(self, name='', description='添加更多备注信息'):
-        self.pages,self.expected_actions = scenario(name,description)
+    def __init__(self, name='', description='添加更多备注信息', requested_name=r.DEFAULT_REMARK, requested_description=r.DEFAULT_DESCRIPTION):
+        self.pages,self.expected_actions = scenario(name,description,requested_name,requested_description)
         self.index=0;self.calls=[]
     def snapshot(self):return self.pages[self.index]
     def apply(self, action, expected, phone, check_budget, context=None):
@@ -52,6 +52,39 @@ def run(driver,**kwargs):
 
 
 class RemarkFlowTests(unittest.TestCase):
+    def test_custom_text_is_saved_once_and_persisted_without_leaking_into_result(self):
+        name,desc='客户甲😀','渠道A\n联调备注'
+        d=Driver(requested_name=name,requested_description=desc)
+        out=r.run_customer_preview(d,{'phoneNumber':PHONE,'remarkName':name,'description':desc},sleep=lambda _:None)
+        self.assertTrue(out['readyToSend']);self.assertEqual(out['remarkSaveStatus'],'confirmed')
+        self.assertEqual(d.calls.count('save_remark'),1);self.assertFalse(out['invitationSent'])
+        self.assertNotIn(name,json.dumps(out,ensure_ascii=False));self.assertNotIn(desc,json.dumps(out,ensure_ascii=False))
+
+    def test_custom_request_preserves_nonempty_fields_and_unknown_save_is_not_replayed(self):
+        request={'phoneNumber':PHONE,'remarkName':'新备注','description':'新描述'}
+        d=Driver('已有备注','已有描述')
+        out=r.run_customer_preview(d,request,sleep=lambda _:None)
+        self.assertTrue(out['readyToSend']);self.assertEqual(out['remarkSaveStatus'],'not_needed')
+        self.assertNotIn('fill_remark',d.calls);self.assertNotIn('fill_description',d.calls)
+        d=Driver(requested_name='新备注',requested_description='新描述');original=d.apply
+        def unknown(action,*args,**kwargs):
+            if action=='save_remark':d.calls.append(action);raise RuntimeError('private 新备注')
+            return original(action,*args,**kwargs)
+        d.apply=unknown;out=r.run_customer_preview(d,request,sleep=lambda _:None)
+        self.assertEqual(out['remarkSaveStatus'],'unknown');self.assertEqual(d.calls.count('save_remark'),1)
+        self.assertNotIn('open_preview',d.calls);self.assertNotIn('新备注',json.dumps(out,ensure_ascii=False))
+
+    def test_remark_validation_and_normalization_precede_all_page_reads(self):
+        self.assertEqual(r.validate_remark_input({'remarkName':' \ufeff ','description':'\n '}),(r.DEFAULT_REMARK,r.DEFAULT_DESCRIPTION))
+        self.assertEqual(r.validate_remark_input({'remarkName':' 客户甲😀 ','description':'渠道A\r\n联调'}),('客户甲😀','渠道A\n联调'))
+        self.assertEqual(len(r.validate_remark_input({'remarkName':'😀'*20})[0]),20)
+        class NoRead:
+            def snapshot(self):raise AssertionError('must not read phone')
+        for field,values in [('remarkName',[None,3,{},'字'*21,'甲\n乙','甲\x00乙','\ud800']),('description',[None,{},'字'*121,'甲\x01乙','\ud800'])]:
+            for value in values:
+                with self.subTest(field=field,value_type=type(value).__name__):
+                    with self.assertRaises(w.StopPreview):r.run_customer_preview(NoRead(),dict({'phoneNumber':PHONE},**{field:value}))
+
     def test_saved_description_profile_still_verifies_full_phone(self):
         saved = frame('个人信息','电话',PHONE,'设置标签','添加为联系人',
                       text('描述',name='com.tencent.wework:id/csu'))
@@ -134,21 +167,22 @@ class RemarkFlowTests(unittest.TestCase):
 
 class RemarkAdapterTests(unittest.TestCase):
     def test_actual_adapter_full_flow_with_synthetic_poco(self):
-        pages,actions=scenario()
-        class Advancing(Poco):
-            def __call__(self,**selector):
-                items=super().__call__(**selector)
-                for item in items:
-                    click,set_text=item.click,item.set_text
-                    def do_click(original=click):
-                        original();self.screen=pages[len(self.effects)]
-                    def do_set(value,original=set_text):
-                        original(value);self.screen=pages[len(self.effects)]
-                    item.click,item.set_text=do_click,do_set
-                return items
-        p=Advancing(pages[0]);d=r.PocoRemarkDriver(p,lambda:w.PACKAGE,lambda:True)
-        out=run(d);self.assertTrue(out['readyToSend']);self.assertTrue(out['remarkSaved'])
-        self.assertEqual(len(p.effects),len(actions));self.assertFalse(any(v==w.SEND for _,v in p.effects))
+        for name,desc in [(r.DEFAULT_REMARK,r.DEFAULT_DESCRIPTION),('客户甲😀','渠道A\n联调备注')]:
+            pages,actions=scenario(requested_name=name,requested_description=desc)
+            class Advancing(Poco):
+                def __call__(self,**selector):
+                    items=super().__call__(**selector)
+                    for item in items:
+                        click,set_text=item.click,item.set_text
+                        def do_click(original=click):
+                            original();self.screen=pages[len(self.effects)]
+                        def do_set(value,original=set_text):
+                            original(value);self.screen=pages[len(self.effects)]
+                        item.click,item.set_text=do_click,do_set
+                    return items
+            p=Advancing(pages[0]);d=r.PocoRemarkDriver(p,lambda:w.PACKAGE,lambda:True)
+            out=r.run_customer_preview(d,{"phoneNumber":PHONE,"remarkName":name,"description":desc},sleep=lambda _:None);self.assertTrue(out['readyToSend']);self.assertTrue(out['remarkSaved'])
+            self.assertEqual(len(p.effects),len(actions));self.assertFalse(any(v==w.SEND for _,v in p.effects))
 
     def test_live_lease_lost_page_changed_and_budget_expired_prevent_save(self):
         screen=remark(r.DEFAULT_REMARK,r.DEFAULT_DESCRIPTION)

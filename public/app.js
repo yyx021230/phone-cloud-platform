@@ -1,4 +1,4 @@
-import { createWecomAutomationPanel } from "./wecom-automation-ui.js?v=20261028-slots-rc3";
+import { createWecomAutomationPanel } from "./wecom-automation-ui.js?v=20261028-remarks-rc4";
 import { renderLookupCardStatus } from "./lookup-card-status.js?v=20261021-scheduling-rc2";
 
 import { ScreenInactivityGuard } from "./screen-inactivity-guard.js?v=20260902-screen-idle-10m-baseline-v2";

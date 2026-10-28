@@ -1133,7 +1133,7 @@ async function pollTask() {
     params.set("managedLookupDelivery", MANAGED_LOOKUP_PROTOCOL);
     params.set("galleryDelivery", SCREEN_GALLERY_DELIVERY_PROTOCOL);
     params.set("xhsPublishDelivery", XHS_PUBLISH_DELIVERY_PROTOCOL);
-    params.set("wecomPreview", "wecom-preview-v2");
+    params.set("wecomPreview", "wecom-preview-v3");
     const suffix = params.size ? `?${params.toString()}` : "";
     const payload = await api(`/api/v1/windows-agents/${encodeURIComponent(config.agentId)}/tasks/next${suffix}`);
     cancellationChecked = true;

@@ -28,6 +28,13 @@ test("uncertain remark state remains blocked without replay",async()=>{
   const result=await runWecomPreviewTask(task,{config,agentDir:"/fixture",spawnChild:fixture.spawnChild});
   assert.equal(result.previewStatus,"blocked");assert.equal(result.remarkSaveStatus,"unknown");
 });
+test("custom remark and multiline description travel only on stdin",async()=>{
+  const remarkName="本地客户😀",description="渠道A\n联调备注";
+  const fixture=childFixture({previewStatus:"ready_before_send",previewCode:"stopped_before_send",invitationSent:false});
+  await runWecomPreviewTask({...task,payload:{...task.payload,remarkName,description}},{config,agentDir:"/fixture",spawnChild:fixture.spawnChild});
+  const input=JSON.parse(fixture.values().input);assert.equal(input.remarkName,remarkName);assert.equal(input.description,description);
+  assert.ok(!JSON.stringify(fixture.values().args).includes(remarkName));assert.ok(!JSON.stringify(fixture.values().args).includes(description));
+});
 test("explicit main and clone choice is carried on stdin without an Android-user fallback",async()=>{
   for(const [appSlot,androidUser] of [["main",0],["clone",999]]) {
     const fixture=childFixture({previewStatus:"ready_before_send",previewCode:"stopped_before_send",invitationSent:false});

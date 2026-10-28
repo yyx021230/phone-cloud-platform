@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import fs from "node:fs";
 import vm from "node:vm";
-import { WECOM_PREVIEW_DEVICES as pool, previewTarget, previewRequest, previewLease, createPreviewSubmissionGate } from "./wecom-preview.mjs";
+import { WECOM_PREVIEW_DEVICES as pool, previewTarget, previewRequest, previewLease, previewRemarkInput, previewRemarkFingerprint, createPreviewSubmissionGate } from "./wecom-preview.mjs";
 
 test("only eight fixed physical identities and the verified Android users are allowed", () => {
   assert.deepEqual(pool, JSON.parse(fs.readFileSync(new URL("../windows-agent/scripts/wecom_preview_devices.json", import.meta.url), "utf8")));
@@ -16,11 +16,19 @@ test("only eight fixed physical identities and the verified Android users are al
 
 test("API rejects all sending flags, arbitrary slots and invalid inputs", () => {
   const input = { deviceId: `adb:${pool["25"].serial}`, phoneNumber: "13800138000", requestId: "request_test_001" };
-  assert.deepEqual(previewRequest(input), input);
+  assert.deepEqual(previewRequest(input), {...input,remarkName:"测试客户",description:"接口联调测试"});
   assert.equal(previewRequest({ ...input, appSlot: "clone" }).appSlot, "clone");
   for (const appSlot of [null, "", "auto", 999, {}, "app2"]) assert.throws(() => previewRequest({ ...input, appSlot }), /invalid_wecom_app_slot/);
   for (const extra of [{ send: true }, { mode: "send" }, { androidUser: 999 }, { maxRetries: 5 }]) assert.throws(() => previewRequest({ ...input, ...extra }), /invalid_wecom_preview_fields/);
   for (const phoneNumber of ["10086", "138 0013 8000", 13800138000, "11800138000"]) assert.throws(() => previewRequest({ ...input, phoneNumber }), /invalid_phone_number/);
+});
+
+test("custom remarks normalize blanks and newlines; bounds and controls fail before submission",()=>{
+  assert.deepEqual(previewRemarkInput({remarkName:" \ufeff ",description:"\n "}),{remarkName:"测试客户",description:"接口联调测试"});
+  assert.deepEqual(previewRemarkInput({remarkName:" 客户甲😀 ",description:"渠道A\r\n联调"}),{remarkName:"客户甲😀",description:"渠道A\n联调"});
+  assert.equal(previewRemarkInput({remarkName:"😀".repeat(20)}).remarkName.length,40);
+  for(const value of [null,42,{},"字".repeat(21),"甲\n乙","甲\u0000乙","\ud800"])assert.throws(()=>previewRemarkInput({remarkName:value}),/invalid_wecom_remarkName/);
+  for(const value of [null,{},"字".repeat(121),"甲\u0001乙","\ud800"])assert.throws(()=>previewRemarkInput({description:value}),/invalid_wecom_description/);
 });
 
 test("configured slots bind Android user; an unconfigured clone never falls back to main", () => {
@@ -48,6 +56,12 @@ test("live lease must agree with task, job, owner, physical phone, clone and loc
   assert.equal(valid(slottedTask,slottedJob),true);
   assert.equal(valid({...slottedTask,payload:{...slottedTask.payload,appSlot:"main"}},slottedJob),false);
   assert.equal(valid({...slottedTask,payload:{...slottedTask.payload,androidUser:0}},{...slottedJob,wecomAndroidUser:0}),false);
+  const customJob={...slottedJob,wecomRemarkName:"客户甲😀",wecomDescription:"渠道A\n联调"};
+  const customTask={...slottedTask,payload:{...slottedTask.payload,remarkName:"客户甲😀",description:"渠道A\n联调"}};
+  assert.equal(valid(customTask,customJob),true);
+  assert.equal(valid({...customTask,payload:{...customTask.payload,remarkName:"另一个备注"}},customJob),false);
+  assert.equal(valid(slottedTask,customJob),false,"dropping custom values cannot fall back to defaults");
+  assert.match(previewRemarkFingerprint(customJob),/^[a-f0-9]{64}$/);
 });
 
 test("duplicate submission waits for persistence; a blocked phone does not block another key", async () => {

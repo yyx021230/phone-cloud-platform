@@ -42,6 +42,17 @@ class HostGuardTests(unittest.TestCase):
         with patch.object(host,"adb_identity",return_value=1),patch.object(host,"lease_valid",return_value=False),patch.object(host,"shell",side_effect=AssertionError("no shell")):
             with self.assertRaisesRegex(host.SafeStop,"device_lease_lost"):host.run_host(self.config())
 
+    def test_remark_fingerprint_matches_node_and_changed_content_loses_lease(self):
+        import datetime,contextlib
+        value=host.validate_config(dict(self.config(),appSlot='main',remarkName='客户甲😀',description='渠道A\n联调'))
+        expected='0fc7b2b51892ebd2cda9b3f1005a80d148dbf6f143881982c803a845a12c670f'
+        self.assertEqual(host.remark_fingerprint(value),expected)
+        proof=dict(valid=True,taskId=value['taskId'],deviceId=value['deviceId'],serial=value['serial'],deviceNumber='25',androidUser=0,appSlot='main',remarkFingerprint=expected,expiresAt=(datetime.datetime.now(datetime.timezone.utc)+datetime.timedelta(seconds=60)).isoformat())
+        response=SimpleNamespace(read=lambda size:json.dumps(proof).encode())
+        opener=SimpleNamespace(open=lambda *a,**kw:contextlib.nullcontext(response))
+        with patch.object(host,'config',value,create=True),patch.object(host,'SERIAL',value['serial'],create=True),patch.object(host,'selected_user',0,create=True),patch.object(host,'budget'),patch.object(host.urllib.request,'build_opener',return_value=opener):
+            self.assertTrue(host.lease_valid());proof['remarkFingerprint']='0'*64;self.assertFalse(host.lease_valid())
+
     def test_instrumentation_failure_cleans_own_process_created_before_health_check(self):
         calls=[]; counts={"pid":0}; clock=[0]
         def now(): clock[0]+=.5;return clock[0]

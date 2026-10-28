@@ -9,6 +9,7 @@ import os
 import threading
 import io
 import json
+import hashlib
 import re
 import socket
 import sys
@@ -31,7 +32,7 @@ DEVICES = json.loads(Path(__file__).with_name("wecom_preview_devices.json").read
 def validate_config(value):
     allowed = {"taskId", "deviceId", "serial", "deviceNumber", "androidUser", "phoneNumber",
                "previewOnly", "agentId", "serverBaseUrl", "agentToken"}
-    if not isinstance(value, dict) or set(value) not in (allowed, allowed | {"appSlot"}) or value.get("previewOnly") is not True:
+    if not isinstance(value, dict) or not allowed <= set(value) or set(value) - allowed - {"appSlot", "remarkName", "description"} or value.get("previewOnly") is not True:
         raise SafeStop("invalid_preview_config")
     entry = DEVICES.get(value.get("deviceNumber"))
     slot = value.get("appSlot", entry["defaultAppSlot"] if entry else None)
@@ -48,7 +49,12 @@ def validate_config(value):
         raise SafeStop("invalid_platform_origin")
     if not isinstance(value["agentToken"], str) or not value["agentToken"]:
         raise SafeStop("missing_agent_credential")
-    return value
+    name, description = remarks.validate_remark_input(value)
+    return dict(value, remarkName=name, description=description)
+
+
+def remark_fingerprint(value):
+    return hashlib.sha256(json.dumps(remarks.validate_remark_input(value), ensure_ascii=False, separators=(",", ":")).encode("utf-8")).hexdigest()
 
 
 class PreviewRemarkEntryDriver(remarks.PocoRemarkDriver):
@@ -96,6 +102,7 @@ def lease_valid():
             and proof.get("deviceId") == config["deviceId"] and proof.get("serial") == SERIAL
             and proof.get("deviceNumber") == config["deviceNumber"] and proof.get("androidUser") == selected_user
             and ("appSlot" not in config or proof.get("appSlot") == config["appSlot"])
+            and proof.get("remarkFingerprint") == remark_fingerprint(config)
             and datetime.datetime.fromisoformat(proof["expiresAt"].replace("Z","+00:00")).timestamp() > time.time()+3)
     except Exception: return False
 
@@ -356,7 +363,7 @@ def run_host(value):
         if not home:raise SafeStop("home_not_confirmed")
         remaining=min(120,deadline-time.monotonic()-10)
         if remaining<10:raise SafeStop("preview_job_budget_exhausted")
-        result=remarks.run_customer_preview(driver,{"phoneNumber":config["phoneNumber"]},timeout=remaining,max_reads=100)
+        result=remarks.run_customer_preview(driver,{"phoneNumber":config["phoneNumber"],"remarkName":config["remarkName"],"description":config["description"]},timeout=remaining,max_reads=100)
         if result.get("status")=="ready_before_send" and not lease_valid():
             result.update(status="blocked",code="device_lease_lost")
         code=result.get("code") or ("preview_ready" if result.get("status")=="ready_before_send" else "preview_stopped")
