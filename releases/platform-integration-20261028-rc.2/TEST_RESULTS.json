@@ -9,10 +9,10 @@
     "skips": "PostgreSQL-only cases separately passed"
   },
   "python": {
-    "passed": 1219,
+    "passed": 1221,
     "failed": 0,
-    "includedQaGuard": 20,
-    "evidence": "1199 existing tests passed in the full run; the current 20 QA guard tests separately passed (11 overlapped the 1210-test combined run)"
+    "includedQaGuard": 22,
+    "evidence": "1199 existing tests passed in the full run; the current 22 QA guard tests separately passed (11 overlapped the 1210-test combined run)"
   },
   "postgres": {
     "combinedPassed": 34,
@@ -37,7 +37,7 @@
     "imageFileHashCount": 642,
     "imageFileHashMismatches": 0
   },
-  "realDevices": "pending controlled candidate full path; old production collector results do not count",
+  "realDevices": "47 default-path single-device passed with 34 notes; Vivo dependency-path retest, dual and five-device acceptance pending; see DEVICE_SINGLE.json",
   "review": "self-review; no independent reviewer",
   "logSha256": {
     "full-final.log": "b6b75c48a90ce34d12a323efe9ae68930d8dc2f9a53b1d8863fedca11359f43b",
@@ -47,7 +47,7 @@
     "image-final.log": "278c30cc53a97f52319e9e0c16680ef218f69dabfa4c20c5ab6c9129a170b0da",
     "docker-build-rc2.log": "1f5574c6af42a3b38c3ef8d5812661abd8184fa526a52deddd1fcb626e706590",
     "full-with-qa.log": "b584b744f477cdce2087b4c9c9f92046644e564f01d309f7d6c155d1a818182b",
-    "qa-guard-final.log": "bd7fa8b9a09e245470e8ad48ac22d5f7160e63aeb87e1690e288d0a0f7ececc6"
+    "qa-guard-final.log": "9cc06a65377b3d3ec552e50bc22038d6a9cf3aeb6c77afb1581bdbf4dc0b8ae5"
   },
   "environments": {
     "fullRegressionNode": "v25.9.0",
