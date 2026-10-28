@@ -30,7 +30,7 @@ for (const dir of nodeDirs) for (const name of (await fs.readdir(path.join(root,
 }
 await run(process.execPath, ['--test', '--test-concurrency=2', ...tests]);
 for (const dir of ['windows-agent/scripts', 'deploy/nginx-isolation', 'tools/windows-migration',
-  'examples/name-lookup', 'examples/name-lookup-api-key', 'experiments/lookup-icon-selector-20261023']) {
+  'examples/name-lookup', 'examples/name-lookup-api-key', 'experiments/lookup-icon-selector-20261023', 'scripts/qa']) {
   await run(python, ['-m', 'unittest', 'discover', '-s', dir, '-p', 'test_*.py']);
 }
 await run(python, ['-m', 'unittest', 'discover', '-s', 'windows-agent/scripts', '-p', '*_test.py']);

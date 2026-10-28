@@ -9,8 +9,9 @@
     "skips": "PostgreSQL-only cases separately passed"
   },
   "python": {
-    "passed": 1199,
-    "failed": 0
+    "passed": 1210,
+    "failed": 0,
+    "includedQaGuard": 11
   },
   "postgres": {
     "combinedPassed": 34,
@@ -43,6 +44,8 @@
     "lookup-pg-final.log": "338fee6849c9a87b7bb192c0e9b1c326b9b771b107cef41c3327a102a38b529a",
     "check-final.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
     "image-final.log": "278c30cc53a97f52319e9e0c16680ef218f69dabfa4c20c5ab6c9129a170b0da",
-    "docker-build-rc2.log": "1f5574c6af42a3b38c3ef8d5812661abd8184fa526a52deddd1fcb626e706590"
+    "docker-build-rc2.log": "1f5574c6af42a3b38c3ef8d5812661abd8184fa526a52deddd1fcb626e706590",
+    "full-with-qa.log": "b584b744f477cdce2087b4c9c9f92046644e564f01d309f7d6c155d1a818182b",
+    "qa-guard-final.log": "cff39968e06cb014f53fba8e6e6777c4dbae512fcfb34d2561cbeed4ba044970"
   }
 }
