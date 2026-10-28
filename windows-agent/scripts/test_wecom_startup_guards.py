@@ -125,5 +125,24 @@ class AccountDrawerTests(unittest.TestCase):
         self.assertEqual(keys,['BACK'])
 
 
+class DrawerRelaunchTests(unittest.TestCase):
+    def test_only_observed_launcher_reopens_same_clone_once(self):
+        calls=[]
+        self.assertTrue(g.restore_wecom_after_drawer(lambda:('com.bbk.launcher2',0,'com.bbk.launcher2/.Launcher'),lambda:True,lambda:calls.append('REOPEN'),999))
+        self.assertEqual(calls,['REOPEN'])
+        self.assertFalse(g.restore_wecom_after_drawer(lambda:(w.PACKAGE,999,'same'),lambda:True,lambda:calls.append('REOPEN'),999))
+        self.assertEqual(calls,['REOPEN'])
+
+    def test_other_apps_users_lost_lease_and_unknown_delivery_do_not_retry(self):
+        for fg,user,lease in ((('other',0,'other'),999,True),(('com.bbk.launcher2',0,'com.bbk.launcher2/.Launcher'),0,True),(('com.bbk.launcher2',0,'com.bbk.launcher2/.Launcher'),999,False)):
+            calls=[]
+            with self.assertRaises(w.StopPreview):g.restore_wecom_after_drawer(lambda:fg,lambda:lease,lambda:calls.append('REOPEN'),user)
+            self.assertFalse(calls)
+        calls=[]
+        def unknown():calls.append('REOPEN');raise TimeoutError()
+        with self.assertRaises(TimeoutError):g.restore_wecom_after_drawer(lambda:('com.bbk.launcher2',0,'com.bbk.launcher2/.Launcher'),lambda:True,unknown,999)
+        self.assertEqual(calls,['REOPEN'])
+
+
 if __name__ == '__main__':
     unittest.main()

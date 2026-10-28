@@ -133,3 +133,16 @@ def dismiss_wecom_account_drawer(read_screen, foreground, lease_valid, press_bac
     check_budget()
     press_back()  # One normal Back, never click/change the selected account.
     return True
+
+
+def restore_wecom_after_drawer(read_foreground, lease_valid, reopen, android_user):
+    """155 Back may finish its clone activity; reopen only from observed launcher."""
+    current = read_foreground()
+    if current[0] == w.PACKAGE and current[1] == android_user:
+        return False
+    if android_user != 999 or current != ('com.bbk.launcher2',0,'com.bbk.launcher2/.Launcher'):
+        raise w.StopPreview('account_drawer_foreground_changed')
+    if lease_valid() is not True:
+        raise w.StopPreview('device_lease_lost')
+    reopen()  # Same resolved launcher component and Android user; no account UI.
+    return True

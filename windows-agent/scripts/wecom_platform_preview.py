@@ -280,7 +280,14 @@ def run_host(value):
                     raise SafeStop("account_drawer_activity_changed")
                 startup.dismiss_wecom_account_drawer(driver.snapshot, foreground, lease_valid,
                     lambda:mutate("input keyevent 4"), check_budget=budget)
-                drawer_dismissed=True; continue
+                drawer_dismissed=True
+                time.sleep(.3)
+                if startup.restore_wecom_after_drawer(foreground_info, lease_valid,
+                    lambda:mutate("am start --user %d -a android.intent.action.MAIN -c android.intent.category.LAUNCHER -n "%selected_user+launch), selected_user):
+                    wake_until=min(deadline,time.monotonic()+6)
+                    while foreground()!=w.PACKAGE and time.monotonic()<wake_until:
+                        budget();time.sleep(.25)
+                continue
             if w.is_home(page) and not w.is_menu(page):
                 second=driver.snapshot();w.guard(second)
                 if w.is_home(second) and not w.is_menu(second):home=True;break
