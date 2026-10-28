@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 from xhs_isolated_guard import validate, validate_file
 from xhs_isolated_runner import GuardedCommands, read_proof
-from xhs_candidate_live import settings_recovery_source, staging_source
+from xhs_candidate_live import settings_recovery_source, staging_source, wait_cached_proof
 
 
 class LeaseBoundary(unittest.TestCase):
@@ -202,6 +202,22 @@ class LeaseBoundary(unittest.TestCase):
                 p.write_text(json.dumps([self.d]))
                 return proof()
             with self.assertRaisesRegex(RuntimeError,'qa_inventory_stale'):validate_file(c,proof_after_file_replacement)
+
+    def test_controller_uses_fresh_pooled_proof_and_preserves_expiry(self):
+        now=[10.0];cache={'j':{'at':6.0,'proof':{'id':'old'}}};slept=[]
+        def sleep(delay):
+            slept.append(delay);now[0]+=delay
+            cache['j']={'at':now[0]-.5,'proof':{'id':'new'}}
+        self.assertEqual(wait_cached_proof(cache,'j',clock=lambda:now[0],sleep=sleep),{'id':'new'})
+        self.assertEqual(len(slept),1);self.assertEqual(cache['j']['at'],9.7)
+        cache['j']={'denied':'another_owner'}
+        with self.assertRaisesRegex(RuntimeError,'qa_lease_lost'):
+            wait_cached_proof(cache,'j',clock=lambda:now[0],sleep=lambda _:self.fail('lost lease is terminal'))
+        cache.clear();started=now[0]
+        def advance(delay):now[0]+=delay
+        with self.assertRaisesRegex(RuntimeError,'qa_fresh_lease_proof_unavailable'):
+            wait_cached_proof(cache,'j',clock=lambda:now[0],sleep=advance)
+        self.assertAlmostEqual(now[0]-started,5)
 
     def test_ascii_staging_preserves_unicode_names_and_binary_content(self):
         import base64,contextlib,io
