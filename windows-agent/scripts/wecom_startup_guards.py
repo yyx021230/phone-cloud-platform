@@ -126,8 +126,10 @@ def dismiss_wecom_account_drawer(read_screen, foreground, lease_valid, press_bac
         return False
     w.guard(observed)
     check_budget()
-    if read_screen() != observed or foreground() != w.PACKAGE or lease_valid() is not True:
-        raise w.StopPreview("account_drawer_context_changed")
+    if read_screen() != observed:
+        raise w.StopPreview("account_drawer_page_changed_before_back")
+    if foreground() != w.PACKAGE or lease_valid() is not True:
+        raise w.StopPreview("account_drawer_lease_or_foreground_lost")
     check_budget()
     press_back()  # One normal Back, never click/change the selected account.
     return True

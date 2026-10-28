@@ -275,8 +275,9 @@ def run_host(value):
                 startup_click(poco,w.PACKAGE,lambda current:all(current.has(v) for v in ("发现新版本","立即更新","取消")),lambda n:n.kind in ("android.widget.Button","android.widget.TextView") and n.text=="取消")
                 update_dismissed=True; continue
             if config["deviceNumber"] == "155" and selected_user == 999 and startup.is_wecom_account_drawer(page):
-                if drawer_dismissed or foreground_info()[2] != "com.tencent.wework/.launch.WwMainActivity":
-                    raise SafeStop("account_drawer_context_changed")
+                if drawer_dismissed: raise SafeStop("account_drawer_not_closed")
+                if foreground_info()[2] != "com.tencent.wework/.launch.WwMainActivity":
+                    raise SafeStop("account_drawer_activity_changed")
                 startup.dismiss_wecom_account_drawer(driver.snapshot, foreground, lease_valid,
                     lambda:mutate("input keyevent 4"), check_budget=budget)
                 drawer_dismissed=True; continue
