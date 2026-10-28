@@ -2628,12 +2628,17 @@ class Runner:
         """
         prefix = "com.alipay.mobile.antui:id/"
         try:
-            titles = self.poco_nodes(poco, name=prefix + "title_txt_1", text=ALIPAY_LOCAL_SERVICE_TITLE)
+            # Optional selectors must not issue separate live exists/list RPCs.
+            # A single fresh hierarchy also prevents evidence from different
+            # popup frames being combined into permission to tap.
+            freeze = getattr(poco, "freeze", None)
+            snapshot = freeze() if callable(freeze) else poco
+            titles = self.poco_nodes(snapshot, name=prefix + "title_txt_1", text=ALIPAY_LOCAL_SERVICE_TITLE)
             if not titles:
                 return False
-            hints = self.poco_nodes(poco, name=prefix + "title_txt_2", text=ALIPAY_LOCAL_SERVICE_HINT)
-            actions = self.poco_nodes(poco, name=prefix + "buttomButtonView", text="下一步")
-            closes = self.poco_nodes(poco, name=prefix + "btn_close", desc="取消")
+            hints = self.poco_nodes(snapshot, name=prefix + "title_txt_2", text=ALIPAY_LOCAL_SERVICE_HINT)
+            actions = self.poco_nodes(snapshot, name=prefix + "buttomButtonView", text="下一步")
+            closes = self.poco_nodes(snapshot, name=prefix + "btn_close", desc="取消")
         except Exception as exc:
             raise RuntimeError(f"poco_rpc_failed:{exc}") from exc
         self.emit("alipay_local_service_prompt_detected", titleCount=len(titles), hintCount=len(hints),
@@ -2652,7 +2657,8 @@ class Runner:
                   permissionRequested=False, nextButtonTapped=False, phoneQueryStarted=False)
         for _ in range(3):
             time.sleep(0.2)
-            if not self.poco_nodes(poco, name=prefix + "title_txt_1", text=ALIPAY_LOCAL_SERVICE_TITLE):
+            snapshot = freeze() if callable(freeze) else poco
+            if not self.poco_nodes(snapshot, name=prefix + "title_txt_1", text=ALIPAY_LOCAL_SERVICE_TITLE):
                 return True
         raise RuntimeError("poco_alipay_local_service_not_dismissed")
 

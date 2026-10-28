@@ -3485,6 +3485,38 @@ class AutomationRunnerTests(unittest.TestCase):
         self.assertFalse(event["nextButtonTapped"])
         self.assertFalse(event["phoneQueryStarted"])
 
+    def test_lookup_location_intro_uses_one_frozen_frame_and_fresh_close_check(self):
+        runner, snapshot, close = self.local_service_poco_fixture()
+        class FrozenOnly:
+            def __init__(self): self.reads = 0
+            def __call__(self, **selector):
+                raise AssertionError("optional popup must not query live selectors")
+            def freeze(self):
+                self.reads += 1
+                return snapshot
+        poco = FrozenOnly()
+        with mock.patch.object(self.lookup.time, "sleep", return_value=None):
+            self.assertTrue(runner.poco_dismiss_local_service_prompt(poco))
+        self.assertEqual(poco.reads, 2)
+        runner.poco_tap.assert_called_once_with(close)
+
+    def test_lookup_location_intro_absent_does_not_issue_live_exists_rpc(self):
+        runner, snapshot, _ = self.local_service_poco_fixture(missing="title_txt_1")
+        poco = mock.Mock(side_effect=TimeoutError("live exists stalled"))
+        poco.freeze.return_value = snapshot
+        self.assertFalse(runner.poco_dismiss_local_service_prompt(poco))
+        poco.assert_not_called()
+        poco.freeze.assert_called_once()
+        runner.poco_tap.assert_not_called()
+
+    def test_lookup_location_intro_snapshot_timeout_is_not_absence(self):
+        runner, _, _ = self.local_service_poco_fixture()
+        poco = mock.Mock()
+        poco.freeze.side_effect = TimeoutError("snapshot timed out")
+        with self.assertRaisesRegex(RuntimeError, "poco_rpc_failed:snapshot timed out"):
+            runner.poco_dismiss_local_service_prompt(poco)
+        runner.poco_tap.assert_not_called()
+
     def test_lookup_location_intro_requires_all_evidence_and_unique_enabled_close(self):
         for options in ({"missing": "title_txt_1"}, {"missing": "title_txt_2"},
                         {"missing": "buttomButtonView"}, {"missing": "btn_close"},
