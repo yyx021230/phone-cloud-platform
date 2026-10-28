@@ -17,6 +17,35 @@ def layout(last='支付宝小程序应用'):
             row('广告示例内容', 200, 1080), row('点击观看', 100, 1270)]
 
 class SuggestionsAdTests(unittest.TestCase):
+    def test_112_native_complete_panel_and_negative_variants(self):
+        sample = json.loads(Path(__file__).with_name('fixtures').joinpath('lookup-suggestions-112-native.json').read_text())
+        rows, size, phone = sample['rows'], sample['size'], '13812345678'
+        self.assertTrue(parse_empty_rows(rows, phone, size)['notFound'])
+        for label in ['查收支明细', '搜口令红包']:
+            index = next(i for i, r in enumerate(rows) if r[1] == label)
+            self.assertIsNone(parse_empty_rows(rows[:index] + rows[index+1:], phone, size))
+            for replacement in ['未知入口', '示例(**甲)', '加载中', '安全验证']:
+                changed = json.loads(json.dumps(rows)); changed[index][1] = replacement
+                self.assertIsNone(parse_empty_rows(changed, phone, size))
+            changed = json.loads(json.dumps(rows)); changed[index][2] = .9
+            self.assertIsNone(parse_empty_rows(changed, phone, size))
+        self.assertIsNone(parse_empty_rows(rows, '13912345678', size))
+        self.assertIsNone(parse_empty_rows(rows + card()[1:], phone, size))
+
+    def test_112_panel_requires_prepared_independent_frames(self):
+        sample = json.loads(Path(__file__).with_name('fixtures').joinpath('lookup-suggestions-112-native.json').read_text())
+        # Existing runner fixture has a 720x1600 screen; preserve normalized
+        # geometry from the real 720x1612 screenshot without identity data.
+        rows = json.loads(json.dumps(sample['rows']))
+        for r in rows:
+            r[1] = r[1].replace('13812345678', PHONE)
+            for point in r[0]: point[1] *= 1600 / sample['size'][1]
+        runner, result, _ = LoadingGuardTests().run_frames(
+            [rows, rows], setup=lambda r,p:r.payload.update(preparedEmptyResult=True))
+        self.assertTrue(result['notFound']); self.assertEqual(runner.adb.call_count, 2)
+        with self.assertRaisesRegex(RuntimeError, 'observation_budget_exhausted'):
+            LoadingGuardTests().run_frames([rows], budget=3)
+
     def test_transfer_recharge_ad_and_lower_clipboard(self):
         rows = [row(PHONE, 250, 120), row('快捷功能', 100, 337),
                 row('转账:'+PHONE, 340, 449), row('手机充值:'+PHONE, 365, 601)]
