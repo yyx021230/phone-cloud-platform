@@ -68,6 +68,7 @@ class GuardedCommands:
     def __init__(self, config, prove, identity=attest, popen=subprocess.Popen):
         self.config, self.prove, self.identity, self.popen = config, prove, identity, popen
         self.paths = set()
+        self.native_commands = {}
 
     def trace(self, event, **fields):
         if not self.config.get('stage'):return
@@ -106,12 +107,21 @@ class GuardedCommands:
             self.paths.add(a[3]); return True
         if len(a)==3 and a[:2] in (('exec-out','cat'),('shell','ls')): return a[2] in self.paths
         if len(a)==4 and a[:3]==('shell','rm','-f'): return a[3] in self.paths
-        if len(a)==3 and a[0]=='push' and Path(a[1])==Path(self.config.get('nativeAsset','__absent__')) and re.fullmatch(r'/data/local/tmp/pc-xhs-elements-[a-f0-9]{32}\.jar',a[2]):
-            if hashlib.sha256(Path(a[1]).read_bytes()).hexdigest()!=self.config['nativeAssetSha256']: return False
-            self.paths.add(a[2]); return True
+        if len(a)==3 and a[0]=='push':
+            for path_key,sha_key,prefix,commands in (
+                    ('nativeAsset','nativeAssetSha256','pc-xhs-elements-',('20 /system/bin/app_process /system/bin NativeWindowReader',)),
+                    ('nativePairAsset','nativePairSha256','pc-xhs-elements-',('20 /system/bin/app_process /system/bin NativeWindowPair',)),
+                    ('nativeNavigationAsset','nativeNavigationSha256','pc-xhs-nav-',(
+                        '15 /system/bin/app_process /system/bin NativeNavigationAction profile',
+                        '15 /system/bin/app_process /system/bin NativeNavigationAction menu'))):
+                if (path_key in self.config and Path(a[1])==Path(self.config[path_key])
+                        and re.fullmatch('/data/local/tmp/'+prefix+r'[a-f0-9]{32}\.jar',a[2])):
+                    if hashlib.sha256(Path(a[1]).read_bytes()).hexdigest()!=self.config[sha_key]:return False
+                    self.paths.add(a[2])
+                    self.native_commands[a[2]]=tuple('CLASSPATH='+a[2]+':/system/framework/uiautomator.jar /system/bin/timeout '+cmd for cmd in commands)
+                    return True
         if len(a)==2 and a[0]=='shell':
-            for remote in self.paths:
-                if remote.endswith('.jar') and a[1]=='CLASSPATH='+remote+':/system/framework/uiautomator.jar /system/bin/timeout 20 /system/bin/app_process /system/bin NativeWindowReader': return True
+            return any(a[1] in commands for commands in self.native_commands.values())
         return False
 
     def guard(self):
@@ -165,6 +175,8 @@ def main():
         raise RuntimeError('qa_collector_hash_changed')
     if hashlib.sha256((p.parent/'xhs_native_window.py').read_bytes()).hexdigest() != c['nativeHelperSha256']:
         raise RuntimeError('qa_native_helper_hash_changed')
+    if hashlib.sha256((p.parent/'xhs_native_navigation.py').read_bytes()).hexdigest() != c['nativeNavigationHelperSha256']:
+        raise RuntimeError('qa_native_navigation_helper_hash_changed')
     sys.path.insert(0, str(p.parent))
     spec = importlib.util.spec_from_file_location('xhs_candidate_collector', p)
     collector = importlib.util.module_from_spec(spec); spec.loader.exec_module(collector)
