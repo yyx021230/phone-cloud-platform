@@ -1,7 +1,7 @@
 {
   "task": "ADB serial case identity / phone 191",
   "date": "2026-10-28",
-  "status": "local_candidate_not_deployed",
+  "status": "merged_into_current_platform_candidate_not_deployed",
   "scope": "Fix stale transport spelling and misleading shell error; local merge requested, no deployment or restart authorized.",
   "baseline": {
     "branch": "codex/adb-serial-case-20261028",
@@ -90,7 +90,17 @@
   "review": {
     "kind": "self-review",
     "result": "Scope, callback identity, cancellation before reservation, active alias exclusion, unrelated-session preservation, per-device policy parity and dependency closure reviewed.",
-    "independentMergeReview": "Requested from the authorized integration owner; pending receipt."
+    "independentMergeReview": "Integration owner accepted and cherry-picked the fix; this thread independently verified the resulting Git diff and reran the 31 scoped tests. No separate independent-review verdict is claimed."
+  },
+  "mergeVerification": {
+    "sourceCommit": "cc262dc1e0a16b85f79138542054ef62c4ffd21f",
+    "sourceTag": "adb-serial-case-20261028-rc.1",
+    "targetBranch": "codex/lookup-throughput-accuracy-20261028",
+    "targetCommit": "3c1d2f1d6699509b8d72f4c95015be51d5fa3252",
+    "targetParent": "9db1766",
+    "verification": "Eight runtime/test files plus the evidence receipt match the source commit byte for byte. The Agent entry retains the integration owner's four pre-existing lookup lines and adds only the same import and resolution hook. Main document retains the owner's added entries. Scoped tests rerun on merged checkout: 31 passed, 0 failed; runtime files clean against the merge commit.",
+    "mergedFullRegression": "Not rerun by this thread in the concurrently edited integration workspace; isolated source regression 1476/1476 and merged scoped 31/31 are distinct results.",
+    "production": "not deployed; no service/ADB/USB restart or real phone control in this implementation turn"
   },
   "notVerified": [
     "No production release or fresh phone 191 screen/control acceptance after this fix.",
