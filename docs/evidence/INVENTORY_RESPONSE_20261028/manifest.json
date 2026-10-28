@@ -1,0 +1,32 @@
+{
+  "status": "local_candidate_not_deployed",
+  "tag": "inventory-response-20261028-rc.1",
+  "parent": "00cfe56f7da24baec40f4ebbcf1f0da84b9f3fbf",
+  "files": {
+    "server/index.mjs": "999bef9821e57ec9729f14ca5d8bb19ec2099f8ab6c0d64f445d9cd2433218da",
+    "server/inventory-sync-response.mjs": "dc9f8969785d89f6cc0e000d1229056229ccdfca3852f8e3ee29146fe729960a",
+    "server/inventory-sync-response.test.mjs": "b7605782d244b964b9b4f53f10ed715515129c20e0ed181c775515fc8ee19c88",
+    "server/inventory-sync-response.http.test.mjs": "d958ff97fbd4f778d9b0d4575cd75b548143c9b346e9d5249d54bcd7c28ebef8"
+  },
+  "tests": {
+    "compression_http": 8,
+    "related_regression": 39,
+    "postgres_batch_integration": 34,
+    "counts_overlap": true,
+    "root_check": true,
+    "real_device_candidate": false,
+    "production_network_candidate": false
+  },
+  "production_read_only": {
+    "database_bytes": 8701115751,
+    "state_total_relation_bytes": 239001600,
+    "state_data_type": "json",
+    "state_estimated_live_rows": 1,
+    "snapshot_content_read": false,
+    "allowlist_slots": 100,
+    "physical_devices": 66,
+    "bindings_match": 100,
+    "unavailable_slots": 7,
+    "busy_slots": 9
+  }
+}
