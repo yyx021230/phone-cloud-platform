@@ -7,6 +7,11 @@ import { createPlatformClient } from "./platform.mjs";
 import { createBatchHandler } from "./http.mjs";
 
 // This separate service never loads the platform .env or starts an Agent/ADB.
+const host = process.env.XHS_BATCH_HOST || "127.0.0.1";
+const port = Number(process.env.XHS_BATCH_PORT || 8791);
+if (!["127.0.0.1", "0.0.0.0"].includes(host) || !Number.isInteger(port) || port < 1 || port > 65535) {
+  throw new Error("invalid_batch_listen_address");
+}
 if (!process.env.XHS_BATCH_CONFIG_FILE || !process.env.XHS_BATCH_DATABASE_URL) throw new Error("batch_config_required");
 const stat = await fs.stat(process.env.XHS_BATCH_CONFIG_FILE);
 if (process.platform !== "win32" && (stat.mode & 0o077)) throw new Error("batch_config_must_be_private");
@@ -19,7 +24,7 @@ const platforms = new Map(clients.map(c => [c.clientId, createPlatformClient({ b
 const engine = new BatchEngine({ store, clients, platforms });
 const server = http.createServer(createBatchHandler({ engine, store, clients }));
 server.requestTimeout = 35_000; server.headersTimeout = 10_000;
-server.listen(Number(process.env.XHS_BATCH_PORT || 8791), "127.0.0.1");
+server.listen(port, host);
 let ticking = false;
 const timer = setInterval(async () => {
   if (ticking) return;

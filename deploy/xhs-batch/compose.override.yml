@@ -1,0 +1,40 @@
+# Opt-in overlay for the repository's docker-compose.yml. Never starts by default.
+# Use the committed platform image; no build on production and no automatic schema migration.
+services:
+  xhs-batch:
+    profiles: [xhs-batch]
+    image: ${XHS_BATCH_IMAGE:?set immutable tested image tag or digest}
+    command: [node, server/xhs-batch/main.mjs]
+    user: node
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/tmp:size=16m,mode=1777]
+    environment:
+      XHS_BATCH_HOST: 0.0.0.0
+      XHS_BATCH_PORT: "8791"
+      XHS_BATCH_CONFIG_FILE: /run/xhs-batch/config.json
+      XHS_BATCH_DATABASE_URL: ${XHS_BATCH_DATABASE_URL:?set private batch database connection}
+    volumes:
+      - type: bind
+        source: ${XHS_BATCH_CONFIG_PATH:?set absolute private config path}
+        target: /run/xhs-batch/config.json
+        read_only: true
+    ports:
+      - "127.0.0.1:8791:8791"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      phone-cloud:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, node, -e, "const r=require('http').get('http://127.0.0.1:8791/healthz',{timeout:4000},s=>process.exit(s.statusCode===200?0:1));r.on('error',()=>process.exit(1));r.on('timeout',()=>{r.destroy();process.exit(1)});"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

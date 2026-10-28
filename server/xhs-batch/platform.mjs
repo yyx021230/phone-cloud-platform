@@ -3,11 +3,11 @@ export class PlatformError extends Error {
   constructor(code, status = 0) { super(code); this.status = status; }
 }
 
-// POST is deliberately never retried: the existing task API has no idempotency key.
+// POST is never replayed. Lost replies are reconciled by clientRequestId instead.
 export function createPlatformClient({ baseUrl, username, password, fetchImpl = fetch }) {
   const base = new URL(baseUrl);
   if (base.username || base.password || base.search || base.hash || base.pathname !== "/"
-      || !(base.protocol === "https:" || (base.protocol === "http:" && ["127.0.0.1", "localhost", "[::1]"].includes(base.hostname)))) {
+      || !["http:", "https:"].includes(base.protocol) || !base.hostname) {
     throw new Error("invalid_platform_url");
   }
   let token = "";
