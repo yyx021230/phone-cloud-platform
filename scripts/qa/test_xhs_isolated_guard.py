@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 from xhs_isolated_guard import validate, validate_file
 from xhs_isolated_runner import GuardedCommands, read_proof
-from xhs_candidate_live import settings_recovery_source, staging_source, wait_cached_proof, candidate_files, validate_target_names, main as live_main
+from xhs_candidate_live import settings_recovery_source, staging_source, wait_cached_proof, candidate_files, validate_target_names, completed_results, completion_payload, collection_succeeded, main as live_main
 
 
 class LeaseBoundary(unittest.TestCase):
@@ -202,6 +202,65 @@ class LeaseBoundary(unittest.TestCase):
                 p.write_text(json.dumps([self.d]))
                 return proof()
             with self.assertRaisesRegex(RuntimeError,'qa_inventory_stale'):validate_file(c,proof_after_file_replacement)
+
+    def test_host_preserves_bounded_raw_partial_before_original_consumer_cleanup(self):
+        import os,sys,shutil,hashlib
+        repo=Path(__file__).resolve().parents[2]
+        with tempfile.TemporaryDirectory() as tmp:
+            stage=Path(tmp)
+            shutil.copyfile(repo/'scripts/qa/xhs_candidate_host.mjs',stage/'host.mjs')
+            shutil.copyfile(repo/'windows-agent/src/xhs-data-collection.mjs',stage/'xhs-data-collection.mjs')
+            output={'schema_version':3,'serial':'fixture','device_name':'47','app_slot':'app1','window_days':30,
+                    'complete':False,'notes':[],'stop_reason':'two_pass_unproven'}
+            code="import sys,json\nfrom pathlib import Path\nif '--qa-adb' in sys.argv:\n print('null' if sys.argv[-1]=='enable_screen_on_proximity_sensor' else '60000');sys.exit(0)\np=Path(sys.argv[sys.argv.index('--output')+1]);p.write_text(json.dumps("+repr(output)+"));sys.exit(2)\n"
+            (stage/'xhs_isolated_runner.py').write_text(code)
+            c={'stage':tmp,'pythonPath':sys.executable,'serial':'fixture','adbPath':'must-not-run','inventoryPath':str(stage/'unused')}
+            task={'taskId':'fixture-task','adbSerial':'fixture','payload':{'automationJobId':'fixture-job','xhsAppSlot':'app1','deviceName':'47'}}
+            (stage/'config.json').write_text(json.dumps(c));(stage/'task.json').write_text(json.dumps(task))
+            p=subprocess.run(['node',str(stage/'host.mjs'),str(stage/'config.json'),str(stage/'task.json')],capture_output=True,timeout=10)
+            self.assertEqual(p.returncode,0,p.stderr.decode());answer=json.loads(p.stdout)
+            self.assertTrue(answer['ok']);self.assertFalse(answer['result']['collection']['complete']);self.assertTrue(answer['settingsRestored'])
+            raw=(stage/'collector-output-private.json').read_bytes();meta=json.loads((stage/'collector-output-meta.json').read_text())
+            self.assertEqual(json.loads(raw),output);self.assertEqual(meta['exitCode'],2);self.assertEqual(meta['sha256'],hashlib.sha256(raw).hexdigest())
+            self.assertFalse((stage/'cache/xhs-data-collection/fixture-task.json').exists())
+            self.assertEqual(list((stage/'cache/xhs-data-collection').glob('*.settings.json')),[])
+            self.assertEqual(completion_payload(answer)['status'],'failed')
+
+    def test_partial_collection_is_reported_failed_with_data_retained(self):
+        answer={'ok':True,'settingsRestored':True,'result':{'collection':{'complete':False,'notes':[{'title':'partial'}]}}}
+        payload=completion_payload(answer)
+        self.assertEqual(payload['status'],'failed');self.assertIs(payload['result'],answer['result']);self.assertFalse(collection_succeeded(answer))
+        answer['result']['collection']['complete']=True
+        self.assertEqual(completion_payload(answer)['status'],'succeeded')
+        self.assertEqual(completion_payload(answer,1)['status'],'failed')
+
+    def test_real_runner_preserves_collector_success_partial_and_exception_exit_codes(self):
+        import os,sys,hashlib
+        runner=Path(__file__).with_name('xhs_isolated_runner.py')
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);empty=hashlib.sha256(b'').hexdigest()
+            for name in ('xhs_native_window.py','xhs_native_navigation.py'):(root/name).write_text('')
+            for result,code in [('return 0',0),('return 2',2),("raise RuntimeError('fixture_failure')",1)]:
+                source='def main(): '+result+'\n'+''.join('def '+name+'(*a,**k): pass\n' for name in ('collect_once','ensure_creator_list','wait_data_center_loading','read_scrolled_content'))
+                collector=root/('collector-'+str(code)+'.py');collector.write_text(source)
+                c={'brokerUrl':'http://127.0.0.1:1','collectorPath':str(collector),'collectorSha256':hashlib.sha256(collector.read_bytes()).hexdigest(),
+                   'nativeHelperSha256':empty,'nativeNavigationHelperSha256':empty}
+                config=root/'config.json';config.write_text(json.dumps(c))
+                env={k:v for k,v in os.environ.items() if k not in ('PYTHONOPTIMIZE','XHS_QA_CONFIG')};env['XHS_QA_CONFIG']=str(config)
+                p=subprocess.run([sys.executable,str(runner)],capture_output=True,env=env,timeout=5)
+                with self.subTest(result=result):self.assertEqual(p.returncode,code,p.stderr.decode())
+
+    def test_fast_second_result_is_available_before_first_task_finishes(self):
+        import concurrent.futures
+        slow=concurrent.futures.Future();fast=concurrent.futures.Future();fast.set_result('fast')
+        results=completed_results([slow,fast])
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+            first=pool.submit(next,results)
+            try:
+                self.assertEqual(first.result(timeout=1),'fast');self.assertFalse(slow.done())
+            finally:slow.set_result('slow')
+        self.assertEqual(next(results),'slow')
+        with self.assertRaises(StopIteration):next(results)
 
     def test_cli_refuses_excess_or_excluded_targets_before_private_access(self):
         import os

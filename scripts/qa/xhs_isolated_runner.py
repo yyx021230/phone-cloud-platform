@@ -199,7 +199,7 @@ def main():
             try:return _fn(*args,**kwargs)
             finally:commands.trace('phase_end',phase=_name)
         setattr(collector,name,traced)
-    collector.main()
+    raise SystemExit(collector.main())
 
 
 if __name__ == '__main__':

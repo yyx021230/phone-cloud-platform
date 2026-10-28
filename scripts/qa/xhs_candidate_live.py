@@ -22,6 +22,23 @@ import uuid
 ROOT=Path(__file__).resolve().parents[2]
 
 
+def collection_succeeded(answer, pending_ledgers=0):
+    return bool(answer.get('ok') and answer.get('result',{}).get('collection',{}).get('complete') is True
+                and answer.get('settingsRestored') and not pending_ledgers)
+
+
+def completion_payload(answer, pending_ledgers=0):
+    if answer.get('ok'):
+        return {'status':'succeeded' if collection_succeeded(answer,pending_ledgers) else 'failed','result':answer['result']}
+    error=answer.get('error','settings_recovery_pending')
+    return {'status':'failed','error':error,'result':{'message':error}}
+
+
+def completed_results(futures):
+    for future in concurrent.futures.as_completed(futures):
+        yield future.result()
+
+
 def validate_target_names(names):
     if (not 1<=len(names)<=5 or len(set(names))!=len(names)
             or set(names)&{'18','152','155','185'}
@@ -259,9 +276,9 @@ console.log(JSON.stringify(targets.map((t,i)=>{const locks=values[1].body.locks.
         assert len(tasks)==len(targets),'local batch did not dispatch'
         with concurrent.futures.ThreadPoolExecutor(max_workers=len(targets)) as pool:
             futures=[pool.submit(stage_and_run,next(t for t in targets if t['serial']==task['adbSerial']),task) for task in tasks]
-            for f in futures:
-                result=f.result();results.append(result);a=result['answer']
-                payload={'status':'succeeded','result':a['result']} if a['ok'] and not result['pendingLedgers'] else {'status':'failed','error':a.get('error','settings_recovery_pending'),'result':{'message':a.get('error','settings_recovery_pending')}}
+            for result in completed_results(futures):
+                results.append(result);a=result['answer']
+                payload=completion_payload(a,result['pendingLedgers'])
                 api_call({'op':'complete','taskId':result['task']['taskId'],'payload':payload})
         for _ in range(30):
             data=api_call({'op':'result','runId':run_id})
@@ -276,7 +293,8 @@ console.log(JSON.stringify(targets.map((t,i)=>{const locks=values[1].body.locks.
             item=matching[0];assert item['accountName']==r['target']['accountName']
             if r['answer']['ok']:
                 raw=r['answer']['result']['collection'];actual=item['data']
-                assert item['status']=='succeeded' and actual['complete'] and raw['complete'],'api_collection_not_complete'
+                assert item['status']==('succeeded' if collection_succeeded(r['answer'],r['pendingLedgers']) else 'failed'),'api_collection_status_mismatch'
+                assert actual['complete']==raw['complete'],'api_collection_completeness_changed'
                 assert len(raw['notes'])==len(actual['notes']),'api_note_count_changed'
                 for src,dst in zip(raw['notes'],actual['notes']):
                     assert dst['title']==src['title'][:180]
@@ -301,8 +319,8 @@ console.log(JSON.stringify(targets.map((t,i)=>{const locks=values[1].body.locks.
             try:q.request('/api/v1/screen-sessions/'+session_id,'DELETE',{})
             except Exception as e:save('release-error-'+session_id+'.json',{'error':str(e)})
         if run_id:
-            try:api_call({'op':'stop','runId':run_id})
-            except Exception:pass
+            try:save('api-stop-private.json',api_call({'op':'stop','runId':run_id}))
+            except Exception as e:save('api-stop-error.json',{'error':str(e)[:300]})
         try:api_call({'op':'close'})
         except Exception:pass
         api.stdin.close()
@@ -317,8 +335,8 @@ console.log(JSON.stringify(targets.map((t,i)=>{const locks=values[1].body.locks.
             except subprocess.TimeoutExpired:p.terminate()
         save('identity-after.json',q.attest())
         shared_after=shared_runtime_hashes(q);save('shared-hashes-after.json',shared_after)
-        summary={'phase':phase,'results':[{'name':r['target']['deviceName'],'model':r['target']['model'],'ok':r['answer']['ok'],'notes':len(r['answer'].get('result',{}).get('collection',{}).get('notes',[])),
-                  'complete':r['answer'].get('result',{}).get('collection',{}).get('complete'), 'pendingLedgers':r['pendingLedgers'],'settingsRestored':r['answer'].get('settingsRestored',False),'elapsedSeconds':r['elapsedSeconds'],'error':r['answer'].get('error')} for r in results],
+        summary={'phase':phase,'results':[{'name':r['target']['deviceName'],'model':r['target']['model'],'ok':collection_succeeded(r['answer'],r['pendingLedgers']),'notes':len(r['answer'].get('result',{}).get('collection',{}).get('notes',[])),
+                  'complete':r['answer'].get('result',{}).get('collection',{}).get('complete'), 'pendingLedgers':r['pendingLedgers'],'settingsRestored':r['answer'].get('settingsRestored',False),'elapsedSeconds':r['elapsedSeconds'],'error':r['answer'].get('error') or (None if collection_succeeded(r['answer'],r['pendingLedgers']) else 'recent_window_not_proven')} for r in results],
                  'proofs':proof_count,'cloudSnapshots':snapshot_count,'proofFailures':proof_failures,'productionSharedFilesChanged':shared_before!=shared_after}
         save('summary.json',summary);print(json.dumps(summary,ensure_ascii=False),flush=True)
 
