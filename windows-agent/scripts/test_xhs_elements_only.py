@@ -68,7 +68,7 @@ class NativeReadingTests(unittest.TestCase):
    r=listing();r.set('data-source',kind)
    with self.assertRaises(sync.ElementListReadError):sync.note_cards(r)
  def test_only_explicit_empty_element_state_can_be_empty(self):
-  r=list_shell();ET.SubElement(r[0],'node',{'text':'暂无笔记','bounds':'[300,900][420,950]'})
+  r=list_shell();ET.SubElement(r[0],'node',{'package':sync.XHS_PACKAGE,'class':'android.widget.TextView','text':'暂无笔记','bounds':'[300,900][420,950]'})
   self.assertIsNotNone(sync.element_page_signature(r));self.assertEqual(sync.note_cards(r),[])
 
 class ElementCaptureTests(unittest.TestCase):
@@ -155,7 +155,9 @@ class ElementCollectionTests(unittest.TestCase):
    stack.enter_context(patch.object(sync,'ensure_creator_list',side_effect=lambda a,b,r,*rest:r));stack.enter_context(patch.object(sync,'reopen_creator_list',return_value=first))
    stack.enter_context(patch.object(sync,'wait_creator_content',side_effect=lambda a,b,r,*rest:r));stack.enter_context(patch.object(sync,'refresh_scrolled_webview',side_effect=lambda a,b,r,*rest:r))
    stack.enter_context(patch.object(sync,'navigation_capture',side_effect=following or []))
-   return sync.collect(args)
+   stack.enter_context(patch.object(sync,'probe_element_pair',return_value=False))
+   stack.enter_context(patch.object(sync,'prove_native_list_start',side_effect=lambda a,b,r,*rest:r))
+   return sync.collect_once(args)
  def test_post_swipe_element_failure_preserves_prior_notes_as_incomplete(self):
   r=self.collect(listing(),[sync.ElementListReadError('missing elements')])
   self.assertFalse(r['complete']);self.assertEqual(len(r['notes']),5);self.assertEqual(r['stop_reason'],'elements_unproven');self.assertIn('collection_reader:ui_elements_only',r['recovery_events'])
@@ -195,11 +197,12 @@ class ElementCollectionTests(unittest.TestCase):
   first=listing();second=listing();sync.verify_element_overlap(first,second)
 
 class LongNativeWindowTests(unittest.TestCase):
- def run_main(self,limit=None):
+ def run_main(self,limit=None,fast=False):
   import tempfile,sys,json
   pages=[]
   for page in range(32):
    root=listing()
+   root.set('native-window-reader','1')
    for offset,(row,item) in enumerate(sync.note_cards(root)):
     index=page+offset
     next(n for n in row.iter("node") if n.get("text")==item["title"]).set("text",f"连续原生帖子{index}")
@@ -216,18 +219,36 @@ class LongNativeWindowTests(unittest.TestCase):
    stack.enter_context(patch.object(sys,'argv',argv));stack.enter_context(patch.object(sync.dt,'datetime',FixedDateTime));stack.enter_context(patch('builtins.print'))
    for name in ('release_idle_poco','verify_collection_slot','assert_no_poco','swipe'):stack.enter_context(patch.object(sync,name))
    stack.enter_context(patch.object(sync,'assert_idle',return_value={'xhsAccounts':[{'appSlot':'app1','enabled':True,'xhsId':'test'}]}))
-   stack.enter_context(patch.object(sync,'adb',side_effect=lambda a,b,*args,**kw: 'device' if args==('get-state',) else '1800000'));stack.enter_context(patch.object(sync,'start_xhs',return_value=first))
+   stack.enter_context(patch.object(sync,'adb',side_effect=lambda a,b,*args,**kw: 'device' if args==('get-state',) else '1800000'))
+   def start(a,b,slot,guard,events):
+    events.append('collection_slot_requested:'+slot);return first
+   stack.enter_context(patch.object(sync,'start_xhs',side_effect=start))
+   stack.enter_context(patch.object(sync,'verification_entry',return_value=None))
+   stack.enter_context(patch.object(sync,'focus',return_value='mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}'))
    stack.enter_context(patch.object(sync,'ensure_creator_list',side_effect=lambda a,b,r,*rest:r));stack.enter_context(patch.object(sync,'reopen_creator_list',return_value=first))
    stack.enter_context(patch.object(sync,'wait_creator_content',side_effect=lambda a,b,r,*rest:r));stack.enter_context(patch.object(sync,'refresh_scrolled_webview',side_effect=lambda a,b,r,*rest:r))
-   stack.enter_context(patch.object(sync,'navigation_capture',side_effect=pages[1:]))
+   stack.enter_context(patch.object(sync,'navigation_capture',side_effect=pages[1:]*2))
+   stack.enter_context(patch.object(sync,'NATIVE_PAIR_PROBE_ENABLED',fast))
+   probe=stack.enter_context(patch.object(sync,'probe_element_pair',return_value=fast))
+   stack.enter_context(patch.object(sync,'capture_element_pair',side_effect=[(r,copy.deepcopy(r)) for r in pages[1:]]*2))
+   stack.enter_context(patch.object(sync,'prove_native_list_start',side_effect=lambda a,b,r,*rest:r))
    code=sync.main();result=json.loads(output.read_text())
+   if fast:self.assertEqual(probe.call_count,2)
+   else:probe.assert_not_called()
   return code,result
  def test_default_scan_continues_past_thirty_swipes_to_proven_date_boundary(self):
   code,result=self.run_main();self.assertEqual(code,0);self.assertTrue(result['complete']);self.assertEqual(result['scrolls'],31)
   self.assertEqual(result['stop_reason'],'older_than_window_visible');self.assertEqual(len(result['notes']),35)
+  self.assertIn('collection_integrity:verified_two_pass',result['recovery_events'])
+  self.assertIn('collection_verification_fresh_pages:31',result['recovery_events'])
  def test_explicit_smaller_budget_still_preserves_incomplete_data(self):
   code,result=self.run_main(30);self.assertEqual(code,2);self.assertFalse(result['complete']);self.assertEqual(result['scrolls'],30)
   self.assertEqual(result['stop_reason'],'scroll_budget_exhausted');self.assertEqual(len(result['notes']),35)
+ def test_fast_path_keeps_all_35_notes_and_31_page_overlap_checks(self):
+  _,slow=self.run_main();code,fast=self.run_main(fast=True)
+  self.assertEqual(code,0);self.assertTrue(fast['complete']);self.assertEqual(fast['notes'],slow['notes'])
+  self.assertEqual(fast['scan_rounds'],slow['scan_rounds']);self.assertEqual(fast['scrolls'],31)
+  self.assertIn('native_pair_fast_pages:31',fast['recovery_events'])
 
 
 class ZeroBoundsElementTests(unittest.TestCase):
@@ -239,3 +260,8 @@ class ZeroBoundsElementTests(unittest.TestCase):
   adb.assert_not_called();process.assert_not_called()
 
 if __name__=='__main__':unittest.main()
+
+class NavigationDiagnosticTests(unittest.TestCase):
+ def test_only_known_landmarks_are_reported(self):
+  r=ET.fromstring('<hierarchy><node text="我" selected="true" bounds="[1,1][20,20]"/><node text="菜单" bounds="[1,1][20,20]"/><node text="private account title" bounds="[1,1][20,20]"/></hierarchy>')
+  self.assertEqual(sync.creator_navigation_state(r),'我/菜单;profile_selected=true')

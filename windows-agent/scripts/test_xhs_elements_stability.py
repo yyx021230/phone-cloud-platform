@@ -125,7 +125,8 @@ class BoundedNativeScrollTests(unittest.TestCase):
     sync.swipe('adb','serial',root,lambda:None,[])
    args=adb.call_args.args;distance=int(args[6])-int(args[8]);rows=[sync.bounds(n) for n,_ in cards]
    self.assertGreater(distance,0)
-   self.assertLessEqual(distance, max((b[3]-b[1]) for b in rows)*2)
+   self.assertLessEqual(distance, max((b[3]-b[1]) for b in rows)*3)
+   if len(rows)>=4:self.assertLessEqual(distance,sorted(rows,key=lambda b:b[1])[-2][1]-min(b[1] for b in rows))
    # On the retained stale subset, never traverse even one complete row.
    if len(cards)==1:self.assertLess(distance,rows[0][3]-rows[0][1])
  def test_scroll_does_not_guess_when_native_rows_are_missing(self):

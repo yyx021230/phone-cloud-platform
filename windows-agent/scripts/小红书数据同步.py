@@ -13,6 +13,7 @@ as authorized by the user, before continuing navigation.
 
 import argparse
 import datetime as dt
+import hashlib
 from decimal import Decimal
 import json
 import os
@@ -36,6 +37,9 @@ MAX_NATIVE_TITLE_CHARS = 4096
 DATA_CENTER_LOAD_SECONDS = 45
 DATA_CENTER_POLL_SECONDS = 2
 DATA_CENTER_MAX_REOPENS = 2
+# Real47/180 trials rejected this probe; retain experiments but do not pay
+# its staging/read cost in the production collection path.
+NATIVE_PAIR_PROBE_ENABLED = False
 
 
 
@@ -292,8 +296,12 @@ def assert_idle(cache_path, serial, device_name, task_id="", app_slot="", cancel
 
 
 def live_nodes(root):
-    return [n for n in root.iter("node") if bounds(n) and
-            bounds(n)[2] > bounds(n)[0] and bounds(n)[3] > bounds(n)[1]]
+    visible = []
+    for node in root.iter("node"):
+        box = bounds(node)
+        if box and box[2] > box[0] and box[3] > box[1]:
+            visible.append(node)
+    return visible
 
 
 def label(root, value):
@@ -812,6 +820,8 @@ def recover_known_overlay(adb_path, serial, root, guard, events):
 
     if ("NotificationAuthorizationTranslucentActivity" in current or
             ("com.vivo.pushservice" in current and "type=2038" in current)):
+        if "creator_late_notification_retry" in events:
+            raise ElementListReadError("notification overlay recurred after bounded navigation recovery")
         press_back()
         if "NotificationAuthorizationTranslucentActivity" in focus(adb_path, serial):
             raise RuntimeError("notification overlay stayed open after Back")
@@ -1635,12 +1645,26 @@ def require_creator_service_available(root):
         raise RuntimeError("Creator Center service is unavailable; collection skipped")
 
 
-def ensure_creator_list(adb_path, serial, root, slot, guard, events):
+def creator_navigation_state(root):
+    """Bounded diagnostics: UI landmarks only, never account or note text."""
+    names = ("我", "菜单", "已选定笔记", "我的草稿", "创作者中心", "创作中心",
+             "最新笔记", "更多", "更多笔记", "近 7 日数据", "观看", "数据中心",
+             "作品分析", "全部笔记", "开通数据权限", "账号异常")
+    present = [name for name in names if label(root, name)]
+    profile = label(root, "我")
+    selected = sorted(set(n.get("selected", "unknown") for n in profile))
+    return "/".join(present) + ";profile_selected=" + ",".join(selected)
+
+
+def ensure_creator_list(adb_path, serial, root, slot, guard, events, _notification_retry=False):
     recoveries = 0
     more_attempts = 0
+    overview_opened = "creator_overview_reopened" in events
     chat_backs = 0
     server_refreshes = 0
-    for _ in range(14):
+    states = []
+    for _ in range(6 if _notification_retry else 14):
+        states.append(creator_navigation_state(root))
         if wake_if_asleep(adb_path, serial, guard, events):
             root = navigation_capture(adb_path, serial, guard, events)
         if any(event.startswith("clone_user_requested:") for event in events):
@@ -1658,7 +1682,7 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
         # Creator Center also labels its overview entry “数据中心”. Keep the
         # proven native home on the existing entry/overlay/account checks below.
         if ((label(root, "数据中心") and not creator_overview_entry(root))
-                or (more_attempts and blank_works_loading(root))):
+                or ((more_attempts or overview_opened) and blank_works_loading(root))):
             return wait_data_center_loading(adb_path, serial, root, guard, events)
         if (label(root, "个人信息保护提示") and any(n.get("package") == XHS_PACKAGE
                 and n.get("text", "").startswith("欢迎使用小红书！") for n in root.iter("node"))
@@ -1734,6 +1758,12 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
         elif label(root, "笔记分析详情"):
             guard()
             adb(adb_path, serial, "shell", "input", "keyevent", "4", timeout=7)
+        elif creator_overview_entry(root):
+            tap_label(adb_path, serial, root, "观看", guard)
+            overview_opened = True
+            events.append("creator_overview_selected" if label(root, "最新笔记")
+                          else "creator_overview_opened_without_latest_notes")
+            time.sleep(0.8)
         elif label(root, "创作中心") and label(root, "最新笔记") and creator_more_label(root):
             if more_attempts >= 2 and label(root, "账号异常"):
                 raise RuntimeError("creator account abnormal; More did not open works analysis")
@@ -1741,10 +1771,6 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
             events.append("creator_more_selected")
             more_attempts += 1
             time.sleep(1)
-        elif creator_overview_entry(root):
-            tap_label(adb_path, serial, root, "观看", guard)
-            events.append("creator_overview_opened_without_latest_notes")
-            time.sleep(0.8)
         elif label(root, "创作者中心") and label(root, "我的草稿"):
             tap_label(adb_path, serial, root, "创作者中心", guard)
         elif label(root, "我的草稿") and any(
@@ -1786,7 +1812,30 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events):
         root = wait_data_center_loading(adb_path, serial, root, guard, events, require_content=True)
         events.append("works_tab_completed_at_navigation_limit")
         return root
-    raise ElementListReadError("could not prove the Creator Center works-analysis path from UI elements")
+    # The last capture is not processed by the exhausted loop. A late XHS
+    # notification activity must get its own bounded dismissal/readback, even
+    # when earlier unrelated overlays consumed the generic recovery budget.
+    current = focus(adb_path, serial)
+    notification = re.search(
+        r"mCurrentFocus=Window\{[^\n}]*\bu\d+\s+com\.xingin\.xhs/(?:"
+        r"com\.xingin\.authorization\.NotificationAuthorizationTranslucentActivity|"
+        r"\.authorization\.NotificationAuthorizationTranslucentActivity)(?:[}\s]|$)", current)
+    if notification and not _notification_retry:
+        assert_requested_foreground(current, events)
+        def notification_guard():
+            guard()
+            fresh = focus(adb_path, serial)
+            assert_requested_foreground(fresh, events)
+            if fresh != current:
+                raise ElementListReadError("late notification foreground changed before Back")
+        if recover_known_overlay(adb_path, serial, root, notification_guard, events):
+            events.append("creator_late_notification_retry")
+            guard()
+            assert_requested_foreground(focus(adb_path, serial), events)
+            root = navigation_capture(adb_path, serial, guard, events)
+            return ensure_creator_list(adb_path, serial, root, slot, guard, events, _notification_retry=True)
+    raise ElementListReadError("could not prove the Creator Center works-analysis path from UI elements; states="
+                               + json.dumps(states[-4:] + [creator_navigation_state(root)], ensure_ascii=False))
 
 
 def reopen_creator_list(adb_path, serial, root, guard, events, slot="app1"):
@@ -1797,15 +1846,15 @@ def reopen_creator_list(adb_path, serial, root, guard, events, slot="app1"):
     adb(adb_path, serial, "shell", "input", "keyevent", "4", timeout=7)
     time.sleep(0.4)
     root = navigation_capture(adb_path, serial, guard, events)
-    if label(root, "创作中心") and label(root, "最新笔记") and creator_more_label(root):
-        tap_label(adb_path, serial, root, creator_more_label(root), guard)
-    elif creator_overview_entry(root):
+    if creator_overview_entry(root):
         tap_label(adb_path, serial, root, "观看", guard)
         events.append("creator_overview_reopened")
         root = navigation_capture(adb_path, serial, guard, events)
         root = ensure_creator_list(adb_path, serial, root, slot, guard, events)
         events.append("list_reopened_at_newest")
         return root
+    elif label(root, "创作中心") and label(root, "最新笔记") and creator_more_label(root):
+        tap_label(adb_path, serial, root, creator_more_label(root), guard)
     else:
         raise RuntimeError("could not prove list returned to Creator Center")
     events.append("list_reopened_at_newest")
@@ -1831,11 +1880,13 @@ def note_cards(root):
 
 def structured_note_cards(root):
     cards = []
-    for node in live_nodes(root):
+    nodes = live_nodes(root)
+    visible = set(nodes)
+    for node in nodes:
         box = bounds(node)
         if box[2]-box[0] < 400 or not 140 <= box[3]-box[1] <= 320:
             continue
-        children = [n for n in node.iter("node") if n in live_nodes(root)]
+        children = [n for n in node.iter("node") if n in visible]
         texts = [(n.get("text") or "").strip() for n in children]
         if not any(is_note_status(t) for t in texts):
             continue
@@ -1869,6 +1920,7 @@ def flat_webview_cards(root):
                 and n.get("class") == "android.webkit.WebView" and n.get("text") == "数据中心"]
     if len(webviews) != 1:
         return []
+    visible = set(live_nodes(root))
     groups = []
     for node in webviews[0]:
         text = (node.get("text") or "").strip()
@@ -1879,14 +1931,13 @@ def flat_webview_cards(root):
             # Only a same-package footer below the whole row is excluded;
             # a note title reading "到底了" remains the second field.
             if (text == "到底了" and len(groups[-1]) == 6
-                    and node in live_nodes(root) and node.get("package") == XHS_PACKAGE
+                    and node in visible and node.get("package") == XHS_PACKAGE
                     and node.get("class") == "android.widget.TextView"
                     and all(bounds(n) for n in groups[-1])
                     and bounds(node)[1] >= max(bounds(n)[3] for n in groups[-1])):
                 continue
             groups[-1].append(node)
     cards = []
-    visible = set(live_nodes(root))
     for group in groups:
         if len(group) != 6 or any(n not in visible or n.get("package") != XHS_PACKAGE
                                   or n.get("class") != "android.widget.TextView" for n in group):
@@ -1915,13 +1966,38 @@ def flat_webview_cards(root):
     return cards
 
 
+def proven_list_terminal(root):
+    """A footer must be outside note rows; a matching note title proves nothing."""
+    views = [n for n in live_nodes(root) if n.get("package") == XHS_PACKAGE
+             and n.get("class") == "android.webkit.WebView" and n.get("text") == "数据中心"]
+    if len(views) != 1:
+        return False, False
+    view = views[0]
+    raw = structured_note_cards(root) or flat_webview_cards(root)
+    nodes = live_nodes(view)
+    filters = label(view, "全部笔记")
+    top = bounds(filters[0])[3] if len(filters) == 1 else bounds(view)[1]
+    bottom = bounds(view)[3]
+    markers = {}
+    for value in ("暂无笔记", "到底了"):
+        matches = [n for n in nodes if n.get("text") == value and n.get("package") == XHS_PACKAGE
+                   and n.get("class") == "android.widget.TextView"
+                   and top <= bounds(n)[1] < bounds(n)[3] <= bottom
+                   and not any(bounds(row)[1] <= bounds(n)[1] < bounds(row)[3] for row, _ in raw)]
+        markers[value] = len(matches) == 1 and (not raw or bounds(matches[0])[1] >= max(bounds(row)[3] for row, _ in raw))
+    empty = markers["暂无笔记"] and not raw and not any(
+        is_note_status(n.get("text", "")) or DATE.fullmatch(n.get("text", "")) for n in nodes)
+    return bool(empty), bool(markers["到底了"] and raw)
+
+
 def element_page_signature(root, allow_duplicate_rows=False):
     """Prove complete visible element rows, excluding only clipped edge rows."""
     require_element_tree(root)
     if not creator_list(root) or creator_filter_panel(root):return None
     cards = note_cards(root)
     if not cards:
-        return ((),bool(label(root,"暂无笔记")),bool(label(root,"到底了"))) if label(root,"暂无笔记") or label(root,"到底了") else None
+        empty, bottom = proven_list_terminal(root)
+        return ((), empty, bottom) if empty else None
     # Window-aware callers retain every row, then reject ambiguous identities
     # inside the requested window. Other callers keep the strict default.
     identities = [(item["title"], item["published_at_raw"]) for _, item in cards]
@@ -1944,7 +2020,7 @@ def element_page_signature(root, allow_duplicate_rows=False):
         gaps = []
         for row,item in cards:
             if any(n.get("package") != XHS_PACKAGE for n in row.iter("node")
-                   if n in live_nodes(root)):
+                   if n in visible):
                 raise ElementListReadError("element row contains another package")
             box = bounds(row)
             matches = [n for n in statuses if box[1] <= bounds(n)[1] < bounds(n)[3] <= box[3]]
@@ -1977,7 +2053,7 @@ def element_page_signature(root, allow_duplicate_rows=False):
                 if box[1]-before < top or box[3]+after > bottom:continue
                 raise ElementListReadError("a fully visible dated element row has incomplete status/title/metrics")
     return (tuple((v["title"],v["published_at_raw"],v["status_raw"],v["list_view_count"],v["list_like_count"],v["list_comment_count"]) for _,v in cards),
-            bool(label(root,"暂无笔记")),bool(label(root,"到底了")))
+            *proven_list_terminal(root))
 
 
 def verify_newest_element_position(root):
@@ -1985,7 +2061,9 @@ def verify_newest_element_position(root):
     filters = label(root,"全部笔记")
     views = [n for n in live_nodes(root) if n.get("package") == XHS_PACKAGE
              and n.get("class") == "android.webkit.WebView" and n.get("text") == "数据中心"]
-    if cards and len(filters) == len(views) == 1:
+    if cards and not len(filters) == len(views) == 1:
+        raise ElementListReadError("newest list position requires a unique native header")
+    if cards:
         top = bounds(filters[0])[3];width = bounds(views[0])[2]-bounds(views[0])[0]
         raw = structured_note_cards(root)
         if (any(bounds(n)[1] < top for n,_ in raw)
@@ -1994,11 +2072,69 @@ def verify_newest_element_position(root):
 
 
 def verify_element_overlap(previous_root, root):
-    previous = {(v["title"],v["published_at_raw"]) for _,v in note_cards(previous_root)}
+    previous = [(v["title"],v["published_at_raw"]) for _,v in note_cards(previous_root)]
     raw = structured_note_cards(root) or flat_webview_cards(root)
-    current = {(v["title"],v["published_at_raw"]) for _,v in raw}
-    if previous and not previous.intersection(current):
+    full = {(v["title"],v["published_at_raw"]) for _,v in note_cards(root)}
+    # Known clipped rows may anchor the seam; unknown clipped rows are not data.
+    current = [(v["title"],v["published_at_raw"]) for _,v in raw
+               if (v["title"],v["published_at_raw"]) in set(previous) | full]
+    common = [identity for identity in current if identity in previous]
+    if previous and not common:
         raise ElementListReadError("element page continuity is unproven after scroll")
+    if not previous:
+        return
+    start = previous.index(common[0])
+    if (previous[start:start+len(common)] != common
+            or current[:len(common)] != common
+            or (len(current) > len(common) and previous[start:] != common)):
+        raise ElementListReadError("ordered element overlap has a gap, reorder or backward jump")
+
+
+def verify_history_extension(history, root, as_of, cutoff, terminal=False):
+    """Do not silently deduplicate a distant repeat or accept a missing known tail."""
+    full = [(v["title"],v["published_at_raw"]) for _,v in note_cards(root)
+            if cutoff <= published_date(v["published_at_raw"], as_of) <= as_of]
+    novel = [identity for identity in full if identity not in history]
+    if not history:
+        return
+    raw = structured_note_cards(root) or flat_webview_cards(root)
+    observed = [(v["title"],v["published_at_raw"]) for _,v in raw
+                if (v["title"],v["published_at_raw"]) in history or (v["title"],v["published_at_raw"]) in full]
+    common = [identity for identity in observed if identity in history]
+    dates = [published_date(identity[1], as_of) for identity in observed]
+    if (not common or common != history[history.index(common[0]):history.index(common[0])+len(common)]
+            or ((novel or terminal) and common != history[-len(common):])
+            or observed[:len(common)] != common
+            or any(later > earlier for earlier, later in zip(dates, dates[1:]))):
+        raise ElementListReadError("ordered collection history has an ambiguous repeat or missing tail")
+
+
+def prove_native_list_start(adb_path, serial, root, guard, events):
+    """Require a freshly read, unchanged leading row after a bounded upward check."""
+    for _ in range(3):
+        guard()
+        signature = element_page_signature(root, allow_duplicate_rows=True)
+        if signature is None:
+            raise ElementListReadError("native list start is not loaded")
+        verify_newest_element_position(root)
+        if not note_cards(root):
+            if not signature[1]:
+                raise ElementListReadError("empty list start is not proven")
+            events.append("list_top_confirmed_empty_elements")
+            return root
+        first = note_cards(root)[0]
+        anchor = (first[1]["title"], first[1]["published_at_raw"], bounds(first[0]))
+        swipe(adb_path, serial, root, guard, events, reverse=True)
+        following = refresh_scrolled_webview(adb_path, serial,
+            navigation_capture(adb_path, serial, guard, events), guard, events, root)
+        following = wait_creator_content(adb_path, serial, following, guard, events)
+        verify_newest_element_position(following)
+        cards = note_cards(following)
+        if cards and anchor == (cards[0][1]["title"], cards[0][1]["published_at_raw"], bounds(cards[0][0])):
+            events.append("list_top_confirmed_by_reverse_scroll")
+            return following
+        root = following
+    raise ElementListReadError("native newest row did not stabilize after upward checks")
 
 
 def data_center_reopen_count(events):
@@ -2118,7 +2254,7 @@ def wait_creator_content(adb_path, serial, root, guard, events):
     return wait_data_center_loading(adb_path, serial, root, guard, events, require_content=True)
 
 
-def swipe(adb_path, serial, root, guard, events):
+def swipe(adb_path, serial, root, guard, events, reverse=False):
     containers = [n for n in live_nodes(root) if n.get("scrollable") == "true"]
     if (not containers and creator_list(root) and note_cards(root)
             and re.search(r"com\.xingin\.xhs/com\.xingin\.xywebview\.activity\.WebViewActivityV2(?:[}\s]|$)", focus(adb_path, serial))):
@@ -2143,9 +2279,22 @@ def swipe(adb_path, serial, root, guard, events):
     # the rows actually read, including when just one complete row remains.
     step = int(min((y2-y1)*.25, height*2,
                    max(height*.5, (rows[-1][1]-rows[0][1])*.5)))
+    # With four or more complete rows, retain the last two visible
+    # row starts as overlap and advance at most three median row heights.
+    # Thin/clipped subsets keep the original smaller step. Actual post-scroll
+    # continuity still requires fresh complete elements before accepting data.
+    # Observed47/141 native boxes overlap2-5px at row edges. Allow only
+    # this tiny rounding envelope; substantial/nested row overlap stays slow.
+    edge_tolerance = min(8, height*.03)
+    if ("collection_verification_pass" not in events and not reverse
+            and len(rows) >= 4 and all(a[3] <= b[1] + edge_tolerance for a, b in zip(rows, rows[1:]))):
+        step = int(min((y2-y1)*.40, height*3, rows[-2][1]-rows[0][1]))
     if step <= 0:
         raise ElementListReadError("native row geometry cannot prove a scroll distance")
     end_y = max(y1+1, start_y-step)
+    if reverse:
+        start_y = y1 + (y2-y1) // 3
+        end_y = min(y2-1, start_y+step)
     wake_if_asleep(adb_path, serial, guard, events)
     guard()
     adb(adb_path, serial, "shell", "input", "swipe", str(x), str(start_y), str(x), str(end_y), "550", timeout=8)
@@ -2213,7 +2362,144 @@ def refresh_scrolled_webview(adb_path, serial, root, guard, events, previous_roo
     return refreshed
 
 
-def collect(args):
+def capture_element_pair(adb_path, serial, guard, events):
+    from xhs_native_window import read
+    current = focus(adb_path, serial)
+    assert_requested_foreground(current, events)
+    assert_no_poco(adb_path, serial)
+    try:
+        return read(adb_path, serial, adb_process, lambda: focus(adb_path, serial), guard, current, pair=True)
+    finally:
+        guard()
+        after = focus(adb_path, serial)
+        assert_requested_foreground(after, events)
+        if login_activity(after):
+            raise RuntimeError("Xiaohongshu account is logged out; manual login is required")
+        if not works_webview_activity(after):
+            raise ElementListReadError("native pair foreground changed")
+
+
+def stable_pair_signature(trees):
+    signatures = []
+    for root in trees:
+        require_creator_service_available(root)
+        try:
+            signature = element_page_signature(root, allow_duplicate_rows=True)
+        except ElementListReadError:
+            return None
+        if signature is None:
+            return None
+        signatures.append(signature)
+    return signatures[0] if len(signatures) == 2 and signatures[0] == signatures[1] else None
+
+
+def probe_element_pair(adb_path, serial, root, guard, events):
+    """Enable only after two fresh native trees agree with the proven stock page."""
+    from xhs_native_window import NativePairUnavailable
+    guard()
+    sdk = adb(adb_path, serial, "shell", "getprop", "ro.build.version.sdk", timeout=8).strip()
+    if not sdk.isdigit() or int(sdk) < 24:
+        events.append("native_pair_sdk_unsupported")
+        return False
+    try:
+        trees = capture_element_pair(adb_path, serial, guard, events)
+    except NativePairUnavailable:
+        events.append("native_pair_probe_unavailable")
+        return False
+    signature = stable_pair_signature(trees)
+    if signature is not None and signature == element_page_signature(root, allow_duplicate_rows=True):
+        events.append("native_pair_elements_enabled")
+        return True
+    events.append("native_pair_probe_mismatch")
+    return False
+
+
+def read_scrolled_content(adb_path, serial, previous_root, guard, events, fast_pair):
+    """Keep continuity and two-snapshot checks; use the old path on unproven progress."""
+    if "collection_verification_pass" in events:
+        guard()
+        current_focus = focus(adb_path, serial)
+        assert_requested_foreground(current_focus, events)
+        if not works_webview_activity(current_focus):
+            raise ElementListReadError("verification foreground is not the works list")
+        root = navigation_capture(adb_path, serial, guard, events)
+        guard()
+        if focus(adb_path, serial) != current_focus:
+            raise ElementListReadError("verification foreground changed during read")
+        require_creator_service_available(root)
+        try:
+            signature = element_page_signature(root, allow_duplicate_rows=True)
+        except ElementListReadError:
+            signature = None
+        previous = {(v["title"], v["published_at_raw"]) for _, v in note_cards(previous_root)}
+        current = {(v["title"], v["published_at_raw"]) for _, v in note_cards(root)}
+        # The primary scan already double-read every row. This independent
+        # audit reads each newly exposed page once; the complete ordered audit
+        # still has to match that primary scan before any result is complete.
+        if signature is not None and current - previous:
+            verify_element_overlap(previous_root, root)
+            events.append("verification_fresh_page_accepted")
+            return root, False, False
+        # Both stock UIAutomator and the fallback native reader produce fresh
+        # element XML through navigation_capture; neither is a cached file.
+        # A stale/partial tree is not evidence. Reuse this first read only as
+        # input to the existing refresh and two-fresh-read stability path.
+        events.append("verification_page_stability_fallback")
+        root = refresh_scrolled_webview(adb_path, serial, root, guard, events, previous_root)
+        return wait_creator_content(adb_path, serial, root, guard, events), False, False
+    if fast_pair:
+        from xhs_native_window import NativePairUnavailable
+        try:
+            trees = capture_element_pair(adb_path, serial, guard, events)
+        except NativePairUnavailable:
+            fast_pair = False
+            events.append("native_pair_disabled_after_rejection")
+        else:
+            signature = stable_pair_signature(trees)
+            previous = {(v["title"], v["published_at_raw"]) for _, v in note_cards(previous_root)}
+            current = {(v["title"], v["published_at_raw"]) for _, v in note_cards(trees[1])}
+            # Unchanged/clipped old content still requires the proven refresh path.
+            if signature is not None and current - previous:
+                verify_element_overlap(previous_root, trees[0])
+                verify_element_overlap(previous_root, trees[1])
+                return trees[1], True, fast_pair
+            # Do not repeatedly pay for two rejected reads on a slow/stale OEM.
+            # The established refresh/loading path remains authoritative here.
+            fast_pair = False
+            events.append("native_pair_disabled_after_unstable_or_stale_page")
+    root = refresh_scrolled_webview(adb_path, serial, navigation_capture(adb_path, serial, guard, events), guard, events, previous_root)
+    root = wait_creator_content(adb_path, serial, root, guard, events)
+    return root, False, fast_pair
+
+
+def verification_entry(args, guard, events):
+    """Reuse only a freshly proven same-slot list from the completed primary scan."""
+    prior = getattr(args, "verified_entry_events", ())
+    if {e for e in prior if e.startswith("collection_slot_requested:")} != {"collection_slot_requested:" + args.app_slot}:
+        return None
+    carried = [e for e in prior if e.startswith(("collection_slot_requested:", "clone_user_requested:"))
+               or e == "native_window_elements_enabled"]
+    guard()
+    current = focus(args.adb, args.serial)
+    assert_requested_foreground(current, carried)
+    if not works_webview_activity(current):
+        return None
+    verify_collection_slot(args.adb, args.serial, args.app_slot, carried)
+    assert_no_poco(args.adb, args.serial)
+    root = navigation_capture(args.adb, args.serial, guard, carried)
+    guard()
+    if focus(args.adb, args.serial) != current:
+        raise ElementListReadError("verification entry foreground changed")
+    require_creator_service_available(root)
+    require_element_tree(root)
+    if not creator_list(root) or creator_filter_panel(root):
+        return None
+    events.extend(carried)
+    events.append("verification_existing_list_reused")
+    return root
+
+
+def collect_once(args):
     device = assert_idle(args.device_cache, args.serial, args.device_name, args.task_id, args.app_slot, args.cancel_file)
     if adb(args.adb, args.serial, "get-state", timeout=6).strip() != "device":
         raise RuntimeError("target ADB transport is not online")
@@ -2223,13 +2509,23 @@ def collect(args):
     if not accounts:
         raise RuntimeError("requested Xiaohongshu app slot is not enabled")
     events = ["collection_window_days:" + str(args.days), "collection_reader:ui_elements_only"]
-    release_idle_poco(args.adb, args.serial, guard, events)
-    root = start_xhs(args.adb, args.serial, args.app_slot, guard, events)
-    root = ensure_creator_list(args.adb, args.serial, root, args.app_slot, guard, events)
+    if getattr(args, "verification_pass", False):
+        events.append("collection_verification_pass")
+        events.extend(["data_center_loading_reopen:budget_carried"] * getattr(args, "used_loading_reopens", 0))
+    entry_started = time.monotonic()
+    root = verification_entry(args, guard, events) if getattr(args, "verification_pass", False) else None
+    if root is None:
+        release_idle_poco(args.adb, args.serial, guard, events)
+        root = start_xhs(args.adb, args.serial, args.app_slot, guard, events)
+        root = ensure_creator_list(args.adb, args.serial, root, args.app_slot, guard, events)
     verify_collection_slot(args.adb, args.serial, args.app_slot, events)
+    events.append("collection_entry_ms:" + str(round((time.monotonic() - entry_started) * 1000)))
+    newest_started = time.monotonic()
     root = wait_creator_content(args.adb, args.serial,
                                 reopen_creator_list(args.adb, args.serial, root, guard, events, args.app_slot), guard, events)
     verify_newest_element_position(root)
+    root = prove_native_list_start(args.adb, args.serial, root, guard, events)
+    events.append("collection_newest_ready_ms:" + str(round((time.monotonic() - newest_started) * 1000)))
     as_of = dt.datetime.now(SHANGHAI).date()
     events.append("collection_scan_as_of:" + as_of.isoformat())
     # Include today as the first calendar date in the requested day count.
@@ -2248,6 +2544,12 @@ def collect(args):
     stagnant = 0
     previous_top_date = None
     date_order_valid = True
+    fast_probe_attempted = False
+    fast_pair = False
+    page_read_ms = 0
+    fast_pages = 0
+    if not NATIVE_PAIR_PROBE_ENABLED:
+        events.append("native_pair_probe_disabled_pending_validation")
     for round_index in range(args.max_scrolls + 1):
         assert_idle(args.device_cache, args.serial, args.device_name, args.task_id, args.app_slot, args.cancel_file)
         assert_no_poco(args.adb, args.serial)
@@ -2271,8 +2573,24 @@ def collect(args):
             date_order_valid = False
         if card_dates and previous_top_date is not None and card_dates[0] > previous_top_date:
             date_order_valid = False
+        if any(date > as_of for date in card_dates):
+            date_order_valid = False
+        if not date_order_valid:
+            result["stop_reason"] = "date_order_unproven"
+            break
         if card_dates:
             previous_top_date = card_dates[0]
+        empty, bottom = proven_list_terminal(root)
+        bottom = bottom or empty
+        older_visible = bool(card_dates and min(card_dates) < cutoff)
+        try:
+            verify_history_extension([(v["title"],v["published_at_raw"]) for v in result["notes"]],
+                                     root, as_of, cutoff, terminal=older_visible or bottom)
+        except ElementListReadError as error:
+            events.append("works_elements_scan_stopped:" + str(error))
+            result["stop_reason"] = "elements_unproven"
+            result["warnings"].append("elements_unproven")
+            break
         for _, item in cards:
             identity = (item["title"], item["published_at_raw"])
             if identity in seen:
@@ -2291,10 +2609,6 @@ def collect(args):
                 seen[identity] = item
             else:
                 seen[identity] = None
-        bottom = bool(label(root, "到底了"))
-        if label(root, "暂无笔记"):
-            bottom = True
-        older_visible = bool(card_dates and min(card_dates) < cutoff)
         result["scan_rounds"].append({"round": round_index, "visible_cards": len(cards),
                                       "new_cards": discovered, "end_marker": bottom,
                                       "older_than_window_visible": older_visible,
@@ -2314,18 +2628,26 @@ def collect(args):
         if round_index >= args.max_scrolls:
             result["stop_reason"] = "scroll_budget_exhausted"
             break
+        if not fast_probe_attempted and NATIVE_PAIR_PROBE_ENABLED:
+            fast_probe_attempted = True
+            probe_started = time.monotonic()
+            fast_pair = probe_element_pair(args.adb, args.serial, root, guard, events)
+            events.append("native_pair_probe_ms:" + str(round((time.monotonic() - probe_started) * 1000)))
         swipe(args.adb, args.serial, root, guard, events)
         result["scrolls"] += 1
         previous_root = root
+        reading_started = time.monotonic()
         try:
-            root = refresh_scrolled_webview(args.adb, args.serial, navigation_capture(args.adb, args.serial, guard, events), guard, events, previous_root)
-            root = wait_creator_content(args.adb, args.serial, root, guard, events)
+            root, used_pair, fast_pair = read_scrolled_content(args.adb, args.serial, previous_root, guard, events, fast_pair)
+            fast_pages += int(used_pair)
             verify_element_overlap(previous_root, root)
         except ElementListReadError as error:
             events.append("works_elements_scan_stopped:" + str(error))
             result["stop_reason"] = "elements_unproven"
             result["warnings"].append("elements_unproven")
             break
+        finally:
+            page_read_ms += round((time.monotonic() - reading_started) * 1000)
     if not result["complete"]:
         result["warnings"].append("recent_window_not_proven")
     if not date_order_valid:
@@ -2337,7 +2659,57 @@ def collect(args):
         result["warnings"].append("creator_list_limited_to_displayed_time_range")
     if not result["account_bound"]:
         result["warnings"].append("app_slot_has_no_bound_xhs_account")
+    events.extend(["scan_page_read_ms:" + str(page_read_ms), "native_pair_fast_pages:" + str(fast_pages)])
     return result
+
+
+def collect(args):
+    """Only two independently restarted, complete ordered scans may succeed."""
+    first = collect_once(args)
+    if not first["complete"]:
+        return first
+    # Never serialize a provisional pass as complete if verification fails.
+    first["complete"] = False
+    first_stop = first["stop_reason"]
+    first["stop_reason"] = "verification_unproven"
+    verification_args = argparse.Namespace(**vars(args))
+    verification_args.verification_pass = True
+    verification_args.verified_entry_events = tuple(first["recovery_events"])
+    verification_args.used_loading_reopens = data_center_reopen_count(first["recovery_events"])
+    started = time.monotonic()
+    try:
+        second = collect_once(verification_args)
+    except ElementListReadError:
+        first["warnings"].append("verification_elements_unproven")
+        first["recovery_events"].insert(0, "collection_integrity:verification_elements_unproven")
+        return first
+    identities = lambda result: [(n["title"], n["published_date"]) for n in result["notes"]]
+    a, b = identities(first), identities(second)
+    digest = lambda values: hashlib.sha256(json.dumps(values, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
+    # The existing public API retains only the first 100 events. Keep the
+    # final completeness evidence ahead of verbose per-page observations.
+    first["recovery_events"][0:0] = [
+        "collection_primary_sha256:" + digest(a), "collection_verification_sha256:" + digest(b),
+        "collection_primary_count:" + str(len(a)), "collection_verification_count:" + str(len(b)),
+        "collection_verification_scrolls:" + str(second["scrolls"]),
+        "collection_verification_ms:" + str(round((time.monotonic() - started) * 1000)),
+        "collection_verification_fresh_pages:" + str(second["recovery_events"].count("verification_fresh_page_accepted")),
+        "collection_verification_fallback_pages:" + str(second["recovery_events"].count("verification_page_stability_fallback")),
+        "collection_verification_entry_reused:" + str("verification_existing_list_reused" in second["recovery_events"]).lower(),
+        "collection_verification_stop:" + str(second["stop_reason"])]
+    # Counts/status may legitimately change during the second pass. Identity,
+    # order, scope and the proven boundary must not be inferred from a union.
+    valid_stops = {"older_than_window_visible", "list_end_visible"}
+    if (not second["complete"] or first_stop not in valid_stops or second["stop_reason"] not in valid_stops
+            or a != b or len(set(a)) != len(a)
+            or any(first[k] != second[k] for k in ("app_slot", "window_start_date", "window_end_date", "list_scope_raw"))):
+        first["warnings"].append("two_pass_identity_or_boundary_unproven")
+        first["recovery_events"].insert(0, "collection_integrity:two_pass_mismatch")
+        return first
+    first["complete"] = True
+    first["stop_reason"] = first_stop
+    first["recovery_events"].insert(0, "collection_integrity:verified_two_pass")
+    return first
 
 
 def main():
