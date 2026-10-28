@@ -5,7 +5,7 @@ import tempfile
 import time
 import unittest
 from pathlib import Path
-from xhs_isolated_guard import validate
+from xhs_isolated_guard import validate, validate_file
 from xhs_isolated_runner import GuardedCommands, read_proof
 from xhs_candidate_live import settings_recovery_source
 
@@ -123,12 +123,85 @@ class LeaseBoundary(unittest.TestCase):
         def open_after_one_failure(req,**kw):
             calls.append(1)
             if len(calls)==1:raise urllib.error.HTTPError(req.full_url,503,'unavailable',{},None)
-            return io.BytesIO(json.dumps({'nonce':json.loads(req.data)['nonce'],'allowed':True}).encode())
+            return io.BytesIO(json.dumps({'nonce':json.loads(req.data)['nonce'],'allowed':True,'brokerProofAgeSeconds':0}).encode())
         p=read_proof(c,open_after_one_failure,sleep=lambda _:None)
         self.assertTrue(p['allowed']);self.assertEqual(len(calls),2)
         def conflict(req,**kw):raise urllib.error.HTTPError(req.full_url,409,'lost',{},None)
         with self.assertRaises(urllib.error.HTTPError):read_proof(c,conflict,sleep=lambda _:self.fail('must not retry'))
         with self.assertRaises(RuntimeError):read_proof(c,lambda *a,**k:io.BytesIO(b'{"nonce":"old"}'),sleep=lambda _:self.fail('must not retry'))
+
+    def test_http_200_transport_expiry_pauses_then_uses_new_proof(self):
+        import io
+        c=dict(self.c,brokerUrl='http://127.0.0.1:1',brokerToken='fixture')
+        now=[0.0];calls=[];sleeps=[]
+        def sleep(delay):sleeps.append(delay);now[0]+=delay
+        def opener(req,**kw):
+            calls.append(json.loads(req.data)['nonce']);now[0]+=.75 if len(calls)==1 else .1
+            return io.BytesIO(json.dumps(dict(self.p,nonce=calls[-1],brokerProofAgeSeconds=2.4 if len(calls)==1 else .2)).encode())
+        proof=read_proof(c,opener,sleep,clock=lambda:now[0])
+        self.assertEqual(len(calls),2);self.assertNotEqual(*calls);self.assertEqual(sleeps,[.2])
+        self.assertEqual(proof['brokerProofAgeSeconds'],.2);self.assertAlmostEqual(proof['roundTripSeconds'],.1)
+        self.assertEqual(proof['localObservedAt'],now[0])
+
+    def test_persistent_stale_200_exhausts_original_budget_without_start(self):
+        import io
+        c=dict(self.c,brokerUrl='http://127.0.0.1:1',brokerToken='fixture')
+        now=[0.0];calls=[]
+        def sleep(delay):now[0]+=delay
+        def opener(req,**kw):
+            calls.append(kw['timeout']);now[0]+=min(.8,kw['timeout'])
+            return io.BytesIO(json.dumps(dict(self.p,nonce=json.loads(req.data)['nonce'],brokerProofAgeSeconds=3)).encode())
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp)/'cache.json';p.write_text(json.dumps([self.d]));c['inventoryPath']=str(p)
+            command=GuardedCommands(c,lambda:read_proof(c,opener,sleep,clock=lambda:now[0]),identity=lambda _:None,
+                                    popen=lambda *a,**k:self.fail('stale proof must never start a client'))
+            with self.assertRaisesRegex(RuntimeError,'qa_fresh_lease_proof_unavailable'):
+                command.run(['fixture-adb','-s','s','get-state'])
+        self.assertAlmostEqual(now[0],5);self.assertGreater(len(calls),1);self.assertTrue(all(x<=2 for x in calls))
+
+    def test_stale_response_followed_by_real_conflict_is_not_retried(self):
+        import io,urllib.error
+        c=dict(self.c,brokerUrl='http://127.0.0.1:1',brokerToken='fixture');calls=[];now=[0.0]
+        def opener(req,**kw):
+            calls.append(1);now[0]+=.2
+            if len(calls)==2:raise urllib.error.HTTPError(req.full_url,409,'lost',{},None)
+            return io.BytesIO(json.dumps(dict(self.p,nonce=json.loads(req.data)['nonce'],brokerProofAgeSeconds=3)).encode())
+        with self.assertRaises(urllib.error.HTTPError):read_proof(c,opener,sleep=lambda _:None,clock=lambda:now[0])
+        self.assertEqual(len(calls),2)
+
+    def test_age_boundary_and_malformed_evidence(self):
+        import io
+        c=dict(self.c,brokerUrl='http://127.0.0.1:1',brokerToken='fixture')
+        for age in (None,-1,float('nan'),float('inf'),True,'0'):
+            def opener(req,**kw):return io.BytesIO(json.dumps(dict(self.p,nonce=json.loads(req.data)['nonce'],brokerProofAgeSeconds=age)).encode())
+            with self.subTest(age=age),self.assertRaisesRegex(RuntimeError,'qa_broker_proof_invalid'):
+                read_proof(c,opener,sleep=lambda _:self.fail('invalid proof is terminal'))
+        now=[0.0]
+        def exact_boundary(req,**kw):
+            now[0]+=.5
+            return io.BytesIO(json.dumps(dict(self.p,nonce=json.loads(req.data)['nonce'],brokerProofAgeSeconds=2.5)).encode())
+        proof=read_proof(c,exact_boundary,clock=lambda:now[0]);self.assertEqual(proof['brokerProofAgeSeconds'],2.5)
+        self.assertIs(validate(c,proof,[self.d],1,now[0]),self.d)
+        with self.assertRaisesRegex(RuntimeError,'qa_lease_not_fresh'):validate(c,proof,[self.d],1,now[0]+.001)
+
+    def test_slow_inventory_read_precedes_proof_and_does_not_refresh_inventory_age(self):
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp)/'cache.json';p.write_text(json.dumps([self.d]));c=dict(self.c,inventoryPath=str(p))
+            events=[];now=[100.0];real_read=Path.read_text
+            def read(path,**kw):
+                events.append('inventory');now[0]+=4;return real_read(path,**kw)
+            def proof():
+                events.append('proof');return dict(self.p,localObservedAt=now[0])
+            with patch.object(Path,'read_text',read),patch('xhs_isolated_guard.time.monotonic',lambda:now[0]):
+                self.assertEqual(validate_file(c,proof),self.d)
+            self.assertEqual(events,['inventory','proof'])
+            import os
+            os.utime(p,(time.time()-100,time.time()-100))
+            def proof_after_file_replacement():
+                p.write_text(json.dumps([self.d]))
+                return proof()
+            with self.assertRaisesRegex(RuntimeError,'qa_inventory_stale'):validate_file(c,proof_after_file_replacement)
 
     def test_recovery_generated_script_compiles_and_restores_exact_ledger(self):
         import contextlib,io
