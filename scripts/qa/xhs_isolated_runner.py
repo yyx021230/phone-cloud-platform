@@ -67,7 +67,7 @@ class GuardedCommands:
             self.paths.add(a[3]); return True
         if len(a)==3 and a[:2] in (('exec-out','cat'),('shell','ls')): return a[2] in self.paths
         if len(a)==4 and a[:3]==('shell','rm','-f'): return a[3] in self.paths
-        if len(a)==3 and a[0]=='push' and a[1]==self.config.get('nativeAsset') and re.fullmatch(r'/data/local/tmp/pc-xhs-elements-[a-f0-9]{32}\.jar',a[2]):
+        if len(a)==3 and a[0]=='push' and Path(a[1])==Path(self.config.get('nativeAsset','__absent__')) and re.fullmatch(r'/data/local/tmp/pc-xhs-elements-[a-f0-9]{32}\.jar',a[2]):
             if hashlib.sha256(Path(a[1]).read_bytes()).hexdigest()!=self.config['nativeAssetSha256']: return False
             self.paths.add(a[2]); return True
         if len(a)==2 and a[0]=='shell':

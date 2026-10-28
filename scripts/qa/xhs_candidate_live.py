@@ -23,6 +23,8 @@ ROOT=Path(__file__).resolve().parents[2]
 
 
 def main():
+    if not __debug__ or os.environ.get('PYTHONOPTIMIZE'):
+        raise RuntimeError('qa_optimized_python_is_forbidden')
     names=sys.argv[1:]
     assert 1<=len(names)<=2 and len(set(names))==len(names) and not set(names)&{'18','152','155','185'}
     spec=importlib.util.spec_from_file_location('access',os.environ['XHS_QA_ACCESS_FILE'])
@@ -60,7 +62,8 @@ const values=await Promise.all([api('/api/v1/devices'),api('/api/v1/device-locks
 if(values.some(x=>x.status!==200))throw Error('state_read_failed');
 const devices=values[0].body.devices.filter(x=>x.deviceId===t.deviceId&&x.adb?.serial===t.serial);
 const locks=values[1].body.locks.filter(x=>x.deviceId===t.deviceId&&x.status==='active');
-console.log(JSON.stringify({devices,locks,lookupReserved:values[2].body.pool.channels.some(x=>x.deviceId===t.deviceId),session:values[3]?.body.session||null}));'''
+const session=values[3]?.body.session||null;
+console.log(JSON.stringify({devices,locks,lockExpiryValid:locks.every(x=>Date.parse(x.expiresAt)>Date.now()),sessionExpiryValid:!!session&&Date.parse(session.expiresAt)>Date.now(),lookupReserved:values[2].body.pool.channels.some(x=>x.deviceId===t.deviceId),session}));'''
         code=code.replace('TARGET',json.dumps(t)).replace('SESSION',",api('/api/v1/screen-sessions/"+session+"')" if session else '')
         return q.cloud(code,timeout=5)
     def prove(c):
@@ -68,7 +71,7 @@ console.log(JSON.stringify({devices,locks,lookupReserved:values[2].body.pool.cha
         started=time.time();s=cloud_state(c,c['sessionId']);proof_count+=1
         assert len(s['devices'])==1 and not s['lookupReserved'],'qa_target_changed_or_lookup_reserved'
         d=s['devices'][0];assert d['adb']['state']=='device','qa_device_offline'
-        assert len(s['locks'])==1,'qa_not_unique_lock'
+        assert len(s['locks'])==1 and s['lockExpiryValid'] and s['sessionExpiryValid'],'qa_not_unique_live_lock'
         lock=s['locks'][0];session=s['session']
         assert lock['lockId']==c['lockId'] and lock['taskId']==c['sessionId'] and lock['ownerUserId']==c['ownerUserId'] and lock['lockType']=='screen_control','qa_lock_changed'
         assert session and session['sessionId']==c['sessionId'] and session['deviceId']==c['deviceId'] and session['status'] in ('ready','streaming'),'qa_session_not_alive'
@@ -113,16 +116,16 @@ console.log(JSON.stringify({devices,locks,lookupReserved:values[2].body.pool.cha
             if s['session']['status'] in ('ready','streaming'):break
             time.sleep(.5)
         lock=s['locks'][0];c.update(sessionId=session_id,lockId=lock['lockId'],ownerUserId=lock['ownerUserId'])
-        stage=r'D:\PhoneCloud\staging\xhs-qa-'+phase+'-'+t['deviceName']
+        stage='D:/PhoneCloud/staging/xhs-qa-'+phase+'-'+t['deviceName']
         c.update(stage=stage,adbPath=identity['adbExe'],adbPid=identity['adbPid'],agentPid=identity['agentPid'],agentCreatedAt=identity['agentCreatedAt'],
-                 inventoryPath=r'D:\PhoneCloud\agent\data\device-scan-cache.json',pythonPath=r'D:\PhoneCloud\tools\python39\python.exe',
+                 inventoryPath='D:/PhoneCloud/agent/data/device-scan-cache.json',pythonPath='D:/PhoneCloud/tools/python39/python.exe',
                  brokerUrl=f'http://127.0.0.1:{remote_port}',brokerToken=uuid.uuid4().hex+uuid.uuid4().hex)
         files={'xhs_isolated_guard.py':ROOT/'scripts/qa/xhs_isolated_guard.py','xhs_isolated_runner.py':ROOT/'scripts/qa/xhs_isolated_runner.py',
                'host.mjs':ROOT/'scripts/qa/xhs_candidate_host.mjs','xhs-data-collection.mjs':ROOT/'windows-agent/src/xhs-data-collection.mjs',
                'scripts/小红书数据同步.py':ROOT/'windows-agent/scripts/小红书数据同步.py','scripts/xhs_native_window.py':ROOT/'windows-agent/scripts/xhs_native_window.py',
                'scripts/native/xhs-native-window.jar':ROOT/'windows-agent/scripts/native/xhs-native-window.jar'}
-        c.update(collectorPath=stage+r'\scripts\小红书数据同步.py',collectorSha256=hashlib.sha256(files['scripts/小红书数据同步.py'].read_bytes()).hexdigest(),
-                 nativeHelperSha256=hashlib.sha256(files['scripts/xhs_native_window.py'].read_bytes()).hexdigest(),nativeAsset=stage+r'\scripts\native\xhs-native-window.jar',
+        c.update(collectorPath=stage+'/scripts/小红书数据同步.py',collectorSha256=hashlib.sha256(files['scripts/小红书数据同步.py'].read_bytes()).hexdigest(),
+                 nativeHelperSha256=hashlib.sha256(files['scripts/xhs_native_window.py'].read_bytes()).hexdigest(),nativeAsset=stage+'/scripts/native/xhs-native-window.jar',
                  nativeAssetSha256=hashlib.sha256(files['scripts/native/xhs-native-window.jar'].read_bytes()).hexdigest())
         configs[c['jobId']]=c;save('config-'+t['deviceName']+'-private.json',c)
         blobs={name:base64.b64encode(p.read_bytes()).decode() for name,p in files.items()}
