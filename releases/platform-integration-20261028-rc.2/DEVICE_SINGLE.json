@@ -1,5 +1,5 @@
 {
-  "status": "single_device_passed; dual_and_five_device_pending",
+  "status": "single_device_passed; later dual and final five-device passed in DEVICE_FIVE.json",
   "phase": "live-fadc543fd105",
   "device": "47",
   "candidateRuntimeSource": "baca5721214658b46f24c974c9147490b0bafada",

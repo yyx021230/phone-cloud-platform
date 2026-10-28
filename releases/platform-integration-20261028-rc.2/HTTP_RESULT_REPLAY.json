@@ -1,0 +1,14 @@
+{
+  "phase": "replay-cb5352f45c73",
+  "kind": "local_HTTP_replay_of_completed_real_results",
+  "sourcePhase": "live-9641a7c2b3f8",
+  "newPhoneActions": 0,
+  "fastItemVisibleWhileSlowPending": true,
+  "paginationAndRestartEqual": true,
+  "stopApiAcknowledged": true,
+  "stopPersisted": true,
+  "completedCounts": {
+    "total": 2,
+    "succeeded": 2
+  }
+}

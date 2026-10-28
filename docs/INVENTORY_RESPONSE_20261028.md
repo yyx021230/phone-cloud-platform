@@ -1,5 +1,7 @@
 # 库存同步响应压缩候选 — 2026-10-28
 
+本文件保留库存子候选阶段事实；后续HTTP、镜像、单/双/五机及D-075实机验证见[全平台rc.2最终回执](../releases/platform-integration-20261028-rc.2/README.md)。不得把下文历史“未验证”清单当成最新总状态。
+
 状态：本地候选，未推送、未部署。标签 `inventory-response-20261028-rc.1`；分支 `codex/xhs-inventory-transport-20261028`。本阶段不包括候选真机租约适配器。
 
 ## 范围与基线

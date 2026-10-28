@@ -1,0 +1,99 @@
+{
+  "phase": "live-82ecb6ec8fc8",
+  "kind": "isolated_HTTP_to_real_devices",
+  "status": "five_of_five_complete",
+  "candidateRuntimeSource": "baca5721214658b46f24c974c9147490b0bafada",
+  "qaSource": "946bacf5261ec58b04acc03459fb59453292a4d3",
+  "productionDeployed": false,
+  "devices": [
+    {
+      "device": "129",
+      "notes": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "twoPassCount": 0,
+      "twoPassDigestMatches": true,
+      "apiIdentityAndFieldsMatch": true,
+      "settingsRestored": true,
+      "pendingSettingsLedgers": 0,
+      "elapsedSeconds": 163.422
+    },
+    {
+      "device": "102",
+      "notes": 6,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "twoPassCount": 6,
+      "twoPassDigestMatches": true,
+      "apiIdentityAndFieldsMatch": true,
+      "settingsRestored": true,
+      "pendingSettingsLedgers": 0,
+      "elapsedSeconds": 177.9
+    },
+    {
+      "device": "180",
+      "notes": 10,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "twoPassCount": 10,
+      "twoPassDigestMatches": true,
+      "apiIdentityAndFieldsMatch": true,
+      "settingsRestored": true,
+      "pendingSettingsLedgers": 0,
+      "elapsedSeconds": 233.551
+    },
+    {
+      "device": "140",
+      "notes": 32,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "twoPassCount": 32,
+      "twoPassDigestMatches": true,
+      "apiIdentityAndFieldsMatch": true,
+      "settingsRestored": true,
+      "pendingSettingsLedgers": 0,
+      "elapsedSeconds": 411.17
+    },
+    {
+      "device": "141",
+      "notes": 20,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "twoPassCount": 20,
+      "twoPassDigestMatches": true,
+      "apiIdentityAndFieldsMatch": true,
+      "settingsRestored": true,
+      "pendingSettingsLedgers": 0,
+      "elapsedSeconds": 554.137
+    }
+  ],
+  "totalNotesInThisBatch": 68,
+  "paginationAndRestartItemsEqual": true,
+  "stopApiAcknowledged": true,
+  "stopRequestedAt": "2026-10-28T04:22:56.346Z",
+  "sharedFileHashesCompared": 9,
+  "sharedFileHashesUnchanged": true,
+  "adbAndAgentIdentityUnchanged": true,
+  "reverseListenersRemaining": 0,
+  "proofRequests": 4205,
+  "cloudSnapshots": 530,
+  "proofReadFailures": 0,
+  "scope": "real selected phones, original collector/consumer and local actual HTTP/PG; isolated Agent transport adapter; not deployed production batch API acceptance",
+  "finalCleanupReceipt": "FINAL_CLEANUP.json",
+  "historicalFailures": [
+    "earlier five-device run had 4 complete and device 140 rejected; QA swallowed partial exit code; original partial cause unproven because transient raw file was deleted",
+    "QA corrected exit propagation, partial status, result order, dependency staging and raw evidence capture; device 140 then passed targeted and five-device retests"
+  ],
+  "inputEvidenceSha256": {
+    "summary.json": "0867a0f2c8a6ab3e082d2d599db0e431932189fa88c911d19849b8b2ace27cf3",
+    "api-pages-private.json": "701c3cd225b2d10be2fac92c38f158639bd8fbeaf45c390c7e93a5484657338f",
+    "api-after-restart-private.json": "701c3cd225b2d10be2fac92c38f158639bd8fbeaf45c390c7e93a5484657338f",
+    "api-stop-private.json": "d90f609a0b6b03ac7784a1b86b0bc163775609f9babaca361259cf6bb218b73e",
+    "shared-hashes-before.json": "7558c8208104a89ad39fee41000e396732987b3596868044292abe3c79f78e62",
+    "shared-hashes-after.json": "7558c8208104a89ad39fee41000e396732987b3596868044292abe3c79f78e62"
+  },
+  "actualConcurrency": {
+    "targetCount": 5,
+    "allCollectorsOverlapSeconds": 158.0534725189209
+  }
+}

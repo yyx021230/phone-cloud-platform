@@ -1,0 +1,24 @@
+{
+  "closedPhases": 13,
+  "closedSessions": 22,
+  "remainingOwnedLocks": 0,
+  "remainingCandidateProcesses": 0,
+  "pendingSettingsLedgers": 0,
+  "remainingReverseListeners": 0,
+  "remainingLocalApiProcesses": 0,
+  "sharedSshMasterExited": false,
+  "adbAndAgentIdentityUnchanged": true,
+  "cloudRuntimeHashesUnchanged": true,
+  "activeSha256": "aae3ffc930d4f4a92d8ed2ad5507a3db86d37f91a1495bebbe3471bafcbc2e4f",
+  "productionImageId": "sha256:5ab68ecbc67dfd4815f3ec93b0d3dd6265acd6a5d044867c3e04904636e80649",
+  "productionActiveAndImageUnchanged": true,
+  "finalFiveConcurrency": {
+    "targetCount": 5,
+    "allCollectorsOverlapSeconds": 158.0534725189209
+  },
+  "evidenceSha256": {
+    "all-completed-phases-cleanup-audit.json": "579b083beec2eb1c132352111c780d60e167cd74e3836bb85a95d39f80404712",
+    "final-runtime-cleanup.json": "6fa73e2d7559c482cb836e6a4eba831a1b6e851cff8eb3df078b596146bd7168",
+    "final-active-image.json": "c7b21d9a70f791d46d77f829b9d54187992a1a57413b2a997c451dfece85be8b"
+  }
+}

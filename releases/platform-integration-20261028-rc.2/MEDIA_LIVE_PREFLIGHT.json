@@ -1,0 +1,25 @@
+{
+  "hostNamespace": true,
+  "existingNode": true,
+  "existingMuslLoaders": 1,
+  "copiedOrInstalledFiles": false,
+  "verifierHashes": {
+    "verify.mjs": "2c5ee69ede4587e40b69333373b0956ffed20dfb9eea6467740a5f4704933a84",
+    "production-baseline.json": "d5b260558469ee75add1f747de2f7e5ad1604c4c7e897592fc6cdf5b91de8561",
+    "enable.conf.example": "f8066357d386bd71938735de0fabc572a017ec8c6efdc1eaf232718648b70d66"
+  },
+  "nodeVersion": "v22.23.3",
+  "versionExitCode": 0,
+  "exitCode": 0,
+  "stderr": "",
+  "result": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "purpose": "read-only release-readiness preflight; repeat before and after authorized deployment",
+  "evidenceFileTimeUtc": "2026-10-28T03:52:50.190698+00:00"
+}
