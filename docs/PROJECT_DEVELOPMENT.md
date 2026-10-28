@@ -4256,3 +4256,7 @@ GitHub main实际从0034b939快进至d37f5b0；修复分支和325条邮箱修正
 ### 2026-10-28 整合决策与变更：WECOM_PREVIEW
 企业微信邀请前备注与页面预览脚本纳入仓库，仍是单机预览工具：不注册正式任务、不发送邀请；Windows 迁移工具保留，不执行。
 历史分支说明存档于 `module-history/WECOM_PREVIEW.md`，不改变当前生产状态。
+
+### 2026-10-28 整合决策与变更：WINDOWS_MIGRATION
+纳入 Windows 主机迁移、运行时核验与 Tailscale 历史材料；不更改 SYSTEM、ADB 或任何主机。
+历史分支说明存档于 `module-history/WINDOWS_MIGRATION.md`，不改变当前生产状态。
