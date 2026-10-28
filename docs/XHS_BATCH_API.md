@@ -1,7 +1,7 @@
 # 小红书每日数据同步：批次任务与开放 API
 
 状态：**本地候选 `xhs-batch-20261026-rc.3`，未上线、未启用生产定时任务**。
-2026-10-27 启用核对：100 个槽位对应 66 台手机，绑定全部一致，33/33 回归通过；用户要求等待后续维护通知，仍未上线。当前只有 HTTP；访问方式和完整发布前置条件见 [本轮启用核对](XHS_BATCH_ENABLEMENT_20261027.md)。
+2026-10-28 候选更新：按用户确认支持公网 HTTP 或 HTTPS 地址，SDK 和批次服务的平台连接都已适配；签名、Nonce 防重放、用户隔离、禁止重定向和提交未知时不重放规则保持。HTTP 不加密传输；本次没有部署或启用定时。2026-10-27 的 100 个槽位/66 台手机名单需在启用前刷新，历史核对见 [启用记录](XHS_BATCH_ENABLEMENT_20261027.md)。
 
 用户已确认：北京时间每天 **02:00** 启动，通过开放 API 查询结果。沿用 D-079 的近 30 天创作者中心外层列表、纯元素采集。
 
@@ -10,7 +10,7 @@
 ## 1. 行为与范围
 
 - 首批准备名单：2026-10-26 的 145 个有效账号绑定槽位中选择 100 个，排除此前确认的 45 个问题槽位。名单在受限部署材料中；生产启用前再次核对设备 ID、app1/app2、小红书 ID，不能仅按可修改的手机名称派发。
-- 全部批次共用最多 **5 台物理手机**的并发额度，同机两个槽位串行。通过原 `POST /api/v1/user/automation/xhs-data-tasks` 占用手机和派发 Agent；沿用 rc.21 元素采集器。
+- 全部批次共用最多 **5 台物理手机**的并发额度，同机两个槽位串行。通过原 `POST /api/v1/user/automation/xhs-data-tasks` 占用手机和派发 Agent；全平台整合候选使用 rc.4 双遍元素采集器，历史 rc.21 真机结果不能替代整合版本验收。
 - 空闲才派发；被占用时等待。默认派发窗口为 **02:00–06:00**（240 分钟，可配置），这是本地候选的等待上限，不是用户要求 03:00 必须结束。窗口结束只跳过还未派发的项，已运行任务继续查询至实际终态。
 - 离线、绑定被移除/变更、Agent 不支持采集直接标明跳过；执行失败不自动重跑。暂时排除的 45 个槽位不计入首批 100 个的成功率分母。
 - 每日自动批次按北京时间日期去重。服务在当日窗口内重启可补建当天批次；窗口外不补跑历史日期。同一客户端有未完成批次时不再叠加新批次。
@@ -42,7 +42,7 @@
 
 ## 3. API
 
-前缀 `/api/v1/open/xhs-data`；以下全部需要签名、生产 HTTPS。客户端只可读写自己的计划和批次。设备/槽位/ID 白名单由受限服务配置管理，接口请求不能任意扩展设备范围。
+前缀 `/api/v1/open/xhs-data`；以下全部需要签名，支持 HTTP 和 HTTPS。客户端只可读写自己的计划和批次。设备/槽位/ID 白名单由受限服务配置管理，接口请求不能任意扩展设备范围。
 
 | 方法 / 路径 | 用途 |
 |---|---|
@@ -103,6 +103,40 @@
 
 Python 3.9+ 无第三方依赖客户端见 [sdk/xhs_batch_client.py](../sdk/xhs_batch_client.py)。从受限配置/密钥服务读取 `base_url/client_id/secret`，调用 `configure()`、`create_batch(request_id)`、`batches()`、`results(run_id, offset)`。客户端不自动重试 POST、不跟随重定向；不要将密钥、平台密码放入 Web 前端或日志。
 
+地址可以直接填写 `http://你的平台地址`（可带端口，不带 API 路径、用户名、密码或查询参数）。小红书批次使用本节的 HMAC 凭据，与支付宝查名的 API Key 独立；不会因为启用 HTTP 而取消认证。
+
+无需 SDK 的 Python 标准 HTTP 查询示例（仅取已有计划和结果，不创建或启动采集）：
+
+```python
+import hashlib, hmac, json, os, time, uuid
+from urllib.request import Request, build_opener, HTTPRedirectHandler
+
+BASE_URL = os.environ["XHS_BASE_URL"].rstrip("/")  # http://你的平台地址
+CLIENT_ID = os.environ["XHS_CLIENT_ID"]
+SECRET = os.environ["XHS_CLIENT_SECRET"]
+
+class NoRedirect(HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+def get(path):
+    timestamp, nonce = str(int(time.time() * 1000)), str(uuid.uuid4())
+    canonical = "\n".join(("GET", path, timestamp, nonce, hashlib.sha256(b"").hexdigest()))
+    signature = hmac.new(SECRET.encode(), canonical.encode(), hashlib.sha256).hexdigest()
+    request = Request(BASE_URL + path, headers={
+        "X-Client-Id": CLIENT_ID, "X-Timestamp": timestamp,
+        "X-Nonce": nonce, "X-Signature": signature,
+    })
+    with build_opener(NoRedirect()).open(request, timeout=40) as response:
+        return json.load(response)
+
+print(get("/api/v1/open/xhs-data/schedule"))
+print(get("/api/v1/open/xhs-data/batches?offset=0"))
+# 从批次列表取 runId，然后逐页读取：
+# page = get(f"/api/v1/open/xhs-data/batches/{run_id}?offset=0&limit=10")
+# nextOffset 为 null 表示已取完；否则用该值继续，查询参数顺序与签名保持一致。
+```
+
 ## 5. 实现与故障恢复
 
 独立 Node 服务 `server/xhs-batch/main.mjs`，用专用普通平台用户通过正式 API 工作；一个外部客户端对应一个不同的专用平台用户。它不启动 Agent、ADB，也不复用管理员 Token。
@@ -131,6 +165,6 @@ Python 3.9+ 无第三方依赖客户端见 [sdk/xhs_batch_client.py](../sdk/xhs_
 
 用户要求先完善后上线，本轮不执行部署。现有平台未新增全局维护准入门禁；一次查到空闲不能保证随后没有新任务。正式加载云端文件前必须在维护窗口协调暂停新任务/控屏进入并再次核对；不能落实时停止发布，不能用“新服务独立”承诺原平台重载零影响。生产能力检查、真实占用冲突、单机→双机和实际 02:00 调度都仍待正式验收。
 
-`schema.sql` 只新增表/索引，已在临时库执行。`config.example.json`、systemd unit、nginx location 是部署模板，目标路径/服务用户需按实际环境配置；示例占位密钥会被启动校验拒绝。启动命令 `npm run start:xhs-batch`，需显式 `XHS_BATCH_CONFIG_FILE`（0600）、`XHS_BATCH_DATABASE_URL` 和可选 `XHS_BATCH_PORT`（默认 8791、仅 loopback）。由既有 HTTPS 入口仅代理该 API 前缀。
+`schema.sql` 只新增表/索引，已在临时库执行。`config.example.json`、systemd unit、nginx location 是部署模板，目标路径/服务用户需按实际环境配置；示例占位密钥会被启动校验拒绝。启动命令 `npm run start:xhs-batch`，需显式 `XHS_BATCH_CONFIG_FILE`（0600）、`XHS_BATCH_DATABASE_URL` 和可选 `XHS_BATCH_PORT`（默认 8791、仅 loopback）。由现有 HTTP 或 HTTPS 入口仅代理该 API 前缀，保持批次端口不直接暴露。配置 `platformBaseUrl` 支持 HTTP/HTTPS，容器内回环只代表该容器自身，必须按实际同机/跨容器拓扑设置，不能原样照搬示例端口。
 
 回退：先关闭计划、stop 未派发项，核对并等待既有任务收尾；停止新批次服务、撤回新增代理段；按备份/原镜像恢复云端两个最小补丁。**保留新表和采集结果**，不 drop、不整库覆盖、不删除业务数据；旧平台不依赖新表。启动回退前后均保持 D-075 生产基线。发布/迁移/创建真实计划与首批手机采集仍须具体版本授权。

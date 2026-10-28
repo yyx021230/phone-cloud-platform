@@ -58,13 +58,35 @@ test("platform POST is never replayed on timeout, redirect, 401 or invalid respo
       } });
     await assert.rejects(platform.submit({ deviceId: "a", appSlot: "app1" })); assert.equal(posts, 1);
   }
-  assert.throws(() => createPlatformClient({ baseUrl: "http://remote.example" }), /invalid_platform_url/);
+  for (const baseUrl of ["ftp://remote.example", "file:///tmp/platform", "http://remote.example/path", "http://remote.example?secret=x", "http://remote.example#fragment"]) {
+    assert.throws(() => createPlatformClient({ baseUrl }), /invalid_platform_url/);
+  }
   assert.throws(() => createPlatformClient({ baseUrl: "https://user:secret@remote.example" }), /invalid_platform_url/);
   let adminCalls = 0;
   const admin = createPlatformClient({ baseUrl: "http://127.0.0.1:8787", username: "fixture", password: "fixture",
     fetchImpl: async () => { adminCalls++; return new Response(JSON.stringify({ session: { token: "fixture" }, user: { role: "admin" } })); } });
   await assert.rejects(admin.submit({ deviceId: "a", appSlot: "app1" }), /ordinary_user_required/);
   assert.equal(adminCalls, 1);
+});
+
+test("public HTTP platform URLs keep ordinary-user login, contract checks and submission identity", async () => {
+  const requests = [];
+  const p = createPlatformClient({ baseUrl: "http://platform.example:8787", username: "fixture", password: "fixture",
+    fetchImpl: async (url, options) => {
+      requests.push({ url: url.href, ...options });
+      assert.equal(url.origin, "http://platform.example:8787");
+      assert.equal(options.redirect, "error");
+      if (url.pathname.endsWith("/auth/login")) return Response.json({ session: { token: "fixture" }, user: { role: "user" } });
+      assert.equal(options.headers.authorization, "Bearer fixture");
+      if (url.pathname.endsWith("/devices")) return Response.json({ devices: [] });
+      if (options.method === "GET") return Response.json({ batchContract: { version: 1, expectedXhsId: true, identitySnapshot: true, submissionLookup: true } });
+      return Response.json({ task: { jobId: "original-job" } });
+    } });
+  assert.deepEqual(await p.devices(), []);
+  assert.equal((await p.submit({ deviceId: "device-a", appSlot: "app2", xhsId: "xhs-a", clientRequestId: "original-reference" })).jobId, "original-job");
+  const sent = requests.filter(r => r.method === "POST" && !r.url.endsWith("/auth/login"));
+  assert.equal(sent.length, 1);
+  assert.deepEqual(JSON.parse(sent[0].body), { deviceId: "device-a", xhsAppSlot: "app2", expectedXhsId: "xhs-a", clientRequestId: "original-reference" });
 });
 
 test("old platform capability is rejected before any phone task is submitted", async () => {

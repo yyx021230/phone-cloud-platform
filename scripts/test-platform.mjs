@@ -35,5 +35,6 @@ for (const dir of ['windows-agent/scripts', 'deploy/nginx-isolation', 'tools/win
 }
 await run(python, ['-m', 'unittest', 'discover', '-s', 'windows-agent/scripts', '-p', '*_test.py']);
 await run(python, ['-m', 'unittest', 'sdk.open_name_lookup.python_client_test']);
+await run(python, ['-m', 'unittest', 'sdk.test_xhs_batch_client']);
 await run(process.execPath, ['scripts/smoke-platform.mjs']);
 console.log('\nLocal combined regression passed. PostgreSQL opt-in, Java/Go, native Windows and real devices require separate verification.');

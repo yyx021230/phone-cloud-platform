@@ -18,8 +18,11 @@ class XhsBatchClient:
         parsed = urlsplit(base_url)
         if parsed.username or parsed.password or parsed.query or parsed.fragment or parsed.path not in ("", "/"):
             raise ValueError("invalid base URL")
-        if parsed.scheme != "https" and not (parsed.scheme == "http" and parsed.hostname in ("localhost", "127.0.0.1", "::1")):
-            raise ValueError("HTTPS required")
+        if parsed.scheme not in ("http", "https") or not parsed.hostname:
+            raise ValueError("HTTP or HTTPS base URL required")
+        # Validate a supplied port before constructing a request. HTTP is supported
+        # for the platform's existing endpoint; request signing remains mandatory.
+        parsed.port
         self.base = base_url.rstrip("/")
         self.client_id = client_id
         self.secret = secret
