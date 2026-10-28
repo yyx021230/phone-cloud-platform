@@ -1,0 +1,8 @@
+{
+  "sourceCommit": "7f32118aff797069bc173ec332bf2188dba480b6",
+  "python": "3.9.13",
+  "passed": 120,
+  "failed": 0,
+  "productionFilesChanged": false,
+  "rawReceiptSha256": "07232289ace341e41a412234592e3adc268b1569e4125b58fb3cc8b14cc19973"
+}
