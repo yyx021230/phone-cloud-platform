@@ -39,7 +39,7 @@ class HostGuardTests(unittest.TestCase):
             calls.append(cmd)
             if cmd.startswith("pm "):return "package:fixture"
             if cmd.startswith("pidof "):
-                counts["pid"]+=1;return "" if counts["pid"]==1 else "123"
+                counts["pid"]+=1;return "" if counts["pid"]<=2 else "123"
             if cmd.startswith("cat /proc/"):return stat
             if keep:return SimpleNamespace(close=lambda:calls.append("instrument_closed"))
             return ""

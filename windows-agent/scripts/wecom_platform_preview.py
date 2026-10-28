@@ -201,9 +201,15 @@ def run_host(value):
         for remote_port in (10080, 10081):
             if not lease_valid(): raise SafeStop("device_lease_lost")
             ports.append(int(host("host-serial:"+SERIAL+":forward:tcp:0;tcp:"+str(remote_port))))
-        mutate("am start -n com.netease.open.pocoservice/.TestActivity")
+        response = mutate("am start -n com.netease.open.pocoservice/.TestActivity")
+        if any(marker in response for marker in ("Error", "Exception", "Permission Denial")):
+            raise SafeStop("poco_start_rejected")
         # Establish ownership before instrumentation health checks can fail.
         owned_pid = shell("pidof com.netease.open.pocoservice").strip()
+        pid_until = min(deadline, time.monotonic()+3)
+        while not owned_pid and time.monotonic() < pid_until:
+            budget(); time.sleep(.2)
+            owned_pid = shell("pidof com.netease.open.pocoservice").strip()
         if not re.fullmatch(r"\d+", owned_pid): raise SafeStop("poco_owner_unconfirmed")
         owned_start = process_start_token(shell("cat /proc/"+owned_pid+"/stat"))
         if not owned_start: raise SafeStop("poco_owner_unconfirmed")
