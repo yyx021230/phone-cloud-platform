@@ -8,6 +8,7 @@ caller's settings ledger instead of changing a subsequent owner's phone.
 import hashlib
 import importlib.util
 import json
+import math
 import os
 import re
 import subprocess
@@ -21,23 +22,33 @@ from types import SimpleNamespace
 from xhs_isolated_guard import validate_file
 
 
-def read_proof(c, opener=urllib.request.urlopen, sleep=time.sleep):
-    deadline=time.monotonic()+5
-    while True:
-        nonce=uuid.uuid4().hex;started=time.monotonic()
+def read_proof(c, opener=urllib.request.urlopen, sleep=time.sleep, clock=time.monotonic):
+    deadline=clock()+5
+    while clock()<deadline:
+        nonce=uuid.uuid4().hex;started=clock()
         request=urllib.request.Request(c['brokerUrl']+'/guard',data=json.dumps({'jobId':c['jobId'],'nonce':nonce}).encode(),
                                        headers={'Authorization':'Bearer '+c['brokerToken'],'Content-Type':'application/json'})
         try:
             with opener(request,timeout=min(2,max(.1,deadline-started))) as r: proof=json.load(r)
             if proof.get('nonce')!=nonce:raise RuntimeError('qa_broker_reply_nonce_mismatch')
-            proof['localObservedAt']=time.monotonic();proof['roundTripSeconds']=proof['localObservedAt']-started
-            return proof
+            proof['localObservedAt']=clock();proof['roundTripSeconds']=proof['localObservedAt']-started
+            age=proof.get('brokerProofAgeSeconds')
+            if (not proof.get('allowed') or isinstance(age,bool) or not isinstance(age,(int,float))
+                    or not math.isfinite(age) or age<0):
+                raise RuntimeError('qa_broker_proof_invalid')
+            # HTTP 200 can already be stale after transport. Pause and ask for a
+            # new snapshot within the same five-second budget; never renew its age.
+            if (0<=proof['roundTripSeconds']<=3
+                    and age+proof['roundTripSeconds']+clock()-proof['localObservedAt']<=3
+                    and clock()<deadline):
+                return proof
         except urllib.error.HTTPError as error:
             if error.code!=503:raise  # A real ownership conflict is never retried.
         except (urllib.error.URLError,TimeoutError,OSError):
             pass
-        if time.monotonic()>=deadline:raise RuntimeError('qa_fresh_lease_proof_unavailable')
-        sleep(.2)  # No device operation is started while awaiting a fresh proof.
+        if clock()>=deadline:break
+        sleep(min(.2,deadline-clock()))  # No device operation is started while awaiting a fresh proof.
+    raise RuntimeError('qa_fresh_lease_proof_unavailable')
 
 
 def attest(config):
@@ -105,7 +116,7 @@ class GuardedCommands:
 
     def guard(self):
         self.identity(self.config)
-        return validate_file(self.config, self.prove())
+        return validate_file(self.config, self.prove)
 
     def run(self, args, capture_output=True, timeout=12, check=False, **kwargs):
         c = self.config

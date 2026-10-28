@@ -1,0 +1,87 @@
+{
+  "phase": "live-1b0376a4f2e8",
+  "identityUnchanged": true,
+  "windows": {
+    "candidateProcesses": [],
+    "pendingLedgers": 0,
+    "hashes": {
+      "scripts/小红书数据同步.py": "0f17e54d9ec84949f987682d44ba4886c1bc8a3b1a8bcb5a4bc3ec42595bc83e",
+      "scripts/xhs_native_window.py": "b06c715c4e31d8d37190a5a5111c808c29ddb1cab5cf7470f9d18fbb1c27ad87",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "eafc722b93788d82bc788ed79f963b17224b2d8c30528bfbfbcedb83fe9a9dd2"
+    }
+  },
+  "sessionStatus": "closed",
+  "settingsRestored": true,
+  "settingsEvidence": [
+    {
+      "scope": "system",
+      "key": "screen_off_timeout",
+      "value": "60000"
+    },
+    {
+      "scope": "global",
+      "key": "enable_screen_on_proximity_sensor",
+      "value": "1"
+    },
+    {
+      "scope": "system",
+      "key": "screen_off_timeout",
+      "value": "60000"
+    },
+    {
+      "scope": "global",
+      "key": "enable_screen_on_proximity_sensor",
+      "value": "1"
+    },
+    {
+      "scope": "system",
+      "key": "screen_off_timeout",
+      "value": "60000"
+    },
+    {
+      "scope": "global",
+      "key": "enable_screen_on_proximity_sensor",
+      "value": "1"
+    }
+  ],
+  "forward": {
+    "returncode": 0,
+    "stderr": "",
+    "remainingListeners": 0
+  },
+  "previousPhases": {
+    "localOldApiProcesses": [],
+    "windows": {
+      "targets": [
+        {
+          "stage": "xhs-qa-live-e91fddc09c62-47",
+          "processes": [],
+          "pendingLedgers": 0
+        },
+        {
+          "stage": "xhs-qa-live-a0318f9b5952-47",
+          "processes": [],
+          "pendingLedgers": 0
+        }
+      ],
+      "oldForwardListeners": 0
+    },
+    "cloud": {
+      "activeOwnedLocks": 0,
+      "sessionStatuses": [
+        {
+          "status": 200,
+          "sessionStatus": "closed"
+        },
+        {
+          "status": 200,
+          "sessionStatus": "closed"
+        }
+      ]
+    }
+  },
+  "candidateBase": "39570d49bdb4f3c8cda981e6f25503c93ad65657",
+  "testCount": 18,
+  "status": "local_candidate_not_ready"
+}

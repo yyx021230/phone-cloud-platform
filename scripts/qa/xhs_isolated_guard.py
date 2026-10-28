@@ -39,7 +39,11 @@ def validate(config, proof, inventory, age, now=None):
     return d  # Actual screen occupancy is deliberately preserved.
 
 
-def validate_file(config, proof):
+def validate_file(config, prove):
     p = Path(config['inventoryPath'])
+    modified_at = p.stat().st_mtime
     payload = json.loads(p.read_text(encoding='utf-8-sig'))
-    return validate(config, proof, payload if isinstance(payload, list) else payload['devices'], time.time() - p.stat().st_mtime)
+    # Read/parse the real inventory before fetching a time-sensitive proof.
+    # Recheck inventory age afterwards; neither clock nor file timestamp is refreshed.
+    proof = prove()
+    return validate(config, proof, payload if isinstance(payload, list) else payload['devices'], time.time() - modified_at)
