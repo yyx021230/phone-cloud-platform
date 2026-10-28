@@ -1,0 +1,18 @@
+{
+  "originalRefsChecked": 480,
+  "originalRefsChangedExcludingNewIntegrationBranch": [],
+  "sourceRuntimeBaseline": "68282ee",
+  "frozenPathsUnchanged": [
+    "screen-client",
+    "windows-agent/src",
+    "public/vendor",
+    "deploy/mediamtx-pacing",
+    "public/screen-control.js"
+  ],
+  "dockerCopyInputsExist": true,
+  "dockerBuilt": false,
+  "reason": "No local Docker daemon or Docker desktop application; did not connect to a remote builder",
+  "dependencyLockfilesChangedOnlyEngineRequirement": true,
+  "gitHubRemoteMainBefore": "ac109ce288e0bc6be34104370309f1bb9465c9d2",
+  "productionAccess": false
+}

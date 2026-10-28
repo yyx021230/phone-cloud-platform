@@ -1,9 +1,9 @@
 {
-  "version": "lookup-recovery-20261023-rc.2",
-  "updatedAt": "2026-10-23",
-  "baseline": "lookup-readiness-20261016-deployed.16",
-  "status": "API Key 简化接入 · 三个普通HTTP接口",
-  "routerSha256": "bd7d0a4e80864fe18f433ec821dd3dd20bcb87be70a9abe8c202f90cedaef039",
+  "version": "platform-integration-20261028-rc.1",
+  "updatedAt": "2026-10-28",
+  "baseline": "lookup-technical-recovery-20261027-rc.8 + xhs batch rc.3 + xhs completeness rc.4",
+  "status": "候选版：查名四个普通 HTTP 接口，小红书采集及定时批次；未部署",
+  "routerSha256": "d8a8e22ed6d89d4b62a62963292019e27fa38de33dd9ee8809e30dc296a53a0c",
   "sourceRoutesReviewed": 106,
   "groups": [
     [
@@ -3133,9 +3133,17 @@
       "id": "get-api-v1-user-automation-xhs-data-tasks",
       "group": "xhs-data",
       "title": "我的采集任务",
-      "description": "返回当前用户最近30个采集任务摘要，result.collection不含notes。",
+      "description": "返回当前用户最近30个采集任务摘要，result.collection不含notes。 可按clientRequestId查询当前用户原任务，返回batchContract能力说明。",
       "auth": "user,admin",
-      "parameters": [],
+      "parameters": [
+        {
+          "name": "clientRequestId",
+          "type": "string",
+          "required": false,
+          "description": "调用方生成的8–120位提交引用，只允许字母、数字、下划线、点、冒号和连字符。响应丢失后用同一引用查询列表；重复创建返回409，不重复下发。",
+          "location": "query"
+        }
+      ],
       "errors": [],
       "errorStatuses": {},
       "successCodes": [
@@ -3155,7 +3163,13 @@
             "result": {},
             "createdAt": "2026-10-14T01:00:00.000Z"
           }
-        ]
+        ],
+        "batchContract": {
+          "version": 1,
+          "expectedXhsId": true,
+          "identitySnapshot": true,
+          "submissionLookup": true
+        }
       }
     },
     {
@@ -3165,7 +3179,7 @@
       "id": "post-api-v1-user-automation-xhs-data-tasks",
       "group": "xhs-data",
       "title": "创建小红书数据采集任务",
-      "description": "只采集最近30日列表数据；201为受理，保存jobId查询结果。无幂等键，响应超时先核对列表，不盲目重提。",
+      "description": "采集最近30日列表数据；201为受理。建议保存clientRequestId，响应丢失时按引用查询原jobId。重复引用返回409，禁止盲目换引用重提。",
       "auth": "user,admin",
       "parameters": [
         {
@@ -3181,6 +3195,20 @@
           "required": true,
           "description": "必填app1或app2",
           "location": "body"
+        },
+        {
+          "name": "expectedXhsId",
+          "type": "string",
+          "required": false,
+          "description": "预期绑定小红书ID；与当前槽位不一致返回409，不创建任务。",
+          "location": "body"
+        },
+        {
+          "name": "clientRequestId",
+          "type": "string",
+          "required": false,
+          "description": "调用方生成的8–120位提交引用，只允许字母、数字、下划线、点、冒号和连字符。响应丢失后用同一引用查询列表；重复创建返回409，不重复下发。",
+          "location": "body"
         }
       ],
       "errors": [
@@ -3188,7 +3216,10 @@
         "device_not_available",
         "xhs_account_slot_not_available",
         "xhs_data_agent_update_required",
-        "device_busy"
+        "device_busy",
+        "invalid_collection_reference",
+        "collection_reference_already_used",
+        "xhs_account_binding_changed"
       ],
       "errorStatuses": {
         "invalid_xhs_app_slot": [
@@ -3204,6 +3235,15 @@
           409
         ],
         "device_busy": [
+          409
+        ],
+        "invalid_collection_reference": [
+          400
+        ],
+        "collection_reference_already_used": [
+          409
+        ],
+        "xhs_account_binding_changed": [
           409
         ]
       },
@@ -3221,7 +3261,11 @@
           "xhsAppSlot": "app1",
           "status": "queued",
           "result": {},
-          "createdAt": "2026-10-14T01:00:00.000Z"
+          "createdAt": "2026-10-14T01:00:00.000Z",
+          "clientRequestId": "collect-demo-001",
+          "xhsAccountId": "xhs-demo",
+          "xhsAccountName": "示例账户",
+          "accountIdentitySource": "platform_binding_snapshot"
         },
         "ok": true
       }

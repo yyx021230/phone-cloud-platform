@@ -1,0 +1,5 @@
+# Isolated test environment; matches existing visual runtime pins.
+numpy==1.26.4
+opencv-python==4.10.0.84
+pillow==11.3.0
+requests==2.32.5

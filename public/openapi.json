@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Phone Cloud 平台功能 API",
-    "version": "lookup-recovery-20261023-rc.2",
-    "description": "启动准备、提交手机号、获取结果三个查名接口；其他平台功能按各自分类查阅。"
+    "version": "platform-integration-20261028-rc.1",
+    "description": "候选版未部署。查名：启动准备、提交手机号、获取结果、结束本轮四个接口。小红书定时批次为独立服务，详见仓库docs/XHS_BATCH_API.md。"
   },
   "servers": [
     {
@@ -2825,7 +2825,7 @@
       "get": {
         "operationId": "get-api-v1-user-automation-xhs-data-tasks",
         "summary": "我的采集任务",
-        "description": "返回当前用户最近30个采集任务摘要，result.collection不含notes。",
+        "description": "返回当前用户最近30个采集任务摘要，result.collection不含notes。 可按clientRequestId查询当前用户原任务，返回batchContract能力说明。",
         "tags": [
           "xhs-data"
         ],
@@ -2836,7 +2836,18 @@
         ],
         "x-platform-auth": "user,admin",
         "x-route-errors": [],
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "clientRequestId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.:-]{8,120}$"
+            },
+            "description": "调用方生成的8–120位提交引用，只允许字母、数字、下划线、点、冒号和连字符。响应丢失后用同一引用查询列表；重复创建返回409，不重复下发。"
+          }
+        ],
         "responses": {
           "200": {
             "description": "采集任务摘要或详情；异步状态见task.status",
@@ -2890,7 +2901,7 @@
       "post": {
         "operationId": "post-api-v1-user-automation-xhs-data-tasks",
         "summary": "创建小红书数据采集任务",
-        "description": "只采集最近30日列表数据；201为受理，保存jobId查询结果。无幂等键，响应超时先核对列表，不盲目重提。",
+        "description": "采集最近30日列表数据；201为受理。建议保存clientRequestId，响应丢失时按引用查询原jobId。重复引用返回409，禁止盲目换引用重提。",
         "tags": [
           "xhs-data"
         ],
@@ -2976,6 +2987,15 @@
                       "app1",
                       "app2"
                     ]
+                  },
+                  "expectedXhsId": {
+                    "type": "string",
+                    "description": "预期绑定小红书ID；与当前槽位不一致返回409，不创建任务。"
+                  },
+                  "clientRequestId": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_.:-]{8,120}$",
+                    "description": "调用方生成的8–120位提交引用，只允许字母、数字、下划线、点、冒号和连字符。响应丢失后用同一引用查询列表；重复创建返回409，不重复下发。"
                   }
                 }
               },

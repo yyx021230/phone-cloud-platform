@@ -1,0 +1,9 @@
+{
+  "version": "platform-integration-20261028-rc.1",
+  "status": "candidate-not-deployed",
+  "baseCommit": "ac109ce288e0bc6be34104370309f1bb9465c9d2",
+  "lookupCandidate": "lookup-technical-recovery-20261027-rc.8",
+  "xhsCollectionCandidate": "xhs-completeness-20261027-rc.4",
+  "xhsBatchSource": "b912b6d7b70b8ff2f21e8a25ef45d97fc6311fa7",
+  "productionUnchanged": true
+}

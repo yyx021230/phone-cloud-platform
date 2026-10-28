@@ -1,0 +1,81 @@
+{
+  "recordedAt": "2026-10-28T02:18:46Z",
+  "environment": {
+    "os": "macOS",
+    "node": "v25.9.0",
+    "python": "3.12",
+    "postgres": "16.15",
+    "scope": "isolated local; no production or phone operations"
+  },
+  "javascript": {
+    "total": 1584,
+    "passedDefault": 1582,
+    "failed": 0,
+    "skippedDefault": 2,
+    "skippedCasesBothExecutedWithPostgres": true
+  },
+  "python": {
+    "total": 1196,
+    "passed": 1196,
+    "failed": 0,
+    "groups": [
+      980,
+      13,
+      13,
+      10,
+      10,
+      3,
+      163,
+      4
+    ]
+  },
+  "postgres": {
+    "xhsBatchAndCollection": {
+      "passed": 24,
+      "failed": 0
+    },
+    "managedLookupHttp": {
+      "passed": 1,
+      "failed": 0
+    }
+  },
+  "java": {
+    "passed": 74
+  },
+  "go": {
+    "testFunctions": 14,
+    "passed": true
+  },
+  "check": true,
+  "viteBuild": true,
+  "jsonSmoke": true,
+  "redisSmoke": true,
+  "cleanNpmCiPlatform": true,
+  "cleanNpmCiAgent": true,
+  "npmDependencyVersionsChanged": false,
+  "historicalInitialFailuresResolved": [
+    "missing four HTTP test helpers",
+    "manual-result tests depended on outside runtime directory",
+    "stale 30-second XHS refresh assertion",
+    "Python image test dependencies absent",
+    "fixture PostgreSQL role and migrations not initialized"
+  ],
+  "notRun": [
+    "Docker image build/start: no local daemon",
+    "combined candidate on native Windows and real phones",
+    "Android/iOS app packaging",
+    "production D-075 --live verification"
+  ],
+  "logHashes": {
+    "pg-lookup-fixed.log": "5ba2dfbbc2b8a39d13f106a19da2d0f87a1bb8c174ddfbb2303a8a72403fb556",
+    "npm-agent-cwd.log": "2d46eedd32355c791c31d193babafc35b83037719327e7e111f5b11225c1bbff",
+    "check-final.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "pg-xhs-fixed.log": "3a1db292d04839f149f97270444902d407fd18262b118d2886d1c858279a2874",
+    "java-tests.log": "b97f875100629a00e90bd9c2508e7f247be162a960509c2cd873bf17f9f0c233",
+    "redis-smoke.log": "a917e1a72233ca45562168e6d43183ba6b5a2ada4fb720884a1a54c0f0305bca",
+    "test-all-clean-deps.log": "593e6556a66199518f469785104c5f148b4e7feacc22dc99ca917f0c4c992f53",
+    "build-clean.log": "9d6b37aa06d610eb1f37d5ba9cc233a18e74d93f949d8e7086a2650e8de2d035",
+    "npm-platform-cwd.log": "3f1630febb0422bf23377d891f822aa942628f22d9832cc9a069e9bb1c90c676",
+    "go-tests.log": "a64b2a021484a24bb44395d0f864f15c297e4917f0a951f2d4782f6d99739fa8"
+  }
+}

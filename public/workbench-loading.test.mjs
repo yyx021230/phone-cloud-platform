@@ -8,9 +8,9 @@ function sourceFor(name) {
   return app.match(new RegExp(`async function ${name}\\([\\s\\S]*?\\n\\}`))?.[0] || "";
 }
 
-test("workbench background refreshes run at the shared 30 second cadence", () => {
+test("workbench preserves 30-second SMS and 3-second XHS task refresh cadences", () => {
   assert.match(app, /const USER_SMS_AUTO_REFRESH_MS = 30_000;/);
-  assert.match(app, /const USER_XHS_TASK_REFRESH_MS = 30_000;/);
+  assert.match(app, /const USER_XHS_TASK_REFRESH_MS = 3_000;/);
 });
 
 test("automatic SMS synchronization does not occupy the manual refresh control", () => {

@@ -15,7 +15,8 @@ test('combined API reference preserves distinct modules and every documented ope
 test('XHS creation examples are executable contracts, with separate result retrieval',()=>{
  const rows=ref.endpoints.filter(e=>e.group==='xhs-data');assert.equal(rows.length,4);
  const create=rows.find(e=>e.method==='POST'&&!e.path.endsWith('/cancel'));
- assert.deepEqual(create.parameters.map(p=>[p.name,p.required,p.location]),[['deviceId',true,'body'],['xhsAppSlot',true,'body']]);
+ assert.deepEqual(create.parameters.filter(p=>p.required).map(p=>[p.name,p.required,p.location]),[['deviceId',true,'body'],['xhsAppSlot',true,'body']]);
+ assert.deepEqual(create.parameters.filter(p=>!p.required).map(p=>p.name),['expectedXhsId','clientRequestId']);
  assert.equal(create.responseExample.task.kind,'xhs_data_collect');assert.equal(create.responseExample.task.status,'queued');
  const detail=rows.find(e=>e.method==='GET'&&e.path.includes('{jobId}'));
  assert.equal(detail.responseExample.task.result.collection.complete,true);

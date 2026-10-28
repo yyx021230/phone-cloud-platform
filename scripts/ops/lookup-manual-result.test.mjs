@@ -1,7 +1,5 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {pathToFileURL} from 'node:url';
-import path from 'node:path';
 import {manualResults} from './lookup-manual-result.mjs';
 const at = '2026-10-22T08:00:00.000Z', actor = 'authorized-operator';
 const entry = {lookupId:'original',expectedQueryId:'original-query',expectedPhoneNumber:'13900000000',name:'测试(*名)',evidenceSha256:'a'.repeat(64)};
@@ -27,9 +25,8 @@ for (const mode of ['wrongPhone','wrongQuery','busy','unknown','alreadyDone','ca
   if(mode==='badEvidence')e.evidenceSha256='';
   const copy=structuredClone(s);assert.throws(()=>manualResults(s,mode==='duplicate'?[e,e]:[e],{actor,at}));assert.deepEqual(s,copy);
 });
-for(const originalState of ['recovery','human'])test('deployed coordinator keeps manual result, stops once, waits for ACK and releases '+originalState,async()=>{
-  if(!process.env.LOOKUP_RUNTIME_DIR)throw Error('Set LOOKUP_RUNTIME_DIR to the hash-verified deployed assembly');
-  const {createManagedLookupService}=await import(pathToFileURL(path.join(process.env.LOOKUP_RUNTIME_DIR,'server/managed-lookup.mjs')));
+for(const originalState of ['recovery','human'])test('integrated coordinator keeps manual result, stops once, waits for ACK and releases '+originalState,async()=>{
+  const {createManagedLookupService}=await import('../../server/managed-lookup.mjs');
   let state=fixture();if(originalState==='human'){state.channels[0].phase='human';state.requests[0].status='waiting_human';}
   state=manualResults(state,[entry],{actor,at}).next;
   const store={snapshot:()=>structuredClone(state),isFenced:()=>false,readRequest:async(id)=>structuredClone(state.requests.find(r=>r.lookupId===id)),transact:async(fn)=>{const next=structuredClone(state);const result=await fn(next,{onRollback:()=>{},onCommit:()=>{}});state=next;return result;}};

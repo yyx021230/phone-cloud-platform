@@ -1,6 +1,7 @@
 FROM node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402
 
-LABEL org.opencontainers.image.version="platform-core-20261014-rc.2"
+ARG PLATFORM_VERSION=platform-integration-20261028-rc.1
+LABEL org.opencontainers.image.version="$PLATFORM_VERSION"
 
 WORKDIR /app
 
@@ -10,6 +11,8 @@ RUN npm ci --omit=dev
 COPY server ./server
 COPY public ./public
 COPY docs ./docs
+COPY deploy/sql ./deploy/sql
+COPY deploy/xhs-batch/schema.sql ./deploy/xhs-batch/schema.sql
 
 RUN grep -Eq '^export const SCREEN_IDLE_TIMEOUT_MS = 10 \* 60 \* 1000;$' /app/public/screen-inactivity-guard.js
 

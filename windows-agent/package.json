@@ -8,7 +8,7 @@
     "check": "node --check src/index.mjs && node --check src/device-scan-cache.mjs && node --check src/serial-adb-activity.mjs && node --check src/serial-adb-health.mjs && node --check src/serial-delay-scheduler.mjs && node --check src/worker-shutdown.mjs && node --check src/screen-stream.mjs && node --test src/*.test.mjs"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22.12.0"
   },
   "dependencies": {
     "@yume-chan/adb": "^2.6.0",

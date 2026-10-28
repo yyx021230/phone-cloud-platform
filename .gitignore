@@ -20,3 +20,6 @@ android-agent/SmsRelay/app/build/
 android-agent/SmsRelay/build/
 ios-wda-lab/WebDriverAgent/
 ios-wda-lab/WebDriverAgent-current/
+
+# Isolated local regression virtual environment
+.venv-test/

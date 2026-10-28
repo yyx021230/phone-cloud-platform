@@ -1,5 +1,9 @@
 # Phone Cloud
 
+> **当前整合候选：`platform-integration-20261028-rc.1`（仅 GitHub，未部署）**
+> 查名、小红书采集/定时批次/完整性提速、短信、登录/发布、快手、设备恢复及预览工具的版本与验证见 [整个平台版本说明](docs/PLATFORM_INTEGRATION_20261028.md)。根目录现在是完整可测试源码；`releases/` 保留不可变历史，不再把旧根源码当新版。
+
+
 Phone Cloud 是“云端平台 + Windows 管理器 + Android 真机”的设备业务平台。当前主能力是：
 
 > **开发必读：** 开始任何开发、排障或部署前，先阅读 [`docs/PROJECT_DEVELOPMENT.md`](docs/PROJECT_DEVELOPMENT.md)。它是当前架构、生产事实、冻结范围、已知问题、决策和路线图的唯一事实来源。历史专题文档与它冲突时，以核实后的主文档为准。

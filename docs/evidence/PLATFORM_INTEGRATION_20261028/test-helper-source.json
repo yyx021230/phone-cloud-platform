@@ -1,0 +1,18 @@
+[
+  {
+    "path": "verification/admin-console-preview.mjs",
+    "gitBlob": "b2d0de27b3d710cdc4080e5d75d2bfa1619c7731"
+  },
+  {
+    "path": "verification/api-key-http.mjs",
+    "gitBlob": "dea15fc3e4ded3c6e0f3d83fa07f6d18e11146bd"
+  },
+  {
+    "path": "verification/readiness-http.mjs",
+    "gitBlob": "28dbb22f45b6e27f966a1710b340588895fb4d09"
+  },
+  {
+    "path": "verification/async-http.mjs",
+    "gitBlob": "5c69bebf1b4a06fd0096ed994bc379dbfc616c87"
+  }
+]
