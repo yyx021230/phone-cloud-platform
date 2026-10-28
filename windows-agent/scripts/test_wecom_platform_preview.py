@@ -86,6 +86,38 @@ class HostGuardTests(unittest.TestCase):
         self.assertLess(calls.index(restart),calls.index('am start -n com.netease.open.pocoservice/.TestActivity'))
         self.assertFalse(any('pm clear' in cmd or 'force-stop --user 0 com.tencent.wework' in cmd for cmd in calls))
 
+    def test_only_preclick_remark_navigation_reobserves_same_phone_and_clicks_once(self):
+        from dataclasses import replace
+        from test_wecom_invite_preview import PROFILE,PHONE,Poco,text
+        changed=replace(PROFILE,nodes=PROFILE.nodes+(text('服务端资料已加载'),))
+        poco=Poco(changed);driver=host.PreviewRemarkEntryDriver(poco,lambda:host.w.PACKAGE,lambda:True)
+        driver.apply('open_remark',PROFILE,PHONE)
+        self.assertEqual(len(poco.effects),1)
+        self.assertEqual(poco.effects[0][0],'click')
+
+    def test_reobserved_other_phone_cannot_open_remarks(self):
+        from dataclasses import replace
+        from test_wecom_invite_preview import PROFILE,PHONE,OTHER,Poco
+        wrong=replace(PROFILE,nodes=tuple(replace(n,text=OTHER) if n.text==PHONE else n for n in PROFILE.nodes))
+        poco=Poco(wrong);driver=host.PreviewRemarkEntryDriver(poco,lambda:host.w.PACKAGE,lambda:True)
+        with self.assertRaises(host.w.StopPreview):driver.apply('open_remark',PROFILE,PHONE)
+        self.assertFalse(poco.effects)
+
+    def test_transport_input_and_save_never_use_navigation_reobserve(self):
+        from test_wecom_invite_preview import PROFILE,PHONE,Poco
+        driver=host.PreviewRemarkEntryDriver(Poco(PROFILE),lambda:host.w.PACKAGE,lambda:True)
+        for action,error in [('open_remark',TimeoutError()),('save_remark',host.w.StopPreview('page_changed_before_action')),('enter_phone',host.w.StopPreview('page_changed_before_action')),('search',host.w.StopPreview('page_changed_before_action'))]:
+            with patch.object(host.remarks.PocoRemarkDriver,'apply',side_effect=error) as apply:
+                with self.assertRaises(type(error)):driver.apply(action,PROFILE,PHONE)
+                self.assertEqual(apply.call_count,1)
+
+    def test_remark_entry_reobserve_is_bounded_without_any_click(self):
+        from test_wecom_invite_preview import PROFILE,PHONE,Poco
+        driver=host.PreviewRemarkEntryDriver(Poco(PROFILE),lambda:host.w.PACKAGE,lambda:True)
+        with patch.object(host.remarks.PocoRemarkDriver,'apply',side_effect=host.w.StopPreview('page_changed_before_action')) as apply:
+            with self.assertRaises(host.w.StopPreview):driver.apply('open_remark',PROFILE,PHONE)
+        self.assertEqual(apply.call_count,3)
+
     def test_late_android_slot_chooser_is_selected_once_while_waiting_for_same_app(self):
         host.deadline=10**12
         with patch.object(host,"foreground",side_effect=['','','',host.w.PACKAGE,host.w.PACKAGE]),patch.object(host,"budget"),patch.object(host,"resolve_observed_wecom_slot",side_effect=[False,True]) as choose,patch.object(host.time,"sleep"):

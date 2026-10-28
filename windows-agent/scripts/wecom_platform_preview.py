@@ -48,6 +48,24 @@ def validate_config(value):
         raise SafeStop("missing_agent_credential")
     return value
 
+
+class PreviewRemarkEntryDriver(remarks.PocoRemarkDriver):
+    def apply(self, action, expected_screen, phone, check_budget=lambda: None, context=None):
+        if action != "open_remark":
+            return super().apply(action, expected_screen, phone, check_budget, context=context)
+        for attempt in range(3):
+            try:
+                return super().apply(action, expected_screen, phone, check_budget, context=context)
+            except w.StopPreview as error:
+                # Both fixed codes are raised BEFORE the click in the audited
+                # parent adapter. Never retry transport errors, input or save.
+                if str(error) not in ("page_changed_before_action", "element_changed_before_action") or attempt == 2:
+                    raise
+                check_budget()
+                expected_screen=self.snapshot()
+                remarks.resolve_remark(action, expected_screen, phone, context)
+
+
 class NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, *args, **kwargs): return None
 
@@ -285,7 +303,7 @@ def run_host(value):
             startup_click(poco,package,lambda page:all(page.has(v) for v in ("取消","仅限充电","传输文件","传输照片")),lambda n:n.labeled("取消"))
             mutate("am start --user %d -a android.intent.action.MAIN -c android.intent.category.LAUNCHER -n "%selected_user+launch)
             package,user,activity=foreground_info()
-        driver=remarks.PocoRemarkDriver(poco,foreground,lease_valid)
+        driver=PreviewRemarkEntryDriver(poco,foreground,lease_valid)
         wait_for_wecom_foreground(poco, 18)
         until=min(deadline,time.monotonic()+60); home=False; update_dismissed=False
         for _ in range(20):
