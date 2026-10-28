@@ -1,0 +1,276 @@
+{
+  "task": "nginx-isolation-20261027",
+  "at": "2026-10-27T08:13:51.344292+00:00",
+  "state": "known permission incident recovered by originating window; hardened diagnostic entry validated and committed; cross-thread adoption pending user permission",
+  "commit": "cb731921fc44347ea9b0e609e17e6ed4e46b5f66",
+  "candidateTag": "nginx-isolation-20261027-rc.1",
+  "workflow": {
+    "revision": "2026-09-30",
+    "sha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+  },
+  "cause": {
+    "source": "inventory sync isolated Nginx test; root with compiled absolute temp paths",
+    "incidentBeijing": "2026-10-27 15:46:44–15:48:49",
+    "sitePermissionErrors": 31,
+    "agentHeartbeat500": 5,
+    "agentInventory500": 5,
+    "defaultFreshnessSeconds": 90,
+    "nginxSource": "https://github.com/nginx/nginx/blob/release-1.18.0/src/core/ngx_file.c#L561",
+    "auditChownSyscallAvailable": false
+  },
+  "ownedChanges": [
+    "test helper",
+    "unit tests",
+    "incident explanation",
+    "AGENTS guard rule",
+    "project document decision/change rows"
+  ],
+  "tests": {
+    "unit": 13,
+    "rootDenied": {
+      "passed": false,
+      "error": "ROOT_FORBIDDEN: use an unprivileged test identity",
+      "function": "require_unprivileged",
+      "line": 36
+    },
+    "workerDenied": {
+      "passed": false,
+      "error": "PRODUCTION_WRITE_ACCESS_FORBIDDEN",
+      "function": "require_no_production_write_access",
+      "line": 61
+    },
+    "rootless": {
+      "cases": [
+        {
+          "acceptEncoding": "gzip",
+          "byteIdentical": true,
+          "decodedBytes": 288015,
+          "gzip": true,
+          "requestBytes": 66700,
+          "responseBytes": 1613,
+          "route": "/inventory-fixture",
+          "status": 200
+        },
+        {
+          "acceptEncoding": "identity",
+          "byteIdentical": true,
+          "decodedBytes": 288015,
+          "gzip": false,
+          "requestBytes": 66700,
+          "responseBytes": 288015,
+          "route": "/inventory-fixture",
+          "status": 200
+        },
+        {
+          "acceptEncoding": "gzip;q=0",
+          "byteIdentical": true,
+          "decodedBytes": 288015,
+          "gzip": false,
+          "requestBytes": 66700,
+          "responseBytes": 288015,
+          "route": "/inventory-fixture",
+          "status": 200
+        },
+        {
+          "acceptEncoding": "gzip",
+          "byteIdentical": true,
+          "decodedBytes": 288015,
+          "gzip": false,
+          "requestBytes": 66700,
+          "responseBytes": 288015,
+          "route": "/unrelated-fixture",
+          "status": 200
+        }
+      ],
+      "cleanupComplete": true,
+      "productionConfigLoaded": false,
+      "productionDirectoryMetadataUnchanged": true,
+      "productionDirectoryWritable": false,
+      "productionRequests": 0,
+      "requestBodySpillExercised": true,
+      "tcpListeners": 0,
+      "uid": 65534
+    },
+    "initialFailure": "Non-root /tmp mkdtemp denied (root:root 0700); no Nginx started; switched only private test root to /var/tmp; did not chmod /tmp",
+    "fullAppSuite": "not run; no business/Agent/media code modified",
+    "sharedWholeDiffCheck": "failed on 2 pre-existing trailing whitespace lines in docs/.ppt-v3/build-workshop-deck.mjs; untouched",
+    "scopedDiffCheck": "passed"
+  },
+  "lastCloud": {
+    "at": "2026-10-27T08:13:51.344292+00:00",
+    "tempDirs": {
+      "/var/lib/nginx/body": {
+        "uid": 33,
+        "gid": 0,
+        "mode": "0o700",
+        "inode": 1326060
+      },
+      "/var/lib/nginx/proxy": {
+        "uid": 33,
+        "gid": 0,
+        "mode": "0o700",
+        "inode": 1326061
+      },
+      "/var/lib/nginx/fastcgi": {
+        "uid": 33,
+        "gid": 0,
+        "mode": "0o700",
+        "inode": 1326062
+      },
+      "/var/lib/nginx/uwsgi": {
+        "uid": 33,
+        "gid": 0,
+        "mode": "0o700",
+        "inode": 1326136
+      },
+      "/var/lib/nginx/scgi": {
+        "uid": 33,
+        "gid": 0,
+        "mode": "0o700",
+        "inode": 1326138
+      }
+    },
+    "configSha256": "8b0b5016fe08bdaac338e65cf8b6dfa61843e7496d9703728b21fd98d920c4b3",
+    "latestIngress": [
+      {
+        "at": "27/Oct/2026:16:11:19 +0800",
+        "type": "heartbeat",
+        "status": 200
+      },
+      {
+        "at": "27/Oct/2026:16:11:20 +0800",
+        "type": "sync",
+        "status": 200
+      },
+      {
+        "at": "27/Oct/2026:16:11:49 +0800",
+        "type": "heartbeat",
+        "status": 200
+      },
+      {
+        "at": "27/Oct/2026:16:11:50 +0800",
+        "type": "sync",
+        "status": 200
+      },
+      {
+        "at": "27/Oct/2026:16:12:20 +0800",
+        "type": "heartbeat",
+        "status": 200
+      },
+      {
+        "at": "27/Oct/2026:16:12:23 +0800",
+        "type": "sync",
+        "status": 200
+      },
+      {
+        "at": "27/Oct/2026:16:12:49 +0800",
+        "type": "heartbeat",
+        "status": 200
+      },
+      {
+        "at": "27/Oct/2026:16:12:51 +0800",
+        "type": "sync",
+        "status": 200
+      },
+      {
+        "at": "27/Oct/2026:16:13:19 +0800",
+        "type": "heartbeat",
+        "status": 200
+      },
+      {
+        "at": "27/Oct/2026:16:13:22 +0800",
+        "type": "sync",
+        "status": 200
+      },
+      {
+        "at": "27/Oct/2026:16:13:49 +0800",
+        "type": "heartbeat",
+        "status": 200
+      },
+      {
+        "at": "27/Oct/2026:16:13:50 +0800",
+        "type": "sync",
+        "status": 200
+      }
+    ],
+    "after154919": {
+      "heartbeat": {
+        "samples": 50,
+        "non200": 0
+      },
+      "sync": {
+        "samples": 50,
+        "non200": 0
+      }
+    },
+    "permissionErrors": {
+      "countInTail": 31,
+      "last": "2026/10/27 15:48:49"
+    },
+    "readyz": {
+      "80": 200,
+      "8787": 200
+    },
+    "platform": {
+      "startedAt": "2026-10-26T02:50:19.313997835Z",
+      "restartCount": 0,
+      "healthy": "healthy"
+    }
+  },
+  "lastWindows": {
+    "at": "2026-10-27T08:12:22.567Z",
+    "states": {
+      "device": 124,
+      "unauthorized": 2
+    },
+    "targets": [
+      {
+        "serial": "10AEAQ1D7P00583",
+        "state": "absent"
+      },
+      {
+        "serial": "10AF4R11XT00BLQ",
+        "state": "device"
+      }
+    ],
+    "recentTargetAdbEvents": [
+      {
+        "at": "10-27 14:05:26.525 203",
+        "kind": "other"
+      },
+      {
+        "at": "10-27 14:16:12.670 203",
+        "kind": "other"
+      },
+      {
+        "at": "10-27 14:18:51.869 203",
+        "kind": "other"
+      },
+      {
+        "at": "10-27 14:39:41.307 203",
+        "kind": "other"
+      },
+      {
+        "at": "10-27 15:52:04.866 203",
+        "kind": "other"
+      },
+      {
+        "at": "10-27 16:09:27.966 203",
+        "kind": "other"
+      },
+      {
+        "at": "10-27 16:12:15.319 203",
+        "kind": "other"
+      }
+    ]
+  },
+  "noProductionConfigEditsByThisTurn": true,
+  "noProductionServiceRestartsByThisTurn": true,
+  "noDeviceActionsByThisTurn": true,
+  "concurrentChange": "originating inventory window restored original Nginx config; verified hash matches its recorded original",
+  "remaining": {
+    "deviceTransport": "Phone 57 absent after 15:52:04 read failed; phone 10 fluctuated at16:09/16:12 and was device at16:12:22; same read-failed pattern existed at14:05 onward. No recovery attempted. Not the all-fleet ingress permission failure.",
+    "enforcement": "Hardened entry rejects unsafe identity; not system-wide enforcement against arbitrary root commands. Existing other window helper not overwritten. Messaging/adoption awaits explicit authorization."
+  },
+  "sharedPreservation": "240 pre-existing status entries preserved plus own new deploy/nginx-isolation folder; prior AGENTS and project-document content verified byte-for-byte after removing owned additions"
+}

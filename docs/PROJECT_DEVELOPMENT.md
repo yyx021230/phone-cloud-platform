@@ -4260,3 +4260,7 @@ GitHub main实际从0034b939快进至d37f5b0；修复分支和325条邮箱修正
 ### 2026-10-28 整合决策与变更：WINDOWS_MIGRATION
 纳入 Windows 主机迁移、运行时核验与 Tailscale 历史材料；不更改 SYSTEM、ADB 或任何主机。
 历史分支说明存档于 `module-history/WINDOWS_MIGRATION.md`，不改变当前生产状态。
+
+### 2026-10-28 整合决策与变更：NGINX_ISOLATION
+保护代码与规则已由小红书提速分支合入；补齐原保护分支历史与隔离验证回执。本次仅本地单测。
+历史分支说明存档于 `module-history/NGINX_ISOLATION.md`，不改变当前生产状态。
