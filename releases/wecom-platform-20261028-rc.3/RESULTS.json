@@ -1,0 +1,68 @@
+{
+  "nodeVersion": "v25.9.0",
+  "pythonVersion": "Python 3.9.6",
+  "screenRegression": {
+    "passed": 1464,
+    "failed": 0,
+    "skipped": 0,
+    "testConcurrency": 2,
+    "command": "node --test --test-concurrency=2 screen-client/*.test.mjs server/*.test.mjs scripts/*.test.mjs windows-agent/src/*.test.mjs"
+  },
+  "finalScopedNode": {
+    "passed": 36,
+    "failed": 0,
+    "overlapsScreenRegression": true,
+    "coversFinalUiModelEdits": true
+  },
+  "wecomPython": {
+    "passed": 122,
+    "failed": 0
+  },
+  "rootSyntaxPassed": true,
+  "jsonSmokePassed": true,
+  "frozenFilesUnchanged": 33,
+  "apiDocumentCopiesEqual": true,
+  "firstRegressionAttempt": {
+    "passed": 1458,
+    "failed": 6,
+    "cacheVersionAssertionsUpdated": 3,
+    "moduleCountAssertionUpdated": 1,
+    "unmodifiedTimingTestsPassedOnRetest": [
+      "server/managed-lookup.http.test.mjs",
+      "windows-agent/src/device-scan-agent.test.mjs"
+    ],
+    "timingFailureRootCauseConfirmed": false,
+    "allFailuresRetainedInLogHash": true
+  },
+  "review": "self review; no independent reviewer",
+  "notRunThisRound": [
+    "new slot Windows-native test",
+    "Postgres roundtrip for new slot field",
+    "new version real-phone/API acceptance",
+    "production deployment and media live check"
+  ],
+  "productionEffects": false,
+  "logs": {
+    "rc3-screen.log": {
+      "sha256": "3a49cb8210f2fa8a6d46b8d111a503a8238c8ca08c550c659d07e3acdbc87128"
+    },
+    "rc3-retest.log": {
+      "sha256": "22e96fea008ee05150713878c487061e41154cba6cc66100b3579d45e2e6290d"
+    },
+    "rc3-screen-bounded.log": {
+      "sha256": "c9ee33f7f3a412865a7d8ae60f9adc6968abca9b0a9ab30f186658086d3337b6"
+    },
+    "rc3-final-scoped-node.log": {
+      "sha256": "7d8c0f6fed8b7dbf1d13067f3087bc46b0aa92626b4afe6e67fdbf0120fb6f0d"
+    },
+    "rc3-final-scoped-python.log": {
+      "sha256": "f75217349ec54531aaeb809b35a4d12e311e4b9de31ca2d211584df7cdd46729"
+    },
+    "rc3-final-check.log": {
+      "sha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+    },
+    "rc3-smoke.log": {
+      "sha256": "a917e1a72233ca45562168e6d43183ba6b5a2ada4fb720884a1a54c0f0305bca"
+    }
+  }
+}
