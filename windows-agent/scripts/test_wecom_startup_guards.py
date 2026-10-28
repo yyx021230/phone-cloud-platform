@@ -93,45 +93,5 @@ class StartupGuardTests(unittest.TestCase):
             self.assertEqual(keys, ['UP'] if mode == 'transport' else [])
 
 
-DRAWER = w.Screen(w.PACKAGE, tuple(w.Node('android.widget.TextView',text=text,
-    name='com.tencent.wework:id/'+name,position=(.25,y),size=(.2,.027))
-    for name,text,y in (('nq','高级功能',.79875),('d7x','创建/加入企业',.869375),('lt_','设置',.919375))))
-
-class AccountDrawerTests(unittest.TestCase):
-    def test_exact_observed_bundle_only(self):
-        self.assertTrue(g.is_wecom_account_drawer(DRAWER))
-        for page in (replace(DRAWER,package='other'),replace(DRAWER,nodes=DRAWER.nodes[:2]),
-                     replace(DRAWER,nodes=DRAWER.nodes+(DRAWER.nodes[0],))):
-            self.assertFalse(g.is_wecom_account_drawer(page))
-        for change in (dict(name='unknown'),dict(text='切换账号'),dict(enabled=False),
-                       dict(position=(.25,.4)),dict(size=(float('nan'),.02))):
-            self.assertFalse(g.is_wecom_account_drawer(replace(DRAWER,nodes=(replace(DRAWER.nodes[0],**change),)+DRAWER.nodes[1:])))
-
-
-
-class DrawerRestartTests(unittest.TestCase):
-    def test_restart_only_observed_clone_once(self):
-        calls=[];fg=('com.tencent.wework',999,'com.tencent.wework/.launch.WwMainActivity')
-        self.assertTrue(g.restart_observed_wecom_clone_drawer(lambda:DRAWER,lambda:fg,lambda:True,lambda:calls.append('RESTART_999'),999))
-        self.assertEqual(calls,['RESTART_999'])
-        for page,user in ((HOME,999),(DRAWER,0)):
-            self.assertFalse(g.restart_observed_wecom_clone_drawer(lambda:page,lambda:fg,lambda:True,lambda:calls.append('RESTART_999'),user))
-        self.assertEqual(calls,['RESTART_999'])
-
-    def test_page_foreground_and_lease_changes_never_restart(self):
-        fg=('com.tencent.wework',999,'com.tencent.wework/.launch.WwMainActivity')
-        for current,lease,changed in ((('other',999,'other'),True,False),(fg,False,False),(fg,True,True)):
-            calls=[];pages=iter([DRAWER,HOME if changed else DRAWER])
-            with self.assertRaises(w.StopPreview):
-                g.restart_observed_wecom_clone_drawer(lambda:next(pages),lambda:current,lambda:lease,lambda:calls.append('RESTART'),999)
-            self.assertFalse(calls)
-
-    def test_unknown_restart_delivery_is_never_replayed(self):
-        calls=[]
-        def unknown():calls.append('RESTART');raise TimeoutError()
-        with self.assertRaises(TimeoutError):g.restart_observed_wecom_clone_drawer(lambda:DRAWER,lambda:('com.tencent.wework',999,'com.tencent.wework/.launch.WwMainActivity'),lambda:True,unknown,999)
-        self.assertEqual(calls,['RESTART'])
-
-
 if __name__ == '__main__':
     unittest.main()

@@ -1,10 +1,9 @@
-"""Observed WeCom/MIUI startup guards for an already leased, connected test host.
+"""Observed MIUI startup guards for an already leased, connected test host.
 
 No ADB, installation, settings changes, password entry or application launch.
 Callbacks must be bounded and bound to the same exclusively leased device.
 """
 import re
-import math
 import time
 import wecom_invite_preview as w
 
@@ -96,42 +95,3 @@ def dismiss_miui_proximity(read_screen, foreground, lease_valid, read_policy,
             return True
         sleep(.25)
     raise w.StopPreview('system_overlay_dismissal_not_confirmed')
-
-
-def is_wecom_account_drawer(screen):
-    """155 clone's observed drawer; never selects an enterprise/account row."""
-    if screen.package != w.PACKAGE:
-        return False
-    markers = (("nq", "高级功能", .76, .83),
-               ("d7x", "创建/加入企业", .84, .90),
-               ("lt_", "设置", .90, .95))
-    for resource, text, top, bottom in markers:
-        nodes = screen.matching(lambda n: n.name == "com.tencent.wework:id/" + resource)
-        if len(nodes) != 1:
-            return False
-        node = nodes[0]
-        x,y = node.position
-        width,height = node.size
-        if (node.kind != "android.widget.TextView" or node.text != text
-            or not all(math.isfinite(v) for v in (x,y,width,height))
-            or not (.1 < x < .5 and top < y < bottom and 0 < width < .5 and 0 < height < .06)):
-            return False
-    return True
-
-
-
-def restart_observed_wecom_clone_drawer(read_screen, read_foreground, lease_valid,
-                                         restart_same_slot, android_user,
-                                         check_budget=lambda: None):
-    observed=read_screen()
-    if android_user!=999 or not is_wecom_account_drawer(observed):
-        return False
-    w.guard(observed)
-    check_budget()
-    if read_screen()!=observed:
-        raise w.StopPreview('account_drawer_page_changed_before_restart')
-    if read_foreground()!=('com.tencent.wework',999,'com.tencent.wework/.launch.WwMainActivity') or lease_valid() is not True:
-        raise w.StopPreview('account_drawer_lease_or_foreground_lost')
-    check_budget()
-    restart_same_slot()  # Only the already leased clone; never retry unknown delivery.
-    return True

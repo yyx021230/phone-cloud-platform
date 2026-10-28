@@ -67,6 +67,25 @@ class HostGuardTests(unittest.TestCase):
         self.assertIn("am force-stop com.netease.open.pocoservice",calls)
         self.assertNotIn("input keyevent 224",calls)
 
+    def test_155_cold_starts_only_its_fixed_clone_before_creating_poco(self):
+        calls=[];count=[0];clock=[0]
+        def now():clock[0]+=.5;return clock[0]
+        def shell(cmd,keep=False):
+            calls.append(cmd)
+            if cmd.startswith('pm '):return 'package:fixture'
+            if cmd.startswith('pidof '):
+                count[0]+=1;return '' if count[0]==1 else '123'
+            if cmd.startswith('cat /proc/'):
+                return '123 (poco) '+' '.join(['S']+['0']*18+['789'])
+            if keep:return SimpleNamespace(close=lambda:None)
+            return ''
+        with patch.object(host,'adb_identity',return_value=1),patch.object(host,'lease_valid',return_value=True),patch.object(host,'shell',side_effect=shell),patch.object(host,'host',return_value='12345'),patch.object(host,'health',return_value=False),patch.object(host,'connection',return_value=SimpleNamespace(close=lambda:None)),patch.object(host,'command'),patch.object(host.time,'monotonic',side_effect=now),patch.object(host.time,'sleep'):
+            with self.assertRaisesRegex(host.SafeStop,'poco_not_ready'):host.run_host(self.config('155'))
+        restart='am force-stop --user 999 com.tencent.wework'
+        self.assertEqual(calls.count(restart),1)
+        self.assertLess(calls.index(restart),calls.index('am start -n com.netease.open.pocoservice/.TestActivity'))
+        self.assertFalse(any('pm clear' in cmd or 'force-stop --user 0 com.tencent.wework' in cmd for cmd in calls))
+
     def test_late_android_slot_chooser_is_selected_once_while_waiting_for_same_app(self):
         host.deadline=10**12
         with patch.object(host,"foreground",side_effect=['','','',host.w.PACKAGE,host.w.PACKAGE]),patch.object(host,"budget"),patch.object(host,"resolve_observed_wecom_slot",side_effect=[False,True]) as choose,patch.object(host.time,"sleep"):

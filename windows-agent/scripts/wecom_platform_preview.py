@@ -220,6 +220,13 @@ def run_host(value):
         if "package:" not in shell("pm path com.netease.open.pocoservice"):
             raise SafeStop("existing_poco_missing")
         if shell("pidof com.netease.open.pocoservice").strip(): raise SafeStop("poco_already_running")
+        # 155's cloned activity retains its sidebar across ordinary relaunch.
+        # Cold-start only this fixed, exclusively leased slot BEFORE Poco is
+        # created; restarting it after RPC setup can invalidate that reader.
+        if config["deviceNumber"] == "155" and selected_user == 999:
+            response=mutate("am force-stop --user 999 com.tencent.wework")
+            if any(marker in response for marker in ("Error","Exception","Permission Denial")):
+                raise SafeStop("wecom_clone_restart_rejected")
         for remote_port in (10080, 10081):
             if not lease_valid(): raise SafeStop("device_lease_lost")
             ports.append(int(host("host-serial:"+SERIAL+":forward:tcp:0;tcp:"+str(remote_port))))
@@ -280,7 +287,7 @@ def run_host(value):
             package,user,activity=foreground_info()
         driver=remarks.PocoRemarkDriver(poco,foreground,lease_valid)
         wait_for_wecom_foreground(poco, 18)
-        until=min(deadline,time.monotonic()+60); home=False; update_dismissed=False; drawer_dismissed=False
+        until=min(deadline,time.monotonic()+60); home=False; update_dismissed=False
         for _ in range(20):
             budget()
             if time.monotonic()>=until: raise SafeStop("home_navigation_timeout")
@@ -290,21 +297,6 @@ def run_host(value):
                 if update_dismissed: raise SafeStop("update_dialog_reappeared")
                 startup_click(poco,w.PACKAGE,lambda current:all(current.has(v) for v in ("发现新版本","立即更新","取消")),lambda n:n.kind in ("android.widget.Button","android.widget.TextView") and n.text=="取消")
                 update_dismissed=True; continue
-            if config["deviceNumber"] == "155" and selected_user == 999 and startup.is_wecom_account_drawer(page):
-                if drawer_dismissed: raise SafeStop("account_drawer_not_closed")
-                if foreground_info()[2] != "com.tencent.wework/.launch.WwMainActivity":
-                    raise SafeStop("account_drawer_activity_changed")
-                def restart_same_clone():
-                    for cmd in ("am force-stop --user 999 com.tencent.wework",
-                                "am start --user 999 -a android.intent.action.MAIN -c android.intent.category.LAUNCHER -n "+launch):
-                        response=mutate(cmd)
-                        if any(marker in response for marker in ("Error","Exception","Permission Denial")):
-                            raise SafeStop("wecom_clone_restart_rejected")
-                startup.restart_observed_wecom_clone_drawer(driver.snapshot, foreground_info,
-                    lease_valid, restart_same_clone, selected_user, check_budget=budget)
-                drawer_dismissed=True
-                wait_for_wecom_foreground(poco, 18)
-                continue
             if w.is_home(page) and not w.is_menu(page):
                 second=driver.snapshot();w.guard(second)
                 if w.is_home(second) and not w.is_menu(second):home=True;break
