@@ -1,0 +1,11 @@
+{
+  "mode": "local browser and HTTP with mock Agent",
+  "realPhoneUsed": false,
+  "appSlot": "clone",
+  "customRemarkDeliveredExactly": true,
+  "multilineDescriptionDeliveredExactly": true,
+  "fingerprintMatchedAcrossNodeAndPython": true,
+  "privateValuesNotEchoedInPublicTask": true,
+  "invitationSent": false,
+  "productionAccessed": false
+}
