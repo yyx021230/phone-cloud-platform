@@ -67,6 +67,19 @@ class HostGuardTests(unittest.TestCase):
         self.assertIn("am force-stop com.netease.open.pocoservice",calls)
         self.assertNotIn("input keyevent 224",calls)
 
+    def test_late_android_slot_chooser_is_selected_once_while_waiting_for_same_app(self):
+        host.deadline=10**12
+        with patch.object(host,"foreground",side_effect=['','','',host.w.PACKAGE,host.w.PACKAGE]),patch.object(host,"budget"),patch.object(host,"resolve_observed_wecom_slot",side_effect=[False,True]) as choose,patch.object(host.time,"sleep"):
+            host.wait_for_wecom_foreground(None,12)
+        self.assertEqual(choose.call_count,2)
+
+    def test_slot_chooser_click_is_not_replayed_when_application_does_not_open(self):
+        host.deadline=10**12;clock=[0]
+        def now():clock[0]+=.5;return clock[0]
+        with patch.object(host,"foreground",return_value=''),patch.object(host,"budget"),patch.object(host,"resolve_observed_wecom_slot",return_value=True) as choose,patch.object(host.time,"monotonic",side_effect=now),patch.object(host.time,"sleep"):
+            with self.assertRaisesRegex(host.SafeStop,'wecom_launch_not_ready'):host.wait_for_wecom_foreground(None,2)
+        self.assertEqual(choose.call_count,1)
+
     def test_process_ownership_token_rejects_missing_or_malformed_stat(self):
         self.assertEqual(host.process_start_token("bad"),"")
         self.assertEqual(host.process_start_token("123 (poco) S 0"),"")

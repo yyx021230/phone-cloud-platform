@@ -176,6 +176,28 @@ def startup_click(poco,package,context,selector):
    time.sleep(.3)
 
 
+
+def resolve_observed_wecom_slot(poco):
+    package,_,activity=foreground_info()
+    if package!="com.android.intentresolver" or not activity.endswith("/.DoubleAppResolverActivity"):
+        return False
+    def slot(node):
+        label=re.sub(r"\s","",node.text)
+        return label=="企业微信" if selected_user==0 else re.fullmatch(r"(?:Ⅱ|II)[·.]?企业微信",label) is not None
+    startup_click(poco,package,lambda page:any("选择要使用的应用" in n.text for n in page.nodes),slot)
+    return True
+
+
+def wait_for_wecom_foreground(poco, seconds):
+    until=min(deadline,time.monotonic()+seconds)
+    chosen=False
+    while foreground()!=w.PACKAGE and time.monotonic()<until:
+        budget()
+        if not chosen: chosen=resolve_observed_wecom_slot(poco)
+        time.sleep(.25)
+    if foreground()!=w.PACKAGE: raise SafeStop("wecom_launch_not_ready")
+
+
 def process_start_token(stat):
     # Linux comm may contain spaces/parentheses; starttime is field 22.
     rest = stat.rsplit(") ", 1)
@@ -256,14 +278,8 @@ def run_host(value):
             startup_click(poco,package,lambda page:all(page.has(v) for v in ("取消","仅限充电","传输文件","传输照片")),lambda n:n.labeled("取消"))
             mutate("am start --user %d -a android.intent.action.MAIN -c android.intent.category.LAUNCHER -n "%selected_user+launch)
             package,user,activity=foreground_info()
-        if package=="com.android.intentresolver" and activity.endswith("/.DoubleAppResolverActivity"):
-            def slot(n):
-                label=re.sub(r"\s","",n.text)
-                return label=="企业微信" if selected_user==0 else re.fullmatch(r"(?:Ⅱ|II)[·.]?企业微信",label) is not None
-            startup_click(poco,package,lambda page:any("选择要使用的应用" in n.text for n in page.nodes),slot)
         driver=remarks.PocoRemarkDriver(poco,foreground,lease_valid)
-        until=min(deadline,time.monotonic()+18)
-        while foreground()!=w.PACKAGE and time.monotonic()<until: budget();time.sleep(.25)
+        wait_for_wecom_foreground(poco, 18)
         until=min(deadline,time.monotonic()+60); home=False; update_dismissed=False; drawer_dismissed=False
         for _ in range(20):
             budget()
@@ -284,9 +300,7 @@ def run_host(value):
                 time.sleep(.3)
                 if startup.restore_wecom_after_drawer(foreground_info, lease_valid,
                     lambda:mutate("am start --user %d -a android.intent.action.MAIN -c android.intent.category.LAUNCHER -n "%selected_user+launch), selected_user):
-                    wake_until=min(deadline,time.monotonic()+6)
-                    while foreground()!=w.PACKAGE and time.monotonic()<wake_until:
-                        budget();time.sleep(.25)
+                    wait_for_wecom_foreground(poco, 12)
                 continue
             if w.is_home(page) and not w.is_menu(page):
                 second=driver.snapshot();w.guard(second)
