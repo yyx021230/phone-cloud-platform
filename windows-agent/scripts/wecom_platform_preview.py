@@ -176,13 +176,20 @@ def startup_click(poco,package,context,selector):
    time.sleep(.3)
 
 
+def process_start_token(stat):
+    # Linux comm may contain spaces/parentheses; starttime is field 22.
+    rest = stat.rsplit(") ", 1)
+    fields = rest[1].split() if len(rest) == 2 else []
+    return fields[19] if len(fields) > 19 and fields[19].isdigit() else ""
+
+
 def run_host(value):
     global config, SERIAL, selected_user, initial_adb, deadline, cleaning_up
     cleaning_up = False
     config = validate_config(value)
     SERIAL = config["serial"]; selected_user = config["androidUser"]
     deadline = time.monotonic() + 210
-    ports = []; instrument = None; owned_pid = ""; result = {}
+    ports = []; instrument = None; owned_pid = ""; owned_start = ""; result = {}
     initial_adb = adb_identity()
     try:
         if not lease_valid(): raise SafeStop("device_lease_lost")
@@ -195,13 +202,27 @@ def run_host(value):
             if not lease_valid(): raise SafeStop("device_lease_lost")
             ports.append(int(host("host-serial:"+SERIAL+":forward:tcp:0;tcp:"+str(remote_port))))
         mutate("am start -n com.netease.open.pocoservice/.TestActivity")
+        # Establish ownership before instrumentation health checks can fail.
+        owned_pid = shell("pidof com.netease.open.pocoservice").strip()
+        if not re.fullmatch(r"\d+", owned_pid): raise SafeStop("poco_owner_unconfirmed")
+        owned_start = process_start_token(shell("cat /proc/"+owned_pid+"/stat"))
+        if not owned_start: raise SafeStop("poco_owner_unconfirmed")
         if not lease_valid(): raise SafeStop("device_lease_lost")
         instrument = shell("am instrument -w -e debug false -e class com.netease.open.pocoservice.InstrumentedTestAsLauncher com.netease.open.pocoservice/androidx.test.runner.AndroidJUnitRunner", keep=True)
         until = min(deadline, time.monotonic()+12)
         while time.monotonic()<until and not health(ports[0]): time.sleep(.3)
+        # Android instrumentation may replace the Activity's process. Bind the
+        # new instance only while our exclusive lease still holds, before a
+        # failed health check exits; never adopt a pre-existing/older instance.
+        current_pid = shell("pidof com.netease.open.pocoservice").strip()
+        if current_pid != owned_pid:
+            if not re.fullmatch(r"\d+", current_pid) or not lease_valid():
+                raise SafeStop("poco_owner_changed")
+            current_start = process_start_token(shell("cat /proc/"+current_pid+"/stat"))
+            if not current_start or int(current_start) < int(owned_start):
+                raise SafeStop("poco_owner_changed")
+            owned_pid, owned_start = current_pid, current_start
         if not health(ports[0]): raise SafeStop("poco_not_ready")
-        owned_pid = shell("pidof com.netease.open.pocoservice").strip()
-        if not re.fullmatch(r"\d+", owned_pid): raise SafeStop("poco_owner_unconfirmed")
         launch = shell("cmd package resolve-activity --brief --user %d com.tencent.wework"%selected_user).splitlines()[-1].strip()
         if not re.fullmatch(r"com\.tencent\.wework/[A-Za-z0-9_.$]+",launch): raise SafeStop("wecom_activity_unconfirmed")
         mutate("input keyevent 224"); mutate("wm dismiss-keyguard")
@@ -275,15 +296,16 @@ def run_host(value):
         deadline = time.monotonic() + 12
         cleanup_ok = True
         # Touch only our own target/forwards; never stop an unrelated Poco owner.
-        if instrument:
+        if instrument or owned_pid:
             try:
-                if owned_pid and shell("pidof com.netease.open.pocoservice").strip()==owned_pid:
+                if (owned_pid and owned_start and shell("pidof com.netease.open.pocoservice").strip()==owned_pid
+                    and process_start_token(shell("cat /proc/"+owned_pid+"/stat"))==owned_start):
                     # Cleanup only the exact tool process created by this child.
                     # The parent keeps this serial reserved until child exit.
                     shell("am force-stop com.netease.open.pocoservice")
                 else: cleanup_ok = False
             except Exception: cleanup_ok = False
-            instrument.close()
+            if instrument: instrument.close()
         for port in ports:
             try:
                 connection_socket = connection()
