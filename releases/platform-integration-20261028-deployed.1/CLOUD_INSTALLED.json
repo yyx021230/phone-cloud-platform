@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-28T05:43:57.888027+00:00",
+  "imageId": "sha256:fca45ec32e72b0787e4375fd6812a5ac97d3aebec4b830b6393b03117554b45e",
+  "containerId": "439c756d8a25ce335e5258c47ad6866b4af8dc365cea5026abcdf3dc3829cf9b",
+  "pid": 927090,
+  "readyz": 200,
+  "startupSeconds": 91.15,
+  "restartCount": 0,
+  "previousImage": "sha256:5ab68ecbc67dfd4815f3ec93b0d3dd6265acd6a5d044867c3e04904636e80649"
+}

@@ -1,0 +1,53 @@
+{
+  "at": "2026-10-28T05:46:36.010662+00:00",
+  "sha256": "ba11eabc40b46e38af71d4dfe698425a1ba48d7155c6460e831d8ca3e1bb06fc",
+  "configTestPassed": true,
+  "gracefulReload": true,
+  "directoryMetadataUnchanged": true,
+  "metadata": [
+    {
+      "path": "/var/lib/nginx",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o40755",
+      "inode": 1325977
+    },
+    {
+      "path": "/var/lib/nginx/body",
+      "uid": 33,
+      "gid": 0,
+      "mode": "0o40700",
+      "inode": 1326060
+    },
+    {
+      "path": "/var/lib/nginx/proxy",
+      "uid": 33,
+      "gid": 0,
+      "mode": "0o40700",
+      "inode": 1326061
+    },
+    {
+      "path": "/var/lib/nginx/fastcgi",
+      "uid": 33,
+      "gid": 0,
+      "mode": "0o40700",
+      "inode": 1326062
+    },
+    {
+      "path": "/var/lib/nginx/uwsgi",
+      "uid": 33,
+      "gid": 0,
+      "mode": "0o40700",
+      "inode": 1326136
+    },
+    {
+      "path": "/var/lib/nginx/scgi",
+      "uid": 33,
+      "gid": 0,
+      "mode": "0o40700",
+      "inode": 1326138
+    }
+  ],
+  "route": "/api/v1/open/xhs-data/",
+  "upstream": "127.0.0.1:8791"
+}

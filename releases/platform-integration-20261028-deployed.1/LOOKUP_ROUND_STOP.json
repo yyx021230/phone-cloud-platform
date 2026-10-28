@@ -1,0 +1,10 @@
+{
+  "status": "stopped",
+  "requestedAt": "2026-10-28T05:41:45.189Z",
+  "completedAt": "2026-10-28T05:41:58.448Z",
+  "cancelledUnfinishedBusiness": 14,
+  "channelsRemaining": 0,
+  "method": "supported signed HTTP stop API",
+  "previousCompletedResultsPreserved": true,
+  "newRoundSubsequentlyAuthorizedByUser": true
+}

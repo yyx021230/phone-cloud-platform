@@ -1,0 +1,11 @@
+{
+  "status": 200,
+  "body": {
+    "ok": true,
+    "preparationId": "29b355b0-e556-471a-a6dc-3e85dbbf6d89",
+    "status": "ready",
+    "ready": true,
+    "expiresAt": null,
+    "acceptingRequests": true
+  }
+}

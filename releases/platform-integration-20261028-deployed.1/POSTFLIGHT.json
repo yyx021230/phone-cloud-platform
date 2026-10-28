@@ -1,0 +1,72 @@
+{
+  "at": "2026-10-28T05:58:56.306091+00:00",
+  "services": {
+    "phone-cloud-platform": {
+      "status": "running",
+      "health": "healthy",
+      "restarts": 0,
+      "oom": false
+    },
+    "phone-cloud-platform-xhs-batch-1": {
+      "status": "running",
+      "health": "healthy",
+      "restarts": 0,
+      "oom": false
+    },
+    "phone-cloud-postgres": {
+      "status": "running",
+      "health": "healthy",
+      "restarts": 0,
+      "oom": false
+    },
+    "phone-cloud-redis": {
+      "status": "running",
+      "health": "healthy",
+      "restarts": 0,
+      "oom": false
+    }
+  },
+  "imageId": "sha256:fca45ec32e72b0787e4375fd6812a5ac97d3aebec4b830b6393b03117554b45e",
+  "rssKB": 1489232,
+  "healthz": {
+    "http": 200,
+    "ms": 47
+  },
+  "readyz": {
+    "http": 200,
+    "ms": 33
+  },
+  "nginxDirectoriesUnchanged": true,
+  "nginxSiteSha256": "ba11eabc40b46e38af71d4dfe698425a1ba48d7155c6460e831d8ca3e1bb06fc",
+  "lookup": {
+    "roundId": "29b355b0-e556-471a-a6dc-3e85dbbf6d89",
+    "newBusiness": 37,
+    "states": {
+      "succeeded": 13,
+      "not_found": 7,
+      "needs_recovery": 1,
+      "running": 4,
+      "queued": 12
+    },
+    "config": {
+      "enabled": true,
+      "concurrency": 8,
+      "preparedClientInflightLimit": 20
+    },
+    "counts": {
+      "registered": 48,
+      "executing": 7,
+      "waitingHuman": 0,
+      "queued": 12
+    }
+  },
+  "identity": {
+    "adbPid": 20316,
+    "adbOwner": "NT AUTHORITY\\SYSTEM",
+    "adbExe": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+    "adbCreatedAt": 1792768226.628511,
+    "agentPid": 26488,
+    "agentOwner": "NT AUTHORITY\\SYSTEM",
+    "agentCreatedAt": 1793165838.1015558
+  }
+}

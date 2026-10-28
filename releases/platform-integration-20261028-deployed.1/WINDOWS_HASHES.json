@@ -1,0 +1,28 @@
+{
+  "files": {
+    "package-lock.json": "e9ed7d7a248b0114cbbdf00117a3ca13fd64a5c75a6c31e6ca8dbcd1cbe0f7d1",
+    "package.json": "1112d5bbc5703eb8de987472ef5602edc62255125c6ff419be9d8efd4e898bf2",
+    "scripts/alipay_name_lookup.py": "07bc870698663b4c63c071a8743b182972658db1d37b015eb79417c01cec87b2",
+    "scripts/lookup_page_actions.py": "e281eaf4d7396a8f4ba4a6f18bee47131005ddfa8db90cc94c46cb2f3c4811cc",
+    "scripts/native/xhs-native-pair.jar": "9e696792b37dd269803d230ef1e97754bf895b1d2b852e8d23ae838c757cbed3",
+    "scripts/wecom_invite_preview.py": "11bd468f1ca57ae193ea3e41f7911aebe404d1e7ad8f63898ccab8f5eb8d2f67",
+    "scripts/wecom_remark_preview.py": "bcfadd95c6ad69b5b957d49e37f450ff1f1b0911411047dc7393dedf746d8207",
+    "scripts/xhs_airtest_poco.py": "8abb00385d12ce99dc5995ae1424f226a5e9f887461c920594e68d27f44fd4e1",
+    "scripts/xhs_list_ocr.py": "4cc3d8ae042c6951b65ec93cc755e57cbed0440393b4c841bda20f76def3a516",
+    "scripts/xhs_native_elements.py": "e94f3066cb9e99c50ed3f7f18ae6c56a32c543774fefa863d125df08f173d46e",
+    "scripts/xhs_native_window.py": "1b15e62ccad9e1d3fc4b81bbe8b5a1adb57f7f913b57472ba54283415e0ba772",
+    "scripts/xhs_ocr_digits.png": "6a65dfb150ecbd4c56140b28fea51e89d11d8187031009447bab0d880164522f",
+    "scripts/小红书数据同步.py": "cbf038e297f3b67c8b4b681bf93b22e6026c7683d263d1c4fc62b56897de63e0",
+    "src/index.mjs": "884bc370558e6b0b3f2d0d46dee309da4467757b613c0da03576de8f9b34df74",
+    "src/lookup-page-recovery.mjs": "c15f74dad44d9199f0113fed9583fc331af7fc23e89242d20ab45357afacd499",
+    "src/lookup-reader-lifecycle.mjs": "9ea791d3db7c185c889c142393c3255c69fe581291fa7d6b81a880c6fbd62860",
+    "src/lookup-recovery-trace.mjs": "7e26269618903b610784dca34331672d3e6d2d7fd0962039b3ed8c36231edd9d"
+  },
+  "frozen": {
+    "adb-auth-env.cjs": "9c3aa5affb9243f255f2bf74376ee7bb01c9f9171989f5477146263ee7e2bb4d",
+    "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+    "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04",
+    "src/config.mjs": "b233775c589ab22e6662a23bb82e507c9a3f635f1112709bfdae24d854a5d254",
+    "vendor/phone-cloud-whip-publisher.exe": "7431037b0a9826a252cc1f1fd6edf4af7bc70cd25cad887412eb5ed3d4630e32"
+  }
+}

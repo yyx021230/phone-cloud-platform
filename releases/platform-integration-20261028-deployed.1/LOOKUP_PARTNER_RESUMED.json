@@ -1,0 +1,14 @@
+{
+  "newBusiness": 21,
+  "states": {
+    "succeeded": 3,
+    "running": 3,
+    "queued": 15
+  },
+  "counts": {
+    "registered": 48,
+    "executing": 7,
+    "waitingHuman": 1,
+    "queued": 15
+  }
+}

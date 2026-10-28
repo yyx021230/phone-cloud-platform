@@ -1,0 +1,26 @@
+{
+  "installedFiles": [
+    "package-lock.json",
+    "package.json",
+    "scripts/alipay_name_lookup.py",
+    "scripts/lookup_page_actions.py",
+    "scripts/native/xhs-native-pair.jar",
+    "scripts/wecom_invite_preview.py",
+    "scripts/wecom_remark_preview.py",
+    "scripts/xhs_airtest_poco.py",
+    "scripts/xhs_list_ocr.py",
+    "scripts/xhs_native_elements.py",
+    "scripts/xhs_native_window.py",
+    "scripts/xhs_ocr_digits.png",
+    "scripts/小红书数据同步.py",
+    "src/index.mjs",
+    "src/lookup-page-recovery.mjs",
+    "src/lookup-reader-lifecycle.mjs",
+    "src/lookup-recovery-trace.mjs"
+  ],
+  "oldAgentPid": 14540,
+  "oldOwnedChildrenStopped": [],
+  "adbPidUnchanged": 20316,
+  "frozenFilesUnchanged": true,
+  "taskActionModified": false
+}
