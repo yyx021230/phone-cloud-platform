@@ -83,7 +83,8 @@ console.log(JSON.stringify({devices,locks,lookupReserved:values[2].body.pool.cha
                 assert self.path=='/guard' and int(self.headers.get('Content-Length','0'))<=256
                 req=json.loads(self.rfile.read(int(self.headers['Content-Length'])))
                 c=configs[req['jobId']];assert self.headers.get('Authorization')=='Bearer '+c['brokerToken']
-                result=prove(c);status=200
+                assert isinstance(req.get('nonce'),str) and len(req['nonce'])==32
+                result=prove(c);result['nonce']=req['nonce'];status=200
             except Exception as e:
                 proof_failures.append(type(e).__name__+':'+str(e)[:200]);result={'allowed':False};status=409
             self.send_response(status);self.send_header('Content-Type','application/json');self.end_headers();self.wfile.write(json.dumps(result).encode())

@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 def validate(config, proof, inventory, age, now=None):
-    now = time.time() if now is None else now
+    now = time.monotonic() if now is None else now
     required = ('deviceId', 'serial', 'deviceName', 'appSlot', 'xhsId', 'accountName',
                 'jobId', 'sessionId', 'lockId', 'ownerUserId')
     if any(not isinstance(config.get(k), str) or not config[k] for k in required):
@@ -14,7 +14,8 @@ def validate(config, proof, inventory, age, now=None):
         raise RuntimeError('qa_target_excluded')
     if not 0 <= age <= 90:
         raise RuntimeError('qa_inventory_stale')
-    if not proof.get('allowed') or not 0 <= now - proof.get('checkedAt', 0) <= 3:
+    if (not proof.get('allowed') or not 0 <= now - proof.get('localObservedAt', -100) <= 3
+            or not 0 <= proof.get('roundTripSeconds', -1) <= 3):
         raise RuntimeError('qa_lease_not_fresh')
     if any(proof.get(k) != config[k] for k in required):
         raise RuntimeError('qa_lease_identity_changed')

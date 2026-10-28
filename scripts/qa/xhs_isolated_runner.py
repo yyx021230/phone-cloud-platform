@@ -14,6 +14,7 @@ import subprocess
 import sys
 import time
 import urllib.request
+import uuid
 from pathlib import Path
 from types import SimpleNamespace
 from xhs_isolated_guard import validate_file
@@ -113,10 +114,16 @@ def main():
     if not c['brokerUrl'].startswith('http://127.0.0.1:'):
         raise RuntimeError('qa_broker_must_be_loopback_tunnel')
     def prove():
-        request = urllib.request.Request(c['brokerUrl'] + '/guard', data=json.dumps({'jobId': c['jobId']}).encode(),
+        nonce=uuid.uuid4().hex;started=time.monotonic()
+        request = urllib.request.Request(c['brokerUrl'] + '/guard', data=json.dumps({'jobId': c['jobId'], 'nonce': nonce}).encode(),
                                          headers={'Authorization': 'Bearer ' + c['brokerToken'], 'Content-Type': 'application/json'})
         with urllib.request.urlopen(request, timeout=3) as r:
-            return json.load(r)
+            proof=json.load(r)
+        if proof.get('nonce')!=nonce:
+            raise RuntimeError('qa_broker_reply_nonce_mismatch')
+        proof['localObservedAt']=time.monotonic()
+        proof['roundTripSeconds']=proof['localObservedAt']-started
+        return proof
     commands = GuardedCommands(c, prove)
     if sys.argv[1:2] == ['--qa-adb']:
         r = commands.run([c['adbPath'], '-s', c['serial']] + sys.argv[2:], timeout=8)
