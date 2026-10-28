@@ -238,11 +238,11 @@ def run_host(value):
         if "package:" not in shell("pm path com.netease.open.pocoservice"):
             raise SafeStop("existing_poco_missing")
         if shell("pidof com.netease.open.pocoservice").strip(): raise SafeStop("poco_already_running")
-        # 155's cloned activity retains its sidebar across ordinary relaunch.
+        # Observed 25 contact stacks and 155 clone sidebar survive warm launch.
         # Cold-start only this fixed, exclusively leased slot BEFORE Poco is
         # created; restarting it after RPC setup can invalidate that reader.
-        if config["deviceNumber"] == "155" and selected_user == 999:
-            response=mutate("am force-stop --user 999 com.tencent.wework")
+        if config["deviceNumber"] in ("25", "155"):
+            response=mutate("am force-stop --user %d com.tencent.wework"%selected_user)
             if any(marker in response for marker in ("Error","Exception","Permission Denial")):
                 raise SafeStop("wecom_clone_restart_rejected")
         for remote_port in (10080, 10081):
