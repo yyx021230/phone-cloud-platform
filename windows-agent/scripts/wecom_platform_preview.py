@@ -295,9 +295,11 @@ def run_host(value):
         remote=client.remote("poco-uiautomation-framework")
         agent=u.PocoAgent(u.RemotePocoHierarchy(remote.dumper,remote.selector,remote.attributor),remote.inputer,u.ScreenWrapper(remote.screen),None)
         poco=u.Poco(agent,**w.PREVIEW_POCO_OPTIONS)
+        proximity_dismissals=0
         if config["deviceNumber"] == "25":
-            startup.dismiss_miui_proximity(lambda:any_snapshot(poco),foreground,lease_valid,
-                lambda:shell("dumpsys window policy"),lambda:mutate("input keyevent 24"),android_user=selected_user,check_budget=budget)
+            if startup.dismiss_miui_proximity(lambda:any_snapshot(poco),foreground,lease_valid,
+                lambda:shell("dumpsys window policy"),lambda:mutate("input keyevent 24"),android_user=selected_user,check_budget=budget):
+                proximity_dismissals+=1
         package,user,activity=foreground_info()
         if package=="com.android.settings" and activity.endswith("/.Settings$UsbDetailsActivity"):
             startup_click(poco,package,lambda page:all(page.has(v) for v in ("取消","仅限充电","传输文件","传输照片")),lambda n:n.labeled("取消"))
@@ -311,6 +313,12 @@ def run_host(value):
             if time.monotonic()>=until: raise SafeStop("home_navigation_timeout")
             page=driver.snapshot(); w.guard(page)
             observed=any_snapshot(poco)
+            if config["deviceNumber"] == "25" and startup.is_miui_proximity_overlay(observed):
+                if proximity_dismissals>=2: raise SafeStop("system_overlay_reappeared")
+                if startup.dismiss_miui_proximity(lambda:any_snapshot(poco),foreground,lease_valid,
+                    lambda:shell("dumpsys window policy"),lambda:mutate("input keyevent 24"),
+                    android_user=selected_user,check_budget=budget): proximity_dismissals+=1
+                continue
             if observed.package==w.PACKAGE and all(observed.has(v) for v in ("发现新版本","立即更新","取消")):
                 if update_dismissed: raise SafeStop("update_dialog_reappeared")
                 startup_click(poco,w.PACKAGE,lambda current:all(current.has(v) for v in ("发现新版本","立即更新","取消")),lambda n:n.kind in ("android.widget.Button","android.widget.TextView") and n.text=="取消")
