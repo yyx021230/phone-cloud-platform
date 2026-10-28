@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 from xhs_isolated_guard import validate, validate_file
 from xhs_isolated_runner import GuardedCommands, read_proof
-from xhs_candidate_live import settings_recovery_source, staging_source, wait_cached_proof, candidate_files
+from xhs_candidate_live import settings_recovery_source, staging_source, wait_cached_proof, candidate_files, validate_target_names, main as live_main
 
 
 class LeaseBoundary(unittest.TestCase):
@@ -202,6 +202,14 @@ class LeaseBoundary(unittest.TestCase):
                 p.write_text(json.dumps([self.d]))
                 return proof()
             with self.assertRaisesRegex(RuntimeError,'qa_inventory_stale'):validate_file(c,proof_after_file_replacement)
+
+    def test_cli_refuses_excess_or_excluded_targets_before_private_access(self):
+        import os
+        from unittest.mock import patch
+        validate_target_names(['180','129','102','141','140'])
+        for names in ([],['1','2','3','4','5','6'],['47','47'],['47','152'],['18'],['155'],['185'],['-1']):
+            with self.subTest(names=names),patch.dict(os.environ,{},clear=True),patch('sys.argv',['qa']+names):
+                with self.assertRaisesRegex(ValueError,'qa_requires_one_to_five'):live_main()
 
     def test_staged_dependency_closure_reaches_guard_with_all_native_assets(self):
         import ast,importlib.util,shutil
