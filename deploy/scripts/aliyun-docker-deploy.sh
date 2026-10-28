@@ -39,8 +39,11 @@ if [ "$RUN_PREFLIGHT" = "true" ]; then
 fi
 
 if [ "$START_STACK" = "true" ]; then
+  # Always enforce media preservation, even when RUN_PREFLIGHT=false.
+  node "$APP_DIR/deploy/mediamtx-pacing/verify.mjs" --deployment
   docker compose up -d --build
   docker compose ps
+  node "$APP_DIR/deploy/mediamtx-pacing/verify.mjs" --deployment
 fi
 
 if [ "$INSTALL_BACKUP_TIMER" = "true" ]; then

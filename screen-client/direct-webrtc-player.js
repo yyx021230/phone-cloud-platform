@@ -1,4 +1,4 @@
-import { extractInboundVideoMetrics, waitForIceGathering } from "./webrtc-player.js";
+import { extractInboundVideoMetrics, summarizeWhepNegotiation, waitForIceGathering } from "./webrtc-player.js";
 
 export class DirectWebRtcScreenPlayer {
   constructor({
@@ -32,6 +32,12 @@ export class DirectWebRtcScreenPlayer {
     this.presentedFrames = 0;
     this.frameCallbackId = null;
     this.previousRtc = {};
+    this.negotiatedFeedback = {
+      rtcNegotiatedNack: false,
+      rtcNegotiatedPli: false,
+      rtcNegotiatedFir: false,
+      rtcNegotiatedRtx: false
+    };
   }
 
   async start({ signalUrl, token, iceServers = [] } = {}) {
@@ -70,6 +76,7 @@ export class DirectWebRtcScreenPlayer {
     const answerPromise = waitForSignal(signal, "answer");
     signal.send(JSON.stringify({ type: "offer", sdp: pc.localDescription?.sdp || offer.sdp }));
     const answerMessage = await answerPromise;
+    this.negotiatedFeedback = summarizeWhepNegotiation(answerMessage.sdp);
     await pc.setRemoteDescription({ type: "answer", sdp: answerMessage.sdp });
     this.requestNextVideoFrame();
     this.monitorTimer = this.setRepeatingTimer(() => this.monitorPlayback(), 250);
@@ -113,7 +120,7 @@ export class DirectWebRtcScreenPlayer {
       const metrics = extractInboundVideoMetrics(reports, { at: this.now(), previous: this.previousRtc });
       if (metrics) {
         this.previousRtc = metrics;
-        this.onStats({ ...metrics, decoderBackend: "direct_webrtc" });
+        this.onStats({ ...metrics, ...this.negotiatedFeedback, decoderBackend: "direct_webrtc" });
       }
     } catch (error) {
       this.onStats({ diagnostic: { event: "direct_webrtc_stats_error", message: String(error?.message || error || "unknown") } });

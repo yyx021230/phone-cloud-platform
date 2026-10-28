@@ -4,6 +4,7 @@ import json
 import os
 import subprocess
 import sys
+import threading
 import time
 import traceback
 import xml.etree.ElementTree as ET
@@ -31,13 +32,129 @@ class DisabledKeepRunningInstrumentationThread:
         return None
 
 
+def start_poco_instrument_once(poco, port, timeout_seconds=12.0, http=None):
+    """Wait for one owned service; the worker then proves its HRPC channel.
+
+    The SDK retries am instrument on every connection refusal without reaping
+    the previous process. Slow OEM startup can then restart itself repeatedly.
+    The Agent already owns bounded worker retries; do not nest another retry
+    loop or kill/uninstall unrelated UiAutomator owners inside the SDK.
+
+    PocoService 1.0.0.68 implements connectionState by dumping the entire
+    hierarchy. Polling it with short HTTP deadlines queues expensive page
+    traversals: timing out the client does not cancel the Android traversal.
+    Use the service's lightweight display-size endpoint for this bootstrap
+    phase. This is NOT worker readiness: verify_poco_transport_ready must
+    still complete an actual bounded selector RPC before workerReady.
+    """
+    if http is None:
+        import requests
+        http = requests.Session()
+        http.trust_env = False  # ADB loopback must not use a system HTTP proxy.
+    started = time.perf_counter()
+    deadline = started + max(0.5, min(float(timeout_seconds), 12.0))
+    adb = poco.adb_client
+    package = "com.netease.open.pocoservice"
+    output = {"stdout": "", "stderr": ""}
+    proc = None
+    readers = []
+    last_error = "instrumentation_not_started"
+    last_observation_at = started
+
+    def drain(stream, key):
+        try:
+            for line in iter(stream.readline, b""):
+                if not line:
+                    break
+                text = line.decode("utf-8", errors="replace") if isinstance(line, bytes) else str(line)
+                output[key] = (output[key] + text)[-2400:]
+        except Exception:
+            pass
+
+    try:
+        run_adb(adb.adb_path, adb.serialno, ["shell", "am", "start", "-n", f"{package}/.TestActivity"], timeout=3)
+        proc = adb.start_shell([
+            "am", "instrument", "-w", "-e", "debug", "false", "-e", "class",
+            f"{package}.InstrumentedTestAsLauncher", f"{package}/androidx.test.runner.AndroidJUnitRunner",
+        ])
+        poco._instrument_proc = proc
+        emit([], "poco_instrumentation_launch_started", instrumentationLaunches=1)
+        for key in output:
+            stream = getattr(proc, key, None)
+            if stream is not None:
+                reader = threading.Thread(target=drain, args=(stream, key), daemon=True)
+                reader.start()
+                readers.append(reader)
+        last_error = "connection_not_ready"
+        while time.perf_counter() < deadline:
+            exit_code = proc.poll()
+            if exit_code is not None:
+                for reader in readers:
+                    reader.join(0.1)
+                raise RuntimeError(f"instrumentation_exited:code={exit_code}:{output}")
+            try:
+                response = http.get(
+                    f"http://{poco.device_ip}:{port}/screen_size",
+                    timeout=max(0.05, min(0.5, deadline - time.perf_counter())),
+                )
+                size = response.json() if response.status_code == 200 else None
+                valid_size = (
+                    isinstance(size, list) and len(size) == 2
+                    and all(type(value) is int and value > 0 for value in size)
+                )
+                if valid_size:
+                    if proc.poll() is not None:
+                        raise RuntimeError("instrumentation_exited_after_connection")
+                    emit([], "poco_instrumentation_connected", elapsedMs=int((time.perf_counter() - started) * 1000), instrumentationLaunches=1, probe="screen_size", hierarchyVerified=False)
+                    return True
+                last_error = f"poco_service_invalid_screen_size:http_status={response.status_code}"
+            except Exception as exc:
+                last_error = f"{type(exc).__name__}:{exc}"
+            if time.perf_counter() - last_observation_at >= 4:
+                last_observation_at = time.perf_counter()
+                emit([], "poco_instrumentation_waiting", elapsedMs=int((last_observation_at-started)*1000), reason=last_error[-700:], processAlive=proc.poll() is None)
+            time.sleep(min(0.2, max(0, deadline - time.perf_counter())))
+        raise RuntimeError(f"connection_deadline:{last_error}:{output}")
+    except Exception as exc:
+        # The Agent may recycle a bootstrap before a task payload exists, so
+        # persist the real handshake failure as a streamed event. A generic
+        # final retry timeout must not erase the earlier Android/HTTP cause.
+        emit([], "poco_instrumentation_handshake_failed", elapsedMs=int((time.perf_counter()-started)*1000), error=str(exc)[-1800:], reason=last_error[-700:], instrumentationOutput=dict(output))
+        # Reap the exact host process we created, not other device sessions.
+        if proc is not None and proc.poll() is None:
+            proc.kill()
+            try:
+                proc.wait(timeout=1)
+            except Exception:
+                pass
+        raise RuntimeError(f"poco_worker_instrumentation_handshake_failed:{exc}") from exc
+    finally:
+        if hasattr(http, "close"):
+            http.close()
+
+
 def create_stable_poco(**options):
     import poco.drivers.android.uiautomation as uiautomation
 
     original = uiautomation.KeepRunningInstrumentationThread
     uiautomation.KeepRunningInstrumentationThread = DisabledKeepRunningInstrumentationThread
+    class ManagedAndroidPoco(uiautomation.AndroidUiautomationPoco):
+        def _install_service(self):
+            # Production QA is not permission to install or update an APK.
+            adb = self.adb_client
+            existing = run_adb(adb.adb_path, adb.serialno, ["shell", "pm", "path", "com.netease.open.pocoservice"], timeout=4)
+            if "package:" not in existing:
+                raise RuntimeError("poco_service_not_installed")
+            return False
+
+        def _start_instrument(self, port_to_ping, force_restart=False):
+            return start_poco_instrument_once(self, port_to_ping)
+
+        def _kill_uiautomator(self):
+            raise RuntimeError("poco_worker_instrumentation_handshake_failed:external_instrumentation_owner")
+
     try:
-        poco = uiautomation.AndroidUiautomationPoco(**options)
+        poco = ManagedAndroidPoco(**options)
         # HRPC defaults every remote selector evaluation to 15 seconds.  One
         # seemingly small ``exists()`` call can issue several RPCs, so a stale
         # PocoService used to block a task for roughly 150 seconds before the
@@ -50,12 +167,27 @@ def create_stable_poco(**options):
         client = getattr(getattr(poco, "_agent", None), "client", None)
         if client is not None and hasattr(client, "set_timeout"):
             client.set_timeout(timeout_seconds)
+            # hrpc's event wait honors ``set_timeout``, but its HTTP transport
+            # sends synchronous requests with ``timeout=None`` first.  If the
+            # on-device PocoService accepts the connection and then stops
+            # responding, requests.post() can therefore block forever before
+            # hrpc reaches its bounded event wait.  Substitute the same bound
+            # only for those synchronous calls; fire-and-forget calls retain
+            # their explicit shorter timeout.
+            transport = getattr(client, "transport", None)
+            original_send = getattr(transport, "send", None)
+            if callable(original_send):
+                def bounded_transport_send(request, timeout=None):
+                    effective_timeout = timeout_seconds if timeout is None else timeout
+                    return original_send(request, timeout=effective_timeout)
+
+                transport.send = bounded_transport_send
         return poco
     finally:
         uiautomation.KeepRunningInstrumentationThread = original
 
 
-def stop_stable_poco(poco, adb_path, serial):
+def stop_stable_poco(poco, adb_path, serial, verify=False):
     thread = getattr(poco, "_keep_running_thread", None)
     if thread is not None:
         thread.stop()
@@ -81,10 +213,40 @@ def stop_stable_poco(poco, adb_path, serial):
             instrument.kill()
         except Exception:
             pass
-    try:
-        run_adb(adb_path, serial, ["shell", "am", "force-stop", "com.netease.open.pocoservice"], timeout=5)
-    except Exception:
-        pass
+    packages = ("com.netease.open.pocoservice", "com.netease.open.pocoservice.test")
+    for package_name in packages:
+        try:
+            run_adb(adb_path, serial, ["shell", "am", "force-stop", package_name], timeout=5)
+        except Exception:
+            pass
+    # ActivityManager can detach the target process before the instrumentation
+    # test package. Verify both owners after one bounded grace period and
+    # force-stop only a package that actually survived; never restart ADB,
+    # USB, the phone, or the app under test.
+    time.sleep(0.25)
+    for package_name in packages:
+        try:
+            remaining = run_adb(
+                adb_path, serial, ["shell", "pidof", package_name], timeout=2,
+            ).strip()
+            if remaining:
+                run_adb(
+                    adb_path, serial, ["shell", "am", "force-stop", package_name], timeout=3,
+                )
+        except Exception:
+            pass
+
+    if verify:
+        for package_name in packages:
+            observed = run_adb(adb_path, serial,
+                ["shell", f"pidof {package_name} || echo LOOKUP_READER_ABSENT"], timeout=2).strip()
+            if observed != "LOOKUP_READER_ABSENT":
+                raise RuntimeError("lookup_reader_cleanup_unconfirmed")
+        listing = run_adb(adb_path, serial, ["forward", "--list"], timeout=2)
+        for line in listing.splitlines():
+            columns = line.split()
+            if len(columns) == 3 and columns[0] == serial and columns[1] in forwards:
+                raise RuntimeError("lookup_reader_forward_cleanup_unconfirmed")
 
 
 def reset_stale_poco_instrumentation(adb_path, serial):
@@ -95,6 +257,56 @@ def reset_stale_poco_instrumentation(adb_path, serial):
         except Exception:
             pass
     time.sleep(0.3)
+
+
+def verify_poco_transport_ready(poco):
+    """Prove that the device-side HRPC hierarchy channel really responds.
+
+    ``AndroidUiautomationPoco`` returning only proves that instrumentation and
+    local port forwarding were created.  A half-started PocoService can still
+    accept the HTTP connection and never answer the first selector request.
+    Perform one bounded, package-neutral selector round trip before the worker
+    advertises readiness to the Agent.  The selector is allowed to be absent;
+    a boolean response itself is the health proof.
+    """
+    started_at = time.perf_counter()
+    for attempt in range(2):
+        try:
+            bool(poco(type="android.widget.FrameLayout").exists())
+            return int((time.perf_counter() - started_at) * 1000)
+        except Exception as exc:
+            # Instrumentation can answer screen_size before its hierarchy is
+            # ready after an app launch. Retry only this read, on the same
+            # owned service; no task payload or phone input has run yet.
+            reason = str(exc).lower()
+            transient = isinstance(exc, (TimeoutError, ConnectionError)) or any(
+                token in reason for token in ("timed out", "timeout", "connection refused",
+                    "connection reset", "connection aborted", "remotedisconnected"))
+            emit([], "poco_worker_transport_probe_retry" if transient and attempt == 0
+                 else "poco_worker_transport_probe_failed", attempt=attempt + 1,
+                 errorType=type(exc).__name__, observationOnly=True, taskStarted=False)
+            if not transient or attempt:
+                raise RuntimeError(f"poco_worker_transport_probe_failed:{exc}") from exc
+            time.sleep(.25)
+
+
+def verify_worker_adb_transport(adb_path, serial, attempts=2):
+    """Tolerate one transient ADB shell failure before abandoning a worker.
+
+    Several fleet phones briefly reject the first shell command while Windows
+    finishes exposing the USB interface.  Exiting the whole Poco worker on
+    that single probe made a healthy phone fail before any Alipay operation
+    ran.  Keep the retry count and each subprocess timeout strictly bounded.
+    """
+    last_error = None
+    for attempt in range(1, max(1, int(attempts)) + 1):
+        try:
+            return run_adb(adb_path, serial, ["shell", "echo", "ok"], timeout=4)
+        except Exception as exc:
+            last_error = exc
+            if attempt < attempts:
+                time.sleep(0.25)
+    raise last_error
 
 
 def emit(log, step, **detail):
@@ -1748,7 +1960,12 @@ def run_preflight(payload):
         run_adb(adb_path, serial, ["shell", "echo", "ok"], timeout=8)
         reset_stale_poco_instrumentation(adb_path, serial)
         connect_device(f"Android://127.0.0.1:5037/{serial}?cap_method=JAVACAP&touch_method=ADBTOUCH")
-        create_stable_poco(use_airtest_input=True, screenshot_each_action=False)
+        # We just stopped the old PocoService above. Tell Poco not to spend
+        # its built-in ten-second HTTP probe checking whether that deliberately
+        # stopped instrumentation is still alive.
+        create_stable_poco(
+            use_airtest_input=True, screenshot_each_action=False, force_restart=True,
+        )
         packages = run_adb(adb_path, serial, ["shell", "pm", "list", "packages"], timeout=20)
         helpers = {
             "pocoService": "package:com.netease.open.pocoservice" in packages,
@@ -2029,22 +2246,96 @@ def run_xhs(payload, poco=None, connected=False):
                 emit(log, "poco_cleanup_error", error=repr(cleanup_exc))
 
 
+def reader_bootstrap_stage(stage, action):
+    """Preserve a bounded machine-readable cause before traceback truncation."""
+    try:
+        return action()
+    except Exception as exc:
+        text = str(exc).lower()
+        if isinstance(exc, subprocess.TimeoutExpired) or "timed out" in text:
+            cause = "timeout"
+        elif any(token in text for token in ("offline", "not found", "unauthorized")):
+            cause = "device_unavailable"
+        elif isinstance(exc, subprocess.CalledProcessError):
+            cause = "command_failed"
+        elif "connection" in text:
+            cause = "connection_failed"
+        else:
+            cause = "unknown"
+        # No command argv, phone, account, OCR text or filesystem path.
+        print(json.dumps({"workerDiagnostic": {"stage": stage, "cause": cause}}),
+              file=sys.stderr, flush=True)
+        raise RuntimeError(f"poco_worker_bootstrap_failed:{stage}:{cause}") from None
+
+
 def run_worker(serial, adb_path):
+    # Third-party instrumentation startup prints to stdout before workerReady.
+    # A pipe is otherwise block-buffered, losing the actual Android error when
+    # the Agent terminates a timed-out bootstrap. Preserve each complete line.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(line_buffering=True)
     from airtest.core.settings import Settings as ST
     ST.ADB = adb_path
     from airtest.core.api import connect_device
 
-    run_adb(adb_path, serial, ["shell", "echo", "ok"], timeout=8)
-    reset_stale_poco_instrumentation(adb_path, serial)
-    connect_device(f"Android://127.0.0.1:5037/{serial}?cap_method=JAVACAP&touch_method=ADBTOUCH")
-    poco = create_stable_poco(use_airtest_input=True, screenshot_each_action=False)
-    print(json.dumps({"workerReady": True, "serial": serial}, ensure_ascii=False), flush=True)
+    bootstrap_started_at = time.perf_counter()
+    reader_bootstrap_stage("adb_probe", lambda: verify_worker_adb_transport(adb_path, serial, attempts=2))
+    adb_probe_ms = int((time.perf_counter() - bootstrap_started_at) * 1000)
+    reset_started_at = time.perf_counter()
+    reader_bootstrap_stage("stale_reset", lambda: reset_stale_poco_instrumentation(adb_path, serial))
+    stale_reset_ms = int((time.perf_counter() - reset_started_at) * 1000)
+    reader_bootstrap_stage("connect_device", lambda: connect_device(f"Android://127.0.0.1:5037/{serial}?cap_method=JAVACAP&touch_method=ADBTOUCH"))
+    # `reset_stale_poco_instrumentation` makes Poco's default ten-second
+    # connection-state probe both redundant and predictably slow. Skip only
+    # that stale-service probe; instrumentation startup remains bounded and
+    # all later RPC health checks are unchanged.
+    poco = None
+    try:
+        instrumentation_started_at = time.perf_counter()
+        try:
+            poco = create_stable_poco(
+                use_airtest_input=True, screenshot_each_action=False, force_restart=True,
+            )
+        except Exception as exc:
+            instrumentation_ms = int((time.perf_counter() - instrumentation_started_at) * 1000)
+            raise RuntimeError(
+                f"poco_worker_instrumentation_handshake_failed:elapsedMs={instrumentation_ms}:{exc}"
+            ) from exc
+        instrumentation_ms = int((time.perf_counter() - instrumentation_started_at) * 1000)
+        try:
+            transport_probe_ms = verify_poco_transport_ready(poco)
+        except Exception as exc:
+            raise RuntimeError(
+                f"poco_worker_transport_probe_failed:instrumentationMs={instrumentation_ms}:{exc}"
+            ) from exc
+    except Exception:
+        if poco is not None:
+            try:
+                stop_stable_poco(poco, adb_path, serial)
+            except Exception:
+                pass
+        raise
+    print(json.dumps({
+        "workerReady": True,
+        "serial": serial,
+        "transportVerified": True,
+        "transportProbeMs": transport_probe_ms,
+        "bootstrapTimings": {
+            "adbProbeMs": adb_probe_ms,
+            "staleResetMs": stale_reset_ms,
+            "instrumentationMs": instrumentation_ms,
+            "transportProbeMs": transport_probe_ms,
+            "totalMs": int((time.perf_counter() - bootstrap_started_at) * 1000),
+        },
+    }, ensure_ascii=False), flush=True)
+    verify_lookup_stop = False
     try:
         for line in sys.stdin:
             line = line.strip()
             if not line:
                 continue
-            if line == "__exit__":
+            if line in ("__exit__", "__exit_lookup__"):
+                verify_lookup_stop = line == "__exit_lookup__"
                 break
             try:
                 payload = json.loads(line)
@@ -2057,7 +2348,7 @@ def run_worker(serial, adb_path):
                 # returns, not that a particular screen is currently visible.
                 if payload.get("operation") == "poco_probe":
                     probe_started_at = time.perf_counter()
-                    probe_exists = bool(poco(text="小红书").exists())
+                    probe_exists = bool(poco(type="android.widget.FrameLayout").exists())
                     result = {
                         "ok": True,
                         "operation": "poco_probe",
@@ -2078,9 +2369,15 @@ def run_worker(serial, adb_path):
                 }, ensure_ascii=False), flush=True)
     finally:
         try:
-            stop_stable_poco(poco, adb_path, serial)
+            if verify_lookup_stop:
+                stop_stable_poco(poco, adb_path, serial, verify=True)
+                print(json.dumps({"lookupWorkerStopped": True}), flush=True)
+            else:
+                stop_stable_poco(poco, adb_path, serial)
         except Exception as exc:
-            print(json.dumps({"workerStopWarning": str(exc)}, ensure_ascii=False), file=sys.stderr, flush=True)
+            if verify_lookup_stop:
+                print(json.dumps({"lookupWorkerStopped": False}), flush=True)
+            print(json.dumps({"workerStopWarning": type(exc).__name__}, ensure_ascii=False), file=sys.stderr, flush=True)
 
 
 def main():

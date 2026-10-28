@@ -81,3 +81,24 @@ test("resets the cadence when a screen session ends", () => {
   assert.equal(reporter.report({ fps: 30 }), true);
   assert.equal(sent.length, 2);
 });
+
+test("reports receiver repair and jitter-buffer feedback for canary pacing", () => {
+  const sent = [];
+  const reporter = createPlaybackMetricsReporter({ send: (message) => sent.push(message) });
+  reporter.report({
+    rtcStatsWindowMs: 1_000,
+    rtcPacketsLostDelta: 4,
+    rtcNackCountDelta: 7,
+    rtcRetransmittedPacketsReceivedDelta: 3,
+    rtcJitterBufferDelayMsPerFrame: 210,
+    rtcIceCurrentRttMs: 243,
+    rtcNegotiatedNack: true,
+    rtcNegotiatedRtx: true,
+    playbackVisible: true
+  });
+  assert.equal(sent[0].metrics.rtcNackCountDelta, 7);
+  assert.equal(sent[0].metrics.rtcRetransmittedPacketsReceivedDelta, 3);
+  assert.equal(sent[0].metrics.rtcJitterBufferDelayMsPerFrame, 210);
+  assert.equal(sent[0].metrics.rtcNegotiatedNack, true);
+  assert.equal(sent[0].metrics.rtcNegotiatedRtx, true);
+});

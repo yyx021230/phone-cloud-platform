@@ -7,7 +7,7 @@ const DEFAULT_START_TIMEOUT_MS = 15_000;
 const DEFAULT_STOP_TIMEOUT_MS = 2_000;
 const WHIP_FRAME_HEADER_BYTES = 13;
 
-export function buildWhipPublisherArgs(publishUrl, { profileLevelId = "42e01f", pacingBitRate = 12_000_000, maxPacketsPerBurst = 2, statsIntervalMs = 0, queueLatencyMs = 400 } = {}) {
+export function buildWhipPublisherArgs(publishUrl, { profileLevelId = "42e01f", pacingBitRate = 12_000_000, adaptivePacing = {}, receiverFeedback = {}, maxPacketsPerBurst = 2, statsIntervalMs = 0, queueLatencyMs = 400 } = {}) {
   if (!/^https?:\/\//i.test(String(publishUrl || ""))) throw new Error("invalid_whip_publish_url");
   const normalizedProfile = normalizeH264ProfileLevelId(profileLevelId);
   const boundedPacingBitRate = Math.max(2_000_000, Math.min(48_000_000, Math.round(Number(pacingBitRate) || 12_000_000)));
@@ -20,6 +20,30 @@ export function buildWhipPublisherArgs(publishUrl, { profileLevelId = "42e01f", 
   ];
   const boundedStatsIntervalMs = Math.max(0, Math.min(60_000, Math.round(Number(statsIntervalMs) || 0)));
   if (boundedStatsIntervalMs > 0) args.push("--stats-interval", `${boundedStatsIntervalMs}ms`);
+  if (adaptivePacing?.enabled === true) {
+    const midBitRate = Math.max(boundedPacingBitRate, Math.min(48_000_000, Math.round(Number(adaptivePacing.midBitRate) || 15_000_000)));
+    const maxBitRate = Math.max(midBitRate, Math.min(48_000_000, Math.round(Number(adaptivePacing.maxBitRate) || 20_000_000)));
+    const upThresholdMs = Math.max(40, Math.min(1_000, Math.round(Number(adaptivePacing.upThresholdMs) || 160)));
+    const maxThresholdMs = Math.max(upThresholdMs + 1, Math.min(1_500, Math.round(Number(adaptivePacing.maxThresholdMs) || 260)));
+    const downThresholdMs = Math.max(10, Math.min(upThresholdMs - 1, Math.round(Number(adaptivePacing.downThresholdMs) || 80)));
+    const holdMs = Math.max(100, Math.min(2_000, Math.round(Number(adaptivePacing.holdMs) || 300)));
+    args.push(
+      "--adaptive-pacing",
+      "--adaptive-pacing-mid-bitrate", String(midBitRate),
+      "--adaptive-pacing-max-bitrate", String(maxBitRate),
+      "--adaptive-pacing-up-threshold", `${upThresholdMs}ms`,
+      "--adaptive-pacing-max-threshold", `${maxThresholdMs}ms`,
+      "--adaptive-pacing-down-threshold", `${downThresholdMs}ms`,
+      "--adaptive-pacing-hold", `${holdMs}ms`
+    );
+  }
+  if (receiverFeedback?.enabled === true) {
+    const stableHoldMs = Math.max(5_000, Math.min(60_000, Math.round(Number(receiverFeedback.stableHoldMs) || 15_000)));
+    args.push(
+      "--receiver-feedback-control",
+      "--receiver-stable-hold", `${stableHoldMs}ms`
+    );
+  }
   return args;
 }
 
@@ -89,6 +113,8 @@ export function createScreenWebRtcPublisher({
   h264ProfileLevelId: profileLevelId,
   frameRate = 30,
   pacingBitRate = 24_000_000,
+  adaptivePacing = {},
+  receiverFeedback = {},
   maxPacketsPerBurst = 2,
   queueLatencyMs = 400,
   statsIntervalMs = 0,
@@ -108,6 +134,8 @@ export function createScreenWebRtcPublisher({
       publishUrl,
       profileLevelId,
       pacingBitRate,
+      adaptivePacing,
+      receiverFeedback,
       maxPacketsPerBurst,
       queueLatencyMs,
       statsIntervalMs,
@@ -273,6 +301,8 @@ function createWhipScreenWebRtcPublisher({
   publishUrl,
   profileLevelId,
   pacingBitRate,
+  adaptivePacing,
+  receiverFeedback,
   maxPacketsPerBurst,
   queueLatencyMs,
   statsIntervalMs = 0,
@@ -293,7 +323,7 @@ function createWhipScreenWebRtcPublisher({
   const start = async () => {
     if (started) return;
     if (closed) throw new Error("webrtc_publisher_closed");
-    const args = buildWhipPublisherArgs(publishUrl, { profileLevelId, pacingBitRate, maxPacketsPerBurst, statsIntervalMs, queueLatencyMs });
+    const args = buildWhipPublisherArgs(publishUrl, { profileLevelId, pacingBitRate, adaptivePacing, receiverFeedback, maxPacketsPerBurst, statsIntervalMs, queueLatencyMs });
     child = spawn(String(publisherPath || ""), args, { windowsHide: true, stdio: ["pipe", "pipe", "pipe"] });
     child.stderr?.on("data", (chunk) => {
       stderr = `${stderr}${Buffer.from(chunk).toString("utf8")}`.slice(-8_000);
@@ -337,6 +367,14 @@ function createWhipScreenWebRtcPublisher({
     await onceDrain(child.stdin);
   };
 
+  const updatePlaybackFeedback = async (metrics) => {
+    if (!started || closed || !child?.stdin?.writable) return false;
+    const framed = encodeWhipPlaybackFeedback(metrics);
+    if (!framed) return false;
+    if (!child.stdin.write(framed)) await onceDrain(child.stdin);
+    return true;
+  };
+
   const stop = async () => {
     if (closed) return;
     closed = true;
@@ -351,6 +389,7 @@ function createWhipScreenWebRtcPublisher({
   return {
     start,
     write,
+    updatePlaybackFeedback,
     stop,
     get bufferedBytes() { return Math.max(0, Number(child?.stdin?.writableLength || 0)); },
     get running() { return Boolean(started && !closed && child && child.exitCode === null); }
@@ -371,6 +410,38 @@ export function encodeWhipFrame(packet) {
   header.writeBigInt64BE(pts, 1);
   header.writeUInt32BE(data.byteLength, 9);
   return Buffer.concat([header, data]);
+}
+
+export function encodeWhipPlaybackFeedback(metrics = {}) {
+  const payload = Buffer.from(JSON.stringify({
+    statsWindowMs: finiteMetric(metrics.rtcStatsWindowMs),
+    framesDecodedDelta: finiteMetric(metrics.rtcFramesDecodedDelta),
+    packetsLostDelta: finiteMetric(metrics.rtcPacketsLostDelta),
+    packetsReceivedDelta: finiteMetric(metrics.rtcPacketsReceivedDelta),
+    nackCountDelta: finiteMetric(metrics.rtcNackCountDelta),
+    pliCountDelta: finiteMetric(metrics.rtcPliCountDelta),
+    firCountDelta: finiteMetric(metrics.rtcFirCountDelta),
+    retransmittedPacketsDelta: finiteMetric(metrics.rtcRetransmittedPacketsReceivedDelta),
+    freezeCountDelta: finiteMetric(metrics.rtcFreezeCountDelta),
+    jitterMs: finiteMetric(metrics.rtcJitterMs),
+    jitterBufferDelayMs: finiteMetric(metrics.rtcJitterBufferDelayMsPerFrame),
+    iceRttMs: finiteMetric(metrics.rtcIceCurrentRttMs),
+    availableIncomingBitrate: finiteMetric(metrics.rtcIceAvailableIncomingBitrate),
+    playbackVisible: metrics.playbackVisible === true,
+    negotiatedNack: metrics.rtcNegotiatedNack === true,
+    negotiatedRtx: metrics.rtcNegotiatedRtx === true
+  }), "utf8");
+  if (!payload.byteLength || payload.byteLength > 64 * 1024) return null;
+  const header = Buffer.allocUnsafe(WHIP_FRAME_HEADER_BYTES);
+  header[0] = 3;
+  header.writeBigInt64BE(0n, 1);
+  header.writeUInt32BE(payload.byteLength, 9);
+  return Buffer.concat([header, payload]);
+}
+
+function finiteMetric(value) {
+  const numeric = Number(value || 0);
+  return Number.isFinite(numeric) && numeric > 0 ? numeric : 0;
 }
 
 function waitForStart(child, timeoutMs) {

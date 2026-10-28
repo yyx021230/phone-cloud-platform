@@ -32,6 +32,7 @@ export function createScreenRelay(options) {
     metrics = null,
     bandwidthMbps = 100,
     qualitySelector = selectScreenQuality,
+    transportPolicySelector = () => ({}),
     buildMediaStart = () => ({ mode: "websocket" })
   } = options;
   const agents = new Map();
@@ -45,6 +46,7 @@ export function createScreenRelay(options) {
   const browserVideoGates = new Map();
   const browserDisconnectTimers = new Map();
   const browserConnectTimers = new Map();
+  const browserMetricsLoggedAt = new Map();
   const wss = new WebSocketServer({ noServer: true, maxPayload: 2 * 1024 * 1024 });
   const heartbeatTimer = setInterval(() => {
     for (const ws of wss.clients) {
@@ -311,10 +313,19 @@ export function createScreenRelay(options) {
         if (message?.type === "screen_playback_metrics") {
           const playbackMetrics = sanitizeBrowserPlaybackMetrics(message.metrics);
           metrics?.browserPlaybackReported?.(session.sessionId, playbackMetrics);
-          logger.info?.("screen relay browser metrics", {
+          const now = Date.now();
+          if (now - Number(browserMetricsLoggedAt.get(session.sessionId) || 0) >= 5_000) {
+            browserMetricsLoggedAt.set(session.sessionId, now);
+            logger.info?.("screen relay browser metrics", {
+              sessionId: session.sessionId,
+              agentId: session.agentId,
+              ...playbackMetrics
+            });
+          }
+          sendAgent(session.agentId, {
+            type: "screen_playback_feedback",
             sessionId: session.sessionId,
-            agentId: session.agentId,
-            ...playbackMetrics
+            metrics: playbackMetrics
           });
           return;
         }
@@ -572,13 +583,14 @@ export function createScreenRelay(options) {
       onSessionClosed(registry.get(session.sessionId), "media_unavailable");
       return false;
     }
+    const transportPolicy = transportPolicySelector(session) || {};
     const sent = sendAgent(session.agentId, {
       type: "screen_start",
       sessionId: session.sessionId,
       deviceId: session.deviceId,
       adbSerial: session.adbSerial,
       transportMode,
-      options: quality,
+      options: { ...quality, ...transportPolicy },
       media
     });
     if (sent) {
@@ -597,6 +609,7 @@ export function createScreenRelay(options) {
     browserConnectTimers.delete(sessionId);
     videoBootstrapBySession.delete(sessionId);
     browserVideoGates.delete(sessionId);
+    browserMetricsLoggedAt.delete(sessionId);
     closeDirectWebRtcPeer(sessionId, 1000, reason);
     closeAgentVideo(sessionId, 1000, reason);
     sendAgent(session.agentId, { type: "screen_stop", sessionId, reason });
@@ -667,6 +680,7 @@ export function createScreenRelay(options) {
     browserConnectTimers.clear();
     videoBootstrapBySession.clear();
     browserVideoGates.clear();
+    browserMetricsLoggedAt.clear();
     directWebRtcPeers.clear();
     agentCapabilities.clear();
     for (const session of registry.sessions.values()) {
@@ -741,6 +755,8 @@ function sanitizeBrowserPlaybackMetrics(input = {}) {
     ...optionalPlaybackMetric(input, "rtcFramesPerSecond", 0, 240),
     ...optionalPlaybackMetric(input, "rtcPacketsLost", 0, 1_000_000_000),
     ...optionalPlaybackMetric(input, "rtcPacketsLostDelta", 0, 1_000_000_000),
+    ...optionalPlaybackMetric(input, "rtcPacketsReceived", 0, 1_000_000_000),
+    ...optionalPlaybackMetric(input, "rtcPacketsReceivedDelta", 0, 1_000_000_000),
     ...optionalPlaybackMetric(input, "rtcJitterMs", 0, 60_000),
     ...optionalPlaybackMetric(input, "rtcBytesReceived", 0, 1_000_000_000_000),
     ...optionalPlaybackMetric(input, "rtcBytesReceivedDelta", 0, 1_000_000_000_000),
@@ -751,6 +767,22 @@ function sanitizeBrowserPlaybackMetrics(input = {}) {
     ...optionalPlaybackMetric(input, "rtcFreezeCountDelta", 0, 1_000_000),
     ...optionalPlaybackMetric(input, "rtcTotalFreezeMs", 0, 60_000_000),
     ...optionalPlaybackMetric(input, "rtcTotalFreezeMsDelta", 0, 60_000_000),
+    ...optionalPlaybackMetric(input, "rtcNackCount", 0, 1_000_000_000),
+    ...optionalPlaybackMetric(input, "rtcNackCountDelta", 0, 1_000_000_000),
+    ...optionalPlaybackMetric(input, "rtcPliCount", 0, 1_000_000_000),
+    ...optionalPlaybackMetric(input, "rtcPliCountDelta", 0, 1_000_000_000),
+    ...optionalPlaybackMetric(input, "rtcFirCount", 0, 1_000_000_000),
+    ...optionalPlaybackMetric(input, "rtcFirCountDelta", 0, 1_000_000_000),
+    ...optionalPlaybackMetric(input, "rtcRetransmittedPacketsReceived", 0, 1_000_000_000),
+    ...optionalPlaybackMetric(input, "rtcRetransmittedPacketsReceivedDelta", 0, 1_000_000_000),
+    ...optionalPlaybackMetric(input, "rtcRetransmittedBytesReceived", 0, 1_000_000_000_000),
+    ...optionalPlaybackMetric(input, "rtcRetransmittedBytesReceivedDelta", 0, 1_000_000_000_000),
+    ...optionalPlaybackMetric(input, "rtcPacketsDiscarded", 0, 1_000_000_000),
+    ...optionalPlaybackMetric(input, "rtcPacketsDiscardedDelta", 0, 1_000_000_000),
+    ...optionalPlaybackMetric(input, "rtcJitterBufferDelayMsPerFrame", 0, 60_000),
+    ...optionalPlaybackMetric(input, "rtcJitterBufferTargetDelayMsPerFrame", 0, 60_000),
+    ...optionalPlaybackMetric(input, "rtcIceCurrentRttMs", 0, 60_000),
+    ...optionalPlaybackMetric(input, "rtcIceAvailableIncomingBitrate", 0, 1_000_000_000),
     ...optionalPlaybackEnum(input, "rtcIceProtocol", ["udp", "tcp"]),
     ...optionalPlaybackEnum(input, "rtcIceLocalType", ["host", "srflx", "prflx", "relay"]),
     ...optionalPlaybackEnum(input, "rtcIceRemoteType", ["host", "srflx", "prflx", "relay"]),
@@ -758,7 +790,11 @@ function sanitizeBrowserPlaybackMetrics(input = {}) {
     ...optionalPlaybackEnum(input, "pageVisibilityState", ["visible", "hidden", "prerender", "unknown"]),
     ...optionalPlaybackBoolean(input, "pageFocused"),
     ...optionalPlaybackBoolean(input, "videoInViewport"),
-    ...optionalPlaybackBoolean(input, "playbackVisible")
+    ...optionalPlaybackBoolean(input, "playbackVisible"),
+    ...optionalPlaybackBoolean(input, "rtcNegotiatedNack"),
+    ...optionalPlaybackBoolean(input, "rtcNegotiatedPli"),
+    ...optionalPlaybackBoolean(input, "rtcNegotiatedFir"),
+    ...optionalPlaybackBoolean(input, "rtcNegotiatedRtx")
   };
 }
 

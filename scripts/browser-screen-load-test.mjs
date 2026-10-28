@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process";
 import { createHash, randomUUID } from "node:crypto";
-import { rm } from "node:fs/promises";
+import { readFile, rm, writeFile } from "node:fs/promises";
 import http from "node:http";
 import { WebSocket } from "ws";
 
@@ -8,30 +8,35 @@ const args = parseArgs(process.argv.slice(2));
 const baseUrl = String(args.baseUrl || process.env.PHONE_CLOUD_BASE_URL || "").replace(/\/$/, "");
 const username = String(args.username || process.env.PHONE_CLOUD_USERNAME || "admin");
 const password = String(process.env.PHONE_CLOUD_PASSWORD || "");
+const providedToken = args.tokenStdin
+  ? String(await readFile("/dev/stdin", "utf8")).trim()
+  : String(process.env.PHONE_CLOUD_TOKEN || "").trim();
 const deviceIds = String(args.devices || "").split(",").map((value) => value.trim()).filter(Boolean);
 const qualityProfile = String(args.qualityProfile || "auto").trim().toLowerCase();
 const durationMs = bounded(args.durationMs, 10_000, 30 * 60_000, 90_000);
+const actionIntervalMs = bounded(args.actionIntervalMs, 250, 5_000, 500);
 const chromePath = String(args.chromePath || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome");
 const debugPort = bounded(args.debugPort, 1024, 65535, 9322);
 const profileDir = String(args.profileDir || `/tmp/phone-cloud-browser-probe-${randomUUID()}`);
 
-if (!baseUrl || !password || !deviceIds.length) {
-  console.error("usage: PHONE_CLOUD_PASSWORD=... node scripts/browser-screen-load-test.mjs --base-url http://host --devices id1,id2 [--duration-ms 90000]");
+if (!baseUrl || (!providedToken && !password) || !deviceIds.length) {
+  console.error("usage: PHONE_CLOUD_PASSWORD=... node scripts/browser-screen-load-test.mjs --base-url http://host --devices id1,id2 [--duration-ms 90000] (or pipe an existing token with --token-stdin)");
   process.exit(2);
 }
 
 const startedAtMs = Date.now();
-const login = await request("/api/v1/auth/login", { method: "POST", body: { username, password } });
-const token = login.session.token;
+const token = providedToken || (await request("/api/v1/auth/login", { method: "POST", body: { username, password } })).session.token;
 const created = [];
 const probes = [];
-let chrome = null;
+const chromes = [];
+const profileDirs = [];
 
 const result = {
   startedAt: new Date(startedAtMs).toISOString(),
   requestedConcurrency: deviceIds.length,
   sessions: [],
-  browser: { processId: 0, debugPort, profileDir },
+  browsers: [],
+  warnings: [],
   error: ""
 };
 
@@ -51,27 +56,49 @@ try {
     return session;
   }));
   const creationFailures = creationResults
-    .filter((item) => item.status === "rejected")
-    .map((item) => String(item.reason?.message || item.reason || "screen_session_create_failed"));
-  if (creationFailures.length) throw new Error(`screen_session_create_failed:${creationFailures.join(" | ")}`);
-  chrome = spawn(chromePath, [
-    "--headless=new",
-    "--autoplay-policy=no-user-gesture-required",
-    "--disable-background-timer-throttling",
-    "--disable-renderer-backgrounding",
-    "--remote-allow-origins=*",
-    `--remote-debugging-port=${debugPort}`,
-    `--user-data-dir=${profileDir}`,
-    `${baseUrl}/`
-  ], { stdio: ["ignore", "ignore", "pipe"] });
-  result.browser = { processId: chrome.pid || 0, debugPort, profileDir };
-  await waitForJson(`http://127.0.0.1:${debugPort}/json/version`, 15_000);
-  for (const item of created) {
-    const target = await createTarget(debugPort, `${baseUrl}/`);
+    .map((item, index) => ({ item, deviceId: deviceIds[index] }))
+    .filter(({ item }) => item.status === "rejected")
+    .map(({ item, deviceId }) => `${deviceId}:${String(item.reason?.message || item.reason || "screen_session_create_failed")}`);
+  result.warnings.push(...creationFailures);
+  if (!created.length) throw new Error(`screen_session_create_failed:${creationFailures.join(" | ")}`);
+  for (let index = 0; index < created.length; index += 1) {
+    const item = created[index];
+    const browserPort = debugPort + index;
+    const browserProfileDir = `${profileDir}-${index}`;
+    const chrome = spawn(chromePath, [
+      "--headless=new",
+      "--autoplay-policy=no-user-gesture-required",
+      "--disable-background-timer-throttling",
+      "--disable-renderer-backgrounding",
+      "--remote-allow-origins=*",
+      `--remote-debugging-port=${browserPort}`,
+      `--user-data-dir=${browserProfileDir}`,
+      `${baseUrl}/`
+    ], { stdio: ["ignore", "ignore", "pipe"] });
+    chromes.push(chrome);
+    profileDirs.push(browserProfileDir);
+    result.browsers.push({ processId: chrome.pid || 0, debugPort: browserPort, profileDir: browserProfileDir });
+    await waitForJson(`http://127.0.0.1:${browserPort}/json/version`, 15_000);
+    const target = await createTarget(browserPort, `${baseUrl}/`);
     const cdp = await createCdp(target.webSocketDebuggerUrl);
     await cdp.send("Runtime.enable");
     await cdp.send("Page.enable");
-    await waitForExpression(cdp, "Boolean(window.PhoneCloudScreenController)", 15_000);
+    await cdp.send("Page.bringToFront");
+    try {
+      await waitForExpression(cdp, "Boolean(window.PhoneCloudScreenController)", 20_000);
+    } catch {
+      await cdp.send("Page.reload", { ignoreCache: true });
+      try {
+        await waitForExpression(cdp, "Boolean(window.PhoneCloudScreenController)", 20_000);
+      } catch {
+        // The production index can occasionally finish without its module
+        // script when several isolated Chrome processes start together. Load
+        // the probe dependency directly so a page-resource hiccup is not
+        // misclassified as a phone/session failure.
+        await evaluate(cdp, `import(${JSON.stringify(`${baseUrl}/vendor/screen-control.js?probe=${Date.now()}-${index}`)})`);
+        await waitForExpression(cdp, "Boolean(window.PhoneCloudScreenController)", 10_000);
+      }
+    }
     await evaluate(cdp, createProbeExpression({
         sessionId: item.session.sessionId,
         browserToken: item.browserToken,
@@ -84,12 +111,44 @@ try {
     result.sessions.push(probe);
   }
 
+  const controllability = await Promise.allSettled(result.sessions.map((item) => waitForExpression(
+    item.cdp,
+    "Boolean(window.__phoneCloudProbe && window.__phoneCloudProbe.controllable())",
+    10_000
+  )));
+  await Promise.all(result.sessions.map((item, index) => (
+    controllability[index]?.status === "fulfilled"
+      ? evaluate(item.cdp, "window.__phoneCloudProbe.prime()")
+      : Promise.resolve()
+  )));
+  await delay(750);
+
+  const readiness = await Promise.allSettled(result.sessions.map((item) => waitForExpression(
+    item.cdp,
+    "Boolean(window.__phoneCloudProbe && window.__phoneCloudProbe.ready())",
+    30_000
+  )));
+  result.sessions.forEach((item, index) => {
+    item.ready = readiness[index]?.status === "fulfilled";
+    if (!item.ready) {
+      item.readinessError = String(readiness[index]?.reason?.message || readiness[index]?.reason || "screen_not_live");
+      result.warnings.push(`${item.deviceId}:${item.readinessError}`);
+    }
+  });
+  const activeSessions = result.sessions.filter((item) => item.ready);
+  if (!activeSessions.length) throw new Error("browser_probe_no_live_sessions");
+  await Promise.all(activeSessions.map((item) => evaluate(
+    item.cdp,
+    "window.__phoneCloudProbe.prepare()"
+  )));
+  await delay(1_500);
+
   const deadline = Date.now() + durationMs;
   while (Date.now() < deadline) {
-    await Promise.all(result.sessions.map(async (item) => {
+    await Promise.all(activeSessions.map(async (item) => {
       await evaluate(item.cdp, "window.__phoneCloudProbe && window.__phoneCloudProbe.action()");
     }));
-    await delay(1_500);
+    await delay(actionIntervalMs);
   }
   const snapshots = await Promise.all(result.sessions.map(async (item) => {
     // CDP can discard complex return-by-value objects from an async page
@@ -98,7 +157,13 @@ try {
     const raw = String(response.result?.value || "");
     let snapshot = {};
     try { snapshot = raw ? JSON.parse(raw) : {}; } catch { snapshot = { snapshotParseError: true }; }
-    return { deviceId: item.deviceId, sessionId: item.sessionId, ...snapshot };
+    return {
+      deviceId: item.deviceId,
+      sessionId: item.sessionId,
+      ready: item.ready === true,
+      ...(item.readinessError ? { readinessError: item.readinessError } : {}),
+      ...snapshot
+    };
   }));
   result.sessions = snapshots;
 } catch (error) {
@@ -112,14 +177,18 @@ try {
     await request(`/api/v1/screen-sessions/${encodeURIComponent(item.session.sessionId)}`, { method: "DELETE", token }).catch(() => {});
   }));
   for (const item of probes) item.cdp?.close();
-  chrome?.kill("SIGTERM");
-  await rm(profileDir, { recursive: true, force: true }).catch(() => {});
+  for (const chrome of chromes) chrome?.kill("SIGTERM");
+  await Promise.all(profileDirs.map((dir) => rm(dir, { recursive: true, force: true }).catch(() => {})));
 }
 
 for (const item of result.sessions) delete item.cdp;
 result.completedAt = new Date().toISOString();
 result.durationMs = Date.now() - startedAtMs;
-process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+const serializedResult = `${JSON.stringify(result, null, 2)}\n`;
+if (args.output) await writeFile(String(args.output), serializedResult, "utf8");
+process.stdout.write(args.output
+  ? `${JSON.stringify({ output: String(args.output), completedAt: result.completedAt, durationMs: result.durationMs, error: result.error, sessions: result.sessions.map(compactSession) }, null, 2)}\n`
+  : serializedResult);
 process.exit(result.error ? 1 : 0);
 
 function createProbeExpression({ sessionId, browserToken, tokenFingerprint, deviceId, media }) {
@@ -146,13 +215,40 @@ function createProbeExpression({ sessionId, browserToken, tokenFingerprint, devi
     });
     let step = 0;
     const fire = (type, x, y) => video.dispatchEvent(new PointerEvent(type, { bubbles: true, pointerId: 1, clientX: x, clientY: y }));
+    const swipe = (direction) => {
+      const horizontal = direction === "left" || direction === "right";
+      const startX = horizontal ? (direction === "left" ? 300 : 60) : 180;
+      const endX = horizontal ? (direction === "left" ? 60 : 300) : 180;
+      const startY = horizontal ? 380 : (direction === "up" ? 650 : 110);
+      const endY = horizontal ? 380 : (direction === "up" ? 110 : 650);
+      fire("pointerdown", startX, startY);
+      for (let index = 1; index <= 6; index += 1) {
+        fire(
+          "pointermove",
+          Math.round(startX + (endX - startX) * index / 6),
+          Math.round(startY + (endY - startY) * index / 6)
+        );
+      }
+      fire("pointerup", endX, endY);
+    };
     window.__phoneCloudProbe = {
+      controllable() {
+        return state.statuses.some((item) => item.status === "preparing" || item.status === "live");
+      },
+      ready() {
+        return state.statuses.some((item) => item.status === "live");
+      },
+      prime() {
+        controller.key("home");
+        setTimeout(() => swipe("up"), 300);
+      },
+      prepare() {
+        controller.key("home");
+      },
       action() {
         try {
           step += 1;
-          controller.key(step % 4 === 1 ? "home" : step % 4 === 2 ? "overview" : "back");
-          if (step % 3 === 0) { fire("pointerdown", 180, 570); fire("pointermove", 180, 360); fire("pointerup", 180, 360); }
-          if (step % 5 === 0) controller.text("PC");
+          swipe(["left", "right", "up", "down"][(step - 1) % 4]);
           state.actions += 1;
         } catch (error) { state.actionErrors.push(String(error?.message || error)); }
       },
@@ -320,4 +416,27 @@ function delay(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
 
 function fingerprint(value) {
   return createHash("sha256").update(String(value || "")).digest("hex").slice(0, 12);
+}
+
+function compactSession(session = {}) {
+  const inbound = Array.isArray(session.inboundReports) ? session.inboundReports[0] || {} : {};
+  const metrics = session.metrics || {};
+  return {
+    deviceId: session.deviceId || "",
+    sessionId: session.sessionId || "",
+    ready: session.ready === true,
+    readinessError: session.readinessError || "",
+    actions: Number(session.actions || 0),
+    actionErrors: Array.isArray(session.actionErrors) ? session.actionErrors.length : 0,
+    statuses: session.statuses || [],
+    pageVisibilityState: metrics.pageVisibilityState || "",
+    playbackVisible: metrics.playbackVisible === true,
+    framesDecoded: Number(inbound.framesDecoded || metrics.rtcFramesDecoded || 0),
+    framesDropped: Number(inbound.framesDropped || metrics.rtcFramesDropped || 0),
+    packetsLost: Number(inbound.packetsLost || metrics.rtcPacketsLost || 0),
+    freezeCount: Number(metrics.rtcFreezeCount || 0),
+    totalFreezeMs: Number(metrics.rtcTotalFreezeMs || 0),
+    iceRttMs: Number(metrics.rtcIceCurrentRttMs || 0),
+    controlRttMs: Number(metrics.controlRttMs || 0)
+  };
 }

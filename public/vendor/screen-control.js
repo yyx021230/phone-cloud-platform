@@ -1252,7 +1252,7 @@ var e = Object.create, t = Object.defineProperty, n = Object.getOwnPropertyDescr
 		return e === 3 ? "浏览器无法解码手机视频流" : e === 4 ? "浏览器不支持手机视频格式" : "实时画面播放失败";
 	}
 }, C = class {
-	constructor({ video: e, onFirstFrame: t = () => {}, onReaderReady: n = () => {}, onVideoFrame: r = () => {}, onStats: i = () => {}, onError: a = () => {}, RTCPeerConnectionCtor: o = globalThis.RTCPeerConnection, fetchFn: s = globalThis.fetch?.bind(globalThis), now: c = () => globalThis.performance?.now?.() || Date.now(), setRepeatingTimer: l = globalThis.setInterval.bind(globalThis), clearRepeatingTimer: u = globalThis.clearInterval.bind(globalThis), setDelayTimer: d = globalThis.setTimeout.bind(globalThis), clearDelayTimer: f = globalThis.clearTimeout.bind(globalThis), sleepFn: p = P, getPlaybackVisibility: m = () => w(e) } = {}) {
+	constructor({ video: e, onFirstFrame: t = () => {}, onReaderReady: n = () => {}, onVideoFrame: r = () => {}, onStats: i = () => {}, onError: a = () => {}, RTCPeerConnectionCtor: o = globalThis.RTCPeerConnection, fetchFn: s = globalThis.fetch?.bind(globalThis), now: c = () => globalThis.performance?.now?.() || Date.now(), setRepeatingTimer: l = globalThis.setInterval.bind(globalThis), clearRepeatingTimer: u = globalThis.clearInterval.bind(globalThis), setDelayTimer: d = globalThis.setTimeout.bind(globalThis), clearDelayTimer: f = globalThis.clearTimeout.bind(globalThis), sleepFn: p = I, getPlaybackVisibility: m = () => w(e) } = {}) {
 		if (!e) throw Error("缺少实时投屏 video 元素");
 		if (!o || !s) throw Error("当前浏览器不支持 WebRTC 实时投屏");
 		this.video = e, this.onFirstFrame = t, this.onReaderReady = n, this.onVideoFrame = r, this.onStats = i, this.onError = a, this.RTCPeerConnectionCtor = o, this.fetch = s, this.now = c, this.setRepeatingTimer = l, this.clearRepeatingTimer = u, this.setDelayTimer = d, this.clearDelayTimer = f, this.sleep = p, this.getPlaybackVisibility = m, this.pc = null, this.resourceUrl = "", this.controller = null, this.token = "", this.monitorTimer = null, this.disconnectTimer = null, this.reconnectTimer = null, this.startOptions = null, this.reconnectAttempts = 0, this.readerReadyAnnounced = !1, this.frameCallbackId = null, this.started = !1, this.failed = !1, this.hasFirstFrame = !1, this.presentedFrames = 0, this.lastStats = {
@@ -1263,7 +1263,7 @@ var e = Object.create, t = Object.defineProperty, n = Object.getOwnPropertyDescr
 		}, this.fpsSamples = [], this.lastRtcStats = {
 			at: 0,
 			bytesReceived: 0
-		}, this.rtcStatsInFlight = !1, this.lastDiagnostic = {
+		}, this.negotiatedFeedback = k(), this.rtcStatsInFlight = !1, this.lastDiagnostic = {
 			state: "",
 			at: 0
 		}, this.presentationWatchdog = {
@@ -1303,8 +1303,8 @@ var e = Object.create, t = Object.defineProperty, n = Object.getOwnPropertyDescr
 			}), this.notifyReaderReadyIfConnected(n);
 		}, this.video.addEventListener("loadeddata", this.handleLoadedData), this.video.addEventListener("error", this.handleVideoError), this.video.addEventListener("playing", this.handlePlaying), this.video.addEventListener("waiting", this.handleWaiting), this.video.addEventListener("stalled", this.handleStalled), this.video.addEventListener("emptied", this.handleEmptied);
 		let r = await n.createOffer();
-		await n.setLocalDescription(r), await N(n);
-		let i = await M({
+		await n.setLocalDescription(r), await F(n);
+		let i = await P({
 			fetchFn: this.fetch,
 			whepUrl: e,
 			token: t,
@@ -1319,7 +1319,7 @@ var e = Object.create, t = Object.defineProperty, n = Object.getOwnPropertyDescr
 		if (!i.ok) throw Error(`WebRTC 媒体服务返回 ${i.status}`);
 		let a = await i.text();
 		if (!a.trim()) throw Error("WebRTC 媒体服务未返回会话描述");
-		this.resourceUrl = j(e, i.headers.get("location")), await n.setRemoteDescription({
+		this.negotiatedFeedback = O(a), this.resourceUrl = N(e, i.headers.get("location")), await n.setRemoteDescription({
 			type: "answer",
 			sdp: a
 		}), this.notifyReaderReadyIfConnected(n), this.requestNextVideoFrame(), this.monitorTimer = this.setRepeatingTimer(() => this.monitorPlayback(), 250);
@@ -1396,7 +1396,7 @@ var e = Object.create, t = Object.defineProperty, n = Object.getOwnPropertyDescr
 					previous: this.lastRtcStats
 				});
 				if (!t) return;
-				this.lastRtcStats = {
+				Object.assign(t, this.negotiatedFeedback), this.lastRtcStats = {
 					...this.lastRtcStats,
 					...t,
 					at: t.at
@@ -1536,29 +1536,48 @@ function T(e) {
 	};
 }
 function E(e, { at: t = Date.now(), previous: n = {} } = {}) {
-	let r = k(e, n.rtcInboundReportId);
+	let r = j(e, n.rtcInboundReportId);
 	if (!r) return null;
-	let i = A(r.bytesReceived), a = A(r.packetsLost), o = A(r.framesDecoded), s = A(r.freezeCount), c = A(r.totalFreezesDuration) * 1e3, l = !!(n.rtcInboundReportId && n.rtcInboundReportId === r.rtcInboundReportId), u = A(n.at), d = l ? Math.max(1, Number(t) - u) : 0, f = Math.max(0, i - A(n.rtcBytesReceived ?? n.bytesReceived)), p = Math.max(0, a - A(n.rtcPacketsLost)), m = Math.max(0, o - A(n.rtcFramesDecoded)), h = Math.max(0, s - A(n.rtcFreezeCount)), g = Math.max(0, c - A(n.rtcTotalFreezeMs)), _ = u > 0 && l ? f * 8 / d / 1e3 : 0, v = A(r.totalDecodeTime), y = D(e, r);
+	let i = M(r.bytesReceived), a = M(r.packetsLost), o = M(r.packetsReceived), s = M(r.framesDecoded), c = M(r.freezeCount), l = M(r.totalFreezesDuration) * 1e3, u = M(r.nackCount), d = M(r.pliCount), f = M(r.firCount), p = M(r.retransmittedPacketsReceived), m = M(r.retransmittedBytesReceived), h = M(r.packetsDiscarded), g = !!(n.rtcInboundReportId && n.rtcInboundReportId === r.rtcInboundReportId), _ = M(n.at), v = g ? Math.max(1, Number(t) - _) : 0, y = Math.max(0, i - M(n.rtcBytesReceived ?? n.bytesReceived)), b = Math.max(0, a - M(n.rtcPacketsLost)), x = Math.max(0, o - M(n.rtcPacketsReceived)), S = Math.max(0, s - M(n.rtcFramesDecoded)), C = Math.max(0, c - M(n.rtcFreezeCount)), w = Math.max(0, l - M(n.rtcTotalFreezeMs)), T = Math.max(0, u - M(n.rtcNackCount)), E = Math.max(0, d - M(n.rtcPliCount)), O = Math.max(0, f - M(n.rtcFirCount)), k = Math.max(0, p - M(n.rtcRetransmittedPacketsReceived)), A = Math.max(0, m - M(n.rtcRetransmittedBytesReceived)), N = Math.max(0, h - M(n.rtcPacketsDiscarded)), P = _ > 0 && g ? y * 8 / v / 1e3 : 0, F = M(r.totalDecodeTime), I = M(r.jitterBufferEmittedCount), L = M(r.jitterBufferDelay), R = M(r.jitterBufferTargetDelay), z = M(n.rtcJitterBufferEmittedCount), B = g ? Math.max(0, I - z) : 0, V = g ? Math.max(0, L - M(n.rtcJitterBufferDelaySeconds)) : 0, H = g ? Math.max(0, R - M(n.rtcJitterBufferTargetDelaySeconds)) : 0, U = D(e, r);
 	return {
 		at: Number(t),
 		rtcInboundReportId: r.rtcInboundReportId,
-		rtcStatsWindowMs: u > 0 && l ? d : 0,
-		rtcFramesDecoded: o,
-		rtcFramesDecodedDelta: u > 0 && l ? m : 0,
-		rtcFramesDropped: A(r.framesDropped),
-		rtcFramesPerSecond: A(r.framesPerSecond),
+		rtcStatsWindowMs: _ > 0 && g ? v : 0,
+		rtcFramesDecoded: s,
+		rtcFramesDecodedDelta: _ > 0 && g ? S : 0,
+		rtcFramesDropped: M(r.framesDropped),
+		rtcFramesPerSecond: M(r.framesPerSecond),
 		rtcPacketsLost: a,
-		rtcPacketsLostDelta: u > 0 && l ? p : 0,
-		rtcJitterMs: A(r.jitter) * 1e3,
+		rtcPacketsLostDelta: _ > 0 && g ? b : 0,
+		rtcPacketsReceived: o,
+		rtcPacketsReceivedDelta: _ > 0 && g ? x : 0,
+		rtcJitterMs: M(r.jitter) * 1e3,
 		rtcBytesReceived: i,
-		rtcBytesReceivedDelta: u > 0 && l ? f : 0,
-		rtcReceiveMbps: _,
-		rtcDecodeMsPerFrame: o > 0 ? v * 1e3 / o : 0,
-		rtcFreezeCount: s,
-		rtcFreezeCountDelta: u > 0 && l ? h : 0,
-		rtcTotalFreezeMs: c,
-		rtcTotalFreezeMsDelta: u > 0 && l ? g : 0,
-		...y
+		rtcBytesReceivedDelta: _ > 0 && g ? y : 0,
+		rtcReceiveMbps: P,
+		rtcDecodeMsPerFrame: s > 0 ? F * 1e3 / s : 0,
+		rtcFreezeCount: c,
+		rtcFreezeCountDelta: _ > 0 && g ? C : 0,
+		rtcTotalFreezeMs: l,
+		rtcTotalFreezeMsDelta: _ > 0 && g ? w : 0,
+		rtcNackCount: u,
+		rtcNackCountDelta: _ > 0 && g ? T : 0,
+		rtcPliCount: d,
+		rtcPliCountDelta: _ > 0 && g ? E : 0,
+		rtcFirCount: f,
+		rtcFirCountDelta: _ > 0 && g ? O : 0,
+		rtcRetransmittedPacketsReceived: p,
+		rtcRetransmittedPacketsReceivedDelta: _ > 0 && g ? k : 0,
+		rtcRetransmittedBytesReceived: m,
+		rtcRetransmittedBytesReceivedDelta: _ > 0 && g ? A : 0,
+		rtcPacketsDiscarded: h,
+		rtcPacketsDiscardedDelta: _ > 0 && g ? N : 0,
+		rtcJitterBufferDelayMsPerFrame: B > 0 ? V * 1e3 / B : I > 0 ? L * 1e3 / I : 0,
+		rtcJitterBufferTargetDelayMsPerFrame: B > 0 ? H * 1e3 / B : I > 0 ? R * 1e3 / I : 0,
+		rtcJitterBufferDelaySeconds: L,
+		rtcJitterBufferTargetDelaySeconds: R,
+		rtcJitterBufferEmittedCount: I,
+		...U
 	};
 }
 function D(e, t) {
@@ -1568,17 +1587,36 @@ function D(e, t) {
 	if (!i || i.type !== "candidate-pair") return {};
 	let a = n.get(String(i.localCandidateId || "")), o = n.get(String(i.remoteCandidateId || ""));
 	return {
-		...O("rtcIceProtocol", a?.protocol),
-		...O("rtcIceLocalType", a?.candidateType),
-		...O("rtcIceRemoteType", o?.candidateType),
-		...O("rtcIcePairState", i?.state)
+		...A("rtcIceProtocol", a?.protocol),
+		...A("rtcIceLocalType", a?.candidateType),
+		...A("rtcIceRemoteType", o?.candidateType),
+		...A("rtcIcePairState", i?.state),
+		rtcIceCurrentRttMs: M(i.currentRoundTripTime) * 1e3,
+		rtcIceAvailableIncomingBitrate: M(i.availableIncomingBitrate)
 	};
 }
-function O(e, t) {
+function O(e = "") {
+	let t = String(e || ""), n = [...t.matchAll(/^a=rtpmap:(\d+)\s+H264\/90000\s*$/gim)].map((e) => e[1]), r = new Set([...t.matchAll(/^a=fmtp:\d+\s+apt=(\d+)(?:;|\s|$)/gim)].map((e) => e[1])), i = n.flatMap((e) => [...t.matchAll(RegExp(`^a=rtcp-fb:(?:${e}|\\*)\\s+([^\\r\\n]+)$`, "gim"))].map((e) => e[1].trim().toLowerCase()));
+	return {
+		rtcNegotiatedNack: i.some((e) => e === "nack" || e.startsWith("nack ")),
+		rtcNegotiatedPli: i.some((e) => e === "nack pli" || e.startsWith("nack pli ")),
+		rtcNegotiatedFir: i.some((e) => e === "ccm fir" || e.startsWith("ccm fir ")),
+		rtcNegotiatedRtx: n.some((e) => r.has(e))
+	};
+}
+function k() {
+	return {
+		rtcNegotiatedNack: !1,
+		rtcNegotiatedPli: !1,
+		rtcNegotiatedFir: !1,
+		rtcNegotiatedRtx: !1
+	};
+}
+function A(e, t) {
 	let n = String(t || "").trim().toLowerCase();
 	return n ? { [e]: n } : {};
 }
-function k(e, t = "") {
+function j(e, t = "") {
 	let n = /* @__PURE__ */ new Map(), r = [];
 	for (let [t, r] of e?.entries?.() || []) r?.type === "codec" && n.set(String(r.id || t), r);
 	for (let [t, i] of e?.entries?.() || []) {
@@ -1595,18 +1633,18 @@ function k(e, t = "") {
 	let i = r.find((e) => e.rtcInboundReportId === String(t || ""));
 	if (i) return i;
 	let a = r.filter((e) => !e.isRetransmission);
-	return (a.length ? a : r).sort((e, t) => A(t.bytesReceived) - A(e.bytesReceived))[0];
+	return (a.length ? a : r).sort((e, t) => M(t.bytesReceived) - M(e.bytesReceived))[0];
 }
-function A(e) {
+function M(e) {
 	let t = Number(e || 0);
 	return Number.isFinite(t) ? t : 0;
 }
-function j(e, t) {
+function N(e, t) {
 	if (!t) return "";
 	let n = new URL(e), r = new URL(t, n), i = n.pathname.indexOf("/pc/");
 	return i > 0 && String(t).startsWith("/") && (r.pathname = `${n.pathname.slice(0, i)}${r.pathname}`), r.toString();
 }
-async function M({ fetchFn: e, whepUrl: t, token: n, sdp: r, signal: i, availabilityTimeoutMs: a = 15e3, retryDelayMs: o = 250, maxRetryDelayMs: s = 1e3, retryBackoffMultiplier: c = 1.6, maxAttempts: l = 3, sleepFn: u = P, now: d = () => Date.now() } = {}) {
+async function P({ fetchFn: e, whepUrl: t, token: n, sdp: r, signal: i, availabilityTimeoutMs: a = 15e3, retryDelayMs: o = 250, maxRetryDelayMs: s = 1e3, retryBackoffMultiplier: c = 1.6, maxAttempts: l = 3, sleepFn: u = I, now: d = () => Date.now() } = {}) {
 	let f = d() + Math.max(0, Number(a) || 0), p = () => e(t, {
 		method: "POST",
 		headers: T(n),
@@ -1616,7 +1654,7 @@ async function M({ fetchFn: e, whepUrl: t, token: n, sdp: r, signal: i, availabi
 	for (; y.status === 404 && v < _ && d() < f;) await u(m), y = await p(), v += 1, m = Math.min(h, Math.ceil(m * g));
 	return y;
 }
-function N(e, t = 3e3) {
+function F(e, t = 3e3) {
 	return e.iceGatheringState === "complete" ? Promise.resolve() : new Promise((n) => {
 		let r = null, i = !1, a = () => {
 			i || (i = !0, r && clearTimeout(r), e.removeEventListener?.("icegatheringstatechange", o), n());
@@ -1626,12 +1664,12 @@ function N(e, t = 3e3) {
 		e.addEventListener?.("icegatheringstatechange", o), !i && (r = setTimeout(a, t));
 	});
 }
-function P(e) {
+function I(e) {
 	return new Promise((t) => setTimeout(t, e));
 }
 //#endregion
 //#region screen-client/direct-webrtc-player.js
-var F = class {
+var L = class {
 	constructor({ video: e, onFirstFrame: t = () => {}, onStats: n = () => {}, onError: r = () => {}, RTCPeerConnectionCtor: i = globalThis.RTCPeerConnection, WebSocketCtor: a = globalThis.WebSocket, now: o = () => globalThis.performance?.now?.() || Date.now(), setRepeatingTimer: s = globalThis.setInterval.bind(globalThis), clearRepeatingTimer: c = globalThis.clearInterval.bind(globalThis) } = {}) {
 		if (!e) throw Error("缺少实时投屏 video 元素");
 		if (!i || !a) throw Error("当前浏览器不支持直连 WebRTC");
@@ -1641,7 +1679,7 @@ var F = class {
 		if (this.started) return;
 		if (!e || !t) throw Error("直连 WebRTC 信令凭证缺失");
 		this.started = !0;
-		let r = new this.RTCPeerConnectionCtor({ iceServers: I(n) });
+		let r = new this.RTCPeerConnectionCtor({ iceServers: R(n) });
 		this.pc = r, r.addTransceiver("video", { direction: "recvonly" }), r.ontrack = (e) => {
 			let t = e.streams?.[0] || new MediaStream([e.track]);
 			this.video.srcObject = t, this.video.play?.().catch((e) => this.fail(e));
@@ -1658,10 +1696,10 @@ var F = class {
 			iceConnectionState: r.iceConnectionState || ""
 		} }), this.video.addEventListener("loadeddata", this.handleLoadedData), this.video.addEventListener("error", this.handleVideoError), this.video.addEventListener("playing", this.handlePlaying), this.video.addEventListener("waiting", this.handleWaiting), this.video.addEventListener("stalled", this.handleStalled);
 		let i = new this.WebSocketCtor(e, [String(t)]);
-		this.signal = i, await L(i, 12e3);
+		this.signal = i, await z(i, 12e3);
 		let a = await r.createOffer();
-		await r.setLocalDescription(a), await N(r);
-		let o = R(i, "answer");
+		await r.setLocalDescription(a), await F(r);
+		let o = B(i, "answer");
 		i.send(JSON.stringify({
 			type: "offer",
 			sdp: r.localDescription?.sdp || a.sdp
@@ -1722,14 +1760,14 @@ var F = class {
 	handleWaiting = () => {};
 	handleStalled = () => {};
 };
-function I(e) {
+function R(e) {
 	return Array.isArray(e) ? e.slice(0, 8).map((e) => ({
 		urls: e?.urls,
 		...e?.username ? { username: e.username } : {},
 		...e?.credential ? { credential: e.credential } : {}
 	})).filter((e) => e.urls) : [];
 }
-function L(e, t) {
+function z(e, t) {
 	return e.readyState === 1 ? Promise.resolve() : new Promise((n, r) => {
 		let i = setTimeout(() => {
 			a(), r(/* @__PURE__ */ Error("direct_webrtc_signal_timeout"));
@@ -1743,7 +1781,7 @@ function L(e, t) {
 		e.addEventListener?.("open", o), e.addEventListener?.("error", s);
 	});
 }
-function R(e, t) {
+function B(e, t) {
 	return new Promise((n, r) => {
 		let i = (e) => {
 			try {
@@ -1764,7 +1802,7 @@ function R(e, t) {
 }
 //#endregion
 //#region screen-client/control-input.js
-function z({ video: e, send: t, keyboardTarget: n = e, documentTarget: r = globalThis.document, keyboardEnabled: i = () => !0, requestFrame: a = globalThis.requestAnimationFrame?.bind(globalThis) || ((e) => setTimeout(e, 16)), cancelFrame: o = globalThis.cancelAnimationFrame?.bind(globalThis) || clearTimeout }) {
+function V({ video: e, send: t, keyboardTarget: n = e, documentTarget: r = globalThis.document, keyboardEnabled: i = () => !0, requestFrame: a = globalThis.requestAnimationFrame?.bind(globalThis) || ((e) => setTimeout(e, 16)), cancelFrame: o = globalThis.cancelAnimationFrame?.bind(globalThis) || clearTimeout }) {
 	if (!e || typeof t != "function") throw Error("invalid_screen_control_input");
 	let s = 0, c = null, l = null, u = null, d = !1, f = !1, p = n?.addEventListener ? n : e, m = typeof p?.value == "string", h = !!(r?.addEventListener && r !== p), g = (e) => t({
 		...e,
@@ -1785,7 +1823,7 @@ function z({ video: e, send: t, keyboardTarget: n = e, documentTarget: r = globa
 		clientX: e.clientX,
 		clientY: e.clientY
 	}), y = (t, n, r = !0) => {
-		let i = B(e, n, {
+		let i = H(e, n, {
 			clampOutside: r,
 			sourceSize: u
 		});
@@ -1896,7 +1934,7 @@ function z({ video: e, send: t, keyboardTarget: n = e, documentTarget: r = globa
 		}
 	};
 }
-function B(e, t, { clampOutside: n = !0, sourceSize: r = null } = {}) {
+function H(e, t, { clampOutside: n = !0, sourceSize: r = null } = {}) {
 	let i = e.getBoundingClientRect(), a = Math.max(0, Math.round(Number(r?.width || e.videoWidth || 0))), o = Math.max(0, Math.round(Number(r?.height || e.videoHeight || 0)));
 	if (!a || !o || !i.width || !i.height) return null;
 	let s = a / o, c = i.width / i.height, l = s > c ? i.width : i.height * s, u = s > c ? i.width / s : i.height, d = (i.width - l) / 2, f = (i.height - u) / 2, p = Number(t.clientX) - i.left - d, m = Number(t.clientY) - i.top - f;
@@ -1911,7 +1949,7 @@ function B(e, t, { clampOutside: n = !0, sourceSize: r = null } = {}) {
 }
 //#endregion
 //#region screen-client/screen-transport.js
-function V(e, t, n) {
+function U(e, t, n) {
 	let r = new URL(String(e || globalThis.location?.origin || "http://127.0.0.1"));
 	r.protocol = r.protocol === "https:" ? "wss:" : "ws:", r.search = "", r.hash = "";
 	let i = encodeURIComponent(String(t || "")), a = new URL(r);
@@ -1922,7 +1960,7 @@ function V(e, t, n) {
 		videoUrl: o.toString()
 	};
 }
-function H(e = {}) {
+function W(e = {}) {
 	let t = e.WebSocketCtor || globalThis.WebSocket, n = e.onControl || (() => {}), r = e.onVideo || (() => {}), i = e.onOpen || (() => {}), a = e.onError || (() => {}), o = e.onClose || (() => {}), s = null, c = null, l = !1, u = (e = 1e3, t = "user_closed") => {
 		l = !0;
 		for (let n of [s, c]) n && n.readyState < 2 && n.close(e, t);
@@ -1931,7 +1969,7 @@ function H(e = {}) {
 	return {
 		connect({ baseUrl: e, sessionId: d, browserToken: f, videoEnabled: p = !0 }) {
 			u(), l = !1;
-			let m = V(e, d, f), h = [String(f || "")].filter(Boolean);
+			let m = U(e, d, f), h = [String(f || "")].filter(Boolean);
 			return s = new t(m.controlUrl, h), c = p ? new t(m.videoUrl, h) : null, c && (c.binaryType = "arraybuffer"), s.onopen = () => i("control"), c && (c.onopen = () => i("video")), s.onmessage = (e) => n(e.data), c && (c.onmessage = (e) => r(e.data)), s.onerror = (e) => a("control", e), c && (c.onerror = (e) => a("video", e)), s.onclose = (e) => {
 				l || o("control", e);
 			}, c && (c.onclose = (e) => {
@@ -1952,21 +1990,21 @@ function H(e = {}) {
 }
 //#endregion
 //#region screen-client/main.js
-function U(e = {}, t = "") {
+function G(e = {}, t = "") {
 	return ["webrtc", "direct_webrtc"].includes(e?.mode) ? {
 		...e,
 		...e.mode === "direct_webrtc" ? { token: String(t || "") } : {}
 	} : { mode: "websocket" };
 }
-var W = class {
+var K = class {
 	constructor({ video: e, onStatus: t, onMetrics: n, relayBaseUrl: r = location.origin }) {
 		if (!e) throw Error("缺少实时投屏 video 元素");
-		this.video = e, this.onStatus = t || (() => {}), this.onMetrics = n || (() => {}), this.relayBaseUrl = r, this.transportClosed = !0, this.player = null, this.failureMessage = "", this.media = { mode: "websocket" }, this.channelMetadata = {}, this.lastStats = {}, this.controlSentAt = /* @__PURE__ */ new Map(), this.pendingVisualProbe = null, this.mediaReaderGeneration = 0, this.transportErrorChannel = "", this.playbackMetrics = K({ send: (e) => this.send(e) }), this.controlInput = z({
+		this.video = e, this.onStatus = t || (() => {}), this.onMetrics = n || (() => {}), this.relayBaseUrl = r, this.transportClosed = !0, this.player = null, this.failureMessage = "", this.media = { mode: "websocket" }, this.channelMetadata = {}, this.lastStats = {}, this.controlSentAt = /* @__PURE__ */ new Map(), this.pendingVisualProbe = null, this.mediaReaderGeneration = 0, this.transportErrorChannel = "", this.playbackMetrics = J({ send: (e) => this.send(e) }), this.controlInput = V({
 			video: e,
 			keyboardTarget: e.parentElement?.querySelector("#userScreenKeyboardBridge") || e,
 			send: (e) => this.sendControl(e),
 			keyboardEnabled: () => !this.transportClosed
-		}), this.transport = H({
+		}), this.transport = W({
 			onControl: (e) => this.consumeTransportData(e),
 			onVideo: (e) => this.consumeTransportData(e),
 			onError: (e) => this.handleTransportError(e),
@@ -1974,7 +2012,7 @@ var W = class {
 		});
 	}
 	connect({ sessionId: e, browserToken: t, media: n = { mode: "websocket" } }) {
-		this.disconnect(!1), this.transportClosed = !1, this.transportErrorChannel = "", this.media = U(n, t), this.emit("connecting", "正在连接手机画面"), this.transport.connect({
+		this.disconnect(!1), this.transportClosed = !1, this.transportErrorChannel = "", this.media = G(n, t), this.emit("connecting", "正在连接手机画面"), this.transport.connect({
 			baseUrl: this.relayBaseUrl,
 			sessionId: e,
 			browserToken: t,
@@ -2012,7 +2050,7 @@ var W = class {
 				}
 				if (t.status === "live" || t.status === "streaming") {
 					this.media.mode === "webrtc" && !this.player && this.setupPlayer("h264");
-					let e = q(this.player?.hasFirstFrame);
+					let e = Y(this.player?.hasFirstFrame);
 					this.emit(e.status, e.detail, {
 						...t.metadata,
 						decoderBackend: ["webrtc", "direct_webrtc"].includes(this.media.mode) ? this.media.mode : "mse",
@@ -2026,7 +2064,7 @@ var W = class {
 		}
 		if (["webrtc", "direct_webrtc"].includes(this.media.mode)) return;
 		this.player || this.setupPlayer("h264");
-		let t = J(e.data);
+		let t = X(e.data);
 		this.player.write(t.data);
 	}
 	setupPlayer(e) {
@@ -2052,7 +2090,7 @@ var W = class {
 				return;
 			}
 			if (this.media.mode === "direct_webrtc") {
-				this.player = new F({
+				this.player = new L({
 					video: this.video,
 					onFirstFrame: (e) => this.emit("live", "实时画面已连接", {
 						...this.channelMetadata,
@@ -2120,7 +2158,7 @@ var W = class {
 			...this.lastStats,
 			controlRttMs: Math.max(0, n - t.sentAt),
 			agentControlMs: Math.max(0, Number(e.agentElapsedMs || 0))
-		}, G(t.control, e) && (this.pendingVisualProbe = {
+		}, q(t.control, e) && (this.pendingVisualProbe = {
 			sequenceId: Number(e.sequenceId || 0),
 			action: String(e.action || "unknown"),
 			sentAt: t.sentAt,
@@ -2173,11 +2211,11 @@ var W = class {
 		});
 	}
 };
-function G(e = {}, t = {}) {
+function q(e = {}, t = {}) {
 	return e?.type === "touch" ? e.action === "up" && t.action === "up" : t.action !== "move";
 }
-function K({ send: e = () => !1, now: t = () => globalThis.performance?.now?.() || Date.now(), intervalMs: n = 5e3 } = {}) {
-	let r = -Infinity, i = Math.max(1e3, Number(n || 5e3));
+function J({ send: e = () => !1, now: t = () => globalThis.performance?.now?.() || Date.now(), intervalMs: n = 1e3 } = {}) {
+	let r = -Infinity, i = Math.max(1e3, Number(n || 1e3));
 	return {
 		report(n = {}) {
 			let a = t();
@@ -2191,24 +2229,7 @@ function K({ send: e = () => !1, now: t = () => globalThis.performance?.now?.() 
 				controlRttMs: Number(n.controlRttMs || 0),
 				agentControlMs: Number(n.agentControlMs || 0)
 			};
-			for (let e of [
-				"rtcStatsWindowMs",
-				"rtcFramesDecoded",
-				"rtcFramesDecodedDelta",
-				"rtcFramesDropped",
-				"rtcFramesPerSecond",
-				"rtcPacketsLost",
-				"rtcPacketsLostDelta",
-				"rtcJitterMs",
-				"rtcBytesReceived",
-				"rtcBytesReceivedDelta",
-				"rtcReceiveMbps",
-				"rtcDecodeMsPerFrame",
-				"rtcFreezeCount",
-				"rtcFreezeCountDelta",
-				"rtcTotalFreezeMs",
-				"rtcTotalFreezeMsDelta"
-			]) n[e] !== void 0 && n[e] !== null && (o[e] = Number(n[e] || 0));
+			for (let e of /* @__PURE__ */ "rtcStatsWindowMs.rtcFramesDecoded.rtcFramesDecodedDelta.rtcFramesDropped.rtcFramesPerSecond.rtcPacketsLost.rtcPacketsLostDelta.rtcPacketsReceived.rtcPacketsReceivedDelta.rtcJitterMs.rtcBytesReceived.rtcBytesReceivedDelta.rtcReceiveMbps.rtcDecodeMsPerFrame.rtcFreezeCount.rtcFreezeCountDelta.rtcTotalFreezeMs.rtcTotalFreezeMsDelta.rtcNackCount.rtcNackCountDelta.rtcPliCount.rtcPliCountDelta.rtcFirCount.rtcFirCountDelta.rtcRetransmittedPacketsReceived.rtcRetransmittedPacketsReceivedDelta.rtcRetransmittedBytesReceived.rtcRetransmittedBytesReceivedDelta.rtcPacketsDiscarded.rtcPacketsDiscardedDelta.rtcJitterBufferDelayMsPerFrame.rtcJitterBufferTargetDelayMsPerFrame.rtcIceCurrentRttMs.rtcIceAvailableIncomingBitrate".split(".")) n[e] !== void 0 && n[e] !== null && (o[e] = Number(n[e] || 0));
 			for (let e of [
 				"rtcIceProtocol",
 				"rtcIceLocalType",
@@ -2220,6 +2241,12 @@ function K({ send: e = () => !1, now: t = () => globalThis.performance?.now?.() 
 				"videoInViewport",
 				"playbackVisible"
 			]) n[e] !== void 0 && n[e] !== null && (o[e] = !!n[e]);
+			for (let e of [
+				"rtcNegotiatedNack",
+				"rtcNegotiatedPli",
+				"rtcNegotiatedFir",
+				"rtcNegotiatedRtx"
+			]) n[e] !== void 0 && n[e] !== null && (o[e] = !!n[e]);
 			return n.pageVisibilityState !== void 0 && n.pageVisibilityState !== null && (o.pageVisibilityState = String(n.pageVisibilityState || "unknown").slice(0, 16)), e({
 				type: "screen_playback_metrics",
 				metrics: o
@@ -2230,7 +2257,7 @@ function K({ send: e = () => !1, now: t = () => globalThis.performance?.now?.() 
 		}
 	};
 }
-function q(e = !1) {
+function Y(e = !1) {
 	return e ? {
 		status: "live",
 		detail: "实时画面已连接"
@@ -2239,7 +2266,7 @@ function q(e = !1) {
 		detail: "执行器已连接，正在等待手机首帧"
 	};
 }
-function J(e) {
+function X(e) {
 	let t = new DataView(e), n = t.getUint8(0), r = t.getUint8(1) === 1, i = t.getBigInt64(2, !1), a = new Uint8Array(e, 10);
 	return n === 0 ? {
 		type: "configuration",
@@ -2251,6 +2278,6 @@ function J(e) {
 		data: a
 	};
 }
-window.PhoneCloudScreenController = W;
+window.PhoneCloudScreenController = K;
 //#endregion
-export { W as PhoneCloudScreenController, K as createPlaybackMetricsReporter, J as decodeVideoPacket, q as liveScreenPlaybackStatus, U as normalizeScreenPlayerMedia };
+export { K as PhoneCloudScreenController, J as createPlaybackMetricsReporter, X as decodeVideoPacket, Y as liveScreenPlaybackStatus, G as normalizeScreenPlayerMedia };

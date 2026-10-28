@@ -311,10 +311,10 @@ function shouldProbeVisualLatency(control = {}, acknowledgement = {}) {
 export function createPlaybackMetricsReporter({
   send = () => false,
   now = () => globalThis.performance?.now?.() || Date.now(),
-  intervalMs = 5_000
+  intervalMs = 1_000
 } = {}) {
   let lastReportedAt = -Infinity;
-  const minimumIntervalMs = Math.max(1_000, Number(intervalMs || 5_000));
+  const minimumIntervalMs = Math.max(1_000, Number(intervalMs || 1_000));
   return {
     report(metrics = {}) {
       const at = now();
@@ -330,8 +330,13 @@ export function createPlaybackMetricsReporter({
       };
       for (const key of [
         "rtcStatsWindowMs", "rtcFramesDecoded", "rtcFramesDecodedDelta", "rtcFramesDropped", "rtcFramesPerSecond",
-        "rtcPacketsLost", "rtcPacketsLostDelta", "rtcJitterMs", "rtcBytesReceived", "rtcBytesReceivedDelta",
-        "rtcReceiveMbps", "rtcDecodeMsPerFrame", "rtcFreezeCount", "rtcFreezeCountDelta", "rtcTotalFreezeMs", "rtcTotalFreezeMsDelta"
+        "rtcPacketsLost", "rtcPacketsLostDelta", "rtcPacketsReceived", "rtcPacketsReceivedDelta", "rtcJitterMs", "rtcBytesReceived", "rtcBytesReceivedDelta",
+        "rtcReceiveMbps", "rtcDecodeMsPerFrame", "rtcFreezeCount", "rtcFreezeCountDelta", "rtcTotalFreezeMs", "rtcTotalFreezeMsDelta",
+        "rtcNackCount", "rtcNackCountDelta", "rtcPliCount", "rtcPliCountDelta", "rtcFirCount", "rtcFirCountDelta",
+        "rtcRetransmittedPacketsReceived", "rtcRetransmittedPacketsReceivedDelta",
+        "rtcRetransmittedBytesReceived", "rtcRetransmittedBytesReceivedDelta",
+        "rtcPacketsDiscarded", "rtcPacketsDiscardedDelta", "rtcJitterBufferDelayMsPerFrame",
+        "rtcJitterBufferTargetDelayMsPerFrame", "rtcIceCurrentRttMs", "rtcIceAvailableIncomingBitrate"
       ]) {
         if (metrics[key] !== undefined && metrics[key] !== null) metricsPayload[key] = Number(metrics[key] || 0);
       }
@@ -339,6 +344,9 @@ export function createPlaybackMetricsReporter({
         if (metrics[key] !== undefined && metrics[key] !== null) metricsPayload[key] = String(metrics[key] || "").slice(0, 24);
       }
       for (const key of ["pageFocused", "videoInViewport", "playbackVisible"]) {
+        if (metrics[key] !== undefined && metrics[key] !== null) metricsPayload[key] = Boolean(metrics[key]);
+      }
+      for (const key of ["rtcNegotiatedNack", "rtcNegotiatedPli", "rtcNegotiatedFir", "rtcNegotiatedRtx"]) {
         if (metrics[key] !== undefined && metrics[key] !== null) metricsPayload[key] = Boolean(metrics[key]);
       }
       if (metrics.pageVisibilityState !== undefined && metrics.pageVisibilityState !== null) {

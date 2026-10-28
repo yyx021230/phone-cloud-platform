@@ -198,7 +198,8 @@ async function main() {
   assert(startWindowsTask, "lookup start should create a linked Windows task");
   await api("POST", `/api/v1/windows-agent-tasks/${startWindowsTask.taskId}/status`, agentToken, {
     status: "succeeded",
-    result: { message: "search ready", currentAccount: "smoke-account" }
+    result: { message: "search ready", currentAccount: "smoke-account", accountIdentityVerified: true,
+      savedAccounts: [{ account: "smoke-account", current: true }] }
   });
   let lookupSessions = await api("GET", "/api/v1/user/automation/alipay-name-sessions", sessionA);
   let lookupSession = lookupSessions.sessions.find((session) => session.sessionId === lookupCreate.session.sessionId);
@@ -210,7 +211,9 @@ async function main() {
   assert(queryWindowsTask, "lookup query should create a linked Windows task");
   await api("POST", `/api/v1/windows-agent-tasks/${queryWindowsTask.taskId}/status`, agentToken, {
     status: "succeeded",
-    result: { message: "lookup complete", matchedPhone: "13800138000", alipayDisplayName: "*测", realNameTailCharacter: "测", durationMs: 1234 }
+    result: { message: "lookup complete", matchedPhone: "13800138000", alipayDisplayName: "*测", realNameTailCharacter: "测", durationMs: 1234,
+      currentAccount: "smoke-account", accountIdentityVerified: true,
+      savedAccounts: [{ account: "smoke-account", current: true }] }
   });
   lookupSessions = await api("GET", "/api/v1/user/automation/alipay-name-sessions", sessionA);
   lookupSession = lookupSessions.sessions.find((session) => session.sessionId === lookupCreate.session.sessionId);

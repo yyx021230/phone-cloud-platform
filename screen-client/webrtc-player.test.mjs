@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { WhepScreenPlayer, buildWhepRequestHeaders, extractInboundVideoMetrics, readPlaybackVisibility, requestWhepAnswer, resolveWhepResourceUrl, waitForIceGathering } from "./webrtc-player.js";
+import { WhepScreenPlayer, buildWhepRequestHeaders, extractInboundVideoMetrics, readPlaybackVisibility, requestWhepAnswer, resolveWhepResourceUrl, summarizeWhepNegotiation, waitForIceGathering } from "./webrtc-player.js";
 
 test("builds a bearer authenticated WHEP request", () => {
   assert.deepEqual(buildWhepRequestHeaders("token-1"), {
@@ -246,13 +246,23 @@ test("extracts inbound WebRTC video metrics without depending on browser-specifi
     framesDropped: 2,
     framesPerSecond: 30,
     packetsLost: 4,
+    packetsReceived: 1_000,
     jitter: 0.012,
     totalDecodeTime: 0.3,
     freezeCount: 1,
     totalFreezesDuration: 0.2,
+    nackCount: 8,
+    pliCount: 2,
+    firCount: 1,
+    retransmittedPacketsReceived: 6,
+    retransmittedBytesReceived: 7_200,
+    packetsDiscarded: 3,
+    jitterBufferDelay: 1.2,
+    jitterBufferTargetDelay: 0.9,
+    jitterBufferEmittedCount: 60,
     codecId: "codec-primary"
   }]]);
-  const metrics = extractInboundVideoMetrics(reports, { at: 2_000, previous: { at: 1_000, rtcInboundReportId: "inbound", rtcBytesReceived: 25_000, rtcPacketsLost: 1, rtcFramesDecoded: 35, rtcFreezeCount: 0, rtcTotalFreezeMs: 0 } });
+  const metrics = extractInboundVideoMetrics(reports, { at: 2_000, previous: { at: 1_000, rtcInboundReportId: "inbound", rtcBytesReceived: 25_000, rtcPacketsLost: 1, rtcPacketsReceived: 800, rtcFramesDecoded: 35, rtcFreezeCount: 0, rtcTotalFreezeMs: 0, rtcNackCount: 3, rtcPliCount: 1, rtcFirCount: 0, rtcRetransmittedPacketsReceived: 2, rtcRetransmittedBytesReceived: 2_400, rtcPacketsDiscarded: 1 } });
   assert.deepEqual(metrics, {
     at: 2_000,
     rtcInboundReportId: "inbound",
@@ -263,6 +273,8 @@ test("extracts inbound WebRTC video metrics without depending on browser-specifi
     rtcFramesPerSecond: 30,
     rtcPacketsLost: 4,
     rtcPacketsLostDelta: 3,
+    rtcPacketsReceived: 1_000,
+    rtcPacketsReceivedDelta: 200,
     rtcJitterMs: 12,
     rtcBytesReceived: 125_000,
     rtcBytesReceivedDelta: 100_000,
@@ -271,7 +283,24 @@ test("extracts inbound WebRTC video metrics without depending on browser-specifi
     rtcFreezeCount: 1,
     rtcFreezeCountDelta: 1,
     rtcTotalFreezeMs: 200,
-    rtcTotalFreezeMsDelta: 200
+    rtcTotalFreezeMsDelta: 200,
+    rtcNackCount: 8,
+    rtcNackCountDelta: 5,
+    rtcPliCount: 2,
+    rtcPliCountDelta: 1,
+    rtcFirCount: 1,
+    rtcFirCountDelta: 1,
+    rtcRetransmittedPacketsReceived: 6,
+    rtcRetransmittedPacketsReceivedDelta: 4,
+    rtcRetransmittedBytesReceived: 7_200,
+    rtcRetransmittedBytesReceivedDelta: 4_800,
+    rtcPacketsDiscarded: 3,
+    rtcPacketsDiscardedDelta: 2,
+    rtcJitterBufferDelayMsPerFrame: 20,
+    rtcJitterBufferTargetDelayMsPerFrame: 15,
+    rtcJitterBufferDelaySeconds: 1.2,
+    rtcJitterBufferTargetDelaySeconds: 0.9,
+    rtcJitterBufferEmittedCount: 60
   });
 });
 
@@ -293,7 +322,7 @@ test("reports the selected ICE path without exposing endpoint addresses", () => 
     ["codec", { type: "codec", mimeType: "video/H264" }],
     ["inbound", { type: "inbound-rtp", kind: "video", bytesReceived: 100, codecId: "codec", transportId: "transport" }],
     ["transport", { type: "transport", selectedCandidatePairId: "pair" }],
-    ["pair", { type: "candidate-pair", state: "succeeded", localCandidateId: "local", remoteCandidateId: "remote" }],
+    ["pair", { type: "candidate-pair", state: "succeeded", localCandidateId: "local", remoteCandidateId: "remote", currentRoundTripTime: 0.243, availableIncomingBitrate: 4_500_000 }],
     ["local", { type: "local-candidate", protocol: "udp", candidateType: "host", address: "192.168.1.10" }],
     ["remote", { type: "remote-candidate", candidateType: "srflx", address: "203.0.113.1" }]
   ]);
@@ -302,5 +331,25 @@ test("reports the selected ICE path without exposing endpoint addresses", () => 
   assert.equal(metrics.rtcIceLocalType, "host");
   assert.equal(metrics.rtcIceRemoteType, "srflx");
   assert.equal(metrics.rtcIcePairState, "succeeded");
+  assert.equal(metrics.rtcIceCurrentRttMs, 243);
+  assert.equal(metrics.rtcIceAvailableIncomingBitrate, 4_500_000);
   assert.equal("address" in metrics, false);
+});
+
+test("summarizes WHEP H264 repair negotiation from the answer SDP", () => {
+  const summary = summarizeWhepNegotiation([
+    "m=video 9 UDP/TLS/RTP/SAVPF 102 103",
+    "a=rtpmap:102 H264/90000",
+    "a=rtcp-fb:102 nack",
+    "a=rtcp-fb:102 nack pli",
+    "a=rtcp-fb:102 ccm fir",
+    "a=rtpmap:103 rtx/90000",
+    "a=fmtp:103 apt=102"
+  ].join("\r\n"));
+  assert.deepEqual(summary, {
+    rtcNegotiatedNack: true,
+    rtcNegotiatedPli: true,
+    rtcNegotiatedFir: true,
+    rtcNegotiatedRtx: true
+  });
 });

@@ -80,8 +80,9 @@ test("selects only Poco forwards for one exact device", () => {
 
 test("the Python worker explicitly stops Poco with bounded ADB cleanup", async () => {
   const source = await fs.readFile(path.join(here, "../scripts/xhs_airtest_poco.py"), "utf8");
-  assert.match(source, /finally:\s*\n\s*try:\s*\n\s*stop_stable_poco\(poco, adb_path, serial\)/);
-  assert.match(source, /run_adb\(adb_path, serial, \["shell", "am", "force-stop", "com\.netease\.open\.pocoservice"\], timeout=5\)/);
+  assert.match(source, /finally:\s*\n\s*try:\s*\n\s*if verify_lookup_stop:[\s\S]*?stop_stable_poco\(poco, adb_path, serial, verify=True\)[\s\S]*?else:\s*\n\s*stop_stable_poco\(poco, adb_path, serial\)/);
+  assert.match(source, /packages = \("com\.netease\.open\.pocoservice", "com\.netease\.open\.pocoservice\.test"\)/);
+  assert.match(source, /for package_name in packages:\s*try:\s*run_adb\(adb_path, serial, \["shell", "am", "force-stop", package_name\], timeout=5\)/);
   assert.match(source, /run_adb\(adb_path, serial, \["forward", "--remove", local\], timeout=1\)/);
   assert.doesNotMatch(source, /poco\.remove_forwards\(\)/);
 });

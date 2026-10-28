@@ -73,9 +73,27 @@ export async function loadAgentConfig({ agentDir, configPath }) {
       ? raw.airtestPackages
       : ["airtest==1.4.3", "pocoui==1.0.94"],
     airtestRunnerPath: resolveAgentPath(raw.airtestRunnerPath || path.join(agentDir, "scripts", "xhs_airtest_poco.py"), ""),
+    // A Poco Python worker uses roughly 650 MiB of committed memory on the
+    // production host. Keep a strict fleet-wide resident bound and recycle
+    // inactive workers instead of retaining one process per phone forever.
+    airtestMaxResidentWorkers: Math.max(1, Math.min(16, Number(raw.airtestMaxResidentWorkers || 8))),
+    airtestWorkerIdleSeconds: Math.max(30, Math.min(1_800, Number(raw.airtestWorkerIdleSeconds || 120))),
+    airtestWorkerCleanupIntervalSeconds: Math.max(10, Math.min(300, Number(raw.airtestWorkerCleanupIntervalSeconds || 30))),
+    // A live Alipay lookup session stays warm between user queries. The lease
+    // is renewed by each start/query and expires if the browser disappears
+    // without sending the normal stop task.
+    airtestLookupWarmSeconds: Math.max(60, Math.min(3_600, Number(raw.airtestLookupWarmSeconds || 900))),
     xmlUiAutomatorRunnerPath: resolveAgentPath(raw.xmlUiAutomatorRunnerPath || path.join(agentDir, "scripts", "xhs_xml_uiautomator.py"), ""),
     xhsPublishRunnerPath: resolveAgentPath(raw.xhsPublishRunnerPath || path.join(agentDir, "scripts", "xhs_publish_poco.py"), ""),
+    xhsDataCollectionRunnerPath: resolveAgentPath(raw.xhsDataCollectionRunnerPath || path.join(agentDir, "scripts", "小红书数据同步.py"), ""),
     alipayNameLookupRunnerPath: resolveAgentPath(raw.alipayNameLookupRunnerPath || path.join(agentDir, "scripts", "alipay_name_lookup.py"), ""),
+    kuaishouLeadEnabled: raw.kuaishouLeadEnabled !== false,
+    kuaishouLeadRunnerPath: resolveAgentPath(raw.kuaishouLeadRunnerPath || path.join(agentDir, "scripts", "feishu-kuaishou-lead.mjs"), ""),
+    kuaishouVehicleLeadRunnerPath: resolveAgentPath(raw.kuaishouVehicleLeadRunnerPath || path.join(agentDir, "scripts", "kuaishou_vehicle_lead.py"), ""),
+    kuaishouLeadCredentialsPath: resolveAgentPath(raw.kuaishouLeadCredentialsPath || path.join(dataDir, "feishu.env"), ""),
+    kuaishouLeadWikiToken: String(raw.kuaishouLeadWikiToken || "XbIfwqgGZipPAjkhwmlcjMaEnZe").trim(),
+    kuaishouPackageName: String(raw.kuaishouPackageName || "com.smile.gifmaker").trim(),
+    kuaishouLeadHeartbeatSeconds: Math.max(10, Math.min(60, Number(raw.kuaishouLeadHeartbeatSeconds || 20))),
     automationPreflightEnabled: raw.automationPreflightEnabled !== false,
     automationPreflightIntervalSeconds: Math.max(60, Number(raw.automationPreflightIntervalSeconds || 600)),
     // Preflight can involve a slow vendor install prompt. Keep a small parallel
@@ -98,6 +116,21 @@ export async function loadAgentConfig({ agentDir, configPath }) {
     // Smaller values are rolled out per device to reduce UDP microbursts
     // without changing encoder quality or every active phone at once.
     screenTransportPacketsPerBurst: Math.max(1, Math.min(8, Math.round(Number(raw.screenTransportPacketsPerBurst || 2)))),
+    // Adaptive transport pacing is opt-in. The global default stays disabled;
+    // selected handset profiles can temporarily raise only their RTP wire rate
+    // while a measured source burst is building up.
+    screenTransportAdaptivePacingEnabled: raw.screenTransportAdaptivePacingEnabled === true,
+    screenTransportAdaptiveMidBitRate: Math.max(2_000_000, Math.min(48_000_000, Number(raw.screenTransportAdaptiveMidBitRate || 15_000_000))),
+    screenTransportAdaptiveMaxBitRate: Math.max(2_000_000, Math.min(48_000_000, Number(raw.screenTransportAdaptiveMaxBitRate || 20_000_000))),
+    screenTransportAdaptiveUpThresholdMs: Math.max(40, Math.min(1_000, Number(raw.screenTransportAdaptiveUpThresholdMs || 160))),
+    screenTransportAdaptiveMaxThresholdMs: Math.max(80, Math.min(1_500, Number(raw.screenTransportAdaptiveMaxThresholdMs || 260))),
+    screenTransportAdaptiveDownThresholdMs: Math.max(10, Math.min(500, Number(raw.screenTransportAdaptiveDownThresholdMs || 80))),
+    screenTransportAdaptiveHoldMs: Math.max(100, Math.min(2_000, Number(raw.screenTransportAdaptiveHoldMs || 300))),
+    // Receiver-driven smoothing is a separate opt-in canary. It consumes the
+    // browser's actual WHEP loss/jitter/RTX feedback and changes only the RTP
+    // packet group size; the proven drain rate remains fixed.
+    screenTransportReceiverFeedbackEnabled: raw.screenTransportReceiverFeedbackEnabled === true,
+    screenTransportReceiverStableHoldMs: Math.max(5_000, Math.min(60_000, Number(raw.screenTransportReceiverStableHoldMs || 15_000))),
     // Bound source backlog by time as well as bytes. A frame-count-only queue
     // turns one normal large IDR into a decoder discontinuity at high FPS.
     screenRealtimeQueueLatencyMs: Math.max(100, Math.min(1_500, Number(raw.screenRealtimeQueueLatencyMs || 400))),
@@ -222,6 +255,12 @@ function normalizeScreenDeviceProfiles(value) {
     }
     if (Number.isFinite(Number(candidate.transportPacketsPerBurst))) {
       profile.transportPacketsPerBurst = Math.max(1, Math.min(8, Math.round(Number(candidate.transportPacketsPerBurst))));
+    }
+    if (typeof candidate.transportAdaptivePacing === "boolean") {
+      profile.transportAdaptivePacing = candidate.transportAdaptivePacing;
+    }
+    if (typeof candidate.transportReceiverFeedback === "boolean") {
+      profile.transportReceiverFeedback = candidate.transportReceiverFeedback;
     }
     if (typeof candidate.sourceRecovery === "boolean") profile.sourceRecovery = candidate.sourceRecovery;
     if (typeof candidate.isolateControl === "boolean") profile.isolateControl = candidate.isolateControl;

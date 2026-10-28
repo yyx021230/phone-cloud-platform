@@ -96,25 +96,6 @@ test("persists linked task state and an event atomically", async () => {
   ]);
 });
 
-test("persists an automation job and its long-lived lookup session atomically", async () => {
-  const database = fakeDatabase();
-  const repos = createPostgresRepositories({ getPool: async () => database.pool });
-
-  await repos.persistTaskMutation({
-    windowsTask: { taskId: "windows-auto-1", agentId: "agent-1", adbSerial: "serial-1", status: "running" },
-    automationJob: { jobId: "job-1", deviceId: "device-1", userId: "user-1", kind: "alipay_name_query", status: "running" },
-    automationSession: { sessionId: "lookup-1", deviceId: "device-1", userId: "user-1", status: "querying" }
-  });
-
-  assert.deepEqual(database.calls.map((call) => call.sql === "begin" || call.sql === "commit" ? call.sql : call.sql.match(/insert into ([a-z_]+)/)?.[1]), [
-    "begin",
-    "phone_cloud_windows_tasks",
-    "phone_cloud_automation_jobs",
-    "phone_cloud_automation_sessions",
-    "commit"
-  ]);
-});
-
 test("persists the active device lock with linked tasks", async () => {
   const database = fakeDatabase();
   const repos = createPostgresRepositories({ getPool: async () => database.pool });

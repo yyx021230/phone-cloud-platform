@@ -6,6 +6,8 @@ COPY server ./server
 COPY public ./public
 COPY docs ./docs
 
+RUN grep -Eq '^export const SCREEN_IDLE_TIMEOUT_MS = 10 \* 60 \* 1000;$' /app/public/screen-inactivity-guard.js
+
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=8787

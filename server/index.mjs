@@ -1,3 +1,19 @@
+import { spoolSnapshot, writeSpooledSnapshot, loadStreamedSnapshot } from './snapshot-stream.mjs';
+import {aiVisionConfig,createAiVisionReader} from './lookup-ai-vision.mjs';
+import {createLookupAiRecovery} from './lookup-ai-recovery.mjs';
+import {buildLookupAdminOverview,requestDetail,jobDetail,jobEvidence,lookupJob,parseLookupCursor} from './lookup-admin-console.mjs';
+import { verifyLookupApiKey } from "./lookup-api-key.mjs";
+import { createRecoveryControls, recoverySerial, normalizeRecoveryControlAck, RECOVERY_CONTROL_PROTOCOL } from './recovery-controls.mjs';
+import { createManagedLookupStore, MANAGED_LOOKUP_PROTOCOL } from './managed-lookup-store.mjs';
+import { createManagedLookupService } from './managed-lookup.mjs';
+import { createManagedLookupAdapter } from './managed-lookup-platform.mjs';
+import { canDeliverManagedLookupTask, isManagedLookupTask, supportsLeasedWindowsTaskDelivery, hasActiveScreenGalleryDelivery, issueScreenGalleryDelivery, readScreenGalleryDeliveryPayload, acknowledgeScreenGalleryDelivery } from './managed-lookup-delivery.mjs';
+import { createLookupHumanNotifier, pendingLookupHumanNotifications, readLookupHumanWebhook } from "./lookup-human-notifications.mjs";
+import { createTaskStatusPersistence } from "./task-status-persistence.mjs";
+import { createLookupHumanHandover, lookupHumanChallenge, lookupHumanResumeReferences } from "./lookup-human-handover.mjs";
+import { lookupAccountPolicy, publicLookupAccountCooldowns, recordLookupAccountCooldown,
+  verifiedSavedAccounts, allSavedAccountsCooling, isVerifiedLookupAccountRestrictionEvent, isPreparedLookupLimitConfirmed } from "./lookup-account-cooldown.mjs";
+import { compactTaskPayload, maintainTaskHistory, normalizeLoadedTaskHistory } from "./task-history-maintenance.mjs";
 import crypto from "node:crypto";
 import fs from "node:fs/promises";
 import http from "node:http";
@@ -13,25 +29,56 @@ import { createScreenRelay } from "./screen-relay.mjs";
 import { ScreenSessionRegistry } from "./screen-sessions.mjs";
 import { SCREEN_QUALITY_PROFILES } from "./screen-quality.mjs";
 import { createScreenMediaAuthorizer, mediaPathForSession } from "./screen-media-auth.mjs";
-import { canQueueScreenGalleryImport, publicScreenGalleryImportTask } from "./screen-gallery-import.mjs";
+import {
+  SCREEN_GALLERY_DELIVERY_PROTOCOL,
+  XHS_PUBLISH_DELIVERY_PROTOCOL,
+  canQueueScreenGalleryImport,
+  maintainScreenGalleryDeliveries,
+  publicScreenGalleryImportTask
+} from "./screen-gallery-import.mjs";
 import { sanitizePostgresText, stringifyPostgresJson } from "./postgres-json.mjs";
 import { createSaveQueue } from "./save-queue.mjs";
 import { createRuntimeSaveScheduler } from "./runtime-save-scheduler.mjs";
 import { createRealtimeMetrics } from "./realtime-metrics.mjs";
 import { createEvidenceSignedUrl, verifyEvidenceSignedUrl } from "./evidence-signing.mjs";
 import { cleanupEvidenceStorage } from "./evidence-storage.mjs";
-import { buildDeviceOccupancy } from "./device-occupancy.mjs";
+import { hasXhsDataCollectionCapability, sanitizeXhsDataCollection, XHS_DATA_COLLECTION_PROTOCOL, XHS_DATA_COLLECTION_TTL_MS } from "./xhs-data-collection.mjs";
+import { buildDeviceOccupancy, isHumanLookupResume } from "./device-occupancy.mjs";
+import {
+  canShareDeviceLockWithScreenControl,
+  canShareLookupSessionWithScreenControl,
+  findScreenControlLockConflict,
+  lookupSessionNeedsHumanAction,
+  remainingActiveDeviceLock
+} from "./device-lock-compatibility.mjs";
 import {
   automationLockType,
+  hasVerifiedAllSavedAccountsRestricted,
+  isPostQueryLookupRestrictionEvent,
   isActiveAutomationStatus,
+  lookupHumanRecoveryUnresolved,
   normalizeAutomationKind,
+  normalizeKuaishouLeadDelayRange,
+  normalizeLookupAccountChoice,
   normalizeLookupPhone,
-  publicAutomationJob,
-  publicLookupSession
+  publicAutomationJob as buildPublicAutomationJob,
+  publicLookupSession as buildPublicLookupSession,
+  resumableLookupHumanVerificationResult,
+  resumableLookupRecoveryResult,
+  upsertLookupRestrictionHistory
 } from "./automation-center.mjs";
 import { smsRefreshRatePolicy } from "./sms-refresh-rate.mjs";
 import { readAgentRuntimeRelease } from "./agent-runtime-release.mjs";
-import { filterMaskedVerificationDuplicates, findSemanticSmsDuplicate, mergeCrossSourceSms } from "./sms-message-dedupe.mjs";
+import { findSemanticSmsDuplicate, mergeCrossSourceSms } from "./sms-message-dedupe.mjs";
+import { createSmsMessageIndex, sortSmsMessagesNewestFirst } from "./sms-message-index.mjs";
+import {
+  isOpenLookupDeviceAllowed,
+  normalizeExternalReference,
+  openLookupRequestFingerprint,
+  parseOpenNameLookupClients,
+  publicOpenLookupResult,
+  publicOpenLookupSession
+} from "./open-name-lookup-api.mjs";
 import {
   applyAdbDeviceName,
   applyAdminDeviceName,
@@ -76,6 +123,8 @@ const DEVICE_AGENT_TOKEN = process.env.DEVICE_AGENT_TOKEN || "dev-device-token";
 const EVIDENCE_SIGNING_SECRET = process.env.EVIDENCE_SIGNING_SECRET || ADMIN_API_TOKEN || WINDOWS_AGENT_TOKEN;
 const EVIDENCE_URL_TTL_SECONDS = Math.max(60, Number(process.env.EVIDENCE_URL_TTL_SECONDS || 300));
 const THIRD_PARTY_API_CLIENTS = parseThirdPartyApiClients(process.env.THIRD_PARTY_API_CLIENTS || "");
+const OPEN_NAME_LOOKUP_API_ENABLED = boolEnv(process.env.OPEN_NAME_LOOKUP_API_ENABLED, false);
+const OPEN_NAME_LOOKUP_CLIENTS = parseOpenNameLookupClients(process.env.OPEN_NAME_LOOKUP_CLIENTS_JSON || "");
 const BOOTSTRAP_ADMIN_USERNAME = process.env.ADMIN_USERNAME || "admin";
 const BOOTSTRAP_ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123";
 const SESSION_TTL_MS = Number(process.env.SESSION_TTL_HOURS || 24) * 3_600_000;
@@ -86,6 +135,10 @@ const LOGIN_RATE_LIMIT_MAX = Number(process.env.LOGIN_RATE_LIMIT_MAX || 8);
 const SMS_ORDER_TTL_MS = Number(process.env.SMS_ORDER_TTL_SECONDS || 300) * 1000;
 const SMS_ORDER_PROBE_INTERVAL_MS = Math.max(500, Number(process.env.SMS_ORDER_PROBE_INTERVAL_MS || DEFAULT_SMS_ORDER_PROBE_INTERVAL_MS));
 const WINDOWS_TASK_TTL_MS = Number(process.env.WINDOWS_TASK_TTL_SECONDS || 300) * 1000;
+const ALIPAY_NAME_QUERY_WINDOWS_TASK_TTL_MS = Math.max(
+  WINDOWS_TASK_TTL_MS,
+  Number(process.env.ALIPAY_NAME_QUERY_TASK_TTL_SECONDS || 2100) * 1000
+);
 const WINDOWS_TASK_QUEUE_TTL_MS = Number(process.env.WINDOWS_TASK_QUEUE_TTL_SECONDS || 1800) * 1000;
 const XHS_TASK_TTL_MS = Number(process.env.XHS_TASK_TTL_SECONDS || 600) * 1000;
 const XHS_TASK_QUEUE_TTL_MS = Number(process.env.XHS_TASK_QUEUE_TTL_SECONDS || 1800) * 1000;
@@ -98,6 +151,7 @@ const MAX_AGENT_RUNTIME_RELEASE_BYTES = Number(process.env.MAX_AGENT_RUNTIME_REL
 const MAX_QR_IMAGE_BYTES = Number(process.env.MAX_QR_IMAGE_BYTES || 3_000_000);
 const MAX_PUBLISH_IMAGES = Math.max(1, Math.min(9, Number(process.env.MAX_PUBLISH_IMAGES || 5)));
 const AUTOMATION_SESSION_TTL_MS = Math.max(600_000, Number(process.env.AUTOMATION_SESSION_TTL_SECONDS || 43_200) * 1000);
+const KUAISHOU_LEAD_LOCK_TTL_MS = AUTOMATION_SESSION_TTL_MS;
 const REQUEST_TIMEOUT_MS = Number(process.env.REQUEST_TIMEOUT_SECONDS || 120) * 1000;
 const KEEP_ALIVE_TIMEOUT_MS = Number(process.env.KEEP_ALIVE_TIMEOUT_SECONDS || 65) * 1000;
 const HEADERS_TIMEOUT_MS = Number(process.env.HEADERS_TIMEOUT_SECONDS || 70) * 1000;
@@ -113,6 +167,10 @@ const MAX_EVIDENCE_ASSETS = Number(process.env.MAX_EVIDENCE_ASSETS || 10000);
 const MAX_AUDIT_EVENTS = Number(process.env.MAX_AUDIT_EVENTS || 5000);
 const MAX_SESSIONS = Number(process.env.MAX_SESSIONS || 5000);
 const DEFAULT_AGENT_MAX_CONCURRENT_ADB_TASKS = Number(process.env.DEFAULT_AGENT_MAX_CONCURRENT_ADB_TASKS || 15);
+const SCREEN_GALLERY_DELIVERY_LEASE_MS = Math.max(15_000, Number(process.env.SCREEN_GALLERY_DELIVERY_LEASE_SECONDS || 60) * 1000);
+const SCREEN_GALLERY_DELIVERY_MAX_ATTEMPTS = Math.max(1, Number(process.env.SCREEN_GALLERY_DELIVERY_MAX_ATTEMPTS || 5));
+const XHS_PUBLISH_DELIVERY_LEASE_MS = Math.max(15_000, Number(process.env.XHS_PUBLISH_DELIVERY_LEASE_SECONDS || 60) * 1000);
+const XHS_PUBLISH_DELIVERY_MAX_ATTEMPTS = Math.max(1, Number(process.env.XHS_PUBLISH_DELIVERY_MAX_ATTEMPTS || 5));
 const MAX_STORED_UI_HIERARCHY_CHARS = Number(process.env.MAX_STORED_UI_HIERARCHY_CHARS || 80_000);
 const MAX_STORED_UI_SNAPSHOT_CHARS = Number(process.env.MAX_STORED_UI_SNAPSHOT_CHARS || 8_000);
 const WINDOWS_AGENT_ONLINE_MS = Number(process.env.WINDOWS_AGENT_ONLINE_SECONDS || 90) * 1000;
@@ -162,6 +220,7 @@ const SCREEN_DIRECT_WEBRTC_ICE_SERVERS = parseWebRtcIceServers(process.env.SCREE
 
 
 const DATA_FILE = path.join(DATA_DIR, "state.json");
+const recoveryControls = await createRecoveryControls({file:path.join(DATA_DIR,"device-recovery-controls.json")});
 const saveQueue = createSaveQueue();
 const realtimeMetrics = createRealtimeMetrics();
 let postgresPool = null;
@@ -171,6 +230,14 @@ const structuredRepos = STORAGE_BACKEND === "postgres" && STRUCTURED_WRITES
   ? createPostgresRepositories({ getPool: getPostgresPool, stringify: stringifyPostgresJson })
   : null;
 if (structuredRepos) applyStructuredOverlay(state, await structuredRepos.loadOverlay());
+// Normalize legacy records once, before HTTP/control handlers can observe state.
+// Runtime maintenance only trims retention/payloads; it never deep-copies history.
+await normalizeLoadedTaskHistory([state.windowsTasks, state.xhsQrTasks, state.automationJobs], {
+  sanitizeEvent: sanitizeStoredEvent,
+  sanitizeResult: (result) => sanitizeTaskResult(result, { includeEvidence: true })
+});
+sortSmsMessagesNewestFirst(state.smsMessages);
+const smsMessageIndex = createSmsMessageIndex(state.smsMessages);
 const repos = createStateRepositories(state);
 const runtimeStore = createRuntimeStore();
 const screenSessions = new ScreenSessionRegistry({
@@ -193,13 +260,54 @@ const persistencePolicy = createPersistencePolicy({
   saveSnapshot: () => saveState(),
   scheduleCheckpoint: () => runtimeSaveScheduler.mark()
 });
+const taskStatusPersistence = createTaskStatusPersistence();
+let managedLookup = null;
 const pendingEvidenceDeletes = new Set();
+const pendingXhsCollectionCommits = new WeakSet();
 let evidenceCleanupRunning = false;
 let lastEvidenceCleanupAt = 0;
 let screenRelay = null;
 await ensureBootstrapAdmin();
 enforceStrictProductionConfig();
+let lookupAiConfig;
+try{lookupAiConfig=await aiVisionConfig();}catch{lookupAiConfig={enabled:boolEnv(process.env.LOOKUP_AI_VISION_ENABLED,false),unavailable:true};console.warn('lookup AI configuration unavailable; enabled compatibility fallback returns existing empty result');}
+if (boolEnv(process.env.MANAGED_NAME_LOOKUP_ENABLED, false)) {
+  if (NODE_ENV === 'production' && (!structuredRepos || STORAGE_BACKEND !== 'postgres')) throw new Error('managed_lookup_requires_structured_postgres');
+  const store = await createManagedLookupStore({getPool: structuredRepos ? getPostgresPool : null, file:path.join(DATA_DIR,'managed-lookup.json'), key:POSTGRES_STATE_KEY, persistLegacy:saveState});
+  const adapter = createManagedLookupAdapter({state, clientIds:()=>[...OPEN_NAME_LOOKUP_CLIENTS.keys()], userFor:id=>openNameLookupUser(OPEN_NAME_LOOKUP_CLIENTS.get(id)), persist:bundle=>structuredRepos.persistTaskMutation(bundle),
+    listed:isDeviceListed,online:isAdbOnline,onlineMs:WINDOWS_AGENT_ONLINE_MS,screenActive:id=>screenSessions.activeForDevice(id),lockFor:activeDeviceLockForTask,recovery:resumableLookupRecoveryResult,
+    allCooling:d=>{const session=state.automationSessions.find(x=>x.deviceId===d.deviceId&&x.savedAccounts?.length);return session?allSavedAccountsCooling(d,session.savedAccounts):false;},
+    createSession:createLookupSession,createJob:createAutomationJob,acquireLock:acquireAutomationDeviceLock,queueTask:queueAutomationWindowsTask,result:upsertLookupResult,cancelJob:cancelAutomationJob});
+  managedLookup = createManagedLookupService({store,adapter,probePhone:process.env.LOOKUP_READINESS_PROBE_PHONE||'',resumeHuman:resumeLookupAfterObservedHumanVerification,aiEnabled:lookupAiConfig.enabled});
+}
+const lookupAiReader=createAiVisionReader(lookupAiConfig);
+const lookupAiRecovery=lookupAiReader.enabled&&managedLookup?createLookupAiRecovery({service:managedLookup,reader:lookupAiReader,loadEvidence:async binding=>{
+  const asset=state.evidenceAssets.find(a=>a.evidenceId===binding.evidenceId&&a.taskId===binding.taskId&&a.sha256===binding.evidenceSha256&&a.mimeType===binding.mimeType);
+  if(!asset)throw new Error('lookup_ai_evidence_missing');
+  const root=await fs.realpath(EVIDENCE_DIR),file=await fs.realpath(asset.filePath),relative=path.relative(root,file);
+  if(relative.startsWith('..')||path.isAbsolute(relative)||(await fs.stat(file)).size>8000000)throw new Error('lookup_ai_evidence_invalid');
+  const image=await fs.readFile(file);if(crypto.createHash('sha256').update(image).digest('hex')!==binding.evidenceSha256)throw new Error('lookup_ai_evidence_invalid');return image;
+},onError:()=>console.warn('lookup AI persistence unavailable; original query retained for lease reconciliation')}):null;
+const lookupAiRecoveryTimer=setInterval(()=>{try{lookupAiRecovery?.pump();}catch{console.warn('lookup AI pump unavailable; original requests retained');}},1000).unref();
+// Restore managed reservations before diagnostics can expire their locks.
 await logStartupDiagnostics();
+const managedLookupTimer=setInterval(()=>managedLookup?.tick().catch(e=>console.error('managed lookup storage/dispatch unavailable; original tasks retained',e.code||e.name||'error')),250).unref();
+
+
+let lookupHumanNotifier = null;
+try {
+  lookupHumanNotifier = createLookupHumanNotifier({
+    webhookUrl: await readLookupHumanWebhook(),
+    receiptsDir: path.join(DATA_DIR, "lookup-human-notifications"),
+    getTargets: () => [...pendingLookupHumanNotifications(state.automationSessions, state.devices),...(managedLookup?.accountOfflineNotifications(state.devices)||[])],
+    onResult: (outcome) => console.log("lookup human notification", outcome)
+  });
+} catch {
+  console.error("lookup human notification configuration unavailable; notifications disabled");
+}
+const lookupHumanNotificationTimer = setInterval(() => {
+  lookupHumanNotifier?.poll().catch(() => console.error("lookup human notification receipt unavailable"));
+}, 3_000).unref();
 
 const maintenanceTimer = setInterval(() => {
   const expiredScreenSessions = screenSessions.expire();
@@ -282,12 +390,24 @@ screenRelay = createScreenRelay({
   logger: console
 });
 
+const lookupHumanHandover = createLookupHumanHandover({
+  targets: lookupHumanProbeTargets,
+  resume: resumeLookupAfterObservedHumanVerification,
+  observeManaged: (target, observation) => managedLookup?.recordHumanObservation(target, observation)
+});
+
 // Screen session state deliberately lives in memory so browser credentials do
 // not survive a process restart. Persisted screen locks therefore cannot be
 // resumed after a restart; release them now and let the Agent inventory stop
 // any leftover scrcpy / ffmpeg worker on reconnect.
+const startupScreenLocks = state.deviceLocks.filter(lock => lock.lockType === "screen_control" && lock.status === "active");
 if (releaseOrphanedScreenLocksAfterRestart()) {
-  await saveState();
+  if (structuredRepos) {
+    // Preserve existing release semantics; persist only the changed lock rows.
+    for (const deviceLock of startupScreenLocks) await structuredRepos.persistTaskMutation({ deviceLock });
+  } else {
+    await saveState();
+  }
 }
 
 server.listen(PORT, HOST, () => {
@@ -299,6 +419,70 @@ process.on("SIGINT", () => shutdown("SIGINT"));
 
 async function routeApi(req, res, url) {
   enforceRequestOrigin(req);
+  if(req.method==='POST'&&url.pathname==='/api/v1/open/name-lookups/prepare'){
+    if(!OPEN_NAME_LOOKUP_API_ENABLED||!managedLookup)return json(res,404,{ok:false,code:'managed_lookup_not_enabled'});
+    try{const {ctx,input}=await readSignedOpenJson(req,url,OPEN_NAME_LOOKUP_CLIENTS);if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).length)return json(res,400,{ok:false,code:'prepare_body_must_be_empty'});const {ok,preparationId,status,ready,expiresAt,acceptingRequests,code,retryAfterSeconds}=await managedLookup.prepare({clientId:ctx.clientId,key:requiredOpenIdempotencyKey(req)});return json(res,200,{ok,preparationId,status,ready,expiresAt,acceptingRequests,...(code?{code,retryAfterSeconds}:{})});}catch(e){return json(res,e.statusCode||503,{ok:false,code:e.statusCode?e.message:'lookup_storage_unavailable'});}
+  }
+  if(req.method==='POST'&&url.pathname==='/api/v1/open/name-lookups/stop'){
+    if(!OPEN_NAME_LOOKUP_API_ENABLED||!managedLookup)return json(res,404,{ok:false,code:'managed_lookup_not_enabled'});
+    try{
+      const {ctx,input}=await readSignedOpenJson(req,url,OPEN_NAME_LOOKUP_CLIENTS);
+      if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).length!==1||typeof input.preparationId!=='string')return json(res,400,{ok:false,code:'stop_body_requires_preparation_id'});
+      const result=await managedLookup.stopRound({clientId:ctx.clientId,preparationId:input.preparationId,key:requiredOpenIdempotencyKey(req)});
+      return json(res,result.stopped?200:202,result);
+    }catch(e){return json(res,e.statusCode||503,{ok:false,code:e.statusCode?e.message:'lookup_storage_unavailable'});}
+  }
+  const asyncLookupResultMatch=url.pathname.match(/^\/api\/v1\/open\/name-lookups\/tasks\/([A-Za-z0-9-]{1,80})$/);
+  if ((req.method==='POST'&&url.pathname==='/api/v1/open/name-lookups/tasks')||(req.method==='GET'&&asyncLookupResultMatch)) {
+    if(!OPEN_NAME_LOOKUP_API_ENABLED||!managedLookup)return json(res,404,{ok:false,code:'managed_lookup_not_enabled'});
+    try {
+      if(req.method==='GET'){
+        const ctx=verifyOpenApiRequest(req,url,'',OPEN_NAME_LOOKUP_CLIENTS);recordOpenApiNonce(ctx);
+        return json(res,200,await managedLookup.getAsyncResult(asyncLookupResultMatch[1],ctx.clientId));
+      }
+      const {ctx,input}=await readSignedOpenJson(req,url,OPEN_NAME_LOOKUP_CLIENTS);
+      let phoneNumber;try{phoneNumber=normalizeLookupPhone(input.phoneNumber);}catch{throw badRequest('invalid_lookup_phone');}
+      const admitted=await managedLookup.submitAsync({clientId:ctx.clientId,phoneNumber,key:requiredOpenIdempotencyKey(req)});
+      const result=await managedLookup.getAsyncResult(admitted.lookupId,ctx.clientId);
+      if(!res.destroyed)return json(res,admitted.reused?200:202,{ok:true,lookupId:admitted.lookupId,status:result.status,reused:admitted.reused,...(result.status==='completed'?{name:result.name}:{}),...(result.code==='lookup_no_available_device'?{code:result.code,acceptingRequests:false,retryAfterSeconds:30}:{})});return;
+    }catch(e){if(res.destroyed)return;if(e.retryAfterSeconds)res.setHeader('Retry-After',String(e.retryAfterSeconds));else if(e.statusCode===429)res.setHeader('Retry-After','5');return json(res,e.statusCode||503,{ok:false,code:e.statusCode?e.message:'lookup_storage_unavailable',...(e.message==='lookup_no_available_device'?{accepted:false,retryAfterSeconds:30}:{})});}
+  }
+  if (req.method === 'POST' && url.pathname === '/api/v1/open/name-lookups/query') {
+    if (!OPEN_NAME_LOOKUP_API_ENABLED || !managedLookup) return json(res,404,{ok:false,name:'',code:'managed_lookup_not_enabled'});
+    try {
+      const {ctx,input}=await readSignedOpenJson(req,url,OPEN_NAME_LOOKUP_CLIENTS);
+      let phoneNumber;try{phoneNumber=normalizeLookupPhone(input.phoneNumber);}catch{throw badRequest('invalid_lookup_phone');}
+      const id=await managedLookup.submit({clientId:ctx.clientId,phoneNumber,key:requiredOpenIdempotencyKey(req)});
+      const abort=new AbortController();const disconnect=()=>{if(!res.writableEnded)abort.abort();};res.once('close',disconnect);
+      try { const result=await managedLookup.wait(id,ctx.clientId,{signal:abort.signal});if(!res.destroyed)return json(res,result.status,result.body); }
+      finally {res.removeListener('close',disconnect);}return;
+    } catch (e) {if(res.destroyed)return;if(!e.statusCode)return json(res,503,{ok:false,name:'',code:'lookup_storage_unavailable'});if(e.statusCode===429)res.setHeader('Retry-After','3');return json(res,e.statusCode,{ok:false,name:'',code:e.message});}
+  }
+  if(url.pathname.startsWith('/api/v1/admin/lookup-pool')) {
+    const ctx=requireAuth(req,['admin']);if(!managedLookup)return json(res,404,{error:'managed_lookup_not_enabled'});
+    if(req.method==='GET'&&url.pathname.startsWith('/api/v1/admin/lookup-pool/console')){
+      res.setHeader('Cache-Control','no-store');
+      if(url.pathname==='/api/v1/admin/lookup-pool/console'){const statistics=await managedLookup.adminStatistics();return json(res,200,{...buildLookupAdminOverview({pool:managedLookup.admin(),state,isReady:c=>managedLookup.adminReady(c)}),statistics});}
+      if(url.pathname==='/api/v1/admin/lookup-pool/console/requests')return json(res,200,await managedLookup.adminRequests(parseLookupCursor(url.searchParams.get('cursor'))));
+      const detail=url.pathname.match(/^\/api\/v1\/admin\/lookup-pool\/console\/requests\/([A-Za-z0-9-]{1,80})$/);
+      if(detail){const r=await managedLookup.adminRequest(detail[1]);if(!r||r.purpose==='readiness_probe')return json(res,404,{error:'lookup_task_not_found'});return json(res,200,requestDetail(state,r));}
+      const jobPath=url.pathname.match(/^\/api\/v1\/admin\/lookup-pool\/console\/jobs\/([A-Za-z0-9-]{1,80})(?:\/evidence\/([A-Za-z0-9-]{1,80}))?$/);
+      if(jobPath){const job=state.automationJobs.find(j=>j.jobId===jobPath[1]&&lookupJob(j));if(!job)return json(res,404,{error:'lookup_job_not_found'});
+        if(!jobPath[2])return json(res,200,jobDetail(state,job));
+        if(!jobEvidence(state,job).some(e=>e.evidenceId===jobPath[2]))return json(res,404,{error:'lookup_evidence_not_found'});
+        try{return await serveEvidenceAsset(res,jobPath[2]);}catch(e){if(e.code==='ENOENT')return json(res,404,{error:'lookup_evidence_expired'});throw e;}
+      }
+    }
+    if(req.method==='GET' && url.pathname==='/api/v1/admin/lookup-pool')return json(res,200,{pool:managedLookup.admin()});
+    if((req.method==='POST'||req.method==='GET') && url.pathname==='/api/v1/admin/lookup-pool/preview')return json(res,200,{devices:managedLookup.preview()});
+    if(req.method==='PUT' && url.pathname==='/api/v1/admin/lookup-pool')return json(res,200,{ok:true,...await managedLookup.configure(await readJson(req),ctx.userId||ctx.role)});
+    const retry=url.pathname.match(/^\/api\/v1\/admin\/lookup-pool\/requests\/([^/]+)\/retry$/);
+    if(req.method==='POST' && retry){await managedLookup.retry(retry[1],ctx.userId||ctx.role);return json(res,202,{ok:true});}
+    const cancel=url.pathname.match(/^\/api\/v1\/admin\/lookup-pool\/requests\/([^/]+)\/cancel$/);
+    if(req.method==='POST' && cancel){await managedLookup.cancel(cancel[1],ctx.userId||ctx.role);return json(res,202,{ok:true});}
+    return json(res,404,{error:'not_found'});
+  }
+
 
   if (req.method === "POST" && url.pathname === "/api/internal/screen-media/auth") {
     const input = await readJson(req);
@@ -419,6 +603,220 @@ async function routeApi(req, res, url) {
     return json(res, 200, { ok: true, request: publicOpenSmsRequest(order) });
   }
 
+  if (url.pathname.startsWith("/api/v1/open/name-lookups")) {
+    if (!OPEN_NAME_LOOKUP_API_ENABLED) return json(res, 404, { error: "open_name_lookup_api_not_enabled" });
+
+    if (req.method === "GET" && url.pathname === "/api/v1/open/name-lookups/devices") {
+      const ctx = verifyOpenApiRequest(req, url, "", OPEN_NAME_LOOKUP_CLIENTS);
+      recordOpenApiNonce(ctx);
+      const user = openNameLookupUser(ctx.client);
+      if (!user) return json(res, 403, { error: "open_name_lookup_user_not_available" });
+      const devices = ctx.client.deviceIds.map((deviceId) => repos.devices.findById(deviceId)).filter(Boolean).map((device) => ({
+        deviceId: device.deviceId,
+        deviceName: device.deviceName || device.deviceId,
+        available: Boolean(isDeviceListed(device) && isAdbOnline(device) && !activeDeviceLockForTask(device.deviceId)),
+        listed: isDeviceListed(device),
+        adbOnline: isAdbOnline(device)
+      }));
+      return json(res, 200, { devices });
+    }
+
+    if (req.method === "POST" && url.pathname === "/api/v1/open/name-lookups/sessions") {
+      const { ctx, input } = await readSignedOpenJson(req, url, OPEN_NAME_LOOKUP_CLIENTS);
+      const user = openNameLookupUser(ctx.client);
+      if (!user) return json(res, 403, { error: "open_name_lookup_user_not_available" });
+      const deviceId = String(input.deviceId || "").trim();
+      if (!isOpenLookupDeviceAllowed(ctx.client, deviceId)) return json(res, 403, { error: "open_name_lookup_device_not_allowed" });
+      const idempotencyKey = requiredOpenIdempotencyKey(req);
+      const fingerprint = openLookupRequestFingerprint({ deviceId });
+      const replay = state.automationSessions.find((session) => session.source === "open-api" && session.clientId === ctx.clientId && session.idempotencyKey === idempotencyKey);
+      if (replay) {
+        if (replay.requestFingerprint !== fingerprint) return json(res, 409, { error: "idempotency_conflict" });
+        return json(res, 200, { ok: true, idempotent: true, session: publicOpenLookupSession(replay) });
+      }
+      const device = repos.devices.findById(deviceId);
+      if (!device) return json(res, 404, { error: "device_not_found" });
+      if (!isDeviceListed(device)) return json(res, 409, { error: "device_not_published" });
+      if (!isAdbOnline(device)) return json(res, 409, { error: "device_not_available" });
+      const conflict = activeDeviceLockForTask(device.deviceId);
+      if (conflict) return json(res, 409, { error: "device_busy" });
+      const existing = state.automationSessions.find((session) => session.userId === user.userId && session.deviceId === device.deviceId && isActiveLookupSessionStatus(session.status));
+      if (existing) {
+        if (existing.source === "open-api" && existing.clientId === ctx.clientId) {
+          return json(res, 409, { error: "lookup_session_already_active", session: publicOpenLookupSession(existing) });
+        }
+        return json(res, 409, { error: "device_busy" });
+      }
+      const session = createLookupSession({ userId: user.userId, deviceId: device.deviceId });
+      Object.assign(session, { source: "open-api", clientId: ctx.clientId, idempotencyKey, requestFingerprint: fingerprint });
+      const job = createAutomationJob({ kind: "alipay_name_start", userId: user.userId, deviceId: device.deviceId, sessionId: session.sessionId });
+      Object.assign(job, { source: "open-api", clientId: ctx.clientId });
+      session.pendingJobId = job.jobId;
+      const actor = { ...ctx, userId: user.userId, user };
+      const lock = acquireAutomationDeviceLock(device, job, actor, { taskId: session.sessionId, ttlMs: AUTOMATION_SESSION_TTL_MS });
+      session.lockId = lock.lockId;
+      const windowsTask = queueAutomationWindowsTask(device, job);
+      const audit = addAudit("open_name_lookup_session_start", actor, { sessionId: session.sessionId, deviceId: device.deviceId });
+      await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask, automationJob: job, automationSession: session, deviceLock: lock, audit }));
+      return json(res, 201, { ok: true, session: publicOpenLookupSession(session) });
+    }
+
+    const openLookupSessionMatch = url.pathname.match(/^\/api\/v1\/open\/name-lookups\/sessions\/([^/]+)$/);
+    if (req.method === "GET" && openLookupSessionMatch) {
+      const ctx = verifyOpenApiRequest(req, url, "", OPEN_NAME_LOOKUP_CLIENTS);
+      recordOpenApiNonce(ctx);
+      if (expireAutomationJobs()) runtimeSaveScheduler.mark();
+      const session = openNameLookupSession(ctx.clientId, openLookupSessionMatch[1]);
+      if (!session) return json(res, 404, { error: "lookup_session_not_found" });
+      const dispatched = dispatchNextOpenLookupQuery(session);
+      if (dispatched) {
+        await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({
+          windowsTask: dispatched.windowsTask,
+          automationJob: dispatched.job,
+          automationSession: session
+        }));
+      }
+      return json(res, 200, { session: publicOpenLookupSession(session) });
+    }
+
+    const openLookupQueryMatch = url.pathname.match(/^\/api\/v1\/open\/name-lookups\/sessions\/([^/]+)\/queries$/);
+    if (req.method === "POST" && openLookupQueryMatch) {
+      const { ctx, input } = await readSignedOpenJson(req, url, OPEN_NAME_LOOKUP_CLIENTS);
+      const session = openNameLookupSession(ctx.clientId, openLookupQueryMatch[1]);
+      if (!session) return json(res, 404, { error: "lookup_session_not_found" });
+      let phoneNumber;
+      let clientReference;
+      let consentReference;
+      try {
+        phoneNumber = normalizeLookupPhone(input.phoneNumber);
+        clientReference = normalizeExternalReference(input.clientReference, "client_reference");
+        consentReference = normalizeExternalReference(input.consentReference, "consent_reference");
+      } catch (error) {
+        return json(res, 400, { error: error.message || "invalid_lookup_query" });
+      }
+      const idempotencyKey = requiredOpenIdempotencyKey(req);
+      const fingerprint = openLookupRequestFingerprint({ sessionId: session.sessionId, phoneNumber, clientReference, consentReference });
+      const replay = state.automationJobs.find((job) => job.source === "open-api" && job.clientId === ctx.clientId && job.sessionId === session.sessionId && job.idempotencyKey === idempotencyKey);
+      if (replay) {
+        if (replay.requestFingerprint !== fingerprint) return json(res, 409, { error: "idempotency_conflict" });
+        return json(res, 200, { ok: true, idempotent: true, queryId: replay.resultId || replay.jobId, session: publicOpenLookupSession(session) });
+      }
+      if (session.requiresAccountSwitch) {
+        return json(res, 409, {
+          error: "lookup_queue_paused_account_switch_required",
+          session: publicOpenLookupSession(session)
+        });
+      }
+      if (!["starting", "ready", "querying", "switching", "choosing_account", "needs_human_verification"].includes(session.status)) {
+        return json(res, 409, { error: "lookup_session_not_accepting_queries", session: publicOpenLookupSession(session) });
+      }
+      const device = repos.devices.findById(session.deviceId);
+      if (!device || !isAdbOnline(device)) return json(res, 409, { error: "device_not_available" });
+      const job = createAutomationJob({ kind: "alipay_name_query", userId: session.userId, deviceId: session.deviceId, sessionId: session.sessionId, phoneNumber });
+      session.nextExternalQuerySequence = Math.max(0, Number(session.nextExternalQuerySequence || 0)) + 1;
+      Object.assign(job, { source: "open-api", clientId: ctx.clientId, idempotencyKey, requestFingerprint: fingerprint, clientReference, consentReference, queueSequence: session.nextExternalQuerySequence });
+      session.updatedAt = nowIso();
+      const result = upsertLookupResult(session, job, { status: "queued", stage: "查询已进入会话队列", createdAt: job.createdAt, updatedAt: session.updatedAt });
+      result.clientReference = clientReference;
+      result.consentReference = consentReference;
+      const dispatched = dispatchNextOpenLookupQuery(session);
+      const audit = addAudit("open_name_lookup_query", ctx, { sessionId: session.sessionId, jobId: job.jobId, deviceId: session.deviceId, clientReference, consentReference });
+      await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({
+        windowsTask: dispatched?.windowsTask || null,
+        automationJob: job,
+        automationJobs: dispatched?.job && dispatched.job !== job ? [dispatched.job] : [],
+        automationSession: session,
+        audit
+      }));
+      return json(res, 202, { ok: true, queryId: result.resultId, session: publicOpenLookupSession(session) });
+    }
+
+    const openLookupQueryDetailMatch = url.pathname.match(/^\/api\/v1\/open\/name-lookups\/sessions\/([^/]+)\/queries\/([^/]+)$/);
+    if (req.method === "GET" && openLookupQueryDetailMatch) {
+      const ctx = verifyOpenApiRequest(req, url, "", OPEN_NAME_LOOKUP_CLIENTS);
+      recordOpenApiNonce(ctx);
+      const session = openNameLookupSession(ctx.clientId, openLookupQueryDetailMatch[1]);
+      if (!session) return json(res, 404, { error: "lookup_session_not_found" });
+      const result = (session.results || []).find((item) => item.resultId === openLookupQueryDetailMatch[2]);
+      if (!result) return json(res, 404, { error: "lookup_query_not_found" });
+      return json(res, 200, { query: publicOpenLookupResult(result) });
+    }
+
+    const openLookupResumeMatch = url.pathname.match(/^\/api\/v1\/open\/name-lookups\/sessions\/([^/]+)\/resume$/);
+    if (req.method === "POST" && openLookupResumeMatch) {
+      const { ctx, input } = await readSignedOpenJson(req, url, OPEN_NAME_LOOKUP_CLIENTS);
+      const session = openNameLookupSession(ctx.clientId, openLookupResumeMatch[1]);
+      if (!session) return json(res, 404, { error: "lookup_session_not_found" });
+      const sourceResult = resumableLookupHumanVerificationResult(session) || resumableLookupRecoveryResult(session);
+      if (!sourceResult) return json(res, 409, { error: "lookup_human_verification_not_resumable", session: publicOpenLookupSession(session) });
+      if (sourceResult.phase === "start") return json(res, 409, { error: "lookup_startup_human_resume_automatic" });
+      if (String(input.queryId || "") !== String(sourceResult.resultId || "")) return json(res, 409, { error: "lookup_human_verification_query_mismatch" });
+      const idempotencyKey = requiredOpenIdempotencyKey(req);
+      const fingerprint = openLookupRequestFingerprint({ sessionId: session.sessionId, queryId: sourceResult.resultId });
+      const replay = state.automationJobs.find((job) => job.source === "open-api" && job.clientId === ctx.clientId && job.sessionId === session.sessionId && job.idempotencyKey === idempotencyKey);
+      if (replay) {
+        if (replay.requestFingerprint !== fingerprint) return json(res, 409, { error: "idempotency_conflict" });
+        return json(res, 200, { ok: true, idempotent: true, queryId: sourceResult.resultId, session: publicOpenLookupSession(session) });
+      }
+      if (screenSessions.activeForDevice(session.deviceId)) return json(res, 409, { error: "lookup_screen_control_active" });
+      const device = repos.devices.findById(session.deviceId);
+      if (!device || !isAdbOnline(device)) return json(res, 409, { error: "device_not_available" });
+      const job = createAutomationJob({ kind: "alipay_name_query", userId: session.userId, deviceId: session.deviceId, sessionId: session.sessionId, phoneNumber: sourceResult.phoneNumber, resultId: sourceResult.resultId, resumeAfterHumanVerification: true, restartAfterHumanVerification: sourceResult.status === "needs_recovery" });
+      Object.assign(job, { source: "open-api", clientId: ctx.clientId, idempotencyKey, requestFingerprint: fingerprint, clientReference: sourceResult.clientReference || "", consentReference: sourceResult.consentReference || "" });
+      session.status = "querying";
+      session.pendingJobId = job.jobId;
+      session.error = "";
+      session.updatedAt = nowIso();
+      upsertLookupResult(session, job, { status: "queued", stage: "等待继续获取当前号码结果", error: "", updatedAt: session.updatedAt });
+      const windowsTask = queueAutomationWindowsTask(device, job);
+      const audit = addAudit("open_name_lookup_human_verification_resume", ctx, { sessionId: session.sessionId, jobId: job.jobId, queryId: sourceResult.resultId, deviceId: session.deviceId });
+      await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask, automationJob: job, automationSession: session, audit }));
+      return json(res, 202, { ok: true, queryId: sourceResult.resultId, session: publicOpenLookupSession(session) });
+    }
+
+    const openLookupEndMatch = url.pathname.match(/^\/api\/v1\/open\/name-lookups\/sessions\/([^/]+)\/end$/);
+    if (req.method === "POST" && openLookupEndMatch) {
+      const { ctx } = await readSignedOpenJson(req, url, OPEN_NAME_LOOKUP_CLIENTS);
+      const session = openNameLookupSession(ctx.clientId, openLookupEndMatch[1]);
+      if (!session) return json(res, 404, { error: "lookup_session_not_found" });
+      if (["ended", "failed", "expired"].includes(session.status)) return json(res, 200, { ok: true, session: publicOpenLookupSession(session) });
+      const pending = session.pendingJobId ? state.automationJobs.find((job) => job.jobId === session.pendingJobId) : null;
+      const pendingWindowsTask = pending ? state.windowsTasks.find((task) => task.taskId === pending.windowsTaskId) : null;
+      if (pending && isActiveAutomationStatus(pending.status)) {
+        cancelAutomationJob(pending, "session_stopping", { releaseLock: false });
+        if (pending.kind === "alipay_name_query") {
+          upsertLookupResult(session, pending, {
+            status: "cancelling",
+            stage: "正在停止当前查询",
+            error: "",
+            updatedAt: nowIso()
+          });
+        }
+      }
+      const cancelledQueuedJobs = cancelQueuedOpenLookupQueries(session, "session_stopping");
+      const device = repos.devices.findById(session.deviceId);
+      let job = null;
+      let windowsTask = null;
+      if (!device || !isAdbOnline(device)) {
+        session.results = (session.results || []).map((result) => result.status === "cancelling"
+          ? { ...result, status: "cancelled", stage: "查询已取消", error: "会话已结束", updatedAt: nowIso() }
+          : result);
+        finishLookupSession(session, "ended", "device_offline_on_stop");
+      } else {
+        job = createAutomationJob({ kind: "alipay_name_stop", userId: session.userId, deviceId: session.deviceId, sessionId: session.sessionId });
+        Object.assign(job, { source: "open-api", clientId: ctx.clientId });
+        session.status = "stopping";
+        session.pendingJobId = job.jobId;
+        session.updatedAt = nowIso();
+        windowsTask = queueAutomationWindowsTask(device, job);
+      }
+      const deviceLock = (state.deviceLocks || []).find((lock) => lock.lockId === session.lockId) || null;
+      const audit = addAudit("open_name_lookup_session_end", ctx, { sessionId: session.sessionId, deviceId: session.deviceId });
+      await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask, automationJob: job, automationJobs: [...cancelledQueuedJobs, ...(pending ? [pending] : [])], windowsTasks: pendingWindowsTask ? [pendingWindowsTask] : [], automationSession: session, deviceLock, audit }));
+      return json(res, 202, { ok: true, session: publicOpenLookupSession(session) });
+    }
+  }
+
   if (req.method === "GET" && url.pathname === "/api/v1/overview") {
     const ctx = requireAuth(req, ["admin"]);
     const changed = [expireSmsOrders(), expireWindowsTasks(), expireXhsTasks()].some(Boolean);
@@ -435,7 +833,7 @@ async function routeApi(req, res, url) {
     const ctx = requireAuth(req, ["admin"]);
     const input = await readJson(req);
     const user = createUser(input);
-    const audit = addAudit("user_create", ctx, { userId: user.userId, username: user.username, role: user.role });
+    const audit = addAudit("user_create", ctx, { userId: user.userId, username: user.username, role: user.role, lookupHumanControl: user.lookupHumanControl === true });
     await persistencePolicy.persist(() => structuredRepos.persistAuthMutation({ user, audit }));
     return json(res, 201, { ok: true, user: publicUser(user) });
   }
@@ -447,7 +845,7 @@ async function routeApi(req, res, url) {
     const user = state.users.find((item) => item.userId === userUpdateMatch[1]);
     if (!user) return json(res, 404, { error: "user_not_found" });
     updateUser(user, input);
-    const audit = addAudit("user_update", ctx, { userId: user.userId, username: user.username, role: user.role });
+    const audit = addAudit("user_update", ctx, { userId: user.userId, username: user.username, role: user.role, lookupHumanControl: user.lookupHumanControl === true });
     const sessions = state.sessions.filter((session) => session.userId === user.userId);
     await persistencePolicy.persist(() => structuredRepos.persistAuthMutation({ user, sessions, audit }));
     return json(res, 200, { ok: true, user: publicUser(user) });
@@ -567,6 +965,13 @@ async function routeApi(req, res, url) {
     return json(res, 200, { phones: buildAvailablePhones() });
   }
 
+  if (req.method === "GET" && url.pathname === "/api/v1/lookup-card-statuses") {
+    const ctx = requireAuth(req, ["user", "admin"]);
+    const devices=state.devices.filter(d=>ctx.role==='admin'||isDeviceListed(d));
+    const lookupDevices=new Set((state.deviceLocks||[]).filter(l=>l.status==='active'&&l.lockType==='alipay_name_lookup').map(l=>l.deviceId));
+    return json(res,200,{statuses:devices.map(d=>({deviceId:d.deviceId,lookup:lookupDevices.has(d.deviceId)||managedLookup?.reserved(d.deviceId)?deviceOccupancyForViewer(d,ctx)?.lookup||null:null}))});
+  }
+
   if (req.method === "GET" && url.pathname === "/api/v1/user/devices") {
     const ctx = requireAuth(req, ["user", "admin"]);
     const changed = [expireSmsOrders(), expireXhsTasks()].some(Boolean);
@@ -591,7 +996,10 @@ async function routeApi(req, res, url) {
     if (!device || !isDeviceListed(device)) return json(res, 404, { error: "device_not_found" });
     if (!isAdbOnline(device) || !hasWindowsAdbBinding(device)) return json(res, 409, { error: "screen_device_offline" });
     if (!screenRelay.agentOnline(device.adb.agentId)) return json(res, 409, { error: "screen_agent_offline" });
-    const conflict = activeDeviceLockForTask(deviceId);
+    const screenOwnerUserId = screenSessionOwnerId(ctx);
+    const conflict = activeDeviceLockForScreenControl(deviceId, screenOwnerUserId, {
+      allowAdminOverride: ctx.role === "admin", allowLookupHumanHelper: ctx.user?.lookupHumanControl === true
+    });
     if (conflict) return json(res, 409, { error: "device_busy", detail: publicDeviceLock(conflict) });
     let created;
     try {
@@ -599,13 +1007,23 @@ async function routeApi(req, res, url) {
         deviceId,
         agentId: device.adb.agentId,
         adbSerial: device.adb.serial,
-        userId: ctx.userId || `admin:${ctx.username || "admin"}`,
+        userId: screenOwnerUserId,
         requestedQualityProfile,
         mediaTransport: SCREEN_MEDIA_TRANSPORT
       });
     } catch (error) {
       if (error.code === "device_screen_busy") return json(res, 409, { error: error.code, session: error.session });
       throw error;
+    }
+    // Bind auto-handover only to this authorised manual intervention, never
+    // to an unrelated viewer or a later screen session on the same device.
+    const humanLookup = state.automationSessions.find((item) => item.deviceId === deviceId
+      && item.sessionId === activeDeviceLockForTask(deviceId)?.taskId
+      && (item.userId === ctx.userId || ctx.role === "admin" || ctx.user?.lookupHumanControl === true) && lookupHumanChallenge(item));
+    if (humanLookup) {
+      screenSessions.getMutable(created.session.sessionId).lookupHumanHandover = {
+        sessionId: humanLookup.sessionId, challengeId: lookupHumanChallenge(humanLookup)
+      };
     }
     acquireDeviceScreenLock(device, created.session, ctx);
     if (!screenRelay.start(created.session)) {
@@ -717,7 +1135,7 @@ async function routeApi(req, res, url) {
     const limit = Math.min(100, Math.max(1, Number(url.searchParams.get("limit") || 20)));
     const offset = Math.max(0, Number(url.searchParams.get("offset") || 0));
     let visibility = ctx.role === "admin" ? "admin_preview" : "device_sms_library";
-    let messages = filterMaskedVerificationDuplicates(smsMessagesForDevice(deviceId));
+    let messages = smsMessagesForDevice(deviceId);
     if (ctx.role === "admin") {
       addAudit("admin_user_sms_library_preview", ctx, { deviceId, q: q ? "[filtered]" : "", box, slotIndex, codeOnly });
       scheduleStateSave();
@@ -733,9 +1151,6 @@ async function routeApi(req, res, url) {
           || String(item.code || "").toLowerCase().includes(q);
       });
     }
-    messages = messages
-      .slice()
-      .sort((a, b) => new Date(b.messageAt || b.receivedAt || b.createdAt).getTime() - new Date(a.messageAt || a.receivedAt || a.createdAt).getTime());
     return json(res, 200, {
       device: publicUserDevice(device, ctx),
       total: messages.length,
@@ -905,6 +1320,68 @@ async function routeApi(req, res, url) {
     return json(res, 200, { ok: true, task: publicUserXhsTask(task) });
   }
 
+  if (url.pathname === "/api/v1/user/automation/xhs-data-tasks" && ["GET", "POST"].includes(req.method)) {
+    const ctx = requireAuth(req, ["user", "admin"]);
+    if (expireAutomationJobs()) runtimeSaveScheduler.mark();
+    if (req.method === "GET") {
+      return json(res, 200, { tasks: state.automationJobs
+        .filter((job) => job.kind === "xhs_data_collect" && job.userId === ctx.userId)
+        .slice(0, 30).map(publicDataCollectionJobSummary) });
+    }
+    const input = await readJson(req);
+    if (!["app1", "app2"].includes(input.xhsAppSlot)) return json(res, 400, { error: "invalid_xhs_app_slot" });
+    const device = state.devices.find((item) => item.deviceId === input.deviceId);
+    if (!device || !isDeviceListed(device) || !hasWindowsAdbBinding(device) || !isAdbOnline(device)) {
+      return json(res, 409, { error: "device_not_available" });
+    }
+    const account = (device.xhsAccounts || []).find((item) => item.appSlot === input.xhsAppSlot && item.enabled !== false);
+    if (!account) return json(res, 409, { error: "xhs_account_slot_not_available" });
+    const agent = state.windowsAgents.find((item) => item.agentId === device.adb.agentId);
+    if (!hasXhsDataCollectionCapability(agent)) return json(res, 409, { error: "xhs_data_agent_update_required" });
+    const conflict = activeDeviceLockForTask(device.deviceId);
+    if (conflict) return json(res, 409, { error: "device_busy", conflict: publicDeviceLock(conflict) });
+    const job = createAutomationJob({ kind: "xhs_data_collect", userId: ctx.userId,
+      deviceId: device.deviceId, xhsAppSlot: account.appSlot, xhsAccountLabel: account.label,
+      xhsAccountId: account.xhsId, xhsAccountName: account.accountName, title: "小红书数据采集" });
+    const lock = acquireAutomationDeviceLock(device, job, ctx, { ttlMs: XHS_DATA_COLLECTION_TTL_MS });
+    const windowsTask = queueAutomationWindowsTask(device, job);
+    const audit = addAudit("user_xhs_data_collect_create", ctx, { jobId: job.jobId, deviceId: job.deviceId, xhsAppSlot: job.xhsAppSlot });
+    pendingXhsCollectionCommits.add(windowsTask);
+    try {
+      await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask, automationJob: job, deviceLock: lock, audit }));
+    } catch (error) {
+      cancelAutomationJob(job, "collection_persistence_failed");
+      runtimeSaveScheduler.mark();
+      throw error;
+    } finally {
+      pendingXhsCollectionCommits.delete(windowsTask);
+    }
+    return json(res, 201, { ok: true, task: publicAutomationJob(job) });
+  }
+
+  const dataDetailMatch = url.pathname.match(/^\/api\/v1\/user\/automation\/xhs-data-tasks\/([^/]+)$/);
+  if (req.method === "GET" && dataDetailMatch) {
+    const ctx = requireAuth(req, ["user", "admin"]);
+    if (expireAutomationJobs()) runtimeSaveScheduler.mark();
+    const job = state.automationJobs.find((item) => item.jobId === dataDetailMatch[1] && item.userId === ctx.userId && item.kind === "xhs_data_collect");
+    if (!job) return json(res, 404, { error: "automation_job_not_found" });
+    return json(res, 200, { task: publicAutomationJob(job) });
+  }
+
+  const dataCancelMatch = url.pathname.match(/^\/api\/v1\/user\/automation\/xhs-data-tasks\/([^/]+)\/cancel$/);
+  if (req.method === "POST" && dataCancelMatch) {
+    const ctx = requireAuth(req, ["user", "admin"]);
+    const job = state.automationJobs.find((item) => item.jobId === dataCancelMatch[1] && item.userId === ctx.userId && item.kind === "xhs_data_collect");
+    if (!job) return json(res, 404, { error: "automation_job_not_found" });
+    if (!isActiveAutomationStatus(job.status)) return json(res, 409, { error: "automation_job_not_cancellable" });
+    cancelAutomationJob(job, "cancelled");
+    const windowsTask = state.windowsTasks.find((item) => item.taskId === job.windowsTaskId) || null;
+    const deviceLock = state.deviceLocks.find((item) => item.lockId === job.lockId) || null;
+    const audit = addAudit("user_xhs_data_collect_cancel", ctx, { jobId: job.jobId, deviceId: job.deviceId });
+    await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask, automationJob: job, deviceLock, audit }));
+    return json(res, 200, { ok: true, task: publicAutomationJob(job) });
+  }
+
   if (req.method === "GET" && url.pathname === "/api/v1/user/automation/xhs-publish-tasks") {
     const ctx = requireAuth(req, ["user", "admin"]);
     if (expireAutomationJobs()) runtimeSaveScheduler.mark();
@@ -969,14 +1446,82 @@ async function routeApi(req, res, url) {
     return json(res, 200, { ok: true, task: publicAutomationJob(job) });
   }
 
+  if (req.method === "GET" && url.pathname === "/api/v1/user/automation/kuaishou-lead-tasks") {
+    const ctx = requireAuth(req, ["user", "admin"]);
+    if (expireAutomationJobs()) runtimeSaveScheduler.mark();
+    return json(res, 200, {
+      tasks: state.automationJobs
+        .filter((job) => job.kind === "kuaishou_lead" && job.userId === ctx.userId)
+        .slice(0, 100)
+        .map(publicAutomationJob)
+    });
+  }
+
+  if (req.method === "POST" && url.pathname === "/api/v1/user/automation/kuaishou-lead-tasks") {
+    const ctx = requireAuth(req, ["user", "admin"]);
+    const input = await readJson(req);
+    if (expireAutomationJobs()) runtimeSaveScheduler.mark();
+    let delayRange;
+    try {
+      delayRange = normalizeKuaishouLeadDelayRange(input.minDelaySeconds, input.maxDelaySeconds);
+    } catch {
+      return json(res, 400, { error: "invalid_kuaishou_lead_delay_range", min: 30, max: 3600 });
+    }
+    const device = repos.devices.findById(String(input.deviceId || ""));
+    if (!device) return json(res, 404, { error: "device_not_found" });
+    if (!isDeviceListed(device)) return json(res, 409, { error: "device_not_published" });
+    if (!isAdbOnline(device)) return json(res, 409, { error: "device_not_available" });
+    const existing = state.automationJobs.find((job) => job.kind === "kuaishou_lead" && isActiveAutomationStatus(job.status));
+    if (existing) {
+      return json(res, 409, {
+        error: "kuaishou_lead_already_active",
+        task: existing.userId === ctx.userId ? publicAutomationJob(existing) : undefined
+      });
+    }
+    const conflict = activeDeviceLockForTask(device.deviceId);
+    if (conflict) return json(res, 409, { error: "device_busy", conflict: publicDeviceLock(conflict) });
+    const job = createAutomationJob({
+      kind: "kuaishou_lead",
+      userId: ctx.userId,
+      deviceId: device.deviceId,
+      ...delayRange
+    });
+    const lock = acquireAutomationDeviceLock(device, job, ctx, { ttlMs: KUAISHOU_LEAD_LOCK_TTL_MS });
+    const windowsTask = queueAutomationWindowsTask(device, job);
+    const audit = addAudit("user_kuaishou_lead_start", ctx, {
+      jobId: job.jobId,
+      deviceId: job.deviceId,
+      ...delayRange
+    });
+    await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask, automationJob: job, deviceLock: lock, audit }));
+    return json(res, 201, { ok: true, task: publicAutomationJob(job), lock: publicDeviceLock(lock), windowsTaskId: windowsTask.taskId });
+  }
+
+  const kuaishouStopMatch = url.pathname.match(/^\/api\/v1\/user\/automation\/kuaishou-lead-tasks\/([^/]+)\/stop$/);
+  if (req.method === "POST" && kuaishouStopMatch) {
+    const ctx = requireAuth(req, ["user", "admin"]);
+    const job = state.automationJobs.find((item) => item.jobId === kuaishouStopMatch[1] && item.userId === ctx.userId && item.kind === "kuaishou_lead");
+    if (!job) return json(res, 404, { error: "automation_job_not_found" });
+    if (!isActiveAutomationStatus(job.status)) return json(res, 409, { error: "automation_job_not_stoppable" });
+    cancelAutomationJob(job, "user_stopped");
+    const windowsTask = state.windowsTasks.find((task) => task.taskId === job.windowsTaskId) || null;
+    const deviceLock = (state.deviceLocks || []).find((lock) => lock.lockId === job.lockId) || null;
+    const audit = addAudit("user_kuaishou_lead_stop", ctx, { jobId: job.jobId, deviceId: job.deviceId });
+    await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask, automationJob: job, deviceLock, audit }));
+    return json(res, 200, { ok: true, task: publicAutomationJob(job) });
+  }
+
   if (req.method === "GET" && url.pathname === "/api/v1/user/automation/alipay-name-sessions") {
     const ctx = requireAuth(req, ["user", "admin"]);
     if (expireAutomationJobs()) runtimeSaveScheduler.mark();
     return json(res, 200, {
       sessions: state.automationSessions
-        .filter((session) => session.userId === ctx.userId)
+        .filter((session) => ctx.role === "admin" || session.userId === ctx.userId)
         .slice(0, 20)
-        .map(publicLookupSession)
+        .map((session) => ({
+          ...publicLookupSession(session),
+          operatorMode: session.userId === ctx.userId ? "owner" : "admin_override"
+        }))
     });
   }
 
@@ -990,7 +1535,7 @@ async function routeApi(req, res, url) {
     if (!isAdbOnline(device)) return json(res, 409, { error: "device_not_available" });
     const conflict = activeDeviceLockForTask(device.deviceId);
     if (conflict) return json(res, 409, { error: "device_busy", conflict: publicDeviceLock(conflict) });
-    const existing = state.automationSessions.find((session) => session.userId === ctx.userId && session.deviceId === device.deviceId && ["starting", "ready", "querying", "stopping"].includes(session.status));
+    const existing = state.automationSessions.find((session) => session.userId === ctx.userId && session.deviceId === device.deviceId && ["starting", "ready", "querying", "switching", "choosing_account", "needs_human_verification", "stopping"].includes(session.status));
     if (existing) return json(res, 409, { error: "lookup_session_already_active", session: publicLookupSession(existing) });
     const session = createLookupSession({ userId: ctx.userId, deviceId: device.deviceId });
     const job = createAutomationJob({ kind: "alipay_name_start", userId: ctx.userId, deviceId: device.deviceId, sessionId: session.sessionId });
@@ -1009,7 +1554,13 @@ async function routeApi(req, res, url) {
     const input = await readJson(req);
     const session = state.automationSessions.find((item) => item.sessionId === lookupQueryMatch[1] && item.userId === ctx.userId);
     if (!session) return json(res, 404, { error: "lookup_session_not_found" });
+    if (session.managedLookupGeneration) return json(res,409,{error:"managed_lookup_use_pool_management"});
     if (session.status !== "ready" || session.pendingJobId) return json(res, 409, { error: "lookup_session_not_ready", session: publicLookupSession(session) });
+    if (session.requiresAccountSwitch) return json(res, 409, { error: "lookup_no_available_account", session: publicLookupSession(session) });
+    if (resumableLookupRecoveryResult(session)) return json(res, 409, { error: "lookup_recovery_required", session: publicLookupSession(session) });
+    if (resumableLookupHumanVerificationResult(session)) {
+      return json(res, 409, { error: "lookup_human_verification_required", session: publicLookupSession(session) });
+    }
     let phoneNumber;
     try {
       phoneNumber = normalizeLookupPhone(input.phoneNumber);
@@ -1018,13 +1569,15 @@ async function routeApi(req, res, url) {
     }
     const device = repos.devices.findById(session.deviceId);
     if (!device || !isAdbOnline(device)) return json(res, 409, { error: "device_not_available" });
+    if (screenSessions.activeForDevice(session.deviceId)) {
+      return json(res, 409, { error: "lookup_screen_control_active", session: publicLookupSession(session) });
+    }
     const job = createAutomationJob({
       kind: "alipay_name_query",
       userId: ctx.userId,
       deviceId: session.deviceId,
       sessionId: session.sessionId,
-      phoneNumber,
-      successfulCountBefore: session.successfulCount
+      phoneNumber
     });
     session.status = "querying";
     session.pendingJobId = job.jobId;
@@ -1041,13 +1594,132 @@ async function routeApi(req, res, url) {
     return json(res, 202, { ok: true, job: publicAutomationJob(job), session: publicLookupSession(session) });
   }
 
+  const lookupHumanResumeMatch = url.pathname.match(/^\/api\/v1\/user\/automation\/alipay-name-sessions\/([^/]+)\/resume-after-human-verification$/);
+  if (req.method === "POST" && lookupHumanResumeMatch) {
+    const ctx = requireAuth(req, ["user", "admin"]);
+    const session = state.automationSessions.find((item) => (
+      item.sessionId === lookupHumanResumeMatch[1]
+      && (item.userId === ctx.userId || ctx.role === "admin")
+    ));
+    if (!session) return json(res, 404, { error: "lookup_session_not_found" });
+    if (session.managedLookupGeneration) return json(res,409,{error:"managed_lookup_use_pool_management"});
+    const sourceResult = resumableLookupHumanVerificationResult(session) || resumableLookupRecoveryResult(session);
+    if (!sourceResult) return json(res, 409, { error: "lookup_human_verification_not_resumable", session: publicLookupSession(session) });
+    if (screenSessions.activeForDevice(session.deviceId)) {
+      return json(res, 409, { error: "lookup_screen_control_active", session: publicLookupSession(session) });
+    }
+    const device = repos.devices.findById(session.deviceId);
+    if (!device || !isAdbOnline(device)) return json(res, 409, { error: "device_not_available" });
+    const startup = sourceResult.phase === "start";
+    const ordinaryRecovery = sourceResult.status === "needs_recovery";
+    let phoneNumber;
+    try {
+      phoneNumber = startup ? "" : normalizeLookupPhone(sourceResult.phoneNumber);
+    } catch {
+      return json(res, 409, { error: "lookup_human_verification_phone_missing", session: publicLookupSession(session) });
+    }
+    const job = createAutomationJob({
+      kind: startup ? "alipay_name_start" : "alipay_name_query",
+      userId: session.userId,
+      deviceId: session.deviceId,
+      sessionId: session.sessionId,
+      phoneNumber,
+      resultId: sourceResult.resultId,
+      resumeAfterHumanVerification: true,
+      restartAfterHumanVerification: ordinaryRecovery
+    });
+    session.status = startup ? "starting" : "querying";
+    session.pendingJobId = job.jobId;
+    session.error = "";
+    session.updatedAt = nowIso();
+    if (startup) session.startupHumanVerification.status = "queued";
+    else upsertLookupResult(session, job, {
+      status: "queued",
+      stage: "等待继续获取当前号码结果",
+      error: "",
+      updatedAt: session.updatedAt
+    });
+    const windowsTask = queueAutomationWindowsTask(device, job);
+    const audit = addAudit("user_alipay_name_human_verification_resume", ctx, {
+      sessionId: session.sessionId,
+      jobId: job.jobId,
+      sourceResultId: sourceResult.resultId,
+      deviceId: session.deviceId
+    });
+    await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask, automationJob: job, automationSession: session, audit }));
+    return json(res, 202, { ok: true, job: publicAutomationJob(job), session: publicLookupSession(session) });
+  }
+
   const lookupEndMatch = url.pathname.match(/^\/api\/v1\/user\/automation\/alipay-name-sessions\/([^/]+)\/end$/);
+
+  const lookupSwitchMatch = url.pathname.match(/^\/api\/v1\/user\/automation\/alipay-name-sessions\/([^/]+)\/switch-account$/);
+  if (req.method === "POST" && lookupSwitchMatch) {
+    const ctx = requireAuth(req, ["user", "admin"]);
+    const input = await readJson(req);
+    const session = state.automationSessions.find((item) => item.sessionId === lookupSwitchMatch[1] && item.userId === ctx.userId);
+    if (!session) return json(res, 404, { error: "lookup_session_not_found" });
+    if (session.managedLookupGeneration) return json(res,409,{error:"managed_lookup_use_pool_management"});
+    const requestedAccount = String(input.targetAccount || "").trim();
+    const accountAction = requestedAccount ? "select" : "list";
+    if (!["ready", "choosing_account"].includes(session.status) || session.pendingJobId) {
+      return json(res, 409, { error: "lookup_session_not_ready", session: publicLookupSession(session) });
+    }
+    if (resumableLookupRecoveryResult(session)) return json(res, 409, { error: "lookup_recovery_required", session: publicLookupSession(session) });
+    if (resumableLookupHumanVerificationResult(session)) {
+      return json(res, 409, { error: "lookup_human_verification_required", session: publicLookupSession(session) });
+    }
+    let targetAccount = "";
+    if (accountAction === "select") {
+      try {
+        targetAccount = normalizeLookupAccountChoice(requestedAccount);
+      } catch {
+        return json(res, 400, { error: "invalid_lookup_account_choice" });
+      }
+      const choice = (session.accountChoices || []).find((item) => item.account === targetAccount);
+      if (!choice) return json(res, 409, { error: "lookup_account_choice_stale", session: publicLookupSession(session) });
+      if (choice.current) return json(res, 409, { error: "lookup_account_already_current", session: publicLookupSession(session) });
+    }
+    const device = repos.devices.findById(session.deviceId);
+    if (!device || !isAdbOnline(device)) return json(res, 409, { error: "device_not_available" });
+    if (targetAccount && publicLookupAccountCooldowns(device).some((row) => row.account === targetAccount && row.cooling)) {
+      return json(res, 409, { error: "lookup_account_cooling", session: publicLookupSession(session) });
+    }
+    if (screenSessions.activeForDevice(session.deviceId)) {
+      return json(res, 409, { error: "lookup_screen_control_active", session: publicLookupSession(session) });
+    }
+    const job = createAutomationJob({
+      kind: "alipay_name_switch",
+      userId: ctx.userId,
+      deviceId: session.deviceId,
+      sessionId: session.sessionId,
+      accountAction,
+      targetAccount
+    });
+    session.status = "switching";
+    session.pendingJobId = job.jobId;
+    if (accountAction === "list") session.accountChoices = [];
+    session.updatedAt = nowIso();
+    const windowsTask = queueAutomationWindowsTask(device, job);
+    const audit = addAudit("user_alipay_name_account_switch", ctx, {
+      sessionId: session.sessionId,
+      jobId: job.jobId,
+      deviceId: session.deviceId,
+      accountAction,
+      targetAccount
+    });
+    await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask, automationJob: job, automationSession: session, audit }));
+    return json(res, 202, { ok: true, job: publicAutomationJob(job), session: publicLookupSession(session) });
+  }
+
   if (req.method === "POST" && lookupEndMatch) {
     const ctx = requireAuth(req, ["user", "admin"]);
     const session = state.automationSessions.find((item) => item.sessionId === lookupEndMatch[1] && item.userId === ctx.userId);
     if (!session) return json(res, 404, { error: "lookup_session_not_found" });
+    if (session.managedLookupGeneration) return json(res,409,{error:"managed_lookup_use_pool_management"});
     if (["ended", "failed", "expired"].includes(session.status)) return json(res, 200, { ok: true, session: publicLookupSession(session) });
+    await drainPendingLookupQueryBeforeStop(session);
     const pending = session.pendingJobId ? state.automationJobs.find((job) => job.jobId === session.pendingJobId) : null;
+    const pendingWindowsTask = pending ? state.windowsTasks.find((task) => task.taskId === pending.windowsTaskId) : null;
     if (pending && isActiveAutomationStatus(pending.status)) {
       cancelAutomationJob(pending, "session_stopping", { releaseLock: false });
       if (pending.kind === "alipay_name_query") {
@@ -1076,7 +1748,7 @@ async function routeApi(req, res, url) {
     }
     const deviceLock = (state.deviceLocks || []).find((lock) => lock.lockId === session.lockId) || null;
     const audit = addAudit("user_alipay_name_session_end", ctx, { sessionId: session.sessionId, deviceId: session.deviceId });
-    await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask, automationJob: job, automationSession: session, deviceLock, audit }));
+    await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask, automationJob: job, automationJobs: pending ? [pending] : [], windowsTasks: pendingWindowsTask ? [pendingWindowsTask] : [], automationSession: session, deviceLock, audit }));
     return json(res, 202, { ok: true, session: publicLookupSession(session) });
   }
 
@@ -1212,6 +1884,29 @@ async function routeApi(req, res, url) {
     return json(res, 200, { ok: true, agent: publicWindowsAgent(agent) });
   }
 
+  const recoveryControlMatch = url.pathname.match(/^\/api\/v1\/windows-agents\/([^/]+)\/recovery-control$/);
+  if (req.method === "POST" && recoveryControlMatch) {
+    const ctx = requireAuth(req, ["admin"]);
+    const agentId = decodeURIComponent(recoveryControlMatch[1]);
+    const agent = repos.agents.findById(agentId);
+    if (!agent) return json(res,404,{error:"windows_agent_not_found"});
+    if (agent.health?.recoveryControl?.protocol !== RECOVERY_CONTROL_PROTOCOL) return json(res,409,{error:"recovery_control_agent_upgrade_required"});
+    const input = await readJson(req);
+    const serial = recoverySerial(input.adbSerial);
+    if(input.resetIsolation && agent.health?.recoveryControl?.isolationReset!==true)return json(res,409,{error:'recovery_isolation_agent_upgrade_required'});
+    if(input.resetIsolation && !(agent.health?.recoveryControl?.isolated||[]).some(x=>x.serial===serial))return json(res,409,{error:'device_recovery_not_isolated'});
+    const current = recoveryControls.get(agentId);
+    const known = (agent.devices || []).some(d => String(d.adbSerial || d.serial || "").toUpperCase() === serial)
+      || (agent.health?.deviceRecovery?.queue || []).some(d => String(d.serial || "").toUpperCase() === serial)
+      || state.devices.some(d => d.adb?.agentId === agentId && String(d.adb?.serial || "").toUpperCase() === serial)
+      || current.paused.some(d => d.serial === serial);
+    if (!known) return json(res,404,{error:"recovery_control_device_not_found"});
+    const control = await recoveryControls.set(agentId,{...input,adbSerial:serial});
+    addAudit(input.paused ? "device_recovery_pause" : "device_recovery_resume",ctx,{agentId,adbSerial:serial,revision:control.revision});
+    runtimeSaveScheduler.mark();
+    return json(res,200,{ok:true,control,agent:publicWindowsAgent(agent)});
+  }
+
   if (req.method === "POST" && url.pathname === "/api/v1/windows-agents/heartbeat") {
     const ctx = requireWindowsAgent(req);
     requireWindowsScope(ctx, "heartbeat");
@@ -1236,14 +1931,51 @@ async function routeApi(req, res, url) {
     return json(res, 200, { ok: true, agent: publicWindowsAgent(agent), devices: state.devices.map(publicDevice) });
   }
 
+  const humanProbeMatch = url.pathname.match(/^\/api\/v1\/windows-agents\/([^/]+)\/lookup-human-verifications$/);
+  if (humanProbeMatch && ["GET", "POST"].includes(req.method)) {
+    const agentId = decodeURIComponent(humanProbeMatch[1]);
+    const ctx = requireWindowsAgent(req, agentId);
+    requireWindowsScope(ctx, req.method === "GET" ? "tasks:read" : "tasks:write");
+    if (req.method === "GET") return json(res, 200, { ok: true, probes: lookupHumanHandover.list(agentId) });
+    const input = await readJson(req);
+    return json(res, 200, { ok: true, ...await lookupHumanHandover.report(agentId, input) });
+  }
+
   const nextTaskMatch = url.pathname.match(/^\/api\/v1\/windows-agents\/([^/]+)\/tasks\/next$/);
   if (req.method === "GET" && nextTaskMatch) {
     const agentId = decodeURIComponent(nextTaskMatch[1]);
     const ctx = requireWindowsAgent(req, agentId);
     requireWindowsScope(ctx, "tasks:read");
+    const galleryDeliveryMaintenance = maintainScreenGalleryDeliveries(state.windowsTasks, {
+      maxAttemptsByType: {
+        screen_gallery_import: SCREEN_GALLERY_DELIVERY_MAX_ATTEMPTS,
+        xhs_publish: XHS_PUBLISH_DELIVERY_MAX_ATTEMPTS
+      }
+    });
+    if (galleryDeliveryMaintenance.changed) {
+      for (const changedTask of galleryDeliveryMaintenance.tasks) {
+        let automationJob = null;
+        let deviceLock = null;
+        if (changedTask.type === "xhs_publish" && isTerminalStatus(changedTask.status)) {
+          const automationJobId = String(changedTask.payload?.automationJobId || "");
+          automationJob = state.automationJobs.find((item) => item.jobId === automationJobId) || null;
+          deviceLock = automationJob?.lockId
+            ? state.deviceLocks.find((item) => item.lockId === automationJob.lockId) || null
+            : null;
+          syncAutomationJobFromWindowsTask(changedTask, "failed", changedTask.result);
+          compactTaskPayload(automationJob);
+        }
+        compactCompletedTask(changedTask);
+        await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({
+          windowsTask: changedTask,
+          automationJob,
+          deviceLock
+        }));
+      }
+    }
     const recoveredTasks = recoverStalledTasks(agentId);
     const expiredTasks = expireWindowsTasks();
-    const maintenanceChanged = recoveredTasks || expiredTasks;
+    const maintenanceChanged = galleryDeliveryMaintenance.changed || recoveredTasks || expiredTasks;
     const agent = ctx.agent || repos.agents.findById(agentId);
     if (!agent) return json(res, 404, { error: "windows_agent_not_found" });
     const activeTaskIds = new Set(String(url.searchParams.get("activeTaskIds") || "")
@@ -1251,6 +1983,9 @@ async function routeApi(req, res, url) {
       .map((value) => decodeURIComponent(value).trim())
       .filter(Boolean)
       .slice(0, 32));
+    const managedDeliveryV1 = String(url.searchParams.get("managedLookupDelivery") || "") === MANAGED_LOOKUP_PROTOCOL;
+    const galleryDeliveryV2 = String(url.searchParams.get("galleryDelivery") || "") === SCREEN_GALLERY_DELIVERY_PROTOCOL;
+    const xhsPublishDeliveryV1 = String(url.searchParams.get("xhsPublishDelivery") || "") === XHS_PUBLISH_DELIVERY_PROTOCOL;
     const cancelledTaskIds = state.windowsTasks
       .filter((item) => item.agentId === agentId && item.status === "cancelled" && activeTaskIds.has(item.taskId))
       .map((item) => item.taskId);
@@ -1272,6 +2007,12 @@ async function routeApi(req, res, url) {
     const task = state.windowsTasks.find((item) => (
       item.agentId === agentId
       && item.status === "queued"
+      && !pendingXhsCollectionCommits.has(item)
+      && (!isManagedLookupTask(item) || (managedDeliveryV1 && canDeliverManagedLookupTask(item)))
+      && !activeTaskIds.has(item.taskId)
+      && !(supportsLeasedWindowsTaskDelivery(item)
+        && ((item.type === "screen_gallery_import" && galleryDeliveryV2) || (item.type === "xhs_publish" && xhsPublishDeliveryV1) || isManagedLookupTask(item))
+        && hasActiveScreenGalleryDelivery(item))
       && (!item.adbSerial || (
         !runningSerials.has(String(item.adbSerial))
         && (!excludedSerials.has(String(item.adbSerial)) || (
@@ -1284,27 +2025,113 @@ async function routeApi(req, res, url) {
       if (maintenanceChanged) runtimeSaveScheduler.mark();
       return json(res, 200, { task: null, cancelledTaskIds });
     }
-    task.status = "running";
-    task.pickedAt = task.pickedAt || nowIso();
-    task.updatedAt = nowIso();
-    const xhsTask = syncXhsTaskFromWindowsTask(task, "running", { action: "Windows 管理器已领取扫码任务" });
-    const automationJob = syncAutomationJobFromWindowsTask(task, "running", { action: "Windows 管理器已领取自动化任务" });
-    const automationSession = automationJob?.sessionId ? state.automationSessions.find((item) => item.sessionId === automationJob.sessionId) : null;
-    const audit = addAudit("windows_agent_task_pick", ctx, { agentId, taskId: task.taskId, type: task.type });
-    const responseTask = publicWindowsTask(task);
-    // Gallery images are one-shot delivery payloads; keep only task metadata after pickup.
-    if (task.type === "screen_gallery_import" && task.payload?.imageDataUrl) delete task.payload.imageDataUrl;
-    if (task.type === "xhs_publish" && task.payload?.imageDataUrls) delete task.payload.imageDataUrls;
-    await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask: task, xhsTask, automationJob, automationSession, audit }));
-    return json(res, 200, { task: responseTask, cancelledTaskIds });
+    const leasedDeliveryEnabled = (
+      isManagedLookupTask(task) ||
+      (task.type === "screen_gallery_import" && galleryDeliveryV2)
+      || (task.type === "xhs_publish" && xhsPublishDeliveryV1)
+    );
+    if (leasedDeliveryEnabled) {
+      const claimSnapshot = snapshotWindowsTaskClaim(task);
+      try {
+        const responseTask = issueScreenGalleryDelivery(task, {
+          token: newId(),
+          leaseMs: task.type === "xhs_publish" ? XHS_PUBLISH_DELIVERY_LEASE_MS : SCREEN_GALLERY_DELIVERY_LEASE_MS
+        });
+        const audit = addAudit("windows_agent_task_delivery", ctx, {
+          agentId,
+          taskId: task.taskId,
+          type: task.type,
+          attempt: task.deliveryAttempts
+        });
+        await persistencePolicy.persist(() => structuredRepos.persistWindowsTaskDeliveryLease({ windowsTask: task, audit }));
+        return json(res, 200, { task: responseTask, cancelledTaskIds });
+      } catch (error) {
+        restoreWindowsTaskClaim(claimSnapshot);
+        throw error;
+      }
+    }
+    const claimSnapshot = snapshotWindowsTaskClaim(task);
+    try {
+      task.status = "running";
+      task.pickedAt = task.pickedAt || nowIso();
+      task.updatedAt = nowIso();
+      const xhsTask = syncXhsTaskFromWindowsTask(task, "running", { action: "Windows 管理器已领取扫码任务" });
+      const automationJob = syncAutomationJobFromWindowsTask(task, "running", { action: "Windows 管理器已领取自动化任务" });
+      const automationSession = automationJob?.sessionId ? state.automationSessions.find((item) => item.sessionId === automationJob.sessionId) : null;
+      const audit = addAudit("windows_agent_task_pick", ctx, { agentId, taskId: task.taskId, type: task.type });
+      const responseTask = publicWindowsTask(task);
+      // Gallery images are one-shot delivery payloads; keep only task metadata after pickup.
+      if (task.type === "screen_gallery_import" && task.payload?.imageDataUrl) delete task.payload.imageDataUrl;
+      if (task.type === "xhs_publish" && task.payload?.imageDataUrls) delete task.payload.imageDataUrls;
+      await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask: task, xhsTask, automationJob, automationSession, audit }));
+      return json(res, 200, { task: responseTask, cancelledTaskIds });
+    } catch (error) {
+      restoreWindowsTaskClaim(claimSnapshot);
+      throw error;
+    }
+  }
+
+  const taskPayloadMatch = url.pathname.match(/^\/api\/v1\/windows-agent-tasks\/([^/]+)\/payload$/);
+  if (req.method === "POST" && taskPayloadMatch) {
+    const ctx = requireWindowsAgent(req);
+    requireWindowsScope(ctx, "tasks:read");
+    const task = repos.windowsTasks.findById(taskPayloadMatch[1]);
+    if (!task) return json(res, 404, { error: "task_not_found" });
+    if (!windowsCtxCanAccessTask(ctx, task)) return json(res, 401, { error: "windows_agent_task_mismatch" });
+    const input = await readJson(req);
+    const delivery = readScreenGalleryDeliveryPayload(task, input.deliveryToken);
+    if (!delivery.ok) return json(res, 409, { error: delivery.error });
+    return json(res, 200, { ok: true, payload: delivery.payload });
+  }
+
+  const taskAckMatch = url.pathname.match(/^\/api\/v1\/windows-agent-tasks\/([^/]+)\/ack$/);
+  if (req.method === "POST" && taskAckMatch) {
+    const ctx = requireWindowsAgent(req);
+    requireWindowsScope(ctx, "tasks:write");
+    const task = repos.windowsTasks.findById(taskAckMatch[1]);
+    if (!task) return json(res, 404, { error: "task_not_found" });
+    if (!windowsCtxCanAccessTask(ctx, task)) return json(res, 401, { error: "windows_agent_task_mismatch" });
+    const input = await readJson(req);
+    const claimSnapshot = snapshotWindowsTaskClaim(task);
+    try {
+      const acknowledgement = acknowledgeScreenGalleryDelivery(task, input.deliveryToken);
+      if (!acknowledgement.ok) return json(res, 409, { error: acknowledgement.error });
+      let automationJob = null;
+      let automationSession = null;
+      if (!acknowledgement.idempotent && (task.type === "xhs_publish" || isManagedLookupTask(task))) {
+        automationJob = syncAutomationJobFromWindowsTask(task, "running", { action: "Windows 管理器已确认接收发布任务" });
+        automationSession = automationJob?.sessionId
+          ? state.automationSessions.find((item) => item.sessionId === automationJob.sessionId) || null
+          : null;
+        if (task.payload?.imageDataUrls) delete task.payload.imageDataUrls;
+        if (automationJob?.imageDataUrls) delete automationJob.imageDataUrls;
+      }
+      const audit = acknowledgement.idempotent ? null : addAudit("windows_agent_task_pick", ctx, {
+        agentId: task.agentId,
+        taskId: task.taskId,
+        type: task.type,
+        deliveryAttempt: task.deliveryAttempts
+      });
+      await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({
+        windowsTask: task,
+        automationJob,
+        automationSession,
+        audit
+      }));
+      return json(res, 200, { ok: true, idempotent: acknowledgement.idempotent });
+    } catch (error) {
+      restoreWindowsTaskClaim(claimSnapshot);
+      throw error;
+    }
   }
 
   if (req.method === "POST" && url.pathname === "/api/v1/windows-agent-tasks") {
     const ctx = requireAuth(req, ["admin"]);
     const input = await readJson(req);
+    if(managedLookup?.reserved(input.deviceId))return json(res,409,{error:"managed_device_reserved"});
     const agent = repos.agents.findById(input.agentId);
     if (!agent) return json(res, 404, { error: "windows_agent_not_found" });
-    const allowed = new Set(["adb_install_apk", "adb_grant_permissions", "adb_start_agent", "adb_collect_diagnostics", "adb_restart_server", "xhs_qr_appium", "xhs_publish", "alipay_name_start", "alipay_name_query", "alipay_name_stop", "sms_sync_now"]);
+    const allowed = new Set(["adb_install_apk", "adb_grant_permissions", "adb_start_agent", "adb_collect_diagnostics", "adb_restart_server", "xhs_qr_appium", "xhs_publish", "kuaishou_lead", "alipay_name_start", "alipay_name_query", "alipay_name_switch", "alipay_name_stop", "sms_sync_now"]);
     if (!allowed.has(input.type)) return json(res, 400, { error: "unsupported_task_type" });
     const task = createWindowsAgentTask({
       agentId: input.agentId,
@@ -1340,13 +2167,25 @@ async function routeApi(req, res, url) {
     const task = repos.windowsTasks.findById(taskStatusMatch[1]);
     if (!task) return json(res, 404, { error: "task_not_found" });
     if (!windowsCtxCanAccessTask(ctx, task)) return json(res, 401, { error: "windows_agent_task_mismatch" });
+    if (isManagedLookupTask(task) && input.managedLookupGeneration !== task.payload.managedLookup.generation) return json(res,409,{error:"managed_lookup_generation_mismatch"});
     if (!["running", "succeeded", "failed", "cancelled"].includes(input.status)) return json(res, 400, { error: "invalid_status" });
     if (isTerminalStatus(task.status)) {
+      await taskStatusPersistence.persist(`${task.taskId}:${task.status}`, () => persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask: task })));
       return json(res, 200, { ok: true, ignored: true, task: publicWindowsTask(task) });
     }
-    task.status = input.status;
     const materializedResult = await materializeTaskResultEvidence(input.result || {}, { taskId: task.taskId, eventId: "result" });
+    // Evidence materialization can yield while another terminal report wins.
+    if (isTerminalStatus(task.status)) {
+      await taskStatusPersistence.persist(`${task.taskId}:${task.status}`, () => persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask: task })));
+      return json(res, 200, { ok: true, ignored: true, task: publicWindowsTask(task) });
+    }
     task.result = sanitizeTaskResult(materializedResult, { includeEvidence: true });
+    task.status = input.status;
+    if (task.type === "xhs_data_collect" && input.status === "succeeded" && task.result.collection?.complete !== true) {
+      task.status = "failed";
+      task.result.errorCode = "recent_window_not_proven";
+      task.result.message = "采集结果尚未证明最近30天完整";
+    }
     task.updatedAt = nowIso();
     if (["succeeded", "failed", "cancelled"].includes(task.status)) {
       task.completedAt = nowIso();
@@ -1355,9 +2194,27 @@ async function routeApi(req, res, url) {
     const xhsTask = syncXhsTaskFromWindowsTask(task, task.status, task.result);
     const automationJob = syncAutomationJobFromWindowsTask(task, task.status, task.result);
     const automationSession = automationJob?.sessionId ? state.automationSessions.find((item) => item.sessionId === automationJob.sessionId) : null;
+    let openLookupDispatch = null;
+    let cancelledQueuedJobs = [];
+    if (["succeeded", "failed", "cancelled"].includes(task.status) && automationSession?.source === "open-api") {
+      if (["ended", "failed", "expired"].includes(automationSession.status)) {
+        cancelledQueuedJobs = cancelQueuedOpenLookupQueries(automationSession, "lookup_session_terminal");
+      } else {
+        openLookupDispatch = dispatchNextOpenLookupQuery(automationSession);
+      }
+    }
     const linkedLockId = String(automationSession?.lockId || automationJob?.lockId || xhsTask?.lockId || "");
     const deviceLock = linkedLockId ? (state.deviceLocks || []).find((item) => item.lockId === linkedLockId) || null : null;
-    await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask: task, xhsTask, automationJob, automationSession, deviceLock }));
+    await taskStatusPersistence.persist(`${task.taskId}:${task.status}`, () => persistencePolicy.persist(() => structuredRepos.persistTaskMutation({
+      windowsTask: task,
+      windowsTasks: openLookupDispatch?.windowsTask ? [openLookupDispatch.windowsTask] : [],
+      device: automationSession ? repos.devices.findById(automationSession.deviceId) : null,
+      xhsTask,
+      automationJob,
+      automationJobs: [...cancelledQueuedJobs, ...(openLookupDispatch?.job ? [openLookupDispatch.job] : [])],
+      automationSession,
+      deviceLock
+    })));
     return json(res, 200, { ok: true, task: publicWindowsTask(task) });
   }
 
@@ -1377,6 +2234,27 @@ async function routeApi(req, res, url) {
     const task = repos.windowsTasks.findById(taskEventsMatch[1]);
     if (!task) return json(res, 404, { error: "task_not_found" });
     if (!windowsCtxCanAccessTask(ctx, task)) return json(res, 401, { error: "windows_agent_task_mismatch" });
+    if (task.type === "kuaishou_lead" && input.phase === "heartbeat" && !isTerminalStatus(task.status)) {
+      task.updatedAt = nowIso();
+      const automationJobId = String(task.payload?.automationJobId || "");
+      const automationJob = state.automationJobs.find((job) => job.jobId === automationJobId) || null;
+      if (automationJob && isActiveAutomationStatus(automationJob.status)) {
+        automationJob.updatedAt = task.updatedAt;
+        automationJob.result = {
+          ...(automationJob.result || {}),
+          progress: {
+            ...(automationJob.result?.progress || {}),
+            heartbeatAt: task.updatedAt
+          }
+        };
+        renewAutomationLock(automationJob, KUAISHOU_LEAD_LOCK_TTL_MS);
+      }
+      const deviceLock = automationJob?.lockId
+        ? (state.deviceLocks || []).find((lock) => lock.lockId === automationJob.lockId) || null
+        : null;
+      await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask: task, automationJob, deviceLock }));
+      return json(res, 200, { ok: true, heartbeat: true });
+    }
     const eventId = newId();
     const materializedEvent = await materializeEventEvidence(input, { taskId: task.taskId, eventId });
     const event = {
@@ -1407,9 +2285,18 @@ async function routeApi(req, res, url) {
       xhsTask,
       automationJob,
       automationSession,
+      device: automationSession ? repos.devices.findById(automationSession.deviceId) : null,
       events: [{ event, taskId: task.taskId, source: "windows" }]
     }));
-    return json(res, 201, { ok: true, event });
+    const acknowledgedRestriction = event.stepId === "lookup_account_limit_confirmed"
+      && task.payload?.accountCooldownProtocol === 1 && isVerifiedLookupAccountRestrictionEvent(event)
+      && automationJob && !isTerminalStatus(automationJob.status)
+      && repos.devices.findById(automationSession?.deviceId)?.lookupAccountCooldowns?.some((row) =>
+        row.account === event.detail.currentAccount && row.restrictionId === `${automationJob.jobId}:${row.account}`);
+    const accountCooldown = acknowledgedRestriction
+      ? publicLookupAccountCooldowns(repos.devices.findById(automationSession?.deviceId))
+        .find((row) => row.account === event.detail.currentAccount) || null : null;
+    return json(res, 201, { ok: true, event, ...(accountCooldown ? { accountCooldown } : {}) });
   }
 
   if (req.method === "GET" && url.pathname === "/api/v1/devices") {
@@ -1593,8 +2480,8 @@ async function routeApi(req, res, url) {
     const q = String(url.searchParams.get("q") || "").trim().toLowerCase();
     const limit = Math.min(500, Math.max(1, Number(url.searchParams.get("limit") || 200)));
     const offset = Math.max(0, Number(url.searchParams.get("offset") || 0));
-    let messages = filterMaskedVerificationDuplicates(repos.sms.allMessages());
-    if (deviceId) messages = messages.filter((item) => item.deviceId === deviceId);
+    const sourceMessages = deviceId ? smsMessagesForDevice(deviceId) : repos.sms.allMessages();
+    let messages = sourceMessages;
     if (box !== "all") messages = messages.filter((item) => item.box === box);
     if (q) {
       messages = messages.filter((item) => {
@@ -1608,8 +2495,6 @@ async function routeApi(req, res, url) {
       limit,
       offset,
       messages: messages
-        .slice()
-        .sort((a, b) => new Date(b.messageAt || b.receivedAt || b.createdAt).getTime() - new Date(a.messageAt || a.receivedAt || a.createdAt).getTime())
         .slice(offset, offset + limit)
         .map(publicSmsMessage)
     });
@@ -1781,7 +2666,9 @@ async function routeApi(req, res, url) {
       return json(res, 200, { ok: true, ignored: true, command: xhsTaskAsDeviceCommand(task) });
     }
     task.status = input.status;
-    task.result = input.result || {};
+    task.result = isTerminalStatus(task.status)
+      ? sanitizeTaskResult(input.result || {}, { includeEvidence: true })
+      : input.result || {};
     task.updatedAt = nowIso();
     if (["succeeded", "failed", "cancelled"].includes(task.status)) {
       task.completedAt = nowIso();
@@ -1797,7 +2684,7 @@ async function routeApi(req, res, url) {
     const input = await readJson(req);
     const task = state.xhsQrTasks.find((item) => item.taskId === deviceCommandEventsMatch[1]);
     if (!task) return json(res, 404, { error: "command_not_found" });
-    const event = {
+    const event = sanitizeStoredEvent({
       eventId: newId(),
       phase: input.phase || "log",
       level: input.level || "info",
@@ -1807,7 +2694,7 @@ async function routeApi(req, res, url) {
       screenshot: input.screenshot || null,
       detail: input.detail || {},
       createdAt: nowIso()
-    };
+    });
     if (!Array.isArray(task.events)) task.events = [];
     task.events.push(event);
     task.updatedAt = nowIso();
@@ -1819,7 +2706,7 @@ async function routeApi(req, res, url) {
     requireAuth(req, ["admin"]);
     const task = state.xhsQrTasks.find((item) => item.taskId === deviceCommandEventsMatch[1]);
     if (!task) return json(res, 404, { error: "command_not_found" });
-    return json(res, 200, { events: task.events || [] });
+    return json(res, 200, { events: (task.events || []).map((event) => sanitizeStoredEvent(event)) });
   }
 
   const xhsTaskStatusMatch = url.pathname.match(/^\/api\/v1\/xhs\/qr-scan-tasks\/([^/]+)\/status$/);
@@ -1833,7 +2720,9 @@ async function routeApi(req, res, url) {
       return json(res, 200, { ok: true, ignored: true, task });
     }
     task.status = input.status;
-    task.result = input.result || {};
+    task.result = isTerminalStatus(task.status)
+      ? sanitizeTaskResult(input.result || {}, { includeEvidence: true })
+      : input.result || {};
     task.updatedAt = nowIso();
     if (["succeeded", "failed", "cancelled"].includes(task.status)) task.completedAt = nowIso();
     await saveState();
@@ -1914,20 +2803,123 @@ function normalizeAgentScopes(scopes = []) {
   return normalized.length ? [...new Set(normalized)] : [...allowed];
 }
 
-async function readSignedOpenJson(req, url) {
-  const { raw, input } = await readRawJson(req);
-  const ctx = verifyOpenApiRequest(req, url, raw);
-  recordOpenApiNonce(ctx);
-  return { ctx, input };
+function openNameLookupUser(client) {
+  if (!client?.username) return null;
+  return (state.users || []).find((user) => (
+    user.enabled !== false
+    && user.role === "user"
+    && String(user.username || "").trim().toLowerCase() === client.username
+  )) || null;
 }
 
-function verifyOpenApiRequest(req, url, rawBody = "") {
+function openNameLookupSession(clientId, sessionId) {
+  return (state.automationSessions || []).find((session) => (
+    session.sessionId === String(sessionId || "")
+    && session.source === "open-api"
+    && session.clientId === String(clientId || "")
+  )) || null;
+}
+
+function isActiveLookupSessionStatus(status) {
+  return ["starting", "ready", "querying", "switching", "choosing_account", "needs_human_verification", "stopping"].includes(String(status || ""));
+}
+
+function requiredOpenIdempotencyKey(req) {
+  const key = normalizeIdempotencyKey(req.headers["idempotency-key"]);
+  if (!key) throw badRequest("idempotency_key_required");
+  return key;
+}
+
+function queuedOpenLookupJobs(session) {
+  return (state.automationJobs || [])
+    .filter((job) => (
+      job.source === "open-api"
+      && job.clientId === session.clientId
+      && job.sessionId === session.sessionId
+      && job.kind === "alipay_name_query"
+      && job.resumeAfterHumanVerification !== true
+      && job.status === "queued"
+      && !job.windowsTaskId
+    ))
+    .sort((left, right) => Number(left.queueSequence || 0) - Number(right.queueSequence || 0)
+      || String(left.createdAt || "").localeCompare(String(right.createdAt || ""))
+      || String(left.jobId || "").localeCompare(String(right.jobId || "")));
+}
+
+function refreshOpenLookupQueuePositions(session) {
+  const queued = queuedOpenLookupJobs(session);
+  const queuedResultIds = new Set();
+  queued.forEach((job, index) => {
+    queuedResultIds.add(String(job.resultId || job.jobId));
+    const result = upsertLookupResult(session, job, {
+      status: "queued",
+      stage: `队列等待中，前方 ${index} 个查询`,
+      updatedAt: job.updatedAt || session.updatedAt
+    });
+    result.queuePosition = index + 1;
+  });
+  for (const result of session.results || []) {
+    if (!queuedResultIds.has(result.resultId)) delete result.queuePosition;
+  }
+  session.queuedCount = queued.length;
+  return queued;
+}
+
+function dispatchNextOpenLookupQuery(session) {
+  const queued = refreshOpenLookupQueuePositions(session);
+  if (!queued.length || session.pendingJobId || session.status !== "ready") return null;
+  if (session.requiresAccountSwitch || resumableLookupHumanVerificationResult(session) || resumableLookupRecoveryResult(session)) return null;
+  if (screenSessions.activeForDevice(session.deviceId)) return null;
+  const device = repos.devices.findById(session.deviceId);
+  if (!device || !isAdbOnline(device)) return null;
+  const job = queued[0];
+  const windowsTask = queueAutomationWindowsTask(device, job);
+  session.status = "querying";
+  session.pendingJobId = job.jobId;
+  session.updatedAt = nowIso();
+  const result = upsertLookupResult(session, job, {
+    status: "queued",
+    stage: "查询任务已提交，等待 Windows 管理器领取",
+    updatedAt: session.updatedAt
+  });
+  delete result.queuePosition;
+  refreshOpenLookupQueuePositions(session);
+  return { job, windowsTask };
+}
+
+function cancelQueuedOpenLookupQueries(session, reason) {
+  const queued = queuedOpenLookupJobs(session);
+  for (const job of queued) {
+    cancelAutomationJob(job, reason, { releaseLock: false });
+    const result = upsertLookupResult(session, job, {
+      status: "cancelled",
+      stage: "查询已取消",
+      error: "会话已结束",
+      updatedAt: job.updatedAt
+    });
+    delete result.queuePosition;
+  }
+  session.queuedCount = 0;
+  return queued;
+}
+
+async function readSignedOpenJson(req, url, clients = THIRD_PARTY_API_CLIENTS) {
+  const { raw, input } = await readRawJson(req);
+  const ctx = verifyOpenApiRequest(req, url, raw, clients);
+  recordOpenApiNonce(ctx);
+  return { ctx, input, raw };
+}
+
+function verifyOpenApiRequest(req, url, rawBody = "", clients = THIRD_PARTY_API_CLIENTS) {
+  if (clients === OPEN_NAME_LOOKUP_CLIENTS && Object.hasOwn(req.headers, "x-api-key")) {
+    return verifyLookupApiKey(req, url, clients);
+  }
   const clientId = String(req.headers["x-client-id"] || "").trim();
   const timestamp = String(req.headers["x-timestamp"] || "").trim();
   const nonce = String(req.headers["x-nonce"] || "").trim();
   const signature = String(req.headers["x-signature"] || "").trim();
   if (!clientId || !timestamp || !nonce || !signature) throw unauthorizedOpenApi("open_api_auth_required");
-  const client = THIRD_PARTY_API_CLIENTS.get(clientId);
+  const client = clients.get(clientId);
   if (!client) throw unauthorizedOpenApi("invalid_open_api_client");
   const timestampMs = Number(timestamp);
   if (!Number.isFinite(timestampMs) || Math.abs(Date.now() - timestampMs) > OPEN_API_TIMESTAMP_SKEW_MS) {
@@ -1938,7 +2930,7 @@ function verifyOpenApiRequest(req, url, rawBody = "") {
   if (replay) throw unauthorizedOpenApi("open_api_nonce_replayed");
   const expected = signOpenApiRequest(client.secret, req.method || "GET", url.pathname, timestamp, nonce, rawBody);
   if (!secureTokenEquals(signature, expected)) throw unauthorizedOpenApi("invalid_open_api_signature");
-  return { role: "open-api", name: clientId, clientId, nonce };
+  return { role: "open-api", name: clientId, clientId, nonce, client };
 }
 
 function signOpenApiRequest(secret, method, pathname, timestamp, nonce, rawBody = "") {
@@ -1961,6 +2953,7 @@ function pruneOpenApiNonces() {
 }
 
 function recordOpenApiNonce(ctx) {
+  if (ctx.authType === "lookup-api-key") return;
   pruneOpenApiNonces();
   state.openApiNonces.unshift({
     clientId: ctx.clientId,
@@ -2064,6 +3057,7 @@ function createUser(input = {}) {
     userId: newId(),
     username,
     displayName: String(input.displayName || username).slice(0, 80),
+    lookupHumanControl: input.lookupHumanControl === true,
     role,
     enabled: input.enabled !== false,
     passwordHash: hashPassword(password),
@@ -2076,6 +3070,10 @@ function createUser(input = {}) {
 }
 
 function updateUser(user, input = {}) {
+  if (input.lookupHumanControl !== undefined) {
+    if (typeof input.lookupHumanControl !== "boolean") throw badRequest("invalid_lookup_human_control");
+    user.lookupHumanControl = input.lookupHumanControl;
+  }
   if (input.displayName !== undefined) user.displayName = String(input.displayName || user.username).slice(0, 80);
   if (input.role !== undefined) user.role = input.role === "admin" ? "admin" : "user";
   if (input.enabled !== undefined) {
@@ -2202,6 +3200,7 @@ function publicUser(user) {
     userId: user.userId,
     username: user.username,
     displayName: user.displayName,
+    lookupHumanControl: user.lookupHumanControl === true,
     role: user.role,
     enabled: user.enabled !== false,
     createdAt: user.createdAt,
@@ -2276,6 +3275,9 @@ function upsertWindowsAgent(input = {}, req) {
   agent.ip = String(input.ip || req?.socket?.remoteAddress || agent.ip || "");
   agent.lastIp = String(req?.socket?.remoteAddress || input.ip || agent.lastIp || agent.ip || "");
   agent.adbVersion = String(input.adbVersion || agent.adbVersion || "");
+  if (input.managedLookupProtocol !== undefined) agent.managedLookupProtocol = input.managedLookupProtocol === MANAGED_LOOKUP_PROTOCOL ? MANAGED_LOOKUP_PROTOCOL : "";
+  agent.lookupPostHumanProtocol=input.lookupPostHumanProtocol===1?1:0;
+  agent.lookupRuntimeId=typeof input.lookupRuntimeId==="string"&&/^[a-f0-9-]{36}$/.test(input.lookupRuntimeId)?input.lookupRuntimeId:"";
   agent.health = normalizeAgentHealth(input.health || agent.health || {});
   if (input.tokenHash) agent.tokenHash = String(input.tokenHash);
   if (input.tokenPrefix) agent.tokenPrefix = String(input.tokenPrefix).slice(0, 16);
@@ -2302,6 +3304,11 @@ function normalizeAgentHealth(input = {}) {
       path: String(input.adb?.path || "").slice(0, 300),
       version: String(input.adb?.version || "").slice(0, 300),
       error: String(input.adb?.error || "").slice(0, 800)
+    },
+    recoveryControl: normalizeRecoveryControlAck(input.recoveryControl),
+    xhsDataCollect: {
+      protocol: input.xhsDataCollect?.protocol === XHS_DATA_COLLECTION_PROTOCOL ? XHS_DATA_COLLECTION_PROTOCOL : "",
+      ready: input.xhsDataCollect?.ready === true
     },
     airtest: {
       enabled: input.airtest?.enabled !== false,
@@ -2719,6 +3726,7 @@ function mergeLegacyAndroidIdDevices(canonical) {
 
 function reassignSmsMessages(fromDeviceId, toDeviceId) {
   if (!Array.isArray(state.smsMessages) || !fromDeviceId || !toDeviceId || fromDeviceId === toDeviceId) return;
+  let changed = false;
   const seen = new Map();
   for (const message of state.smsMessages) {
     if (message.deviceId === toDeviceId && message.messageKey) seen.set(message.messageKey, message);
@@ -2736,13 +3744,16 @@ function reassignSmsMessages(fromDeviceId, toDeviceId) {
         updatedAt: nowIso()
       });
       remove.add(message);
+      changed = true;
     } else {
       message.deviceId = toDeviceId;
       message.updatedAt = nowIso();
       if (key) seen.set(key, message);
+      changed = true;
     }
   }
   if (remove.size) state.smsMessages = state.smsMessages.filter((message) => !remove.has(message));
+  if (changed) smsMessageIndex.replace(state.smsMessages);
 }
 
 function normalizeSims(sims) {
@@ -2850,6 +3861,15 @@ function createXhsQrTask(input = {}) {
   return task;
 }
 
+function publicDataCollectionJobSummary(job) {
+  const task = publicAutomationJob(job);
+  if (task.result?.collection) {
+    const { notes, recovery_events, ...summary } = task.result.collection;
+    task.result = { ...task.result, collection: { ...summary, note_count: notes.length } };
+  }
+  return task;
+}
+
 function createAutomationJob(input = {}) {
   const kind = normalizeAutomationKind(input.kind);
   const createdAt = nowIso();
@@ -2867,6 +3887,13 @@ function createAutomationJob(input = {}) {
     content: String(input.content || ""),
     imageDataUrls: Array.isArray(input.imageDataUrls) ? input.imageDataUrls : [],
     phoneNumber: String(input.phoneNumber || ""),
+    minDelaySeconds: Math.max(0, Number(input.minDelaySeconds || 0)),
+    maxDelaySeconds: Math.max(0, Number(input.maxDelaySeconds || 0)),
+    resultId: String(input.resultId || ""),
+    resumeAfterHumanVerification: input.resumeAfterHumanVerification === true,
+    restartAfterHumanVerification: input.restartAfterHumanVerification === true,
+    accountAction: String(input.accountAction || ""),
+    targetAccount: String(input.targetAccount || ""),
     successfulCountBefore: Math.max(0, Number(input.successfulCountBefore || 0)),
     windowsTaskId: "",
     agentId: "",
@@ -2883,6 +3910,18 @@ function createAutomationJob(input = {}) {
   return job;
 }
 
+function publicLookupSession(session = {}) {
+  const device = repos.devices.findById(session.deviceId);
+  const cooldowns = publicLookupAccountCooldowns(device);
+  const view = buildPublicLookupSession(session);
+  return { ...view, accountIdentityVerified: session.accountIdentityVerified === true,
+    savedAccounts: session.savedAccounts || [],
+    accountCooldowns: cooldowns,
+    accountChoices: view.accountChoices.map((choice) => ({ ...choice,
+      ...(cooldowns.find((row) => row.account === choice.account) || { cooling: false, remainingMs: 0 })
+    })) };
+}
+
 function createLookupSession(input = {}) {
   const createdAt = nowIso();
   const session = {
@@ -2891,8 +3930,16 @@ function createLookupSession(input = {}) {
     deviceId: String(input.deviceId || ""),
     status: "starting",
     successfulCount: 0,
-    switchEvery: 200,
     currentAccount: "",
+    accountIdentityVerified: false,
+    accountQueryStarted: false,
+    savedAccounts: [],
+    requiresAccountSwitch: false,
+    limitReason: "",
+    automationHaltReason: "",
+    lastAccountSwitch: null,
+    accountChoices: [],
+    restrictionHistory: [],
     pendingJobId: "",
     lockId: "",
     results: [],
@@ -2950,8 +3997,53 @@ function releaseAutomationLock(jobOrSession, reason = "completed") {
   return lock;
 }
 
+function snapshotWindowsTaskClaim(task) {
+  const xhsTaskId = String(task?.payload?.xhsTaskId || "");
+  const automationJobId = String(task?.payload?.automationJobId || "");
+  const xhsTask = xhsTaskId ? state.xhsQrTasks.find((item) => item.taskId === xhsTaskId) || null : null;
+  const automationJob = automationJobId ? state.automationJobs.find((item) => item.jobId === automationJobId) || null : null;
+  const automationSession = automationJob?.sessionId
+    ? state.automationSessions.find((item) => item.sessionId === automationJob.sessionId) || null
+    : null;
+  const deviceLock = automationJob?.lockId
+    ? (state.deviceLocks || []).find((item) => item.lockId === automationJob.lockId) || null
+    : null;
+  return {
+    records: [task, xhsTask, automationJob, automationSession, deviceLock]
+      .filter(Boolean)
+      .map((record) => ({ record, snapshot: structuredClone(record) })),
+    audit: state.audit
+  };
+}
+
+function restoreWindowsTaskClaim(claimSnapshot) {
+  for (const entry of claimSnapshot?.records || []) {
+    for (const key of Object.keys(entry.record)) delete entry.record[key];
+    Object.assign(entry.record, structuredClone(entry.snapshot));
+  }
+  if (claimSnapshot?.audit) state.audit = claimSnapshot.audit;
+}
+
+function renewAutomationLock(job, ttlMs = AUTOMATION_SESSION_TTL_MS) {
+  const lockId = String(job?.lockId || "");
+  if (!lockId) return null;
+  const lock = (state.deviceLocks || []).find((item) => item.lockId === lockId && item.status === "active");
+  if (!lock) return null;
+  const boundedTtlMs = Math.max(60_000, Number(ttlMs || AUTOMATION_SESSION_TTL_MS));
+  lock.updatedAt = nowIso();
+  lock.expiresAt = new Date(Date.now() + boundedTtlMs).toISOString();
+  runtimeStore.setEx(
+    `lock:device:${lock.deviceId}`,
+    JSON.stringify(publicDeviceLock(lock)),
+    Math.ceil(boundedTtlMs / 1000)
+  ).catch(() => {});
+  return lock;
+}
+
 function finishLookupSession(session, status, reason = "") {
   session.status = status;
+  delete session.startupHumanVerification;
+  if (session.limitReason === "jigsaw_verification") session.limitReason = "";
   session.pendingJobId = "";
   session.error = status === "failed" ? String(reason || "lookup_session_failed") : "";
   session.updatedAt = nowIso();
@@ -2960,13 +4052,34 @@ function finishLookupSession(session, status, reason = "") {
   return session;
 }
 
+async function drainPendingLookupQueryBeforeStop(session, graceMs = 1_800) {
+  const isPendingQuery = (job) => String(job?.kind || "") === "alipay_name_query"
+    && ["submitting", "queued", "running"].includes(String(job?.status || ""));
+  const initial = session?.pendingJobId
+    ? state.automationJobs.find((job) => job.jobId === session.pendingJobId)
+    : null;
+  if (!isPendingQuery(initial)) return initial;
+  const deadline = Date.now() + Math.max(0, Number(graceMs || 0));
+  while (Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    const current = session?.pendingJobId
+      ? state.automationJobs.find((job) => job.jobId === session.pendingJobId)
+      : null;
+    if (!isPendingQuery(current)) return current;
+  }
+  return session?.pendingJobId
+    ? state.automationJobs.find((job) => job.jobId === session.pendingJobId)
+    : null;
+}
+
 function upsertLookupResult(session, job, patch = {}) {
   if (!session || !job?.jobId) return null;
   if (!Array.isArray(session.results)) session.results = [];
-  let result = session.results.find((item) => item.resultId === job.jobId);
+  const resultId = String(job.resultId || job.jobId);
+  let result = session.results.find((item) => item.resultId === resultId);
   if (!result) {
     result = {
-      resultId: job.jobId,
+      resultId,
       phoneNumber: String(job.phoneNumber || ""),
       name: "",
       realNameTailCharacter: "",
@@ -2977,8 +4090,19 @@ function upsertLookupResult(session, job, patch = {}) {
     };
     session.results.unshift(result);
   }
+  if (job.kind === "alipay_name_query" && patch.accountSwitchCount !== undefined) {
+    // Capture the preceding attempts once per job. Replayed terminal reports
+    // remain idempotent; retaining/pruning old jobs cannot reset this total.
+    if (job.lookupResultAccountSwitchBaseCount === undefined) {
+      job.lookupResultAccountSwitchBaseCount = Math.max(0, Number(result.accountSwitchCount) || 0);
+    }
+    const count = job.lookupResultAccountSwitchBaseCount + Math.max(0, Number(patch.accountSwitchCount) || 0);
+    patch = { ...patch, accountSwitchCount: count,
+      accountSwitched: Boolean(count || patch.accountSwitched),
+      accountSwitchReason: patch.accountSwitchReason || result.accountSwitchReason || "" };
+  }
   Object.assign(result, patch, { updatedAt: patch.updatedAt || job.updatedAt || nowIso() });
-  session.results = session.results.slice(0, 500);
+  if (session.source !== "open-api") session.results = session.results.slice(0, 500);
   return result;
 }
 
@@ -2988,16 +4112,28 @@ function lookupProgressStage(event = {}) {
   if (step === "input_phone") return "号码已输入，正在搜索";
   if (step === "submit_search") return "已确认搜索，正在等待结果";
   if (step === "retry_search_result") return "结果暂未返回，正在重新提交一次";
-  if (step === "lookup_no_name_result") return "该号码未查询到姓名结果";
+  if (step === "lookup_no_name_result") {
+    return event.detail?.reason === "account_not_real_named"
+      ? "已识别支付宝账户未实名，正在返回"
+      : "该号码未查询到姓名结果";
+  }
+  if (step === "alipay_access_denied_detected" || step === "alipay_account_restriction_detected") {
+    return event.detail?.accountSwitchRequired
+      ? "已检测到当前账号查询受限，正在返回切号提示"
+      : "查询前已存在限制页面，正在返回诊断";
+  }
   if (step === "human_verification_detected") return "检测到滑动验证，正在自动处理";
   if (step === "human_verification_slider_drag") return "正在拖动验证滑块";
   if (step === "human_verification_retry") return "滑块未通过，正在重试";
   if (step === "human_verification_passed") return "滑块验证已通过";
   if (step === "human_verification_failed") return "滑块自动验证未通过";
   if (step === "replay_query_after_human_verification") return "验证通过，正在重新提交当前号码";
-  if (step === "open_my_tab" || step === "open_settings" || step === "open_saved_account_picker") return "已达 200 次，正在切换支付宝账号";
-  if (step === "account_selected" || step === "account_selection_returned_home") return "已选择新账号，正在复核当前账号";
-  if (step === "account_switch_verified") return "支付宝账号切换验证成功，正在继续查询";
+  if (step === "open_my_tab" || step === "open_settings" || step === "open_saved_account_picker") return "正在读取支付宝已保存账号";
+  if (step === "reuse_open_account_picker") return "已复用当前账号页，正在切换指定账号";
+  if (step === "reuse_open_account_picker_failed") return "账号页已变化，正在重新读取";
+  if (step === "account_selected") return "已选择新账号，正在等待支付宝返回首页";
+  if (step === "account_selection_returned_home") return "账号切换已返回首页，正在恢复查询页";
+  if (step === "account_switch_verified") return "支付宝账号切换完成，正在继续查询";
   if (step === "query_full_path_recovery") return "页面状态异常，正在自动恢复";
   if (step === "launch_alipay") return "正在重新打开支付宝";
   if (step === "open_search") return "正在进入支付宝搜索页";
@@ -3053,6 +4189,12 @@ function releaseDeviceTaskLock(task, reason = "completed") {
   return lock;
 }
 
+function managedLookupReservationLock(deviceId) {
+  const c=managedLookup?.reserved(deviceId);if(!c)return null;
+  const session=state.automationSessions.find(s=>s.sessionId===c.sessionId);
+  return {lockId:session?.lockId||c.generation,lockType:'alipay_name_lookup',deviceId,status:'active',taskId:c.sessionId,ownerUserId:session?.userId||'',managedLookupGeneration:c.generation};
+}
+
 function activeDeviceLockForTask(deviceId = "", xhsAppSlot = "") {
   expireDeviceLocks();
   const normalizedSlot = xhsAppSlot ? normalizeXhsAppSlot(xhsAppSlot) : "";
@@ -3060,13 +4202,29 @@ function activeDeviceLockForTask(deviceId = "", xhsAppSlot = "") {
     lock.status === "active"
     && lock.deviceId === deviceId
     && (lock.lockType !== "xhs_qr" || DEVICE_MAX_ACTIVE_XHS_TASKS <= 1 || !normalizedSlot || !lock.appSlot || lock.appSlot === normalizedSlot)
-  )) || null;
+  )) || (typeof managedLookup!=="undefined" && managedLookup ? managedLookupReservationLock(deviceId) : null);
+}
+
+function activeDeviceLockForScreenControl(deviceId = "", ownerUserId = "", options = {}) {
+  expireDeviceLocks();
+  const locks = (state.deviceLocks || []).filter((lock) => (
+    lock.status === "active" && lock.deviceId === deviceId
+  ));
+  if(!locks.length && typeof managedLookup!=="undefined" && managedLookup?.reserved(deviceId)) locks.push(managedLookupReservationLock(deviceId));
+  const conflict = findScreenControlLockConflict(locks, deviceId, ownerUserId, options);
+  if (conflict) return conflict;
+  const lookupLock = locks.find((lock) => canShareDeviceLockWithScreenControl(lock, ownerUserId, options));
+  if (!lookupLock) return null;
+  const lookupSession = (state.automationSessions || []).find((session) => session.sessionId === lookupLock.taskId) || null;
+  return canShareLookupSessionWithScreenControl(lookupLock, ownerUserId, lookupSession, options) ? null : lookupLock;
 }
 
 function acquireDeviceScreenLock(device, session, ctx = { role: "system" }) {
   if (!Array.isArray(state.deviceLocks)) state.deviceLocks = [];
   expireDeviceLocks();
-  const conflict = activeDeviceLockForTask(device.deviceId);
+  const conflict = activeDeviceLockForScreenControl(device.deviceId, session.userId, {
+    allowAdminOverride: ctx.role === "admin", allowLookupHumanHelper: ctx.user?.lookupHumanControl === true
+  });
   if (conflict) {
     const error = badRequest("device_busy");
     error.statusCode = 409;
@@ -3125,6 +4283,23 @@ function expireDeviceLocks() {
   let changed = false;
   for (const lock of state.deviceLocks) {
     if (lock.status !== "active") continue;
+    if (lock.managedLookupGeneration && managedLookup?.reserved(lock.deviceId)) continue;
+    if (lock.lockType === "kuaishou_lead") {
+      const job = (state.automationJobs || []).find((item) => item.jobId === lock.taskId);
+      const windowsTask = job?.windowsTaskId ? (state.windowsTasks || []).find((item) => item.taskId === job.windowsTaskId) : null;
+      if (job && isActiveAutomationStatus(job.status) && windowsTask && ["queued", "running", "stalled"].includes(windowsTask.status)) {
+        continue;
+      }
+      if (job && !isActiveAutomationStatus(job.status)) {
+        lock.status = "released";
+        lock.releasedAt = job.completedAt || nowIso();
+        lock.releaseReason = job.status || "task_terminal";
+        lock.updatedAt = nowIso();
+        releaseRuntimeDeviceLock(lock);
+        changed = true;
+        continue;
+      }
+    }
     const task = state.xhsQrTasks.find((item) => item.taskId === lock.taskId);
     if (task && !isActiveXhsTask(task)) {
       lock.status = "released";
@@ -3330,14 +4505,95 @@ function queueXhsAirtestWindowsTask(device, xhsTask, ctx = { role: "system" }) {
   return task;
 }
 
+function lookupHumanProbeTargets(agentId) {
+  const probes = [];
+  for (const session of state.automationSessions) {
+    const challengeId = lookupHumanChallenge(session);
+    if (!challengeId || session.requiresAccountSwitch) continue;
+    const device = repos.devices.findById(session.deviceId);
+    if (!device || !isAdbOnline(device) || device.adb?.agentId !== agentId) continue;
+    const lock = state.deviceLocks.find((item) => item.status === "active"
+      && item.lockType === "alipay_name_lookup" && item.taskId === session.sessionId
+      && item.deviceId === session.deviceId && item.ownerUserId === session.userId);
+    if (!lock) continue;
+    const screen = screenSessions.activeForDevice(session.deviceId);
+    if (screen) {
+      const handover = screenSessions.getMutable(screen.sessionId)?.lookupHumanHandover;
+      if (!screenRelay.agentOnline(agentId) || !["ready", "streaming"].includes(screen.status)
+        || handover?.sessionId !== session.sessionId || handover.challengeId !== challengeId) continue;
+    }
+    probes.push({ managedLookup: Boolean(session.managedLookupGeneration), sessionId: session.sessionId, deviceId: session.deviceId,
+      adbSerial: device.adb.serial, challengeId, screenSessionId: screen?.sessionId || "" });
+  }
+  return probes;
+}
+
+async function resumeLookupAfterObservedHumanVerification(target) {
+  const session = state.automationSessions.find((item) => item.sessionId === target.sessionId);
+  if (!session || lookupHumanChallenge(session) !== target.challengeId) throw badRequest("lookup_human_probe_stale");
+  if (session.managedLookupGeneration && !lookupHumanProbeTargets(repos.devices.findById(session.deviceId)?.adb?.agentId).some(p => p.sessionId === target.sessionId && p.deviceId === target.deviceId && p.challengeId === target.challengeId && p.screenSessionId === target.screenSessionId)) return false;
+  if(session.managedLookupGeneration && state.windowsAgents.find(a=>a.agentId===repos.devices.findById(session.deviceId)?.adb?.agentId)?.lookupPostHumanProtocol!==1)return false;
+  if (session.managedLookupGeneration && !(await managedLookup?.beforeResume(session.sessionId))) return false;
+  const sourceResult = resumableLookupHumanVerificationResult(session) || resumableLookupRecoveryResult(session);
+  const device = repos.devices.findById(session.deviceId);
+  const startup = sourceResult.phase === "start";
+  const phoneNumber = startup ? "" : normalizeLookupPhone(sourceResult.phoneNumber);
+  const screen = screenSessions.activeForDevice(session.deviceId);
+  if ((screen?.sessionId || "") !== target.screenSessionId) throw badRequest("lookup_human_probe_stale");
+  if (screen && !screenRelay.stop(screen.sessionId, "lookup_human_verification_completed")) {
+    throw badRequest("lookup_human_screen_stop_failed");
+  }
+  const job = createAutomationJob({ kind: startup ? "alipay_name_start" : "alipay_name_query", userId: session.userId,
+    deviceId: session.deviceId, sessionId: session.sessionId, phoneNumber,
+    resultId: sourceResult.resultId, resumeAfterHumanVerification: true,
+    restartAfterHumanVerification: true });
+  if (["open-api", "managed-api"].includes(session.source)) Object.assign(job, {
+    source: session.source, clientId: session.clientId,
+    clientReference: sourceResult.clientReference || "", consentReference: sourceResult.consentReference || ""
+  });
+  if(session.managedLookupGeneration){job.postHumanCheck=true;Object.assign(job,lookupHumanResumeReferences(session,sourceResult,state.automationJobs));}
+  const oldJob=(state.automationJobs||[]).find(j=>(j.resultId||j.jobId)===sourceResult.resultId&&j.preparedLookup);
+  if(oldJob)job.preparedLookup={...oldJob.preparedLookup,verifiedAccount:""};
+  session.status = startup ? "starting" : "querying";
+  session.pendingJobId = job.jobId;
+  session.error = "";
+  session.updatedAt = nowIso();
+  if (startup) session.startupHumanVerification.status = "queued";
+  else upsertLookupResult(session, job, { status: "queued", error: "",
+    stage: "验证页面已变化，正在复核当前页面并接续原请求", updatedAt: session.updatedAt });
+  const windowsTask = queueAutomationWindowsTask(device, job);
+  // Do not admit a retry before its durable record exists. A persistence
+  // failure leaves it held, rather than blindly running/retrying a query.
+  windowsTask.status = "human_handover_pending";
+  const audit = addAudit("alipay_name_human_auto_handover", { role: "windows_agent", agentId: job.agentId }, {
+    sessionId: session.sessionId, jobId: job.jobId, sourceResultId: sourceResult.resultId,
+    deviceId: session.deviceId, screenSessionId: target.screenSessionId
+  });
+  try {
+    await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask, automationJob: job, automationSession: session, audit }));
+  } catch {
+    session.error = "人工验证自动恢复保存失败，任务保持暂停，请结束会话后检查。";
+    throw new Error("lookup_human_resume_persist_failed");
+  }
+  // End/cancel may have happened while saving. Never resurrect that task.
+  if (session.pendingJobId !== job.jobId || session.status !== (startup ? "starting" : "querying")
+    || job.status !== "queued" || windowsTask.status !== "human_handover_pending") return;
+  windowsTask.status = "queued";
+  runtimeSaveScheduler.mark();
+  return true;
+}
+
 function queueAutomationWindowsTask(device, job) {
   const agentId = String(device?.adb?.agentId || "");
   const adbSerial = String(device?.adb?.serial || "");
   if (!agentId || !adbSerial || !isAdbOnline(device)) throw badRequest("device_not_available");
   const typeByKind = {
     xhs_publish: "xhs_publish",
+    kuaishou_lead: "kuaishou_lead",
+    xhs_data_collect: "xhs_data_collect",
     alipay_name_start: "alipay_name_start",
     alipay_name_query: "alipay_name_query",
+    alipay_name_switch: "alipay_name_switch",
     alipay_name_stop: "alipay_name_stop"
   };
   const task = createWindowsAgentTask({
@@ -3347,15 +4603,28 @@ function queueAutomationWindowsTask(device, job) {
     type: typeByKind[job.kind],
     payload: {
       automationJobId: job.jobId,
+      ...(job.kind === "xhs_data_collect" ? { deviceName: device.deviceName || device.deviceId, windowDays: 30 } : {}),
       automationSessionId: job.sessionId || "",
+      ...(state.automationSessions.find(s=>s.sessionId===job.sessionId)?.managedLookupGeneration ? {managedLookup:{protocol:MANAGED_LOOKUP_PROTOCOL,generation:state.automationSessions.find(s=>s.sessionId===job.sessionId).managedLookupGeneration}} : {}),
       xhsAppSlot: job.xhsAppSlot || "",
       xhsAccountLabel: job.xhsAccountLabel || "",
       title: job.title || "",
       content: job.content || "",
       imageDataUrls: job.imageDataUrls || [],
       phoneNumber: job.phoneNumber || "",
-      successfulCountBefore: job.successfulCountBefore || 0,
-      switchEvery: 200,
+      ...(job.preparedLookup?{preparedLookup:job.preparedLookup}:{}),
+      ...(job.postHumanCheck?{postHumanCheck:true}:{}),
+      minDelaySeconds: job.minDelaySeconds || 0,
+      maxDelaySeconds: job.maxDelaySeconds || 0,
+      resumeAfterHumanVerification: job.resumeAfterHumanVerification === true,
+      recoveryOrigin: ['human','page','state','device','network','automatic'].includes(job.recoveryOrigin) ? job.recoveryOrigin : '',
+      restartAfterHumanVerification: job.restartAfterHumanVerification === true,
+      accountAction: job.accountAction || "",
+      targetAccount: job.targetAccount || "",
+      ...(job.kind.startsWith("alipay_name_") ? lookupAccountPolicy(device,
+        state.automationSessions.find((session) => session.sessionId === job.sessionId)) : {}),
+      savedAccounts: job.kind.startsWith("alipay_name_")
+        ? (state.automationSessions.find((session) => session.sessionId === job.sessionId)?.savedAccounts || []) : [],
       maxRecoveryAttempts: 2
     }
   });
@@ -3388,101 +4657,251 @@ function syncAutomationJobFromWindowsTask(windowsTask, status, result = {}) {
   const job = state.automationJobs.find((item) => item.jobId === jobId);
   if (!job || isTerminalStatus(job.status)) return job || null;
   job.status = status;
+  const previousProgress = job.kind === "kuaishou_lead" && job.result?.progress && typeof job.result.progress === "object"
+    ? { ...job.result.progress } : null;
   job.result = sanitizeTaskResult(result || {}, { includeEvidence: true });
+  if (previousProgress) job.result.progress = previousProgress;
   job.windowsTaskId = windowsTask.taskId;
   job.agentId = windowsTask.agentId;
   job.adbSerial = windowsTask.adbSerial;
   if (status === "running") job.pickedAt = job.pickedAt || nowIso();
   job.updatedAt = nowIso();
+  if (job.kind === "kuaishou_lead" && status === "running") renewAutomationLock(job, KUAISHOU_LEAD_LOCK_TTL_MS);
   const session = job.sessionId ? state.automationSessions.find((item) => item.sessionId === job.sessionId) : null;
+  const device = session ? repos.devices.findById(session.deviceId) : null;
+  const accountProtocol = windowsTask.payload?.accountCooldownProtocol === 1;
+  if (session && ["succeeded", "failed"].includes(status) && accountProtocol) {
+    const runner = job.result.runner || job.result.diagnostic || {};
+    const saved = verifiedSavedAccounts(job.result.savedAccounts || runner.savedAccounts);
+    const current = String(job.result.currentAccount || "");
+    const verified = job.result.accountIdentityVerified === true
+      && saved?.some((choice) => choice.current && choice.account === current);
+    if (verified && job.kind !== "alipay_name_stop") {
+      // Query failure/puzzle can follow a completed, verified rotation. Commit
+      // the identity and its picker together, independently of query success.
+      session.savedAccounts = saved;
+      session.currentAccount = current;
+      session.accountIdentityVerified = true;
+    }
+    if (status === "succeeded" && job.kind !== "alipay_name_stop") {
+      if (!verified) {
+        status = job.status = "failed";
+        job.result.errorCode = "alipay_account_identity_unverified";
+        job.result.message = "账户身份未确认，未放行查询；请重新启动会话检查账户。";
+        session.accountIdentityVerified = false;
+      } else {
+        session.currentAccount = current;
+        session.accountIdentityVerified = true;
+      }
+    }
+  }
   if (session && job.kind === "alipay_name_query" && status === "running") {
     upsertLookupResult(session, job, {
       status: "running",
-      stage: "Windows 管理器已领取，正在查询",
+      stage: isHumanLookupResume(job)
+        ? "人工验证已确认，正在获取当前号码结果"
+        : job.resumeAfterHumanVerification ? "正在自动恢复并读取原号码结果"
+        : "Windows 管理器已领取，正在查询",
       updatedAt: job.updatedAt
     });
     session.status = "querying";
     session.updatedAt = job.updatedAt;
+  } else if (session && job.kind === "alipay_name_switch" && status === "running") {
+    session.status = "switching";
+    session.updatedAt = job.updatedAt;
   }
   if (["succeeded", "failed", "cancelled"].includes(status)) {
     job.completedAt = nowIso();
-    if (job.kind === "xhs_publish") {
+    if (["xhs_publish", "kuaishou_lead", "xhs_data_collect"].includes(job.kind)) {
       releaseAutomationLock(job, status);
     } else if (session) {
       session.pendingJobId = "";
       session.updatedAt = nowIso();
       if (job.kind === "alipay_name_start") {
         if (status === "succeeded") {
+          delete session.startupHumanVerification;
           session.status = "ready";
           session.currentAccount = String(job.result.currentAccount || "");
+          session.requiresAccountSwitch = false;
+          session.limitReason = "";
+          session.automationHaltReason = "";
           session.error = "";
+        } else if (status === "failed" && (job.result.errorCode === "alipay_human_verification_required"
+          || String(job.result.error || "").includes("alipay_human_verification_required"))) {
+          session.startupHumanVerification = { resultId: job.jobId, phase: "start",
+            status: "needs_human_verification", limitReason: "jigsaw_verification",
+            errorCode: "alipay_human_verification_required", updatedAt: job.completedAt };
+          session.status = "needs_human_verification";
+          session.limitReason = "jigsaw_verification";
+          session.requiresAccountSwitch = false;
+          session.error = "启动时遇到拼图，请在实时控屏中完成，系统检测通过后继续准备账户。";
+        } else if (lookupHumanRecoveryUnresolved(job, status, { limitReached: job.result.errorCode === "alipay_no_available_account" })) {
+          session.startupHumanVerification = { resultId: job.jobId, phase: "start",
+            status: "needs_recovery", updatedAt: job.completedAt };
+          session.status = "ready";
+          session.limitReason = "";
+          session.automationHaltReason = "lookup_human_recovery_failed";
+          session.error = "账户准备恢复失败，队列已暂停；请重试或结束会话。";
         } else {
           finishLookupSession(session, "failed", job.result.errorCode || job.result.error || status);
         }
       } else if (job.kind === "alipay_name_query") {
-        if (job.result.accountSwitched) {
+        if (!accountProtocol && job.result.accountSwitched) {
           session.currentAccount = String(job.result.currentAccount || session.currentAccount || "");
         }
         if (status === "succeeded" && job.result.realNameTailCharacter) {
           session.successfulCount += 1;
           session.currentAccount = String(job.result.currentAccount || session.currentAccount || "");
+          session.requiresAccountSwitch = false;
+          session.limitReason = "";
+          session.automationHaltReason = "";
           upsertLookupResult(session, job, {
             name: String(job.result.alipayDisplayName || ""),
             realNameTailCharacter: String(job.result.realNameTailCharacter || ""),
             account: String(job.result.currentAccount || ""),
             accountSwitched: Boolean(job.result.accountSwitched),
             accountSwitchReason: String(job.result.accountSwitchReason || ""),
+            accountSwitchCount: Math.max(0, Number(job.result.accountSwitchCount || 0)),
             recoveryAttempts: Math.max(0, Number(job.result.recoveryAttempts || 0)),
             durationMs: Number(job.result.durationMs || 0),
             status: "succeeded",
-            stage: "查询完成",
+            limitReason: "",
+            errorCode: "",
+            stage: isHumanLookupResume(job) ? "人工验证后当前号码查询完成" : "查询完成",
             error: "",
             updatedAt: job.completedAt
           });
           session.status = "ready";
           session.error = "";
         } else if (status === "succeeded" && job.result.notFound === true) {
+          const accountNotRealNamed = job.result.message === "account_not_real_named";
           session.successfulCount += 1;
+          session.requiresAccountSwitch = false;
+          session.limitReason = "";
+          session.automationHaltReason = "";
           upsertLookupResult(session, job, {
             name: "",
             realNameTailCharacter: "",
             account: String(job.result.currentAccount || ""),
             accountSwitched: Boolean(job.result.accountSwitched),
             accountSwitchReason: String(job.result.accountSwitchReason || ""),
+            accountSwitchCount: Math.max(0, Number(job.result.accountSwitchCount || 0)),
             recoveryAttempts: Math.max(0, Number(job.result.recoveryAttempts || 0)),
             durationMs: Number(job.result.durationMs || 0),
             status: "not_found",
-            stage: "该号码未查询到姓名结果",
+            limitReason: "",
+            errorCode: "",
+            stage: accountNotRealNamed ? "支付宝账户未实名" : "该号码未查询到姓名结果",
             error: "",
             updatedAt: job.completedAt
           });
           session.status = "ready";
           session.error = "";
         } else {
-          const needsHumanVerification = job.result.errorCode === "alipay_human_verification_required"
+          const noAvailableAccount = accountProtocol && job.result.errorCode === "alipay_no_available_account"
+            && allSavedAccountsCooling(device, session.savedAccounts);
+          const limitReached = noAvailableAccount || isPreparedLookupLimitConfirmed(device, job) || hasVerifiedAllSavedAccountsRestricted(job.result.diagnostic);
+          const explicitHumanVerification = job.result.errorCode === "alipay_human_verification_required"
             || String(job.result.error || job.result.message || "").includes("alipay_human_verification_required");
+          const needsHumanVerification = explicitHumanVerification;
+          const recoveryUnresolved = !explicitHumanVerification
+            && !limitReached && (lookupHumanRecoveryUnresolved(job, status, { limitReached })
+              || job.result.errorCode === "lookup_status_storage_unavailable");
+          const limitReason = String(job.result.diagnostic?.limitReason || "");
           const errorMessage = String(job.result.message || job.result.error || status);
+          if (limitReached) {
+            const restrictionEvent = [...(job.events || [])].reverse().find((event) => isPostQueryLookupRestrictionEvent(event));
+            const detail = restrictionEvent?.detail || {};
+            upsertLookupRestrictionHistory(session, {
+              restrictionId: job.jobId,
+              jobId: job.jobId,
+              windowsTaskId: job.windowsTaskId,
+              deviceId: job.deviceId,
+              phoneNumber: job.phoneNumber,
+              account: detail.currentAccount || job.result.currentAccount || session.currentAccount,
+              reason: limitReason || detail.reason,
+              title: detail.title,
+              driver: detail.driver,
+              phase: detail.phase,
+              phoneQueryStarted: detail.phoneQueryStarted === true,
+              requiresAccountSwitch: true,
+              status: "confirmed",
+              errorCode: job.result.errorCode,
+              message: errorMessage,
+              detectedAt: restrictionEvent?.createdAt,
+              confirmedAt: job.completedAt
+            });
+          }
           upsertLookupResult(session, job, {
             name: "",
             realNameTailCharacter: "",
-            status: status === "cancelled" ? "cancelled" : needsHumanVerification ? "needs_human_verification" : "failed",
+            status: status === "cancelled" ? "cancelled" : needsHumanVerification ? "needs_human_verification" : recoveryUnresolved ? "needs_recovery" : limitReached ? "limit_reached" : "failed",
             account: String(job.result.currentAccount || ""),
             accountSwitched: Boolean(job.result.accountSwitched),
             accountSwitchReason: String(job.result.accountSwitchReason || ""),
-            stage: status === "cancelled" ? "查询已取消" : needsHumanVerification ? "等待人工验证" : "查询失败",
+            accountSwitchCount: Math.max(0, Number(job.result.accountSwitchCount || 0)),
+            stage: needsHumanVerification
+              ? (isHumanLookupResume(job) ? "人工恢复未完成，需检查当前号码" : "等待人工验证")
+              : recoveryUnresolved ? "当前号码恢复失败，等待重试" : status === "cancelled" ? "查询已取消" : limitReached ? "当前账号触发查询限制" : "查询失败",
             error: errorMessage,
+            errorCode: String(job.result.errorCode || ""),
+            limitReason,
             durationMs: Number(job.result.durationMs || 0),
             updatedAt: job.completedAt
           });
-          if (needsHumanVerification) {
+          if (recoveryUnresolved) {
             session.status = "ready";
-            session.error = "支付宝要求人工完成滑动验证；完成后可重试当前号码";
+            session.automationHaltReason = "lookup_human_recovery_failed";
+            session.error = "当前号码恢复失败，后续队列已暂停；请重试当前号码或结束会话。";
+          } else if (needsHumanVerification) {
+            session.status = "ready";
+            session.error = isHumanLookupResume(job)
+              ? "当前号码的人工恢复未完成；队列已暂停，请检查页面后再次确认。"
+              : "支付宝要求人工完成滑动验证；完成后可重试当前号码";
+          } else if (limitReached) {
+            session.status = "ready";
+            session.requiresAccountSwitch = true;
+            session.limitReason = limitReason;
+            session.automationHaltReason = String(job.result.errorCode || limitReason || "automatic_account_rotation_exhausted");
+            session.error = errorMessage;
           } else if (session.status !== "stopping") {
+            session.requiresAccountSwitch = false;
+            session.limitReason = "";
+            session.automationHaltReason = "";
             session.status = "ready";
             session.error = status === "cancelled" ? "查询已取消，可以继续输入号码。" : errorMessage;
           } else {
             session.updatedAt = job.completedAt;
           }
+        }
+        session.accountQueryStarted = status === "succeeded";
+      } else if (job.kind === "alipay_name_switch") {
+        session.accountQueryStarted = false;
+        if (status === "succeeded" && job.accountAction === "list") {
+          const choices = Array.isArray(job.result.savedAccounts) ? job.result.savedAccounts : [];
+          session.accountChoices = choices.slice(0, 12).map((choice) => ({
+            account: String(choice?.account || "").slice(0, 120),
+            current: Boolean(choice?.current)
+          })).filter((choice) => choice.account);
+          session.status = "choosing_account";
+          session.currentAccount = String(job.result.currentAccount || session.currentAccount || "");
+          session.error = "";
+        } else if (status === "succeeded") {
+          session.status = "ready";
+          session.currentAccount = String(job.result.currentAccount || session.currentAccount || "");
+          session.accountChoices = [];
+          session.requiresAccountSwitch = false;
+          session.limitReason = "";
+          session.automationHaltReason = "";
+          session.lastAccountSwitch = {
+            fromAccount: String(job.result.diagnostic?.fromAccount || ""),
+            toAccount: String(job.result.currentAccount || ""),
+            switchedAt: job.completedAt
+          };
+          session.error = "";
+        } else if (session.status !== "stopping") {
+          session.status = session.accountChoices?.length ? "choosing_account" : "ready";
+          session.error = String(job.result.message || job.result.error || "支付宝账号切换失败，请重试。");
         }
       } else if (job.kind === "alipay_name_stop") {
         session.results = (session.results || []).map((result) => result.status === "cancelling"
@@ -3501,13 +4920,80 @@ function appendWindowsEventToAutomationJob(windowsTask, event) {
   if (!jobId) return null;
   const job = state.automationJobs.find((item) => item.jobId === jobId);
   if (!job) return null;
+  if (isTerminalStatus(job.status)) return job;
   job.events.push(sanitizeStoredEvent({ ...event, source: "windows-agent", windowsTaskId: windowsTask.taskId }));
   job.events = job.events.slice(-100);
   job.updatedAt = nowIso();
+  if (job.kind === "kuaishou_lead") {
+    renewAutomationLock(job, KUAISHOU_LEAD_LOCK_TTL_MS);
+    const queueEvent = String(event?.detail?.queueEvent || "");
+    const progress = job.result?.progress && typeof job.result.progress === "object"
+      ? { ...job.result.progress }
+      : { processedCount: 0, successCount: 0, failedAttemptCount: 0, unknownCount: 0, skippedCount: 0 };
+    if (queueEvent === "row_finalized") {
+      progress.processedCount = Math.max(0, Number(progress.processedCount || 0)) + 1;
+      if (event.detail?.status === "推送成功") progress.successCount = Math.max(0, Number(progress.successCount || 0)) + 1;
+      else if (event.detail?.status === "推送失败（提交前）") progress.failedAttemptCount = Math.max(0, Number(progress.failedAttemptCount || 0)) + 1;
+      else if (event.detail?.status === "结果待确认") progress.unknownCount = Math.max(0, Number(progress.unknownCount || 0)) + 1;
+      progress.lastRow = Math.max(0, Number(event.detail?.row || 0));
+      progress.lastStatus = String(event.detail?.status || "").slice(0, 80);
+    }
+    if (queueEvent === "row_skipped") {
+      progress.skippedCount = Math.max(0, Number(progress.skippedCount || 0)) + 1;
+      progress.lastRow = Math.max(0, Number(event.detail?.row || 0));
+      progress.lastStatus = "领取状态变化，未操作手机";
+      progress.currentRow = 0;
+    }
+    if (["waiting", "waiting_for_new_rows", "waiting_for_queue_retry", "waiting_after_row_skip"].includes(queueEvent)) {
+      const seconds = Math.max(0, Number(event.detail?.seconds || 0));
+      progress.nextRunAt = seconds ? new Date(Date.now() + seconds * 1000).toISOString() : "";
+    }
+    if (queueEvent === "candidate_selected") {
+      progress.currentRow = Math.max(0, Number(event.detail?.row || 0));
+      progress.currentPhone = String(event.detail?.phone || "").slice(0, 32);
+      progress.currentCity = String(event.detail?.city || "").slice(0, 80);
+    }
+    if (queueEvent === "queue_empty") progress.currentRow = 0;
+    progress.lastQueueEvent = queueEvent;
+    progress.lastEventAt = job.updatedAt;
+    job.result = { ...(job.result || {}), progress };
+  }
+  const lookupSession = job.sessionId ? state.automationSessions.find((item) => item.sessionId === job.sessionId) : null;
+  const verifiedRestriction = windowsTask.payload?.accountCooldownProtocol === 1
+    && isVerifiedLookupAccountRestrictionEvent(event);
+  if (lookupSession && verifiedRestriction) {
+    const detail = event.detail;
+    recordLookupAccountCooldown(repos.devices.findById(lookupSession.deviceId), {
+      account: detail.currentAccount, reason: detail.reason,
+      restrictionId: `${job.jobId}:${detail.currentAccount}`, jobId: job.jobId,
+      accountIdentityVerified: true, phoneQueryStarted: detail.phoneQueryStarted,
+      detectedAt: event.createdAt || nowIso()
+    });
+  }
   if (job.kind === "alipay_name_query") {
     const session = state.automationSessions.find((item) => item.sessionId === job.sessionId);
     if (session) {
       const stopping = session.status === "stopping";
+      if (isPostQueryLookupRestrictionEvent(event) || verifiedRestriction) {
+        const detail = event.detail || {};
+        const account = String(detail.currentAccount || session.currentAccount || "");
+        upsertLookupRestrictionHistory(session, {
+          restrictionId: `${job.jobId}:${account}`,
+          jobId: job.jobId,
+          windowsTaskId: windowsTask.taskId,
+          deviceId: job.deviceId,
+          phoneNumber: job.phoneNumber,
+          account,
+          reason: detail.reason,
+          title: detail.title,
+          driver: detail.driver,
+          phase: detail.phase,
+          phoneQueryStarted: detail.phoneQueryStarted === true,
+          requiresAccountSwitch: true,
+          status: "detected",
+          detectedAt: event.createdAt || nowIso()
+        });
+      }
       upsertLookupResult(session, job, {
         status: stopping ? "cancelling" : "running",
         stage: stopping ? "正在停止当前查询" : lookupProgressStage(event),
@@ -4120,7 +5606,13 @@ function recordDeviceOnlineRuntime(deviceId, value = {}) {
 
 function releaseRuntimeDeviceLock(lock) {
   if (!lock?.deviceId) return;
-  runtimeStore.del(`lock:device:${lock.deviceId}`).catch(() => {});
+  const remaining = remainingActiveDeviceLock(state.deviceLocks, lock);
+  if (!remaining) {
+    runtimeStore.del(`lock:device:${lock.deviceId}`).catch(() => {});
+    return;
+  }
+  const ttlSeconds = Math.max(1, Math.ceil((toTime(remaining.expiresAt) - Date.now()) / 1000));
+  runtimeStore.setEx(`lock:device:${remaining.deviceId}`, JSON.stringify(publicDeviceLock(remaining)), ttlSeconds).catch(() => {});
 }
 
 async function getTaskProgress(taskId) {
@@ -4300,6 +5792,25 @@ function signedEvidenceUrl(evidenceId) {
   });
 }
 
+function publicEventHierarchyUrl(event) {
+  const evidenceId = event?.uiHierarchyEvidence?.evidenceId || event?.detail?.uiHierarchyEvidence?.evidenceId;
+  return evidenceId ? signedEvidenceUrl(evidenceId)
+    : String(event?.uiHierarchyUrl || event?.uiHierarchyEvidence?.url || event?.detail?.uiHierarchyUrl || event?.detail?.uiHierarchyEvidence?.url || "");
+}
+
+function publicAutomationJob(job) {
+  const view = buildPublicAutomationJob(job);
+  const result = isTerminalStatus(view.status) ? sanitizeTaskResult(view.result, { includeEvidence: true }) : view.result;
+  if (view.kind === "kuaishou_lead" && view.result?.progress && typeof view.result.progress === "object") {
+    result.progress = sanitizeKuaishouLeadProgress(view.result.progress);
+  }
+  return {
+    ...view,
+    result,
+    events: view.events.map((event) => sanitizeStoredEvent(event))
+  };
+}
+
 function verifyEvidenceSignature(evidenceId, expires, sig) {
   return verifyEvidenceSignedUrl(evidenceId, {
     secret: EVIDENCE_SIGNING_SECRET,
@@ -4346,7 +5857,10 @@ function sanitizeEventDetail(input = {}) {
   if (detail.source) detail.source = String(detail.source).slice(0, MAX_STORED_UI_SNAPSHOT_CHARS);
   if (detail.xml) detail.xml = String(detail.xml).slice(0, MAX_STORED_UI_HIERARCHY_CHARS);
   if (detail.screenshot) detail.screenshot = sanitizeScreenshot(detail.screenshot, { includeDataUrl: true });
-  if (detail.uiHierarchyEvidence) detail.uiHierarchyEvidence = publicEvidenceAsset(detail.uiHierarchyEvidence);
+  if (detail.uiHierarchyEvidence) {
+    detail.uiHierarchyEvidence = publicEvidenceAsset(detail.uiHierarchyEvidence);
+    detail.uiHierarchyUrl = detail.uiHierarchyEvidence.url;
+  }
   if (detail.uiHierarchyUrl) detail.uiHierarchyUrl = String(detail.uiHierarchyUrl).slice(0, 500);
   return detail;
 }
@@ -4364,12 +5878,19 @@ function sanitizeTaskResult(input = {}, options = {}) {
     wallMs: Number.isFinite(Number(input.wallMs)) ? Number(input.wallMs) : null,
     timeoutSeconds: Number.isFinite(Number(input.timeoutSeconds)) ? Number(input.timeoutSeconds) : null
   };
+  if (input.collection) result.collection = sanitizeXhsDataCollection(input.collection);
   if (input.uiSnapshot) result.uiSnapshot = String(input.uiSnapshot).slice(0, MAX_STORED_UI_SNAPSHOT_CHARS);
   if (input.uiHierarchy) result.uiHierarchy = String(input.uiHierarchy).slice(0, MAX_STORED_UI_HIERARCHY_CHARS);
   if (input.uiHierarchyUrl) result.uiHierarchyUrl = String(input.uiHierarchyUrl).slice(0, 500);
   if (input.uiSnapshotUrl) result.uiSnapshotUrl = String(input.uiSnapshotUrl).slice(0, 500);
-  if (input.uiHierarchyEvidence) result.uiHierarchyEvidence = publicEvidenceAsset(input.uiHierarchyEvidence);
-  if (input.uiSnapshotEvidence) result.uiSnapshotEvidence = publicEvidenceAsset(input.uiSnapshotEvidence);
+  if (input.uiHierarchyEvidence) {
+    result.uiHierarchyEvidence = publicEvidenceAsset(input.uiHierarchyEvidence);
+    result.uiHierarchyUrl = result.uiHierarchyEvidence.url;
+  }
+  if (input.uiSnapshotEvidence) {
+    result.uiSnapshotEvidence = publicEvidenceAsset(input.uiSnapshotEvidence);
+    result.uiSnapshotUrl = result.uiSnapshotEvidence.url;
+  }
   if (input.screenshot) result.screenshot = sanitizeScreenshot(input.screenshot, { includeDataUrl: options.includeEvidence === true });
   for (const key of ["qrTimings", "preRunTimings", "timings", "diagnostic"]) {
     if (input[key] && typeof input[key] === "object") result[key] = cloneJson(input[key]);
@@ -4380,8 +5901,16 @@ function sanitizeTaskResult(input = {}, options = {}) {
       : String(input[key]).slice(0, 500);
   }
   if (Number.isFinite(Number(input.recoveryAttempts))) result.recoveryAttempts = Number(input.recoveryAttempts);
+  if (Number.isFinite(Number(input.accountSwitchCount))) result.accountSwitchCount = Math.max(0, Number(input.accountSwitchCount));
   if (input.accountSwitched !== undefined) result.accountSwitched = Boolean(input.accountSwitched);
+  if (input.accountIdentityVerified !== undefined) result.accountIdentityVerified = input.accountIdentityVerified === true;
   if (input.notFound !== undefined) result.notFound = Boolean(input.notFound);
+  if (Array.isArray(input.savedAccounts)) {
+    result.savedAccounts = input.savedAccounts.slice(0, 12).map((choice) => ({
+      account: String(choice?.account || "").slice(0, 120),
+      current: Boolean(choice?.current)
+    })).filter((choice) => choice.account);
+  }
   if (Array.isArray(input.events)) result.events = input.events.slice(-30).map((event) => sanitizeStoredEvent(event));
   if (input.runner && typeof input.runner === "object") {
     result.runner = {
@@ -4392,6 +5921,25 @@ function sanitizeTaskResult(input = {}, options = {}) {
     };
   }
   return result;
+}
+
+function sanitizeKuaishouLeadProgress(input = {}) {
+  return {
+    processedCount: Math.max(0, Number(input.processedCount || 0)),
+    successCount: Math.max(0, Number(input.successCount || 0)),
+    failedAttemptCount: Math.max(0, Number(input.failedAttemptCount || 0)),
+    unknownCount: Math.max(0, Number(input.unknownCount || 0)),
+    skippedCount: Math.max(0, Number(input.skippedCount || 0)),
+    currentRow: Math.max(0, Number(input.currentRow || 0)),
+    currentPhone: String(input.currentPhone || "").slice(0, 32),
+    currentCity: String(input.currentCity || "").slice(0, 80),
+    lastRow: Math.max(0, Number(input.lastRow || 0)),
+    lastStatus: String(input.lastStatus || "").slice(0, 80),
+    lastQueueEvent: String(input.lastQueueEvent || "").slice(0, 80),
+    lastEventAt: String(input.lastEventAt || "").slice(0, 80),
+    nextRunAt: String(input.nextRunAt || "").slice(0, 80),
+    heartbeatAt: String(input.heartbeatAt || "").slice(0, 80)
+  };
 }
 
 function sanitizeRunnerLogItem(input = {}) {
@@ -4410,6 +5958,7 @@ function sanitizeRunnerLogItem(input = {}) {
 }
 
 function sanitizeStoredEvent(input = {}) {
+  const uiHierarchyEvidence = input.uiHierarchyEvidence ? publicEvidenceAsset(input.uiHierarchyEvidence) : null;
   const event = {
     ...cloneJson(input),
     message: String(input.message || "").slice(0, 2000),
@@ -4419,8 +5968,8 @@ function sanitizeStoredEvent(input = {}) {
     currentActivity: String(input.currentActivity || "").slice(0, 1000),
     uiSnapshot: String(input.uiSnapshot || "").slice(0, MAX_STORED_UI_SNAPSHOT_CHARS),
     uiHierarchy: String(input.uiHierarchy || input.uiSnapshot || "").slice(0, MAX_STORED_UI_HIERARCHY_CHARS),
-    uiHierarchyEvidence: input.uiHierarchyEvidence ? publicEvidenceAsset(input.uiHierarchyEvidence) : null,
-    uiHierarchyUrl: String(input.uiHierarchyUrl || input.uiHierarchyEvidence?.url || "").slice(0, 500),
+    uiHierarchyEvidence,
+    uiHierarchyUrl: String(uiHierarchyEvidence?.url || input.uiHierarchyUrl || "").slice(0, 500),
     detail: sanitizeEventDetail(input.detail || {}),
     screenshot: sanitizeScreenshot(input.screenshot, { includeDataUrl: true })
   };
@@ -4429,12 +5978,8 @@ function sanitizeStoredEvent(input = {}) {
 
 function compactCompletedTask(task) {
   if (!task || !isTerminalStatus(task.status)) return task;
-  if (task.qrImageDataUrl) delete task.qrImageDataUrl;
-  if (task.payload?.qrImageDataUrl) delete task.payload.qrImageDataUrl;
-  if (task.payload?.imageDataUrl) delete task.payload.imageDataUrl;
-  if (task.payload?.imageDataUrls) delete task.payload.imageDataUrls;
+  compactTaskPayload(task);
   if (task.result) task.result = sanitizeTaskResult(task.result, { includeEvidence: true });
-  if (Array.isArray(task.events)) task.events = task.events.map((event) => sanitizeStoredEvent(event));
   const xhsTaskId = String(task.payload?.xhsTaskId || "");
   const xhsTask = xhsTaskId ? state.xhsQrTasks.find((item) => item.taskId === xhsTaskId) : null;
   if (xhsTask && isTerminalStatus(xhsTask.status) && xhsTask.qrImageDataUrl) delete xhsTask.qrImageDataUrl;
@@ -4544,13 +6089,14 @@ function resolveSmsOrderTarget(input = {}) {
 }
 
 function smsMessagesForDevice(deviceId = "") {
-  return (state.smsMessages || []).filter((message) => !deviceId || message.deviceId === deviceId);
+  return deviceId ? smsMessageIndex.forDevice(deviceId) : smsMessageIndex.all();
 }
 
 function visibleSmsMessagesForUser(userId, deviceId = "") {
   const userOrders = state.smsOrders.filter((order) => order.userId === userId && (!deviceId || order.deviceId === deviceId));
   if (!userOrders.length) return [];
-  return (state.smsMessages || []).filter((message) => {
+  const sourceMessages = deviceId ? smsMessagesForDevice(deviceId) : smsMessageIndex.all();
+  return sourceMessages.filter((message) => {
     if (deviceId && message.deviceId !== deviceId) return false;
     return userOrders.some((order) => smsOrderHasMatchedMessage(order, message));
   });
@@ -4583,7 +6129,7 @@ function publicUserDevice(device, ctx = null) {
     .map((order) => order.phoneNumber));
   const activeXhs = activeXhsTaskCount(device.deviceId);
   const busySims = (device.sims || []).filter((sim) => sim.phoneNumber && waitingPhones.has(sim.phoneNumber));
-  const smsLibraryCount = smsMessagesForDevice(device.deviceId).length;
+  const smsLibraryCount = smsMessageIndex.countForDevice(device.deviceId);
   const adbOnline = isAdbOnline(device);
   const agentOnline = isDeviceAgentOnline(device);
   const windowsAgent = device.adb?.agentId ? state.windowsAgents.find((agent) => agent.agentId === device.adb.agentId) : null;
@@ -4593,6 +6139,25 @@ function publicUserDevice(device, ctx = null) {
   const activeXhsTask = activeXhsTaskForDevice(device.deviceId);
   const activeLock = activeDeviceLockForTask(device.deviceId);
   const activeScreenSession = screenSessions.activeForDevice(device.deviceId);
+  const screenOwnerUserId = screenSessionOwnerId(ctx);
+  const screenControlAccess = { allowAdminOverride: ctx?.role === "admin", allowLookupHumanHelper: ctx?.user?.lookupHumanControl === true };
+  const screenOwnerLookupSession = canShareDeviceLockWithScreenControl(activeLock, screenOwnerUserId, screenControlAccess)
+    ? (state.automationSessions || []).find((session) => session.sessionId === activeLock.taskId) || null
+    : null;
+  const screenControlConcurrentLookupAllowed = Boolean(
+    !activeScreenSession
+    && canShareLookupSessionWithScreenControl(
+      activeLock,
+      screenOwnerUserId,
+      screenOwnerLookupSession,
+      screenControlAccess
+    )
+    && !activeDeviceLockForScreenControl(device.deviceId, screenOwnerUserId, screenControlAccess)
+  );
+  const screenControlNeedsHumanAction = Boolean(
+    screenOwnerLookupSession
+    && lookupSessionNeedsHumanAction(screenOwnerLookupSession)
+  );
   const waitingSmsOrder = state.smsOrders.find((order) => (
     order.status === "waiting"
     && (order.deviceId === device.deviceId || (order.phoneNumber && busySims.some((sim) => sim.phoneNumber === order.phoneNumber)))
@@ -4617,6 +6182,7 @@ function publicUserDevice(device, ctx = null) {
     adbOnline,
     agentOnline,
     listingStatus: normalizeDeviceListingStatus(device.listingStatus || "listed"),
+    xhsDataCollectionReady: hasXhsDataCollectionCapability(windowsAgent),
     automationStatus: {
       checkedAt: windowsAgent?.health?.checkedAt || null,
       windowsAgentOnline: windowsAgent ? Date.now() - new Date(windowsAgent.lastSeenAt).getTime() < WINDOWS_AGENT_ONLINE_MS : false,
@@ -4654,6 +6220,8 @@ function publicUserDevice(device, ctx = null) {
       ...(!occupancy && activeScreenSession ? ["实时控制中"] : [])
     ],
     screenControlAvailable: Boolean(adbOnline && device.adb?.agentId && screenRelay?.agentOnline(device.adb.agentId)),
+    screenControlConcurrentLookupAllowed,
+    screenControlNeedsHumanAction,
     screenControlBusy: Boolean(activeScreenSession),
     screenSession: activeScreenSession ? {
       sessionId: activeScreenSession.sessionId,
@@ -5058,7 +6626,7 @@ function countUniqueTaskScreenshots(task) {
 
 function publicXhsEventSummary(event, options = {}) {
   const screenshot = event?.screenshot ? sanitizeScreenshot(event.screenshot, { includeDataUrl: options.includeScreenshot === true }) : null;
-  const uiHierarchyUrl = String(event?.uiHierarchyUrl || event?.uiHierarchyEvidence?.url || event?.detail?.uiHierarchyUrl || event?.detail?.uiHierarchyEvidence?.url || "");
+  const uiHierarchyUrl = publicEventHierarchyUrl(event);
   const summary = {
     phase: String(event.phase || ""),
     level: String(event.level || "info"),
@@ -5113,7 +6681,7 @@ function matchSmsOrderWithMessage(message, detail = {}) {
   const order = match?.order || null;
   if (!order) return null;
   order.status = "received";
-  order.code = String(match.code || "");
+  order.code = String(message.code || extractCode(message.body) || "");
   order.smsEventId = detail.smsEventId || order.smsEventId || "";
   order.smsMessageId = message.messageId || order.smsMessageId || "";
   order.sender = message.address || message.sender || "";
@@ -5164,7 +6732,10 @@ function upsertSmsMessageFromEvent(event) {
 
 function upsertSmsLibraryMessages(deviceId, messages) {
   if (!deviceId) return { upserted: 0, inserted: 0, updated: 0, skipped: Array.isArray(messages) ? messages.length : 0, persistedMessages: [] };
-  if (!Array.isArray(state.smsMessages)) state.smsMessages = [];
+  if (!Array.isArray(state.smsMessages)) {
+    state.smsMessages = [];
+    smsMessageIndex.replace(state.smsMessages);
+  }
   let inserted = 0;
   let updated = 0;
   let skipped = 0;
@@ -5176,7 +6747,7 @@ function upsertSmsLibraryMessages(deviceId, messages) {
       skipped += 1;
       continue;
     }
-    const existing = state.smsMessages.find((item) => item.deviceId === message.deviceId && item.messageKey === message.messageKey);
+    const existing = smsMessageIndex.find(message.deviceId, message.messageKey);
     if (existing) {
       const sourceAliases = [...new Set([
         ...(Array.isArray(existing.sourceAliases) ? existing.sourceAliases : []),
@@ -5195,22 +6766,30 @@ function upsertSmsLibraryMessages(deviceId, messages) {
       persistedMessages.push(existing);
       updated += 1;
     } else {
-      const semanticDuplicate = findSemanticSmsDuplicate(state.smsMessages, message);
+      const semanticDuplicate = findSemanticSmsDuplicate(smsMessageIndex.forDevice(message.deviceId), message);
       if (semanticDuplicate) {
+        const previousBusinessKey = {
+          deviceId: semanticDuplicate.deviceId,
+          messageKey: semanticDuplicate.messageKey
+        };
         Object.assign(semanticDuplicate, mergeCrossSourceSms(semanticDuplicate, message), { updatedAt: nowIso() });
+        smsMessageIndex.reindex(semanticDuplicate, previousBusinessKey);
         persistedMessages.push(semanticDuplicate);
         updated += 1;
       } else {
         state.smsMessages.unshift(message);
+        smsMessageIndex.add(message);
         insertedMessages.push(message);
         persistedMessages.push(message);
         inserted += 1;
       }
     }
   }
+  if (!inserted && !updated) return { upserted: 0, inserted: 0, updated: 0, skipped, persistedMessages };
   matchSmsOrdersFromLibrary(insertedMessages);
-  state.smsMessages.sort((a, b) => toTime(b.messageAt || b.receivedAt || b.createdAt) - toTime(a.messageAt || a.receivedAt || a.createdAt));
+  sortSmsMessagesNewestFirst(state.smsMessages);
   if (state.smsMessages.length > MAX_SMS_MESSAGES) state.smsMessages = state.smsMessages.slice(0, MAX_SMS_MESSAGES);
+  smsMessageIndex.replace(state.smsMessages);
   return { upserted: inserted + updated, inserted, updated, skipped, persistedMessages };
 }
 
@@ -5353,14 +6932,20 @@ function expireWindowsTasks() {
   for (const task of state.windowsTasks) {
     if (!["queued", "running", "stalled"].includes(task.status)) continue;
     const anchor = task.status === "running" ? latestTaskActivityAt(task) || task.pickedAt || task.updatedAt : task.createdAt;
-    const ttlMs = task.status === "queued" ? WINDOWS_TASK_QUEUE_TTL_MS : WINDOWS_TASK_TTL_MS;
+    const runningTtlMs = task.type === "alipay_name_query"
+      ? ALIPAY_NAME_QUERY_WINDOWS_TASK_TTL_MS
+      : task.type === "kuaishou_lead"
+        ? AUTOMATION_SESSION_TTL_MS
+        : task.type === "xhs_data_collect" ? XHS_DATA_COLLECTION_TTL_MS : WINDOWS_TASK_TTL_MS;
+    const ttlMs = task.status === "queued" ? WINDOWS_TASK_QUEUE_TTL_MS : runningTtlMs;
     const wasStalled = task.status === "stalled";
     if (task.status === "stalled") {
       const stalledAt = toTime(task.stalledAt || task.updatedAt || task.createdAt);
-      if (stalledAt && now - stalledAt <= WINDOWS_TASK_TTL_MS) continue;
+      if (stalledAt && now - stalledAt <= runningTtlMs) continue;
     } else if (now - new Date(anchor || task.createdAt).getTime() <= ttlMs) {
       continue;
     }
+    if (isManagedLookupTask(task)) {task.status="stalled";task.stalledAt=task.stalledAt||nowIso();task.updatedAt=nowIso();changed=true;continue;}
     const expiredStatus = task.status;
     const timeoutSeconds = Math.round(ttlMs / 1000);
     task.status = "failed";
@@ -5427,20 +7012,25 @@ function expireAutomationJobs() {
   expireDeviceLocks();
   for (const job of state.automationJobs || []) {
     if (!isActiveAutomationStatus(job.status)) continue;
-    const ttlMs = job.kind === "xhs_publish" ? XHS_TASK_TTL_MS : AUTOMATION_SESSION_TTL_MS;
+    if (job.kind === "kuaishou_lead") {
+      const windowsTask = job.windowsTaskId ? (state.windowsTasks || []).find((item) => item.taskId === job.windowsTaskId) : null;
+      if (windowsTask && ["queued", "running", "stalled"].includes(windowsTask.status)) continue;
+    }
+    const ttlMs = job.kind === "xhs_data_collect" ? XHS_DATA_COLLECTION_TTL_MS : job.kind === "xhs_publish" ? XHS_TASK_TTL_MS : AUTOMATION_SESSION_TTL_MS;
     const anchor = toTime(job.updatedAt || job.createdAt);
     if (!anchor || now - anchor <= ttlMs) continue;
     job.status = "expired";
     job.updatedAt = nowIso();
     job.completedAt = job.updatedAt;
     job.result = { ...(job.result || {}), errorCode: "automation_task_timeout", timeoutSeconds: Math.round(ttlMs / 1000) };
-    if (job.kind === "xhs_publish") releaseAutomationLock(job, "expired");
+    if (["xhs_publish", "kuaishou_lead", "xhs_data_collect"].includes(job.kind)) releaseAutomationLock(job, "expired");
     const session = job.sessionId ? state.automationSessions.find((item) => item.sessionId === job.sessionId) : null;
     if (session) finishLookupSession(session, "expired", "automation_session_timeout");
     changed = true;
   }
   for (const session of state.automationSessions || []) {
-    if (!["starting", "ready", "querying", "stopping"].includes(session.status)) continue;
+    if (session.managedLookupGeneration && managedLookup?.reserved(session.deviceId)) continue;
+    if (!["starting", "ready", "querying", "switching", "choosing_account", "needs_human_verification", "stopping"].includes(session.status)) continue;
     const lock = (state.deviceLocks || []).find((item) => item.lockId === session.lockId);
     const anchor = toTime(session.updatedAt || session.createdAt);
     if ((lock && lock.status === "active") && anchor && now - anchor <= AUTOMATION_SESSION_TTL_MS) continue;
@@ -5495,7 +7085,7 @@ function pruneState(options = {}) {
       maxItems: MAX_AUTOMATION_JOBS
     }),
     automationSessions: pruneArray(state.automationSessions || [], {
-      isActive: (session) => ["starting", "ready", "querying", "stopping"].includes(session.status),
+      isActive: (session) => ["starting", "ready", "querying", "switching", "choosing_account", "needs_human_verification", "stopping"].includes(session.status),
       getTime: (session) => session.updatedAt || session.createdAt,
       maxItems: MAX_AUTOMATION_SESSIONS
     }),
@@ -5544,7 +7134,10 @@ function pruneState(options = {}) {
     trimTaskEvents(next.automationJobs);
     state.smsOrders = next.smsOrders;
     state.smsEvents = next.smsEvents;
-    state.smsMessages = next.smsMessages;
+    if (state.smsMessages !== next.smsMessages) {
+      state.smsMessages = next.smsMessages;
+      smsMessageIndex.replace(state.smsMessages);
+    }
     state.windowsTasks = next.windowsTasks;
     state.xhsQrTasks = next.xhsQrTasks;
     state.automationJobs = next.automationJobs;
@@ -5593,28 +7186,18 @@ async function runEvidenceStorageCleanup() {
 }
 
 function trimTaskEvents(tasks = []) {
-  for (const task of Array.isArray(tasks) ? tasks : []) {
-    if (isTerminalStatus(task.status)) compactCompletedTask(task);
-    if (!Array.isArray(task.events)) continue;
-    task.events = task.events.map((event) => sanitizeStoredEvent(event));
-    if (task.events.length <= 100) continue;
-    task.events = task.events
-      .slice()
-      .sort((a, b) => toTime(b.createdAt) - toTime(a.createdAt))
-      .slice(0, 100)
-      .reverse();
-  }
+  maintainTaskHistory(tasks);
 }
 
 function compactTaskCollectionsForSave() {
   for (const task of state.windowsTasks || []) {
-    if (isTerminalStatus(task.status)) compactCompletedTask(task);
+    compactTaskPayload(task);
   }
   for (const task of state.xhsQrTasks || []) {
-    if (isTerminalStatus(task.status)) compactCompletedTask(task);
+    compactTaskPayload(task);
   }
   for (const job of state.automationJobs || []) {
-    if (isTerminalStatus(job.status) && job.imageDataUrls?.length) delete job.imageDataUrls;
+    compactTaskPayload(job);
   }
 }
 
@@ -5624,7 +7207,9 @@ function pruneArray(items, options) {
   const withinRetention = options.ignoreRetention
     ? list
     : list.filter((item) => options.isActive(item) || toTime(options.getTime(item)) >= cutoff);
-  if (withinRetention.length <= options.maxItems) return withinRetention;
+  if (withinRetention.length <= options.maxItems) {
+    return withinRetention.length === list.length ? list : withinRetention;
+  }
   const active = withinRetention.filter(options.isActive);
   const inactive = withinRetention
     .filter((item) => !options.isActive(item))
@@ -5826,6 +7411,7 @@ async function buildDiagnostics() {
   const productionWarnings = buildProductionConfigWarnings();
   const warnings = [...tokenWarnings];
   if (!THIRD_PARTY_API_CLIENTS.size) warnings.push("open_api_clients_not_configured");
+  if (OPEN_NAME_LOOKUP_API_ENABLED && !OPEN_NAME_LOOKUP_CLIENTS.size) warnings.push("open_name_lookup_api_enabled_without_clients");
 
   if (NODE_ENV === "production" && STORAGE_BACKEND === "json" && !ALLOW_JSON_STORAGE_IN_PRODUCTION) {
     warnings.push("json_storage_requires_production_ack");
@@ -5873,6 +7459,12 @@ async function buildDiagnostics() {
     readinessCheck("adb_devices", "ADB 可控手机", overview.adbOnline > 0 ? "ok" : "warn", `${overview.adbOnline}/${overview.devices}`),
     readinessCheck("airtest_poco", "Airtest/Poco 自动化", automationReadyAgents.length > 0 ? "ok" : "warn", automationDetails),
     readinessCheck("open_api_clients", "第三方验证码 API", THIRD_PARTY_API_CLIENTS.size ? "ok" : "warn", THIRD_PARTY_API_CLIENTS.size ? `${THIRD_PARTY_API_CLIENTS.size} 个客户端已配置` : "未配置 THIRD_PARTY_API_CLIENTS"),
+    readinessCheck(
+      "open_name_lookup_api",
+      "外部查名字 API",
+      !OPEN_NAME_LOOKUP_API_ENABLED ? "ok" : OPEN_NAME_LOOKUP_CLIENTS.size ? "ok" : "fail",
+      !OPEN_NAME_LOOKUP_API_ENABLED ? "默认关闭" : OPEN_NAME_LOOKUP_CLIENTS.size ? `已启用，${OPEN_NAME_LOOKUP_CLIENTS.size} 个客户端已配置` : "已启用但未配置有效客户端"
+    ),
     readinessCheck("legacy_third_party_sms_orders", "旧验证码接口兼容", "warn", "旧 /api/v1/third-party/sms-orders 仍保留，第三方新接入应使用签名 open API"),
     readinessCheck("recent_operational_issues", "近 10 分钟异常", recentIssues.some((item) => item.level === "error") ? "fail" : recentIssues.length ? "warn" : "ok", recentIssues.length ? `${recentIssues.length} 个异常需要查看` : "暂无异常"),
     readinessCheck("phone_agents", "手机 Agent 兼容通道", overview.agentOnline > 0 ? "ok" : "warn", `${overview.agentOnline}/${overview.devices}，新流程不依赖 APK 在线`)
@@ -6153,6 +7745,11 @@ async function shutdown(signal) {
   shuttingDown = true;
   console.log(`${nowIso()} received ${signal}, shutting down`);
   clearInterval(maintenanceTimer);
+  clearInterval(lookupHumanNotificationTimer);
+  clearInterval(managedLookupTimer);
+  clearInterval(lookupAiRecoveryTimer);
+  await lookupAiRecovery?.close();
+  await managedLookup?.close();
   screenRelay?.close();
   try {
     await saveState();
@@ -6183,6 +7780,7 @@ function publicWindowsAgent(agent) {
     }, {});
   return {
     ...agent,
+    recoveryControl: recoveryControls.get(agent.agentId),
     tokenHash: undefined,
     hasToken: Boolean(agent.tokenHash),
     tokenPrefix: agent.tokenPrefix || "",
@@ -6227,6 +7825,8 @@ function publicWindowsTask(task) {
     ...task,
     payload: cloneJson(task?.payload || {}),
     result: cloneJson(task?.result || {}),
+    delivery: undefined,
+    deliveryAttempts: undefined,
     events: undefined
   };
 }
@@ -6268,6 +7868,8 @@ function publicWindowsTaskAdminDetail(task) {
     ...task,
     payload: publicWindowsTaskPayload(task.payload || {}),
     result: sanitizeTaskResult(task.result || {}, { includeEvidence: true }),
+    delivery: undefined,
+    deliveryAttempts: Number(task.deliveryAttempts || 0),
     events: undefined
   };
 }
@@ -6278,6 +7880,8 @@ function publicWindowsTaskPayload(payload = {}) {
     source: payload.source || "",
     automationJobId: payload.automationJobId || "",
     automationSessionId: payload.automationSessionId || "",
+    minDelaySeconds: Math.max(0, Number(payload.minDelaySeconds || 0)),
+    maxDelaySeconds: Math.max(0, Number(payload.maxDelaySeconds || 0)),
     xhsTaskId: payload.xhsTaskId || "",
     xhsAppSlot: payload.xhsAppSlot || "",
     xhsAccountLabel: payload.xhsAccountLabel || "",
@@ -6292,7 +7896,7 @@ function publicWindowsTaskPayload(payload = {}) {
 
 function publicWindowsTaskEventSummary(event, options = {}) {
   const screenshot = event?.screenshot ? sanitizeScreenshot(event.screenshot, { includeDataUrl: options.includeEvidence === true }) : null;
-  const uiHierarchyUrl = String(event?.uiHierarchyUrl || event?.uiHierarchyEvidence?.url || event?.detail?.uiHierarchyUrl || event?.detail?.uiHierarchyEvidence?.url || "");
+  const uiHierarchyUrl = publicEventHierarchyUrl(event);
   return {
     phase: String(event?.phase || ""),
     level: String(event?.level || "info"),
@@ -6327,7 +7931,9 @@ function xhsTaskAsDeviceCommand(task) {
       xhsAccountName: task.xhsAccountName || "",
       workflowScript: task.workflowScript || null
     },
-    result: task.result || {},
+    result: isTerminalStatus(task.status)
+      ? sanitizeTaskResult(task.result || {}, { includeEvidence: true })
+      : task.result || {},
     createdAt: task.createdAt,
     updatedAt: task.updatedAt,
     pickedAt: task.pickedAt || null,
@@ -6465,7 +8071,10 @@ function deviceOccupancyForViewer(device, viewer = null, overrides = {}) {
       taskId: waitingSmsOrder.orderId,
       createdAt: waitingSmsOrder.startedAt || waitingSmsOrder.createdAt
     } : null);
-  return buildDeviceOccupancy({ lock: source, viewer, users: state.users || [] });
+  const lookupChannel = managedLookup?.reserved(device.deviceId);
+  const lookupSessionId = lookupChannel?.sessionId || (source?.lockType === "alipay_name_lookup" ? source.taskId : "");
+  const lookupSession = lookupSessionId ? state.automationSessions.find(s => s.sessionId === lookupSessionId && s.deviceId === device.deviceId) : null;
+  return buildDeviceOccupancy({ lock: source, viewer, users: state.users || [], lookupSession, lookupChannel, lookupJobs: state.automationJobs || [] });
 }
 
 function addAudit(action, ctx, detail) {
@@ -6818,8 +8427,8 @@ function scheduleStateSave(delayMs = 1000) {
 async function loadPostgresState() {
   const pool = await getPostgresPool();
   await initPostgresStorage(pool);
-  const result = await pool.query("select data from phone_cloud_state where state_key = $1", [POSTGRES_STATE_KEY]);
-  if (result.rows[0]?.data) return withStateDefaults(result.rows[0].data);
+  const loaded = await loadStreamedSnapshot(pool, POSTGRES_STATE_KEY);
+  if (loaded) return withStateDefaults(loaded);
 
   if (POSTGRES_BOOTSTRAP_FROM_JSON) {
     try {
@@ -6839,30 +8448,28 @@ async function loadPostgresState() {
 async function savePostgresSnapshot(snapshot) {
   const pool = await getPostgresPool();
   await initPostgresStorage(pool);
-  const client = await pool.connect();
-  const serialized = stringifyPostgresJson(snapshot);
+  const encoded = spoolSnapshot(snapshot, stringifyPostgresJson);
+  let client;
   try {
+    client = await pool.connect();
     await client.query("begin");
     // This table intentionally stores a single full-state snapshot. Updating a
     // large jsonb row repeatedly creates dead TOAST tuples faster than autovacuum
     // can reclaim them. Replacing the one-row table keeps the relation small
     // until the state is fully split into structured tables.
     await client.query("truncate table phone_cloud_state");
-    await client.query(
-      `insert into phone_cloud_state (state_key, data, updated_at)
-       values ($1, $2::jsonb, now())`,
-      [POSTGRES_STATE_KEY, serialized]
-    );
+    await writeSpooledSnapshot(client, POSTGRES_STATE_KEY, encoded);
     if (STRUCTURED_TABLE_SYNC) {
       await syncStructuredTables(client, snapshot);
     }
     await client.query("commit");
-    return Buffer.byteLength(serialized);
+    return encoded.bytes;
   } catch (error) {
-    await client.query("rollback").catch(() => {});
+    await client?.query("rollback").catch(() => {});
     throw error;
   } finally {
-    client.release();
+    client?.release();
+    encoded.dispose();
   }
 }
 
@@ -6888,7 +8495,7 @@ async function initPostgresStorage(pool) {
   await pool.query(`
     create table if not exists phone_cloud_state (
       state_key text primary key,
-      data jsonb not null,
+      data json not null,
       updated_at timestamptz not null default now()
     )
   `);

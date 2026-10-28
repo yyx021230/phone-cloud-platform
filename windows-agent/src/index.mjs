@@ -1,3 +1,12 @@
+import {isLookupReaderRecovery, readerExitDiagnostic, verifyLookupReaderCleanup, lookupReaderStopReason} from "./lookup-reader-lifecycle.mjs";
+const lookupReaderStopBarriers = new Map();
+import {collectLookupTrace, isAutomaticLookupResume} from "./lookup-recovery-trace.mjs";
+import { createRecoveryIsolation } from './recovery-isolation.mjs';
+import { createDeviceScanPipeline, recoverySnapshotAdmission } from './device-scan-pipeline.mjs';
+import { createPnpRecoveryControl } from './pnp-recovery-control.mjs';
+import {hydrateManagedLookupTask,MANAGED_LOOKUP_PROTOCOL} from './managed-lookup-delivery.mjs';
+import {randomUUID} from "node:crypto";
+const lookupRuntimeId=randomUUID();
 import { execFile, spawn } from "node:child_process";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -5,13 +14,25 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { isDeviceSerialInNotificationFallbackScope, loadAgentConfig } from "./config.mjs";
 import { cachedAdbSerials, indexCachedDevices, mergeCachedDeviceScanRow } from "./device-scan-cache.mjs";
+import { runXhsDataCollection } from "./xhs-data-collection.mjs";
 import { galleryImportFileName, parseGalleryImportImage } from "./gallery-import.mjs";
+import {
+  hydrateLeasedWindowsTask,
+  SCREEN_GALLERY_DELIVERY_PROTOCOL,
+  XHS_PUBLISH_DELIVERY_PROTOCOL
+} from "./gallery-task-delivery.mjs";
 import { createSerialAdbActivityTracker } from "./serial-adb-activity.mjs";
 import { assertSerialAdbHealthy } from "./serial-adb-health.mjs";
 import { createSerialDelayScheduler } from "./serial-delay-scheduler.mjs";
 import { isSerialReservedForBackgroundWork, shouldScheduleSmsBackground } from "./serial-reservation.mjs";
 import { shouldRunPostTaskDeviceScan } from "./post-task-scan-policy.mjs";
-import { shouldFallbackAlipayPocoFailure } from "./alipay-poco-fallback-policy.mjs";
+import {
+  isRetryableAlipayPocoStartFailure,
+  shouldFallbackAlipayPocoFailure
+} from "./alipay-poco-fallback-policy.mjs";
+import { restartLookupQueryOnce } from "./lookup-page-recovery.mjs";
+import { createLookupStatusOutbox } from "./lookup-status-outbox.mjs";
+import { runLookupWithAccountPolicy } from "./lookup-account-policy.mjs";
 import { createDeviceActorManager } from "./device-actor.mjs";
 import { acquireAgentInstanceLock } from "./agent-instance-lock.mjs";
 import { createScreenStreamManager } from "./screen-stream.mjs";
@@ -19,6 +40,10 @@ import { createProcessRuntimeMetrics } from "./runtime-metrics.mjs";
 import { createSingleFlightRunner } from "./single-flight.mjs";
 import { createAtomicJsonWriter } from "./atomic-json-writer.mjs";
 import { pocoForwardLocals, stopWorkerWithFallback, waitForWorkerExit } from "./worker-shutdown.mjs";
+import {
+  selectAirtestWorkerEvictionCandidate,
+  selectIdleAirtestWorkerSerials
+} from "./airtest-worker-lifecycle.mjs";
 import { createAdbServerRecovery } from "./adb-server-recovery.mjs";
 import { createPnpMissingDeviceRecovery } from "./pnp-missing-device-recovery.mjs";
 import {
@@ -50,6 +75,9 @@ import {
   buildRemoveExactPnpArgs
 } from "./pnp-exact-actions.mjs";
 import { createGuardedTaskRunner } from "./guarded-task-runner.mjs";
+import { pnpRecoveryAdmissionReason } from "./pnp-recovery-admission.mjs";
+import { createWindowsDeviceInstallProbe } from "./windows-device-install-probe.mjs";
+import { classifyHumanVerificationXml, createLookupHumanObserver } from "./lookup-human-observer.mjs";
 import { createPnpRecoveryWakeScheduler } from "./pnp-recovery-wake-scheduler.mjs";
 import {
   scopePnpRecoveryPlansForSafety,
@@ -94,12 +122,23 @@ await fs.mkdir(path.join(cacheDir, "apk"), { recursive: true });
 await fs.mkdir(dataDir, { recursive: true });
 const pnpRecoveryStatePath = path.join(dataDir, "pnp-recovery-state.json");
 const persistedPnpRecoveryState = await loadPnpRecoveryState(pnpRecoveryStatePath);
+const pnpRecoveryControl = await createPnpRecoveryControl({file:path.join(dataDir,"device-recovery-control.json"),agentId:config.agentId});
+const recoveryIsolation = await createRecoveryIsolation({file:path.join(dataDir,"device-recovery-isolation.json"),agentId:config.agentId});
 const agentInstanceLock = await acquireAgentInstanceLock({
   lockPath: path.join(dataDir, "agent-instance.lock"),
   agentId: config.agentId
 });
 
+const lookupStatusOutbox = await createLookupStatusOutbox({
+  directory: path.join(dataDir, "lookup-status-outbox"),
+  send: (record) => api(`/api/v1/windows-agent-tasks/${encodeURIComponent(record.taskId)}/status`, {
+    method: "POST", body: { status: record.status, result: record.result, managedLookupGeneration:record.managedLookupGeneration }
+  })
+});
+
 let lastDevices = [];
+const scanMetadata = new Map();
+let deviceSyncChain = Promise.resolve();
 let lastDevicesScannedAt = 0;
 let lastAdbVersion = "";
 let smsSyncCursors = await loadSmsSyncCursors();
@@ -135,6 +174,9 @@ let automationStatusSyncTimer = null;
 let automationStatusSyncInFlight = false;
 let automationStatusSyncRequested = false;
 const airtestWorkersBySerial = new Map();
+const airtestLookupWarmUntilBySerial = new Map();
+let airtestWorkerAdmissionChain = Promise.resolve();
+let airtestWorkerCleanupTimer = null;
 const activeTasksById = new Map();
 const activeTaskAbortControllersById = new Map();
 const activeTaskSerials = new Set();
@@ -205,30 +247,43 @@ pnpMissingDeviceRecovery.seed(cachedAdbSerials(lastServerDevicesById).filter((se
   const cached = lastServerDevicesById.get(`adb:${serial}`) || {};
   return cached.listed !== false && cached.adb?.agentId === config.agentId;
 }));
+const deviceScanPipeline = createDeviceScanPipeline({
+  discover: () => scanAdbDevices({lightweight:true}),
+  publish: publishDeviceSnapshot,
+  maintain: maintainDeviceSnapshot,
+  onError: error => log("device maintenance failed", error?.message || String(error))
+});
+
 let health = await buildHealth("starting", null);
 const guardedTasks = createGuardedTaskRunner({
   onError(error, name) {
     log(`${name} failed`, error?.message || String(error));
   }
 });
+const inspectWindowsDeviceInstallActivity = createWindowsDeviceInstallProbe({ run });
 let pnpRecoveryWakeScheduler = null;
 pnpRecoveryWakeScheduler = createPnpRecoveryWakeScheduler({
   retryDelayMs: 1_000,
   async run(reason) {
-    // Poll only the process list while Windows DeviceInstall is active. A
-    // hundred-device inventory every five seconds would make recovery faster
-    // on paper but add exactly the PnP pressure this guard is meant to avoid.
+    // Installer activity blocks PnP mutations, not ADB discovery/publication
+    // or transport-only recovery. Avoid forcing a full USB inventory on every
+    // busy poll; normal inventory freshness and command admission still apply.
     const installer = await inspectWindowsDeviceInstallActivity();
     if (installer.busy) {
-      pnpRecoveryWakeScheduler.schedule(config.pnpDeviceInstallPollSeconds * 1_000, reason || "device_install_busy");
-      return { deferred: true };
+      log("pnp installer lane deferred", {
+        reason: installer.reason, probeState: installer.state,
+        probeDurationMs: installer.durationMs, probeCheckedAt: installer.checkedAt,
+        probeErrorCode: installer.errorCode, probeTimedOut: installer.timedOut,
+        processCount: installer.processes.length, processes: installer.processes.slice(0, 8)
+      });
+      pnpRecoveryWakeScheduler.schedule(config.pnpDeviceInstallPollSeconds * 1_000, installer.reason);
     }
-    return await runGuardedInterval("scan", () => scanAndSync({
-      forcePnpInventory: true,
+    return await scanAndSync({
+      forcePnpInventory: !installer.busy,
       skipSms: false,
       skipPreflight: true,
       reason: reason || "pnp_recovery_followup"
-    }));
+    });
   },
   onError(error, reason) {
     log("pnp recovery wake failed", { reason, error: error?.message || String(error) });
@@ -291,31 +346,71 @@ screenStreamManager = createScreenStreamManager({
     await pauseAutomationForScreenControl(serial);
   },
   async afterSessionEnd(serial) {
-    automationResumeScheduler.schedule(serial);
-    log("automation resume scheduled after screen control", { serial, delayMs: 15_000 });
+    if (hasActiveAirtestLookupWarmLease(serial)) {
+      automationResumeScheduler.schedule(serial);
+      log("automation resume scheduled for active lookup session", { serial, delayMs: 15_000 });
+      return;
+    }
+    markAutomationReadyOnDemand(serial, "screen_control_ended");
+    log("automation remains on demand after screen control", { serial });
   }
 });
 screenStreamManager.start();
 
+const failedHumanProbeWorkers = new WeakMap();
+const lookupHumanObserver = createLookupHumanObserver({
+  request: api,
+  agentId: config.agentId,
+  canObserve: (probe) => !pnpScreenCoordinator.active && !activeTaskSerials.has(probe.adbSerial)
+    && lastDevices.some((device) => device.adbSerial === probe.adbSerial && device.state === "device"),
+  observe: observeLookupHumanVerification,
+  readPower: probe => adb(probe.adbSerial, ["shell", "dumpsys", "power"], {
+    allowScreenControl: Boolean(probe.screenSessionId), timeoutMs: 2_000,
+    actorLabel: "lookup-human-power-readonly"
+  }),
+  detached: true,
+  onError: () => log("lookup human observation report failed")
+});
+const lookupStatusOutboxTimer = setInterval(() => {
+  lookupStatusOutbox.flush().catch(() => log("lookup terminal report remains pending"));
+}, 3_000);
+const lookupHumanObserverTimer = setInterval(
+  () => runGuardedInterval("lookup human observation", () => lookupHumanObserver.poll()), 3_000
+);
+
 setInterval(() => runGuardedInterval("heartbeat", () => heartbeat()), config.heartbeatIntervalSeconds * 1000);
-setInterval(() => runGuardedInterval("scan", () => scanAndSync()), config.scanIntervalSeconds * 1000);
+setInterval(() => scanAndSync(), config.scanIntervalSeconds * 1000);
 setInterval(() => runGuardedInterval("task poll", () => pollTask()), config.taskPollIntervalSeconds * 1000);
+airtestWorkerCleanupTimer = setInterval(
+  () => runGuardedInterval("airtest worker cleanup", () => cleanupIdleAirtestWorkers()),
+  config.airtestWorkerCleanupIntervalSeconds * 1000
+);
 
 await runGuardedInterval("heartbeat", () => heartbeat()).catch((error) => log("startup heartbeat failed", error?.message || String(error)));
-await runGuardedInterval("scan", () => scanAndSync()).catch((error) => log("startup scan failed", error?.message || String(error)));
+await scanAndSync().catch((error) => log("startup scan failed", error?.message || String(error)));
 scheduleTaskPoll(100);
 
 process.stdin.resume();
 
 for (const signal of ["SIGINT", "SIGTERM"]) {
   process.on(signal, async () => {
+    lookupHumanObserver.stop();
+    clearInterval(lookupHumanObserverTimer);
+    clearInterval(lookupStatusOutboxTimer);
     backgroundSmsNotificationLoopStopped = true;
+    if (airtestWorkerCleanupTimer) {
+      clearInterval(airtestWorkerCleanupTimer);
+      airtestWorkerCleanupTimer = null;
+    }
     if (backgroundSmsNotificationLoopTimer) {
       clearTimeout(backgroundSmsNotificationLoopTimer);
       backgroundSmsNotificationLoopTimer = null;
     }
     pnpRecoveryWakeScheduler?.cancel();
     await screenStreamManager?.close().catch(() => {});
+    await stopAllAirtestWorkers("agent_shutdown").catch((error) => {
+      log("airtest worker shutdown failed", { error: error?.message || String(error) });
+    });
     deviceActors.close("agent_shutdown");
     if (pnpRecoveryStateSaveTimer) {
       clearTimeout(pnpRecoveryStateSaveTimer);
@@ -341,11 +436,12 @@ async function runGuardedInterval(name, fn) {
 }
 
 async function buildHealth(reason, previousHealth = null) {
-  const [adbCheck, logDirCheck, cacheDirCheck, airtestCheck] = await Promise.allSettled([
+  const [adbCheck, logDirCheck, cacheDirCheck, airtestCheck, collectionProtocolCheck] = await Promise.allSettled([
     adbVersion(),
     checkWritableDir(logDir),
     checkWritableDir(cacheDir),
-    checkAirtestStatus()
+    checkAirtestStatus(),
+    run(config.pythonCommand, [config.xhsDataCollectionRunnerPath, "--protocol"], { timeoutMs: 8_000 })
   ]);
   const adbOk = adbCheck.status === "fulfilled";
   const logOk = logDirCheck.status === "fulfilled" && logDirCheck.value.ok;
@@ -366,6 +462,11 @@ async function buildHealth(reason, previousHealth = null) {
       version: adbOk ? adbCheck.value : "",
       error: adbOk ? "" : adbCheck.reason.message
     },
+    xhsDataCollect: {
+      protocol: "xhs_data_collect_v1",
+      ready: adbOk && collectionProtocolCheck.status === "fulfilled"
+        && collectionProtocolCheck.value === "xhs_data_collect_v1"
+    },
     airtest: {
       enabled: config.airtestEnabled,
       ok: airtestCheck.status === "fulfilled" && airtestCheck.value.ok,
@@ -384,6 +485,7 @@ async function buildHealth(reason, previousHealth = null) {
     },
     runtime: runtimeMetrics.snapshot(),
     deviceActors: deviceActors.health().slice(0, 200),
+    recoveryControl: {...pnpRecoveryControl.health(),isolationReset:true,isolationError:recoveryIsolation.health().error,isolated:recoveryIsolation.health().isolated},
     deviceRecovery: currentPnpRecoveryHealth(),
     directories: {
       logDir: { path: logDir, ok: logOk, error: logDirCheck.status === "fulfilled" ? logDirCheck.value.error : logDirCheck.reason.message },
@@ -408,7 +510,7 @@ async function checkWritableDir(targetDir) {
 async function heartbeat() {
   health = await buildHealth("heartbeat", health);
   if (!lastAdbVersion) lastAdbVersion = health.adb.ok ? health.adb.version : `adb unavailable: ${health.adb.error}`;
-  await api("/api/v1/windows-agents/heartbeat", {
+  const response = await api("/api/v1/windows-agents/heartbeat", {
     method: "POST",
     body: {
       agentId: config.agentId,
@@ -418,43 +520,65 @@ async function heartbeat() {
       platform: os.platform(),
       arch: os.arch(),
       adbVersion: lastAdbVersion,
+      managedLookupProtocol: MANAGED_LOOKUP_PROTOCOL, lookupPostHumanProtocol: 1, lookupRuntimeId,
       maxConcurrentAdbTasks: config.maxConcurrentAdbTasks,
       deviceTaskConcurrency: config.deviceTaskConcurrency,
       health
     }
   });
+  await pnpRecoveryControl.apply(response.agent?.recoveryControl);
+  const released=await recoveryIsolation.release(response.agent.recoveryControl);
+  for(const serial of released || [])pnpTargetRecoveryAttempts.delete(serial);
+  if(released?.length)await persistPnpRecoveryStateNow();
 }
 
+
 async function scanAndSync(options = {}) {
-  const activeAutomationTask = hasActiveAutomationTask();
-  let devices = [];
-  try {
-    devices = await scanAdbDevices();
-    health.lastScan = {
-      ok: true,
-      at: new Date().toISOString(),
-      error: "",
-      activeAutomationTask,
-      reason: options.reason || ""
-    };
-  } catch (error) {
-    health.lastScan = { ok: false, at: new Date().toISOString(), error: error.message };
-    await heartbeat().catch((heartbeatError) => log("heartbeat after scan failure failed", heartbeatError.message));
+  // Discovery/publication owns this guard; maintenance has its own single owner.
+  // Neither timeout permits overlapping work in its respective lane.
+  return runGuardedInterval("scan", () => performDeviceScanAndSync(options));
+}
+
+async function performDeviceScanAndSync(options = {}) {
+  try { return await deviceScanPipeline.scan(options); }
+  catch(error) {
+    health.lastScan={ok:false,at:new Date().toISOString(),error:error.message};
     throw error;
   }
-  // Release stale Poco/ADB forwards before any exact PnP restart. Kernel-PnP
-  // event 225 showed adb-related processes holding device removal paths open.
-  await cleanupOfflineAutomationWorkers(devices).catch((error) => log("automation worker cleanup failed", error.message));
-  await requestSafePnpRescanForMissingDevices(devices, { forceInventory: options.forcePnpInventory === true });
-  health.deviceRecovery = currentPnpRecoveryHealth();
+}
+
+async function publishDeviceSnapshot(snapshot, options = {}) {
+  const devices=snapshot.devices;
+  const activeAutomationTask=hasActiveAutomationTask();
+  health.lastScan={ok:true,at:new Date(snapshot.observedAt).toISOString(),error:"",activeAutomationTask,reason:options.reason||""};
+  // Cached physical inventory may add missing phones but never overwrites fresh
+  // ADB states or requires a Windows inventory operation on this fast path.
+  appendPhysicalRecoveryRows(devices,buildDeviceRecoveryObservations({devices,inventory:lastPhysicalPnpInventory,knownSerials:cachedAdbSerials(lastServerDevicesById),inventoryReady:isPhysicalPnpInventoryReady()}));
+  health.deviceRecovery=currentPnpRecoveryHealth();
   markAutomationPreflightPending(devices);
-  lastDevices = devices;
-  lastDevicesScannedAt = Date.now();
+  lastDevices=devices;lastDevicesScannedAt=snapshot.observedAt;
   annotateDeviceAutomationStatus(devices);
-  const syncResult = await syncDevicesToPlatform(devices);
-  rememberServerDevices(syncResult.devices || []);
-  await saveDeviceScanCache(syncResult.devices || []).catch((error) => log("device scan cache save failed", error.message));
-  log("synced devices", devices.map((device) => `${device.adbSerial}:${device.state}`).join(", ") || "none");
+  const syncResult=await syncDevicesToPlatform(devices);
+  rememberServerDevices(syncResult.devices||[]);
+  await saveDeviceScanCache(syncResult.devices||[]).catch(error=>log("device scan cache save failed",error.message));
+  log("synced devices",devices.map(device=>`${device.adbSerial}:${device.state}`).join(", ")||"none");
+}
+
+async function maintainDeviceSnapshot(snapshot,options,getLatest) {
+  let devices=snapshot.devices;
+  await hydrateStaticDeviceInfo(devices);
+  await refreshBatteryLevels(devices);
+  await refreshSmsRelayHealth(devices);
+  for(const device of devices)scanMetadata.set(String(device.adbSerial).toUpperCase(),Object.fromEntries(
+    ["model","manufacturer","brand","androidVersion","batteryLevel","sims","smsRelay"].filter(key=>device[key]!==undefined).map(key=>[key,device[key]])
+  ));
+  devices=getLatest().devices;
+  await cleanupOfflineAutomationWorkers(devices).catch(error=>log("automation worker cleanup failed",error.message));
+  await requestSafePnpRescanForMissingDevices(devices,{forceInventory:options.forcePnpInventory===true});
+  health.deviceRecovery=currentPnpRecoveryHealth();
+  // Never publish a stale maintenance snapshot after a newer discovery.
+  devices=getLatest().devices;
+  const activeAutomationTask=hasActiveAutomationTask();
   const recoveryPending = Number(health.deviceRecovery?.actionableCount || 0) > 0;
   if (!activeAutomationTask && !recoveryPending && !options.skipPreflight) {
     scheduleAutomationPreflight(devices)
@@ -490,7 +614,8 @@ async function scanAndSync(options = {}) {
 }
 
 async function syncDevicesToPlatform(devices) {
-  return api(`/api/v1/windows-agents/${encodeURIComponent(config.agentId)}/devices/sync`, {
+  const snapshot=structuredClone(devices);
+  const operation=deviceSyncChain.then(() => api(`/api/v1/windows-agents/${encodeURIComponent(config.agentId)}/devices/sync`, {
     method: "POST",
     body: {
       agent: {
@@ -501,11 +626,14 @@ async function syncDevicesToPlatform(devices) {
         platform: os.platform(),
         arch: os.arch(),
         adbVersion: lastAdbVersion,
+        managedLookupProtocol: MANAGED_LOOKUP_PROTOCOL, lookupPostHumanProtocol: 1, lookupRuntimeId,
         health
       },
-      devices
+      devices:snapshot
     }
-  });
+  }));
+  deviceSyncChain=operation.catch(()=>{});
+  return operation;
 }
 
 function scheduleAutomationStatusSync() {
@@ -626,6 +754,16 @@ function markAutomationPreflightPending(devices) {
     if (cached && cached.status === "ready" && workerReady && now - Number(cached.checkedAtMs || 0) < config.automationPreflightIntervalSeconds * 1000) {
       continue;
     }
+    if (cached?.ok && !workerReady) {
+      automationPreflightBySerial.set(serial, {
+        ...cached,
+        serial,
+        ok: true,
+        status: "ready_on_demand",
+        lastError: "自动化组件已就绪，任务开始时按需启动 Poco worker"
+      });
+      continue;
+    }
     if (cached && (cached.status === "preparing" || cached.status === "queued")) continue;
     automationPreflightBySerial.set(serial, {
       ...(cached || {}),
@@ -644,6 +782,7 @@ async function cleanupOfflineAutomationWorkers(devices) {
   const online = new Set(devices.filter((device) => device.state === "device").map((device) => device.adbSerial).filter(Boolean));
   for (const serial of airtestWorkersBySerial.keys()) {
     if (online.has(serial)) continue;
+    airtestLookupWarmUntilBySerial.delete(serial);
     await stopAirtestWorker(serial, "device_offline").catch((error) => log("airtest worker cleanup failed", { serial, error: error.message }));
   }
 }
@@ -711,14 +850,14 @@ function shouldRunAutomationPreflight(device) {
   if (automationResumeScheduler.isPending(serial)) return false;
   if (isDeviceSerialReserved(serial)) return false;
   if (automationPreflightRunning.has(serial)) return false;
-  const worker = airtestWorkersBySerial.get(serial);
-  if (!worker || worker.exited || worker.stopping) return true;
   const cached = automationPreflightBySerial.get(serial);
   if (!cached) return true;
   if (cached.status === "preparing") return false;
   const age = Date.now() - Number(cached.checkedAtMs || 0);
   if (cached.ok && age < config.automationPreflightIntervalSeconds * 1000) return false;
   if (!cached.ok && cached.nextCheckAt && Date.now() < cached.nextCheckAt) return false;
+  const worker = airtestWorkersBySerial.get(serial);
+  if (!worker || worker.exited || worker.stopping) return true;
   return true;
 }
 
@@ -980,22 +1119,37 @@ async function pollTask() {
   let picked = 0;
   let cancellationChecked = false;
   while (!cancellationChecked || activeTasksById.size < config.maxConcurrentAdbTasks) {
-    const excludeSerials = [...new Set([...activeTaskSerials, ...screenControlledSerials])]
+    const excludeSerials = [...new Set([...activeTaskSerials, ...screenControlledSerials, ...lookupStatusOutbox.pendingTasks().map((item) => item.adbSerial)])]
       .filter(Boolean)
       .map(encodeURIComponent)
       .join(",");
     const screenGallerySerials = [...screenControlledSerials].filter(Boolean).map(encodeURIComponent).join(",");
-    const activeTaskIds = [...activeTasksById.keys()].filter(Boolean).map(encodeURIComponent).join(",");
+    const activeTaskIds = [...new Set([...activeTasksById.keys(), ...lookupStatusOutbox.pendingTasks().map((item) => item.taskId)])].filter(Boolean).map(encodeURIComponent).join(",");
     const params = new URLSearchParams();
     if (excludeSerials) params.set("excludeSerials", excludeSerials);
     if (screenGallerySerials) params.set("screenGallerySerials", screenGallerySerials);
     if (activeTaskIds) params.set("activeTaskIds", activeTaskIds);
+    params.set("managedLookupDelivery", MANAGED_LOOKUP_PROTOCOL);
+    params.set("galleryDelivery", SCREEN_GALLERY_DELIVERY_PROTOCOL);
+    params.set("xhsPublishDelivery", XHS_PUBLISH_DELIVERY_PROTOCOL);
     const suffix = params.size ? `?${params.toString()}` : "";
     const payload = await api(`/api/v1/windows-agents/${encodeURIComponent(config.agentId)}/tasks/next${suffix}`);
     cancellationChecked = true;
     abortCancelledAutomationTasks(payload.cancelledTaskIds || []);
     if (!payload.task) break;
-    startTask(payload.task);
+    const prepared = payload.task.payload?.managedLookup ? await hydrateManagedLookupTask(payload.task,{request:api}) : await hydrateLeasedWindowsTask(payload.task, { request: api });
+    if (!prepared.acknowledged) {
+      log("task acknowledgement uncertain", {
+        taskId: prepared.task.taskId,
+        type: prepared.task.type,
+        error: prepared.acknowledgementError?.message || String(prepared.acknowledgementError || "")
+      });
+      // Gallery import is idempotent enough to finish after a lost ACK
+      // response. Publishing is an external side effect: never click publish
+      // unless the server has confirmed ownership of this delivery.
+      if (prepared.task.type === "xhs_publish" || prepared.task.payload?.managedLookup) continue;
+    }
+    startTask(prepared.task);
     picked += 1;
   }
   if (picked) log("tasks dispatched", { picked, active: activeTasksById.size, maxConcurrentAdbTasks: config.maxConcurrentAdbTasks });
@@ -1042,10 +1196,15 @@ function startTask(task) {
 }
 
 async function runTask(task, options = {}) {
+  const isLookup = task.type.startsWith("alipay_name_");
+  let lookupTerminal = null;
   log("task picked", { taskId: task.taskId, type: task.type, adbSerial: task.adbSerial });
   taskEvent(task, "start", "info", `开始执行 ${task.type}`)
     .catch((error) => log("task start event failed", { taskId: task.taskId, error: error.message }));
   try {
+    if (isLookup && task.type !== "alipay_name_stop" && !lookupStatusOutbox.isAvailable()) {
+      throw Object.assign(new Error("查名结果存储不可用，当前任务未操作手机；请检查存储后重试。"), { code: "lookup_status_storage_unavailable" });
+    }
     let result;
     if (task.type === "adb_install_apk") result = await taskInstallApk(task);
     else if (task.type === "adb_grant_permissions") result = await taskGrantPermissions(task);
@@ -1057,11 +1216,15 @@ async function runTask(task, options = {}) {
     else if (task.type === "screen_gallery_import") result = await taskScreenGalleryImport(task);
     else if (task.type === "xhs_qr_appium") result = await taskXhsQrAirtestPoco(task);
     else if (task.type === "xhs_publish") result = await taskXhsPublish(task);
-    else if (["alipay_name_start", "alipay_name_query", "alipay_name_stop"].includes(task.type)) result = await taskAlipayNameLookup(task, options);
+    else if (task.type === "xhs_data_collect") result = await taskXhsDataCollect(task, options);
+    else if (task.type === "kuaishou_lead") result = await taskKuaishouLead(task, options);
+    else if (["alipay_name_start", "alipay_name_query", "alipay_name_switch", "alipay_name_stop"].includes(task.type)) result = await taskAlipayNameLookupWithAccounts(task, options);
     else throw new Error(`unsupported task type: ${task.type}`);
-    await taskEvent(task, "finish", "info", "执行成功", compactTaskResultForEvent(result))
+    const collectionIncomplete = task.type === "xhs_data_collect" && result.collection?.complete !== true;
+    await taskEvent(task, "finish", collectionIncomplete ? "warn" : "info", collectionIncomplete ? "已保存部分采集结果" : "执行成功", compactTaskResultForEvent(result))
       .catch((error) => log("task finish event failed", { taskId: task.taskId, error: error.message }));
-    await taskStatus(task, "succeeded", result);
+    if (isLookup) lookupTerminal = { status: "succeeded", result };
+    else await taskStatus(task, collectionIncomplete ? "failed" : "succeeded", result);
   } catch (error) {
     if (isAutomationTaskCancellation(error)) {
       taskEvent(task, "cancelled", "info", "用户已结束会话，当前自动化任务已停止", { reason: "automation_task_cancelled" })
@@ -1077,13 +1240,14 @@ async function runTask(task, options = {}) {
         .catch((statusError) => log("task cancellation status failed", { taskId: task.taskId, error: statusError.message }));
       return;
     }
-    const evidence = await captureFailureEvidence(task).catch((evidenceError) => ({
+    const evidence = error.code === "lookup_status_storage_unavailable" ? {} : await captureFailureEvidence(task).catch((evidenceError) => ({
       evidenceError: evidenceError?.message || String(evidenceError)
     }));
     const failure = { ...taskFailureResult(error), ...evidence };
     await taskEvent(task, "finish", "error", error.message, compactTaskResultForEvent(failure))
       .catch((eventError) => log("task failure event failed", { taskId: task.taskId, error: eventError.message }));
-    await taskStatus(task, "failed", failure);
+    if (isLookup) lookupTerminal = { status: "failed", result: failure };
+    else await taskStatus(task, "failed", failure);
   } finally {
     if (options.signal?.aborted) {
       log("post-task scan skipped after task cancellation", {
@@ -1102,6 +1266,8 @@ async function runTask(task, options = {}) {
       });
     }
   }
+  // Reporting faults are not Android execution failures.
+  if (lookupTerminal) await taskStatus(task, lookupTerminal.status, lookupTerminal.result);
 }
 
 function preemptSmsSyncForScreen(serial) {
@@ -1648,6 +1814,29 @@ async function taskXhsQrAirtestPoco(task) {
   }
 }
 
+async function taskXhsDataCollect(task, options = {}) {
+  if (!(await fileExists(config.xhsDataCollectionRunnerPath))) throw new Error("小红书数据采集脚本不存在，请更新 Windows 管理器");
+  await assertAdbDeviceOnlineFast(task.adbSerial);
+  await ensureXmlUiAutomatorReady(task.adbSerial);
+  await taskEvent(task, "xhs_data_collect", "info", "开始读取最近30天作品列表", { xhsAppSlot: task.payload?.xhsAppSlot, days: 30 });
+  try {
+    return await runXhsDataCollection(task, {
+      config, run, adb, cacheDir, deviceCachePath: deviceScanCachePath(), signal: options.signal
+    });
+  } catch (error) {
+    if (options.signal?.aborted) throw options.signal.reason || error;
+    const runnerReason = String(error.stderr || error.message || "").slice(0, 600);
+    const message = runnerReason.includes("could not prove") ? "无法进入作品分析，请确认账号已登录且数据权限已开通"
+      : runnerReason.includes("stayed blank") ? "作品列表未加载，请稍后重试"
+      : runnerReason.includes("occupied") ? "手机被其他任务占用，采集已停止"
+      : "小红书数据采集失败，已保留诊断信息";
+    error.code = "xhs_data_collection_failed";
+    error.diagnostic = { code: error.code, message, runnerReason, restorationErrors: error.restorationErrors || [] };
+    error.message = message;
+    throw error;
+  }
+}
+
 async function taskXhsPublish(task) {
   const startedAt = Date.now();
   if (!(await fileExists(config.xhsPublishRunnerPath))) throw new Error(`小红书发布执行器不存在：${config.xhsPublishRunnerPath}`);
@@ -1668,9 +1857,6 @@ async function taskXhsPublish(task) {
     remotePaths: prepared.map((item) => item.remotePath),
     taskId: task.taskId
   };
-  const accountSwitchDue = operation === "query"
-    && payload.successfulCountBefore > 0
-    && payload.successfulCountBefore % payload.switchEvery === 0;
   await fs.mkdir(path.dirname(payloadPath), { recursive: true });
   await fs.writeFile(payloadPath, JSON.stringify(payload), "utf8");
   await taskEvent(task, "xhs_publish", "info", "启动小红书图文发布流程", {
@@ -1703,6 +1889,196 @@ async function taskXhsPublish(task) {
   }
 }
 
+function kuaishouLeadEventMessage(event = {}) {
+  if (event.event === "candidate_selected") return `已选择飞书第 ${event.row || "?"} 行，准备录入 ${event.phone || "号码"}`;
+  if (event.event === "row_claimed") return `已占用飞书第 ${event.row || "?"} 行，正在操作手机`;
+  if (event.event === "row_finalized") return `飞书第 ${event.row || "?"} 行已更新为“${event.status || "已处理"}”`;
+  if (event.event === "row_skipped") return `飞书第 ${event.row || "?"} 行领取状态已变化，未操作手机并继续扫描`;
+  if (event.event === "queue_empty") return "当前没有未处理或可安全重试的数据，继续等待新行";
+  if (event.event === "waiting_for_new_rows") return `等待 ${event.seconds || 0} 秒后再次扫描飞书`;
+  if (event.event === "waiting_for_queue_retry") return `飞书读取暂时失败，等待 ${event.seconds || 0} 秒后重试`;
+  if (event.event === "waiting_after_row_skip") return `等待 ${event.seconds || 0} 秒后继续扫描飞书`;
+  if (event.event === "queue_read_failed") return `飞书读取暂时失败：${event.error || "网络异常"}`;
+  if (event.event === "waiting") return `等待 ${event.seconds || 0} 秒后处理下一条`;
+  if (event.event === "consumer_stopped") return "快手录入消费器已停止";
+  return "快手录入任务运行中";
+}
+
+function runStreamingJsonLines(file, args, options = {}) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(file, args, {
+      windowsHide: true,
+      shell: options.shell ?? needsShell(file),
+      cwd: options.cwd,
+      env: options.env,
+      detached: options.killTree === true,
+      stdio: [options.controlStdin ? "pipe" : "ignore", "pipe", "pipe"]
+    });
+    let stdoutBuffer = "";
+    let stderr = "";
+    let settled = false;
+    let stopRequested = false;
+    let forceStopTimer = null;
+    let eventQueue = Promise.resolve();
+    const enqueueLine = (line) => {
+      const text = String(line || "").trim();
+      if (!text) return;
+      eventQueue = eventQueue.then(async () => {
+        let parsed;
+        try { parsed = JSON.parse(text); } catch { parsed = { event: "runner_output", message: text.slice(0, 500) }; }
+        await options.onLine?.(parsed);
+      }).catch((error) => log("streaming child event relay failed", { error: error.message }));
+    };
+    child.stdout.on("data", (chunk) => {
+      stdoutBuffer += String(chunk || "");
+      const lines = stdoutBuffer.split(/\r?\n/);
+      stdoutBuffer = lines.pop() || "";
+      for (const line of lines) enqueueLine(line);
+    });
+    child.stderr.on("data", (chunk) => {
+      stderr = `${stderr}${String(chunk || "")}`.slice(-4000);
+    });
+    child.stdin?.on("error", () => {});
+    const forceStop = () => {
+      if (!child.pid || child.exitCode !== null) return;
+      if (process.platform === "win32") {
+        try {
+          const terminator = spawn("taskkill", ["/PID", String(child.pid), "/T", "/F"], {
+            windowsHide: true,
+            stdio: "ignore"
+          });
+          terminator.on("error", () => {
+            try { child.kill("SIGKILL"); } catch {}
+          });
+          terminator.unref();
+          return;
+        } catch {}
+      } else if (options.killTree) {
+        try {
+          process.kill(-child.pid, "SIGKILL");
+          return;
+        } catch {}
+      }
+      try { child.kill("SIGKILL"); } catch {}
+    };
+    const stop = () => {
+      if (stopRequested || child.exitCode !== null) return;
+      stopRequested = true;
+      if (options.controlStdin && child.stdin?.writable) {
+        try { child.stdin.end("stop\n"); } catch {}
+        forceStopTimer = setTimeout(forceStop, Math.max(500, Number(options.forceStopAfterMs || 3_000)));
+        forceStopTimer.unref?.();
+        return;
+      }
+      forceStop();
+    };
+    if (options.signal?.aborted) stop();
+    options.signal?.addEventListener("abort", stop, { once: true });
+    child.on("error", (error) => {
+      if (settled) return;
+      settled = true;
+      if (forceStopTimer) clearTimeout(forceStopTimer);
+      options.signal?.removeEventListener("abort", stop);
+      reject(options.signal?.aborted ? (options.signal.reason || automationTaskCancellationError()) : error);
+    });
+    child.on("close", async (code, signal) => {
+      if (settled) return;
+      settled = true;
+      if (forceStopTimer) clearTimeout(forceStopTimer);
+      options.signal?.removeEventListener("abort", stop);
+      if (stdoutBuffer.trim()) enqueueLine(stdoutBuffer);
+      await eventQueue;
+      if (options.signal?.aborted) {
+        reject(options.signal.reason || automationTaskCancellationError());
+        return;
+      }
+      if (code !== 0) {
+        const error = new Error(`快手录入消费器异常退出 (exit=${code}, signal=${signal || "none"})${stderr ? `: ${stderr}` : ""}`);
+        error.code = "kuaishou_lead_runner_failed";
+        reject(error);
+        return;
+      }
+      resolve({ code, signal });
+    });
+  });
+}
+
+async function taskKuaishouLead(task, options = {}) {
+  if (!config.kuaishouLeadEnabled) throw new Error("当前 Windows 管理器未启用快手录入");
+  for (const [label, target] of [
+    ["快手录入消费器", config.kuaishouLeadRunnerPath],
+    ["快手手机执行器", config.kuaishouVehicleLeadRunnerPath]
+  ]) {
+    if (!(await fileExists(target))) throw new Error(`${label}不存在：${target}`);
+  }
+  if (!(await fileExists(config.kuaishouLeadCredentialsPath)) && (!process.env.FEISHU_APP_ID || !process.env.FEISHU_APP_SECRET)) {
+    throw new Error(`飞书凭据文件不存在：${config.kuaishouLeadCredentialsPath}`);
+  }
+  const device = await assertAdbDeviceOnlineFast(task.adbSerial);
+  if (!(await isPackageInstalled(task.adbSerial, config.kuaishouPackageName))) {
+    throw new Error(`这台手机未安装快手：${config.kuaishouPackageName}`);
+  }
+  await ensureDeviceAutomationReady(device, { task });
+  const minDelaySeconds = Math.max(30, Number(task.payload?.minDelaySeconds || 240));
+  const maxDelaySeconds = Math.max(minDelaySeconds, Math.min(3600, Number(task.payload?.maxDelaySeconds || 420)));
+  const args = [
+    config.kuaishouLeadRunnerPath,
+    "run",
+    "--credentials", config.kuaishouLeadCredentialsPath,
+    "--wiki-token", config.kuaishouLeadWikiToken,
+    "--serial", task.adbSerial,
+    "--adb", config.adbPath,
+    "--python", config.pythonCommand,
+    "--vehicle-runner", config.kuaishouVehicleLeadRunnerPath,
+    "--min-delay", String(minDelaySeconds),
+    "--max-delay", String(maxDelaySeconds),
+    "--heartbeat-seconds", String(config.kuaishouLeadHeartbeatSeconds),
+    "--control-stdin"
+  ];
+  await taskEvent(task, "kuaishou_lead", "info", "快手录入已启动，将持续扫描飞书直到用户停止", {
+    minDelaySeconds,
+    maxDelaySeconds,
+    executionMode: "windows_airtest_poco"
+  });
+  await runStreamingJsonLines(process.execPath, args, {
+    cwd: agentDir,
+    env: airtestEnv(),
+    signal: options.signal,
+    controlStdin: true,
+    killTree: true,
+    onLine: async (event) => {
+      const queueEvent = String(event?.event || "runner_output");
+      if (queueEvent === "consumer_heartbeat") {
+        await taskEvent(task, "heartbeat", "info", "快手录入任务心跳", { queueEvent });
+        return;
+      }
+      await taskEvent(task, "kuaishou_lead", queueEvent.includes("failed") ? "warn" : "info", kuaishouLeadEventMessage(event), {
+        ...event,
+        queueEvent
+      });
+    }
+  });
+  throw Object.assign(new Error("快手录入消费器意外结束"), { code: "kuaishou_lead_unexpected_exit" });
+}
+
+function alipayAccountSwitchReasonFromError(rawMessage = "") {
+  const raw = String(rawMessage || "");
+  if (raw.includes("alipay_access_denied_account_switch_required")) return "access_denied";
+  const match = raw.match(/alipay_account_restriction_switch_required:([a-z_]+)/);
+  return ["device_risk", "frequent_or_abnormal_access"].includes(match?.[1])
+    ? match[1]
+    : "";
+}
+
+function alipayLimitMessage(reason = "") {
+  const messages = {
+    access_denied: "当前支付宝账号在查询后出现“访问被拒绝”，自动切换所有已保存账号后仍无法完成当前号码。",
+    device_risk: "当前支付宝账号在查询后出现设备风险限制，自动切换所有已保存账号后仍无法完成当前号码。",
+    frequent_or_abnormal_access: "当前支付宝账号在查询后提示操作频繁或访问异常，自动切换所有已保存账号后仍无法完成当前号码。"
+  };
+  return messages[String(reason || "")] || "当前支付宝账号在查询后触发访问限制。请点击“选择切换账号”后重试该号码。";
+}
+
 function classifyAlipayNameLookupFailure(rawMessage = "") {
   const raw = String(rawMessage || "");
   const compactReason = raw
@@ -1710,7 +2086,33 @@ function classifyAlipayNameLookupFailure(rawMessage = "") {
     .replace(/search_input_readback_mismatch:[^;]*/i, "search_input_readback_mismatch:<redacted>")
     .replace(/\d/g, "#")
     .slice(0, 500);
-  const diagnostic = { code: "alipay_lookup_failed", retryable: true, runnerReason: compactReason };
+  const readerExit = /worker (?:已退出|exited)|poco_worker_bootstrap_failed:/.test(raw) ? readerExitDiagnostic(raw) : null;
+  const diagnostic = { code: "alipay_lookup_failed", retryable: true, runnerReason: compactReason, ...(readerExit ? {readerExit} : {}) };
+  if (raw.includes("local_lookup_result_unconfirmed:")) return { ...diagnostic,
+    code: "alipay_lookup_result_unconfirmed", retryable: false,
+    message: "当前号码查询结果尚未确认，原请求已保留，等待平台恢复；请勿重新创建查询。" };
+  if (raw.includes("alipay_startup_device_risk")) return { ...diagnostic,
+    code: "alipay_startup_device_risk", retryable: false,
+    message: "支付宝设备风险页面未能安全关闭或仍然存在，本次暂停准备；未切号或写入账号冷却。" };
+  if (raw.includes("alipay_no_available_account")) return { ...diagnostic,
+    code: "alipay_no_available_account", retryable: false,
+    message: "当前手机无可用账户：已保存账户全部在八小时冷却中。" };
+  if (/alipay_(?:account_identity_unverified|account_preflight_required|target_account_cooling|account_cooldown_data_invalid)/.test(raw)) {
+    return { ...diagnostic, code: "alipay_account_identity_unverified", retryable: false,
+      message: "账户身份或冷却状态未确认，已停止查询；请重新启动会话检查账户。" };
+  }
+  if (raw.includes("alipay_all_saved_accounts_restricted")) {
+    const reason = String(raw.match(/alipay_all_saved_accounts_restricted:([a-z_]+)/)?.[1] || "");
+    return {
+      ...diagnostic,
+      code: "alipay_all_saved_accounts_restricted",
+      retryable: false,
+      limitReached: true,
+      requiresAccountSwitch: true,
+      limitReason: reason,
+      message: "这台手机保存的支付宝账号查询后均触发限制，请更换可用账号或稍后再试。"
+    };
+  }
   if (raw.includes("alipay_access_denied_after_account_switch")) {
     return {
       ...diagnostic,
@@ -1719,11 +2121,51 @@ function classifyAlipayNameLookupFailure(rawMessage = "") {
       message: "切换支付宝账号后仍被拒绝访问，请先更换手机网络后再重试。"
     };
   }
+  if (raw.includes("alipay_account_restricted_after_account_switch")) {
+    return {
+      ...diagnostic,
+      code: "alipay_account_restricted_after_account_switch",
+      retryable: false,
+      message: "切换支付宝账号后仍触发账号或设备限制，请稍后更换其他账号或设备重试。"
+    };
+  }
   if (raw.includes("alipay_access_denied_account_switch_required")) {
     return {
       ...diagnostic,
       code: "alipay_access_denied_account_switch_required",
-      message: "当前支付宝账号访问被拒绝，需要切换账号后重试。"
+      retryable: false,
+      limitReached: true,
+      requiresAccountSwitch: true,
+      limitReason: "access_denied",
+      phoneQueryStarted: true,
+      message: alipayLimitMessage("access_denied")
+    };
+  }
+  if (raw.includes("alipay_account_restriction_switch_required")) {
+    const reason = alipayAccountSwitchReasonFromError(raw);
+    return {
+      ...diagnostic,
+      code: "alipay_account_restriction_switch_required",
+      retryable: false,
+      limitReached: true,
+      requiresAccountSwitch: true,
+      limitReason: reason,
+      phoneQueryStarted: true,
+      message: alipayLimitMessage(reason)
+    };
+  }
+  if (raw.includes("alipay_account_restriction_before_search")) {
+    const reason = String(raw.match(/alipay_account_restriction_before_search:([a-z_]+)/)?.[1] || "");
+    return {
+      ...diagnostic,
+      code: "alipay_account_restriction_before_search",
+      retryable: false,
+      limitReached: false,
+      requiresAccountSwitch: false,
+      limitReason: reason,
+      accountRestrictionDetected: true,
+      phoneQueryStarted: false,
+      message: "支付宝在本次号码查询开始前就已显示账号或设备限制，不能认定为该号码触发的查询上限；请人工确认页面，或主动切换账号。"
     };
   }
   if (raw.includes("alipay_human_verification_required")) {
@@ -1732,6 +2174,43 @@ function classifyAlipayNameLookupFailure(rawMessage = "") {
       code: "alipay_human_verification_required",
       requiresHumanAction: true,
       message: "支付宝要求人工完成滑动验证；完成后可在当前会话重试同一号码"
+    };
+  }
+  if (raw.includes("poco_alipay_login_required")) {
+    return {
+      ...diagnostic,
+      code: "alipay_login_required",
+      retryable: false,
+      message: "这台手机的支付宝当前停留在登录页，未提交查询号码；请先登录账号后再试。"
+    };
+  }
+  if (raw.includes("alipay_saved_account_labels_not_unique")) {
+    return {
+      ...diagnostic,
+      code: "alipay_saved_account_labels_not_unique",
+      retryable: false,
+      message: "支付宝对多个账号显示了相同的脱敏标识，无法安全区分，本次没有点击任何账号。"
+    };
+  }
+  if (raw.includes("alipay_saved_account_candidate_missing")) {
+    return {
+      ...diagnostic,
+      code: "alipay_saved_account_candidate_missing",
+      message: "支付宝账号列表不足两个，或“当前”标记不唯一，无法安全切换。"
+    };
+  }
+  if (raw.includes("alipay_target_account_already_current")) {
+    return {
+      ...diagnostic,
+      code: "alipay_target_account_already_current",
+      message: "所选支付宝账号已经是当前账号，请选择其他账号。"
+    };
+  }
+  if (raw.includes("alipay_target_account_not_unique_or_missing") || raw.includes("alipay_target_account_required")) {
+    return {
+      ...diagnostic,
+      code: "alipay_target_account_stale",
+      message: "所选支付宝账号已不在当前列表中，请重新读取账号后再选择。"
     };
   }
   if (raw.includes("search_input_readback_mismatch")) {
@@ -1771,85 +2250,456 @@ function classifyAlipayNameLookupFailure(rawMessage = "") {
   return { ...diagnostic, message: "支付宝查名字执行失败，已保留具体诊断原因；可重试当前号码。" };
 }
 
+async function observeLookupHumanVerification(probe) {
+  const serial = probe.adbSerial;
+  if (activeTaskSerials.has(serial) || automationPreflightRunning.has(serial)) return "unknown";
+  const worker = airtestWorkersBySerial.get(serial);
+  if (!probe.screenSessionId && !screenControlledSerials.has(serial) && worker && !worker.exited) {
+    // Reuse only an already-idle worker. Never compete for UiAutomation with
+    // a living Poco process, including one whose observation has timed out.
+    if (worker.stopping || worker.pending || worker.readyResolve
+      || (failedHumanProbeWorkers.get(worker)||0)>Date.now()) return "unknown";
+    // Only this idle lookup worker's rejected observation queue may be retried.
+    // Pending/stopping workers above remain untouched; never create a reader beside them.
+    if(failedHumanProbeWorkers.has(worker)){
+      worker.queue=worker.queue?.catch(()=>{});
+      failedHumanProbeWorkers.delete(worker);
+    }
+    try {
+      const parsed = await worker.enqueue({ operation: "human_probe", workflow: "alipay_name",
+        serial, adbPath: config.adbPath, requestId: `human-probe-${probe.probeId}` }, 6_000);
+      if (activeTaskSerials.has(serial) || screenControlledSerials.has(serial)
+        || airtestWorkersBySerial.get(serial) !== worker || worker.exited) return "unknown";
+      return parsed?.ok ? parsed.verificationState : "unknown";
+    } catch {
+      failedHumanProbeWorkers.set(worker,Date.now()+30000);
+      return "unknown";
+    }
+  }
+  // Once Poco has fully exited, a bounded read can also observe a phone whose
+  // control window was closed. Observation never creates or repairs a worker.
+  const screen = probe.screenSessionId ? screenStreamManager.sessions.get(probe.screenSessionId) : null;
+  const stable = () => {
+    const currentWorker = airtestWorkersBySerial.get(serial);
+    if (activeTaskSerials.has(serial) || automationPreflightRunning.has(serial) || currentWorker && !currentWorker.exited) return false;
+    if (!probe.screenSessionId) return !screenControlledSerials.has(serial);
+    return screen && screen.serial === serial && !screen.closed
+      && screenStreamManager.sessions.get(probe.screenSessionId) === screen
+      && screenControlledSerials.has(serial);
+  };
+  if (!stable()) return "unknown";
+  const options = { allowScreenControl: Boolean(screen), timeoutMs: 2_000,
+    actorLabel: "lookup-human-readonly" };
+  const before = await adb(serial, ["shell", "dumpsys", "window"], options);
+  if (!stable()) return "unknown";
+  // Android's dump waits for idle for up to ten seconds. Allow that wait but
+  // keep the whole observation within the server's expiring thirty-second lease.
+  const xml = await adb(serial, ["exec-out", "uiautomator", "dump", "/dev/tty"], { ...options, timeoutMs: 15_000 });
+  if (!stable()) return "unknown";
+  const after = await adb(serial, ["shell", "dumpsys", "window"], options);
+  if (!stable()) return "unknown";
+  return classifyHumanVerificationXml(xml, before, after);
+}
+
+async function taskAlipayNameLookupWithAccounts(task, options = {}) {
+  return runLookupWithAccountPolicy({ task,
+    assertAllowed: () => {
+      if (options.signal?.aborted) throw automationTaskCancellationError();
+      if (screenControlledSerials.has(task.adbSerial)) throw screenPriorityCancellationError();
+    },
+    execute: (next, hooks = {}) => taskAlipayNameLookup(next, { ...options, ...hooks }),
+    recordLimit: (record) => taskEvent(task, "alipay_name", "warn", "查询限制已确认，保存账户八小时冷却后再继续", {
+      ...record, currentAccount: record.account, accountSwitchRequired: true,
+      stepId: "lookup_account_limit_confirmed"
+    })
+  });
+}
+
 async function taskAlipayNameLookup(task, options = {}) {
+  const lookupTrace = [];
+  let searchSubmitted = false;
+  let resultRecoveryAttempted = false;
+  const replayLookupEvents = events => {
+    if ((events || []).some(event => event?.step === "submit_search")) searchSubmitted = true;
+    collectLookupTrace(lookupTrace, events);
+    return replayAirtestEvents(task, events);
+  };
   const startedAt = Date.now();
   if (!(await fileExists(config.alipayNameLookupRunnerPath))) throw new Error(`支付宝查名字执行器不存在：${config.alipayNameLookupRunnerPath}`);
   await assertAdbDeviceOnlineFast(task.adbSerial);
   const packageName = "com.eg.android.AlipayGphone";
   if (!(await isPackageInstalled(task.adbSerial, packageName))) throw new Error("这台手机未安装支付宝");
-  const operation = task.type === "alipay_name_start" ? "start" : task.type === "alipay_name_stop" ? "stop" : "query";
-  const successfulCountBefore = Math.max(0, Number(task.payload?.successfulCountBefore || 0));
-  const switchEvery = Math.max(1, Number(task.payload?.switchEvery || 200));
-  const accountSwitchDue = operation === "query"
-    && successfulCountBefore > 0
-      && successfulCountBefore % switchEvery === 0;
-  let accessDeniedSwitchRequired = false;
+  const operation = task.payload?.postHumanCheckOnly === true ? "post_human_check" : task.type === "alipay_name_start"
+    ? "start"
+    : task.type === "alipay_name_stop"
+      ? "stop"
+      : task.type === "alipay_name_switch"
+        ? (String(task.payload?.accountAction || "list") === "select" ? "switch" : "list_accounts")
+        : task.payload?.restartAfterHumanVerification === true
+          ? "query"
+          : task.payload?.resumeAfterHumanVerification === true
+          ? "query_resume"
+          : "query";
+  const queryOperation = ["query", "query_resume"].includes(operation);
+  const accountOperation = ["list_accounts", "switch"].includes(operation)
+    || (operation === "start" && task.payload?.accountCooldownProtocol === 1);
+  if (operation === "stop") clearAirtestLookupWarmLease(task.adbSerial, "lookup_session_stopped");
+  if (task.payload?.restartAfterHumanVerification === true) automationResumeScheduler.cancel(task.adbSerial);
   const payload = {
     operation,
     workflow: "alipay_name",
     serial: task.adbSerial,
     adbPath: config.adbPath,
     phoneNumber: String(task.payload?.phoneNumber || ""),
-    successfulCountBefore,
-    switchEvery,
+    targetAccount: String(task.payload?.targetAccount || ""),
+    postHumanStartup: task.payload?.postHumanStartup === true,
+    accountCooldownProtocol: task.payload?.accountCooldownProtocol,
+    knownAccount: String(task.payload?.knownAccount || ""),
+    preparedEmptyResult: task.payload?.preparedEmptyResult === true,
+    observationOnlyResume: operation === "query_resume" && task.payload?.preparedLookup?.observationOnlyResume === true,
+    accountIdentityVerified: task.payload?.accountIdentityVerified === true,
+    accountCooldowns: task.payload?.accountCooldowns || [],
+    savedAccounts: task.payload?.savedAccounts || [],
     maxRecoveryAttempts: Math.min(2, Math.max(0, Number(task.payload?.maxRecoveryAttempts ?? 2))),
     taskId: task.taskId
   };
-  await taskEvent(task, "alipay_name", "info", operation === "query" ? "复用支付宝搜索页查询号码" : operation === "start" ? "建立支付宝查名字会话" : "结束支付宝查名字会话", {
+  await taskEvent(task, "alipay_name", "info", operation === "query_resume"
+    ? (isAutomaticLookupResume(task.payload) ? "自动恢复：继续读取原号码结果" : "人工验证完成后继续获取当前号码的姓名结果")
+    : operation === "query"
+      ? "复用支付宝搜索页查询号码"
+    : operation === "start"
+      ? "建立支付宝查名字会话"
+      : operation === "list_accounts"
+        ? "读取支付宝已保存账号，等待用户选择"
+        : operation === "switch"
+          ? `用户请求切换到指定支付宝账号 ${payload.targetAccount}`
+        : operation === "post_human_check"
+          ? "检查人工验证后的页面状态"
+          : operation === "human_probe"
+            ? "只读检测人工验证状态"
+            : "结束支付宝查名字会话", {
     operation,
-    reuseSearchSession: operation === "query",
+    reuseSearchSession: queryOperation,
+    resumeAfterHumanVerification: operation === "query_resume",
+    restartAfterHumanVerification: task.payload?.restartAfterHumanVerification === true,
+    resubmitsInput: operation === "query_resume" ? false : undefined,
     maxRecoveryAttempts: payload.maxRecoveryAttempts,
-    preferredDriver: accountSwitchDue ? "xml_uiautomator_account_switch" : "poco_fast_path",
-    accountSwitchDue
+    preferredDriver: accountOperation ? "xml_uiautomator_account_switch" : "poco_fast_path",
+    manualAccountSwitch: operation === "switch"
   });
 
-  const buildResult = (parsed, driver) => ({
-    action: operation === "query" ? "查名字完成" : operation === "start" ? "查名字会话已就绪" : "查名字会话已结束",
-    message: parsed.message || "",
-    realNameTailCharacter: parsed.realNameTailCharacter || "",
-    alipayDisplayName: parsed.alipayDisplayName || "",
-    matchedPhone: parsed.matchedPhone || "",
-    currentAccount: parsed.currentAccount || "",
-    accountSwitched: Boolean(parsed.accountSwitched),
-    accountSwitchReason: String(parsed.accountSwitchReason || ""),
-    recoveryAttempts: Number(parsed.recoveryAttempts || 0),
-    notFound: Boolean(parsed.notFound),
-    durationMs: Date.now() - startedAt,
-    driver,
-    runner: parsed
-  });
+  const buildResult = (parsed, driver) => {
+    if (operation !== "stop") touchAirtestLookupWarmLease(task.adbSerial, operation);
+    return {
+      postHumanCheckPassed: parsed.postHumanCheckPassed === true,
+      postHumanResult: parsed.postHumanResult === true,
+      postHumanState: parsed.postHumanState || "",
+      action: queryOperation ? "查名字完成" : operation === "post_human_check" ? "验证后页面已复核" : operation === "start" ? "查名字会话已就绪" : operation === "list_accounts" ? "支付宝账号列表已读取" : operation === "switch" ? "支付宝账号切换完成" : "查名字会话已结束",
+      message: parsed.message || "",
+      realNameTailCharacter: parsed.realNameTailCharacter || "",
+      alipayDisplayName: parsed.alipayDisplayName || "",
+      matchedPhone: parsed.matchedPhone || "",
+      currentAccount: parsed.currentAccount || "",
+      accountIdentityVerified: parsed.accountIdentityVerified === true,
+      accountSwitched: Boolean(parsed.accountSwitched),
+      accountSwitchReason: String(parsed.accountSwitchReason || ""),
+      accountSwitchCount: Math.max(0, Number(parsed.accountSwitchCount || 0)),
+      accountSwitchHistory: Array.isArray(parsed.accountSwitchHistory) ? parsed.accountSwitchHistory : [],
+      restrictedAccounts: Array.isArray(parsed.restrictedAccounts) ? parsed.restrictedAccounts : [],
+      savedAccounts: Array.isArray(parsed.savedAccounts) ? parsed.savedAccounts.slice(0, 12).map((choice) => ({
+        account: String(choice?.account || "").slice(0, 120),
+        current: Boolean(choice?.current)
+      })).filter((choice) => choice.account) : [],
+      recoveryAttempts: Number(parsed.recoveryAttempts || 0),
+      notFound: Boolean(parsed.notFound),
+      diagnostic: accountOperation ? {
+        recoveryTrace: lookupTrace.slice(),
+        fromAccount: String(parsed.accountSwitchHistory?.at(-1)?.fromAccount || ""),
+        toAccount: String(parsed.currentAccount || ""),
+        savedAccountCount: Math.max(0, Number(parsed.savedAccountCount || 0))
+      } : {recoveryTrace: lookupTrace.slice()},
+      durationMs: Date.now() - startedAt,
+      driver,
+      runner: parsed
+    };
+  };
 
-  if (!accountSwitchDue) {
+  if (!accountOperation) {
     try {
-      const parsed = await runXhsAirtestPocoWorker(payload, {
-        readyTimeoutMs: 12_000,
-        timeoutMs: operation === "query" ? 45_000 : operation === "start" ? 45_000 : 12_000,
-        maxIdleMs: 15 * 60_000,
-        onEvent: (event) => replayAirtestEvents(task, [event])
-      });
+      let parsed = null;
+      // Start may need one additional bounded attach after a hierarchy
+      // transport failure.  The Python runner now returns that failure
+      // immediately without relaunching Alipay, so a third worker can attach
+      // to the stable foreground page while the overall 38-second SLO remains
+      // enforceable by the platform caller.
+      const pocoColdStartAttempts = operation === "post_human_check" ? 1 : operation === "start" ? 3 : 2;
+      for (let attempt = 1; attempt <= pocoColdStartAttempts; attempt += 1) {
+        try {
+          parsed = await runXhsAirtestPocoWorker(payload, {
+            // Older OPPO/ColorOS/Honor devices can take more than 12 seconds
+            // to bootstrap PocoService. Keep each wait bounded and rebuild
+            // Poco once before declaring the independent XML path necessary.
+            readyTimeoutMs: 25_000,
+            timeoutMs: queryOperation ? 65_000 : ["start", "post_human_check"].includes(operation) ? 45_000 : 12_000,
+            maxIdleMs: 15 * 60_000,
+            onEvent: (event) => replayLookupEvents([event])
+          });
+          if (operation === "start"
+            && !parsed.ok
+            && isRetryableAlipayPocoStartFailure(parsed.error)
+            && attempt < pocoColdStartAttempts) {
+            await taskEvent(task, "alipay_name", "warn", "Poco 启动传输超时，正在重建 Poco 后重试", {
+              operation,
+              retryOperation: "start",
+              attempt,
+              nextAttempt: attempt + 1,
+              reason: "poco_transport_timeout",
+              fallbackSkipped: "xml_uiautomator",
+              driver: "poco"
+            });
+            await stopAirtestWorker(task.adbSerial, "poco_start_transport_timeout").catch(() => {});
+            parsed = null;
+            continue;
+          }
+          break;
+        } catch (error) {
+          if (isAutomationTaskCancellation(error)) throw error;
+          const errorMessage = String(error?.message || error);
+          const coldStartTimedOut = errorMessage.includes("Airtest/Poco worker 启动超时");
+          const startRequestTimedOut = operation === "start"
+            && errorMessage.includes("Airtest/Poco worker 执行超时");
+          const workerProbeFailed = operation === "start"
+            && errorMessage.includes("Airtest/Poco worker 探活未通过");
+          if ((!coldStartTimedOut && !startRequestTimedOut && !workerProbeFailed)
+            || attempt >= pocoColdStartAttempts) throw error;
+          const retryReason = coldStartTimedOut
+            ? "worker_ready_timeout"
+            : startRequestTimedOut
+              ? "start_request_timeout"
+              : "worker_probe_failed";
+          await stopAirtestWorker(task.adbSerial, `poco_start_${retryReason}`).catch(() => {});
+          await taskEvent(task, "alipay_name", "warn", "Poco 启动阶段异常，正在重建 Poco 后重试", {
+            operation,
+            attempt,
+            nextAttempt: attempt + 1,
+            reason: retryReason,
+            fallbackSkipped: "xml_uiautomator",
+            driver: "poco"
+          });
+        }
+      }
+      if (!parsed) throw new Error("Airtest/Poco worker 冷启动重试未返回结果");
       const streamedReplayCount = Number(parsed.streamedReplayCount || 0);
-      if (!streamedReplayCount) await replayAirtestEvents(task, parsed.log || []);
+      if (!streamedReplayCount) await replayLookupEvents(parsed.log || []);
+      if (operation === "query_resume"
+        && !parsed.ok
+        && String(parsed.error || "").includes("poco_query_result_channel_timeout_after_input")) {
+        resultRecoveryAttempted = true;
+        await taskEvent(task, "alipay_name", "warn", "人工恢复结果读取超时，正在重建 Poco 只读检查当前结果页", {
+          operation,
+          retryOperation: "query_resume",
+          resumeAttempt: 1,
+          maxResumeAttempts: 1,
+          observationOnly: true,
+          resubmitsInput: false,
+          resubmitsSearch: false,
+          fallbackSkipped: "xml_uiautomator",
+          driver: "poco"
+        });
+        if (await stopAirtestWorker(task.adbSerial, "poco_query_resume_result_channel_timeout") !== true) throw new Error("lookup_old_worker_exit_unconfirmed");
+        let observed;
+        try {
+          observed = await runXhsAirtestPocoWorker({
+            ...payload,
+            operation: "query_resume",
+            allowEmptyInputRecovery: false,
+            observationOnlyResume: true
+          }, {
+            readyTimeoutMs: 25_000,
+            timeoutMs: 65_000,
+            maxIdleMs: 15 * 60_000,
+            onEvent: (event) => replayLookupEvents([event])
+          });
+        } catch (observationError) {
+          throw new Error(`poco_query_resume_observation_failed:${String(observationError?.message || observationError)}`);
+        }
+        const observationReplayCount = Number(observed.streamedReplayCount || 0);
+        if (!observationReplayCount) await replayLookupEvents(observed.log || []);
+        if (!observed.ok) {
+          throw new Error(`poco_query_resume_observation_failed:${String(observed.error || "unknown")}`);
+        }
+        parsed = observed;
+      }
+      if (operation === "query"
+        && !parsed.ok
+        && String(parsed.error || "").includes("poco_query_result_channel_timeout_after_input")) {
+        resultRecoveryAttempted = true;
+        const initialResumeError = String(parsed.error || "");
+        const maxQueryResumeAttempts = 2;
+        for (let resumeAttempt = 1; resumeAttempt <= maxQueryResumeAttempts; resumeAttempt += 1) {
+          // Empty-field recovery is safe only when the input delivery itself
+          // was ambiguous. Once ADB input returned successfully, every later
+          // recovery is observation-only so a submitted query can never be
+          // typed a second time after a transient hierarchy timeout.
+          const allowEmptyInputRecovery = !searchSubmitted && resumeAttempt === 1
+            && (initialResumeError.includes("poco_bounded_input_failed")
+              || initialResumeError.includes("poco_input_failed"));
+          await taskEvent(task, "alipay_name", "warn", "Poco 查询结果通道超时，正在重建 Poco 恢复结果页面", {
+            operation,
+            retryOperation: "query_resume",
+            resumeAttempt,
+            maxResumeAttempts: maxQueryResumeAttempts,
+            resubmitsInput: allowEmptyInputRecovery ? "only_after_confirmed_empty" : false,
+            observationOnly: searchSubmitted,
+            resubmitsSearch: !searchSubmitted,
+            fallbackSkipped: "xml_uiautomator",
+            driver: "poco"
+          });
+          if (await stopAirtestWorker(task.adbSerial, "poco_query_result_channel_timeout") !== true) throw new Error("lookup_old_worker_exit_unconfirmed");
+          let resumed;
+          try {
+            resumed = await runXhsAirtestPocoWorker({
+              ...payload,
+              operation: "query_resume",
+              allowEmptyInputRecovery,
+              observationOnlyResume: payload.observationOnlyResume || searchSubmitted
+            }, {
+              readyTimeoutMs: 25_000,
+              timeoutMs: 65_000,
+              maxIdleMs: 15 * 60_000,
+              onEvent: (event) => replayLookupEvents([event])
+            });
+          } catch (resumeError) {
+            throw new Error(`poco_query_resume_failed:${String(resumeError?.message || resumeError)}`);
+          }
+          const resumeReplayCount = Number(resumed.streamedReplayCount || 0);
+          if (!resumeReplayCount) await replayLookupEvents(resumed.log || []);
+          if (resumed.ok) {
+            parsed = resumed;
+            break;
+          }
+          const resumeError = String(resumed.error || "unknown");
+          const remainsPostInputTransportFailure = resumeError.includes(
+            "poco_query_result_channel_timeout_after_input"
+          );
+          if (!remainsPostInputTransportFailure || resumeAttempt >= maxQueryResumeAttempts) {
+            throw new Error(`poco_query_resume_failed:${resumeError}`);
+          }
+        }
+      }
       if (!parsed.ok) throw new Error(parsed.error || "支付宝 Poco 快路径失败");
-      return buildResult(parsed, "poco");
+      const result = buildResult(parsed, "poco");
+      if (operation === "stop") {
+        await stopAirtestWorker(task.adbSerial, "lookup_session_stopped");
+        markAutomationReadyOnDemand(task.adbSerial, "lookup_session_stopped");
+      }
+      return result;
     } catch (error) {
       if (isAutomationTaskCancellation(error)) throw error;
+      if (operation === "post_human_check") {
+        const diagnostic = classifyAlipayNameLookupFailure(String(error?.message || error));
+        throw Object.assign(new Error(diagnostic.message), {code: diagnostic.code, diagnostic: {...diagnostic, recoveryTrace: lookupTrace.slice()}});
+      }
+      // A generic execution/page failure is not limited to the input stage.
+      // Preserve the task/phone and bound an app-only full-path retry to one.
+      try {
+        const recovered = await restartLookupQueryOnce({
+          operation, error, payload, submitted: searchSubmitted, resultRecoveryAttempted,
+          assertAllowed: () => {
+            if (options.signal?.aborted) throw automationTaskCancellationError();
+            if (screenControlledSerials.has(task.adbSerial)) throw screenPriorityCancellationError();
+          },
+          onRecovery: ({ mode } = {}) => taskEvent(task, "alipay_name", "warn", mode === "reattach_before_input"
+            ? "号码尚未输入，重建本机查名读取进程后继续原查询"
+            : mode === "reattach_result_only" ? "搜索已提交，重建本机读取进程后只读原结果，不重复输入"
+            : "查名字执行异常，最多重启支付宝一次后重查当前号码", {
+            recoveryAttempt: 1, maxRecoveryAttempts: 1, sameTask: true,
+            recoveryMode: mode || "restart_app", resubmitsInput: mode === "restart_app",
+            accountSwitchRequested: false, driver: "poco"
+          }),
+          stopWorker: () => stopAirtestWorker(task.adbSerial, "lookup_query_app_recovery"),
+          runWorker: async (recoveryPayload) => {
+            if (["continue_query", "reattach_before_input"].includes(recoveryPayload.pageRecoveryStage) && options.beforeLookupRecovery) {
+              const policy = await options.beforeLookupRecovery();
+              recoveryPayload = { ...recoveryPayload, ...policy };
+            }
+            return runXhsAirtestPocoWorker(recoveryPayload, {
+            readyTimeoutMs: 25_000, timeoutMs: recoveryPayload.pageRecoveryStage === "restart_app" ? 45_000 : 65_000, maxIdleMs: 15 * 60_000,
+            onEvent: (event) => replayLookupEvents([event])
+          }); }
+        });
+        if (recovered) {
+          if (!Number(recovered.streamedReplayCount || 0)) await replayLookupEvents(recovered.log || []);
+          if (!recovered.ok) throw new Error(recovered.error || "unknown");
+          return buildResult({ ...recovered, recoveryAttempts: 1 }, "poco");
+        }
+      } catch (recoveryError) {
+        if (isAutomationTaskCancellation(recoveryError)) throw recoveryError;
+        error = new Error(`poco_query_page_recovery_failed:${String(recoveryError?.message || recoveryError)}`);
+      }
       const pocoError = String(error?.message || error || "");
-      if (!shouldFallbackAlipayPocoFailure(error)) {
+      if (operation === "stop") {
+        // Ending a lookup session is a platform lifecycle action. Clearing the
+        // warm search input is only best effort; never start the independent
+        // XML/UIAutomator stack just because a stale PocoService session could
+        // not be probed or recycled.
+        await taskEvent(task, "alipay_name", "warn", "Poco 结束清理异常，已直接释放查名字会话", {
+          operation,
+          reason: cleanLogText(pocoError).slice(0, 500),
+          fallbackSkipped: "xml_uiautomator",
+          driver: "poco"
+        });
+        await stopAirtestWorker(task.adbSerial, "lookup_session_stop_best_effort").catch(() => {});
+        markAutomationReadyOnDemand(task.adbSerial, "lookup_session_stopped");
+        return buildResult({ ok: true, message: "session_stopped", log: [] }, "poco");
+      }
+      if (pocoError.includes("poco_query_page_recovery_failed:")) {
+        const diagnostic = classifyAlipayNameLookupFailure(pocoError);
+        const runnerError = new Error(diagnostic.message);
+        runnerError.code = diagnostic.code;
+        runnerError.diagnostic = { ...diagnostic, appRecoveryAttempts: 1 };
+        runnerError.diagnostic = {...runnerError.diagnostic, recoveryTrace: lookupTrace.slice()};
+        throw runnerError;
+      }
+      if (payload.accountCooldownProtocol === 1 && pocoError.includes("alipay_account_restriction_before_search:")) {
+        const diagnostic = classifyAlipayNameLookupFailure(pocoError);
+        throw Object.assign(new Error(diagnostic.message), { code: diagnostic.code, diagnostic: {...diagnostic, recoveryTrace: lookupTrace.slice()} });
+      }
+      const automaticAccountSwitchReason = ["query", "query_resume"].includes(operation)
+        ? alipayAccountSwitchReasonFromError(pocoError)
+        : "";
+      if ((operation === "query_resume" || searchSubmitted) && !automaticAccountSwitchReason) {
+        const diagnostic = classifyAlipayNameLookupFailure(pocoError);
+        const runnerError = new Error(diagnostic.message);
+        runnerError.code = diagnostic.code;
+        runnerError.diagnostic = { ...diagnostic, resumeAfterHumanVerification: true, resubmitsInput: false };
+        runnerError.diagnostic = {...runnerError.diagnostic, recoveryTrace: lookupTrace.slice()};
+        throw runnerError;
+      }
+      if (automaticAccountSwitchReason) {
+        if (payload.accountCooldownProtocol === 1) {
+          const diagnostic = classifyAlipayNameLookupFailure(pocoError);
+          throw Object.assign(new Error(diagnostic.message), { code: diagnostic.code, diagnostic: {...diagnostic, recoveryTrace: lookupTrace.slice()} });
+        }
+        await taskEvent(task, "alipay_name", "warn", "检测到账号查询限制，正在自动切换已保存账号并重试当前号码", {
+          operation,
+          restrictionReason: automaticAccountSwitchReason,
+          retryCurrentPhone: true,
+          resumedAfterHumanVerification: operation === "query_resume",
+          fallbackDriver: "xml_uiautomator_account_rotation"
+        });
+        await stopAirtestWorker(task.adbSerial, "automatic_account_rotation").catch(() => {});
+        // A post-jigsaw result can itself be an exact account restriction.
+        // The independent XML runner owns account rotation and intentionally
+        // replays this same phone only after switching to another saved account.
+        payload.operation = "query";
+      } else if (!shouldFallbackAlipayPocoFailure(error)) {
         const diagnostic = classifyAlipayNameLookupFailure(pocoError);
         const runnerError = new Error(diagnostic.message);
         runnerError.code = diagnostic.code;
         runnerError.diagnostic = diagnostic;
+        runnerError.diagnostic = {...runnerError.diagnostic, recoveryTrace: lookupTrace.slice()};
         throw runnerError;
-      }
-      if (operation === "query" && pocoError.includes("alipay_access_denied_account_switch_required")) {
-        accessDeniedSwitchRequired = true;
-        payload.forceAccountSwitchReason = "access_denied";
-        await taskEvent(task, "alipay_name", "warn", "检测到支付宝访问被拒绝，正在切换账号并重试当前号码", {
-          operation,
-          fallbackDriver: "xml_uiautomator_account_switch",
-          reason: "access_denied",
-          retryCurrentPhone: true
-        });
       } else {
         await taskEvent(task, "alipay_name", "warn", "Poco 快路径异常，正在切换 XML 兜底", {
           operation,
@@ -1860,7 +2710,7 @@ async function taskAlipayNameLookup(task, options = {}) {
     }
   }
 
-  const accountSwitchRequested = accountSwitchDue || accessDeniedSwitchRequired;
+  const accountSwitchRequested = operation === "switch";
   await ensureXmlUiAutomatorReady(task.adbSerial);
   const payloadPath = path.join(cacheDir, "alipay-name", safeFileName(`${operation}-${task.taskId}.json`));
   await fs.mkdir(path.dirname(payloadPath), { recursive: true });
@@ -1869,7 +2719,7 @@ async function taskAlipayNameLookup(task, options = {}) {
     let output;
     try {
       output = await run(config.pythonCommand, [config.alipayNameLookupRunnerPath, "--payload", payloadPath], {
-        timeoutMs: operation === "query" ? 150_000 : 120_000,
+        timeoutMs: payload.operation === "query" ? 1_800_000 : 120_000,
         maxBuffer: 10 * 1024 * 1024,
         cwd: agentDir,
         env: airtestEnv(),
@@ -1878,23 +2728,32 @@ async function taskAlipayNameLookup(task, options = {}) {
     } catch (error) {
       if (isAutomationTaskCancellation(error)) throw error;
       const failed = parseAirtestRunnerOutput(String(error.stdout || ""));
-      await replayAirtestEvents(task, failed.log || []);
+      await replayLookupEvents(failed.log || []);
       const diagnostic = classifyAlipayNameLookupFailure(failed.error || error.message || "");
       diagnostic.accountSwitched = Boolean(failed.accountSwitched);
       diagnostic.currentAccount = String(failed.currentAccount || "");
       diagnostic.accountSwitchReason = String(failed.accountSwitchReason || "");
+      diagnostic.accountSwitchCount = Math.max(0, Number(failed.accountSwitchCount || 0));
+      diagnostic.accountSwitchHistory = Array.isArray(failed.accountSwitchHistory) ? failed.accountSwitchHistory : [];
+      diagnostic.restrictedAccounts = Array.isArray(failed.restrictedAccounts) ? failed.restrictedAccounts : [];
+      diagnostic.savedAccountCount = Math.max(0, Number(failed.savedAccountCount || 0));
+      diagnostic.savedAccounts = Array.isArray(failed.savedAccounts) ? failed.savedAccounts : [];
+      diagnostic.accountIdentityVerified = failed.accountIdentityVerified === true;
       const runnerError = new Error(diagnostic.message);
       runnerError.code = diagnostic.code;
       runnerError.diagnostic = diagnostic;
+      runnerError.diagnostic = {...runnerError.diagnostic, recoveryTrace: lookupTrace.slice()};
       throw runnerError;
     }
     const parsed = parseAirtestRunnerOutput(output);
-    await replayAirtestEvents(task, parsed.log || []);
+    await replayLookupEvents(parsed.log || []);
     if (!parsed.ok) throw new Error(parsed.error || "支付宝查名字流程失败");
-    return buildResult(
+    const result = buildResult(
       parsed,
       accountSwitchRequested || parsed.accountSwitched ? "xml_uiautomator_account_switch" : "xml_uiautomator_fallback"
     );
+    if (operation === "stop") markAutomationReadyOnDemand(task.adbSerial, "lookup_session_stopped");
+    return result;
   } finally {
     await fs.unlink(payloadPath).catch(() => {});
   }
@@ -2066,7 +2925,7 @@ async function runXhsAirtestPocoWorker(payload, options = {}) {
         delay(readyTimeoutMs).then(() => { throw new Error(`Airtest/Poco worker 启动超时：${serial}`); })
       ]);
     } catch (error) {
-      await stopAirtestWorker(serial, "ready_timeout").catch(() => {});
+      await stopAirtestWorker(serial, lookupReaderStopReason(payload, "ready_timeout")).catch(() => {});
       throw error;
     }
   } else {
@@ -2076,17 +2935,17 @@ async function runXhsAirtestPocoWorker(payload, options = {}) {
   const idleMs = Date.now() - Number(worker.lastUsedAt || worker.startedAt || Date.now());
   if (idleMs >= maxIdleMs) {
     log("recycling idle Airtest/Poco worker before task", { serial, idleMs, maxIdleMs });
-    worker = await recycleAirtestWorker(serial, "idle_before_task");
+    worker = await recycleAirtestWorker(serial, lookupReaderStopReason(payload, "idle_before_task"));
   }
   try {
-    await probeAirtestWorker(worker);
+    await probeAirtestWorker(worker, payload.workflow);
   } catch (error) {
     log("Airtest/Poco worker probe failed; rebuilding before task", {
       serial,
       error: error.message || String(error)
     });
-    worker = await recycleAirtestWorker(serial, "poco_probe_failed");
-    await probeAirtestWorker(worker);
+    worker = await recycleAirtestWorker(serial, lookupReaderStopReason(payload, "poco_probe_failed"));
+    await probeAirtestWorker(worker, payload.workflow);
   }
   const timeoutMs = options.timeoutMs || 180_000;
   const requestId = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -2096,10 +2955,11 @@ async function runXhsAirtestPocoWorker(payload, options = {}) {
   return result;
 }
 
-async function probeAirtestWorker(worker) {
+async function probeAirtestWorker(worker, workflow) {
   const requestId = `probe-${Date.now()}-${Math.random().toString(16).slice(2)}`;
   const result = await worker.enqueue({
     operation: "poco_probe",
+    workflow,
     requestId,
     serial: worker.serial,
     adbPath: config.adbPath
@@ -2118,24 +2978,153 @@ async function probeAirtestWorker(worker) {
 async function recycleAirtestWorker(serial, reason) {
   const existing = airtestWorkersBySerial.get(serial);
   if (existing) {
-    await stopAirtestWorker(serial, reason);
+    const stopped = await stopAirtestWorker(serial, reason);
+    if (isLookupReaderRecovery(reason) && stopped !== true) throw new Error("lookup_reader_cleanup_unconfirmed");
     const exited = await waitForWorkerExit(existing, 8_000);
     if (!exited) throw new Error(`Airtest/Poco worker 未能停止：${serial}`);
   }
   return getAirtestWorker(serial);
 }
 
+function hasActiveAirtestLookupWarmLease(serial, now = Date.now()) {
+  return Number(airtestLookupWarmUntilBySerial.get(String(serial || "").trim()) || 0) > now;
+}
+
+function touchAirtestLookupWarmLease(serial, reason = "lookup_activity") {
+  const key = String(serial || "").trim();
+  if (!key) return;
+  const warmUntil = Date.now() + config.airtestLookupWarmSeconds * 1_000;
+  airtestLookupWarmUntilBySerial.set(key, warmUntil);
+  log("airtest lookup warm lease renewed", {
+    serial: key,
+    reason,
+    warmUntil: new Date(warmUntil).toISOString()
+  });
+}
+
+function clearAirtestLookupWarmLease(serial, reason = "lookup_inactive") {
+  const key = String(serial || "").trim();
+  if (!key) return;
+  const removed = airtestLookupWarmUntilBySerial.delete(key);
+  if (removed) log("airtest lookup warm lease cleared", { serial: key, reason });
+}
+
+function markAutomationReadyOnDemand(serial, reason = "worker_not_resident") {
+  const key = String(serial || "").trim();
+  if (!key) return;
+  const cached = automationPreflightBySerial.get(key) || {};
+  automationPreflightBySerial.set(key, {
+    ...cached,
+    serial: key,
+    ok: Boolean(cached.ok || cached.airtestReady),
+    status: "ready_on_demand",
+    checkedAt: cached.checkedAt || new Date().toISOString(),
+    checkedAtMs: Number(cached.checkedAtMs || Date.now()),
+    airtestReady: Boolean(cached.airtestReady || cached.ok),
+    pocoReady: false,
+    helpersReady: Boolean(cached.helpersReady || cached.ok || cached.airtestReady),
+    repairAction: "",
+    lastError: "自动化组件已就绪，任务开始时按需启动 Poco worker",
+    workerLifecycleReason: reason
+  });
+}
+
+function withAirtestWorkerAdmission(action) {
+  const result = airtestWorkerAdmissionChain.then(action, action);
+  airtestWorkerAdmissionChain = result.then(() => undefined, () => undefined);
+  return result;
+}
+
+function residentAirtestWorkerCount() {
+  return [...airtestWorkersBySerial.values()].filter((worker) => worker && !worker.exited).length;
+}
+
+async function ensureAirtestWorkerCapacity(incomingSerial) {
+  while (residentAirtestWorkerCount() >= config.airtestMaxResidentWorkers) {
+    const candidate = selectAirtestWorkerEvictionCandidate({
+      workers: airtestWorkersBySerial,
+      incomingSerial,
+      activeSerials: activeTaskSerials,
+      screenControlledSerials,
+      preflightSerials: automationPreflightRunning,
+      warmUntilBySerial: airtestLookupWarmUntilBySerial
+    });
+    if (!candidate) {
+      const error = new Error(`Airtest/Poco 常驻 worker 已达到上限 ${config.airtestMaxResidentWorkers}，当前均在执行任务`);
+      error.code = "airtest_worker_capacity_reached";
+      throw error;
+    }
+    log("evicting Airtest/Poco worker for resident limit", {
+      serial: candidate.serial,
+      incomingSerial,
+      warm: candidate.warm,
+      residentCount: residentAirtestWorkerCount(),
+      residentLimit: config.airtestMaxResidentWorkers
+    });
+    const stopped = await stopAirtestWorker(candidate.serial, "resident_limit");
+    if (!stopped) throw new Error(`Airtest/Poco worker 容量回收失败：${candidate.serial}`);
+    markAutomationReadyOnDemand(candidate.serial, "resident_limit");
+  }
+}
+
+async function cleanupIdleAirtestWorkers() {
+  const now = Date.now();
+  for (const [serial, warmUntil] of airtestLookupWarmUntilBySerial.entries()) {
+    if (Number(warmUntil || 0) <= now) clearAirtestLookupWarmLease(serial, "warm_lease_expired");
+  }
+  const targets = selectIdleAirtestWorkerSerials({
+    workers: airtestWorkersBySerial,
+    idleMs: config.airtestWorkerIdleSeconds * 1_000,
+    activeSerials: activeTaskSerials,
+    screenControlledSerials,
+    preflightSerials: automationPreflightRunning,
+    warmUntilBySerial: airtestLookupWarmUntilBySerial,
+    now
+  }).slice(0, config.airtestMaxResidentWorkers);
+  if (!targets.length) return 0;
+  await runLimited(targets, 4, async (serial) => {
+    const stopped = await stopAirtestWorker(serial, "idle_timeout");
+    if (stopped) markAutomationReadyOnDemand(serial, "idle_timeout");
+  });
+  log("idle Airtest/Poco workers recycled", {
+    stopped: targets.length,
+    residentCount: residentAirtestWorkerCount(),
+    idleSeconds: config.airtestWorkerIdleSeconds
+  });
+  return targets.length;
+}
+
+async function stopAllAirtestWorkers(reason = "agent_shutdown") {
+  const serials = [...airtestWorkersBySerial.keys()];
+  if (!serials.length) return 0;
+  await runLimited(serials, 4, (serial) => stopAirtestWorker(serial, reason));
+  return serials.length;
+}
+
 async function getAirtestWorker(serial) {
   const key = String(serial || "").trim();
   if (!key) throw new Error("缺少 ADB 序列号，无法启动 Airtest/Poco worker");
+  if (lookupReaderStopBarriers.has(key) && await lookupReaderStopBarriers.get(key) !== true) throw new Error("lookup_reader_cleanup_unconfirmed");
   const existing = airtestWorkersBySerial.get(key);
   if (existing && !existing.exited && !existing.stopping) return existing.readyPromise.then(() => existing);
-  if (existing?.stopping && !existing.exited) {
-    const exited = await waitForWorkerExit(existing, 10_000);
-    if (!exited) throw new Error(`Airtest/Poco worker 正在停止但未退出：${key}`);
-  }
-  const worker = createAirtestWorker(key);
-  airtestWorkersBySerial.set(key, worker);
+  const worker = await withAirtestWorkerAdmission(async () => {
+    if (lookupReaderStopBarriers.has(key) && await lookupReaderStopBarriers.get(key) !== true) throw new Error("lookup_reader_cleanup_unconfirmed");
+    const current = airtestWorkersBySerial.get(key);
+    if (current && !current.exited && !current.stopping) return current;
+    if (current?.stopping && !current.exited) {
+      const exited = await waitForWorkerExit(current, 10_000);
+      if (!exited) throw new Error(`Airtest/Poco worker 正在停止但未退出：${key}`);
+    }
+    await ensureAirtestWorkerCapacity(key);
+    const created = createAirtestWorker(key);
+    airtestWorkersBySerial.set(key, created);
+    log("Airtest/Poco worker admitted", {
+      serial: key,
+      residentCount: residentAirtestWorkerCount(),
+      residentLimit: config.airtestMaxResidentWorkers
+    });
+    return created;
+  });
   return worker.readyPromise.then(() => worker);
 }
 
@@ -2197,7 +3186,10 @@ function createAirtestWorker(serial) {
     worker.exited = true;
     if (airtestWorkersBySerial.get(serial) === worker) airtestWorkersBySerial.delete(serial);
     clearTimeout(readyTimer);
-    const error = new Error(`Airtest/Poco worker 已退出：${serial} code=${code ?? ""} signal=${signal ?? ""} ${worker.stderrBuffer}`.trim());
+    const readerExit = readerExitDiagnostic(worker.stderrBuffer, code, signal);
+    log("airtest worker exit diagnostic", {serial, expectedStop:worker.stopping, ...readerExit});
+    const marker = `poco_worker_bootstrap_failed:${readerExit.stage}:${readerExit.cause}`;
+    const error = new Error(`Airtest/Poco worker 已退出：${serial} code=${code ?? ""} signal=${signal ?? ""} ${marker} ${worker.stderrBuffer}`.trim());
     if (worker.readyReject) worker.readyReject(error);
     if (worker.pending) {
       worker.pending.reject(error);
@@ -2223,6 +3215,10 @@ function handleAirtestWorkerLine(worker, line, readyTimer) {
     parsed = JSON.parse(line);
   } catch {
     worker.stderrBuffer = `${worker.stderrBuffer}\n${line}`.slice(-8000);
+    return;
+  }
+  if (typeof parsed.lookupWorkerStopped === "boolean") {
+    worker.lookupStopConfirmed = parsed.lookupWorkerStopped;
     return;
   }
   if (parsed.workerReady) {
@@ -2272,7 +3268,7 @@ function sendAirtestWorkerPayload(worker, payload, timeoutMs, onEvent = null) {
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => {
       if (worker.pending) worker.pending = null;
-      stopAirtestWorker(worker.serial, "task_timeout").catch(() => {});
+      stopAirtestWorker(worker.serial, lookupReaderStopReason(payload, "task_timeout")).catch(() => {});
       reject(new Error(`Airtest/Poco worker 执行超时：${worker.serial}`));
     }, timeoutMs);
     worker.pending = { resolve, reject, timer, onEvent, streamedEventCount: 0, streamedReplayCount: 0, eventPromises: [] };
@@ -2286,24 +3282,48 @@ function sendAirtestWorkerPayload(worker, payload, timeoutMs, onEvent = null) {
 }
 
 async function stopAirtestWorker(serial, reason = "stop") {
+  const pending = lookupReaderStopBarriers.get(serial);
+  if (pending) return pending;
+  if (!isLookupReaderRecovery(reason)) return stopAirtestWorkerImpl(serial, reason);
+  const operation = stopAirtestWorkerImpl(serial, reason);
+  lookupReaderStopBarriers.set(serial, operation);
+  try { return await operation; }
+  finally { if (lookupReaderStopBarriers.get(serial) === operation) lookupReaderStopBarriers.delete(serial); }
+}
+
+async function stopAirtestWorkerImpl(serial, reason = "stop") {
   const worker = airtestWorkersBySerial.get(serial);
   if (!worker) return true;
   const screenPriority = reason === "screen_control" || reason === "xml_uiautomator";
+  const lookupRecovery = isLookupReaderRecovery(reason);
+  let cleanupConfirmed = true;
   const startedAt = Date.now();
   const result = await stopWorkerWithFallback(worker, {
-    gracefulTimeoutMs: screenPriority ? 5_000 : 300,
+    gracefulTimeoutMs: screenPriority || lookupRecovery ? 5_000 : 300,
     forcedTimeoutMs: 2_000,
     requestStop() {
-      worker.child.stdin.write("__exit__\n");
+      worker.child.stdin.write(lookupRecovery ? "__exit_lookup__\n" : "__exit__\n");
     },
     async forceStop() {
-      log("forcing stuck airtest worker to stop", { serial, reason, pid: worker.child.pid });
+      log("forcing stuck airtest worker to stop", {
+        serial,
+        reason,
+        pid: worker.child.pid,
+        stderrTail: cleanLogText(worker.stderrBuffer || "").slice(-1200)
+      });
       try { worker.child.kill(); } catch {}
-      await cleanupAirtestDeviceAfterForcedStop(serial).catch((error) => {
+      await (lookupRecovery
+        ? verifyLookupReaderCleanup(serial, (args, options) => run(config.adbPath, args, options)).then(() => { worker.lookupStopConfirmed = true; })
+        : cleanupAirtestDeviceAfterForcedStop(serial)).catch((error) => {
+        cleanupConfirmed = false;
         log("forced airtest cleanup failed", { serial, reason, error: error.message || String(error) });
       });
     }
   });
+  if (lookupRecovery && result.exited && !worker.lookupStopConfirmed && !result.forced) {
+    cleanupConfirmed = await verifyLookupReaderCleanup(serial, (args, options) => run(config.adbPath, args, options))
+      .then(() => true, () => false);
+  }
   if (screenPriority && result.exited && !result.forced) {
     await cleanupAirtestForwardsAfterStop(serial).catch((error) => {
       log("airtest forward cleanup failed", { serial, reason, error: error.message || String(error) });
@@ -2313,10 +3333,11 @@ async function stopAirtestWorker(serial, reason = "stop") {
     serial,
     exited: result.exited,
     forced: result.forced,
+    ...(lookupRecovery ? {cleanupConfirmed} : {}),
     reason,
     elapsedMs: Date.now() - startedAt
   });
-  return result.exited;
+  return result.exited && (!lookupRecovery || cleanupConfirmed);
 }
 
 async function cleanupAirtestDeviceAfterForcedStop(serial) {
@@ -2373,6 +3394,11 @@ async function resumeAutomationAfterScreenControl(serial) {
     log("automation resume skipped for offline device", { serial });
     return;
   }
+  if (!hasActiveAirtestLookupWarmLease(serial)) {
+    markAutomationReadyOnDemand(serial, "screen_control_ended");
+    log("automation resume skipped because no lookup session needs a warm worker", { serial });
+    return;
+  }
   const cached = automationPreflightBySerial.get(serial) || {};
   automationPreflightBySerial.set(serial, {
     ...cached,
@@ -2402,7 +3428,7 @@ async function resumeAutomationAfterScreenControl(serial) {
       repairAction: "",
       lastError: ""
     });
-    log("automation resumed after screen control", { serial });
+    log("automation resumed for active lookup session after screen control", { serial });
   } catch (error) {
     automationPreflightBySerial.set(serial, {
       ...cached,
@@ -2448,19 +3474,25 @@ async function replayAirtestEvents(task, events = []) {
     retry_search_result: ["alipay", "info", "结果暂未返回，正在重新提交一次"],
     lookup_no_name_result: ["alipay", "info", "该号码未查询到姓名结果"],
     alipay_access_denied_detected: ["alipay", "warn", "检测到支付宝访问被拒绝"],
+    alipay_account_restriction_detected: ["alipay", "warn", "检测到支付宝账号或设备限制"],
     account_switch_triggered: ["alipay", "warn", "正在切换支付宝账号并重试当前号码"],
     alipay_access_denied_after_account_switch: ["alipay", "error", "切换账号后仍被支付宝拒绝访问"],
+    alipay_account_restricted_after_account_switch: ["alipay", "error", "切换账号后仍触发支付宝限制"],
+    alipay_all_saved_accounts_restricted: ["alipay", "error", "全部已保存支付宝账号均触发查询限制"],
+    account_restriction_dismissed_for_switch: ["alipay", "info", "已退出限制页，正在进入账号设置"],
     human_verification_detected: ["alipay", "warn", "检测到支付宝滑动验证，正在自动处理"],
     human_verification_slider_drag: ["alipay", "info", "正在按元素轨道拖动验证滑块"],
     human_verification_retry: ["alipay", "warn", "滑块验证未通过，正在重试"],
     human_verification_passed: ["alipay", "info", "滑块验证已通过"],
     human_verification_failed: ["alipay", "error", "滑块自动验证未通过"],
-    replay_query_after_human_verification: ["alipay", "info", "验证通过，正在重新提交当前号码"],
+    resume_query_after_human_verification: ["alipay", "info", "验证通过，正在恢复当前查询结果"],
     open_my_tab: ["alipay", "info", "正在进入支付宝账号设置"],
     open_settings: ["alipay", "info", "正在打开支付宝设置"],
     open_saved_account_picker: ["alipay", "info", "正在打开已保存账号列表"],
-    account_selected: ["alipay", "info", "已选择下一个支付宝账号"],
-    account_selection_returned_home: ["alipay", "info", "账号选择已返回首页，正在复核"],
+    reuse_open_account_picker: ["alipay", "info", "已复用当前账号选择页"],
+    reuse_open_account_picker_failed: ["alipay", "warn", "账号选择页已变化，正在重新读取"],
+    account_selected: ["alipay", "info", "已选择用户指定的支付宝账号"],
+    account_selection_returned_home: ["alipay", "info", "账号切换已返回首页"],
     account_switch_verified: ["alipay", "info", "支付宝账号切换验证成功"],
     query_full_path_recovery: ["alipay", "warn", "页面状态异常，正在自动恢复"],
     masked_real_name_tail_extracted: ["alipay", "info", "已识别结果，正在返回"],
@@ -2521,17 +3553,23 @@ function shouldReplayAirtestEvent(step, event = {}) {
     "retry_search_result",
     "lookup_no_name_result",
     "alipay_access_denied_detected",
+    "alipay_account_restriction_detected",
     "account_switch_triggered",
     "alipay_access_denied_after_account_switch",
+    "alipay_account_restricted_after_account_switch",
+    "alipay_all_saved_accounts_restricted",
+    "account_restriction_dismissed_for_switch",
     "human_verification_detected",
     "human_verification_slider_drag",
     "human_verification_retry",
     "human_verification_passed",
     "human_verification_failed",
-    "replay_query_after_human_verification",
+    "resume_query_after_human_verification",
     "open_my_tab",
     "open_settings",
     "open_saved_account_picker",
+    "reuse_open_account_picker",
+    "reuse_open_account_picker_failed",
     "account_selected",
     "account_selection_returned_home",
     "account_switch_verified",
@@ -2869,9 +3907,12 @@ async function taskEvent(task, phase, level, message, detail = {}) {
 }
 
 async function taskStatus(task, status, result = {}) {
+  if (task.type?.startsWith("alipay_name_") && lookupStatusOutbox.isAvailable() && ["succeeded", "failed", "cancelled"].includes(status)) {
+    return lookupStatusOutbox.report(task, status, compactTaskResultForStatus(result));
+  }
   return await api(`/api/v1/windows-agent-tasks/${encodeURIComponent(task.taskId)}/status`, {
     method: "POST",
-    body: { status, result: compactTaskResultForStatus(result) }
+    body: { status, result: compactTaskResultForStatus(result), managedLookupGeneration:task.payload?.managedLookup?.generation }
   });
 }
 
@@ -2894,6 +3935,10 @@ function compactTaskResultForStatus(result = {}) {
     realNameTailCharacter: String(result.realNameTailCharacter || "").slice(0, 8),
     alipayDisplayName: String(result.alipayDisplayName || "").slice(0, 80),
     currentAccount: String(result.currentAccount || "").slice(0, 120),
+    savedAccounts: Array.isArray(result.savedAccounts) ? result.savedAccounts.slice(0, 12).map((choice) => ({
+      account: String(choice?.account || "").slice(0, 120),
+      current: Boolean(choice?.current)
+    })).filter((choice) => choice.account) : [],
     accountSwitched: Boolean(result.accountSwitched),
     recoveryAttempts: Math.max(0, Number(result.recoveryAttempts || 0)),
     notFound: Boolean(result.notFound),
@@ -2916,6 +3961,10 @@ function compactTaskResultForStatus(result = {}) {
       log: runnerLog.slice(-80).map((item) => compactEventDetail(item, 3000))
     } : null
   };
+  if (result.accountIdentityVerified !== undefined) compact.accountIdentityVerified = result.accountIdentityVerified === true;
+  if (result.accountSwitchCount !== undefined) compact.accountSwitchCount = Math.max(0, Number(result.accountSwitchCount || 0));
+  if (result.accountSwitchReason !== undefined) compact.accountSwitchReason = String(result.accountSwitchReason || "").slice(0, 120);
+  if (result.collection) compact.collection = result.collection;
   const uiHierarchy = result.uiHierarchy || result.evidence?.uiHierarchy || "";
   const uiSnapshot = result.uiSnapshot || result.evidence?.uiSnapshot || uiHierarchy;
   if (uiSnapshot) compact.uiSnapshot = String(uiSnapshot).slice(0, 8000);
@@ -2961,7 +4010,7 @@ function compactScreenshotForTransport(screenshot, options = {}) {
   };
 }
 
-async function scanAdbDevices() {
+async function scanAdbDevices({lightweight=false} = {}) {
   let output;
   try {
     output = await run(config.adbPath, ["devices", "-l"]);
@@ -3001,6 +4050,8 @@ async function scanAdbDevices() {
       });
       continue;
     }
+    const metadata=scanMetadata.get(serialKey) || previous || {};
+    for(const key of ["model","manufacturer","brand","androidVersion","batteryLevel","sims","smsRelay"])if(metadata[key]!==undefined && row[key]===undefined)row[key]=structuredClone(metadata[key]);
     if (row.state === "device") {
       row.model = row.model || "";
       row.manufacturer = row.manufacturer || "";
@@ -3012,6 +4063,7 @@ async function scanAdbDevices() {
     row.deviceName = row.deviceName || defaultDeviceName(row);
     enriched.push(row);
   }
+  if(lightweight)return enriched;
   await hydrateStaticDeviceInfo(enriched);
   await refreshBatteryLevels(enriched);
   await refreshSmsRelayHealth(enriched);
@@ -3088,6 +4140,7 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
         mode: state.lastMode,
         reason: "stability_window_confirmed"
       });
+      await recoveryIsolation.confirmed(serial);
       pnpTargetRecoveryAttempts.delete(serial);
       continue;
     }
@@ -3114,6 +4167,7 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
     pnpMissingDeviceRecovery.seed(lastPhysicallyPresentAndroidUsbSerials);
   }
 
+  devices=deviceScanPipeline.snapshot().devices;
   const inventoryReady = isPhysicalPnpInventoryReady();
   lastDeviceRecoveryObservations = buildDeviceRecoveryObservations({
     devices,
@@ -3144,7 +4198,7 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
     }
   }
   appendPhysicalRecoveryRows(devices, lastDeviceRecoveryObservations);
-  const recoveryExclusions = new Set([...screenControlledSerials, ...activeTaskSerials]
+  const recoveryExclusions = new Set([...screenControlledSerials, ...activeTaskSerials, ...pnpRecoveryControl.paused().map(x => x.serial), ...recoveryIsolation.health().isolated.map(x=>x.serial)]
     .map((serial) => String(serial || "").trim().toUpperCase())
     .filter(Boolean));
   // A session on another phone no longer freezes the whole queue. The exact
@@ -3163,7 +4217,7 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
   schedulePnpRecoveryStateSave();
   if (safety.actionableCount > 0 && !safety.circuitOpen) {
     const pnpTargetSerials = lastDeviceRecoveryObservations
-      .filter((item) => item.physicalPresent && item.state !== DEVICE_RECOVERY_STATES.ADB_DEVICE && !recoveryExclusions.has(item.key))
+      .filter((item) => item.physicalPresent && item.state !== DEVICE_RECOVERY_STATES.ADB_DEVICE && !recoveryExclusions.has(item.key) && !(pnpRecoveryControl.reason(item.serial) || recoveryIsolation.reason(item.serial)))
       .map((item) => item.serial);
     await preemptBackgroundSmsSyncForPnpRecovery(pnpTargetSerials);
   }
@@ -3202,6 +4256,7 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
   const recoveryDueAt = Date.now();
   const dueTargets = orderPnpRecoveryTargets(
     plan.resetSerials
+      .filter(serial => !(pnpRecoveryControl.reason(serial) || recoveryIsolation.reason(serial)))
       .filter((serial) => physical.has(String(serial).toUpperCase()))
       .filter((serial) => {
         const state = observationsBySerial.get(String(serial).toUpperCase())?.state;
@@ -3235,40 +4290,45 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
     config.pnpMaxTargetRecoveriesPerPass
   );
   const rescueKeys = new Set(batchScope.rescueSerials);
-  const batchTargets = selectPnpRecoveryBatch(
-    batchScope.plans,
-    pnpTargetRecoveryAttempts,
-    batchScope.maxTargets
-  )
-    .map((item) => item.serial);
-  if (!batchTargets.length) return;
-  const batchKeys = new Set(batchTargets.map((serial) => String(serial).trim().toUpperCase()));
-  const batchNeedsPnp = plannedTargets.some((item) => batchKeys.has(String(item.serial).trim().toUpperCase())
-    && isAutomaticRecoveryAction(item.plan)
-    && item.plan.mode !== "adb_reconnect");
-  if (batchNeedsPnp) {
+  function deferPnpForInstaller(installer, serials) {
+    safety = pnpRecoverySafety.observe(lastDeviceRecoveryObservations, {
+      hostBusy,
+      installerBusy: true,
+      installerUnknown: installer.state === "unknown",
+      inventoryReady,
+      ignoredSerials: recoveryExclusions
+    });
+    lastPnpRecoveryHealth = publicPnpRecoveryHealth(safety);
+    logPnpRecoverySafetyTransition(safety);
+    for (const serial of serials) {
+      pnpRecoveryJournal.record({ type: "deferred", severity: "warning", serial, reason: installer.reason });
+    }
+    schedulePnpRecoveryStateSave();
+    log("pnp installer lane deferred", {
+      serials, reason: installer.reason, probeState: installer.state,
+      probeDurationMs: installer.durationMs, probeCheckedAt: installer.checkedAt,
+      probeErrorCode: installer.errorCode, probeTimedOut: installer.timedOut,
+      processCount: installer.processes.length, processes: installer.processes.slice(0, 8)
+    });
+    pnpRecoveryWakeScheduler?.schedule(config.pnpDeviceInstallPollSeconds * 1_000, "device_install_idle");
+  }
+  const needsInstaller = item => isAutomaticRecoveryAction(item.plan) && item.plan.mode !== "adb_reconnect";
+  let eligiblePlans = batchScope.plans;
+  if (eligiblePlans.some(needsInstaller)) {
     const installer = await inspectWindowsDeviceInstallActivity();
     if (installer.busy) {
-      safety = pnpRecoverySafety.observe(lastDeviceRecoveryObservations, {
-        hostBusy,
-        installerBusy: true,
-        inventoryReady,
-        ignoredSerials: recoveryExclusions
-      });
-      lastPnpRecoveryHealth = publicPnpRecoveryHealth(safety);
-      logPnpRecoverySafetyTransition(safety);
-      pnpRecoveryJournal.record({ type: "deferred", severity: "warning", reason: "device_install_busy" });
-      schedulePnpRecoveryStateSave();
-      log("pnp concurrent recovery batch deferred", {
-        serials: batchTargets,
-        reason: "device_install_busy",
-        processCount: installer.processes.length,
-        processes: installer.processes.slice(0, 8)
-      });
-      pnpRecoveryWakeScheduler?.schedule(config.pnpDeviceInstallPollSeconds * 1_000, "device_install_idle");
-      return;
+      deferPnpForInstaller(installer, eligiblePlans.filter(needsInstaller).map(item => item.serial));
+      // Filter before applying the batch limit: waiting PnP rows must not
+      // consume every slot and starve a later transport-only recovery.
+      eligiblePlans = eligiblePlans.filter(item => !needsInstaller(item));
     }
   }
+  const batchTargets = selectPnpRecoveryBatch(
+    eligiblePlans,
+    pnpTargetRecoveryAttempts,
+    batchScope.maxTargets
+  ).map(item => item.serial);
+  if (!batchTargets.length) return;
 
   async function recoverSelectedTarget(serial) {
   if (isSerialBusy(serial)) {
@@ -3280,12 +4340,37 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
 
   const key = String(serial).toUpperCase();
   const observation = observationsBySerial.get(key);
-  const previous = normalizePnpRecoveryTargetState(pnpTargetRecoveryAttempts.get(key), serial);
+  const plannedState = pnpTargetRecoveryAttempts.get(key);
+  const previous = normalizePnpRecoveryTargetState(plannedState, serial);
+  function checkAdmission() {
+    const reason = (pnpRecoveryControl.reason(serial) || recoveryIsolation.reason(serial)) || recoverySnapshotAdmission(deviceScanPipeline.snapshot(),serial) || pnpRecoveryAdmissionReason({
+      currentState: pnpTargetRecoveryAttempts.get(key), plannedState,
+      currentObservation: lastDeviceRecoveryObservations.find((item) => item.key === key),
+      plannedObservation: observation, inventoryReady: isPhysicalPnpInventoryReady(),
+      busy: isSerialBusy(serial)
+    });
+    if (!reason) return null;
+    pnpRecoveryJournal.record({ type: "deferred", severity: "warning", serial, reason });
+    schedulePnpRecoveryStateSave();
+    log("pnp target adb recovery deferred", { serial, reason });
+    scheduleNextPnpRecoveryDueWake();
+    return { serial, status: "deferred", reason, actionAttempted: false };
+  }
+  const admission = checkAdmission();
+  if (admission) return admission;
   const actionPlan = planPnpRecoveryAction({
     observation,
     previous,
     maxAttempts: config.pnpMaxAutomaticAttemptsPerDevice
   });
+  function pauseBeforeCommand() {
+    const reason = (pnpRecoveryControl.reason(serial) || recoveryIsolation.reason(serial)) || recoverySnapshotAdmission(deviceScanPipeline.snapshot(),serial);
+    if (!reason) return null;
+    pnpTargetRecoveryAttempts.set(key, previous);
+    schedulePnpRecoveryStateSave();
+    log("pnp target adb recovery deferred", {serial,reason});
+    return {serial,status:"deferred",reason,actionAttempted:false};
+  }
   const transportOnly = actionPlan.mode === "adb_reconnect";
   const attempt = actionPlan.attempt;
   const mode = actionPlan.mode;
@@ -3327,52 +4412,10 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
     return { serial, status: "deferred", reason: "exact_mapping_temporarily_unavailable", mode, actionAttempted: false };
   }
   if (!isAutomaticRecoveryAction(actionPlan)) {
-    if (config.pnpContinuousRecoveryEnabled && actionPlan.terminal) {
-      const cooldownMs = config.pnpRecoveryCycleCooldownSeconds * 1_000;
-      const nextCycle = beginNextPnpRecoveryCycle(previous, {
-        serial,
-        terminalMode: mode,
-        at: Date.now(),
-        cooldownMs
-      });
-      const nextRetryAt = nextCycle.nextRetryAt;
-      const recoveryCycle = nextCycle.recoveryCycle;
-      pnpTargetRecoveryAttempts.set(key, {
-        ...nextCycle,
-        targetType: actionPlan.targetType,
-        lastError: mode
-      });
-      pnpRecoveryJournal.record({
-        type: "cooldown_started",
-        severity: "warning",
-        serial,
-        state: observation?.state || "unknown",
-        attempt: previous.attempts || 0,
-        maxAttempts: config.pnpMaxAutomaticAttemptsPerDevice,
-        mode,
-        reason: "recovery_cycle_completed",
-        result: `cycle=${recoveryCycle}; cooldown=${config.pnpRecoveryCycleCooldownSeconds}s`,
-        nextActionAt: new Date(nextRetryAt).toISOString(),
-        targetType: actionPlan.targetType
-      });
-      await persistPnpRecoveryStateNow();
-      pnpMissingDeviceRecovery.markReset(serial, { targetPresent: true, retryAfterMs: cooldownMs });
-      pnpRecoveryWakeScheduler?.schedule(cooldownMs, "continuous_recovery_cycle");
-      log("pnp target recovery cycle cooling down", {
-        serial,
-        state: observation?.state || "unknown",
-        recoveryCycle,
-        completedAttempts: previous.attempts || 0,
-        terminalMode: mode,
-        cooldownSeconds: config.pnpRecoveryCycleCooldownSeconds
-      });
-      return {
-        serial,
-        status: "deferred",
-        reason: "recovery_cycle_cooldown",
-        mode: "recovery_cycle_cooldown",
-        actionAttempted: false
-      };
+    if(actionPlan.terminal) {
+      await recoveryIsolation.isolate(serial,"recovery_attempts_exhausted");
+      log("pnp target isolated",{serial,reason:"recovery_attempts_exhausted"});
+      return {serial,status:"quarantined",reason:"device_recovery_isolated",mode,actionAttempted:false};
     }
     if (!previous.quarantinedAt || previous.lastMode !== mode) {
       const quarantinedAt = Date.now();
@@ -3435,9 +4478,11 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
     ? config.pnpTargetResetCooldownSeconds * 1_000
     : retryAfterMs;
   if (transportOnly) {
+    const admission = checkAdmission();
+    if (admission) return admission;
     const attemptedAt = Date.now();
+    let commandIssued=false;
     try {
-      pnpRecoverySafety.recordAction();
       lastPnpRecoveryHealth = publicPnpRecoveryHealth(pnpRecoverySafety.health());
       pnpTargetRecoveryAttempts.set(key, { ...previous, serial, attempts: attempt, actionHistory: previous.actionHistory || [], lastMode: mode, lastAttemptAt: attemptedAt, inProgress: true, quarantinedAt: 0 });
       pnpRecoveryJournal.record({
@@ -3450,6 +4495,10 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
         mode
       });
       await persistPnpRecoveryStateNow();
+      const paused = pauseBeforeCommand();
+      if (paused) return paused;
+      pnpRecoverySafety.recordAction();
+      commandIssued=true;
       const output = await run(config.adbPath, ["-s", serial, "reconnect"], { timeoutMs: 10_000 });
       const nextRetryAt = attemptedAt + nextCheckAfterMs;
       pnpTargetRecoveryAttempts.set(key, { ...previous, serial, attempts: attempt, actionHistory: completedActionHistory, lastMode: mode, lastAttemptAt: attemptedAt, nextRetryAt, inProgress: false, quarantinedAt: 0 });
@@ -3476,6 +4525,7 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
       });
       return { serial, status: "action_completed", mode, actionAttempted: true };
     } catch (error) {
+      if(commandIssued)await recoveryIsolation.failure(serial,`${mode}:${attemptedAt}`,"adb_reconnect_failed");
       const exhausted = attempt >= config.pnpMaxAutomaticAttemptsPerDevice;
       const recycleAfterFailure = config.pnpContinuousRecoveryEnabled && exhausted;
       const retryDelayMs = recycleAfterFailure
@@ -3530,7 +4580,10 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
     return { serial, status: "deferred", reason: "host_or_pnp_action_in_progress", mode, actionAttempted: false };
   }
   const attemptedAt = Date.now();
+  let commandIssued=false;
   try {
+    const admission = checkAdmission();
+    if (admission) return admission;
     if (isSerialBusy(serial)) {
       pnpRecoveryJournal.record({ type: "deferred", severity: "warning", serial, state: observation?.state || "unknown", reason: "host_became_busy" });
       schedulePnpRecoveryStateSave();
@@ -3574,7 +4627,6 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
       });
       return { serial, status: "deferred", reason: "exact_instance_not_found", mode, actionAttempted: false };
     }
-    pnpRecoverySafety.recordAction();
     lastPnpRecoveryHealth = publicPnpRecoveryHealth(pnpRecoverySafety.health());
     pnpTargetRecoveryAttempts.set(key, { ...previous, serial, attempts: attempt, actionHistory: previous.actionHistory || [], lastMode: mode, lastAttemptAt: attemptedAt, targetType: target.targetType, inProgress: true, quarantinedAt: 0 });
     pnpRecoveryJournal.record({
@@ -3588,6 +4640,23 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
       targetType: target.targetType
     });
     await persistPnpRecoveryStateNow();
+    // A Windows installer can start after batch selection or while the
+    // recovery state is being persisted. Never reuse an earlier idle result.
+    const installer = await inspectWindowsDeviceInstallActivity();
+    if (installer.busy) {
+      pnpTargetRecoveryAttempts.set(key, previous);
+      deferPnpForInstaller(installer, [serial]);
+      return { serial, status: "deferred", reason: installer.reason, mode, actionAttempted: false };
+    }
+    const paused = pauseBeforeCommand();
+    if (paused) return paused;
+    if (isSerialBusy(serial)) {
+      pnpTargetRecoveryAttempts.set(key, previous);
+      schedulePnpRecoveryStateSave();
+      return { serial, status: "deferred", reason: "target_busy", mode, actionAttempted: false };
+    }
+    pnpRecoverySafety.recordAction();
+    commandIssued=true;
     const result = await executePnpRecoveryAction(target);
     const nextRetryAt = attemptedAt + nextCheckAfterMs;
     pnpTargetRecoveryAttempts.set(key, { ...previous, serial, attempts: attempt, actionHistory: completedActionHistory, lastMode: mode, lastAttemptAt: attemptedAt, nextRetryAt, targetType: target.targetType, inProgress: false, quarantinedAt: 0 });
@@ -3628,6 +4697,7 @@ async function requestSafePnpRescanForMissingDevices(devices, options = {}) {
       pnpRecoverySafety.recordFailure(reason, { serial });
       lastPnpRecoveryHealth = publicPnpRecoveryHealth(pnpRecoverySafety.health());
     }
+    if(commandIssued)await recoveryIsolation.failure(serial,`${mode}:${attemptedAt}`,reason);
     const exhausted = attempt >= config.pnpMaxAutomaticAttemptsPerDevice;
     const recycleAfterFailure = config.pnpContinuousRecoveryEnabled && exhausted;
     const retryDelayMs = recycleAfterFailure
@@ -3941,10 +5011,15 @@ function publicPnpRecoveryHealth(value = {}) {
 }
 
 function currentPnpRecoveryHealth() {
+  const snapshot=deviceScanPipeline.snapshot();
+  const observations=buildDeviceRecoveryObservations({devices:snapshot.devices,inventory:lastPhysicalPnpInventory,knownSerials:cachedAdbSerials(lastServerDevicesById),inventoryReady:isPhysicalPnpInventoryReady()});
   return {
     ...lastPnpRecoveryHealth,
+    adbDeviceCount:snapshot.devices.filter(d=>d.state==="device").length,
+    unauthorizedCount:snapshot.devices.filter(d=>d.state==="unauthorized").length,
+    scanObservedAt:snapshot.observedAt ? new Date(snapshot.observedAt).toISOString() : "",
     queue: buildRecoveryQueue({
-      observations: lastDeviceRecoveryObservations,
+      observations,
       attemptsBySerial: pnpTargetRecoveryAttempts,
       devices: [...lastDevices, ...lastServerDevicesById.values()],
       maxAttempts: config.pnpMaxAutomaticAttemptsPerDevice,
@@ -3977,7 +5052,7 @@ function scheduleNextPnpRecoveryDueWake() {
   const at = Date.now();
   let earliest = Infinity;
   for (const state of pnpTargetRecoveryAttempts.values()) {
-    if (state?.quarantinedAt || state?.inProgress) continue;
+    if (state?.quarantinedAt || state?.inProgress || pnpRecoveryControl.reason(state?.serial) || recoveryIsolation.reason(state?.serial)) continue;
     const nextRetryAt = Number(state?.nextRetryAt || 0);
     if (nextRetryAt > at && nextRetryAt < earliest) earliest = nextRetryAt;
   }
@@ -3986,24 +5061,6 @@ function scheduleNextPnpRecoveryDueWake() {
     Math.max(1_000, earliest - at),
     "pnp_retry_due"
   );
-}
-
-async function inspectWindowsDeviceInstallActivity() {
-  const script = [
-    "$rows = @(Get-CimInstance Win32_Process | Where-Object { $_.Name -in @('pnputil.exe','drvinst.exe') })",
-    "$rows | ForEach-Object { Write-Output ($_.ProcessId.ToString() + \"`t\" + $_.Name + \"`t\" + ([string]$_.CreationDate)) }"
-  ].join("; ");
-  const encoded = Buffer.from(script, "utf16le").toString("base64");
-  try {
-    const output = await run("powershell.exe", ["-NoProfile", "-NonInteractive", "-EncodedCommand", encoded], { timeoutMs: 10_000 });
-    const processes = cleanLogText(output).split(/\r?\n/).map((line) => {
-      const [pid = "", name = "", createdAt = ""] = line.split("\t", 3);
-      return { pid: Number(pid || 0), name, createdAt };
-    }).filter((item) => item.pid && item.name);
-    return { busy: processes.length > 0, processes };
-  } catch (error) {
-    return { busy: true, processes: [{ pid: 0, name: "probe_failed", createdAt: cleanLogText(error?.message || error).slice(0, 120) }] };
-  }
 }
 
 async function discoverPhysicallyPresentAndroidUsbInventory() {
@@ -5003,7 +6060,15 @@ async function serverJsonRequest(pathname, options = {}) {
       body: options.body ? JSON.stringify(options.body) : undefined,
       signal: controller.signal
     });
-    const payload = await response.json().catch(() => ({}));
+    let payload;
+    try {
+      payload = await response.json();
+    } catch (error) {
+      if (controller.signal.aborted || error?.name === "AbortError") {
+        throw new Error(`HTTP request timeout while reading response: ${pathname}`);
+      }
+      throw new Error(`HTTP response JSON invalid: ${pathname}: ${error?.message || String(error)}`);
+    }
     if (!response.ok) throw new Error(payload.error || `HTTP ${response.status}`);
     return payload;
   } catch (error) {
@@ -5085,6 +6150,9 @@ function taskFailureResult(error) {
     result.diagnostic = error.diagnostic;
     if (error.diagnostic.accountSwitched !== undefined) result.accountSwitched = Boolean(error.diagnostic.accountSwitched);
     if (error.diagnostic.currentAccount) result.currentAccount = String(error.diagnostic.currentAccount);
+    if (error.diagnostic.accountIdentityVerified !== undefined) result.accountIdentityVerified = error.diagnostic.accountIdentityVerified === true;
+    if (Array.isArray(error.diagnostic.savedAccounts)) result.savedAccounts = error.diagnostic.savedAccounts;
+    if (error.diagnostic.accountSwitchCount !== undefined) result.accountSwitchCount = Math.max(0, Number(error.diagnostic.accountSwitchCount) || 0);
     if (error.diagnostic.accountSwitchReason) result.accountSwitchReason = String(error.diagnostic.accountSwitchReason);
     if (error.diagnostic.packageName) result.packageName = error.diagnostic.packageName;
     if (error.diagnostic.currentActivity) result.currentActivity = error.diagnostic.currentActivity;

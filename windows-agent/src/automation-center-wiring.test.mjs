@@ -2,14 +2,16 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
+import vm from "node:vm";
 import { fileURLToPath } from "node:url";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const source = fs.readFileSync(path.join(root, "index.mjs"), "utf8");
 const config = fs.readFileSync(path.join(root, "config.mjs"), "utf8");
+const publishFunction = source.match(/async function taskXhsPublish\(task\) \{([\s\S]*?)\n\}\n\nfunction /)?.[1] || "";
 
-test("dispatches publish and the three lookup commands", () => {
-  for (const taskType of ["xhs_publish", "alipay_name_start", "alipay_name_query", "alipay_name_stop"]) {
+test("dispatches publish and all lookup commands", () => {
+  for (const taskType of ["xhs_publish", "xhs_data_collect", "alipay_name_start", "alipay_name_query", "alipay_name_switch", "alipay_name_stop"]) {
     assert.match(source, new RegExp(`task\\.type === \\"${taskType}\\"|\\[\\"alipay_name_start\\"`));
   }
 });
@@ -18,6 +20,12 @@ test("lookup retries are bounded to two and publish keeps element runner paths c
   assert.match(source, /Math\.min\(2, Math\.max\(0, Number\(task\.payload\?\.maxRecoveryAttempts/);
   assert.match(config, /xhsPublishRunnerPath/);
   assert.match(config, /alipayNameLookupRunnerPath/);
+});
+
+test("XHS publish does not reference Alipay lookup-only variables", () => {
+  assert.ok(publishFunction, "taskXhsPublish function was not found");
+  assert.doesNotMatch(publishFunction, /\boperation\b/);
+  assert.doesNotMatch(publishFunction, /\baccountSwitchDue\b/);
 });
 
 test("automation paths do not mutate the screen stream implementation", () => {
@@ -33,25 +41,78 @@ test("unresolved Alipay verification remains reportable for human action", () =>
 test("Alipay runner errors keep a specific diagnostic instead of generic command failure", () => {
   assert.match(source, /classifyAlipayNameLookupFailure/);
   assert.match(source, /alipay_search_input_not_stable/);
+  assert.match(source, /alipay_login_required/);
   assert.match(source, /runnerError\.diagnostic = diagnostic/);
 });
 
-test("Alipay uses a bounded Poco fast path with XML fallback and a defined account switch gate", () => {
-  assert.match(source, /const accountSwitchDue = operation === "query"/);
-  assert.match(source, /preferredDriver: accountSwitchDue \? "xml_uiautomator_account_switch" : "poco_fast_path"/);
+test("Alipay uses a bounded Poco fast path and reserves XML account navigation for manual switching", () => {
+  assert.match(source, /const accountOperation = \["list_accounts", "switch"\]\.includes\(operation\)/);
+  assert.match(source, /preferredDriver: accountOperation \? "xml_uiautomator_account_switch" : "poco_fast_path"/);
   assert.match(source, /runXhsAirtestPocoWorker\(payload/);
   assert.match(source, /shouldFallbackAlipayPocoFailure\(error\)/);
   assert.match(source, /Poco 快路径异常，正在切换 XML 兜底/);
   assert.match(source, /await ensureXmlUiAutomatorReady\(task\.adbSerial\)/);
-  assert.match(source, /readyTimeoutMs: 12_000/);
+  assert.match(source, /readyTimeoutMs: 25_000/);
+  assert.match(source, /const pocoColdStartAttempts = operation === "post_human_check" \? 1 : operation === "start" \? 3 : 2/);
+  assert.match(source, /Poco 启动阶段异常，正在重建 Poco 后重试/);
+  assert.match(source, /operation === "start"[\s\S]*Airtest\/Poco worker 执行超时/);
+  assert.match(source, /operation === "start"[\s\S]*Airtest\/Poco worker 探活未通过/);
+  assert.match(source, /: "worker_probe_failed"/);
+  assert.match(source, /stopAirtestWorker\(task\.adbSerial, `poco_start_\$\{retryReason\}`\)/);
+  assert.match(source, /isRetryableAlipayPocoStartFailure\(parsed\.error\)/);
+  assert.match(source, /Poco 启动传输超时，正在重建 Poco 后重试/);
+  assert.match(source, /retryOperation: "start"/);
+  assert.match(source, /reason: "poco_transport_timeout"/);
+  assert.match(source, /poco_start_transport_timeout/);
+  assert.match(source, /operation === "stop"/);
+  assert.match(source, /Poco 结束清理异常，已直接释放查名字会话/);
+  assert.match(source, /fallbackSkipped: "xml_uiautomator"/);
+  assert.match(source, /retryOperation: "query_resume"/);
+  assert.match(source, /resubmitsInput: false/);
+  assert.match(source, /poco_query_resume_failed/);
 });
 
-test("Alipay access denial switches accounts once and retries the current number", () => {
+test("Alipay limits request account action while a jigsaw requests human action", () => {
   assert.match(source, /alipay_access_denied_account_switch_required/);
-  assert.match(source, /payload\.forceAccountSwitchReason = "access_denied"/);
-  assert.match(source, /正在切换账号并重试当前号码/);
-  assert.match(source, /const accountSwitchRequested = accountSwitchDue \|\| accessDeniedSwitchRequired/);
-  assert.match(source, /alipay_access_denied_after_account_switch/);
+  assert.match(source, /alipay_account_restriction_switch_required/);
+  const context = vm.createContext({});
+  for (const name of ["alipayAccountSwitchReasonFromError", "alipayLimitMessage", "classifyAlipayNameLookupFailure"]) {
+    const start = source.indexOf(`function ${name}(`);
+    assert.ok(start >= 0);
+    vm.runInContext(source.slice(start, source.indexOf("\n}", start) + 2), context);
+  }
+  for (const reason of ["access_denied", "device_risk", "frequent_or_abnormal_access"]) {
+    const result = context.classifyAlipayNameLookupFailure(reason === "access_denied"
+      ? "alipay_access_denied_account_switch_required" : `alipay_account_restriction_switch_required:${reason}`);
+    assert.equal(result.limitReached, true);
+    assert.equal(result.requiresAccountSwitch, true);
+    assert.equal(result.limitReason, reason);
+    assert.notEqual(result.requiresHumanAction, true);
+  }
+  const risk = context.classifyAlipayNameLookupFailure("alipay_startup_device_risk");
+  assert.equal(risk.code,"alipay_startup_device_risk");
+  assert.equal(risk.retryable,false);
+  assert.notEqual(risk.requiresAccountSwitch,true);
+  assert.notEqual(risk.limitReached,true);
+  const ambiguous = context.classifyAlipayNameLookupFailure("local_lookup_result_unconfirmed:visual_card_not_proven");
+  assert.equal(ambiguous.code, "alipay_lookup_result_unconfirmed");
+  assert.equal(ambiguous.retryable, false);
+  assert.notEqual(ambiguous.requiresAccountSwitch, true);
+  assert.notEqual(ambiguous.limitReached, true);
+  const human = context.classifyAlipayNameLookupFailure("poco_alipay_human_verification_required:jigsaw_verification");
+  assert.equal(human.requiresHumanAction, true);
+  assert.notEqual(human.requiresAccountSwitch, true);
+  assert.notEqual(human.limitReached, true);
+  assert.match(source, /device_risk/);
+  assert.match(source, /frequent_or_abnormal_access/);
+  assert.match(source, /requiresAccountSwitch: true/);
+  assert.match(source, /limitReached: true/);
+  assert.match(source, /const accountSwitchRequested = operation === "switch"/);
+  assert.match(source, /targetAccount: String\(task\.payload\?\.targetAccount/);
+  assert.match(source, /savedAccounts: Array\.isArray\(parsed\.savedAccounts\)/);
+  assert.doesNotMatch(source, /payload\.forceAccountSwitchReason/);
+  assert.doesNotMatch(source, /accountSwitchDue/);
+  assert.match(source, /timeoutMs: payload\.operation === "query" \? 1_800_000 : 120_000/);
 });
 
 test("successful Alipay lookup fields survive the Windows status transport", () => {
@@ -59,6 +120,8 @@ test("successful Alipay lookup fields survive the Windows status transport", () 
   assert.match(source, /alipayDisplayName: String\(result\.alipayDisplayName/);
   assert.match(source, /currentAccount: String\(result\.currentAccount/);
   assert.match(source, /accountSwitchReason: String\(parsed\.accountSwitchReason/);
+  assert.match(source, /accountSwitchCount: Math\.max\(0, Number\(parsed\.accountSwitchCount/);
+  assert.match(source, /restrictedAccounts: Array\.isArray\(parsed\.restrictedAccounts/);
   assert.match(source, /notFound: Boolean\(parsed\.notFound\)/);
   assert.match(source, /notFound: Boolean\(result\.notFound\)/);
 });

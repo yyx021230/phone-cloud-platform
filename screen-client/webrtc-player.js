@@ -51,6 +51,7 @@ export class WhepScreenPlayer {
     this.lastStats = { decoded: 0, dropped: 0, presented: 0, at: this.now() };
     this.fpsSamples = [];
     this.lastRtcStats = { at: 0, bytesReceived: 0 };
+    this.negotiatedFeedback = emptyWhepNegotiationSummary();
     this.rtcStatsInFlight = false;
     this.lastDiagnostic = { state: "", at: 0 };
     this.presentationWatchdog = { presented: 0, stalledSince: 0, lastReportedAt: -Infinity };
@@ -133,6 +134,7 @@ export class WhepScreenPlayer {
     if (!response.ok) throw new Error(`WebRTC 媒体服务返回 ${response.status}`);
     const answerSdp = await response.text();
     if (!answerSdp.trim()) throw new Error("WebRTC 媒体服务未返回会话描述");
+    this.negotiatedFeedback = summarizeWhepNegotiation(answerSdp);
     this.resourceUrl = resolveWhepResourceUrl(whepUrl, response.headers.get("location"));
     await pc.setRemoteDescription({ type: "answer", sdp: answerSdp });
     // setRemoteDescription() only completes WHEP signaling. ICE may still be
@@ -248,6 +250,7 @@ export class WhepScreenPlayer {
         previous: this.lastRtcStats
       });
       if (!metrics) return;
+      Object.assign(metrics, this.negotiatedFeedback);
       this.lastRtcStats = { ...this.lastRtcStats, ...metrics, at: metrics.at };
       const visibility = this.playbackVisibility();
       this.observePresentationProgress(metrics, visibility);
@@ -421,21 +424,48 @@ export function extractInboundVideoMetrics(reports, { at = Date.now(), previous 
   if (!inbound) return null;
   const bytesReceived = finiteNumber(inbound.bytesReceived);
   const packetsLost = finiteNumber(inbound.packetsLost);
+  const packetsReceived = finiteNumber(inbound.packetsReceived);
   const framesDecoded = finiteNumber(inbound.framesDecoded);
   const freezeCount = finiteNumber(inbound.freezeCount);
   const totalFreezeMs = finiteNumber(inbound.totalFreezesDuration) * 1_000;
+  const nackCount = finiteNumber(inbound.nackCount);
+  const pliCount = finiteNumber(inbound.pliCount);
+  const firCount = finiteNumber(inbound.firCount);
+  const retransmittedPacketsReceived = finiteNumber(inbound.retransmittedPacketsReceived);
+  const retransmittedBytesReceived = finiteNumber(inbound.retransmittedBytesReceived);
+  const packetsDiscarded = finiteNumber(inbound.packetsDiscarded);
   const sameInboundReport = Boolean(previous.rtcInboundReportId && previous.rtcInboundReportId === inbound.rtcInboundReportId);
   const previousAt = finiteNumber(previous.at);
   const elapsedMs = sameInboundReport ? Math.max(1, Number(at) - previousAt) : 0;
   const bytesReceivedDelta = Math.max(0, bytesReceived - finiteNumber(previous.rtcBytesReceived ?? previous.bytesReceived));
   const packetsLostDelta = Math.max(0, packetsLost - finiteNumber(previous.rtcPacketsLost));
+  const packetsReceivedDelta = Math.max(0, packetsReceived - finiteNumber(previous.rtcPacketsReceived));
   const framesDecodedDelta = Math.max(0, framesDecoded - finiteNumber(previous.rtcFramesDecoded));
   const freezeCountDelta = Math.max(0, freezeCount - finiteNumber(previous.rtcFreezeCount));
   const totalFreezeMsDelta = Math.max(0, totalFreezeMs - finiteNumber(previous.rtcTotalFreezeMs));
+  const nackCountDelta = Math.max(0, nackCount - finiteNumber(previous.rtcNackCount));
+  const pliCountDelta = Math.max(0, pliCount - finiteNumber(previous.rtcPliCount));
+  const firCountDelta = Math.max(0, firCount - finiteNumber(previous.rtcFirCount));
+  const retransmittedPacketsReceivedDelta = Math.max(0, retransmittedPacketsReceived - finiteNumber(previous.rtcRetransmittedPacketsReceived));
+  const retransmittedBytesReceivedDelta = Math.max(0, retransmittedBytesReceived - finiteNumber(previous.rtcRetransmittedBytesReceived));
+  const packetsDiscardedDelta = Math.max(0, packetsDiscarded - finiteNumber(previous.rtcPacketsDiscarded));
   const receivedMbps = previousAt > 0
     && sameInboundReport ? bytesReceivedDelta * 8 / elapsedMs / 1_000
     : 0;
   const totalDecodeTime = finiteNumber(inbound.totalDecodeTime);
+  const jitterBufferEmittedCount = finiteNumber(inbound.jitterBufferEmittedCount);
+  const jitterBufferDelay = finiteNumber(inbound.jitterBufferDelay);
+  const jitterBufferTargetDelay = finiteNumber(inbound.jitterBufferTargetDelay);
+  const previousJitterBufferEmittedCount = finiteNumber(previous.rtcJitterBufferEmittedCount);
+  const jitterBufferEmittedDelta = sameInboundReport
+    ? Math.max(0, jitterBufferEmittedCount - previousJitterBufferEmittedCount)
+    : 0;
+  const jitterBufferDelayDelta = sameInboundReport
+    ? Math.max(0, jitterBufferDelay - finiteNumber(previous.rtcJitterBufferDelaySeconds))
+    : 0;
+  const jitterBufferTargetDelayDelta = sameInboundReport
+    ? Math.max(0, jitterBufferTargetDelay - finiteNumber(previous.rtcJitterBufferTargetDelaySeconds))
+    : 0;
   const icePath = extractSelectedIcePath(reports, inbound);
   return {
     at: Number(at),
@@ -447,6 +477,8 @@ export function extractInboundVideoMetrics(reports, { at = Date.now(), previous 
     rtcFramesPerSecond: finiteNumber(inbound.framesPerSecond),
     rtcPacketsLost: packetsLost,
     rtcPacketsLostDelta: previousAt > 0 && sameInboundReport ? packetsLostDelta : 0,
+    rtcPacketsReceived: packetsReceived,
+    rtcPacketsReceivedDelta: previousAt > 0 && sameInboundReport ? packetsReceivedDelta : 0,
     rtcJitterMs: finiteNumber(inbound.jitter) * 1_000,
     rtcBytesReceived: bytesReceived,
     rtcBytesReceivedDelta: previousAt > 0 && sameInboundReport ? bytesReceivedDelta : 0,
@@ -456,6 +488,29 @@ export function extractInboundVideoMetrics(reports, { at = Date.now(), previous 
     rtcFreezeCountDelta: previousAt > 0 && sameInboundReport ? freezeCountDelta : 0,
     rtcTotalFreezeMs: totalFreezeMs,
     rtcTotalFreezeMsDelta: previousAt > 0 && sameInboundReport ? totalFreezeMsDelta : 0,
+    rtcNackCount: nackCount,
+    rtcNackCountDelta: previousAt > 0 && sameInboundReport ? nackCountDelta : 0,
+    rtcPliCount: pliCount,
+    rtcPliCountDelta: previousAt > 0 && sameInboundReport ? pliCountDelta : 0,
+    rtcFirCount: firCount,
+    rtcFirCountDelta: previousAt > 0 && sameInboundReport ? firCountDelta : 0,
+    rtcRetransmittedPacketsReceived: retransmittedPacketsReceived,
+    rtcRetransmittedPacketsReceivedDelta: previousAt > 0 && sameInboundReport ? retransmittedPacketsReceivedDelta : 0,
+    rtcRetransmittedBytesReceived: retransmittedBytesReceived,
+    rtcRetransmittedBytesReceivedDelta: previousAt > 0 && sameInboundReport ? retransmittedBytesReceivedDelta : 0,
+    rtcPacketsDiscarded: packetsDiscarded,
+    rtcPacketsDiscardedDelta: previousAt > 0 && sameInboundReport ? packetsDiscardedDelta : 0,
+    rtcJitterBufferDelayMsPerFrame: jitterBufferEmittedDelta > 0
+      ? jitterBufferDelayDelta * 1_000 / jitterBufferEmittedDelta
+      : jitterBufferEmittedCount > 0 ? jitterBufferDelay * 1_000 / jitterBufferEmittedCount : 0,
+    rtcJitterBufferTargetDelayMsPerFrame: jitterBufferEmittedDelta > 0
+      ? jitterBufferTargetDelayDelta * 1_000 / jitterBufferEmittedDelta
+      : jitterBufferEmittedCount > 0 ? jitterBufferTargetDelay * 1_000 / jitterBufferEmittedCount : 0,
+    // Keep cumulative values locally so the next sample can compute a window,
+    // but do not include them in the browser-to-server metrics allowlist.
+    rtcJitterBufferDelaySeconds: jitterBufferDelay,
+    rtcJitterBufferTargetDelaySeconds: jitterBufferTargetDelay,
+    rtcJitterBufferEmittedCount: jitterBufferEmittedCount,
     ...icePath
   };
 }
@@ -474,7 +529,36 @@ function extractSelectedIcePath(reports, inbound) {
     ...(iceField("rtcIceProtocol", local?.protocol)),
     ...(iceField("rtcIceLocalType", local?.candidateType)),
     ...(iceField("rtcIceRemoteType", remote?.candidateType)),
-    ...(iceField("rtcIcePairState", pair?.state))
+    ...(iceField("rtcIcePairState", pair?.state)),
+    rtcIceCurrentRttMs: finiteNumber(pair.currentRoundTripTime) * 1_000,
+    rtcIceAvailableIncomingBitrate: finiteNumber(pair.availableIncomingBitrate)
+  };
+}
+
+export function summarizeWhepNegotiation(sdp = "") {
+  const value = String(sdp || "");
+  const h264PayloadTypes = [...value.matchAll(/^a=rtpmap:(\d+)\s+H264\/90000\s*$/gim)].map((match) => match[1]);
+  const rtxAptPayloadTypes = new Set(
+    [...value.matchAll(/^a=fmtp:\d+\s+apt=(\d+)(?:;|\s|$)/gim)].map((match) => match[1])
+  );
+  const feedback = h264PayloadTypes.flatMap((payloadType) => (
+    [...value.matchAll(new RegExp(`^a=rtcp-fb:(?:${payloadType}|\\*)\\s+([^\\r\\n]+)$`, "gim"))]
+      .map((match) => match[1].trim().toLowerCase())
+  ));
+  return {
+    rtcNegotiatedNack: feedback.some((line) => line === "nack" || line.startsWith("nack ")),
+    rtcNegotiatedPli: feedback.some((line) => line === "nack pli" || line.startsWith("nack pli ")),
+    rtcNegotiatedFir: feedback.some((line) => line === "ccm fir" || line.startsWith("ccm fir ")),
+    rtcNegotiatedRtx: h264PayloadTypes.some((payloadType) => rtxAptPayloadTypes.has(payloadType))
+  };
+}
+
+function emptyWhepNegotiationSummary() {
+  return {
+    rtcNegotiatedNack: false,
+    rtcNegotiatedPli: false,
+    rtcNegotiatedFir: false,
+    rtcNegotiatedRtx: false
   };
 }
 

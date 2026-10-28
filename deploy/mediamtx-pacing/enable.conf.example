@@ -1,0 +1,7 @@
+# D-075 production baseline, activated 2026-09-10. Preserve on routine updates.
+# Requires the approved custom binary in production-baseline.json.
+# Do not clear/zero BPS, remove this drop-in, or use stock MediaMTX as a routine
+# rollback. Baseline changes and media restarts require explicit user approval.
+[Service]
+Environment=PHONECLOUD_VIEWER_PACING_BPS=8000000
+Environment=PHONECLOUD_VIEWER_PACING_GROUP_PACKETS=2

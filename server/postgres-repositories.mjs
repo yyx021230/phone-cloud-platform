@@ -75,7 +75,10 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
            adb_serial = excluded.adb_serial,
            status = excluded.status,
            updated_at = excluded.updated_at,
-           data = excluded.data`,
+           data = excluded.data
+       where phone_cloud_windows_tasks.updated_at is null
+          or excluded.updated_at is null
+          or excluded.updated_at >= phone_cloud_windows_tasks.updated_at`,
     [
       requiredId(task?.taskId, "windowsTask.taskId"),
       task.agentId || "",
@@ -96,7 +99,10 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
            user_id = excluded.user_id,
            status = excluded.status,
            updated_at = excluded.updated_at,
-           data = excluded.data`,
+           data = excluded.data
+       where phone_cloud_xhs_tasks.updated_at is null
+          or excluded.updated_at is null
+          or excluded.updated_at >= phone_cloud_xhs_tasks.updated_at`,
     [
       requiredId(task?.taskId, "xhsTask.taskId"),
       task.deviceId || "",
@@ -118,7 +124,10 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
            kind = excluded.kind,
            status = excluded.status,
            updated_at = excluded.updated_at,
-           data = excluded.data`,
+           data = excluded.data
+       where phone_cloud_automation_jobs.updated_at is null
+          or excluded.updated_at is null
+          or excluded.updated_at >= phone_cloud_automation_jobs.updated_at`,
     [
       requiredId(job?.jobId, "automationJob.jobId"),
       job.deviceId || "",
@@ -140,7 +149,10 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
            user_id = excluded.user_id,
            status = excluded.status,
            updated_at = excluded.updated_at,
-           data = excluded.data`,
+           data = excluded.data
+       where phone_cloud_automation_sessions.updated_at is null
+          or excluded.updated_at is null
+          or excluded.updated_at >= phone_cloud_automation_sessions.updated_at`,
     [
       requiredId(session?.sessionId, "automationSession.sessionId"),
       session.deviceId || "",
@@ -160,7 +172,9 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
        set device_id = excluded.device_id,
            status = excluded.status,
            expires_at = excluded.expires_at,
-           data = excluded.data`,
+           data = excluded.data
+       where coalesce(phone_cloud_device_locks.data->>'updatedAt', '')
+          <= coalesce(excluded.data->>'updatedAt', '')`,
     [
       requiredId(lock?.lockId, "deviceLock.lockId"),
       lock.deviceId || "",
@@ -310,11 +324,15 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
       });
     },
 
-    async persistTaskMutation({ windowsTask = null, xhsTask = null, automationJob = null, automationSession = null, deviceLock = null, events = [], audit = null } = {}) {
-      return inTransaction(async (client) => {
+    async persistTaskMutation({ windowsTask = null, windowsTasks = [], xhsTask = null, automationJob = null, automationJobs = [], automationSession = null, device = null, deviceLock = null, events = [], audit = null, transactionClient = null } = {}) {
+      const transaction = transactionClient ? (fn) => fn(transactionClient) : inTransaction;
+      return transaction(async (client) => {
+        if (device) await upsertDevice(client, device);
         if (windowsTask) await upsertWindowsTask(client, windowsTask);
+        for (const item of windowsTasks) await upsertWindowsTask(client, item);
         if (xhsTask) await upsertXhsTask(client, xhsTask);
         if (automationJob) await upsertAutomationJob(client, automationJob);
+        for (const item of automationJobs) await upsertAutomationJob(client, item);
         if (automationSession) await upsertAutomationSession(client, automationSession);
         if (deviceLock) await upsertDeviceLock(client, deviceLock);
         await insertTaskEvents(client, events);
@@ -322,20 +340,44 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
       });
     },
 
+    async persistWindowsTaskDeliveryLease({ windowsTask, audit = null } = {}) {
+      return inTransaction(async (client) => {
+        await client.query(
+          `update phone_cloud_windows_tasks
+              set updated_at = $2,
+                  data = jsonb_set(
+                    jsonb_set(
+                      jsonb_set(data, '{delivery}', $3::jsonb, true),
+                      '{deliveryAttempts}', to_jsonb($4::integer), true
+                    ),
+                    '{updatedAt}', to_jsonb($5::text), true
+                  )
+            where task_id = $1`,
+          [
+            requiredId(windowsTask?.taskId, "windowsTask.taskId"),
+            pgDate(windowsTask.updatedAt),
+            stringify(windowsTask.delivery || {}),
+            Math.max(0, Number(windowsTask.deliveryAttempts || 0)),
+            String(windowsTask.updatedAt || "")
+          ]
+        );
+        await insertAudit(client, audit);
+      });
+    },
+
     async loadOverlay() {
       const pool = await getPool();
-      const [users, sessions, devices, smsMessages, windowsTasks, xhsTasks, automationJobs, automationSessions, deviceLocks, auditEvents] = await Promise.all([
-        loadDataRows(pool, "phone_cloud_users", "updated_at", 5_000),
-        loadDataRows(pool, "phone_cloud_sessions", "expires_at", 5_000),
-        loadDataRows(pool, "phone_cloud_devices", "updated_at", 5_000),
-        loadDataRows(pool, "phone_cloud_sms_messages", "message_at", 50_000),
-        loadDataRows(pool, "phone_cloud_windows_tasks", "updated_at", 5_000),
-        loadDataRows(pool, "phone_cloud_xhs_tasks", "updated_at", 5_000),
-        loadDataRows(pool, "phone_cloud_automation_jobs", "updated_at", 5_000),
-        loadDataRows(pool, "phone_cloud_automation_sessions", "updated_at", 1_000),
-        loadDataRows(pool, "phone_cloud_device_locks", "expires_at", 5_000),
-        loadDataRows(pool, "phone_cloud_audit_events", "created_at", 5_000)
-      ]);
+      // Bound startup query memory; returned rows and merge precedence stay unchanged.
+      const users = await loadDataRows(pool, "phone_cloud_users", "updated_at", 5_000);
+      const sessions = await loadDataRows(pool, "phone_cloud_sessions", "expires_at", 5_000);
+      const devices = await loadDataRows(pool, "phone_cloud_devices", "updated_at", 5_000);
+      const smsMessages = await loadDataRows(pool, "phone_cloud_sms_messages", "message_at", 50_000);
+      const windowsTasks = await loadDataRows(pool, "phone_cloud_windows_tasks", "updated_at", 5_000);
+      const xhsTasks = await loadDataRows(pool, "phone_cloud_xhs_tasks", "updated_at", 5_000);
+      const automationJobs = await loadDataRows(pool, "phone_cloud_automation_jobs", "updated_at", 5_000);
+      const automationSessions = await loadDataRows(pool, "phone_cloud_automation_sessions", "updated_at", 1_000);
+      const deviceLocks = await loadDataRows(pool, "phone_cloud_device_locks", "expires_at", 5_000);
+      const auditEvents = await loadDataRows(pool, "phone_cloud_audit_events", "created_at", 5_000);
       return { users, sessions, devices, smsMessages, windowsTasks, xhsTasks, automationJobs, automationSessions, deviceLocks, auditEvents };
     }
   };

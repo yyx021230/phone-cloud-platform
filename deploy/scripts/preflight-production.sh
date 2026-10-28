@@ -200,6 +200,19 @@ else
   fail "node is required"
 fi
 
+SCREEN_IDLE_GUARD="$APP_DIR/public/screen-inactivity-guard.js"
+if [ -f "$SCREEN_IDLE_GUARD" ] && grep -Eq '^export const SCREEN_IDLE_TIMEOUT_MS = 10 \* 60 \* 1000;$' "$SCREEN_IDLE_GUARD"; then
+  pass "screen inactivity default is 10 minutes"
+else
+  fail "screen inactivity default must remain 10 minutes"
+fi
+
+if node "$APP_DIR/deploy/mediamtx-pacing/verify.mjs" --deployment; then
+  pass "D-075 media baseline guard passed (see output for live vs repository-only scope)"
+else
+  fail "D-075 media pacing baseline must not regress"
+fi
+
 if [ -f "$APP_DIR/package-lock.json" ]; then
   pass "package-lock.json exists"
 else

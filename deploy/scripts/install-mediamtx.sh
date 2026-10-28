@@ -1,19 +1,9 @@
 #!/usr/bin/env sh
 set -eu
 
-VERSION="${MEDIAMTX_VERSION:-1.18.2}"
-ARCHIVE="mediamtx_v${VERSION}_linux_amd64.tar.gz"
-BASE_DIR="${MEDIAMTX_BASE_DIR:-/opt/phone-cloud-mediamtx}"
-CONFIG_DIR="${MEDIAMTX_CONFIG_DIR:-/etc/phone-cloud}"
-SERVICE_FILE="/etc/systemd/system/phone-cloud-mediamtx.service"
-SOURCE_DIR="${SOURCE_DIR:-$(cd "$(dirname "$0")/../.." && pwd)}"
-
-mkdir -p "$BASE_DIR" "$CONFIG_DIR"
-curl -fL --retry 3 -o "/tmp/$ARCHIVE" "https://github.com/bluenviron/mediamtx/releases/download/v${VERSION}/${ARCHIVE}"
-tar -xzf "/tmp/$ARCHIVE" -C "$BASE_DIR" mediamtx
-chmod 0755 "$BASE_DIR/mediamtx"
-install -m 0644 "$SOURCE_DIR/deploy/mediamtx.yml" "$CONFIG_DIR/mediamtx.yml"
-install -m 0644 "$SOURCE_DIR/deploy/systemd/phone-cloud-mediamtx.service" "$SERVICE_FILE"
-systemctl daemon-reload
-systemctl enable --now phone-cloud-mediamtx
-systemctl --no-pager --full status phone-cloud-mediamtx
+# D-075: the stock installer would silently remove native viewer pacing.
+# No override flag: both fresh installation and replacement require the
+# separately reviewed custom build / deployment and an approved media window.
+printf '%s\n' 'BLOCKED: stock MediaMTX installation would violate the D-075 production baseline.' >&2
+printf '%s\n' 'Use deploy/mediamtx-pacing/build.mjs and the D-075 runbook. Preserve 8Mbps / 2-packet pacing; obtain approval before replacing or restarting media.' >&2
+exit 2

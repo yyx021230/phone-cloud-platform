@@ -190,7 +190,7 @@ export function createPnpRecoverySafety(options = {}) {
       : context.hostBusy
         ? "host_busy"
         : context.installerBusy
-          ? "device_install_busy"
+          ? (context.installerUnknown ? "device_install_probe_failed" : "device_install_busy")
           : budgetExhausted
             ? "hourly_budget_exhausted"
             : actionCoolingDown

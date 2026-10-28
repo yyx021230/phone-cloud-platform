@@ -69,9 +69,9 @@ test("uses direct keyboard input on the focused phone surface", () => {
   assert.match(screenBundle, /compositionend/);
   assert.match(screenBundle, /clipboardData/);
   assert.match(screenBundle, /select_all/);
-  assert.match(html, /styles\.css\?v=20260827-lookup-results-v2/);
-  assert.match(html, /app\.js\?v=20260827-screen-idle-10m-v1/);
-  assert.match(html, /screen-control\.js\?v=20260806-ice-ready-wake-v1/);
+  assert.match(html, /styles\.css\?v=20261020-lookup-card-rc1/);
+  assert.match(html, /app\.js\?v=20261023-admin-capacity-rc1/);
+  assert.match(html, /screen-control\.js\?v=20260828-receiver-feedback-v1/);
 });
 
 test("screen workspace imports an image into the active phone gallery", () => {
@@ -79,6 +79,7 @@ test("screen workspace imports an image into the active phone gallery", () => {
   assert.match(html, /导入到手机相册/);
   assert.match(app, /function importUserScreenGalleryImage\(/);
   assert.match(app, /screen-sessions\/\$\{encodeURIComponent\(sessionId\)\}\/gallery-imports/);
+  assert.match(app, /图片导入等待超时，请重新提交；平台不会继续显示为导入中/);
   assert.match(app, /function pollUserScreenGalleryImport\(sessionId, taskId\)/);
 });
 
@@ -136,7 +137,7 @@ test("screen sessions warn after ten idle minutes and default to disconnect afte
   assert.match(html, /已连续 10 分钟没有检测到操作/);
   assert.match(html, /id="userScreenIdleContinueButton"[^>]*>继续控制</);
   assert.match(html, /id="userScreenIdleDisconnectButton"[^>]*>立即断开</);
-  assert.match(app, /import \{ ScreenInactivityGuard \} from "\.\/screen-inactivity-guard\.js\?v=20260827-screen-idle-10m-v1"/);
+  assert.match(app, /import \{ ScreenInactivityGuard \} from "\.\/screen-inactivity-guard\.js\?v=20260902-screen-idle-10m-baseline-v2"/);
   assert.match(app, /stopUserScreenSession\(\{ detail: "长时间未操作，已自动断开" \}\)/);
   assert.match(app, /\["pointerdown", "keydown", "wheel", "touchstart"\]/);
   assert.match(app, /if \(!event\.isTrusted \|\| !state\.userScreenSession\?\.sessionId\) return/);

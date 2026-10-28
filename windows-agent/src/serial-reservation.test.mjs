@@ -32,8 +32,10 @@ test("keeps healthy phones syncing while another phone is waiting for recovery",
   }), true);
 });
 
-test("foreground automation only reserves its serial while explicit scan options still block", () => {
+test("foreground work reserves its exact phone while other phones can sync SMS", () => {
   assert.equal(shouldScheduleSmsBackground({ enabled: true, activeAutomationTask: true }), true);
+  assert.equal(isSerialReservedForBackgroundWork("busy", new Set(["busy"]), new Set()), true);
+  assert.equal(isSerialReservedForBackgroundWork("free", new Set(["busy"]), new Set()), false);
   assert.equal(shouldScheduleSmsBackground({ enabled: true, skipSms: true }), false);
   assert.equal(shouldScheduleSmsBackground({ enabled: false }), false);
 });

@@ -64,15 +64,25 @@ export function screenKeyCode(key) {
   return { back: 4, home: 3, overview: 187, wakeup: 224, volume_up: 24, enter: 66, delete: 67, forward_delete: 112 }[key] || 0;
 }
 
-export function createScreenVideoCodecOptions(config = {}) {
+export function createScreenVideoCodecOptions(config = {}, requestedOptions = {}) {
   // Do not force an H.264 profile: some MediaTek encoders reject it. We do
   // require frequent IDR frames, however. Without them a WHEP viewer that
   // joins after startup receives P-frames only and remains on "preparing"
   // until the screen changes enough for Android to emit another keyframe.
   return {
     videoCodecOptions: new ScrcpyCodecOptions({
-      iFrameInterval: Math.max(1, Math.min(10, Number(config.screenIFrameIntervalSeconds || 1))),
-      bitrateMode: Math.max(0, Math.min(2, Number(config.screenEncoderBitrateMode ?? 2)))
+      iFrameInterval: bounded(
+        requestedOptions.iFrameIntervalSeconds,
+        1,
+        10,
+        bounded(config.screenIFrameIntervalSeconds, 1, 10, 1)
+      ),
+      bitrateMode: bounded(
+        requestedOptions.encoderBitrateMode,
+        0,
+        2,
+        bounded(config.screenEncoderBitrateMode, 0, 2, 2)
+      )
     })
   };
 }
@@ -86,6 +96,7 @@ export function createScreenScrcpyOptions({ requestedOptions = {}, maxSize, conf
   // int, so keep it within 0x0fffffff instead of accepting all 8 hex digits.
   const sessionHex = String(sessionId || "").replace(/[^a-fA-F0-9]/g, "").toLowerCase();
   const scid = `${channel === "control" ? "c" : ""}${sessionHex}`.slice(0, 7);
+  const videoEncoder = normalizeScreenVideoEncoder(requestedOptions.videoEncoder);
   return new AdbScrcpyOptions3_3_3({
     video,
     audio: false,
@@ -93,10 +104,17 @@ export function createScreenScrcpyOptions({ requestedOptions = {}, maxSize, conf
     ...(scid ? { scid } : {}),
     tunnelForward: false,
     videoCodec: "h264",
-    ...createScreenVideoCodecOptions(config),
+    ...(videoEncoder ? { videoEncoder } : {}),
+    ...createScreenVideoCodecOptions(config, requestedOptions),
     maxSize,
-    maxFps: bounded(requestedOptions.maxFps, 5, 60, config.screenMaxFps),
-    videoBitRate: bounded(requestedOptions.videoBitRate, 500_000, 12_000_000, config.screenVideoBitRate),
+    maxFps: boundedByConfiguredCeiling(requestedOptions.maxFps, 5, 60, config.screenMaxFps, 60),
+    videoBitRate: boundedByConfiguredCeiling(
+      requestedOptions.videoBitRate,
+      500_000,
+      12_000_000,
+      config.screenVideoBitRate,
+      8_000_000
+    ),
     sendFrameMeta: true,
     sendDeviceMeta: true,
     sendCodecMeta: true,
@@ -115,14 +133,54 @@ export function screenControlIsolationEnabled(config = {}, serial = "") {
   return typeof deviceValue === "boolean" ? deviceValue : config.screenIsolateControlEnabled === true;
 }
 
-export function screenSourceRecoveryEnabled(config = {}, serial = "") {
+export function screenSourceRecoveryEnabled(config = {}, serial = "", requestedOptions = {}) {
+  const requestedValue = requestedOptions.sourceRecoveryEnabled;
+  if (typeof requestedValue === "boolean") return requestedValue;
   const deviceValue = config.screenDeviceProfiles?.[serial]?.sourceRecovery;
   return typeof deviceValue === "boolean" ? deviceValue : config.screenSourceRecoveryEnabled === true;
 }
 
-export function screenViewerKeyframeResetEnabled(config = {}, serial = "") {
+export function screenViewerKeyframeResetEnabled(config = {}, serial = "", requestedOptions = {}) {
+  const requestedValue = requestedOptions.viewerKeyframeResetEnabled;
+  if (typeof requestedValue === "boolean") return requestedValue;
   const deviceValue = config.screenDeviceProfiles?.[serial]?.viewerKeyframeReset;
   return typeof deviceValue === "boolean" ? deviceValue : config.screenViewerKeyframeResetEnabled === true;
+}
+
+export function resolveScreenSourceRecoveryPolicy({ requestedOptions = {}, config = {}, serial = "" }) {
+  return {
+    enabled: screenSourceRecoveryEnabled(config, serial, requestedOptions),
+    maxAttempts: bounded(
+      requestedOptions.sourceRecoveryMaxAttempts,
+      1,
+      8,
+      bounded(config.screenSourceRecoveryMaxAttempts, 1, 8, 3)
+    ),
+    windowSeconds: bounded(
+      requestedOptions.sourceRecoveryWindowSeconds,
+      10,
+      300,
+      bounded(config.screenSourceRecoveryWindowSeconds, 10, 300, 30)
+    )
+  };
+}
+
+export function resolveScreenRealtimeQueueLatencyMs({ requestedOptions = {}, config = {} }) {
+  return bounded(
+    requestedOptions.realtimeQueueLatencyMs,
+    100,
+    1_500,
+    bounded(config.screenRealtimeQueueLatencyMs, 100, 1_500, 400)
+  );
+}
+
+export function resolveScreenKeyframeRecoveryCooldownMs({ requestedOptions = {}, config = {} }) {
+  return bounded(
+    requestedOptions.keyframeRecoveryCooldownMs,
+    500,
+    10_000,
+    bounded(config.screenKeyframeRecoveryCooldownMs, 500, 10_000, 2_000)
+  );
 }
 
 export function screenSourceRecoveryDelayMs(attempt) {
@@ -131,14 +189,20 @@ export function screenSourceRecoveryDelayMs(attempt) {
   return delays[index];
 }
 
-// A device profile is a ceiling, not a second independent set of requested
-// options. This lets us tame a single encoder with oversized H.264 bursts
-// without reducing the quality of every other connected phone.
+// A device profile is the normal session ceiling. A versioned server hot
+// policy may explicitly override selected fields, but the Agent-wide encoder
+// capability ceiling is still enforced when scrcpy starts.
 export function applyScreenDeviceProfile({ requestedOptions = {}, config = {}, serial = "" }) {
   const profile = config.screenDeviceProfiles?.[serial];
   if (!profile || typeof profile !== "object") return { ...requestedOptions };
   const options = { ...requestedOptions };
+  const hotFields = new Set(
+    Array.isArray(options.screenHotConfigFields)
+      ? options.screenHotConfigFields.filter((key) => ["maxFps", "videoBitRate", "maxSize"].includes(key))
+      : []
+  );
   for (const key of ["maxFps", "videoBitRate", "maxSize"]) {
+    if (hotFields.has(key)) continue;
     const ceiling = Number(profile[key]);
     if (!Number.isFinite(ceiling) || ceiling <= 0) continue;
     const requested = Number(options[key]);
@@ -155,23 +219,80 @@ export function applyScreenDeviceProfile({ requestedOptions = {}, config = {}, s
 // P-frames arrive. Keep this device-scoped so concurrent phones retain the
 // normal aggregate bandwidth budget.
 export function resolveScreenTransportPacingBitRate({ requestedOptions = {}, config = {}, serial = "" }) {
+  const requestedPacing = Number(requestedOptions.transportPacingBitRate);
   const profilePacing = Number(config.screenDeviceProfiles?.[serial]?.transportPacingBitRate);
   const configuredPacing = Number(config.screenTransportPacingBitRate || 12_000_000);
   const requestedVideoBitRate = Number(requestedOptions.videoBitRate || 0);
+  const selectedPacing = Number.isFinite(requestedPacing) && requestedPacing > 0
+    ? requestedPacing
+    : (Number.isFinite(profilePacing) && profilePacing > 0 ? profilePacing : configuredPacing);
   return Math.max(
     requestedVideoBitRate,
-    Number.isFinite(profilePacing) && profilePacing > 0 ? profilePacing : configuredPacing
+    Math.max(2_000_000, Math.min(48_000_000, Math.round(selectedPacing || 12_000_000)))
   );
 }
 
 // Packet grouping changes the instantaneous UDP burst size, not the encoder
 // bitrate. Keep it independently device-scoped so two canaries can use smaller
 // groups while every other session retains the established eight-packet path.
-export function resolveScreenTransportPacketsPerBurst({ config = {}, serial = "" }) {
+export function resolveScreenTransportPacketsPerBurst({ requestedOptions = {}, config = {}, serial = "" }) {
+  const requestedValue = Number(requestedOptions.transportPacketsPerBurst);
   const profileValue = Number(config.screenDeviceProfiles?.[serial]?.transportPacketsPerBurst);
   const configuredValue = Number(config.screenTransportPacketsPerBurst || 2);
-  const selected = Number.isFinite(profileValue) && profileValue > 0 ? profileValue : configuredValue;
+  const selected = Number.isFinite(requestedValue) && requestedValue > 0
+    ? requestedValue
+    : (Number.isFinite(profileValue) && profileValue > 0 ? profileValue : configuredValue);
   return Math.max(1, Math.min(8, Math.round(Number(selected) || 8)));
+}
+
+// The baseline stays at the proven global pacing rate. Only an explicitly
+// enabled device profile may enter the temporary mid/max tiers, and the Go
+// publisher decides when to move tiers from its real pending-byte backlog.
+export function resolveScreenTransportAdaptivePacing({ requestedOptions = {}, config = {}, serial = "", baselineBitRate = 12_000_000 }) {
+  const deviceValue = config.screenDeviceProfiles?.[serial]?.transportAdaptivePacing;
+  const enabled = typeof requestedOptions.transportAdaptivePacing === "boolean"
+    ? requestedOptions.transportAdaptivePacing
+    : (typeof deviceValue === "boolean" ? deviceValue : config.screenTransportAdaptivePacingEnabled === true);
+  const baseline = Math.max(2_000_000, Math.min(48_000_000, Math.round(Number(baselineBitRate) || 12_000_000)));
+  const midBitRate = Math.max(
+    baseline,
+    Math.min(48_000_000, Math.round(Number(config.screenTransportAdaptiveMidBitRate) || 15_000_000))
+  );
+  const maxBitRate = Math.max(
+    midBitRate,
+    Math.min(48_000_000, Math.round(Number(config.screenTransportAdaptiveMaxBitRate) || 20_000_000))
+  );
+  const upThresholdMs = Math.max(40, Math.min(1_000, Math.round(Number(config.screenTransportAdaptiveUpThresholdMs) || 160)));
+  const maxThresholdMs = Math.max(upThresholdMs + 1, Math.min(1_500, Math.round(Number(config.screenTransportAdaptiveMaxThresholdMs) || 260)));
+  const downThresholdMs = Math.max(10, Math.min(upThresholdMs - 1, Math.round(Number(config.screenTransportAdaptiveDownThresholdMs) || 80)));
+  const holdMs = Math.max(100, Math.min(2_000, Math.round(Number(config.screenTransportAdaptiveHoldMs) || 300)));
+  return {
+    enabled,
+    midBitRate,
+    maxBitRate,
+    upThresholdMs,
+    maxThresholdMs,
+    downThresholdMs,
+    holdMs
+  };
+}
+
+// Browser feedback controls only RTP packet grouping, never the encoder or
+// the proven drain rate. A loss burst switches two-packet writes to one-packet
+// writes without creating a source-side queue; recovery is deliberately slow.
+export function resolveScreenTransportReceiverFeedback({ requestedOptions = {}, config = {}, serial = "" }) {
+  const deviceValue = config.screenDeviceProfiles?.[serial]?.transportReceiverFeedback;
+  const enabled = typeof requestedOptions.transportReceiverFeedback === "boolean"
+    ? requestedOptions.transportReceiverFeedback
+    : (typeof deviceValue === "boolean" ? deviceValue : config.screenTransportReceiverFeedbackEnabled === true);
+  return {
+    enabled,
+    stableHoldMs: Math.max(5_000, Math.min(60_000, Math.round(
+      Number(requestedOptions.transportReceiverStableHoldMs)
+      || Number(config.screenTransportReceiverStableHoldMs)
+      || 15_000
+    )))
+  };
 }
 
 export function parseScrcpyFallbackMaxSize(line) {
@@ -211,7 +332,13 @@ export function devicePowerState(output) {
   return "unknown";
 }
 
-export async function ensureDeviceAwake({ adbPath, serial, remoteWakeHelperPath = "", run = execFileAsync }) {
+export async function ensureDeviceAwake({
+  adbPath,
+  serial,
+  remoteWakeHelperPath = "",
+  refreshActivity = false,
+  run = execFileAsync
+}) {
   const commandOptions = { timeout: 5_000, windowsHide: true, maxBuffer: 256 * 1024 };
   // Some vendor builds append a very large wake-lock history to `dumpsys
   // power`. We only need the wakefulness line; collecting the whole dump can
@@ -220,10 +347,11 @@ export async function ensureDeviceAwake({ adbPath, serial, remoteWakeHelperPath 
   const powerCommand = "dumpsys power | grep -m 1 mWakefulness";
   const { stdout = "" } = await run(adbPath, ["-s", serial, "shell", powerCommand], commandOptions);
   const powerState = devicePowerState(stdout);
-  const wakeRequested = powerState === "asleep";
+  const wakeRequested = powerState !== "awake";
+  const wakeRefreshRequested = refreshActivity && powerState === "awake";
   let wakeMethod = "none";
   let wakeHelperFailed = false;
-  if (wakeRequested) {
+  if (wakeRequested || wakeRefreshRequested) {
     if (remoteWakeHelperPath) {
       // The helper uses hidden Android APIs and is not portable across every
       // vendor build.  Its failure must not abort screen startup while the
@@ -237,22 +365,38 @@ export async function ensureDeviceAwake({ adbPath, serial, remoteWakeHelperPath 
         wakeMethod = "keycode_wakeup_after_helper_failure";
       }
     } else {
-      await run(adbPath, ["-s", serial, "shell", "input", "keyevent", "26"], commandOptions);
-      wakeMethod = "power_key";
+      // KEYCODE_WAKEUP is idempotent: unlike KEYCODE_POWER it can never turn
+      // an already-awake display off.  Alipay/Poco startup also uses this as a
+      // bounded activity refresh before each instrumentation attach so an OEM
+      // screen timeout cannot suspend TestActivity halfway through UiAutomation
+      // registration.
+      await run(adbPath, ["-s", serial, "shell", "input", "keyevent", "224"], commandOptions);
+      wakeMethod = wakeRefreshRequested ? "keycode_wakeup_refresh" : "keycode_wakeup";
     }
   }
   await run(adbPath, ["-s", serial, "shell", "wm", "dismiss-keyguard"], commandOptions);
-  if (!wakeRequested) return { powerState, finalPowerState: powerState, wakeRequested: false, wakeMethod };
+  if (!wakeRequested && !wakeRefreshRequested) {
+    return { powerState, finalPowerState: powerState, wakeRequested: false, wakeRefreshRequested: false, wakeMethod };
+  }
   let { stdout: finalOutput = "" } = await run(adbPath, ["-s", serial, "shell", powerCommand], commandOptions);
   let finalPowerState = devicePowerState(finalOutput);
-  if (finalPowerState === "asleep" && remoteWakeHelperPath && !wakeHelperFailed) {
+  if (finalPowerState === "asleep") {
     await run(adbPath, ["-s", serial, "shell", "input", "keyevent", "224"], commandOptions);
-    wakeMethod = "keycode_wakeup_after_helper_no_effect";
+    wakeMethod = remoteWakeHelperPath && !wakeHelperFailed
+      ? "keycode_wakeup_after_helper_no_effect"
+      : `${wakeMethod || "keycode_wakeup"}_retry`;
     await run(adbPath, ["-s", serial, "shell", "wm", "dismiss-keyguard"], commandOptions);
     ({ stdout: finalOutput = "" } = await run(adbPath, ["-s", serial, "shell", powerCommand], commandOptions));
     finalPowerState = devicePowerState(finalOutput);
   }
-  return { powerState, finalPowerState, wakeRequested: true, wakeMethod, wakeHelperFailed };
+  return {
+    powerState,
+    finalPowerState,
+    wakeRequested,
+    wakeRefreshRequested,
+    wakeMethod,
+    wakeHelperFailed
+  };
 }
 
 export async function dismissVendorScreenGuard({ adbPath, serial, controller, run = execFileAsync }) {
@@ -290,6 +434,33 @@ export function createScreenStreamManager(options) {
   return new ScreenStreamManager(options);
 }
 
+export function createScreenAdbOwner(adb) {
+  if (!adb || typeof adb.close !== "function") throw new TypeError("screen_adb_owner_requires_closeable_adb");
+  let closePromise = null;
+  let closed = false;
+  return {
+    adb,
+    get closed() {
+      return closed;
+    },
+    close() {
+      if (closed) return Promise.resolve();
+      if (!closePromise) {
+        closePromise = Promise.resolve()
+          .then(() => adb.close())
+          .then(() => {
+            closed = true;
+          })
+          .catch((error) => {
+            closePromise = null;
+            throw error;
+          });
+      }
+      return closePromise;
+    }
+  };
+}
+
 class ScreenStreamManager {
   constructor(options) {
     this.config = options.config;
@@ -302,6 +473,7 @@ class ScreenStreamManager {
     this.beforeSessionStart = options.beforeSessionStart || (async () => {});
     this.afterSessionEnd = options.afterSessionEnd || (async () => {});
     this.sessions = new Map();
+    this.adbOwners = new Set();
     // A stop can arrive while a screen_start is still waiting for ADB or the
     // automation worker. Keep a short-lived cancellation marker so that a
     // late start cannot resurrect a session the server has already closed.
@@ -330,10 +502,22 @@ class ScreenStreamManager {
   }
 
   health() {
+    const sessionOwners = new Set();
+    for (const session of this.sessions.values()) {
+      for (const owner of [
+        ...(session.adbOwners || []),
+        session.videoAdbOwner,
+        session.controlAdbOwner
+      ].filter(Boolean)) sessionOwners.add(owner);
+    }
+    const owners = new Set([...this.adbOwners, ...sessionOwners]);
+    const activeOwners = [...owners].filter((owner) => !owner.closed);
     return {
       enabled: Boolean(this.config.screenStreamEnabled),
       connected: this.socket?.readyState === WebSocket.OPEN,
       activeSessions: this.sessions.size,
+      adbOwners: activeOwners.length,
+      orphanedAdbOwners: activeOwners.filter((owner) => !sessionOwners.has(owner)).length,
       serverJarReady: existsSync(this.serverJar),
       serverJar: this.serverJar,
       wakeHelperReady: existsSync(this.wakeHelperJar)
@@ -352,9 +536,10 @@ class ScreenStreamManager {
       this.sendJson({
         type: "screen_capabilities",
         transports: ["multiplexed", "split-v1"],
-        mediaTransports: this.webrtcPublisherReady()
-          ? [this.config.screenPublisherMode === "direct_webrtc" ? "webrtc-direct-v1" : "webrtc-rtsp-v1"]
-          : [],
+        mediaTransports: [
+          ...(this.webrtcPublisherReady() ? ["webrtc-rtsp-v1"] : []),
+          ...(this.directWebRtcPublisherReady() ? ["webrtc-direct-v1"] : [])
+        ],
         maxSize: this.config.screenMaxSize,
         maxFps: this.config.screenMaxFps,
         maxVideoBitRate: this.config.screenVideoBitRate,
@@ -431,6 +616,9 @@ class ScreenStreamManager {
     if (message?.type === "screen_control") return this.handleControl(message.sessionId, message.control);
     if (message?.type === "screen_media_reader_ready") {
       return this.handleMediaReaderReady(message.sessionId, message.generation);
+    }
+    if (message?.type === "screen_playback_feedback") {
+      return this.handlePlaybackFeedback(message.sessionId, message.metrics);
     }
   }
 
@@ -513,7 +701,10 @@ class ScreenStreamManager {
       serial,
       startedAtMs: Date.now(),
       videoClient: null,
+      videoAdbOwner: null,
+      adbOwners: new Set(),
       controlClient: null,
+      controlAdbOwner: null,
       reader: null,
       controlQueue: null,
       controlGeneration: 0,
@@ -540,6 +731,7 @@ class ScreenStreamManager {
       visualLatencyProbe: null,
       mediaWriteError: null,
       mediaWaitingForKeyframe: false,
+      receiverFeedbackEnabled: false,
       latestVideoConfiguration: null,
       videoWidth: 0,
       videoHeight: 0,
@@ -622,21 +814,75 @@ class ScreenStreamManager {
       throw error;
     }
     await phase("scrcpy_server", () => this.ensureServerJar(session.serial));
-    const requestedMaxSize = bounded(requestedOptions.maxSize, 480, 2160, this.config.screenMaxSize);
+    const requestedMaxSize = boundedByConfiguredCeiling(
+      requestedOptions.maxSize,
+      480,
+      2_160,
+      this.config.screenMaxSize,
+      1_600
+    );
     let maxSize = Math.min(requestedMaxSize, this.compatibleMaxSizes.get(session.serial) || requestedMaxSize);
     session.maxSize = maxSize;
     let encoderRestarts = 0;
     let sourceGeneration = 0;
     const sourceRecoveryAttempts = [];
     session.controlIsolated = screenControlIsolationEnabled(this.config, session.serial);
-    session.sourceRecoveryEnabled = screenSourceRecoveryEnabled(this.config, session.serial);
-    session.viewerKeyframeResetEnabled = screenViewerKeyframeResetEnabled(this.config, session.serial);
+    const sourceRecoveryPolicy = resolveScreenSourceRecoveryPolicy({
+      requestedOptions,
+      config: this.config,
+      serial: session.serial
+    });
+    session.sourceRecoveryEnabled = sourceRecoveryPolicy.enabled;
+    session.sourceRecoveryMaxAttempts = sourceRecoveryPolicy.maxAttempts;
+    session.sourceRecoveryWindowSeconds = sourceRecoveryPolicy.windowSeconds;
+    session.viewerKeyframeResetEnabled = screenViewerKeyframeResetEnabled(this.config, session.serial, requestedOptions);
+    session.iFrameIntervalSeconds = bounded(
+      requestedOptions.iFrameIntervalSeconds,
+      1,
+      10,
+      bounded(this.config.screenIFrameIntervalSeconds, 1, 10, 1)
+    );
+    session.keyframeRecoveryCooldownMs = resolveScreenKeyframeRecoveryCooldownMs({
+      requestedOptions,
+      config: this.config
+    });
     this.log("screen scrcpy lifecycle policy", {
       sessionId: session.sessionId,
       serial: session.serial,
+      transportPolicyRevision: Math.max(0, Math.round(Number(requestedOptions.transportPolicyRevision || 0))),
+      hotConfigFields: Array.isArray(requestedOptions.screenHotConfigFields)
+        ? requestedOptions.screenHotConfigFields
+        : [],
+      maxSize,
+      maxFps: boundedByConfiguredCeiling(
+        requestedOptions.maxFps,
+        5,
+        60,
+        this.config.screenMaxFps,
+        60
+      ),
+      videoBitRate: boundedByConfiguredCeiling(
+        requestedOptions.videoBitRate,
+        500_000,
+        12_000_000,
+        this.config.screenVideoBitRate,
+        8_000_000
+      ),
+      videoEncoder: normalizeScreenVideoEncoder(requestedOptions.videoEncoder) || "auto",
+      encoderBitrateMode: bounded(
+        requestedOptions.encoderBitrateMode,
+        0,
+        2,
+        bounded(this.config.screenEncoderBitrateMode, 0, 2, 2)
+      ),
+      realtimeQueueLatencyMs: resolveScreenRealtimeQueueLatencyMs({ requestedOptions, config: this.config }),
       controlIsolated: session.controlIsolated,
       sourceRecoveryEnabled: session.sourceRecoveryEnabled,
-      viewerKeyframeResetEnabled: session.viewerKeyframeResetEnabled
+      sourceRecoveryMaxAttempts: session.sourceRecoveryMaxAttempts,
+      sourceRecoveryWindowSeconds: session.sourceRecoveryWindowSeconds,
+      viewerKeyframeResetEnabled: session.viewerKeyframeResetEnabled,
+      iFrameIntervalSeconds: session.iFrameIntervalSeconds,
+      keyframeRecoveryCooldownMs: session.keyframeRecoveryCooldownMs
     });
     if (session.controlIsolated) {
       await phase("scrcpy_control_start", () => this.startControlClient(session));
@@ -647,10 +893,19 @@ class ScreenStreamManager {
       const videoGeneration = sourceGeneration;
       session.videoSourceGeneration = videoGeneration;
       let videoClient;
+      let videoAdbOwner;
       try {
         const connector = new AdbServerNodeTcpConnector({ host: this.config.adbServerHost, port: this.config.adbServerPort });
         const adbServer = new AdbServerClient(connector);
         const adb = await adbServer.createAdb({ serial: session.serial });
+        videoAdbOwner = createScreenAdbOwner(adb);
+        this.adbOwners.add(videoAdbOwner);
+        session.adbOwners.add(videoAdbOwner);
+        session.videoAdbOwner = videoAdbOwner;
+        if (session.closed) {
+          await this.releaseAdbOwner(session, "videoAdbOwner", videoAdbOwner, "video_adb_close_after_session_closed");
+          return;
+        }
         const options = createScreenScrcpyOptions({
           requestedOptions,
           maxSize,
@@ -664,7 +919,13 @@ class ScreenStreamManager {
           channel: "video"
         });
         videoClient = await phase("scrcpy_video_start", () => AdbScrcpyClient.start(adb, REMOTE_SERVER_PATH, options));
+        if (session.closed) {
+          try { await videoClient.close(); } catch {}
+          await this.releaseAdbOwner(session, "videoAdbOwner", videoAdbOwner, "video_adb_close_after_session_closed");
+          return;
+        }
       } catch (error) {
+        await this.releaseAdbOwner(session, "videoAdbOwner", videoAdbOwner, "video_adb_close_after_start_failure");
         if (!this.reserveSourceRecoveryAttempt(session, sourceRecoveryAttempts)) throw error;
         const attempt = sourceRecoveryAttempts.length;
         const delayMs = screenSourceRecoveryDelayMs(attempt);
@@ -748,6 +1009,7 @@ class ScreenStreamManager {
         this.sendStatus(session.sessionId, "preparing", `正在适配手机画面（${fallbackMaxSize}）`);
         try { await reader.cancel(); } catch {}
         try { await videoClient.close(); } catch {}
+        await this.releaseAdbOwner(session, "videoAdbOwner", videoAdbOwner, "video_adb_close_after_encoder_fallback");
         session.reader = null;
         session.videoClient = null;
         if (session.controlClient === videoClient) {
@@ -787,6 +1049,18 @@ class ScreenStreamManager {
       };
       session.onMediaReady = announceSourceKeyframeLive;
       if (["webrtc", "direct_webrtc"].includes(session.media.mode) && !session.mediaPublisher) {
+        const pacingBitRate = resolveScreenTransportPacingBitRate({
+          requestedOptions,
+          config: this.config,
+          serial: session.serial
+        });
+        const receiverFeedback = resolveScreenTransportReceiverFeedback({
+          requestedOptions,
+          config: this.config,
+          serial: session.serial,
+          baselineBitRate: pacingBitRate
+        });
+        session.receiverFeedbackEnabled = receiverFeedback.enabled;
         session.mediaPublisher = createScreenWebRtcPublisher({
           ffmpegPath: this.config.ffmpegPath,
           whipPublisherPath: this.config.screenWhipPublisherPath,
@@ -795,17 +1069,27 @@ class ScreenStreamManager {
           agentToken: this.config.agentToken,
           iceServers: session.media.iceServers || [],
           h264ProfileLevelId: h264ProfileLevelId(firstPacket.value),
-          frameRate: bounded(requestedOptions.maxFps, 5, 60, this.config.screenMaxFps),
-          pacingBitRate: resolveScreenTransportPacingBitRate({
+          frameRate: boundedByConfiguredCeiling(
+            requestedOptions.maxFps,
+            5,
+            60,
+            this.config.screenMaxFps,
+            60
+          ),
+          pacingBitRate,
+          adaptivePacing: resolveScreenTransportAdaptivePacing({
+            requestedOptions,
+            config: this.config,
+            serial: session.serial,
+            baselineBitRate: pacingBitRate
+          }),
+          receiverFeedback,
+          maxPacketsPerBurst: resolveScreenTransportPacketsPerBurst({
             requestedOptions,
             config: this.config,
             serial: session.serial
           }),
-          maxPacketsPerBurst: resolveScreenTransportPacketsPerBurst({
-            config: this.config,
-            serial: session.serial
-          }),
-          queueLatencyMs: this.config.screenRealtimeQueueLatencyMs,
+          queueLatencyMs: resolveScreenRealtimeQueueLatencyMs({ requestedOptions, config: this.config }),
           statsIntervalMs: Math.round(Number(this.config.screenPublisherStatsIntervalSeconds || 0) * 1000),
           onLog: (entry) => this.log("screen WebRTC publisher", { sessionId: session.sessionId, serial: session.serial, ...entry }),
           onKeyframeRequest: (reason) => {
@@ -917,6 +1201,7 @@ class ScreenStreamManager {
         session.videoClient = null;
         try { await reader.cancel(); } catch {}
         try { await videoClient.close(); } catch {}
+        await this.releaseAdbOwner(session, "videoAdbOwner", videoAdbOwner, "video_adb_close_after_source_recovery");
         await delay(delayMs);
         continue;
       }
@@ -928,29 +1213,49 @@ class ScreenStreamManager {
   async startControlClient(session) {
     if (session.closed) return null;
     let controlClient = session.videoClient;
+    let controlAdbOwner = null;
     let transport = "shared_scrcpy_session";
     if (session.controlIsolated) {
-      const connector = new AdbServerNodeTcpConnector({ host: this.config.adbServerHost, port: this.config.adbServerPort });
-      const adbServer = new AdbServerClient(connector);
-      const adb = await adbServer.createAdb({ serial: session.serial });
-      const options = createScreenScrcpyOptions({
-        requestedOptions: session.requestedOptions,
-        maxSize: session.maxSize,
-        config: this.config,
-        video: false,
-        control: true,
-        sessionId: session.sessionId,
-        channel: "control"
-      });
-      controlClient = await AdbScrcpyClient.start(adb, REMOTE_SERVER_PATH, options);
-      transport = "isolated_control_only_scrcpy";
-      monitorScrcpyOutput(controlClient.output, (line) => {
-        this.log("scrcpy server output", { sessionId: session.sessionId, serial: session.serial, channel: "control", line });
-      });
+      try {
+        const connector = new AdbServerNodeTcpConnector({ host: this.config.adbServerHost, port: this.config.adbServerPort });
+        const adbServer = new AdbServerClient(connector);
+        const adb = await adbServer.createAdb({ serial: session.serial });
+        controlAdbOwner = createScreenAdbOwner(adb);
+        this.adbOwners.add(controlAdbOwner);
+        session.adbOwners.add(controlAdbOwner);
+        session.controlAdbOwner = controlAdbOwner;
+        if (session.closed) {
+          await this.releaseAdbOwner(session, "controlAdbOwner", controlAdbOwner, "control_adb_close_after_session_closed");
+          return null;
+        }
+        const options = createScreenScrcpyOptions({
+          requestedOptions: session.requestedOptions,
+          maxSize: session.maxSize,
+          config: this.config,
+          video: false,
+          control: true,
+          sessionId: session.sessionId,
+          channel: "control"
+        });
+        controlClient = await AdbScrcpyClient.start(adb, REMOTE_SERVER_PATH, options);
+        transport = "isolated_control_only_scrcpy";
+        monitorScrcpyOutput(controlClient.output, (line) => {
+          this.log("scrcpy server output", { sessionId: session.sessionId, serial: session.serial, channel: "control", line });
+        });
+      } catch (error) {
+        await this.releaseAdbOwner(session, "controlAdbOwner", controlAdbOwner, "control_adb_close_after_start_failure");
+        throw error;
+      }
     }
     if (!controlClient?.controller) {
       try { await controlClient?.close(); } catch {}
+      await this.releaseAdbOwner(session, "controlAdbOwner", controlAdbOwner, "control_adb_close_when_unavailable");
       throw new Error("scrcpy_control_unavailable");
+    }
+    if (session.closed) {
+      try { await controlClient.close(); } catch {}
+      await this.releaseAdbOwner(session, "controlAdbOwner", controlAdbOwner, "control_adb_close_after_session_closed");
+      return null;
     }
     session.controlClient = controlClient;
     this.installControlQueue(session, controlClient);
@@ -974,13 +1279,15 @@ class ScreenStreamManager {
   async restartControlClient(session) {
     if (session.closed) return;
     const previous = session.controlClient;
+    const previousAdbOwner = session.controlAdbOwner;
     session.controlClient = null;
     session.controlQueue = null;
     if (session.controlIsolated && previous && previous !== session.videoClient) {
       try { await previous.close(); } catch {}
     }
+    await this.releaseAdbOwner(session, "controlAdbOwner", previousAdbOwner, "control_adb_close_before_recovery");
     const maximum = session.sourceRecoveryEnabled
-      ? Math.max(1, Math.min(8, Number(this.config.screenSourceRecoveryMaxAttempts || 3)))
+      ? bounded(session.sourceRecoveryMaxAttempts, 1, 8, 3)
       : 1;
     let lastError = null;
     for (let attempt = 1; attempt <= maximum && !session.closed; attempt += 1) {
@@ -1024,8 +1331,8 @@ class ScreenStreamManager {
       || this.socket?.readyState !== WebSocket.OPEN
     ) return false;
     const now = Date.now();
-    const windowMs = Math.max(10_000, Math.min(300_000, Number(this.config.screenSourceRecoveryWindowSeconds || 30) * 1_000));
-    const maximum = Math.max(1, Math.min(8, Number(this.config.screenSourceRecoveryMaxAttempts || 3)));
+    const windowMs = bounded(session.sourceRecoveryWindowSeconds, 10, 300, 30) * 1_000;
+    const maximum = bounded(session.sourceRecoveryMaxAttempts, 1, 8, 3);
     while (attempts.length && now - attempts[0] > windowMs) attempts.shift();
     if (attempts.length >= maximum) {
       this.log("scrcpy video source recovery exhausted", {
@@ -1318,6 +1625,18 @@ class ScreenStreamManager {
     }
   }
 
+  async handlePlaybackFeedback(sessionId, metrics = {}) {
+    const session = this.sessions.get(String(sessionId || ""));
+    if (
+      !session
+      || session.closed
+      || session.media?.mode !== "webrtc"
+      || !session.receiverFeedbackEnabled
+      || typeof session.mediaPublisher?.updatePlaybackFeedback !== "function"
+    ) return false;
+    return session.mediaPublisher.updatePlaybackFeedback(metrics);
+  }
+
   async wakeSessionForMediaReader(session, generation) {
     const wake = await ensureDeviceAwake({
       adbPath: this.config.adbPath,
@@ -1355,13 +1674,13 @@ class ScreenStreamManager {
   }
 
   async requestWebRtcKeyframe(session, reason = "pli") {
-    if (session.closed || session.media?.mode !== "webrtc") return false;
+    if (session.closed || !["webrtc", "direct_webrtc"].includes(session.media?.mode)) return false;
     this.log("screen keyframe request observed", {
       sessionId: session.sessionId,
       serial: session.serial,
       reason,
       policy: "awaits_next_source_idr",
-      iFrameIntervalSeconds: Math.max(1, Math.min(10, Number(this.config.screenIFrameIntervalSeconds || 1)))
+      iFrameIntervalSeconds: bounded(session.iFrameIntervalSeconds, 1, 10, 1)
     });
     // MediaMTX can emit periodic PLIs even for a healthy reader. Do not insert
     // an old cached IDR into a live GOP: that resets the browser decoder while
@@ -1370,8 +1689,8 @@ class ScreenStreamManager {
   }
 
   async requestWebRtcKeyframeRecovery(session, reason) {
-    if (session.closed || session.media?.mode !== "webrtc") return false;
-    const cooldownMs = Math.max(500, Math.min(10_000, Number(this.config.screenKeyframeRecoveryCooldownMs || 2_000)));
+    if (session.closed || !["webrtc", "direct_webrtc"].includes(session.media?.mode)) return false;
+    const cooldownMs = bounded(session.keyframeRecoveryCooldownMs, 500, 10_000, 2_000);
     const now = Date.now();
     if (now - Number(session.lastSourceKeyframeRecoveryAtMs || 0) < cooldownMs) return false;
     session.lastSourceKeyframeRecoveryAtMs = now;
@@ -1385,7 +1704,7 @@ class ScreenStreamManager {
       serial: session.serial,
       reason,
       policy: "drop_until_next_source_idr",
-      iFrameIntervalSeconds: Math.max(1, Math.min(10, Number(this.config.screenIFrameIntervalSeconds || 1)))
+      iFrameIntervalSeconds: bounded(session.iFrameIntervalSeconds, 1, 10, 1)
     });
     return false;
   }
@@ -1607,6 +1926,11 @@ class ScreenStreamManager {
         if (session.controlClient && session.controlClient !== session.videoClient) {
           await this.runCleanupStep(session, "control_client_close", () => session.controlClient?.close());
         }
+        await this.releaseAdbOwner(session, "controlAdbOwner", session.controlAdbOwner, "control_adb_close");
+        await this.releaseAdbOwner(session, "videoAdbOwner", session.videoAdbOwner, "video_adb_close");
+        for (const owner of [...(session.adbOwners || [])]) {
+          await this.releaseAdbOwner(session, null, owner, "registered_adb_close");
+        }
         session.videoChannel?.close(1000, reason);
         // scrcpy starts a short-lived Android cleanup process. Keep this serial
         // reserved until it has had time to exit, otherwise an immediate reconnect
@@ -1636,6 +1960,10 @@ class ScreenStreamManager {
     return existsSync(this.config.ffmpegPath);
   }
 
+  directWebRtcPublisherReady() {
+    return Boolean(this.config.screenWebRtcEnabled && existsSync(this.config.screenWhipPublisherPath));
+  }
+
   async runCleanupStep(session, step, operation) {
     try {
       await withTimeout(operation, this.cleanupTimeoutMs, `screen_cleanup_timeout:${step}`);
@@ -1645,6 +1973,24 @@ class ScreenStreamManager {
         serial: session.serial,
         step,
         error: error?.message || String(error)
+      });
+    }
+  }
+
+  async releaseAdbOwner(session, slot, owner, step) {
+    if (!owner) return;
+    await this.runCleanupStep(session, step, () => owner.close());
+    if (owner.closed) {
+      if (slot && session?.[slot] === owner) session[slot] = null;
+      if (session?.videoAdbOwner === owner) session.videoAdbOwner = null;
+      if (session?.controlAdbOwner === owner) session.controlAdbOwner = null;
+      session?.adbOwners?.delete(owner);
+      this.adbOwners.delete(owner);
+      this.log("screen adb owner released", {
+        sessionId: session?.sessionId || "",
+        serial: session?.serial || "",
+        channel: slot === "controlAdbOwner" ? "control" : (slot === "videoAdbOwner" ? "video" : "registered"),
+        step
       });
     }
   }
@@ -1801,6 +2147,16 @@ function scrcpyPtsToMilliseconds(value) {
   } catch {
     return NaN;
   }
+}
+
+function normalizeScreenVideoEncoder(value) {
+  const encoder = String(value || "").trim();
+  return /^[A-Za-z0-9._-]{1,128}$/.test(encoder) ? encoder : "";
+}
+
+function boundedByConfiguredCeiling(value, min, max, configuredValue, configuredFallback) {
+  const ceiling = bounded(configuredValue, min, max, configuredFallback);
+  return Math.min(ceiling, bounded(value, min, max, ceiling));
 }
 
 function bounded(value, min, max, fallback) {

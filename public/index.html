@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Phone Cloud Platform</title>
-  <link rel="stylesheet" href="./styles.css?v=20260827-lookup-results-v2" />
+  <link rel="stylesheet" href="./styles.css?v=20261020-lookup-card-rc1" />
   </head>
   <body class="booting">
     <div class="boot-loader" aria-label="正在加载 Phone Cloud">
@@ -64,6 +64,7 @@
         <button data-page-button="users" data-role-page="admin" type="button">用户账号</button>
         <button data-page-button="windows" type="button">Windows 管理器</button>
         <button data-page-button="devices" type="button">手机设备</button>
+        <button data-page-button="lookup-admin" data-role-page="admin" type="button">查名字</button>
         <button data-page-button="sms" type="button">短信接收</button>
         <button data-page-button="xhs" type="button">小红书扫码</button>
         <span class="nav-section-label">系统维护</span>
@@ -106,15 +107,21 @@
         </div>
         <button id="userTopAdminButton" class="top-settings-button user-top-admin-button hidden" type="button">管理后台</button>
         <button id="topSettingsButton" class="top-settings-button hidden" type="button">设置</button>
-        <button id="refreshButton" type="button">刷新</button>
+        <div class="topbar-actions">
+          <a class="ghost-button api-docs-entry" href="./api-docs.html" target="_blank" rel="noopener noreferrer" aria-label="打开 API 文档（新窗口）"><span aria-hidden="true">&lt;/&gt;</span> API 文档</a>
+          <a class="ghost-button" href="./lookup-pool.html">查名设备池</a>
+          <button id="refreshButton" type="button">刷新</button>
+        </div>
       </header>
 
+      <section class="page hidden" data-page="lookup-admin"><div id="lookupAdminHost"></div></section>
       <section class="page" data-page="dashboard">
         <div id="overviewGrid" class="metric-grid"></div>
       </section>
 
       <section class="page hidden user-workbench" data-page="user-workbench">
         <div id="userDeviceInventoryView" class="user-device-inventory-view module-panel device-column">
+          <a class="ghost-button api-docs-entry api-docs-inventory-entry" href="./api-docs.html" target="_blank" rel="noopener noreferrer" aria-label="打开 API 文档（新窗口）"><span aria-hidden="true">&lt;/&gt;</span> API 文档</a>
           <div class="user-inventory-head toolbar">
             <div>
               <h2>设备库存</h2>
@@ -158,7 +165,29 @@
             <div class="device-detail-titlebar">
               <button id="userDeviceBackButton" class="ghost-button back-button prominent-back-button" type="button">返回设备库存</button>
               <div class="user-detail-title-block">
-                <h2 id="userDeviceTitle">手机详情</h2>
+                <div class="user-detail-heading-row">
+                  <h2 id="userDeviceTitle">手机详情</h2>
+                  <div id="userDeviceSwitcher" class="user-device-switcher">
+                    <button id="userDeviceSwitcherButton" class="user-device-switcher-button" type="button" aria-haspopup="dialog" aria-controls="userDeviceSwitcherPanel" aria-expanded="false">
+                      <span>切换手机</span>
+                      <i aria-hidden="true">⌄</i>
+                    </button>
+                    <div id="userDeviceSwitcherPanel" class="user-device-switcher-panel" role="dialog" aria-label="切换手机" hidden>
+                      <div class="user-device-switcher-head">
+                        <div>
+                          <strong>切换手机</strong>
+                          <small id="userDeviceSwitcherCount">0 台</small>
+                        </div>
+                        <kbd>ESC</kbd>
+                      </div>
+                      <label class="user-device-switcher-search">
+                        <span aria-hidden="true"></span>
+                        <input id="userDeviceSwitcherSearch" type="search" autocomplete="off" placeholder="搜索编号 / 型号 / 手机号 / 账号" aria-label="搜索要切换的手机" />
+                      </label>
+                      <div id="userDeviceSwitcherList" class="user-device-switcher-list" role="listbox" aria-label="手机列表"></div>
+                    </div>
+                  </div>
+                </div>
                 <p id="userDeviceDetailMeta">这台手机的 ADB 短信库、验证码接收和小红书扫码任务。</p>
               </div>
               <div id="userDeviceStatusPills" class="device-detail-statusbar">
@@ -207,8 +236,14 @@
                   <button data-automation-module="publish" type="button" role="tab" aria-selected="false">
                     <em>02</em><span><b>一键发布</b><small>图文笔记</small></span><i aria-hidden="true">↗</i>
                   </button>
+                  <button data-automation-module="kuaishou" type="button" role="tab" aria-selected="false">
+                    <em>03</em><span><b>快手录入</b><small>飞书队列</small></span><i aria-hidden="true">↗</i>
+                  </button>
+                  <button data-automation-module="data" type="button" role="tab" aria-selected="false">
+                    <em>04</em><span><b>小红书数据采集</b><small>最近 30 天</small></span><i aria-hidden="true">↗</i>
+                  </button>
                   <button data-automation-module="name" type="button" role="tab" aria-selected="false">
-                    <em>03</em><span><b>查名字</b><small>连续查询</small></span><i aria-hidden="true">↗</i>
+                    <em>05</em><span><b>查名字</b><small>连续查询</small></span><i aria-hidden="true">↗</i>
                   </button>
                 </div>
                 <form id="userXhsTaskForm" class="panel action-rail-card scan-create-card" data-automation-module-panel="scan">
@@ -325,6 +360,52 @@
                   <div id="userPublishTaskList" class="stack scan-task-list"></div>
                 </div>
 
+                <section class="panel action-rail-card automation-form-card kuaishou-lead-card hidden" data-automation-module-panel="kuaishou">
+                  <div class="automation-card-head">
+                    <div>
+                      <span class="scan-kicker">KUAISHOU · FEISHU QUEUE</span>
+                      <h2>快手录入</h2>
+                      <p>持续扫描飞书中的未处理行和“推送失败（提交前）”行，直到你主动停止。</p>
+                    </div>
+                    <span class="automation-mode-badge"><i></i> 持续任务</span>
+                  </div>
+                  <div id="userKuaishouStatus" class="lookup-session-status" data-state="idle"><i></i><div><strong>尚未启动</strong><span>选择间隔范围后启动飞书队列</span></div></div>
+                  <div class="kuaishou-delay-grid">
+                    <label class="scan-field automation-text-field"><span>最短间隔（秒）</span><input id="userKuaishouMinDelay" type="number" min="30" max="3600" step="1" value="240" /></label>
+                    <label class="scan-field automation-text-field"><span>最长间隔（秒）</span><input id="userKuaishouMaxDelay" type="number" min="30" max="3600" step="1" value="420" /></label>
+                  </div>
+                  <div class="kuaishou-safety-note">
+                    <span><i>✓</i> 空白数据按表格从上到下处理</span>
+                    <span><i>✓</i> 仅提交前失败会自动重试</span>
+                    <span><i>✓</i> 结果待确认绝不重复提交</span>
+                  </div>
+                  <div class="automation-submit-row">
+                    <div><strong>独占当前设备运行</strong><p id="userKuaishouHint" class="hint">飞书暂时没有新数据时也会继续等待。</p></div>
+                    <div class="kuaishou-command-buttons">
+                      <button id="userKuaishouStartButton" class="scan-submit-button" type="button"><span>启动快手录入</span><i aria-hidden="true">→</i></button>
+                      <button id="userKuaishouStopButton" class="danger-outline" type="button" disabled>停止任务</button>
+                    </div>
+                  </div>
+                </section>
+                <div class="panel action-rail-card compact-task-card automation-side-board kuaishou-history-board hidden" data-automation-module-panel="kuaishou">
+                  <div class="scan-board-head"><div><span class="scan-kicker">CONTINUOUS QUEUE</span><h2>运行记录</h2><p>显示当前设备的扫描状态、累计结果和下一次检查时间。</p></div><em>实时</em></div>
+                  <div id="userKuaishouTaskList" class="stack scan-task-list"></div>
+                </div>
+
+                <form id="userDataCollectionForm" class="panel action-rail-card automation-form-card xhs-data-console hidden" data-automation-module-panel="data">
+                  <div class="automation-card-head"><div><span class="scan-kicker">CREATOR DATA</span><h2>小红书数据采集</h2><p>读取最近 30 天作品的观看、点赞和评论。</p></div><span class="automation-mode-badge">30 天</span></div>
+                  <label class="scan-field automation-select-field"><span>小红书账号槽位</span><select id="userDataTargetSelect" name="xhsAppSlot" required></select></label>
+                  <p class="hint">自动向下翻页，到达日期边界或列表末尾后结束。遇到未完成笔记会保存为草稿后继续。</p>
+                  <div class="automation-submit-row"><button id="userDataCollectButton" type="submit"><span>开始采集</span><i aria-hidden="true">→</i></button></div>
+                  <p id="userDataCollectionHint" class="hint" aria-live="polite"></p>
+                </form>
+                <section class="panel action-rail-card compact-task-card hidden" data-automation-module-panel="data">
+                  <div class="scan-board-head"><div><span class="scan-kicker">NOTE SNAPSHOT</span><h2>作品数据</h2><p>每次采集保留独立快照。</p></div></div>
+                  <div id="userDataCollectionResult" aria-live="polite"></div>
+                </section>
+                <section class="panel action-rail-card compact-task-card hidden" data-automation-module-panel="data">
+                  <div class="scan-board-head"><div><h2>采集记录</h2></div><em>最新在前</em></div><div id="userDataCollectionTasks"></div>
+                </section>
                 <section class="panel action-rail-card automation-form-card lookup-console-card hidden" data-automation-module-panel="name">
                   <div class="automation-card-head lookup-console-head">
                     <div>
@@ -335,24 +416,36 @@
                     <span class="automation-mode-badge"><i></i> 长会话</span>
                   </div>
                   <div class="lookup-pipeline" aria-hidden="true">
-                    <span><i>1</i><b>建立会话</b><small>进入支付宝搜索页</small></span>
+                    <span><i>1</i><b>检查账户</b><small>识别账户并检查冷却</small></span>
                     <em></em>
                     <span><i>2</i><b>连续查询</b><small>仅替换手机号码</small></span>
                     <em></em>
-                    <span><i>3</i><b>自动续航</b><small>200 次切换账号</small></span>
+                    <span><i>3</i><b>账户冷却</b><small>明确限制后冷却八小时</small></span>
                   </div>
                   <div class="lookup-console-grid">
                     <section class="lookup-session-panel">
                       <div class="automation-section-title"><span>A</span><div><strong>会话控制</strong><small>一台设备同一时间仅运行一个会话</small></div></div>
                       <div id="userLookupSessionStatus" class="lookup-session-status" data-state="idle"><i></i><div><strong>尚未开始</strong><span>点击开始建立查询会话</span></div></div>
                       <div class="lookup-session-facts">
-                        <span><small>查询上限</small><strong>200 <em>次/账号</em></strong></span>
+                        <span><small>当前账号</small><strong id="userLookupCurrentAccount">启动后识别</strong></span>
                         <span><small>异常策略</small><strong>2 <em>次重试</em></strong></span>
                       </div>
                       <div class="lookup-session-actions">
                         <button id="userLookupStartButton" class="scan-submit-button" type="button"><span>启动查询会话</span><i aria-hidden="true">→</i></button>
+                        <button id="userLookupSwitchButton" class="secondary-outline" type="button" disabled>选择切换账号</button>
                         <button id="userLookupEndButton" class="danger-outline" type="button" disabled>结束会话</button>
                       </div>
+                      <div id="userLookupAccountChooser" class="lookup-account-chooser" hidden>
+                        <div><span>选择目标账号</span><small>账号来自当前手机支付宝</small></div>
+                        <div id="userLookupAccountList" class="lookup-account-list"></div>
+                      </div>
+                      <section id="userLookupCooldownPanel" class="lookup-cooldown-panel" hidden aria-labelledby="userLookupCooldownTitle">
+                        <h4 id="userLookupCooldownTitle">账户冷却记录 <small>触发限制起 8 小时</small></h4>
+                        <div class="lookup-cooldown-scroll" tabindex="0" role="region" aria-label="账户冷却时间表，可横向滚动">
+                          <table><thead><tr><th scope="col">账户</th><th scope="col">上限触发时间</th><th scope="col">冷却结束／状态</th></tr></thead><tbody id="userLookupCooldownRows"></tbody></table>
+                        </div>
+                        <p>到期后可再次尝试，不代表支付宝已解除限制。全部冷却时不再下发查询。</p>
+                      </section>
                     </section>
                     <section class="lookup-query-panel">
                       <div class="automation-section-title"><span>B</span><div><strong>号码查询台</strong><small>查询成功后直接输入下一个号码</small></div></div>
@@ -361,6 +454,10 @@
                         <span>+86</span>
                         <input id="userLookupPhoneInput" inputmode="numeric" maxlength="11" placeholder="请输入 11 位手机号" disabled />
                         <button id="userLookupQueryButton" type="button" disabled>查询名字 <i aria-hidden="true">↗</i></button>
+                      </div>
+                      <div id="userLookupHumanResumePanel" class="lookup-human-resume" hidden>
+                        <div><strong>当前号码等待人工验证</strong><small>发起者或管理员进入实时控屏完成拼图。系统自动检测，结束这次控屏、清空搜索框并重查原号码，无需再点确认。</small></div>
+                        <button id="userLookupRecoveryRetryButton" type="button" hidden>重试当前号码</button>
                       </div>
                       <div class="lookup-query-notes">
                         <span><i>✓</i> 查询后保持当前页面</span>
@@ -857,7 +954,7 @@
       </section>
     </main>
 
-    <script type="module" src="./vendor/screen-control.js?v=20260806-ice-ready-wake-v1"></script>
-    <script type="module" src="./app.js?v=20260827-screen-idle-10m-v1"></script>
+    <script type="module" src="./vendor/screen-control.js?v=20260828-receiver-feedback-v1"></script>
+    <script type="module" src="./app.js?v=20261023-admin-capacity-rc1"></script>
   </body>
 </html>

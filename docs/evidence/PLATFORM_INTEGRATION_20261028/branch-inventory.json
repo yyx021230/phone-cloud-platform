@@ -1,0 +1,46 @@
+[
+  {
+    "ref": "refs/heads/codex/github-author-repair-20261027",
+    "sha": "ac109ce288e0bc6be34104370309f1bb9465c9d2"
+  },
+  {
+    "ref": "refs/heads/codex/inventory-test-isolation-20261027",
+    "sha": "29d96f4c25abaa336e322f5f48560a61d92fcadb"
+  },
+  {
+    "ref": "refs/heads/codex/lookup-intake-audit-20261026",
+    "sha": "1f4972c3f4a462f18ce48d29b796ee2e96bb6b7a"
+  },
+  {
+    "ref": "refs/heads/codex/lookup-manual-orders-20261022",
+    "sha": "b033f1a184f2cfc5df051cc85e23cc6ab5ac0364"
+  },
+  {
+    "ref": "refs/heads/codex/nginx-isolation-20261027",
+    "sha": "4def4116731cbf06f1ee072e782eff4547b68aad"
+  },
+  {
+    "ref": "refs/heads/codex/platform-integration-20261028",
+    "sha": "ac109ce288e0bc6be34104370309f1bb9465c9d2"
+  },
+  {
+    "ref": "refs/heads/codex/recovery-control-feedback-20261019",
+    "sha": "26ff5bbf9a30ecf8837c9c12d488a130441014ea"
+  },
+  {
+    "ref": "refs/heads/codex/wecom-default-remarks-20261020",
+    "sha": "fcf792689e6ac624e97a7fd16c92a11a79833750"
+  },
+  {
+    "ref": "refs/heads/codex/windows-tailscale-20261019",
+    "sha": "dd200b03a0f5fe7b57d5a8bec3635c770d11845e"
+  },
+  {
+    "ref": "refs/heads/codex/xhs-popup-release-20261019",
+    "sha": "97665b0978509e70e3eaca26b4e8e1d83eff8e0c"
+  },
+  {
+    "ref": "refs/heads/codex/xhs-schedule-enablement-20261027",
+    "sha": "b912b6d7b70b8ff2f21e8a25ef45d97fc6311fa7"
+  }
+]
