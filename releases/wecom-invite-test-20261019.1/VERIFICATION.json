@@ -1,0 +1,99 @@
+{
+  "testId": "wecom-invite-test-20261019.1",
+  "recordedAt": "2026-10-19T14:48:17.358755+08:00",
+  "branch": "codex/wecom-invite-test-user-20261019",
+  "baseCommit": "c529cc67016baa7c9e4f669ac5210a43845fdd15",
+  "workingTreeAtStart": "clean; existing unrelated worktrees untouched",
+  "authorization": {
+    "deviceNumber": "67",
+    "targetSuffix": "6441",
+    "operation": "user explicitly requested one real test-user invitation; no bulk sends or account switching"
+  },
+  "source": {
+    "previewCodeChanged": false,
+    "sourceSha256": "3b12e7ecfd11aaee64d350d2452378343d0681337249d1032f28a5d5516e30a0",
+    "previewCandidate": "wecom-invite-preview-20261019-rc.3"
+  },
+  "scriptAttempts": [
+    {
+      "elapsedSeconds": 36.12,
+      "status": "stopped",
+      "code": "page_changed_before_action",
+      "stage": "menu",
+      "completedSteps": [
+        "open_menu"
+      ],
+      "phoneEntered": false,
+      "invitationSent": false
+    },
+    {
+      "elapsedSeconds": 45.17,
+      "status": "stopped",
+      "code": "page_changed_before_action",
+      "stage": "entry",
+      "completedSteps": [],
+      "phoneEntered": false,
+      "invitationSent": false,
+      "leaseValidAtEnd": false
+    }
+  ],
+  "readOnlyDiagnostics": {
+    "confirmedSessionCheck": {
+      "status": "streaming",
+      "deviceSerialUserMatches": true,
+      "activeScreenControlLocks": 1,
+      "validExpiry": true
+    },
+    "snapshotDifference": {
+      "firstNodeCount": 24,
+      "removedNodes": 2,
+      "addedNodes": 0,
+      "removedType": "android.widget.ImageView",
+      "normalizedY": 0.017369727047146403,
+      "removedTextAndDescription": "empty",
+      "resourceNamesNotCollected": true
+    },
+    "interpretation": "changes are in the top status-bar region; likely unrelated system icons, exact resource identity and original stop difference not yet verified; no filter change made",
+    "platformApiReadFailures": "Windows-side bounded HTTP reads timed out intermittently at lease preflight and login; a separate later read confirmed valid actual lease; cause not established",
+    "lastProbeElapsedSeconds": [
+      7.17,
+      5.59
+    ]
+  },
+  "realAttempt": {
+    "executor": "platform UI via existing phone67 screen_control session; not automatic script sending",
+    "phoneQueries": 1,
+    "targetInputAndProfileExactMatch": true,
+    "sendClickCount": 1,
+    "automaticRetryAllowed": false,
+    "state": "restricted_after_one_send_click",
+    "notice": "添加好友过于频繁，当前功能暂时被限制",
+    "successConfirmed": false,
+    "customerAcceptanceConfirmed": false,
+    "details": "in-app Add customer restriction explanation recommends pausing and trying the next day; no exact unblock time or employee-versus-enterprise cause verified"
+  },
+  "postRun": {
+    "adbPid": 8988,
+    "adbOwner": "NT AUTHORITY\\SYSTEM",
+    "adbSdkPathUnchanged": true,
+    "agentPid14508Exists": true,
+    "pocoServicePresent": false,
+    "targetPocoForwardsRemaining": 0,
+    "isolatedStagingRemoved": true,
+    "screenControlEnded": true
+  },
+  "evidence": {
+    "67-test6441-profile.private.png": "4cdfb8706908b803590548e23b987284d4324978eb88731441cc0baf545df94f",
+    "67-test6441-restricted.private.png": "e603a06d4f60ca8cff136e8e6edbc853537a8d167c3732495e15d986f0b3857c",
+    "67-add-restricted-notice.png": "de4ccdc1bfeea196744fb0535ad2c7a6e57173cc94af346b0677881fbc124071",
+    "67-add-restriction-details.png": "523acf92232412f435a82d20bc605586b34638b94750acb3d0a19dbb49b1cb08"
+  },
+  "localChecks": "documentation diff/JSON/hash review only; business source unchanged, previous 64-test result not rerun or relabeled as this test pass",
+  "remaining": [
+    "account restriction not resolved and no successful invite confirmed",
+    "preview full-page comparison may stop on unrelated status-bar changes; no code fix in this test",
+    "intermittent Windows-to-platform API timeout cause unverified",
+    "automatic sending not implemented or tested"
+  ],
+  "deployment": "none; no production Agent/cloud/media/ADB identity/key/startup changes; no remote push"
+}

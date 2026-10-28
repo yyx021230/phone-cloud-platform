@@ -1,0 +1,133 @@
+{
+  "releaseId": "wecom-remarks-preview-20261020-rc.1",
+  "state": "local_candidate",
+  "baseCommit": "360bf9997d17553fdc821fcb89ba4fa2d1241c24",
+  "branch": "codex/wecom-default-remarks-20261020",
+  "userRequest": "Default placeholder remark information, prioritize stability, stop before invitation",
+  "defaults": {
+    "remark": "\u6d4b\u8bd5\u5ba2\u6237",
+    "description": "\u63a5\u53e3\u8054\u8c03\u6d4b\u8bd5",
+    "preserveNonempty": true
+  },
+  "tests": {
+    "remark": 14,
+    "realElements": 17,
+    "legacyPreview": 35,
+    "automationRunner": 20,
+    "total": 86,
+    "result": "passed",
+    "newSavedProfileRegressionBeforeFix": "1 failure among 14; fixed without deleting assertions",
+    "review": "self-review only"
+  },
+  "realDevice": {
+    "number": 67,
+    "target": "previous authorized test target ending 6441; full number omitted",
+    "windowsPython": "3.9.13",
+    "profileProbe": {
+      "previewPassed": true,
+      "remarkNativeElementsObserved": true,
+      "invitationSent": false
+    },
+    "firstRemarkRun": {
+      "result": {
+        "workflowVersion": "wecom-customer-preview-v2",
+        "status": "stopped",
+        "code": "profile_phone_mismatch",
+        "readyToSend": false,
+        "invitationSent": false,
+        "remarkSaved": false,
+        "stage": "profile",
+        "events": [
+          {
+            "step": "open_menu"
+          },
+          {
+            "step": "open_add"
+          },
+          {
+            "step": "open_search"
+          },
+          {
+            "step": "enter_phone"
+          },
+          {
+            "step": "search"
+          }
+        ],
+        "remarkSaveStatus": "unknown",
+        "remarkPrepared": false,
+        "remarkEvents": [
+          {
+            "step": "open_remark"
+          },
+          {
+            "step": "fill_description"
+          },
+          {
+            "step": "save_remark"
+          }
+        ]
+      },
+      "workflowSeconds": 49.859,
+      "elapsedSeconds": 61.11,
+      "leaseValidAtEnd": true,
+      "adbPidUnchanged": true
+    },
+    "rootCause": "Saving a description removes the empty Set remark and description row; original profile predicate rejected the saved layout. Added exact observed description resource plus labels and full number, no broader navigation fallback.",
+    "reconciliation": {
+      "reconciliation": {
+        "sameTargetVerified": true,
+        "defaultDescriptionPersisted": true,
+        "saveAttemptedThisRun": false,
+        "readyBeforeSend": true,
+        "invitationSent": false,
+        "freshPhoneSearches": 0,
+        "remarkEvents": [
+          {
+            "step": "open_remark"
+          },
+          {
+            "step": "close_remark"
+          }
+        ]
+      },
+      "elapsedSeconds": 20.0,
+      "leaseValidAtEnd": true,
+      "adbPidUnchanged": true
+    },
+    "remarkNamePreserved": true,
+    "remarkNameDefaultRealBlankCase": "not tested on real phone; existing name preserved",
+    "freshSearchesThisPhase": 2,
+    "saveAttemptsThisPhase": 1,
+    "invitationSendClicksThisPhase": 0,
+    "remainingAt": "send invitation confirmation; no invitation sent",
+    "finalFullFreshTraversalAfterCompatibilityFix": "not rerun; only the same target was reopened, persisted values verified, and navigation to invitation resumed without another search/save"
+  },
+  "cleanup": {
+    "adbPid": 8988,
+    "pocoRunning": false,
+    "pocoForwardCount": 0,
+    "diagnosticTempRemoved": true,
+    "windowsStagingRemoved": true,
+    "agentPid": 14508,
+    "adbOwner": "SYSTEM",
+    "agentOwner": "SYSTEM",
+    "deviceControlReleased": true,
+    "deviceOnline": true
+  },
+  "deployed": false,
+  "pushed": false,
+  "productionRuntimeFilesChanged": false,
+  "sharedServiceRestarts": 0,
+  "adbIdentityKeyDriverChanges": false,
+  "mediaChanges": false,
+  "proofScreenshot": "/Users/yyx/Backups/PhoneCloud/wecom-remarks-20261020/final-before-send.png",
+  "untested": [
+    "Other devices and WeCom versions",
+    "Long-running reliability",
+    "Unattended Agent/API integration",
+    "Successful real invitation",
+    "Final fresh blank-fields full traversal after saved-profile compatibility fix"
+  ],
+  "rollback": "Stop new entry and restore the base preview source from immutable rc.5; no service restart or schema migration. Already saved target description remains unless separately restored."
+}

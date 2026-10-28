@@ -1,0 +1,9 @@
+{
+  "testId": "wecom-invite-test-20261019.1",
+  "baseCommit": "c529cc67016baa7c9e4f669ac5210a43845fdd15",
+  "files": {
+    "docs/PROJECT_DEVELOPMENT.md": "7865d50f77be327ae6bcf89c75087036083257e9b3be229f6062db34087659ec",
+    "releases/wecom-invite-test-20261019.1/README.md": "3b20106e65d2f2786897afe2353650cd87e52c5da932fff470c043896353d718",
+    "releases/wecom-invite-test-20261019.1/VERIFICATION.json": "89bc76c696c39ffbfc55d7e944d866a0696dd388ff0c0aebd3199dd820775654"
+  }
+}

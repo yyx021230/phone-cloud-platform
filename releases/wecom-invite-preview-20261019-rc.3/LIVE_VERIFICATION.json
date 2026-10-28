@@ -1,0 +1,92 @@
+{
+  "releaseId": "wecom-invite-preview-20261019-rc.3",
+  "testedAt": "2026-10-19T14:34:47+08:00",
+  "baseCommit": "cc142c6868786eceec172289e02a33524bf6031b",
+  "branch": "codex/wecom-live-preview-20261019",
+  "scope": "single-device live preview; no invitation/remark writes; no Agent deployment",
+  "device": {
+    "number": "67",
+    "model": "V2357A",
+    "android": "14",
+    "target": "same authorized document example ending 6041"
+  },
+  "runtime": {
+    "platform": "Windows",
+    "python": "3.9.13",
+    "sourceSha256": "3b12e7ecfd11aaee64d350d2452378343d0681337249d1032f28a5d5516e30a0",
+    "lease": "real platform screen_control lock; session device/serial/user/expiry and active lock checked through authenticated read APIs before snapshots/actions; browser input idle during script",
+    "poco": "existing installed service; manual bounded RPC agent, no default install constructor; 2s RPC timeout; device-only existing-server forwards",
+    "diagnosticHarnessSha256": "c6cc063948755c9dc6c05528edcfd70f8afee169347cba5ddd689da12a074b2c"
+  },
+  "actualResult": {
+    "status": "ready_before_send",
+    "code": "stopped_before_send",
+    "readyToSend": true,
+    "invitationSent": false,
+    "remarkSaved": false,
+    "stage": "preview",
+    "events": [
+      {
+        "step": "open_menu"
+      },
+      {
+        "step": "open_add"
+      },
+      {
+        "step": "open_search"
+      },
+      {
+        "step": "enter_phone"
+      },
+      {
+        "step": "search"
+      },
+      {
+        "step": "open_preview"
+      }
+    ]
+  },
+  "elapsedSeconds": 50.48,
+  "leaseValidAtEnd": true,
+  "localVerification": {
+    "realElementTests": 9,
+    "previewTests": 35,
+    "existingRunnerTests": 20,
+    "offlineSixActionReplay": "passed",
+    "diffCheck": "passed",
+    "review": "self-review only"
+  },
+  "findings": [
+    {
+      "stage": "diagnostic setup",
+      "failure": "dynamic ADB forward reply contained an extra OKAY; initial probe parsing failed before UI actions",
+      "resolution": "corrected temporary host decoder and removed exactly the two own created forwards"
+    },
+    {
+      "stage": "live Poco probe",
+      "failure": "PocoNoSuchNodeException while iterating an absent widget type; synthetic list proxy did not reproduce native behavior",
+      "resolution": "check len(proxy) before iteration, propagate unrelated errors, add empty-proxy and count-failure regressions; later live six-action run passed"
+    }
+  ],
+  "postRun": {
+    "adbPid": 8988,
+    "adbOwner": "NT AUTHORITY\\SYSTEM",
+    "agentPid": 14508,
+    "agentOwner": "NT AUTHORITY\\SYSTEM",
+    "adbPidUnchanged": true,
+    "agentPidUnchanged": true,
+    "targetPocoForwardsRemaining": 0,
+    "ownInstrumentation": "stopped by harness",
+    "screenControl": "ended via platform UI",
+    "deviceAvailableAfterRelease": true,
+    "isolatedStagingRemoved": true
+  },
+  "notVerified": [
+    "other device/WeCom versions",
+    "production Agent/API integration and unattended lease lifecycle",
+    "sending or saving remarks (intentionally excluded)"
+  ],
+  "evidence": "restricted screenshot 67-script-live-before-send.png; no raw hierarchy or customer data committed",
+  "deployment": "not deployed; only isolated test staging on authorized Windows host; no remote push",
+  "evidenceSha256": "3c95abfd92b0e19b93bf727f60a2edaf052e5a99d23777503d673b6f30f1aeb0"
+}

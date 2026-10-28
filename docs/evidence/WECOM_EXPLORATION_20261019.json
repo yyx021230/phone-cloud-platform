@@ -1,0 +1,43 @@
+{
+  "id": "wecom-exploration-20261019.1",
+  "dateAsiaShanghai": "2026-10-19",
+  "deviceNumber": 67,
+  "model": "V2357A",
+  "androidVersion": "14",
+  "target": "Previously authorized document example ending 6041; full number omitted",
+  "method": "Manual exploration through the existing platform real-time control UI",
+  "initialPage": "Invitation confirmation left from the previous exploration",
+  "observed": [
+    "Returned to personal information and visually matched the authorized target number",
+    "Opened Set remark and description; separate Save button; remark, enterprise, phone, description and image fields visible",
+    "Exited remark editor without editing or clicking Save",
+    "Add as contact navigated to the separate invitation confirmation page, with Send invitation still available",
+    "Pencil beside invitation text activated inline editing and the phone keyboard; no separate save page was observed",
+    "Android Back hid the keyboard and retained the original text on the invitation page",
+    "Did not click Send invitation; used End control after capturing evidence"
+  ],
+  "sideEffectsByThisRun": {
+    "phoneTextWrites": 0,
+    "remarkSaveClicks": 0,
+    "invitationSendClicks": 0,
+    "freshPhoneSearchSubmissions": 0,
+    "codeDeployments": 0,
+    "adbCommands": 0,
+    "serviceRestarts": 0
+  },
+  "proof": {
+    "privateLocalFile": "/Users/yyx/Backups/PhoneCloud/wecom-exploration-20261019/67-before-send.png",
+    "sha256": "e450fa288a01c8d19eecd1c23c820a3fd838c79ef2d30435d431c92effd923b9",
+    "containsFullTargetPhone": false
+  },
+  "scriptStatus": "Existing rc.1 remains unchanged and local only; new script was NOT executed on this phone",
+  "controlReleaseVerified": "After ending control, refreshed platform showed device 67 ADB online, automation available and current user unoccupied",
+  "notVerified": [
+    "Actual Poco labels/resource IDs and element hierarchy",
+    "Programmatic text entry/readback and stable selectors",
+    "Persistence behavior after changing invitation text",
+    "Platform automation lease integration",
+    "Windows native execution or other WeCom versions"
+  ],
+  "review": "Visual workflow evidence only; not automatic-run acceptance"
+}

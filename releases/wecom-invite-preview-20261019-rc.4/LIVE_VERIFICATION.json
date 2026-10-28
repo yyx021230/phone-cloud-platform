@@ -1,0 +1,98 @@
+{
+  "releaseId": "wecom-invite-preview-20261019-rc.4",
+  "recordedAt": "2026-10-19T15:00:01.567962+08:00",
+  "branch": "codex/wecom-watch-replay-20261019",
+  "baseCommit": "c5a0c71a07341778778b9a881ca7ec00760031c7",
+  "authorization": "user asked to watch phone67 replay; run the same authorized target ending6441 through preview only; no repeated send or handling of prior restriction",
+  "scope": "standalone preview module only; no Agent/cloud/control/media deployment",
+  "sourceSha256": "bc9a00356d4f62207cff758fbab3e1ce54e037b7c8eec31cc20811ee6f58f5e6",
+  "beforeFix": {
+    "status": "stopped",
+    "code": "page_changed_before_action",
+    "stage": "entry",
+    "events": [],
+    "elapsedSeconds": 53.31,
+    "leaseValidAtEnd": true,
+    "boundedLeaseReadTimeoutAlsoObserved": true,
+    "phoneEntered": false,
+    "invitationSent": false
+  },
+  "readOnlyEvidence": {
+    "PocoRootContainsSeparateSystemUiWindow": true,
+    "statusBandBottom": 0.034739454094292806,
+    "observedNames": [
+      "com.android.systemui:id/clock",
+      "com.android.systemui:id/battery_percentage_view",
+      "com.android.systemui:id/wifi_signal",
+      "com.android.systemui:id/mobile_type",
+      "com.android.systemui:id/vivo_mobile_hd",
+      "com.android.systemui:id/notificationIcons",
+      "com.android.systemui:id/cutout_space_view"
+    ],
+    "previousIconDeltaY": 0.017369727047146403
+  },
+  "change": "exclude status visuals with SystemUI resource prefix and complete bottom within top4%, finite bounded geometry; only known clock/percent text shapes or blank image/view/group visuals; descriptions, unknown text, WeCom nodes, body overlays retained; full-page/action/lease/foreground checks unchanged",
+  "hostSetup": "manual bounded Back navigation from restriction details to home before script; fixed SYSTEM/SDK existing smart socket; no install/global ADB command; host API read timeout 8s and run budget120s; all actual lease fields still checked, no fixed-true callback",
+  "actualResult": {
+    "status": "ready_before_send",
+    "code": "stopped_before_send",
+    "stage": "preview",
+    "events": [
+      {
+        "step": "open_menu"
+      },
+      {
+        "step": "open_add"
+      },
+      {
+        "step": "open_search"
+      },
+      {
+        "step": "enter_phone"
+      },
+      {
+        "step": "search"
+      },
+      {
+        "step": "open_preview"
+      }
+    ],
+    "readyToSend": true,
+    "invitationSent": false,
+    "remarkSaved": false
+  },
+  "elapsedSeconds": 70.5,
+  "leaseValidAtEnd": true,
+  "deviceNumber": "67",
+  "targetSuffix": "6441",
+  "executor": "actual Windows Python/Poco script; no manual assistance during six actions",
+  "verification": {
+    "realElementTests": 13,
+    "previewTests": 35,
+    "existingRunnerTests": 20,
+    "total": 68,
+    "review": "self-review only",
+    "diffCheck": "passed"
+  },
+  "postRun": {
+    "adbPid": 8988,
+    "adbOwner": "NT AUTHORITY\\SYSTEM",
+    "agentPid": 14508,
+    "pocoServicePresent": false,
+    "targetPocoForwardsRemaining": 0,
+    "userScreenSession": "kept open; no screen-session mutation or release by harness",
+    "agentOwner": "NT AUTHORITY\\SYSTEM",
+    "isolatedStagingRemoved": true
+  },
+  "privateEvidence": {
+    "finalScreenshotSha256": "26854b98c9c12ff362e032b1bfeb9bf02e7de8884f6f6828dc7d73731313e8bf",
+    "diagnosticHarnessSha256": "5ff6d4788f1e9d3648080c2b93dc02d1c990a38bc72ce7d6b645e1436607edbf"
+  },
+  "notVerified": [
+    "actual send remains excluded; prior account restriction is unresolved",
+    "other models and WeCom versions",
+    "Windows-to-platform HTTP timeout root cause; longer bounded host read timeout is not a production fix",
+    "unattended Agent/API integration or long-running stability"
+  ],
+  "deployment": "not deployed; temporary isolated host staging only; no push; unrelated worktrees preserved"
+}

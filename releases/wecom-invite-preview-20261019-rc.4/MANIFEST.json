@@ -1,0 +1,11 @@
+{
+  "releaseId": "wecom-invite-preview-20261019-rc.4",
+  "baseCommit": "c5a0c71a07341778778b9a881ca7ec00760031c7",
+  "files": {
+    "windows-agent/scripts/wecom_invite_preview.py": "bc9a00356d4f62207cff758fbab3e1ce54e037b7c8eec31cc20811ee6f58f5e6",
+    "windows-agent/scripts/test_wecom_real_elements.py": "132e03d19dfb1f5b05ba3597285e783392f535ae7598daeb3463be48ea7f0edf",
+    "docs/PROJECT_DEVELOPMENT.md": "24689bc8efc6718a1b636d1696a8a644f3a641ff6ce2b02bee1b811d3eb02676",
+    "releases/wecom-invite-preview-20261019-rc.4/README.md": "c837bfe2c33f6e2ccda90c96c286f3d1c8dddcd1d95203d6b2c29cd9ce68bb0b",
+    "releases/wecom-invite-preview-20261019-rc.4/LIVE_VERIFICATION.json": "5b9f327aa33251a64b895f237dabc1ecaea4fe1b2b45b1ecbc4ff1a7575e1d7d"
+  }
+}

@@ -1,0 +1,403 @@
+{
+  "syntheticOnly": true,
+  "request": {
+    "phoneNumber": "19900000001",
+    "mode": "preview"
+  },
+  "frames": [
+    {
+      "package": "com.tencent.wework",
+      "nodes": [
+        {
+          "kind": "android.widget.TextView",
+          "text": "消息",
+          "name": "",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            0.1,
+            0.1
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "工作台",
+          "name": "",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            0.1,
+            0.1
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "通讯录",
+          "name": "",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            0.1,
+            0.1
+          ]
+        },
+        {
+          "kind": "android.widget.ImageView",
+          "text": "",
+          "name": "",
+          "desc": "更多",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.93,
+            0.06
+          ],
+          "size": [
+            0.1,
+            0.1
+          ]
+        }
+      ],
+      "expectAction": "open_menu"
+    },
+    {
+      "package": "com.tencent.wework",
+      "nodes": [
+        {
+          "kind": "android.widget.TextView",
+          "text": "添加客户",
+          "name": "",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            0.1,
+            0.1
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "发起群聊",
+          "name": "",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            0.1,
+            0.1
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "扫一扫",
+          "name": "",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            0.1,
+            0.1
+          ]
+        }
+      ],
+      "expectAction": "open_add"
+    },
+    {
+      "package": "com.tencent.wework",
+      "nodes": [
+        {
+          "kind": "android.widget.TextView",
+          "text": "添加客户",
+          "name": "",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            0.1,
+            0.1
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "面对面添加",
+          "name": "",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            0.1,
+            0.1
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "搜索手机号添加",
+          "name": "",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            0.1,
+            0.1
+          ]
+        }
+      ],
+      "expectAction": "open_search"
+    },
+    {
+      "package": "com.tencent.wework",
+      "nodes": [
+        {
+          "kind": "android.widget.EditText",
+          "text": "手机号",
+          "name": "phone_input",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            0.1,
+            0.1
+          ]
+        }
+      ],
+      "expectAction": "enter_phone"
+    },
+    {
+      "package": "com.tencent.wework",
+      "nodes": [
+        {
+          "kind": "android.widget.EditText",
+          "text": "19900000001",
+          "name": "phone_input",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            0.1,
+            0.1
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "网络查找手机/邮箱：19900000001",
+          "name": "",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            0.1,
+            0.1
+          ]
+        }
+      ],
+      "expectAction": "search"
+    },
+    {
+      "package": "com.tencent.wework",
+      "nodes": [
+        {
+          "kind": "android.widget.TextView",
+          "text": "个人信息",
+          "name": "",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            0.1,
+            0.1
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "设置备注和描述",
+          "name": "",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            0.1,
+            0.1
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "电话",
+          "name": "",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            0.1,
+            0.1
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "19900000001",
+          "name": "",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            0.1,
+            0.1
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "添加为联系人",
+          "name": "",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            0.1,
+            0.1
+          ]
+        }
+      ],
+      "expectAction": "open_preview"
+    },
+    {
+      "package": "com.tencent.wework",
+      "nodes": [
+        {
+          "kind": "android.widget.TextView",
+          "text": "测试企业",
+          "name": "",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            0.1,
+            0.1
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "测试成员",
+          "name": "",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            0.1,
+            0.1
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "测试邀请文案",
+          "name": "",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            0.1,
+            0.1
+          ]
+        },
+        {
+          "kind": "android.widget.TextView",
+          "text": "发送添加邀请",
+          "name": "",
+          "desc": "",
+          "enabled": true,
+          "visible": true,
+          "position": [
+            0.5,
+            0.5
+          ],
+          "size": [
+            0.1,
+            0.1
+          ]
+        }
+      ],
+      "expectAction": null
+    }
+  ]
+}

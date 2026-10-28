@@ -1,0 +1,526 @@
+{
+  "releaseId": "wecom-invite-preview-20261019-rc.5",
+  "recordedAt": "2026-10-19T15:28:51.659133+08:00",
+  "branch": "codex/wecom-preview-perf-20261019",
+  "baseCommit": "1e30a92bb4a3c4869f1f8993857e758b494c0c72",
+  "startWorktree": "clean; unrelated worktrees untouched",
+  "sourceSha256": "49f7d5501b777e2f345ae68c1ba50ebdfa88c2cc9601eaa72c3320b63cd3c4f8",
+  "status": {
+    "functional": "single-device preview passed",
+    "performance": "NOT ACCEPTED; no stable end-to-end speed improvement demonstrated",
+    "deployment": "not deployed or pushed"
+  },
+  "deviceNumber": "67",
+  "targetSuffix": "6441",
+  "realPhoneQueriesThisPhase": 3,
+  "realSendClicksThisPhase": 0,
+  "baseline": {
+    "adbPid": 8988,
+    "deviceNumber": "67",
+    "mode": "run",
+    "setupSeconds": 5.891,
+    "result": {
+      "workflowVersion": "wecom-invite-preview-v1",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ]
+    },
+    "workflowSeconds": 31.266,
+    "leaseValidAtEnd": true,
+    "elapsedSeconds": 37.86,
+    "adbPidUnchanged": true,
+    "cleanupSeconds": 0.594,
+    "timingInclusive": {
+      "adb_identity": {
+        "calls": 47,
+        "seconds": 2.5006,
+        "maxSeconds": 0.0693
+      },
+      "api_login": {
+        "calls": 1,
+        "seconds": 0.0851,
+        "maxSeconds": 0.0851
+      },
+      "api_devices": {
+        "calls": 1,
+        "seconds": 0.167,
+        "maxSeconds": 0.167
+      },
+      "api_session": {
+        "calls": 39,
+        "seconds": 2.1861,
+        "maxSeconds": 0.0743
+      },
+      "api_locks": {
+        "calls": 39,
+        "seconds": 7.5138,
+        "maxSeconds": 0.8389
+      },
+      "lease_valid": {
+        "calls": 39,
+        "seconds": 9.704,
+        "maxSeconds": 0.8989
+      },
+      "connection": {
+        "calls": 45,
+        "seconds": 2.8144,
+        "maxSeconds": 0.0828
+      },
+      "shell": {
+        "calls": 41,
+        "seconds": 5.5831,
+        "maxSeconds": 0.1836
+      },
+      "foreground": {
+        "calls": 35,
+        "seconds": 4.6639,
+        "maxSeconds": 0.1555
+      },
+      "host": {
+        "calls": 2,
+        "seconds": 0.1053,
+        "maxSeconds": 0.0576
+      },
+      "health": {
+        "calls": 7,
+        "seconds": 2.2528,
+        "maxSeconds": 1.447
+      },
+      "poco_dump": {
+        "calls": 14,
+        "seconds": 4.8967,
+        "maxSeconds": 1.6124
+      },
+      "snapshot": {
+        "calls": 14,
+        "seconds": 15.15,
+        "maxSeconds": 2.4692
+      },
+      "poco_select": {
+        "calls": 6,
+        "seconds": 0.9229,
+        "maxSeconds": 0.4018
+      },
+      "poco_getAttr": {
+        "calls": 81,
+        "seconds": 2.6419,
+        "maxSeconds": 0.07
+      },
+      "apply": {
+        "calls": 6,
+        "seconds": 20.0889,
+        "maxSeconds": 3.6943
+      },
+      "poco_setAttr": {
+        "calls": 1,
+        "seconds": 0.0468,
+        "maxSeconds": 0.0468
+      },
+      "api_logout": {
+        "calls": 1,
+        "seconds": 0.0477,
+        "maxSeconds": 0.0477
+      }
+    }
+  },
+  "unadoptedParallelTransportPrototype": {
+    "adbPid": 8988,
+    "deviceNumber": "67",
+    "mode": "run",
+    "setupSeconds": 6.219,
+    "result": {
+      "workflowVersion": "wecom-invite-preview-v1",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ]
+    },
+    "workflowSeconds": 35.64,
+    "leaseValidAtEnd": true,
+    "elapsedSeconds": 42.52,
+    "adbPidUnchanged": true,
+    "cleanupSeconds": 0.563,
+    "transport": "persistent_connections_parallel_fresh_lease_reads",
+    "timingInclusive": {
+      "adb_identity": {
+        "calls": 47,
+        "seconds": 2.9993,
+        "maxSeconds": 0.3833
+      },
+      "api_login": {
+        "calls": 1,
+        "seconds": 0.0983,
+        "maxSeconds": 0.0983
+      },
+      "api_devices": {
+        "calls": 1,
+        "seconds": 0.1299,
+        "maxSeconds": 0.1299
+      },
+      "api_session": {
+        "calls": 39,
+        "seconds": 1.5908,
+        "maxSeconds": 0.3253
+      },
+      "api_locks": {
+        "calls": 39,
+        "seconds": 18.0874,
+        "maxSeconds": 2.0749
+      },
+      "lease_valid": {
+        "calls": 39,
+        "seconds": 18.1088,
+        "maxSeconds": 2.0754
+      },
+      "connection": {
+        "calls": 45,
+        "seconds": 3.198,
+        "maxSeconds": 0.3835
+      },
+      "shell": {
+        "calls": 41,
+        "seconds": 5.8752,
+        "maxSeconds": 0.4567
+      },
+      "foreground": {
+        "calls": 35,
+        "seconds": 5.0851,
+        "maxSeconds": 0.4572
+      },
+      "host": {
+        "calls": 2,
+        "seconds": 0.1356,
+        "maxSeconds": 0.0764
+      },
+      "health": {
+        "calls": 7,
+        "seconds": 1.1986,
+        "maxSeconds": 0.8264
+      },
+      "poco_dump": {
+        "calls": 14,
+        "seconds": 6.8318,
+        "maxSeconds": 1.6694
+      },
+      "snapshot": {
+        "calls": 14,
+        "seconds": 24.1018,
+        "maxSeconds": 4.7057
+      },
+      "poco_select": {
+        "calls": 6,
+        "seconds": 0.9002,
+        "maxSeconds": 0.4279
+      },
+      "poco_getAttr": {
+        "calls": 81,
+        "seconds": 2.758,
+        "maxSeconds": 0.0857
+      },
+      "apply": {
+        "calls": 6,
+        "seconds": 17.3527,
+        "maxSeconds": 4.9158
+      },
+      "poco_setAttr": {
+        "calls": 1,
+        "seconds": 0.0535,
+        "maxSeconds": 0.0535
+      },
+      "api_logout": {
+        "calls": 1,
+        "seconds": 0.029,
+        "maxSeconds": 0.029
+      }
+    }
+  },
+  "candidate": {
+    "adbPid": 8988,
+    "deviceNumber": "67",
+    "mode": "run",
+    "setupSeconds": 4.734,
+    "result": {
+      "workflowVersion": "wecom-invite-preview-v1",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ]
+    },
+    "workflowSeconds": 37.328,
+    "leaseValidAtEnd": true,
+    "elapsedSeconds": 42.73,
+    "adbPidUnchanged": true,
+    "cleanupSeconds": 0.547,
+    "guardMode": "initial_read_mutations_terminal_fresh_lease_no_cache",
+    "timingInclusive": {
+      "adb_identity": {
+        "calls": 36,
+        "seconds": 2.1111,
+        "maxSeconds": 0.3866
+      },
+      "api_login": {
+        "calls": 1,
+        "seconds": 0.0849,
+        "maxSeconds": 0.0849
+      },
+      "api_devices": {
+        "calls": 1,
+        "seconds": 0.1599,
+        "maxSeconds": 0.1599
+      },
+      "api_session": {
+        "calls": 15,
+        "seconds": 4.4152,
+        "maxSeconds": 3.6425
+      },
+      "api_locks": {
+        "calls": 15,
+        "seconds": 12.9766,
+        "maxSeconds": 4.4268
+      },
+      "lease_valid": {
+        "calls": 15,
+        "seconds": 17.3938,
+        "maxSeconds": 8.0695
+      },
+      "connection": {
+        "calls": 34,
+        "seconds": 2.2283,
+        "maxSeconds": 0.3868
+      },
+      "shell": {
+        "calls": 30,
+        "seconds": 4.3235,
+        "maxSeconds": 0.4624
+      },
+      "foreground": {
+        "calls": 24,
+        "seconds": 3.503,
+        "maxSeconds": 0.4626
+      },
+      "host": {
+        "calls": 2,
+        "seconds": 0.0953,
+        "maxSeconds": 0.0488
+      },
+      "health": {
+        "calls": 7,
+        "seconds": 1.1937,
+        "maxSeconds": 0.7152
+      },
+      "poco_dump": {
+        "calls": 15,
+        "seconds": 8.9954,
+        "maxSeconds": 2.0506
+      },
+      "snapshot": {
+        "calls": 15,
+        "seconds": 13.4156,
+        "maxSeconds": 2.3909
+      },
+      "poco_select": {
+        "calls": 6,
+        "seconds": 0.9272,
+        "maxSeconds": 0.464
+      },
+      "poco_getAttr": {
+        "calls": 81,
+        "seconds": 2.6409,
+        "maxSeconds": 0.0831
+      },
+      "apply": {
+        "calls": 6,
+        "seconds": 24.0076,
+        "maxSeconds": 9.9249
+      },
+      "poco_setAttr": {
+        "calls": 1,
+        "seconds": 0.0429,
+        "maxSeconds": 0.0429
+      },
+      "api_logout": {
+        "calls": 1,
+        "seconds": 0.0471,
+        "maxSeconds": 0.0471
+      }
+    }
+  },
+  "networkRouteExperiment": {
+    "samples": [
+      {
+        "route": "windows_direct",
+        "seconds": 0.1254,
+        "lockCount": 300
+      },
+      {
+        "route": "ssh_http_test_path",
+        "seconds": 0.1339,
+        "lockCount": 300
+      },
+      {
+        "route": "ssh_http_test_path",
+        "seconds": 0.1276,
+        "lockCount": 300
+      },
+      {
+        "route": "windows_direct",
+        "seconds": 0.1268,
+        "lockCount": 300
+      },
+      {
+        "route": "windows_direct",
+        "seconds": 0.129,
+        "lockCount": 300
+      },
+      {
+        "route": "ssh_http_test_path",
+        "seconds": 0.1303,
+        "lockCount": 300
+      },
+      {
+        "route": "ssh_http_test_path",
+        "seconds": 0.1291,
+        "lockCount": 300
+      },
+      {
+        "route": "windows_direct",
+        "seconds": 0.2738,
+        "lockCount": 300
+      }
+    ],
+    "medianSeconds": {
+      "windows_direct": 0.1279,
+      "ssh_http_test_path": 0.1297
+    },
+    "phoneActions": 0,
+    "phoneQueries": 0
+  },
+  "candidateDesign": {
+    "freshLeaseGates": "first read; immediately before each UI mutation; terminal readiness captures",
+    "ordinaryFrames": "read-only; foreground check retained; no remote lease-result cache",
+    "lostLeaseDuringRead": "a read may complete after external revocation, but every later input/click and ready result is freshly fenced; negative tests verify no click",
+    "fullPageAndTargetRecheck": "unchanged",
+    "sdkFixedPostClickSleepSeconds": 0,
+    "statePollingSleepSeconds": 0.25
+  },
+  "verification": {
+    "realElementTests": 17,
+    "previewTests": 35,
+    "existingRunnerTests": 20,
+    "total": 72,
+    "initialTestFailure": "one previous test tail was inserted into the new test by mistake; restored to its original method, no assertion removed; subsequent72 passed",
+    "review": "self-review only"
+  },
+  "observations": {
+    "priorUninstrumentedRunSeconds": 70.5,
+    "baselineSeconds": 37.86,
+    "candidateSeconds": 42.73,
+    "leaseChecksBefore": 39,
+    "leaseChecksAfter": 15,
+    "authoritativeHttpReadsBefore": 78,
+    "authoritativeHttpReadsAfter": 30,
+    "candidateLeaseWaitSeconds": 17.3938,
+    "candidateMaximumLeaseWaitSeconds": 8.0695,
+    "candidateHierarchyDumpSeconds": 8.9954,
+    "candidateHierarchyReads": 15,
+    "warning": "timings are inclusive and nested; do not sum all categories or attribute a stable speed gain from this single variable-load comparison"
+  },
+  "unadoptedExperiments": [
+    "persistent HTTP alone: median0.121s vs0.1188s baseline; response remained uncompressed",
+    "parallel fresh session/lock reads: full preview42.52s vs37.86s baseline; not adopted",
+    "temporary loopback SSH HTTP path: median0.1297s vs direct0.1279s, no stable route advantage; forwarding removed"
+  ],
+  "blockedAttempt": {
+    "code": "device_lease_unconfirmed",
+    "elapsedSeconds": 0.75,
+    "phoneActions": 0,
+    "reason": "user control session had ended; phone was then verified free and a new real test session created before the successful candidate run"
+  },
+  "postRun": {
+    "adbPid": 8988,
+    "adbOwner": "NT AUTHORITY\\SYSTEM",
+    "agentPid": 14508,
+    "agentOwner": "NT AUTHORITY\\SYSTEM",
+    "pocoServicePresent": false,
+    "targetPocoForwardsRemaining": 0,
+    "temporaryHttpForwardRemoved": true,
+    "testScreenSessionEnded": true,
+    "isolatedStagingRemoved": true
+  },
+  "evidence": {
+    "finalScreenshotSha256": "a3cae7ede573515c3ec656cd8accf111fd87ca506563f16b33d08cb457767317",
+    "testHarnessSha256": "de626e62535f4159fc3e29299973d5e21260d241af5091c0a0d95d21c44deebf"
+  },
+  "remaining": [
+    "latency acceptance not achieved; source of long-tail HTTP/tree waits unverified",
+    "other device/WeCom versions and unattended Agent integration not tested",
+    "prior WeCom add-customer restriction left unchanged; actual send excluded"
+  ]
+}

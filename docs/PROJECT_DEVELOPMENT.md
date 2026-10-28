@@ -4252,3 +4252,7 @@ GitHub main实际从0034b939快进至d37f5b0；修复分支和325条邮箱修正
 ### 2026-10-28 整合决策与变更：RECOVERY_CONTROL_FEEDBACK
 恢复隔离状态反馈在完整根源码中已包含；补齐独立回归与历史回执，保留新版前端缓存标识。
 历史分支说明存档于 `module-history/RECOVERY_CONTROL_FEEDBACK.md`，不改变当前生产状态。
+
+### 2026-10-28 整合决策与变更：WECOM_PREVIEW
+企业微信邀请前备注与页面预览脚本纳入仓库，仍是单机预览工具：不注册正式任务、不发送邀请；Windows 迁移工具保留，不执行。
+历史分支说明存档于 `module-history/WECOM_PREVIEW.md`，不改变当前生产状态。

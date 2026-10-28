@@ -1,0 +1,32 @@
+{
+  "releaseId": "wecom-invite-preview-20261019-rc.1",
+  "baseCommit": "650ecf8458cf94d5800e5e09614504600400a1b8",
+  "tag": "wecom-invite-preview-20261019-rc.1",
+  "state": "local_candidate",
+  "files": [
+    {
+      "path": "windows-agent/scripts/wecom_invite_preview.py",
+      "sha256": "a79a931850173fff602ed92581520a76bebf07afc542bc0d27dcb5af2220f7a6"
+    },
+    {
+      "path": "windows-agent/scripts/test_wecom_invite_preview.py",
+      "sha256": "3e30987927b23255ec9dc6e878655bce846a61545f2ccb708590f4631750c7a5"
+    },
+    {
+      "path": "docs/PROJECT_DEVELOPMENT.md",
+      "sha256": "58e125c57763a6ebe21aeaf6e90ea5c28572bb850eaa5f302b86695e94bf6b04"
+    },
+    {
+      "path": "releases/wecom-invite-preview-20261019-rc.1/README.md",
+      "sha256": "e9869523a75abdc40ed4d51022a17f2787900cb033ee00a9a4611c002de5dd8c"
+    },
+    {
+      "path": "releases/wecom-invite-preview-20261019-rc.1/VERIFICATION.json",
+      "sha256": "9aec581b911083f060f4a52daeb2c605a9e76319b32d97e99d3560bf8b8d7728"
+    },
+    {
+      "path": "releases/wecom-invite-preview-20261019-rc.1/synthetic-flow.json",
+      "sha256": "b1cc78fbc8182483c1c8c9a6aee432e3836b667520c9411eac0ee627555126f6"
+    }
+  ]
+}

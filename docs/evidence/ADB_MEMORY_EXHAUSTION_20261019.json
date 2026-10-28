@@ -1,0 +1,46 @@
+{
+  "id": "adb-memory-audit-20261019.2",
+  "status": "read_only_evidence_not_fix",
+  "baselineCommit": "8899be2fe62a8ad2e10abd29fe996fb4dbe3e5b2",
+  "systemEvent": {
+    "utc": "2026-10-19T02:22:11.3381096Z",
+    "provider": "Microsoft-Windows-Resource-Exhaustion-Detector",
+    "id": 2004,
+    "recordId": 232166,
+    "commitBytes": 56815939584,
+    "commitLimitBytes": 57081081856,
+    "physicalUsedBytes": 15612080128,
+    "physicalTotalBytes": 34263810048,
+    "processAttributionValid": false
+  },
+  "adb": {
+    "oldPid": 634172,
+    "newPid": 1086632,
+    "newStartUtc": "2026-10-19T02:22:13.059Z",
+    "owner": "NT AUTHORITY\\SYSTEM",
+    "executable": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+    "version": "37.0.0-14910828",
+    "untimestampedErrorBetweenOldLastLogAndNewStart": "libc++abi: terminating due to uncaught exception of type std::bad_alloc: std::bad_alloc",
+    "agentSmsClientsReportedDaemonNotRunning": true,
+    "concurrentStartAttemptsFailedToBind5037": 2,
+    "agentPidUnchanged": 650400
+  },
+  "scans": [
+    {"utc": "2026-10-19T02:19:37.673Z", "device": 119, "unauthorized": 1},
+    {"utc": "2026-10-19T02:22:37.592Z", "device": 100, "unauthorized": 17},
+    {"utc": "2026-10-19T02:31:10.751Z", "device": 103, "unauthorized": 17},
+    {"utc": "2026-10-19T02:38:23.364Z", "device": 103, "unauthorized": 17, "physicallyAbsent": 9, "interfaceTransportMissing": 1, "mtpOnly": 1}
+  ],
+  "unauthorizedDeviceNumbers": [59,71,75,81,88,91,94,95,102,103,139,151,157,161,177,180,184],
+  "backupTimesAsiaShanghai": {
+    "firstDestinationCreated": "2026-10-19T10:23:02.663989",
+    "firstZipCreated": "2026-10-19T10:25:03.785950",
+    "completedAttemptStarted": "2026-10-19T10:26:00.563903"
+  },
+  "currentMemory": {"utc": "2026-10-19T02:38:28.732152Z", "commitBytes": 14719246336, "commitLimitBytes": 49296195584, "commitPeakBytes": 57080864768},
+  "confirmed": "Host commit exhaustion and ADB allocation exception preceded daemon replacement and 16 additional unauthorized devices. File packing began later.",
+  "unresolved": ["Historical process or kernel component consuming commit", "Whether earlier read-only diagnostics contributed to resource pressure", "Long-term prevention; no old-server dump obtained"],
+  "actions": "Read logs/events/process metadata only. No ADB client, restart, device action, driver change, key change or production configuration modification.",
+  "localRecordingFailure": "Initial documentation command failed on stdin encoding before writing. Its accidentally created local tag .1 was removed without publication; completed evidence uses .2.",
+  "validationLimits": "No recovery, fault injection or code changes. Current resource sample cannot identify historical offender."
+}

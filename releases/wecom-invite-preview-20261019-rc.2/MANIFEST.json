@@ -1,0 +1,13 @@
+{
+  "releaseId": "wecom-invite-preview-20261019-rc.2",
+  "baseCommit": "fa327dcda16623ea60f12ead368fd5ba220379fe",
+  "files": {
+    "windows-agent/scripts/wecom_invite_preview.py": "2894f8934e597c12ab28a227bd62e4ffac15c50bcb4ef1b31348addfaf9087e1",
+    "windows-agent/scripts/test_wecom_real_elements.py": "c65ff759dfb235f63e9c0495c0102b4c6fa565468cc238fa918d2c54409ec54a",
+    "docs/PROJECT_DEVELOPMENT.md": "4faa9b800406506c84fc6189eaa464378024d2aeeea61ef6ab891b28a5720564",
+    "releases/wecom-invite-preview-20261019-rc.2/README.md": "ed12b26565c8ac69494db4c840968198a4ea2db80268fc8c78113d9edad23e30",
+    "releases/wecom-invite-preview-20261019-rc.2/SOURCE_EVIDENCE.json": "7b9d82e851a22271b0961fc4ff4cd1e5f31dafb4d2bd3f3eff41724ec5ef10aa",
+    "releases/wecom-invite-preview-20261019-rc.2/VERIFICATION.json": "b9fae3674071cff6dad6f21949e94886afed021b8084ba9e3768b9bfc88d1c45",
+    "releases/wecom-invite-preview-20261019-rc.2/redacted-real-flow.json": "16b17d9d5767061e8d1d9bdae65d3d960fd5a2e1c25c39447207461a59585652"
+  }
+}
