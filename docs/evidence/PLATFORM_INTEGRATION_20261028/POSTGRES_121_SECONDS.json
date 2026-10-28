@@ -1,0 +1,28 @@
+{
+  "atUtc": "2026-10-28T02:19:53.679Z",
+  "loopbackOnly": true,
+  "storage": "postgres",
+  "elapsedBeforeFreshKeyRetryMs": 121000,
+  "over120Seconds": true,
+  "submittedReusesSameLookupId": true,
+  "actualCloudQueryTasks": 1,
+  "syntheticAgentStarts": 1,
+  "physicalRealPhoneQueries": 0,
+  "readOnlyResultRetries": true,
+  "concurrentFreshKeys": 8,
+  "postgresOrJsonReopenAliases": true,
+  "originalQueryNotRedelivered": true,
+  "lateOriginalResult": "passed",
+  "recentReuse": "passed",
+  "sameKeySyncCompatible": true,
+  "tenantIsolation": "passed",
+  "httpStatusCases": [
+    200,
+    202,
+    400,
+    409,
+    404
+  ],
+  "drained": true,
+  "productionConnections": 0
+}

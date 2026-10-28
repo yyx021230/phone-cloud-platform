@@ -1,0 +1,3665 @@
+{
+  "version": "platform-integration-20261028-rc.1",
+  "status": "candidate-not-deployed",
+  "runtimeSourceCommit": "cb3c7e3e247c210e13b1ab6a569b1181dea45184",
+  "gitHubPreviousMain": "ac109ce288e0bc6be34104370309f1bb9465c9d2",
+  "frozenBaselineCommit": "68282ee",
+  "fileCount": 731,
+  "files": [
+    {
+      "path": "Dockerfile",
+      "sha256": "5849014bbc7d7125c743cafcce49d2931edfe16af89de9dd63dd1c9bc914a7ba",
+      "bytes": 1056
+    },
+    {
+      "path": "VERSION.json",
+      "sha256": "6b4d474d61d1160c7b625a5d056ca5f71c6310fe56d6f3f88ba41c5f75578c8b",
+      "bytes": 373
+    },
+    {
+      "path": "android-agent/SmsRelay/README.md",
+      "sha256": "0ffaf482465ee48c5b14cf82b5de1f110a43c4bd36106651cc391dbbc4fc3d43",
+      "bytes": 9827
+    },
+    {
+      "path": "android-agent/SmsRelay/app/build.gradle",
+      "sha256": "aa8b7e658f04e8079e3908cbcafb193ca47076d593660e9a73412e3dba5ec386",
+      "bytes": 862
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/compatProbe/AndroidManifest.xml",
+      "sha256": "10bc39ae853be31aa03e8fa411578ae8364d2500821c457ccffefbbbacd24705",
+      "bytes": 563
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/AndroidManifest.xml",
+      "sha256": "28cf86fded4808fb48078515271a2b6df41d834fb91c6cdd35f32c2dae73f71e",
+      "bytes": 7564
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/ActivationWindowStore.java",
+      "sha256": "1586b4466b5501483e03400c230e058436ffd0b4b6aaba6ba9abe241a6893c10",
+      "bytes": 9044
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/ApkFileProvider.java",
+      "sha256": "4ce2b15822b080c16228f6201a711f1cc67a9a2e02864cb5e216175b5cdbfd78",
+      "bytes": 2126
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/AppMode.java",
+      "sha256": "4fb533a8d57ee44c45561e0c1f47cdb3c05141106e676910ae0da7ac5cf36bac",
+      "bytes": 351
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/AppUpdater.java",
+      "sha256": "fb1cef235d93d6385d84317c85b668f2c6ba7c1f33a68c52d7e49ac60886fd62",
+      "bytes": 8815
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/BootReceiver.java",
+      "sha256": "049df34f435817c739739a1fe78333c503d2a396837094de5043c5c6d627827e",
+      "bytes": 987
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/CodeParser.java",
+      "sha256": "1d7a4f952e08ebf397816651adf451bdb12ab22bb7218e8618df4780e419ad8d",
+      "bytes": 1425
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/DefaultSmsRole.java",
+      "sha256": "c2063b1ef651843c64bc6d03b92afed093c87445effd695bae8154d401e3e3fb",
+      "bytes": 6071
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/DeviceCommandExecutor.java",
+      "sha256": "698de798974ff3949418fa8623325e118377d8af11c104362c4460b6aefcff4f",
+      "bytes": 14938
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/DeviceController.java",
+      "sha256": "cc63d230a5f10be8992d68ddc97772d5219ec6ed7183f74cfcf1b28827c757a5",
+      "bytes": 1383
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/DeviceLiveClient.java",
+      "sha256": "a51f687e391dfa1786419899e53f8deac71fc6cf84bcfa26ec3d765aee76dea0",
+      "bytes": 10477
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/MainActivity.java",
+      "sha256": "eec88a2c935badaa34cdf4ed29ce36c96001bc3822be713f658f5a2d0af73bb9",
+      "bytes": 14772
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/MmsReceiver.java",
+      "sha256": "0d51268bcf541c3ac87bc08e980a502eaa542da04d5afacb487dc01edf9bdb02",
+      "bytes": 423
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/RecentSmsNotificationStore.java",
+      "sha256": "5295d312b787f71793f5917de4436ae202a51115e0ced63c30259a486c742b79",
+      "bytes": 4150
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/RecoveryActivity.java",
+      "sha256": "d7313d65594b9ea041fe1acca19581f94f547e8fba8ae0e61899754b83f362d2",
+      "bytes": 949
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/RelayClient.java",
+      "sha256": "02c42be9391a0010a28b25882b78102ab9021117c8ad0b59931e13b9c4a355db",
+      "bytes": 9789
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/RelayConfig.java",
+      "sha256": "40e3ab34df8c58d6e6ec39456e5093b3dadb4a9057d11a151a19dd4dd4dbbac4",
+      "bytes": 3189
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/RelayForegroundService.java",
+      "sha256": "e42231850c2f7afcc90ada723bd5a701f4047c81736c890b5c5a0d488ec4cd44",
+      "bytes": 11777
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/ScanAccessibilityService.java",
+      "sha256": "7c3dd150a7308ef7b265bc2c4c1529090dac165a793c2449cca048183346ecc8",
+      "bytes": 72973
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/SimInfoReader.java",
+      "sha256": "21f5840c9f5c65ec5ac2d7cfe7351398f1332df186ed170c2bf1c0c0fb1c27bd",
+      "bytes": 7507
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/SmsComposeActivity.java",
+      "sha256": "53aeb4f1ff6f3a2822d1b2225eb95d98f4b2858f7016573c38acf1eb78a89ab1",
+      "bytes": 7094
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/SmsHealthProvider.java",
+      "sha256": "bf5de3f01ae0ff461c432dd5e17bdbefd04ebf9db516ea4eb95160bc1121bf1e",
+      "bytes": 1342
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/SmsHomeActivity.java",
+      "sha256": "6407df5013666ecf6a7f261fa6e994c96e7afeda2ebd43e29fc8343dcb465609",
+      "bytes": 13524
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/SmsLibrarySync.java",
+      "sha256": "3351e07ab727b259793979fe248c273d97cc4b237745cad9fc2c6c47238fa377",
+      "bytes": 8183
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/SmsModels.java",
+      "sha256": "9a92f1227569495a53fa6119bf89f180e490ef4b6b5bc23a64af7ba8ff0e5ad3",
+      "bytes": 1979
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/SmsNotificationFallback.java",
+      "sha256": "51f346755bbf507edb4983ea0306a9af92cfce7c3a9348aa6deafdb6800b2fd9",
+      "bytes": 1414
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/SmsNotificationHelper.java",
+      "sha256": "3dddc7b8cdad06e3f896b0ef196a72ac72d479f535725cd2dbb895db65016483",
+      "bytes": 4399
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/SmsNotificationListenerService.java",
+      "sha256": "39361d3d3bddd38a805adc0123c268a213e852ef9b1d33baa7d6b5640723c079",
+      "bytes": 6279
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/SmsProviderMirror.java",
+      "sha256": "a3f4330138af09773e66ed7c191ba730e1ab1e8a506c0fb0c614a6bc91943221",
+      "bytes": 2414
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/SmsQueueStore.java",
+      "sha256": "ceb16fe1870c19432998da727cf245b7007b9d807964dd077cc67a1d06307def",
+      "bytes": 22800
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/SmsReceiver.java",
+      "sha256": "23aed3d56a695983c3d69b3d8001f1bcee975d121e9b4ebc5429c63e8f7c59f4",
+      "bytes": 5789
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/SmsRelayDiagnostics.java",
+      "sha256": "1f3778ba2ad378ae029abe8cdaf5fa896cc7041cc97cb3743f27d6bf90844ac5",
+      "bytes": 8076
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/SmsRepository.java",
+      "sha256": "47da8b748b70b3bc2de6cc89fa14b4c21c40ed01a4e2ed853be95bbad2768137",
+      "bytes": 14604
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/SmsRespondService.java",
+      "sha256": "9307827f5951c384e2d4e601d3714c089dab77dc86630752afc6f5274c8aea1e",
+      "bytes": 892
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/SmsSender.java",
+      "sha256": "d9da9d47ce9ae726993baed602e0df707a5b585317fa696afc3216751e5e2e5c",
+      "bytes": 1861
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/SmsThreadActivity.java",
+      "sha256": "18e4d80b8389d5821bdf1e3f47a8c1933c5556714ffd11a715445a07aa8676c7",
+      "bytes": 12792
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/SmsUi.java",
+      "sha256": "d3c193c7570e6130c74470696ef81f79c34dd26c17621e25b356306e5e8bbd51",
+      "bytes": 2337
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/SmsUploadJobService.java",
+      "sha256": "f7eec72405d05f6ee92232ca0b0aa055cac4b80d97489eb66c5fbe5fbe3fc7c5",
+      "bytes": 1794
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/WakeUnlockActivity.java",
+      "sha256": "957e99cb3376edbec732ed0f40c4587c4b93618a5ce6457f3769652880c06f15",
+      "bytes": 1709
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/WatchdogReceiver.java",
+      "sha256": "28c7e6dedc7196270d1fac39ceb4b335d68c465bedd72fe83bbdc327130f3e3c",
+      "bytes": 653
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/java/com/ztqc/smsrelay/XhsAppDiscovery.java",
+      "sha256": "efbbeac24b057469bab124ca19e75cbad1d3d31762729029975a5f50cb515f1f",
+      "bytes": 5605
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/res/drawable/ic_launcher_ztc.xml",
+      "sha256": "3402d0f451178b65023af9f5adf7fa610d632866631a4a5b10889874763654b8",
+      "bytes": 1213
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/res/drawable/ic_stat_ztc.xml",
+      "sha256": "36b44f47cd8ee37d246248c52d5a8a4ec8ee912b96a9f59d0a20a352f0bd6fb1",
+      "bytes": 681
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/res/values/strings.xml",
+      "sha256": "f7e2027cf26b209d5abbfdef980bfc0129b42a3b54f3b7ae74ac9b9054c158b5",
+      "bytes": 237
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/res/values/styles.xml",
+      "sha256": "cca82115e38095dd36a481c982ed40f446f3b28b7b0af321d4b2370578c33929",
+      "bytes": 684
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/res/xml/network_security_config.xml",
+      "sha256": "4dbc860ad01dde2b9d3423fc2e0ef1ad6280d93f56fa2e3dd7cafa9ffca5a83b",
+      "bytes": 339
+    },
+    {
+      "path": "android-agent/SmsRelay/app/src/main/res/xml/scan_accessibility_service.xml",
+      "sha256": "46f212a9689069e59d463e7d64740b5310b449a90279faaede5426288e63ad13",
+      "bytes": 533
+    },
+    {
+      "path": "android-agent/SmsRelay/build.gradle",
+      "sha256": "9779e64941ef00fdb75ecd9ccbf290bad2a4924ea0e1688bb1c617884e2753b6",
+      "bytes": 73
+    },
+    {
+      "path": "android-agent/SmsRelay/gradle/wrapper/gradle-wrapper.jar",
+      "sha256": "497c8c2a7e5031f6aa847f88104aa80a93532ec32ee17bdb8d1d2f67a194a9c7",
+      "bytes": 48462
+    },
+    {
+      "path": "android-agent/SmsRelay/gradle/wrapper/gradle-wrapper.properties",
+      "sha256": "94c3a7cce4cdb7b52232c72acc2083ca2d35ae1951602448ce8d40dc59908a69",
+      "bytes": 279
+    },
+    {
+      "path": "android-agent/SmsRelay/gradlew",
+      "sha256": "ab5c0cad16305af2e619c159c1f58dd68d07fab9c11e36701e109c0277407f7a",
+      "bytes": 8654
+    },
+    {
+      "path": "android-agent/SmsRelay/gradlew.bat",
+      "sha256": "475c4f08cd57cf2faa819e7f36d72aa93f0ad646ea23a8f7fa3ef54dee1cbc52",
+      "bytes": 2846
+    },
+    {
+      "path": "android-agent/SmsRelay/settings.gradle",
+      "sha256": "bef378ecb925fc54f5dab7c651c89fd872947d28f1ebad4f61f0672da3922b53",
+      "bytes": 327
+    },
+    {
+      "path": "deploy/inventory-sync-compression/README.md",
+      "sha256": "8ea0beae6f8d18dcc8888cb760622b0f8b6b39acc8d1bf94554317a6017a1e2b",
+      "bytes": 4632
+    },
+    {
+      "path": "deploy/inventory-sync-compression/isolation-adoption-20261027.json",
+      "sha256": "6f5ce59b7b1baed1f4194751d1d2df9172ff1db548459d38f1f056c88e24a131",
+      "bytes": 4238
+    },
+    {
+      "path": "deploy/inventory-sync-compression/patch.mjs",
+      "sha256": "a660a9bb2f9616af6577fbfc1e481dd5b01a734913b1d1166fedfc9831eafb4f",
+      "bytes": 1539
+    },
+    {
+      "path": "deploy/inventory-sync-compression/patch.test.mjs",
+      "sha256": "afb047016ff8fe0254c663cbe86b9cb57ae0c4947e94b25dd109793adcb1c4e3",
+      "bytes": 2396
+    },
+    {
+      "path": "deploy/inventory-sync-compression/validation-20261027.md",
+      "sha256": "d15b9ce97cb10d718b83a0e1cfa4d26deb825a5ef7fe49cb374473f7e241ad70",
+      "bytes": 4447
+    },
+    {
+      "path": "deploy/mediamtx-pacing/build.mjs",
+      "sha256": "3bb1a914af57d03593c57c400696deb9c13825732a504282e10e4892cd6099ce",
+      "bytes": 3663
+    },
+    {
+      "path": "deploy/mediamtx-pacing/enable.conf.example",
+      "sha256": "f8066357d386bd71938735de0fabc572a017ec8c6efdc1eaf232718648b70d66",
+      "bytes": 420
+    },
+    {
+      "path": "deploy/mediamtx-pacing/peer-connection.patch",
+      "sha256": "ce75d9ca0a229515f6b4597ddd7bf501dbfed104f108bd7f986e0a8bc64e94a4",
+      "bytes": 765
+    },
+    {
+      "path": "deploy/mediamtx-pacing/production-baseline.json",
+      "sha256": "d5b260558469ee75add1f747de2f7e5ad1604c4c7e897592fc6cdf5b91de8561",
+      "bytes": 674
+    },
+    {
+      "path": "deploy/mediamtx-pacing/verify.mjs",
+      "sha256": "2c5ee69ede4587e40b69333373b0956ffed20dfb9eea6467740a5f4704933a84",
+      "bytes": 5341
+    },
+    {
+      "path": "deploy/mediamtx-pacing/viewer-session.patch",
+      "sha256": "83d5597484c3a61fb430a971470ba3509b034b8847963a6d9fc19b189400770a",
+      "bytes": 344
+    },
+    {
+      "path": "deploy/mediamtx-pacing/viewer_pacing.go",
+      "sha256": "b7a3ee05c13b4d012803a6af57fcf43a72d7ca2c8fdd3c1eeff777c62a4fa8d1",
+      "bytes": 1833
+    },
+    {
+      "path": "deploy/mediamtx-pacing/viewer_pacing_test.go",
+      "sha256": "bffa105183093e3c63457f5b8388eb5f301b4689deb5987c482a4cfa1a45b5a4",
+      "bytes": 4242
+    },
+    {
+      "path": "deploy/mediamtx.yml",
+      "sha256": "6693a3432e820e85c063d2facf64c2c1230c2154d09f51ad9d76b1b513ab751b",
+      "bytes": 1847
+    },
+    {
+      "path": "deploy/nginx-isolation/README.md",
+      "sha256": "7396321a7bcc20707fd783897ce805e60cba86728c2503227ecbbf44f7c9e60f",
+      "bytes": 4397
+    },
+    {
+      "path": "deploy/nginx-isolation/test_verify.py",
+      "sha256": "09cd0a03c0d27c67d4f26de371181a4db7cd4a1e6921e5a6820be03a1b7999e8",
+      "bytes": 4293
+    },
+    {
+      "path": "deploy/nginx-isolation/verification-20261027.json",
+      "sha256": "e9787212419158525cf22dbd6aab51b44ae824326b22dfb5ffe4d05fe12fec23",
+      "bytes": 7810
+    },
+    {
+      "path": "deploy/nginx-isolation/verify.py",
+      "sha256": "fbf5ccfbb61d6646aca69420a9f7bedf07c3600bd3b715e6207e9f972f22afcd",
+      "bytes": 9891
+    },
+    {
+      "path": "deploy/nginx/managed-lookup-location.conf.example",
+      "sha256": "bfdeea99f56e1e693e1f4b10e96fcfef0b525f4d883040a93c4155072d778e02",
+      "bytes": 609
+    },
+    {
+      "path": "deploy/nginx/phone-cloud-http.conf.example",
+      "sha256": "95257e2c78cf6574498269f2e4e388a98b7d59cb32ef07032f299ea921d6a64c",
+      "bytes": 764
+    },
+    {
+      "path": "deploy/nginx/phone-cloud.conf.example",
+      "sha256": "28cffb18061e911aea2ae193e9bc90d0c73441eaeb7aa24706d4d19f0648ae1d",
+      "bytes": 1413
+    },
+    {
+      "path": "deploy/scripts/aliyun-docker-deploy.sh",
+      "sha256": "95b5ed095add6f403c3a4c129315ee376ec4a17efbacc3612e050067a782be79",
+      "bytes": 1636
+    },
+    {
+      "path": "deploy/scripts/backup-current-storage.sh",
+      "sha256": "d222b9ca38c8ae9dff7cd15858322feef48a4a734a0df9b3bcdb5c2e27e5e205",
+      "bytes": 1735
+    },
+    {
+      "path": "deploy/scripts/backup-json-state.sh",
+      "sha256": "ffefc10916c96b35b6d3ba9cc02cf53ebee22f239191b5d854166a84ac7c62dd",
+      "bytes": 488
+    },
+    {
+      "path": "deploy/scripts/backup-postgres-state.sh",
+      "sha256": "596494154d070a3ea6b98b27809f85cd983ed5274f554ca3e328b10dab233456",
+      "bytes": 843
+    },
+    {
+      "path": "deploy/scripts/build-android-agent.sh",
+      "sha256": "2713d2714c0a0a7aef332d8432ab2485ebfd9add6d3874352c55d8170b4d604d",
+      "bytes": 518
+    },
+    {
+      "path": "deploy/scripts/deploy-d066-windows.ps1",
+      "sha256": "0959afc58d91c7719c2b21cef4d34351fe467ff9e549f5573526e311c3a42e87",
+      "bytes": 3757
+    },
+    {
+      "path": "deploy/scripts/deploy-d067-windows.ps1",
+      "sha256": "b4c474a6063b2e856e642bcd1f0b9146875a226df82741292b86b5756703fcac",
+      "bytes": 2545
+    },
+    {
+      "path": "deploy/scripts/deploy-d069-windows.ps1",
+      "sha256": "8824a591613ee1076f379a73f71cef3c54df14bbe8a6bd0e740dd97adc55f1f9",
+      "bytes": 2665
+    },
+    {
+      "path": "deploy/scripts/deploy-d070-windows.ps1",
+      "sha256": "0e43b9f09d466f2f16147b3a4aeb470c1b3126521075dfa067e3621b921062ce",
+      "bytes": 2578
+    },
+    {
+      "path": "deploy/scripts/deploy-d071-windows.ps1",
+      "sha256": "9ddf942644b627402f89a98df3ef8a0ed4d5a273a22a6514c8bacf3f00c1707b",
+      "bytes": 1249
+    },
+    {
+      "path": "deploy/scripts/deploy-d072-windows.ps1",
+      "sha256": "1cfa12e04f9698a93cc2dbe6969ae6c0c484791b2889f2df831ed88fe29de020",
+      "bytes": 1269
+    },
+    {
+      "path": "deploy/scripts/generate-production-env.sh",
+      "sha256": "de430927ae0334f957b8f547c2c715185a628c1167e0f8a3725b7b03ab81a0af",
+      "bytes": 2541
+    },
+    {
+      "path": "deploy/scripts/install-backup-timer.sh",
+      "sha256": "e1bb5b03c55656d3172b579a36830941c0bf5b4964ca008ad4b0fccecfe69bdb",
+      "bytes": 1642
+    },
+    {
+      "path": "deploy/scripts/install-mediamtx.sh",
+      "sha256": "57795cbe28c74982d1c42561ffb9fffafcb5d3415e389e80db28edb655b900f7",
+      "bytes": 527
+    },
+    {
+      "path": "deploy/scripts/preflight-production.sh",
+      "sha256": "877d65646da86eaa6ce167c958a1edb2288f5bfc65a824c3717c71cd00144e5b",
+      "bytes": 9826
+    },
+    {
+      "path": "deploy/scripts/prepare-d066-windows-merge.py",
+      "sha256": "afd7f14ab0bd35ab1b12a89b9e62876a5b7f416ef7c09c10edc0c34a21009227",
+      "bytes": 17565
+    },
+    {
+      "path": "deploy/scripts/prepare-d067-v2-windows-merge.py",
+      "sha256": "380420a67876697299dc01f73710907e76abcd7adc3cb33fc7a4a1b68f86c5bb",
+      "bytes": 1165
+    },
+    {
+      "path": "deploy/scripts/prepare-d067-windows-merge.py",
+      "sha256": "d1bc234cbc592655a97fe081108840615a26cba092bae157d90b72c9797eb9f3",
+      "bytes": 2662
+    },
+    {
+      "path": "deploy/scripts/prepare-d068-windows-merge.py",
+      "sha256": "8b934e7a9bf9ce47c0050262ce395ec6c1336933ae5086648aaf1634d7799034",
+      "bytes": 1359
+    },
+    {
+      "path": "deploy/scripts/prepare-d069-windows-merge.py",
+      "sha256": "2ff737738d58475cf22db2acaa45eca0e720f51dbfcbe474628f1a1f062e585b",
+      "bytes": 1992
+    },
+    {
+      "path": "deploy/scripts/prepare-d070-windows-merge.py",
+      "sha256": "551c916e069d69f8a3eadca95141a391de4ffb4ce76342a5e8bb8ffc921cc73a",
+      "bytes": 1211
+    },
+    {
+      "path": "deploy/scripts/prepare-d071-windows-merge.py",
+      "sha256": "51b8ff834798a4e2526258084140934d795866af2f8da846732a2b20be858177",
+      "bytes": 2103
+    },
+    {
+      "path": "deploy/scripts/prepare-d072-windows-merge.py",
+      "sha256": "49e6df8ad0963ac82de00c955831a9706feb75f501915d641817d452f305daeb",
+      "bytes": 5136
+    },
+    {
+      "path": "deploy/scripts/prepare-history-maintenance-merge.mjs",
+      "sha256": "b81c9ea3f1d5f796a1f85e6c333312a5095afd55cc9022ae572d38e5dab2891b",
+      "bytes": 7012
+    },
+    {
+      "path": "deploy/scripts/publish-built-apk.sh",
+      "sha256": "174ae3f84ca30926a95eee54b44379b4f12ba87d4ee37f616a9861cb79ec149b",
+      "bytes": 1187
+    },
+    {
+      "path": "deploy/scripts/render-nginx-config.sh",
+      "sha256": "627b6e8eae612e377b63bab98b3614d7d32cbd2e4bfd0b2b13116625507cde78",
+      "bytes": 1212
+    },
+    {
+      "path": "deploy/scripts/restore-json-state.sh",
+      "sha256": "89c45f4f4571e43105f07b1a7812d0743d340f3790233ed738343654635629f3",
+      "bytes": 654
+    },
+    {
+      "path": "deploy/scripts/restore-postgres-state.sh",
+      "sha256": "ab762df36199547a20b5beaf1fccb7ad681d5245bf06c38b1202114f88606e58",
+      "bytes": 870
+    },
+    {
+      "path": "deploy/scripts/smoke-test-platform.sh",
+      "sha256": "a4e309dcfa10d2c1378dc2604a5b5582d0d2957799b0ff5bc272618d4e359ba7",
+      "bytes": 20803
+    },
+    {
+      "path": "deploy/scripts/smoke-test-postgres.sh",
+      "sha256": "9544bc7a17ee7c80b6f55ae6579e64673fed57b812768ab5cef04f80cb8c2df7",
+      "bytes": 4708
+    },
+    {
+      "path": "deploy/scripts/smoke-test-timeouts.sh",
+      "sha256": "6974b5ebb48db2bcae446c7eb5d6a2b3a513579c350a8d8a19e427be0d031de7",
+      "bytes": 3433
+    },
+    {
+      "path": "deploy/sql/20260817-big-release-sms-message-key-rollback.sql",
+      "sha256": "c2693fb552b3837f50bfe4d75506b38eb3675590d3457a8c5221aa06260a9993",
+      "bytes": 1044
+    },
+    {
+      "path": "deploy/sql/20260817-big-release-sms-message-key.sql",
+      "sha256": "98201a799ad730eb54aedbc083698da7405bed6d841ce7a73d71614a3e59e8fb",
+      "bytes": 2721
+    },
+    {
+      "path": "deploy/sql/20260817-big-release-sms-preflight.sql",
+      "sha256": "38d0feea20219ec8a45a1c199353311c70f781cf1e2de2a18215d19f2dc5df9f",
+      "bytes": 701
+    },
+    {
+      "path": "deploy/sql/20261013-managed-lookup-async.sql",
+      "sha256": "c89dfea58d8b7c28187461007d645877f375633b62b75aca16fa22defb4f706e",
+      "bytes": 737
+    },
+    {
+      "path": "deploy/sql/20261013-managed-lookup.sql",
+      "sha256": "98b3b3d84aa8549dd6ff42d46cc417e9ecd6e44fcdfa6dfc899bfa6bdf7fea33",
+      "bytes": 691
+    },
+    {
+      "path": "deploy/sql/phone-cloud-structured-schema.sql",
+      "sha256": "ab11f1d80c0cf8224734e618b6ab56c8bf76ca83a33c17312b0cfe3ecfd51dcc",
+      "bytes": 7303
+    },
+    {
+      "path": "deploy/sql/postgres-state.sql",
+      "sha256": "90b69cf072f131c812806fe7ca1d7882d03b7d95d3cc9c8d916bbc9fa0e6ff8e",
+      "bytes": 151
+    },
+    {
+      "path": "deploy/systemd/phone-cloud-backup.service.example",
+      "sha256": "c78eddc456f9eb3aecaee486609b8311fbdaf0c1249d87da3034d04d45983e87",
+      "bytes": 364
+    },
+    {
+      "path": "deploy/systemd/phone-cloud-backup.timer.example",
+      "sha256": "e97b74fb807e6cdce0f79ac0fb303a99cfe4b0eb9c53ce8728fa7f8214003f15",
+      "bytes": 197
+    },
+    {
+      "path": "deploy/systemd/phone-cloud-mediamtx.service",
+      "sha256": "1117e3d97dbb4d5fbfba54aacb69ef4ed19ca0d349abc0a30b212fe49f84de0c",
+      "bytes": 426
+    },
+    {
+      "path": "deploy/systemd/phone-cloud.service.example",
+      "sha256": "56478c8310902b8f9c30a70731f5baf67d4564c11cfe36644aa8e7d19d09b4c4",
+      "bytes": 377
+    },
+    {
+      "path": "deploy/xhs-batch/config.example.json",
+      "sha256": "b4fcc3cd0915540af2c53f182951a72c5334688b4b6f212d2b11dbaf199b3b69",
+      "bytes": 480
+    },
+    {
+      "path": "deploy/xhs-batch/nginx-location.conf",
+      "sha256": "dd1444d7a6ccecc2d52e0fca9ad9febf2a7854ad9a0ccd140d55ed60148d63e8",
+      "bytes": 328
+    },
+    {
+      "path": "deploy/xhs-batch/phone-cloud-xhs-batch.service",
+      "sha256": "cbdf334515bc49b4a2c6da93e6b747c6412bcba563d718a963f86fb49378bb03",
+      "bytes": 494
+    },
+    {
+      "path": "deploy/xhs-batch/prepare-platform-patch.mjs",
+      "sha256": "06206e0d04dc4e8d6581a92fce7a2d4bf49424ef77d95b826b61dc80760ec64b",
+      "bytes": 4451
+    },
+    {
+      "path": "deploy/xhs-batch/schema.sql",
+      "sha256": "4e7fbdbd9c3e3d95ea401b221ec64a348860601f773e97839cde3cc75fdb9bcf",
+      "bytes": 751
+    },
+    {
+      "path": "examples/name-lookup-api-key/README.md",
+      "sha256": "bcd37554b3f53240310f2206d85ea3df643ccdab4e6d2c6ad82df2161684a90a",
+      "bytes": 5066
+    },
+    {
+      "path": "examples/name-lookup-api-key/lookup.mjs",
+      "sha256": "463ac44a509215fe44fa3b2374c1c469ee66fbe2e6a5779ea57ad39fd5ecdb88",
+      "bytes": 9201
+    },
+    {
+      "path": "examples/name-lookup-api-key/lookup.py",
+      "sha256": "95ca247988e7a6c7a03ce0d3078f455715335a9f5a575bb987044fc3c933251b",
+      "bytes": 10819
+    },
+    {
+      "path": "examples/name-lookup-api-key/lookup.test.mjs",
+      "sha256": "5f0e743a4e46cb2fc11887aca2c12938ea6886ceed1217994818fdbd1e893ac3",
+      "bytes": 9084
+    },
+    {
+      "path": "examples/name-lookup-api-key/test_lookup.py",
+      "sha256": "e8f87ad7b1ecf33efdecb965b16bf1a607c00eca07f6c868e36c5dd4803036b2",
+      "bytes": 8995
+    },
+    {
+      "path": "examples/name-lookup/HTTP_README.md",
+      "sha256": "d6763edebd743eb13d5468a62fafac202f10711322e9cff979c588e4c8d9499b",
+      "bytes": 8947
+    },
+    {
+      "path": "examples/name-lookup/README.md",
+      "sha256": "cfedf8727b4150dab82574e3141c708d0f5a54d42d156f148f001d53668ea1af",
+      "bytes": 4465
+    },
+    {
+      "path": "examples/name-lookup/VERIFICATION.md",
+      "sha256": "80ab6cbcffebc5ac5644aa5df6c3d7d7cb13c935e09fa99e8f5e8b809daa6f59",
+      "bytes": 2652
+    },
+    {
+      "path": "examples/name-lookup/lookup.mjs",
+      "sha256": "3eba93f018a10116ddf46f51ba2f802e5e386b9ece96c4b73e47a7d3776f9f6e",
+      "bytes": 9693
+    },
+    {
+      "path": "examples/name-lookup/lookup.py",
+      "sha256": "2880153796e33c015ec9ac83ffac8879587b47a96d84ea42de12138a5c4824af",
+      "bytes": 11392
+    },
+    {
+      "path": "examples/name-lookup/lookup.test.mjs",
+      "sha256": "09ba267cd73e5e058c104c3ebc0b3899ba99605928578d90dcd5ac97d1525b78",
+      "bytes": 9735
+    },
+    {
+      "path": "examples/name-lookup/test_lookup.py",
+      "sha256": "97c4851d44bfc97fa9b4259f544ee873c1f33f363b9bd935d0079366d665f458",
+      "bytes": 9343
+    },
+    {
+      "path": "ios-wda-lab/mjpeg-control-poc/README.md",
+      "sha256": "fbb835c26066610418b353c9f8c9065aab9cbe21155d13c17fd56f6c79dd6f6d",
+      "bytes": 428
+    },
+    {
+      "path": "ios-wda-lab/mjpeg-control-poc/app.js",
+      "sha256": "500da7f50eda44f0fa688e3e817441090030466df60b693a6dbbfe21fb00cc26",
+      "bytes": 4320
+    },
+    {
+      "path": "ios-wda-lab/mjpeg-control-poc/bridge.mjs",
+      "sha256": "785b0b35bdbd13426b388d4e5483629aac3272f4bb6cb0037d8ef8180f09f7a4",
+      "bytes": 2718
+    },
+    {
+      "path": "ios-wda-lab/mjpeg-control-poc/bridge.test.mjs",
+      "sha256": "0a2e3c139cab8bd89fb090fb41f4a064959318fd76fe06b378b8b82bac423368",
+      "bytes": 1844
+    },
+    {
+      "path": "ios-wda-lab/mjpeg-control-poc/index.html",
+      "sha256": "d1dc821a67d7c5e61c5ececc15f55eee34dedb5005801169a5edd6b8ef7e71b9",
+      "bytes": 1517
+    },
+    {
+      "path": "ios-wda-lab/mjpeg-control-poc/server.mjs",
+      "sha256": "35a9d9e143cfc1de79ef2a9782038a8755e55a69e797c520b92b15135846b8c2",
+      "bytes": 9379
+    },
+    {
+      "path": "ios-wda-lab/mjpeg-control-poc/styles.css",
+      "sha256": "862f501de487378b859543a3f5de242fd6f7df4a72be683b044701e8ff10d08f",
+      "bytes": 2330
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "0f52fdfd7458c3fc29799402d6d0a7ff2523b0d52bcc65cf835e1797dc2d3743",
+      "bytes": 36989
+    },
+    {
+      "path": "package.json",
+      "sha256": "1ecae2cfde31318dc328be56db93ff73238b7962414b4fa6bd85be9b42c4693f",
+      "bytes": 2876
+    },
+    {
+      "path": "public/api-docs.css",
+      "sha256": "45fb3127c805089a9227cc96d9b44a71c00d82f27638623289b3d850a6a349cd",
+      "bytes": 16443
+    },
+    {
+      "path": "public/api-docs.html",
+      "sha256": "322cb59f3281babe976d60ee041fbb78f228758711fe16bc76d7c2297e220c32",
+      "bytes": 2872
+    },
+    {
+      "path": "public/api-docs.js",
+      "sha256": "f61a477d104bec3062a921109203585616ccb5273642a78a17c07f9182d326f6",
+      "bytes": 34155
+    },
+    {
+      "path": "public/api-reference.json",
+      "sha256": "c56453958307af38fd52742217e3aadc99fc514757a3cc1a04a6a2af3b1606fc",
+      "bytes": 154753
+    },
+    {
+      "path": "public/app.js",
+      "sha256": "98e828b9288cd4ec6b82850d526ada380ae9b21892c6a0c695bd2b5e6feeb7c7",
+      "bytes": 304858
+    },
+    {
+      "path": "public/assets/login-terminal-bg.png",
+      "sha256": "3daf3ad0a2a1fcb7f82bfc5bfeb89ea387fa4a25d6c431b70fb8da26956480d0",
+      "bytes": 1463540
+    },
+    {
+      "path": "public/downloads/lookup.mjs",
+      "sha256": "c6c04722cd2ecd76ca7a81b72b82b1ee95ec0b8a26ab75795dc75632a4fde246",
+      "bytes": 9542
+    },
+    {
+      "path": "public/downloads/lookup.py",
+      "sha256": "4d25a7b23c11df237ff58f2a791f006c3aeb6a7f05c01a7f53feda7c3227bd59",
+      "bytes": 11239
+    },
+    {
+      "path": "public/downloads/name-lookup-http-guide.md",
+      "sha256": "531ed0824f18f13606c2b9605557dc2e3f8d25c3c2bd63ce637d2af1543bedf5",
+      "bytes": 14561
+    },
+    {
+      "path": "public/downloads/name-lookup-integration.zip",
+      "sha256": "8dd4d70b25dd62491aecbc4fbc8dbe1e56a76b83f53dfc3a807fb4965660e413",
+      "bytes": 28048
+    },
+    {
+      "path": "public/downloads/name-lookup-openapi.json",
+      "sha256": "2cf855866e5f30f05b6f7610f61235f15dbc15135a8d529b7e8f31dfcac4e438",
+      "bytes": 94027
+    },
+    {
+      "path": "public/downloads/name-lookup-sha256.json",
+      "sha256": "133e59e60c859baa052bc29664bf51f55f100060a746573ae6b9e283e183901c",
+      "bytes": 586
+    },
+    {
+      "path": "public/downloads/sign.mjs",
+      "sha256": "8aac5bdf144c8dd6c93da3aa34c63c21952270fba139e5b117730b6730c51946",
+      "bytes": 605
+    },
+    {
+      "path": "public/downloads/stop_lookup.py",
+      "sha256": "e0d7f72ff6fae836973432804ae42083ee99c136f307483a7e9eb5a198d862ed",
+      "bytes": 3240
+    },
+    {
+      "path": "public/index.html",
+      "sha256": "185aded6485a64a9f905389b09c8cc18530540a5a01691e8305c5728333bd7ee",
+      "bytes": 55829
+    },
+    {
+      "path": "public/lookup-admin.css",
+      "sha256": "94000299289d4be0a354fd4fb1095df6229d0412b1bf1057c2c2486de02b84d8",
+      "bytes": 9990
+    },
+    {
+      "path": "public/lookup-admin.html",
+      "sha256": "0504f8c50efa14d7c47c89073da56df35eb67f95936d7f52234e09edc426a9b8",
+      "bytes": 3708
+    },
+    {
+      "path": "public/lookup-admin.js",
+      "sha256": "a73862010010a141d1d43ab731bd769fb4305c4edc0bfcbfbc48b7902d3a4962",
+      "bytes": 14472
+    },
+    {
+      "path": "public/lookup-card-status.js",
+      "sha256": "419c865557401c9b431bef2a30c48b332f39d266f2addfa462fd21beb9c7a780",
+      "bytes": 1095
+    },
+    {
+      "path": "public/lookup-pool.css",
+      "sha256": "1b4781315f76a2526f92aa6231d90a5849f8c4020cd8509c83a8b03e2e4a7ca0",
+      "bytes": 5001
+    },
+    {
+      "path": "public/lookup-pool.html",
+      "sha256": "fcd0b8af95e38ee1ccdc9306bb7017396ef1d2eac68180b1954aa630e19999a8",
+      "bytes": 4039
+    },
+    {
+      "path": "public/lookup-pool.js",
+      "sha256": "d87e587c9466cc71e87caf08d95f8f5da315996ce4d7a993ed18b90ce58a5e45",
+      "bytes": 12779
+    },
+    {
+      "path": "public/openapi.json",
+      "sha256": "61548643a7468a223620465df85e38d5a75f33449fed0770156310219d742b25",
+      "bytes": 169120
+    },
+    {
+      "path": "public/screen-control.js",
+      "sha256": "9618ae22993d0b1fc5bbffbedf2e9ced52ad5b8ccf46fded85513f39a4bda3ba",
+      "bytes": 70317
+    },
+    {
+      "path": "public/screen-inactivity-guard.js",
+      "sha256": "433578679963fc37b6eb2412c641cbaaa81f424f8611b109b28d2ba3b49ec182",
+      "bytes": 4564
+    },
+    {
+      "path": "public/styles.css",
+      "sha256": "ea46847aa8a1c4814c1cfe4dd8f79347b1f2cd3b09bcc2901b32d8ac82962d40",
+      "bytes": 174331
+    },
+    {
+      "path": "public/user-device-inventory.js",
+      "sha256": "bda1d9e9ac5ebfeebc092dc4dd7da0e9fedac85922a94045964b147af769107b",
+      "bytes": 1379
+    },
+    {
+      "path": "public/user-sms-refresh-policy.mjs",
+      "sha256": "82239510997859f2ccab5dc793caf0e14c00260e9fb94bd6d1169a3b33ef5061",
+      "bytes": 146
+    },
+    {
+      "path": "public/user-sms-refresh-policy.test.mjs",
+      "sha256": "afde5f9111244096a14121fc982f95ca3130c02ce9165233b95ac7a2c500922e",
+      "bytes": 394
+    },
+    {
+      "path": "public/vendor/screen-control.js",
+      "sha256": "ef4e36d5934050ad85075fb877257e4ec63b30af94becefc69e29bf76b2f44c5",
+      "bytes": 79430
+    },
+    {
+      "path": "public/vendor/worker-Dm9DNeDt.js",
+      "sha256": "1d2f4e9d5377fe41356be079ad925ddb38b10b5035914f2b883ec1696f831687",
+      "bytes": 173627
+    },
+    {
+      "path": "public/workbench-loading.test.mjs",
+      "sha256": "512d057e749fc84bf12122e06e88265188aec6aa984504d32deeb0e9fc26fbd7",
+      "bytes": 1449
+    },
+    {
+      "path": "public/xhs-data-collection-ui.js",
+      "sha256": "7be06e984b25ec61fa4e7004433f92c076c1acbb5a821e6cd979e539d955201f",
+      "bytes": 4654
+    },
+    {
+      "path": "requirements-test.txt",
+      "sha256": "6039e68370da4c42b3eb52c085e57028a9e538247070422d025a8df81ef04123",
+      "bytes": 138
+    },
+    {
+      "path": "requirements-visual-lookup.txt",
+      "sha256": "23808ea43c34074a08754216be27b582efe2d4f6003ebe7682ec4901fd67660d",
+      "bytes": 302
+    },
+    {
+      "path": "screen-client/control-input.js",
+      "sha256": "6add5a3c8df3ae393b0456c7bf3044b43555431724efedbfad4e6c223e03f0b0",
+      "bytes": 9096
+    },
+    {
+      "path": "screen-client/control-input.test.mjs",
+      "sha256": "fb3effbb5b8f7048a0f3d6df7a5d69f480cf90f5796e9cb13c6539107a60a7aa",
+      "bytes": 5497
+    },
+    {
+      "path": "screen-client/direct-webrtc-player.js",
+      "sha256": "284f1fd2a245ec7a33ca00d674e0f794221093cbaa155c74ecde401c78029d85",
+      "bytes": 8281
+    },
+    {
+      "path": "screen-client/direct-webrtc-player.test.mjs",
+      "sha256": "025ad334706a46403eab1a863ce9c749473d02fbddde9f55554e6ae0748e2755",
+      "bytes": 3362
+    },
+    {
+      "path": "screen-client/main.js",
+      "sha256": "d963f3c173f35d24cc9bcd43ae56009a1d3990efdb2a266c1fde5dfd5c59b35b",
+      "bytes": 16241
+    },
+    {
+      "path": "screen-client/main.test.mjs",
+      "sha256": "1994a97f33dd48760f48a64ea3b29efd0ba091fba61077bebb81abe368891555",
+      "bytes": 3647
+    },
+    {
+      "path": "screen-client/mse-player.js",
+      "sha256": "bb2c54be0f453b92f42621a805d27d08487a7f34c62ab5379d069dbb9369fd34",
+      "bytes": 6725
+    },
+    {
+      "path": "screen-client/mse-player.test.mjs",
+      "sha256": "9060fbdf871bd1e84b84fdfdc1842c7596bf51c2758b818b2f87adc46bab29b2",
+      "bytes": 4610
+    },
+    {
+      "path": "screen-client/recovery-console-ui.test.mjs",
+      "sha256": "e528e80e6b35755fea39426402d07571b6758752f59956783c154f3beb43550f",
+      "bytes": 1679
+    },
+    {
+      "path": "screen-client/screen-inactivity-guard.test.mjs",
+      "sha256": "e2609e8fdf83aac8f35768de81c250b542d12c91c61d409e4647ff8b658636eb",
+      "bytes": 4332
+    },
+    {
+      "path": "screen-client/screen-transport.js",
+      "sha256": "bac891e3ef5f2229b70ccba9c67ad550e5a06355ddd482e2c9b71b12be12198c",
+      "bytes": 2877
+    },
+    {
+      "path": "screen-client/screen-transport.test.mjs",
+      "sha256": "053a2d492cd1044bbd6758b6771c5ef08e8a4e6150e567790a5d78edc59d5282",
+      "bytes": 1966
+    },
+    {
+      "path": "screen-client/screen-ui.test.mjs",
+      "sha256": "f7bdfd311a51ac2efceddcfd5f5c3cc1e6d9f9ca237df8e3fa622bf856dcc86e",
+      "bytes": 11316
+    },
+    {
+      "path": "screen-client/user-device-search.test.mjs",
+      "sha256": "89d4f0b6dd2e2c6bc3bd9e106d9cee7d33f2f25320d57c954cdcc722fd601063",
+      "bytes": 1507
+    },
+    {
+      "path": "screen-client/user-sms-load.test.mjs",
+      "sha256": "8296c9db8c850b462d5200a6f236db75fc469d07369e9bf4b207ff90ac4577a6",
+      "bytes": 1269
+    },
+    {
+      "path": "screen-client/webrtc-player.js",
+      "sha256": "aeab64aedd8f6b89ef024acae4b5e685d70b548a1dc911ad3fa56fbcea3e2fa1",
+      "bytes": 30450
+    },
+    {
+      "path": "screen-client/webrtc-player.test.mjs",
+      "sha256": "b8335435d5268e4cea4a46a200696f8aa2e48817480c012806bc7e5a163647d9",
+      "bytes": 13826
+    },
+    {
+      "path": "scripts/alipay-full-chain-qa.mjs",
+      "sha256": "da86e97c167b3f054912205510bb815594955ac1f05c574ddccd61656eb14097",
+      "bytes": 12620
+    },
+    {
+      "path": "scripts/api-docs.test.mjs",
+      "sha256": "ba7f3d2bfa286893cd0e9da02b24d921949d0de695f3a6f41af95090eb7abcfe",
+      "bytes": 15524
+    },
+    {
+      "path": "scripts/apply-xhs-id-migration.mjs",
+      "sha256": "bcde571d5237552c3364a8256e8d26dce89185ba7263f81320a5279059673622",
+      "bytes": 5649
+    },
+    {
+      "path": "scripts/apply-xhs-id-migration.test.mjs",
+      "sha256": "c7a79b2950b558516ff5e7cb517fb5000b8d5a497422b1aeddea0e7e07e9d777",
+      "bytes": 2039
+    },
+    {
+      "path": "scripts/benchmark-task-history.mjs",
+      "sha256": "4b65d2d663ebb54b496343b183d7470cd513ee53d0c9a43507f366dec69f65e5",
+      "bytes": 6796
+    },
+    {
+      "path": "scripts/big-release-sql.test.mjs",
+      "sha256": "8aacc861ba56d2f20b8c03aab523050087d42f4914f094809c33c7dbd9a09b27",
+      "bytes": 1800
+    },
+    {
+      "path": "scripts/browser-screen-load-test.mjs",
+      "sha256": "8a328246f125b8b056310c00c6a41ec335326db2185517370a8d339c69d1d6c1",
+      "bytes": 20107
+    },
+    {
+      "path": "scripts/build-api-docs.py",
+      "sha256": "1125d7f0c33328479303baa700ce5b23d5009e2386b8d390542dbf006fecd491",
+      "bytes": 17278
+    },
+    {
+      "path": "scripts/build-managed-lookup-docs.py",
+      "sha256": "67167d0fb32c8102cb102a46caced65931039d1c205634b0a21f581592ebec91",
+      "bytes": 14968
+    },
+    {
+      "path": "scripts/build-xhs-id-migration.mjs",
+      "sha256": "47f5fedefe098058c93e907779ed8ca6ce15ff4735c8921bac44d2d8c03e135c",
+      "bytes": 4848
+    },
+    {
+      "path": "scripts/build-xhs-id-migration.test.mjs",
+      "sha256": "777f13f221c41b983257865ecc29323d6d9f2a2366eac919c66d2b24e166f455",
+      "bytes": 2307
+    },
+    {
+      "path": "scripts/deployment-baseline.test.mjs",
+      "sha256": "442c40f3c64e70dce5eb6079191f323000526e5887593aa6b92e10ec3bf00402",
+      "bytes": 915
+    },
+    {
+      "path": "scripts/media-pacing-baseline.test.mjs",
+      "sha256": "622ee988409c50271c29bd489ca7dfa539bfa202975fd2847ee32ea8fac5576e",
+      "bytes": 4584
+    },
+    {
+      "path": "scripts/ops/lookup-manual-result.mjs",
+      "sha256": "f4d24a5458f21433f57c8b7c0b7fc9010b7d69e9e8936301a5daf8686588222b",
+      "bytes": 5837
+    },
+    {
+      "path": "scripts/ops/lookup-manual-result.test.mjs",
+      "sha256": "3caae185fb482fd64e15147d3087e32163b45e1823a650e6575e7a369a2d171e",
+      "bytes": 5354
+    },
+    {
+      "path": "scripts/prepare-platform-update.py",
+      "sha256": "8bde9e7cf11d9d63be0c94486f0f1ddb1f8ec913090fb9f9e4bc2878c6036941",
+      "bytes": 8336
+    },
+    {
+      "path": "scripts/recovery-control-feedback.test.mjs",
+      "sha256": "38fb3e01ba570fa5f3db3e3467fdadae2670619bc72d7c1cb4b90a750ee36c58",
+      "bytes": 7353
+    },
+    {
+      "path": "scripts/recovery-controls-ui.test.mjs",
+      "sha256": "898ec8f92d023f691a1d86b487a0a85a40fc915f0ecb7fbbac45d68ea2c1c336",
+      "bytes": 2798
+    },
+    {
+      "path": "scripts/screen-load-report.mjs",
+      "sha256": "ffb2f01d518b6860801ddb620bb6f98e4e1e6cd47e3c067772cb629ca6241f76",
+      "bytes": 2324
+    },
+    {
+      "path": "scripts/screen-load-report.test.mjs",
+      "sha256": "afd31defdc4426a0690444a5b84ceb631ed23fe05238c0dab226f1342ea6425b",
+      "bytes": 1975
+    },
+    {
+      "path": "scripts/screen-load-test-actions.test.mjs",
+      "sha256": "bf0f47a1016e1d98682f454e0b8e821bf2dd52a84deb9d04c9d284aac5625163",
+      "bytes": 493
+    },
+    {
+      "path": "scripts/screen-load-test.mjs",
+      "sha256": "0e68d3e5a70afaa7b8167df735b32f15b43ef7447e44e2122fb1778f523fd1e8",
+      "bytes": 10001
+    },
+    {
+      "path": "scripts/smoke-platform.mjs",
+      "sha256": "77b87b906ea23a7a8d93fbdf323797ad4b87fcec1bf3d58b651dd4b9a7af3f20",
+      "bytes": 15189
+    },
+    {
+      "path": "scripts/start-local.mjs",
+      "sha256": "f135228bdddcc12835ccdc78173e4c803c3b06ba3feed4667b0305b7abbd1f7d",
+      "bytes": 1435
+    },
+    {
+      "path": "scripts/test-platform.mjs",
+      "sha256": "86e976208c691262be0fc1a516ecaa3fd9d246d234112ddeac905acb84151582",
+      "bytes": 2530
+    },
+    {
+      "path": "scripts/udp-network-probe.go",
+      "sha256": "48ba542915288d1d2e2fdcd90110dd5c1a1f70756df9e437349b8bf5d3a77034",
+      "bytes": 3222
+    },
+    {
+      "path": "scripts/xhs-slot-retest-plan.mjs",
+      "sha256": "848447cfb436d957edc2b05cd0ad5b784dd58366574a457ad7c62021b7e2c042",
+      "bytes": 2029
+    },
+    {
+      "path": "scripts/xhs-slot-retest-plan.test.mjs",
+      "sha256": "79d995f6ede77fcada66805955d64aae4eff0e36e1383c8e8d4f92306af19daf",
+      "bytes": 2658
+    },
+    {
+      "path": "sdk/__init__.py",
+      "sha256": "ef5f656be8b371afeca71e892bdc31f815fa375ecba9a7671996edd5d99ba77b",
+      "bytes": 39
+    },
+    {
+      "path": "sdk/open_name_lookup/PARTNER_HANDOFF.md",
+      "sha256": "1c12e64c36d510817a50810cdfddc6f79a5df58af0936497aaa745280a9a443d",
+      "bytes": 3341
+    },
+    {
+      "path": "sdk/open_name_lookup/README.md",
+      "sha256": "fe5c2abed29dba4e5dccfedd5f58d95482e945a355a9cdd22d96e9eda71fcac4",
+      "bytes": 3555
+    },
+    {
+      "path": "sdk/open_name_lookup/__init__.py",
+      "sha256": "dabb7b3eba418d564910c1b4436e4b69afdcaae665be4362cb74761a2f01f8ff",
+      "bytes": 134
+    },
+    {
+      "path": "sdk/open_name_lookup/node_client.mjs",
+      "sha256": "ad17a1031dfa2676acdb83f370ba0b5d036290dc8ce7aeedea08df361e0a4b53",
+      "bytes": 9774
+    },
+    {
+      "path": "sdk/open_name_lookup/node_client.test.mjs",
+      "sha256": "7d5befd37287d44e9ee67966861b1e4e4a93394466143ef3cc6db96c21c4e566",
+      "bytes": 6719
+    },
+    {
+      "path": "sdk/open_name_lookup/node_client.transport.test.mjs",
+      "sha256": "976cb27e25dbf410148165f0bd8b5a46e41ede243632857a998783ab2176a6b3",
+      "bytes": 6827
+    },
+    {
+      "path": "sdk/open_name_lookup/partner_example.py",
+      "sha256": "839fae5abec385ec3feb80f05ddd54361ded5f2eb8ac111e1a70b40790c5e8e2",
+      "bytes": 4970
+    },
+    {
+      "path": "sdk/open_name_lookup/python_client.py",
+      "sha256": "9261c7515450e858b981814b47ffe44e1bd342ed36a458a5eff2742c2c3c5776",
+      "bytes": 12902
+    },
+    {
+      "path": "sdk/open_name_lookup/python_client_test.py",
+      "sha256": "09d8066344b2054e21fe8bdadfaaca6258ad6709cd20d69ada0d4166bd565a3e",
+      "bytes": 5077
+    },
+    {
+      "path": "sdk/xhs_batch_client.py",
+      "sha256": "6f2008abce3b5994761ba0ab88729fe04b8b2cd47b39e46e98c2882b5818fcdb",
+      "bytes": 2701
+    },
+    {
+      "path": "server/agent-runtime-release.mjs",
+      "sha256": "3720982d360bfe424c1d1740c03d9f42a03a866617319ca8c99f8d74d46b6c8e",
+      "bytes": 1074
+    },
+    {
+      "path": "server/agent-runtime-release.test.mjs",
+      "sha256": "0f8f7941643480b299588d1e76357d96b17ac58e7f3b7aa792100bfef0252ddb",
+      "bytes": 1358
+    },
+    {
+      "path": "server/auth-write-persistence.test.mjs",
+      "sha256": "14c0f7b3b631c7a97a2ff87b7f0bf63e73f5b88c0e0d8a2175d12d488d4429a0",
+      "bytes": 1479
+    },
+    {
+      "path": "server/automation-center-ui.test.mjs",
+      "sha256": "60d8420fba1f488c18e89bafb0d907169a55ee2bc6cf482b2e68b856b919d0e0",
+      "bytes": 6367
+    },
+    {
+      "path": "server/automation-center.mjs",
+      "sha256": "49cc414f4b6dd1edf550d94140b32f46f98493a2db0bf9781660cdcd323a6344",
+      "bytes": 11396
+    },
+    {
+      "path": "server/automation-center.test.mjs",
+      "sha256": "93a1bb935c0df8c863320480f47f59829c234bfc7d186dabf695bbba83e75602",
+      "bytes": 8824
+    },
+    {
+      "path": "server/automation-module-preservation.test.mjs",
+      "sha256": "ff79666e11c51c292e7948f4a1b7e141b53132f7ee812bebb10845a8d4ba2ac9",
+      "bytes": 5141
+    },
+    {
+      "path": "server/device-lock-compatibility.mjs",
+      "sha256": "48ea2fa99c4bea2d7bbc865d65f0e7572d6e914e0e86a1806022abb81700b9c3",
+      "bytes": 2658
+    },
+    {
+      "path": "server/device-lookup-card-status.test.mjs",
+      "sha256": "84a72d1fd44f25bcb37b0f065bd68103e7d8c7bd22aa1920da40e5437c73d3ad",
+      "bytes": 6612
+    },
+    {
+      "path": "server/device-naming.mjs",
+      "sha256": "d7b74e874f557b77514d9db7460f86fd2f7d58b05c96b327b99a522dc46bccad",
+      "bytes": 2904
+    },
+    {
+      "path": "server/device-naming.test.mjs",
+      "sha256": "45f65e18a5d06ac738de4c12f7498c471aeabeb495bdf70913afa9cc76261e36",
+      "bytes": 2525
+    },
+    {
+      "path": "server/device-occupancy.mjs",
+      "sha256": "ac2bc7c45599bf0dbad046e5dfa12bb10d5fda291552c5ef10cf3fda99cedea5",
+      "bytes": 8418
+    },
+    {
+      "path": "server/device-occupancy.test.mjs",
+      "sha256": "e6b3a4efd76617ab4468a3f49e798eae4e29ef571eb7d7e0a337db164e767d8b",
+      "bytes": 2992
+    },
+    {
+      "path": "server/device-sim-authority.mjs",
+      "sha256": "21651ac3da6a3fff4febe5c718fca8f68ae8635d643289014adc6631bd89aa21",
+      "bytes": 2368
+    },
+    {
+      "path": "server/device-sim-authority.test.mjs",
+      "sha256": "e41faaca404b3dd73a45572f589080450a59ec5ffaf3bf674d5d22a140212610",
+      "bytes": 3481
+    },
+    {
+      "path": "server/device-write-persistence.test.mjs",
+      "sha256": "4d6350c5bcea32585a4cce3486747aefac19fc3f1da78842f611c9e2bc0f8a85",
+      "bytes": 1656
+    },
+    {
+      "path": "server/evidence-signing.mjs",
+      "sha256": "9d344fe3e44bf9a46caf1a7eff3eaf9017bb3f8cb02f521b6e7640b3c096ef6a",
+      "bytes": 1393
+    },
+    {
+      "path": "server/evidence-signing.test.mjs",
+      "sha256": "404356c725d3c0008db69b0566e8f6ec110bcc38b6fab242c10d3ea600bed7d6",
+      "bytes": 1737
+    },
+    {
+      "path": "server/evidence-storage.mjs",
+      "sha256": "0bbcbe14f57000af513275e1d055705aa6639929464c2a9bf30171852b906bf8",
+      "bytes": 2154
+    },
+    {
+      "path": "server/evidence-storage.test.mjs",
+      "sha256": "9445437f81d1b194ac2f59df9f5ff31281d550dae76fe11bf35a099e6bc77856",
+      "bytes": 2120
+    },
+    {
+      "path": "server/hot-write-persistence.test.mjs",
+      "sha256": "edfe5716b632d06c59e5af50c9bdaef8aa176228ebd3dccbb15461703ceab902",
+      "bytes": 1425
+    },
+    {
+      "path": "server/index.mjs",
+      "sha256": "d8a8e22ed6d89d4b62a62963292019e27fa38de33dd9ee8809e30dc296a53a0c",
+      "bytes": 421710
+    },
+    {
+      "path": "server/lookup-account-cooldown.mjs",
+      "sha256": "26276439d52a15512221b1f9a0aec20e7b25a0e2ccbe64475a01e4bdeeb80d97",
+      "bytes": 4929
+    },
+    {
+      "path": "server/lookup-account-cooldown.test.mjs",
+      "sha256": "a4ace1b92124cb3a13cd662161cf52bc5850c1c6a624c3a6ac5e87c7cda2b44d",
+      "bytes": 4960
+    },
+    {
+      "path": "server/lookup-account-offline.mjs",
+      "sha256": "c351c5e69e00a4c795204a927dffb323cf1f56ed67d583e963ea346dcb52841d",
+      "bytes": 4046
+    },
+    {
+      "path": "server/lookup-account-offline.test.mjs",
+      "sha256": "00552b5c5fb4338ecf3848bbab7f40c7029f1e9d77c235715f1476ae0b309fc6",
+      "bytes": 15706
+    },
+    {
+      "path": "server/lookup-admin-console.http.test.mjs",
+      "sha256": "53c424f6af47157198b0979d30c03897185f55037299977c90bb785b7ab7b062",
+      "bytes": 5018
+    },
+    {
+      "path": "server/lookup-admin-console.mjs",
+      "sha256": "8c513bbd876b7d28c24fe695e2aed5940e33be25ba10336cb29dd97dba7c9230",
+      "bytes": 9238
+    },
+    {
+      "path": "server/lookup-admin-console.test.mjs",
+      "sha256": "48d62d01bae4bb82f3f968ce52a19aaebee30d2fff2744eb51bb1ac72176d893",
+      "bytes": 9597
+    },
+    {
+      "path": "server/lookup-admin-statistics.mjs",
+      "sha256": "89360238846308959a70edf770b555fc5d99a80495affb2b66b31bd002d70008",
+      "bytes": 4225
+    },
+    {
+      "path": "server/lookup-admin-statistics.test.mjs",
+      "sha256": "ffb71bb2756e418d509aaeeb22195a8de58458905e80264e587392cbbddf0483",
+      "bytes": 1778
+    },
+    {
+      "path": "server/lookup-ai-adapter.test.mjs",
+      "sha256": "98fbf3262e547bb00322ea21737a2d7b3a172cae500bba7c1c17eddc7ced97bc",
+      "bytes": 8378
+    },
+    {
+      "path": "server/lookup-ai-flow.test.mjs",
+      "sha256": "0db0c4960ca303af261268d39bec0ca689a0cc55ca0c5d3b04db45703cb6f672",
+      "bytes": 10748
+    },
+    {
+      "path": "server/lookup-ai-headerless.fixture.json",
+      "sha256": "6dbe58532b32faf6096069df4fdf0ba2c38f73d4813284a305b31aead98ec45a",
+      "bytes": 2826
+    },
+    {
+      "path": "server/lookup-ai-headerless.test.mjs",
+      "sha256": "4f31ba73d9d11e165441b797463f5fc88f935109d6e3f537e707a7d871f920fc",
+      "bytes": 3835
+    },
+    {
+      "path": "server/lookup-ai-recovery.mjs",
+      "sha256": "5d5acf90a7fbf70f22940372bb9d8e62db896b1813b37c4a1ea150fbea60962e",
+      "bytes": 2529
+    },
+    {
+      "path": "server/lookup-ai-vision.mjs",
+      "sha256": "5ed350d73dd90fe0d799604b466f2fc00a314c31428c05e0707d5bf7429e11e2",
+      "bytes": 17314
+    },
+    {
+      "path": "server/lookup-ai-vision.test.mjs",
+      "sha256": "204581a0b613a5970068cbb2dd380c01ea7ac5f58ef16cfb1afce2a7f9b173d3",
+      "bytes": 10854
+    },
+    {
+      "path": "server/lookup-api-key.http.test.mjs",
+      "sha256": "e5c2e23b89326f04c8a8acfdcf2bb16448986a02c27927ecbabb3b77b6c49dc1",
+      "bytes": 720
+    },
+    {
+      "path": "server/lookup-api-key.mjs",
+      "sha256": "11f8f2b9fdecc219f1e172a3c311dd31d9868f8f65a2f69641ef9e77ab53e31d",
+      "bytes": 1712
+    },
+    {
+      "path": "server/lookup-api-key.test.mjs",
+      "sha256": "ac88cb06b2dca3f1e52fc68c6ef9e1d26b5ff1ea6e65d0084392d3ca6eef355d",
+      "bytes": 3097
+    },
+    {
+      "path": "server/lookup-automatic-recovery.test.mjs",
+      "sha256": "8177fd11eee1060298ecaa99b6f1dcbfb5b5a50f6ef4255bb6534168bc19a381",
+      "bytes": 32643
+    },
+    {
+      "path": "server/lookup-card-accuracy.test.mjs",
+      "sha256": "8b741d563593304becb0ad229d72ff35f6299a86ad50c3be8101ded344cbbd26",
+      "bytes": 2991
+    },
+    {
+      "path": "server/lookup-card-refresh.test.mjs",
+      "sha256": "bf6043199f530eb262f297574fa98b6c6aa2eb8e05d1d88452fa47c5a42132f7",
+      "bytes": 1909
+    },
+    {
+      "path": "server/lookup-chain-reliability.test.mjs",
+      "sha256": "7334976d12114a41d9acf64b820c1746939aeb5d3f727ed76eac42d16e4c3c43",
+      "bytes": 18063
+    },
+    {
+      "path": "server/lookup-device-availability.mjs",
+      "sha256": "16d4d30f56c8e6fd6707a7af4a257192243e142c489c164d1e46608e9e1f0779",
+      "bytes": 5003
+    },
+    {
+      "path": "server/lookup-device-availability.test.mjs",
+      "sha256": "0044523a8099a72c4fc2ec313d718593807d9b70e749acec6237b099456527aa",
+      "bytes": 14839
+    },
+    {
+      "path": "server/lookup-double-card.fixture.json",
+      "sha256": "5cf3081eff4bbd873c018b33cd86f5c0fabbe5f93f7db8bee3a44b23fd3af796",
+      "bytes": 3699
+    },
+    {
+      "path": "server/lookup-failure-domain.mjs",
+      "sha256": "f4509ee463479559725636a49bae1743af813eda21be4fa59f824b09aed0c575",
+      "bytes": 3440
+    },
+    {
+      "path": "server/lookup-human-handover.mjs",
+      "sha256": "feb3da78d297ff4d4a97d0d6265fed0ff213d6fe8d0f8024dd6e62bf9eb9cbcf",
+      "bytes": 5624
+    },
+    {
+      "path": "server/lookup-human-handover.test.mjs",
+      "sha256": "fb283821c8057d336283535fd37b6a96723e83d9af43fe27d1b480b243dc1f8a",
+      "bytes": 13877
+    },
+    {
+      "path": "server/lookup-human-helper.test.mjs",
+      "sha256": "c58eef939772b6d7155bbe4f6a6b5044c2c1bd0939d25778ea008693882d24a8",
+      "bytes": 3505
+    },
+    {
+      "path": "server/lookup-human-intervention.test.mjs",
+      "sha256": "cc7d129734cdf4d54b6ae33be2eef51d8b6999b5a2ccca0467aa1fcc002e7e94",
+      "bytes": 16482
+    },
+    {
+      "path": "server/lookup-human-notifications.http.test.mjs",
+      "sha256": "ca06160d101fd1bb241a281861a5a0dd12a5cb056bffd5802a87d4b8aa0c6258",
+      "bytes": 4729
+    },
+    {
+      "path": "server/lookup-human-notifications.mjs",
+      "sha256": "c075ecf48ccc590264a5c93d08f416160d110605f1933d3b8e779e022d89c78f",
+      "bytes": 5370
+    },
+    {
+      "path": "server/lookup-human-notifications.test.mjs",
+      "sha256": "c55bcf5a038d77d789821fb1f8a10d153a3e93f09f4d014778f92e71ec813c5a",
+      "bytes": 8312
+    },
+    {
+      "path": "server/lookup-offline-fence.test.mjs",
+      "sha256": "678ae2ae87455851ab823cb8fce6f09aff6911d5eff24a67b47733914bbe3a9d",
+      "bytes": 5288
+    },
+    {
+      "path": "server/lookup-offline-handoff.test.mjs",
+      "sha256": "8f2792e7cc849249c7b2c105cbbcb6dce775375a8040b0069a66ddb28a5b0d11",
+      "bytes": 9122
+    },
+    {
+      "path": "server/lookup-offline-round-stop.test.mjs",
+      "sha256": "8e312ae7b1381cf988d1b311c1720393301c53e8452ca202605eb8708989a195",
+      "bytes": 10352
+    },
+    {
+      "path": "server/lookup-overlay-failure-domain.test.mjs",
+      "sha256": "d96ac608983405862c4c6794d4a4fb004b1e27446036d1b916c9fde4340aadbe",
+      "bytes": 1248
+    },
+    {
+      "path": "server/lookup-page-reprobe.test.mjs",
+      "sha256": "3156aadb65e72cbb7aef935eb4654d0a487b8ad72a43123b3b71b7119a219adf",
+      "bytes": 12060
+    },
+    {
+      "path": "server/lookup-preparation-classification.test.mjs",
+      "sha256": "6ef271b8b0895754536925be345abea8484e6622ea8b3ee4bc4c9ce44d047eca",
+      "bytes": 4571
+    },
+    {
+      "path": "server/lookup-prepare-lifecycle.test.mjs",
+      "sha256": "b8f862e2a69d12ddd2a7393d2eaf8e33b0164b2ae83270fe333844c1755a00d3",
+      "bytes": 8403
+    },
+    {
+      "path": "server/lookup-probe-ai.test.mjs",
+      "sha256": "777dfbbe2a582e868548f9e4039ace958c6acc60c687a20c73f7e3e19ccbc6b0",
+      "bytes": 11701
+    },
+    {
+      "path": "server/lookup-readiness.http.test.mjs",
+      "sha256": "c6181acbdbe6fbc0700bbdbade9a72b27c6cd8fb39c63535258969c930ceb22f",
+      "bytes": 857
+    },
+    {
+      "path": "server/lookup-readiness.mjs",
+      "sha256": "03fc1ef4ca62d084159dc7702b8fff61b4db571fa9cf1d4843079a9fc9f07480",
+      "bytes": 15715
+    },
+    {
+      "path": "server/lookup-readiness.test.mjs",
+      "sha256": "017854c6be75c1fa23c78ca0e2016c759ea0a01f2a57316032ac5481a25db86a",
+      "bytes": 54245
+    },
+    {
+      "path": "server/lookup-recovery-origin.test.mjs",
+      "sha256": "aa3a6aef4ab3a00c9326727f9a8e1747697c9bbd9db13131dce6165955f02452",
+      "bytes": 1112
+    },
+    {
+      "path": "server/lookup-reroute-deadline.test.mjs",
+      "sha256": "cbcb66daa70db6c8aa9bc78ddffd93937e5162988ddbdf791a543947b6a71845",
+      "bytes": 7504
+    },
+    {
+      "path": "server/lookup-retained-capacity.test.mjs",
+      "sha256": "0a756cbd562730465d6fdd73d4bc71a29d7ffd1b055a52b88ef6105d41e170ba",
+      "bytes": 13438
+    },
+    {
+      "path": "server/lookup-round-idle.mjs",
+      "sha256": "3b04fcd724fe7d6c6bcbd291d4b9b06626cadbe96cf2249755f549a6469ce402",
+      "bytes": 1821
+    },
+    {
+      "path": "server/lookup-round-idle.test.mjs",
+      "sha256": "8949564032ef08621cfd0e61ba17b16b037e6b53d510308bf2a997c98a1a561d",
+      "bytes": 10824
+    },
+    {
+      "path": "server/lookup-round-stop.mjs",
+      "sha256": "f13558828d2050529513d27e7085e8633cea56628982a5a63711bd3f7dcc21aa",
+      "bytes": 4307
+    },
+    {
+      "path": "server/lookup-round-stop.test.mjs",
+      "sha256": "0d2f6329bf0bc580e6fdb87d2353e723c706ee9423b08216ecf3a55279a12593",
+      "bytes": 11569
+    },
+    {
+      "path": "server/lookup-scheduling.test.mjs",
+      "sha256": "a3444b2c40798b90ecc100891d1963083152c00beca588f5020ec5a3223b45e7",
+      "bytes": 13731
+    },
+    {
+      "path": "server/lookup-session-lifecycle.mjs",
+      "sha256": "6d4a3a70adbe668d16bd74bd33032dc1201ad335737678fdb94e0d94c2559e62",
+      "bytes": 1023
+    },
+    {
+      "path": "server/lookup-startup-ownership.test.mjs",
+      "sha256": "2b22450a13e6b1df4411eb9a1fe84abfb06caa7af127f8e068e568216fd9fe0c",
+      "bytes": 2332
+    },
+    {
+      "path": "server/lookup-technical-domain.test.mjs",
+      "sha256": "2c5ca22ff0b005dd5b39f74ede5c1d8a0c258831a93f750e6aa7c85e3ee70960",
+      "bytes": 2718
+    },
+    {
+      "path": "server/maintenance-persistence.test.mjs",
+      "sha256": "3246f77c6a76c96ccb784452cd8bdd5fe74948051e21e313167d1706960c1c10",
+      "bytes": 689
+    },
+    {
+      "path": "server/managed-lookup-admission.test.mjs",
+      "sha256": "f9501af8d875d71f996840d35fc88b7e6ef576b3d2fa918cdd47bf6f5199f98a",
+      "bytes": 2878
+    },
+    {
+      "path": "server/managed-lookup-async.http.test.mjs",
+      "sha256": "52f696ffd52b9d5778564620f9700917d384151125de0b9a4010d43b88db42fd",
+      "bytes": 368
+    },
+    {
+      "path": "server/managed-lookup-async.mjs",
+      "sha256": "bcbb78728f6312d2535d3bd70e71c68f3ffc42c75886f782283ddd756346c3b7",
+      "bytes": 7232
+    },
+    {
+      "path": "server/managed-lookup-async.test.mjs",
+      "sha256": "d84d8f7cd61938d8cfde870854326e63a7f8f3c42aba2c39c43eeb9d42626d95",
+      "bytes": 12527
+    },
+    {
+      "path": "server/managed-lookup-delivery.mjs",
+      "sha256": "bf919f335fef57eb09c11fdee73d52fdd5b44372c60ad4f70e6651f4ef5e5c3d",
+      "bytes": 2821
+    },
+    {
+      "path": "server/managed-lookup-isolation.test.mjs",
+      "sha256": "8240763b22fc5e7c9f8c3c89dba0203c5b69f6cd17a8f5a157e69059bde13c19",
+      "bytes": 9812
+    },
+    {
+      "path": "server/managed-lookup-platform.mjs",
+      "sha256": "a85366d0af61b2ba852ea27235bc16ed38c0961b6c0e3af54d153c2849b5f921",
+      "bytes": 20816
+    },
+    {
+      "path": "server/managed-lookup-release.test.mjs",
+      "sha256": "94687c23711e66868295947c09a77857c6bc8155c3a0a4a3ef8ffe64256f7744",
+      "bytes": 3072
+    },
+    {
+      "path": "server/managed-lookup-result-race.test.mjs",
+      "sha256": "07c64889c922e2c303c75c0fbf875fc8344c8d79bd86cd045acc445ac51941d1",
+      "bytes": 9686
+    },
+    {
+      "path": "server/managed-lookup-store.mjs",
+      "sha256": "78e79206181fd3e4fb3529175b08fa67c5c1431f9600f35de8e5c1e4087f75c6",
+      "bytes": 9279
+    },
+    {
+      "path": "server/managed-lookup.http.test.mjs",
+      "sha256": "13e30ac1df504ad694c0433d5cbd4b937f1a3125c404016693050ea94a7d676b",
+      "bytes": 18861
+    },
+    {
+      "path": "server/managed-lookup.mjs",
+      "sha256": "592ce01ffaf4d5ae562b70842f496e7708ee0c0fb3ebc810a57bd9eb71f448ed",
+      "bytes": 58191
+    },
+    {
+      "path": "server/managed-lookup.test.mjs",
+      "sha256": "11ccfc4f2ae327499d1ae67fdeb9e2fbc9cdbe6d6cecaeb742eec7706842ad65",
+      "bytes": 8453
+    },
+    {
+      "path": "server/open-name-lookup-api.http.test.mjs",
+      "sha256": "790f9392b0c9eae79ab6c1040a7813bcd14a9a29b125f76b99f1577326cf57dc",
+      "bytes": 22885
+    },
+    {
+      "path": "server/open-name-lookup-api.mjs",
+      "sha256": "866055162aa6a127cdb7b71734ad94ba0bc4ece85ca10aad02f6e702a72f0d99",
+      "bytes": 5582
+    },
+    {
+      "path": "server/open-name-lookup-api.test.mjs",
+      "sha256": "13405982cc183b0b25bef8312e8e12edfe5b47741e4a88fd9ec0f811f615c3bc",
+      "bytes": 4214
+    },
+    {
+      "path": "server/persistence-policy.mjs",
+      "sha256": "a25cbbbb296c23a4f8876c13a97c8235824881ebc28daa3998762fcf2c0658ca",
+      "bytes": 1537
+    },
+    {
+      "path": "server/persistence-policy.test.mjs",
+      "sha256": "8504da6f6055102eca480f8767de3489b03990a9df973e3ea291507dc43f118c",
+      "bytes": 1476
+    },
+    {
+      "path": "server/platform-release-docs.test.mjs",
+      "sha256": "dd67d84373cac53c1479c16bc688ccfb110e4ae66cd30ce0fc2ec5dbea5d75f7",
+      "bytes": 3959
+    },
+    {
+      "path": "server/postgres-json.mjs",
+      "sha256": "23f39df35269e1ff560bed4624c96fbd7a1d6958fc04764e7945948d212c2fe2",
+      "bytes": 404
+    },
+    {
+      "path": "server/postgres-json.test.mjs",
+      "sha256": "107914e88619e58453f22344df0ca11fe7b89b334961b92f2cd4a0759e1eff68",
+      "bytes": 883
+    },
+    {
+      "path": "server/postgres-repositories.mjs",
+      "sha256": "ecbea083a248f9ef98410bea3da6ebf1c02f832fcab4deba2b1b8996ef6a0706",
+      "bytes": 18712
+    },
+    {
+      "path": "server/postgres-repositories.test.mjs",
+      "sha256": "f95007bae75c6a8571ab44e4419789c71c9bec7b32bb4f4e3f82f6ce99fa8ac8",
+      "bytes": 8727
+    },
+    {
+      "path": "server/read-route-persistence.test.mjs",
+      "sha256": "06ee9e57fec78d7fb97f6c62f63e9225faf940c1fe5fbfab9f2be9b22fd164b7",
+      "bytes": 2794
+    },
+    {
+      "path": "server/realtime-metrics.mjs",
+      "sha256": "f3fbe51272fa2cf17a54d2bf90ec717ea591a413f27bf2703ae51d3eb6b47459",
+      "bytes": 12736
+    },
+    {
+      "path": "server/realtime-metrics.test.mjs",
+      "sha256": "c38b2f59551818a35bf2057124cd327aa2a74842633696134fcf2e1adec1f032",
+      "bytes": 6108
+    },
+    {
+      "path": "server/recovery-controls.http.test.mjs",
+      "sha256": "e23710f9cd71c42ff02b51ea553e32f424edd5e7fae9cf7b536fa60cfec91d03",
+      "bytes": 5789
+    },
+    {
+      "path": "server/recovery-controls.mjs",
+      "sha256": "0147f3f3c122e9d444bf48666cb6bbaab64a64c585860ca0664afdec44890af8",
+      "bytes": 5357
+    },
+    {
+      "path": "server/recovery-controls.test.mjs",
+      "sha256": "224908ac246283fd0fe9511c3e6d4965dd2bd30f0393d882ff111ebc488dd766",
+      "bytes": 2451
+    },
+    {
+      "path": "server/runtime-save-scheduler.mjs",
+      "sha256": "53a25966429c65891fe543df20df852a2dfcf3e26acfc47d73c0163ec74a39ec",
+      "bytes": 1248
+    },
+    {
+      "path": "server/runtime-save-scheduler.test.mjs",
+      "sha256": "0a1dbe60162ae01062d8658fa06c4c76c3e09de2c2bd7d2d73c33c8c7d27e979",
+      "bytes": 1393
+    },
+    {
+      "path": "server/save-queue.mjs",
+      "sha256": "e1dc8fd7a71aaa5b33a5dbd13989b2f0b8c2ce274b8d3ade375d0d0ba065e4b7",
+      "bytes": 209
+    },
+    {
+      "path": "server/save-queue.test.mjs",
+      "sha256": "fb2c8a89b709132f1ef9d2a714d0beb14aff769717f94ba955dce7021ac7c75c",
+      "bytes": 1167
+    },
+    {
+      "path": "server/screen-backpressure.mjs",
+      "sha256": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4",
+      "bytes": 850
+    },
+    {
+      "path": "server/screen-backpressure.test.mjs",
+      "sha256": "7785ca71da52388375777bd32760e7f1ce3c7c9192e1c6df25ad3a39a30df457",
+      "bytes": 1399
+    },
+    {
+      "path": "server/screen-capacity-route.test.mjs",
+      "sha256": "f6e872159b1cbe190e84955109397dcd59fe5dd2eabdf2a60aa64e6e0dba4c4a",
+      "bytes": 622
+    },
+    {
+      "path": "server/screen-gallery-import.mjs",
+      "sha256": "39f7727860372f25959a5ca78145be07dfaf92c3747954afc99c8cd02cd8e697",
+      "bytes": 7165
+    },
+    {
+      "path": "server/screen-gallery-import.test.mjs",
+      "sha256": "82de4a99847f06354e954c2146a5c3c8dc022c62e8a92045c036ac756e3a8361",
+      "bytes": 1932
+    },
+    {
+      "path": "server/screen-media-auth.mjs",
+      "sha256": "c569931fdbad95338ebc50dee5d04b0f62550733bc627324171ab3590d3668b1",
+      "bytes": 4514
+    },
+    {
+      "path": "server/screen-media-auth.test.mjs",
+      "sha256": "f62b6f2a16db115237cbe9cfdb8a23b842d40720bdbb9ad4e68696355506bcfe",
+      "bytes": 2280
+    },
+    {
+      "path": "server/screen-quality.mjs",
+      "sha256": "bfadf379b03fadcf73bedc911649680ac6e3ace77907afee3524b335d4406451",
+      "bytes": 1918
+    },
+    {
+      "path": "server/screen-quality.test.mjs",
+      "sha256": "c86ee9a25aef85b24d81070e9cd72afd9ed5204e2d105d7a364e5cf32ba92994",
+      "bytes": 1655
+    },
+    {
+      "path": "server/screen-relay.mjs",
+      "sha256": "91b706a0cd00ea573997fdea338cad8f37e2c88e62fdbeee24b86ec4a6036c02",
+      "bytes": 40595
+    },
+    {
+      "path": "server/screen-relay.test.mjs",
+      "sha256": "e7cdde78da52c8042bdc96afa02f37c9856e665d8e30b1b6133fc690f28cbd39",
+      "bytes": 20487
+    },
+    {
+      "path": "server/screen-sessions.mjs",
+      "sha256": "811a15aa7ecb87a934ef5f92826ed9031278d87df2387cc20a85098ce91cde09",
+      "bytes": 6674
+    },
+    {
+      "path": "server/screen-sessions.test.mjs",
+      "sha256": "639846f603752e4dd2d303baa0f8532ee6d9866255e8e38f9b433aaf3cfa57dc",
+      "bytes": 3685
+    },
+    {
+      "path": "server/screen-transport-policy.mjs",
+      "sha256": "331b212c564bc992628712eef81bff6dafe3b0df3f480f64fb808dfe7c41c721",
+      "bytes": 5690
+    },
+    {
+      "path": "server/sms-library-read-path.test.mjs",
+      "sha256": "60b1d4109bfc3a3bd3f12d549c5bd7bf7fb0b4806802ce4531fe67a2a79b66b5",
+      "bytes": 838
+    },
+    {
+      "path": "server/sms-message-dedupe.mjs",
+      "sha256": "b39dc3ee2d51e1ada870255c65fd5fabd44c170b567526eabf208391f933623c",
+      "bytes": 7825
+    },
+    {
+      "path": "server/sms-message-dedupe.test.mjs",
+      "sha256": "5542ab15d04635b1f180c08267ea569eb543503173e802a28b6fd2ed509b62e5",
+      "bytes": 4569
+    },
+    {
+      "path": "server/sms-message-index.mjs",
+      "sha256": "bf7190694f42de6e1695cb577d513b74d7cde07ed21af2e467568e38e067d68b",
+      "bytes": 2920
+    },
+    {
+      "path": "server/sms-order-matcher.mjs",
+      "sha256": "ac8977d0f923774cdc83ee494c47c5ea1a09c685baf2a04f572d6db5ae67a4e6",
+      "bytes": 4583
+    },
+    {
+      "path": "server/sms-order-matcher.test.mjs",
+      "sha256": "e01411d863820af888885836c14a4c7a2c4151848eb68724fa3ea0224d7c03a9",
+      "bytes": 5080
+    },
+    {
+      "path": "server/sms-order-probe.mjs",
+      "sha256": "8161e01ec5b5c373471bfa23a85c8929f947ebaaa06e9258ef8d13d3c71ba3f6",
+      "bytes": 1625
+    },
+    {
+      "path": "server/sms-order-probe.test.mjs",
+      "sha256": "b0bb2fa9525c0a15d62e3797a31b4c32516fd4cc6b758bd01d2739914bd07295",
+      "bytes": 1840
+    },
+    {
+      "path": "server/sms-refresh-rate.mjs",
+      "sha256": "9995876862c4ba0f36ca7a6caaa8876370b269ecfdabdffd46fad6b42ca34d3e",
+      "bytes": 318
+    },
+    {
+      "path": "server/sms-refresh-rate.test.mjs",
+      "sha256": "c3511058f54166f37b9619380a4effea3dbd97a2ba6454c0b2816ce054c0d4dd",
+      "bytes": 623
+    },
+    {
+      "path": "server/snapshot-copy.mjs",
+      "sha256": "568f9de4c607e835a6547d1f81815e5c43faa20ed98b37b006182a21c8a6f2f6",
+      "bytes": 2116
+    },
+    {
+      "path": "server/snapshot-stream.mjs",
+      "sha256": "6a28e2a09ec78a3b8f5cc3203bc054db732dcc503ee198f25a94d8f09af47f73",
+      "bytes": 6422
+    },
+    {
+      "path": "server/state-repositories.mjs",
+      "sha256": "dff0a6e289b9d29c63f3f8056394b143cd163db197e487bb632f81d796981e43",
+      "bytes": 926
+    },
+    {
+      "path": "server/static-content-type.test.mjs",
+      "sha256": "1ac35fec5430936727b1a28fafe78d29c7ac3478864f7db84c993eef65084f49",
+      "bytes": 488
+    },
+    {
+      "path": "server/task-create-persistence.test.mjs",
+      "sha256": "39b5d3195df0dd2ad1bc835b838b44ea912d4e98e6c9d81383fc0ec358309ffa",
+      "bytes": 1354
+    },
+    {
+      "path": "server/task-history-maintenance.mjs",
+      "sha256": "fbb8bad420c3e8423f1b0bf9abc37819b83d59a33e5b1e788ba42737d89fab0d",
+      "bytes": 2890
+    },
+    {
+      "path": "server/task-status-persistence.mjs",
+      "sha256": "26f8e48a3a6a77de4d4f47aa8b9b54b45d1ee1a37a2ad4c787a8653845c4cab8",
+      "bytes": 720
+    },
+    {
+      "path": "server/vendor/pg-copy-streams/NOTICE.md",
+      "sha256": "b08f2fe6aa18f19efa4ef069a0e9dd487b183056abee64146f838bbd015c9a26",
+      "bytes": 392
+    },
+    {
+      "path": "server/vendor/pg-copy-streams/copy-from.js",
+      "sha256": "51157fabab8ada619de12388714d57fa298310a9fc3d2948a9d16554d8d20637",
+      "bytes": 4782
+    },
+    {
+      "path": "server/vendor/pg-copy-streams/copy-to.js",
+      "sha256": "355bdad15df14e4353b89a6e2bb1402f3bd8712c59fe1e42c024300f65f262be",
+      "bytes": 4938
+    },
+    {
+      "path": "server/vendor/pg-copy-streams/message-formats.js",
+      "sha256": "ff07a7c22a37ff5940442ec5d5fbd73874dce90b8357e668d863ccfd51ca25a6",
+      "bytes": 1047
+    },
+    {
+      "path": "server/vendor/pg-copy-streams/obuf.js",
+      "sha256": "bcf089cd07a34eb6aab6e5ece2841034fd256db3febbca34fd96b902c4df5659",
+      "bytes": 8590
+    },
+    {
+      "path": "server/vendor/pg-copy-streams/package.json",
+      "sha256": "742c921f6ebcf2f293960a54c58c6b53843d31ca6bc87534e18161fcf1529035",
+      "bytes": 1285
+    },
+    {
+      "path": "server/vendor/stream-json/Assembler.js",
+      "sha256": "a341b21d86a9c005e5433eadb6c33d4708d611c8bc624ee383463c0fb6d2e32b",
+      "bytes": 3526
+    },
+    {
+      "path": "server/vendor/stream-json/LICENSE",
+      "sha256": "f0cafa4717146b30d7b5aeb4ff96cd5e9dafb03b97d2038d904d8b1e7a0400f3",
+      "bytes": 1909
+    },
+    {
+      "path": "server/vendor/stream-json/NOTICE.md",
+      "sha256": "9294e2d281a4f91e43ad820141faec622a37c07c8afd103c4c85f4c1e1354816",
+      "bytes": 271
+    },
+    {
+      "path": "server/vendor/stream-json/Parser.js",
+      "sha256": "83866088a1805b0370fbf80a3906377c81d80e6d35521c5716e870212c3ce927",
+      "bytes": 20977
+    },
+    {
+      "path": "server/vendor/stream-json/package.json",
+      "sha256": "d83a7ff5f26b3cad3b3fe4a6858a55e7065209674fd4ffc6c7a2524a013e0f33",
+      "bytes": 1241
+    },
+    {
+      "path": "server/vendor/stream-json/utils/Utf8Stream.js",
+      "sha256": "56b1c98d9d7be72b86acacea6b76e24edd9ca40b01773f60797999c02a26b0f6",
+      "bytes": 1224
+    },
+    {
+      "path": "server/windows-task-dispatch.mjs",
+      "sha256": "bcf1f67baee52972d59df3f12134548db21489e9b9b4e07b600202bf3de0d8cd",
+      "bytes": 768
+    },
+    {
+      "path": "server/xhs-account-identity.mjs",
+      "sha256": "7bdb004ecccc13f799aaec28bca24e7a93394b747cd64d14a7b7509b271aac64",
+      "bytes": 2041
+    },
+    {
+      "path": "server/xhs-account-identity.test.mjs",
+      "sha256": "1d71954471283784b5439f34cb8426dd17abffe2bf5a395470f2cf7985bb8f7a",
+      "bytes": 1780
+    },
+    {
+      "path": "server/xhs-account-wiring.test.mjs",
+      "sha256": "cbb2ce50020b1627164f87eb818a2062c847588386d8cd1857757f1b2f59f01f",
+      "bytes": 1236
+    },
+    {
+      "path": "server/xhs-batch/engine.mjs",
+      "sha256": "be3fed0de38fc021132f6d47d6adac24e62dcd4a11c538daba4e5f4a3cc64eb8",
+      "bytes": 14933
+    },
+    {
+      "path": "server/xhs-batch/engine.test.mjs",
+      "sha256": "ff582d99c29ad56baeca3386fe51b8b8aeca5fb47af0ec934ad52430e3129029",
+      "bytes": 13643
+    },
+    {
+      "path": "server/xhs-batch/fixtures.mjs",
+      "sha256": "824c88687dfda881da866340902051a009b626284d3a929f75d25a661f2b3a32",
+      "bytes": 882
+    },
+    {
+      "path": "server/xhs-batch/http.mjs",
+      "sha256": "2b8da8b5fe4387a5391c65dd4a2db65c4c27fa19984ed7e0ff889e67d6a3376b",
+      "bytes": 4528
+    },
+    {
+      "path": "server/xhs-batch/http.test.mjs",
+      "sha256": "da502bcdc17f2d72f7292a20f6a48ed79dfe984cd8c9ce74e39680d2e608c0f8",
+      "bytes": 5790
+    },
+    {
+      "path": "server/xhs-batch/main-smoke.test.mjs",
+      "sha256": "1adbdefb87b8d9b67be54feab614b4f1e4c4ae374d22ee34a84a10c0b94ec125",
+      "bytes": 6407
+    },
+    {
+      "path": "server/xhs-batch/main.mjs",
+      "sha256": "f45512c4c389e6dd4fe84eab8cacc79aa709cdcafea5bc1bc475b65d3a0c0f13",
+      "bytes": 1959
+    },
+    {
+      "path": "server/xhs-batch/platform.mjs",
+      "sha256": "87bb1e53245b30dbbc5726c7881e5dfb412f787c6eaa4ea800657d2a5120216e",
+      "bytes": 3067
+    },
+    {
+      "path": "server/xhs-batch/store.mjs",
+      "sha256": "5d6ea6424748dd57bb46d3a7bfd5a2b99ad95005ed4284763fab6f5b75ec31a3",
+      "bytes": 2489
+    },
+    {
+      "path": "server/xhs-batch/store.test.mjs",
+      "sha256": "eb04169d496dfcec90b435046d408ccda16c3d036f6562acbbb7dc88aa767371",
+      "bytes": 2559
+    },
+    {
+      "path": "server/xhs-data-collection.http.test.mjs",
+      "sha256": "2a148f1e73b46865d281e84c7affbd33bc304fde8e71477aaefc1624df3b196c",
+      "bytes": 13287
+    },
+    {
+      "path": "server/xhs-data-collection.mjs",
+      "sha256": "17738a1f2f9fb2eb93ba4ba89f4e563f53d9b0a8313087fdfa6a1c620a55a49a",
+      "bytes": 2966
+    },
+    {
+      "path": "server/xhs-data-collection.test.mjs",
+      "sha256": "02280f50a591535889265eaf6d68ceea872298377ccc4ce85672b230456b96b4",
+      "bytes": 2272
+    },
+    {
+      "path": "server/xhs-data-ui.test.mjs",
+      "sha256": "f8ebbdd3dd84ebd9911b9d22077c37167520bce0e0171d6a4d444564dbfa83fb",
+      "bytes": 3241
+    },
+    {
+      "path": "tools/lookup-pool-live-tests/continuous-load.mjs",
+      "sha256": "672b2bd4a94d885dce720505e9ac8af857cd4197b887c3a4ae312769eb7914ce",
+      "bytes": 976
+    },
+    {
+      "path": "tools/lookup-pool-live-tests/continuous-load.test.mjs",
+      "sha256": "2be5d9f1420402c89f6e1b7060bca88a10916beedc08158ec087557140099dac",
+      "bytes": 1686
+    },
+    {
+      "path": "tools/lookup-pool-live-tests/delayed-receipt-proxy.mjs",
+      "sha256": "00333873a29f9780b78dac442436aec8daadb6ed475950e6e09dd515d2fff21a",
+      "bytes": 2088
+    },
+    {
+      "path": "tools/lookup-pool-live-tests/delayed-receipt-proxy.test.mjs",
+      "sha256": "71cd7e4ddb8a30bb815a8457c593381ee3624f42e86831b291ce29618cbc2834",
+      "bytes": 1136
+    },
+    {
+      "path": "tools/windows-migration/Prepare-NewHost.ps1",
+      "sha256": "02506adfa6daee9eb7cffb1e8d05ca6dccdaef73ef409555861b336e4739594e",
+      "bytes": 4702
+    },
+    {
+      "path": "tools/windows-migration/capture_final_state.py",
+      "sha256": "d5269a3b56111beb408ed4937fda333d07a9c61d96ca410ea12fa8879252df98",
+      "bytes": 6241
+    },
+    {
+      "path": "tools/windows-migration/smoke_windows_runtime.py",
+      "sha256": "3c2b9a2bc1030484069346e32d9281bd13e95910b152f347aad2c0b368f5b3a7",
+      "bytes": 2591
+    },
+    {
+      "path": "tools/windows-migration/test_migration.py",
+      "sha256": "95d07208466e5f13ceb6d8149dde280786c4a656934b0b6ad40da495224a2c89",
+      "bytes": 5050
+    },
+    {
+      "path": "tools/windows-migration/verify_bundle.py",
+      "sha256": "567cba1e9543190e4cac4d5fc75d070349e5d35b0c35d07102880c910524d1e1",
+      "bytes": 3390
+    },
+    {
+      "path": "windows-agent/config.example.json",
+      "sha256": "9f2e5425593e23964ac9e72c097b6e247061c9fa872047c78d6411b6d5c166eb",
+      "bytes": 3571
+    },
+    {
+      "path": "windows-agent/package-lock.json",
+      "sha256": "e9ed7d7a248b0114cbbdf00117a3ca13fd64a5c75a6c31e6ca8dbcd1cbe0f7d1",
+      "bytes": 5041
+    },
+    {
+      "path": "windows-agent/package.json",
+      "sha256": "1112d5bbc5703eb8de987472ef5602edc62255125c6ff419be9d8efd4e898bf2",
+      "bytes": 726
+    },
+    {
+      "path": "windows-agent/runtime-manifests/wheel-manifest.json",
+      "sha256": "77bb79cbb0ae88818d3b102fc429c468748294f06460340f36c0087a823624d3",
+      "bytes": 8823
+    },
+    {
+      "path": "windows-agent/runtime-manifests/windows-wheel-lock.txt",
+      "sha256": "841e5a4903669a63dcbf5e0cbd3b32ac0a9f53ca85b190cb7ba3e323ed934c5a",
+      "bytes": 1838
+    },
+    {
+      "path": "windows-agent/scripts/alipay_name_lookup.py",
+      "sha256": "07bc870698663b4c63c071a8743b182972658db1d37b015eb79417c01cec87b2",
+      "bytes": 318356
+    },
+    {
+      "path": "windows-agent/scripts/alipay_post_human_state.py",
+      "sha256": "8e0290dfa7c0ac2b28efbcebd1e056259a5e311243cebdce121015562e224efc",
+      "bytes": 1762
+    },
+    {
+      "path": "windows-agent/scripts/alipay_visual_result.py",
+      "sha256": "3f1a6315150fe7424724122947b418d2c4b8f4448db4d4d4372bf99749542e30",
+      "bytes": 25031
+    },
+    {
+      "path": "windows-agent/scripts/automation_runners_test.py",
+      "sha256": "3e1688296e56903fa9939257b2a8290eb77fddbe30901d2ae19e51490af674f7",
+      "bytes": 200042
+    },
+    {
+      "path": "windows-agent/scripts/feishu-kuaishou-lead.mjs",
+      "sha256": "2ac1f28489ac6a130d4a06da29a41cc0e69543fbdd9ad5606f6a4d55506adcc4",
+      "bytes": 25639
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/lookup-20261021-redacted-replay.json",
+      "sha256": "c95c365d4f6663cd16f503d98b5477672b53b0eecf628a47688b2fcf6979c83c",
+      "bytes": 128007
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/lookup-suggestions-ads.json",
+      "sha256": "3ee7cbb42314eed9d628b4851b73d08952e4649d144b79a30894f47296be511e",
+      "bytes": 40943
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/lookup_recharge_recommendations.json",
+      "sha256": "9e5ebd7247ee866feb912f9347bfddb7a1e268b50d826ff07024a04231dc1402",
+      "bytes": 17247
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/blank-works-loading-18.xml",
+      "sha256": "8bf40cdbc84c2f2a0bde2d63792f448d1edaa0c85e9f0da1beb94e12c9290fd5",
+      "bytes": 4527
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/counts-1080-47.json",
+      "sha256": "0ffc86b07340bafa2e9a8b566c52e7a5f1706d08edaed71b4fb065cec80ed422",
+      "bytes": 2219
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/counts-1080-47.png",
+      "sha256": "4da240ae39093dafa67c428b3d08997a2d951135ead480924989e8bffbebf856",
+      "bytes": 18022
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/counts-720.json",
+      "sha256": "39443bd4b64d165d543f67da7070ba938bab68c08b032804be324b7e35a353fd",
+      "bytes": 12656
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/counts-720.png",
+      "sha256": "bcfae52bfdb0114956a2f87e327d34c0b3aef16bfb4d08ffb99f5b5f2c8f7073",
+      "bytes": 190689
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/creator-growth-account-overlay.xml",
+      "sha256": "2179be2b5d82fdacc12511ea5eb9fe23175b047e448049a72b0a281c3ba694d2",
+      "bytes": 4097
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/creator-home-data-label-173.xml",
+      "sha256": "3acb6bdebf2ebe8576a613ebbd0f98efbb9760d4578027dc940bc76ca8e34f77",
+      "bytes": 73136
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/creator-home-data-label-182.xml",
+      "sha256": "d5498d4b2f121ee27af482325ef7525411bf002f1e6904d537cb939b10abc255",
+      "bytes": 73959
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/creator-repairing-service-error.xml",
+      "sha256": "f7f3ffa97f6fe786e0e0a8f9034e1d2238c4c7dad86b64bce9f676801be02f0c",
+      "bytes": 5032
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/data-center-flat-tabs.xml",
+      "sha256": "2e94e4cf2b75627778accafd209da0558938dfad74acc755506b06698448bd59",
+      "bytes": 36294
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/data-center-loading-header-25.xml",
+      "sha256": "c9567568c8d85641de1c0425bb208bb9b39f2955b59ec0af9863f1bee1dc5373",
+      "bytes": 10138
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/data-center-loading-missing-tab-25.xml",
+      "sha256": "17dd003c1cdfbfb6b01a9eadd4641a7f09489ec137dcb9b830b5804cae9bbcfa",
+      "bytes": 9171
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/date-05-18-binary.png",
+      "sha256": "143c4917dde7e37232dcdcd322e5504df103977322a0f3a6232ab6141de9a098",
+      "bytes": 1605
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/date-05-18-soft.png",
+      "sha256": "2406eeb52b2dcc2d3862f7eb0d00b223785474748e907cb46fb1f0ee991fd0d4",
+      "bytes": 1639
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/date-09-16-155.png",
+      "sha256": "021f06cfd51999d87ab00e2cf25851ab874cddcb07fab87a2b9a3f8dcee5643c",
+      "bytes": 3151
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/filter-navigation-ocr.json",
+      "sha256": "f2b5c6bbf3bebb6df72328bce173a68787c6248e7b53cfa14423d27d6ebda529",
+      "bytes": 4407
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/filter-panel-elements.xml",
+      "sha256": "7c6a39a6da78cfa2528b128cd0dd1c541b691ffd788645b21b25ff95d37e38dc",
+      "bytes": 1297
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/font7-47-v57-proof.json",
+      "sha256": "8e7b290450e30dc03e837cc8adcb90dddb031864b791df5125f681887d31d365",
+      "bytes": 4160
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/header-title-geometry-141-proof.json",
+      "sha256": "e46b24c9611ca654cf4090a32050f6b32331c09852ea199ccf3fb84324c10d04",
+      "bytes": 1242
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/home-zero-footer-live-menu.xml",
+      "sha256": "4b02326c2a0490c4d978e2c64ecebcae994fb39088323a27d19027f4c6b6c492",
+      "bytes": 37754
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/index-navigation.png",
+      "sha256": "4d7be4fa6df46afc93f6496f806a5d3977bd299eaf57531658736dff50587f0d",
+      "bytes": 35265
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/metric-row-720.png",
+      "sha256": "0b5069522f8bf77a905b92859f169d7159fba81c505464176a97d9ccc9a1702d",
+      "bytes": 24299
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/milestone-sharing-154.xml",
+      "sha256": "d7b22d3eb1602f96506d5a8bcc8ad1942ade2a0dbe08029d71ce037241c63d25",
+      "bytes": 1323
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/milestone-sharing.xml",
+      "sha256": "059c237d348b57dab9e5f5ad3939bb62bbbc7a372fc84b37584a55edd366f9ab",
+      "bytes": 5826
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/milestone-ten-likes.xml",
+      "sha256": "a352e9456bbb0438c8f45a245a1465d7e55154d7808b55997621cbf3aa23b484",
+      "bytes": 5807
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/miui-xhs-anr.xml",
+      "sha256": "c7e5591dbfc8a9ffad7dd4d826664b90f1f2e5970222a79fd18561c4f4f7d34c",
+      "bytes": 3399
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/native-menu-notification-121.xml",
+      "sha256": "d98d61329907bbccd78646e1c88e73a189b6f121055b35bed5a248515ffeef80",
+      "bytes": 3434
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/native-menu-update-popup.xml",
+      "sha256": "649f235fc90a69dcb99fad98e6ff1fdbee6d5365751ed92fffa7a79041cd3172",
+      "bytes": 6110
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/notification-47-systemui-only.xml",
+      "sha256": "63f4f8bd51b7aa3763a9fd60166dd5a0eee764c235d35b15e3be318876fbc937",
+      "bytes": 1074
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/number-387-47-v57.png",
+      "sha256": "d2845948dc031e2c1331ffd3c7e655343c6122456ff8508a170f787c349e0bab",
+      "bytes": 2233
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/title-collinear-141.json",
+      "sha256": "dae47c9af8388a45248b65ed684f47fba98010881eec73b64ee60cc7d57c918f",
+      "bytes": 6471
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/title-prefix-cjk-155.json",
+      "sha256": "4373bd2ff0652a237f92d342f4ce3557da51a0a62b4037d04addaccb260b4594",
+      "bytes": 5849
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/vivo-browser-first-use.xml",
+      "sha256": "bfab6884e65921bb697d6730e1dd2069795d80770747716c4564e2cda581037f",
+      "bytes": 18078
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/vivo-browser-location-permission.xml",
+      "sha256": "5344d70e0bb1fb87e5c0a9616b098dcf45b86acb5c9791fad211b3d0e75609a1",
+      "bytes": 2354
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/vivo-browser-returned-resolver-43.xml",
+      "sha256": "f0c974f941c2f00768563b81133bd70e293995f587eba4a0f3c187b32102ff25",
+      "bytes": 6992
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/vivo-framework-usb-cancel.xml",
+      "sha256": "1d20c7e61f205c4807f65fdf0632dba8340edb7b3160441734c56435f61270e4",
+      "bytes": 13633
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/vivo-notification.xml",
+      "sha256": "826b937ee7787c7b26afe01b5f8345ce99b812d9d7e506e02f126232a670d640",
+      "bytes": 7451
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/vivo-overview-elements.xml",
+      "sha256": "987a3192eadeab74756c2317a4e2dc6387d2c93da359c92d0c3b526372697f60",
+      "bytes": 8951
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/vivo-store-update-elements.xml",
+      "sha256": "897db8e17502ff766c2677c4090c9c9eb720b12b427f98271c261380fdbff2f8",
+      "bytes": 1661
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/works-47-before-subset.xml",
+      "sha256": "5a16e6eca79202a3f102f2560cf6dd1bf4ea7301f8342b131223af4ecef5e20d",
+      "bytes": 73210
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/works-47-stale-subset.xml",
+      "sha256": "aba9a4f773adbc3f675326d01d4e366812548f3f6ea1429995d8e4862a62746b",
+      "bytes": 72493
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/works-clipped-row-rounding.xml",
+      "sha256": "797f1af511b9ec90b6c9c848afb9867e789a511f4df1b5256e528298916031a2",
+      "bytes": 164477
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/works-duplicate-old-titles.xml",
+      "sha256": "5d0fdec7f489fecc259a195535f2c670b18d7baa689f1ce275ae22f0bf4e3a87",
+      "bytes": 60757
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/works-elements-141.xml",
+      "sha256": "729ca16d9c18945184ed75c458abb16a52d607ce2475586d1da793259a69568a",
+      "bytes": 61955
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/works-flat-footer.xml",
+      "sha256": "b744f9af2fa4e0e84ce04ea53f6d50792fc90047e830b6f7702cbde597a63ac8",
+      "bytes": 15031
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/works-header-only-47-after-ocr-error.xml",
+      "sha256": "ba32dcf8f784dae05282c6fed4d9f5b2f52e56d6a369fffd05345794922bd218",
+      "bytes": 5097
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/works-long-native-title.xml",
+      "sha256": "2bf9450bea9bead664ff54b6d376df17c657bfa9407d478de2454a63126c5623",
+      "bytes": 116466
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/works-reviewing-note.xml",
+      "sha256": "df3ef18d47b69bbf0597bdb2b78777cd95a772804e4550ee29041a05266f2f78",
+      "bytes": 63353
+    },
+    {
+      "path": "windows-agent/scripts/install-service.ps1",
+      "sha256": "a344876246580c72bf83ed95274a5047e7a30c6c63217a4a5beec245d97a7de7",
+      "bytes": 1099
+    },
+    {
+      "path": "windows-agent/scripts/install_lookup_ocr.py",
+      "sha256": "14f389ad55b0d976f50a2524d7888c1fd19b4a31ebeee7d3670f52216b83934c",
+      "bytes": 2999
+    },
+    {
+      "path": "windows-agent/scripts/kuaishou_vehicle_lead.py",
+      "sha256": "d12ec654560d3115254fb2025132c8f32e60544b9523772ee951b891bb3ea3e3",
+      "bytes": 33127
+    },
+    {
+      "path": "windows-agent/scripts/lookup-native-double-card.fixture.json",
+      "sha256": "f78e67a7375b9e0a1efeecc2625ad65b9a8e64e1ff8ab83b0596494790687228",
+      "bytes": 3516
+    },
+    {
+      "path": "windows-agent/scripts/lookup_ocr_runtime.py",
+      "sha256": "786aa196b75fc9401c7d7b721f4c21a67cd527a429fe757605bc7bbcebb171ae",
+      "bytes": 4775
+    },
+    {
+      "path": "windows-agent/scripts/lookup_ocr_worker.py",
+      "sha256": "4243c4da4582c1259198842fa3c577ba9ddce8a47e687611b2dec824d9304ccd",
+      "bytes": 2914
+    },
+    {
+      "path": "windows-agent/scripts/lookup_page_actions.py",
+      "sha256": "e281eaf4d7396a8f4ba4a6f18bee47131005ddfa8db90cc94c46cb2f3c4811cc",
+      "bytes": 2679
+    },
+    {
+      "path": "windows-agent/scripts/native/xhs-native-navigation.jar",
+      "sha256": "910f03a9c4cd6963b89ce1dd4bf4a6ad21b6f888029970401134fdcf820af754",
+      "bytes": 6194
+    },
+    {
+      "path": "windows-agent/scripts/native/xhs-native-pair.jar",
+      "sha256": "9e696792b37dd269803d230ef1e97754bf895b1d2b852e8d23ae838c757cbed3",
+      "bytes": 10238
+    },
+    {
+      "path": "windows-agent/scripts/native/xhs-native-window.jar",
+      "sha256": "15b043f5f78c17855b08d354dc5af4004216bc7ce14b5d03fa9e05f72e8d57c7",
+      "bytes": 9338
+    },
+    {
+      "path": "windows-agent/scripts/probe-douyin-qr-flow.mjs",
+      "sha256": "3f78b4148d3331e7127c776a311af4bdfc0159c38bfb125da3294ec301e4630d",
+      "bytes": 11985
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeElementsProbe.java",
+      "sha256": "dab9337121e000b5449e6d5cfa1e1a85472ffe30d9da403eac1274486510127a",
+      "bytes": 10558
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeElementsProbeTest.java",
+      "sha256": "9061e4a209c3a3eaee954d8edf9576273e8753b71b49d250d9ae33973187f50f",
+      "bytes": 4698
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeNavigationAction.java",
+      "sha256": "00d6a9a34ff63829dcdb0183aa5307615857e42fa19fe5eb29434dabc6064c65",
+      "bytes": 9660
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeNavigationActionTest.java",
+      "sha256": "2ec6788f85d5390b39e04480cbd6c731a1624d6513c094e6fe2f7bf81401cbf3",
+      "bytes": 4611
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeTreeAudit.java",
+      "sha256": "7f133c5c5caef95cc316a89184299abd264ee071a0bfe9640ad0c4b68af89da8",
+      "bytes": 10669
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeTreeAuditTest.java",
+      "sha256": "f7d8cc2a772ab48804c996821837f10a7edf2e83cc3b795254eda0b34da7daf8",
+      "bytes": 2089
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeWindowPair.java",
+      "sha256": "3e10ed20d79130d9f0bea5816adc6ef325a9627d6ab199af206bb6aa7ec5f217",
+      "bytes": 3857
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeWindowPairTest.java",
+      "sha256": "cb557026cb8aa29310a64f7e6dc685dafba5e4124ea4013e905bd93fd7d037f8",
+      "bytes": 3050
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeWindowReader.java",
+      "sha256": "b35fa0bc036dc796dc8a2ccab9c4bed61886ba6837924946e20a179247002059",
+      "bytes": 8603
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeWindowReaderTest.java",
+      "sha256": "d761289cc615024e2fe926bc644fd3c6ef7f43c56ea9604a52dceaf0f32b070c",
+      "bytes": 3593
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeWorksSessionProbe.java",
+      "sha256": "9ae5bb073cee3914d09e32aa47a4cfb70f2ff43f181b5c6648dd7ae71378ff2e",
+      "bytes": 7085
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeWorksSessionProbeTest.java",
+      "sha256": "8eb4126574bd260003ec9327b54146cf9cbde348969f331a2893567f4b021cee",
+      "bytes": 3309
+    },
+    {
+      "path": "windows-agent/scripts/probes/build-native-pair.py",
+      "sha256": "2b79e551f76a86cbf9d1c7697e234990f06cca585111a2c73701256bcad92b1e",
+      "bytes": 1798
+    },
+    {
+      "path": "windows-agent/scripts/scrcpy-source-probe.mjs",
+      "sha256": "e38a77ecf12a839fca97aab31af10acdeef8a21455fb2c76aa82ad97001725aa",
+      "bytes": 2347
+    },
+    {
+      "path": "windows-agent/scripts/set-runtime-config.mjs",
+      "sha256": "2e2b183daeb36d69d3216ba8ad64a447d92e848444ee4a145dae2fe17839bf7f",
+      "bytes": 1041
+    },
+    {
+      "path": "windows-agent/scripts/smsrelay_fleet_preflight.mjs",
+      "sha256": "a5f8d93fa863b19dfb0302a538b5409d042bf885eb45122e4f04288c4f456c98",
+      "bytes": 8770
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_account_action_rows.py",
+      "sha256": "7265f58dd5f1dd9f42ef0634a375bf943c631d457ce92316083fe149bdce0c4e",
+      "bytes": 1920
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_account_cooldown.py",
+      "sha256": "7c1b043ccef5bfd9c2445727e646b80c61699a7bb39558b6be01a171b816f42a",
+      "bytes": 10266
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_account_picker_transition.py",
+      "sha256": "d9cef0dd18b2d20316768bf7ba9cab19579b9f0bbee28ff433cbbb235dcd7fff",
+      "bytes": 8580
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_account_usb_overlay.py",
+      "sha256": "6036b9f443172ab58e31c3fb9e2dc0648434ddd370c8cd21706b9e049393560c",
+      "bytes": 3351
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_alipay_info_suggestion.py",
+      "sha256": "2e047831e9e88c14437ea95fa59879e7c086c64a98e1f2a8d9faf7289ff38f6a",
+      "bytes": 1919
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_blank_card_guard.py",
+      "sha256": "276537f57362ed18dcac9cb1fef5986e992d81bb0222fb874dc2057e569eda02",
+      "bytes": 6378
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_card_boundaries.py",
+      "sha256": "00cbdca12e089123962eeeec51c1e6d8b90ada228f1ec647bb217ceeaf9303f3",
+      "bytes": 7196
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_cold_access_denied.py",
+      "sha256": "c38a1163c253f54c9e7a948a527c0a13aa2a97b36e09c93a0622d8b629e5990d",
+      "bytes": 4967
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_cold_restriction.py",
+      "sha256": "79e4738140e46a4705a619b6510c649ef1a670c7da46c2a504e3e2079d9d37e5",
+      "bytes": 5099
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_compact_result.py",
+      "sha256": "21454b6513060ce3a15fe9688896686beb3460bf84a033516c45cd168cd17dc3",
+      "bytes": 2176
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_customer_suggestion.py",
+      "sha256": "70d20edf5166bf14919bd74d65641661001494d43499b22599ec00990f83fc4a",
+      "bytes": 792
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_daily_replay.py",
+      "sha256": "e6de6e29fec450ca0282dce933a43e03b72eff9080babd7729df7c9e7070b168",
+      "bytes": 4050
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_failure_diagnostic.py",
+      "sha256": "a592927526384dfd87451f3e6996be57eb9a21253acbec0e0a51b093f06030ff",
+      "bytes": 1669
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_gray_compat.py",
+      "sha256": "9474ede790b23b10139a2aaef9b9009e97e2d65975a809997b4186a45eefdddb",
+      "bytes": 5768
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_human_probe.py",
+      "sha256": "03b343cdb50a87f4bb42206708ec08b85a23d70d9151822c5e3fa5f3962f01b0",
+      "bytes": 5384
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_keyevent_compat.py",
+      "sha256": "3accb92699c70914773c13f2d0bc765d9979b9959126465869498c625815fd04",
+      "bytes": 5292
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_limit_popup.py",
+      "sha256": "aa6a7368b9f9f883e7300db514983f87b120baa915dee6f2f916afb0e8b68a98",
+      "bytes": 9284
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_loading_animation.py",
+      "sha256": "e791cac35977a4a7977e981a3283babf34a0d9aaa3d59a9da440db4c8fa82a60",
+      "bytes": 1580
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_loading_guard.py",
+      "sha256": "35e1473023b14fb6c75c771d66f332981d8a26bd370466040c0d589ed6c09f5e",
+      "bytes": 4358
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_loading_transition.py",
+      "sha256": "49da16d230e544e0eedf6f103610687801dd458cf8dfe0dd596a60881008060c",
+      "bytes": 776
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_login_consistency.py",
+      "sha256": "7ed547914cda9602caff00dd977c93ed4aff0c2763e5c4f36e12cb5802027d8b",
+      "bytes": 1564
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_merge_compat.py",
+      "sha256": "40d0c388b87c5d37a75ab8349cc95b055f5a6768c25e5cc8a003348a763b5715",
+      "bytes": 2194
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_name_formats.py",
+      "sha256": "1fcbf5cc3d5b1f8f305d3d684d6091e1ef707c0b58303bfac16ef83823bda1dc",
+      "bytes": 3277
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_navigation_read_timeout.py",
+      "sha256": "6690e7c22f7a35561d600a14d620dc86f0a0701d8cc432b1086cd935c82e4431",
+      "bytes": 3208
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_ocr_runtime.py",
+      "sha256": "0c87324890573809b320595df8c355b275af371902c6291c04a3bf8bdc4b17e9",
+      "bytes": 4323
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_overlay_guard.py",
+      "sha256": "6a060a0dcf5ed64085afdc53d49d27c246839764e8cda30f0bbb6a0589ed0bd3",
+      "bytes": 15698
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_overnight_compat.py",
+      "sha256": "305c0192356ec60f2e0bfce7b10fecf67c80e11169431a4c53647aa7bb3266d8",
+      "bytes": 3003
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_page_actions.py",
+      "sha256": "0edc072c28289f946ea341e8679b86905c850602f3d45b31d111ef6157fc274c",
+      "bytes": 13229
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_page_recovery.py",
+      "sha256": "b39047fa9463d11c7ae87799bfd1ebb53ab417739f10a3e23a428d9e60312778",
+      "bytes": 11470
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_phone_character_confidence.py",
+      "sha256": "61baca6889d9c39e36ecd061ca07115d36c7489a6669bcaa3889d305c808e906",
+      "bytes": 3107
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_picker_budget.py",
+      "sha256": "10a0d2305df977c904753cd93501eab3f52246a17f2944d9aba05824969df526",
+      "bytes": 5596
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_poco_crash_overlay.py",
+      "sha256": "8993846a65c98566b1f7c2c7f03c6603f26ff86528d2c78e3cdc7a6c943ecc51",
+      "bytes": 5264
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_prepare_notification_shade.py",
+      "sha256": "6b181006d0b40912668fb9b539d431908196d18ef3f510e90cbe5a442f15ecc8",
+      "bytes": 4158
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_prepare_technical_recovery.py",
+      "sha256": "220fcd0fb0e69e02b20e6e94d7a8cc4f26567da40ac6b08fe718f7bc47f12ff7",
+      "bytes": 11258
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_prepared_empty.py",
+      "sha256": "ad60ca97b31a0cb963d73e25c6ebd7fb96e587c3343ed077b5dc2a89527300f7",
+      "bytes": 1704
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_query_budget.py",
+      "sha256": "8eb40f86c76466f900443915316a0f6e51f6941a47356d95914be1e46f4338f6",
+      "bytes": 3635
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_reader_boundary.py",
+      "sha256": "a25a82d951479f9437a291ff44197252662835059842fa9c1894100d3f997c71",
+      "bytes": 3482
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_recharge_recommendations.py",
+      "sha256": "716ea331d9901983d1566d108e9eb45ec3409512d304234ba374915d75823956",
+      "bytes": 1933
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_remaining_compat.py",
+      "sha256": "bb00a453daed3470f7c392701f2d443b1135949fa6cb414672af0a2db85c866c",
+      "bytes": 2172
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_result_wait.py",
+      "sha256": "1275ad72c4dc5961ecb9d8457f93cf84839ee04a98a932bef457743ae2ec29a4",
+      "bytes": 2767
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_resume_overlay.py",
+      "sha256": "827ae31b688be209d28fd6b6096e8088ec8d48cbeebb8487f35825be3d52364b",
+      "bytes": 3790
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_search_entry.py",
+      "sha256": "ee9ee886d99ddc51d666d101bf7b09ada8c9e0c222f0c78b3dc93bb4e3fa3695",
+      "bytes": 3263
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_stable_unparsed_handoff.py",
+      "sha256": "814488517aa5c29be9a277f8a3653fa85e81089d260ea3d299e12ba921541ecb",
+      "bytes": 4794
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_suggestions_ads.py",
+      "sha256": "839651b32329f658649384953d3e0dfc4d8a39c2cf81922b35a632ba15905ccc",
+      "bytes": 4237
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_switch_login.py",
+      "sha256": "e9be135a8cd2022fc8cd78316b32b47476d5915addedfba9cf581462b17b84f1",
+      "bytes": 3107
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_transfer_shortcuts.py",
+      "sha256": "9601cfb780b61c206b3b4ce3f49a526822793945a48def807644640385d215f6",
+      "bytes": 3430
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_transient_gap.py",
+      "sha256": "eb9f3a63bab7894860f01d889f5c9dd0f78d404df297a70c11c3305acfa8b78c",
+      "bytes": 1653
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_transport_read.py",
+      "sha256": "8097ef84f607f21020431d2058aaaada9f2cc603e9494eea6e1cf816ebb0b133",
+      "bytes": 4537
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_usb_recovery_flow.py",
+      "sha256": "8b886bfd9721a780f30e21f805fa13b40f7cdf5ff6bfc60d9d6fbd2e02ca2035",
+      "bytes": 10543
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_visual_action_scope.py",
+      "sha256": "89da63803f3ea0cd126d974291cb2adddf507d3799421e5133bcc7c1d93d6789",
+      "bytes": 2441
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_visual_budget.py",
+      "sha256": "926b711704fa6c180faee4030f76bf3ea1cb587e3ff972661fc54d88e60301a9",
+      "bytes": 1370
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_visual_inline_phone.py",
+      "sha256": "9124ccc3f02aaf4a86e6daf17fc795b20dd19388e1baaaab8055c024bb693b23",
+      "bytes": 3424
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_visual_pending.py",
+      "sha256": "d0d02995307cb2e2095b639b7730c6995d2849c62400f3c6935dc24752ecd26e",
+      "bytes": 3523
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_visual_result.py",
+      "sha256": "c9a986a27745403c537cdfc60f3f754e16bd0e429571a57b9dcbcb05d2dbd546",
+      "bytes": 2554
+    },
+    {
+      "path": "windows-agent/scripts/test_post_human_closure.py",
+      "sha256": "f684370f7b2e3346b9429a9a5971598a8efba6abb5857459bc592ad5fb56368a",
+      "bytes": 4083
+    },
+    {
+      "path": "windows-agent/scripts/test_wecom_invite_preview.py",
+      "sha256": "3e30987927b23255ec9dc6e878655bce846a61545f2ccb708590f4631750c7a5",
+      "bytes": 17273
+    },
+    {
+      "path": "windows-agent/scripts/test_wecom_real_elements.py",
+      "sha256": "df595eafad4ea1d57aa70bc0ba53b5ef0b0ebc755384cdb8c91c3511e9c492a9",
+      "bytes": 11613
+    },
+    {
+      "path": "windows-agent/scripts/test_wecom_remark_preview.py",
+      "sha256": "ed510d39a12b55312bc4420dc51bf0ea3766a8cd76ebfd6cbc5e30f8980b11c1",
+      "bytes": 10034
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_anr.py",
+      "sha256": "8fc63b770345985eb210a1f6bb425e79944d1953a62ee4c51e0be7830b162528",
+      "bytes": 2884
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_compatibility_20261015.py",
+      "sha256": "e43de91beb259454af3be05056e3e95b1d1c4ddc99678ecba32111c1139058d8",
+      "bytes": 70984
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_completeness.py",
+      "sha256": "e7101413f55f5fc8cac8197030ff5a9e2646279908f73d74a8179d057fd69269",
+      "bytes": 10567
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_data_sync.py",
+      "sha256": "11dd3ff7d543100c02e5b8c937825bf69412ac9413a7aef2b92de8ea9e5ae751",
+      "bytes": 129873
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_element_pair.py",
+      "sha256": "3a22c495f069e6bf91b0d95489faf9916aba778dc33efa2ec70e3d2731d1c72b",
+      "bytes": 12075
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_elements_only.py",
+      "sha256": "7ded7d38ee318df7afa4080c39b02774f446ae9dc916e0b212bcb7f0cd85012f",
+      "bytes": 20426
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_elements_stability.py",
+      "sha256": "df2ef6b9da477441ec7b1160ab18b643f2111d132af131517209b75d31ff26c8",
+      "bytes": 10752
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_late_notification.py",
+      "sha256": "a0449d6b180dae3742233fe8684ca15bea69cd235d1c718159ac2181f123d77a",
+      "bytes": 3765
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_list_ocr.py",
+      "sha256": "c8a5c0b47956f013f247be58184fd33a01ad29d16d821b7ae629be41f073ee3c",
+      "bytes": 20340
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_loading_wait.py",
+      "sha256": "c191c281eb100931c70e95c9c3eb9eb662f5f35ff72c968cacb258d49b9db738",
+      "bytes": 13139
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_native_elements.py",
+      "sha256": "29d9fff13397d2ab801705687a7688a9585fe8f2dad0261b7c10425d3143167b",
+      "bytes": 10138
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_native_navigation.py",
+      "sha256": "071e84af20db0b3f0e69dd712ea4c296b24217da0011856c431410b7ccd7816a",
+      "bytes": 3228
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_native_window.py",
+      "sha256": "96e96f157560f0d73ce22363d21e3564358855027d2aa83ced511c1ba80d0d8b",
+      "bytes": 5066
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_parse_performance.py",
+      "sha256": "cb6883d3b1d6736580225331349aa776f513340d1806a6b2f45646b8ee164f7e",
+      "bytes": 2532
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_speed_entry_scroll.py",
+      "sha256": "13677fe9de87163b82caf0cf8f7b5914ac4e2556dd97f4f7ba03acb996d43e3d",
+      "bytes": 7035
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_startup_elements.py",
+      "sha256": "73abbf5194352d18fec516d052e63f3aff274e3bd00f0df923d000fdd68a76f7",
+      "bytes": 14968
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_verification_speed.py",
+      "sha256": "c4c5ced4ad58ad622ccac7611ffdb381ae96e2d039ab8d5e92105e6bacca58ff",
+      "bytes": 8571
+    },
+    {
+      "path": "windows-agent/scripts/uninstall-service.ps1",
+      "sha256": "b8685b95d3a8495cb216b17145264878984e2c52c3b84fb0c3f8c2bb11ebc278",
+      "bytes": 345
+    },
+    {
+      "path": "windows-agent/scripts/wecom_invite_preview.py",
+      "sha256": "11bd468f1ca57ae193ea3e41f7911aebe404d1e7ad8f63898ccab8f5eb8d2f67",
+      "bytes": 18264
+    },
+    {
+      "path": "windows-agent/scripts/wecom_remark_preview.py",
+      "sha256": "bcfadd95c6ad69b5b957d49e37f450ff1f1b0911411047dc7393dedf746d8207",
+      "bytes": 9623
+    },
+    {
+      "path": "windows-agent/scripts/xhs_airtest_poco.py",
+      "sha256": "8abb00385d12ce99dc5995ae1424f226a5e9f887461c920594e68d27f44fd4e1",
+      "bytes": 114496
+    },
+    {
+      "path": "windows-agent/scripts/xhs_list_ocr.py",
+      "sha256": "4cc3d8ae042c6951b65ec93cc755e57cbed0440393b4c841bda20f76def3a516",
+      "bytes": 77567
+    },
+    {
+      "path": "windows-agent/scripts/xhs_native_elements.py",
+      "sha256": "e94f3066cb9e99c50ed3f7f18ae6c56a32c543774fefa863d125df08f173d46e",
+      "bytes": 9565
+    },
+    {
+      "path": "windows-agent/scripts/xhs_native_navigation.py",
+      "sha256": "a1e04af69daf72371591b8238c5de17320a514471f8a13499257e03d748e7a3c",
+      "bytes": 2417
+    },
+    {
+      "path": "windows-agent/scripts/xhs_native_ocr.ps1",
+      "sha256": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "bytes": 3157
+    },
+    {
+      "path": "windows-agent/scripts/xhs_native_window.py",
+      "sha256": "1b15e62ccad9e1d3fc4b81bbe8b5a1adb57f7f913b57472ba54283415e0ba772",
+      "bytes": 3918
+    },
+    {
+      "path": "windows-agent/scripts/xhs_ocr_digits.png",
+      "sha256": "6a65dfb150ecbd4c56140b28fea51e89d11d8187031009447bab0d880164522f",
+      "bytes": 184572
+    },
+    {
+      "path": "windows-agent/scripts/xhs_publish_poco.py",
+      "sha256": "8411a66b4b7dd8adab0cee528c66ec775842bfc7d854d4ecd44e7319732ca4d9",
+      "bytes": 35327
+    },
+    {
+      "path": "windows-agent/scripts/xhs_xml_uiautomator.py",
+      "sha256": "3b27f4c309df6ab095d676ea43316091477792ec11e7634ccb52b70afe117dfb",
+      "bytes": 26159
+    },
+    {
+      "path": "windows-agent/scripts/\u5c0f\u7ea2\u4e66\u6570\u636e\u540c\u6b65.py",
+      "sha256": "cbf038e297f3b67c8b4b681bf93b22e6026c7683d263d1c4fc62b56897de63e0",
+      "bytes": 161710
+    },
+    {
+      "path": "windows-agent/sms-listener-helper/sanitize-notification-dump.mjs",
+      "sha256": "211eec72784b97fb2fc961a0ed15ad570699398c47ece91368baa5ade4c83497",
+      "bytes": 2247
+    },
+    {
+      "path": "windows-agent/sms-listener-helper/src/com/phonecloud/smsprobe/Main.java",
+      "sha256": "aa5eb2b1e9929bb7b04b97e8ca110eb79223d4d5c077ac0e5ccd1f9ba0989f5b",
+      "bytes": 12357
+    },
+    {
+      "path": "windows-agent/sms-listener-helper/watch-notification-code.mjs",
+      "sha256": "6a8285cdb9a6dd409e636cb07fbdee95aa2bfcff4657432115438de580fff5e7",
+      "bytes": 3665
+    },
+    {
+      "path": "windows-agent/src/adb-priority-queue.mjs",
+      "sha256": "0bb8cfd86baaddc8a32d040e5835452f06e1ae5e3b78cbe2aeb0a67a24e5495d",
+      "bytes": 3096
+    },
+    {
+      "path": "windows-agent/src/adb-priority-queue.test.mjs",
+      "sha256": "8f1b3c16a14f3f576411ee3db5922f10eb8a39fb0552fbbb915f52f270f03283",
+      "bytes": 1388
+    },
+    {
+      "path": "windows-agent/src/adb-server-recovery.mjs",
+      "sha256": "693535b4379089e33b7badeaac2e2665c1b2efb797adba1264e8c431d356fb2f",
+      "bytes": 1713
+    },
+    {
+      "path": "windows-agent/src/adb-server-recovery.test.mjs",
+      "sha256": "f1881e23e5ced33a711d1adc565f4581a7560806284a92a4ac8ad7046caa0a6d",
+      "bytes": 1692
+    },
+    {
+      "path": "windows-agent/src/agent-instance-lock.mjs",
+      "sha256": "c18e716c1295931d8aad73c3e2df6c4cd10562c52938b1749eff2f47f3e9d0ac",
+      "bytes": 2709
+    },
+    {
+      "path": "windows-agent/src/agent-instance-lock.test.mjs",
+      "sha256": "cf36719e0e8ded133ec8ef2929dc4fd1cd46db42f1946c2406edf848b6483dd7",
+      "bytes": 1349
+    },
+    {
+      "path": "windows-agent/src/airtest-worker-lifecycle.mjs",
+      "sha256": "af10fa43a5d7982b590b44f432ab206d15adf285fe3b617f8b286e13b3d2b374",
+      "bytes": 3660
+    },
+    {
+      "path": "windows-agent/src/alipay-poco-fallback-policy.mjs",
+      "sha256": "0d56fccc2d1b81541668cf2880e3da4b4547b54a34aef92120516bd6e9fd2f09",
+      "bytes": 1083
+    },
+    {
+      "path": "windows-agent/src/alipay-poco-fallback-policy.test.mjs",
+      "sha256": "bc8ed1a46cc6e8a3a215a56d7aac4b80715564142b3e80f15f1365cd299de6aa",
+      "bytes": 2213
+    },
+    {
+      "path": "windows-agent/src/atomic-json-writer.mjs",
+      "sha256": "c7aeda35d9fffed03eca35cfb290456e54d0f96e7078fbda858a4906d22f2294",
+      "bytes": 1211
+    },
+    {
+      "path": "windows-agent/src/atomic-json-writer.test.mjs",
+      "sha256": "4d3f5186be710b07f929e99e52d619728dddc2f343819afe8489ebc3665fe823",
+      "bytes": 1824
+    },
+    {
+      "path": "windows-agent/src/automation-center-wiring.test.mjs",
+      "sha256": "bf99779b693a6a150232bafaeee7d4f8709da115b01e45ec2859dcc9ca546cd3",
+      "bytes": 7936
+    },
+    {
+      "path": "windows-agent/src/config.mjs",
+      "sha256": "b233775c589ab22e6662a23bb82e507c9a3f635f1112709bfdae24d854a5d254",
+      "bytes": 21371
+    },
+    {
+      "path": "windows-agent/src/config.pre-20260722-pacing-default.mjs",
+      "sha256": "ade70095493249dfcb9047d950fad7fc258f2fadddd214036ef5318aebdaf7d1",
+      "bytes": 6148
+    },
+    {
+      "path": "windows-agent/src/config.test.mjs",
+      "sha256": "5e93f6fa873c4e3af99addabea64678ce8aa049ba34c0a21a48b5854fe31b48e",
+      "bytes": 3189
+    },
+    {
+      "path": "windows-agent/src/device-actor-integration.test.mjs",
+      "sha256": "11f949b78ba99db4c1f11b70de2f3e12e88b40c07c729acc54a9bf3b092cb52b",
+      "bytes": 1734
+    },
+    {
+      "path": "windows-agent/src/device-actor.mjs",
+      "sha256": "b1d97b76ce1d71d0fa3fd70757311e78f76255661288e9cd5199b6c3cba2a2cf",
+      "bytes": 1505
+    },
+    {
+      "path": "windows-agent/src/device-actor.test.mjs",
+      "sha256": "110380560e8fc39a0ebed08c95813be2be0de97b156ab79263870f98fe6c9182",
+      "bytes": 1288
+    },
+    {
+      "path": "windows-agent/src/device-recovery-state.mjs",
+      "sha256": "6315883802f283291f4eab489c6c2975e9dfaee2d035143732a2214f4e723293",
+      "bytes": 4636
+    },
+    {
+      "path": "windows-agent/src/device-recovery-state.test.mjs",
+      "sha256": "8d1269046948a5a00ee2902dc0cefd88f6e190d68913788b34cfbc1bd04015d7",
+      "bytes": 3892
+    },
+    {
+      "path": "windows-agent/src/device-scan-agent.test.mjs",
+      "sha256": "41910c55fe547c1a8dcd4fea5ee0a7b8db42e60ec18bc35e6ec8719ef746e6ad",
+      "bytes": 4282
+    },
+    {
+      "path": "windows-agent/src/device-scan-cache.mjs",
+      "sha256": "1526782cd19841841535a790d78c350103aa50f12ae4e0ac5557828afd09e1a5",
+      "bytes": 1220
+    },
+    {
+      "path": "windows-agent/src/device-scan-cache.test.mjs",
+      "sha256": "51315ed285033bce42297c63b8ff9a2533dc0fe528f531a5ad8cac5cbba13ee7",
+      "bytes": 2103
+    },
+    {
+      "path": "windows-agent/src/device-scan-pipeline.mjs",
+      "sha256": "8ef31ead50d4b1bec3bc648d72d6cbe64fe4cc102c04a5c0d269240295a5a6c4",
+      "bytes": 1824
+    },
+    {
+      "path": "windows-agent/src/device-scan-pipeline.test.mjs",
+      "sha256": "9cd13646b486657c94a3db393a9689e8fdce5f3f5948047a33af2ed5ba368f45",
+      "bytes": 3722
+    },
+    {
+      "path": "windows-agent/src/gallery-import.mjs",
+      "sha256": "d0e64f21c1c3e85ca89929f08c7739c6e5ba21600a70b74e2318ba388a425d74",
+      "bytes": 986
+    },
+    {
+      "path": "windows-agent/src/gallery-import.test.mjs",
+      "sha256": "477d8b59669552d7f16145363e46d944c7bb4172fb6b69e040d136493e070573",
+      "bytes": 665
+    },
+    {
+      "path": "windows-agent/src/gallery-task-delivery.mjs",
+      "sha256": "382c1e5b1519600e60405dae813687d4499c3770356969c0878c5dd934656a71",
+      "bytes": 4826
+    },
+    {
+      "path": "windows-agent/src/guarded-task-runner.mjs",
+      "sha256": "150e14ea6fcdd6b0bb117d771bce084347cb26442a7674b0963cf9887df1d25f",
+      "bytes": 1496
+    },
+    {
+      "path": "windows-agent/src/guarded-task-runner.test.mjs",
+      "sha256": "f0269d5bf19ad8a995d1e504f304a6707ba23fbda94be1678b568b8d7a6f535c",
+      "bytes": 857
+    },
+    {
+      "path": "windows-agent/src/index.mjs",
+      "sha256": "884bc370558e6b0b3f2d0d46dee309da4467757b613c0da03576de8f9b34df74",
+      "bytes": 281087
+    },
+    {
+      "path": "windows-agent/src/installer-admission-agent.test.mjs",
+      "sha256": "c035d11bb1cbf65ccc7eb0fd41d393d2a2526fc6eb31676872de810d8c3f3357",
+      "bytes": 6814
+    },
+    {
+      "path": "windows-agent/src/lookup-account-policy.mjs",
+      "sha256": "51f9a5a3368554efbd8d07e2e420f70da7086e1b592c5959cada4752c9301c98",
+      "bytes": 10569
+    },
+    {
+      "path": "windows-agent/src/lookup-account-policy.test.mjs",
+      "sha256": "aef4d30310841c10abb4bfe9237be6ed3dd8d35123a18c547ec897fbfa1704d9",
+      "bytes": 20532
+    },
+    {
+      "path": "windows-agent/src/lookup-human-observer.mjs",
+      "sha256": "dbd77ffb69215d26610a814d1c4013e89a3d1a7b81ea509c9570d7035808a8a5",
+      "bytes": 7370
+    },
+    {
+      "path": "windows-agent/src/lookup-human-observer.test.mjs",
+      "sha256": "7263defff310569fdf25513971c48924057a5ff2ca540cc1917aea3aff51c9b9",
+      "bytes": 15155
+    },
+    {
+      "path": "windows-agent/src/lookup-network-restriction.test.mjs",
+      "sha256": "66c774f09fcf97a13640ff79dce82d268eccc9e3cae034eff6e7e2a07a61893a",
+      "bytes": 2717
+    },
+    {
+      "path": "windows-agent/src/lookup-observer-power.test.mjs",
+      "sha256": "3a827d15bccaff6f0c94ca283f79802b652edeb10369ec342b55f29f03e2c30d",
+      "bytes": 2622
+    },
+    {
+      "path": "windows-agent/src/lookup-page-recovery.mjs",
+      "sha256": "c15f74dad44d9199f0113fed9583fc331af7fc23e89242d20ab45357afacd499",
+      "bytes": 5244
+    },
+    {
+      "path": "windows-agent/src/lookup-page-recovery.test.mjs",
+      "sha256": "50b873375488e3a1602668b5175aa2da2de792103fc9da79d9bdc789d2d9c6cc",
+      "bytes": 21474
+    },
+    {
+      "path": "windows-agent/src/lookup-post-human-state.mjs",
+      "sha256": "11be7e62af4193387a0ebeef09f8130abb9577d94d1ddef8c816513c7e3a0580",
+      "bytes": 1666
+    },
+    {
+      "path": "windows-agent/src/lookup-post-human-state.test.mjs",
+      "sha256": "af1f0a99ec77f703c7c726e14ece9c2bc319795039be1a92ef2d205bceb6fe3f",
+      "bytes": 2687
+    },
+    {
+      "path": "windows-agent/src/lookup-preinput-reattach.test.mjs",
+      "sha256": "9efcf64ba4176db9067e5c13261dc899eaeb716244c0c202ab6aad7d6d7d2e38",
+      "bytes": 4007
+    },
+    {
+      "path": "windows-agent/src/lookup-reader-lifecycle.mjs",
+      "sha256": "9ea791d3db7c185c889c142393c3255c69fe581291fa7d6b81a880c6fbd62860",
+      "bytes": 2812
+    },
+    {
+      "path": "windows-agent/src/lookup-reader-lifecycle.test.mjs",
+      "sha256": "d077fffad40df141691da3dfd42d510928b74b3045193e4a47ceb6a42cdc9d66",
+      "bytes": 6096
+    },
+    {
+      "path": "windows-agent/src/lookup-recovery-trace.mjs",
+      "sha256": "7e26269618903b610784dca34331672d3e6d2d7fd0962039b3ed8c36231edd9d",
+      "bytes": 1777
+    },
+    {
+      "path": "windows-agent/src/lookup-recovery-trace.test.mjs",
+      "sha256": "fe1a98fd1b13224aa1bf76ebde99bb624f7be37f74c54d31af976413495fac72",
+      "bytes": 1856
+    },
+    {
+      "path": "windows-agent/src/lookup-result-transport.test.mjs",
+      "sha256": "02025ebc0ec618616c62dfe8f90412537818bc936f75741fd80fdcb3d9cc8af7",
+      "bytes": 3190
+    },
+    {
+      "path": "windows-agent/src/lookup-status-outbox.mjs",
+      "sha256": "43c10101e982b3a6881a2a1d5b7ae691553833d4548bf5f11f5ea51fc49b4dc1",
+      "bytes": 3347
+    },
+    {
+      "path": "windows-agent/src/lookup-status-outbox.test.mjs",
+      "sha256": "4d8636321c11dd64a31f88f1dd86858cc2a4eedffe6705e4ff179c9a7603de68",
+      "bytes": 5439
+    },
+    {
+      "path": "windows-agent/src/managed-lookup-delivery.mjs",
+      "sha256": "cfdc56ea307bf82fac3965a75b3d0a2115826e3ebeb1f3c2bfc48e2a74a8bce6",
+      "bytes": 1205
+    },
+    {
+      "path": "windows-agent/src/managed-lookup-delivery.test.mjs",
+      "sha256": "a688cbf4eff9722efcdb94534aa366da68c2759b92a75fbf8270ebb48b08554f",
+      "bytes": 1241
+    },
+    {
+      "path": "windows-agent/src/pnp-exact-actions.mjs",
+      "sha256": "2e67e3fb1612ac79499055878caa042fd91c4e42caa28df4621d4cabf7172cab",
+      "bytes": 830
+    },
+    {
+      "path": "windows-agent/src/pnp-exact-actions.test.mjs",
+      "sha256": "3ccb4b96c2d7ccca8c15193aa7f9fa86ee2a8c868432908b6bfe9bc335ecc972",
+      "bytes": 1412
+    },
+    {
+      "path": "windows-agent/src/pnp-missing-device-recovery.mjs",
+      "sha256": "eddfcf36dd904bf2ca834fb8958d21c55fa62c45139d880399d565b1006825f6",
+      "bytes": 3686
+    },
+    {
+      "path": "windows-agent/src/pnp-missing-device-recovery.test.mjs",
+      "sha256": "3e9b7b2c1a9354f89d2e18dc6f62602473bc14d3dc1aa35e653bbba9758d42a8",
+      "bytes": 3821
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-admission.mjs",
+      "sha256": "dede33101b9765342ffa50121a8edadf066d519c047646fcca82635ab6cc236f",
+      "bytes": 927
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-control.mjs",
+      "sha256": "92e2bcc37d7bc8b9d3e61d4385116db7181530d5fe125c6c2a3210c5142fde0f",
+      "bytes": 3351
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-control.test.mjs",
+      "sha256": "7f0896cfd32508d8d5143337e89c823c73a4bf9b93cd363431019729e5ae1ee8",
+      "bytes": 5889
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-policy.mjs",
+      "sha256": "5a66a8ccb4defbf837c58cb473fd884ffe1763c17256ed6642d91dfe1be4e850",
+      "bytes": 17220
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-policy.test.mjs",
+      "sha256": "a06bca3959075c4482c6bc9d587b8a2f217859a44119f5abb59f1b76328e2f0d",
+      "bytes": 15187
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-safety.mjs",
+      "sha256": "ad7de7d0575476cb807201e88b1c12842d12af0d9864e54809f4b98913c6d355",
+      "bytes": 17834
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-safety.test.mjs",
+      "sha256": "d5098630738adb344c31b1f78d8415865f96784e93bbaac4bffdb497d0301c50",
+      "bytes": 13850
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-verification.mjs",
+      "sha256": "0658e51af5e109fa3d78588860f64face9f15c7062b97e575e0201b7c1f2915a",
+      "bytes": 2159
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-verification.test.mjs",
+      "sha256": "437a7c96584f0e70ab3ed060be8a69b561b43c5d016e97207071e968123f41a1",
+      "bytes": 2082
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-wake-scheduler.mjs",
+      "sha256": "c0f98f5dac1454eba52317dda13f991cc1d765387b5256c67e892b599be678af",
+      "bytes": 1773
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-wake-scheduler.test.mjs",
+      "sha256": "50299e5e334294831641e7931a5a33fe1888cad2e42a666a42aa774ec6b754ed",
+      "bytes": 1977
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-wave.mjs",
+      "sha256": "cc9a01d0f80cf72f1de0b09288fee61d9c91919b8d59b60ec66aa6fde4b7d83c",
+      "bytes": 3417
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-wave.test.mjs",
+      "sha256": "235d587581c896eca4d5812e027194e51f12a279a662ec478fae910245c91e71",
+      "bytes": 3603
+    },
+    {
+      "path": "windows-agent/src/pnp-screen-coordinator.mjs",
+      "sha256": "5eb1551e7dedbef4eed8d941733fa20b4780a362196338c51db4651b78ab9003",
+      "bytes": 1923
+    },
+    {
+      "path": "windows-agent/src/pnp-screen-coordinator.test.mjs",
+      "sha256": "a590a4cb507caf4ee0b0b0982af57c25821071af2a9a9add361d06b80356d562",
+      "bytes": 3105
+    },
+    {
+      "path": "windows-agent/src/pnp-windows-inventory.mjs",
+      "sha256": "7fef1564a5159238064d207905326f1d8cd9b5f39274fe85ddcd951fdc3cef5d",
+      "bytes": 8299
+    },
+    {
+      "path": "windows-agent/src/pnp-windows-inventory.test.mjs",
+      "sha256": "fd8b32b65916335a56dc52442ea4a7dd650bd1d33a63b00f22d25c49868147ba",
+      "bytes": 1554
+    },
+    {
+      "path": "windows-agent/src/post-task-scan-policy.mjs",
+      "sha256": "a5bd899c70a9d1707fdaddc70b1adf1965260a7ce9d8bb10cccdc2de45842ec1",
+      "bytes": 347
+    },
+    {
+      "path": "windows-agent/src/post-task-scan-policy.test.mjs",
+      "sha256": "e9198ced86f76a03a4b71438b93a16a23083a04f22c4dcc1461585a7441766ad",
+      "bytes": 726
+    },
+    {
+      "path": "windows-agent/src/recovery-command-path.test.mjs",
+      "sha256": "9f984ae2f3a8edc815bc74aed95180afa4aea870b0c7f09d1426534216f9e12f",
+      "bytes": 5866
+    },
+    {
+      "path": "windows-agent/src/recovery-isolation.mjs",
+      "sha256": "2fe4305e6ca9afabb72b0406a224786659d88f2d8f3a1351e4a8b2aa475e312f",
+      "bytes": 3427
+    },
+    {
+      "path": "windows-agent/src/recovery-isolation.test.mjs",
+      "sha256": "c35564b700afd37ce9181688f799d109775f36d3e42b750571e60cde135d94d6",
+      "bytes": 3746
+    },
+    {
+      "path": "windows-agent/src/recovery-observability.mjs",
+      "sha256": "72ff0b2a548d78b323cf10d75184d69f51326b6343eb40b49c4d793b514675eb",
+      "bytes": 7717
+    },
+    {
+      "path": "windows-agent/src/recovery-observability.test.mjs",
+      "sha256": "ccabd843c452b45b458be5b102e6e1b3418e3cf9ac33193227024f183f1bbaf1",
+      "bytes": 4689
+    },
+    {
+      "path": "windows-agent/src/runtime-metrics.mjs",
+      "sha256": "78eab1cba502ade21ee3de1e686b207c3124562e2b67b7d85121c1918255b4d8",
+      "bytes": 1541
+    },
+    {
+      "path": "windows-agent/src/runtime-metrics.test.mjs",
+      "sha256": "aecf8d80398a1021bd0e47c2e33e24347d34751aef1fc73feca7db20a4f16057",
+      "bytes": 954
+    },
+    {
+      "path": "windows-agent/src/screen-backpressure.mjs",
+      "sha256": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4",
+      "bytes": 850
+    },
+    {
+      "path": "windows-agent/src/screen-control-queue.mjs",
+      "sha256": "27e6e5e39364817b2ee6a8ced3ecae8cee522904a7d4d3b0321bacd697212879",
+      "bytes": 3300
+    },
+    {
+      "path": "windows-agent/src/screen-control-queue.test.mjs",
+      "sha256": "a67976c783d961ff5ccd20a4f28aeb510631328391401d6713f71766160d6263",
+      "bytes": 4002
+    },
+    {
+      "path": "windows-agent/src/screen-stream.mjs",
+      "sha256": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "bytes": 93463
+    },
+    {
+      "path": "windows-agent/src/screen-stream.pre-20260722-pacing-default.mjs",
+      "sha256": "9b28020b8f97e79068d944fd484596cae4e4ab4ae5a53ecf165fc016030b95e0",
+      "bytes": 53592
+    },
+    {
+      "path": "windows-agent/src/screen-stream.pre-20260722-wire-pacing.mjs",
+      "sha256": "c374bfd2e01376d07bfecb209388c3a1b6a2a34b71218852ad58aa3a9fca8538",
+      "bytes": 53422
+    },
+    {
+      "path": "windows-agent/src/screen-stream.pre-pli-loop-20260722.mjs",
+      "sha256": "a7d113722291c2be02e3298d4364dc929c0ed3ca567e388272dfd2cea5efcb8b",
+      "bytes": 54526
+    },
+    {
+      "path": "windows-agent/src/screen-stream.test.mjs",
+      "sha256": "a7ba26f4f9b3b80c73aa08100ce1925bcbc22fd0df0391ca12695344f0216920",
+      "bytes": 30295
+    },
+    {
+      "path": "windows-agent/src/screen-stream.verify.mjs",
+      "sha256": "cc2678e743981d65d16d54eac928bce407275f5244921e67d56fb4808251beb1",
+      "bytes": 46897
+    },
+    {
+      "path": "windows-agent/src/screen-video-channel.mjs",
+      "sha256": "9e8c1ccd1439568beca2e99595764aa598893cee576109c514ae503486c1ca25",
+      "bytes": 2088
+    },
+    {
+      "path": "windows-agent/src/screen-video-channel.test.mjs",
+      "sha256": "613c5f361043889f9c80d6189a3ab643c49a494a8a24bcb873eb05ddca447c84",
+      "bytes": 1511
+    },
+    {
+      "path": "windows-agent/src/screen-webrtc-publisher.mjs",
+      "sha256": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04",
+      "bytes": 19015
+    },
+    {
+      "path": "windows-agent/src/screen-webrtc-publisher.pre-20260722-wire-pacing.mjs",
+      "sha256": "d78b425dfdca9e3079cb9505a7b57d5d4d2bc7de3ce5174f52ab9e2c133d820c",
+      "bytes": 14344
+    },
+    {
+      "path": "windows-agent/src/screen-webrtc-publisher.test.mjs",
+      "sha256": "33858d5614b36cd588b0935f5ed0e55991663249437abf314f06ab287fd0bd34",
+      "bytes": 5868
+    },
+    {
+      "path": "windows-agent/src/serial-adb-activity.mjs",
+      "sha256": "4668e7a416feac9860289d1d903849970645f45544eec77c77f26859b67132d9",
+      "bytes": 1694
+    },
+    {
+      "path": "windows-agent/src/serial-adb-health.mjs",
+      "sha256": "efb0f36c5b73511f5366704b30a10c5e0e6caf4fe13a23c328b60dec14c77c0d",
+      "bytes": 600
+    },
+    {
+      "path": "windows-agent/src/serial-adb-health.test.mjs",
+      "sha256": "ea673d061fa111eaaf465710345f3d671d8c32348ddda875f4938fdcf5f46a07",
+      "bytes": 847
+    },
+    {
+      "path": "windows-agent/src/serial-delay-scheduler.mjs",
+      "sha256": "ee71bc11573cb0880f6017a4ef1c3ca186bf2441c6e7e167be4c2d3f14ab7ea1",
+      "bytes": 853
+    },
+    {
+      "path": "windows-agent/src/serial-delay-scheduler.test.mjs",
+      "sha256": "7731765ed2b94d8215e106d441b2a255be77c6fa2488f4ad304c2b89c2049d0e",
+      "bytes": 1099
+    },
+    {
+      "path": "windows-agent/src/serial-reservation.mjs",
+      "sha256": "97fe332bc4877dc4ac70d613fc8c27f8c86a84072e90b95a277ca108e7895802",
+      "bytes": 627
+    },
+    {
+      "path": "windows-agent/src/serial-reservation.test.mjs",
+      "sha256": "41c3d428847734a232db3909cdd4d4b9b86d54118b533f4421e7506ffdbc1a00",
+      "bytes": 1543
+    },
+    {
+      "path": "windows-agent/src/single-flight.mjs",
+      "sha256": "59f57777a082c0b8ec10786788151eadfec78d99445dd80f5297b2f974b1f6fe",
+      "bytes": 270
+    },
+    {
+      "path": "windows-agent/src/single-flight.test.mjs",
+      "sha256": "c6387d0e5ff2c148656deb06bc93f3a292b32be2d47884f4d900e411cd7eeef8",
+      "bytes": 665
+    },
+    {
+      "path": "windows-agent/src/sms-content-query.mjs",
+      "sha256": "2ec02795c765aea39edb18f4b4210c765a43297386973c38eb2dfba97958980f",
+      "bytes": 697
+    },
+    {
+      "path": "windows-agent/src/sms-content-query.test.mjs",
+      "sha256": "a3592079ef5ac14a4172f7bdb8a5c5dc9bc7a408f3c5e5114b045321ba73bfbc",
+      "bytes": 1115
+    },
+    {
+      "path": "windows-agent/src/sms-notification-source.mjs",
+      "sha256": "c1a9af263945e376ed94e92163794e7f2349e40de2c27371e59d34336df972d2",
+      "bytes": 9531
+    },
+    {
+      "path": "windows-agent/src/sms-notification-source.test.mjs",
+      "sha256": "31f8fbc33096de223bc1fe2e928ea9c945185dc1c1d591dc916ced1776839cb7",
+      "bytes": 4486
+    },
+    {
+      "path": "windows-agent/src/sms-relay-health.mjs",
+      "sha256": "5f6128ff30906093fceb294fdb25839d0f36e69bbd7c091d80d743af4e6a98c2",
+      "bytes": 3204
+    },
+    {
+      "path": "windows-agent/src/sms-relay-health.test.mjs",
+      "sha256": "2b06cbe1221790aa2684cb05510ce355d294dfc32e4b6d47b29a76a5a3905608",
+      "bytes": 2525
+    },
+    {
+      "path": "windows-agent/src/sms-subscription-map.mjs",
+      "sha256": "f7581e9170a22d0a662a448172db8f46d39c15a2ca55c517bd9ed0a84fabd040",
+      "bytes": 1524
+    },
+    {
+      "path": "windows-agent/src/sms-subscription-map.test.mjs",
+      "sha256": "912f0422bb9387456c2151976b38307bf6514eb841ffdd1f17bb68f3e1e5fa30",
+      "bytes": 1349
+    },
+    {
+      "path": "windows-agent/src/smsrelay-fleet-preflight.test.mjs",
+      "sha256": "0e011155d7b4336f042176a74001ee67671498dc05b06dcb929c9d71ac51eced",
+      "bytes": 2799
+    },
+    {
+      "path": "windows-agent/src/startup-order.test.mjs",
+      "sha256": "d25e3e537feb2913c00c06604226c8c04c72c3376543e74fca69113c81f23e44",
+      "bytes": 590
+    },
+    {
+      "path": "windows-agent/src/windows-device-install-probe.mjs",
+      "sha256": "c360457e2bcf820fb697a514627fc1c7c1761afe51935d464eb8240719f9401c",
+      "bytes": 2541
+    },
+    {
+      "path": "windows-agent/src/worker-shutdown.mjs",
+      "sha256": "a685d487bbaff8f110bcef00629bdb830ede0fcc70807429b45ea4a4e6829b56",
+      "bytes": 1491
+    },
+    {
+      "path": "windows-agent/src/worker-shutdown.test.mjs",
+      "sha256": "c7df9e4e8f1962daaf0e891bb313add1e8e636ca846ee0d94d0663cd5365981a",
+      "bytes": 5137
+    },
+    {
+      "path": "windows-agent/src/xhs-data-collection.mjs",
+      "sha256": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "bytes": 6675
+    },
+    {
+      "path": "windows-agent/src/xhs-data-collection.test.mjs",
+      "sha256": "7dd50df200bda1df59416a4e30a7f8c31e462c30e0557a9eadd26cd3083661cd",
+      "bytes": 9952
+    },
+    {
+      "path": "windows-agent/src/xhs-poco-rpc-timeout.test.mjs",
+      "sha256": "405ada81fb50d26f82e0d9127786053b8829529cc6454901ca5ad9628557d984",
+      "bytes": 9204
+    },
+    {
+      "path": "windows-agent/src/xhs-worker-fast-restart.test.mjs",
+      "sha256": "f3249d7a5087ee7e7e6dbba7d551a5fa89918d5ff9a07bdfc11907ca74c81e37",
+      "bytes": 2139
+    },
+    {
+      "path": "windows-agent/src/xml-uiautomator.test.mjs",
+      "sha256": "f805d6899913513ba916097f8eced0c16c0a984eb05cb0baf1385caf8282be88",
+      "bytes": 1291
+    },
+    {
+      "path": "windows-agent/vendor/phone-cloud-wake.jar",
+      "sha256": "ce9491962196a387a6f5bb4535c897c0a090fc9f92c4bc481f46f084f07b1d0b",
+      "bytes": 2208
+    },
+    {
+      "path": "windows-agent/vendor/phone-cloud-whip-publisher.exe",
+      "sha256": "55424e061a1e219812737b4f324b9161f8d04e3d0bee07a7f63548a048961f6b",
+      "bytes": 15422976
+    },
+    {
+      "path": "windows-agent/vendor/scrcpy-server-v3.3.4",
+      "sha256": "8588238c9a5a00aa542906b6ec7e6d5541d9ffb9b5d0f6e1bc0e365e2303079e",
+      "bytes": 90980
+    },
+    {
+      "path": "windows-agent/wake-helper/src/com/phonecloud/wake/Main.java",
+      "sha256": "810f9fc85579592af89a63704c9a5265c4ceb07de9c170f89a22be21781100d0",
+      "bytes": 2933
+    },
+    {
+      "path": "windows-agent/whip-publisher/cmd/whep-smoke/main.go",
+      "sha256": "be68bd5bb15dbdf7e4c3cffb1718b5dcced66572d8e884fe2f25153fe5ac194e",
+      "bytes": 8082
+    },
+    {
+      "path": "windows-agent/whip-publisher/go.mod",
+      "sha256": "efdb219fc653503f42298b61f291c91f0afdad03240c16a70babd18abbf5d18a",
+      "bytes": 1012
+    },
+    {
+      "path": "windows-agent/whip-publisher/go.sum",
+      "sha256": "2b9acb7cdc5bb54e1bc672eb700c6d0ba8ac7facd36b851b3febc891eac88a7c",
+      "bytes": 4628
+    },
+    {
+      "path": "windows-agent/whip-publisher/main.go",
+      "sha256": "18813f8131bdd009a5eb8a8ed94eebf54fe55f0f43afc29dfd3734e6aaf0d14d",
+      "bytes": 32712
+    },
+    {
+      "path": "windows-agent/whip-publisher/main_test.go",
+      "sha256": "e6bf342efc1950309765186df1946228dc549ba58777cd7653cdbbcb1b8f2409",
+      "bytes": 11016
+    }
+  ]
+}

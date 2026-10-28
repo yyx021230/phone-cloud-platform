@@ -1,0 +1,20 @@
+{
+  "blobs": 709,
+  "bytes": 91446796,
+  "largeFiles": [],
+  "findings": [
+    {
+      "path": "server/xhs-batch/http.test.mjs",
+      "oid": "d10b680d7157cff29972dcfd24da0aee6ddc730f",
+      "kind": "credential_url",
+      "line": 62
+    },
+    {
+      "path": "server/xhs-batch/http.test.mjs",
+      "oid": "14f3c167f3ac202b7b917462419cd3d4c2513ac3",
+      "kind": "credential_url",
+      "line": 62
+    }
+  ],
+  "review": "Both matches are the same synthetic remote.example credential-URL rejection fixture in two historical blobs; no real key/private key/webhook matches. Pattern scan is not an absolute secret-detection guarantee."
+}
