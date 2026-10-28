@@ -13,9 +13,21 @@ DEFAULT_DESCRIPTION = "接口联调测试"
 NAME_ID = "com.tencent.wework:id/d0y"
 DESCRIPTION_ID = "com.tencent.wework:id/czj"
 BACK_ID = "com.tencent.wework:id/ns5"
+# Five-editor layouts observed on 67, 157 (5.0.12), and 59 (5.0.9).
+# Never combine IDs from different observed layouts.
+REMARK_LAYOUTS = ((NAME_ID, DESCRIPTION_ID, BACK_ID),
+                  ("com.tencent.wework:id/d67", "com.tencent.wework:id/d4r", "com.tencent.wework:id/o62"),
+                  ("com.tencent.wework:id/d0r", "com.tencent.wework:id/czc", "com.tencent.wework:id/nr7"),
+                  ("com.tencent.wework:id/d0s", "com.tencent.wework:id/czd", "com.tencent.wework:id/nr_"),
+                  ("com.tencent.wework:id/cqe", "com.tencent.wework:id/cp0", "com.tencent.wework:id/n24"),
+                  ("com.tencent.wework:id/cu1", "com.tencent.wework:id/csm", "com.tencent.wework:id/nc9"))
 REMARK_ACTIONS = ("open_remark", "fill_remark", "fill_description", "save_remark", "close_remark")
 EMPTY_VALUES = {NAME_ID: ("", "备注名"), DESCRIPTION_ID: ("", "添加更多备注信息")}
 DEFAULTS = {NAME_ID: DEFAULT_REMARK, DESCRIPTION_ID: DEFAULT_DESCRIPTION}
+for _name, _description, _back in REMARK_LAYOUTS[1:]:
+    EMPTY_VALUES[_name] = ("", "备注名")
+    EMPTY_VALUES[_description] = ("", "添加更多备注信息")
+    DEFAULTS[_name], DEFAULTS[_description] = DEFAULT_REMARK, DEFAULT_DESCRIPTION
 
 
 def editors(screen):
@@ -26,12 +38,20 @@ def values(screen):
     return tuple((n.name, n.text, n.desc, n.enabled) for n in editors(screen))
 
 
-def remark_page(screen):
+def remark_layout(screen):
     if not all(screen.has(v) for v in ("设置备注和描述", "备注名", "企业", "电话", "描述", "保存")):
-        return False
+        return None
     nodes = editors(screen)
-    return (len(nodes) == 5 and all(n.enabled for n in nodes)
-            and all(sum(n.name == key for n in nodes) == 1 for key in DEFAULTS))
+    if len(nodes) != 5 or not all(n.enabled for n in nodes):
+        return None
+    layouts = [layout for layout in REMARK_LAYOUTS
+               if all(sum(n.name == key for n in nodes) == 1 for key in layout[:2])
+               and not any(n.name in DEFAULTS and n.name not in layout[:2] for n in nodes)]
+    return layouts[0] if len(layouts) == 1 else None
+
+
+def remark_page(screen):
+    return remark_layout(screen) is not None
 
 
 @dataclass(frozen=True)
@@ -48,13 +68,13 @@ def resolve_remark(action, screen, phone, context=None):
         if screen.has("设置备注和描述"):
             return w.unique(screen.matching(lambda n: n.labeled("设置备注和描述")))
         return w.unique(screen.matching(lambda n: n.kind == "android.widget.TextView"
-                        and n.name == w.OBSERVED_PROFILE_DESCRIPTION and n.text == "描述"))
+                        and n.name in w.OBSERVED_PROFILE_DESCRIPTIONS and n.text == "描述"))
     if action not in REMARK_ACTIONS or not remark_page(screen) or context is None:
         raise w.StopPreview("remark_action_not_allowed")
     if values(screen) != context.expected:
         raise w.StopPreview("remark_fields_changed")
     if action in ("fill_remark", "fill_description"):
-        key = NAME_ID if action == "fill_remark" else DESCRIPTION_ID
+        key = remark_layout(screen)[0 if action == "fill_remark" else 1]
         node = w.unique(screen.matching(lambda n: n.kind == "android.widget.EditText" and n.name == key))
         if node.text.strip() not in EMPTY_VALUES[key] or context.value != DEFAULTS[key]:
             raise w.StopPreview("remark_overwrite_forbidden")
@@ -63,7 +83,7 @@ def resolve_remark(action, screen, phone, context=None):
         return w.unique(screen.matching(lambda n: n.labeled("保存")))
     if action == "close_remark":
         return w.unique(screen.matching(lambda n: n.kind == "android.widget.TextView"
-                                       and n.name == BACK_ID and not n.text and not n.desc))
+                                       and n.name == remark_layout(screen)[2] and not n.text and not n.desc))
     raise w.StopPreview("remark_action_not_allowed")
 
 
@@ -146,7 +166,8 @@ class _RemarkingDriver:
         screen = self.read_until(remark_page, check_budget)
         expected = values(screen)
         changed = False
-        for key, action in ((NAME_ID, "fill_remark"), (DESCRIPTION_ID, "fill_description")):
+        name_id, description_id, _ = remark_layout(screen)
+        for key, action in ((name_id, "fill_remark"), (description_id, "fill_description")):
             node = w.unique([n for n in editors(screen) if n.name == key])
             if node.text.strip() not in EMPTY_VALUES[key]:
                 continue  # Preserve an existing name/description, even on rerun.

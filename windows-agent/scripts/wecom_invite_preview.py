@@ -23,13 +23,18 @@ SEND = "发送添加邀请"
 # Device 67's observed WeCom build exposes the + icon as an unlabeled TextView.
 # Unknown resource names remain unsupported; no screenshot-coordinate fallback.
 OBSERVED_HOME_MENU = "com.tencent.wework:id/nt3"
+# Additional + controls visually confirmed on 157, 59 and 93.
+# Require the full home context and top-right unique enabled control below.
+OBSERVED_HOME_MENUS = (OBSERVED_HOME_MENU, "com.tencent.wework:id/o70", "com.tencent.wework:id/ns5", "com.tencent.wework:id/ns8", "com.tencent.wework:id/n30", "com.tencent.wework:id/nd7")
+OBSERVED_PHONE_SEARCH_VIEW = "com.tencent.wework:id/m0f"
 OBSERVED_PROFILE_DESCRIPTION = "com.tencent.wework:id/csu"
+OBSERVED_PROFILE_DESCRIPTIONS = (OBSERVED_PROFILE_DESCRIPTION, "com.tencent.wework:id/cxu", "com.tencent.wework:id/cso", "com.tencent.wework:id/csn", "com.tencent.wework:id/cii", "com.tencent.wework:id/cm0")
 NODE_TYPES = ("android.widget.TextView", "android.widget.Button",
               "android.widget.ImageView", "android.widget.ImageButton",
-              "android.widget.EditText", "android.view.View",
+              "android.widget.EditText", "android.widget.SearchView", "android.view.View",
               "android.view.ViewGroup")
 HUMAN_MARKERS = ("请完成验证", "安全验证", "拖动滑块", "拼图", "操作过于频繁",
-                 "操作频繁", "添加客户已达上限", "今日添加客户数量已达上限")
+                 "操作频繁", "添加客户已达上限", "今日添加客户数量已达上限", "同事辅助验证")
 
 
 class StopPreview(Exception):
@@ -86,7 +91,11 @@ def is_system_status_indicator(node):
         return ((node.name == "com.android.systemui:id/clock"
                  and re.fullmatch(r"[0-2]?[0-9]:[0-5][0-9]", node.text) is not None)
                 or (node.name == "com.android.systemui:id/battery_percentage_view"
-                    and re.fullmatch(r"(?:100|[0-9]{1,2})%", node.text) is not None))
+                    and re.fullmatch(r"(?:100|[0-9]{1,2})%", node.text) is not None)
+                or (node.name == "com.android.systemui:id/networkspeed_num"
+                    and re.fullmatch(r"[0-9]{1,4}(?:\.[0-9]{1,2})?", node.text) is not None)
+                or (node.name == "com.android.systemui:id/networkspeed_unit"
+                    and node.text in ("B/s", "KB/s", "MB/s", "GB/s")))
     return (node.kind in ("android.widget.ImageView", "android.view.View", "android.view.ViewGroup")
             and not node.text)
 
@@ -108,7 +117,7 @@ def guard(screen):
     texts = [v for n in screen.nodes if n.visible for v in (n.text, n.desc)]
     if any(marker in v for v in texts for marker in HUMAN_MARKERS):
         raise StopPreview("human_required")
-    if any(screen.has(v) for v in ("手机号登录", "登录", "登录已过期", "重新登录")):
+    if any(screen.has(v) for v in ("手机号登录", "登录", "登录已过期", "重新登录", "登录失效，请重新登录。", "登录失效，请重新登录")):
         raise StopPreview("login_required")
     if any(screen.has(v) for v in ("该用户不存在", "用户不存在", "未找到相关用户")):
         raise StopPreview("not_found")
@@ -125,24 +134,40 @@ def is_home(screen):
 
 
 def is_menu(screen):
-    return all(screen.has(v) for v in ("添加客户", "发起群聊", "扫一扫"))
+    return (all(screen.has(v) for v in ("发起群聊", "扫一扫"))
+            and any(screen.has(v) for v in ("添加客户", "加微信")))
 
 
 def is_add_page(screen):
-    return all(screen.has(v) for v in ("添加客户", "面对面添加", "搜索手机号添加"))
+    return (all(screen.has(v) for v in ("面对面添加", "搜索手机号添加"))
+            and any(screen.has(v) for v in ("添加客户", "添加外部联系人")))
+
+
+def is_phone_editor(node):
+    return (node.kind == "android.widget.EditText" or
+            (node.kind == "android.widget.SearchView" and node.name == OBSERVED_PHONE_SEARCH_VIEW))
 
 
 def editor(screen):
-    return unique(screen.matching(lambda n: n.kind == "android.widget.EditText"))
+    return unique(screen.matching(is_phone_editor))
 
 
 def profile_matches(screen, phone):
     # On 67, saving a description replaces the empty settings row with this
     # exact native description row. Keep full target-number verification.
-    has_remark_entry = screen.has("设置备注和描述") or (
+    # 145's external-contact profile omits the tag feature. Require its exact
+    # observed title/phone/description/add controls, never an arbitrary row.
+    untagged_layout = (("com.tencent.wework:id/o64", "个人信息"),
+                       ("com.tencent.wework:id/ldy", "电话"),
+                       ("com.tencent.wework:id/cxu", "描述"),
+                       ("com.tencent.wework:id/lm", "添加为联系人"))
+    observed_untagged = all(len(screen.matching(lambda n: n.kind == "android.widget.TextView"
+                           and n.name == resource and n.text == label)) == 1
+                           for resource, label in untagged_layout)
+    has_remark_entry = observed_untagged or screen.has("设置备注和描述") or (
         screen.has("设置标签") and len(screen.matching(lambda n:
             n.kind == "android.widget.TextView" and n.text == "描述"
-            and n.name == OBSERVED_PROFILE_DESCRIPTION)) == 1)
+            and n.name in OBSERVED_PROFILE_DESCRIPTIONS)) == 1)
     return (screen.has("个人信息") and has_remark_entry
             and any(n.visible and re.sub(r"[\s-]", "", n.text) in (phone, "电话" + phone)
                     for n in screen.nodes))
@@ -157,11 +182,11 @@ def resolve_action(action, screen, phone):
         return unique(screen.matching(lambda n: (
             (n.kind in ("android.widget.ImageView", "android.widget.ImageButton", "android.widget.Button")
              and any(n.labeled(v) for v in ("+", "更多", "添加")))
-            or (n.kind == "android.widget.TextView" and n.name == OBSERVED_HOME_MENU
+            or (n.kind == "android.widget.TextView" and n.name in OBSERVED_HOME_MENUS
                 and not n.text and not n.desc))
             and n.position[0] > 0.75 and n.position[1] < 0.18))
     if action == "open_add" and is_menu(screen):
-        return unique(screen.matching(lambda n: n.labeled("添加客户")))
+        return unique(screen.matching(lambda n: n.labeled("添加客户") or n.labeled("加微信")))
     if action == "open_search" and is_add_page(screen):
         return unique(screen.matching(lambda n: n.labeled("搜索手机号添加")))
     if action == "enter_phone":
@@ -248,10 +273,10 @@ def run_preview(driver, request, timeout=45, max_reads=90, cancelled=lambda: Fal
             elif stage == "add" and is_add_page(screen):
                 action, next_stage = "open_search", "search"
             elif stage == "search":
-                if screen.matching(lambda n: n.kind == "android.widget.EditText"):
+                if screen.matching(is_phone_editor):
                     action, next_stage = "enter_phone", "readback"
             elif stage == "readback":
-                if not screen.matching(lambda n: n.kind == "android.widget.EditText"):
+                if not screen.matching(is_phone_editor):
                     sleep(0.25)
                     continue
                 value = editor(screen).text

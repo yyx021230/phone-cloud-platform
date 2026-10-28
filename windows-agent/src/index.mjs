@@ -1,5 +1,6 @@
 import {isLookupReaderRecovery, readerExitDiagnostic, verifyLookupReaderCleanup, lookupReaderStopReason} from "./lookup-reader-lifecycle.mjs";
 const lookupReaderStopBarriers = new Map();
+import { runWecomPreviewTask } from "./wecom-preview-task.mjs";
 import {collectLookupTrace, isAutomaticLookupResume} from "./lookup-recovery-trace.mjs";
 import { createRecoveryIsolation } from './recovery-isolation.mjs';
 import { createDeviceScanPipeline, recoverySnapshotAdmission } from './device-scan-pipeline.mjs';
@@ -1132,6 +1133,7 @@ async function pollTask() {
     params.set("managedLookupDelivery", MANAGED_LOOKUP_PROTOCOL);
     params.set("galleryDelivery", SCREEN_GALLERY_DELIVERY_PROTOCOL);
     params.set("xhsPublishDelivery", XHS_PUBLISH_DELIVERY_PROTOCOL);
+    params.set("wecomPreview", "wecom-preview-v1");
     const suffix = params.size ? `?${params.toString()}` : "";
     const payload = await api(`/api/v1/windows-agents/${encodeURIComponent(config.agentId)}/tasks/next${suffix}`);
     cancellationChecked = true;
@@ -1217,14 +1219,16 @@ async function runTask(task, options = {}) {
     else if (task.type === "xhs_qr_appium") result = await taskXhsQrAirtestPoco(task);
     else if (task.type === "xhs_publish") result = await taskXhsPublish(task);
     else if (task.type === "xhs_data_collect") result = await taskXhsDataCollect(task, options);
+    else if (task.type === "wecom_customer_preview") result = await taskWecomPreview(task, options);
     else if (task.type === "kuaishou_lead") result = await taskKuaishouLead(task, options);
     else if (["alipay_name_start", "alipay_name_query", "alipay_name_switch", "alipay_name_stop"].includes(task.type)) result = await taskAlipayNameLookupWithAccounts(task, options);
     else throw new Error(`unsupported task type: ${task.type}`);
     const collectionIncomplete = task.type === "xhs_data_collect" && result.collection?.complete !== true;
-    await taskEvent(task, "finish", collectionIncomplete ? "warn" : "info", collectionIncomplete ? "已保存部分采集结果" : "执行成功", compactTaskResultForEvent(result))
+    const previewBlocked = task.type === "wecom_customer_preview" && result.previewStatus !== "ready_before_send";
+    await taskEvent(task, "finish", collectionIncomplete || previewBlocked ? "warn" : "info", previewBlocked ? "企微预览已保护性停止，未发送邀请" : collectionIncomplete ? "已保存部分采集结果" : "执行成功", compactTaskResultForEvent(result))
       .catch((error) => log("task finish event failed", { taskId: task.taskId, error: error.message }));
     if (isLookup) lookupTerminal = { status: "succeeded", result };
-    else await taskStatus(task, collectionIncomplete ? "failed" : "succeeded", result);
+    else await taskStatus(task, collectionIncomplete || previewBlocked ? "failed" : "succeeded", result);
   } catch (error) {
     if (isAutomationTaskCancellation(error)) {
       taskEvent(task, "cancelled", "info", "用户已结束会话，当前自动化任务已停止", { reason: "automation_task_cancelled" })
@@ -1240,10 +1244,13 @@ async function runTask(task, options = {}) {
         .catch((statusError) => log("task cancellation status failed", { taskId: task.taskId, error: statusError.message }));
       return;
     }
-    const evidence = error.code === "lookup_status_storage_unavailable" ? {} : await captureFailureEvidence(task).catch((evidenceError) => ({
+    const evidence = task.type === "wecom_customer_preview" || error.code === "lookup_status_storage_unavailable" ? {} : await captureFailureEvidence(task).catch((evidenceError) => ({
       evidenceError: evidenceError?.message || String(evidenceError)
     }));
-    const failure = { ...taskFailureResult(error), ...evidence };
+    const failure = { ...taskFailureResult(error), ...evidence,
+      ...(task.type === "wecom_customer_preview" ? { previewStatus: "blocked", invitationSent: false,
+        previewCode: /^[a-z0-9_]{1,100}$/.test(error.message || "") ? error.message : "wecom_preview_outcome_unknown",
+        remarkSaveStatus: "unknown" } : {}) };
     await taskEvent(task, "finish", "error", error.message, compactTaskResultForEvent(failure))
       .catch((eventError) => log("task failure event failed", { taskId: task.taskId, error: eventError.message }));
     if (isLookup) lookupTerminal = { status: "failed", result: failure };
@@ -1255,7 +1262,7 @@ async function runTask(task, options = {}) {
         adbSerial: task.adbSerial,
         reason: options.signal.reason?.code || options.signal.reason?.message || "cancelled"
       });
-    } else if (shouldRunPostTaskDeviceScan(task.type)) {
+    } else if (task.type !== "wecom_customer_preview" && shouldRunPostTaskDeviceScan(task.type)) {
       await scanAndSync({ force: true, skipSms: true, reason: "post_task" }).catch((error) => log("post-task scan failed", error.message));
     } else {
       log("post-task device scan skipped", {
@@ -6282,4 +6289,12 @@ function log(message, detail = "") {
   if (logDir) {
     fs.appendFile(path.join(logDir, "agent.log"), `${line}\n`).catch(() => {});
   }
+}
+
+// Existing workers are never stopped or adopted by this preview path.
+// The one-shot adapter rejects a device with an existing Poco owner.
+async function taskWecomPreview(task, options = {}) {
+  const proof = await api(`/api/v1/windows-agents/${encodeURIComponent(config.agentId)}/wecom-preview-tasks/${encodeURIComponent(task.taskId)}/lease`);
+  if (proof.valid !== true || proof.serial !== task.adbSerial || proof.deviceId !== task.deviceId) throw new Error("wecom_preview_device_lease_lost");
+  return runWecomPreviewTask(task, { config, agentDir, signal: options.signal });
 }

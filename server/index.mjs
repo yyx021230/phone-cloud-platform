@@ -1,4 +1,5 @@
 import { sendInventorySyncResponse } from "./inventory-sync-response.mjs";
+import { WECOM_PREVIEW_KIND, previewTarget, previewRequest, publicPreview, previewLease, createPreviewSubmissionGate } from "./wecom-preview.mjs";
 import { spoolSnapshot, writeSpooledSnapshot, loadStreamedSnapshot } from './snapshot-stream.mjs';
 import {aiVisionConfig,createAiVisionReader} from './lookup-ai-vision.mjs';
 import {createLookupAiRecovery} from './lookup-ai-recovery.mjs';
@@ -418,8 +419,79 @@ server.listen(PORT, HOST, () => {
 process.on("SIGTERM", () => shutdown("SIGTERM"));
 process.on("SIGINT", () => shutdown("SIGINT"));
 
+const wecomSubmissionGate = createPreviewSubmissionGate();
+const pendingWecomCommits = new Set();
+
 async function routeApi(req, res, url) {
   enforceRequestOrigin(req);
+  if (url.pathname === "/api/v1/user/automation/wecom-preview-devices" && req.method === "GET") {
+    requireAuth(req, ["admin"]);
+    const devices = [];
+    for (const device of state.devices) {
+      try {
+        const target = previewTarget(device);
+        devices.push({ deviceId: device.deviceId, ...target,
+          available: isDeviceListed(device) && isAdbOnline(device) && !activeDeviceLockForTask(device.deviceId) });
+      } catch { /* Only the eight verified physical devices are exposed. */ }
+    }
+    return json(res, 200, { devices, mode: "preview_only" });
+  }
+  if (url.pathname === "/api/v1/user/automation/wecom-preview-tasks" && ["GET", "POST"].includes(req.method)) {
+    const ctx = requireAuth(req, ["admin"]);
+    if (req.method === "GET") return json(res, 200, { tasks: state.automationJobs
+      .filter(j => j.kind === WECOM_PREVIEW_KIND && j.userId === ctx.userId).slice(0, 100).map(publicPreview) });
+    const input = previewRequest(await readJson(req));
+    return wecomSubmissionGate(`${ctx.userId}:${input.requestId}`, async () => {
+      const existing = state.automationJobs.find(j => j.kind === WECOM_PREVIEW_KIND && j.userId === ctx.userId && j.wecomRequestId === input.requestId);
+      if (existing) {
+        if (existing.deviceId !== input.deviceId || existing.phoneNumber !== input.phoneNumber) return json(res, 409, { error: "wecom_request_id_conflict" });
+        return json(res, 200, { reused: true, task: publicPreview(existing) });
+      }
+      if (state.automationJobs.filter(j => j.kind === WECOM_PREVIEW_KIND && isActiveAutomationStatus(j.status)).length >= 2) {
+        return json(res, 429, { error: "wecom_preview_capacity_full", limit: 2 });
+      }
+      const device = repos.devices.findById(input.deviceId);
+      if (!device) return json(res, 404, { error: "device_not_found" });
+      const target = previewTarget(device);
+      if (!isDeviceListed(device) || !isAdbOnline(device) || !device.adb?.agentId) return json(res, 409, { error: "device_not_available" });
+      if (activeDeviceLockForTask(device.deviceId)) return json(res, 409, { error: "device_busy" });
+      const job = createAutomationJob({ kind: WECOM_PREVIEW_KIND, userId: ctx.userId, deviceId: device.deviceId, phoneNumber: input.phoneNumber });
+      Object.assign(job, { wecomRequestId: input.requestId, wecomDeviceNumber: target.deviceNumber, wecomAndroidUser: target.androidUser });
+      const lock = acquireAutomationDeviceLock(device, job, ctx, { ttlMs: 300_000 });
+      const windowsTask = queueAutomationWindowsTask(device, job);
+      const audit = addAudit("wecom_preview_create", ctx, { jobId: job.jobId, deviceId: job.deviceId, mode: "preview_only" });
+      pendingWecomCommits.add(windowsTask);
+      try {
+        await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask, automationJob: job, deviceLock: lock, audit }));
+      } catch (error) {
+        // Storage may have committed despite a lost acknowledgement. Keep the
+        // original submission and mark it stalled; never issue another query.
+        job.status = "stalled"; windowsTask.status = "stalled";
+        job.result = { previewStatus: "blocked", previewCode: "submission_persistence_unknown" };
+        throw error;
+      } finally { pendingWecomCommits.delete(windowsTask); }
+      return json(res, 201, { reused: false, task: publicPreview(job) });
+    });
+  }
+  const wecomDetail = url.pathname.match(/^\/api\/v1\/user\/automation\/wecom-preview-tasks\/([^/]+)$/);
+  if (wecomDetail && req.method === "GET") {
+    const ctx = requireAuth(req, ["admin"]);
+    const job = state.automationJobs.find(j => j.kind === WECOM_PREVIEW_KIND && j.jobId === wecomDetail[1] && j.userId === ctx.userId);
+    return json(res, job ? 200 : 404, job ? { task: publicPreview(job) } : { error: "wecom_task_not_found" });
+  }
+  const wecomLease = url.pathname.match(/^\/api\/v1\/windows-agents\/([^/]+)\/wecom-preview-tasks\/([^/]+)\/lease$/);
+  if (wecomLease && req.method === "GET") {
+    const ctx = requireWindowsAgent(req, decodeURIComponent(wecomLease[1]));
+    requireWindowsScope(ctx, "tasks:read");
+    const task = state.windowsTasks.find(t => t.taskId === wecomLease[2]);
+    const job = task && state.automationJobs.find(j => j.jobId === task.payload?.automationJobId);
+    const device = task && repos.devices.findById(task.deviceId);
+    const locks = task && state.deviceLocks.filter(l => l.deviceId === task.deviceId && l.status === "active" && Date.parse(l.expiresAt) > Date.now());
+    const valid = locks?.length === 1 && previewLease(task, job, locks[0], device, decodeURIComponent(wecomLease[1]));
+    return json(res, 200, { valid: Boolean(valid), ...(valid ? { taskId: task.taskId, deviceId: device.deviceId, serial: task.adbSerial,
+      deviceNumber: job.wecomDeviceNumber, androidUser: job.wecomAndroidUser, expiresAt: locks[0].expiresAt } : {}) });
+  }
+
   if(req.method==='POST'&&url.pathname==='/api/v1/open/name-lookups/prepare'){
     if(!OPEN_NAME_LOOKUP_API_ENABLED||!managedLookup)return json(res,404,{ok:false,code:'managed_lookup_not_enabled'});
     try{const {ctx,input}=await readSignedOpenJson(req,url,OPEN_NAME_LOOKUP_CLIENTS);if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).length)return json(res,400,{ok:false,code:'prepare_body_must_be_empty'});const {ok,preparationId,status,ready,expiresAt,acceptingRequests,code,retryAfterSeconds}=await managedLookup.prepare({clientId:ctx.clientId,key:requiredOpenIdempotencyKey(req)});return json(res,200,{ok,preparationId,status,ready,expiresAt,acceptingRequests,...(code?{code,retryAfterSeconds}:{})});}catch(e){return json(res,e.statusCode||503,{ok:false,code:e.statusCode?e.message:'lookup_storage_unavailable'});}
@@ -2016,6 +2088,8 @@ async function routeApi(req, res, url) {
     const task = state.windowsTasks.find((item) => (
       item.agentId === agentId
       && item.status === "queued"
+      && (item.type !== WECOM_PREVIEW_KIND || url.searchParams.get("wecomPreview") === "wecom-preview-v1")
+      && !pendingWecomCommits.has(item)
       && !pendingXhsCollectionCommits.has(item)
       && (!isManagedLookupTask(item) || (managedDeliveryV1 && canDeliverManagedLookupTask(item)))
       && !activeTaskIds.has(item.taskId)
@@ -4597,6 +4671,7 @@ function queueAutomationWindowsTask(device, job) {
   const adbSerial = String(device?.adb?.serial || "");
   if (!agentId || !adbSerial || !isAdbOnline(device)) throw badRequest("device_not_available");
   const typeByKind = {
+    wecom_customer_preview: WECOM_PREVIEW_KIND,
     xhs_publish: "xhs_publish",
     kuaishou_lead: "kuaishou_lead",
     xhs_data_collect: "xhs_data_collect",
@@ -4612,6 +4687,7 @@ function queueAutomationWindowsTask(device, job) {
     type: typeByKind[job.kind],
     payload: {
       automationJobId: job.jobId,
+      ...(job.kind === WECOM_PREVIEW_KIND ? { deviceNumber: job.wecomDeviceNumber, androidUser: job.wecomAndroidUser, previewOnly: true } : {}),
       ...(job.kind === "xhs_data_collect" ? { deviceName: device.deviceName || device.deviceId, windowDays: 30 } : {}),
       automationSessionId: job.sessionId || "",
       ...(state.automationSessions.find(s=>s.sessionId===job.sessionId)?.managedLookupGeneration ? {managedLookup:{protocol:MANAGED_LOOKUP_PROTOCOL,generation:state.automationSessions.find(s=>s.sessionId===job.sessionId).managedLookupGeneration}} : {}),
@@ -4721,7 +4797,7 @@ function syncAutomationJobFromWindowsTask(windowsTask, status, result = {}) {
   }
   if (["succeeded", "failed", "cancelled"].includes(status)) {
     job.completedAt = nowIso();
-    if (["xhs_publish", "kuaishou_lead", "xhs_data_collect"].includes(job.kind)) {
+    if (["wecom_customer_preview", "xhs_publish", "kuaishou_lead", "xhs_data_collect"].includes(job.kind)) {
       releaseAutomationLock(job, status);
     } else if (session) {
       session.pendingJobId = "";
@@ -5887,6 +5963,12 @@ function sanitizeTaskResult(input = {}, options = {}) {
     wallMs: Number.isFinite(Number(input.wallMs)) ? Number(input.wallMs) : null,
     timeoutSeconds: Number.isFinite(Number(input.timeoutSeconds)) ? Number(input.timeoutSeconds) : null
   };
+  if (input.previewStatus !== undefined) {
+    result.previewStatus = ["ready_before_send", "blocked"].includes(input.previewStatus) ? input.previewStatus : "blocked";
+    result.previewCode = /^[a-z0-9_]{1,100}$/.test(input.previewCode || "") ? input.previewCode : "wecom_preview_stopped";
+    result.invitationSent = false;
+    result.remarkSaveStatus = ["not_attempted", "unknown", "confirmed", "not_needed"].includes(input.remarkSaveStatus) ? input.remarkSaveStatus : "unknown";
+  }
   if (input.collection) result.collection = sanitizeXhsDataCollection(input.collection);
   if (input.uiSnapshot) result.uiSnapshot = String(input.uiSnapshot).slice(0, MAX_STORED_UI_SNAPSHOT_CHARS);
   if (input.uiHierarchy) result.uiHierarchy = String(input.uiHierarchy).slice(0, MAX_STORED_UI_HIERARCHY_CHARS);
@@ -6885,7 +6967,7 @@ function recoverStalledTasks(agentId = "") {
     if (["queued", "running"].includes(task.status) && task.agentId && !onlineAgents.has(task.agentId)) {
       task.status = "stalled";
       task.stalledAt = task.stalledAt || nowIso();
-      task.recoverable = true;
+      task.recoverable = task.type !== "wecom_customer_preview";
       task.result = { ...(task.result || {}), error: "agent_offline", message: "Windows 管理器离线，任务等待恢复" };
       task.updatedAt = nowIso();
       if (!Array.isArray(task.events)) task.events = [];
@@ -7032,7 +7114,7 @@ function expireAutomationJobs() {
     job.updatedAt = nowIso();
     job.completedAt = job.updatedAt;
     job.result = { ...(job.result || {}), errorCode: "automation_task_timeout", timeoutSeconds: Math.round(ttlMs / 1000) };
-    if (["xhs_publish", "kuaishou_lead", "xhs_data_collect"].includes(job.kind)) releaseAutomationLock(job, "expired");
+    if (["wecom_customer_preview", "xhs_publish", "kuaishou_lead", "xhs_data_collect"].includes(job.kind)) releaseAutomationLock(job, "expired");
     const session = job.sessionId ? state.automationSessions.find((item) => item.sessionId === job.sessionId) : null;
     if (session) finishLookupSession(session, "expired", "automation_session_timeout");
     changed = true;

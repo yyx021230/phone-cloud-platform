@@ -1,0 +1,13 @@
+.wecom-preview-page{margin:0;display:block;min-height:100vh;background:#f4f6f8;color:#162332}
+.wecom-preview-shell{max-width:880px;margin:0 auto;padding:32px 24px}
+.wecom-preview-shell header,.wecom-history-heading{display:flex;justify-content:space-between;align-items:center;gap:20px}
+.wecom-preview-shell header{margin-bottom:24px;font-size:13px;color:#66717d}
+.wecom-preview-shell .panel{padding:28px;margin-bottom:20px;border:1px solid #e1e5eb;border-radius:12px;background:white}
+.wecom-preview-shell .eyebrow{font-size:13px;color:#356f65;margin:0 0 8px}
+.wecom-preview-shell h1{font-size:28px;margin:0 0 12px}.wecom-preview-shell h2{font-size:18px;margin:0}
+.wecom-preview-shell label{display:grid;gap:8px;margin:18px 0;font-size:14px}
+.wecom-preview-shell select,.wecom-preview-shell input{width:100%;box-sizing:border-box;min-height:44px}
+.wecom-preview-shell button{cursor:pointer}.wecom-preview-shell button:disabled{cursor:default;opacity:.5}
+.wecom-preview-task{padding:16px 0;border-bottom:1px solid #e8edf1}.wecom-preview-task p{margin:6px 0;overflow-wrap:anywhere}
+.wecom-preview-task small,.wecom-preview-shell .hint{color:#677483;line-height:1.7}
+@media(max-width:600px){.wecom-preview-shell{padding:18px 12px}.wecom-preview-shell .panel{padding:20px}}

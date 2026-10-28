@@ -1,0 +1,67 @@
+const root = "/api/v1/user/automation";
+const form = document.querySelector("#previewForm");
+const devices = document.querySelector("#device");
+const submit = document.querySelector("#submit");
+const feedback = document.querySelector("#feedback");
+const history = document.querySelector("#history");
+let requestInFlight = false;
+let accepted = null;
+let unresolved = null;
+
+async function api(path, data) {
+  const token = localStorage.getItem("phoneCloudSessionToken");
+  if (!token) throw new Error("请先返回平台登录管理员账号");
+  const response = await fetch(root + path, {
+    method: data ? "POST" : "GET", credentials: "same-origin", redirect: "error",
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    ...(data ? { body: JSON.stringify(data) } : {}), signal: AbortSignal.timeout(15000)
+  });
+  const body = await response.json();
+  if (!response.ok) throw Object.assign(new Error(body.error || "请求失败"), { definiteResponse: response.status < 500 });
+  return body;
+}
+
+function text(tag, value) { const element = document.createElement(tag); element.textContent = value; return element; }
+const labels = { queued: "等待设备领取", running: "正在执行", stalled: "状态待核对", failed: "已停止，请核对原因", expired: "已超时", succeeded: "已到发送前，未发送邀请" };
+
+async function refresh() {
+  const [inventory, list] = await Promise.all([api("/wecom-preview-devices"), api("/wecom-preview-tasks")]);
+  const selected = devices.value;
+  devices.replaceChildren(text("option", "选择空闲手机")); devices.firstChild.value = "";
+  for (const device of inventory.devices) {
+    const option = text("option", `${device.deviceNumber}号${device.androidUser === 999 ? " · 分身" : ""} · ${device.available ? "可用" : "占用或离线"}`);
+    option.value = device.deviceId; option.disabled = !device.available; devices.append(option);
+  }
+  devices.value = selected;
+  history.replaceChildren();
+  if (!list.tasks.length) history.append(text("p", "暂无预览任务"));
+  for (const task of list.tasks) {
+    const row = document.createElement("article"); row.className = "wecom-preview-task";
+    row.append(text("b", `${task.deviceNumber}号 · ${labels[task.status] || task.status}`));
+    row.append(text("p", task.result.code || "所有操作都停在发送前"));
+    row.append(text("small", `${new Date(task.createdAt).toLocaleString()} · ${task.jobId}`)); history.append(row);
+  }
+  if (unresolved) {
+    const found = list.tasks.find(task => task.requestId === unresolved.requestId);
+    if (found) { accepted = found.jobId; unresolved = null; }
+  }
+  const own = accepted && list.tasks.find(task => task.jobId === accepted);
+  if (own) feedback.textContent = `${own.deviceNumber}号：${labels[own.status] || own.status}${own.result.code ? `（${own.result.code}）` : ""}`;
+  submit.disabled = requestInFlight || Boolean(unresolved) || Boolean(own && ["queued", "running", "stalled"].includes(own.status));
+}
+
+form.addEventListener("submit", async event => {
+  event.preventDefault(); if (requestInFlight || unresolved) return;
+  requestInFlight = true; submit.disabled = true;
+  const input = { deviceId: devices.value, phoneNumber: document.querySelector("#phone").value, requestId: Array.from(crypto.getRandomValues(new Uint8Array(16)), byte => byte.toString(16).padStart(2, "0")).join("") };
+  feedback.textContent = "正在提交…";
+  try { const body = await api("/wecom-preview-tasks", input); accepted = body.task.jobId; }
+  catch (error) {
+    if (!error.definiteResponse) { unresolved = input; feedback.textContent = "提交结果暂未确认，正在查找原任务。请勿重新提交。"; }
+    else feedback.textContent = error.message;
+  } finally { requestInFlight = false; }
+  try { await refresh(); } catch (error) { feedback.textContent = error.message; }
+});
+document.querySelector("#refresh").addEventListener("click", () => refresh().catch(error => { feedback.textContent = error.message; }));
+await refresh().catch(error => { feedback.textContent = error.message; });
+setInterval(() => { if (!document.hidden) refresh().catch(() => {}); }, 5000);
