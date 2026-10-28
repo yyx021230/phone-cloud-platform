@@ -1,0 +1,161 @@
+{
+  "status": "single_send_click_executed_delivery_awaiting_recipient_confirmation",
+  "userAuthorization": "Current turn explicitly permits one real WeCom invitation to the specified test target; does not enable permanent/bulk sending.",
+  "targetMasked": "136****6441",
+  "sourceCommit": "3756dd7c431f7630e52669e0ceb7d2db39f53e62",
+  "coreSourceCommit": "b14d58c7b160504b05a18e345e27f0210c82a0a6",
+  "productionFeatureDeployed": false,
+  "productionPreviewOnlyUnchanged": true,
+  "productionWhitelistUnchanged": true,
+  "method": "isolated temporary candidate adapter with real production screen-control owner/unique device lease; one explicit final native-element click outside preview core; not the undeployed platform WeCom API",
+  "preflight": {
+    "67": "online/idle; main app requires login, zero sends; no login attempt",
+    "23": "online/idle; selected previously verified main app user0; no account switching"
+  },
+  "attempts": [
+    {
+      "scope": "one_explicitly_authorized_test_invitation",
+      "productionPreviewApiUsed": false,
+      "sendClickIssued": false,
+      "sendOutcome": "not_attempted",
+      "productionRuntimeChanged": false,
+      "deviceNumber": "67",
+      "blockedCode": "login_required",
+      "errorType": "StopPreview",
+      "ownLeaseReleased": true,
+      "elapsedSeconds": 22.219,
+      "localSourceCommit": "3756dd7c431f7630e52669e0ceb7d2db39f53e62",
+      "sourceHashes": {
+        "wecom_platform_preview.py": "290711f39accacf800398f7f338eec7aa9efa47c74bac0d6877cde3e97f20c4c",
+        "wecom_invite_preview.py": "f7329cf01b0d9c7f750b730d570826099abba4df6581931eb395f74527ae8692",
+        "wecom_remark_preview.py": "ba97879f714c618511defe33e46c5a32cdb561a3f37a5fa4edd8c83cd7f1dfd6",
+        "wecom_startup_guards.py": "82fcf0d5ccc3d8aceab9901ac663725fcc9bf6b5f072715d18892036652f6d25",
+        "wecom_rpc_budget.py": "60aab705ab8b1a5282da225ac5e7f3ac27c90c01749e4637e0dfe732e906bff6",
+        "wecom_preview_devices.json": "2eab0e0415e7db2f7c00c8ccf8e55f36cb3987a22c03bdc5aee4b05f6167bc88",
+        "host.py": "5ce251d6f85e16aecf0a7eac369e04f023e3ac35ab618145ee7bf294a555b892"
+      }
+    },
+    {
+      "scope": "one_explicitly_authorized_test_invitation",
+      "productionPreviewApiUsed": false,
+      "sendClickIssued": true,
+      "sendOutcome": "unknown_no_retry",
+      "productionRuntimeChanged": false,
+      "deviceNumber": "23",
+      "actionsStarted": [
+        "open_menu",
+        "open_add",
+        "open_search",
+        "enter_phone",
+        "search",
+        "open_remark",
+        "close_remark",
+        "open_preview"
+      ],
+      "actionsCompleted": [
+        "open_menu",
+        "open_add",
+        "open_search",
+        "enter_phone",
+        "search",
+        "open_remark",
+        "close_remark",
+        "open_preview"
+      ],
+      "exactPhoneVerifiedBeforePreview": true,
+      "previewStatus": "ready_before_send",
+      "previewCode": "stopped_before_send",
+      "remarkSaveStatus": "not_needed",
+      "previewAdapterResult": {
+        "previewStatus": "ready_before_send",
+        "previewCode": "stopped_before_send",
+        "invitationSent": false,
+        "remarkSaveStatus": "not_needed"
+      },
+      "adbPidUnchanged": true,
+      "agentPidUnchanged": true,
+      "ownLeaseReleased": true,
+      "elapsedSeconds": 115.969,
+      "localSourceCommit": "3756dd7c431f7630e52669e0ceb7d2db39f53e62",
+      "sourceHashes": {
+        "wecom_platform_preview.py": "290711f39accacf800398f7f338eec7aa9efa47c74bac0d6877cde3e97f20c4c",
+        "wecom_invite_preview.py": "f7329cf01b0d9c7f750b730d570826099abba4df6581931eb395f74527ae8692",
+        "wecom_remark_preview.py": "ba97879f714c618511defe33e46c5a32cdb561a3f37a5fa4edd8c83cd7f1dfd6",
+        "wecom_startup_guards.py": "82fcf0d5ccc3d8aceab9901ac663725fcc9bf6b5f072715d18892036652f6d25",
+        "wecom_rpc_budget.py": "60aab705ab8b1a5282da225ac5e7f3ac27c90c01749e4637e0dfe732e906bff6",
+        "wecom_preview_devices.json": "2eab0e0415e7db2f7c00c8ccf8e55f36cb3987a22c03bdc5aee4b05f6167bc88",
+        "host.py": "5ce251d6f85e16aecf0a7eac369e04f023e3ac35ab618145ee7bf294a555b892"
+      }
+    }
+  ],
+  "send": {
+    "device": "23",
+    "nativeSendClickCount": 1,
+    "transportCallReturned": true,
+    "targetVerifiedOnFullProfileBeforeInvite": true,
+    "readinessConfirmed": true,
+    "durablePreClickClaim": true,
+    "claimRetainedOnWindows": true,
+    "automaticResends": 0,
+    "providerConfirmationObserved": false,
+    "recipientConfirmation": "pending",
+    "remarkSaveStatus": "not_needed; existing nonempty fields preserved"
+  },
+  "readOnlyReconciliation": {
+    "firstRead": "screen was locked; no WeCom status evidence",
+    "laterReads": "normal wake of nonsecure keyguard only; desktop visible; attempt to restore prior observed profile did not confirm WeCom foreground",
+    "noAdditionalSearchOrSend": true,
+    "lastForegroundPackage": "com.miui.home",
+    "leasesReleased": true,
+    "unknownResultNotConvertedToSuccess": true
+  },
+  "postflight": {
+    "agentPid": 26488,
+    "adbPid": 17764,
+    "owner": "NT AUTHORITY\\SYSTEM",
+    "devices": [
+      {
+        "number": "23",
+        "pocoPresent": false
+      },
+      {
+        "number": "67",
+        "pocoPresent": false
+      }
+    ],
+    "agentEntrySha256": "884bc370558e6b0b3f2d0d46dee309da4467757b613c0da03576de8f9b34df74",
+    "sendJournalRetained": true,
+    "inventory": [
+      {
+        "number": "23",
+        "state": "device",
+        "occupied": false
+      },
+      {
+        "number": "67",
+        "state": "device",
+        "occupied": false
+      }
+    ]
+  },
+  "temporaryHarnessHashes": {
+    "host.py": "5ce251d6f85e16aecf0a7eac369e04f023e3ac35ab618145ee7bf294a555b892",
+    "run.py": "8cdd1299d7a6d798f3762402f958d4495c2fc3000ab139324c6c2b82cea028b4",
+    "observe.py": "cbb6ac2d8a2cbaeda0fdc43b89d5b59bd0a1838c4194a346dbfcea2f93db4628"
+  },
+  "verification": {
+    "temporaryPythonSourcesCompiled": true,
+    "realFullFlowToPreviewOn23": true,
+    "sendOutcomeDetector": "did not confirm provider-specific success; delivery remains unknown",
+    "newUnitOrFullRegressionRunThisRound": false,
+    "noRuntimeRepositoryChanges": true,
+    "review": "self review only"
+  },
+  "limitations": [
+    "No confirmed recipient acceptance or invitation delivery yet",
+    "67 login-required cause not investigated",
+    "This is a one-off real-device script test, not production WeCom API rollout or bulk-send acceptance"
+  ],
+  "recordedAtUtc": "2026-10-28T10:27:36.665221+00:00",
+  "pushed": false
+}
