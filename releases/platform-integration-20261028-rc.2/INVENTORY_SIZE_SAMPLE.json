@@ -1,0 +1,8 @@
+{
+  "scope": "captured read-only device inventory response; excludes sync agent wrapper; local compression only; not production wire verification",
+  "rawBytes": 449283,
+  "gzipLevel1Bytes": 55064,
+  "fraction": 0.1226,
+  "localCompressionMs": 1.157,
+  "roundTripExact": true
+}

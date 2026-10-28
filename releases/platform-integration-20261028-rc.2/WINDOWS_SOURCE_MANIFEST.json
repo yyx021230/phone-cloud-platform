@@ -1,0 +1,1576 @@
+{
+  "sourceCommit": "baca5721214658b46f24c974c9147490b0bafada",
+  "archiveSha256": "3e26b639bdd7bfbba2aeaa8756dec9d23c40cf2194f3de26732768838897a074",
+  "archiveBytes": 9645905,
+  "purpose": "source candidate only; not an automatic production overwrite bundle",
+  "preserveProduction": [
+    "config.json",
+    "data",
+    "logs",
+    "node_modules",
+    "ADB binary, identity, keys and startup",
+    "media/screen frozen baseline"
+  ],
+  "files": [
+    {
+      "path": "VERSION.json",
+      "sha256": "4f77595e84803fad56a3c7c7797f39a573aff19a8c047434718fab4cb91f1cd4",
+      "bytes": 586
+    },
+    {
+      "path": "windows-agent/config.example.json",
+      "sha256": "9f2e5425593e23964ac9e72c097b6e247061c9fa872047c78d6411b6d5c166eb",
+      "bytes": 3571
+    },
+    {
+      "path": "windows-agent/package-lock.json",
+      "sha256": "e9ed7d7a248b0114cbbdf00117a3ca13fd64a5c75a6c31e6ca8dbcd1cbe0f7d1",
+      "bytes": 5041
+    },
+    {
+      "path": "windows-agent/package.json",
+      "sha256": "1112d5bbc5703eb8de987472ef5602edc62255125c6ff419be9d8efd4e898bf2",
+      "bytes": 726
+    },
+    {
+      "path": "windows-agent/runtime-manifests/wheel-manifest.json",
+      "sha256": "77bb79cbb0ae88818d3b102fc429c468748294f06460340f36c0087a823624d3",
+      "bytes": 8823
+    },
+    {
+      "path": "windows-agent/runtime-manifests/windows-wheel-lock.txt",
+      "sha256": "841e5a4903669a63dcbf5e0cbd3b32ac0a9f53ca85b190cb7ba3e323ed934c5a",
+      "bytes": 1838
+    },
+    {
+      "path": "windows-agent/scripts/alipay_name_lookup.py",
+      "sha256": "07bc870698663b4c63c071a8743b182972658db1d37b015eb79417c01cec87b2",
+      "bytes": 318356
+    },
+    {
+      "path": "windows-agent/scripts/alipay_post_human_state.py",
+      "sha256": "8e0290dfa7c0ac2b28efbcebd1e056259a5e311243cebdce121015562e224efc",
+      "bytes": 1762
+    },
+    {
+      "path": "windows-agent/scripts/alipay_visual_result.py",
+      "sha256": "3f1a6315150fe7424724122947b418d2c4b8f4448db4d4d4372bf99749542e30",
+      "bytes": 25031
+    },
+    {
+      "path": "windows-agent/scripts/automation_runners_test.py",
+      "sha256": "3e1688296e56903fa9939257b2a8290eb77fddbe30901d2ae19e51490af674f7",
+      "bytes": 200042
+    },
+    {
+      "path": "windows-agent/scripts/feishu-kuaishou-lead.mjs",
+      "sha256": "2ac1f28489ac6a130d4a06da29a41cc0e69543fbdd9ad5606f6a4d55506adcc4",
+      "bytes": 25639
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/lookup-20261021-redacted-replay.json",
+      "sha256": "c95c365d4f6663cd16f503d98b5477672b53b0eecf628a47688b2fcf6979c83c",
+      "bytes": 128007
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/lookup-suggestions-ads.json",
+      "sha256": "3ee7cbb42314eed9d628b4851b73d08952e4649d144b79a30894f47296be511e",
+      "bytes": 40943
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/lookup_recharge_recommendations.json",
+      "sha256": "9e5ebd7247ee866feb912f9347bfddb7a1e268b50d826ff07024a04231dc1402",
+      "bytes": 17247
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/blank-works-loading-18.xml",
+      "sha256": "8bf40cdbc84c2f2a0bde2d63792f448d1edaa0c85e9f0da1beb94e12c9290fd5",
+      "bytes": 4527
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/counts-1080-47.json",
+      "sha256": "0ffc86b07340bafa2e9a8b566c52e7a5f1706d08edaed71b4fb065cec80ed422",
+      "bytes": 2219
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/counts-1080-47.png",
+      "sha256": "4da240ae39093dafa67c428b3d08997a2d951135ead480924989e8bffbebf856",
+      "bytes": 18022
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/counts-720.json",
+      "sha256": "39443bd4b64d165d543f67da7070ba938bab68c08b032804be324b7e35a353fd",
+      "bytes": 12656
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/counts-720.png",
+      "sha256": "bcfae52bfdb0114956a2f87e327d34c0b3aef16bfb4d08ffb99f5b5f2c8f7073",
+      "bytes": 190689
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/creator-growth-account-overlay.xml",
+      "sha256": "2179be2b5d82fdacc12511ea5eb9fe23175b047e448049a72b0a281c3ba694d2",
+      "bytes": 4097
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/creator-home-data-label-173.xml",
+      "sha256": "3acb6bdebf2ebe8576a613ebbd0f98efbb9760d4578027dc940bc76ca8e34f77",
+      "bytes": 73136
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/creator-home-data-label-182.xml",
+      "sha256": "d5498d4b2f121ee27af482325ef7525411bf002f1e6904d537cb939b10abc255",
+      "bytes": 73959
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/creator-repairing-service-error.xml",
+      "sha256": "f7f3ffa97f6fe786e0e0a8f9034e1d2238c4c7dad86b64bce9f676801be02f0c",
+      "bytes": 5032
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/data-center-flat-tabs.xml",
+      "sha256": "2e94e4cf2b75627778accafd209da0558938dfad74acc755506b06698448bd59",
+      "bytes": 36294
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/data-center-loading-header-25.xml",
+      "sha256": "c9567568c8d85641de1c0425bb208bb9b39f2955b59ec0af9863f1bee1dc5373",
+      "bytes": 10138
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/data-center-loading-missing-tab-25.xml",
+      "sha256": "17dd003c1cdfbfb6b01a9eadd4641a7f09489ec137dcb9b830b5804cae9bbcfa",
+      "bytes": 9171
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/date-05-18-binary.png",
+      "sha256": "143c4917dde7e37232dcdcd322e5504df103977322a0f3a6232ab6141de9a098",
+      "bytes": 1605
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/date-05-18-soft.png",
+      "sha256": "2406eeb52b2dcc2d3862f7eb0d00b223785474748e907cb46fb1f0ee991fd0d4",
+      "bytes": 1639
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/date-09-16-155.png",
+      "sha256": "021f06cfd51999d87ab00e2cf25851ab874cddcb07fab87a2b9a3f8dcee5643c",
+      "bytes": 3151
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/filter-navigation-ocr.json",
+      "sha256": "f2b5c6bbf3bebb6df72328bce173a68787c6248e7b53cfa14423d27d6ebda529",
+      "bytes": 4407
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/filter-panel-elements.xml",
+      "sha256": "7c6a39a6da78cfa2528b128cd0dd1c541b691ffd788645b21b25ff95d37e38dc",
+      "bytes": 1297
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/font7-47-v57-proof.json",
+      "sha256": "8e7b290450e30dc03e837cc8adcb90dddb031864b791df5125f681887d31d365",
+      "bytes": 4160
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/header-title-geometry-141-proof.json",
+      "sha256": "e46b24c9611ca654cf4090a32050f6b32331c09852ea199ccf3fb84324c10d04",
+      "bytes": 1242
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/home-zero-footer-live-menu.xml",
+      "sha256": "4b02326c2a0490c4d978e2c64ecebcae994fb39088323a27d19027f4c6b6c492",
+      "bytes": 37754
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/index-navigation.png",
+      "sha256": "4d7be4fa6df46afc93f6496f806a5d3977bd299eaf57531658736dff50587f0d",
+      "bytes": 35265
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/metric-row-720.png",
+      "sha256": "0b5069522f8bf77a905b92859f169d7159fba81c505464176a97d9ccc9a1702d",
+      "bytes": 24299
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/milestone-sharing-154.xml",
+      "sha256": "d7b22d3eb1602f96506d5a8bcc8ad1942ade2a0dbe08029d71ce037241c63d25",
+      "bytes": 1323
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/milestone-sharing.xml",
+      "sha256": "059c237d348b57dab9e5f5ad3939bb62bbbc7a372fc84b37584a55edd366f9ab",
+      "bytes": 5826
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/milestone-ten-likes.xml",
+      "sha256": "a352e9456bbb0438c8f45a245a1465d7e55154d7808b55997621cbf3aa23b484",
+      "bytes": 5807
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/miui-xhs-anr.xml",
+      "sha256": "c7e5591dbfc8a9ffad7dd4d826664b90f1f2e5970222a79fd18561c4f4f7d34c",
+      "bytes": 3399
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/native-menu-notification-121.xml",
+      "sha256": "d98d61329907bbccd78646e1c88e73a189b6f121055b35bed5a248515ffeef80",
+      "bytes": 3434
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/native-menu-update-popup.xml",
+      "sha256": "649f235fc90a69dcb99fad98e6ff1fdbee6d5365751ed92fffa7a79041cd3172",
+      "bytes": 6110
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/notification-47-systemui-only.xml",
+      "sha256": "63f4f8bd51b7aa3763a9fd60166dd5a0eee764c235d35b15e3be318876fbc937",
+      "bytes": 1074
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/number-387-47-v57.png",
+      "sha256": "d2845948dc031e2c1331ffd3c7e655343c6122456ff8508a170f787c349e0bab",
+      "bytes": 2233
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/title-collinear-141.json",
+      "sha256": "dae47c9af8388a45248b65ed684f47fba98010881eec73b64ee60cc7d57c918f",
+      "bytes": 6471
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/title-prefix-cjk-155.json",
+      "sha256": "4373bd2ff0652a237f92d342f4ce3557da51a0a62b4037d04addaccb260b4594",
+      "bytes": 5849
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/vivo-browser-first-use.xml",
+      "sha256": "bfab6884e65921bb697d6730e1dd2069795d80770747716c4564e2cda581037f",
+      "bytes": 18078
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/vivo-browser-location-permission.xml",
+      "sha256": "5344d70e0bb1fb87e5c0a9616b098dcf45b86acb5c9791fad211b3d0e75609a1",
+      "bytes": 2354
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/vivo-browser-returned-resolver-43.xml",
+      "sha256": "f0c974f941c2f00768563b81133bd70e293995f587eba4a0f3c187b32102ff25",
+      "bytes": 6992
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/vivo-framework-usb-cancel.xml",
+      "sha256": "1d20c7e61f205c4807f65fdf0632dba8340edb7b3160441734c56435f61270e4",
+      "bytes": 13633
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/vivo-notification.xml",
+      "sha256": "826b937ee7787c7b26afe01b5f8345ce99b812d9d7e506e02f126232a670d640",
+      "bytes": 7451
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/vivo-overview-elements.xml",
+      "sha256": "987a3192eadeab74756c2317a4e2dc6387d2c93da359c92d0c3b526372697f60",
+      "bytes": 8951
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/vivo-store-update-elements.xml",
+      "sha256": "897db8e17502ff766c2677c4090c9c9eb720b12b427f98271c261380fdbff2f8",
+      "bytes": 1661
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/works-47-before-subset.xml",
+      "sha256": "5a16e6eca79202a3f102f2560cf6dd1bf4ea7301f8342b131223af4ecef5e20d",
+      "bytes": 73210
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/works-47-stale-subset.xml",
+      "sha256": "aba9a4f773adbc3f675326d01d4e366812548f3f6ea1429995d8e4862a62746b",
+      "bytes": 72493
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/works-clipped-row-rounding.xml",
+      "sha256": "797f1af511b9ec90b6c9c848afb9867e789a511f4df1b5256e528298916031a2",
+      "bytes": 164477
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/works-duplicate-old-titles.xml",
+      "sha256": "5d0fdec7f489fecc259a195535f2c670b18d7baa689f1ce275ae22f0bf4e3a87",
+      "bytes": 60757
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/works-elements-141.xml",
+      "sha256": "729ca16d9c18945184ed75c458abb16a52d607ce2475586d1da793259a69568a",
+      "bytes": 61955
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/works-flat-footer.xml",
+      "sha256": "b744f9af2fa4e0e84ce04ea53f6d50792fc90047e830b6f7702cbde597a63ac8",
+      "bytes": 15031
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/works-header-only-47-after-ocr-error.xml",
+      "sha256": "ba32dcf8f784dae05282c6fed4d9f5b2f52e56d6a369fffd05345794922bd218",
+      "bytes": 5097
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/works-long-native-title.xml",
+      "sha256": "2bf9450bea9bead664ff54b6d376df17c657bfa9407d478de2454a63126c5623",
+      "bytes": 116466
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/works-reviewing-note.xml",
+      "sha256": "df3ef18d47b69bbf0597bdb2b78777cd95a772804e4550ee29041a05266f2f78",
+      "bytes": 63353
+    },
+    {
+      "path": "windows-agent/scripts/install-service.ps1",
+      "sha256": "a344876246580c72bf83ed95274a5047e7a30c6c63217a4a5beec245d97a7de7",
+      "bytes": 1099
+    },
+    {
+      "path": "windows-agent/scripts/install_lookup_ocr.py",
+      "sha256": "14f389ad55b0d976f50a2524d7888c1fd19b4a31ebeee7d3670f52216b83934c",
+      "bytes": 2999
+    },
+    {
+      "path": "windows-agent/scripts/kuaishou_vehicle_lead.py",
+      "sha256": "d12ec654560d3115254fb2025132c8f32e60544b9523772ee951b891bb3ea3e3",
+      "bytes": 33127
+    },
+    {
+      "path": "windows-agent/scripts/lookup-native-double-card.fixture.json",
+      "sha256": "f78e67a7375b9e0a1efeecc2625ad65b9a8e64e1ff8ab83b0596494790687228",
+      "bytes": 3516
+    },
+    {
+      "path": "windows-agent/scripts/lookup_ocr_runtime.py",
+      "sha256": "786aa196b75fc9401c7d7b721f4c21a67cd527a429fe757605bc7bbcebb171ae",
+      "bytes": 4775
+    },
+    {
+      "path": "windows-agent/scripts/lookup_ocr_worker.py",
+      "sha256": "4243c4da4582c1259198842fa3c577ba9ddce8a47e687611b2dec824d9304ccd",
+      "bytes": 2914
+    },
+    {
+      "path": "windows-agent/scripts/lookup_page_actions.py",
+      "sha256": "e281eaf4d7396a8f4ba4a6f18bee47131005ddfa8db90cc94c46cb2f3c4811cc",
+      "bytes": 2679
+    },
+    {
+      "path": "windows-agent/scripts/native/xhs-native-navigation.jar",
+      "sha256": "910f03a9c4cd6963b89ce1dd4bf4a6ad21b6f888029970401134fdcf820af754",
+      "bytes": 6194
+    },
+    {
+      "path": "windows-agent/scripts/native/xhs-native-pair.jar",
+      "sha256": "9e696792b37dd269803d230ef1e97754bf895b1d2b852e8d23ae838c757cbed3",
+      "bytes": 10238
+    },
+    {
+      "path": "windows-agent/scripts/native/xhs-native-window.jar",
+      "sha256": "15b043f5f78c17855b08d354dc5af4004216bc7ce14b5d03fa9e05f72e8d57c7",
+      "bytes": 9338
+    },
+    {
+      "path": "windows-agent/scripts/probe-douyin-qr-flow.mjs",
+      "sha256": "3f78b4148d3331e7127c776a311af4bdfc0159c38bfb125da3294ec301e4630d",
+      "bytes": 11985
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeElementsProbe.java",
+      "sha256": "dab9337121e000b5449e6d5cfa1e1a85472ffe30d9da403eac1274486510127a",
+      "bytes": 10558
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeElementsProbeTest.java",
+      "sha256": "9061e4a209c3a3eaee954d8edf9576273e8753b71b49d250d9ae33973187f50f",
+      "bytes": 4698
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeNavigationAction.java",
+      "sha256": "00d6a9a34ff63829dcdb0183aa5307615857e42fa19fe5eb29434dabc6064c65",
+      "bytes": 9660
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeNavigationActionTest.java",
+      "sha256": "2ec6788f85d5390b39e04480cbd6c731a1624d6513c094e6fe2f7bf81401cbf3",
+      "bytes": 4611
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeTreeAudit.java",
+      "sha256": "7f133c5c5caef95cc316a89184299abd264ee071a0bfe9640ad0c4b68af89da8",
+      "bytes": 10669
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeTreeAuditTest.java",
+      "sha256": "f7d8cc2a772ab48804c996821837f10a7edf2e83cc3b795254eda0b34da7daf8",
+      "bytes": 2089
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeWindowPair.java",
+      "sha256": "3e10ed20d79130d9f0bea5816adc6ef325a9627d6ab199af206bb6aa7ec5f217",
+      "bytes": 3857
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeWindowPairTest.java",
+      "sha256": "cb557026cb8aa29310a64f7e6dc685dafba5e4124ea4013e905bd93fd7d037f8",
+      "bytes": 3050
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeWindowReader.java",
+      "sha256": "b35fa0bc036dc796dc8a2ccab9c4bed61886ba6837924946e20a179247002059",
+      "bytes": 8603
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeWindowReaderTest.java",
+      "sha256": "d761289cc615024e2fe926bc644fd3c6ef7f43c56ea9604a52dceaf0f32b070c",
+      "bytes": 3593
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeWorksSessionProbe.java",
+      "sha256": "9ae5bb073cee3914d09e32aa47a4cfb70f2ff43f181b5c6648dd7ae71378ff2e",
+      "bytes": 7085
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeWorksSessionProbeTest.java",
+      "sha256": "8eb4126574bd260003ec9327b54146cf9cbde348969f331a2893567f4b021cee",
+      "bytes": 3309
+    },
+    {
+      "path": "windows-agent/scripts/probes/build-native-pair.py",
+      "sha256": "2b79e551f76a86cbf9d1c7697e234990f06cca585111a2c73701256bcad92b1e",
+      "bytes": 1798
+    },
+    {
+      "path": "windows-agent/scripts/scrcpy-source-probe.mjs",
+      "sha256": "e38a77ecf12a839fca97aab31af10acdeef8a21455fb2c76aa82ad97001725aa",
+      "bytes": 2347
+    },
+    {
+      "path": "windows-agent/scripts/set-runtime-config.mjs",
+      "sha256": "2e2b183daeb36d69d3216ba8ad64a447d92e848444ee4a145dae2fe17839bf7f",
+      "bytes": 1041
+    },
+    {
+      "path": "windows-agent/scripts/smsrelay_fleet_preflight.mjs",
+      "sha256": "a5f8d93fa863b19dfb0302a538b5409d042bf885eb45122e4f04288c4f456c98",
+      "bytes": 8770
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_account_action_rows.py",
+      "sha256": "7265f58dd5f1dd9f42ef0634a375bf943c631d457ce92316083fe149bdce0c4e",
+      "bytes": 1920
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_account_cooldown.py",
+      "sha256": "7c1b043ccef5bfd9c2445727e646b80c61699a7bb39558b6be01a171b816f42a",
+      "bytes": 10266
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_account_picker_transition.py",
+      "sha256": "d9cef0dd18b2d20316768bf7ba9cab19579b9f0bbee28ff433cbbb235dcd7fff",
+      "bytes": 8580
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_account_usb_overlay.py",
+      "sha256": "6036b9f443172ab58e31c3fb9e2dc0648434ddd370c8cd21706b9e049393560c",
+      "bytes": 3351
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_alipay_info_suggestion.py",
+      "sha256": "2e047831e9e88c14437ea95fa59879e7c086c64a98e1f2a8d9faf7289ff38f6a",
+      "bytes": 1919
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_blank_card_guard.py",
+      "sha256": "276537f57362ed18dcac9cb1fef5986e992d81bb0222fb874dc2057e569eda02",
+      "bytes": 6378
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_card_boundaries.py",
+      "sha256": "00cbdca12e089123962eeeec51c1e6d8b90ada228f1ec647bb217ceeaf9303f3",
+      "bytes": 7196
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_cold_access_denied.py",
+      "sha256": "c38a1163c253f54c9e7a948a527c0a13aa2a97b36e09c93a0622d8b629e5990d",
+      "bytes": 4967
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_cold_restriction.py",
+      "sha256": "79e4738140e46a4705a619b6510c649ef1a670c7da46c2a504e3e2079d9d37e5",
+      "bytes": 5099
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_compact_result.py",
+      "sha256": "21454b6513060ce3a15fe9688896686beb3460bf84a033516c45cd168cd17dc3",
+      "bytes": 2176
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_customer_suggestion.py",
+      "sha256": "70d20edf5166bf14919bd74d65641661001494d43499b22599ec00990f83fc4a",
+      "bytes": 792
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_daily_replay.py",
+      "sha256": "e6de6e29fec450ca0282dce933a43e03b72eff9080babd7729df7c9e7070b168",
+      "bytes": 4050
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_failure_diagnostic.py",
+      "sha256": "a592927526384dfd87451f3e6996be57eb9a21253acbec0e0a51b093f06030ff",
+      "bytes": 1669
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_gray_compat.py",
+      "sha256": "9474ede790b23b10139a2aaef9b9009e97e2d65975a809997b4186a45eefdddb",
+      "bytes": 5768
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_human_probe.py",
+      "sha256": "03b343cdb50a87f4bb42206708ec08b85a23d70d9151822c5e3fa5f3962f01b0",
+      "bytes": 5384
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_keyevent_compat.py",
+      "sha256": "3accb92699c70914773c13f2d0bc765d9979b9959126465869498c625815fd04",
+      "bytes": 5292
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_limit_popup.py",
+      "sha256": "aa6a7368b9f9f883e7300db514983f87b120baa915dee6f2f916afb0e8b68a98",
+      "bytes": 9284
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_loading_animation.py",
+      "sha256": "e791cac35977a4a7977e981a3283babf34a0d9aaa3d59a9da440db4c8fa82a60",
+      "bytes": 1580
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_loading_guard.py",
+      "sha256": "35e1473023b14fb6c75c771d66f332981d8a26bd370466040c0d589ed6c09f5e",
+      "bytes": 4358
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_loading_transition.py",
+      "sha256": "49da16d230e544e0eedf6f103610687801dd458cf8dfe0dd596a60881008060c",
+      "bytes": 776
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_login_consistency.py",
+      "sha256": "7ed547914cda9602caff00dd977c93ed4aff0c2763e5c4f36e12cb5802027d8b",
+      "bytes": 1564
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_merge_compat.py",
+      "sha256": "40d0c388b87c5d37a75ab8349cc95b055f5a6768c25e5cc8a003348a763b5715",
+      "bytes": 2194
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_name_formats.py",
+      "sha256": "1fcbf5cc3d5b1f8f305d3d684d6091e1ef707c0b58303bfac16ef83823bda1dc",
+      "bytes": 3277
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_navigation_read_timeout.py",
+      "sha256": "6690e7c22f7a35561d600a14d620dc86f0a0701d8cc432b1086cd935c82e4431",
+      "bytes": 3208
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_ocr_runtime.py",
+      "sha256": "0c87324890573809b320595df8c355b275af371902c6291c04a3bf8bdc4b17e9",
+      "bytes": 4323
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_overlay_guard.py",
+      "sha256": "6a060a0dcf5ed64085afdc53d49d27c246839764e8cda30f0bbb6a0589ed0bd3",
+      "bytes": 15698
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_overnight_compat.py",
+      "sha256": "305c0192356ec60f2e0bfce7b10fecf67c80e11169431a4c53647aa7bb3266d8",
+      "bytes": 3003
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_page_actions.py",
+      "sha256": "0edc072c28289f946ea341e8679b86905c850602f3d45b31d111ef6157fc274c",
+      "bytes": 13229
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_page_recovery.py",
+      "sha256": "b39047fa9463d11c7ae87799bfd1ebb53ab417739f10a3e23a428d9e60312778",
+      "bytes": 11470
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_phone_character_confidence.py",
+      "sha256": "61baca6889d9c39e36ecd061ca07115d36c7489a6669bcaa3889d305c808e906",
+      "bytes": 3107
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_picker_budget.py",
+      "sha256": "10a0d2305df977c904753cd93501eab3f52246a17f2944d9aba05824969df526",
+      "bytes": 5596
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_poco_crash_overlay.py",
+      "sha256": "8993846a65c98566b1f7c2c7f03c6603f26ff86528d2c78e3cdc7a6c943ecc51",
+      "bytes": 5264
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_prepare_notification_shade.py",
+      "sha256": "6b181006d0b40912668fb9b539d431908196d18ef3f510e90cbe5a442f15ecc8",
+      "bytes": 4158
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_prepare_technical_recovery.py",
+      "sha256": "220fcd0fb0e69e02b20e6e94d7a8cc4f26567da40ac6b08fe718f7bc47f12ff7",
+      "bytes": 11258
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_prepared_empty.py",
+      "sha256": "ad60ca97b31a0cb963d73e25c6ebd7fb96e587c3343ed077b5dc2a89527300f7",
+      "bytes": 1704
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_query_budget.py",
+      "sha256": "8eb40f86c76466f900443915316a0f6e51f6941a47356d95914be1e46f4338f6",
+      "bytes": 3635
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_reader_boundary.py",
+      "sha256": "a25a82d951479f9437a291ff44197252662835059842fa9c1894100d3f997c71",
+      "bytes": 3482
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_recharge_recommendations.py",
+      "sha256": "716ea331d9901983d1566d108e9eb45ec3409512d304234ba374915d75823956",
+      "bytes": 1933
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_remaining_compat.py",
+      "sha256": "bb00a453daed3470f7c392701f2d443b1135949fa6cb414672af0a2db85c866c",
+      "bytes": 2172
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_result_wait.py",
+      "sha256": "1275ad72c4dc5961ecb9d8457f93cf84839ee04a98a932bef457743ae2ec29a4",
+      "bytes": 2767
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_resume_overlay.py",
+      "sha256": "827ae31b688be209d28fd6b6096e8088ec8d48cbeebb8487f35825be3d52364b",
+      "bytes": 3790
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_search_entry.py",
+      "sha256": "ee9ee886d99ddc51d666d101bf7b09ada8c9e0c222f0c78b3dc93bb4e3fa3695",
+      "bytes": 3263
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_stable_unparsed_handoff.py",
+      "sha256": "814488517aa5c29be9a277f8a3653fa85e81089d260ea3d299e12ba921541ecb",
+      "bytes": 4794
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_suggestions_ads.py",
+      "sha256": "839651b32329f658649384953d3e0dfc4d8a39c2cf81922b35a632ba15905ccc",
+      "bytes": 4237
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_switch_login.py",
+      "sha256": "e9be135a8cd2022fc8cd78316b32b47476d5915addedfba9cf581462b17b84f1",
+      "bytes": 3107
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_transfer_shortcuts.py",
+      "sha256": "9601cfb780b61c206b3b4ce3f49a526822793945a48def807644640385d215f6",
+      "bytes": 3430
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_transient_gap.py",
+      "sha256": "eb9f3a63bab7894860f01d889f5c9dd0f78d404df297a70c11c3305acfa8b78c",
+      "bytes": 1653
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_transport_read.py",
+      "sha256": "8097ef84f607f21020431d2058aaaada9f2cc603e9494eea6e1cf816ebb0b133",
+      "bytes": 4537
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_usb_recovery_flow.py",
+      "sha256": "8b886bfd9721a780f30e21f805fa13b40f7cdf5ff6bfc60d9d6fbd2e02ca2035",
+      "bytes": 10543
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_visual_action_scope.py",
+      "sha256": "89da63803f3ea0cd126d974291cb2adddf507d3799421e5133bcc7c1d93d6789",
+      "bytes": 2441
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_visual_budget.py",
+      "sha256": "926b711704fa6c180faee4030f76bf3ea1cb587e3ff972661fc54d88e60301a9",
+      "bytes": 1370
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_visual_inline_phone.py",
+      "sha256": "9124ccc3f02aaf4a86e6daf17fc795b20dd19388e1baaaab8055c024bb693b23",
+      "bytes": 3424
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_visual_pending.py",
+      "sha256": "d0d02995307cb2e2095b639b7730c6995d2849c62400f3c6935dc24752ecd26e",
+      "bytes": 3523
+    },
+    {
+      "path": "windows-agent/scripts/test_lookup_visual_result.py",
+      "sha256": "c9a986a27745403c537cdfc60f3f754e16bd0e429571a57b9dcbcb05d2dbd546",
+      "bytes": 2554
+    },
+    {
+      "path": "windows-agent/scripts/test_post_human_closure.py",
+      "sha256": "f684370f7b2e3346b9429a9a5971598a8efba6abb5857459bc592ad5fb56368a",
+      "bytes": 4083
+    },
+    {
+      "path": "windows-agent/scripts/test_wecom_invite_preview.py",
+      "sha256": "3e30987927b23255ec9dc6e878655bce846a61545f2ccb708590f4631750c7a5",
+      "bytes": 17273
+    },
+    {
+      "path": "windows-agent/scripts/test_wecom_real_elements.py",
+      "sha256": "df595eafad4ea1d57aa70bc0ba53b5ef0b0ebc755384cdb8c91c3511e9c492a9",
+      "bytes": 11613
+    },
+    {
+      "path": "windows-agent/scripts/test_wecom_remark_preview.py",
+      "sha256": "ed510d39a12b55312bc4420dc51bf0ea3766a8cd76ebfd6cbc5e30f8980b11c1",
+      "bytes": 10034
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_anr.py",
+      "sha256": "8fc63b770345985eb210a1f6bb425e79944d1953a62ee4c51e0be7830b162528",
+      "bytes": 2884
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_compatibility_20261015.py",
+      "sha256": "e43de91beb259454af3be05056e3e95b1d1c4ddc99678ecba32111c1139058d8",
+      "bytes": 70984
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_completeness.py",
+      "sha256": "e7101413f55f5fc8cac8197030ff5a9e2646279908f73d74a8179d057fd69269",
+      "bytes": 10567
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_data_sync.py",
+      "sha256": "11dd3ff7d543100c02e5b8c937825bf69412ac9413a7aef2b92de8ea9e5ae751",
+      "bytes": 129873
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_element_pair.py",
+      "sha256": "3a22c495f069e6bf91b0d95489faf9916aba778dc33efa2ec70e3d2731d1c72b",
+      "bytes": 12075
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_elements_only.py",
+      "sha256": "7ded7d38ee318df7afa4080c39b02774f446ae9dc916e0b212bcb7f0cd85012f",
+      "bytes": 20426
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_elements_stability.py",
+      "sha256": "df2ef6b9da477441ec7b1160ab18b643f2111d132af131517209b75d31ff26c8",
+      "bytes": 10752
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_late_notification.py",
+      "sha256": "a0449d6b180dae3742233fe8684ca15bea69cd235d1c718159ac2181f123d77a",
+      "bytes": 3765
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_list_ocr.py",
+      "sha256": "c8a5c0b47956f013f247be58184fd33a01ad29d16d821b7ae629be41f073ee3c",
+      "bytes": 20340
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_loading_wait.py",
+      "sha256": "c191c281eb100931c70e95c9c3eb9eb662f5f35ff72c968cacb258d49b9db738",
+      "bytes": 13139
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_native_elements.py",
+      "sha256": "29d9fff13397d2ab801705687a7688a9585fe8f2dad0261b7c10425d3143167b",
+      "bytes": 10138
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_native_navigation.py",
+      "sha256": "071e84af20db0b3f0e69dd712ea4c296b24217da0011856c431410b7ccd7816a",
+      "bytes": 3228
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_native_window.py",
+      "sha256": "96e96f157560f0d73ce22363d21e3564358855027d2aa83ced511c1ba80d0d8b",
+      "bytes": 5066
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_parse_performance.py",
+      "sha256": "cb6883d3b1d6736580225331349aa776f513340d1806a6b2f45646b8ee164f7e",
+      "bytes": 2532
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_speed_entry_scroll.py",
+      "sha256": "13677fe9de87163b82caf0cf8f7b5914ac4e2556dd97f4f7ba03acb996d43e3d",
+      "bytes": 7035
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_startup_elements.py",
+      "sha256": "73abbf5194352d18fec516d052e63f3aff274e3bd00f0df923d000fdd68a76f7",
+      "bytes": 14968
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_verification_speed.py",
+      "sha256": "c4c5ced4ad58ad622ccac7611ffdb381ae96e2d039ab8d5e92105e6bacca58ff",
+      "bytes": 8571
+    },
+    {
+      "path": "windows-agent/scripts/uninstall-service.ps1",
+      "sha256": "b8685b95d3a8495cb216b17145264878984e2c52c3b84fb0c3f8c2bb11ebc278",
+      "bytes": 345
+    },
+    {
+      "path": "windows-agent/scripts/wecom_invite_preview.py",
+      "sha256": "11bd468f1ca57ae193ea3e41f7911aebe404d1e7ad8f63898ccab8f5eb8d2f67",
+      "bytes": 18264
+    },
+    {
+      "path": "windows-agent/scripts/wecom_remark_preview.py",
+      "sha256": "bcfadd95c6ad69b5b957d49e37f450ff1f1b0911411047dc7393dedf746d8207",
+      "bytes": 9623
+    },
+    {
+      "path": "windows-agent/scripts/xhs_airtest_poco.py",
+      "sha256": "8abb00385d12ce99dc5995ae1424f226a5e9f887461c920594e68d27f44fd4e1",
+      "bytes": 114496
+    },
+    {
+      "path": "windows-agent/scripts/xhs_list_ocr.py",
+      "sha256": "4cc3d8ae042c6951b65ec93cc755e57cbed0440393b4c841bda20f76def3a516",
+      "bytes": 77567
+    },
+    {
+      "path": "windows-agent/scripts/xhs_native_elements.py",
+      "sha256": "e94f3066cb9e99c50ed3f7f18ae6c56a32c543774fefa863d125df08f173d46e",
+      "bytes": 9565
+    },
+    {
+      "path": "windows-agent/scripts/xhs_native_navigation.py",
+      "sha256": "a1e04af69daf72371591b8238c5de17320a514471f8a13499257e03d748e7a3c",
+      "bytes": 2417
+    },
+    {
+      "path": "windows-agent/scripts/xhs_native_ocr.ps1",
+      "sha256": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "bytes": 3157
+    },
+    {
+      "path": "windows-agent/scripts/xhs_native_window.py",
+      "sha256": "1b15e62ccad9e1d3fc4b81bbe8b5a1adb57f7f913b57472ba54283415e0ba772",
+      "bytes": 3918
+    },
+    {
+      "path": "windows-agent/scripts/xhs_ocr_digits.png",
+      "sha256": "6a65dfb150ecbd4c56140b28fea51e89d11d8187031009447bab0d880164522f",
+      "bytes": 184572
+    },
+    {
+      "path": "windows-agent/scripts/xhs_publish_poco.py",
+      "sha256": "8411a66b4b7dd8adab0cee528c66ec775842bfc7d854d4ecd44e7319732ca4d9",
+      "bytes": 35327
+    },
+    {
+      "path": "windows-agent/scripts/xhs_xml_uiautomator.py",
+      "sha256": "3b27f4c309df6ab095d676ea43316091477792ec11e7634ccb52b70afe117dfb",
+      "bytes": 26159
+    },
+    {
+      "path": "windows-agent/scripts/小红书数据同步.py",
+      "sha256": "cbf038e297f3b67c8b4b681bf93b22e6026c7683d263d1c4fc62b56897de63e0",
+      "bytes": 161710
+    },
+    {
+      "path": "windows-agent/sms-listener-helper/sanitize-notification-dump.mjs",
+      "sha256": "211eec72784b97fb2fc961a0ed15ad570699398c47ece91368baa5ade4c83497",
+      "bytes": 2247
+    },
+    {
+      "path": "windows-agent/sms-listener-helper/src/com/phonecloud/smsprobe/Main.java",
+      "sha256": "aa5eb2b1e9929bb7b04b97e8ca110eb79223d4d5c077ac0e5ccd1f9ba0989f5b",
+      "bytes": 12357
+    },
+    {
+      "path": "windows-agent/sms-listener-helper/watch-notification-code.mjs",
+      "sha256": "6a8285cdb9a6dd409e636cb07fbdee95aa2bfcff4657432115438de580fff5e7",
+      "bytes": 3665
+    },
+    {
+      "path": "windows-agent/src/adb-priority-queue.mjs",
+      "sha256": "0bb8cfd86baaddc8a32d040e5835452f06e1ae5e3b78cbe2aeb0a67a24e5495d",
+      "bytes": 3096
+    },
+    {
+      "path": "windows-agent/src/adb-priority-queue.test.mjs",
+      "sha256": "8f1b3c16a14f3f576411ee3db5922f10eb8a39fb0552fbbb915f52f270f03283",
+      "bytes": 1388
+    },
+    {
+      "path": "windows-agent/src/adb-server-recovery.mjs",
+      "sha256": "693535b4379089e33b7badeaac2e2665c1b2efb797adba1264e8c431d356fb2f",
+      "bytes": 1713
+    },
+    {
+      "path": "windows-agent/src/adb-server-recovery.test.mjs",
+      "sha256": "f1881e23e5ced33a711d1adc565f4581a7560806284a92a4ac8ad7046caa0a6d",
+      "bytes": 1692
+    },
+    {
+      "path": "windows-agent/src/agent-instance-lock.mjs",
+      "sha256": "c18e716c1295931d8aad73c3e2df6c4cd10562c52938b1749eff2f47f3e9d0ac",
+      "bytes": 2709
+    },
+    {
+      "path": "windows-agent/src/agent-instance-lock.test.mjs",
+      "sha256": "cf36719e0e8ded133ec8ef2929dc4fd1cd46db42f1946c2406edf848b6483dd7",
+      "bytes": 1349
+    },
+    {
+      "path": "windows-agent/src/airtest-worker-lifecycle.mjs",
+      "sha256": "af10fa43a5d7982b590b44f432ab206d15adf285fe3b617f8b286e13b3d2b374",
+      "bytes": 3660
+    },
+    {
+      "path": "windows-agent/src/alipay-poco-fallback-policy.mjs",
+      "sha256": "0d56fccc2d1b81541668cf2880e3da4b4547b54a34aef92120516bd6e9fd2f09",
+      "bytes": 1083
+    },
+    {
+      "path": "windows-agent/src/alipay-poco-fallback-policy.test.mjs",
+      "sha256": "bc8ed1a46cc6e8a3a215a56d7aac4b80715564142b3e80f15f1365cd299de6aa",
+      "bytes": 2213
+    },
+    {
+      "path": "windows-agent/src/atomic-json-writer.mjs",
+      "sha256": "c7aeda35d9fffed03eca35cfb290456e54d0f96e7078fbda858a4906d22f2294",
+      "bytes": 1211
+    },
+    {
+      "path": "windows-agent/src/atomic-json-writer.test.mjs",
+      "sha256": "4d3f5186be710b07f929e99e52d619728dddc2f343819afe8489ebc3665fe823",
+      "bytes": 1824
+    },
+    {
+      "path": "windows-agent/src/automation-center-wiring.test.mjs",
+      "sha256": "bf99779b693a6a150232bafaeee7d4f8709da115b01e45ec2859dcc9ca546cd3",
+      "bytes": 7936
+    },
+    {
+      "path": "windows-agent/src/config.mjs",
+      "sha256": "b233775c589ab22e6662a23bb82e507c9a3f635f1112709bfdae24d854a5d254",
+      "bytes": 21371
+    },
+    {
+      "path": "windows-agent/src/config.pre-20260722-pacing-default.mjs",
+      "sha256": "ade70095493249dfcb9047d950fad7fc258f2fadddd214036ef5318aebdaf7d1",
+      "bytes": 6148
+    },
+    {
+      "path": "windows-agent/src/config.test.mjs",
+      "sha256": "5e93f6fa873c4e3af99addabea64678ce8aa049ba34c0a21a48b5854fe31b48e",
+      "bytes": 3189
+    },
+    {
+      "path": "windows-agent/src/device-actor-integration.test.mjs",
+      "sha256": "11f949b78ba99db4c1f11b70de2f3e12e88b40c07c729acc54a9bf3b092cb52b",
+      "bytes": 1734
+    },
+    {
+      "path": "windows-agent/src/device-actor.mjs",
+      "sha256": "b1d97b76ce1d71d0fa3fd70757311e78f76255661288e9cd5199b6c3cba2a2cf",
+      "bytes": 1505
+    },
+    {
+      "path": "windows-agent/src/device-actor.test.mjs",
+      "sha256": "110380560e8fc39a0ebed08c95813be2be0de97b156ab79263870f98fe6c9182",
+      "bytes": 1288
+    },
+    {
+      "path": "windows-agent/src/device-recovery-state.mjs",
+      "sha256": "6315883802f283291f4eab489c6c2975e9dfaee2d035143732a2214f4e723293",
+      "bytes": 4636
+    },
+    {
+      "path": "windows-agent/src/device-recovery-state.test.mjs",
+      "sha256": "8d1269046948a5a00ee2902dc0cefd88f6e190d68913788b34cfbc1bd04015d7",
+      "bytes": 3892
+    },
+    {
+      "path": "windows-agent/src/device-scan-agent.test.mjs",
+      "sha256": "41910c55fe547c1a8dcd4fea5ee0a7b8db42e60ec18bc35e6ec8719ef746e6ad",
+      "bytes": 4282
+    },
+    {
+      "path": "windows-agent/src/device-scan-cache.mjs",
+      "sha256": "1526782cd19841841535a790d78c350103aa50f12ae4e0ac5557828afd09e1a5",
+      "bytes": 1220
+    },
+    {
+      "path": "windows-agent/src/device-scan-cache.test.mjs",
+      "sha256": "51315ed285033bce42297c63b8ff9a2533dc0fe528f531a5ad8cac5cbba13ee7",
+      "bytes": 2103
+    },
+    {
+      "path": "windows-agent/src/device-scan-pipeline.mjs",
+      "sha256": "8ef31ead50d4b1bec3bc648d72d6cbe64fe4cc102c04a5c0d269240295a5a6c4",
+      "bytes": 1824
+    },
+    {
+      "path": "windows-agent/src/device-scan-pipeline.test.mjs",
+      "sha256": "9cd13646b486657c94a3db393a9689e8fdce5f3f5948047a33af2ed5ba368f45",
+      "bytes": 3722
+    },
+    {
+      "path": "windows-agent/src/gallery-import.mjs",
+      "sha256": "d0e64f21c1c3e85ca89929f08c7739c6e5ba21600a70b74e2318ba388a425d74",
+      "bytes": 986
+    },
+    {
+      "path": "windows-agent/src/gallery-import.test.mjs",
+      "sha256": "477d8b59669552d7f16145363e46d944c7bb4172fb6b69e040d136493e070573",
+      "bytes": 665
+    },
+    {
+      "path": "windows-agent/src/gallery-task-delivery.mjs",
+      "sha256": "382c1e5b1519600e60405dae813687d4499c3770356969c0878c5dd934656a71",
+      "bytes": 4826
+    },
+    {
+      "path": "windows-agent/src/guarded-task-runner.mjs",
+      "sha256": "150e14ea6fcdd6b0bb117d771bce084347cb26442a7674b0963cf9887df1d25f",
+      "bytes": 1496
+    },
+    {
+      "path": "windows-agent/src/guarded-task-runner.test.mjs",
+      "sha256": "f0269d5bf19ad8a995d1e504f304a6707ba23fbda94be1678b568b8d7a6f535c",
+      "bytes": 857
+    },
+    {
+      "path": "windows-agent/src/index.mjs",
+      "sha256": "884bc370558e6b0b3f2d0d46dee309da4467757b613c0da03576de8f9b34df74",
+      "bytes": 281087
+    },
+    {
+      "path": "windows-agent/src/installer-admission-agent.test.mjs",
+      "sha256": "c035d11bb1cbf65ccc7eb0fd41d393d2a2526fc6eb31676872de810d8c3f3357",
+      "bytes": 6814
+    },
+    {
+      "path": "windows-agent/src/lookup-account-policy.mjs",
+      "sha256": "51f9a5a3368554efbd8d07e2e420f70da7086e1b592c5959cada4752c9301c98",
+      "bytes": 10569
+    },
+    {
+      "path": "windows-agent/src/lookup-account-policy.test.mjs",
+      "sha256": "aef4d30310841c10abb4bfe9237be6ed3dd8d35123a18c547ec897fbfa1704d9",
+      "bytes": 20532
+    },
+    {
+      "path": "windows-agent/src/lookup-human-observer.mjs",
+      "sha256": "dbd77ffb69215d26610a814d1c4013e89a3d1a7b81ea509c9570d7035808a8a5",
+      "bytes": 7370
+    },
+    {
+      "path": "windows-agent/src/lookup-human-observer.test.mjs",
+      "sha256": "7263defff310569fdf25513971c48924057a5ff2ca540cc1917aea3aff51c9b9",
+      "bytes": 15155
+    },
+    {
+      "path": "windows-agent/src/lookup-network-restriction.test.mjs",
+      "sha256": "66c774f09fcf97a13640ff79dce82d268eccc9e3cae034eff6e7e2a07a61893a",
+      "bytes": 2717
+    },
+    {
+      "path": "windows-agent/src/lookup-observer-power.test.mjs",
+      "sha256": "3a827d15bccaff6f0c94ca283f79802b652edeb10369ec342b55f29f03e2c30d",
+      "bytes": 2622
+    },
+    {
+      "path": "windows-agent/src/lookup-page-recovery.mjs",
+      "sha256": "c15f74dad44d9199f0113fed9583fc331af7fc23e89242d20ab45357afacd499",
+      "bytes": 5244
+    },
+    {
+      "path": "windows-agent/src/lookup-page-recovery.test.mjs",
+      "sha256": "50b873375488e3a1602668b5175aa2da2de792103fc9da79d9bdc789d2d9c6cc",
+      "bytes": 21474
+    },
+    {
+      "path": "windows-agent/src/lookup-post-human-state.mjs",
+      "sha256": "11be7e62af4193387a0ebeef09f8130abb9577d94d1ddef8c816513c7e3a0580",
+      "bytes": 1666
+    },
+    {
+      "path": "windows-agent/src/lookup-post-human-state.test.mjs",
+      "sha256": "af1f0a99ec77f703c7c726e14ece9c2bc319795039be1a92ef2d205bceb6fe3f",
+      "bytes": 2687
+    },
+    {
+      "path": "windows-agent/src/lookup-preinput-reattach.test.mjs",
+      "sha256": "9efcf64ba4176db9067e5c13261dc899eaeb716244c0c202ab6aad7d6d7d2e38",
+      "bytes": 4007
+    },
+    {
+      "path": "windows-agent/src/lookup-reader-lifecycle.mjs",
+      "sha256": "9ea791d3db7c185c889c142393c3255c69fe581291fa7d6b81a880c6fbd62860",
+      "bytes": 2812
+    },
+    {
+      "path": "windows-agent/src/lookup-reader-lifecycle.test.mjs",
+      "sha256": "d077fffad40df141691da3dfd42d510928b74b3045193e4a47ceb6a42cdc9d66",
+      "bytes": 6096
+    },
+    {
+      "path": "windows-agent/src/lookup-recovery-trace.mjs",
+      "sha256": "7e26269618903b610784dca34331672d3e6d2d7fd0962039b3ed8c36231edd9d",
+      "bytes": 1777
+    },
+    {
+      "path": "windows-agent/src/lookup-recovery-trace.test.mjs",
+      "sha256": "fe1a98fd1b13224aa1bf76ebde99bb624f7be37f74c54d31af976413495fac72",
+      "bytes": 1856
+    },
+    {
+      "path": "windows-agent/src/lookup-result-transport.test.mjs",
+      "sha256": "02025ebc0ec618616c62dfe8f90412537818bc936f75741fd80fdcb3d9cc8af7",
+      "bytes": 3190
+    },
+    {
+      "path": "windows-agent/src/lookup-status-outbox.mjs",
+      "sha256": "43c10101e982b3a6881a2a1d5b7ae691553833d4548bf5f11f5ea51fc49b4dc1",
+      "bytes": 3347
+    },
+    {
+      "path": "windows-agent/src/lookup-status-outbox.test.mjs",
+      "sha256": "4d8636321c11dd64a31f88f1dd86858cc2a4eedffe6705e4ff179c9a7603de68",
+      "bytes": 5439
+    },
+    {
+      "path": "windows-agent/src/managed-lookup-delivery.mjs",
+      "sha256": "cfdc56ea307bf82fac3965a75b3d0a2115826e3ebeb1f3c2bfc48e2a74a8bce6",
+      "bytes": 1205
+    },
+    {
+      "path": "windows-agent/src/managed-lookup-delivery.test.mjs",
+      "sha256": "a688cbf4eff9722efcdb94534aa366da68c2759b92a75fbf8270ebb48b08554f",
+      "bytes": 1241
+    },
+    {
+      "path": "windows-agent/src/pnp-exact-actions.mjs",
+      "sha256": "2e67e3fb1612ac79499055878caa042fd91c4e42caa28df4621d4cabf7172cab",
+      "bytes": 830
+    },
+    {
+      "path": "windows-agent/src/pnp-exact-actions.test.mjs",
+      "sha256": "3ccb4b96c2d7ccca8c15193aa7f9fa86ee2a8c868432908b6bfe9bc335ecc972",
+      "bytes": 1412
+    },
+    {
+      "path": "windows-agent/src/pnp-missing-device-recovery.mjs",
+      "sha256": "eddfcf36dd904bf2ca834fb8958d21c55fa62c45139d880399d565b1006825f6",
+      "bytes": 3686
+    },
+    {
+      "path": "windows-agent/src/pnp-missing-device-recovery.test.mjs",
+      "sha256": "3e9b7b2c1a9354f89d2e18dc6f62602473bc14d3dc1aa35e653bbba9758d42a8",
+      "bytes": 3821
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-admission.mjs",
+      "sha256": "dede33101b9765342ffa50121a8edadf066d519c047646fcca82635ab6cc236f",
+      "bytes": 927
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-control.mjs",
+      "sha256": "92e2bcc37d7bc8b9d3e61d4385116db7181530d5fe125c6c2a3210c5142fde0f",
+      "bytes": 3351
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-control.test.mjs",
+      "sha256": "7f0896cfd32508d8d5143337e89c823c73a4bf9b93cd363431019729e5ae1ee8",
+      "bytes": 5889
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-policy.mjs",
+      "sha256": "5a66a8ccb4defbf837c58cb473fd884ffe1763c17256ed6642d91dfe1be4e850",
+      "bytes": 17220
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-policy.test.mjs",
+      "sha256": "a06bca3959075c4482c6bc9d587b8a2f217859a44119f5abb59f1b76328e2f0d",
+      "bytes": 15187
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-safety.mjs",
+      "sha256": "ad7de7d0575476cb807201e88b1c12842d12af0d9864e54809f4b98913c6d355",
+      "bytes": 17834
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-safety.test.mjs",
+      "sha256": "d5098630738adb344c31b1f78d8415865f96784e93bbaac4bffdb497d0301c50",
+      "bytes": 13850
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-verification.mjs",
+      "sha256": "0658e51af5e109fa3d78588860f64face9f15c7062b97e575e0201b7c1f2915a",
+      "bytes": 2159
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-verification.test.mjs",
+      "sha256": "437a7c96584f0e70ab3ed060be8a69b561b43c5d016e97207071e968123f41a1",
+      "bytes": 2082
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-wake-scheduler.mjs",
+      "sha256": "c0f98f5dac1454eba52317dda13f991cc1d765387b5256c67e892b599be678af",
+      "bytes": 1773
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-wake-scheduler.test.mjs",
+      "sha256": "50299e5e334294831641e7931a5a33fe1888cad2e42a666a42aa774ec6b754ed",
+      "bytes": 1977
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-wave.mjs",
+      "sha256": "cc9a01d0f80cf72f1de0b09288fee61d9c91919b8d59b60ec66aa6fde4b7d83c",
+      "bytes": 3417
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-wave.test.mjs",
+      "sha256": "235d587581c896eca4d5812e027194e51f12a279a662ec478fae910245c91e71",
+      "bytes": 3603
+    },
+    {
+      "path": "windows-agent/src/pnp-screen-coordinator.mjs",
+      "sha256": "5eb1551e7dedbef4eed8d941733fa20b4780a362196338c51db4651b78ab9003",
+      "bytes": 1923
+    },
+    {
+      "path": "windows-agent/src/pnp-screen-coordinator.test.mjs",
+      "sha256": "a590a4cb507caf4ee0b0b0982af57c25821071af2a9a9add361d06b80356d562",
+      "bytes": 3105
+    },
+    {
+      "path": "windows-agent/src/pnp-windows-inventory.mjs",
+      "sha256": "7fef1564a5159238064d207905326f1d8cd9b5f39274fe85ddcd951fdc3cef5d",
+      "bytes": 8299
+    },
+    {
+      "path": "windows-agent/src/pnp-windows-inventory.test.mjs",
+      "sha256": "fd8b32b65916335a56dc52442ea4a7dd650bd1d33a63b00f22d25c49868147ba",
+      "bytes": 1554
+    },
+    {
+      "path": "windows-agent/src/post-task-scan-policy.mjs",
+      "sha256": "a5bd899c70a9d1707fdaddc70b1adf1965260a7ce9d8bb10cccdc2de45842ec1",
+      "bytes": 347
+    },
+    {
+      "path": "windows-agent/src/post-task-scan-policy.test.mjs",
+      "sha256": "e9198ced86f76a03a4b71438b93a16a23083a04f22c4dcc1461585a7441766ad",
+      "bytes": 726
+    },
+    {
+      "path": "windows-agent/src/recovery-command-path.test.mjs",
+      "sha256": "9f984ae2f3a8edc815bc74aed95180afa4aea870b0c7f09d1426534216f9e12f",
+      "bytes": 5866
+    },
+    {
+      "path": "windows-agent/src/recovery-isolation.mjs",
+      "sha256": "2fe4305e6ca9afabb72b0406a224786659d88f2d8f3a1351e4a8b2aa475e312f",
+      "bytes": 3427
+    },
+    {
+      "path": "windows-agent/src/recovery-isolation.test.mjs",
+      "sha256": "c35564b700afd37ce9181688f799d109775f36d3e42b750571e60cde135d94d6",
+      "bytes": 3746
+    },
+    {
+      "path": "windows-agent/src/recovery-observability.mjs",
+      "sha256": "72ff0b2a548d78b323cf10d75184d69f51326b6343eb40b49c4d793b514675eb",
+      "bytes": 7717
+    },
+    {
+      "path": "windows-agent/src/recovery-observability.test.mjs",
+      "sha256": "ccabd843c452b45b458be5b102e6e1b3418e3cf9ac33193227024f183f1bbaf1",
+      "bytes": 4689
+    },
+    {
+      "path": "windows-agent/src/runtime-metrics.mjs",
+      "sha256": "78eab1cba502ade21ee3de1e686b207c3124562e2b67b7d85121c1918255b4d8",
+      "bytes": 1541
+    },
+    {
+      "path": "windows-agent/src/runtime-metrics.test.mjs",
+      "sha256": "aecf8d80398a1021bd0e47c2e33e24347d34751aef1fc73feca7db20a4f16057",
+      "bytes": 954
+    },
+    {
+      "path": "windows-agent/src/screen-backpressure.mjs",
+      "sha256": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4",
+      "bytes": 850
+    },
+    {
+      "path": "windows-agent/src/screen-control-queue.mjs",
+      "sha256": "27e6e5e39364817b2ee6a8ced3ecae8cee522904a7d4d3b0321bacd697212879",
+      "bytes": 3300
+    },
+    {
+      "path": "windows-agent/src/screen-control-queue.test.mjs",
+      "sha256": "a67976c783d961ff5ccd20a4f28aeb510631328391401d6713f71766160d6263",
+      "bytes": 4002
+    },
+    {
+      "path": "windows-agent/src/screen-stream.mjs",
+      "sha256": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "bytes": 93463
+    },
+    {
+      "path": "windows-agent/src/screen-stream.pre-20260722-pacing-default.mjs",
+      "sha256": "9b28020b8f97e79068d944fd484596cae4e4ab4ae5a53ecf165fc016030b95e0",
+      "bytes": 53592
+    },
+    {
+      "path": "windows-agent/src/screen-stream.pre-20260722-wire-pacing.mjs",
+      "sha256": "c374bfd2e01376d07bfecb209388c3a1b6a2a34b71218852ad58aa3a9fca8538",
+      "bytes": 53422
+    },
+    {
+      "path": "windows-agent/src/screen-stream.pre-pli-loop-20260722.mjs",
+      "sha256": "a7d113722291c2be02e3298d4364dc929c0ed3ca567e388272dfd2cea5efcb8b",
+      "bytes": 54526
+    },
+    {
+      "path": "windows-agent/src/screen-stream.test.mjs",
+      "sha256": "a7ba26f4f9b3b80c73aa08100ce1925bcbc22fd0df0391ca12695344f0216920",
+      "bytes": 30295
+    },
+    {
+      "path": "windows-agent/src/screen-stream.verify.mjs",
+      "sha256": "cc2678e743981d65d16d54eac928bce407275f5244921e67d56fb4808251beb1",
+      "bytes": 46897
+    },
+    {
+      "path": "windows-agent/src/screen-video-channel.mjs",
+      "sha256": "9e8c1ccd1439568beca2e99595764aa598893cee576109c514ae503486c1ca25",
+      "bytes": 2088
+    },
+    {
+      "path": "windows-agent/src/screen-video-channel.test.mjs",
+      "sha256": "613c5f361043889f9c80d6189a3ab643c49a494a8a24bcb873eb05ddca447c84",
+      "bytes": 1511
+    },
+    {
+      "path": "windows-agent/src/screen-webrtc-publisher.mjs",
+      "sha256": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04",
+      "bytes": 19015
+    },
+    {
+      "path": "windows-agent/src/screen-webrtc-publisher.pre-20260722-wire-pacing.mjs",
+      "sha256": "d78b425dfdca9e3079cb9505a7b57d5d4d2bc7de3ce5174f52ab9e2c133d820c",
+      "bytes": 14344
+    },
+    {
+      "path": "windows-agent/src/screen-webrtc-publisher.test.mjs",
+      "sha256": "33858d5614b36cd588b0935f5ed0e55991663249437abf314f06ab287fd0bd34",
+      "bytes": 5868
+    },
+    {
+      "path": "windows-agent/src/serial-adb-activity.mjs",
+      "sha256": "4668e7a416feac9860289d1d903849970645f45544eec77c77f26859b67132d9",
+      "bytes": 1694
+    },
+    {
+      "path": "windows-agent/src/serial-adb-health.mjs",
+      "sha256": "efb0f36c5b73511f5366704b30a10c5e0e6caf4fe13a23c328b60dec14c77c0d",
+      "bytes": 600
+    },
+    {
+      "path": "windows-agent/src/serial-adb-health.test.mjs",
+      "sha256": "ea673d061fa111eaaf465710345f3d671d8c32348ddda875f4938fdcf5f46a07",
+      "bytes": 847
+    },
+    {
+      "path": "windows-agent/src/serial-delay-scheduler.mjs",
+      "sha256": "ee71bc11573cb0880f6017a4ef1c3ca186bf2441c6e7e167be4c2d3f14ab7ea1",
+      "bytes": 853
+    },
+    {
+      "path": "windows-agent/src/serial-delay-scheduler.test.mjs",
+      "sha256": "7731765ed2b94d8215e106d441b2a255be77c6fa2488f4ad304c2b89c2049d0e",
+      "bytes": 1099
+    },
+    {
+      "path": "windows-agent/src/serial-reservation.mjs",
+      "sha256": "97fe332bc4877dc4ac70d613fc8c27f8c86a84072e90b95a277ca108e7895802",
+      "bytes": 627
+    },
+    {
+      "path": "windows-agent/src/serial-reservation.test.mjs",
+      "sha256": "41c3d428847734a232db3909cdd4d4b9b86d54118b533f4421e7506ffdbc1a00",
+      "bytes": 1543
+    },
+    {
+      "path": "windows-agent/src/single-flight.mjs",
+      "sha256": "59f57777a082c0b8ec10786788151eadfec78d99445dd80f5297b2f974b1f6fe",
+      "bytes": 270
+    },
+    {
+      "path": "windows-agent/src/single-flight.test.mjs",
+      "sha256": "c6387d0e5ff2c148656deb06bc93f3a292b32be2d47884f4d900e411cd7eeef8",
+      "bytes": 665
+    },
+    {
+      "path": "windows-agent/src/sms-content-query.mjs",
+      "sha256": "2ec02795c765aea39edb18f4b4210c765a43297386973c38eb2dfba97958980f",
+      "bytes": 697
+    },
+    {
+      "path": "windows-agent/src/sms-content-query.test.mjs",
+      "sha256": "a3592079ef5ac14a4172f7bdb8a5c5dc9bc7a408f3c5e5114b045321ba73bfbc",
+      "bytes": 1115
+    },
+    {
+      "path": "windows-agent/src/sms-notification-source.mjs",
+      "sha256": "c1a9af263945e376ed94e92163794e7f2349e40de2c27371e59d34336df972d2",
+      "bytes": 9531
+    },
+    {
+      "path": "windows-agent/src/sms-notification-source.test.mjs",
+      "sha256": "31f8fbc33096de223bc1fe2e928ea9c945185dc1c1d591dc916ced1776839cb7",
+      "bytes": 4486
+    },
+    {
+      "path": "windows-agent/src/sms-relay-health.mjs",
+      "sha256": "5f6128ff30906093fceb294fdb25839d0f36e69bbd7c091d80d743af4e6a98c2",
+      "bytes": 3204
+    },
+    {
+      "path": "windows-agent/src/sms-relay-health.test.mjs",
+      "sha256": "2b06cbe1221790aa2684cb05510ce355d294dfc32e4b6d47b29a76a5a3905608",
+      "bytes": 2525
+    },
+    {
+      "path": "windows-agent/src/sms-subscription-map.mjs",
+      "sha256": "f7581e9170a22d0a662a448172db8f46d39c15a2ca55c517bd9ed0a84fabd040",
+      "bytes": 1524
+    },
+    {
+      "path": "windows-agent/src/sms-subscription-map.test.mjs",
+      "sha256": "912f0422bb9387456c2151976b38307bf6514eb841ffdd1f17bb68f3e1e5fa30",
+      "bytes": 1349
+    },
+    {
+      "path": "windows-agent/src/smsrelay-fleet-preflight.test.mjs",
+      "sha256": "0e011155d7b4336f042176a74001ee67671498dc05b06dcb929c9d71ac51eced",
+      "bytes": 2799
+    },
+    {
+      "path": "windows-agent/src/startup-order.test.mjs",
+      "sha256": "d25e3e537feb2913c00c06604226c8c04c72c3376543e74fca69113c81f23e44",
+      "bytes": 590
+    },
+    {
+      "path": "windows-agent/src/windows-device-install-probe.mjs",
+      "sha256": "c360457e2bcf820fb697a514627fc1c7c1761afe51935d464eb8240719f9401c",
+      "bytes": 2541
+    },
+    {
+      "path": "windows-agent/src/worker-shutdown.mjs",
+      "sha256": "a685d487bbaff8f110bcef00629bdb830ede0fcc70807429b45ea4a4e6829b56",
+      "bytes": 1491
+    },
+    {
+      "path": "windows-agent/src/worker-shutdown.test.mjs",
+      "sha256": "c7df9e4e8f1962daaf0e891bb313add1e8e636ca846ee0d94d0663cd5365981a",
+      "bytes": 5137
+    },
+    {
+      "path": "windows-agent/src/xhs-data-collection.mjs",
+      "sha256": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "bytes": 6675
+    },
+    {
+      "path": "windows-agent/src/xhs-data-collection.test.mjs",
+      "sha256": "7dd50df200bda1df59416a4e30a7f8c31e462c30e0557a9eadd26cd3083661cd",
+      "bytes": 9952
+    },
+    {
+      "path": "windows-agent/src/xhs-poco-rpc-timeout.test.mjs",
+      "sha256": "405ada81fb50d26f82e0d9127786053b8829529cc6454901ca5ad9628557d984",
+      "bytes": 9204
+    },
+    {
+      "path": "windows-agent/src/xhs-worker-fast-restart.test.mjs",
+      "sha256": "f3249d7a5087ee7e7e6dbba7d551a5fa89918d5ff9a07bdfc11907ca74c81e37",
+      "bytes": 2139
+    },
+    {
+      "path": "windows-agent/src/xml-uiautomator.test.mjs",
+      "sha256": "f805d6899913513ba916097f8eced0c16c0a984eb05cb0baf1385caf8282be88",
+      "bytes": 1291
+    },
+    {
+      "path": "windows-agent/vendor/phone-cloud-wake.jar",
+      "sha256": "ce9491962196a387a6f5bb4535c897c0a090fc9f92c4bc481f46f084f07b1d0b",
+      "bytes": 2208
+    },
+    {
+      "path": "windows-agent/vendor/phone-cloud-whip-publisher.exe",
+      "sha256": "55424e061a1e219812737b4f324b9161f8d04e3d0bee07a7f63548a048961f6b",
+      "bytes": 15422976
+    },
+    {
+      "path": "windows-agent/vendor/scrcpy-server-v3.3.4",
+      "sha256": "8588238c9a5a00aa542906b6ec7e6d5541d9ffb9b5d0f6e1bc0e365e2303079e",
+      "bytes": 90980
+    },
+    {
+      "path": "windows-agent/wake-helper/src/com/phonecloud/wake/Main.java",
+      "sha256": "810f9fc85579592af89a63704c9a5265c4ceb07de9c170f89a22be21781100d0",
+      "bytes": 2933
+    },
+    {
+      "path": "windows-agent/whip-publisher/cmd/whep-smoke/main.go",
+      "sha256": "be68bd5bb15dbdf7e4c3cffb1718b5dcced66572d8e884fe2f25153fe5ac194e",
+      "bytes": 8082
+    },
+    {
+      "path": "windows-agent/whip-publisher/go.mod",
+      "sha256": "efdb219fc653503f42298b61f291c91f0afdad03240c16a70babd18abbf5d18a",
+      "bytes": 1012
+    },
+    {
+      "path": "windows-agent/whip-publisher/go.sum",
+      "sha256": "2b9acb7cdc5bb54e1bc672eb700c6d0ba8ac7facd36b851b3febc891eac88a7c",
+      "bytes": 4628
+    },
+    {
+      "path": "windows-agent/whip-publisher/main.go",
+      "sha256": "18813f8131bdd009a5eb8a8ed94eebf54fe55f0f43afc29dfd3734e6aaf0d14d",
+      "bytes": 32712
+    },
+    {
+      "path": "windows-agent/whip-publisher/main_test.go",
+      "sha256": "e6bf342efc1950309765186df1946228dc549ba58777cd7653cdbbcb1b8f2409",
+      "bytes": 11016
+    }
+  ]
+}
