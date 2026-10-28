@@ -4248,3 +4248,7 @@ GitHub main实际从0034b939快进至d37f5b0；修复分支和325条邮箱修正
 - 纳入 29d96f4 分支的纯元素双遍完整性校验、页面树解析复用、迟到通知处理及受限 Nginx 测试工具。完整性检查优先于早期单遍提速方案；不启用已否决的 native pair 探针。
 - 库存压缩仅保留隔离试验工具，不改生产 Nginx 或 Agent 压缩配置。继承新增 Nginx 非特权隔离规则，同时保留 SYSTEM 与版本管理规则。
 - 历史真机证据见 XHS_ELEMENTS_SPEED_20261026.md；本组合版本尚未进行真机或生产验收。
+
+### 2026-10-28 整合决策与变更：RECOVERY_CONTROL_FEEDBACK
+恢复隔离状态反馈在完整根源码中已包含；补齐独立回归与历史回执，保留新版前端缓存标识。
+历史分支说明存档于 `module-history/RECOVERY_CONTROL_FEEDBACK.md`，不改变当前生产状态。

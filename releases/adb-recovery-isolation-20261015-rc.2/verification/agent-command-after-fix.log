@@ -1,0 +1,17 @@
+✔ actual adb_reconnect branch invokes command and returns result (6.679833ms)
+✔ actual adb_reconnect rejects pause arriving during persistence without consuming command (1.312333ms)
+✔ actual adb_reconnect rejects newly online target before command (1.105208ms)
+✔ actual adb_reconnect stops fourth issued command after three errors (21.463708ms)
+✔ actual restart_adb_interface branch invokes command and returns result (2.566ms)
+✔ actual restart_adb_interface rejects pause arriving during persistence without consuming command (1.37ms)
+✔ actual restart_adb_interface rejects newly online target before command (2.344042ms)
+✔ actual restart_adb_interface stops fourth issued command after three errors (14.415041ms)
+✔ actual exhausted ladder isolates target before another cycle (4.96225ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 133.552375

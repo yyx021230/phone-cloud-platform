@@ -1,0 +1,72 @@
+{
+  "recordId": "adb-manual-recovery-20261015-observation.1",
+  "authorization": "Targeted manual recovery only; no release, shared restart, identity/key/startup/driver changes.",
+  "observedProductionVersion": "lookup-readiness-20261015-deployed.10",
+  "receiptCommit": "f2c36e98407564b94dca60e2bb7959377d6d885a",
+  "intervalUtc": [
+    "2026-10-15T08:04:13.373690Z",
+    "2026-10-15T08:07:02.010Z"
+  ],
+  "adbSnapshots": [
+    {
+      "at": "2026-10-15T08:04:13.373690Z",
+      "device": 108,
+      "unauthorized": 3
+    },
+    {
+      "at": "2026-10-15T08:06:49.314278Z",
+      "device": 113,
+      "unauthorized": 4
+    }
+  ],
+  "stableProcessIds": {
+    "adbServer": 634172,
+    "agent": 634228
+  },
+  "owner": "NT AUTHORITY\\SYSTEM",
+  "cloudFinalStates": {
+    "unauthorized": [
+      "139",
+      "103",
+      "94",
+      "59"
+    ],
+    "adb_interface_ready_transport_missing": [
+      "143",
+      "71"
+    ],
+    "physically_absent": [
+      "114",
+      "180",
+      "184",
+      "58",
+      "128",
+      "183",
+      "76",
+      "63",
+      "160",
+      "77",
+      "33",
+      "OPPO-ea0043b6"
+    ]
+  },
+  "activeScreenPhones": [
+    "51",
+    "147",
+    "182",
+    "126"
+  ],
+  "activeLookupPhones": [
+    "156",
+    "155"
+  ],
+  "manualMutations": [],
+  "observations": [
+    "At 16:04 71 installer and 116 waiting occupied queue ~8min.",
+    "Queue cleared by 16:06; original Agent automatically recovered 116,120,123,130, later87.",
+    "At16:06:33 automatic recreation of143/87 began new install; SetupAPI again records cross-device reconfiguration and open-handle veto.",
+    "114 changed from present missing transport to physically absent during observation; earliest physical-loss cause remains unproven."
+  ],
+  "result": "Manual intervention blocked by shared install/automatic recovery contention; observed improvement is not attributable to this session. No stability acceptance.",
+  "next": "Require separate shared-maintenance authorization before pausing Agent/rebuilding same SYSTEM ADB; do not change keys/start action or bind drivers in that authorization."
+}
