@@ -1,0 +1,168 @@
+{
+  "status": "released_and107_production_task_verified",
+  "candidateTag": "xhs-popup-20261019-rc.1",
+  "sourceCommit": "047a8035e422cea281d6512c068d13edfe4f9555",
+  "productionBaselineSHA": "bb459e3570d4201434bbbf05841c8b2b9d3864a3febc25b414780f9d84c710fc",
+  "candidateSHA": "e4ee2e856a41c9346e88c205b99f9faec371fe869752f0c492454016ffd639c5",
+  "baselineCommit": "99b4151bdf65d8e1ca4354594f01434fe60eab57",
+  "authorization": "User explicitly requested107popup compatibility deployment",
+  "scope": "Only7lines in dedicated collector; no rc2 OCR/navigation changes or other compatibility candidates imported",
+  "localTests": {
+    "python": 155,
+    "failed": 0,
+    "rootSyntax": "passed",
+    "diffCheck": "passed"
+  },
+  "grayStageManifest": {
+    "collector.py": "eb1b2fbf62894dc908963e965c19162a25585eef55244ffdaa69dc2fbb088da8",
+    "qa_adb_guard.py": "42bb0d99cc4a31e7a2bfde6744f6e0d62dd0af66e35414183d24c09642aee6f0",
+    "fleet.mjs": "22d266e981c1e162d9e008cc60ad4164619e8795bfed5a912715623d6f4dc6a7",
+    "targets.json": "9ff334c100a159412c3c93bea080dac08e2c9a69628020812383718dcbcdfdc1",
+    "candidate.py": "e4ee2e856a41c9346e88c205b99f9faec371fe869752f0c492454016ffd639c5",
+    "xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+    "xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+    "xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+    "xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164"
+  },
+  "grayTests": [
+    {
+      "name": "107",
+      "slot": "app2",
+      "status": "passed",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "windowStart": "2026-09-20",
+      "windowEnd": "2026-10-19",
+      "settingsRestored": true,
+      "metricsComplete": true,
+      "stopReason": "older_than_window_visible",
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app2",
+        "xhs_cold_started",
+        "clone_user_requested:999",
+        "clone_slot_selected:app2",
+        "creator_overview_opened_without_latest_notes",
+        "works_image_probe_unproven:OCR works-list header is not unique: 全部笔记",
+        "data_center_works_tab_selected",
+        "creator_overview_reopened",
+        "data_center_works_tab_selected",
+        "list_reopened_at_newest",
+        "collection_scan_as_of:2026-10-19"
+      ]
+    },
+    {
+      "name": "129",
+      "slot": "app1",
+      "status": "passed",
+      "notes": 0,
+      "scrolls": 0,
+      "complete": true,
+      "windowStart": "2026-09-20",
+      "windowEnd": "2026-10-19",
+      "settingsRestored": true,
+      "metricsComplete": true,
+      "stopReason": "older_than_window_visible",
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app1",
+        "unsecured_keyguard_dismissed",
+        "xhs_cold_started",
+        "clone_slot_selected:app1",
+        "creator_overview_opened_without_latest_notes",
+        "works_image_probe_unproven:OCR works-list header is not unique: 全部笔记",
+        "data_center_works_tab_selected",
+        "creator_overview_reopened",
+        "data_center_works_tab_selected",
+        "list_reopened_at_newest",
+        "collection_scan_as_of:2026-10-19"
+      ]
+    },
+    {
+      "name": "102",
+      "slot": "app1",
+      "status": "passed",
+      "notes": 11,
+      "scrolls": 3,
+      "complete": true,
+      "windowStart": "2026-09-20",
+      "windowEnd": "2026-10-19",
+      "settingsRestored": true,
+      "metricsComplete": true,
+      "stopReason": "older_than_window_visible",
+      "recoveryEvents": [
+        "collection_window_days:30",
+        "collection_slot_requested:app1",
+        "unsecured_keyguard_dismissed",
+        "xhs_cold_started",
+        "notification_prompt_back",
+        "list_reopened_at_newest",
+        "works_image_probe_unproven:OCR metric icon is not proven: like",
+        "collection_scan_as_of:2026-10-19",
+        "works_list_updated_without_filter_toggle",
+        "works_list_updated_without_filter_toggle",
+        "webview_accessibility_refreshed"
+      ]
+    }
+  ],
+  "branchEvidenceLimit": "Growth popup did not appear in current107 full scan; exact dismissal was seen10/16 and actual static XML plus regressions verify same7lines. Full107 scan now reached an older09/15 boundary, not an account/permission failure.",
+  "releasePlan": {
+    "target": "D:\\PhoneCloud\\agent\\scripts\\小红书数据同步.py",
+    "backupFolder": "D:\\PhoneCloud\\backups\\xhs-popup-20261019",
+    "preflight": "Fresh cloud collection locks/processes/owner/path/5037, source SHA, 0pending recovery",
+    "apply": "Exact SHA compare, back up original, byte-compile staged content, atomic one-file replacement; no service restart",
+    "postflight": "Expected1of8 hash changed, same SYSTEM Agent and ADB PID/path, 0owned tasks/pending, cloud sources unchanged",
+    "rollback": "Restore backed-up single collector only after current hash equals candidate and explicit rollback need; no database or media rollback"
+  },
+  "notDeployedYet": false,
+  "deploymentTag": "xhs-popup-20261019-deployed.1",
+  "deployment": {
+    "sourceCommit": "047a8035e422cea281d6512c068d13edfe4f9555",
+    "beforeHashes": {
+      "scripts/小红书数据同步.py": "bb459e3570d4201434bbbf05841c8b2b9d3864a3febc25b414780f9d84c710fc",
+      "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+      "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+      "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    "afterHashes": {
+      "scripts/小红书数据同步.py": "e4ee2e856a41c9346e88c205b99f9faec371fe869752f0c492454016ffd639c5",
+      "scripts/xhs_list_ocr.py": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7",
+      "scripts/xhs_native_ocr.ps1": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "scripts/xhs_ocr_digits.png": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164",
+      "src/xhs-data-collection.mjs": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "src/index.mjs": "31f551f6e817bf61cd8f8a799fd43cd4b3e635b4a81e0967c1cc08863a05e2a9",
+      "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    "beforeIdentity": {
+      "adbPID": 634172,
+      "agentPID": 650400,
+      "owner": "NT AUTHORITY\\SYSTEM",
+      "pending": 0
+    },
+    "afterIdentity": {
+      "adbPID": 634172,
+      "agentPID": 650400,
+      "owner": "NT AUTHORITY\\SYSTEM",
+      "pending": 0
+    },
+    "backup": "D:\\PhoneCloud\\backups\\xhs-popup-release-20261019",
+    "servicesRestarted": false,
+    "cloudSourcesUnchanged": true,
+    "production107": {
+      "jobId": "b3e4ec90-5edf-4d45-92b9-c8931bbb5463",
+      "status": "succeeded",
+      "complete": true,
+      "notes": 0,
+      "stopReason": "older_than_window_visible",
+      "settingsRestored": true,
+      "lockReleased": true
+    },
+    "limits": "Actual popup branch was absent today;10/16 real dismissal and exact static regression remain branch evidence.0 recent107notes is a valid09/15older boundary, not all-time zero. No other compatibility fixes/OCR shipped."
+  }
+}

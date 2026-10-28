@@ -4272,3 +4272,7 @@ GitHub main实际从0034b939快进至d37f5b0；修复分支和325条邮箱修正
 ### 2026-10-28 整合决策与变更：LOOKUP_MANUAL_RESULT
 保留受控人工结果工具、单元测试与操作审计；本轮不调用工具、不改任何真实查询结果。
 历史分支说明存档于 `module-history/LOOKUP_MANUAL_RESULT.md`，不改变当前生产状态。
+
+### 2026-10-28 整合决策与变更：XHS_POPUP_HISTORY
+旧成长弹窗修复已被纯元素加载恢复与完整性版本继承；保留原发布分支和回执，不回退新路径或引入旧 OCR 回退。
+历史分支说明存档于 `module-history/XHS_POPUP_HISTORY.md`，不改变当前生产状态。
