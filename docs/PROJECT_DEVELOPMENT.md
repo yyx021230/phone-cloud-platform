@@ -4379,3 +4379,13 @@ D-075只读live检查已通过：宿主无PATH内Node，通过现有容器文件
 13阶段/22次目标租约统一收尾：会话closed、自有活动锁0、候选进程0、恢复账本0、转发监听0；保留共享SSH master。最后设置原值/终值一致，SYSTEM ADB/Agent身份、9共享文件实际前后hash、云端源码hash、ACTIVE回执及镜像不变。本地测试服务退出，独立PG无客户端后停止，数据与私有证据保留。D-075只读宿主live通过；没有生产部署、迁移、定时启用或远端推送。
 
 27项本地QA边界测试、真实结果本地HTTP重放通过；完整回执与失败史见[库存/隔离验收文档](INVENTORY_RESPONSE_20261028.md)及[evidence JSON](evidence/INVENTORY_RESPONSE_20261028/qa-final-acceptance.json)。本轮app1样本不冒充100槽位全量、app2重新验收或每日95%稳定性证明；生产压缩收益与正式批次服务仍待维护窗口验收。正式collector内容与候选双帧关闭开关不变。延续用户“线上先别动、维护时段后续通知”，本窗口只提交候选和证据，不更新GitHub main或任何远端。
+
+### 变更记录｜2026-10-28 全平台发布准备 rc.2 收尾
+
+主集成窗口已合入上述小红书回执与QA修复，并独立核对最终五台68篇的API身份/字段、两遍哈希、分页、重启续查、停止回执、9共享文件前后哈希和全部清理证据。生产ACTIVE哈希`aae3ffc930d4f4a92d8ed2ad5507a3db86d37f91a1495bebbe3471bafcbc2e4f`与运行镜像`5ab68ecb`不变。D-075真实宿主只读live通过。分支`codex/platform-release-readiness-20261028`；完整回执与文件清单见`releases/platform-integration-20261028-rc.2/README.md`及`RELEASE_INDEX.json`。
+
+运行源码固定`baca5721214658b46f24c974c9147490b0bafada`，Linux amd64/Node22镜像`fca45ec32e72b0787e4375fd6812a5ac97d3aebec4b830b6393b03117554b45e`已实启验证并核对642文件；后续仅QA与文档变化，不需要以混杂工作区重建运行镜像。1592项JS通过、2项PG专用另验；1199项既有Python及27项当前QA分别通过。HTTP适配、库存有界压缩、默认关闭的批次Compose、镜像/Windows源码归档与回退步骤齐备；候选仍未部署，不启用定时。
+
+### 决策日志｜2026-10-28 保持整合范围并单独保存发布资格
+
+延续前一全平台rc.1及用户“全量测试后只推送GitHub”的授权，主集成完成后以普通fast-forward保存GitHub main、独立候选分支和不可变annotated标签`platform-integration-20261028-rc.2`；不强推、不移动旧标签、不推GitLab。上段“小红书窗口不更新远端”限定协作窗口，统一远端交付由主集成执行。GitHub保存不等于正式发布，维护授权、切换前最新备份、D-075前后复核及正式HTTP/自然定时验收仍保留。未将首次140失败的未知完整性原因、关闭的native-pair试验、app2及100槽位全量说成已全部验证。

@@ -1,0 +1,62 @@
+{
+  "candidate": "platform-integration-20261028-rc.2",
+  "status": "ready_for_authorized_release_not_deployed",
+  "tag": "platform-integration-20261028-rc.2",
+  "branch": "codex/platform-release-readiness-20261028",
+  "runtimeSourceCommit": "baca5721214658b46f24c974c9147490b0bafada",
+  "imageId": "sha256:fca45ec32e72b0787e4375fd6812a5ac97d3aebec4b830b6393b03117554b45e",
+  "files": [
+    {
+      "path": "COMPOSE_VALIDATION.json",
+      "sha256": "11212f1528ca3fb74f52e1d654c6395d9b1e346b1a39f86cf7b28c90e2127454"
+    },
+    {
+      "path": "DEVICE_FIVE.json",
+      "sha256": "f52de368a7cd58231d83c9f70882e4a49e59e04a06aae82cf561c710a787bd54"
+    },
+    {
+      "path": "DEVICE_SINGLE.json",
+      "sha256": "00a8f30b13a8058630f733a7589f2d9d2d974df8b7fb7704458b7566e2fa5c7b"
+    },
+    {
+      "path": "FINAL_CLEANUP.json",
+      "sha256": "9aba3aa368e365984f90e74048afab1623efc1f0109fc63e0a38c546fa1cdc24"
+    },
+    {
+      "path": "HTTP_RESULT_REPLAY.json",
+      "sha256": "4117a7971b2e596034f06d2b1dc18c0b552e0f559f0d90d566f436db2c30faa6"
+    },
+    {
+      "path": "IMAGE_MANIFEST.json",
+      "sha256": "6602ad656de23f617426d71ce3413d158d750b00e47f1b0ef6f244b70fff501e"
+    },
+    {
+      "path": "IMAGE_SMOKE.json",
+      "sha256": "b5039867e590e3e40c423896756b04c6ebfbdb7af36dcdc3431a446f41c658e9"
+    },
+    {
+      "path": "INVENTORY_SIZE_SAMPLE.json",
+      "sha256": "f230315cfd965a96caf4c4889be010f4a8364c766f58251fe4893901935ea36f"
+    },
+    {
+      "path": "MEDIA_LIVE_PREFLIGHT.json",
+      "sha256": "a621be52862bdd177a5c63e1ace6b67b4a394a4845f0ee77b2e183c96c5d641f"
+    },
+    {
+      "path": "MEDIA_REPOSITORY.json",
+      "sha256": "3872373ebdc82fb96727d7260cd35dbfcbe3ca5cc3dd914828b16731a8a3fd9d"
+    },
+    {
+      "path": "README.md",
+      "sha256": "612032aa84850fc5850ff36e46174dfea054480c111d7087197587af6eb48593"
+    },
+    {
+      "path": "TEST_RESULTS.json",
+      "sha256": "dc825e8ce035ebc3063080900f2dc6d3d2bdb2b9b0ccbbf917042291e064be1a"
+    },
+    {
+      "path": "WINDOWS_SOURCE_MANIFEST.json",
+      "sha256": "ef5e11fec98c8d7a62560a3f90d19cc2c3fc83c8f91214a16c9fce4f4860d1f4"
+    }
+  ]
+}
