@@ -219,13 +219,14 @@ def run_host(value):
         while time.monotonic()<until and not health(ports[0]): time.sleep(.3)
         # Android instrumentation may replace the Activity's process. Bind the
         # new instance only while our exclusive lease still holds, before a
-        # failed health check exits; never adopt a pre-existing/older instance.
+        # failed health check exits. Instance tokens protect cleanup identity;
+        # they are not interpreted as application launch chronology.
         current_pid = shell("pidof com.netease.open.pocoservice").strip()
         if current_pid != owned_pid:
             if not re.fullmatch(r"\d+", current_pid) or not lease_valid():
                 raise SafeStop("poco_owner_changed")
             current_start = process_start_token(shell("cat /proc/"+current_pid+"/stat"))
-            if not current_start or int(current_start) < int(owned_start):
+            if not current_start:
                 raise SafeStop("poco_owner_changed")
             owned_pid, owned_start = current_pid, current_start
         if not health(ports[0]): raise SafeStop("poco_not_ready")
@@ -263,7 +264,7 @@ def run_host(value):
         driver=remarks.PocoRemarkDriver(poco,foreground,lease_valid)
         until=min(deadline,time.monotonic()+18)
         while foreground()!=w.PACKAGE and time.monotonic()<until: budget();time.sleep(.25)
-        until=min(deadline,time.monotonic()+60); home=False; update_dismissed=False
+        until=min(deadline,time.monotonic()+60); home=False; update_dismissed=False; drawer_dismissed=False
         for _ in range(20):
             budget()
             if time.monotonic()>=until: raise SafeStop("home_navigation_timeout")
@@ -273,6 +274,12 @@ def run_host(value):
                 if update_dismissed: raise SafeStop("update_dialog_reappeared")
                 startup_click(poco,w.PACKAGE,lambda current:all(current.has(v) for v in ("发现新版本","立即更新","取消")),lambda n:n.kind in ("android.widget.Button","android.widget.TextView") and n.text=="取消")
                 update_dismissed=True; continue
+            if config["deviceNumber"] == "155" and selected_user == 999 and startup.is_wecom_account_drawer(page):
+                if drawer_dismissed or foreground_info()[2] != "com.tencent.wework/.launch.WwMainActivity":
+                    raise SafeStop("account_drawer_context_changed")
+                startup.dismiss_wecom_account_drawer(driver.snapshot, foreground, lease_valid,
+                    lambda:mutate("input keyevent 4"), check_budget=budget)
+                drawer_dismissed=True; continue
             if w.is_home(page) and not w.is_menu(page):
                 second=driver.snapshot();w.guard(second)
                 if w.is_home(second) and not w.is_menu(second):home=True;break

@@ -59,7 +59,7 @@ class HostGuardTests(unittest.TestCase):
             if cmd.startswith("pidof "):
                 count[0]+=1;return "" if count[0]==1 else "123" if count[0]==2 else "456"
             if cmd.startswith("cat /proc/"):
-                return "123 (poco) "+" ".join(["S"]+["0"]*18+["789" if "123" in cmd else "790"])
+                return "123 (poco) "+" ".join(["S"]+["0"]*18+["789" if "123" in cmd else "700"])
             if keep:return SimpleNamespace(close=lambda:None)
             return ""
         with patch.object(host,"adb_identity",return_value=1),patch.object(host,"lease_valid",return_value=True),patch.object(host,"shell",side_effect=shell),patch.object(host,"host",return_value="12345"),patch.object(host,"health",return_value=False),patch.object(host,"connection",return_value=SimpleNamespace(close=lambda:None)),patch.object(host,"command"),patch.object(host.time,"monotonic",side_effect=now),patch.object(host.time,"sleep"):

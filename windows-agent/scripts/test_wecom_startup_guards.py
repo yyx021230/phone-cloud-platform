@@ -93,5 +93,37 @@ class StartupGuardTests(unittest.TestCase):
             self.assertEqual(keys, ['UP'] if mode == 'transport' else [])
 
 
+DRAWER = w.Screen(w.PACKAGE, tuple(w.Node('android.widget.TextView',text=text,
+    name='com.tencent.wework:id/'+name,position=(.25,y),size=(.2,.027))
+    for name,text,y in (('nq','高级功能',.79875),('d7x','创建/加入企业',.869375),('lt_','设置',.919375))))
+
+class AccountDrawerTests(unittest.TestCase):
+    def test_exact_observed_bundle_only(self):
+        self.assertTrue(g.is_wecom_account_drawer(DRAWER))
+        for page in (replace(DRAWER,package='other'),replace(DRAWER,nodes=DRAWER.nodes[:2]),
+                     replace(DRAWER,nodes=DRAWER.nodes+(DRAWER.nodes[0],))):
+            self.assertFalse(g.is_wecom_account_drawer(page))
+        for change in (dict(name='unknown'),dict(text='切换账号'),dict(enabled=False),
+                       dict(position=(.25,.4)),dict(size=(float('nan'),.02))):
+            self.assertFalse(g.is_wecom_account_drawer(replace(DRAWER,nodes=(replace(DRAWER.nodes[0],**change),)+DRAWER.nodes[1:])))
+
+    def test_one_back_after_fresh_page_and_lease_no_account_click(self):
+        keys=[]
+        self.assertTrue(g.dismiss_wecom_account_drawer(lambda:DRAWER,lambda:w.PACKAGE,lambda:True,lambda:keys.append('BACK')))
+        self.assertEqual(keys,['BACK'])
+        self.assertFalse(g.dismiss_wecom_account_drawer(lambda:HOME,lambda:w.PACKAGE,lambda:True,lambda:keys.append('BACK')))
+        self.assertEqual(keys,['BACK'])
+
+    def test_changed_foreground_lease_or_page_and_uncertain_back_do_not_retry(self):
+        for package,lease,changed in (('other',True,False),(w.PACKAGE,False,False),(w.PACKAGE,True,True)):
+            keys=[];pages=iter([DRAWER,HOME if changed else DRAWER])
+            with self.assertRaises(w.StopPreview):g.dismiss_wecom_account_drawer(lambda:next(pages),lambda:package,lambda:lease,lambda:keys.append('BACK'))
+            self.assertFalse(keys)
+        keys=[]
+        def unknown():keys.append('BACK');raise TimeoutError()
+        with self.assertRaises(TimeoutError):g.dismiss_wecom_account_drawer(lambda:DRAWER,lambda:w.PACKAGE,lambda:True,unknown)
+        self.assertEqual(keys,['BACK'])
+
+
 if __name__ == '__main__':
     unittest.main()
