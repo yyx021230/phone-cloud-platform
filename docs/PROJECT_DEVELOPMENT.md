@@ -4301,3 +4301,10 @@ GitHub main实际从0034b939快进至d37f5b0；修复分支和325条邮箱修正
 独立分支codex/xhs-inventory-transport-20261028，集成基线b85ed14，HTTP准备提交00cfe56；本轮仅增加库存响应模块、两份测试及server/index.mjs两处接入。8项压缩/真实本地HTTP测试、39项相关回归、34项本地PostgreSQL批次集成及根语法检查通过，测试集合重叠，不求和。初次HTTP fixture用错heartbeat路径已更正，未为此改业务实现。真实限速回环链路验证原JSON超时、gzip解压逐字节一致；不冒充生产链路或真机结果。
 
 今日只读核对100槽位属于66台手机且绑定一致；7槽位离线/未授权、9槽位占用是当时快照，不是新任务结果。线上仍为原采集器且无批次capability；未部署、未建生产表、未开启定时任务、未改ADB/SYSTEM。既有控制会话租约与采集器own-task检查的适配仍待隔离验证，不能使用旧版结果替代候选验收。完整范围、哈希、回退与限制见[库存压缩候选回执](INVENTORY_RESPONSE_20261028.md)。主工作区及其他任务改动保留。
+
+### 2026-10-28 决策与变更记录：rc.2 整合镜像和发布路径实测
+- 延续整合 rc.1 与 HTTP/库存响应压缩决策，运行源码提交 baca5721214658b46f24c974c9147490b0bafada；候选 platform-integration-20261028-rc.2，未部署、未推送。旧标签和各模块归属保留。
+- 补齐此前 Docker 缺口：独立本机 Colima（不改默认 Docker context）、Linux amd64 Node22镜像 fca45ec32e72，隔离PG16/Redis8/非root Nginx经普通HTTP实际通过。140台合成库存gzip完整解压，批次签名/重复请求/分页/停止/重启持久化通过；不代表真机结果。
+- 最终默认回归1592项JS通过、2项PG专用另实测通过、1199项Python及JSON冒烟通过；隔离PG组合34通过后补齐查名fixture显式migration，该唯一失败复测通过。根语法、Compose现有服务不变、D-075 repository-only通过。日志哈希与范围见 releases/platform-integration-20261028-rc.2/TEST_RESULTS.json。
+- 自审确认库存route仅改返回传输，不移动鉴权、写入、锁或保存逻辑；HTTP支持不删除HMAC/Nonce/普通账号隔离，不重放未知POST。无独立审查者。
+- 仅添加可复用本地镜像验收工具和发布材料，生产数据库、服务、共享Agent、ADB/SYSTEM/媒体未改。与小红书窗口继续补独立候选真机租约链路；旧生产任务和模块历史真机证据不能冒充本组合验收。发布仍需要当时基线、最新备份、D-075 live及维护授权。

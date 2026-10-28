@@ -1,5 +1,7 @@
 # 整个平台整合候选：2026-10-28
 
+后续发布准备见 [rc.2回执](../releases/platform-integration-20261028-rc.2/README.md)：HTTP适配、库存有界压缩及实际amd64镜像验证已补齐。下文保留rc.1阶段事实，未验证项以后续回执为准，不能将本地验证当生产验收。
+
 版本：`platform-integration-20261028-rc.1`。分支：`codex/platform-integration-20261028`。
 用户授权：整合全部模块、处理冲突和依赖、全量本地测试后只推送 GitHub；保留已有分支/标签，线上不动。不是正式部署授权。
 

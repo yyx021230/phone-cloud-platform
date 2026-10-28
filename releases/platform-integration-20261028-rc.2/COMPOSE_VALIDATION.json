@@ -1,0 +1,9 @@
+{
+  "valid": true,
+  "defaultProfileDisabled": true,
+  "unprivilegedUser": "node",
+  "readOnlyRoot": true,
+  "hostLoopbackOnly": true,
+  "existingServicesUnchanged": true,
+  "fixtureOnly": true
+}

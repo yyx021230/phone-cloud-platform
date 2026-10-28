@@ -1,0 +1,57 @@
+{
+  "image": "phone-cloud-platform:platform-integration-20261028-rc.2",
+  "scope": "isolated local Linux amd64 containers; synthetic credentials; no real phones",
+  "network": "internal; no published ports",
+  "checks": {
+    "platform": {
+      "ready": true,
+      "backend": "postgres",
+      "contract": {
+        "version": 1,
+        "expectedXhsId": true,
+        "identitySnapshot": true,
+        "submissionLookup": true
+      },
+      "assets": [
+        "/",
+        "/api-docs.html",
+        "/app.js",
+        "/user-device-inventory.js"
+      ],
+      "ordinaryRole": "user",
+      "inventoryGzip": true,
+      "decodedSyntheticDevices": 140,
+      "node": "v22.23.3"
+    },
+    "batch": {
+      "http": true,
+      "viaUnprivilegedNginx": true,
+      "signed": true,
+      "scheduleInitiallyDisabled": true,
+      "oneBatchOnRepeat": true,
+      "stopped": true,
+      "items": 1,
+      "nextOffset": null,
+      "realPhoneTasks": 0
+    },
+    "restart": {
+      "persistedCompletedBatch": true
+    }
+  },
+  "imageMetadata": {
+    "Id": "sha256:fca45ec32e72b0787e4375fd6812a5ac97d3aebec4b830b6393b03117554b45e",
+    "Architecture": "amd64",
+    "Os": "linux"
+  },
+  "passed": true,
+  "postgresImage": [
+    "postgres@sha256:0cefaabd882e42bcb2a2f3dc56d3ce4770560ba62fd7f197f1a2e008fd5731ab"
+  ],
+  "redisImage": [
+    "redis@sha256:47b08295737773de3b711fb86f13ae802f5074e96a9a2d29f5f80164ac08c046"
+  ],
+  "nginxImage": [
+    "nginx@sha256:47928bf67eb62a1863cb08d9ecb52d3e704304ba614eaee17884204677702951"
+  ],
+  "cleanup": true
+}

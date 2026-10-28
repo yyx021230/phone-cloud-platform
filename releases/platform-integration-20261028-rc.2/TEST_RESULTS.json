@@ -1,0 +1,46 @@
+{
+  "candidate": "platform-integration-20261028-rc.2",
+  "sourceCommit": "baca5721214658b46f24c974c9147490b0bafada",
+  "javascript": {
+    "total": 1594,
+    "passed": 1592,
+    "failed": 0,
+    "skipped": 2,
+    "skips": "PostgreSQL-only cases separately passed"
+  },
+  "python": {
+    "passed": 1199,
+    "failed": 0
+  },
+  "postgres": {
+    "combinedPassed": 34,
+    "initialFixtureFailure": "lookup fixture did not have explicit managed-lookup migrations",
+    "afterMigrationsLookupPassed": 1,
+    "unresolvedFailures": 0,
+    "setsOverlap": "do not add these counts to default regression"
+  },
+  "image": {
+    "id": "sha256:fca45ec32e72b0787e4375fd6812a5ac97d3aebec4b830b6393b03117554b45e",
+    "os": "linux",
+    "architecture": "amd64",
+    "node": "v22.23.3",
+    "archiveSha256": "c165c9ac955ea26e26714ac0ac83ae730b13aa129d347d8bd88d31bd7b192ed4"
+  },
+  "checks": {
+    "syntax": true,
+    "compose": true,
+    "isolatedImage": true,
+    "D075Repository": true,
+    "D075ProductionLive": false
+  },
+  "realDevices": "pending controlled candidate full path; old production collector results do not count",
+  "review": "self-review; no independent reviewer",
+  "logSha256": {
+    "full-final.log": "b6b75c48a90ce34d12a323efe9ae68930d8dc2f9a53b1d8863fedca11359f43b",
+    "pg-final.log": "1e66732b2458e6ba51dea454ea9a0fef65bd18376fe7c5fa927bac7e72446d0d",
+    "lookup-pg-final.log": "338fee6849c9a87b7bb192c0e9b1c326b9b771b107cef41c3327a102a38b529a",
+    "check-final.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "image-final.log": "278c30cc53a97f52319e9e0c16680ef218f69dabfa4c20c5ab6c9129a170b0da",
+    "docker-build-rc2.log": "1f5574c6af42a3b38c3ef8d5812661abd8184fa526a52deddd1fcb626e706590"
+  }
+}
