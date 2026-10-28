@@ -1,5 +1,5 @@
 {
-  "status": "single_send_click_executed_delivery_awaiting_recipient_confirmation",
+  "status": "invitation_delivery_confirmed_by_user",
   "userAuthorization": "Current turn explicitly permits one real WeCom invitation to the specified test target; does not enable permanent/bulk sending.",
   "targetMasked": "136****6441",
   "sourceCommit": "3756dd7c431f7630e52669e0ceb7d2db39f53e62",
@@ -98,8 +98,10 @@
     "claimRetainedOnWindows": true,
     "automaticResends": 0,
     "providerConfirmationObserved": false,
-    "recipientConfirmation": "pending",
-    "remarkSaveStatus": "not_needed; existing nonempty fields preserved"
+    "recipientConfirmation": "invitation_received_confirmed_by_user",
+    "remarkSaveStatus": "not_needed; existing nonempty fields preserved",
+    "deliveryConfirmed": true,
+    "contactAcceptanceStatus": "not_verified"
   },
   "readOnlyReconciliation": {
     "firstRead": "screen was locked; no WeCom status evidence",
@@ -152,10 +154,19 @@
     "review": "self review only"
   },
   "limitations": [
-    "No confirmed recipient acceptance or invitation delivery yet",
+    "Recipient confirmed receiving the invitation; acceptance/becoming contacts remains unverified. Sender-side automatic success detection was not fixed or retested.",
     "67 login-required cause not investigated",
     "This is a one-off real-device script test, not production WeCom API rollout or bulk-send acceptance"
   ],
-  "recordedAtUtc": "2026-10-28T10:27:36.665221+00:00",
-  "pushed": false
+  "recordedAtUtc": "2026-10-28T10:47:32.511967+00:00",
+  "pushed": false,
+  "recipientConfirmationEvidence": {
+    "source": "direct_user_reply_in_this_thread",
+    "statement": "已收到添加邀请",
+    "recordedAtUtc": "2026-10-28T10:47:32.511967+00:00",
+    "targetMasked": "136****6441",
+    "device": "23",
+    "newSendActions": 0,
+    "doesNotConfirmContactAcceptance": true
+  }
 }
