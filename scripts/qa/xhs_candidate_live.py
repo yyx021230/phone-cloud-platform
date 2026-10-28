@@ -90,7 +90,10 @@ console.log(JSON.stringify({devices,locks,lookupReserved:values[2].body.pool.cha
     broker=http.server.ThreadingHTTPServer(('127.0.0.1',0),Handler)
     threading.Thread(target=broker.serve_forever,daemon=True).start()
     remote_port=q.win("import socket,json\ns=socket.socket();s.bind(('127.0.0.1',0));print(json.dumps(s.getsockname()[1]));s.close()")
-    tunnel=subprocess.Popen(q.qa.WINDOWS+['-o','ExitOnForwardFailure=yes','-R',f'127.0.0.1:{remote_port}:127.0.0.1:{broker.server_port}','-N'],stdout=subprocess.DEVNULL,stderr=(folder/'tunnel.log').open('w'))
+    forward=f'127.0.0.1:{remote_port}:127.0.0.1:{broker.server_port}'
+    tunnel_command=q.qa.WINDOWS[:-1]+['-O','forward','-R',forward,q.qa.WINDOWS[-1]]
+    tunnel=subprocess.run(tunnel_command,capture_output=True,timeout=10)
+    (folder/'tunnel.log').write_bytes(tunnel.stderr)
     leases=[];run_id=None;results=[]
     def stage_and_run(t,task):
         c=dict(t,jobId=task['payload']['automationJobId'])
@@ -139,7 +142,7 @@ console.log(JSON.stringify({devices,locks,lookupReserved:values[2].body.pool.cha
         save('result-'+t['deviceName']+'-private.json',answer)
         return {'target':t,'task':task,'answer':answer,'pendingLedgers':pending['ledgers'],'elapsedSeconds':time.time()-start,'sessionId':session_id}
     try:
-        time.sleep(.3);assert tunnel.poll() is None,'reverse tunnel failed'
+        assert tunnel.returncode==0,'reverse tunnel failed'
         run_id=api_call({'op':'create','requestId':phase})['batch']['runId']
         tasks=[]
         deadline=time.time()+40
@@ -203,7 +206,11 @@ print(json.dumps({'recovered':recovered,'pending':len(list(folder.glob('*.settin
             except Exception:pass
         try:api_call({'op':'close'})
         except Exception:pass
-        api.wait(timeout=15);broker.shutdown();tunnel.terminate();tunnel.wait(timeout=10)
+        api.stdin.close()
+        try:api.wait(timeout=30)
+        except subprocess.TimeoutExpired:api.terminate();api.wait(timeout=10)
+        broker.shutdown()
+        subprocess.run(q.qa.WINDOWS[:-1]+['-O','cancel','-R',forward,q.qa.WINDOWS[-1]],capture_output=True,timeout=10)
         for p in keepers.values():
             try:p.wait(timeout=10)
             except subprocess.TimeoutExpired:p.terminate()
