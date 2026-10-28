@@ -31,7 +31,9 @@
     "compose": true,
     "isolatedImage": true,
     "D075Repository": true,
-    "D075ProductionLive": false
+    "D075ProductionLive": false,
+    "imageFileHashCount": 642,
+    "imageFileHashMismatches": 0
   },
   "realDevices": "pending controlled candidate full path; old production collector results do not count",
   "review": "self-review; no independent reviewer",

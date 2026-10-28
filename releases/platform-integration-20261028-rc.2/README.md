@@ -28,7 +28,7 @@
 - 本轮没有升级依赖，没有移动标签，没有变更生产服务、媒体、共享Agent、ADB身份或密钥。
 - 各测试集合重叠，不把计数累加为独立场景总数；真实图片、原生OCR、手机账户和采集结果仍须相应真机证据。
 
-精确回执见 `TEST_RESULTS.json`、`IMAGE_SMOKE.json`、`COMPOSE_VALIDATION.json`。镜像烟测工具为 `tools/release-validation/image-smoke.py`，只能显式使用本机Unix Docker入口；创建内部隔离网络、临时合成凭据及容器，结束后清理，不接生产或手机。
+精确回执见 `TEST_RESULTS.json`、`IMAGE_SMOKE.json`、`COMPOSE_VALIDATION.json`；`IMAGE_MANIFEST.json` 的642个已打包源码文件均与镜像内字节核对一致。镜像烟测工具为 `tools/release-validation/image-smoke.py`，只能显式使用本机Unix Docker入口；创建内部隔离网络、临时合成凭据及容器，结束后清理，不接生产或手机。
 
 ## 发布顺序和回滚
 
