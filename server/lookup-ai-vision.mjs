@@ -97,7 +97,7 @@ export function createAiVisionReader(config,{fetchImpl=fetch}={}){
    reads++;timings.reads=reads;stage='model_request';const requestAt=Date.now();
    const response=await fetchImpl(config.baseUrl+'/v1/responses',{method:'POST',headers:{Authorization:'Bearer '+config.apiKey,'Content-Type':'application/json'},body:JSON.stringify({model:'gpt-6.1-sol',store:false,stream:false,reasoning:{effort:'medium'},max_output_tokens:2000,input:[{role:'user',content:[{type:'input_text',text:prompt+'\n请逐笔核对昵称和括号内姓名的字形，特别注意相近汉字的偏旁与横竖结构，不可凭常见姓名或昵称语义替换原字。'},{type:'input_image',image_url:`data:${mimeType};base64,${image.toString('base64')}`,detail:'high'}]}],text:{format:{type:'json_schema',name:'lookup_terminal_result',strict:true,schema}}}),signal:controller.signal,redirect:'error'});
    upstreamStatus=response.status;timings.responseHeadersMs=Date.now()-requestAt;stage='model_body';
-   if(!response.ok)throw fail('upstream_error');
+   if(!response.ok){await response.body?.cancel();throw fail([502,503,504].includes(response.status)?'transient_upstream':'upstream_error');}
    const chunks=[];let size=0;for await(const bytes of response.body){size+=bytes.length;if(size>250000)throw fail('response_too_large');chunks.push(Buffer.from(bytes));}
    timings.responseBodyMs=Date.now()-requestAt;stage='model_validation';
    const body=JSON.parse(Buffer.concat(chunks).toString('utf8'));if(body.status!=='completed'||!Array.isArray(body.output))throw fail('incomplete');
@@ -106,19 +106,26 @@ export function createAiVisionReader(config,{fetchImpl=fetch}={}){
    let result;try{result=validate(value,phoneNumber);}catch(e){result={kind:'unconfirmed',name:'',rejectionCode:value?.outcome==='unconfirmed'?'model_unconfirmed':e.code==='card_actions_or_compact_boundary'?e.code:'result_contract_rejected'};}
    return result;
    }
-   let result=await readOnce();
+   async function readReliable(){
+    try{return await readOnce();}catch(error){
+     if(error.code!=='transient_upstream'||reads>=3||controller.signal.aborted)throw error;
+     timings.transientRetries=(timings.transientRetries||0)+1;
+     return readOnce();
+    }
+   }
+   let result=await readReliable();
    // One ambiguous extraction may be transient. Retry the immutable evidence
    // once, within the same 120s deadline; never query the phone again.
-   if(result.kind==='unconfirmed'&&result.rejectionCode)result=await readOnce();
+   if(result.kind==='unconfirmed'&&result.rejectionCode&&reads<3)result=await readReliable();
    if(controller.signal.aborted)throw fail('aborted');
    if(result.kind==='name'){
-    const verified=await readOnce();
+    const verified=reads<3?await readReliable():{kind:'unconfirmed'};
     const canonical=s=>String(s||'').replaceAll('（','(').replaceAll('）',')');
     if(controller.signal.aborted)throw fail('aborted');
     if(verified.kind!=='name'||canonical(result.name)!==canonical(verified.name)){
      // At most one adjudication, on the original immutable image and deadline.
      // Never repair disagreement by querying a phone or guessing a character.
-     const third=reads<3?await readOnce():{kind:'unconfirmed'};
+     const third=reads<3?await readReliable():{kind:'unconfirmed'};
      if(controller.signal.aborted)throw fail('aborted');
      if(third.kind==='name'&&canonical(third.name)===canonical(result.name)){}
      else if(third.kind==='name'&&verified.kind==='name'&&canonical(third.name)===canonical(verified.name))result=verified;

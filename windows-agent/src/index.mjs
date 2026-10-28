@@ -2354,6 +2354,10 @@ async function taskAlipayNameLookup(task, options = {}) {
     targetAccount: String(task.payload?.targetAccount || ""),
     postHumanStartup: task.payload?.postHumanStartup === true,
     accountCooldownProtocol: task.payload?.accountCooldownProtocol,
+    // Managed readiness always follows identity preparation with a real probe.
+    // Let that existing Poco path open Search, as it already does after switching.
+    deferSearchPreparation: operation === "start" && task.payload?.accountCooldownProtocol === 1
+      && Boolean(task.payload?.managedLookup?.generation),
     knownAccount: String(task.payload?.knownAccount || ""),
     preparedEmptyResult: task.payload?.preparedEmptyResult === true,
     observationOnlyResume: operation === "query_resume" && task.payload?.preparedLookup?.observationOnlyResume === true,

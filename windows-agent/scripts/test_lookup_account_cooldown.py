@@ -34,6 +34,19 @@ class AccountCooldownTests(unittest.TestCase):
         r.open_search.assert_called_once()
         r.adb.assert_not_called()
 
+    def test_managed_preflight_defers_search_but_keeps_fresh_identity(self):
+        r = self.runner(deferSearchPreparation=True)
+        result = r.prepare_available_account()
+        self.assertTrue(result["accountIdentityVerified"])
+        self.assertEqual(result["currentAccount"], "A")
+        r.open_account_picker.assert_called_once_with("preflight")
+        r.launch.assert_any_call("account-preflight-complete")
+        r.open_search.assert_not_called()
+        self.assertFalse(r.search_ready_after_switch)
+        r.emit.assert_any_call("account_preflight_search_prepare_deferred",
+                              reason="managed_probe_prepares_search", accountIdentityVerified=True,
+                              readinessProven=False, phoneQueryStarted=False)
+
     def test_only_one_saved_account_is_a_valid_identity(self):
         self.assertEqual(lookup.Runner.saved_account_choices(self.rows(("A",))), [{"account": "A", "current": True}])
 

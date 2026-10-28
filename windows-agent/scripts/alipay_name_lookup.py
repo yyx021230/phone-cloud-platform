@@ -4152,6 +4152,8 @@ class Runner:
             raise RuntimeError("local_lookup_result_unconfirmed:ocr_dependency_unavailable") from exc
         previous = None
         previous_restriction = None
+        previous_raw = None
+        previous_ocr = None
         sample = 0
         loading_reported = False
         pending_reported = False
@@ -4189,8 +4191,18 @@ class Runner:
                     # budget and misreport deadline exhaustion as a reader fault.
                     if query_deadline - ocr_started < 2.0:
                         raise observation_timeout()
-                    rows, size = recognize(raw, timeout=query_deadline-ocr_started)
-                    self.emit("lookup_visual_frame_read", driver="poco_visual_readonly",
+                    # Two independent captures and all native guards remain.
+                    # Deterministic OCR of byte-identical full PNGs is redundant;
+                    # reuse only a positive prior frame within this one query.
+                    cache_hit = (previous is not None and previous_ocr is not None
+                                 and isinstance(raw, bytes) and raw.startswith(b"\x89PNG\r\n\x1a\n")
+                                 and raw == previous_raw)
+                    if cache_hit:
+                        rows, size = previous_ocr
+                    else:
+                        rows, size = recognize(raw, timeout=query_deadline-ocr_started)
+                    previous_raw, previous_ocr = raw, (rows, size)
+                    self.emit("lookup_visual_frame_read", driver="poco_visual_readonly", cacheHit=cache_hit,
                               elapsedMs=round((time.perf_counter()-ocr_started)*1000),
                               remainingMs=max(0, round((query_deadline-time.perf_counter())*1000)),
                               resubmitsInput=False, resubmitsSearch=False)
@@ -4956,10 +4968,17 @@ class Runner:
         if self.current_account_after_switch in cooling:
             self.switch_account(reason="cooldown", excluded_accounts=cooling,
                                 reuse_open_picker=True, verify_current_marker=True)
-            self.open_search("account-preflight-switch-complete")
+            if self.payload.get("deferSearchPreparation") is not True:
+                self.open_search("account-preflight-switch-complete")
         else:
             self.launch("account-preflight-complete")
-            self.open_search("account-preflight-complete")
+            if self.payload.get("deferSearchPreparation") is not True:
+                self.open_search("account-preflight-complete")
+        if self.payload.get("deferSearchPreparation") is True:
+            self.search_ready_after_switch = False
+            self.emit("account_preflight_search_prepare_deferred",
+                      reason="managed_probe_prepares_search", accountIdentityVerified=True,
+                      readinessProven=False, phoneQueryStarted=False)
         self.emit("lookup_account_ready", **self.account_metadata())
         return self.account_metadata()
 
