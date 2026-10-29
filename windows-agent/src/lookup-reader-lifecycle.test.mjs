@@ -65,3 +65,31 @@ test('lost force-stop ACK requires real absence and forward confirmation',async(
  assert.equal(ok,true);assert.equal(forceAttempts,2);assert.equal(checks,2);
  await assert.rejects(verifyLookupReaderCleanup('one',async args=>{if(args[3]==='am')throw Error('timeout');return '1234';}),/cleanup_unconfirmed/);
 });
+
+test('worker exit cancels old timeout before replacement with same serial can run',async()=>{
+ const {rejectExitedReaderRequest}=await import('./lookup-reader-lifecycle.mjs');let stopped=false,rejected=0;
+ const worker={pending:{timer:setTimeout(()=>{stopped=true;},15),reject:()=>{rejected++;}}};
+ assert.equal(rejectExitedReaderRequest(worker,Error('exited')),true);
+ assert.equal(rejectExitedReaderRequest(worker,Error('duplicate exit')),false);
+ await new Promise(r=>setTimeout(r,35));assert.equal(stopped,false);assert.equal(rejected,1);assert.equal(worker.pending,null);
+});
+
+test('actual worker exit/error handlers cannot time out the next worker on the same serial',async()=>{
+ const {EventEmitter}=await import('node:events');const {rejectExitedReaderRequest}=await import('./lookup-reader-lifecycle.mjs');
+ const body=source.slice(source.indexOf('function createAirtestWorker('),source.indexOf('function handleAirtestWorkerLine('));
+ for(const event of ['exit','error']){
+  const timers=new Map(),workers=new Map();let id=0,stops=0,rejections=0;
+  const schedule=(f)=>{timers.set(++id,f);return id;};const clear=t=>timers.delete(t);
+  const spawn=()=>{const c=new EventEmitter();for(const k of ['stdout','stderr']){c[k]=new EventEmitter();c[k].setEncoding=()=>{};}return c;};
+  const deps={spawn,config:{},agentDir:'.',airtestEnv:()=>({}),setTimeout:schedule,clearTimeout:clear,
+   airtestWorkersBySerial:workers,readerExitDiagnostic,log:()=>{},stopAirtestWorker:async()=>{stops++;},
+   rejectExitedReaderRequest:(w,e)=>rejectExitedReaderRequest(w,e,clear)};
+  const create=new Function(...Object.keys(deps),body+';return createAirtestWorker;')(...Object.values(deps));
+  const old=create('same');old.readyPromise.catch(()=>{});workers.set('same',old);
+  old.pending={timer:schedule(()=>{stops++;}),reject:()=>{rejections++;}};
+  old.child.emit(event,event==='exit'?1:Error('spawn error'));
+  const replacement={serial:'same',healthy:true};workers.set('same',replacement);
+  for(const f of timers.values())f();await Promise.resolve();
+  assert.equal(stops,0,event);assert.equal(rejections,1);assert.equal(workers.get('same'),replacement);
+ }
+});

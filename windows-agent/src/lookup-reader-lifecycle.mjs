@@ -34,3 +34,14 @@ export async function verifyLookupReaderCleanup(serial, runAdb, now=Date.now) {
 export function lookupReaderStopReason(payload, reason) {
   return payload?.workflow === "alipay_name" && ["ready_timeout", "idle_before_task", "poco_probe_failed", "task_timeout"].includes(reason) ? `lookup_reader_${reason}` : reason;
 }
+
+// An exited worker's pending timeout must not later stop a replacement worker
+// with the same serial. Settle only this worker's request, exactly once.
+export function rejectExitedReaderRequest(worker, error, clear = clearTimeout) {
+  const pending=worker.pending;
+  if(!pending)return false;
+  worker.pending=null;
+  clear(pending.timer);
+  pending.reject(error);
+  return true;
+}

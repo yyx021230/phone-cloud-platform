@@ -1,0 +1,99 @@
+{
+  "scope": "local HTTP API + isolated Windows candidate scripts; not production API acceptance",
+  "at": "2026-10-29T01:53:05.208Z",
+  "devices": [
+    "51",
+    "52"
+  ],
+  "ready": false,
+  "stopped": true,
+  "businessSubmitted": 0,
+  "controlledFaultInjected": false,
+  "tasks": [
+    {
+      "device": "52",
+      "type": "alipay_name_start",
+      "purpose": "account_preparation",
+      "startedAt": "2026-10-29T01:53:06.710Z",
+      "endedAt": "2026-10-29T01:54:43.079Z",
+      "status": "succeeded"
+    },
+    {
+      "device": "51",
+      "type": "alipay_name_start",
+      "purpose": "account_preparation",
+      "startedAt": "2026-10-29T01:53:07.645Z",
+      "endedAt": "2026-10-29T01:54:41.734Z",
+      "status": "succeeded"
+    },
+    {
+      "device": "51",
+      "type": "alipay_name_query",
+      "purpose": "probe",
+      "startedAt": "2026-10-29T01:54:42.057Z",
+      "endedAt": "2026-10-29T01:56:28.471Z",
+      "status": "failed",
+      "code": "alipay_lookup_failed"
+    },
+    {
+      "device": "52",
+      "type": "alipay_name_query",
+      "purpose": "probe",
+      "startedAt": "2026-10-29T01:54:43.568Z",
+      "endedAt": "2026-10-29T01:56:32.820Z",
+      "status": "failed",
+      "code": "alipay_lookup_failed"
+    },
+    {
+      "device": "51",
+      "type": "alipay_name_stop",
+      "purpose": "cleanup",
+      "startedAt": "2026-10-29T01:56:28.475Z",
+      "endedAt": "2026-10-29T01:57:00.395Z",
+      "status": "succeeded"
+    },
+    {
+      "device": "52",
+      "type": "alipay_name_stop",
+      "purpose": "cleanup",
+      "startedAt": "2026-10-29T01:56:32.830Z",
+      "endedAt": "2026-10-29T01:57:04.982Z",
+      "status": "succeeded"
+    }
+  ],
+  "confirmedNaturalFailures": [
+    {
+      "device": "51",
+      "stage": "visual_after",
+      "type": "ReadTimeout",
+      "rpcElapsedMs": 2013,
+      "ocrElapsedMs": 8328,
+      "searchSubmitted": true
+    },
+    {
+      "device": "52",
+      "stage": "visual_after",
+      "type": "ReadTimeout",
+      "rpcElapsedMs": 2024,
+      "ocrElapsedMs": 7016,
+      "searchSubmitted": true
+    }
+  ],
+  "cleanupProof": false,
+  "independentAgentEvidence": [
+    "same phones SMS and battery shell reads failed",
+    "51 new control preparation failed: ADB shell no response"
+  ],
+  "limits": [
+    "Original cleanup failure overwritten in test adapter; event replay was lost before recovery. Recovered actual error from private worker log.",
+    "Test adapter repaired after this run: replay events before cleanup error; recovery requires cleanup proof. Syntax only, not rerun on phones.",
+    "First RPC timeout underlying cause remains unproved; independent Agent failures demonstrate command-channel involvement, not which USB or process cause.",
+    "No result recovery/changed-key business dedup/20-or-30 queued work/cross-device business acceptance obtained."
+  ],
+  "evidenceSha256": {
+    "INCIDENT_HTTP_RECEIPT.json": "7570a0a26d647c6b784fe6f1635cd3be02be0db1d7a30de0c9f22523259e483f",
+    "http-run.log": "fcd72aefc7fec02ccd91c0f4a6170bfc70fadddf7d26ef33ca56130517a334ba",
+    "agent-tail-private.txt": "7660de6c750393f39c8096c0d7afaa8010cc3e99fc733d8549d5236d27dd0311",
+    "process-snapshot-private.json": "520fa713fb2f441ba87dee5ab1260bb5d6d25596c1cd7459641b21d54f668e1c"
+  }
+}

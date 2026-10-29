@@ -365,6 +365,17 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
       });
     },
 
+    // Exact IDs only: failure details must not rehydrate the full retained history.
+    async readLookupJob(jobId) {
+      if (!/^[A-Za-z0-9-]{1,80}$/.test(String(jobId))) return null;
+      const pool = await getPool();
+      const result = await pool.query({text: `select j.data as job, t.data as task
+        from phone_cloud_automation_jobs j
+        left join phone_cloud_windows_tasks t on t.task_id = j.data->>'windowsTaskId'
+        where j.job_id = $1 limit 1`, values: [jobId], query_timeout: 5000});
+      return result.rows[0] || null;
+    },
+
     async loadOverlay() {
       const pool = await getPool();
       // Bound startup query memory; returned rows and merge precedence stay unchanged.

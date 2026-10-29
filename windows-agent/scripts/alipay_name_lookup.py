@@ -5414,8 +5414,11 @@ class Runner:
             remaining = deadline - time.monotonic()
             if remaining <= .1:
                 break
-            # Reserve time for a second sample when no first valid frame exists.
-            sample_budget = min(10.0, remaining / (2 if previous is None else 1))
+            # Keep each read useful after a transitional/invalid frame. Halving
+            # the remaining budget repeatedly starves a normal 7-8 second dump.
+            # The outer deadline still bounds all samples; two fresh matching
+            # complete frames remain mandatory before any account selection.
+            sample_budget = min(10.0, remaining)
             if sample_budget < 2.0:
                 break  # Too little time for a meaningful fresh UIAutomator read.
             sample_started = time.monotonic()
@@ -5483,8 +5486,10 @@ class Runner:
                                   evidence=["登录其他账号", "退出登录", "取消"])
             time.sleep(0.25)
         self.emit("account_picker_sampling_finished", sampleReason=last_reason, sampleCount=sample_count)
+        if last_reason == "sample_timeout":
+            raise RuntimeError("alipay_account_picker_read_timeout")
         if sample_count == 0:
-            raise RuntimeError("alipay_account_picker_read_timeout" if last_reason == "sample_timeout" else "uiautomator_hierarchy_missing")
+            raise RuntimeError("uiautomator_hierarchy_missing")
         if not allow_intermediate_sheet and not picker_seen:
             raise RuntimeError("alipay_open_account_picker_not_reusable")
         raise RuntimeError("alipay_account_picker_not_stable")

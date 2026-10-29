@@ -212,3 +212,10 @@ function fakeDatabase({ failOn = "" } = {}) {
   };
   return database;
 }
+
+test('archive lookup is one bounded parameterized read by exact primary key',async()=>{
+ const calls=[];const repos=createPostgresRepositories({getPool:async()=>({query:async q=>{calls.push(q);return {rows:[{job:{jobId:'j'},task:{taskId:'t'}}]};}})});
+ assert.equal((await repos.readLookupJob('j')).job.jobId,'j');assert.equal(calls.length,1);
+ assert.deepEqual(calls[0].values,['j']);assert.match(calls[0].text,/where j.job_id = \$1 limit 1/);assert.equal(calls[0].query_timeout,5000);
+ assert.equal(await repos.readLookupJob('../bad'),null);assert.equal(calls.length,1);
+});

@@ -1,5 +1,5 @@
 import {lookupXmlFailure} from "./lookup-xml-failure.mjs";
-import {isLookupReaderRecovery, readerExitDiagnostic, verifyLookupReaderCleanup, lookupReaderStopReason} from "./lookup-reader-lifecycle.mjs";
+import {isLookupReaderRecovery, rejectExitedReaderRequest, readerExitDiagnostic, verifyLookupReaderCleanup, lookupReaderStopReason} from "./lookup-reader-lifecycle.mjs";
 const lookupReaderStopBarriers = new Map();
 import {collectLookupTrace, isAutomaticLookupResume} from "./lookup-recovery-trace.mjs";
 import { createRecoveryIsolation } from './recovery-isolation.mjs';
@@ -3204,20 +3204,14 @@ function createAirtestWorker(serial) {
     const marker = `poco_worker_bootstrap_failed:${readerExit.stage}:${readerExit.cause}`;
     const error = new Error(`Airtest/Poco worker 已退出：${serial} code=${code ?? ""} signal=${signal ?? ""} ${marker} ${worker.stderrBuffer}`.trim());
     if (worker.readyReject) worker.readyReject(error);
-    if (worker.pending) {
-      worker.pending.reject(error);
-      worker.pending = null;
-    }
+    rejectExitedReaderRequest(worker, error);
   });
   child.on("error", (error) => {
     worker.exited = true;
     if (airtestWorkersBySerial.get(serial) === worker) airtestWorkersBySerial.delete(serial);
     clearTimeout(readyTimer);
     if (worker.readyReject) worker.readyReject(error);
-    if (worker.pending) {
-      worker.pending.reject(error);
-      worker.pending = null;
-    }
+    rejectExitedReaderRequest(worker, error);
   });
   return worker;
 }
