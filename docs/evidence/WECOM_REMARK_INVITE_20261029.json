@@ -1,0 +1,197 @@
+{
+  "status": "requested_remark_persisted_one_send_click_delivery_pending",
+  "operationDateAsiaShanghai": "2026-10-29",
+  "targetMasked": "136****6441",
+  "previousSender": "23",
+  "selectedSender": "59/main/user0",
+  "userAuthorization": "Another WeCom account, same previously specified test user, one real invitation with remark yyx（坦克）.",
+  "sourceCommit": "2a9a08a94ba3774ebd877bd7a98f48227481faa3",
+  "coreSourceCommit": "b14d58c7b160504b05a18e345e27f0210c82a0a6",
+  "productionRollout": false,
+  "productionPreviewOnlyProtocolUnchanged": true,
+  "productionWhitelistUnchanged": true,
+  "method": "Temporary explicit-test adapter under real platform owner and unique screen-control lease, same existing SYSTEM ADB socket. One native send click after persistent exact-remark verification; no permanent send mode.",
+  "remark": {
+    "requested": "yyx（坦克）",
+    "verifiedFromReopenedPersistedPage": "yyx（坦克）",
+    "exactUnicodeComparison": true,
+    "nameWriteCount": 1,
+    "saveClickCount": 1,
+    "otherFieldsPreserved": true,
+    "scope": "Only this requested target on selected account; explicit request supersedes preserve-nonempty for this one operation; platform default unchanged."
+  },
+  "send": {
+    "nativeClickCount": 1,
+    "automaticResends": 0,
+    "durablePreClickClaim": true,
+    "claimRetained": true,
+    "runtimeOutcome": "unknown_no_retry",
+    "providerDeliveryConfirmed": false,
+    "recipientConfirmation": "pending",
+    "contactAcceptance": "not_verified"
+  },
+  "attempts": [
+    {
+      "scope": "one_explicitly_authorized_test_invitation",
+      "productionPreviewApiUsed": false,
+      "sendClickIssued": false,
+      "sendOutcome": "not_attempted",
+      "productionRuntimeChanged": false,
+      "deviceNumber": "43",
+      "blockedCode": "home_not_confirmed",
+      "errorType": "SafeStop",
+      "ownLeaseReleased": true,
+      "elapsedSeconds": 56.453,
+      "sourceCommit": "2a9a08a94ba3774ebd877bd7a98f48227481faa3",
+      "sourceHashes": {
+        "wecom_platform_preview.py": "290711f39accacf800398f7f338eec7aa9efa47c74bac0d6877cde3e97f20c4c",
+        "wecom_invite_preview.py": "f7329cf01b0d9c7f750b730d570826099abba4df6581931eb395f74527ae8692",
+        "wecom_remark_preview.py": "ba97879f714c618511defe33e46c5a32cdb561a3f37a5fa4edd8c83cd7f1dfd6",
+        "wecom_startup_guards.py": "82fcf0d5ccc3d8aceab9901ac663725fcc9bf6b5f072715d18892036652f6d25",
+        "wecom_rpc_budget.py": "60aab705ab8b1a5282da225ac5e7f3ac27c90c01749e4637e0dfe732e906bff6",
+        "wecom_preview_devices.json": "2eab0e0415e7db2f7c00c8ccf8e55f36cb3987a22c03bdc5aee4b05f6167bc88",
+        "host.py": "b1ab75742eb722410e68e674a5ba354981f40cbe77e7e86c5163f2a8b5c6fe37",
+        "exact_remark.py": "748182accbddb2a0fa52034d3ae1be424e5be292b151ba333d5df121171eb54e"
+      }
+    },
+    {
+      "scope": "one_explicitly_authorized_test_invitation",
+      "productionPreviewApiUsed": false,
+      "sendClickIssued": true,
+      "sendOutcome": "unknown_no_retry",
+      "productionRuntimeChanged": false,
+      "deviceNumber": "59",
+      "actionsStarted": [
+        "open_menu",
+        "open_add",
+        "open_search",
+        "enter_phone",
+        "search",
+        "open_remark",
+        "save_remark",
+        "open_remark",
+        "close_remark",
+        "open_preview"
+      ],
+      "actionsCompleted": [
+        "open_menu",
+        "open_add",
+        "open_search",
+        "enter_phone",
+        "search",
+        "open_remark",
+        "save_remark",
+        "open_remark",
+        "close_remark",
+        "open_preview"
+      ],
+      "remarkWriteIssued": true,
+      "remarkSaveClickCount": 1,
+      "remarkNameVerified": "yyx（坦克）",
+      "otherRemarkFieldsPreserved": true,
+      "exactPhoneVerifiedBeforePreview": true,
+      "previewStatus": "ready_before_send",
+      "previewCode": "stopped_before_send",
+      "remarkSaveStatus": "confirmed",
+      "previewAdapterResult": {
+        "previewStatus": "ready_before_send",
+        "previewCode": "stopped_before_send",
+        "invitationSent": false,
+        "remarkSaveStatus": "confirmed"
+      },
+      "adbPidUnchanged": true,
+      "agentPidUnchanged": true,
+      "ownLeaseReleased": true,
+      "elapsedSeconds": 129.172,
+      "sourceCommit": "2a9a08a94ba3774ebd877bd7a98f48227481faa3",
+      "sourceHashes": {
+        "wecom_platform_preview.py": "290711f39accacf800398f7f338eec7aa9efa47c74bac0d6877cde3e97f20c4c",
+        "wecom_invite_preview.py": "f7329cf01b0d9c7f750b730d570826099abba4df6581931eb395f74527ae8692",
+        "wecom_remark_preview.py": "ba97879f714c618511defe33e46c5a32cdb561a3f37a5fa4edd8c83cd7f1dfd6",
+        "wecom_startup_guards.py": "82fcf0d5ccc3d8aceab9901ac663725fcc9bf6b5f072715d18892036652f6d25",
+        "wecom_rpc_budget.py": "60aab705ab8b1a5282da225ac5e7f3ac27c90c01749e4637e0dfe732e906bff6",
+        "wecom_preview_devices.json": "2eab0e0415e7db2f7c00c8ccf8e55f36cb3987a22c03bdc5aee4b05f6167bc88",
+        "host.py": "b1ab75742eb722410e68e674a5ba354981f40cbe77e7e86c5163f2a8b5c6fe37",
+        "exact_remark.py": "748182accbddb2a0fa52034d3ae1be424e5be292b151ba333d5df121171eb54e"
+      }
+    }
+  ],
+  "postflight": {
+    "agentPid": 26488,
+    "adbPid": 17764,
+    "owner": "NT AUTHORITY\\SYSTEM",
+    "agentEntrySha256": "884bc370558e6b0b3f2d0d46dee309da4467757b613c0da03576de8f9b34df74",
+    "devices": [
+      {
+        "number": "43",
+        "pocoPresent": false
+      },
+      {
+        "number": "59",
+        "pocoPresent": false
+      }
+    ],
+    "journal": {
+      "status": "unknown_no_retry",
+      "deviceNumber": "59",
+      "sendClickCount": 1,
+      "atUtc": "2026-10-29T01:25:16.867819+00:00"
+    },
+    "inventory": [
+      {
+        "number": "43",
+        "online": true,
+        "busy": false,
+        "screenControlBusy": false
+      },
+      {
+        "number": "59",
+        "online": true,
+        "busy": false,
+        "screenControlBusy": false
+      }
+    ]
+  },
+  "offlineGuardTests": {
+    "command": "PYTHONPATH=<repository>/windows-agent/scripts python3 test_exact_remark.py",
+    "passed": 8,
+    "failed": 0,
+    "realDevices": 0,
+    "sourceSha256": "748182accbddb2a0fa52034d3ae1be424e5be292b151ba333d5df121171eb54e",
+    "testSha256": "7ac66ce692034512aa36f536cc88d10aaf747367cef37cff4d6d0b4f9bdd7762",
+    "cases": [
+      "explicit nonempty override and other-field preservation",
+      "already exact no write",
+      "wrong target blocks before remark page",
+      "lost lease blocks write",
+      "unknown save single attempt",
+      "lost persistence blocks confirmation",
+      "unrelated field change blocks save",
+      "unknown write no replay"
+    ]
+  },
+  "archivedTestOnlySources": {
+    "verification/wecom-explicit-remark-20261029/exact_remark.py": "748182accbddb2a0fa52034d3ae1be424e5be292b151ba333d5df121171eb54e",
+    "verification/wecom-explicit-remark-20261029/test_exact_remark.py": "7ac66ce692034512aa36f536cc88d10aaf747367cef37cff4d6d0b4f9bdd7762"
+  },
+  "temporaryHarnessHashes": {
+    "host.py": "b1ab75742eb722410e68e674a5ba354981f40cbe77e7e86c5163f2a8b5c6fe37",
+    "run.py": "e77f46bdf3bb0593ac8c7a592d4c038e1113fee4409a9ad482e3633b88227a90",
+    "postflight.py": "5d80cce9c3637bc49bea96b59159fbc58af56a71189502ee90f7f700ac605479"
+  },
+  "notVerified": [
+    "recipient delivery/acceptance for this second invitation",
+    "43 initial home page failure root cause",
+    "stable automatic sender-side delivery detection",
+    "production WeCom API dispatch or bulk sending",
+    "new Windows-native automated/full regression"
+  ],
+  "recordedAtUtc": "2026-10-29T01:27:45.696293+00:00",
+  "pushed": false,
+  "archivedGuardTests": {
+    "command": "PYTHONPATH=windows-agent/scripts python3 verification/wecom-explicit-remark-20261029/test_exact_remark.py",
+    "passed": 8,
+    "failed": 0,
+    "runtimeDeviceOrNetworkActions": 0
+  }
+}
