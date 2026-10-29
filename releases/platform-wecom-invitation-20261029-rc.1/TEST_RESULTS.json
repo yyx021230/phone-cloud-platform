@@ -1,0 +1,174 @@
+{
+  "version": "platform-wecom-invitation-20261029-rc.1",
+  "status": "local_candidate",
+  "acceptanceCommit": "9f991685ccf6a7a32e300f435ec1fdce015ca566",
+  "runtimeSourceCommit": "6f6b4859f280cd74fcd81c8e0b619ac61593f305",
+  "environment": {
+    "os": "macOS",
+    "node": "v25.9.0",
+    "python": "3.9.6"
+  },
+  "finalCombined": {
+    "command": "node verification/wecom-invitation-20261029/run-local.mjs",
+    "exitCode": 0,
+    "node": {
+      "tests": 1704,
+      "pass": 1702,
+      "fail": 0,
+      "skipped": 2
+    },
+    "pythonGroups": [
+      {
+        "command": "python3 -m unittest discover -s windows-agent/scripts -p test_*.py",
+        "passed": 1075,
+        "seconds": 38.782,
+        "failed": 0
+      },
+      {
+        "command": "python3 -m unittest discover -s deploy/nginx-isolation -p test_*.py",
+        "passed": 13,
+        "seconds": 0.003,
+        "failed": 0
+      },
+      {
+        "command": "python3 -m unittest discover -s tools/windows-migration -p test_*.py",
+        "passed": 13,
+        "seconds": 0.012,
+        "failed": 0
+      },
+      {
+        "command": "python3 -m unittest discover -s examples/name-lookup -p test_*.py",
+        "passed": 10,
+        "seconds": 1.815,
+        "failed": 0
+      },
+      {
+        "command": "python3 -m unittest discover -s examples/name-lookup-api-key -p test_*.py",
+        "passed": 10,
+        "seconds": 1.801,
+        "failed": 0
+      },
+      {
+        "command": "python3 -m unittest discover -s experiments/lookup-icon-selector-20261023 -p test_*.py",
+        "passed": 3,
+        "seconds": 0.316,
+        "failed": 0
+      },
+      {
+        "command": "python3 -m unittest discover -s scripts/qa -p test_*.py",
+        "passed": 27,
+        "seconds": 1.292,
+        "failed": 0
+      },
+      {
+        "command": "python3 -m unittest discover -s windows-agent/scripts -p *_test.py",
+        "passed": 166,
+        "seconds": 1.396,
+        "failed": 0
+      },
+      {
+        "command": "python3 -m unittest sdk.open_name_lookup.python_client_test",
+        "passed": 4,
+        "seconds": 0.001,
+        "failed": 0
+      },
+      {
+        "command": "python3 -m unittest sdk.test_xhs_batch_client",
+        "passed": 3,
+        "seconds": 0.512,
+        "failed": 0
+      }
+    ],
+    "jsonSmoke": "passed",
+    "logSha256": "c3ceb169b261f1356cf5caf7bed7d2497551f895624945d262e0506b60d58bb1"
+  },
+  "focusedWecomPython": {
+    "command": "python3 -m unittest discover -s windows-agent/scripts -p 'test_wecom*.py'",
+    "passed": 135,
+    "failed": 0,
+    "overlapsCombined": true
+  },
+  "syntax": {
+    "command": "npm run check; node --check public/wecom-automation-ui.js; node --check public/wecom-preview.js",
+    "passed": true
+  },
+  "guardChecks": {
+    "unchangedFrozenFiles": 33,
+    "committedRuntimeArchiveFiles": 31,
+    "mergedNonSharedRuntimeExactBytes": 10,
+    "archivePathAndHashCheck": "passed",
+    "apiCopiesIdentical": true,
+    "gitDiffCheck": "passed",
+    "privateKeyJwtPatternScan": "passed"
+  },
+  "mediaBaseline": {
+    "command": "node deploy/mediamtx-pacing/verify.mjs --repository",
+    "result": "repository-only",
+    "liveVerified": false
+  },
+  "priorFailures": [
+    {
+      "stage": "initial screen subset before cache assertion update",
+      "counts": {
+        "tests": 1513,
+        "pass": 1509,
+        "fail": 4,
+        "skipped": 0
+      },
+      "logSha256": "be396bf559fad80d02298a7b966c0b15200dbe418995dd0ddaad8676d72e17f0"
+    },
+    {
+      "stage": "intermediate integration before isolated-function fix",
+      "counts": {
+        "tests": 1704,
+        "pass": 1696,
+        "fail": 6,
+        "skipped": 2
+      },
+      "logSha256": "5026612ab9ad468ca47ddbb3ad2061a66dea62ceb2066504c979f2f178f9000b"
+    },
+    {
+      "stage": "parallel full before recovery fixture isolation",
+      "counts": {
+        "tests": 1704,
+        "pass": 1701,
+        "fail": 1,
+        "skipped": 2
+      },
+      "logSha256": "d4c630418f762f24a2003c9b6823f24b1fb3b16061485d16155cb9a25fe32d41"
+    },
+    {
+      "stage": "serial full before recovery fixture isolation",
+      "counts": {
+        "tests": 1704,
+        "pass": 1701,
+        "fail": 1,
+        "skipped": 2
+      },
+      "logSha256": "3fa086060a29a8cae132240801516e286019ebd9aea1c17f30d47b4e89efb51b"
+    }
+  ],
+  "resolvedInitialIssues": [
+    "old cache version assertions updated with the new entrypoint",
+    "new feature exception handler referenced a missing variable; fixed before final acceptance",
+    "extracted generic sync fixture lacked the newly referenced constant; avoided affecting unrelated jobs",
+    "existing recovery fixture reused a 1000ms deadline for business-result assertions; restored prior 3000ms fixture budget, retained 800ms ACK-loss timeout and all business assertions"
+  ],
+  "defaultParallelRecheckedAfterFixtureFix": false,
+  "selfReview": "completed; no independent reviewer",
+  "notVerified": [
+    "current production baseline and rollback backups",
+    "new native Windows execution",
+    "new real-phone automation delivery",
+    "real PostgreSQL integration",
+    "recipient automatic delivery detection",
+    "new image build and production maintenance/rollback exercise",
+    "Java/Go checks (no code changes in these components)"
+  ],
+  "productionConnections": 0,
+  "realInvitationsSentThisRound": 0,
+  "deployed": false,
+  "pushed": false,
+  "existingUntrackedDependencySymlinksRetained": true,
+  "recordedAtUtc": "2026-10-29T03:05:14.044710+00:00"
+}
