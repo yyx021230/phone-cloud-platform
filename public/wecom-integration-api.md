@@ -134,3 +134,42 @@
 - 400为参数不合法；401为缺少有效管理员身份；403为手机不在允许范围；409为目标／占用／参数冲突；429为当前容量已满；503为受理保存尚未确认。503不代表未操作，按原参数／原任务核对。
 
 本地已用真实HTTP及模拟Agent测试四字段提交、整数手机编号、单双开、并发重复提交、防重、丢失任务号后复查、权限与服务重启。没有连接生产或发送真实邀请；新版本Windows原生、Postgres和真机完整对接仍未验。
+
+
+## 对接代码与本轮完整模拟验收
+
+可选Node客户端示例：`examples/wecom-integration/client.mjs`，无额外npm依赖，调用只涉及上述三个接口；其他语言仍按HTTP合同接入。示例不会读取.env、不会自动重试POST，Token只放Authorization头，网络异常只报告“受理/执行结果未知”。
+
+```javascript
+import { WecomClient } from './client.mjs';
+const api = new WecomClient({ baseUrl, token });
+const inventory = await api.devices({ onlineOnly: true });
+// 由对接系统选择 available=true 的设备及返回的 appSlots，检查 capacity.remaining。
+const task = await api.submit({ deviceNumber, appSlot, phoneNumber, remarkName });
+// 先把 task.taskId 持久化到对接系统，再按原ID每2秒查询；不要轮询POST。
+const result = await api.result(task.taskId);
+```
+
+以下是2026-10-29本地实际HTTP验证，不是真机或生产验收。调用端经过本地HTTP网关，后台假Agent通过原Node子进程包装器，执行真实备注/发送算法，页面采用合成Poco夹具；未执行Windows启动/ADB适配器。
+
+| 场景 | 实际结果 |
+|---|---|
+| 全量及在线列表 | 10台已登记模拟设备，9台在线；未配置企微的在线手机不可选；155返回main/clone |
+| 同时重复提交 | 6次相同POST只得到1个任务号、1个执行任务 |
+| 同一手机双开互斥 | main执行期间clone提交被409拒绝，未自动换账户 |
+| 不同手机并行 | 155/main停在发送前时，59/main独立完成；155原任务仍running |
+| 主应用与分身 | 155/main绑定0、155/clone绑定999，各1次搜索、保存、模拟发送；备注保存并回读确认 |
+| POST响应丢失 | 网关保留已受理响应，客户端100ms真实HTTP超时；原四字段再提交取回原任务，分身只模拟发送1次 |
+| claim响应丢失 | 模拟执行器丢弃已持久化claim的回应后停止，0次模拟发送，结果unknown |
+| 服务重启后再提交 | 取回原任务号和unknown结果，无新增执行任务 |
+| 非法/越权请求 | 白名单外、未配置分身、非法号码、额外字段、失效Token、普通用户、跨管理员查结果、重复编号均按合同拒绝 |
+
+共4个模拟执行任务：4次搜索、4次备注保存、3次模拟原生发送点击；另一条claim未知保持0点击。真实手机操作和真实邀请均为0。`unknown`没有伪装成收到邀请或已加好友。Node定向52项、企微Python135项通过，二者覆盖有重叠；没有用这些数量替代Windows原生、真实Postgres或真机灰度。
+
+复现完整外部调用模拟（仓库根目录；只创建本地临时服务/数据/假设备）：
+
+```sh
+node --test --test-concurrency=1 server/wecom-integration.e2e.test.mjs examples/wecom-integration/client.test.mjs
+```
+
+本轮未改平台业务源码、界面或Agent；新增的是调用示例、隔离模拟与文档。当前仍未推送/上线，新Windows原生、真实Postgres、真实手机发送和自动送达识别仍待后续验收。首次离线夹具未登记导致的测试准备失败已按“先登记、再模拟离线”修正，没有改平台同步规则。
