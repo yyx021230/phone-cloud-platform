@@ -43,6 +43,9 @@ export function lookupFailureDomain(job = {}) {
   if (/^lookup_(?:old|restart|prepare)_worker_exit_unconfirmed$/.test(reason)
     || reason === 'lookup_reader_cleanup_unconfirmed') return 'device';
   if (/^poco_worker_bootstrap_failed:adb_probe:(?:timeout|device_unavailable|command_failed)$/.test(reason)) return 'device';
+  // Runner-owned dumpsys-window timeout: no reliable foreground observation,
+  // not a missing selector or a result screenshot for the name reader.
+  if (reason === 'poco_android_window_service_timeout') return 'device';
   // A local result reader failure can use the exact terminal screenshot; it
   // does not prove the device or its ADB transport is unavailable.
   if (lookupTerminalResultReason(job)) return 'page';
