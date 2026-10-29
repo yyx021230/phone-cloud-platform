@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 from xhs_isolated_guard import validate, validate_file
 from xhs_isolated_runner import GuardedCommands, read_proof
-from xhs_candidate_live import settings_recovery_source, staging_source, wait_cached_proof, candidate_files, validate_target_names, completed_results, completion_payload, collection_succeeded, main as live_main
+from xhs_candidate_live import settings_recovery_source, staging_source, wait_cached_proof, candidate_files, validate_target_names, completed_results, completion_payload, collection_succeeded, parse_target_selectors, main as live_main
 
 
 class LeaseBoundary(unittest.TestCase):
@@ -360,3 +360,16 @@ class LeaseBoundary(unittest.TestCase):
 
 
 if __name__ == '__main__': unittest.main()
+
+
+class SlotScenarioTests(unittest.TestCase):
+    def test_two_slots_of_one_phone_are_explicit(self):
+        self.assertEqual(parse_target_selectors(['131/app1','131/app2']),(['131','131'],['app1','app2']))
+        self.assertEqual(parse_target_selectors(['153/app2']),(['153'],['app2']))
+    def test_duplicate_slots_exclusions_and_invalid_selectors_refuse(self):
+        for selectors in ([],['131','131/app1'],['18/app1'],['152/app2'],['155/app1'],['185/app1'],['131/app3'],['131/app1/extra'],['131/app2','131/app2']):
+            with self.subTest(selectors=selectors),self.assertRaises(ValueError):parse_target_selectors(selectors)
+    def test_busy_preflight_has_no_success_collection(self):
+        a={'ok':True,'preflightOnly':True,'settingsRestored':True,'result':{'errorCode':'xhs_data_reservation_pending','diagnostic':{'collectionStarted':False}}}
+        self.assertEqual(completion_payload(a),{'status':'failed','result':a['result']})
+        self.assertFalse(collection_succeeded(a))

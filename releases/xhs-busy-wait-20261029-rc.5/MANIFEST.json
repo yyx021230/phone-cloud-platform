@@ -1,0 +1,44 @@
+{
+  "status": "candidate_not_deployed",
+  "sourceCommit": "26d816fa7e11403df989e708473dd3531e4a6870",
+  "sourceTag": "xhs-busy-wait-20261029-rc.5",
+  "baselineCommit": "d8019059f48182c02307a4addc1fa50ebfec4aeb",
+  "files": [
+    {
+      "path": "server/xhs-batch/engine.mjs",
+      "sha256": "52fc62dd5acec4ea2a3bea7493f7774310033c8a39dd1943c67d666af74151c1",
+      "baselineSha256": "be3fed0de38fc021132f6d47d6adac24e62dcd4a11c538daba4e5f4a3cc64eb8"
+    },
+    {
+      "path": "server/xhs-data-collection.mjs",
+      "sha256": "ec966c4f55e937960af29b620c78f4717b6f702af43b33b1cf8c427286510bc0",
+      "baselineSha256": "17738a1f2f9fb2eb93ba4ba89f4e563f53d9b0a8313087fdfa6a1c620a55a49a"
+    },
+    {
+      "path": "windows-agent/src/index.mjs",
+      "sha256": "0f70a3a14bec81b91c0b84cfa34c4d24ee0462ac262cba777395cc5aa5fd8c38",
+      "baselineSha256": "884bc370558e6b0b3f2d0d46dee309da4467757b613c0da03576de8f9b34df74"
+    },
+    {
+      "path": "windows-agent/src/xhs-data-collection.mjs",
+      "sha256": "e1c6812a079ff078492797fb5d928b731675cf68ef20f87e93ad768733c79ffe",
+      "baselineSha256": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842"
+    },
+    {
+      "path": "windows-agent/scripts/小红书数据同步.py",
+      "sha256": "9a95226108c70ed8830dd322bdbd32c9d932f163ebbc509ff371703888b1fddf",
+      "baselineSha256": "cbf038e297f3b67c8b4b681bf93b22e6026c7683d263d1c4fc62b56897de63e0"
+    }
+  ],
+  "packages": {
+    "candidate.tar.gz": "ae62beed55e909601338bb77ef4e04b883c2263d6443a357f6c358a43cab2c2e",
+    "rollback-reference.tar.gz": "66920d671955fd4bef7ca37db8e7404d16b09efb2f7180721aadcd53b0cdb2d0"
+  },
+  "rollbackDrill": {
+    "isolated": true,
+    "candidateApplied": true,
+    "baselineRestored": true,
+    "unrelatedFilePreserved": true
+  },
+  "baselineEvidence": "Production platform/batch container and Windows file hashes read on 2026-10-29 match the stated baseline for scoped runtime files. Recheck and take actual production backups before deployment."
+}

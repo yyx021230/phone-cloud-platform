@@ -199,6 +199,37 @@ def main():
             try:return _fn(*args,**kwargs)
             finally:commands.trace('phase_end',phase=_name)
         setattr(collector,name,traced)
+    if c.get('identityProbe'):
+        # Diagnostic only: two newest-page element reads, no swipes and no
+        # success claim. Store hashes of allowlisted resource components only.
+        element_records={}
+        original_fingerprint=collector.element_cover_fingerprint
+        def fingerprint(row,visible):
+            value=original_fingerprint(row,visible)
+            if value and value not in element_records:
+                for node in row.iter('node'):
+                    raw=(node.get('text') or '').strip()
+                    if hashlib.sha256(('xhs-cover-element-v1\0'+raw).encode()).hexdigest()!=value:continue
+                    parts={}
+                    for part in raw.split('&')[1:]:
+                        key,sep,component=part.partition('=')
+                        if sep and key in ('ap','sc','sign','t','ext'):
+                            parts[key]=hashlib.sha256(component.encode()).hexdigest()
+                    element_records[value]=parts
+            return value
+        collector.element_cover_fingerprint=fingerprint
+        def probe(args):
+            from argparse import Namespace
+            first_args=Namespace(**vars(args));first_args.max_scrolls=0
+            first=collector.collect_once(first_args)
+            second_args=Namespace(**vars(first_args));second_args.verification_pass=True
+            second_args.verified_entry_events=tuple(first['recovery_events'])
+            second_args.used_loading_reopens=collector.data_center_reopen_count(first['recovery_events'])
+            second=collector.collect_once(second_args)
+            (Path(c['stage'])/'identity-probe-private.json').write_text(json.dumps({'passes':[first,second],'componentHashes':element_records},ensure_ascii=False),encoding='utf-8')
+            first['complete']=False;first['stop_reason']='qa_identity_probe_only'
+            return first
+        collector.collect=probe
     raise SystemExit(collector.main())
 
 

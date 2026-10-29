@@ -1069,6 +1069,35 @@ def recover_known_overlay(adb_path, serial, root, guard, events):
         events.append("vivo_usb_cancelled")
         return True
 
+    # 153/OPPO exposes USB choices in SystemUI, above the clone chooser.
+    # Back only dismisses this proven panel; never select a USB mode or grant ADB.
+    system_usb_title = [n for n in live_nodes(root)
+                        if n.get("package") == "com.android.systemui"
+                        and n.get("resource-id") == "com.android.systemui:id/usb_select_title_tv"
+                        and n.get("text") == "USB 用于"]
+    if system_usb_title:
+        live = live_nodes(root)
+        choices = [n for n in live if n.get("resource-id") == "com.android.systemui:id/title"]
+        expected = {"仅充电", "传输文件 / Android Auto", "传输照片", "USB 网络共享", "MIDI"}
+        labels = [" ".join((n.get("text") or "").split()) for n in choices]
+        if (len(system_usb_title) != 1 or len(choices) != 5 or set(labels) != expected
+                or any(n.get("package") != "com.android.systemui" for n in live)
+                or any(n.get("class") != "android.widget.TextView" for n in choices + system_usb_title)
+                or not re.search(r"mCurrentFocus=Window\{[^\n}]*\bu\d+\s+com\.android\.systemui[}\s]", current)):
+            raise RuntimeError("SystemUI USB mode panel is not uniquely proven")
+        if "oppo_systemui_usb_dismissed" in events:
+            raise RuntimeError("SystemUI USB mode panel reappeared; collection stopped")
+        guard()
+        if focus(adb_path, serial) != current:
+            raise ElementListReadError("SystemUI USB mode foreground changed before Back")
+        adb(adb_path, serial, "shell", "input", "keyevent", "4", timeout=7)
+        time.sleep(0.4)
+        after = navigation_capture(adb_path, serial, guard, events)
+        if any(n.get("resource-id") == "com.android.systemui:id/usb_select_title_tv" for n in live_nodes(after)):
+            raise RuntimeError("SystemUI USB mode panel stayed open after Back")
+        events.append("oppo_systemui_usb_dismissed")
+        return True
+
     huawei_usb_titles = [node for node in live_nodes(root)
                          if node.get("package") == "com.android.settings"
                          and node.get("resource-id") == "android:id/alertTitle"
@@ -1905,11 +1934,41 @@ def structured_note_cards(root):
         values = [value for _, value in numbers]
         if len(values) != 3:
             continue
-        cards.append((node, {"title": title, "published_at_raw": date, "status_raw": status,
+        item = {"title": title, "published_at_raw": date, "status_raw": status,
                              "list_view_count": values[0] if len(values) > 0 else None,
                              "list_like_count": values[1] if len(values) > 1 else None,
-                             "list_comment_count": values[2] if len(values) > 2 else None}))
+                             "list_comment_count": values[2] if len(values) > 2 else None}
+        cover = element_cover_fingerprint(node, visible)
+        if cover:
+            item["element_cover_sha256"] = cover
+        cards.append((node, item))
     return cards
+
+
+def element_cover_fingerprint(row, visible):
+    """Hash only the native cover element's opaque text, never image pixels.
+
+    This is an in-task identity aid, not a note ID. Rotating/missing resource
+    labels must fail the existing seam/two-pass checks, not merge two posts.
+    """
+    x1, y1, x2, y2 = bounds(row)
+    covers = [n for n in row.iter("node") if n in visible and n.get("package") == XHS_PACKAGE
+              and n.get("class") == "android.widget.Image" and bounds(n)
+              and x1 <= bounds(n)[0] < bounds(n)[2] <= x1 + (x2-x1)*.25
+              and y1 <= bounds(n)[1] < bounds(n)[3] <= y2
+              and bounds(n)[3]-bounds(n)[1] >= (y2-y1)*.45]
+    if len(covers) != 1:
+        return None
+    value = (covers[0].get("text") or "").strip()
+    if not 1 <= len(value) <= 16384:
+        return None
+    return hashlib.sha256(("xhs-cover-element-v1\0" + value).encode("utf-8")).hexdigest()
+
+
+def note_identity(note, normalized_date=False):
+    identity = (note["title"], note["published_date" if normalized_date else "published_at_raw"])
+    cover = note.get("element_cover_sha256")
+    return identity + (cover,) if cover else identity
 
 
 def flat_webview_cards(root):
@@ -2000,7 +2059,7 @@ def element_page_signature(root, allow_duplicate_rows=False):
         return ((), empty, bottom) if empty else None
     # Window-aware callers retain every row, then reject ambiguous identities
     # inside the requested window. Other callers keep the strict default.
-    identities = [(item["title"], item["published_at_raw"]) for _, item in cards]
+    identities = [note_identity(item) for _, item in cards]
     if not allow_duplicate_rows and len(set(identities)) != len(identities):
         raise ElementListReadError("visible element rows have ambiguous duplicate title/date")
     views = [n for n in live_nodes(root) if n.get("package") == XHS_PACKAGE
@@ -2052,7 +2111,7 @@ def element_page_signature(root, allow_duplicate_rows=False):
                 if any(row[1] <= box[1] < box[3] <= row[3] for row in clipped_rows):continue
                 if box[1]-before < top or box[3]+after > bottom:continue
                 raise ElementListReadError("a fully visible dated element row has incomplete status/title/metrics")
-    return (tuple((v["title"],v["published_at_raw"],v["status_raw"],v["list_view_count"],v["list_like_count"],v["list_comment_count"]) for _,v in cards),
+    return (tuple(note_identity(v) + (v["status_raw"],v["list_view_count"],v["list_like_count"],v["list_comment_count"]) for _,v in cards),
             *proven_list_terminal(root))
 
 
@@ -2072,12 +2131,12 @@ def verify_newest_element_position(root):
 
 
 def verify_element_overlap(previous_root, root):
-    previous = [(v["title"],v["published_at_raw"]) for _,v in note_cards(previous_root)]
+    previous = [note_identity(v) for _,v in note_cards(previous_root)]
     raw = structured_note_cards(root) or flat_webview_cards(root)
-    full = {(v["title"],v["published_at_raw"]) for _,v in note_cards(root)}
+    full = {note_identity(v) for _,v in note_cards(root)}
     # Known clipped rows may anchor the seam; unknown clipped rows are not data.
-    current = [(v["title"],v["published_at_raw"]) for _,v in raw
-               if (v["title"],v["published_at_raw"]) in set(previous) | full]
+    current = [note_identity(v) for _,v in raw
+               if note_identity(v) in set(previous) | full]
     common = [identity for identity in current if identity in previous]
     if previous and not common:
         raise ElementListReadError("element page continuity is unproven after scroll")
@@ -2092,14 +2151,14 @@ def verify_element_overlap(previous_root, root):
 
 def verify_history_extension(history, root, as_of, cutoff, terminal=False):
     """Do not silently deduplicate a distant repeat or accept a missing known tail."""
-    full = [(v["title"],v["published_at_raw"]) for _,v in note_cards(root)
+    full = [note_identity(v) for _,v in note_cards(root)
             if cutoff <= published_date(v["published_at_raw"], as_of) <= as_of]
     novel = [identity for identity in full if identity not in history]
     if not history:
         return
     raw = structured_note_cards(root) or flat_webview_cards(root)
-    observed = [(v["title"],v["published_at_raw"]) for _,v in raw
-                if (v["title"],v["published_at_raw"]) in history or (v["title"],v["published_at_raw"]) in full]
+    observed = [note_identity(v) for _,v in raw
+                if note_identity(v) in history or note_identity(v) in full]
     common = [identity for identity in observed if identity in history]
     dates = [published_date(identity[1], as_of) for identity in observed]
     if (not common or common != history[history.index(common[0]):history.index(common[0])+len(common)]
@@ -2123,14 +2182,14 @@ def prove_native_list_start(adb_path, serial, root, guard, events):
             events.append("list_top_confirmed_empty_elements")
             return root
         first = note_cards(root)[0]
-        anchor = (first[1]["title"], first[1]["published_at_raw"], bounds(first[0]))
+        anchor = (note_identity(first[1]), bounds(first[0]))
         swipe(adb_path, serial, root, guard, events, reverse=True)
         following = refresh_scrolled_webview(adb_path, serial,
             navigation_capture(adb_path, serial, guard, events), guard, events, root)
         following = wait_creator_content(adb_path, serial, following, guard, events)
         verify_newest_element_position(following)
         cards = note_cards(following)
-        if cards and anchor == (cards[0][1]["title"], cards[0][1]["published_at_raw"], bounds(cards[0][0])):
+        if cards and anchor == (note_identity(cards[0][1]), bounds(cards[0][0])):
             events.append("list_top_confirmed_by_reverse_scroll")
             return following
         root = following
@@ -2320,8 +2379,8 @@ def refresh_scrolled_webview(adb_path, serial, root, guard, events, previous_roo
     """Refresh a stale WebView accessibility tree without changing filters."""
     require_element_tree(root)
     if previous_root is not None and not creator_filter_panel(root) and creator_list(root) and note_cards(root):
-        previous = [(n[1]["title"], n[1]["published_at_raw"]) for n in note_cards(previous_root)]
-        current_cards = [(n[1]["title"], n[1]["published_at_raw"]) for n in note_cards(root)]
+        previous = [note_identity(n[1]) for n in note_cards(previous_root)]
+        current_cards = [note_identity(n[1]) for n in note_cards(root)]
         # Clipping can remove old rows without exposing new content (47).
         # Require a genuinely new native identity before skipping the refresh.
         if (previous and set(current_cards) - set(previous)
@@ -2431,8 +2490,8 @@ def read_scrolled_content(adb_path, serial, previous_root, guard, events, fast_p
             signature = element_page_signature(root, allow_duplicate_rows=True)
         except ElementListReadError:
             signature = None
-        previous = {(v["title"], v["published_at_raw"]) for _, v in note_cards(previous_root)}
-        current = {(v["title"], v["published_at_raw"]) for _, v in note_cards(root)}
+        previous = {note_identity(v) for _, v in note_cards(previous_root)}
+        current = {note_identity(v) for _, v in note_cards(root)}
         # The primary scan already double-read every row. This independent
         # audit reads each newly exposed page once; the complete ordered audit
         # still has to match that primary scan before any result is complete.
@@ -2456,8 +2515,8 @@ def read_scrolled_content(adb_path, serial, previous_root, guard, events, fast_p
             events.append("native_pair_disabled_after_rejection")
         else:
             signature = stable_pair_signature(trees)
-            previous = {(v["title"], v["published_at_raw"]) for _, v in note_cards(previous_root)}
-            current = {(v["title"], v["published_at_raw"]) for _, v in note_cards(trees[1])}
+            previous = {note_identity(v) for _, v in note_cards(previous_root)}
+            current = {note_identity(v) for _, v in note_cards(trees[1])}
             # Unchanged/clipped old content still requires the proven refresh path.
             if signature is not None and current - previous:
                 verify_element_overlap(previous_root, trees[0])
@@ -2565,7 +2624,7 @@ def collect_once(args):
         discovered = 0
         cards = note_cards(root)
         card_dates = [published_date(item["published_at_raw"], as_of) for _, item in cards]
-        identities = [(item["title"], item["published_at_raw"])
+        identities = [note_identity(item)
                       for (_, item), date in zip(cards, card_dates) if date >= cutoff]
         if len(set(identities)) != len(identities):
             raise ElementListReadError("visible in-window element rows have ambiguous duplicate title/date")
@@ -2584,7 +2643,7 @@ def collect_once(args):
         bottom = bottom or empty
         older_visible = bool(card_dates and min(card_dates) < cutoff)
         try:
-            verify_history_extension([(v["title"],v["published_at_raw"]) for v in result["notes"]],
+            verify_history_extension([note_identity(v) for v in result["notes"]],
                                      root, as_of, cutoff, terminal=older_visible or bottom)
         except ElementListReadError as error:
             events.append("works_elements_scan_stopped:" + str(error))
@@ -2592,7 +2651,7 @@ def collect_once(args):
             result["warnings"].append("elements_unproven")
             break
         for _, item in cards:
-            identity = (item["title"], item["published_at_raw"])
+            identity = note_identity(item)
             if identity in seen:
                 saved = seen[identity]
                 if saved is not None:
@@ -2663,8 +2722,99 @@ def collect_once(args):
     return result
 
 
+def verify_duplicate_window_reverse(args, first, boundary_stop):
+    """Audit ambiguous-title posts upwards without regenerating image signatures.
+
+    Every newly observed row must occupy its exact place in the primary ordered
+    identity list. Reverse seams, the old-date/end boundary and the actual top
+    are all proven from fresh elements. Never accept a count-only match.
+    """
+    guard = lambda: assert_idle(args.device_cache, args.serial, args.device_name,
+                               args.task_id, args.app_slot, args.cancel_file)
+    as_of = dt.date.fromisoformat(first["window_end_date"])
+    cutoff = dt.date.fromisoformat(first["window_start_date"])
+    events = ["collection_verification_pass", "collection_verification_reverse_same_list",
+              "collection_scan_as_of:" + as_of.isoformat()]
+    root = verification_entry(args, guard, events)
+    if root is None:
+        raise ElementListReadError("duplicate verification requires the same live works list")
+    root = wait_creator_content(args.adb, args.serial, root, guard, events)
+    expected = [note_identity(n) for n in first["notes"]]
+    if not expected or len(set(expected)) != len(expected):
+        raise ElementListReadError("duplicate verification primary identities are ambiguous")
+    positions = {identity: index for index, identity in enumerate(expected)}
+    observed = {}
+    second = dict(first, complete=False, notes=[], scrolls=0, recovery_events=events,
+                  warnings=[], stop_reason="verification_unproven")
+    previous = None
+    stagnant = 0
+    budget = min(args.max_scrolls * 2 + 3, first["scrolls"] * 2 + 6)
+    for step in range(budget + 1):
+        guard()
+        current = focus(args.adb, args.serial)
+        assert_requested_foreground(current, events)
+        if not works_webview_activity(current) or not creator_list(root) or creator_filter_panel(root):
+            raise ElementListReadError("reverse verification left the works list")
+        require_creator_service_available(root)
+        if element_page_signature(root, allow_duplicate_rows=True) is None:
+            raise ElementListReadError("reverse verification elements are incomplete")
+        cards = note_cards(root)
+        dates = [published_date(n["published_at_raw"], as_of) for _, n in cards]
+        if any(d > as_of for d in dates) or any(b > a for a, b in zip(dates, dates[1:])):
+            raise ElementListReadError("reverse verification date order changed")
+        if step == 0:
+            empty, bottom = proven_list_terminal(root)
+            if not ((boundary_stop == "older_than_window_visible" and any(d < cutoff for d in dates))
+                    or (boundary_stop == "list_end_visible" and bottom and not empty)):
+                raise ElementListReadError("reverse verification lower boundary changed")
+        if previous is not None:
+            verify_element_overlap(root, previous)
+        items = [dict(n, published_date=d.isoformat()) for (_, n), d in zip(cards, dates) if cutoff <= d <= as_of]
+        ids = [note_identity(n) for n in items]
+        if any(identity not in positions for identity in ids) or len(set(ids)) != len(ids):
+            raise ElementListReadError("reverse verification found a new or ambiguous identity")
+        indices = [positions[identity] for identity in ids]
+        if indices and indices != list(range(indices[0], indices[0] + len(indices))):
+            raise ElementListReadError("reverse verification skipped or reordered a post")
+        before = len(observed)
+        for index, item in zip(indices, items):
+            observed.setdefault(index, item)
+        if observed and sorted(observed) != list(range(min(observed), len(expected))):
+            raise ElementListReadError("reverse verification is missing the known tail")
+        stagnant = stagnant + 1 if len(observed) == before and previous is not None else 0
+        if len(observed) == len(expected):
+            verify_newest_element_position(root)
+            root = prove_native_list_start(args.adb, args.serial, root, guard, events)
+            top = [note_identity(n) for _, n in note_cards(root)
+                   if cutoff <= published_date(n["published_at_raw"], as_of) <= as_of]
+            if not top or top != expected[:len(top)]:
+                raise ElementListReadError("reverse verification newest identities changed")
+            scope = next((n.get("text") for n in live_nodes(root) if (n.get("text") or "").startswith("仅统计")), None)
+            if scope != first["list_scope_raw"]:
+                raise ElementListReadError("reverse verification list scope changed")
+            second.update(complete=True, notes=[observed[i] for i in range(len(expected))], stop_reason=boundary_stop)
+            events.append("verification_reverse_completed")
+            return second
+        if step == budget or stagnant >= 3:
+            raise ElementListReadError("reverse verification did not reach every post and the top")
+        previous = root
+        swipe(args.adb, args.serial, root, guard, events, reverse=True)
+        second["scrolls"] += 1
+        guard()
+        current = focus(args.adb, args.serial)
+        assert_requested_foreground(current, events)
+        root = navigation_capture(args.adb, args.serial, guard, events)
+        guard()
+        if focus(args.adb, args.serial) != current:
+            raise ElementListReadError("reverse verification foreground changed during read")
+        root = refresh_scrolled_webview(args.adb, args.serial, root, guard, events, previous)
+        root = wait_creator_content(args.adb, args.serial, root, guard, events)
+        events.append("verification_fresh_page_accepted")
+    raise ElementListReadError("reverse verification budget exhausted")
+
+
 def collect(args):
-    """Only two independently restarted, complete ordered scans may succeed."""
+    """Only two complete ordered element audits may succeed."""
     first = collect_once(args)
     if not first["complete"]:
         return first
@@ -2677,17 +2827,29 @@ def collect(args):
     verification_args.verified_entry_events = tuple(first["recovery_events"])
     verification_args.used_loading_reopens = data_center_reopen_count(first["recovery_events"])
     started = time.monotonic()
+    title_dates = [(n["title"], n["published_date"]) for n in first["notes"]]
+    duplicate_titles = len(set(title_dates)) != len(title_dates)
     try:
-        second = collect_once(verification_args)
-    except ElementListReadError:
+        if duplicate_titles:
+            duplicate_keys = {key for key in title_dates if title_dates.count(key) > 1}
+            if any(not n.get("element_cover_sha256") for n in first["notes"]
+                   if (n["title"], n["published_date"]) in duplicate_keys):
+                raise ElementListReadError("duplicate-title posts lack distinct cover elements")
+            second = verify_duplicate_window_reverse(verification_args, first, first_stop)
+        else:
+            second = collect_once(verification_args)
+    except ElementListReadError as error:
+        first["recovery_events"].insert(0, "collection_verification_error:" + str(error))
         first["warnings"].append("verification_elements_unproven")
         first["recovery_events"].insert(0, "collection_integrity:verification_elements_unproven")
         return first
-    identities = lambda result: [(n["title"], n["published_date"]) for n in result["notes"]]
+    identities = lambda result: [note_identity(n, normalized_date=True) if duplicate_titles else (n["title"], n["published_date"]) for n in result["notes"]]
     a, b = identities(first), identities(second)
     digest = lambda values: hashlib.sha256(json.dumps(values, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
     # The existing public API retains only the first 100 events. Keep the
     # final completeness evidence ahead of verbose per-page observations.
+    if duplicate_titles:
+        first["recovery_events"].insert(0, "collection_identity_schema:title_date_cover_sha256_v1")
     first["recovery_events"][0:0] = [
         "collection_primary_sha256:" + digest(a), "collection_verification_sha256:" + digest(b),
         "collection_primary_count:" + str(len(a)), "collection_verification_count:" + str(len(b)),
@@ -2696,6 +2858,7 @@ def collect(args):
         "collection_verification_fresh_pages:" + str(second["recovery_events"].count("verification_fresh_page_accepted")),
         "collection_verification_fallback_pages:" + str(second["recovery_events"].count("verification_page_stability_fallback")),
         "collection_verification_entry_reused:" + str("verification_existing_list_reused" in second["recovery_events"]).lower(),
+        "collection_verification_direction:" + ("reverse_same_list" if duplicate_titles else "forward_reopened"),
         "collection_verification_stop:" + str(second["stop_reason"])]
     # Counts/status may legitimately change during the second pass. Identity,
     # order, scope and the proven boundary must not be inferred from a union.

@@ -14,7 +14,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { isDeviceSerialInNotificationFallbackScope, loadAgentConfig } from "./config.mjs";
 import { cachedAdbSerials, indexCachedDevices, mergeCachedDeviceScanRow } from "./device-scan-cache.mjs";
-import { runXhsDataCollection } from "./xhs-data-collection.mjs";
+import { runXhsDataCollection, waitForXhsDataReservation } from "./xhs-data-collection.mjs";
 import { galleryImportFileName, parseGalleryImportImage } from "./gallery-import.mjs";
 import {
   hydrateLeasedWindowsTask,
@@ -1198,6 +1198,7 @@ function startTask(task) {
 async function runTask(task, options = {}) {
   const isLookup = task.type.startsWith("alipay_name_");
   let lookupTerminal = null;
+  let xhsPreflightOnly = false;
   log("task picked", { taskId: task.taskId, type: task.type, adbSerial: task.adbSerial });
   taskEvent(task, "start", "info", `开始执行 ${task.type}`)
     .catch((error) => log("task start event failed", { taskId: task.taskId, error: error.message }));
@@ -1221,11 +1222,16 @@ async function runTask(task, options = {}) {
     else if (["alipay_name_start", "alipay_name_query", "alipay_name_switch", "alipay_name_stop"].includes(task.type)) result = await taskAlipayNameLookupWithAccounts(task, options);
     else throw new Error(`unsupported task type: ${task.type}`);
     const collectionIncomplete = task.type === "xhs_data_collect" && result.collection?.complete !== true;
-    await taskEvent(task, "finish", collectionIncomplete ? "warn" : "info", collectionIncomplete ? "已保存部分采集结果" : "执行成功", compactTaskResultForEvent(result))
+    xhsPreflightOnly = task.type === "xhs_data_collect" && result.diagnostic?.phase === "before_device_actions"
+      && result.diagnostic.collectionStarted === false;
+    await taskEvent(task, "finish", collectionIncomplete ? "warn" : "info", collectionIncomplete ? (result.collection ? "已保存部分采集结果" : result.message) : "执行成功", compactTaskResultForEvent(result))
       .catch((error) => log("task finish event failed", { taskId: task.taskId, error: error.message }));
     if (isLookup) lookupTerminal = { status: "succeeded", result };
     else await taskStatus(task, collectionIncomplete ? "failed" : "succeeded", result);
   } catch (error) {
+    // A failed status upload is uncertain delivery, not permission to inspect
+    // the phone that the cache-only preflight deliberately left untouched.
+    if (xhsPreflightOnly) throw error;
     if (isAutomationTaskCancellation(error)) {
       taskEvent(task, "cancelled", "info", "用户已结束会话，当前自动化任务已停止", { reason: "automation_task_cancelled" })
         .catch((eventError) => log("task cancellation event failed", { taskId: task.taskId, error: eventError.message }));
@@ -1816,6 +1822,10 @@ async function taskXhsQrAirtestPoco(task) {
 
 async function taskXhsDataCollect(task, options = {}) {
   if (!(await fileExists(config.xhsDataCollectionRunnerPath))) throw new Error("小红书数据采集脚本不存在，请更新 Windows 管理器");
+  const preflight = await waitForXhsDataReservation(task, { deviceCachePath: deviceScanCachePath(), signal: options.signal });
+  // Return a failed result (no collection), not an exception: the shared error
+  // handler would otherwise capture evidence by operating an occupied phone.
+  if (preflight) return preflight;
   await assertAdbDeviceOnlineFast(task.adbSerial);
   await ensureXmlUiAutomatorReady(task.adbSerial);
   await taskEvent(task, "xhs_data_collect", "info", "开始读取最近30天作品列表", { xhsAppSlot: task.payload?.xhsAppSlot, days: 30 });

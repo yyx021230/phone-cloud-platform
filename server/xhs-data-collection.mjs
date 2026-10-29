@@ -24,11 +24,15 @@ export function sanitizeXhsDataCollection(input) {
         || note.published_date < input.window_start_date || note.published_date > input.window_end_date) {
       invalid("invalid_xhs_collection_note");
     }
+    if (note.element_cover_sha256 !== undefined && (typeof note.element_cover_sha256 !== "string" || !/^[a-f0-9]{64}$/.test(note.element_cover_sha256))) {
+      invalid("invalid_xhs_collection_element_identity");
+    }
     return {
       title: text(note.title, 180), published_date: note.published_date,
       published_at_raw: text(note.published_at_raw, 10), status_raw: text(note.status_raw, 120),
       list_view_count: count(note.list_view_count), list_like_count: count(note.list_like_count),
-      list_comment_count: count(note.list_comment_count), note_id: null
+      list_comment_count: count(note.list_comment_count), note_id: null,
+      ...(note.element_cover_sha256 === undefined ? {} : { element_cover_sha256: note.element_cover_sha256 })
     };
   });
   const complete = input.complete === true

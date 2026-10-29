@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {execFile} from 'node:child_process';
-import {runXhsDataCollection} from './xhs-data-collection.mjs';
+import {runXhsDataCollection,waitForXhsDataReservation} from './xhs-data-collection.mjs';
 const c=JSON.parse(await fs.readFile(process.argv[2],'utf8'));
 const task=JSON.parse(await fs.readFile(process.argv[3],'utf8'));
 const env={...process.env,PYTHONIOENCODING:'utf-8',XHS_QA_CONFIG:process.argv[2]};
@@ -50,9 +50,16 @@ const controller=new AbortController();
 process.once('SIGTERM',()=>controller.abort(new Error('qa_stopped')));
 const start=Date.now();
 try{
+  if(c.preflightOnly){
+    const result=await waitForXhsDataReservation(task,{deviceCachePath:c.inventoryPath,signal:controller.signal});
+    if(result?.errorCode!=='xhs_data_reservation_pending'||result?.diagnostic?.reason!=='other_occupancy'||result.diagnostic.collectionStarted!==false)throw Error('qa_busy_deferral_unproven');
+    console.log(JSON.stringify({ok:true,result,preflightOnly:true,noPhoneActions:true,settingsRestored:true,elapsedMs:Date.now()-start}));
+    process.exitCode=0;
+  }else{
   const result=await runXhsDataCollection(task,{config,run,adb,signal:controller.signal,cacheDir:path.join(c.stage,'cache'),deviceCachePath:c.inventoryPath});
   await verifySettings();
   console.log(JSON.stringify({ok:true,result,settingsRestored:true,settingsEvidence:settingReads,elapsedMs:Date.now()-start}));
+  }
 }catch(error){
   let settingsRestored=false;
   try{settingsRestored=await verifySettings();}catch{}
