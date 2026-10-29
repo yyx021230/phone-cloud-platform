@@ -1356,6 +1356,10 @@ function isAutomationTaskCancellation(error) {
 }
 
 async function captureFailureEvidence(task) {
+  // Stop failures retain the original cleanup diagnostics. Taking evidence
+  // must not start a reader or send additional phone commands after cleanup.
+  if (task?.type === "alipay_name_stop") return {};
+  const isLookup = /^alipay_name_(start|query|switch)$/.test(task?.type || "");
   const serial = String(task?.adbSerial || "").trim();
   if (!serial) return {};
   const capturedAt = new Date().toISOString();
@@ -1369,7 +1373,9 @@ async function captureFailureEvidence(task) {
     evidence.currentActivity = focusLines.join("\n").slice(0, 1000);
     evidence.packageName = packageNameFromFocusLines(focusLines);
   }
-  const hierarchy = await adb(serial, ["exec-out", "uiautomator", "dump", "/dev/tty"], {
+  // A missing host worker is not proof that Poco's on-phone instrumentation
+  // exited. Never launch an independent UIAutomator merely to record failure.
+  const hierarchy = isLookup ? "" : await adb(serial, ["exec-out", "uiautomator", "dump", "/dev/tty"], {
     timeoutMs: 15_000,
     maxBuffer: 2 * 1024 * 1024
   }).catch(() => "");

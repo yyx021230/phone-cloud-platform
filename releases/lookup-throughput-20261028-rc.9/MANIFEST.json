@@ -1,0 +1,33 @@
+{
+  "candidateTag": "lookup-throughput-20261028-rc.9",
+  "state": "local-candidate-not-deployed",
+  "parentCommit": "d0a5492282fdf1d742de4a0b8885f1510ee39fe2",
+  "files": {
+    "windows-agent/src/index.mjs": "f4488eecc7105e091cebca7aa739075eb01a51188ff6ac2f9fe0f5c342edf556",
+    "windows-agent/src/lookup-failure-evidence.test.mjs": "94447fddc8349ac8e7e608a1839c940ed81a204d48963f810d4db1b0a208c6ca",
+    "docs/PROJECT_DEVELOPMENT.md": "3a1d49ad77b5bd61a6f608852f1479789a5ec89ac0f9818e5b9935dcf45fbaed",
+    "releases/lookup-throughput-20261028-rc.9/README.md": "15125c8438b667353bb0591cc7ee8e4dbe8c1d8f92a965a0b8729f77bc5f82e1"
+  },
+  "validation": {
+    "nodeFull": {
+      "tests": 1608,
+      "passed": 1608
+    },
+    "rootCheck": "passed",
+    "actualPhoneEvidenceBranch": {
+      "device": 52,
+      "focusMs": 328,
+      "screenshotMs": 1922,
+      "uiAutomatorCalls": 0,
+      "stopExtraPhoneCommands": 0
+    },
+    "businessApiRecovery": "not passed",
+    "businessQueries": 0,
+    "productionChanged": false
+  },
+  "evidence": {
+    "pc-evidence-full-rc9.log": "474e4e4a44dbe8f1a03f94da7be372d660c4e928e89eab252f5d8363053eb128",
+    "pc-evidence-check-final-rc9.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "FAILURE_EVIDENCE_NATIVE.json": "e7d3077ddf3522921d19ab4ae0a7fe554809a06867b586879d8ae25c34a3452b"
+  }
+}
