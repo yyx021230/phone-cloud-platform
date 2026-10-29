@@ -1,3 +1,4 @@
+import {confirmedLookupStop} from "./lookup-stop-proof.mjs";
 import { sendInventorySyncResponse } from "./inventory-sync-response.mjs";
 import { spoolSnapshot, writeSpooledSnapshot, loadStreamedSnapshot } from './snapshot-stream.mjs';
 import {aiVisionConfig,createAiVisionReader} from './lookup-ai-vision.mjs';
@@ -4061,7 +4062,7 @@ function finishLookupSession(session, status, reason = "") {
   session.error = status === "failed" ? String(reason || "lookup_session_failed") : "";
   session.updatedAt = nowIso();
   session.endedAt = session.updatedAt;
-  releaseAutomationLock(session, reason || status);
+  if (!(session.managedLookupGeneration && status === "failed")) releaseAutomationLock(session, reason || status);
   return session;
 }
 
@@ -4669,6 +4670,7 @@ function syncAutomationJobFromWindowsTask(windowsTask, status, result = {}) {
   if (!jobId) return null;
   const job = state.automationJobs.find((item) => item.jobId === jobId);
   if (!job || isTerminalStatus(job.status)) return job || null;
+  if (job.kind === "alipay_name_stop" && job.windowsTaskId && job.windowsTaskId !== windowsTask.taskId) return job;
   job.status = status;
   const previousProgress = job.kind === "kuaishou_lead" && job.result?.progress && typeof job.result.progress === "object"
     ? { ...job.result.progress } : null;
@@ -4682,6 +4684,12 @@ function syncAutomationJobFromWindowsTask(windowsTask, status, result = {}) {
   if (job.kind === "kuaishou_lead" && status === "running") renewAutomationLock(job, KUAISHOU_LEAD_LOCK_TTL_MS);
   const session = job.sessionId ? state.automationSessions.find((item) => item.sessionId === job.sessionId) : null;
   const device = session ? repos.devices.findById(session.deviceId) : null;
+  // A late stop from an earlier task/generation may update its job audit,
+  // but cannot clear a newer pending task or release that session's lock.
+  if (session && job.kind === "alipay_name_stop" && (
+      session.pendingJobId !== job.jobId || windowsTask.deviceId !== session.deviceId
+      || windowsTask.payload?.automationSessionId !== session.sessionId
+      || String(windowsTask.payload?.managedLookup?.generation || "") !== String(session.managedLookupGeneration || ""))) return job;
   const accountProtocol = windowsTask.payload?.accountCooldownProtocol === 1;
   if (session && ["succeeded", "failed"].includes(status) && accountProtocol) {
     const runner = job.result.runner || job.result.diagnostic || {};
@@ -4917,6 +4925,16 @@ function syncAutomationJobFromWindowsTask(windowsTask, status, result = {}) {
           session.error = String(job.result.message || job.result.error || "支付宝账号切换失败，请重试。");
         }
       } else if (job.kind === "alipay_name_stop") {
+        if (!confirmedLookupStop(windowsTask, status, job.result, session)) {
+          delete session.lookupStopConfirmation;
+          session.status = "stopping";
+          session.error = "查名读取器停止未确认，保留设备占用";
+          session.lookupStopFailure = {jobId:job.jobId,taskId:windowsTask.taskId,
+            taskStatus:status,code:"lookup_reader_cleanup_unconfirmed",at:job.completedAt};
+          return job;
+        }
+        session.lookupStopConfirmation = structuredClone(job.result.diagnostic.lookupStopProof);
+        delete session.lookupStopFailure;
         session.results = (session.results || []).map((result) => result.status === "cancelling"
           ? { ...result, status: "cancelled", stage: "查询已取消", error: "会话已结束", updatedAt: job.completedAt }
           : result);

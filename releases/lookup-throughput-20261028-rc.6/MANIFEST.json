@@ -1,0 +1,53 @@
+{
+  "candidateTag": "lookup-throughput-20261028-rc.6",
+  "state": "local-candidate-not-deployed",
+  "parentCommit": "b64d2c46ee02fb50e1d64d6bcdd88b1cf5b8af5f",
+  "files": {
+    "docs/PROJECT_DEVELOPMENT.md": "f05ddac369117692ce782b0055cc42daeb9e7b585fec607a3b7b05771545f788",
+    "server/index.mjs": "2ddd0e0d410528bb0d800dea1a4190f8de8cbda6e0a98648c3fb4a9ac1b6a891",
+    "server/lookup-reader-capacity.http.test.mjs": "3852147d5e3b53bba070d174f13fca2fee83f2882718109f5a5b499f371c6179",
+    "server/lookup-reader-capacity.test.mjs": "f06565b2dcc6ab6d316d7b3f471beecd4b09feffef8e2b0ec27787d5c0b90584",
+    "server/lookup-stop-proof.mjs": "f36587d11613679ff013b2aa071d552a8719851ee80890b45e685b5884ae6a18",
+    "server/lookup-stop-proof.test.mjs": "6dfc0db0ab2bad5d133efb30e94d282a3578d4b8dc969164fd37da79c751cc3a",
+    "server/lookup-stop-retry.test.mjs": "64834b4945a4e314dab0b46bcf46cead990b44d06a572b8134b97495e50665a3",
+    "server/managed-lookup-platform.mjs": "2340aac9014ed006ab39a29dcbe0259d53b47fb68c3227d398f5979122439ec7",
+    "server/managed-lookup-result-race.test.mjs": "a6d60113ac4c5f1f0f41084e93ff1dc267826c500e69048939d29cb73b354319",
+    "server/managed-lookup.http.test.mjs": "6950209d13531720e1f82533f167daf551263142afc81121230be9e9c1e95be4",
+    "server/managed-lookup.mjs": "c58747a82c750aa7ab643e84ca7028475ed4b9d797dc1542b96cb495f37ad3c0",
+    "server/open-name-lookup-api.http.test.mjs": "75ead605780ef1b97bdb84e08a69f9169883faee98a4b6d98156aac596f7c8da",
+    "verification/api-key-http.mjs": "6ce92b0af93d2ba9303207e9c0f8f2560af965b4f850ab52207b267205b33bc2",
+    "verification/async-http.mjs": "bd29c11c4dc27c9ecba93273c88657d0d161d06410ab9e17c1ee9ab1ff2d5d9c",
+    "verification/readiness-http.mjs": "f64239a89d34656731d610cbe3beec3bd40a0d824bcc9a007e4018e5f3e3210f",
+    "windows-agent/src/automation-center-wiring.test.mjs": "67cad48cd7a69ffa64059ec5730e5ea1ba4540de9b58ef3724e943466f9a2178",
+    "windows-agent/src/index.mjs": "7610339adfd015846d939ad42eb1a2c853303bbbb096d97f23e51a06a4c46fdd",
+    "windows-agent/src/lookup-stop-proof.test.mjs": "e72fbabccf15575718503148ab6215aa98979d497c4c894bfc38d0f23d2f514b",
+    "server/lookup-readiness.test.mjs": "5d7dbd53071e3201a05021abe4c82f8cfc3d7352d2a877bb8210298b24c1b8dd"
+  },
+  "validation": {
+    "nodeFull": {
+      "tests": 1547,
+      "passed": 1547
+    },
+    "rootCheck": "passed",
+    "realPhoneBusinessQueries": 0,
+    "realApiStopProof": {
+      "phones": [
+        51,
+        52
+      ],
+      "confirmed": true,
+      "channelsAfter": 0
+    },
+    "productionUnchanged": true
+  },
+  "limits": [
+    "full real business timeout recovery not passed",
+    "164 occupied by production",
+    "persistent online cleanup failure remains reserved",
+    "reader capacity and duration evidence work remaining"
+  ],
+  "testEvidence": {
+    "fullNode": "ea6ddb3f09f086e7b3aa68c2c0250a135839beb95a8416c291b328a2adc69ea4",
+    "rootCheck": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+  }
+}

@@ -11,7 +11,7 @@ function fixture({transport=false}={}){
  const readyStart=async c=>{obs.set(c.deviceId,{ready:true});await service.tick();};
  const result=async(c,name='名',status='succeeded')=>{obs.set(c.deviceId,{ready:true,result:{resultId:c.queryId||store.snapshot().channels.find(x=>x.deviceId===c.deviceId).queryId,status,name}});await service.tick();};
  const twoReady=async()=>{await prepare();await service.tick();let cs=store.snapshot().channels.slice(0,2);for(const c of cs)await readyStart(c);for(const c of cs)await result(c);return cs;};
- return {get service(){return service;},store,adapter,events,obs,epochs,offline,configure,prepare,readyStart,result,twoReady,advance:n=>clock+=n,restart(){service=createManagedLookupService({store,adapter,now:()=>clock,probePhone:'13800000000'});},submit:(key='business-key-1',phoneNumber='13900000000')=>service.submitAsync({clientId:'a',key,phoneNumber})};
+ return {get service(){return service;},now:()=>clock,store,adapter,events,obs,epochs,offline,configure,prepare,readyStart,result,twoReady,advance:n=>clock+=n,restart(){service=createManagedLookupService({store,adapter,now:()=>clock,probePhone:'13800000000'});},submit:(key='business-key-1',phoneNumber='13900000000')=>service.submitAsync({clientId:'a',key,phoneNumber})};
 }
 test('starts five physical channels; second successful probe immediately admits business while others run',async()=>{
  const f=fixture();await f.configure();await f.twoReady();const p=await f.prepare();assert.equal(p.ready,true);assert.equal(p.readyCount,2);assert.equal(f.events.filter(e=>e.kind==='start').length,5);
@@ -293,7 +293,7 @@ test('recent successful idle phones are preferred for probing but history never 
 });
 test('stale future offline or quarantined success hints cannot override eligibility',async()=>{
  for(const mode of ['stale','future','offline','quarantine']){
-  const f=fixture();await f.configure();await f.store.transact(s=>{const d=s.devices.find(d=>d.deviceId==='d152');d.lastReadinessSuccessAt=Date.now()+(mode==='stale'?-86400001:mode==='future'?86400000:0);if(mode==='quarantine')d.quarantineUntil=Date.now()+600000;});if(mode==='offline')f.offline.add('d152');await f.prepare();await f.service.tick();assert.notEqual(f.events.find(e=>e.kind==='start').device,'d152');
+  const f=fixture();await f.configure();await f.store.transact(s=>{const d=s.devices.find(d=>d.deviceId==='d152');d.lastReadinessSuccessAt=f.now()+(mode==='stale'?-86400001:mode==='future'?86400000:0);if(mode==='quarantine')d.quarantineUntil=f.now()+600000;});if(mode==='offline')f.offline.add('d152');await f.prepare();await f.service.tick();assert.notEqual(f.events.find(e=>e.kind==='start').device,'d152',mode);
  }
 });
 

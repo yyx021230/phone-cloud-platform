@@ -43,6 +43,7 @@ test('real isolated HTTP:phone-only result,49-device mapping,max5,duplicate repl
   async function complete(task){
     const lose=loseNextAck;loseNextAck=false;const prepared=await hydrateManagedLookupTask(task,{request:async(p,o)=>{const result=await request(p,o);if(lose&&p.endsWith('/ack'))throw new Error('simulated ACK response lost');return result;}});if(!prepared.acknowledged){uncertain.add(task.taskId);return;}task=prepared.task;tasks.push(task);
     const m=task.payload.managedLookup.generation;let result={},status='succeeded';
+    if(task.type==='alipay_name_stop')result={diagnostic:{lookupStopProof:{version:1,readerCleanupConfirmed:true,taskId:task.taskId,sessionId:task.payload.automationSessionId,generation:m}}};
     if(task.type!=='alipay_name_stop')result={currentAccount:'fixture-account',accountIdentityVerified:true,savedAccounts:[{account:'fixture-account',current:true}]};
     if(task.type==='alipay_name_query'){
       assert.equal(live.has(task.adbSerial),false,'same phone cannot overlap');live.set(task.adbSerial,task.taskId);max=Math.max(max,live.size);queryCount++;

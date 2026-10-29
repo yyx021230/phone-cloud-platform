@@ -107,6 +107,17 @@ export function createManagedLookupService({store,adapter,now=Date.now,probePhon
       r.name=o.result.name||'';finish(r,o.result.status);releaseCompleted(s,c,o,releasedDevices);return;
     }
     if(r&&['succeeded','not_found'].includes(r.status)&&releaseCompleted(s,c,o,releasedDevices))return;
+    // An explicit failed cleanup is not a stop ACK. Retry cleanup only, at
+    // most twice with 30s spacing; never bootstrap UI or silently reroute.
+    // Actual offline devices still use the existing durable generation fence.
+    if(o.stopUnconfirmed&&!adapter.isOffline?.(c)){
+      c.phase='stopping';c.stopRetryAt??=now()+30000;
+      if(now()>=c.stopRetryAt&&(c.stopRetryCount||0)<2&&adapter.canStop(c)){
+        await adapter.stop(c,tx);c.stopRetryCount=(c.stopRetryCount||0)+1;c.stopRetryAt=now()+30000;
+        audit(s,'lookup_stop_cleanup_retry','system',{deviceId:c.deviceId,attempt:c.stopRetryCount});
+      }
+      return;
+    }
     // End the caller's round independently of unreachable phone cleanup.
     // Offline is never a physical ACK: keep this generation reserved, cancel
     // its deliverable work durably, and only then detach it from round gating.
@@ -352,6 +363,9 @@ export function createManagedLookupService({store,adapter,now=Date.now,probePhon
   }
   function unchangedChannel(s,c){
     const r=s.requests.find(r=>r.lookupId===c.requestId);
+    const stopObservation=adapter.observe(c);
+    if(stopObservation.stopUnconfirmed&&!adapter.isOffline?.(c))return c.stopRetryAt!==undefined&&
+      (now()<c.stopRetryAt||(c.stopRetryCount||0)>=2||!adapter.canStop(c));
     if(c.roundStopPreparationId||c.offlineHandoffAt!==undefined){
       const o=adapter.observe(c);
       if(o.stopped||(r&&!DONE.has(r.status)&&completedResult(r,c,o)))return false;

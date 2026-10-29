@@ -65,8 +65,8 @@ test("Alipay uses a bounded Poco fast path and reserves XML account navigation f
   assert.match(source, /reason: "poco_transport_timeout"/);
   assert.match(source, /poco_start_transport_timeout/);
   assert.match(source, /operation === "stop"/);
-  assert.match(source, /Poco 结束清理异常，已直接释放查名字会话/);
-  assert.match(source, /fallbackSkipped: "xml_uiautomator"/);
+  assert.match(source, /lookup_reader_cleanup_unconfirmed/);
+  assert.doesNotMatch(source, /Poco 结束清理异常，已直接释放查名字会话/);
   assert.match(source, /retryOperation: "query_resume"/);
   assert.match(source, /resubmitsInput: false/);
   assert.match(source, /poco_query_resume_failed/);

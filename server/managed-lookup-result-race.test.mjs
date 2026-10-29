@@ -66,7 +66,7 @@ for(const condition of ['pending-stop','offline','stalled','ended','expired','fa
   if(['ended','expired','failed'].includes(condition))session.status=condition;
   if(condition==='human')session.status='needs_human_verification';if(condition==='recovery')session.startupHumanVerification={status:'needs_recovery'};
   const adapter=createManagedLookupAdapter({state,online:()=>condition!=='offline'}),o=adapter.observe({sessionId:'s',queryId:'q',deviceId:'d'});
-  assert.equal(o.result?.name,'测*');if(condition==='pending-stop')assert.equal(o.busy,true);if(['offline','stalled'].includes(condition))assert.equal(o.unknown,true);if(['ended','failed'].includes(condition))assert.equal(o.stopped,true);if(condition==='expired')assert.equal(o.stopped,false);if(condition==='human')assert.equal(o.human,true);if(condition==='recovery')assert.equal(o.recovery,true);
+  assert.equal(o.result?.name,'测*');if(condition==='pending-stop')assert.equal(o.busy,true);if(['offline','stalled'].includes(condition))assert.equal(o.unknown,true);if(['ended','failed'].includes(condition))assert.equal(o.stopped,false);if(condition==='expired')assert.equal(o.stopped,false);if(condition==='human')assert.equal(o.human,true);if(condition==='recovery')assert.equal(o.recovery,true);
 });
 
 for (const marker of ['needs_human_verification', 'needs_recovery']) {
@@ -74,14 +74,14 @@ for (const marker of ['needs_human_verification', 'needs_recovery']) {
     const session = {sessionId:'s', status, results:[{resultId:'q',status:marker}], startupHumanVerification:{status:marker}};
     const adapter = createManagedLookupAdapter({state:{automationSessions:[session],automationJobs:[],windowsTasks:[],devices:[]}});
     const o = adapter.observe({sessionId:'s',queryId:'q',deviceId:'d'});
-    if (['ended','failed'].includes(status)) { assert.equal(o.stopped,true); assert.equal(o.human,undefined); assert.equal(o.recovery,undefined); }
+    if (['ended','failed'].includes(status)) { assert.equal(o.stopped,false); assert.equal(o.human,undefined); assert.equal(o.recovery,undefined); }
     else if (status==='expired') { assert.equal(o.stopped,false); assert.equal(o.ready,false); }
     else assert.equal(o[marker==='needs_recovery'?'recovery':'human'],true);
   });
 }
 test('real stopped adapter releases cancelled human binding without repeating query',async t=>{
   const f=await fixture(t);await f.service.cancel(f.lookupId,'fixture');await f.service.tick();
-  const adapter=createManagedLookupAdapter({state:{automationSessions:[{sessionId:'synthetic-session',status:'ended',results:[{resultId:'synthetic-query',status:'needs_human_verification'}]}],automationJobs:[],windowsTasks:[],devices:[]}});
-  f.set(adapter.observe({sessionId:'synthetic-session',queryId:'synthetic-query',deviceId:'fixture118'}));
+  const adapter=createManagedLookupAdapter({state:{automationSessions:[{sessionId:'synthetic-session',managedLookupGeneration:'g',lookupStopConfirmation:{version:1,readerCleanupConfirmed:true,taskId:'stop-task',sessionId:'synthetic-session',generation:'g'},status:'ended',results:[{resultId:'synthetic-query',status:'needs_human_verification'}]}],automationJobs:[],windowsTasks:[],devices:[]}});
+  f.set(adapter.observe({generation:'g',sessionId:'synthetic-session',queryId:'synthetic-query',deviceId:'fixture118'}));
   await f.service.tick();assert.equal(f.service.reserved('fixture118'),undefined);assert.equal((await f.read()).code,'lookup_cancelled');assert.equal(f.events.filter(e=>e==='query').length,1);
 });

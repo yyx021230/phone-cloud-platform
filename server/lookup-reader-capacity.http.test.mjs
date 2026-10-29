@@ -22,7 +22,7 @@ test('external HTTP capacity failure preserves ID, never isolates phones, waits 
  const api=async(method,p,body,auth=admin)=>{const r=await fetch(base+p,{signal:AbortSignal.timeout(5000),method,headers:{Authorization:'Bearer '+auth,'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});const j=await r.json();assert.ok(r.ok,`${method} ${p}: ${r.status} ${j.error||j.code}`);return j;};
  const external=async(method,p,body,id)=>{const r=await fetch(base+'/api/v1/open/name-lookups'+p,{signal:AbortSignal.timeout(5000),method,headers:{'X-API-Key':key,'Content-Type':'application/json',...(id?{'Idempotency-Key':id}:{})},body:body===undefined?undefined:JSON.stringify(body)});const j=await r.json();assert.ok(r.ok,`${p}: ${r.status} ${j.error||j.code}`);return j;};
  const account={currentAccount:'fixture-account',accountIdentityVerified:true,savedAccounts:[{account:'fixture-account',current:true}]};
- const finish=(t,result={},status='succeeded')=>api('POST',`/api/v1/windows-agent-tasks/${t.taskId}/status`,{status,managedLookupGeneration:t.payload.managedLookup.generation,result:{...account,...result}},token);
+ const finish=(t,result={},status='succeeded')=>api('POST',`/api/v1/windows-agent-tasks/${t.taskId}/status`,{status,managedLookupGeneration:t.payload.managedLookup.generation,result:{...account,...(t.type==='alipay_name_stop'&&status==='succeeded'?{diagnostic:{lookupStopProof:{version:1,readerCleanupConfirmed:true,taskId:t.taskId,sessionId:t.payload.automationSessionId,generation:t.payload.managedLookup.generation}}}:{}),...result}},token);
  const fail=t=>finish(t,{errorCode:'alipay_lookup_failed',diagnostic:{runnerReason:'lookup_worker_capacity_reached'},message:'synthetic shared reader full'},'failed');
  const pool=async()=>(await api('GET','/api/v1/admin/lookup-pool')).pool;
  const wait=async fn=>{for(let i=0;i<2200;i++){if(error)throw error;if(child.exitCode!==null)throw Error('isolated server exited: '+childError);const r=await fn();if(r)return r;await sleep(25);}const s=await pool();console.log('capacity HTTP state',JSON.stringify({channels:s.channels.map(c=>({phase:c.phase,device:c.deviceNumber,query:!!c.queryId})),requests:s.requests.map(r=>({purpose:r.purpose,status:r.status,code:r.code})),backoff:s.readerCapacityBackoffs}));throw Error('capacity HTTP wait timed out');};
@@ -55,6 +55,15 @@ test('external HTTP capacity failure preserves ID, never isolates phones, waits 
   const other=await external('POST','/tasks',{phoneNumber:'13900000002'},'capacity-business-2');await wait(()=>heldBusiness.length===1);
   const otherTask=heldBusiness.shift();assert.equal(otherTask.payload.phoneNumber,'13900000002');await finish(otherTask,{alipayDisplayName:'测试(*乙)',realNameTailCharacter:'乙'});
   await wait(async()=>(await external('GET','/tasks/'+other.lookupId)).status==='completed');assert.equal(queries.filter(x=>x.phone==='13900000001').length,1,'no replay before stop ACK');
+  const failedStop=heldStops.shift(),failedStopAt=Date.now();
+  await finish(failedStop,{errorCode:'lookup_reader_cleanup_unconfirmed'},'failed');
+  await sleep(1200);
+  assert.equal(queries.filter(x=>x.phone==='13900000001').length,1,'failed cleanup is not stop ACK');
+  assert.ok((await pool()).channels.some(c=>c.sessionId===failedStop.payload.automationSessionId),'failed cleanup keeps exact reservation');
+  assert.equal((await external('POST','/tasks',{phoneNumber:'13900000001'},'capacity-business-third-key')).lookupId,first.lookupId);
+  await wait(()=>heldStops.length===1);
+  assert.ok(Date.now()-failedStopAt>=29500,'cleanup retry must wait 30 seconds');
+  assert.notEqual(heldStops[0].taskId,failedStop.taskId);
   holdStops=false;holdBusiness=false;await finish(heldStops.shift());
   await wait(async()=>(await external('GET','/tasks/'+first.lookupId)).status==='completed');
   assert.equal(queries.filter(x=>x.phone==='13900000001').length,2);s=await pool();assert.ok(s.devices.every(d=>!d.lookupUnavailable&&!d.prepareFailureCount&&!d.preparationIssue));

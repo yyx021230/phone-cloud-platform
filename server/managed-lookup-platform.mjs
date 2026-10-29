@@ -1,3 +1,4 @@
+import {hasConfirmedLookupStop} from './lookup-stop-proof.mjs';
 import {jobEvidence} from './lookup-admin-console.mjs';
 import {preparationFailureEvidence} from './lookup-device-availability.mjs';
 import crypto from 'node:crypto';
@@ -127,11 +128,12 @@ export function createManagedLookupAdapter(api){
       const completed=result&&['succeeded','not_found'].includes(result.status)?{result}:{};
       const job=state.automationJobs.find(j=>j.jobId===s.pendingJobId);
       if(s.pendingJobId){const task=state.windowsTasks.find(t=>t.taskId===job?.windowsTaskId);if(!task||['stalled','expired'].includes(task.status)||!api.online(state.devices.find(d=>d.deviceId===c.deviceId)))return {...completed,unknown:true};return {...completed,busy:true,switching:s.status==='switching'};}
+      if(s.status==='stopping'&&s.lookupStopFailure)return {...completed,stopUnconfirmed:true,stopJobId:s.lookupStopFailure.jobId,ready:false};
       const accountOffline=lookupAccountOfflineEvidence(latestAccountWork(state.automationJobs,c.sessionId),s);
-      if(accountOffline)return {...completed,accountOffline,stopped:s.status==='ended'||s.status==='failed',ready:false};
+      if(accountOffline)return {...completed,accountOffline,stopped:s.status==='ended'&&hasConfirmedLookupStop(s,c),ready:false};
       // A confirmed terminal session overrides historical per-result prompts.
       // Expiry alone still cannot prove that a device stopped.
-      if(['ended','expired','failed'].includes(s.status))return {...completed,stopped:s.status!=='expired',startFailed:!c.queryId,ready:false};
+      if(['ended','expired','failed'].includes(s.status))return {...completed,stopped:s.status==='ended'&&hasConfirmedLookupStop(s,c),startFailed:!c.queryId,ready:false};
       if(s.status==='needs_human_verification'||s.startupHumanVerification?.status==='needs_human_verification'||result?.status==='needs_human_verification')return {...completed,human:true};
       // Only the exact failed task can authorize a handoff. Do not turn an
       // unknown/running task or a stale generation into an automatic replay.
@@ -180,7 +182,7 @@ export function createManagedLookupAdapter(api){
       if(s.pendingJobId){const job=state.automationJobs.find(j=>j.jobId===s.pendingJobId);if(job){const copy=structuredClone(job),task=state.windowsTasks.find(t=>t.taskId===job.windowsTaskId),taskCopy=task&&structuredClone(task);tx.onRollback(()=>{Object.assign(job,copy);if(task)Object.assign(task,taskCopy);});api.cancelJob(job,'managed_pool_stopping',{releaseLock:false});cancelledJob=job;cancelledTask=task;}}
       const device=state.devices.find(d=>d.deviceId===c.deviceId);
       if(!device||!api.online(device))throw managedLookupError('managed_stop_requires_online',503);
-      const job=track(()=>api.createJob({kind:'alipay_name_stop',userId:s.userId,deviceId:c.deviceId,sessionId:c.sessionId}));tag(c,job);s.status='stopping';s.pendingJobId=job.jobId;const task=track(()=>api.queueTask(device,job));holdManagedLookupDispatch(task,tx);mark();await persist(tx,{automationSession:s,automationJob:job,windowsTask:task,automationJobs:cancelledJob?[cancelledJob]:[],windowsTasks:cancelledTask?[cancelledTask]:[]});
+      const job=track(()=>api.createJob({kind:'alipay_name_stop',userId:s.userId,deviceId:c.deviceId,sessionId:c.sessionId}));tag(c,job);delete s.lookupStopFailure;delete s.lookupStopConfirmation;s.status='stopping';s.pendingJobId=job.jobId;const task=track(()=>api.queueTask(device,job));holdManagedLookupDispatch(task,tx);mark();await persist(tx,{automationSession:s,automationJob:job,windowsTask:task,automationJobs:cancelledJob?[cancelledJob]:[],windowsTasks:cancelledTask?[cancelledTask]:[]});
     }
   };
 }

@@ -2330,6 +2330,23 @@ async function taskAlipayNameLookup(task, options = {}) {
     return replayAirtestEvents(task, events);
   };
   const startedAt = Date.now();
+  if (task.type === "alipay_name_stop") {
+    // Stop is cleanup, never a reason to bootstrap another reader or touch UI.
+    if (options.signal?.aborted) throw automationTaskCancellationError();
+    clearAirtestLookupWarmLease(task.adbSerial, "lookup_session_stopped");
+    automationResumeScheduler.cancel(task.adbSerial);
+    let confirmed = false;
+    try { confirmed = await stopAirtestWorker(task.adbSerial, "lookup_session_stopped") === true; }
+    catch { /* An exception is not physical cleanup acknowledgement. */ }
+    if (!confirmed) throw Object.assign(new Error("查名读取器清理未确认，保留占用等待核验"), {
+      code: "lookup_reader_cleanup_unconfirmed", diagnostic: { lookupStopCleanupConfirmed: false }
+    });
+    markAutomationReadyOnDemand(task.adbSerial, "lookup_session_stopped");
+    return { action: "查名字会话已结束", message: "session_stopped", durationMs: Date.now()-startedAt,
+      diagnostic: { lookupStopProof: { version: 1, readerCleanupConfirmed: true,
+        taskId: task.taskId, sessionId: String(task.payload?.automationSessionId || ""),
+        generation: String(task.payload?.managedLookup?.generation || "") } } };
+  }
   if (!(await fileExists(config.alipayNameLookupRunnerPath))) throw new Error(`支付宝查名字执行器不存在：${config.alipayNameLookupRunnerPath}`);
   await assertAdbDeviceOnlineFast(task.adbSerial);
   const packageName = "com.eg.android.AlipayGphone";
@@ -2598,10 +2615,6 @@ async function taskAlipayNameLookup(task, options = {}) {
       }
       if (!parsed.ok) throw new Error(parsed.error || "支付宝 Poco 快路径失败");
       const result = buildResult(parsed, "poco");
-      if (operation === "stop") {
-        await stopAirtestWorker(task.adbSerial, "lookup_session_stopped");
-        markAutomationReadyOnDemand(task.adbSerial, "lookup_session_stopped");
-      }
       return result;
     } catch (error) {
       if (isAutomationTaskCancellation(error)) throw error;
@@ -2647,21 +2660,6 @@ async function taskAlipayNameLookup(task, options = {}) {
         error = new Error(`poco_query_page_recovery_failed:${String(recoveryError?.message || recoveryError)}`);
       }
       const pocoError = String(error?.message || error || "");
-      if (operation === "stop") {
-        // Ending a lookup session is a platform lifecycle action. Clearing the
-        // warm search input is only best effort; never start the independent
-        // XML/UIAutomator stack just because a stale PocoService session could
-        // not be probed or recycled.
-        await taskEvent(task, "alipay_name", "warn", "Poco 结束清理异常，已直接释放查名字会话", {
-          operation,
-          reason: cleanLogText(pocoError).slice(0, 500),
-          fallbackSkipped: "xml_uiautomator",
-          driver: "poco"
-        });
-        await stopAirtestWorker(task.adbSerial, "lookup_session_stop_best_effort").catch(() => {});
-        markAutomationReadyOnDemand(task.adbSerial, "lookup_session_stopped");
-        return buildResult({ ok: true, message: "session_stopped", log: [] }, "poco");
-      }
       if (pocoError.includes("poco_query_page_recovery_failed:")) {
         const diagnostic = classifyAlipayNameLookupFailure(pocoError);
         const runnerError = new Error(diagnostic.message);
