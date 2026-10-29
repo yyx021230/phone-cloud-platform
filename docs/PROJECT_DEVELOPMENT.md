@@ -5131,3 +5131,16 @@ readiness在16:54/16:55出现503，当时未保存失败子项，原因未确认
 43/main唯一POST原task fd84ce2b、Windows任务e9d99e49在约233.5秒后failed，内部message=wecom_preview_worker_timeout_no_replay/errorCode=task_failed，云claim空、本地claim不存在、sendStatus=not_attempted；没有发出邀请、没有重试或换机。子进程23324退出，自有锁released/failed，43库存available；不能把这些当手机端清理证明。17:28:29在SYSTEM5037原PID/路径确认后，唯一一次原始协议只读收尾观察到43无Poco/PocoTest进程、10080/10081目标转发0、Awake，当前前台com.android.intentresolver/.DoubleAppResolverActivity；没有运行ADB客户端二进制、没有UI输入/写命令或服务变更。此为事后当前状态，不证明230秒全程卡点。
 
 静态链路确认独立缺陷：Agent catch/业务结果具备previewStatus/previewCode/sendStatus/invitationSent/remarkSaveStatus，compactTaskResultForStatus没有保留；server sanitize以previewStatus存在为条件才保留企微结果，公开code因此为空。旧e2e假Agent直接POST status绕过真实压缩边界，未覆盖该集成缺口。已要求企微窗口在独立干净worktree从3a266d71形成最小白名单透传候选与真实compactor→status→公开结果回归，不更改本工作区或生产，不延长超时、不重发、不改ADB/SYSTEM。该已证实结果传输缺陷与原生超时根因分开；线上未修，完整验收未通过，后续加载需具体维护和真实验收范围，不借版本回执冒称解决。
+
+
+### 变更记录｜2026-10-29 发布回执绑定及企微透传独立候选完成
+
+本轮正式发布回执11b6645981df7366bdc04a923ca3ce3abef1e6c3、不可变annotated tag platform-integration-20261029-deployed.1已绑定线上ACTIVE，绑定后SHA256 a0b5b612359d617c2cbe1841189b69d566203fd308a80f46ae149bce51f2bb2a，状态deployed_pending_fixes_and_acceptance；业务源码仍3a、主云a4db69c8/批次be21335b/Agent20232/ADB17764，不含下列候选。无远端推送，发布回执与候选状态分开。
+
+企微独立分支codex/wecom-status-transport-20261029已完成最小compactor白名单透传，运行源码513f5a9，封装提交3082c0e1b9e5a4de4752f7d95a07985969fcaba1，annotated tag wecom-status-transport-20261029-rc.1。只改Agent index9行、202顶层函数仅压缩函数改变；候选hash0001bfb3684eaccf15a01a78d578f396e5c4418dc3ca04baf4efcb3ac2e30bf3，当前生产仍c309d1f6。精确旧Agent上6项新增回归全失败，补丁通过；真实runTask→taskStatus→compactor→HTTP/JSON持久化→公开查询四场景、重启及三种unknown原ID复用通过，相关35/投屏183/root check通过，原始失败/重跑日志保留。未跑该候选PG/全平台/原生/真机，不把局部回归当线上通过；root独立审看9行差异并核验最终tag/manifest SHA45e657e6406cdce754087d66b2d7c644d9b89a399096c3291acb0bf561341a56。
+
+该候选没有部署，没有为其再重启正在服务的Agent/查名，没有追加43邀请或改变手机。它修已确认结果字段丢失，不修已未定位的230秒原生停点；当前生产企微真实发送仍未通过。线上后续查名重探状态更正由查名窗口另获人类授权、独立版本记录，不混入本发布组件或本回执；未来追加加载/真实验证须明确当时维护与尝试范围。
+
+### 决策日志｜2026-10-29 发布证据与后续修复候选分别冻结
+
+延续版本管理和已对外查名保护；正式发布tag固定11b6645当轮事实，后续文档接续不移动旧tag。采用只读真实compactor/HTTP契约定位结果丢字段的独立修复，不凭失败后双开选择器现象夹带导航点击，不以延长超时、重发或重启掩盖原生卡点。保持当前生产运行，将需Agent重新加载的补丁保留为可审阅候选；没有新的维护/真实尝试范围不扩大原43一次预算。
