@@ -1,0 +1,69 @@
+{
+  "candidateCommit": "179b124ad990c158f02010dbaa42acb20964abe1",
+  "sourceCommit": "baca5721214658b46f24c974c9147490b0bafada",
+  "mode": "read-only exact historical DB and original stored evidence; no phone or inference calls",
+  "cases": [
+    {
+      "devices": [
+        130,
+        181
+      ],
+      "confirmed": "Both exact stack traces fail at production line4831: returned navigation focus outside Home allowlist. Subsequent error focus and original screenshots show AlipayLogin Home. No account marker successfully established.",
+      "unknown": [
+        "returned intermediate focus was not recorded",
+        "transient null, overlay or different activity cannot be distinguished",
+        "screenshots alone do not prove historical account login/current identity"
+      ],
+      "candidateCoverage": "same Home guard remains; exact live cause unresolved; no speculative click fix"
+    },
+    {
+      "device": 159,
+      "jobId": "d67a59df-3ebf-4b06-b228-54094090b37a",
+      "purpose": "readiness_probe",
+      "finalStatus": "failed",
+      "code": "lookup_probe_page_unsupported",
+      "evidenceSha256": "1b6647a873a7458370107e72af653dcd293a2271b66157e1ed5e67dd55ef32b6",
+      "confirmed": "Double-card original image hash matches archived aiVision. Correct original evidence reached AI; upstream502 at model_body after10240ms, one read; no geometry rejection recorded.",
+      "candidateCoverage": "same evidence bounded502/503/504 retry, max3 reads and120s, name confirmation retained; synthetic tests only for this old evidence; no new inference"
+    },
+    {
+      "device": 159,
+      "jobId": "9226a22a-867e-4561-91cf-5b3fbd24732b",
+      "finalStatus": "succeeded",
+      "hasName": true,
+      "confirmed": "Different newer single-card image; exact job/evidence AI resolved name using2 reads in34813ms. Do not count its physical failure as final API failure or double-card fix."
+    },
+    {
+      "device": 163,
+      "jobId": "cea3c477-fc0c-4be1-a1f5-7e616f3dbcd7",
+      "confirmed": "Original error focus and screenshot show XHS ChatActivity while Alipay open_search waits for input selector. Account-picker sampling reported stable earlier.",
+      "unknown": [
+        "who/what changed foreground",
+        "whether original reservation and manual-control ownership overlapped at that instant"
+      ],
+      "candidateCoverage": "search entry foreign-focus guard tests pass; no new tap/relaunch or claim of real conflict resolution"
+    }
+  ],
+  "validation": {
+    "coldNavigationSynthetic": 16,
+    "searchEntrySynthetic": 5,
+    "aiReaderSynthetic": 85,
+    "realPhoneActions": 0,
+    "newInferenceCalls": 0
+  },
+  "files": {
+    "representative-events-130-private.json": "8bb82bd8b0d8f1287276b51be8a34f92dd9b14fcb9286a90d8209c29376ee0f3",
+    "representative-events-181-private.json": "ec4b60c8eb063432b1e7a88f9a9454c549136d423da651e5376c8e044d972c38",
+    "representative-events-159-private.json": "f5b950933c0596cc8eff4f8d185ce2af2dcb6f6443c98fdc964854488a100a1e",
+    "representative-events-163-private.json": "3c4934935e2a7cabfd2d9c22d114deb0486f808836031e971c6738185123f16c",
+    "representative-159-outcome-private.json": "36ccc7f63ebfedb743737a6c09016eb10e9b01bfa9c43c9d9b39291c46bf82b7",
+    "representative-159-double-private.json": "5b978d1a8f1b45e14bb406d72f908cf6a6089943a0bdf9b644fcc9b7eebf7da6",
+    "representative-159-double-outcome-private.json": "f472bbba9a43f2d960b713606f6fa9311f6e63f2121f9d4c8eb6879c7f8aaef9",
+    "representative-image-receipts.json": "bd837e43736d319893681fbb31ebb5f4cd49f12f203a8d936c89ae0adc26bc3d"
+  },
+  "testLogs": {
+    "pc-fleet-cold-navigation-review.log": "25d718152414a917d6eb4a014d599eff20a2b538451c2591d104ace11b9de0dd",
+    "pc-fleet-search-entry-review.log": "d03ce458f2a6cd2b4f27522f3aacad03ce1872c028853507c3ad02ca621bdcad",
+    "pc-fleet-ai-review.log": "0a0ff0345cfcb9c9b9dd766d0591d0d6bbd54cc2981705ef979b676ce505d1f5"
+  }
+}

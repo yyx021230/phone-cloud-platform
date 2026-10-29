@@ -1,0 +1,29 @@
+{
+  "candidateTag": "lookup-fleet-audit-20261029-rc.2",
+  "state": "investigation_document_only_not_deployed",
+  "branch": "codex/lookup-fleet-audit-20261029",
+  "baseCommit": "67a16cddbf4aa4030782ad27877f2889eeb5d52d",
+  "files": {
+    "docs/PROJECT_DEVELOPMENT.md": "d8ba67f3a5be0de9747350c455de6f42e57c37e3ada723f7842698fe7e2ab556"
+  },
+  "artifacts": {
+    "README.md": "68cf8a61f8a22ba51d31d298daada817268b79030408c96195995a6d4db22d1f",
+    "REPRESENTATIVE_EVENT_REVIEW.json": "fa0ddb974b312dc782883e4fc2e8c407d3c788d1a2473a7e01b896fd2ffe7b27",
+    "FOCUS_TRANSITION_REPRO.json": "1c4ca091a6c5f91e4180b7c9e79a91ad9f43f6fb6a8ad7d4dd4dce9b43da5089"
+  },
+  "validation": {
+    "privateRepresentativeHashes": "all matched",
+    "oldDoubleImageHashMatches": true,
+    "independentAiReaderMockTests": 60,
+    "focusTransition": "code behavior reproduced only; historical cause unproven",
+    "businessCodeChanges": false,
+    "newPhoneOperations": 0,
+    "newInferenceCalls": 0,
+    "productionChanged": false
+  },
+  "privateEvidence": {
+    "REPRESENTATIVE_EVENT_REVIEW.json": "fa0ddb974b312dc782883e4fc2e8c407d3c788d1a2473a7e01b896fd2ffe7b27",
+    "independent-ai-representative-tests.txt": "b289bd4cd61e4c54b58651d2567eeba5e107991138ef7a48d56e5826faffe4bb"
+  },
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+}
