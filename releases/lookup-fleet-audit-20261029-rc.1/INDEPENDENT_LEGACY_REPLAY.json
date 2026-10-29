@@ -1,0 +1,13 @@
+{
+  "result": "passed",
+  "cases": 220,
+  "checks": [
+    "captured production module matches baca572 commit byte for byte",
+    "all 220 exact failures rejected by old AI domain",
+    "all 220 exact failures classify page/direct result in candidate"
+  ],
+  "scope": "classification only; not full adapter, image content, model or real device acceptance",
+  "inputSha256": "4447790ce32e6fe82acc5589ac656c10304f61fd682e4f7618d78e2b654227e7",
+  "oldSourceSha256": "f4509ee463479559725636a49bae1743af813eda21be4fa59f824b09aed0c575",
+  "candidateSourceSha256": "03fce1243c53274ce5bf5e8874de315db92bb1bef9463ce25a80381702d50e9f"
+}
