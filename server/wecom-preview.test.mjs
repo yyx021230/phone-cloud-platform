@@ -43,7 +43,7 @@ test("configured slots bind Android user; an unconfigured clone never falls back
 });
 
 test("live lease must agree with task, job, owner, physical phone, clone and lock expiry", () => {
-  const device = { deviceName: "155", deviceId: `adb:${pool["155"].serial}`, adb: { serial: pool["155"].serial } };
+  const device = { deviceName: "155", deviceId: `adb:${pool["155"].serial}`, adb: { serial: pool["155"].serial, agentId: "agent" } };
   const task = { taskId: "task", deviceId: device.deviceId, adbSerial: device.adb.serial, agentId: "agent", type: "wecom_customer_preview", status: "running", payload: { automationJobId: "job", deviceNumber: "155", androidUser: 999 } };
   const job = { jobId: "job", windowsTaskId: "task", kind: task.type, status: "running", deviceId: device.deviceId, wecomDeviceNumber: "155", wecomAndroidUser: 999, userId: "owner", lockId: "lock" };
   const lock = { lockId: "lock", deviceId: device.deviceId, taskId: "job", ownerUserId: "owner", lockType: task.type, status: "active", expiresAt: new Date(Date.now()+60_000).toISOString() };

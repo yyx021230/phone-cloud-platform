@@ -80,12 +80,12 @@
 |---|---|
 | 外层status | queued／running／stalled／succeeded／failed／expired；succeeded仅表示执行器完成，不证明送达 |
 | result.status | ready_before_send预览完成；send_attempted单次发送调用完成；blocked保护性停止 |
-| sendStatus | not_attempted未取得云端发送凭据；unknown已取得凭据或发送尝试，需核对，不重发 |
-| invitationSent | false未记录云端发送凭据；null发送结果未知；本版不返回true，不能凭点击冒充已送达 |
+| sendStatus | not_attempted未取得云端发送凭据；unknown云端／本地凭据或发送尝试存在不确定性，需核对，不重发 |
+| invitationSent | false未进入发送步骤；null发送结果未知；本版不返回true，不能凭点击冒充已送达 |
 | sendClaimed | 是否已记录云端发送凭据；即使没有终态上报也保留 |
 | remarkSaveStatus | not_attempted／unknown／confirmed／not_needed |
 
-Agent本地凭据先成功、云端凭据未成功的情况会保护性失败；以原任务code为准，不能凭云端not_attempted自动重试。当前没有自动对端送达或联系人接受确认接口，历史用户直接确认不等于自动识别已实现。需要人工验证时不自动登录、切号或跳过。
+Agent本地凭据先成功、云端凭据未成功或响应丢失时会保护性失败并保留unknown；以原任务code为准，不能因sendClaimed=false换请求重试。云端收到本地unknown终态后同样阻止该目标换键重发。当前没有自动对端送达或联系人接受确认接口，历史用户直接确认不等于自动识别已实现。需要人工验证时不自动登录、切号或跳过。
 
 ## Agent配套、发布与回退
 

@@ -166,4 +166,12 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   await request("POST",route,admin,{...sendInput,requestId:"fixture_send_after_restart"},409);
   await request("POST",sendClaim,agent,{},409);
 
+  const localUnknown={...sendInput,deviceId:"adb:"+pool["23"].serial,requestId:"fixture_local_claim_unknown"};
+  const localJob=(await request("POST",route,admin,localUnknown,201)).task;
+  const localTask=(await request("GET",next+"?wecomPreview=wecom-invitation-v4",agent)).task;
+  await request("POST",`/api/v1/windows-agent-tasks/${localTask.taskId}/status`,agent,{status:"failed",result:{previewStatus:"blocked",previewCode:"invitation_claim_unconfirmed_no_retry",sendStatus:"unknown",invitationSent:null}});
+  const localDone=(await request("GET",`${route}/${localJob.jobId}`,admin)).task;
+  assert.equal(localDone.result.sendClaimed,false);assert.equal(localDone.result.sendStatus,"unknown");assert.equal(localDone.result.invitationSent,null);
+  await request("POST",route,admin,{...localUnknown,requestId:"fixture_local_new_request"},409);
+
 });

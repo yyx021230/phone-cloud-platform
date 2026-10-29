@@ -1261,7 +1261,8 @@ async function runTask(task, options = {}) {
       evidenceError: evidenceError?.message || String(evidenceError)
     }));
     const failure = { ...taskFailureResult(error), ...evidence,
-      ...(task.type === "wecom_customer_preview" ? { previewStatus: "blocked", invitationSent: false,
+      ...(task.type === "wecom_customer_preview" ? { previewStatus: "blocked", invitationSent: task.payload?.mode === "send" ? null : false,
+        sendStatus: task.payload?.mode === "send" ? "unknown" : "not_attempted",
         previewCode: /^[a-z0-9_]{1,100}$/.test(error.message || "") ? error.message : "wecom_preview_outcome_unknown",
         remarkSaveStatus: "unknown" } : {}) };
     await taskEvent(task, "finish", "error", error.message, compactTaskResultForEvent(failure))

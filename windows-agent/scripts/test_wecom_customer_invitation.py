@@ -129,5 +129,15 @@ class InvitationTests(unittest.TestCase):
         for change in (dict(mode='send'),dict(mode='send',previewOnly=False),dict(mode='bad')):
             with self.assertRaises(host.SafeStop):host.validate_config(dict(value,**change))
 
+class FingerprintTests(unittest.TestCase):
+    def test_operation_fingerprint_matches_node_with_full_target_and_unicode_remark(self):
+        import subprocess
+        value=host.validate_config(dict(host_tests.HostGuardTests().config('155'),mode='send',previewOnly=False,claimDirectory='fixture',remarkName='yyx（坦克）',description='渠道A\n联调'))
+        job=dict(wecomMode='send',wecomRemarkName=value['remarkName'],wecomDescription=value['description'],phoneNumber=value['phoneNumber'],deviceId=value['deviceId'],wecomAndroidUser=value['androidUser'])
+        code="import fs from 'node:fs';import {previewOperationFingerprint} from './server/wecom-preview.mjs';process.stdout.write(previewOperationFingerprint(JSON.parse(fs.readFileSync(0,'utf8'))));"
+        result=subprocess.run(['node','--input-type=module','-e',code],input=json.dumps(job,ensure_ascii=False),text=True,capture_output=True,check=True,cwd=Path(__file__).resolve().parents[2])
+        self.assertEqual(result.stdout,host.operation_fingerprint(value))
+        self.assertNotEqual(host.operation_fingerprint(value),host.operation_fingerprint(dict(value,phoneNumber=OTHER)))
+
 
 if __name__=='__main__':unittest.main()

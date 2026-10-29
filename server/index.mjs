@@ -1,5 +1,5 @@
 import { sendInventorySyncResponse } from "./inventory-sync-response.mjs";
-import { WECOM_PREVIEW_KIND, WECOM_PREVIEW_DEVICES, previewTarget, previewSlots, previewJobSlot, previewJobRemarks, previewRemarkFingerprint, previewJobMode, previewOperationFingerprint, sameWecomRecipient, previewRequest, publicPreview, previewLease, createPreviewSubmissionGate } from "./wecom-preview.mjs";
+import { WECOM_PREVIEW_KIND, WECOM_PREVIEW_DEVICES, previewTarget, previewSlots, previewJobSlot, previewJobRemarks, previewRemarkFingerprint, previewJobMode, previewOperationFingerprint, previewSendState, sameWecomRecipient, previewRequest, publicPreview, previewLease, createPreviewSubmissionGate } from "./wecom-preview.mjs";
 import { spoolSnapshot, writeSpooledSnapshot, loadStreamedSnapshot } from './snapshot-stream.mjs';
 import {aiVisionConfig,createAiVisionReader} from './lookup-ai-vision.mjs';
 import {createLookupAiRecovery} from './lookup-ai-recovery.mjs';
@@ -454,7 +454,7 @@ async function routeApi(req, res, url) {
       if (!device) return json(res, 404, { error: "device_not_found" });
       const target = previewTarget(device, input.appSlot);
       if (input.mode === "send") {
-        const prior = state.automationJobs.find(j => sameWecomRecipient({ deviceId: device.deviceId, wecomAndroidUser: target.androidUser, phoneNumber: input.phoneNumber }, j) && j.wecomSendClaimAt);
+        const prior = state.automationJobs.find(j => sameWecomRecipient({ deviceId: device.deviceId, wecomAndroidUser: target.androidUser, phoneNumber: input.phoneNumber }, j) && previewSendState(j) === "unknown");
         if (prior) return json(res, 409, { error: "wecom_invitation_already_claimed_no_retry", jobId: prior.userId === ctx.userId ? prior.jobId : undefined });
       }
       if (!isDeviceListed(device) || !isAdbOnline(device) || !device.adb?.agentId) return json(res, 409, { error: "device_not_available" });
@@ -4776,15 +4776,15 @@ function syncAutomationJobFromWindowsTask(windowsTask, status, result = {}) {
   const previousProgress = job.kind === "kuaishou_lead" && job.result?.progress && typeof job.result.progress === "object"
     ? { ...job.result.progress } : null;
   job.result = sanitizeTaskResult(result || {}, { includeEvidence: true });
-  if (job.kind === WECOM_PREVIEW_KIND) {
+  if (job.kind === "wecom_customer_preview") {
     const sending = previewJobMode(job) === "send";
     if ((job.result.previewStatus === "send_attempted" && (!sending || !job.wecomSendClaimAt))
         || (sending && job.result.previewStatus === "ready_before_send")) {
       job.result.previewStatus = "blocked"; job.result.previewCode = "wecom_result_mode_unconfirmed";
       if (status === "succeeded") status = job.status = "failed";
     }
-    job.result.invitationSent = job.wecomSendClaimAt ? null : false;
-    job.result.sendStatus = job.wecomSendClaimAt ? "unknown" : "not_attempted";
+    job.result.sendStatus = previewSendState(job);
+    job.result.invitationSent = job.result.sendStatus === "unknown" ? null : false;
   }
   if (previousProgress) job.result.progress = previousProgress;
   job.windowsTaskId = windowsTask.taskId;

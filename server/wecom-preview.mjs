@@ -46,7 +46,7 @@ export function previewOperationFingerprint(job) {
   return createHash("sha256").update(JSON.stringify([previewJobMode(job), previewRemarkFingerprint(job), job.phoneNumber, job.deviceId, job.wecomAndroidUser])).digest("hex");
 }
 export function previewSendState(job) {
-  return job.wecomSendClaimAt ? "unknown" : "not_attempted";
+  return job.wecomSendClaimAt || (previewJobMode(job) === "send" && job.result?.sendStatus === "unknown") ? "unknown" : "not_attempted";
 }
 export function sameWecomRecipient(job, other) {
   return other.kind === WECOM_PREVIEW_KIND && previewJobMode(other) === "send"
@@ -67,7 +67,7 @@ export function publicPreview(job) {
     mode: previewJobMode(job), appSlot: previewJobSlot(job), androidUser: job.wecomAndroidUser, requestId: job.wecomRequestId, status: job.status,
     createdAt: job.createdAt, updatedAt: job.updatedAt, completedAt: job.completedAt,
     result: { status: job.result?.previewStatus || "", code: job.result?.previewCode || "",
-      invitationSent: job.wecomSendClaimAt ? null : false, sendStatus: previewSendState(job), sendClaimed: Boolean(job.wecomSendClaimAt), remarkSaveStatus: job.result?.remarkSaveStatus || "not_attempted" } };
+      invitationSent: previewSendState(job) === "unknown" ? null : false, sendStatus: previewSendState(job), sendClaimed: Boolean(job.wecomSendClaimAt), remarkSaveStatus: job.result?.remarkSaveStatus || "not_attempted" } };
 }
 
 export function previewLease(task, job, lock, device, agentId, now = Date.now()) {
@@ -75,7 +75,7 @@ export function previewLease(task, job, lock, device, agentId, now = Date.now())
     const target = previewTarget(device, previewJobSlot(job));
     const requested = previewJobRemarks(job), delivered = previewRemarkInput(task?.payload || {});
     return Boolean(task?.type === WECOM_PREVIEW_KIND && task.agentId === agentId && task.status === "running"
-      && task.deviceId === device.deviceId && task.adbSerial === device.adb.serial
+      && task.deviceId === device.deviceId && task.adbSerial === device.adb.serial && device.adb.agentId === agentId
       && job?.kind === WECOM_PREVIEW_KIND && job.status === "running" && job.windowsTaskId === task.taskId
       && job.deviceId === device.deviceId && task.payload?.automationJobId === job.jobId
       && task.payload?.phoneNumber === job.phoneNumber
