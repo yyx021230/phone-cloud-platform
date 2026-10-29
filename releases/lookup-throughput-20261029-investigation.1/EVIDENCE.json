@@ -1,0 +1,338 @@
+{
+  "status": "investigation_not_accepted",
+  "candidate": "lookup-throughput-20261028-rc.5",
+  "candidateCommit": "80a36ee8b77fe7a42c3637fdfca22771993771a9",
+  "productionChanged": false,
+  "httpRound": {
+    "at": "2026-10-29T03:26:15.220Z",
+    "physicalPhones": [
+      "51",
+      "162"
+    ],
+    "ready": true,
+    "stopped": true,
+    "cleanupUnconfirmed": true,
+    "duplicateChecks": [
+      {
+        "index": 0,
+        "sameLookupId": true
+      }
+    ],
+    "faultInjected": null
+  },
+  "taskSummary": [
+    {
+      "device": "162",
+      "purpose": "account_preparation",
+      "status": "succeeded",
+      "code": null,
+      "startedAt": "2026-10-29T03:26:16.637Z",
+      "endedAt": "2026-10-29T03:27:18.174Z"
+    },
+    {
+      "device": "51",
+      "purpose": "account_preparation",
+      "status": "succeeded",
+      "code": null,
+      "startedAt": "2026-10-29T03:26:17.139Z",
+      "endedAt": "2026-10-29T03:27:50.752Z"
+    },
+    {
+      "device": "162",
+      "purpose": "probe",
+      "status": "succeeded",
+      "code": null,
+      "startedAt": "2026-10-29T03:27:18.632Z",
+      "endedAt": "2026-10-29T03:28:22.899Z"
+    },
+    {
+      "device": "51",
+      "purpose": "probe",
+      "status": "succeeded",
+      "code": null,
+      "startedAt": "2026-10-29T03:27:51.372Z",
+      "endedAt": "2026-10-29T03:29:35.788Z"
+    },
+    {
+      "device": "51",
+      "purpose": "business",
+      "status": "failed",
+      "code": "alipay_lookup_failed",
+      "startedAt": "2026-10-29T03:29:38.475Z",
+      "endedAt": "2026-10-29T03:31:14.872Z"
+    },
+    {
+      "device": "162",
+      "purpose": "cleanup",
+      "status": "succeeded",
+      "code": null,
+      "startedAt": "2026-10-29T03:31:06.098Z",
+      "endedAt": "2026-10-29T03:31:29.142Z"
+    },
+    {
+      "device": "51",
+      "purpose": "cleanup",
+      "status": "succeeded",
+      "code": null,
+      "startedAt": "2026-10-29T03:31:14.879Z",
+      "endedAt": "2026-10-29T03:31:57.014Z"
+    }
+  ],
+  "samples": [
+    {
+      "description": "51 manual verification same-task resume",
+      "file": "api-14f9367e-2a4d-4e7f-8926-b461658d07fa-query_resume-e40f9bb0-private.json",
+      "sha256": "82b8a580b0b14c3a7437429c4279542ea4f0751130cd80c41522e90de2f7bba3",
+      "ok": true,
+      "seconds": 31.625,
+      "workerExited": true,
+      "cleanupConfirmed": true,
+      "transportDiagnostic": [],
+      "steps": [
+        "poco_instrumentation_launch_started",
+        "poco_instrumentation_waiting",
+        "poco_instrumentation_connected",
+        "poco_request_received",
+        "poco_reused",
+        "resume_query_without_reinput",
+        "resume_result_observation_only",
+        "page_mismatch_overlay_detected",
+        "dismiss_coloros_securepay_usb_warning",
+        "page_mismatch_overlay_cleared",
+        "lookup_visual_result_probe",
+        "lookup_visual_frame_read",
+        "lookup_visual_frame_read",
+        "masked_real_name_tail_extracted"
+      ]
+    },
+    {
+      "description": "51 natural probe timeout",
+      "file": "api-a989e0ed-1ffc-4b1f-bf55-bcd326997597-query-493c6901-private.json",
+      "sha256": "c9fafaf776fdfcbc8c4fc74b48165d3cd5b3a9af93bc7e3183668a3a51d57e25",
+      "ok": false,
+      "seconds": 40.953,
+      "workerExited": true,
+      "cleanupConfirmed": true,
+      "transportDiagnostic": [
+        {
+          "kind": "state",
+          "ms": 0,
+          "exit": 0,
+          "ok": true
+        },
+        {
+          "kind": "shell",
+          "ms": 47,
+          "exit": 0,
+          "ok": true
+        },
+        {
+          "kind": "exec_out",
+          "ms": 32,
+          "exit": 0,
+          "ok": true
+        }
+      ],
+      "steps": [
+        "poco_instrumentation_launch_started",
+        "poco_instrumentation_waiting",
+        "poco_instrumentation_connected",
+        "poco_request_received",
+        "poco_reused",
+        "dismiss_coloros_securepay_usb_warning",
+        "retry_reuse_after_coloros_securepay_warning",
+        "poco_reuse_focus_observed",
+        "poco_reuse_restriction_probe_begin",
+        "poco_reuse_restriction_probe_done",
+        "resume_alipay_home",
+        "activate_alipay_home_tab",
+        "poco_home_search_live_target",
+        "open_search",
+        "reuse_existing_search_page",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "poco_input_clear_confirmed",
+        "query_input_throttle_wait",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "input_phone",
+        "submit_search",
+        "poco_fast_path_failed"
+      ]
+    },
+    {
+      "description": "51 same-task probe recovery",
+      "file": "api-a989e0ed-1ffc-4b1f-bf55-bcd326997597-query_resume-8847d7bb-private.json",
+      "sha256": "72c7bd77a491b38c4e63f537b9eb971859fbfeb9547687b3d867aa99b8c138de",
+      "ok": true,
+      "seconds": 35.984,
+      "workerExited": true,
+      "cleanupConfirmed": true,
+      "transportDiagnostic": [],
+      "steps": [
+        "poco_instrumentation_launch_started",
+        "poco_instrumentation_waiting",
+        "poco_instrumentation_connected",
+        "poco_request_received",
+        "poco_reused",
+        "resume_query_without_reinput",
+        "resume_result_observation_only",
+        "page_mismatch_overlay_detected",
+        "dismiss_coloros_securepay_usb_warning",
+        "page_mismatch_overlay_cleared",
+        "lookup_visual_result_probe",
+        "lookup_visual_frame_read",
+        "lookup_visual_frame_read",
+        "masked_real_name_tail_extracted"
+      ]
+    },
+    {
+      "description": "51 HTTP business natural timeout",
+      "file": "api-d8569ab4-9ead-4451-ae41-f948c69e06c7-query-08cd1a40-private.json",
+      "sha256": "d092f5a25fc4ab1360a64ad7222aa56ffa3f548e882733e444f5a521f98c8fc2",
+      "ok": false,
+      "seconds": 70.984,
+      "workerExited": true,
+      "cleanupConfirmed": false,
+      "transportDiagnostic": [
+        {
+          "kind": "state",
+          "ms": 16,
+          "exit": 0,
+          "ok": true
+        },
+        {
+          "kind": "shell",
+          "ms": 1016,
+          "timeout": true
+        },
+        {
+          "kind": "exec_out",
+          "ms": 1031,
+          "timeout": true
+        }
+      ],
+      "steps": [
+        "poco_instrumentation_launch_started",
+        "poco_instrumentation_waiting",
+        "poco_instrumentation_connected",
+        "poco_request_received",
+        "poco_reused",
+        "dismiss_coloros_securepay_usb_warning",
+        "retry_reuse_after_coloros_securepay_warning",
+        "poco_reuse_focus_observed",
+        "reuse_search_page_by_exact_activity",
+        "reuse_existing_search_page",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "clear_previous_query",
+        "poco_input_clear_confirmed",
+        "query_input_throttle_wait",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "input_phone",
+        "submit_search",
+        "lookup_visual_result_probe",
+        "lookup_visual_frame_read",
+        "lookup_reader_failure",
+        "poco_fast_path_failed"
+      ]
+    },
+    {
+      "description": "51 post-stop native observation only; not API recovery",
+      "file": "api-d8569ab4-9ead-4451-ae41-f948c69e06c7-query_resume-1233d467-private.json",
+      "sha256": "f9b159069bd6877bd6f65e47c897a75451b8d4fe2930349c2667b49020db3017",
+      "ok": false,
+      "seconds": 70.859,
+      "workerExited": true,
+      "cleanupConfirmed": false,
+      "transportDiagnostic": [
+        {
+          "kind": "state",
+          "ms": 32,
+          "exit": 0,
+          "ok": true
+        },
+        {
+          "kind": "shell",
+          "ms": 1015,
+          "timeout": true
+        },
+        {
+          "kind": "exec_out",
+          "ms": 1032,
+          "timeout": true
+        }
+      ],
+      "steps": [
+        "poco_instrumentation_launch_started",
+        "poco_instrumentation_waiting",
+        "poco_instrumentation_connected",
+        "poco_request_received",
+        "poco_reused",
+        "resume_query_without_reinput",
+        "resume_result_observation_only",
+        "page_mismatch_overlay_detected",
+        "dismiss_coloros_securepay_usb_warning",
+        "page_mismatch_overlay_cleared",
+        "lookup_visual_result_probe",
+        "lookup_visual_frame_read",
+        "lookup_visual_pending_wait",
+        "lookup_visual_frame_read",
+        "lookup_visual_frame_read",
+        "lookup_reader_failure",
+        "poco_fast_path_failed"
+      ]
+    },
+    {
+      "description": "52 isolated keepalive attempt",
+      "file": "api-2c17c9c8-8dda-4977-89bd-16e4f2fb85d9-query-cab23b02-private.json",
+      "sha256": "bfb76df182800b90a9d3db23cf255d80283c1f969b2401560964f8102ec8b728",
+      "ok": false,
+      "seconds": 73.515,
+      "workerExited": true,
+      "cleanupConfirmed": false,
+      "transportDiagnostic": [
+        {
+          "kind": "state",
+          "ms": 16,
+          "exit": 0,
+          "ok": true
+        },
+        {
+          "kind": "shell",
+          "ms": 1015,
+          "timeout": true
+        },
+        {
+          "kind": "exec_out",
+          "ms": 1032,
+          "timeout": true
+        }
+      ],
+      "steps": [
+        "poco_instrumentation_launch_started",
+        "poco_instrumentation_waiting",
+        "poco_instrumentation_connected",
+        "isolated_light_keepalive_started",
+        "poco_request_received",
+        "poco_reused",
+        "poco_reuse_focus_observed",
+        "reuse_search_page_by_exact_activity",
+        "reuse_existing_search_page",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "poco_input_clear_confirmed",
+        "query_input_throttle_wait",
+        "poco_search_ready_focus",
+        "poco_search_input_probe_begin",
+        "input_phone",
+        "submit_search",
+        "lookup_visual_result_probe",
+        "lookup_visual_frame_read",
+        "lookup_visual_frame_read",
+        "poco_fast_path_failed"
+      ]
+    }
+  ]
+}
