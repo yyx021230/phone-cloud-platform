@@ -172,3 +172,5 @@ print(get("/api/v1/open/xhs-data/batches?offset=0"))
 ### 同名同日笔记身份扩展（2026-10-29 本地候选，未上线）
 
 `notes[].element_cover_sha256` 可选，为64位小写十六进制字符串。来自原生封面元素资源文本的任务内指纹，原始文本不导出；不是稳定笔记ID，不能用于跨日关联。带 `collection_identity_schema:title_date_cover_sha256_v1` 时，完整性摘要对每条 `[title, published_date, element_cover_sha256]` 计算；无指纹行仍用 `[title, published_date]`。保持数组顺序，不按标题日期去重。无此标记的既有结果按原算法核对。字段缺失不当作空指纹、账号身份或零篇证明。
+
+同日标题唯一时继续使用原有标题/日期的跨遍身份摘要，封面指纹只作为单遍连续性辅助；同名同日笔记存在时才使用上述 `title_date_cover_sha256_v1` 摘要，并增加 `collection_verification_direction:reverse_same_list`。后一种验证在同一已加载列表中由下向上重新读取元素，核对每个身份、连续位置、底部日期/列表结束边界和顶部；不跨重开比较临时签名，不按数量相等放行。该变化仍为本地待真机候选。

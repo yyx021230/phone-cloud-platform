@@ -2722,8 +2722,97 @@ def collect_once(args):
     return result
 
 
+def verify_duplicate_window_reverse(args, first, boundary_stop):
+    """Audit ambiguous-title posts upwards without regenerating image signatures.
+
+    Every newly observed row must occupy its exact place in the primary ordered
+    identity list. Reverse seams, the old-date/end boundary and the actual top
+    are all proven from fresh elements. Never accept a count-only match.
+    """
+    guard = lambda: assert_idle(args.device_cache, args.serial, args.device_name,
+                               args.task_id, args.app_slot, args.cancel_file)
+    as_of = dt.date.fromisoformat(first["window_end_date"])
+    cutoff = dt.date.fromisoformat(first["window_start_date"])
+    events = ["collection_verification_pass", "collection_verification_reverse_same_list",
+              "collection_scan_as_of:" + as_of.isoformat()]
+    root = verification_entry(args, guard, events)
+    if root is None:
+        raise ElementListReadError("duplicate verification requires the same live works list")
+    root = wait_creator_content(args.adb, args.serial, root, guard, events)
+    expected = [note_identity(n) for n in first["notes"]]
+    if not expected or len(set(expected)) != len(expected):
+        raise ElementListReadError("duplicate verification primary identities are ambiguous")
+    positions = {identity: index for index, identity in enumerate(expected)}
+    observed = {}
+    second = dict(first, complete=False, notes=[], scrolls=0, recovery_events=events,
+                  warnings=[], stop_reason="verification_unproven")
+    previous = None
+    stagnant = 0
+    budget = min(args.max_scrolls * 2 + 3, first["scrolls"] * 2 + 6)
+    for step in range(budget + 1):
+        guard()
+        assert_requested_foreground(focus(args.adb, args.serial), events)
+        if not creator_list(root) or creator_filter_panel(root):
+            raise ElementListReadError("reverse verification left the works list")
+        require_creator_service_available(root)
+        if element_page_signature(root, allow_duplicate_rows=True) is None:
+            raise ElementListReadError("reverse verification elements are incomplete")
+        cards = note_cards(root)
+        dates = [published_date(n["published_at_raw"], as_of) for _, n in cards]
+        if any(d > as_of for d in dates) or any(b > a for a, b in zip(dates, dates[1:])):
+            raise ElementListReadError("reverse verification date order changed")
+        if step == 0:
+            empty, bottom = proven_list_terminal(root)
+            if not ((boundary_stop == "older_than_window_visible" and any(d < cutoff for d in dates))
+                    or (boundary_stop == "list_end_visible" and bottom and not empty)):
+                raise ElementListReadError("reverse verification lower boundary changed")
+        if previous is not None:
+            verify_element_overlap(root, previous)
+        items = [dict(n, published_date=d.isoformat()) for (_, n), d in zip(cards, dates) if cutoff <= d <= as_of]
+        ids = [note_identity(n) for n in items]
+        if any(identity not in positions for identity in ids) or len(set(ids)) != len(ids):
+            raise ElementListReadError("reverse verification found a new or ambiguous identity")
+        indices = [positions[identity] for identity in ids]
+        if indices and indices != list(range(indices[0], indices[0] + len(indices))):
+            raise ElementListReadError("reverse verification skipped or reordered a post")
+        before = len(observed)
+        for index, item in zip(indices, items):
+            observed.setdefault(index, item)
+        if observed and sorted(observed) != list(range(min(observed), len(expected))):
+            raise ElementListReadError("reverse verification is missing the known tail")
+        stagnant = stagnant + 1 if len(observed) == before and previous is not None else 0
+        if len(observed) == len(expected):
+            verify_newest_element_position(root)
+            root = prove_native_list_start(args.adb, args.serial, root, guard, events)
+            top = [note_identity(n) for _, n in note_cards(root)
+                   if cutoff <= published_date(n["published_at_raw"], as_of) <= as_of]
+            if not top or top != expected[:len(top)]:
+                raise ElementListReadError("reverse verification newest identities changed")
+            scope = next((n.get("text") for n in live_nodes(root) if (n.get("text") or "").startswith("仅统计")), None)
+            if scope != first["list_scope_raw"]:
+                raise ElementListReadError("reverse verification list scope changed")
+            second.update(complete=True, notes=[observed[i] for i in range(len(expected))], stop_reason=boundary_stop)
+            events.append("verification_reverse_completed")
+            return second
+        if step == budget or stagnant >= 3:
+            raise ElementListReadError("reverse verification did not reach every post and the top")
+        previous = root
+        swipe(args.adb, args.serial, root, guard, events, reverse=True)
+        second["scrolls"] += 1
+        guard()
+        current = focus(args.adb, args.serial)
+        assert_requested_foreground(current, events)
+        root = navigation_capture(args.adb, args.serial, guard, events)
+        guard()
+        if focus(args.adb, args.serial) != current:
+            raise ElementListReadError("reverse verification foreground changed during read")
+        root = wait_creator_content(args.adb, args.serial, root, guard, events)
+        events.append("verification_fresh_page_accepted")
+    raise ElementListReadError("reverse verification budget exhausted")
+
+
 def collect(args):
-    """Only two independently restarted, complete ordered scans may succeed."""
+    """Only two complete ordered element audits may succeed."""
     first = collect_once(args)
     if not first["complete"]:
         return first
@@ -2736,18 +2825,28 @@ def collect(args):
     verification_args.verified_entry_events = tuple(first["recovery_events"])
     verification_args.used_loading_reopens = data_center_reopen_count(first["recovery_events"])
     started = time.monotonic()
+    title_dates = [(n["title"], n["published_date"]) for n in first["notes"]]
+    duplicate_titles = len(set(title_dates)) != len(title_dates)
     try:
-        second = collect_once(verification_args)
-    except ElementListReadError:
+        if duplicate_titles:
+            duplicate_keys = {key for key in title_dates if title_dates.count(key) > 1}
+            if any(not n.get("element_cover_sha256") for n in first["notes"]
+                   if (n["title"], n["published_date"]) in duplicate_keys):
+                raise ElementListReadError("duplicate-title posts lack distinct cover elements")
+            second = verify_duplicate_window_reverse(verification_args, first, first_stop)
+        else:
+            second = collect_once(verification_args)
+    except ElementListReadError as error:
+        first["recovery_events"].insert(0, "collection_verification_error:" + str(error))
         first["warnings"].append("verification_elements_unproven")
         first["recovery_events"].insert(0, "collection_integrity:verification_elements_unproven")
         return first
-    identities = lambda result: [note_identity(n, normalized_date=True) for n in result["notes"]]
+    identities = lambda result: [note_identity(n, normalized_date=True) if duplicate_titles else (n["title"], n["published_date"]) for n in result["notes"]]
     a, b = identities(first), identities(second)
     digest = lambda values: hashlib.sha256(json.dumps(values, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
     # The existing public API retains only the first 100 events. Keep the
     # final completeness evidence ahead of verbose per-page observations.
-    if any(n.get("element_cover_sha256") for n in first["notes"]):
+    if duplicate_titles:
         first["recovery_events"].insert(0, "collection_identity_schema:title_date_cover_sha256_v1")
     first["recovery_events"][0:0] = [
         "collection_primary_sha256:" + digest(a), "collection_verification_sha256:" + digest(b),
@@ -2757,6 +2856,7 @@ def collect(args):
         "collection_verification_fresh_pages:" + str(second["recovery_events"].count("verification_fresh_page_accepted")),
         "collection_verification_fallback_pages:" + str(second["recovery_events"].count("verification_page_stability_fallback")),
         "collection_verification_entry_reused:" + str("verification_existing_list_reused" in second["recovery_events"]).lower(),
+        "collection_verification_direction:" + ("reverse_same_list" if duplicate_titles else "forward_reopened"),
         "collection_verification_stop:" + str(second["stop_reason"])]
     # Counts/status may legitimately change during the second pass. Identity,
     # order, scope and the proven boundary must not be inferred from a union.
