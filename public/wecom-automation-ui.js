@@ -1,7 +1,7 @@
 const ROOT = "/api/v1/user/automation";
 const ACTIVE = new Set(["queued", "running", "stalled"]);
 export const wecomSlotLabel = slot => slot === "clone" ? "分身" : "主应用";
-export const wecomStatusLabel = task => task.result?.status === "blocked" ? "已停止，请核对原因" : task.status === "succeeded" ? (task.result?.status === "ready_before_send" ? "已到发送前，未发送邀请" : "执行已结束，请核对结果") : ({ queued: "等待设备领取", running: "正在执行", stalled: "状态待核对", failed: "已停止", expired: "已超时" })[task.status] || task.status;
+export const wecomStatusLabel = task => task.result?.sendStatus === "unknown" ? "发送已尝试或状态待核对，请勿重发" : task.result?.status === "blocked" ? "已停止，请核对原因" : task.status === "succeeded" ? (task.result?.status === "ready_before_send" ? "已到发送前，未发送邀请" : "执行已结束，请核对结果") : ({ queued: "等待设备领取", running: "正在执行", stalled: "状态待核对", failed: "已停止", expired: "已超时" })[task.status] || task.status;
 const localRejection = message => Object.assign(new Error(message), { definiteResponse: true });
 
 // One pending submission per physical phone, across both slots. Storage contains
@@ -17,7 +17,7 @@ export function createWecomPanelModel({ request, storage } = {}) {
       try {
         const saved = JSON.parse(storage?.getItem(`wecomPreviewPending:${identity}`) || "{}");
         for (const [deviceId, value] of Object.entries(saved)) {
-          if (deviceId.startsWith("adb:") && /^[A-Za-z0-9_-]{8,100}$/.test(value?.requestId) && ["main", "clone"].includes(value.appSlot)) pending[deviceId] = { requestId: value.requestId, appSlot: value.appSlot };
+          if (deviceId.startsWith("adb:") && /^[A-Za-z0-9_-]{8,100}$/.test(value?.requestId) && ["main", "clone"].includes(value.appSlot)) pending[deviceId] = { requestId: value.requestId, appSlot: value.appSlot, mode: value.mode === "send" ? "send" : "preview" };
         }
       } catch { /* Invalid storage never grants a device or application slot. */ }
     }
@@ -50,7 +50,7 @@ export function createWecomPanelModel({ request, storage } = {}) {
     if (pending[input.deviceId] || tasks.some(t => t.deviceId === input.deviceId && ACTIVE.has(t.status))) throw localRejection("请先核对这台手机的原任务，不能重复提交");
     if (!/^1[3-9]\d{9}$/.test(input.phoneNumber)) throw localRejection("请输入11位客户手机号");
     const current = generation;
-    pending[input.deviceId] = { requestId: input.requestId, appSlot: input.appSlot };
+    pending[input.deviceId] = { requestId: input.requestId, appSlot: input.appSlot, mode: input.mode === "send" ? "send" : "preview" };
     // If the recovery identity cannot be saved, do not POST.
     try { persist(); } catch { delete pending[input.deviceId]; throw localRejection("无法保存请求编号，本次未提交，请检查浏览器存储"); }
     try {
@@ -71,6 +71,7 @@ export function createWecomAutomationPanel({ context, document: doc = document, 
   const form = doc.getElementById("userWecomForm");
   if (!form) return { render() {}, refresh: async () => {} };
   const slot = doc.getElementById("userWecomSlot"), phone = doc.getElementById("userWecomPhone");
+  const mode = doc.getElementById("userWecomMode");
   const remarkName = doc.getElementById("userWecomRemarkName"), description = doc.getElementById("userWecomDescription");
   const button = doc.getElementById("userWecomSubmit"), hint = doc.getElementById("userWecomHint"), history = doc.getElementById("userWecomTasks");
   const selectedSlots = new Map();
@@ -80,7 +81,7 @@ export function createWecomAutomationPanel({ context, document: doc = document, 
       headers: { Authorization: `Bearer ${ctx.token}`, "Content-Type": "application/json" },
       ...(input ? { body: JSON.stringify(input) } : {}), signal: AbortSignal.timeout(15000) });
     const data = await response.json();
-    if (!response.ok) throw Object.assign(new Error(({invalid_wecom_remarkName:"备注名最多20字，不能包含换行或控制字符",invalid_wecom_description:"描述最多120字，不能包含控制字符"})[data.error] || data.error || "请求失败"), { definiteResponse: response.status < 500 });
+    if (!response.ok) throw Object.assign(new Error(({invalid_wecom_remarkName:"备注名最多20字，不能包含换行或控制字符",invalid_wecom_description:"描述最多120字，不能包含控制字符",wecom_invitation_already_claimed_no_retry:"此账户已尝试邀请这个客户，请核对原任务，不要重复发送"})[data.error] || data.error || "请求失败"), { definiteResponse: response.status < 500 });
     return data;
   } });
   function text(tag, value) { const node = doc.createElement(tag); node.textContent = value; return node; }
@@ -102,9 +103,12 @@ export function createWecomAutomationPanel({ context, document: doc = document, 
     const active = Boolean(activeTask);
     button.disabled = ctx.role !== "admin" || !state.loaded || !device?.available || !slot.value || Boolean(pending || active);
     slot.disabled = Boolean(pending || active) || !options.length;
+    if (pending || activeTask) mode.value = (pending || activeTask).mode || "preview";
+    mode.disabled = Boolean(pending || active) || ctx.role !== "admin";
+    button.querySelector("span").textContent = mode.value === "send" ? "填写备注并发送邀请一次" : "运行至发送前";
     phone.disabled = Boolean(pending || active) || ctx.role !== "admin";
     remarkName.disabled = phone.disabled; description.disabled = phone.disabled;
-    hint.textContent = ctx.role !== "admin" ? "此阶段仅管理员可运行企微预览。" : pending ? (original ? `原任务：${wecomStatusLabel(original)}。同一台手机请等待当前任务结束。` : "提交结果暂未确认，正在查找原请求，请勿重新提交。") : !state.loaded ? (message || "请刷新读取企微应用和任务状态。") : !device ? "这台手机不在本轮8台范围内。" : message || (!device.available ? "手机占用或离线，请空闲后再试。" : "只搜索并核对备注，停在发送邀请前。");
+    hint.textContent = ctx.role !== "admin" ? "仅管理员可运行企微任务。" : pending ? (original ? `原任务：${wecomStatusLabel(original)}。同一台手机请等待当前任务结束。` : "提交结果暂未确认，正在查找原请求，请勿重新提交。") : !state.loaded ? (message || "请刷新读取企微应用和任务状态。") : !device ? "这台手机不在本轮8台范围内。" : message || (!device.available ? "手机占用或离线，请空闲后再试。" : (mode.value === "send" ? "发送模式：按表单更新备注名，保存回读后发送一次；结果不明不会重发。" : "只搜索并核对备注，停在发送邀请前。"));
     history.replaceChildren();
     const tasks = state.tasks.filter(t => t.deviceId === ctx.deviceId);
     for (const task of tasks) {
@@ -114,10 +118,11 @@ export function createWecomAutomationPanel({ context, document: doc = document, 
     if (!tasks.length) history.append(text("p", "暂无企微任务记录。"));
   }
   async function refresh() { const ctx = context(); if (ctx.role !== "admin") { render(); return; } try { await model.refresh(ctx); } catch { message = "企微状态读取失败，请刷新后再运行。"; } render(); }
+  mode.addEventListener("change", render);
   slot.addEventListener("change", () => { selectedSlots.set(context().deviceId, slot.value); });
   form.addEventListener("submit", async event => {
     event.preventDefault(); const ctx = context();
-    const input = { deviceId: ctx.deviceId, appSlot: slot.value, phoneNumber: phone.value, remarkName: remarkName.value, description: description.value, requestId: crypto.randomUUID() };
+    const input = { deviceId: ctx.deviceId, mode: mode.value, appSlot: slot.value, phoneNumber: phone.value, remarkName: remarkName.value, description: description.value, requestId: crypto.randomUUID() };
     const work = model.submit(ctx, input); render();
     try { const task = await work; if (task) { phone.value = ""; remarkName.value = ""; description.value = ""; message = ""; } }
     catch (error) { message = error.definiteResponse ? error.message : "提交未确认，请刷新查询原请求，不要重复提交。"; }

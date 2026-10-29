@@ -72,6 +72,7 @@ class RemarkContext:
     expected: tuple
     value: str = ""
     requested: tuple = (DEFAULT_REMARK, DEFAULT_DESCRIPTION)
+    replace_name: bool = False
 
 
 def resolve_remark(action, screen, phone, context=None):
@@ -94,7 +95,7 @@ def resolve_remark(action, screen, phone, context=None):
             raise w.StopPreview("invalid_remark_context")
         requested = validate_remark_input(dict(zip(("remarkName", "description"), context.requested)))
         desired = requested[0 if action == "fill_remark" else 1]
-        if node.text.strip() not in EMPTY_VALUES[key] or context.value != desired:
+        if (node.text.strip() not in EMPTY_VALUES[key] and not (action == "fill_remark" and context.replace_name is True)) or context.value != desired:
             raise w.StopPreview("remark_overwrite_forbidden")
         return node
     if action == "save_remark":
@@ -136,9 +137,10 @@ class PocoRemarkDriver(w.PocoPreviewDriver):
 
 
 class _RemarkingDriver:
-    def __init__(self, driver, sleep, requested):
+    def __init__(self, driver, sleep, requested, replace_name=False):
         self.driver, self.sleep = driver, sleep
         self.requested = requested
+        self.replace_name = replace_name
         self.saved = False
         self.save_status = "not_attempted"
         self.prepared = False
@@ -181,6 +183,7 @@ class _RemarkingDriver:
         return self.read_until(matches, check_budget)
 
     def prepare(self, screen, phone, check_budget):
+        if self.prepared: raise w.StopPreview("remark_prepare_repeated")
         self.perform("open_remark", screen, phone, check_budget)
         screen = self.read_until(remark_page, check_budget)
         expected = values(screen)
@@ -189,12 +192,12 @@ class _RemarkingDriver:
         desired = {name_id: self.requested[0], description_id: self.requested[1]}
         for key, action in ((name_id, "fill_remark"), (description_id, "fill_description")):
             node = w.unique([n for n in editors(screen) if n.name == key])
-            if node.text.strip() not in EMPTY_VALUES[key]:
+            if node.text == desired[key] or (node.text.strip() not in EMPTY_VALUES[key] and not (key == name_id and self.replace_name)):
                 continue  # Preserve an existing name/description, even on rerun.
             before = expected
             after = tuple((name, desired[key] if name == key else text, desc, enabled)
                           for name, text, desc, enabled in before)
-            self.perform(action, screen, phone, check_budget, RemarkContext(before, desired[key], self.requested))
+            self.perform(action, screen, phone, check_budget, RemarkContext(before, desired[key], self.requested, self.replace_name))
             def readback(current):
                 if not remark_page(current):
                     return False
@@ -216,6 +219,10 @@ class _RemarkingDriver:
             screen = self.read_until(remark_page, check_budget)
             if values(screen) != expected:
                 raise w.StopPreview("remark_persistence_unconfirmed")
+            second = self.driver.snapshot(); w.guard(second)
+            if not remark_page(second) or values(second) != expected:
+                raise w.StopPreview("remark_persistence_unstable")
+            screen = second
             self.saved = True
             self.save_status = "confirmed"
         else:
@@ -232,7 +239,7 @@ class _RemarkingDriver:
 
 
 def run_customer_preview(driver, request, timeout=120, max_reads=90,
-                         cancelled=lambda: False, clock=time.monotonic, sleep=time.sleep):
+                         cancelled=lambda: False, clock=time.monotonic, sleep=time.sleep, replace_name=False):
     """Requested or default remark/description for empty fields, then stop before invitation.
 
     Original nonempty fields and every other editor are preserved. Save is
@@ -242,7 +249,7 @@ def run_customer_preview(driver, request, timeout=120, max_reads=90,
     if not isinstance(request, dict) or set(request) - {"phoneNumber", "mode", "remarkName", "description"}:
         raise w.StopPreview("invalid_request")
     requested = validate_remark_input(request)
-    wrapper = _RemarkingDriver(driver, sleep, requested)
+    wrapper = _RemarkingDriver(driver, sleep, requested, replace_name=replace_name)
     core_request = {k: v for k, v in request.items() if k not in ("remarkName", "description")}
     result = w.run_preview(wrapper, core_request, timeout=timeout, max_reads=max_reads,
                            cancelled=cancelled, clock=clock, sleep=sleep)

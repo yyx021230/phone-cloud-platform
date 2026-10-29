@@ -1,7 +1,8 @@
-"""One-shot, preview-only production adapter. Credentials arrive on stdin only.
+"""One-shot leased WeCom adapter. Credentials arrive on stdin only.
 
 Uses the fixed, already-running SYSTEM ADB socket, never starts a server,
-installs packages, switches accounts, guesses coordinates or sends invitations.
+installs packages, switches accounts or guesses coordinates. Sending requires
+an explicit mode and both local and cloud one-use claims.
 """
 import contextlib
 import datetime
@@ -20,6 +21,7 @@ from pathlib import Path
 import wecom_invite_preview as w
 import wecom_remark_preview as remarks
 import wecom_startup_guards as startup
+import wecom_customer_invitation as invitation
 from wecom_rpc_budget import bound_rpc_transport
 
 class SafeStop(Exception): pass
@@ -32,8 +34,13 @@ DEVICES = json.loads(Path(__file__).with_name("wecom_preview_devices.json").read
 def validate_config(value):
     allowed = {"taskId", "deviceId", "serial", "deviceNumber", "androidUser", "phoneNumber",
                "previewOnly", "agentId", "serverBaseUrl", "agentToken"}
-    if not isinstance(value, dict) or not allowed <= set(value) or set(value) - allowed - {"appSlot", "remarkName", "description"} or value.get("previewOnly") is not True:
+    if not isinstance(value, dict) or not allowed <= set(value) or set(value) - allowed - {"appSlot", "remarkName", "description", "mode", "claimDirectory"}:
         raise SafeStop("invalid_preview_config")
+    mode = value.get("mode", "preview")
+    if mode not in ("preview", "send") or value.get("previewOnly") is not (mode != "send"):
+        raise SafeStop("invalid_preview_config")
+    if mode == "send" and (not isinstance(value.get("claimDirectory"), str) or not value['claimDirectory']):
+        raise SafeStop("missing_invitation_claim_directory")
     entry = DEVICES.get(value.get("deviceNumber"))
     slot = value.get("appSlot", entry["defaultAppSlot"] if entry else None)
     if (not entry or not isinstance(slot, str) or slot not in entry["appSlots"]
@@ -50,14 +57,14 @@ def validate_config(value):
     if not isinstance(value["agentToken"], str) or not value["agentToken"]:
         raise SafeStop("missing_agent_credential")
     name, description = remarks.validate_remark_input(value)
-    return dict(value, remarkName=name, description=description)
+    return dict(value, mode=mode, remarkName=name, description=description)
 
 
 def remark_fingerprint(value):
     return hashlib.sha256(json.dumps(remarks.validate_remark_input(value), ensure_ascii=False, separators=(",", ":")).encode("utf-8")).hexdigest()
 
 
-class PreviewRemarkEntryDriver(remarks.PocoRemarkDriver):
+class PreviewRemarkEntryDriver(invitation.InvitationDriverMixin, remarks.PocoRemarkDriver):
     def __init__(self, poco, foreground, lease_valid, wake_if_needed=lambda: None):
         super().__init__(poco, foreground, lease_valid)
         self.wake_if_needed=wake_if_needed
@@ -103,8 +110,26 @@ def lease_valid():
             and proof.get("deviceNumber") == config["deviceNumber"] and proof.get("androidUser") == selected_user
             and ("appSlot" not in config or proof.get("appSlot") == config["appSlot"])
             and proof.get("remarkFingerprint") == remark_fingerprint(config)
+            and (config.get("mode", "preview") != "send" or (proof.get("mode") == "send" and proof.get("operationFingerprint") == operation_fingerprint(config)))
             and datetime.datetime.fromisoformat(proof["expiresAt"].replace("Z","+00:00")).timestamp() > time.time()+3)
     except Exception: return False
+
+def operation_fingerprint(value):
+    return hashlib.sha256(json.dumps([value.get('mode', 'preview'), remark_fingerprint(value), value['phoneNumber'], value['deviceId'], value['androidUser']], separators=(',', ':')).encode('utf8')).hexdigest()
+
+
+def claim_invitation():
+    budget()
+    if not lease_valid(): raise SafeStop('device_lease_lost')
+    invitation.claim_local(config['claimDirectory'], config)
+    url = config['serverBaseUrl'].rstrip('/') + '/api/v1/windows-agents/' + config['agentId'] + '/wecom-preview-tasks/' + config['taskId'] + '/send-claim'
+    req = urllib.request.Request(url, data=b'{}', method='POST', headers={'Authorization': 'Bearer ' + config['agentToken'], 'Content-Type': 'application/json'})
+    with urllib.request.build_opener(NoRedirect).open(req, timeout=min(8, deadline-time.monotonic())) as response:
+        raw = response.read(8193)
+    if len(raw) > 8192: return False
+    proof = json.loads(raw)
+    return proof.get('claimed') is True and proof.get('taskId') == config['taskId'] and proof.get('operationFingerprint') == operation_fingerprint(config)
+
 
 def mutate(cmd):
     budget()
@@ -363,12 +388,14 @@ def run_host(value):
         if not home:raise SafeStop("home_not_confirmed")
         remaining=min(120,deadline-time.monotonic()-10)
         if remaining<10:raise SafeStop("preview_job_budget_exhausted")
-        result=remarks.run_customer_preview(driver,{"phoneNumber":config["phoneNumber"],"remarkName":config["remarkName"],"description":config["description"]},timeout=remaining,max_reads=100)
+        result=remarks.run_customer_preview(driver,{"phoneNumber":config["phoneNumber"],"remarkName":config["remarkName"],"description":config["description"]},timeout=remaining,max_reads=100,replace_name=config.get("mode") == "send")
+        if config.get("mode") == "send":
+            result=invitation.send_once(driver,result,claim_invitation,budget)
         if result.get("status")=="ready_before_send" and not lease_valid():
             result.update(status="blocked",code="device_lease_lost")
         code=result.get("code") or ("preview_ready" if result.get("status")=="ready_before_send" else "preview_stopped")
-        output = {"previewStatus":result.get("status") if result.get("status")=="ready_before_send" else "blocked",
-                "previewCode":code,"invitationSent":False,"remarkSaveStatus":result.get("remarkSaveStatus","not_attempted")}
+        output = {"previewStatus":result.get("status") if result.get("status") in ("ready_before_send", "send_attempted") else "blocked",
+                "previewCode":code,"invitationSent":result.get("invitationSent",False),"sendStatus":result.get("sendStatus","not_attempted"),"remarkSaveStatus":result.get("remarkSaveStatus","not_attempted")}
         return output
     finally:
         cleaning_up = True

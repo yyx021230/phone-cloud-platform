@@ -1135,7 +1135,7 @@ async function pollTask() {
     params.set("managedLookupDelivery", MANAGED_LOOKUP_PROTOCOL);
     params.set("galleryDelivery", SCREEN_GALLERY_DELIVERY_PROTOCOL);
     params.set("xhsPublishDelivery", XHS_PUBLISH_DELIVERY_PROTOCOL);
-    params.set("wecomPreview", "wecom-preview-v3");
+    params.set("wecomPreview", "wecom-invitation-v4");
     const suffix = params.size ? `?${params.toString()}` : "";
     const payload = await api(`/api/v1/windows-agents/${encodeURIComponent(config.agentId)}/tasks/next${suffix}`);
     cancellationChecked = true;
@@ -1151,7 +1151,7 @@ async function pollTask() {
       // Gallery import is idempotent enough to finish after a lost ACK
       // response. Publishing is an external side effect: never click publish
       // unless the server has confirmed ownership of this delivery.
-      if (prepared.task.type === "xhs_publish" || prepared.task.payload?.managedLookup) continue;
+      if (prepared.task.type === "xhs_publish" || prepared.task.type === "wecom_customer_preview" || prepared.task.payload?.managedLookup) continue;
     }
     startTask(prepared.task);
     picked += 1;
@@ -1226,8 +1226,8 @@ async function runTask(task, options = {}) {
     else if (["alipay_name_start", "alipay_name_query", "alipay_name_switch", "alipay_name_stop"].includes(task.type)) result = await taskAlipayNameLookupWithAccounts(task, options);
     else throw new Error(`unsupported task type: ${task.type}`);
     const collectionIncomplete = task.type === "xhs_data_collect" && result.collection?.complete !== true;
-    const previewBlocked = task.type === "wecom_customer_preview" && result.previewStatus !== "ready_before_send";
-    await taskEvent(task, "finish", collectionIncomplete || previewBlocked ? "warn" : "info", previewBlocked ? "企微预览已保护性停止，未发送邀请" : collectionIncomplete ? "已保存部分采集结果" : "执行成功", compactTaskResultForEvent(result))
+    const previewBlocked = task.type === "wecom_customer_preview" && !["ready_before_send", "send_attempted"].includes(result.previewStatus);
+    await taskEvent(task, "finish", collectionIncomplete || previewBlocked ? "warn" : "info", task.type === "wecom_customer_preview" && task.payload?.mode === "send" ? "企微单次邀请流程结束，请核对发送状态" : previewBlocked ? "企微预览已保护性停止，未发送邀请" : collectionIncomplete ? "已保存部分采集结果" : "执行成功", compactTaskResultForEvent(result))
       .catch((error) => log("task finish event failed", { taskId: task.taskId, error: error.message }));
     if (isLookup) lookupTerminal = { status: "succeeded", result };
     else await taskStatus(task, collectionIncomplete || previewBlocked ? "failed" : "succeeded", result);

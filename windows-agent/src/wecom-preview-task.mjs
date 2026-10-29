@@ -4,14 +4,16 @@ import path from "node:path";
 // A one-shot child with stdin-only credentials and no command-line phone data.
 // It neither imports the Agent entry point nor manages the shared ADB server.
 export async function runWecomPreviewTask(task, { config, agentDir, signal, spawnChild = spawn } = {}) {
-  if (task.type !== "wecom_customer_preview" || task.payload?.previewOnly !== true) throw new Error("invalid_wecom_preview_task");
+  const sending = task.payload?.mode === "send";
+  if (task.type !== "wecom_customer_preview" || ![undefined, "preview", "send"].includes(task.payload?.mode) || task.payload?.previewOnly !== !sending) throw new Error("invalid_wecom_preview_task");
   if (signal?.aborted) throw signal.reason || new Error("automation_task_cancelled");
   const payload = { taskId: task.taskId, deviceId: task.deviceId, serial: task.adbSerial,
     deviceNumber: task.payload.deviceNumber, androidUser: task.payload.androidUser,
     ...(task.payload.appSlot === undefined ? {} : { appSlot: task.payload.appSlot }),
     ...(task.payload.remarkName === undefined ? {} : { remarkName: task.payload.remarkName }),
     ...(task.payload.description === undefined ? {} : { description: task.payload.description }),
-    phoneNumber: task.payload.phoneNumber, previewOnly: true,
+    phoneNumber: task.payload.phoneNumber, previewOnly: !sending, mode: sending ? "send" : "preview",
+    ...(sending ? { claimDirectory: path.join(agentDir, "state", "wecom-send-claims") } : {}),
     agentId: config.agentId, serverBaseUrl: config.serverBaseUrl, agentToken: config.agentToken };
   return new Promise((resolve, reject) => {
     let stdout = "", settled = false, abortReason = null, killTimer = null;
@@ -48,11 +50,12 @@ export async function runWecomPreviewTask(task, { config, agentDir, signal, spaw
       try {
         if (code !== 0) throw new Error();
         const value = JSON.parse(stdout.trim());
-        if (!["ready_before_send", "blocked"].includes(value.previewStatus) || value.invitationSent !== false
+        if (!(sending ? ["send_attempted", "blocked"] : ["ready_before_send", "blocked"]).includes(value.previewStatus)
+          || (sending ? !((value.sendStatus === "unknown" && value.invitationSent === null) || (value.previewStatus === "blocked" && [undefined, "not_attempted"].includes(value.sendStatus) && value.invitationSent === false)) : value.invitationSent !== false)
           || !/^[a-z0-9_]{1,100}$/.test(value.previewCode || "")) throw new Error();
         finish(null, { previewStatus: value.previewStatus, previewCode: value.previewCode,
-          invitationSent: false, remarkSaveStatus: ["not_attempted", "unknown", "confirmed", "not_needed"].includes(value.remarkSaveStatus) ? value.remarkSaveStatus : "unknown",
-          executionMode: "wecom_poco_preview_only" });
+          invitationSent: sending && value.sendStatus === "unknown" ? null : false, sendStatus: sending && value.sendStatus === "unknown" ? "unknown" : "not_attempted", remarkSaveStatus: ["not_attempted", "unknown", "confirmed", "not_needed"].includes(value.remarkSaveStatus) ? value.remarkSaveStatus : "unknown",
+          executionMode: sending ? "wecom_poco_single_invitation" : "wecom_poco_preview_only" });
       } catch { finish(new Error("wecom_preview_worker_outcome_unknown")); }
     });
     child.stdin.write(JSON.stringify(payload) + "\n");

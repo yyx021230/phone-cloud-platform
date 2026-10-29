@@ -62,3 +62,35 @@ test("failed freshness or recovery storage prevents any POST",async()=>{
   offline=false;await model.refresh(ctx);storage.setItem=()=>{throw new Error("quota");};
   await assert.rejects(model.submit(ctx,input),/本次未提交/);assert.equal(posts,0);
 });
+
+test("the automation form explicitly selects send mode, passes remark and clone, and clears private inputs",async()=>{
+  const {createWecomAutomationPanel}=await import('../public/wecom-automation-ui.js');
+  class Element {
+    constructor(){this.value='';this.textContent='';this.children=[];this.events={};this.disabled=false;}
+    replaceChildren(){this.children=[];}
+    append(...nodes){this.children.push(...nodes);}
+    addEventListener(event,listener){this.events[event]=listener;}
+    querySelector(){return this.label ||= new Element();}
+  }
+  const elements=Object.fromEntries(['Form','Slot','Mode','Phone','RemarkName','Description','Submit','Hint','Tasks','Refresh'].map(n=>['userWecom'+n,new Element()]));
+  elements.userWecomMode.value='preview';const calls=[];let tasks=[];
+  const doc={getElementById:id=>elements[id],createElement:()=>new Element()};
+  const fetchImpl=async(url,options)=>{
+    if(options.method==='POST'){
+      const body=JSON.parse(options.body);calls.push(body);
+      const task={...body,jobId:'fixture-job',status:'queued'};tasks=[task];return {ok:true,json:async()=>({task})};
+    }
+    return {ok:true,json:async()=>url.endsWith('devices')?inventory:{tasks}};
+  };
+  const panel=createWecomAutomationPanel({context:()=>({...ctx,deviceId:input.deviceId}),document:doc,fetchImpl,storage:storageFixture()});
+  await panel.refresh();assert.equal(elements.userWecomMode.value,'preview');
+  elements.userWecomMode.value='send';elements.userWecomMode.events.change();
+  assert.match(elements.userWecomSubmit.querySelector('span').textContent,/发送邀请一次/);
+  elements.userWecomPhone.value=input.phoneNumber;elements.userWecomRemarkName.value='yyx（坦克）';elements.userWecomDescription.value='联调';
+  elements.userWecomSlot.value='clone';
+  await elements.userWecomForm.events.submit({preventDefault(){}});
+  assert.equal(calls.length,1);assert.equal(calls[0].mode,'send');assert.equal(calls[0].appSlot,'clone');assert.equal(calls[0].remarkName,'yyx（坦克）');
+  assert.equal(elements.userWecomPhone.value,'');assert.equal(elements.userWecomRemarkName.value,'');
+  assert.equal(elements.userWecomMode.disabled,true);
+  assert.match(wecomStatusLabel({status:'failed',result:{sendStatus:'unknown'}}),/请勿重发/);
+});

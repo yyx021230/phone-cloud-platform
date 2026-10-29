@@ -80,7 +80,8 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   assert.equal((await request("GET",next,agent)).task,null,"old Agent cannot claim a preview task");
   assert.equal((await request("GET",next+"?wecomPreview=wecom-preview-v1",agent)).task,null,"v1 cannot claim slot-aware tasks");
   assert.equal((await request("GET",next+"?wecomPreview=wecom-preview-v2",agent)).task,null,"v2 cannot consume custom remark tasks");
-  const picked=(await request("GET",next+"?wecomPreview=wecom-preview-v3",agent)).task;
+  assert.equal((await request("GET",next+"?wecomPreview=wecom-preview-v3",agent)).task,null,"v3 cannot consume invitation-aware tasks");
+  const picked=(await request("GET",next+"?wecomPreview=wecom-invitation-v4",agent)).task;
   assert.equal(picked.type,"wecom_customer_preview");assert.equal(picked.payload.androidUser,0);assert.equal(picked.payload.previewOnly,true);
   assert.equal(picked.payload.appSlot,"main");
   assert.equal(picked.payload.remarkName,input.remarkName);assert.equal(picked.payload.description,input.description);
@@ -98,7 +99,7 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   await request("POST",route,admin,{...cloneInput,appSlot:"main"},409);
   await request("POST",route,admin,{...input,deviceId:"adb:"+pool["23"].serial,requestId:"request_capacity_001"},429);
   assert.equal((await request("POST",route,admin,input,200)).task.jobId,a.task.jobId,"replay is allowed at capacity");
-  const clonePicked=(await request("GET",next+"?wecomPreview=wecom-preview-v3",agent)).task;
+  const clonePicked=(await request("GET",next+"?wecomPreview=wecom-invitation-v4",agent)).task;
   assert.equal(clonePicked.deviceId,cloneInput.deviceId);assert.equal(clonePicked.payload.androidUser,999,"another phone can proceed while first is running");
   assert.equal(clonePicked.payload.remarkName,"测试客户");assert.equal(clonePicked.payload.description,"接口联调测试");
   const cloneLease=`/api/v1/windows-agents/fixture-agent/wecom-preview-tasks/${clonePicked.taskId}/lease`;
@@ -117,7 +118,7 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   const mainInput={...cloneInput,appSlot:"main",requestId:"request_same_phone_main"};
   const main=(await request("POST",route,admin,mainInput,201)).task;
   assert.equal(main.appSlot,"main");assert.equal(main.androidUser,0);
-  const mainPicked=(await request("GET",next+"?wecomPreview=wecom-preview-v3",agent)).task;
+  const mainPicked=(await request("GET",next+"?wecomPreview=wecom-invitation-v4",agent)).task;
   assert.equal(mainPicked.payload.appSlot,"main");assert.equal(mainPicked.payload.androidUser,0);
   await request("POST",`/api/v1/windows-agent-tasks/${mainPicked.taskId}/status`,agent,{status:"succeeded",result:{previewStatus:"ready_before_send",previewCode:"stopped_before_send",invitationSent:false,remarkSaveStatus:"not_needed"}});
   await stop();await start();
@@ -126,5 +127,43 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   assert.equal((await request("POST",route,admin,input,200)).task.jobId,done.jobId);
   assert.equal((await request("POST",route,admin,mainInput,200)).task.jobId,main.jobId);
   await request("POST",route,admin,{...mainInput,appSlot:"clone"},409);
-  assert.equal((await request("GET",next+"?wecomPreview=wecom-preview-v3",agent)).task,null,"no duplicate physical query after restart");
+  assert.equal((await request("GET",next+"?wecomPreview=wecom-invitation-v4",agent)).task,null,"no duplicate physical query after restart");
+  const sendInput={...input,appSlot:"main",mode:"send",remarkName:"yyx（坦克）",requestId:"fixture_send_main_001"};
+  const sendJob=(await request("POST",route,admin,sendInput,201)).task;
+  assert.equal(sendJob.mode,"send");
+  await request("POST",route,admin,{...sendInput,mode:"preview"},409);
+  const sentTask=(await request("GET",next+"?wecomPreview=wecom-invitation-v4",agent)).task;
+  assert.equal(sentTask.payload.previewOnly,false);assert.equal(sentTask.payload.mode,"send");
+  const sendLease=`/api/v1/windows-agents/fixture-agent/wecom-preview-tasks/${sentTask.taskId}/lease`;
+  const sendClaim=sendLease.replace(/lease$/,"send-claim");
+  assert.equal((await request("GET",sendLease,agent)).mode,"send");
+  await request("POST",sendClaim,admin,{},401);
+  await request("POST",sendClaim,agent,{send:true},400);
+  const claim=(await request("POST",sendClaim,agent,{},201));
+  assert.equal(claim.claimed,true);
+  assert.equal(claim.operationFingerprint,(await request("GET",sendLease,agent)).operationFingerprint);
+  await request("POST",sendClaim,agent,{},409);
+  await request("POST",`/api/v1/windows-agent-tasks/${sentTask.taskId}/status`,agent,{status:"succeeded",result:{previewStatus:"send_attempted",previewCode:"invitation_click_issued_delivery_unknown",sendStatus:"unknown",invitationSent:null,remarkSaveStatus:"confirmed"}});
+  const sent=(await request("GET",`${route}/${sendJob.jobId}`,admin)).task;
+  assert.equal(sent.result.invitationSent,null);assert.equal(sent.result.sendStatus,"unknown");assert.equal(sent.result.sendClaimed,true);
+  await request("POST",route,admin,{...sendInput,requestId:"fixture_send_new_key_002"},409);
+  assert.equal((await request("POST",route,admin,sendInput,200)).task.jobId,sendJob.jobId);
+  // The same target on a different configured account is independent. A clone
+  // cannot be substituted for a main-app task, even with the same request ID.
+  const cloneSend={...sendInput,deviceId:cloneInput.deviceId,appSlot:"clone",requestId:"fixture_send_clone_003"};
+  const cloneSendJob=(await request("POST",route,admin,cloneSend,201)).task;
+  await request("POST",route,admin,{...cloneSend,appSlot:"main"},409);
+  const cloneSendTask=(await request("GET",next+"?wecomPreview=wecom-invitation-v4",agent)).task;
+  assert.equal(cloneSendTask.payload.androidUser,999);
+  const cloneClaim=`/api/v1/windows-agents/fixture-agent/wecom-preview-tasks/${cloneSendTask.taskId}/send-claim`;
+  await request("POST",cloneClaim,agent,{},201);
+  // Simulate losing the first claim response and restarting both sides: do not
+  // grant a second send even though no terminal result ever arrived.
+  await stop();await start();
+  const held=(await request("GET",`${route}/${cloneSendJob.jobId}`,admin)).task;
+  assert.equal(held.result.sendStatus,"unknown");assert.equal(held.result.invitationSent,null);
+  await request("POST",cloneClaim,agent,{},409);
+  await request("POST",route,admin,{...sendInput,requestId:"fixture_send_after_restart"},409);
+  await request("POST",sendClaim,agent,{},409);
+
 });

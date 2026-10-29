@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import { createHash } from "node:crypto";
-// Preview is deliberately a separate task kind. There is no send option.
+// Retain the historical task kind and routes; execution mode is explicitly bound.
 export const WECOM_PREVIEW_KIND = "wecom_customer_preview";
 export const WECOM_PREVIEW_DEVICES = Object.freeze(JSON.parse(fs.readFileSync(new URL("./wecom-preview-devices.json", import.meta.url), "utf8")));
 
@@ -41,8 +41,20 @@ export function previewRemarkFingerprint(job) {
   return createHash("sha256").update(JSON.stringify([value.remarkName, value.description])).digest("hex");
 }
 
+export function previewJobMode(job) { return job.wecomMode || "preview"; }
+export function previewOperationFingerprint(job) {
+  return createHash("sha256").update(JSON.stringify([previewJobMode(job), previewRemarkFingerprint(job), job.phoneNumber, job.deviceId, job.wecomAndroidUser])).digest("hex");
+}
+export function previewSendState(job) {
+  return job.wecomSendClaimAt ? "unknown" : "not_attempted";
+}
+export function sameWecomRecipient(job, other) {
+  return other.kind === WECOM_PREVIEW_KIND && previewJobMode(other) === "send"
+    && job.deviceId === other.deviceId && job.wecomAndroidUser === other.wecomAndroidUser && job.phoneNumber === other.phoneNumber;
+}
 export function previewRequest(input) {
-  if (!input || Object.keys(input).some(k => !["deviceId", "phoneNumber", "requestId", "appSlot", "remarkName", "description"].includes(k))) throw problem("invalid_wecom_preview_fields", 400);
+  if (!input || Object.keys(input).some(k => !["deviceId", "phoneNumber", "requestId", "appSlot", "remarkName", "description", "mode"].includes(k))) throw problem("invalid_wecom_preview_fields", 400);
+  if (input.mode !== undefined && !["preview", "send"].includes(input.mode)) throw problem("invalid_wecom_mode", 400);
   if (Object.hasOwn(input, "appSlot") && !["main", "clone"].includes(input.appSlot)) throw problem("invalid_wecom_app_slot", 400);
   if (typeof input.phoneNumber !== "string" || !/^1[3-9]\d{9}$/.test(input.phoneNumber)) throw problem("invalid_phone_number", 400);
   if (typeof input.deviceId !== "string" || !input.deviceId.startsWith("adb:")) throw problem("device_required", 400);
@@ -52,10 +64,10 @@ export function previewRequest(input) {
 
 export function publicPreview(job) {
   return { jobId: job.jobId, deviceId: job.deviceId, deviceNumber: job.wecomDeviceNumber,
-    appSlot: previewJobSlot(job), androidUser: job.wecomAndroidUser, requestId: job.wecomRequestId, status: job.status,
+    mode: previewJobMode(job), appSlot: previewJobSlot(job), androidUser: job.wecomAndroidUser, requestId: job.wecomRequestId, status: job.status,
     createdAt: job.createdAt, updatedAt: job.updatedAt, completedAt: job.completedAt,
     result: { status: job.result?.previewStatus || "", code: job.result?.previewCode || "",
-      invitationSent: false, remarkSaveStatus: job.result?.remarkSaveStatus || "not_attempted" } };
+      invitationSent: job.wecomSendClaimAt ? null : false, sendStatus: previewSendState(job), sendClaimed: Boolean(job.wecomSendClaimAt), remarkSaveStatus: job.result?.remarkSaveStatus || "not_attempted" } };
 }
 
 export function previewLease(task, job, lock, device, agentId, now = Date.now()) {
@@ -66,8 +78,11 @@ export function previewLease(task, job, lock, device, agentId, now = Date.now())
       && task.deviceId === device.deviceId && task.adbSerial === device.adb.serial
       && job?.kind === WECOM_PREVIEW_KIND && job.status === "running" && job.windowsTaskId === task.taskId
       && job.deviceId === device.deviceId && task.payload?.automationJobId === job.jobId
+      && task.payload?.phoneNumber === job.phoneNumber
       && target.deviceNumber === job.wecomDeviceNumber && target.androidUser === job.wecomAndroidUser
       && (job.wecomAppSlot === undefined ? task.payload?.appSlot === undefined : task.payload?.appSlot === target.appSlot)
+      && previewJobMode(job) === (task.payload?.mode || "preview")
+      && (previewJobMode(job) !== "send" || task.payload?.previewOnly === false)
       && requested.remarkName === delivered.remarkName && requested.description === delivered.description
       && task.payload?.deviceNumber === target.deviceNumber && task.payload?.androidUser === target.androidUser
       && lock?.status === "active" && lock.lockType === WECOM_PREVIEW_KIND && lock.taskId === job.jobId

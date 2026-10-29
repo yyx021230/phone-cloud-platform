@@ -65,3 +65,20 @@ test("active cancellation keeps ownership until the child acknowledges cleanup a
   await new Promise(resolve=>setImmediate(resolve)); assert.equal(cancelReceived,true);assert.equal(finished,false);
   child.emit("close",0);await assert.rejects(pending,/fixture_active_cancel/);assert.equal(finished,true);
 });
+
+
+test("sending uses an explicit mode and private fixed claim directory; unknown delivery stays unknown",async()=>{
+  const fixture=childFixture({previewStatus:"send_attempted",previewCode:"invitation_click_issued_delivery_unknown",invitationSent:null,sendStatus:"unknown",remarkSaveStatus:"confirmed"});
+  const result=await runWecomPreviewTask({...task,payload:{...task.payload,mode:"send",previewOnly:false,appSlot:"clone",androidUser:999}},{config,agentDir:"/fixture",spawnChild:fixture.spawnChild});
+  assert.equal(result.sendStatus,"unknown");assert.equal(result.invitationSent,null);
+  const payload=JSON.parse(fixture.values().input);
+  assert.equal(payload.mode,"send");assert.equal(payload.claimDirectory,"/fixture/state/wecom-send-claims");
+  assert.equal(payload.appSlot,"clone");assert.equal(payload.androidUser,999);
+});
+
+test("a send worker may never turn a click into confirmed delivery or silently preview instead",async()=>{
+  for (const output of [{previewStatus:"send_attempted",previewCode:"sent",invitationSent:true,sendStatus:"unknown"},{previewStatus:"ready_before_send",previewCode:"preview_ready",invitationSent:false}]) {
+    const fixture=childFixture(output);
+    await assert.rejects(runWecomPreviewTask({...task,payload:{...task.payload,mode:"send",previewOnly:false}},{config,agentDir:"/fixture",spawnChild:fixture.spawnChild}),/outcome_unknown/);
+  }
+});

@@ -1,70 +1,57 @@
-# 企微加微信：发送前预览 API
+# 企微加微信：自动化任务 API
 
-本轮为**本地候选，未上线**。入口：“用户工作台 → 手机详情 → 自动化 → 企微加微信”。管理员选择此手机的主应用或分身，填写已授权测试号码、备注名和描述。此版本只搜索、核对备注并进入邀请确认页，**没有发送添加邀请的能力**。
+本轮为**本地候选，未上线**。入口：手机详情 → 自动化 → 企微加微信。管理员选择主应用／分身、客户手机号、备注名和描述，再选择执行方式。默认 `preview` 只到发送前；显式 `send` 会填写备注、保存回读后发送一次邀请。
 
-只开放23、25、43、59、93、145、155、157这8台的固定物理映射。155配置主应用（Android用户0）和已确认的分身（999）；其他7台只配置主应用，不猜测分身用户。155主应用是本候选新增目标，本轮仅模拟通过，未做该槽位真机验收。实际安装、登录及页面在执行时校验；列表里的`available`只表示手机在线且无独占锁，不等于已登录。
+范围仍为23、25、43、59、93、145、155、157这8台；155配置主应用Android用户0、分身999，其余只配置主应用0。槽位对应已配置应用，不是自动切换企微登录账号。未配置分身返回409，不回退主应用。列表的available只表示在线且无锁，不证明已登录。登录、验证、限制和陌生页面会停止。
 
-## 认证与接口
+## 接口与认证
 
-沿用现有管理员登录返回的Bearer Token，普通用户、第三方查名API Key没有本轮权限。接口前缀：`/api/v1/user/automation`。
+沿用平台管理员Bearer Token及同源保护，普通用户和查名API Key无权限。前缀 `/api/v1/user/automation`；兼容历史路径名，不代表只支持预览。
 
 | 方法与路径 | 用途 |
 |---|---|
-| GET `/wecom-preview-devices` | 8台库存映射、默认应用、已配置应用列表及在线/占用状态 |
-| POST `/wecom-preview-tasks` | 提交一个客户的发送前预览 |
-| GET `/wecom-preview-tasks` | 本管理员最近100条任务，含应用选择和原请求编号 |
-| GET `/wecom-preview-tasks/{jobId}` | 原任务状态与结果 |
+| GET `/wecom-preview-devices` | 固定设备、已配置appSlots及available；modes为preview/send |
+| POST `/wecom-preview-tasks` | 创建一次预览或单次邀请任务 |
+| GET `/wecom-preview-tasks` | 当前管理员最近100条任务 |
+| GET `/wecom-preview-tasks/{jobId}` | 原任务状态，超时后用原ID续查 |
 
-设备列表包含`deviceId`、`deviceNumber`、默认`appSlot`/`androidUser`、`available`及`appSlots`。例如155的`appSlots`：
+独立旧页面 `/wecom-preview.html` 仍只创建预览；完整发送入口在自动化任务模块。当前并发仍最多2条未终态任务，同一物理手机的主应用和分身共用独占锁，必须依次运行，不抢控屏或其他任务。
 
-```json
-[
-  {"deviceNumber":"155","appSlot":"main","androidUser":0},
-  {"deviceNumber":"155","appSlot":"clone","androidUser":999}
-]
-```
-
-从列表选择已配置的`appSlot`，不要按品牌推断Android用户。槽位代表手机主应用/分身，不代表在企微里切换登录账户。
-
-## 提交与双开绑定
+## 提交参数
 
 ```json
 {
-  "deviceId": "adb:<设备列表返回的实际序列号>",
+  "deviceId": "adb:<设备列表中的序列号>",
   "appSlot": "clone",
-  "phoneNumber": "<已授权测试手机号>",
-  "remarkName": "联调客户",
-  "description": "渠道A的测试客户",
-  "requestId": "wecom-preview-demo-0001"
+  "phoneNumber": "<已授权客户手机号>",
+  "remarkName": "yyx（坦克）",
+  "description": "接口联调测试",
+  "mode": "send",
+  "requestId": "wecom-invitation-demo-0001"
 }
 ```
 
 | 字段 | 约束 |
 |---|---|
-| `deviceId` | 列表中的固定物理设备ID |
-| `appSlot` | `main`主应用 / `clone`分身，该手机必须已配置此项 |
-| `phoneNumber` | 字符串，11位大陆手机号 |
-| `remarkName` | 可选字符串，平台限制最多20个Unicode码点；省略、空串或全空白使用“测试客户” |
-| `description` | 可选字符串，最多120个Unicode码点，允许多行；省略、空串或全空白使用“接口联调测试” |
-| `requestId` | 8–100位字母、数字、下划线或连字符，同一次操作及重试保持不变 |
+| deviceId | 设备列表中的固定ID |
+| appSlot | main／clone；省略兼容原默认：155分身，其余主应用 |
+| phoneNumber | 11位大陆手机号字符串 |
+| remarkName | 可选；最多20个Unicode码点；空白使用“测试客户” |
+| description | 可选；最多120个Unicode码点，可多行；空白使用“接口联调测试” |
+| mode | preview／send；省略为preview，未知值或null返回400 |
+| requestId | 8–100位字母、数字、下划线、连字符；重试保留原值 |
 
-备注和描述会去除首尾空白，描述的CRLF/CR换行统一为LF；非字符串、超长值、备注名内部换行及不支持的控制字符返回400。20/120是本平台输入限制，不作为企微官方规格。客户姓名或其他私密内容不放进请求号。
+首尾空白去除，描述CRLF／CR统一LF；非法类型、控制字符、超长值入队前拒绝。20／120是平台限制，不是企微官方规格。不接受send布尔开关、任意Android用户、包名、密钥路径或重试次数。
 
-不接受`send`、`mode`、`androidUser`、自定义包名或重试次数。兼容旧三字段调用：省略`appSlot`沿用原默认，155分身，其余主应用。新界面始终显式提交。空值、`auto`等无效槽位返回400；未配置分身返回409 `wecom_app_slot_not_configured`，**不会回退主应用**。
+`preview` 沿用原行为：备注名与描述仅补空白，已有值保留。`send` 中备注名按表单规范化值精确更新，**包含覆盖非空备注名**；描述仅补空白，已有描述、企业和电话号码等其他资料保留。空白备注会使用“测试客户”，界面明确展示此行为。最多保存一次，保存后重新打开并稳定读取一致才能继续；未知保存、错号或其他字段变化立即停止。
 
-服务端把应用选择和Android用户存到job及Windows任务；Agent经stdin交给单次Python子进程。执行前及每次写操作的原租约同时核对物理设备、槽位、Android用户、job、任务、owner、锁及备注内容摘要。单双开选择器只点已绑定目标；未安装、未登录或身份不一致时停止，不换另一套应用继续。
+## 防重、超时与结果
 
-**同一手机的两套应用共用物理独占锁，必须依次运行**；其他空闲手机可独立执行。仍保留最多2个未终态预览，未扩大并发或设备范围。手机被控屏/其他任务占用时不抢占；已有其他Poco会话时停止，不终止别人的会话。
+首次受理201，返回 `{reused:false,task:{...}}`。同管理员、同requestId、同设备／号码／槽位／mode／规范化备注和描述返回200及原任务。任一参数不同409。提交超时、5xx、响应不完整均先用原requestId查列表、再GET原jobId；不要换请求号重新发。浏览器只保存设备、槽位、mode和请求号，不存客户号码或备注正文。未知受理时阻止这台手机两套应用重复提交，其他手机可继续。
 
-## 受理、防重与超时
+发送前先写Agent本地收件目标凭据，再向云端申请一次性send-claim。只有云端持久化成功并明确返回、原租约和同一页面仍有效，才调用一次原生发送元素。凭据申请超时、点击超时、断线、取消、清理失败或Agent重启都不重放。云端已claim的同一物理设备／Android用户／手机号，即使换requestId也409；主应用与分身是不同发送账户。云端防重受现有历史保留期约束；Agent本地SHA-256目标凭据跨任务与重启保留，无自动清除入口。迁机须保留 `windows-agent/state/wecom-send-claims`，不能删除凭据后用重发验收。
 
-首次受理HTTP201，返回`{reused:false,task:{jobId,...}}`。同管理员、同`requestId`和同设备/号码/应用/规范化备注和描述返回HTTP200及原任务，不重新操作手机；同键换任一参数409 `wecom_request_id_conflict`。防重受现有历史保留期约束，不承诺永久保存。达到2个未终态任务429；忙碌/离线409、白名单外403、鉴权失败401。
-
-POST超时、5xx或响应不完整不能视为未提交。先GET列表按`requestId`找原任务，再GET原`jobId`；重试POST必须保持原请求号及全部参数。页面不会自动重新POST：浏览器会话存储只保留设备/槽位/请求号，不保留手机号或凭据。同手机原任务未确认时，两套应用都禁止再提交；其他手机不受此限制。列表未找到仍保持待核对，不能因此自动新建请求。
-
-未知备注保存、输入/点击异常不自动重查或重复保存。Agent离线后原任务不自动重新入队，保留原任务供状态/超时核对。
-
-## 结果
+云端claim响应丢失可能造成“实际未点击但已隔离”的保守停止；这时必须核对，不能自动解锁。运行期间不切换同槽位登录账户；目前没有稳定企微账号ID绑定，不把槽位当永久账号身份。发送成功、对端送达、对端接受是三个不同事实。
 
 ```json
 {
@@ -74,28 +61,38 @@ POST超时、5xx或响应不完整不能视为未提交。先GET列表按`reques
     "deviceNumber": "155",
     "appSlot": "clone",
     "androidUser": 999,
-    "requestId": "wecom-preview-demo-0001",
+    "mode": "send",
+    "requestId": "wecom-invitation-demo-0001",
     "status": "succeeded",
     "result": {
-      "status": "ready_before_send",
-      "code": "stopped_before_send",
-      "invitationSent": false,
-      "remarkSaveStatus": "not_needed"
+      "status": "send_attempted",
+      "code": "invitation_click_issued_delivery_unknown",
+      "invitationSent": null,
+      "sendStatus": "unknown",
+      "sendClaimed": true,
+      "remarkSaveStatus": "confirmed"
     }
   }
 }
 ```
 
-外层`status`为queued/running/stalled/succeeded/failed/expired，另含创建/更新时间。**只有`result.status=ready_before_send`说明已到发送前**；即使外层执行结束也须检查结果。`result.status=blocked`为保护性停止，`result.code`说明原因。没有“添加成功”的返回值，`invitationSent`始终false。
+| 结果字段 | 含义 |
+|---|---|
+| 外层status | queued／running／stalled／succeeded／failed／expired；succeeded仅表示执行器完成，不证明送达 |
+| result.status | ready_before_send预览完成；send_attempted单次发送调用完成；blocked保护性停止 |
+| sendStatus | not_attempted未取得云端发送凭据；unknown已取得凭据或发送尝试，需核对，不重发 |
+| invitationSent | false未记录云端发送凭据；null发送结果未知；本版不返回true，不能凭点击冒充已送达 |
+| sendClaimed | 是否已记录云端发送凭据；即使没有终态上报也保留 |
+| remarkSaveStatus | not_attempted／unknown／confirmed／not_needed |
 
-`remarkSaveStatus`为not_attempted/unknown/confirmed/not_needed。unknown须核对原任务和手机，不能创建新请求重放保存。空白备注名补“测试客户”、空白描述补“接口联调测试”，已有非空及其他字段保留，最多保存一次并回读验证。自定义内容也仅补空白：即使传入不同文字，已有非空备注/描述仍保留，不属于覆盖编辑功能；仅凭传入内容不能认定它已写入。真实拼图、登录失效、限制和陌生页面停止；不增加自动登录、切号或通知发送。
+Agent本地凭据先成功、云端凭据未成功的情况会保护性失败；以原任务code为准，不能凭云端not_attempted自动重试。当前没有自动对端送达或联系人接受确认接口，历史用户直接确认不等于自动识别已实现。需要人工验证时不自动登录、切号或跳过。
 
-## Agent兼容与验证边界
+## Agent配套、发布与回退
 
-领取需声明`wecomPreview=wecom-preview-v3`；旧v1、v2或未声明协议的Agent不能领取新任务，避免丢失应用选择。旧历史无槽位字段的job按已存Android用户解释，无备注字段的历史仍按原默认值解释；不能用新请求改写原目标。新云端与Agent须配套，不能只换网页；本轮不执行生产切换。
+领取必须声明 `wecomPreview=wecom-invitation-v4`，旧v1/v2/v3不能领取；旧历史任务缺mode仍按preview处理。新云端／Agent／Python／页面必须配套，旧回滚版本不能执行send任务，禁止把send改成preview后重放。
 
-Agent专用租约：`GET /api/v1/windows-agents/{agentId}/wecom-preview-tasks/{taskId}/lease`，沿用Agent身份及tasks:read权限。有效响应含`appSlot`、`androidUser`和`remarkFingerprint`（SHA-256，按规范化`[remarkName,description]`的紧凑UTF-8 JSON计算），不回传备注原文。执行器摘要不一致则停止，避免自定义文字丢失后退回默认值；不能用管理员Token替代，也不接收客户号码。
+Agent内部只读租约：GET `/api/v1/windows-agents/{agentId}/wecom-preview-tasks/{taskId}/lease`，需Agent身份及tasks:read。响应绑定任务、物理设备、Android用户、槽位、mode、原owner/锁、remarkFingerprint和operationFingerprint。后者为SHA-256，对紧凑UTF-8 JSON `[mode,remarkFingerprint,phoneNumber,deviceId,androidUser]`计算。执行器每次写及发送前重新校验，不把凭据、号码或备注正文放argv或事件。
 
-本地HTTP用模拟Agent验证主/分身提交、同手机互斥、防重、租约、终态和重启续查；浏览器验证入口、选择及两套应用独立记录。Python/Node mock验证参数与槽位不一致时停止。这些不代表新版本双开真机或生产API验收。旧rc.2双机执行器及八机核心证据保留，不作为本次155主应用真机通过的证明。
+Agent内部单次发送凭据：POST 同一路径末尾 `/send-claim`，空JSON对象，需tasks:write及有效send租约。首次201含claimed/taskId/operationFingerprint；再次调用409，**不是可重放令牌**。存储失败或失锁不给发送许可。
 
-本轮备注补充为rc.4本地候选，仍未上线。新增验证覆盖自定义中文/emoji/多行、长度/类型/控制字符、防重参数冲突、Node与Python摘要一致、真实Poco适配器的合成页面完整填写/单次保存/持久回读，以及未知保存不重放；均为本地模拟，未在真实手机上写入本轮自定义备注。
+本轮只做本地HTTP／假Agent／合成Poco与故障模拟，不连接线上、不真实添加客户。历史23和59单次邀请已获对端确认，但不是本次平台完整发送版本的真机验收。后续正式发布前重新核对实际生产基线、备份、D-075和维护范围，单机→双机验证，不直接全量。
