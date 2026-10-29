@@ -8,6 +8,15 @@ const iso = now => new Date(now).toISOString();
 export const batchError = (code, statusCode = 400) => Object.assign(new Error(code), { statusCode });
 export const localDay = now => new Date(now + 8 * 3600_000).toISOString().slice(0, 10);
 const itemKey = item => `${item.deviceId}/${item.appSlot}`;
+const reservationRetryMs = 30_000;
+function unstartedReservationWait(job) {
+  const d = job.result?.diagnostic;
+  return job.status === "failed" && !job.result?.collection
+    && job.result?.errorCode === "xhs_data_reservation_pending" && d?.code === "xhs_data_reservation_pending"
+    && d.version === 1 && d.phase === "before_device_actions" && d.collectionStarted === false
+    && d.jobId === job.jobId && d.appSlot === job.xhsAppSlot
+    && ["other_occupancy", "reservation_not_visible"].includes(d.reason);
+}
 
 export function validateClients(input) {
   if (!Array.isArray(input) || !input.length || input.length > 20) throw batchError("invalid_batch_clients");
@@ -158,6 +167,19 @@ export class BatchEngine {
           item.status = "unknown"; item.reason = "job_identity_mismatch"; continue;
         }
         item.accountName = String(job.xhsAccountName || item.accountName);
+        // Only the explicit cache-only preflight proof permits a NEW attempt.
+        // Generic occupied/offline errors and uncertain submissions never do.
+        if (unstartedReservationWait(job) && job.clientRequestId === item.clientRequestId && !item.hasResult) {
+          const deferredAt = this.clock();
+          item.deferredAttempts ||= [];
+          item.deferredAttempts.push({ jobId: item.jobId, clientRequestId: item.clientRequestId,
+            submittedAt: item.submittedAt, completedAt: iso(deferredAt), reason: job.result.diagnostic.reason });
+          item.status = "queued"; item.reason = "device_busy_waiting"; item.jobId = null;
+          item.nextAttemptAt = iso(deferredAt + reservationRetryMs);
+          item.clientRequestId = `batch:${run.runId}:${item.itemId}:retry${item.deferredAttempts.length}`;
+          delete item.submittedAt; delete item.completedAt; delete item.errorCode; delete item.needsAttention;
+          continue;
+        }
         item.status = "failed"; item.reason = job.status;
         if (/^[a-zA-Z0-9_.:-]{1,160}$/.test(job.result?.errorCode || "")) item.errorCode = job.result.errorCode;
         if (job.result?.collection) {
@@ -178,6 +200,7 @@ export class BatchEngine {
       await this.save(`run/${run.runId}`, run);
     }
     const occupied = new Set(runs.flatMap(r => r.items.filter(i => inflight.has(i.status)).map(i => i.deviceId)));
+    const coolingDown = new Set(runs.flatMap(r => r.items.filter(i => i.status === "queued" && Date.parse(i.nextAttemptAt) > this.clock()).map(i => i.deviceId)));
     for (const run of runs.reverse()) {
       await this.applyStop(run);
       const client = this.clients.get(run.clientId), platform = this.platforms.get(run.clientId);
@@ -189,7 +212,8 @@ export class BatchEngine {
         if (!client || !client.targets.some(t => itemKey(t) === itemKey(item) && t.xhsId === item.xhsId)) {
           item.status = "skipped"; item.reason = "target_removed_from_allowlist"; continue;
         }
-        if (this.clock() >= Date.parse(run.deadline)) { item.status = "skipped"; item.reason = item.reason || "dispatch_window_expired"; continue; }
+        if (this.clock() >= Date.parse(run.deadline)) { item.status = "skipped"; item.reason = item.reason === "device_busy_waiting" ? "device_busy_window_expired" : item.reason || "dispatch_window_expired"; continue; }
+        if (coolingDown.has(item.deviceId)) continue;
         if (occupied.has(item.deviceId) || occupied.size >= 5 || run.items.filter(i => inflight.has(i.status)).length >= run.concurrency) continue;
         if (!Array.isArray(devices)) { item.reason = "inventory_unavailable"; continue; }
         const device = devices.find(d => d.deviceId === item.deviceId);
