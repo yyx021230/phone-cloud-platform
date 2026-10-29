@@ -1,4 +1,4 @@
-import { wecomStatusLabel } from "./wecom-automation-ui.js?v=20261028-remarks-rc4";
+import { wecomStatusLabel } from "./wecom-automation-ui.js?v=20261029-invitation-rc5";
 const root = "/api/v1/user/automation";
 const form = document.querySelector("#previewForm");
 const devices = document.querySelector("#device");
