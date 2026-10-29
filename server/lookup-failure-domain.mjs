@@ -27,11 +27,18 @@ export function lookupFailureDomain(job = {}) {
   if(lookupLegacyResultMissing(job))return 'page';
   const code = job.result?.errorCode;
   const reason = lookupFailureReason(job);
+  if (code === 'alipay_lookup_failed' && (reason === 'lookup_worker_capacity_reached'
+    || /^Airtest\/Poco 常驻 worker 已达到上限 (?:\d+|#+)，当前均在执行任务$/.test(reason))) return 'capacity';
+  // A timed-out package-manager command is transport/preflight evidence,
+  // not a missing screen selector and not proof of an account restriction.
+  if (code === 'task_failed' && /^package_manager_unresponsive:/.test(String(job.result?.message||''))) return 'device';
   // Agent preflight can fail before a Python diagnostic exists (191). Match
   // explicit ADB evidence only; a generic task_failed remains unknown.
   if (code === 'task_failed' && /(?:^|\n)ADB 设备未连接：[^\r\n]+/.test(String(job.result?.message||''))
     && /\berror: device ['"][^'"\r\n]+['"] (?:not found|offline|unauthorized)\b/.test(String(job.result?.message||''))) return 'device';
   if (!['alipay_lookup_failed', 'alipay_lookup_result_unconfirmed'].includes(code)) return '';
+  if (/^lookup_(?:old|restart|prepare)_worker_exit_unconfirmed$/.test(reason)
+    || reason === 'lookup_reader_cleanup_unconfirmed') return 'device';
   if (/^poco_worker_bootstrap_failed:adb_probe:(?:timeout|device_unavailable|command_failed)$/.test(reason)) return 'device';
   // A local result reader failure can use the exact terminal screenshot; it
   // does not prove the device or its ADB transport is unavailable.

@@ -2091,6 +2091,8 @@ function classifyAlipayNameLookupFailure(rawMessage = "") {
     .slice(0, 500);
   const readerExit = /worker (?:已退出|exited)|poco_worker_bootstrap_failed:/.test(raw) ? readerExitDiagnostic(raw) : null;
   const diagnostic = { code: "alipay_lookup_failed", retryable: true, runnerReason: compactReason, ...(readerExit ? {readerExit} : {}) };
+  if (/^Airtest\/Poco 常驻 worker 已达到上限 \d+，当前均在执行任务$/.test(raw)) return {...diagnostic,
+    runnerReason:"lookup_worker_capacity_reached", message:"查名读取器资源暂满，原请求保留，等待资源后继续。"};
   if (raw.includes("local_lookup_result_unconfirmed:")) return { ...diagnostic,
     code: "alipay_lookup_result_unconfirmed", retryable: false,
     message: "当前号码查询结果尚未确认，原请求已保留，等待平台恢复；请勿重新创建查询。" };

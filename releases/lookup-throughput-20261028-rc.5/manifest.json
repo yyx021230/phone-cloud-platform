@@ -1,0 +1,44 @@
+{
+  "version": "lookup-throughput-20261028-rc.5",
+  "status": "local-candidate-acceptance-blocked",
+  "baseCommit": "ee28a80a74ec49679eb4f512e4ec6701f2a7a740",
+  "branch": "codex/lookup-throughput-accuracy-20261028",
+  "production": {
+    "at": "2026-10-29T02:37:13.668348+00:00",
+    "version": "platform-integration-20261028-deployed.1",
+    "source": "baca5721214658b46f24c974c9147490b0bafada",
+    "activeSha256": "4bb61c39a8a5cd912069ed494d84dba1af4cf3cc37adbac8285db935586b995a",
+    "image": "sha256:fca45ec32e72b0787e4375fd6812a5ac97d3aebec4b830b6393b03117554b45e",
+    "running": true,
+    "restarts": 0
+  },
+  "checks": {
+    "nodeRegression": 1518,
+    "nodeRegressionFailed": 0,
+    "npmCheck": true,
+    "capacityExternalHTTP": "passed with synthetic Agent",
+    "nativeBusinessRecovery": false,
+    "newPythonRun": false,
+    "noPushOrDeployment": true
+  },
+  "files": {
+    "docs/PROJECT_DEVELOPMENT.md": "f97f5d05ef441531319176b6d10654dd6cbeaa541bb7090847dd37929127f3fd",
+    "releases/lookup-throughput-20261028-rc.5/API_EVIDENCE.json": "c602773e8bb73d97d42407c5b0fbc33d8b265a66db67c1fe0edf6a63095d72ae",
+    "releases/lookup-throughput-20261028-rc.5/FLEET_AUDIT.md": "3aaf5c8c90672065e98672ae742ccf057cb3265ce31ed0a01fe1e1f7d42d9148",
+    "releases/lookup-throughput-20261028-rc.5/README.md": "ad2805133d4f2df9159db3d80f354bb6dbeaef646a7637d9ceec4849fd7821a1",
+    "server/automation-center.mjs": "373398dda9af807df332dae261dfb79754291f07bd82e4ceaecf83ad933f7682",
+    "server/lookup-device-availability.mjs": "86d917c11eb93651e4a5ee2bcae0da777ae5031655da5cc36749c4d0e0644310",
+    "server/lookup-device-availability.test.mjs": "f9fa0cb9a27b0afe687d8c5fbce82edadf435673b9e9239d0929b08f864a1df3",
+    "server/lookup-failure-domain.mjs": "03fce1243c53274ce5bf5e8874de315db92bb1bef9463ce25a80381702d50e9f",
+    "server/lookup-reader-capacity.http.test.mjs": "5b306d09f70733d4afd00d77970a6abedff3fe308fe769e359500bd650c27e37",
+    "server/lookup-reader-capacity.mjs": "cd27eb166caf02eddf54322685e475fae3edb7f375cb923cf7e78a487b0455d7",
+    "server/lookup-reader-capacity.test.mjs": "2c5de2625064eef227ef475da497eb7a8ed3920b83e19aa67e5ca5d376708073",
+    "server/lookup-readiness.mjs": "139a3d44cd2130d8f9f7c1c1c05f1e254995c7b71057346468846f0518d3de6c",
+    "server/lookup-technical-domain.test.mjs": "971fc4ffb28e2c294060d792fd1dc64c5cfee5fe441f0fac71cd418343bc3aef",
+    "server/managed-lookup-platform.mjs": "a311aa661e35d3eb9a4a307d908a32302b989fb720b24915f5c061f158632a66",
+    "server/managed-lookup.mjs": "a35ae7b396ebce5490086ac85397ea12d6d301853eaf99b14e6d0c260216a743",
+    "windows-agent/src/alipay-poco-fallback-policy.mjs": "d9cca5a6ce0e97f0d6145306f4322d5a8873aaa5e71c2a5441707a46d349f917",
+    "windows-agent/src/alipay-poco-fallback-policy.test.mjs": "35443cce850937ff3bb00d675d382f9472a5a6e411855da859699c22bc32f55c",
+    "windows-agent/src/index.mjs": "75443f223547991b4ad4dd2fc113d4510c030dee10a29ef3766051f29313a7e6"
+  }
+}

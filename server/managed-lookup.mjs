@@ -1,4 +1,5 @@
 import {ROUND_IDLE_MS,roundIdleNeedsSync,syncRoundIdle} from './lookup-round-idle.mjs';
+import {readerCapacityWaiting,deferReaderCapacity} from './lookup-reader-capacity.mjs';
 import {requestRoundStop,expireIdleRound,settleRoundStops,roundStopRequested,ROUND_STOP_OFFLINE_GRACE_MS} from './lookup-round-stop.mjs';
 import {lookupDeviceUnavailable,currentDeviceReprobe,temporaryPreparationDomain,preparationBlocked,pagePreparationRetryAt,recordLookupPreparationFailure,recordLookupPreparationSuccess,resetLookupUnavailable} from './lookup-device-availability.mjs';
 import {createManagedAsyncLookup,managedRequestByKey} from './managed-lookup-async.mjs';
@@ -215,6 +216,21 @@ export function createManagedLookupService({store,adapter,now=Date.now,probePhon
       }
       return;
     }
+    // A terminal admission failure did not prove a bad phone/page/account.
+    // Fence and stop this attempt, retain the original business ID, and pace
+    // further dispatch to this Agent instead of rotating across its devices.
+    const capacityFailure=adapter.preparationFailure?.(c);
+    if(r&&!DONE.has(r.status)&&capacityFailure?.domain==='capacity'){
+      if(c.capacityFailureJobId!==capacityFailure.jobId){deferReaderCapacity(s,adapter,c,capacityFailure,now());c.capacityFailureJobId=capacityFailure.jobId;}
+      delete c.readinessProof;delete c.pageCompatibilityRequired;
+      if(r.purpose==='readiness_probe')finish(r,'failed','lookup_reader_capacity_wait');
+      else{r.status='rerouting';r.code='lookup_reader_capacity_wait';c.rerouteAfterStop=true;c.rerouteReason='lookup_retry_reader_capacity';}
+      audit(s,'lookup_reader_capacity_wait','system',{deviceId:c.deviceId,lookupId:r.lookupId,jobId:capacityFailure.jobId});
+      if(o.stopped)c.phase='stopping';
+      else if(adapter.canStop(c)){await adapter.stop(c,tx);c.phase='stopping';}
+      else c.phase='unknown';
+      return;
+    }
     // A confirmed lost-input state is recoverable on the same probe phone;
     // it is not an unknown page. Permit one normal resume with the unchanged
     // account/runtime identity, then retire the failed probe as before.
@@ -318,7 +334,7 @@ export function createManagedLookupService({store,adapter,now=Date.now,probePhon
       if(r.attempts.length<2&&!r.queryId){r.status='queued';c.requestId='';}else finish(r,'failed','lookup_prepare_failed');
       if(o.stopped)s.channels.splice(s.channels.indexOf(c),1);else{await adapter.stop(c,tx);c.phase='stopping';}return;
     }
-    if(o.ready&&r&&(c.phase==='starting'||(c.phase==='querying'&&!r.queryId&&!c.queryId))){if(!adapter.health(c.deviceId).ready)return;if(r.purpose!=='readiness_probe')recordLookupPreparationSuccess(s,c);await adapter.query(c,r,tx,{prepared:r.resultProtocol===PREPARED_PROTOCOL,probePhone:readiness.probePhone,verified:readiness.valid(s,c)});c.phase='querying';r.status='running';return;}
+    if(o.ready&&r&&(c.phase==='starting'||(c.phase==='querying'&&!r.queryId&&!c.queryId))){if(!adapter.health(c.deviceId).ready||readerCapacityWaiting(s,adapter,c.deviceId,now()))return;if(r.purpose!=='readiness_probe')recordLookupPreparationSuccess(s,c);await adapter.query(c,r,tx,{prepared:r.resultProtocol===PREPARED_PROTOCOL,probePhone:readiness.probePhone,verified:readiness.valid(s,c)});c.phase='querying';r.status='running';return;}
     if(c.phase==='resuming'&&o.ready){c.phase=r&&!DONE.has(r.status)?'starting':'idle';}
     if(c.phase==='idle'&&(!s.config.enabled||!s.devices.some(d=>d.deviceId===c.deviceId&&d.enabled)||!authorized(s,c.clientId)||(now()-c.idleAt>=s.config.idleMs&&!readiness.keepWarm(s,c)))){
       if(adapter.canStop(c)&&activeCount(s)<s.config.concurrency){await adapter.stop(c,tx);c.phase='stopping';}
@@ -607,6 +623,9 @@ export function createManagedLookupService({store,adapter,now=Date.now,probePhon
               if(r.waitForLookupId&&s.channels.some(c=>c.requestId===r.waitForLookupId))continue;
               const used=new Set(r.attempts.map(a=>a.deviceId)),candidates=[];
               for(const d of s.devices){
+                // Existing verified channels may reuse their resident reader;
+                // only creating a new channel waits for shared capacity.
+                if(!s.channels.some(c=>c.deviceId===d.deviceId)&&readerCapacityWaiting(s,adapter,d.deviceId,now()))continue;
                 if(retiring.has(d.deviceId)||(r.recoveryExcludedDevices?.includes(d.deviceId)||r.humanWaitExcludedDevices?.includes(d.deviceId))||!d.enabled||lookupDeviceUnavailable(d)||d.accountOffline||releasedDevices.has(d.deviceId)||failedDevices.has(d.deviceId)||d.quarantineUntil>now()||(r.resultProtocol!==PREPARED_PROTOCOL&&used.has(d.deviceId)))continue;
                 const c=s.channels.find(c=>c.deviceId===d.deviceId);if(c&&!(c.phase==='idle'&&c.clientId===clientId))continue;
                 // One physical reservation budget includes human and idle channels.

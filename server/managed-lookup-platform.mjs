@@ -25,6 +25,7 @@ export function createManagedLookupAdapter(api){
     catch(cause){throw Object.assign(new Error('managed_lookup_persistence_failed',{cause}),{code:'managed_lookup_persistence_failed'});}
   }
   return {
+    readerCapacityGroup(id){const agentId=state.devices.find(d=>d.deviceId===id)?.adb?.agentId;return agentId?`agent:${agentId}`:'';},
     aiEvidence(c,r){
       const session=state.automationSessions.find(s=>s.sessionId===c.sessionId);
       const job=latestAccountWork(state.automationJobs,c.sessionId),task=state.windowsTasks.find(t=>t.taskId===job?.windowsTaskId);
