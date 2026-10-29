@@ -46,6 +46,16 @@ def validate_target_names(names):
         raise ValueError('qa_requires_one_to_five_unique_approved_targets')
 
 
+def parse_target_selectors(selectors):
+    names=[s.split('/')[0] for s in selectors]
+    slots=[s.split('/')[1] if '/' in s else 'app1' for s in selectors]
+    validate_target_names(list(dict.fromkeys(names)))
+    if (len(set(zip(names,slots)))!=len(names) or any(s.count('/')>1 for s in selectors)
+            or any(slot not in ('app1','app2') for slot in slots)):
+        raise ValueError('qa_requires_one_to_five_unique_approved_targets_and_unique_valid_slots')
+    return names,slots
+
+
 def shared_runtime_hashes(q):
     names=['scripts/小红书数据同步.py','scripts/xhs_native_window.py','scripts/xhs_native_navigation.py',
            'scripts/native/xhs-native-window.jar','scripts/native/xhs-native-pair.jar',
@@ -113,11 +123,8 @@ print(json.dumps({'recovered':recovered,'pending':len(list(folder.glob('*.settin
 def main():
     if not __debug__ or os.environ.get('PYTHONOPTIMIZE'):
         raise RuntimeError('qa_optimized_python_is_forbidden')
-    selectors=sys.argv[1:]
-    names=[s.split('/')[0] for s in selectors]
-    slots=[s.split('/')[1] if '/' in s else 'app1' for s in selectors]
-    validate_target_names(names)
-    if any(slot not in ('app1','app2') for slot in slots):raise ValueError('qa_invalid_slot')
+    names,slots=parse_target_selectors(sys.argv[1:])
+    prove_busy=os.environ.get('XHS_QA_PROVE_BUSY')=='1'
     spec=importlib.util.spec_from_file_location('access',os.environ['XHS_QA_ACCESS_FILE'])
     access=importlib.util.module_from_spec(spec);spec.loader.exec_module(access);q=access.q
     phase='live-'+uuid.uuid4().hex[:12]
@@ -218,7 +225,7 @@ console.log(JSON.stringify(targets.map((t,i)=>{const locks=values[1].body.locks.
     tunnel=subprocess.run(tunnel_command,capture_output=True,timeout=10)
     (folder/'tunnel.log').write_bytes(tunnel.stderr)
     leases=[];run_id=None;results=[]
-    def stage_and_run(t,task):
+    def stage_and_run(t,task,preflight_only=False):
         c=dict(t,jobId=task['payload']['automationJobId'],windowsTaskId=task['taskId'])
         initial=cloud_state(t);assert not initial['locks'] and not initial['lookupReserved'] and not initial['devices'][0].get('occupancy'),'qa_target_became_busy'
         created=q.request('/api/v1/user/devices/'+t['deviceId']+'/screen-sessions','POST',{})
@@ -226,7 +233,7 @@ console.log(JSON.stringify(targets.map((t,i)=>{const locks=values[1].body.locks.
         session=created['body']['session'];session_id=session['sessionId'];leases.append(session_id)
         # Uses the existing WS connection solely to keep this formal lease alive.
         keeper_code="import {WebSocket} from 'ws';const w=new WebSocket('ws://127.0.0.1:8787/realtime/v1/sessions/'+"+json.dumps(session_id)+"+'/control?token='+encodeURIComponent("+json.dumps(created['body']['browserToken'])+"));w.on('open',()=>console.log('ready'));w.on('error',()=>process.exit(1));w.on('close',()=>process.exit(0));setTimeout(()=>{w.close();process.exit(0)},25*60*1000);"
-        p=subprocess.Popen(q.qa.CLOUD+['docker exec -i phone-cloud-platform node --input-type=module'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=(folder/('keeper-'+t['deviceName']+'.log')).open('w'),text=True)
+        p=subprocess.Popen(q.qa.CLOUD+['docker exec -i phone-cloud-platform node --input-type=module'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=(folder/('keeper-'+t['deviceName']+'-'+t['appSlot']+'-'+task['taskId']+'.log')).open('w'),text=True)
         p.stdin.write(keeper_code);p.stdin.close();keepers[session_id]=p
         ready=queue.Queue();threading.Thread(target=lambda:ready.put(p.stdout.readline()),daemon=True).start();assert ready.get(timeout=10).strip()=='ready'
         for _ in range(20):
@@ -235,8 +242,8 @@ console.log(JSON.stringify(targets.map((t,i)=>{const locks=values[1].body.locks.
             if s['session']['status'] in ('ready','streaming'):break
             time.sleep(.5)
         lock=s['locks'][0];c.update(sessionId=session_id,lockId=lock['lockId'],ownerUserId=lock['ownerUserId'])
-        stage='D:/PhoneCloud/staging/xhs-qa-'+phase+'-'+t['deviceName']
-        c.update(stage=stage,adbPath=identity['adbExe'],adbPid=identity['adbPid'],agentPid=identity['agentPid'],agentCreatedAt=identity['agentCreatedAt'],
+        stage='D:/PhoneCloud/staging/xhs-qa-'+phase+'-'+t['deviceName']+'-'+t['appSlot']+'-'+task['taskId'][:8]
+        c.update(preflightOnly=preflight_only,stage=stage,adbPath=identity['adbExe'],adbPid=identity['adbPid'],agentPid=identity['agentPid'],agentCreatedAt=identity['agentCreatedAt'],
                  inventoryPath='D:/PhoneCloud/agent/data/device-scan-cache.json',pythonPath='D:/PhoneCloud/tools/python39/python.exe',
                  brokerUrl=f'http://127.0.0.1:{remote_port}',brokerToken=uuid.uuid4().hex+uuid.uuid4().hex)
         files=candidate_files()
@@ -248,7 +255,7 @@ console.log(JSON.stringify(targets.map((t,i)=>{const locks=values[1].body.locks.
                  nativeNavigationAsset=stage+'/scripts/native/xhs-native-navigation.jar',
                  nativeNavigationSha256=hashlib.sha256(files['scripts/native/xhs-native-navigation.jar'].read_bytes()).hexdigest(),
                  nativeNavigationHelperSha256=hashlib.sha256(files['scripts/xhs_native_navigation.py'].read_bytes()).hexdigest())
-        configs[c['jobId']]=c;save('config-'+t['deviceName']+'-private.json',c)
+        configs[c['jobId']]=c;save('config-'+t['deviceName']+'-'+t['appSlot']+'-'+task['taskId']+'-private.json',c)
         blobs={name:base64.b64encode(p.read_bytes()).decode() for name,p in files.items()}
         blobs['config.json']=base64.b64encode(json.dumps(c).encode()).decode();blobs['task.json']=base64.b64encode(json.dumps(task).encode()).decode()
         q.win(staging_source(stage,blobs),timeout=20)
@@ -264,31 +271,59 @@ console.log(JSON.stringify(targets.map((t,i)=>{const locks=values[1].body.locks.
         command=subprocess.list2cmdline([node,stage+'\\host.mjs',stage+'\\config.json',stage+'\\task.json'])
         start=time.time();raw=q.qa.execute(q.qa.WINDOWS+[command],'',timeout=1250);answer=json.loads(raw)
         pending=q.win('from pathlib import Path\nimport json\np=Path('+repr(stage)+');print(json.dumps({"ledgers":len(list((p/"cache/xhs-data-collection").glob("*.settings.json")))}))')
-        save('result-'+t['deviceName']+'-private.json',answer)
-        return {'target':t,'task':task,'answer':answer,'pendingLedgers':pending['ledgers'],'elapsedSeconds':time.time()-start,'sessionId':session_id}
+        save('result-'+t['deviceName']+'-'+t['appSlot']+'-'+task['taskId']+'-private.json',answer)
+        if preflight_only:
+            trace=q.win('from pathlib import Path\nimport json\np=Path('+repr(stage)+');print(json.dumps({"traceExists":(p/"qa-trace.jsonl").exists(),"settingsExists":(p/"settings-evidence.json").exists()}))')
+            assert not trace['traceExists'] and not trace['settingsExists'],'qa_busy_phase_touched_phone'
+            save('no-phone-actions-'+task['taskId']+'.json',trace)
+        if pending['ledgers'] or (not preflight_only and not answer.get('settingsRestored')):
+            raise RuntimeError('qa_settings_restore_unproven_stop_handoff')
+        recovery=q.win(settings_recovery_source(c),timeout=80)
+        assert recovery['pending']==0,'qa_settings_ledger_pending'
+        save('settings-final-'+task['taskId']+'.json',recovery)
+        released=q.request('/api/v1/screen-sessions/'+session_id,'DELETE',{})
+        assert released['status']==200,'qa_lease_release_unproven'
+        leases.remove(session_id);configs.pop(c['jobId']);proof_cache.pop(c['jobId'],None)
+        return {'target':t,'task':task,'answer':answer,'pendingLedgers':pending['ledgers'],'elapsedSeconds':time.time()-start,'startedAt':start,'finishedAt':time.time(),'sessionId':session_id}
     try:
         assert tunnel.returncode==0,'reverse tunnel failed'
         run_id=api_call({'op':'create','requestId':phase})['batch']['runId']
-        tasks=[]
-        deadline=time.time()+40
-        while len(tasks)<len(targets) and time.time()<deadline:
-            picked=api_call({'op':'next'}).get('task')
-            if picked:
-                assert picked['type']=='xhs_data_collect','unexpected local task';tasks.append(picked)
-            else:time.sleep(1)
-        assert len(tasks)==len(targets),'local batch did not dispatch'
-        with concurrent.futures.ThreadPoolExecutor(max_workers=len(targets)) as pool:
-            futures=[pool.submit(stage_and_run,next(t for t in targets if t['serial']==task['adbSerial']),task) for task in tasks]
-            for result in completed_results(futures):
-                results.append(result);a=result['answer']
-                payload=completion_payload(a,result['pendingLedgers'])
-                api_call({'op':'complete','taskId':result['task']['taskId'],'payload':payload})
+        # Dispatch incrementally: a physical phone is freed only after its exact
+        # candidate restored settings and released the real production lease.
+        busy_attempted=False
+        deadline=time.time()+3600
+        with concurrent.futures.ThreadPoolExecutor(max_workers=min(5,len(set(names)))) as pool:
+            active={}
+            while time.time()<deadline:
+                for future in list(active):
+                    if not future.done():continue
+                    result=future.result();results.append(result)
+                    payload=completion_payload(result['answer'],result['pendingLedgers'])
+                    api_call({'op':'complete','taskId':result['task']['taskId'],'payload':payload})
+                    active.pop(future)
+                state=api_call({'op':'result','runId':run_id})
+                if state['status']=='completed' and not active:break
+                if len(active)<min(5,len(set(names))):
+                    task=api_call({'op':'next'}).get('task')
+                    if task:
+                        assert task['type']=='xhs_data_collect','unexpected local task'
+                        t=next(t for t in targets if t['serial']==task['adbSerial'] and t['appSlot']==task['payload']['xhsAppSlot'])
+                        assert t['serial'] not in active.values(),'qa_same_phone_concurrent'
+                        preflight=prove_busy and not busy_attempted
+                        busy_attempted=busy_attempted or preflight
+                        future=pool.submit(stage_and_run,t,task,preflight)
+                        active[future]=t['serial']
+                time.sleep(.5)
+            else:raise RuntimeError('qa_scenario_deadline_exceeded')
         for _ in range(30):
             data=api_call({'op':'result','runId':run_id})
-            if data['complete']:break
+            if data['status']=='completed':break
             time.sleep(1)
         pages=[api_call({'op':'result','runId':run_id,'offset':i}) for i in range(len(targets))]
-        for r,page in zip(results,pages):
+        for r in results:
+            if r['answer'].get('preflightOnly'):
+                assert r['answer']['result']['diagnostic']['collectionStarted'] is False
+                continue
             # Match identity independently of completion/order; raw notes are
             # compared with the existing API's documented field normalization.
             matching=[p['items'][0] for p in pages if p.get('items') and p['items'][0]['xhsId']==r['target']['xhsId']]
@@ -340,7 +375,7 @@ console.log(JSON.stringify(targets.map((t,i)=>{const locks=values[1].body.locks.
         save('identity-after.json',q.attest())
         shared_after=shared_runtime_hashes(q);save('shared-hashes-after.json',shared_after)
         summary={'phase':phase,'results':[{'name':r['target']['deviceName'],'model':r['target']['model'],'appSlot':r['target']['appSlot'],'ok':collection_succeeded(r['answer'],r['pendingLedgers']),'notes':len(r['answer'].get('result',{}).get('collection',{}).get('notes',[])),
-                  'complete':r['answer'].get('result',{}).get('collection',{}).get('complete'), 'pendingLedgers':r['pendingLedgers'],'settingsRestored':r['answer'].get('settingsRestored',False),'elapsedSeconds':r['elapsedSeconds'],'error':r['answer'].get('error') or (None if collection_succeeded(r['answer'],r['pendingLedgers']) else 'recent_window_not_proven')} for r in results],
+                  'complete':r['answer'].get('result',{}).get('collection',{}).get('complete'), 'pendingLedgers':r['pendingLedgers'],'settingsRestored':r['answer'].get('settingsRestored',False),'elapsedSeconds':r['elapsedSeconds'],'startedAt':r['startedAt'],'finishedAt':r['finishedAt'],'preflightOnly':r['answer'].get('preflightOnly',False),'jobId':r['task']['payload']['automationJobId'],'error':r['answer'].get('error') or r['answer'].get('result',{}).get('errorCode') or (None if collection_succeeded(r['answer'],r['pendingLedgers']) else 'recent_window_not_proven')} for r in results],
                  'proofs':proof_count,'cloudSnapshots':snapshot_count,'proofFailures':proof_failures,'productionSharedFilesChanged':shared_before!=shared_after}
         save('summary.json',summary);print(json.dumps(summary,ensure_ascii=False),flush=True)
 
