@@ -1,0 +1,37 @@
+{
+  "candidateTag": "lookup-throughput-20261028-rc.10",
+  "state": "local-candidate-not-deployed",
+  "parentCommit": "73de8ba87d3f75ff3d9e32da4821b57784b69200",
+  "files": {
+    "server/lookup-failure-domain.mjs": "bd31370d753119267669e0e05537d7de9639f25066411e38337151ee8cea38b9",
+    "server/lookup-technical-domain.test.mjs": "4dc50463f9f0c270cce9aab6be1f4bc9311bef0bf6745af0cc7a73600fade003",
+    "server/lookup-stop-proof.test.mjs": "1a594bed3f79c01c94e59281558fb6c4a83ce4a07f33aa5a94844425b56b5594",
+    "docs/PROJECT_DEVELOPMENT.md": "4c6521d9e7f4bc9affb4b36058e57aae5c39b0417b64a8d89ced5b84bd8640f9",
+    "releases/lookup-throughput-20261028-rc.10/README.md": "894299203738bdbaca4b026313e10c185874dc4cb8f15a588429900049ba139a"
+  },
+  "validation": {
+    "nodeFull": {
+      "tests": 1629,
+      "passed": 1629
+    },
+    "targeted": 126,
+    "independentTargeted": 120,
+    "exactHistoricalMessages": 4,
+    "classifiedDevice": 4,
+    "terminalAiEligible": 0,
+    "rootCheck": "passed",
+    "newPhoneOperations": 0,
+    "realBusinessApiRecovery": "not passed",
+    "productionChanged": false
+  },
+  "evidence": {
+    "pc-unauthorized-targeted-rc10.log": "3ca5a7eed4671c0b443ff690e7452bd1347af23ceba8c89b002e23893b191cb6",
+    "pc-unauthorized-full-rc10.log": "11c888434eed5c6dfca485cc420a7475235a72cb419e9d855915ab6bbe6edf15",
+    "pc-unauthorized-check-rc10.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "unauthorized-exact-private.json": "29a00de38e44b494187f6c12e728c566e9c88dcb2be999cdc3b35d07379eaef2",
+    "unauthorized-candidate-replay.json": "48b5a417f4e62b0bc19cd2749c3dec55aa45c93ea0f006833a27f95452307006",
+    "INDEPENDENT_UNAUTHORIZED_REPLAY.json": "3083d3b914f0b5f784dab67c7f09fcc04590d9749bd9479a1b88a5b3d2eb35de",
+    "unauthorized-independent-tests.txt": "784d7582ef307963907689d2ad160cd35f63215634e5ecbcc9ae7c36ba1d366c"
+  },
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+}

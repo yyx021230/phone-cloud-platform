@@ -34,8 +34,11 @@ export function lookupFailureDomain(job = {}) {
   if (code === 'task_failed' && /^package_manager_unresponsive:/.test(String(job.result?.message||''))) return 'device';
   // Agent preflight can fail before a Python diagnostic exists (191). Match
   // explicit ADB evidence only; a generic task_failed remains unknown.
-  if (code === 'task_failed' && /(?:^|\n)ADB 设备未连接：[^\r\n]+/.test(String(job.result?.message||''))
-    && /\berror: device ['"][^'"\r\n]+['"] (?:not found|offline|unauthorized)\b/.test(String(job.result?.message||''))) return 'device';
+  // ADB also emits "error: device unauthorized." without a serial. Require
+  // the executor-owned prefix and a whole stderr line, not quoted advice or
+  // embedded command text (including ADB's own kill-server suggestion).
+  if (code === 'task_failed' && /^ADB 设备未连接：[^\r\n]+/.test(String(job.result?.message||''))
+    && /^error: device (?:(?:'[^'\r\n]+'|"[^"\r\n]+") )?(?:not found|offline|unauthorized)\.?[ \t]*\r?$/m.test(String(job.result?.message||''))) return 'device';
   if (!['alipay_lookup_failed', 'alipay_lookup_result_unconfirmed'].includes(code)) return '';
   if (/^lookup_(?:old|restart|prepare)_worker_exit_unconfirmed$/.test(reason)
     || reason === 'lookup_reader_cleanup_unconfirmed') return 'device';
