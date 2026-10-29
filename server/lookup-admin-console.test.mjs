@@ -35,3 +35,20 @@ test('expired and cross-device blocking detail never substituted by latest failu
 test('recovered or cooling device does not advertise historical preparation block',()=>{
  for(const health of [{ready:true},{ready:false,reason:'accounts_cooling'}]){const f=fixture();Object.assign(f.pool.devices[0],{health,lastPreparationFailure:{jobId:'old',at:now}});assert.equal(buildLookupAdminOverview(f).devices[0].blockingFailure,null);}
 });
+
+test('exact archived failure is readable without rehydrating live state',async()=>{
+ const {state,job}=evidenceFixture();const task=state.windowsTasks[0];state.automationJobs=[];state.windowsTasks=[];
+ const before=JSON.stringify(state);const {lookupJobContext}=await import('./lookup-admin-console.mjs');let calls=[];
+ const ctx=await lookupJobContext(state,'j',async id=>{calls.push(id);return {job,task};});
+ assert.equal(jobDetail(ctx.state,ctx.job).evidence.length,1);assert.deepEqual(calls,['j']);assert.equal(JSON.stringify(state),before);
+});
+test('archive cannot substitute a different job, workflow, task or device',async()=>{
+ const {lookupJobContext}=await import('./lookup-admin-console.mjs');
+ for(const mutate of [j=>j.jobId='other',j=>j.kind='xhs_publish']){const {state,job}=evidenceFixture();state.automationJobs=[];mutate(job);assert.equal(await lookupJobContext(state,'j',async()=>({job})),null);}
+ for(const mutate of [t=>t.taskId='other',t=>t.deviceId='other']){const {state,job}=evidenceFixture();const task=structuredClone(state.windowsTasks[0]);mutate(task);state.automationJobs=[];state.windowsTasks=[];const ctx=await lookupJobContext(state,'j',async()=>({job,task}));assert.deepEqual(jobEvidence(ctx.state,ctx.job),[]);}
+});
+test('live detail wins, invalid IDs do not hit storage and storage failure is not reported as deletion',async()=>{
+ const {lookupJobContext}=await import('./lookup-admin-console.mjs');const {state,job}=evidenceFixture();
+ const read=async()=>{throw Error('storage_down');};assert.equal((await lookupJobContext(state,'j',read)).job,job);
+ assert.equal(await lookupJobContext(state,'../x',read),null);state.automationJobs=[];state.windowsTasks=[];await assert.rejects(lookupJobContext(state,'j',read),/storage_down/);
+});

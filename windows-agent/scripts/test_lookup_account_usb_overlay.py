@@ -34,6 +34,18 @@ class AccountUsbOverlayTests(unittest.TestCase):
         r.tap_unique=mock.Mock(side_effect=tap)
         return r,state
 
+    def test_generic_overlay_entry_cancels_usb_before_any_hierarchy_read(self):
+        r,state=self.runner('home')
+        r.dismiss_known_overlay=lookup.Runner.dismiss_known_overlay.__get__(r)
+        self.assertTrue(r.dismiss_known_overlay())
+        self.assertFalse(state['overlay']);r.dump.assert_not_called();r.tap_unique.assert_not_called()
+
+    def test_generic_overlay_entry_preserves_uncertain_usb_failure(self):
+        r,_=self.runner('home','poco_vivo_usb_mode_dialog:cancel_not_confirmed')
+        r.dismiss_known_overlay=lookup.Runner.dismiss_known_overlay.__get__(r)
+        with self.assertRaisesRegex(RuntimeError,'cancel_not_confirmed'):r.dismiss_known_overlay()
+        r.dump.assert_not_called();r.tap_unique.assert_not_called()
+
     def test_home_usb_window_cancelled_before_account_navigation(self):
         r,state=self.runner('home')
         r.enter_my_settings('test')

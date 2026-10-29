@@ -370,7 +370,7 @@ def parse_empty_rows(rows, phone, size):
         if len(suggestions) != 1 or suggestions[0][1] < .93:
             return None
         heading = suggestions[0]
-        labels = {"查询快递", "看账单记录", "支付宝账号信息", "查名字",
+        labels = {"查询快递", "看账单记录", "查收支明细", "搜口令红包", "支付宝账号信息", "查名字",
                   "用户信息", "查询名字", "账户信息", "客户信息", "支付宝信息",
                   "APP小程序", "快速查询", "注册认证小程序", "支付宝小程序应用", "付款二维码", "收付款记录"}
         cells = sorted((e for e in body if e[0] in labels), key=lambda e: (e[3], e[2]))

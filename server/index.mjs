@@ -3,7 +3,7 @@ import { WECOM_PREVIEW_KIND, WECOM_PREVIEW_DEVICES, previewTarget, previewSlots,
 import { spoolSnapshot, writeSpooledSnapshot, loadStreamedSnapshot } from './snapshot-stream.mjs';
 import {aiVisionConfig,createAiVisionReader} from './lookup-ai-vision.mjs';
 import {createLookupAiRecovery} from './lookup-ai-recovery.mjs';
-import {buildLookupAdminOverview,requestDetail,jobDetail,jobEvidence,lookupJob,parseLookupCursor} from './lookup-admin-console.mjs';
+import {buildLookupAdminOverview,requestDetail,jobDetail,jobEvidence,lookupJobContext,parseLookupCursor} from './lookup-admin-console.mjs';
 import { verifyLookupApiKey } from "./lookup-api-key.mjs";
 import { createRecoveryControls, recoverySerial, normalizeRecoveryControlAck, RECOVERY_CONTROL_PROTOCOL } from './recovery-controls.mjs';
 import { createManagedLookupStore, MANAGED_LOOKUP_PROTOCOL } from './managed-lookup-store.mjs';
@@ -567,9 +567,10 @@ async function routeApi(req, res, url) {
       const detail=url.pathname.match(/^\/api\/v1\/admin\/lookup-pool\/console\/requests\/([A-Za-z0-9-]{1,80})$/);
       if(detail){const r=await managedLookup.adminRequest(detail[1]);if(!r||r.purpose==='readiness_probe')return json(res,404,{error:'lookup_task_not_found'});return json(res,200,requestDetail(state,r));}
       const jobPath=url.pathname.match(/^\/api\/v1\/admin\/lookup-pool\/console\/jobs\/([A-Za-z0-9-]{1,80})(?:\/evidence\/([A-Za-z0-9-]{1,80}))?$/);
-      if(jobPath){const job=state.automationJobs.find(j=>j.jobId===jobPath[1]&&lookupJob(j));if(!job)return json(res,404,{error:'lookup_job_not_found'});
-        if(!jobPath[2])return json(res,200,jobDetail(state,job));
-        if(!jobEvidence(state,job).some(e=>e.evidenceId===jobPath[2]))return json(res,404,{error:'lookup_evidence_not_found'});
+      if(jobPath){const context=await lookupJobContext(state,jobPath[1],structuredRepos?.readLookupJob);if(!context)return json(res,404,{error:'lookup_job_not_found'});
+        const {job,state:detailState}=context;
+        if(!jobPath[2])return json(res,200,jobDetail(detailState,job));
+        if(!jobEvidence(detailState,job).some(e=>e.evidenceId===jobPath[2]))return json(res,404,{error:'lookup_evidence_not_found'});
         try{return await serveEvidenceAsset(res,jobPath[2]);}catch(e){if(e.code==='ENOENT')return json(res,404,{error:'lookup_evidence_expired'});throw e;}
       }
     }

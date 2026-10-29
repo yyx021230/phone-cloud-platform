@@ -84,3 +84,18 @@ class PickerBudgetTests(unittest.TestCase):
         with mock.patch.object(lookup.time,'monotonic',side_effect=lambda:clock[0]),mock.patch.object(lookup.time,'sleep',side_effect=lambda n:clock.__setitem__(0,clock[0]+n)):
             with self.assertRaisesRegex(RuntimeError,'alipay_account_picker_read_timeout'):r.wait_account_picker('slow',timeout=24)
         self.assertLessEqual(clock[0],24);r.adb.assert_not_called()
+
+    def test_transitional_frame_does_not_halve_next_real_dump_budget(self):
+        import xml.etree.ElementTree as ET
+        r=lookup.Runner({'serial':'SYNTHETIC'});clock=[0.0];calls=[];root=tree()
+        def dump(token,**kw):
+            calls.append(kw['total_timeout']);duration=7.5
+            if kw['total_timeout']<duration:
+                clock[0]+=kw['total_timeout'];raise subprocess.TimeoutExpired('synthetic',kw['total_timeout'])
+            clock[0]+=duration
+            page=ET.fromstring('<hierarchy/>') if len(calls)==1 else root
+            return page,{c:p for p in page.iter() for c in p}
+        r.dump=dump;r.emit=mock.Mock();r.page_overlay_kind=lambda **kw:None;r.recover_page_mismatch=lambda *a,**kw:False;r.adb=mock.Mock()
+        with mock.patch.object(lookup.time,'monotonic',side_effect=lambda:clock[0]),mock.patch.object(lookup.time,'sleep',side_effect=lambda n:clock.__setitem__(0,clock[0]+n)):
+            self.assertEqual(len(r.wait_account_picker('transition',timeout=24)),2)
+        self.assertEqual(len(calls),3);self.assertGreaterEqual(min(calls),7.5);self.assertLess(clock[0],24);r.adb.assert_not_called()

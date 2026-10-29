@@ -77,3 +77,19 @@ export function lookupRequestPage(rows,cursor,limit=30){
  const page=unique.slice(0,limit),last=page.at(-1);
  return {requests:page.map(requestSummary),nextCursor:unique.length>limit?Buffer.from(JSON.stringify({createdAt:last.createdAt,lookupId:last.lookupId})).toString('base64url'):null};
 }
+
+// Archived rows are a private read projection, never added to the scheduler state.
+export async function lookupJobContext(state, jobId, readArchive) {
+ if(!/^[A-Za-z0-9-]{1,80}$/.test(String(jobId)))return null;
+ let job=list(state.automationJobs).find(j=>j.jobId===jobId);
+ if(job&&!lookupJob(job))return null;
+ let task=job&&list(state.windowsTasks).find(t=>t.taskId===job.windowsTaskId&&t.deviceId===job.deviceId);
+ if((!job||!task)&&readArchive){
+  const archived=await readArchive(jobId);
+  if(!job&&archived?.job?.jobId===jobId&&lookupJob(archived.job))job=archived.job;
+  const candidate=archived?.task;
+  if(job&&!task&&candidate?.taskId===job.windowsTaskId&&candidate.deviceId===job.deviceId)task=candidate;
+ }
+ if(!job)return null;
+ return {job,state:{devices:state.devices,evidenceAssets:state.evidenceAssets,windowsTasks:task?[task]:[]}};
+}

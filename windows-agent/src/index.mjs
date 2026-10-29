@@ -1,4 +1,5 @@
-import {isLookupReaderRecovery, readerExitDiagnostic, verifyLookupReaderCleanup, lookupReaderStopReason} from "./lookup-reader-lifecycle.mjs";
+import {lookupXmlFailure} from "./lookup-xml-failure.mjs";
+import {isLookupReaderRecovery, rejectExitedReaderRequest, readerExitDiagnostic, verifyLookupReaderCleanup, lookupReaderStopReason} from "./lookup-reader-lifecycle.mjs";
 const lookupReaderStopBarriers = new Map();
 import { runWecomPreviewTask } from "./wecom-preview-task.mjs";
 import {collectLookupTrace, isAutomaticLookupResume} from "./lookup-recovery-trace.mjs";
@@ -2740,9 +2741,15 @@ async function taskAlipayNameLookup(task, options = {}) {
       });
     } catch (error) {
       if (isAutomationTaskCancellation(error)) throw error;
-      const failed = parseAirtestRunnerOutput(String(error.stdout || ""));
+      const failed = lookupXmlFailure(error, parseAirtestRunnerOutput);
       await replayLookupEvents(failed.log || []);
       const diagnostic = classifyAlipayNameLookupFailure(failed.error || error.message || "");
+      if (failed.executionExit) {
+        diagnostic.executionExit = failed.executionExit;
+        await taskEvent(task, "alipay_name", "warn",
+          `查名执行进程未返回最终结果；最后记录步骤：${failed.executionExit.lastStep || "无"}。`,
+          { stepId: "lookup_xml_executor_exit", executionExit: failed.executionExit });
+      }
       diagnostic.accountSwitched = Boolean(failed.accountSwitched);
       diagnostic.currentAccount = String(failed.currentAccount || "");
       diagnostic.accountSwitchReason = String(failed.accountSwitchReason || "");
@@ -2990,9 +2997,13 @@ async function probeAirtestWorker(worker, workflow) {
 
 async function recycleAirtestWorker(serial, reason) {
   const existing = airtestWorkersBySerial.get(serial);
-  if (existing) {
+  // An exit callback may already have removed the host worker. Its Android
+  // instrumentation can outlive it, so lookup still needs cleanup proof.
+  if (existing || isLookupReaderRecovery(reason)) {
     const stopped = await stopAirtestWorker(serial, reason);
     if (isLookupReaderRecovery(reason) && stopped !== true) throw new Error("lookup_reader_cleanup_unconfirmed");
+  }
+  if (existing) {
     const exited = await waitForWorkerExit(existing, 8_000);
     if (!exited) throw new Error(`Airtest/Poco worker 未能停止：${serial}`);
   }
@@ -3204,20 +3215,14 @@ function createAirtestWorker(serial) {
     const marker = `poco_worker_bootstrap_failed:${readerExit.stage}:${readerExit.cause}`;
     const error = new Error(`Airtest/Poco worker 已退出：${serial} code=${code ?? ""} signal=${signal ?? ""} ${marker} ${worker.stderrBuffer}`.trim());
     if (worker.readyReject) worker.readyReject(error);
-    if (worker.pending) {
-      worker.pending.reject(error);
-      worker.pending = null;
-    }
+    rejectExitedReaderRequest(worker, error);
   });
   child.on("error", (error) => {
     worker.exited = true;
     if (airtestWorkersBySerial.get(serial) === worker) airtestWorkersBySerial.delete(serial);
     clearTimeout(readyTimer);
     if (worker.readyReject) worker.readyReject(error);
-    if (worker.pending) {
-      worker.pending.reject(error);
-      worker.pending = null;
-    }
+    rejectExitedReaderRequest(worker, error);
   });
   return worker;
 }
@@ -3306,7 +3311,15 @@ async function stopAirtestWorker(serial, reason = "stop") {
 
 async function stopAirtestWorkerImpl(serial, reason = "stop") {
   const worker = airtestWorkersBySerial.get(serial);
-  if (!worker) return true;
+  if (!worker) {
+    if (!isLookupReaderRecovery(reason)) return true;
+    // Host process exit is not evidence that Android stopped instrumentation.
+    // Keep the same bounded, serial-scoped proof before lookup can reattach.
+    const cleanupConfirmed = await verifyLookupReaderCleanup(serial, (args, options) => run(config.adbPath, args, options))
+      .then(() => true, () => false);
+    log("lookup exited reader cleanup completed", { serial, reason, cleanupConfirmed });
+    return cleanupConfirmed;
+  }
   const screenPriority = reason === "screen_control" || reason === "xml_uiautomator";
   const lookupRecovery = isLookupReaderRecovery(reason);
   let cleanupConfirmed = true;

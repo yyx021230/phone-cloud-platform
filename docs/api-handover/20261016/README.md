@@ -395,9 +395,9 @@ Content-Type: application/json
 | failed | lookup_round_stopped | 主动结束本轮导致取消，不代表没有姓名 |
 | failed | lookup_queue_timeout / lookup_processing_timeout | 任务排队/处理期限到达；记录失败后按业务规则决定是否新建 |
 | failed | 其他code | 保存lookupId、时间、code供平台排查；不能当作空姓名 |
+| 网络超时 / 502 / 非JSON | 无可靠code | 按请求结果未知处理；保存原键/ID，退避重试 |
 
 本地待发布候选新增明确错误码 `lookup_result_unconfirmed`：原结果截图读取超时、上游识别服务失败，或多次姓名读取不能一致时，GET 仍使用上述 `failed` 合同，保留原 `lookupId`，不提供 `name` 字段。这不表示号码没有姓名。调用方应记录错误交由异常处理，不自动写入空姓名，也不要无休止重新提交。明确未实名或确认没有姓名仍返回 `completed` 和 `name: ""`。**本说明是2026-10-28本地候选改动，尚未上线。**
-| 网络超时 / 502 / 非JSON | 无可靠code | 按请求结果未知处理；保存原键/ID，退避重试 |
 
 不要将所有400/401/403/404当作可以无限重试的临时故障。提交响应为200/202后仍要读 GET 业务状态。
 
