@@ -2751,8 +2751,9 @@ def verify_duplicate_window_reverse(args, first, boundary_stop):
     budget = min(args.max_scrolls * 2 + 3, first["scrolls"] * 2 + 6)
     for step in range(budget + 1):
         guard()
-        assert_requested_foreground(focus(args.adb, args.serial), events)
-        if not creator_list(root) or creator_filter_panel(root):
+        current = focus(args.adb, args.serial)
+        assert_requested_foreground(current, events)
+        if not works_webview_activity(current) or not creator_list(root) or creator_filter_panel(root):
             raise ElementListReadError("reverse verification left the works list")
         require_creator_service_available(root)
         if element_page_signature(root, allow_duplicate_rows=True) is None:
@@ -2806,6 +2807,7 @@ def verify_duplicate_window_reverse(args, first, boundary_stop):
         guard()
         if focus(args.adb, args.serial) != current:
             raise ElementListReadError("reverse verification foreground changed during read")
+        root = refresh_scrolled_webview(args.adb, args.serial, root, guard, events, previous)
         root = wait_creator_content(args.adb, args.serial, root, guard, events)
         events.append("verification_fresh_page_accepted")
     raise ElementListReadError("reverse verification budget exhausted")

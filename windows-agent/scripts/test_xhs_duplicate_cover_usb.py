@@ -82,7 +82,7 @@ class ReverseDuplicateVerificationTests(unittest.TestCase):
   r=listing();notes=[dict(n,published_date=sync.published_date(n['published_at_raw'],dt.date(2026,10,29)).isoformat()) for _,n in sync.note_cards(r)]
   scope=next(n.get('text') for n in sync.live_nodes(r) if (n.get('text') or '').startswith('仅统计'))
   return dict(notes=notes,scrolls=1,complete=False,recovery_events=['collection_slot_requested:app1'],warnings=[],app_slot='app1',window_start_date='2026-09-30',window_end_date='2026-10-29',list_scope_raw=scope)
- def verify(self,root=None,top=None,terminal=True,first=None,guard=None):
+ def verify(self,root=None,top=None,terminal=True,first=None,guard=None,current=None):
   from contextlib import ExitStack
   first=self.first() if first is None else first;root=listing() if root is None else root
   args=SimpleNamespace(device_cache='unused',serial='s',device_name='131',task_id='j',app_slot='app1',cancel_file='',adb='adb',max_scrolls=2)
@@ -90,7 +90,8 @@ class ReverseDuplicateVerificationTests(unittest.TestCase):
    stack.enter_context(patch.object(sync,'assert_idle',side_effect=guard))
    stack.enter_context(patch.object(sync,'verification_entry',return_value=root))
    stack.enter_context(patch.object(sync,'wait_creator_content',side_effect=lambda a,b,r,*rest:r))
-   stack.enter_context(patch.object(sync,'focus',return_value='mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}'))
+   stack.enter_context(patch.object(sync,'refresh_scrolled_webview',side_effect=lambda a,b,r,*rest:r))
+   stack.enter_context(patch.object(sync,'focus',return_value=current or 'mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}'))
    stack.enter_context(patch.object(sync,'assert_requested_foreground'))
    stack.enter_context(patch.object(sync,'proven_list_terminal',return_value=(False,terminal)))
    stack.enter_context(patch.object(sync,'prove_native_list_start',return_value=top if top is not None else root))
@@ -116,6 +117,8 @@ class ReverseDuplicateVerificationTests(unittest.TestCase):
   with self.assertRaisesRegex(sync.ElementListReadError,'newest'):self.verify(top=top)
   first=self.first();first['list_scope_raw']='changed'
   with self.assertRaisesRegex(sync.ElementListReadError,'scope'):self.verify(first=first)
+ def test_other_xhs_activity_does_not_allow_swiping_underlying_list(self):
+  with self.assertRaisesRegex(sync.ElementListReadError,'left the works list'):self.verify(current='mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.authorization.NotificationAuthorizationTranslucentActivity}')
  def test_lost_ownership_never_reads_or_scrolls(self):
   with self.assertRaisesRegex(RuntimeError,'occupied'):self.verify(guard=Mock(side_effect=RuntimeError('occupied')))
  def test_missing_cover_in_a_duplicate_group_cannot_complete(self):
@@ -153,7 +156,8 @@ class ReverseSeamTests(unittest.TestCase):
    for name in ('assert_idle','assert_requested_foreground'):stack.enter_context(patch.object(sync,name))
    stack.enter_context(patch.object(sync,'verification_entry',return_value=bottom))
    stack.enter_context(patch.object(sync,'wait_creator_content',side_effect=lambda a,b,r,*rest:r))
-   stack.enter_context(patch.object(sync,'focus',return_value='same focus'))
+   stack.enter_context(patch.object(sync,'refresh_scrolled_webview',side_effect=lambda a,b,r,*rest:r))
+   stack.enter_context(patch.object(sync,'focus',return_value='mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}'))
    stack.enter_context(patch.object(sync,'proven_list_terminal',return_value=(False,True)))
    stack.enter_context(patch.object(sync,'prove_native_list_start',return_value=top))
    swipe=stack.enter_context(patch.object(sync,'swipe'))
