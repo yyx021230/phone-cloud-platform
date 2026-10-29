@@ -93,3 +93,38 @@ test('actual worker exit/error handlers cannot time out the next worker on the s
   assert.equal(stops,0,event);assert.equal(rejections,1);assert.equal(workers.get('same'),replacement);
  }
 });
+
+test('lookup recovery proves Android cleanup after host worker was removed',async()=>{
+ const begin=source.indexOf('async function stopAirtestWorkerImpl('),end=source.indexOf('async function cleanupAirtestDeviceAfterForcedStop',begin);
+ for(const state of ['absent','still_running','transport_timeout']){
+  const calls=[];
+  const run=async(command,args,options)=>{
+   assert.equal(command,'existing-adb');
+   calls.push(args);assert.deepEqual(args.slice(0,2),['-s','one']);assert.ok(options.timeoutMs<=2000);
+   if(state==='transport_timeout')throw Error('shell timeout');
+   if(args[3]?.startsWith('pidof'))return state==='absent'?'LOOKUP_READER_ABSENT':'3731';
+   return '';
+  };
+  const stop=new Function('airtestWorkersBySerial','isLookupReaderRecovery','verifyLookupReaderCleanup','run','config','log',source.slice(begin,end)+';return stopAirtestWorkerImpl;')(
+   new Map(),isLookupReaderRecovery,verifyLookupReaderCleanup,run,{adbPath:'existing-adb'},()=>{});
+  let resumes=0;
+  const attempt=()=>restartLookupQueryOnce({operation:'query',error:Error('HTTPConnectionPool(local): Read timed out'),payload:{taskId:'original'},submitted:true,
+   stopWorker:()=>stop('one','lookup_query_app_recovery'),onRecovery:async()=>{},runWorker:async p=>{resumes++;assert.equal(p.taskId,'original');assert.equal(p.operation,'query_resume');assert.equal(p.allowEmptyInputRecovery,false);return {ok:true};}});
+  if(state==='absent'){assert.ok((await attempt()).ok);assert.equal(resumes,1);}
+  else{await assert.rejects(attempt,/old_worker_exit_unconfirmed/);assert.equal(resumes,0);}
+  assert.ok(calls.length>0);
+  const before=calls.length;
+  for(const reason of ['screen_control','xml_uiautomator','resident_limit','agent_shutdown'])assert.equal(await stop('one',reason),true);
+  assert.equal(calls.length,before,'unrelated absent-worker paths perform no new cleanup');
+ }
+});
+
+test('lookup recycle checks cleanup even when exit already deleted worker',async()=>{
+ const start=source.indexOf('async function recycleAirtestWorker('),end=source.indexOf('function hasActiveAirtestLookupWarmLease(',start);
+ let stopped=0,created=0,confirmed=false;
+ const fn=new Function('airtestWorkersBySerial','stopAirtestWorker','isLookupReaderRecovery','waitForWorkerExit','getAirtestWorker',source.slice(start,end)+';return recycleAirtestWorker;')(
+  new Map(),async()=>{stopped++;return confirmed;},isLookupReaderRecovery,async()=>{throw Error('no host to wait for');},async()=>{created++;return {};});
+ await assert.rejects(fn('one','lookup_reader_poco_probe_failed'),/cleanup_unconfirmed/);assert.equal(created,0);assert.equal(stopped,1);
+ confirmed=true;await fn('one','lookup_reader_poco_probe_failed');assert.equal(created,1);assert.equal(stopped,2);
+ await fn('one','poco_probe_failed');assert.equal(created,2);assert.equal(stopped,2);
+});

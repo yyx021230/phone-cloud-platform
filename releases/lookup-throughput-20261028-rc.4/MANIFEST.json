@@ -1,0 +1,28 @@
+{
+  "version": "lookup-throughput-20261028-rc.4",
+  "status": "local-candidate-acceptance-blocked",
+  "baseCommit": "ba8f4921ee08d9762853b69b54c2c7371c6f95d2",
+  "branch": "codex/lookup-throughput-accuracy-20261028",
+  "production": {
+    "at": "2026-10-29T02:37:13.668348+00:00",
+    "version": "platform-integration-20261028-deployed.1",
+    "source": "baca5721214658b46f24c974c9147490b0bafada",
+    "activeSha256": "4bb61c39a8a5cd912069ed494d84dba1af4cf3cc37adbac8285db935586b995a",
+    "image": "sha256:fca45ec32e72b0787e4375fd6812a5ac97d3aebec4b830b6393b03117554b45e",
+    "running": true,
+    "restarts": 0
+  },
+  "checks": {
+    "nodeRegression": 1504,
+    "focused": 51,
+    "npmCheck": true,
+    "realBusinessRecovery": false
+  },
+  "files": {
+    "windows-agent/src/index.mjs": "32ab7baaab587e6f2800de3999763a6c1a431f0946128976dc4a96335de3485f",
+    "windows-agent/src/lookup-reader-lifecycle.test.mjs": "252c4dd83f0d0e04e3ae51cc49b9c6ea026a33da80b7ef6f378f74b429dbd344",
+    "docs/PROJECT_DEVELOPMENT.md": "cb9ae3610ae45d636795b1093c99a0d36a7f73360716e25cf58399bdce4ccc9f",
+    "releases/lookup-throughput-20261028-rc.4/README.md": "02786b36e9111efa8f0e9edec7137e06bcb4b41051f07e39fb6a6b7a70de2be1",
+    "releases/lookup-throughput-20261028-rc.4/API_EVIDENCE.json": "79afba0ab4fd6942a62ab1ce334b9ef08e89eba9b10bda096f7e34362df5d31d"
+  }
+}

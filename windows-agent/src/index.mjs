@@ -2990,9 +2990,13 @@ async function probeAirtestWorker(worker, workflow) {
 
 async function recycleAirtestWorker(serial, reason) {
   const existing = airtestWorkersBySerial.get(serial);
-  if (existing) {
+  // An exit callback may already have removed the host worker. Its Android
+  // instrumentation can outlive it, so lookup still needs cleanup proof.
+  if (existing || isLookupReaderRecovery(reason)) {
     const stopped = await stopAirtestWorker(serial, reason);
     if (isLookupReaderRecovery(reason) && stopped !== true) throw new Error("lookup_reader_cleanup_unconfirmed");
+  }
+  if (existing) {
     const exited = await waitForWorkerExit(existing, 8_000);
     if (!exited) throw new Error(`Airtest/Poco worker 未能停止：${serial}`);
   }
@@ -3300,7 +3304,15 @@ async function stopAirtestWorker(serial, reason = "stop") {
 
 async function stopAirtestWorkerImpl(serial, reason = "stop") {
   const worker = airtestWorkersBySerial.get(serial);
-  if (!worker) return true;
+  if (!worker) {
+    if (!isLookupReaderRecovery(reason)) return true;
+    // Host process exit is not evidence that Android stopped instrumentation.
+    // Keep the same bounded, serial-scoped proof before lookup can reattach.
+    const cleanupConfirmed = await verifyLookupReaderCleanup(serial, (args, options) => run(config.adbPath, args, options))
+      .then(() => true, () => false);
+    log("lookup exited reader cleanup completed", { serial, reason, cleanupConfirmed });
+    return cleanupConfirmed;
+  }
   const screenPriority = reason === "screen_control" || reason === "xml_uiautomator";
   const lookupRecovery = isLookupReaderRecovery(reason);
   let cleanupConfirmed = true;
