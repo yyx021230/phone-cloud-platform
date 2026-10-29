@@ -1,0 +1,12 @@
+{
+  "agentRestarted": false,
+  "sampledAt": "2026-10-29T09:06:17.3838148Z",
+  "adbChanged": false,
+  "adbPid": 17764,
+  "stage": "D:\\PhoneCloud\\staging\\platform-integration-20261029-rc.3",
+  "relative": "scripts/小红书数据同步.py",
+  "sha256": "9a95226108c70ed8830dd322bdbd32c9d932f163ebbc509ff371703888b1fddf",
+  "status": "xhs_python_runner_corrected",
+  "oldSha256": "cbf038e297f3b67c8b4b681bf93b22e6026c7683d263d1c4fc62b56897de63e0",
+  "agentPid": 20232
+}

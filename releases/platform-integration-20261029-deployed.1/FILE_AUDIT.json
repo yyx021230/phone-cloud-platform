@@ -1,0 +1,43 @@
+{
+  "selectedFiles": 211,
+  "cloudFiles": 110,
+  "windowsFiles": 101,
+  "candidateMatched": 206,
+  "sourceCommit": "3a266d71ba861f8e81d6ec3a173d7efc12d5b245",
+  "differences": [
+    {
+      "file": "windows-agent/scripts/lookup-native-double-card.fixture.json",
+      "actual": null,
+      "candidate": "f78e67a7375b9e0a1efeecc2625ad65b9a8e64e1ff8ab83b0596494790687228",
+      "frozen": false
+    },
+    {
+      "file": "windows-agent/scripts/probes/build-native-pair.py",
+      "actual": null,
+      "candidate": "2b79e551f76a86cbf9d1c7697e234990f06cca585111a2c73701256bcad92b1e",
+      "frozen": false
+    },
+    {
+      "file": "windows-agent/scripts/smsrelay_fleet_preflight.mjs",
+      "actual": null,
+      "candidate": "a5f8d93fa863b19dfb0302a538b5409d042bf885eb45122e4f04288c4f456c98",
+      "frozen": false
+    },
+    {
+      "file": "windows-agent/src/screen-stream.mjs",
+      "actual": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "candidate": "2a2dc815a6b9068b4ca9f234102fdb97eb8785474f587bb31eaf4b2707dbb569",
+      "frozen": true
+    },
+    {
+      "file": "windows-agent/src/serial-adb-health.mjs",
+      "actual": "efb0f36c5b73511f5366704b30a10c5e0e6caf4fe13a23c328b60dec14c77c0d",
+      "candidate": "ea6066d526ce12c6a1fd7d4e15b19f012ace259dbf7461549d951c40afb46334",
+      "frozen": true
+    }
+  ],
+  "coverage": "Tracked selected business source/assets in server/public/windows-agent/src/scripts; includes Unicode paths and native JARs. Credentials/configuration and OS binaries excluded; D-075 separately verified live.",
+  "diagnosticAndFixtureMissing": 3,
+  "frozenProductionPreserved": 2,
+  "unexpectedRuntimeDifferences": 0
+}
