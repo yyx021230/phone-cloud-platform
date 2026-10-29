@@ -1,0 +1,39 @@
+{
+  "candidateTag": "lookup-fleet-20261029-rc.1",
+  "branch": "codex/lookup-fleet-audit-20261029",
+  "state": "local_candidate_not_deployed",
+  "parents": {
+    "fleetAudit": "9211afebe98d857eeec6455c893ae770cc1cd4d7",
+    "businessRc10": "179b124ad990c158f02010dbaa42acb20964abe1"
+  },
+  "commonBase": "73de8ba87d3f75ff3d9e32da4821b57784b69200",
+  "mergeResolution": "only PROJECT_DEVELOPMENT.md append conflict; retain entire audit suffix then entire rc10 suffix byte for byte",
+  "files": {
+    "server/lookup-failure-domain.mjs": "bd31370d753119267669e0e05537d7de9639f25066411e38337151ee8cea38b9",
+    "server/lookup-technical-domain.test.mjs": "4dc50463f9f0c270cce9aab6be1f4bc9311bef0bf6745af0cc7a73600fade003",
+    "server/lookup-stop-proof.test.mjs": "1a594bed3f79c01c94e59281558fb6c4a83ce4a07f33aa5a94844425b56b5594",
+    "docs/PROJECT_DEVELOPMENT.md": "45aede6fa64ad92b06e10ae7a8d32db0135c9b9502cc7fb35f607d445cb93cd8",
+    "releases/lookup-throughput-20261028-rc.10/README.md": "894299203738bdbaca4b026313e10c185874dc4cb8f15a588429900049ba139a"
+  },
+  "artifacts": {
+    "README.md": "eda7d32ddfc8decc0a3e26d077bf007a53364614ce87b52aadee262cc44b36d9",
+    "INDEPENDENT_UNAUTHORIZED_REPLAY.json": "eff671b7a3e3394fc83209cb62e050d360908093c7127de973611b9bd120b67d"
+  },
+  "validation": {
+    "fullNodeByCollaboratingChat": 1629,
+    "fullNodeLogSha256Verified": "11c888434eed5c6dfca485cc420a7475235a72cb419e9d855915ab6bbe6edf15",
+    "rootCheckByCollaboratingChat": "passed; log SHA256 verified",
+    "independentTargetedBeforeMerge": 120,
+    "combinedTargetedAfterMerge": 120,
+    "historicalMessageReplay": 4,
+    "combinedSourceSameAsFullTestedRc10": true,
+    "businessRealDeviceAcceptance": "not_completed",
+    "newPhoneOperations": 0,
+    "productionChanges": false
+  },
+  "evidence": {
+    "combined-targeted-tests.txt": "f2f53dbc5970453fd565ff03d516ca79f62add989a1d352b023c69f39261c3b6",
+    "unauthorized-exact-private.json": "29a00de38e44b494187f6c12e728c566e9c88dcb2be999cdc3b35d07379eaef2"
+  },
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+}

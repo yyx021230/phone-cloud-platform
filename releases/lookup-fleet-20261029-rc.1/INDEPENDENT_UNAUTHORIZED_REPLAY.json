@@ -1,0 +1,14 @@
+{
+  "result": "passed",
+  "originalDatabaseCases": 4,
+  "oldUnknown": 4,
+  "newDevice": 4,
+  "newTerminalAi": 0,
+  "candidateCommit": "179b124ad990c158f02010dbaa42acb20964abe1",
+  "review": "read complete diff; only cloud error classification and tests, no ADB or phone operations",
+  "privateEvidenceSha256": "29a00de38e44b494187f6c12e728c566e9c88dcb2be999cdc3b35d07379eaef2",
+  "classifierSha256": "bd31370d753119267669e0e05537d7de9639f25066411e38337151ee8cea38b9",
+  "independentTargetedTests": 120,
+  "combinedTreeTargetedTests": 120,
+  "realDeviceAuthorizationRecovery": "not_verified"
+}

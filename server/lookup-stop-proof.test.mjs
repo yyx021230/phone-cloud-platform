@@ -1,6 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {confirmedLookupStop,hasConfirmedLookupStop} from './lookup-stop-proof.mjs';
 import {createManagedLookupAdapter} from './managed-lookup-platform.mjs';
+import {lookupFailureDomain} from './lookup-failure-domain.mjs';
 const source=fs.readFileSync(new URL('./index.mjs',import.meta.url),'utf8');
 const body=source.match(/^function syncAutomationJobFromWindowsTask\(windowsTask, status, result = \{\}\) \{[\s\S]*?^\}/m)[0];
 const sanitizeBody=source.match(/^function sanitizeTaskResult\(input = \{\}, options = \{\}\) \{[\s\S]*?^\}/m)[0];
@@ -16,6 +17,16 @@ function fixture(){
  return {session,job,task,proof,state,released,sync,c:{sessionId:'session',deviceId:'phone',generation:'g'}};
 }
 for(const status of ['failed','cancelled','succeeded'])test('stop '+status+' without proof keeps reservation and cancellation pending',()=>{const f=fixture();f.sync(f.task,status,{errorCode:'lookup_reader_cleanup_unconfirmed'});assert.equal(f.session.status,'stopping');assert.equal(f.session.results[0].status,'cancelling');assert.equal(f.released.length,0);assert.equal(f.session.lookupStopFailure.code,'lookup_reader_cleanup_unconfirmed');const o=createManagedLookupAdapter({state:f.state}).observe(f.c);assert.equal(o.stopUnconfirmed,true);assert.notEqual(o.stopped,true);});
+test('unauthorized device classification cannot prove stop or release its reservation',()=>{
+ const f=fixture(),result={errorCode:'task_failed',message:'ADB 设备未连接：SYNTHETIC Command failed: adb.exe -s SYNTHETIC get-state\nerror: device unauthorized.\nOtherwise check for a confirmation dialog on your device.'};
+ f.sync(f.task,'failed',result);
+ assert.equal(lookupFailureDomain(f.job),'device');
+ assert.equal(f.session.status,'stopping');assert.equal(f.session.results[0].status,'cancelling');
+ assert.equal(f.released.length,0);assert.equal(f.state.windowsTasks.length,1);
+ const o=createManagedLookupAdapter({state:f.state}).observe(f.c);
+ assert.equal(o.stopUnconfirmed,true);assert.notEqual(o.stopped,true);
+ assert.equal(hasConfirmedLookupStop(f.session,f.c),false);
+});
 test('only successful matching stop proof survives sanitize and releases exact session',()=>{const f=fixture();f.sync(f.task,'succeeded',{diagnostic:{lookupStopProof:f.proof}});assert.equal(f.session.status,'ended');assert.equal(f.session.results[0].status,'cancelled');assert.deepEqual(f.released,['session']);assert.equal(hasConfirmedLookupStop(f.session,f.c),true);assert.equal(createManagedLookupAdapter({state:f.state}).observe(f.c).stopped,true);});
 for(const field of ['taskId','sessionId','generation','readerCleanupConfirmed','version'])test('wrong stop proof '+field+' cannot release',()=>{const f=fixture();f.proof[field]='wrong';f.sync(f.task,'succeeded',{diagnostic:{lookupStopProof:f.proof}});assert.equal(f.released.length,0);assert.equal(f.session.status,'stopping');});
 for(const change of ['pendingJob','generation','session','device','task'])test('late stop binding '+change+' cannot alter next task or confirmation',()=>{const f=fixture();if(change==='pendingJob')f.session.pendingJobId='new-job';if(change==='generation')f.task.payload.managedLookup.generation='old';if(change==='session')f.task.payload.automationSessionId='old';if(change==='device')f.task.deviceId='other';if(change==='task')f.task.taskId='other';const before=structuredClone(f.session);f.sync(f.task,'succeeded',{diagnostic:{lookupStopProof:f.proof}});assert.deepEqual(f.session,before);assert.equal(f.released.length,0);});

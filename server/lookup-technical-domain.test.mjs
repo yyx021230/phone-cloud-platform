@@ -20,6 +20,30 @@ test('preflight task_failed classifies explicit ADB not-found without runner dia
  assert.equal(lookupFailureDomain({result:{errorCode:'alipay_lookup_result_unconfirmed',diagnostic:{runnerReason:'local_lookup_result_unconfirmed:network_refresh_unconfirmed'}}}),'network');
 });
 
+for(const line of ['error: device unauthorized.','error: device offline','error: device not found',"error: device 'SYNTHETIC' unauthorized",'error: device "SYNTHETIC" offline.']){
+ for(const newline of ['\n','\r\n'])test('executor ADB stderr shape '+JSON.stringify([line,newline]),()=>{
+  const message=['ADB 设备未连接：SYNTHETIC Command failed: adb.exe -s SYNTHETIC get-state',line,"Try 'adb kill-server' if that seems wrong.",'Otherwise check for a confirmation dialog on your device.'].join(newline);
+  for(const kind of ['alipay_name_query','alipay_name_stop']){
+   const job={kind,status:'failed',result:{errorCode:'task_failed',message}};
+   assert.equal(lookupFailureDomain(job),'device');assert.equal(lookupTerminalResultReason(job),'');
+  }
+ });
+}
+for(const text of [
+ 'error: device unauthorized.',
+ 'unrelated\nADB 设备未连接：SYNTHETIC\nerror: device unauthorized.',
+ 'ADB 设备未连接：SYNTHETIC error: device unauthorized.',
+ 'ADB 设备未连接：SYNTHETIC\nTip: error: device unauthorized.',
+ 'ADB 设备未连接：SYNTHETIC\n"error: device unauthorized."',
+ "ADB 设备未连接：SYNTHETIC\nTry 'adb kill-server' if that seems wrong.",
+ "ADB 设备未连接：SYNTHETIC\nadb shell echo 'error: device unauthorized.'",
+ 'ADB 设备未连接：SYNTHETIC\nerror: device unauthorized. Try adb kill-server',
+ 'ADB 设备未连接：SYNTHETIC\nerror: device unauthorized-extra',
+ 'ADB 设备未连接：SYNTHETIC\nerror: device \'SYNTHETIC" unauthorized',
+])test('non-stderr advice cannot classify task as device failure '+JSON.stringify(text),()=>{
+ assert.equal(lookupFailureDomain({kind:'alipay_name_query',result:{errorCode:'task_failed',message:text}}),'');
+});
+
 for(const prefix of ['', 'poco_query_resume_observation_failed:'])test('exhausted ADB read stays transport: '+prefix,()=>{
  const j={result:{errorCode:'alipay_lookup_result_unconfirmed',diagnostic:{runnerReason:prefix+'local_lookup_result_unconfirmed:adb_read_unavailable'}}};
  assert.equal(lookupFailureDomain(j),'device');assert.equal(lookupTerminalResultReason(j),'');
