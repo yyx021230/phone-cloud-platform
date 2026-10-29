@@ -113,8 +113,11 @@ print(json.dumps({'recovered':recovered,'pending':len(list(folder.glob('*.settin
 def main():
     if not __debug__ or os.environ.get('PYTHONOPTIMIZE'):
         raise RuntimeError('qa_optimized_python_is_forbidden')
-    names=sys.argv[1:]
+    selectors=sys.argv[1:]
+    names=[s.split('/')[0] for s in selectors]
+    slots=[s.split('/')[1] if '/' in s else 'app1' for s in selectors]
     validate_target_names(names)
+    if any(slot not in ('app1','app2') for slot in slots):raise ValueError('qa_invalid_slot')
     spec=importlib.util.spec_from_file_location('access',os.environ['XHS_QA_ACCESS_FILE'])
     access=importlib.util.module_from_spec(spec);spec.loader.exec_module(access);q=access.q
     phase='live-'+uuid.uuid4().hex[:12]
@@ -126,8 +129,8 @@ def main():
     inventory=q.request('/api/v1/devices')['body']['devices']
     approved=json.loads(Path(os.environ['XHS_QA_TARGETS_FILE']).read_text())['targets']
     targets=[]
-    for name in names:
-        t=next(t for t in approved if t['deviceName']==name and t['appSlot']=='app1')
+    for name,slot in zip(names,slots):
+        t=next(t for t in approved if t['deviceName']==name and t['appSlot']==slot)
         d=next(d for d in inventory if d['deviceId']==t['deviceId'])
         assert d['adb']['state']=='device' and not d.get('occupancy')
         a=next(a for a in d['xhsAccounts'] if a['appSlot']==t['appSlot'])
@@ -299,6 +302,7 @@ console.log(JSON.stringify(targets.map((t,i)=>{const locks=values[1].body.locks.
                 for src,dst in zip(raw['notes'],actual['notes']):
                     assert dst['title']==src['title'][:180]
                     for key in ('published_date','list_view_count','list_like_count','list_comment_count'):assert dst[key]==src[key],'api_note_field_changed'
+                    assert dst.get('element_cover_sha256')==src.get('element_cover_sha256'),'api_cover_identity_changed'
             else:assert item['status']!='succeeded','failed_candidate_was_reported_success'
         save('api-pages-private.json',pages);api_call({'op':'restart'})
         restored=[api_call({'op':'result','runId':run_id,'offset':i}) for i in range(len(targets))]
@@ -335,7 +339,7 @@ console.log(JSON.stringify(targets.map((t,i)=>{const locks=values[1].body.locks.
             except subprocess.TimeoutExpired:p.terminate()
         save('identity-after.json',q.attest())
         shared_after=shared_runtime_hashes(q);save('shared-hashes-after.json',shared_after)
-        summary={'phase':phase,'results':[{'name':r['target']['deviceName'],'model':r['target']['model'],'ok':collection_succeeded(r['answer'],r['pendingLedgers']),'notes':len(r['answer'].get('result',{}).get('collection',{}).get('notes',[])),
+        summary={'phase':phase,'results':[{'name':r['target']['deviceName'],'model':r['target']['model'],'appSlot':r['target']['appSlot'],'ok':collection_succeeded(r['answer'],r['pendingLedgers']),'notes':len(r['answer'].get('result',{}).get('collection',{}).get('notes',[])),
                   'complete':r['answer'].get('result',{}).get('collection',{}).get('complete'), 'pendingLedgers':r['pendingLedgers'],'settingsRestored':r['answer'].get('settingsRestored',False),'elapsedSeconds':r['elapsedSeconds'],'error':r['answer'].get('error') or (None if collection_succeeded(r['answer'],r['pendingLedgers']) else 'recent_window_not_proven')} for r in results],
                  'proofs':proof_count,'cloudSnapshots':snapshot_count,'proofFailures':proof_failures,'productionSharedFilesChanged':shared_before!=shared_after}
         save('summary.json',summary);print(json.dumps(summary,ensure_ascii=False),flush=True)
