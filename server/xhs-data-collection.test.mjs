@@ -36,3 +36,18 @@ test("old or unhealthy agents cannot receive collection jobs", () => {
   assert.equal(hasXhsDataCollectionCapability({ health: { xhsDataCollect: { protocol: "xhs_data_collect_v1", ready: true } } }), true);
   assert.equal(hasXhsDataCollectionCapability({ health: { xhsDataCollect: { protocol: "other", ready: true } } }), false);
 });
+
+test("opaque element fingerprints preserve distinct same-title/date posts without exposing resource text", () => {
+  const input = snapshot();
+  input.notes = ['a', 'b'].map(c => ({ ...input.notes[0], element_cover_sha256: c.repeat(64), cover_resource: 'private' }));
+  const result = sanitizeXhsDataCollection(input);
+  assert.equal(result.notes.length, 2);
+  assert.deepEqual(result.notes.map(n => n.element_cover_sha256), ['a'.repeat(64), 'b'.repeat(64)]);
+  assert.ok(result.notes.every(n => n.note_id === null && n.cover_resource === undefined));
+});
+test("invalid element fingerprints cannot enter exported results", () => {
+  for (const value of [null, 3, 'url', 'A'.repeat(64), ['a'.repeat(64)], { toString: () => 'a'.repeat(64) }]) {
+    const input = snapshot(); input.notes[0].element_cover_sha256 = value;
+    assert.throws(() => sanitizeXhsDataCollection(input), /invalid_xhs_collection_element_identity/);
+  }
+});

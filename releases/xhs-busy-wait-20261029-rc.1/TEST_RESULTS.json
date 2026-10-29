@@ -1,0 +1,157 @@
+{
+  "nodeVersion": "v25.9.0",
+  "productionOrPhoneTests": false,
+  "runs": [
+    {
+      "name": "targeted-final",
+      "command": [
+        "node",
+        "--test",
+        "server/xhs-batch/engine.test.mjs",
+        "windows-agent/src/xhs-data-reservation.test.mjs",
+        "windows-agent/src/xhs-data-collection.test.mjs"
+      ],
+      "counts": {
+        "tests": 59,
+        "pass": 59,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "log": "targeted-final.log",
+      "sha256": "6170769569ca9b90b5e4c71cd7d8f16b34da1ec4ae06c042338164e08f809287",
+      "exitCode": 0
+    },
+    {
+      "name": "batch-final",
+      "command": [
+        "npm",
+        "run",
+        "test:xhs-batch"
+      ],
+      "counts": {
+        "tests": 41,
+        "pass": 39,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 2
+      },
+      "log": "batch-final.log",
+      "sha256": "77a3b7583c1a1d061a248e513bc7fc5a95172bf66f3cdfb037a4a82eb16ab537",
+      "exitCode": 0
+    },
+    {
+      "name": "screen-tests",
+      "command": [
+        "npm",
+        "run",
+        "test:screen"
+      ],
+      "counts": {
+        "tests": 1460,
+        "pass": 1458,
+        "fail": 2,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "log": "screen-tests.log",
+      "sha256": "11f1701fafd6c1957bc05316fc89389d2ca3427653b729ef3047c3be3c6714ff",
+      "exitCode": 1
+    },
+    {
+      "name": "screen-serial-tests",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "same full test:screen file set"
+      ],
+      "counts": {
+        "tests": 1461,
+        "pass": 1460,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "log": "screen-serial-tests.log",
+      "sha256": "2b2783b95906617c9c32c6d868ac49cddbea08b0debeb6557c850eb3fe4a4437",
+      "exitCode": 1
+    },
+    {
+      "name": "affected-tests",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "server/managed-lookup.http.test.mjs",
+        "windows-agent/src/device-scan-agent.test.mjs",
+        "windows-agent/src/xhs-data-reservation.test.mjs"
+      ],
+      "counts": {
+        "tests": 16,
+        "pass": 16,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "log": "affected-tests.log",
+      "sha256": "bde92c451364e62ee197d5330b084f85f0a32f5c345ada5edb120c75a9115e11",
+      "exitCode": 0
+    },
+    {
+      "name": "scan-baseline",
+      "command": [
+        "node",
+        "--test",
+        "windows-agent/src/device-scan-agent.test.mjs"
+      ],
+      "counts": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "log": "scan-baseline.log",
+      "sha256": "a767cac205ea1cabdb4275a0099e157af5b9b0c2b9ce5af393759e4172b837ac",
+      "exitCode": 0
+    },
+    {
+      "name": "scan-candidate",
+      "command": [
+        "node",
+        "--test",
+        "windows-agent/src/device-scan-agent.test.mjs"
+      ],
+      "counts": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "log": "scan-candidate.log",
+      "sha256": "38e66086d14f77f8e935890aff7b097a38f17a94f4a99fdc4f1ae4ec7be1f2b2",
+      "exitCode": 0
+    },
+    {
+      "name": "syntax-final",
+      "command": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "counts": {},
+      "log": "syntax-final.log",
+      "sha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+      "exitCode": 0
+    }
+  ],
+  "review": "self_review",
+  "limitations": [
+    "No real phone or deployment acceptance",
+    "Two opt-in PostgreSQL tests skipped without disposable database",
+    "Full-suite inventory first-sync <3s assertion failed intermittently; isolated baseline and candidate both pass. Cause of timing variation not established.",
+    "Initial detached full-suite invocation was interrupted without completion; never counted as passing"
+  ]
+}

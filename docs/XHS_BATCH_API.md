@@ -168,3 +168,9 @@ print(get("/api/v1/open/xhs-data/batches?offset=0"))
 `schema.sql` 只新增表/索引，已在临时库执行。`config.example.json`、systemd unit、nginx location 是部署模板，目标路径/服务用户需按实际环境配置；示例占位密钥会被启动校验拒绝。启动命令 `npm run start:xhs-batch`，需显式 `XHS_BATCH_CONFIG_FILE`（0600）、`XHS_BATCH_DATABASE_URL` 和可选 `XHS_BATCH_PORT`（默认 8791、仅 loopback）。由现有 HTTP 或 HTTPS 入口仅代理该 API 前缀，保持批次端口不直接暴露。配置 `platformBaseUrl` 支持 HTTP/HTTPS，容器内回环只代表该容器自身，必须按实际同机/跨容器拓扑设置，不能原样照搬示例端口。
 
 回退：先关闭计划、stop 未派发项，核对并等待既有任务收尾；停止新批次服务、撤回新增代理段；按备份/原镜像恢复云端两个最小补丁。**保留新表和采集结果**，不 drop、不整库覆盖、不删除业务数据；旧平台不依赖新表。启动回退前后均保持 D-075 生产基线。发布/迁移/创建真实计划与首批手机采集仍须具体版本授权。
+
+### 同名同日笔记身份扩展（2026-10-29 本地候选，未上线）
+
+`notes[].element_cover_sha256` 可选，为64位小写十六进制字符串。来自原生封面元素资源文本的任务内指纹，原始文本不导出；不是稳定笔记ID，不能用于跨日关联。带 `collection_identity_schema:title_date_cover_sha256_v1` 时，完整性摘要对每条 `[title, published_date, element_cover_sha256]` 计算；无指纹行仍用 `[title, published_date]`。保持数组顺序，不按标题日期去重。无此标记的既有结果按原算法核对。字段缺失不当作空指纹、账号身份或零篇证明。
+
+同日标题唯一时继续使用原有标题/日期的跨遍身份摘要，封面指纹只作为单遍连续性辅助；同名同日笔记存在时才使用上述 `title_date_cover_sha256_v1` 摘要，并增加 `collection_verification_direction:reverse_same_list`。后一种验证在同一已加载列表中由下向上重新读取元素，核对每个身份、连续位置、底部日期/列表结束边界和顶部；不跨重开比较临时签名，不按数量相等放行。该变化仍为本地待真机候选。

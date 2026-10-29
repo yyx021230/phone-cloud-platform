@@ -1,0 +1,33 @@
+{
+  "status": "locally_merged_release_candidate_not_deployed",
+  "recordedAt": "2026-10-29T04:32:40.959335+00:00",
+  "branch": "codex/xhs-release-20261029",
+  "releaseTag": "xhs-release-20261029-rc.1",
+  "mergeCommit": "8146a756dbf083a50f829969f19a83bed3fdd225",
+  "parents": [
+    "d8019059f48182c02307a4addc1fa50ebfec4aeb",
+    "574a0f17b85887ba75704746bc86c02592d8422d"
+  ],
+  "acceptedCandidateCommit": "574a0f17b85887ba75704746bc86c02592d8422d",
+  "runtimeSourceCommit": "26d816fa7e11403df989e708473dd3531e4a6870",
+  "mergeTreeEqualsAcceptedTree": true,
+  "runtimeFileHashesReverified": true,
+  "packageHashesReverified": true,
+  "productionDeployed": false,
+  "remotePushed": false,
+  "unrelatedWorktreesModified": false,
+  "cleanup": {
+    "ownedQaDatabaseStopped": true,
+    "ownedDependencySymlinksRemoved": true,
+    "livePhasesLeasesAndForwardClosed": true,
+    "phoneSettingsRestored": true,
+    "productionSharedFilesUnchanged": true
+  },
+  "remainingAcceptance": [
+    "153 USB dismissal branch was replay-tested; current live run reached data-permission gate without observed USB branch execution",
+    "153/app1 and app2 require account data permission; 131/app2 requires login",
+    "Production Agent positive xhs reservation path requires authorized maintenance activation and staged acceptance"
+  ],
+  "tests": "TEST_RESULTS.json",
+  "liveEvidence": "LIVE_ACCEPTANCE.json"
+}

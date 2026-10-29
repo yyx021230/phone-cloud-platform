@@ -1,0 +1,48 @@
+{
+  "suites": [
+    {
+      "suite": "python",
+      "passed": 488,
+      "exitCode": 0,
+      "log": "rc5-final-python.log",
+      "sha256": "a83f4f9063bef7d84b2584aa38d26018c62690ad386bf7c153c4bc62df691009"
+    },
+    {
+      "suite": "screen_and_js",
+      "passed": 1463,
+      "exitCode": 0,
+      "log": "rc5-screen-serial.log",
+      "sha256": "54ec3c2cd2a2fc339ca85a2cb390613ea92c9825f7fd7c760586be93fc4edca1"
+    },
+    {
+      "suite": "batch_with_postgresql",
+      "passed": 41,
+      "exitCode": 0,
+      "log": "rc5-batch-with-pg.log",
+      "sha256": "4b43c4ed520955710a6ae879a9f5a058e34bbcf8c955805fe7d1c45a04f6d8b6"
+    },
+    {
+      "suite": "qa_guards",
+      "passed": 30,
+      "exitCode": 0,
+      "log": "rc5-qa-final.log",
+      "sha256": "0692f832f8d30c15cea2da81c1677745e94965aea2ec32a39fe3c08e6363b286"
+    },
+    {
+      "suite": "focused_js",
+      "passed": 65,
+      "exitCode": 0,
+      "log": "rc4-js-targeted.log",
+      "sha256": "5d3cd26d3602c07577366e068f38f5242a74715a65f33a8d4dfe2f345f7ffefa"
+    },
+    {
+      "suite": "root_syntax",
+      "passed": null,
+      "exitCode": 0,
+      "log": "rc5-root-check.log",
+      "sha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+    }
+  ],
+  "doNotSumOverlappingSuites": true,
+  "priorFailedAttemptsPreservedIn": "../xhs-busy-wait-20261029-rc.1/"
+}

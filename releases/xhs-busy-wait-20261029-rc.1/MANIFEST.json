@@ -1,0 +1,31 @@
+{
+  "version": "xhs-busy-wait-20261029-rc.1",
+  "status": "local_candidate_not_deployed",
+  "branch": "codex/xhs-busy-wait-20261029",
+  "baselineReceiptCommit": "d8019059f48182c02307a4addc1fa50ebfec4aeb",
+  "runtimeFiles": [
+    {
+      "path": "server/xhs-batch/engine.mjs",
+      "baselineSha256": "be3fed0de38fc021132f6d47d6adac24e62dcd4a11c538daba4e5f4a3cc64eb8",
+      "candidateSha256": "52fc62dd5acec4ea2a3bea7493f7774310033c8a39dd1943c67d666af74151c1"
+    },
+    {
+      "path": "windows-agent/src/index.mjs",
+      "baselineSha256": "884bc370558e6b0b3f2d0d46dee309da4467757b613c0da03576de8f9b34df74",
+      "candidateSha256": "0f70a3a14bec81b91c0b84cfa34c4d24ee0462ac262cba777395cc5aa5fd8c38"
+    },
+    {
+      "path": "windows-agent/src/xhs-data-collection.mjs",
+      "baselineSha256": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842",
+      "candidateSha256": "e1c6812a079ff078492797fb5d928b731675cf68ef20f87e93ad768733c79ffe"
+    }
+  ],
+  "packages": {
+    "candidate.tar.gz": "c22c8334df68a1c1ebbea1a2d880830147e616a4b9385715fc38407dde89689e",
+    "rollback-reference.tar.gz": "e882ad8e878d47ff2995409f3fc97b7530e90b5fce90802557d10a818c4461ea"
+  },
+  "isolatedArchiveRestoreVerified": true,
+  "productionFreshHashesAndBackupsRequired": true,
+  "productionDataModified": false,
+  "testPhonesOperated": false
+}
