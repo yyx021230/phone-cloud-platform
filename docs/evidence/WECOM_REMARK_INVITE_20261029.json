@@ -1,5 +1,5 @@
 {
-  "status": "requested_remark_persisted_one_send_click_delivery_pending",
+  "status": "requested_remark_invitation_delivery_confirmed_by_user",
   "operationDateAsiaShanghai": "2026-10-29",
   "targetMasked": "136****6441",
   "previousSender": "23",
@@ -27,8 +27,9 @@
     "claimRetained": true,
     "runtimeOutcome": "unknown_no_retry",
     "providerDeliveryConfirmed": false,
-    "recipientConfirmation": "pending",
-    "contactAcceptance": "not_verified"
+    "recipientConfirmation": "invitation_received_confirmed_by_user",
+    "contactAcceptance": "not_verified",
+    "deliveryConfirmed": true
   },
   "attempts": [
     {
@@ -180,18 +181,27 @@
     "postflight.py": "5d80cce9c3637bc49bea96b59159fbc58af56a71189502ee90f7f700ac605479"
   },
   "notVerified": [
-    "recipient delivery/acceptance for this second invitation",
+    "recipient contact acceptance for this second invitation",
     "43 initial home page failure root cause",
     "stable automatic sender-side delivery detection",
     "production WeCom API dispatch or bulk sending",
     "new Windows-native automated/full regression"
   ],
-  "recordedAtUtc": "2026-10-29T01:27:45.696293+00:00",
+  "recordedAtUtc": "2026-10-29T01:41:06.257303+00:00",
   "pushed": false,
   "archivedGuardTests": {
     "command": "PYTHONPATH=windows-agent/scripts python3 verification/wecom-explicit-remark-20261029/test_exact_remark.py",
     "passed": 8,
     "failed": 0,
     "runtimeDeviceOrNetworkActions": 0
+  },
+  "recipientConfirmationEvidence": {
+    "source": "direct_user_reply_in_this_thread",
+    "statement": "已收到这次新邀请",
+    "device": "59",
+    "targetMasked": "136****6441",
+    "confirmsDeliveryOnly": true,
+    "newSendActions": 0,
+    "recordedAtUtc": "2026-10-29T01:41:06.257303+00:00"
   }
 }
