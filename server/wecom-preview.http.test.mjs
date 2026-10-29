@@ -174,4 +174,52 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   assert.equal(localDone.result.sendClaimed,false);assert.equal(localDone.result.sendStatus,"unknown");assert.equal(localDone.result.invitationSent,null);
   await request("POST",route,admin,{...localUnknown,requestId:"fixture_local_new_request"},409);
 
+  // Four-field third-system contract: implicit single-main mapping, no ADB IDs,
+  // caller request ID or execution-mode argument; duplicate POST is one task.
+  const integration='/api/v1/wecom/customer-invitations';
+  const simple={deviceNumber:'59',appSlot:'main',phoneNumber:'13800138000',remarkName:'对接客户'};
+  await request('POST',integration,'',simple,401);
+  await request('POST',integration,user,simple,401);
+  await request('POST',integration,admin,{...simple,mode:'preview'},400);
+  await request('POST',integration,admin,{...simple,deviceNumber:'155',appSlot:undefined},400);
+  const accepted=await request('POST',integration,admin,simple,202);
+  assert.ok(accepted.taskId);assert.equal(accepted.status,'queued');assert.equal(accepted.deviceId,undefined);assert.equal(accepted.requestId,undefined);
+  const duplicate=await request('POST',integration,admin,simple,200);
+  assert.equal(duplicate.taskId,accepted.taskId);assert.equal(duplicate.reused,true);
+  await request('POST',integration,admin,{...simple,remarkName:'不可改写原任务'},409);
+  const simpleTask=(await request('GET',next+'?wecomPreview=wecom-invitation-v4',agent)).task;
+  assert.equal(simpleTask.payload.mode,'send');assert.equal(simpleTask.payload.remarkName,simple.remarkName);
+  assert.equal(simpleTask.adbSerial,pool['59'].serial);
+  const simpleClaim=`/api/v1/windows-agents/fixture-agent/wecom-preview-tasks/${simpleTask.taskId}/send-claim`;
+  await request('POST',simpleClaim,agent,{},201);
+  await request('POST',`/api/v1/windows-agent-tasks/${simpleTask.taskId}/status`,agent,{status:'succeeded',result:{previewStatus:'send_attempted',previewCode:'invitation_click_issued_delivery_unknown',sendStatus:'unknown',invitationSent:null,remarkSaveStatus:'confirmed'}});
+  const externalResult=await request('GET',`${integration}/${accepted.taskId}`,admin);
+  assert.equal(externalResult.status,'unknown');assert.equal(externalResult.taskId,accepted.taskId);
+  await request('GET',`${integration}/${accepted.taskId}`,user,undefined,401);
+  assert.equal((await request('POST',integration,admin,simple,200)).taskId,accepted.taskId);
+  await stop();await start();
+  assert.equal((await request('POST',integration,admin,simple,200)).taskId,accepted.taskId,'lost task ID recovers same request after restart without another invitation');
+  assert.equal((await request('GET',`${integration}/${accepted.taskId}`,admin)).status,'unknown');
+
+  await request('GET',`${integration}/${a.task.jobId}`,admin,undefined,404);
+  const concurrent={...simple,deviceNumber:145};
+  const concurrentResponses=await Promise.all(Array.from({length:3},async()=>{
+    const response=await fetch(base+integration,{method:'POST',headers:{authorization:`Bearer ${admin}`,'content-type':'application/json'},body:JSON.stringify(concurrent)});
+    return {status:response.status,body:await response.json()};
+  }));
+  assert.deepEqual(concurrentResponses.map(r=>r.status).sort(),[200,200,202]);
+  assert.equal(new Set(concurrentResponses.map(r=>r.body.taskId)).size,1,'simultaneous body-only retries create one durable task');
+
+  const pending145=(await request('GET',next+'?wecomPreview=wecom-invitation-v4',agent)).task;
+  await request('POST',`/api/v1/windows-agent-tasks/${pending145.taskId}/status`,agent,{status:'failed',result:{previewStatus:'blocked',previewCode:'not_found',invitationSent:false,remarkSaveStatus:'not_attempted'}});
+  await request('POST',`/api/v1/windows-agent-tasks/${cloneSendTask.taskId}/status`,agent,{status:'failed',result:{previewStatus:'blocked',previewCode:'invitation_outcome_unknown_no_retry',sendStatus:'unknown',invitationSent:null}});
+  const explicitClone={...simple,deviceNumber:155,appSlot:'clone',phoneNumber:'13900139000'};
+  const cloneExternal=(await request('POST',integration,admin,explicitClone,202));
+  const cloneDelivery=(await request('GET',next+'?wecomPreview=wecom-invitation-v4',agent)).task;
+  assert.equal(cloneDelivery.payload.appSlot,'clone');assert.equal(cloneDelivery.payload.androidUser,999);
+  assert.equal(cloneDelivery.payload.phoneNumber,explicitClone.phoneNumber);
+  await request('POST',`/api/v1/windows-agent-tasks/${cloneDelivery.taskId}/status`,agent,{status:'failed',result:{previewStatus:'blocked',previewCode:'not_found',invitationSent:false,remarkSaveStatus:'not_attempted'}});
+  const safeRetry=await request('POST',integration,admin,explicitClone,202);
+  assert.notEqual(safeRetry.taskId,cloneExternal.taskId,'explicit pre-write failure can be retried without bypassing any send claim');
+
 });

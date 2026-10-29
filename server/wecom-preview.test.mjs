@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import fs from "node:fs";
 import vm from "node:vm";
-import { WECOM_PREVIEW_DEVICES as pool, previewTarget, previewRequest, previewLease, previewRemarkInput, previewRemarkFingerprint, createPreviewSubmissionGate } from "./wecom-preview.mjs";
+import { WECOM_PREVIEW_DEVICES as pool, previewTarget, previewRequest, previewLease, previewRemarkInput, previewRemarkFingerprint, createPreviewSubmissionGate, invitationRequest, publicInvitation } from "./wecom-preview.mjs";
 
 test("only eight fixed physical identities and the verified Android users are allowed", () => {
   assert.deepEqual(pool, JSON.parse(fs.readFileSync(new URL("../windows-agent/scripts/wecom_preview_devices.json", import.meta.url), "utf8")));
@@ -90,4 +90,25 @@ test("actual offline recovery never requeues a preview with uncertain UI writes;
     agent.online=true;context.recoverStalledTasks();
     assert.equal(task.status,type==="wecom_customer_preview"?"stalled":"queued");assert.equal(task.taskId,"original");
   }
+});
+
+
+test("integration facade accepts four business fields and resolves public number without trusting an ADB serial",()=>{
+  const devices=Object.entries(pool).map(([deviceName,d])=>({deviceName,deviceId:"adb:"+d.serial,adb:{serial:d.serial}}));
+  const input={deviceNumber:"59",appSlot:"main",phoneNumber:"13800138000",remarkName:"yyx（坦克）"};
+  const options={requestId:"fixture_auto_request"};
+  const normalized=invitationRequest(input,devices,options);
+  assert.equal(normalized.deviceId,"adb:"+pool['59'].serial);assert.equal(normalized.mode,"send");
+  assert.equal(normalized.requestId,options.requestId);assert.equal(normalized.remarkName,input.remarkName);
+  assert.equal(invitationRequest({...input,deviceNumber:59,appSlot:undefined},devices,options).appSlot,"main");
+  assert.throws(()=>invitationRequest({...input,deviceNumber:'155',appSlot:undefined},devices,options),/app_slot_required/);
+  for(const appSlot of ['main','clone']) assert.equal(invitationRequest({...input,deviceNumber:'155',appSlot},devices,options).appSlot,appSlot);
+  for(const extra of [{mode:'preview'},{requestId:'caller_body_key'},{description:'extra'},{deviceId:'adb:other'}]) assert.throws(()=>invitationRequest({...input,...extra},devices,options),/invalid_wecom_invitation_fields/);
+  assert.throws(()=>invitationRequest(input,[...devices,devices.find(d=>d.deviceName==='59')],options),/not_unique/);
+});
+
+test("integration status never turns a native click or unknown persistence into confirmed customer delivery",()=>{
+  for(const status of ['queued','running']) assert.equal(publicInvitation({jobId:'fixture',status,result:{sendStatus:'unknown'}}).status,status);
+  for(const task of [{status:'succeeded',result:{status:'send_attempted',sendStatus:'unknown'}},{status:'stalled',result:{}},{status:'failed',result:{remarkSaveStatus:'unknown'}}]) assert.equal(publicInvitation({jobId:'fixture',...task}).status,'unknown');
+  assert.equal(publicInvitation({jobId:'fixture',status:'failed',result:{code:'login_required'}}).status,'needs_attention');
 });

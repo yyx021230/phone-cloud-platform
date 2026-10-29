@@ -104,3 +104,38 @@ export function createPreviewSubmissionGate() {
 }
 
 function problem(code, statusCode) { return Object.assign(new Error(code), { statusCode }); }
+
+// Integration facade: public phone number, configured application slot, target
+// customer and remark. Execution details remain in the existing leased task.
+export function invitationRequest(input, devices, { requestId } = {}) {
+  if (!input || typeof input !== "object" || Array.isArray(input)
+      || Object.keys(input).some(k => !["deviceNumber", "appSlot", "phoneNumber", "remarkName"].includes(k))) throw problem("invalid_wecom_invitation_fields", 400);
+  const number = typeof input.deviceNumber === "number" && Number.isInteger(input.deviceNumber) ? String(input.deviceNumber) : input.deviceNumber;
+  if (typeof number !== "string" || !/^[1-9]\d{0,2}$/.test(number)) throw problem("invalid_wecom_device_number", 400);
+  if (!Object.hasOwn(WECOM_PREVIEW_DEVICES, number)) throw problem("wecom_device_not_allowed", 403);
+  const matches = devices.filter(d => d.deviceName === number);
+  if (matches.length !== 1) throw problem("wecom_device_number_not_unique", 409);
+  const entry = WECOM_PREVIEW_DEVICES[number];
+  if (input.appSlot === undefined && Object.keys(entry.appSlots).length > 1) throw problem("wecom_app_slot_required", 400);
+  const target = previewTarget(matches[0], input.appSlot);
+  return previewRequest({ deviceId: matches[0].deviceId, appSlot: target.appSlot, phoneNumber: input.phoneNumber,
+    ...(input.remarkName === undefined ? {} : { remarkName: input.remarkName }), mode: "send",
+    requestId });
+}
+
+export function holdInvitation(job) {
+  return ["queued", "running", "stalled"].includes(job.status) || previewSendState(job) === "unknown" || job.result?.remarkSaveStatus === "unknown";
+}
+
+export function publicInvitation(task) {
+  const active = ["queued", "running"].includes(task.status);
+  const code = task.result?.code || (task.status === "expired" ? "task_expired" : "");
+  const needsHuman = /(?:human|login_required|not_ready|poco_already_running|lease_lost)/.test(code);
+  const unknown = !active && (task.result?.sendStatus === "unknown" || task.status === "stalled" || task.result?.remarkSaveStatus === "unknown");
+  const status = active ? task.status : unknown ? "unknown" : needsHuman ? "needs_attention" : "failed";
+  const message = status === "queued" ? "任务已受理，等待执行" : status === "running" ? "正在添加客户"
+    : status === "unknown" ? "执行结果待核对，请勿重复发送"
+    : status === "needs_attention" ? "请在对应手机处理登录或验证，再核对原任务"
+    : "本次任务未完成，请根据错误码核对";
+  return { taskId: task.jobId, deviceNumber: task.deviceNumber, appSlot: task.appSlot, status, code, message };
+}

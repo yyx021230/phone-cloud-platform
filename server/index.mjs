@@ -1,5 +1,5 @@
 import { sendInventorySyncResponse } from "./inventory-sync-response.mjs";
-import { WECOM_PREVIEW_KIND, WECOM_PREVIEW_DEVICES, previewTarget, previewSlots, previewJobSlot, previewJobRemarks, previewRemarkFingerprint, previewJobMode, previewOperationFingerprint, previewSendState, sameWecomRecipient, previewRequest, publicPreview, previewLease, createPreviewSubmissionGate } from "./wecom-preview.mjs";
+import { WECOM_PREVIEW_KIND, WECOM_PREVIEW_DEVICES, previewTarget, previewSlots, previewJobSlot, previewJobRemarks, previewRemarkFingerprint, previewJobMode, previewOperationFingerprint, previewSendState, sameWecomRecipient, previewRequest, invitationRequest, holdInvitation, publicInvitation, publicPreview, previewLease, createPreviewSubmissionGate } from "./wecom-preview.mjs";
 import { spoolSnapshot, writeSpooledSnapshot, loadStreamedSnapshot } from './snapshot-stream.mjs';
 import {aiVisionConfig,createAiVisionReader} from './lookup-ai-vision.mjs';
 import {createLookupAiRecovery} from './lookup-ai-recovery.mjs';
@@ -436,29 +436,46 @@ async function routeApi(req, res, url) {
     }
     return json(res, 200, { devices, modes: ["preview", "send"] });
   }
-  if (url.pathname === "/api/v1/user/automation/wecom-preview-tasks" && ["GET", "POST"].includes(req.method)) {
+  const simpleInvitationSubmit = url.pathname === "/api/v1/wecom/customer-invitations" && req.method === "POST";
+  if ((url.pathname === "/api/v1/user/automation/wecom-preview-tasks" && ["GET", "POST"].includes(req.method)) || simpleInvitationSubmit) {
     const ctx = requireAuth(req, ["admin"]);
     if (req.method === "GET") return json(res, 200, { tasks: state.automationJobs
       .filter(j => j.kind === WECOM_PREVIEW_KIND && j.userId === ctx.userId).slice(0, 100).map(publicPreview) });
-    const input = previewRequest(await readJson(req));
-    return wecomSubmissionGate(`${ctx.userId}:${input.requestId}`, async () => {
+    const input = simpleInvitationSubmit
+      ? invitationRequest(await readJson(req), state.devices, { requestId: newId() })
+      : previewRequest(await readJson(req));
+    const reply = (status, body) => json(res, simpleInvitationSubmit && status === 201 ? 202 : status,
+      simpleInvitationSubmit && body.task ? { ...publicInvitation(body.task), reused: body.reused === true } : body);
+    const gateKey = simpleInvitationSubmit ? `recipient:${ctx.userId}:${input.deviceId}:${input.appSlot}:${input.phoneNumber}` : `${ctx.userId}:${input.requestId}`;
+    return wecomSubmissionGate(gateKey, async () => {
       const existing = state.automationJobs.find(j => j.kind === WECOM_PREVIEW_KIND && j.userId === ctx.userId && j.wecomRequestId === input.requestId);
       if (existing) {
-        if (previewJobMode(existing) !== (input.mode || "preview") || existing.deviceId !== input.deviceId || existing.phoneNumber !== input.phoneNumber || previewJobSlot(existing) !== (input.appSlot ?? WECOM_PREVIEW_DEVICES[existing.wecomDeviceNumber]?.defaultAppSlot) || previewJobRemarks(existing).remarkName !== input.remarkName || previewJobRemarks(existing).description !== input.description) return json(res, 409, { error: "wecom_request_id_conflict" });
-        return json(res, 200, { reused: true, task: publicPreview(existing) });
+        if (previewJobMode(existing) !== (input.mode || "preview") || existing.deviceId !== input.deviceId || existing.phoneNumber !== input.phoneNumber || previewJobSlot(existing) !== (input.appSlot ?? WECOM_PREVIEW_DEVICES[existing.wecomDeviceNumber]?.defaultAppSlot) || previewJobRemarks(existing).remarkName !== input.remarkName || previewJobRemarks(existing).description !== input.description) return reply(409, { error: "wecom_request_id_conflict" });
+        if ([...pendingWecomCommits].some(t => t.payload?.automationJobId === existing.jobId)) return reply(503, { error: "wecom_submission_pending" });
+        return reply(200, { reused: true, task: publicPreview(existing) });
+      }
+      if (simpleInvitationSubmit) {
+        const target = previewTarget(repos.devices.findById(input.deviceId), input.appSlot);
+        const prior = state.automationJobs.find(j => j.userId === ctx.userId && sameWecomRecipient({ deviceId: input.deviceId, wecomAndroidUser: target.androidUser, phoneNumber: input.phoneNumber }, j) && holdInvitation(j));
+        if (prior) {
+          if ([...pendingWecomCommits].some(t => t.payload?.automationJobId === prior.jobId)) return reply(503, { error: "wecom_submission_pending" });
+          const remarks = previewJobRemarks(prior);
+          if (remarks.remarkName !== input.remarkName || remarks.description !== input.description) return reply(409, { error: "wecom_invitation_parameters_conflict", taskId: prior.jobId });
+          return reply(200, { reused: true, task: publicPreview(prior) });
+        }
       }
       if (state.automationJobs.filter(j => j.kind === WECOM_PREVIEW_KIND && isActiveAutomationStatus(j.status)).length >= 2) {
-        return json(res, 429, { error: "wecom_preview_capacity_full", limit: 2 });
+        return reply(429, { error: "wecom_preview_capacity_full", limit: 2 });
       }
       const device = repos.devices.findById(input.deviceId);
-      if (!device) return json(res, 404, { error: "device_not_found" });
+      if (!device) return reply(404, { error: "device_not_found" });
       const target = previewTarget(device, input.appSlot);
       if (input.mode === "send") {
         const prior = state.automationJobs.find(j => sameWecomRecipient({ deviceId: device.deviceId, wecomAndroidUser: target.androidUser, phoneNumber: input.phoneNumber }, j) && previewSendState(j) === "unknown");
-        if (prior) return json(res, 409, { error: "wecom_invitation_already_claimed_no_retry", jobId: prior.userId === ctx.userId ? prior.jobId : undefined });
+        if (prior) return reply(409, { error: "wecom_invitation_already_claimed_no_retry", jobId: prior.userId === ctx.userId ? prior.jobId : undefined });
       }
-      if (!isDeviceListed(device) || !isAdbOnline(device) || !device.adb?.agentId) return json(res, 409, { error: "device_not_available" });
-      if (activeDeviceLockForTask(device.deviceId)) return json(res, 409, { error: "device_busy" });
+      if (!isDeviceListed(device) || !isAdbOnline(device) || !device.adb?.agentId) return reply(409, { error: "device_not_available" });
+      if (activeDeviceLockForTask(device.deviceId)) return reply(409, { error: "device_busy" });
       const job = createAutomationJob({ kind: WECOM_PREVIEW_KIND, userId: ctx.userId, deviceId: device.deviceId, phoneNumber: input.phoneNumber });
       Object.assign(job, { wecomMode: input.mode || "preview", wecomRequestId: input.requestId, wecomDeviceNumber: target.deviceNumber, wecomAppSlot: target.appSlot, wecomAndroidUser: target.androidUser, wecomRemarkName: input.remarkName, wecomDescription: input.description });
       const lock = acquireAutomationDeviceLock(device, job, ctx, { ttlMs: 300_000 });
@@ -474,8 +491,14 @@ async function routeApi(req, res, url) {
         job.result = { previewStatus: "blocked", previewCode: "submission_persistence_unknown" };
         throw error;
       } finally { pendingWecomCommits.delete(windowsTask); }
-      return json(res, 201, { reused: false, task: publicPreview(job) });
+      return reply(201, { reused: false, task: publicPreview(job) });
     });
+  }
+  const invitationDetail = url.pathname.match(/^\/api\/v1\/wecom\/customer-invitations\/([^/]+)$/);
+  if (invitationDetail && req.method === "GET") {
+    const ctx = requireAuth(req, ["admin"]);
+    const job = state.automationJobs.find(j => j.kind === WECOM_PREVIEW_KIND && previewJobMode(j) === "send" && j.jobId === invitationDetail[1] && j.userId === ctx.userId);
+    return json(res, job ? 200 : 404, job ? publicInvitation(publicPreview(job)) : { error: "wecom_task_not_found" });
   }
   const wecomDetail = url.pathname.match(/^\/api\/v1\/user\/automation\/wecom-preview-tasks\/([^/]+)$/);
   if (wecomDetail && req.method === "GET") {
