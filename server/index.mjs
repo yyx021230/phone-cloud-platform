@@ -1,5 +1,5 @@
 import { sendInventorySyncResponse } from "./inventory-sync-response.mjs";
-import { WECOM_PREVIEW_KIND, WECOM_PREVIEW_DEVICES, previewTarget, previewSlots, previewJobSlot, previewJobRemarks, previewRemarkFingerprint, previewJobMode, previewOperationFingerprint, previewSendState, sameWecomRecipient, previewRequest, invitationRequest, holdInvitation, publicInvitation, publicPreview, previewLease, createPreviewSubmissionGate } from "./wecom-preview.mjs";
+import { WECOM_PREVIEW_KIND, WECOM_PREVIEW_DEVICES, previewTarget, previewSlots, previewJobSlot, previewJobRemarks, previewRemarkFingerprint, previewJobMode, previewOperationFingerprint, previewSendState, sameWecomRecipient, previewRequest, invitationRequest, holdInvitation, publicInvitation, publicWecomDevice, publicPreview, previewLease, createPreviewSubmissionGate } from "./wecom-preview.mjs";
 import { spoolSnapshot, writeSpooledSnapshot, loadStreamedSnapshot } from './snapshot-stream.mjs';
 import {aiVisionConfig,createAiVisionReader} from './lookup-ai-vision.mjs';
 import {createLookupAiRecovery} from './lookup-ai-recovery.mjs';
@@ -424,6 +424,24 @@ const pendingWecomCommits = new Set();
 
 async function routeApi(req, res, url) {
   enforceRequestOrigin(req);
+  if (url.pathname === "/api/v1/wecom/devices" && req.method === "GET") {
+    const ctx = requireAuth(req, ["admin"]);
+    const onlyOnline = url.searchParams.get("onlineOnly");
+    if (onlyOnline !== null && !["true", "false"].includes(onlyOnline)) return json(res, 400, { error: "invalid_online_only" });
+    const counts = new Map();
+    for (const device of state.devices) counts.set(String(device.deviceName || ""), (counts.get(String(device.deviceName || "")) || 0) + 1);
+    const rows = state.devices.map(device => {
+      const adbOnline = isAdbOnline(device);
+      const agent = state.windowsAgents.find(a => a.agentId === device.adb?.agentId);
+      const runningTask = state.windowsTasks.find(t => t.deviceId === device.deviceId && t.status === "running");
+      const occupancy = deviceOccupancyForViewer(device, ctx, { readOnly: true }) || (runningTask ? { kind: runningTask.type, label: "设备任务执行中" } : null);
+      return publicWecomDevice(device, { online: adbOnline || isDeviceAgentOnline(device), adbOnline,
+        agentOnline: Boolean(agent && isWindowsAgentOnline(agent)), listed: isDeviceListed(device), occupancy,
+        mappingCount: counts.get(String(device.deviceName || "")) });
+    }).filter(row => onlyOnline !== "true" || row.online);
+    const active = state.automationJobs.filter(j => j.kind === WECOM_PREVIEW_KIND && isActiveAutomationStatus(j.status)).length;
+    return json(res, 200, { devices: rows, total: rows.length, updatedAt: nowIso(), capacity: { limit: 2, active, remaining: Math.max(0, 2 - active) } });
+  }
   if (url.pathname === "/api/v1/user/automation/wecom-preview-devices" && req.method === "GET") {
     requireAuth(req, ["admin"]);
     const devices = [];
@@ -8201,7 +8219,9 @@ function publicDevice(device) {
 }
 
 function deviceOccupancyForViewer(device, viewer = null, overrides = {}) {
-  const activeLock = overrides.activeLock || activeDeviceLockForTask(device.deviceId);
+  const activeLock = overrides.readOnly === true
+    ? (state.deviceLocks || []).find(lock => lock.deviceId === device.deviceId && lock.status === "active") || managedLookupReservationLock(device.deviceId)
+    : overrides.activeLock || activeDeviceLockForTask(device.deviceId);
   const activeScreenSession = overrides.activeScreenSession || screenSessions.activeForDevice(device.deviceId);
   const activeXhsTask = overrides.activeXhsTask || activeXhsTaskForDevice(device.deviceId);
   const waitingSmsOrder = overrides.waitingSmsOrder || state.smsOrders.find((order) => (

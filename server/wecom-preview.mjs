@@ -139,3 +139,25 @@ export function publicInvitation(task) {
     : "本次任务未完成，请根据错误码核对";
   return { taskId: task.jobId, deviceNumber: task.deviceNumber, appSlot: task.appSlot, status, code, message };
 }
+
+// A small inventory view for integration clients. No SIM/customer/ADB identity
+// or task owner data is carried into this projection.
+export function publicWecomDevice(device, { online = false, adbOnline = false, agentOnline = false,
+  listed = false, occupancy = null, mappingCount = 1 } = {}) {
+  const name = String(device.deviceName || "");
+  const deviceNumber = /^[1-9]\d{0,2}$/.test(name) ? name : null;
+  let slots = [], allowed = false;
+  try { slots = previewSlots(device); allowed = mappingCount === 1; } catch { /* Not a configured WeCom phone. */ }
+  if (!allowed) slots = [];
+  const busy = Boolean(occupancy);
+  const reason = !allowed ? (mappingCount > 1 && Object.hasOwn(WECOM_PREVIEW_DEVICES, name) ? "device_number_conflict" : "wecom_not_configured")
+    : !listed ? "device_not_listed" : !adbOnline ? "adb_offline" : !agentOnline ? "agent_offline" : busy ? "device_busy" : "";
+  const occupation = occupancy ? { type: occupancy.kind || "device_task",
+    label: occupancy.kind === WECOM_PREVIEW_KIND ? "企微加客户" : occupancy.label || "设备任务" } : null;
+  return { deviceNumber, deviceName: name, online, adbOnline, agentOnline, listed,
+    busy, busyReason: occupation?.label || "", occupancy: occupation,
+    wecomAllowed: allowed, appSlots: slots.map(s => ({ appSlot: s.appSlot, label: s.appSlot === "clone" ? "分身" : "主应用" })),
+    available: reason === "", unavailableReason: reason,
+    model: device.model || "", brand: device.brand || device.adb?.brand || "", androidVersion: device.androidVersion || "",
+    batteryLevel: device.batteryLevel ?? null, lastSeenAt: device.lastSeenAt || null, adbLastSeenAt: device.adb?.lastSeenAt || null };
+}

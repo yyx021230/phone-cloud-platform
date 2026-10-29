@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import fs from "node:fs";
 import vm from "node:vm";
-import { WECOM_PREVIEW_DEVICES as pool, previewTarget, previewRequest, previewLease, previewRemarkInput, previewRemarkFingerprint, createPreviewSubmissionGate, invitationRequest, publicInvitation } from "./wecom-preview.mjs";
+import { WECOM_PREVIEW_DEVICES as pool, previewTarget, previewRequest, previewLease, previewRemarkInput, previewRemarkFingerprint, createPreviewSubmissionGate, invitationRequest, publicInvitation, publicWecomDevice } from "./wecom-preview.mjs";
 
 test("only eight fixed physical identities and the verified Android users are allowed", () => {
   assert.deepEqual(pool, JSON.parse(fs.readFileSync(new URL("../windows-agent/scripts/wecom_preview_devices.json", import.meta.url), "utf8")));
@@ -111,4 +111,41 @@ test("integration status never turns a native click or unknown persistence into 
   for(const status of ['queued','running']) assert.equal(publicInvitation({jobId:'fixture',status,result:{sendStatus:'unknown'}}).status,status);
   for(const task of [{status:'succeeded',result:{status:'send_attempted',sendStatus:'unknown'}},{status:'stalled',result:{}},{status:'failed',result:{remarkSaveStatus:'unknown'}}]) assert.equal(publicInvitation({jobId:'fixture',...task}).status,'unknown');
   assert.equal(publicInvitation({jobId:'fixture',status:'failed',result:{code:'login_required'}}).status,'needs_attention');
+});
+
+
+test("integration inventory separates online/busy/WeCom eligibility and never exposes private device data",()=>{
+  const device={deviceName:'155',deviceId:'adb:'+pool['155'].serial,adb:{serial:pool['155'].serial,agentId:'private-agent'},sims:[{phoneNumber:'13800138000'}],token:'private-token'};
+  const live={online:true,adbOnline:true,agentOnline:true,listed:true};
+  const row=publicWecomDevice(device,live);
+  assert.equal(row.available,true);assert.equal(row.busy,false);assert.equal(row.wecomAllowed,true);
+  assert.deepEqual(row.appSlots.map(s=>s.appSlot),['main','clone']);assert.equal(row.deviceNumber,'155');
+  const busy=publicWecomDevice(device,{...live,occupancy:{kind:'screen_control',label:'实时控制',ownerLabel:'private-user',taskId:'private-task'}});
+  assert.equal(busy.online,true);assert.equal(busy.available,false);assert.equal(busy.busyReason,'实时控制');
+  assert.deepEqual(busy.occupancy,{type:'screen_control',label:'实时控制'});
+  const output=JSON.stringify(busy);for(const text of [pool['155'].serial,'private-agent','13800138000','private-token','private-user','private-task'])assert.ok(!output.includes(text));
+  assert.equal(publicWecomDevice(device,{...live,adbOnline:false}).unavailableReason,'adb_offline');
+  assert.equal(publicWecomDevice(device,{...live,agentOnline:false}).unavailableReason,'agent_offline');
+  assert.equal(publicWecomDevice(device,{...live,listed:false}).available,false);
+  const duplicate=publicWecomDevice(device,{...live,mappingCount:2});assert.equal(duplicate.wecomAllowed,false);assert.equal(duplicate.unavailableReason,'device_number_conflict');
+  const wrong=publicWecomDevice({...device,deviceName:'67'},live);assert.equal(wrong.online,true);assert.equal(wrong.available,false);assert.equal(wrong.unavailableReason,'wecom_not_configured');
+  assert.equal(publicWecomDevice({...device,adb:{serial:'wrong'}},live).wecomAllowed,false);
+  assert.equal(publicWecomDevice(device,{...live,occupancy:{kind:'wecom_customer_preview'}}).busyReason,'企微加客户');
+});
+
+
+test("integration occupancy reads do not expire locks or invoke device recovery",()=>{
+  const source=fs.readFileSync(new URL('./index.mjs',import.meta.url),'utf8');
+  const start=source.indexOf('function deviceOccupancyForViewer('),end=source.indexOf('\nfunction addAudit(',start);
+  const expired={deviceId:'fixture',status:'active',expiresAt:new Date(0).toISOString()};
+  const valid={deviceId:'fixture',status:'active',expiresAt:new Date(Date.now()+60000).toISOString(),lockType:'wecom_customer_preview'};
+  const state={deviceLocks:[expired,valid],smsOrders:[],users:[],automationSessions:[],automationJobs:[]};const before=JSON.stringify(state);
+  const context=vm.createContext({state,managedLookup:null,managedLookupReservationLock:()=>null,
+    screenSessions:{activeForDevice:()=>null},activeXhsTaskForDevice:()=>null,buildDeviceOccupancy:({lock})=>lock,
+    activeDeviceLockForTask:()=>{throw new Error('expiry_mutator_must_not_run');}});
+  vm.runInContext(source.slice(start,end),context);
+  assert.equal(context.deviceOccupancyForViewer({deviceId:'fixture'},null,{readOnly:true}),expired,'read-only view conservatively retains active locks until normal maintenance releases them');
+  assert.equal(context.deviceOccupancyForViewer({deviceId:'other'},null,{readOnly:true}),null);
+  assert.equal(JSON.stringify(state),before);
+  assert.throws(()=>context.deviceOccupancyForViewer({deviceId:'fixture'}),/expiry_mutator/,'normal callers retain their existing expiry path');
 });

@@ -1,6 +1,60 @@
 # 企业微信加客户：系统对接接口
 
-**本地候选，尚未上线。** 对接只需两个接口：提交添加任务、查询任务结果。手机编号和主应用／分身由调用方选择；搜索、备注保存、发送、锁定及防重都在平台内部执行。原自动化页面和旧接口保持原样。
+**本地候选，尚未上线。** 对接流程：先查询设备，再提交添加任务，最后查询任务结果。手机编号和主应用／分身由调用方选择；搜索、备注保存、发送、锁定及防重都在平台内部执行。原自动化页面和旧接口保持原样。
+
+## 0. 查询设备：在线、占用及可选账户
+
+`GET /api/v1/wecom/devices`
+
+沿用下文管理员Bearer鉴权。默认返回平台全部设备，包含离线和未配置企微的手机；只看在线使用 `GET /api/v1/wecom/devices?onlineOnly=true`。不启动ADB扫描、恢复或手机操作，读取平台已有心跳和任务状态。
+
+```json
+{
+  "devices": [{
+    "deviceNumber": "59",
+    "deviceName": "59",
+    "online": true,
+    "adbOnline": true,
+    "agentOnline": true,
+    "listed": true,
+    "busy": false,
+    "busyReason": "",
+    "occupancy": null,
+    "wecomAllowed": true,
+    "appSlots": [{"appSlot": "main", "label": "主应用"}],
+    "available": true,
+    "unavailableReason": "",
+    "model": "<机型>",
+    "brand": "<品牌>",
+    "androidVersion": "<系统版本>",
+    "batteryLevel": 85,
+    "lastSeenAt": null,
+    "adbLastSeenAt": "<最近ADB状态上报时间>"
+  }],
+  "total": 1,
+  "updatedAt": "<本次列表生成时间>",
+  "capacity": {"limit": 2, "active": 0, "remaining": 2}
+}
+```
+
+| 字段 | 如何使用 |
+|---|---|
+| deviceNumber | 后续提交用的手机编号；非编号名称的设备可能为null，以deviceName展示 |
+| online | 平台判断在线：ADB或手机Agent心跳有效；不等于可执行企微 |
+| adbOnline / agentOnline | ADB通道／Windows Agent心跳是否有效；企微执行都需要 |
+| busy / busyReason | 是否有平台占用及中文原因，如实时控制、企微加客户、等待短信、其他任务执行中 |
+| occupancy | 占用类型type及中文label；无占用为null，不返回占用人的身份或客户信息 |
+| wecomAllowed | 是否有唯一、匹配的本轮企微映射；未配置、映射冲突时false |
+| appSlots | 可以选择的主应用／分身，不需要对方猜测；未知映射为空数组 |
+| available | 当前符合本轮企微单机提交条件；应只选择true的手机 |
+| unavailableReason | 不能选择的原因，如device_busy、adb_offline、agent_offline、device_not_listed、wecom_not_configured或device_number_conflict |
+| capacity.remaining | 当前还可受理多少条企微任务；为0时等待，不抢其他任务 |
+
+对接方可每5秒刷新设备列表，优先 `available=true`，从返回的appSlots选择账户。列表不会主动释放或回收锁，尚未释放的占用会保守标为busy。列表中所有在线手机不代表都允许运行企微；未加入本轮配置的设备也能查看在线/占用，但available=false。单机available和全局capacity都是瞬时参考，不预留设备；提交时仍会复核占用/容量，竞态可返回409/429。
+
+`updatedAt`是响应生成时间，设备新鲜度看lastSeenAt/adbLastSeenAt；available不证明企微已登录或不会出现验证。接口不暴露SIM号码、ADB序列号、任务所有人或其他客户资料。
+
+平台原有 `GET /api/v1/user/devices`（上架设备，含online/busy/occupancy）和管理员 `GET /api/v1/devices`（全部设备的完整管理视图）继续保留。新企微对接推荐统一使用本节接口，避免自行拼接旧列表和应用配置。
 
 ## 1. 提交任务
 

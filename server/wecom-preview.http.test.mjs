@@ -55,9 +55,22 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   const agent = (await request("POST", "/api/v1/windows-agents", admin, { agentId: "fixture-agent", agentName: "Fixture" }, 201)).token;
   const { WECOM_PREVIEW_DEVICES: pool } = await import("./wecom-preview.mjs");
   await request("POST", "/api/v1/windows-agents/fixture-agent/devices/sync", agent, {
-    agent: { agentId: "fixture-agent" }, devices: Object.values(pool).map(d => ({ adbSerial: d.serial, state: "device", model: "Fixture" }))
+    agent: { agentId: "fixture-agent" }, devices: [...Object.values(pool).map(d => ({ adbSerial: d.serial, state: "device", model: "Fixture" })), { adbSerial: "fixture-extra", state: "device", model: "OtherFixture" }]
   });
   for (const [number,row] of Object.entries(pool)) await request("PUT", `/api/v1/devices/${encodeURIComponent("adb:"+row.serial)}`, admin, { listingStatus: "listed", deviceName: number });
+  await request('PUT','/api/v1/devices/adb%3Afixture-extra',admin,{listingStatus:'listed',deviceName:'67'});
+  const discovery='/api/v1/wecom/devices';
+  await request('GET',discovery,'',undefined,401);await request('GET',discovery,user,undefined,401);
+  await request('GET',discovery+'?onlineOnly=invalid',admin,undefined,400);
+  const fullInventory=await request('GET',discovery,admin);
+  assert.equal(fullInventory.total,9);assert.ok(fullInventory.updatedAt);assert.deepEqual(fullInventory.capacity,{limit:2,active:0,remaining:2});
+  const live59=fullInventory.devices.find(d=>d.deviceNumber==='59');assert.equal(live59.available,true);assert.equal(live59.online,true);assert.equal(live59.busy,false);
+  assert.deepEqual(fullInventory.devices.find(d=>d.deviceNumber==='155').appSlots.map(s=>s.appSlot),['main','clone']);
+  const other=fullInventory.devices.find(d=>d.deviceNumber==='67');assert.equal(other.online,true);assert.equal(other.wecomAllowed,false);assert.equal(other.available,false);
+  assert.equal((await request('GET',discovery+'?onlineOnly=true',admin)).total,9);
+  await request('POST','/api/v1/windows-agents/fixture-agent/devices/sync',agent,{agent:{agentId:'fixture-agent'},devices:[...Object.values(pool).map(d=>({adbSerial:d.serial,state:'device',model:'Fixture'})),{adbSerial:'fixture-extra',state:'offline',model:'OtherFixture'}]});
+  assert.equal((await request('GET',discovery,admin)).total,9,'default includes offline devices');
+  assert.equal((await request('GET',discovery+'?onlineOnly=true',admin)).total,8,'online filter excludes the offline phone');
   const route="/api/v1/user/automation/wecom-preview-tasks";
   const next="/api/v1/windows-agents/fixture-agent/tasks/next";
   const input={deviceId:"adb:"+pool["25"].serial,phoneNumber:"13800138000",requestId:"request_fixture_001",remarkName:"本地客户😀",description:"渠道A\n联调备注"};
@@ -75,6 +88,11 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   await request("POST",route,admin,{...input,appSlot:"auto"},400);
   const [a,b]=await Promise.all([request("POST",route,admin,input,201),request("POST",route,admin,input,200)]);
   assert.equal(a.task.jobId,b.task.jobId);assert.equal(b.reused,true);
+  const allocated=(await request('GET',discovery,admin)).devices.find(d=>d.deviceNumber==='25');
+  assert.equal(allocated.busy,true);assert.equal(allocated.available,false);assert.equal(allocated.busyReason,'企微加客户');
+  assert.equal(allocated.occupancy.type,'wecom_customer_preview');assert.equal(allocated.occupancy.taskId,undefined);
+  assert.equal((await request('GET',discovery,admin)).capacity.remaining,1);
+
   await request("POST",route,admin,{...input,phoneNumber:"13900139000"},409);
   await request("POST",route,admin,{...input,requestId:"request_fixture_002"},409);
   assert.equal((await request("GET",next,agent)).task,null,"old Agent cannot claim a preview task");
@@ -107,6 +125,8 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   await request("POST",`/api/v1/windows-agent-tasks/${picked.taskId}/status`,agent,{status:"succeeded",result:{previewStatus:"ready_before_send",previewCode:"preview_ready",invitationSent:false,remarkSaveStatus:"not_needed"}});
   assert.equal((await request("GET",lease,agent)).valid,false);
   const done=(await request("GET",`${route}/${a.task.jobId}`,admin)).task;
+  const freed=(await request('GET',discovery,admin)).devices.find(d=>d.deviceNumber==='25');assert.equal(freed.available,true);assert.equal(freed.busy,false);
+
   assert.equal(done.status,"succeeded");assert.equal(done.result.status,"ready_before_send");assert.equal(done.result.invitationSent,false);
   const replay=await request("POST",route,admin,input,200);assert.equal(replay.task.jobId,done.jobId);
   await request("POST",route,admin,{...cloneInput,appSlot:"main",requestId:"request_same_phone_main"},409);
