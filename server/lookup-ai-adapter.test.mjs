@@ -44,3 +44,9 @@ for(const reason of ['poco_query_page_recovery_failed:local_lookup_result_unconf
 test('uncertain AI result remains an explicit failed original row, never an empty success',async()=>{const f=fixture();await f.adapter.recordAiResult(f.c,{...f.r,status:'failed',code:'lookup_result_unconfirmed',name:'',completedAt:new Date().toISOString()},{onRollback:()=>{}},{jobId:'j',evidenceId:'e'});assert.equal(f.session.results[0].status,'failed');assert.equal(f.session.results[0].errorCode,'lookup_result_unconfirmed');assert.match(f.session.results[0].stage,/未确认/);});
 
 test('legacy result-read exhaustion binds exact original screenshot directly, without another phone query',()=>{const f=fixture();f.job.result.errorCode='alipay_person_result_not_found';f.job.result.diagnostic={runnerReason:'alipay_lookup_failed_after_recovery:alipay_person_result_not_found:texts=[]'};assert.equal(f.adapter.aiEvidence(f.c,f.r).directResult,true);f.job.kind='alipay_name_start';assert.equal(f.adapter.aiEvidence(f.c,f.r),null);});
+
+for(const prefix of ['', 'poco_query_page_recovery_failed:', 'poco_query_resume_failed:', 'poco_query_resume_observation_failed:'])test('window service timeout never sends even a bound screenshot to result AI '+prefix,()=>{
+ const f=fixture();f.job.result.errorCode='alipay_lookup_failed';
+ f.job.result.diagnostic={runnerReason:prefix+'poco_android_window_service_timeout'};
+ assert.equal(f.adapter.aiEvidence(f.c,f.r),null);
+});

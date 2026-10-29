@@ -4909,6 +4909,42 @@ class Runner:
         if self.current_account_after_switch in self.cooling_accounts():
             raise RuntimeError("alipay_account_preflight_required")
 
+    def settle_cold_account_navigation_focus(self, current, app):
+        """Observe only a transient missing focus after restricted Search Back.
+
+        Adds a two-second observation budget and at most eight focus reads to
+        this narrow path. Never launches, taps, presses Back or proves identity.
+        """
+        def pending():
+            window = str(current or "").strip()
+            activity = str(app or "").strip()
+            return (not window or re.fullmatch(r"mCurrentFocus\s*=\s*null", window)) and (
+                not activity or re.fullmatch(r"mFocusedApp\s*=\s*null", activity)
+                or ALIPAY_PACKAGE in activity)
+
+        started = time.monotonic()
+        deadline = started + 2.0
+        samples = 0
+        outcome = "read_failed"
+        try:
+            while pending() and samples < 8:
+                remaining = deadline - time.monotonic()
+                if remaining < .05:
+                    break
+                samples += 1
+                lines = self.focus(timeout=min(.5, remaining), recover=False)
+                current, app = self.focus_components(lines)
+                if pending():
+                    time.sleep(min(.15, max(0, deadline - time.monotonic())))
+            homes = {ALIPAY_HOME, ALIPAY_PACKAGE + "/" + ALIPAY_PACKAGE + ".AlipayLogin"}
+            outcome = "home" if focused_window_name([current]) in homes else (
+                "unresolved" if pending() else "non_home")
+            return current, app
+        finally:
+            self.emit("cold_account_navigation_focus_observed", outcome=outcome, samples=samples,
+                      observationMs=int((time.monotonic() - started) * 1000),
+                      accountSelected=False, queryReplayed=False)
+
     def identify_cold_search_restriction_account(self, evidence):
         if evidence.get("reason") == "device_risk":
             # Do not attribute a device risk to an unverified account or rotate it.
@@ -4927,8 +4963,9 @@ class Runner:
         search = ALIPAY_PACKAGE + "/com.alipay.android.phone.businesscommon.globalsearch.ui.MainSearchActivity"
         if focused_window_name([current]) != search:
             raise RuntimeError("alipay_account_identity_unverified")
-        current, _ = self.exit_search_activity_for_account_navigation(
+        current, focused_app = self.exit_search_activity_for_account_navigation(
             "restricted-startup-identity", max_attempts=4)
+        current, _ = self.settle_cold_account_navigation_focus(current, focused_app)
         homes = {ALIPAY_HOME, ALIPAY_PACKAGE + "/" + ALIPAY_PACKAGE + ".AlipayLogin"}
         if focused_window_name([current]) not in homes:
             raise RuntimeError("alipay_account_identity_unverified")

@@ -59,3 +59,17 @@ for(const cause of ['timeout','device_unavailable','command_failed'])test('reade
 for(const reason of ['lookup_worker_capacity_reached','Airtest/Poco 常驻 worker 已达到上限 #，当前均在执行任务'])test('shared reader saturation is neither page AI nor a failed phone: '+reason,()=>{const j={result:{errorCode:'alipay_lookup_failed',diagnostic:{runnerReason:reason}}};assert.equal(lookupFailureDomain(j),'capacity');assert.equal(lookupTerminalResultReason(j),'');});
 for(const reason of ['lookup_old_worker_exit_unconfirmed','poco_query_page_recovery_failed:lookup_old_worker_exit_unconfirmed','lookup_reader_cleanup_unconfirmed'])test('unconfirmed reader cleanup cannot consume screenshot as a page result: '+reason,()=>assert.equal(lookupFailureDomain({result:{errorCode:'alipay_lookup_failed',diagnostic:{runnerReason:reason}}}),'device'));
 test('package manager preflight failure is eligible for transport recovery, not unknown round exclusion',()=>{assert.equal(lookupFailureDomain({result:{errorCode:'task_failed',message:'package_manager_unresponsive:FIXTURE:command timed out'}}),'device');assert.equal(lookupFailureDomain({result:{errorCode:'task_failed',message:'selector_missing:package_manager_unresponsive'}}),'');});
+
+for(const prefix of ['', 'poco_query_page_recovery_failed:', 'poco_query_resume_failed:', 'poco_query_resume_observation_failed:', 'poco_query_resume_failed:poco_query_resume_observation_failed:'])test('owned window service timeout is technical '+prefix,()=>{
+ for(const errorCode of ['alipay_lookup_failed','alipay_lookup_result_unconfirmed']){
+  const job={kind:'alipay_name_query',result:{errorCode,diagnostic:{runnerReason:prefix+'poco_android_window_service_timeout'}}};
+  assert.equal(lookupFailureDomain(job),'device');assert.equal(lookupTerminalResultReason(job),'');
+ }
+});
+for(const reason of ['selector_missing:poco_android_window_service_timeout', 'unrelated:poco_android_window_service_timeout', 'poco_android_window_service_timeout_extra', 'poco_query_resume_failed:selector_missing:poco_android_window_service_timeout'])test('embedded window timeout label is not transport proof '+reason,()=>{
+ assert.equal(lookupFailureDomain({result:{errorCode:'alipay_lookup_failed',diagnostic:{runnerReason:reason}}}),'page');
+});
+for(const errorCode of ['task_failed','alipay_login_required','alipay_account_limit_reached','alipay_person_result_not_found'])test('window timeout text does not override unrelated error code '+errorCode,()=>{
+ const job={result:{errorCode,diagnostic:{runnerReason:'poco_android_window_service_timeout'}}};
+ assert.equal(lookupFailureDomain(job),'');assert.equal(lookupTerminalResultReason(job),'');
+});

@@ -1,0 +1,11 @@
+{
+  "result": "passed",
+  "historicalQueries": 6,
+  "oldPage": 6,
+  "newDevice": 6,
+  "terminalAi": 0,
+  "sourceSha256": "d256d831f639c19e7c111fc6541f0c215370d9b20fb3f47dc53bd005bea5a29a",
+  "evidenceSha256": "5a9f88eab43cc59b65f41567c65ee025b969cc3813c9d09115560b6d60b03e3e",
+  "newPhoneActions": 0,
+  "sourceReview": "one exact reason after allowed-code guard and bounded owned wrapper removal; full adapter rejects result AI; no transport or recovery changes"
+}

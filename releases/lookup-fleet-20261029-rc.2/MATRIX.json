@@ -1,0 +1,2630 @@
+{
+  "scope": {
+    "sampledAt": "2026-10-29T06:33:28.836526+00:00",
+    "from24h": "2026-10-28T06:33:28.836526+00:00",
+    "from7d": "2026-10-22T06:33:28.836526+00:00",
+    "queryMode": "read-only grouped + 100-row failure pages; no device commands",
+    "failedPages": 28,
+    "initialLargeExport": "7-day JSON metadata export hit 15-second transport timeout; discarded and not retried"
+  },
+  "healthAsOf": "2026-10-29T06:38:43.930Z",
+  "note": "created-window物理job统计与completed-window最终API统计分开；设备以稳定ID关联后脱敏；不同采样时点不可视为同一快照。所有候选业务真机验收均未完成。",
+  "devices": [
+    {
+      "number": 6,
+      "deviceRef": "da7571e456da",
+      "manufacturer": "vivo",
+      "model": "V2020A",
+      "android": "10",
+      "jobs": 94,
+      "failedJobs": 42,
+      "families": {
+        "account_limit": 11,
+        "observation_budget_exhausted": 3,
+        "person_not_found": 2,
+        "visual_card_not_proven": 9,
+        "human": 14,
+        "foreground_not_alipay": 1,
+        "post_human_input_changed": 1,
+        "result_other": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 10,
+        "not_found": 4,
+        "failed": 1
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "accounts_cooling",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "3daf5800-340e-452f-a7ac-8493ee6ac63d",
+        "taskId": "c7277f4b-9639-4c24-b328-451d17300841",
+        "createdAt": "2026-10-29T04:00:10.023+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_prepared_account_limited",
+        "family": "account_limit"
+      }
+    },
+    {
+      "number": 10,
+      "deviceRef": "6bc308e8b486",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "android": "14",
+      "jobs": 26,
+      "failedJobs": 8,
+      "families": {
+        "login": 1,
+        "account_limit": 2,
+        "human": 2,
+        "identity_unverified": 1,
+        "observation_budget_exhausted": 1,
+        "visual_card_not_proven": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 8,
+        "not_found": 2
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "account_login_required",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "5bf711cf-5ded-42a0-af58-e69fa9962894",
+        "taskId": "891eb752-7526-43d2-bbc3-d6e79e1dade6",
+        "createdAt": "2026-10-28T07:30:09.279+00:00",
+        "kind": "alipay_name_start",
+        "errorCode": "alipay_login_required",
+        "family": "login"
+      }
+    },
+    {
+      "number": 51,
+      "deviceRef": "3620de004e3a",
+      "manufacturer": "OPPO",
+      "model": "PECM20",
+      "android": "12",
+      "jobs": 79,
+      "failedJobs": 46,
+      "families": {
+        "package_manager": 18,
+        "cleanup_unconfirmed": 9,
+        "account_picker_unstable": 1,
+        "human": 16,
+        "reader_bootstrap_exit": 2
+      },
+      "terminalBusiness": {},
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": "task_failed",
+        "reason": "preparation_failed_round",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "列表/准备、探测与原ID续读局部通过；业务RPC/清理仍失败",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "e83835e3-b478-4726-94f5-76bcc412032f",
+        "taskId": "6f947569-1b83-4fe6-acf6-864c46447815",
+        "createdAt": "2026-10-29T01:15:38.794+00:00",
+        "kind": "alipay_name_start",
+        "errorCode": "task_failed",
+        "family": "package_manager"
+      }
+    },
+    {
+      "number": 52,
+      "deviceRef": "d6c4dce70d4d",
+      "manufacturer": "OPPO",
+      "model": "PECM30",
+      "android": "12",
+      "jobs": 14,
+      "failedJobs": 7,
+      "families": {
+        "package_manager": 3,
+        "person_not_found": 2,
+        "human": 2
+      },
+      "terminalBusiness": {},
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "lookup_device_unavailable",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "准备/人工识别/停止与取证分支局部通过；业务未通过",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "275d7265-c7b7-4f6c-b192-b16edaf8118a",
+        "taskId": "1a0ea9f4-9f75-4e2c-8c75-00853d6b174a",
+        "createdAt": "2026-10-29T03:58:47.608+00:00",
+        "kind": "alipay_name_start",
+        "errorCode": "task_failed",
+        "family": "package_manager"
+      }
+    },
+    {
+      "number": 53,
+      "deviceRef": "9cc3b809a708",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "android": "14",
+      "jobs": 631,
+      "failedJobs": 124,
+      "families": {
+        "visual_card_not_proven": 43,
+        "person_not_found": 21,
+        "human": 29,
+        "observation_budget_exhausted": 9,
+        "selector_missing": 1,
+        "account_limit": 5,
+        "resume_state_mismatch": 7,
+        "post_human_input_changed": 7,
+        "identity_unverified": 1,
+        "window_service_timeout": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 340,
+        "not_found": 67,
+        "failed": 11
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "preparation_backoff",
+        "domain": null,
+        "until": "1793256221263"
+      },
+      "phase": "stopping",
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "44bcc848-306b-4435-8254-805c0d8046a3",
+        "taskId": "4358199f-3c95-49ce-9e8a-f56fa9081d46",
+        "createdAt": "2026-10-29T06:29:13.333+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_lookup_result_unconfirmed",
+        "family": "visual_card_not_proven"
+      }
+    },
+    {
+      "number": 54,
+      "deviceRef": "28cfdeba6193",
+      "manufacturer": "OPPO",
+      "model": "PECM30",
+      "android": "12",
+      "jobs": 16,
+      "failedJobs": 10,
+      "families": {
+        "package_manager": 3,
+        "human": 3,
+        "progress_diagnostic": 3,
+        "cleanup_unconfirmed": 1
+      },
+      "terminalBusiness": {},
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": "task_failed",
+        "reason": "preparation_failed_round",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "037ad13d-19df-4d4e-b7f5-f98b538185b5",
+        "taskId": "3093cb44-4a88-4284-a5a8-7d939a31633d",
+        "createdAt": "2026-10-29T02:05:03.845+00:00",
+        "kind": "alipay_name_start",
+        "errorCode": "task_failed",
+        "family": "package_manager"
+      }
+    },
+    {
+      "number": 57,
+      "deviceRef": "87632374f75a",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "android": "14",
+      "jobs": 1031,
+      "failedJobs": 191,
+      "families": {
+        "observation_budget_exhausted": 13,
+        "person_not_found": 16,
+        "visual_card_not_proven": 70,
+        "reader_capacity": 4,
+        "human": 47,
+        "account_limit": 5,
+        "resume_state_mismatch": 13,
+        "post_human_input_changed": 17,
+        "selector_missing": 3,
+        "identity_unverified": 1,
+        "server_error": 2
+      },
+      "terminalBusiness": {
+        "succeeded": 632,
+        "not_found": 114,
+        "failed": 6
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "",
+        "domain": null,
+        "until": null
+      },
+      "phase": "human",
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "237f8f73-e271-487b-b05b-a3f0fd6ff2df",
+        "taskId": "4779f1ce-496e-4c06-9296-2235bdc53b0a",
+        "createdAt": "2026-10-29T06:26:01.208+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_lookup_result_unconfirmed",
+        "family": "observation_budget_exhausted"
+      }
+    },
+    {
+      "number": 58,
+      "deviceRef": "ae7aa01f82bb",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "android": "14",
+      "jobs": 103,
+      "failedJobs": 33,
+      "families": {
+        "account_limit": 13,
+        "human": 17,
+        "selector_missing": 3
+      },
+      "terminalBusiness": {
+        "succeeded": 13,
+        "not_found": 7
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "accounts_cooling",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "87b26954-315a-42f9-be25-5a231ef1b6df",
+        "taskId": "35269a97-4fb5-4d82-931b-9d8942e3cc41",
+        "createdAt": "2026-10-29T01:03:08.006+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_no_available_account",
+        "family": "account_limit"
+      }
+    },
+    {
+      "number": 60,
+      "deviceRef": "7629b5fda836",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "android": "14",
+      "jobs": 81,
+      "failedJobs": 29,
+      "families": {
+        "account_limit": 6,
+        "human": 14,
+        "selector_missing": 2,
+        "identity_unverified": 4,
+        "post_human_input_changed": 2,
+        "visual_card_not_proven": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 15,
+        "not_found": 3
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": "alipay_page_element_changed",
+        "reason": "page_preparation_backoff",
+        "domain": null,
+        "until": "1793208075644"
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "08646bb3-6c18-485b-bd51-5710678006cb",
+        "taskId": "5ff0f0c9-7cb3-41a2-924d-a545704122f8",
+        "createdAt": "2026-10-29T02:01:02.026+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_no_available_account",
+        "family": "account_limit"
+      }
+    },
+    {
+      "number": 67,
+      "deviceRef": "b78e0dcae360",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "android": "14",
+      "jobs": 34,
+      "failedJobs": 12,
+      "families": {
+        "account_limit": 5,
+        "human": 5,
+        "person_not_found": 1,
+        "visual_card_not_proven": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 3,
+        "failed": 1
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": "alipay_no_available_account",
+        "reason": "preparation_failed_round",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "b67e2503-15a5-451d-82ab-1025a5d0de34",
+        "taskId": "628b588e-1682-448e-a059-c1042a88814c",
+        "createdAt": "2026-10-29T01:00:18.347+00:00",
+        "kind": "alipay_name_start",
+        "errorCode": "alipay_no_available_account",
+        "family": "account_limit"
+      }
+    },
+    {
+      "number": 74,
+      "deviceRef": "48355b617804",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "android": "14",
+      "jobs": 65,
+      "failedJobs": 21,
+      "families": {
+        "account_limit": 10,
+        "identity_unverified": 1,
+        "human": 5,
+        "visual_card_not_proven": 3,
+        "navigation_overlay": 1,
+        "person_not_found": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 12,
+        "not_found": 1
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "accounts_cooling",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "1a09740c-558d-4ee7-854d-043c9e886c09",
+        "taskId": "231de1e5-7c71-448b-b268-601529ae10b0",
+        "createdAt": "2026-10-29T01:49:16.077+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_no_available_account",
+        "family": "account_limit"
+      }
+    },
+    {
+      "number": 79,
+      "deviceRef": "f3acdbccb60b",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "android": "14",
+      "jobs": 222,
+      "failedJobs": 51,
+      "families": {
+        "login": 1,
+        "visual_card_not_proven": 14,
+        "human": 14,
+        "resume_state_mismatch": 8,
+        "post_human_input_changed": 9,
+        "observation_budget_exhausted": 4,
+        "account_limit": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 120,
+        "not_found": 22
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "account_login_required",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "57e5f48a-1125-400b-b192-7cc1e7345bd3",
+        "taskId": "063a5c2b-8d87-4003-ac4f-00837d604fd8",
+        "createdAt": "2026-10-28T17:45:31.371+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_login_required",
+        "family": "login"
+      }
+    },
+    {
+      "number": 86,
+      "deviceRef": "3d3e55c3d628",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "android": "14",
+      "jobs": 1,
+      "failedJobs": 1,
+      "families": {
+        "login": 1
+      },
+      "terminalBusiness": {},
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "account_login_required",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "21073049-2aad-4596-9802-0b7097bf9379",
+        "taskId": "f0f8ec20-2da2-4e4d-9d74-a1c3ae980655",
+        "createdAt": "2026-10-28T06:41:25.507+00:00",
+        "kind": "alipay_name_start",
+        "errorCode": "alipay_login_required",
+        "family": "login"
+      }
+    },
+    {
+      "number": 87,
+      "deviceRef": "06dd5560f9ee",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "android": "14",
+      "jobs": 88,
+      "failedJobs": 27,
+      "families": {
+        "account_limit": 6,
+        "human": 13,
+        "navigation_overlay": 3,
+        "identity_unverified": 4,
+        "visual_card_not_proven": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 19,
+        "not_found": 4
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "accounts_cooling",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "99a11997-ae5d-4808-9cf7-b833450e3146",
+        "taskId": "8815aa9c-8b24-4ea9-8afc-fdefaba06b0a",
+        "createdAt": "2026-10-29T06:18:09.361+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_no_available_account",
+        "family": "account_limit"
+      }
+    },
+    {
+      "number": 101,
+      "deviceRef": "fa843e63ad74",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "android": "14",
+      "jobs": 515,
+      "failedJobs": 90,
+      "families": {
+        "visual_card_not_proven": 34,
+        "person_not_found": 11,
+        "human": 26,
+        "observation_budget_exhausted": 3,
+        "account_limit": 5,
+        "reader_capacity": 1,
+        "foreground_changed": 1,
+        "resume_state_mismatch": 4,
+        "post_human_input_changed": 5
+      },
+      "terminalBusiness": {
+        "succeeded": 310,
+        "not_found": 60,
+        "failed": 7
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "",
+        "domain": null,
+        "until": null
+      },
+      "phase": "recovery",
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "806b9732-5c2b-4c9a-94c0-a83132bbbb2f",
+        "taskId": "36c4a5dd-feb4-45f8-8bbf-a5ddff74a64b",
+        "createdAt": "2026-10-29T06:28:55.058+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_lookup_result_unconfirmed",
+        "family": "visual_card_not_proven"
+      }
+    },
+    {
+      "number": 107,
+      "deviceRef": "2d08f117d681",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "android": "14",
+      "jobs": 17,
+      "failedJobs": 6,
+      "families": {
+        "account_limit": 3,
+        "identity_unverified": 1,
+        "visual_card_not_proven": 1,
+        "human": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 4,
+        "not_found": 1
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "accounts_cooling",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "fc6c3f99-e657-4d05-a2e2-8da3ebac4405",
+        "taskId": "68653a69-0ca2-463d-8baf-d02875724584",
+        "createdAt": "2026-10-29T05:54:58.742+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_no_available_account",
+        "family": "account_limit"
+      }
+    },
+    {
+      "number": 112,
+      "deviceRef": "498fab19a8eb",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "android": "14",
+      "jobs": 456,
+      "failedJobs": 101,
+      "families": {
+        "human": 24,
+        "visual_card_not_proven": 41,
+        "person_not_found": 9,
+        "observation_budget_exhausted": 14,
+        "account_limit": 4,
+        "window_service_timeout": 1,
+        "resume_state_mismatch": 4,
+        "post_human_input_changed": 4
+      },
+      "terminalBusiness": {
+        "succeeded": 274,
+        "not_found": 46,
+        "failed": 9
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "preparation_backoff",
+        "domain": null,
+        "until": "1793255940920"
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "1404f544-5c14-4a09-acd9-6f9aa312e187",
+        "taskId": "ca1acc32-4758-4541-9d52-3601834a6744",
+        "createdAt": "2026-10-29T06:31:50.856+00:00",
+        "kind": "alipay_name_start",
+        "errorCode": "alipay_human_verification_required",
+        "family": "human"
+      }
+    },
+    {
+      "number": 115,
+      "deviceRef": "14338805411d",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "android": "14",
+      "jobs": 27,
+      "failedJobs": 9,
+      "families": {
+        "login": 1,
+        "account_limit": 2,
+        "post_human_input_changed": 1,
+        "human": 3,
+        "identity_unverified": 1,
+        "visual_card_not_proven": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 7,
+        "not_found": 3
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "account_login_required",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "11f90f7b-c48f-444d-8322-a1517668d0b2",
+        "taskId": "402c86d8-7609-46b3-a378-3f925b086370",
+        "createdAt": "2026-10-28T13:09:46.944+00:00",
+        "kind": "alipay_name_start",
+        "errorCode": "alipay_login_required",
+        "family": "login"
+      }
+    },
+    {
+      "number": 116,
+      "deviceRef": "33fb65392d6f",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "android": "14",
+      "jobs": 966,
+      "failedJobs": 201,
+      "families": {
+        "observation_budget_exhausted": 24,
+        "visual_card_not_proven": 65,
+        "person_not_found": 8,
+        "human": 44,
+        "reader_capacity": 2,
+        "identity_unverified": 1,
+        "account_limit": 5,
+        "resume_state_mismatch": 14,
+        "post_human_input_changed": 20,
+        "cleanup_unconfirmed": 5,
+        "device_missing": 7,
+        "reader_bootstrap_exit": 1,
+        "result_other": 1,
+        "window_service_timeout": 1,
+        "input_changed": 1,
+        "selector_missing": 1,
+        "visual_card_changed": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 583,
+        "not_found": 104,
+        "failed": 6
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "",
+        "domain": null,
+        "until": null
+      },
+      "phase": "human",
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "15b2125b-fdf6-4981-a1d6-0a48c6b4abf9",
+        "taskId": "deaad3a2-9540-4275-bf2f-fe41fe065f85",
+        "createdAt": "2026-10-29T06:32:07.58+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_lookup_result_unconfirmed",
+        "family": "observation_budget_exhausted"
+      }
+    },
+    {
+      "number": 118,
+      "deviceRef": "379e304eabd6",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "android": "14",
+      "jobs": 3,
+      "failedJobs": 1,
+      "families": {
+        "login": 1
+      },
+      "terminalBusiness": {},
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "account_login_required",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "3dc5392c-c1ba-4c49-9d74-306b1503617a",
+        "taskId": "6d4492dd-6ba9-4325-8b80-ae270a8743d6",
+        "createdAt": "2026-10-28T06:58:23.085+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_login_required",
+        "family": "login"
+      }
+    },
+    {
+      "number": 128,
+      "deviceRef": "5e9223f5b249",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "android": "14",
+      "jobs": 73,
+      "failedJobs": 27,
+      "families": {
+        "account_limit": 9,
+        "human": 12,
+        "identity_unverified": 1,
+        "post_human_input_changed": 3,
+        "visual_card_not_proven": 1,
+        "observation_budget_exhausted": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 14,
+        "not_found": 3
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": "alipay_no_available_account",
+        "reason": "preparation_failed_round",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "0291fa93-0e8a-4fae-ad50-1423642a02cf",
+        "taskId": "d0df751c-2f87-4963-a972-2851e0fe3691",
+        "createdAt": "2026-10-29T01:29:00.87+00:00",
+        "kind": "alipay_name_start",
+        "errorCode": "alipay_no_available_account",
+        "family": "account_limit"
+      }
+    },
+    {
+      "number": 130,
+      "deviceRef": "31bba16d8714",
+      "manufacturer": "vivo",
+      "model": "V2357A",
+      "android": "14",
+      "jobs": 81,
+      "failedJobs": 35,
+      "families": {
+        "account_limit": 9,
+        "human": 22,
+        "identity_unverified": 4
+      },
+      "terminalBusiness": {},
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": "alipay_account_identity_unverified",
+        "reason": "page_preparation_backoff",
+        "domain": null,
+        "until": "1793243997009"
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "1ab77b5e-8d45-4762-9319-899168aa5953",
+        "taskId": "b44d16f2-d1fd-444a-b315-f9d9aec263d3",
+        "createdAt": "2026-10-29T04:53:22.929+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_no_available_account",
+        "family": "account_limit"
+      }
+    },
+    {
+      "number": 138,
+      "deviceRef": "4bb37fd3285a",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "android": "14",
+      "jobs": 223,
+      "failedJobs": 69,
+      "families": {
+        "human": 10,
+        "visual_card_not_proven": 35,
+        "person_not_found": 15,
+        "observation_budget_exhausted": 4,
+        "visual_card_changed": 1,
+        "resume_state_mismatch": 2,
+        "post_human_input_changed": 2
+      },
+      "terminalBusiness": {
+        "succeeded": 112,
+        "not_found": 15,
+        "failed": 9
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "",
+        "domain": null,
+        "until": null
+      },
+      "phase": "human",
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "2876b8bd-c225-4613-8ab9-55051823d740",
+        "taskId": "928d5e1d-23b1-4458-a5ff-4828e69752c7",
+        "createdAt": "2026-10-29T06:28:53.824+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_human_verification_required",
+        "family": "human"
+      }
+    },
+    {
+      "number": 142,
+      "deviceRef": "d6a639032465",
+      "manufacturer": "OPPO",
+      "model": "PDYM20",
+      "android": "12",
+      "jobs": 94,
+      "failedJobs": 38,
+      "families": {
+        "progress_diagnostic": 1,
+        "person_not_found": 5,
+        "screenshot_command": 2,
+        "account_picker_unstable": 4,
+        "rpc_timeout": 14,
+        "human": 10,
+        "reader_capacity": 2
+      },
+      "terminalBusiness": {
+        "not_found": 1,
+        "failed": 1
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": "alipay_lookup_failed",
+        "reason": "page_preparation_backoff",
+        "domain": null,
+        "until": "1793255574431"
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "准备/探测遇人工，非业务验收",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "d08de967-3f02-4cf7-9b7b-4fbea3ce381c",
+        "taskId": "c718348f-5b5b-4582-a3d1-f02217efda87",
+        "createdAt": "2026-10-29T06:15:43.362+00:00",
+        "kind": "alipay_name_start",
+        "errorCode": "alipay_lookup_failed",
+        "family": "progress_diagnostic"
+      }
+    },
+    {
+      "number": 146,
+      "deviceRef": "adbbfc363009",
+      "manufacturer": "OPPO",
+      "model": "PHJ110",
+      "android": "13",
+      "jobs": 62,
+      "failedJobs": 24,
+      "families": {
+        "human": 5,
+        "person_not_found": 10,
+        "package_manager": 1,
+        "rpc_timeout": 2,
+        "cleanup_unconfirmed": 4,
+        "reader_capacity": 1,
+        "xml_missing": 1
+      },
+      "terminalBusiness": {
+        "failed": 1
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "",
+        "domain": null,
+        "until": null
+      },
+      "phase": "querying",
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "94e0b98c-6849-4e8b-8e85-0c6d4745af4d",
+        "taskId": "f23a1437-c953-4f6e-a3c8-75b005727b9e",
+        "createdAt": "2026-10-29T06:10:43.901+00:00",
+        "kind": "alipay_name_start",
+        "errorCode": "alipay_human_verification_required",
+        "family": "human"
+      }
+    },
+    {
+      "number": 147,
+      "deviceRef": "6a5f1990b444",
+      "manufacturer": "OPPO",
+      "model": "PHJ110",
+      "android": "13",
+      "jobs": 46,
+      "failedJobs": 20,
+      "families": {
+        "human": 9,
+        "person_not_found": 3,
+        "reader_capacity": 1,
+        "rpc_timeout": 6,
+        "navigation_overlay": 1
+      },
+      "terminalBusiness": {},
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "account_login_required",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "bd50e87c-522b-406d-a003-82948bfc8fe7",
+        "taskId": "46db9b12-8c5d-433d-b7da-bbbad9ec91ca",
+        "createdAt": "2026-10-29T06:31:45.46+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_human_verification_required",
+        "family": "human"
+      }
+    },
+    {
+      "number": 149,
+      "deviceRef": "0d740200f7e3",
+      "manufacturer": "OPPO",
+      "model": "PKL110",
+      "android": "15",
+      "jobs": 35,
+      "failedJobs": 13,
+      "families": {
+        "human": 5,
+        "rpc_timeout": 4,
+        "person_not_found": 1,
+        "reader_reattach": 1,
+        "reader_capacity": 2
+      },
+      "terminalBusiness": {},
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "lookup_device_unavailable",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "7c5e5731-f295-4ae2-a7df-34c2642e5172",
+        "taskId": "a23e3e92-ea6a-4dae-8c23-4dbf7585c708",
+        "createdAt": "2026-10-29T06:19:00.466+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_human_verification_required",
+        "family": "human"
+      }
+    },
+    {
+      "number": 152,
+      "deviceRef": "b07e20aadef9",
+      "manufacturer": "OPPO",
+      "model": "PHJ110",
+      "android": "13",
+      "jobs": 0,
+      "failedJobs": 0,
+      "families": {},
+      "terminalBusiness": {},
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "lookup_device_unavailable",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": null
+    },
+    {
+      "number": 153,
+      "deviceRef": "12a309b57ed7",
+      "manufacturer": "OPPO",
+      "model": "PKL110",
+      "android": "15",
+      "jobs": 22,
+      "failedJobs": 15,
+      "families": {
+        "package_manager": 7,
+        "cleanup_unconfirmed": 4,
+        "human": 3,
+        "navigation_overlay": 1
+      },
+      "terminalBusiness": {},
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": "task_failed",
+        "reason": "preparation_failed_round",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "已知USB/实名弹窗导航局部通过；非业务验收",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "c3d25655-51b0-4873-a767-46fa2bd3dc81",
+        "taskId": "59c7d2f1-6055-4c24-9216-ec543d0a5022",
+        "createdAt": "2026-10-29T03:50:56.912+00:00",
+        "kind": "alipay_name_start",
+        "errorCode": "task_failed",
+        "family": "package_manager"
+      }
+    },
+    {
+      "number": 154,
+      "deviceRef": "fa63eaf0980c",
+      "manufacturer": "OPPO",
+      "model": "PMC110",
+      "android": "16",
+      "jobs": 301,
+      "failedJobs": 112,
+      "families": {
+        "human": 27,
+        "cleanup_unconfirmed": 39,
+        "person_not_found": 11,
+        "package_manager": 4,
+        "input_changed": 4,
+        "rpc_timeout": 2,
+        "navigation_overlay": 4,
+        "device_missing": 2,
+        "reader_capacity": 1,
+        "progress_diagnostic": 1,
+        "identity_unverified": 1,
+        "account_limit": 1,
+        "reader_bootstrap_exit": 15
+      },
+      "terminalBusiness": {
+        "succeeded": 2,
+        "not_found": 1,
+        "failed": 2
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "",
+        "domain": null,
+        "until": null
+      },
+      "phase": "starting",
+      "candidateRealDeviceEvidence": "系统USB框导航/准备通过，探测遇人工；非业务验收",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "05dd2974-9cc9-48f2-b4d1-7e3b2e579467",
+        "taskId": "207db613-8d4c-43a2-8beb-4c5ee13ab3ac",
+        "createdAt": "2026-10-29T06:29:15.144+00:00",
+        "kind": "alipay_name_start",
+        "errorCode": "alipay_human_verification_required",
+        "family": "human"
+      }
+    },
+    {
+      "number": 155,
+      "deviceRef": "36ec62208c5d",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "android": "14",
+      "jobs": 362,
+      "failedJobs": 73,
+      "families": {
+        "visual_card_not_proven": 38,
+        "person_not_found": 3,
+        "rpc_timeout": 1,
+        "window_service_timeout": 1,
+        "adb_read_unavailable": 3,
+        "input_changed": 3,
+        "cleanup_unconfirmed": 2,
+        "device_missing": 17,
+        "prompt_screenshot_invalid": 1,
+        "adb_exit": 1,
+        "reader_capacity": 1,
+        "observation_budget_exhausted": 1,
+        "account_limit": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 236,
+        "not_found": 48,
+        "failed": 5
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "66a7e7ff-6e59-4786-a8c6-262f205bd0e1",
+        "taskId": "ba873f7b-d117-4cb1-b06e-d1596f0ab4a1",
+        "createdAt": "2026-10-29T06:30:11.491+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_lookup_result_unconfirmed",
+        "family": "visual_card_not_proven"
+      }
+    },
+    {
+      "number": 156,
+      "deviceRef": "5af1eeb20edd",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "android": "14",
+      "jobs": 684,
+      "failedJobs": 58,
+      "families": {
+        "account_limit": 9,
+        "identity_unverified": 6,
+        "visual_card_not_proven": 9,
+        "human": 22,
+        "post_human_input_changed": 8,
+        "observation_budget_exhausted": 4
+      },
+      "terminalBusiness": {
+        "succeeded": 477,
+        "not_found": 91
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "accounts_cooling",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "5c724b89-e33e-4a0a-91b2-d6a69b8e40bd",
+        "taskId": "3f2d3e54-8bc5-4dba-9817-6d87dccfc409",
+        "createdAt": "2026-10-29T01:53:23.595+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_no_available_account",
+        "family": "account_limit"
+      }
+    },
+    {
+      "number": 157,
+      "deviceRef": "911e0698787f",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "android": "14",
+      "jobs": 72,
+      "failedJobs": 26,
+      "families": {
+        "account_limit": 11,
+        "human": 9,
+        "rpc_timeout": 1,
+        "progress_diagnostic": 1,
+        "navigation_overlay": 2,
+        "identity_unverified": 1,
+        "visual_card_not_proven": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 9,
+        "not_found": 1
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": "alipay_no_available_account",
+        "reason": "preparation_failed_round",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "9152c086-64b7-4b7f-bbca-bd76a61ca292",
+        "taskId": "18c24d4d-3515-495d-b1a0-c672290738f7",
+        "createdAt": "2026-10-29T05:26:16.393+00:00",
+        "kind": "alipay_name_start",
+        "errorCode": "alipay_no_available_account",
+        "family": "account_limit"
+      }
+    },
+    {
+      "number": 158,
+      "deviceRef": "652f8ee30aaf",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "android": "14",
+      "jobs": 125,
+      "failedJobs": 53,
+      "families": {
+        "adb_read_unavailable": 2,
+        "device_missing": 15,
+        "human": 7,
+        "prompt_screenshot_invalid": 1,
+        "rpc_timeout": 1,
+        "visual_card_not_proven": 20,
+        "person_not_found": 5,
+        "reader_bootstrap_exit": 1,
+        "xml_command": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 49,
+        "not_found": 13,
+        "failed": 3
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "lookup_device_unavailable",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "749ec513-a4b8-468b-8594-638fa7188e06",
+        "taskId": "667b6350-e479-405c-8584-5410cfbffba7",
+        "createdAt": "2026-10-29T06:21:32.801+00:00",
+        "kind": "alipay_name_start",
+        "errorCode": "alipay_lookup_result_unconfirmed",
+        "family": "adb_read_unavailable"
+      }
+    },
+    {
+      "number": 159,
+      "deviceRef": "550325744b36",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "android": "14",
+      "jobs": 81,
+      "failedJobs": 32,
+      "families": {
+        "account_limit": 5,
+        "human": 11,
+        "navigation_overlay": 3,
+        "visual_card_not_proven": 6,
+        "progress_diagnostic": 1,
+        "identity_unverified": 2,
+        "person_not_found": 3,
+        "post_human_input_changed": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 12,
+        "not_found": 2,
+        "failed": 2
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": "alipay_no_available_account",
+        "reason": "preparation_failed_round",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "19168537-2fe5-4d17-8576-78cdfb01ae0e",
+        "taskId": "b50ce361-dba6-4945-8838-7bc177730879",
+        "createdAt": "2026-10-29T04:20:09.416+00:00",
+        "kind": "alipay_name_start",
+        "errorCode": "alipay_no_available_account",
+        "family": "account_limit"
+      }
+    },
+    {
+      "number": 161,
+      "deviceRef": "ee5adc5b6c0d",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "android": "14",
+      "jobs": 655,
+      "failedJobs": 127,
+      "families": {
+        "adb_read_unavailable": 1,
+        "visual_card_not_proven": 77,
+        "navigation_overlay": 2,
+        "account_limit": 3,
+        "observation_budget_exhausted": 14,
+        "identity_unverified": 1,
+        "resume_state_mismatch": 5,
+        "post_human_input_changed": 6,
+        "human": 15,
+        "device_unauthorized": 2,
+        "person_not_found": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 469,
+        "not_found": 87,
+        "failed": 2
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "device_or_agent_offline",
+        "domain": null,
+        "until": null
+      },
+      "phase": "quarantined",
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "6c645619-e9dc-40d5-8aff-c1b9054677b6",
+        "taskId": "0a4db9a9-cb1d-4f85-bc84-b42788e8b921",
+        "createdAt": "2026-10-29T01:07:19.048+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_lookup_result_unconfirmed",
+        "family": "adb_read_unavailable"
+      }
+    },
+    {
+      "number": 162,
+      "deviceRef": "0ad63494f644",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "android": "14",
+      "jobs": 660,
+      "failedJobs": 135,
+      "families": {
+        "human": 17,
+        "person_not_found": 16,
+        "visual_card_not_proven": 78,
+        "observation_budget_exhausted": 9,
+        "reader_capacity": 1,
+        "account_limit": 3,
+        "device_missing": 1,
+        "foreground_changed": 1,
+        "xml_command": 1,
+        "identity_unverified": 1,
+        "resume_state_mismatch": 3,
+        "post_human_input_changed": 4
+      },
+      "terminalBusiness": {
+        "succeeded": 433,
+        "not_found": 94,
+        "failed": 9
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "preparation_backoff",
+        "domain": null,
+        "until": "1793255987178"
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "准备/探测局部通过；非业务验收",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "cb418512-e974-4f7c-8087-acec9b7cec54",
+        "taskId": "dea464b5-2e48-4912-b63e-c3878572016d",
+        "createdAt": "2026-10-29T06:32:35.305+00:00",
+        "kind": "alipay_name_start",
+        "errorCode": "alipay_human_verification_required",
+        "family": "human"
+      }
+    },
+    {
+      "number": 163,
+      "deviceRef": "fbf455e96126",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "android": "14",
+      "jobs": 88,
+      "failedJobs": 32,
+      "families": {
+        "account_limit": 11,
+        "human": 13,
+        "selector_missing": 1,
+        "identity_unverified": 1,
+        "navigation_overlay": 1,
+        "visual_card_not_proven": 3,
+        "device_missing": 1,
+        "observation_budget_exhausted": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 16,
+        "not_found": 6
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": "alipay_page_element_changed",
+        "reason": "page_preparation_backoff",
+        "domain": null,
+        "until": "1793236795524"
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "2adc45ba-b949-4d45-b9e8-303de31f026f",
+        "taskId": "250ae360-d025-414f-8536-cc69c88de845",
+        "createdAt": "2026-10-29T02:15:50.738+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_no_available_account",
+        "family": "account_limit"
+      }
+    },
+    {
+      "number": 164,
+      "deviceRef": "5881901a1d14",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "android": "14",
+      "jobs": 419,
+      "failedJobs": 96,
+      "families": {
+        "human": 22,
+        "observation_budget_exhausted": 6,
+        "visual_card_not_proven": 43,
+        "person_not_found": 8,
+        "reader_capacity": 1,
+        "xml_missing": 2,
+        "navigation_overlay": 1,
+        "identity_unverified": 1,
+        "account_limit": 2,
+        "resume_state_mismatch": 4,
+        "post_human_input_changed": 5,
+        "xml_command": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 263,
+        "not_found": 41,
+        "failed": 3
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "preparation_backoff",
+        "domain": null,
+        "until": "1793256076296"
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "准备通过后RPC失败，后来生产占用未抢占",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "a589db9d-cb14-4070-b925-7045597fb3c0",
+        "taskId": "9d8a7c3c-8aec-4a11-9c25-f1c17a3c5ac4",
+        "createdAt": "2026-10-29T06:26:52.76+00:00",
+        "kind": "alipay_name_start",
+        "errorCode": "alipay_human_verification_required",
+        "family": "human"
+      }
+    },
+    {
+      "number": 165,
+      "deviceRef": "4130a8b91f69",
+      "manufacturer": "vivo",
+      "model": "V2442A",
+      "android": "14",
+      "jobs": 90,
+      "failedJobs": 34,
+      "families": {
+        "account_limit": 9,
+        "human": 15,
+        "progress_diagnostic": 1,
+        "identity_unverified": 4,
+        "observation_budget_exhausted": 1,
+        "visual_card_not_proven": 3,
+        "post_human_input_changed": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 18,
+        "not_found": 5
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": "alipay_lookup_failed",
+        "reason": "page_preparation_backoff",
+        "domain": null,
+        "until": "1793227717070"
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "d156bb2a-eda7-42ed-8167-616ac75c62bd",
+        "taskId": "9c235a78-d75b-445b-9c69-bfd391eeb324",
+        "createdAt": "2026-10-29T02:36:19.558+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_no_available_account",
+        "family": "account_limit"
+      }
+    },
+    {
+      "number": 172,
+      "deviceRef": "11806caa91d2",
+      "manufacturer": "Tianyi",
+      "model": "TYH651M_02",
+      "android": "14",
+      "jobs": 374,
+      "failedJobs": 102,
+      "families": {
+        "human": 11,
+        "visual_card_not_proven": 42,
+        "person_not_found": 14,
+        "observation_budget_exhausted": 15,
+        "screenshot_command": 10,
+        "resume_state_mismatch": 1,
+        "post_human_input_changed": 3,
+        "reader_capacity": 2,
+        "device_unauthorized": 2,
+        "adb_read_unavailable": 1,
+        "account_limit": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 209,
+        "not_found": 46,
+        "failed": 10
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "preparation_backoff",
+        "domain": null,
+        "until": "1793256082461"
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "0947bc5f-36c3-4157-850a-450e50dcc707",
+        "taskId": "5082601c-e2c9-4c6e-8c90-47ce4a2f8022",
+        "createdAt": "2026-10-29T06:25:52.582+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_human_verification_required",
+        "family": "human"
+      }
+    },
+    {
+      "number": 176,
+      "deviceRef": "4267dac5d217",
+      "manufacturer": "vivo",
+      "model": "V2443A",
+      "android": "15",
+      "jobs": 622,
+      "failedJobs": 188,
+      "families": {
+        "human": 25,
+        "person_not_found": 27,
+        "visual_card_not_proven": 101,
+        "window_service_timeout": 1,
+        "observation_budget_exhausted": 7,
+        "resume_state_mismatch": 7,
+        "post_human_input_changed": 11,
+        "selector_missing": 3,
+        "identity_unverified": 2,
+        "account_limit": 3,
+        "adb_read_unavailable": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 343,
+        "not_found": 53,
+        "failed": 18
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "preparation_backoff",
+        "domain": null,
+        "until": "1793256124908"
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "3bdbba35-614b-4b66-8f53-9007dfd3b4fd",
+        "taskId": "60ffa26d-118f-4d15-b587-a5d870759696",
+        "createdAt": "2026-10-29T06:27:17.739+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_human_verification_required",
+        "family": "human"
+      }
+    },
+    {
+      "number": 181,
+      "deviceRef": "970a16662335",
+      "manufacturer": "HUAWEI",
+      "model": "STG_AL00",
+      "android": "12",
+      "jobs": 88,
+      "failedJobs": 35,
+      "families": {
+        "account_limit": 6,
+        "human": 14,
+        "reader_capacity": 1,
+        "identity_unverified": 7,
+        "navigation_overlay": 1,
+        "post_human_input_changed": 1,
+        "visual_card_not_proven": 3,
+        "observation_budget_exhausted": 1,
+        "selector_missing": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 22,
+        "not_found": 3
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": "alipay_no_available_account",
+        "reason": "preparation_failed_round",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "b84777c8-dd4d-4ace-b450-cda9b5456111",
+        "taskId": "f1989f83-3ca7-4b75-afee-6b3957451c2a",
+        "createdAt": "2026-10-29T03:34:08.968+00:00",
+        "kind": "alipay_name_start",
+        "errorCode": "alipay_no_available_account",
+        "family": "account_limit"
+      }
+    },
+    {
+      "number": 182,
+      "deviceRef": "1639cae9c65c",
+      "manufacturer": "HUAWEI",
+      "model": "ANA_AN00",
+      "android": "12",
+      "jobs": 904,
+      "failedJobs": 241,
+      "families": {
+        "human": 49,
+        "identity_unverified": 4,
+        "account_limit": 5,
+        "visual_card_not_proven": 99,
+        "person_not_found": 17,
+        "observation_budget_exhausted": 36,
+        "resume_state_mismatch": 14,
+        "post_human_input_changed": 16,
+        "navigation_overlay": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 535,
+        "not_found": 92,
+        "failed": 6
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "preparation_backoff",
+        "domain": null,
+        "until": "1793255937065"
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "0bc3e0e6-eb75-4e95-8d86-24ba07e8b69d",
+        "taskId": "8914ba7b-4189-496c-8681-1056bf4f6b1f",
+        "createdAt": "2026-10-29T06:31:46.489+00:00",
+        "kind": "alipay_name_start",
+        "errorCode": "alipay_human_verification_required",
+        "family": "human"
+      }
+    },
+    {
+      "number": 183,
+      "deviceRef": "141a917dafba",
+      "manufacturer": "HONOR",
+      "model": "ANN_AN00",
+      "android": "15",
+      "jobs": 40,
+      "failedJobs": 18,
+      "families": {
+        "account_limit": 5,
+        "visual_card_not_proven": 4,
+        "human": 5,
+        "navigation_overlay": 1,
+        "foreground_changed": 1,
+        "foreground_not_alipay": 1,
+        "identity_unverified": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 4,
+        "not_found": 1
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "accounts_cooling",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "babf47a5-74b2-418b-b56f-cf50ea041531",
+        "taskId": "805957b5-a1ed-4413-a34e-ddc052fcda1b",
+        "createdAt": "2026-10-29T01:05:43.361+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_no_available_account",
+        "family": "account_limit"
+      }
+    },
+    {
+      "number": 188,
+      "deviceRef": "1319bd8c3790",
+      "manufacturer": "HONOR",
+      "model": "LLY_AN00",
+      "android": "14",
+      "jobs": 161,
+      "failedJobs": 56,
+      "families": {
+        "observation_budget_exhausted": 10,
+        "human": 11,
+        "rpc_timeout": 12,
+        "person_not_found": 9,
+        "navigation_overlay": 1,
+        "account_limit": 4,
+        "input_changed": 1,
+        "post_human_input_changed": 1,
+        "window_service_timeout": 1,
+        "selector_missing": 2,
+        "visual_card_not_proven": 2,
+        "identity_unverified": 1,
+        "reader_capacity": 1
+      },
+      "terminalBusiness": {
+        "succeeded": 32,
+        "not_found": 5,
+        "failed": 6
+      },
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "accounts_cooling",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "4c7ad8a2-ddeb-40e7-8d7d-a20cdb987f8d",
+        "taskId": "9195940a-2c12-47b5-b447-3cc6bc3adbde",
+        "createdAt": "2026-10-29T06:30:56.699+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_lookup_result_unconfirmed",
+        "family": "observation_budget_exhausted"
+      }
+    },
+    {
+      "number": 191,
+      "deviceRef": "2c20e982233e",
+      "manufacturer": "unknown",
+      "model": "M2012K11AC",
+      "android": "unknown",
+      "jobs": 21,
+      "failedJobs": 21,
+      "families": {
+        "device_missing": 21
+      },
+      "terminalBusiness": {},
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "lookup_device_unavailable",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "0c643746-c6a0-4960-89f9-639c58362b0c",
+        "taskId": "84903571-d6c7-420a-9907-244291922af8",
+        "createdAt": "2026-10-29T06:24:55.047+00:00",
+        "kind": "alipay_name_start",
+        "errorCode": "task_failed",
+        "family": "device_missing"
+      }
+    },
+    {
+      "number": 192,
+      "deviceRef": "cee403909cda",
+      "manufacturer": "unknown",
+      "model": "FNE_AN00",
+      "android": "unknown",
+      "jobs": 54,
+      "failedJobs": 18,
+      "families": {
+        "reader_bootstrap_exit": 15,
+        "human": 2,
+        "person_not_found": 1
+      },
+      "terminalBusiness": {},
+      "healthAsOf": "2026-10-29T06:38:43.930Z",
+      "health": {
+        "code": null,
+        "reason": "lookup_device_unavailable",
+        "domain": null,
+        "until": null
+      },
+      "phase": null,
+      "candidateRealDeviceEvidence": "无本候选精确真机通过回执",
+      "candidateBusinessAcceptance": "未通过/未验收",
+      "latestFailedTask": {
+        "jobId": "27457c92-18b8-4abb-b170-fdf07f3b0d2a",
+        "taskId": "ace64b4e-ce03-48f1-88f4-4a155de188bd",
+        "createdAt": "2026-10-29T06:28:23.087+00:00",
+        "kind": "alipay_name_query",
+        "errorCode": "alipay_lookup_failed",
+        "family": "reader_bootstrap_exit"
+      }
+    }
+  ],
+  "failureFamilies": [
+    {
+      "family": "visual_card_not_proven",
+      "jobs": 850,
+      "devices": [
+        6,
+        10,
+        53,
+        57,
+        60,
+        67,
+        74,
+        79,
+        87,
+        101,
+        107,
+        112,
+        115,
+        116,
+        128,
+        138,
+        155,
+        156,
+        157,
+        158,
+        159,
+        161,
+        162,
+        163,
+        164,
+        165,
+        172,
+        176,
+        181,
+        182,
+        183,
+        188
+      ],
+      "linkedRequests": 850,
+      "linkedFinals": {
+        "business:succeeded": 632,
+        "readiness_probe:succeeded": 167,
+        "business:not_found": 48,
+        "readiness_probe:failed": 3
+      }
+    },
+    {
+      "family": "human",
+      "jobs": 630,
+      "devices": [
+        6,
+        10,
+        51,
+        52,
+        53,
+        54,
+        57,
+        58,
+        60,
+        67,
+        74,
+        79,
+        87,
+        101,
+        107,
+        112,
+        115,
+        116,
+        128,
+        130,
+        138,
+        142,
+        146,
+        147,
+        149,
+        153,
+        154,
+        156,
+        157,
+        158,
+        159,
+        161,
+        162,
+        163,
+        164,
+        165,
+        172,
+        176,
+        181,
+        182,
+        183,
+        188,
+        192
+      ],
+      "linkedRequests": 508,
+      "linkedFinals": {
+        "readiness_probe:cancelled": 176,
+        "business:succeeded": 169,
+        "business:not_found": 41,
+        "readiness_probe:failed": 44,
+        "readiness_probe:succeeded": 78
+      }
+    },
+    {
+      "family": "person_not_found",
+      "jobs": 220,
+      "devices": [
+        6,
+        52,
+        53,
+        57,
+        67,
+        74,
+        101,
+        112,
+        116,
+        138,
+        142,
+        146,
+        147,
+        149,
+        154,
+        155,
+        158,
+        159,
+        161,
+        162,
+        164,
+        172,
+        176,
+        182,
+        188,
+        192
+      ],
+      "linkedRequests": 220,
+      "linkedFinals": {
+        "readiness_probe:failed": 120,
+        "business:failed": 100
+      }
+    },
+    {
+      "family": "observation_budget_exhausted",
+      "jobs": 181,
+      "devices": [
+        6,
+        10,
+        53,
+        57,
+        79,
+        101,
+        112,
+        116,
+        128,
+        138,
+        155,
+        156,
+        161,
+        162,
+        163,
+        164,
+        165,
+        172,
+        176,
+        181,
+        182,
+        188
+      ],
+      "linkedRequests": 181,
+      "linkedFinals": {
+        "business:not_found": 52,
+        "business:succeeded": 127,
+        "readiness_probe:succeeded": 2
+      }
+    },
+    {
+      "family": "account_limit",
+      "jobs": 180,
+      "devices": [
+        6,
+        10,
+        53,
+        57,
+        58,
+        60,
+        67,
+        74,
+        79,
+        87,
+        101,
+        107,
+        112,
+        115,
+        116,
+        128,
+        130,
+        154,
+        155,
+        156,
+        157,
+        159,
+        161,
+        162,
+        163,
+        164,
+        165,
+        172,
+        176,
+        181,
+        182,
+        183,
+        188
+      ],
+      "linkedRequests": 172,
+      "linkedFinals": {
+        "readiness_probe:failed": 60,
+        "business:not_found": 18,
+        "business:succeeded": 94
+      }
+    },
+    {
+      "family": "post_human_input_changed",
+      "jobs": 128,
+      "devices": [
+        6,
+        53,
+        57,
+        60,
+        79,
+        101,
+        112,
+        115,
+        116,
+        128,
+        138,
+        156,
+        159,
+        161,
+        162,
+        164,
+        165,
+        172,
+        176,
+        181,
+        182,
+        188
+      ],
+      "linkedRequests": 125,
+      "linkedFinals": {
+        "business:succeeded": 83,
+        "readiness_probe:succeeded": 14,
+        "readiness_probe:failed": 8,
+        "business:not_found": 20
+      }
+    },
+    {
+      "family": "resume_state_mismatch",
+      "jobs": 86,
+      "devices": [
+        53,
+        57,
+        79,
+        101,
+        112,
+        116,
+        138,
+        161,
+        162,
+        164,
+        172,
+        176,
+        182
+      ],
+      "linkedRequests": 85,
+      "linkedFinals": {
+        "business:succeeded": 68,
+        "readiness_probe:failed": 3,
+        "business:not_found": 14
+      }
+    },
+    {
+      "family": "cleanup_unconfirmed",
+      "jobs": 64,
+      "devices": [
+        51,
+        54,
+        116,
+        146,
+        153,
+        154,
+        155
+      ],
+      "linkedRequests": 64,
+      "linkedFinals": {
+        "readiness_probe:failed": 49,
+        "business:not_found": 2,
+        "business:succeeded": 10,
+        "business:failed": 3
+      }
+    },
+    {
+      "family": "device_missing",
+      "jobs": 64,
+      "devices": [
+        116,
+        154,
+        155,
+        158,
+        162,
+        163,
+        191
+      ],
+      "linkedRequests": 11,
+      "linkedFinals": {
+        "business:not_found": 2,
+        "business:succeeded": 3,
+        "readiness_probe:failed": 4,
+        "business:failed": 2
+      }
+    },
+    {
+      "family": "identity_unverified",
+      "jobs": 53,
+      "devices": [
+        10,
+        53,
+        57,
+        60,
+        74,
+        87,
+        107,
+        115,
+        116,
+        128,
+        130,
+        154,
+        156,
+        157,
+        159,
+        161,
+        162,
+        163,
+        164,
+        165,
+        176,
+        181,
+        182,
+        183,
+        188
+      ],
+      "linkedRequests": 0,
+      "linkedFinals": {}
+    },
+    {
+      "family": "rpc_timeout",
+      "jobs": 43,
+      "devices": [
+        142,
+        146,
+        147,
+        149,
+        154,
+        155,
+        157,
+        158,
+        188
+      ],
+      "linkedRequests": 43,
+      "linkedFinals": {
+        "business:succeeded": 3,
+        "readiness_probe:failed": 35,
+        "business:failed": 5
+      }
+    },
+    {
+      "family": "package_manager",
+      "jobs": 36,
+      "devices": [
+        51,
+        52,
+        54,
+        146,
+        153,
+        154
+      ],
+      "linkedRequests": 2,
+      "linkedFinals": {
+        "readiness_probe:failed": 2
+      }
+    },
+    {
+      "family": "reader_bootstrap_exit",
+      "jobs": 34,
+      "devices": [
+        51,
+        116,
+        154,
+        158,
+        192
+      ],
+      "linkedRequests": 34,
+      "linkedFinals": {
+        "readiness_probe:failed": 15,
+        "business:succeeded": 16,
+        "business:not_found": 3
+      }
+    },
+    {
+      "family": "navigation_overlay",
+      "jobs": 23,
+      "devices": [
+        74,
+        87,
+        147,
+        153,
+        154,
+        157,
+        159,
+        161,
+        163,
+        164,
+        181,
+        182,
+        183,
+        188
+      ],
+      "linkedRequests": 1,
+      "linkedFinals": {
+        "readiness_probe:failed": 1
+      }
+    },
+    {
+      "family": "reader_capacity",
+      "jobs": 21,
+      "devices": [
+        57,
+        101,
+        116,
+        142,
+        146,
+        147,
+        149,
+        154,
+        155,
+        162,
+        164,
+        172,
+        181,
+        188
+      ],
+      "linkedRequests": 16,
+      "linkedFinals": {
+        "readiness_probe:failed": 11,
+        "business:not_found": 2,
+        "business:succeeded": 2,
+        "readiness_probe:succeeded": 1
+      }
+    },
+    {
+      "family": "selector_missing",
+      "jobs": 17,
+      "devices": [
+        53,
+        57,
+        58,
+        60,
+        116,
+        163,
+        176,
+        181,
+        188
+      ],
+      "linkedRequests": 3,
+      "linkedFinals": {
+        "readiness_probe:failed": 3
+      }
+    },
+    {
+      "family": "screenshot_command",
+      "jobs": 12,
+      "devices": [
+        142,
+        172
+      ],
+      "linkedRequests": 3,
+      "linkedFinals": {
+        "business:failed": 1,
+        "readiness_probe:failed": 2
+      }
+    },
+    {
+      "family": "input_changed",
+      "jobs": 9,
+      "devices": [
+        116,
+        154,
+        155,
+        188
+      ],
+      "linkedRequests": 9,
+      "linkedFinals": {
+        "business:succeeded": 8,
+        "business:not_found": 1
+      }
+    },
+    {
+      "family": "adb_read_unavailable",
+      "jobs": 8,
+      "devices": [
+        155,
+        158,
+        161,
+        172,
+        176
+      ],
+      "linkedRequests": 5,
+      "linkedFinals": {
+        "business:succeeded": 3,
+        "business:failed": 1,
+        "readiness_probe:failed": 1
+      }
+    },
+    {
+      "family": "progress_diagnostic",
+      "jobs": 8,
+      "devices": [
+        54,
+        142,
+        154,
+        157,
+        159,
+        165
+      ],
+      "linkedRequests": 0,
+      "linkedFinals": {}
+    },
+    {
+      "family": "window_service_timeout",
+      "jobs": 6,
+      "devices": [
+        53,
+        112,
+        116,
+        155,
+        176,
+        188
+      ],
+      "linkedRequests": 6,
+      "linkedFinals": {
+        "business:failed": 6
+      }
+    },
+    {
+      "family": "account_picker_unstable",
+      "jobs": 5,
+      "devices": [
+        51,
+        142
+      ],
+      "linkedRequests": 0,
+      "linkedFinals": {}
+    },
+    {
+      "family": "login",
+      "jobs": 5,
+      "devices": [
+        10,
+        79,
+        86,
+        115,
+        118
+      ],
+      "linkedRequests": 2,
+      "linkedFinals": {
+        "readiness_probe:failed": 2
+      }
+    },
+    {
+      "family": "device_unauthorized",
+      "jobs": 4,
+      "devices": [
+        161,
+        172
+      ],
+      "linkedRequests": 1,
+      "linkedFinals": {
+        "business:failed": 1
+      }
+    },
+    {
+      "family": "xml_missing",
+      "jobs": 3,
+      "devices": [
+        146,
+        164
+      ],
+      "linkedRequests": 0,
+      "linkedFinals": {}
+    },
+    {
+      "family": "foreground_changed",
+      "jobs": 3,
+      "devices": [
+        101,
+        162,
+        183
+      ],
+      "linkedRequests": 3,
+      "linkedFinals": {
+        "business:succeeded": 2,
+        "business:not_found": 1
+      }
+    },
+    {
+      "family": "xml_command",
+      "jobs": 3,
+      "devices": [
+        158,
+        162,
+        164
+      ],
+      "linkedRequests": 0,
+      "linkedFinals": {}
+    },
+    {
+      "family": "visual_card_changed",
+      "jobs": 2,
+      "devices": [
+        116,
+        138
+      ],
+      "linkedRequests": 2,
+      "linkedFinals": {
+        "business:not_found": 2
+      }
+    },
+    {
+      "family": "prompt_screenshot_invalid",
+      "jobs": 2,
+      "devices": [
+        155,
+        158
+      ],
+      "linkedRequests": 0,
+      "linkedFinals": {}
+    },
+    {
+      "family": "result_other",
+      "jobs": 2,
+      "devices": [
+        6,
+        116
+      ],
+      "linkedRequests": 2,
+      "linkedFinals": {
+        "business:not_found": 1,
+        "readiness_probe:failed": 1
+      }
+    },
+    {
+      "family": "foreground_not_alipay",
+      "jobs": 2,
+      "devices": [
+        6,
+        183
+      ],
+      "linkedRequests": 2,
+      "linkedFinals": {
+        "readiness_probe:failed": 1,
+        "business:succeeded": 1
+      }
+    },
+    {
+      "family": "server_error",
+      "jobs": 2,
+      "devices": [
+        57
+      ],
+      "linkedRequests": 2,
+      "linkedFinals": {
+        "business:not_found": 1,
+        "business:succeeded": 1
+      }
+    },
+    {
+      "family": "reader_reattach",
+      "jobs": 1,
+      "devices": [
+        149
+      ],
+      "linkedRequests": 1,
+      "linkedFinals": {
+        "readiness_probe:failed": 1
+      }
+    },
+    {
+      "family": "adb_exit",
+      "jobs": 1,
+      "devices": [
+        155
+      ],
+      "linkedRequests": 1,
+      "linkedFinals": {
+        "readiness_probe:failed": 1
+      }
+    }
+  ],
+  "classificationRefinement": {
+    "previousGroup": "rpc_timeout49 included6 WindowManager service timeouts",
+    "now": {
+      "rpc_timeout": 43,
+      "window_service_timeout": 6
+    },
+    "reason": "exact historical diagnostic distinguishes window observation from Poco HTTP/RPC; candidate classification is separate from physical root cause",
+    "currentHealthRefresh": false
+  },
+  "candidateReview": {
+    "tag": "lookup-fleet-20261029-rc.2",
+    "sourceCommit": "f26cb5175f8426dabd74b36be277e6a8834ebfb1",
+    "newRealDeviceBusinessAcceptance": "not_completed",
+    "healthData": "historical14:38:43; not refreshed during candidate integration"
+  }
+}
