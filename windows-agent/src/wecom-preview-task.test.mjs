@@ -72,7 +72,7 @@ test("sending uses an explicit mode and private fixed claim directory; unknown d
   const result=await runWecomPreviewTask({...task,payload:{...task.payload,mode:"send",previewOnly:false,appSlot:"clone",androidUser:999}},{config,agentDir:"/fixture",spawnChild:fixture.spawnChild});
   assert.equal(result.sendStatus,"unknown");assert.equal(result.invitationSent,null);
   const payload=JSON.parse(fixture.values().input);
-  assert.equal(payload.mode,"send");assert.equal(payload.claimDirectory,"/fixture/state/wecom-send-claims");
+  assert.equal(payload.mode,"send");assert.equal(payload.claimDirectory,"/fixture/data/wecom-send-claims");
   assert.equal(payload.appSlot,"clone");assert.equal(payload.androidUser,999);
 });
 

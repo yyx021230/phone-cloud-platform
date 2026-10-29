@@ -13,7 +13,7 @@ export async function runWecomPreviewTask(task, { config, agentDir, signal, spaw
     ...(task.payload.remarkName === undefined ? {} : { remarkName: task.payload.remarkName }),
     ...(task.payload.description === undefined ? {} : { description: task.payload.description }),
     phoneNumber: task.payload.phoneNumber, previewOnly: !sending, mode: sending ? "send" : "preview",
-    ...(sending ? { claimDirectory: path.join(agentDir, "state", "wecom-send-claims") } : {}),
+    ...(sending ? { claimDirectory: path.join(agentDir, "data", "wecom-send-claims") } : {}),
     agentId: config.agentId, serverBaseUrl: config.serverBaseUrl, agentToken: config.agentToken };
   return new Promise((resolve, reject) => {
     let stdout = "", settled = false, abortReason = null, killTimer = null;
