@@ -243,7 +243,7 @@ console.log(JSON.stringify(targets.map((t,i)=>{const locks=values[1].body.locks.
             time.sleep(.5)
         lock=s['locks'][0];c.update(sessionId=session_id,lockId=lock['lockId'],ownerUserId=lock['ownerUserId'])
         stage='D:/PhoneCloud/staging/xhs-qa-'+phase+'-'+t['deviceName']+'-'+t['appSlot']+'-'+task['taskId'][:8]
-        c.update(preflightOnly=preflight_only,stage=stage,adbPath=identity['adbExe'],adbPid=identity['adbPid'],agentPid=identity['agentPid'],agentCreatedAt=identity['agentCreatedAt'],
+        c.update(identityProbe=os.environ.get('XHS_QA_IDENTITY_PROBE')=='1',preflightOnly=preflight_only,stage=stage,adbPath=identity['adbExe'],adbPid=identity['adbPid'],agentPid=identity['agentPid'],agentCreatedAt=identity['agentCreatedAt'],
                  inventoryPath='D:/PhoneCloud/agent/data/device-scan-cache.json',pythonPath='D:/PhoneCloud/tools/python39/python.exe',
                  brokerUrl=f'http://127.0.0.1:{remote_port}',brokerToken=uuid.uuid4().hex+uuid.uuid4().hex)
         files=candidate_files()
