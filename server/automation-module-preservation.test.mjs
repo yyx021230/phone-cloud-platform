@@ -12,12 +12,12 @@ const chunk = (start, end) => app.slice(app.indexOf(start), app.indexOf(end, app
 const queueFunctions = chunk("function activeKuaishouLeadTask(", "function renderAutomationJobCard(");
 const queueHandlers = chunk("els.userKuaishouStartButton?.addEventListener(", "els.userPublishImagesInput?.addEventListener(");
 
-test("automation retains all existing modules and adds collection as the fifth module", () => {
+test("automation retains existing five modules and adds WeCom as the sixth", () => {
   assert.deepEqual([...html.matchAll(/data-automation-module="([^"]+)"/g)].map((match) => match[1]),
-    ["scan", "publish", "kuaishou", "data", "name"]);
+    ["scan", "publish", "kuaishou", "data", "name", "wecom"]);
   for (const name of proof.modules) assert.match(html, new RegExp(`data-automation-module-panel="${name}"`));
   const styles = read("public/styles.css");
-  assert.equal([...styles.matchAll(/\.automation-module-tabs \{[^}]*repeat\(5, minmax\(0, 1fr\)\)/g)].length, 2);
+  assert.equal([...styles.matchAll(/\.automation-module-tabs \{[^}]*repeat\(3, minmax\(0, 1fr\)\)/g)].length, 2);
 });
 
 test("the existing deployed Kuaishou handlers and task rendering are preserved byte for byte", () => {
@@ -26,21 +26,24 @@ test("the existing deployed Kuaishou handlers and task rendering are preserved b
   }
 });
 
-test("all five module clicks persist the selected module and render the workbench", () => {
+test("all six module clicks persist selection; WeCom alone refreshes its own panel", () => {
   let handler;
   let renders = 0;
   const saved = new Map();
   const state = {};
+  let wecomRefreshes = 0;
   vm.runInNewContext(chunk("els.userAutomationModuleTabs?.addEventListener(", "function clearUserDataSession("), {
     state, els: { userAutomationModuleTabs: { addEventListener: (_type, fn) => { handler = fn; } } },
-    localStorage: { setItem: (key, value) => saved.set(key, value) }, renderUserWorkbench: () => renders++
+    localStorage: { setItem: (key, value) => saved.set(key, value) }, renderUserWorkbench: () => renders++,
+    wecomPanel: { refresh: () => { wecomRefreshes++; } }
   });
-  for (const module of proof.modules) {
+  for (const module of [...proof.modules,"wecom"]) {
     handler({ target: { closest: () => ({ dataset: { automationModule: module } }) } });
     assert.equal(state.userAutomationModule, module);
     assert.equal(saved.get("phoneCloudUserAutomationModule"), module);
   }
-  assert.equal(renders, 5);
+  assert.equal(renders, 6);
+  assert.equal(wecomRefreshes, 1);
 });
 
 function harness() {

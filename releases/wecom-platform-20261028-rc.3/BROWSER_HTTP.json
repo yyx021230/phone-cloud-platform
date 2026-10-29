@@ -1,0 +1,31 @@
+{
+  "mode": "local HTTP and browser, mock Agent only",
+  "realPhoneUsed": false,
+  "tasks": [
+    {
+      "appSlot": "clone",
+      "androidUser": 999,
+      "status": "succeeded",
+      "result": {
+        "status": "ready_before_send",
+        "code": "fixture_before_send",
+        "invitationSent": false,
+        "remarkSaveStatus": "not_needed"
+      }
+    },
+    {
+      "appSlot": "main",
+      "androidUser": 0,
+      "status": "succeeded",
+      "result": {
+        "status": "ready_before_send",
+        "code": "fixture_before_send",
+        "invitationSent": false,
+        "remarkSaveStatus": "not_needed"
+      }
+    }
+  ],
+  "activeLocksAfter": 0,
+  "productionAccessed": false,
+  "runtimeSourceCommit": "2a8f428d0d0b82bd7617bc735772af9309c1c36b"
+}

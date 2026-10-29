@@ -1,0 +1,53 @@
+{
+  "screenRegression": {
+    "passed": 1467,
+    "failed": 0,
+    "skipped": 0,
+    "testConcurrency": 2,
+    "command": "node --test --test-concurrency=2 screen-client/*.test.mjs server/*.test.mjs scripts/*.test.mjs windows-agent/src/*.test.mjs"
+  },
+  "finalScopedNode": {
+    "passed": 20,
+    "failed": 0,
+    "overlapsScreenRegression": true
+  },
+  "wecomPython": {
+    "passed": 126,
+    "failed": 0,
+    "usesSyntheticPocoAndMockTransport": true
+  },
+  "rootSyntaxPassed": true,
+  "jsonSmokePassed": true,
+  "frozenFilesUnchanged": 33,
+  "review": "self review; no independent reviewer",
+  "notRunThisRound": [
+    "Windows native new version",
+    "Postgres roundtrip new custom fields",
+    "real-phone custom remark writes",
+    "production deployment and acceptance"
+  ],
+  "nodeVersion": "v25.9.0",
+  "pythonVersion": "Python 3.9.6",
+  "logs": {
+    "rc4-screen.log": {
+      "sha256": "4a360260b14b1c3e2eb9f2c7f44a1bcb735ed15a3e9e647d35c733ee04b6cc9d"
+    },
+    "rc4-final-node.log": {
+      "sha256": "e8984f32ab66517862d8db1cf8139817e1643d20c454689deead56f2296f9f75"
+    },
+    "rc4-final-python.log": {
+      "sha256": "c4515373cbc87c06befeca3b007914bbaa8db52aa9e8379a44ffb50a81ec3ea0"
+    },
+    "rc4-check.log": {
+      "sha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+    },
+    "rc4-smoke.log": {
+      "sha256": "a917e1a72233ca45562168e6d43183ba6b5a2ada4fb720884a1a54c0f0305bca"
+    }
+  },
+  "cleanup": {
+    "localFixtureStopped": true,
+    "port": 18504,
+    "productionTouched": false
+  }
+}

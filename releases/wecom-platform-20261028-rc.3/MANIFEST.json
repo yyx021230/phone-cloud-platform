@@ -1,0 +1,173 @@
+{
+  "version": "wecom-platform-20261028-rc.3",
+  "status": "local_candidate",
+  "branch": "codex/wecom-automation-slots-20261028",
+  "runtimeSourceCommit": "2a8f428d0d0b82bd7617bc735772af9309c1c36b",
+  "developmentBaseCommit": "996d97db775a9d19f5e9d82d160ee1a3906b8840",
+  "previousCandidateTag": "wecom-platform-20261028-rc.2",
+  "previousCandidateNotDeployed": true,
+  "productionBaselineLastObserved": {
+    "version": "platform-integration-20261028-deployed.1",
+    "imageId": "sha256:fca45ec32e72b0787e4375fd6812a5ac97d3aebec4b830b6393b03117554b45e",
+    "notRecheckedThisRound": true,
+    "source": "../wecom-platform-20261028-rc.2/CLOUD_PRESWITCH_READONLY.json"
+  },
+  "imageBuiltThisRound": false,
+  "candidateImageId": null,
+  "deployed": false,
+  "pushed": false,
+  "productionAccessedThisRound": false,
+  "maintenanceWindowApproved": false,
+  "previewOnly": true,
+  "deviceNumbers": [
+    "23",
+    "25",
+    "43",
+    "59",
+    "93",
+    "145",
+    "155",
+    "157"
+  ],
+  "appSlots": {
+    "155": {
+      "main": 0,
+      "clone": 999
+    },
+    "otherSeven": {
+      "main": 0
+    }
+  },
+  "defaultAppSlot": {
+    "155": "clone",
+    "otherSeven": "main"
+  },
+  "maxNonterminalTasks": 2,
+  "agentCapability": "wecom-preview-v2",
+  "runtimeFiles": {
+    "public/app.js": "010e4b26ebef71dc9daf182d34e068976e05ef869e90fc7254d1bb36f545b384",
+    "public/index.html": "88ac312a12414be8f24a48c5f21e1957b24678e836312cb5ab0d2c1c22f2afda",
+    "public/styles.css": "6e744015f24a18a2ebcb178d1a56d2fa07fd4b370abb150f5a181d07a4fc0159",
+    "public/wecom-automation-ui.js": "0bf4ac34ef92914e50554325199120287c4e35d71f19d6f0d67065db2c39ebf5",
+    "public/wecom-preview-api.md": "01d9081a01cdd1f9d1b6ffe1fc30629858caa7c7bd54ee07a67fd844048da6d5",
+    "public/wecom-preview.css": "1238557a85819a9fe7c160e62bc9ec38fac7e1afbe99226a79b81c07c381e4c8",
+    "public/wecom-preview.html": "b5bed7cfbfd72eea733084d2c1b79741dedd06b611be9d0fe304e986736c8c72",
+    "public/wecom-preview.js": "4761e03529cdf22c39cbf742f115dd80eaccc3f1d0552fc553919820d3dda7cb",
+    "server/automation-center.mjs": "e1d7e001bfe42582bacf2366f89ddda4df2c7cdb0fa306996c96a15e3bd97d9d",
+    "server/index.mjs": "1074ed6f1a7649f64ff3a21e50333f1bef2c9781dde4e1fbd69739b5aba23ef3",
+    "server/wecom-preview-devices.json": "2eab0e0415e7db2f7c00c8ccf8e55f36cb3987a22c03bdc5aee4b05f6167bc88",
+    "server/wecom-preview.mjs": "439b733edb4724c5285fecd57186f2bdb44df558e2e49741ba97b973a1bbbdef",
+    "windows-agent/scripts/wecom_invite_preview.py": "f7329cf01b0d9c7f750b730d570826099abba4df6581931eb395f74527ae8692",
+    "windows-agent/scripts/wecom_platform_preview.py": "099a1e0efaca857aded23655eda34d7074abcfb498001e42ced2af10a80a700a",
+    "windows-agent/scripts/wecom_preview_devices.json": "2eab0e0415e7db2f7c00c8ccf8e55f36cb3987a22c03bdc5aee4b05f6167bc88",
+    "windows-agent/scripts/wecom_remark_preview.py": "8109a5cd7f35a877f29fe431dbf85040282e70c70d8b63dc86f0034083a536b5",
+    "windows-agent/scripts/wecom_rpc_budget.py": "60aab705ab8b1a5282da225ac5e7f3ac27c90c01749e4637e0dfe732e906bff6",
+    "windows-agent/scripts/wecom_startup_guards.py": "82fcf0d5ccc3d8aceab9901ac663725fcc9bf6b5f072715d18892036652f6d25",
+    "windows-agent/src/index.mjs": "0061fa7b35ef61386861032d6120d710989a757d0a2af0651aaa86fd3bc462f0",
+    "windows-agent/src/wecom-preview-task.mjs": "73921bc44167df4840b21044ceeb27d9bfa850e85d6fdef27d6a5ed8ebe71a52"
+  },
+  "changesAgainstPreviousCandidate": {
+    "docs/PROJECT_DEVELOPMENT.md": {
+      "before": "b1cdb15c8ea7f7ce0c1fd507b03c6a3800cb32ef791ce66abe972b221e577100",
+      "after": "1cc83e65e6fccbe57e06e5e4823285dfe05d11c9a4618377b32027f63b2b6c65"
+    },
+    "docs/WECOM_PREVIEW_API.md": {
+      "before": "88126a769738c85d61d3d104af2bbb8a20a07c9e3c02f37cfb0d597ab1cd2d81",
+      "after": "01d9081a01cdd1f9d1b6ffe1fc30629858caa7c7bd54ee07a67fd844048da6d5"
+    },
+    "public/app.js": {
+      "before": "98e828b9288cd4ec6b82850d526ada380ae9b21892c6a0c695bd2b5e6feeb7c7",
+      "after": "010e4b26ebef71dc9daf182d34e068976e05ef869e90fc7254d1bb36f545b384"
+    },
+    "public/index.html": {
+      "before": "123a85de9e915b33aac58ef6d7cacbe36b541a61217b3c866a996c86812aa757",
+      "after": "88ac312a12414be8f24a48c5f21e1957b24678e836312cb5ab0d2c1c22f2afda"
+    },
+    "public/styles.css": {
+      "before": "ea46847aa8a1c4814c1cfe4dd8f79347b1f2cd3b09bcc2901b32d8ac82962d40",
+      "after": "6e744015f24a18a2ebcb178d1a56d2fa07fd4b370abb150f5a181d07a4fc0159"
+    },
+    "public/wecom-automation-ui.js": {
+      "before": null,
+      "after": "0bf4ac34ef92914e50554325199120287c4e35d71f19d6f0d67065db2c39ebf5"
+    },
+    "public/wecom-preview-api.md": {
+      "before": "88126a769738c85d61d3d104af2bbb8a20a07c9e3c02f37cfb0d597ab1cd2d81",
+      "after": "01d9081a01cdd1f9d1b6ffe1fc30629858caa7c7bd54ee07a67fd844048da6d5"
+    },
+    "public/wecom-preview.html": {
+      "before": "c7890db70517a635224046c289eb096e5f05b407a35236415b5b22d68850da96",
+      "after": "b5bed7cfbfd72eea733084d2c1b79741dedd06b611be9d0fe304e986736c8c72"
+    },
+    "public/wecom-preview.js": {
+      "before": "650bd1c61121a6a06bde09e4597c36a258ae8e3265e434f243ade04604352cf2",
+      "after": "4761e03529cdf22c39cbf742f115dd80eaccc3f1d0552fc553919820d3dda7cb"
+    },
+    "screen-client/screen-ui.test.mjs": {
+      "before": "f7bdfd311a51ac2efceddcfd5f5c3cc1e6d9f9ca237df8e3fa622bf856dcc86e",
+      "after": "a022ddaa2d2cafcf6ab9722c1a7cfa31a275045a1d5613641a1644ecc9e2828c"
+    },
+    "server/automation-center-ui.test.mjs": {
+      "before": "60d8420fba1f488c18e89bafb0d907169a55ee2bc6cf482b2e68b856b919d0e0",
+      "after": "3e2e15a2b6f7432e6d4a36e0272a1abae725c78861ad0bc28f556f4740b44a9d"
+    },
+    "server/automation-module-preservation.test.mjs": {
+      "before": "ff79666e11c51c292e7948f4a1b7e141b53132f7ee812bebb10845a8d4ba2ac9",
+      "after": "14d34e89a5c0dc48a7d0f05449b0e21a55404edfc129b17ede592829da1ce7e1"
+    },
+    "server/index.mjs": {
+      "before": "4c018404102c65801a04ec4aba181678d7e52161bf591ebcbbc44f68e32e3436",
+      "after": "1074ed6f1a7649f64ff3a21e50333f1bef2c9781dde4e1fbd69739b5aba23ef3"
+    },
+    "server/wecom-automation-ui.test.mjs": {
+      "before": null,
+      "after": "8eca021f7a962f4497bed68a4385b3357d42f65c32d30c407242c2413ee1bdd9"
+    },
+    "server/wecom-preview-devices.json": {
+      "before": "13a9bb4004cfbbd22153a2944d822eba888473055ed525a2e2db91659b424159",
+      "after": "2eab0e0415e7db2f7c00c8ccf8e55f36cb3987a22c03bdc5aee4b05f6167bc88"
+    },
+    "server/wecom-preview.http.test.mjs": {
+      "before": "a356f6f08da1185de55936fe9fd15539a9a6ca713bec67021a39881c2b7f1b42",
+      "after": "d03ba7e942e33e9a9f1c71b00959bddb3f8de2c162ca5619b87dab417608fa03"
+    },
+    "server/wecom-preview.mjs": {
+      "before": "02f57813db413cdd4b694afbb814681256e1f63f1970be306492bad90c4b4820",
+      "after": "439b733edb4724c5285fecd57186f2bdb44df558e2e49741ba97b973a1bbbdef"
+    },
+    "server/wecom-preview.test.mjs": {
+      "before": "fe0c3901c023bbdaf56248338905bda3a49310e39cee74863ff5fffa17e7ace8",
+      "after": "9d67f78d7fbf3caf5b9a14f868d0951375ed987086d138595bb11358b3c7f1b5"
+    },
+    "windows-agent/scripts/test_wecom_platform_preview.py": {
+      "before": "ede9c0aedc3c523cba133b801d1fa85fc6147f1b7f17235a77c7a476f899756c",
+      "after": "c6440bbcba0a9f6ce801bbc85dc7f10dcc31ad0e878b54974dc59c80966144ac"
+    },
+    "windows-agent/scripts/wecom_platform_preview.py": {
+      "before": "0f2946f219e5f1138674d3372d256be521063930385b6ef2eebb1c3d6b0e0e04",
+      "after": "099a1e0efaca857aded23655eda34d7074abcfb498001e42ced2af10a80a700a"
+    },
+    "windows-agent/scripts/wecom_preview_devices.json": {
+      "before": "13a9bb4004cfbbd22153a2944d822eba888473055ed525a2e2db91659b424159",
+      "after": "2eab0e0415e7db2f7c00c8ccf8e55f36cb3987a22c03bdc5aee4b05f6167bc88"
+    },
+    "windows-agent/src/index.mjs": {
+      "before": "cbd6dceca618b57471594d602f46e092c5f6f4b7cff2ea26df19dff050d34e3f",
+      "after": "0061fa7b35ef61386861032d6120d710989a757d0a2af0651aaa86fd3bc462f0"
+    },
+    "windows-agent/src/wecom-preview-task.mjs": {
+      "before": "126546338fd08bdda693d0e7964c8cd9dde011851263883ca81b6f5815645b1e",
+      "after": "73921bc44167df4840b21044ceeb27d9bfa850e85d6fdef27d6a5ed8ebe71a52"
+    },
+    "windows-agent/src/wecom-preview-task.test.mjs": {
+      "before": "516bd1499160c1295331d91ef860de7f82e349d12a75f1615da1fb1a43d03fa7",
+      "after": "fc4112722d13ff4c75b46b9ae73bc118d1b9d5e6666befc54488231845bcca2c"
+    }
+  },
+  "workflow": {
+    "revision": "2026-09-30",
+    "sha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+  },
+  "noDatabaseMigration": true,
+  "dependenciesChanged": false
+}

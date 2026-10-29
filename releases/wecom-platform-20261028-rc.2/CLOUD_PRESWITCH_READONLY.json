@@ -1,0 +1,25 @@
+{
+  "atUtc": "2026-10-28T07:14:14Z",
+  "baselineVersion": "platform-integration-20261028-deployed.1",
+  "activeSha256": "4bb61c39a8a5cd912069ed494d84dba1af4cf3cc37adbac8285db935586b995a",
+  "imageId": "sha256:fca45ec32e72b0787e4375fd6812a5ac97d3aebec4b830b6393b03117554b45e",
+  "sourceFilesMatched": 9,
+  "composeFilesMatched": 31,
+  "metadataOnlyChanges": [
+    "receiptBoundAtUtc",
+    "receiptDirectory",
+    "receiptCommit",
+    "receiptTag"
+  ],
+  "noRuntimeHotPatch": true,
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "businessChanged": false,
+  "serviceReloaded": false
+}

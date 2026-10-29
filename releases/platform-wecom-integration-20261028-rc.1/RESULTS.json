@@ -1,0 +1,85 @@
+{
+  "status": "local_candidate",
+  "recordedAt": "2026-10-28T08:46:09.174292+00:00",
+  "environment": {
+    "node": "v25.9.0",
+    "python": "Python 3.9.6",
+    "storage": "isolated temporary JSON; fake Agent/model on loopback only"
+  },
+  "tests": [
+    {
+      "command": "node --test --test-concurrency=2 screen-client/*.test.mjs server/*.test.mjs scripts/*.test.mjs windows-agent/src/*.test.mjs server/xhs-batch/*.test.mjs",
+      "passed": 1534,
+      "failed": 0,
+      "skipped": 2
+    },
+    {
+      "command": "python3 -m unittest discover -s windows-agent/scripts -p 'test_*.py'",
+      "passed": 1049,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "command": "python3 windows-agent/scripts/automation_runners_test.py",
+      "passed": 166,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "command": "node --test sdk/open_name_lookup/*.test.mjs",
+      "passed": 22,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "command": "python3 -m unittest sdk/open_name_lookup/python_client_test.py sdk/test_xhs_batch_client.py",
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "command": "python3 -m unittest discover -s deploy/xhs-batch -p 'test_*.py'",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "command": "npm run check",
+      "exitCode": 0,
+      "coverage": "root syntax only"
+    },
+    {
+      "command": "env -i [PATH HOME plus JSON/empty database/Redis/webhook settings] node scripts/smoke-platform.mjs",
+      "exitCode": 0,
+      "result": "smoke ok"
+    },
+    {
+      "command": "node deploy/mediamtx-pacing/verify.mjs --repository",
+      "exitCode": 0,
+      "verified": "repository-only",
+      "liveVerified": false
+    },
+    {
+      "command": "env -i [PATH HOME plus AI_HTTP_HOLD_MS=121000 and empty test database] node verification/lookup-throughput-accuracy-http.mjs",
+      "exitCode": 0,
+      "evidence": "THROUGHPUT_HTTP.json"
+    }
+  ],
+  "skipped": [
+    "real service + PostgreSQL + Python SDK recovers accepted task after lost reply and restart",
+    "PostgreSQL migration, exclusive lease, restart, nonce and result persistence"
+  ],
+  "notVerified": [
+    "PostgreSQL-backed combined candidate",
+    "Windows native runtime/OCR for this combined version",
+    "real phones and five-phone concurrency",
+    "production version/health/media live verification",
+    "new combined container image build/deployment"
+  ],
+  "review": "self-review only; ancestor graph, shared entrances, conflict resolution, frozen hashes, added documentation secret patterns, no independent reviewer",
+  "productionAccessed": false,
+  "realPhones": 0,
+  "invitationsSent": 0,
+  "pushed": false,
+  "deployed": false
+}

@@ -13,7 +13,7 @@ export function isActiveAutomationStatus(status) {
 
 export function normalizeAutomationKind(kind) {
   const value = String(kind || "").trim();
-  if (["xhs_publish", "xhs_data_collect", "kuaishou_lead", "alipay_name_start", "alipay_name_query", "alipay_name_switch", "alipay_name_stop"].includes(value)) return value;
+  if (["wecom_customer_preview", "xhs_publish", "xhs_data_collect", "kuaishou_lead", "alipay_name_start", "alipay_name_query", "alipay_name_switch", "alipay_name_stop"].includes(value)) return value;
   throw new TypeError("unsupported_automation_kind");
 }
 
@@ -102,6 +102,7 @@ export function hasVerifiedAllSavedAccountsRestricted(diagnostic = {}) {
 }
 
 export function automationLockType(kind) {
+  if (kind === "wecom_customer_preview") return kind;
   if (String(kind || "") === "kuaishou_lead") return "kuaishou_lead";
   if (kind === "xhs_data_collect") return "xhs_data_collect";
   return String(kind || "").startsWith("alipay_name_") ? "alipay_name_lookup" : "xhs_publish";

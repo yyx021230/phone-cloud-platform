@@ -14,7 +14,7 @@ env.DATABASE_URL = ''; env.REDIS_URL = ''; env.STORAGE_BACKEND = 'json';
 const python = process.env.PYTHON || 'python3';
 const nodeDirs = ['screen-client', 'server', 'scripts', 'windows-agent/src', 'server/xhs-batch',
   'scripts/ops', 'deploy/inventory-sync-compression', 'public', 'sdk/open_name_lookup',
-  'examples/name-lookup', 'examples/name-lookup-api-key', 'tools/lookup-pool-live-tests',
+  'examples/name-lookup', 'examples/name-lookup-api-key', 'examples/wecom-integration', 'tools/lookup-pool-live-tests',
   'ios-wda-lab/mjpeg-control-poc', 'experiments/lookup-icon-selector-20261023'];
 async function run(command, args) {
   console.log(`\n[local regression] ${command} ${args.join(' ')}`);

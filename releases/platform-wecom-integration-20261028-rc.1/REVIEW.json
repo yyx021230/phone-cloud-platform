@@ -1,0 +1,39 @@
+{
+  "sources": {
+    "wecom": "8a0c08ab7586818e13456fe5e920bce0da3a9092",
+    "lookup": "cbdf22c4171176d7aa8db032578010607baf32cf",
+    "xhs": "b4d77990ca7f3ec078b76c2c5895a66998293567",
+    "adb": "3155c61fb493cb52836ca979a2758b6f286953c4",
+    "deploy": "d8019059f48182c02307a4addc1fa50ebfec4aeb"
+  },
+  "allSourcesAncestors": {
+    "wecom": true,
+    "lookup": true,
+    "xhs": true,
+    "adb": true,
+    "deploy": true
+  },
+  "frozenCompared": 33,
+  "unchanged": 31,
+  "approvedIdentityOnlyDifferences": {
+    "windows-agent/src/serial-adb-health.mjs": {
+      "before": "efb0f36c5b73511f5366704b30a10c5e0e6caf4fe13a23c328b60dec14c77c0d",
+      "after": "ea6066d526ce12c6a1fd7d4e15b19f012ace259dbf7461549d951c40afb46334",
+      "matchesApprovedSource": true
+    },
+    "windows-agent/src/screen-stream.mjs": {
+      "before": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "after": "2a2dc815a6b9068b4ca9f234102fdb97eb8785474f587bb31eaf4b2707dbb569",
+      "matchesApprovedSource": true
+    }
+  },
+  "conflictMarkers": [],
+  "addedDocumentationSecretPatternHits": {
+    "fullPersonalPhone": 0,
+    "webhook": 0,
+    "privateKey": 0,
+    "bearer": 0
+  },
+  "reviewType": "self_review",
+  "productionAccessed": false
+}

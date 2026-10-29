@@ -1,0 +1,25 @@
+{
+  "version": "platform-wecom-invitation-20261029-rc.3",
+  "runtimeSourceCommit": "1f2ea59ac6b6f92a17d91622cbd07dcf1b2061b4",
+  "command": "node --test --test-concurrency=1 server/wecom-preview.test.mjs server/wecom-preview.http.test.mjs server/device-occupancy.test.mjs server/lookup-chain-reliability.test.mjs server/auth-write-persistence.test.mjs server/read-only-hot-paths.test.mjs server/user-device-detail-access.test.mjs",
+  "passed": 31,
+  "failed": 0,
+  "skipped": 0,
+  "logSha256": "36c040788cc0a856ddd0123052b47052e10179e468051e2b5b5f21c8b205c0d4",
+  "rootSyntaxCheck": "passed",
+  "diffCheck": "passed",
+  "frozenFileCountUnchanged": 33,
+  "uiRuntimeFileCountUnchanged": 5,
+  "apiDocumentPairsIdentical": true,
+  "review": "self-review only",
+  "notRun": [
+    "new full combined suite",
+    "PostgreSQL fixture",
+    "native Windows",
+    "real devices",
+    "production baseline/live media verification"
+  ],
+  "productionConnections": 0,
+  "realPhoneOperations": 0,
+  "recordedAtUtc": "2026-10-29T06:30:52.840006+00:00"
+}

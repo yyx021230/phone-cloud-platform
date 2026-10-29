@@ -1,0 +1,9 @@
+{
+  "EXTERNAL_API_EVIDENCE.json": "18286e1b9e5516e0e121c8a9baf550aba8efe297bdb2c9cdd21d1ad4b0e70418",
+  "MANIFEST.json": "90581946f08de0fe05b9bf3bc9f91367b9b82e7b771cfe567693d744ce5d469d",
+  "README.md": "43496cb90d091204d4d4216e603bc21411f8e0138f354ab27afc70207f2cb09e",
+  "TEST_RESULTS.json": "f4cbc21bac485cc5380d42dcfd957a8fc9d630df1fb678c9a911ed951f2dca18",
+  "candidate-runtime-layer.tar.gz": "8ca4090533db980d0b80407b397e7be171a04c8c85c882a5f5c7e8351a6b9291",
+  "development-rollback-reference.tar.gz": "fff60fce9a908f66376c3fd371f78e1a5f77c9282c966331315cd7c7d875cdda",
+  "integration-handoff.zip": "132295e979a78b2b8481c33faf17131f9b73d8a7aaecd446d74b3667e2c92b98"
+}

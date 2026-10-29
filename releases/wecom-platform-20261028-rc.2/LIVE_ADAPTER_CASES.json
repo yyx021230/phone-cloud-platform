@@ -1,0 +1,124 @@
+{
+  "productionApiRealPhoneAcceptance": false,
+  "testTarget": "previously authorized test user, tail6441",
+  "cases": [
+    {
+      "device": "25",
+      "mode": "isolated_candidate_adapter_with_real_control_lease",
+      "newProductionApiUsed": false,
+      "sourceHashes": {
+        "wecom_invite_preview.py": "f7329cf01b0d9c7f750b730d570826099abba4df6581931eb395f74527ae8692",
+        "wecom_platform_preview.py": "0f2946f219e5f1138674d3372d256be521063930385b6ef2eebb1c3d6b0e0e04",
+        "wecom_remark_preview.py": "8109a5cd7f35a877f29fe431dbf85040282e70c70d8b63dc86f0034083a536b5",
+        "wecom_rpc_budget.py": "60aab705ab8b1a5282da225ac5e7f3ac27c90c01749e4637e0dfe732e906bff6",
+        "wecom_startup_guards.py": "82fcf0d5ccc3d8aceab9901ac663725fcc9bf6b5f072715d18892036652f6d25"
+      },
+      "startedActions": [
+        "open_menu",
+        "open_add",
+        "open_search",
+        "enter_phone",
+        "search",
+        "open_remark",
+        "close_remark",
+        "open_preview"
+      ],
+      "completedActions": [
+        "open_menu",
+        "open_add",
+        "open_search",
+        "enter_phone",
+        "search",
+        "open_remark",
+        "close_remark",
+        "open_preview"
+      ],
+      "result": {
+        "previewStatus": "ready_before_send",
+        "previewCode": "stopped_before_send",
+        "invitationSent": false,
+        "remarkSaveStatus": "not_needed"
+      },
+      "leaseValidAfter": true,
+      "adbPidUnchanged": true,
+      "agentPidUnchanged": true,
+      "controlReleased": true,
+      "elapsedSeconds": 61.657,
+      "bridge": "fresh filtered read over existing SSH; no proof cache",
+      "rpcCalls": 64,
+      "maxRpcSeconds": 0.387,
+      "startedAt": 1793172170.982644,
+      "finishedAt": 1793172232.927616
+    },
+    {
+      "device": "155",
+      "mode": "isolated_candidate_adapter_with_real_control_lease",
+      "newProductionApiUsed": false,
+      "sourceHashes": {
+        "wecom_invite_preview.py": "f7329cf01b0d9c7f750b730d570826099abba4df6581931eb395f74527ae8692",
+        "wecom_platform_preview.py": "0f2946f219e5f1138674d3372d256be521063930385b6ef2eebb1c3d6b0e0e04",
+        "wecom_remark_preview.py": "8109a5cd7f35a877f29fe431dbf85040282e70c70d8b63dc86f0034083a536b5",
+        "wecom_rpc_budget.py": "60aab705ab8b1a5282da225ac5e7f3ac27c90c01749e4637e0dfe732e906bff6",
+        "wecom_startup_guards.py": "82fcf0d5ccc3d8aceab9901ac663725fcc9bf6b5f072715d18892036652f6d25"
+      },
+      "startedActions": [
+        "open_menu",
+        "open_add",
+        "open_search",
+        "enter_phone",
+        "search",
+        "open_remark",
+        "close_remark",
+        "open_preview"
+      ],
+      "completedActions": [
+        "open_menu",
+        "open_add",
+        "open_search",
+        "enter_phone",
+        "search",
+        "open_remark",
+        "close_remark",
+        "open_preview"
+      ],
+      "result": {
+        "previewStatus": "ready_before_send",
+        "previewCode": "stopped_before_send",
+        "invitationSent": false,
+        "remarkSaveStatus": "not_needed"
+      },
+      "leaseValidAfter": true,
+      "adbPidUnchanged": true,
+      "agentPidUnchanged": true,
+      "controlReleased": true,
+      "elapsedSeconds": 71.063,
+      "bridge": "fresh filtered read over existing SSH; no proof cache",
+      "rpcCalls": 60,
+      "maxRpcSeconds": 0.258,
+      "startedAt": 1793172241.293739,
+      "finishedAt": 1793172312.6774342
+    }
+  ],
+  "cleanup": {
+    "atUnix": 1793172757.0011628,
+    "adbPid": 20316,
+    "agentPid": 26488,
+    "adbOwnerSystem": true,
+    "agentOwnerSystem": true,
+    "devices": [
+      {
+        "device": "25",
+        "pocoProcessAbsent": true,
+        "matchingPocoForwardCount": 0
+      },
+      {
+        "device": "155",
+        "pocoProcessAbsent": true,
+        "matchingPocoForwardCount": 0
+      }
+    ],
+    "readOnly": true
+  },
+  "historicalCoreEightPhones": "prior core-only home-to-preview evidence, not current production API acceptance",
+  "failedPrototypesRetained": true
+}

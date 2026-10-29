@@ -69,8 +69,8 @@ test("uses direct keyboard input on the focused phone surface", () => {
   assert.match(screenBundle, /compositionend/);
   assert.match(screenBundle, /clipboardData/);
   assert.match(screenBundle, /select_all/);
-  assert.match(html, /styles\.css\?v=20261020-lookup-card-rc1/);
-  assert.match(html, /app\.js\?v=20261023-admin-capacity-rc1/);
+  assert.match(html, /styles\.css\?v=20261028-wecom-slots-rc3/);
+  assert.match(html, /app\.js\?v=20261029-wecom-invitation-rc5/);
   assert.match(html, /screen-control\.js\?v=20260828-receiver-feedback-v1/);
 });
 
