@@ -1,3 +1,4 @@
+import {lookupXmlFailure} from "./lookup-xml-failure.mjs";
 import {isLookupReaderRecovery, readerExitDiagnostic, verifyLookupReaderCleanup, lookupReaderStopReason} from "./lookup-reader-lifecycle.mjs";
 const lookupReaderStopBarriers = new Map();
 import {collectLookupTrace, isAutomaticLookupResume} from "./lookup-recovery-trace.mjs";
@@ -2733,9 +2734,15 @@ async function taskAlipayNameLookup(task, options = {}) {
       });
     } catch (error) {
       if (isAutomationTaskCancellation(error)) throw error;
-      const failed = parseAirtestRunnerOutput(String(error.stdout || ""));
+      const failed = lookupXmlFailure(error, parseAirtestRunnerOutput);
       await replayLookupEvents(failed.log || []);
       const diagnostic = classifyAlipayNameLookupFailure(failed.error || error.message || "");
+      if (failed.executionExit) {
+        diagnostic.executionExit = failed.executionExit;
+        await taskEvent(task, "alipay_name", "warn",
+          `查名执行进程未返回最终结果；最后记录步骤：${failed.executionExit.lastStep || "无"}。`,
+          { stepId: "lookup_xml_executor_exit", executionExit: failed.executionExit });
+      }
       diagnostic.accountSwitched = Boolean(failed.accountSwitched);
       diagnostic.currentAccount = String(failed.currentAccount || "");
       diagnostic.accountSwitchReason = String(failed.accountSwitchReason || "");

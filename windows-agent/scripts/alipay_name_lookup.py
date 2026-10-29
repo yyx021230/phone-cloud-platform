@@ -14,6 +14,7 @@ import re
 import subprocess
 import time
 import traceback
+import uuid
 import xml.etree.ElementTree as ET
 
 ALIPAY_PACKAGE = "com.eg.android.AlipayGphone"
@@ -126,6 +127,28 @@ def real_name_canvas_evidence(raw):
     evidence = {"visible": bool(titles or actions), "close": None,
                 "titleCount": len(titles), "actionCount": len(actions), "closeCount": len(closes)}
     if not (len(titles) == len(actions) == len(closes) == 1):
+        # New observed coupon / two-step identity dialogs retain the same
+        # unique circle X, but not the old title/action raster. Require exact
+        # local OCR labels and layout; a generic X is never sufficient.
+        if len(closes) == 1 and abs(closes[0][0] - w / 2) < w * .045:
+            from alipay_visual_result import recognize
+            from lookup_home_modal import optional_home_modal
+            # Read only the proven central modal area, excluding the busy
+            # Home background. This keeps cold OCR inside the same deadline.
+            # Translate boxes back to original screenshot coordinates.
+            x0, x1 = round(width * .10), round(width * .90)
+            y0, y1 = round(height * .28), round(height * .76)
+            encoded_ok, encoded = cv2.imencode(".png", image[y0:y1, x0:x1])
+            if not encoded_ok:
+                raise RuntimeError("alipay_canvas_prompt_screenshot_invalid")
+            rows, size = recognize(encoded.tobytes(), timeout=8)
+            if tuple(size) != (x1-x0, y1-y0):
+                raise RuntimeError("alipay_canvas_prompt_evidence_changed")
+            rows = [([[x+x0, y+y0] for x,y in box], text, score) for box,text,score in rows]
+            close = [round(v * width / 720) for v in closes[0]]
+            kind = optional_home_modal(rows, (width, height), close)
+            if kind:
+                evidence.update(visible=True, close=close, modalKind=kind)
         return evidence
     title, action, close = titles[0], actions[0], closes[0]
     if (any(abs(point[0] - w / 2) > w * .045 for point in (title, action, close))
@@ -399,13 +422,30 @@ class Runner:
             if remaining <= .05:
                 raise RuntimeError("account_picker_sample_timeout")
             return min(cap, remaining)
-        remote = f"/sdcard/PhoneCloud/.alipay-name-{self.task_id}-{token}.xml"
+        # A failed dump can leave its previous XML untouched. Even repeated
+        # tokens / restarted workers must never read an older observation.
+        remote = f"/sdcard/PhoneCloud/.alipay-name-{self.task_id}-{uuid.uuid4().hex}.xml"
         self.adb(["shell", "mkdir", "-p", "/sdcard/PhoneCloud"], timeout=budget(8))
-        self.adb(["shell", "uiautomator", "dump", remote], timeout=budget(command_timeout), check=False)
-        raw = self.adb(["exec-out", "cat", remote], timeout=budget(read_timeout), binary=True)
-        if b"<hierarchy" not in raw and allow_tty_fallback:
-            raw = self.adb(["exec-out", "uiautomator", "dump", "/dev/tty"],
-                           timeout=budget(command_timeout), check=False, binary=True)
+        try:
+            self.adb(["shell", "uiautomator", "dump", remote], timeout=budget(command_timeout), check=False)
+            try:
+                raw = self.adb(["exec-out", "cat", remote], timeout=budget(read_timeout), binary=True)
+            except RuntimeError as exc:
+                if "No such file or directory" not in str(exc):
+                    raise  # Preserve transport/permission failures.
+                raw = b""
+            if b"<hierarchy" not in raw and allow_tty_fallback:
+                raw = self.adb(["exec-out", "uiautomator", "dump", "/dev/tty"],
+                               timeout=budget(command_timeout), check=False, binary=True)
+        finally:
+            # Delete only this invocation's private file. Cleanup cannot mask
+            # the original failure or extend an exhausted caller deadline.
+            remaining = 2 if deadline is None else min(2, deadline - time.monotonic())
+            if remaining > .05:
+                try:
+                    self.adb(["shell", "rm", "-f", remote], timeout=remaining, check=False)
+                except (RuntimeError, subprocess.TimeoutExpired):
+                    self.emit("lookup_xml_cleanup_deferred", observation=token)
         decoded = raw.decode("utf-8", "replace")
         start, end = decoded.find("<hierarchy"), decoded.rfind("</hierarchy>")
         if start < 0 or end < start:
@@ -871,6 +911,11 @@ class Runner:
         raise RuntimeError("coloros_securepay_usb_warning_dismiss_timeout")
 
     def dismiss_known_overlay(self, root=None, parent=None):
+        # The USB chooser can appear before the first My-tab checkpoint.
+        # Dismiss only the exact foreground window; do not read/click the
+        # covered Alipay tree or select any USB connection mode.
+        if self.dismiss_vivo_usb_mode_dialog():
+            return True
         if self.dismiss_honor_software_update_overlay("xml_uiautomator_focus_adb_back"):
             return True
         if self.dismiss_vivo_wlan_risk_overlay("xml_uiautomator_focus_adb_back"):
@@ -1085,6 +1130,22 @@ class Runner:
             str(current_focus or ""),
         ))
 
+    @staticmethod
+    def vivo_usb_systemui_evidence(root):
+        # New Vivo builds expose the same chooser as SystemUI. A package
+        # alone is not enough: never Back a keyguard or arbitrary permission.
+        if root is None:
+            return False
+        normalize = lambda text: re.sub(r"\s+", "", text or "")
+        titles = [n for n in root.iter("node") if n.get("package") == SYSTEM_UI_PACKAGE
+                  and n.get("resource-id") == SYSTEM_UI_PACKAGE + ":id/usb_select_title_tv"]
+        options = [normalize(n.get("text")) for n in root.iter("node")
+                   if n.get("package") == SYSTEM_UI_PACKAGE
+                   and n.get("resource-id") == SYSTEM_UI_PACKAGE + ":id/title"]
+        return (len(titles) == 1 and normalize(titles[0].get("text")) == "USB用于"
+                and len(options) == 5 and set(options) == {
+                    "仅充电", "传输文件/AndroidAuto", "传输照片", "USB网络共享", "MIDI"})
+
     def dismiss_vivo_usb_mode_dialog(self):
         """Cancel the exact USB chooser without selecting a connection mode.
 
@@ -1093,21 +1154,40 @@ class Runner:
         change a USB property, or relaunch the covered Alipay login activity.
         """
         _, current, focused = self.focus_state()
-        if not self.vivo_usb_mode_dialog_visible(current) or ALIPAY_PACKAGE not in focused:
+        if ALIPAY_PACKAGE not in focused:
             return False
+        systemui = focused_window_name([current]) == SYSTEM_UI_PACKAGE
+        if systemui:
+            root, _ = self.dump("vivo-usb-systemui-before", total_timeout=7, allow_tty_fallback=False)
+            if not self.vivo_usb_systemui_evidence(root):
+                return False
+        elif not self.vivo_usb_mode_dialog_visible(current):
+            return False
+        if getattr(self, "_vivo_usb_cancelled", False):
+            raise RuntimeError("poco_vivo_usb_mode_dialog:reappeared_during_account_navigation")
+        def same_window(current):
+            return focused_window_name([current]) == SYSTEM_UI_PACKAGE if systemui else self.vivo_usb_mode_dialog_visible(current)
         try:
             before = str(self.adb(["shell", "getprop", "sys.usb.config"], timeout=3)).strip()
             if not before:
                 raise RuntimeError("usb_mode_unavailable")
             _, current, focused = self.focus_state()
-            if not self.vivo_usb_mode_dialog_visible(current) or ALIPAY_PACKAGE not in focused:
+            if not same_window(current) or ALIPAY_PACKAGE not in focused:
                 raise RuntimeError("foreground_changed")
+            if systemui:
+                root, _ = self.dump("vivo-usb-systemui-confirm", total_timeout=7, allow_tty_fallback=False)
+                if not self.vivo_usb_systemui_evidence(root):
+                    raise RuntimeError("foreground_changed")
+                _, current, focused = self.focus_state()
+                if not same_window(current) or ALIPAY_PACKAGE not in focused:
+                    raise RuntimeError("foreground_changed")
+            self._vivo_usb_cancelled = True
             self.emit("vivo_usb_mode_dialog_detected", driver="poco_focus_adb_back",
                       method="back", modeSelectionTapped=False, phoneQueryStarted=False)
             self.adb(["shell", "input", "keyevent", "4"], timeout=5)
             for _ in range(4):
                 _, current, _ = self.focus_state()
-                if current and not re.search(r"mCurrentFocus\s*=\s*null", current) and not self.vivo_usb_mode_dialog_visible(current):
+                if current and not re.search(r"mCurrentFocus\s*=\s*null", current) and not same_window(current):
                     after = str(self.adb(["shell", "getprop", "sys.usb.config"], timeout=3)).strip()
                     if after != before:
                         raise RuntimeError("usb_mode_changed_after_cancel")
@@ -1603,6 +1683,11 @@ class Runner:
                     and re.search(r"\bu\d+\s+" + re.escape(ALIPAY_PACKAGE) + r"/", underlying)):
                 system = "notification_shade"
             elif self.vivo_usb_mode_dialog_visible(current): system = "vivo_usb"
+            elif focused_window_name(focus_lines) == SYSTEM_UI_PACKAGE and ALIPAY_PACKAGE in underlying:
+                root, parent = self.dump("mismatch-vivo-usb-systemui", total_timeout=7, allow_tty_fallback=False)
+                if not self.vivo_usb_systemui_evidence(root):
+                    return False
+                system = "vivo_usb"
             elif COLOROS_SECUREPAY_PACKAGE in current: system = "coloros_usb"
             elif HONOR_SOFTWARE_UPDATE_PACKAGE in current: system = "honor_update"
             elif "com.bbk.updater/" in current: system = "vivo_update"
