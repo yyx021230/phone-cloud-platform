@@ -1,0 +1,326 @@
+{
+  "candidateTag": "platform-integration-20261029-rc.1",
+  "branch": "codex/platform-integration-20261029",
+  "state": "local_candidate_not_deployed",
+  "sources": {
+    "lookup": "043468cbf95faa5ec754927f2c6e329a8063ac70",
+    "xhs": "804d992efb62e95b5864e9acb3e9772bbb1fb55d",
+    "wecom": "7e6e8e4144ffb5ee2743da2bd3e22caff688c689"
+  },
+  "previousLookupTag": "lookup-fleet-20261029-rc.2",
+  "sourceTags": {
+    "xhs": "xhs-release-20261029-rc.1",
+    "wecom": "platform-wecom-invitation-20261029-rc.4"
+  },
+  "mergeCommits": [
+    "edd719838df24bb2183cceb90a58db4ddc3dba4e",
+    "e884e487d66cbb309172131ef13c9dc65aa2f43c"
+  ],
+  "runtimeMergeCommit": "e884e487d66cbb309172131ef13c9dc65aa2f43c",
+  "recordedDeploymentSource": "baca5721214658b46f24c974c9147490b0bafada",
+  "productionBaselineRecheckedThisRound": false,
+  "runtimeFilesComparedToRecordedSource": {
+    "public/app.js": "946d396cd2846d3a5e7d18e80d8bdfa685c2bb53fbdf95bef0182435cdba66f9",
+    "public/index.html": "63bd54b052795277a8725d60934753c721daa4db93dc5f5c460338889fcd7b71",
+    "public/lookup-admin.js": "5fd23f75f5c945362ab09c984886a79cef56ad9261e0c3c9384d9fc520ffd4ee",
+    "public/styles.css": "6e744015f24a18a2ebcb178d1a56d2fa07fd4b370abb150f5a181d07a4fc0159",
+    "public/wecom-automation-ui.js": "8e5c7a7e8979d5550d56aac47eeec6cbd553ca6fad15ec66db5622473ecf02c0",
+    "public/wecom-integration-api.md": "585a2bdaa7db82d308b792d9b4f091afda6e30299e91f3e0e64a3445086a379a",
+    "public/wecom-preview-api.md": "10196d0097be52bee2797dca324253ce1ee5b465adbc615010b68f3349e414b4",
+    "public/wecom-preview.css": "1238557a85819a9fe7c160e62bc9ec38fac7e1afbe99226a79b81c07c381e4c8",
+    "public/wecom-preview.html": "82811274b5702ddbe1ad1e5e444a44a659c749c1d9645baddbe9e5e36b0363ae",
+    "public/wecom-preview.js": "405e45ba702f2b5d99bf966329a63f54b55f07b258ad523c08c0ae0374f0acd9",
+    "server/automation-center.mjs": "9abf864ead077e0f706b04319f28e137ad3f7693318c951127c1762e2f22caf5",
+    "server/index.mjs": "53fc2b55dcb330762a437a1be3e248dd7dccafc9a041606020eb5ae85cf351cf",
+    "server/lookup-admin-console.mjs": "2c3505f19e464e862dd0615c59d22b7ce1dbc7b81b6117a068df3385189b1c94",
+    "server/lookup-ai-vision.mjs": "27179e050b12abdca392534962cfbe4dbda1b8bbd15eaf81193cee6009878269",
+    "server/lookup-device-availability.mjs": "86d917c11eb93651e4a5ee2bcae0da777ae5031655da5cc36749c4d0e0644310",
+    "server/lookup-execution-metrics.mjs": "537f1b57b491508ed537985168c9c3f52cd85c362c0bb933b5103711153939dc",
+    "server/lookup-failure-domain.mjs": "d256d831f639c19e7c111fc6541f0c215370d9b20fb3f47dc53bd005bea5a29a",
+    "server/lookup-reader-admission.mjs": "6143dc1f18d25eb0e3e0d82c0075b80d5a069360d1ed9d70a818e7122954d3ec",
+    "server/lookup-reader-capabilities.mjs": "a47d4fff7bf18714bb83e125f129c83a621ec2ab051c0f4d869d2947abf70f3f",
+    "server/lookup-reader-capacity.mjs": "cd27eb166caf02eddf54322685e475fae3edb7f375cb923cf7e78a487b0455d7",
+    "server/lookup-readiness.mjs": "139a3d44cd2130d8f9f7c1c1c05f1e254995c7b71057346468846f0518d3de6c",
+    "server/lookup-stop-proof.mjs": "f36587d11613679ff013b2aa071d552a8719851ee80890b45e685b5884ae6a18",
+    "server/managed-lookup-platform.mjs": "2340aac9014ed006ab39a29dcbe0259d53b47fb68c3227d398f5979122439ec7",
+    "server/managed-lookup.mjs": "c58747a82c750aa7ab643e84ca7028475ed4b9d797dc1542b96cb495f37ad3c0",
+    "server/postgres-repositories.mjs": "cc8e9dc791635004c62acf1f6e69bc1f381d84b3963e63f1b36537ab48f35d90",
+    "server/wecom-preview-devices.json": "2eab0e0415e7db2f7c00c8ccf8e55f36cb3987a22c03bdc5aee4b05f6167bc88",
+    "server/wecom-preview.mjs": "0e2bcf8bbcb9fc34e0fbfd917bfcd66aff1ab82a3a652cfd6e2a1bbf111caa50",
+    "server/xhs-batch/engine.mjs": "52fc62dd5acec4ea2a3bea7493f7774310033c8a39dd1943c67d666af74151c1",
+    "server/xhs-data-collection.mjs": "ec966c4f55e937960af29b620c78f4717b6f702af43b33b1cf8c427286510bc0",
+    "windows-agent/scripts/alipay_name_lookup.py": "8c60bb140a4e2bcf07ee29ccd85591b210f20365dc6638cd3f62451444fd4a63",
+    "windows-agent/scripts/alipay_visual_result.py": "e5159fe17b3509fdd7accd997b3af03fc35071d5ae557181ed22f32fa140bd81",
+    "windows-agent/scripts/lookup_home_modal.py": "17955787340edbc8558269199812ffa93b8fda5ec61ecee65e90b0dc3a8bce84",
+    "windows-agent/scripts/wecom_customer_invitation.py": "5c8a4438318cb10dba2b3ddc0017aff9294aead36e3c99ad5878d0f3465cbd24",
+    "windows-agent/scripts/wecom_invite_preview.py": "f7329cf01b0d9c7f750b730d570826099abba4df6581931eb395f74527ae8692",
+    "windows-agent/scripts/wecom_platform_preview.py": "2211bc1afb3f3019cec5f5e0020bf7bbf64e287cb80f3633db10ee0ffff87cc6",
+    "windows-agent/scripts/wecom_preview_devices.json": "2eab0e0415e7db2f7c00c8ccf8e55f36cb3987a22c03bdc5aee4b05f6167bc88",
+    "windows-agent/scripts/wecom_remark_preview.py": "cffc8c9a60ace1a4cbf2d000965db79af9919f2966733fd4c070e7d27b307860",
+    "windows-agent/scripts/wecom_rpc_budget.py": "60aab705ab8b1a5282da225ac5e7f3ac27c90c01749e4637e0dfe732e906bff6",
+    "windows-agent/scripts/wecom_startup_guards.py": "82fcf0d5ccc3d8aceab9901ac663725fcc9bf6b5f072715d18892036652f6d25",
+    "windows-agent/src/adb-serial-identity.mjs": "9474bf4c3db8d144eda0eaa6c40a1ba912a0c0c53460747b8e638d79d79ba09f",
+    "windows-agent/src/alipay-poco-fallback-policy.mjs": "d9cca5a6ce0e97f0d6145306f4322d5a8873aaa5e71c2a5441707a46d349f917",
+    "windows-agent/src/index.mjs": "c309d1f6dd0bda9530ec6ff8dccc874509aa7cd57e8ef6bdea77a64b7a1c5a67",
+    "windows-agent/src/lookup-execution-metrics.mjs": "880adc6afe1c2ae60a973bab7ed6aa375b77167966256df19737cb1c1cafae31",
+    "windows-agent/src/lookup-page-recovery.mjs": "6ac3f752e52db13667b9f0d6a42380c4e3807bbe33c95777e823ef107d8f48b0",
+    "windows-agent/src/lookup-reader-admission-log.mjs": "4ebddfa2371e85841745d8a8c1bab9e9fffcfb2622d44c32465adce319c6dd7d",
+    "windows-agent/src/lookup-reader-capacity-report.mjs": "feb2f97e05ad631f4ece7a6e49491d8204d3118b7bfaa6322094afcc10b33900",
+    "windows-agent/src/lookup-reader-lifecycle.mjs": "d957d51ff0cba4bb1c504e979fb61eadf1fd4b7113c804882e62456210d70168",
+    "windows-agent/src/lookup-recovery-trace.mjs": "7d9a1e353564327df4129a4f600a265e5e86dc26a0970d6b96f3b47d9d8b49c7",
+    "windows-agent/src/lookup-xml-failure.mjs": "2e6097bbe3aa23c433e68d8bdb414137a1a12fa349447364de90dbb13a852539",
+    "windows-agent/src/screen-stream.mjs": "2a2dc815a6b9068b4ca9f234102fdb97eb8785474f587bb31eaf4b2707dbb569",
+    "windows-agent/src/serial-adb-health.mjs": "ea6066d526ce12c6a1fd7d4e15b19f012ace259dbf7461549d951c40afb46334",
+    "windows-agent/src/wecom-preview-task.mjs": "f9f45f5b346f52c48b4f3c2c5bff7e19fd9dc0682adc55583cdf9a44138b8dde",
+    "windows-agent/src/xhs-data-collection.mjs": "e1c6812a079ff078492797fb5d928b731675cf68ef20f87e93ad768733c79ffe"
+  },
+  "ownVerificationChange": {
+    "scripts/smoke-platform.mjs": "6e416d19b2daa90afbc657b429a3d860676fa1c6dbcfd58f40f3cb854647f246"
+  },
+  "frozenFiles": {
+    "server/screen-gallery-import.mjs": "39f7727860372f25959a5ca78145be07dfaf92c3747954afc99c8cd02cd8e697",
+    "server/screen-sessions.mjs": "811a15aa7ecb87a934ef5f92826ed9031278d87df2387cc20a85098ce91cde09",
+    "server/screen-media-auth.mjs": "c569931fdbad95338ebc50dee5d04b0f62550733bc627324171ab3590d3668b1",
+    "server/screen-relay.mjs": "91b706a0cd00ea573997fdea338cad8f37e2c88e62fdbeee24b86ec4a6036c02",
+    "server/screen-transport-policy.mjs": "331b212c564bc992628712eef81bff6dafe3b0df3f480f64fb808dfe7c41c721",
+    "server/screen-backpressure.mjs": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4",
+    "server/screen-quality.mjs": "bfadf379b03fadcf73bedc911649680ac6e3ace77907afee3524b335d4406451",
+    "windows-agent/src/serial-delay-scheduler.mjs": "ee71bc11573cb0880f6017a4ef1c3ca186bf2441c6e7e167be4c2d3f14ab7ea1",
+    "windows-agent/src/pnp-recovery-safety.mjs": "ad7de7d0575476cb807201e88b1c12842d12af0d9864e54809f4b98913c6d355",
+    "windows-agent/src/adb-priority-queue.mjs": "0bb8cfd86baaddc8a32d040e5835452f06e1ae5e3b78cbe2aeb0a67a24e5495d",
+    "windows-agent/src/screen-control-queue.mjs": "27e6e5e39364817b2ee6a8ced3ecae8cee522904a7d4d3b0321bacd697212879",
+    "windows-agent/src/pnp-recovery-wake-scheduler.mjs": "c0f98f5dac1454eba52317dda13f991cc1d765387b5256c67e892b599be678af",
+    "windows-agent/src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04",
+    "windows-agent/src/device-actor.mjs": "b1d97b76ce1d71d0fa3fd70757311e78f76255661288e9cd5199b6c3cba2a2cf",
+    "windows-agent/src/pnp-recovery-admission.mjs": "dede33101b9765342ffa50121a8edadf066d519c047646fcca82635ab6cc236f",
+    "windows-agent/src/serial-adb-health.mjs": "ea6066d526ce12c6a1fd7d4e15b19f012ace259dbf7461549d951c40afb46334",
+    "windows-agent/src/pnp-recovery-policy.mjs": "5a66a8ccb4defbf837c58cb473fd884ffe1763c17256ed6642d91dfe1be4e850",
+    "windows-agent/src/adb-server-recovery.mjs": "693535b4379089e33b7badeaac2e2665c1b2efb797adba1264e8c431d356fb2f",
+    "windows-agent/src/pnp-screen-coordinator.mjs": "5eb1551e7dedbef4eed8d941733fa20b4780a362196338c51db4651b78ab9003",
+    "windows-agent/src/pnp-recovery-verification.mjs": "0658e51af5e109fa3d78588860f64face9f15c7062b97e575e0201b7c1f2915a",
+    "windows-agent/src/pnp-recovery-control.mjs": "92e2bcc37d7bc8b9d3e61d4385116db7181530d5fe125c6c2a3210c5142fde0f",
+    "windows-agent/src/pnp-recovery-wave.mjs": "cc9a01d0f80cf72f1de0b09288fee61d9c91919b8d59b60ec66aa6fde4b7d83c",
+    "windows-agent/src/screen-stream.mjs": "2a2dc815a6b9068b4ca9f234102fdb97eb8785474f587bb31eaf4b2707dbb569",
+    "windows-agent/src/pnp-exact-actions.mjs": "2e67e3fb1612ac79499055878caa042fd91c4e42caa28df4621d4cabf7172cab",
+    "windows-agent/src/screen-video-channel.mjs": "9e8c1ccd1439568beca2e99595764aa598893cee576109c514ae503486c1ca25",
+    "windows-agent/src/serial-reservation.mjs": "97fe332bc4877dc4ac70d613fc8c27f8c86a84072e90b95a277ca108e7895802",
+    "windows-agent/src/pnp-windows-inventory.mjs": "7fef1564a5159238064d207905326f1d8cd9b5f39274fe85ddcd951fdc3cef5d",
+    "windows-agent/src/pnp-missing-device-recovery.mjs": "eddfcf36dd904bf2ca834fb8958d21c55fa62c45139d880399d565b1006825f6",
+    "windows-agent/src/serial-adb-activity.mjs": "4668e7a416feac9860289d1d903849970645f45544eec77c77f26859b67132d9",
+    "windows-agent/src/config.mjs": "b233775c589ab22e6662a23bb82e507c9a3f635f1112709bfdae24d854a5d254",
+    "windows-agent/src/screen-backpressure.mjs": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4",
+    "public/vendor/screen-control.js": "ef4e36d5934050ad85075fb877257e4ec63b30af94becefc69e29bf76b2f44c5",
+    "public/vendor/worker-Dm9DNeDt.js": "1d2f4e9d5377fe41356be079ad925ddb38b10b5035914f2b883ec1696f831687"
+  },
+  "mediaBaselineFiles": {
+    "deploy/mediamtx-pacing/build.mjs": "3bb1a914af57d03593c57c400696deb9c13825732a504282e10e4892cd6099ce",
+    "deploy/mediamtx-pacing/enable.conf.example": "f8066357d386bd71938735de0fabc572a017ec8c6efdc1eaf232718648b70d66",
+    "deploy/mediamtx-pacing/peer-connection.patch": "ce75d9ca0a229515f6b4597ddd7bf501dbfed104f108bd7f986e0a8bc64e94a4",
+    "deploy/mediamtx-pacing/production-baseline.json": "d5b260558469ee75add1f747de2f7e5ad1604c4c7e897592fc6cdf5b91de8561",
+    "deploy/mediamtx-pacing/verify.mjs": "2c5ee69ede4587e40b69333373b0956ffed20dfb9eea6467740a5f4704933a84",
+    "deploy/mediamtx-pacing/viewer-session.patch": "83d5597484c3a61fb430a971470ba3509b034b8847963a6d9fc19b189400770a",
+    "deploy/mediamtx-pacing/viewer_pacing.go": "b7a3ee05c13b4d012803a6af57fcf43a72d7ca2c8fdd3c1eeff777c62a4fa8d1",
+    "deploy/mediamtx-pacing/viewer_pacing_test.go": "bffa105183093e3c63457f5b8388eb5f301b4689deb5987c482a4cfa1a45b5a4"
+  },
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "artifacts": {
+    "README.md": "76fb2a532c7d42f934e4aa2695de1920439777cb30153ad9e0be2c8512fa27a5",
+    "TEST_RESULTS.json": "9134081e945da649f1dd2444deaa8903a01a90d41543f9aa4cbce6bc31ae7924",
+    "ROLLBACK_PLAN.json": "940aef8e0097406195af0dcee884fea04dfbefdc11f6dd587949798b93c1da12"
+  },
+  "deployed": false,
+  "pushed": false,
+  "realDeviceAccepted": false,
+  "initialDirtyEntries": 0,
+  "otherWorktreesModified": false,
+  "files": {
+    "docs/PROJECT_DEVELOPMENT.md": "b2756d74bcb8896d9fdd323cef2bd3ab9d4329b98f425859cd1ecd6ec73ae272",
+    "docs/PLATFORM_INTEGRATION_20261029.md": "2edcd56d5baf99bd093aa2d0245caede0e534caf71ab0a11ec970f62a4c8c207"
+  },
+  "cleanup": {
+    "ownedDependencyLinksRemoved": true,
+    "ownedPostgresStopped": true,
+    "otherWorktreesWritten": false
+  },
+  "historicalDiffCheck": {
+    "baseline": "043468cbf95faa5ec754927f2c6e329a8063ac70",
+    "exitCode": 2,
+    "warnings": [
+      "releases/xhs-busy-wait-20261029-rc.5/rc5-root-check.log:4: new blank line at EOF."
+    ],
+    "decision": "retain immutable imported original log bytes; all authored/runtime diff checks passed"
+  },
+  "runtimeFileProvenance": {
+    "public/app.js": [
+      "wecom"
+    ],
+    "public/index.html": [
+      "wecom"
+    ],
+    "public/lookup-admin.js": [
+      "lookup"
+    ],
+    "public/styles.css": [
+      "wecom"
+    ],
+    "public/wecom-automation-ui.js": [
+      "wecom"
+    ],
+    "public/wecom-integration-api.md": [
+      "wecom"
+    ],
+    "public/wecom-preview-api.md": [
+      "wecom"
+    ],
+    "public/wecom-preview.css": [
+      "wecom"
+    ],
+    "public/wecom-preview.html": [
+      "wecom"
+    ],
+    "public/wecom-preview.js": [
+      "wecom"
+    ],
+    "server/automation-center.mjs": [
+      "three-way combined shared module"
+    ],
+    "server/index.mjs": [
+      "three-way combined shared module"
+    ],
+    "server/lookup-admin-console.mjs": [
+      "lookup"
+    ],
+    "server/lookup-ai-vision.mjs": [
+      "lookup",
+      "wecom"
+    ],
+    "server/lookup-device-availability.mjs": [
+      "lookup"
+    ],
+    "server/lookup-execution-metrics.mjs": [
+      "lookup"
+    ],
+    "server/lookup-failure-domain.mjs": [
+      "lookup"
+    ],
+    "server/lookup-reader-admission.mjs": [
+      "lookup"
+    ],
+    "server/lookup-reader-capabilities.mjs": [
+      "lookup"
+    ],
+    "server/lookup-reader-capacity.mjs": [
+      "lookup"
+    ],
+    "server/lookup-readiness.mjs": [
+      "lookup"
+    ],
+    "server/lookup-stop-proof.mjs": [
+      "lookup"
+    ],
+    "server/managed-lookup-platform.mjs": [
+      "lookup"
+    ],
+    "server/managed-lookup.mjs": [
+      "lookup"
+    ],
+    "server/postgres-repositories.mjs": [
+      "lookup",
+      "wecom"
+    ],
+    "server/wecom-preview-devices.json": [
+      "wecom"
+    ],
+    "server/wecom-preview.mjs": [
+      "wecom"
+    ],
+    "server/xhs-batch/engine.mjs": [
+      "xhs",
+      "wecom"
+    ],
+    "server/xhs-data-collection.mjs": [
+      "xhs"
+    ],
+    "windows-agent/scripts/alipay_name_lookup.py": [
+      "lookup"
+    ],
+    "windows-agent/scripts/alipay_visual_result.py": [
+      "lookup",
+      "wecom"
+    ],
+    "windows-agent/scripts/lookup_home_modal.py": [
+      "lookup",
+      "wecom"
+    ],
+    "windows-agent/scripts/wecom_customer_invitation.py": [
+      "wecom"
+    ],
+    "windows-agent/scripts/wecom_invite_preview.py": [
+      "wecom"
+    ],
+    "windows-agent/scripts/wecom_platform_preview.py": [
+      "wecom"
+    ],
+    "windows-agent/scripts/wecom_preview_devices.json": [
+      "wecom"
+    ],
+    "windows-agent/scripts/wecom_remark_preview.py": [
+      "wecom"
+    ],
+    "windows-agent/scripts/wecom_rpc_budget.py": [
+      "wecom"
+    ],
+    "windows-agent/scripts/wecom_startup_guards.py": [
+      "wecom"
+    ],
+    "windows-agent/src/adb-serial-identity.mjs": [
+      "lookup",
+      "wecom"
+    ],
+    "windows-agent/src/alipay-poco-fallback-policy.mjs": [
+      "lookup"
+    ],
+    "windows-agent/src/index.mjs": [
+      "three-way combined shared module"
+    ],
+    "windows-agent/src/lookup-execution-metrics.mjs": [
+      "lookup"
+    ],
+    "windows-agent/src/lookup-page-recovery.mjs": [
+      "lookup"
+    ],
+    "windows-agent/src/lookup-reader-admission-log.mjs": [
+      "lookup"
+    ],
+    "windows-agent/src/lookup-reader-capacity-report.mjs": [
+      "lookup"
+    ],
+    "windows-agent/src/lookup-reader-lifecycle.mjs": [
+      "lookup",
+      "wecom"
+    ],
+    "windows-agent/src/lookup-recovery-trace.mjs": [
+      "lookup",
+      "wecom"
+    ],
+    "windows-agent/src/lookup-xml-failure.mjs": [
+      "lookup",
+      "wecom"
+    ],
+    "windows-agent/src/screen-stream.mjs": [
+      "lookup",
+      "wecom"
+    ],
+    "windows-agent/src/serial-adb-health.mjs": [
+      "lookup",
+      "wecom"
+    ],
+    "windows-agent/src/wecom-preview-task.mjs": [
+      "wecom"
+    ],
+    "windows-agent/src/xhs-data-collection.mjs": [
+      "xhs",
+      "wecom"
+    ]
+  }
+}

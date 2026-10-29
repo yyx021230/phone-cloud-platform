@@ -1,0 +1,20 @@
+{
+  "status": "development_reference_only_not_production_backup",
+  "preIntegrationCommit": "043468cbf95faa5ec754927f2c6e329a8063ac70",
+  "sourceTags": [
+    "lookup-fleet-20261029-rc.2",
+    "xhs-release-20261029-rc.1",
+    "platform-wecom-invitation-20261029-rc.4"
+  ],
+  "automaticRollbackExecuted": false,
+  "productionChanged": false,
+  "localRecovery": "Use retained Git refs in a separate clean branch/worktree; do not reset,clean or overwrite unrelated work. Review runtime differences before removal.",
+  "persistentDataMustRetain": [
+    "cloud automation jobs and unknown outcomes",
+    "lookup-reader-capabilities directory",
+    "cloud WeCom send claims",
+    "windows-agent/data/wecom-send-claims",
+    "XHS collection results and deferred attempts"
+  ],
+  "productionRecovery": "Requires actual on-host backup, version and authorized drain/maintenance window; no production rollback package produced this round."
+}

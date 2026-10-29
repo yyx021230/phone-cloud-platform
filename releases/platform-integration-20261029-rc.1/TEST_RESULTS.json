@@ -1,0 +1,149 @@
+{
+  "status": "completed_local_regression_not_real_device_acceptance",
+  "recordedAt": "2026-10-29T15:53:19.373197+08:00",
+  "environment": {
+    "node": "v25.9.0",
+    "python": "Python 3.9.6",
+    "backend": "temporary JSON plus explicitly isolated localhost PostgreSQL",
+    "agent": "fake/local subprocess only",
+    "credentials": "test-process allowlist environment; no .env loaded"
+  },
+  "preMergeTargeted": {
+    "xhs": 54,
+    "wecom": 27
+  },
+  "firstCombinedAttempt": {
+    "node": {
+      "tests": 1858,
+      "pass": 1856,
+      "fail": 0,
+      "skipped": 2
+    },
+    "pythonGroupsPassed": 10,
+    "finalSmoke": "failed: old fake stop ACK omitted required lookupStopProof",
+    "overallExit": 1,
+    "businessGuardWeakened": false
+  },
+  "fix": {
+    "file": "scripts/smoke-platform.mjs",
+    "scope": "simulate matching task/session/generation cleanup proof; assert stopping before and ended/unlocked after",
+    "businessRuntimeChangedBeyondMerges": false
+  },
+  "finalCombinedAttempt": {
+    "command": "node scripts/test-platform.mjs",
+    "overallExit": 0,
+    "node": {
+      "tests": 1858,
+      "pass": 1856,
+      "fail": 0,
+      "skipped": 2
+    },
+    "python": [
+      {
+        "command": "python3 -m unittest discover -s windows-agent/scripts -p test_*.py",
+        "tests": 1108,
+        "status": "passed"
+      },
+      {
+        "command": "python3 -m unittest discover -s deploy/nginx-isolation -p test_*.py",
+        "tests": 13,
+        "status": "passed"
+      },
+      {
+        "command": "python3 -m unittest discover -s tools/windows-migration -p test_*.py",
+        "tests": 13,
+        "status": "passed"
+      },
+      {
+        "command": "python3 -m unittest discover -s examples/name-lookup -p test_*.py",
+        "tests": 10,
+        "status": "passed"
+      },
+      {
+        "command": "python3 -m unittest discover -s examples/name-lookup-api-key -p test_*.py",
+        "tests": 10,
+        "status": "passed"
+      },
+      {
+        "command": "python3 -m unittest discover -s experiments/lookup-icon-selector-20261023 -p test_*.py",
+        "tests": 3,
+        "status": "passed"
+      },
+      {
+        "command": "python3 -m unittest discover -s scripts/qa -p test_*.py",
+        "tests": 30,
+        "status": "passed"
+      },
+      {
+        "command": "python3 -m unittest discover -s windows-agent/scripts -p *_test.py",
+        "tests": 166,
+        "status": "passed"
+      },
+      {
+        "command": "python3 -m unittest sdk.open_name_lookup.python_client_test",
+        "tests": 4,
+        "status": "passed"
+      },
+      {
+        "command": "python3 -m unittest sdk.test_xhs_batch_client",
+        "tests": 3,
+        "status": "passed"
+      }
+    ],
+    "pythonCaseExecutions": 1360,
+    "pythonUniqueCases": "not asserted; groups may overlap",
+    "smoke": "passed"
+  },
+  "isolatedPostgres": {
+    "tests": 42,
+    "pass": 42,
+    "fail": 0,
+    "skip": 0,
+    "command": "node --test --test-concurrency=1 server/xhs-batch/*.test.mjs server/wecom-preview.http.test.mjs",
+    "coversDefaultSkippedTests": 2,
+    "scope": "batch service/persistence/nonce/lease/restart and WeCom HTTP persistence/main-clone/send claims/no replay",
+    "listen": "127.0.0.1",
+    "ownedClusterStopped": true,
+    "notUniqueAdditiveToNode": true
+  },
+  "syntax": "npm run check passed",
+  "mediaBaseline": {
+    "repository": "passed",
+    "productionLive": "not_run"
+  },
+  "diffCheck": {
+    "runtimeAndNewMaterial": "passed",
+    "historicalImportedEvidence": "rc5-root-check.log:4 one new blank line at EOF retained unchanged from804d992; not a new runtime defect"
+  },
+  "scope": {
+    "newRealPhoneOperations": 0,
+    "newInvitations": 0,
+    "paidModelCalls": 0,
+    "productionConnections": 0,
+    "deployed": false,
+    "pushed": false
+  },
+  "unverified": [
+    "combined candidate real phone/API acceptance",
+    "WeCom new native Windows and real invitation delivery",
+    "XHS login/data permissions and production reservation positive path",
+    "lookup initial RPC/command failure root cause and original-ID real recovery/8-phone no-video throughput",
+    "current production versions/backups and D075 live not rechecked",
+    "Java/Go builds not run; respective production source untouched"
+  ],
+  "evidenceHashes": {
+    "BASELINE.json": "824af234c2dcceb037db4af690627342961b7dd3790daa53cf733b94e8b6ae69",
+    "XHS_MERGE_REVIEW.json": "cedcc9404e374b3cb159d66a70ba79c12e045b78536787f59b69bc47a88eeca8",
+    "WECOM_MERGE_REVIEW.json": "ba1177b1f8620e9535b1a7601554f3dbbaf2edf78abaa6851dc97f74fa74b81b",
+    "xhs-merge-targeted.log": "136c3e64ec1787531d7b97569cfbe5ab9e7a050977356c54827c9372544a61af",
+    "wecom-merge-targeted.log": "f86e8c4920d2fd71cfd4e24636ae8dcbda58ee88887d4bc96afbbc91c2562602",
+    "combined-regression.log": "4b9fd665c31fdfd1acecfb02eeb3aa523a2e2c3f05bac881400c4ee86fce5d17",
+    "smoke-corrected.log": "a917e1a72233ca45562168e6d43183ba6b5a2ada4fb720884a1a54c0f0305bca",
+    "combined-regression-final.log": "87793aa74f3fd6242fcbd56d8731d97e2526997ae3788f813c61257c01f62c57",
+    "postgres-combined-tests.log": "76848d83177d80599c0112923cfb92b4f5126492b68b2c8b954b7138f8740eda",
+    "postgres-tests-exit.json": "c99af60dd02375793725c1c127e846e636d72cb4bffb74aebc1fe1c4d47af4d9",
+    "root-check.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "d075-repository.log": "3872373ebdc82fb96727d7260cd35dbfcbe3ca5cc3dd914828b16731a8a3fd9d",
+    "PG_FIXTURE.json": "d9f451e97bc899afa1d846d8b2d248bfb7bd8392e790ab32c08b44ce337fbb15"
+  }
+}

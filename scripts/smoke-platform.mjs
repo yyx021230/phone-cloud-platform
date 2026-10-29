@@ -224,13 +224,21 @@ async function main() {
   automationTasks = await api("GET", "/api/v1/windows-agent-tasks?limit=30", admin);
   const stopWindowsTask = automationTasks.tasks.find((task) => task.type === "alipay_name_stop" && task.payload?.automationSessionId === lookupSession.sessionId);
   assert(stopWindowsTask, "lookup end should create a linked stop task");
+  const pendingStop = await api("GET", "/api/v1/user/automation/alipay-name-sessions", sessionA);
+  assert(pendingStop.sessions.find((session) => session.sessionId === lookupSession.sessionId)?.status === "stopping", "lookup end must wait for the exact cleanup proof");
   await api("POST", `/api/v1/windows-agent-tasks/${stopWindowsTask.taskId}/status`, agentToken, {
     status: "succeeded",
-    result: { message: "session stopped" }
+    result: { message: "session stopped", diagnostic: { lookupStopProof: {
+      version: 1, readerCleanupConfirmed: true, taskId: stopWindowsTask.taskId,
+      sessionId: lookupSession.sessionId,
+      generation: String(stopWindowsTask.payload?.managedLookup?.generation || "")
+    } } }
   });
   lookupSessions = await api("GET", "/api/v1/user/automation/alipay-name-sessions", sessionA);
   lookupSession = lookupSessions.sessions.find((session) => session.sessionId === lookupCreate.session.sessionId);
   assert(lookupSession?.status === "ended", "lookup end should release the persistent session");
+  const finalLocks = await api("GET", "/api/v1/device-locks", admin);
+  assert(!finalLocks.locks.some((lock) => lock.deviceId === device.deviceId && lock.lockType === "alipay_name_lookup" && lock.status === "active"), "confirmed lookup stop should release the device lock");
 
   const metrics = await api("GET", "/api/v1/metrics/operations", admin);
   assert(metrics.metrics?.queue, "operations metrics should include queue data");
