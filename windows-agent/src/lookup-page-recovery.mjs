@@ -5,7 +5,7 @@ const PROTECTED_STATES = [
   "frequent_or_abnormal_access", "account_restriction", "account_switch",
   "login_required", "invalid_phone_number", "device_not_online", "alipay_not_installed",
   "person_result_not_found", "local_lookup_", "cancel", "screen_control", "capacity_reached",
-  "poco_query_page_recovery_failed:"
+  "poco_query_page_recovery_failed:", "worker_exit_unconfirmed", "lookup_reader_cleanup_unconfirmed"
 ];
 
 export function canRestartLookupAfterFailure(operation, error) {

@@ -1,3 +1,4 @@
+import { measureLookupExecution } from "./lookup-execution-metrics.mjs";
 import {lookupXmlFailure} from "./lookup-xml-failure.mjs";
 import {isLookupReaderRecovery, rejectExitedReaderRequest, readerExitDiagnostic, verifyLookupReaderCleanup, lookupReaderStopReason} from "./lookup-reader-lifecycle.mjs";
 const lookupReaderStopBarriers = new Map();
@@ -1232,14 +1233,14 @@ async function runTask(task, options = {}) {
     if (isAutomationTaskCancellation(error)) {
       taskEvent(task, "cancelled", "info", "用户已结束会话，当前自动化任务已停止", { reason: "automation_task_cancelled" })
         .catch((eventError) => log("task cancellation event failed", { taskId: task.taskId, error: eventError.message }));
-      taskStatus(task, "cancelled", { code: "automation_task_cancelled", message: "用户已结束会话，当前自动化任务已停止" })
+      taskStatus(task, "cancelled", { ...(isLookup ? taskFailureResult(error) : {}), code: "automation_task_cancelled", message: "用户已结束会话，当前自动化任务已停止" })
         .catch((statusError) => log("task cancellation status failed", { taskId: task.taskId, error: statusError.message }));
       return;
     }
     if (isScreenPriorityCancellation(error)) {
       taskEvent(task, "cancelled", "info", "投屏优先，已暂停短信同步", { reason: "screen_control_priority" })
         .catch((eventError) => log("task cancellation event failed", { taskId: task.taskId, error: eventError.message }));
-      taskStatus(task, "cancelled", { code: "screen_control_priority", message: "投屏优先，已暂停短信同步" })
+      taskStatus(task, "cancelled", { ...(isLookup ? taskFailureResult(error) : {}), code: "screen_control_priority", message: "投屏优先，已暂停短信同步" })
         .catch((statusError) => log("task cancellation status failed", { taskId: task.taskId, error: statusError.message }));
       return;
     }
@@ -2307,21 +2308,26 @@ async function observeLookupHumanVerification(probe) {
 }
 
 async function taskAlipayNameLookupWithAccounts(task, options = {}) {
-  return runLookupWithAccountPolicy({ task,
+  return measureLookupExecution(lookupMetrics => runLookupWithAccountPolicy({ task,
     assertAllowed: () => {
       if (options.signal?.aborted) throw automationTaskCancellationError();
       if (screenControlledSerials.has(task.adbSerial)) throw screenPriorityCancellationError();
     },
-    execute: (next, hooks = {}) => taskAlipayNameLookup(next, { ...options, ...hooks }),
+    execute: (next, hooks = {}) => taskAlipayNameLookup(next, { ...options, ...hooks, lookupMetrics }),
     recordLimit: (record) => taskEvent(task, "alipay_name", "warn", "查询限制已确认，保存账户八小时冷却后再继续", {
       ...record, currentAccount: record.account, accountSwitchRequired: true,
       stepId: "lookup_account_limit_confirmed"
     })
-  });
+  }));
 }
 
 async function taskAlipayNameLookup(task, options = {}) {
   const lookupTrace = [];
+  const metrics = options.lookupMetrics;
+  const rebuildReader = reason => {
+    if (metrics) metrics.readerRebuildAttempts += 1;
+    return stopAirtestWorker(task.adbSerial, reason);
+  };
   let searchSubmitted = false;
   let resultRecoveryAttempted = false;
   const replayLookupEvents = events => {
@@ -2468,6 +2474,7 @@ async function taskAlipayNameLookup(task, options = {}) {
             readyTimeoutMs: 25_000,
             timeoutMs: queryOperation ? 65_000 : ["start", "post_human_check"].includes(operation) ? 45_000 : 12_000,
             maxIdleMs: 15 * 60_000,
+            onReaderRebuild: () => { if (metrics) metrics.readerRebuildAttempts += 1; },
             onEvent: (event) => replayLookupEvents([event])
           });
           if (operation === "start"
@@ -2483,7 +2490,7 @@ async function taskAlipayNameLookup(task, options = {}) {
               fallbackSkipped: "xml_uiautomator",
               driver: "poco"
             });
-            await stopAirtestWorker(task.adbSerial, "poco_start_transport_timeout").catch(() => {});
+            await rebuildReader("poco_start_transport_timeout").catch(() => {});
             parsed = null;
             continue;
           }
@@ -2503,7 +2510,7 @@ async function taskAlipayNameLookup(task, options = {}) {
             : startRequestTimedOut
               ? "start_request_timeout"
               : "worker_probe_failed";
-          await stopAirtestWorker(task.adbSerial, `poco_start_${retryReason}`).catch(() => {});
+          await rebuildReader(`poco_start_${retryReason}`).catch(() => {});
           await taskEvent(task, "alipay_name", "warn", "Poco 启动阶段异常，正在重建 Poco 后重试", {
             operation,
             attempt,
@@ -2532,7 +2539,8 @@ async function taskAlipayNameLookup(task, options = {}) {
           fallbackSkipped: "xml_uiautomator",
           driver: "poco"
         });
-        if (await stopAirtestWorker(task.adbSerial, "poco_query_resume_result_channel_timeout") !== true) throw new Error("lookup_old_worker_exit_unconfirmed");
+        if (await rebuildReader("poco_query_resume_result_channel_timeout") !== true) throw new Error("lookup_old_worker_exit_unconfirmed");
+        if (metrics) metrics.resultResumeAttempts += 1;
         let observed;
         try {
           observed = await runXhsAirtestPocoWorker({
@@ -2544,6 +2552,7 @@ async function taskAlipayNameLookup(task, options = {}) {
             readyTimeoutMs: 25_000,
             timeoutMs: 65_000,
             maxIdleMs: 15 * 60_000,
+            onReaderRebuild: () => { if (metrics) metrics.readerRebuildAttempts += 1; },
             onEvent: (event) => replayLookupEvents([event])
           });
         } catch (observationError) {
@@ -2581,7 +2590,8 @@ async function taskAlipayNameLookup(task, options = {}) {
             fallbackSkipped: "xml_uiautomator",
             driver: "poco"
           });
-          if (await stopAirtestWorker(task.adbSerial, "poco_query_result_channel_timeout") !== true) throw new Error("lookup_old_worker_exit_unconfirmed");
+          if (await rebuildReader("poco_query_result_channel_timeout") !== true) throw new Error("lookup_old_worker_exit_unconfirmed");
+          if (metrics) metrics.resultResumeAttempts += 1;
           let resumed;
           try {
             resumed = await runXhsAirtestPocoWorker({
@@ -2593,7 +2603,8 @@ async function taskAlipayNameLookup(task, options = {}) {
               readyTimeoutMs: 25_000,
               timeoutMs: 65_000,
               maxIdleMs: 15 * 60_000,
-              onEvent: (event) => replayLookupEvents([event])
+              onReaderRebuild: () => { if (metrics) metrics.readerRebuildAttempts += 1; },
+            onEvent: (event) => replayLookupEvents([event])
             });
           } catch (resumeError) {
             throw new Error(`poco_query_resume_failed:${String(resumeError?.message || resumeError)}`);
@@ -2639,14 +2650,17 @@ async function taskAlipayNameLookup(task, options = {}) {
             recoveryMode: mode || "restart_app", resubmitsInput: mode === "restart_app",
             accountSwitchRequested: false, driver: "poco"
           }),
-          stopWorker: () => stopAirtestWorker(task.adbSerial, "lookup_query_app_recovery"),
+          stopWorker: () => rebuildReader("lookup_query_app_recovery"),
           runWorker: async (recoveryPayload) => {
+            if (metrics && recoveryPayload.pageRecoveryStage === "restart_app") metrics.appRestartAttempts += 1;
+            if (metrics && recoveryPayload.operation === "query_resume") metrics.resultResumeAttempts += 1;
             if (["continue_query", "reattach_before_input"].includes(recoveryPayload.pageRecoveryStage) && options.beforeLookupRecovery) {
               const policy = await options.beforeLookupRecovery();
               recoveryPayload = { ...recoveryPayload, ...policy };
             }
             return runXhsAirtestPocoWorker(recoveryPayload, {
             readyTimeoutMs: 25_000, timeoutMs: recoveryPayload.pageRecoveryStage === "restart_app" ? 45_000 : 65_000, maxIdleMs: 15 * 60_000,
+            onReaderRebuild: () => { if (metrics) metrics.readerRebuildAttempts += 1; },
             onEvent: (event) => replayLookupEvents([event])
           }); }
         });
@@ -2948,6 +2962,7 @@ async function runXhsAirtestPocoWorker(payload, options = {}) {
   const idleMs = Date.now() - Number(worker.lastUsedAt || worker.startedAt || Date.now());
   if (idleMs >= maxIdleMs) {
     log("recycling idle Airtest/Poco worker before task", { serial, idleMs, maxIdleMs });
+    if (payload.workflow === "alipay_name") options.onReaderRebuild?.();
     worker = await recycleAirtestWorker(serial, lookupReaderStopReason(payload, "idle_before_task"));
   }
   try {
@@ -2957,6 +2972,7 @@ async function runXhsAirtestPocoWorker(payload, options = {}) {
       serial,
       error: error.message || String(error)
     });
+    if (payload.workflow === "alipay_name") options.onReaderRebuild?.();
     worker = await recycleAirtestWorker(serial, lookupReaderStopReason(payload, "poco_probe_failed"));
     await probeAirtestWorker(worker, payload.workflow);
   }
@@ -3948,9 +3964,9 @@ function compactTaskResultForStatus(result = {}) {
     qrRemotePath: String(result.qrRemotePath || "").slice(0, 500),
     packageName: String(result.packageName || "").slice(0, 160),
     currentActivity: String(result.currentActivity || "").slice(0, 1000),
-    durationMs: Number.isFinite(Number(result.durationMs)) ? Number(result.durationMs) : null,
-    wallMs: Number.isFinite(Number(result.wallMs)) ? Number(result.wallMs) : null,
-    timeoutSeconds: Number.isFinite(Number(result.timeoutSeconds)) ? Number(result.timeoutSeconds) : null,
+    durationMs: ((typeof result.durationMs === "number" || typeof result.durationMs === "string" && result.durationMs.trim()) && Number.isFinite(Number(result.durationMs)) && Number(result.durationMs) >= 0) ? Number(result.durationMs) : null,
+    wallMs: ((typeof result.wallMs === "number" || typeof result.wallMs === "string" && result.wallMs.trim()) && Number.isFinite(Number(result.wallMs)) && Number(result.wallMs) >= 0) ? Number(result.wallMs) : null,
+    timeoutSeconds: ((typeof result.timeoutSeconds === "number" || typeof result.timeoutSeconds === "string" && result.timeoutSeconds.trim()) && Number.isFinite(Number(result.timeoutSeconds)) && Number(result.timeoutSeconds) >= 0) ? Number(result.timeoutSeconds) : null,
     realNameTailCharacter: String(result.realNameTailCharacter || "").slice(0, 8),
     alipayDisplayName: String(result.alipayDisplayName || "").slice(0, 80),
     currentAccount: String(result.currentAccount || "").slice(0, 120),
@@ -3980,6 +3996,15 @@ function compactTaskResultForStatus(result = {}) {
       log: runnerLog.slice(-80).map((item) => compactEventDetail(item, 3000))
     } : null
   };
+  // Keep bounded counters even when a large failure diagnostic is compacted.
+  // Never copy arbitrary extra fields from this transport extension.
+  const measurement = result.diagnostic?.lookupExecution;
+  const metricKeys = ["durationMs", "readerRebuildAttempts", "appRestartAttempts", "resultResumeAttempts"];
+  if (measurement?.version === 1 && measurement.scope === "agent_command"
+      && metricKeys.every(key => Number.isSafeInteger(measurement[key]) && measurement[key] >= 0)) {
+    compact.diagnostic = { ...compact.diagnostic, lookupExecution: { version: 1, scope: "agent_command",
+      ...Object.fromEntries(metricKeys.map(key => [key, measurement[key]])) } };
+  }
   if (result.accountIdentityVerified !== undefined) compact.accountIdentityVerified = result.accountIdentityVerified === true;
   if (result.accountSwitchCount !== undefined) compact.accountSwitchCount = Math.max(0, Number(result.accountSwitchCount || 0));
   if (result.accountSwitchReason !== undefined) compact.accountSwitchReason = String(result.accountSwitchReason || "").slice(0, 120);
@@ -6167,6 +6192,7 @@ function taskFailureResult(error) {
   };
   if (error.diagnostic) {
     result.diagnostic = error.diagnostic;
+    if (error.diagnostic.lookupExecution?.version === 1) result.durationMs = error.diagnostic.lookupExecution.durationMs;
     if (error.diagnostic.accountSwitched !== undefined) result.accountSwitched = Boolean(error.diagnostic.accountSwitched);
     if (error.diagnostic.currentAccount) result.currentAccount = String(error.diagnostic.currentAccount);
     if (error.diagnostic.accountIdentityVerified !== undefined) result.accountIdentityVerified = error.diagnostic.accountIdentityVerified === true;

@@ -4784,7 +4784,7 @@ function syncAutomationJobFromWindowsTask(windowsTask, status, result = {}) {
             accountSwitchReason: String(job.result.accountSwitchReason || ""),
             accountSwitchCount: Math.max(0, Number(job.result.accountSwitchCount || 0)),
             recoveryAttempts: Math.max(0, Number(job.result.recoveryAttempts || 0)),
-            durationMs: Number(job.result.durationMs || 0),
+            durationMs: job.result.durationMs ?? null,
             status: "succeeded",
             limitReason: "",
             errorCode: "",
@@ -4808,7 +4808,7 @@ function syncAutomationJobFromWindowsTask(windowsTask, status, result = {}) {
             accountSwitchReason: String(job.result.accountSwitchReason || ""),
             accountSwitchCount: Math.max(0, Number(job.result.accountSwitchCount || 0)),
             recoveryAttempts: Math.max(0, Number(job.result.recoveryAttempts || 0)),
-            durationMs: Number(job.result.durationMs || 0),
+            durationMs: job.result.durationMs ?? null,
             status: "not_found",
             limitReason: "",
             errorCode: "",
@@ -4867,7 +4867,7 @@ function syncAutomationJobFromWindowsTask(windowsTask, status, result = {}) {
             error: errorMessage,
             errorCode: String(job.result.errorCode || ""),
             limitReason,
-            durationMs: Number(job.result.durationMs || 0),
+            durationMs: job.result.durationMs ?? null,
             updatedAt: job.completedAt
           });
           if (recoveryUnresolved) {
@@ -5905,9 +5905,9 @@ function sanitizeTaskResult(input = {}, options = {}) {
     executionMode: String(input.executionMode || "").slice(0, 80),
     packageName: String(input.packageName || "").slice(0, 160),
     currentActivity: String(input.currentActivity || "").slice(0, 1000),
-    durationMs: Number.isFinite(Number(input.durationMs)) ? Number(input.durationMs) : null,
-    wallMs: Number.isFinite(Number(input.wallMs)) ? Number(input.wallMs) : null,
-    timeoutSeconds: Number.isFinite(Number(input.timeoutSeconds)) ? Number(input.timeoutSeconds) : null
+    durationMs: ((typeof input.durationMs === "number" || typeof input.durationMs === "string" && input.durationMs.trim()) && Number.isFinite(Number(input.durationMs)) && Number(input.durationMs) >= 0) ? Number(input.durationMs) : null,
+    wallMs: ((typeof input.wallMs === "number" || typeof input.wallMs === "string" && input.wallMs.trim()) && Number.isFinite(Number(input.wallMs)) && Number(input.wallMs) >= 0) ? Number(input.wallMs) : null,
+    timeoutSeconds: ((typeof input.timeoutSeconds === "number" || typeof input.timeoutSeconds === "string" && input.timeoutSeconds.trim()) && Number.isFinite(Number(input.timeoutSeconds)) && Number(input.timeoutSeconds) >= 0) ? Number(input.timeoutSeconds) : null
   };
   if (input.collection) result.collection = sanitizeXhsDataCollection(input.collection);
   if (input.uiSnapshot) result.uiSnapshot = String(input.uiSnapshot).slice(0, MAX_STORED_UI_SNAPSHOT_CHARS);

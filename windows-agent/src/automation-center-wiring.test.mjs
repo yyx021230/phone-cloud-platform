@@ -58,7 +58,8 @@ test("Alipay uses a bounded Poco fast path and reserves XML account navigation f
   assert.match(source, /operation === "start"[\s\S]*Airtest\/Poco worker 执行超时/);
   assert.match(source, /operation === "start"[\s\S]*Airtest\/Poco worker 探活未通过/);
   assert.match(source, /: "worker_probe_failed"/);
-  assert.match(source, /stopAirtestWorker\(task\.adbSerial, `poco_start_\$\{retryReason\}`\)/);
+  assert.match(source, /rebuildReader\(`poco_start_\$\{retryReason\}`\)/);
+  assert.match(source, /return stopAirtestWorker\(task\.adbSerial, reason\)/);
   assert.match(source, /isRetryableAlipayPocoStartFailure\(parsed\.error\)/);
   assert.match(source, /Poco 启动传输超时，正在重建 Poco 后重试/);
   assert.match(source, /retryOperation: "start"/);

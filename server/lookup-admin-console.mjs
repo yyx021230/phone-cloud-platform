@@ -1,3 +1,4 @@
+import {lookupExecutionMetrics,lookupExecutionDuration,lookupRecoverySummary} from './lookup-execution-metrics.mjs';
 import {buildLookupCardStatus} from './device-occupancy.mjs';
 import {publicLookupAccountCooldowns,verifiedSavedAccounts} from './lookup-account-cooldown.mjs';
 const list=v=>Array.isArray(v)?v:[];
@@ -61,11 +62,12 @@ export function jobEvidence(state,job){
 }
 export function jobDetail(state,job){
  const task=list(state.windowsTasks).find(t=>t.taskId===job.windowsTaskId&&t.deviceId===job.deviceId);
- return {jobId:job.jobId,sessionId:job.sessionId,deviceId:job.deviceId,deviceNumber:list(state.devices).find(d=>d.deviceId===job.deviceId)?.deviceName||'',kind:job.kind,status:job.status,createdAt:job.createdAt,completedAt:job.completedAt||null,account:text(job.result?.currentAccount||job.result?.diagnostic?.currentAccount),code:text(job.result?.errorCode),reason:text(job.result?.diagnostic?.runnerReason||job.result?.diagnostic?.reason),evidence:jobEvidence(state,job),events:list(task?.events).slice(-100).map(e=>({at:e.createdAt||e.at||null,step:text(e.stepId),phase:text(e.phase),message:text(e.message)}))};
+ return {jobId:job.jobId,sessionId:job.sessionId,deviceId:job.deviceId,deviceNumber:list(state.devices).find(d=>d.deviceId===job.deviceId)?.deviceName||'',kind:job.kind,status:job.status,createdAt:job.createdAt,completedAt:job.completedAt||null,account:text(job.result?.currentAccount||job.result?.diagnostic?.currentAccount),executionDurationMs:lookupExecutionDuration(job.result||task?.result),execution:lookupExecutionMetrics(job.result||task?.result),code:text(job.result?.errorCode),reason:text(job.result?.diagnostic?.runnerReason||job.result?.diagnostic?.reason),evidence:jobEvidence(state,job),events:list(task?.events).slice(-100).map(e=>({at:e.createdAt||e.at||null,step:text(e.stepId),phase:text(e.phase),message:text(e.message)}))};
 }
 export function requestDetail(state,r){
  const attempts=list(r.attempts).map(a=>({deviceId:a.deviceId,deviceNumber:list(state.devices).find(d=>d.deviceId===a.deviceId)?.deviceName||'',sessionId:a.sessionId,at:a.at,jobs:list(state.automationJobs).filter(j=>lookupJob(j)&&j.deviceId===a.deviceId&&j.sessionId===a.sessionId&&j.clientReference===r.lookupId).map(j=>jobDetail(state,j))}));
- return {...requestSummary(r),attempts};
+ const jobs=list(state.automationJobs).filter(j=>lookupJob(j)&&j.clientReference===r.lookupId);
+ return {...requestSummary(r),recovery:lookupRecoverySummary(jobs,list(r.attempts)),attempts};
 }
 export function parseLookupCursor(raw){
  if(!raw)return null;
