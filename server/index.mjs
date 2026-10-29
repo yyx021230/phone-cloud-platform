@@ -1,3 +1,4 @@
+import { createLookupReaderCapabilities } from './lookup-reader-capabilities.mjs';
 import {confirmedLookupStop} from "./lookup-stop-proof.mjs";
 import { sendInventorySyncResponse } from "./inventory-sync-response.mjs";
 import { spoolSnapshot, writeSpooledSnapshot, loadStreamedSnapshot } from './snapshot-stream.mjs';
@@ -9,6 +10,7 @@ import { createRecoveryControls, recoverySerial, normalizeRecoveryControlAck, RE
 import { createManagedLookupStore, MANAGED_LOOKUP_PROTOCOL } from './managed-lookup-store.mjs';
 import { createManagedLookupService } from './managed-lookup.mjs';
 import { createManagedLookupAdapter } from './managed-lookup-platform.mjs';
+import { normalizeLookupReaderCapacity, canAdmitLookupReader } from './lookup-reader-admission.mjs';
 import { canDeliverManagedLookupTask, isManagedLookupTask, supportsLeasedWindowsTaskDelivery, hasActiveScreenGalleryDelivery, issueScreenGalleryDelivery, readScreenGalleryDeliveryPayload, acknowledgeScreenGalleryDelivery } from './managed-lookup-delivery.mjs';
 import { createLookupHumanNotifier, pendingLookupHumanNotifications, readLookupHumanWebhook } from "./lookup-human-notifications.mjs";
 import { createTaskStatusPersistence } from "./task-status-persistence.mjs";
@@ -228,6 +230,10 @@ const realtimeMetrics = createRealtimeMetrics();
 let postgresPool = null;
 const loginRateLimits = new Map();
 const state = await loadState();
+const lookupReaderCapabilities = await createLookupReaderCapabilities(path.join(DATA_DIR, "lookup-reader-capabilities"));
+for (const agent of state.windowsAgents) {
+  if (lookupReaderCapabilities.has(agent.agentId)) agent.lookupReaderCapacityProtocol = 1;
+}
 const structuredRepos = STORAGE_BACKEND === "postgres" && STRUCTURED_WRITES
   ? createPostgresRepositories({ getPool: getPostgresPool, stringify: stringifyPostgresJson })
   : null;
@@ -1923,6 +1929,7 @@ async function routeApi(req, res, url) {
     requireWindowsScope(ctx, "heartbeat");
     const input = await readJson(req);
     if (ctx.agent && input.agentId && input.agentId !== ctx.agent.agentId) return json(res, 401, { error: "windows_agent_mismatch" });
+    if (input.lookupReaderCapacityProtocol === 1) await lookupReaderCapabilities.enable(ctx.agentId || input.agentId);
     const agent = upsertWindowsAgent(input, req);
     addAudit("windows_agent_heartbeat", ctx, { agentId: agent.agentId });
     runtimeSaveScheduler.mark();
@@ -1935,6 +1942,7 @@ async function routeApi(req, res, url) {
     const ctx = requireWindowsAgent(req, agentId);
     requireWindowsScope(ctx, "devices:sync");
     const input = await readJson(req);
+    if (input.agent?.lookupReaderCapacityProtocol === 1) await lookupReaderCapabilities.enable(agentId);
     const agent = upsertWindowsAgent({ ...(input.agent || {}), agentId }, req);
     syncAdbDevices(agent, input.devices || []);
     addAudit("windows_agent_devices_sync", ctx, { agentId, count: agent.devices.length });
@@ -2000,6 +2008,37 @@ async function routeApi(req, res, url) {
     const cancelledTaskIds = state.windowsTasks
       .filter((item) => item.agentId === agentId && item.status === "cancelled" && activeTaskIds.has(item.taskId))
       .map((item) => item.taskId);
+    // Only fresh, authenticated poll input authorizes new reader work. Health
+    // snapshots are observational and never reused as capacity authorization.
+    let capacityInput = null;
+    const capacityText = url.searchParams.get("lookupReaderCapacity") || "";
+    if (capacityText.length <= 32768) {
+      try { capacityInput = JSON.parse(capacityText); } catch { /* invalid => closed */ }
+    }
+    let readerReport = normalizeLookupReaderCapacity(capacityInput, {
+      runtimeId: agent.lookupRuntimeId, receivedAt: Date.now()
+    });
+    let readerCapabilityPersistenceFailed = !lookupReaderCapabilities.available(agentId);
+    if (readerCapabilityPersistenceFailed) readerReport = null;
+    if (url.searchParams.get("lookupReaderCapacityProtocol") === "1") {
+      agent.lookupReaderCapacityProtocol = 1;
+      try { await lookupReaderCapabilities.enable(agentId); }
+      catch { readerCapabilityPersistenceFailed = true; readerReport = null; }
+    }
+    const strictReaderCapacity = lookupReaderCapabilities.has(agentId) || agent.lookupReaderCapacityProtocol === 1 || Boolean(readerReport);
+    let readerCapacity = { mode: strictReaderCapacity ? "reported" : "legacy_unreported",
+      reason: strictReaderCapacity ? (readerReport ? "lookup_reader_report_valid" : "lookup_reader_report_invalid") : "legacy_unreported",
+      used: null, limit: readerReport?.limit ?? null };
+    const admitsReader = (item) => {
+      if (!strictReaderCapacity) return true;
+      const decision = canAdmitLookupReader({ task: item, agentId, report: readerReport,
+        now: Date.now(), tasks: state.windowsTasks, activeTaskIds });
+      if (readerCapabilityPersistenceFailed && decision.reason === "lookup_reader_report_invalid") {
+        decision.reason = "lookup_reader_capability_storage_unavailable";
+      }
+      if (isManagedLookupTask(item)) readerCapacity = { mode: "reported", ...decision };
+      return decision.allowed;
+    };
     const maxRunning = Math.max(1, Number(agent.maxConcurrentAdbTasks || DEFAULT_AGENT_MAX_CONCURRENT_ADB_TASKS));
     const excludedSerials = new Set(String(url.searchParams.get("excludeSerials") || "")
       .split(",")
@@ -2012,7 +2051,7 @@ async function routeApi(req, res, url) {
     const runningTasks = state.windowsTasks.filter((item) => item.agentId === agentId && item.status === "running");
     if (runningTasks.length >= maxRunning) {
       if (maintenanceChanged) runtimeSaveScheduler.mark();
-      return json(res, 200, { task: null, cancelledTaskIds, capacity: { running: runningTasks.length, max: maxRunning } });
+      return json(res, 200, { task: null, cancelledTaskIds, readerCapacity, capacity: { running: runningTasks.length, max: maxRunning } });
     }
     const runningSerials = new Set(runningTasks.filter((item) => item.adbSerial).map((item) => String(item.adbSerial)));
     const task = state.windowsTasks.find((item) => (
@@ -2031,10 +2070,11 @@ async function routeApi(req, res, url) {
           && screenGallerySerials.has(String(item.adbSerial))
         ))
       ))
+      && admitsReader(item)
     ));
     if (!task) {
       if (maintenanceChanged) runtimeSaveScheduler.mark();
-      return json(res, 200, { task: null, cancelledTaskIds });
+      return json(res, 200, { task: null, cancelledTaskIds, readerCapacity });
     }
     const leasedDeliveryEnabled = (
       isManagedLookupTask(task) ||
@@ -2055,7 +2095,7 @@ async function routeApi(req, res, url) {
           attempt: task.deliveryAttempts
         });
         await persistencePolicy.persist(() => structuredRepos.persistWindowsTaskDeliveryLease({ windowsTask: task, audit }));
-        return json(res, 200, { task: responseTask, cancelledTaskIds });
+        return json(res, 200, { task: responseTask, cancelledTaskIds, readerCapacity });
       } catch (error) {
         restoreWindowsTaskClaim(claimSnapshot);
         throw error;
@@ -2075,7 +2115,7 @@ async function routeApi(req, res, url) {
       if (task.type === "screen_gallery_import" && task.payload?.imageDataUrl) delete task.payload.imageDataUrl;
       if (task.type === "xhs_publish" && task.payload?.imageDataUrls) delete task.payload.imageDataUrls;
       await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask: task, xhsTask, automationJob, automationSession, audit }));
-      return json(res, 200, { task: responseTask, cancelledTaskIds });
+      return json(res, 200, { task: responseTask, cancelledTaskIds, readerCapacity });
     } catch (error) {
       restoreWindowsTaskClaim(claimSnapshot);
       throw error;
@@ -3288,6 +3328,8 @@ function upsertWindowsAgent(input = {}, req) {
   agent.adbVersion = String(input.adbVersion || agent.adbVersion || "");
   if (input.managedLookupProtocol !== undefined) agent.managedLookupProtocol = input.managedLookupProtocol === MANAGED_LOOKUP_PROTOCOL ? MANAGED_LOOKUP_PROTOCOL : "";
   agent.lookupPostHumanProtocol=input.lookupPostHumanProtocol===1?1:0;
+  // Capability floor is sticky across heartbeat omission, restart and rollback.
+  agent.lookupReaderCapacityProtocol = lookupReaderCapabilities.has(agentId) || agent.lookupReaderCapacityProtocol === 1 || input.lookupReaderCapacityProtocol === 1 ? 1 : 0;
   agent.lookupRuntimeId=typeof input.lookupRuntimeId==="string"&&/^[a-f0-9-]{36}$/.test(input.lookupRuntimeId)?input.lookupRuntimeId:"";
   agent.health = normalizeAgentHealth(input.health || agent.health || {});
   if (input.tokenHash) agent.tokenHash = String(input.tokenHash);

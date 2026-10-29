@@ -1,3 +1,4 @@
+import {buildLookupReaderCapacityReport} from '../windows-agent/src/lookup-reader-capacity-report.mjs';
 import {isHumanLookupResume} from "./device-occupancy.mjs";
 import fs from 'node:fs/promises';
 import vm from 'node:vm';
@@ -139,15 +140,19 @@ test("late evidence materialization cannot overwrite a winning terminal result",
 
 test("pending lookup reports reserve only their serial while retaining screen polling parameters", async () => {
   let params;
+  const report=buildLookupReaderCapacityReport({runtimeId:'3f2ba500-8c87-451b-a0ba-9c5e245b6ad3',limit:8,workers:new Map([['ACTIVE',{pending:{}}]])});
   const context = vm.createContext({ URLSearchParams, encodeURIComponent, config: { maxConcurrentAdbTasks: 1, agentId: "a" },
     activeTasksById: new Map([["active", {}]]), activeTaskSerials: new Set(["ACTIVE"]), screenControlledSerials: new Set(["SCREEN"]),
     lookupStatusOutbox: { pendingTasks: () => [{ taskId: "pending", adbSerial: "LOOKUP" }] },
+    lookupReaderCapacityReport: () => report, observeLookupReaderAdmission: () => {},
     canDeliverManagedLookupTask,MANAGED_LOOKUP_PROTOCOL:"managed_lookup_v1",SCREEN_GALLERY_DELIVERY_PROTOCOL: "gallery", XHS_PUBLISH_DELIVERY_PROTOCOL: "publish",
     api: async (url) => { params = new URL("http://local" + url).searchParams; return { task: null, cancelledTaskIds: [] }; },
     abortCancelledAutomationTasks: () => {}, log: () => {} });
   vm.runInContext(fn(agent, "pollTask"), context); await context.pollTask();
   assert.deepEqual(new Set(params.get("excludeSerials").split(",")), new Set(["ACTIVE", "SCREEN", "LOOKUP"]));
   assert.equal(params.get("screenGallerySerials"), "SCREEN");
+  assert.equal(params.get("lookupReaderCapacityProtocol"), "1");
+  assert.deepEqual(JSON.parse(params.get("lookupReaderCapacity")),report);
   assert.deepEqual(new Set(params.get("activeTaskIds").split(",")), new Set(["active", "pending"]));
 });
 

@@ -1,0 +1,45 @@
+{
+  "candidateTag": "lookup-throughput-20261028-rc.8",
+  "state": "local-candidate-not-deployed",
+  "parentCommit": "7dd0727e6fadf7e854b36e5997a976cb85f3e98c",
+  "importedPureModuleCommit": "086d7f207f06fc39a50cbd6f653fdf603fe53dd4",
+  "files": {
+    "docs/PROJECT_DEVELOPMENT.md": "5385b5bf6c9c89a993c1d3e4fdb3a7b2c67fba867950e6c0b4c0f729d43f2e15",
+    "server/index.mjs": "a7bca8f2ea7e06b56425d3f75c1208d439891050d5bbef70092b050ce131ac6d",
+    "server/lookup-chain-reliability.test.mjs": "00f128ff97b16ecb18f095bb5c1538fdc3ddabd1ba359743dacd5a0025f26a2a",
+    "windows-agent/src/index.mjs": "e89da3c523442779557f92d85dc571f1480e1c4f4fa94da92547095bc3291a18",
+    "releases/lookup-throughput-20261028-rc.8/README.md": "df3e25eb4ae242acc5d229710f795d511443a7d432b45a2cd90c58aecf80343a",
+    "releases/lookup-throughput-20261028-rc.8/REAL_DEVICE.md": "5a1d809b28e33bceaad7ea42252b819405462a603bbf88af6f9c29a64244b7af",
+    "server/lookup-reader-admission.http.test.mjs": "45b10a4dc173619a93ed7d8c983614306b31914ebb61b0a2bed02a4c0f7cf136",
+    "server/lookup-reader-admission.mjs": "6143dc1f18d25eb0e3e0d82c0075b80d5a069360d1ed9d70a818e7122954d3ec",
+    "server/lookup-reader-admission.test.mjs": "6febe4681379c06f476374d3e93933508e7892a4b310e72d5fe8cfb222d40c6d",
+    "server/lookup-reader-capabilities.mjs": "a47d4fff7bf18714bb83e125f129c83a621ec2ab051c0f4d869d2947abf70f3f",
+    "server/lookup-reader-capabilities.test.mjs": "54b29164a25a2f566fef1c90ff7179284190cc93b91d7aaeab87ac494bdf8f12",
+    "windows-agent/src/lookup-reader-admission-log.mjs": "4ebddfa2371e85841745d8a8c1bab9e9fffcfb2622d44c32465adce319c6dd7d",
+    "windows-agent/src/lookup-reader-admission-log.test.mjs": "c88b0838c5527648051d11a434c5466c168e2ffee39c9ba1e5999295cd8fce23",
+    "windows-agent/src/lookup-reader-capacity-report.mjs": "feb2f97e05ad631f4ece7a6e49491d8204d3118b7bfaa6322094afcc10b33900",
+    "windows-agent/src/lookup-reader-capacity-report.test.mjs": "b63e608977c4caa805c79fc8cca1b3a0ab842cec3482ea4be4ec01f4b30a6ece"
+  },
+  "validation": {
+    "nodeFull": {
+      "tests": 1602,
+      "passed": 1602
+    },
+    "rootCheck": "passed",
+    "actualHttp": "synthetic Agent, JSON runtime, SIGKILL and storage failures covered",
+    "realBusinessQueries": 0,
+    "realPhones": [
+      51,
+      52
+    ],
+    "fullRealRecovery": "not passed",
+    "productionChanged": false
+  },
+  "evidence": {
+    "pc-capacity-full-reviewed-rc8.log": "4c9695e98f1914925b222fb969f44b8899e568d619d1af8281f2b625b943dfa5",
+    "pc-capacity-check-final-rc8.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "pc-capacity-durable-rc8.log": "3bf1cddbf5d0fb1a1ea5ba9433b8a0d1c703c1764c0bcb10be20f5a63dd77307",
+    "INCIDENT_HTTP_RECEIPT.json": "a427ff5dfca4071fe81d836095c89dd74e694dbf42c7936d780ec7594c1ef328",
+    "INSTALLED_READER_AUDIT.json": "c5139d485c5717a2ec1e35f22be9c69bd1d8aef323d9f078f0b39aea07e23fd3"
+  }
+}

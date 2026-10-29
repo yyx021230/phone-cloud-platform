@@ -1,3 +1,5 @@
+import { createLookupReaderAdmissionLog } from "./lookup-reader-admission-log.mjs";
+import { buildLookupReaderCapacityReport } from "./lookup-reader-capacity-report.mjs";
 import { measureLookupExecution } from "./lookup-execution-metrics.mjs";
 import {lookupXmlFailure} from "./lookup-xml-failure.mjs";
 import {isLookupReaderRecovery, rejectExitedReaderRequest, readerExitDiagnostic, verifyLookupReaderCleanup, lookupReaderStopReason} from "./lookup-reader-lifecycle.mjs";
@@ -9,6 +11,7 @@ import { createPnpRecoveryControl } from './pnp-recovery-control.mjs';
 import {hydrateManagedLookupTask,MANAGED_LOOKUP_PROTOCOL} from './managed-lookup-delivery.mjs';
 import {randomUUID} from "node:crypto";
 const lookupRuntimeId=randomUUID();
+const observeLookupReaderAdmission = createLookupReaderAdmissionLog({log});
 import { execFile, spawn } from "node:child_process";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -439,6 +442,12 @@ async function runGuardedInterval(name, fn) {
   return await guardedTasks.run(name, fn, timeoutMs);
 }
 
+function lookupReaderCapacityReport() {
+  return buildLookupReaderCapacityReport({ runtimeId: lookupRuntimeId, limit: config.airtestMaxResidentWorkers,
+    workers: airtestWorkersBySerial, activeSerials: activeTaskSerials, screenControlledSerials,
+    preflightSerials: automationPreflightRunning });
+}
+
 async function buildHealth(reason, previousHealth = null) {
   const [adbCheck, logDirCheck, cacheDirCheck, airtestCheck, collectionProtocolCheck] = await Promise.allSettled([
     adbVersion(),
@@ -524,7 +533,7 @@ async function heartbeat() {
       platform: os.platform(),
       arch: os.arch(),
       adbVersion: lastAdbVersion,
-      managedLookupProtocol: MANAGED_LOOKUP_PROTOCOL, lookupPostHumanProtocol: 1, lookupRuntimeId,
+      managedLookupProtocol: MANAGED_LOOKUP_PROTOCOL, lookupPostHumanProtocol: 1, lookupRuntimeId, lookupReaderCapacityProtocol: 1,
       maxConcurrentAdbTasks: config.maxConcurrentAdbTasks,
       deviceTaskConcurrency: config.deviceTaskConcurrency,
       health
@@ -630,7 +639,7 @@ async function syncDevicesToPlatform(devices) {
         platform: os.platform(),
         arch: os.arch(),
         adbVersion: lastAdbVersion,
-        managedLookupProtocol: MANAGED_LOOKUP_PROTOCOL, lookupPostHumanProtocol: 1, lookupRuntimeId,
+        managedLookupProtocol: MANAGED_LOOKUP_PROTOCOL, lookupPostHumanProtocol: 1, lookupRuntimeId, lookupReaderCapacityProtocol: 1,
         health
       },
       devices:snapshot
@@ -1134,10 +1143,13 @@ async function pollTask() {
     if (screenGallerySerials) params.set("screenGallerySerials", screenGallerySerials);
     if (activeTaskIds) params.set("activeTaskIds", activeTaskIds);
     params.set("managedLookupDelivery", MANAGED_LOOKUP_PROTOCOL);
+    params.set("lookupReaderCapacityProtocol", "1");
+    params.set("lookupReaderCapacity", JSON.stringify(lookupReaderCapacityReport()));
     params.set("galleryDelivery", SCREEN_GALLERY_DELIVERY_PROTOCOL);
     params.set("xhsPublishDelivery", XHS_PUBLISH_DELIVERY_PROTOCOL);
     const suffix = params.size ? `?${params.toString()}` : "";
     const payload = await api(`/api/v1/windows-agents/${encodeURIComponent(config.agentId)}/tasks/next${suffix}`);
+    observeLookupReaderAdmission(payload.readerCapacity);
     cancellationChecked = true;
     abortCancelledAutomationTasks(payload.cancelledTaskIds || []);
     if (!payload.task) break;
