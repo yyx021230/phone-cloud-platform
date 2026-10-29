@@ -1,0 +1,1 @@
+{"exitCode": 0, "seconds": 6.17, "command": ["node", "--test", "windows-agent/src/device-scan-agent.test.mjs"]}

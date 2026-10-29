@@ -199,3 +199,103 @@ test("failed result persistence cannot turn an account into success", async () =
   f.store.set = set; await f.makeEngine().tick();
   assert.equal((await f.engine.results("test", run.runId)).items[0].status, "succeeded");
 });
+
+function defer(job) {
+  Object.assign(job, { status: "failed", result: { errorCode: "xhs_data_reservation_pending", diagnostic: {
+    code: "xhs_data_reservation_pending", version: 1, phase: "before_device_actions", collectionStarted: false,
+    jobId: job.jobId, appSlot: job.xhsAppSlot, reason: "other_occupancy"
+  } } });
+}
+
+test("accepted but unstarted busy task waits across restart, then uses a new attempt and preserves both slots", async () => {
+  const f = fixture(4), run = await f.engine.create("test", "busy-after-accept");
+  await f.engine.tick(); defer(f.jobs.get("j1"));
+  await f.engine.tick();
+  let result = await f.engine.results("test", run.runId);
+  assert.equal(result.items[0].status, "queued");
+  assert.equal(result.items[0].reason, "device_busy_waiting");
+  assert.equal(result.items[0].deferredAttempts[0].jobId, "j1");
+  assert.equal(result.items[0].data, null);
+  const oldRef = f.jobs.get("j1").clientRequestId;
+  await f.makeEngine().tick(); assert.equal(f.posts.filter(d => d === "d0").length, 1);
+  f.advance(30_000); f.devices[0].screenControlBusy = true;
+  await f.makeEngine().tick(); assert.equal(f.posts.filter(d => d === "d0").length, 1);
+  f.devices[0].screenControlBusy = false; await f.makeEngine().tick();
+  assert.equal(f.posts.filter(d => d === "d0").length, 2);
+  assert.notEqual(f.jobs.get("j3").clientRequestId, oldRef);
+  assert.equal(f.jobs.get("j3").xhsAppSlot, "app1");
+  f.finish(); await f.engine.tick(); f.finish(); await f.engine.tick();
+  result = await f.engine.results("test", run.runId);
+  assert.equal(result.counts.succeeded, 4); assert.equal(result.items.length, 4);
+  assert.equal(result.items[0].deferredAttempts.length, 1);
+  assert.equal(result.items[0].jobId, "j3");
+});
+
+test("busy deferral does not occupy global capacity while waiting", async () => {
+  const f = fixture(14); await f.engine.create("test", "busy-capacity"); await f.engine.tick();
+  for (const job of f.jobs.values()) defer(job);
+  await f.engine.tick();
+  assert.equal(f.posts.length, 7); // two other physical phones fill capacity
+  assert.equal(f.posts.filter(d => d === "d0").length, 1); // app2 cannot bypass phone cooldown
+});
+
+for (const [label, mutate] of [
+  ["old generic occupied error", j => { j.result = { errorCode: "xhs_data_collection_failed", diagnostic: { runnerReason: "target phone is offline or occupied" } }; }],
+  ["missing proof", j => { delete j.result.diagnostic; }],
+  ["collection started", j => { j.result.diagnostic.collectionStarted = true; }],
+  ["wrong phase", j => { j.result.diagnostic.phase = "collection"; }],
+  ["wrong job", j => { j.result.diagnostic.jobId = "another"; }],
+  ["wrong slot", j => { j.result.diagnostic.appSlot = "app2"; }],
+  ["wrong attempt reference", j => { j.clientRequestId = "another"; }],
+  ["cancelled", j => { j.status = "cancelled"; }],
+  ["offline", j => { j.result.diagnostic.reason = "adb_not_online"; }],
+  ["partial result", j => { j.result.collection = { complete: false }; }]
+]) {
+  test(`${label} is never resubmitted as an unstarted busy task`, async () => {
+    const f = fixture(1), run = await f.engine.create("test", "busy-negative");
+    await f.engine.tick(); const job = f.jobs.get("j1"); defer(job); mutate(job);
+    await f.engine.tick(); f.advance(60_000); await f.makeEngine().tick();
+    assert.equal(f.posts.length, 1);
+    assert.equal((await f.engine.results("test", run.runId)).items[0].status, "failed");
+  });
+}
+
+test("lost response on a retried attempt reconciles only that attempt and never POSTs twice", async () => {
+  const f = fixture(1), run = await f.engine.create("test", "busy-retry-unknown");
+  await f.engine.tick(); defer(f.jobs.get("j1")); await f.engine.tick();
+  f.advance(30_000); const submit = f.platform.submit;
+  f.platform.submit = async item => { await submit(item); throw new Error("lost"); };
+  f.platform.submission = async ref => [...f.jobs.values()].find(j => j.clientRequestId === ref);
+  await f.engine.tick(); await f.makeEngine().tick();
+  assert.equal(f.posts.length, 2);
+  assert.equal((await f.engine.results("test", run.runId)).items[0].jobId, "j2");
+  f.finish(); await f.engine.tick();
+  assert.equal((await f.engine.results("test", run.runId)).items[0].status, "succeeded");
+});
+
+for (const stop of [true, false]) {
+  test(`${stop ? "stop" : "dispatch deadline"} prevents busy retries`, async () => {
+    const f = fixture(1), run = await f.engine.create("test", "busy-stop-deadline");
+    await f.engine.tick(); defer(f.jobs.get("j1"));
+    if (stop) await f.engine.stop("test", run.runId);
+    else f.advance(4 * 3600_000);
+    await f.engine.tick();
+    const result = await f.engine.results("test", run.runId);
+    assert.equal(f.posts.length, 1); assert.equal(result.status, "completed");
+    assert.equal(result.items[0].status, "skipped");
+    assert.equal(result.items[0].reason, stop ? "batch_stopped" : "device_busy_window_expired");
+  });
+}
+
+test("failure to persist the deferral never dispatches a new attempt", async () => {
+  const f = fixture(1), run = await f.engine.create("test", "busy-persist-failure");
+  await f.engine.tick(); defer(f.jobs.get("j1")); const set = f.store.set;
+  f.store.set = async (key, value) => {
+    if (value.items?.some(i => i.deferredAttempts?.length)) throw new Error("write failed");
+    return set(key, value);
+  };
+  await assert.rejects(f.engine.tick(), /write failed/); assert.equal(f.posts.length, 1);
+  f.store.set = set; await f.makeEngine().tick(); f.advance(30_000); await f.makeEngine().tick();
+  assert.equal(f.posts.length, 2);
+  assert.equal((await f.engine.results("test", run.runId)).items[0].deferredAttempts.length, 1);
+});
