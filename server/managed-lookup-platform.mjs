@@ -3,7 +3,7 @@ import {jobEvidence} from './lookup-admin-console.mjs';
 import {preparationFailureEvidence} from './lookup-device-availability.mjs';
 import crypto from 'node:crypto';
 import {lookupPageRecoveryExhausted} from './automation-center.mjs';
-import {lookupFailureDomain,lookupKilledExecution,lookupTerminalResultReason} from './lookup-failure-domain.mjs';
+import {lookupFailureDomain,lookupKilledExecution,lookupTerminalResultReason,lookupCleanupUnconfirmed} from './lookup-failure-domain.mjs';
 import {lookupAccountOfflineEvidence,latestAccountWork} from './lookup-account-offline.mjs';
 import {holdManagedLookupDispatch} from './managed-lookup-delivery.mjs';
 import {MANAGED_LOOKUP_PROTOCOL} from './managed-lookup-store.mjs';
@@ -149,7 +149,7 @@ export function createManagedLookupAdapter(api){
         const terminal=failed?.kind==='alipay_name_query'&&failed.status==='failed'&&task?.status==='failed'&&c.queryId&&(failed.resultId||failed.jobId)===c.queryId;
         const rawReason=failed?.result?.diagnostic?.runnerReason;
         const reason=lookupPageRecoveryExhausted(failed)?'poco_query_page_recovery_failed':['local_lookup_result_unconfirmed:ocr_reader_timeout','local_lookup_result_unconfirmed:observation_budget_exhausted','local_lookup_result_unconfirmed:visual_network_busy','local_lookup_result_unconfirmed:network_refresh_exhausted'].includes(rawReason)?rawReason:'';
-        return {...completed,recovery:true,postHumanPageUnknown:failed?.postHumanCheck===true&&failed?.result?.errorCode==='alipay_lookup_result_unconfirmed',...(terminal?{recoveryFailure:{jobId:failed.jobId,identity:this.readinessIdentity(c),reason,domain:lookupFailureDomain(failed),canResume:!/(?:foreground_changed|poco_query_resume_state_mismatch:)/.test(rawReason||'')}}:{})};
+        return {...completed,recovery:true,postHumanPageUnknown:failed?.postHumanCheck===true&&failed?.result?.errorCode==='alipay_lookup_result_unconfirmed',...(terminal?{recoveryFailure:{jobId:failed.jobId,identity:this.readinessIdentity(c),reason,domain:lookupFailureDomain(failed),canResume:!lookupCleanupUnconfirmed(failed)&&!/(?:foreground_changed|poco_query_resume_state_mismatch:)/.test(rawReason||'')}}:{})};
       }
       if(result)return {result,exhausted:s.requiresAccountSwitch===true,ready:s.status==='ready'};
       return {ready:s.status==='ready',exhausted:s.requiresAccountSwitch===true};

@@ -1,3 +1,4 @@
+import {lookupReaderCleanupFailure,requireConfirmedLookupCleanup} from './lookup-cleanup-policy.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -11,7 +12,7 @@ const failure = new Function(fn('taskFailureResult')+';return taskFailureResult;
 const compact = new Function('compactEventDetail', fn('compactTaskResultForStatus')+';return compactTaskResultForStatus;')(x=>x);
 function fixture(sequence, cleanup = true) {
   let tick = 100, calls = [];
-  const deps = { measureLookupExecution: execute=>measureLookupExecution(execute,()=>tick), runLookupWithAccountPolicy,
+  const deps = {lookupReaderCleanupFailure,requireConfirmedLookupCleanup, measureLookupExecution: execute=>measureLookupExecution(execute,()=>tick), runLookupWithAccountPolicy,
     screenControlledSerials:new Set(), config:{}, fileExists:async()=>true, assertAdbDeviceOnlineFast:async()=>{},
     isPackageInstalled:async()=>true, taskEvent:async()=>{}, touchAirtestLookupWarmLease:()=>{},
     collectLookupTrace,isAutomaticLookupResume,replayAirtestEvents:async()=>{},restartLookupQueryOnce,
@@ -59,7 +60,7 @@ for(const mode of ['probe','idle','both','probe_failed'])test('actual worker '+m
     probeAirtestWorker:async()=>{probes++;if(mode==='probe_failed'||mode!=='idle'&&probes===1)throw Error('synthetic probe failure');},
     recycleAirtestWorker:async()=>{recycles++;return worker;},log:()=>{},lookupReaderStopReason:(_p,r)=>r};
   const runWorker=new Function(...Object.keys(workerDeps),fn('runXhsAirtestPocoWorker')+';return runXhsAirtestPocoWorker;')(...Object.values(workerDeps));
-  const deps={config:{},fileExists:async()=>true,assertAdbDeviceOnlineFast:async()=>{},isPackageInstalled:async()=>true,
+  const deps={lookupReaderCleanupFailure,requireConfirmedLookupCleanup,config:{},fileExists:async()=>true,assertAdbDeviceOnlineFast:async()=>{},isPackageInstalled:async()=>true,
     taskEvent:async()=>{},collectLookupTrace,replayAirtestEvents:async()=>{},touchAirtestLookupWarmLease:()=>{},runXhsAirtestPocoWorker:runWorker,
     isAutomationTaskCancellation:()=>false,restartLookupQueryOnce:async()=>null,alipayAccountSwitchReasonFromError:()=>'',shouldFallbackAlipayPocoFailure:()=>false,
     classifyAlipayNameLookupFailure:r=>({code:'probe_failed',message:r})};

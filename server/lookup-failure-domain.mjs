@@ -14,6 +14,12 @@ export function lookupFailureReason(job={}) {
   }
   return reason;
 }
+export function lookupCleanupUnconfirmed(job={}) {
+  if(!['alipay_lookup_failed','alipay_lookup_result_unconfirmed'].includes(job.result?.errorCode))return false;
+  const reason=lookupFailureReason(job);
+  return /^lookup_(?:old|restart|prepare)_worker_exit_unconfirmed$/.test(reason)
+    || reason==='lookup_reader_cleanup_unconfirmed'||reason==='lookup_reader_forward_cleanup_unconfirmed';
+}
 export function lookupTerminalResultReason(job={}) {
   if(lookupLegacyResultMissing(job))return 'legacy_person_result_missing';
   if(!['alipay_lookup_failed','alipay_lookup_result_unconfirmed'].includes(job.result?.errorCode))return '';
@@ -40,8 +46,7 @@ export function lookupFailureDomain(job = {}) {
   if (code === 'task_failed' && /^ADB 设备未连接：[^\r\n]+/.test(String(job.result?.message||''))
     && /^error: device (?:(?:'[^'\r\n]+'|"[^"\r\n]+") )?(?:not found|offline|unauthorized)\.?[ \t]*\r?$/m.test(String(job.result?.message||''))) return 'device';
   if (!['alipay_lookup_failed', 'alipay_lookup_result_unconfirmed'].includes(code)) return '';
-  if (/^lookup_(?:old|restart|prepare)_worker_exit_unconfirmed$/.test(reason)
-    || reason === 'lookup_reader_cleanup_unconfirmed') return 'device';
+  if (lookupCleanupUnconfirmed(job)) return 'device';
   if (/^poco_worker_bootstrap_failed:adb_probe:(?:timeout|device_unavailable|command_failed)$/.test(reason)) return 'device';
   // Runner-owned dumpsys-window timeout: no reliable foreground observation,
   // not a missing selector or a result screenshot for the name reader.

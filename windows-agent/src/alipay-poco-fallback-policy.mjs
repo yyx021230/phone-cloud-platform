@@ -1,3 +1,5 @@
+import {lookupReaderCleanupFailure} from './lookup-cleanup-policy.mjs';
+
 const NON_FALLBACK_RESULTS = [
   "local_lookup_result_unconfirmed:",
   "poco_alipay_person_result_not_found",
@@ -18,6 +20,7 @@ const NON_FALLBACK_RESULTS = [
 ];
 
 export function shouldFallbackAlipayPocoFailure(error) {
+  if (lookupReaderCleanupFailure(error)) return false;
   const message = String(error?.message || error || "");
   if (error?.code === 'airtest_worker_capacity_reached'
     || /^Airtest\/Poco 常驻 worker 已达到上限 \d+，当前均在执行任务$/.test(message)) return false;

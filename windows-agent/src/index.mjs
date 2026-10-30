@@ -38,6 +38,7 @@ import {
   shouldFallbackAlipayPocoFailure
 } from "./alipay-poco-fallback-policy.mjs";
 import { restartLookupQueryOnce } from "./lookup-page-recovery.mjs";
+import {lookupReaderCleanupFailure,requireConfirmedLookupCleanup} from './lookup-cleanup-policy.mjs';
 import { createLookupStatusOutbox } from "./lookup-status-outbox.mjs";
 import { runLookupWithAccountPolicy } from "./lookup-account-policy.mjs";
 import { createDeviceActorManager } from "./device-actor.mjs";
@@ -2364,6 +2365,14 @@ async function taskAlipayNameLookupWithAccounts(task, options = {}) {
 async function taskAlipayNameLookup(task, options = {}) {
   const lookupTrace = [];
   const metrics = options.lookupMetrics;
+  const rejectUnconfirmedCleanup = error => {
+    const cleanupFailure = lookupReaderCleanupFailure(error);
+    if (!cleanupFailure) return;
+    const diagnostic = {...classifyAlipayNameLookupFailure(cleanupFailure),
+      runnerReason: cleanupFailure, retryable: false, recoveryTrace: lookupTrace.slice(),
+      message: "旧查名读取器清理尚未确认，保留原任务等待安全收尾；请勿重新提交查询。"};
+    throw Object.assign(new Error(diagnostic.message), {code: diagnostic.code, diagnostic});
+  };
   const rebuildReader = reason => {
     if (metrics) metrics.readerRebuildAttempts += 1;
     return stopAirtestWorker(task.adbSerial, reason);
@@ -2530,7 +2539,9 @@ async function taskAlipayNameLookup(task, options = {}) {
               fallbackSkipped: "xml_uiautomator",
               driver: "poco"
             });
-            await rebuildReader("poco_start_transport_timeout").catch(() => {});
+            await requireConfirmedLookupCleanup(() => rebuildReader("poco_start_transport_timeout"));
+            if (options.signal?.aborted) throw automationTaskCancellationError();
+            if (screenControlledSerials.has(task.adbSerial)) throw screenPriorityCancellationError();
             parsed = null;
             continue;
           }
@@ -2550,7 +2561,9 @@ async function taskAlipayNameLookup(task, options = {}) {
             : startRequestTimedOut
               ? "start_request_timeout"
               : "worker_probe_failed";
-          await rebuildReader(`poco_start_${retryReason}`).catch(() => {});
+          await requireConfirmedLookupCleanup(() => rebuildReader(`poco_start_${retryReason}`));
+          if (options.signal?.aborted) throw automationTaskCancellationError();
+          if (screenControlledSerials.has(task.adbSerial)) throw screenPriorityCancellationError();
           await taskEvent(task, "alipay_name", "warn", "Poco 启动阶段异常，正在重建 Poco 后重试", {
             operation,
             attempt,
@@ -2596,7 +2609,8 @@ async function taskAlipayNameLookup(task, options = {}) {
             onEvent: (event) => replayLookupEvents([event])
           });
         } catch (observationError) {
-          throw new Error(`poco_query_resume_observation_failed:${String(observationError?.message || observationError)}`);
+          if (isAutomationTaskCancellation(observationError) || observationError?.code === 'screen_control_priority' || observationError?.message === 'screen_control_priority') throw observationError;
+          throw new Error(`poco_query_resume_observation_failed:${lookupReaderCleanupFailure(observationError) || String(observationError?.message || observationError)}`);
         }
         const observationReplayCount = Number(observed.streamedReplayCount || 0);
         if (!observationReplayCount) await replayLookupEvents(observed.log || []);
@@ -2647,7 +2661,8 @@ async function taskAlipayNameLookup(task, options = {}) {
             onEvent: (event) => replayLookupEvents([event])
             });
           } catch (resumeError) {
-            throw new Error(`poco_query_resume_failed:${String(resumeError?.message || resumeError)}`);
+            if (isAutomationTaskCancellation(resumeError) || resumeError?.code === 'screen_control_priority' || resumeError?.message === 'screen_control_priority') throw resumeError;
+            throw new Error(`poco_query_resume_failed:${lookupReaderCleanupFailure(resumeError) || String(resumeError?.message || resumeError)}`);
           }
           const resumeReplayCount = Number(resumed.streamedReplayCount || 0);
           if (!resumeReplayCount) await replayLookupEvents(resumed.log || []);
@@ -2669,6 +2684,8 @@ async function taskAlipayNameLookup(task, options = {}) {
       return result;
     } catch (error) {
       if (isAutomationTaskCancellation(error)) throw error;
+      rejectUnconfirmedCleanup(error);
+      if (error?.code === 'screen_control_priority' || error?.message === 'screen_control_priority') throw error;
       if (operation === "post_human_check") {
         const diagnostic = classifyAlipayNameLookupFailure(String(error?.message || error));
         throw Object.assign(new Error(diagnostic.message), {code: diagnostic.code, diagnostic: {...diagnostic, recoveryTrace: lookupTrace.slice()}});
@@ -2711,8 +2728,11 @@ async function taskAlipayNameLookup(task, options = {}) {
         }
       } catch (recoveryError) {
         if (isAutomationTaskCancellation(recoveryError)) throw recoveryError;
-        error = new Error(`poco_query_page_recovery_failed:${String(recoveryError?.message || recoveryError)}`);
+        if (recoveryError?.code === 'screen_control_priority' || recoveryError?.message === 'screen_control_priority') throw recoveryError;
+        const cleanupFailure = lookupReaderCleanupFailure(recoveryError);
+        error = new Error(`poco_query_page_recovery_failed:${cleanupFailure || String(recoveryError?.message || recoveryError)}`);
       }
+      rejectUnconfirmedCleanup(error);
       const pocoError = String(error?.message || error || "");
       if (pocoError.includes("poco_query_page_recovery_failed:")) {
         const diagnostic = classifyAlipayNameLookupFailure(pocoError);
@@ -2749,7 +2769,14 @@ async function taskAlipayNameLookup(task, options = {}) {
           resumedAfterHumanVerification: operation === "query_resume",
           fallbackDriver: "xml_uiautomator_account_rotation"
         });
-        await stopAirtestWorker(task.adbSerial, "automatic_account_rotation").catch(() => {});
+        try {
+          await requireConfirmedLookupCleanup(() => stopAirtestWorker(task.adbSerial, "automatic_account_rotation"));
+        } catch (cleanupError) {
+          rejectUnconfirmedCleanup(cleanupError);
+          throw cleanupError;
+        }
+        if (options.signal?.aborted) throw automationTaskCancellationError();
+        if (screenControlledSerials.has(task.adbSerial)) throw screenPriorityCancellationError();
         // A post-jigsaw result can itself be an exact account restriction.
         // The independent XML runner owns account rotation and intentionally
         // replays this same phone only after switching to another saved account.
@@ -2992,7 +3019,9 @@ async function runXhsAirtestPocoWorker(payload, options = {}) {
         delay(readyTimeoutMs).then(() => { throw new Error(`Airtest/Poco worker 启动超时：${serial}`); })
       ]);
     } catch (error) {
-      await stopAirtestWorker(serial, lookupReaderStopReason(payload, "ready_timeout")).catch(() => {});
+      const stop = () => stopAirtestWorker(serial, lookupReaderStopReason(payload, "ready_timeout"));
+      if (payload.workflow === 'alipay_name') await requireConfirmedLookupCleanup(stop);
+      else await stop().catch(() => {});
       throw error;
     }
   } else {
@@ -3364,8 +3393,8 @@ async function stopAirtestWorkerImpl(serial, reason = "stop") {
     if (!isLookupReaderRecovery(reason)) return true;
     // Host process exit is not evidence that Android stopped instrumentation.
     // Keep the same bounded, serial-scoped proof before lookup can reattach.
-    const cleanupConfirmed = await verifyLookupReaderCleanup(serial, (args, options) => run(config.adbPath, args, options))
-      .then(() => true, () => false);
+    const cleanupConfirmed = await verifyLookupReaderCleanup(serial, (args, options) => run(config.adbPath, args, options), Date.now, {observeFirst:true})
+      .then(() => true, error => {log('lookup reader cleanup unconfirmed',{serial,reason,cleanup:error?.lookupCleanup||null});return false;});
     log("lookup exited reader cleanup completed", { serial, reason, cleanupConfirmed });
     return cleanupConfirmed;
   }
@@ -3391,13 +3420,13 @@ async function stopAirtestWorkerImpl(serial, reason = "stop") {
         ? verifyLookupReaderCleanup(serial, (args, options) => run(config.adbPath, args, options)).then(() => { worker.lookupStopConfirmed = true; })
         : cleanupAirtestDeviceAfterForcedStop(serial)).catch((error) => {
         cleanupConfirmed = false;
-        log("forced airtest cleanup failed", { serial, reason, error: error.message || String(error) });
+        log("forced airtest cleanup failed", { serial, reason, error: error.message || String(error), ...(lookupRecovery?{cleanup:error?.lookupCleanup||null}:{}) });
       });
     }
   });
   if (lookupRecovery && result.exited && !worker.lookupStopConfirmed && !result.forced) {
     cleanupConfirmed = await verifyLookupReaderCleanup(serial, (args, options) => run(config.adbPath, args, options))
-      .then(() => true, () => false);
+      .then(() => true, error => {log('lookup reader cleanup unconfirmed',{serial,reason,cleanup:error?.lookupCleanup||null});return false;});
   }
   if (screenPriority && result.exited && !result.forced) {
     await cleanupAirtestForwardsAfterStop(serial).catch((error) => {

@@ -1,3 +1,4 @@
+import {lookupReaderCleanupFailure,requireConfirmedLookupCleanup} from './lookup-cleanup-policy.mjs';
 import {collectLookupTrace,isAutomaticLookupResume} from "./lookup-recovery-trace.mjs";
 import assert from "node:assert/strict";
 import test from "node:test";
@@ -168,7 +169,7 @@ test("actual Agent transports pre-input restriction evidence from Poco without X
   assert.ok(classifiers && body);
   for (const resumeAfterHumanVerification of [false, true]) {
     let workers = 0;
-    const deps = {collectLookupTrace,isAutomaticLookupResume,
+    const deps = {collectLookupTrace,isAutomaticLookupResume,lookupReaderCleanupFailure,requireConfirmedLookupCleanup,
       config: { alipayNameLookupRunnerPath: "synthetic", adbPath: "fake-adb" },
       fileExists: async () => true, assertAdbDeviceOnlineFast: async () => {},
       isPackageInstalled: async () => true, taskEvent: async () => {},

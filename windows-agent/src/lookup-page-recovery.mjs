@@ -1,3 +1,5 @@
+import {lookupReaderCleanupFailure} from './lookup-cleanup-policy.mjs';
+
 // Unexpected lookup failures may restart this app once, never a device or ADB.
 // Business/verification/identity states are not execution failures to replay.
 const PROTECTED_STATES = [
@@ -9,7 +11,7 @@ const PROTECTED_STATES = [
 ];
 
 export function canRestartLookupAfterFailure(operation, error) {
-  if (operation !== "query") return false;
+  if (operation !== "query" || lookupReaderCleanupFailure(error)) return false;
   const message = `${String(error?.code || "")} ${String(error?.message || error || "")}`.trim();
   return Boolean(message) && !PROTECTED_STATES.some((token) => message.includes(token));
 }

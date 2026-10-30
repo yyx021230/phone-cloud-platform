@@ -1,4 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs/promises';
+import {requireConfirmedLookupCleanup} from './lookup-cleanup-policy.mjs';
 import {isLookupReaderRecovery,readerExitDiagnostic,verifyLookupReaderCleanup,lookupReaderStopReason} from './lookup-reader-lifecycle.mjs';
 import {restartLookupQueryOnce} from './lookup-page-recovery.mjs';
 const source=await fs.readFile(new URL('./index.mjs',import.meta.url),'utf8');
@@ -127,4 +128,97 @@ test('lookup recycle checks cleanup even when exit already deleted worker',async
  await assert.rejects(fn('one','lookup_reader_poco_probe_failed'),/cleanup_unconfirmed/);assert.equal(created,0);assert.equal(stopped,1);
  confirmed=true;await fn('one','lookup_reader_poco_probe_failed');assert.equal(created,1);assert.equal(stopped,2);
  await fn('one','poco_probe_failed');assert.equal(created,2);assert.equal(stopped,2);
+});
+
+test('cleanup command failure records bounded stage without losing original error',async()=>{
+ const original=Object.assign(Error('private-output'),{killed:true});
+ await assert.rejects(verifyLookupReaderCleanup('one',async args=>{
+  if(args[3]?.startsWith('pidof'))throw original;
+  return '';
+ }),error=>{
+  assert.equal(error,original);
+  assert.deepEqual(error.lookupCleanup,{version:1,stage:'absence_check',component:'poco_service',outcome:'timeout'});
+  assert.ok(!JSON.stringify(error.lookupCleanup).includes('private-output'));
+  return true;
+ });
+});
+for(const stage of ['forward_list','forward_remove','forward_check'])test('cleanup diagnostics distinguish '+stage,async()=>{
+ let lists=0;
+ await assert.rejects(verifyLookupReaderCleanup('one',async args=>{
+  if(args[3]?.startsWith('pidof'))return 'LOOKUP_READER_ABSENT';
+  if(args[2]!=='forward')return '';
+  if(args[3]==='--list'){
+   lists++;
+   if(stage==='forward_list'||stage==='forward_check'&&lists===2)throw Error('command failed');
+   return 'one tcp:123 tcp:10080';
+  }
+  if(stage==='forward_remove')throw Error('command failed');
+  return '';
+ }),error=>{assert.deepEqual(error.lookupCleanup,{version:1,stage,component:'poco_forwards',outcome:'command_failed'});return true;});
+});
+test('absence and remaining forward are not mistaken for command failures or success',async()=>{
+ await assert.rejects(verifyLookupReaderCleanup('one',async args=>args[3]?.startsWith('pidof')?'1234':''),
+  error=>{assert.equal(error.lookupCleanup.outcome,'absence_unconfirmed');return true;});
+ await assert.rejects(verifyLookupReaderCleanup('one',async args=>args[3]?.startsWith('pidof')?'LOOKUP_READER_ABSENT':args[3]==='--list'?'one tcp:123 tcp:10080':''),
+  error=>{assert.equal(error.lookupCleanup.outcome,'forward_remaining');assert.equal(error.lookupCleanup.stage,'forward_check');return true;});
+});
+test('shared cleanup budget remains eight seconds and no command starts after it expires',async()=>{
+ let clock=0,calls=0;
+ await assert.rejects(verifyLookupReaderCleanup('one',async()=>{calls++;clock=8000;throw Error('lost ACK');},()=>clock),
+  error=>{assert.equal(error.message,'lookup_reader_cleanup_deadline');assert.equal(error.lookupCleanup.outcome,'deadline');return true;});
+ assert.equal(calls,1);
+});
+test('actual absent-worker stop logs cleanup stage and keeps false; screen stop stays untouched',async()=>{
+ const begin=source.indexOf('async function stopAirtestWorkerImpl('),end=source.indexOf('async function cleanupAirtestDeviceAfterForcedStop',begin);
+ const logs=[];let checks=0;
+ const stop=new Function('airtestWorkersBySerial','isLookupReaderRecovery','verifyLookupReaderCleanup','run','config','log',source.slice(begin,end)+';return stopAirtestWorkerImpl;')(
+  new Map(),isLookupReaderRecovery,async()=>{checks++;throw Object.assign(Error('failure'),{lookupCleanup:{version:1,stage:'absence_check',component:'poco_service',outcome:'command_failed'}});},assert.fail,{adbPath:'unused'},(event,detail)=>logs.push({event,detail}));
+ assert.equal(await stop('one','lookup_session_stopped'),false);
+ assert.equal(logs[0].event,'lookup reader cleanup unconfirmed');
+ assert.equal(logs[0].detail.cleanup.stage,'absence_check');
+ assert.equal(await stop('one','screen_control'),true);
+ assert.equal(checks,1);
+});
+
+test('exited-reader observation proves absence without issuing another force-stop',async()=>{
+ const calls=[];
+ assert.equal(await verifyLookupReaderCleanup('one',async args=>{
+  calls.push(args);return args[3]?.startsWith('pidof')?'LOOKUP_READER_ABSENT':'';
+ },Date.now,{observeFirst:true}),true);
+ assert.equal(calls.filter(a=>a.includes('force-stop')).length,0);
+ assert.equal(calls.filter(a=>a[3]?.startsWith('pidof')).length,2);
+});
+test('exited-reader observed process still requires targeted stop and fresh absence',async()=>{
+ const stopped=new Set(),calls=[];
+ assert.equal(await verifyLookupReaderCleanup('one',async args=>{
+  calls.push(args);
+  if(args[3]?.startsWith('pidof'))return stopped.has(args[3].split(' ')[1])?'LOOKUP_READER_ABSENT':'1234';
+  if(args[3]==='am')stopped.add(args[5]);
+  return '';
+ },Date.now,{observeFirst:true}),true);
+ assert.equal(calls.filter(a=>a.includes('force-stop')).length,2);
+ assert.equal(calls.filter(a=>a[3]?.startsWith('pidof')).length,4);
+});
+test('exited-reader observation failure cannot be promoted to absence or skip proof',async()=>{
+ let forces=0;
+ await assert.rejects(verifyLookupReaderCleanup('one',async args=>{
+  if(args[3]?.startsWith('pidof'))throw Error('unavailable');
+  if(args[3]==='am')forces++;
+  return '';
+ },Date.now,{observeFirst:true}),/unavailable/);
+ assert.equal(forces,1);
+});
+
+for(const workflow of ['alipay_name','xhs_qr'])for(const mode of ['false','throw','true'])test('actual ready-timeout cleanup '+workflow+' '+mode,async()=>{
+ const original=Error('Airtest/Poco worker 启动超时');let stops=0;
+ const start=source.indexOf('async function runXhsAirtestPocoWorker('),end=source.indexOf('\nasync function probeAirtestWorker(',start);
+ const deps={getAirtestWorker:async()=>{throw original;},delay:()=>new Promise(()=>{}),lookupReaderStopReason,requireConfirmedLookupCleanup,
+  stopAirtestWorker:async()=>{stops++;if(mode==='throw')throw Error('not stopped');return mode==='true';}};
+ const run=new Function(...Object.keys(deps),source.slice(start,end)+';return runXhsAirtestPocoWorker;')(...Object.values(deps));
+ await assert.rejects(run({serial:'synthetic',workflow},{readyTimeoutMs:1}),e=>{
+  if(workflow==='alipay_name'&&mode!=='true')assert.equal(e.code,'lookup_reader_cleanup_unconfirmed');
+  else assert.equal(e,original);
+  return true;
+ });
+ assert.equal(stops,1);
 });
