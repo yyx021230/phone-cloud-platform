@@ -1,0 +1,853 @@
+{
+  "at": "2026-10-30T02:14:58.810Z",
+  "concurrency": 15,
+  "configRevision": 141,
+  "devices": [
+    {
+      "number": 6,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "health": {
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 10,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "account_login_required"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 51,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "channel": {
+        "phase": "stopping",
+        "sessionId": "0f253e1a-40e2-4441-be58-4907d2e46c62",
+        "generation": "83afd305-8f77-46ab-aafd-ea854eb4a888",
+        "stopRetryCount": 2
+      },
+      "requestPurpose": "readiness_probe"
+    },
+    {
+      "number": 52,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "channel": {
+        "phase": "stopping",
+        "sessionId": "342be99b-e655-4419-9c33-4b3afd52bf6f",
+        "generation": "4d92674e-3377-4be5-b099-ce268c56cccc",
+        "stopRetryCount": 2
+      },
+      "requestPurpose": "readiness_probe"
+    },
+    {
+      "number": 53,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "channel": {
+        "phase": "human",
+        "sessionId": "1ea04ba7-5fca-4338-ad01-297bad174301",
+        "generation": "971305f5-5fa7-451c-8c98-a983a0fd68cb",
+        "stopRetryCount": null
+      },
+      "requestPurpose": null
+    },
+    {
+      "number": 54,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "channel": {
+        "phase": "stopping",
+        "sessionId": "e583a34c-ade7-452d-afdd-eca2beeab128",
+        "generation": "2be31e4d-ee96-44f9-9419-8459223cd61b",
+        "stopRetryCount": 2
+      },
+      "requestPurpose": "readiness_probe"
+    },
+    {
+      "number": 57,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "channel": {
+        "phase": "querying",
+        "sessionId": "78e4b1b6-2bd4-4bff-ae84-b782673a2846",
+        "generation": "f7e535e1-66a2-4d50-9266-608fb59dff11",
+        "stopRetryCount": null
+      },
+      "requestPurpose": null
+    },
+    {
+      "number": 58,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "health": {
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 60,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "preparation_backoff"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 67,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "health": {
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 74,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "health": {
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 79,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "account_login_required"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 86,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": false,
+        "reason": "screen_control_active"
+      },
+      "health": {
+        "ready": false,
+        "reason": "account_login_required"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 87,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "health": {
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 101,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "preparation_backoff"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 107,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "health": {
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 112,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "channel": {
+        "phase": "idle",
+        "sessionId": "d7daf7fc-9095-4b68-94ae-043786de7807",
+        "generation": "32d83b25-f76f-4d72-94f1-20242536aeb6",
+        "stopRetryCount": null
+      },
+      "requestPurpose": null
+    },
+    {
+      "number": 115,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "account_login_required"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 116,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "page_preparation_backoff"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 118,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "account_login_required"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 128,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "health": {
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 130,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "channel": {
+        "phase": "human",
+        "sessionId": "a4f8abf3-2bf8-476d-bb0b-1f0a3d76ac51",
+        "generation": "20e5273c-ed37-4eea-8b2a-21bc00de8e7e",
+        "stopRetryCount": null
+      },
+      "requestPurpose": "readiness_probe"
+    },
+    {
+      "number": 138,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "channel": {
+        "phase": "querying",
+        "sessionId": "f6a4a169-dac7-46cd-8dcd-abc9131f41f5",
+        "generation": "480e8da3-d4c3-40ed-9ed8-6b228a2645fa",
+        "stopRetryCount": null
+      },
+      "requestPurpose": null
+    },
+    {
+      "number": 142,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "page_preparation_backoff"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 146,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "lookup_device_unavailable"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 147,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "lookup_device_unavailable"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 149,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "page_preparation_backoff"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 152,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": false,
+        "reason": "screen_control_active"
+      },
+      "health": {
+        "ready": false,
+        "reason": "lookup_device_unavailable"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 153,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "preparation_failed_round"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 154,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "lookup_device_unavailable"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 155,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "page_preparation_backoff"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 156,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "page_preparation_backoff"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 157,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "page_preparation_backoff"
+      },
+      "channel": {
+        "phase": "querying",
+        "sessionId": "6d4cb115-e172-4651-a8b8-11ca4bf51e3b",
+        "generation": "02542b97-d882-47e9-80c5-23260937fbc1",
+        "stopRetryCount": null
+      },
+      "requestPurpose": "readiness_probe"
+    },
+    {
+      "number": 158,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "lookup_device_unavailable"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 159,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "page_preparation_backoff"
+      },
+      "channel": {
+        "phase": "human",
+        "sessionId": "ee1774d1-550b-4b9d-9069-4e42ee26c547",
+        "generation": "aab7f168-2c06-4ebc-a3f5-6729bc34082f",
+        "stopRetryCount": null
+      },
+      "requestPurpose": "readiness_probe"
+    },
+    {
+      "number": 161,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "channel": {
+        "phase": "querying",
+        "sessionId": "652af30f-39fb-40fd-ac28-4987deda9e3a",
+        "generation": "199091a5-cb43-4a98-8871-cb8ee2c6eae9",
+        "stopRetryCount": null
+      },
+      "requestPurpose": null
+    },
+    {
+      "number": 162,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "channel": {
+        "phase": "querying",
+        "sessionId": "608f748b-fc9c-46c3-881b-4cae2c21993a",
+        "generation": "61ac78dc-5dfe-4808-8b91-6f36dee9ac33",
+        "stopRetryCount": null
+      },
+      "requestPurpose": null
+    },
+    {
+      "number": 163,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "page_preparation_backoff"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 164,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "channel": {
+        "phase": "human",
+        "sessionId": "584ac6ed-18bf-4835-8893-d4b0090edb3d",
+        "generation": "eee69920-1c9d-4d1b-b14c-d826a2dd5fb3",
+        "stopRetryCount": null
+      },
+      "requestPurpose": "readiness_probe"
+    },
+    {
+      "number": 165,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": false,
+        "reason": "screen_control_active"
+      },
+      "health": {
+        "ready": false,
+        "reason": "preparation_backoff"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 172,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "lookup_device_unavailable"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 176,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "lookup_device_unavailable"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 181,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": true,
+        "reason": ""
+      },
+      "channel": {
+        "phase": "starting",
+        "sessionId": "60f410de-8f35-45d1-811c-d60f6983daa6",
+        "generation": "148db148-d142-4e25-bf0d-f6310ceff002",
+        "stopRetryCount": null
+      },
+      "requestPurpose": "readiness_probe"
+    },
+    {
+      "number": 182,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "page_preparation_backoff"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 183,
+      "enabled": true,
+      "adbState": "usb_present_mtp_only",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": false,
+        "reason": "device_or_agent_offline"
+      },
+      "health": {
+        "ready": false,
+        "reason": "page_preparation_backoff"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 188,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "lookup_device_unavailable"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 191,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "page_preparation_backoff"
+      },
+      "channel": null,
+      "requestPurpose": null
+    },
+    {
+      "number": 192,
+      "enabled": true,
+      "adbState": "device",
+      "agentAgeSeconds": 27.9,
+      "physical": {
+        "ready": true,
+        "reason": ""
+      },
+      "health": {
+        "ready": false,
+        "reason": "lookup_device_unavailable"
+      },
+      "channel": {
+        "phase": "starting",
+        "sessionId": "6fcb92a5-66b9-4e67-918d-282ece2ddeb0",
+        "generation": "db16a2c5-2de6-44c1-af90-dfeebac93caa",
+        "stopRetryCount": null
+      },
+      "requestPurpose": "readiness_probe"
+    }
+  ],
+  "sourceSha256": "87454fd55d9db2cb1df1314a75f37d65d0e8de7f6affdaf2cdfefda95a111857",
+  "agentReaderLimitFromSeparateSnapshot": 12,
+  "containsActualAcceptance": false
+}

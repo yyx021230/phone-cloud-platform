@@ -12,3 +12,5 @@
 - 未解决/未验：底层pidof/传输超时根因、runtime丢失/TTL重排、账户登录/页面退避、AI契约/未找到准确性、全48吞吐；未跑PG全平台烟测/Python全量/新版本真机。Windows细分日志不是UI/API分阶段proof。
 
 详见../../docs/LOOKUP_CLEANUP_GUARD_20261030.md及主文档末尾本轮变更/决策。FINAL/REVIEW日志为本地合成测试，没有生产凭据和完整账号。SHA256SUMS.json覆盖除其本身外候选证据，不用自引用hash。
+
+该封装已由lookup-cleanup-guard-20261030-rc.2替代：rc.1 tag未收录被忽略的.log原始证据，不作为完整交付包。旧tag不移动，运行源码不变。

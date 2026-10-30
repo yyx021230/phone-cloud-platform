@@ -5216,10 +5216,12 @@ readiness在16:54/16:55出现503，当时未保存失败子项，原因未确认
 
 51/52/54为09:24已成功释放之后的新代次，三台停止重试再次耗尽2，非旧锁未解除。实际停止日志首轮5秒后强停Python、Poco absence命令失败，随后两次无host重试失败。51/52事后两包absence和forward0仅为不同时间点的只读证据，非Agent stop ACK，未释放预约。更底层命令为何失败尚未确认。
 
-已确认并形成候选：精确识别cleanup/worker_exit/forward marker，阻止XML、app-restart和重复冷启动；保留code-only错误穿过query/resume包装；legacy换号和查名ready-timeout必须stop===true，取消/投屏优先；cloud对清理失败canResume=false并归device域。无host仅在两包严格absence后省去重复force-stop，读失败仍不能算清理；补有限Windows阶段日志，总预算不放宽。具体范围、实际测试和失败记录、33冻结文件核对、混合版本/旧retry2限制见docs/LOOKUP_CLEANUP_GUARD_20261030.md与releases/lookup-cleanup-guard-20261030-rc.1。最终root npm run check及test:screen 1769/1769通过，源码测试前后hash一致；实际日志见候选TEST_RESULTS，静态/合成通过不等于真机通过。
+已确认并形成候选：精确识别cleanup/worker_exit/forward marker，阻止XML、app-restart和重复冷启动；保留code-only错误穿过query/resume包装；legacy换号和查名ready-timeout必须stop===true，取消/投屏优先；cloud对清理失败canResume=false并归device域。无host仅在两包严格absence后省去重复force-stop，读失败仍不能算清理；补有限Windows阶段日志，总预算不放宽。具体范围、实际测试和失败记录、33冻结文件核对、混合版本/旧retry2限制见docs/LOOKUP_CLEANUP_GUARD_20261030.md与releases/lookup-cleanup-guard-20261030-rc.2。最终root npm run check及test:screen 1769/1769通过，源码测试前后hash一致；实际日志见候选TEST_RESULTS，静态/合成通过不等于真机通过。
 
 本轮没有生产代码/配置/任务修改、重载或新查询，未改变ADB/SYSTEM/媒体/投屏。147/138输入后传输、146旧worker、172截图、188页面HTTP、192bootstrap、142picker及账户/AI/吞吐仍分项待定位；runtime丢失/TTL重排永久修复不在本候选。后台观察曾暂停、配置路径后不可达，尚无用户恢复答复，不宣称后台已运行。保留起步无既有改动的事实与旧审计/发布标签。
 
 ### 决策日志｜2026-10-30 清理未确认统一阻止后继，停止耗尽与全池恢复分开验收
 
 延续主文档原ID不重放、真实stop proof、物理预约及10月30日错误XML降级决策；用最小跨Agent/cloud栅栏补执行链缺口，不以提高并发、清资格、假ACK、改身份或共享重启掩盖。此候选须先cloud栅栏再匹配Agent，新Agent配旧cloud不安全；回退Agent保留cloud栅栏。旧retry2不会仅加载代码自行重试，三台真实收尾需重新确认代次与单独授权范围。Agent重载必须保护/排空在途已输入业务及outbox，不能重演09:21未接续。当前只是本地候选，后续R3须具体版本/窗口/预算、单/双设备验收和实际回执；不宣称48台已恢复或生产问题已解决。
+
+本轮候选封装补充：首次rc.1不可变tag遗漏被gitignore的原始.log证据；保留旧tag，改用tracked .txt逐字节归档并递增rc.2。运行源码af774f5d608dbc8fe185550e385c2c2b9e90fa8c及最终测试hash不变，不重复宣称生产验收。

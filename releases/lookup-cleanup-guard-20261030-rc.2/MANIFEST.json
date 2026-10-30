@@ -1,0 +1,76 @@
+{
+  "status": "local_candidate_not_deployed_not_real_device_accepted",
+  "candidateTag": "lookup-cleanup-guard-20261030-rc.2",
+  "branch": "codex/lookup-cleanup-guard-20261030",
+  "localStart": "2c23ba1bde5797a8ce73b68894fb52cc7ab34a2e",
+  "actualProductionBusinessSource": "3a266d71ba861f8e81d6ec3a173d7efc12d5b245",
+  "actualProductionReceiptTag": "platform-integration-20261029-deployed.1",
+  "runtimeFiles": [
+    {
+      "component": "cloud",
+      "path": "server/lookup-failure-domain.mjs",
+      "productionSha256": "d256d831f639c19e7c111fc6541f0c215370d9b20fb3f47dc53bd005bea5a29a",
+      "baseSha256": "d256d831f639c19e7c111fc6541f0c215370d9b20fb3f47dc53bd005bea5a29a",
+      "matches": true,
+      "candidateSha256": "b49e04c86c356e018a0666d411d7172edc4a686f9f4a299730866f166f6f2b08"
+    },
+    {
+      "component": "cloud",
+      "path": "server/managed-lookup-platform.mjs",
+      "productionSha256": "2340aac9014ed006ab39a29dcbe0259d53b47fb68c3227d398f5979122439ec7",
+      "baseSha256": "2340aac9014ed006ab39a29dcbe0259d53b47fb68c3227d398f5979122439ec7",
+      "matches": true,
+      "candidateSha256": "81cf25909dddcb3d5249a7bd647be0239630b6e9499a6a0718f3b40a00fb0cb9"
+    },
+    {
+      "component": "agent",
+      "path": "windows-agent/src/lookup-page-recovery.mjs",
+      "productionSha256": "6ac3f752e52db13667b9f0d6a42380c4e3807bbe33c95777e823ef107d8f48b0",
+      "baseSha256": "6ac3f752e52db13667b9f0d6a42380c4e3807bbe33c95777e823ef107d8f48b0",
+      "matches": true,
+      "candidateSha256": "28a7857162cb40a676f724700feee914eccaae26e0e8561e040754bdebf5754f"
+    },
+    {
+      "component": "agent",
+      "path": "windows-agent/src/alipay-poco-fallback-policy.mjs",
+      "productionSha256": "d9cca5a6ce0e97f0d6145306f4322d5a8873aaa5e71c2a5441707a46d349f917",
+      "baseSha256": "d9cca5a6ce0e97f0d6145306f4322d5a8873aaa5e71c2a5441707a46d349f917",
+      "matches": true,
+      "candidateSha256": "335ef77d486fc83cca4f39170314a189e158177695e181bc3d39bbd5267f2511"
+    },
+    {
+      "component": "agent",
+      "path": "windows-agent/src/index.mjs",
+      "productionSha256": "c309d1f6dd0bda9530ec6ff8dccc874509aa7cd57e8ef6bdea77a64b7a1c5a67",
+      "baseSha256": "c309d1f6dd0bda9530ec6ff8dccc874509aa7cd57e8ef6bdea77a64b7a1c5a67",
+      "matches": true,
+      "candidateSha256": "be614255d1ffa583d04cf599a94a531a8ec3aa4688ee1c62f500470d00aa31f2"
+    },
+    {
+      "component": "agent",
+      "path": "windows-agent/src/lookup-reader-lifecycle.mjs",
+      "productionSha256": "d957d51ff0cba4bb1c504e979fb61eadf1fd4b7113c804882e62456210d70168",
+      "baseSha256": "d957d51ff0cba4bb1c504e979fb61eadf1fd4b7113c804882e62456210d70168",
+      "matches": true,
+      "candidateSha256": "e74a0cf0ba392f97b2e42571d13288a263df0a963723df824b0f1983ece461eb"
+    },
+    {
+      "component": "agent",
+      "path": "windows-agent/src/lookup-cleanup-policy.mjs",
+      "productionSha256": null,
+      "baseAbsent": true,
+      "newCandidateFile": true,
+      "candidateSha256": "a48d1d0ada71bbbc504e436f2fb0aff5beb963ff42dff23a21815bb304d08912"
+    }
+  ],
+  "sourceCommit": "af774f5d608dbc8fe185550e385c2c2b9e90fa8c",
+  "noProductionMutation": true,
+  "schemaMigration": false,
+  "requiresCloudFenceBeforeAgent": true,
+  "existingStopRetryCount2AutoRetries": false,
+  "realDeviceAcceptance": false,
+  "adbSystemMediaFrozen": true,
+  "wecomCompactorCandidateIncluded": false,
+  "supersedes": "lookup-cleanup-guard-20261030-rc.1",
+  "packagingCorrection": "rc.1 tag omitted gitignored .log evidence; rc.2 includes tracked .txt copies; runtime source and tested hashes unchanged"
+}

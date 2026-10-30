@@ -1,0 +1,64 @@
+✖ cleanup not confirmed cannot auto-resume before real stop: lookup_reader_cleanup_unconfirmed (8.182292ms)
+✖ cleanup not confirmed cannot auto-resume before real stop: lookup_reader_forward_cleanup_unconfirmed (2.641875ms)
+✖ cleanup not confirmed cannot auto-resume before real stop: lookup_old_worker_exit_unconfirmed (2.871708ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 0
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 88.459917
+
+✖ failing tests:
+
+test at server/lookup-automatic-recovery.test.mjs:235:140
+✖ cleanup not confirmed cannot auto-resume before real stop: lookup_reader_cleanup_unconfirmed (8.182292ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/server/lookup-automatic-recovery.test.mjs:246:9)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at server/lookup-automatic-recovery.test.mjs:235:140
+✖ cleanup not confirmed cannot auto-resume before real stop: lookup_reader_forward_cleanup_unconfirmed (2.641875ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/server/lookup-automatic-recovery.test.mjs:246:9)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at server/lookup-automatic-recovery.test.mjs:235:140
+✖ cleanup not confirmed cannot auto-resume before real stop: lookup_old_worker_exit_unconfirmed (2.871708ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/server/lookup-automatic-recovery.test.mjs:246:9)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

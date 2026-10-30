@@ -1,0 +1,370 @@
+✖ real query cleanup fence before XML: lookup_reader_cleanup_unconfirmed plain (3.893125ms)
+✖ real query cleanup fence before XML: lookup_reader_cleanup_unconfirmed code-only (0.55575ms)
+✖ real query cleanup fence before XML: lookup_reader_cleanup_unconfirmed wrapped (0.438625ms)
+✖ real query cleanup fence before XML: lookup_reader_forward_cleanup_unconfirmed plain (1.002291ms)
+✖ real query cleanup fence before XML: lookup_reader_forward_cleanup_unconfirmed code-only (0.4465ms)
+✖ real query cleanup fence before XML: lookup_reader_forward_cleanup_unconfirmed wrapped (0.429042ms)
+✖ real query cleanup fence before XML: lookup_old_worker_exit_unconfirmed plain (0.387917ms)
+✖ real query cleanup fence before XML: lookup_old_worker_exit_unconfirmed code-only (0.380042ms)
+✖ real query cleanup fence before XML: lookup_old_worker_exit_unconfirmed wrapped (0.405833ms)
+✖ real query cleanup fence before XML: lookup_restart_worker_exit_unconfirmed plain (0.4445ms)
+✖ real query cleanup fence before XML: lookup_restart_worker_exit_unconfirmed code-only (0.62325ms)
+✖ real query cleanup fence before XML: lookup_restart_worker_exit_unconfirmed wrapped (0.461833ms)
+✖ real query cleanup fence before XML: lookup_prepare_worker_exit_unconfirmed plain (0.424667ms)
+✖ real query cleanup fence before XML: lookup_prepare_worker_exit_unconfirmed code-only (0.410208ms)
+✖ real query cleanup fence before XML: lookup_prepare_worker_exit_unconfirmed wrapped (0.446458ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 0
+ℹ fail 15
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 77.602125
+
+✖ failing tests:
+
+test at windows-agent/src/lookup-page-recovery.test.mjs:153:55
+✖ real query cleanup fence before XML: lookup_reader_cleanup_unconfirmed plain (3.893125ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'lookup_reader_cleanup_unconfirmed'
+  
+      at Object.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:158:14)
+      at expectedException (node:assert:553:17)
+      at expectsError (node:assert:678:21)
+      at strict.rejects (node:assert:744:3)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:157:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'lookup_reader_cleanup_unconfirmed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/lookup-page-recovery.test.mjs:153:55
+✖ real query cleanup fence before XML: lookup_reader_cleanup_unconfirmed code-only (0.55575ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'lookup_reader_cleanup_unconfirmed'
+  
+      at Object.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:158:14)
+      at expectedException (node:assert:553:17)
+      at expectsError (node:assert:678:21)
+      at strict.rejects (node:assert:744:3)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:157:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'lookup_reader_cleanup_unconfirmed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/lookup-page-recovery.test.mjs:153:55
+✖ real query cleanup fence before XML: lookup_reader_cleanup_unconfirmed wrapped (0.438625ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'lookup_reader_cleanup_unconfirmed'
+  
+      at Object.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:158:14)
+      at expectedException (node:assert:553:17)
+      at expectsError (node:assert:678:21)
+      at strict.rejects (node:assert:744:3)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:157:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'lookup_reader_cleanup_unconfirmed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/lookup-page-recovery.test.mjs:153:55
+✖ real query cleanup fence before XML: lookup_reader_forward_cleanup_unconfirmed plain (1.002291ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'lookup_reader_forward_cleanup_unconfirmed'
+  
+      at Object.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:158:14)
+      at expectedException (node:assert:553:17)
+      at expectsError (node:assert:678:21)
+      at strict.rejects (node:assert:744:3)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:157:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'lookup_reader_forward_cleanup_unconfirmed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/lookup-page-recovery.test.mjs:153:55
+✖ real query cleanup fence before XML: lookup_reader_forward_cleanup_unconfirmed code-only (0.4465ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'lookup_reader_forward_cleanup_unconfirmed'
+  
+      at Object.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:158:14)
+      at expectedException (node:assert:553:17)
+      at expectsError (node:assert:678:21)
+      at strict.rejects (node:assert:744:3)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:157:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'lookup_reader_forward_cleanup_unconfirmed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/lookup-page-recovery.test.mjs:153:55
+✖ real query cleanup fence before XML: lookup_reader_forward_cleanup_unconfirmed wrapped (0.429042ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'lookup_reader_forward_cleanup_unconfirmed'
+  
+      at Object.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:158:14)
+      at expectedException (node:assert:553:17)
+      at expectsError (node:assert:678:21)
+      at strict.rejects (node:assert:744:3)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:157:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'lookup_reader_forward_cleanup_unconfirmed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/lookup-page-recovery.test.mjs:153:55
+✖ real query cleanup fence before XML: lookup_old_worker_exit_unconfirmed plain (0.387917ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'lookup_old_worker_exit_unconfirmed'
+  
+      at Object.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:158:14)
+      at expectedException (node:assert:553:17)
+      at expectsError (node:assert:678:21)
+      at strict.rejects (node:assert:744:3)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:157:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'lookup_old_worker_exit_unconfirmed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/lookup-page-recovery.test.mjs:153:55
+✖ real query cleanup fence before XML: lookup_old_worker_exit_unconfirmed code-only (0.380042ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'lookup_old_worker_exit_unconfirmed'
+  
+      at Object.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:158:14)
+      at expectedException (node:assert:553:17)
+      at expectsError (node:assert:678:21)
+      at strict.rejects (node:assert:744:3)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:157:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'lookup_old_worker_exit_unconfirmed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/lookup-page-recovery.test.mjs:153:55
+✖ real query cleanup fence before XML: lookup_old_worker_exit_unconfirmed wrapped (0.405833ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'lookup_old_worker_exit_unconfirmed'
+  
+      at Object.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:158:14)
+      at expectedException (node:assert:553:17)
+      at expectsError (node:assert:678:21)
+      at strict.rejects (node:assert:744:3)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:157:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'lookup_old_worker_exit_unconfirmed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/lookup-page-recovery.test.mjs:153:55
+✖ real query cleanup fence before XML: lookup_restart_worker_exit_unconfirmed plain (0.4445ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'lookup_restart_worker_exit_unconfirmed'
+  
+      at Object.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:158:14)
+      at expectedException (node:assert:553:17)
+      at expectsError (node:assert:678:21)
+      at strict.rejects (node:assert:744:3)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:157:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'lookup_restart_worker_exit_unconfirmed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/lookup-page-recovery.test.mjs:153:55
+✖ real query cleanup fence before XML: lookup_restart_worker_exit_unconfirmed code-only (0.62325ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'lookup_restart_worker_exit_unconfirmed'
+  
+      at Object.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:158:14)
+      at expectedException (node:assert:553:17)
+      at expectsError (node:assert:678:21)
+      at strict.rejects (node:assert:744:3)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:157:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'lookup_restart_worker_exit_unconfirmed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/lookup-page-recovery.test.mjs:153:55
+✖ real query cleanup fence before XML: lookup_restart_worker_exit_unconfirmed wrapped (0.461833ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'lookup_restart_worker_exit_unconfirmed'
+  
+      at Object.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:158:14)
+      at expectedException (node:assert:553:17)
+      at expectsError (node:assert:678:21)
+      at strict.rejects (node:assert:744:3)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:157:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'lookup_restart_worker_exit_unconfirmed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/lookup-page-recovery.test.mjs:153:55
+✖ real query cleanup fence before XML: lookup_prepare_worker_exit_unconfirmed plain (0.424667ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'lookup_prepare_worker_exit_unconfirmed'
+  
+      at Object.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:158:14)
+      at expectedException (node:assert:553:17)
+      at expectsError (node:assert:678:21)
+      at strict.rejects (node:assert:744:3)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:157:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'lookup_prepare_worker_exit_unconfirmed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/lookup-page-recovery.test.mjs:153:55
+✖ real query cleanup fence before XML: lookup_prepare_worker_exit_unconfirmed code-only (0.410208ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'lookup_prepare_worker_exit_unconfirmed'
+  
+      at Object.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:158:14)
+      at expectedException (node:assert:553:17)
+      at expectsError (node:assert:678:21)
+      at strict.rejects (node:assert:744:3)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:157:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'lookup_prepare_worker_exit_unconfirmed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/lookup-page-recovery.test.mjs:153:55
+✖ real query cleanup fence before XML: lookup_prepare_worker_exit_unconfirmed wrapped (0.446458ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'lookup_prepare_worker_exit_unconfirmed'
+  
+      at Object.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:158:14)
+      at expectedException (node:assert:553:17)
+      at expectsError (node:assert:678:21)
+      at strict.rejects (node:assert:744:3)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-page-recovery.test.mjs:157:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'lookup_prepare_worker_exit_unconfirmed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

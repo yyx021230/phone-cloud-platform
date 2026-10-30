@@ -1,0 +1,47 @@
+✖ exited-reader observation proves absence without issuing another force-stop (1.363125ms)
+✖ exited-reader observed process still requires targeted stop and fresh absence (0.149917ms)
+✔ exited-reader observation failure cannot be promoted to absence or skip proof (0.247292ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 1
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 66.088542
+
+✖ failing tests:
+
+test at windows-agent/src/lookup-reader-lifecycle.test.mjs:182:1
+✖ exited-reader observation proves absence without issuing another force-stop (1.363125ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  2 !== 0
+  
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-reader-lifecycle.test.mjs:187:9)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/lookup-reader-lifecycle.test.mjs:190:1
+✖ exited-reader observed process still requires targeted stop and fresh absence (0.149917ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  2 !== 4
+  
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reader-admission/phone-cloud-platform/windows-agent/src/lookup-reader-lifecycle.test.mjs:199:9)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 4,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
