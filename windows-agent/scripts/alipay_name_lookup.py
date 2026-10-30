@@ -1777,7 +1777,7 @@ class Runner:
             elif kind == "canvas_real_name": closed = self.dismiss_canvas_real_name_prompt(root if poco is None and not unreadable and not canvas_above_ad else None, phase)
             elif kind == "app_center_upgrade": closed = self.dismiss_app_center_upgrade()
             elif poco is not None:
-                closed = (self.poco_dismiss_local_service_prompt(poco) if kind == "local_service"
+                closed = (self.poco_dismiss_local_service_prompt(poco, snapshot=snapshot) if kind == "local_service"
                           else self.poco_dismiss_alipay_home_overlay_snapshot(snapshot))
             else:
                 closed = self.dismiss_known_overlay(root, parent)
@@ -2708,13 +2708,15 @@ class Runner:
                         raise
                     self.emit("account_restriction_probe_unavailable", phase="search-ready-focus", driver="poco", error=str(exc))
             raise RuntimeError(f"poco_alipay_search_not_foreground:{current_focus}")
-        self.poco_dismiss_local_service_prompt(poco)
+        # The unique-input check below already takes a fresh protected frame
+        # and resolves known overlays before returning a node. A separate
+        # live lookup for an absent optional popup stalled on device 149,
+        # after its search/input had already been verified. Do not make that
+        # extra RPC a prerequisite for every normal input check.
         try:
             self.emit("poco_search_input_probe_begin", driver="poco")
             return self.poco_unique(poco, timeout=2.0, live=live, name=SEARCH_INPUT_ID)
         except Exception as exc:
-            if "poco_selector_missing:" in str(exc) and self.poco_dismiss_local_service_prompt(poco):
-                return self.poco_unique(poco, timeout=2.0, live=live, name=SEARCH_INPUT_ID)
             if (
                 "poco_selector_missing:" in str(exc)
                 and self.solve_verification_from_xml_if_present("poco-search-ready")
@@ -2728,7 +2730,7 @@ class Runner:
                     raise
             raise exc
 
-    def poco_dismiss_local_service_prompt(self, poco):
+    def poco_dismiss_local_service_prompt(self, poco, snapshot=None):
         """Close the optional location introduction evidenced on device 57.
 
         This is Alipay's own introduction, not Android's permission dialog.
@@ -2743,11 +2745,12 @@ class Runner:
             # to prove an optional popup absent. One bounded count only gates
             # observation; ALL permission-to-close evidence remains in the
             # same subsequent frozen frame, with a fresh foreground check.
-            title = poco(name=prefix + "title_txt_1", text=ALIPAY_LOCAL_SERVICE_TITLE)
-            if self.poco_initial_home_search_count(poco, title) == 0:
-                return False
             freeze = getattr(poco, "freeze", None)
-            snapshot = freeze() if callable(freeze) else poco
+            if snapshot is None:
+                title = poco(name=prefix + "title_txt_1", text=ALIPAY_LOCAL_SERVICE_TITLE)
+                if self.poco_initial_home_search_count(poco, title) == 0:
+                    return False
+                snapshot = freeze() if callable(freeze) else poco
             titles = self.poco_nodes(snapshot, name=prefix + "title_txt_1", text=ALIPAY_LOCAL_SERVICE_TITLE)
             if not titles:
                 return False

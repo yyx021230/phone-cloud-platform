@@ -3568,13 +3568,44 @@ class AutomationRunnerTests(unittest.TestCase):
         runner.poco_search_ready.assert_called_once_with(poco)
         self.assertEqual(runner.log[-1]["method"], "after_local_service_cancel")
 
-    def test_lookup_query_checks_location_intro_before_input(self):
-        runner, poco, close = self.local_service_poco_fixture()
-        runner.poco_unique = mock.Mock(return_value=object())
+    def test_lookup_search_input_uses_fresh_frame_without_optional_live_popup_rpc(self):
+        runner, _, _ = self.local_service_poco_fixture()
+        node = object()
+        snapshot = mock.Mock()
+        poco = mock.Mock(return_value=node)
+        poco.freeze.return_value = snapshot
+        runner.poco_nodes = mock.Mock(return_value=[node])
+        runner.page_overlay_kind = mock.Mock(return_value="")
+        runner.poco_dismiss_local_service_prompt = mock.Mock(side_effect=AssertionError("149 absent popup RPC"))
+        self.assertIs(runner.poco_search_ready(poco), node)
+        poco.freeze.assert_called_once_with()
+        poco.assert_called_once_with(name=self.lookup.SEARCH_INPUT_ID)
+        runner.page_overlay_kind.assert_called_once_with(poco=poco, snapshot=snapshot)
+        runner.poco_dismiss_local_service_prompt.assert_not_called()
+
+    def test_lookup_search_input_reobserves_after_known_overlay_before_returning_node(self):
+        runner, _, _ = self.local_service_poco_fixture()
+        first, second, fresh_node = object(), object(), object()
+        poco = mock.Mock(return_value=fresh_node)
+        poco.freeze.side_effect = [first, second]
+        runner.poco_nodes = mock.Mock(return_value=[object()])
+        runner.page_overlay_kind = mock.Mock(side_effect=["local_service", ""])
+        runner.recover_page_mismatch = mock.Mock(return_value=True)
+        self.assertIs(runner.poco_search_ready(poco), fresh_node)
+        self.assertEqual(poco.freeze.call_count, 2)
+        self.assertIs(runner.recover_page_mismatch.call_args.kwargs["snapshot"], first)
+        poco.assert_called_once_with(name=self.lookup.SEARCH_INPUT_ID)
+
+    def test_lookup_location_intro_reuses_proven_frame_but_checks_close_and_after_frame(self):
+        runner, snapshot, close = self.local_service_poco_fixture()
+        poco = mock.Mock(side_effect=AssertionError("no second live title query"))
+        poco.freeze.return_value = snapshot
         with mock.patch.object(self.lookup.time, "sleep", return_value=None):
-            runner.poco_search_ready(poco)
+            self.assertTrue(runner.poco_dismiss_local_service_prompt(poco, snapshot=snapshot))
+        poco.assert_not_called()
+        poco.freeze.assert_called_once_with()
+        runner.focus_state.assert_called_once_with()
         runner.poco_tap.assert_called_once_with(close)
-        runner.poco_unique.assert_called_once_with(poco, timeout=2.0, live=True, name=self.lookup.SEARCH_INPUT_ID)
 
     def test_lookup_late_jigsaw_is_classified_after_single_submit_without_reinput(self):
         phone = "13800138000"

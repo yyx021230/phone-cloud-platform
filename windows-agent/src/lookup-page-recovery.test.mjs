@@ -149,6 +149,17 @@ function realTaskHarness(responses, stopResult = true, {realFallback = false, ta
     takeControl: () => dependencies.screenControlledSerials.add('LOCAL') };
 }
 
+test('192 missing instrumentation dependency never restarts Alipay or falls through to XML',async()=>{
+ const reason='Airtest/Poco worker 已退出：TEST code=1 signal= poco_worker_bootstrap_failed:instrumentation:dependency_missing';
+ const h=realTaskHarness([Error(reason)],true,{realFallback:true});
+ await assert.rejects(h.run(),/dependency_missing/);
+ assert.equal(h.calls.length,1);assert.equal(h.stops(),0);assert.equal(h.xmlCalls(),0);
+ for(const submitted of [false,true]){
+  const r=await restartLookupQueryOnce({operation:'query',error:Error(reason),payload:{},submitted,
+   stopWorker:assert.fail,runWorker:assert.fail,onRecovery:assert.fail});assert.equal(r,null);
+ }
+});
+
 for (const code of ['lookup_reader_cleanup_unconfirmed','lookup_reader_forward_cleanup_unconfirmed',
   'lookup_old_worker_exit_unconfirmed','lookup_restart_worker_exit_unconfirmed','lookup_prepare_worker_exit_unconfirmed']) {
   for (const mode of ['plain','code-only','wrapped']) test('real query cleanup fence before XML: '+code+' '+mode,async()=>{

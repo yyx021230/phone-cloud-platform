@@ -1,4 +1,5 @@
 import {lookupReaderCleanupFailure} from './lookup-cleanup-policy.mjs';
+import {isLookupReaderDependencyMissing} from './lookup-reader-lifecycle.mjs';
 
 const NON_FALLBACK_RESULTS = [
   "local_lookup_result_unconfirmed:",
@@ -20,7 +21,7 @@ const NON_FALLBACK_RESULTS = [
 ];
 
 export function shouldFallbackAlipayPocoFailure(error) {
-  if (lookupReaderCleanupFailure(error)) return false;
+  if (lookupReaderCleanupFailure(error) || isLookupReaderDependencyMissing(error)) return false;
   const message = String(error?.message || error || "");
   if (error?.code === 'airtest_worker_capacity_reached'
     || /^Airtest\/Poco 常驻 worker 已达到上限 \d+，当前均在执行任务$/.test(message)) return false;
@@ -28,6 +29,7 @@ export function shouldFallbackAlipayPocoFailure(error) {
 }
 
 export function isRetryableAlipayPocoStartFailure(error) {
+  if (isLookupReaderDependencyMissing(error)) return false;
   const message = String(error?.message || error || "");
   return message.includes("poco_rpc_failed:")
     || message.includes("Airtest/Poco worker 探活未通过");

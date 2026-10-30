@@ -2133,6 +2133,9 @@ function classifyAlipayNameLookupFailure(rawMessage = "") {
     .slice(0, 500);
   const readerExit = /worker (?:已退出|exited)|poco_worker_bootstrap_failed:/.test(raw) ? readerExitDiagnostic(raw) : null;
   const diagnostic = { code: "alipay_lookup_failed", retryable: true, runnerReason: compactReason, ...(readerExit ? {readerExit} : {}) };
+  if ((readerExit?.stage === 'instrumentation' && readerExit.cause === 'dependency_missing') || raw === 'poco_service_not_installed') return {...diagnostic,
+    retryable:false,runnerReason:'poco_worker_bootstrap_failed:instrumentation:dependency_missing',
+    message:'这台手机缺少查名读取组件，需安装已核验组件后重新探测；不会通过重启支付宝、切号或XML兜底重试。'};
   if (/^Airtest\/Poco 常驻 worker 已达到上限 \d+，当前均在执行任务$/.test(raw)) return {...diagnostic,
     runnerReason:"lookup_worker_capacity_reached", message:"查名读取器资源暂满，原请求保留，等待资源后继续。"};
   if (raw.includes("local_lookup_result_unconfirmed:")) return { ...diagnostic,

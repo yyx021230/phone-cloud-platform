@@ -47,6 +47,7 @@ export function lookupFailureDomain(job = {}) {
     && /^error: device (?:(?:'[^'\r\n]+'|"[^"\r\n]+") )?(?:not found|offline|unauthorized)\.?[ \t]*\r?$/m.test(String(job.result?.message||''))) return 'device';
   if (!['alipay_lookup_failed', 'alipay_lookup_result_unconfirmed'].includes(code)) return '';
   if (lookupCleanupUnconfirmed(job)) return 'device';
+  if (reason === 'poco_worker_bootstrap_failed:instrumentation:dependency_missing') return 'device';
   if (/^poco_worker_bootstrap_failed:adb_probe:(?:timeout|device_unavailable|command_failed)$/.test(reason)) return 'device';
   // Runner-owned dumpsys-window timeout: no reliable foreground observation,
   // not a missing selector or a result screenshot for the name reader.

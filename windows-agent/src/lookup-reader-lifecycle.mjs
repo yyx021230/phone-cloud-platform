@@ -12,6 +12,12 @@ export function readerExitDiagnostic(stderr = "", code = null, signal = null) {
     exitCode:Number.isInteger(code)?code:null,signal:["SIGTERM","SIGKILL","SIGABRT"].includes(signal)?signal:null};
 }
 
+export function isLookupReaderDependencyMissing(error) {
+  const text=String(error?.message||error||'');
+  return text==='poco_service_not_installed'
+    || /(?:^|[\s:])poco_worker_bootstrap_failed:instrumentation:dependency_missing(?=$|[\s:])/.test(text);
+}
+
 // A failed pidof command is not proof that no service exists. Use one shell
 // with explicit absence output and fail closed on malformed/read failures.
 export async function verifyLookupReaderCleanup(serial, runAdb, now=Date.now, {observeFirst=false}={}) {

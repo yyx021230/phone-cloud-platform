@@ -227,3 +227,21 @@ for(const workflow of ['alipay_name','xhs_qr'])for(const mode of ['false','throw
  });
  assert.equal(stops,1);
 });
+
+test('192 dependency absence is precise and keeps original failure through classifier to pool',async()=>{
+ const {isLookupReaderDependencyMissing}=await import('./lookup-reader-lifecycle.mjs');
+ const {lookupFailureDomain,lookupTerminalResultReason}=await import('../../server/lookup-failure-domain.mjs');
+ const {shouldFallbackAlipayPocoFailure,isRetryableAlipayPocoStartFailure}=await import('./alipay-poco-fallback-policy.mjs');
+ const classify=new Function('readerExitDiagnostic',source.slice(source.indexOf('function alipayAccountSwitchReasonFromError('),source.indexOf('async function observeLookupHumanVerification('))+';return classifyAlipayNameLookupFailure;')(readerExitDiagnostic);
+ for(const text of ['poco_service_not_installed','Airtest/Poco worker 已退出: poco_worker_bootstrap_failed:instrumentation:dependency_missing','poco_rpc_failed:poco_worker_bootstrap_failed:instrumentation:dependency_missing']){
+  assert.equal(isLookupReaderDependencyMissing(Error(text)),true);
+  assert.equal(shouldFallbackAlipayPocoFailure(Error(text)),false);
+  assert.equal(isRetryableAlipayPocoStartFailure(Error(text)),false);
+  const diagnostic=classify(text);
+  assert.equal(diagnostic.retryable,false);assert.notEqual(diagnostic.limitReached,true);assert.notEqual(diagnostic.requiresAccountSwitch,true);
+  assert.equal(diagnostic.runnerReason,'poco_worker_bootstrap_failed:instrumentation:dependency_missing');
+  const job={result:{errorCode:diagnostic.code,diagnostic}};
+  assert.equal(lookupFailureDomain(job),'device');assert.equal(lookupTerminalResultReason(job),'');
+ }
+ for(const text of ['dependency_missing','poco_worker_bootstrap_failed:transport_probe:dependency_missing','poco_worker_bootstrap_failed:instrumentation:dependency_missing_other','poco_rpc_failed:timeout'])assert.equal(isLookupReaderDependencyMissing(Error(text)),false);
+});
