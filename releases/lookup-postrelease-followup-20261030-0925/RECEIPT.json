@@ -1,0 +1,228 @@
+{
+  "artifactType": "post_audit_receipt_verification_not_a_new_production_operation",
+  "version": "lookup-postrelease-followup-20261030.1",
+  "baseAuditCommit": "d7c676e9a1bbcbc69475979fd03f41dee06835b3",
+  "baseAuditTag": "lookup-postrelease-audit-20261030.1",
+  "verifiedAt": "2026-10-30T01:28:14.999948+00:00",
+  "evidenceScope": "Root read locally committed peer receipts and private reconciliation snapshot; root did not reconnect to production or perform recovery",
+  "capacity": {
+    "adbOwner": "NT AUTHORITY\\SYSTEM",
+    "newAgentCreated": "2026-10-30T01:21:28.0335510Z",
+    "sampledAt": "2026-10-30T01:21:32.0678167Z",
+    "adbPid": 17764,
+    "configuredLimit": 12,
+    "taskXmlUnchanged": true,
+    "oldReaderPidsExited": true,
+    "oldAgentPid": 20232,
+    "oldReaderCount": 22,
+    "agentOwner": "NT AUTHORITY\\SYSTEM",
+    "status": "loaded_12_postreload_reconciliation_pending",
+    "newAgentPid": 22668,
+    "capacityReport": {
+      "runtimeId": "8e5df26e-9d6f-41b4-86e5-cdf2d888ab74",
+      "limit": 12,
+      "observedAt": "2026-10-30T01:21:57+00:00",
+      "source": "nginx access log Agent tasks/next query"
+    },
+    "healthz": 200,
+    "readyz": 200,
+    "originalRequestsNotManuallyChanged": true,
+    "pendingOldRunningTasks": 7,
+    "knownStoppingChannels": 3,
+    "scope": "Only old Node process stopped; same existing SYSTEM scheduled task started. No process-tree kill, ADB/client commands, source replacement, cloud restart or new backup.",
+    "limitations": [
+      "12 is effective configured reader capacity, not proof of 12 concurrent successful queries.",
+      "Seven pre-reload tasks still reported running at 09:22:13; full original-query recovery unverified.",
+      "Existing admission gate was absent; check stopped before flag write. No claim of successful drain.",
+      "Old host reader processes exited; this is not Android cleanup proof."
+    ]
+  },
+  "stopRecovery": {
+    "operation": "operator-stop-retry-20261030-approved515254",
+    "sourceCommit": "c80c316",
+    "appliedAt": "2026-10-30T01:24:44.092Z",
+    "verifiedAt": "2026-10-30T01:24:56.664Z",
+    "status": "three_original_channels_released_after_real_stop_proofs",
+    "rows": [
+      {
+        "number": 51,
+        "sessionId": "5505a06a-4238-47ab-8a6e-8c86cc9afe33",
+        "generation": "02e3e810-604e-46dc-b864-74e018fb277b",
+        "stopTaskId": "dcb38ff9-7936-4698-aeca-df7eedf7d7be",
+        "endedAt": "2026-10-30T01:24:45.893+00:00",
+        "readerCleanupConfirmed": true,
+        "channelReleased": true,
+        "originalRequest": {
+          "code": "lookup_probe_human_replaced",
+          "status": "cancelled",
+          "hasName": false,
+          "queryId": "55eac191-2914-46fa-868d-4417083acf32",
+          "lookupId": "5ed12014-fe41-4f50-9d15-d63b1a0918fc",
+          "completedAt": "2026-10-29T09:40:52.627Z"
+        }
+      },
+      {
+        "number": 52,
+        "sessionId": "f753b7b8-0785-43d6-90a8-61412daee68e",
+        "generation": "e8fb502e-6f76-479f-be3b-4a739180bb56",
+        "stopTaskId": "e9769425-83d2-400a-b182-a0683e4a8c76",
+        "endedAt": "2026-10-30T01:24:45.571+00:00",
+        "readerCleanupConfirmed": true,
+        "channelReleased": true,
+        "originalRequest": {
+          "code": "lookup_probe_human_replaced",
+          "status": "cancelled",
+          "hasName": false,
+          "queryId": "fb0f2e2b-967c-4652-a364-e7f3c1ebb39d",
+          "lookupId": "1e3f02c0-cb31-4eeb-970e-749f857ab36d",
+          "completedAt": "2026-10-29T21:20:34.529Z"
+        }
+      },
+      {
+        "number": 54,
+        "sessionId": "900c6144-82df-43db-bbcf-dfb210994464",
+        "generation": "615795fd-b337-4910-a646-478a2b2c71c3",
+        "stopTaskId": "ba27b0d6-ecff-48be-b566-e0be3f68f567",
+        "endedAt": "2026-10-30T01:24:45.802+00:00",
+        "readerCleanupConfirmed": true,
+        "channelReleased": true,
+        "originalRequest": {
+          "code": "lookup_probe_human_replaced",
+          "status": "cancelled",
+          "hasName": false,
+          "queryId": "8ec7b936-deb7-4254-925e-cd0792f84dbd",
+          "lookupId": "b5156c3f-6e10-411d-a481-ee56bc5b9566",
+          "completedAt": "2026-10-29T21:20:24.407Z"
+        }
+      }
+    ],
+    "scope": "Only one extra cleanup retry per target, under row lock and original-generation CAS; normal running Agent produced stop proofs and server released reservations. No fake ACK, manual result overwrite, shared service restart, or ADB server/identity change.",
+    "tests": {
+      "pureOperatorScopeChecks": 3,
+      "failed": 0,
+      "productionActualStopProofs": 3
+    },
+    "limitations": [
+      "This is an approved one-off recovery, not a deployed permanent stop-retry fix.",
+      "A broader joined read timed out at 3s; subsequent primary-key reads succeeded.",
+      "Other old running requests from Agent reload remain separate and were not modified."
+    ]
+  },
+  "oldQueryTasksAtReconciliationSnapshot": [
+    {
+      "taskId": "4fefb2e3-5b27-4698-a17a-9bd71ddf4620",
+      "jobId": "d74fab82-6d99-411f-b81f-834dd0071993",
+      "sessionId": "09fd5290-0f20-4268-bf0d-5d544faad2c5",
+      "status": "running",
+      "updatedAt": "2026-10-30T01:21:04.908+00:00",
+      "ackedAt": "2026-10-30T01:20:49.168Z",
+      "leaseExpiresAt": "2026-10-30T01:21:49.104Z",
+      "generation": "48dc566a-10c7-4f9f-be14-18b83483503e",
+      "lastEvent": {
+        "at": "2026-10-30T01:21:04.908+00:00",
+        "stepId": "submit_search",
+        "phase": "alipay"
+      }
+    },
+    {
+      "taskId": "1e68639a-3034-4a04-bd3e-2c035e2eae60",
+      "jobId": "5b0c4261-1010-4eb3-a527-4ad24539b006",
+      "sessionId": "dadbd90c-d05d-4e73-83d8-1b46478f33a7",
+      "status": "running",
+      "updatedAt": "2026-10-30T01:21:06.583+00:00",
+      "ackedAt": "2026-10-30T01:20:51.750Z",
+      "leaseExpiresAt": "2026-10-30T01:21:51.645Z",
+      "generation": "1f8659d7-2c8c-4709-bbb9-7d10e11a2ce0",
+      "lastEvent": {
+        "at": "2026-10-30T01:21:06.583+00:00",
+        "stepId": "submit_search",
+        "phase": "alipay"
+      }
+    },
+    {
+      "taskId": "ac7d84b8-bddd-4a02-89ff-c120d0edaee2",
+      "jobId": "aeb86ec1-38e7-47a7-b258-711903470964",
+      "sessionId": "1e647cae-d732-45d4-94c4-76ec552bce06",
+      "status": "running",
+      "updatedAt": "2026-10-30T01:21:11.079+00:00",
+      "ackedAt": "2026-10-30T01:20:55.781Z",
+      "leaseExpiresAt": "2026-10-30T01:21:55.671Z",
+      "generation": "0a0f57f5-4ee5-41b8-8a75-faaaab315496",
+      "lastEvent": {
+        "at": "2026-10-30T01:21:11.079+00:00",
+        "stepId": "submit_search",
+        "phase": "alipay"
+      }
+    },
+    {
+      "taskId": "5c5b9b83-f3f4-43ba-9510-d5366460e6fb",
+      "jobId": "7bfa8b24-d035-452a-8976-62cb09064f4d",
+      "sessionId": "22a565f0-bf83-4073-9662-cfa99cb16fdb",
+      "status": "running",
+      "updatedAt": "2026-10-30T01:21:12.862+00:00",
+      "ackedAt": "2026-10-30T01:21:00.737Z",
+      "leaseExpiresAt": "2026-10-30T01:22:00.662Z",
+      "generation": "0b7b5602-a95c-4a75-ad87-d400b91f57d1",
+      "lastEvent": {
+        "at": "2026-10-30T01:21:12.862+00:00",
+        "stepId": "submit_search",
+        "phase": "alipay"
+      }
+    },
+    {
+      "taskId": "01fcdfb3-b96b-4da5-afe3-0b64102d610d",
+      "jobId": "9ccebe1f-a85b-43c8-a7db-34888cfc3517",
+      "sessionId": "b0d8e88f-6fe3-4568-a9bf-1bbbf22cf114",
+      "status": "running",
+      "updatedAt": "2026-10-30T01:21:08.947+00:00",
+      "ackedAt": "2026-10-30T01:20:57.792Z",
+      "leaseExpiresAt": "2026-10-30T01:21:57.707Z",
+      "generation": "bce90516-dacf-4392-b3f7-54783449272c",
+      "lastEvent": {
+        "at": "2026-10-30T01:21:08.947+00:00",
+        "stepId": "submit_search",
+        "phase": "alipay"
+      }
+    },
+    {
+      "taskId": "09997c01-2cc2-471e-a5e8-4b028768f210",
+      "jobId": "cb7bed0b-e3a3-4c59-abf1-1f75712efcdb",
+      "sessionId": "6f67d02b-3ca7-4520-948e-eee76b0de3be",
+      "status": "running",
+      "updatedAt": "2026-10-30T01:21:13.695+00:00",
+      "ackedAt": "2026-10-30T01:20:59.214Z",
+      "leaseExpiresAt": "2026-10-30T01:21:59.141Z",
+      "generation": "4f99d807-34ff-41a3-af5f-52997544c0ee",
+      "lastEvent": {
+        "at": "2026-10-30T01:21:13.695+00:00",
+        "stepId": "submit_search",
+        "phase": "alipay"
+      }
+    }
+  ],
+  "canonicalBusinessRequestStatus": "Still to be joined by lookupId; six running task rows do not prove six unfinished business requests",
+  "sources": [
+    {
+      "path": "/Users/yyx/.codex/worktrees/lookup-reprobe-reset/phone-cloud-platform/releases/agent-reader-limit12-20261030/RELOADED.json",
+      "sha256": "a7d03366e1f99df3ec6699dcfa2b581e9505f1724a572cee2e69e2746b4f0437",
+      "bytes": 1353
+    },
+    {
+      "path": "/Users/yyx/.codex/worktrees/lookup-reprobe-reset/phone-cloud-platform/releases/lookup-stop-retry-20261030/RECEIPT.json",
+      "sha256": "11b94d9dab8636db3f7df2dac7a9ae18622fd107e09e31b148a905e14028d21d",
+      "bytes": 2844
+    },
+    {
+      "path": "/private/tmp/pc-reader12-reload-20261030/RECONCILE.json",
+      "sha256": "9fc89a74ffd15505cf9a29c896a6427fc7e02e312635ee1e25bb92194de4a93c",
+      "bytes": 9173
+    }
+  ],
+  "limits": [
+    "Original audit tag remains immutable and describes its earlier snapshot",
+    "Loaded capacity is not measured twelve-phone sustained throughput",
+    "Three stop channels released once with real proofs; no permanent stop-retry fix claimed",
+    "154 XML fallback defect, diagnostic gaps, AI rejection branch and original transport root remain unresolved",
+    "Root did not edit configuration, tasks, locks, original results or runtime code"
+  ]
+}

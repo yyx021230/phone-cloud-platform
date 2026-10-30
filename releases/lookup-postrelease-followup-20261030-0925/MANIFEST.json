@@ -1,0 +1,24 @@
+{
+  "version": "lookup-postrelease-followup-20261030.1",
+  "annotatedTag": "lookup-postrelease-followup-20261030.1",
+  "baseCommit": "d7c676e9a1bbcbc69475979fd03f41dee06835b3",
+  "files": [
+    {
+      "path": "docs/PROJECT_DEVELOPMENT.md",
+      "sha256": "ecbb9c7c6793079af961e2b964065081684a8281bb40fed62054413309a25c59",
+      "bytes": 1207605
+    },
+    {
+      "path": "releases/lookup-postrelease-followup-20261030-0925/README.md",
+      "sha256": "3b0c6b823a7521824bdffd267ee5b85a02d9c9be8d6d2d98ee5ea3248ffebb9d",
+      "bytes": 1191
+    },
+    {
+      "path": "releases/lookup-postrelease-followup-20261030-0925/RECEIPT.json",
+      "sha256": "429956848dae60b6b73299badad24a1a92937b7e8965c8fd5214c33c2b545e59",
+      "bytes": 9617
+    }
+  ],
+  "runtimeFilesChanged": [],
+  "rootProductionActions": []
+}
