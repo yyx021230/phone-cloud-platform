@@ -1,0 +1,34 @@
+{
+  "version": "lookup-runtime-loss-audit-20261030.1",
+  "annotatedTag": "lookup-runtime-loss-audit-20261030.1",
+  "baseCommit": "e4a897616cd478cbb5749da4db28300a7bd6ec7e",
+  "files": [
+    {
+      "path": "docs/PROJECT_DEVELOPMENT.md",
+      "bytes": 1210591,
+      "sha256": "f997a92205ce3068c49a59570b10306c88ddb61d72fdae03e55d139cb8964d00"
+    },
+    {
+      "path": "releases/lookup-runtime-loss-audit-20261030/README.md",
+      "bytes": 1893,
+      "sha256": "1d0c13a1648d9c81f0facc2ef5a248afb2be2a087dc6ebf3cdae9bb25e2300d8"
+    },
+    {
+      "path": "releases/lookup-runtime-loss-audit-20261030/REPORT.json",
+      "bytes": 10728,
+      "sha256": "988144127a86375d399ef78b2600f70954ce7952d2b93626dbee08420fc96e54"
+    },
+    {
+      "path": "releases/lookup-runtime-loss-audit-20261030/VERIFICATION.json",
+      "bytes": 919,
+      "sha256": "6b1ef630422a2d4f0ac7118a273c34edefd54d50351fdd70b26da97199c4cf25"
+    },
+    {
+      "path": "releases/lookup-runtime-loss-audit-20261030/verify-runtime-loss.mjs",
+      "bytes": 5039,
+      "sha256": "74fcb89d312ed6a5c1df20758afa8b7cf8865e688361b529f1589386a765cdcd"
+    }
+  ],
+  "runtimeSourceChanged": false,
+  "productionActions": []
+}

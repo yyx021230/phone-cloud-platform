@@ -1,0 +1,221 @@
+{
+  "artifactType": "runtime_loss_investigation_not_fix",
+  "version": "lookup-runtime-loss-audit-20261030.1",
+  "baseCommit": "e4a897616cd478cbb5749da4db28300a7bd6ec7e",
+  "generatedAt": "2026-10-30T01:31:09.916978+00:00",
+  "peerReconciliation": {
+    "tag": "agent-reader-limit12-20261030-reconciled.1",
+    "commit": "14dc063403d990e0e1bf9dd6b4d64444ae825034",
+    "path": "/Users/yyx/.codex/worktrees/lookup-reprobe-reset/phone-cloud-platform/releases/agent-reader-limit12-20261030/POSTRELOAD_RECONCILIATION.json",
+    "sha256": "d2a8076a2d7486eeef486ecdff647b890cc325e4e3923b8877db739ec324fe77",
+    "sampledAt": "2026-10-30T01:27:13.954984+00:00",
+    "status": "six_original_business_requests_unfinished_after_fast_agent_reload",
+    "rows": [
+      {
+        "deviceNumber": 53,
+        "lookupId": "b00297d9-bfa5-4439-bd0e-0d7e8c7def3f",
+        "windowsTaskId": "01fcdfb3-b96b-4da5-afe3-0b64102d610d",
+        "queryId": "9ccebe1f-a85b-43c8-a7db-34888cfc3517",
+        "sessionId": "b0d8e88f-6fe3-4568-a9bf-1bbbf22cf114",
+        "generation": "bce90516-dacf-4392-b3f7-54783449272c",
+        "requestStatus": "running",
+        "windowsTaskStatus": "running",
+        "ackedAt": "2026-10-30T01:20:57.792Z",
+        "deliveryLeaseExpiresAt": "2026-10-30T01:21:57.707Z",
+        "executionDeadline": 1793326740106,
+        "executionDeadlineCST": "2026-10-30T10:19:00.106000+08:00",
+        "queryTaskDefaultInactivityExpiryCST": "2026-10-30T09:56:08.947000+08:00",
+        "archivedResultPresent": false,
+        "outboxPresent": false,
+        "activeInNewRuntime": false,
+        "lastEvent": {
+          "at": "2026-10-30T01:21:08.947+00:00",
+          "phase": "alipay",
+          "stepId": "submit_search"
+        }
+      },
+      {
+        "deviceNumber": 57,
+        "lookupId": "da844359-e245-438d-ad7c-8ad658733969",
+        "windowsTaskId": "ac7d84b8-bddd-4a02-89ff-c120d0edaee2",
+        "queryId": "aeb86ec1-38e7-47a7-b258-711903470964",
+        "sessionId": "1e647cae-d732-45d4-94c4-76ec552bce06",
+        "generation": "0a0f57f5-4ee5-41b8-8a75-faaaab315496",
+        "requestStatus": "running",
+        "windowsTaskStatus": "running",
+        "ackedAt": "2026-10-30T01:20:55.781Z",
+        "deliveryLeaseExpiresAt": "2026-10-30T01:21:55.671Z",
+        "executionDeadline": 1793326712388,
+        "executionDeadlineCST": "2026-10-30T10:18:32.388000+08:00",
+        "queryTaskDefaultInactivityExpiryCST": "2026-10-30T09:56:11.079000+08:00",
+        "archivedResultPresent": false,
+        "outboxPresent": false,
+        "activeInNewRuntime": false,
+        "lastEvent": {
+          "at": "2026-10-30T01:21:11.079+00:00",
+          "phase": "alipay",
+          "stepId": "submit_search"
+        }
+      },
+      {
+        "deviceNumber": 67,
+        "lookupId": "fde09268-9734-421e-afeb-819ed459b855",
+        "windowsTaskId": "1e68639a-3034-4a04-bd3e-2c035e2eae60",
+        "queryId": "5b0c4261-1010-4eb3-a527-4ad24539b006",
+        "sessionId": "dadbd90c-d05d-4e73-83d8-1b46478f33a7",
+        "generation": "1f8659d7-2c8c-4709-bbb9-7d10e11a2ce0",
+        "requestStatus": "running",
+        "windowsTaskStatus": "running",
+        "ackedAt": "2026-10-30T01:20:51.750Z",
+        "deliveryLeaseExpiresAt": "2026-10-30T01:21:51.645Z",
+        "executionDeadline": 1793326710393,
+        "executionDeadlineCST": "2026-10-30T10:18:30.393000+08:00",
+        "queryTaskDefaultInactivityExpiryCST": "2026-10-30T09:56:06.583000+08:00",
+        "archivedResultPresent": false,
+        "outboxPresent": false,
+        "activeInNewRuntime": false,
+        "lastEvent": {
+          "at": "2026-10-30T01:21:06.583+00:00",
+          "phase": "alipay",
+          "stepId": "submit_search"
+        }
+      },
+      {
+        "deviceNumber": 101,
+        "lookupId": "323432cf-ff9c-4499-b11a-8f18e3900de7",
+        "windowsTaskId": "4fefb2e3-5b27-4698-a17a-9bd71ddf4620",
+        "queryId": "d74fab82-6d99-411f-b81f-834dd0071993",
+        "sessionId": "09fd5290-0f20-4268-bf0d-5d544faad2c5",
+        "generation": "48dc566a-10c7-4f9f-be14-18b83483503e",
+        "requestStatus": "running",
+        "windowsTaskStatus": "running",
+        "ackedAt": "2026-10-30T01:20:49.168Z",
+        "deliveryLeaseExpiresAt": "2026-10-30T01:21:49.104Z",
+        "executionDeadline": 1793326710287,
+        "executionDeadlineCST": "2026-10-30T10:18:30.287000+08:00",
+        "queryTaskDefaultInactivityExpiryCST": "2026-10-30T09:56:04.908000+08:00",
+        "archivedResultPresent": false,
+        "outboxPresent": false,
+        "activeInNewRuntime": false,
+        "lastEvent": {
+          "at": "2026-10-30T01:21:04.908+00:00",
+          "phase": "alipay",
+          "stepId": "submit_search"
+        }
+      },
+      {
+        "deviceNumber": 112,
+        "lookupId": "484ddaa6-992e-4612-b727-8a404b49918a",
+        "windowsTaskId": "5c5b9b83-f3f4-43ba-9510-d5366460e6fb",
+        "queryId": "7bfa8b24-d035-452a-8976-62cb09064f4d",
+        "sessionId": "22a565f0-bf83-4073-9662-cfa99cb16fdb",
+        "generation": "0b7b5602-a95c-4a75-ad87-d400b91f57d1",
+        "requestStatus": "running",
+        "windowsTaskStatus": "running",
+        "ackedAt": "2026-10-30T01:21:00.737Z",
+        "deliveryLeaseExpiresAt": "2026-10-30T01:22:00.662Z",
+        "executionDeadline": 1793326740445,
+        "executionDeadlineCST": "2026-10-30T10:19:00.445000+08:00",
+        "queryTaskDefaultInactivityExpiryCST": "2026-10-30T09:56:12.862000+08:00",
+        "archivedResultPresent": false,
+        "outboxPresent": false,
+        "activeInNewRuntime": false,
+        "lastEvent": {
+          "at": "2026-10-30T01:21:12.862+00:00",
+          "phase": "alipay",
+          "stepId": "submit_search"
+        }
+      },
+      {
+        "deviceNumber": 161,
+        "lookupId": "729a1d92-3e43-4fbe-83aa-a968025ab6a4",
+        "windowsTaskId": "09997c01-2cc2-471e-a5e8-4b028768f210",
+        "queryId": "cb7bed0b-e3a3-4c59-abf1-1f75712efcdb",
+        "sessionId": "6f67d02b-3ca7-4520-948e-eee76b0de3be",
+        "generation": "4f99d807-34ff-41a3-af5f-52997544c0ee",
+        "requestStatus": "running",
+        "windowsTaskStatus": "running",
+        "ackedAt": "2026-10-30T01:20:59.214Z",
+        "deliveryLeaseExpiresAt": "2026-10-30T01:21:59.141Z",
+        "executionDeadline": 1793326740271,
+        "executionDeadlineCST": "2026-10-30T10:19:00.271000+08:00",
+        "queryTaskDefaultInactivityExpiryCST": "2026-10-30T09:56:13.695000+08:00",
+        "archivedResultPresent": false,
+        "outboxPresent": false,
+        "activeInNewRuntime": false,
+        "lastEvent": {
+          "at": "2026-10-30T01:21:13.695+00:00",
+          "phase": "alipay",
+          "stepId": "submit_search"
+        }
+      }
+    ],
+    "confirmed": [
+      "All six canonical business requests and their query jobs/sessions remain running; no archived results or matching outbox entries.",
+      "Each last event was submit_search before Agent reload; no matching old task IDs in new Agent runtime active reports.",
+      "Delivery ACK occurred before reload. Its 60-second lease does not expire an acknowledged running task.",
+      "Short reload did not exceed 90-second Agent online threshold; recoverStalledTasks only marks offline agents, not runtime changes."
+    ],
+    "staticLimits": [
+      "Default query task inactivity TTL is 2100 seconds; server environment has no override. Expiry does not itself prove physical cleanup or successful business recovery.",
+      "Original overall deadlines are 10:18:30–10:19:00 CST. Do not wait on these as a claim of satisfactory recovery.",
+      "No new query, cleanup, ACK, result or channel mutation made during this reconciliation."
+    ]
+  },
+  "verifiedSource": {
+    "server/index.mjs": {
+      "sha256": "53fc2b55dcb330762a437a1be3e248dd7dccafc9a041606020eb5ae85cf351cf",
+      "matchesPriorProductionRead": true
+    },
+    "server/managed-lookup-delivery.mjs": {
+      "sha256": "bf919f335fef57eb09c11fdee73d52fdd5b44372c60ad4f70e6651f4ef5e5c3d",
+      "matchesActualBusinessSourceCommit": true,
+      "freshLiveHashRead": false
+    }
+  },
+  "localReproduction": {
+    "kind": "diagnostic_reproduction_not_fix",
+    "scope": "existing functions, synthetic state and clock; no HTTP, Agent, ADB, database, model or phone actions",
+    "observations": {
+      "runtimeChangedWhileAgentOnline": "running",
+      "afterQueryInactivityTtl": "stalled",
+      "afterNextOnlineRecovery": "queued",
+      "originalTaskCanReceiveNewLease": true,
+      "oldUnexecutedRunningTasksStillClaimReaderBudget": 6,
+      "sixOldClaimsPlusSixPinnedReadersDenyAnother": true,
+      "afterSyntheticNewAck": "running",
+      "originalOperationStillQuery": true,
+      "queryResumeFlagsPresent": false
+    },
+    "limitations": [
+      "Does not execute the complete tasks/next filter, coordinator or Agent runner",
+      "Proves metadata requeue and lease path, not that production duplicate input has occurred",
+      "Other timing, cancellation, capacity and generation gates may affect actual delivery"
+    ],
+    "productionFixed": false
+  },
+  "findings": [
+    {
+      "id": "R1",
+      "state": "confirmed",
+      "fact": "New Agent runtime does not mark acknowledged tasks lost while the same Agent stays online; six canonical requests have no result/outbox or active executor at the 09:27 snapshot"
+    },
+    {
+      "id": "R2",
+      "state": "confirmed_in_local_reproduction",
+      "fact": "Managed query inactivity expiry changes running to stalled; subsequent online-agent recovery changes stalled to queued and the same task can receive a new lease"
+    },
+    {
+      "id": "R3",
+      "state": "risk_not_production_replay_proven",
+      "fact": "The six tasks already submitted search; expiry and ordinary redelivery are not a safe read-only continuation. Full routing/coordinator/runner behavior not exercised"
+    },
+    {
+      "id": "R4",
+      "state": "confirmed_budget_behavior_in_local_reproduction",
+      "fact": "Six old same-Agent running tasks consume six reader claims despite fresh new-runtime report with zero pinned workers; with six additional pinned readers the 12-slot budget denies another reader. These conservative reservations must not be cleared without cleanup/generation evidence."
+    }
+  ],
+  "scope": "Root read existing local peer receipts and ran isolated synthetic functions only; no production login, configuration/task mutation, new query, ADB, model or phone actions",
+  "recommendedNextStep": "Design and locally verify runtime-loss handling that fences old execution, retains original lookup/query/generation, and distinguishes observation-only continuation from query replay. Real recovery requires its specific authorization and evidence. Do not claim natural TTL success."
+}

@@ -5180,3 +5180,18 @@ readiness在16:54/16:55出现503，当时未保存失败子项，原因未确认
 ### 决策日志｜2026-10-30 单次运维收尾与永久代码修复分开记账
 
 延续真实清理proof、同机原代次预约和原ID不重放；三台释放只有在真实证明及正常调度解除后才确认，原查询结果不补写。用户对另一窗口新批准的窄操作单独绑定其回执，根窗口不据转述扩展生产权限、不并行重载或改状态。旧运行任务对账未闭合、维护前未排空及永久故障未修继续公开；不以Agent上限12/health200或三台一次性释放宣称全链路修复。审计与后续回执采用新提交/新证据标签，旧版本不移动。
+
+
+### 变更记录｜2026-10-30 重载后六条业务未接续确认及期限重排路径复现
+
+查名字窗口09:27:13–54按六个lookupId独立对账：53/57/67/101/112/161的canonical业务request/job/session/windowsTask均running、归档0行、outbox0、新Agent runtime activeTaskIds不含旧六任务，最后事件均为09:21:04–13 submit_search。根窗口核对其不可变agent-reader-limit12-20261030-reconciled.1（来源14dc063）内POSTRELOAD_RECONCILIATION，SHA256 d2a8076a2d7486eeef486ecdff647b890cc325e4e3923b8877db739ec324fe77；这次确认是六条业务未完成，不再只是待关联的执行任务行。短重载不足90秒，没有触发Agent离线；recoverStalledTasks仅判断Agent在线，不按lookupRuntimeId变化接管ACK后旧任务，领取lease过期也不结束running。
+
+根窗口继续只读/本地调查，新增独立诊断夹具，从server/index.mjs实际代码提取recoverStalledTasks、expireWindowsTasks、latestTaskActivityAt，以合成同Agent新runtime、旧ACK及submit_search和受控时钟执行。真实index hash仍匹配先前生产读数，managed delivery与实际发布业务来源3a一致。断言通过：runtime变化但Agent在线保持running；2100秒无活动后managed分支只置stalled；下一轮在线恢复将其queued；现有投递纯函数可对同task再租约/ACK成running，原type仍query且无resume标记。没有运行完整next路由、协调者或Agent，不把此复现写成生产已重复输入。
+
+线上query TTL未覆写默认2100秒，六条候选触发约09:56:04–13；原业务总期限10:18:30–10:19:00。TTL路径不是安全终止、物理清理或成功接续证明，不能等待后宣称自然解决。已向查名字窗口交接明确风险；根窗口不登录、不改六条状态、不提交查询/手机命令。材料releases/lookup-runtime-loss-audit-20261030，只有诊断夹具和文档，不是运行修复；51/52/54单次释放与这六条接续缺口分别记账。
+
+### 决策日志｜2026-10-30 runtime丢失与普通在线/租约超时分开判断
+
+延续原ID、搜索后禁止盲目重放、真实清理与代际栅栏。新增确认的快速重载接续缺口不能用提高容量、等待35分钟、直接queued或原task普通query重领视为修复。后续候选需显式识别执行runtime丢失，绑定旧任务/查询/会话/代次，验证迟到状态、真实清理或受控只读原结果续取；完整派发与执行链的故障用例通过后，才讨论具体真实处置范围。当前只复现元数据路径，不声称永久孤儿、必然重复输入或期限后安全结束，亦未扩大生产修复授权。
+
+容量补充复现：新runtime报告0个pinned时，6个同Agent旧running任务仍占6个reader claim；再有6个新pinned时used=12并拒绝下一reader。与activeCount中的旧查询占用共同限制有效执行，不把配置12称12台实际吞吐；该保守预约不能未经清理/代次证明直接扣除。
