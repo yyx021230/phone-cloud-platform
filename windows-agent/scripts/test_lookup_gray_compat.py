@@ -107,5 +107,21 @@ class GrayClockTests(unittest.TestCase):
         r.adb.assert_not_called()
 
 
+class GrayForeignForegroundTests(GrayClockTests):
+    def runner(self, second=None):
+        r=super().runner(second)
+        xhs='com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2'
+        r.focus_state=mock.Mock(side_effect=[('', 'mCurrentFocus=Window{a u0 '+xhs+'}',
+            'mFocusedApp=ActivityRecord{a u0 '+xhs+'}'), ALIPAY])
+        return r
+
+    def test_xhs_overlay_or_mismatched_activity_is_not_a_foreign_recovery(self):
+        r=self.runner();r.focus_state.side_effect=None
+        r.focus_state.return_value=('', 'mCurrentFocus=Window{a u0 com.xingin.xhs/com.other.Page}',
+            'mFocusedApp=ActivityRecord{a u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}')
+        with self.assertRaisesRegex(RuntimeError,'hierarchy_missing'):r.prepare_available_account()
+        r.adb.assert_not_called()
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -1,0 +1,6 @@
+DEPENDENCY_PROBE=poco_worker_bootstrap_failed:instrumentation:dependency_missing
+..........................................
+----------------------------------------------------------------------
+Ran 42 tests in 0.054s
+
+OK

@@ -240,8 +240,12 @@ class AutomationRunnerTests(unittest.TestCase):
     def test_managed_poco_never_installs_apk_or_kills_external_uiautomator(self):
         source = (SCRIPT_DIR / "xhs_airtest_poco.py").read_text(encoding="utf-8")
         managed = source.split("class ManagedAndroidPoco", 1)[1].split("    try:\n        poco =", 1)[0]
-        self.assertIn('"pm", "path", "com.netease.open.pocoservice"', managed)
-        self.assertNotIn("install(", managed)
+        dependency = source.split("def verify_poco_service_installed(", 1)[1].split("def create_stable_poco(", 1)[0]
+        self.assertIn("verify_poco_service_installed(adb.adb_path, adb.serialno)", managed)
+        self.assertIn('package = "com.netease.open.pocoservice"', dependency)
+        self.assertIn('["shell", "pm", "path", package]', dependency)
+        self.assertIn('["shell", "pm", "list", "packages", package]', dependency)
+        self.assertNotIn("install(", managed + dependency)
         self.assertIn("external_instrumentation_owner", managed)
 
     def test_worker_ready_probe_accepts_a_completed_false_selector_response(self):

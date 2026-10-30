@@ -223,6 +223,9 @@ class Runner:
         return delay_seconds
 
     def adb(self, args, timeout=20, check=True, binary=False):
+        # A picker proof belongs to the immediately preceding observation.
+        # Even an intervening read invalidates it; never reuse across navigation.
+        self._account_picker_proof = None
         # Only these observations are safe to repeat. Never retry an input,
         # tap, account action, app launch or XML instrumentation here.
         read_only = (args == ["exec-out", "screencap", "-p"]
@@ -5022,21 +5025,25 @@ class Runner:
         try:
             root, parent = self.dump("account-preflight-visible-state")
         except RuntimeError as exc:
-            # vivo's animated clock can prevent UIAutomator from becoming
-            # idle. Only the evidenced clock foreground permits a single
-            # non-destructive bring-to-front, then repeat all Alipay guards.
+            # Observed foreign foregrounds can have no readable hierarchy.
+            # Resume the existing Alipay task once, without force-stop, only
+            # when both focus observations identify an evidenced foreign app.
+            # Then repeat every Alipay guard, including human verification.
             if str(exc) != "uiautomator_hierarchy_missing":
                 raise
             _, current, focused = self.focus_state()
             window = focused_window_name([current]) or ""
-            if (not window.startswith("com.android.BBKClock/")
-                    or "com.android.BBKClock/" not in focused
-                    or ALIPAY_PACKAGE in focused):
+            clock_foreground = (window.startswith("com.android.BBKClock/")
+                                and "com.android.BBKClock/" in focused)
+            xhs_webview = "com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2"
+            xhs_foreground = window == xhs_webview and xhs_webview in focused
+            if (not (clock_foreground or xhs_foreground) or ALIPAY_PACKAGE in focused):
                 raise
             self.adb(["shell", "am", "start", "-W", "-f", "0x10200000",
                       "-a", "android.intent.action.MAIN", "-c", "android.intent.category.LAUNCHER",
                       "-n", ALIPAY_HOME], timeout=20)
-            self.emit("account_preflight_clock_foreground_recovery", forceStopped=False,
+            self.emit("account_preflight_clock_foreground_recovery" if clock_foreground
+                      else "account_preflight_foreign_foreground_recovery", forceStopped=False,
                       phoneQueryStarted=False, accountSelected=False)
             time.sleep(.5)
             _, resumed, _ = self.focus_state()
@@ -5074,6 +5081,18 @@ class Runner:
                 self.assert_known_account()
                 self.raise_account_restriction(restriction, "account-preflight-visible-state",
                                                "xml_uiautomator", phone_query_started=False)
+        # A preparation retry can already be on the real account picker.
+        # Revalidate complete rows instead of cold-launching and navigating
+        # back to the same page. The current account and cooldown checks below
+        # are unchanged; an old payload or one partial frame is never proof.
+        if (cold_rows is None and self.account_picker_snapshot(root, parent)
+                and not self.page_overlay_kind(root=root)):
+            _, current, focused = self.focus_state()
+            picker = ALIPAY_PACKAGE + "/com.alipay.mobile.security.accountmanager.ui.AccountManagerV2Activity"
+            if focused_window_name([current]) == picker and picker in focused:
+                cold_rows = self.wait_account_picker("preflight-visible", timeout=24)
+                self.emit("account_preflight_existing_picker_revalidated",
+                          accountSelected=False, phoneQueryStarted=False)
         # The cold restriction path just verified this exact open picker.
         # Reuse it instead of leaving, launching and reading the same list twice.
         if cold_rows is None:
@@ -5436,12 +5455,19 @@ class Runner:
             signature.append((account, current, (x1, y1, x2, y2)))
         return rows, tuple(signature)
 
-    def wait_account_picker(self, token, timeout=24, allow_intermediate_sheet=False):
+    def wait_account_picker(self, token, timeout=24, allow_intermediate_sheet=False,
+                            reuse_immediate_proof=False):
         # A title can appear before rows finish loading or moving. A fresh path
         # per snapshot also prevents dump() from reading an older XML file if
         # UIAutomator fails to overwrite a repeated token during a transition.
-        deadline = time.monotonic() + timeout
+        now = time.monotonic()
+        proof = getattr(self, "_account_picker_proof", None)
+        self._account_picker_proof = None
+        deadline = now + timeout
         previous = None
+        if (reuse_immediate_proof and proof is not None
+                and 0 <= now - proof[0] <= 1.0):
+            previous = proof[1]
         entry_tapped = False
         picker_seen = False
         sample_count = 0
@@ -5492,6 +5518,7 @@ class Runner:
                 if time.monotonic() >= deadline:
                     break
                 if signature == previous:
+                    self._account_picker_proof = (time.monotonic(), signature)
                     self.emit("account_picker_stable", savedAccountCount=len(rows), snapshots=2)
                     return rows
                 previous = signature
@@ -5549,9 +5576,14 @@ class Runner:
             rows.append((account, current, node))
         return rows
 
-    def reuse_open_account_picker(self, token, timeout=8.0):
+    def reuse_open_account_picker(self, token, timeout=24.0):
         """Read stable saved rows without tapping any navigation entry."""
-        rows = self.wait_account_picker(f"reuse-{token}", timeout=timeout)
+        # Automatic cooldown rotation has just verified this exact list. Match
+        # it against one new complete frame instead of restarting two samples.
+        # A separate invocation/expired proof still needs two fresh frames and
+        # the normal picker budget (one real dump can take seven seconds).
+        rows = self.wait_account_picker(f"reuse-{token}", timeout=timeout,
+                                        reuse_immediate_proof=True)
         self.emit("reuse_open_account_picker", savedAccountCount=len(rows))
         return rows
 

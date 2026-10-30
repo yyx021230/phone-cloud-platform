@@ -1,0 +1,29 @@
+{
+  "device": 188,
+  "queries": [
+    {
+      "selector": {
+        "desc": "搜索框"
+      },
+      "error": "read_timeout_2s",
+      "ms": 2016
+    },
+    {
+      "selector": {
+        "name": "com.alipay.android.phone.openplatform.app:id/searchButton"
+      },
+      "count": 1,
+      "ms": 1843
+    },
+    {
+      "selector": {
+        "text": "搜索"
+      },
+      "error": "read_timeout_2s",
+      "ms": 2000
+    }
+  ],
+  "phoneNumberSubmitted": false,
+  "transportProbeMs": 1199,
+  "cleanupConfirmed": true
+}

@@ -8,7 +8,7 @@ export function readerExitDiagnostic(stderr = "", code = null, signal = null) {
   const cause=marker?.[2] || (/device[^\n]*(?:offline|not found|unauthorized)/i.test(text) ? "device_unavailable"
     : /TimeoutExpired|ReadTimeout|timed out/i.test(text) ? "timeout"
     : /ConnectionRefused|ConnectionReset/i.test(text) ? "connection_failed" : "unknown");
-  return {stage:marker?.[1]||"unknown",cause:["timeout","device_unavailable","command_failed","connection_failed","unknown"].includes(cause)?cause:"unknown",
+  return {stage:marker?.[1]||"unknown",cause:["timeout","device_unavailable","command_failed","connection_failed","dependency_missing","unknown"].includes(cause)?cause:"unknown",
     exitCode:Number.isInteger(code)?code:null,signal:["SIGTERM","SIGKILL","SIGABRT"].includes(signal)?signal:null};
 }
 

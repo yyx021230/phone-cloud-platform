@@ -52,4 +52,41 @@ class ReaderBoundaryTests(unittest.TestCase):
         with mock.patch.object(worker,"run_adb",side_effect=call),mock.patch.object(worker.time,"sleep"):
             with self.assertRaises(subprocess.TimeoutExpired):worker.stop_stable_poco(p,"adb","fixture",verify=True)
 
+    def test_missing_dependency_requires_successful_empty_package_list(self):
+        with mock.patch.object(worker, "run_adb", side_effect=[RuntimeError("adb exited 1"), ""]) as call:
+            with self.assertRaisesRegex(RuntimeError, "^poco_service_not_installed$"):
+                worker.verify_poco_service_installed("adb", "fixture")
+        self.assertEqual(call.call_count, 2)
+        self.assertEqual(call.call_args.args[2], ["shell", "pm", "list", "packages", "com.netease.open.pocoservice"])
+        self.assertTrue(all(c.kwargs["timeout"] == 4 for c in call.call_args_list))
+
+    def test_dependency_transport_errors_do_not_become_missing_package(self):
+        for error in [RuntimeError("device unauthorized"), RuntimeError("device offline"), subprocess.TimeoutExpired([], 4)]:
+            with mock.patch.object(worker, "run_adb", side_effect=error) as call:
+                with self.assertRaises(type(error)) as caught:
+                    worker.verify_poco_service_installed("adb", "fixture")
+            self.assertIs(caught.exception, error)
+            self.assertEqual(call.call_count, 1)
+        for listed in ["package:com.netease.open.pocoservice", "Error: package manager unavailable"]:
+            with mock.patch.object(worker, "run_adb", side_effect=[RuntimeError("adb exited 1"), listed]):
+                with self.assertRaisesRegex(RuntimeError, "^adb exited 1$"):
+                    worker.verify_poco_service_installed("adb", "fixture")
+        with mock.patch.object(worker, "run_adb", side_effect=[RuntimeError("adb exited 1"), subprocess.TimeoutExpired([], 4)]):
+            with self.assertRaises(subprocess.TimeoutExpired):
+                worker.verify_poco_service_installed("adb", "fixture")
+
+    def test_existing_dependency_and_unconfirmed_path(self):
+        with mock.patch.object(worker, "run_adb", return_value="package:/data/app/fixture/base.apk") as call:
+            worker.verify_poco_service_installed("adb", "fixture")
+        self.assertEqual(call.call_count, 1)
+        with mock.patch.object(worker, "run_adb", return_value=""):
+            with self.assertRaisesRegex(RuntimeError, "poco_service_path_unconfirmed"):
+                worker.verify_poco_service_installed("adb", "fixture")
+
+    def test_instrumentation_failure_keeps_precise_safe_stage(self):
+        for error, cause in [(RuntimeError("poco_service_not_installed"), "dependency_missing"), (RuntimeError("adb exited 1"), "command_failed")]:
+            with contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaisesRegex(RuntimeError, "^poco_worker_bootstrap_failed:instrumentation:" + cause + "$"):
+                    worker.reader_bootstrap_stage("instrumentation", mock.Mock(side_effect=error))
+
 if __name__=="__main__":unittest.main()

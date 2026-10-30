@@ -13,6 +13,11 @@ test('long traceback keeps safe stage and cause, never raw secrets',()=>{
  assert.deepEqual(d,{stage:'adb_probe',cause:'timeout',exitCode:1,signal:null});
  assert.equal(readerExitDiagnostic('unrecognized account text').cause,'unknown');
 });
+test('wrapped instrumentation dependency failure survives worker exit without private data',()=>{
+ const d=readerExitDiagnostic('poco_worker_instrumentation_handshake_failed:elapsedMs=312:poco_worker_bootstrap_failed:instrumentation:dependency_missing',1,null);
+ assert.deepEqual(d,{stage:'instrumentation',cause:'dependency_missing',exitCode:1,signal:null});
+ assert.equal(readerExitDiagnostic('poco_worker_transport_probe_failed:poco_worker_bootstrap_failed:transport_probe:timeout').stage,'transport_probe');
+});
 test('cleanup touches only this serial and Poco forwards',async()=>{
  const calls=[];let removed=false;
  assert.equal(await verifyLookupReaderCleanup('one',async args=>{calls.push(args);assert.deepEqual(args.slice(0,2),['-s','one']);

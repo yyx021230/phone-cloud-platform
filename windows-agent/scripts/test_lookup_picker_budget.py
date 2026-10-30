@@ -99,3 +99,89 @@ class PickerBudgetTests(unittest.TestCase):
         with mock.patch.object(lookup.time,'monotonic',side_effect=lambda:clock[0]),mock.patch.object(lookup.time,'sleep',side_effect=lambda n:clock.__setitem__(0,clock[0]+n)):
             self.assertEqual(len(r.wait_account_picker('transition',timeout=24)),2)
         self.assertEqual(len(calls),3);self.assertGreaterEqual(min(calls),7.5);self.assertLess(clock[0],24);r.adb.assert_not_called()
+
+class PickerImmediateProofTests(unittest.TestCase):
+    def setUp(self):
+        self.r=lookup.Runner({'serial':'SYNTHETIC','taskId':'picker-proof'})
+        self.clock=0.0;self.frames=[];self.calls=0
+        self.r.emit=mock.Mock();self.r.page_overlay_kind=lambda **kw:None
+        self.r.recover_page_mismatch=lambda *a,**kw:False
+        def dump(*args,**kw):
+            self.calls+=1;self.clock+=7.0
+            frame=self.frames.pop(0) if self.frames else tree()
+            if isinstance(frame,Exception):raise frame
+            return frame,{c:p for p in frame.iter() for c in p}
+        self.r.dump=dump
+        self.time=mock.patch.object(lookup.time,'monotonic',side_effect=lambda:self.clock)
+        self.sleep=mock.patch.object(lookup.time,'sleep',side_effect=lambda n:setattr(self,'clock',self.clock+n))
+        self.time.start();self.sleep.start();self.addCleanup(self.time.stop);self.addCleanup(self.sleep.stop)
+
+    def verified(self):
+        self.assertEqual(len(self.r.wait_account_picker('first')),2)
+        self.assertEqual(self.calls,2)
+
+    def test_immediate_rotation_matches_one_new_complete_frame(self):
+        self.verified();self.r.reuse_open_account_picker('rotation')
+        self.assertEqual(self.calls,3)
+
+    def test_separate_invocation_still_requires_two_fresh_frames(self):
+        self.r.reuse_open_account_picker('manual')
+        self.assertEqual(self.calls,2)
+
+    def test_expired_proof_requires_two_fresh_frames(self):
+        self.verified();self.clock+=1.01;self.r.reuse_open_account_picker('expired')
+        self.assertEqual(self.calls,4)
+
+    def test_intervening_adb_call_invalidates_even_when_it_fails(self):
+        self.verified()
+        with mock.patch.object(lookup.subprocess,'run',side_effect=subprocess.TimeoutExpired('synthetic',1)):
+            with self.assertRaises(subprocess.TimeoutExpired):self.r.adb(['shell','echo','observation'],timeout=1)
+        self.r.reuse_open_account_picker('after-command');self.assertEqual(self.calls,4)
+
+    def test_changed_current_marker_or_positions_requires_two_new_matching_frames(self):
+        for changed in (tree(current='B'),tree(y=400)):
+            self.calls=0;self.r._account_picker_proof=None;self.verified()
+            self.frames=[changed,changed];self.r.reuse_open_account_picker('changed')
+            self.assertEqual(self.calls,4)
+
+    def test_incomplete_frame_discards_prior_proof(self):
+        self.verified();self.frames=[tree(rows=False),tree(),tree()]
+        self.r.reuse_open_account_picker('partial');self.assertEqual(self.calls,5)
+
+    def test_failed_reuse_cannot_leave_a_proof_for_next_attempt(self):
+        self.verified();self.frames=[subprocess.TimeoutExpired('synthetic',7)]
+        with self.assertRaises(RuntimeError):self.r.reuse_open_account_picker('timeout',timeout=8)
+        self.assertIsNone(self.r._account_picker_proof)
+        before=self.calls;self.r.reuse_open_account_picker('retry');self.assertEqual(self.calls-before,2)
+
+    def test_regular_wait_does_not_consume_prior_proof(self):
+        self.verified();self.r.wait_account_picker('independent');self.assertEqual(self.calls,4)
+
+class PickerPreparationRetryTests(unittest.TestCase):
+    def runner(self, cooling=False):
+        from test_lookup_account_cooldown import AccountCooldownTests
+        r=AccountCooldownTests().runner(**({'accountCooldowns':[{'account':'A','cooldownUntil':'2099-01-01T00:00:00Z'}]} if cooling else {}))
+        root=tree();r.dump.return_value=(root,{c:p for p in root.iter() for c in p})
+        picker=lookup.ALIPAY_PACKAGE+'/com.alipay.mobile.security.accountmanager.ui.AccountManagerV2Activity'
+        r.focus_state=mock.Mock(return_value=('', 'mCurrentFocus=Window{a u0 '+picker+'}', 'mFocusedApp=ActivityRecord{a u0 '+picker+'}'))
+        return r
+
+    @mock.patch.object(lookup.time,'sleep')
+    def test_visible_picker_retry_revalidates_without_relaunching_entry(self,_):
+        r=self.runner();r.prepare_available_account()
+        self.assertEqual(r.dump.call_count,3)
+        r.open_account_picker.assert_not_called()
+        r.launch.assert_called_once_with('account-preflight-complete')
+
+    @mock.patch.object(lookup.time,'sleep')
+    def test_visible_picker_does_not_skip_current_cooldown(self,_):
+        r=self.runner(True);r.prepare_available_account()
+        r.switch_account.assert_called_once_with(reason='cooldown',excluded_accounts={'A'},reuse_open_picker=True,verify_current_marker=True)
+        r.open_account_picker.assert_not_called()
+
+    @mock.patch.object(lookup.time,'sleep')
+    def test_mismatched_foreground_cannot_reuse_underlying_rows(self,_):
+        r=self.runner();r.focus_state.return_value=('', 'mCurrentFocus=Window{a u0 com.android.systemui/.Overlay}', '')
+        r.prepare_available_account()
+        r.open_account_picker.assert_called_once_with('preflight')
+        self.assertEqual(r.dump.call_count,1)
