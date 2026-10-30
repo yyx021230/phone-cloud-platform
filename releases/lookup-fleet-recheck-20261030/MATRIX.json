@@ -1,0 +1,1260 @@
+{
+  "asOf": "2026-10-30T09:10:03.052Z",
+  "historyScope": {
+    "sampledAt": "2026-10-29T06:33:28.836526+00:00",
+    "from24h": "2026-10-28T06:33:28.836526+00:00",
+    "from7d": "2026-10-22T06:33:28.836526+00:00",
+    "queryMode": "read-only grouped + 100-row failure pages; no device commands",
+    "failedPages": 28,
+    "initialLargeExport": "7-day JSON metadata export hit 15-second transport timeout; discarded and not retried"
+  },
+  "historyFailedJobs": 2708,
+  "historyTotalJobs": 10906,
+  "currentTechnicalOrPreparationBlocked": [
+    51,
+    52,
+    54,
+    142,
+    146,
+    147,
+    149,
+    152,
+    153,
+    154,
+    155,
+    158,
+    183,
+    188,
+    191,
+    192
+  ],
+  "currentHealthCounts": {
+    "accounts_cooling": 15,
+    "account_login_required": 5,
+    "eligible": 15,
+    "page_preparation_backoff": 2,
+    "lookup_device_unavailable": 10,
+    "preparation_failed_round": 1
+  },
+  "localBaseCommit": "77ae334bf14b09b9bae5d8d91fd802433a2f1ce0",
+  "productionRelease": "platform-integration-20261029-deployed.1",
+  "productionSource": "3a266d71ba861f8e81d6ec3a173d7efc12d5b245",
+  "productionImage": "sha256:a4db69c8a61befac7591924e354227146cb97fc6574556da35a2b86b7ddd6b4d",
+  "exactJobsRequested": 43,
+  "exactJobsFound": 43,
+  "exactArchivedResultsFound": 36,
+  "privateEvidenceHashes": {
+    "FLEET_LIVE_PRIVATE.json": "7403f82bf64e9b450987ed4124c4fc6c976021074ad9286c3d9538b937e3506b",
+    "FLEET_JOBS_PRIVATE.json": "bec9ac80a786d41f97ebb0eba611594c66edf390b2639fc12f9861306fced871",
+    "FLEET_FINALS_PRIVATE.json": "8125ac746d98e8a9cb4d5428e3f88eee9e5d1815093de24cd7562ae89b9bcb32",
+    "ACTIVE_PRIVATE.json": "5371061a78c06602e87f9b43def1ca404143df21ebf4756e09098bfbaf9839a7"
+  },
+  "devices": [
+    {
+      "deviceNumber": 6,
+      "currentReason": "accounts_cooling",
+      "phase": null,
+      "observation": "账户全部冷却；历史问题仍见下列各族",
+      "jobId": "4bc55a81-34fa-46d5-a689-2f9745498e7f",
+      "historicalFamilies": {
+        "account_limit": 11,
+        "observation_budget_exhausted": 3,
+        "person_not_found": 2,
+        "visual_card_not_proven": 9,
+        "human": 14,
+        "foreground_not_alipay": 1,
+        "post_human_input_changed": 1,
+        "result_other": 1
+      },
+      "historicalFailedJobs": 42,
+      "historicalTotalJobs": 94,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "89284859-b67c-4203-b34f-ed0f2e6ac7d9",
+        "status": "succeeded",
+        "purpose": null,
+        "hasName": null,
+        "code": ""
+      }
+    },
+    {
+      "deviceNumber": 10,
+      "currentReason": "account_login_required",
+      "phase": null,
+      "observation": "未登录/本轮阻断；历史问题仍见下列各族",
+      "jobId": null,
+      "historicalFamilies": {
+        "login": 1,
+        "account_limit": 2,
+        "human": 2,
+        "identity_unverified": 1,
+        "observation_budget_exhausted": 1,
+        "visual_card_not_proven": 1
+      },
+      "historicalFailedJobs": 8,
+      "historicalTotalJobs": 26,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false
+    },
+    {
+      "deviceNumber": 51,
+      "currentReason": "",
+      "phase": "stopping",
+      "observation": "旧代次停止清理未确认，重试耗尽",
+      "jobId": null,
+      "historicalFamilies": {
+        "package_manager": 18,
+        "cleanup_unconfirmed": 9,
+        "account_picker_unstable": 1,
+        "human": 16,
+        "reader_bootstrap_exit": 2
+      },
+      "historicalFailedJobs": 46,
+      "historicalTotalJobs": 79,
+      "candidateEvidence": "原机准备/续读局部通过，业务及清理故障未闭环",
+      "completeCandidateAcceptance": false
+    },
+    {
+      "deviceNumber": 52,
+      "currentReason": "",
+      "phase": "stopping",
+      "observation": "旧代次停止清理未确认，重试耗尽",
+      "jobId": null,
+      "historicalFamilies": {
+        "package_manager": 3,
+        "person_not_found": 2,
+        "human": 2
+      },
+      "historicalFailedJobs": 7,
+      "historicalTotalJobs": 14,
+      "candidateEvidence": "原机准备局部通过，保活试验失败，完整业务未闭环",
+      "completeCandidateAcceptance": false
+    },
+    {
+      "deviceNumber": 53,
+      "currentReason": "",
+      "phase": "idle",
+      "observation": "结果卡未证明；同原业务最终有名",
+      "jobId": "17f806e4-cba7-472b-bf3f-377b9bbaf1c0",
+      "historicalFamilies": {
+        "visual_card_not_proven": 43,
+        "person_not_found": 21,
+        "human": 29,
+        "observation_budget_exhausted": 9,
+        "selector_missing": 1,
+        "account_limit": 5,
+        "resume_state_mismatch": 7,
+        "post_human_input_changed": 7,
+        "identity_unverified": 1,
+        "window_service_timeout": 1
+      },
+      "historicalFailedJobs": 124,
+      "historicalTotalJobs": 631,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "ae3602a0-ff7d-4ba3-ac8e-0576e7e13908",
+        "status": "succeeded",
+        "purpose": null,
+        "hasName": true,
+        "code": ""
+      }
+    },
+    {
+      "deviceNumber": 54,
+      "currentReason": "",
+      "phase": "stopping",
+      "observation": "旧代次停止清理未确认，重试耗尽",
+      "jobId": null,
+      "historicalFamilies": {
+        "package_manager": 3,
+        "human": 3,
+        "progress_diagnostic": 3,
+        "cleanup_unconfirmed": 1
+      },
+      "historicalFailedJobs": 10,
+      "historicalTotalJobs": 16,
+      "candidateEvidence": "旧代次曾清理释放；新代次复发，完整业务未闭环",
+      "completeCandidateAcceptance": false
+    },
+    {
+      "deviceNumber": 57,
+      "currentReason": "",
+      "phase": null,
+      "observation": "输入后结果通道超时；同原业务最终有名",
+      "jobId": "936e760f-2c12-46bb-812a-6677ae00034e",
+      "historicalFamilies": {
+        "observation_budget_exhausted": 13,
+        "person_not_found": 16,
+        "visual_card_not_proven": 70,
+        "reader_capacity": 4,
+        "human": 47,
+        "account_limit": 5,
+        "resume_state_mismatch": 13,
+        "post_human_input_changed": 17,
+        "selector_missing": 3,
+        "identity_unverified": 1,
+        "server_error": 2
+      },
+      "historicalFailedJobs": 191,
+      "historicalTotalJobs": 1031,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "66adcfad-40fe-46ed-804a-f2a7cba0e818",
+        "status": "succeeded",
+        "purpose": null,
+        "hasName": true,
+        "code": ""
+      }
+    },
+    {
+      "deviceNumber": 58,
+      "currentReason": "accounts_cooling",
+      "phase": null,
+      "observation": "账户全部冷却；历史问题仍见下列各族",
+      "jobId": "13b11705-1710-46a0-b15d-85e93989c51d",
+      "historicalFamilies": {
+        "account_limit": 13,
+        "human": 17,
+        "selector_missing": 3
+      },
+      "historicalFailedJobs": 33,
+      "historicalTotalJobs": 103,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "29085102-3f60-4e18-8611-951e84b8b080",
+        "status": "succeeded",
+        "purpose": null,
+        "hasName": true,
+        "code": ""
+      }
+    },
+    {
+      "deviceNumber": 60,
+      "currentReason": "accounts_cooling",
+      "phase": null,
+      "observation": "账户全部冷却；历史问题仍见下列各族",
+      "jobId": "5da99c3d-04c1-4851-916f-1ebc689aa5da",
+      "historicalFamilies": {
+        "account_limit": 6,
+        "human": 14,
+        "selector_missing": 2,
+        "identity_unverified": 4,
+        "post_human_input_changed": 2,
+        "visual_card_not_proven": 1
+      },
+      "historicalFailedJobs": 29,
+      "historicalTotalJobs": 81,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "ba66fd92-adb6-4863-9ebe-99cdcf8d8bfd",
+        "status": "succeeded",
+        "purpose": null,
+        "hasName": null,
+        "code": ""
+      }
+    },
+    {
+      "deviceNumber": 67,
+      "currentReason": "",
+      "phase": "human",
+      "observation": "池级无阻断；历史问题仍见下列各族",
+      "jobId": "eb6d6e60-6adf-4175-bc08-549deb6f2d8b",
+      "historicalFamilies": {
+        "account_limit": 5,
+        "human": 5,
+        "person_not_found": 1,
+        "visual_card_not_proven": 1
+      },
+      "historicalFailedJobs": 12,
+      "historicalTotalJobs": 34,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "388b5dfc-b2d1-4cb6-8bd6-a1e884f947df",
+        "status": "waiting_human",
+        "purpose": "readiness_probe",
+        "hasName": false,
+        "code": null
+      }
+    },
+    {
+      "deviceNumber": 74,
+      "currentReason": "accounts_cooling",
+      "phase": null,
+      "observation": "账户全部冷却；历史问题仍见下列各族",
+      "jobId": "565514b4-a4f4-48ac-b3bb-05acdec12b38",
+      "historicalFamilies": {
+        "account_limit": 10,
+        "identity_unverified": 1,
+        "human": 5,
+        "visual_card_not_proven": 3,
+        "navigation_overlay": 1,
+        "person_not_found": 1
+      },
+      "historicalFailedJobs": 21,
+      "historicalTotalJobs": 65,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "8d9a78e3-f7d8-43e2-b734-15e41e03a437",
+        "status": "succeeded",
+        "purpose": null,
+        "hasName": null,
+        "code": ""
+      }
+    },
+    {
+      "deviceNumber": 79,
+      "currentReason": "account_login_required",
+      "phase": null,
+      "observation": "未登录/本轮阻断；历史问题仍见下列各族",
+      "jobId": null,
+      "historicalFamilies": {
+        "login": 1,
+        "visual_card_not_proven": 14,
+        "human": 14,
+        "resume_state_mismatch": 8,
+        "post_human_input_changed": 9,
+        "observation_budget_exhausted": 4,
+        "account_limit": 1
+      },
+      "historicalFailedJobs": 51,
+      "historicalTotalJobs": 222,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false
+    },
+    {
+      "deviceNumber": 86,
+      "currentReason": "account_login_required",
+      "phase": null,
+      "observation": "未登录/本轮阻断；历史问题仍见下列各族",
+      "jobId": null,
+      "historicalFamilies": {
+        "login": 1
+      },
+      "historicalFailedJobs": 1,
+      "historicalTotalJobs": 1,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false
+    },
+    {
+      "deviceNumber": 87,
+      "currentReason": "accounts_cooling",
+      "phase": null,
+      "observation": "账户全部冷却；历史问题仍见下列各族",
+      "jobId": "82ce83c7-1554-4082-ba28-ade0d1df65cb",
+      "historicalFamilies": {
+        "account_limit": 6,
+        "human": 13,
+        "navigation_overlay": 3,
+        "identity_unverified": 4,
+        "visual_card_not_proven": 1
+      },
+      "historicalFailedJobs": 27,
+      "historicalTotalJobs": 88,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "80923fcc-83bc-459a-969f-3257b3cb82d8",
+        "status": "succeeded",
+        "purpose": null,
+        "hasName": null,
+        "code": ""
+      }
+    },
+    {
+      "deviceNumber": 101,
+      "currentReason": "accounts_cooling",
+      "phase": null,
+      "observation": "账户全部冷却；历史问题仍见下列各族",
+      "jobId": "5a1f60a5-c219-4bcc-90cc-464388b757b2",
+      "historicalFamilies": {
+        "visual_card_not_proven": 34,
+        "person_not_found": 11,
+        "human": 26,
+        "observation_budget_exhausted": 3,
+        "account_limit": 5,
+        "reader_capacity": 1,
+        "foreground_changed": 1,
+        "resume_state_mismatch": 4,
+        "post_human_input_changed": 5
+      },
+      "historicalFailedJobs": 90,
+      "historicalTotalJobs": 515,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "82d9b6d5-0eda-428a-8f22-5dbf7c77a9c7",
+        "status": "failed",
+        "purpose": "readiness_probe",
+        "hasName": null,
+        "code": "lookup_accounts_cooling"
+      }
+    },
+    {
+      "deviceNumber": 107,
+      "currentReason": "accounts_cooling",
+      "phase": null,
+      "observation": "账户全部冷却；历史问题仍见下列各族",
+      "jobId": "caa24c1e-73b3-4c4e-896d-f1fd5e7f38ca",
+      "historicalFamilies": {
+        "account_limit": 3,
+        "identity_unverified": 1,
+        "visual_card_not_proven": 1,
+        "human": 1
+      },
+      "historicalFailedJobs": 6,
+      "historicalTotalJobs": 17,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "e6cb4ae6-f3c4-40aa-bd46-8f9acb05ac8b",
+        "status": "failed",
+        "purpose": "readiness_probe",
+        "hasName": null,
+        "code": "lookup_accounts_cooling"
+      }
+    },
+    {
+      "deviceNumber": 112,
+      "currentReason": "accounts_cooling",
+      "phase": null,
+      "observation": "账户全部冷却；历史问题仍见下列各族",
+      "jobId": "7566cfe3-1d9d-4e86-ae67-b96ece915c50",
+      "historicalFamilies": {
+        "human": 24,
+        "visual_card_not_proven": 41,
+        "person_not_found": 9,
+        "observation_budget_exhausted": 14,
+        "account_limit": 4,
+        "window_service_timeout": 1,
+        "resume_state_mismatch": 4,
+        "post_human_input_changed": 4
+      },
+      "historicalFailedJobs": 101,
+      "historicalTotalJobs": 456,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "80622f5e-74ad-4955-95b5-12f86150f63f",
+        "status": "succeeded",
+        "purpose": null,
+        "hasName": null,
+        "code": ""
+      }
+    },
+    {
+      "deviceNumber": 115,
+      "currentReason": "account_login_required",
+      "phase": null,
+      "observation": "未登录/本轮阻断；历史问题仍见下列各族",
+      "jobId": null,
+      "historicalFamilies": {
+        "login": 1,
+        "account_limit": 2,
+        "post_human_input_changed": 1,
+        "human": 3,
+        "identity_unverified": 1,
+        "visual_card_not_proven": 1
+      },
+      "historicalFailedJobs": 9,
+      "historicalTotalJobs": 27,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false
+    },
+    {
+      "deviceNumber": 116,
+      "currentReason": "",
+      "phase": "querying",
+      "observation": "池级无阻断；历史问题仍见下列各族",
+      "jobId": "62743246-0753-4a5c-a428-3a9a9bc08cdc",
+      "historicalFamilies": {
+        "observation_budget_exhausted": 24,
+        "visual_card_not_proven": 65,
+        "person_not_found": 8,
+        "human": 44,
+        "reader_capacity": 2,
+        "identity_unverified": 1,
+        "account_limit": 5,
+        "resume_state_mismatch": 14,
+        "post_human_input_changed": 20,
+        "cleanup_unconfirmed": 5,
+        "device_missing": 7,
+        "reader_bootstrap_exit": 1,
+        "result_other": 1,
+        "window_service_timeout": 1,
+        "input_changed": 1,
+        "selector_missing": 1,
+        "visual_card_changed": 1
+      },
+      "historicalFailedJobs": 201,
+      "historicalTotalJobs": 966,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "3c2072d1-1c80-44a8-8aef-4e0775436a5f",
+        "status": "succeeded",
+        "purpose": "readiness_probe",
+        "hasName": true,
+        "code": ""
+      }
+    },
+    {
+      "deviceNumber": 118,
+      "currentReason": "account_login_required",
+      "phase": null,
+      "observation": "未登录/本轮阻断；历史问题仍见下列各族",
+      "jobId": null,
+      "historicalFamilies": {
+        "login": 1
+      },
+      "historicalFailedJobs": 1,
+      "historicalTotalJobs": 3,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false
+    },
+    {
+      "deviceNumber": 128,
+      "currentReason": "accounts_cooling",
+      "phase": null,
+      "observation": "账户全部冷却；历史问题仍见下列各族",
+      "jobId": "5c4bdb64-035c-4d33-aa12-7b8af9a53ec4",
+      "historicalFamilies": {
+        "account_limit": 9,
+        "human": 12,
+        "identity_unverified": 1,
+        "post_human_input_changed": 3,
+        "visual_card_not_proven": 1,
+        "observation_budget_exhausted": 1
+      },
+      "historicalFailedJobs": 27,
+      "historicalTotalJobs": 73,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "18724088-870d-41c5-b7db-099447c1093d",
+        "status": "failed",
+        "purpose": "readiness_probe",
+        "hasName": null,
+        "code": "lookup_accounts_cooling"
+      }
+    },
+    {
+      "deviceNumber": 130,
+      "currentReason": "accounts_cooling",
+      "phase": null,
+      "observation": "账户全部冷却；历史问题仍见下列各族",
+      "jobId": "0d8bb2d8-1b22-4754-baf9-b3a8b18164b4",
+      "historicalFamilies": {
+        "account_limit": 9,
+        "human": 22,
+        "identity_unverified": 4
+      },
+      "historicalFailedJobs": 35,
+      "historicalTotalJobs": 81,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "f1806cef-950a-426a-9c3c-7e3cadd0ec17",
+        "status": "succeeded",
+        "purpose": null,
+        "hasName": null,
+        "code": ""
+      }
+    },
+    {
+      "deviceNumber": 138,
+      "currentReason": "",
+      "phase": "querying",
+      "observation": "结果卡未证明；同原探测最终有名",
+      "jobId": "0d9cb984-0d1a-4a46-9123-a4d8c877b994",
+      "historicalFamilies": {
+        "human": 10,
+        "visual_card_not_proven": 35,
+        "person_not_found": 15,
+        "observation_budget_exhausted": 4,
+        "visual_card_changed": 1,
+        "resume_state_mismatch": 2,
+        "post_human_input_changed": 2
+      },
+      "historicalFailedJobs": 69,
+      "historicalTotalJobs": 223,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "0e9b264c-f421-4ff4-87b5-2351ad2d9545",
+        "status": "succeeded",
+        "purpose": "readiness_probe",
+        "hasName": true,
+        "code": ""
+      }
+    },
+    {
+      "deviceNumber": 142,
+      "currentReason": "page_preparation_backoff",
+      "phase": null,
+      "observation": "切号账户列表采样不稳定",
+      "jobId": "cc4b94b5-403c-4f08-b42a-ee89f14ebfb1",
+      "historicalFamilies": {
+        "progress_diagnostic": 1,
+        "person_not_found": 5,
+        "screenshot_command": 2,
+        "account_picker_unstable": 4,
+        "rpc_timeout": 14,
+        "human": 10,
+        "reader_capacity": 2
+      },
+      "historicalFailedJobs": 38,
+      "historicalTotalJobs": 94,
+      "candidateEvidence": "旧原机输入后恢复通过；最新列表不稳定未用本候选闭环",
+      "completeCandidateAcceptance": false
+    },
+    {
+      "deviceNumber": 146,
+      "currentReason": "lookup_device_unavailable",
+      "phase": null,
+      "observation": "旧worker退出未确认，后续stop也未确认",
+      "jobId": "0dbd5509-a27e-4730-a934-22e27e0fb4f7",
+      "historicalFamilies": {
+        "human": 5,
+        "person_not_found": 10,
+        "package_manager": 1,
+        "rpc_timeout": 2,
+        "cleanup_unconfirmed": 4,
+        "reader_capacity": 1,
+        "xml_missing": 1
+      },
+      "historicalFailedJobs": 24,
+      "historicalTotalJobs": 62,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "38f69f9c-22f4-497f-8984-c5a71978ad2b",
+        "status": "failed",
+        "purpose": "readiness_probe",
+        "hasName": null,
+        "code": "lookup_probe_failed"
+      }
+    },
+    {
+      "deviceNumber": 147,
+      "currentReason": "lookup_device_unavailable",
+      "phase": null,
+      "observation": "恢复后输入完成，读取结果通道超时",
+      "jobId": "bc8c7825-967b-4427-b156-0c84e3fad879",
+      "historicalFamilies": {
+        "human": 9,
+        "person_not_found": 3,
+        "reader_capacity": 1,
+        "rpc_timeout": 6,
+        "navigation_overlay": 1
+      },
+      "historicalFailedJobs": 20,
+      "historicalTotalJobs": 46,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "5cf2b398-0b0e-4a0b-86c8-0abfc9e7c594",
+        "status": "failed",
+        "purpose": "readiness_probe",
+        "hasName": null,
+        "code": "lookup_probe_failed"
+      }
+    },
+    {
+      "deviceNumber": 149,
+      "currentReason": "lookup_device_unavailable",
+      "phase": null,
+      "observation": "输入前Poco RPC超时",
+      "jobId": "9fb25434-e8f4-4054-8dbb-ee9f9a8659ec",
+      "historicalFamilies": {
+        "human": 5,
+        "rpc_timeout": 4,
+        "person_not_found": 1,
+        "reader_reattach": 1,
+        "reader_capacity": 2
+      },
+      "historicalFailedJobs": 13,
+      "historicalTotalJobs": 35,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "2a44e677-425e-4405-9507-be4bb1a06088",
+        "status": "failed",
+        "purpose": "readiness_probe",
+        "hasName": null,
+        "code": "lookup_probe_failed"
+      }
+    },
+    {
+      "deviceNumber": 152,
+      "currentReason": "lookup_device_unavailable",
+      "phase": null,
+      "observation": "输入后visual_before结果通道超时",
+      "jobId": "d82d4a8a-0621-4050-9e84-bd367e92dc65",
+      "historicalFamilies": {},
+      "historicalFailedJobs": 0,
+      "historicalTotalJobs": 0,
+      "candidateEvidence": "原机普通命令失效/清理先失败后成功；完整业务未闭环",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "55f26778-584b-4945-95f4-c9c692442633",
+        "status": "failed",
+        "purpose": "readiness_probe",
+        "hasName": null,
+        "code": "lookup_probe_failed"
+      }
+    },
+    {
+      "deviceNumber": 153,
+      "currentReason": "preparation_failed_round",
+      "phase": null,
+      "observation": "包管理器查询支付宝包路径无响应；DB有原始错误，卡面无详情",
+      "jobId": "c3d25655-51b0-4873-a767-46fa2bd3dc81",
+      "historicalFamilies": {
+        "package_manager": 7,
+        "cleanup_unconfirmed": 4,
+        "human": 3,
+        "navigation_overlay": 1
+      },
+      "historicalFailedJobs": 15,
+      "historicalTotalJobs": 22,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false
+    },
+    {
+      "deviceNumber": 154,
+      "currentReason": "lookup_device_unavailable",
+      "phase": "quarantined",
+      "observation": "旧worker退出未确认，后续stop也未确认",
+      "jobId": "4e7a08a6-0aae-4eda-9169-02dae450a420",
+      "historicalFamilies": {
+        "human": 27,
+        "cleanup_unconfirmed": 39,
+        "person_not_found": 11,
+        "package_manager": 4,
+        "input_changed": 4,
+        "rpc_timeout": 2,
+        "navigation_overlay": 4,
+        "device_missing": 2,
+        "reader_capacity": 1,
+        "progress_diagnostic": 1,
+        "identity_unverified": 1,
+        "account_limit": 1,
+        "reader_bootstrap_exit": 15
+      },
+      "historicalFailedJobs": 112,
+      "historicalTotalJobs": 301,
+      "candidateEvidence": "旧原机读取恢复局部通过；清理未确认仍未闭环",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "b79f4473-d132-4bbc-b35e-eb968a39f346",
+        "status": "failed",
+        "purpose": "readiness_probe",
+        "hasName": null,
+        "code": "lookup_probe_failed"
+      }
+    },
+    {
+      "deviceNumber": 155,
+      "currentReason": "lookup_device_unavailable",
+      "phase": null,
+      "observation": "阻断记录为设备未找到；较晚任务曾到人工页，不能当持续离线",
+      "jobId": "452644e8-2af5-4ab9-b489-3590d7717c7f",
+      "historicalFamilies": {
+        "visual_card_not_proven": 38,
+        "person_not_found": 3,
+        "rpc_timeout": 1,
+        "window_service_timeout": 1,
+        "adb_read_unavailable": 3,
+        "input_changed": 3,
+        "cleanup_unconfirmed": 2,
+        "device_missing": 17,
+        "prompt_screenshot_invalid": 1,
+        "adb_exit": 1,
+        "reader_capacity": 1,
+        "observation_budget_exhausted": 1,
+        "account_limit": 1
+      },
+      "historicalFailedJobs": 73,
+      "historicalTotalJobs": 362,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false
+    },
+    {
+      "deviceNumber": 156,
+      "currentReason": "",
+      "phase": "idle",
+      "observation": "池级无阻断；历史问题仍见下列各族",
+      "jobId": "3c2bd318-798b-41c8-bea8-90d29e8b1cb4",
+      "historicalFamilies": {
+        "account_limit": 9,
+        "identity_unverified": 6,
+        "visual_card_not_proven": 9,
+        "human": 22,
+        "post_human_input_changed": 8,
+        "observation_budget_exhausted": 4
+      },
+      "historicalFailedJobs": 58,
+      "historicalTotalJobs": 684,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "7b72d0b2-266f-40dd-ad8a-b6a29e74fc3a",
+        "status": "failed",
+        "purpose": "readiness_probe",
+        "hasName": null,
+        "code": "lookup_accounts_cooling"
+      }
+    },
+    {
+      "deviceNumber": 157,
+      "currentReason": "accounts_cooling",
+      "phase": null,
+      "observation": "账户全部冷却；历史问题仍见下列各族",
+      "jobId": "54f841c7-ed0d-42e5-a096-caa17ba90c51",
+      "historicalFamilies": {
+        "account_limit": 11,
+        "human": 9,
+        "rpc_timeout": 1,
+        "progress_diagnostic": 1,
+        "navigation_overlay": 2,
+        "identity_unverified": 1,
+        "visual_card_not_proven": 1
+      },
+      "historicalFailedJobs": 26,
+      "historicalTotalJobs": 72,
+      "candidateEvidence": "旧原机人工后只读续接成功；不能替代其他机型",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "a5380ec8-823b-46f0-be42-e790e1a2974f",
+        "status": "succeeded",
+        "purpose": null,
+        "hasName": null,
+        "code": ""
+      }
+    },
+    {
+      "deviceNumber": 158,
+      "currentReason": "lookup_device_unavailable",
+      "phase": null,
+      "observation": "UIAutomator dump命令超时，旧domain=page；不是已证页面布局问题",
+      "jobId": "b2a17ac7-cb13-4537-a4be-b403ef3ac7ff",
+      "historicalFamilies": {
+        "adb_read_unavailable": 2,
+        "device_missing": 15,
+        "human": 7,
+        "prompt_screenshot_invalid": 1,
+        "rpc_timeout": 1,
+        "visual_card_not_proven": 20,
+        "person_not_found": 5,
+        "reader_bootstrap_exit": 1,
+        "xml_command": 1
+      },
+      "historicalFailedJobs": 53,
+      "historicalTotalJobs": 125,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false
+    },
+    {
+      "deviceNumber": 159,
+      "currentReason": "accounts_cooling",
+      "phase": null,
+      "observation": "账户全部冷却；历史问题仍见下列各族",
+      "jobId": "c22342b3-d919-454e-93e0-aed022e58b86",
+      "historicalFamilies": {
+        "account_limit": 5,
+        "human": 11,
+        "navigation_overlay": 3,
+        "visual_card_not_proven": 6,
+        "progress_diagnostic": 1,
+        "identity_unverified": 2,
+        "person_not_found": 3,
+        "post_human_input_changed": 1
+      },
+      "historicalFailedJobs": 32,
+      "historicalTotalJobs": 81,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "d2264091-44be-4538-a951-317d347fa9f5",
+        "status": "failed",
+        "purpose": "readiness_probe",
+        "hasName": null,
+        "code": "lookup_accounts_cooling"
+      }
+    },
+    {
+      "deviceNumber": 161,
+      "currentReason": "",
+      "phase": "querying",
+      "observation": "观察预算耗尽；同原业务最终有名",
+      "jobId": "ad58ab7c-b6dd-40c6-82f8-6d09cbe9157e",
+      "historicalFamilies": {
+        "adb_read_unavailable": 1,
+        "visual_card_not_proven": 77,
+        "navigation_overlay": 2,
+        "account_limit": 3,
+        "observation_budget_exhausted": 14,
+        "identity_unverified": 1,
+        "resume_state_mismatch": 5,
+        "post_human_input_changed": 6,
+        "human": 15,
+        "device_unauthorized": 2,
+        "person_not_found": 1
+      },
+      "historicalFailedJobs": 127,
+      "historicalTotalJobs": 655,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "24e96b4b-b9de-4754-b946-5bc3421f949f",
+        "status": "succeeded",
+        "purpose": null,
+        "hasName": true,
+        "code": ""
+      }
+    },
+    {
+      "deviceNumber": 162,
+      "currentReason": "",
+      "phase": "idle",
+      "observation": "恢复后结果卡未证明；同原探测最终有名",
+      "jobId": "5d138812-509f-4906-9511-851fb9533ea9",
+      "historicalFamilies": {
+        "human": 17,
+        "person_not_found": 16,
+        "visual_card_not_proven": 78,
+        "observation_budget_exhausted": 9,
+        "reader_capacity": 1,
+        "account_limit": 3,
+        "device_missing": 1,
+        "foreground_changed": 1,
+        "xml_command": 1,
+        "identity_unverified": 1,
+        "resume_state_mismatch": 3,
+        "post_human_input_changed": 4
+      },
+      "historicalFailedJobs": 135,
+      "historicalTotalJobs": 660,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "3acbadb9-eaef-4496-99de-1f3be845f723",
+        "status": "succeeded",
+        "purpose": "readiness_probe",
+        "hasName": true,
+        "code": ""
+      }
+    },
+    {
+      "deviceNumber": 163,
+      "currentReason": "accounts_cooling",
+      "phase": null,
+      "observation": "账户全部冷却；历史问题仍见下列各族",
+      "jobId": "bcccaf5d-47ff-401a-ac5a-b91dbde267e1",
+      "historicalFamilies": {
+        "account_limit": 11,
+        "human": 13,
+        "selector_missing": 1,
+        "identity_unverified": 1,
+        "navigation_overlay": 1,
+        "visual_card_not_proven": 3,
+        "device_missing": 1,
+        "observation_budget_exhausted": 1
+      },
+      "historicalFailedJobs": 32,
+      "historicalTotalJobs": 88,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "1470458d-3fd1-4235-ad70-8468a15b67f2",
+        "status": "succeeded",
+        "purpose": null,
+        "hasName": null,
+        "code": ""
+      }
+    },
+    {
+      "deviceNumber": 164,
+      "currentReason": "",
+      "phase": null,
+      "observation": "续读状态不匹配；同原业务最终有名",
+      "jobId": "a487b1b1-f085-4d79-84f0-136aa21b42e3",
+      "historicalFamilies": {
+        "human": 22,
+        "observation_budget_exhausted": 6,
+        "visual_card_not_proven": 43,
+        "person_not_found": 8,
+        "reader_capacity": 1,
+        "xml_missing": 2,
+        "navigation_overlay": 1,
+        "identity_unverified": 1,
+        "account_limit": 2,
+        "resume_state_mismatch": 4,
+        "post_human_input_changed": 5,
+        "xml_command": 1
+      },
+      "historicalFailedJobs": 96,
+      "historicalTotalJobs": 419,
+      "candidateEvidence": "生产原任务已有AI/恢复成功记录；不是本候选故障验收",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "694cc556-b3bb-4085-a9b3-deaeb0dcaa4d",
+        "status": "succeeded",
+        "purpose": null,
+        "hasName": true,
+        "code": ""
+      }
+    },
+    {
+      "deviceNumber": 165,
+      "currentReason": "accounts_cooling",
+      "phase": null,
+      "observation": "账户全部冷却；历史问题仍见下列各族",
+      "jobId": "ad01d047-18da-431a-ba06-e576ae1befbc",
+      "historicalFamilies": {
+        "account_limit": 9,
+        "human": 15,
+        "progress_diagnostic": 1,
+        "identity_unverified": 4,
+        "observation_budget_exhausted": 1,
+        "visual_card_not_proven": 3,
+        "post_human_input_changed": 1
+      },
+      "historicalFailedJobs": 34,
+      "historicalTotalJobs": 90,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "f78758c5-572e-4fa8-892d-d1310b0deb99",
+        "status": "succeeded",
+        "purpose": null,
+        "hasName": null,
+        "code": ""
+      }
+    },
+    {
+      "deviceNumber": 172,
+      "currentReason": "",
+      "phase": "querying",
+      "observation": "恢复后结果卡未证明；同原探测最终有名",
+      "jobId": "aee1c5c1-5faa-4d65-9a90-320a0fbb3362",
+      "historicalFamilies": {
+        "human": 11,
+        "visual_card_not_proven": 42,
+        "person_not_found": 14,
+        "observation_budget_exhausted": 15,
+        "screenshot_command": 10,
+        "resume_state_mismatch": 1,
+        "post_human_input_changed": 3,
+        "reader_capacity": 2,
+        "device_unauthorized": 2,
+        "adb_read_unavailable": 1,
+        "account_limit": 1
+      },
+      "historicalFailedJobs": 102,
+      "historicalTotalJobs": 374,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "ee445d55-4b2a-4382-a58a-97daa4a86023",
+        "status": "succeeded",
+        "purpose": "readiness_probe",
+        "hasName": true,
+        "code": ""
+      }
+    },
+    {
+      "deviceNumber": 176,
+      "currentReason": "",
+      "phase": null,
+      "observation": "续读状态不匹配；同原业务最终有名",
+      "jobId": "922f8ffd-895c-408c-b818-02bea90387f6",
+      "historicalFamilies": {
+        "human": 25,
+        "person_not_found": 27,
+        "visual_card_not_proven": 101,
+        "window_service_timeout": 1,
+        "observation_budget_exhausted": 7,
+        "resume_state_mismatch": 7,
+        "post_human_input_changed": 11,
+        "selector_missing": 3,
+        "identity_unverified": 2,
+        "account_limit": 3,
+        "adb_read_unavailable": 1
+      },
+      "historicalFailedJobs": 188,
+      "historicalTotalJobs": 622,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "cf684c61-3aba-4daf-b165-011b3a7235e9",
+        "status": "succeeded",
+        "purpose": null,
+        "hasName": true,
+        "code": ""
+      }
+    },
+    {
+      "deviceNumber": 181,
+      "currentReason": "accounts_cooling",
+      "phase": null,
+      "observation": "账户全部冷却；历史问题仍见下列各族",
+      "jobId": "1aa7026d-cad1-4993-bc48-9cf76792f8ce",
+      "historicalFamilies": {
+        "account_limit": 6,
+        "human": 14,
+        "reader_capacity": 1,
+        "identity_unverified": 7,
+        "navigation_overlay": 1,
+        "post_human_input_changed": 1,
+        "visual_card_not_proven": 3,
+        "observation_budget_exhausted": 1,
+        "selector_missing": 1
+      },
+      "historicalFailedJobs": 35,
+      "historicalTotalJobs": 88,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "6dba79f3-e366-491c-b0e0-b46063a7ecc4",
+        "status": "succeeded",
+        "purpose": null,
+        "hasName": null,
+        "code": ""
+      }
+    },
+    {
+      "deviceNumber": 182,
+      "currentReason": "",
+      "phase": "querying",
+      "observation": "结果卡未证明；同原业务最终有名",
+      "jobId": "e4468e68-fade-4c7f-82a2-837fc17636a6",
+      "historicalFamilies": {
+        "human": 49,
+        "identity_unverified": 4,
+        "account_limit": 5,
+        "visual_card_not_proven": 99,
+        "person_not_found": 17,
+        "observation_budget_exhausted": 36,
+        "resume_state_mismatch": 14,
+        "post_human_input_changed": 16,
+        "navigation_overlay": 1
+      },
+      "historicalFailedJobs": 241,
+      "historicalTotalJobs": 904,
+      "candidateEvidence": "本候选原机账户准备通过；未证明完整业务恢复",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "eceb7caf-7212-4c4a-a58c-ac053e1374cd",
+        "status": "succeeded",
+        "purpose": null,
+        "hasName": true,
+        "code": ""
+      }
+    },
+    {
+      "deviceNumber": 183,
+      "currentReason": "page_preparation_backoff",
+      "phase": null,
+      "observation": "原结果续读状态不匹配；DB有runnerReason，卡面无详情",
+      "jobId": "c255a88a-9130-4918-b080-b35a032ee990",
+      "historicalFamilies": {
+        "account_limit": 5,
+        "visual_card_not_proven": 4,
+        "human": 5,
+        "navigation_overlay": 1,
+        "foreground_changed": 1,
+        "foreground_not_alipay": 1,
+        "identity_unverified": 1
+      },
+      "historicalFailedJobs": 18,
+      "historicalTotalJobs": 40,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "d914d097-e72e-4785-848f-a2f9ac14466d",
+        "status": "failed",
+        "purpose": "readiness_probe",
+        "hasName": null,
+        "code": "lookup_probe_failed"
+      }
+    },
+    {
+      "deviceNumber": 188,
+      "currentReason": "lookup_device_unavailable",
+      "phase": null,
+      "observation": "Poco HTTP读取超时（本机候选局部验证另列）",
+      "jobId": "5daeb7d3-d0e3-4686-9dc0-85cda171f3ae",
+      "historicalFamilies": {
+        "observation_budget_exhausted": 10,
+        "human": 11,
+        "rpc_timeout": 12,
+        "person_not_found": 9,
+        "navigation_overlay": 1,
+        "account_limit": 4,
+        "input_changed": 1,
+        "post_human_input_changed": 1,
+        "window_service_timeout": 1,
+        "selector_missing": 2,
+        "visual_card_not_proven": 2,
+        "identity_unverified": 1,
+        "reader_capacity": 1
+      },
+      "historicalFailedJobs": 56,
+      "historicalTotalJobs": 161,
+      "candidateEvidence": "rc.3原机首页/整页读取通过；完整业务链仍未通过",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "8bb42698-5145-470e-8da9-0d0ab5e090b1",
+        "status": "failed",
+        "purpose": "readiness_probe",
+        "hasName": null,
+        "code": "lookup_probe_failed"
+      }
+    },
+    {
+      "deviceNumber": 191,
+      "currentReason": "lookup_device_unavailable",
+      "phase": null,
+      "observation": "通知栏关闭未确认（本机已发现Dozing/焦点恢复问题）",
+      "jobId": "b4ffdd81-398f-460f-a4e5-4dd11c7ba171",
+      "historicalFamilies": {
+        "device_missing": 21
+      },
+      "historicalFailedJobs": 21,
+      "historicalTotalJobs": 21,
+      "candidateEvidence": "组件安装、息屏/准备局部验证；完整业务链仍未通过",
+      "completeCandidateAcceptance": false
+    },
+    {
+      "deviceNumber": 192,
+      "currentReason": "lookup_device_unavailable",
+      "phase": null,
+      "observation": "读取器bootstrap退出，终止诊断unknown，深层原因未证",
+      "jobId": "5b9717f8-90d9-4b84-be58-bc13df347eef",
+      "historicalFamilies": {
+        "reader_bootstrap_exit": 15,
+        "human": 2,
+        "person_not_found": 1
+      },
+      "historicalFailedJobs": 18,
+      "historicalTotalJobs": 54,
+      "candidateEvidence": "未检得本候选原机完整API故障恢复通过回执",
+      "completeCandidateAcceptance": false,
+      "linkedFinal": {
+        "lookupId": "74ea2ae4-35b9-400f-beff-673beb5307e7",
+        "status": "failed",
+        "purpose": "readiness_probe",
+        "hasName": null,
+        "code": "lookup_probe_failed"
+      }
+    }
+  ]
+}
