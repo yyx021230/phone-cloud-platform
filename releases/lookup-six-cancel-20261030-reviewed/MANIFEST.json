@@ -1,0 +1,24 @@
+{
+  "version": "lookup-six-cancel-20261030-reviewed.1",
+  "annotatedTag": "lookup-six-cancel-20261030-reviewed.1",
+  "baseCommit": "81d8172e4f2bffaf92404f2e91cd87108d4b67a3",
+  "files": [
+    {
+      "path": "docs/PROJECT_DEVELOPMENT.md",
+      "bytes": 1213169,
+      "sha256": "752b27b57e3c0f87b7dcd103542cfdc9936fbb610084a98c5daa1b2d1ad46f8c"
+    },
+    {
+      "path": "releases/lookup-six-cancel-20261030-reviewed/README.md",
+      "bytes": 1532,
+      "sha256": "34411a19e0cd796c232a73f1ecd6aad266a4cbb8083a166ebac1f1b6151e60cf"
+    },
+    {
+      "path": "releases/lookup-six-cancel-20261030-reviewed/REVIEW.json",
+      "bytes": 13879,
+      "sha256": "8f01f659da59b5b4218e2610f136e8ce6c9aceb7efa1fdf9ebc2225d97da57c7"
+    }
+  ],
+  "runtimeSourceModified": false,
+  "operatorReleaseTag": "lookup-six-cancel-20261030-applied.1"
+}
