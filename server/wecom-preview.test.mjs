@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import fs from "node:fs";
 import vm from "node:vm";
+import {isManagedLookupTask} from "./managed-lookup-delivery.mjs";
 import { WECOM_PREVIEW_DEVICES as pool, previewTarget, previewRequest, previewLease, previewRemarkInput, previewRemarkFingerprint, createPreviewSubmissionGate, invitationRequest, publicInvitation, publicWecomDevice } from "./wecom-preview.mjs";
 
 test("only eight fixed physical identities and the verified Android users are allowed", () => {
@@ -83,7 +84,7 @@ test("actual offline recovery never requeues a preview with uncertain UI writes;
   for (const type of ["wecom_customer_preview","xhs_qr_appium"]) {
     const task={type,taskId:"original",agentId:"agent",status:"running",events:[]};
     const agent={agentId:"agent",online:false};
-    const context=vm.createContext({state:{windowsAgents:[agent],windowsTasks:[task]},
+    const context=vm.createContext({isManagedLookupTask,state:{windowsAgents:[agent],windowsTasks:[task]},
       isWindowsAgentOnline:a=>a.online,nowIso:()=>new Date().toISOString(),newId:()=>"event",
       syncXhsTaskFromWindowsTask:()=>{},syncAutomationJobFromWindowsTask:()=>{},toTime:s=>Date.parse(s),WINDOWS_TASK_TTL_MS:300_000});
     vm.runInContext(fn,context);context.recoverStalledTasks();assert.equal(task.status,"stalled");

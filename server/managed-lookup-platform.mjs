@@ -86,6 +86,20 @@ export function createManagedLookupAdapter(api){
       return !d||!api.online(d)||!a||a.enabled===false||!Number.isFinite(Date.parse(a.lastSeenAt))||Date.now()-Date.parse(a.lastSeenAt)>api.onlineMs;
     },
     screenActive: c => Boolean(api.screenActive(c.deviceId)),
+    runtimeLoss(c){
+      const s=state.automationSessions.find(s=>s.sessionId===c.sessionId&&s.deviceId===c.deviceId&&s.managedLookupGeneration===c.generation);
+      const j=state.automationJobs.find(j=>j.jobId===s?.pendingJobId),t=state.windowsTasks.find(t=>t.taskId===j?.windowsTaskId);
+      const d=state.devices.find(d=>d.deviceId===c.deviceId),a=state.windowsAgents.find(a=>a.agentId===d?.adb?.agentId),report=a?.lookupExecutionReport;
+      if(!s||!j||!t||!['running','stalled'].includes(t.status)||!t.delivery?.ackedAt||!t.delivery.lookupRuntimeId||j.source!=='managed-api'||j.clientId!==c.clientId
+        ||j.deviceId!==c.deviceId||j.sessionId!==c.sessionId||t.deviceId!==c.deviceId||t.agentId!==a?.agentId
+        ||t.payload?.automationSessionId!==c.sessionId||t.payload?.managedLookup?.generation!==c.generation
+        ||!/^alipay_name_(start|query|switch|stop)$/.test(t.type)||j.kind!==t.type
+        ||(j.kind==='alipay_name_query'&&(j.resultId||j.jobId)!==c.queryId)
+        ||!a?.lookupRuntimeId||a.lookupRuntimeId===t.delivery.lookupRuntimeId||this.isOffline(c)
+        ||report?.runtimeId!==a.lookupRuntimeId||!Number.isFinite(report.receivedAt)||Date.now()-report.receivedAt<0||Date.now()-report.receivedAt>=15000
+        ||!Array.isArray(report.activeTaskIds)||report.activeTaskIds.includes(t.taskId))return null;
+      return {taskId:t.taskId,runtimeId:a.lookupRuntimeId};
+    },
     canStop:c=>{const d=state.devices.find(d=>d.deviceId===c.deviceId);return !!d&&api.online(d);},
     clientValid:id=>Boolean(userFor(id)),
     clientOptions:()=>api.clientIds().filter(id=>userFor(id)),
@@ -154,9 +168,15 @@ export function createManagedLookupAdapter(api){
       if(result)return {result,exhausted:s.requiresAccountSwitch===true,ready:s.status==='ready'};
       return {ready:s.status==='ready',exhausted:s.requiresAccountSwitch===true};
     },
-    async quarantineRoundStop(c,tx){
+    async fenceCleanupWait(c,tx,reason){
+      if(!['lookup_processing_timeout','lookup_cancelled','lookup_round_stopped','lookup_recovery_exhausted','lookup_manual_wait_expired','lookup_ai_result_cleanup','lookup_ai_probe_cleanup'].includes(reason))throw managedLookupError('managed_cleanup_reason_invalid',409);
       const session=state.automationSessions.find(s=>s.sessionId===c.sessionId&&s.deviceId===c.deviceId);
-      if((!c.roundStopPreparationId&&c.offlineHandoffSince===undefined&&c.offlineHandoffAt===undefined)||!session||session.managedLookupGeneration!==c.generation)throw managedLookupError('managed_stop_fence_binding_missing',409);
+      if(session?.status!=='stopping'||!session.lookupStopFailure)throw managedLookupError('managed_cleanup_failure_missing',409);
+      return this.quarantineRoundStop(c,tx,reason);
+    },
+    async quarantineRoundStop(c,tx,cleanupReason=''){
+      const session=state.automationSessions.find(s=>s.sessionId===c.sessionId&&s.deviceId===c.deviceId);
+      if((!cleanupReason&&!c.roundStopPreparationId&&c.offlineHandoffSince===undefined&&c.offlineHandoffAt===undefined)||!session||session.managedLookupGeneration!==c.generation)throw managedLookupError('managed_stop_fence_binding_missing',409);
       const done=new Set(['succeeded','failed','cancelled','expired']);
       const jobs=state.automationJobs.filter(j=>j.sessionId===c.sessionId&&j.deviceId===c.deviceId&&/^alipay_name_(start|query|switch|stop)$/.test(j.kind)&&!done.has(j.status));
       const tasks=state.windowsTasks.filter(t=>t.deviceId===c.deviceId&&t.payload?.automationSessionId===c.sessionId&&t.payload?.managedLookup?.generation===c.generation&&/^alipay_name_(start|query|switch|stop)$/.test(t.type)&&!done.has(t.status));
@@ -168,7 +188,7 @@ export function createManagedLookupAdapter(api){
       }
       const affected=[session,...jobs,...tasks],copies=affected.map(x=>structuredClone(x));
       tx.onRollback(()=>affected.forEach((x,i)=>{for(const k of Object.keys(x))delete x[k];Object.assign(x,copies[i]);}));
-      const reason=c.roundStopPreparationId?'lookup_round_stopped':'lookup_device_offline_reassigned';
+      const reason=cleanupReason||(c.roundStopPreparationId?'lookup_round_stopped':'lookup_device_offline_reassigned');
       for(const j of jobs)api.cancelJob(j,reason,{releaseLock:false});
       // Includes leased or handover-pending tasks whose job record is absent.
       // Terminal task guards already reject late payload/ACK/status delivery.

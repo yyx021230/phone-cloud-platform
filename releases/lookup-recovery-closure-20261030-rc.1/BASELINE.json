@@ -1,0 +1,11 @@
+{
+  "head": "19bfc250a1395a1cefd0fdbeabd01d9617cf04cd",
+  "files": {
+    "server/managed-lookup.mjs": "c58747a82c750aa7ab643e84ca7028475ed4b9d797dc1542b96cb495f37ad3c0",
+    "server/managed-lookup-platform.mjs": "81cf25909dddcb3d5249a7bd647be0239630b6e9499a6a0718f3b40a00fb0cb9",
+    "server/managed-lookup-delivery.mjs": "bf919f335fef57eb09c11fdee73d52fdd5b44372c60ad4f70e6651f4ef5e5c3d",
+    "server/index.mjs": "53fc2b55dcb330762a437a1be3e248dd7dccafc9a041606020eb5ae85cf351cf",
+    "windows-agent/src/index.mjs": "be614255d1ffa583d04cf599a94a531a8ec3aa4688ee1c62f500470d00aa31f2",
+    "windows-agent/src/lookup-reader-lifecycle.mjs": "e74a0cf0ba392f97b2e42571d13288a263df0a963723df824b0f1983ece461eb"
+  }
+}

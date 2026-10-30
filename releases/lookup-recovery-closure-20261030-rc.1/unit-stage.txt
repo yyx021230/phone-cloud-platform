@@ -1,0 +1,29 @@
+✔ actual Agent classification enters resumable lifecycle, bypassing image AI and account limits (1.340833ms)
+✔ start saturation pauses new probes on same Agent, without isolating phones; other Agent proceeds (6.059292ms)
+✔ capacity failure preserves original ID through ACK, other warmed phone completes, no permanent exclusion (4.228875ms)
+✔ capacity wait persists restart, expires once and requires new probe; stop never dispatches queued work (4.138167ms)
+✔ exhausted stop resumes paced cleanup, never releases before proof, then accepts next lookup (5.299708ms)
+✔ late cleanup retries pause for live manual control and do not burst after long gap (4.405083ms)
+✔ runtime loss requires exact acknowledged old task and fresh authenticated new runtime report (0.375875ms)
+✔ new runtime preserves original lookup through real stop barrier; late known result wins (3.518541ms)
+✔ result received during runtime grace is preserved and does not trigger duplicate query (2.277167ms)
+✔ runtime observation rejects truncated and malformed lists rather than declaring lost work (1.3685ms)
+✔ acknowledged managed work is never blindly requeued by generic Agent reconnect (4.529291ms)
+✔ unconfirmed cleanup ends deadline logically, never releases the phone (2.709417ms)
+✔ unconfirmed cleanup ends cancel logically, never releases the phone (2.67275ms)
+✔ unconfirmed cleanup ends round logically, never releases the phone (2.525458ms)
+✔ cleanup cancellation persistence failure keeps original request and reservation (1.931ms)
+✔ actual Agent classification enters resumable lifecycle, bypassing image AI and account limits (1.314292ms)
+✔ start saturation pauses new probes on same Agent, without isolating phones; other Agent proceeds (6.203042ms)
+✔ capacity failure preserves original ID through ACK, other warmed phone completes, no permanent exclusion (4.213292ms)
+✔ capacity wait persists restart, expires once and requires new probe; stop never dispatches queued work (4.239417ms)
+✔ failed cleanup persists paced retries, never drops original reservation or duplicates lookup (3.688875ms)
+✔ round stop does not turn explicit cleanup failure into success; subsequent real ACK releases (2.608417ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 126.674375

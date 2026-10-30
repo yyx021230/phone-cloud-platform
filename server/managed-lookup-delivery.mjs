@@ -7,6 +7,9 @@ export function issueScreenGalleryDelivery(t,o={}){
   if(!isManagedLookupTask(t))return legacy.issueScreenGalleryDelivery(t,o);
   if(t.status!=='queued'||!o.token)throw new Error('managed_lookup_delivery_not_queueable');
   const now=o.nowMs??Date.now();t.delivery={token:o.token,attempt:(t.deliveryAttempts||0)+1,leasedAt:new Date(now).toISOString(),expiresAt:new Date(now+(o.leaseMs||60000)).toISOString(),ackedAt:''};t.deliveryAttempts=t.delivery.attempt;t.updatedAt=t.delivery.leasedAt;
+  // Server-owned execution identity. Never infer it later from whichever
+  // process happens to heartbeat after an acknowledged task was dispatched.
+  if(typeof o.lookupRuntimeId==='string'&&/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(o.lookupRuntimeId))t.delivery.lookupRuntimeId=o.lookupRuntimeId;
   const x=structuredClone(t);x.deliveryToken=t.delivery.token;delete x.delivery;delete x.payload.phoneNumber;delete x.payload.preparedLookup;return x;
 }
 export function readScreenGalleryDeliveryPayload(t,token,now=Date.now()){

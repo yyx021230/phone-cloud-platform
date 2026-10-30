@@ -10,6 +10,9 @@ import {LOOKUP_POOL_NUMBERS} from './managed-lookup-store.mjs';
 const DONE=new Set(['succeeded','not_found','failed','expired','cancelled']);
 const OFFLINE_HANDOFF_GRACE_MS=30000;
 const ACTIVE=new Set(['starting','querying','switching','stopping','resuming','unknown']);
+// Two quick retries, then at most one cleanup per phone every 1/2/4/5 minutes.
+// Keep the physical reservation until a matching proof; never restart a reader.
+const stopRetryDelay=count=>count<2?30000:Math.min(300000,60000*2**Math.min(3,Math.max(0,count-2)));
 export function managedLookupError(code,status=400){const e=new Error(code);e.statusCode=status;return e;}
 export function managedLookupResponse(r) {
   if(r.status==='succeeded')return {status:200,body:{ok:true,name:r.name||''}};
@@ -107,17 +110,56 @@ export function createManagedLookupService({store,adapter,now=Date.now,probePhon
       r.name=o.result.name||'';finish(r,o.result.status);releaseCompleted(s,c,o,releasedDevices);return;
     }
     if(r&&['succeeded','not_found'].includes(r.status)&&releaseCompleted(s,c,o,releasedDevices))return;
-    // An explicit failed cleanup is not a stop ACK. Retry cleanup only, at
-    // most twice with 30s spacing; never bootstrap UI or silently reroute.
+    // An explicit failed cleanup is not a stop ACK. After the quick retries,
+    // retain a paced cleanup obligation instead of permanently skipping it.
     // Actual offline devices still use the existing durable generation fence.
     if(o.stopUnconfirmed&&!adapter.isOffline?.(c)){
-      c.phase='stopping';c.stopRetryAt??=now()+30000;
-      if(now()>=c.stopRetryAt&&(c.stopRetryCount||0)<2&&adapter.canStop(c)){
-        await adapter.stop(c,tx);c.stopRetryCount=(c.stopRetryCount||0)+1;c.stopRetryAt=now()+30000;
+      c.phase='stopping';c.stopRetryAt??=now()+30000;c.stopCleanupSince??=now();
+      c.stopCleanupLastJobId=o.stopJobId||'';
+      if((c.stopRetryCount||0)>=2&&!c.stopCleanupAttentionAt){
+        c.stopCleanupAttentionAt=now();
+        audit(s,'lookup_cleanup_attention_required','system',{deviceId:c.deviceId,generation:c.generation});
+      }
+      // Logical completion is not physical release. Persist a cancellation
+      // fence first; deadlines and caller stop must not wait forever on a
+      // broken phone command. The channel still consumes its physical budget.
+      const expired=r?.mode==='async'&&!DONE.has(r.status)&&now()>=r.executionDeadline;
+      const detachRound=c.roundStopPreparationId&&c.roundStopDetachedAt===undefined;
+      if(adapter.fenceCleanupWait&&(detachRound||(r&&!DONE.has(r.status)&&(r.cancelRequested||expired)))){
+        const reason=detachRound?'lookup_round_stopped':r.cancelRequested?(r.cancelReason||'lookup_cancelled'):'lookup_processing_timeout';
+        await adapter.fenceCleanupWait(c,tx,reason);
+        c.cleanupBusinessDetachedAt=now();c.cleanupEndReason=reason;
+        if(detachRound)c.roundStopDetachedAt=now();
+        if(r&&!DONE.has(r.status)){r.cancelRequested=true;r.cancelReason=reason;finish(r,reason==='lookup_processing_timeout'?'expired':'cancelled',reason);}
+        delete c.rerouteAfterStop;delete c.rerouteReason;
+        audit(s,'lookup_cleanup_business_detached','system',{deviceId:c.deviceId,lookupId:r?.lookupId,reason});
+        return;
+      }
+      if(now()>=c.stopRetryAt&&adapter.canStop(c)&&!adapter.screenActive?.(c)){
+        const count=c.stopRetryCount||0;
+        await adapter.stop(c,tx);c.stopRetryCount=count+1;c.stopRetryAt=now()+stopRetryDelay(count);
         audit(s,'lookup_stop_cleanup_retry','system',{deviceId:c.deviceId,attempt:c.stopRetryCount});
       }
       return;
     }
+    // A fresh new process report is evidence of a lost executor, not proof
+    // the old phone reader has stopped. Allow its outbox a bounded grace,
+    // then cancel the exact old delivery via stop() and wait for real proof.
+    const lost=adapter.runtimeLoss?.(c);
+    if(lost){
+      const identity=lost.taskId+':'+lost.runtimeId;
+      if(c.runtimeLossIdentity!==identity){c.runtimeLossIdentity=identity;c.runtimeLossSince=now();}
+      delete c.readinessProof;
+      if(now()-c.runtimeLossSince<30000||adapter.screenActive?.(c)||!adapter.canStop(c))return;
+      if(r&&!DONE.has(r.status)&&!r.cancelRequested&&!c.roundStopPreparationId){
+        if(r.purpose==='readiness_probe')finish(r,'failed','lookup_executor_runtime_lost');
+        else{r.status='rerouting';c.rerouteAfterStop=true;c.rerouteReason='lookup_reroute_runtime_lost';}
+      }
+      await adapter.stop(c,tx);c.phase='stopping';
+      audit(s,'lookup_runtime_lost_cleanup','system',{deviceId:c.deviceId,lookupId:r?.lookupId,taskId:lost.taskId,generation:c.generation});
+      delete c.runtimeLossIdentity;delete c.runtimeLossSince;return;
+    }
+    delete c.runtimeLossIdentity;delete c.runtimeLossSince;
     // End the caller's round independently of unreachable phone cleanup.
     // Offline is never a physical ACK: keep this generation reserved, cancel
     // its deliverable work durably, and only then detach it from round gating.
@@ -364,8 +406,14 @@ export function createManagedLookupService({store,adapter,now=Date.now,probePhon
   function unchangedChannel(s,c){
     const r=s.requests.find(r=>r.lookupId===c.requestId);
     const stopObservation=adapter.observe(c);
-    if(stopObservation.stopUnconfirmed&&!adapter.isOffline?.(c))return c.stopRetryAt!==undefined&&
-      (now()<c.stopRetryAt||(c.stopRetryCount||0)>=2||!adapter.canStop(c));
+    if(r&&!DONE.has(r.status)&&completedResult(r,c,stopObservation))return false;
+    if(stopObservation.stopUnconfirmed&&!adapter.isOffline?.(c)){
+      if(adapter.fenceCleanupWait&&((c.roundStopPreparationId&&c.roundStopDetachedAt===undefined)
+        ||(r&&!DONE.has(r.status)&&(r.cancelRequested||(r.mode==='async'&&now()>=r.executionDeadline)))))return false;
+      if((c.stopRetryCount||0)>=2&&!c.stopCleanupAttentionAt)return false;
+      return c.stopRetryAt!==undefined&&(now()<c.stopRetryAt||!adapter.canStop(c)||adapter.screenActive?.(c));
+    }
+    if(adapter.runtimeLoss?.(c)||c.runtimeLossIdentity)return false;
     if(c.roundStopPreparationId||c.offlineHandoffAt!==undefined){
       const o=adapter.observe(c);
       if(o.stopped||(r&&!DONE.has(r.status)&&completedResult(r,c,o)))return false;

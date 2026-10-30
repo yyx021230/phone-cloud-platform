@@ -27,6 +27,19 @@ export function normalizeLookupReaderCapacity(input, {runtimeId, receivedAt} = {
     pinnedSerials: [...input.pinnedSerials], receivedAt};
 }
 
+// Runtime recovery must never treat a truncated or malformed active-ID list as
+// proof that an acknowledged task disappeared. This is observation, not cleanup.
+export function normalizeLookupExecutionReport(report, encodedIds) {
+  if (!normalizeLookupReaderCapacity(report, {runtimeId:report?.runtimeId, receivedAt:report?.receivedAt})
+      || typeof encodedIds !== 'string' || encodedIds.length > 16384) return null;
+  let ids;
+  try { ids = encodedIds ? encodedIds.split(',').map(id => decodeURIComponent(id).trim()) : []; }
+  catch { return null; }
+  if (ids.length > MAX_ACTIVE_IDS || ids.some(id => !uuid.test(id))
+      || new Set(ids).size !== ids.length) return null;
+  return {runtimeId:report.runtimeId, receivedAt:report.receivedAt, activeTaskIds:ids};
+}
+
 const decision = (allowed, reason, used = null, limit = null) => ({allowed, reason, used, limit});
 
 // Pure decision only. The caller must record issueScreenGalleryDelivery's

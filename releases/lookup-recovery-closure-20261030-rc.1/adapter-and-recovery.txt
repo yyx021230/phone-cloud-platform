@@ -1,0 +1,33 @@
+✔ durable offline fence cancels payload and ACK, retains results and physical lock (1.976708ms)
+✔ fence only touches this session/generation; unrelated work is preserved (0.627667ms)
+✔ rollback restores exact session, jobs and task leases after persistence failure (0.360375ms)
+✔ missing or mismatched generation cannot declare a cancellation fence (0.200708ms)
+✔ orphan leased and handover-pending tasks are fenced even without an active job (0.083583ms)
+✔ business handoff fences only the old attempt with its own reason, without a round stop (0.087667ms)
+✔ offline detection includes stale Agent heartbeat but not screen occupancy or cooling (0.096708ms)
+✔ online failed-cleanup cancellation fence persists task revocation without releasing physical lock (0.117208ms)
+✔ online cleanup fence rejects missing proof and wrong bindings, rolls back persistence failure (0.470584ms)
+✔ actual Agent classification enters resumable lifecycle, bypassing image AI and account limits (1.42375ms)
+✔ start saturation pauses new probes on same Agent, without isolating phones; other Agent proceeds (9.531ms)
+✔ capacity failure preserves original ID through ACK, other warmed phone completes, no permanent exclusion (4.8385ms)
+✔ capacity wait persists restart, expires once and requires new probe; stop never dispatches queued work (3.956042ms)
+✔ exhausted stop resumes paced cleanup, never releases before proof, then accepts next lookup (4.678458ms)
+✔ late cleanup retries pause for live manual control and do not burst after long gap (4.443208ms)
+✔ runtime loss requires exact acknowledged old task and fresh authenticated new runtime report (0.4005ms)
+✔ new runtime preserves original lookup through real stop barrier; late known result wins (4.98675ms)
+✔ result received during runtime grace is preserved and does not trigger duplicate query (2.872833ms)
+✔ runtime observation rejects truncated and malformed lists rather than declaring lost work (1.441209ms)
+✔ acknowledged managed work is never blindly requeued by generic Agent reconnect (4.583917ms)
+✔ unconfirmed cleanup ends deadline logically, never releases the phone (2.6665ms)
+✔ unconfirmed cleanup ends cancel logically, never releases the phone (2.331167ms)
+✔ unconfirmed cleanup ends round logically, never releases the phone (2.582583ms)
+✔ cleanup cancellation persistence failure keeps original request and reservation (1.828917ms)
+✔ already received exact result wins even during cleanup backoff and deadline (2.156708ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 132.2355

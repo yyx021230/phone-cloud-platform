@@ -51,3 +51,21 @@ test('offline detection includes stale Agent heartbeat but not screen occupancy 
  state.windowsAgents[0].lastSeenAt=new Date(Date.now()-61000).toISOString();assert.equal(adapter.isOffline({deviceId:'phone'}),true);
  state.windowsAgents[0].lastSeenAt=new Date().toISOString();online=false;assert.equal(adapter.isOffline({deviceId:'phone'}),true);
 });
+
+test('online failed-cleanup cancellation fence persists task revocation without releasing physical lock',async()=>{
+ const f=fixture();delete f.c.roundStopPreparationId;f.session.status='stopping';f.session.lookupStopFailure={jobId:'failed-stop'};
+ issueScreenGalleryDelivery(f.task,{token:'lease-token'});await f.adapter.fenceCleanupWait(f.c,f.tx,'lookup_processing_timeout');
+ assert.equal(f.job.status,'cancelled');assert.equal(f.task.status,'cancelled');assert.equal(f.task.result.errorCode,'lookup_processing_timeout');
+ assert.equal(readScreenGalleryDeliveryPayload(f.task,'lease-token').ok,false);assert.equal(acknowledgeScreenGalleryDelivery(f.task,'lease-token').ok,false);
+ assert.equal(f.bundles.length,1);assert.equal(f.state.deviceLocks[0].status,'active');assert.equal(f.session.results[0].name,'kept');
+});
+test('online cleanup fence rejects missing proof and wrong bindings, rolls back persistence failure',async()=>{
+ const f=fixture();delete f.c.roundStopPreparationId;
+ await assert.rejects(f.adapter.fenceCleanupWait(f.c,f.tx,'lookup_processing_timeout'),/managed_cleanup_failure_missing/);
+ f.session.status='stopping';f.session.lookupStopFailure={jobId:'failed-stop'};
+ await assert.rejects(f.adapter.fenceCleanupWait(f.c,f.tx,'untrusted-reason'),/managed_cleanup_reason_invalid/);
+ f.c.generation='other';await assert.rejects(f.adapter.fenceCleanupWait(f.c,f.tx,'lookup_processing_timeout'),/managed_stop_fence_binding/);f.c.generation='generation';
+ const before=structuredClone(f.state),adapter=createManagedLookupAdapter({state:f.state,persist:async()=>{throw Error('SQL unavailable');},cancelJob:j=>{j.status='cancelled';}});
+ await assert.rejects(adapter.fenceCleanupWait(f.c,f.tx,'lookup_processing_timeout'),{code:'managed_lookup_persistence_failed'});
+ f.rollback();assert.deepEqual(f.state,before);
+});

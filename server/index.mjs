@@ -11,7 +11,7 @@ import { createRecoveryControls, recoverySerial, normalizeRecoveryControlAck, RE
 import { createManagedLookupStore, MANAGED_LOOKUP_PROTOCOL } from './managed-lookup-store.mjs';
 import { createManagedLookupService } from './managed-lookup.mjs';
 import { createManagedLookupAdapter } from './managed-lookup-platform.mjs';
-import { normalizeLookupReaderCapacity, canAdmitLookupReader } from './lookup-reader-admission.mjs';
+import { normalizeLookupReaderCapacity, normalizeLookupExecutionReport, canAdmitLookupReader } from './lookup-reader-admission.mjs';
 import { canDeliverManagedLookupTask, isManagedLookupTask, supportsLeasedWindowsTaskDelivery, hasActiveScreenGalleryDelivery, issueScreenGalleryDelivery, readScreenGalleryDeliveryPayload, acknowledgeScreenGalleryDelivery } from './managed-lookup-delivery.mjs';
 import { createLookupHumanNotifier, pendingLookupHumanNotifications, readLookupHumanWebhook } from "./lookup-human-notifications.mjs";
 import { createTaskStatusPersistence } from "./task-status-persistence.mjs";
@@ -2158,6 +2158,9 @@ async function routeApi(req, res, url) {
     let readerReport = normalizeLookupReaderCapacity(capacityInput, {
       runtimeId: agent.lookupRuntimeId, receivedAt: Date.now()
     });
+    // Observational only: this cannot release reservations or prove cleanup.
+    // Poll IDs include executing work and pending status outbox entries.
+    agent.lookupExecutionReport = normalizeLookupExecutionReport(readerReport, url.searchParams.get("activeTaskIds") || "");
     let readerCapabilityPersistenceFailed = !lookupReaderCapabilities.available(agentId);
     if (readerCapabilityPersistenceFailed) readerReport = null;
     if (url.searchParams.get("lookupReaderCapacityProtocol") === "1") {
@@ -2228,6 +2231,7 @@ async function routeApi(req, res, url) {
       try {
         const responseTask = issueScreenGalleryDelivery(task, {
           token: newId(),
+          lookupRuntimeId: agent.lookupRuntimeId,
           leaseMs: task.type === "xhs_publish" ? XHS_PUBLISH_DELIVERY_LEASE_MS : SCREEN_GALLERY_DELIVERY_LEASE_MS
         });
         const audit = addAudit("windows_agent_task_delivery", ctx, {
@@ -7128,6 +7132,10 @@ function recoverStalledTasks(agentId = "") {
       continue;
     }
     if (task.status === "stalled" && task.agentId && onlineAgents.has(task.agentId) && task.recoverable !== false) {
+      // An acknowledged managed lookup may still own a phone reader or have a
+      // pending result outbox. Only its generation-aware cleanup/recovery may
+      // replace it; generic reconnect must not re-lease the original query.
+      if (isManagedLookupTask(task) && task.delivery?.ackedAt) continue;
       const stalledAt = toTime(task.stalledAt || task.updatedAt);
       if (stalledAt && now - stalledAt > WINDOWS_TASK_TTL_MS) {
         task.status = "failed";
