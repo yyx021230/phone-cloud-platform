@@ -1940,6 +1940,28 @@ class Runner:
             if (focused_window_name([focus]) in {ALIPAY_HOME, ALIPAY_PACKAGE+"/"+ALIPAY_PACKAGE+".AlipayLogin"}
                     and not self.page_overlay_kind(root=root) and len(matches) == 1):
                 return root, parent, matches[0]
+        if ((recovered or home_tab_returned)
+                and token in {"home-account-preflight-complete", "home-account-preflight-switch-complete"}
+                and selector == {"desc": "搜索框", "package": ALIPAY_PACKAGE}
+                and self.account_identity_verified and self.current_account_after_switch):
+            # 191: waking/dismissing keyguard consumed the last poll. Re-read
+            # once after that confirmed action; never fail on the stale frame
+            # or repeat the Home/account tap. This is arrival proof only.
+            root, parent = self.dump(token+"-after-recovery", command_timeout=3,
+                                     read_timeout=2, allow_tty_fallback=False)
+            _, focus, _ = self.focus_state()
+            self.poco_raise_if_login_focus(focus, token)
+            restriction = self.account_restriction_evidence(root)
+            if restriction:
+                self.raise_account_restriction(restriction, token, "xml_uiautomator")
+            if self.page_overlay_protected(token, root=root):
+                raise RuntimeError("poco_alipay_human_verification_required")
+            matches = self.find(root, **selector)
+            if (focused_window_name([focus]) in {ALIPAY_HOME, ALIPAY_PACKAGE+"/"+ALIPAY_PACKAGE+".AlipayLogin"}
+                    and not self.page_overlay_kind(root=root) and len(matches) == 1):
+                self.emit("account_home_recovery_arrival_confirmed", phoneQueryStarted=False,
+                          accountSelected=False, observationOnly=True)
+                return root, parent, matches[0]
         raise RuntimeError(f"selector_missing:{selector!r}; texts={self.texts(root, 50)!r}; focus={self.focus()!r}")
 
     def return_verified_account_home_tab(self, root, parent):
@@ -2716,9 +2738,14 @@ class Runner:
         """
         prefix = "com.alipay.mobile.antui:id/"
         try:
-            # Optional selectors must not issue separate live exists/list RPCs.
-            # A single fresh hierarchy also prevents evidence from different
-            # popup frames being combined into permission to tap.
+            # 188's Home answers a narrow selector but its full hierarchy
+            # exceeds the transport budget. Do not dump that large tree merely
+            # to prove an optional popup absent. One bounded count only gates
+            # observation; ALL permission-to-close evidence remains in the
+            # same subsequent frozen frame, with a fresh foreground check.
+            title = poco(name=prefix + "title_txt_1", text=ALIPAY_LOCAL_SERVICE_TITLE)
+            if self.poco_initial_home_search_count(poco, title) == 0:
+                return False
             freeze = getattr(poco, "freeze", None)
             snapshot = freeze() if callable(freeze) else poco
             titles = self.poco_nodes(snapshot, name=prefix + "title_txt_1", text=ALIPAY_LOCAL_SERVICE_TITLE)
@@ -2956,6 +2983,30 @@ class Runner:
                 return True
         raise RuntimeError("poco_real_name_prompt_not_dismissed")
 
+    def poco_initial_home_search_count(self, poco, target):
+        """Budget only the first Home navigation selector, not later RPCs.
+
+        Device 188's fresh Home selector needs 2.4-2.8s while its next
+        selector takes <1s. A 2s transport cutoff provokes an unnecessary
+        worker/app recovery. Keep this single navigation read at 4s and
+        restore the original transport before any popup action or input.
+        """
+        transport = getattr(getattr(getattr(poco, "_agent", None), "client", None), "transport", None)
+        original_send = getattr(transport, "send", None)
+        if getattr(self, "_home_search_read_budget_used", False) or not callable(original_send):
+            return len(target)
+        self._home_search_read_budget_used = True
+        def send(request, timeout=None):
+            return original_send(request, timeout=4.0 if timeout is None else timeout)
+        transport.send = send
+        started = time.perf_counter()
+        try:
+            return len(target)
+        finally:
+            transport.send = original_send
+            self.emit("poco_initial_home_read", durationMs=round((time.perf_counter()-started)*1000),
+                      budgetMs=4000, transportRestored=True, driver="poco")
+
     def poco_live_home_search_target(self, poco):
         """Return one live home Search proxy without materializing the full tree.
 
@@ -2970,7 +3021,7 @@ class Runner:
         try:
             target = poco(desc="搜索框")
             try:
-                count = len(target)
+                count = self.poco_initial_home_search_count(poco, target)
             except TypeError:
                 # Simple test doubles and older proxy implementations do not
                 # expose the multiple-query length contract.  Preserve the
@@ -3850,6 +3901,7 @@ class Runner:
             # Input, native result wait and two full-frame OCR reads share one
             # hard budget. Slider recovery passes this deadline through unchanged.
             query_deadline = time.perf_counter() + 60.0
+        self._query_snapshot_deadline = query_deadline
         no_name_deadline = time.time() + POCO_NO_NAME_RESULT_SECONDS
         if resume_after_input:
             # The previous worker already set the phone before its hierarchy
@@ -4222,6 +4274,35 @@ class Runner:
         # and categories. An unchanged input is not evidence of no person.
         return self.poco_visual_result_readonly(poco, phone, query_deadline)
 
+    def poco_bounded_full_snapshot(self, poco, freeze):
+        # 188 real dumps repeatedly take 2.2-4.1s while narrow reads take <1s.
+        # Give ONLY this read one bounded budget; never retry it here, widen
+        # selectors/actions, or extend the original query deadline.
+        transport = getattr(getattr(getattr(poco, "_agent", None), "client", None), "transport", None)
+        original_send = getattr(transport, "send", None)
+        if not callable(original_send):
+            return freeze()
+        started = time.perf_counter()
+        deadline = min(started + 5.0, getattr(self, "_query_snapshot_deadline", started + 5.0))
+        def send(request, timeout=None):
+            remaining = deadline - time.perf_counter()
+            if remaining <= 0:
+                raise TimeoutError("Read timed out: full snapshot budget exhausted")
+            return original_send(request, timeout=min(remaining, timeout) if timeout is not None else remaining)
+        transport.send = send
+        ok = False
+        try:
+            result = freeze()
+            if time.perf_counter() > deadline:
+                raise TimeoutError("Read timed out: full snapshot completed after deadline")
+            ok = True
+            return result
+        finally:
+            transport.send = original_send
+            self.emit("lookup_full_snapshot_read", durationMs=round((time.perf_counter()-started)*1000),
+                      budgetMs=max(0,round((deadline-started)*1000)), ok=ok,
+                      transportRestored=True, observationOnly=True)
+
     def poco_result_snapshot(self, poco, stage):
         # Both checks belong to an already submitted query. Keep the existing
         # bounded observation-resume path, never an app restart or new input.
@@ -4254,20 +4335,57 @@ class Runner:
         unparsed_previous = None
         network_busy = False
         network_previous = None
+        display_recoveries = 0
         def observation_timeout():
             reason = "visual_network_busy" if network_busy or getattr(self,"_network_refreshed_phone",None)==phone else "observation_budget_exhausted"
             return RuntimeError("local_lookup_result_unconfirmed:" + reason)
         self.emit("lookup_visual_result_probe", driver="poco_visual_readonly",
                   remainingMs=max(0, round((query_deadline-time.perf_counter())*1000)),
                   resubmitsInput=False, resubmitsSearch=False)
-        while sample < 2:
+        def observe_result_focus():
+            nonlocal display_recoveries
             remaining = query_deadline - time.perf_counter()
-            if remaining < 2.0:
+            if remaining <= 0:
                 raise observation_timeout()
             lines = self.focus(timeout=min(3.0, remaining), recover=False)
             current, focused = self.focus_components(lines)
             if not self.exact_search_activity_visible(current, focused):
-                raise RuntimeError("local_lookup_result_unconfirmed:foreground_changed")
+                # A screen timeout can hide the submitted Search and clear
+                # mFocusedApp entirely. Waking a proven sleeping keyguard is
+                # only permission to re-observe, never proof of Search/result.
+                # A different concrete underlying app must remain untouched.
+                if (display_recoveries < 3
+                        and focused_window_name([current]) == "NotificationShade"
+                        and (self.exact_search_activity_visible(focused, focused)
+                             or str(focused).strip() in ("", "mFocusedApp=null"))
+                        and self.wake_before_query_if_asleep(deadline=query_deadline)):
+                    display_recoveries += 1
+                    self.emit("lookup_result_display_recovered", resubmitsInput=False,
+                              resubmitsSearch=False, beforeInput=False)
+                    # Power can report Awake before WindowManager has removed
+                    # keyguard (observed on 191). Observe only that transient
+                    # for <=2s/8 reads; do not navigate or repeat the wake.
+                    settle_deadline = min(query_deadline, time.perf_counter() + 2.0)
+                    for _ in range(8):
+                        remaining = settle_deadline - time.perf_counter()
+                        if remaining <= 0:
+                            break
+                        lines = self.focus(timeout=min(1.0, remaining), recover=False)
+                        current, focused = self.focus_components(lines)
+                        if self.exact_search_activity_visible(current, focused):
+                            break
+                        transient = (focused_window_name([current]) == "NotificationShade"
+                                     or str(current).strip() in ("", "mCurrentFocus=null"))
+                        if not transient:
+                            break
+                        time.sleep(min(.1, max(0, settle_deadline-time.perf_counter())))
+                if not self.exact_search_activity_visible(current, focused):
+                    raise RuntimeError("local_lookup_result_unconfirmed:foreground_changed")
+        while sample < 2:
+            remaining = query_deadline - time.perf_counter()
+            if remaining < 2.0:
+                raise observation_timeout()
+            observe_result_focus()
             snapshot = self.poco_result_snapshot(poco, "visual_before")
             self.poco_raise_if_account_restricted(snapshot, "visual-result-before", phone_query_started=True)
             if self.poco_verification_evidence(snapshot):
@@ -4328,10 +4446,7 @@ class Runner:
             remaining = query_deadline - time.perf_counter()
             if remaining <= 0:
                 raise observation_timeout()
-            lines = self.focus(timeout=min(3.0, remaining), recover=False)
-            current, focused = self.focus_components(lines)
-            if not self.exact_search_activity_visible(current, focused):
-                raise RuntimeError("local_lookup_result_unconfirmed:foreground_changed")
+            observe_result_focus()
             fresh = self.poco_result_snapshot(poco, "visual_after")
             self.poco_raise_if_account_restricted(fresh, "visual-result-after", phone_query_started=True)
             if self.poco_verification_evidence(fresh):
@@ -4673,6 +4788,8 @@ class Runner:
         phone = re.sub(r"\D", "", str(self.payload.get("phoneNumber") or ""))
         if not re.fullmatch(r"1\d{10}", phone):
             raise RuntimeError("invalid_phone_number")
+        if operation == "query":
+            self.wake_before_query_if_asleep(before_input=True)
         if self.payload.get("recoverUnexpectedPage") is True:
             if operation != "query":
                 raise RuntimeError("page_recovery_operation_invalid")
@@ -4682,7 +4799,23 @@ class Runner:
             # Never dismiss a visible verification/login/limit by restarting.
             # An unavailable hierarchy fails closed instead of guessing.
             self.dismiss_notification_shade_if_present()
-            snapshot = poco.freeze()
+            try:
+                snapshot = poco.freeze()
+            except Exception as exc:
+                # The post-restart protection read still precedes ALL input.
+                # Preserve the existing one-reattach contract on a transport
+                # timeout here, just as for Search navigation below. Never
+                # use an unreadable guard to authorize another app restart.
+                reason = str(exc)
+                if recovery_stage == "continue_query" and (
+                        "HTTPConnectionPool" in reason or "poco_rpc_failed:" in reason
+                ) and re.search(r"read timed out|ReadTimeout", reason, re.I):
+                    self.emit("lookup_reader_failure", stage="recovery_protection_snapshot",
+                              errorType=type(exc).__name__, beforeInput=True)
+                    raise RuntimeError(
+                        f"poco_query_page_recovery_prepare_failed:poco_rpc_failed:{exc}"
+                    ) from exc
+                raise
             self.poco_raise_if_login_focus("\n".join(self.focus()), "page-recovery")
             self.poco_raise_if_login_required(snapshot, "page-recovery")
             self.poco_raise_if_account_restricted(
@@ -4737,7 +4870,10 @@ class Runner:
                     ) from exc
                 raise
             if not reused:
-                raise RuntimeError("poco_query_search_page_unavailable_before_input")
+                # A verified account may be backgrounded by a wake or reader
+                # bootstrap. Restore its existing task before escalating to
+                # an app restart; this path is still strictly before input.
+                self.poco_prepare_full_path(poco, "verified-query-before-input")
         result = self.query_once_poco(
             poco, phone,
             resume_after_input=(operation == "query_resume"),
@@ -4755,6 +4891,10 @@ class Runner:
     def dismiss_notification_shade_if_present(self):
         if focused_window_name(self.focus()) != "NotificationShade":
             return False
+        # Android also uses this window name for a dozing keyguard. A
+        # notification collapse alone cannot reveal it. Wake first only with
+        # power-state evidence; result-resume still does no app navigation.
+        self.wake_before_query_if_asleep()
         # This only closes the evidenced system drawer; it never presses a
         # permission button, dismisses a verification, or changes a setting.
         self.adb(["shell", "cmd", "statusbar", "collapse"], timeout=5)
@@ -4767,7 +4907,37 @@ class Runner:
             time.sleep(0.1)
         raise RuntimeError("notification_shade_collapse_unconfirmed")
 
-    def wake_and_unlock_for_lookup_start(self):
+    def wake_before_query_if_asleep(self, before_input=False, deadline=None):
+        # Some powered phones report AC (plug type 1), so the existing USB
+        # stay-awake setting does not keep them on. A dozing keyguard is also
+        # named NotificationShade; collapsing a notification cannot wake it.
+        # Wake only a confirmed sleeping display, without changing persistent
+        # power settings or navigating/re-entering a submitted result.
+        def budget(seconds):
+            if deadline is None:
+                return seconds
+            remaining = deadline - time.perf_counter()
+            if remaining < .25:
+                raise RuntimeError("local_lookup_result_unconfirmed:observation_budget_exhausted")
+            return min(seconds, remaining)
+        power = str(self.adb(["shell", "dumpsys", "power"], timeout=budget(3)))
+        states = set(re.findall(r"mWakefulness\s*=\s*(\w+)", power))
+        if states == {"Awake"}:
+            return False
+        if len(states) != 1 or not states.issubset({"Asleep", "Dozing"}):
+            raise RuntimeError("poco_query_wakefulness_unconfirmed")
+        self.emit("query_display_asleep", state=next(iter(states)), beforeInput=before_input)
+        if deadline is None:
+            self.wake_and_unlock_for_lookup_start()
+        else:
+            self.wake_and_unlock_for_lookup_start(deadline=deadline)
+        after = str(self.adb(["shell", "dumpsys", "power"], timeout=budget(3)))
+        if set(re.findall(r"mWakefulness\s*=\s*(\w+)", after)) != {"Awake"}:
+            raise RuntimeError("poco_query_wakefulness_unconfirmed")
+        self.emit("query_display_awake", beforeInput=before_input, powerSettingsChanged=False)
+        return True
+
+    def wake_and_unlock_for_lookup_start(self, deadline=None):
         """Wake the display before reading the foreground Poco hierarchy.
 
         KEYCODE_WAKEUP is normally idempotent, but vivo V2442A on Android 14
@@ -4776,14 +4946,21 @@ class Runner:
         asleep do we send KEYCODE_POWER, avoiding the risk of toggling an
         already-awake display off.
         """
-        self.adb(["shell", "input", "keyevent", "224"], timeout=5, check=False)
-        self.adb(["shell", "wm", "dismiss-keyguard"], timeout=5, check=False)
+        def budget():
+            if deadline is None:
+                return 5
+            remaining = deadline - time.perf_counter()
+            if remaining < .25:
+                raise RuntimeError("local_lookup_result_unconfirmed:observation_budget_exhausted")
+            return min(5, remaining)
+        self.adb(["shell", "input", "keyevent", "224"], timeout=budget(), check=False)
+        self.adb(["shell", "wm", "dismiss-keyguard"], timeout=budget(), check=False)
         power_state = str(self.adb(
-            ["shell", "dumpsys", "power"], timeout=5, check=False,
+            ["shell", "dumpsys", "power"], timeout=budget(), check=False,
         ))
         if re.search(r"mWakefulness\s*=\s*Asleep\b", power_state, re.IGNORECASE):
-            self.adb(["shell", "input", "keyevent", "26"], timeout=5, check=False)
-            self.adb(["shell", "wm", "dismiss-keyguard"], timeout=5, check=False)
+            self.adb(["shell", "input", "keyevent", "26"], timeout=budget(), check=False)
+            self.adb(["shell", "wm", "dismiss-keyguard"], timeout=budget(), check=False)
             self.emit(
                 "wake_display_power_fallback",
                 reason="keycode_wakeup_left_device_asleep",
@@ -5122,6 +5299,17 @@ class Runner:
             if self.payload.get("deferSearchPreparation") is not True:
                 self.open_search("account-preflight-complete")
         if self.payload.get("deferSearchPreparation") is True:
+            # Deferring Search does not mean leaving the verified task on My.
+            # On 188 XML exposes both tab labels while Poco omits them; the
+            # subsequent probe cannot normalize My by those missing labels.
+            # Use the existing guarded XML Home return while this reader owns
+            # preparation, then require a fresh Home Search node. No tap on
+            # Search and no phone input occurs here; readiness still needs the
+            # real managed probe.
+            self.wait_unique("home-account-preflight-complete", timeout=12,
+                             desc="搜索框", package=ALIPAY_PACKAGE)
+            self.emit("account_preflight_home_confirmed", driver="xml_uiautomator",
+                      searchOpened=False, phoneQueryStarted=False)
             self.search_ready_after_switch = False
             self.emit("account_preflight_search_prepare_deferred",
                       reason="managed_probe_prepares_search", accountIdentityVerified=True,
@@ -6070,18 +6258,27 @@ class Runner:
 def run_poco_operation(payload, poco):
     """Run one Alipay operation inside the Agent's resident Poco worker."""
     runner = Runner(payload)
+    original_freeze = poco.freeze
+    poco.freeze = lambda: runner.poco_bounded_full_snapshot(poco, original_freeze)
     try:
         result = runner.run_poco(poco)
         result.setdefault("elapsedMs", int((time.perf_counter() - runner.started) * 1000))
         return result
     except Exception as exc:
-        runner.emit("poco_fast_path_failed", error=repr(exc), workflow="alipay_name")
+        # Keep only code locations, never traceback source lines or locals:
+        # queries/accounts can occur in exception text and runtime values.
+        frames = [{"file": os.path.basename(frame.filename), "function": frame.name,
+                   "line": frame.lineno} for frame in traceback.extract_tb(exc.__traceback__)[-12:]]
+        runner.emit("poco_fast_path_failed", error=repr(exc), workflow="alipay_name",
+                    failureFrames=frames)
         return {
             "ok": False,
             "error": str(exc),
             "elapsedMs": int((time.perf_counter() - runner.started) * 1000),
             "log": runner.log,
         }
+    finally:
+        poco.freeze = original_freeze
 
 
 def main():

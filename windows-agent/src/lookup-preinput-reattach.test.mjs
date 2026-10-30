@@ -14,8 +14,30 @@ test('only a second proven pre-input timeout may escalate to one existing app re
  assert.deepEqual(f.events,['reattach_before_input','restart_app']);assert.equal(f.stops,3);
 });
 test('protected and post-input outcomes from reattach cannot restart or duplicate input',async()=>{
- for(const error of ['poco_alipay_human_verification_required','poco_alipay_login_required','alipay_account_restriction_before_search:access_denied','device_not_online','local_lookup_result_unconfirmed:visual_card_not_proven','poco_query_result_channel_timeout_after_input:ReadTimeout','poco_query_before_input_failed:editableLength=4']){
+ for(const error of ['poco_alipay_human_verification_required','poco_alipay_login_required','alipay_account_restriction_before_search:access_denied','device_not_online','local_lookup_result_unconfirmed:visual_card_not_proven','poco_query_before_input_failed:editableLength=4']){
   const f=fixture(async()=>({ok:false,error}));assert.equal((await f.run()).error,error);assert.equal(f.calls.length,1);assert.equal(f.stops,1);
+ }
+});
+test('post-input timeout inside recovery gets one observation-only continuation, never recursive replay',async()=>{
+ const error='poco_query_result_channel_timeout_after_input:ReadTimeout';
+ const f=fixture(async()=>({ok:false,error}));assert.equal((await f.run()).error,error);
+ assert.equal(f.calls.length,2);assert.equal(f.stops,2);
+ assert.deepEqual(f.calls.map(p=>p.operation),['query','query_resume']);
+ assert.equal(f.calls[1].observationOnlyResume,true);assert.equal(f.calls[1].allowEmptyInputRecovery,false);
+ assert.ok(f.calls.every(p=>p.recoverUnexpectedPage===false));
+});
+test('nested result continuation respects cleanup, prior retry and cancellation fences',async()=>{
+ const error='poco_query_result_channel_timeout_after_input:ReadTimeout';
+ const exhausted=fixture(async()=>({ok:false,error}),{resultRecoveryAttempted:true});
+ await exhausted.run();assert.equal(exhausted.calls.length,1);
+ for(const mode of ['cleanup','cancel']){
+  let stops=0,allowed=true;
+  const f=fixture(async()=>({ok:false,error}),{
+   stopWorker:async()=>{stops++;if(stops===2){if(mode==='cancel')allowed=false;else return false;}return true;},
+   assertAllowed:()=>{if(!allowed)throw Error('screen_control_priority');}
+  });
+  await assert.rejects(f.run(),mode==='cleanup'?/exit_unconfirmed/:/screen_control_priority/);
+  assert.equal(f.calls.length,1);
  }
 });
 test('thrown cancellation and unknown post-input faults are not replayed',async()=>{

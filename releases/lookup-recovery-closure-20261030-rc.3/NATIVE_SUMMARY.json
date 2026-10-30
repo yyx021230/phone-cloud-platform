@@ -1,0 +1,93 @@
+{
+  "nativeAttempt": 11,
+  "at": "2026-10-30T08:47:27.031Z",
+  "physicalPhones": [
+    188,
+    191
+  ],
+  "productionCodeChanged": false,
+  "realAiEnabled": true,
+  "preparationSucceeded": [
+    191,
+    188
+  ],
+  "probeReads": [
+    {
+      "device": 191,
+      "reads": 8,
+      "durationsMs": [
+        773,
+        105,
+        203,
+        125,
+        647,
+        556,
+        425,
+        98
+      ],
+      "allSucceeded": true,
+      "finalCode": "alipay_human_verification_required"
+    },
+    {
+      "device": 188,
+      "reads": 7,
+      "durationsMs": [
+        2633,
+        2310,
+        1867,
+        1871,
+        1678,
+        932,
+        1091
+      ],
+      "allSucceeded": true,
+      "finalCode": "alipay_human_verification_required"
+    }
+  ],
+  "businessSubmissions": 0,
+  "fullApiRecoveryPassed": false,
+  "stopped": true,
+  "bothNativeWorkersCleanupConfirmed": true,
+  "ownControlLeasesReleased": true,
+  "whitelistRestore": [
+    {
+      "device": 188,
+      "restoredEnabled": true,
+      "revision": 155,
+      "restoredAt": "2026-10-30T08:50:56.294429+00:00"
+    },
+    {
+      "device": 191,
+      "restoredEnabled": true,
+      "revision": 156,
+      "restoredAt": "2026-10-30T08:50:58.778492+00:00"
+    }
+  ],
+  "productionBaseline": {
+    "version": "platform-integration-20261029-deployed.1",
+    "runtimeCandidateCommit": "3a266d71ba861f8e81d6ec3a173d7efc12d5b245",
+    "businessSourceCommit": "3a266d71ba861f8e81d6ec3a173d7efc12d5b245",
+    "imageId": "sha256:a4db69c8a61befac7591924e354227146cb97fc6574556da35a2b86b7ddd6b4d",
+    "restartImageId": "sha256:a4db69c8a61befac7591924e354227146cb97fc6574556da35a2b86b7ddd6b4d",
+    "activeSha256": "a0b5b612359d617c2cbe1841189b69d566203fd308a80f46ae149bce51f2bb2a",
+    "running": true,
+    "health": "healthy",
+    "image": "sha256:a4db69c8a61befac7591924e354227146cb97fc6574556da35a2b86b7ddd6b4d",
+    "startedAt": "2026-10-29T08:47:53.272641045Z"
+  },
+  "adbPid": 8148,
+  "agentPid": 22668,
+  "bothOwners": "SYSTEM",
+  "nativeTestSourceHashes": {
+    "test_lookup_reader_boundary.py": "3670e407aec60016f22acfa790858a12f42b956ff7311a4fd908d6fc5cd97367",
+    "alipay_name_lookup.py": "ecf3d7e858b3b847f61c0556f363bc08ed11a48a99c5b53b6f57d12506e94cb6",
+    "test_lookup_prepare_notification_shade.py": "36fcb6806d5141a0704fc477256358067a41b951e7cb88df12e6aef6bfde4263"
+  },
+  "finalCandidateDifference": "After native attempt11, added rejection of a snapshot completing past its deadline; local and Windows isolated tests passed, native full chain not rerun.",
+  "remaining": [
+    "Manual CAPTCHA on 188 and191, latest evidence16:49; no automatic solving",
+    "Original business query failure/recovery/result/next-query chain not completed",
+    "Permanent cleanup failure and shared Agent restart/outbox not native accepted",
+    "Deeper cause of device full-tree latency remains open; slow tree vs2-second cutoff is proven"
+  ]
+}

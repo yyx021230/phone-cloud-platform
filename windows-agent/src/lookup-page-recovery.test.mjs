@@ -179,10 +179,37 @@ test("actual Agent function recovers both thrown transport and parsed page error
     assert.equal(h.calls[2].pageRecoveryStage, "continue_query");
   }
 });
+test("actual Agent pre-input reattach that times out after input observes the original result", async () => {
+  const h = realTaskHarness([
+    {ok:false,error:"poco_query_before_input_failed:ReadTimeout:HTTPConnectionPool read timed out"},
+    {ok:false,error:"poco_query_result_channel_timeout_after_input:ReadTimeout:HTTPConnectionPool read timed out",log:[{step:"input_phone"}]},
+    {ok:true,realNameTailCharacter:"甲",log:[]}
+  ]);
+  const result=await h.run();
+  assert.equal(result.realNameTailCharacter,"甲");
+  assert.deepEqual(h.calls.map(x=>x.operation),["query","query","query_resume"]);
+  assert.equal(h.calls[2].observationOnlyResume,true);
+  assert.equal(h.calls[2].allowEmptyInputRecovery,false);
+  assert.ok(h.calls.every(x=>x.taskId==="original"&&x.phoneNumber==="13800138000"));
+  assert.equal(h.stops(),2);assert.equal(h.xmlCalls(),0);
+});
+
 test("actual Agent recovery failure terminates without another restart or XML", async () => {
   const h = realTaskHarness([{ ok: false, error: "unexpected" }, { ok: false, error: "still_wrong_page" }]);
   await assert.rejects(h.run(), /poco_query_page_recovery_failed/);
   assert.equal(h.calls.length, 2); assert.equal(h.stops(), 1);
+});
+test("actual Agent post-restart continuation also preserves a later input boundary", async () => {
+  const h=realTaskHarness([
+    {ok:false,error:"unexpected_popup"},
+    {ok:true,appRecoveryStage:"app_restarted",log:[]},
+    {ok:false,error:"poco_query_result_channel_timeout_after_input:ReadTimeout",log:[{step:"input_phone"}]},
+    {ok:true,realNameTailCharacter:"甲",log:[]}
+  ]);
+  assert.equal((await h.run()).realNameTailCharacter,"甲");
+  assert.deepEqual(h.calls.map(x=>x.pageRecoveryStage),[undefined,"restart_app","continue_query","reattach_result_only"]);
+  assert.equal(h.calls[3].observationOnlyResume,true);assert.equal(h.calls[3].allowEmptyInputRecovery,false);
+  assert.equal(h.stops(),3);assert.equal(h.xmlCalls(),0);
 });
 test("actual Agent retries tagged preparation once, with the original task and no extra app restart", async () => {
   const h = realTaskHarness([{ ok: false, error: "unexpected_popup" },

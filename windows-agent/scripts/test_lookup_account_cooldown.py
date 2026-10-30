@@ -21,6 +21,7 @@ class AccountCooldownTests(unittest.TestCase):
         r.launch = mock.Mock()
         r.open_account_picker = mock.Mock(return_value=self.rows())
         r.open_search = mock.Mock()
+        r.wait_unique = mock.Mock()
         r.emit = mock.Mock()
         r.switch_account = mock.Mock()
         return r
@@ -42,10 +43,20 @@ class AccountCooldownTests(unittest.TestCase):
         r.open_account_picker.assert_called_once_with("preflight")
         r.launch.assert_any_call("account-preflight-complete")
         r.open_search.assert_not_called()
+        r.wait_unique.assert_called_once_with("home-account-preflight-complete", timeout=12,
+                                             desc="搜索框", package=lookup.ALIPAY_PACKAGE)
         self.assertFalse(r.search_ready_after_switch)
         r.emit.assert_any_call("account_preflight_search_prepare_deferred",
                               reason="managed_probe_prepares_search", accountIdentityVerified=True,
                               readinessProven=False, phoneQueryStarted=False)
+
+    def test_deferred_preflight_cannot_pass_when_home_return_fails(self):
+        r = self.runner(deferSearchPreparation=True)
+        r.wait_unique.side_effect = RuntimeError("selector_missing:home")
+        with self.assertRaisesRegex(RuntimeError, "selector_missing:home"):
+            r.prepare_available_account()
+        r.open_search.assert_not_called()
+        self.assertFalse(any(c.args[0] == "lookup_account_ready" for c in r.emit.call_args_list))
 
     def test_only_one_saved_account_is_a_valid_identity(self):
         self.assertEqual(lookup.Runner.saved_account_choices(self.rows(("A",))), [{"account": "A", "current": True}])

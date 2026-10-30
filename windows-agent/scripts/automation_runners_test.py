@@ -3494,28 +3494,32 @@ class AutomationRunnerTests(unittest.TestCase):
         class FrozenOnly:
             def __init__(self): self.reads = 0
             def __call__(self, **selector):
-                raise AssertionError("optional popup must not query live selectors")
+                self_selector = {"name": "com.alipay.mobile.antui:id/title_txt_1", "text": self_title}
+                if selector != self_selector: raise AssertionError("only one narrow title gate allowed")
+                return [object()]
             def freeze(self):
                 self.reads += 1
                 return snapshot
+        self_title = self.lookup.ALIPAY_LOCAL_SERVICE_TITLE
         poco = FrozenOnly()
         with mock.patch.object(self.lookup.time, "sleep", return_value=None):
             self.assertTrue(runner.poco_dismiss_local_service_prompt(poco))
         self.assertEqual(poco.reads, 2)
         runner.poco_tap.assert_called_once_with(close)
 
-    def test_lookup_location_intro_absent_does_not_issue_live_exists_rpc(self):
+    def test_lookup_location_intro_absent_does_not_dump_full_home_or_issue_exists_rpc(self):
         runner, snapshot, _ = self.local_service_poco_fixture(missing="title_txt_1")
-        poco = mock.Mock(side_effect=TimeoutError("live exists stalled"))
-        poco.freeze.return_value = snapshot
+        poco = mock.Mock(return_value=[])
+        poco.freeze.side_effect = TimeoutError("full Home tree stalled")
         self.assertFalse(runner.poco_dismiss_local_service_prompt(poco))
-        poco.assert_not_called()
-        poco.freeze.assert_called_once()
+        poco.assert_called_once_with(name="com.alipay.mobile.antui:id/title_txt_1",
+                                     text=self.lookup.ALIPAY_LOCAL_SERVICE_TITLE)
+        poco.freeze.assert_not_called()
         runner.poco_tap.assert_not_called()
 
     def test_lookup_location_intro_snapshot_timeout_is_not_absence(self):
         runner, _, _ = self.local_service_poco_fixture()
-        poco = mock.Mock()
+        poco = mock.Mock(return_value=[object()])
         poco.freeze.side_effect = TimeoutError("snapshot timed out")
         with self.assertRaisesRegex(RuntimeError, "poco_rpc_failed:snapshot timed out"):
             runner.poco_dismiss_local_service_prompt(poco)
@@ -4029,6 +4033,8 @@ class AutomationRunnerTests(unittest.TestCase):
                     return "device"
                 if args == ["shell", "pm", "path", self.lookup.ALIPAY_PACKAGE]:
                     return "package:/alipay.apk"
+                if args == ["shell", "dumpsys", "power"]:
+                    return "mWakefulness=Awake"
                 return ""
 
             def poco_try_reuse_search_page(inner_self, poco):
