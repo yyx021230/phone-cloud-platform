@@ -53,7 +53,7 @@ CREATE UNIQUE INDEX wecom_v2_claim_operation_once
   WHERE claim_data IS NOT NULL;
 ```
 
-实际DDL还须对其余固定ID/recordedAt存在与类型校验，完整字段白名单由应用执行；示例不是schema已验。M2原六列查询/NULL-only用例应兼容，不能把NULL记录补成某个新claim。claimed task与claimOperationId唯一约束不随未来物理释放删除，未知不能换新执行/claim/nonce绕过；全部ID先由可信server context固定，DB层只消费。
+上方是设计动机，正式拟实现约束以下附录A为准，不只实现这段示例。M2原六列查询/NULL-only用例应兼容，不能把NULL记录补成某个新claim。claimed task与claimOperationId唯一约束不随未来物理释放删除，未知不能换新执行/claim/nonce绕过；全部ID先由可信server context固定，DB层只消费。
 
 ## 3. 已知旧写锁序与非等待策略
 
@@ -107,3 +107,114 @@ immutable business fingerprint沿纯叶/现业务规范字段，原task/job/lock
 另测不同serial一条持锁另一条实际提交、大小写同key、缺anchor/缺device拒绝不创行、same claim全tuple复用/异内容拒绝、新ID冲突、各写点rollback/真实COMMIT丢回复、legacy NULL、合法progress矩阵、旧checkpoint双锁序交错/NOWAIT有界退出与commit后投影回退拒绝、不发布未提交candidate、恢复/回退pending保留。原M2 PG14作独立回归，不累计覆盖数量。
 
 即便本DB片通过，也只证明参与该新anchor的M3路径；旧v1/查名/控屏未接联合门控前不启用、不能宣称跨业务排他成立。journal/真实父子facts/Windows/共享idle pool健康仍仅后续计划。当前只文档，没有上述SQL、表、约束、PG用例或M3 DB实现。
+
+## 附录A：拟实现的完整claim约束（SQL未执行）
+
+本附录取代第2节简化shape示例；M2原DDL原字节保持，新迁移单独创建函数/列/索引。函数仅接受固定字段且不读表、不取时钟。新增列NULL保持兼容；非NULL输入类型错误直接返回false，CHECK必须IS TRUE。recordedAt是审计字符串，不作租约权威；存储片仅接收0001—9999年四位UTC毫秒子集，超出纯叶子集明确拒绝，不悄悄截断。函数体是本提案的一部分，尚未通过真实PG语法/约束验证。
+
+```sql
+CREATE FUNCTION phone_cloud_wecom_v2_claim_valid(c jsonb, s jsonb)
+RETURNS boolean LANGUAGE plpgsql IMMUTABLE AS $$
+DECLARE b jsonb; k text; parsed timestamptz;
+BEGIN
+  IF jsonb_typeof(c) IS DISTINCT FROM 'object' THEN RETURN false; END IF;
+  IF c - ARRAY['version','claimOperationId','originalJobId','originalLockId',
+    'ownerUserId','requestId','mode','businessFingerprint','recordedAt','binding']
+    <> '{}'::jsonb OR c->'version' IS DISTINCT FROM '1'::jsonb THEN RETURN false; END IF;
+  FOREACH k IN ARRAY ARRAY['claimOperationId','originalJobId','originalLockId','ownerUserId'] LOOP
+    IF jsonb_typeof(c->k) IS DISTINCT FROM 'string'
+      OR NOT ((c->>k ~ '^[A-Za-z0-9_-]{1,160}$') IS TRUE) THEN RETURN false; END IF;
+  END LOOP;
+  IF jsonb_typeof(c->'requestId') IS DISTINCT FROM 'string'
+    OR NOT ((c->>'requestId' ~ '^[A-Za-z0-9_-]{8,100}$') IS TRUE)
+    OR jsonb_typeof(c->'mode') IS DISTINCT FROM 'string'
+    OR NOT ((c->>'mode' IN ('preview','send')) IS TRUE)
+    OR jsonb_typeof(c->'businessFingerprint') IS DISTINCT FROM 'string'
+    OR NOT ((c->>'businessFingerprint' ~ '^[a-f0-9]{64}$') IS TRUE)
+    OR jsonb_typeof(c->'recordedAt') IS DISTINCT FROM 'string'
+    OR NOT ((c->>'recordedAt' ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[.][0-9]{3}Z$') IS TRUE)
+    THEN RETURN false; END IF;
+  BEGIN
+    parsed := (c->>'recordedAt')::timestamptz;
+    IF to_char(parsed AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.MS"Z"')
+      IS DISTINCT FROM c->>'recordedAt' THEN RETURN false; END IF;
+  EXCEPTION WHEN datetime_field_overflow OR invalid_datetime_format THEN RETURN false;
+  END;
+  b := c->'binding';
+  IF jsonb_typeof(b) IS DISTINCT FROM 'object'
+    OR b IS DISTINCT FROM s->'binding'
+    OR b - ARRAY['version','obligationId','originalTaskId','executionId','deviceId','serial',
+      'agentId','appSlot','androidUser','nonce','serverEpoch','agentInstanceId','handshakeNonce']
+      <> '{}'::jsonb OR b->'version' IS DISTINCT FROM '2'::jsonb THEN RETURN false; END IF;
+  FOREACH k IN ARRAY ARRAY['obligationId','originalTaskId','executionId','agentId',
+    'nonce','serverEpoch','agentInstanceId','handshakeNonce'] LOOP
+    IF jsonb_typeof(b->k) IS DISTINCT FROM 'string'
+      OR NOT ((b->>k ~ '^[A-Za-z0-9_-]{1,160}$') IS TRUE) THEN RETURN false; END IF;
+  END LOOP;
+  IF jsonb_typeof(b->'serial') IS DISTINCT FROM 'string'
+    OR NOT ((b->>'serial' ~ '^[A-Za-z0-9_.:-]{1,128}$') IS TRUE)
+    OR jsonb_typeof(b->'deviceId') IS DISTINCT FROM 'string'
+    OR b->>'deviceId' IS DISTINCT FROM 'adb:' || (b->>'serial')
+    OR jsonb_typeof(b->'appSlot') IS DISTINCT FROM 'string'
+    OR NOT (((b->>'appSlot'='main' AND b->'androidUser'='0'::jsonb)
+      OR (b->>'appSlot'='clone' AND b->'androidUser'='999'::jsonb)) IS TRUE)
+    OR b->>'obligationId'=c->>'originalLockId' THEN RETURN false; END IF;
+  RETURN true;
+END;
+$$;
+ALTER TABLE phone_cloud_wecom_cleanup_v2 ADD COLUMN claim_data jsonb;
+ALTER TABLE phone_cloud_wecom_cleanup_v2 ADD CONSTRAINT wecom_v2_claim_shape
+  CHECK (claim_data IS NULL OR phone_cloud_wecom_v2_claim_valid(claim_data,protocol_state) IS TRUE);
+CREATE UNIQUE INDEX wecom_v2_one_claim_per_task
+  ON phone_cloud_wecom_cleanup_v2 ((claim_data #>> '{binding,originalTaskId}'))
+  WHERE claim_data IS NOT NULL;
+CREATE UNIQUE INDEX wecom_v2_claim_operation_once
+  ON phone_cloud_wecom_cleanup_v2 ((claim_data->>'claimOperationId'))
+  WHERE claim_data IS NOT NULL;
+```
+
+claimData严格10字段，binding严格13字段；DB验证所有类型/必填/格式及binding与protocol_state完全一致。M1重建校验仍校验protocol_state全结构、revision/host操作，不以这函数代替M1。task/job全JSONB是开放业务记录，沿纯叶严格值域+必需关联检查而非伪造固定顶层字段白名单；不添加独立手机/备注副本到ledger。claimOperationId与M1 host/close operationId属于不同操作用途，后续若出现同号冲突拒绝，不默许跨用途复用。
+
+## 附录B：锚点初始化与并发映射门控（尚未接线，默认禁启）
+
+第1节anchor拟补充以下列（最终CREATE一次完整列清单，不是运行时ALTER）：
+
+```sql
+agent_id text NOT NULL CHECK (agent_id ~ '^[A-Za-z0-9_-]{1,160}$'),
+mapping_revision bigint NOT NULL CHECK (mapping_revision > 0),
+mapping_fingerprint text NOT NULL CHECK (mapping_fingerprint ~ '^[a-f0-9]{64}$'),
+mapping_state text NOT NULL DEFAULT 'disabled' CHECK (mapping_state IN ('disabled','ready'))
+```
+
+fingerprint由固定server解析后的JSON数组[deviceId,serial,agentId,deviceNumber]生成SHA256，大小写serial保持原配置；physical_key单独小写。初始化独立受审事务从真实devices读取并生成逐设备预览，拒绝非USB/重复alias/缺Agent/不一致映射；所有anchor初始disabled，不自动转换pending v1、不覆盖已占用anchor、不创建device。纯DB测试用合成数据可显式设置ready，但不等于生产可启。
+
+实际集成前，所有设备配置/映射变更入口必须先取得相同anchor NOWAIT锁并将mapping_state改disabled、递增revision，active指针存在则禁止改映射；禁用与映射写入须有同一事务或可验证不可用屏障。不得采用“先改device，再事后禁anchor”的窗口。旧generic/checkpoint设备写入尚不参与，因此当前无法证明该屏障，**生产v2必须默认禁启**，不能靠leaf读到相同device快照或无device FK宣称解决竞态。不能为了加此屏障本轮改共享配置入口。未来启用要求root审核入口清单与并发变更验证；重启不自动把disabled升ready。
+
+## 附录C：create/reconcile共享精确读锁集合与返回校验
+
+两者用同一专用loader：BEGIN ISOLATION LEVEL READ COMMITTED；局部lock_timeout=2000ms/statement_timeout=3000ms/idle_in_transaction_session_timeout=5000ms。reconcile只SELECT/SET/事务结束，无INSERT/UPDATE/DELETE，包括全无也不重写。FOR UPDATE不能放在READ ONLY事务中，这里的“只读”指无数据DML，不冒称PG READ ONLY。每次固定以下顺序；每张表查询同样NOWAIT，不调用原M2会等待的SELECT helper：
+
+| 序 | 查询/固定参数 | 必取返回列（不得SELECT *） |
+|---|---|---|
+|1|anchors WHERE physical_key=$physicalKey FOR UPDATE NOWAIT|physical_key,device_id,active_obligation_id,active_claim_operation_id,agent_id,mapping_revision,mapping_fingerprint,mapping_state|
+|2|windows_tasks WHERE task_id=$binding.originalTaskId FOR UPDATE NOWAIT|task_id,agent_id,adb_serial,status,created_at,updated_at,data|
+|3|automation_jobs WHERE job_id=$originalJobId FOR UPDATE NOWAIT|job_id,device_id,user_id,kind,status,created_at,updated_at,data|
+|4|device_locks WHERE lock_id=$binding.obligationId FOR UPDATE NOWAIT|lock_id,device_id,status,expires_at,data|
+|5|device_locks WHERE lock_id=$originalLockId FOR UPDATE NOWAIT|lock_id,device_id,status,expires_at,data|
+|6|wecom_cleanup_v2 WHERE obligation_id=$binding.obligationId FOR UPDATE NOWAIT|obligation_id,server_epoch,revision,host_operation_id,close_operation_id,protocol_state,claim_data|
+
+create的新领取允许4/6缺失；其余必须恰1行。active指针非空时，仍按原固定尝试IDs读上述集合，全tuple一致才算同claim已记录，异claim只返回busy，不跳读其他任务。reconcile允许缺行作为unknown/冲突事实，但须完成可读集合后分类，绝不从全无推导可重写；缺anchor直接拒绝不做补造。取锁失败中断ROLLBACK，保留pending义务。两者都不查/锁device行；稳定mapping证明由附录B的未来屏障要求，未齐不执行。
+
+每个SELECT结果同时核rowCount、rows.length、恰好返回列集合、标量类型与JSONB对应值；日期按驱动Date或string统一为ISO/null再比较，不能依赖日志文本。task投影核task_id/agent_id/adb_serial/status/created_at/updated_at与data对应；job核job_id/device_id/user_id/kind/status/日期；lock核lock_id/device_id/status/expires_at与JSON（physical hold JSON expiresAt空串→SQL NULL）；ledger先M1完整验证再claimData/关联验证。任务状态与投影必须各自一致，但task/job状态不强求相同，沿第5节矩阵。
+
+create所有写语句绑定参数，不拼用户字段；次序task CAS→job CAS→新physical hold INSERT→ledger INSERT→anchor CAS。task UPDATE仅status/updated_at/data，WHERE同时匹配task_id、agent_id、adb_serial、status='queued'、created_at/updated_at IS NOT DISTINCT FROM预期时间、data=$fullExpected::jsonb；job同理再含device_id/user_id/kind。新hold插入五列(lock_id,device_id,status,expires_at,data)；ledger插入上述七列，revision0/两个operation NULL；不使用UPSERT/ON CONFLICT掩盖旧NULL或其他claim。anchor UPDATE还要求原mapping_revision/fingerprint/state='ready'与两个active NULL；仅赋active IDs。business lock不写，audit本片不写。
+
+**每条DML必须RETURNING该表上表完整列集合，rowCount=1且rows.length=1；返回值通过相同列/JSONB检查并与candidate完整JSONB相等**。anchor返回mapping不变且active IDs准确；hold SQL expires_at必须NULL/JSON空串；ledger claimData/protocolState必须与原候选深相等。任一不足/多行/不同值即失败，不COMMIT。JSONB比较按JSON语义忽略对象键序，不忽略数组序/字段缺失/null或不同数值。COMMIT只接受真实command COMMIT；未知先retire原client再独立checkout同loader，原IDs不变。共同loader不是跨事务快照锁：真实PG并发测试须证明持锁期间全tuple稳定；不把缺失行锁当互斥。
+
+## 附录D：拟动文件与独立验证清单
+
+待root逐片批准后，拟新增server/wecom-cleanup-v2-claim-postgres.mjs及同名测试、deploy/sql/wecom-cleanup-v2-claim.sql、verification/wecom-v2-claim-postgres-20261102/专属fixtures/runner/代理场景/manifest；更新主文档日志。**不改已审M2 repository/DDL、M1、index/getPool、共享repository、Agent/SDK/配置入口**。M3库叶始终protocolPermit=false，不启动执行器。M2错误拥有期模式若复制进新叶，固定源/独立反例审，不抽共享重构。
+
+固定manifest覆盖新叶/测试/DDL、纯claim叶/M1及fixture、实际使用的runner/代理/observer和既有pg依赖实际源码hash；列完整argv/env/预算/归属清理/失败保留。runner修改另固定版本，不拿既有M2 runner授权覆盖新源。当前没有这套新runner或新PG授权。
+
+独立PG场景逐项计，不复用M2 14数目冒充本片：①main基本claim和全tuple；②clone独立serial；③同anchor不同task/slot并发最多一胜+原业务busy拒绝；④不同anchor一条持锁另一提交；⑤大小写同key/缺anchor/缺device不创；⑥disabled或映射revision/fingerprint不符拒绝；⑦受审合成映射变更先disabled交错，active禁止重绑；⑧同claim完整tuple复用/改关联拒绝；⑨旧NULL/claim/task唯一碰撞；⑩五个DML写点回滚及RETURNING错行/错JSONB反例；⑪真实COMMIT丢回复与COMMIT前断开，全无未知不重写；⑫任务正常进展/业务锁释放/ledger revision1、2完整矩阵；⑬各投影queued回退/丢claim/错手机号备注关联拒绝；⑭旧task→job与job→task两交错NOWAIT退出且独立设备不受阻；⑮reconcile精确同序/取锁失败/缺任一行/全无无DML；⑯client同步error、首因保留/退役后独立读/无listener泄漏；⑰DDL所有必填/错类型/额外字段/错binding/日期/索引负例；⑱旧M2 NULL行及原M2独立回归。未定义清active或跨业务接线验收，不运行Windows/手机，不宣称满足最终真机目标。

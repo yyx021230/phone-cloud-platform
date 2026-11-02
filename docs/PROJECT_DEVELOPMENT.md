@@ -5936,3 +5936,14 @@ expected保留完整原JSONB queued快照供将来CAS，业务fingerprint不包�
 ### 决策日志｜2026-11-02 不用同task CAS冒充同物理设备互斥
 
 延续M3分片规则，DB方案先审已有锚点和缺失拒绝、完整tuple COMMIT未知对账、两旧锁序交错、不同task/slot同serial与不同serial独立并发，再决定具体DDL/最小实现。固定执行/claim/nonce不会因未知换号，legacy NULL不升级，正常终态/events/result不误报永久maintenance。未改M2/M1/DDL/index/getPool/Agent或共享运行时，未运行新测试/PG/Windows/手机/生产动作；原43义务、155/157查名池和所有冻结保持。主号/分身真机验收仍未补齐。
+
+
+### 变更记录｜2026-11-02 M3a DB draft.2补全约束与精确读锁集合（未执行）
+
+根窗口独立核f95b054纯叶55+业务11通过并入18b35b8后，按其限定仅补DB方案附录A—D：claimData十字段/binding十三字段类型与完整拟DDL函数/唯一索引，四位UTC审计日期子集明确；create与无DML reconcile用相同六步NOWAIT loader、逐列JSONB投影/每条RETURNING验真，未知全无也不重写。新增anchor映射disabled/revision/fingerprint设计，所有生产旧映射写入尚未加入屏障，因此默认禁启。
+
+拟动文件仅新claim-postgres叶/新迁移/独立fixtures与文档；完整18类私有PG场景和固定源manifest要求列明，尚无新runner或执行授权。当前没有新增运行代码/DDL文件，也未运行PG/SQL/Windows/真机；旧M2/M1/共享入口均未动。
+
+### 决策日志｜2026-11-02 方案固定不等于领取实现或生产验收
+
+延续3647e5f draft.1，不移动旧tag；按root要求用新draft.2再审完整DB文本、create/reconcile同锁序及并发重绑停用边界。记录只证明拟议约束完整程度，未声称SQL已解析、锁隔离已验证或映射竞态已解决。受审后才可进入独立DB叶实现，仍不修改M2/共享index/getPool或启动PG。原43/147/52、155/157查名池与冻结保持，主号/分身真机仍未验。
