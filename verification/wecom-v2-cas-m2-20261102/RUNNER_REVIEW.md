@@ -40,3 +40,12 @@ before模式在COMMIT送到后端前断自有连接；独立读取旧revision，
 ## draft.2静态修正（真实PG仍未启动）
 
 固定ebabcb6/draft.1后自审发现fixture trigger函数END缺块内分号；仅改成END;，更新对应固定源hash。旧tag保留，没有产生真实PG失败/重试或宣称SQL实测；node --check只证明外层JS可解析。产品/M2/M1/runner/代理逻辑均未改，原8/6不重复计数；按draft.2固定源交root审后才执行。
+
+
+## draft.3：M2 rc.3事件拥有期修复及严格fixture观察（第二次PG未运行）
+
+原fa245单次PG实际14项7/7失败与14条body note已逐字固定cd82c14，原失败db仍停止/保留，不重启、不改旧结果。root审88633cc owned client修复39绿后，此稿更新固定M2源，barrier adapter仅把on/removeListener透传真实client，原14真实场景/断言不减少。
+
+新增pg-fault-observer只观察首个proxy client与其真实before-drop或唯一COMMIT/I/无E断链事实；预期client event还必须存在另一个事务拥有期error listener，fixture自身单独监听不能把产品缺handler抹绿。事件分类有界8条、仅固定category/原client/PG PID/listener数；其他client、其他错误、无wire事实、坏COMMIT tuple或idle pool事件仍抛错导致测试失败，非全局吞错。end只清理fixture自己的监听，产品仍须自己记录失信、阻止查询与精确清理。
+
+7项新纯EventEmitter观察器测试通过，明确旧产品无owned监听时仍失败；原8协议与6安全源未变不重复跑，不能将7与原实际PG7pass混淆。source guard现固定13源；完整命令/隔离/环境/工具/自有PID与失败留存边界同draft.2，无第二次库或代理启动。root审本固定稿后才由root单次新建私有库，不能启动旧失败库。

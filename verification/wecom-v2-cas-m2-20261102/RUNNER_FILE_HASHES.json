@@ -1,22 +1,26 @@
 {
-  "baseCommit": "ebabcb655a225c3f6a8a01a080f38ce19ce30600",
+  "baseCommit": "88633cc1cd5c29271494107d7b14206c0ce70e83",
   "realPgExecuted": false,
   "existing14ProductSourcesUnchanged": true,
   "sourceGuardReadOnlyPassed": true,
   "files": {
     "verification/wecom-v2-cas-m2-20261102/PROTOCOL_PARSER_OUTPUT.txt": "69f51387c8a7d37e454f8c544d192dd0daeb52ea26af0de79f52ee6d36bbbc9b",
     "verification/wecom-v2-cas-m2-20261102/RUNNER_SAFETY_OUTPUT.txt": "125c03d88cb1c0903061edb2e35a13d34f8d5509914b7fd6abb3a845739486bc",
-    "verification/wecom-v2-cas-m2-20261102/RUNNER_SOURCE_HASHES.json": "d3ce2d786d49c99485b8e1089d340d0f7258e33d310022c610d86bea8e270371",
+    "verification/wecom-v2-cas-m2-20261102/RUNNER_SOURCE_HASHES.json": "2ccfe1a4593fd3de2633617d7ad52b4d86a41962aea64726471b752e221c3bba",
     "verification/wecom-v2-cas-m2-20261102/RUNNER_UNIT_RECEIPT.json": "91b19953f602c29811e139e24bbd3ae175dbd1f656490e9e1e00f9a5d8c74281",
-    "verification/wecom-v2-cas-m2-20261102/RUNNER_REVIEW.md": "ac081dbbd0c61008aa596fe2789863d0c8315f7b5feda443b1a5cf058ca4280f",
+    "verification/wecom-v2-cas-m2-20261102/RUNNER_REVIEW.md": "5483a08890015b490e878c638df49fad24b1e6080bff9e13bacc33d4a993a681",
     "verification/wecom-v2-cas-m2-20261102/owned-pg.mjs": "c16d0dc393fbc1ea7f24e5aeac5a33687da8def8dae53666a7d73d2defd581d7",
     "verification/wecom-v2-cas-m2-20261102/pg-commit-proxy.mjs": "a884a5e9147daf8cf8fffab93a6878f80793c825e833a2c4bddb0d6c8678a3b1",
     "verification/wecom-v2-cas-m2-20261102/pg-commit-proxy.test.mjs": "79ec0ee937bb5e001601de46104755a4992b3a231826b318ceced3140291b517",
     "verification/wecom-v2-cas-m2-20261102/pg-readback-child.mjs": "af2ca4bbc73e633407b625ab5679ddaecd038628f400d31e429f85d1c0613fda",
-    "verification/wecom-v2-cas-m2-20261102/postgres.integration.mjs": "29408c9b8039d8fbe28a57f36eab6cfd77f7d6b5a8ed41cc299f625b94edf241",
+    "verification/wecom-v2-cas-m2-20261102/postgres.integration.mjs": "9684a8fd48b7df31e32c7e4072d4c4ea4e5c774146cfa7d220d9d84ef8f13ac3",
     "verification/wecom-v2-cas-m2-20261102/run-owned-postgres.py": "07d7674a5109763fb066f0ca8d4b1ab25cf7332411d21d1bd6f9fd021eb26ca0",
     "verification/wecom-v2-cas-m2-20261102/test_owned_runner.py": "7efb2b5098b7a0aea8596283ecaa20d55b65a170630996da136d6aabaf506f8c",
-    "docs/PROJECT_DEVELOPMENT.md": "6a21c36f0ba76f2f801033104106aac95b103fffcd56dbdb7444acb5cd0a5508"
+    "docs/PROJECT_DEVELOPMENT.md": "7f07fce632d2bdd32ee3acef59617ce3b79c8ac9fb1ef7480054d7730edfd3df",
+    "verification/wecom-v2-cas-m2-20261102/pg-fault-observer.mjs": "62fa45c101bcf1c1912123ddc46d8cee060a25337e4d033d7a3e49ec837728a6",
+    "verification/wecom-v2-cas-m2-20261102/pg-fault-observer.test.mjs": "216b834313c281757bbcee4cb229a4f182f3a4eb337ccdc8d117650d22c98b8a",
+    "verification/wecom-v2-cas-m2-20261102/FAULT_OBSERVER_OUTPUT.txt": "5dbfae3c4fa64ff848aad8dd476db1f3de40fb626f3065221312c7af73f1b776",
+    "verification/wecom-v2-cas-m2-20261102/FAULT_OBSERVER_RECEIPT.json": "684d87071cfd5b6a6bb582d045e7909ee6810056e98ec02da29e6c03b0e7ecc8"
   },
-  "revision": 2
+  "revision": 3
 }

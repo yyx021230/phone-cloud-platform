@@ -5879,3 +5879,14 @@ root核实际pg checkout/同步error与Promise nextTick顺序后，owner只给M2
 ### 决策日志｜2026-11-02 错误observer必须改变决策与归属清理，不能空吞事件
 
 owned listener只记录首错误且各查询边界实际执行拒绝，不以fixture Pool空handler掩盖root七个真实失败。当前39是本地事件生命周期，不能替真实断链验证；产品候选固定后，更新runner源码guard与typed预期/非目标错误观测，root审新稿再单次新库运行。原观察INITDB原始EOF空白格式警告保留不洗，证据格式与代码diffcheck分开不虚称完整绿。无Windows/phone/ADB/生产/部署，原43/隔离/查名池/冻结保持，主号分身未验。
+
+
+### 变更记录｜2026-11-02 PG runner draft.3固定M2 rc.3和有归属故障观察（未重测PG）
+
+root独立39审88633cc后，owner仅更新verification：barrier adapter将on/removeListener透传实际client；新增fixture typed observer要求首fault client、真实断链wire事实、额外事务listener存在，固定有界记录。其他client/其他错误/idle pool事件仍抛错，无wire/ROLLBACK/T/E不能算预期，fixture监听不能代替产品handler。原14库用例/断言均保留。
+
+7纯EventEmitter观察器用例过及JS syntax，原8协议/6入口安全源未变不重跑；固定source guard扩13源绑定M2 rc.3。旧fa245真实7/7失败、14 body note和失败DB保持不变，第二次PG/端口未启动，不能把新7单元当真实7断链通过。完整命令/环境/新私有cluster/自有PID清理边界仍同已审runner。
+
+### 决策日志｜2026-11-02 新fixture不代替产品错误监听，非目标错误不能被绿化
+
+只有本次首fault client与真实wire断链对应的固定错误才允许观察；同时断言产品拥有期listener存在，否则仍失败。此稿不改产品/DDL/index/getPool/v1/Agent，14旧源不变；原失败不洗、不重启旧库，root核固定13源后才统一执行一次新私有库。无Windows/phone/ADB/生产或部署，原43/隔离/查名池/冻结保持，主号分身未完成。

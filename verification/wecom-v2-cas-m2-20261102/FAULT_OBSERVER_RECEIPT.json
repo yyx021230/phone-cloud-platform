@@ -1,0 +1,15 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/verification/wecom-v2-cas-m2-20261102/pg-fault-observer.test.mjs"
+  ],
+  "exitCode": 0,
+  "scope": "EventEmitter fixture observer only; no PG/network; no original failure reclassification",
+  "sourceSha256": {
+    "verification/wecom-v2-cas-m2-20261102/pg-fault-observer.mjs": "62fa45c101bcf1c1912123ddc46d8cee060a25337e4d033d7a3e49ec837728a6",
+    "verification/wecom-v2-cas-m2-20261102/pg-fault-observer.test.mjs": "216b834313c281757bbcee4cb229a4f182f3a4eb337ccdc8d117650d22c98b8a"
+  },
+  "outputSha256": "5dbfae3c4fa64ff848aad8dd476db1f3de40fb626f3065221312c7af73f1b776"
+}

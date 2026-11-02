@@ -10,6 +10,7 @@ import test, { before, after } from "node:test";
 import { fixture } from "./fixture.mjs";
 import { ownedConfiguration, verifyOwnedServer } from "./owned-pg.mjs";
 import { startCommitReplyProxy } from "./pg-commit-proxy.mjs";
+import { createFaultClientObserver } from "./pg-fault-observer.mjs";
 import { createWecomV2PostgresRepository } from "../../server/wecom-cleanup-v2-postgres.mjs";
 
 const config = await ownedConfiguration(), db = new config.Pool(config.options);
@@ -25,7 +26,8 @@ function selectBarrierPool() {
   });
   return { backendPids, async connect() {
     const client = await db.connect(); backendPids.push(client.processID);
-    return { release: error => client.release(error), async query(sql, values) {
+    return { release: error => client.release(error), on: (name, listener) => client.on(name, listener),
+      removeListener: (name, listener) => client.removeListener(name, listener), async query(sql, values) {
       if (sql.startsWith("SELECT") && sql.includes("FROM phone_cloud_wecom_cleanup_v2") && sql.endsWith("FOR UPDATE")) {
         arrivals++; if (arrivals === 2) { clearTimeout(timer); release(); } await gate;
       }
@@ -114,10 +116,13 @@ async function proxyCase({ name, mode, initialize = false, mutation = null }) {
   const proxy = await startCommitReplyProxy({ backendPort: config.port, mode,
     onBackendCompletion: mutation ? e => { assert.ok(e.commitConfirmedFromBackend); if (mutation === "epoch") f.auth.serverEpoch = "changed-after-backend-commit"; else f.auth.version = 1; } : undefined });
   const pool = new config.Pool({ ...config.options, port: proxy.port, max: 1 }), backendPids = [];
-  pool.on("connect", client => backendPids.push(client.processID));
+  const driverErrors = createFaultClientObserver({ readWire: proxy.snapshot, mode });
+  pool.on("connect", client => { backendPids.push(client.processID); driverErrors.attach(client); });
+  pool.on("error", driverErrors.poolError);
   try {
     const r = repo(f, pool), answer = initialize ? await r.createPending(f.binding) : await r.commitHostOperation("host", f.body);
-    const s = await stored(f), wire = proxy.snapshot();
+    const s = await stored(f), wire = proxy.snapshot(), observedDriverErrors = driverErrors.snapshot();
+    assert.ok(observedDriverErrors.length >= 1 && observedDriverErrors.every(e => e.expected === true));
     const writes = wire.events.filter(e => e.event === "query" && e.command === (initialize ? "INSERT" : "UPDATE"));
     assert.equal(writes.length, 1); assert.equal(answer.protocolPermit, false); assert.equal(answer.fence, "held");
     if (mode === "after_commit") {
@@ -136,7 +141,7 @@ async function proxyCase({ name, mode, initialize = false, mutation = null }) {
       assert.equal(answer.storageStatus, "unknown"); assert.equal(answer.commitKnown, false); assert.equal(s.revision, 0);
       assert.ok(wire.events.some(e => e.event === "dropped_before_commit")); assert.ok(!wire.events.some(e => e.commitConfirmedFromBackend));
     }
-    note(name, { wire, backendPids, independentRowRevision: s.revision, storageStatus: answer.storageStatus, commitKnown: answer.commitKnown, originalWriteCount: writes.length });
+    note(name, { wire, backendPids, observedDriverErrors, independentRowRevision: s.revision, storageStatus: answer.storageStatus, commitKnown: answer.commitKnown, originalWriteCount: writes.length });
   } finally { await pool.end(); await proxy.close(); }
 }
 test("actual PG: COMMIT success bytes dropped then independent max1 read reconciles", () => proxyCase({ name: "commit-after", mode: "after_commit" }));
