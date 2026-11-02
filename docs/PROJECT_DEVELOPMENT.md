@@ -5579,3 +5579,13 @@ L03/L04调用链复核：51/52/54/154既有stopping+pending空+stopFailure可以
 延续v1独立义务、真实首项事实、未知不重放及冻结基线。确认原实现跨机wall比较存在本地可复现假阴性风险，生产43唯一根因仍待原请求证据；后继时间协议须完整覆盖host登记/close/核验领取/3秒新鲜度/期限，不单删createdAt下界、不重写OS出生时间、不改时钟、不延预算。本轮TIME_DOMAIN_REVIEW是待评审建议，尚未替换线上v1合同或实现恢复入口。43旧义务缺原host证据继续单机隔离，不自动迁移清除；后续候选须固定源码、测试、获具体加载授权后再正式单机验收，不能拿本地反例通过冒充生产验收完成。
 
 15:16:09企微追加纯CIM旁证：Agent19756仍在，企微preview/verify host=0，directPython11/shared8；原ADB8148已不在fork-server列表，当前PID27912，未核owner，不推测身份或根因。查名独立测试同时报告identity守卫失败并中止；企微未调用ADB客户端，全部新真机动作暂停，证据交root统筹。此快照不能倒推为15:04原预览失败原因，亦不作为可重启/切身份/新派发授权；43保护义务继续保持。
+
+### 变更记录｜2026-11-02 企微时间域v2合同草案与ADB错误文本分类
+
+root统一冻结native后，企微owner从37a954f建立独立codex/wecom-clock-contract-20261102，只读既有Agent.log的07:12–07:15有界尾部、不调用ADB/SDK/新SYSTEM入口。07:13:11.193至07:13:16.836的19条kill-server词命中全部是含try 'adb kill-server'的建议正文；version mismatch及taskRestartAdb/adb_restart_server/adb scan recovery/adb transport recovery结构未命中，不能当成实际命令执行证据。其余仅导出socket/unauthorized/daemon not running等白名单技术词与时间；有界日志未见不代表全机没有事件。脱敏计数/私有证据hash见verification/wecom-clock-v2-20261102/ADB_LOG_CLASSIFICATION.json。原27912来源/父进程链由root只读取证，本owner未推测初因。
+
+CONTRACT.md为后继v2草案，明确SYSTEM/真实spawn PID/精确OS出生token/机器与nonce/真实close守卫保持；不同机器wall只作审计，授权使用服务器epoch内monotonic及一次性3秒保守观察挑战，网络和真实child close计入窗口。v1剩余义务不迁移、不restamp，43仍隔离；协议协商、120秒lease跨重启、最小私有journal原子性/ACL、三秒实际延迟与所有旁路均列为实现前评审门槛。没有产品源码修改或新测试通过声明；9项是前阶段反例，不是本草案实现或真机验证。
+
+### 决策日志｜2026-11-02 先审完整时间合同，不用新ADB进程或建议文本替代证据
+
+延续独立义务与冻结生产操作。root允许企微owner承担后继独立本地候选，先合同评审；本轮只完成draft，不把设想直接当新生产规则。拟替换跨机wall因果及计龄而不放宽预算/真实证明，草案通过评审和具体实现测试前不改产品。新PID同SYSTEM仍非自动基线更新，错误正文建议不是执行审计，不将15:13变化倒推15:04原失败原因。后续需分别解决新协议和缺原host的43旧义务，未经具体授权不部署/重建/切身份/keys/入口/NTP；原预览验收继续未完成。
