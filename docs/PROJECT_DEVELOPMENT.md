@@ -6061,3 +6061,13 @@ blob/spool/启动/retention方案同时保留独立wecom canonical refs与lookup
 ### 决策日志｜2026-11-02 先验证语句等待窗口，未验证SQL不接生产
 
 只JS语法/基线hash核对，无SQL解析/PG/Windows/手机或产品修改。PostgreSQL16官方快照/目标row条件重评估及RETURNING文档仅支持提案背景，本项目具体NOT EXISTS/EPQ结果仍待真实受控PG反例，不能当实测。建议下一最小片只task三对比与服务端阻塞事实，再逐步补shared writer/boot；当前S2映射/journal/native/跨协议原子admission仍未实现，原43设备义务/147/52和查名池/冻结保持，主号分身真机未完成。
+
+### 变更记录｜2026-11-02 S1b task EPQ三对比和SAVEPOINT验证源码待审
+
+按root24b8d5b仅新增verification/wecom-v2-task-epq-20261102。4组源码：实际M3完整5DML在COMMIT发送前拦，B旧NOT EXISTS/guarded UPDATE/guarded UPSERT已发，第三owned C观察active/Lock及pg_blocking_pids精确A后才提交；正控制必须0行/rows空、最终JSONB/claim完整/M3重读，候选时间2099严格晚于A。负例预期覆盖但尚未执行，结果不符照实失败，不改断言绿化。
+
+SAVEPOINT组真实NOWAIT55P03后仅回滚目标1，目标2同transaction/同backend实际COMMIT后新backend复读；失败连接或COMMIT未知不宣称独立成功。固定新epq root/marker、12源/6依赖、原Popen清理/失败保留边界。实际6 guards+2命名反例、AST/JSsyntax/只读hash通过，无SQL/PG或Windows/手机动作。
+
+### 决策日志｜2026-11-02 窄SQL竞态必须真实观察，不能替代shared writer接线
+
+comparison SQL/产品/DDL/shared index/repos/restore/Agent均未改；4仅未执行场景数量，不累计历史存储/兼容或纯策略测试。backend_xmin/逻辑等待顺序不冒称完整导出statement snapshot，全部proof及RETURNING必须实测。job/hold/business无marker/delivery/controlled owner/blob/boot/lookup canonical/跨协议admission仍未验，S2/journal/native默认禁启，原43设备义务/147/52和查名池保持，主号分身真机未完成。
