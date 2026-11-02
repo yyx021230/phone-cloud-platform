@@ -1,0 +1,41 @@
+{
+  "executedCommit": "bab3b9d49f33a68a033e74fa3acb753ed8d7aba7",
+  "executedTag": "wecom-v2-claim-pg-20261102-draft.3",
+  "sourceRoot": "/private/tmp/pc-wecom-v2-claim-pg-o4fitmi8",
+  "copiedOriginalFiles": {
+    "fixture.json": "029561b1c0535d3cc1eb3d20ab52b35ce8ca6c8cfedfb0615c685a478e3310e3",
+    "POSTGRES.txt": "b09ab26189333dff474d99356338c188ee301d75d22a9356094ec0a39dbd693c",
+    "PG_EVIDENCE.json": "8f11c3690bb6e659ec60b198940627b502607d8f6c1b8d9b523817800c876d76",
+    "CREATEDB.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "INITDB.txt": "d805ac25ef45806532ceefa1158e2c2d8e410a5c8b38cb0931c8f341d8ca0cb7",
+    "NODE_TEST_OUTPUT.txt": "5388de2639b5b46d6dd73dbd971094118c7e6969abc21d2e42e79be156f4b7b9",
+    "RUN_RECEIPT.json": "17ef3ff26913ea0c9cbe28f10a34535fe3b5b82d7b305986e21d76ebdd5def92"
+  },
+  "rootReviewOriginal": "/private/tmp/pc-root-wecom-claim-pg-bab3b9-20261102/actual-review.json",
+  "rootReviewSha256": "a9e870ff4bb6ecf268eb5a9b14811773d8e450836c234906fa8335b372c8b32a",
+  "executedManifestSha256": "ca6948c7d703f48ff97c6cd44c6692c2d59c8fc9a3eeba69ab52c32620a594eb",
+  "tap": {
+    "tests": 18,
+    "pass": 18,
+    "fail": 0
+  },
+  "actualPgGroups": 18,
+  "sourceAfterMatched": true,
+  "nodeCleanup": {
+    "started": true,
+    "pid": 44305,
+    "exitCode": 0,
+    "groupAbsent": true
+  },
+  "postgresCleanup": {
+    "pid": 44293,
+    "exitCode": 0,
+    "confirmed": true
+  },
+  "successDataDirectoryRemovedByOwnedRunnerAfterConfirmation": true,
+  "previousFailedDataDirectoryRetained": true,
+  "archiveDidNotConnectRestartOrChangeDatabase": true,
+  "notPhoneOrProductionAcceptance": true,
+  "fullOldM2Pg14NotRerun": true,
+  "rootReviewCommit": "4ba4ccd4de843a684c843fcb7ae59eafa881a0e2"
+}

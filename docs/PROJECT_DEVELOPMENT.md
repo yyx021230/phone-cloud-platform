@@ -5993,3 +5993,13 @@ root统一单次执行a7b07e draft.2，新库pc-wecom-v2-claim-pg-gr_br461；真
 ### 决策日志｜2026-11-02 测试命名修正不掩盖原始失败或改初始化语义
 
 不改seed为UPSERT、不删除前组记录、不弱化缺行断言；产品/DDL/旧锁barrier/其他场景/预算/清理不变。source guard固定20源（新增两纯命名测试源）/6依赖，新稿再审后仅新库单次执行。旧失败db与原7件保持，不把纯5或旧17过宣称新PG18通过，原M2 14单列。无新PG/Windows/手机/生产动作，主号分身仍未真机验收，原43/147/52和查名池/冻结保持。
+
+### 变更记录｜2026-11-02 第二次M3a真实PG18项全部通过，仅本地存储阶段
+
+root差量审bab3b9 draft.3后在全新pc-wecom-v2-claim-pg-o4fitmi8单次运行，TAP18pass/0fail、18唯一body及前后源hash匹配。7原件/20固定执行源manifest和root actual-review逐字封存verification/wecom-v2-claim-pg-observed2-20261102。缺行矩阵完成、ledger FK阻删、无DML重读、真实服务端锁等待/同机不同task一胜/异serial推进和三断链原5DML各一轮均独立核对。
+
+Node44305exit0/组消失、PG44293exit0确认，成功db仅由原runner全部确认后删除；原gr_br461失败db保持停止保留、原17/1与7件不改，不累计两轮覆盖。原INITDB EOF空白按原字节保留并具名例外，不能称完整diffcheck绿。无新Windows/手机/ADB/生产/发送动作。
+
+### 决策日志｜2026-11-02 私有PG18通过不等于跨旧业务或真机就绪
+
+接受215fb15新叶在该本地PG16.15/pg8.22/Node25.9所测存储阶段；保持protocolPermit false/映射屏障未验/默认禁启。旧M2完整14与新DDL兼容尚未复测，当前legacy仅窄兼容。下一仅准备共享checkpoint/旧v1读写共存与device mapping屏障、journal持久恢复、真实host事实和时钟入口的最小切片方案交审，不实现共享index/getPool/配置/Agent，也不自行PG/Windows。原43/147/52和155/157查名池保持，主号分身真机仍未验收。

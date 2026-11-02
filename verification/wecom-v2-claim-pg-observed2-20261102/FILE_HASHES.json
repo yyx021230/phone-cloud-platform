@@ -1,0 +1,20 @@
+{
+  "baseCommit": "bab3b9d49f33a68a033e74fa3acb753ed8d7aba7",
+  "candidateTag": "wecom-v2-claim-pg-20261102-observed.2",
+  "files": {
+    "docs/PROJECT_DEVELOPMENT.md": "26530ba399be690e2dccc4acc9da004f3a2e4745b60992c25d2263e80e399a82",
+    "verification/wecom-v2-claim-pg-observed2-20261102/CREATEDB.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verification/wecom-v2-claim-pg-observed2-20261102/EXECUTED_SOURCE_MANIFEST.json": "ca6948c7d703f48ff97c6cd44c6692c2d59c8fc9a3eeba69ab52c32620a594eb",
+    "verification/wecom-v2-claim-pg-observed2-20261102/INITDB.txt": "d805ac25ef45806532ceefa1158e2c2d8e410a5c8b38cb0931c8f341d8ca0cb7",
+    "verification/wecom-v2-claim-pg-observed2-20261102/NODE_TEST_OUTPUT.txt": "5388de2639b5b46d6dd73dbd971094118c7e6969abc21d2e42e79be156f4b7b9",
+    "verification/wecom-v2-claim-pg-observed2-20261102/OBSERVATION.md": "b9352ca443d79b3ab534ee77109e66c30bb68ce84c7da81dd351c872915301c0",
+    "verification/wecom-v2-claim-pg-observed2-20261102/PG_EVIDENCE.json": "8f11c3690bb6e659ec60b198940627b502607d8f6c1b8d9b523817800c876d76",
+    "verification/wecom-v2-claim-pg-observed2-20261102/POSTGRES.txt": "b09ab26189333dff474d99356338c188ee301d75d22a9356094ec0a39dbd693c",
+    "verification/wecom-v2-claim-pg-observed2-20261102/PROVENANCE.json": "654498e1f4e7badd676790a88663c49584cc6d7104a9fa56e009313e8e0e229f",
+    "verification/wecom-v2-claim-pg-observed2-20261102/RAW_WHITESPACE.json": "5eaaa23e16e22e0396b01a0059e2b9a6584a2e9b4f9e0191b8e4f9a48d8d2995",
+    "verification/wecom-v2-claim-pg-observed2-20261102/ROOT_REVIEW.json": "a9e870ff4bb6ecf268eb5a9b14811773d8e450836c234906fa8335b372c8b32a",
+    "verification/wecom-v2-claim-pg-observed2-20261102/RUN_RECEIPT.json": "17ef3ff26913ea0c9cbe28f10a34535fe3b5b82d7b305986e21d76ebdd5def92",
+    "verification/wecom-v2-claim-pg-observed2-20261102/fixture.json": "029561b1c0535d3cc1eb3d20ab52b35ce8ca6c8cfedfb0615c685a478e3310e3",
+    "verification/wecom-v2-claim-pg-observed2-20261102/DIFFCHECK_RECEIPT.json": "b3dcc3138da1cb0fb6086562fd3254e5a532f9fdf689b42e520f4827009ef8a2"
+  }
+}
