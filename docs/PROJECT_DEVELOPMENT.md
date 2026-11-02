@@ -6175,3 +6175,11 @@ Node67391exit0/组消失、PG67379exit0确认，成功db原runner删除，旧失
 ### 决策日志｜2026-11-03 tree编码通过不证明原始JSON和数值来源
 
 仅verification leaf，无parser/PG/repo/DDL/roles/head初始化/authorizer/产品/shared/M1/events改动。ordinary JSON.parse已折叠的duplicate key或损失数值不能由tree encoder发现，原raw duplicate descriptor仍待验，不声称16全部入口通过；DB原数值无损读取仍未定。稳定journalop/trusted authority/允许迁移/链retention/blob/boot/outbox及S2/journal/native仍阻塞，43/147/52和查名池保持，主号分身真机未完成，无Windows/ADB/设备/生产动作。
+
+### 变更记录｜2026-11-03 最小progress head/receipt精确文本提案
+
+根独立复跑encoder64通过后，新增verification/wecom-v2-progress-store-plan-20261103，仅SCHEMA/TRANSACTION/ASSERTIONS。限定task+job running→stalled，固定audit/result exact allowlist、其余已知未知字段深等；head11列/receipt11列、完整proposal/双snapshotFP、op/前回执链/唯一不分叉与完整RETURNING模板。head0仅新isolated synthetic在M3known后另TX同client全tuple校验seed，缺head/legacy不补、不改M3。
+
+### 决策日志｜2026-11-03 不为凑合法后继测试增加未经审定状态迁移
+
+本片只revision0→1；单次running→stalled后无下一合法迁移，根明确不加stalled→stalled/恢复running/手种rev2冒充后继通过。通用previousop/previousReceiptFingerprint链保留合同，rev>1与合法后继验收未覆盖；可分开真实原receipt历史known与当前投影unknown，不授执行。数值仅synthetic受信constructor，不冒称一般JSONB无损来源。无adapter/可执行DDL/roles/SQL/PG/新测试或产品/shared/Windows/ADB/手机/生产修改，journal/实际authority/head生产初始化/允许迁移/retention/blob/outbox及主号分身真机仍未闭合，43/147/52和查名池保持。
