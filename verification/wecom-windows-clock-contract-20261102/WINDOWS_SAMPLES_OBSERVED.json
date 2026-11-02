@@ -1,0 +1,215 @@
+{
+  "scope": "readonly-clock-contract-observation",
+  "authoritySupported": false,
+  "nativeExecutionPermitted": false,
+  "physicalCleanupVerified": false,
+  "pid": 5856,
+  "sampleLimit": 16,
+  "executionContext": "inherited-SSH-user; not a SYSTEM worker test",
+  "pythonVersion": {
+    "major": 3,
+    "minor": 9,
+    "micro": 13,
+    "releaselevel": "final",
+    "serial": 0
+  },
+  "pointerBits": 64,
+  "bindingPolicy": {
+    "GetTickCount64": "kernel32.dll",
+    "QueryUnbiasedInterruptTimePrecise": "api-ms-win-core-realtime-l1-1-1.dll",
+    "GetSystemTimePreciseAsFileTime": "kernel32.dll",
+    "QueryPerformanceCounter": "kernel32.dll",
+    "QueryPerformanceFrequency": "kernel32.dll",
+    "GetCurrentProcess": "kernel32.dll",
+    "GetProcessTimes": "kernel32.dll",
+    "GetSystemTimeAdjustment": "kernel32.dll"
+  },
+  "windowsVersion": {
+    "major": 10,
+    "minor": 0,
+    "build": 19045
+  },
+  "ownCreationFileTime100ns": "134380912986454709",
+  "qpcFrequency": "10000000",
+  "adjustmentObservation": {
+    "amount100ns": "156250",
+    "increment100ns": "156250",
+    "periodicAdjustmentDisabled": true
+  },
+  "bootIdentityConfirmed": false,
+  "physicalOrVmConfirmed": false,
+  "units": {
+    "boot": "milliseconds",
+    "work": "100ns",
+    "wall": "FILETIME-100ns-since-1601",
+    "qpc": "ticks; frequency-per-second"
+  },
+  "status": "observed_not_authority",
+  "samples": [
+    {
+      "sequence": 1,
+      "qpcBefore": "12354098872124",
+      "qpcAfter": "12354098872193",
+      "bootBeforeMs": "1235409734",
+      "bootAfterMs": "1235409734",
+      "work100ns": "12354097375354",
+      "wallBefore100ns": "134380912986688159",
+      "wallAfter100ns": "134380912986688207"
+    },
+    {
+      "sequence": 2,
+      "qpcBefore": "12354098872232",
+      "qpcAfter": "12354098872264",
+      "bootBeforeMs": "1235409734",
+      "bootAfterMs": "1235409734",
+      "work100ns": "12354097375427",
+      "wallBefore100ns": "134380912986688259",
+      "wallAfter100ns": "134380912986688278"
+    },
+    {
+      "sequence": 3,
+      "qpcBefore": "12354098872289",
+      "qpcAfter": "12354098872316",
+      "bootBeforeMs": "1235409734",
+      "bootAfterMs": "1235409734",
+      "work100ns": "12354097375480",
+      "wallBefore100ns": "134380912986688315",
+      "wallAfter100ns": "134380912986688331"
+    },
+    {
+      "sequence": 4,
+      "qpcBefore": "12354098872338",
+      "qpcAfter": "12354098872365",
+      "bootBeforeMs": "1235409734",
+      "bootAfterMs": "1235409734",
+      "work100ns": "12354097375529",
+      "wallBefore100ns": "134380912986688364",
+      "wallAfter100ns": "134380912986688380"
+    },
+    {
+      "sequence": 5,
+      "qpcBefore": "12354098872387",
+      "qpcAfter": "12354098872414",
+      "bootBeforeMs": "1235409734",
+      "bootAfterMs": "1235409734",
+      "work100ns": "12354097375578",
+      "wallBefore100ns": "134380912986688413",
+      "wallAfter100ns": "134380912986688429"
+    },
+    {
+      "sequence": 6,
+      "qpcBefore": "12354098872435",
+      "qpcAfter": "12354098872462",
+      "bootBeforeMs": "1235409734",
+      "bootAfterMs": "1235409734",
+      "work100ns": "12354097375626",
+      "wallBefore100ns": "134380912986688462",
+      "wallAfter100ns": "134380912986688477"
+    },
+    {
+      "sequence": 7,
+      "qpcBefore": "12354098872482",
+      "qpcAfter": "12354098872509",
+      "bootBeforeMs": "1235409734",
+      "bootAfterMs": "1235409734",
+      "work100ns": "12354097375673",
+      "wallBefore100ns": "134380912986688508",
+      "wallAfter100ns": "134380912986688524"
+    },
+    {
+      "sequence": 8,
+      "qpcBefore": "12354098872545",
+      "qpcAfter": "12354098872573",
+      "bootBeforeMs": "1235409734",
+      "bootAfterMs": "1235409734",
+      "work100ns": "12354097375737",
+      "wallBefore100ns": "134380912986688571",
+      "wallAfter100ns": "134380912986688587"
+    },
+    {
+      "sequence": 9,
+      "qpcBefore": "12354098872593",
+      "qpcAfter": "12354098872620",
+      "bootBeforeMs": "1235409734",
+      "bootAfterMs": "1235409734",
+      "work100ns": "12354097375784",
+      "wallBefore100ns": "134380912986688620",
+      "wallAfter100ns": "134380912986688635"
+    },
+    {
+      "sequence": 10,
+      "qpcBefore": "12354098872641",
+      "qpcAfter": "12354098872668",
+      "bootBeforeMs": "1235409734",
+      "bootAfterMs": "1235409734",
+      "work100ns": "12354097375832",
+      "wallBefore100ns": "134380912986688668",
+      "wallAfter100ns": "134380912986688683"
+    },
+    {
+      "sequence": 11,
+      "qpcBefore": "12354098872701",
+      "qpcAfter": "12354098872731",
+      "bootBeforeMs": "1235409734",
+      "bootAfterMs": "1235409734",
+      "work100ns": "12354097375894",
+      "wallBefore100ns": "134380912986688728",
+      "wallAfter100ns": "134380912986688746"
+    },
+    {
+      "sequence": 12,
+      "qpcBefore": "12354098872754",
+      "qpcAfter": "12354098872782",
+      "bootBeforeMs": "1235409734",
+      "bootAfterMs": "1235409734",
+      "work100ns": "12354097375946",
+      "wallBefore100ns": "134380912986688781",
+      "wallAfter100ns": "134380912986688797"
+    },
+    {
+      "sequence": 13,
+      "qpcBefore": "12354098872802",
+      "qpcAfter": "12354098872829",
+      "bootBeforeMs": "1235409734",
+      "bootAfterMs": "1235409734",
+      "work100ns": "12354097375993",
+      "wallBefore100ns": "134380912986688829",
+      "wallAfter100ns": "134380912986688844"
+    },
+    {
+      "sequence": 14,
+      "qpcBefore": "12354098872849",
+      "qpcAfter": "12354098872876",
+      "bootBeforeMs": "1235409734",
+      "bootAfterMs": "1235409734",
+      "work100ns": "12354097376040",
+      "wallBefore100ns": "134380912986688875",
+      "wallAfter100ns": "134380912986688891"
+    },
+    {
+      "sequence": 15,
+      "qpcBefore": "12354098872896",
+      "qpcAfter": "12354098872923",
+      "bootBeforeMs": "1235409734",
+      "bootAfterMs": "1235409734",
+      "work100ns": "12354097376086",
+      "wallBefore100ns": "134380912986688922",
+      "wallAfter100ns": "134380912986688937"
+    },
+    {
+      "sequence": 16,
+      "qpcBefore": "12354098872942",
+      "qpcAfter": "12354098872969",
+      "bootBeforeMs": "1235409734",
+      "bootAfterMs": "1235409734",
+      "work100ns": "12354097376133",
+      "wallBefore100ns": "134380912986688968",
+      "wallAfter100ns": "134380912986688984"
+    }
+  ],
+  "anomalies": [],
+  "limitations": [
+    "Back-to-back observations, not a hard error/drift/pause bound.",
+    "No sleep/VM migration test, SYSTEM reader, socket-peer or journal recovery proof."
+  ]
+}

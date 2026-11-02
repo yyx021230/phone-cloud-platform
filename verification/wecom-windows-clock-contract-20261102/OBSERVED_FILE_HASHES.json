@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "ab8359c8b1f53cf82e8073db3b7d9e525f2e7dfd",
+  "scope": "root-owned single Administrator read-only sample, not authority/native acceptance",
+  "sha256": {
+    "docs/PROJECT_DEVELOPMENT.md": "d749ca5652e0eed53c15b9bec3ef19df8cf39d66e3e8ae9a4f6279b57c34a1e2",
+    "verification/wecom-windows-clock-contract-20261102/FILE_HASHES.json": "d9a34f364f8b91e946cdde61f24434bdf4dcb0c5b6294efbb0091ce11febc490",
+    "verification/wecom-windows-clock-contract-20261102/OBSERVATION.md": "48b2dde419a85b949c13b42240dfd1061a56e3d458ea228bd20023aed65c38c8",
+    "verification/wecom-windows-clock-contract-20261102/OBSERVED_SUMMARY.json": "0d8c16f5516e5e734a3b6d9d160e21742bb9765288df3f429b81bc4f8cf33f97",
+    "verification/wecom-windows-clock-contract-20261102/PLAN.md": "51724f058698e43c9bcfea7113a1a33e69d3a6bfbefdc6c239b0bfbffb88d7fd",
+    "verification/wecom-windows-clock-contract-20261102/PROVENANCE.json": "98cdf9a323de38c116233f56e8d0d207fb95b22ed1f6c480a6bc8aca0f7604b6",
+    "verification/wecom-windows-clock-contract-20261102/ROOT_EXECUTION_RECEIPT.json": "a679b7e9021cebc7fdb9a26e37b998621da6b06209084b2ba374b1099ee0a74b",
+    "verification/wecom-windows-clock-contract-20261102/TEST_OUTPUT.txt": "c0c6d4b2c4ac32d8d483dcd36c79424f957affd3328a4e442961739e3470ffd6",
+    "verification/wecom-windows-clock-contract-20261102/TEST_RECEIPT.json": "168991b5f0037d7a14219e6c4ac86cb7923263a3855578eb78f1df68e6869ee6",
+    "verification/wecom-windows-clock-contract-20261102/WINDOWS_SAMPLES_OBSERVED.json": "64d261bc68d8133a6c190095ddb0e6c2cc13339e0f8549917a588dcd64b49a8e",
+    "verification/wecom-windows-clock-contract-20261102/survey.py": "deef98f246309e69b76fdc3a6f5106727e550249b9f87aa71dbcd4bdb0d9a116",
+    "verification/wecom-windows-clock-contract-20261102/test_survey.py": "c4a19987ddc0c16325b3002574635cb34098902f11975e41fa46ef887324682b"
+  }
+}

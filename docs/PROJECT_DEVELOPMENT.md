@@ -5754,3 +5754,14 @@ ApiFailure只输出固定failedApi/failedModule/apiPhase(load_module/resolve_sym
 ### 决策日志｜2026-11-02 显式契约绑定替代错误模块假设，不改变采样权限
 
 按已核Microsoft动态加载契约选择唯一API-set映射，不以尝试DLL列表寻找能用项。候选只修本地调查绑定选择及可定位失败字段，不宣称Windows实测、v1运行时或真机问题已解决；先审具体脚本/源hash，再统一入口采一次，不并发发Windows命令。实际样本仍不足证明硬界/暂停/SYSTEM/peer/持久；生产factory和v1不动，原43/147/52/155范围及27912因果unknown保持。
+
+
+### 变更记录｜2026-11-02 显式契约一次实际取到16组Windows观察
+
+root独立8项审ab835后统一一次只读采样，owner从干净ab835建立codex/wecom-windows-clock-contract-observed-20261102，仅复制本地脱敏原件/来源归档，无本人Windows命令。19:08:19北京时间SSH89ms/exit0/stderr0、5413字节；typed BODY按原源JSON重建精确SHA141673f06d82daaacedd88d3d6b6cfb414f13d66f575df8547c12f7417d8b50b。16组sequence1..16/anomalies[]，Win10.19045、Python3.9.13/64位、QPC10MHz；单一API-set的UnbiasedPrecise实际解析/调用返回，其余7 Kernel32。调查绑定兼容点已实测，生产入口未改。
+
+root实际命令有重复反斜杠分隔符，原样复制并保留ntpath规范化等于既定解释器的说明，不伪写argv或误称二进制切换。括号QPC耗时摘要仅本次观察，anomalies仅源定义回退检查，不推最坏误差/漂移/暂停或真实3秒界；仍非SYSTEM/phone/Linux/peer/PG/journal验证，所有authority/native/physical false。原208/旧371/b343/15b和43/147/52/155/27912事实不改，无重复查询/配置/服务/身份/手机动作。
+
+### 决策日志｜2026-11-02 调查绑定可用后转向具体兼容接线，不扩采样循环
+
+实际可调用已取得，不再永久用未测假factory替代调查；下一步优先现v1最小兼容协议/持久绑定具体diff计划，先核实际代码/事务/父child身份和原始义务，再交审，不直接把观察读数升级成模型支持/清理许可或加载生产。保持原8 API/预算/冻结；不扩大样本次数或并发Windows试验。真机流程仍未完成，候选与部署/验收严格分列。
