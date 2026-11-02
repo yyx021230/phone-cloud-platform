@@ -1,0 +1,27 @@
+2026-11-02 22:38:07.638 CST [49643] LOG:  starting PostgreSQL 16.15 (Homebrew) on aarch64-apple-darwin25.6.0, compiled by Apple clang version 21.0.0 (clang-2100.1.1.101), 64-bit
+2026-11-02 22:38:07.638 CST [49643] LOG:  listening on IPv4 address "127.0.0.1", port 60001
+2026-11-02 22:38:07.638 CST [49643] LOG:  listening on Unix socket "/private/tmp/pc-wecom-v2-compat-pg-w57mcq87/.s.PGSQL.60001"
+2026-11-02 22:38:07.640 CST [49647] LOG:  database system was shut down at 2026-11-02 22:38:07 CST
+2026-11-02 22:38:07.641 CST [49643] LOG:  database system is ready to accept connections
+2026-11-02 22:38:08.023 CST [49657] ERROR:  fixture_reject
+2026-11-02 22:38:08.023 CST [49657] CONTEXT:  PL/pgSQL function wecom_v2_fixture_reject() line 1 at RAISE
+2026-11-02 22:38:08.023 CST [49657] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2
+	  SET revision=$4, host_operation_id=$5, close_operation_id=$6, protocol_state=$7::jsonb
+	  WHERE obligation_id=$1 AND server_epoch=$2 AND revision=$3 RETURNING obligation_id, server_epoch, revision, host_operation_id, close_operation_id, protocol_state
+2026-11-02 22:38:08.025 CST [49658] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "phone_cloud_wecom_cleanup_v2_protocol_state_check2"
+2026-11-02 22:38:08.025 CST [49658] DETAIL:  Failing row contains (duty-constraints, fixture-server-epoch, 0, null, null, {"phase": "awaiting_host", "binding": {"nonce": "binding-nonce-c..., null).
+2026-11-02 22:38:08.025 CST [49658] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET protocol_state=protocol_state-'fence' WHERE obligation_id=$1
+2026-11-02 22:38:08.027 CST [49659] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "phone_cloud_wecom_cleanup_v2_check6"
+2026-11-02 22:38:08.027 CST [49659] DETAIL:  Failing row contains (duty-constraints, fixture-server-epoch, 2, host-constraints, host-constraints, {"fence": "held", "phase": "awaiting_verification", "binding": {..., null).
+2026-11-02 22:38:08.027 CST [49659] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET revision=2,host_operation_id=$2,close_operation_id=$2,protocol_state=$3::jsonb WHERE obligation_id=$1
+2026-11-02 22:38:10.035 CST [49661] ERROR:  canceling statement due to lock timeout
+2026-11-02 22:38:10.035 CST [49661] CONTEXT:  while locking tuple (0,2) in relation "phone_cloud_wecom_cleanup_v2"
+2026-11-02 22:38:10.035 CST [49661] STATEMENT:  SELECT obligation_id, server_epoch, revision, host_operation_id, close_operation_id, protocol_state FROM phone_cloud_wecom_cleanup_v2 WHERE obligation_id=$1 FOR UPDATE
+2026-11-02 22:38:10.069 CST [49669] LOG:  unexpected EOF on client connection with an open transaction
+2026-11-02 22:38:10.412 CST [49643] LOG:  received fast shutdown request
+2026-11-02 22:38:10.413 CST [49643] LOG:  aborting any active transactions
+2026-11-02 22:38:10.413 CST [49643] LOG:  background worker "logical replication launcher" (PID 49650) exited with exit code 1
+2026-11-02 22:38:10.414 CST [49645] LOG:  shutting down
+2026-11-02 22:38:10.414 CST [49645] LOG:  checkpoint starting: shutdown immediate
+2026-11-02 22:38:10.451 CST [49645] LOG:  checkpoint complete: wrote 988 buffers (6.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.031 s, sync=0.006 s, total=0.038 s; sync files=331, longest=0.001 s, average=0.001 s; distance=4578 kB, estimate=4578 kB; lsn=0/19965D0, redo lsn=0/19965D0
+2026-11-02 22:38:10.452 CST [49643] LOG:  database system is shut down

@@ -1,0 +1,31 @@
+{
+  "kind": "claimed-row-M2-storage-compat-only",
+  "server": {
+    "privateDataDirectoryMatched": true,
+    "loopbackPortMatched": true,
+    "fsync": "on",
+    "synchronousCommit": "on"
+  },
+  "cases": [
+    {
+      "name": "claimed-main",
+      "dataMode": "preview",
+      "hostRevision": 1,
+      "closedRevision": 2,
+      "originalClaimDataPreserved": true,
+      "m3ReconciledAfterBoth": true,
+      "protocolPermit": false,
+      "syntheticHostFactsNotOsAttestation": true
+    },
+    {
+      "name": "claimed-clone",
+      "dataMode": "send",
+      "hostRevision": 1,
+      "closedRevision": 2,
+      "originalClaimDataPreserved": true,
+      "m3ReconciledAfterBoth": true,
+      "protocolPermit": false,
+      "syntheticHostFactsNotOsAttestation": true
+    }
+  ]
+}

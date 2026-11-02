@@ -6041,3 +6041,13 @@ root b7b55483审ac9002原53通过，新增真实纯模块反例Number1被String(
 ### 决策日志｜2026-11-02 兼容验证不改旧测试语义或扩大生产门控
 
 旧M2 test body/断回复条件/计数与产品源不变，只在新私有库增加DDL条件和独立claimed-row验证，不用窄legacy案例代替原完整14。不沿用旧PG执行授权；新固定runner/manifest交root审后统一执行，当前不启动或重连旧库。S1纯策略通过不代表shared writer/SQL EPQ/blob恢复已接线，映射/journal/native仍未实现；原43设备义务/147/52、查名池与冻结保持，主号分身真机未验收。
+
+### 变更记录｜2026-11-02 M2原14+新claim DDL与claimed2私有PG实测全部通过
+
+root审固定23d781后，新库pc-wecom-v2-compat-pg-w57mcq87单次两阶段：原M2 14/14、独立claimed-row 2/2，14和2唯一body齐，前后源匹配。主号/分身合成记录经M3 claim→原M2 host/close→M3两次重读，原claimData保持/M1rev1→2/零执行权限。9原件/21执行源manifest/14body hash与root actual-review逐字封存verification/wecom-v2-m2-compat-observed-20261102。
+
+第一Node49655exit0/组消失、第二49679exit0/组消失、PG49643exit0确认，成功db由原runner所有确认后删除，旧gr_br461失败db保持未动。原INITDB EOF空白保留，完整diffcheck与具名raw例外分列。无归档以外新PG/SQL、Windows/手机/生产动作。
+
+### 决策日志｜2026-11-02 兼容存储闭合，真实writer和启动权限重建仍待方案
+
+接受原M2完整14与新DDL兼容，以及独立claimed2，分别记账不与M3 18或策略64累计。下一仅准备S1b精确SQL/EPQ、逐writer/restore/compact/boot调用点、full-state blob和启动canonical fence方案及只验证用源码，先审不改共享index/repositories/cleanup-service/配置/Agent、不执行新PG/Windows/设备。原43设备清理义务/147/52与查名池保留，S2/journal/native与主号分身真机仍未闭合，生产v2默认禁启。

@@ -1,0 +1,23 @@
+{
+  "baseCommit": "23d781d353acd9ea12b69366546c2cc7de0f40f3",
+  "candidateTag": "wecom-v2-m2-compat-20261102-observed.1",
+  "files": {
+    "docs/PROJECT_DEVELOPMENT.md": "377bc63047becb5a8206508269f11bec0489b6d937c2c0bf87322470e692a2fb",
+    "verification/wecom-v2-m2-compat-observed-20261102/CLAIMED_EVIDENCE.json": "1df85b4e690d2af47fc8023f75edbfd24e37541003df9f68134673921bc32757",
+    "verification/wecom-v2-m2-compat-observed-20261102/CREATEDB.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verification/wecom-v2-m2-compat-observed-20261102/EXECUTED_M2_BODY_HASHES.json": "d93fb664a8a66b718e86d6842ae774822171bbd6ff17221bf0e789274e0e55b7",
+    "verification/wecom-v2-m2-compat-observed-20261102/EXECUTED_SOURCE_MANIFEST.json": "d6ccc2e1e80acae3bcd01d9a74d943d4ba4006538d48e2f9ad75e079ad9fb27e",
+    "verification/wecom-v2-m2-compat-observed-20261102/INITDB.txt": "9f5638effe8b819ef423866da201f45d78da993f4d9d202822a4bcecfba4cefa",
+    "verification/wecom-v2-m2-compat-observed-20261102/NODE_CLAIMED_OUTPUT.txt": "7311df220d1d18c66cd5a2ec55c8368a4400fd7dca17325104c8aab73fd05188",
+    "verification/wecom-v2-m2-compat-observed-20261102/NODE_TEST_OUTPUT.txt": "7517b10cd4ec0bf885d6fa2848be89cea2251a1a5da36f817722554b28bc3dd5",
+    "verification/wecom-v2-m2-compat-observed-20261102/OBSERVATION.md": "623d2135eeb6f92350ec23ac9c2f53d1e7932db61b51a73dfaf61e57b47b0b15",
+    "verification/wecom-v2-m2-compat-observed-20261102/PG_EVIDENCE.json": "287ed6f336c79dd7c82a3fda9fb5193d89912207b11f72cffb65cde249e94551",
+    "verification/wecom-v2-m2-compat-observed-20261102/POSTGRES.txt": "5ee106dfd9afc54e534aeb13ed9755c5198e9a4b23ee9cdc5652aee2d0d984ad",
+    "verification/wecom-v2-m2-compat-observed-20261102/PROVENANCE.json": "31288df20a76de9ec3c7a0ecd7aa3b43d41a988273e00296850e246a56706c58",
+    "verification/wecom-v2-m2-compat-observed-20261102/RAW_WHITESPACE.json": "d58cf8459709f2480fdf15580ef27b5a0f306d19c7d1a700de861ed4058d779d",
+    "verification/wecom-v2-m2-compat-observed-20261102/ROOT_REVIEW.json": "e72c3ae6f01fc30a37bbb6bb4a566d779776edd75a2a966d167cd233f6ae9d98",
+    "verification/wecom-v2-m2-compat-observed-20261102/RUN_RECEIPT.json": "6aa4f3f2a2fb7550ff02645a501578a0d430605a702214d6e356308663ee3c38",
+    "verification/wecom-v2-m2-compat-observed-20261102/fixture.json": "6dc18d5e4568a6dc900549c5aa7447549c62d7542579e6619fee0a2fcdb29de5",
+    "verification/wecom-v2-m2-compat-observed-20261102/DIFFCHECK_RECEIPT.json": "4a87cfe4a0b6654647a4263e7fba75198c2865f8147872c0ddf6833c464e9509"
+  }
+}
