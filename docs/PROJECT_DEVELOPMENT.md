@@ -5734,3 +5734,12 @@ observed.2已固定b343实际绑定阶段失败且停止原补采。root要求�
 ### 决策日志｜2026-11-02 定位指定模块解析事实，避免由泛AttributeError猜接口
 
 原bindhelper未记录name，不凭AttributeError/WinErr0认定具体导出缺失。下一步只审原8名的解析矩阵与实际解释器信息，解析成功不等于调用/精度/暂停支持，解析失败也不自动改API-set或库；不加入额外模块路径API。先固定本地源及fake反例，未有新的Windows/ADB/手机/服务授权推定。实际数据到手再评最小绑定兼容差异和接线；原43、27912因果仍未知，不清锁/改身份或把当前计划称运行时修复。
+
+
+### 变更记录｜2026-11-02 原8导出一次实际观察定位调查绑定失败
+
+root独立7项后统一一次执行2ee4/e6f5探针（102ms/SSH exit0/stderr0），企微owner不重复发送Windows命令。18:51:24北京时间实际解释器3.9.13 final64位；原8名中仅QueryUnbiasedInterruptTimePrecise在指定Kernel32下present=false/AttributeError，其余7可解析但未调用。原BODY按脚本编码重建恰1024字节，SHA66cb9b577a9153995af81d02be0c1ec5fa70ccb1dc543cbda8a8b2c0a949f188与root传输一致。source2ee4、旧bounded22cfe、Admin身份不变，零采样/手机/ADB/配置动作；root receipt保留remoteCommand字段斜杠文本更正，实际传输/body未变。owner从干净2ee4建codex/wecom-windows-exports-observed-20261102，仅复制本地脱敏材料/来源/hash归档。
+
+### 决策日志｜2026-11-02 按官方API契约准备显式绑定，不盲试DLL
+
+本次事实解释新调查bind阶段失败，不升级为全OS API缺失、其他API-set不存在或原43/ADB原因。Microsoft官方win32-apis清单列该函数在api-ms-win-core-realtime-l1-1-1.dll（10.0.10240起），并明确动态加载应使用列出的module/API-set；已读原文，与单函数页Kernel32表项区分。后继仅本地准备此函数单一契约绑定、其余7保持Kernel32，有限失败API/模块/stage字段与fake-DLL差异验证；API-set本机可用仍待审后实测，不fallback/增加API/改预算或许可。未修v1、未接native，原源/旧receipt/隔离与身份冻结保持。

@@ -1,0 +1,16 @@
+{
+  "producerThread": "01a185b7-7928-70e1-a092-f4fdf6c23876",
+  "executionOwnedByRoot": true,
+  "ownerNewWindowsCommands": 0,
+  "rootRemoteBudget": 1,
+  "bodyRoundtripBytes": 1024,
+  "bodyRoundtripSha256": "66cb9b577a9153995af81d02be0c1ec5fa70ccb1dc543cbda8a8b2c0a949f188",
+  "sourceCommit": "2ee4c71748a9e8d42c7d5f62e025773cd43b205c",
+  "receiptFieldCorrectionRetained": {
+    "field": "remoteCommand",
+    "issue": "Original receipt string doubled path separators; actual bounded call used single separators",
+    "originalReceiptSha256": "29880630b9cee227704e1e1fbe4bd90b683d496d554e24a5b90d3c296a9b9a3c",
+    "transportOrBodyChanged": false
+  },
+  "scope": "Kernel32 export resolution only, no clock function called; no API-set observation"
+}

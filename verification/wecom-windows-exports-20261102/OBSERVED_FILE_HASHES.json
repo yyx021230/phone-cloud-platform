@@ -1,0 +1,17 @@
+{
+  "sourceCommit": "2ee4c71748a9e8d42c7d5f62e025773cd43b205c",
+  "scope": "root-owned single export inspection, owner no repeat, no API-set measurement",
+  "sha256": {
+    "docs/PROJECT_DEVELOPMENT.md": "6bdee61e305056b70f879d0f5b65074432bcd0e4807387a88d44ff11f58084d7",
+    "verification/wecom-windows-exports-20261102/FILE_HASHES.json": "7c461d8b628a13a15d305aa541d5c1f856191668cea9777aac9c32903d36178f",
+    "verification/wecom-windows-exports-20261102/OBSERVATION.md": "c516acd7fb01e4da8e7cfbe02182bcaa2bfd148f60610187594dac047e13c438",
+    "verification/wecom-windows-exports-20261102/PLAN.md": "488865e52d5f213891d0fbb0154cbd4fb1cc0fa328749e09001f1e87a37a0e57",
+    "verification/wecom-windows-exports-20261102/PROVENANCE.json": "a356d2a7768014d9a2ccd5e5d196c0dc12ddc76975a2780776864b64b83275b7",
+    "verification/wecom-windows-exports-20261102/ROOT_EXECUTION_RECEIPT.json": "dc1f39d610e0305c5da4480988e3ad26bb6e342f0dbab6c16aecf572fd53eced",
+    "verification/wecom-windows-exports-20261102/TEST_OUTPUT.txt": "72babdcb57a6149fe13ea438250d0a14ba3d39a059b02f9ef71580fad8e68db9",
+    "verification/wecom-windows-exports-20261102/TEST_RECEIPT.json": "bed38234775a84fcddfa05d4f14c62bf0e2217d75d59396a30d6584eeaba7164",
+    "verification/wecom-windows-exports-20261102/WINDOWS_EXPORTS_OBSERVED.json": "3ca8b212fdf254a42aca08d768d9b2d9a2ee6c67fdacff9975f88e6529901462",
+    "verification/wecom-windows-exports-20261102/test_windows_exports.py": "374ffd6a7b4f1887b08df220ae6fe718acf2c5689d9bd26e603c16b2166867d3",
+    "verification/wecom-windows-exports-20261102/windows_exports.py": "e6f5ec370458eb45573ff52ab546f584f6591e7c5008100a27c44628cb3200c4"
+  }
+}
