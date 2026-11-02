@@ -1,0 +1,196 @@
+{
+  "INDEX_HOOKS.patch.txt": {
+    "sha256": "5bd045c3a23868e5e32a2744db09ba0c867c2afd19975e29ce6746ace29deb67",
+    "lines": [
+      {
+        "line": 10,
+        "hex": "200a"
+      },
+      {
+        "line": 51,
+        "hex": "200a"
+      }
+    ],
+    "reason": "required unified-diff blank context line contains one space"
+  },
+  "LEGACY_REGRESSIONS_RED.txt": {
+    "sha256": "cba19757c0134f28d7a63740c8cb2a89ec7f92904a69f4326fcab353ecfc1cfa",
+    "lines": [
+      {
+        "line": 71,
+        "hex": "20200a"
+      },
+      {
+        "line": 73,
+        "hex": "20200a"
+      },
+      {
+        "line": 312,
+        "hex": "20200a"
+      },
+      {
+        "line": 314,
+        "hex": "20200a"
+      },
+      {
+        "line": 423,
+        "hex": "20200a"
+      },
+      {
+        "line": 425,
+        "hex": "20200a"
+      }
+    ],
+    "reason": "verbatim original diagnostic whitespace"
+  },
+  "LEGACY_VERIFY_NODE_RED.txt": {
+    "sha256": "12b2eb30abaf7dfad41c5278d86765731c1b7820559b341d9ad25f12659d6e8d",
+    "lines": [
+      {
+        "line": 43,
+        "hex": "20200a"
+      },
+      {
+        "line": 45,
+        "hex": "20200a"
+      },
+      {
+        "line": 71,
+        "hex": "20200a"
+      },
+      {
+        "line": 73,
+        "hex": "20200a"
+      },
+      {
+        "line": 89,
+        "hex": "20200a"
+      },
+      {
+        "line": 93,
+        "hex": "20200a"
+      },
+      {
+        "line": 109,
+        "hex": "20200a"
+      },
+      {
+        "line": 113,
+        "hex": "20200a"
+      },
+      {
+        "line": 128,
+        "hex": "20200a"
+      },
+      {
+        "line": 130,
+        "hex": "20200a"
+      },
+      {
+        "line": 145,
+        "hex": "20200a"
+      },
+      {
+        "line": 147,
+        "hex": "20200a"
+      }
+    ],
+    "reason": "verbatim original diagnostic whitespace"
+  },
+  "ROOT_CHECK.txt": {
+    "sha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "lines": [
+      {
+        "line": 4,
+        "hex": "0a"
+      }
+    ],
+    "reason": "verbatim original diagnostic whitespace"
+  },
+  "DIFF_CHECK_RAW_RED.txt": {
+    "sha256": "31477c02c34f062fcbfcf557faced4197a5af337cbb7fd6c0c0164463500639b",
+    "lines": [
+      {
+        "line": 2,
+        "hex": "2b200a"
+      },
+      {
+        "line": 4,
+        "hex": "2b200a"
+      },
+      {
+        "line": 6,
+        "hex": "2b20200a"
+      },
+      {
+        "line": 8,
+        "hex": "2b20200a"
+      },
+      {
+        "line": 10,
+        "hex": "2b20200a"
+      },
+      {
+        "line": 12,
+        "hex": "2b20200a"
+      },
+      {
+        "line": 14,
+        "hex": "2b20200a"
+      },
+      {
+        "line": 16,
+        "hex": "2b20200a"
+      },
+      {
+        "line": 18,
+        "hex": "2b20200a"
+      },
+      {
+        "line": 20,
+        "hex": "2b20200a"
+      },
+      {
+        "line": 22,
+        "hex": "2b20200a"
+      },
+      {
+        "line": 24,
+        "hex": "2b20200a"
+      },
+      {
+        "line": 26,
+        "hex": "2b20200a"
+      },
+      {
+        "line": 28,
+        "hex": "2b20200a"
+      },
+      {
+        "line": 30,
+        "hex": "2b20200a"
+      },
+      {
+        "line": 32,
+        "hex": "2b20200a"
+      },
+      {
+        "line": 34,
+        "hex": "2b20200a"
+      },
+      {
+        "line": 36,
+        "hex": "2b20200a"
+      },
+      {
+        "line": 38,
+        "hex": "2b20200a"
+      },
+      {
+        "line": 40,
+        "hex": "2b20200a"
+      }
+    ],
+    "reason": "verbatim scoped diff diagnostic itself includes the original whitespace"
+  }
+}

@@ -1,0 +1,16 @@
+✔ proof stays behind child close and pickedAt comes from the actual claimed task (4.574875ms)
+✔ lease denial and business payload in verification cannot start a child (0.342959ms)
+✔ lost proof ACK retries exact original proof once and never sends generic success (0.585125ms)
+✔ permanent proof uncertainty never downgrades a possibly committed task or resamples (0.503875ms)
+✔ native read failure reports only fixed failure, without evidence or scan callbacks (0.718583ms)
+✔ verify hard kill false is not child close (0.6595ms)
+✔ verify hard kill throw is not child close (0.282125ms)
+✔ real OS pipe returns fixture facts before exit, but HTTP proof waits for exit (238.236375ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 316.814708

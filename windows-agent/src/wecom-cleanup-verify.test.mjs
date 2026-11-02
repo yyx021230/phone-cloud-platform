@@ -9,7 +9,11 @@ import {PassThrough} from 'node:stream';
 import {runWecomCleanupVerifyTask,handleWecomCleanupVerification} from './wecom-cleanup-verify.mjs';
 const fixture=JSON.parse(await fs.readFile(new URL('../../verification/wecom-cleanup-v1/fixtures.json',import.meta.url),'utf8'));
 const config={agentId:fixture.binding.agentId,pythonCommand:'python3',serverBaseUrl:'http://127.0.0.1:1',agentToken:'fixture-only-token'};
-const task={type:'wecom_cleanup_verify',taskId:fixture.verificationPayload.verificationTaskId,agentId:config.agentId,deviceId:fixture.binding.deviceId,adbSerial:fixture.binding.serial,pickedAt:fixture.verificationPickedAt,payload:fixture.verificationPayload};
+const causalLease={protocol:'wecom-causal-v1',epoch:'fixture-epoch',leaseId:'fixture-lease',purpose:'verification'};
+const challenge={protocol:'wecom-causal-v1',epoch:causalLease.epoch,verificationLeaseId:causalLease.leaseId,challengeId:'fixture-challenge'};
+const proof={...structuredClone(fixture.proof),challenge,snapshots:fixture.proof.snapshots.map((s,i)=>({...s,sequence:i+1,elapsedMs:(i+1)*100}))};
+const preliminary=route=>route.includes('/lease?')?{valid:true,remainingMs:120000,causalLease}:route.endsWith('/challenge')?{ok:true,challenge}:null;
+const task={type:'wecom_cleanup_verify',taskId:fixture.verificationPayload.verificationTaskId,agentId:config.agentId,deviceId:fixture.binding.deviceId,adbSerial:fixture.binding.serial,pickedAt:fixture.verificationPickedAt,payload:{...fixture.verificationPayload,causalLease}};
 function child(){const c=new EventEmitter();c.pid=456;for(const k of ['stdin','stdout'])c[k]=new PassThrough();c.kill=()=>false;return c;}
 const flush=()=>new Promise(r=>setImmediate(r));
 
@@ -17,11 +21,11 @@ test('proof stays behind child close and pickedAt comes from the actual claimed 
   const c=child();let proofCalls=0,input;
   c.stdin.on('data',b=>input=JSON.parse(String(b)));
   const pending=runWecomCleanupVerifyTask(task,{config,agentDir:'/fixture',spawnChild:()=>c,cleanupRequest:async(route,{body}={})=>{
-    if(route.includes('/lease?'))return{valid:true};proofCalls++;assert.deepEqual(body,fixture.proof);return{ok:true,verified:true};
+    if(preliminary(route))return preliminary(route);proofCalls++;assert.deepEqual(body,proof);return{ok:true,verified:true};
   }});
   await flush();assert.equal(input.pickedAt,fixture.verificationPickedAt);assert.equal(input.hosts.length,1);
   for(const secret of ['phoneNumber','remarkName','claimDirectory'])assert.equal(Object.hasOwn(input,secret),false);
-  c.stdout.write(JSON.stringify({ok:true,proof:fixture.proof}));await flush();assert.equal(proofCalls,0);
+  c.stdout.write(JSON.stringify({ok:true,proof:proof}));await flush();assert.equal(proofCalls,0);
   c.emit('close',0);assert.equal((await pending).verified,true);assert.equal(proofCalls,1);
 });
 
@@ -34,26 +38,26 @@ test('lease denial and business payload in verification cannot start a child',as
 test('lost proof ACK retries exact original proof once and never sends generic success',async()=>{
   const c=child();let proofCalls=0,failures=0;
   const pending=handleWecomCleanupVerification(task,{config,agentDir:'/fixture',spawnChild:()=>c,reportFailure:async()=>failures++,cleanupRequest:async route=>{
-    if(route.includes('/lease?'))return{valid:true};proofCalls++;
+    if(preliminary(route))return preliminary(route);proofCalls++;
     if(proofCalls===1)throw Object.assign(Error('lost ACK'),{deliveryUnknown:true});return{ok:true,verified:true,reused:true};
   }});
-  await flush();c.stdout.write(JSON.stringify({ok:true,proof:fixture.proof}));c.emit('close',0);
+  await flush();c.stdout.write(JSON.stringify({ok:true,proof:proof}));c.emit('close',0);
   assert.equal((await pending).verified,true);assert.equal(proofCalls,2);assert.equal(failures,0);
 });
 
 test('permanent proof uncertainty never downgrades a possibly committed task or resamples',async()=>{
   const c=child();let starts=0,failures=0,proofCalls=0;
   const pending=handleWecomCleanupVerification(task,{config,agentDir:'/fixture',spawnChild:()=>{starts++;return c;},reportFailure:async()=>failures++,cleanupRequest:async route=>{
-    if(route.includes('/lease?'))return{valid:true};proofCalls++;throw Object.assign(Error('lost'),{deliveryUnknown:true});
+    if(preliminary(route))return preliminary(route);proofCalls++;throw Object.assign(Error('lost'),{deliveryUnknown:true});
   }});
-  await flush();c.stdout.write(JSON.stringify({ok:true,proof:fixture.proof}));c.emit('close',0);
+  await flush();c.stdout.write(JSON.stringify({ok:true,proof:proof}));c.emit('close',0);
   const value=await pending;assert.equal(value.pending,true);assert.equal(value.code,'wecom_cleanup_proof_ack_unknown');
   assert.equal(failures,0);assert.equal(starts,1);assert.equal(proofCalls,2);
 });
 
 test('native read failure reports only fixed failure, without evidence or scan callbacks',async()=>{
   const c=child(),reported=[];
-  const pending=handleWecomCleanupVerification(task,{config,agentDir:'/fixture',spawnChild:()=>c,reportFailure:async value=>reported.push(value),cleanupRequest:async()=>({valid:true})});
+  const pending=handleWecomCleanupVerification(task,{config,agentDir:'/fixture',spawnChild:()=>c,reportFailure:async value=>reported.push(value),cleanupRequest:async route=>preliminary(route)||{ok:true,verified:true}});
   await flush();c.stdout.write(JSON.stringify({ok:false,code:'wecom_forward_still_present'}));c.emit('close',0);
   assert.equal((await pending).verified,false);assert.equal(reported.length,1);assert.equal(reported[0].code,'wecom_forward_still_present');
 });
@@ -61,19 +65,27 @@ test('native read failure reports only fixed failure, without evidence or scan c
 for(const mode of ['false','throw'])test(`verify hard kill ${mode} is not child close`,async t=>{
   t.mock.timers.enable({apis:['setTimeout']});const c=child();let killed=0,settled=false;
   c.kill=()=>{killed++;if(mode==='throw')throw Error('private');return false;};
-  const pending=runWecomCleanupVerifyTask(task,{config,agentDir:'/fixture',spawnChild:()=>c,cleanupRequest:async()=>({valid:true})});
+  const pending=runWecomCleanupVerifyTask(task,{config,agentDir:'/fixture',spawnChild:()=>c,cleanupRequest:async route=>preliminary(route)||{ok:true,verified:true}});
   const rejected=assert.rejects(pending,/worker_timeout/).then(()=>settled=true);
-  await Promise.resolve();await Promise.resolve();t.mock.timers.tick(20000);t.mock.timers.tick(15000);await Promise.resolve();
+  await flush();t.mock.timers.tick(20000);t.mock.timers.tick(15000);await Promise.resolve();
   assert.equal(killed,1);assert.equal(settled,false);c.emit('close',1);await rejected;
 });
 
 test('real OS pipe returns fixture facts before exit, but HTTP proof waits for exit',{timeout:5000},async t=>{
   const dir=await fs.mkdtemp(path.join(os.tmpdir(),'wecom-verify-real-pipe-'));t.after(()=>fs.rm(dir,{recursive:true,force:true}));
   await fs.mkdir(path.join(dir,'scripts'));
-  await fs.writeFile(path.join(dir,'scripts/wecom_cleanup_verify.py'),`import sys,json,time\nsys.stdin.readline()\nprint(${JSON.stringify(JSON.stringify({ok:true,proof:fixture.proof}))},flush=True)\ntime.sleep(.2)\n`);
-  let closed=false,proof=0;
+  await fs.writeFile(path.join(dir,'scripts/wecom_cleanup_verify.py'),`import sys,json,time\nsys.stdin.readline()\nprint(${JSON.stringify(JSON.stringify({ok:true,proof:proof}))},flush=True)\ntime.sleep(.2)\n`);
+  let closed=false,proofPosts=0;
   const result=await runWecomCleanupVerifyTask(task,{config,agentDir:dir,signal:t.signal,spawnChild:(...args)=>{const c=spawn(...args);c.once('close',()=>closed=true);t.after(async()=>{if(!closed){const done=once(c,'close',{signal:AbortSignal.timeout(1000)});c.kill();await done;}});return c;},cleanupRequest:async route=>{
-    if(route.includes('/lease?'))return{valid:true};assert.equal(closed,true);proof++;return{ok:true,verified:true};
+    if(preliminary(route))return preliminary(route);assert.equal(closed,true);proofPosts++;return{ok:true,verified:true};
   }});
-  assert.equal(result.verified,true);assert.equal(proof,1);
+  assert.equal(result.verified,true);assert.equal(proofPosts,1);
+});
+
+test('real delayed child close is included in3s and proof is never submitted',{timeout:6000},async t=>{
+  const dir=await fs.mkdtemp(path.join(os.tmpdir(),'wecom-verify-late-close-'));t.after(()=>fs.rm(dir,{recursive:true,force:true}));await fs.mkdir(path.join(dir,'scripts'));
+  await fs.writeFile(path.join(dir,'scripts/wecom_cleanup_verify.py'),`import sys,json,time\nsys.stdin.readline()\nprint(${JSON.stringify(JSON.stringify({ok:true,proof}))},flush=True)\ntime.sleep(3.05)\n`);
+  let closed=false,posts=0;
+  await assert.rejects(runWecomCleanupVerifyTask(task,{config,agentDir:dir,signal:t.signal,spawnChild:(...args)=>{const c=spawn(...args);c.once('close',()=>closed=true);t.after(async()=>{if(!closed){const done=once(c,'close',{signal:AbortSignal.timeout(1000)});c.kill();await done;}});return c;},cleanupRequest:async route=>{const r=preliminary(route);if(r)return r;posts++;return{ok:true,verified:true};}}),/proof_invalid/);
+  assert.equal(closed,true);assert.equal(posts,0);
 });

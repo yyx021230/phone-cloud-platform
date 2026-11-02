@@ -22,7 +22,7 @@ export async function runWecomPreviewTask(task, { config, agentDir, signal, spaw
     phoneNumber: task.payload.phoneNumber, previewOnly: !sending, mode: sending ? "send" : "preview",
     ...(sending ? { claimDirectory: path.join(agentDir, "data", "wecom-send-claims") } : {}),
     agentId: config.agentId, serverBaseUrl: config.serverBaseUrl, agentToken: config.agentToken,
-    ...(physical ? { physicalCleanup: physical.binding } : {}) };
+    ...(physical ? { physicalCleanup: physical.binding,causalLease:task.payload.wecomCausalLease } : {}) };
   return new Promise((resolve, reject) => {
     let stdout = "", settled = false, abortReason = null, killTimer = null;
     let stderrLine = "", discardLine = false;
@@ -33,7 +33,7 @@ export async function runWecomPreviewTask(task, { config, agentDir, signal, spaw
       return execution ? { diagnostic: { wecomExecution: execution } } : {};
     };
     let child;
-    try { child = spawnChild(config.pythonCommand, [path.join(agentDir, "scripts", "wecom_platform_preview.py"), ...(physical ? ["--physical-ready-v1"] : [])], {
+    try { child = spawnChild(config.pythonCommand, [path.join(agentDir, "scripts", "wecom_platform_preview.py"), ...(physical ? ["--physical-causal-v1"] : [])], {
       cwd: agentDir, windowsHide: true, stdio: ["pipe", "pipe", "pipe"],
       env: { ...process.env, PYTHONIOENCODING: "utf-8" }
     }); } catch { reject(new Error("wecom_preview_worker_start_failed")); return; }
@@ -125,7 +125,10 @@ export async function runWecomPreviewTask(task, { config, agentDir, signal, spaw
           executionMode: sending ? "wecom_poco_single_invitation" : "wecom_poco_preview_only", ...diagnostic(value) });
       } catch { finish(new Error("wecom_preview_worker_outcome_unknown")); }
     });
-    if (!physical) { payloadReleased = true; child.stdin.write(JSON.stringify(payload) + "\n"); }
+    try {
+      if (!physical) { payloadReleased = true; child.stdin.write(JSON.stringify(payload) + "\n"); }
+      else child.stdin.write(JSON.stringify(physical.bootstrapInput)+"\n");
+    } catch { stop(new Error("wecom_preview_input_delivery_unknown")); }
     if (signal?.aborted) abort();
   });
 }

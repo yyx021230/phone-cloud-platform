@@ -9,6 +9,7 @@ import json
 import unittest
 from unittest.mock import patch
 import wecom_platform_preview as host
+from wecom_cleanup_contract import CausalLeaseBudget
 
 def checked_pid_shell(fn):
     def invoke(cmd, keep=False):
@@ -56,9 +57,11 @@ class HostGuardTests(unittest.TestCase):
         expected='0fc7b2b51892ebd2cda9b3f1005a80d148dbf6f143881982c803a845a12c670f'
         self.assertEqual(host.remark_fingerprint(value),expected)
         proof=dict(valid=True,taskId=value['taskId'],deviceId=value['deviceId'],serial=value['serial'],deviceNumber='25',androidUser=0,appSlot='main',remarkFingerprint=expected,expiresAt=(datetime.datetime.now(datetime.timezone.utc)+datetime.timedelta(seconds=60)).isoformat())
+        ticket=dict(protocol='wecom-causal-v1',epoch='fixture-epoch',leaseId='fixture-lease',purpose='business')
+        proof.update(causalLease=ticket,remainingMs=60000)
         response=SimpleNamespace(read=lambda size:json.dumps(proof).encode())
         opener=SimpleNamespace(open=lambda *a,**kw:contextlib.nullcontext(response))
-        with patch.object(host,'config',value,create=True),patch.object(host,'SERIAL',value['serial'],create=True),patch.object(host,'selected_user',0,create=True),patch.object(host,'budget'),patch.object(host.urllib.request,'build_opener',return_value=opener):
+        with patch.object(host,'causal_business_budget',CausalLeaseBudget(ticket)),patch.object(host,'external_authority',None),patch.object(host,'config',value,create=True),patch.object(host,'SERIAL',value['serial'],create=True),patch.object(host,'selected_user',0,create=True),patch.object(host,'budget'),patch.object(host.urllib.request,'build_opener',return_value=opener):
             self.assertTrue(host.lease_valid());proof['remarkFingerprint']='0'*64;self.assertFalse(host.lease_valid())
 
     def test_instrumentation_failure_cleans_own_process_created_before_health_check(self):

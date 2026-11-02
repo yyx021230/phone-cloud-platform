@@ -1,7 +1,9 @@
 import { isDeepStrictEqual } from "node:util";
 import { randomUUID } from "node:crypto";
+import {createWecomCausalClock,WECOM_CAUSAL_PROTOCOL} from "./wecom-causal-clock.mjs";
+import {previewOperationFingerprint,previewRemarkInput,previewJobRemarks} from "./wecom-preview.mjs";
 import { WECOM_CLEANUP_KIND, WECOM_CLEANUP_LOCK, isWecomCleanupPending,
-  pendingWecomCleanup, assertCleanupBinding, recordWecomHosts, recordWecomHostClosed,
+  pendingWecomCleanup, createWecomCleanupObligation, assertCleanupBinding, recordWecomHosts, recordWecomHostClosed,
   noteWecomTerminal, createWecomVerification, wecomVerificationLease,
   validateWecomProof, completeWecomVerification } from "./wecom-physical-cleanup.mjs";
 
@@ -14,8 +16,40 @@ const exact = (body, keys) => body && typeof body === "object" && !Array.isArray
 
 // The injected persistence policy owns either the existing JSON checkpoint or
 // the existing PostgreSQL transaction. No new database table is introduced.
-export function createWecomCleanupService({ state, persist, conflict = () => false, now = Date.now, id = randomUUID }) {
+export function createWecomCleanupService({ state, persist, conflict = () => false, now = Date.now, id = randomUUID, clock = createWecomCausalClock() }) {
   const queues = new Map(), committing = new Map(), checkpointFences = new Map();
+  function businessScope(task,job,lock) {
+    if(!task||!job||!lock||task.type!=="wecom_customer_preview"||job.kind!==task.type
+      ||task.payload?.automationJobId!==job.jobId||job.windowsTaskId!==task.taskId||job.lockId!==lock.lockId
+      ||lock.taskId!==job.jobId||lock.lockType!==job.kind||lock.ownerUserId!==job.userId
+      ||[job.deviceId,lock.deviceId].some(v=>v!==task.deviceId)||job.agentId!==task.agentId||job.adbSerial!==task.adbSerial
+      ||task.payload.phoneNumber!==job.phoneNumber||!isDeepStrictEqual(previewRemarkInput(task.payload),previewJobRemarks(job))
+      ||(task.payload.mode||"preview")!==(job.wecomMode||"preview")||task.payload.androidUser!==job.wecomAndroidUser
+      ||task.payload.appSlot!==job.wecomAppSlot)fail("causal_context_unconfirmed");
+    return {taskId:task.taskId,jobId:job.jobId,lockId:lock.lockId,deviceId:task.deviceId,serial:task.adbSerial,agentId:task.agentId,
+      appSlot:job.wecomAppSlot,androidUser:job.wecomAndroidUser,operationFingerprint:previewOperationFingerprint(job)};
+  }
+  const contextFor=task=>{const job=state.automationJobs.find(j=>j.jobId===task?.payload?.automationJobId);return {job,lock:state.deviceLocks.find(l=>l.lockId===job?.lockId)};};
+  function bindBusinessLease(stamp,task,job,lock){
+    if(task?.status!=="queued"||job?.status!=="queued"||lock?.status!=="active"||Object.hasOwn(task.payload,"wecomCausalLease")||Object.hasOwn(job,"wecomCausalLease"))fail("causal_context_unconfirmed");
+    const ticket=clock.businessLease(stamp,businessScope(task,job,lock));task.payload.wecomCausalLease=structuredClone(ticket);job.wecomCausalLease=structuredClone(ticket);return ticket;
+  }
+  function businessLeaseState(task){try{const {job,lock}=contextFor(task);if(!isDeepStrictEqual(task.payload.wecomCausalLease,job.wecomCausalLease))return {known:false,remainingMs:0};return {known:true,remainingMs:clock.remaining(task.payload.wecomCausalLease,businessScope(task,job,lock))};}catch{return {known:false,remainingMs:0};}}
+  function businessRemaining(task){return businessLeaseState(task).remainingMs;}
+  function businessLockState(lock){
+    if(lock?.lockType!=="wecom_customer_preview")return null;
+    const job=state.automationJobs.find(j=>j.jobId===lock.taskId&&j.lockId===lock.lockId),task=state.windowsTasks.find(t=>t.taskId===job?.windowsTaskId);
+    return job?.wecomCausalLease||task?.payload?.wecomCausalLease?businessLeaseState(task):null;
+  }
+  function createObligation(task,job,device){
+    if(task?.status!=="running"||businessRemaining(task)<=3000)fail("causal_context_unconfirmed");
+    const lock=createWecomCleanupObligation(task,job,device,{now:now(),id});
+    lock.physicalCleanup.causal={protocol:WECOM_CAUSAL_PROTOCOL,serverEpoch:clock.epoch,businessLease:structuredClone(task.payload.wecomCausalLease)};return lock;
+  }
+  const verificationScope=lock=>{const v=lock.physicalCleanup.verification;return {binding:lock.physicalCleanup.binding,verificationId:v.verificationId,verificationNonce:v.verificationNonce,verificationTaskId:v.verificationTaskId};};
+  function verificationLeaseState(lock){try{if(lock.physicalCleanup.causal.serverEpoch!==clock.epoch)return {known:false,remainingMs:0};return {known:true,remainingMs:clock.remaining(lock.physicalCleanup.verification.causalLease,verificationScope(lock))};}catch{return {known:false,remainingMs:0};}}
+  function verificationRemaining(lock){return verificationLeaseState(lock).remainingMs;}
+  function causal(lock){if(lock.physicalCleanup?.causal?.protocol!==WECOM_CAUSAL_PROTOCOL||lock.physicalCleanup.causal.serverEpoch!==clock.epoch)fail("causal_context_unconfirmed");}
   function pending(deviceId) {
     return committing.get(deviceId) || pendingWecomCleanup(state.deviceLocks, deviceId);
   }
@@ -89,21 +123,23 @@ export function createWecomCleanupService({ state, persist, conflict = () => fal
     return Boolean(binding && device?.adb?.serial === binding.serial && device.adb.agentId === binding.agentId);
   }
   function originalReady(task) {
-    if (!task?.payload?.physicalCleanup) return true; // explicitly old protocol
+    if (!task?.payload?.physicalCleanup || businessRemaining(task)<=3000) return false;
     const lock = pending(task.deviceId);
     return Boolean(lock && !committing.has(lock.deviceId) && deviceMatches(lock)
       && isDeepStrictEqual(lock.physicalCleanup.binding, task.payload.physicalCleanup)
+      && lock.physicalCleanup.causal?.serverEpoch===clock.epoch && lock.physicalCleanup.causal?.bootstrap
       && lock.physicalCleanup.hosts && !lock.physicalCleanup.hostClosedAt
       && !lock.physicalCleanup.originalTerminalAt && task.status === "running");
   }
   function canPick(task) {
+    if(["wecom_customer_preview",WECOM_CLEANUP_KIND].includes(task.type)&&task.status!=="queued")return false;
     const lock = pending(task.deviceId) || [...committing.values(), ...(state.deviceLocks || [])].find(l => isWecomCleanupPending(l)
       && serialKey(l.physicalCleanup?.binding?.serial || l.physicalCleanup?.legacySerial || state.devices.find(d => d.deviceId === l.deviceId)?.adb?.serial) === serialKey(task.adbSerial) && serialKey(task.adbSerial));
-    if (!lock) return task.type !== WECOM_CLEANUP_KIND;
+    if (!lock) return task.type === "wecom_customer_preview" ? businessRemaining(task)>3000 : task.type !== WECOM_CLEANUP_KIND;
     if (committing.has(lock.deviceId) || task.type !== WECOM_CLEANUP_KIND) return false;
     const v = lock.physicalCleanup?.verification;
     return Boolean(v && v.verificationTaskId === task.taskId && task.status === "queued"
-      && Date.parse(v.expiresAt) > now() && deviceMatches(lock)
+      && verificationRemaining(lock)>0 && deviceMatches(lock)
       && isDeepStrictEqual(task.payload?.physicalCleanup, lock.physicalCleanup.binding)
       && !conflict(lock, task));
   }
@@ -143,32 +179,50 @@ export function createWecomCleanupService({ state, persist, conflict = () => fal
         if (!isDeepStrictEqual(body, lock.physicalCleanup.proof)) fail("proof_invalid");
         return { ok: true, verified: true, reused: true };
       }
+      causal(lock);
       if (!isWecomCleanupPending(lock)) fail("binding_mismatch");
       return transaction(lock, ({ track, trackLock, add }) => {
         const { task, job } = execution(lock);
         noteWecomTerminal(lock, task, job, now());
-        if (action === "host") { recordWecomHosts(lock, body, task, now()); return { ok: true }; }
+        if (action === "host") { if(businessRemaining(task)<=3000)fail("causal_context_unconfirmed");recordWecomHosts(lock, body, task, now()); return { ok: true }; }
         if (action === "host-closed") { recordWecomHostClosed(lock, body, now()); return { ok: true }; }
         if (action === "verify") {
           if (!exact(body, ["binding"])) fail("binding_mismatch");
           if (!lock.physicalCleanup.originalTerminalAt) fail("not_terminal");
           if (!lock.physicalCleanup.hostClosedAt) fail("host_unconfirmed");
           const existing = verificationTask(lock);
-          if (existing && !terminal(existing.status) && Date.parse(lock.physicalCleanup.verification.expiresAt) > now()) {
+          if (existing && !terminal(existing.status) && verificationRemaining(lock)>0) {
             return { ok: true, reused: true, taskId: existing.taskId };
           }
           if (conflict(lock, existing)) fail("device_busy");
           if (existing && !terminal(existing.status)) {
             track(existing); existing.status = "expired"; existing.updatedAt = existing.completedAt = iso(now());
           }
-          const verification = add(createWecomVerification(lock, { now: now(), id }));
+          // Do not auto-renew an expired/failed verification's authority.
+          if(existing)fail("causal_context_unconfirmed");
+          const stamp=clock.mark(),verification = add(createWecomVerification(lock, { now: now(), id }));
+          const ticket=clock.verificationLease(stamp,verificationScope(lock));
+          lock.physicalCleanup.verification.causalLease=structuredClone(ticket);verification.payload.causalLease=structuredClone(ticket);
           return { ok: true, taskId: verification.taskId, reused: false };
+        }
+        if(action==="challenge"){
+          const verification=verificationTask(lock);
+          if(!exact(body,["binding","verificationId","verificationNonce","verificationTaskId"])||conflict(lock,verification)
+            ||!wecomVerificationLease(lock,verification,body,agentId,now(),verificationRemaining(lock)))fail("proof_invalid");
+          const challenge=clock.challenge(lock.physicalCleanup.verification.causalLease,verificationScope(lock));
+          const previous=lock.physicalCleanup.verification.challenge;
+          if(previous&&!isDeepStrictEqual(previous,challenge))fail("proof_invalid");
+          lock.physicalCleanup.verification.challenge=structuredClone(challenge);return {ok:true,challenge};
         }
         if (action === "proof") {
           const verification = verificationTask(lock);
           if (conflict(lock, verification)) fail("device_busy");
-          const proof = validateWecomProof(lock, verification, body, agentId, now());
+          const proof = validateWecomProof(lock, verification, body, agentId, now(),verificationRemaining(lock));
           const originalLock = state.deviceLocks.find(l => l.lockId === lock.physicalCleanup.originalLockId);
+          if(originalLock?.status==="active"&&(originalLock.deviceId!==lock.deviceId||originalLock.taskId!==lock.physicalCleanup.originalJobId||originalLock.lockType!=="wecom_customer_preview"))fail("original_lock_mismatch");
+          // Last synchronous authority check, inside the per-device queue,
+          // after full proof validation and before ANY released candidate.
+          clock.validateChallenge(body.challenge,lock.physicalCleanup.verification.causalLease,verificationScope(lock));
           if (originalLock?.status === "active") {
             if (originalLock.deviceId !== lock.deviceId || originalLock.taskId !== lock.physicalCleanup.originalJobId
                 || originalLock.lockType !== "wecom_customer_preview") fail("original_lock_mismatch");
@@ -187,7 +241,7 @@ export function createWecomCleanupService({ state, persist, conflict = () => fal
   // verification generations or replay the original business task.
   async function reconcile(agentId) {
     const lock = state.deviceLocks.find(l => isWecomCleanupPending(l)
-      && l.physicalCleanup?.binding?.agentId === agentId && l.physicalCleanup.hostClosedAt
+      && l.physicalCleanup?.causal?.serverEpoch===clock.epoch && l.physicalCleanup?.binding?.agentId === agentId && l.physicalCleanup.hostClosedAt
       && !l.physicalCleanup.verification && deviceMatches(l) && !conflict(l, null)
       && (l.physicalCleanup.originalTerminalAt || terminal(execution(l).task?.status) || terminal(execution(l).job?.status)));
     if (!lock) return null;
@@ -214,7 +268,26 @@ export function createWecomCleanupService({ state, persist, conflict = () => fal
   function lease(agentId, obligationId, fields) {
     const lock = locate(agentId, obligationId), task = verificationTask(lock);
     return Boolean(!committing.has(lock.deviceId) && deviceMatches(lock)
-      && wecomVerificationLease(lock, task, fields, agentId, now()) && !conflict(lock, task));
+      && wecomVerificationLease(lock, task, fields, agentId, now(),verificationRemaining(lock)) && !conflict(lock, task));
   }
-  return { pending, canPick, picked, noteTerminal, ensureLegacy, handle, lease, reconcile, status, originalReady, checkpoint, checkpointWriting };
+  function leaseProof(agentId,obligationId,fields){const lock=locate(agentId,obligationId);return lease(agentId,obligationId,fields)?{valid:true,remainingMs:verificationRemaining(lock),causalLease:structuredClone(lock.physicalCleanup.verification.causalLease)}:{valid:false};}
+  function causalTask(task){return ["wecom_customer_preview",WECOM_CLEANUP_KIND].includes(task?.type)&&Boolean(task.payload?.wecomCausalLease||task.payload?.causalLease);}
+  // Dedicated maintenance hook. Never let shared UTC expiry revive/extend or
+  // prematurely expire this protocol, and never release its physical hold.
+  function expireTask(task){
+    if(!causalTask(task)||committing.has(task.deviceId)||terminal(task.status))return false;
+    const budget=task.type===WECOM_CLEANUP_KIND?verificationLeaseState(pending(task.deviceId)):businessLeaseState(task);
+    if(budget.known&&budget.remainingMs>0)return false;
+    const code=budget.known?"wecom_cleanup_causal_lease_expired":"wecom_cleanup_causal_context_unconfirmed";
+    if(task.status==="stalled"&&task.result?.errorCode===code)return false;
+    task.status=budget.known?"failed":"stalled";task.recoverable=false;task.updatedAt=iso(now());
+    task.result={...task.result,errorCode:code};if(budget.known)task.completedAt=task.updatedAt;
+    if(task.type==="wecom_customer_preview"){
+      const {job}=contextFor(task);if(job&&!terminal(job.status)){job.status=task.status;job.updatedAt=task.updatedAt;job.result={...job.result,errorCode:code};if(budget.known)job.completedAt=task.updatedAt;}
+      const hold=pending(task.deviceId);if(hold)noteWecomTerminal(hold,task,job,now());
+    }
+    return true;
+  }
+  return { pending, canPick, picked, noteTerminal, ensureLegacy, handle, lease, leaseProof,reconcile, status, originalReady, checkpoint, checkpointWriting,
+    beginBusinessLease:()=>clock.mark(),bindBusinessLease,businessRemaining,businessLeaseState,businessLockState,createObligation,causalTask,expireTask };
 }

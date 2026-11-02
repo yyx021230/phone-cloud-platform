@@ -13,6 +13,8 @@ class VerifyWireTests(unittest.TestCase):
     def context(self):
         p=copy.deepcopy(FIXTURE['verificationPayload']);b=p.pop('physicalCleanup');p['pickedAt']=FIXTURE['verificationPickedAt']
         value=dict(p,physicalCleanup=b,taskId=p['verificationTaskId'],deviceId=b['deviceId'],serial=b['serial'],agentId=b['agentId'],serverBaseUrl='http://127.0.0.1:1',agentToken='fixture-only')
+        value['causalLease']=dict(protocol='wecom-causal-v1',epoch='fixture-epoch',leaseId='fixture-lease',purpose='verification')
+        value['challenge']=dict(protocol='wecom-causal-v1',epoch='fixture-epoch',verificationLeaseId='fixture-lease',challengeId='fixture-challenge')
         now=[0.];base=timestamp(FIXTURE['serverNow']);calls=[]
         class Adb:
             def __init__(self,serial,guard,budget,operation_guard):self.authority=operation_guard
@@ -20,7 +22,7 @@ class VerifyWireTests(unittest.TestCase):
             def forwards(self):self.authority();calls.append('forwards');now[0]+=.05;return[]
         kwargs=dict(clock=lambda:now[0],wall=lambda:base+now[0],runtime_factory=lambda:SimpleNamespace(check=lambda:True),
             process_created_at=lambda _:None,closed_hosts=lambda _:True,adb_factory=Adb,
-            sleep=lambda seconds:now.__setitem__(0,now[0]+seconds),lease_request=lambda url,token:{'valid':True})
+            sleep=lambda seconds:now.__setitem__(0,now[0]+seconds),lease_request=lambda url,token:{'valid':True,'remainingMs':120000,'causalLease':value['causalLease']})
         return value,kwargs,calls,now
 
     def test_fixed_wire_scope_and_two_earliest_fact_frames_without_writes(self):
@@ -29,7 +31,8 @@ class VerifyWireTests(unittest.TestCase):
         self.assertEqual(calls,[MAIN,TEST,'forwards']*2)
         self.assertTrue(all(frame['packagesAbsent']is True and frame['serialForwardCount']==0 for frame in proof['snapshots']))
         first=timestamp(proof['snapshots'][0]['observedAt'])
-        self.assertLess(first,timestamp(FIXTURE['serverNow']));self.assertGreater(first,timestamp(FIXTURE['verificationPickedAt']))
+        self.assertLess(first,timestamp(FIXTURE['serverNow']))
+        self.assertEqual([f['sequence']for f in proof['snapshots']],[1,2]);self.assertLess(proof['snapshots'][0]['elapsedMs'],proof['snapshots'][1]['elapsedMs'])
         old=proof['snapshots'][0]['observedAt'];now[0]+=10;self.assertEqual(proof['snapshots'][0]['observedAt'],old)
 
     def test_phone_or_business_payload_cannot_enter_verify_config(self):
@@ -72,7 +75,7 @@ class VerifyWireTests(unittest.TestCase):
             def pids(self,p):calls.append(p);now[0]+=1.9 if len(calls)<=3 else 0;return[]
             def forwards(self):calls.append('forwards');now[0]+=1.9 if len(calls)<=3 else 0;return[]
         kwargs['adb_factory']=Slow
-        with self.assertRaisesRegex(VerifyStop,'wecom_tool_proof_stale'):execute(value,**kwargs)
+        with self.assertRaisesRegex(VerifyStop,'wecom_tool_proof_stale|wecom_cleanup_verify_timeout'):execute(value,**kwargs)
 
     def test_residual_reader_or_legal_scrcpy_forward_cannot_generate_proof(self):
         for target in ('reader','media'):
@@ -88,8 +91,8 @@ class VerifyWireTests(unittest.TestCase):
         value,kwargs,calls,_=self.context();kwargs['cancelled']=lambda:True
         with self.assertRaisesRegex(VerifyStop,'wecom_cleanup_cancelled'):execute(value,**kwargs)
         self.assertFalse(calls)
-        value,kwargs,calls,_=self.context();kwargs['wall']=lambda:timestamp(value['expiresAt'])+1
-        with self.assertRaisesRegex(VerifyStop,'wecom_cleanup_verify_timeout'):execute(value,**kwargs)
+        value,kwargs,calls,_=self.context();kwargs['lease_request']=lambda *a:{'valid':True,'remainingMs':0,'causalLease':value['causalLease']}
+        with self.assertRaisesRegex(VerifyStop,'wecom_cleanup_lease_lost'):execute(value,**kwargs)
         self.assertFalse(calls)
 
 if __name__=='__main__':unittest.main()

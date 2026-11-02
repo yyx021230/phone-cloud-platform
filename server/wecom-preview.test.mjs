@@ -44,17 +44,19 @@ test("configured slots bind Android user; an unconfigured clone never falls back
   assert.throws(()=>previewTarget(device("155"),null),/invalid_wecom_app_slot/);
 });
 
-test("live lease must agree with task, job, owner, physical phone, clone and lock expiry", () => {
+test("live lease must agree with task, job, owner, physical phone, clone and original monotonic remaining budget", () => {
   const device = { deviceName: "155", deviceId: `adb:${pool["155"].serial}`, adb: { serial: pool["155"].serial, agentId: "agent" } };
   const task = { taskId: "task", deviceId: device.deviceId, adbSerial: device.adb.serial, agentId: "agent", type: "wecom_customer_preview", status: "running", payload: { automationJobId: "job", deviceNumber: "155", androidUser: 999 } };
   const job = { jobId: "job", windowsTaskId: "task", kind: task.type, status: "running", deviceId: device.deviceId, wecomDeviceNumber: "155", wecomAndroidUser: 999, userId: "owner", lockId: "lock" };
   const lock = { lockId: "lock", deviceId: device.deviceId, taskId: "job", ownerUserId: "owner", lockType: task.type, status: "active", expiresAt: new Date(Date.now()+60_000).toISOString() };
-  const valid = (t=task,j=job,l=lock,d=device,a="agent") => previewLease(t,j,l,d,a);
+  const valid = (t=task,j=job,l=lock,d=device,a="agent") => previewLease(t,j,l,d,a,Date.now(),60000);
   assert.equal(valid(), true);
+  for(const remaining of [null,0,3000,3000.5,NaN]) assert.equal(previewLease(task,job,lock,device,"agent",Date.now(),remaining),false);
+  assert.equal(previewLease(task,job,{...lock,expiresAt:new Date(0).toISOString()},device,"agent",Date.now()+86400000,60000),true,"audit wall expiry cannot override the original monotonic budget");
   assert.equal(valid({...task,payload:{...task.payload,phoneNumber:"13800138000"}}, {...job,phoneNumber:"13900139000"}),false,"lease binds the complete target phone");
   for (const change of [{ status: "cancelled" }, { agentId: "other" }, { adbSerial: "OTHER" }, { deviceId: "other" }]) assert.equal(valid({ ...task, ...change }), false);
   for (const change of [{ status: "failed" }, { wecomAndroidUser: 0 }, { windowsTaskId: "other" }]) assert.equal(valid(task,{ ...job, ...change }), false);
-  for (const change of [{ status: "released" }, { ownerUserId: "other" }, { lockType: "screen_control" }, { expiresAt: new Date(0).toISOString() }]) assert.equal(valid(task,job,{ ...lock, ...change }), false);
+  for (const change of [{ status: "released" }, { ownerUserId: "other" }, { lockType: "screen_control" }]) assert.equal(valid(task,job,{ ...lock, ...change }), false);
   assert.equal(valid(task,job,lock,device,"other"), false);
   const slottedJob={...job,wecomAppSlot:"clone"};
   const slottedTask={...task,payload:{...task.payload,appSlot:"clone"}};

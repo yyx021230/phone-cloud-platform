@@ -6207,3 +6207,14 @@ root bed2a7f与范围提醒后，暂停后继adapter/DDL/runner，保留全部�
 ### 决策日志｜2026-11-03 优先修正式v1时间因果，不继续通用progress前置
 
 根要求先方案；新增verification/wecom-v1-causal-plan-20261103/PLAN，提议原binding.nonce+私有spawn pipeNonce+同机实际身份/close、原verification一次cloud challenge与双端完整3秒预算、server原单调lease剩余扣完整RTT。沿既有持久physical duty/checkpoint/gate，不加M3/ProgressHead/通用issuer/DDL，不把无physical字段当QA绕过。此为待审提案，未替换生产v1合同或实现；旧43host证据不补造、ADB/SYSTEM/control/媒体冻结不动，需具体补丁候选及本地反例/回归后另验真机。现成QA keeper跨重启持久隔离仍无直接合法运维路径，新增真实QA reservation若需要应另最小审，不伪造任务/host或插DB。
+
+
+### 变更记录｜2026-11-03 正式企微v1因果计时本地叶候选
+
+根审0c7ded方案后，仅改企微专用server/Agent/Python叶，固定协议wecom-causal-v1：原binding及私有pipeNonce先bootstrap、持久host ACK后释放业务配置、真实owned close后提交关闭/核验；原创建时点300/120秒单调预算、完整HTTP RTT扣减、原verification一次challenge及双帧seq/elapsed。3秒最终判断位于同device gate中完整proof验证后、首个released候选前；原事务/committing/checkpoint直到已知持久化完成。跨机器UTC只审计，未增加时间预算，不从旧UTC或重启epoch重建授权。
+
+本地Node139项通过（含此前57和旧fixture迁移56子集，不累加），Python discovery486次执行通过（存在导入重复，不称486独立场景），根npm run check语法通过。真实本地child/private pipe、loopback HTTP合成fsync登记丢ACK与实际verify child延迟close超过3秒反例通过，非Windows/SYSTEM/真机或生产HTTP验收。原旧wire失败及两次测试fixture适配错误原件保留verification/wecom-v1-causal-fix-20261103；不可变原fixture不改。两个shared index保持原字节，窄hook只作未应用patch提案，拟合成server语法解析通过。
+
+### 决策日志｜2026-11-03 特定v1因果替代跨机wall，不宣称真机阻塞已解
+
+落实上一提案的专用叶；原43未决和所有旧physical义务不迁移、不补造、不释放。epoch缺失停滞隔离，过期verification不自动续代，原300/120/230/210秒及3秒边界不放宽。无新DDL/通用issuer/M3/ProgressHead、无共享SDK/屏控/媒体/ADB身份或key变化，无远端/Windows/手机操作及邀请。父侧独立OS token/实际socket身份桥仍未集成；shared hook、认证HTTP/原JSON/PG完整回归、Windows性能和主号分身真机验收仍未完成。需根审固定候选、最小合共享入口与既有控屏回归，再按新鲜完整占用逐台内部preview到发送前；本候选不能单独加载或标作上线。

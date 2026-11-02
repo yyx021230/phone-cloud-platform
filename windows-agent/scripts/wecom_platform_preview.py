@@ -40,6 +40,8 @@ resource_state = {}
 primary_failure = None
 physical_bootstrap_hosts = None
 physical_bootstrap_runtime = None
+physical_bootstrap_causal = None
+causal_business_budget = None
 
 
 def record_resources():
@@ -95,6 +97,9 @@ def validate_config(value):
         from wecom_cleanup_contract import validate_binding
         if physical_bootstrap_hosts is None or physical_bootstrap_runtime is None:raise SafeStop('wecom_cleanup_bootstrap_missing')
         validate_binding(value['physicalCleanup'],value,original=True)
+        ticket=value.get('causalLease')
+        if not isinstance(ticket,dict)or set(ticket)!={'protocol','epoch','leaseId','purpose'}or ticket.get('protocol')!='wecom-causal-v1'or ticket.get('purpose')!='business'or physical_bootstrap_causal is None or physical_bootstrap_causal['bindingNonce']!=value['physicalCleanup']['nonce']:
+            raise SafeStop('wecom_cleanup_causal_context_unconfirmed')
     elif physical_bootstrap_hosts is not None:raise SafeStop('wecom_cleanup_binding_mismatch')
     name, description = remarks.validate_remark_input(value)
     return dict(value, mode=mode, remarkName=name, description=description)
@@ -152,27 +157,34 @@ def io_timeout(maximum):
 
 @observed('lease.read')
 def lease_valid():
+    valid=False
     try:
         budget()
         if config.get('physicalCleanup')is not None:
             if physical_bootstrap_runtime is None or physical_bootstrap_runtime.check()is not True:return False
         if external_authority is not None:
             return external_authority.check(config)
+        if causal_business_budget is None:return False
         url = config["serverBaseUrl"].rstrip("/") + "/api/v1/windows-agents/" + config["agentId"] + "/wecom-preview-tasks/" + config["taskId"] + "/lease"
         req = urllib.request.Request(url, headers={"Authorization": "Bearer " + config["agentToken"]})
+        started=causal_business_budget.sample()
         with urllib.request.build_opener(NoRedirect).open(req, timeout=io_timeout(8)) as response:
             raw = response.read(8193)
         budget()
         if len(raw)>8192: return False
         proof = json.loads(raw)
-        return (proof.get("valid") is True and proof.get("taskId") == config["taskId"]
+        valid=(proof.get("valid") is True and proof.get("taskId") == config["taskId"]
             and proof.get("deviceId") == config["deviceId"] and proof.get("serial") == SERIAL
             and proof.get("deviceNumber") == config["deviceNumber"] and proof.get("androidUser") == selected_user
             and ("appSlot" not in config or proof.get("appSlot") == config["appSlot"])
             and proof.get("remarkFingerprint") == remark_fingerprint(config)
             and (config.get("mode", "preview") != "send" or (proof.get("mode") == "send" and proof.get("operationFingerprint") == operation_fingerprint(config)))
-            and datetime.datetime.fromisoformat(proof["expiresAt"].replace("Z","+00:00")).timestamp() > time.time()+3)
+            and causal_business_budget.consume(proof,started))
+        return valid
     except Exception: return False
+    finally:
+        if external_authority is None and causal_business_budget is not None and not valid:
+            causal_business_budget.revoked=True
 
 def operation_fingerprint(value):
     return hashlib.sha256(json.dumps([value.get('mode', 'preview'), remark_fingerprint(value), value['phoneNumber'], value['deviceId'], value['androidUser']], separators=(',', ':')).encode('utf8')).hexdigest()
@@ -417,14 +429,18 @@ def remove_reader_forward(port):
 
 
 def run_host(value, diagnostic_stream=None, *, authority=None):
-    global config, SERIAL, selected_user, initial_adb, deadline, cleaning_up, trace, external_authority, resource_state, primary_failure
+    global config, SERIAL, selected_user, initial_adb, deadline, cleaning_up, trace, external_authority, resource_state, primary_failure, causal_business_budget
     cleaning_up = False
     primary_failure = None
     external_authority = None
+    causal_business_budget = None
     resource_state = {'readerStarted':False, 'pid':'', 'startToken':'', 'forwards':[], 'cleanupConfirmed':None}
     trace = ExecutionTrace(diagnostic_stream, clock=lambda: time.monotonic())
     with trace.phase("configuration"):
         config = validate_config(value)
+        if config.get('physicalCleanup')is not None:
+            from wecom_cleanup_contract import CausalLeaseBudget
+            causal_business_budget=CausalLeaseBudget(config.get('causalLease'))
         if authority is not None:
             from wecom_screen_lease import ScreenAuthority
             if type(authority) is not ScreenAuthority or config['mode'] != 'preview' or authority.binding['purpose'] != 'preview':
@@ -672,12 +688,17 @@ def main(keep_diagnostic_watchdog=False):
         calls = previous_calls
 
 if __name__=="__main__":
-    if sys.argv[1:]==['--physical-ready-v1']:
+    if sys.argv[1:]==['--physical-causal-v1']:
         try:
-            from wecom_host_identity import reader_bootstrap
-            physical_bootstrap_hosts,physical_bootstrap_runtime=reader_bootstrap()
-            print('WECOM_PHYSICAL_READY '+json.dumps({'version':1,'hosts':physical_bootstrap_hosts}),file=sys.stderr,flush=True)
+            from wecom_host_identity import causal_reader_bootstrap
+            bootstrap_raw=control_pipe.read_line(sys.stdin,8192)
+            if len(bootstrap_raw)>8192:raise SafeStop('wecom_cleanup_bootstrap_unconfirmed')
+            physical_bootstrap_hosts,physical_bootstrap_runtime,physical_bootstrap_causal=causal_reader_bootstrap(json.loads(bootstrap_raw))
+            print('WECOM_PHYSICAL_READY '+json.dumps({'version':1,'hosts':physical_bootstrap_hosts,'bootstrap':physical_bootstrap_causal}),file=sys.stderr,flush=True)
         except Exception:
             print(json.dumps({'previewStatus':'blocked','previewCode':'wecom_cleanup_bootstrap_unconfirmed','invitationSent':False,'sendStatus':'not_attempted','remarkSaveStatus':'not_attempted'}),flush=True)
             sys.exit(1)
+    elif sys.argv[1:]:
+        print(json.dumps({'previewStatus':'blocked','previewCode':'wecom_cleanup_bootstrap_unconfirmed','invitationSent':False,'sendStatus':'not_attempted','remarkSaveStatus':'not_attempted'}),flush=True)
+        sys.exit(1)
     main(keep_diagnostic_watchdog=True)

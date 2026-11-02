@@ -57,6 +57,20 @@ def reader_bootstrap(*,runtime=None,current_pid=None,parent_pid=None,platform=No
 def reader_hosts(**kwargs):return reader_bootstrap(**kwargs)[0]
 
 
+def causal_reader_bootstrap(envelope,**kwargs):
+    """Bind the real reader to this parent's private bootstrap before UI input."""
+    from wecom_cleanup_contract import validate_binding
+    if not isinstance(envelope,dict)or set(envelope)!={'version','binding','bootstrap'}or type(envelope['version'])is not int or envelope['version']!=1:
+        raise VerifyStop('wecom_cleanup_bootstrap_unconfirmed')
+    b=envelope['binding'];p=envelope['bootstrap']
+    if not isinstance(b,dict)or not isinstance(p,dict)or set(p)!={'protocol','bindingNonce','pipeNonce'}or p['protocol']!='wecom-causal-v1' or p['bindingNonce']!=b.get('nonce')or not isinstance(p['pipeNonce'],str)or not re.fullmatch(r'[a-f0-9]{48}',p['pipeNonce']):
+        raise VerifyStop('wecom_cleanup_bootstrap_unconfirmed')
+    context={**b,'taskId':b.get('originalTaskId')}
+    validate_binding(b,context,original=True)
+    hosts,guard=reader_bootstrap(**kwargs)
+    return hosts,guard,dict(p)
+
+
 def original_hosts_closed(hosts,*,runtime=None,machine=None):
     """Local parent proof only. Another machine or missing precision is unknown."""
     if runtime is None:import psutil;runtime=psutil

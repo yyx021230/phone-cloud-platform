@@ -1,7 +1,7 @@
 import {spawn} from 'node:child_process';
 import path from 'node:path';
 import {isDeepStrictEqual} from 'node:util';
-import {physicalBinding,physicalHosts,createCleanupRequest,cleanupRoute,submitSamePhysicalProof} from './wecom-cleanup-protocol.mjs';
+import {physicalBinding,physicalHosts,createCleanupRequest,cleanupRoute,submitSamePhysicalProof,WECOM_CAUSAL_PROTOCOL} from './wecom-cleanup-protocol.mjs';
 
 const exact=(v,keys)=>v&&typeof v==='object'&&!Array.isArray(v)&&Object.keys(v).length===keys.length&&keys.every(k=>Object.hasOwn(v,k));
 const code=e=>/^wecom_[a-z0-9_]{1,90}$/.test(e?.message||'')?e.message:'wecom_cleanup_verify_unconfirmed';
@@ -9,24 +9,23 @@ const problem=value=>new Error(value);
 function verificationConfig(task,config){
   if(task.type!=='wecom_cleanup_verify')throw problem('wecom_cleanup_task_invalid');
   const binding=physicalBinding(task,config,{verification:true}),p=task.payload;
-  if(!exact(p,['physicalCleanup','verificationId','verificationNonce','verificationTaskId','issuedAt','expiresAt','pickedAt','hosts'])
+  if(!exact(p,['physicalCleanup','verificationId','verificationNonce','verificationTaskId','issuedAt','expiresAt','pickedAt','hosts','causalLease'])
     ||p.verificationTaskId!==task.taskId||!['verificationId','verificationNonce','verificationTaskId'].every(k=>typeof p[k]==='string'&&/^[A-Za-z0-9_-]{1,160}$/.test(p[k]))
     ||!['issuedAt','expiresAt'].every(k=>typeof p[k]==='string'&&Number.isFinite(Date.parse(p[k])))
-    ||!Number.isFinite(Date.parse(task.pickedAt))||Date.parse(p.expiresAt)-Date.parse(p.issuedAt)>120001
-    ||!(Date.parse(p.issuedAt)<=Date.parse(task.pickedAt)&&Date.parse(task.pickedAt)<Date.parse(p.expiresAt)))throw problem('wecom_cleanup_task_invalid');
+    ||!Number.isFinite(Date.parse(task.pickedAt))||!exact(p.causalLease,['protocol','epoch','leaseId','purpose'])||p.causalLease.protocol!==WECOM_CAUSAL_PROTOCOL||p.causalLease.purpose!=='verification')throw problem('wecom_cleanup_task_invalid');
   return{taskId:task.taskId,deviceId:binding.deviceId,serial:binding.serial,agentId:binding.agentId,serverBaseUrl:config.serverBaseUrl,agentToken:config.agentToken,
     physicalCleanup:binding,verificationId:p.verificationId,verificationNonce:p.verificationNonce,verificationTaskId:p.verificationTaskId,
-    issuedAt:p.issuedAt,expiresAt:p.expiresAt,pickedAt:task.pickedAt,hosts:physicalHosts(p.hosts)};
+    issuedAt:p.issuedAt,expiresAt:p.expiresAt,pickedAt:task.pickedAt,hosts:physicalHosts(p.hosts),causalLease:{...p.causalLease}};
 }
 function validateProof(proof,input){
-  if(!exact(proof,['binding','verificationId','verificationNonce','verificationTaskId','snapshots'])||!isDeepStrictEqual(proof.binding,input.physicalCleanup)
+  if(!exact(proof,['binding','verificationId','verificationNonce','verificationTaskId','challenge','snapshots'])||!isDeepStrictEqual(proof.binding,input.physicalCleanup)||!isDeepStrictEqual(proof.challenge,input.challenge)
     ||!['verificationId','verificationNonce','verificationTaskId'].every(k=>proof[k]===input[k])||!Array.isArray(proof.snapshots)||proof.snapshots.length!==2)throw problem('wecom_cleanup_proof_invalid');
-  let previous=Date.parse(input.pickedAt);
-  for(const frame of proof.snapshots){
-    if(!exact(frame,['observedAt','packagesAbsent','packageNames','serialForwardCount'])||frame.packagesAbsent!==true||frame.serialForwardCount!==0
+  let previous=-1;
+  for(const [i,frame] of proof.snapshots.entries()){
+    if(!exact(frame,['sequence','elapsedMs','observedAt','packagesAbsent','packageNames','serialForwardCount'])||frame.packagesAbsent!==true||frame.serialForwardCount!==0
       ||!isDeepStrictEqual(frame.packageNames,['com.netease.open.pocoservice','com.netease.open.pocoservice.test'])
-      ||typeof frame.observedAt!=='string'||!Number.isFinite(Date.parse(frame.observedAt))||Date.parse(frame.observedAt)<=previous)throw problem('wecom_cleanup_proof_invalid');
-    previous=Date.parse(frame.observedAt);
+      ||typeof frame.observedAt!=='string'||!Number.isFinite(Date.parse(frame.observedAt))||frame.sequence!==i+1||!Number.isFinite(frame.elapsedMs)||frame.elapsedMs<=previous||frame.elapsedMs<0||frame.elapsedMs>3000)throw problem('wecom_cleanup_proof_invalid');
+    previous=frame.elapsedMs;
   }
   return proof;
 }
@@ -73,9 +72,17 @@ export async function runWecomCleanupVerifyTask(task,{config,agentDir,signal,spa
   const input=verificationConfig(task,config);
   if(signal?.aborted)throw problem('wecom_cleanup_cancelled');
   const q=new URLSearchParams(Object.fromEntries(['verificationId','verificationNonce','verificationTaskId'].map(k=>[k,input[k]])));
+  const leaseStarted=performance.now();
   const before=await cleanupRequest(cleanupRoute(input.physicalCleanup,'lease')+'?'+q,{method:'GET'});
-  if(before?.valid!==true)throw problem('wecom_cleanup_lease_lost');
+  if(before?.valid!==true||!isDeepStrictEqual(before.causalLease,input.causalLease)||!Number.isSafeInteger(before.remainingMs)||before.remainingMs>120000||before.remainingMs-(performance.now()-leaseStarted)<=3000)throw problem('wecom_cleanup_lease_lost');
+  const challengeStarted=performance.now();
+  const response=await cleanupRequest(cleanupRoute(input.physicalCleanup,'challenge'),{body:{binding:input.physicalCleanup,...Object.fromEntries(['verificationId','verificationNonce','verificationTaskId'].map(k=>[k,input[k]]))},timeoutMs:3000});
+  const c=response?.challenge;
+  if(response?.ok!==true||!exact(c,['protocol','epoch','verificationLeaseId','challengeId'])||c.protocol!==WECOM_CAUSAL_PROTOCOL||c.epoch!==input.causalLease.epoch||c.verificationLeaseId!==input.causalLease.leaseId||typeof c.challengeId!=='string'||!/^[A-Za-z0-9_-]{1,160}$/.test(c.challengeId)||performance.now()-challengeStarted>=3000)throw problem('wecom_cleanup_proof_invalid');
+  input.challenge={...c};
   const proof=await nativeProof(input,{config,agentDir,signal,spawnChild});
+  // nativeProof resolves only after the owned child actually closes.
+  if(performance.now()-challengeStarted>3000)throw problem('wecom_cleanup_proof_invalid');
   if(signal?.aborted)throw problem('wecom_cleanup_cancelled');
   // The exact first-fact timestamps survive stdout, OS close and a lost ACK.
   // No normal taskStatus(succeeded): this endpoint atomically commits success.

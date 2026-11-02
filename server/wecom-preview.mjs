@@ -73,7 +73,7 @@ export function publicPreview(job) {
       ...(execution ? { execution } : {}) } };
 }
 
-export function previewLease(task, job, lock, device, agentId, now = Date.now()) {
+export function previewLease(task, job, lock, device, agentId, now = Date.now(), remainingMs = null) {
   try {
     const target = previewTarget(device, previewJobSlot(job));
     const requested = previewJobRemarks(job), delivered = previewRemarkInput(task?.payload || {});
@@ -90,7 +90,7 @@ export function previewLease(task, job, lock, device, agentId, now = Date.now())
       && task.payload?.deviceNumber === target.deviceNumber && task.payload?.androidUser === target.androidUser
       && lock?.status === "active" && lock.lockType === WECOM_PREVIEW_KIND && lock.taskId === job.jobId
       && lock.deviceId === job.deviceId && lock.ownerUserId === job.userId && lock.lockId === job.lockId
-      && Date.parse(lock.expiresAt) > now + 3000);
+      && Number.isSafeInteger(remainingMs) && remainingMs > 3000);
   } catch { return false; }
 }
 

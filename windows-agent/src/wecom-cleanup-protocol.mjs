@@ -1,4 +1,7 @@
 // Dedicated WeCom protocol helpers. No Agent entry, ADB, screen or OS lifecycle.
+import {randomBytes} from 'node:crypto';
+import {isDeepStrictEqual} from 'node:util';
+export const WECOM_CAUSAL_PROTOCOL='wecom-causal-v1';
 const fields=['version','obligationId','originalTaskId','executionId','deviceId','serial','agentId','appSlot','androidUser','nonce'];
 const exact=(value,keys)=>value&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).length===keys.length&&keys.every(k=>Object.hasOwn(value,k));
 const fail=code=>{throw new Error(code);};
@@ -27,7 +30,7 @@ export function physicalHosts(value){
   if(!Array.isArray(value)||value.length<1||value.length>8)fail('wecom_cleanup_host_invalid');
   const result=value.map(h=>{
     if(!exact(h,['role','pid','createdAt','creationToken','machineId'])||typeof h.role!=='string'||!/^[a-z][a-z0-9_]{0,31}$/.test(h.role)||h.role==='agent'
-      ||!Number.isSafeInteger(h.pid)||h.pid<=0||typeof h.createdAt!=='string'||!Number.isFinite(Date.parse(h.createdAt))
+      ||!Number.isSafeInteger(h.pid)||h.pid<=0||h.pid>0xffffffff||typeof h.createdAt!=='string'||!Number.isFinite(Date.parse(h.createdAt))
       ||new Date(h.createdAt).toISOString()!==h.createdAt||typeof h.creationToken!=='string'||!/^0x1\.[0-9a-f]{13}p[+-]\d{1,4}$/.test(h.creationToken)
       ||typeof h.machineId!=='string'||!/^[a-f0-9]{64}$/.test(h.machineId))fail('wecom_cleanup_host_invalid');
     const created=creationValue(h.creationToken);
@@ -40,7 +43,7 @@ export function physicalHosts(value){
 }
 
 export function cleanupRoute(binding,action){
-  if(!['host','host-closed','verify','lease','proof'].includes(action))fail('wecom_cleanup_route_invalid');
+  if(!['host','host-closed','verify','lease','challenge','proof'].includes(action))fail('wecom_cleanup_route_invalid');
   return `/api/v1/windows-agents/${encodeURIComponent(binding.agentId)}/wecom-cleanup/${encodeURIComponent(binding.obligationId)}/${action}`;
 }
 
@@ -48,7 +51,7 @@ export function createCleanupRequest(config){
   const base=new URL(config.serverBaseUrl);
   if(!['http:','https:'].includes(base.protocol)||base.username||base.password)fail('wecom_cleanup_origin_invalid');
   return async(route,{method='POST',body,timeoutMs=5000}={})=>{
-    if(!/^\/api\/v1\/windows-agents\/[^/]+\/wecom-cleanup\/[^/]+\/(host|host-closed|verify|lease|proof)(?:\?.*)?$/.test(route))fail('wecom_cleanup_route_invalid');
+    if(!/^\/api\/v1\/windows-agents\/[^/]+\/wecom-cleanup\/[^/]+\/(host|host-closed|verify|lease|challenge|proof)(?:\?.*)?$/.test(route))fail('wecom_cleanup_route_invalid');
     let response,value;
     try{
       if(!Number.isFinite(timeoutMs)||timeoutMs<=0)throw Error('expired');
@@ -81,17 +84,20 @@ async function sameAcknowledgement(route,body,request,remaining){
 export function createPhysicalLifecycle(task,{config,request=createCleanupRequest(config),wall=()=>new Date().toISOString(),remainingMs=()=>Infinity}={}){
   const binding=physicalBinding(task,config);
   if(!binding)return null;
+  const ticket=task.payload.wecomCausalLease;
+  if(!exact(ticket,['protocol','epoch','leaseId','purpose'])||ticket.protocol!==WECOM_CAUSAL_PROTOCOL||ticket.purpose!=='business'||!id(ticket.epoch)||!id(ticket.leaseId))fail('wecom_cleanup_causal_context_unconfirmed');
+  const bootstrap=Object.freeze({protocol:WECOM_CAUSAL_PROTOCOL,bindingNonce:binding.nonce,pipeNonce:randomBytes(24).toString('hex')});
   let hosts=null,registration=null,closed=false;
   return{
-    binding,
+    binding,bootstrap,bootstrapInput:Object.freeze({version:1,binding,bootstrap}),
     async ready(frame,actualPid){
-      if(hosts||!exact(frame,['version','hosts'])||frame.version!==1)fail('wecom_cleanup_host_invalid');
+      if(hosts||!exact(frame,['version','hosts','bootstrap'])||frame.version!==1||!isDeepStrictEqual(frame.bootstrap,bootstrap))fail('wecom_cleanup_host_invalid');
       const observed=physicalHosts(frame.hosts);
       // The current product creates exactly one task child. Do not invent a
       // supervisor or include the long-lived shared Agent in the exit set.
       if(observed.length!==1||observed[0].role!=='reader'||observed[0].pid!==actualPid)fail('wecom_cleanup_host_invalid');
       hosts=observed;
-      registration=sameAcknowledgement(cleanupRoute(binding,'host'),{binding,hosts},request,()=>remainingMs('host'));
+      registration=sameAcknowledgement(cleanupRoute(binding,'host'),{binding,hosts,bootstrap},request,()=>remainingMs('host'));
       const result=await registration;
       if(result?.ok!==true)fail('wecom_cleanup_host_registration_unconfirmed');
     },
@@ -101,7 +107,7 @@ export function createPhysicalLifecycle(task,{config,request=createCleanupReques
       // If the ACK was lost the exact registered IDs can still be closed;
       // unknown storage never permits config release or invented host IDs.
       if(registration)await registration.catch(()=>{});
-      const body={binding,hosts,observedAt:wall(),exited:true,observerMachineId:hosts[0].machineId};
+      const body={binding,hosts,bootstrap,observedAt:wall(),exited:true,observerMachineId:hosts[0].machineId};
       const result=await sameAcknowledgement(cleanupRoute(binding,'host-closed'),body,request,()=>remainingMs('host-closed'));
       if(result?.ok!==true)fail('wecom_cleanup_host_close_unconfirmed');
     }

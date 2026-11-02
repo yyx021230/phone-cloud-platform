@@ -1,0 +1,148 @@
+--- a/server/index.mjs
++++ b/server/index.mjs
+@@ -1,4 +1,4 @@
+-import { WECOM_CLEANUP_KIND, WECOM_CLEANUP_LOCK, isWecomCleanupPending, pendingWecomCleanup, createWecomCleanupObligation } from "./wecom-physical-cleanup.mjs";
++import { WECOM_CLEANUP_KIND, WECOM_CLEANUP_LOCK, isWecomCleanupPending, pendingWecomCleanup } from "./wecom-physical-cleanup.mjs";
+ import { publicWecomCleanupState } from "./wecom-physical-cleanup.mjs";
+ import { createWecomCleanupService } from "./wecom-cleanup-service.mjs";
+ import { createLookupReaderCapabilities } from './lookup-reader-capabilities.mjs';
+@@ -455,14 +455,14 @@
+ 
+ async function routeApi(req, res, url) {
+   enforceRequestOrigin(req);
+-  const physicalCleanupRoute = url.pathname.match(/^\/api\/v1\/windows-agents\/([^/]+)\/wecom-cleanup\/([^/]+)\/(host|host-closed|verify|proof|lease)$/);
++  const physicalCleanupRoute = url.pathname.match(/^\/api\/v1\/windows-agents\/([^/]+)\/wecom-cleanup\/([^/]+)\/(host|host-closed|verify|proof|lease|challenge)$/);
+   if (physicalCleanupRoute) {
+     const agentId = decodeURIComponent(physicalCleanupRoute[1]);
+     const ctx = requireWindowsAgent(req, agentId);
+     const action = physicalCleanupRoute[3];
+     requireWindowsScope(ctx, action === "lease" ? "tasks:read" : "tasks:write");
+     if (action === "lease" && req.method === "GET") {
+-      return json(res, 200, { valid: wecomCleanup.lease(agentId, physicalCleanupRoute[2], Object.fromEntries(url.searchParams)) });
++      return json(res, 200, wecomCleanup.leaseProof(agentId, physicalCleanupRoute[2], Object.fromEntries(url.searchParams)));
+     }
+     if (action !== "lease" && req.method === "POST") {
+       return json(res, 200, await wecomCleanup.handle(agentId, physicalCleanupRoute[2], action, await readJson(req)));
+@@ -540,10 +540,12 @@
+       if (!isDeviceListed(device) || !isAdbOnline(device) || !device.adb?.agentId) return reply(409, { error: "device_not_available" });
+       if (wecomCleanup.pending(device.deviceId)) return reply(409, { error: "wecom_cleanup_pending" });
+       if (activeDeviceLockForTask(device.deviceId)) return reply(409, { error: "device_busy" });
++      const causalCreation = wecomCleanup.beginBusinessLease();
+       const job = createAutomationJob({ kind: WECOM_PREVIEW_KIND, userId: ctx.userId, deviceId: device.deviceId, phoneNumber: input.phoneNumber });
+       Object.assign(job, { wecomMode: input.mode || "preview", wecomRequestId: input.requestId, wecomDeviceNumber: target.deviceNumber, wecomAppSlot: target.appSlot, wecomAndroidUser: target.androidUser, wecomRemarkName: input.remarkName, wecomDescription: input.description });
+       const lock = acquireAutomationDeviceLock(device, job, ctx, { ttlMs: 300_000 });
+       const windowsTask = queueAutomationWindowsTask(device, job);
++      wecomCleanup.bindBusinessLease(causalCreation, windowsTask, job, lock);
+       const audit = addAudit("wecom_preview_create", ctx, { jobId: job.jobId, deviceId: job.deviceId, mode: job.wecomMode });
+       pendingWecomCommits.add(windowsTask);
+       try {
+@@ -577,10 +579,10 @@
+     const task = state.windowsTasks.find(t => t.taskId === wecomLease[2]);
+     const job = task && state.automationJobs.find(j => j.jobId === task.payload?.automationJobId);
+     const device = task && repos.devices.findById(task.deviceId);
+-    const locks = task && state.deviceLocks.filter(l => l.deviceId === task.deviceId && l.status === "active" && Date.parse(l.expiresAt) > Date.now());
+-    const valid = locks?.length === 1 && wecomCleanup.originalReady(task) && previewLease(task, job, locks[0], device, decodeURIComponent(wecomLease[1]));
++    const locks = task && state.deviceLocks.filter(l => l.deviceId === task.deviceId && l.status === "active");
++    const valid = locks?.length === 1 && wecomCleanup.originalReady(task) && previewLease(task, job, locks[0], device, decodeURIComponent(wecomLease[1]), Date.now(), wecomCleanup.businessRemaining(task));
+     return json(res, 200, { valid: Boolean(valid), ...(valid ? { taskId: task.taskId, deviceId: device.deviceId, serial: task.adbSerial,
+-      deviceNumber: job.wecomDeviceNumber, appSlot: previewJobSlot(job), androidUser: job.wecomAndroidUser, remarkFingerprint: previewRemarkFingerprint(job), mode: previewJobMode(job), operationFingerprint: previewOperationFingerprint(job), expiresAt: locks[0].expiresAt } : {}) });
++      deviceNumber: job.wecomDeviceNumber, appSlot: previewJobSlot(job), androidUser: job.wecomAndroidUser, remarkFingerprint: previewRemarkFingerprint(job), mode: previewJobMode(job), operationFingerprint: previewOperationFingerprint(job), expiresAt: locks[0].expiresAt, remainingMs: wecomCleanup.businessRemaining(task), causalLease: task.payload.wecomCausalLease } : {}) });
+   }
+ 
+   // A successful response grants exactly one send attempt. Lost responses are
+@@ -595,13 +597,13 @@
+       const task = state.windowsTasks.find(t => t.taskId === wecomClaim[2]);
+       const job = task && state.automationJobs.find(j => j.jobId === task.payload?.automationJobId);
+       const device = task && repos.devices.findById(task.deviceId);
+-      const locks = task && state.deviceLocks.filter(l => l.deviceId === task.deviceId && l.status === "active" && Date.parse(l.expiresAt) > Date.now());
+-      if (locks?.length !== 1 || !wecomCleanup.originalReady(task) || !previewLease(task, job, locks[0], device, agentId) || previewJobMode(job) !== "send") return json(res, 409, { error: "wecom_send_lease_invalid" });
++      const locks = task && state.deviceLocks.filter(l => l.deviceId === task.deviceId && l.status === "active");
++      if (locks?.length !== 1 || !wecomCleanup.originalReady(task) || !previewLease(task, job, locks[0], device, agentId, Date.now(), wecomCleanup.businessRemaining(task)) || previewJobMode(job) !== "send") return json(res, 409, { error: "wecom_send_lease_invalid" });
+       if (state.automationJobs.some(j => sameWecomRecipient(job, j) && j.wecomSendClaimAt)) return json(res, 409, { error: "wecom_send_already_claimed_no_retry" });
+       job.wecomSendClaimAt = nowIso(); job.updatedAt = job.wecomSendClaimAt;
+       // Never erase the in-memory fence after an uncertain database write.
+       await persistencePolicy.persist(() => structuredRepos.persistTaskMutation({ windowsTask: task, automationJob: job }));
+-      if (!wecomCleanup.originalReady(task) || !previewLease(task, job, locks[0], device, agentId)) return json(res, 409, { error: "wecom_send_lease_lost_after_claim" });
++      if (!wecomCleanup.originalReady(task) || !previewLease(task, job, locks[0], device, agentId, Date.now(), wecomCleanup.businessRemaining(task))) return json(res, 409, { error: "wecom_send_lease_lost_after_claim" });
+       return json(res, 201, { claimed: true, taskId: task.taskId, operationFingerprint: previewOperationFingerprint(job) });
+     });
+   }
+@@ -2177,7 +2179,7 @@
+     const maintenanceChanged = galleryDeliveryMaintenance.changed || recoveredTasks || expiredTasks;
+     const agent = ctx.agent || repos.agents.findById(agentId);
+     if (!agent) return json(res, 404, { error: "windows_agent_not_found" });
+-    if (url.searchParams.get("wecomCleanupProtocol") === "1") await wecomCleanup.reconcile(agentId);
++    if (url.searchParams.get("wecomCleanupProtocol") === "1" && url.searchParams.get("wecomCausalProtocol") === "wecom-causal-v1") await wecomCleanup.reconcile(agentId);
+     const activeTaskIds = new Set(String(url.searchParams.get("activeTaskIds") || "")
+       .split(",")
+       .map((value) => decodeURIComponent(value).trim())
+@@ -2242,7 +2244,7 @@
+       item.agentId === agentId
+       && item.status === "queued"
+       && (item.type !== WECOM_PREVIEW_KIND || url.searchParams.get("wecomPreview") === "wecom-invitation-v4")
+-      && (![WECOM_PREVIEW_KIND, WECOM_CLEANUP_KIND].includes(item.type) || url.searchParams.get("wecomCleanupProtocol") === "1")
++      && (![WECOM_PREVIEW_KIND, WECOM_CLEANUP_KIND].includes(item.type) || (url.searchParams.get("wecomCleanupProtocol") === "1" && url.searchParams.get("wecomCausalProtocol") === "wecom-causal-v1"))
+       && wecomCleanup.canPick(item)
+       && !pendingWecomCommits.has(item)
+       && !pendingXhsCollectionCommits.has(item)
+@@ -2298,7 +2300,7 @@
+       let physicalCleanupLock = null;
+       if (task.type === WECOM_PREVIEW_KIND) {
+         const job = state.automationJobs.find(j => j.jobId === task.payload?.automationJobId);
+-        physicalCleanupLock = createWecomCleanupObligation(task, job, repos.devices.findById(task.deviceId));
++        physicalCleanupLock = wecomCleanup.createObligation(task, job, repos.devices.findById(task.deviceId));
+         state.deviceLocks.unshift(physicalCleanupLock);
+         task.payload.physicalCleanup = structuredClone(physicalCleanupLock.physicalCleanup.binding);
+       } else if (task.type === WECOM_CLEANUP_KIND) physicalCleanupLock = wecomCleanup.picked(task);
+@@ -4546,6 +4548,8 @@
+   let changed = false;
+   for (const lock of state.deviceLocks) {
+     if (lock.status !== "active") continue;
++    const causalBudget = wecomCleanup?.businessLockState(lock);
++    if (causalBudget && (!causalBudget.known || causalBudget.remainingMs > 0)) continue;
+     if (lock.managedLookupGeneration && managedLookup?.reserved(lock.deviceId)) continue;
+     if (lock.lockType === "kuaishou_lead") {
+       const job = (state.automationJobs || []).find((item) => item.jobId === lock.taskId);
+@@ -4573,7 +4577,8 @@
+       changed = true;
+       continue;
+     }
+-    if (toTime(lock.expiresAt) && toTime(lock.expiresAt) <= now) {
++    if ((causalBudget?.known && causalBudget.remainingMs === 0)
++        || (!causalBudget && toTime(lock.expiresAt) && toTime(lock.expiresAt) <= now)) {
+       lock.status = "expired";
+       lock.releasedAt = nowIso();
+       lock.releaseReason = "lock_timeout";
+@@ -7242,6 +7247,10 @@
+   let changed = false;
+   for (const task of state.windowsTasks) {
+     if (!["queued", "running", "stalled"].includes(task.status)) continue;
++    if (wecomCleanup.causalTask(task)) {
++      changed = wecomCleanup.expireTask(task) || changed;
++      continue;
++    }
+     const anchor = task.status === "running" ? latestTaskActivityAt(task) || task.pickedAt || task.updatedAt : task.createdAt;
+     const runningTtlMs = task.type === "alipay_name_query"
+       ? ALIPAY_NAME_QUERY_WINDOWS_TASK_TTL_MS
+@@ -7323,6 +7332,11 @@
+   expireDeviceLocks();
+   for (const job of state.automationJobs || []) {
+     if (!isActiveAutomationStatus(job.status)) continue;
++    if (job.kind === WECOM_PREVIEW_KIND && job.wecomCausalLease) {
++      const task = state.windowsTasks.find(t => t.taskId === job.windowsTaskId);
++      if (task) changed = wecomCleanup.expireTask(task) || changed;
++      continue;
++    }
+     if (job.kind === "kuaishou_lead") {
+       const windowsTask = job.windowsTaskId ? (state.windowsTasks || []).find((item) => item.taskId === job.windowsTaskId) : null;
+       if (windowsTask && ["queued", "running", "stalled"].includes(windowsTask.status)) continue;
+--- a/windows-agent/src/index.mjs
++++ b/windows-agent/src/index.mjs
+@@ -1153,6 +1153,7 @@
+     params.set("xhsPublishDelivery", XHS_PUBLISH_DELIVERY_PROTOCOL);
+     params.set("wecomPreview", "wecom-invitation-v4");
+     params.set("wecomCleanupProtocol", "1");
++    params.set("wecomCausalProtocol", "wecom-causal-v1");
+     const suffix = params.size ? `?${params.toString()}` : "";
+     const payload = await api(`/api/v1/windows-agents/${encodeURIComponent(config.agentId)}/tasks/next${suffix}`);
+     observeLookupReaderAdmission(payload.readerCapacity);

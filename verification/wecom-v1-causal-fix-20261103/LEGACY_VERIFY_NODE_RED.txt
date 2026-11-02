@@ -1,0 +1,167 @@
+✖ proof stays behind child close and pickedAt comes from the actual claimed task (1.912084ms)
+✖ lease denial and business payload in verification cannot start a child (1.044708ms)
+✖ lost proof ACK retries exact original proof once and never sends generic success (1.027ms)
+✖ permanent proof uncertainty never downgrades a possibly committed task or resamples (0.561541ms)
+✖ native read failure reports only fixed failure, without evidence or scan callbacks (0.716125ms)
+✖ verify hard kill false is not child close (0.377625ms)
+✖ verify hard kill throw is not child close (0.103584ms)
+✖ real OS pipe returns fixture facts before exit, but HTTP proof waits for exit (2.282958ms)
+ℹ Error: Test "verify hard kill false is not child close" at windows-agent/src/wecom-cleanup-verify.test.mjs:61:37 generated asynchronous activity after the test ended. This activity created the error "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /worker_timeout/. Input:
+
+'Error: wecom_cleanup_task_invalid'
+" and would have caused the test to fail, but instead triggered an unhandledRejection event.
+ℹ Error: Test "verify hard kill throw is not child close" at windows-agent/src/wecom-cleanup-verify.test.mjs:61:37 generated asynchronous activity after the test ended. This activity created the error "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /worker_timeout/. Input:
+
+'Error: wecom_cleanup_task_invalid'
+" and would have caused the test to fail, but instead triggered an unhandledRejection event.
+ℹ tests 8
+ℹ suites 0
+ℹ pass 0
+ℹ fail 8
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 71.400875
+
+✖ failing tests:
+
+test at windows-agent/src/wecom-cleanup-verify.test.mjs:16:1
+✖ proof stays behind child close and pickedAt comes from the actual claimed task (1.912084ms)
+  Error: wecom_cleanup_task_invalid
+      at problem (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-verify.mjs:8:22)
+      at verificationConfig (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-verify.mjs:15:209)
+      at runWecomCleanupVerifyTask (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-verify.mjs:72:15)
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-verify.test.mjs:19:17)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.start (node:internal/test_runner/test:1096:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17)
+
+test at windows-agent/src/wecom-cleanup-verify.test.mjs:28:1
+✖ lease denial and business payload in verification cannot start a child (1.044708ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /lease_lost/. Input:
+  
+  'Error: wecom_cleanup_task_invalid'
+  
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-verify.test.mjs:30:3)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: wecom_cleanup_task_invalid
+        at problem (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-verify.mjs:8:22)
+        at verificationConfig (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-verify.mjs:15:209)
+        at runWecomCleanupVerifyTask (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-verify.mjs:72:15)
+        at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-verify.test.mjs:30:24)
+        at Test.runInAsyncScope (node:async_hooks:226:14)
+        at Test.run (node:internal/test_runner/test:1201:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+        at Test.postRun (node:internal/test_runner/test:1330:19)
+        at Test.run (node:internal/test_runner/test:1258:12)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5),
+    expected: /lease_lost/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/wecom-cleanup-verify.test.mjs:34:1
+✖ lost proof ACK retries exact original proof once and never sends generic success (1.027ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-verify.test.mjs:41:10)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/wecom-cleanup-verify.test.mjs:44:1
+✖ permanent proof uncertainty never downgrades a possibly committed task or resamples (0.561541ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'wecom_cleanup_task_invalid'
+  - 'wecom_cleanup_proof_ack_unknown'
+                   ^
+  
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-verify.test.mjs:50:69)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'wecom_cleanup_task_invalid',
+    expected: 'wecom_cleanup_proof_ack_unknown',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/wecom-cleanup-verify.test.mjs:54:1
+✖ native read failure reports only fixed failure, without evidence or scan callbacks (0.716125ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'wecom_cleanup_task_invalid'
+  - 'wecom_forward_still_present'
+           ^
+  
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-verify.test.mjs:58:87)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'wecom_cleanup_task_invalid',
+    expected: 'wecom_forward_still_present',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/wecom-cleanup-verify.test.mjs:61:37
+✖ verify hard kill false is not child close (0.377625ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-verify.test.mjs:67:10)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/wecom-cleanup-verify.test.mjs:61:37
+✖ verify hard kill throw is not child close (0.103584ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-verify.test.mjs:67:10)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/wecom-cleanup-verify.test.mjs:70:1
+✖ real OS pipe returns fixture facts before exit, but HTTP proof waits for exit (2.282958ms)
+  Error: wecom_cleanup_task_invalid
+      at problem (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-verify.mjs:8:22)
+      at verificationConfig (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-verify.mjs:15:209)
+      at runWecomCleanupVerifyTask (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-verify.mjs:72:15)
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-verify.test.mjs:75:22)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7)

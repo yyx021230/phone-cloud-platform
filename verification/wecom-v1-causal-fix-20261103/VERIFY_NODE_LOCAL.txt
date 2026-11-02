@@ -1,0 +1,25 @@
+✔ proof stays behind child close and pickedAt comes from the actual claimed task (4.532708ms)
+✔ lease denial and business payload in verification cannot start a child (0.421167ms)
+✔ lost proof ACK retries exact original proof once and never sends generic success (0.803584ms)
+✔ permanent proof uncertainty never downgrades a possibly committed task or resamples (0.524875ms)
+✔ native read failure reports only fixed failure, without evidence or scan callbacks (0.714291ms)
+✔ verify hard kill false is not child close (0.678833ms)
+✔ verify hard kill throw is not child close (0.280833ms)
+✖ real OS pipe returns fixture facts before exit, but HTTP proof waits for exit (1.586167ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 7
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 104.43575
+
+✖ failing tests:
+
+test at windows-agent/src/wecom-cleanup-verify.test.mjs:74:1
+✖ real OS pipe returns fixture facts before exit, but HTTP proof waits for exit (1.586167ms)
+  ReferenceError: Cannot access 'proof' before initialization
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-verify.test.mjs:77:169)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7)

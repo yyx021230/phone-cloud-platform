@@ -2,41 +2,48 @@ import { syntheticHostTime } from "./wecom-cleanup-fixture.mjs";
 import assert from "node:assert/strict";
 import test from "node:test";
 import { createWecomCleanupObligation, WECOM_PACKAGES, isWecomCleanupPending, publicWecomCleanupState } from "./wecom-physical-cleanup.mjs";
+import {createWecomCausalClock} from "./wecom-causal-clock.mjs";
 import { createWecomCleanupService } from "./wecom-cleanup-service.mjs";
 
 export function fixture() {
-  let clock = Date.parse("2026-11-02T05:00:00.000Z"), sequence = 0;
+  let clock = Date.parse("2026-11-02T05:00:00.000Z"), mono=0n,sequence = 0,clockSequence=0;
+  const causalClock=createWecomCausalClock({mono:()=>mono,id:()=>`clock-${++clockSequence}`,epoch:"test-epoch"});
   const id = () => `fixture-${++sequence}`;
   const device = { deviceId: "adb:fixture", adb: { serial: "fixture", agentId: "fixture-agent" } };
-  const job = { jobId: "original-job", deviceId: device.deviceId, userId: "fixture-owner", wecomAppSlot: "main", wecomAndroidUser: 0, lockId: "original-lock", status: "running", wecomSendClaimAt: "unchanged" };
-  const task = { taskId: "original-task", type: "wecom_customer_preview", status: "running", deviceId: device.deviceId,
-    adbSerial: "fixture", agentId: "fixture-agent", pickedAt: new Date(clock).toISOString(), payload: { automationJobId: job.jobId } };
-  const lock = createWecomCleanupObligation(task, job, device, { now: clock, id });
-  task.payload.physicalCleanup = structuredClone(lock.physicalCleanup.binding);
-  const state = { devices: [device], automationJobs: [job], windowsTasks: [task], deviceLocks: [lock] };
-  const binding = structuredClone(lock.physicalCleanup.binding);
+  const job = { jobId: "original-job", deviceId: device.deviceId, userId: "fixture-owner", wecomAppSlot: "main", wecomAndroidUser: 0, lockId: "original-lock", status: "queued",kind:"wecom_customer_preview",windowsTaskId:"original-task",agentId:"fixture-agent",adbSerial:"fixture",phoneNumber:"13900000000",wecomMode:"preview", wecomSendClaimAt: "unchanged" };
+  const task = { taskId: "original-task", type: "wecom_customer_preview", status: "queued", deviceId: device.deviceId,
+    adbSerial: "fixture", agentId: "fixture-agent", pickedAt: new Date(clock).toISOString(), payload: { automationJobId: job.jobId,phoneNumber:job.phoneNumber,appSlot:"main",androidUser:0,mode:"preview" } };
+  const businessLock={lockId:job.lockId,taskId:job.jobId,deviceId:device.deviceId,lockType:job.kind,status:"active",ownerUserId:job.userId};
+  const state = { devices: [device], automationJobs: [job], windowsTasks: [task], deviceLocks: [businessLock] };
   let rejectSave = false, blocked = false, writes = [];
-  const service = createWecomCleanupService({ state, now: () => clock, id,
-    conflict: () => blocked, persist: async bundle => { if (rejectSave) throw new Error("fixture_storage_failure"); writes.push(structuredClone(bundle)); } });
-  const step = (ms = 100) => { clock += ms; return new Date(clock).toISOString(); };
+  const options={state,now:()=>clock,id,clock:causalClock,conflict:()=>blocked,persist:async bundle=>{if(rejectSave)throw new Error("fixture_storage_failure");writes.push(structuredClone(bundle));}};
+  const service = createWecomCleanupService(options);
+  service.bindBusinessLease(service.beginBusinessLease(),task,job,businessLock);
+  task.status=job.status="running";
+  const lock=service.createObligation(task,job,device);state.deviceLocks.unshift(lock);
+  task.payload.physicalCleanup=structuredClone(lock.physicalCleanup.binding);
+  const binding=structuredClone(lock.physicalCleanup.binding);
+  const bootstrap={protocol:"wecom-causal-v1",bindingNonce:binding.nonce,pipeNonce:"b".repeat(48)};
+  const step = (ms = 100) => { clock += ms;mono+=BigInt(ms)*1000000n; return new Date(clock).toISOString(); };
   const hosts = [{ role: "reader", pid: 123, ...syntheticHostTime(Date.parse(step())), machineId: "a".repeat(64) }];
   const call = (action, body) => service.handle("fixture-agent", lock.lockId, action, body);
   async function ready() {
-    await call("host", { binding, hosts });
+    await call("host", { binding, hosts,bootstrap });
     task.status = job.status = "failed"; job.result = { previewCode: "preview_cleanup_unconfirmed", cleanupConfirmed: false };
     service.noteTerminal(task, job);
-    await call("host-closed", { binding, hosts, observedAt: step(), exited: true, observerMachineId: hosts[0].machineId });
+    await call("host-closed", { binding, hosts,bootstrap, observedAt: step(), exited: true, observerMachineId: hosts[0].machineId });
     const reply = await call("verify", { binding });
     const verifyTask = state.windowsTasks.find(t => t.taskId === reply.taskId);
     verifyTask.status = "running"; verifyTask.pickedAt = step(); service.picked(verifyTask);
+    const v=lock.physicalCleanup.verification;await call("challenge",{binding,verificationId:v.verificationId,verificationNonce:v.verificationNonce,verificationTaskId:v.verificationTaskId});
     return verifyTask;
   }
   function proof() {
     const v = lock.physicalCleanup.verification;
-    const snapshots = [1, 2].map(() => ({ observedAt: step(), packagesAbsent: true, packageNames: [...WECOM_PACKAGES], serialForwardCount: 0 }));
-    step(); return { binding, verificationId: v.verificationId, verificationNonce: v.verificationNonce, verificationTaskId: v.verificationTaskId, snapshots };
+    const snapshots = [1, 2].map(i => ({sequence:i,elapsedMs:i*100, observedAt: step(), packagesAbsent: true, packageNames: [...WECOM_PACKAGES], serialForwardCount: 0 }));
+    step(); return { binding, verificationId: v.verificationId, verificationNonce: v.verificationNonce, verificationTaskId: v.verificationTaskId,challenge:v.challenge, snapshots };
   }
-  return { state, lock, job, task, binding, hosts, service, call, ready, proof, step,
+  return { state, lock, businessLock,options,job, task, binding,bootstrap,hosts, service, call, ready, proof, step,
     failStorage: value => { rejectSave = value; }, block: value => { blocked = value; }, writes: () => writes };
 }
 
@@ -75,11 +82,11 @@ for (const [label, alter] of [
   ["package present", p => { p.snapshots[0].packagesAbsent = false; }],
   ["missing package", p => { p.snapshots[0].packageNames.pop(); }],
   ["one frame", p => { p.snapshots.pop(); }],
-  ["same time", p => { p.snapshots[1].observedAt = p.snapshots[0].observedAt; }],
+  ["same monotonic duration", p => { p.snapshots[1].elapsedMs = p.snapshots[0].elapsedMs; }],
   ["old generation", p => { p.verificationId = "old"; }],
   ["old nonce", p => { p.verificationNonce = "old"; }],
   ["wrong task", p => { p.verificationTaskId = "original-task"; }],
-  ["future", p => { p.snapshots[1].observedAt = "2099-01-01T00:00:00Z"; }],
+  ["invalid audit UTC", p => { p.snapshots[1].observedAt = "invalid"; }],
   ["unknown field", p => { p.cleanupConfirmed = true; }]
 ]) test(`proof rejects ${label}`, async () => {
   const f = fixture(); await f.ready(); const proof = f.proof(); alter(proof);
@@ -88,7 +95,7 @@ for (const [label, alter] of [
 
 test("stale proof, changed device owner and wrong Agent cannot release", async () => {
   const f = fixture(); await f.ready(); const proof = f.proof(); f.step(3001);
-  await assert.rejects(f.call("proof", proof), /proof_invalid/);
+  await assert.rejects(f.call("proof", proof), /causal_context/);
   await assert.rejects(f.service.handle("other", f.lock.lockId, "proof", f.proof()), /binding_mismatch/);
   f.state.devices[0].adb.agentId = "other";
   await assert.rejects(f.call("proof", f.proof()), /binding_mismatch/);
@@ -96,11 +103,11 @@ test("stale proof, changed device owner and wrong Agent cannot release", async (
 
 test("host must be original machine, exact process creation token and real task child", async () => {
   const f = fixture();
-  await assert.rejects(f.call("host", { binding: f.binding, hosts: [{ ...f.hosts[0], creationToken: undefined }] }), /host_invalid/);
-  await f.call("host", { binding: f.binding, hosts: f.hosts });
-  await f.call("host", { binding: f.binding, hosts: f.hosts });
-  await assert.rejects(f.call("host", { binding: f.binding, hosts: [{ ...f.hosts[0], creationToken: "0x1.aba0634000000p+30" }] }), /binding_mismatch/);
-  await assert.rejects(f.call("host-closed", { binding: f.binding, hosts: f.hosts, observedAt: f.step(), exited: true, observerMachineId: "b".repeat(64) }), /host_unconfirmed/);
+  await assert.rejects(f.call("host", { binding: f.binding,bootstrap:f.bootstrap, hosts: [{ ...f.hosts[0], creationToken: undefined }] }), /host_invalid/);
+  await f.call("host", { binding: f.binding,bootstrap:f.bootstrap, hosts: f.hosts });
+  await f.call("host", { binding: f.binding,bootstrap:f.bootstrap, hosts: f.hosts });
+  await assert.rejects(f.call("host", { binding: f.binding,bootstrap:f.bootstrap, hosts: [{ ...f.hosts[0], creationToken: "0x1.aba0634000000p+30" }] }), /binding_mismatch/);
+  await assert.rejects(f.call("host-closed", { binding: f.binding,bootstrap:f.bootstrap, hosts: f.hosts, observedAt: f.step(), exited: true, observerMachineId: "b".repeat(64) }), /host_unconfirmed/);
 });
 
 test("failed persistence restores exact proof state and keeps physical fence", async () => {
@@ -110,20 +117,20 @@ test("failed persistence restores exact proof state and keeps physical fence", a
   f.failStorage(false); await f.call("proof", proof); assert.equal(f.service.pending("adb:fixture"), null);
 });
 
-test("archive and restored JSON retain obligation and allow independently bound late proof", async () => {
+test("archive and restored JSON retain obligation without reconstructing monotonic authority", async () => {
   const f = fixture(); await f.ready(); f.state.automationJobs = []; f.state.windowsTasks = f.state.windowsTasks.filter(t => t.type === "wecom_cleanup_verify");
   const restored = JSON.parse(JSON.stringify(f.state));
   assert.ok(isWecomCleanupPending(restored.deviceLocks[0]));
   const service = createWecomCleanupService({ state: restored, now: () => Date.parse("2026-11-02T05:00:01Z"), persist: async () => {} });
-  await service.handle("fixture-agent", f.lock.lockId, "proof", f.proof());
-  assert.equal(service.pending("adb:fixture"), null);
+  await assert.rejects(service.handle("fixture-agent", f.lock.lockId, "proof", f.proof()),/causal_context/);
+  assert.ok(service.pending("adb:fixture"));
 });
 
-test("expired verify issues fresh generation; late old proof cannot clear it", async () => {
-  const f = fixture(); const oldTask = await f.ready(), oldProof = f.proof(); f.step(120001);
-  const next = await f.call("verify", { binding: f.binding });
-  assert.notEqual(next.taskId, oldTask.taskId); assert.equal(oldTask.status, "expired");
-  await assert.rejects(f.call("proof", oldProof), /proof_invalid/);
+test("expired verify never issues a fresh generation or clears its original obligation", async () => {
+  const f=fixture(),oldTask=await f.ready(),oldProof=f.proof();f.step(120001);
+  await assert.rejects(f.call("verify",{binding:f.binding}),/causal_context/);
+  assert.equal(oldTask.status,"running","rejected transaction restores the original task");
+  await assert.rejects(f.call("proof",oldProof),/proof_invalid/);
   assert.ok(f.service.pending("adb:fixture"));
 });
 
@@ -134,8 +141,8 @@ test("conflicting phone activity blocks verify, but not another physical phone",
 });
 
 test("reconcile survives lost verify request, deduplicates, never loops a failed generation", async () => {
-  const f = fixture(); await f.call("host", { binding: f.binding, hosts: f.hosts });
-  await f.call("host-closed", { binding: f.binding, hosts: f.hosts, observedAt: f.step(), exited: true, observerMachineId: f.hosts[0].machineId });
+  const f = fixture(); await f.call("host", { binding: f.binding,bootstrap:f.bootstrap, hosts: f.hosts });
+  await f.call("host-closed", { binding: f.binding,bootstrap:f.bootstrap, hosts: f.hosts, observedAt: f.step(), exited: true, observerMachineId: f.hosts[0].machineId });
   assert.equal(await f.service.reconcile("fixture-agent"), null);
   f.task.status = f.job.status = "failed";
   const [a,b] = await Promise.all([f.service.reconcile("fixture-agent"), f.service.reconcile("fixture-agent")]);
@@ -147,9 +154,9 @@ test("reconcile survives lost verify request, deduplicates, never loops a failed
 
 test("proof commits only exact original lock, rolls all three records back, ignores late failure", async () => {
   const f = fixture(); const task = await f.ready();
-  const old = { lockId: f.job.lockId,taskId:f.job.jobId,deviceId:f.task.deviceId,lockType:"wecom_customer_preview",status:"active" };
+  const old = f.businessLock;
   const unrelated = { ...old, lockId:"other-lock",taskId:"other-job" };
-  f.state.deviceLocks.push(old,unrelated); f.failStorage(true);
+  f.state.deviceLocks.push(unrelated); f.failStorage(true);
   await assert.rejects(f.call("proof",f.proof()),/storage_unavailable/);
   assert.equal(old.status,"active"); assert.equal(task.status,"running");
   f.failStorage(false); await f.call("proof",f.proof());
@@ -160,14 +167,14 @@ test("proof commits only exact original lock, rolls all three records back, igno
 
 test("mismatched original lock cannot release any hold", async () => {
   const f=fixture(); await f.ready();
-  f.state.deviceLocks.push({lockId:f.job.lockId,taskId:"another-job",deviceId:f.task.deviceId,lockType:"wecom_customer_preview",status:"active"});
+  f.businessLock.taskId="another-job";
   await assert.rejects(f.call("proof",f.proof()),/original_lock_mismatch/);
   assert.ok(f.service.pending(f.task.deviceId));
 });
 
 test("serial-only dispatch stays blocked while release write is unresolved", async () => {
   const f=fixture(); await f.ready(); const proof=f.proof(); let release;
-  const service=createWecomCleanupService({state:f.state,now:()=>Date.parse(f.step()),persist:()=>new Promise(r=>{release=r;})});
+  const service=createWecomCleanupService({...f.options,persist:()=>new Promise(r=>{release=r;})});
   const done=service.handle("fixture-agent",f.lock.lockId,"proof",proof);
   await new Promise(r=>setImmediate(r));
   assert.equal(service.canPick({adbSerial:"fixture",type:"xhs_publish"}),false);
@@ -200,9 +207,9 @@ test("terminal missing host evidence is maintenance, not an endlessly automatic 
   const f=fixture(); assert.equal(publicWecomCleanupState(f.lock).phase,"awaiting_host");
   f.task.status=f.job.status="failed"; f.service.noteTerminal(f.task,f.job);
   assert.deepEqual(publicWecomCleanupState(f.lock),{phase:"maintenance",label:"企微清理待确认 · 需单机维护",reason:"host_evidence_missing"});
-  const g=fixture(); await g.call("host",{binding:g.binding,hosts:g.hosts});
+  const g=fixture(); await g.call("host",{binding:g.binding,bootstrap:g.bootstrap,hosts:g.hosts});
   g.task.status=g.job.status="failed"; g.service.noteTerminal(g.task,g.job);
   assert.equal(publicWecomCleanupState(g.lock).reason,"host_close_unconfirmed");
-  await g.call("host-closed",{binding:g.binding,hosts:g.hosts,observedAt:g.step(),exited:true,observerMachineId:g.hosts[0].machineId});
+  await g.call("host-closed",{binding:g.binding,bootstrap:g.bootstrap,hosts:g.hosts,observedAt:g.step(),exited:true,observerMachineId:g.hosts[0].machineId});
   assert.equal(publicWecomCleanupState(g.lock).phase,"awaiting_verification");
 });

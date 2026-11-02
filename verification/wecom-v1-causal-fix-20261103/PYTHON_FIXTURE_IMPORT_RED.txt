@@ -1,0 +1,21 @@
+....................................................................................................................................................................................E...................................................................................................................................................................................................................................................................................E.............................
+======================================================================
+ERROR: test_remark_fingerprint_matches_node_and_changed_content_loses_lease (test_wecom_platform_preview.HostGuardTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_platform_preview.py", line 63, in test_remark_fingerprint_matches_node_and_changed_content_loses_lease
+    with patch.object(host,'causal_business_budget',host.CausalLeaseBudget(ticket)),patch.object(host,'external_authority',None),patch.object(host,'config',value,create=True),patch.object(host,'SERIAL',value['serial'],create=True),patch.object(host,'selected_user',0,create=True),patch.object(host,'budget'),patch.object(host.urllib.request,'build_opener',return_value=opener):
+AttributeError: module 'wecom_platform_preview' has no attribute 'CausalLeaseBudget'
+
+======================================================================
+ERROR: test_remark_fingerprint_matches_node_and_changed_content_loses_lease (test_wecom_platform_preview.HostGuardTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_platform_preview.py", line 63, in test_remark_fingerprint_matches_node_and_changed_content_loses_lease
+    with patch.object(host,'causal_business_budget',host.CausalLeaseBudget(ticket)),patch.object(host,'external_authority',None),patch.object(host,'config',value,create=True),patch.object(host,'SERIAL',value['serial'],create=True),patch.object(host,'selected_user',0,create=True),patch.object(host,'budget'),patch.object(host.urllib.request,'build_opener',return_value=opener):
+AttributeError: module 'wecom_platform_preview' has no attribute 'CausalLeaseBudget'
+
+----------------------------------------------------------------------
+Ran 486 tests in 1.818s
+
+FAILED (errors=2)
