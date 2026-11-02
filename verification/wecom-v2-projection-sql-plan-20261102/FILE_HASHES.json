@@ -1,0 +1,11 @@
+{
+  "baseCommit": "b1be4cd1fd4bbb0f7d39d15958732ec3229e92a2",
+  "candidateTag": "wecom-v2-projection-sql-20261102-draft.1",
+  "files": {
+    "docs/PROJECT_DEVELOPMENT.md": "801e899fc985b2455acbebdf774e30745783f6abb8a6996fa27275dedb8a96bc",
+    "verification/wecom-v2-projection-sql-plan-20261102/PLAN.md": "93d651d6990e6be5ec9883960a41ebb38d5ba40bf2104206edf224925d4310f0",
+    "verification/wecom-v2-projection-sql-plan-20261102/SOURCE_BASELINE.json": "e654c05c8b86e9dee0dd438810aea7bfa52761cd4d30a09b2ab0e4d32980919b",
+    "verification/wecom-v2-projection-sql-plan-20261102/SYNTAX_RECEIPT.json": "301dc52d027c1badb0b9e133c855a7e1bd62c9e3edecb1c919f414ee04a87cd0",
+    "verification/wecom-v2-projection-sql-plan-20261102/verification-queries.mjs": "c62c8f7c49044bd3211c9a5d01160895b57f25b504f9f201ce1b2cb677989fc9"
+  }
+}

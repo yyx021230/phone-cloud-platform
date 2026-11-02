@@ -1,0 +1,11 @@
+{
+  "command": [
+    "node",
+    "--check",
+    "verification/wecom-v2-projection-sql-plan-20261102/verification-queries.mjs"
+  ],
+  "exitCode": 0,
+  "sqlParsed": false,
+  "queriesExecuted": false,
+  "noPgWindowsDeviceOrServiceActions": true
+}

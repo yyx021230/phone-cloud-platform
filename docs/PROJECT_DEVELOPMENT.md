@@ -6081,3 +6081,11 @@ SAVEPOINT55P03只回滚首目标，另目标同writer提交后新backend复读�
 ### 决策日志｜2026-11-02 比较SQL窄行为通过不宣称生产writer已修
 
 只接受隔离库task marker/target SAVEPOINT行为，不把负例当原生产因果或实际共享writer修复。无产品/DDL/Windows/手机/生产动作；下一仅准备job/hold/business无marker/custom delivery及controlled owner写的精确最小验证片/SQL，blob/boot共同门控仍另案，先审不执行PG/设备/改shared。原43设备义务/147/52、查名池与冻结保持，S2/journal/native和主号分身真机仍未完成。
+
+### 变更记录｜2026-11-02 后继projection SQL分片提案，未执行
+
+新增verification/wecom-v2-projection-sql-plan-20261102仅方案/SQL字符串：A建议job/hold各正负4组先审；B原business无marker及anchor+immutable/CAS合法status单独；C实际jsonb_set delivery保字段行为与缺执行/CAS关联、controlled task/job progress单独。明确不能假设delivery会抹claim，不能把同task旧投递说成允许换claim ID。所有新SQL仅验证文本、未解析/执行。
+
+### 决策日志｜2026-11-02 claim仍存在不证明后续progress操作已提交
+
+后继controlled owner还缺独立稳定progress/delivery op ID/内容指纹/持久回执合同，不能只看M3 tuple recorded或向M1 exact状态塞新操作，也不拿可裁剪events当永久回执。本片不造新DDL/lookup schema，不修改comparison/产品/shared代码或执行PG/Windows/设备；blob/boot与lookup executionWait独立owner引用域由root统一。S2/journal/native默认禁用，原43设备义务/147/52和查名池保留，主号分身真机未完成。
