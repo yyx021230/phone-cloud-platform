@@ -5901,3 +5901,14 @@ Node29303 exit0/组消失、PG29291 exit0/停止确认，成功db依原runner清
 ### 决策日志｜2026-11-02 存储实测通过仍不成为host ACK，M3先方案审
 
 M2始终held/protocolPermit false；后继只准备任务/物理hold/协议账本原子创建、journal恢复、真实父子facts/v1兼容最小方案，不因本地PG绿写共享index/getPool或放开手机号。未改原43/147/52、155/157查名池，不称主号/分身/线上通过。原INITDB EOF格式按原件保留，完整diffcheck与证据格式例外分列，无Windows/phone/ADB/生产/部署动作，冻结保持。
+
+
+### 变更记录｜2026-11-02 M3原子领取/journal/父子事实最小分片方案（未实现）
+
+root闭合M2本地PG证据484d72db后，owner只读实际index领取/restore/checkpoint、M2私有事务及Agent v1 ready/close路径，新增verification/wecom-v2-m3-plan-20261102/PLAN与12源hash。现领取错误restore会移除新增hold，不能用于COMMIT未知；两次独立persist/M2 createPending不构成跨记录原子领取。方案先M3a纯claim bundle+命名PG原子方法/完整tuple对账，任务类/物理hold/ledger同事务，拟claim_data可空列保存IDs/业务指纹且不改M1 exact state，均待审未编码/迁移。
+
+后继M3b专属恢复journal不复用发送claim，断电/Windows ACL/flush实际依据未齐不释放payload；M3c真实SYSTEM父子/PID-born-machine/connected peer与时间权威先定适配器，再root共享入口分派。明确v1/旧pending不迁移、不重标、不清原43，原子写不代表checkpoint后续写不会冲突，canonical v2门控/投影一致性仍是接线前提。
+
+### 决策日志｜2026-11-02 M3不一口接全链路，pool归属和旧写共存先审
+
+M2 owned client监听仅本调用；共享idle Pool生命周期须root在创建处一次定义有限错误/健康结果及readiness策略，不能业务叶全局吞错，也不把单idle连接错误擅扩成其他手机全停。现index/generic/checkpoint写入冲突、稳定claim幂等/回退pending保留/完整tuple未知对账纳入M3a审，未审不写共享index/getPool。无M3代码/SQL/新测试/PG/Windows/phone/生产/部署，旧14/0库结论不升级成host ACK/native，主号分身仍未验，隔离/查名池/冻结保持。
