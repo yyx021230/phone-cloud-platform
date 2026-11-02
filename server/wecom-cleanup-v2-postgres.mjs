@@ -109,8 +109,8 @@ export function createWecomV2PostgresRepository({ getPool, readAuthenticatedBind
   }
   async function reconcile(expected, action = null, body = null) {
     // Does not replay INSERT/UPDATE, replace nonce, restamp epoch or loop.
-    requireContext(expected);
     try {
+      requireContext(expected);
       const attempt = await transaction(expected, async client => {
         const state = await selected(client, expected);
         if (!state) return result("unknown", { reason: "row_not_visible" });

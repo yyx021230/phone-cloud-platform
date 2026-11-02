@@ -5826,3 +5826,14 @@ COMMIT须实际返回COMMIT tag，未知退役销毁旧client后独立checkout�
 本片仅本地未接线新repository/可审DDL，14旧产品源不变；没启动PG、没执行SQL或真实连接，26fake只证明调用顺序/错误分类，不能称CAS/锁/约束/COMMIT网络语义已验。下一步先编固定私有cluster runner/有界代理交root审，真实后端COMMIT/ReadyForQuery/无ErrorResponse与独立直连事实齐才计正例。新表不替旧物理fence，原task/lock/journal/OS事实/时钟权威后继独立审。无Windows/手机/ADB/生产或部署，原43/隔离/查名池/冻结保持，真机主号分身仍未完成。
 
 M2证据格式补充：完整staged diffcheck在原始PRE_REVIEW_RED_OUTPUT.txt的6行TAP空行缩进报尾空格，保留原始失败输出/hash；仅排除此固定日志的代码/文档检查另行通过，不宣称完整diffcheck绿。例外与两条实际命令/退出码见DIFFCHECK_RECEIPT，交root审，无其他路径豁免。
+
+
+### 变更记录｜2026-11-02 M2 rc.1独立审发现提交未知认证分类缺口，rc.2修正
+
+root固定4efde08模块/fixture复现操作epoch、初始化epoch、操作malformed三例：COMMIT回复未知且认证变化时，内部reconcile的try外认证throw绕过结构化存储未知分类；原连接已销毁、无二次写正确。owner先在旧产品源追加3反例，原26过/新3红保存实际源/hash/日志，另复制root固定Git反例与原输出。产品仅把内部requireContext移入既有try/catch，未知+epoch返回obsolete_epoch/commitKnown false，未知+畸形返回unknown/false，保持held/protocolPermit false/storedOperation null，不借fake已写状态声称提交。
+
+补齐初始化/操作各epoch/malformed四组合，并验证公开reconcileOperation前置认证仍拒绝、无额外checkout/写；当前30单元、原M1 61、v1/Agent50过及语法检查。证据verification/wecom-v2-cas-m2-context-20261102，旧rc.1/tag/原26绿/新3红不改不累加。未完成代理/parser两文件保留未暂存，不混入本修正。
+
+### 决策日志｜2026-11-02 副作用在途后的认证错误不得伪装纯前置拒绝
+
+延续M2保守未知原则：COMMIT已确认的known事实与COMMIT未知必须区分，认证变更不授权读写或重放，也不能把未知丢成普通throw诱发换号重试。此修正不放宽公开输入认证、不重标epoch、不清fence。只改M2新叶/测试，14旧源、M1/v1/DDL/index/Agent均不动；无真实PG/SQL/Windows/phone/发布，runner先审再启动，原43/隔离/查名池/冻结保持。

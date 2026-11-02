@@ -1,0 +1,50 @@
+// Unit lifecycle/validation fixtures ONLY. These tests do not verify SQL CAS,
+// PostgreSQL isolation/constraints or actual COMMIT/network failure semantics.
+import assert from "node:assert/strict";
+import test from "node:test";
+import { createWecomV2PostgresRepository } from "./wecom-cleanup-v2-postgres.mjs";
+import { createWecomV2HostState, normalizeWecomV2HostRequest, validateWecomV2HostState } from "./wecom-cleanup-v2-host.mjs";
+import { fixture, row } from "../verification/wecom-v2-cas-m2-20261102/fixture.mjs";
+
+function unitPool(initial = null) {
+  const p = { state: initial ? structuredClone(initial) : null, trace: [], connections: 0, active: 0,
+    commitFailure: null, commitTag: "COMMIT", selectFailure: false, updateZero: false, changedRow: null, hook: () => {} };
+  p.connect = async () => {
+    assert.equal(p.active, 0, "max1 fixture: original connection must be released before new checkout");
+    p.active++; const id = ++p.connections; let pending = p.state ? structuredClone(p.state) : null;
+    p.trace.push([id, "CONNECT"]);
+    return {
+      async query(sql, values = []) {
+        const tag = sql.trim().split(/\s+/)[0]; p.trace.push([id, tag]);
+        if (tag === "INSERT" && !pending) pending = JSON.parse(values[2]);
+        if (tag === "SELECT") {
+          if (p.selectFailure) throw new Error("fixture_lock_timeout");
+          return { rowCount: pending ? 1 : 0, rows: pending ? [row(pending)] : [] };
+        }
+        if (tag === "UPDATE") {
+          if (p.updateZero) return { rowCount: 0, rows: [] };
+          pending = JSON.parse(values[6]); p.hook(tag);
+          return { rowCount: 1, rows: [p.changedRow ? p.changedRow(row(pending)) : row(pending)] };
+        }
+        if (tag === "COMMIT") {
+          if (p.commitFailure === "before") { p.commitFailure = null; throw new Error("fixture_reply_unknown"); }
+          if (p.commitTag === "COMMIT") p.state = pending ? structuredClone(pending) : null;
+          p.hook(tag);
+          if (p.commitFailure === "after") { p.commitFailure = null; throw new Error("fixture_reply_unknown"); }
+          return { command: p.commitTag };
+        }
+        return { command: tag };
+      },
+      release(error) { assert.equal(p.active, 1); p.active--; p.trace.push([id, error ? "DESTROY" : "RELEASE"]); }
+    };
+  };
+  return p;
+}
+function setup({ seeded = true } = {}) {
+  const f = fixture(), pool = unitPool(seeded ? f.initial : null);
+  return { ...f, pool, repo: createWecomV2PostgresRepository({ getPool: async () => pool, ...f.providers }) };
+}
+const writes = p => p.trace.filter(v => ["INSERT", "UPDATE"].includes(v[1]));
+
+
+for (const name of ["operation_epoch","initialization_epoch","operation_malformed"]) {const f=setup({seeded:name!=="initialization_epoch"});f.pool.commitFailure="after";f.pool.hook=tag=>{if(tag==="COMMIT"){if(name==="operation_malformed")f.auth.version=1;else f.auth.serverEpoch="changed-during-unknown-commit";}};try{const v=await(name==="initialization_epoch"?f.repo.createPending(f.binding):f.repo.commitHostOperation("host",f.body));console.log(JSON.stringify({name,returned:v,persistedRevision:f.pool.state?.revision,trace:f.pool.trace}));}catch(e){console.log(JSON.stringify({name,threw:e.message,persistedRevision:f.pool.state?.revision,trace:f.pool.trace}));}}

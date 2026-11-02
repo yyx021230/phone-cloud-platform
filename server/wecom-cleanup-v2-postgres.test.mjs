@@ -205,3 +205,17 @@ test("normalization and state validation reject rather than mutate deeply frozen
   assert.notEqual(restored.binding, f.initial.binding); assert.notEqual(normalized.binding, f.body.binding);
   assert.throws(() => { normalized.binding.agentId = "other"; }, TypeError);
 });
+for (const [label, initialize, malformed] of [["operation epoch", false, false], ["initialization epoch", true, false], ["operation malformed", false, true], ["initialization malformed", true, true]]) {
+  test(`COMMIT unknown plus changed ${label} retains structured unknown storage classification`, async () => {
+    const f = setup({ seeded: !initialize }); f.pool.commitFailure = "after";
+    f.pool.hook = tag => { if (tag === "COMMIT") { if (malformed) f.auth.version = 1; else f.auth.serverEpoch = "changed-with-unknown-commit"; } };
+    const answer = initialize ? await f.repo.createPending(f.binding) : await f.repo.commitHostOperation("host", f.body);
+    assert.equal(answer.storageStatus, malformed ? "unknown" : "obsolete_epoch");
+    assert.equal(answer.commitKnown, false); assert.equal(answer.storedOperation, null);
+    assert.equal(answer.fence, "held"); assert.equal(answer.protocolPermit, false);
+    assert.equal(f.pool.connections, 1); assert.equal(writes(f.pool).length, 1);
+    assert.ok(f.pool.trace.some(v => v[1] === "DESTROY")); assert.ok(!f.pool.trace.some(v => v[1] === "ROLLBACK"));
+    await assert.rejects(f.repo.reconcileOperation("host", f.body), /obsolete_epoch|context_unconfirmed/);
+    assert.equal(f.pool.connections, 1); // Public auth precheck remains strict.
+  });
+}
