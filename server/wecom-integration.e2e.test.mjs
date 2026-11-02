@@ -82,17 +82,18 @@ async function fixture(t) {
   await adminCall('POST', '/api/v1/windows-agents/simulated-agent/devices/sync', agentToken, { agent: { agentId: 'simulated-agent' }, devices: [...Object.values(pool).map(d => ({ adbSerial: d.serial, state: 'device', model: 'Synthetic' })), { adbSerial: 'SIM-NON-WECOM', state: 'device', model: 'Synthetic' }, { adbSerial: 'SIM-OFFLINE', state: 'offline', model: 'Synthetic' }] });
   const client = new WecomClient({ baseUrl, token: admin });
   async function next() { return (await adminCall('GET', '/api/v1/windows-agents/simulated-agent/tasks/next?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1', agentToken)).task; }
-  cleanupFixture=createSimulatedWecomCleanup({request:adminCall,agentId:"simulated-agent",token:agentToken,nextRoute:"/api/v1/windows-agents/simulated-agent/tasks/next?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1"});
+  cleanupFixture=createSimulatedWecomCleanup({request:adminCall,agentId:"simulated-agent",token:agentToken,nextRoute:"/api/v1/windows-agents/simulated-agent/tasks/next?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1",runtimeHostRegistration:true});
   function execute(task, { waitAtClaim = false, loseClaimReply = false } = {}) {
     const operation = (async () => {
       const result = await runWecomPreviewTask(task, {
         config: { pythonCommand: 'python3', serverBaseUrl: origin, agentId: 'simulated-agent', agentToken }, agentDir,
+        cleanupRequest: (route, { method = 'POST', body } = {}) => adminCall(method, route, agentToken, body),
         spawnChild: (command, args, options) => {
           assert.equal(path.basename(args[0]), 'wecom_platform_preview.py');
           assert.ok(!JSON.stringify(args).includes(task.payload.phoneNumber), 'customer input must be stdin-only');
           const child = spawn(command, [path.join(root, 'verification/wecom-external-api-20261029/simulated_worker.py')], {
             ...options, cwd: root, env: { PATH: process.env.PATH, PYTHONPATH: path.join(root, 'windows-agent/scripts'),
-              PYTHONIOENCODING: 'utf-8', PYTHONDONTWRITEBYTECODE: '1', WECOM_SIM_PAUSE: String(waitAtClaim), WECOM_SIM_LOSE_CLAIM_REPLY: String(loseClaimReply) } });
+              PYTHONIOENCODING: 'utf-8', PYTHONDONTWRITEBYTECODE: '1', WECOM_SIM_PHYSICAL_READY: '1', WECOM_SIM_PAUSE: String(waitAtClaim), WECOM_SIM_LOSE_CLAIM_REPLY: String(loseClaimReply) } });
           children.add(child); child.once('exit', () => children.delete(child)); return child;
         }
       });

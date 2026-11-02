@@ -121,3 +121,15 @@ class ScreenWakeGuard:
         if self.lease_valid() is not True:raise w.StopPreview('device_lease_lost')
         self.check_budget();self.dismiss()  # Normal OS request; no PIN/password bypass.
         return True
+
+
+def confirm_awake(read_power, lease_valid, check_budget=lambda:None, sleep=time.sleep):
+    """Read-only settling after one wake; original caller deadline still applies."""
+    for attempt in range(4):
+        check_budget()
+        if lease_valid() is not True:raise w.StopPreview('device_lease_lost')
+        check_budget();raw=read_power();check_budget()
+        if re.search(r'mWakefulness=Awake\b',raw):return True
+        if not re.search(r'mWakefulness=(?:Asleep|Dozing)\b',raw):break
+        if attempt<3:sleep(.2)
+    raise w.StopPreview('screen_wake_not_confirmed')

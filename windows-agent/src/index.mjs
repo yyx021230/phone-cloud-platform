@@ -5,6 +5,8 @@ import {lookupXmlFailure} from "./lookup-xml-failure.mjs";
 import {isLookupReaderRecovery, rejectExitedReaderRequest, readerExitDiagnostic, verifyLookupReaderCleanup, lookupReaderStopReason} from "./lookup-reader-lifecycle.mjs";
 const lookupReaderStopBarriers = new Map();
 import { runWecomPreviewTask } from "./wecom-preview-task.mjs";
+import { physicalBinding } from "./wecom-cleanup-protocol.mjs";
+import { handleWecomCleanupVerification } from "./wecom-cleanup-verify.mjs";
 import {collectLookupTrace, isAutomaticLookupResume} from "./lookup-recovery-trace.mjs";
 import { createRecoveryIsolation } from './recovery-isolation.mjs';
 import { createDeviceScanPipeline, recoverySnapshotAdmission } from './device-scan-pipeline.mjs';
@@ -1150,6 +1152,7 @@ async function pollTask() {
     params.set("galleryDelivery", SCREEN_GALLERY_DELIVERY_PROTOCOL);
     params.set("xhsPublishDelivery", XHS_PUBLISH_DELIVERY_PROTOCOL);
     params.set("wecomPreview", "wecom-invitation-v4");
+    params.set("wecomCleanupProtocol", "1");
     const suffix = params.size ? `?${params.toString()}` : "";
     const payload = await api(`/api/v1/windows-agents/${encodeURIComponent(config.agentId)}/tasks/next${suffix}`);
     observeLookupReaderAdmission(payload.readerCapacity);
@@ -1166,7 +1169,7 @@ async function pollTask() {
       // Gallery import is idempotent enough to finish after a lost ACK
       // response. Publishing is an external side effect: never click publish
       // unless the server has confirmed ownership of this delivery.
-      if (prepared.task.type === "xhs_publish" || prepared.task.type === "wecom_customer_preview" || prepared.task.payload?.managedLookup) continue;
+      if (prepared.task.type === "xhs_publish" || prepared.task.type === "wecom_customer_preview" || prepared.task.type === "wecom_cleanup_verify" || prepared.task.payload?.managedLookup) continue;
     }
     startTask(prepared.task);
     picked += 1;
@@ -1215,6 +1218,13 @@ function startTask(task) {
 }
 
 async function runTask(task, options = {}) {
+  if (task.type === "wecom_cleanup_verify") {
+    return handleWecomCleanupVerification(task, {
+      config, agentDir, signal: options.signal,
+      event: (phase, level, message) => taskEvent(task, phase, level, message),
+      reportFailure: result => taskStatus(task, "failed", result)
+    });
+  }
   const isLookup = task.type.startsWith("alipay_name_");
   let lookupTerminal = null;
   let xhsPreflightOnly = false;
@@ -4081,6 +4091,15 @@ function compactTaskResultForStatus(result = {}) {
   if (result.accountSwitchCount !== undefined) compact.accountSwitchCount = Math.max(0, Number(result.accountSwitchCount || 0));
   if (result.accountSwitchReason !== undefined) compact.accountSwitchReason = String(result.accountSwitchReason || "").slice(0, 120);
   if (result.collection) compact.collection = result.collection;
+  // Keep the invitation outcome through the real status transport. Dropping
+  // unknown send/save states would remove the server's no-replay fence.
+  if (result.previewStatus !== undefined) {
+    compact.previewStatus = ["ready_before_send", "send_attempted", "blocked"].includes(result.previewStatus) ? result.previewStatus : "blocked";
+    compact.previewCode = typeof result.previewCode === "string" && /^[a-z0-9_]{1,100}$/.test(result.previewCode) ? result.previewCode : "wecom_preview_stopped";
+    compact.sendStatus = result.sendStatus === "unknown" ? "unknown" : "not_attempted";
+    compact.invitationSent = compact.sendStatus === "unknown" ? null : false;
+    compact.remarkSaveStatus = ["not_attempted", "unknown", "confirmed", "not_needed"].includes(result.remarkSaveStatus) ? result.remarkSaveStatus : "unknown";
+  }
   const uiHierarchy = result.uiHierarchy || result.evidence?.uiHierarchy || "";
   const uiSnapshot = result.uiSnapshot || result.evidence?.uiSnapshot || uiHierarchy;
   if (uiSnapshot) compact.uiSnapshot = String(uiSnapshot).slice(0, 8000);
@@ -6404,7 +6423,9 @@ function log(message, detail = "") {
 // Existing workers are never stopped or adopted by this preview path.
 // The one-shot adapter rejects a device with an existing Poco owner.
 async function taskWecomPreview(task, options = {}) {
-  const proof = await api(`/api/v1/windows-agents/${encodeURIComponent(config.agentId)}/wecom-preview-tasks/${encodeURIComponent(task.taskId)}/lease`);
-  if (proof.valid !== true || proof.serial !== task.adbSerial || proof.deviceId !== task.deviceId) throw new Error("wecom_preview_device_lease_lost");
-  return runWecomPreviewTask(task, { config, agentDir, signal: options.signal });
+  // This Agent advertises protocol 1. An old server's unbound task must never
+  // fall through the legacy wrapper and operate without a durable obligation.
+  if (!physicalBinding(task, config)) throw new Error("wecom_cleanup_binding_missing");
+  return runWecomPreviewTask(task, { config, agentDir, signal: options.signal,
+    onPhysicalPending: code => log("wecom physical cleanup pending", { taskId: task.taskId, code }) });
 }

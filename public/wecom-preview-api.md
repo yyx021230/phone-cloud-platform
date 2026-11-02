@@ -87,9 +87,17 @@
 | sendClaimed | 是否已记录云端发送凭据；即使没有终态上报也保留 |
 | remarkSaveStatus | not_attempted／unknown／confirmed／not_needed |
 
+目标已经添加时，保持现有合同：外层`failed`、`result.status=blocked`、`result.code=already_contact`，未发送邀请；不再填备注或重复添加。这不同于`ready_before_send`，不能当成可发送许可。2026-11-02候选补充“客户详情”页面的严格同号码识别，本地文档不表示生产已经加载。
+
 Agent本地凭据先成功、云端凭据未成功或响应丢失时会保护性失败并保留unknown；以原任务code为准，不能因sendClaimed=false换请求重试。云端收到本地unknown终态后同样阻止该目标换键重发。当前没有自动对端送达或联系人接受确认接口，历史用户直接确认不等于自动识别已实现。需要人工验证时不自动登录、切号或跳过。
 
+## 固定错误码与阶段诊断
+
+2026-10-30本地候选在`task.result.execution`附加经过白名单过滤的执行阶段、累计耗时和本执行器清理回执。外部简版GET对应顶层`execution`，字段／错误码含义见[执行诊断](wecom-integration-api.md#可选执行诊断2026-10-30本地候选)。旧记录没有阶段数据，不回填推断值。终态上报前的记录仅经子进程私有管道保存，不承诺实时推送。错误码与阶段不能解除未知发送／保存隔离，不自动重放。
+
 ## Agent配套、发布与回退
+
+2026-11-02本地清理候选：业务终态与手机可用性分开。任务失败或取消后若清理仍未确认，同一物理手机所有槽位保持占用，新任务返回409 `wecom_cleanup_pending`；请查询原任务和设备列表，选择其他可用手机，不换requestId绕过。清理确认后才重新接单，未知发送／保存状态仍保留原防重规则。设备显示“需单机维护”时，不代表正在自动无限重试。该行为须配套云端和Agent一起验收，当前未发布。
 
 领取必须声明 `wecomPreview=wecom-invitation-v4`，旧v1/v2/v3不能领取；旧历史任务缺mode仍按preview处理。新云端／Agent／Python／页面必须配套，旧回滚版本不能执行send任务，禁止把send改成preview后重放。
 
@@ -97,4 +105,4 @@ Agent内部只读租约：GET `/api/v1/windows-agents/{agentId}/wecom-preview-ta
 
 Agent内部单次发送凭据：POST 同一路径末尾 `/send-claim`，空JSON对象，需tasks:write及有效send租约。首次201含claimed/taskId/operationFingerprint；再次调用409，**不是可重放令牌**。存储失败或失锁不给发送许可。
 
-本轮只做本地HTTP／假Agent／合成Poco与故障模拟，不连接线上、不真实添加客户。历史23和59单次邀请已获对端确认，但不是本次平台完整发送版本的真机验收。后续正式发布前重新核对实际生产基线、备份、D-075和维护范围，单机→双机验证，不直接全量。
+2026-10-30初始候选只做本地HTTP／假Agent／合成Poco与故障模拟；11月2日开始使用空闲真机的独立staging预览，未加载共享Agent或发送邀请，实际结果见项目主文档。历史23和59单次邀请获对端确认，仍不是当前候选完整发送版本的验收。正式发布前另行核对生产基线、备份、D-075和维护范围，单机→双机验证。

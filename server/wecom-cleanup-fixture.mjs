@@ -9,22 +9,37 @@ export function syntheticHostTime(ms = Date.now()) {
   const fraction = (bits & ((1n << 52n) - 1n)).toString(16).padStart(13, "0");
   return { createdAt: new Date(ms).toISOString(), creationToken: `0x1.${fraction}p+${exponent}` };
 }
-export function createSimulatedWecomCleanup({ request, agentId, token, nextRoute }) {
+export function createSimulatedWecomCleanup({ request, agentId, token, nextRoute, runtimeHostRegistration = false }) {
   const records = new Map(); let pid = 100;
   async function observe(method, route, body, result) {
     const task = method === "GET" && route.includes("/tasks/next") ? result.task : null;
     if (task?.type === "wecom_customer_preview" && task.payload?.physicalCleanup) {
       const binding = task.payload.physicalCleanup;
-      const hosts = [{ role: "reader", pid: ++pid, ...syntheticHostTime(), machineId: "a".repeat(64) }];
       const prefix = `/api/v1/windows-agents/${agentId}/wecom-cleanup/${binding.obligationId}/`;
-      await request("POST", prefix + "host", token, { binding, hosts });
-      records.set(task.taskId, { binding, hosts, prefix });
+      const record = { binding, prefix, hosts: null, closed: false };
+      records.set(task.taskId, record);
+      if (!runtimeHostRegistration) {
+        record.hosts = [{ role: "reader", pid: ++pid, ...syntheticHostTime(), machineId: "a".repeat(64) }];
+        await request("POST", prefix + "host", token, { binding, hosts: record.hosts });
+      }
+    }
+    // The UI algorithm fixture may use the actual Node wrapper and OS child.
+    // In that case only its acknowledged host/close calls supply identities;
+    // Android tool observations below remain explicitly synthetic.
+    if (runtimeHostRegistration && method === "POST" && body?.binding) {
+      const record = records.get(body.binding.originalTaskId);
+      if (record && route === record.prefix + "host") record.hosts = structuredClone(body.hosts);
+      if (record && route === record.prefix + "host-closed") record.closed = true;
     }
     const match = route.match(/^\/api\/v1\/windows-agent-tasks\/([^/]+)\/status$/);
     if (method !== "POST" || !match || !["succeeded", "failed", "cancelled"].includes(body?.status)) return;
     const record = records.get(match[1]); if (!record) return;
     const { binding, hosts, prefix } = record;
-    await request("POST", prefix + "host-closed", token, { binding, hosts, observedAt: new Date().toISOString(), exited: true, observerMachineId: hosts[0].machineId });
+    if (runtimeHostRegistration) {
+      assert.ok(hosts && record.closed, "actual wrapper must register and close its own fixture child before status");
+    } else {
+      await request("POST", prefix + "host-closed", token, { binding, hosts, observedAt: new Date().toISOString(), exited: true, observerMachineId: hosts[0].machineId });
+    }
     const created = await request("POST", prefix + "verify", token, { binding });
     const verification = (await request("GET", nextRoute, token)).task;
     assert.equal(verification?.taskId, created.taskId);

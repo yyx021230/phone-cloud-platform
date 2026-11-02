@@ -10,6 +10,14 @@ import unittest
 from unittest.mock import patch
 import wecom_platform_preview as host
 
+def checked_pid_shell(fn):
+    def invoke(cmd, keep=False):
+        checked = '; code=$?;' in cmd
+        original = cmd.split(';', 1)[0] if checked else cmd
+        value = fn(original, keep=True) if keep else fn(original)
+        return '__WECOM_PID_ABSENT_V1__' if checked and not value else value
+    return invoke
+
 class HostGuardTests(unittest.TestCase):
     def config(self, number="25"):
         row=host.DEVICES[number]
@@ -60,13 +68,13 @@ class HostGuardTests(unittest.TestCase):
         def shell(cmd,keep=False):
             calls.append(cmd)
             if cmd.startswith("pm "):return "package:fixture"
-            if cmd.startswith("pidof "):
+            if cmd == "pidof com.netease.open.pocoservice":
                 counts["pid"]+=1;return "" if counts["pid"]<=2 else "123"
             if cmd.startswith("cat /proc/"):return stat
             if keep:return SimpleNamespace(close=lambda:calls.append("instrument_closed"))
             return ""
         sock=SimpleNamespace(close=lambda:None)
-        with patch.object(host,"adb_identity",return_value=1),patch.object(host,"lease_valid",return_value=True),patch.object(host,"shell",side_effect=shell),patch.object(host,"host",return_value="12345"),patch.object(host,"health",return_value=False),patch.object(host,"connection",return_value=sock),patch.object(host,"command"),patch.object(host.time,"monotonic",side_effect=now),patch.object(host.time,"sleep"):
+        with patch.object(host,"adb_identity",return_value=1),patch.object(host,"lease_valid",return_value=True),patch.object(host,"shell",side_effect=checked_pid_shell(shell)),patch.object(host,"host",return_value="12345"),patch.object(host,"health",return_value=False),patch.object(host,"connection",return_value=sock),patch.object(host,"command"),patch.object(host.time,"monotonic",side_effect=now),patch.object(host.time,"sleep"):
             with self.assertRaisesRegex(host.SafeStop,"poco_not_ready"):host.run_host(self.config())
         self.assertIn("am force-stop com.netease.open.pocoservice",calls)
         self.assertIn("instrument_closed",calls)
@@ -78,13 +86,13 @@ class HostGuardTests(unittest.TestCase):
         def shell(cmd,keep=False):
             calls.append(cmd)
             if cmd.startswith("pm "):return "package:fixture"
-            if cmd.startswith("pidof "):
+            if cmd == "pidof com.netease.open.pocoservice":
                 count[0]+=1;return "" if count[0]==1 else "123" if count[0]==2 else "456"
             if cmd.startswith("cat /proc/"):
                 return "123 (poco) "+" ".join(["S"]+["0"]*18+["789" if "123" in cmd else "700"])
             if keep:return SimpleNamespace(close=lambda:None)
             return ""
-        with patch.object(host,"adb_identity",return_value=1),patch.object(host,"lease_valid",return_value=True),patch.object(host,"shell",side_effect=shell),patch.object(host,"host",return_value="12345"),patch.object(host,"health",return_value=False),patch.object(host,"connection",return_value=SimpleNamespace(close=lambda:None)),patch.object(host,"command"),patch.object(host.time,"monotonic",side_effect=now),patch.object(host.time,"sleep"):
+        with patch.object(host,"adb_identity",return_value=1),patch.object(host,"lease_valid",return_value=True),patch.object(host,"shell",side_effect=checked_pid_shell(shell)),patch.object(host,"host",return_value="12345"),patch.object(host,"health",return_value=False),patch.object(host,"connection",return_value=SimpleNamespace(close=lambda:None)),patch.object(host,"command"),patch.object(host.time,"monotonic",side_effect=now),patch.object(host.time,"sleep"):
             with self.assertRaisesRegex(host.SafeStop,"poco_not_ready"):host.run_host(self.config())
         self.assertIn("am force-stop com.netease.open.pocoservice",calls)
         self.assertNotIn("input keyevent 224",calls)
@@ -96,13 +104,13 @@ class HostGuardTests(unittest.TestCase):
             def shell(cmd,keep=False):
                 calls.append(cmd)
                 if cmd.startswith('pm '):return 'package:fixture'
-                if cmd.startswith('pidof '):
+                if cmd == 'pidof com.netease.open.pocoservice':
                     count[0]+=1;return '' if count[0]==1 else '123'
                 if cmd.startswith('cat /proc/'):
                     return '123 (poco) '+' '.join(['S']+['0']*18+['789'])
                 if keep:return SimpleNamespace(close=lambda:None)
                 return ''
-            with patch.object(host,'adb_identity',return_value=1),patch.object(host,'lease_valid',return_value=True),patch.object(host,'shell',side_effect=shell),patch.object(host,'host',return_value='12345'),patch.object(host,'health',return_value=False),patch.object(host,'connection',return_value=SimpleNamespace(close=lambda:None)),patch.object(host,'command'),patch.object(host.time,'monotonic',side_effect=now),patch.object(host.time,'sleep'):
+            with patch.object(host,'adb_identity',return_value=1),patch.object(host,'lease_valid',return_value=True),patch.object(host,'shell',side_effect=checked_pid_shell(shell)),patch.object(host,'host',return_value='12345'),patch.object(host,'health',return_value=False),patch.object(host,'connection',return_value=SimpleNamespace(close=lambda:None)),patch.object(host,'command'),patch.object(host.time,'monotonic',side_effect=now),patch.object(host.time,'sleep'):
                 value=self.config(number)
                 if (number,user)==('155',0):value.update(appSlot='main',androidUser=0)
                 with self.assertRaisesRegex(host.SafeStop,'poco_not_ready'):host.run_host(value)
@@ -175,8 +183,8 @@ class HostGuardTests(unittest.TestCase):
         self.assertIsNone(host.NoRedirect().redirect_request(None,None,None,None,None,None))
 
     def test_dependency_exception_never_leaks_credentials_or_target(self):
-        value=self.config(); stdout=io.StringIO()
-        with patch("sys.stdin",io.StringIO(json.dumps(value)+"\n")),patch("sys.stdout",stdout),patch.object(host,"start_control_monitor"),patch.object(host,"run_host",side_effect=RuntimeError(value["phoneNumber"]+value["agentToken"])):
+        value=self.config(); stdout=io.StringIO(); stderr=io.StringIO()
+        with patch("sys.stdin",io.StringIO(json.dumps(value)+"\n")),patch("sys.stdout",stdout),patch("sys.stderr",stderr),patch.object(host,"start_control_monitor"),patch.object(host,"run_host",side_effect=RuntimeError(value["phoneNumber"]+value["agentToken"])):
             host.main()
         result=json.loads(stdout.getvalue());self.assertFalse(result["invitationSent"])
         self.assertNotIn(value["phoneNumber"],stdout.getvalue());self.assertNotIn(value["agentToken"],stdout.getvalue())
@@ -200,7 +208,12 @@ class HostGuardTests(unittest.TestCase):
             process.stdin.write(b"{}\n");process.stdin.flush()
             self.assertEqual(process.wait(timeout=6),0)
             self.assertEqual(json.loads(process.stdout.read())["previewCode"],"invalid_preview_config")
-            self.assertEqual(process.stderr.read(),b"")
+            records=process.stderr.read().decode().splitlines()
+            phases=[line for line in records if line.startswith("WECOM_DIAGNOSTIC ")]
+            self.assertEqual(len(phases),2)
+            self.assertTrue(all(line.startswith(("WECOM_DIAGNOSTIC ","WECOM_CALL ")) for line in records))
+            self.assertEqual(json.loads(phases[-1].split(" ",1)[1])["phase"],"configuration")
+            self.assertTrue(any("final_json_flushed" in line for line in records))
         finally:
             if process.poll() is None:process.kill();process.wait()
             process.stdin.close();process.stdout.close();process.stderr.close()

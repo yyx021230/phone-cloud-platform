@@ -125,7 +125,39 @@
 
 **本版没有自动对端送达／好友接受确认。** 原生发送调用返回不等于对端收到；未知结果不会伪装成“添加成功”。`reused`只在提交响应出现，与执行成功无关。旧预览任务不能通过这个结果接口冒充添加任务，也不能读取其他管理员的任务。
 
+## 可选执行诊断（2026-10-30本地候选）
+
+提交字段不变。新云端与配套Agent加载后，终态GET可能附带`execution`；旧任务或旧Agent没有此字段，不能从旧失败记录补出原始原因。它只用于定位，不是重试或发送许可，也不是实时阶段订阅。
+
+| execution字段 | 含义 |
+|---|---|
+| version | 当前为1 |
+| phase / failurePhase | 最后记录的阶段／捕获错误的阶段；尚无异常事件时failurePhase为空 |
+| elapsedMs | 子进程内单调时钟累计毫秒，不是接口耗时 |
+| cleanupConfirmed | true仅表示执行器自己的工具进程及转发清理按既有检查完成；false未确认；null没有清理回执。不证明其他应用或整台手机状态 |
+| events | 最多24条固定阶段begin/end/error，包含step及elapsedMs；不含号码、备注、页面文本、Token或原始异常 |
+
+阶段包括`configuration`、`adb_identity`、`device_preflight`、`screen_prepare`、`poco_launch`、`poco_health`、`wecom_launch`、`rpc_setup`、`startup_guards`、`foreground_wait`、`selector_observe`、`selector_click`、`home_navigation`、`recipient_search`、`remark_edit`、`remark_save`、`send_claim`、`invitation_send`、`cleanup`。父进程超时保留已收到的阶段；没有回执时不虚构清理成功。
+
+| code示例 | 含义与处理 |
+|---|---|
+| screen_prepare_timeout / screen_wake_not_confirmed | 屏幕准备超时／未确认唤醒；核对手机，不自动重发 |
+| device_unlock_requires_user | 系统锁屏需要本人处理；不输入密码或修改设置 |
+| poco_not_ready | 已有读取组件未就绪，不代表未操作；核对原任务及备注状态 |
+| adb_io_timeout | 本任务对原有ADB的单次I/O超时；不重启、切身份或重发 |
+| wecom_launch_not_ready | 指定账户应用未在前台等待预算内确认；结合selector阶段核对，不重复点账户 |
+| home_navigation_timeout | 回首页超出阶段预算；不在未知页面继续操作 |
+| already_contact | 已核对目标号码且该账户已添加该客户；不会再填写备注或发送邀请，按已存在处理，无需重试本次任务 |
+| wecom_preview_worker_timeout_no_replay | 父进程最终看门狗超时；保持unknown保护，查看最后阶段，不重放 |
+| preview_cleanup_unconfirmed | 本执行器清理未确认；核对工具与占用，不能当发送成功或安全重试 |
+
+此候选保留父进程230秒看门狗与15秒取消清理宽限，不增加点击重试。阶段预算约束原始ADB逐块读取、RPC和请求的超时参数及调用前后检查；第三方同步调用／操作系统查询仍可能晚返回，父看门狗继续兜底，不能承诺每阶段严格硬实时。
+
+`already_contact`保留现有结果合同：GET仍正常返回200，任务`status`为`failed`、`code`为`already_contact`、`sendStatus`为`not_attempted`、`invitationSent`为`false`。这是目标已存在的业务停止，不是“发送成功”，也不需要重新添加。2026-11-02候选补充了已观测“客户详情”页面的同号码识别；本地文档更新不表示生产已加载补丁。
+
 ## 超时、防重和重试
+
+2026-11-02本地清理候选增加409 `wecom_cleanup_pending`：原任务结束后手机可能仍显示“企微清理待确认”，所有账户槽位暂停接新任务。以设备列表的available为准；原任务仍可查询，其他可用手机继续使用。清理确认不会改写原发送／保存结果，也不解除未知结果的防重限制。此项尚未发布。
 
 - POST超时或断线：若已有taskId，用GET查询；若任务号也没收到，保持原四个参数再POST，进行中或未知任务会返回原ID。不能换账户或改备注来“确认是否发送”。
 - 云端重启后，已保存任务及发送凭据继续有效；Agent本地凭据仍按手机／槽位／好友保留，不因换请求而重发。

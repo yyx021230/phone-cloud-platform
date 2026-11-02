@@ -149,6 +149,18 @@ class _RemarkingDriver:
     def snapshot(self):
         return self.driver.snapshot()
 
+    def guard_input_observation(self):
+        guard=getattr(self.driver,'guard_input_observation',None)
+        if guard is not None:guard()
+
+    def observe_input_change(self,before,after):
+        observe=getattr(self.driver,'observe_input_change',None)
+        if observe is not None:observe(before,after)
+
+    def observe_action_change(self,action,before,after):
+        observe=getattr(self.driver,'observe_action_change',None)
+        if observe is not None:observe(action,before,after)
+
     def read_until(self, predicate, check_budget):
         for _ in range(30):
             check_budget()
@@ -173,7 +185,7 @@ class _RemarkingDriver:
 
     def profile(self, phone, check_budget):
         def matches(screen):
-            if screen.has("个人信息"):
+            if screen.has("个人信息") or screen.has("客户详情"):
                 if not w.profile_matches(screen, phone):
                     raise w.StopPreview("profile_phone_mismatch")
                 if screen.has("发消息"):

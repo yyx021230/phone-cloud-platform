@@ -104,7 +104,18 @@ def execute(config):
 
 
 if __name__ == '__main__':
-    try: output = execute(json.loads(sys.stdin.readline(16385)))
+    try:
+        if os.environ.get('WECOM_SIM_PHYSICAL_READY') == '1':
+            # Explicit test fixture: real OS identity, synthetic machine ID.
+            # This does not bypass or execute the production SYSTEM adapter.
+            import datetime
+            import psutil
+            created = psutil.Process(os.getpid()).create_time()
+            host = dict(role='reader', pid=os.getpid(),
+                        createdAt=datetime.datetime.fromtimestamp(created, datetime.timezone.utc).isoformat(timespec='milliseconds').replace('+00:00', 'Z'),
+                        creationToken=created.hex(), machineId='a' * 64)
+            print('WECOM_PHYSICAL_READY ' + json.dumps(dict(version=1, hosts=[host])), file=sys.stderr, flush=True)
+        output = execute(json.loads(sys.stdin.readline(16385)))
     except Exception:
         output = dict(previewStatus='blocked', previewCode='simulation_worker_error', invitationSent=False, remarkSaveStatus='unknown')
     print(json.dumps(output), flush=True)

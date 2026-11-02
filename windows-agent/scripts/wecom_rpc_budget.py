@@ -6,6 +6,11 @@ This helper changes only the dedicated test client's send method, not shared
 requests defaults, installed packages, ADB, Agent or another Poco instance.
 """
 import math
+from wecom_invite_preview import StopPreview
+
+
+class RpcDeliveryUnknown(StopPreview):
+    """Do not let SDK TransportDisconnected decorators repeat a delivered write."""
 
 
 def bound_rpc_transport(client, seconds=3):
@@ -19,7 +24,10 @@ def bound_rpc_transport(client, seconds=3):
     def send(request, timeout=None):
         if timeout is not None and (isinstance(timeout, bool) or not isinstance(timeout, (int, float)) or not math.isfinite(timeout) or timeout <= 0):
             raise ValueError('invalid_rpc_timeout')
-        return original_send(request, timeout=seconds if timeout is None else min(timeout, seconds))
+        try:
+            return original_send(request, timeout=seconds if timeout is None else min(timeout, seconds))
+        except Exception as error:
+            raise RpcDeliveryUnknown('wecom_rpc_delivery_unknown_no_replay') from error
 
     transport.send = send
     transport._wecom_bounded = True

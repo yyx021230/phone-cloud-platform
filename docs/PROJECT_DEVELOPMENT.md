@@ -5488,3 +5488,17 @@ L03/L04调用链复核：51/52/54/154既有stopping+pending空+stopFailure可以
 延续v1契约，完成服务端本地实现，不扩到自动kill/remove或重新邀请。持久未知义务优先于锁TTL/归档/普通终态；新控制只遵守占用门槛，不更改已有媒体控制传输。保守旧任务缺host或机器换主不可验证即维护；实际系统权限/主循环旁路/生产时钟与真实媒体forward仍待原生验收。候选标签不代表发布，回滚旧应用必须保留义务且先停止企微新派发，禁止删数据解锁。通用cancel各旁路真实PG故障、SYSTEM原生正向与长期全池尚未覆盖，不核销查名L01–L08的原未验项。
 
 本阶段最终验证：根check通过，npm run test:screen全量1858/1858；之后legacy归档/serial-only保守定位与缺host证据maintenance提示的相关复测130/130。真实隔离PG三模式已过。初轮32项失败分为VM缺新依赖29项、隔离Agent依赖缺失3项，修正测试环境/接线后全量复跑，不改业务兼容门槛。新协议SYSTEM真机/生产仍未验。
+
+### 变更记录｜2026-11-02 跨窗口企微清理本地集成开始
+
+协调窗口复用自身干净独立工作区建立codex/wecom-cleanup-integration-20261102，基线6d2b271，合入企微固定20ee4f6/代码66abe0f的WeCom叶子及513/b56状态/阶段诊断；测试后续固定7d6490f和PG测试器5c7c369分别导入。没有覆盖旧Windows整树：查名d13读取脚本、cleanup-policy、恢复/取消保护、XHS运行文件和媒体保持基线；只有共享Agent index三方合入WeCom能力声明、专属入口及结果传输，无冲突。20个Agent运行叶子与固定manifest全hash匹配，179个非WeCom运行/屏控基线文件先逐项核对。版本材料releases/wecom-cleanup-integrated-20261102-rc.1当前仍为验收中。
+
+新Agent先读自身真实PID/创建token/原SYSTEM父Agent身份，host登记持久ACK前不发送任务配置；实际reader close后提交原身份退出，丢响应只同原body有限重发。verify-only独立runTask入口不走失败截图/全局扫描，不重放业务或通用上报succeeded；proof端点负责终态事务，未知ACK不把已提交结果降级。保留Windows/SYSTEM/ADB及原Agent入口守卫，不为本地验收创建新SYSTEM启动方式。
+
+首轮组合147项140通过7失败，确定旧UI模拟器没有ready握手而互等、旧transport测试漏protocol能力；只更新测试fixture：真实Node wrapper/OS child负责host登记与close，物理包/forward仍明确合成，字段运输用例继续单独模拟生命周期。10项相关复测通过，292企微Python通过；固定QA runner、组合全量与其后不可变版本记录待完成，不提前填通过。原生SYSTEM/新协议真机依旧未验、25完整preview未通过；43旧ea7预览不挪作新协议验收。无生产连接/手机、推送发布、共享服务或ADB/SYSTEM/媒体变更。既有根证据d1b8d2c与其标签保留，两个新增本地依赖链接不提交、版本/lock不变。
+
+### 决策日志｜2026-11-02 保留查名基线后最小集成，旧模拟器适配不放宽产品守卫
+
+延续独立义务与真实proof合同，以后继查名候选6d为本地合并基线；企微旧分支没有其后全部查名恢复代码，禁止整份Agent/Python覆盖。状态透传和有限诊断也须一起保留，不能只合新host协议而丢失未知邀请状态。旧业务算法/字段测试可明确模拟物理证明，新的产品入口另用真实OS管道与实际HTTP组合检查；模拟数据不等于手机清理。先固定代码再绑定全量结果，后续只在实际验证后形成候选标签，未验SYSTEM/自然故障/长期全池状态不核销，当前授权不包含线上加载或新SYSTEM入口。
+
+打包闭包补充：root按20ee rc.1精确20运行文件导出，实际import失败ModuleNotFoundError wecom_screen_lease，完整源码树此前掩盖了它。原manifest将QA模块排除，但platform顶层无条件导入。企微owner最小修复99dac921/组件8b4bb6c及wecom-cleanup-agent-20261102-rc.2，将导入移入原authority非空分支，保留type/mode/purpose保护，不把QA启动器放进运行包。root导入唯一新产品叶及新测试，隔离Python只复制20文件、禁site/源码回退/网络/线程/子进程动作，15Python模块实际导入及故意缺依赖反例2/2通过。其余19叶、共享index来源补丁和冻结文件不变；历史rc.1 manifest仅保存旧边界，不能拿旧hash当组合安装清单。未发布，SYSTEM与真机未验不变。

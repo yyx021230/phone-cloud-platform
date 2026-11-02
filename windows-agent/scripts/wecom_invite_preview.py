@@ -152,6 +152,39 @@ def editor(screen):
     return unique(screen.matching(is_phone_editor))
 
 
+def customer_detail_phone(screen):
+    # 23's observed already-added view. This recognizes a safe RETURN context,
+    # never the current request's result; that still requires exact target match.
+    try:guard(screen)
+    except StopPreview:return None
+    layout=(('n26','客户详情'),('cii','描述'),('cii','设置标签'),('bg6','发消息'))
+    if (screen.has(SEND) or screen.has('添加为联系人') or any(n.visible and is_phone_editor(n)for n in screen.nodes)
+        or not all(len(screen.matching(lambda n:n.kind=='android.widget.TextView'
+            and n.name=='com.tencent.wework:id/'+resource and n.text==label))==1
+            for resource,label in layout)):
+        return None
+    phones=[]
+    for node in screen.nodes:
+        if not node.visible:continue
+        value=re.sub(r'[\s-]','',node.text)
+        if value.startswith('电话'):value=value[2:]
+        if re.fullmatch(r'1[3-9][0-9]{9}',value):phones.append(value)
+    return phones[0]if len(phones)==1 else None
+
+
+def observed_customer_detail(screen,phone):
+    return customer_detail_phone(screen)==phone
+
+
+def return_from_customer_detail(screen, *, snapshot, foreground, back, check_budget):
+    if customer_detail_phone(screen)is None:return False
+    if snapshot()!=screen or foreground()!=PACKAGE:
+        raise StopPreview('home_navigation_page_changed')
+    check_budget()
+    back()  # Host provides ONLY its normal lease-guarded keyevent 4.
+    return True
+
+
 def profile_matches(screen, phone):
     # On 67, saving a description replaces the empty settings row with this
     # exact native description row. Keep full target-number verification.
@@ -168,7 +201,7 @@ def profile_matches(screen, phone):
         screen.has("设置标签") and len(screen.matching(lambda n:
             n.kind == "android.widget.TextView" and n.text == "描述"
             and n.name in OBSERVED_PROFILE_DESCRIPTIONS)) == 1)
-    return (screen.has("个人信息") and has_remark_entry
+    return observed_customer_detail(screen,phone) or (screen.has("个人信息") and has_remark_entry
             and any(n.visible and re.sub(r"[\s-]", "", n.text) in (phone, "电话" + phone)
                     for n in screen.nodes))
 
@@ -221,6 +254,8 @@ def run_preview(driver, request, timeout=45, max_reads=90, cancelled=lambda: Fal
     stage = "entry"
     target_verified = False
     preview_frames = 0
+    empty_input_frame = None
+    home_menu_frame = None
 
     def result(status, code):
         return {"workflowVersion": WORKFLOW, "status": status, "code": code,
@@ -264,6 +299,15 @@ def run_preview(driver, request, timeout=45, max_reads=90, cancelled=lambda: Fal
                 elif is_add_page(screen):
                     action, next_stage = "open_search", "search"
                 elif is_home(screen):
+                    guard_observation=getattr(driver,'guard_input_observation',None)
+                    if guard_observation is not None:guard_observation()
+                    check_budget();resolve_action('open_menu',screen,phone)
+                    if home_menu_frame!=screen:
+                        observe=getattr(driver,'observe_action_change',None)
+                        if home_menu_frame is not None and observe is not None:
+                            try:observe('open_menu',home_menu_frame,screen)
+                            except Exception:pass
+                        home_menu_frame=screen;sleep(.25);continue
                     action, next_stage = "open_menu", "menu"
                 else:
                     # Do not inherit an arbitrary chat editor or old customer.
@@ -273,8 +317,24 @@ def run_preview(driver, request, timeout=45, max_reads=90, cancelled=lambda: Fal
             elif stage == "add" and is_add_page(screen):
                 action, next_stage = "open_search", "search"
             elif stage == "search":
+                input_guard=getattr(driver,'guard_input_observation',None)
+                if input_guard is not None:input_guard()
+                check_budget()
                 if screen.matching(is_phone_editor):
+                    # First write only after two stable, canonical empty frames.
+                    # The adapter still compares a THIRD fresh frame before the
+                    # single set_text; a later change stops without retry.
+                    resolve_action("enter_phone",screen,phone)
+                    if empty_input_frame!=screen:
+                        observe=getattr(driver,'observe_input_change',None)
+                        if empty_input_frame is not None and observe is not None:
+                            try:observe(empty_input_frame,screen)
+                            except Exception:pass
+                        empty_input_frame=screen
+                        sleep(.25);continue
                     action, next_stage = "enter_phone", "readback"
+                else:
+                    empty_input_frame=None
             elif stage == "readback":
                 if not screen.matching(is_phone_editor):
                     sleep(0.25)
@@ -284,7 +344,7 @@ def run_preview(driver, request, timeout=45, max_reads=90, cancelled=lambda: Fal
                     raise StopPreview("phone_readback_mismatch")
                 if value == phone and screen.matching(lambda n: n.text.startswith("网络查找手机/邮箱")):
                     action, next_stage = "search", "profile"
-            elif stage == "profile" and screen.has("个人信息"):
+            elif stage == "profile" and (screen.has("个人信息") or screen.has("客户详情")):
                 if not profile_matches(screen, phone):
                     raise StopPreview("profile_phone_mismatch")
                 if screen.has("发消息"):
@@ -320,6 +380,7 @@ class PocoPreviewDriver:
         self.foreground = foreground
         self.lease_valid = lease_valid
         self._read_started = False
+        self.before_action_difference=lambda action,before,after:None
 
     def _guard_foreground(self):
         if self.foreground() != PACKAGE:
@@ -371,9 +432,19 @@ class PocoPreviewDriver:
             self._read_started = False
         return screen
 
+    def guard_input_observation(self):self._guard_host()
+
+    def observe_input_change(self,before,after):
+        self.observe_action_change('enter_phone',before,after)
+
+    def observe_action_change(self,action,before,after):
+        try:self.before_action_difference(action,before,after)
+        except Exception:pass  # Diagnostic failure never replaces the input guard.
+
     def apply(self, action, expected_screen, phone, check_budget=lambda: None):
         fresh = self.snapshot()
         if fresh != expected_screen:
+            if action in ('enter_phone','open_menu'):self.observe_action_change(action,expected_screen,fresh)
             raise StopPreview("page_changed_before_action")
         node = resolve_action(action, fresh, phone)
         if node.text:

@@ -82,3 +82,45 @@ test("a send worker may never turn a click into confirmed delivery or silently p
     await assert.rejects(runWecomPreviewTask({...task,payload:{...task.payload,mode:"send",previewOnly:false}},{config,agentDir:"/fixture",spawnChild:fixture.spawnChild}),/outcome_unknown/);
   }
 });
+
+const progressLine = (phase, step=1, state='begin', extra={}) => 'WECOM_DIAGNOSTIC '+JSON.stringify({version:1,step,phase,state,elapsedMs:step,...extra})+'\n';
+function manualChild() {
+  const child=new EventEmitter();child.stdout=new PassThrough();child.stderr=new PassThrough();child.stdin=new PassThrough();child.kill=()=>{};return child;
+}
+test('split progress records survive; arbitrary stderr, oversized and regressing frames are discarded', async()=>{
+  const child=manualChild();
+  const pending=runWecomPreviewTask(task,{config,agentDir:'/fixture',spawnChild:()=>child});
+  const line=progressLine('foreground_wait');child.stderr.write(line.slice(0,9));child.stderr.write(line.slice(9));
+  child.stderr.write('raw private phone UI token\n');
+  child.stderr.write(progressLine('selector_click',2,'begin',{phoneNumber:'private'}));
+  child.stderr.write('X'.repeat(2000)+progressLine('selector_click',2));
+  child.stderr.write(progressLine('selector_click',2));child.stderr.write(progressLine('home_navigation',1));
+  child.stderr.write(progressLine('cleanup',3,'end',{cleanupConfirmed:false}));
+  child.stdout.write(JSON.stringify({previewStatus:'blocked',previewCode:'wecom_launch_not_ready',invitationSent:false}));child.emit('close',0);
+  const result=await pending, execution=result.diagnostic.wecomExecution;
+  assert.equal(execution.cleanupConfirmed,false);assert.deepEqual(execution.events.map(e=>e.phase),['foreground_wait','selector_click','cleanup']);
+  assert.equal(JSON.stringify(result).includes('private'),false);
+});
+test('parent watchdog retains last stage and waits for child cleanup without replay', async t=>{
+  t.mock.timers.enable({apis:['setTimeout']});
+  const child=manualChild();let cancelled=0,finished=false;
+  child.stdin.on('data',chunk=>{if(String(chunk)==='cancel\n')cancelled++;});
+  const pending=runWecomPreviewTask(task,{config,agentDir:'/fixture',spawnChild:()=>child}).finally(()=>{finished=true;});
+  child.stderr.write(progressLine('selector_click'));
+  t.mock.timers.tick(230000);await Promise.resolve();assert.equal(cancelled,1);assert.equal(finished,false);
+  child.stderr.write(progressLine('cleanup',2,'end',{cleanupConfirmed:false}));
+  child.emit('close',0);
+  await assert.rejects(pending,error=>{
+    assert.equal(error.message,'wecom_preview_worker_timeout_no_replay');
+    assert.equal(error.diagnostic.wecomExecution.cleanupConfirmed,false);
+    assert.equal(error.diagnostic.wecomExecution.events[0].phase,'selector_click');return true;
+  });
+});
+test('real Python adapter configuration rejection crosses the child pipe with a fixed stage and no ADB', async()=>{
+  const { fileURLToPath }=await import('node:url');
+  const agentDir=fileURLToPath(new URL('..',import.meta.url));
+  const result=await runWecomPreviewTask(task,{config:{...config,pythonCommand:'python3'},agentDir});
+  assert.equal(result.previewCode,'device_not_authorized');
+  assert.equal(result.diagnostic.wecomExecution.failurePhase,'configuration');
+  assert.equal(result.invitationSent,false);
+});

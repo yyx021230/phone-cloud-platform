@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import { createHash } from "node:crypto";
+import { wecomExecution } from "./wecom-diagnostics.mjs";
 // Retain the historical task kind and routes; execution mode is explicitly bound.
 export const WECOM_PREVIEW_KIND = "wecom_customer_preview";
 export const WECOM_PREVIEW_DEVICES = Object.freeze(JSON.parse(fs.readFileSync(new URL("./wecom-preview-devices.json", import.meta.url), "utf8")));
@@ -63,11 +64,13 @@ export function previewRequest(input) {
 }
 
 export function publicPreview(job) {
+  const execution = wecomExecution(job.result?.diagnostic?.wecomExecution);
   return { jobId: job.jobId, deviceId: job.deviceId, deviceNumber: job.wecomDeviceNumber,
     mode: previewJobMode(job), appSlot: previewJobSlot(job), androidUser: job.wecomAndroidUser, requestId: job.wecomRequestId, status: job.status,
     createdAt: job.createdAt, updatedAt: job.updatedAt, completedAt: job.completedAt,
     result: { status: job.result?.previewStatus || "", code: job.result?.previewCode || "",
-      invitationSent: previewSendState(job) === "unknown" ? null : false, sendStatus: previewSendState(job), sendClaimed: Boolean(job.wecomSendClaimAt), remarkSaveStatus: job.result?.remarkSaveStatus || "not_attempted" } };
+      invitationSent: previewSendState(job) === "unknown" ? null : false, sendStatus: previewSendState(job), sendClaimed: Boolean(job.wecomSendClaimAt), remarkSaveStatus: job.result?.remarkSaveStatus || "not_attempted",
+      ...(execution ? { execution } : {}) } };
 }
 
 export function previewLease(task, job, lock, device, agentId, now = Date.now()) {
@@ -137,7 +140,9 @@ export function publicInvitation(task) {
     : status === "unknown" ? "执行结果待核对，请勿重复发送"
     : status === "needs_attention" ? "请在对应手机处理登录或验证，再核对原任务"
     : "本次任务未完成，请根据错误码核对";
-  return { taskId: task.jobId, deviceNumber: task.deviceNumber, appSlot: task.appSlot, status, code, message };
+  const execution = wecomExecution(task.result?.execution);
+  return { taskId: task.jobId, deviceNumber: task.deviceNumber, appSlot: task.appSlot, status, code, message,
+    ...(execution ? { execution } : {}) };
 }
 
 // A small inventory view for integration clients. No SIM/customer/ADB identity

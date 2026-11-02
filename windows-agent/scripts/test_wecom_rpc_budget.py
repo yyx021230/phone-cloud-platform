@@ -7,7 +7,7 @@ import types
 import unittest
 import urllib.request
 import wecom_invite_preview as w
-from wecom_rpc_budget import bound_rpc_transport
+from wecom_rpc_budget import bound_rpc_transport, RpcDeliveryUnknown
 from test_wecom_invite_preview import HOME, PHONE
 
 
@@ -34,7 +34,7 @@ class BudgetTests(unittest.TestCase):
                 check_budget();client.transport.send({'method':'uncertain UI operation'},timeout=None)
         try:
             started=time.monotonic();out=w.run_preview(Driver(),{'phoneNumber':PHONE},sleep=lambda _:None)
-            self.assertTrue(entered.is_set());self.assertEqual(out['code'],'executor_error_no_replay')
+            self.assertTrue(entered.is_set());self.assertEqual(out['code'],'wecom_rpc_delivery_unknown_no_replay')
             self.assertEqual(calls,['accepted']);self.assertLess(time.monotonic()-started,1.5)
             self.assertFalse(out['invitationSent'])
         finally:release.set();server.shutdown();server.server_close();thread.join(2)
@@ -55,12 +55,29 @@ class BudgetTests(unittest.TestCase):
         for value in (0,-1,True,float('nan'),11):
             with self.assertRaises(ValueError):bound_rpc_transport(types.SimpleNamespace(transport=Transport()),value)
         client=types.SimpleNamespace(transport=Transport());bound_rpc_transport(client)
-        with self.assertRaises(TimeoutError):client.transport.send({})
+        with self.assertRaises(RpcDeliveryUnknown) as raised:client.transport.send({})
+        self.assertIsInstance(raised.exception.__cause__,TimeoutError)
+        self.assertNotIn('private',str(raised.exception))
         self.assertEqual(calls,[1])
         with self.assertRaises(ValueError):bound_rpc_transport(client)
         for value in (0,-1,True,float('inf')):
             with self.assertRaises(ValueError):client.transport.send({},timeout=value)
         self.assertEqual(calls,[1])
+
+    def test_sdk_disconnect_retry_cannot_repeat_an_applied_write(self):
+        class TransportDisconnected(Exception): pass
+        applied=[]; sleeps=[]
+        class Transport:
+            def send(self,request,timeout=None):
+                applied.append(1)
+                raise TransportDisconnected('delivered_then_response_lost')
+        client=types.SimpleNamespace(transport=Transport());bound_rpc_transport(client)
+        def sdk_set_attr():
+            for _ in range(3):
+                try:return client.transport.send({'method':'setAttr'})
+                except TransportDisconnected:sleeps.append(3)
+        with self.assertRaises(RpcDeliveryUnknown):sdk_set_attr()
+        self.assertEqual(applied,[1]);self.assertEqual(sleeps,[])
 
 
 if __name__=='__main__':unittest.main()
