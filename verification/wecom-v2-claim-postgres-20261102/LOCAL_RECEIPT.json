@@ -1,0 +1,14 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "server/wecom-cleanup-v2-claim-postgres.test.mjs"
+  ],
+  "exitCode": 0,
+  "logSha256": "52144113879b55e5a44b1f72f0689d320b6993c55881135813523e18d423ca38",
+  "sourceSha256": {
+    "server/wecom-cleanup-v2-claim-postgres.mjs": "46d0e8ee2857656acf765920f1d58a10e313ba05aff5b2a867270c3611d0a276",
+    "server/wecom-cleanup-v2-claim-postgres.test.mjs": "4e5347a2286f81265703d22524c41c5755bfe5155f561bc442fda31a37005fe0",
+    "verification/wecom-v2-claim-postgres-20261102/fixture.mjs": "4f8c713618185540c296dca380ed6027b45e0a777de5e63e7110ace147608f0c"
+  }
+}

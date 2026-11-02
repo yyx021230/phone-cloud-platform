@@ -1,0 +1,122 @@
+✔ storage only main/preview (5.626417ms)
+✔ storage only main/send (0.695625ms)
+✔ storage only clone/preview (0.579792ms)
+✔ storage only clone/send (0.536292ms)
+✔ create and reconciliation share all six NOWAIT reads in exact order (0.981208ms)
+✔ same fixed claim reuses tuple without DML (1.010125ms)
+✖ different task/main-clone sees committed same physical anchor busy (1.221584ms)
+✔ reject mapping change a => { a.mapping_state = "disabled"; } (0.283458ms)
+✔ reject mapping change a => { a.mapping_revision = "2"; } (0.298375ms)
+✔ reject mapping change a => { a.mapping_fingerprint = "0".repeat(64); } (0.298625ms)
+✔ reject mapping change a => { a.agent_id = "other"; } (0.281416ms)
+✔ reject mapping change a => { a.device_id = "adb:other"; } (0.285958ms)
+✔ missing anchor is never seeded (0.251542ms)
+✔ missing existing business row 1 rejected (0.24975ms)
+✔ missing existing business row 2 rejected (0.238291ms)
+✔ missing existing business row 3 rejected (0.475375ms)
+✔ missing device projection cannot be replaced by ready boolean (0.234208ms)
+✔ provider getter rejected without invoking it (0.04075ms)
+✔ changed context before checkout fails without SQL (0.146417ms)
+✔ context changes while getPool yields: no checkout (0.176625ms)
+✔ full original queued JSONB snapshot is required, unrelated field too (0.234209ms)
+✔ legitimate task/job progress running stays same claim (1.041167ms)
+✔ legitimate task/job progress stalled stays same claim (0.666959ms)
+✔ legitimate task/job progress succeeded stays same claim (0.688625ms)
+✔ legitimate task/job progress failed stays same claim (0.676459ms)
+✔ legitimate task/job progress cancelled stays same claim (0.574666ms)
+✔ legitimate task/job progress expired stays same claim (0.540417ms)
+✔ task success/job failure or early cancellation need not agree (0.7565ms)
+✔ released business lock does not release physical duty (0.670667ms)
+✔ regressed/conflicting projection preserved s => { s.task().status = s.task().data.status = "queued"; } (0.488625ms)
+✔ regressed/conflicting projection preserved s => { delete s.task().data.wecomV2Claim; } (0.474042ms)
+✖ regressed/conflicting projection preserved s => { s.job().data.phoneNumber = "13900000001"; } (0.662458ms)
+✖ regressed/conflicting projection preserved s => { s.job().data.wecomRemarkName = "其他备注"; } (0.552708ms)
+✔ regressed/conflicting projection preserved s => { s.ledger().claim_data = null; } (0.642541ms)
+✔ regressed/conflicting projection preserved s => { s.hold().data.physicalCleanup.originalJobId = "other"; } (0.519375ms)
+✔ regressed/conflicting projection preserved s => { s.anchor().active_claim_operation_id = "other"; } (0.506459ms)
+✔ DML 1 rejected RETURNING aborts without commit (0.28975ms)
+✔ DML 2 rejected RETURNING aborts without commit (0.244ms)
+✔ DML 3 rejected RETURNING aborts without commit (0.268208ms)
+✔ DML 4 rejected RETURNING aborts without commit (0.299791ms)
+✔ DML 5 rejected RETURNING aborts without commit (0.294708ms)
+✔ RETURNING task corruption extra (0.34525ms)
+✔ RETURNING task corruption status (0.375458ms)
+✔ RETURNING task corruption updated_at (0.222125ms)
+✔ RETURNING task corruption agent_id (0.212584ms)
+✔ RETURNING task corruption data (0.212292ms)
+✔ PG Date projections accepted alongside exact JSONB ISO values (0.375125ms)
+✔ owned EventEmitter error at SELECT stops further SQL on client (0.213125ms)
+✔ owned EventEmitter error at UPDATE stops further SQL on client (0.23725ms)
+✔ owned EventEmitter error at COMMIT stops further SQL on client (0.557875ms)
+✔ lost COMMIT reply reconciles only after original client retirement (0.586542ms)
+✔ fault before forwarding COMMIT remains unknown, no automatic write replay (0.522791ms)
+✔ ROLLBACK tag answering COMMIT is not a confirmed claim (0.525292ms)
+✔ context changed after confirmed COMMIT retains known storage, no permission (0.385667ms)
+✔ COMMIT unknown plus changed context cannot initiate independent SQL (0.37225ms)
+✔ all records absent reconciliation never seeds or rewrites (0.1395ms)
+✔ reconcile row lock failure exits with no writes (0.12525ms)
+ℹ tests 57
+ℹ suites 0
+ℹ pass 54
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 101.944083
+
+✖ failing tests:
+
+test at server/wecom-cleanup-v2-claim-postgres.test.mjs:26:1
+✖ different task/main-clone sees committed same physical anchor busy (1.221584ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'conflict' !== 'busy'
+  
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-v2-claim-postgres.test.mjs:29:59)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'conflict',
+    expected: 'busy',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at server/wecom-cleanup-v2-claim-postgres.test.mjs:50:394
+✖ regressed/conflicting projection preserved s => { s.job().data.phoneNumber = "13900000001"; } (0.662458ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'unavailable'
+  - 'conflict'
+  
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-v2-claim-postgres.test.mjs:51:56)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'unavailable',
+    expected: 'conflict',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at server/wecom-cleanup-v2-claim-postgres.test.mjs:50:394
+✖ regressed/conflicting projection preserved s => { s.job().data.wecomRemarkName = "其他备注"; } (0.552708ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'unavailable'
+  - 'conflict'
+  
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-v2-claim-postgres.test.mjs:51:56)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'unavailable',
+    expected: 'conflict',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

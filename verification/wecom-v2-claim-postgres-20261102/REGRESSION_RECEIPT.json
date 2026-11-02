@@ -1,0 +1,35 @@
+[
+  {
+    "command": [
+      "node",
+      "--test",
+      "server/wecom-cleanup-v2-claim.test.mjs",
+      "server/wecom-cleanup-v2-host.test.mjs",
+      "server/wecom-cleanup-v2-postgres.test.mjs",
+      "server/wecom-preview.test.mjs"
+    ],
+    "exitCode": 0,
+    "file": "REGRESSION_OUTPUT.txt",
+    "sha256": "a2edcdcf5800ca590ce7bd5862297110c3662a379ea4a72c7f969db2a3dc7695"
+  },
+  {
+    "command": [
+      "node",
+      "--check",
+      "server/wecom-cleanup-v2-claim-postgres.mjs"
+    ],
+    "exitCode": 0,
+    "file": "SYNTAX_1.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": [
+      "node",
+      "--check",
+      "server/wecom-cleanup-v2-claim-postgres.test.mjs"
+    ],
+    "exitCode": 0,
+    "file": "SYNTAX_2.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

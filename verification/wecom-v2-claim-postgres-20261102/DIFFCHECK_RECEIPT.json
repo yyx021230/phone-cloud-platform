@@ -1,0 +1,22 @@
+{
+  "fullCommand": [
+    "git",
+    "diff",
+    "--cached",
+    "--check"
+  ],
+  "fullExitCode": 2,
+  "fullOutput": "verification/wecom-v2-claim-postgres-20261102/initial/FIRST_OUTPUT.txt:72: trailing whitespace.\n+  \nverification/wecom-v2-claim-postgres-20261102/initial/FIRST_OUTPUT.txt:74: trailing whitespace.\n+  \nverification/wecom-v2-claim-postgres-20261102/initial/FIRST_OUTPUT.txt:90: trailing whitespace.\n+  \nverification/wecom-v2-claim-postgres-20261102/initial/FIRST_OUTPUT.txt:93: trailing whitespace.\n+  \nverification/wecom-v2-claim-postgres-20261102/initial/FIRST_OUTPUT.txt:109: trailing whitespace.\n+  \nverification/wecom-v2-claim-postgres-20261102/initial/FIRST_OUTPUT.txt:112: trailing whitespace.\n+  \nverification/wecom-v2-claim-postgres-20261102/initial/REPRODUCED_OUTPUT.txt:72: trailing whitespace.\n+  \nverification/wecom-v2-claim-postgres-20261102/initial/REPRODUCED_OUTPUT.txt:74: trailing whitespace.\n+  \nverification/wecom-v2-claim-postgres-20261102/initial/REPRODUCED_OUTPUT.txt:90: trailing whitespace.\n+  \nverification/wecom-v2-claim-postgres-20261102/initial/REPRODUCED_OUTPUT.txt:93: trailing whitespace.\n+  \nverification/wecom-v2-claim-postgres-20261102/initial/REPRODUCED_OUTPUT.txt:109: trailing whitespace.\n+  \nverification/wecom-v2-claim-postgres-20261102/initial/REPRODUCED_OUTPUT.txt:112: trailing whitespace.\n+  \n",
+  "narrowCommand": [
+    "git",
+    "diff",
+    "--cached",
+    "--check",
+    "--",
+    ".",
+    ":(exclude)verification/wecom-v2-claim-postgres-20261102/initial/FIRST_OUTPUT.txt",
+    ":(exclude)verification/wecom-v2-claim-postgres-20261102/initial/REPRODUCED_OUTPUT.txt"
+  ],
+  "narrowExitCode": 0,
+  "rawEvidenceNotTrimmed": true
+}

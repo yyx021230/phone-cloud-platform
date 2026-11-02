@@ -1,0 +1,12 @@
+{
+  "tests": 67,
+  "pass": 66,
+  "fail": 1,
+  "exitCode": 1,
+  "reason": "new fixture passed M1 preparer arguments in wrong order; no product M1 failure",
+  "sha256": {
+    "wecom-cleanup-v2-claim-postgres.mjs.txt": "7edd907fa3b56948d00f7b6ca2e6003f3bfdc9282d917b5823c0f64a06f27e8a",
+    "wecom-cleanup-v2-claim-postgres.test.mjs.txt": "58ffe7ddf07bed20d3d44540db6497008aa300afdd01be3fcf85e90a3fe7a136",
+    "OUTPUT.txt": "04896ebb7640b880947ad75a48aeca6d6d8898b89c4a36ac5f84b9d77f72ddaa"
+  }
+}

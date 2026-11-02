@@ -1,0 +1,120 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { createWecomV2ClaimPostgresRepository } from "./wecom-cleanup-v2-claim-postgres.mjs";
+import { createWecomV2HostPreparer } from "./wecom-cleanup-v2-host.mjs";
+import { fixture as hostFixture } from "../verification/wecom-v2-cas-m2-20261102/fixture.mjs";
+import { setup, tables, taskRow, jobRow, isDml } from "../verification/wecom-v2-claim-postgres-20261102/fixture.mjs";
+const dml = s => s.pool.calls.filter(c => isDml(c.sql));
+function denied(result) { assert.equal(result.protocolPermit, false); assert.equal(result.fence, "held"); assert.equal(result.liveChecksRequired, true); assert.equal(result.mappingBarrierVerified, false); assert.equal(result.productionEnabled, false); }
+async function claim(s) { const r = await s.repo.createClaim(s.f.input); denied(r); return r; }
+function listeners(s) { for (const c of s.pool.clients) { assert.equal(c.released, true); assert.deepEqual(c.listeners("error"), [c.external]); } }
+
+for (const slot of ["main", "clone"]) for (const mode of ["preview", "send"]) test(`storage only ${slot}/${mode}`, async () => {
+  const s = setup({ slot, mode }); const r = await claim(s); assert.equal(r.storageStatus, "recorded"); assert.equal(r.commitKnown, true);
+  assert.equal(dml(s).length, 5); assert.equal(s.task().status, "running"); assert.equal(s.job().status, "running");
+  assert.equal(s.hold().expires_at, null); assert.equal(s.anchor().active_obligation_id, s.f.context.binding.obligationId);
+  assert.equal(s.ledger().claim_data.mode, mode); assert.equal(s.ledger().claim_data.phoneNumber, undefined);
+  const publicResult = JSON.stringify(r); for (const secret of [s.f.input.job.phoneNumber, s.f.input.job.wecomRemarkName, s.f.context.binding.nonce]) assert.equal(publicResult.includes(secret), false);
+  listeners(s);
+});
+test("create and reconciliation share all six NOWAIT reads in exact order", async () => {
+  const s = setup(); await claim(s); const first = s.pool.calls.filter(c => c.sql.startsWith("SELECT"));
+  await s.repo.reconcileClaim(); const second = s.pool.calls.filter(c => c.sql.startsWith("SELECT")).slice(6);
+  assert.equal(first.length, 6); assert.equal(second.length, 6);
+  assert.deepEqual(second.map(c => [c.sql, c.args]), first.map(c => [c.sql, c.args]));
+  assert.equal(dml(s).length, 5); assert.equal(s.pool.calls.at(-1).sql, "ROLLBACK"); listeners(s);
+});
+test("same fixed claim reuses tuple without DML", async () => { const s = setup(); await claim(s); assert.equal((await claim(s)).storageStatus, "recorded"); assert.equal(dml(s).length, 5); listeners(s); });
+test("different task/main-clone sees committed same physical anchor busy", async () => {
+  const s = setup(); await claim(s); const other = setup({ suffix: "two", slot: "clone" });
+  // Same physical device has ONE configured deviceNumber across app slots.
+  other.f.context.target.deviceNumber = "23"; other.f.input.device.deviceName = "23";
+  other.f.input.task.payload.deviceNumber = "23"; other.f.input.job.wecomDeviceNumber = "23";
+  const repo = createWecomV2ClaimPostgresRepository({ ...other.providers, getPool: async () => s.pool });
+  const r = await repo.createClaim(other.f.input); assert.equal(r.storageStatus, "busy"); assert.equal(dml(s).length, 5); denied(r);
+});
+for (const mutate of [a => { a.mapping_state = "disabled"; }, a => { a.mapping_revision = "2"; }, a => { a.mapping_fingerprint = "0".repeat(64); }, a => { a.agent_id = "other"; }, a => { a.device_id = "adb:other"; }]) test(`reject mapping change ${mutate}`, async () => {
+  const s = setup(); mutate(s.anchor()); assert.equal((await claim(s)).storageStatus, "conflict"); assert.equal(dml(s).length, 0); listeners(s);
+});
+test("missing anchor is never seeded", async () => { const s = setup(); s.pool.db[tables[0]].clear(); assert.equal((await claim(s)).storageStatus, "conflict"); assert.equal(dml(s).length, 0); assert.equal(s.pool.calls.filter(c => c.sql.startsWith("SELECT")).length, 1); });
+for (const index of [1, 2, 3]) test(`missing existing business row ${index} rejected`, async () => {
+  const s = setup(); s.pool.db[tables[index]].clear(); assert.equal((await claim(s)).storageStatus, "conflict"); assert.equal(dml(s).length, 0);
+});
+test("missing device projection cannot be replaced by ready boolean", () => { const s = setup(); assert.throws(() => createWecomV2ClaimPostgresRepository({ ...s.providers, readDeviceMapping: () => ({ ready: true }) }), /mapping_unconfirmed/); assert.equal(s.pool.clients.length, 0); });
+test("provider getter rejected without invoking it", () => { let calls = 0; assert.throws(() => createWecomV2ClaimPostgresRepository({ get getPool() { calls++; return () => {}; }, readClaimContext() {}, readDeviceMapping() {} }), /providers_required/); assert.equal(calls, 0); });
+test("changed context before checkout fails without SQL", async () => { const s = setup(); s.f.context.claimOperationId = "new-claim"; await assert.rejects(claim(s), /context_changed/); assert.equal(s.pool.clients.length, 0); });
+test("context changes while getPool yields: no checkout", async () => { const s = setup(); const repo = createWecomV2ClaimPostgresRepository({ ...s.providers, getPool: async () => { s.f.context.binding.serverEpoch = "new-epoch"; return s.pool; } }); assert.equal((await repo.createClaim(s.f.input)).storageStatus, "conflict"); assert.equal(s.pool.clients.length, 0); });
+test("full original queued JSONB snapshot is required, unrelated field too", async () => { const s = setup(); s.task().data.extra = "changed"; assert.equal((await claim(s)).storageStatus, "conflict"); assert.equal(dml(s).length, 0); });
+for (const status of ["running", "stalled", "succeeded", "failed", "cancelled", "expired"]) test(`legitimate task/job progress ${status} stays same claim`, async () => {
+  const s = setup(); await claim(s);
+  for (const row of [s.task(), s.job()]) { row.status = row.data.status = status; row.updated_at = row.data.updatedAt = "2026-11-02T05:01:00.000Z"; row.data.result = { changed: true }; row.data.events.push({ type: "progress" }); }
+  const r = await s.repo.reconcileClaim(); assert.equal(r.storageStatus, "recorded"); denied(r); assert.equal(dml(s).length, 5);
+});
+test("task success/job failure or early cancellation need not agree", async () => { const s = setup(); await claim(s); s.task().status = s.task().data.status = "succeeded"; s.job().status = s.job().data.status = "failed"; assert.equal((await s.repo.reconcileClaim()).storageStatus, "recorded"); s.task().status = s.task().data.status = "running"; s.job().status = s.job().data.status = "cancelled"; assert.equal((await s.repo.reconcileClaim()).storageStatus, "recorded"); });
+test("released business lock does not release physical duty", async () => { const s = setup(); await claim(s); const row = s.pool.db[tables[3]].get(s.f.context.originalLockId); row.status = row.data.status = "released"; assert.equal((await s.repo.reconcileClaim()).storageStatus, "recorded"); assert.equal(s.anchor().active_obligation_id, s.f.context.binding.obligationId); });
+for (const mutate of [s => { s.task().status = s.task().data.status = "queued"; }, s => { delete s.task().data.wecomV2Claim; }, s => { s.job().data.phoneNumber = "13900000001"; }, s => { s.job().data.wecomRemarkName = "其他备注"; }, s => { s.ledger().claim_data = null; }, s => { s.hold().data.physicalCleanup.originalJobId = "other"; }, s => { s.anchor().active_claim_operation_id = "other"; }]) test(`regressed/conflicting projection preserved ${mutate}`, async () => {
+  const s = setup(); await claim(s); mutate(s); assert.equal((await s.repo.reconcileClaim()).storageStatus, "conflict"); assert.equal(dml(s).length, 5); assert.notEqual(s.anchor().active_obligation_id, null);
+});
+for (let index = 0; index < 5; index++) test(`DML ${index + 1} rejected RETURNING aborts without commit`, async () => {
+  const s = setup(); let count = 0;
+  s.pool.after = (c, sql, answer) => isDml(sql) && count++ === index ? { ...answer, rowCount: 0, rows: [] } : answer;
+  assert.equal((await claim(s)).storageStatus, "conflict"); assert.equal(s.task().status, "queued"); assert.equal(s.anchor().active_obligation_id, null);
+  assert.equal(s.pool.calls.some(c => c.sql === "COMMIT"), false); listeners(s);
+});
+for (const field of ["extra", "status", "updated_at", "agent_id", "data"]) test(`RETURNING task corruption ${field}`, async () => {
+  const s = setup(); s.pool.after = (c, sql, answer) => { if (sql.startsWith("UPDATE phone_cloud_windows_tasks")) { const row = answer.rows[0]; if (field === "data") row.data.extra = "unexpected"; else row[field] = "wrong"; } return answer; };
+  assert.equal((await claim(s)).storageStatus, "conflict"); assert.equal(s.task().status, "queued");
+});
+test("PG Date projections accepted alongside exact JSONB ISO values", async () => { const s = setup(); s.pool.after = (c, sql, a) => { for (const row of a.rows || []) for (const k of ["created_at", "updated_at", "expires_at"]) if (typeof row[k] === "string") row[k] = new Date(row[k]); return a; }; assert.equal((await claim(s)).storageStatus, "recorded"); });
+for (const where of ["SELECT", "UPDATE", "COMMIT"]) test(`owned EventEmitter error at ${where} stops further SQL on client`, async () => {
+  const s = setup(), error = Error(`fault-${where}`); let fired = false;
+  s.pool.after = (client, sql, a) => { if (!fired && sql.startsWith(where)) { fired = true; client.emit("error", error); } return a; };
+  const r = await claim(s); assert.equal(r.storageStatus, where === "COMMIT" ? "recorded" : "unavailable");
+  const old = s.pool.clients[0], calls = s.pool.calls.filter(c => c.client === old); assert.equal(calls.at(-1).sql.startsWith(where), true);
+  assert.equal(s.pool.releases[0].error, error); listeners(s);
+});
+test("lost COMMIT reply reconciles only after original client retirement", async () => {
+  const s = setup(); let cut = false; s.pool.after = (client, sql, a) => { if (sql === "COMMIT" && !cut) { cut = true; throw Error("lost_commit_reply"); } return a; };
+  s.pool.onCheckout = () => { if (s.pool.clients.length === 2) assert.equal(s.pool.clients[0].released, true); };
+  assert.equal((await claim(s)).storageStatus, "recorded"); assert.equal(s.pool.clients.length, 2); assert.equal(dml(s).length, 5); listeners(s);
+});
+test("fault before forwarding COMMIT remains unknown, no automatic write replay", async () => {
+  const s = setup(); s.pool.before = (client, sql) => { if (sql === "COMMIT") throw Error("commit_not_forwarded"); };
+  const r = await claim(s); assert.equal(r.storageStatus, "unknown"); assert.equal(r.commitKnown, false); assert.equal(s.task().status, "queued"); assert.equal(dml(s).length, 5); assert.equal(s.pool.clients.length, 2); listeners(s);
+});
+test("ROLLBACK tag answering COMMIT is not a confirmed claim", async () => { const s = setup(); s.pool.before = (c, sql) => { if (sql === "COMMIT") c.tx = structuredClone(s.pool.db); }; s.pool.after = (c, sql, a) => sql === "COMMIT" ? { command: "ROLLBACK" } : a; assert.equal((await claim(s)).storageStatus, "unknown"); assert.equal(s.task().status, "queued"); });
+test("context changed after confirmed COMMIT retains known storage, no permission", async () => { const s = setup(); s.pool.after = (c, sql, a) => { if (sql === "COMMIT") s.f.context.claimOperationId = "obsolete-new"; return a; }; const r = await claim(s); assert.equal(r.storageStatus, "obsolete_context"); assert.equal(r.commitKnown, true); });
+test("COMMIT unknown plus changed context cannot initiate independent SQL", async () => { const s = setup(); s.pool.after = (c, sql, a) => { if (sql === "COMMIT") { s.f.context.claimOperationId = "obsolete-new"; throw Error("lost"); } return a; }; assert.equal((await claim(s)).storageStatus, "unknown"); assert.equal(s.pool.clients.length, 1); });
+test("all records absent reconciliation never seeds or rewrites", async () => { const s = setup(); for (const name of tables.slice(1)) s.pool.db[name].clear(); const r = await s.repo.reconcileClaim(); assert.equal(r.storageStatus, "not_recorded"); assert.equal(r.commitKnown, false); assert.equal(dml(s).length, 0); assert.equal(s.pool.calls.at(-1).sql, "ROLLBACK"); });
+test("reconcile row lock failure exits with no writes", async () => { const s = setup(); s.pool.before = (c, sql) => { if (sql.startsWith("SELECT")) throw Error("55P03"); }; const r = await s.repo.reconcileClaim(); assert.equal(r.storageStatus, "unavailable"); assert.equal(dml(s).length, 0); listeners(s); });
+test("valid M1 revision1 then revision2 still reconcile original claim", async () => {
+  const s = setup(); await claim(s); const hf = hostFixture("progress"), b = s.f.context.binding;
+  hf.auth = b; hf.body.binding = b; hf.body.readyNonce = b.handshakeNonce;
+  hf.facts.agentInstanceId = b.agentInstanceId; hf.facts.spawnNonce = b.handshakeNonce;
+  const prepare = createWecomV2HostPreparer({ readAuthenticatedBinding: () => b, readParentInstanceFacts: () => hf.facts });
+  const host = prepare("host", s.ledger().protocol_state, hf.body).nextState;
+  Object.assign(s.ledger(), { revision: 1, host_operation_id: host.hostOperationId, protocol_state: host });
+  assert.equal((await s.repo.reconcileClaim()).storageStatus, "recorded");
+  const close = { ...hf.body, operationId: "close-progress", expectedRevision: 1, closeEventId: "close-event-progress" };
+  hf.facts.closeEventId = close.closeEventId; const closed = prepare("host-closed", host, close).nextState;
+  Object.assign(s.ledger(), { revision: 2, close_operation_id: closed.closeOperationId, protocol_state: closed });
+  assert.equal((await s.repo.reconcileClaim()).storageStatus, "recorded"); assert.equal(dml(s).length, 5);
+});
+for (const mutate of [s => { s.ledger().protocol_state.revision = 2; }, s => { s.task().data.pickedAt = "2026-11-02T05:00:01.001Z"; }, s => { s.hold().expires_at = "2026-11-02T05:05:00.000Z"; }, s => { s.task().status = "failed"; }]) test(`tuple shape/projection mismatch ${mutate}`, async () => {
+  const s = setup(); await claim(s); mutate(s); assert.equal((await s.repo.reconcileClaim()).storageStatus, "conflict"); assert.equal(dml(s).length, 5);
+});
+for (const sqlPrefix of ["SELECT", "UPDATE", "COMMIT"]) test(`query rejection first error at ${sqlPrefix} retires listener`, async () => {
+  const s = setup(), error = Error("driver-query-rejection"); let fired = false;
+  s.pool.before = (c, sql) => { if (!fired && sql.startsWith(sqlPrefix)) { fired = true; throw error; } };
+  const r = await claim(s); assert.equal(r.storageStatus, sqlPrefix === "COMMIT" ? "unknown" : "unavailable");
+  assert.equal(s.pool.releases[0].error, error); listeners(s);
+});
+test("multiple error events retain first Error identity", async () => {
+  const s = setup(), first = Error("first-owned-error"), second = Error("second-owned-error");
+  s.pool.after = (c, sql, a) => { if (sql.startsWith("UPDATE")) { c.emit("error", first); c.emit("error", second); } return a; };
+  assert.equal((await claim(s)).storageStatus, "unavailable"); assert.equal(s.pool.releases[0].error, first); listeners(s);
+});
+test("missing listener API fails before BEGIN, client retired", async () => {
+  const s = setup(); s.pool.onCheckout = c => { c.on = undefined; };
+  assert.equal((await claim(s)).storageStatus, "conflict"); assert.equal(s.pool.calls.length, 1); assert.equal(s.pool.calls[0].sql, "ROLLBACK");
+});

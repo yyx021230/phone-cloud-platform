@@ -5947,3 +5947,13 @@ expected保留完整原JSONB queued快照供将来CAS，业务fingerprint不包�
 ### 决策日志｜2026-11-02 方案固定不等于领取实现或生产验收
 
 延续3647e5f draft.1，不移动旧tag；按root要求用新draft.2再审完整DB文本、create/reconcile同锁序及并发重绑停用边界。记录只证明拟议约束完整程度，未声称SQL已解析、锁隔离已验证或映射竞态已解决。受审后才可进入独立DB叶实现，仍不修改M2/共享index/getPool或启动PG。原43/147/52、155/157查名池与冻结保持，主号/分身真机仍未验。
+
+### 变更记录｜2026-11-02 M3a新claim-postgres叶本地67项通过，未执行SQL
+
+root561232cb审DB draft.2后，仅新增独立claim-postgres模块/同名测试、新claim迁移与专属verification。固定六步NOWAIT同loader、五DML完整RETURNING/JSONB、queued完整快照CAS、固定claim关联与合法进展矩阵；COMMIT未知原client先退役再独立重读，无自动重写。owned EventEmitter监听锁首因，各query前后失信即止步，仅移除自有listener，预BEGIN失败不发ROLLBACK。
+
+本地新叶67通过，独立原claim55/M1 61/M2 39/业务11合166回归通过，JS syntax通过。初57项54/3及67项66/1实际失败原件/源均保留，分别为同机clone编号fixture不一致、不可变业务冲突分类、M1进展fixture传参顺序；详TASK/回执。模拟库不证明真实PG锁/约束/COMMIT网络。未解析或执行新DDL、未启动PG/Windows/手机/生产/发送。
+
+### 决策日志｜2026-11-02 本地存储确认保持无执行权限，映射屏障仍未实现
+
+M2/M1/旧DDL/共享index/getPool/Agent原字节不变；新anchor初始disabled，无初始化、启用、清active或journal。设备投影provider不是配置写入屏障，输出恒liveChecksRequired true/mappingBarrierVerified false/protocolPermit false，不能用fake ready升为生产可信。后继固定真实PG测试源与新runner交root审后单独执行，不沿用旧执行授权。原43/147/52义务和155/157查名池保留，主号/分身真机尚未补齐，线上未动。
