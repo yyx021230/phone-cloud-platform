@@ -1,0 +1,24 @@
+{
+  "kind": "verification-tree-unit-only",
+  "command": [
+    "/opt/homebrew/bin/node",
+    "--test",
+    "--test-reporter=spec",
+    "verification/wecom-v2-mutation-encoder-20261103/encoder.test.mjs"
+  ],
+  "exitCode": 0,
+  "tests": 64,
+  "pass": 64,
+  "fail": 0,
+  "originalAcceptedGoldenVectors": 20,
+  "originalGoldenBytesUnchanged": true,
+  "rawDuplicateKeyInputUntested": true,
+  "dbNumericSourceUnverified": true,
+  "initial61NotAddedToFinal64": true,
+  "outputSha256": "76e902d4ea3fc6084ffcccd8144cb0d84f3f7e5b2c8124a0e8c1a44b2704f925",
+  "encoderSha256": "900af50074526be5acbb4b8b6f84559c54fe94ec76948f9ec874ba7b40dababb",
+  "testSha256": "f0b28e1fba0c322a4a1f2708650003237a86442cff673cd3837846caf8b49694",
+  "nodeVersion": "v25.9.0",
+  "jsSyntaxChecked": true,
+  "pgOrDevicesExecuted": false
+}

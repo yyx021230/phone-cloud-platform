@@ -6167,3 +6167,11 @@ Node67391exit0/组消失、PG67379exit0确认，成功db原runner删除，旧失
 ### 决策日志｜2026-11-03 回执草案不能替代稳定journal入口、真实权限与生产接线
 
 稳定op持久入口、可信authority来源、head初始化/精确DDL、合法字段迁移、JSONB数值无损读取、retention/blob/boot/outbox仍待根决策。COMMIT未知覆盖同事务所有操作，不以RETURNING或claim仍recorded外发成功；目标确定NOWAIT/CAS0才局部回退。无新SQL/PG/测试/产品/authorizer/roles/shared/M1/events修改，不运行Windows/ADB/手机/生产。43/147/52和查名池保留，主号分身真机仍未完成。
+
+### 变更记录｜2026-11-03 C2纯verification WCMUT1 tree encoder本地64通过
+
+根限定后仅新增verification/wecom-v2-mutation-encoder-20261103。原20accepted规范hex/hash逐项直接比对，原spec/golden不改；严格JSON-tree typed bytes/SHA256、Unicode scalar排序、binary64边界、不可调用getter/Proxy/toJSON、结构拒绝与深度24/25、节点50000/50001、总字节262144/262145验证。初61全部通过的源/测试/日志留存，追加3边界后64/64，JS syntax通过；两轮不累计，无红例伪造。
+
+### 决策日志｜2026-11-03 tree编码通过不证明原始JSON和数值来源
+
+仅verification leaf，无parser/PG/repo/DDL/roles/head初始化/authorizer/产品/shared/M1/events改动。ordinary JSON.parse已折叠的duplicate key或损失数值不能由tree encoder发现，原raw duplicate descriptor仍待验，不声称16全部入口通过；DB原数值无损读取仍未定。稳定journalop/trusted authority/允许迁移/链retention/blob/boot/outbox及S2/journal/native仍阻塞，43/147/52和查名池保持，主号分身真机未完成，无Windows/ADB/设备/生产动作。
