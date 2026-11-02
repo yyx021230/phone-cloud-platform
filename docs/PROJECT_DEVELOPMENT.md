@@ -6031,3 +6031,13 @@ root b7b55483审ac9002原53通过，新增真实纯模块反例Number1被String(
 ### 决策日志｜2026-11-02 不用隐式字符串转换替代规范化输入合同
 
 修复是新纯策略schema一致性，不是现网释放漏洞，所有权限原本也false。旧rc.1/红原件保留，新rc.2递增不移动tag；M1/M2/M3/DDL/共享入口与14旧源未改，无SQL/PG/Windows/手机/生产。兼容测试未提交目录保留不混入该修复，主号分身真机仍未完成，原43设备清理义务/147/52和查名池/冻结保持。
+
+### 变更记录｜2026-11-02 原M2完整14+新claim DDL与claimed-row兼容源码待审
+
+新增verification/wecom-v2-m2-compat-20261102，仅verification/文档；原M2 integration全文只多before新DDL一行，其余11声明/14展开body与helpers逐字不变，M2_BODY_HASHES固定原14/hash及shared proxy helper，4本地source等价/反弱化用例通过。另2项claimed-row源码单独Node阶段：M3 claim后真实M2 host/close→M3重读，仍未执行。所有产品/DDL与4d3113不变。
+
+新root pc-wecom-v2-compat-pg-*与专属marker，固定21源/6依赖；原14 Node45秒+后继2 Node15秒串行且先确认第一组退出，再进入第二；失败保留/成功仅确认后清自有db，前后hash与归属检查。实际仅6 runner guard、AST/JS syntax/只读hash检查，无PG二进制/SQL/服务/Windows/手机动作。原M2 14和新claimed2结果均待另审新库实测，不与历史M3 18累加。
+
+### 决策日志｜2026-11-02 兼容验证不改旧测试语义或扩大生产门控
+
+旧M2 test body/断回复条件/计数与产品源不变，只在新私有库增加DDL条件和独立claimed-row验证，不用窄legacy案例代替原完整14。不沿用旧PG执行授权；新固定runner/manifest交root审后统一执行，当前不启动或重连旧库。S1纯策略通过不代表shared writer/SQL EPQ/blob恢复已接线，映射/journal/native仍未实现；原43设备义务/147/52、查名池与冻结保持，主号分身真机未验收。

@@ -1,0 +1,32 @@
+{
+  "baseCommit": "4d3113367e1722fbed641444614a028c4eea3796",
+  "candidateTag": "wecom-v2-m2-compat-20261102-draft.1",
+  "branch": "codex/wecom-v2-m2-compat2-20261102",
+  "productAndDdlTreesUnchanged": true,
+  "noPgSqlOrWindowsPhoneActions": true,
+  "files": {
+    "docs/PROJECT_DEVELOPMENT.md": "5d973f62af25334ea7eb1832c1bd93bbe8f1621c1a607f81a1825788e99d304a",
+    "verification/wecom-v2-m2-compat-20261102/COPIED_M2_HASHES.json": "3877f1a1e7579f15a474adac3ee52a9696e947454b0626ff6367bd52edb7ea50",
+    "verification/wecom-v2-m2-compat-20261102/LOCAL_0.txt": "125c03d88cb1c0903061edb2e35a13d34f8d5509914b7fd6abb3a845739486bc",
+    "verification/wecom-v2-m2-compat-20261102/LOCAL_1.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verification/wecom-v2-m2-compat-20261102/LOCAL_2.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verification/wecom-v2-m2-compat-20261102/LOCAL_RECEIPT.json": "7a9a1a031221f2acf6ba9ffb8cee8789d8a10528bb768ff69e20d1cf32d7d3dd",
+    "verification/wecom-v2-m2-compat-20261102/M2_BODY_HASHES.json": "d93fb664a8a66b718e86d6842ae774822171bbd6ff17221bf0e789274e0e55b7",
+    "verification/wecom-v2-m2-compat-20261102/RUNNER_REVIEW.md": "858bed41fa6d35dbfc6ea74e938609c04863a3a6b3f27f44cfa7086c64f51756",
+    "verification/wecom-v2-m2-compat-20261102/RUNNER_SOURCE_HASHES.json": "d6ccc2e1e80acae3bcd01d9a74d943d4ba4006538d48e2f9ad75e079ad9fb27e",
+    "verification/wecom-v2-m2-compat-20261102/SOURCE_TEST_OUTPUT.txt": "935730da1ca9dd4157287275e1e04cc7a0cd09a16a406a8e0cf0240e850ebc70",
+    "verification/wecom-v2-m2-compat-20261102/audit-source.mjs": "c21d7e7e8293e0db4928740d46acb5bcd7759f997de1bdf5b38d33fd96219093",
+    "verification/wecom-v2-m2-compat-20261102/claimed.integration.mjs": "2dc15f1dd21dba748c1a2c87555fc85dfffd359db81c4c1222b0c9baf0262177",
+    "verification/wecom-v2-m2-compat-20261102/compat-source.test.mjs": "49c20037dd2a79a362054f33d6140fc563906d4a10d6fd527565b0e60c1323db",
+    "verification/wecom-v2-m2-compat-20261102/fixture.mjs": "ac6e39ce28dd4a9625e9f03e3d648022768c7e10096ef91e9109df2e31681965",
+    "verification/wecom-v2-m2-compat-20261102/owned-pg.mjs": "1c5d361455bdad0193187669fafab2b74f4062b32d19e074848e9a5719e29361",
+    "verification/wecom-v2-m2-compat-20261102/pg-commit-proxy.mjs": "a884a5e9147daf8cf8fffab93a6878f80793c825e833a2c4bddb0d6c8678a3b1",
+    "verification/wecom-v2-m2-compat-20261102/pg-commit-proxy.test.mjs": "79ec0ee937bb5e001601de46104755a4992b3a231826b318ceced3140291b517",
+    "verification/wecom-v2-m2-compat-20261102/pg-fault-observer.mjs": "62fa45c101bcf1c1912123ddc46d8cee060a25337e4d033d7a3e49ec837728a6",
+    "verification/wecom-v2-m2-compat-20261102/pg-fault-observer.test.mjs": "216b834313c281757bbcee4cb229a4f182f3a4eb337ccdc8d117650d22c98b8a",
+    "verification/wecom-v2-m2-compat-20261102/pg-readback-child.mjs": "af2ca4bbc73e633407b625ab5679ddaecd038628f400d31e429f85d1c0613fda",
+    "verification/wecom-v2-m2-compat-20261102/postgres.integration.mjs": "7174aaae69b7d513e4c54cf39fcfc7881651c4a5561ed5658534695ba368e03e",
+    "verification/wecom-v2-m2-compat-20261102/run-owned-postgres.py": "51c56c2f2b8901726cffa53b09203a4e165f9dab50edf0a4917750b03720cd7b",
+    "verification/wecom-v2-m2-compat-20261102/test_owned_runner.py": "7efb2b5098b7a0aea8596283ecaa20d55b65a170630996da136d6aabaf506f8c"
+  }
+}

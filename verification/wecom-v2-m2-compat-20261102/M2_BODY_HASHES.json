@@ -1,0 +1,66 @@
+{
+  "originalSha256": "9684a8fd48b7df31e32c7e4072d4c4ea4e5c774146cfa7d220d9d84ef8f13ac3",
+  "compatSha256": "7174aaae69b7d513e4c54cf39fcfc7881651c4a5561ed5658534695ba368e03e",
+  "exactOriginalPlusOneSetupLine": true,
+  "uniqueTestDeclarations": 11,
+  "expandedTestCases": 14,
+  "bodies": [
+    {
+      "name": "basic",
+      "testCallSha256": "166f708cd5c12dea79a12d9467fdc9d4a6b204d47760cc6988be5481cf30df2e"
+    },
+    {
+      "name": "same-id-concurrency",
+      "testCallSha256": "1a278fd4bc9ec92a56fff15aae53394f09c62afb953c67039b14d3ad5c5b5d9c"
+    },
+    {
+      "name": "different-id-concurrency",
+      "testCallSha256": "49a3bd8f1b60e2fbaeb051741463af62559e4fdf2418aa79d3a45dfaea720622"
+    },
+    {
+      "name": "trigger-rollback",
+      "testCallSha256": "76a28b50746ceed3a1be784e05ef514c9c272d140f1e1a7e6ecb7d942cd9995a"
+    },
+    {
+      "name": "sql-constraints",
+      "testCallSha256": "c4bc7d5755be4abd79a8b4416d32ddc53c1e3a6ef9388ffb25e3479b9ed82f3a"
+    },
+    {
+      "name": "row-lock-isolation",
+      "testCallSha256": "ccac9f4a96d94cd5e47e8f8cb7c95b9eb7f4095d3ae73c0189a6bbad403e2a50"
+    },
+    {
+      "name": "commit-after",
+      "testCallSha256": "165f1ef716c0dcf66f0a5fc0daa059e9ae664d9a8186ceb9a0751db8bb94d348"
+    },
+    {
+      "name": "commit-before",
+      "testCallSha256": "3d626946ab729c7af69fbb24425fe183e7e123b440625441b9013dfc01f6f3d7"
+    },
+    {
+      "name": "init-after",
+      "testCallSha256": "37a2146aa018c2a5406994fc2ac79135e10f323ae733c75469a006cf19284303"
+    },
+    {
+      "name": "op-epoch",
+      "testCallSha256": "28796ba66644300d8422e8d498f38a58fbd51f017d6178839438dfad30070c6d"
+    },
+    {
+      "name": "op-malformed",
+      "testCallSha256": "28796ba66644300d8422e8d498f38a58fbd51f017d6178839438dfad30070c6d"
+    },
+    {
+      "name": "init-epoch",
+      "testCallSha256": "28796ba66644300d8422e8d498f38a58fbd51f017d6178839438dfad30070c6d"
+    },
+    {
+      "name": "init-malformed",
+      "testCallSha256": "28796ba66644300d8422e8d498f38a58fbd51f017d6178839438dfad30070c6d"
+    },
+    {
+      "name": "restart",
+      "testCallSha256": "731d8ba4fe4f5c311e4b4fb30d56a4e44e072ba1bba22e3f8f691721f213376f"
+    }
+  ],
+  "sharedProxyCaseSha256": "0fc8068dd0bb47c0fdddcfdb375ec206760ff9ee148dbb98a0dc8d4ce6c466e8"
+}
