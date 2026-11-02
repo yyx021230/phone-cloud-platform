@@ -1,0 +1,16 @@
+✔ offline actual child + HTTP stays within 3s, with both synthetic frames and real close (1094.358542ms)
+✔ offline wrong_pid cannot reach proof (54.670792ms)
+✔ offline old_nonce cannot reach proof (39.911875ms)
+✔ offline early_fact cannot reach proof (342.118333ms)
+✔ actual child close cost is included, never restamped after close (3373.246917ms)
+✔ challenge response latency plus reads plus close can exhaust the same 3s window (3319.361167ms)
+✔ slow synthetic reads retain all guards and reject rather than skip a frame (3343.809042ms)
+✔ simulated epoch change cannot consume an old challenge even within 3s (366.965667ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12027.998875

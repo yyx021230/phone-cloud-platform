@@ -5589,3 +5589,7 @@ CONTRACT.md为后继v2草案，明确SYSTEM/真实spawn PID/精确OS出生token/
 ### 决策日志｜2026-11-02 先审完整时间合同，不用新ADB进程或建议文本替代证据
 
 延续独立义务与冻结生产操作。root允许企微owner承担后继独立本地候选，先合同评审；本轮只完成draft，不把设想直接当新生产规则。拟替换跨机wall因果及计龄而不放宽预算/真实证明，草案通过评审和具体实现测试前不改产品。新PID同SYSTEM仍非自动基线更新，错误正文建议不是执行审计，不将15:13变化倒推15:04原失败原因。后续需分别解决新协议和缺原host的43旧义务，未经具体授权不部署/重建/切身份/keys/入口/NTP；原预览验收继续未完成。
+
+合同draft.2自审补充：真实wecom_platform_preview.lease_valid仍用云端expiresAt减本机wall，故物理首关之外还须处理原业务lease；300秒业务锁/230秒执行/3秒余量保留，拟用服务器剩余减完整RTT的保守下界，不缓存valid或加回RTT。服务器时间源须验证覆盖宿主/VM暂停或连续性异常failclosed，不能默认hrtime就代表真实经过时间；任意跳时不得复活旧授权。共享expiry/启动恢复各旁路只审v2企微分支，避免全局改查名/XHS/媒体。以上仍待合同review/实现，未写产品源码或新通过结论。
+
+root合同审查6点后，draft.2补全当前源码逐入口清单、同事务及checkpoint/延迟旧写保护、重启未消费授权maintenance且最多1自动核验代次、必需的无业务bootstrap双nonce与实际私有spawn PID绑定、journal受限ACL/原子写/fsync/有限receipt轮转、暂停连续性模型及三秒延迟实验边界。新增离线原型8/8通过：真实本地OS child+HTTP/实际close，调用未改产品verify_empty真实函数，旧host/包/forward全部合成且无ADB/SDK/ReadOnlyAdb；错PID/旧pipe nonce/提前事实不发proof，3000ms真实close或2700ms挑战响应+250ms close、600ms单读均保守拒绝，固定±5分钟audit offset不影响正常窗口。源hash和实际输出绑定LATENCY_TEST_RECEIPT；没有Windows/SYSTEM、暂停连续性、journal/PG事务或产品v2正向通过结论，不代表合同已批准。root新增事故主文档3b21e0a已连续阅读，真机冻结及43旧义务保持，本阶段仍只改离线验证文件和文档。
