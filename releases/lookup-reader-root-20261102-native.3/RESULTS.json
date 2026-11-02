@@ -1,0 +1,67 @@
+{
+  "sourceCommit": "6b32257284b91d8f69a6319cca555150e0be24b4",
+  "candidateTag": "lookup-reader-root-20261102-rc.3",
+  "deviceNumber": 188,
+  "status": "partial_native_evidence_not_full_probe_pass",
+  "rounds": 1,
+  "durationMs": 180094,
+  "businessQueries": 0,
+  "newPhoneNumbers": 0,
+  "modelCalls": 0,
+  "phoneSettingsChanged": 0,
+  "componentsInstalled": 0,
+  "applicationPoolConcurrency": 2,
+  "eligibleDevices": 1,
+  "nativeConcurrencyLimit": 1,
+  "accountPreparationPassed": true,
+  "accountPreparationMs": 81839,
+  "probeInputCount": 1,
+  "probeStatus": "human_verification_required",
+  "screenshotManuallyReviewed": true,
+  "publicPrepareReady": false,
+  "probeStopPassed": false,
+  "nativeFrames": {
+    "count": 7,
+    "failed": 0,
+    "minMs": 849,
+    "maxMs": 2448,
+    "overOldTwoSecondLimit": 1
+  },
+  "stop": {
+    "publicStopped": true,
+    "freshTaskSucceeded": true,
+    "proofMatchesTaskSessionGeneration": true,
+    "sameAsPreparedSession": true,
+    "sessionEnded": true,
+    "twoPackageAbsenceChecks": 4,
+    "zeroOwnedForwardChecks": 4,
+    "finalCleanupConfirmed": true,
+    "workerRemaining": false
+  },
+  "testLeaseReleased": true,
+  "restoration": {
+    "at": "2026-11-02T04:12:12.968981+00:00",
+    "beforeRevision": 170,
+    "afterRevision": 171,
+    "restoredNumbers": [
+      188
+    ],
+    "otherConfigPreserved": true,
+    "physicalCleanupConfirmed": true,
+    "testOccupancyAbsent": true
+  },
+  "productionBaselineUnchanged": true,
+  "localHarnessTests": {
+    "tests": 22,
+    "pass": 22
+  },
+  "limits": [
+    "Real probe did not return a name; no ready or business acceptance",
+    "No AI enabled; not production AI end-to-end verification",
+    "No natural first timeout or permanent cleanup failure reproduced",
+    "No shared Agent main loop/outbox/reload tested",
+    "Old 51/52/54/154 reservation cleanup not exercised",
+    "No repeat round, new account settings or further phone action"
+  ],
+  "acceptanceCaveat": "Original holistic gate requires readinessProof before its stop check. Its fresh_public_stop_not_proven reason on this human-blocked round is not an actual stop failure; separate persisted task/session/generation and phone absence/forward evidence above confirms the new stop."
+}

@@ -187,3 +187,9 @@ rc.3最终第11次：1887帧完整树0超时，其中2.633/2.310秒超过旧2秒
 实际adapter反例补齐：错device/generation/client/source及pending job/task关联在取消前拒绝；持久化失败精确回滚新增字段。四旧形态实际scheduler+文件store重启+新投递/模拟proof才释放的22项专项本地通过；旧任务不回填、不复活取消查询。L03候选加强但永久清理失败原机仍未验；L04共享运行时未验；L01自然根因未核销；L08 native.2两机证据不转移到新adapter。生产和共享服务未变，无第三原机轮/新号码。
 
 本阶段查名相关回归826/826、停止新专项22/22、根npm run check通过；首轮12项HTTP因缺本地ws无法启动，按锁文件离线npm ci后重跑通过，未改变依赖版本/lock。协调窗口只读复审未发现新增阻断；仅本地候选，不算全平台或真机验收。
+
+## 17. 2026-11-02 188新代次单机探测与停止局部实证
+
+[188回执](../releases/lookup-reader-root-20261102-native.3/README.md)。固定6b32257，单轮180.094秒，0业务/新号码/AI/设置安装。真实准备成功，探测一次输入、7帧0失败（849–2448ms），遇真实拼图后停止；没有姓名/ready/下一条，不把人工归为新的RPC失败。
+
+L03仅新增：公开stop已stopped，新task的实际proof与原准备session/generation匹配、session ended；两轮清理有两包absence及forward0，lease释放，CAS171恢复188原enabled。四旧占位和永久清理失败仍未验。L01仅该实例未再超时；L04共享运行时未验；L08探测/业务未通过，完整链缺口保留。生产及ADB/SYSTEM不变。产品公开prepare仍需两台，测试仅本地pool2/唯一188/native1；不把单机成功虚报公开ready。
