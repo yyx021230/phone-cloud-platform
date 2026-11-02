@@ -6183,3 +6183,11 @@ Node67391exit0/组消失、PG67379exit0确认，成功db原runner删除，旧失
 ### 决策日志｜2026-11-03 不为凑合法后继测试增加未经审定状态迁移
 
 本片只revision0→1；单次running→stalled后无下一合法迁移，根明确不加stalled→stalled/恢复running/手种rev2冒充后继通过。通用previousop/previousReceiptFingerprint链保留合同，rev>1与合法后继验收未覆盖；可分开真实原receipt历史known与当前投影unknown，不授执行。数值仅synthetic受信constructor，不冒称一般JSONB无损来源。无adapter/可执行DDL/roles/SQL/PG/新测试或产品/shared/Windows/ADB/手机/生产修改，journal/实际authority/head生产初始化/允许迁移/retention/blob/outbox及主号分身真机仍未闭合，43/147/52和查名池保持。
+
+### 变更记录｜2026-11-03 暂停通用progress扩展，回到真实主号/分身最短路径
+
+root bed2a7f与范围提醒后，暂停后继adapter/DDL/runner，保留全部候选；新增verification/wecom-native-minimal-path-20261103只读源码/原件调查。26当前运行文件与生产最后已核32c Git字节一致，原da8 API文档本地差异保留；首次把文档混入全相等断言失败已记录并正确分开，不改产品凑通过。旧43正式API停在host ACK前，155/999旧桥通过不当新协议验收。旧main23/25/59/93/145和唯一clone155不作为当前空闲结论。
+
+### 决策日志｜2026-11-03 区分必需执行/隔离与可延期通用合同
+
+替换此前将通用C2逐层完善展开为真实预览统一前置的推进顺序；真实独占、运行身份、原ID、未知不重放、close与单机cleanup proof继续必需。优先已有standalone+真实ScreenAuthority/QAkeeper做核心脚本路径，正式API v1跨机wall问题另保留，不拿脚本通过冒充API。现有QA harness只main、cloud reader仅active锁、keeper异常保活未证明跨重启持久隔离，先最小审查，不绕过43/147/52原义务或查名155/157。当前旧cloud master不存在，无新鲜云端凭据通道、不新登录fallback；本轮无线上/Windows/ADB/手机/租约/新测试，fresh占用全未知，主号分身真机仍未完成。
