@@ -1,0 +1,17 @@
+{
+  "scope": "fixed local adapter/evidence; no product or native acceptance",
+  "sha256": {
+    "docs/PROJECT_DEVELOPMENT.md": "aacf2509cb155d4f6dc64238089d8a296ca6b9d48564e84c7543925862a012bf",
+    "server/wecom-physical-cleanup.mjs": "7fea00c14fcd6df20a30b5492c4c52c244b6dec26bbc5169212d0fcd2e15a07b",
+    "verification/wecom-clock-adapter-20261102/INITIAL_RECEIPT.json": "0a983dc706fada0c55662b1cfe56f3fc6d177c5d52c0193fbe6fe2059c4bd729",
+    "verification/wecom-clock-adapter-20261102/INITIAL_TEST_OUTPUT.txt": "0e642a73fb0d20446d1bdcddf12caf70f0853b9d1f395e57b32ea4807d8eafb8",
+    "verification/wecom-clock-adapter-20261102/TASK.md": "8909215006e8ebc2d8cb18544249dd2e0b5139819f2887d8a5b2eecb166faeb3",
+    "verification/wecom-clock-adapter-20261102/TEST_OUTPUT.txt": "44ea3a7bf747ce32c2e5df9e555c70fe6814026fcfd78a8d3f5e12e97faf3b7b",
+    "verification/wecom-clock-adapter-20261102/TEST_RECEIPT.json": "88e535fe345c562fa88d8c5c70be04c546e8aa11674479a2e5a7eff335bbb5de",
+    "verification/wecom-clock-adapter-20261102/authority.mjs": "5e37a7825d0ef1a1d03d8b382e23d70c020a8345d8b152d7c76cbba6406cf05e",
+    "verification/wecom-clock-adapter-20261102/authority.test.mjs": "e0d8235b2ad94353979170a18e9d3dff3025d4d0acfec85e96105a5359b54332",
+    "verification/wecom-clock-adapter-20261102/clock_probe.py": "534e6eb9bdd31c93777c6c7c1958697a12ed3f32b4442fcdef286b47a4088b31",
+    "verification/wecom-clock-adapter-20261102/fixture-child.mjs": "675e51c4e02ad648841434a379d5348a7a3b659ee1cc0ccdf7b5c7900479c57b",
+    "verification/wecom-clock-authority-20261102/model.mjs": "e3d55547232f4d121da52b542debbd86fc965f7f21146361c16c413348928121"
+  }
+}

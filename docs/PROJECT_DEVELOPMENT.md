@@ -5672,3 +5672,21 @@ root审c6c发现测试盲区而非产品字段故障：旧harness按effect数量
 ### 决策日志｜2026-11-02 当前无完整安全路径时不以换空闲机试赌登记门禁
 
 root复核32c源码：host出生/cloud lock先后、hostClosed、proof仍跨机wall，proof3秒未适配；这是代码缺口，不补推43历史唯一原因。raw5037不启动CLI，但当前PID检查不等于已连socket peer和出生代次绑定，不能以raw socket标签解除共享风险。因此选机后停在新phone POST前，不向其他空闲机累积未确认义务、不挪155查名槽位、不放宽预算/调钟/补旧host/换PID。后继先做专属本地clock authority适配叶和真实本地HTTP/child反例，再固定最小接线审查；不扩大外部API草案、不自动改生产v1/Agent index/共享runner或加载候选。真实Windows/暂停证明缺失应明确unsupported，具体运行时修复和加载后才接续真机验收。当前是只读准备已完成、主号/分身验收阻塞，不是验收完成。
+
+
+### 变更记录｜2026-11-02 企微专属clock适配边界最小本地候选
+
+root确认当前无完整可加载安全路径后，企微owner从干净94a建立codex/wecom-clock-adapter-20261102，仅新增verification/wecom-clock-adapter-20261102与记录，不改生产入口/共享runner/原模型。固定model.2被本地helper复用；生产factory始终unsupported，fixture factory单列，所有正向输出nativeExecutionPermitted=false/physicalCleanupVerified=false。父生成nonce、实际自有child管道/PID/epoch/连续序号绑定，旧/乱序/重复/异child/超长无newline/残缺/超时/迟到拒绝，首错误对象保留；phase持久提交后再取新样本，真实本地child close事件、opaque双frame顺序/单次及未知后同reader不重arm。
+
+首轮21项20过1输出标记断言失败，保存当时hash/日志（当时未提交完整源码快照，不把旧输出归最终源）；frame补显式拒绝标记及后继防护后最终28项通过。真实loopbackHTTP/自有child退出/本地fsync与ENOENT覆盖时序和持久失败，当前v1真实recordWecomHosts对合成200ms偏差拒绝保留为反例；数值时间与误差仍是fixture，不证明43实际原因/生产精度/暂停/3秒现实界。clock_probe.py本机observe-only，Linux可读配对API也不从读数/分辨率推硬界，Darwin/Windows未知拒绝，不以自报profile/continuity升权。原36/455/49未重跑或叠算。JS语法/PythonAST/diff通过，源码/结果hash固定；无产品/远端/Windows/ADB/SDK/手机/配置/部署/邀请动作。
+
+### 决策日志｜2026-11-02 适配时序通过不等于生产时钟权威成立
+
+延续人类真机验收目标与先修运行时依赖，先提交可运行专属适配候选供审查，不为通过测试改v1门禁或直接把syntheticProfile接生产。时序helper只能资格化fixture时间，两个frame没有手机包/forward事实，不能释放锁。真实Windows/VM时钟硬界/暂停、host出生代次与已连socket peer、跨重启journal/PG和兼容接线仍未解决；不默认支持、不扩3秒、不调钟、不补旧43host/改27912基线。后续先审固定候选和最小接线，再满足真实环境依据与具体加载授权后才能续真机；当前不是可部署完整运行时修复或验收完成。
+
+
+### 变更记录｜2026-11-02 clock适配叶review反例修正与范围澄清
+
+root独立28项通过后在隔离副本以合法JSON null替代not-json，发现stdout回调读value.nonce可抛未捕获TypeError。企微owner保存root红例/修前四源快照，并在旧helper上补null/array/bool/number/string/missing六项，实际34项28过6红后修：先严格对象和精确字段再读nonce，所有响应解析/协议异常进入同一首错锁存。strict schema使两个旧nonce/PID夹具因缺sample提前拒绝，32/34输出与旧child源保留，只补完整合法夹具再故意错绑定。最终34项全过；原初28材料单列保留、不倒填归新源。
+
+偏差反例改为由同createdAt的IEEE754秒构造精确hex token，先真实Agent physicalHosts接受，再真实server登记因合成-200ms拒绝；只证明两实际函数的合成偏差分支，不是完整pipeline/OS出生事实或原43原因。明示fixture counter默认静止、靠advance注入，不计实际HTTP/fsync墙钟耗时，真实本地传输/持久操作不能推出现实3秒界；claimedBy仅WeakMap，fsync文件未实现跨进程恢复。生产factory仍全部unsupported、产品入口未改，原生与线上动作0；本轮到此固定最小verification候选供接线审查，不继续扩大模型或对外API。

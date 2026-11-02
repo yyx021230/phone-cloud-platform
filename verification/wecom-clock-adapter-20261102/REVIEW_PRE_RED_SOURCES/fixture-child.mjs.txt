@@ -1,0 +1,48 @@
+// Fixed local test child, no SDK/ADB/network. All counter values are synthetic.
+import {createInterface} from 'node:readline';
+import {randomUUID} from 'node:crypto';
+const mode=process.argv[2];
+if(!['--clock-fixture','--reader-fixture'].includes(mode))process.exit(2);
+const lines=createInterface({input:process.stdin,crlfDelay:Infinity});
+const epoch=randomUUID();
+const send=value=>process.stdout.write(JSON.stringify({pid:process.pid,epoch,...value})+'\n');
+let sequence=0,boot=1_000_000n,work=boot,offset=1_790_000_000_000_000n,previous=null,replay=false,fault='';
+if(mode==='--reader-fixture')send({fixtureOnly:true,event:'ready',nonce:process.argv[3],pid:process.pid,epoch});
+for await(const raw of lines){
+  if(Buffer.byteLength(raw)>4096)process.exit(3);
+  let value;try{value=JSON.parse(raw);}catch{process.exit(3);}
+  if(mode==='--reader-fixture'){
+    if(value.op==='stop'&&Object.keys(value).length===1)process.exit(0);
+    process.exit(3);
+  }
+  const {op,nonce}=value;
+  if(typeof nonce!=='string'||!/^[a-f0-9-]{36}$/.test(nonce))process.exit(3);
+  if(op==='advance'){
+    boot+=BigInt(value.bootUs);work+=BigInt(value.workUs);offset+=BigInt(value.wallShiftUs||0);
+    send({nonce,fixtureOnly:true,advanced:true});continue;
+  }
+  if(op==='replay-next'){replay=true;send({nonce,fixtureOnly:true,armed:true});continue;}
+  if(op==='fault-next'){fault=value.fault;send({nonce,fixtureOnly:true,armed:true});continue;}
+  if(op!=='sample'||Object.keys(value).length!==2)process.exit(3);
+  let duplicate=false,delayed=false;
+  if(fault){const current=fault;fault='';
+    if(current==='partial'){process.stdout.write('{"fixtureOnly":');continue;}
+    if(current==='oversized'){process.stdout.write('x'.repeat(5000));continue;}
+    if(current==='silent')continue;
+    if(current==='exit')process.exit(4);
+    if(current==='malformed'){process.stdout.write('not-json\n');continue;}
+    if(current==='out-of-order')sequence++;
+    if(current==='nonce'){send({nonce:randomUUID(),fixtureOnly:true});continue;}
+    if(current==='foreign-child'){send({nonce,pid:process.pid+1,fixtureOnly:true});continue;}
+    if(current==='duplicate')duplicate=true;
+    if(current==='delayed')delayed=true;
+  }
+  const sample=replay&&previous?previous:{sequence:++sequence,domain:{hostId:'fixture-host',bootId:'fixture-boot',
+    processEpoch:epoch,timeDomain:'fixture-domain',sourceId:'fixture-child-paired-v1'},
+    bootBeforeUs:String(boot),bootAfterUs:String(boot),workUs:String(work),
+    wallBeforeUs:String(offset+boot),wallAfterUs:String(offset+boot)};
+  previous=sample;replay=false;
+  if(delayed){setTimeout(()=>send({nonce,fixtureOnly:true,sample}),1200);continue;}
+  send({nonce,fixtureOnly:true,sample});
+  if(duplicate)send({nonce,fixtureOnly:true,sample});
+}

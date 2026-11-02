@@ -1,0 +1,6 @@
+{
+  "authority.mjs": "5e37a7825d0ef1a1d03d8b382e23d70c020a8345d8b152d7c76cbba6406cf05e",
+  "authority.test.mjs": "e0d8235b2ad94353979170a18e9d3dff3025d4d0acfec85e96105a5359b54332",
+  "fixture-child.mjs": "675e51c4e02ad648841434a379d5348a7a3b659ee1cc0ccdf7b5c7900479c57b",
+  "clock_probe.py": "534e6eb9bdd31c93777c6c7c1958697a12ed3f32b4442fcdef286b47a4088b31"
+}

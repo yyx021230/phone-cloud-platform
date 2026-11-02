@@ -1,0 +1,14 @@
+file:///private/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/pc-root-clock-json-esh4dhue/wecom-clock-adapter-20261102/authority.mjs:58
+    if(!pending||value.nonce!==pending.nonce||value.fixtureOnly!==true){invalidate('response_not_current');return;}
+                       ^
+
+TypeError: Cannot read properties of null (reading 'nonce')
+    at line (file:///private/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/pc-root-clock-json-esh4dhue/wecom-clock-adapter-20261102/authority.mjs:58:24)
+    at Socket.<anonymous> (file:///private/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/pc-root-clock-json-esh4dhue/wecom-clock-adapter-20261102/authority.mjs:70:76)
+    at Socket.emit (node:events:509:20)
+    at addChunk (node:internal/streams/readable:564:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:515:3)
+    at Readable.push (node:internal/streams/readable:395:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+
+Node.js v25.9.0

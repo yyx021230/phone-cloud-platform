@@ -1,0 +1,154 @@
+TAP version 13
+# Subtest: production factory rejects UI/env/profile/continuity instead of enabling fixtures
+ok 1 - production factory rejects UI/env/profile/continuity instead of enabling fixtures
+  ---
+  duration_ms: 0.737917
+  type: 'test'
+  ...
+# Subtest: actual local OS probe cannot turn nominal clock observations into authority
+ok 2 - actual local OS probe cannot turn nominal clock observations into authority
+  ---
+  duration_ms: 61.568125
+  type: 'test'
+  ...
+# Subtest: local HTTP + actual child close + fsync journal qualifies fixture timing only
+not ok 3 - local HTTP + actual child close + fsync journal qualifies fixture timing only
+  ---
+  duration_ms: 98.478708
+  type: 'test'
+  location: '/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/verification/wecom-clock-adapter-20261102/authority.test.mjs:36:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + undefined
+    - false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/verification/wecom-clock-adapter-20261102/authority.test.mjs:61:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1208:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:831:7)
+  ...
+# Subtest: registered is not closed until the actual owned child closes
+ok 4 - registered is not closed until the actual owned child closes
+  ---
+  duration_ms: 58.183375
+  type: 'test'
+  ...
+# Subtest: forged child, fake frames, reversed frames and repeated frames cannot qualify
+ok 5 - forged child, fake frames, reversed frames and repeated frames cannot qualify
+  ---
+  duration_ms: 219.552042
+  type: 'test'
+  ...
+# Subtest: stale sample replay is rejected even with a fresh pipe request nonce
+ok 6 - stale sample replay is rejected even with a fresh pipe request nonce
+  ---
+  duration_ms: 56.748917
+  type: 'test'
+  ...
+# Subtest: child pipe rejects nonce without replacing child or rearming
+ok 7 - child pipe rejects nonce without replacing child or rearming
+  ---
+  duration_ms: 55.913708
+  type: 'test'
+  ...
+# Subtest: child pipe rejects foreign-child without replacing child or rearming
+ok 8 - child pipe rejects foreign-child without replacing child or rearming
+  ---
+  duration_ms: 57.687916
+  type: 'test'
+  ...
+# Subtest: child pipe rejects duplicate without replacing child or rearming
+ok 9 - child pipe rejects duplicate without replacing child or rearming
+  ---
+  duration_ms: 52.59875
+  type: 'test'
+  ...
+# Subtest: child pipe rejects partial without replacing child or rearming
+ok 10 - child pipe rejects partial without replacing child or rearming
+  ---
+  duration_ms: 1067.677084
+  type: 'test'
+  ...
+# Subtest: child pipe rejects oversized without replacing child or rearming
+ok 11 - child pipe rejects oversized without replacing child or rearming
+  ---
+  duration_ms: 58.812459
+  type: 'test'
+  ...
+# Subtest: child pipe rejects silent without replacing child or rearming
+ok 12 - child pipe rejects silent without replacing child or rearming
+  ---
+  duration_ms: 1069.355375
+  type: 'test'
+  ...
+# Subtest: child pipe rejects exit without replacing child or rearming
+ok 13 - child pipe rejects exit without replacing child or rearming
+  ---
+  duration_ms: 106.025708
+  type: 'test'
+  ...
+# Subtest: persistence failure keeps the first cause and cannot re-register the same child
+ok 14 - persistence failure keeps the first cause and cannot re-register the same child
+  ---
+  duration_ms: 56.837833
+  type: 'test'
+  ...
+# Subtest: fresh sample after registered persistence rejects delayed queued result
+ok 15 - fresh sample after registered persistence rejects delayed queued result
+  ---
+  duration_ms: 109.253459
+  type: 'test'
+  ...
+# Subtest: fresh sample after closed persistence rejects delayed queued result
+ok 16 - fresh sample after closed persistence rejects delayed queued result
+  ---
+  duration_ms: 104.320875
+  type: 'test'
+  ...
+# Subtest: fresh sample after challenge persistence rejects delayed queued result
+ok 17 - fresh sample after challenge persistence rejects delayed queued result
+  ---
+  duration_ms: 99.126334
+  type: 'test'
+  ...
+# Subtest: fresh sample after timing_proof persistence rejects delayed queued result
+ok 18 - fresh sample after timing_proof persistence rejects delayed queued result
+  ---
+  duration_ms: 101.354292
+  type: 'test'
+  ...
+# Subtest: OS pause, local wall jump and missing monitor cadence poison the same epoch
+ok 19 - OS pause, local wall jump and missing monitor cadence poison the same epoch
+  ---
+  duration_ms: 159.400542
+  type: 'test'
+  ...
+# Subtest: three-second window includes all persisted/transport intervals, cannot reissue
+ok 20 - three-second window includes all persisted/transport intervals, cannot reissue
+  ---
+  duration_ms: 52.132708
+  type: 'test'
+  ...
+# Subtest: current v1 real host-registration function rejects a synthetic 200ms cross-host skew
+ok 21 - current v1 real host-registration function rejects a synthetic 200ms cross-host skew
+  ---
+  duration_ms: 47.444458
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 20
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3801.41875
