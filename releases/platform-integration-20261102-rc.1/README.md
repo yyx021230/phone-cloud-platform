@@ -7,3 +7,7 @@
 发布由root统一切换，查名字执行云端，企微执行Windows，小红书审查调度。现场实际镜像与源码基线、备份/取消预览、SYSTEM/ADB身份、冻结文件overlay及D075 live必须另记。生产src/screen-stream.mjs与src/serial-adb-health.mjs保持现场原字节，不整树覆盖。配置、授权环境、keys、启动动作、ADB、Windows、媒体均不改。
 
 停止业务不等于物理清理。未决cleanup_pending须保持整机封锁。旧版回退前必须查清全部未决义务；紧急情况先保持业务入口/Agent停止和数据保留，不让不识别义务的旧应用重新接单。真实SYSTEM/三业务线上验收与全池长期状态尚未通过，25完整预览等原未验项保留。
+
+准备完成：业务源32c0091，云端新image 4468f5ce，699文件精确一致，无网且无生产挂载的隔离health/ready通过。实际宿主D075 live通过；旧双image实际导出约88MB，关键PG约2.37MB完整解码，非全库备份或恢复演练。Windows最终prep3为104运行路径校验/26增量，zip SHA256为7c4278d18e4115e4efcb0487ded24e279e9d6a9d84fa3f49c5e8d45459ba78e6，SYSTEM机器上的staging、代码备份、15Python模块隔离导入及Node语法通过。原425b包中文遗漏及PowerShell准备变量碰撞均已被发布前拦截，失败材料保留，未当作安装通过。
+
+实际发布overlay回归1890/1908通过、18失败，旧生产3a与相同两文件复现同18失败；纯候选1908通过不挪作实际发布组合全通过。具体收据见PRODUCTION_OVERLAY_VALIDATION.json。部署材料在deployment/，不含密码或受影响业务完整私有记录。准备与正式激活分别记录。
