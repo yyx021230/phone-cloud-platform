@@ -1,0 +1,179 @@
+{
+  "version": 1,
+  "state": "native_acceptance_blocked_before_ui_config",
+  "productionSource": "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+  "activeSha256": {
+    "activeSha256": "a5390dcc93b5f1393e7b95732ca4df679dc5065200f80cf509d96e0f759e2a2f",
+    "matchesApprovedRelease": true
+  },
+  "deviceNumber": "43",
+  "appSlot": "main",
+  "targetSuffix": "6441",
+  "actualNewJobs": 1,
+  "realInvitationAttempted": false,
+  "sameRequestReplay": {
+    "at": "2026-11-02T07:04:07.902Z",
+    "stage": "same_request_replay",
+    "httpStatus": 200,
+    "sameJobId": true,
+    "reused": true
+  },
+  "accepted": {
+    "at": "2026-11-02T07:04:07.900Z",
+    "stage": "accepted",
+    "httpStatus": 201,
+    "job": {
+      "jobId": "7b993763-6364-40fb-9599-2af3bb8d9da3",
+      "deviceNumber": "43",
+      "appSlot": "main",
+      "mode": "preview",
+      "requestId": "wecom-native-20261102-43-main-fe499f264bf4",
+      "status": "queued",
+      "createdAt": "2026-11-02T07:04:07.882Z",
+      "completedAt": null,
+      "result": {
+        "status": "",
+        "code": "",
+        "invitationSent": false,
+        "sendStatus": "not_attempted",
+        "sendClaimed": false,
+        "remarkSaveStatus": "not_attempted"
+      }
+    }
+  },
+  "final": {
+    "at": "2026-11-02T07:05:40.772Z",
+    "stage": "final",
+    "succeeded": false,
+    "job": {
+      "jobId": "7b993763-6364-40fb-9599-2af3bb8d9da3",
+      "deviceNumber": "43",
+      "appSlot": "main",
+      "mode": "preview",
+      "requestId": "wecom-native-20261102-43-main-fe499f264bf4",
+      "status": "failed",
+      "createdAt": "2026-11-02T07:04:07.882Z",
+      "completedAt": "2026-11-02T07:04:08.762Z",
+      "result": {
+        "status": "blocked",
+        "code": "wecom_cleanup_host_unconfirmed",
+        "invitationSent": false,
+        "sendStatus": "not_attempted",
+        "sendClaimed": false,
+        "remarkSaveStatus": "unknown"
+      }
+    },
+    "physicalEvidence": {
+      "readonlyPg": true,
+      "originalTaskId": "d633cc58-318e-41eb-be22-0f300d0c90ee",
+      "originalTaskStatus": "failed",
+      "obligationId": "52ea12f0-21b9-4c95-898d-757e2f066c47",
+      "obligationStatus": "cleanup_pending",
+      "phase": "awaiting_host",
+      "originalBindingMatches": true,
+      "hosts": [],
+      "hostClosedAt": null,
+      "originalTerminalAt": "2026-11-02T07:04:08.762Z",
+      "verificationTaskId": null,
+      "verificationStatus": null,
+      "verificationPickedAt": null,
+      "verificationResult": false,
+      "verificationType": null,
+      "verificationBindingMatches": false,
+      "sameAgentAndDevice": false,
+      "proofBindingMatches": false,
+      "proofGenerationMatches": false,
+      "proofSnapshots": [],
+      "releasedAt": null,
+      "releaseReason": null,
+      "proofCommitTimesMatch": false,
+      "originalSendClaimed": false,
+      "originalJobStatus": "failed"
+    },
+    "currentDeviceAvailable": false,
+    "realInvitationAttempted": false,
+    "note": "Preview may fill empty remarks; no invitation endpoint or send claim was called."
+  },
+  "currentHostObservation": {
+    "at": "2026-11-02T07:08:58.9791766Z",
+    "agentPid": 19756,
+    "wecomCurrentHosts": [],
+    "directPythonCount": 10,
+    "sharedWorkerCount": 10,
+    "adbClientCalls": 0,
+    "phoneActions": 0
+  },
+  "clockBounds": {
+    "cloud": {
+      "localStartEpoch": 1793603214.526866,
+      "localEndEpoch": 1793603214.600236,
+      "roundTripSeconds": 0.07336997985839844,
+      "remoteEpoch": 1793603214.616425,
+      "remoteMinusLocalRange": [
+        0.016189098358154297,
+        0.08955907821655273
+      ]
+    },
+    "windows": {
+      "localStartEpoch": 1793603214.606418,
+      "localEndEpoch": 1793603214.870968,
+      "roundTripSeconds": 0.26455020904541016,
+      "remoteEpoch": 1793603214.45,
+      "remoteMinusLocalRange": [
+        -0.42096805572509766,
+        -0.1564178466796875
+      ]
+    }
+  },
+  "taskLog": {
+    "at": "2026-11-02T07:11:37.3931730Z",
+    "taskLog": [
+      {
+        "at": "2026-11-02T07:04:07.726Z",
+        "kind": "task_picked",
+        "code": null
+      },
+      {
+        "at": "2026-11-02T07:04:08.321Z",
+        "kind": "physical_pending",
+        "code": "wecom_cleanup_host_unconfirmed"
+      },
+      {
+        "at": "2026-11-02T07:04:08.423Z",
+        "kind": "task_related",
+        "code": null
+      }
+    ],
+    "processEvents": [],
+    "eventLogs": {
+      "Security": {
+        "queryAvailable": false,
+        "errorType": "Exception"
+      },
+      "Microsoft-Windows-Sysmon/Operational": {
+        "queryAvailable": false,
+        "errorType": "Exception"
+      }
+    },
+    "adbClientCalls": 0,
+    "phoneActions": 0
+  },
+  "httpAccessLog": {
+    "at": "2026-11-02T07:12:19.531050+00:00",
+    "requests": [],
+    "bodyLogged": false
+  },
+  "transport": {
+    "exitCode": 1,
+    "stderrBytes": 0,
+    "originalIntentRetained": true
+  },
+  "limitations": [
+    "Original ready body, child PID, creationToken and HTTP status were not persisted; cannot reconstruct them.",
+    "Current absence plus deployed close-gated result and config-after-ACK control flow support reader handoff only; not a physical cleanup proof.",
+    "Cross-clock false rejection reproduced locally; unique cause of the production failure remains unconfirmed.",
+    "No new preview, clear-lock, proof mutation, deployment or restart after failure.",
+    "Receipt retains remarkSaveStatus=unknown; no overwrite of original result.",
+    "Original read-only PG polling unintentionally ran every 2 seconds after terminal; client now respects 10-second interval."
+  ]
+}

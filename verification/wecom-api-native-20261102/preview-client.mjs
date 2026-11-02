@@ -126,7 +126,7 @@ async function main() {
     const current = devices.find(device => String(device.deviceNumber) === '43');
     const key = JSON.stringify([job.status, job.result?.code, current?.available, current?.busyReason]);
     if (key !== lastKey) { emit({ stage: 'observation', job: publicJob(job), device: { available: current?.available, busy: current?.busy, busyReason: current?.busyReason } }); lastKey = key; }
-    if (Date.now() - lastPgAt >= 10000 || terminal.has(job.status)) {
+    if (Date.now() - lastPgAt >= 10000) {
       try { proof = await databaseEvidence(jobId); emit({ stage: 'physical_evidence', evidence: proof }); }
       catch { emit({ stage: 'physical_evidence_unavailable', code: 'readonly_pg_evidence_unavailable' }); }
       lastPgAt = Date.now();

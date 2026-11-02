@@ -5565,3 +5565,15 @@ L03/L04调用链复核：51/52/54/154既有stopping+pending空+stopFailure可以
 延续原ID对账与精确证据边界：158后续新proof允许解除该会话停止故障，原失败/设备不可见原因不抹除；140新正式路径通过不替代下一次自然批次或新异常分支。147应区分输入已送达/可能送达与手动点击搜索确认，以自然事件固定反例，保护188已知前输入恢复与149只读结果续接；候选先测试与真机，不在生产临时改共享生命周期/ADB或把本地通过写作已修复。
 
 收尾只读快照14:31：main/batch/PG/Redis均healthy，运行镜像分别保持4468/be213，业务两容器自启动后0重启；health/ready分别45/32ms且200。池51条启用保持，基础可用17/不可用34、probe9、ready2、human2，外部2运行/27排队。不可用原因当前互斥统计为登录5、冷却8、准备退避8、设备/Agent离线5、技术不可用6、控屏占用1、页面退避1，不把登录/冷却/占用当代码已修或全部归成Poco卡死。ACTIVE正式receiptCommit40f962a/tag deployed.1，后续聚合旁证metadata更新后SHA a5390dcc；未再次部署/重启，完整验收false。旧手动runtime zip在已查PhoneCloud任务/服务/固定启动入口范围未见自动下载引用，非全盘不存在证明，也非本次完整安装包。
+
+### 变更记录｜2026-11-02 企微43正式API预览首条失败与跨时钟反例
+
+用户授权选择空闲真机、只到发送前且不影响查名。企微owner从已发布后检552a555建立独立codex/wecom-api-preview-20261102，核对生产source32c/ACTIVE a539、104运行hash、原Agent19756与ADB SYSTEM基线；排除启用查名池155/157，43/main新鲜空闲后只创建1条正式preview。job7b993763/taskd633cc58在北京时间15:04:07.882创建，15:04:08.762失败wecom_cleanup_host_unconfirmed；同键重复POST200复用原job，没有邀请/claim。原独立义务52ea12f0保持cleanup_pending/awaiting_host，未登记host/close、未发verify，不重排、不清锁、不伪造proof。原remarkSaveStatus=unknown保留。
+
+15:08:58只读确认当前企微preview/verify子进程0，直接Python/shared worker均10/上限12。实际发布wrapper该错误路径只在child close后终态，host登记ACK前不释放UI配置；据此只交还测试容量供查名串行，不宣称43手机清理已验证。原ready正文、child PID/token和HTTP状态未持久记录，现有进程创建事件不可查，不能补造原host。15:06时钟测量有界显示Windows落后本机156–421ms、云端超前16–90ms，但不能据此唯一确认失败当刻原因。
+
+未改产品源码，新增本地9项护栏/反例通过：±300ms时差可让原v1拒绝新child；只绕首关仍会卡host-close或proof；真实本地OS child+HTTP复现409、实际close及配置未释放，均明确非SYSTEM/手机正向。验收工具终态PG实际每2秒读取的瑕疵已修为10秒，不抹原受限51事件。脱敏回执/证据hash/时间域评审见verification/wecom-api-native-20261102。新协议完整真机、双开、25和其余合格手机仍未验；没有新部署/推送/重载、ADB/身份/keys/媒体修改。
+
+### 决策日志｜2026-11-02 先保留失败原单，不用换机或放宽首关伪造全流程通过
+
+延续v1独立义务、真实首项事实、未知不重放及冻结基线。确认原实现跨机wall比较存在本地可复现假阴性风险，生产43唯一根因仍待原请求证据；后继时间协议须完整覆盖host登记/close/核验领取/3秒新鲜度/期限，不单删createdAt下界、不重写OS出生时间、不改时钟、不延预算。本轮TIME_DOMAIN_REVIEW是待评审建议，尚未替换线上v1合同或实现恢复入口。43旧义务缺原host证据继续单机隔离，不自动迁移清除；后续候选须固定源码、测试、获具体加载授权后再正式单机验收，不能拿本地反例通过冒充生产验收完成。
