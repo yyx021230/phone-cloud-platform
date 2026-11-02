@@ -1,0 +1,17 @@
+{
+  "fullExit": 2,
+  "verbatimStdout": "verification/wecom-v1-causal-lifecycle-20261103/INDEX_HOOKS.patch.txt:10: trailing whitespace.\n+ \nverification/wecom-v1-causal-lifecycle-20261103/INDEX_HOOKS.patch.txt:60: trailing whitespace.\n+ \n",
+  "exceptionFile": "verification/wecom-v1-causal-lifecycle-20261103/INDEX_HOOKS.patch.txt",
+  "sha256": "81e3afc1e34f4d1d7fca17d11b72a08ed001c31306cae56960d382390a3e0d08",
+  "exactContextLines": [
+    {
+      "line": 10,
+      "hex": "200a"
+    },
+    {
+      "line": 60,
+      "hex": "200a"
+    }
+  ],
+  "note": "Only required unified-diff empty-context spaces excluded; full check remains red."
+}

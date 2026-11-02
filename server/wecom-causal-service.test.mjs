@@ -5,14 +5,14 @@ import {createWecomCausalClock} from "./wecom-causal-clock.mjs";
 import {createWecomCleanupObligation,WECOM_PACKAGES} from "./wecom-physical-cleanup.mjs";
 import {syntheticHostTime} from "./wecom-cleanup-fixture.mjs";
 const deferred=()=>{let resolve;const promise=new Promise(r=>{resolve=r;});return {promise,resolve};};
-function fixture(offset=0){
+function fixture(offset=0,providedClock=null){
   let mono=0n,wall=Date.parse("2026-11-03T00:00:00.000Z"),n=0,clockId=0,writer=async()=>{};
   const device={deviceId:"adb:synthetic",adb:{serial:"synthetic",agentId:"fixture-agent"}};
   const job={jobId:"job-one",kind:"wecom_customer_preview",lockId:"lock-one",windowsTaskId:"task-one",userId:"owner",deviceId:device.deviceId,adbSerial:"synthetic",agentId:"fixture-agent",status:"queued",wecomMode:"preview",wecomAppSlot:"main",wecomAndroidUser:0,phoneNumber:"13900000000",wecomRemarkName:"测试客户",wecomDescription:"接口联调测试"};
   const task={taskId:"task-one",type:job.kind,status:"queued",deviceId:device.deviceId,adbSerial:"synthetic",agentId:"fixture-agent",payload:{automationJobId:job.jobId,phoneNumber:job.phoneNumber,remarkName:job.wecomRemarkName,description:job.wecomDescription,appSlot:"main",androidUser:0,mode:"preview"}};
   const businessLock={lockId:job.lockId,deviceId:device.deviceId,taskId:job.jobId,lockType:job.kind,status:"active",ownerUserId:job.userId,expiresAt:new Date(wall+300000).toISOString()};
   const state={devices:[device],automationJobs:[job],windowsTasks:[task],deviceLocks:[businessLock]},saved=[];
-  const clock=createWecomCausalClock({mono:()=>mono,id:()=>`clock-${++clockId}`,epoch:"epoch-one"});
+  const clock=providedClock||createWecomCausalClock({mono:()=>mono,id:()=>`clock-${++clockId}`,epoch:"epoch-one"});
   const options={state,now:()=>wall,id:()=>`fixture-${++n}`,persist:async bundle=>{saved.push(structuredClone(bundle));await writer(bundle);}};
   const service=createWecomCleanupService({...options,clock});service.bindBusinessLease(service.beginBusinessLease(),task,job,businessLock);
   task.status="running";const lock=service.createObligation(task,job,device);state.deviceLocks.unshift(lock);task.payload.physicalCleanup=structuredClone(lock.physicalCleanup.binding);job.status="running";
@@ -22,7 +22,7 @@ function fixture(offset=0){
   const call=(action,body)=>service.handle("fixture-agent",lock.lockId,action,body);
   async function ready(){await call("host",{binding,hosts,bootstrap});task.status=job.status="failed";service.noteTerminal(task,job);await call("host-closed",close);const v=await call("verify",{binding});const t=state.windowsTasks.find(t=>t.taskId===v.taskId);t.status="running";t.pickedAt=new Date(wall).toISOString();service.picked(t);const fields=Object.fromEntries(["verificationId","verificationNonce","verificationTaskId"].map(k=>[k,lock.physicalCleanup.verification[k]]));const c=await call("challenge",{binding,...fields});return {t,fields,challenge:c.challenge};}
   function proof(r){return {binding,...r.fields,challenge:r.challenge,snapshots:[1,2].map(i=>({sequence:i,elapsedMs:i*100,observedAt:new Date(wall+offset).toISOString(),packagesAbsent:true,packageNames:[...WECOM_PACKAGES],serialForwardCount:0}))};}
-  return {state,task,job,businessLock,lock,binding,bootstrap,hosts,close,service,options,call,ready,proof,saved,
+  return {state,task,job,businessLock,lock,binding,bootstrap,hosts,close,service,options,clock,call,ready,proof,saved,
     advance:ms=>{mono+=BigInt(ms)*1000000n;},wallShift:ms=>{wall+=ms;},write:fn=>{writer=fn;}};
 }
 for(const offset of [-300000,-300,300,300000])test(`real service flow ignores cross-machine UTC offset ${offset}`,async()=>{const f=fixture(offset),r=await f.ready();f.advance(2999);const p=f.proof(r);assert.equal(f.service.lease("fixture-agent",f.lock.lockId,r.fields),true);assert.equal((await f.call("proof",p)).verified,true);assert.equal(f.lock.status,"released");assert.equal(r.t.status,"succeeded");assert.equal((await f.call("proof",p)).reused,true);});
@@ -38,3 +38,29 @@ test("new challenge request does not reset old3s",async()=>{const f=fixture(),r=
 test("proof semantic, scope, replay sequence and unknown fields reject before release",async()=>{for(const change of [p=>p.snapshots[1].sequence=1,p=>p.snapshots[1].elapsedMs=p.snapshots[0].elapsedMs,p=>p.snapshots[0].packagesAbsent=false,p=>p.snapshots[0].serialForwardCount=1,p=>p.challenge.challengeId="old",p=>p.extra=true]){const f=fixture(),r=await f.ready(),p=f.proof(r);change(p);await assert.rejects(f.call("proof",p),/proof_invalid|causal_context/);assert.equal(f.lock.status,"cleanup_pending");}});
 test("wall jumps cannot extend or expire original monotonic business lease",()=>{const f=fixture();f.wallShift(86400000);assert.equal(f.service.expireTask(f.task),false);assert.deepEqual(f.service.businessLockState(f.businessLock),{known:true,remainingMs:300000});f.advance(300000);assert.equal(f.service.expireTask(f.task),true);assert.equal(f.task.status,"failed");assert.equal(f.lock.status,"cleanup_pending");});
 test("missing epoch is stalled without clearing hold or requeue",()=>{const f=fixture();const fresh=createWecomCleanupService({...f.options,clock:createWecomCausalClock({epoch:"epoch-two"})});assert.equal(fresh.expireTask(f.task),true);assert.equal(f.task.status,"stalled");assert.equal(f.task.recoverable,false);assert.equal(f.lock.status,"cleanup_pending");assert.equal(fresh.canPick(f.task),false);});
+
+test("known durable proof retires original contexts and stored exact proof still ACKs after epoch loss",async()=>{
+  const f=fixture(),r=await f.ready(),p=f.proof(r);assert.equal(f.clock.counts().leases,2);await f.call("proof",p);
+  assert.deepEqual(f.clock.counts(),{capacity:1024,business:0,verification:0,marks:0,leases:0,challenges:0});
+  assert.equal((await f.call("proof",p)).reused,true);
+  const restored=createWecomCleanupService({...f.options,clock:createWecomCausalClock({epoch:"next-epoch"})});
+  assert.equal((await restored.handle("fixture-agent",f.lock.lockId,"proof",structuredClone(p))).reused,true);
+  await assert.rejects(restored.handle("fixture-agent",f.lock.lockId,"proof",{...p,verificationNonce:"other"}),/proof_invalid/);
+});
+test("pending or unknown persistence cannot retire any original context",async()=>{
+  const f=fixture(),r=await f.ready(),gate=deferred(),entered=deferred(),before=f.clock.counts();
+  f.write(async()=>{entered.resolve();await gate.promise;throw Error("synthetic-commit-unknown");});
+  const pending=f.call("proof",f.proof(r));await entered.promise;assert.deepEqual(f.clock.counts(),before);assert.ok(f.service.pending(f.task.deviceId));
+  gate.resolve();await assert.rejects(pending,/storage_unavailable/);assert.deepEqual(f.clock.counts(),before);assert.equal(f.lock.status,"cleanup_pending");
+});
+test("another unresolved physical duty retains bounded authority even after this proof commits",async()=>{
+  const f=fixture(),r=await f.ready(),before=f.clock.counts();
+  f.state.deviceLocks.push({lockId:"another-original-duty",deviceId:f.task.deviceId,lockType:"wecom_physical_cleanup",status:"cleanup_pending",physicalCleanup:{legacySerial:f.task.adbSerial}});
+  await f.call("proof",f.proof(r));assert.deepEqual(f.clock.counts(),before);assert.ok(f.service.pending(f.task.deviceId));
+});
+test("repeated normally completed service lifecycles do not accumulate clock entries",async()=>{
+  let n=0;const clock=createWecomCausalClock({mono:()=>0n,id:()=>`id-${++n}`,epoch:"reused-service-clock",capacity:1});
+  for(let i=0;i<100;i++){
+    const f=fixture(0,clock),r=await f.ready();await f.call("proof",f.proof(r));assert.equal(clock.counts().leases,0);assert.equal(clock.counts().challenges,0);assert.equal(clock.counts().marks,0);
+  }
+});

@@ -6218,3 +6218,12 @@ root bed2a7f与范围提醒后，暂停后继adapter/DDL/runner，保留全部�
 ### 决策日志｜2026-11-03 特定v1因果替代跨机wall，不宣称真机阻塞已解
 
 落实上一提案的专用叶；原43未决和所有旧physical义务不迁移、不补造、不释放。epoch缺失停滞隔离，过期verification不自动续代，原300/120/230/210秒及3秒边界不放宽。无新DDL/通用issuer/M3/ProgressHead、无共享SDK/屏控/媒体/ADB身份或key变化，无远端/Windows/手机操作及邀请。父侧独立OS token/实际socket身份桥仍未集成；shared hook、认证HTTP/原JSON/PG完整回归、Windows性能和主号分身真机验收仍未完成。需根审固定候选、最小合共享入口与既有控屏回归，再按新鲜完整占用逐台内部preview到发送前；本候选不能单独加载或标作上线。
+
+
+### 变更记录｜2026-11-03 企微因果上下文有界容量与已知proof回收
+
+根审rc.1发现leases/challenges按累计请求无界增长，rc.2最小修复：business/verification各默认1024预占额度，mark前满额503，独立额度留给原核验；未绑定mark仅由完整创建finally释放（shared仅未应用hook提案）。原proof持久化known且本机无未决physical义务后，退役原精确scope；unknown/pending不回收、不覆盖，不以wall/LRU丢原义务。原proof丢ACK及epoch丢失后仍只原样幂等答复，不重建执行权。ID改为有界Set检索与不回绕序号后缀，避免扫描历史和退役ID复活。
+
+### 决策日志｜2026-11-03 无法证明安全退役时接受有界backpressure
+
+无法确认的已绑定创建、未接入known终态回收、归档/漂移scope或另有未决义务继续占有限额度，可能持续503；不为腾位增加通用存储/补造授权。Node148执行通过，包含本地完整旧139与9个新增生命周期用例，既有147/76子集不累加；Python未变不重复，rc.1证据保留。窄hook新server仅syntax通过，两个index未应用；认证HTTP/存储/屏控回归与父侧OS/socket桥、Windows严格3秒性能和主号分身真机仍未完成，无生产/Windows/ADB/手机动作。

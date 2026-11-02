@@ -1,0 +1,31 @@
+{
+  "baseCommit": "8080be8bdc0bfec44a72dd25a2d7ff8fdf1630f4",
+  "createdAt": "2026-11-02T17:44:19.433950+00:00",
+  "sources": {
+    "docs/PROJECT_DEVELOPMENT.md": {
+      "baseSha256": "c2dfc9e0a0f84dec19a126be96a789d20561ea306729db28c782ee927bc15c9b",
+      "currentSha256": "c93f61e5a4d911405ec5fa0e712c1307dc926a75b1ac4cc7272fa0f73c554e6b"
+    },
+    "server/wecom-causal-clock.mjs": {
+      "baseSha256": "308c2bda22cc8a2c239eeae9f7ca17094d3d0da56cf3a136d4726e03ebb963d9",
+      "currentSha256": "4027ae717f1a5f8db05a925c27214cbd98dfbcd6e1760ddbb11a2358e85c77f0"
+    },
+    "server/wecom-causal-clock.test.mjs": {
+      "baseSha256": "15844cadb12c4ea4681f759eb408c80b61681d0d1dcb332ed5441e44ee8392a7",
+      "currentSha256": "9292cda73acef24765e2c4383e3800aff5ea7451ff753488e4ddf7fd1c09e274"
+    },
+    "server/wecom-causal-service.test.mjs": {
+      "baseSha256": "74b05722e205313115f737847ac8c5743667f4d75098cc3a3c0fcc7e65be586b",
+      "currentSha256": "cb88b853355798075b8b571041faa3777ead948cfcf487bf39dd10724f236cf1"
+    },
+    "server/wecom-cleanup-service.mjs": {
+      "baseSha256": "dc86a8dce2272062e3bbffa2b467d61058b66b8dfe7d45d20185989d72329f33",
+      "currentSha256": "7676470a04c81acf9a3a152f672507a2d04edd264e5e4b1b0479d653640062fc"
+    }
+  },
+  "sharedUnchanged": {
+    "server/index.mjs": "4bcecc8702ea577a77e5f17664b7833ced33b681f88e5beedcdc6875b6f047cc",
+    "windows-agent/src/index.mjs": "85b2b2eea012a345f87b455ebbb994ef6ce9dd70b6e1dddc4769594781c29eff"
+  },
+  "pythonUnchangedFromRc1": true
+}

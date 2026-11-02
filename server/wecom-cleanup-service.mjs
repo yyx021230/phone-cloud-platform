@@ -114,6 +114,23 @@ export function createWecomCleanupService({ state, persist, conflict = () => fal
     return { task: state.windowsTasks.find(t => t.taskId === duty.binding?.originalTaskId),
       job: state.automationJobs.find(j => j.jobId === duty.originalJobId) };
   }
+  function retireKnownProof(lock) {
+    const duty=lock.physicalCleanup,v=duty?.verification;
+    if(lock.status!=="released"||!duty.proof||!v
+      ||state.deviceLocks.some(l=>isWecomCleanupPending(l)&&(l.deviceId===lock.deviceId
+        ||serialKey(l.physicalCleanup?.binding?.serial||l.physicalCleanup?.legacySerial||state.devices.find(d=>d.deviceId===l.deviceId)?.adb?.serial)===serialKey(duty.binding.serial))))return;
+    const {task,job}=execution(lock),verify=verificationTask(lock);
+    if(!terminal(task?.status)&&!terminal(job?.status)||verify?.status!=="succeeded")return;
+    // Failure to reconstruct an archived/drifted original scope retains its
+    // bounded slot; never guess a replacement scope just to reclaim capacity.
+    try{clock.retire(v.causalLease,verificationScope(lock));}catch{}
+    try{
+      const original=state.deviceLocks.find(l=>l.lockId===duty.originalLockId);
+      if(!isDeepStrictEqual(duty.causal.businessLease,task.payload.wecomCausalLease)
+          ||!isDeepStrictEqual(task.payload.wecomCausalLease,job.wecomCausalLease))return;
+      clock.retire(duty.causal.businessLease,businessScope(task,job,original));
+    }catch{}
+  }
   function verificationTask(lock) {
     return state.windowsTasks.find(t => t.taskId === lock.physicalCleanup?.verification?.verificationTaskId);
   }
@@ -181,7 +198,7 @@ export function createWecomCleanupService({ state, persist, conflict = () => fal
       }
       causal(lock);
       if (!isWecomCleanupPending(lock)) fail("binding_mismatch");
-      return transaction(lock, ({ track, trackLock, add }) => {
+      const result=await transaction(lock, ({ track, trackLock, add }) => {
         const { task, job } = execution(lock);
         noteWecomTerminal(lock, task, job, now());
         if (action === "host") { if(businessRemaining(task)<=3000)fail("causal_context_unconfirmed");recordWecomHosts(lock, body, task, now()); return { ok: true }; }
@@ -200,10 +217,13 @@ export function createWecomCleanupService({ state, persist, conflict = () => fal
           }
           // Do not auto-renew an expired/failed verification's authority.
           if(existing)fail("causal_context_unconfirmed");
-          const stamp=clock.mark(),verification = add(createWecomVerification(lock, { now: now(), id }));
-          const ticket=clock.verificationLease(stamp,verificationScope(lock));
-          lock.physicalCleanup.verification.causalLease=structuredClone(ticket);verification.payload.causalLease=structuredClone(ticket);
-          return { ok: true, taskId: verification.taskId, reused: false };
+          const stamp=clock.mark("verification");
+          try{
+            const verification=add(createWecomVerification(lock,{now:now(),id}));
+            const ticket=clock.verificationLease(stamp,verificationScope(lock));
+            lock.physicalCleanup.verification.causalLease=structuredClone(ticket);verification.payload.causalLease=structuredClone(ticket);
+            return {ok:true,taskId:verification.taskId,reused:false};
+          }finally{clock.releaseMark(stamp);}
         }
         if(action==="challenge"){
           const verification=verificationTask(lock);
@@ -235,6 +255,11 @@ export function createWecomCleanupService({ state, persist, conflict = () => fal
         }
         fail("invalid_action");
       });
+      // Only this known durable proof completion may retire authority. Failed
+      // or unknown persistence never reaches here; exact lost ACK replay is
+      // answered above from the original saved proof, without live tickets.
+      if(action==="proof"&&result.verified===true)retireKnownProof(lock);
+      return result;
     });
   }
   // Recover one missed request after restart/outbox delay. Never loop failed
@@ -289,5 +314,5 @@ export function createWecomCleanupService({ state, persist, conflict = () => fal
     return true;
   }
   return { pending, canPick, picked, noteTerminal, ensureLegacy, handle, lease, leaseProof,reconcile, status, originalReady, checkpoint, checkpointWriting,
-    beginBusinessLease:()=>clock.mark(),bindBusinessLease,businessRemaining,businessLeaseState,businessLockState,createObligation,causalTask,expireTask };
+    beginBusinessLease:()=>clock.mark(),finishBusinessCreation:stamp=>clock.releaseMark(stamp),bindBusinessLease,businessRemaining,businessLeaseState,businessLockState,createObligation,causalTask,expireTask };
 }
