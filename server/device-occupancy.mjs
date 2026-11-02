@@ -1,3 +1,4 @@
+import { isWecomCleanupPending, publicWecomCleanupState } from "./wecom-physical-cleanup.mjs";
 export const isHumanLookupResume = job => job?.resumeAfterHumanVerification === true && !['page','state','device','network','automatic'].includes(job.recoveryOrigin);
 import {lookupAccountOfflineEvidence,latestAccountWork} from './lookup-account-offline.mjs';
 
@@ -32,7 +33,8 @@ export function buildDeviceOccupancy({ lock, viewer = null, users = [], lookupSe
   return {
     ...(lookupSession ? {lookup: buildLookupCardStatus(lookupSession, lookupChannel, lookupJobs)} : {}),
     kind: String(lock.lockType || "task"),
-    label: occupancyLabel(lock.lockType, appSlot),
+    label: isWecomCleanupPending(lock) ? publicWecomCleanupState(lock).label : occupancyLabel(lock.lockType, appSlot),
+    ...(isWecomCleanupPending(lock) ? { cleanup: publicWecomCleanupState(lock) } : {}),
     ownerLabel: owner.label,
     ownerVisible: owner.visible,
     startedAt: String(lock.createdAt || ""),

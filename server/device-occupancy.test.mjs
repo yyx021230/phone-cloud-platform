@@ -104,3 +104,12 @@ test("marks an unresolvable owner as unknown", () => {
   assert.equal(occupancy.ownerLabel, "未知用户");
   assert.equal(occupancy.ownerVisible, false);
 });
+
+test("pending WeCom cleanup is explicit and exposes no raw process or binding fields", () => {
+  const lock = { lockId: "fixture", lockType: "wecom_physical_cleanup", status: "cleanup_pending", physicalCleanup: {
+    phase: "maintenance", hosts: [{ pid: 98765, creationToken: "private-token" }], binding: { nonce: "private-nonce", serial: "private-serial" }
+  } };
+  const row = buildDeviceOccupancy({ lock });
+  assert.equal(row.label, "企微清理待确认 · 需单机维护"); assert.equal(row.cleanup.phase, "maintenance");
+  for (const secret of ["98765", "private-token", "private-nonce", "private-serial"]) assert.ok(!JSON.stringify(row).includes(secret));
+});

@@ -1,3 +1,4 @@
+import { pendingWecomCleanup } from "./wecom-physical-cleanup.mjs";
 import assert from "node:assert/strict";
 import test from "node:test";
 import fs from "node:fs";
@@ -141,7 +142,7 @@ test("integration occupancy reads do not expire locks or invoke device recovery"
   const expired={deviceId:'fixture',status:'active',expiresAt:new Date(0).toISOString()};
   const valid={deviceId:'fixture',status:'active',expiresAt:new Date(Date.now()+60000).toISOString(),lockType:'wecom_customer_preview'};
   const state={deviceLocks:[expired,valid],smsOrders:[],users:[],automationSessions:[],automationJobs:[]};const before=JSON.stringify(state);
-  const context=vm.createContext({state,managedLookup:null,managedLookupReservationLock:()=>null,
+  const context=vm.createContext({state,pendingWecomCleanup,managedLookup:null,managedLookupReservationLock:()=>null,
     screenSessions:{activeForDevice:()=>null},activeXhsTaskForDevice:()=>null,buildDeviceOccupancy:({lock})=>lock,
     activeDeviceLockForTask:()=>{throw new Error('expiry_mutator_must_not_run');}});
   vm.runInContext(source.slice(start,end),context);

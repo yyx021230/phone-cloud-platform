@@ -1,3 +1,4 @@
+import { WECOM_PREVIEW_KIND } from "./wecom-preview.mjs";
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {confirmedLookupStop,hasConfirmedLookupStop} from './lookup-stop-proof.mjs';
 import {createManagedLookupAdapter} from './managed-lookup-platform.mjs';
@@ -12,7 +13,7 @@ function fixture(){
  const task={taskId:'stop-task',deviceId:'phone',type:'alipay_name_stop',payload:{automationJobId:'stop-job',automationSessionId:'session',managedLookup:{generation:'g'}}};
  const proof={version:1,readerCleanupConfirmed:true,taskId:'stop-task',sessionId:'session',generation:'g'};
  const state={automationSessions:[session],automationJobs:[job],windowsTasks:[task]};const released=[];
- const deps={state,isTerminalStatus:s=>['succeeded','failed','cancelled','expired'].includes(s),sanitizeTaskResult:sanitize,nowIso:()=>new Date().toISOString(),repos:{devices:{findById:()=>({})}},confirmedLookupStop,finishLookupSession:(s,status)=>{s.status=status;released.push(s.sessionId);}};
+ const deps={WECOM_PREVIEW_KIND,wecomCleanup:null,state,isTerminalStatus:s=>['succeeded','failed','cancelled','expired'].includes(s),sanitizeTaskResult:sanitize,nowIso:()=>new Date().toISOString(),repos:{devices:{findById:()=>({})}},confirmedLookupStop,finishLookupSession:(s,status)=>{s.status=status;released.push(s.sessionId);}};
  const sync=new Function(...Object.keys(deps),body+';return syncAutomationJobFromWindowsTask;')(...Object.values(deps));
  return {session,job,task,proof,state,released,sync,c:{sessionId:'session',deviceId:'phone',generation:'g'}};
 }

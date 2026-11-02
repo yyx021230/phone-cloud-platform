@@ -1,3 +1,4 @@
+import { createSimulatedWecomCleanup } from "./wecom-cleanup-fixture.mjs";
 import assert from "node:assert/strict";
 import pg from "pg";
 import { spawn } from "node:child_process";
@@ -40,12 +41,14 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
     }
     throw new Error("fixture server did not start");
   };
+  let cleanupFixture;
   const request = async (method, route, token, body, expected = 200) => {
     const response = await fetch(`${base}${route}`, { method, headers: {
       "content-type": "application/json", ...(token ? { authorization: `Bearer ${token}` } : {})
     }, body: body === undefined ? undefined : JSON.stringify(body) });
     const result = await response.json();
     assert.equal(response.status, expected, `${method} ${route}: ${result.error || "unexpected status"}`);
+    await cleanupFixture?.observe(method, route, body, result);
     return result;
   };
   await start();
@@ -73,6 +76,7 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   assert.equal((await request('GET',discovery+'?onlineOnly=true',admin)).total,8,'online filter excludes the offline phone');
   const route="/api/v1/user/automation/wecom-preview-tasks";
   const next="/api/v1/windows-agents/fixture-agent/tasks/next";
+  cleanupFixture=createSimulatedWecomCleanup({request,agentId:"fixture-agent",token:agent,nextRoute:next+"?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1"});
   const input={deviceId:"adb:"+pool["25"].serial,phoneNumber:"13800138000",requestId:"request_fixture_001",remarkName:"本地客户😀",description:"渠道A\n联调备注"};
   const foreignOrigin = await fetch(base+route, {method:"POST",headers:{"content-type":"application/json",authorization:`Bearer ${admin}`,origin:"http://foreign.invalid"},body:JSON.stringify(input)});
   assert.equal(foreignOrigin.status,403,"preview keeps the platform origin guard");
@@ -99,7 +103,8 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   assert.equal((await request("GET",next+"?wecomPreview=wecom-preview-v1",agent)).task,null,"v1 cannot claim slot-aware tasks");
   assert.equal((await request("GET",next+"?wecomPreview=wecom-preview-v2",agent)).task,null,"v2 cannot consume custom remark tasks");
   assert.equal((await request("GET",next+"?wecomPreview=wecom-preview-v3",agent)).task,null,"v3 cannot consume invitation-aware tasks");
-  const picked=(await request("GET",next+"?wecomPreview=wecom-invitation-v4",agent)).task;
+  assert.equal((await request("GET",next+"?wecomPreview=wecom-invitation-v4",agent)).task,null,"old v4 needs physical cleanup protocol capability");
+  const picked=(await request("GET",next+"?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1",agent)).task;
   assert.equal(picked.type,"wecom_customer_preview");assert.equal(picked.payload.androidUser,0);assert.equal(picked.payload.previewOnly,true);
   assert.equal(picked.payload.appSlot,"main");
   assert.equal(picked.payload.remarkName,input.remarkName);assert.equal(picked.payload.description,input.description);
@@ -117,7 +122,7 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   await request("POST",route,admin,{...cloneInput,appSlot:"main"},409);
   await request("POST",route,admin,{...input,deviceId:"adb:"+pool["23"].serial,requestId:"request_capacity_001"},429);
   assert.equal((await request("POST",route,admin,input,200)).task.jobId,a.task.jobId,"replay is allowed at capacity");
-  const clonePicked=(await request("GET",next+"?wecomPreview=wecom-invitation-v4",agent)).task;
+  const clonePicked=(await request("GET",next+"?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1",agent)).task;
   assert.equal(clonePicked.deviceId,cloneInput.deviceId);assert.equal(clonePicked.payload.androidUser,999,"another phone can proceed while first is running");
   assert.equal(clonePicked.payload.remarkName,"测试客户");assert.equal(clonePicked.payload.description,"接口联调测试");
   const cloneLease=`/api/v1/windows-agents/fixture-agent/wecom-preview-tasks/${clonePicked.taskId}/lease`;
@@ -138,7 +143,7 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   const mainInput={...cloneInput,appSlot:"main",requestId:"request_same_phone_main"};
   const main=(await request("POST",route,admin,mainInput,201)).task;
   assert.equal(main.appSlot,"main");assert.equal(main.androidUser,0);
-  const mainPicked=(await request("GET",next+"?wecomPreview=wecom-invitation-v4",agent)).task;
+  const mainPicked=(await request("GET",next+"?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1",agent)).task;
   assert.equal(mainPicked.payload.appSlot,"main");assert.equal(mainPicked.payload.androidUser,0);
   await request("POST",`/api/v1/windows-agent-tasks/${mainPicked.taskId}/status`,agent,{status:"succeeded",result:{previewStatus:"ready_before_send",previewCode:"stopped_before_send",invitationSent:false,remarkSaveStatus:"not_needed"}});
   await stop();await start();
@@ -147,12 +152,12 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   assert.equal((await request("POST",route,admin,input,200)).task.jobId,done.jobId);
   assert.equal((await request("POST",route,admin,mainInput,200)).task.jobId,main.jobId);
   await request("POST",route,admin,{...mainInput,appSlot:"clone"},409);
-  assert.equal((await request("GET",next+"?wecomPreview=wecom-invitation-v4",agent)).task,null,"no duplicate physical query after restart");
+  assert.equal((await request("GET",next+"?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1",agent)).task,null,"no duplicate physical query after restart");
   const sendInput={...input,appSlot:"main",mode:"send",remarkName:"yyx（坦克）",requestId:"fixture_send_main_001"};
   const sendJob=(await request("POST",route,admin,sendInput,201)).task;
   assert.equal(sendJob.mode,"send");
   await request("POST",route,admin,{...sendInput,mode:"preview"},409);
-  const sentTask=(await request("GET",next+"?wecomPreview=wecom-invitation-v4",agent)).task;
+  const sentTask=(await request("GET",next+"?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1",agent)).task;
   assert.equal(sentTask.payload.previewOnly,false);assert.equal(sentTask.payload.mode,"send");
   const sendLease=`/api/v1/windows-agents/fixture-agent/wecom-preview-tasks/${sentTask.taskId}/lease`;
   const sendClaim=sendLease.replace(/lease$/,"send-claim");
@@ -173,7 +178,7 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   const cloneSend={...sendInput,deviceId:cloneInput.deviceId,appSlot:"clone",requestId:"fixture_send_clone_003"};
   const cloneSendJob=(await request("POST",route,admin,cloneSend,201)).task;
   await request("POST",route,admin,{...cloneSend,appSlot:"main"},409);
-  const cloneSendTask=(await request("GET",next+"?wecomPreview=wecom-invitation-v4",agent)).task;
+  const cloneSendTask=(await request("GET",next+"?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1",agent)).task;
   assert.equal(cloneSendTask.payload.androidUser,999);
   const cloneClaim=`/api/v1/windows-agents/fixture-agent/wecom-preview-tasks/${cloneSendTask.taskId}/send-claim`;
   await request("POST",cloneClaim,agent,{},201);
@@ -188,7 +193,7 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
 
   const localUnknown={...sendInput,deviceId:"adb:"+pool["23"].serial,requestId:"fixture_local_claim_unknown"};
   const localJob=(await request("POST",route,admin,localUnknown,201)).task;
-  const localTask=(await request("GET",next+"?wecomPreview=wecom-invitation-v4",agent)).task;
+  const localTask=(await request("GET",next+"?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1",agent)).task;
   await request("POST",`/api/v1/windows-agent-tasks/${localTask.taskId}/status`,agent,{status:"failed",result:{previewStatus:"blocked",previewCode:"invitation_claim_unconfirmed_no_retry",sendStatus:"unknown",invitationSent:null}});
   const localDone=(await request("GET",`${route}/${localJob.jobId}`,admin)).task;
   assert.equal(localDone.result.sendClaimed,false);assert.equal(localDone.result.sendStatus,"unknown");assert.equal(localDone.result.invitationSent,null);
@@ -207,7 +212,7 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   const duplicate=await request('POST',integration,admin,simple,200);
   assert.equal(duplicate.taskId,accepted.taskId);assert.equal(duplicate.reused,true);
   await request('POST',integration,admin,{...simple,remarkName:'不可改写原任务'},409);
-  const simpleTask=(await request('GET',next+'?wecomPreview=wecom-invitation-v4',agent)).task;
+  const simpleTask=(await request('GET',next+'?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1',agent)).task;
   assert.equal(simpleTask.payload.mode,'send');assert.equal(simpleTask.payload.remarkName,simple.remarkName);
   assert.equal(simpleTask.adbSerial,pool['59'].serial);
   const simpleClaim=`/api/v1/windows-agents/fixture-agent/wecom-preview-tasks/${simpleTask.taskId}/send-claim`;
@@ -230,12 +235,12 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   assert.deepEqual(concurrentResponses.map(r=>r.status).sort(),[200,200,202]);
   assert.equal(new Set(concurrentResponses.map(r=>r.body.taskId)).size,1,'simultaneous body-only retries create one durable task');
 
-  const pending145=(await request('GET',next+'?wecomPreview=wecom-invitation-v4',agent)).task;
+  const pending145=(await request('GET',next+'?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1',agent)).task;
   await request('POST',`/api/v1/windows-agent-tasks/${pending145.taskId}/status`,agent,{status:'failed',result:{previewStatus:'blocked',previewCode:'not_found',invitationSent:false,remarkSaveStatus:'not_attempted'}});
   await request('POST',`/api/v1/windows-agent-tasks/${cloneSendTask.taskId}/status`,agent,{status:'failed',result:{previewStatus:'blocked',previewCode:'invitation_outcome_unknown_no_retry',sendStatus:'unknown',invitationSent:null}});
   const explicitClone={...simple,deviceNumber:155,appSlot:'clone',phoneNumber:'13900139000'};
   const cloneExternal=(await request('POST',integration,admin,explicitClone,202));
-  const cloneDelivery=(await request('GET',next+'?wecomPreview=wecom-invitation-v4',agent)).task;
+  const cloneDelivery=(await request('GET',next+'?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1',agent)).task;
   assert.equal(cloneDelivery.payload.appSlot,'clone');assert.equal(cloneDelivery.payload.androidUser,999);
   assert.equal(cloneDelivery.payload.phoneNumber,explicitClone.phoneNumber);
   await request('POST',`/api/v1/windows-agent-tasks/${cloneDelivery.taskId}/status`,agent,{status:'failed',result:{previewStatus:'blocked',previewCode:'not_found',invitationSent:false,remarkSaveStatus:'not_attempted'}});

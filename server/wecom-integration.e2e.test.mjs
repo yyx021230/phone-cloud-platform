@@ -1,3 +1,4 @@
+import { createSimulatedWecomCleanup } from "./wecom-cleanup-fixture.mjs";
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
@@ -64,10 +65,11 @@ async function fixture(t) {
     await stop(); await fs.rm(dir, { recursive: true, force: true });
   });
   await start();
+  let cleanupFixture;
   async function adminCall(method, route, token, body, expected = 200) {
     const response = await fetch(origin + route, { method, headers: { authorization: token ? `Bearer ${token}` : '', 'content-type': 'application/json' },
       ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
-    const value = await response.json(); assert.equal(response.status, expected, `harness ${method} ${route}`); return value;
+    const value = await response.json(); assert.equal(response.status, expected, `harness ${method} ${route}`); await cleanupFixture?.observe(method,route,body,value); return value;
   }
   const admin = (await adminCall('POST', '/api/v1/auth/login', '', { username: 'fixture_admin', password: 'fixture-password' })).session.token;
   const agentToken = (await adminCall('POST', '/api/v1/windows-agents', admin, { agentId: 'simulated-agent', agentName: 'isolated fixture' }, 201)).token;
@@ -79,7 +81,8 @@ async function fixture(t) {
   await adminCall('PUT', '/api/v1/devices/adb%3ASIM-OFFLINE', admin, { deviceName: '68', listingStatus: 'listed' });
   await adminCall('POST', '/api/v1/windows-agents/simulated-agent/devices/sync', agentToken, { agent: { agentId: 'simulated-agent' }, devices: [...Object.values(pool).map(d => ({ adbSerial: d.serial, state: 'device', model: 'Synthetic' })), { adbSerial: 'SIM-NON-WECOM', state: 'device', model: 'Synthetic' }, { adbSerial: 'SIM-OFFLINE', state: 'offline', model: 'Synthetic' }] });
   const client = new WecomClient({ baseUrl, token: admin });
-  async function next() { return (await adminCall('GET', '/api/v1/windows-agents/simulated-agent/tasks/next?wecomPreview=wecom-invitation-v4', agentToken)).task; }
+  async function next() { return (await adminCall('GET', '/api/v1/windows-agents/simulated-agent/tasks/next?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1', agentToken)).task; }
+  cleanupFixture=createSimulatedWecomCleanup({request:adminCall,agentId:"simulated-agent",token:agentToken,nextRoute:"/api/v1/windows-agents/simulated-agent/tasks/next?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1"});
   function execute(task, { waitAtClaim = false, loseClaimReply = false } = {}) {
     const operation = (async () => {
       const result = await runWecomPreviewTask(task, {

@@ -324,7 +324,7 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
       });
     },
 
-    async persistTaskMutation({ windowsTask = null, windowsTasks = [], xhsTask = null, automationJob = null, automationJobs = [], automationSession = null, device = null, deviceLock = null, events = [], audit = null, transactionClient = null } = {}) {
+    async persistTaskMutation({ windowsTask = null, windowsTasks = [], xhsTask = null, automationJob = null, automationJobs = [], automationSession = null, device = null, deviceLock = null, deviceLocks = [], events = [], audit = null, transactionClient = null } = {}) {
       const transaction = transactionClient ? (fn) => fn(transactionClient) : inTransaction;
       return transaction(async (client) => {
         if (device) await upsertDevice(client, device);
@@ -335,6 +335,7 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
         for (const item of automationJobs) await upsertAutomationJob(client, item);
         if (automationSession) await upsertAutomationSession(client, automationSession);
         if (deviceLock) await upsertDeviceLock(client, deviceLock);
+        for (const lock of deviceLocks) await upsertDeviceLock(client, lock);
         await insertTaskEvents(client, events);
         await insertAudit(client, audit);
       });
@@ -387,7 +388,14 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
       const xhsTasks = await loadDataRows(pool, "phone_cloud_xhs_tasks", "updated_at", 5_000);
       const automationJobs = await loadDataRows(pool, "phone_cloud_automation_jobs", "updated_at", 5_000);
       const automationSessions = await loadDataRows(pool, "phone_cloud_automation_sessions", "updated_at", 1_000);
-      const deviceLocks = await loadDataRows(pool, "phone_cloud_device_locks", "expires_at", 5_000);
+      const recentDeviceLocks = await loadDataRows(pool, "phone_cloud_device_locks", "expires_at", 5_000);
+      // Pending physical obligations have no expiry and must not fall outside
+      // the recent-history window. Refuse startup instead of silently losing a fence.
+      const pendingPhysical = await pool.query(`select data from phone_cloud_device_locks
+        where data->>'lockType' = 'wecom_physical_cleanup' and status is distinct from 'released'
+        order by lock_id limit 5001`);
+      if (pendingPhysical.rows.length > 5000) throw new Error("wecom_cleanup_pending_load_overflow");
+      const deviceLocks = mergeByKey(pendingPhysical.rows.map(r => r.data), recentDeviceLocks, "lockId");
       const auditEvents = await loadDataRows(pool, "phone_cloud_audit_events", "created_at", 5_000);
       return { users, sessions, devices, smsMessages, windowsTasks, xhsTasks, automationJobs, automationSessions, deviceLocks, auditEvents };
     }

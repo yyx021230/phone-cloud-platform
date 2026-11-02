@@ -1,3 +1,4 @@
+import { WECOM_PREVIEW_KIND } from "./wecom-preview.mjs";
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -33,13 +34,13 @@ function fixture(numbers=[51]){
  }
  let seq=0;const nowIso=()=>new Date().toISOString(),isTerminalStatus=s=>['succeeded','failed','cancelled','expired'].includes(s);
  const release=s=>{released.push(s.sessionId);state.deviceLocks=state.deviceLocks.filter(l=>l.deviceId!==s.deviceId);};
- const cancel=new Function('state','nowIso','isTerminalStatus','releaseAutomationLock',cancelBody+';return cancelAutomationJob;')(state,nowIso,isTerminalStatus,release);
+ const cancel=new Function('WECOM_PREVIEW_KIND','wecomCleanup','state','nowIso','isTerminalStatus','releaseAutomationLock',cancelBody+';return cancelAutomationJob;')(WECOM_PREVIEW_KIND,null,state,nowIso,isTerminalStatus,release);
  const finish=new Function('nowIso','releaseAutomationLock',finishBody+';return finishLookupSession;')(nowIso,release);
  const api={state,online:()=>true,onlineMs:90000,screenActive:()=>false,listed:()=>true,allCooling:()=>false,lockFor:id=>state.deviceLocks.find(x=>x.deviceId===id),
   createJob:input=>{calls.push('create');const j={...input,jobId:'new-job-'+(++seq),status:'queued'};state.automationJobs.push(j);return j;},
   queueTask:(device,j)=>{calls.push('queue');const s=state.automationSessions.find(s=>s.sessionId===j.sessionId),t={taskId:'new-task-'+seq,deviceId:device.deviceId,agentId:'agent',type:j.kind,status:'queued',payload:{automationJobId:j.jobId,automationSessionId:j.sessionId,managedLookup:{protocol:'managed_lookup_v1',generation:s.managedLookupGeneration}}};j.windowsTaskId=t.taskId;state.windowsTasks.push(t);return t;},
   cancelJob:(...args)=>{calls.push('cancel');return cancel(...args);},persist:async()=>{calls.push('persist');}};
- const deps={state,isTerminalStatus,sanitizeTaskResult:sanitize,nowIso,repos:{devices:{findById:id=>state.devices.find(d=>d.deviceId===id)}},confirmedLookupStop,finishLookupSession:finish};
+ const deps={WECOM_PREVIEW_KIND,wecomCleanup:null,state,isTerminalStatus,sanitizeTaskResult:sanitize,nowIso,repos:{devices:{findById:id=>state.devices.find(d=>d.deviceId===id)}},confirmedLookupStop,finishLookupSession:finish};
  const sync=new Function(...Object.keys(deps),syncBody+';return syncAutomationJobFromWindowsTask;')(...Object.values(deps));
  const adapter=createManagedLookupAdapter(api);
  return {pool,state,api,adapter,sync,released,calls,c:pool.channels[0],session:state.automationSessions[0],oldTask:state.windowsTasks[0]};

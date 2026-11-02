@@ -219,3 +219,34 @@ test('archive lookup is one bounded parameterized read by exact primary key',asy
  assert.deepEqual(calls[0].values,['j']);assert.match(calls[0].text,/where j.job_id = \$1 limit 1/);assert.equal(calls[0].query_timeout,5000);
  assert.equal(await repos.readLookupJob('../bad'),null);assert.equal(calls.length,1);
 });
+
+test("physical cleanup pending rows load independently of the recent 5000 lock window", async () => {
+  const pending = { lockId: "old-duty", lockType: "wecom_physical_cleanup", status: "cleanup_pending", expiresAt: "" };
+  const calls = [];
+  const repos = createPostgresRepositories({ getPool: async () => ({ query: async sql => {
+    calls.push(String(sql));
+    return { rows: String(sql).includes("where data->>'lockType'") ? [{ data: pending }] : [] };
+  } }) });
+  const overlay = await repos.loadOverlay();
+  assert.deepEqual(overlay.deviceLocks, [pending]);
+  assert.ok(calls.some(sql => sql.includes("limit 5001") && !sql.includes("expires_at >")));
+});
+
+test("physical cleanup load overflow fails closed instead of dropping pending obligations", async () => {
+  const repos = createPostgresRepositories({ getPool: async () => ({ query: async sql => ({ rows:
+    String(sql).includes("where data->>'lockType'") ? Array.from({ length: 5001 }, (_, i) => ({ data: { lockId: `pending-${i}` } })) : []
+  }) }) });
+  await assert.rejects(repos.loadOverlay(), /wecom_cleanup_pending_load_overflow/);
+});
+
+test("new and ordinary locks persist with task in one transaction and rollback on hold failure", async () => {
+  const db = fakeDatabase({ failOn: "insert into phone_cloud_device_locks" });
+  const repos = createPostgresRepositories({ getPool: async () => db.pool });
+  await assert.rejects(repos.persistTaskMutation({
+    windowsTask: { taskId: "verify", status: "succeeded" },
+    deviceLocks: [{ lockId: "duty", status: "released", lockType: "wecom_physical_cleanup" }]
+  }), /structured_write_failed/);
+  assert.ok(db.calls.some(c => c.sql.includes("phone_cloud_windows_tasks")));
+  assert.equal(db.calls.at(-1).sql, "rollback");
+  assert.ok(!db.calls.some(c => c.sql === "commit"));
+});
