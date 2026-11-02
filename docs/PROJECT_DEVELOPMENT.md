@@ -6089,3 +6089,11 @@ SAVEPOINT55P03只回滚首目标，另目标同writer提交后新backend复读�
 ### 决策日志｜2026-11-02 claim仍存在不证明后续progress操作已提交
 
 后继controlled owner还缺独立稳定progress/delivery op ID/内容指纹/持久回执合同，不能只看M3 tuple recorded或向M1 exact状态塞新操作，也不拿可裁剪events当永久回执。本片不造新DDL/lookup schema，不修改comparison/产品/shared代码或执行PG/Windows/设备；blob/boot与lookup executionWait独立owner引用域由root统一。S2/journal/native默认禁用，原43设备义务/147/52和查名池保留，主号分身真机未完成。
+
+### 变更记录｜2026-11-02 A片job/hold四组owned PG验证源码待审
+
+按root限定只新增verification/wecom-v2-job-hold-epq-20261102及文档，实际原M3 5DML拦COMMIT、B raw job/hold正负查询、C服务端真实Lock/blocking PID后放提交。job负例原timestamp/旧queued丢claim、guard正例0rows/fullJSONB；hold负例binding不伪造、statusreleased但SQLexpiry仍NULL，guard正例保持cleanup_pending/nonexpiry/M3recorded。每组核ledger/anchor保留，不把released投影当实际物理释放。
+
+### 决策日志｜2026-11-02 只扩展窄projection比较，不据此接shared
+
+固定新projection私有root/marker、13源/6依赖、45秒Node/原Popen清理/失败留库；实际6guards+2四seed命名反例、AST/JSsyntax与只读hash通过，四SQL未执行。comparison/产品/M1M2M3/DDL/shared均未改，不累计历史测试，不扩大B/C或blob/boot/lookup canonical/cross-admission。原43设备义务/147/52和查名池保留，S2/journal/native与主号分身真机仍未完成，无新PG/Windows/手机/生产动作。
