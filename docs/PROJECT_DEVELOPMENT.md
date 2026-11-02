@@ -6191,3 +6191,11 @@ root bed2a7f与范围提醒后，暂停后继adapter/DDL/runner，保留全部�
 ### 决策日志｜2026-11-03 区分必需执行/隔离与可延期通用合同
 
 替换此前将通用C2逐层完善展开为真实预览统一前置的推进顺序；真实独占、运行身份、原ID、未知不重放、close与单机cleanup proof继续必需。优先已有standalone+真实ScreenAuthority/QAkeeper做核心脚本路径，正式API v1跨机wall问题另保留，不拿脚本通过冒充API。现有QA harness只main、cloud reader仅active锁、keeper异常保活未证明跨重启持久隔离，先最小审查，不绕过43/147/52原义务或查名155/157。当前旧cloud master不存在，无新鲜云端凭据通道、不新登录fallback；本轮无线上/Windows/ADB/手机/租约/新测试，fresh占用全未知，主号分身真机仍未完成。
+
+### 变更记录｜2026-11-03 旧QA查锁GET并非严格只读且缺完整性
+
+本地源码补核server/index.mjs:1080，GET /api/v1/device-locks调用expireDeviceLocks并mark运行保存，且前300条无完整性标识；两个旧QA cloud reader均调用该路由后只过滤active。该事实追加最短路径PATH说明，不回写或否认历史实际请求。本轮未调用该GET或任何生产接口；draft.2只封存此补充，后继主文档同步另commit/tag，不移动旧标签。
+
+### 决策日志｜2026-11-03 GET方法不能自动视作无生产副作用
+
+后续严格只读取完整占用不能直接复用这两个旧QA读取器；须使用已核不触发维护且有完整性证明的canonical/cache来源或另审纯投影，缺项为unknown。不能用active过滤/300条空结果证明无cleanup_pending、worker或stop barrier；不为恢复预览放宽持久隔离。无产品、线上、Windows、ADB、手机或新测试动作，43/147/52和查名155/157排除保持。
