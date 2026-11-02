@@ -1,0 +1,14 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "server/wecom-v2-projection-policy.test.mjs"
+  ],
+  "exitCode": 0,
+  "logSha256": "6e78f24337371b25354961c5f6e2aaeba22ab8b7da50c5e392f758d3596b5195",
+  "sourceSha256": {
+    "server/wecom-v2-projection-policy.mjs": "3eb362a8922d7d5a190053d9fa0caca5eedf48553151c7ffc570cd4896c4cf62",
+    "server/wecom-v2-projection-policy.test.mjs": "3820c9307d5f0dd435d7f7fc6966e4d93fa6cce5f7ffac2febef875276679e5c",
+    "verification/wecom-v2-projection-policy-20261102/fixture.mjs": "a5ccc25833ba6510b9d07a6c2c9c02aa5a6692cd2bfb7f3309bec94b22c0b938"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "command": [
+    "node",
+    "--check",
+    "server/wecom-v2-projection-policy.mjs"
+  ],
+  "exitCode": 0,
+  "noServicesStarted": true
+}

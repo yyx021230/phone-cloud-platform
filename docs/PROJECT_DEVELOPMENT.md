@@ -6013,3 +6013,13 @@ root57583564闭合36be03 observed.2后，只读当前generic/checkpoint/v1 servi
 ### 决策日志｜2026-11-02 后继方案不扩大到共享接线或真机授权
 
 延续M3分片，仍默认禁启/protocolPermit false。最小建议是纯projection-policy叶/反例，不提供写入/执行许可；shared index/getPool/repository/配置/Agent/SDK/媒体均不改。没有新代码、测试、PG、Windows、手机或生产动作；47合成seed检测与本机18/18不是现场设备验收。下一需root审具体片范围，保留已有改动/原失败证据、原43/147/52及查名池；主号分身真机未完成。
+
+### 变更记录｜2026-11-02 S1纯逐目标投影策略叶53项本地通过，未接共享writer
+
+按root4814a5de限定，仅新增wecom-v2-projection-policy模块/同名测试及专属fixture/schema。固定policy epoch和同步privileged canonical provider；missing/异常与observed_absent分开，legacy_candidate也无许可。完整M3 normalized tuple/M1状态与immutable关联核对，旧queued提案保留canonical，正常状态分歧/业务锁释放/M1进展不清active，canonical缺行/旧NULL/v1不升级。单目标冲突/未知返回逐目标decision，混合另一设备继续分类，不throw整批。
+
+实际53项纯测试通过，fixture从原已审纯claim bundle生成；输出深冻结、只序号/决策/固定码，不返回号码备注/全快照/provider错误。所有结果恒writePermit/protocolPermit/releaseAllowed/canonicalSourceVerified false，保留原义务且要求实时核验。结构正确不等于来源真实，更不是执行门禁。
+
+### 决策日志｜2026-11-02 保留canonical分类不成为写入许可
+
+旧M1/M2/M3/DDL/index/getPool/shared repository/Agent与14基线源均未改，无新SQL/PG/Windows/手机或生产动作。纯policy不实现READ COMMITTED等待后覆盖防护、full-state blob重建、设备改绑屏障或journal/native；这些仍按后继方案单独审。原M2完整14+新DDL兼容另备源码未执行，原43设备清理义务/147/52与查名池保留，主号/分身真机未完成。
