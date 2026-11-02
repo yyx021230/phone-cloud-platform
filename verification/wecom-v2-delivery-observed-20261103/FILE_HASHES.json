@@ -1,0 +1,16 @@
+{
+  "verification/wecom-v2-delivery-observed-20261103/CREATEDB.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "verification/wecom-v2-delivery-observed-20261103/DIFFCHECK_RECEIPT.json": "be7a496a904e75e2c7cb87c590e489f803378a21ebe3f022fb4a7b241a8ee86a",
+  "verification/wecom-v2-delivery-observed-20261103/EXECUTED_SOURCE_MANIFEST.json": "d11cf347e5ad770940971812ae39e7f5f3788b647826da4b86e6bf10fb2fa02e",
+  "verification/wecom-v2-delivery-observed-20261103/INITDB.txt": "ff9898640a1618907738b6e35399c7b34aa21888c2907a215f44de427f905bf9",
+  "verification/wecom-v2-delivery-observed-20261103/NODE_TEST_OUTPUT.txt": "3bf671884fe608f61ea6ae3698a8040eda2d54684362e1ec3998edb993a64e23",
+  "verification/wecom-v2-delivery-observed-20261103/OBSERVATION.md": "4b39ed57fe08a2da49753435cf552d1013e9523b42d9b538fb9e1ae57c1b870f",
+  "verification/wecom-v2-delivery-observed-20261103/PG_EVIDENCE.json": "9e3a7f8177f429f13422cda2d856eca0c6544247b54a122db4a5c9b3ecd2dd03",
+  "verification/wecom-v2-delivery-observed-20261103/POSTGRES.txt": "fe9bd4677b0ee290ab232192aa92b1b6cfff38f0531b70dc32818783f926af1d",
+  "verification/wecom-v2-delivery-observed-20261103/PROVENANCE.json": "8ee01d9b9fe16a954b5a0638bb1f23222e81f13f1ae01328f4f30fc0d2c75fe4",
+  "verification/wecom-v2-delivery-observed-20261103/RAW_WHITESPACE.json": "c8c0d46e10ff010c420b26b541ee1b5b67e76f0cfcd9d11646974ca04c06f48d",
+  "verification/wecom-v2-delivery-observed-20261103/ROOT_REVIEW.json": "692f874ce1a5361a98cd088a6cc60af538fc173081dea0549b90113c18b108f6",
+  "verification/wecom-v2-delivery-observed-20261103/RUN_RECEIPT.json": "afab31949ee3670e8c445b3c907921c04056bfa2d3ff3808cb273be08381c79f",
+  "verification/wecom-v2-delivery-observed-20261103/fixture.json": "8de9edf0826d41d6ddfea287ef703dd23a579ff5dce53618b95e4bcd0b8340bb",
+  "docs/PROJECT_DEVELOPMENT.md": "14e6522e1ebdf9eac539140595076b8e10effede31296e8545a550048f3dcdcb"
+}

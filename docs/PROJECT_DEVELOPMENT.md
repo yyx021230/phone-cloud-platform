@@ -6151,3 +6151,11 @@ root3715a0d限定后，仅新增verification/wecom-v2-delivery-verify-20261103�
 ### 决策日志｜2026-11-03 C1只验顺序SQL字段，不扩大WeCom可达性或C2
 
 delivery-fields与delivery-stale-proposal源码要求完整RETURNING/known COMMIT/release后新backend、恰三JSON路径外所有已知未知字段保留、所有claim/物理义务深等/M3后置；顺序旧候选不是EPQ，直接合成行SQL不代表HTTPauth绕过或WeCom leased分支可达，audit方法未测。新delivery owned root沿原45秒/原Popen/失败留库边界，根审前不PG；C2/产品/DDL/shared/M1M2M3/helper不改，无Windows/ADB/设备/生产，43/147/52和查名池保持，主号分身真机未完成。
+
+### 变更记录｜2026-11-03 C1 delivery私有PG2/2原件封存
+
+根固定3f96cb2后，00:10 CST单次新delivery库真实2/2通过，2case/attempt齐、16执行源前后匹配。7原件/manifest/root review逐字封存verification/wecom-v2-delivery-observed-20261103。三路径SQL恰改delivery/deliveryAttempts/updatedAt及SQL时间，其他所有已知未知JSON与全部job/locks/ledger/anchor/device保持；旧候选顺序覆盖较新delivery，M3仍recorded。每次known COMMIT/release后独立backend复读。
+
+### 决策日志｜2026-11-03 SQL直接旧写负例不等于现行企微路线故障
+
+Node67391exit0/组消失、PG67379exit0确认，成功db原runner删除，旧失败库保留；INITDB24 EOF原样具名例外。不累计helper26/guard6/seed2或历史阶段。未证明WeCom leased分支可达、HTTPauth绕过/audit或shared已修。后续仅C2 verification schema/interface/txn/canonical golden文本先审，无authorizer/产品/shared/可执行DDL/新PG。无Windows/ADB/设备/生产，43/147/52与查名池保留，主号分身真机未完成。
