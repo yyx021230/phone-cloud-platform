@@ -6143,3 +6143,11 @@ Node62313exit0/组消失、PG62301exit0确认，成功db仅原runner删除，旧
 ### 决策日志｜2026-11-03 后续mutation须独立稳定回执，先审不造DDL
 
 细化原projection C项：稳定operation/完整内容指纹/owner关联、task+job+receipt同事务、COMMIT未知先退役后原IDs独立读取；receipt缺而旧事务未决继续unknown，不重跑手机。候选canonical编码、可信执行实例、receipt schema/retention/outbox仍待根定，不实现authorizer、产品/shared/DDL/M1扩展。无PG/Windows/ADB/手机/生产动作；blob/boot/lookup根协调，S2/journal/native及主号分身真机未完成，43/147/52和查名池保留。
+
+### 变更记录｜2026-11-03 C1两组delivery SQL源码与现有helper矩阵待审
+
+root3715a0d限定后，仅新增verification/wecom-v2-delivery-verify-20261103。直接import现有helper26通过：gallery/xhs/managed有效、错token、到期、queued ACK、running过期仍幂等及未ACK拒绝，WeCom主号/分身不支持lease。6 guards+2实际seed/真实preparer未知JSON保留与重复命名反例、AST/JSsyntax/16源6依赖hash通过；两PG源码未执行。
+
+### 决策日志｜2026-11-03 C1只验顺序SQL字段，不扩大WeCom可达性或C2
+
+delivery-fields与delivery-stale-proposal源码要求完整RETURNING/known COMMIT/release后新backend、恰三JSON路径外所有已知未知字段保留、所有claim/物理义务深等/M3后置；顺序旧候选不是EPQ，直接合成行SQL不代表HTTPauth绕过或WeCom leased分支可达，audit方法未测。新delivery owned root沿原45秒/原Popen/失败留库边界，根审前不PG；C2/产品/DDL/shared/M1M2M3/helper不改，无Windows/ADB/设备/生产，43/147/52和查名池保持，主号分身真机未完成。

@@ -1,0 +1,45 @@
+{
+  "kind": "local-only-no-postgres-or-phone",
+  "candidateBase": "b4641e46f82bfbb5a03eee7530a5befeabcd737b",
+  "rootPlanReview": "3715a0d64a7e33c4e38bb7f0169f1a2e9acb505b",
+  "checks": [
+    {
+      "label": "helpers",
+      "command": "/opt/homebrew/bin/node --test --test-reporter=spec verification/wecom-v2-delivery-verify-20261103/helpers.test.mjs > verification/wecom-v2-delivery-verify-20261103/LOCAL_HELPERS.txt 2>&1",
+      "exitCode": 0
+    },
+    {
+      "label": "guards",
+      "command": "python3 -I -B verification/wecom-v2-delivery-verify-20261103/test_owned_runner.py > verification/wecom-v2-delivery-verify-20261103/LOCAL_GUARDS.txt 2>&1",
+      "exitCode": 0
+    },
+    {
+      "label": "seeds",
+      "command": "/opt/homebrew/bin/node --test --test-reporter=spec verification/wecom-v2-delivery-verify-20261103/fixture-names.test.mjs > verification/wecom-v2-delivery-verify-20261103/LOCAL_SEEDS.txt 2>&1",
+      "exitCode": 0
+    },
+    {
+      "label": "syntax",
+      "command": "python3 -I -B - <<'PY'\nfrom pathlib import Path\nimport ast,importlib.util,subprocess\np=Path('verification/wecom-v2-delivery-verify-20261103')\nfor f in p.glob('*.py'): ast.parse(f.read_text())\ns=importlib.util.spec_from_file_location('fixture_runner',p/'run-owned-postgres.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m);spec=m.verify_sources()\nfor f in p.glob('*.mjs'): subprocess.run(['/opt/homebrew/bin/node','--check',str(f)],check=True)\n(p/'LOCAL_SYNTAX.txt').write_text('Python AST and JS syntax passed; '+str(len(spec['sourceSha256']))+' source hashes and '+str(len(spec['dependencySha256']))+' dependency hashes matched; no PG execution.\\n')\nPY",
+      "exitCode": 0
+    }
+  ],
+  "helperTests": {
+    "tests": 26,
+    "pass": 26,
+    "fail": 0
+  },
+  "runnerGuards": {
+    "tests": 6,
+    "pass": 6,
+    "fail": 0
+  },
+  "seedChecks": {
+    "tests": 2,
+    "pass": 2,
+    "fail": 0
+  },
+  "newPgCasesExecuted": 0,
+  "phoneAcceptance": false,
+  "productionChanged": false
+}

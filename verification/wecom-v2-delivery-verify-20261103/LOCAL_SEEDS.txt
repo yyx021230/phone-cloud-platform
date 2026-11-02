@@ -1,0 +1,10 @@
+✔ both actual delivery seeds unique and unknown JSON accepted by real preparer (3.573583ms)
+✔ old namespace reuse rejected before PG (0.636166ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 76.495667

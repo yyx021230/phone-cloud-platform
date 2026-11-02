@@ -1,0 +1,34 @@
+✔ screen_gallery_import: supported queued delivery and payload (2.066041ms)
+✔ screen_gallery_import: wrong payload token rejected unchanged (0.086541ms)
+✔ screen_gallery_import: wrong queued ACK token rejected unchanged (0.10025ms)
+✔ screen_gallery_import: queued expired payload and ACK rejected (0.070542ms)
+✔ screen_gallery_import: queued matching ACK becomes running (0.841417ms)
+✔ screen_gallery_import: running matching acknowledged token remains idempotent after expiry (0.097ms)
+✔ screen_gallery_import: running wrong token rejected (0.062292ms)
+✔ screen_gallery_import: running without previous ACK is not idempotent (0.052167ms)
+✔ xhs_publish: supported queued delivery and payload (0.078959ms)
+✔ xhs_publish: wrong payload token rejected unchanged (0.080417ms)
+✔ xhs_publish: wrong queued ACK token rejected unchanged (0.046583ms)
+✔ xhs_publish: queued expired payload and ACK rejected (0.035792ms)
+✔ xhs_publish: queued matching ACK becomes running (0.04375ms)
+✔ xhs_publish: running matching acknowledged token remains idempotent after expiry (0.039625ms)
+✔ xhs_publish: running wrong token rejected (0.038542ms)
+✔ xhs_publish: running without previous ACK is not idempotent (0.030917ms)
+✔ alipay_name_query: supported queued delivery and payload (0.044208ms)
+✔ alipay_name_query: wrong payload token rejected unchanged (0.045167ms)
+✔ alipay_name_query: wrong queued ACK token rejected unchanged (0.033125ms)
+✔ alipay_name_query: queued expired payload and ACK rejected (0.03375ms)
+✔ alipay_name_query: queued matching ACK becomes running (0.023875ms)
+✔ alipay_name_query: running matching acknowledged token remains idempotent after expiry (0.037875ms)
+✔ alipay_name_query: running wrong token rejected (0.03325ms)
+✔ alipay_name_query: running without previous ACK is not idempotent (0.023333ms)
+✔ WeCom main: current profile unsupported, no lease or invitation (0.177542ms)
+✔ WeCom clone: current profile unsupported, no lease or invitation (0.032541ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 73.5055
