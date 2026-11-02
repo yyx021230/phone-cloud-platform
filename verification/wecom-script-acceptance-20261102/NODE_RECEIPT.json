@@ -1,0 +1,22 @@
+{
+  "atUtc": "2026-11-02T09:25:45.631614+00:00",
+  "exitCode": 0,
+  "counts": {
+    "tests": 49,
+    "pass": 49,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "testFiles": [
+    "wecom-preview-task",
+    "wecom-preview-lifecycle",
+    "wecom-diagnostics",
+    "wecom-cleanup-protocol",
+    "wecom-physical-readiness",
+    "wecom-cleanup-entry",
+    "wecom-cleanup-verify"
+  ],
+  "scope": "existing wrapper/lifecycle tests with fixture IO, not native acceptance",
+  "nativeAcceptance": false
+}
