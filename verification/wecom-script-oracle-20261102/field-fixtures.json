@@ -1,0 +1,22 @@
+{
+  "scope": "Frozen synthetic semantic field fixtures; not fresh native evidence",
+  "provenance": {
+    "inheritedSourceCommit": "c6cce4fe4206ff8dd0473e86637a04656900f4de",
+    "inheritedSource": "windows-agent/scripts/wecom_remark_preview.py:REMARK_LAYOUTS",
+    "supportingTest": "windows-agent/scripts/test_wecom_build_compat.py:RemarkBuildTests",
+    "limitation": "Identifiers were documented as observed in inherited source; original raw UI trees for all six layouts are not present here. Values are frozen literal expectations, never read from mutable product constants at execution. This improves mutation detection, not independent native validation."
+  },
+  "layouts": [
+    {"remarkName":"com.tencent.wework:id/d0y","description":"com.tencent.wework:id/czj","back":"com.tencent.wework:id/ns5"},
+    {"remarkName":"com.tencent.wework:id/d67","description":"com.tencent.wework:id/d4r","back":"com.tencent.wework:id/o62"},
+    {"remarkName":"com.tencent.wework:id/d0r","description":"com.tencent.wework:id/czc","back":"com.tencent.wework:id/nr7"},
+    {"remarkName":"com.tencent.wework:id/d0s","description":"com.tencent.wework:id/czd","back":"com.tencent.wework:id/nr_"},
+    {"remarkName":"com.tencent.wework:id/cqe","description":"com.tencent.wework:id/cp0","back":"com.tencent.wework:id/n24"},
+    {"remarkName":"com.tencent.wework:id/cu1","description":"com.tencent.wework:id/csm","back":"com.tencent.wework:id/nc9"}
+  ],
+  "otherFields": [
+    {"role":"company","resource":"com.tencent.wework:id/d_f","text":"添加企业名称"},
+    {"role":"phone","resource":"android.widget.EditText","text":"19900000001"},
+    {"role":"extraPhone","resource":"android.widget.EditText","text":"添加电话号码"}
+  ]
+}

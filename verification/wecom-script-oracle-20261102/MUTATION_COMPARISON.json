@@ -1,0 +1,26 @@
+{
+  "baselineCommit": "c6cce4fe4206ff8dd0473e86637a04656900f4de",
+  "scope": "wrong-editor mutation of actual resolver in local process only",
+  "nativeAcceptance": false,
+  "runs": {
+    "baseline": {
+      "tests": 24,
+      "failures": 0,
+      "errors": 0,
+      "actualWrongTargetWrites": 24,
+      "casesPassed": 24,
+      "noWriteCases": 6,
+      "susceptibleMutantSurvived": 18
+    },
+    "current": {
+      "tests": 24,
+      "failures": 18,
+      "errors": 0,
+      "actualWrongTargetWrites": 18,
+      "casesPassed": 6,
+      "noWriteCases": 6,
+      "susceptibleMutantSurvived": 0
+    }
+  },
+  "expectedOutcomeVerified": true
+}

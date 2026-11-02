@@ -1,0 +1,29 @@
+test_layout_0_description_retained (wecom_baseline_oracle.ScriptAcceptanceTests) ... ok
+test_layout_0_empty (wecom_baseline_oracle.ScriptAcceptanceTests) ... ok
+test_layout_0_name_retained (wecom_baseline_oracle.ScriptAcceptanceTests) ... ok
+test_layout_0_retained (wecom_baseline_oracle.ScriptAcceptanceTests) ... ok
+test_layout_1_description_retained (wecom_baseline_oracle.ScriptAcceptanceTests) ... ok
+test_layout_1_empty (wecom_baseline_oracle.ScriptAcceptanceTests) ... ok
+test_layout_1_name_retained (wecom_baseline_oracle.ScriptAcceptanceTests) ... ok
+test_layout_1_retained (wecom_baseline_oracle.ScriptAcceptanceTests) ... ok
+test_layout_2_description_retained (wecom_baseline_oracle.ScriptAcceptanceTests) ... ok
+test_layout_2_empty (wecom_baseline_oracle.ScriptAcceptanceTests) ... ok
+test_layout_2_name_retained (wecom_baseline_oracle.ScriptAcceptanceTests) ... ok
+test_layout_2_retained (wecom_baseline_oracle.ScriptAcceptanceTests) ... ok
+test_layout_3_description_retained (wecom_baseline_oracle.ScriptAcceptanceTests) ... ok
+test_layout_3_empty (wecom_baseline_oracle.ScriptAcceptanceTests) ... ok
+test_layout_3_name_retained (wecom_baseline_oracle.ScriptAcceptanceTests) ... ok
+test_layout_3_retained (wecom_baseline_oracle.ScriptAcceptanceTests) ... ok
+test_layout_4_description_retained (wecom_baseline_oracle.ScriptAcceptanceTests) ... ok
+test_layout_4_empty (wecom_baseline_oracle.ScriptAcceptanceTests) ... ok
+test_layout_4_name_retained (wecom_baseline_oracle.ScriptAcceptanceTests) ... ok
+test_layout_4_retained (wecom_baseline_oracle.ScriptAcceptanceTests) ... ok
+test_layout_5_description_retained (wecom_baseline_oracle.ScriptAcceptanceTests) ... ok
+test_layout_5_empty (wecom_baseline_oracle.ScriptAcceptanceTests) ... ok
+test_layout_5_name_retained (wecom_baseline_oracle.ScriptAcceptanceTests) ... ok
+test_layout_5_retained (wecom_baseline_oracle.ScriptAcceptanceTests) ... ok
+
+----------------------------------------------------------------------
+Ran 24 tests in 0.051s
+
+OK
