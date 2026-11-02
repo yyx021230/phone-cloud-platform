@@ -5912,3 +5912,16 @@ root闭合M2本地PG证据484d72db后，owner只读实际index领取/restore/che
 ### 决策日志｜2026-11-02 M3不一口接全链路，pool归属和旧写共存先审
 
 M2 owned client监听仅本调用；共享idle Pool生命周期须root在创建处一次定义有限错误/健康结果及readiness策略，不能业务叶全局吞错，也不把单idle连接错误擅扩成其他手机全停。现index/generic/checkpoint写入冲突、稳定claim幂等/回退pending保留/完整tuple未知对账纳入M3a审，未审不写共享index/getPool。无M3代码/SQL/新测试/PG/Windows/phone/生产/部署，旧14/0库结论不升级成host ACK/native，主号分身仍未验，隔离/查名池/冻结保持。
+
+
+### 变更记录｜2026-11-02 M3a纯claim-bundle叶本地候选（无DB/物理排他）
+
+root限定第一片后，从干净66c4eb89仅新增server/wecom-cleanup-v2-claim.mjs/同名测试及synthetic fixture。固定可信代码context含全部稳定ID、已解析target/原业务指纹/audit，工厂捕获尝试并拒绝后续变号；不生成ID/当前时刻或I/O。task-job-owner-lock-device-Agent-slot/request关联严格，preview/send及previewOnly分开；仅显式版本2的新standalone queued，旧NULL/v1/既有binding/已执行状态拒绝，未修改任何producer/API。
+
+expected保留完整原JSONB queued快照供将来CAS，业务fingerprint不包含合法status/events等进展字段；claimData不复制号码/备注/凭据，内部task快照不可作日志/公开响应。现业务lock.appSlot为空表示整机，保留不误当主号锁。输出候选始终protocolPermit/durable false、要求持久/物理排他/live checks；physicalKey只是lowercase串行化键，非实际锁，单测明确两个同机/主分身候选仍可同时生成。
+
+当前55纯叶+现11业务测试过及JS syntax；历史INITIAL不重复累加。14旧源与M2/M1/DDL/runner未改，没启动PG/Windows/phone/生产或发送。DB anchor/SQL/锁序/正常进展对账矩阵下一片先提案，不能把当前叶当原子领取或真机通过。
+
+### 决策日志｜2026-11-02 task CAS与业务指纹职责分离，DB片未审不实现
+
+完整queued快照只用于queued→running CAS，后继正常status/results/events不能据此判永久maintenance；原业务指纹与固定claim关联独立用于重读。execution/claim/nonce由单一可信server尝试固定，pure module不提供全局唯一/物理排他，不能自动变号或升级legacy。下一DB片须给真实存在物理anchor/缺失拒绝、同serial不同task/slot与不同serial并发、旧checkpoint/generic锁序兼容、合法进展矩阵后再审，不改已验证M2/DDL/index/getPool。原43/隔离/查名池/冻结保持，主号分身验收仍未完成。

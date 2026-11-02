@@ -1,0 +1,16 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "server/wecom-cleanup-v2-claim.test.mjs"
+  ],
+  "exitCode": 0,
+  "scope": "pure claim bundle only, no SQL/PG/OS/phone authority",
+  "sourceSha256": {
+    "server/wecom-cleanup-v2-claim.mjs": "e894d2dfba811fd1885916c46aa2e5a666e83f085014a8e95380e275f6daa320",
+    "server/wecom-cleanup-v2-claim.test.mjs": "e3513506868ad7b89c9c8d5ff0806f67d4a2e4b2f00cadcd2bb83f38d4760b3f",
+    "verification/wecom-v2-claim-bundle-20261102/fixture.mjs": "9acf7d46e50cc3e3957a6f3af968cf8af29a6ccb6f4cb6e9935b28c7a613854d"
+  },
+  "outputSha256": "953e57af0d8b419332c21a517bccf51cdb499e38c56e0440d88ce5d8c4fbd515"
+}

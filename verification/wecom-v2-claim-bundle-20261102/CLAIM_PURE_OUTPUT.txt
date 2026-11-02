@@ -1,0 +1,340 @@
+TAP version 13
+# Subtest: preview/main prepares held candidates, never permission or persistence ACK
+ok 1 - preview/main prepares held candidates, never permission or persistence ACK
+  ---
+  duration_ms: 3.186708
+  type: 'test'
+  ...
+# Subtest: preview/clone prepares held candidates, never permission or persistence ACK
+ok 2 - preview/clone prepares held candidates, never permission or persistence ACK
+  ---
+  duration_ms: 0.281042
+  type: 'test'
+  ...
+# Subtest: send/main prepares held candidates, never permission or persistence ACK
+ok 3 - send/main prepares held candidates, never permission or persistence ACK
+  ---
+  duration_ms: 0.666167
+  type: 'test'
+  ...
+# Subtest: send/clone prepares held candidates, never permission or persistence ACK
+ok 4 - send/clone prepares held candidates, never permission or persistence ACK
+  ---
+  duration_ms: 0.179917
+  type: 'test'
+  ...
+# Subtest: business hash matches independent literal and existing canonical API semantics
+ok 5 - business hash matches independent literal and existing canonical API semantics
+  ---
+  duration_ms: 0.197
+  type: 'test'
+  ...
+# Subtest: full queued CAS snapshot preserves metadata while business fingerprint excludes later progress fields
+ok 6 - full queued CAS snapshot preserves metadata while business fingerprint excludes later progress fields
+  ---
+  duration_ms: 0.220792
+  type: 'test'
+  ...
+# Subtest: claim_data contains fixed IDs/hash but no phone, remarks or credential fields
+ok 7 - claim_data contains fixed IDs/hash but no phone, remarks or credential fields
+  ---
+  duration_ms: 0.172375
+  type: 'test'
+  ...
+# Subtest: deep frozen input/provider stays unchanged; outputs do not alias inputs
+ok 8 - deep frozen input/provider stays unchanged; outputs do not alias inputs
+  ---
+  duration_ms: 0.28025
+  type: 'test'
+  ...
+# Subtest: same fixed attempt is deterministic without Date.now/random or ID regeneration
+ok 9 - same fixed attempt is deterministic without Date.now/random or ID regeneration
+  ---
+  duration_ms: 0.280875
+  type: 'test'
+  ...
+# Subtest: provider attempt change cannot silently create a new claim (c => { c.binding.executionId = "new-execution"; })
+ok 10 - provider attempt change cannot silently create a new claim (c => { c.binding.executionId = "new-execution"; })
+  ---
+  duration_ms: 0.130584
+  type: 'test'
+  ...
+# Subtest: provider attempt change cannot silently create a new claim (c => { c.claimOperationId = "new-claim"; })
+ok 11 - provider attempt change cannot silently create a new claim (c => { c.claimOperationId = "new-claim"; })
+  ---
+  duration_ms: 0.08025
+  type: 'test'
+  ...
+# Subtest: provider attempt change cannot silently create a new claim (c => { c.binding.nonce = "new-nonce"; })
+ok 12 - provider attempt change cannot silently create a new claim (c => { c.binding.nonce = "new-nonce"; })
+  ---
+  duration_ms: 0.050875
+  type: 'test'
+  ...
+# Subtest: provider attempt change cannot silently create a new claim (c => { c.binding.handshakeNonce = "new-handshake"; })
+ok 13 - provider attempt change cannot silently create a new claim (c => { c.binding.handshakeNonce = "new-handshake"; })
+  ---
+  duration_ms: 0.051167
+  type: 'test'
+  ...
+# Subtest: provider attempt change cannot silently create a new claim (c => { c.binding.serverEpoch = "new-epoch"; })
+ok 14 - provider attempt change cannot silently create a new claim (c => { c.binding.serverEpoch = "new-epoch"; })
+  ---
+  duration_ms: 0.047375
+  type: 'test'
+  ...
+# Subtest: provider attempt change cannot silently create a new claim (c => { c.recordedAt = "2026-11-02T06:00:00.000Z"; })
+ok 15 - provider attempt change cannot silently create a new claim (c => { c.recordedAt = "2026-11-02T06:00:00.000Z"; })
+  ---
+  duration_ms: 0.061583
+  type: 'test'
+  ...
+# Subtest: identity association rejects wrong task ID
+ok 16 - identity association rejects wrong task ID
+  ---
+  duration_ms: 0.084792
+  type: 'test'
+  ...
+# Subtest: identity association rejects wrong job ID in both records
+ok 17 - identity association rejects wrong job ID in both records
+  ---
+  duration_ms: 0.083667
+  type: 'test'
+  ...
+# Subtest: identity association rejects wrong job task link
+ok 18 - identity association rejects wrong job task link
+  ---
+  duration_ms: 0.060042
+  type: 'test'
+  ...
+# Subtest: identity association rejects wrong owner in job and lock
+ok 19 - identity association rejects wrong owner in job and lock
+  ---
+  duration_ms: 0.070625
+  type: 'test'
+  ...
+# Subtest: identity association rejects wrong original lock in job and lock
+ok 20 - identity association rejects wrong original lock in job and lock
+  ---
+  duration_ms: 0.062167
+  type: 'test'
+  ...
+# Subtest: identity association rejects wrong agent in task and job
+ok 21 - identity association rejects wrong agent in task and job
+  ---
+  duration_ms: 0.060916
+  type: 'test'
+  ...
+# Subtest: identity association rejects wrong device in task and job
+ok 22 - identity association rejects wrong device in task and job
+  ---
+  duration_ms: 0.069583
+  type: 'test'
+  ...
+# Subtest: identity association rejects wrong serial in task and job
+ok 23 - identity association rejects wrong serial in task and job
+  ---
+  duration_ms: 0.0595
+  type: 'test'
+  ...
+# Subtest: identity association rejects wrong request ID
+ok 24 - identity association rejects wrong request ID
+  ---
+  duration_ms: 0.067
+  type: 'test'
+  ...
+# Subtest: identity association rejects wrong session
+ok 25 - identity association rejects wrong session
+  ---
+  duration_ms: 0.060917
+  type: 'test'
+  ...
+# Subtest: identity association rejects wrong device mapping
+ok 26 - identity association rejects wrong device mapping
+  ---
+  duration_ms: 0.064959
+  type: 'test'
+  ...
+# Subtest: identity association rejects wrong device number
+ok 27 - identity association rejects wrong device number
+  ---
+  duration_ms: 0.092375
+  type: 'test'
+  ...
+# Subtest: business/physical semantics reject preview becomes send
+ok 28 - business/physical semantics reject preview becomes send
+  ---
+  duration_ms: 0.070875
+  type: 'test'
+  ...
+# Subtest: business/physical semantics reject preview flag
+ok 29 - business/physical semantics reject preview flag
+  ---
+  duration_ms: 0.0655
+  type: 'test'
+  ...
+# Subtest: business/physical semantics reject slot
+ok 30 - business/physical semantics reject slot
+  ---
+  duration_ms: 0.07275
+  type: 'test'
+  ...
+# Subtest: business/physical semantics reject Android user
+ok 31 - business/physical semantics reject Android user
+  ---
+  duration_ms: 0.060917
+  type: 'test'
+  ...
+# Subtest: business/physical semantics reject both target phones changed
+ok 32 - business/physical semantics reject both target phones changed
+  ---
+  duration_ms: 0.065833
+  type: 'test'
+  ...
+# Subtest: business/physical semantics reject both remark values changed
+ok 33 - business/physical semantics reject both remark values changed
+  ---
+  duration_ms: 0.072959
+  type: 'test'
+  ...
+# Subtest: business/physical semantics reject both description values changed
+ok 34 - business/physical semantics reject both description values changed
+  ---
+  duration_ms: 0.075875
+  type: 'test'
+  ...
+# Subtest: business/physical semantics reject noncanonical remark
+ok 35 - business/physical semantics reject noncanonical remark
+  ---
+  duration_ms: 0.059208
+  type: 'test'
+  ...
+# Subtest: business/physical semantics reject XHS slot
+ok 36 - business/physical semantics reject XHS slot
+  ---
+  duration_ms: 0.094625
+  type: 'test'
+  ...
+# Subtest: business/physical semantics reject physical lock narrowed to clone
+ok 37 - business/physical semantics reject physical lock narrowed to clone
+  ---
+  duration_ms: 0.066459
+  type: 'test'
+  ...
+# Subtest: business/physical semantics reject lock task link
+ok 38 - business/physical semantics reject lock task link
+  ---
+  duration_ms: 0.064667
+  type: 'test'
+  ...
+# Subtest: business/physical semantics reject released lock
+ok 39 - business/physical semantics reject released lock
+  ---
+  duration_ms: 0.087708
+  type: 'test'
+  ...
+# Subtest: fresh v2 claim refuses running task
+ok 40 - fresh v2 claim refuses running task
+  ---
+  duration_ms: 0.06675
+  type: 'test'
+  ...
+# Subtest: fresh v2 claim refuses picked task
+ok 41 - fresh v2 claim refuses picked task
+  ---
+  duration_ms: 0.059209
+  type: 'test'
+  ...
+# Subtest: fresh v2 claim refuses previous result
+ok 42 - fresh v2 claim refuses previous result
+  ---
+  duration_ms: 0.373
+  type: 'test'
+  ...
+# Subtest: fresh v2 claim refuses send claim exists
+ok 43 - fresh v2 claim refuses send claim exists
+  ---
+  duration_ms: 0.11825
+  type: 'test'
+  ...
+# Subtest: fresh v2 claim refuses null protocol
+ok 44 - fresh v2 claim refuses null protocol
+  ---
+  duration_ms: 0.085083
+  type: 'test'
+  ...
+# Subtest: fresh v2 claim refuses missing job protocol
+ok 45 - fresh v2 claim refuses missing job protocol
+  ---
+  duration_ms: 0.090334
+  type: 'test'
+  ...
+# Subtest: fresh v2 claim refuses v1 protocol
+ok 46 - fresh v2 claim refuses v1 protocol
+  ---
+  duration_ms: 0.061
+  type: 'test'
+  ...
+# Subtest: fresh v2 claim refuses legacy null physical binding
+ok 47 - fresh v2 claim refuses legacy null physical binding
+  ---
+  duration_ms: 0.058958
+  type: 'test'
+  ...
+# Subtest: pure bundles alone do not serialize two tasks/main-clone on one physical key
+ok 48 - pure bundles alone do not serialize two tasks/main-clone on one physical key
+  ---
+  duration_ms: 0.163958
+  type: 'test'
+  ...
+# Subtest: re-preparing already-running candidate is rejected; store must reconcile original attempt separately
+ok 49 - re-preparing already-running candidate is rejected; store must reconcile original attempt separately
+  ---
+  duration_ms: 0.149791
+  type: 'test'
+  ...
+# Subtest: no UI permission, ID factory or fake provider flags are accepted
+ok 50 - no UI permission, ID factory or fake provider flags are accepted
+  ---
+  duration_ms: 0.107666
+  type: 'test'
+  ...
+# Subtest: record must be JSON object, not null
+ok 51 - record must be JSON object, not null
+  ---
+  duration_ms: 0.069584
+  type: 'test'
+  ...
+# Subtest: record must be JSON object, not []
+ok 52 - record must be JSON object, not []
+  ---
+  duration_ms: 0.05675
+  type: 'test'
+  ...
+# Subtest: record must be JSON object, not true
+ok 53 - record must be JSON object, not true
+  ---
+  duration_ms: 0.053291
+  type: 'test'
+  ...
+# Subtest: snapshot copying rejects silent JSON loss and never invokes accessors
+ok 54 - snapshot copying rejects silent JSON loss and never invokes accessors
+  ---
+  duration_ms: 0.621542
+  type: 'test'
+  ...
+# Subtest: audit time is not a live-clock lease or OS authority
+ok 55 - audit time is not a live-clock lease or OS authority
+  ---
+  duration_ms: 0.198291
+  type: 'test'
+  ...
+1..55
+# tests 55
+# suites 0
+# pass 55
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 86.468667
