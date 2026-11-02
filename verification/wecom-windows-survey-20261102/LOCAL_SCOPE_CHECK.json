@@ -1,0 +1,27 @@
+{
+  "scope": "AST and local non-Windows rejection only",
+  "hostPlatform": "darwin",
+  "pythonSourceSha256": "153c7a6ed6fda7eb1b8a0c910826e14618ad5a495dd6ca78c1047251c317bae7",
+  "pythonAst": "passed",
+  "imports": [
+    "ctypes",
+    "json",
+    "os",
+    "sys"
+  ],
+  "readonlyApiBindings": [
+    "GetCurrentProcess",
+    "GetProcessTimes",
+    "GetSystemTimeAdjustment",
+    "GetSystemTimePreciseAsFileTime",
+    "GetTickCount64",
+    "QueryPerformanceCounter",
+    "QueryPerformanceFrequency",
+    "QueryUnbiasedInterruptTimePrecise"
+  ],
+  "nonWindowsGate": "rejected_as_expected",
+  "windowsApiCallsExecuted": 0,
+  "remoteCommandsExecuted": 0,
+  "powershellParseOrExecution": "not_run; no pwsh runtime",
+  "nativeAcceptance": false
+}

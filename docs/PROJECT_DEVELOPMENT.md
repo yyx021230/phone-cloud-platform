@@ -5690,3 +5690,14 @@ root确认当前无完整可加载安全路径后，企微owner从干净94a建�
 root独立28项通过后在隔离副本以合法JSON null替代not-json，发现stdout回调读value.nonce可抛未捕获TypeError。企微owner保存root红例/修前四源快照，并在旧helper上补null/array/bool/number/string/missing六项，实际34项28过6红后修：先严格对象和精确字段再读nonce，所有响应解析/协议异常进入同一首错锁存。strict schema使两个旧nonce/PID夹具因缺sample提前拒绝，32/34输出与旧child源保留，只补完整合法夹具再故意错绑定。最终34项全过；原初28材料单列保留、不倒填归新源。
 
 偏差反例改为由同createdAt的IEEE754秒构造精确hex token，先真实Agent physicalHosts接受，再真实server登记因合成-200ms拒绝；只证明两实际函数的合成偏差分支，不是完整pipeline/OS出生事实或原43原因。明示fixture counter默认静止、靠advance注入，不计实际HTTP/fsync墙钟耗时，真实本地传输/持久操作不能推出现实3秒界；claimedBy仅WeakMap，fsync文件未实现跨进程恢复。生产factory仍全部unsupported、产品入口未改，原生与线上动作0；本轮到此固定最小verification候选供接线审查，不继续扩大模型或对外API。
+
+
+### 变更记录｜2026-11-02 真实Windows只读clock调查脚本待审
+
+root已固定b4c适配叶包审3d922b，后继优先从实际API/主机证据查清可实现条件，停止继续扩模型或重复34。企微owner从干净b4c建立codex/wecom-windows-survey-plan-20261102，仅verification/wecom-windows-survey-20261102与记录：拟以现有Administrator SSH读取两次局部CIM OS/厂商型号/HypervisorPresent和自身身份类别，另用固定现有Python3.9 -I -B从stdin执行只读ctypes Kernel32脚本，16组配对读数，无sleep、落盘、Add-Type/csc、新SYSTEM入口或手机/ADB/SDK/服务动作。脚本/API签名、类型/权限、命令/输出/失败界及v1最小兼容接线待审点均在PLAN。
+
+Python AST/八固定read API绑定和本机非Windows拒绝已核；初次词扫描误把限制文字socket当调用的本地检查失败如实保留，后改AST审阅。无pwsh，PowerShell未解析或运行，Windows API未执行；没有远端连接。只读结果仍明确不签发authority/native许可，名义分辨率/periodic调整/型号或HypervisorPresent/boot wall不能升级为硬界或物理证明。源码hash先提交draft供root具体审查，实际执行不由本计划自动放行。
+
+### 决策日志｜2026-11-02 先查真实API和主机条件，不把未测永久假定不支持
+
+延续真机验收依赖修复目标，下一步用有界最小只读调查区分‘API真缺失’与‘尚未取得误差/暂停/代次/持久证据’，不扩大生产或新开SYSTEM入口。现有v1入口/旧义务保持；具体脚本审后才按批准范围采一次当前状态，观察不是校准或清理证明。系统sleep/虚拟机全冻结、Linux超管语义、SYSTEM实际child与socket peer、跨重启journal/PG等缺口仍单列；后续用实际调查结论提出最小兼容接线，不把调查自报布尔传进许可、不补43/改27912基线或挪155查名。当前仅计划，非Windows验收或完整运行时修复。

@@ -1,0 +1,12 @@
+{
+  "baseCommit": "b4c3897b3a0ea9d5d0cba281276b98d64db2452c",
+  "scope": "proposed read-only survey; Windows not executed",
+  "sha256": {
+    "docs/PROJECT_DEVELOPMENT.md": "d39c739d679dcdee8d598a4b1e4c7f2573dd47fc13fb244c1a5c9bd21d8af431",
+    "verification/wecom-windows-survey-20261102/LOCAL_CHECK_INITIAL_FAILURE.json": "1f823ccc0178fa3cc3e7241849481854749a3de3055e17f0e9e850779b54586d",
+    "verification/wecom-windows-survey-20261102/LOCAL_SCOPE_CHECK.json": "3c909caba78e1adb0976095d811c6b6dc9d9a2eda8cfb3e4365d0497acd7adce",
+    "verification/wecom-windows-survey-20261102/PLAN.md": "af6f9662a0068c5feca626f6aafc0f7bcf7cf7fa75eacf982beb7d5ca25ade9e",
+    "verification/wecom-windows-survey-20261102/windows_clock_survey.py": "153c7a6ed6fda7eb1b8a0c910826e14618ad5a495dd6ca78c1047251c317bae7",
+    "verification/wecom-windows-survey-20261102/windows_metadata.ps1": "080d110be479cb1ce62577416480960cd57e566f13fbddceec31274e67081eb0"
+  }
+}

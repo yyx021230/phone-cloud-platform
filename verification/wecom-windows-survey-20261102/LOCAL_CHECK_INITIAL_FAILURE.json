@@ -1,0 +1,7 @@
+{
+  "scope": "local static review only",
+  "reason": "word-based forbidden-socket check matched a harmless limitations string; no socket import/call",
+  "remoteCommandsExecuted": 0,
+  "windowsApiCallsExecuted": 0,
+  "sourceSha256": "153c7a6ed6fda7eb1b8a0c910826e14618ad5a495dd6ca78c1047251c317bae7"
+}
