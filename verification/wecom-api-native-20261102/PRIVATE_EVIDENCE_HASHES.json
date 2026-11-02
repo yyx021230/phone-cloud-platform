@@ -11,5 +11,6 @@
   "attempt-43-main-01/EVENTS.jsonl": "77a75c6e0eeb20a094b9b784b7c6e07c7ad9cf30508364b1199ea34b55a7b8aa",
   "attempt-43-main-01/INTENT.json": "1edf9f2fa4871fb20b3d15d07d79ca1c89d624fd57ca16df7b608c3a7563b7dc",
   "attempt-43-main-01/TRANSPORT.json": "b4ba812699f615c5afa237d2dec75b828d886f901c253f9c130c8377ee57f585",
-  "preflight-windows.ps1": "c572af871d3e9b5fd632ceed1499a535d17bc4952ea1c47c1a592ef498891938"
+  "preflight-windows.ps1": "c572af871d3e9b5fd632ceed1499a535d17bc4952ea1c47c1a592ef498891938",
+  "RESOURCE_RECHECK.json": "a201dea3abca377708beed9623a8f2010c89d64d1e765f9426cff4ac03592ee5"
 }

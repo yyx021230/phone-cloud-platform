@@ -1,0 +1,13 @@
+{
+  "at": "2026-11-02T07:16:09.9826870Z",
+  "agent19756Present": true,
+  "wecomCurrentHostCount": 0,
+  "directPythonCount": 11,
+  "sharedWorkerCount": 8,
+  "serverProcessIds": [
+    27912
+  ],
+  "originalServer8148Present": false,
+  "adbClientCalls": 0,
+  "phoneActions": 0
+}
