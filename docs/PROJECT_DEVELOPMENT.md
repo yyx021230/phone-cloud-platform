@@ -5603,3 +5603,13 @@ root只读审查固定draft.2及输出/hash后，明确仍未给产品实现/nat
 ### 决策日志｜2026-11-02 时钟精度和暂停保证须有部署证据，模型通过不替代授权依据
 
 延续draft.2的完整时间合同、3秒保守窗口和原义务隔离。拟定官方API不等于部署误差硬上界或超管暂停保证；模型仅验证带明确合成假设的数学边界，不能凭通常分辨率或continuity=true生成生产授权。当前缺真实误差/漂移、VM暂停与采样器依据，产品v2继续阻断；journal原生权限/原子API/崩溃恢复与实际PG旧checkpoint问题也仍未实现/验证。43旧义务不迁移、不新preview，27912不自动接纳为基线，生产native/ADB/身份/keys/入口/权限操作冻结保持；后续先固定离线版本供root评审，不将27项本地模型通过写作生产或真机完成。
+
+### 变更记录｜2026-11-02 时钟模型动作门控强制新采样，保留旧反例
+
+root在固定af00/model.1只运行无IO重现，observe一次/issue后连续permits可返回true/true；只说明API读取陈旧快照，未实际等待3秒或证明生产发生。企微owner新增7项反例，在未改af00 model源上实际全部失败（Missing expected exception）；原source/test/output hash及完整红例保留STALE_SAMPLE_RED，model.1标签不动。后继只改独占verification，未改产品：proof/business余量/issue/permits每次内部先observe本次sample，缺sample/重复sequence拒绝；暂停或监控断档第一次通过decision出现也会失效全部未消费ledger。纯数学helper改名snapshot*，明确不能作为动作门控，后台observe不再是先决条件。
+
+当前36项离线通过：原27适配新接口，新增7先红后绿及2业务/直接decision边界；MODEL1原27回执与当前36/旧源7红例各自绑定源码与输出，未挪改历史。实际适配器仍未实现，不能从新序号数值包证明刚读OS，也不解决全部客体时钟冻结不可区分性；真实VM/误差/权限/journal/PG和产品v2仍未验证/放行。所有生产、手机、OS时钟/权限、ADB/Agent/身份/keys操作为0，43义务与native冻结保持。
+
+### 决策日志｜2026-11-02 快照数学不能直接当动作授权
+
+延续原区间上/下界、完整RTT扣减和未知VM拒绝，修正model.1可无新观察反复许可的接口，不通过更改时间预算或给continuity布尔补真值解决。动作边界必须同步现取并校验新样本，不复用后台排队样本；离线接口仅检查样本结构/序号及数值一致性，不冒称已证明真实采样时效。缺样本/重复样本/暂停异常后继续保守失败，不重新issue旧task或清保护锁；固定新commit/model.2供root只读审查，产品实现仍待独立依据与批准。

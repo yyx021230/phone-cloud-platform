@@ -1,6 +1,6 @@
 # 企微时钟授权：离线区间模型
 
-状态：**仅verification，候选产品尚未实现/放行**。基线5d75159182f60f1654bd5976867bf74af45e24e2（合同draft.2），分支codex/wecom-clock-authority-model-20261102。生产源码32c/ACTIVE a539未改；43旧义务、147/52隔离及native冻结保持。
+状态：**仅verification，候选产品尚未实现/放行**。初始基线5d75159182f60f1654bd5976867bf74af45e24e2（合同draft.2）；model.2修订基线为af00bac0302d125221e876c9a3a01b0f7fd0b74a/model.1，分支codex/wecom-clock-authority-model-20261102。生产源码32c/ACTIVE a539未改；43旧义务、147/52隔离及native冻结保持。
 
 本目录没有OS采样器、网络、文件系统权限操作、Agent/ADB/SDK依赖，也没有连接实际Linux VM或Windows。全部时钟读数、误差参数、暂停/重启是显式合成数据；JSON恢复仅内存模型，不是实际PG/checkpoint/journal验证。前阶段8项OS子进程/HTTP原型没有重跑或并入本阶段测试数量。
 
@@ -47,6 +47,20 @@ boot在work读取瞬间的真值区间为`[boot_before-Eb, boot_after+Eb]`，wor
 
 `OfflineTaskBudgets`只用真实合成数值触发上述判断，随后使该模型中**全部未消费任务**转maintenance。JSON往返/新process epoch后，旧任务只有维护状态，没有可恢复的进程内stamp；同taskId禁止重新issue，不能换新epoch/新时间起点偷偷复活。它没有清锁/rearm接口，不是实际持久化层实现，不覆盖不同taskId的业务去重（仍由原合同负责）。
 
+## model.2：动作判断不能复用最后一次观察
+
+root在固定model.1发现`observe一次 -> issue -> permits -> permits`在没有新采样时仍可得true/true。本轮新增7项反例在未修改af00源码上实际全部失败，保留原model hash、反例源hash及完整输出；这是离线API缺口，不证明曾真实等待3秒或生产出现过相同行为。
+
+后继入口统一强制接收本次动作的新sample，并在判断之前内部`observe(sample)`：
+
+- `OfflineClockModel.proofWithinThreeSeconds(challenge,sample)`：缺采样/旧sequence先拒绝，不能只读上次年龄。
+- `businessLeaseWithinMargin(serverRemaining,requestSent,sample)`：先观察，再按完整RTT上界扣减并检查严格3秒余量。
+- `OfflineTaskBudgets.issue(taskId,budget,sample)`和`permits(taskId,sample)`：签发与每一次动作判断都先观察。无需先运行后台observe；暂停/监控断档第一次出现在decision时同样使该ledger全部未消费任务转maintenance。
+
+缺sample、复用sequence、数值暂停或监控断档会使当前模型失效；后续正常样本不会复活旧授权。原纯数学方法改为`snapshotAge / snapshotRemainingLowerBound / snapshotReceiveLeaseLowerBound`，明确只计算最后一份快照，**不可作为动作门控**。状态列表/snapshot也不是许可结果。
+
+实际适配器将来必须在动作入口同步现取样，不能从后台消息队列取一份旧数据再递增sequence。当前纯数值模型能拒绝缺sample/同sequence，不可能从一个伪装成新序号的相同数值包证明“真的刚读了OS”；它没有实现采样器，下面的VM全冻结不可观测性限制完全保留。该修订不产生真实时钟依据、native或产品结论。
+
 ## 必须保留的VM不可观测性反例
 
 设轨迹A是真实经过10ms，轨迹B是在虚拟机所有客体时钟同时冻结10秒后再工作10ms。若两者暴露的boot/work/wall/sequence/epoch完全相同，任何只看这些输入的确定性算法都无法辨别真实年龄。本测试保留相同输入的双场景，证明条件性“OS语义成立”模型会对两者给同一答案，**不是万能暂停检测器**。
@@ -55,8 +69,8 @@ boot在work读取瞬间的真值区间为`[boot_before-Eb, boot_after+Eb]`，wor
 
 ## 实际验证与未验项
 
-27项离线测试覆盖两种拟定源配置、数值暂停、监控断档、5种身份切换、同机wall前/后跳、固定offset、回退/宽样本/序号/伪continuity、缺界与错误API、未刻画VM、不可区分轨迹、外来stamp、完整RTT扣减、45组量化误差网格、精确3秒/余量边界、BigInt负值/超界、速率/夹取扣减、全任务维护及JSON重启不rearm。
+model.1原27项覆盖两种拟定源配置、数值暂停、监控断档、5种身份切换、同机wall前/后跳、固定offset、回退/宽样本/序号/伪continuity、缺界与错误API、未刻画VM、不可区分轨迹、外来stamp、完整RTT扣减、45组量化误差网格、精确3秒/余量边界、BigInt负值/超界、速率/夹取扣减、全任务维护及JSON重启不rearm。model.2适配新接口并新增9项：7项旧实现先红后绿反例、业务余量门控的新采样要求，以及监控停止后直接proof decision的拒绝。当前总数36项，不将参数网格/历史运行次数相加。
 
-验证命令：`node --test verification/wecom-clock-authority-20261102/model.test.mjs`。实际源码/输出hash与回执另存本目录。不把45组参数网格额外加成独立测试总数。
+验证命令：`node --test verification/wecom-clock-authority-20261102/*.test.mjs`。当前36项回执为TEST_RECEIPT/TEST_OUTPUT；MODEL1_TEST_RECEIPT/OUTPUT是固定af00原27项历史，STALE_SAMPLE_RED_RECEIPT/OUTPUT是该旧源码7项失败反例。各自源/输出hash分别绑定，不将旧回执误当当前源码结果。
 
 仍未验证：实际Linux/Windows API调用与精度、原生休眠/VM暂停、生产source指纹、采样监控调度、Windows journal权限/断电/API、真实PG与旧checkpoint顺序、业务与物理义务的产品v2实现、43旧义务恢复及真机API完整验收。本阶段不需要也没有OS/ADB/Agent/权限/生产动作，合同仍待review，产品实现仍未放行。

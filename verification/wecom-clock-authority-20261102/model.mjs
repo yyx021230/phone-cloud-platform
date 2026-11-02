@@ -69,21 +69,29 @@ export class OfflineClockModel {
       this.#stamps.set(stamp,point);return stamp;
     }catch(error){this.#failure=/^offline_clock_([a-z0-9_]+)$/.exec(error.message)?.[1]||'sample_invalid';throw error;}
   }
-  age(anchor){
+  // Pure interval arithmetic at the last snapshot, NEVER an action gate.
+  snapshotAge(anchor){
     this.#live();const point=this.#stamps.get(anchor);
     if(!point||!this.#last)fail('foreign_stamp');
     return this.#delta(point,this.#last,'boot');
   }
-  proofWithinThreeSeconds(challenge){return this.age(challenge).upperUs<=3_000_000n;}
-  remainingLowerBound(budgetUs,issued){
-    if(!allowedBudgets.has(budgetUs))fail('budget_changed');
-    return floor0(budgetUs-this.age(issued).upperUs);
+  proofWithinThreeSeconds(challenge,sample){
+    this.observe(sample); // Missing/replayed input poisons the epoch before any grant.
+    return this.snapshotAge(challenge).upperUs<=3_000_000n;
   }
-  receiveLeaseLowerBound(serverRemainingUs,requestSent){
+  snapshotRemainingLowerBound(budgetUs,issued){
+    if(!allowedBudgets.has(budgetUs))fail('budget_changed');
+    return floor0(budgetUs-this.snapshotAge(issued).upperUs);
+  }
+  snapshotReceiveLeaseLowerBound(serverRemainingUs,requestSent){
     if(!count(serverRemainingUs,300_000_000n))fail('remaining_invalid');
     // Includes this machine's paired read uncertainty and rate error. The
     // entire RTT upper bound is SUBTRACTED; no cross-host timestamps.
-    return floor0(serverRemainingUs-this.age(requestSent).upperUs);
+    return floor0(serverRemainingUs-this.snapshotAge(requestSent).upperUs);
+  }
+  businessLeaseWithinMargin(serverRemainingUs,requestSent,sample){
+    this.observe(sample);
+    return this.snapshotReceiveLeaseLowerBound(serverRemainingUs,requestSent)>3_000_000n;
   }
 }
 
@@ -104,7 +112,7 @@ export const fixtureSample=({sequence=1,bootUs=1_000_000n,workUs=bootUs,wallUs=1
 // persistence implementation. Raw clock observations, not poison flags, cause
 // all outstanding tickets to become maintenance. There is no clear/rearm API.
 export class OfflineTaskBudgets {
-  #clock;#current=null;#tasks=new Map();
+  #clock;#tasks=new Map();
   constructor(profile,{restored=[]}={}){
     this.#clock=new OfflineClockModel(profile);
     for(const row of restored){
@@ -118,19 +126,20 @@ export class OfflineTaskBudgets {
     }
   }
   observe(sample){
-    try{this.#current=this.#clock.observe(sample);return this.#current;}
-    catch(error){for(const row of this.#tasks.values())row.status='maintenance';this.#current=null;throw error;}
+    try{return this.#clock.observe(sample);}
+    catch(error){for(const row of this.#tasks.values())row.status='maintenance';throw error;}
   }
-  issue(taskId,budgetUs){
+  issue(taskId,budgetUs,sample){
     if(this.#tasks.has(taskId))fail('old_task_no_rearm');
-    if(!/^fixture-[a-z0-9-]{1,80}$/.test(taskId)||!allowedBudgets.has(budgetUs)||!this.#current)fail('task_budget_unavailable');
-    this.#clock.age(this.#current);
-    this.#tasks.set(taskId,{budgetUs,anchor:this.#current,status:'active'});
+    if(!/^fixture-[a-z0-9-]{1,80}$/.test(taskId)||!allowedBudgets.has(budgetUs))fail('task_budget_unavailable');
+    const anchor=this.observe(sample);
+    this.#tasks.set(taskId,{budgetUs,anchor,status:'active'});
   }
-  permits(taskId){
+  permits(taskId,sample){
+    this.observe(sample); // Every decision samples, even without background monitoring.
     const row=this.#tasks.get(taskId);
     if(!row||row.status!=='active'||!row.anchor)return false;
-    return this.#clock.remainingLowerBound(row.budgetUs,row.anchor)>0n;
+    return this.#clock.snapshotRemainingLowerBound(row.budgetUs,row.anchor)>0n;
   }
   statuses(){return [...this.#tasks].map(([taskId,row])=>({taskId,status:row.status}));}
   snapshot(){return [...this.#tasks].map(([taskId,row])=>({taskId,status:row.status,budgetUs:String(row.budgetUs)}));}
