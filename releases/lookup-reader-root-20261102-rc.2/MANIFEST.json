@@ -1,0 +1,15 @@
+{
+  "status": "local_candidate_not_deployed",
+  "base": "125845ed35b71257361e373fea0d290be86371a3",
+  "files": {
+    "windows-agent/scripts/alipay_name_lookup.py": "d13f48f5c81acc5e8e74675dc677d720c217c68baf3df4ac0f5165fe216dbdb2",
+    "windows-agent/scripts/test_lookup_search_ready_rpc.py": "a70e30461abf8ca4bb66fba2c324d913210188ea861bda79ecc3981d5019a02d"
+  },
+  "tests": {
+    "lookupPython": 532,
+    "targetedPython": 12,
+    "rootCheck": "passed",
+    "nativeThisPatch": "not_run"
+  },
+  "nativeBaselineBusinessCount": 0
+}

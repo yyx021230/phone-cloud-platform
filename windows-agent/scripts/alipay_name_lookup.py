@@ -280,6 +280,7 @@ class Runner:
         return proc.stdout
 
     def focus(self, timeout=10, recover=True):
+        started = time.perf_counter()
         try:
             output = self.adb(["shell", "dumpsys", "window"], timeout=timeout, check=False)
         except subprocess.TimeoutExpired as exc:
@@ -288,14 +289,27 @@ class Runner:
             # One read-only, device-side bounded recovery for transient WMS
             # stalls. Do not enter the launch fallback and repeat a 10s dump.
             self.emit("android_window_service_read_timeout", driver="poco_focus_adb",
+                      durationMs=round((time.perf_counter() - started) * 1000),
+                      budgetMs=round(timeout * 1000), observation="dumpsys_window",
                       deviceRestarted=False, queryReplayed=False)
+            recovery_started = time.perf_counter()
             try:
                 output = self.adb(["shell", "dumpsys", "-t", "2", "window"], timeout=3, check=False)
             except Exception as retry_exc:
+                self.emit("android_window_service_recovery_failed", driver="poco_focus_adb",
+                          durationMs=round((time.perf_counter() - recovery_started) * 1000),
+                          budgetMs=3000, observation="dumpsys_bounded_window",
+                          outcome="read_failed", errorType=type(retry_exc).__name__)
                 raise RuntimeError("poco_android_window_service_timeout") from retry_exc
             if "mCurrentFocus" not in str(output) or "DUMP TIMEOUT" in str(output):
+                self.emit("android_window_service_recovery_failed", driver="poco_focus_adb",
+                          durationMs=round((time.perf_counter() - recovery_started) * 1000),
+                          budgetMs=3000, observation="dumpsys_bounded_window",
+                          outcome="invalid_response")
                 raise RuntimeError("poco_android_window_service_timeout") from exc
             self.emit("android_window_service_read_recovered", driver="poco_focus_adb",
+                      durationMs=round((time.perf_counter() - recovery_started) * 1000),
+                      budgetMs=3000, observation="dumpsys_bounded_window",
                       deviceRestarted=False, queryReplayed=False)
         return [line.strip() for line in str(output).splitlines() if "mCurrentFocus" in line or "mFocusedApp" in line]
 
@@ -2728,7 +2742,10 @@ class Runner:
             self.emit("poco_search_input_probe_begin", driver="poco")
             return self.poco_unique(poco, timeout=2.0, live=live, name=SEARCH_INPUT_ID)
         except Exception as exc:
-            if str(exc).startswith("poco_rpc_failed:"):
+            if (str(exc).startswith("poco_rpc_failed:")
+                    or str(exc) == "poco_android_window_service_timeout"):
+                # A failed frame may also fail the fresh-focus overlay check.
+                # That window error does not make the hierarchy readable again.
                 # poco_unique already checked fresh focus for a known overlay.
                 # Re-reading the same failed hierarchy here consumed another
                 # full transport deadline on 149 before recovery could start.
