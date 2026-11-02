@@ -1,0 +1,30 @@
+{
+  "baseCommit": "57a3f7a3c8d005472c0c0aa49636c9e27735207c",
+  "candidateTag": "wecom-v2-original-lock-verify-20261102-draft.1",
+  "branch": "codex/wecom-v2-original-lock-verify-20261102",
+  "productAndDdlTreesUnchanged": true,
+  "sqlNotParsedOrExecuted": true,
+  "files": {
+    "docs/PROJECT_DEVELOPMENT.md": "29ac1acf03c1d65271fa336270ee465cda917125f3c1839d94b0049df07d9644",
+    "verification/wecom-v2-original-lock-verify-20261102/FINAL_LOCAL_0.txt": "7d9113e5aafba55198093aa222058dc3b24128fee5b534537cb5a4570ec47721",
+    "verification/wecom-v2-original-lock-verify-20261102/FINAL_LOCAL_1.txt": "f7f7e061dc82cf6e892998b691075b9c32dc963103dda742e1a4191a9adedf7d",
+    "verification/wecom-v2-original-lock-verify-20261102/FINAL_LOCAL_2.txt": "2305dcb2cd5425ff8ded16600004163e11f2e9884aa540b9a476fffed0e9850f",
+    "verification/wecom-v2-original-lock-verify-20261102/FINAL_LOCAL_3.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verification/wecom-v2-original-lock-verify-20261102/FINAL_LOCAL_RECEIPT.json": "8d15ea173ce02859435af121261f671441c2130a33c96e75a17ca3b10ab76278",
+    "verification/wecom-v2-original-lock-verify-20261102/OWNER_LOCAL_OUTPUT.txt": "75d8a7bb4525906ccad2e5cd6a3af2c7ad1ade22cb27bbdb7e436a043d9acaf2",
+    "verification/wecom-v2-original-lock-verify-20261102/OWNER_LOCAL_RECEIPT.json": "de1ee46f32872fa231c90d4c37584a4c70181b5e1ca7fa6a940dccc0d29cf8f4",
+    "verification/wecom-v2-original-lock-verify-20261102/RUNNER_REVIEW.md": "be08bb548095fe3c5d1669eedad77983738224518d22a8c2bdde66be387593d5",
+    "verification/wecom-v2-original-lock-verify-20261102/RUNNER_SOURCE_HASHES.json": "d8d817e74eb327d0615e613d9672644f498d63849f6fab0d67e37bc3e364770c",
+    "verification/wecom-v2-original-lock-verify-20261102/fixture-names.test.mjs": "b4cfe1d3d8723aa87745ce1a09944612834a474da52915de006d7b64f66e8a26",
+    "verification/wecom-v2-original-lock-verify-20261102/initial-owner/OWNER_LOCAL_OUTPUT.txt": "75d8a7bb4525906ccad2e5cd6a3af2c7ad1ade22cb27bbdb7e436a043d9acaf2",
+    "verification/wecom-v2-original-lock-verify-20261102/initial-owner/OWNER_LOCAL_RECEIPT.json": "de1ee46f32872fa231c90d4c37584a4c70181b5e1ca7fa6a940dccc0d29cf8f4",
+    "verification/wecom-v2-original-lock-verify-20261102/initial-owner/owner-fixture.mjs.txt": "b5373fc9fa7011540965602429f81d532122fd05bbed6c04a73b89b81fb50a63",
+    "verification/wecom-v2-original-lock-verify-20261102/initial-owner/owner-fixture.test.mjs.txt": "b0df1a95e80164eecaac97c5ed594747b848d60960cb1c39dbf3f14cc500ef4e",
+    "verification/wecom-v2-original-lock-verify-20261102/owned-pg.mjs": "4fdf1cd8d3291c258f33d51f91a04b616c2b8085677f7598f4843fdf8e7574e0",
+    "verification/wecom-v2-original-lock-verify-20261102/owner-fixture.mjs": "2cee60ac270a840b144c3eec00ba405912e0bfef06f505d38cbb0d34de0220d3",
+    "verification/wecom-v2-original-lock-verify-20261102/owner-fixture.test.mjs": "f6a39ca024d2009c2793222f48d9049a4ba2cbdbfdd457d1fe0f85bf70ddda20",
+    "verification/wecom-v2-original-lock-verify-20261102/postgres.integration.mjs": "cb5a11bb6b08ba9b1a4232616b6dd7e6af2e5ead93e6fe15ac4ec2bd551b476c",
+    "verification/wecom-v2-original-lock-verify-20261102/run-owned-postgres.py": "271f947425753d5f6498afbbdac8704cc8e3cc853f7a90120e26f1c7406a44bb",
+    "verification/wecom-v2-original-lock-verify-20261102/test_owned_runner.py": "7efb2b5098b7a0aea8596283ecaa20d55b65a170630996da136d6aabaf506f8c"
+  }
+}

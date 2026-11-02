@@ -1,0 +1,39 @@
+✔ synthetic normalized tuple matches candidate but grants no authority (8.05625ms)
+✔ context owner rejected before any DML (1.575584ms)
+✔ context claim rejected before any DML (0.679875ms)
+✔ context request rejected before any DML (0.527875ms)
+✔ lock id rejected before any DML (0.510417ms)
+✔ job id rejected before any DML (0.464916ms)
+✔ device rejected before any DML (0.236125ms)
+✔ owner rejected before any DML (0.398958ms)
+✔ slot rejected before any DML (0.42275ms)
+✔ kind rejected before any DML (0.665ms)
+✔ creation rejected before any DML (0.455083ms)
+✔ expiry rejected before any DML (0.363ms)
+✔ cleared expiry rejected before any DML (0.343083ms)
+✔ candidate state rejected before any DML (0.314167ms)
+✔ source state rejected before any DML (0.341833ms)
+✔ numeric revision rejected before any DML (0.555833ms)
+✔ zero-prefixed revision rejected before any DML (0.358667ms)
+✔ Date transport rejected before any DML (0.217667ms)
+✔ unknown added rejected before any DML (0.7385ms)
+✔ unknown changed rejected before any DML (0.529833ms)
+✔ unknown removed rejected before any DML (0.333708ms)
+✔ new marker rejected before any DML (0.62425ms)
+✔ bad updated time rejected before any DML (0.314334ms)
+✔ different released time rejected before any DML (0.322625ms)
+✔ invalid reason rejected before any DML (0.322708ms)
+✔ legacy ledger rejected before any DML (0.218875ms)
+✔ missing hold rejected before any DML (0.230083ms)
+✔ unknown JSON extensions unchanged are preserved, not discarded (0.594458ms)
+✔ candidate accessors are rejected without invocation or DML (0.284625ms)
+✔ same-message driver failure is not a local CAS conflict (0.44625ms)
+✔ only owned zero-row classification is a CAS conflict (0.407708ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 98.558084

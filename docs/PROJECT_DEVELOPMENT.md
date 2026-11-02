@@ -6115,3 +6115,13 @@ Node56258exit0/组消失、PG56245exit0确认、成功db原runner确认后删、
 ### 决策日志｜2026-11-02 同TX loader不调用开新连接M3自锁，不把纯policy当写许可
 
 持anchor期间仅verification loader同client读全tuple，S1结构分类仍零权限；COMMIT/ROLLBACK确认并release后才M3 fresh重读。受控fixture不是生产owner/auth实现，旧非参与writer随后覆盖仍是未解边界，COMMIT未知不拿现claim仍recorded当本次progress成功。产品/DDL/shared及旧17源不改，无测试/PG/SQL/Windows/设备动作；delivery持久回执/blob/boot/lookup owner根协调，S2/journal/native和主号分身真机未闭合，原43设备义务/147/52、查名池与冻结保持。
+
+### 变更记录｜2026-11-02 B片local loader/候选拒绝矩阵与四组owned PG源码待审
+
+root33e72941限定后，仅新增verification/wecom-v2-original-lock-verify-20261102。候选只可改四字段，其余全部已知未知JSON完整保持；context/owner/ID/slot/state/type/expiry/其他漂移DML前拒绝，当前31本地通过，初29源/日志/回执保留不累计；自有WeakSet CAS0与同message driver错误分开，不降任意SQL/连接错误为局部成功。loader全6步同client，持anchor不另connect；真实事务结束/release后才fresh M3。
+
+四组源码unmarked-negative/owner-status-known/target-nowait/target-cas-zero分别要求真A/B/C阻塞、known COMMIT、真55P03与真实CAS0+注入随目标回滚/另目标同TX提交，全部physical义务保留。固定business新root/marker、17源/6依赖、原45秒Node/原Popen边界；实际6 guards+2六seed反例、AST/JSsyntax/只读hash通过，SQL未解析/执行。
+
+### 决策日志｜2026-11-02 本地SQL fixture的owner不是实际权限，不接shared
+
+S1分类恒零权限，合成owner context只验证给定快照/SQL机制；旧未参与writer随后覆盖仍未解决，known COMMIT之外progress回执合同缺时继续unknown。产品/DDL/M1M2M3/policy/shared均未改，无PG/Windows/手机/生产。delivery、blob/boot与lookup owner由root另片协调，S2/journal/native默认禁启，原43设备义务/147/52和查名池保留，主号分身真机未验收。

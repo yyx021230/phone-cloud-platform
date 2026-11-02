@@ -1,0 +1,14 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "verification/wecom-v2-original-lock-verify-20261102/owner-fixture.test.mjs"
+  ],
+  "exitCode": 0,
+  "logSha256": "75d8a7bb4525906ccad2e5cd6a3af2c7ad1ade22cb27bbdb7e436a043d9acaf2",
+  "sourceSha256": {
+    "verification/wecom-v2-original-lock-verify-20261102/owner-fixture.mjs": "b5373fc9fa7011540965602429f81d532122fd05bbed6c04a73b89b81fb50a63",
+    "verification/wecom-v2-original-lock-verify-20261102/owner-fixture.test.mjs": "b0df1a95e80164eecaac97c5ed594747b848d60960cb1c39dbf3f14cc500ef4e"
+  },
+  "noPgSqlOrServiceActions": true
+}
