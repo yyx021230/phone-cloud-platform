@@ -1,0 +1,44 @@
+{
+  "atUtc": "2026-11-02T11:19:13.614440+00:00",
+  "status": "Root annotation correction; actual commands and transport observations unchanged",
+  "rootMistake": "Outer tool JSON display escaping was mistaken for literal repeated path separators without first decoding the saved JSON.",
+  "verifiedFacts": [
+    {
+      "receipt": "WECOM_EXPORTS_OBSERVATION/RECEIPT_INITIAL_COMMAND_ESCAPE.json",
+      "receiptSha256": "29880630b9cee227704e1e1fbe4bd90b683d496d554e24a5b90d3c296a9b9a3c",
+      "executableLength": 39,
+      "backslashCount": 4,
+      "adjacentSeparators": false
+    },
+    {
+      "receipt": "WECOM_EXPORTS_OBSERVATION/RECEIPT.json",
+      "receiptSha256": "dc1f39d610e0305c5da4480988e3ad26bb6e342f0dbab6c16aecf572fd53eced",
+      "executableLength": 39,
+      "backslashCount": 4,
+      "adjacentSeparators": false
+    },
+    {
+      "receipt": "WECOM_CLOCK_CONTRACT_OBSERVATION/RECEIPT.json",
+      "receiptSha256": "a679b7e9021cebc7fdb9a26e37b998621da6b06209084b2ba374b1099ee0a74b",
+      "executableLength": 39,
+      "backslashCount": 4,
+      "adjacentSeparators": false
+    },
+    {
+      "receipt": "LOOKUP_B5_UPLOAD_AUDIT/RECEIPT.json",
+      "receiptSha256": "9d8cd1d121acbf02cae041d63f508bfe43af4057ecd8381b1bae040a42a81e31",
+      "executableLength": 39,
+      "backslashCount": 4,
+      "adjacentSeparators": false
+    }
+  ],
+  "withdrawnAnnotations": [
+    "WECOM_KERNEL32_EXPORTS_REVIEW.json transportReceipt.receiptFieldCorrection.issue",
+    "WECOM_CLOCK_CONTRACT_OBSERVED.json transportReceipt.commandRepresentation.note",
+    "Earlier main-document sentences claiming a command/path separator correction or actual duplicate separators"
+  ],
+  "originalEvidencePreserved": true,
+  "actualCommandPathChanged": false,
+  "transportOrBodyChanged": false,
+  "apiOrPhoneResultChanged": false
+}
