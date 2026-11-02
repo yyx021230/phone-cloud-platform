@@ -5701,3 +5701,14 @@ Python AST/八固定read API绑定和本机非Windows拒绝已核；初次词扫
 ### 决策日志｜2026-11-02 先查真实API和主机条件，不把未测永久假定不支持
 
 延续真机验收依赖修复目标，下一步用有界最小只读调查区分‘API真缺失’与‘尚未取得误差/暂停/代次/持久证据’，不扩大生产或新开SYSTEM入口。现有v1入口/旧义务保持；具体脚本审后才按批准范围采一次当前状态，观察不是校准或清理证明。系统sleep/虚拟机全冻结、Linux超管语义、SYSTEM实际child与socket peer、跨重启journal/PG等缺口仍单列；后续用实际调查结论提出最小兼容接线，不把调查自报布尔传进许可、不补43/改27912基线或挪155查名。当前仅计划，非Windows验收或完整运行时修复。
+
+
+### 变更记录｜2026-11-02 首次Windows只读调查与失败留证缺口
+
+root审208具体脚本后，企微owner从干净208建立codex/wecom-windows-survey-observed-20261102，沿用既有Administrator SSH单次执行两个固定Git源/hash，未上传/换路径身份或新增SYSTEM入口。18:27:24北京时间PS326ms/exit0/stderr0，Win10.0.19045/64位、ASUS System Product Name/16逻辑CPU/HypervisorPresent=false/采集用户非SYSTEM；这些不是物理机/时钟证明。Python固定命令72ms/exit0/stderr0、stdout371字节，但原collector合并decode/shape/permission/status失败且成功才存body，原正文/分支丢失；只记录unconfirmed_response，不能推API不支持或JSON可解析，最初status猜测已更正。原collector/receipt不改，失败即停，未自动重采或碰ADB/SDK/手机/配置。
+
+本地新增独立Python-only补采wrapper提案，原208源/原命令/原身份、独立marker/绑定原receipt，先保存byte/SHA再parse、类型白名单后保留失败body再判断。root发现初版只key不校验known值类型，已保留旧8项与源，并以12方法/26错类型子场景先红后绿，最终12项本地通过；实际main用假transport验证原receipt不覆盖及不重发，无远端。材料在verification/wecom-windows-survey-20261102，合成127不是原371的错误。补采尚待具体wrapper审，不以本地通过自动执行。实际OS时钟读数、主机硬界、SYSTEM/peer/跨重启持久与v1修复仍缺，43原状态等保持。
+
+### 决策日志｜2026-11-02 传输成功不等于采样成功，失败正文须先留存
+
+延续只读调查而非真机授权。SSH exit0和371字节只能证明传输报告，没保存原body/parse分支就保留未知，不反推API支持性或重跑填证。补采仅在新wrapper审后一次原Python，metadata不重做；body所有字段和值类型必须固定schema，未知/未审内容不落盘，保存首因不再合并成一个笼统失败。样本/机器提示不能给工厂升权、不补旧host/清锁或调钟。此阶段留证与本地collector纠正，不是生产运行时修复或验收。

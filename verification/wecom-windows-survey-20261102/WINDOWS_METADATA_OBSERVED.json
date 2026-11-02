@@ -1,0 +1,16 @@
+{
+  "scope": "readonly-os-and-virtualization-hints",
+  "atUtc": "2026-11-02T10:27:24.4667477Z",
+  "isSystem": false,
+  "version": "10.0.19045",
+  "build": "19045",
+  "architecture": "64 \u4f4d",
+  "observedLastBootWallUtc": "2026-10-19T03:58:09.1154410Z",
+  "manufacturer": "ASUS",
+  "model": "System Product Name",
+  "hypervisorPresent": false,
+  "logicalProcessors": 16,
+  "physicalOrVmProven": false,
+  "clockAuthorityProven": false,
+  "nativeExecutionPermitted": false
+}

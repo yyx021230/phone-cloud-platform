@@ -1,0 +1,81 @@
+"""Proposed one CLOCK-only supplement; requires a separate concrete review.
+
+Does not re-run metadata or overwrite the original unknown attempt.
+"""
+import datetime
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import sys
+from collect_reviewed import BASE, ROOT, HERE, APPROVED, bounded
+
+ALLOWED = {'scope', 'authoritySupported', 'nativeExecutionPermitted', 'physicalCleanupVerified',
+           'pid', 'sampleLimit', 'executionContext', 'status', 'windowsVersion', 'pointerBits',
+           'ownCreationFileTime100ns', 'qpcFrequency', 'adjustmentObservation', 'selectedApis',
+           'bootIdentityConfirmed', 'physicalOrVmConfirmed', 'units', 'samples', 'anomalies',
+           'limitations', 'failedStage', 'errorType', 'windowsError'}
+
+
+def classify(raw):
+    try:
+        value = json.loads(raw.decode('utf-8-sig'))
+    except UnicodeError:
+        return {'classification': 'invalid_utf8'}, None
+    except json.JSONDecodeError as error:
+        return {'classification': 'not_json', 'errorLine': error.lineno, 'errorColumn': error.colno}, None
+    if not isinstance(value, dict) or set(value) - ALLOWED:
+        return {'classification': 'non_whitelisted_shape'}, None
+    if (value.get('scope') != 'readonly-clock-observation'
+            or any(value.get(k) is not False for k in (
+                'authoritySupported', 'nativeExecutionPermitted', 'physicalCleanupVerified'))):
+        return {'classification': 'unexpected_scope_or_permission'}, None
+    status = value.get('status')
+    if status == 'observed_not_authority':
+        return {'classification': 'observed_not_authority'}, value
+    if status in ('unsupported_api_or_read_failure', 'unsupported_platform'):
+        return {'classification': 'observed_unsupported_or_api_failure',
+                'failedStage': value.get('failedStage'), 'errorType': value.get('errorType'),
+                'windowsError': value.get('windowsError')}, value
+    return {'classification': 'unknown_status'}, None
+
+
+def main():
+    if sys.argv[1:] != ['--execute-reviewed-clock-once']:
+        raise SystemExit('explicit_clock_supplement_required')
+    receipt_file, body_file = HERE / 'CLOCK_SUPPLEMENT_RECEIPT.json', HERE / 'CLOCK_SUPPLEMENT_BODY.json'
+    if receipt_file.exists() or body_file.exists():
+        raise SystemExit('supplement_already_attempted_no_retry')
+    original = HERE / 'EXECUTION_RECEIPT.json'
+    if not original.exists():
+        raise SystemExit('original_attempt_required')
+    path = 'verification/wecom-windows-survey-20261102/windows_clock_survey.py'
+    source = subprocess.check_output(['git', '-C', str(ROOT), 'show', BASE + ':' + path])
+    if hashlib.sha256(source).hexdigest() != APPROVED['windows_clock_survey.py']:
+        raise SystemExit('reviewed_source_hash_mismatch')
+    receipt = {'atUtc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+               'originalReceiptSha256': hashlib.sha256(original.read_bytes()).hexdigest(),
+               'sourceCommit': BASE, 'sourceSha256': APPROVED['windows_clock_survey.py'],
+               'scope': 'clock-only read-only supplement; separately reviewed; no metadata retry',
+               'phoneActions': 0, 'adbClientCalls': 0, 'productionConfigChanges': 0, 'nativeAcceptance': False}
+    with receipt_file.open('x') as file:
+        json.dump(receipt, file, indent=2)
+    received, transport = bounded(r'D:\PhoneCloud\tools\python39\python.exe -I -B - --observe', source)
+    receipt.update(transport, stdoutSha256=hashlib.sha256(received['stdout']).hexdigest())
+    if transport['failure'] or transport['exitCode']:
+        receipt['classification'] = 'unconfirmed_transport'
+    else:
+        result, value = classify(received['stdout'])
+        receipt.update(result)
+        if value is not None:
+            with body_file.open('x') as file:
+                file.write(json.dumps(value, indent=2, ensure_ascii=True) + '\n')
+    receipt['completedAtUtc'] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    receipt_file.write_text(json.dumps(receipt, indent=2) + '\n')
+    print(json.dumps(receipt), flush=True)
+    if receipt['classification'] != 'observed_not_authority':
+        raise SystemExit('stopped_with_recorded_failure_no_retry')
+
+
+if __name__ == '__main__':
+    main()
