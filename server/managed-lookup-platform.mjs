@@ -197,11 +197,25 @@ export function createManagedLookupAdapter(api){
       await persist(tx,{automationSession:session,automationJobs:jobs,windowsTasks:tasks});
     },
     async stop(c,tx){
-      const mark=checkpoint(tx);const track=fn=>{try{return fn();}finally{mark();}};const s=state.automationSessions.find(s=>s.sessionId===c.sessionId);if(!s)return;
-      const old=structuredClone(s);tx.onRollback(()=>Object.assign(s,old));let cancelledJob=null,cancelledTask=null;
-      if(s.pendingJobId){const job=state.automationJobs.find(j=>j.jobId===s.pendingJobId);if(job){const copy=structuredClone(job),task=state.windowsTasks.find(t=>t.taskId===job.windowsTaskId),taskCopy=task&&structuredClone(task);tx.onRollback(()=>{Object.assign(job,copy);if(task)Object.assign(task,taskCopy);});api.cancelJob(job,'managed_pool_stopping',{releaseLock:false});cancelledJob=job;cancelledTask=task;}}
+      const s=state.automationSessions.find(s=>s.sessionId===c.sessionId);if(!s)return;
+      // A stale channel must not cancel a newer execution or create a stop for
+      // another phone. Validate the complete binding before any state mutation.
+      const pending=s.pendingJobId?state.automationJobs.find(j=>j.jobId===s.pendingJobId):null;
+      const pendingTask=pending?.windowsTaskId?state.windowsTasks.find(t=>t.taskId===pending.windowsTaskId):null;
+      if(typeof c.generation!=='string'||!c.generation||!c.clientId||s.deviceId!==c.deviceId
+        ||s.managedLookupGeneration!==c.generation||s.clientId!==c.clientId||s.source!=='managed-api'
+        ||(s.pendingJobId&&(!pending||pending.deviceId!==c.deviceId||pending.sessionId!==c.sessionId
+          ||pending.clientId!==c.clientId||pending.source!=='managed-api'||!/^alipay_name_(start|query|switch|stop)$/.test(pending.kind)
+          ||(pending.windowsTaskId&&!pendingTask)))
+        ||(pendingTask&&(pendingTask.deviceId!==c.deviceId||pendingTask.type!==pending.kind
+          ||pendingTask.payload?.automationJobId!==pending.jobId||pendingTask.payload?.automationSessionId!==c.sessionId
+          ||pendingTask.payload?.managedLookup?.generation!==c.generation)))throw managedLookupError('managed_stop_binding_mismatch',409);
       const device=state.devices.find(d=>d.deviceId===c.deviceId);
       if(!device||!api.online(device))throw managedLookupError('managed_stop_requires_online',503);
+      const mark=checkpoint(tx);const track=fn=>{try{return fn();}finally{mark();}};
+      const restore=(target,copy)=>{for(const key of Object.keys(target))delete target[key];Object.assign(target,copy);};
+      const old=structuredClone(s);tx.onRollback(()=>restore(s,old));let cancelledJob=null,cancelledTask=null;
+      if(pending){const copy=structuredClone(pending),taskCopy=pendingTask&&structuredClone(pendingTask);tx.onRollback(()=>{restore(pending,copy);if(pendingTask)restore(pendingTask,taskCopy);});api.cancelJob(pending,'managed_pool_stopping',{releaseLock:false});cancelledJob=pending;cancelledTask=pendingTask;}
       const job=track(()=>api.createJob({kind:'alipay_name_stop',userId:s.userId,deviceId:c.deviceId,sessionId:c.sessionId}));tag(c,job);delete s.lookupStopFailure;delete s.lookupStopConfirmation;s.status='stopping';s.pendingJobId=job.jobId;const task=track(()=>api.queueTask(device,job));holdManagedLookupDispatch(task,tx);mark();await persist(tx,{automationSession:s,automationJob:job,windowsTask:task,automationJobs:cancelledJob?[cancelledJob]:[],windowsTasks:cancelledTask?[cancelledTask]:[]});
     }
   };

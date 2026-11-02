@@ -1,0 +1,58 @@
+{
+  "status": "local_candidate_not_deployed",
+  "base": "7957e07d27f86cbb6cbddb0849d7ef4ffab5a0f7",
+  "node": "v25.9.0",
+  "tests": {
+    "baselineRed": {
+      "tests": 14,
+      "pass": 2,
+      "fail": 12,
+      "scope": "11 stale binding cases plus exact rollback; legacy no-runtime positive already passed"
+    },
+    "targetFinal": {
+      "tests": 22,
+      "pass": 22,
+      "fail": 0,
+      "command": "node --test server/lookup-legacy-stop.test.mjs"
+    },
+    "lookupRegressionFirst": {
+      "tests": 818,
+      "pass": 806,
+      "fail": 12,
+      "reason": "HTTP children could not start: missing ws (ERR_MODULE_NOT_FOUND)"
+    },
+    "dependencyRepair": {
+      "command": "npm ci --offline --ignore-scripts --no-audit --no-fund",
+      "exit": 0,
+      "lockfileChanged": false
+    },
+    "lookupRegressionFinal": {
+      "tests": 826,
+      "pass": 826,
+      "fail": 0,
+      "durationMs": 156931.272584,
+      "command": "env -u DATABASE_URL -u REDIS_URL -u MANAGED_LOOKUP_TEST_DATABASE_URL node --test server/lookup*.test.mjs server/managed-lookup*.test.mjs"
+    },
+    "rootCheck": {
+      "command": "npm run check",
+      "exit": 0
+    }
+  },
+  "limits": [
+    "Synthetic task execution and proof; no Windows or phone operation",
+    "File store reopen, not PostgreSQL migration or complete server restart",
+    "New adapter not native validated; old dfa4102/native.2 evidence is not transferred",
+    "No production release, push or four-phone cleanup"
+  ],
+  "review": {
+    "self": "diff and call-chain reviewed",
+    "coordinator": "root read-only review: no new blocker; missing pending metadata intentionally stays isolated; independent fixed-commit test pending"
+  },
+  "privateLogHashes": {
+    "lookup-legacy-stop-red.log": "cc78569496f96009cd1f825be2556a59a1f672722ba3f40c5668132a6aec11f4",
+    "lookup-legacy-stop-green.log": "dfefb24531fc3af28ab13929ac76f49b9d9b06c022bbfb9aa21547d24748da33",
+    "lookup-legacy-stop-regression.log": "bacac00ccdc79094d55fa614bf8448bfcd2609bc1483a7ed590007ddefd14188",
+    "lookup-legacy-stop-dependencies.log": "a78f613876ef5e811b7c3947427bf9e4d0733a1ea1b6478f8b5834ae01f2f1f4",
+    "lookup-legacy-stop-check.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+  }
+}
