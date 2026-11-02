@@ -6097,3 +6097,13 @@ SAVEPOINT55P03只回滚首目标，另目标同writer提交后新backend复读�
 ### 决策日志｜2026-11-02 只扩展窄projection比较，不据此接shared
 
 固定新projection私有root/marker、13源/6依赖、45秒Node/原Popen清理/失败留库；实际6guards+2四seed命名反例、AST/JSsyntax与只读hash通过，四SQL未执行。comparison/产品/M1M2M3/DDL/shared均未改，不累计历史测试，不扩大B/C或blob/boot/lookup canonical/cross-admission。原43设备义务/147/52和查名池保留，S2/journal/native与主号分身真机仍未完成，无新PG/Windows/手机/生产动作。
+
+### 变更记录｜2026-11-02 job/hold窄投影比较私有PG4/4通过
+
+root审固定bb20bfa后，新库pc-wecom-v2-projection-pg-z7kfy78i单次真实4/4pass、4case/attempt齐/前后源匹配；7原件/13固定源与root actual-review逐字封存verification/wecom-v2-job-hold-observed-20261102。A原M3 5DML、B raw/C精确Lock阻塞后提交，job负1丢claim/guard0完整，hold负1released但SQL expiryNULL/binding保留、guard0 cleanup_pending/nonexpiry，两负M3conflict/正M3recorded，ledger与anchor义务均保留。
+
+Node56258exit0/组消失、PG56245exit0确认、成功db原runner确认后删、旧gr_br461失败db未动。INITDB EOF原空白保留并单列例外，不累计历史不同阶段测试；归档无新连接/Windows/设备/生产动作。
+
+### 决策日志｜2026-11-02 投影released不等于物理释放，shared仍未改
+
+只验证比较SQL，不能当生产因果或shared修复。下一仅准备原business-lock验证切片提案：无marker负例、同transaction anchor/fulltuple、immutable/status/fullJSONB CAS、目标局部冲突；禁止持anchor调用另开连接M3 reconcile自锁。delivery/controlled progress独立操作回执另片，blob/boot/lookup根协调；S2/journal/native默认禁用，原43设备义务/147/52和查名池保留，主号分身真机未验收。

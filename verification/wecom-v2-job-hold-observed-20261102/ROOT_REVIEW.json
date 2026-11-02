@@ -1,0 +1,244 @@
+{
+  "candidateCommit": "bb20bfaf1153f9fab77c0bf880b1dc26fa0328ff",
+  "tag": "wecom-v2-job-hold-epq-20261102-draft.1",
+  "packageHashes": 12,
+  "sourceHashes": 13,
+  "dependencyHashes": 6,
+  "tagBound": true,
+  "productDdlUnchanged": true,
+  "diffCheckExit": 0,
+  "astParsed": true,
+  "rootChecks": [
+    {
+      "label": "guard",
+      "command": [
+        "python3",
+        "-I",
+        "-B",
+        "verification/wecom-v2-job-hold-epq-20261102/test_owned_runner.py"
+      ],
+      "exitCode": 0,
+      "rawSha256": "8d87e639eea9f16b29b40d4e6c3d409fde9896dafb2890b1cf3ca585321f6f98"
+    },
+    {
+      "label": "seeds",
+      "command": [
+        "/opt/homebrew/bin/node",
+        "--test",
+        "--test-reporter=tap",
+        "verification/wecom-v2-job-hold-epq-20261102/fixture-names.test.mjs"
+      ],
+      "exitCode": 0,
+      "rawSha256": "dcd404cce9d6281fa9006298a993d61ec6c1eb638d38c1e664e2d65f10f49303"
+    },
+    {
+      "label": "syntax",
+      "command": [
+        "/opt/homebrew/bin/node",
+        "--check",
+        "verification/wecom-v2-job-hold-epq-20261102/postgres.integration.mjs"
+      ],
+      "exitCode": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "actualPgExecuted": true,
+  "artifactRoot": "/private/tmp/pc-wecom-v2-projection-pg-z7kfy78i",
+  "startedAtUtc": "2026-11-02T15:19:30.689719+00:00",
+  "actualPgTests": 4,
+  "passed": 4,
+  "failed": 0,
+  "completedCases": 4,
+  "attempts": 4,
+  "cases": [
+    {
+      "name": "job-negative",
+      "aBackend": 56263,
+      "bBackend": 56261,
+      "lockProof": {
+        "waiter": 56261,
+        "blocker": 56263,
+        "controlBackend": 56262,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          56263
+        ],
+        "backendXmin": "739",
+        "queryStart": "2026-11-02T15:19:31.527Z",
+        "reads": 1,
+        "elapsedMs": 0.9625419999999991,
+        "exactStatementSnapshotExported": false
+      },
+      "returning": {
+        "command": "INSERT",
+        "rowCount": 1,
+        "rows": [
+          {
+            "recordId": "job-projection-job-negative",
+            "status": "queued",
+            "dataSha256": "40f8353eeea2f6227c05026fdfb9e62fba6506883e53fc3ae68b9dbed80f24e9",
+            "hasClaim": false,
+            "bindingVersion": null
+          }
+        ]
+      },
+      "final": {
+        "role": "job",
+        "dataSha256": "40f8353eeea2f6227c05026fdfb9e62fba6506883e53fc3ae68b9dbed80f24e9",
+        "hasClaim": false,
+        "bindingVersion": null,
+        "status": "queued",
+        "updatedAt": "2099-01-01T00:00:00.000Z",
+        "claimDataPreserved": true,
+        "physicalAnchorRetained": true,
+        "m3StorageStatus": "conflict"
+      }
+    },
+    {
+      "name": "job-guarded",
+      "aBackend": 56263,
+      "bBackend": 56262,
+      "lockProof": {
+        "waiter": 56262,
+        "blocker": 56263,
+        "controlBackend": 56261,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          56263
+        ],
+        "backendXmin": "747",
+        "queryStart": "2026-11-02T15:19:31.536Z",
+        "reads": 1,
+        "elapsedMs": 0.6442910000000097,
+        "exactStatementSnapshotExported": false
+      },
+      "returning": {
+        "command": "INSERT",
+        "rowCount": 0,
+        "rows": []
+      },
+      "final": {
+        "role": "job",
+        "dataSha256": "a79a771212e4544a62591af71be01d8217a7b859e24c90ca99afa04b4585b03a",
+        "hasClaim": true,
+        "bindingVersion": null,
+        "status": "running",
+        "updatedAt": "2026-11-02T05:00:01.000Z",
+        "claimDataPreserved": true,
+        "physicalAnchorRetained": true,
+        "m3StorageStatus": "recorded"
+      }
+    },
+    {
+      "name": "hold-negative",
+      "aBackend": 56263,
+      "bBackend": 56261,
+      "lockProof": {
+        "waiter": 56261,
+        "blocker": 56263,
+        "controlBackend": 56262,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          56263
+        ],
+        "backendXmin": "755",
+        "queryStart": "2026-11-02T15:19:31.542Z",
+        "reads": 1,
+        "elapsedMs": 0.32620800000000827,
+        "exactStatementSnapshotExported": false
+      },
+      "returning": {
+        "command": "INSERT",
+        "rowCount": 1,
+        "rows": [
+          {
+            "recordId": "physical-projection-hold-negative",
+            "status": "released",
+            "dataSha256": "78695d779de085c288c18d86950ff005e9f86d0b527ca931abc7c4036374b524",
+            "hasClaim": false,
+            "bindingVersion": 2
+          }
+        ]
+      },
+      "final": {
+        "role": "hold",
+        "dataSha256": "78695d779de085c288c18d86950ff005e9f86d0b527ca931abc7c4036374b524",
+        "hasClaim": false,
+        "bindingVersion": 2,
+        "status": "released",
+        "updatedAt": "2099-01-01T00:00:00.000Z",
+        "claimDataPreserved": true,
+        "sqlExpiresAt": null,
+        "physicalAnchorRetained": true,
+        "m3StorageStatus": "conflict"
+      }
+    },
+    {
+      "name": "hold-guarded",
+      "aBackend": 56263,
+      "bBackend": 56262,
+      "lockProof": {
+        "waiter": 56262,
+        "blocker": 56263,
+        "controlBackend": 56261,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          56263
+        ],
+        "backendXmin": "763",
+        "queryStart": "2026-11-02T15:19:31.547Z",
+        "reads": 1,
+        "elapsedMs": 0.28837499999998784,
+        "exactStatementSnapshotExported": false
+      },
+      "returning": {
+        "command": "INSERT",
+        "rowCount": 0,
+        "rows": []
+      },
+      "final": {
+        "role": "hold",
+        "dataSha256": "5383650984a5472e58902b14e57848bb58bdba414dc5cfbcb6a51bf6585f3b5d",
+        "hasClaim": false,
+        "bindingVersion": 2,
+        "status": "cleanup_pending",
+        "updatedAt": "2026-11-02T05:00:01.000Z",
+        "claimDataPreserved": true,
+        "sqlExpiresAt": null,
+        "physicalAnchorRetained": true,
+        "m3StorageStatus": "recorded"
+      }
+    }
+  ],
+  "sourceAfterMatched": true,
+  "nodeCleanup": {
+    "started": true,
+    "pid": 56258,
+    "exitCode": 0,
+    "groupAbsent": true
+  },
+  "postgresCleanup": {
+    "pid": 56245,
+    "exitCode": 0,
+    "confirmed": true
+  },
+  "successfulOwnDataRemoved": true,
+  "previousFailedDataRetained": true,
+  "artifactSha256": {
+    "fixture.json": "bae36e5b5a013b8a7baea65eb3d091d6008be20ba02ddee7ab98b9cefdd1a901",
+    "POSTGRES.txt": "cca32c31da094d98f0f6fbdbf2d03610db3058723acff91724003e472cd84230",
+    "PG_EVIDENCE.json": "74a114264d57b44ad5014987f5f7a8e16d1d5a87c9e43a59f994eca062ffacc0",
+    "CREATEDB.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "INITDB.txt": "c4c73a16e15633c57c67f5efece4eb978c313e8c942078f959b5dbc0047af6d4",
+    "NODE_TEST_OUTPUT.txt": "a3ec968ce24a5315afdff1a3a5d922ff538584b58b1cd692836a8e8986cd87c0",
+    "RUN_RECEIPT.json": "a6ac993ece65bc2d3aa71d0f88e6e8cb60b6750b144b48bd5ed02396da0b9885"
+  },
+  "productionChanged": false,
+  "phoneAcceptance": false,
+  "historicalRootCauseProven": false,
+  "sharedWriterRepaired": false
+}

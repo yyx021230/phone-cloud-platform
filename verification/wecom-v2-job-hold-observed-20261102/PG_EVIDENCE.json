@@ -1,0 +1,481 @@
+{
+  "kind": "job-hold-EPQ-only",
+  "server": {
+    "privateDataDirectoryMatched": true,
+    "loopbackPortMatched": true,
+    "fsync": "on",
+    "synchronousCommit": "on"
+  },
+  "cases": [
+    {
+      "name": "job-negative",
+      "trace": [
+        "A_all_five_DML_uncommitted_before_COMMIT",
+        "B_raw_statement_dispatched_while_A_uncommitted",
+        "C_server_observed_B_active_Lock_blocked_by_A",
+        "A_COMMIT_released_only_after_server_proof",
+        "B_raw_statement_returned",
+        "B_COMMIT_confirmed"
+      ],
+      "comparisonSql": "20843c962c73c9ebb6f9b4cfdeadd80f247adcfa57f855e04016619ea6a95968",
+      "aTransaction": {
+        "xid": "739",
+        "snapshot": "739:739:"
+      },
+      "aBackend": 56263,
+      "aDmlCount": 5,
+      "bBackend": 56261,
+      "lateTimestamp": "2099-01-01T00:00:00.000Z",
+      "aTimestamp": "2026-11-02T05:00:01.000Z",
+      "lockProof": {
+        "waiter": 56261,
+        "blocker": 56263,
+        "controlBackend": 56262,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          56263
+        ],
+        "backendXmin": "739",
+        "queryStart": "2026-11-02T15:19:31.527Z",
+        "reads": 1,
+        "elapsedMs": 0.9625419999999991,
+        "exactStatementSnapshotExported": false
+      },
+      "aCommitTag": "COMMIT",
+      "bReturning": {
+        "command": "INSERT",
+        "rowCount": 1,
+        "rows": [
+          {
+            "recordId": "job-projection-job-negative",
+            "status": "queued",
+            "dataSha256": "40f8353eeea2f6227c05026fdfb9e62fba6506883e53fc3ae68b9dbed80f24e9",
+            "hasClaim": false,
+            "bindingVersion": null
+          }
+        ]
+      },
+      "final": {
+        "role": "job",
+        "dataSha256": "40f8353eeea2f6227c05026fdfb9e62fba6506883e53fc3ae68b9dbed80f24e9",
+        "hasClaim": false,
+        "bindingVersion": null,
+        "status": "queued",
+        "updatedAt": "2099-01-01T00:00:00.000Z",
+        "claimDataPreserved": true,
+        "physicalAnchorRetained": true,
+        "m3StorageStatus": "conflict"
+      },
+      "protocolPermit": false,
+      "negativeControl": true
+    },
+    {
+      "name": "job-guarded",
+      "trace": [
+        "A_all_five_DML_uncommitted_before_COMMIT",
+        "B_raw_statement_dispatched_while_A_uncommitted",
+        "C_server_observed_B_active_Lock_blocked_by_A",
+        "A_COMMIT_released_only_after_server_proof",
+        "B_raw_statement_returned",
+        "B_COMMIT_confirmed"
+      ],
+      "comparisonSql": "b90fe24046b074edc06b4147cefae06a8f59b4e32c62017ff5c52a8ea887a65f",
+      "aTransaction": {
+        "xid": "747",
+        "snapshot": "747:747:"
+      },
+      "aBackend": 56263,
+      "aDmlCount": 5,
+      "bBackend": 56262,
+      "lateTimestamp": "2099-01-01T00:00:00.000Z",
+      "aTimestamp": "2026-11-02T05:00:01.000Z",
+      "lockProof": {
+        "waiter": 56262,
+        "blocker": 56263,
+        "controlBackend": 56261,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          56263
+        ],
+        "backendXmin": "747",
+        "queryStart": "2026-11-02T15:19:31.536Z",
+        "reads": 1,
+        "elapsedMs": 0.6442910000000097,
+        "exactStatementSnapshotExported": false
+      },
+      "aCommitTag": "COMMIT",
+      "bReturning": {
+        "command": "INSERT",
+        "rowCount": 0,
+        "rows": []
+      },
+      "final": {
+        "role": "job",
+        "dataSha256": "a79a771212e4544a62591af71be01d8217a7b859e24c90ca99afa04b4585b03a",
+        "hasClaim": true,
+        "bindingVersion": null,
+        "status": "running",
+        "updatedAt": "2026-11-02T05:00:01.000Z",
+        "claimDataPreserved": true,
+        "physicalAnchorRetained": true,
+        "m3StorageStatus": "recorded"
+      },
+      "protocolPermit": false,
+      "negativeControl": false
+    },
+    {
+      "name": "hold-negative",
+      "trace": [
+        "A_all_five_DML_uncommitted_before_COMMIT",
+        "B_raw_statement_dispatched_while_A_uncommitted",
+        "C_server_observed_B_active_Lock_blocked_by_A",
+        "A_COMMIT_released_only_after_server_proof",
+        "B_raw_statement_returned",
+        "B_COMMIT_confirmed"
+      ],
+      "comparisonSql": "e5ef5d9d909015b33d197217c5edac7fe43d3d03356faf38a7ddc647751f3568",
+      "aTransaction": {
+        "xid": "755",
+        "snapshot": "755:755:"
+      },
+      "aBackend": 56263,
+      "aDmlCount": 5,
+      "bBackend": 56261,
+      "lateTimestamp": "2099-01-01T00:00:00.000Z",
+      "aTimestamp": "2026-11-02T05:00:01.000Z",
+      "lockProof": {
+        "waiter": 56261,
+        "blocker": 56263,
+        "controlBackend": 56262,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          56263
+        ],
+        "backendXmin": "755",
+        "queryStart": "2026-11-02T15:19:31.542Z",
+        "reads": 1,
+        "elapsedMs": 0.32620800000000827,
+        "exactStatementSnapshotExported": false
+      },
+      "aCommitTag": "COMMIT",
+      "bReturning": {
+        "command": "INSERT",
+        "rowCount": 1,
+        "rows": [
+          {
+            "recordId": "physical-projection-hold-negative",
+            "status": "released",
+            "dataSha256": "78695d779de085c288c18d86950ff005e9f86d0b527ca931abc7c4036374b524",
+            "hasClaim": false,
+            "bindingVersion": 2
+          }
+        ]
+      },
+      "final": {
+        "role": "hold",
+        "dataSha256": "78695d779de085c288c18d86950ff005e9f86d0b527ca931abc7c4036374b524",
+        "hasClaim": false,
+        "bindingVersion": 2,
+        "status": "released",
+        "updatedAt": "2099-01-01T00:00:00.000Z",
+        "claimDataPreserved": true,
+        "sqlExpiresAt": null,
+        "physicalAnchorRetained": true,
+        "m3StorageStatus": "conflict"
+      },
+      "protocolPermit": false,
+      "negativeControl": true
+    },
+    {
+      "name": "hold-guarded",
+      "trace": [
+        "A_all_five_DML_uncommitted_before_COMMIT",
+        "B_raw_statement_dispatched_while_A_uncommitted",
+        "C_server_observed_B_active_Lock_blocked_by_A",
+        "A_COMMIT_released_only_after_server_proof",
+        "B_raw_statement_returned",
+        "B_COMMIT_confirmed"
+      ],
+      "comparisonSql": "393ff409b639f0a4bd8b1b3cbd754b24b82ccd2b637fc4b5d056c423dce0830c",
+      "aTransaction": {
+        "xid": "763",
+        "snapshot": "763:763:"
+      },
+      "aBackend": 56263,
+      "aDmlCount": 5,
+      "bBackend": 56262,
+      "lateTimestamp": "2099-01-01T00:00:00.000Z",
+      "aTimestamp": "2026-11-02T05:00:01.000Z",
+      "lockProof": {
+        "waiter": 56262,
+        "blocker": 56263,
+        "controlBackend": 56261,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          56263
+        ],
+        "backendXmin": "763",
+        "queryStart": "2026-11-02T15:19:31.547Z",
+        "reads": 1,
+        "elapsedMs": 0.28837499999998784,
+        "exactStatementSnapshotExported": false
+      },
+      "aCommitTag": "COMMIT",
+      "bReturning": {
+        "command": "INSERT",
+        "rowCount": 0,
+        "rows": []
+      },
+      "final": {
+        "role": "hold",
+        "dataSha256": "5383650984a5472e58902b14e57848bb58bdba414dc5cfbcb6a51bf6585f3b5d",
+        "hasClaim": false,
+        "bindingVersion": 2,
+        "status": "cleanup_pending",
+        "updatedAt": "2026-11-02T05:00:01.000Z",
+        "claimDataPreserved": true,
+        "sqlExpiresAt": null,
+        "physicalAnchorRetained": true,
+        "m3StorageStatus": "recorded"
+      },
+      "protocolPermit": false,
+      "negativeControl": false
+    }
+  ],
+  "attempts": [
+    {
+      "name": "job-negative",
+      "trace": [
+        "A_all_five_DML_uncommitted_before_COMMIT",
+        "B_raw_statement_dispatched_while_A_uncommitted",
+        "C_server_observed_B_active_Lock_blocked_by_A",
+        "A_COMMIT_released_only_after_server_proof",
+        "B_raw_statement_returned",
+        "B_COMMIT_confirmed"
+      ],
+      "comparisonSql": "20843c962c73c9ebb6f9b4cfdeadd80f247adcfa57f855e04016619ea6a95968",
+      "aTransaction": {
+        "xid": "739",
+        "snapshot": "739:739:"
+      },
+      "aBackend": 56263,
+      "aDmlCount": 5,
+      "bBackend": 56261,
+      "lateTimestamp": "2099-01-01T00:00:00.000Z",
+      "aTimestamp": "2026-11-02T05:00:01.000Z",
+      "lockProof": {
+        "waiter": 56261,
+        "blocker": 56263,
+        "controlBackend": 56262,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          56263
+        ],
+        "backendXmin": "739",
+        "queryStart": "2026-11-02T15:19:31.527Z",
+        "reads": 1,
+        "elapsedMs": 0.9625419999999991,
+        "exactStatementSnapshotExported": false
+      },
+      "aCommitTag": "COMMIT",
+      "bReturning": {
+        "command": "INSERT",
+        "rowCount": 1,
+        "rows": [
+          {
+            "recordId": "job-projection-job-negative",
+            "status": "queued",
+            "dataSha256": "40f8353eeea2f6227c05026fdfb9e62fba6506883e53fc3ae68b9dbed80f24e9",
+            "hasClaim": false,
+            "bindingVersion": null
+          }
+        ]
+      },
+      "final": {
+        "role": "job",
+        "dataSha256": "40f8353eeea2f6227c05026fdfb9e62fba6506883e53fc3ae68b9dbed80f24e9",
+        "hasClaim": false,
+        "bindingVersion": null,
+        "status": "queued",
+        "updatedAt": "2099-01-01T00:00:00.000Z",
+        "claimDataPreserved": true,
+        "physicalAnchorRetained": true,
+        "m3StorageStatus": "conflict"
+      }
+    },
+    {
+      "name": "job-guarded",
+      "trace": [
+        "A_all_five_DML_uncommitted_before_COMMIT",
+        "B_raw_statement_dispatched_while_A_uncommitted",
+        "C_server_observed_B_active_Lock_blocked_by_A",
+        "A_COMMIT_released_only_after_server_proof",
+        "B_raw_statement_returned",
+        "B_COMMIT_confirmed"
+      ],
+      "comparisonSql": "b90fe24046b074edc06b4147cefae06a8f59b4e32c62017ff5c52a8ea887a65f",
+      "aTransaction": {
+        "xid": "747",
+        "snapshot": "747:747:"
+      },
+      "aBackend": 56263,
+      "aDmlCount": 5,
+      "bBackend": 56262,
+      "lateTimestamp": "2099-01-01T00:00:00.000Z",
+      "aTimestamp": "2026-11-02T05:00:01.000Z",
+      "lockProof": {
+        "waiter": 56262,
+        "blocker": 56263,
+        "controlBackend": 56261,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          56263
+        ],
+        "backendXmin": "747",
+        "queryStart": "2026-11-02T15:19:31.536Z",
+        "reads": 1,
+        "elapsedMs": 0.6442910000000097,
+        "exactStatementSnapshotExported": false
+      },
+      "aCommitTag": "COMMIT",
+      "bReturning": {
+        "command": "INSERT",
+        "rowCount": 0,
+        "rows": []
+      },
+      "final": {
+        "role": "job",
+        "dataSha256": "a79a771212e4544a62591af71be01d8217a7b859e24c90ca99afa04b4585b03a",
+        "hasClaim": true,
+        "bindingVersion": null,
+        "status": "running",
+        "updatedAt": "2026-11-02T05:00:01.000Z",
+        "claimDataPreserved": true,
+        "physicalAnchorRetained": true,
+        "m3StorageStatus": "recorded"
+      }
+    },
+    {
+      "name": "hold-negative",
+      "trace": [
+        "A_all_five_DML_uncommitted_before_COMMIT",
+        "B_raw_statement_dispatched_while_A_uncommitted",
+        "C_server_observed_B_active_Lock_blocked_by_A",
+        "A_COMMIT_released_only_after_server_proof",
+        "B_raw_statement_returned",
+        "B_COMMIT_confirmed"
+      ],
+      "comparisonSql": "e5ef5d9d909015b33d197217c5edac7fe43d3d03356faf38a7ddc647751f3568",
+      "aTransaction": {
+        "xid": "755",
+        "snapshot": "755:755:"
+      },
+      "aBackend": 56263,
+      "aDmlCount": 5,
+      "bBackend": 56261,
+      "lateTimestamp": "2099-01-01T00:00:00.000Z",
+      "aTimestamp": "2026-11-02T05:00:01.000Z",
+      "lockProof": {
+        "waiter": 56261,
+        "blocker": 56263,
+        "controlBackend": 56262,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          56263
+        ],
+        "backendXmin": "755",
+        "queryStart": "2026-11-02T15:19:31.542Z",
+        "reads": 1,
+        "elapsedMs": 0.32620800000000827,
+        "exactStatementSnapshotExported": false
+      },
+      "aCommitTag": "COMMIT",
+      "bReturning": {
+        "command": "INSERT",
+        "rowCount": 1,
+        "rows": [
+          {
+            "recordId": "physical-projection-hold-negative",
+            "status": "released",
+            "dataSha256": "78695d779de085c288c18d86950ff005e9f86d0b527ca931abc7c4036374b524",
+            "hasClaim": false,
+            "bindingVersion": 2
+          }
+        ]
+      },
+      "final": {
+        "role": "hold",
+        "dataSha256": "78695d779de085c288c18d86950ff005e9f86d0b527ca931abc7c4036374b524",
+        "hasClaim": false,
+        "bindingVersion": 2,
+        "status": "released",
+        "updatedAt": "2099-01-01T00:00:00.000Z",
+        "claimDataPreserved": true,
+        "sqlExpiresAt": null,
+        "physicalAnchorRetained": true,
+        "m3StorageStatus": "conflict"
+      }
+    },
+    {
+      "name": "hold-guarded",
+      "trace": [
+        "A_all_five_DML_uncommitted_before_COMMIT",
+        "B_raw_statement_dispatched_while_A_uncommitted",
+        "C_server_observed_B_active_Lock_blocked_by_A",
+        "A_COMMIT_released_only_after_server_proof",
+        "B_raw_statement_returned",
+        "B_COMMIT_confirmed"
+      ],
+      "comparisonSql": "393ff409b639f0a4bd8b1b3cbd754b24b82ccd2b637fc4b5d056c423dce0830c",
+      "aTransaction": {
+        "xid": "763",
+        "snapshot": "763:763:"
+      },
+      "aBackend": 56263,
+      "aDmlCount": 5,
+      "bBackend": 56262,
+      "lateTimestamp": "2099-01-01T00:00:00.000Z",
+      "aTimestamp": "2026-11-02T05:00:01.000Z",
+      "lockProof": {
+        "waiter": 56262,
+        "blocker": 56263,
+        "controlBackend": 56261,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          56263
+        ],
+        "backendXmin": "763",
+        "queryStart": "2026-11-02T15:19:31.547Z",
+        "reads": 1,
+        "elapsedMs": 0.28837499999998784,
+        "exactStatementSnapshotExported": false
+      },
+      "aCommitTag": "COMMIT",
+      "bReturning": {
+        "command": "INSERT",
+        "rowCount": 0,
+        "rows": []
+      },
+      "final": {
+        "role": "hold",
+        "dataSha256": "5383650984a5472e58902b14e57848bb58bdba414dc5cfbcb6a51bf6585f3b5d",
+        "hasClaim": false,
+        "bindingVersion": 2,
+        "status": "cleanup_pending",
+        "updatedAt": "2026-11-02T05:00:01.000Z",
+        "claimDataPreserved": true,
+        "sqlExpiresAt": null,
+        "physicalAnchorRetained": true,
+        "m3StorageStatus": "recorded"
+      }
+    }
+  ]
+}

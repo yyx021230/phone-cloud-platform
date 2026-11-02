@@ -1,0 +1,116 @@
+{
+  "kind": "owned-loopback-wecom-v2-projection",
+  "artifactRoot": "/private/tmp/pc-wecom-v2-projection-pg-z7kfy78i",
+  "versions": {
+    "postgres": "postgres (PostgreSQL) 16.15 (Homebrew)",
+    "initdb": "initdb (PostgreSQL) 16.15 (Homebrew)",
+    "createdb": "createdb (PostgreSQL) 16.15 (Homebrew)",
+    "pg_isready": "pg_isready (PostgreSQL) 16.15 (Homebrew)",
+    "node": "v25.9.0"
+  },
+  "startedAt": "2026-11-02T15:19:30.689719+00:00",
+  "commands": [
+    {
+      "argv": [
+        "/opt/homebrew/bin/initdb",
+        "-D",
+        "/private/tmp/pc-wecom-v2-projection-pg-z7kfy78i/db",
+        "-A",
+        "trust",
+        "-U",
+        "wecom_v2_fixture",
+        "--no-locale"
+      ],
+      "exitCode": 0,
+      "output": "INITDB.txt",
+      "pid": 56229,
+      "cleanup": {
+        "started": true,
+        "pid": 56229,
+        "exitCode": 0,
+        "groupAbsent": true
+      }
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/createdb",
+        "-h",
+        "/private/tmp/pc-wecom-v2-projection-pg-z7kfy78i",
+        "-p",
+        "52938",
+        "-U",
+        "wecom_v2_fixture",
+        "wecom_v2_host_fixture"
+      ],
+      "exitCode": 0,
+      "output": "CREATEDB.txt",
+      "pid": 56255,
+      "cleanup": {
+        "started": true,
+        "pid": 56255,
+        "exitCode": 0,
+        "groupAbsent": true
+      }
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/node",
+        "--test",
+        "--test-reporter=tap",
+        "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/verification/wecom-v2-job-hold-epq-20261102/postgres.integration.mjs"
+      ],
+      "exitCode": 0,
+      "output": "NODE_TEST_OUTPUT.txt",
+      "pid": 56258
+    }
+  ],
+  "sourceManifestSha256": "c84f5ce74e23c9ed00411f4c66f80f7ff4705472240a957fbe3ab5aad780aa61",
+  "postgres": {
+    "pid": 56245,
+    "argv": [
+      "/opt/homebrew/bin/postgres",
+      "-D",
+      "/private/tmp/pc-wecom-v2-projection-pg-z7kfy78i/db",
+      "-h",
+      "127.0.0.1",
+      "-p",
+      "52938",
+      "-k",
+      "/private/tmp/pc-wecom-v2-projection-pg-z7kfy78i",
+      "-c",
+      "unix_socket_permissions=0700",
+      "-c",
+      "fsync=on",
+      "-c",
+      "synchronous_commit=on",
+      "-c",
+      "full_page_writes=on",
+      "-c",
+      "max_connections=12"
+    ],
+    "directOwnedChild": true
+  },
+  "sourceAfterMatched": true,
+  "actualPgCases": 4,
+  "nodeCleanup": {
+    "started": true,
+    "pid": 56258,
+    "exitCode": 0,
+    "groupAbsent": true
+  },
+  "postgresCleanup": {
+    "pid": 56245,
+    "exitCode": 0,
+    "confirmed": true
+  },
+  "status": "passed",
+  "dataDirectoryRemoved": true,
+  "artifactSha256": {
+    "fixture.json": "bae36e5b5a013b8a7baea65eb3d091d6008be20ba02ddee7ab98b9cefdd1a901",
+    "POSTGRES.txt": "cca32c31da094d98f0f6fbdbf2d03610db3058723acff91724003e472cd84230",
+    "PG_EVIDENCE.json": "74a114264d57b44ad5014987f5f7a8e16d1d5a87c9e43a59f994eca062ffacc0",
+    "CREATEDB.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "INITDB.txt": "c4c73a16e15633c57c67f5efece4eb978c313e8c942078f959b5dbc0047af6d4",
+    "NODE_TEST_OUTPUT.txt": "a3ec968ce24a5315afdff1a3a5d922ff538584b58b1cd692836a8e8986cd87c0"
+  }
+}
