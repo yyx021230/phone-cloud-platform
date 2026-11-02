@@ -5925,3 +5925,14 @@ expected保留完整原JSONB queued快照供将来CAS，业务fingerprint不包�
 ### 决策日志｜2026-11-02 task CAS与业务指纹职责分离，DB片未审不实现
 
 完整queued快照只用于queued→running CAS，后继正常status/results/events不能据此判永久maintenance；原业务指纹与固定claim关联独立用于重读。execution/claim/nonce由单一可信server尝试固定，pure module不提供全局唯一/物理排他，不能自动变号或升级legacy。下一DB片须给真实存在物理anchor/缺失拒绝、同serial不同task/slot与不同serial并发、旧checkpoint/generic锁序兼容、合法进展矩阵后再审，不改已验证M2/DDL/index/getPool。原43/隔离/查名池/冻结保持，主号分身验收仍未完成。
+
+
+### 变更记录｜2026-11-02 M3a DB排他和旧写共存提案（未实现）
+
+以f95b054纯claim叶为基线，只新增DB_NEXT_PLAN文档。实际device_locks只有lock_id PK，空行SELECT不会排他；提案从既有无歧义USB配置预置物理serial锚点，缺anchor拒绝，主号/分身共享持久active指针。claim_data拟独立于M1 exact state，原queued JSONB用于首次CAS，后续固定claim关联/业务指纹与合法状态进展分开对账。
+
+实际旧persistTaskMutation/checkpoint分别存在task→job和job→task锁序，提案新事务anchor先锁、其余已有记录NOWAIT、局部超时、未提交candidate不进入共享数组。明确旧写提交后仍可能回退投影，旧查名/控屏入口未参与前不能称跨业务冲突已解决。schema示例/迁移初始化/接线及真实PG交错均未实施，当前仅供审查，不能据此放开手机。
+
+### 决策日志｜2026-11-02 不用同task CAS冒充同物理设备互斥
+
+延续M3分片规则，DB方案先审已有锚点和缺失拒绝、完整tuple COMMIT未知对账、两旧锁序交错、不同task/slot同serial与不同serial独立并发，再决定具体DDL/最小实现。固定执行/claim/nonce不会因未知换号，legacy NULL不升级，正常终态/events/result不误报永久maintenance。未改M2/M1/DDL/index/getPool/Agent或共享运行时，未运行新测试/PG/Windows/手机/生产动作；原43义务、155/157查名池和所有冻结保持。主号/分身真机验收仍未补齐。
