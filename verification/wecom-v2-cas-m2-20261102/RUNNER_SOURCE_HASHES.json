@@ -9,7 +9,7 @@
     "verification/wecom-v2-cas-m2-20261102/pg-commit-proxy.test.mjs": "79ec0ee937bb5e001601de46104755a4992b3a231826b318ceced3140291b517",
     "verification/wecom-v2-cas-m2-20261102/owned-pg.mjs": "c16d0dc393fbc1ea7f24e5aeac5a33687da8def8dae53666a7d73d2defd581d7",
     "verification/wecom-v2-cas-m2-20261102/pg-readback-child.mjs": "af2ca4bbc73e633407b625ab5679ddaecd038628f400d31e429f85d1c0613fda",
-    "verification/wecom-v2-cas-m2-20261102/postgres.integration.mjs": "ebe7b668c287d45fbd5ecf92b7caf706ba6a70da9e439d4d39669851275727ac",
+    "verification/wecom-v2-cas-m2-20261102/postgres.integration.mjs": "29408c9b8039d8fbe28a57f36eab6cfd77f7d6b5a8ed41cc299f625b94edf241",
     "verification/wecom-v2-cas-m2-20261102/run-owned-postgres.py": "07d7674a5109763fb066f0ca8d4b1ab25cf7332411d21d1bd6f9fd021eb26ca0",
     "verification/wecom-v2-cas-m2-20261102/test_owned_runner.py": "7efb2b5098b7a0aea8596283ecaa20d55b65a170630996da136d6aabaf506f8c"
   },
@@ -24,5 +24,6 @@
     "-B",
     "verification/wecom-v2-cas-m2-20261102/run-owned-postgres.py",
     "--execute-reviewed"
-  ]
+  ],
+  "revision": 2
 }

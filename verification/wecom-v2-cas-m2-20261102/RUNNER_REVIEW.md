@@ -35,3 +35,8 @@ before模式在COMMIT送到后端前断自有连接；独立读取旧revision，
 8项纯PG字节解析/COMMIT判定测试、6项runner入口/环境/源hash/已退出组不发信号安全测试通过，Python AST与新增JS syntax检查通过。没有监听测试代理、没有启动PG、没有执行DDL或真实CAS/断链用例；8/6不能当14真实PG通过，M2 30/M1 61/v1 50也不能相加冒充PG覆盖。两项普通argv拒绝子进程仅执行无参数runner并返回2。
 
 实际源hash、工具命令/退出码见RUNNER_SOURCE_HASHES和RUNNER_UNIT_RECEIPT。审核通过后若运行失败，先固定该次原输出/回执，修成新候选再申请协调单次运行，不自行循环改参数直到绿。本候选没有上线、原生或主号/分身验收结论；原43/147/52、155/157查名池及冻结保持。
+
+
+## draft.2静态修正（真实PG仍未启动）
+
+固定ebabcb6/draft.1后自审发现fixture trigger函数END缺块内分号；仅改成END;，更新对应固定源hash。旧tag保留，没有产生真实PG失败/重试或宣称SQL实测；node --check只证明外层JS可解析。产品/M2/M1/runner/代理逻辑均未改，原8/6不重复计数；按draft.2固定源交root审后才执行。

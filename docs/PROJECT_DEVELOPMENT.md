@@ -5848,3 +5848,12 @@ root独立审3c37362最小分类修正通过后，保留原未跟踪proxy/parser
 ### 决策日志｜2026-11-02 先审私有运行器与真实故障证据，再启动隔离PG
 
 仅verification候选，完整命令/env/依赖/PID清理/失败留存边界见RUNNER_REVIEW；源/依赖变化拒绝，不自更新hash或自动重试到绿。8/6和既有30/61/50都不能替代真实PG14项；root核固定源码后才可启动新自有cluster，禁止生产/共享5432/现有库/全局清理。保留失败DB、不以COMMIT前置或ROLLBACK返回猜成功；存储确认不开放业务。14旧产品源不变，无Windows/phone/ADB/部署，原43/隔离/查名池/冻结保持，主号分身验收仍未补齐。
+
+
+### 变更记录｜2026-11-02 PG runner draft.2静态修正未执行fixture SQL
+
+固定ebabcb6后owner自审发现integration里trigger PL/pgSQL字符串END漏块内分号，执行前通知root停止放行draft.1；仅补END;并更新该源manifest，旧tag/原源码保留。外层JS syntax检查通过，不冒称PG已解析或产生真实库失败。产品、runner/代理逻辑及原8/6用例均未变不重复运行。
+
+### 决策日志｜2026-11-02 SQL字面修正也递增候选，不偷换已审源码
+
+后继真实PG只能用draft.2重新固定的11源与完整命令，不能以已通过node --check掩盖SQL未经实际验证。仍未启动PG/SQL/Windows/phone或生产动作；原14旧源、43/隔离/查名池/冻结保持，实际库/native未验。

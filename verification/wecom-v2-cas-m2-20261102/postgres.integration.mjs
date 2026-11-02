@@ -78,7 +78,7 @@ test("actual PG: concurrent different IDs at same revision have one winner", asy
 });
 test("actual PG: fixture UPDATE trigger failure preserves original revision", async () => {
   const f = fixture("trigger"), r = repo(f); await r.createPending(f.binding);
-  await db.query(`CREATE FUNCTION wecom_v2_fixture_reject() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'fixture_reject'; END $$;
+  await db.query(`CREATE FUNCTION wecom_v2_fixture_reject() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'fixture_reject'; END; $$;
     CREATE TRIGGER wecom_v2_fixture_reject BEFORE UPDATE ON phone_cloud_wecom_cleanup_v2
     FOR EACH ROW WHEN (NEW.obligation_id = 'duty-trigger') EXECUTE FUNCTION wecom_v2_fixture_reject()`);
   try {
