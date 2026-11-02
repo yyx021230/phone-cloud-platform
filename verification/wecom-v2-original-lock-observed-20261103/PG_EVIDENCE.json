@@ -1,0 +1,229 @@
+{
+  "kind": "original-business-lock-verification-only",
+  "server": {
+    "privateDataDirectoryMatched": true,
+    "loopbackPortMatched": true,
+    "fsync": "on",
+    "synchronousCommit": "on"
+  },
+  "cases": [
+    {
+      "name": "unmarked-negative",
+      "trace": [
+        "A_all_five_DML_uncommitted_before_COMMIT",
+        "B_raw_statement_dispatched_while_A_uncommitted",
+        "C_server_observed_B_active_Lock_blocked_by_A",
+        "A_COMMIT_released_only_after_server_proof",
+        "B_raw_statement_returned",
+        "B_COMMIT_confirmed",
+        "B_client_released_before_fresh_reconcile"
+      ],
+      "comparisonSql": "a44d7c9d5d989bdc048d651a92eaf5eaa2e9f989b81cdbbb170c1adc54cece20",
+      "aTransaction": {
+        "xid": "739",
+        "snapshot": "739:739:"
+      },
+      "aBackend": 62317,
+      "aDmlCount": 5,
+      "bBackend": 62315,
+      "lateTimestamp": "2099-01-01T00:00:00.000Z",
+      "aTimestamp": "2026-11-02T05:00:00.000Z",
+      "lockProof": {
+        "waiter": 62315,
+        "blocker": 62317,
+        "controlBackend": 62316,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          62317
+        ],
+        "backendXmin": "739",
+        "queryStart": "2026-11-02T15:58:18.488Z",
+        "reads": 1,
+        "elapsedMs": 0.9470840000000038,
+        "exactStatementSnapshotExported": false
+      },
+      "aCommitTag": "COMMIT",
+      "bReturning": {
+        "command": "UPDATE",
+        "rowCount": 1,
+        "rows": [
+          {
+            "lockId": "business-business-unmarked-negative",
+            "status": "active",
+            "dataSha256": "d73dcbfd00615b75a240c345cef4b3398593591594becdef97620567e165270f",
+            "hasClaim": false
+          }
+        ]
+      },
+      "final": {
+        "dataSha256": "d73dcbfd00615b75a240c345cef4b3398593591594becdef97620567e165270f",
+        "hasClaim": false,
+        "status": "active",
+        "updatedAt": "2099-01-01T00:00:00.000Z",
+        "claimDataPreserved": true,
+        "m3StorageStatus": "conflict"
+      },
+      "protocolPermit": false,
+      "negativeControl": true
+    },
+    {
+      "name": "owner-status-known",
+      "ownerBackend": 62316,
+      "commitKnown": true,
+      "clientReleased": true,
+      "returnedRows": 1,
+      "canonicalSourceVerified": false,
+      "readback": {
+        "backend": 62318,
+        "records": [
+          {
+            "lockId": "business-business-owner-status",
+            "dataSha256": "02af765c993d847567bdd53cd3ca95179eb15f2e624834dd17c3e90d6111906f",
+            "status": "released"
+          }
+        ]
+      },
+      "physicalObligationUnchanged": true,
+      "syntheticFixtureOwnerOnly": true,
+      "protocolPermit": false
+    },
+    {
+      "name": "target-nowait",
+      "holderBackend": 62316,
+      "ownerBackend": 62315,
+      "firstTargetError": "55P03",
+      "rollbackToTarget": true,
+      "secondTargetSameTransactionCommitted": true,
+      "readback": {
+        "backend": 62319,
+        "records": [
+          {
+            "lockId": "business-business-nowait-one",
+            "dataSha256": "1c7b60c77ca98d1455443d7db006114fe6b16652959993dbe6b036f8d2502f5f",
+            "status": "active"
+          },
+          {
+            "lockId": "business-business-nowait-two",
+            "dataSha256": "347c25499d4116e0635885f62e4ceaf422347584377f24e5bf1797adf8de1db9",
+            "status": "released"
+          }
+        ]
+      },
+      "allPhysicalObligationsUnchanged": true,
+      "protocolPermit": false
+    },
+    {
+      "name": "target-cas-zero",
+      "ownerBackend": 62316,
+      "actualCasRowCount": 0,
+      "injectedFaultRolledBackWithTarget": true,
+      "secondTargetSameTransactionCommitted": true,
+      "readback": {
+        "backend": 62320,
+        "records": [
+          {
+            "lockId": "business-business-cas-one",
+            "dataSha256": "b7dead90084f05998e321f6ce42fcbeb6ed0da34a6c6832d9beadb9a991487ef",
+            "status": "active"
+          },
+          {
+            "lockId": "business-business-cas-two",
+            "dataSha256": "a887187e224f074a5d09e1c986eb5bbdc84c590ffabc94645bff55e2e69680cb",
+            "status": "released"
+          }
+        ]
+      },
+      "allPhysicalObligationsUnchanged": true,
+      "protocolPermit": false
+    }
+  ],
+  "attempts": [
+    {
+      "name": "unmarked-negative",
+      "trace": [
+        "A_all_five_DML_uncommitted_before_COMMIT",
+        "B_raw_statement_dispatched_while_A_uncommitted",
+        "C_server_observed_B_active_Lock_blocked_by_A",
+        "A_COMMIT_released_only_after_server_proof",
+        "B_raw_statement_returned",
+        "B_COMMIT_confirmed",
+        "B_client_released_before_fresh_reconcile"
+      ],
+      "comparisonSql": "a44d7c9d5d989bdc048d651a92eaf5eaa2e9f989b81cdbbb170c1adc54cece20",
+      "aTransaction": {
+        "xid": "739",
+        "snapshot": "739:739:"
+      },
+      "aBackend": 62317,
+      "aDmlCount": 5,
+      "bBackend": 62315,
+      "lateTimestamp": "2099-01-01T00:00:00.000Z",
+      "aTimestamp": "2026-11-02T05:00:00.000Z",
+      "lockProof": {
+        "waiter": 62315,
+        "blocker": 62317,
+        "controlBackend": 62316,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          62317
+        ],
+        "backendXmin": "739",
+        "queryStart": "2026-11-02T15:58:18.488Z",
+        "reads": 1,
+        "elapsedMs": 0.9470840000000038,
+        "exactStatementSnapshotExported": false
+      },
+      "aCommitTag": "COMMIT",
+      "bReturning": {
+        "command": "UPDATE",
+        "rowCount": 1,
+        "rows": [
+          {
+            "lockId": "business-business-unmarked-negative",
+            "status": "active",
+            "dataSha256": "d73dcbfd00615b75a240c345cef4b3398593591594becdef97620567e165270f",
+            "hasClaim": false
+          }
+        ]
+      },
+      "final": {
+        "dataSha256": "d73dcbfd00615b75a240c345cef4b3398593591594becdef97620567e165270f",
+        "hasClaim": false,
+        "status": "active",
+        "updatedAt": "2099-01-01T00:00:00.000Z",
+        "claimDataPreserved": true,
+        "m3StorageStatus": "conflict"
+      }
+    },
+    {
+      "name": "owner-status-known",
+      "trace": [
+        "same_client_full_tuple_loading",
+        "known_commit_and_client_release_before_fresh_M3"
+      ],
+      "ownerBackend": 62316,
+      "commitTag": "COMMIT"
+    },
+    {
+      "name": "target-nowait",
+      "trace": [
+        "first_target_55P03_rolled_back_to_savepoint"
+      ],
+      "ownerBackend": 62315,
+      "holderBackend": 62316,
+      "firstTargetError": "55P03",
+      "commitTag": "COMMIT"
+    },
+    {
+      "name": "target-cas-zero",
+      "trace": [
+        "owned_real_zero_CAS_and_fault_injection_rolled_back_to_target"
+      ],
+      "ownerBackend": 62316,
+      "actualCasRowCount": 0,
+      "commitTag": "COMMIT"
+    }
+  ]
+}

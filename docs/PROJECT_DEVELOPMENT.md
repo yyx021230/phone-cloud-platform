@@ -6125,3 +6125,13 @@ root33e72941限定后，仅新增verification/wecom-v2-original-lock-verify-2026
 ### 决策日志｜2026-11-02 本地SQL fixture的owner不是实际权限，不接shared
 
 S1分类恒零权限，合成owner context只验证给定快照/SQL机制；旧未参与writer随后覆盖仍未解决，known COMMIT之外progress回执合同缺时继续unknown。产品/DDL/M1M2M3/policy/shared均未改，无PG/Windows/手机/生产。delivery、blob/boot与lookup owner由root另片协调，S2/journal/native默认禁启，原43设备义务/147/52和查名池保留，主号分身真机未验收。
+
+### 变更记录｜2026-11-03 原业务锁四组私有PG验证原件封存
+
+root审eb42fc4后于11月2日23:58 CST单次新business私有库真实4/4通过，4case/attempt齐、17执行源前后匹配。7原件/执行manifest/root actual-review逐字封存verification/wecom-v2-original-lock-observed-20261103。无marker负例真A/B/C锁后UPDATE1/M3conflict；合成owner known COMMIT/release后fresh读取；NOWAIT真55P03和真实CAS0均只回滚目标，第二目标同TX提交，新backend验证。所有physical hold/ledger/anchor义务保留。
+
+Node62313exit0/组消失、PG62301exit0确认，成功db仅原runner删除，旧gr_br461失败db未动。INITDB第24行原EOF空白具名保留，不累计既有测试；归档无新SQL、连接、Windows、手机或生产动作。
+
+### 决策日志｜2026-11-03 合成owner验证不代替实际写权限和设备验收
+
+接受本片原业务锁SQL机制，仍不接shared或扩大产品/DDL。后续仅准备delivery/progress精确验证提案，核真实三jsonb_set字段和旧caller身份；独立稳定opID、内容指纹与durable receipt合同先审，不向M1 exact状态或可裁剪events塞回执。known claim不证明本次后续操作提交。blob/boot/lookup根协调，S2/journal/native默认禁启，原43设备义务/147/52和查名池保持，主号分身真机未完成。

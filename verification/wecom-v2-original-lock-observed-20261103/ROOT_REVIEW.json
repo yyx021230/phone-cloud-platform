@@ -1,0 +1,317 @@
+{
+  "candidateCommit": "eb42fc4d34d6353e24fae060e5d81e52efe0ee2f",
+  "candidateTag": "wecom-v2-original-lock-verify-20261102-draft.1",
+  "manifestHashesMatched": 21,
+  "executionSourceHashes": 17,
+  "dependencyHashes": 6,
+  "annotatedTagBound": true,
+  "productDdlUnchanged": true,
+  "onlyVerificationAndDocsChanged": true,
+  "diffCheckExit": 0,
+  "rootLocalOwnerTests": 31,
+  "rootRunnerGuards": 6,
+  "rootSeedCases": 2,
+  "rootChecks": [
+    {
+      "label": "owner",
+      "command": [
+        "/opt/homebrew/bin/node",
+        "--test",
+        "--test-reporter=tap",
+        "verification/wecom-v2-original-lock-verify-20261102/owner-fixture.test.mjs"
+      ],
+      "exitCode": 0,
+      "rawSha256": "dbfbba8241f9e9ed27159e454bf0ad3708cda86aa69d0e665230a2ade3e3113b"
+    },
+    {
+      "label": "guards",
+      "command": [
+        "python3",
+        "-I",
+        "-B",
+        "verification/wecom-v2-original-lock-verify-20261102/test_owned_runner.py"
+      ],
+      "exitCode": 0,
+      "rawSha256": "feb5170ecd3a84eecaab6898ebc92f39ac5f61a37eb55497bcf39d6dae69f4bc"
+    },
+    {
+      "label": "seeds",
+      "command": [
+        "/opt/homebrew/bin/node",
+        "--test",
+        "--test-reporter=tap",
+        "verification/wecom-v2-original-lock-verify-20261102/fixture-names.test.mjs"
+      ],
+      "exitCode": 0,
+      "rawSha256": "9fd0b2a71bbbb66cc23b258eabc4d9bdcb7dbae5865f49d3f709c3f26f6bd997"
+    },
+    {
+      "label": "syntax",
+      "command": [
+        "/opt/homebrew/bin/node",
+        "--check",
+        "verification/wecom-v2-original-lock-verify-20261102/postgres.integration.mjs"
+      ],
+      "exitCode": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "pythonAstParsed": true,
+  "sqlOrPgExecuted": false,
+  "actualPgExecuted": true,
+  "startedAtUtc": "2026-11-02T15:58:17.599400+00:00",
+  "artifactRoot": "/private/tmp/pc-wecom-v2-business-pg-8nemqqbt",
+  "actualPgTests": 4,
+  "passed": 4,
+  "failed": 0,
+  "attempts": 4,
+  "completedCases": 4,
+  "sourceAfterMatched": true,
+  "cases": [
+    {
+      "name": "unmarked-negative",
+      "trace": [
+        "A_all_five_DML_uncommitted_before_COMMIT",
+        "B_raw_statement_dispatched_while_A_uncommitted",
+        "C_server_observed_B_active_Lock_blocked_by_A",
+        "A_COMMIT_released_only_after_server_proof",
+        "B_raw_statement_returned",
+        "B_COMMIT_confirmed",
+        "B_client_released_before_fresh_reconcile"
+      ],
+      "comparisonSql": "a44d7c9d5d989bdc048d651a92eaf5eaa2e9f989b81cdbbb170c1adc54cece20",
+      "aTransaction": {
+        "xid": "739",
+        "snapshot": "739:739:"
+      },
+      "aBackend": 62317,
+      "aDmlCount": 5,
+      "bBackend": 62315,
+      "lateTimestamp": "2099-01-01T00:00:00.000Z",
+      "aTimestamp": "2026-11-02T05:00:00.000Z",
+      "lockProof": {
+        "waiter": 62315,
+        "blocker": 62317,
+        "controlBackend": 62316,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          62317
+        ],
+        "backendXmin": "739",
+        "queryStart": "2026-11-02T15:58:18.488Z",
+        "reads": 1,
+        "elapsedMs": 0.9470840000000038,
+        "exactStatementSnapshotExported": false
+      },
+      "aCommitTag": "COMMIT",
+      "bReturning": {
+        "command": "UPDATE",
+        "rowCount": 1,
+        "rows": [
+          {
+            "lockId": "business-business-unmarked-negative",
+            "status": "active",
+            "dataSha256": "d73dcbfd00615b75a240c345cef4b3398593591594becdef97620567e165270f",
+            "hasClaim": false
+          }
+        ]
+      },
+      "final": {
+        "dataSha256": "d73dcbfd00615b75a240c345cef4b3398593591594becdef97620567e165270f",
+        "hasClaim": false,
+        "status": "active",
+        "updatedAt": "2099-01-01T00:00:00.000Z",
+        "claimDataPreserved": true,
+        "m3StorageStatus": "conflict"
+      },
+      "protocolPermit": false,
+      "negativeControl": true
+    },
+    {
+      "name": "owner-status-known",
+      "ownerBackend": 62316,
+      "commitKnown": true,
+      "clientReleased": true,
+      "returnedRows": 1,
+      "canonicalSourceVerified": false,
+      "readback": {
+        "backend": 62318,
+        "records": [
+          {
+            "lockId": "business-business-owner-status",
+            "dataSha256": "02af765c993d847567bdd53cd3ca95179eb15f2e624834dd17c3e90d6111906f",
+            "status": "released"
+          }
+        ]
+      },
+      "physicalObligationUnchanged": true,
+      "syntheticFixtureOwnerOnly": true,
+      "protocolPermit": false
+    },
+    {
+      "name": "target-nowait",
+      "holderBackend": 62316,
+      "ownerBackend": 62315,
+      "firstTargetError": "55P03",
+      "rollbackToTarget": true,
+      "secondTargetSameTransactionCommitted": true,
+      "readback": {
+        "backend": 62319,
+        "records": [
+          {
+            "lockId": "business-business-nowait-one",
+            "dataSha256": "1c7b60c77ca98d1455443d7db006114fe6b16652959993dbe6b036f8d2502f5f",
+            "status": "active"
+          },
+          {
+            "lockId": "business-business-nowait-two",
+            "dataSha256": "347c25499d4116e0635885f62e4ceaf422347584377f24e5bf1797adf8de1db9",
+            "status": "released"
+          }
+        ]
+      },
+      "allPhysicalObligationsUnchanged": true,
+      "protocolPermit": false
+    },
+    {
+      "name": "target-cas-zero",
+      "ownerBackend": 62316,
+      "actualCasRowCount": 0,
+      "injectedFaultRolledBackWithTarget": true,
+      "secondTargetSameTransactionCommitted": true,
+      "readback": {
+        "backend": 62320,
+        "records": [
+          {
+            "lockId": "business-business-cas-one",
+            "dataSha256": "b7dead90084f05998e321f6ce42fcbeb6ed0da34a6c6832d9beadb9a991487ef",
+            "status": "active"
+          },
+          {
+            "lockId": "business-business-cas-two",
+            "dataSha256": "a887187e224f074a5d09e1c986eb5bbdc84c590ffabc94645bff55e2e69680cb",
+            "status": "released"
+          }
+        ]
+      },
+      "allPhysicalObligationsUnchanged": true,
+      "protocolPermit": false
+    }
+  ],
+  "attemptDetails": [
+    {
+      "name": "unmarked-negative",
+      "trace": [
+        "A_all_five_DML_uncommitted_before_COMMIT",
+        "B_raw_statement_dispatched_while_A_uncommitted",
+        "C_server_observed_B_active_Lock_blocked_by_A",
+        "A_COMMIT_released_only_after_server_proof",
+        "B_raw_statement_returned",
+        "B_COMMIT_confirmed",
+        "B_client_released_before_fresh_reconcile"
+      ],
+      "comparisonSql": "a44d7c9d5d989bdc048d651a92eaf5eaa2e9f989b81cdbbb170c1adc54cece20",
+      "aTransaction": {
+        "xid": "739",
+        "snapshot": "739:739:"
+      },
+      "aBackend": 62317,
+      "aDmlCount": 5,
+      "bBackend": 62315,
+      "lateTimestamp": "2099-01-01T00:00:00.000Z",
+      "aTimestamp": "2026-11-02T05:00:00.000Z",
+      "lockProof": {
+        "waiter": 62315,
+        "blocker": 62317,
+        "controlBackend": 62316,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          62317
+        ],
+        "backendXmin": "739",
+        "queryStart": "2026-11-02T15:58:18.488Z",
+        "reads": 1,
+        "elapsedMs": 0.9470840000000038,
+        "exactStatementSnapshotExported": false
+      },
+      "aCommitTag": "COMMIT",
+      "bReturning": {
+        "command": "UPDATE",
+        "rowCount": 1,
+        "rows": [
+          {
+            "lockId": "business-business-unmarked-negative",
+            "status": "active",
+            "dataSha256": "d73dcbfd00615b75a240c345cef4b3398593591594becdef97620567e165270f",
+            "hasClaim": false
+          }
+        ]
+      },
+      "final": {
+        "dataSha256": "d73dcbfd00615b75a240c345cef4b3398593591594becdef97620567e165270f",
+        "hasClaim": false,
+        "status": "active",
+        "updatedAt": "2099-01-01T00:00:00.000Z",
+        "claimDataPreserved": true,
+        "m3StorageStatus": "conflict"
+      }
+    },
+    {
+      "name": "owner-status-known",
+      "trace": [
+        "same_client_full_tuple_loading",
+        "known_commit_and_client_release_before_fresh_M3"
+      ],
+      "ownerBackend": 62316,
+      "commitTag": "COMMIT"
+    },
+    {
+      "name": "target-nowait",
+      "trace": [
+        "first_target_55P03_rolled_back_to_savepoint"
+      ],
+      "ownerBackend": 62315,
+      "holderBackend": 62316,
+      "firstTargetError": "55P03",
+      "commitTag": "COMMIT"
+    },
+    {
+      "name": "target-cas-zero",
+      "trace": [
+        "owned_real_zero_CAS_and_fault_injection_rolled_back_to_target"
+      ],
+      "ownerBackend": 62316,
+      "actualCasRowCount": 0,
+      "commitTag": "COMMIT"
+    }
+  ],
+  "nodeCleanup": {
+    "started": true,
+    "pid": 62313,
+    "exitCode": 0,
+    "groupAbsent": true
+  },
+  "postgresCleanup": {
+    "pid": 62301,
+    "exitCode": 0,
+    "confirmed": true
+  },
+  "successfulOwnDbRemoved": true,
+  "previousFailedDbRetained": true,
+  "artifactSha256": {
+    "fixture.json": "4a146fbf9962f9dd9905b6a3b24d25ef7592020a9626efabde07ff99b1d664ff",
+    "POSTGRES.txt": "c69b162a55b8ccf9f6edc5590324bc451462e557b31bab582091dd486e9bf4f3",
+    "PG_EVIDENCE.json": "e89b5bd5dc26797a3c1e33ec1e23df145d0978891df36a1c5831d9141092c988",
+    "CREATEDB.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "INITDB.txt": "fdb119abc155c3fe1582aeacce4afcfc66e86ed647ec6db8e59a702ea39ac830",
+    "NODE_TEST_OUTPUT.txt": "5931e36a2a208401c116d2c7fd4277f3ccaf67901fb76ea368911866ab93b6ca",
+    "RUN_RECEIPT.json": "af396c0dd4db21e2ed07d06e54a73788909240da175bf120693f06a46f2e733c"
+  },
+  "productionChanged": false,
+  "sharedWriterRepaired": false,
+  "phoneAcceptance": false,
+  "actualOwnerAuthorityProven": false,
+  "laterProgressUnknownReceiptImplemented": false
+}

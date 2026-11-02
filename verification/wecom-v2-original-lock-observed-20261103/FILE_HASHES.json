@@ -1,0 +1,16 @@
+{
+  "verification/wecom-v2-original-lock-observed-20261103/CREATEDB.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "verification/wecom-v2-original-lock-observed-20261103/DIFFCHECK_RECEIPT.json": "c5f913f4dbfa49ade678fbf2e06fc797a9d805893de2b9a1613873a72420a684",
+  "verification/wecom-v2-original-lock-observed-20261103/EXECUTED_SOURCE_MANIFEST.json": "d8d817e74eb327d0615e613d9672644f498d63849f6fab0d67e37bc3e364770c",
+  "verification/wecom-v2-original-lock-observed-20261103/INITDB.txt": "fdb119abc155c3fe1582aeacce4afcfc66e86ed647ec6db8e59a702ea39ac830",
+  "verification/wecom-v2-original-lock-observed-20261103/NODE_TEST_OUTPUT.txt": "5931e36a2a208401c116d2c7fd4277f3ccaf67901fb76ea368911866ab93b6ca",
+  "verification/wecom-v2-original-lock-observed-20261103/OBSERVATION.md": "5dafdabbfba719ff0b31b5513b49fa8d525e57b20eb7de25ca7bf6572034cff4",
+  "verification/wecom-v2-original-lock-observed-20261103/PG_EVIDENCE.json": "e89b5bd5dc26797a3c1e33ec1e23df145d0978891df36a1c5831d9141092c988",
+  "verification/wecom-v2-original-lock-observed-20261103/POSTGRES.txt": "c69b162a55b8ccf9f6edc5590324bc451462e557b31bab582091dd486e9bf4f3",
+  "verification/wecom-v2-original-lock-observed-20261103/PROVENANCE.json": "ee4b9eaba13d9f80356c36067c8168f17f31bef686fd6dfc3170879169802866",
+  "verification/wecom-v2-original-lock-observed-20261103/RAW_WHITESPACE.json": "00a4f4a049cfb35a4ed3786f57905420b3b09d8191ec684e5aa798736e3ed0af",
+  "verification/wecom-v2-original-lock-observed-20261103/ROOT_REVIEW.json": "4c3fc42e44032865d4df959b2e98518308e2beb66a8f0cef9d381f6c566442ad",
+  "verification/wecom-v2-original-lock-observed-20261103/RUN_RECEIPT.json": "af396c0dd4db21e2ed07d06e54a73788909240da175bf120693f06a46f2e733c",
+  "verification/wecom-v2-original-lock-observed-20261103/fixture.json": "4a146fbf9962f9dd9905b6a3b24d25ef7592020a9626efabde07ff99b1d664ff",
+  "docs/PROJECT_DEVELOPMENT.md": "f3998b7bf6bd333ac88401254b9a8bb22f032fbf384c9ea3cc430f4c6a14f8c0"
+}

@@ -1,0 +1,14 @@
+2026-11-02 23:58:18.101 CST [62301] LOG:  starting PostgreSQL 16.15 (Homebrew) on aarch64-apple-darwin25.6.0, compiled by Apple clang version 21.0.0 (clang-2100.1.1.101), 64-bit
+2026-11-02 23:58:18.101 CST [62301] LOG:  listening on IPv4 address "127.0.0.1", port 62049
+2026-11-02 23:58:18.101 CST [62301] LOG:  listening on Unix socket "/private/tmp/pc-wecom-v2-business-pg-8nemqqbt/.s.PGSQL.62049"
+2026-11-02 23:58:18.103 CST [62305] LOG:  database system was shut down at 2026-11-02 23:58:18 CST
+2026-11-02 23:58:18.105 CST [62301] LOG:  database system is ready to accept connections
+2026-11-02 23:58:18.516 CST [62315] ERROR:  could not obtain lock on row in relation "phone_cloud_device_locks"
+2026-11-02 23:58:18.516 CST [62315] STATEMENT:  SELECT lock_id,device_id,status,expires_at,data FROM phone_cloud_device_locks WHERE lock_id=$1 FOR UPDATE NOWAIT
+2026-11-02 23:58:18.589 CST [62301] LOG:  received fast shutdown request
+2026-11-02 23:58:18.589 CST [62301] LOG:  aborting any active transactions
+2026-11-02 23:58:18.590 CST [62301] LOG:  background worker "logical replication launcher" (PID 62308) exited with exit code 1
+2026-11-02 23:58:18.590 CST [62303] LOG:  shutting down
+2026-11-02 23:58:18.590 CST [62303] LOG:  checkpoint starting: shutdown immediate
+2026-11-02 23:58:18.626 CST [62303] LOG:  checkpoint complete: wrote 992 buffers (6.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.030 s, sync=0.006 s, total=0.036 s; sync files=334, longest=0.001 s, average=0.001 s; distance=4593 kB, estimate=4593 kB; lsn=0/1999E78, redo lsn=0/1999E78
+2026-11-02 23:58:18.627 CST [62301] LOG:  database system is shut down
