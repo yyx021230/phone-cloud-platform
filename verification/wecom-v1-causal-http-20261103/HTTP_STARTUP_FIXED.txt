@@ -1,0 +1,27 @@
+✔ external client: discover -> four-field submit -> actual synthetic remark/send -> result; dual slots, timeout and restart never replay (1766.358541ms)
+ℹ WECOM_EXTERNAL_EVIDENCE {"simulatedTasks":4,"syntheticSearchCalls":4,"syntheticSaveCalls":4,"syntheticSendCalls":3,"recipientsDeliveryConfirmed":0,"realPhoneOperations":0,"realInvitations":0,"simultaneousDuplicatePosts":6,"duplicateTaskCount":1,"pausedPhoneDidNotBlockOtherPhone":true,"acceptanceReplyLostAndRecoveredOriginal":true,"unknownClaimReplyPreventedSend":true,"restartEnqueuedExtraWorkers":0,"publicEndpointKinds":3,"clientTimeoutMs":100,"perTask":[{"deviceNumber":"155","appSlot":"clone","androidUser":999,"searchCalls":1,"saveCalls":1,"sendCalls":1,"claimCalls":1,"remarkVerified":true},{"deviceNumber":"59","appSlot":"main","androidUser":0,"searchCalls":1,"saveCalls":1,"sendCalls":1,"claimCalls":1,"remarkVerified":true},{"deviceNumber":"155","appSlot":"main","androidUser":0,"searchCalls":1,"saveCalls":1,"sendCalls":1,"claimCalls":1,"remarkVerified":true},{"deviceNumber":"59","appSlot":"main","androidUser":0,"searchCalls":1,"saveCalls":1,"sendCalls":0,"claimCalls":1,"remarkVerified":true}]}
+✔ external client: mapping, ownership, malformed fields and authentication fail before any worker (284.260458ms)
+ℹ WECOM_EXTERNAL_NEGATIVE_EVIDENCE {"parameterOrMappingRejections":5,"invalidTokenRejections":3,"ordinaryUserRejections":3,"crossAdminResultRejections":1,"workersRun":0}
+✔ authenticated JSON: new capability, main/clone, wrong scope and lost ACK retain original identity (312.117375ms)
+✔ authenticated JSON: real write failure rolls back proof and keeps physical duty until same original proof commits (171.319625ms)
+✔ authenticated JSON: restart keeps original duty and rejects old epoch instead of issuing new verification (446.554916ms)
+✔ authenticated JSON: repeated challenge cannot renew expired3s and another phone still dispatches (3347.815666ms)
+✔ authenticated JSON: restart after persisted main/clone send claims cannot authorize or replay either original worker (318.489625ms)
+✔ preview HTTP covers authentication, eight phones, leases, original-id reuse and restart (793.084416ms)
+▶ real Agent runTask -> taskStatus -> compactor -> HTTP persistence -> public result retains WeCom states
+  ✔ native click attempt remains unknown (21.729167ms)
+  ✔ definite prewrite block remains failed/not_attempted (14.193916ms)
+  ✔ unknown remark save remains held without a send claim (15.2855ms)
+  ✔ actual Python identity guard -> child wrapper -> Agent -> HTTP diagnostics (73.856458ms)
+  ✔ actual parent timeout catch stays unknown and exposes its code (14.633709ms)
+✔ real Agent runTask -> taskStatus -> compactor -> HTTP persistence -> public result retains WeCom states (445.226584ms)
+ℹ WECOM_STATUS_TRANSPORT_EVIDENCE {"scenarios":[{"scenario":"native click attempt remains unknown","status":"unknown","code":"invitation_click_issued_delivery_unknown","statusWrites":1},{"scenario":"definite prewrite block remains failed/not_attempted","status":"failed","code":"not_found","statusWrites":1},{"scenario":"unknown remark save remains held without a send claim","status":"unknown","code":"remark_persistence_unconfirmed","statusWrites":1},{"scenario":"actual Python identity guard -> child wrapper -> Agent -> HTTP diagnostics","status":"unknown","code":"adb_identity_unconfirmed","statusWrites":1},{"scenario":"actual parent timeout catch stays unknown and exposes its code","status":"unknown","code":"wecom_preview_worker_timeout_no_replay","statusWrites":1}],"persistedAfterRestart":5,"heldRepostsReuseOriginal":4,"extraWorkers":0,"actualAgentCompactor":true,"actualAgentTimeoutCatch":true,"realPhoneOperations":0,"realInvitations":0,"backend":"isolated JSON"}
+✔ WeCom status whitelist rejects arbitrary delivery claims and does not change unrelated transport (1.037209ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8166.59675

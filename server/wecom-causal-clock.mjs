@@ -3,7 +3,7 @@
 import {randomUUID} from "node:crypto";
 import {isDeepStrictEqual as equal} from "node:util";
 export const WECOM_CAUSAL_PROTOCOL="wecom-causal-v1";
-const fail=()=>{throw new Error("wecom_cleanup_causal_context_unconfirmed");};
+const fail=()=>{throw Object.assign(new Error("wecom_cleanup_causal_context_unconfirmed"),{statusCode:409});};
 const exact=(v,keys)=>v&&typeof v==="object"&&!Array.isArray(v)&&Reflect.ownKeys(v).length===keys.length&&keys.every(k=>Object.hasOwn(v,k)&&Object.hasOwn(Object.getOwnPropertyDescriptor(v,k),"value"));
 const text=v=>typeof v==="string"&&/^[A-Za-z0-9_.:-]{1,160}$/.test(v);
 const copy=v=>structuredClone(v);

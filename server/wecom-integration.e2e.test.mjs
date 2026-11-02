@@ -1,4 +1,4 @@
-import { createSimulatedWecomCleanup } from "./wecom-cleanup-fixture.mjs";
+import { createSimulatedWecomCleanup } from "./wecom-causal-fixture.mjs";
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
@@ -81,8 +81,8 @@ async function fixture(t) {
   await adminCall('PUT', '/api/v1/devices/adb%3ASIM-OFFLINE', admin, { deviceName: '68', listingStatus: 'listed' });
   await adminCall('POST', '/api/v1/windows-agents/simulated-agent/devices/sync', agentToken, { agent: { agentId: 'simulated-agent' }, devices: [...Object.values(pool).map(d => ({ adbSerial: d.serial, state: 'device', model: 'Synthetic' })), { adbSerial: 'SIM-NON-WECOM', state: 'device', model: 'Synthetic' }, { adbSerial: 'SIM-OFFLINE', state: 'offline', model: 'Synthetic' }] });
   const client = new WecomClient({ baseUrl, token: admin });
-  async function next() { return (await adminCall('GET', '/api/v1/windows-agents/simulated-agent/tasks/next?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1', agentToken)).task; }
-  cleanupFixture=createSimulatedWecomCleanup({request:adminCall,agentId:"simulated-agent",token:agentToken,nextRoute:"/api/v1/windows-agents/simulated-agent/tasks/next?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1",runtimeHostRegistration:true});
+  async function next() { return (await adminCall('GET', '/api/v1/windows-agents/simulated-agent/tasks/next?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1&wecomCausalProtocol=wecom-causal-v1', agentToken)).task; }
+  cleanupFixture=createSimulatedWecomCleanup({request:adminCall,agentId:"simulated-agent",token:agentToken,nextRoute:"/api/v1/windows-agents/simulated-agent/tasks/next?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1&wecomCausalProtocol=wecom-causal-v1",runtimeHostRegistration:true});
   function execute(task, { waitAtClaim = false, loseClaimReply = false } = {}) {
     const operation = (async () => {
       const result = await runWecomPreviewTask(task, {
@@ -91,7 +91,7 @@ async function fixture(t) {
         spawnChild: (command, args, options) => {
           assert.equal(path.basename(args[0]), 'wecom_platform_preview.py');
           assert.ok(!JSON.stringify(args).includes(task.payload.phoneNumber), 'customer input must be stdin-only');
-          const child = spawn(command, [path.join(root, 'verification/wecom-external-api-20261029/simulated_worker.py')], {
+          const child = spawn(command, [path.join(root, 'verification/wecom-v1-causal-http-20261103/simulated_worker.py')], {
             ...options, cwd: root, env: { PATH: process.env.PATH, PYTHONPATH: path.join(root, 'windows-agent/scripts'),
               PYTHONIOENCODING: 'utf-8', PYTHONDONTWRITEBYTECODE: '1', WECOM_SIM_PHYSICAL_READY: '1', WECOM_SIM_PAUSE: String(waitAtClaim), WECOM_SIM_LOSE_CLAIM_REPLY: String(loseClaimReply) } });
           children.add(child); child.once('exit', () => children.delete(child)); return child;

@@ -6227,3 +6227,14 @@ root bed2a7f与范围提醒后，暂停后继adapter/DDL/runner，保留全部�
 ### 决策日志｜2026-11-03 无法证明安全退役时接受有界backpressure
 
 无法确认的已绑定创建、未接入known终态回收、归档/漂移scope或另有未决义务继续占有限额度，可能持续503；不为腾位增加通用存储/补造授权。Node148执行通过，包含本地完整旧139与9个新增生命周期用例，既有147/76子集不累加；Python未变不重复，rc.1证据保留。窄hook新server仅syntax通过，两个index未应用；认证HTTP/存储/屏控回归与父侧OS/socket桥、Windows严格3秒性能和主号分身真机仍未完成，无生产/Windows/ADB/手机动作。
+
+
+### 变更记录｜2026-11-03 企微因果v1本地共享接线与真实HTTP/JSON闭环
+
+在3caba67 rc.2上，根批准的精确窄hook已本地接入，Agent共享入口仅加WeCom轮询能力参数。真实JSON重启暴露启动诊断早于wecomCleanup构造，原hook会null调用；另行批准只保护初始化时原causal任务/按原job/task关联的causal业务锁，不落回audit UTC，非WeCom/legacy保持过期。clock固定context错误明确409、capacity仍503，未放宽预算或解除义务。新派生合成helper/worker保留旧原件，拆分同epoch清理成功与restart原义务保留，不再把续代当通过。
+
+本地真实认证HTTP/原JSON临时持久化16/16通过，含main/clone、错scope、host/proof回包丢失原ID幂等、实际目录写失败rollback、旧epoch拒续代、已持久send-claim重启不重放、运行/排队任务audit锁过期保留、其他锁照常过期及3.1秒拒绝。完整根test:screen2252/2252、Agent完整check675/675、Python486采集执行（含重复导入）、WeCom SDK4/4及根check语法通过，不累加重叠计数。最终各运行536源前后hash相同。首轮缺依赖红、旧wire红、适配GET误写POST及真实startup/context红、完整回归2251/1旧VM缺全局红均保留verification/wecom-v1-causal-http-20261103；只补旧测试上下文，未为测试放宽产品。锁文件不改。
+
+### 决策日志｜2026-11-03 本地完整通过不等于Windows和主号分身真机验收
+
+本轮仅本地候选，原43与旧未决/查名保留，共享SDK、屏控媒体和SYSTEM ADB身份/keys/lifecycle不动。新合成UI虽跑原备注/邀请算法，但实际手机和真实邀请均0，不称真机或上线。没有PG执行或生产D-075宿主live核验；Windows实际连接身份、严格3秒性能、设备现场与主号分身原生验收仍未完成，需根审固定版本后按现行授权继续内部preview到发送前。不得用外部真实发送POST替代本轮预览，不清原义务作为回滚。

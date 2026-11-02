@@ -1,0 +1,12 @@
+✔ caller POST transport failures are unknown and never automatically retried (0.980042ms)
+✔ malformed success responses do not become accepted jobs or permission to resend (0.186834ms)
+✔ only explicit origins and bounded task IDs are accepted before any network call (0.15025ms)
+✔ a business rejection exposes only the fixed code and original task reference (0.085709ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 94.710458

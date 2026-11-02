@@ -1,188 +1,158 @@
-import pg from "pg";
-import { syntheticHostTime } from "./wecom-cleanup-fixture.mjs";
-import assert from "node:assert/strict";
-import { spawn } from "node:child_process";
-import { once } from "node:events";
-import fs from "node:fs/promises";
-import net from "node:net";
-import os from "node:os";
-import path from "node:path";
-import test from "node:test";
-import { fileURLToPath } from "node:url";
-import { WECOM_PREVIEW_DEVICES } from "./wecom-preview.mjs";
-import { WECOM_PACKAGES } from "./wecom-physical-cleanup.mjs";
+// Actual loopback authentication/JSON/process restart. All Android/host facts are synthetic.
+// The pre-causal archive/PG opt-in test is preserved verbatim in this candidate's legacy-inputs.
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import {spawn} from 'node:child_process';
+import {once} from 'node:events';
+import http from 'node:http';
+import fs from 'node:fs/promises';
+import net from 'node:net';
+import os from 'node:os';
+import path from 'node:path';
+import {WECOM_PREVIEW_DEVICES as pool} from './wecom-preview.mjs';
+import {WECOM_PACKAGES} from './wecom-physical-cleanup.mjs';
+import {syntheticHostTime} from './wecom-cleanup-fixture.mjs';
+const pause=ms=>new Promise(r=>setTimeout(r,ms));
+const capability='?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1&wecomCausalProtocol=wecom-causal-v1';
+async function fixture(t){
+  assert.equal(process.env.WECOM_CLEANUP_TEST_DATABASE_URL||'','','causal fixture is isolated JSON only; no PG acceptance claim');
+  const data=await fs.mkdtemp(path.join(os.tmpdir(),'pc-wecom-causal-http-'));
+  const reservation=net.createServer().listen(0,'127.0.0.1');await once(reservation,'listening');const port=reservation.address().port;await new Promise(r=>reservation.close(r));
+  const upstream=`http://127.0.0.1:${port}`,root=path.resolve(import.meta.dirname,'..');let child,logs='',drop=null;
+  const gateway=http.createServer(async(req,res)=>{
+    try{
+      const chunks=[];for await(const chunk of req)chunks.push(chunk);
+      const response=await fetch(upstream+req.url,{method:req.method,redirect:'error',headers:{authorization:req.headers.authorization||'','content-type':'application/json'},...(['POST','PUT'].includes(req.method)?{body:Buffer.concat(chunks)}:{})});
+      const bytes=Buffer.from(await response.arrayBuffer());
+      if(drop===req.url){drop=null;res.destroy();return;} // Actual committed upstream reply lost on this owned socket.
+      res.writeHead(response.status,{'content-type':'application/json'});res.end(bytes);
+    }catch{if(!res.destroyed){res.writeHead(502,{'content-type':'application/json'});res.end('{"error":"fixture_gateway_failure"}');}}
+  });gateway.listen(0,'127.0.0.1');await once(gateway,'listening');const base=`http://127.0.0.1:${gateway.address().port}`;
+  async function start(){
+    child=spawn(process.execPath,['server/index.mjs'],{cwd:root,env:{PATH:process.env.PATH,HOST:'127.0.0.1',PORT:String(port),DATA_DIR:data,DATABASE_URL:'',REDIS_URL:'',STORAGE_BACKEND:'json',STRUCTURED_WRITES:'true',PUBLIC_BASE_URL:upstream,ADMIN_USERNAME:'fixture_admin',ADMIN_PASSWORD:'fixture-only-password',SCREEN_MEDIA_AUTH_SECRET:'fixture-only-secret',WINDOWS_AGENT_ONLINE_SECONDS:'300',MANAGED_NAME_LOOKUP_ENABLED:'false',LOOKUP_AI_VISION_ENABLED:'false'},stdio:['ignore','pipe','pipe']});
+    child.stdout.on('data',b=>{logs=(logs+b).slice(-2000);});child.stderr.on('data',b=>{logs=(logs+b).slice(-2000);});
+    for(let i=0;i<150;i++){try{if((await fetch(upstream+'/readyz')).ok)return;}catch{}if(child.exitCode!==null)assert.fail('isolated service failed '+logs);await pause(20);}assert.fail('isolated service readiness timeout '+logs);
+  }
+  async function stop(){if(child&&child.exitCode===null){const exited=once(child,'exit'),timer=setTimeout(()=>child.kill('SIGKILL'),2000);child.kill('SIGTERM');await exited;clearTimeout(timer);}}
+  t.after(async()=>{await stop();gateway.closeAllConnections();await new Promise(r=>gateway.close(r));await fs.rm(data,{recursive:true,force:true});});
+  async function req(method,route,token,body,expected=200){assert.ok(route.startsWith('/api/v1/'));const response=await fetch(base+route,{method,redirect:'error',headers:{'content-type':'application/json',...(token?{authorization:'Bearer '+token}:{})},...(body===undefined?{}:{body:JSON.stringify(body)})});const value=await response.json();assert.equal(response.status,expected,`${method} ${route}: ${value.error||response.status}`);return value;}
+  await start();
+  const admin=(await req('POST','/api/v1/auth/login','',{username:'fixture_admin',password:'fixture-only-password'})).session.token;
+  const agent=(await req('POST','/api/v1/windows-agents',admin,{agentId:'fixture-agent',agentName:'Synthetic'},201)).token;
+  const other=(await req('POST','/api/v1/windows-agents',admin,{agentId:'other-agent',agentName:'Synthetic other'},201)).token;
+  await req('POST','/api/v1/windows-agents/fixture-agent/devices/sync',agent,{agent:{agentId:'fixture-agent'},devices:['59','155','25'].map(n=>({adbSerial:pool[n].serial,state:'device',model:'Synthetic'}))});
+  for(const n of ['59','155','25'])await req('PUT','/api/v1/devices/'+encodeURIComponent('adb:'+pool[n].serial),admin,{listingStatus:'listed',deviceName:n});
+  const submit='/api/v1/user/automation/wecom-preview-tasks',next='/api/v1/windows-agents/fixture-agent/tasks/next';let sequence=0;
+  async function create(number='59',appSlot='main',mode='preview'){
+    const input={deviceId:'adb:'+pool[number].serial,appSlot,mode,phoneNumber:'13900000000',requestId:'fixture_causal_'+(++sequence)};
+    const result=await req('POST',submit,admin,input,201);return {input,job:result.task};
+  }
+  async function pick(){return(await req('GET',next+capability,agent)).task;}
+  async function registered(created,loss=false){
+    const task=await pick();assert.equal(task.payload.automationJobId,created.job.jobId);assert.equal(task.payload.wecomCausalLease.protocol,'wecom-causal-v1');
+    const binding=task.payload.physicalCleanup,prefix=`/api/v1/windows-agents/fixture-agent/wecom-cleanup/${binding.obligationId}/`;
+    const bootstrap={protocol:'wecom-causal-v1',bindingNonce:binding.nonce,pipeNonce:'d'.repeat(48)},hosts=[{role:'reader',pid:123,...syntheticHostTime(Date.now()+300000),machineId:'a'.repeat(64)}];
+    const body={binding,hosts,bootstrap},lease=`/api/v1/windows-agents/fixture-agent/wecom-preview-tasks/${task.taskId}/lease`;
+    assert.equal((await req('GET',lease,agent)).valid,false);
+    await req('POST',prefix+'host',other,body,401);
+    await req('POST',prefix+'host',agent,{...body,bootstrap:{...bootstrap,bindingNonce:'wrong'}},409);
+    if(loss){drop=prefix+'host';await assert.rejects(req('POST',prefix+'host',agent,body));}
+    await req('POST',prefix+'host',agent,body);
+    const live=await req('GET',lease,agent);assert.equal(live.valid,true);assert.deepEqual(live.causalLease,task.payload.wecomCausalLease);assert.ok(live.remainingMs>3000&&live.remainingMs<=300000);
+    return {...created,task,binding,prefix,bootstrap,hosts,body,lease};
+  }
+  async function ready(r){
+    await req('POST',`/api/v1/windows-agent-tasks/${r.task.taskId}/status`,agent,{status:'failed',result:{previewStatus:'blocked',previewCode:'fixture_no_invitation',invitationSent:false}});
+    const closed={binding:r.binding,hosts:r.hosts,bootstrap:r.bootstrap,observedAt:new Date(Date.now()-300000).toISOString(),exited:true,observerMachineId:r.hosts[0].machineId};
+    await req('POST',r.prefix+'host-closed',agent,closed);
+    const v=await req('POST',r.prefix+'verify',agent,{binding:r.binding}),task=await pick();assert.equal(task.taskId,v.taskId);
+    const fields={verificationId:task.payload.verificationId,verificationNonce:task.payload.verificationNonce,verificationTaskId:task.taskId};
+    return {...r,verifyTask:task,fields};
+  }
+  async function challenge(r){const started=performance.now(),result=await req('POST',r.prefix+'challenge',agent,{binding:r.binding,...r.fields});return {...r,challenge:result.challenge,started};}
+  function proof(r){return {binding:r.binding,...r.fields,challenge:r.challenge,snapshots:[1,2].map(i=>({sequence:i,elapsedMs:performance.now()-r.started+i,observedAt:new Date(Date.now()-300000).toISOString(),packagesAbsent:true,packageNames:[...WECOM_PACKAGES],serialForwardCount:0}))};}
+  const snapshot=async()=>JSON.parse(await fs.readFile(path.join(data,'state.json'),'utf8'));
+  return {req,admin,agent,other,submit,next,create,pick,registered,ready,challenge,proof,snapshot,file:path.join(data,'state.json'),restart:async mutate=>{await stop();if(mutate)await mutate(path.join(data,'state.json'));await start();},dropReply:route=>{drop=route;}};
+}
 
-const pause = ms => new Promise(r => setTimeout(r, ms));
-test("actual HTTP: unknown cleanup blocks same phone, survives restart/archive, proof commits before release", { timeout: 45_000 }, async t => {
-  const root = process.env.WECOM_CLEANUP_BASELINE_ROOT || path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-  const databaseUrl = process.env.WECOM_CLEANUP_TEST_DATABASE_URL || "";
-  if (databaseUrl) { const u = new URL(databaseUrl); assert.ok(["127.0.0.1", "localhost"].includes(u.hostname) && u.pathname === "/wecom_cleanup_fixture" && !u.password, "isolated credential-free fixture database only"); }
-  const pool = databaseUrl ? new pg.Pool({ connectionString: databaseUrl }) : null;
-  const data = await fs.mkdtemp(path.join(os.tmpdir(), "pc-wecom-cleanup-http-"));
-  const listener = net.createServer(); listener.listen(0, "127.0.0.1"); await once(listener, "listening");
-  const port = listener.address().port; await new Promise(r => listener.close(r));
-  const base = `http://127.0.0.1:${port}`; let server, output = "";
-  const stop = async () => { if (server && server.exitCode === null) { server.kill(); await once(server, "exit"); } };
-  t.after(async () => { await stop(); await pool?.end(); await fs.rm(data, { recursive: true, force: true }); });
-  async function start() {
-    server = spawn(process.execPath, ["server/index.mjs"], { cwd: root, env: {
-      PATH: process.env.PATH, SYSTEMROOT: process.env.SYSTEMROOT, HOST: "127.0.0.1", PORT: String(port), DATA_DIR: data,
-      STORAGE_BACKEND: databaseUrl ? "postgres" : "json", STRUCTURED_WRITES: process.env.WECOM_CLEANUP_TEST_SNAPSHOT_ONLY === "1" ? "false" : "true", STRUCTURED_TABLE_SYNC: process.env.WECOM_CLEANUP_TEST_TABLE_SYNC === "1" ? "true" : "false", DATABASE_URL: databaseUrl, REDIS_URL: "", ADMIN_USERNAME: "fixture_admin",
-      ADMIN_PASSWORD: "fixture-only-password", SCREEN_MEDIA_AUTH_SECRET: "fixture-cleanup-secret", PUBLIC_BASE_URL: base,
-      WINDOWS_AGENT_ONLINE_SECONDS: "300", MANAGED_NAME_LOOKUP_ENABLED: "false", LOOKUP_AI_VISION_ENABLED: "false"
-    }, stdio: ["ignore", "pipe", "pipe"] });
-    server.stdout.on("data", c => { output += c; }); server.stderr.on("data", c => { output += c; });
-    for (let i = 0; i < 100; i++) {
-      try { if ((await fetch(base + "/healthz")).ok) return; } catch {}
-      if (server.exitCode !== null) throw new Error(output.slice(-1500)); await pause(30);
-    }
-    throw new Error("fixture_start_failed " + output.slice(-1500));
+test('authenticated JSON: new capability, main/clone, wrong scope and lost ACK retain original identity', {timeout:20000},async t=>{
+  const f=await fixture(t),created=await f.create();
+  for(const suffix of ['','?wecomPreview=wecom-invitation-v4','?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1','?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1&wecomCausalProtocol=old'])assert.equal((await f.req('GET',f.next+suffix,f.agent)).task,null);
+  let r=await f.registered(created,true);r=await f.ready(r);r=await f.challenge(r);const p=f.proof(r);
+  const wrong=structuredClone(p);wrong.binding.appSlot='clone';wrong.binding.androidUser=999;await f.req('POST',r.prefix+'proof',f.agent,wrong,409);
+  await f.req('POST',`/api/v1/windows-agent-tasks/${r.verifyTask.taskId}/status`,f.agent,{status:'succeeded'},409);
+  const busy=await f.req('POST',f.submit,f.admin,{...created.input,requestId:'fixture_blocked_original'},409);assert.equal(busy.error,'wecom_cleanup_pending');
+  f.dropReply(r.prefix+'proof');await assert.rejects(f.req('POST',r.prefix+'proof',f.agent,p));
+  const stored=await f.snapshot();assert.equal(stored.deviceLocks.find(l=>l.lockId===r.binding.obligationId).status,'released');
+  assert.equal((await f.req('POST',r.prefix+'proof',f.agent,p)).reused,true);
+  await f.restart();assert.equal((await f.req('POST',r.prefix+'proof',f.agent,p)).reused,true);
+  assert.equal(await f.pick(),null,'known proof ACK never enqueues another worker');
+  const clone=await f.create('155','clone'),c=await f.registered(clone);assert.equal(c.task.payload.androidUser,999);assert.equal(c.task.payload.appSlot,'clone');
+});
+
+test('authenticated JSON: real write failure rolls back proof and keeps physical duty until same original proof commits', {timeout:15000},async t=>{
+  const f=await fixture(t),r=await f.challenge(await f.ready(await f.registered(await f.create()))),p=f.proof(r);
+  await fs.rename(f.file,f.file+'.before-failure');await fs.mkdir(f.file);
+  try{await f.req('POST',r.prefix+'proof',f.agent,p,503);}finally{await fs.rm(f.file,{recursive:true,force:true});await fs.rename(f.file+'.before-failure',f.file);}
+  assert.equal((await f.req('GET',r.prefix+'lease?'+new URLSearchParams(r.fields),f.agent)).valid,true);
+  await f.req('POST',f.submit,f.admin,{...r.input,requestId:'fixture_after_unknown_persist'},409);
+  assert.equal((await f.snapshot()).deviceLocks.find(l=>l.lockId===r.binding.obligationId).status,'cleanup_pending');
+  assert.equal((await f.req('POST',r.prefix+'proof',f.agent,p)).verified,true);
+});
+
+test('authenticated JSON: restart keeps original duty and rejects old epoch instead of issuing new verification', {timeout:15000},async t=>{
+  const f=await fixture(t),r=await f.challenge(await f.ready(await f.registered(await f.create()))),p=f.proof(r);
+  await f.restart();await f.req('POST',r.prefix+'verify',f.agent,{binding:r.binding},409);await f.req('POST',r.prefix+'proof',f.agent,p,409);
+  assert.equal((await f.req('POST',f.submit,f.admin,{...r.input,requestId:'fixture_after_epoch_loss'},409)).error,'wecom_cleanup_pending');
+  const disk=await f.snapshot();assert.equal(disk.deviceLocks.find(l=>l.lockId===r.binding.obligationId).status,'cleanup_pending');
+  assert.equal(disk.windowsTasks.filter(x=>x.type==='wecom_cleanup_verify').length,1,'no replacement verification generation');
+  const unrelated=await f.create('25'),task=await f.pick();assert.equal(task.payload.automationJobId,unrelated.job.jobId);
+});
+
+test('authenticated JSON: repeated challenge cannot renew expired3s and another phone still dispatches', {timeout:12000},async t=>{
+  const f=await fixture(t),r=await f.challenge(await f.ready(await f.registered(await f.create()))),p=f.proof(r);
+  await pause(3100);const again=await f.req('POST',r.prefix+'challenge',f.agent,{binding:r.binding,...r.fields});assert.deepEqual(again.challenge,r.challenge);
+  await f.req('POST',r.prefix+'proof',f.agent,p,409);assert.equal((await f.snapshot()).deviceLocks.find(l=>l.lockId===r.binding.obligationId).status,'cleanup_pending');
+  const other=await f.create('155','clone');assert.equal((await f.pick()).payload.automationJobId,other.job.jobId);
+});
+
+test('authenticated JSON: restart after persisted main/clone send claims cannot authorize or replay either original worker', {timeout:15000},async t=>{
+  const f=await fixture(t),originals=[];
+  for(const [number,slot]of [['59','main'],['155','clone']]){
+    const r=await f.registered(await f.create(number,slot,'send'));
+    await f.req('POST',r.lease.replace(/lease$/,'send-claim'),f.agent,{},201);originals.push(r);
   }
-  async function req(method, route, token, body, expected = 200) {
-    const response = await fetch(base + route, { method, headers: { "content-type": "application/json", ...(token ? { authorization: `Bearer ${token}` } : {}) }, body: body === undefined ? undefined : JSON.stringify(body) });
-    const json = await response.json();
-    assert.equal(response.status, expected, `${method} ${route}: ${json.error || response.status}`); return json;
+  await f.restart();
+  for(const r of originals){
+    assert.equal((await f.req('GET',r.lease,f.agent)).valid,false);
+    await f.req('POST',r.lease.replace(/lease$/,'send-claim'),f.agent,{},409);
+    assert.equal((await f.req('POST',f.submit,f.admin,r.input,200)).task.jobId,r.job.jobId);
+    assert.equal((await f.snapshot()).deviceLocks.find(l=>l.lockId===r.binding.obligationId).status,'cleanup_pending');
   }
-  const readSnapshot = async () => {
-    if (!pool) return JSON.parse(await fs.readFile(path.join(data, "state.json"), "utf8"));
-    const value = (await pool.query("select data from phone_cloud_state limit 1")).rows[0].data;
-    return typeof value === "string" ? JSON.parse(value) : value;
-  };
-  await start();
-  const admin = (await req("POST", "/api/v1/auth/login", "", { username: "fixture_admin", password: "fixture-only-password" })).session.token;
-  const agent = (await req("POST", "/api/v1/windows-agents", admin, { agentId: "fixture-agent", agentName: "Fixture" }, 201)).token;
-  const otherAgent = (await req("POST", "/api/v1/windows-agents", admin, { agentId: "other-agent", agentName: "Other" }, 201)).token;
-  const serial = WECOM_PREVIEW_DEVICES["155"].serial, otherSerial = WECOM_PREVIEW_DEVICES["59"].serial;
-  const deviceId = "adb:" + serial;
-  await req("POST", "/api/v1/windows-agents/fixture-agent/devices/sync", agent, {
-    agent: { agentId: "fixture-agent" }, devices: [serial, otherSerial].map(adbSerial => ({ adbSerial, state: "device", model: "Fixture" }))
+  assert.equal(await f.pick(),null,'old original main/clone tasks are never replayed');
+});
+
+test('authenticated JSON startup preserves running/queued causal audit-expired locks while unrelated and legacy records still expire', {timeout:15000},async t=>{
+  const f=await fixture(t),running=await f.registered(await f.create()),queued=await f.create('155','clone');
+  await f.restart(async file=>{
+    const state=JSON.parse(await fs.readFile(file,'utf8')),old='2000-01-01T00:00:00.000Z';
+    for(const j of state.automationJobs.filter(j=>[running.job.jobId,queued.job.jobId].includes(j.jobId)))state.deviceLocks.find(l=>l.lockId===j.lockId).expiresAt=old;
+    // Explicit isolated legacy fixture, derived from an actual queued record;
+    // no production data, host/close evidence or causal context is fabricated.
+    const original=state.automationJobs.find(j=>j.jobId===queued.job.jobId),sourceTask=state.windowsTasks.find(t=>t.taskId===original.windowsTaskId),sourceLock=state.deviceLocks.find(l=>l.lockId===original.lockId);
+    const job={...structuredClone(original),jobId:'fixture-legacy-job',windowsTaskId:'fixture-legacy-task',lockId:'fixture-legacy-lock',deviceId:'adb:'+pool['25'].serial,adbSerial:pool['25'].serial,createdAt:old,updatedAt:old};delete job.wecomCausalLease;
+    const task={...structuredClone(sourceTask),taskId:job.windowsTaskId,deviceId:job.deviceId,adbSerial:job.adbSerial,createdAt:old,updatedAt:old,pickedAt:''};delete task.payload.wecomCausalLease;task.payload.automationJobId=job.jobId;
+    const lock={...structuredClone(sourceLock),lockId:job.lockId,taskId:job.jobId,deviceId:job.deviceId,createdAt:old,updatedAt:old,expiresAt:old};
+    state.automationJobs.push(job);state.windowsTasks.push(task);state.deviceLocks.push(lock,{...structuredClone(lock),lockId:'fixture-unrelated-lock',taskId:'fixture-unrelated-task',lockType:'fixture_unrelated'});
+    await fs.writeFile(file,JSON.stringify(state));
   });
-  for (const [phone, number] of [[serial, "155"], [otherSerial, "59"]]) await req("PUT", `/api/v1/devices/${encodeURIComponent("adb:" + phone)}`, admin, { listingStatus: "listed", deviceName: number });
-  const route = "/api/v1/user/automation/wecom-preview-tasks";
-  const input = { deviceId, appSlot: "main", phoneNumber: "13900000000", requestId: "fixture_original_001" };
-  const first = await req("POST", route, admin, input, 201);
-  const next = "/api/v1/windows-agents/fixture-agent/tasks/next?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1";
-  const task = (await req("GET", next, agent)).task; assert.equal(task.payload.automationJobId, first.task.jobId);
-  const binding = task.payload.physicalCleanup;
-  if (!binding) {
-    // The same fixture executes against the immutable old source to establish
-    // the user-visible red case, without weakening the new assertion.
-    await req("POST", `/api/v1/windows-agent-tasks/${task.taskId}/status`, agent, { status: "failed", result: { previewStatus: "blocked", previewCode: "preview_cleanup_unconfirmed", diagnostic: { wecomExecution: { cleanupConfirmed: false } } } });
-    await req("POST", route, admin, { ...input, requestId: "fixture_after_failure" }, 409);
-    assert.fail("baseline lacks persisted obligation");
-  }
-  const cleanup = `/api/v1/windows-agents/fixture-agent/wecom-cleanup/${binding.obligationId}/`;
-  await pause(2);
-  const hosts = [{ role: "reader", pid: 123, ...syntheticHostTime(), machineId: "a".repeat(64) }];
-  assert.equal((await req("GET", `/api/v1/windows-agents/fixture-agent/wecom-preview-tasks/${task.taskId}/lease`, agent)).valid, false, "unregistered host has no phone permission");
-  await req("POST", cleanup + "host", agent, { binding, hosts });
-  await req("POST", cleanup + "host", agent, { binding, hosts });
-  await req("POST", cleanup + "host", otherAgent, { binding, hosts }, 401);
-  await req("POST", `/api/v1/windows-agent-tasks/${task.taskId}/status`, agent, { status: "failed", result: { previewStatus: "blocked", previewCode: "preview_cleanup_unconfirmed", diagnostic: { wecomExecution: { cleanupConfirmed: false } } } });
-  const failedBusiness = (await req("GET", route + "/" + first.task.jobId, admin)).task;
-  const blocked = { ...input, appSlot: "clone", requestId: "fixture_after_failure" };
-  assert.equal((await req("POST", route, admin, blocked, 409)).error, "wecom_cleanup_pending");
-  await req("POST", cleanup + "verify", agent, { binding }, 409);
-  await req("POST", `/api/v1/device-locks/${binding.obligationId}/release`, admin, {}, 409);
-  await req("POST", route, admin, { ...input, deviceId: "adb:" + otherSerial, requestId: "fixture_other_phone" }, 201);
-  assert.equal((await req("GET", next, agent)).task.deviceId, "adb:" + otherSerial, "unrelated phone still dispatches");
-  await pause(2);
-  const closed = { binding, hosts, observedAt: new Date().toISOString(), exited: true, observerMachineId: "a".repeat(64) };
-  await req("POST", cleanup + "host-closed", agent, { ...closed, observerMachineId: "b".repeat(64) }, 409);
-  await req("POST", cleanup + "host-closed", agent, closed);
-  await stop();
-  // Age ordinary lock/task/job to exercise actual maintenance/retention after
-  // a real server process restart; no production or simulated remote state.
-  const file = path.join(data, "state.json"), saved = await readSnapshot();
-  const old = "2020-01-01T00:00:00.000Z";
-  for (const row of saved.deviceLocks.filter(l => l.deviceId === deviceId)) { row.expiresAt = old; row.updatedAt = old; row.createdAt = old; }
-  for (const row of [...saved.windowsTasks, ...saved.automationJobs].filter(r => r.deviceId === deviceId)) { row.createdAt = row.updatedAt = row.completedAt = old; }
-  if (pool) {
-    await pool.query("update phone_cloud_state set data=$1", [JSON.stringify(saved)]);
-    for (const row of saved.deviceLocks.filter(l => l.deviceId === deviceId)) await pool.query("update phone_cloud_device_locks set expires_at=$1,data=$2 where lock_id=$3", [old,JSON.stringify(row),row.lockId]);
-    for (const row of saved.windowsTasks.filter(t => t.deviceId === deviceId)) await pool.query("update phone_cloud_windows_tasks set updated_at=$1,data=$2 where task_id=$3", [old,JSON.stringify(row),row.taskId]);
-    for (const row of saved.automationJobs.filter(j => j.deviceId === deviceId)) await pool.query("update phone_cloud_automation_jobs set updated_at=$1,data=$2 where job_id=$3", [old,JSON.stringify(row),row.jobId]);
-  } else await fs.writeFile(file, JSON.stringify(saved));
-  await start();
-  await req("GET", "/api/v1/device-locks", admin);
-  await req("POST", "/api/v1/maintenance/prune", admin, { dryRun: false });
-  assert.equal((await req("POST", route, admin, blocked, 409)).error, "wecom_cleanup_pending");
-  const disk = await readSnapshot();
-  assert.ok(disk.deviceLocks.some(l => l.lockId === binding.obligationId && l.status === "cleanup_pending"));
-  assert.ok(!disk.automationJobs.some(j => j.jobId === first.task.jobId), "actual prune archived original job");
-  const verifyTask = (await req("GET", next, agent)).task; // restart poll repairs the lost explicit verify request
-  const requested = await req("POST", cleanup + "verify", agent, { binding });
-  assert.equal((await req("POST", cleanup + "verify", agent, { binding })).taskId, requested.taskId);
-  assert.equal(verifyTask.type, "wecom_cleanup_verify"); assert.equal(verifyTask.taskId, requested.taskId);
-  const v = verifyTask.payload;
-  const fields = { verificationId: v.verificationId, verificationNonce: v.verificationNonce, verificationTaskId: verifyTask.taskId };
-  const leaseRoute = cleanup + "lease?" + new URLSearchParams(fields);
-  assert.equal((await req("GET", leaseRoute, agent)).valid, true);
-  async function freshProof() {
-    const snapshots = [];
-    for (let i = 0; i < 2; i++) { await pause(3); snapshots.push({ observedAt: new Date().toISOString(), packagesAbsent: true, packageNames: [...WECOM_PACKAGES], serialForwardCount: 0 }); }
-    return { binding, ...fields, snapshots };
-  }
-  const wrong = await freshProof(); wrong.snapshots[1].serialForwardCount = 1;
-  await req("POST", cleanup + "proof", agent, wrong, 409);
-  await req("POST", `/api/v1/windows-agent-tasks/${verifyTask.taskId}/status`, agent, { status: "succeeded", result: { cleanupConfirmed: true } }, 409);
-  // Real filesystem persistence failure, not just a mocked writer. Keep a copy
-  // of this isolated server's state and restore it before the retry.
-  if (pool) await pool.query(`create function fixture_reject_release() returns trigger language plpgsql as $$ begin
-    if NEW.data->>'lockType' = 'wecom_physical_cleanup' and NEW.status = 'released' then raise exception 'fixture_rejected'; end if; return NEW; end $$;
-    create trigger fixture_release_failure before insert or update on phone_cloud_device_locks for each row execute function fixture_reject_release()`);
-  else { await fs.rename(file, file + ".before-failure"); await fs.mkdir(file); }
-  try { await req("POST", cleanup + "proof", agent, await freshProof(), 503); }
-  finally {
-    if (pool) await pool.query("drop trigger fixture_release_failure on phone_cloud_device_locks; drop function fixture_reject_release()");
-    else { await fs.rm(file, { recursive: true, force: true }); await fs.rename(file + ".before-failure", file); }
-  }
-  if (pool) {
-    assert.equal((await pool.query("select data->>'status' as status from phone_cloud_windows_tasks where task_id=$1",[verifyTask.taskId])).rows[0].status,"running","Postgres rolled back task before failed lock release");
-    assert.equal((await pool.query("select status from phone_cloud_device_locks where lock_id=$1",[binding.obligationId])).rows[0].status,"cleanup_pending");
-  }
-  assert.equal((await req("GET", leaseRoute, agent)).valid, true, "rollback kept verification running");
-  assert.equal((await req("POST", route, admin, blocked, 409)).error, "wecom_cleanup_pending");
-  const proof = await freshProof(); assert.equal((await req("POST", cleanup + "proof", agent, proof)).verified, true);
-  assert.equal((await req("POST", cleanup + "proof", agent, proof)).reused, true);
-  await req("POST", `/api/v1/windows-agent-tasks/${verifyTask.taskId}/status`, agent, { status: "failed", result: { errorCode: "late_response_loss" } });
-  assert.equal((await req("GET", `/api/v1/windows-agent-tasks/${verifyTask.taskId}`, admin)).task.status,"succeeded");
-  await req("POST", route, admin, blocked, 201);
-  assert.equal(failedBusiness.status, "failed");
-  const end = await readSnapshot();
-  const verified = pool ? (await pool.query("select data from phone_cloud_device_locks where lock_id=$1",[binding.obligationId])).rows[0].data : end.deviceLocks.find(l => l.lockId === binding.obligationId);
-  assert.equal(verified.status, "released"); assert.equal(verified.releaseReason, "wecom_physical_verified");
-  assert.ok(!end.automationJobs.some(j => j.jobId === first.task.jobId), "proof did not resurrect archived business");
-  if (pool) assert.equal((await pool.query("select data->>'status' as status from phone_cloud_automation_jobs where job_id=$1",[first.task.jobId])).rows[0].status,"failed");
-  // A real restart of a pre-protocol in-flight fixture must conservatively
-  // persist maintenance, even with structured snapshot dual-write disabled.
-  const legacyTask = (await req("GET", next, agent)).task;
-  assert.equal(legacyTask.type, "wecom_customer_preview");
-  await stop(); const legacyState = await readSnapshot();
-  const legacyRow = legacyState.windowsTasks.find(t => t.taskId === legacyTask.taskId);
-  const obsoleteHoldId = legacyRow.payload.physicalCleanup.obligationId;
-  delete legacyRow.payload.physicalCleanup;
-  legacyState.deviceLocks = legacyState.deviceLocks.filter(l => l.lockId !== obsoleteHoldId);
-  const legacyJob = legacyState.automationJobs.find(j => j.jobId === legacyRow.payload.automationJobId);
-  legacyJob.createdAt = legacyJob.updatedAt = old;
-  if (pool) {
-    await pool.query("delete from phone_cloud_device_locks where lock_id=$1", [obsoleteHoldId]);
-    await pool.query("update phone_cloud_windows_tasks set data=$1 where task_id=$2", [JSON.stringify(legacyRow), legacyRow.taskId]);
-    await pool.query("update phone_cloud_automation_jobs set updated_at=$1,data=$2 where job_id=$3", [old,JSON.stringify(legacyJob),legacyJob.jobId]);
-    await pool.query("update phone_cloud_state set data=$1", [JSON.stringify(legacyState)]);
-  } else await fs.writeFile(file, JSON.stringify(legacyState));
-  await start();
-  const maintenance = (await req("GET", "/api/v1/device-locks", admin)).locks.find(l => l.deviceId === deviceId && l.cleanup?.phase === "maintenance");
-  assert.ok(maintenance, "old picked task has durable maintenance hold before HTTP opens");
-  if (pool) assert.equal((await pool.query("select status from phone_cloud_device_locks where lock_id=$1", [maintenance.lockId])).rows[0].status,"cleanup_pending");
-  await req("GET", "/api/v1/user/automation/xhs-data-tasks/fixture_missing", admin, undefined, 404); // runs actual expiry reducer
-  assert.equal((await req("GET", route + "/" + legacyJob.jobId, admin)).task.status,"expired");
-  await stop(); await start();
-  assert.equal((await req("POST", route, admin, { ...input, requestId:"fixture_after_legacy_expiry" },409)).error,"wecom_cleanup_pending");
-  if (pool) {
-    const persisted = (await pool.query("select data from phone_cloud_device_locks where lock_id=$1", [maintenance.lockId])).rows[0].data;
-    assert.equal(persisted.physicalCleanup.phase,"maintenance"); assert.equal(persisted.physicalCleanup.binding,undefined);
-    assert.equal(persisted.physicalCleanup.legacySerial,serial);
-  }
-  t.diagnostic(databaseUrl ? "actual isolated PostgreSQL: HTTP + process restart + archive + transaction rollback" : "actual JSON HTTP + process restart + archive + filesystem rollback");
+  const locks=(await f.req('GET','/api/v1/device-locks',f.admin)).locks;
+  for(const job of [running.job,queued.job])assert.equal(locks.find(l=>l.taskId===job.jobId&&l.lockType==='wecom_customer_preview').status,'active','audit expiresAt cannot delete unknown original authority/ownership');
+  assert.equal(locks.find(l=>l.lockId==='fixture-unrelated-lock').status,'expired');
+  assert.notEqual(locks.find(l=>l.lockId==='fixture-legacy-lock').status,'active','old records retain their original generic expiry');
+  assert.equal((await f.req('GET',running.lease,f.agent)).valid,false);
+  assert.equal(await f.pick(),null,'epoch loss grants no running or queued work');
+  await f.req('POST',running.prefix+'host',f.agent,running.body,409);
+  const disk=await f.snapshot();assert.equal(disk.deviceLocks.find(l=>l.lockId===running.binding.obligationId).status,'cleanup_pending');
+  assert.equal(disk.windowsTasks.filter(t=>t.type==='wecom_cleanup_verify').length,0);
 });

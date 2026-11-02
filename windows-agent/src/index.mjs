@@ -1153,6 +1153,7 @@ async function pollTask() {
     params.set("xhsPublishDelivery", XHS_PUBLISH_DELIVERY_PROTOCOL);
     params.set("wecomPreview", "wecom-invitation-v4");
     params.set("wecomCleanupProtocol", "1");
+    params.set("wecomCausalProtocol", "wecom-causal-v1");
     const suffix = params.size ? `?${params.toString()}` : "";
     const payload = await api(`/api/v1/windows-agents/${encodeURIComponent(config.agentId)}/tasks/next${suffix}`);
     observeLookupReaderAdmission(payload.readerCapacity);

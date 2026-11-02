@@ -1,0 +1,192 @@
+{
+  "fullExit": 2,
+  "verbatimStdout": "verification/wecom-v1-causal-http-20261103/AGENT_FIRST.txt:699: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/AGENT_FIRST.txt:713: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/AGENT_FIRST.txt:715: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/HTTP_ADAPTED_FIRST.txt:42: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/HTTP_ADAPTED_FIRST.txt:48: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/HTTP_ADAPTED_FIRST.txt:50: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/HTTP_ADAPTED_SECOND.txt:33: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/HTTP_ADAPTED_SECOND.txt:35: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/HTTP_ADAPTED_SECOND.txt:60: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/HTTP_ADAPTED_SECOND.txt:66: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/HTTP_ADAPTED_SECOND.txt:68: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/HTTP_ADAPTED_SECOND.txt:86: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/HTTP_ADAPTED_SECOND.txt:88: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/HTTP_ADAPTED_SECOND.txt:109: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/HTTP_ADAPTED_SECOND.txt:115: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/HTTP_ADAPTED_SECOND.txt:117: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/HTTP_PROTOCOL_RED.txt:62: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/HTTP_PROTOCOL_RED.txt:64: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/HTTP_PROTOCOL_RED.txt:83: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/HTTP_PROTOCOL_RED.txt:85: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/HTTP_PROTOCOL_RED.txt:104: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/HTTP_PROTOCOL_RED.txt:106: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/HTTP_PROTOCOL_RED.txt:125: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/HTTP_PROTOCOL_RED.txt:127: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/HTTP_PROTOCOL_RED.txt:146: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/HTTP_PROTOCOL_RED.txt:148: trailing whitespace.\n+  \nverification/wecom-v1-causal-http-20261103/ROOT_CHECK.txt:4: new blank line at EOF.\nverification/wecom-v1-causal-http-20261103/ROOT_CHECK_FINAL.txt:4: new blank line at EOF.\nverification/wecom-v1-causal-http-20261103/SHARED_FINAL_DIFF.patch.txt:12: trailing whitespace.\n+ \nverification/wecom-v1-causal-http-20261103/SHARED_FINAL_DIFF.patch.txt:62: trailing whitespace.\n+ \n",
+  "exceptions": {
+    "verification/wecom-v1-causal-http-20261103/AGENT_FIRST.txt": {
+      "sha256": "37b754b94af2c055ee375f25c7b07dbb6cff5cff0ddf578f7fcb8449e9b24770",
+      "lines": [
+        {
+          "line": 699,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        },
+        {
+          "line": 713,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        },
+        {
+          "line": 715,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        }
+      ]
+    },
+    "verification/wecom-v1-causal-http-20261103/HTTP_ADAPTED_FIRST.txt": {
+      "sha256": "e038bfa06d6e26acdab89925a33a7c709d79878af6a5666a0d50e7e029ce6651",
+      "lines": [
+        {
+          "line": 42,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        },
+        {
+          "line": 48,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        },
+        {
+          "line": 50,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        }
+      ]
+    },
+    "verification/wecom-v1-causal-http-20261103/HTTP_ADAPTED_SECOND.txt": {
+      "sha256": "471e1b94fbf5fa2803aaa6facb9f9e8a1c3b4a3db6b707922c92028b27582829",
+      "lines": [
+        {
+          "line": 33,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        },
+        {
+          "line": 35,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        },
+        {
+          "line": 60,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        },
+        {
+          "line": 66,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        },
+        {
+          "line": 68,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        },
+        {
+          "line": 86,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        },
+        {
+          "line": 88,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        },
+        {
+          "line": 109,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        },
+        {
+          "line": 115,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        },
+        {
+          "line": 117,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        }
+      ]
+    },
+    "verification/wecom-v1-causal-http-20261103/HTTP_PROTOCOL_RED.txt": {
+      "sha256": "a424b169a635f272e481828b33ba1dcd84fb61ed562fc249ea407941d6948180",
+      "lines": [
+        {
+          "line": 62,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        },
+        {
+          "line": 64,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        },
+        {
+          "line": 83,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        },
+        {
+          "line": 85,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        },
+        {
+          "line": 104,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        },
+        {
+          "line": 106,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        },
+        {
+          "line": 125,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        },
+        {
+          "line": 127,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        },
+        {
+          "line": 146,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        },
+        {
+          "line": 148,
+          "hex": "20200a",
+          "diagnostic": "trailing whitespace."
+        }
+      ]
+    },
+    "verification/wecom-v1-causal-http-20261103/ROOT_CHECK.txt": {
+      "sha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+      "lines": [
+        {
+          "line": 4,
+          "hex": "0a",
+          "diagnostic": "new blank line at EOF."
+        }
+      ]
+    },
+    "verification/wecom-v1-causal-http-20261103/ROOT_CHECK_FINAL.txt": {
+      "sha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+      "lines": [
+        {
+          "line": 4,
+          "hex": "0a",
+          "diagnostic": "new blank line at EOF."
+        }
+      ]
+    },
+    "verification/wecom-v1-causal-http-20261103/SHARED_FINAL_DIFF.patch.txt": {
+      "sha256": "f815e059c07ff286118735eec2a999965bb15ad38a1bdd2d282df5b7f9090df7",
+      "lines": [
+        {
+          "line": 12,
+          "hex": "200a",
+          "diagnostic": "trailing whitespace."
+        },
+        {
+          "line": 62,
+          "hex": "200a",
+          "diagnostic": "trailing whitespace."
+        }
+      ]
+    }
+  },
+  "scope": "Only exact owned raw log/source/unified-diff artifact locations; not a blanket full-check pass."
+}

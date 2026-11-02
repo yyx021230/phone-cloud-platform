@@ -9,7 +9,7 @@ import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import { runWecomPreviewTask } from '../windows-agent/src/wecom-preview-task.mjs';
 import { WECOM_PREVIEW_DEVICES } from './wecom-preview.mjs';
-import { createSimulatedWecomCleanup } from './wecom-cleanup-fixture.mjs';
+import { createSimulatedWecomCleanup } from './wecom-causal-fixture.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const source = await fs.readFile(new URL('../windows-agent/src/index.mjs', import.meta.url), 'utf8');
@@ -76,7 +76,7 @@ async function fixture(t) {
   await request('PUT', '/api/v1/devices/' + encodeURIComponent('adb:' + serial), admin,
     { deviceName: '59', listingStatus: 'listed' });
   cleanupFixture = createSimulatedWecomCleanup({ request, agentId: 'wire-fixture', token: agent,
-    nextRoute: '/api/v1/windows-agents/wire-fixture/tasks/next?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1' });
+    nextRoute: '/api/v1/windows-agents/wire-fixture/tasks/next?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1&wecomCausalProtocol=wecom-causal-v1' });
   return { request, admin, agent, restart: async () => { await stop(); await start(); } };
 }
 
@@ -105,7 +105,7 @@ test('real Agent runTask -> taskStatus -> compactor -> HTTP persistence -> publi
     for (const [index, sample] of samples.entries()) await t.test(sample.name, async () => {
       const body = { deviceNumber: '59', appSlot: 'main', phoneNumber: '1990000000' + (index + 1), remarkName: '本地序列化测试' };
       const submitted = await f.request('POST', '/api/v1/wecom/customer-invitations', f.admin, body, 202);
-      const task = (await f.request('GET', '/api/v1/windows-agents/wire-fixture/tasks/next?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1', f.agent)).task;
+      const task = (await f.request('GET', '/api/v1/windows-agents/wire-fixture/tasks/next?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1&wecomCausalProtocol=wecom-causal-v1', f.agent)).task;
       assert.equal(task.payload.automationJobId, submitted.taskId);
       if (sample.claimed) await f.request('POST', `/api/v1/windows-agents/wire-fixture/wecom-preview-tasks/${task.taskId}/send-claim`, f.agent, {}, 201);
       const writes = [];
