@@ -6135,3 +6135,11 @@ Node62313exit0/组消失、PG62301exit0确认，成功db仅原runner删除，旧
 ### 决策日志｜2026-11-03 合成owner验证不代替实际写权限和设备验收
 
 接受本片原业务锁SQL机制，仍不接shared或扩大产品/DDL。后续仅准备delivery/progress精确验证提案，核真实三jsonb_set字段和旧caller身份；独立稳定opID、内容指纹与durable receipt合同先审，不向M1 exact状态或可裁剪events塞回执。known claim不证明本次后续操作提交。blob/boot/lookup根协调，S2/journal/native默认禁启，原43设备义务/147/52和查名池保持，主号分身真机未完成。
+
+### 变更记录｜2026-11-03 C片delivery/progress验证与回执合同提案
+
+仅新增verification/wecom-v2-delivery-progress-plan-20261103/PLAN与RECEIPT_CONTRACT，核对repository三jsonb_set、poll/auth/ack/status真实条件。明确当前WeCom不进入leased分支，合成WeCom行直接SQL不能冒称真实路由可达。建议C1两组窄SQL字段/旧候选效果，另核现有helper token/时效/profile；尚无源码或测试执行，不把claim保持误当caller合法。
+
+### 决策日志｜2026-11-03 后续mutation须独立稳定回执，先审不造DDL
+
+细化原projection C项：稳定operation/完整内容指纹/owner关联、task+job+receipt同事务、COMMIT未知先退役后原IDs独立读取；receipt缺而旧事务未决继续unknown，不重跑手机。候选canonical编码、可信执行实例、receipt schema/retention/outbox仍待根定，不实现authorizer、产品/shared/DDL/M1扩展。无PG/Windows/ADB/手机/生产动作；blob/boot/lookup根协调，S2/journal/native及主号分身真机未完成，43/147/52和查名池保留。
