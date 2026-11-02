@@ -5789,3 +5789,14 @@ root审441a计划后限定最小切片，干净441a上新增server/wecom-cleanup
 ### 决策日志｜2026-11-02 先交未接线host叶，持久化和真实时效分阶段
 
 延续441a兼容提案，M1仅实现有限schema/状态准备，不把本地候选当运行时修好。v1和旧义务不改、不清原43；独立叶未来导入也须经root明确接线，不能将requiresPersistence候选当durable ACK。下一阶段专用PG CAS/COMMIT未知、journal与pending-release各自审查验证；时钟真实来源/peer身份仍缺，禁止以合成provider或Admin16组读数放行。155/157查名池、147/52隔离、SYSTEM/固定ADB/冻结均保持。
+
+
+### 变更记录｜2026-11-02 M1 rc.1独立审发现身份schema遗漏，rc.2本地修正
+
+root以实际preparer复现同源request/provider一致坏PID=4294967296、非finite出生token、同一host的createdAt/token不匹配仍准备revision1；fence held/durable false，不是物理释放。owner先在未改rc.1产品源追加3负例，原45绿、新3红，保存旧源/实际日志与hash；另逐字复制root固定Git模块反例包，原可变工作区EXTRA脚本只作参考，不能冒充历史执行。
+
+仅收紧M1独立叶：PID为正DWORD，hexfloat解码必须finite且>0，同一host token秒值与自己createdAt毫秒差<=1.001ms；没有跨机wall比较/重标时间。黄金fixture按各自wall生成合法hexfloat，2000/2099正例保留；错实例close改用另一对合法出生记录，保证实际状态绑定受测。当前61项全过，含reader/parent同源3坏输入、DWORD边界、underflow零、±1ms保留及2ms拒绝；v1/Agent原50项回归过，新增两文件语法和diff检查过。证据verification/wecom-v2-host-identity-20261102，历史45/48红/中间59不累加。
+
+### 决策日志｜2026-11-02 事实来源相同也必须校验内部合法性
+
+延续M1只准备未持久状态的边界，provider对照不代替Windows值域和同机出生数据一致性。rc.1旧tag/绿回执不改，rc.2新提交/tag；14既有产品源保持不变。CAS/journal/可信OS事实/时间权威仍未实现；未改v1/service/index/PG/Agent/Python，零Windows/手机/ADB/发布动作，原43与隔离/查名池/冻结继续保持。该修正不是运行时/native验收通过。

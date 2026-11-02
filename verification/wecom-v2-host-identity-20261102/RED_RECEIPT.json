@@ -1,0 +1,16 @@
+{
+  "baselineCommit": "2bae48b706b4d2742c74a6c1624605e2c9908fab",
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "server/wecom-cleanup-v2-host.test.mjs"
+  ],
+  "exitCode": 1,
+  "sourceSha256": {
+    "server/wecom-cleanup-v2-host.mjs": "66ba8759717805e248d40cd45ffd79b289a850e3fd337670e8501cb56afbe446",
+    "server/wecom-cleanup-v2-host.test.mjs": "42e7efea19a1289d7249519c79456cec818487cc399c9600062c82326d5164d0"
+  },
+  "outputSha256": "e1ba5f361cd7be23f94f1b8f6eab5a88fcb14b3ebf556d0751a83e8957f07fdb",
+  "expected": "old45 pass / new3 fail; malformed same-source reader identity accepted by rc.1"
+}

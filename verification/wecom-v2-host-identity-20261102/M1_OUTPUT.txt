@@ -1,0 +1,376 @@
+TAP version 13
+# Subtest: two stages prepare immutable held states; neither is durable ACK or release
+ok 1 - two stages prepare immutable held states; neither is durable ACK or release
+  ---
+  duration_ms: 2.810333
+  type: 'test'
+  ...
+# Subtest: deeply frozen caller inputs and provider facts are never modified
+ok 2 - deeply frozen caller inputs and provider facts are never modified
+  ---
+  duration_ms: 0.167209
+  type: 'test'
+  ...
+# Subtest: audit wall 2000-01-01T00:00:00.000Z is not compared to cloud now
+ok 3 - audit wall 2000-01-01T00:00:00.000Z is not compared to cloud now
+  ---
+  duration_ms: 0.20525
+  type: 'test'
+  ...
+# Subtest: audit wall 2099-01-01T00:00:00.000Z is not compared to cloud now
+ok 4 - audit wall 2099-01-01T00:00:00.000Z is not compared to cloud now
+  ---
+  duration_ms: 0.191709
+  type: 'test'
+  ...
+# Subtest: configured clone binds Android user999, never changes main identity
+ok 5 - configured clone binds Android user999, never changes main identity
+  ---
+  duration_ms: 0.1235
+  type: 'test'
+  ...
+# Subtest: object key order normalizes; identical operation returns original candidate without increment
+ok 6 - object key order normalizes; identical operation returns original candidate without increment
+  ---
+  duration_ms: 0.477958
+  type: 'test'
+  ...
+# Subtest: same operationId with changed content cannot be reinterpreted
+ok 7 - same operationId with changed content cannot be reinterpreted
+  ---
+  duration_ms: 0.477584
+  type: 'test'
+  ...
+# Subtest: competing candidates require external CAS; this leaf does not pick a committed winner
+ok 8 - competing candidates require external CAS; this leaf does not pick a committed winner
+  ---
+  duration_ms: 0.145042
+  type: 'test'
+  ...
+# Subtest: close before host, skipped revision, new host after registration reject
+ok 9 - close before host, skipped revision, new host after registration reject
+  ---
+  duration_ms: 0.192458
+  type: 'test'
+  ...
+# Subtest: authenticated context rejects mismatched obligationId
+ok 10 - authenticated context rejects mismatched obligationId
+  ---
+  duration_ms: 0.105708
+  type: 'test'
+  ...
+# Subtest: authenticated context rejects mismatched originalTaskId
+ok 11 - authenticated context rejects mismatched originalTaskId
+  ---
+  duration_ms: 0.055833
+  type: 'test'
+  ...
+# Subtest: authenticated context rejects mismatched executionId
+ok 12 - authenticated context rejects mismatched executionId
+  ---
+  duration_ms: 0.043208
+  type: 'test'
+  ...
+# Subtest: authenticated context rejects mismatched deviceId
+ok 13 - authenticated context rejects mismatched deviceId
+  ---
+  duration_ms: 0.037084
+  type: 'test'
+  ...
+# Subtest: authenticated context rejects mismatched serial
+ok 14 - authenticated context rejects mismatched serial
+  ---
+  duration_ms: 0.042625
+  type: 'test'
+  ...
+# Subtest: authenticated context rejects mismatched agentId
+ok 15 - authenticated context rejects mismatched agentId
+  ---
+  duration_ms: 0.046667
+  type: 'test'
+  ...
+# Subtest: authenticated context rejects mismatched appSlot
+ok 16 - authenticated context rejects mismatched appSlot
+  ---
+  duration_ms: 0.042125
+  type: 'test'
+  ...
+# Subtest: authenticated context rejects mismatched androidUser
+ok 17 - authenticated context rejects mismatched androidUser
+  ---
+  duration_ms: 0.039542
+  type: 'test'
+  ...
+# Subtest: authenticated context rejects mismatched nonce
+ok 18 - authenticated context rejects mismatched nonce
+  ---
+  duration_ms: 0.043125
+  type: 'test'
+  ...
+# Subtest: authenticated context rejects mismatched serverEpoch
+ok 19 - authenticated context rejects mismatched serverEpoch
+  ---
+  duration_ms: 0.039583
+  type: 'test'
+  ...
+# Subtest: authenticated context rejects mismatched agentInstanceId
+ok 20 - authenticated context rejects mismatched agentInstanceId
+  ---
+  duration_ms: 0.037834
+  type: 'test'
+  ...
+# Subtest: authenticated context rejects mismatched handshakeNonce
+ok 21 - authenticated context rejects mismatched handshakeNonce
+  ---
+  duration_ms: 0.036458
+  type: 'test'
+  ...
+# Subtest: wrong request nonce does not grant preparation
+ok 22 - wrong request nonce does not grant preparation
+  ---
+  duration_ms: 0.052458
+  type: 'test'
+  ...
+# Subtest: wrong trusted spawn nonce does not grant preparation
+ok 23 - wrong trusted spawn nonce does not grant preparation
+  ---
+  duration_ms: 0.041209
+  type: 'test'
+  ...
+# Subtest: wrong parent instance does not grant preparation
+ok 24 - wrong parent instance does not grant preparation
+  ---
+  duration_ms: 0.0405
+  type: 'test'
+  ...
+# Subtest: wrong parent PID does not grant preparation
+ok 25 - wrong parent PID does not grant preparation
+  ---
+  duration_ms: 0.042458
+  type: 'test'
+  ...
+# Subtest: wrong reader PID does not grant preparation
+ok 26 - wrong reader PID does not grant preparation
+  ---
+  duration_ms: 0.044792
+  type: 'test'
+  ...
+# Subtest: wrong parent birth token does not grant preparation
+ok 27 - wrong parent birth token does not grant preparation
+  ---
+  duration_ms: 0.037125
+  type: 'test'
+  ...
+# Subtest: wrong reader birth token does not grant preparation
+ok 28 - wrong reader birth token does not grant preparation
+  ---
+  duration_ms: 0.0395
+  type: 'test'
+  ...
+# Subtest: wrong parent audit timestamp does not grant preparation
+ok 29 - wrong parent audit timestamp does not grant preparation
+  ---
+  duration_ms: 0.036792
+  type: 'test'
+  ...
+# Subtest: wrong reader audit timestamp does not grant preparation
+ok 30 - wrong reader audit timestamp does not grant preparation
+  ---
+  duration_ms: 0.035
+  type: 'test'
+  ...
+# Subtest: wrong reader machine does not grant preparation
+ok 31 - wrong reader machine does not grant preparation
+  ---
+  duration_ms: 0.037
+  type: 'test'
+  ...
+# Subtest: nonce alone cannot replace parent/reader facts or genuine close observation
+ok 32 - nonce alone cannot replace parent/reader facts or genuine close observation
+  ---
+  duration_ms: 0.183375
+  type: 'test'
+  ...
+# Subtest: known instance cannot be substituted between registration and close
+ok 33 - known instance cannot be substituted between registration and close
+  ---
+  duration_ms: 0.098083
+  type: 'test'
+  ...
+# Subtest: JSON roundtrip only rehydrates structure, never durable ACK or runtime authority
+ok 34 - JSON roundtrip only rehydrates structure, never durable ACK or runtime authority
+  ---
+  duration_ms: 0.148292
+  type: 'test'
+  ...
+# Subtest: rehydration rejects tampered phase
+ok 35 - rehydration rejects tampered phase
+  ---
+  duration_ms: 0.09525
+  type: 'test'
+  ...
+# Subtest: rehydration rejects tampered fence
+ok 36 - rehydration rejects tampered fence
+  ---
+  duration_ms: 0.067208
+  type: 'test'
+  ...
+# Subtest: rehydration rejects tampered revision
+ok 37 - rehydration rejects tampered revision
+  ---
+  duration_ms: 0.064
+  type: 'test'
+  ...
+# Subtest: rehydration rejects tampered stored host
+ok 38 - rehydration rejects tampered stored host
+  ---
+  duration_ms: 0.07925
+  type: 'test'
+  ...
+# Subtest: rehydration rejects tampered candidate ACK
+ok 39 - rehydration rejects tampered candidate ACK
+  ---
+  duration_ms: 0.096166
+  type: 'test'
+  ...
+# Subtest: rehydration rejects tampered extra operation
+ok 40 - rehydration rejects tampered extra operation
+  ---
+  duration_ms: 0.058625
+  type: 'test'
+  ...
+# Subtest: v1, HTTP booleans, privilege claims, proof/release actions are not accepted
+ok 41 - v1, HTTP booleans, privilege claims, proof/release actions are not accepted
+  ---
+  duration_ms: 0.179167
+  type: 'test'
+  ...
+# Subtest: primitive/array context null cannot confer authority
+ok 42 - primitive/array context null cannot confer authority
+  ---
+  duration_ms: 0.087291
+  type: 'test'
+  ...
+# Subtest: primitive/array context true cannot confer authority
+ok 43 - primitive/array context true cannot confer authority
+  ---
+  duration_ms: 0.0655
+  type: 'test'
+  ...
+# Subtest: primitive/array context [] cannot confer authority
+ok 44 - primitive/array context [] cannot confer authority
+  ---
+  duration_ms: 0.065083
+  type: 'test'
+  ...
+# Subtest: primitive/array context "authenticated" cannot confer authority
+ok 45 - primitive/array context "authenticated" cannot confer authority
+  ---
+  duration_ms: 0.095833
+  type: 'test'
+  ...
+# Subtest: same-source invalid reader facts reject PID above Windows DWORD
+ok 46 - same-source invalid reader facts reject PID above Windows DWORD
+  ---
+  duration_ms: 0.047292
+  type: 'test'
+  ...
+# Subtest: same-source invalid reader facts reject nonfinite birth token
+ok 47 - same-source invalid reader facts reject nonfinite birth token
+  ---
+  duration_ms: 0.040625
+  type: 'test'
+  ...
+# Subtest: same-source invalid reader facts reject same-host birth mismatch
+ok 48 - same-source invalid reader facts reject same-host birth mismatch
+  ---
+  duration_ms: 0.042958
+  type: 'test'
+  ...
+# Subtest: same-source invalid parent facts reject PID above Windows DWORD
+ok 49 - same-source invalid parent facts reject PID above Windows DWORD
+  ---
+  duration_ms: 0.039209
+  type: 'test'
+  ...
+# Subtest: same-source invalid parent facts reject nonfinite birth token
+ok 50 - same-source invalid parent facts reject nonfinite birth token
+  ---
+  duration_ms: 0.034667
+  type: 'test'
+  ...
+# Subtest: same-source invalid parent facts reject same-host birth mismatch
+ok 51 - same-source invalid parent facts reject same-host birth mismatch
+  ---
+  duration_ms: 0.033834
+  type: 'test'
+  ...
+# Subtest: parentHost accepts positive DWORD maximum with otherwise valid facts
+ok 52 - parentHost accepts positive DWORD maximum with otherwise valid facts
+  ---
+  duration_ms: 0.05475
+  type: 'test'
+  ...
+# Subtest: parentHost rejects finite-token underflow to zero even when both sources match
+ok 53 - parentHost rejects finite-token underflow to zero even when both sources match
+  ---
+  duration_ms: 0.038041
+  type: 'test'
+  ...
+# Subtest: parentHost rejects same-source two millisecond mismatch beyond tolerance
+ok 54 - parentHost rejects same-source two millisecond mismatch beyond tolerance
+  ---
+  duration_ms: 0.04725
+  type: 'test'
+  ...
+# Subtest: parentHost preserves same-host -1ms audit tolerance without restamping
+ok 55 - parentHost preserves same-host -1ms audit tolerance without restamping
+  ---
+  duration_ms: 0.055958
+  type: 'test'
+  ...
+# Subtest: parentHost preserves same-host 1ms audit tolerance without restamping
+ok 56 - parentHost preserves same-host 1ms audit tolerance without restamping
+  ---
+  duration_ms: 0.042917
+  type: 'test'
+  ...
+# Subtest: readerHost accepts positive DWORD maximum with otherwise valid facts
+ok 57 - readerHost accepts positive DWORD maximum with otherwise valid facts
+  ---
+  duration_ms: 0.042375
+  type: 'test'
+  ...
+# Subtest: readerHost rejects finite-token underflow to zero even when both sources match
+ok 58 - readerHost rejects finite-token underflow to zero even when both sources match
+  ---
+  duration_ms: 0.033125
+  type: 'test'
+  ...
+# Subtest: readerHost rejects same-source two millisecond mismatch beyond tolerance
+ok 59 - readerHost rejects same-source two millisecond mismatch beyond tolerance
+  ---
+  duration_ms: 0.039333
+  type: 'test'
+  ...
+# Subtest: readerHost preserves same-host -1ms audit tolerance without restamping
+ok 60 - readerHost preserves same-host -1ms audit tolerance without restamping
+  ---
+  duration_ms: 0.042541
+  type: 'test'
+  ...
+# Subtest: readerHost preserves same-host 1ms audit tolerance without restamping
+ok 61 - readerHost preserves same-host 1ms audit tolerance without restamping
+  ---
+  duration_ms: 0.045417
+  type: 'test'
+  ...
+1..61
+# tests 61
+# suites 0
+# pass 61
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 76.958583

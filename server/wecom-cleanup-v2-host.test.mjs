@@ -2,12 +2,18 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { createWecomV2HostState, createWecomV2HostPreparer } from "./wecom-cleanup-v2-host.mjs";
 
+function auditBirth(milliseconds) {
+  const bytes = new DataView(new ArrayBuffer(8)); bytes.setFloat64(0, milliseconds / 1000);
+  const bits = bytes.getBigUint64(0), exponent = Number((bits >> 52n) & 2047n) - 1023;
+  const fraction = (bits & ((1n << 52n) - 1n)).toString(16).padStart(13, "0");
+  return { createdAt: new Date(milliseconds).toISOString(), creationToken: `0x1.${fraction}p${exponent >= 0 ? "+" : ""}${exponent}` };
+}
 function fixture({ wall = "2026-11-02T00:00:00.000Z", slot = "main" } = {}) {
   const binding = { version: 2, obligationId: "duty", originalTaskId: "task", executionId: "execution", deviceId: "adb:fixture",
     serial: "fixture", agentId: "agent", appSlot: slot, androidUser: slot === "main" ? 0 : 999,
     nonce: "binding-nonce", serverEpoch: "server-epoch", agentInstanceId: "agent-instance", handshakeNonce: "spawn-nonce" };
-  const parentHost = { role: "agent", pid: 100, createdAt: wall, creationToken: "0x1.9a00000000000p+30", machineId: "a".repeat(64) };
-  const readerHost = { ...parentHost, role: "reader", pid: 101, creationToken: "0x1.9a00000000001p+30" };
+  const parentHost = { role: "agent", pid: 100, ...auditBirth(Date.parse(wall)), machineId: "a".repeat(64) };
+  const readerHost = { ...parentHost, role: "reader", pid: 101, ...auditBirth(Date.parse(wall) + 1) };
   const facts = { agentInstanceId: binding.agentInstanceId, parentHost, readerHost, spawnNonce: binding.handshakeNonce, closeEventId: null };
   const auth = structuredClone(binding);
   const prepare = createWecomV2HostPreparer({ readAuthenticatedBinding: () => auth, readParentInstanceFacts: () => facts });
@@ -53,7 +59,8 @@ for (const wall of ["2000-01-01T00:00:00.000Z", "2099-01-01T00:00:00.000Z"]) {
     const f = fixture({ wall });
     const one = f.register(); f.facts.closeEventId = "native-close-event";
     const two = f.prepare(one.nextState, "host-closed", f.closeBody());
-    assert.equal(two.nextState.readerHost.createdAt, wall); assert.equal(two.nextState.fence, "held");
+    assert.equal(two.nextState.parentHost.createdAt, wall);
+    assert.equal(two.nextState.readerHost.createdAt, new Date(Date.parse(wall) + 1).toISOString()); assert.equal(two.nextState.fence, "held");
   });
 }
 test("configured clone binds Android user999, never changes main identity", () => {
@@ -129,7 +136,7 @@ test("nonce alone cannot replace parent/reader facts or genuine close observatio
 });
 test("known instance cannot be substituted between registration and close", () => {
   const f = fixture(), one = f.register(); f.facts.closeEventId = "native-close-event";
-  f.facts.readerHost = { ...f.facts.readerHost, creationToken: "0x1.9a00000000002p+30" };
+  f.facts.readerHost = { ...f.facts.readerHost, ...auditBirth(Date.parse(f.facts.readerHost.createdAt) + 2) };
   const altered = { ...f.closeBody(), readerHost: structuredClone(f.facts.readerHost) };
   assert.throws(() => f.prepare(one.nextState, "host-closed", altered), /host_mismatch/);
 });
@@ -166,3 +173,41 @@ for (const value of [null, true, [], "authenticated"]) test(`primitive/array con
   assert.throws(() => noAuth(f.first, "host", f.body), /binding_invalid/);
   assert.throws(() => noFacts(f.first, "host", f.body), /instance_unconfirmed/);
 });
+for (const [label, mutate] of [
+  ["PID above Windows DWORD", h => { h.pid = 4294967296; }],
+  ["nonfinite birth token", h => { h.creationToken = "0x1.0000000000000p+9999"; }],
+  ["same-host birth mismatch", h => { h.createdAt = "2000-01-01T00:00:00.000Z"; }],
+]) test(`same-source invalid reader facts reject ${label}`, () => {
+  const f = fixture(); mutate(f.facts.readerHost); f.body.readerHost = structuredClone(f.facts.readerHost);
+  assert.throws(f.register, /host_invalid/);
+});
+for (const [label, mutate] of [
+  ["PID above Windows DWORD", h => { h.pid = 4294967296; }],
+  ["nonfinite birth token", h => { h.creationToken = "0x1.0000000000000p+9999"; }],
+  ["same-host birth mismatch", h => { h.createdAt = "2000-01-01T00:00:00.000Z"; }],
+]) test(`same-source invalid parent facts reject ${label}`, () => {
+  const f = fixture(); mutate(f.facts.parentHost); f.body.parentHost = structuredClone(f.facts.parentHost);
+  assert.throws(f.register, /host_invalid/);
+});
+for (const key of ["parentHost", "readerHost"]) {
+  test(`${key} accepts positive DWORD maximum with otherwise valid facts`, () => {
+    const f = fixture(); f.facts[key].pid = 0xffffffff; f.body[key].pid = 0xffffffff;
+    assert.equal(f.register().nextState[key].pid, 0xffffffff);
+  });
+  test(`${key} rejects finite-token underflow to zero even when both sources match`, () => {
+    const f = fixture(); f.facts[key].creationToken = "0x1.0000000000000p-9999";
+    f.body[key] = structuredClone(f.facts[key]); assert.throws(f.register, /host_invalid/);
+  });
+  test(`${key} rejects same-source two millisecond mismatch beyond tolerance`, () => {
+    const f = fixture(); f.facts[key].createdAt = new Date(Date.parse(f.facts[key].createdAt) + 2).toISOString();
+    f.body[key] = structuredClone(f.facts[key]); assert.throws(f.register, /host_invalid/);
+  });
+  for (const offset of [-1, 1]) test(`${key} preserves same-host ${offset}ms audit tolerance without restamping`, () => {
+    const f = fixture(), rawToken = f.facts[key].creationToken;
+    const audit = new Date(Date.parse(f.facts[key].createdAt) + offset).toISOString();
+    f.facts[key].createdAt = audit; f.body[key].createdAt = audit;
+    const one = f.register();
+    assert.equal(one.nextState[key].creationToken, rawToken); assert.equal(one.nextState[key].createdAt, audit);
+    assert.equal(one.nextState.fence, "held");
+  });
+}

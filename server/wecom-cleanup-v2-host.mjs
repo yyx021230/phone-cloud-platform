@@ -25,12 +25,16 @@ function binding(value) {
   return Object.fromEntries(BINDING.map(key => [key, value[key]]));
 }
 function host(value, role) {
-  if (!exact(value, HOST) || value.role !== role || !Number.isSafeInteger(value.pid) || value.pid <= 0
+  if (!exact(value, HOST) || value.role !== role || !Number.isSafeInteger(value.pid) || value.pid <= 0 || value.pid > 0xffffffff
     || typeof value.createdAt !== "string" || !Number.isFinite(Date.parse(value.createdAt))
     || new Date(value.createdAt).toISOString() !== value.createdAt
     || typeof value.creationToken !== "string" || !/^0x1\.[0-9a-f]{13}p[+-]\d{1,4}$/.test(value.creationToken)
     || typeof value.machineId !== "string" || !/^[a-f0-9]{64}$/.test(value.machineId)) error("host_invalid");
-  // Audit wall is retained, never ordered against cloud wall or another host.
+  const match = /^0x1\.([0-9a-f]{13})p([+-]\d{1,4})$/.exec(value.creationToken);
+  const born = (1 + Number.parseInt(match[1], 16) / 2 ** 52) * 2 ** Number(match[2]);
+  // This is SAME-host audit consistency, matching the existing Agent's 1.001ms
+  // tolerance. Never order either value against cloud wall or another host.
+  if (!Number.isFinite(born) || born <= 0 || Math.abs(born * 1000 - Date.parse(value.createdAt)) > 1.001) error("host_invalid");
   return Object.fromEntries(HOST.map(key => [key, value[key]]));
 }
 function request(action, value) {
