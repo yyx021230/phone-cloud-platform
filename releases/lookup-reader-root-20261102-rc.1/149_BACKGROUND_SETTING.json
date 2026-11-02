@@ -1,0 +1,10 @@
+{
+  "at": "2026-11-02T01:34:46.116149+00:00",
+  "device": 149,
+  "package": "com.netease.open.pocoservice",
+  "setting": "允许应用后台行为",
+  "before": false,
+  "after": true,
+  "confirmationAccepted": true,
+  "rollback": "Return only this switch to false; leave other settings unchanged."
+}

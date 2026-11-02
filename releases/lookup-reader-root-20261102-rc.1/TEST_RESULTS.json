@@ -1,0 +1,39 @@
+{
+  "pythonLookup": {
+    "passed": 530,
+    "failed": 0
+  },
+  "automationRunners": {
+    "passed": 168,
+    "failed": 0,
+    "note": "Run with initial 30 reader-boundary/search-ready tests before added timing metadata; full lookup suite then rerun."
+  },
+  "windowsSearchReady": {
+    "passed": 3,
+    "failed": 0,
+    "scope": "Initial no-redundant-read candidate; timing metadata delta not included"
+  },
+  "rootCheck": "passed after final code",
+  "redBeforeFix": "1 failure / 3 search-ready cases: freeze called twice instead of once",
+  "notClaimed": [
+    "Production deployment",
+    "Full business result then next request",
+    "All fleet failures resolved",
+    "Shared Agent runtime reload/outbox real test",
+    "Final SDK wrapper candidate real-phone API acceptance: third native run intentionally used previous exact source for background-setting comparison."
+  ],
+  "windowsFinalCandidate": {
+    "passed": 11,
+    "failed": 0,
+    "scope": "Exact staged rc3 source, including SDK exception wrapper; isolated Windows unit tests, no phone operation"
+  },
+  "testHarnessFailure": [
+    "First Windows unittest invocation treated stderr progress as PowerShell NativeCommandError; rerun with stdout runner passed.",
+    "Second API launch initially blocked before startup by expired cloud SSH; reauthenticated without configuration changes, then restarted test.",
+    "Initial authorized background toggle opened a second confirmation dialog; verification refused to claim success, explicit confirmation then read-back proved true."
+  ],
+  "windowsInstalledSdk": {
+    "passed": true,
+    "scope": "Real RemotePocoHierarchy decorator with fixture transport; inside frame 1 call/0 sleep, outside 3 calls/3 sleeps; no phone operation"
+  }
+}

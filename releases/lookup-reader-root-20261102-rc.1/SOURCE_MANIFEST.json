@@ -1,0 +1,13 @@
+{
+  "baseCommit": "0165174229c2e7392fd9629584addcd6b87240f6",
+  "branch": "codex/lookup-reader-root-20261102",
+  "candidateTag": "lookup-reader-root-20261102-rc.1",
+  "deployed": false,
+  "sha256": {
+    "windows-agent/scripts/alipay_name_lookup.py": "a9b9ca2e180f7867bbc40d181ac9a3052cd67ca9268e993d792f14f136e2d3ea",
+    "windows-agent/scripts/test_lookup_reader_boundary.py": "bb4236a6b5799fab10e35b82d393974f2b1071edf64a10bc25c27e18e80e3687",
+    "windows-agent/scripts/test_lookup_search_ready_rpc.py": "c8d7c2bcff4b5d0b31ebd94d1d14929c92c5fbcb4328ad1e9bc1f62502e59ad2",
+    "docs/PROJECT_DEVELOPMENT.md": "4844e95e588de98b3b9aa7a17c2381290dcd14c4465d9a50b3e328b7bbd85be7",
+    "docs/LOOKUP_PROBLEM_CLOSURE_LEDGER.md": "fb84eb39c5fac27e90dfbb5ba1e9620f42b122dd277e22e5d9823f32f784bf8e"
+  }
+}

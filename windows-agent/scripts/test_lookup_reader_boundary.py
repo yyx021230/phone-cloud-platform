@@ -297,6 +297,41 @@ class FullTreeBudgetTests(unittest.TestCase):
         with self.assertRaisesRegex(TimeoutError,'fixture'):
             r.poco_bounded_full_snapshot(p,lambda:t.send('tree',timeout=.2))
         send.assert_called_once_with('tree',timeout=.2);self.assertIs(t.send,send)
+        detail=r.emit.call_args.kwargs
+        self.assertEqual(detail['rpcCount'],1)
+        self.assertFalse(detail['rpcReads'][0]['ok'])
+        self.assertNotIn('tree',str(detail));self.assertNotIn('fixture',str(detail))
+
+    def test_snapshot_diagnostics_are_bounded_and_do_not_include_payloads(self):
+        r,p,t,send=self.fixture()
+        def freeze():
+            for _ in range(12):t.send({'private': 'secret-number-and-name'})
+            return 'tree'
+        with mock.patch.object(lookup.time,'perf_counter',return_value=100.):
+            self.assertEqual(r.poco_bounded_full_snapshot(p,freeze),'tree')
+        detail=r.emit.call_args.kwargs
+        self.assertEqual(detail['rpcCount'],12);self.assertEqual(len(detail['rpcReads']),8)
+        self.assertTrue(all(x=={'durationMs':0,'ok':True}for x in detail['rpcReads']))
+        self.assertNotIn('private',str(detail));self.assertNotIn('secret-number-and-name',str(detail))
+        self.assertIs(t.send,send)
+
+    def test_sdk_disconnection_cannot_sleep_and_retry_inside_frame_budget(self):
+        class SdkDisconnected(Exception):
+            pass
+        r,p,t,send=self.fixture();original=SdkDisconnected('fixture connection reset')
+        send.side_effect=original
+        # Installed RemotePocoHierarchy.dump uses retries_when(count=3,delay=3).
+        def sdk_dump():
+            for _ in range(3):
+                try:return t.send('private-request')
+                except SdkDisconnected:lookup.time.sleep(3)
+            raise original
+        with mock.patch.object(lookup,'HrpcTransportDisconnected',SdkDisconnected),mock.patch.object(lookup.time,'sleep') as sleep:
+            with self.assertRaises(lookup.LookupSnapshotTransportFailure) as caught:
+                r.poco_bounded_full_snapshot(p,sdk_dump)
+        self.assertIs(caught.exception.__cause__,original)
+        self.assertEqual(str(caught.exception),str(original))
+        send.assert_called_once();sleep.assert_not_called();self.assertIs(t.send,send)
 
     def test_operation_wrapper_restores_freeze_on_success_and_failure(self):
         from types import SimpleNamespace

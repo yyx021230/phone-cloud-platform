@@ -1,0 +1,181 @@
+{
+  "WHITELIST_RECEIPT.json": {
+    "at": "2026-11-02T01:10:05.787031+00:00",
+    "beforeRevision": 159,
+    "afterRevision": 160,
+    "added": [
+      {
+        "number": 117,
+        "enabled": true
+      },
+      {
+        "number": 119,
+        "enabled": true
+      },
+      {
+        "number": 120,
+        "enabled": false
+      }
+    ],
+    "otherConfigUnchanged": true,
+    "beforeCount": 48,
+    "afterCount": 51
+  },
+  "120_ENABLE_RECEIPT.json": {
+    "at": "2026-11-02T01:16:56.633448+00:00",
+    "enabled": [
+      117,
+      119,
+      120
+    ],
+    "beforeRevision": 161,
+    "afterRevision": 162,
+    "environmentPassed": true,
+    "productionCodeChanged": false
+  },
+  "ENVIRONMENT_SMOKE.json": {
+    "at": "2026-11-02T01:08:35.526Z",
+    "businessQueries": 0,
+    "phones": [
+      {
+        "device": "117",
+        "ok": true,
+        "selectorResponded": true,
+        "elapsedMs": 291,
+        "cleanupConfirmed": true,
+        "workerRemaining": false
+      },
+      {
+        "device": "119",
+        "ok": true,
+        "selectorResponded": true,
+        "elapsedMs": 301,
+        "cleanupConfirmed": true,
+        "workerRemaining": false
+      }
+    ],
+    "finalCleanup": [
+      {
+        "cleanupConfirmed": true,
+        "workerRemaining": false,
+        "device": "117"
+      },
+      {
+        "cleanupConfirmed": true,
+        "workerRemaining": false,
+        "device": "119"
+      }
+    ]
+  },
+  "ENVIRONMENT_SMOKE-120.json": {
+    "at": "2026-11-02T01:14:11.404Z",
+    "businessQueries": 0,
+    "phones": [
+      {
+        "device": "120",
+        "ok": true,
+        "selectorResponded": true,
+        "elapsedMs": 304,
+        "cleanupConfirmed": true,
+        "workerRemaining": false
+      }
+    ],
+    "finalCleanup": [
+      {
+        "cleanupConfirmed": true,
+        "workerRemaining": false,
+        "device": "120"
+      }
+    ]
+  },
+  "ATTEMPT1_SANITIZED.json": {
+    "at": "2026-11-02T01:10:52.093Z",
+    "ready": false,
+    "businessSubmitted": 0,
+    "stopped": true,
+    "tasks": [
+      {
+        "device": "152",
+        "purpose": "account_preparation",
+        "status": "succeeded",
+        "code": null,
+        "startedAt": "2026-11-02T01:10:52.929Z",
+        "endedAt": "2026-11-02T01:12:13.847Z"
+      },
+      {
+        "device": "149",
+        "purpose": "account_preparation",
+        "status": "succeeded",
+        "code": null,
+        "startedAt": "2026-11-02T01:10:53.435Z",
+        "endedAt": "2026-11-02T01:12:38.700Z"
+      },
+      {
+        "device": "152",
+        "purpose": "probe",
+        "status": "failed",
+        "code": "alipay_human_verification_required",
+        "startedAt": "2026-11-02T01:12:14.581Z",
+        "endedAt": "2026-11-02T01:13:10.113Z"
+      },
+      {
+        "device": "149",
+        "purpose": "probe",
+        "status": "failed",
+        "code": "alipay_lookup_failed",
+        "startedAt": "2026-11-02T01:12:39.290Z",
+        "endedAt": "2026-11-02T01:16:22.164Z"
+      },
+      {
+        "device": "152",
+        "purpose": "cleanup",
+        "status": "succeeded",
+        "code": null,
+        "startedAt": "2026-11-02T01:16:22.698Z",
+        "endedAt": "2026-11-02T01:16:31.266Z"
+      },
+      {
+        "device": "149",
+        "purpose": "cleanup",
+        "status": "succeeded",
+        "code": null,
+        "startedAt": "2026-11-02T01:16:23.217Z",
+        "endedAt": "2026-11-02T01:16:32.219Z"
+      }
+    ],
+    "cleanupConfirmed": true,
+    "sameIdResultAndNextUnverified": true
+  },
+  "149_READ_COMPARISON.json": {
+    "device": "149",
+    "tests": [
+      {
+        "kind": "exact_input",
+        "ok": true,
+        "found": true,
+        "ms": 877
+      },
+      {
+        "kind": "full_snapshot",
+        "ok": true,
+        "found": null,
+        "ms": 249
+      },
+      {
+        "kind": "exact_input_after",
+        "ok": true,
+        "found": true,
+        "ms": 318
+      }
+    ],
+    "noQueryOrInput": true,
+    "idleWaitLines": [
+      "11-02 09:20:13.914 14009 14029 W QueryController: Could not detect idle state."
+    ],
+    "cleanupConfirmed": true
+  },
+  "149_INSTALLED_APK.json": {
+    "device": "149",
+    "installedApkSha256": "ed96af302a803ed8f7696fa5c1267c7b1c7a3a5d4b1ddd457eeb76e0d19b70d9"
+  }
+}

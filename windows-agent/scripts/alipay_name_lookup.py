@@ -17,6 +17,17 @@ import traceback
 import uuid
 import xml.etree.ElementTree as ET
 
+# XML-only execution does not require the optional Poco/HRPC dependency.
+try:
+    from hrpc.exceptions import TransportDisconnected as HrpcTransportDisconnected
+except ImportError:
+    HrpcTransportDisconnected = ()
+
+
+class LookupSnapshotTransportFailure(RuntimeError):
+    """Leave SDK retry decorators; the caller owns bounded reader recovery."""
+
+
 ALIPAY_PACKAGE = "com.eg.android.AlipayGphone"
 ALIPAY_HOME = "com.eg.android.AlipayGphone/.AlipayLogin"
 ALIPAY_LOGIN_ACTIVITY = "com.ali.user.mobile.loginupgrade.activity.LoginActivity"
@@ -2717,6 +2728,14 @@ class Runner:
             self.emit("poco_search_input_probe_begin", driver="poco")
             return self.poco_unique(poco, timeout=2.0, live=live, name=SEARCH_INPUT_ID)
         except Exception as exc:
+            if str(exc).startswith("poco_rpc_failed:"):
+                # poco_unique already checked fresh focus for a known overlay.
+                # Re-reading the same failed hierarchy here consumed another
+                # full transport deadline on 149 before recovery could start.
+                # Preserve the error/cause for the existing bounded recovery;
+                # an unreadable frame is neither an empty result nor a limit.
+                self.emit("poco_search_ready_failed_channel_deferred", driver="poco")
+                raise
             if (
                 "poco_selector_missing:" in str(exc)
                 and self.solve_verification_from_xml_if_present("poco-search-ready")
@@ -4287,11 +4306,32 @@ class Runner:
             return freeze()
         started = time.perf_counter()
         deadline = min(started + 5.0, getattr(self, "_query_snapshot_deadline", started + 5.0))
+        rpc_reads = []
+        rpc_count = 0
         def send(request, timeout=None):
+            nonlocal rpc_count
             remaining = deadline - time.perf_counter()
             if remaining <= 0:
                 raise TimeoutError("Read timed out: full snapshot budget exhausted")
-            return original_send(request, timeout=min(remaining, timeout) if timeout is not None else remaining)
+            rpc_count += 1
+            rpc_started = time.perf_counter()
+            rpc_ok = False
+            try:
+                response = original_send(request, timeout=min(remaining, timeout) if timeout is not None else remaining)
+                rpc_ok = True
+                return response
+            except HrpcTransportDisconnected as exc:
+                # RemotePocoHierarchy.dump retries this SDK exception three
+                # times with a 3s sleep, even after our frame budget expires
+                # (152: 5169ms HTTP failure -> 8173ms frame failure). Surface
+                # the original cause to existing recovery without that hidden
+                # sleep/retry. This wrapper exists only during lookup freeze.
+                raise LookupSnapshotTransportFailure(str(exc)) from exc
+            finally:
+                # Only timing/outcome, never request arguments or UI text.
+                # Distinguish one slow HTTP response from cumulative reads.
+                if len(rpc_reads) < 8:
+                    rpc_reads.append({"durationMs": round((time.perf_counter()-rpc_started)*1000), "ok": rpc_ok})
         transport.send = send
         ok = False
         try:
@@ -4304,7 +4344,8 @@ class Runner:
             transport.send = original_send
             self.emit("lookup_full_snapshot_read", durationMs=round((time.perf_counter()-started)*1000),
                       budgetMs=max(0,round((deadline-started)*1000)), ok=ok,
-                      transportRestored=True, observationOnly=True)
+                      transportRestored=True, observationOnly=True,
+                      rpcCount=rpc_count, rpcReads=rpc_reads)
 
     def poco_result_snapshot(self, poco, stage):
         # Both checks belong to an already submitted query. Keep the existing

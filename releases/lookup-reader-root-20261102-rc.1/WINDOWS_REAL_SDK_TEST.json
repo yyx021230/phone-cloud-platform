@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "actualInstalledSdk": true,
+  "boundedFreezeCalls": 1,
+  "boundedFreezeSleeps": 0,
+  "outsideFreezeCalls": 3,
+  "outsideFreezeSleeps": 3,
+  "phoneOperations": 0
+}
