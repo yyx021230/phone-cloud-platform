@@ -25,3 +25,5 @@ owned-pg入口先检查根lstat/realpath/owner/mode、私有marker、postmaster.
 失败保留新库/全部日志/原hash，不重启它、不自动第二次尝试。Node仅操作当前Popen未回收自有session，确认exit/groupAbsent；已回收PID不重杀。PG仅原Popen.send_signal(SIGINT)，等待10秒exit0；不杀未知子进程。仅TAP0+18唯一case+源前后不变+Node组消失+PGexit0时删除**该自有成功db目录**，原件与receipt留存；旧M2失败库/private/tmp/pc-wecom-v2-pg-3mrc7nik不读取/重启/删除。
 
 当前实际只运行6个runner guard、8字节协议+7 typed observer（合15）、JS syntax和只读18源/6依赖hash匹配；未启动PG、连接数据库或执行SQL。本方案不包含Windows、手机、ADB/SYSTEM/密钥/Agent、媒体或生产变更；原43/147/52和155/157池保持。产品输出仍无执行许可，完成该私有库阶段也不算真机验收。
+
+draft.2执行前修正：root指出draft.1的setImmediate只能保证一轮事件循环，不能证明旧后端实际等新叶task锁。现在只改old-lock-orders及专用helper：第三个本cluster自有控制连接预先BEGIN/SET LOCAL statement_timeout150ms，再启动旧2s task取锁；最多32次/800ms窗口读取pg_stat_activity(pid/state/wait_event_type)和pg_blocking_pids，必须观察旧state=active、wait_event_type=Lock、blockers包含当前新叶backend PID，才放行新叶NOWAIT job读。无sleep猜测、不无界轮询，读前清当前统计snapshot。源记录old/leaf/control三个PID、实际阻塞列表/读次数/elapsed，NOWAIT退出后必须确认旧第二把锁实际取得；job分支即使启动观察失败也不能退到另一分支而通过。任何未证实均测试失败，原task→job仍仅合成两锁交错，未执行完整checkpoint。产品、DDL、其他case和runner清理边界不变；当前依然没有PG执行。

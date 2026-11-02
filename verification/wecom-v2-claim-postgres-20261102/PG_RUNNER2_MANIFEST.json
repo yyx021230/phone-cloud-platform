@@ -1,0 +1,15 @@
+{
+  "baseCommit": "d9daa9d63165061e4a5e44d352ddc399d166bc79",
+  "candidateTag": "wecom-v2-claim-pg-20261102-draft.2",
+  "branch": "codex/wecom-v2-claim-pg-runner2-20261102",
+  "productAndDDLUnchanged": true,
+  "onlyScenarioChange": "old-lock-orders server-observed wait barrier",
+  "pgSqlAndIntegrationNotExecuted": true,
+  "files": {
+    "docs/PROJECT_DEVELOPMENT.md": "8fdb774a977134a5d58c551142db7502e8f105725c2de4da625b92d2e3be4f3e",
+    "verification/wecom-v2-claim-postgres-20261102/postgres.integration.mjs": "124c6fb7724b7fd5810f39c9fa7681578c1bdff8a04e1ff9e85b18a66841dd03",
+    "verification/wecom-v2-claim-postgres-20261102/RUNNER_SOURCE_HASHES.json": "dfd5bceff966c57a5d7eb85a5373e17776b21933596c7b93f0113f82c18d8be8",
+    "verification/wecom-v2-claim-postgres-20261102/RUNNER_REVIEW.md": "0c4be0c28d88b354653ad7b3ebe7f2ffad8ea4d771c12ec9f3e829420cf5d68f",
+    "verification/wecom-v2-claim-postgres-20261102/RUNNER2_CHECKS.json": "36b0326ae1dc0c3302b1a855dec0e4ddd3885e16a668f9722f7d51510b7b5141"
+  }
+}

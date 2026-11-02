@@ -1,6 +1,6 @@
 {
   "repositoryBaseCommit": "215fb15b7a66df99dc2b1991c6e9be93d5c103a8",
-  "revision": 1,
+  "revision": 2,
   "sourceSha256": {
     "server/wecom-cleanup-v2-claim-postgres.mjs": "46d0e8ee2857656acf765920f1d58a10e313ba05aff5b2a867270c3611d0a276",
     "server/wecom-cleanup-v2-claim-postgres.test.mjs": "4e5347a2286f81265703d22524c41c5755bfe5155f561bc442fda31a37005fe0",
@@ -17,7 +17,7 @@
     "verification/wecom-v2-cas-m2-20261102/pg-fault-observer.test.mjs": "216b834313c281757bbcee4cb229a4f182f3a4eb337ccdc8d117650d22c98b8a",
     "verification/wecom-v2-claim-postgres-20261102/fixture.mjs": "4f8c713618185540c296dca380ed6027b45e0a777de5e63e7110ace147608f0c",
     "verification/wecom-v2-claim-postgres-20261102/owned-pg.mjs": "b99eb9da66261777b3913c655b7213f6f06f60da9eb0c6deafef5fe924e46440",
-    "verification/wecom-v2-claim-postgres-20261102/postgres.integration.mjs": "cff843aa8aea01af06e3b8ab4bcd6f9853f97231f5d0bb0f5ff5563a37f4b2b9",
+    "verification/wecom-v2-claim-postgres-20261102/postgres.integration.mjs": "124c6fb7724b7fd5810f39c9fa7681578c1bdff8a04e1ff9e85b18a66841dd03",
     "verification/wecom-v2-claim-postgres-20261102/run-owned-postgres.py": "68e9bda526e42a012fe6ccf18d8f5eee5cd8f73a44d054250a68059240593c97",
     "verification/wecom-v2-claim-postgres-20261102/test_owned_runner.py": "7efb2b5098b7a0aea8596283ecaa20d55b65a170630996da136d6aabaf506f8c"
   },

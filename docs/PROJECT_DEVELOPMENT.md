@@ -5967,3 +5967,11 @@ root8642e42独立核215fb15新叶67/26manifest/8旧源和tag后，本轮只新�
 ### 决策日志｜2026-11-02 真实PG新运行器须按固定源码另审，不复用旧执行授权
 
 实际只运行新runner guard6、旧proxy字节8与typed observer7（合15）、最终Python AST/JS syntax与18源/6依赖只读hash核对。没有运行任何PG二进制/监听端口/数据库或Windows/手机；新叶/DDL及其他server/windows/deploy/public均与215fb15相同。候选固定后交root审，下一真实PG必须新根单次执行并保存原件，不自动重试、不开生产。M2原14仍单列，存储成功不授权host ACK或真机；原43/147/52、155/157池和冻结保持。
+
+### 变更记录｜2026-11-02 PG runner draft.2修正执行前锁等待证据缺口
+
+root全文审d9daa9后发现old-lock-orders用setImmediate无法证明旧PG后端已阻塞于新叶task锁，尚未启动PG即要求修正。只改该case/专用helper：独立控制后端先准备150ms局部查询预算，再启动旧2s task取锁；最多32次/800ms窗口核pg_stat_activity active/Lock及pg_blocking_pids包含确切new leaf backend，证实后才让新叶NOWAIT job读。保留old/leaf/control PID、实际blockers、观察次数/耗时，以及退出后旧第二锁取得证据；缺证据必失败，不sleep猜测或无限轮询。
+
+### 决策日志｜2026-11-02 事件循环先后不能替代后端阻塞事实
+
+延续d9daa9，不移动draft.1；新draft.2仅此验证缺口/manifest/文档差量，产品/DDL/其余场景/runner隔离与清理边界不变。JS syntax和只读18源/6依赖hash核对通过，没执行PG或SQL；旧2s statement预算前准备控制连接，不以成功返回但空proof掩盖观察失败。原task→job仅合成锁序交错，完整checkpoint未验；原43/147/52和查名池/冻结保持，主号分身仍未真机验收。

@@ -40,6 +40,31 @@ function adapter(pool, intercept) {
 async function saveData(table, column, id, data, status = data.status) {
   await db.query(`UPDATE ${table} SET status=$2,updated_at=$3,data=$4::jsonb WHERE ${column}=$1`, [id, status, data.updatedAt, JSON.stringify(data)]);
 }
+async function observedOldTaskWait(oldBackendPid, leafBackendPid, startOldWait) {
+  // No sleep or guessed event-loop turn: a third owned backend observes the
+  // actual server lock wait, bounded both by deadline and number of reads.
+  const control=await db.connect();let failed=null,cleanupError=null;
+  try {
+    await control.query("BEGIN");await control.query("SET LOCAL statement_timeout='150ms'");
+    // Prepare the control backend before starting the old 2s statement budget.
+    const started=performance.now(),deadline=started+800;startOldWait();
+    for(let reads=1;reads<=32&&performance.now()<deadline;reads++){
+      await control.query("SELECT pg_stat_clear_snapshot()");
+      const r=await control.query("SELECT pid,state,wait_event_type,pg_blocking_pids(pid) AS blockers FROM pg_stat_activity WHERE pid=$1",[oldBackendPid]);
+      const actual=r.rows[0];
+      if(r.rowCount===1&&actual.pid===oldBackendPid&&actual.state==="active"&&actual.wait_event_type==="Lock"
+        &&Array.isArray(actual.blockers)&&actual.blockers.includes(leafBackendPid)){
+        return {oldBackendPid,leafBackendPid,controlBackendPid:control.processID,oldState:actual.state,waitEventType:actual.wait_event_type,
+          blockingPids:actual.blockers,reads,elapsedMs:performance.now()-started};
+      }
+    }
+    throw Error("fixture_server_lock_wait_not_observed");
+  }catch(error){failed=error;throw error;}
+  finally{
+    if(!failed){try{await control.query("ROLLBACK");}catch(error){failed=cleanupError=error;}}
+    control.release(failed||undefined);if(cleanupError)throw cleanupError;
+  }
+}
 async function seed(f, { extra = false, state = "ready", noAnchor = false, noDevice = false } = {}) {
   const b = f.context.binding, { task: t, job: j, businessLock: l, device } = f.input;
   if (!extra && !noDevice) await db.query("INSERT INTO phone_cloud_devices VALUES ($1,$2::jsonb,NULL)", [b.deviceId, JSON.stringify(device)]);
@@ -178,19 +203,21 @@ test("actual PG: old projection regressions never reopen canonical duty",async()
 test("actual PG: legacy task/job lock orders reject promptly, other device works",async()=>{
   const seen=[];for(const table of ["phone_cloud_windows_tasks","phone_cloud_automation_jobs"]){const f=made(table.endsWith("jobs")?"job-first":"task-first"),g=made(`${f.context.originalJobId}-other`);await seed(f);await seed(g);const c=await db.connect();
     try{await c.query("BEGIN");const key=table.endsWith("jobs")?"job_id":"task_id",id=key==="job_id"?f.context.originalJobId:f.context.binding.originalTaskId;await c.query(`SELECT ${key} FROM ${table} WHERE ${key}=$1 FOR UPDATE`,[id]);
-      await c.query("SET LOCAL statement_timeout='2000ms'");let oldTaskWait=null;
+      await c.query("SET LOCAL statement_timeout='2000ms'");let oldTaskCompletion=null,lockProof=null;
       const pool=adapter(db,async(client,sql,args)=>{
         if(table.endsWith("jobs")&&sql.includes("FROM phone_cloud_automation_jobs")){
           // Legacy job→task is now waiting on the task already locked by the
           // new task→job path. Its NOWAIT job read must break that cycle.
-          oldTaskWait=c.query("SELECT task_id FROM phone_cloud_windows_tasks WHERE task_id=$1 FOR UPDATE",[f.context.binding.originalTaskId]);
-          await new Promise(resolve=>setImmediate(resolve));
+          lockProof=await observedOldTaskWait(c.processID,client.processID,()=>{
+            oldTaskCompletion=c.query("SELECT task_id FROM phone_cloud_windows_tasks WHERE task_id=$1 FOR UPDATE",[f.context.binding.originalTaskId])
+              .then(result=>({result}),error=>({error}));
+          });
         }return client.query(sql,args);
       });
       const start=performance.now();assert.equal((await repo(f,pool).createClaim(f.input)).storageStatus,"unavailable");const elapsed=performance.now()-start;assert.ok(elapsed<1500);
-      if(oldTaskWait)assert.equal((await oldTaskWait).rowCount,1);
+      if(table.endsWith("jobs")){assert.ok(oldTaskCompletion,"old task wait must have started");assert.ok(lockProof,"server-side Lock wait and exact blocker must be observed");const done=await oldTaskCompletion;if(done.error)throw done.error;assert.equal(done.result.rowCount,1);}
       else assert.equal((await c.query("SELECT job_id FROM phone_cloud_automation_jobs WHERE job_id=$1 FOR UPDATE",[f.context.originalJobId])).rowCount,1);
-      assert.equal((await repo(g).createClaim(g.input)).storageStatus,"recorded");seen.push({table,elapsed,legacySecondLockAcquired:true});
+      assert.equal((await repo(g).createClaim(g.input)).storageStatus,"recorded");seen.push({table,elapsed,legacySecondLockAcquired:true,lockProof});
     }finally{await c.query("ROLLBACK");c.release();}}
   note("old-lock-orders",{seen,syntheticLegacyOrderPrefixesOnly:true,fullCheckpointWriterNotExecuted:true});
 });
