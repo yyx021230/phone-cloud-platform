@@ -1,0 +1,13 @@
+{
+  "baseCommit": "b5f1a8a04e640299566ce369c74ed49d86aa1727",
+  "command": [
+    "node",
+    "--check",
+    "verification/wecom-v2-claim-postgres-20261102/postgres.integration.mjs"
+  ],
+  "exitCode": 0,
+  "sourceGuardOnlyMatched": 20,
+  "dependencyGuardOnlyMatched": 6,
+  "sourceManifestSha256": "ca6948c7d703f48ff97c6cd44c6692c2d59c8fc9a3eeba69ab52c32620a594eb",
+  "noPgOrIntegrationExecution": true
+}

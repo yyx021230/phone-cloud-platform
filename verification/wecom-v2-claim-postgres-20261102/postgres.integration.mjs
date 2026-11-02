@@ -227,7 +227,7 @@ test("actual PG: reconcile same six locks, all absent no write",async()=>{
   for(const [table,key,id] of [["phone_cloud_windows_tasks","task_id",f.context.binding.originalTaskId],["phone_cloud_automation_jobs","job_id",f.context.originalJobId],["phone_cloud_device_locks","lock_id",f.context.originalLockId]])await db.query(`DELETE FROM ${table} WHERE ${key}=$1`,[id]);
   assert.equal((await r.reconcileClaim()).storageStatus,"not_recorded");assert.equal(queries.filter(isDml).length,0);
   const missing=[];
-  for(const kind of ["anchor","task","job","hold","business","ledger"]){const g=made(`missing-${kind}`);await seed(g);const gr=repo(g);await gr.createClaim(g.input);
+  for(const kind of ["anchor","task","job","hold","business","ledger"]){const g=made(`reconcile-missing-${kind}`);await seed(g);const gr=repo(g);await gr.createClaim(g.input);
     const [table,key,id]=kind==="anchor"?["phone_cloud_wecom_v2_physical_anchors","physical_key",g.context.binding.serial]:kind==="task"?["phone_cloud_windows_tasks","task_id",g.context.binding.originalTaskId]:kind==="job"?["phone_cloud_automation_jobs","job_id",g.context.originalJobId]:kind==="ledger"?["phone_cloud_wecom_cleanup_v2","obligation_id",g.context.binding.obligationId]:["phone_cloud_device_locks","lock_id",kind==="hold"?g.context.binding.obligationId:g.context.originalLockId];
     if(kind==="ledger"){await assert.rejects(db.query(`DELETE FROM ${table} WHERE ${key}=$1`,[id]),e=>e.code==="23503");assert.equal((await gr.reconcileClaim()).storageStatus,"recorded");missing.push({kind,fkPreventedDelete:true});}
     else{await db.query(`DELETE FROM ${table} WHERE ${key}=$1`,[id]);assert.equal((await gr.reconcileClaim()).storageStatus,"conflict");missing.push({kind,refused:true});}
