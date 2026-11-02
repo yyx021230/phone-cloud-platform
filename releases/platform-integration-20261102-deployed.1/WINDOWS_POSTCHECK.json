@@ -1,0 +1,28 @@
+﻿{
+    "state":  "windows_identity_and_files_verified_cloud_heartbeat_pending",
+    "sourceCommit":  "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+    "at":  "2026-11-02T06:12:56.5213851Z",
+    "agent":  {
+                  "pid":  19756,
+                  "parentPid":  1808,
+                  "path":  "D:\\PhoneCloud\\tools\\node\\node.exe",
+                  "createdAt":  "2026-11-02T06:12:42.9654250Z",
+                  "owner":  "NT AUTHORITY\\SYSTEM"
+              },
+    "adb":  {
+                "pid":  8148,
+                "createdAt":  "2026-10-30T04:06:25.4916290Z",
+                "path":  "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+                "owner":  "NT AUTHORITY\\SYSTEM"
+            },
+    "runtimeHashesVerified":  104,
+    "businessPythonExitConfirmed":  true,
+    "oldBusinessPythonCount":  10,
+    "switchElapsedMs":  10909,
+    "installedCount":  26,
+    "configAuthEnvPackagesTaskUnchanged":  true,
+    "phoneActions":  0,
+    "newSystemPhoneProtocol":  "not_validated",
+    "phonePhysicalCleanupVerified":  false,
+    "capabilityHeartbeat":  "root_cloud_check_required"
+}

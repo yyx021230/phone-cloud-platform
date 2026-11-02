@@ -1,0 +1,174 @@
+{
+  "at": "2026-11-02T06:17:26.905628+00:00",
+  "rows": [
+    {
+      "sessionId": "4b58b629-0a91-46a2-8be4-701d081bd161",
+      "status": "ended",
+      "generation": "68317c18-34b2-44da-9b5f-eab1258d6517",
+      "generationMatchesCutoff": true,
+      "proof": {
+        "taskId": "d76c2433-91ec-40fd-b8cb-ff98e2ed353b",
+        "version": 1,
+        "sessionId": "4b58b629-0a91-46a2-8be4-701d081bd161",
+        "generation": "68317c18-34b2-44da-9b5f-eab1258d6517",
+        "readerCleanupConfirmed": true
+      }
+    },
+    {
+      "sessionId": "9d32e3cd-fe78-4ba8-adfe-faf1fa7d516f",
+      "status": "ended",
+      "generation": "8b11fe9a-2dbe-4221-82d7-25532e50574d",
+      "generationMatchesCutoff": true,
+      "proof": {
+        "taskId": "c3914c25-74bb-432a-8608-7e5936ae77c1",
+        "version": 1,
+        "sessionId": "9d32e3cd-fe78-4ba8-adfe-faf1fa7d516f",
+        "generation": "8b11fe9a-2dbe-4221-82d7-25532e50574d",
+        "readerCleanupConfirmed": true
+      }
+    },
+    {
+      "sessionId": "e7e37436-0479-4e07-a5e7-41ad4c3758ac",
+      "status": "ended",
+      "generation": "cc91092c-3db8-408d-931d-7fafd82bb7eb",
+      "generationMatchesCutoff": true,
+      "proof": {
+        "taskId": "79eafd01-96a7-47a1-98b3-d725c7ff6c23",
+        "version": 1,
+        "sessionId": "e7e37436-0479-4e07-a5e7-41ad4c3758ac",
+        "generation": "cc91092c-3db8-408d-931d-7fafd82bb7eb",
+        "readerCleanupConfirmed": true
+      }
+    },
+    {
+      "sessionId": "4b28068a-7a29-4191-a88e-071a9871933d",
+      "status": "ended",
+      "generation": "e4e6b4a9-c2b0-4510-97b3-be77fc86c2cf",
+      "generationMatchesCutoff": true,
+      "proof": {
+        "taskId": "b01962c6-4075-48f7-9e37-797e47857b79",
+        "version": 1,
+        "sessionId": "4b28068a-7a29-4191-a88e-071a9871933d",
+        "generation": "e4e6b4a9-c2b0-4510-97b3-be77fc86c2cf",
+        "readerCleanupConfirmed": true
+      }
+    },
+    {
+      "sessionId": "0f253e1a-40e2-4441-be58-4907d2e46c62",
+      "status": "ended",
+      "generation": "83afd305-8f77-46ab-aafd-ea854eb4a888",
+      "generationMatchesCutoff": true,
+      "proof": {
+        "taskId": "7c4dc29a-b090-42cd-8446-d5edffcade48",
+        "version": 1,
+        "sessionId": "0f253e1a-40e2-4441-be58-4907d2e46c62",
+        "generation": "83afd305-8f77-46ab-aafd-ea854eb4a888",
+        "readerCleanupConfirmed": true
+      }
+    },
+    {
+      "sessionId": "342be99b-e655-4419-9c33-4b3afd52bf6f",
+      "status": "ended",
+      "generation": "4d92674e-3377-4be5-b099-ce268c56cccc",
+      "generationMatchesCutoff": true,
+      "proof": {
+        "taskId": "b8061df7-3228-4de1-900d-9565e43f07fe",
+        "version": 1,
+        "sessionId": "342be99b-e655-4419-9c33-4b3afd52bf6f",
+        "generation": "4d92674e-3377-4be5-b099-ce268c56cccc",
+        "readerCleanupConfirmed": true
+      }
+    },
+    {
+      "sessionId": "e583a34c-ade7-452d-afdd-eca2beeab128",
+      "status": "ended",
+      "generation": "2be31e4d-ee96-44f9-9419-8459223cd61b",
+      "generationMatchesCutoff": true,
+      "proof": {
+        "taskId": "7a46dc8c-65f2-47f8-baea-6b44ba35708d",
+        "version": 1,
+        "sessionId": "e583a34c-ade7-452d-afdd-eca2beeab128",
+        "generation": "2be31e4d-ee96-44f9-9419-8459223cd61b",
+        "readerCleanupConfirmed": true
+      }
+    },
+    {
+      "sessionId": "c2e81adc-31e4-4d1e-bf69-d04d82fa62ec",
+      "status": "ended",
+      "generation": "fbc9e82a-4c9b-4485-bd73-cdb1f1a138f0",
+      "generationMatchesCutoff": true,
+      "proof": {
+        "taskId": "f63af657-bcc2-4e1d-8a5c-d9866debb066",
+        "version": 1,
+        "sessionId": "c2e81adc-31e4-4d1e-bf69-d04d82fa62ec",
+        "generation": "fbc9e82a-4c9b-4485-bd73-cdb1f1a138f0",
+        "readerCleanupConfirmed": true
+      }
+    },
+    {
+      "sessionId": "7f180027-7152-4f3c-ad7f-4de3375aa681",
+      "status": "ended",
+      "generation": "56d84015-b78a-42b1-b783-3d574ecf53bb",
+      "generationMatchesCutoff": true,
+      "proof": {
+        "taskId": "5a76b275-958a-44cd-a7c6-f304bd38930e",
+        "version": 1,
+        "sessionId": "7f180027-7152-4f3c-ad7f-4de3375aa681",
+        "generation": "56d84015-b78a-42b1-b783-3d574ecf53bb",
+        "readerCleanupConfirmed": true
+      }
+    },
+    {
+      "sessionId": "c7b11106-427e-4506-b196-17eb9afbdcd5",
+      "status": "ended",
+      "generation": "5d18ec2f-3e43-4aad-9aad-b49a8cfda8da",
+      "generationMatchesCutoff": true,
+      "proof": {
+        "taskId": "f88857b3-f7fe-4a42-9df8-df38a91f7c3c",
+        "version": 1,
+        "sessionId": "c7b11106-427e-4506-b196-17eb9afbdcd5",
+        "generation": "5d18ec2f-3e43-4aad-9aad-b49a8cfda8da",
+        "readerCleanupConfirmed": true
+      }
+    },
+    {
+      "sessionId": "a2e3fcea-d3a8-4c13-9e78-7287dcaa1659",
+      "status": "ended",
+      "generation": "a70ab641-62b1-4361-852a-5971bdb82473",
+      "generationMatchesCutoff": true,
+      "proof": {
+        "taskId": "a05bdf5b-77d1-4233-af79-d9ab44137278",
+        "version": 1,
+        "sessionId": "a2e3fcea-d3a8-4c13-9e78-7287dcaa1659",
+        "generation": "a70ab641-62b1-4361-852a-5971bdb82473",
+        "readerCleanupConfirmed": true
+      }
+    },
+    {
+      "sessionId": "a2b54527-1545-4a87-989e-e576c39cada8",
+      "status": "ended",
+      "generation": "18930f0b-358b-4de2-8e7c-fc6039b7d766",
+      "generationMatchesCutoff": true,
+      "proof": {
+        "taskId": "f7febd66-5ff5-4d55-bc58-7915e0c90b7b",
+        "version": 1,
+        "sessionId": "a2b54527-1545-4a87-989e-e576c39cada8",
+        "generation": "18930f0b-358b-4de2-8e7c-fc6039b7d766",
+        "readerCleanupConfirmed": true
+      }
+    },
+    {
+      "sessionId": "eedc72f3-bc1c-4139-9d89-0708b4f125a0",
+      "status": "ended",
+      "generation": "2023e194-b385-4b76-8f2c-abac883087ce",
+      "generationMatchesCutoff": true,
+      "proof": {
+        "taskId": "3ebe50d3-544e-43eb-b894-84aa0f182a70",
+        "version": 1,
+        "sessionId": "eedc72f3-bc1c-4139-9d89-0708b4f125a0",
+        "generation": "2023e194-b385-4b76-8f2c-abac883087ce",
+        "readerCleanupConfirmed": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "ready": true,
+  "health": true,
+  "mode": "isolated_json_no_network_no_production_mounts",
+  "fixtureSecrets": "random_in_process_only"
+}

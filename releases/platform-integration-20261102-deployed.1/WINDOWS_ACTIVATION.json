@@ -1,0 +1,111 @@
+﻿{
+    "state":  "task_started_pending_postcheck",
+    "sourceCommit":  "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+    "at":  "2026-11-02T06:12:42.9652404Z",
+    "elapsedMs":  10909,
+    "installed":  [
+                      "scripts/alipay_name_lookup.py",
+                      "scripts/wecom_call_trace.py",
+                      "scripts/wecom_cleanup.py",
+                      "scripts/wecom_cleanup_contract.py",
+                      "scripts/wecom_cleanup_verify.py",
+                      "scripts/wecom_control_pipe.py",
+                      "scripts/wecom_diagnostics.py",
+                      "scripts/wecom_host_identity.py",
+                      "scripts/wecom_invite_preview.py",
+                      "scripts/wecom_physical_verify.py",
+                      "scripts/wecom_platform_preview.py",
+                      "scripts/wecom_remark_preview.py",
+                      "scripts/wecom_rpc_budget.py",
+                      "scripts/wecom_startup_guards.py",
+                      "scripts/wecom_system_runtime.py",
+                      "scripts/xhs_airtest_poco.py",
+                      "scripts/小红书数据同步.py",
+                      "src/alipay-poco-fallback-policy.mjs",
+                      "src/index.mjs",
+                      "src/lookup-cleanup-policy.mjs",
+                      "src/lookup-page-recovery.mjs",
+                      "src/lookup-reader-lifecycle.mjs",
+                      "src/wecom-cleanup-protocol.mjs",
+                      "src/wecom-cleanup-verify.mjs",
+                      "src/wecom-diagnostics.mjs",
+                      "src/wecom-preview-task.mjs"
+                  ],
+    "oldBusinessPythonFacts":  [
+                                   {
+                                       "pid":  19320,
+                                       "parentPid":  22668,
+                                       "path":  "D:\\PhoneCloud\\tools\\python39\\python.exe",
+                                       "createdAt":  "2026-11-02T06:03:27.9431670Z",
+                                       "owner":  "NT AUTHORITY\\SYSTEM"
+                                   },
+                                   {
+                                       "pid":  32412,
+                                       "parentPid":  22668,
+                                       "path":  "D:\\PhoneCloud\\tools\\python39\\python.exe",
+                                       "createdAt":  "2026-11-02T06:10:35.3309750Z",
+                                       "owner":  "NT AUTHORITY\\SYSTEM"
+                                   },
+                                   {
+                                       "pid":  31656,
+                                       "parentPid":  22668,
+                                       "path":  "D:\\PhoneCloud\\tools\\python39\\python.exe",
+                                       "createdAt":  "2026-11-02T06:11:02.3805490Z",
+                                       "owner":  "NT AUTHORITY\\SYSTEM"
+                                   },
+                                   {
+                                       "pid":  1796,
+                                       "parentPid":  22668,
+                                       "path":  "D:\\PhoneCloud\\tools\\python39\\python.exe",
+                                       "createdAt":  "2026-11-02T06:11:04.8519290Z",
+                                       "owner":  "NT AUTHORITY\\SYSTEM"
+                                   },
+                                   {
+                                       "pid":  27428,
+                                       "parentPid":  19320,
+                                       "path":  "D:\\PhoneCloud\\agent\\runtime\\lookup-ocr\\Scripts\\python.exe",
+                                       "createdAt":  "2026-11-02T06:03:37.2493030Z",
+                                       "owner":  "NT AUTHORITY\\SYSTEM"
+                                   },
+                                   {
+                                       "pid":  35608,
+                                       "parentPid":  31656,
+                                       "path":  "D:\\PhoneCloud\\agent\\runtime\\lookup-ocr\\Scripts\\python.exe",
+                                       "createdAt":  "2026-11-02T06:11:28.1502530Z",
+                                       "owner":  "NT AUTHORITY\\SYSTEM"
+                                   },
+                                   {
+                                       "pid":  18800,
+                                       "parentPid":  1796,
+                                       "path":  "D:\\PhoneCloud\\agent\\runtime\\lookup-ocr\\Scripts\\python.exe",
+                                       "createdAt":  "2026-11-02T06:11:30.1120360Z",
+                                       "owner":  "NT AUTHORITY\\SYSTEM"
+                                   },
+                                   {
+                                       "pid":  13540,
+                                       "parentPid":  27428,
+                                       "path":  "D:\\PhoneCloud\\tools\\python39\\python.exe",
+                                       "createdAt":  "2026-11-02T06:03:37.2646750Z",
+                                       "owner":  "NT AUTHORITY\\SYSTEM"
+                                   },
+                                   {
+                                       "pid":  27332,
+                                       "parentPid":  35608,
+                                       "path":  "D:\\PhoneCloud\\tools\\python39\\python.exe",
+                                       "createdAt":  "2026-11-02T06:11:28.1655290Z",
+                                       "owner":  "NT AUTHORITY\\SYSTEM"
+                                   },
+                                   {
+                                       "pid":  1908,
+                                       "parentPid":  18800,
+                                       "path":  "D:\\PhoneCloud\\tools\\python39\\python.exe",
+                                       "createdAt":  "2026-11-02T06:11:30.1321930Z",
+                                       "owner":  "NT AUTHORITY\\SYSTEM"
+                                   }
+                               ],
+    "businessPythonExitConfirmed":  true,
+    "phonePhysicalCleanupVerified":  false,
+    "adbRestarted":  false,
+    "taskDefinitionChanged":  false,
+    "automaticRollback":  false
+}

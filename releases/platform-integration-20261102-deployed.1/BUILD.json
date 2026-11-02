@@ -1,0 +1,11 @@
+{
+  "imageId": "sha256:4468f5ce0f2107b8df7c4ab6cb90bb0dc584e41d0a3a55a8a9dee3c1e20440e0",
+  "tag": "phone-cloud-platform:platform-integration-20261102-rc.1",
+  "sourceCommit": "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+  "baseExactImage": "sha256:a4db69c8a61befac7591924e354227146cb97fc6574556da35a2b86b7ddd6b4d",
+  "packageDependencyHashesVerified": true,
+  "releaseDockerfileSha256": "669c502babcf73648a8e902f71f8195cf29d77984941199ebef917b94d74396d",
+  "size": 114409587,
+  "status": "built_not_activated",
+  "firstBuildFailure": "BuildKit treated raw image ID as repository; retried with dedicated exact-ID rollback tag; original production tags unchanged"
+}

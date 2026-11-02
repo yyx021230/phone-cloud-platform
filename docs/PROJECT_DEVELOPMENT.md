@@ -5537,3 +5537,17 @@ L03/L04调用链复核：51/52/54/154既有stopping+pending空+stopFailure可以
 ### 决策日志｜2026-11-02 冻结基线失败和调度恢复分开处理
 
 延续D-001/D-003/D-075及最小发布原则。18项既有生产变体断言如实保留，新增代码不回退线上冻结字节；实际线上/真机验收仍单独判断。小红书503定位到丢连接后永久失败关闭的机制，当前只在授权维护中恢复业务容器，不以此宣称Postgres异常退出已解决或凌晨自然批次已验。首份Windows包因非NUL Git列表遗漏中文采集器已作废，尚未执行Prepare/Activate；改用UTF8 NUL库存与精确必含hash核验，不以zip与错误manifest彼此一致作为闭包证明。
+
+### 变更记录｜2026-11-02 三业务固定版本实际发布及新失败
+
+用户本轮直接发布/终止授权已执行。业务源码32c0091、候选platform-integration-20261102-rc.1；新main image4468f5ce，699文件匹配，Windows Agent19756/SYSTEM、26增量/104运行文件匹配，实际驻留report limit12（本地8只是fixture），原ADB8148/SYSTEM/原路径/创建时间/5037、auth-env/keys/计划任务与两份生产冻结源文件保持。原batch be213镜像受控恢复，PG/Redis/Windows/ADB/媒体未重启、Nginx未改、无迁移/数据库恢复。D075真实宿主发布前后live通过，PID2503525及原custom binary/drop-in/8Mbps/2包不变。
+
+06:11:13Z开始暂停/原ID停止，main关停exit1原日志为shutdown timeout10秒并伴close后storage_fenced，不据此推断OOM。Windows精确Node/10业务Python结束后26文件切换约11秒，原task启动；06:13:30Z新main起，约66秒health/ready200，首次等待窗口短已改只读继续观察，没有重复up/回滚。06:14:36Z调度起，06:15:18Z原enabled以CAS172→173恢复。旧轮停止，06:15:54Z唯一新HMAC prepare不提交手机号；06:19:17Z新轮达准入门槛，后见ready3及外部3执行/17排队，不把服务健康当业务恢复。
+
+原cutoff13会话全部ended且新停止证明task/session/generation逐一匹配；旧51/52/54/154的新stop在06:14:47Z创建、06:14:48Z成功，不再仅是本地模拟或round detach。这只核销本次清理，不扩写四机下一业务/全池长期。上线后仍有176准备uiautomator_hierarchy_missing、147探测visual_after ReadTimeout（恢复后仍失败，原事件两次input_phone保留）、158 stop cleanup_unconfirmed/stopping保留占用。不得用13条成功掩盖新失败。
+
+小红书正式签名API27页均200、5历史批次各100项分页/绑定一致、唯一新租约；11月2日无自然批次不补建，4条历史标题截断hash不可独立重算待核。新140/app1仅一个正式采集任务正在验收，未预填通过；企微新物理协议完整SYSTEM真机、全池长测、PG SIGABRT初因与旧完整runtime下载包更新继续未完。正式回执releases/platform-integration-20261102-deployed.1，生产状态已发布待完整验收，远端未推送，其他工作区与两原依赖链接保留。
+
+### 决策日志｜2026-11-02 发布成功与完整修复验收分别登记
+
+延续已授权直接切换、真实证明和未知不重放。终止当前任务不删除旧记录/claim/历史，不解除未知物理占用；恢复原配置仅改变enabled，不复活旧轮。源码、实际运行overlay、构建/部署回执、真机证据分别绑定；原13条新证明允许更新其清理结论，不覆盖新158失败或未验企微。主服务/调度恢复与三类业务整体全量验收不是同一状态；未通过项继续保留，后续修复另用不可变提交/候选及实际验证，不在生产直接试新代码。
