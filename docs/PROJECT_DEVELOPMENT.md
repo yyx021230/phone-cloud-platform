@@ -5837,3 +5837,14 @@ root固定4efde08模块/fixture复现操作epoch、初始化epoch、操作malfor
 ### 决策日志｜2026-11-02 副作用在途后的认证错误不得伪装纯前置拒绝
 
 延续M2保守未知原则：COMMIT已确认的known事实与COMMIT未知必须区分，认证变更不授权读写或重放，也不能把未知丢成普通throw诱发换号重试。此修正不放宽公开输入认证、不重标epoch、不清fence。只改M2新叶/测试，14旧源、M1/v1/DDL/index/Agent均不动；无真实PG/SQL/Windows/phone/发布，runner先审再启动，原43/隔离/查名池/冻结保持。
+
+
+### 变更记录｜2026-11-02 M2私有PG运行器与COMMIT代理源码待审（未启动）
+
+root独立审3c37362最小分类修正通过后，保留原未跟踪proxy/parser并补私有PG runner、归属guard、14项真实库integration入口与新Node只读回查子程序，产品源/DDL均不动。RUNNER_SOURCE_HASHES固定11源、既有共享pg8.22.0 package hash/Node版本；唯一--execute-reviewed参数前置拒绝、非root/最小env、新0700目录/私有Unix socket+随机loopback端口、原Popen子进程/自有session清理、失败保留原数据与日志。source guard本轮实际只读匹配11源，无服务动作。
+
+有界代理只记录固定命令类型及COMMIT tag/ReadyForQuery状态/ErrorResponse数，真实后端唯一COMMIT+I+无E才成为丢回复正例，ROLLBACK/error不算；close等真实自有socket退出。计划14库用例涵盖barrier并发/CAS/约束/trigger/锁隔离/真实断回复/未知认证/新Node旧epoch等，均未运行。实际只运行8纯协议字节与6入口安全单元，通过并有回执；Python AST/JS syntax检查，不监听端口、不启动PG/执行SQL。
+
+### 决策日志｜2026-11-02 先审私有运行器与真实故障证据，再启动隔离PG
+
+仅verification候选，完整命令/env/依赖/PID清理/失败留存边界见RUNNER_REVIEW；源/依赖变化拒绝，不自更新hash或自动重试到绿。8/6和既有30/61/50都不能替代真实PG14项；root核固定源码后才可启动新自有cluster，禁止生产/共享5432/现有库/全局清理。保留失败DB、不以COMMIT前置或ROLLBACK返回猜成功；存储确认不开放业务。14旧产品源不变，无Windows/phone/ADB/部署，原43/隔离/查名池/冻结保持，主号分身验收仍未补齐。

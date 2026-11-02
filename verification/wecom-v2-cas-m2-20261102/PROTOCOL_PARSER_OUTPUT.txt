@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: fragmented frames preserve bytes; oversized/SSL startup is rejected
+ok 1 - fragmented frames preserve bytes; oversized/SSL startup is rejected
+  ---
+  duration_ms: 1.251458
+  type: 'test'
+  ...
+# Subtest: only one exact COMMIT/I/no-ErrorResponse tuple confirms backend completion
+ok 2 - only one exact COMMIT/I/no-ErrorResponse tuple confirms backend completion
+  ---
+  duration_ms: 0.767417
+  type: 'test'
+  ...
+# Subtest: gate refuses success when ROLLBACK tag
+ok 3 - gate refuses success when ROLLBACK tag
+  ---
+  duration_ms: 0.113458
+  type: 'test'
+  ...
+# Subtest: gate refuses success when error present
+ok 4 - gate refuses success when error present
+  ---
+  duration_ms: 0.037042
+  type: 'test'
+  ...
+# Subtest: gate refuses success when transaction still open
+ok 5 - gate refuses success when transaction still open
+  ---
+  duration_ms: 0.041417
+  type: 'test'
+  ...
+# Subtest: gate refuses success when no command completion
+ok 6 - gate refuses success when no command completion
+  ---
+  duration_ms: 0.035167
+  type: 'test'
+  ...
+# Subtest: gate refuses success when two command completions
+ok 7 - gate refuses success when two command completions
+  ---
+  duration_ms: 0.038708
+  type: 'test'
+  ...
+# Subtest: before-COMMIT drop sends no COMMIT; consumed fault is not applied again
+ok 8 - before-COMMIT drop sends no COMMIT; consumed fault is not applied again
+  ---
+  duration_ms: 0.072916
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 65.3565
