@@ -1,0 +1,10 @@
+{
+  "baseCommit": "ba015964c61175987567f93d097055fa47ac927d",
+  "candidateTag": "wecom-v2-original-lock-20261102-draft.1",
+  "files": {
+    "docs/PROJECT_DEVELOPMENT.md": "ddd53de292d658f1db4026afaeb422df3e84011da0c919f04135fcc0ec4fe9b6",
+    "verification/wecom-v2-original-lock-plan-20261102/LOAD_SPEC.json": "4e31377bab2eac8ce889adf172e7e3e8a30c14dd782975364d5d69d1aa2bcf9a",
+    "verification/wecom-v2-original-lock-plan-20261102/PLAN.md": "764441bc8363194dd8d948a21a2a19e882298433d0c639e62f914e8ce15232bf",
+    "verification/wecom-v2-original-lock-plan-20261102/SOURCE_BASELINE.json": "e1157f10300cacbda2b86e696fac786f6205e8bebf2ac9b976ae30a49ae5d146"
+  }
+}

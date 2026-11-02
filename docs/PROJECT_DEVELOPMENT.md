@@ -6107,3 +6107,11 @@ Node56258exit0/组消失、PG56245exit0确认、成功db原runner确认后删、
 ### 决策日志｜2026-11-02 投影released不等于物理释放，shared仍未改
 
 只验证比较SQL，不能当生产因果或shared修复。下一仅准备原business-lock验证切片提案：无marker负例、同transaction anchor/fulltuple、immutable/status/fullJSONB CAS、目标局部冲突；禁止持anchor调用另开连接M3 reconcile自锁。delivery/controlled progress独立操作回执另片，blob/boot/lookup根协调；S2/journal/native默认禁用，原43设备义务/147/52和查名池保留，主号分身真机未验收。
+
+### 变更记录｜2026-11-02 B片原business lock同TX验证提案，未实现/未执行
+
+新增verification/wecom-v2-original-lock-plan-20261102/PLAN和LOAD_SPEC，仅提案。原锁无v2 marker负例、同一owned client anchor→task→job→hold→original business→ledger精确列/规范化、immutable与active→released合同/fullJSONB CAS/RETURNING明确；四组建议含known commit、目标NOWAIT与实际CAS0局部回退。createdAt/expiry仅与本次锁内fresh值比较，不伪称claim_data包含历史快照或wall权限。
+
+### 决策日志｜2026-11-02 同TX loader不调用开新连接M3自锁，不把纯policy当写许可
+
+持anchor期间仅verification loader同client读全tuple，S1结构分类仍零权限；COMMIT/ROLLBACK确认并release后才M3 fresh重读。受控fixture不是生产owner/auth实现，旧非参与writer随后覆盖仍是未解边界，COMMIT未知不拿现claim仍recorded当本次progress成功。产品/DDL/shared及旧17源不改，无测试/PG/SQL/Windows/设备动作；delivery持久回执/blob/boot/lookup owner根协调，S2/journal/native和主号分身真机未闭合，原43设备义务/147/52、查名池与冻结保持。
