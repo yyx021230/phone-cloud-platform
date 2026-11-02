@@ -1,0 +1,14 @@
+{
+  "scope": "local fake DLL + non-Windows gate only, no exports observed on Windows",
+  "tests": 7,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "remoteCommands": 0,
+  "nativeAcceptance": false,
+  "sha256": {
+    "windows_exports.py": "e6f5ec370458eb45573ff52ab546f584f6591e7c5008100a27c44628cb3200c4",
+    "test_windows_exports.py": "374ffd6a7b4f1887b08df220ae6fe718acf2c5689d9bd26e603c16b2166867d3",
+    "TEST_OUTPUT.txt": "72babdcb57a6149fe13ea438250d0a14ba3d39a059b02f9ef71580fad8e68db9"
+  }
+}

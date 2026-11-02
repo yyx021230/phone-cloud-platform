@@ -5723,3 +5723,14 @@ typed wrapper/原attempt先固定984fed9/observed.1，root实际12项与具体ha
 ### 决策日志｜2026-11-02 将本地启动、传输和API阶段失败分开
 
 本地import失败不是Windows命令失败、更不是API缺失；修正只限已审本地bootstrap，不改模块或远端源。实际补采已取得有限API绑定失败事实，下一步若定位具体符号须另列最小只读源供审，不循环重跑泛调查。原Windows/主机提示已补齐，真实配对时钟样本/硬界/暂停/SYSTEM/peer/持久与v1修复仍缺；生产工厂、43/147/52隔离、155查名排除及27912来源未知保持，未派手机任务或修改业务/服务/身份/时钟。
+
+
+### 变更记录｜2026-11-02 原八个Kernel32导出定位脚本本地待审
+
+observed.2已固定b343实际绑定阶段失败且停止原补采。root要求先本地准备极小导出定位，企微owner从干净b343建立codex/wecom-windows-exports-plan-20261102，仅verification/wecom-windows-exports-20261102与记录。windows_exports.py仍同System32 Kernel32/原8个固定名字，只getattr/callable逐项记录name/present/有限errorType，不调用任何返回函数指针、不尝试替代DLL/API、路径/地址/其他模块/环境不采；实际sys.version_info与指针位数直接输出，不由目录python39猜版本。所有结果仍authority/native/physical false，CLI只有显式inspect-exports。
+
+本地7项fake-DLL/非Windows/CLI拒绝通过，AST通过，无新远端；覆盖零函数调用、缺失固定名、OSError/意外getter错误与非function属性，未把合成缺失当真实Windows缺失。原208源、首次未知371、b343实际AttributeError事实/原receipt和旧任务不更改。精确命令/限制、下一次独立源/hash/typed回执规则在PLAN；需root审固定脚本后才执行新的只读预算，本阶段不发命令/不重跑34或改变v1。
+
+### 决策日志｜2026-11-02 定位指定模块解析事实，避免由泛AttributeError猜接口
+
+原bindhelper未记录name，不凭AttributeError/WinErr0认定具体导出缺失。下一步只审原8名的解析矩阵与实际解释器信息，解析成功不等于调用/精度/暂停支持，解析失败也不自动改API-set或库；不加入额外模块路径API。先固定本地源及fake反例，未有新的Windows/ADB/手机/服务授权推定。实际数据到手再评最小绑定兼容差异和接线；原43、27912因果仍未知，不清锁/改身份或把当前计划称运行时修复。
