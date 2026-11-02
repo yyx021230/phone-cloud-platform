@@ -5813,3 +5813,16 @@ root独立复核925898的61+原50、manifest/14原产品源及tag通过后，own
 ### 决策日志｜2026-11-02 新账本隔离旧写入，未知提交不猜失败
 
 M2先交具体方案，不扩全v2或接线；独立表替换441a原JSONB复用建议的原因是已核checkpoint/generic写路径，而非临时偏好。PK仅义务内去重，不宣称替代统一设备锁。相同操作须规范化全内容与已提交原结果一致，COMMIT在途异常不能凭ROLLBACK或旧快照清fence；epoch变更不重标旧义务。真实本地PG与故障注入证据未产生，纯fake不得称CAS通过；不自动启动共享服务或连接生产PG。旧43/隔离/查名池/冻结、v1/index/Agent均保持，真机验收未完成。
+
+
+### 变更记录｜2026-11-02 M2专属账本初始本地代码候选，真实PG未运行
+
+root审85f5cc3接受单表方案及M1两个纯导出后，新增server/wecom-cleanup-v2-postgres.mjs/测试、deploy/sql/wecom-cleanup-v2.sql与合成fixture；M1仅新增request/state规范化冻结包装导出，旧行为不变。显式getPool/认证/父事实provider，坏schema/nonce/认证在checkout前拒绝，getPool等待后重验；新操作真实调用M1，按原action/opid全内容去重，单行FOR UPDATE+revision UPDATE RETURNING，零行/状态不一致不成功。SQL未执行，无自动DDL/路由/领取/锁/释放接线。
+
+COMMIT须实际返回COMMIT tag，未知退役销毁旧client后独立checkout读原操作，不靠ROLLBACK猜失败、不重放原写；post-COMMIT认证变化保留已知commit与原操作、obsolete分类。所有结果protocolPermit=false/fence held，存储确认不是HTTP ACK或payload许可。M2初21绿后追加3入口反例实际红（nonce/等待期间认证checkout、异内容对账分类），保存红源/日志/hash后修正，当前26单元过；M1原61、v1/Agent原50回归过及JS语法检查。证据verification/wecom-v2-cas-m2-20261102，历史运行不累加。
+
+### 决策日志｜2026-11-02 存储候选先审，真实库故障证据不得被fake替代
+
+本片仅本地未接线新repository/可审DDL，14旧产品源不变；没启动PG、没执行SQL或真实连接，26fake只证明调用顺序/错误分类，不能称CAS/锁/约束/COMMIT网络语义已验。下一步先编固定私有cluster runner/有界代理交root审，真实后端COMMIT/ReadyForQuery/无ErrorResponse与独立直连事实齐才计正例。新表不替旧物理fence，原task/lock/journal/OS事实/时钟权威后继独立审。无Windows/手机/ADB/生产或部署，原43/隔离/查名池/冻结保持，真机主号分身仍未完成。
+
+M2证据格式补充：完整staged diffcheck在原始PRE_REVIEW_RED_OUTPUT.txt的6行TAP空行缩进报尾空格，保留原始失败输出/hash；仅排除此固定日志的代码/文档检查另行通过，不宣称完整diffcheck绿。例外与两条实际命令/退出码见DIFFCHECK_RECEIPT，交root审，无其他路径豁免。

@@ -1,0 +1,17 @@
+{
+  "scope": "fake lifecycle only, no real PG or CAS validation",
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "server/wecom-cleanup-v2-postgres.test.mjs"
+  ],
+  "exitCode": 0,
+  "sourceSha256": {
+    "server/wecom-cleanup-v2-postgres.mjs": "55198cd154c271dda65b515ca0aa35f1a97f48699547fee6012c8cced71cf677",
+    "server/wecom-cleanup-v2-postgres.test.mjs": "1945039cb3c03c25a7c7b60ae4cb85c5bfe4b8ab544638136ff823da94163df3",
+    "server/wecom-cleanup-v2-host.mjs": "6caf31175e62002476f37d0785ef3b5d3c3de87581cd117320ce6695c98be397",
+    "verification/wecom-v2-cas-m2-20261102/fixture.mjs": "ac6e39ce28dd4a9625e9f03e3d648022768c7e10096ef91e9109df2e31681965"
+  },
+  "outputSha256": "bb53ddc57f14557a24ccd10557aca62d8ddae6968cdab0f21c756de2988e1220"
+}

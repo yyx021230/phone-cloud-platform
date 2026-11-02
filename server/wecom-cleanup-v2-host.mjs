@@ -91,6 +91,9 @@ function state(value) {
 }
 
 export function createWecomV2HostState(value) { return freeze(initial(value)); }
+// Structural helpers only; neither accepts nor manufactures OS authority.
+export function normalizeWecomV2HostRequest(action, value) { return freeze(request(action, value)); }
+export function validateWecomV2HostState(value) { return freeze(state(value)); }
 
 export function createWecomV2HostPreparer({ readAuthenticatedBinding, readParentInstanceFacts } = {}) {
   if (typeof readAuthenticatedBinding !== "function" || typeof readParentInstanceFacts !== "function") error("trusted_providers_required");
