@@ -42,6 +42,8 @@ public/wecom-integration-api.md有先前da8a2c1已提交的发布状态/发送�
 
 旧QA SSH参数只有BatchMode，若复用时socket丢失仍可能尝试新连接；本轮不运行该启动器。将来运行必须只走已确认master、无fallback/新登录，凭据不入参数、日志或文件。此次默认旧cloud master `/private/tmp/pc-wecom-diag-cloud-20261102.sock`不存在；只有已知Windows master，未使用。没有当前cloud凭据/连接的安全只读通道，本报告**全部fresh占用未知**，未登录fallback、未发GET或租约。root可沿自己的存活通道补新鲜全占用。
 
+后续补核的严格只读边界：server/index.mjs:1080 的GET `/api/v1/device-locks`会调用expireDeviceLocks并mark运行保存，**不是纯只读**；还只返回前300条、无完整性标记。两条旧QA reader都调用它，不能直接用于本轮“只读完整占用”调查。必须另选已核不维护的canonical/cache来源或另审纯投影；不能因为method=GET就绕过不改生产数据的范围。此发现来自本地源码，本轮未实际调用该端点，也不倒改旧请求证据。
+
 ## 当前硬阻塞与最小动作（由root协调，不是执行授权）
 
 1. **共享执行基线**：旧ADB8148消失、11月2日17:52只读27912/SYSTEM/固定路径/5037唯一，Agent19756/SYSTEM/固定Node。新PID来源未知仍留调查，但不应靠重建/切身份来“修”。root先新鲜只读核路径/owner/出生/监听唯一、实际Agent入口/reader预算，核所选实际执行通道的连续guard与cleanup来源。root补充已确认：生产preview用raw socket/既有AndroidRpcClient、adb_identity主要是LISTEN PID/preconnect比较，SystemRuntimeGuard有SID/path/create_time/LISTEN；**单补baseline批准并不足以证明整个执行安全**。本owner不运行会隐式start-server的客户端、不另开SYSTEM入口。旧故障初因与当前guard完整性分开调查。
