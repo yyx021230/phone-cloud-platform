@@ -1,0 +1,130 @@
+{
+  "artifactRoot": "/private/tmp/pc-wecom-v2-pg-xeywe54s",
+  "runnerCommit": "073886ee24a8613598d90f68a87ffbdee8b9e460",
+  "productCommit": "88633cc1cd5c29271494107d7b14206c0ce70e83",
+  "realPgTests": 14,
+  "pass": 14,
+  "fail": 0,
+  "faultCases": 7,
+  "expectedDriverEvents": 7,
+  "singleOriginalWritePerFaultCase": true,
+  "ownedCleanupConfirmed": true,
+  "successDbRemoved": true,
+  "oldFailedDbRetained": true,
+  "runReceipt": {
+    "kind": "owned-loopback-wecom-v2",
+    "artifactRoot": "/private/tmp/pc-wecom-v2-pg-xeywe54s",
+    "versions": {
+      "postgres": "postgres (PostgreSQL) 16.15 (Homebrew)",
+      "initdb": "initdb (PostgreSQL) 16.15 (Homebrew)",
+      "createdb": "createdb (PostgreSQL) 16.15 (Homebrew)",
+      "pg_isready": "pg_isready (PostgreSQL) 16.15 (Homebrew)",
+      "node": "v25.9.0"
+    },
+    "startedAt": "2026-11-02T12:47:35.136519+00:00",
+    "commands": [
+      {
+        "argv": [
+          "/opt/homebrew/bin/initdb",
+          "-D",
+          "/private/tmp/pc-wecom-v2-pg-xeywe54s/db",
+          "-A",
+          "trust",
+          "-U",
+          "wecom_v2_fixture",
+          "--no-locale"
+        ],
+        "exitCode": 0,
+        "output": "INITDB.txt",
+        "pid": 29280,
+        "cleanup": {
+          "started": true,
+          "pid": 29280,
+          "exitCode": 0,
+          "groupAbsent": true
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/bin/createdb",
+          "-h",
+          "/private/tmp/pc-wecom-v2-pg-xeywe54s",
+          "-p",
+          "49226",
+          "-U",
+          "wecom_v2_fixture",
+          "wecom_v2_host_fixture"
+        ],
+        "exitCode": 0,
+        "output": "CREATEDB.txt",
+        "pid": 29301,
+        "cleanup": {
+          "started": true,
+          "pid": 29301,
+          "exitCode": 0,
+          "groupAbsent": true
+        }
+      },
+      {
+        "argv": [
+          "/opt/homebrew/bin/node",
+          "--test",
+          "--test-reporter=tap",
+          "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/verification/wecom-v2-cas-m2-20261102/postgres.integration.mjs"
+        ],
+        "exitCode": 0,
+        "output": "NODE_TEST_OUTPUT.txt",
+        "pid": 29303
+      }
+    ],
+    "sourceManifestSha256": "2ccfe1a4593fd3de2633617d7ad52b4d86a41962aea64726471b752e221c3bba",
+    "postgres": {
+      "pid": 29291,
+      "argv": [
+        "/opt/homebrew/bin/postgres",
+        "-D",
+        "/private/tmp/pc-wecom-v2-pg-xeywe54s/db",
+        "-h",
+        "127.0.0.1",
+        "-p",
+        "49226",
+        "-k",
+        "/private/tmp/pc-wecom-v2-pg-xeywe54s",
+        "-c",
+        "unix_socket_permissions=0700",
+        "-c",
+        "fsync=on",
+        "-c",
+        "synchronous_commit=on",
+        "-c",
+        "full_page_writes=on",
+        "-c",
+        "max_connections=12"
+      ],
+      "directOwnedChild": true
+    },
+    "actualPgCases": 14,
+    "nodeCleanup": {
+      "started": true,
+      "pid": 29303,
+      "exitCode": 0,
+      "groupAbsent": true
+    },
+    "postgresCleanup": {
+      "pid": 29291,
+      "exitCode": 0,
+      "confirmed": true
+    },
+    "status": "passed",
+    "dataDirectoryRemoved": true,
+    "artifactSha256": {
+      "fixture.json": "296f588073886b020c5eba6c92b47beea6ec14eafe33cb59f8a5cdc0df87137f",
+      "POSTGRES.txt": "d9aae25a5df2bf51a78c3c1d34455a9ce0e245f49210ad5c7a060f06a6094faf",
+      "PG_EVIDENCE.json": "3914bb06b0fa2074b9192d5c9eafe6fc59998331f79ee18ab1e05390f47250e6",
+      "CREATEDB.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "INITDB.txt": "8e75689aa5712fc173750ed5a6d9898938e1a4dbcb01d62e3be747e31cae9357",
+      "NODE_TEST_OUTPUT.txt": "f46277225df5aa86b1c6a9b2e34c85428f09a7d69e7fce5a47ccc0220ea4f272"
+    }
+  },
+  "realDeviceOrProductionAcceptance": false
+}

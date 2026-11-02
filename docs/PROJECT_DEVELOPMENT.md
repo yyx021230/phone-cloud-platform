@@ -5890,3 +5890,14 @@ root独立39审88633cc后，owner仅更新verification：barrier adapter将on/re
 ### 决策日志｜2026-11-02 新fixture不代替产品错误监听，非目标错误不能被绿化
 
 只有本次首fault client与真实wire断链对应的固定错误才允许观察；同时断言产品拥有期listener存在，否则仍失败。此稿不改产品/DDL/index/getPool/v1/Agent，14旧源不变；原失败不洗、不重启旧库，root核固定13源后才统一执行一次新私有库。无Windows/phone/ADB/生产或部署，原43/隔离/查名池/冻结保持，主号分身未完成。
+
+
+### 变更记录｜2026-11-02 draft.3单次新私有PG14项全部通过，逐字归档observed.2
+
+root审073886ee runner与88633cc1 M2后统一执行全新xeywe54s一次，实际TAP14/14 pass/0 fail，14唯一case齐。7故障case均有expected原client断链/真实wire/额外事务listener恰1、原写次数1，COMMIT丢回复对账、并发/约束/锁隔离/旧epoch等断言实际通过。owner未重跑，只逐字复制7artifact并核receipt hash，执行source manifest精确匹配且13源字节相符，root独立复核JSON也归档verification/wecom-v2-pg-observed2-20261102。
+
+Node29303 exit0/组消失、PG29291 exit0/停止确认，成功db依原runner清理；原3mrc7nik失败db仍在未重启，首次14项7/7及14notes不改，不累加两轮覆盖。原8/6/7纯fixture及39/61/50各阶段不重复计数；本次只证明本机PG16.15/pg8.22/Node25.9与所测协议，非生产/Windows/native。
+
+### 决策日志｜2026-11-02 存储实测通过仍不成为host ACK，M3先方案审
+
+M2始终held/protocolPermit false；后继只准备任务/物理hold/协议账本原子创建、journal恢复、真实父子facts/v1兼容最小方案，不因本地PG绿写共享index/getPool或放开手机号。未改原43/147/52、155/157查名池，不称主号/分身/线上通过。原INITDB EOF格式按原件保留，完整diffcheck与证据格式例外分列，无Windows/phone/ADB/生产/部署动作，冻结保持。
