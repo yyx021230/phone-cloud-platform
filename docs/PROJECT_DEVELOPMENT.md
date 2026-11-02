@@ -6003,3 +6003,13 @@ Node44305exit0/组消失、PG44293exit0确认，成功db仅由原runner全部确
 ### 决策日志｜2026-11-02 私有PG18通过不等于跨旧业务或真机就绪
 
 接受215fb15新叶在该本地PG16.15/pg8.22/Node25.9所测存储阶段；保持protocolPermit false/映射屏障未验/默认禁启。旧M2完整14与新DDL兼容尚未复测，当前legacy仅窄兼容。下一仅准备共享checkpoint/旧v1读写共存与device mapping屏障、journal持久恢复、真实host事实和时钟入口的最小切片方案交审，不实现共享index/getPool/配置/Agent，也不自行PG/Windows。原43/147/52和155/157查名池保持，主号分身真机仍未验收。
+
+### 变更记录｜2026-11-02 M3私有PG后继共存/映射/journal/host最小方案（未实现）
+
+root57583564闭合36be03 observed.2后，只读当前generic/checkpoint/v1 service、占用与device更新/Agent scan、现v1父子启动路径，新增verification/wecom-v2-postclaim-plan-20261102/PLAN及源码baseline。方案建议先纯逐目标投影策略，不接共享writer；明确普通UPSERT等待行锁后可能覆盖新v2标识、只在checkpoint起点读一次ledger或NOT EXISTS不够，full-state blob与启动重建也须共同处理。单台冲突不可用不能扩成其他手机整轮checkpoint失败。
+
+设备映射先disabled/revision与device写同提交，不先改内存；lastSeen/battery不当改绑。journal拆纯格式/Windows IO/恢复协调，真实host/peer/同host时钟权威由root共享入口另审；无事实不回填旧43。M2原完整14+新DDL与claimed-row兼容另立固定验证候选，当前未重测；外部send入口不能当no-send预览验证。
+
+### 决策日志｜2026-11-02 后继方案不扩大到共享接线或真机授权
+
+延续M3分片，仍默认禁启/protocolPermit false。最小建议是纯projection-policy叶/反例，不提供写入/执行许可；shared index/getPool/repository/配置/Agent/SDK/媒体均不改。没有新代码、测试、PG、Windows、手机或生产动作；47合成seed检测与本机18/18不是现场设备验收。下一需root审具体片范围，保留已有改动/原失败证据、原43/147/52及查名池；主号分身真机未完成。
