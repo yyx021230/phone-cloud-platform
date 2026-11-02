@@ -5551,3 +5551,17 @@ L03/L04调用链复核：51/52/54/154既有stopping+pending空+stopFailure可以
 ### 决策日志｜2026-11-02 发布成功与完整修复验收分别登记
 
 延续已授权直接切换、真实证明和未知不重放。终止当前任务不删除旧记录/claim/历史，不解除未知物理占用；恢复原配置仅改变enabled，不复活旧轮。源码、实际运行overlay、构建/部署回执、真机证据分别绑定；原13条新证明允许更新其清理结论，不覆盖新158失败或未验企微。主服务/调度恢复与三类业务整体全量验收不是同一状态；未通过项继续保留，后续修复另用不可变提交/候选及实际验证，不在生产直接试新代码。
+
+### 变更记录｜2026-11-02 140正式采集成功与158后续清理补证
+
+140/app1经正式内部接口与共享SYSTEM Agent19756提交唯一任务5c82861c/task a0311834，14:19:27至14:25:36成功，369.024秒，采集350.352秒，34/34及两遍有序身份hash独立重算一致、日期边界/槽位/纯元素检查通过。两次API回查与真实PG job/windowsTask集合canonical hash相同、账号绑定/reference关联相同，自有锁唯一released，设备busy=false/occupancy=null。14:27:39只读Windows同任务Python/ledger/cache均0；无历史host PID，未额外复读手机设置，结合真实消费者await execFile及正常finally作为收尾旁证，不宣称所有孙进程绝对无残留或隐藏帖子/100账号自然批次通过。完整帖子与账号导出留私有目录，仅聚合收据/哈希入正式发布材料。
+
+158原203ms失败底层已定位：06:19:15 instrumentation退出device_unavailable；06:19:16日志精确target_device_not_found，Poco主包absence_check命令失败，不能当作已证包/forward残留。原fe936052失败保留，自动后续stop bde79936/job c5d8ff42在06:19:49.488Z成功，原session6ee46d0f/generation23b47b92匹配、readerCleanupConfirmed=true并ended，随后channels为空。只核销同会话停止恢复链；目标为何消失、原查询及下一条仍未知，未重启ADB/SYSTEM/Hub或发诊断手机命令。
+
+147自然时间线显示已成功input_phone后无手动submit事件，输入后只读恢复失败仍走restart_app并第二次input_phone。代码仅submit_search置searchSubmitted，不能覆盖自动搜索/输入已送达；查名字窗口已从固定32c建独立lookup-input-fence工作区，以真实函数红例及最小候选处理，未改线上、未抢147或故障注入，不提前称修好。正式部署receipt40f962a/tag platform-integration-20261102-deployed.1已绑定ACTIVE；完整验收仍false。
+
+### 决策日志｜2026-11-02 后续成功不覆盖首次失败，新缺口先本地修复
+
+延续原ID对账与精确证据边界：158后续新proof允许解除该会话停止故障，原失败/设备不可见原因不抹除；140新正式路径通过不替代下一次自然批次或新异常分支。147应区分输入已送达/可能送达与手动点击搜索确认，以自然事件固定反例，保护188已知前输入恢复与149只读结果续接；候选先测试与真机，不在生产临时改共享生命周期/ADB或把本地通过写作已修复。
+
+收尾只读快照14:31：main/batch/PG/Redis均healthy，运行镜像分别保持4468/be213，业务两容器自启动后0重启；health/ready分别45/32ms且200。池51条启用保持，基础可用17/不可用34、probe9、ready2、human2，外部2运行/27排队。不可用原因当前互斥统计为登录5、冷却8、准备退避8、设备/Agent离线5、技术不可用6、控屏占用1、页面退避1，不把登录/冷却/占用当代码已修或全部归成Poco卡死。ACTIVE正式receiptCommit40f962a/tag deployed.1，后续聚合旁证metadata更新后SHA a5390dcc；未再次部署/重启，完整验收false。旧手动runtime zip在已查PhoneCloud任务/服务/固定启动入口范围未见自动下载引用，非全盘不存在证明，也非本次完整安装包。

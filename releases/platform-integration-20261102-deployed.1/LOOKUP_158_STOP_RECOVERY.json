@@ -1,0 +1,73 @@
+{
+  "state": "read_only_diagnosis_with_matching_persisted_recovery",
+  "sourceCommit": "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+  "deviceNumber": 158,
+  "originalStopTask": "fe936052-b1d2-423d-9578-409bea8f4436",
+  "originalStopJob": "7303af51-a51d-4cf1-bda6-d5d48a307221",
+  "session": "6ee46d0f-5e61-4f08-bc69-fa45304bf22c",
+  "facts": [
+    {
+      "at": "2026-11-02T06:19:15.499Z",
+      "fact": "instrumentation reader host exited1, device_unavailable"
+    },
+    {
+      "at": "2026-11-02T06:19:16.424Z",
+      "fact": "existing target error contains exact adb target device not found token"
+    },
+    {
+      "at": "2026-11-02T06:19:16.858Z",
+      "fact": "original stop cleanup marker absence_check/poco_service/command_failed"
+    },
+    {
+      "at": "2026-11-02T06:19:49.026Z",
+      "fact": "later distinct stop has cleanupConfirmed=true in Agent log",
+      "laterStopTask": "bde79936-0154-4acc-bd02-6aeb299d2007",
+      "persistedSessionMatch": {
+        "source": "lookup window primary-key read-only verification",
+        "laterStopJob": "c5d8ff42-5b50-4fd0-9c30-5c5b524ffcee",
+        "status": "succeeded",
+        "completedAt": "2026-11-02T06:19:49.488Z",
+        "session": "6ee46d0f-5e61-4f08-bc69-fa45304bf22c",
+        "generation": "23b47b92-1df5-4d28-b5a7-5ba125241666",
+        "sessionStatus": "ended",
+        "readerCleanupConfirmed": true,
+        "proofTaskIdMatches": true,
+        "originalStopStillFailed": true
+      }
+    }
+  ],
+  "conclusion": "The stop failed while checking main Poco package absence because the read command failed. Same-period target not-found explains inability to obtain proof; no evidence here of remaining PID/forward or unexited host. Why the target disappeared is not established.",
+  "sourceLines": {
+    "windows-agent/src/lookup-reader-lifecycle.mjs": [
+      31,
+      36,
+      46,
+      47,
+      54,
+      55
+    ],
+    "windows-agent/src/index.mjs": [
+      2407,
+      2410,
+      3405,
+      3409,
+      3410,
+      3411
+    ]
+  },
+  "limits": [
+    "No direct phone/ADB verification",
+    "No causal conclusion about USB cable, driver, Hub or ADB server",
+    "No claim later lookup is healthy",
+    "Matching session cleanup/release recovered; original query and next-query success not established"
+  ],
+  "evidence": {
+    "DIAGNOSE_158_CLEANUP.json": "4307de63fc1e9fe53d47c83e8b85207621806012c7df7c72130f2b5fc1e71f7e",
+    "DIAGNOSE_158_CLEANUP_DETAIL.json": "f038817fbaa87b00f153430db4849fabef5c5439e6ca02300e4abb88c4bf82bb"
+  },
+  "agentPid": 19756,
+  "agentOwner": "NT AUTHORITY\\SYSTEM",
+  "adbClientCalls": 0,
+  "phoneActions": 0,
+  "productionChanged": false
+}

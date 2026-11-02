@@ -29,13 +29,12 @@
   "observedRemainingIssues": [
     "176 preparation uiautomator_hierarchy_missing",
     "147 probe visual_after ReadTimeout after recovery attempts",
-    "158 stop cleanup_unconfirmed: isolated, not resolved",
     "WeCom new physical protocol full SYSTEM phone flow unverified",
-    "140/app1 single formal collection in progress; no outcome claimed",
     "Nov2 natural batch missing; next02:00 unverified",
     "PG backend SIGABRT initial cause unknown",
     "four historical hashes not fully recomputable from API-truncated titles",
-    "legacy manual full runtime download zip not updated"
+    "legacy manual full runtime download zip not updated",
+    "158 initial ADB target disappearance/query failure remains unexplained; subsequent cleanup proof succeeded"
   ],
   "localVariantRegression": {
     "tests": 1908,
@@ -44,5 +43,22 @@
     "sameFailuresReproducedOnPriorProductionVariant": true
   },
   "remoteGitPushed": false,
-  "originalDependencySymlinksRetained": true
+  "originalDependencySymlinksRetained": true,
+  "formalXhs140": {
+    "jobId": "5c82861c-c28c-4c34-8cb2-c9c9f68a601f",
+    "status": "succeeded",
+    "postCount": 34,
+    "twoOrderedPassesVerified": true,
+    "apiAndPostgresCanonicalHashesMatch": true,
+    "ownLockReleased": true,
+    "laterTaskSpecificWindowsCensusEmpty": true,
+    "naturalDailyAnd100AccountAcceptance": false
+  },
+  "lookup158StopRecovery": {
+    "originalStop": "failed_preserved",
+    "laterStopTask": "bde79936-0154-4acc-bd02-6aeb299d2007",
+    "sameSessionGenerationProofMatched": true,
+    "laterSessionStatus": "ended",
+    "queryAndDisconnectCauseResolved": false
+  }
 }
