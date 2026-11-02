@@ -6159,3 +6159,11 @@ delivery-fields与delivery-stale-proposal源码要求完整RETURNING/known COMMI
 ### 决策日志｜2026-11-03 SQL直接旧写负例不等于现行企微路线故障
 
 Node67391exit0/组消失、PG67379exit0确认，成功db原runner删除，旧失败库保留；INITDB24 EOF原样具名例外。不累计helper26/guard6/seed2或历史阶段。未证明WeCom leased分支可达、HTTPauth绕过/audit或shared已修。后续仅C2 verification schema/interface/txn/canonical golden文本先审，无authorizer/产品/shared/可执行DDL/新PG。无Windows/ADB/设备/生产，43/147/52与查名池保留，主号分身真机未完成。
+
+### 变更记录｜2026-11-03 C2 mutation回执逻辑schema/interface与规范编码草案
+
+新增verification/wecom-v2-progress-receipt-plan-20261103，仅SCHEMA_INTERFACE/TRANSACTION_TEMPLATE/CANONICAL及固定golden数据。提议独立ProgressHead与immutable MutationReceipt、完整proposal/owner/authority指纹、task/job/head/receipt同事务，原op新backend对账与合法后继链不误判历史提交。WCMUT1 typed bytes/Unicode scalar排序/binary64边界与固定hex摘要只为规范提案，未实现或测试encoder。
+
+### 决策日志｜2026-11-03 回执草案不能替代稳定journal入口、真实权限与生产接线
+
+稳定op持久入口、可信authority来源、head初始化/精确DDL、合法字段迁移、JSONB数值无损读取、retention/blob/boot/outbox仍待根决策。COMMIT未知覆盖同事务所有操作，不以RETURNING或claim仍recorded外发成功；目标确定NOWAIT/CAS0才局部回退。无新SQL/PG/测试/产品/authorizer/roles/shared/M1/events修改，不运行Windows/ADB/手机/生产。43/147/52和查名池保留，主号分身真机仍未完成。

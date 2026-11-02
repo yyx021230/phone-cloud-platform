@@ -1,0 +1,8 @@
+{
+  "verification/wecom-v2-progress-receipt-plan-20261103/CANONICAL.md": "c1b2f1639ea655e2a3ed38bd06bde521e6a3ccbb9b6b6f8cd706bdd29e65eda4",
+  "verification/wecom-v2-progress-receipt-plan-20261103/GOLDEN_VECTORS.json": "37a612c23e717bfd02875f366684d3094dd51323a23a39b9415d93284ccf765f",
+  "verification/wecom-v2-progress-receipt-plan-20261103/SCHEMA_INTERFACE.md": "c359fd923ae9bb75c0e20395a5653b82f3552bd1521ff5063d4e4c622c50b75f",
+  "verification/wecom-v2-progress-receipt-plan-20261103/SOURCE_BASELINE.json": "24fde88fa28e411fa0cc5627a09ef170c1a9be7e895e72e489ceebc0ceec8c57",
+  "verification/wecom-v2-progress-receipt-plan-20261103/TRANSACTION_TEMPLATE.md": "ce51e424e8eefb1420bcbb14bc317c0b2878bd25cf18b044e22c432284ae62d9",
+  "docs/PROJECT_DEVELOPMENT.md": "e8bc451c424e4706e207e33fa34788ac923225cdb00e944630787f079aa3b182"
+}
