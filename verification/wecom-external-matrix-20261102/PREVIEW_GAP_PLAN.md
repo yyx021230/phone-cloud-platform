@@ -2,6 +2,8 @@
 
 本轮用户明确“仍只到发送前”。实际32c外部POST只支持send，9槽位纯函数反例及当前线上模块hash已确认；不试探生产send POST。下列是后继独立方案，尚未批准为产品范围，也不代表已有预览能力或部署授权。它延续现有四业务字段、管理员认证、原任务防重及物理隔离；拟增加外部预览资源，**不替换或静默改变现有真实发送接口**。
 
+后继精确定义见`../wecom-external-preview-contract-20261102/CONTRACT.md`：幂等回执/墓碑与归档410、accepted taskId=jobId及专属GET、备注未知与物理释放独立、取消/保存失败、跨管理员和旧send兼容。它仍是待评审建议；新路由与必要持久模型均未实现。da8原矩阵/19项只读审查保持原归属，不因后续合同完善追加native结论。
+
 ## 建议接口
 
 - `POST /api/v1/wecom/customer-previews`：沿用管理员Bearer，body仍为deviceNumber/appSlot/phoneNumber/remarkName；路由强制preview，拒绝mode/send/previewOnly等可改执行语义的额外字段，不接受客户端Android用户/ADB身份。已有四字段真实发送路由维持当前行为，不将404或preview失败自动降级到send。

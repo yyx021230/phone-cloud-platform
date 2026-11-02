@@ -1,0 +1,40 @@
+// Actual 32c route branch + in-memory records. No HTTP, database or Agent.
+// Passing reproduces the current send/preview mapping GAP; it is not a fix.
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import {WECOM_PREVIEW_DEVICES,previewTarget,previewJobMode,previewJobRemarks,sameWecomRecipient,
+  holdInvitation,publicPreview,publicInvitation,WECOM_PREVIEW_KIND} from '../../server/wecom-preview.mjs';
+
+test('current send retry branch can reuse an unknown preview ID rejected by the send-result predicate (source counterexample)',async()=>{
+  const source=fs.readFileSync(new URL('../../server/index.mjs',import.meta.url),'utf8');
+  const start=source.indexOf('      if (simpleInvitationSubmit) {');
+  const end=source.indexOf('      if (state.automationJobs.filter',start);
+  assert.ok(start>0&&end>start,'exact current submit branch located');
+  const block=source.slice(start,end);
+  const device={deviceName:'43',deviceId:'adb:'+WECOM_PREVIEW_DEVICES['43'].serial,
+    adb:{serial:WECOM_PREVIEW_DEVICES['43'].serial}};
+  const old={jobId:'fixture-old-preview',kind:WECOM_PREVIEW_KIND,userId:'fixture-admin',deviceId:device.deviceId,
+    phoneNumber:'13900000000',wecomDeviceNumber:'43',wecomAndroidUser:0,wecomAppSlot:'main',wecomMode:'preview',
+    wecomRequestId:'fixture-old-key',status:'failed',result:{previewStatus:'blocked',previewCode:'wecom_cleanup_host_unconfirmed',
+      remarkSaveStatus:'unknown',invitationSent:false,sendStatus:'not_attempted'}};
+  const state={automationJobs:[old]},ctx={userId:'fixture-admin'};
+  const input={deviceId:device.deviceId,appSlot:'main',phoneNumber:old.phoneNumber,requestId:'fixture-new-key',
+    remarkName:'测试客户',description:'接口联调测试'};
+  const run=vm.runInNewContext(`(async()=>{${block}\nreturn {fallThrough:true};})`,{
+    simpleInvitationSubmit:true,state,ctx,input,repos:{devices:{findById:()=>device}},
+    previewTarget,sameWecomRecipient,holdInvitation,previewJobRemarks,pendingWecomCommits:new Set(),
+    reply:(status,body)=>({status,body})});
+  const result=await run();
+  assert.equal(result.status,200);assert.equal(result.body.reused,true);assert.equal(result.body.task,old);
+  const external=publicInvitation(publicPreview(result.body.task));
+  assert.equal(external.taskId,old.jobId);assert.equal(external.status,'unknown');
+  const detailStart=source.indexOf('  const invitationDetail =');
+  const detailEnd=source.indexOf('  const wecomDetail =',detailStart);
+  const detail=source.slice(detailStart,detailEnd);
+  const expression=/const job = ([^\n]+);/.exec(detail)?.[1];
+  assert.ok(expression,'exact current result lookup located');
+  const found=vm.runInNewContext(expression,{state,ctx,invitationDetail:['',external.taskId],WECOM_PREVIEW_KIND,previewJobMode});
+  assert.equal(found,undefined,'that reused ID cannot satisfy the external send GET lookup');
+});

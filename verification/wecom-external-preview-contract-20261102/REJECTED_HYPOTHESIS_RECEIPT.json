@@ -1,0 +1,9 @@
+{
+  "baseline": "da8a2c133c92c74894fd28375071092343e8a15b",
+  "exitCode": 1,
+  "sourceSha256": "f320d94807f99c7fbde4b1d6abbcc0f4112dd08b8c2c8ee426bc36c045955a93",
+  "outputSha256": "31eeafec5fdcc5ebca08ed12ee1c99ee02e6ae7e9aec0a79a26d92a2fbf5e194",
+  "meaning": "Hypothesis disproved: helper already restricts recipients to send mode; this is not a reproduced product defect.",
+  "httpCalls": 0,
+  "nativeActions": 0
+}

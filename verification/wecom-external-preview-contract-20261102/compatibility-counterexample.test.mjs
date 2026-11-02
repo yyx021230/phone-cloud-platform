@@ -1,0 +1,70 @@
+// Actual 32c PRE-CREATE route code with synthetic records, not HTTP/Agent tests.
+// No new task is ever created; fallthrough is an explicit local sentinel.
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import {WECOM_PREVIEW_DEVICES,previewTarget,previewJobMode,previewJobSlot,previewJobRemarks,sameWecomRecipient,
+  previewSendState,holdInvitation,publicPreview,publicInvitation,WECOM_PREVIEW_KIND,invitationRequest} from '../../server/wecom-preview.mjs';
+const source=fs.readFileSync(new URL('../../server/index.mjs',import.meta.url),'utf8');
+const prefix='    return wecomSubmissionGate(gateKey, async () => {';
+const start=source.indexOf(prefix),end=source.indexOf('      const job = createAutomationJob',start);
+assert.ok(start>0&&end>start);
+const block=source.slice(start+prefix.length,end);
+const detailStart=source.indexOf('  const invitationDetail ='),detailEnd=source.indexOf('  const wecomDetail =',detailStart);
+const getExpression=/const job = ([^\n]+);/.exec(source.slice(detailStart,detailEnd))?.[1];
+assert.ok(getExpression);
+function fixture({mode='preview',remark='测试客户',physicalPending=true,claim=false,pendingSave=false,owner='fixture-admin',caller='fixture-admin'}={}){
+  const device={deviceName:'43',deviceId:'adb:'+WECOM_PREVIEW_DEVICES['43'].serial,
+    adb:{serial:WECOM_PREVIEW_DEVICES['43'].serial,agentId:'fixture-agent'}};
+  const old={jobId:'fixture-original-job',kind:WECOM_PREVIEW_KIND,userId:owner,deviceId:device.deviceId,
+    phoneNumber:'13900000000',wecomDeviceNumber:'43',wecomAndroidUser:0,wecomAppSlot:'main',wecomMode:mode,
+    wecomRequestId:'fixture-old-key',status:'failed',result:{previewStatus:'blocked',previewCode:'fixture_stopped',
+      remarkSaveStatus:'unknown',invitationSent:false,sendStatus:'not_attempted'},...(claim?{wecomSendClaimAt:'2026-11-02T00:00:00.000Z'}:{})};
+  const state={automationJobs:[old]},ctx={userId:caller};
+  const input=invitationRequest({deviceNumber:'43',appSlot:'main',phoneNumber:old.phoneNumber,remarkName:remark},[device],{requestId:'fixture-new-key'});
+  let physicalReads=0;
+  const run=vm.runInNewContext(`(async()=>{${block}\nreturn {wouldReachCreate:true};})`,{
+    simpleInvitationSubmit:true,state,ctx,input,WECOM_PREVIEW_KIND,WECOM_PREVIEW_DEVICES,
+    repos:{devices:{findById:()=>device}},previewTarget,previewJobMode,previewJobSlot,previewJobRemarks,
+    sameWecomRecipient,holdInvitation,previewSendState,publicPreview,
+    pendingWecomCommits:new Set(pendingSave?[{payload:{automationJobId:old.jobId}}]:[]),
+    isActiveAutomationStatus:()=>false,isDeviceListed:()=>true,isAdbOnline:()=>true,
+    wecomCleanup:{pending:()=>{physicalReads++;return physicalPending?{fixtureOnly:true}:null;}},activeDeviceLockForTask:()=>null,
+    reply:(status,body)=>({status,body})});
+  const get=taskId=>vm.runInNewContext(getExpression,{state,ctx,invitationDetail:['',taskId],WECOM_PREVIEW_KIND,previewJobMode});
+  return {run,get,old,physicalReads:()=>physicalReads};
+}
+test('preview is excluded by the helper; same/different remarks still hit physical pending gate, not cross-mode ID reuse',async()=>{
+  for(const remark of ['测试客户','fixture changed']){
+    const f=fixture({remark});assert.equal(sameWecomRecipient(f.old,f.old),false);
+    const r=await f.run();assert.equal(r.status,409);assert.equal(r.body.error,'wecom_cleanup_pending');
+    assert.equal(f.physicalReads(),1);assert.equal(f.get(f.old.jobId),undefined);
+  }
+});
+test('unknown send same remarks reuses its original queryable send ID before the physical gate without creating work',async()=>{
+  const f=fixture({mode:'send'}),r=await f.run();assert.equal(r.status,200);assert.equal(r.body.reused,true);
+  const external=publicInvitation(r.body.task);assert.equal(external.taskId,f.old.jobId);
+  assert.equal(external.status,'unknown');assert.equal(f.get(external.taskId),f.old);
+  assert.equal(f.physicalReads(),0,'safe original-ID lookup returns before new-work gate');
+});
+test('unknown send with changed remarks is a conflict and does not advance to creation',async()=>{
+  const f=fixture({mode:'send',remark:'fixture changed'}),r=await f.run();
+  assert.equal(r.status,409);assert.equal(r.body.error,'wecom_invitation_parameters_conflict');assert.equal(r.body.taskId,f.old.jobId);
+});
+test('send claim remains non-replayable; another admin cannot query or obtain that original ID',async()=>{
+  const own=fixture({mode:'send',claim:true}),a=await own.run();assert.equal(a.status,200);
+  assert.equal(a.body.task.jobId,own.old.jobId);assert.equal(a.body.task.result.sendClaimed,true);
+  const other=fixture({mode:'send',claim:true,caller:'fixture-other-admin'}),b=await other.run();
+  assert.equal(b.status,409);assert.equal(b.body.error,'wecom_invitation_already_claimed_no_retry');
+  assert.equal(b.body.jobId,undefined);assert.equal(other.get(other.old.jobId),undefined);
+});
+test('uncertain submission persistence returns 503 rather than accepted-ID permission',async()=>{
+  const f=fixture({mode:'send',pendingSave:true}),r=await f.run();assert.equal(r.status,503);
+  assert.equal(r.body.error,'wecom_submission_pending');assert.equal(f.physicalReads(),0);
+});
+test('without synthetic physical pending, preview-only unknown can reach pre-create; a later explicit send is a separate policy question',async()=>{
+  const f=fixture({physicalPending:false}),r=await f.run();
+  assert.equal(r.wouldReachCreate,true,'stops BEFORE actual create function: only local source branch evidence');
+  assert.equal(f.physicalReads(),1);assert.equal(f.get(f.old.jobId),undefined);
+});

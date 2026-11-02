@@ -1,0 +1,14 @@
+✔ preview is excluded by the helper; same/different remarks still hit physical pending gate, not cross-mode ID reuse (2.422625ms)
+✔ unknown send same remarks reuses its original queryable send ID before the physical gate without creating work (0.838875ms)
+✔ unknown send with changed remarks is a conflict and does not advance to creation (0.306625ms)
+✔ send claim remains non-replayable; another admin cannot query or obtain that original ID (0.70025ms)
+✔ uncertain submission persistence returns 503 rather than accepted-ID permission (0.249708ms)
+✔ without synthetic physical pending, preview-only unknown can reach pre-create; a later explicit send is a separate policy question (0.403875ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 90.759584

@@ -1,0 +1,8 @@
+{
+  "exitCode": 1,
+  "sourceSha256": "6e3f96f9600182a741136733e41fb09e8057243fbf16f521bed113d6b057917a",
+  "outputSha256": "158b6966a7f82756804681e0b37943be94ddd738d121933c58c4debe785a8bf3",
+  "classification": "fixture preparation errors: missing synthetic agentId, overlong synthetic remark and double public projection; not product bugs",
+  "httpCalls": 0,
+  "nativeActions": 0
+}

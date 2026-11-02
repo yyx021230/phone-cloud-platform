@@ -5627,3 +5627,13 @@ root在固定af00/model.1只运行无IO重现，observe一次/issue后连续perm
 ### 决策日志｜2026-11-02 外部目录通过与外部发送前真机流程分列
 
 延续用户不真加人、避开查名/在用手机及原隔离，不因新“所有机型”目标解除native冻结或扩白名单。此次完成只读覆盖调查，真正发送前外部提交/结果能力仍缺；PREVIEW_GAP_PLAN提出独立external-preview资源、沿用认证/四业务字段、稳定幂等头、强制preview/零send-claim、备注真实保存语义、专属结果与旧send兼容，**仅待评审建议，未批准产品范围或实现/上线**。共享runner/退出回执仍归查名owner，未并行改写。原生时间/ADB/journal/PG和43旧义务阻断分别保留；先形成具体可审阅候选/修复条件与明确加载授权，再按新鲜占用/身份/资源单机、双机、逐型验收，不用模型/只读API或历史模拟虚填全流程通过。
+
+### 变更记录｜2026-11-02 外部预览合同精化与当前send模式边界反证
+
+root固定da8矩阵审查/独立19复跑已在根8fcbaab记载，本阶段不重跑19或新增GET。企微owner从da8建立codex/wecom-external-preview-contract-20261102，仅补合同、计划链接、verification与记录。拟定external-preview独立幂等回执/命名空间：完整结果至少30天、授权归档后保留key墓碑，旧key/ID410不重做、异参数409，活跃scope墓碑不自动TTL；accepted taskId固定jobId，receipt/job/普通锁/唯一Windows task同事务后202，GET独立映射与跨owner隔离，保存未知503不假受理。取消/未知备注与物理清理分别定义，ready_before_send不解除手机或等同发送许可。以上均为待评审建议，没有新路由/集合/表/迁移或现有持久保证声明。
+
+最初仅据index prior没显式mode怀疑preview会复用到send ID，实际真helper sameWecomRecipient已内置send过滤，源分支反例未成立；原错误怀疑源/hash/失败输出保存REJECTED_HYPOTHESIS，不虚报为产品缺陷。初轮六项夹具缺agentId/备注过长/双投影错误的4失败另存FIXTURE_INITIAL，只修夹具。最终6项实际32c pre-create分支+真实helper内存核验通过：preview有physical pending仍409；send未知同备注原ID可查/异备注409；claim及跨owner保护；pending commit503。合成无physical pending时旧preview-only保存unknown可到create前哨兵，仅是当前模式语义，不证明真实释放/创建/重放或旁路bug。
+
+### 决策日志｜2026-11-02 原helper反证优先，未知预览与新显式发送不混同
+
+延续用户不真加人和旧send兼容。preview没有发送能力，之后新显式send不同于重复邀请；是否给未知preview备注增加跨mode核对是策略待定，不能擅自将全部历史preview unknown永久阻断send，也不删除真实helper已有mode限制来造串ID。新preview自动重试如何保留未知写入需独立回执/人工核对设计，但当前不实现/批量迁移历史；物理义务仍须真实证明释放，非空备注预览保留规则不与send显式备注语义混同。六项仅无HTTP/Agent/实际create的源码分支检查，不冒充新接口或PG/真机通过；原19矩阵、生产source32c与43/14752/native冻结保持，待产品范围与具体持久/兼容方案批准后再开发。
