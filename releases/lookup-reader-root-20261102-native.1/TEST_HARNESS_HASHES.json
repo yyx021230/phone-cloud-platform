@@ -1,0 +1,11 @@
+{
+  "usedAttempt4": {
+    "reader-root-http.attempt4.mjs": "41de45609ebe618a32739d95e147681a7598917eec04f8bd012c028cc6d9c932",
+    "remote-client.attempt4.mjs": "20daf652230c1c3bc7f8dfb30143eeea6847eb41eed2616bf8562fad9a3b13b9"
+  },
+  "pendingNotExecuted": {
+    "runtime/verification/reader-root-http.mjs": "57ca576b07a46f2d7af088d63892d1ed6b20db6379b106e2719defc9da1ee4d2",
+    "remote-client.mjs": "44d1c7a5132c07b0b8b77865dded00e2a874f5ebcf967c4c251bc9d613df2e6f",
+    "read-human-idle.py": "7ad018c4423b6f165cdcdd8c070f3258c65d95b06eae48d1eb08daff694929f9"
+  }
+}

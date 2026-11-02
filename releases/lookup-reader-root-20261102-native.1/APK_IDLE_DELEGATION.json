@@ -1,0 +1,37 @@
+{
+  "apkSha256": "ed96af302a803ed8f7696fa5c1267c7b1c7a3a5d4b1ddd457eeb76e0d19b70d9",
+  "methods": [
+    {
+      "class": "Landroidx/test/uiautomator/QueryController;",
+      "method": "waitForIdle",
+      "descriptor": "()V",
+      "instructions": [
+        "invoke-static Landroidx/test/uiautomator/Configurator;->getInstance()Landroidx/test/uiautomator/Configurator;",
+        "move-result-object v0",
+        "invoke-virtual v0, Landroidx/test/uiautomator/Configurator;->getWaitForIdleTimeout()J",
+        "move-result-wide v0",
+        "invoke-virtual v2, v0, v1, Landroidx/test/uiautomator/QueryController;->waitForIdle(J)V",
+        "return-void "
+      ]
+    },
+    {
+      "class": "Landroidx/test/uiautomator/QueryController;",
+      "method": "waitForIdle",
+      "descriptor": "(J)V",
+      "instructions": [
+        "invoke-direct v3, Landroidx/test/uiautomator/QueryController;->getInstrumentation()Landroid/app/Instrumentation;",
+        "move-result-object v0",
+        "invoke-static v0, Landroidx/test/uiautomator/UiDevice;->getUiAutomation(Landroid/app/Instrumentation;)Landroid/app/UiAutomation;",
+        "move-result-object v0",
+        "const-wide/16 v1, 500",
+        "invoke-virtual v0, v1, v2, v4, v5, Landroid/app/UiAutomation;->waitForIdle(J J)V",
+        "goto +9h",
+        "move-exception v0",
+        "sget-object v1, Landroidx/test/uiautomator/QueryController;->LOG_TAG Ljava/lang/String;",
+        "const-string v2, \"Could not detect idle state.\"",
+        "invoke-static v1, v2, Landroid/util/Log;->w(Ljava/lang/String; Ljava/lang/String;)I",
+        "return-void "
+      ]
+    }
+  ]
+}

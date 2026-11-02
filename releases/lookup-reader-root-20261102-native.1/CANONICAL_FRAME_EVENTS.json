@@ -1,0 +1,795 @@
+[
+  {
+    "attempt": 3,
+    "device": 149,
+    "eventSource": "airtest worker event only; exclude helper worker_event copies",
+    "events": [
+      {
+        "at": "2026-11-02T01:37:02.012Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 1006,
+        "durationMs": 545,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 545,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:37:05.103Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 4097,
+        "durationMs": 710,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 709,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:37:06.462Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 5456,
+        "durationMs": 1129,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 1129,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:37:07.472Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 6466,
+        "durationMs": 571,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 571,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:37:11.355Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 10348,
+        "durationMs": 261,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 260,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:37:11.800Z",
+        "step": "input_phone",
+        "elapsedMs": 10794,
+        "durationMs": null,
+        "budgetMs": null,
+        "ok": null,
+        "rpcCount": null,
+        "rpcReads": null
+      },
+      {
+        "at": "2026-11-02T01:37:13.033Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 12027,
+        "durationMs": 1233,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 1233,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:37:13.668Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 12662,
+        "durationMs": 380,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 380,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:37:14.086Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 13079,
+        "durationMs": 308,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 307,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:37:14.863Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 13857,
+        "durationMs": 471,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 471,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:37:14.962Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 13955,
+        "durationMs": 96,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 96,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:37:14.962Z",
+        "step": "human_verification_detected",
+        "elapsedMs": 13956,
+        "durationMs": null,
+        "budgetMs": null,
+        "ok": null,
+        "rpcCount": null,
+        "rpcReads": null
+      }
+    ]
+  },
+  {
+    "attempt": 3,
+    "device": 152,
+    "eventSource": "airtest worker event only; exclude helper worker_event copies",
+    "events": [
+      {
+        "at": "2026-11-02T01:36:54.212Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 1585,
+        "durationMs": 125,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 125,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:36:55.356Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 2729,
+        "durationMs": 73,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 73,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:36:59.481Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 6855,
+        "durationMs": 810,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 809,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:37:00.185Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 7559,
+        "durationMs": 485,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 485,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:37:01.442Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 8816,
+        "durationMs": 897,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 896,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:37:12.305Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 19679,
+        "durationMs": 5028,
+        "budgetMs": 5000,
+        "ok": false,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 5027,
+            "ok": false
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:37:30.369Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 37742,
+        "durationMs": 5029,
+        "budgetMs": 5000,
+        "ok": false,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 5029,
+            "ok": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "attempt": 4,
+    "device": 149,
+    "eventSource": "airtest worker event only; exclude helper worker_event copies",
+    "events": [
+      {
+        "at": "2026-11-02T01:53:41.502Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 2146,
+        "durationMs": 834,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 833,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:53:42.586Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 3230,
+        "durationMs": 88,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 88,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:53:46.792Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 7437,
+        "durationMs": 1173,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 1173,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:53:48.080Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 8724,
+        "durationMs": 1008,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 1008,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:53:49.088Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 9732,
+        "durationMs": 580,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 580,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:53:54.622Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 15266,
+        "durationMs": 158,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 158,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:53:55.109Z",
+        "step": "input_phone",
+        "elapsedMs": 15753,
+        "durationMs": null,
+        "budgetMs": null,
+        "ok": null,
+        "rpcCount": null,
+        "rpcReads": null
+      },
+      {
+        "at": "2026-11-02T01:53:56.110Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 16754,
+        "durationMs": 1002,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 1001,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:53:56.625Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 17269,
+        "durationMs": 508,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 508,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:53:56.780Z",
+        "step": "submit_search",
+        "elapsedMs": 17424,
+        "durationMs": null,
+        "budgetMs": null,
+        "ok": null,
+        "rpcCount": null,
+        "rpcReads": null
+      },
+      {
+        "at": "2026-11-02T01:53:57.995Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 18638,
+        "durationMs": 1030,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 1030,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:53:59.078Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 19722,
+        "durationMs": 891,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 891,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:53:59.437Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 20081,
+        "durationMs": 166,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 166,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:53:59.741Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 20385,
+        "durationMs": 113,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 113,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:54:00.116Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 20760,
+        "durationMs": 179,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 179,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:54:01.033Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 21677,
+        "durationMs": 726,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 725,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:54:01.587Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 22231,
+        "durationMs": 132,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 132,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:54:07.915Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 28559,
+        "durationMs": 346,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 345,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:54:08.513Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 29157,
+        "durationMs": 141,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 141,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:54:12.703Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 33348,
+        "durationMs": 147,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 147,
+            "ok": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "attempt": 4,
+    "device": 152,
+    "eventSource": "airtest worker event only; exclude helper worker_event copies",
+    "events": [
+      {
+        "at": "2026-11-02T01:53:31.208Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 1418,
+        "durationMs": 72,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 72,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:53:32.242Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 2452,
+        "durationMs": 94,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 94,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:53:36.612Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 6822,
+        "durationMs": 1172,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 1172,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:53:37.761Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 7972,
+        "durationMs": 952,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 952,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:53:38.521Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 8730,
+        "durationMs": 481,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 481,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:53:46.293Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 16503,
+        "durationMs": 228,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 228,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:53:46.574Z",
+        "step": "input_phone",
+        "elapsedMs": 16784,
+        "durationMs": null,
+        "budgetMs": null,
+        "ok": null,
+        "rpcCount": null,
+        "rpcReads": null
+      },
+      {
+        "at": "2026-11-02T01:53:47.498Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 17708,
+        "durationMs": 924,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 924,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:53:48.098Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 18308,
+        "durationMs": 315,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 315,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:53:48.351Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 18561,
+        "durationMs": 152,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 152,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:53:49.095Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 19305,
+        "durationMs": 635,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 635,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:53:49.694Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 19904,
+        "durationMs": 404,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 404,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:53:49.787Z",
+        "step": "lookup_full_snapshot_read",
+        "elapsedMs": 19998,
+        "durationMs": 91,
+        "budgetMs": 5000,
+        "ok": true,
+        "rpcCount": 1,
+        "rpcReads": [
+          {
+            "durationMs": 91,
+            "ok": true
+          }
+        ]
+      },
+      {
+        "at": "2026-11-02T01:53:49.789Z",
+        "step": "human_verification_detected",
+        "elapsedMs": 19999,
+        "durationMs": null,
+        "budgetMs": null,
+        "ok": null,
+        "rpcCount": null,
+        "rpcReads": null
+      }
+    ]
+  }
+]
