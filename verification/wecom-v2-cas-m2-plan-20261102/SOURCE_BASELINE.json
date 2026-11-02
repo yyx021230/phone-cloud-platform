@@ -1,0 +1,35 @@
+{
+  "baseCommit": "925898ff05784350885827271f7f8033d05428c6",
+  "status": "plan_only_no_M2_code_SQL_execution_PG_service_or_tests",
+  "sourceSha256": {
+    "server/index.mjs": "4bcecc8702ea577a77e5f17664b7833ced33b681f88e5beedcdc6875b6f047cc",
+    "server/postgres-repositories.mjs": "22f7e458bf28e8252639c5bcc5957d56abe8361307baa79432bb869fa34c65ad",
+    "server/persistence-policy.mjs": "a25cbbbb296c23a4f8876c13a97c8235824881ebc28daa3998762fcf2c0658ca",
+    "server/wecom-cleanup-service.mjs": "fb594dd7a191bb37f7a2abdf508298059ca4730814f394c491965f0c46c366a0",
+    "server/wecom-cleanup-v2-host.mjs": "c409a9e660e6098e9ef72ba70c659d23047a0b93f7c7007bedc8a79539102f70",
+    "deploy/sql/phone-cloud-structured-schema.sql": "ab11f1d80c0cf8224734e618b6ab56c8bf76ca83a33c17312b0cfe3ecfd51dcc",
+    "deploy/sql/postgres-state.sql": "90b69cf072f131c812806fe7ca1d7882d03b7d95d3cc9c8d916bbc9fa0e6ff8e",
+    "docker-compose.yml": "8687bf4176f8f0d78ab73380a7ef0fd6b71bf044de5474f172ef5483d3e47435",
+    "package.json": "1ecae2cfde31318dc328be56db93ff73238b7962414b4fa6bd85be9b42c4693f",
+    "package-lock.json": "0f52fdfd7458c3fc29799402d6d0a7ff2523b0d52bcc65cf835e1797dc2d3743",
+    "verification/wecom-cleanup-v1/run-postgres.py": "cd82302cf3a9d83e635d3ee9bc117b8952d1eb254fe07cf9211a47bc46bfe0e0"
+  },
+  "workflowRevision": "2026-09-30",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "dependencyObservation": {
+    "postgres": "16.15 (Homebrew)",
+    "initdb": "16.15 (Homebrew)",
+    "pg_ctl": "16.15 (Homebrew)",
+    "psql": "16.15 (Homebrew)",
+    "currentWorkspacePgResolve": "MODULE_NOT_FOUND",
+    "sharedPgPackage": "/Users/yyx/ztqc/phone-cloud-platform/node_modules/pg/package.json",
+    "sharedPgVersion": "8.22.0",
+    "sharedPgSha256": "bab5faf4410151a463078fffa326d10979150bfc330f0a29bd08948378ed3421",
+    "sharedPgEntry": "/Users/yyx/ztqc/phone-cloud-platform/node_modules/pg/lib/index.js",
+    "packageLockPgVersion": "8.22.0",
+    "postgresStarted": false,
+    "databaseConnected": false
+  },
+  "observedAt": "2026-11-02T19:51:56.595573+08:00",
+  "planSha256": "c32e6613212dd18ab6a13d9f8baba096c26210f8665d69e4de56d42a105f6252"
+}

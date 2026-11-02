@@ -5800,3 +5800,16 @@ root以实际preparer复现同源request/provider一致坏PID=4294967296、非fi
 ### 决策日志｜2026-11-02 事实来源相同也必须校验内部合法性
 
 延续M1只准备未持久状态的边界，provider对照不代替Windows值域和同机出生数据一致性。rc.1旧tag/绿回执不改，rc.2新提交/tag；14既有产品源保持不变。CAS/journal/可信OS事实/时间权威仍未实现；未改v1/service/index/PG/Agent/Python，零Windows/手机/ADB/发布动作，原43与隔离/查名池/冻结继续保持。该修正不是运行时/native验收通过。
+
+
+### 变更记录｜2026-11-02 M2单行CAS/重复操作/COMMIT未知对账方案（未编码）
+
+root独立复核925898的61+原50、manifest/14原产品源及tag通过后，owner从干净925898准备verification/wecom-v2-cas-m2-plan-20261102。实际PG schema依据index:initPostgresStorage的JSONB表，旧静态structured SQL无data且expires_at约束不同，不能当运行表。现generic upsert按updatedAt而非revision；checkpoint仍会写pending physical，故提案替换441a优先原lock.data方案为独立v2单行账本，避免共享写覆盖且不改generic路径。该选择仅待审，不是已新增架构或表。
+
+具体列新专用repository/SQL/测试、M1两个纯规范化导出依赖、PK与双操作槽约束、FOR UPDATE+revision CAS、全内容去重、提交前后epoch核对、COMMIT未知新连接有界读回及缺行不能断言未提交、真实PG代理丢COMMIT回复故障注入/私有cluster回退。候选回复不成为ACK，storage confirmed不提供协议许可，无proof/release或原任务锁接线。后续跨实体原子领取、journal和真实时间仍独立待做。
+
+本机PG工具16.15可用；当前工作区pg直接解析失败，root提供既有共享路径后只读确认pg8.22.0，与本lock相同，后续可显式用现依赖无需安装/升级。没有启动PG/SQL/测试或访问生产、Windows/手机；仅源码/元数据调查，语义对照PG16官方文档，实际CAS仍未验。
+
+### 决策日志｜2026-11-02 新账本隔离旧写入，未知提交不猜失败
+
+M2先交具体方案，不扩全v2或接线；独立表替换441a原JSONB复用建议的原因是已核checkpoint/generic写路径，而非临时偏好。PK仅义务内去重，不宣称替代统一设备锁。相同操作须规范化全内容与已提交原结果一致，COMMIT在途异常不能凭ROLLBACK或旧快照清fence；epoch变更不重标旧义务。真实本地PG与故障注入证据未产生，纯fake不得称CAS通过；不自动启动共享服务或连接生产PG。旧43/隔离/查名池/冻结、v1/index/Agent均保持，真机验收未完成。
