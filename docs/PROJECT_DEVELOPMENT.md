@@ -5613,3 +5613,17 @@ root在固定af00/model.1只运行无IO重现，observe一次/issue后连续perm
 ### 决策日志｜2026-11-02 快照数学不能直接当动作授权
 
 延续原区间上/下界、完整RTT扣减和未知VM拒绝，修正model.1可无新观察反复许可的接口，不通过更改时间预算或给continuity布尔补真值解决。动作边界必须同步现取并校验新样本，不复用后台排队样本；离线接口仅检查样本结构/序号及数值一致性，不冒称已证明真实采样时效。缺样本/重复样本/暂停异常后继续保守失败，不重新issue旧task或清保护锁；固定新commit/model.2供root只读审查，产品实现仍待独立依据与批准。
+
+### 变更记录｜2026-11-02 企微外部API全机型只读矩阵与发送前能力缺口
+
+用户直接要求继续外部API测试所有机型，并确认仍只到发送前。企微owner从干净cdbf建立codex/wecom-external-matrix-20261102；重读AGENTS/共同流程并读根59e/26e/488新增主文档。使用root本轮明确共享的readonly-b云端连接，容器进程内既有管理员材料正常认证1次（预期session/audit写入、token不输出落盘），其余9次认证业务GET及6次匿名GET；没有手机任务POST、备注/邀请/claim/锁/配置/Windows/ADB/媒体动作，连接未擅自关闭。
+
+北京时间16:46:09，外部目录141台/online126，企微8台9槽位/4种model+Android组合：23/25 Redmi220233L2C/11，59/93 vivoV2357A/14，43/155/157 vivoV2442A/14，145 HUAWEITAS_AN00/12。当时23/25/59/145平台空闲且不在查名启用池；93控屏，43维护义务，155/157启用查名池即使available也排除。全平台按缓存brand/model/Android分44组（部分字段缺失），企微覆盖4组；不将组数当独立真实物理机型数，也不把online126与旧ADB device111互比成恢复。
+
+实际外部鉴权目录/在线过滤200、非法filter400、占位不存在send结果404；43原preview内部结果200，经外部send结果仍404。当前管理员最近100条企微历史页只有43一条failed preview，无send原单可核200结果；不推断全租户/全历史不存在发送。原43wecom_cleanup_host_unconfirmed/remarkSaveStatus unknown及独立义务保留。ACTIVE仍a539，3个运行服务端模块与public接口文档hash精确匹配32c，未据此声称新Windows/ADB核验。
+
+本地19项定向通过（collector护栏/脱敏、8设备9槽位外部preview拒绝反例、既有合同与示例客户端），不是全机型真机。外部POST目前始终send，额外mode=preview拒绝，不能去掉字段或调用内部preview冒充外部流程。docs/public文案本地纠正“未上线”旧状态、明确发送前边界，保留public诊断章节并纠正already_contact外部不含内部sendStatus/invitationSent。验证/脱敏矩阵/当前及私有证据hash见verification/wecom-external-matrix-20261102；文案和工具未部署/推送，生产运行源码未改。
+
+### 决策日志｜2026-11-02 外部目录通过与外部发送前真机流程分列
+
+延续用户不真加人、避开查名/在用手机及原隔离，不因新“所有机型”目标解除native冻结或扩白名单。此次完成只读覆盖调查，真正发送前外部提交/结果能力仍缺；PREVIEW_GAP_PLAN提出独立external-preview资源、沿用认证/四业务字段、稳定幂等头、强制preview/零send-claim、备注真实保存语义、专属结果与旧send兼容，**仅待评审建议，未批准产品范围或实现/上线**。共享runner/退出回执仍归查名owner，未并行改写。原生时间/ADB/journal/PG和43旧义务阻断分别保留；先形成具体可审阅候选/修复条件与明确加载授权，再按新鲜占用/身份/资源单机、双机、逐型验收，不用模型/只读API或历史模拟虚填全流程通过。

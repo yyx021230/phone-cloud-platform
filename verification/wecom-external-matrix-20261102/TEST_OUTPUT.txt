@@ -1,0 +1,27 @@
+✔ caller POST transport failures are unknown and never automatically retried (1.018541ms)
+✔ malformed success responses do not become accepted jobs or permission to resend (0.205292ms)
+✔ only explicit origins and bounded task IDs are accepted before any network call (0.437667ms)
+✔ a business rejection exposes only the fixed code and original task reference (0.295084ms)
+✔ only eight fixed physical identities and the verified Android users are allowed (2.195ms)
+✔ API requires explicit known execution mode and rejects arbitrary flags or slots (0.264875ms)
+✔ custom remarks normalize blanks and newlines; bounds and controls fail before submission (0.181084ms)
+✔ configured slots bind Android user; an unconfigured clone never falls back to main (0.11025ms)
+✔ live lease must agree with task, job, owner, physical phone, clone and lock expiry (1.612708ms)
+✔ duplicate submission waits for persistence; a blocked phone does not block another key (0.115375ms)
+✔ actual offline recovery never requeues a preview with uncertain UI writes; other kinds retain their policy (2.52175ms)
+✔ integration facade accepts four business fields and resolves public number without trusting an ADB serial (0.272875ms)
+✔ integration status never turns a native click or unknown persistence into confirmed customer delivery (0.202958ms)
+✔ integration inventory separates online/busy/WeCom eligibility and never exposes private device data (0.276458ms)
+✔ integration occupancy reads do not expire locks or invoke device recovery (0.9825ms)
+✔ all eight configured phones / nine slots refuse external preview; safe reads must not become send tasks (2.427208ms)
+✔ collector refuses all actual phone submissions, claims, cleanup and configuration mutations (1.15625ms)
+✔ GET scope is exact and result IDs cannot inject other routes (0.14675ms)
+✔ inventory projection retains model/OS/busy facts and drops identity/customer secrets (0.778834ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 150.818625
