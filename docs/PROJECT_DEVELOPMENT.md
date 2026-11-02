@@ -5466,3 +5466,13 @@ L03/L04调用链复核：51/52/54/154既有stopping+pending空+stopFailure可以
 ### 决策日志｜2026-11-02 单机探测与公开就绪、新停止证据分开
 
 延续L01/L03/L04/L08，不为单机验收放宽首次两台门槛或伪造第二台。人工阻塞时只收尾，不以停止成功替代探测姓名通过；测试器组合门槛缺readyProof产生的停止拒绝标签，与实际持久绑定和物理清理证据分开复核，不改写原回执。188新stop正常绑定实例有真实证据，但旧retry2/永久清理失败、自然首次超时根因、共享Agent重载、业务结果/下一条和全池吞吐继续未验；不因这一轮未复发即核销历史故障。
+
+### 变更记录｜2026-11-02 企微物理清理独立义务契约 v1（设计冻结，未上线）
+
+跨窗口授权协作下，查名窗口独占后端候选、企微窗口负责Agent/Python，协调窗口独立复审。根已用真实loopback HTTP复现failed且cleanup未确认后同机新任务仍受理，0手机操作。新契约见docs/WECOM_CLEANUP_V1.md及verification/wecom-cleanup-v1/fixtures.json：独立device_lock.data义务，cleanup_pending不随业务终态/TTL/归档结束；冷加载必须完整保留。原任务专属Python reader用PID、精确creationToken、machineId持久登记，父Agent确认原机真实close；共享Agent不属于应退出host，不新增虚构supervisor。新代次仅只读核验双帧两包absence/目标serial任意forward0，真实媒体forward存在也拒绝，不删除。无可信旧host身份则maintenance。
+
+本次仅固定文档/fixtures，产品实现和HTTP/重启/失败回滚仍进行中。28项本地helper检查已运行，不冒充最终集成或真机验收。未发布、推送、访问生产或操作手机；既有查名候选与原工作区改动保留。
+
+### 决策日志｜2026-11-02 企微业务终态与物理义务分离，恢复首版只核验
+
+延续原任务ID、未知副作用不重放、真实清理证明原则，替换企微业务结束即等同手机资源空闲的假设。载体沿用既有锁表独立行，不加表/迁移、不用无限expiry；仅锁该物理手机，不跨槽位漏放、不阻其他手机。验证关闭和解除必须事务持久化成功；原邀请结果/发送claim不变。首版不kill/remove未知PID或forward，不从Agent runtime变化补猜旧进程死亡。旧应用不理解义务，回滚不能直接恢复企微派发；后续需明确兼容门禁及真实验收证据。
