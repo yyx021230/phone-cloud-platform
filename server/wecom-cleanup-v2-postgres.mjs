@@ -69,26 +69,45 @@ export function createWecomV2PostgresRepository({ getPool, readAuthenticatedBind
   }
   async function transaction(expected, work) {
     let client = null, began = false, commitAttempted = false;
+    let firstFailure = null, listening = false;
+    const remember = error => { firstFailure ||= error instanceof Error ? error : new Error("wecom_v2_client_error_unconfirmed"); };
+    // pg emits checked-out client errors before its query Promise rejects.
+    // This observer records loss of trust; every following boundary enforces it.
+    const onClientError = error => { remember(error); };
+    const query = async (text, values, committing = false) => {
+      if (firstFailure) throw firstFailure;
+      const current = client;
+      if (committing) commitAttempted = true; // Only when COMMIT is actually invoked.
+      let answer;
+      try { answer = await current.query(text, values); }
+      catch (error) { remember(error); throw firstFailure; }
+      if (firstFailure) throw firstFailure;
+      return answer;
+    };
+    const owned = { query: (text, values) => query(text, values) };
     const retire = destroy => {
       if (!client) return;
       const old = client; client = null;
+      if (listening) { old.removeListener("error", onClientError); listening = false; }
       // Passing an Error destroys the pg-pool client instead of returning it.
-      old.release(destroy ? new Error("wecom_v2_connection_retired") : undefined);
+      old.release(destroy ? firstFailure || new Error("wecom_v2_connection_retired") : undefined);
     };
     try {
       const pool = await getPool();
       requireContext(expected); // getPool may yield; recheck before checkout.
       client = await pool.connect();
+      if (typeof client.on !== "function" || typeof client.removeListener !== "function") throw new Error("client_events_unconfirmed");
+      client.on("error", onClientError); listening = true;
       requireContext(expected);
-      await client.query("BEGIN ISOLATION LEVEL READ COMMITTED"); began = true;
-      await client.query("SET LOCAL lock_timeout = '2000ms'");
-      await client.query("SET LOCAL statement_timeout = '3000ms'");
-      await client.query("SET LOCAL idle_in_transaction_session_timeout = '5000ms'");
-      const value = await work(client);
+      await query("BEGIN ISOLATION LEVEL READ COMMITTED"); began = true;
+      await query("SET LOCAL lock_timeout = '2000ms'");
+      await query("SET LOCAL statement_timeout = '3000ms'");
+      await query("SET LOCAL idle_in_transaction_session_timeout = '5000ms'");
+      const value = await work(owned);
       requireContext(expected);
-      commitAttempted = true;
-      const committed = await client.query("COMMIT");
+      const committed = await query("COMMIT", undefined, true);
       // An aborted PG transaction can answer COMMIT with the ROLLBACK tag.
+      if (firstFailure) throw firstFailure;
       if (committed?.command !== "COMMIT") throw new Error("commit_not_confirmed");
       retire(false);
       return { confirmed: true, value: afterCommit(expected, value) };
@@ -99,8 +118,9 @@ export function createWecomV2PostgresRepository({ getPool, readAuthenticatedBind
         retire(true);
         return { confirmed: false, commitUnknown: true };
       }
-      if (client && began) {
-        try { const answer = await client.query("ROLLBACK"); retire(answer?.command !== "ROLLBACK"); }
+      if (firstFailure) retire(true); // No further SQL on an untrusted client.
+      else if (client && began) {
+        try { const answer = await query("ROLLBACK"); retire(answer?.command !== "ROLLBACK"); }
         catch { retire(true); }
       } else retire(true);
       if (protocolErrors.has(error)) throw error;

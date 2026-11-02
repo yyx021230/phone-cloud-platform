@@ -1,0 +1,208 @@
+TAP version 13
+# Subtest: repository requires explicit pool/auth/parent providers without I/O
+ok 1 - repository requires explicit pool/auth/parent providers without I/O
+  ---
+  duration_ms: 1.131542
+  type: 'test'
+  ...
+# Subtest: pure M1 exports normalize/clone/freeze and reject damaged state without authority
+ok 2 - pure M1 exports normalize/clone/freeze and reject damaged state without authority
+  ---
+  duration_ms: 1.725041
+  type: 'test'
+  ...
+# Subtest: bad extra prepared flag is rejected before pool checkout
+ok 3 - bad extra prepared flag is rejected before pool checkout
+  ---
+  duration_ms: 0.246
+  type: 'test'
+  ...
+# Subtest: bad bad PID is rejected before pool checkout
+ok 4 - bad bad PID is rejected before pool checkout
+  ---
+  duration_ms: 0.103875
+  type: 'test'
+  ...
+# Subtest: bad request v1 is rejected before pool checkout
+ok 5 - bad request v1 is rejected before pool checkout
+  ---
+  duration_ms: 0.080542
+  type: 'test'
+  ...
+# Subtest: bad wrong auth is rejected before pool checkout
+ok 6 - bad wrong auth is rejected before pool checkout
+  ---
+  duration_ms: 0.1175
+  type: 'test'
+  ...
+# Subtest: bad new epoch is rejected before pool checkout
+ok 7 - bad new epoch is rejected before pool checkout
+  ---
+  duration_ms: 0.09625
+  type: 'test'
+  ...
+# Subtest: createPending confirms only after COMMIT; repeated create never replaces revision
+ok 8 - createPending confirms only after COMMIT; repeated create never replaces revision
+  ---
+  duration_ms: 0.593292
+  type: 'test'
+  ...
+# Subtest: new operation calls M1; duplicates return original stored result with canonical key order
+ok 9 - new operation calls M1; duplicates return original stored result with canonical key order
+  ---
+  duration_ms: 0.795334
+  type: 'test'
+  ...
+# Subtest: late host replay after close returns original revision1 candidate, never current close reply
+ok 10 - late host replay after close returns original revision1 candidate, never current close reply
+  ---
+  duration_ms: 1.116542
+  type: 'test'
+  ...
+# Subtest: new operation cannot bypass actual M1 parent facts with request flags
+ok 11 - new operation cannot bypass actual M1 parent facts with request flags
+  ---
+  duration_ms: 0.243125
+  type: 'test'
+  ...
+# Subtest: zero-row CAS and mismatching RETURNING are never storage confirmations
+ok 12 - zero-row CAS and mismatching RETURNING are never storage confirmations
+  ---
+  duration_ms: 0.312459
+  type: 'test'
+  ...
+# Subtest: COMMIT unknown retires before max1 checkout and independently reconciles without second UPDATE
+ok 13 - COMMIT unknown retires before max1 checkout and independently reconciles without second UPDATE
+  ---
+  duration_ms: 0.284958
+  type: 'test'
+  ...
+# Subtest: unknown commit with old revision remains unknown and does not replay write
+ok 14 - unknown commit with old revision remains unknown and does not replay write
+  ---
+  duration_ms: 0.216292
+  type: 'test'
+  ...
+# Subtest: COMMIT returning ROLLBACK tag is not a successful COMMIT
+ok 15 - COMMIT returning ROLLBACK tag is not a successful COMMIT
+  ---
+  duration_ms: 0.20725
+  type: 'test'
+  ...
+# Subtest: initial INSERT reply unknown is independently read back without second INSERT
+ok 16 - initial INSERT reply unknown is independently read back without second INSERT
+  ---
+  duration_ms: 0.225667
+  type: 'test'
+  ...
+# Subtest: missing row and lock error never initialize or rewrite during reconciliation
+ok 17 - missing row and lock error never initialize or rewrite during reconciliation
+  ---
+  duration_ms: 0.283125
+  type: 'test'
+  ...
+# Subtest: post-COMMIT epoch change retains known storage fact without rollback or protocol permit
+ok 18 - post-COMMIT epoch change retains known storage fact without rollback or protocol permit
+  ---
+  duration_ms: 0.218375
+  type: 'test'
+  ...
+# Subtest: authentication changes before COMMIT abort candidate rather than submitting it
+ok 19 - authentication changes before COMMIT abort candidate rather than submitting it
+  ---
+  duration_ms: 0.163083
+  type: 'test'
+  ...
+# Subtest: damaged persisted state and stored old epoch fail closed without writes
+ok 20 - damaged persisted state and stored old epoch fail closed without writes
+  ---
+  duration_ms: 0.148834
+  type: 'test'
+  ...
+# Subtest: provider/connection failure never returns a candidate or raw exception text
+ok 21 - provider/connection failure never returns a candidate or raw exception text
+  ---
+  duration_ms: 0.058083
+  type: 'test'
+  ...
+# Subtest: wrong ready nonce is rejected before PG checkout
+ok 22 - wrong ready nonce is rejected before PG checkout
+  ---
+  duration_ms: 0.048125
+  type: 'test'
+  ...
+# Subtest: authentication changed while obtaining pool must reject before checkout
+ok 23 - authentication changed while obtaining pool must reject before checkout
+  ---
+  duration_ms: 0.062166
+  type: 'test'
+  ...
+# Subtest: same-ID changed reconciliation content is explicitly conflict, never generic unknown
+ok 24 - same-ID changed reconciliation content is explicitly conflict, never generic unknown
+  ---
+  duration_ms: 0.223625
+  type: 'test'
+  ...
+# Subtest: post-COMMIT malformed context retains known stored operation as obsolete context
+ok 25 - post-COMMIT malformed context retains known stored operation as obsolete context
+  ---
+  duration_ms: 0.151125
+  type: 'test'
+  ...
+# Subtest: normalization and state validation reject rather than mutate deeply frozen inputs
+ok 26 - normalization and state validation reject rather than mutate deeply frozen inputs
+  ---
+  duration_ms: 0.082042
+  type: 'test'
+  ...
+# Subtest: COMMIT unknown plus changed operation epoch retains structured unknown storage classification
+ok 27 - COMMIT unknown plus changed operation epoch retains structured unknown storage classification
+  ---
+  duration_ms: 0.197625
+  type: 'test'
+  ...
+# Subtest: COMMIT unknown plus changed initialization epoch retains structured unknown storage classification
+ok 28 - COMMIT unknown plus changed initialization epoch retains structured unknown storage classification
+  ---
+  duration_ms: 0.105625
+  type: 'test'
+  ...
+# Subtest: COMMIT unknown plus changed operation malformed retains structured unknown storage classification
+ok 29 - COMMIT unknown plus changed operation malformed retains structured unknown storage classification
+  ---
+  duration_ms: 0.185583
+  type: 'test'
+  ...
+# Subtest: COMMIT unknown plus changed initialization malformed retains structured unknown storage classification
+ok 30 - COMMIT unknown plus changed initialization malformed retains structured unknown storage classification
+  ---
+  duration_ms: 0.104292
+  type: 'test'
+  ...
+# Subtest: owned client event precedes COMMIT Promise rejection without uncaught emitter or replay
+ok 31 - owned client event precedes COMMIT Promise rejection without uncaught emitter or replay
+  ---
+  duration_ms: 0.274
+  type: 'test'
+  ...
+# Subtest: event between queries stops before UPDATE, retaining first error and no unknown replay
+ok 32 - event between queries stops before UPDATE, retaining first error and no unknown replay
+  ---
+  duration_ms: 0.1155
+  type: 'test'
+  ...
+# Subtest: successful transaction removes only its owned listener and preserves pre-existing owner
+ok 33 - successful transaction removes only its owned listener and preserves pre-existing owner
+  ---
+  duration_ms: 0.200542
+  type: 'test'
+  ...
+1..33
+# tests 33
+# suites 0
+# pass 33
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 74.054833

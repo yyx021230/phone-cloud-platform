@@ -5868,3 +5868,14 @@ root审fa2452df固定runner后统一执行一次，owner只读逐字归档/priva
 ### 决策日志｜2026-11-02 body证据不能覆盖驱动事件失败，先修拥有期监听再新候选
 
 7个基础/并发/约束/锁隔离/restart场景通过，7断链body局部事实保留但完整失败；不宣称PG全验收或native通过。下一M2最小片处理owned client首错误/失信/查询边界、精确listener清理与未知销毁后独立读，idle pool契约另审；先本地EventEmitter反例及候选/更新manifest，再审单次新PG运行，不重启原失败库、不改v1/index或吞全局错误。本观察阶段无产品修改、PG/Windows/手机/生产动作，原43/隔离/查名池/冻结保持。
+
+
+### 变更记录｜2026-11-02 M2 rc.3 checkout client错误拥有期本地修正
+
+root核实际pg checkout/同步error与Promise nextTick顺序后，owner只给M2新叶本调用checkout client安装精确引用observer；首个事件/query拒绝锁定失信，前后query边界止步，失信client无后继UPDATE/COMMIT/ROLLBACK，release(Error)按首因销毁；提交在途仍先退役再独立读、无写重放。成功/异常移除且仅移除本次listener，外部既有监听保留，缺接口在BEGIN前保守失败。COMMIT标志仅实际调用时设置，不因预检查拒绝误标在途。
+
+先实际EventEmitter fake client反例原30绿/新3红，保存原源/输出/hash；当前39单元、原M1 61/v1 Agent50回归过及JS syntax。证据verification/wecom-v2-client-events-20261102。无全局error吞掉/uncaught注册，不改index/getPool/v1/共享pool；归还后的idle生命周期仍需未来接线另审。旧真实PG14项7/7不改，未开第二个库或重启失败库；14旧产品源及M1/DDL原字节不变。
+
+### 决策日志｜2026-11-02 错误observer必须改变决策与归属清理，不能空吞事件
+
+owned listener只记录首错误且各查询边界实际执行拒绝，不以fixture Pool空handler掩盖root七个真实失败。当前39是本地事件生命周期，不能替真实断链验证；产品候选固定后，更新runner源码guard与typed预期/非目标错误观测，root审新稿再单次新库运行。原观察INITDB原始EOF空白格式警告保留不洗，证据格式与代码diffcheck分开不虚称完整绿。无Windows/phone/ADB/生产/部署，原43/隔离/查名池/冻结保持，主号分身未验。

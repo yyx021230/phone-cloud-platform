@@ -1,0 +1,24 @@
+{
+  "baseCommit": "cd82c14f6baef51521d43213d22e445c7303ed8b",
+  "realPgRerun": false,
+  "oldPgFailurePreserved": true,
+  "existing14ProductSourcesUnchanged": true,
+  "rawWhitespaceException": "verification/wecom-v2-client-events-20261102/RED_OUTPUT.txt",
+  "files": {
+    "server/wecom-cleanup-v2-postgres.mjs": "1816196b59d4175a162e7d5fd18c62445459a8e663baf9e732c3add07b1a6ca3",
+    "server/wecom-cleanup-v2-postgres.test.mjs": "38654520e66228063d41905ed236ce26dbc974a2fe011761d21e16b98d02ab59",
+    "docs/PROJECT_DEVELOPMENT.md": "81c336a3a91658b43f3e200497ffc41b8424174e34c94152742db9c138bc47a8",
+    "verification/wecom-v2-client-events-20261102/DIFFCHECK_RECEIPT.json": "a46c0bc76d65d6c255505662df45d209a64d06d46cf5d3585a9dcc75ae429cf7",
+    "verification/wecom-v2-client-events-20261102/INITIAL_FIX_OUTPUT.txt": "ce31103163854c8e12d121b12af30c7b18ae859dfda5667352f0a2723daa17dc",
+    "verification/wecom-v2-client-events-20261102/INITIAL_FIX_RECEIPT.json": "1bab0bf1fc18f1bb289fd48c8c5b2b83295a32bd13c801bdab24ceca98051642",
+    "verification/wecom-v2-client-events-20261102/M1_REGRESSION_OUTPUT.txt": "9cae1529c15168b427d4f6bfb56f869c0db1e8627b20e8d38a5982af225b1812",
+    "verification/wecom-v2-client-events-20261102/M2_EVENTS_OUTPUT.txt": "8665de51eb5e40260f4f43ef6d29dd0ef68ef867a3213125722166448a8383cf",
+    "verification/wecom-v2-client-events-20261102/RED_OUTPUT.txt": "9fa841f44318e97791a4c9d42054e2c6ad067c7e06e7b6c14436fd868917d566",
+    "verification/wecom-v2-client-events-20261102/RED_RECEIPT.json": "00a84f58037848f87a34c58a69b5039598fee7f606e2c7dc96bdf8644a615778",
+    "verification/wecom-v2-client-events-20261102/TASK.md": "394c9592847cb79bbe299524e4e8b9bb12cf3f9dc072c4b2ab8b95ae231cb959",
+    "verification/wecom-v2-client-events-20261102/TEST_RECEIPT.json": "b5aeb0232be30b350f85973a21c7d5fce73480d5c0dcf8c99674619c5cf62b1c",
+    "verification/wecom-v2-client-events-20261102/V1_REGRESSION_OUTPUT.txt": "3abd88cbfc121b1fe16e13c21bb727d7979c4f70bad6ed9cbb0910ba59853040",
+    "verification/wecom-v2-client-events-20261102/wecom-cleanup-v2-postgres.mjs.red.txt": "573e7363976db447d7950c6a856a16ef910fa747d9a2f0755e995a0d1aa7b143",
+    "verification/wecom-v2-client-events-20261102/wecom-cleanup-v2-postgres.test.mjs.red.txt": "268d9a6543ec4eaf5affed6df9878414ada502ccd77038d264494225b6d56a54"
+  }
+}

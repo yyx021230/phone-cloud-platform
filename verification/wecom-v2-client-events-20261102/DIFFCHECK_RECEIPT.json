@@ -1,0 +1,53 @@
+{
+  "records": [
+    {
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exitCode": 2,
+      "output": "verification/wecom-v2-client-events-20261102/RED_OUTPUT.txt:192: trailing whitespace.\n+    \nverification/wecom-v2-client-events-20261102/RED_OUTPUT.txt:204: trailing whitespace.\n+    \nverification/wecom-v2-client-events-20261102/RED_OUTPUT.txt:235: trailing whitespace.\n+    \nverification/wecom-v2-client-events-20261102/RED_OUTPUT.txt:255: trailing whitespace.\n+    \nverification/wecom-v2-client-events-20261102/RED_OUTPUT.txt:296: trailing whitespace.\n+    \nverification/wecom-v2-client-events-20261102/RED_OUTPUT.txt:301: trailing whitespace.\n+    \n"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check",
+        "--",
+        ".",
+        ":(exclude)verification/wecom-v2-client-events-20261102/RED_OUTPUT.txt"
+      ],
+      "exitCode": 0,
+      "output": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "cd82c14f6baef51521d43213d22e445c7303ed8b^",
+        "cd82c14f6baef51521d43213d22e445c7303ed8b",
+        "--check"
+      ],
+      "exitCode": 2,
+      "output": "verification/wecom-v2-pg-observed-20261102/INITDB.txt:24: new blank line at EOF.\n"
+    }
+  ],
+  "currentRawEvidenceException": {
+    "path": "verification/wecom-v2-client-events-20261102/RED_OUTPUT.txt",
+    "lines": [
+      192,
+      204,
+      235,
+      255,
+      296,
+      301
+    ],
+    "sha256": "9fa841f44318e97791a4c9d42054e2c6ad067c7e06e7b6c14436fd868917d566"
+  },
+  "fullDiffCheckPassed": false,
+  "narrowerCodeDocsCheckPassed": true,
+  "originalFailedOutputsPreserved": true
+}

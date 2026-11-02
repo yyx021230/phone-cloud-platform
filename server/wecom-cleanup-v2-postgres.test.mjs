@@ -2,41 +2,44 @@
 // PostgreSQL isolation/constraints or actual COMMIT/network failure semantics.
 import assert from "node:assert/strict";
 import test from "node:test";
+import { EventEmitter } from "node:events";
 import { createWecomV2PostgresRepository } from "./wecom-cleanup-v2-postgres.mjs";
 import { createWecomV2HostState, normalizeWecomV2HostRequest, validateWecomV2HostState } from "./wecom-cleanup-v2-host.mjs";
 import { fixture, row } from "../verification/wecom-v2-cas-m2-20261102/fixture.mjs";
 
 function unitPool(initial = null) {
   const p = { state: initial ? structuredClone(initial) : null, trace: [], connections: 0, active: 0,
-    commitFailure: null, commitTag: "COMMIT", selectFailure: false, updateZero: false, changedRow: null, hook: () => {} };
+    commitFailure: null, commitTag: "COMMIT", selectFailure: false, updateZero: false, changedRow: null,
+    hook: () => {}, configureClient: () => {}, clients: [] };
   p.connect = async () => {
     assert.equal(p.active, 0, "max1 fixture: original connection must be released before new checkout");
     p.active++; const id = ++p.connections; let pending = p.state ? structuredClone(p.state) : null;
     p.trace.push([id, "CONNECT"]);
-    return {
-      async query(sql, values = []) {
+    const client = new EventEmitter(); p.clients.push(client);
+    client.query = async (sql, values = []) => {
         const tag = sql.trim().split(/\s+/)[0]; p.trace.push([id, tag]);
         if (tag === "INSERT" && !pending) pending = JSON.parse(values[2]);
         if (tag === "SELECT") {
           if (p.selectFailure) throw new Error("fixture_lock_timeout");
+          p.hook(tag, client);
           return { rowCount: pending ? 1 : 0, rows: pending ? [row(pending)] : [] };
         }
         if (tag === "UPDATE") {
           if (p.updateZero) return { rowCount: 0, rows: [] };
-          pending = JSON.parse(values[6]); p.hook(tag);
+          pending = JSON.parse(values[6]); p.hook(tag, client);
           return { rowCount: 1, rows: [p.changedRow ? p.changedRow(row(pending)) : row(pending)] };
         }
         if (tag === "COMMIT") {
           if (p.commitFailure === "before") { p.commitFailure = null; throw new Error("fixture_reply_unknown"); }
           if (p.commitTag === "COMMIT") p.state = pending ? structuredClone(pending) : null;
-          p.hook(tag);
+          p.hook(tag, client);
           if (p.commitFailure === "after") { p.commitFailure = null; throw new Error("fixture_reply_unknown"); }
           return { command: p.commitTag };
         }
-        return { command: tag };
-      },
-      release(error) { assert.equal(p.active, 1); p.active--; p.trace.push([id, error ? "DESTROY" : "RELEASE"]); }
+        p.hook(tag, client); return { command: tag };
     };
+    client.release = error => { assert.equal(p.active, 1); p.active--; client.releasedWith = error; p.trace.push([id, error ? "DESTROY" : "RELEASE"]); };
+    p.configureClient(client); return client;
   };
   return p;
 }
@@ -219,3 +222,77 @@ for (const [label, initialize, malformed] of [["operation epoch", false, false],
     assert.equal(f.pool.connections, 1); // Public auth precheck remains strict.
   });
 }
+test("owned client event precedes COMMIT Promise rejection without uncaught emitter or replay", async () => {
+  const f = setup(), fault = new Error("fixture_first_driver_event"), emitterThrows = [];
+  f.pool.commitFailure = "after";
+  f.pool.hook = (tag, client) => { if (tag === "COMMIT" && f.pool.connections === 1) queueMicrotask(() => {
+    try { client.emit("error", fault); } catch (e) { emitterThrows.push(e); }
+  }); };
+  const answer = await f.repo.commitHostOperation("host", f.body);
+  assert.deepEqual(emitterThrows, []); assert.equal(answer.storageStatus, "committed_reconciled");
+  assert.equal(f.pool.clients[0].releasedWith, fault); assert.equal(writes(f.pool).length, 1);
+  assert.ok(f.pool.clients.every(c => c.listenerCount("error") === 0));
+});
+test("event between queries stops before UPDATE, retaining first error and no unknown replay", async () => {
+  const f = setup(), first = new Error("fixture_first_between_queries"), second = new Error("fixture_second_between_queries"), emitterThrows = [];
+  f.pool.hook = (tag, client) => { if (tag === "SELECT") queueMicrotask(() => {
+    for (const e of [first, second]) try { client.emit("error", e); } catch (thrown) { emitterThrows.push(thrown); }
+  }); };
+  const answer = await f.repo.commitHostOperation("host", f.body);
+  assert.deepEqual(emitterThrows, []); assert.equal(answer.storageStatus, "unknown"); assert.equal(answer.commitKnown, false);
+  assert.equal(f.pool.clients[0].releasedWith, first); assert.equal(writes(f.pool).length, 0);
+  assert.equal(f.pool.connections, 1); assert.ok(!f.pool.trace.some(v => v[1] === "COMMIT"));
+});
+test("successful transaction removes only its owned listener and preserves pre-existing owner", async () => {
+  const f = setup(), external = () => {}, counts = [];
+  f.pool.configureClient = c => c.on("error", external);
+  f.pool.hook = (tag, client) => { if (tag === "SELECT") counts.push(client.listenerCount("error")); };
+  await f.repo.commitHostOperation("host", f.body);
+  assert.deepEqual(counts, [2]); assert.deepEqual(f.pool.clients[0].listeners("error"), [external]);
+});
+test("client event during BEGIN prevents every later query and destroys the client", async () => {
+  const f = setup(), fault = new Error("fixture_begin_error"), emitterThrows = [];
+  f.pool.hook = (tag, client) => { if (tag === "BEGIN") queueMicrotask(() => {
+    try { client.emit("error", fault); } catch (e) { emitterThrows.push(e); }
+  }); };
+  const answer = await f.repo.commitHostOperation("host", f.body);
+  assert.deepEqual(emitterThrows, []); assert.equal(answer.storageStatus, "unknown"); assert.equal(answer.commitKnown, false);
+  assert.deepEqual(f.pool.trace.map(v => v[1]), ["CONNECT", "BEGIN", "DESTROY"]);
+  assert.equal(f.pool.clients[0].releasedWith, fault); assert.equal(f.pool.clients[0].listenerCount("error"), 0);
+});
+test("COMMIT event alone invalidates a fulfilled query and requires independent reconciliation", async () => {
+  const f = setup(), fault = new Error("fixture_commit_event_only"), emitterThrows = [];
+  f.pool.hook = (tag, client) => { if (tag === "COMMIT" && f.pool.connections === 1) queueMicrotask(() => {
+    try { client.emit("error", fault); } catch (e) { emitterThrows.push(e); }
+  }); };
+  const answer = await f.repo.commitHostOperation("host", f.body);
+  assert.deepEqual(emitterThrows, []); assert.equal(answer.storageStatus, "committed_reconciled");
+  assert.equal(f.pool.connections, 2); assert.equal(f.pool.clients[0].releasedWith, fault);
+  assert.equal(writes(f.pool).length, 1); assert.ok(f.pool.clients.every(c => c.listenerCount("error") === 0));
+});
+test("protocol failure cleanup preserves external listener and removes only transaction observer", async () => {
+  const f = setup(), external = () => {}; f.pool.configureClient = c => c.on("error", external);
+  f.facts.readerHost = { ...f.facts.readerHost, pid: 888 };
+  await assert.rejects(f.repo.commitHostOperation("host", f.body), /host_mismatch/);
+  assert.deepEqual(f.pool.clients[0].listeners("error"), [external]); assert.equal(f.pool.clients[0].releasedWith, undefined);
+  assert.equal(writes(f.pool).length, 0);
+});
+test("query rejection without client event retains that error and never reuses failed connection", async () => {
+  const f = setup(); f.pool.commitFailure = "before";
+  const answer = await f.repo.commitHostOperation("host", f.body);
+  assert.equal(answer.storageStatus, "unknown"); assert.equal(f.pool.clients[0].releasedWith.message, "fixture_reply_unknown");
+  assert.equal(f.pool.clients[0].listenerCount("error"), 0); assert.equal(writes(f.pool).length, 1);
+});
+test("repository adds no global handler and does not own unrelated client errors", async () => {
+  const counts = [process.listenerCount("uncaughtException"), process.listenerCount("unhandledRejection")];
+  const f = setup(); await f.repo.commitHostOperation("host", f.body);
+  assert.deepEqual([process.listenerCount("uncaughtException"), process.listenerCount("unhandledRejection")], counts);
+  const unrelated = new EventEmitter(), fault = new Error("fixture_unrelated_client");
+  assert.throws(() => unrelated.emit("error", fault), e => e === fault);
+});
+test("client without owned event interface fails closed before BEGIN", async () => {
+  const f = setup(); f.pool.configureClient = c => { c.on = undefined; c.removeListener = undefined; };
+  const answer = await f.repo.commitHostOperation("host", f.body);
+  assert.equal(answer.storageStatus, "unknown"); assert.equal(answer.protocolPermit, false);
+  assert.deepEqual(f.pool.trace.map(v => v[1]), ["CONNECT", "DESTROY"]);
+});
