@@ -6199,3 +6199,11 @@ root bed2a7f与范围提醒后，暂停后继adapter/DDL/runner，保留全部�
 ### 决策日志｜2026-11-03 GET方法不能自动视作无生产副作用
 
 后续严格只读取完整占用不能直接复用这两个旧QA读取器；须使用已核不触发维护且有完整性证明的canonical/cache来源或另审纯投影，缺项为unknown。不能用active过滤/300条空结果证明无cleanup_pending、worker或stop barrier；不为恢复预览放宽持久隔离。无产品、线上、Windows、ADB、手机或新测试动作，43/147/52和查名155/157排除保持。
+
+### 变更记录｜2026-11-03 收束collector审查与正式v1因果修补提案
+
+本owner只本地审root collector，发现并指出无windows_tasks.device_id列/对外目录无内部deviceId、旧GET维护副作用与启动器blocking stdin逃逸deadline；root修受控只读collector和监督器，本owner未启动。根第二次00:55:56 CST全fleet只读观察成功，10hash匹配，READ ONLY结束/自有SSH退出；原第一次57014超时保留，不当空闲。目录141，23/25/59/93/145 available仅缓存证据，43唯一企微物理清理busy、155/157查名enabled排除；299nonreleased与14非终态DB历史行不能等同真实worker。
+
+### 决策日志｜2026-11-03 优先修正式v1时间因果，不继续通用progress前置
+
+根要求先方案；新增verification/wecom-v1-causal-plan-20261103/PLAN，提议原binding.nonce+私有spawn pipeNonce+同机实际身份/close、原verification一次cloud challenge与双端完整3秒预算、server原单调lease剩余扣完整RTT。沿既有持久physical duty/checkpoint/gate，不加M3/ProgressHead/通用issuer/DDL，不把无physical字段当QA绕过。此为待审提案，未替换生产v1合同或实现；旧43host证据不补造、ADB/SYSTEM/control/媒体冻结不动，需具体补丁候选及本地反例/回归后另验真机。现成QA keeper跨重启持久隔离仍无直接合法运维路径，新增真实QA reservation若需要应另最小审，不伪造任务/host或插DB。
