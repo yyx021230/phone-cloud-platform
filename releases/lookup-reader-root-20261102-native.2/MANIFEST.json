@@ -1,0 +1,15 @@
+{
+  "status": "local isolated native verification, not deployed",
+  "runtimeCommit": "dfa4102c17b45e99010a2b43f55b8930da2b2acf",
+  "policyCommit": "a0c190d16d9a86762d1da7301cfbb30c10749bdf",
+  "runtimeSha256": {
+    "windows-agent/scripts/alipay_name_lookup.py": "d13f48f5c81acc5e8e74675dc677d720c217c68baf3df4ac0f5165fe216dbdb2",
+    "verification/lookup-reader-native-20261102/harness-policy.mjs": "e8140ffcd1a9f20fa704efad907185ef12c2c22a62fdc1a70bdae31b9b02e5d2"
+  },
+  "evidenceFiles": {
+    "EVIDENCE_HASHES.json": "edfb845d60104ebdc148a1e0189cadb2193ea5ee190016b45d2e89604a36b148",
+    "RESULTS.json": "87fb3c2fc945e8867ea10e695a283da4c67341efc3ba81a23324f84c01c0235f",
+    "README.md": "7b331f30a984412468449c88b4157d52e555acdc8a993161018036ac751e42e6"
+  },
+  "productionChanged": false
+}
