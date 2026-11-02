@@ -1,0 +1,45 @@
+{
+  "codeCommit": "0d4f1a29f37db1b4a8f7029d803f8987eb59179d",
+  "scope": "fixed integrated local code; physical facts simulated; no SYSTEM positive acceptance",
+  "productionConnections": 0,
+  "phoneActions": 0,
+  "exitCode": 0,
+  "checks": [
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "windows-agent/scripts",
+        "-p",
+        "test_wecom*.py"
+      ],
+      "exitCode": 0,
+      "summary": "......................................................................................................................................................................................................................................................................................................\n----------------------------------------------------------------------\nRan 294 tests in 2.229s\n\nOK\n"
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts/qa",
+        "-p",
+        "test_wecom*.py"
+      ],
+      "exitCode": 0,
+      "summary": "................\n----------------------------------------------------------------------\nRan 16 tests in 1.384s\n\nOK\n"
+    },
+    {
+      "command": [
+        "python3",
+        "verification/wecom-cleanup-v1/test_postgres_runner.py"
+      ],
+      "exitCode": 0,
+      "summary": "..\n----------------------------------------------------------------------\nRan 2 tests in 2.216s\n\nOK\n"
+    }
+  ]
+}

@@ -5502,3 +5502,17 @@ L03/L04调用链复核：51/52/54/154既有stopping+pending空+stopFailure可以
 延续独立义务与真实proof合同，以后继查名候选6d为本地合并基线；企微旧分支没有其后全部查名恢复代码，禁止整份Agent/Python覆盖。状态透传和有限诊断也须一起保留，不能只合新host协议而丢失未知邀请状态。旧业务算法/字段测试可明确模拟物理证明，新的产品入口另用真实OS管道与实际HTTP组合检查；模拟数据不等于手机清理。先固定代码再绑定全量结果，后续只在实际验证后形成候选标签，未验SYSTEM/自然故障/长期全池状态不核销，当前授权不包含线上加载或新SYSTEM入口。
 
 打包闭包补充：root按20ee rc.1精确20运行文件导出，实际import失败ModuleNotFoundError wecom_screen_lease，完整源码树此前掩盖了它。原manifest将QA模块排除，但platform顶层无条件导入。企微owner最小修复99dac921/组件8b4bb6c及wecom-cleanup-agent-20261102-rc.2，将导入移入原authority非空分支，保留type/mode/purpose保护，不把QA启动器放进运行包。root导入唯一新产品叶及新测试，隔离Python只复制20文件、禁site/源码回退/网络/线程/子进程动作，15Python模块实际导入及故意缺依赖反例2/2通过。其余19叶、共享index来源补丁和冻结文件不变；历史rc.1 manifest仅保存旧边界，不能拿旧hash当组合安装清单。未发布，SYSTEM与真机未验不变。
+
+### 变更记录｜2026-11-02 本地组合固定代码及全量验证完成，生产门槛保持开放
+
+组合代码0d4f1a29f37db1b4a8f7029d803f8987eb59179d，本地候选wecom-cleanup-integrated-20261102-rc.1；基线6d2b271、WeCom源20ee4f6加99dac92，QA7d6490f/5c7c369。根check与test:screen实际1908/1908、WeCom Python294/294、QA16/16和PG测试器2/2通过；1908包含既有屏控/服务端/Agent回归，不能把各类次数相加成独立用例总数。原首轮7项失败和运行包ModuleNotFound旧红保留，未延长业务期限或放宽产品守卫以凑通过。
+
+固定QA runner在同一组合树独立执行实际Agent函数/父wrapper/verify manager、真实Python OS pipe及loopback平台：原失败和未知物理占用先保持、实际JSON服务重启仍阻断、同Agent补排新verify、顶层pickedAt、proof提交后再接新任务，原业务不改。三模式均过：proof首次提交后ACK丢失；host首次未送达并close首次ACK丢失；proof两次已提交而ACK均丢失。原body不重盖时间，verify通用status写入0、capture/scan均0；最后一种本地ack_unknown、云端succeeded并存，不降级已提交结果。物理机器/工具事实是合成，未启动共享Agent主循环，不是SYSTEM/真机证明。自己的独立Postgres集群三种写入模式实际HTTP、重启、归档和trigger写入失败回滚均过；不借其他窗口或生产DB。
+
+查名字窗口对固定0d4f代码只读交叉审查，181保护运行文件与6d逐字节相同、20 Agent叶子hash匹配、server/index未变；shared index只增加WeCom专用分支与透传，查名outbox/terminal报告/恢复及stop barrier保留，双方诊断白名单一致，未发现新增代码阻断。审查未跑测试/未连线上，推断不回退查名保护不等于运行验收。根此后只写材料/文档，不改已测运行源码。材料releases/wecom-cleanup-integrated-20261102-rc.1；源组件标签及根历史证据分支保留，不移动标签、不推送/部署。
+
+### 决策日志｜2026-11-02 本地组合通过不解除SYSTEM与整机回退门槛
+
+延续v1首项事实计龄、当前绑定证明、未知不重放和版本分层。新协议SYSTEM正向、真实手机close后核验再接业务、真实网络时钟/媒体forward共存、全池长期与永久资源清理继续未验；25完整preview及旧51/52/54/154本轮新清理仍无通过证据，43/149/152先前固定源码真机结果不挪作本次整体验收。当前线上不加载、不新增SYSTEM入口、ADB/身份/keys/媒体冻结保持。
+
+更正早期服务端rc.1回退说明：旧版不识别cleanup_pending，仅保留义务并关闭企微派发仍不能阻止查名/XHS/新控屏使用未知手机，不能算安全回退。未来须全部未决义务真实核验终结，或已验证旧版可识别且覆盖所有入口的整机隔离；该兼容机制本阶段未实现，未准备生产执行方案。禁止删数据或伪造proof恢复接单。本地候选与生产可发布/可回滚分别登记，不因自动测试通过扩大原授权。

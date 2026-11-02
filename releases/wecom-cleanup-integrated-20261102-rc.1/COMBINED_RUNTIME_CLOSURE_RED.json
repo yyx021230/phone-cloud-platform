@@ -1,0 +1,9 @@
+{
+  "sourceAgentRef": "20ee4f6b292aeee6de4beb88d85c0ba4e139ac15",
+  "manifestRuntimeFiles": 20,
+  "exitCode": 1,
+  "productionConnections": 0,
+  "phoneActions": 0,
+  "scope": "actual import from exact20-file runtime-only bundle; no main/SDK/ADB invoked",
+  "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"/private/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/wecom-production-closure-red-v4y0qngz/windows-agent/scripts/wecom_platform_preview.py\", line 30, in <module>\n    from wecom_screen_lease import ScreenAuthority\nModuleNotFoundError: No module named 'wecom_screen_lease'\n"
+}

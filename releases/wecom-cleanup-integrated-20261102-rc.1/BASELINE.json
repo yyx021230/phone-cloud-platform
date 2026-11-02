@@ -1,5 +1,5 @@
 {
-  "state": "local_integration_validation_pending_not_released",
+  "state": "local_checks_passed_system_phone_and_rollback_gates_open_not_released",
   "branch": "codex/wecom-cleanup-integration-20261102",
   "candidateBase": "6d2b2717c7fca4bcb2843d8c1838b8bfd349f766",
   "agentSource": "20ee4f6b292aeee6de4beb88d85c0ba4e139ac15",
@@ -220,5 +220,11 @@
   "sharedFixtureSha256": "2533fcd95a0b431f5b4b77fc3e4e702f5bbb03120e5ab82bf79a1b259b0830f4",
   "agentFinalComponentRef": "8b4bb6c0dce81788234a46308283902dab782d40",
   "agentFinalComponentTag": "wecom-cleanup-agent-20261102-rc.2",
-  "archivedRc1ManifestIsHistoricalBoundaryOnly": true
+  "archivedRc1ManifestIsHistoricalBoundaryOnly": true,
+  "codeCommit": "0d4f1a29f37db1b4a8f7029d803f8987eb59179d",
+  "tag": "wecom-cleanup-integrated-20261102-rc.1",
+  "sharedAgentMainLoopValidated": false,
+  "windowsSystemPositiveValidated": false,
+  "productionRollbackIsolationImplemented": false,
+  "protectedRuntimeCount": 181
 }

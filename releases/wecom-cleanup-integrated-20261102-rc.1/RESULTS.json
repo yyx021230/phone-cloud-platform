@@ -1,0 +1,54 @@
+{
+  "codeCommit": "0d4f1a29f37db1b4a8f7029d803f8987eb59179d",
+  "status": "local_pass_not_release_ready",
+  "checks": {
+    "npmRunCheck": {
+      "exitCode": 0
+    },
+    "npmRunTestScreen": {
+      "passed": 1908,
+      "failed": 0,
+      "skipped": 0
+    },
+    "wecomPython": {
+      "passed": 294,
+      "failed": 0
+    },
+    "qaPython": {
+      "passed": 16,
+      "failed": 0
+    },
+    "postgresRunnerDiagnostics": {
+      "passed": 2
+    },
+    "actualAgentFunctionsRealOsPipeLocalHttpFaultModes": {
+      "passed": 3,
+      "syntheticPhysicalFacts": true,
+      "windowsSystem": false
+    },
+    "actualDisposablePostgresModes": {
+      "structured": true,
+      "snapshotOnly": true,
+      "dualWrite": true
+    }
+  },
+  "countsAreSeparateRunsNotAnAdditiveUniqueTotal": true,
+  "initialFailures": [
+    "147 quick combined:140pass7fail from old fixture handshake/capability; repaired10targeted then final1908 passed",
+    "old exact20-file runtime import ModuleNotFoundError; fixed by99dac92 and isolated closure2 passed"
+  ],
+  "productionChanged": false,
+  "phoneActionsByRoot": 0,
+  "deployed": false,
+  "pushed": false,
+  "sourceOwnerWorktreesEdited": false,
+  "open": [
+    "new protocol real SYSTEM Agent/phones not validated",
+    "25 full preview not passed",
+    "old51/52/54/154 no new cleanup proof in this round",
+    "natural fleet initial timeout and permanent cleanup residuals not all resolved",
+    "host-close communication permanently lost or Agent restart may require maintenance",
+    "owned resource kill/forward removal absent in verify-only v1",
+    "legacy-compatible all-entry rollback isolation not implemented"
+  ]
+}
