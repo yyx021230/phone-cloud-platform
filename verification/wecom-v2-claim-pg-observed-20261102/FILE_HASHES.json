@@ -1,0 +1,19 @@
+{
+  "baseCommit": "a7b07e0177e5d62e29030e1a6acaa29ec012606d",
+  "candidateTag": "wecom-v2-claim-pg-20261102-observed.1",
+  "files": {
+    "docs/PROJECT_DEVELOPMENT.md": "21019b0ff5fc47b2324522dac31185d42dec524660bb8002810c58dbbb04d4b0",
+    "verification/wecom-v2-claim-pg-observed-20261102/CREATEDB.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verification/wecom-v2-claim-pg-observed-20261102/EXECUTED_SOURCE_MANIFEST.json": "dfd5bceff966c57a5d7eb85a5373e17776b21933596c7b93f0113f82c18d8be8",
+    "verification/wecom-v2-claim-pg-observed-20261102/INITDB.txt": "373936e6e8dfe4cb26bc22b3e641bd44b16b57f5f113b0b5a7b67fdb34d08b26",
+    "verification/wecom-v2-claim-pg-observed-20261102/NODE_TEST_OUTPUT.txt": "67830cf382b2c302f20562c0fb1146f94d2c3f4ce7aeb0619eb64801b600c858",
+    "verification/wecom-v2-claim-pg-observed-20261102/OBSERVATION.md": "24d49a6e5d2c5483e642176805f5fddb77f3367333fa01c35c22b4cf07a05afd",
+    "verification/wecom-v2-claim-pg-observed-20261102/PG_EVIDENCE.json": "ecc83d9c929ec887a6e9e227fc7c51b2b37555d246d2d53804de411b57028661",
+    "verification/wecom-v2-claim-pg-observed-20261102/POSTGRES.txt": "3af828c479e1f6accb28a3fad3f2db9c1ed654d462aafe6e88de1c92062b2aa9",
+    "verification/wecom-v2-claim-pg-observed-20261102/PROVENANCE.json": "d4cde91b6e7ca8ddfd7cd5377c5ac853e3e7db1d1508bca33b1947224218c114",
+    "verification/wecom-v2-claim-pg-observed-20261102/RAW_WHITESPACE.json": "38b7523e2ca9bd34be26f6dbfc16af13bede5dfa0f3743cadf39323ba7f7b439",
+    "verification/wecom-v2-claim-pg-observed-20261102/RUN_RECEIPT.json": "b4430b5f759df34231fba35b1c46a95a6a6cc7d08436f54cbd44ec282bcf0d62",
+    "verification/wecom-v2-claim-pg-observed-20261102/fixture.json": "5efeab6b06fa5ca0aecdd8e2cca95fbbfa0b33e6ccc2655db2b20d12ff5bbc22",
+    "verification/wecom-v2-claim-pg-observed-20261102/DIFFCHECK_RECEIPT.json": "487b30148d6cbc378e7dfd0f80c0f2912220541d4d482a373d26278432745e8e"
+  }
+}

@@ -5975,3 +5975,13 @@ root全文审d9daa9后发现old-lock-orders用setImmediate无法证明旧PG后�
 ### 决策日志｜2026-11-02 事件循环先后不能替代后端阻塞事实
 
 延续d9daa9，不移动draft.1；新draft.2仅此验证缺口/manifest/文档差量，产品/DDL/其余场景/runner隔离与清理边界不变。JS syntax和只读18源/6依赖hash核对通过，没执行PG或SQL；旧2s statement预算前准备控制连接，不以成功返回但空proof掩盖观察失败。原task→job仅合成锁序交错，完整checkpoint未验；原43/147/52和查名池/冻结保持，主号分身仍未真机验收。
+
+### 变更记录｜2026-11-02 首次M3a真实PG18项17通过1失败，保留原库
+
+root统一单次执行a7b07e draft.2，新库pc-wecom-v2-claim-pg-gr_br461；真实TAP18项17pass/1fail，失败组read-only-reconcile首个missing-anchor seed与前mapping-missing用例deviceId重名，23505 phone_cloud_devices_pkey，缺行矩阵未完成。7原件和执行manifest逐字归档verification/wecom-v2-claim-pg-observed-20261102，核RUN_RECEIPT及18源固定Git哈希。runner默认actualPgCases0不等于执行0，17body notes不等于18通过。
+
+真实旧锁等待证据old40984/new40990/control40991、active Lock/blockers[40990]、reads1/1.4195ms，新叶NOWAIT后旧第二锁完成；三断链原5DML各一轮。Node40971exit1/组消失、PG40959exit0停止confirmed，失败db保留未重启。原INITDB EOF空白保留，原件格式例外单列，不洗成全diff绿。
+
+### 决策日志｜2026-11-02 测试数据命名冲突也必须保留失败，不用UPSERT掩盖
+
+只观察归档，不改产品/SQL/运行器或重新运行。下一片仅将缺行循环改专属命名空间并添加所有合成seed名的本地反例检测，原断言/其余场景/预算/清理保持；固定draft.3由root差量审后才可新库重验。旧失败库和M2历史库均不重跑，不拿17过宣称全验收；原43/147/52与155/157查名池保留，主号/分身未真机验收、线上未动。
