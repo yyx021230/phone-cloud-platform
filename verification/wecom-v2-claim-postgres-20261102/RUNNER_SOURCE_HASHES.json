@@ -1,0 +1,45 @@
+{
+  "repositoryBaseCommit": "215fb15b7a66df99dc2b1991c6e9be93d5c103a8",
+  "revision": 1,
+  "sourceSha256": {
+    "server/wecom-cleanup-v2-claim-postgres.mjs": "46d0e8ee2857656acf765920f1d58a10e313ba05aff5b2a867270c3611d0a276",
+    "server/wecom-cleanup-v2-claim-postgres.test.mjs": "4e5347a2286f81265703d22524c41c5755bfe5155f561bc442fda31a37005fe0",
+    "server/wecom-cleanup-v2-claim.mjs": "4c079cfcf3b77505b0cbc2aa1e416d8d446dfc1240d25fcb03401494264a18fd",
+    "server/wecom-cleanup-v2-host.mjs": "6caf31175e62002476f37d0785ef3b5d3c3de87581cd117320ce6695c98be397",
+    "server/wecom-cleanup-v2-postgres.mjs": "1816196b59d4175a162e7d5fd18c62445459a8e663baf9e732c3add07b1a6ca3",
+    "deploy/sql/wecom-cleanup-v2.sql": "19ea05e772c913a6534a744b6197d216b7be7cc1c867157e98a842a614d13c7c",
+    "deploy/sql/wecom-cleanup-v2-claim.sql": "9b89cc925083933e04a1888c6567202f7c2a0b5f8eeb9268c1ffa424b7d2fc7d",
+    "verification/wecom-v2-claim-bundle-20261102/fixture.mjs": "9acf7d46e50cc3e3957a6f3af968cf8af29a6ccb6f4cb6e9935b28c7a613854d",
+    "verification/wecom-v2-cas-m2-20261102/fixture.mjs": "ac6e39ce28dd4a9625e9f03e3d648022768c7e10096ef91e9109df2e31681965",
+    "verification/wecom-v2-cas-m2-20261102/pg-commit-proxy.mjs": "a884a5e9147daf8cf8fffab93a6878f80793c825e833a2c4bddb0d6c8678a3b1",
+    "verification/wecom-v2-cas-m2-20261102/pg-commit-proxy.test.mjs": "79ec0ee937bb5e001601de46104755a4992b3a231826b318ceced3140291b517",
+    "verification/wecom-v2-cas-m2-20261102/pg-fault-observer.mjs": "62fa45c101bcf1c1912123ddc46d8cee060a25337e4d033d7a3e49ec837728a6",
+    "verification/wecom-v2-cas-m2-20261102/pg-fault-observer.test.mjs": "216b834313c281757bbcee4cb229a4f182f3a4eb337ccdc8d117650d22c98b8a",
+    "verification/wecom-v2-claim-postgres-20261102/fixture.mjs": "4f8c713618185540c296dca380ed6027b45e0a777de5e63e7110ace147608f0c",
+    "verification/wecom-v2-claim-postgres-20261102/owned-pg.mjs": "b99eb9da66261777b3913c655b7213f6f06f60da9eb0c6deafef5fe924e46440",
+    "verification/wecom-v2-claim-postgres-20261102/postgres.integration.mjs": "cff843aa8aea01af06e3b8ab4bcd6f9853f97231f5d0bb0f5ff5563a37f4b2b9",
+    "verification/wecom-v2-claim-postgres-20261102/run-owned-postgres.py": "68e9bda526e42a012fe6ccf18d8f5eee5cd8f73a44d054250a68059240593c97",
+    "verification/wecom-v2-claim-postgres-20261102/test_owned_runner.py": "7efb2b5098b7a0aea8596283ecaa20d55b65a170630996da136d6aabaf506f8c"
+  },
+  "dependencySha256": {
+    "/Users/yyx/ztqc/phone-cloud-platform/node_modules/pg/package.json": "bab5faf4410151a463078fffa326d10979150bfc330f0a29bd08948378ed3421",
+    "/Users/yyx/ztqc/phone-cloud-platform/node_modules/pg/lib/client.js": "86cda0e1fda47e03d27dde65f10c7b9d597f7411f77ed853c8d27d5f150978a2",
+    "/Users/yyx/ztqc/phone-cloud-platform/node_modules/pg/lib/query.js": "4253bb48364243573c330a2d5827a0f306f632f84f5ac56feaa3ac83f2293001",
+    "/Users/yyx/ztqc/phone-cloud-platform/node_modules/pg/lib/connection.js": "5c17c585f307518f8369d6162d138c58eef1309128ad2fae2d6b315c8000234e",
+    "/Users/yyx/ztqc/phone-cloud-platform/node_modules/pg-pool/index.js": "6f304776edaabde2954cbf8c4366fa6d9512bfba0e408e78cc56b3c46c69d058",
+    "/Users/yyx/ztqc/phone-cloud-platform/node_modules/pg-protocol/dist/parser.js": "7abb711bf087571db432102e1d2fe8321c3176b1191d1f026b97fee86b89b545"
+  },
+  "sharedPgPackageSha256": "bab5faf4410151a463078fffa326d10979150bfc330f0a29bd08948378ed3421",
+  "sharedPgVersion": "8.22.0",
+  "nodeVersion": "v25.9.0",
+  "postgresVersion": "16.15 (Homebrew)",
+  "realPgExecuted": false,
+  "expectedCaseGroups": 18,
+  "command": [
+    "python3",
+    "-I",
+    "-B",
+    "verification/wecom-v2-claim-postgres-20261102/run-owned-postgres.py",
+    "--execute-reviewed"
+  ]
+}

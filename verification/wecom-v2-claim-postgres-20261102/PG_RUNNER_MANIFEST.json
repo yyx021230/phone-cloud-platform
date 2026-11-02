@@ -1,0 +1,26 @@
+{
+  "baseCommit": "215fb15b7a66df99dc2b1991c6e9be93d5c103a8",
+  "branch": "codex/wecom-v2-claim-pg-runner-20261102",
+  "candidateTag": "wecom-v2-claim-pg-20261102-draft.1",
+  "runtimeAndDeployTreesUnchanged": true,
+  "noPgSqlOrWindowsPhoneActions": true,
+  "expectedCaseGroupsNotExecuted": 18,
+  "files": {
+    "docs/PROJECT_DEVELOPMENT.md": "eee86a880b3a084e9dfe83fb52b3e68efeecc97e8cb2f9c196272aaa4dfc0705",
+    "verification/wecom-v2-claim-postgres-20261102/RUNNER_FINAL_0.txt": "f78bc80de25c6e0cb06a8e702a6b68a7d773ea784f6bc20c429ed5c64c35d436",
+    "verification/wecom-v2-claim-postgres-20261102/RUNNER_FINAL_1.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verification/wecom-v2-claim-postgres-20261102/RUNNER_FINAL_2.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verification/wecom-v2-claim-postgres-20261102/RUNNER_FINAL_RECEIPT.json": "19222dfad8dfc0e3c282200e94d4ce243fd20b8942d12b4e59d4c108a0fe63cc",
+    "verification/wecom-v2-claim-postgres-20261102/RUNNER_LOCAL_0.txt": "1bec6410dd389aba26ec7a6a75d2793629fecb48d36f42a9fde8afa39d8ce2c8",
+    "verification/wecom-v2-claim-postgres-20261102/RUNNER_LOCAL_1.txt": "84ca1c2fdf98bf0cb8492371bf7a3daef9a62fd9ad0e62bcb952ab9cef956269",
+    "verification/wecom-v2-claim-postgres-20261102/RUNNER_LOCAL_2.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verification/wecom-v2-claim-postgres-20261102/RUNNER_LOCAL_3.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verification/wecom-v2-claim-postgres-20261102/RUNNER_LOCAL_RECEIPT.json": "012f9d4dd834c5a03efcb79d764e07ef872a5aa8b017c53f0cb9269037485c8b",
+    "verification/wecom-v2-claim-postgres-20261102/RUNNER_REVIEW.md": "0a54850b80186000bfa9d067c3c7849a636146349ce27f904a7a9edfcca64399",
+    "verification/wecom-v2-claim-postgres-20261102/RUNNER_SOURCE_HASHES.json": "b22cd3e5b086f7474e9b15a21a61d1dffef5eee9869fdeb9f965694d8e5c422b",
+    "verification/wecom-v2-claim-postgres-20261102/owned-pg.mjs": "b99eb9da66261777b3913c655b7213f6f06f60da9eb0c6deafef5fe924e46440",
+    "verification/wecom-v2-claim-postgres-20261102/postgres.integration.mjs": "cff843aa8aea01af06e3b8ab4bcd6f9853f97231f5d0bb0f5ff5563a37f4b2b9",
+    "verification/wecom-v2-claim-postgres-20261102/run-owned-postgres.py": "68e9bda526e42a012fe6ccf18d8f5eee5cd8f73a44d054250a68059240593c97",
+    "verification/wecom-v2-claim-postgres-20261102/test_owned_runner.py": "7efb2b5098b7a0aea8596283ecaa20d55b65a170630996da136d6aabaf506f8c"
+  }
+}

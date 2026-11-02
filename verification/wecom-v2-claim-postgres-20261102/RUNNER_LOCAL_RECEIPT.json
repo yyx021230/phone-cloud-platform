@@ -1,0 +1,49 @@
+{
+  "sourceGuardOnlyMatched": 18,
+  "dependencyGuardOnlyMatched": 6,
+  "noPgBinaryOrSocketOrServiceActions": true,
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "-I",
+        "-B",
+        "verification/wecom-v2-claim-postgres-20261102/test_owned_runner.py"
+      ],
+      "exitCode": 0,
+      "file": "RUNNER_LOCAL_0.txt",
+      "sha256": "1bec6410dd389aba26ec7a6a75d2793629fecb48d36f42a9fde8afa39d8ce2c8"
+    },
+    {
+      "command": [
+        "node",
+        "--test",
+        "verification/wecom-v2-cas-m2-20261102/pg-commit-proxy.test.mjs",
+        "verification/wecom-v2-cas-m2-20261102/pg-fault-observer.test.mjs"
+      ],
+      "exitCode": 0,
+      "file": "RUNNER_LOCAL_1.txt",
+      "sha256": "84ca1c2fdf98bf0cb8492371bf7a3daef9a62fd9ad0e62bcb952ab9cef956269"
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "verification/wecom-v2-claim-postgres-20261102/postgres.integration.mjs"
+      ],
+      "exitCode": 0,
+      "file": "RUNNER_LOCAL_2.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "verification/wecom-v2-claim-postgres-20261102/owned-pg.mjs"
+      ],
+      "exitCode": 0,
+      "file": "RUNNER_LOCAL_3.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

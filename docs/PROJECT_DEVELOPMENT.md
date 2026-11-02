@@ -5957,3 +5957,13 @@ root561232cb审DB draft.2后，仅新增独立claim-postgres模块/同名测试�
 ### 决策日志｜2026-11-02 本地存储确认保持无执行权限，映射屏障仍未实现
 
 M2/M1/旧DDL/共享index/getPool/Agent原字节不变；新anchor初始disabled，无初始化、启用、清active或journal。设备投影provider不是配置写入屏障，输出恒liveChecksRequired true/mappingBarrierVerified false/protocolPermit false，不能用fake ready升为生产可信。后继固定真实PG测试源与新runner交root审后单独执行，不沿用旧执行授权。原43/147/52义务和155/157查名池保留，主号/分身真机尚未补齐，线上未动。
+
+### 变更记录｜2026-11-02 M3a真实PG专属运行器与18组测试源码待审（未执行）
+
+root8642e42独立核215fb15新叶67/26manifest/8旧源和tag后，本轮只新增verification里的私有PG运行器、独立marker守卫和18组integration源码。固定18源与6个既有pg关键依赖hash，显式入口前无服务动作，新0700根与自有Popen/session、loopback及Unix socket、前后源校验、失败保留、仅自有成功库清理。与M2 runner/旧失败库隔离。
+
+测试源码覆盖同serial不同task/slot两个backend、独立serial进展、缺失/disabled/合成映射重绑屏障、全tuple CAS和合法进展/回退、五DML实际SQL拒绝及RETURNING反例、六步reconcile无DML、真实COMMIT后/前截断与上下文变化、完整schema/两个索引、旧锁序实际交错。完整生产checkpoint未导入，生产映射门控未实现；18组仅源码数量，SQL未解析或执行。
+
+### 决策日志｜2026-11-02 真实PG新运行器须按固定源码另审，不复用旧执行授权
+
+实际只运行新runner guard6、旧proxy字节8与typed observer7（合15）、最终Python AST/JS syntax与18源/6依赖只读hash核对。没有运行任何PG二进制/监听端口/数据库或Windows/手机；新叶/DDL及其他server/windows/deploy/public均与215fb15相同。候选固定后交root审，下一真实PG必须新根单次执行并保存原件，不自动重试、不开生产。M2原14仍单列，存储成功不授权host ACK或真机；原43/147/52、155/157池和冻结保持。
