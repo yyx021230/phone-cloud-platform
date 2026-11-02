@@ -1,0 +1,11 @@
+{
+  "manifestSha256": "a5390dcc93b5f1393e7b95732ca4df679dc5065200f80cf509d96e0f759e2a2f",
+  "version": "platform-integration-20261102-deployed.1",
+  "businessSourceCommit": "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+  "runtimeCandidateCommit": "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+  "runtimeCandidateTag": "platform-integration-20261102-rc.1",
+  "imageId": "sha256:4468f5ce0f2107b8df7c4ab6cb90bb0dc584e41d0a3a55a8a9dee3c1e20440e0",
+  "imageTag": "phone-cloud-platform:platform-integration-20261102-rc.1",
+  "restartImageId": "sha256:4468f5ce0f2107b8df7c4ab6cb90bb0dc584e41d0a3a55a8a9dee3c1e20440e0",
+  "restartImageTag": "phone-cloud-platform:platform-integration-20261102-rc.1"
+}
