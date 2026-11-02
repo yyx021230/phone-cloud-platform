@@ -5712,3 +5712,14 @@ root审208具体脚本后，企微owner从干净208建立codex/wecom-windows-sur
 ### 决策日志｜2026-11-02 传输成功不等于采样成功，失败正文须先留存
 
 延续只读调查而非真机授权。SSH exit0和371字节只能证明传输报告，没保存原body/parse分支就保留未知，不反推API支持性或重跑填证。补采仅在新wrapper审后一次原Python，metadata不重做；body所有字段和值类型必须固定schema，未知/未审内容不落盘，保存首因不再合并成一个笼统失败。样本/机器提示不能给工厂升权、不补旧host/清锁或调钟。此阶段留证与本地collector纠正，不是生产运行时修复或验收。
+
+
+### 变更记录｜2026-11-02 CLOCK补采取得实际API绑定失败阶段
+
+typed wrapper/原attempt先固定984fed9/observed.1，root实际12项与具体hash审后允许一次原Python补采。首次本地caller -I未加入脚本目录，import collect_reviewed即ModuleNotFoundError，main/marker/bounded和远端均未执行，预算未用；错误分列本地启动记录。root审固定绝对目录的isolated -c/bootstrap修正，Popen/check_output失败哨兵import probe、四源sha和无marker核后，原208源/原命令/原Admin身份执行唯一实际CLOCK-only补采，lookup协调无并发Windows实验。
+
+18:40:07北京时间SSH121ms/exit0/stderr0，stdout371字节/SHA41146400a672bed55a856d70915ace020bd824c243a4008dee24ad7a47cb22a9，先存传输再parse，本次typed失败body真实保留：unsupported_api_or_read_failure / bind_readonly_apis / AttributeError / windowsError0，进程17840。没有进入采样阶段，具体哪个导出/兼容点未知，不推全部时钟API不支持；Windows OS64位已知但Python ABI在失败之前尚未输出。补采预算1/1已用，失败即停，不换API/DLL/用户/路径。原371正文仍未知，不能按字节数相同追补旧原因；原EXEC SHA44c78fcc1bd60728d31c7a8363f385a76f534ef146ecbc041259b7705e1d6f9d不变，PS未重查。
+
+### 决策日志｜2026-11-02 将本地启动、传输和API阶段失败分开
+
+本地import失败不是Windows命令失败、更不是API缺失；修正只限已审本地bootstrap，不改模块或远端源。实际补采已取得有限API绑定失败事实，下一步若定位具体符号须另列最小只读源供审，不循环重跑泛调查。原Windows/主机提示已补齐，真实配对时钟样本/硬界/暂停/SYSTEM/peer/持久与v1修复仍缺；生产工厂、43/147/52隔离、155查名排除及27912来源未知保持，未派手机任务或修改业务/服务/身份/时钟。

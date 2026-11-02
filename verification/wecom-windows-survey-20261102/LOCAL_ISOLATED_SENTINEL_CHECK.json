@@ -1,0 +1,12 @@
+{
+  "scope": "fixed-directory isolated import probe",
+  "popenAndCheckOutputForbidden": true,
+  "mainInvoked": false,
+  "remoteCommands": 0,
+  "sourceHashes": {
+    "collect_clock_supplement.py": "34636da46680ae150f153cfa57003a1bada53c577c2c06279f8445ad2f1d8813",
+    "test_collect_classification.py": "c77c089a9f3f957d65154a6d1981217591b0430f22f9789e01a687eec0eee787",
+    "collect_reviewed.py": "22cfe2028b99147f6fbf99bc0198bc7dcc71ece6be7faa16dad55d7d21009778",
+    "windows_clock_survey.py": "153c7a6ed6fda7eb1b8a0c910826e14618ad5a495dd6ca78c1047251c317bae7"
+  }
+}
