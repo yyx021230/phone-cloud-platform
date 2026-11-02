@@ -5743,3 +5743,14 @@ root独立7项后统一一次执行2ee4/e6f5探针（102ms/SSH exit0/stderr0）�
 ### 决策日志｜2026-11-02 按官方API契约准备显式绑定，不盲试DLL
 
 本次事实解释新调查bind阶段失败，不升级为全OS API缺失、其他API-set不存在或原43/ADB原因。Microsoft官方win32-apis清单列该函数在api-ms-win-core-realtime-l1-1-1.dll（10.0.10240起），并明确动态加载应使用列出的module/API-set；已读原文，与单函数页Kernel32表项区分。后继仅本地准备此函数单一契约绑定、其余7保持Kernel32，有限失败API/模块/stage字段与fake-DLL差异验证；API-set本机可用仍待审后实测，不fallback/增加API/改预算或许可。未修v1、未接native，原源/旧receipt/隔离与身份冻结保持。
+
+
+### 变更记录｜2026-11-02 单一API-set显式绑定本地候选
+
+root b880已固定原导出事实与官方契约方向，企微owner从干净15b建立codex/wecom-windows-clock-contract-20261102，仅新增verification/wecom-windows-clock-contract-20261102与记录。新独立survey.py只将QueryUnbiasedInterruptTimePrecise映射api-ms-win-core-realtime-l1-1-1.dll，其余7保持Kernel32，固定System32策略，各模块一次，不遍历、不fallback，不增加API；旧208/原receipt/观察不改。原ABI/16组采样/QPC两秒循环起点检查保持，实际Python版本/位数在绑定前记录，所有authority/native/physical false。
+
+ApiFailure只输出固定failedApi/failedModule/apiPhase(load_module/resolve_symbol/set_signature/invoke_api/invalid_return)和有限errorType，不泄露raw异常或地址；实际cause仅本地保留。8个fake-DLL/读取失败/非Windows/CLI差异用例通过及AST检查，验证旧Kernel-only模拟失败而新契约可绑、7原映射不变、无回退/绑定时零调用、fake成功16组和BOOL失败精确API。均非真实Windows/API-set支持证据；无远端、未接产品/重建采集入口/重跑模型或手机。精确命令/字段/限制在PLAN，固定源交root审后才决定一次新只读采样。
+
+### 决策日志｜2026-11-02 显式契约绑定替代错误模块假设，不改变采样权限
+
+按已核Microsoft动态加载契约选择唯一API-set映射，不以尝试DLL列表寻找能用项。候选只修本地调查绑定选择及可定位失败字段，不宣称Windows实测、v1运行时或真机问题已解决；先审具体脚本/源hash，再统一入口采一次，不并发发Windows命令。实际样本仍不足证明硬界/暂停/SYSTEM/peer/持久；生产factory和v1不动，原43/147/52/155范围及27912因果unknown保持。

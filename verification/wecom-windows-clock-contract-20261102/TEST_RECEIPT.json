@@ -1,0 +1,14 @@
+{
+  "scope": "local fake DLL binding/read only; no Windows/API-set observation",
+  "tests": 8,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "remoteCommands": 0,
+  "nativeAcceptance": false,
+  "sha256": {
+    "survey.py": "deef98f246309e69b76fdc3a6f5106727e550249b9f87aa71dbcd4bdb0d9a116",
+    "test_survey.py": "c4a19987ddc0c16325b3002574635cb34098902f11975e41fa46ef887324682b",
+    "TEST_OUTPUT.txt": "c0c6d4b2c4ac32d8d483dcd36c79424f957affd3328a4e442961739e3470ffd6"
+  }
+}
