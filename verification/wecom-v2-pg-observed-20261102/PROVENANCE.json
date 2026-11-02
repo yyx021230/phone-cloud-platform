@@ -1,0 +1,27 @@
+{
+  "scope": "single root-owned private PG failure; no rerun/product fix/Windows/phone",
+  "sourceCommit": "fa2452df995abd8e5e0a5ac6de5a8ca0da99f55f",
+  "sourceTag": "wecom-v2-pg-runner-20261102-draft.2",
+  "origin": "/private/tmp/pc-wecom-v2-pg-3mrc7nik",
+  "copiedSha256": {
+    "RUN_RECEIPT.json": "2ecccf3ec524fb7378abd909077eebd0af39989f26d490e8fb2ad2d1fc6924b8",
+    "NODE_TEST_OUTPUT.txt": "01e3633c57dfdb946ea94a9c75972b881a33494c96d3907e8c2eecf3bd951f40",
+    "PG_EVIDENCE.json": "309a61e860d3cafa6024d9432554df3622fbc1d1fb22213b33b0cae40cfe6485",
+    "POSTGRES.txt": "4100656516e0bdaf4ca236559b5e1a48df67c3179fd177f7cbaeb05608a74cc1",
+    "INITDB.txt": "ab162c26d2792754de9bd28d1c938621524d7d2e4455cb71c7ee3329cc1ad37c",
+    "CREATEDB.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "fixture.json": "961ff7c802e3b251e8e291bd09c1cb13ba9d88b1ba084e0ecbfe9cba1fdea683"
+  },
+  "actualTests": 14,
+  "pass": 7,
+  "fail": 7,
+  "uncaughtExceptions": 7,
+  "partialEvidenceCases": 14,
+  "runnerActualPgCasesDefaultZeroDoesNotMeanZeroExecuted": true,
+  "nodeExitCode": 1,
+  "nodeGroupAbsent": true,
+  "postgresExitCode": 0,
+  "postgresStoppedConfirmed": true,
+  "failedDatabasePreservedAt": "/private/tmp/pc-wecom-v2-pg-3mrc7nik/db",
+  "driverSourceExcerptsSha256": "14098a76eaaa128115086ef0ddf8f8585a5c365c5a7389a7665e5d9bbfc05761"
+}

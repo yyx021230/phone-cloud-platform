@@ -1,0 +1,576 @@
+{
+  "kind": "private-postgres-fixture-only",
+  "cases": [
+    {
+      "name": "basic",
+      "revision": 2,
+      "operations": 2,
+      "lateHostPreparedRevision": 1
+    },
+    {
+      "name": "same-id-concurrency",
+      "revision": 1,
+      "operations": 1,
+      "confirmedResponses": 2,
+      "backendPids": [
+        26332,
+        26333
+      ]
+    },
+    {
+      "name": "different-id-concurrency",
+      "revision": 1,
+      "operations": 1,
+      "rejected": 1,
+      "backendPids": [
+        26333,
+        26332
+      ]
+    },
+    {
+      "name": "trigger-rollback",
+      "revision": 0,
+      "storageStatus": "unknown"
+    },
+    {
+      "name": "sql-constraints",
+      "rejectedMissingField": true,
+      "rejectedDuplicateSlots": true,
+      "revision": 0
+    },
+    {
+      "name": "row-lock-isolation",
+      "lockedRevision": 0,
+      "otherRevision": 1,
+      "otherCommittedBeforeHolderRelease": true
+    },
+    {
+      "name": "commit-after",
+      "wire": {
+        "mode": "after_commit",
+        "connections": 2,
+        "faultSpent": true,
+        "events": [
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "BEGIN"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SELECT"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "UPDATE"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "COMMIT"
+          },
+          {
+            "connectionId": 1,
+            "event": "backend_commit_completion",
+            "commandTag": "COMMIT",
+            "commandCompleteCount": 1,
+            "readyForQuery": "I",
+            "errorResponseCount": 0,
+            "commitConfirmedFromBackend": true
+          },
+          {
+            "connectionId": 2,
+            "event": "query",
+            "command": "BEGIN"
+          },
+          {
+            "connectionId": 2,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 2,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 2,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 2,
+            "event": "query",
+            "command": "SELECT"
+          },
+          {
+            "connectionId": 2,
+            "event": "query",
+            "command": "COMMIT"
+          }
+        ]
+      },
+      "backendPids": [
+        26341,
+        26342
+      ],
+      "independentRowRevision": 1,
+      "storageStatus": "committed_reconciled",
+      "commitKnown": true,
+      "originalWriteCount": 1
+    },
+    {
+      "name": "commit-before",
+      "wire": {
+        "mode": "before_commit",
+        "connections": 2,
+        "faultSpent": true,
+        "events": [
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "BEGIN"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SELECT"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "UPDATE"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "COMMIT"
+          },
+          {
+            "connectionId": 1,
+            "event": "dropped_before_commit"
+          },
+          {
+            "connectionId": 2,
+            "event": "query",
+            "command": "BEGIN"
+          },
+          {
+            "connectionId": 2,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 2,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 2,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 2,
+            "event": "query",
+            "command": "SELECT"
+          },
+          {
+            "connectionId": 2,
+            "event": "query",
+            "command": "COMMIT"
+          }
+        ]
+      },
+      "backendPids": [
+        26343,
+        26344
+      ],
+      "independentRowRevision": 0,
+      "storageStatus": "unknown",
+      "commitKnown": false,
+      "originalWriteCount": 1
+    },
+    {
+      "name": "init-after",
+      "wire": {
+        "mode": "after_commit",
+        "connections": 2,
+        "faultSpent": true,
+        "events": [
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "BEGIN"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "INSERT"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SELECT"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "COMMIT"
+          },
+          {
+            "connectionId": 1,
+            "event": "backend_commit_completion",
+            "commandTag": "COMMIT",
+            "commandCompleteCount": 1,
+            "readyForQuery": "I",
+            "errorResponseCount": 0,
+            "commitConfirmedFromBackend": true
+          },
+          {
+            "connectionId": 2,
+            "event": "query",
+            "command": "BEGIN"
+          },
+          {
+            "connectionId": 2,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 2,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 2,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 2,
+            "event": "query",
+            "command": "SELECT"
+          },
+          {
+            "connectionId": 2,
+            "event": "query",
+            "command": "COMMIT"
+          }
+        ]
+      },
+      "backendPids": [
+        26345,
+        26346
+      ],
+      "independentRowRevision": 0,
+      "storageStatus": "committed_reconciled",
+      "commitKnown": true,
+      "originalWriteCount": 1
+    },
+    {
+      "name": "op-epoch",
+      "wire": {
+        "mode": "after_commit",
+        "connections": 1,
+        "faultSpent": true,
+        "events": [
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "BEGIN"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SELECT"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "UPDATE"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "COMMIT"
+          },
+          {
+            "connectionId": 1,
+            "event": "backend_commit_completion",
+            "commandTag": "COMMIT",
+            "commandCompleteCount": 1,
+            "readyForQuery": "I",
+            "errorResponseCount": 0,
+            "commitConfirmedFromBackend": true
+          }
+        ]
+      },
+      "backendPids": [
+        26347
+      ],
+      "independentRowRevision": 1,
+      "storageStatus": "obsolete_epoch",
+      "commitKnown": false,
+      "originalWriteCount": 1
+    },
+    {
+      "name": "op-malformed",
+      "wire": {
+        "mode": "after_commit",
+        "connections": 1,
+        "faultSpent": true,
+        "events": [
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "BEGIN"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SELECT"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "UPDATE"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "COMMIT"
+          },
+          {
+            "connectionId": 1,
+            "event": "backend_commit_completion",
+            "commandTag": "COMMIT",
+            "commandCompleteCount": 1,
+            "readyForQuery": "I",
+            "errorResponseCount": 0,
+            "commitConfirmedFromBackend": true
+          }
+        ]
+      },
+      "backendPids": [
+        26348
+      ],
+      "independentRowRevision": 1,
+      "storageStatus": "unknown",
+      "commitKnown": false,
+      "originalWriteCount": 1
+    },
+    {
+      "name": "init-epoch",
+      "wire": {
+        "mode": "after_commit",
+        "connections": 1,
+        "faultSpent": true,
+        "events": [
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "BEGIN"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "INSERT"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SELECT"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "COMMIT"
+          },
+          {
+            "connectionId": 1,
+            "event": "backend_commit_completion",
+            "commandTag": "COMMIT",
+            "commandCompleteCount": 1,
+            "readyForQuery": "I",
+            "errorResponseCount": 0,
+            "commitConfirmedFromBackend": true
+          }
+        ]
+      },
+      "backendPids": [
+        26349
+      ],
+      "independentRowRevision": 0,
+      "storageStatus": "obsolete_epoch",
+      "commitKnown": false,
+      "originalWriteCount": 1
+    },
+    {
+      "name": "init-malformed",
+      "wire": {
+        "mode": "after_commit",
+        "connections": 1,
+        "faultSpent": true,
+        "events": [
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "BEGIN"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SET"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "INSERT"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "SELECT"
+          },
+          {
+            "connectionId": 1,
+            "event": "query",
+            "command": "COMMIT"
+          },
+          {
+            "connectionId": 1,
+            "event": "backend_commit_completion",
+            "commandTag": "COMMIT",
+            "commandCompleteCount": 1,
+            "readyForQuery": "I",
+            "errorResponseCount": 0,
+            "commitConfirmedFromBackend": true
+          }
+        ]
+      },
+      "backendPids": [
+        26350
+      ],
+      "independentRowRevision": 0,
+      "storageStatus": "unknown",
+      "commitKnown": false,
+      "originalWriteCount": 1
+    },
+    {
+      "name": "restart",
+      "childPid": 26351,
+      "oldEpochRejectedBeforeCheckout": true,
+      "revision": 1,
+      "originalEpochPreserved": true
+    }
+  ],
+  "server": {
+    "privateDataDirectoryMatched": true,
+    "loopbackPortMatched": true,
+    "fsync": "on",
+    "synchronousCommit": "on"
+  }
+}

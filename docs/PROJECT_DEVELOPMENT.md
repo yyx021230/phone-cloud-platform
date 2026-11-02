@@ -5857,3 +5857,14 @@ root独立审3c37362最小分类修正通过后，保留原未跟踪proxy/parser
 ### 决策日志｜2026-11-02 SQL字面修正也递增候选，不偷换已审源码
 
 后继真实PG只能用draft.2重新固定的11源与完整命令，不能以已通过node --check掩盖SQL未经实际验证。仍未启动PG/SQL/Windows/phone或生产动作；原14旧源、43/隔离/查名池/冻结保持，实际库/native未验。
+
+
+### 变更记录｜2026-11-02 单次私有PG实际14项7过7失败，保留原件未重试
+
+root审fa2452df固定runner后统一执行一次，owner只读逐字归档/private/tmp/pc-wecom-v2-pg-3mrc7nik的7原件与来源/hash。实际TAP14项7pass/7fail，7代理断链均uncaughtException Connection terminated unexpectedly；PG_EVIDENCE 14条body note不等于14通过，runner默认actualPgCases0也非实际执行0项。Node exit1/组消失、原PG26307 SIGINT后exit0停止确认，失败db原地保留，未再启动或连接。
+
+实际pg-pool checkout移除client idleListener；pg unexpected end先排nextTick query错误再同步client.emit(error)，现M2 owned client无error监听导致COMMIT Promise catch前未捕获。相关源码/hash节选及原始证据在verification/wecom-v2-pg-observed-20261102，root独立追踪一致。仅给fixture Pool空error handler不能解决active client路径，不允许吞错伪绿。
+
+### 决策日志｜2026-11-02 body证据不能覆盖驱动事件失败，先修拥有期监听再新候选
+
+7个基础/并发/约束/锁隔离/restart场景通过，7断链body局部事实保留但完整失败；不宣称PG全验收或native通过。下一M2最小片处理owned client首错误/失信/查询边界、精确listener清理与未知销毁后独立读，idle pool契约另审；先本地EventEmitter反例及候选/更新manifest，再审单次新PG运行，不重启原失败库、不改v1/index或吞全局错误。本观察阶段无产品修改、PG/Windows/手机/生产动作，原43/隔离/查名池/冻结保持。
