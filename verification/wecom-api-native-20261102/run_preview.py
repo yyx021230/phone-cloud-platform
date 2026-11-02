@@ -16,7 +16,22 @@ SOURCE = '32c0091a534aa7f9038deb91aa33f202f72e0e6b'
 def main():
     if sys.argv[1:] != ['--accept-preview']:
         raise SystemExit('explicit_preview_flag_required')
-    supplied = json.loads(sys.stdin.readline())
+    # The desktop command runner closes plain-pipe stdin. Its interactive PTY
+    # remains writable; suppress echo before receiving the authorized number.
+    prior_terminal = None
+    if sys.stdin.isatty():
+        import termios
+        prior_terminal = termios.tcgetattr(sys.stdin.fileno())
+        quiet = list(prior_terminal); quiet[3] &= ~termios.ECHO
+        termios.tcsetattr(sys.stdin.fileno(), termios.TCSANOW, quiet)
+    try:
+        line = sys.stdin.readline()
+    finally:
+        if prior_terminal is not None:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSANOW, prior_terminal)
+    if not line:
+        raise SystemExit('stdin_input_required_no_submission')
+    supplied = json.loads(line)
     phone = supplied['phoneNumber']
     if not isinstance(phone, str) or len(phone) != 11 or not phone.isdigit() or not phone.endswith('6441'):
         raise SystemExit('authorized_target_required')
