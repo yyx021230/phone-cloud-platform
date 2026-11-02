@@ -6071,3 +6071,13 @@ SAVEPOINT组真实NOWAIT55P03后仅回滚目标1，目标2同transaction/同back
 ### 决策日志｜2026-11-02 窄SQL竞态必须真实观察，不能替代shared writer接线
 
 comparison SQL/产品/DDL/shared index/repos/restore/Agent均未改；4仅未执行场景数量，不累计历史存储/兼容或纯策略测试。backend_xmin/逻辑等待顺序不冒称完整导出statement snapshot，全部proof及RETURNING必须实测。job/hold/business无marker/delivery/controlled owner/blob/boot/lookup canonical/跨协议admission仍未验，S2/journal/native默认禁启，原43设备义务/147/52和查名池保持，主号分身真机未完成。
+
+### 变更记录｜2026-11-02 task EPQ三对比与target SAVEPOINT私有PG4/4通过
+
+root审496a44后一次新库pc-wecom-v2-epq-pg-5imxqwro真实4/4pass、4attempt齐/源前后匹配；7原件/12固定执行源与root actual-review逐字封存verification/wecom-v2-task-epq-observed-20261102。A真实M3 5DML、B raw语句+C服务端精确Lock阻塞证明后才提交；NOT EXISTS负例覆盖1行丢marker/M3conflict，两当前row marker控制各0行/完整claim保留/M3recorded，2099候选排除timestamp假阳性。
+
+SAVEPOINT55P03只回滚首目标，另目标同writer提交后新backend复读首不变/第二stalled。Node53663exit0/组消失、PG53650exit0确认，成功db由原runner确认后删、旧gr_br461失败db未动。原INITDB EOF空白保留并具名例外，不累计既有M3/兼容/纯策略测试。
+
+### 决策日志｜2026-11-02 比较SQL窄行为通过不宣称生产writer已修
+
+只接受隔离库task marker/target SAVEPOINT行为，不把负例当原生产因果或实际共享writer修复。无产品/DDL/Windows/手机/生产动作；下一仅准备job/hold/business无marker/custom delivery及controlled owner写的精确最小验证片/SQL，blob/boot共同门控仍另案，先审不执行PG/设备/改shared。原43设备义务/147/52、查名池与冻结保持，S2/journal/native和主号分身真机仍未完成。

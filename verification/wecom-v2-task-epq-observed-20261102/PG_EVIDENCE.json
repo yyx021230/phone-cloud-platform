@@ -1,0 +1,363 @@
+{
+  "kind": "task-EPQ-and-target-savepoint-only",
+  "server": {
+    "privateDataDirectoryMatched": true,
+    "loopbackPortMatched": true,
+    "fsync": "on",
+    "synchronousCommit": "on"
+  },
+  "cases": [
+    {
+      "name": "unsafe-not-exists",
+      "trace": [
+        "A_all_five_DML_uncommitted_before_COMMIT",
+        "B_raw_statement_dispatched_while_A_uncommitted",
+        "C_server_observed_B_active_Lock_blocked_by_A",
+        "A_COMMIT_released_only_after_server_proof",
+        "B_raw_statement_returned",
+        "B_COMMIT_confirmed"
+      ],
+      "comparisonSql": "b2f2390b3883fb907b21439a22f5aa5d5bb32d2e44ed85f312754d205440896b",
+      "aTransaction": {
+        "xid": "739",
+        "snapshot": "739:739:"
+      },
+      "aBackend": 53667,
+      "aDmlCount": 5,
+      "bBackend": 53665,
+      "lateTimestamp": "2099-01-01T00:00:00.000Z",
+      "aTimestamp": "2026-11-02T05:00:01.000Z",
+      "lockProof": {
+        "waiter": 53665,
+        "blocker": 53667,
+        "controlBackend": 53666,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          53667
+        ],
+        "backendXmin": "739",
+        "queryStart": "2026-11-02T15:04:19.424Z",
+        "reads": 1,
+        "elapsedMs": 0.9828329999999994,
+        "exactStatementSnapshotExported": false
+      },
+      "aCommitTag": "COMMIT",
+      "bReturning": {
+        "command": "UPDATE",
+        "rowCount": 1,
+        "rows": [
+          {
+            "taskId": "task-epq-unsafe-not-exists",
+            "status": "queued",
+            "dataSha256": "e9c5ee767a9d9b5bffe1ab87891a5b1cb8f6336dee93ee637d750bf1b08b40d5",
+            "hasClaim": false
+          }
+        ]
+      },
+      "final": {
+        "dataSha256": "e9c5ee767a9d9b5bffe1ab87891a5b1cb8f6336dee93ee637d750bf1b08b40d5",
+        "hasClaim": false,
+        "status": "queued",
+        "updatedAt": "2099-01-01T00:00:00.000Z",
+        "claimDataPreserved": true,
+        "m3StorageStatus": "conflict"
+      },
+      "protocolPermit": false,
+      "negativeControl": true
+    },
+    {
+      "name": "guarded-update",
+      "trace": [
+        "A_all_five_DML_uncommitted_before_COMMIT",
+        "B_raw_statement_dispatched_while_A_uncommitted",
+        "C_server_observed_B_active_Lock_blocked_by_A",
+        "A_COMMIT_released_only_after_server_proof",
+        "B_raw_statement_returned",
+        "B_COMMIT_confirmed"
+      ],
+      "comparisonSql": "b7c474ae410e0ae0e54b2b14f44aa40003e98e1e361cb4066bbb36b9e888ead6",
+      "aTransaction": {
+        "xid": "747",
+        "snapshot": "747:747:"
+      },
+      "aBackend": 53667,
+      "aDmlCount": 5,
+      "bBackend": 53666,
+      "lateTimestamp": "2099-01-01T00:00:00.000Z",
+      "aTimestamp": "2026-11-02T05:00:01.000Z",
+      "lockProof": {
+        "waiter": 53666,
+        "blocker": 53667,
+        "controlBackend": 53665,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          53667
+        ],
+        "backendXmin": "747",
+        "queryStart": "2026-11-02T15:04:19.433Z",
+        "reads": 1,
+        "elapsedMs": 0.6673329999999993,
+        "exactStatementSnapshotExported": false
+      },
+      "aCommitTag": "COMMIT",
+      "bReturning": {
+        "command": "UPDATE",
+        "rowCount": 0,
+        "rows": []
+      },
+      "final": {
+        "dataSha256": "4cac3ed287233dc8ff5b3e31de1bafa46d5a38b0affd3dbaf465dde0e47d1287",
+        "hasClaim": true,
+        "status": "running",
+        "updatedAt": "2026-11-02T05:00:01.000Z",
+        "claimDataPreserved": true,
+        "m3StorageStatus": "recorded"
+      },
+      "protocolPermit": false,
+      "negativeControl": false
+    },
+    {
+      "name": "guarded-upsert",
+      "trace": [
+        "A_all_five_DML_uncommitted_before_COMMIT",
+        "B_raw_statement_dispatched_while_A_uncommitted",
+        "C_server_observed_B_active_Lock_blocked_by_A",
+        "A_COMMIT_released_only_after_server_proof",
+        "B_raw_statement_returned",
+        "B_COMMIT_confirmed"
+      ],
+      "comparisonSql": "0cac7422ded8d27c106ce4d5d244c025bde5ddcab58d1d8dba3b874fa6d5adb8",
+      "aTransaction": {
+        "xid": "755",
+        "snapshot": "755:755:"
+      },
+      "aBackend": 53667,
+      "aDmlCount": 5,
+      "bBackend": 53665,
+      "lateTimestamp": "2099-01-01T00:00:00.000Z",
+      "aTimestamp": "2026-11-02T05:00:01.000Z",
+      "lockProof": {
+        "waiter": 53665,
+        "blocker": 53667,
+        "controlBackend": 53666,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          53667
+        ],
+        "backendXmin": "755",
+        "queryStart": "2026-11-02T15:04:19.439Z",
+        "reads": 1,
+        "elapsedMs": 0.3595420000000047,
+        "exactStatementSnapshotExported": false
+      },
+      "aCommitTag": "COMMIT",
+      "bReturning": {
+        "command": "INSERT",
+        "rowCount": 0,
+        "rows": []
+      },
+      "final": {
+        "dataSha256": "c873b893ee1e3e8489af7474745a7ab0f84ce77990b10c4995dc08ddc8e88399",
+        "hasClaim": true,
+        "status": "running",
+        "updatedAt": "2026-11-02T05:00:01.000Z",
+        "claimDataPreserved": true,
+        "m3StorageStatus": "recorded"
+      },
+      "protocolPermit": false,
+      "negativeControl": false
+    },
+    {
+      "name": "target-savepoint",
+      "holderBackend": 53666,
+      "writerBackend": 53665,
+      "trace": [
+        "first_target_SQL_NOWAIT_failed_and_savepoint_rolled_back",
+        "second_target_same_writer_transaction_COMMIT_confirmed"
+      ],
+      "firstTargetError": "55P03",
+      "readbackBackend": 53668,
+      "firstUnchanged": true,
+      "secondDataSha256": "37d694824d4d96e139402a752dd95c0a658301b287fdde7179a42b1622646ae8",
+      "secondStatus": "stalled",
+      "commitKnown": true,
+      "physicalPermission": false
+    }
+  ],
+  "attempts": [
+    {
+      "name": "unsafe-not-exists",
+      "trace": [
+        "A_all_five_DML_uncommitted_before_COMMIT",
+        "B_raw_statement_dispatched_while_A_uncommitted",
+        "C_server_observed_B_active_Lock_blocked_by_A",
+        "A_COMMIT_released_only_after_server_proof",
+        "B_raw_statement_returned",
+        "B_COMMIT_confirmed"
+      ],
+      "comparisonSql": "b2f2390b3883fb907b21439a22f5aa5d5bb32d2e44ed85f312754d205440896b",
+      "aTransaction": {
+        "xid": "739",
+        "snapshot": "739:739:"
+      },
+      "aBackend": 53667,
+      "aDmlCount": 5,
+      "bBackend": 53665,
+      "lateTimestamp": "2099-01-01T00:00:00.000Z",
+      "aTimestamp": "2026-11-02T05:00:01.000Z",
+      "lockProof": {
+        "waiter": 53665,
+        "blocker": 53667,
+        "controlBackend": 53666,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          53667
+        ],
+        "backendXmin": "739",
+        "queryStart": "2026-11-02T15:04:19.424Z",
+        "reads": 1,
+        "elapsedMs": 0.9828329999999994,
+        "exactStatementSnapshotExported": false
+      },
+      "aCommitTag": "COMMIT",
+      "bReturning": {
+        "command": "UPDATE",
+        "rowCount": 1,
+        "rows": [
+          {
+            "taskId": "task-epq-unsafe-not-exists",
+            "status": "queued",
+            "dataSha256": "e9c5ee767a9d9b5bffe1ab87891a5b1cb8f6336dee93ee637d750bf1b08b40d5",
+            "hasClaim": false
+          }
+        ]
+      },
+      "final": {
+        "dataSha256": "e9c5ee767a9d9b5bffe1ab87891a5b1cb8f6336dee93ee637d750bf1b08b40d5",
+        "hasClaim": false,
+        "status": "queued",
+        "updatedAt": "2099-01-01T00:00:00.000Z",
+        "claimDataPreserved": true,
+        "m3StorageStatus": "conflict"
+      }
+    },
+    {
+      "name": "guarded-update",
+      "trace": [
+        "A_all_five_DML_uncommitted_before_COMMIT",
+        "B_raw_statement_dispatched_while_A_uncommitted",
+        "C_server_observed_B_active_Lock_blocked_by_A",
+        "A_COMMIT_released_only_after_server_proof",
+        "B_raw_statement_returned",
+        "B_COMMIT_confirmed"
+      ],
+      "comparisonSql": "b7c474ae410e0ae0e54b2b14f44aa40003e98e1e361cb4066bbb36b9e888ead6",
+      "aTransaction": {
+        "xid": "747",
+        "snapshot": "747:747:"
+      },
+      "aBackend": 53667,
+      "aDmlCount": 5,
+      "bBackend": 53666,
+      "lateTimestamp": "2099-01-01T00:00:00.000Z",
+      "aTimestamp": "2026-11-02T05:00:01.000Z",
+      "lockProof": {
+        "waiter": 53666,
+        "blocker": 53667,
+        "controlBackend": 53665,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          53667
+        ],
+        "backendXmin": "747",
+        "queryStart": "2026-11-02T15:04:19.433Z",
+        "reads": 1,
+        "elapsedMs": 0.6673329999999993,
+        "exactStatementSnapshotExported": false
+      },
+      "aCommitTag": "COMMIT",
+      "bReturning": {
+        "command": "UPDATE",
+        "rowCount": 0,
+        "rows": []
+      },
+      "final": {
+        "dataSha256": "4cac3ed287233dc8ff5b3e31de1bafa46d5a38b0affd3dbaf465dde0e47d1287",
+        "hasClaim": true,
+        "status": "running",
+        "updatedAt": "2026-11-02T05:00:01.000Z",
+        "claimDataPreserved": true,
+        "m3StorageStatus": "recorded"
+      }
+    },
+    {
+      "name": "guarded-upsert",
+      "trace": [
+        "A_all_five_DML_uncommitted_before_COMMIT",
+        "B_raw_statement_dispatched_while_A_uncommitted",
+        "C_server_observed_B_active_Lock_blocked_by_A",
+        "A_COMMIT_released_only_after_server_proof",
+        "B_raw_statement_returned",
+        "B_COMMIT_confirmed"
+      ],
+      "comparisonSql": "0cac7422ded8d27c106ce4d5d244c025bde5ddcab58d1d8dba3b874fa6d5adb8",
+      "aTransaction": {
+        "xid": "755",
+        "snapshot": "755:755:"
+      },
+      "aBackend": 53667,
+      "aDmlCount": 5,
+      "bBackend": 53665,
+      "lateTimestamp": "2099-01-01T00:00:00.000Z",
+      "aTimestamp": "2026-11-02T05:00:01.000Z",
+      "lockProof": {
+        "waiter": 53665,
+        "blocker": 53667,
+        "controlBackend": 53666,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          53667
+        ],
+        "backendXmin": "755",
+        "queryStart": "2026-11-02T15:04:19.439Z",
+        "reads": 1,
+        "elapsedMs": 0.3595420000000047,
+        "exactStatementSnapshotExported": false
+      },
+      "aCommitTag": "COMMIT",
+      "bReturning": {
+        "command": "INSERT",
+        "rowCount": 0,
+        "rows": []
+      },
+      "final": {
+        "dataSha256": "c873b893ee1e3e8489af7474745a7ab0f84ce77990b10c4995dc08ddc8e88399",
+        "hasClaim": true,
+        "status": "running",
+        "updatedAt": "2026-11-02T05:00:01.000Z",
+        "claimDataPreserved": true,
+        "m3StorageStatus": "recorded"
+      }
+    },
+    {
+      "name": "target-savepoint",
+      "holderBackend": 53666,
+      "writerBackend": 53665,
+      "trace": [
+        "first_target_SQL_NOWAIT_failed_and_savepoint_rolled_back",
+        "second_target_same_writer_transaction_COMMIT_confirmed"
+      ],
+      "firstTargetError": "55P03",
+      "readbackBackend": 53668,
+      "firstUnchanged": true,
+      "secondDataSha256": "37d694824d4d96e139402a752dd95c0a658301b287fdde7179a42b1622646ae8",
+      "secondStatus": "stalled"
+    }
+  ]
+}

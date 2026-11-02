@@ -1,0 +1,15 @@
+2026-11-02 23:04:19.045 CST [53650] LOG:  starting PostgreSQL 16.15 (Homebrew) on aarch64-apple-darwin25.6.0, compiled by Apple clang version 21.0.0 (clang-2100.1.1.101), 64-bit
+2026-11-02 23:04:19.045 CST [53650] LOG:  listening on IPv4 address "127.0.0.1", port 49494
+2026-11-02 23:04:19.045 CST [53650] LOG:  listening on Unix socket "/private/tmp/pc-wecom-v2-epq-pg-5imxqwro/.s.PGSQL.49494"
+2026-11-02 23:04:19.047 CST [53654] LOG:  database system was shut down at 2026-11-02 23:04:19 CST
+2026-11-02 23:04:19.048 CST [53650] LOG:  database system is ready to accept connections
+2026-11-02 23:04:19.444 CST [53665] ERROR:  could not obtain lock on row in relation "phone_cloud_wecom_v2_physical_anchors"
+2026-11-02 23:04:19.444 CST [53665] STATEMENT:  SELECT physical_key,device_id,active_obligation_id,active_claim_operation_id,agent_id,mapping_revision,mapping_fingerprint,mapping_state
+	    FROM phone_cloud_wecom_v2_physical_anchors WHERE physical_key=$1 FOR UPDATE NOWAIT
+2026-11-02 23:04:19.465 CST [53650] LOG:  received fast shutdown request
+2026-11-02 23:04:19.465 CST [53650] LOG:  aborting any active transactions
+2026-11-02 23:04:19.466 CST [53650] LOG:  background worker "logical replication launcher" (PID 53657) exited with exit code 1
+2026-11-02 23:04:19.466 CST [53652] LOG:  shutting down
+2026-11-02 23:04:19.466 CST [53652] LOG:  checkpoint starting: shutdown immediate
+2026-11-02 23:04:19.503 CST [53652] LOG:  checkpoint complete: wrote 987 buffers (6.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.031 s, sync=0.006 s, total=0.038 s; sync files=332, longest=0.001 s, average=0.001 s; distance=4564 kB, estimate=4564 kB; lsn=0/1992D30, redo lsn=0/1992D30
+2026-11-02 23:04:19.505 CST [53650] LOG:  database system is shut down

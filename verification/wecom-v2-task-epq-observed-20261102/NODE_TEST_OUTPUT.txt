@@ -1,0 +1,34 @@
+TAP version 13
+# Subtest: actual PG task EPQ: unsafe-not-exists
+ok 1 - actual PG task EPQ: unsafe-not-exists
+  ---
+  duration_ms: 32.950042
+  type: 'test'
+  ...
+# Subtest: actual PG task EPQ: guarded-update
+ok 2 - actual PG task EPQ: guarded-update
+  ---
+  duration_ms: 7.74575
+  type: 'test'
+  ...
+# Subtest: actual PG task EPQ: guarded-upsert
+ok 3 - actual PG task EPQ: guarded-upsert
+  ---
+  duration_ms: 6.262667
+  type: 'test'
+  ...
+# Subtest: actual PG target SAVEPOINT: first NOWAIT failure, second same transaction commits
+ok 4 - actual PG target SAVEPOINT: first NOWAIT failure, second same transaction commits
+  ---
+  duration_ms: 5.7315
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 130.25325

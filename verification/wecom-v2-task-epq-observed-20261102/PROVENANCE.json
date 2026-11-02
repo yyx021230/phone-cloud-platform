@@ -1,0 +1,42 @@
+{
+  "executedCommit": "496a44ae3cacba400ee161be043c25ead3a26166",
+  "executedTag": "wecom-v2-task-epq-20261102-draft.1",
+  "sourceRoot": "/private/tmp/pc-wecom-v2-epq-pg-5imxqwro",
+  "copiedOriginalFiles": {
+    "fixture.json": "b60d329ceff5c2125b8bf6cb6e3dd4368632112064a680284d125acd327cf252",
+    "POSTGRES.txt": "0e8f1d3c94bf7d81b72857806fe8157fd260a441d012538bb5b7a8e58a4106a3",
+    "PG_EVIDENCE.json": "e3610bdc1308c2c5d070bab08e0ee82962a719935d6cb191426624713e9be3c6",
+    "CREATEDB.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "INITDB.txt": "7c8b4e1b6f1eb973db4af4077bf57f0cb42b6064114f5f1c8dc89d39a698ee68",
+    "NODE_TEST_OUTPUT.txt": "b2c1e541a17ebc6e8f085ba477b4f55e82929409ac8a5f284c3915bb441a3e06",
+    "RUN_RECEIPT.json": "ca8e68a34abe04ae71a139c57fe45dcd9b32bed567c813074e0b6784c4a7885d"
+  },
+  "executedManifestSha256": "28b2dcf35ea7b10737914e02589cfe462f02c5548c8ceae427216deef78b985a",
+  "tap": {
+    "tests": 4,
+    "pass": 4,
+    "fail": 0
+  },
+  "bodyCases": 4,
+  "attempts": 4,
+  "sourceAfterMatched": true,
+  "nodeCleanup": {
+    "started": true,
+    "pid": 53663,
+    "exitCode": 0,
+    "groupAbsent": true
+  },
+  "postgresCleanup": {
+    "pid": 53650,
+    "exitCode": 0,
+    "confirmed": true
+  },
+  "successDbRemovedByOwnedRunnerOnly": true,
+  "olderFailedDbRetained": true,
+  "rootReviewOriginal": "/private/tmp/pc-root-wecom-task-epq-496a44-20261102/actual-review.json",
+  "rootReviewSha256": "24ab42226c538193a6e17193eed0713e66917a5566cd4115ec879447a76d572c",
+  "archiveDidNotConnectRestartOrChangeDatabase": true,
+  "verificationSqlOnlyNotProductionCauseOrSharedFix": true,
+  "notNativeAcceptance": true,
+  "rootReviewCommit": "f3a521897ce18f0fb164e52369d83e9a607a93ce"
+}
