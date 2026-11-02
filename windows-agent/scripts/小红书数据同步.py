@@ -117,8 +117,6 @@ def capture(adb_path, serial):
         if attempt == 0:
             time.sleep(0.5)
     current = focus(adb_path, serial)
-    if re.search(r"com\.xingin\.xhs/com\.xingin\.login\.device\.offline\.DeviceOfflineRemindActivity(?:[}\s]|$)", current):
-        raise RuntimeError("Xiaohongshu account is logged out; manual login is required")
     # Some OEM builds return no XML through /dev/tty while a file dump works.
     # Use a fresh per-capture path, never a cached hierarchy from another page.
     path = "/sdcard/phonecloud-xhs-capture-" + uuid.uuid4().hex + ".xml"
@@ -160,6 +158,41 @@ def login_activity(current):
         r"mCurrentFocus=Window\{[^\n}]*\bu\d+\s+com\.xingin\.xhs/com\.xingin\.login\."
         r"(?:halfwelcome\.HalfWelcomeActivity|activity\.WelcomeActivity|device\.offline\.DeviceOfflineRemindActivity)(?:[}\s]|$)",
         current))
+
+
+def login_element_evidence(root, current, events):
+    """A login Activity alone, empty tree or wrong slot never proves logout."""
+    require_element_tree(root)
+    nodes = [n for n in live_nodes(root) if n.get("package") == XHS_PACKAGE]
+    texts = {n.get("text", "").strip() for n in nodes}
+    if ("账号下线通知" in texts and "重新登录" in texts
+            and "你的小红书账号已在其他设备登录，如非本人操作，请尽快在「设置-账号与安全-登录设备管理」中移除未知设备。" in texts
+            and login_activity(current)):
+        assert_requested_foreground(current, events)
+        return "account_offline_notice"
+    index = re.search(r"mCurrentFocus=Window\{[^\n}]*\bu\d+\s+com\.xingin\.xhs/(?:com\.xingin\.xhs\.index\.v2\.IndexActivityV2|\.index\.v2\.IndexActivityV2)[}\s]", current)
+    if ((login_activity(current) or index) and {"登录后展示自己", "微信登录"} <= texts
+            and ("手机号登录" in texts or {"一键登录", "其他登录方式"} <= texts)
+            and not {"我的草稿", "最新笔记", "作品分析"} & texts):
+        assert_requested_foreground(current, events)
+        return "login_controls"
+    return None
+
+
+def confirm_logged_out(adb_path, serial, root, guard, events):
+    """Two fresh native trees plus the requested foreground user are required."""
+    guard()
+    first = login_element_evidence(root, focus(adb_path, serial), events)
+    if first is None:
+        raise ElementListReadError("login state lacks native element evidence")
+    time.sleep(.5)
+    guard()
+    fresh = capture(adb_path, serial)
+    second = login_element_evidence(fresh, focus(adb_path, serial), events)
+    if first != second:
+        raise ElementListReadError("login state changed during native confirmation")
+    events.append("login_state_confirmed:" + first)
+    raise RuntimeError("Xiaohongshu account is logged out; manual login is required")
 
 
 def assert_requested_foreground(current, events):
@@ -220,7 +253,7 @@ def navigation_capture(adb_path, serial, guard, events):
             return capture(adb_path, serial)
         if login_activity(current):
             assert_requested_foreground(current, events)
-            raise RuntimeError("Xiaohongshu account is logged out; manual login is required") from error
+            raise ElementListReadError("login foreground could not be read; logout is unproven") from error
         notification = re.search(
             r"com\.xingin\.xhs/(?:com\.xingin\.authorization\.NotificationAuthorizationTranslucentActivity|"
             r"\.authorization\.NotificationAuthorizationTranslucentActivity)(?:[}\s]|$)", current)
@@ -776,8 +809,54 @@ def start_xhs(adb_path, serial, slot, guard, events):
     raise RuntimeError("Xiaohongshu clone slot could not be proven")
 
 
-def recover_known_overlay(adb_path, serial, root, guard, events):
+def close_notification_card(adb_path, serial, root, current, guard, events, read_guard):
+    """Only the observed XHS message card's unique native close image."""
+    if not re.search(r"mCurrentFocus=Window\{[^\n}]*\bu\d+\s+com\.xingin\.xhs/(?:com\.xingin\.authorization\.NotificationAuthorizationTranslucentActivity|\.authorization\.NotificationAuthorizationTranslucentActivity)[}\s]", current):
+        return False
+    assert_requested_foreground(current, events)
+    nodes = live_nodes(root)
+    parents = {child: parent for parent in root.iter() for child in parent}
+    copy = "打开通知，有热门笔记和互动消息第一时间通知你"
+    if not all(len([n for n in nodes if n.get("package") == XHS_PACKAGE and n.get("text") == text]) == 1
+               for text in ("消息提醒", copy, "确认")):
+        return False
+    candidates = []
+    for n in nodes:
+        panel = parents.get(n)
+        if (n.get("package") != XHS_PACKAGE or n.get("class") != "android.widget.ImageView"
+                or n.get("resource-id") != XHS_PACKAGE + ":id/0_resource_name_obfuscated"
+                or n.get("clickable") != "true" or n.get("enabled") != "true"
+                or panel is None or panel.get("class") != "android.widget.FrameLayout"
+                or panel.get("package") != XHS_PACKAGE or not bounds(panel)):
+            continue
+        x1,y1,x2,y2 = bounds(n);a,b,c,d = bounds(panel)
+        if (a <= x1 < x2 <= c and b <= y1 < y2 <= b+(d-b)*.15
+                and x1 >= a+(c-a)*.8 and x2-x1 <= (c-a)*.15
+                and all(label(panel, text) for text in ("消息提醒", copy, "确认"))):
+            candidates.append(n)
+    if len(candidates) != 1:
+        raise ElementListReadError("notification card close element is not uniquely proven")
+    marker = "notification_card_close_selected"
+    if marker in events:
+        raise ElementListReadError("notification card recurred after native close")
+    guard()
+    if focus(adb_path, serial) != current:
+        raise ElementListReadError("notification card foreground changed before close")
+    x1,y1,x2,y2 = bounds(candidates[0])
+    events.append(marker)
+    adb(adb_path, serial, "shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2), timeout=7)
+    for _ in range(8):
+        read_guard();time.sleep(.4)
+        fresh = navigation_capture(adb_path, serial, read_guard, events)
+        assert_requested_foreground(focus(adb_path, serial), events)
+        if not label(fresh, copy):
+            return True
+    raise ElementListReadError("notification card remained after native close")
+
+
+def recover_known_overlay(adb_path, serial, root, guard, events, read_guard=None):
     """Use only exact, previously evidenced QR/publish dismissal paths."""
+    read_guard = read_guard or guard
     current = focus(adb_path, serial)
     nodes = list(root.iter("node"))
     parents = {child: parent for parent in root.iter() for child in parent}
@@ -822,8 +901,15 @@ def recover_known_overlay(adb_path, serial, root, guard, events):
             ("com.vivo.pushservice" in current and "type=2038" in current)):
         if "creator_late_notification_retry" in events:
             raise ElementListReadError("notification overlay recurred after bounded navigation recovery")
+        if close_notification_card(adb_path, serial, root, current, guard, events, read_guard):
+            return True
         press_back()
-        if "NotificationAuthorizationTranslucentActivity" in focus(adb_path, serial):
+        for _ in range(8):
+            read_guard()
+            if "NotificationAuthorizationTranslucentActivity" not in focus(adb_path, serial):
+                break
+            time.sleep(.4)
+        else:
             raise RuntimeError("notification overlay stayed open after Back")
         events.append("notification_prompt_back")
         return True
@@ -973,6 +1059,30 @@ def recover_known_overlay(adb_path, serial, root, guard, events):
         return True
 
     if "com.bbk.updater" in current or any(node.get("package") == "com.bbk.updater" for node in nodes):
+        if label(root, "智慧升级"):
+            smart = [n for n in live_nodes(root) if n.get("package") == "com.bbk.updater"
+                     and n.get("resource-id") == "com.bbk.updater:id/alertTitle" and n.get("text") == "智慧升级"]
+            body = [n for n in live_nodes(root) if n.get("package") == "com.bbk.updater"
+                    and n.get("resource-id") == "com.bbk.updater:id/message_main"
+                    and n.get("text") == "建议开启智慧升级。开启后，将通过 WLAN 自动下载升级包，并在夜间 01:00 - 05:00 设备闲置时自动安装，无需等待和手动操作。"]
+            buttons = [n for n in live_nodes(root) if n.get("package") == "com.bbk.updater"
+                       and n.get("resource-id") == "android:id/button2"
+                       and n.get("class") == "android.widget.LinearLayout"
+                       and n.get("clickable") == "true" and n.get("enabled") == "true"
+                       and len([c for c in n if c.get("resource-id") == "com.bbk.updater:id/vbutton_title"
+                                and c.get("text") == "取消"]) == 1]
+            if ("com.bbk.updater" not in current or len(smart) != 1 or len(body) != 1 or len(buttons) != 1
+                    or "vivo_smart_upgrade_cancelled" in events):
+                raise ElementListReadError("Vivo smart upgrade safe cancel is not proven")
+            guard()
+            if focus(adb_path, serial) != current:
+                raise ElementListReadError("Vivo smart upgrade foreground changed")
+            x1,y1,x2,y2 = bounds(buttons[0]);events.append("vivo_smart_upgrade_cancelled")
+            adb(adb_path, serial, "shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2), timeout=7)
+            time.sleep(.5)
+            if label(navigation_capture(adb_path, serial, guard, events), "智慧升级"):
+                raise ElementListReadError("Vivo smart upgrade remained after cancel")
+            return True
         title = [node for node in nodes if node.get("package") == "com.bbk.updater"
                  and (node.get("text") or "").strip() == "系统升级"]
         buttons = []
@@ -992,7 +1102,9 @@ def recover_known_overlay(adb_path, serial, root, guard, events):
         adb(adb_path, serial, "shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2), timeout=7)
         time.sleep(0.4)
         if "com.bbk.updater" in focus(adb_path, serial):
-            raise RuntimeError("Vivo update overlay stayed open after defer")
+            refreshed = navigation_capture(adb_path, serial, guard, events)
+            if not label(refreshed, "智慧升级"):
+                raise RuntimeError("Vivo update overlay stayed open after defer")
         events.append("vivo_update_deferred")
         return True
 
@@ -1433,7 +1545,7 @@ def tap_index_menu(adb_path, serial, root, guard, events):
             assert_requested_foreground(current, events)
             if current != foreground:
                 raise ElementListReadError("menu notification foreground changed before Back")
-        if not recover_known_overlay(adb_path, serial, fresh, notification_guard, events):
+        if not recover_known_overlay(adb_path, serial, fresh, notification_guard, events, read_guard=guard):
             raise ElementListReadError("menu notification recovery was not proven")
         fresh = navigation_capture(adb_path, serial, guard, events)
         assert_requested_foreground(focus(adb_path, serial), events)
@@ -1745,14 +1857,9 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events, _notificati
         if recover_vivo_browser_redirect(adb_path,serial,slot,current,guard,events,root):
             root = navigation_capture(adb_path,serial,guard,events)
             continue
-        if login_activity(current):
-            assert_requested_foreground(current, events)
-            raise RuntimeError("Xiaohongshu account is logged out; manual login is required")
-        if (label(root, "登录后展示自己") and label(root, "微信登录")
-                and (label(root, "手机号登录") or (label(root, "一键登录") and label(root, "其他登录方式")))
-                and re.search(r"mCurrentFocus=Window\{[^\n}]*\bu\d+\s+com\.xingin\.xhs/(?:com\.xingin\.xhs\.index\.v2\.IndexActivityV2|\.index\.v2\.IndexActivityV2)[}\s]", current)):
-            assert_requested_foreground(current, events)
-            raise RuntimeError("Xiaohongshu account is logged out; manual login is required")
+        if login_activity(current) or (re.search(r"mCurrentFocus=Window\{[^\n}]*\bu\d+\s+com\.xingin\.xhs/", current)
+                                       and login_element_evidence(root, current, events)):
+            confirm_logged_out(adb_path, serial, root, guard, events)
         if (XHS_PACKAGE in current and label(root, "创作中心") and label(root, "开通数据权限")
                 and not label(root, "最新笔记")):
             raise RuntimeError("Creator Center data permission is not enabled")
@@ -1857,7 +1964,7 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events, _notificati
             assert_requested_foreground(fresh, events)
             if fresh != current:
                 raise ElementListReadError("late notification foreground changed before Back")
-        if recover_known_overlay(adb_path, serial, root, notification_guard, events):
+        if recover_known_overlay(adb_path, serial, root, notification_guard, events, read_guard=guard):
             events.append("creator_late_notification_retry")
             guard()
             assert_requested_foreground(focus(adb_path, serial), events)
@@ -2269,7 +2376,7 @@ def wait_data_center_loading(adb_path, serial, root, guard, events, require_cont
                 current = focus(adb_path, serial)
                 assert_requested_foreground(current, events)
                 if login_activity(current):
-                    raise RuntimeError("Xiaohongshu account is logged out; manual login is required")
+                    confirm_logged_out(adb_path, serial, navigation_capture(adb_path, serial, guard, events), guard, events)
                 if not works_webview_activity(current):
                     raise ElementListReadError("data-center loading foreground changed")
                 if creator_list(root):
@@ -2433,7 +2540,7 @@ def capture_element_pair(adb_path, serial, guard, events):
         after = focus(adb_path, serial)
         assert_requested_foreground(after, events)
         if login_activity(after):
-            raise RuntimeError("Xiaohongshu account is logged out; manual login is required")
+            raise ElementListReadError("native pair left works list for unconfirmed login state")
         if not works_webview_activity(after):
             raise ElementListReadError("native pair foreground changed")
 
@@ -2496,7 +2603,23 @@ def read_scrolled_content(adb_path, serial, previous_root, guard, events, fast_p
         # audit reads each newly exposed page once; the complete ordered audit
         # still has to match that primary scan before any result is complete.
         if signature is not None and current - previous:
-            verify_element_overlap(previous_root, root)
+            try:
+                verify_element_overlap(previous_root, root)
+            except ElementListReadError:
+                # A single asynchronous WebView export can expose a transient
+                # seam. Stay at this position and require stable fresh elements.
+                # Never issue another swipe or accept a genuine gap/reorder.
+                events.append("verification_overlap_stability_retry")
+                guard()
+                if focus(adb_path, serial) != current_focus:
+                    raise ElementListReadError("verification foreground changed before seam reread")
+                root = navigation_capture(adb_path, serial, guard, events)
+                root = wait_creator_content(adb_path, serial, root, guard, events)
+                guard()
+                if focus(adb_path, serial) != current_focus:
+                    raise ElementListReadError("verification foreground changed during seam reread")
+                verify_element_overlap(previous_root, root)
+                events.append("verification_page_stability_fallback")
             events.append("verification_fresh_page_accepted")
             return root, False, False
         # Both stock UIAutomator and the fallback native reader produce fresh
@@ -2571,6 +2694,8 @@ def collect_once(args):
     if getattr(args, "verification_pass", False):
         events.append("collection_verification_pass")
         events.extend(["data_center_loading_reopen:budget_carried"] * getattr(args, "used_loading_reopens", 0))
+    else:
+        events.extend(["data_center_loading_reopen:budget_carried"] * getattr(args, "prior_loading_reopens", 0))
     entry_started = time.monotonic()
     root = verification_entry(args, guard, events) if getattr(args, "verification_pass", False) else None
     if root is None:
@@ -2813,6 +2938,51 @@ def verify_duplicate_window_reverse(args, first, boundary_stop):
     raise ElementListReadError("reverse verification budget exhausted")
 
 
+def ordered_identity_coverage(previous, current):
+    """Every previously observed unique post must be independently reread in order."""
+    index = 0
+    for identity in current:
+        if index < len(previous) and identity == previous[index]:
+            index += 1
+    return index == len(previous)
+
+
+def recover_integrity_mismatch(args, first, second):
+    # One extra *pair*, never concatenate old notes or choose a count-only match.
+    # The CLI enables one attempt; recursion explicitly removes that budget.
+    if getattr(args, "integrity_retries", 0) != 1:
+        return first
+    fields = ("app_slot", "window_start_date", "window_end_date", "list_scope_raw")
+    if any(first[k] != second[k] for k in fields):
+        return first
+    identities = lambda r: [(n["title"], n["published_date"]) for n in r["notes"]]
+    observed = [identities(first), identities(second)]
+    if any(len(set(values)) != len(values) for values in observed):
+        return first  # Rotating cover text cannot prove duplicate identity across reloads.
+    retry_args = argparse.Namespace(**vars(args))
+    retry_args.integrity_retries = 0
+    retry_args.verification_pass = False
+    retry_args.prior_loading_reopens = max(data_center_reopen_count(r["recovery_events"]) for r in (first, second))
+    first["recovery_events"].insert(0, "collection_integrity_recovery:attempted_once")
+    try:
+        recovered = collect(retry_args)
+    except ElementListReadError as error:
+        first["recovery_events"].insert(0, "collection_integrity_recovery:elements_unproven")
+        return first
+    fresh = identities(recovered)
+    if (not recovered["complete"] or len(set(fresh)) != len(fresh)
+            or any(first[k] != recovered[k] for k in fields)
+            or not all(ordered_identity_coverage(values, fresh) for values in observed)):
+        first["recovery_events"].insert(0, "collection_integrity_recovery:coverage_or_pair_unproven")
+        return first
+    evidence = [e for e in first["recovery_events"] if e.startswith(("collection_primary_count:",
+                "collection_verification_count:", "collection_primary_sha256:", "collection_verification_sha256:",
+                "collection_verification_stop:"))]
+    recovered["recovery_events"][0:0] = ["collection_integrity_recovery:verified_after_mismatch"] + [
+        "prior_" + e for e in evidence]
+    return recovered
+
+
 def collect(args):
     """Only two complete ordered element audits may succeed."""
     first = collect_once(args)
@@ -2868,6 +3038,12 @@ def collect(args):
             or any(first[k] != second[k] for k in ("app_slot", "window_start_date", "window_end_date", "list_scope_raw"))):
         first["warnings"].append("two_pass_identity_or_boundary_unproven")
         first["recovery_events"].insert(0, "collection_integrity:two_pass_mismatch")
+        seam_failure = second["stop_reason"] == "elements_unproven" and any(
+            e == "works_elements_scan_stopped:ordered element overlap has a gap, reorder or backward jump"
+            or e == "works_elements_scan_stopped:element page continuity is unproven after scroll"
+            for e in second["recovery_events"])
+        if first_stop in valid_stops and (second["complete"] and second["stop_reason"] in valid_stops or seam_failure):
+            return recover_integrity_mismatch(args, first, second)
         return first
     first["complete"] = True
     first["stop_reason"] = first_stop
@@ -2889,6 +3065,8 @@ def main():
     parser.add_argument("--max-scrolls", type=int, default=60)
     parser.add_argument("--min-scrolls", type=int, default=0)
     parser.add_argument("--stagnant-rounds", type=int, default=3)
+    parser.add_argument("--integrity-retries", type=int, choices=(0, 1), default=1,
+                        help="At most one fresh two-pass audit after identity mismatch")
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
     if not 1 <= args.days <= 180 or not 0 <= args.min_scrolls <= args.max_scrolls <= 100 or not 1 <= args.stagnant_rounds <= 5:

@@ -101,11 +101,11 @@ class PairScanTests(unittest.TestCase):
                 with self.assertRaises(RuntimeError):
                     sync.capture_element_pair('adb', 'serial', lambda: None, self.events)
 
-    def test_logout_during_pair_remains_an_account_error(self):
+    def test_login_activity_during_pair_remains_unconfirmed_without_elements(self):
         logout = 'mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.login.device.offline.DeviceOfflineRemindActivity}'
         with patch.object(sync, 'focus', side_effect=[FOCUS, logout]), patch.object(sync, 'assert_no_poco'), \
                 patch.object(native, 'read', side_effect=RuntimeError('foreground changed')):
-            with self.assertRaisesRegex(RuntimeError, 'logged out; manual login'):
+            with self.assertRaisesRegex(sync.ElementListReadError, 'unconfirmed login state'):
                 sync.capture_element_pair('adb', 'serial', lambda: None, self.events)
 
 
