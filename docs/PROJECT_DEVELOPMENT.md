@@ -5593,3 +5593,13 @@ CONTRACT.md为后继v2草案，明确SYSTEM/真实spawn PID/精确OS出生token/
 合同draft.2自审补充：真实wecom_platform_preview.lease_valid仍用云端expiresAt减本机wall，故物理首关之外还须处理原业务lease；300秒业务锁/230秒执行/3秒余量保留，拟用服务器剩余减完整RTT的保守下界，不缓存valid或加回RTT。服务器时间源须验证覆盖宿主/VM暂停或连续性异常failclosed，不能默认hrtime就代表真实经过时间；任意跳时不得复活旧授权。共享expiry/启动恢复各旁路只审v2企微分支，避免全局改查名/XHS/媒体。以上仍待合同review/实现，未写产品源码或新通过结论。
 
 root合同审查6点后，draft.2补全当前源码逐入口清单、同事务及checkpoint/延迟旧写保护、重启未消费授权maintenance且最多1自动核验代次、必需的无业务bootstrap双nonce与实际私有spawn PID绑定、journal受限ACL/原子写/fsync/有限receipt轮转、暂停连续性模型及三秒延迟实验边界。新增离线原型8/8通过：真实本地OS child+HTTP/实际close，调用未改产品verify_empty真实函数，旧host/包/forward全部合成且无ADB/SDK/ReadOnlyAdb；错PID/旧pipe nonce/提前事实不发proof，3000ms真实close或2700ms挑战响应+250ms close、600ms单读均保守拒绝，固定±5分钟audit offset不影响正常窗口。源hash和实际输出绑定LATENCY_TEST_RECEIPT；没有Windows/SYSTEM、暂停连续性、journal/PG事务或产品v2正向通过结论，不代表合同已批准。root新增事故主文档3b21e0a已连续阅读，真机冻结及43旧义务保持，本阶段仍只改离线验证文件和文档。
+
+### 变更记录｜2026-11-02 企微时钟授权离线区间模型与VM不可观测性反例
+
+root只读审查固定draft.2及输出/hash后，明确仍未给产品实现/native放行；企微owner从5d751591建立独立codex/wecom-clock-authority-model-20261102，仅verification模型与文档。依据官方Linux/Microsoft资料区分拟研究的Linux BOOTTIME/MONOTONIC与直接Win32 GetTickCount64/QueryUnbiasedInterruptTimePrecise；资料只说明API语义，不建立当前Linux VM/Windows实测保证。模型无实际OS采样器、远程/ADB/SDK/权限操作，误差/ppm/夹取宽度/监控间隔全为显式合成参数，缺生产上界默认不能签发。
+
+本阶段27项离线测试通过：BigInt微秒区间向上计龄/向下算余量、age上界恰3秒及+1us、余量下界恰3秒及-1us、完整RTT扣减、负值/越界/错误类型、量化网格、host/boot/epoch/time-domain/source变化、同机跳时/数值暂停/监控断档、全部未消费任务maintenance及内存JSON新epoch不重起旧task。数值区间差会触发失效，不提供poisonEpoch假检测；同时保留“客体全部时钟冻结10秒与正常10ms呈完全相同轨迹”的不可区分反例，证明单机观测的限制。条件性OS语义profile不能由此识别真实VM全冻结，未刻画VM profile直接拒绝，不能复制合成标签进入生产。结果与源/输出hash见verification/wecom-clock-authority-20261102；45组网格不额外算独立用例，前8项没有复跑或挪作本轮结果。
+
+### 决策日志｜2026-11-02 时钟精度和暂停保证须有部署证据，模型通过不替代授权依据
+
+延续draft.2的完整时间合同、3秒保守窗口和原义务隔离。拟定官方API不等于部署误差硬上界或超管暂停保证；模型仅验证带明确合成假设的数学边界，不能凭通常分辨率或continuity=true生成生产授权。当前缺真实误差/漂移、VM暂停与采样器依据，产品v2继续阻断；journal原生权限/原子API/崩溃恢复与实际PG旧checkpoint问题也仍未实现/验证。43旧义务不迁移、不新preview，27912不自动接纳为基线，生产native/ADB/身份/keys/入口/权限操作冻结保持；后续先固定离线版本供root评审，不将27项本地模型通过写作生产或真机完成。
