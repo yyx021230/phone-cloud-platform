@@ -5776,3 +5776,16 @@ root实际命令有重复反斜杠分隔符，原样复制并保留ntpath规范�
 ### 决策日志｜2026-11-02 因果绑定与时效分离，先审具体差异而非扩大模型
 
 本提案延续model.2每动作新采样和3秒保守界，不以收到时刻改写出生记录，不以握手解决真实时间，不放宽预算。先审专用握手/CAS/journal及COMMIT未知和重启pending阶段，再实现与隔离PG验证；真实Linux/VM/误差/Windows SYSTEM时效依据仍缺，不用16组Admin读数启用生产factory。原43 maintenance、147/52隔离、155/157查名池保持。新主号与分身真机验收均未补齐；无Windows命令、新测试、部署或手机动作，不宣称已交付通过。
+
+
+### 变更记录｜2026-11-02 M1企微v2进程绑定准备器本地候选（未接线）
+
+root审441a计划后限定最小切片，干净441a上新增server/wecom-cleanup-v2-host.mjs及同名测试，未改v1/service/index/PG/Agent/Python。两个代码级provider注入未来可信认证binding和父实例/spawn/close事实，严格字段/epoch/task-exec-device-slot-agent/原PID-born-machine/nonce/revision/operationId绑定；只准备host与host-closed状态，createdAt/token原样审计不跨机wall排序，nonce和shape不能证明真实OS来源。provider真实来源仍未实现，fixture不成为权威。
+
+输出nextState/replyCandidate均冻结；候选始终durable=false/requiresPersistence=true、fence held，不提供proof/release/payload许可。相同规范化操作复用原候选，变内容/错revision/错实例/close先行拒绝；JSON仅结构校验，不能证明COMMIT。并发同revision能生成两个候选，留待专用存储CAS，不虚称已防双提交。
+
+实际M1专属45项、本地现v1清理/Agent协议/physical readiness50项通过，两个新增文件语法检查通过；源/日志hash见verification/wecom-v2-host-m1-20261102，历史初次40项不累加。14既有产品源hash保持441a一致，无Windows/手机/ADB/PG/新HTTP接线/部署，主号分身真机验收仍未完成。
+
+### 决策日志｜2026-11-02 先交未接线host叶，持久化和真实时效分阶段
+
+延续441a兼容提案，M1仅实现有限schema/状态准备，不把本地候选当运行时修好。v1和旧义务不改、不清原43；独立叶未来导入也须经root明确接线，不能将requiresPersistence候选当durable ACK。下一阶段专用PG CAS/COMMIT未知、journal与pending-release各自审查验证；时钟真实来源/peer身份仍缺，禁止以合成provider或Admin16组读数放行。155/157查名池、147/52隔离、SYSTEM/固定ADB/冻结均保持。

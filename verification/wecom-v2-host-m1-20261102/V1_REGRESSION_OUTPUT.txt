@@ -1,0 +1,310 @@
+TAP version 13
+# Subtest: business failure and elapsed time retain the physical fence, not another phone
+ok 1 - business failure and elapsed time retain the physical fence, not another phone
+  ---
+  duration_ms: 2.867583
+  type: 'test'
+  ...
+# Subtest: new verification alone releases; business result and send claim are untouched
+ok 2 - new verification alone releases; business result and send claim are untouched
+  ---
+  duration_ms: 0.783917
+  type: 'test'
+  ...
+# Subtest: wrong version cannot register, close or release
+ok 3 - wrong version cannot register, close or release
+  ---
+  duration_ms: 0.3305
+  type: 'test'
+  ...
+# Subtest: wrong obligationId cannot register, close or release
+ok 4 - wrong obligationId cannot register, close or release
+  ---
+  duration_ms: 0.215375
+  type: 'test'
+  ...
+# Subtest: wrong originalTaskId cannot register, close or release
+ok 5 - wrong originalTaskId cannot register, close or release
+  ---
+  duration_ms: 0.192333
+  type: 'test'
+  ...
+# Subtest: wrong executionId cannot register, close or release
+ok 6 - wrong executionId cannot register, close or release
+  ---
+  duration_ms: 0.178958
+  type: 'test'
+  ...
+# Subtest: wrong deviceId cannot register, close or release
+ok 7 - wrong deviceId cannot register, close or release
+  ---
+  duration_ms: 0.457416
+  type: 'test'
+  ...
+# Subtest: wrong serial cannot register, close or release
+ok 8 - wrong serial cannot register, close or release
+  ---
+  duration_ms: 0.144875
+  type: 'test'
+  ...
+# Subtest: wrong agentId cannot register, close or release
+ok 9 - wrong agentId cannot register, close or release
+  ---
+  duration_ms: 0.181916
+  type: 'test'
+  ...
+# Subtest: wrong appSlot cannot register, close or release
+ok 10 - wrong appSlot cannot register, close or release
+  ---
+  duration_ms: 0.2135
+  type: 'test'
+  ...
+# Subtest: wrong androidUser cannot register, close or release
+ok 11 - wrong androidUser cannot register, close or release
+  ---
+  duration_ms: 0.193
+  type: 'test'
+  ...
+# Subtest: wrong nonce cannot register, close or release
+ok 12 - wrong nonce cannot register, close or release
+  ---
+  duration_ms: 0.153209
+  type: 'test'
+  ...
+# Subtest: proof rejects residual forward
+ok 13 - proof rejects residual forward
+  ---
+  duration_ms: 0.191
+  type: 'test'
+  ...
+# Subtest: proof rejects package present
+ok 14 - proof rejects package present
+  ---
+  duration_ms: 0.153542
+  type: 'test'
+  ...
+# Subtest: proof rejects missing package
+ok 15 - proof rejects missing package
+  ---
+  duration_ms: 0.130042
+  type: 'test'
+  ...
+# Subtest: proof rejects one frame
+ok 16 - proof rejects one frame
+  ---
+  duration_ms: 0.130042
+  type: 'test'
+  ...
+# Subtest: proof rejects same time
+ok 17 - proof rejects same time
+  ---
+  duration_ms: 0.126958
+  type: 'test'
+  ...
+# Subtest: proof rejects old generation
+ok 18 - proof rejects old generation
+  ---
+  duration_ms: 0.130959
+  type: 'test'
+  ...
+# Subtest: proof rejects old nonce
+ok 19 - proof rejects old nonce
+  ---
+  duration_ms: 0.124542
+  type: 'test'
+  ...
+# Subtest: proof rejects wrong task
+ok 20 - proof rejects wrong task
+  ---
+  duration_ms: 0.135083
+  type: 'test'
+  ...
+# Subtest: proof rejects future
+ok 21 - proof rejects future
+  ---
+  duration_ms: 0.130542
+  type: 'test'
+  ...
+# Subtest: proof rejects unknown field
+ok 22 - proof rejects unknown field
+  ---
+  duration_ms: 0.142208
+  type: 'test'
+  ...
+# Subtest: stale proof, changed device owner and wrong Agent cannot release
+ok 23 - stale proof, changed device owner and wrong Agent cannot release
+  ---
+  duration_ms: 0.168917
+  type: 'test'
+  ...
+# Subtest: host must be original machine, exact process creation token and real task child
+ok 24 - host must be original machine, exact process creation token and real task child
+  ---
+  duration_ms: 0.198792
+  type: 'test'
+  ...
+# Subtest: failed persistence restores exact proof state and keeps physical fence
+ok 25 - failed persistence restores exact proof state and keeps physical fence
+  ---
+  duration_ms: 0.255458
+  type: 'test'
+  ...
+# Subtest: archive and restored JSON retain obligation and allow independently bound late proof
+ok 26 - archive and restored JSON retain obligation and allow independently bound late proof
+  ---
+  duration_ms: 0.2295
+  type: 'test'
+  ...
+# Subtest: expired verify issues fresh generation; late old proof cannot clear it
+ok 27 - expired verify issues fresh generation; late old proof cannot clear it
+  ---
+  duration_ms: 0.207625
+  type: 'test'
+  ...
+# Subtest: conflicting phone activity blocks verify, but not another physical phone
+ok 28 - conflicting phone activity blocks verify, but not another physical phone
+  ---
+  duration_ms: 0.146209
+  type: 'test'
+  ...
+# Subtest: reconcile survives lost verify request, deduplicates, never loops a failed generation
+ok 29 - reconcile survives lost verify request, deduplicates, never loops a failed generation
+  ---
+  duration_ms: 0.286666
+  type: 'test'
+  ...
+# Subtest: proof commits only exact original lock, rolls all three records back, ignores late failure
+ok 30 - proof commits only exact original lock, rolls all three records back, ignores late failure
+  ---
+  duration_ms: 0.281416
+  type: 'test'
+  ...
+# Subtest: mismatched original lock cannot release any hold
+ok 31 - mismatched original lock cannot release any hold
+  ---
+  duration_ms: 0.155292
+  type: 'test'
+  ...
+# Subtest: serial-only dispatch stays blocked while release write is unresolved
+ok 32 - serial-only dispatch stays blocked while release write is unresolved
+  ---
+  duration_ms: 4.468
+  type: 'test'
+  ...
+# Subtest: legacy picked task creates a non-expiring maintenance hold without fabricated identity
+ok 33 - legacy picked task creates a non-expiring maintenance hold without fabricated identity
+  ---
+  duration_ms: 0.149917
+  type: 'test'
+  ...
+# Subtest: picked legacy task without archived business still retains a maintenance fence
+ok 34 - picked legacy task without archived business still retains a maintenance fence
+  ---
+  duration_ms: 0.044375
+  type: 'test'
+  ...
+# Subtest: terminal missing host evidence is maintenance, not an endlessly automatic stage
+ok 35 - terminal missing host evidence is maintenance, not an endlessly automatic stage
+  ---
+  duration_ms: 0.158334
+  type: 'test'
+  ...
+# Subtest: fixed fixture binding is exact and cannot inherit another task or Agent
+ok 36 - fixed fixture binding is exact and cannot inherit another task or Agent
+  ---
+  duration_ms: 1.341792
+  type: 'test'
+  ...
+# Subtest: exact creation precision, machine and only actual task host roles are required
+ok 37 - exact creation precision, machine and only actual task host roles are required
+  ---
+  duration_ms: 0.807083
+  type: 'test'
+  ...
+# Subtest: historical ID case is retained while the corrected actual selector stays exact
+ok 38 - historical ID case is retained while the corrected actual selector stays exact
+  ---
+  duration_ms: 0.079958
+  type: 'test'
+  ...
+# Subtest: ready must bind the actual OS child and cannot invent a wrapper exit requirement
+ok 39 - ready must bind the actual OS child and cannot invent a wrapper exit requirement
+  ---
+  duration_ms: 0.207375
+  type: 'test'
+  ...
+# Subtest: host registration ACK precedes release; close cannot be fabricated by final JSON
+ok 40 - host registration ACK precedes release; close cannot be fabricated by final JSON
+  ---
+  duration_ms: 0.19125
+  type: 'test'
+  ...
+# Subtest: duplicate ready and mismatched precision are rejected without another grant
+ok 41 - duplicate ready and mismatched precision are rejected without another grant
+  ---
+  duration_ms: 0.070208
+  type: 'test'
+  ...
+# Subtest: host and close each retry the exact body once for lost ACK only
+ok 42 - host and close each retry the exact body once for lost ACK only
+  ---
+  duration_ms: 0.266167
+  type: 'test'
+  ...
+# Subtest: permanent close uncertainty and exhausted original budget stay pending
+ok 43 - permanent close uncertainty and exhausted original budget stay pending
+  ---
+  duration_ms: 0.160792
+  type: 'test'
+  ...
+# Subtest: lost proof response retries the same original bytes without restamping or rereading
+ok 44 - lost proof response retries the same original bytes without restamping or rereading
+  ---
+  duration_ms: 0.357959
+  type: 'test'
+  ...
+# Subtest: two unknown proof ACKs retain unknown; known rejection does not trigger a new proof
+ok 45 - two unknown proof ACKs retain unknown; known rejection does not trigger a new proof
+  ---
+  duration_ms: 0.16325
+  type: 'test'
+  ...
+# Subtest: real OS pipe keeps config behind durable host ACK and result behind actual close (fixture machine)
+ok 46 - real OS pipe keeps config behind durable host ACK and result behind actual close (fixture machine)
+  ---
+  duration_ms: 431.57225
+  type: 'test'
+  ...
+# Subtest: cancel during host ACK cannot release config after a late ACK (real pipe)
+ok 47 - cancel during host ACK cannot release config after a late ACK (real pipe)
+  ---
+  duration_ms: 180.289042
+  type: 'test'
+  ...
+# Subtest: mismatched ready PID stops before registration and config (real pipe)
+ok 48 - mismatched ready PID stops before registration and config (real pipe)
+  ---
+  duration_ms: 153.862875
+  type: 'test'
+  ...
+# Subtest: two unknown registration ACKs never allow config, even if close is acknowledged
+ok 49 - two unknown registration ACKs never allow config, even if close is acknowledged
+  ---
+  duration_ms: 153.092459
+  type: 'test'
+  ...
+# Subtest: fixture exit before ready wakes the waiter instead of hanging
+ok 50 - fixture exit before ready wakes the waiter instead of hanging
+  ---
+  duration_ms: 99.225125
+  type: 'test'
+  ...
+1..50
+# tests 50
+# suites 0
+# pass 50
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1081.926292

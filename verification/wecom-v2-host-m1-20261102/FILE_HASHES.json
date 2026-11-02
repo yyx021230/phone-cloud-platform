@@ -1,0 +1,18 @@
+{
+  "baseCommit": "441a0e7744f77844c70d5aacc0b3159d1d938679",
+  "importAllowlist": [
+    "server/wecom-cleanup-v2-host.mjs",
+    "server/wecom-cleanup-v2-host.test.mjs"
+  ],
+  "existing14ProductSourcesUnchanged": true,
+  "files": {
+    "server/wecom-cleanup-v2-host.mjs": "66ba8759717805e248d40cd45ffd79b289a850e3fd337670e8501cb56afbe446",
+    "server/wecom-cleanup-v2-host.test.mjs": "9b3aad87e6c9de2421a8706dc58edd2146405e5ed70ae63724384cbbe5bccab2",
+    "docs/PROJECT_DEVELOPMENT.md": "44880528f9ce8a710c7759e1c84a473f5599cb3cd630b8926fd2ce7da14e5ee6",
+    "verification/wecom-v2-host-m1-20261102/M1_OUTPUT.txt": "6b0fce96e4496f33c47ed4b74bd5c27bb37339c447913648c4ffe0b901af66a8",
+    "verification/wecom-v2-host-m1-20261102/TASK.md": "ed9d040cd45236a7f00b08b87f1d5a1a35de92593f10a98d6fcf898ac56f7f63",
+    "verification/wecom-v2-host-m1-20261102/TEST_OUTPUT.txt": "fe7e8e2b8162e3e82696ff573aa14c87053760cfd681f686debde69fb3a5fd80",
+    "verification/wecom-v2-host-m1-20261102/TEST_RECEIPT.json": "d43ec6e1e71c35b92eb9879fd38fd98afd29a868b6837ae3c6f2bd74b6b3c3c1",
+    "verification/wecom-v2-host-m1-20261102/V1_REGRESSION_OUTPUT.txt": "6a9a04f9638b0eca876644999a3721619a101cecd5af2959ad6a938b978eebe4"
+  }
+}
