@@ -6023,3 +6023,11 @@ root57583564闭合36be03 observed.2后，只读当前generic/checkpoint/v1 servi
 ### 决策日志｜2026-11-02 保留canonical分类不成为写入许可
 
 旧M1/M2/M3/DDL/index/getPool/shared repository/Agent与14基线源均未改，无新SQL/PG/Windows/手机或生产动作。纯policy不实现READ COMMITTED等待后覆盖防护、full-state blob重建、设备改绑屏障或journal/native；这些仍按后继方案单独审。原M2完整14+新DDL兼容另备源码未执行，原43设备清理义务/147/52与查名池保留，主号/分身真机未完成。
+
+### 变更记录｜2026-11-02 S1 rc.2严格字符串revision，64项本地通过
+
+root b7b55483审ac9002原53通过，新增真实纯模块反例Number1被String()升格并retain，与规范化PG bigint必须字符串的SCHEMA冲突。root原红源/输出/counter/回执及owner旧源+新增typed/mixed反例实际64项62/2保留于verification/wecom-v2-projection-policy2-20261102。产品仅改typeof string后正整数字面量验证，原53不变；新增Number/Boolean/前导零/零/负/小数/null拒绝、合法'1'/'2'及两目标独立，当前64全过。
+
+### 决策日志｜2026-11-02 不用隐式字符串转换替代规范化输入合同
+
+修复是新纯策略schema一致性，不是现网释放漏洞，所有权限原本也false。旧rc.1/红原件保留，新rc.2递增不移动tag；M1/M2/M3/DDL/共享入口与14旧源未改，无SQL/PG/Windows/手机/生产。兼容测试未提交目录保留不混入该修复，主号分身真机仍未完成，原43设备清理义务/147/52和查名池/冻结保持。

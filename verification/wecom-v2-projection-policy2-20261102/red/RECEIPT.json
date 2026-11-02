@@ -1,0 +1,25 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "server/wecom-v2-projection-policy.test.mjs"
+  ],
+  "exitCode": 1,
+  "rootReview": "b7b55483a55077762e826988e8a2cec49db2b44d",
+  "sourceSha256": {
+    "server/wecom-v2-projection-policy.mjs": "3eb362a8922d7d5a190053d9fa0caca5eedf48553151c7ffc570cd4896c4cf62",
+    "server/wecom-v2-projection-policy.test.mjs": "f4ca7d35806057874aa5c3b5b9e3e5c069e8e1720a6c2fad03067ccb855dba20",
+    "verification/wecom-v2-projection-policy-20261102/fixture.mjs": "a5ccc25833ba6510b9d07a6c2c9c02aa5a6692cd2bfb7f3309bec94b22c0b938"
+  },
+  "rawSha256": {
+    "root-numeric-revision-counter.json": "1fed6a098df306c07e482f7ae09de5ae5a023ba8ec88ca173b2a51973b248afd",
+    "root-numeric-revision-red-receipt.json": "ee4bc563c0a7a5e47a645260a0392c95a12b5ccd07eaf29b7f264820c9f927ec",
+    "root-numeric-revision-red-output.txt": "22be8987fb8f50ede1abf540925598895b9de800cbfbcefa2d9e2914eefb552d",
+    "wecom-v2-projection-policy.mjs.txt": "3eb362a8922d7d5a190053d9fa0caca5eedf48553151c7ffc570cd4896c4cf62",
+    "fixture.mjs.txt": "a5ccc25833ba6510b9d07a6c2c9c02aa5a6692cd2bfb7f3309bec94b22c0b938",
+    "LOCAL_OUTPUT.txt": "8462211e05842663a22b30059e3149df02beb6c611061d167a300d935e828aa1",
+    "wecom-v2-projection-policy.test.mjs.txt": "f4ca7d35806057874aa5c3b5b9e3e5c069e8e1720a6c2fad03067ccb855dba20",
+    "root-numeric-revision-red-source.mjs": "ffc1cd187c6ea483d83e07d9e348c3d07624fae765b7826759c4519a314e22ce",
+    "root-review.json": "b014312e808ad3e734576200c578317782cab131620cc94dcd74fa26b81e2141"
+  }
+}

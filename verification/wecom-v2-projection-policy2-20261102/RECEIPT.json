@@ -1,0 +1,15 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "server/wecom-v2-projection-policy.test.mjs"
+  ],
+  "exitCode": 0,
+  "logSha256": "61373e5f0c30633b9cce69bdcf4d09e4a782283144ae09c56ecb901b5a0d3751",
+  "sourceSha256": {
+    "server/wecom-v2-projection-policy.mjs": "62c47aaf78ae9925d8b66bb0e33e79fbae0a22e238b01460f69671ee1a27ac03",
+    "server/wecom-v2-projection-policy.test.mjs": "f4ca7d35806057874aa5c3b5b9e3e5c069e8e1720a6c2fad03067ccb855dba20",
+    "verification/wecom-v2-projection-policy-20261102/fixture.mjs": "a5ccc25833ba6510b9d07a6c2c9c02aa5a6692cd2bfb7f3309bec94b22c0b938"
+  },
+  "noPgSqlWindowsPhoneActions": true
+}

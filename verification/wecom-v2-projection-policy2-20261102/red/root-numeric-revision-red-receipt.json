@@ -1,0 +1,10 @@
+{
+  "actualModuleCommit": "ac9002f285f2d3dc68cf60b9249a0740eb9131ec",
+  "sourceSha256": "ffc1cd187c6ea483d83e07d9e348c3d07624fae765b7826759c4519a314e22ce",
+  "rawOutputSha256": "22be8987fb8f50ede1abf540925598895b9de800cbfbcefa2d9e2914eefb552d",
+  "exitCode": 1,
+  "scope": "pure memory counterexample; no PG, SQL or phone",
+  "expectedDecision": "reject_target",
+  "actualDecision": "retain_canonical",
+  "allPermissionsRemainFalse": true
+}

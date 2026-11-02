@@ -61,3 +61,11 @@ test("normalized M1 revision1/2 progress retains exact claim",()=>{
 });
 test("batch getter is rejected without invoking user code",()=>{const s=setup();let n=0;const r=s.policy({get targets(){n++;return[s.f.request];}});assert.equal(n,0);assert.equal(r.requestError,"invalid_batch");});
 test("missing provider and extra authority booleans rejected at construction",()=>{assert.throws(()=>createWecomV2ProjectionPolicy({}),/providers_required/);const s=setup();assert.throws(()=>createWecomV2ProjectionPolicy({...s.providers,verified:true}),/providers_required/);});
+for(const value of[1,true,false,"01","0","-1",1.5,null])test(`normalized anchor revision rejects ${JSON.stringify(value)}`,()=>{const s=setup();s.f.canonical.anchor.mapping_revision=value;assert.equal(result(s).decision,"reject_target");});
+for(const value of["1","2"])test(`normalized positive string revision ${value} remains valid`,()=>{const s=setup();s.f.canonical.anchor.mapping_revision=value;assert.equal(result(s).decision,"retain_canonical");});
+test("numeric revision on first target cannot block normal independent target",()=>{
+  const a=fixture({suffix:"revision-a"}),b=fixture({suffix:"revision-b"});a.canonical.anchor.mapping_revision=1;
+  const policy=createWecomV2ProjectionPolicy({readPolicyEpoch:()=>a.observation.serverEpoch,readCanonicalProjection:t=>t.deviceId===a.target.deviceId?a.observation:b.observation});
+  const r=policy({targets:[a.request,b.request]});assert.deepEqual(r.results.map(x=>x.decision),["reject_target","retain_canonical"]);
+  for(const d of r.results){assert.equal(d.protocolPermit,false);assert.equal(d.writePermit,false);assert.equal(d.releaseAllowed,false);}
+});

@@ -59,7 +59,7 @@ function claimed(c,t,epoch){
     ||l.host_operation_id!==l.protocol_state.hostOperationId||l.close_operation_id!==l.protocol_state.closeOperationId
     ||[l.host_operation_id,l.close_operation_id].includes(claim.claimOperationId))fail();
   if(a.physical_key!==t.serial.toLowerCase()||a.device_id!==t.deviceId||a.agent_id!==t.agentId||a.mapping_state!=="ready"
-    ||!(/^[1-9][0-9]*$/).test(String(a.mapping_revision))||a.active_obligation_id!==b.obligationId||a.active_claim_operation_id!==claim.claimOperationId
+    ||typeof a.mapping_revision!=="string"||!(/^[1-9][0-9]*$/).test(a.mapping_revision)||a.active_obligation_id!==b.obligationId||a.active_claim_operation_id!==claim.claimOperationId
     ||a.mapping_fingerprint!==sha([t.deviceId,t.serial,t.agentId,c.device?.deviceName]))fail();
   const task=c.windowsTask.data,job=c.automationJob.data,hold=c.physicalHold.data,lock=c.businessLock.data;
   if(!equal(task.wecomV2Claim,claim)||!equal(job.wecomV2Claim,claim)||!equal(task.payload?.physicalCleanup,b)

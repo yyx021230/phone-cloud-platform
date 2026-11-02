@@ -1,0 +1,21 @@
+{
+  "fullCommand": [
+    "git",
+    "diff",
+    "--cached",
+    "--check"
+  ],
+  "fullExitCode": 2,
+  "fullOutput": "verification/wecom-v2-projection-policy2-20261102/red/LOCAL_OUTPUT.txt:80: trailing whitespace.\n+  \nverification/wecom-v2-projection-policy2-20261102/red/LOCAL_OUTPUT.txt:84: trailing whitespace.\n+  \nverification/wecom-v2-projection-policy2-20261102/red/LOCAL_OUTPUT.txt:104: trailing whitespace.\n+  \nverification/wecom-v2-projection-policy2-20261102/red/LOCAL_OUTPUT.txt:110: trailing whitespace.\n+  \n",
+  "narrowCommand": [
+    "git",
+    "diff",
+    "--cached",
+    "--check",
+    "--",
+    ".",
+    ":(exclude)verification/wecom-v2-projection-policy2-20261102/red/LOCAL_OUTPUT.txt"
+  ],
+  "narrowExitCode": 0,
+  "rawNotTrimmed": true
+}
