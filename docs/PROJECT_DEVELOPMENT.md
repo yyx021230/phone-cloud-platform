@@ -6051,3 +6051,13 @@ root审固定23d781后，新库pc-wecom-v2-compat-pg-w57mcq87单次两阶段：�
 ### 决策日志｜2026-11-02 兼容存储闭合，真实writer和启动权限重建仍待方案
 
 接受原M2完整14与新DDL兼容，以及独立claimed2，分别记账不与M3 18或策略64累计。下一仅准备S1b精确SQL/EPQ、逐writer/restore/compact/boot调用点、full-state blob和启动canonical fence方案及只验证用源码，先审不改共享index/repositories/cleanup-service/配置/Agent、不执行新PG/Windows/设备。原43设备清理义务/147/52与查名池保留，S2/journal/native与主号分身真机仍未闭合，生产v2默认禁启。
+
+### 变更记录｜2026-11-02 S1b SQL/EPQ和blob启动共存精确提案，未执行
+
+核实际structured UPSERT/定制delivery、checkpoint/v1 restore、compact/prune/boot overlay调用点，新增verification/wecom-v2-writer-epq-plan-20261102/PLAN及仅供验证的SQL字符串模块。SQL分旧NOT EXISTS/原业务锁无marker负例、task/job/hold当前row marker窄控制、完整owner CAS职责；明确原business锁无v2 marker，不能仅凭task guard声称全保护。0行RETURNING需逐目标重读分类，不当全局异常，也不视写成功。
+
+blob/spool/启动/retention方案同时保留独立wecom canonical refs与lookup executionWait refs边界，lookup owner存储合同尚待其候选，不能只JSON字段或pool索引当canonical。root统一shared hunk，双方不各改index/repos/saveState。启动先两owner canonical fence再维护/派发，旧blob不能授予权限，单target冲突与真实全局存储失信分开。
+
+### 决策日志｜2026-11-02 先验证语句等待窗口，未验证SQL不接生产
+
+只JS语法/基线hash核对，无SQL解析/PG/Windows/手机或产品修改。PostgreSQL16官方快照/目标row条件重评估及RETURNING文档仅支持提案背景，本项目具体NOT EXISTS/EPQ结果仍待真实受控PG反例，不能当实测。建议下一最小片只task三对比与服务端阻塞事实，再逐步补shared writer/boot；当前S2映射/journal/native/跨协议原子admission仍未实现，原43设备义务/147/52和查名池/冻结保持，主号分身真机未完成。

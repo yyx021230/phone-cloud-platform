@@ -1,0 +1,11 @@
+{
+  "baseCommit": "4adcc0d3f3a1779937d867a11ef793dad759614a",
+  "candidateTag": "wecom-v2-writer-epq-20261102-draft.1",
+  "files": {
+    "docs/PROJECT_DEVELOPMENT.md": "e4ea8af01707a58d8d3713714f5ec07d6ff9ffb37c5128df714b89a573762d36",
+    "verification/wecom-v2-writer-epq-plan-20261102/PLAN.md": "af55d205d6dcd3b7631665bb69934b3d19241dcc01244eee021376fe7aeeec17",
+    "verification/wecom-v2-writer-epq-plan-20261102/SOURCE_BASELINE.json": "94ac1980dd8fb44b89435fde78e6a999d9c147c1e388c6ff6c588979a00ab3d8",
+    "verification/wecom-v2-writer-epq-plan-20261102/SYNTAX_RECEIPT.json": "b857bf99e4459171e72c44ee0401478aefed33343ee96bedee39e23f8bfbc71b",
+    "verification/wecom-v2-writer-epq-plan-20261102/comparison-queries.mjs": "7a3838675f986ebf4d45b67f171061d970cc3a3b0b57c5ec18f7d96dfafec7f5"
+  }
+}
