@@ -527,7 +527,11 @@ def run_host(value, diagnostic_stream=None, *, authority=None):
             with calls.call('rpc.import'):
                 import poco.drivers.android.uiautomation as u
             with calls.call('rpc.client'):
-                client=u.AndroidRpcClient("http://127.0.0.1:"+str(ports[1])); client.set_timeout(3); bound_rpc_transport(client,6)
+                def rpc_failed(error):
+                    trace.record_rpc_failure(error)
+                    observer=getattr(external_authority,'observe_rpc_failure',None)
+                    if observer is not None:observer(dict(trace.transport_failure),dict(resource_state))
+                client=u.AndroidRpcClient("http://127.0.0.1:"+str(ports[1])); client.set_timeout(3); bound_rpc_transport(client,6,on_error=rpc_failed)
             send=client.transport.send
             def bounded_send(request,timeout=None):
                 with calls.call(rpc_label(request)):

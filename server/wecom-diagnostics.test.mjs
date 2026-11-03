@@ -4,6 +4,16 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { wecomExecution,wecomTransportFailure } from './wecom-diagnostics.mjs';
+
+test('RPC failure details retain fixed categories and drop arbitrary exception text',()=>{
+  const detail={reason:'read_timeout',errorType:'ReadTimeout',elapsedMs:80,errno:10054};
+  assert.deepEqual(wecomTransportFailure(detail),detail);
+  for(const wrong of [{...detail,message:'private UI'},{...detail,errorType:'private'},{...detail,reason:[]},{...detail,elapsedMs:true},{...detail,errno:Infinity}])assert.equal(wecomTransportFailure(wrong),null);
+  const base={version:1,phase:'cleanup',failurePhase:'recipient_search',elapsedMs:100,cleanupConfirmed:false,events:[]};
+  assert.deepEqual(wecomExecution({...base,transportFailure:detail}).transportFailure,detail);
+  assert.deepEqual(wecomExecution({...base,transportFailure:{message:'private'}}),base);
+});
 
 test('cloud diagnostic contract is identical to Agent but imports without Agent files in Docker layout', async t=>{
   const cloud=new URL('./wecom-diagnostics.mjs',import.meta.url);

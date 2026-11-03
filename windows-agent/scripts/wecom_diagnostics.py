@@ -22,6 +22,13 @@ class ExecutionTrace:
         self.step = 0
         self.failure_phase = ""
         self.cleanup_confirmed = None
+        self.transport_failure = None
+
+    def record_rpc_failure(self, error):
+        if self.transport_failure is not None:return
+        from wecom_rpc_budget import rpc_failure_details
+        self.transport_failure=dict(rpc_failure_details(error),
+            elapsedMs=max(0,min(900000,int((self.clock()-self.started)*1000))))
 
     def emit(self, phase, state, cleanup=None):
         if phase not in PHASES or state not in ("begin", "end", "error"):
@@ -71,4 +78,5 @@ class ExecutionTrace:
         last = self.frames[-1] if self.frames else None
         return {"version": 1, "phase": last["phase"] if last else "configuration",
                 "failurePhase": self.failure_phase, "elapsedMs": last["elapsedMs"] if last else 0,
-                "cleanupConfirmed": self.cleanup_confirmed, "events": list(self.frames)}
+                "cleanupConfirmed": self.cleanup_confirmed, "events": list(self.frames),
+                **({'transportFailure':dict(self.transport_failure)}if self.transport_failure is not None else{})}

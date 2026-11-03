@@ -12,6 +12,7 @@ from wecom_qa_tcp_runtime import WindowsTcpRuntime,identity_scope
 from wecom_call_trace import CallTrace
 from wecom_private_observation import writer
 from pathlib import Path
+from wecom_rpc_evidence import RpcEvidenceProbe
 
 
 def main():
@@ -37,6 +38,9 @@ def main():
         host.start_control_monitor(sys.stdin)
         # Only the two structured channels retain diagnostics; SDK output is discarded.
         with identity_scope(host,authority),peer_guard.install(), open(os.devnull,'w') as sink,contextlib.redirect_stdout(sink),contextlib.redirect_stderr(sink):
+            probe=RpcEvidenceProbe(config['serial'],Path(__file__).resolve().parents[2])
+            probe.prepare()
+            authority.observe_rpc_failure=probe.capture
             result = host.run_host(config, sys.__stderr__, authority=authority)
     except (host.SafeStop,host.w.StopPreview) as error:
         code = str(error)

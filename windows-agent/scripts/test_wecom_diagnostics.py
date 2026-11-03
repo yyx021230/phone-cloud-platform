@@ -12,6 +12,14 @@ import test_wecom_platform_preview as host_tests
 
 
 class NativeDiagnosticTests(unittest.TestCase):
+    def test_first_rpc_failure_is_fixed_and_not_overwritten_by_cleanup_error(self):
+        clock=[0];trace=ExecutionTrace(clock=lambda:clock[0]);clock[0]=2
+        trace.record_rpc_failure(type('ReadTimeout',(Exception,),{})('private request UI token'))
+        trace.record_rpc_failure(ConnectionError('later cleanup'))
+        value=trace.summary()['transportFailure']
+        self.assertEqual(value,{'reason':'read_timeout','errorType':'ReadTimeout','elapsedMs':2000})
+        self.assertNotIn('private',json.dumps(trace.summary()))
+
     def setUp(self):
         self.trace_patch = patch.object(host, 'trace', ExecutionTrace(clock=lambda: time.monotonic()), create=True)
         self.trace_patch.start()

@@ -7,11 +7,30 @@ import types
 import unittest
 import urllib.request
 import wecom_invite_preview as w
-from wecom_rpc_budget import bound_rpc_transport, RpcDeliveryUnknown
+from wecom_rpc_budget import bound_rpc_transport, RpcDeliveryUnknown,rpc_failure_details,safe_rpc_failure
 from test_wecom_invite_preview import HOME, PHONE
 
 
 class BudgetTests(unittest.TestCase):
+    def test_fixed_failure_categories_never_include_exception_or_request_text(self):
+        cases=[(TimeoutError('private phone token'),'timeout'),(ConnectionResetError(10054,'private'),'connection_closed')]
+        for name,reason in(('ReadTimeout','read_timeout'),('ConnectTimeout','connect_timeout'),('PeerDenied','peer_verification_failed'),('UntrustedCustomerText','unknown')):
+            cases.append((type(name,(Exception,),{})('private'),reason))
+        for error,reason in cases:
+            details=rpc_failure_details(error);self.assertEqual(details['reason'],reason)
+            self.assertNotIn('private',str(details));self.assertIsNotNone(safe_rpc_failure(details))
+        for value in({'reason':'private','errorType':'TimeoutError'},{'reason':'timeout','errorType':'TimeoutError','message':'private'},
+                      {'reason':'timeout','errorType':'TimeoutError','elapsedMs':True}):self.assertIsNone(safe_rpc_failure(value))
+
+    def test_observer_failure_cannot_mask_original_error_or_replay(self):
+        calls=[];observed=[];original=TimeoutError('private')
+        class Transport:
+            def send(self,request,timeout=None):calls.append(timeout);raise original
+        def observer(error):observed.append(error);raise ValueError('evidence unavailable')
+        client=types.SimpleNamespace(transport=Transport());bound_rpc_transport(client,3,on_error=observer)
+        with self.assertRaises(RpcDeliveryUnknown)as failure:client.transport.send({'secret':'private'})
+        self.assertIs(failure.exception.__cause__,original);self.assertEqual(calls,[3]);self.assertEqual(observed,[original])
+
     def test_real_http_wait_stops_and_uncertain_action_is_not_replayed(self):
         entered=threading.Event();release=threading.Event();calls=[]
         class Handler(http.server.BaseHTTPRequestHandler):

@@ -9,6 +9,16 @@ export const WECOM_PHASES = Object.freeze([
 export const WECOM_DIAGNOSTIC_PREFIX = "WECOM_DIAGNOSTIC ";
 const phases = new Set(WECOM_PHASES);
 const integer = (value, maximum) => Number.isSafeInteger(value) && value >= 0 && value <= maximum;
+const transportReasons=new Set(['connect_timeout','read_timeout','timeout','connection_closed','transport_disconnected','peer_verification_failed','connection_error','unknown']);
+const transportTypes=new Set(['TimeoutError','ReadTimeout','ReadTimeoutError','ConnectTimeout','ConnectTimeoutError','RpcTimeoutException','ConnectionError','ConnectionResetError','ConnectionAbortedError','BrokenPipeError','TransportDisconnected','PeerDenied','PeerUnavailable','PermissionError','OSError','URLError','HTTPError','OtherError']);
+
+export function wecomTransportFailure(value) {
+  if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).some(k=>!['reason','errorType','elapsedMs','errno','winerror'].includes(k))
+    ||!transportReasons.has(value.reason)||!transportTypes.has(value.errorType)||!integer(value.elapsedMs,900000))return null;
+  for(const k of ['errno','winerror'])if(value[k]!==undefined&&(!Number.isSafeInteger(value[k])||Math.abs(value[k])>200000))return null;
+  return {reason:value.reason,errorType:value.errorType,elapsedMs:value.elapsedMs,
+    ...(value.errno===undefined?{}:{errno:value.errno}),...(value.winerror===undefined?{}:{winerror:value.winerror})};
+}
 
 export function wecomProgress(value) {
   if (!value || typeof value !== "object" || Array.isArray(value)
@@ -26,8 +36,9 @@ export function wecomExecution(value) {
     || ![true, false, null].includes(value.cleanupConfirmed) || !Array.isArray(value.events) || value.events.length > 24) return null;
   const events = value.events.map(wecomProgress);
   if (events.some(e => !e) || events.some((e, i) => i > 0 && (e.step <= events[i-1].step || e.elapsedMs < events[i-1].elapsedMs))) return null;
+  const transportFailure=wecomTransportFailure(value.transportFailure);
   return { version: 1, phase: value.phase, failurePhase: value.failurePhase, elapsedMs: value.elapsedMs,
-    cleanupConfirmed: value.cleanupConfirmed, events };
+    cleanupConfirmed: value.cleanupConfirmed, events,...(transportFailure?{transportFailure}:{}) };
 }
 
 export function progressSummary(events) {
