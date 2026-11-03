@@ -6321,3 +6321,12 @@ rc5真机已通过Poco health/企微启动/主号选择/首页并进入recipient
 ### 决策日志｜2026-11-03 未知观察不等于已证权限撤销，但未知时绝不操作
 
 首个固定失败码/首个实际拒绝state保存，proof前再核原generation与revocation；响应加Content-Length，客户端关响应socket不制造设备冲突。runner11（含实际loopback broker JSON与未知读后新完整事实恢复、正冲突仍硬停）与既有proof6通过，Windows阶段22源不改。verification/wecom-single-device-20261103-rc6保存回执；尚待下一次真实全流程，生产/共享Agent/ADB/媒体未改。rc5原Poco/forward已同scope清理双验、原screen关闭、59恢复listed；本轮并发11/rev177仍为同一轮测试临时保留，结束恢复12。
+
+
+### 变更记录｜2026-11-03 企微唤醒准备阶段过紧超时修正
+
+rc6真机在screen_prepare8秒预算耗尽，trace8.235秒、只完成一次wake响应，未出现authority/socket拒绝；该轮自动双清理、原控屏释放与59恢复listed均完成。仅将WeCom runner此阶段8→20秒，原wake/dismiss动作体、身份/租约门禁、最多4次只读确认及总任务210秒/IO剩余预算不变，不增加动作重放。
+
+### 决策日志｜2026-11-03 稳定性预算不能替代原总截止
+
+真实失败后新增慢两动作唤醒反例，旧8秒失败；新20秒下通过且两动作各一次，原总deadline6秒仍正确中断。503项WeCom Python采集执行通过，verification/wecom-single-device-20261103-rc7保存前后回执；尚未手机验收本改动，生产WeCom/共享Agent/ADB/媒体未加载或变更。后续同轮59真机验证，临时名额11/rev177结束后恢复12。

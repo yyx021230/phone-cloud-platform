@@ -382,7 +382,7 @@ def observe_startup_state(kind, raw):
         except Exception:pass
     return raw
 
-@phase("screen_prepare", 8, "screen_prepare_timeout")
+@phase("screen_prepare", 20, "screen_prepare_timeout")
 def prepare_screen_before_poco():
     # Only a positively observed sleeping display moves the existing normal
     # wake before instrumentation. No key/PIN/settings or unknown-page clicks.

@@ -1,0 +1,8 @@
+{
+  "verification/wecom-single-device-20261103-rc7/after.stderr": "93bf5547e8cb9f99e22a82c740f32e67fa0e3b3af32839cf70d59ce3d21c02db",
+  "verification/wecom-single-device-20261103-rc7/TASK.json": "6c9d293def586213364ffdc4cd000ff55489e1b4828074e60cad231fda78bc95",
+  "verification/wecom-single-device-20261103-rc7/after.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "verification/wecom-single-device-20261103-rc7/before.stderr": "e34b33d95e64db88125fdb42bc9e2fef101ee264b2a3ee12e6df60c1d9b300d3",
+  "verification/wecom-single-device-20261103-rc7/SOURCE_HASHES.json": "d25d8624f527d03d0192129df8a56ccf543b3ec6a847b0a8367c8fa13b1621b5",
+  "verification/wecom-single-device-20261103-rc7/before.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}
