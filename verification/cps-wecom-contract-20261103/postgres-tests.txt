@@ -1,0 +1,42 @@
+✔ journal has one coordinator, durably serializes revisions and refuses an obsolete schema (223.399125ms)
+✔ a stale owner file is never stolen and a failed commit fences all later mutations (15.411959ms)
+✔ Postgres lost acknowledgement, revision conflict and owner disconnect fence execution (0.505ms)
+✔ isolated real Postgres SQL, advisory owner, CAS conflict and restart persistence (38.809792ms)
+✔ CPS published signature vector is exact; booleans, zero and Chinese participate unchanged (0.984167ms)
+✔ INT64 survives parse, signature and callback serialization; duplicates/arrays/floats are rejected (0.511667ms)
+✔ configuration rejects ambiguous member/slot, invalid callbacks and unknown auth (0.362667ms)
+✔ all devices include offline and unmapped phones; account mapping/availability is explicit and private IDs stay private (82.229291ms)
+✔ nonce, skew and signatures fail before dispatch; one nonce is consumed across both routes (57.956875ms)
+✔ same lead with new nonce returns accepted once; parameter changes and unconfigured members fail closed (169.403583ms)
+✔ lost submission acknowledgement is reconciled by original request, never submitted twice (52.865625ms)
+✔ unknown submission without original task stays held and does not become a fresh invitation (56.912666ms)
+✔ verified duplicate callback retries with new signed nonce, without repeating device work (109.010083ms)
+✔ a native unknown send or unrelated failure cannot be disguised as CPS success or frequency limit (194.807583ms)
+✔ successful callback requires both send confirmation and independent remark phone confirmation (86.26775ms)
+✔ preview never calls CPS callback, including verified duplicate; same journal survives graceful restart (66.945ms)
+✔ real loopback HTTP receives CPS dispatch and queries all status without accepting query/body confusion (58.223833ms)
+✔ platform bridge joins only verified private identities, requests phone proof and never leaks platform credentials (0.495291ms)
+✔ busy before admission may wait; stale physical remapping cannot switch the selected phone (64.175416ms)
+✔ one phone submission hanging does not block a second phone reaching its original task (95.972375ms)
+✔ configured but unverified account cannot execute or be advertised as available (29.070584ms)
+✔ HTTP oversized body is rejected with a defined response before authentication or task creation (16.020125ms)
+✔ remark rule rejects overlength before creating a task, preserving full INT64 without fallback (47.824833ms)
+✔ two-minute timeout, fresh lead ID, restart and phone migration cannot bypass the logical recipient fence (127.731458ms)
+✔ concurrent different lead IDs for the same member/customer reserve only one original execution (201.885375ms)
+✔ a completed callback retains the recipient fence after deleting the raw phone (167.892875ms)
+✔ only terminal confirmed non-send with cleanup permits a different lead for the same recipient (275.19575ms)
+✔ confirmed frequency pauses just that official member immediately, persists, and expires at China midnight (171.739542ms)
+✔ missing trustworthy frequency time isolates member without fabricating a callback day (72.437458ms)
+✔ preview journal cannot become a send journal on restart (23.01125ms)
+✔ callback rejection and exhausted retries do not repeat device operations (260.213042ms)
+✔ queued work on one busy phone cannot consume the slot of a second idle phone (112.820917ms)
+✔ future-but-valid timestamp cannot replay after the nominal five-minute nonce interval (24.231916ms)
+✔ preview HTTP covers authentication, eight phones, leases, original-id reuse and restart (2028.381708ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2724.774875

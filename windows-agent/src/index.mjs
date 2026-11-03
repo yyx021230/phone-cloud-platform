@@ -1152,6 +1152,7 @@ async function pollTask() {
     params.set("galleryDelivery", SCREEN_GALLERY_DELIVERY_PROTOCOL);
     params.set("xhsPublishDelivery", XHS_PUBLISH_DELIVERY_PROTOCOL);
     params.set("wecomPreview", "wecom-invitation-v4");
+    params.set("wecomRemarkPhone", "verified-v1");
     params.set("wecomCleanupProtocol", "1");
     params.set("wecomCausalProtocol", "wecom-causal-v1");
     const suffix = params.size ? `?${params.toString()}` : "";

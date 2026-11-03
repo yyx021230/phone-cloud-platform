@@ -141,3 +141,42 @@ class FingerprintTests(unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main()
+
+class CpsApplicationAckTests(unittest.TestCase):
+    def dialog(self,message='已发送好友申请',resource='android:id/message'):
+        return w.Screen(w.PACKAGE,(w.Node('android.widget.TextView',text=message,name=resource),w.Node('android.widget.Button',text='确定',name='android:id/button1')))
+
+    def prepared(self):return dict(status='ready_before_send',remarkPrepared=True,remarkSaveStatus='confirmed',remarkPhoneSet=True)
+
+    def run_send(self,after,second=None):
+        frames=iter([PREVIEW,PREVIEW,after,second or after]);calls=[]
+        class TestDriver:
+            def snapshot(inner):return next(frames)
+            def _guard_host(inner):calls.append('lease')
+            def send_invitation(inner,*args):calls.append('click')
+        def claim():calls.append('claim');return True
+        result=invite.send_once(TestDriver(),self.prepared(),claim,lambda:None,observe_application_ack=True)
+        return result,calls
+
+    def test_explicit_two_frame_application_ack_does_not_clear_unknown_delivery_fence(self):
+        out,calls=self.run_send(self.dialog())
+        self.assertTrue(out['invitationRequestConfirmed']);self.assertEqual(out['invitationRequestProof'],'wecom_system_dialog_v1')
+        self.assertEqual(out['sendStatus'],'unknown');self.assertIsNone(out['invitationSent']);self.assertEqual(calls.count('click'),1);self.assertEqual(calls.count('claim'),1)
+
+    def test_nickname_text_unstable_dialog_and_wrong_app_cannot_prove_sent(self):
+        for after,second in [(self.dialog(resource='com.tencent.wework:id/nickname'),None),(self.dialog(),PREVIEW),(replace(self.dialog(),package='other.package'),None)]:
+            out,calls=self.run_send(after,second)
+            self.assertNotIn('invitationRequestConfirmed',out);self.assertEqual(out['sendStatus'],'unknown');self.assertEqual(calls.count('click'),1)
+
+    def test_frequency_only_from_known_system_message_and_never_from_customer_name(self):
+        for message in ['添加好友过于频繁','添加好友过于频繁，请稍后再试。']:
+            with self.assertRaisesRegex(w.StopPreview,'wecom_add_friend_too_frequent'):w.guard(self.dialog(message))
+        w.guard(self.dialog('添加好友过于频繁',resource='com.tencent.wework:id/nickname'))
+        out,calls=self.run_send(self.dialog('添加好友过于频繁'))
+        self.assertTrue(out['addFriendLimitConfirmed']);self.assertEqual(out['code'],'wecom_add_friend_too_frequent');self.assertEqual(out['sendStatus'],'unknown')
+
+    def test_missing_phone_proof_cannot_claim_or_send(self):
+        class NoRead:
+            def snapshot(self):raise AssertionError('no read')
+        out=invite.send_once(NoRead(),dict(self.prepared(),remarkPhoneSet=False),lambda:True,lambda:None,observe_application_ack=True)
+        self.assertEqual(out['code'],'remark_phone_not_verified');self.assertEqual(out['sendStatus'],'not_attempted')

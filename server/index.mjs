@@ -499,6 +499,19 @@ async function routeApi(req, res, url) {
     }
     return json(res, 200, { devices, modes: ["preview", "send"] });
   }
+  if (url.pathname === '/api/v1/user/automation/wecom-cps-devices' && req.method === 'GET') {
+    requireAuth(req,['admin']);
+    const devices=[];
+    for(const device of state.devices) {
+      try {
+        const target=previewTarget(device),agent=state.windowsAgents.find(a=>a.agentId===device.adb?.agentId);
+        const age=Date.now()-toTime(agent?.wecomRemarkPhoneAt);
+        devices.push({deviceId:device.deviceId,...target,appSlots:previewSlots(device),
+          cpsRemarkPhoneReady:agent?.wecomRemarkPhoneProtocol==='verified-v1' && age>=0 && age<WINDOWS_AGENT_ONLINE_MS});
+      }catch{/* Only exact configured physical identities. No lock expiry or recovery. */}
+    }
+    return json(res,200,{devices});
+  }
   const simpleInvitationSubmit = url.pathname === "/api/v1/wecom/customer-invitations" && req.method === "POST";
   if ((url.pathname === "/api/v1/user/automation/wecom-preview-tasks" && ["GET", "POST"].includes(req.method)) || simpleInvitationSubmit) {
     const ctx = requireAuth(req, ["admin"]);
@@ -513,7 +526,7 @@ async function routeApi(req, res, url) {
     return wecomSubmissionGate(gateKey, async () => {
       const existing = state.automationJobs.find(j => j.kind === WECOM_PREVIEW_KIND && j.userId === ctx.userId && j.wecomRequestId === input.requestId);
       if (existing) {
-        if (previewJobMode(existing) !== (input.mode || "preview") || existing.deviceId !== input.deviceId || existing.phoneNumber !== input.phoneNumber || previewJobSlot(existing) !== (input.appSlot ?? WECOM_PREVIEW_DEVICES[existing.wecomDeviceNumber]?.defaultAppSlot) || previewJobRemarks(existing).remarkName !== input.remarkName || previewJobRemarks(existing).description !== input.description) return reply(409, { error: "wecom_request_id_conflict" });
+        if ((existing.wecomRequireRemarkPhone === true) !== (input.requireRemarkPhone === true) || previewJobMode(existing) !== (input.mode || "preview") || existing.deviceId !== input.deviceId || existing.phoneNumber !== input.phoneNumber || previewJobSlot(existing) !== (input.appSlot ?? WECOM_PREVIEW_DEVICES[existing.wecomDeviceNumber]?.defaultAppSlot) || previewJobRemarks(existing).remarkName !== input.remarkName || previewJobRemarks(existing).description !== input.description) return reply(409, { error: "wecom_request_id_conflict" });
         if ([...pendingWecomCommits].some(t => t.payload?.automationJobId === existing.jobId)) return reply(503, { error: "wecom_submission_pending" });
         return reply(200, { reused: true, task: publicPreview(existing) });
       }
@@ -544,6 +557,7 @@ async function routeApi(req, res, url) {
       try {
       const job = createAutomationJob({ kind: WECOM_PREVIEW_KIND, userId: ctx.userId, deviceId: device.deviceId, phoneNumber: input.phoneNumber });
       Object.assign(job, { wecomMode: input.mode || "preview", wecomRequestId: input.requestId, wecomDeviceNumber: target.deviceNumber, wecomAppSlot: target.appSlot, wecomAndroidUser: target.androidUser, wecomRemarkName: input.remarkName, wecomDescription: input.description });
+      if (input.requireRemarkPhone === true) job.wecomRequireRemarkPhone = true;
       const lock = acquireAutomationDeviceLock(device, job, ctx, { ttlMs: 300_000 });
       const windowsTask = queueAutomationWindowsTask(device, job);
       wecomCleanup.bindBusinessLease(causalCreation, windowsTask, job, lock);
@@ -2181,6 +2195,8 @@ async function routeApi(req, res, url) {
     const maintenanceChanged = galleryDeliveryMaintenance.changed || recoveredTasks || expiredTasks;
     const agent = ctx.agent || repos.agents.findById(agentId);
     if (!agent) return json(res, 404, { error: "windows_agent_not_found" });
+    agent.wecomRemarkPhoneProtocol = url.searchParams.get('wecomRemarkPhone') === 'verified-v1' ? 'verified-v1' : '';
+    agent.wecomRemarkPhoneAt = nowIso();
     if (url.searchParams.get("wecomCleanupProtocol") === "1" && url.searchParams.get("wecomCausalProtocol") === "wecom-causal-v1") await wecomCleanup.reconcile(agentId);
     const activeTaskIds = new Set(String(url.searchParams.get("activeTaskIds") || "")
       .split(",")
@@ -2246,6 +2262,7 @@ async function routeApi(req, res, url) {
       item.agentId === agentId
       && item.status === "queued"
       && (item.type !== WECOM_PREVIEW_KIND || url.searchParams.get("wecomPreview") === "wecom-invitation-v4")
+      && (item.type !== WECOM_PREVIEW_KIND || item.payload?.requireRemarkPhone !== true || url.searchParams.get('wecomRemarkPhone') === 'verified-v1')
       && (![WECOM_PREVIEW_KIND, WECOM_CLEANUP_KIND].includes(item.type) || (url.searchParams.get("wecomCleanupProtocol") === "1" && url.searchParams.get("wecomCausalProtocol") === "wecom-causal-v1"))
       && wecomCleanup.canPick(item)
       && !pendingWecomCommits.has(item)
@@ -4880,7 +4897,7 @@ function queueAutomationWindowsTask(device, job) {
     type: typeByKind[job.kind],
     payload: {
       automationJobId: job.jobId,
-      ...(job.kind === WECOM_PREVIEW_KIND ? { deviceNumber: job.wecomDeviceNumber, ...(job.wecomAppSlot === undefined ? {} : { appSlot: job.wecomAppSlot }), androidUser: job.wecomAndroidUser, ...previewJobRemarks(job), mode: previewJobMode(job), previewOnly: previewJobMode(job) !== "send" } : {}),
+      ...(job.kind === WECOM_PREVIEW_KIND ? { deviceNumber: job.wecomDeviceNumber, ...(job.wecomAppSlot === undefined ? {} : { appSlot: job.wecomAppSlot }), ...(job.wecomRequireRemarkPhone === true ? {requireRemarkPhone:true} : {}), androidUser: job.wecomAndroidUser, ...previewJobRemarks(job), mode: previewJobMode(job), previewOnly: previewJobMode(job) !== "send" } : {}),
       ...(job.kind === "xhs_data_collect" ? { deviceName: device.deviceName || device.deviceId, windowDays: 30 } : {}),
       automationSessionId: job.sessionId || "",
       ...(state.automationSessions.find(s=>s.sessionId===job.sessionId)?.managedLookupGeneration ? {managedLookup:{protocol:MANAGED_LOOKUP_PROTOCOL,generation:state.automationSessions.find(s=>s.sessionId===job.sessionId).managedLookupGeneration}} : {}),
@@ -4948,6 +4965,10 @@ function syncAutomationJobFromWindowsTask(windowsTask, status, result = {}) {
   job.result = sanitizeTaskResult(result || {}, { includeEvidence: true });
   if (job.kind === "wecom_customer_preview") {
     const sending = previewJobMode(job) === "send";
+    if (job.wecomRequireRemarkPhone === true && ['ready_before_send','send_attempted'].includes(job.result.previewStatus) && job.result.remarkPhoneSet !== true) {
+      job.result.previewStatus='blocked';job.result.previewCode='remark_phone_not_verified';
+      if(status==='succeeded')status=job.status='failed';
+    }
     if ((job.result.previewStatus === "send_attempted" && (!sending || !job.wecomSendClaimAt))
         || (sending && job.result.previewStatus === "ready_before_send")) {
       job.result.previewStatus = "blocked"; job.result.previewCode = "wecom_result_mode_unconfirmed";
@@ -6196,6 +6217,13 @@ function sanitizeTaskResult(input = {}, options = {}) {
     result.invitationSent = input.sendStatus === "unknown" ? null : false;
     result.sendStatus = input.sendStatus === "unknown" ? "unknown" : "not_attempted";
     result.remarkSaveStatus = ["not_attempted", "unknown", "confirmed", "not_needed"].includes(input.remarkSaveStatus) ? input.remarkSaveStatus : "unknown";
+    if (typeof input.remarkPhoneSet === 'boolean') result.remarkPhoneSet = input.remarkPhoneSet;
+    if (input.invitationRequestConfirmed === true && input.invitationRequestProof === 'wecom_system_dialog_v1') {
+      result.invitationRequestConfirmed=true;result.invitationRequestProof='wecom_system_dialog_v1';
+    }
+    if (input.previewCode === 'wecom_add_friend_too_frequent' && input.addFriendLimitConfirmed === true && input.addFriendLimitProof === 'wecom_system_dialog_v1') {
+      result.addFriendLimitConfirmed=true;result.addFriendLimitProof='wecom_system_dialog_v1';
+    }
   }
   if (input.collection) result.collection = sanitizeXhsDataCollection(input.collection);
   if (input.uiSnapshot) result.uiSnapshot = String(input.uiSnapshot).slice(0, MAX_STORED_UI_SNAPSHOT_CHARS);

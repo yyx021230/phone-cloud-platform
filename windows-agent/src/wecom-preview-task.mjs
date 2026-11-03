@@ -19,6 +19,7 @@ export async function runWecomPreviewTask(task, { config, agentDir, signal, spaw
     ...(task.payload.appSlot === undefined ? {} : { appSlot: task.payload.appSlot }),
     ...(task.payload.remarkName === undefined ? {} : { remarkName: task.payload.remarkName }),
     ...(task.payload.description === undefined ? {} : { description: task.payload.description }),
+    ...(task.payload.requireRemarkPhone === true ? {requireRemarkPhone:true} : {}),
     phoneNumber: task.payload.phoneNumber, previewOnly: !sending, mode: sending ? "send" : "preview",
     ...(sending ? { claimDirectory: path.join(agentDir, "data", "wecom-send-claims") } : {}),
     agentId: config.agentId, serverBaseUrl: config.serverBaseUrl, agentToken: config.agentToken,
@@ -118,10 +119,16 @@ export async function runWecomPreviewTask(task, { config, agentDir, signal, spaw
         if (code !== 0) throw new Error();
         const value = JSON.parse(stdout.trim());
         if (!(sending ? ["send_attempted", "blocked"] : ["ready_before_send", "blocked"]).includes(value.previewStatus)
+          || (task.payload.requireRemarkPhone === true && value.previewStatus !== 'blocked' && value.remarkPhoneSet !== true)
           || (sending ? !((value.sendStatus === "unknown" && value.invitationSent === null) || (value.previewStatus === "blocked" && [undefined, "not_attempted"].includes(value.sendStatus) && value.invitationSent === false)) : value.invitationSent !== false)
           || !/^[a-z0-9_]{1,100}$/.test(value.previewCode || "")) throw new Error();
         finish(null, { previewStatus: value.previewStatus, previewCode: value.previewCode,
           invitationSent: sending && value.sendStatus === "unknown" ? null : false, sendStatus: sending && value.sendStatus === "unknown" ? "unknown" : "not_attempted", remarkSaveStatus: ["not_attempted", "unknown", "confirmed", "not_needed"].includes(value.remarkSaveStatus) ? value.remarkSaveStatus : "unknown",
+          ...(task.payload.requireRemarkPhone === true ? {remarkPhoneSet:value.remarkPhoneSet === true} : {}),
+          ...(task.payload.requireRemarkPhone === true && value.invitationRequestConfirmed === true && value.invitationRequestProof === 'wecom_system_dialog_v1'
+            ? {invitationRequestConfirmed:true,invitationRequestProof:'wecom_system_dialog_v1'} : {}),
+          ...(value.previewCode === 'wecom_add_friend_too_frequent' && value.addFriendLimitConfirmed === true && value.addFriendLimitProof === 'wecom_system_dialog_v1'
+            ? {addFriendLimitConfirmed:true,addFriendLimitProof:'wecom_system_dialog_v1'} : {}),
           executionMode: sending ? "wecom_poco_single_invitation" : "wecom_poco_preview_only", ...diagnostic(value) });
       } catch { finish(new Error("wecom_preview_worker_outcome_unknown")); }
     });

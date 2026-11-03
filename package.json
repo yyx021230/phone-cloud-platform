@@ -7,6 +7,8 @@
     "start:xhs-batch": "node server/xhs-batch/main.mjs",
     "test:xhs-batch": "node --test --test-concurrency=1 server/xhs-batch/*.test.mjs",
     "start": "node server/index.mjs",
+    "start:cps-wecom": "node server/cps-wecom/main.mjs",
+    "test:cps-wecom": "node --test server/cps-wecom*.test.mjs server/wecom-preview.http.test.mjs",
     "start:local": "node scripts/start-local.mjs",
     "start:windows-agent": "node windows-agent/src/index.mjs",
     "build:screen": "vite build --config vite.screen.config.mjs",

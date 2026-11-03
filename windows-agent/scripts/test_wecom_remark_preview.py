@@ -205,3 +205,20 @@ class RemarkAdapterTests(unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main()
+
+class CpsRemarkPhoneTests(unittest.TestCase):
+    def test_independent_phone_editor_is_confirmed_and_name_is_not_phone_proof(self):
+        d=Driver();out=r.run_customer_preview(d,{'phoneNumber':PHONE},sleep=lambda _:None,require_remark_phone=True)
+        self.assertTrue(out['remarkPhoneSet']);self.assertTrue(out['readyToSend']);self.assertFalse(out['invitationSent'])
+        self.assertNotIn(PHONE,json.dumps(out))
+        page=remark(name=PHONE)
+        page=replace(page,nodes=tuple(replace(n,text='添加电话号码')if n.name=='android.widget.EditText'else n for n in page.nodes))
+        self.assertFalse(r.remark_phone_matches(page,PHONE))
+
+    def test_missing_duplicate_or_changed_phone_stops_before_saving_or_sending(self):
+        for replacement in ('添加电话号码',OTHER):
+            d=Driver();page=d.pages[6];d.pages[6]=replace(page,nodes=tuple(replace(n,text=replacement)if n.name=='android.widget.EditText'and n.text==PHONE else n for n in page.nodes))
+            out=r.run_customer_preview(d,{'phoneNumber':PHONE},sleep=lambda _:None,require_remark_phone=True)
+            self.assertEqual(out['code'],'remark_phone_not_verified');self.assertFalse(out['remarkPhoneSet']);self.assertNotIn('save_remark',d.calls);self.assertNotIn('open_preview',d.calls)
+        page=remark();page=replace(page,nodes=tuple(replace(n,text=PHONE)if n.name=='android.widget.EditText'else n for n in page.nodes))
+        self.assertFalse(r.remark_phone_matches(page,PHONE))

@@ -40,7 +40,8 @@ export function previewRemarkInput(input) {
 export function previewJobRemarks(job) { return previewRemarkInput({ remarkName: job.wecomRemarkName, description: job.wecomDescription }); }
 export function previewRemarkFingerprint(job) {
   const value = previewJobRemarks(job);
-  return createHash("sha256").update(JSON.stringify([value.remarkName, value.description])).digest("hex");
+  return createHash("sha256").update(JSON.stringify([value.remarkName, value.description,
+    ...(job.wecomRequireRemarkPhone === true ? ['remark-phone-verified-v1'] : [])])).digest("hex");
 }
 
 export function previewJobMode(job) { return job.wecomMode || "preview"; }
@@ -55,7 +56,8 @@ export function sameWecomRecipient(job, other) {
     && job.deviceId === other.deviceId && job.wecomAndroidUser === other.wecomAndroidUser && job.phoneNumber === other.phoneNumber;
 }
 export function previewRequest(input) {
-  if (!input || Object.keys(input).some(k => !["deviceId", "phoneNumber", "requestId", "appSlot", "remarkName", "description", "mode"].includes(k))) throw problem("invalid_wecom_preview_fields", 400);
+  if (!input || Object.keys(input).some(k => !["deviceId", "phoneNumber", "requestId", "appSlot", "remarkName", "description", "mode", "requireRemarkPhone"].includes(k))) throw problem("invalid_wecom_preview_fields", 400);
+  if (input.requireRemarkPhone !== undefined && typeof input.requireRemarkPhone !== 'boolean') throw problem('invalid_wecom_remark_phone_requirement',400);
   if (input.mode !== undefined && !["preview", "send"].includes(input.mode)) throw problem("invalid_wecom_mode", 400);
   if (Object.hasOwn(input, "appSlot") && !["main", "clone"].includes(input.appSlot)) throw problem("invalid_wecom_app_slot", 400);
   if (typeof input.phoneNumber !== "string" || !/^1[3-9]\d{9}$/.test(input.phoneNumber)) throw problem("invalid_phone_number", 400);
@@ -73,6 +75,11 @@ export function publicPreview(job) {
     createdAt: job.createdAt, updatedAt: job.updatedAt, completedAt: job.completedAt,
     result: { status: job.result?.previewStatus || "", code: job.result?.previewCode || "",
       invitationSent: previewSendState(job) === "unknown" ? null : false, sendStatus: previewSendState(job), sendClaimed: Boolean(job.wecomSendClaimAt), remarkSaveStatus: job.result?.remarkSaveStatus || "not_attempted",
+      ...(job.wecomRequireRemarkPhone === true ? {remarkPhoneSet:job.result?.remarkPhoneSet === true} : {}),
+      ...(job.wecomRequireRemarkPhone === true && job.wecomSendClaimAt && job.result?.invitationRequestConfirmed === true && job.result?.invitationRequestProof === 'wecom_system_dialog_v1'
+        ? {invitationRequestConfirmed:true,invitationRequestProof:'wecom_system_dialog_v1'} : {}),
+      ...(job.result?.previewCode === 'wecom_add_friend_too_frequent' && job.result?.addFriendLimitConfirmed === true && job.result?.addFriendLimitProof === 'wecom_system_dialog_v1'
+        ? {addFriendLimitConfirmed:true,addFriendLimitProof:'wecom_system_dialog_v1'} : {}),
       ...(execution ? { execution } : {}), ...(errorInfo ? { errorInfo } : {}) } };
 }
 
@@ -88,6 +95,7 @@ export function previewLease(task, job, lock, device, agentId, now = Date.now(),
       && target.deviceNumber === job.wecomDeviceNumber && target.androidUser === job.wecomAndroidUser
       && (job.wecomAppSlot === undefined ? task.payload?.appSlot === undefined : task.payload?.appSlot === target.appSlot)
       && previewJobMode(job) === (task.payload?.mode || "preview")
+      && (job.wecomRequireRemarkPhone === true) === (task.payload?.requireRemarkPhone === true)
       && (previewJobMode(job) !== "send" || task.payload?.previewOnly === false)
       && requested.remarkName === delivered.remarkName && requested.description === delivered.description
       && task.payload?.deviceNumber === target.deviceNumber && task.payload?.androidUser === target.androidUser

@@ -52,15 +52,27 @@ class InvitationDriverMixin:
         item.click()  # Exactly one call; a timeout may already have sent.
 
 
-def send_once(driver, prepared, claim, check_budget):
+def application_ack(screen):
+    """Closed, read-only native dialog proof; never infer from page navigation."""
+    if screen.package != w.PACKAGE:return False
+    messages=[n for n in screen.nodes if n.visible and n.kind=='android.widget.TextView' and n.name=='android:id/message']
+    buttons=[n for n in screen.nodes if n.visible and n.name=='android:id/button1' and n.text in ('确定','知道了')]
+    return len(messages)==len(buttons)==1 and messages[0].text in ('已发送好友申请','好友申请已发送','已成功发送好友申请')
+
+
+def send_once(driver, prepared, claim, check_budget, observe_application_ack=False):
     if (prepared.get('status') != 'ready_before_send' or prepared.get('remarkPrepared') is not True
             or prepared.get('remarkSaveStatus') not in ('confirmed', 'not_needed')):
         return prepared
+    if observe_application_ack and prepared.get('remarkPhoneSet') is not True:
+        return dict(prepared,status='blocked',code='remark_phone_not_verified',invitationSent=False,sendStatus='not_attempted')
     result = dict(prepared, sendStatus='not_attempted')
     claimed = False
     try:
         check_budget()
         page = driver.snapshot(); w.guard(page)
+        if observe_application_ack and application_ack(page):
+            raise w.StopPreview('invitation_result_already_present')
         w.unique(page.matching(lambda n: n.labeled(w.SEND)))
         if driver.snapshot() != page:
             raise w.StopPreview('invitation_page_unstable')
@@ -73,8 +85,18 @@ def send_once(driver, prepared, claim, check_budget):
         driver.send_invitation(page, check_budget)
         # Native click completion proves an attempt, not recipient delivery.
         result.update(status='send_attempted', code='invitation_click_issued_delivery_unknown')
+        if observe_application_ack:
+            # Two fresh exact frames and a live original lease. No second tap,
+            # no retry of a timed out RPC and no changed overall deadline.
+            driver._guard_host();check_budget();after=driver.snapshot();w.guard(after)
+            if application_ack(after):
+                driver._guard_host();check_budget();second=driver.snapshot();w.guard(second)
+                if second==after and application_ack(second):
+                    result.update(invitationRequestConfirmed=True,invitationRequestProof='wecom_system_dialog_v1')
     except w.StopPreview as error:
         result.update(status='blocked', code=str(error))
+        if str(error)=='wecom_add_friend_too_frequent':
+            result.update(addFriendLimitConfirmed=True,addFriendLimitProof='wecom_system_dialog_v1')
     except Exception:
         result.update(status='blocked', code='invitation_outcome_unknown_no_retry')
     result.update(invitationSent=None if claimed else False, sendStatus='unknown' if claimed else 'not_attempted')

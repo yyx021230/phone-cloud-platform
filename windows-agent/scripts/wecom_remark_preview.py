@@ -67,6 +67,13 @@ def remark_page(screen):
     return remark_layout(screen) is not None
 
 
+def remark_phone_matches(screen, phone):
+    # Only the independently observed telephone editors inside the complete
+    # known five-editor remark page count; a matching remark NAME is not proof.
+    return remark_page(screen) and sum(n.name == 'android.widget.EditText' and n.text == phone
+                                      for n in editors(screen)) == 1
+
+
 @dataclass(frozen=True)
 class RemarkContext:
     expected: tuple
@@ -137,10 +144,12 @@ class PocoRemarkDriver(w.PocoPreviewDriver):
 
 
 class _RemarkingDriver:
-    def __init__(self, driver, sleep, requested, replace_name=False):
+    def __init__(self, driver, sleep, requested, replace_name=False, require_remark_phone=False):
         self.driver, self.sleep = driver, sleep
         self.requested = requested
         self.replace_name = replace_name
+        self.require_remark_phone = require_remark_phone
+        self.remark_phone_set = False
         self.saved = False
         self.save_status = "not_attempted"
         self.prepared = False
@@ -198,6 +207,8 @@ class _RemarkingDriver:
         if self.prepared: raise w.StopPreview("remark_prepare_repeated")
         self.perform("open_remark", screen, phone, check_budget)
         screen = self.read_until(remark_page, check_budget)
+        if self.require_remark_phone and not remark_phone_matches(screen, phone):
+            raise w.StopPreview('remark_phone_not_verified')
         expected = values(screen)
         changed = False
         name_id, description_id, _ = remark_layout(screen)
@@ -239,6 +250,11 @@ class _RemarkingDriver:
             self.save_status = "confirmed"
         else:
             self.save_status = "not_needed"
+        if self.require_remark_phone:
+            second = self.driver.snapshot(); w.guard(second); check_budget()
+            if values(second) != expected or not remark_phone_matches(second, phone):
+                raise w.StopPreview('remark_phone_not_verified')
+            self.remark_phone_set = True
         self.perform("close_remark", screen, phone, check_budget, context)
         screen = self.profile(phone, check_budget)
         self.prepared = True
@@ -251,7 +267,7 @@ class _RemarkingDriver:
 
 
 def run_customer_preview(driver, request, timeout=120, max_reads=90,
-                         cancelled=lambda: False, clock=time.monotonic, sleep=time.sleep, replace_name=False):
+                         cancelled=lambda: False, clock=time.monotonic, sleep=time.sleep, replace_name=False, require_remark_phone=False):
     """Requested or default remark/description for empty fields, then stop before invitation.
 
     Original nonempty fields and every other editor are preserved. Save is
@@ -261,11 +277,13 @@ def run_customer_preview(driver, request, timeout=120, max_reads=90,
     if not isinstance(request, dict) or set(request) - {"phoneNumber", "mode", "remarkName", "description"}:
         raise w.StopPreview("invalid_request")
     requested = validate_remark_input(request)
-    wrapper = _RemarkingDriver(driver, sleep, requested, replace_name=replace_name)
+    if type(require_remark_phone) is not bool:raise w.StopPreview('invalid_wecom_remark_phone_requirement')
+    wrapper = _RemarkingDriver(driver, sleep, requested, replace_name=replace_name, require_remark_phone=require_remark_phone)
     core_request = {k: v for k, v in request.items() if k not in ("remarkName", "description")}
     result = w.run_preview(wrapper, core_request, timeout=timeout, max_reads=max_reads,
                            cancelled=cancelled, clock=clock, sleep=sleep)
     result.update(workflowVersion="wecom-customer-preview-v2", remarkSaved=wrapper.saved,
                   remarkSaveStatus=wrapper.save_status, remarkPrepared=wrapper.prepared,
                   remarkEvents=wrapper.events)
+    if require_remark_phone:result['remarkPhoneSet'] = wrapper.remark_phone_set
     return result

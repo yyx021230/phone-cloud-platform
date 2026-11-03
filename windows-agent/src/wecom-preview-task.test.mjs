@@ -124,3 +124,12 @@ test('real Python adapter configuration rejection crosses the child pipe with a 
   assert.equal(result.diagnostic.wecomExecution.failurePhase,'configuration');
   assert.equal(result.invitationSent,false);
 });
+
+test('CPS phone verification flag reaches stdin; successful output without independent proof fails closed',async()=>{
+  const cps={...task,payload:{...task.payload,requireRemarkPhone:true}};
+  const valid=childFixture({previewStatus:'ready_before_send',previewCode:'stopped_before_send',invitationSent:false,remarkPhoneSet:true});
+  const result=await runWecomPreviewTask(cps,{config,agentDir:'/fixture',spawnChild:valid.spawnChild});
+  assert.equal(JSON.parse(valid.values().input).requireRemarkPhone,true);assert.equal(result.remarkPhoneSet,true);
+  const missing=childFixture({previewStatus:'ready_before_send',previewCode:'stopped_before_send',invitationSent:false});
+  await assert.rejects(runWecomPreviewTask(cps,{config,agentDir:'/fixture',spawnChild:missing.spawnChild}),/outcome_unknown/);
+});

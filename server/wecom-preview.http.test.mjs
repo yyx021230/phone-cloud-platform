@@ -257,4 +257,77 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   const safeRetry=await request('POST',integration,admin,explicitClone,202);
   assert.notEqual(safeRetry.taskId,cloneExternal.taskId,'explicit pre-write failure can be retried without bypassing any send claim');
 
+  // CPS jobs are gated on an explicit new Agent capability; old v4 workers
+  // cannot silently execute a request while ignoring its telephone-field proof.
+  const retryPicked=(await request('GET',next+'?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1&wecomCausalProtocol=wecom-causal-v1',agent)).task;
+  await request('POST',`/api/v1/windows-agent-tasks/${retryPicked.taskId}/status`,agent,{status:'failed',result:{previewStatus:'blocked',previewCode:'not_found',invitationSent:false,remarkSaveStatus:'not_attempted'}});
+  const cpsInput={deviceId:'adb:'+pool['43'].serial,phoneNumber:'13800138000',requestId:'fixture_cps_phone_001',mode:'preview',requireRemarkPhone:true};
+  const cpsJob=(await request('POST',route,admin,cpsInput,201)).task;
+  await request('POST',route,admin,{...cpsInput,requireRemarkPhone:false},409);
+  assert.equal((await request('GET',next+'?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1&wecomCausalProtocol=wecom-causal-v1',agent)).task,null);
+  const cpsPoll=next+'?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1&wecomCausalProtocol=wecom-causal-v1&wecomRemarkPhone=verified-v1';
+  const cpsPicked=(await request('GET',cpsPoll,agent)).task;assert.equal(cpsPicked.payload.requireRemarkPhone,true);
+  await request('POST',`/api/v1/windows-agent-tasks/${cpsPicked.taskId}/status`,agent,{status:'succeeded',result:{previewStatus:'ready_before_send',previewCode:'stopped_before_send',invitationSent:false,remarkPhoneSet:true,remarkSaveStatus:'confirmed'}});
+  assert.equal((await request('GET',`${route}/${cpsJob.jobId}`,admin)).task.result.remarkPhoneSet,true);
+
+  // All three CPS interactions over actual loopback HTTP, backed by this real
+  // platform fixture and simulated Agent. No phone or external callback.
+  const http=await import('node:http');
+  const {createStore}=await import('./cps-wecom/store.mjs');
+  const {createPlatform}=await import('./cps-wecom/platform.mjs');
+  const {createService}=await import('./cps-wecom/service.mjs');
+  const {parseClients,signature,stringifyBody,parseBody,ROUTES}=await import('./cps-wecom/protocol.mjs');
+  const {createHttpServer,listen}=await import('./cps-wecom/http.mjs');
+  const callbackRows=[];const cpsSecret='fixture-cps-contract-secret';
+  const cpsReceiver=http.createServer(async(req,res)=>{let raw='';for await(const chunk of req)raw+=chunk;const data=parseBody(raw);assert.equal(signature(data,cpsSecret),data.sign);callbackRows.push(data);res.setHeader('content-type','application/json');res.end(JSON.stringify({success:true,code:200}));});
+  await listen(cpsReceiver);t.after(()=>{cpsReceiver.closeAllConnections();return new Promise(r=>cpsReceiver.close(r));});
+  const clients=parseClients(JSON.stringify([{appId:'fixture_cps',secret:cpsSecret,callbackUrl:'http://127.0.0.1:'+cpsReceiver.address().port+'/api/v1/lead/callback',allowLoopbackTest:true,allDeviceStatus:true,members:[{deviceNumber:'43',appSlot:'main',bindingVerified:true,wecom_corp_id:'ww_fixture',wecom_userid:'member_main'},{deviceNumber:'59',appSlot:'main',bindingVerified:true,wecom_corp_id:'ww_fixture',wecom_userid:'busy_member'},{deviceNumber:'155',appSlot:'clone',bindingVerified:true,wecom_corp_id:'ww_fixture',wecom_userid:'idle_clone'}]}]));
+  const cpsDir=await fs.mkdtemp(path.join(os.tmpdir(),'cps-real-http-'));
+  const cpsStore=await createStore({file:path.join(cpsDir,'journal.json')});let cpsNow=Date.now();
+  const cpsService=createService({store:cpsStore,clients,platform:createPlatform({baseUrl:base,token:admin,mode:'send'}),clock:()=>cpsNow});
+  const cpsServer=createHttpServer(cpsService);await listen(cpsServer);
+  t.after(async()=>{cpsServer.closeAllConnections();await new Promise(r=>cpsServer.close(r));await cpsService.close();await fs.rm(cpsDir,{recursive:true,force:true});});
+  const cpsCall=async(endpoint,input)=>{const body={...input,app_id:'fixture_cps',timestamp:Date.now(),nonce:(await import('node:crypto')).randomBytes(16).toString('hex')};body.sign=signature(body,cpsSecret);const r=await fetch('http://127.0.0.1:'+cpsServer.address().port+endpoint,{method:'POST',headers:{'content-type':'application/json'},body:stringifyBody(body)});assert.equal(r.status,200);return r.json();};
+  assert.equal((await request('GET',cpsPoll,agent)).task,null);
+  const cpsDevices=await cpsCall(ROUTES.devices,{});assert.equal(cpsDevices.result.total,9);assert.equal(cpsDevices.result.devices.find(d=>d.device_number==='43').accounts[0].wecom_userid,'member_main');
+  const lead={lead_id:12345678n,phone:'13800138000',wecom_corp_id:'ww_fixture',wecom_userid:'member_main'};
+  assert.equal((await cpsCall(ROUTES.dispatch,{...lead,lead_id:9223372036854775807n})).code,2003);assert.equal(cpsStore.snapshot().leads.length,0);
+  assert.equal((await cpsCall(ROUTES.dispatch,lead)).success,true);assert.equal((await cpsCall(ROUTES.dispatch,lead)).success,true);
+  await cpsService.tick();const leadTask=(await request('GET',cpsPoll,agent)).task;assert.equal(leadTask.payload.requireRemarkPhone,true);assert.equal(leadTask.payload.remarkName,'13800138000_12345678');assert.equal(leadTask.payload.mode,'send');
+  await request('POST',`/api/v1/windows-agent-tasks/${leadTask.taskId}/status`,agent,{status:'failed',result:{previewStatus:'blocked',previewCode:'already_contact',invitationSent:false,sendStatus:'not_attempted',remarkSaveStatus:'not_attempted'}});
+  cpsNow+=2001;await cpsService.tick();await cpsService.tick();assert.equal(callbackRows.length,1);assert.equal(callbackRows[0].lead_id,12345678n);assert.equal(callbackRows[0].result,'duplicate');assert.equal(cpsStore.snapshot().leads[0].stage,'completed');
+  // A native application acknowledgement is distinct from recipient delivery.
+  await request('GET',cpsPoll,agent);
+  const sentLead={...lead,lead_id:2n,phone:'13900139001'};assert.equal((await cpsCall(ROUTES.dispatch,sentLead)).success,true);
+  await cpsService.tick();const confirmedTask=(await request('GET',cpsPoll,agent)).task;
+  await request('POST',`/api/v1/windows-agents/fixture-agent/wecom-preview-tasks/${confirmedTask.taskId}/send-claim`,agent,{},201);
+  await request('POST',`/api/v1/windows-agent-tasks/${confirmedTask.taskId}/status`,agent,{status:'succeeded',result:{previewStatus:'send_attempted',previewCode:'invitation_click_issued_delivery_unknown',invitationSent:null,sendStatus:'unknown',remarkSaveStatus:'confirmed',remarkPhoneSet:true,invitationRequestConfirmed:true,invitationRequestProof:'wecom_system_dialog_v1'}});
+  cpsNow+=2001;await cpsService.tick();await cpsService.tick();assert.equal(callbackRows[1].result,'success');assert.equal(callbackRows[1].remark_phone_set,true);
+  const originalConfirmed=(await request('GET',`${route}/${cpsStore.snapshot().leads[1].jobId}`,admin)).task;
+  assert.equal(originalConfirmed.result.sendStatus,'unknown');assert.equal(originalConfirmed.result.invitationSent,null);
+  // A real fixed-vocabulary native frequency proof maps only this member's failure.
+  await request('GET',cpsPoll,agent);assert.equal((await cpsCall(ROUTES.dispatch,{...lead,lead_id:3n,phone:'13900139002'})).success,true);
+  await cpsService.tick();const limited=(await request('GET',cpsPoll,agent)).task;
+  await request('POST',`/api/v1/windows-agent-tasks/${limited.taskId}/status`,agent,{status:'failed',result:{previewStatus:'blocked',previewCode:'wecom_add_friend_too_frequent',invitationSent:false,sendStatus:'not_attempted',addFriendLimitConfirmed:true,addFriendLimitProof:'wecom_system_dialog_v1'}});
+  cpsNow+=2001;await cpsService.tick();await cpsService.tick();assert.equal(callbackRows[2].result,'failed');assert.equal(callbackRows[2].fail_reason,'添加好友过于频繁');
+  // CPS discovery/admission must preserve an existing real lookup session and
+  // its physical lock, while a different idle phone can still accept CPS work.
+  await request('GET',cpsPoll,agent); // Refresh the upgraded Agent after the legacy cleanup fixture's poll.
+  const lookupPath='/api/v1/user/automation/alipay-name-sessions';
+  const lookup=await request('POST',lookupPath,admin,{deviceId:'adb:'+pool['59'].serial},201);
+  const locksBefore=(await request('GET','/api/v1/device-locks',admin)).locks.filter(l=>l.deviceId==='adb:'+pool['59'].serial&&l.status==='active');
+  assert.equal(locksBefore.length,1);assert.equal(locksBefore[0].lockType,'alipay_name_lookup');
+  await request('GET','/api/v1/user/automation/wecom-cps-devices',user,undefined,401);
+  const busyList=await cpsCall(ROUTES.devices,{});const occupied=busyList.result.devices.find(d=>d.device_number==='59');
+  assert.equal(occupied.busy,true);assert.equal(occupied.available,false);assert.equal(occupied.accounts[0].unavailable_reason,'device_busy');
+  assert.equal((await cpsCall(ROUTES.dispatch,{...lead,lead_id:4n,wecom_userid:'busy_member'})).code,2003);
+  const idleReply=await cpsCall(ROUTES.dispatch,{...lead,lead_id:5n,phone:'13900139005',wecom_userid:'idle_clone'});assert.equal(idleReply.success,true,JSON.stringify(idleReply));
+  await cpsService.tick();assert.equal(cpsStore.snapshot().leads.find(l=>l.leadId==='5').stage,'submitted');
+  const locksAfter=(await request('GET','/api/v1/device-locks',admin)).locks.filter(l=>l.deviceId==='adb:'+pool['59'].serial&&l.status==='active');
+  assert.deepEqual(locksAfter,locksBefore);
+  const preserved=(await request('GET',lookupPath,admin)).sessions.find(s=>s.sessionId===lookup.session.sessionId);
+  assert.equal(preserved.status,'starting');assert.equal(preserved.pendingJobId,lookup.session.pendingJobId);
+
+
+
 });

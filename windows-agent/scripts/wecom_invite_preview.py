@@ -114,6 +114,10 @@ def validate_request(request):
 def guard(screen):
     if screen.package != PACKAGE:
         raise StopPreview("wrong_foreground_app")
+    if any(n.kind == 'android.widget.TextView' and n.name == 'android:id/message'
+           and n.text in ('添加好友过于频繁', '添加好友过于频繁，请稍后再试', '添加好友过于频繁，请稍后再试。')
+           for n in screen.nodes if n.visible):
+        raise StopPreview('wecom_add_friend_too_frequent')
     texts = [v for n in screen.nodes if n.visible for v in (n.text, n.desc)]
     if any(marker in v for v in texts for marker in HUMAN_MARKERS):
         raise StopPreview("human_required")

@@ -71,8 +71,10 @@ DEVICES = json.loads(Path(__file__).with_name("wecom_preview_devices.json").read
 def validate_config(value):
     allowed = {"taskId", "deviceId", "serial", "deviceNumber", "androidUser", "phoneNumber",
                "previewOnly", "agentId", "serverBaseUrl", "agentToken"}
-    if not isinstance(value, dict) or not allowed <= set(value) or set(value) - allowed - {"appSlot", "remarkName", "description", "mode", "claimDirectory", "physicalCleanup"}:
+    if not isinstance(value, dict) or not allowed <= set(value) or set(value) - allowed - {"appSlot", "remarkName", "description", "mode", "claimDirectory", "physicalCleanup", "requireRemarkPhone"}:
         raise SafeStop("invalid_preview_config")
+    if 'requireRemarkPhone' in value and type(value['requireRemarkPhone']) is not bool:
+        raise SafeStop('invalid_wecom_remark_phone_requirement')
     mode = value.get("mode", "preview")
     if mode not in ("preview", "send") or value.get("previewOnly") is not (mode != "send"):
         raise SafeStop("invalid_preview_config")
@@ -106,7 +108,9 @@ def validate_config(value):
 
 
 def remark_fingerprint(value):
-    return hashlib.sha256(json.dumps(remarks.validate_remark_input(value), ensure_ascii=False, separators=(",", ":")).encode("utf-8")).hexdigest()
+    values=list(remarks.validate_remark_input(value))
+    if value.get('requireRemarkPhone') is True:values.append('remark-phone-verified-v1')
+    return hashlib.sha256(json.dumps(values, ensure_ascii=False, separators=(",", ":")).encode("utf-8")).hexdigest()
 
 
 class PreviewRemarkEntryDriver(invitation.InvitationDriverMixin, remarks.PocoRemarkDriver):
@@ -614,18 +618,25 @@ def run_host(value, diagnostic_stream=None, *, authority=None):
         remaining=min(120,deadline-time.monotonic()-10)
         if remaining<10:raise SafeStop("preview_job_budget_exhausted")
         with trace.phase("recipient_search"):
-            result=remarks.run_customer_preview(driver,{"phoneNumber":config["phoneNumber"],"remarkName":config["remarkName"],"description":config["description"]},timeout=remaining,max_reads=100,replace_name=config.get("mode") == "send")
+            result=remarks.run_customer_preview(driver,{"phoneNumber":config["phoneNumber"],"remarkName":config["remarkName"],"description":config["description"]},timeout=remaining,max_reads=100,replace_name=config.get("mode") == "send" or config.get('requireRemarkPhone') is True,require_remark_phone=config.get('requireRemarkPhone',False))
             if result.get('status') in ('blocked','stopped') and not trace.failure_phase:
                 trace.failure_phase = 'recipient_search'
                 trace.emit('recipient_search', 'error')
+        if config.get('requireRemarkPhone') is True and result.get('status') == 'ready_before_send' and result.get('remarkPhoneSet') is not True:
+            raise SafeStop('remark_phone_not_verified')
         if config.get("mode") == "send":
             with trace.phase("invitation_send"):
-                result=invitation.send_once(driver,result,claim_invitation,budget)
+                result=invitation.send_once(driver,result,claim_invitation,budget,observe_application_ack=config.get('requireRemarkPhone') is True)
         if result.get("status")=="ready_before_send" and not lease_valid():
             result.update(status="blocked",code="device_lease_lost")
         code=result.get("code") or ("preview_ready" if result.get("status")=="ready_before_send" else "preview_stopped")
         output = {"previewStatus":result.get("status") if result.get("status") in ("ready_before_send", "send_attempted") else "blocked",
                 "previewCode":code,"invitationSent":result.get("invitationSent",False),"sendStatus":result.get("sendStatus","not_attempted"),"remarkSaveStatus":result.get("remarkSaveStatus","not_attempted")}
+        if config.get('requireRemarkPhone') is True:output['remarkPhoneSet']=result.get('remarkPhoneSet') is True
+        if result.get('invitationRequestConfirmed') is True and result.get('invitationRequestProof')=='wecom_system_dialog_v1':
+            output.update(invitationRequestConfirmed=True,invitationRequestProof='wecom_system_dialog_v1')
+        if code=='wecom_add_friend_too_frequent':
+            output.update(addFriendLimitConfirmed=True,addFriendLimitProof='wecom_system_dialog_v1')
         return output
     finally:
         if 'output'in locals()and output.get('previewStatus')=='blocked':

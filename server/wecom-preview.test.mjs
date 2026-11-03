@@ -153,3 +153,11 @@ test("integration occupancy reads do not expire locks or invoke device recovery"
   assert.equal(JSON.stringify(state),before);
   assert.throws(()=>context.deviceOccupancyForViewer({deviceId:'fixture'}),/expiry_mutator/,'normal callers retain their existing expiry path');
 });
+
+test('CPS capability inventory never expires locks or invokes recovery/ADB',()=>{
+  const source=fs.readFileSync(new URL('./index.mjs',import.meta.url),'utf8');
+  const start=source.indexOf("if (url.pathname === '/api/v1/user/automation/wecom-cps-devices'");
+  assert.ok(start>0);const route=source.slice(start,source.indexOf('const simpleInvitationSubmit',start));
+  assert.doesNotMatch(route,/activeDeviceLockForTask|expireDeviceLocks|saveState|\.reconcile\(|\.recover\(|adb\.(?:shell|devices)/);
+  assert.match(route,/requireAuth\(req,\['admin'\]\)/);
+});

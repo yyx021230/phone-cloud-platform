@@ -1,6 +1,7 @@
 import { wecomExecution } from './wecom-diagnostics.mjs';
 
 const groups = [
+  ['account_limit', ['wecom_add_friend_too_frequent'], '指定企微成员添加好友过于频繁', '暂停该成员分配并核对原任务，不自动换账户或重发。'],
   ['login', ['login_required'], '企微账户未登录', '在对应手机登录所选账户，再核对原任务。'],
   ['human', ['human_required', 'device_unlock_requires_user'], '手机需要人工验证或解锁', '在对应手机完成验证或解锁，不重新提交原任务。'],
   ['device_connection', ['adb_io_timeout', 'device_offline', 'adb_offline', 'agent_offline', 'adb_device_not_ready'], '手机或执行端连接未就绪', '检查这台手机和执行端的连接；不要重建共享ADB或切换身份。'],
@@ -10,7 +11,7 @@ const groups = [
   ['business_stop', ['not_found'], '本次未找到匹配客户', '核对客户号码及手机搜索结果。'],
   ['cleanup', ['preview_cleanup_unconfirmed', 'wecom_cleanup_bootstrap_unconfirmed'], '任务工具清理尚未确认', '保留原任务和单机占用，等待运维核对清理；不要直接清锁或再次运行。'],
   ['result_unconfirmed', ['remark_persistence_unconfirmed', 'remark_persistence_unstable', 'remark_readback_mismatch', 'invitation_claim_unconfirmed_no_retry', 'invitation_local_claim_exists_no_retry', 'wecom_invitation_already_claimed_no_retry', 'invitation_click_issued_delivery_unknown', 'invitation_outcome_unknown_no_retry'], '备注保存或邀请状态需要核对', '查看原任务及该账户的实际结果，不能自动再次保存或发送。'],
-  ['page_compatibility', ['ambiguous_or_missing_element', 'element_changed_before_action', 'element_has_no_stable_selector', 'page_changed_before_action', 'home_navigation_page_changed', 'unsupported_start_page', 'unrecognized_phone_input', 'phone_readback_mismatch', 'search_input_not_empty', 'preview_target_unverified', 'wrong_foreground_app', 'unexpected_send_page', 'invitation_element_changed', 'invitation_element_missing', 'invitation_page_changed', 'invitation_page_unstable', 'remark_fields_changed', 'invalid_remark_context', 'system_overlay_changed_before_action', 'system_overlay_dismissal_not_confirmed'], '页面结构、目标或前台状态未通过核对', '查看失败阶段和这台手机的当前页面，由脚本维护人员核对适配；不要盲点或重放。'],
+  ['page_compatibility', ['ambiguous_or_missing_element', 'element_changed_before_action', 'element_has_no_stable_selector', 'page_changed_before_action', 'home_navigation_page_changed', 'unsupported_start_page', 'unrecognized_phone_input', 'phone_readback_mismatch', 'search_input_not_empty', 'preview_target_unverified', 'wrong_foreground_app', 'unexpected_send_page', 'invitation_element_changed', 'invitation_element_missing', 'invitation_page_changed', 'invitation_page_unstable', 'invitation_result_already_present', 'remark_fields_changed', 'remark_phone_not_verified', 'invalid_remark_context', 'system_overlay_changed_before_action', 'system_overlay_dismissal_not_confirmed'], '页面结构、目标或前台状态未通过核对', '查看失败阶段和这台手机的当前页面，由脚本维护人员核对适配；不要盲点或重放。'],
   ['timeout', ['timeout', 'screen_prepare_timeout', 'screen_wake_not_confirmed', 'device_unlock_not_confirmed', 'wecom_launch_not_ready', 'home_navigation_timeout', 'preview_phase_timeout', 'observation_budget_exhausted', 'remark_observation_budget_exhausted', 'poco_not_ready', 'wecom_preview_worker_timeout_no_replay', 'task_expired'], '本阶段等待超时或组件未就绪', '结合失败阶段核对手机和原任务结果，不自动重跑或放宽超时。'],
 ];
 const catalog = new Map(groups.flatMap(([category, codes, message, action]) => codes.map(code => [code, { category, message, action }])));
