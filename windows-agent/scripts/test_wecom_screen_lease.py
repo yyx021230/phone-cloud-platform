@@ -1,8 +1,8 @@
 import copy
 import json
 import unittest
-from unittest.mock import patch
-from wecom_screen_lease import validate, ScreenAuthority, INVENTORY_PATH
+from unittest.mock import patch,Mock
+from wecom_screen_lease import validate, ScreenAuthority, INVENTORY_PATH,read_inventory_payload
 
 
 def fixture():
@@ -24,6 +24,31 @@ class ScreenLeaseTests(unittest.TestCase):
     def test_exact_owned_reservation_is_allowed_without_rewriting_inventory(self):
         c,p,i=fixture();old=copy.deepcopy(i)
         self.assertTrue(self.verify(c,p,i));self.assertEqual(i,old)
+
+    def test_inventory_sharing_denial_only_retries_fresh_reads_without_writes(self):
+        _,_,inventory=fixture();path=Mock();path.read_text.side_effect=[PermissionError(),PermissionError(),json.dumps(inventory)]
+        with patch('wecom_screen_lease.time.sleep')as sleep:
+            self.assertEqual(read_inventory_payload(path),inventory)
+        self.assertEqual(path.read_text.call_count,3);self.assertEqual(sleep.call_count,2)
+        self.assertEqual(set(name for name,_,_ in path.mock_calls),{'read_text'})
+
+    def test_permanent_inventory_denial_is_bounded_and_other_errors_do_not_retry(self):
+        path=Mock();path.read_text.side_effect=PermissionError()
+        with patch('wecom_screen_lease.time.sleep')as sleep:
+            with self.assertRaises(PermissionError):read_inventory_payload(path)
+        self.assertEqual(path.read_text.call_count,3);self.assertEqual(sleep.call_count,2)
+        for error in(FileNotFoundError(),json.JSONDecodeError('fixture','',0)):
+            path=Mock();path.read_text.side_effect=error
+            with patch('wecom_screen_lease.time.sleep')as sleep:
+                with self.assertRaises(type(error)):read_inventory_payload(path)
+            self.assertEqual(path.read_text.call_count,1);sleep.assert_not_called()
+
+    def test_inventory_after_sharing_retry_still_requires_exact_scope(self):
+        c,p,i=fixture();wrong=[dict(i[0],occupancy={'kind':'screen_control','sessionId':'other'})]
+        path=Mock();path.read_text.side_effect=[PermissionError(),json.dumps(wrong)]
+        with patch('wecom_screen_lease.time.sleep'):
+            observed=read_inventory_payload(path)
+        with self.assertRaises(ValueError):self.verify(c,p,observed)
 
     def test_every_identity_and_generation_is_bound(self):
         c,p,i=fixture()

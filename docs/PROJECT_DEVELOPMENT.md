@@ -6457,3 +6457,13 @@ rc9首轮17台均完成投递前复核并实际启动原生脚本：125/59/69/71
 106在Poco启动阶段因QA授权读取qa_transport_unknown中断，readerStarted已记录但PID未及记录；原native/控制进程退出，旧清理拒绝停止未绑定PID。保持原screen与持久下架，重新核对仅自有控制锁、无其他任务/作业/会话、查名排除、无其他staged worker和SYSTEM身份/文件hash后，另建exclusive_single_phone_reader_maintenance，仅对重新读取并复验的当前PID14800/startToken55210836执行一次单机维护停止，双验空reader/forward后释放原screen并恢复listing。未将晚捕获PID伪写成原资源收据，未修改自动cleanup_reader的未知PID拒绝规则；Android startToken与uptime换算不作为归属证明。
 
 185冷启动后仍在打开搜索入口发生wecom_rpc_delivery_unknown_no_replay，未重放，原native退出后按原PID6206/startToken761136759单机清理并双验、恢复上架。有限logcat/lastanr未返回匹配诊断，不代表排除了ANR；底层原始RPC异常类别未保留，暂不认定共享ADB、驱动或网络根因，不靠放宽超时伪造通过。本轮测试仍预留并发11/rev181，所有剩余资源收尾后须CAS恢复12；无共享服务重载、ADB身份/密钥或媒体更改。
+
+### 变更记录｜2026-11-03 补测遇到的QA读取中断与有界只读重试
+
+rc10的145已实际ready_before_send并完成原资源清理、上架恢复。127已通过首页入口、号码输入阶段，后在forward发送前socket owner检查发生inspection_error/errorType other而阻断，根因未分类，不能算完整通过；原资源单机清理恢复。145/106一轮在原生投递前qa_transport_unknown，随后只读复查成功；生产index hash、SYSTEM Agent/ADB身份与文件未变，healthz/readyz200，40次只读TCP表采样无错误，SQL分项0–20ms及WeCom库存GET130ms，暂未确认那次瞬时读取失败根因。
+
+106后续实际到备注阶段，因inventory_read的PermissionError（qa_authority_file_denied）撤销权限，非企微页面识别错误；原PID28564/startToken56095139按原scope清理并恢复。只给测试专用ScreenAuthority读取固定设备缓存增加最多3次全新只读打开，PermissionError间隔20ms；不复用旧内容、不修改文件/ACL/身份，持续拒绝仍失败，缺失或JSON错误不重试，后续全部身份、租约、nonce与新鲜度校验保持。
+
+### 决策日志｜2026-11-03 区分测试基础读取失败与业务失败
+
+当前证据只能确认缓存打开被拒绝，Windows缓存更新共享冲突属于待验证解释，不宣称根因已证。有界读取在本次检查返回前完成，已撤销的generation仍不可恢复；不是重试UI或SDK写入。新增瞬时拒绝恢复、持续拒绝上限、其他错误立即失败、恢复后错误scope仍拒绝反例，完整Python WeCom529项通过。此变更仅独立预览的测试授权类，普通Agent及实时控制不引用，不发布或重载共享服务；只继续106/127补测，78仍按用户要求跳过，185未通过状态保持。

@@ -53,6 +53,16 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, *args, **kwargs): return None
 
 
+def read_inventory_payload(path):
+    # A cache writer can briefly hold a Windows sharing lock. Read only; never
+    # reuse old content or change file permissions. Permanent denial still fails.
+    for attempt in range(3):
+        try:return json.loads(path.read_text(encoding='utf-8-sig'))
+        except PermissionError:
+            if attempt==2:raise
+            time.sleep(.02)
+
+
 class ScreenAuthority:
     def __init__(self, binding, *, clock=time.monotonic, wall=time.time, runtime=None):
         self.binding = dict(binding); self.clock, self.wall = clock, wall
@@ -120,7 +130,7 @@ class ScreenAuthority:
             stage='inventory_read'
             with self.observe('qa.inventory'):
                 path = Path(self.binding['inventoryPath'])
-                payload = json.loads(path.read_text(encoding='utf-8-sig'))
+                payload = read_inventory_payload(path)
                 inventory = payload if isinstance(payload, list) else payload['devices']
             nonce = secrets.token_hex(16); started = self.clock()
             body = json.dumps({'taskId':self.binding['taskId'], 'nonce':nonce, 'purpose':purpose,
