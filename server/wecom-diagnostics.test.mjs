@@ -20,7 +20,7 @@ test('cloud diagnostic contract is identical to Agent but imports without Agent 
   assert.equal(await fs.readFile(cloud,'utf8'),await fs.readFile(new URL('../windows-agent/src/wecom-diagnostics.mjs',import.meta.url),'utf8'));
   const dir=await fs.mkdtemp(path.join(os.tmpdir(),'wecom-cloud-shape-'));
   t.after(()=>fs.rm(dir,{recursive:true,force:true}));
-  for(const name of ['wecom-preview.mjs','wecom-diagnostics.mjs','wecom-preview-devices.json'])await fs.copyFile(new URL('./'+name,import.meta.url),path.join(dir,name));
+  for(const name of ['wecom-preview.mjs','wecom-diagnostics.mjs','wecom-errors.mjs','wecom-preview-devices.json'])await fs.copyFile(new URL('./'+name,import.meta.url),path.join(dir,name));
   const api=await import(pathToFileURL(path.join(dir,'wecom-preview.mjs')).href);
   const execution={version:1,phase:'cleanup',failurePhase:'poco_health',elapsedMs:12,cleanupConfirmed:false,events:[]};
   const job={result:{diagnostic:{wecomExecution:execution}}};

@@ -18,6 +18,18 @@ def fixture():
 
 
 class ScreenLeaseTests(unittest.TestCase):
+    def test_identity_failure_metadata_is_closed_and_never_permits_same_generation(self):
+        import hashlib
+        c,_,_=fixture();cfg=dict(c,mode='preview',previewOnly=True,remarkName='fixture',description='fixture',phoneNumber='13800138000')
+        c['operationFingerprint']=hashlib.sha256(json.dumps(['preview',hashlib.sha256(json.dumps(['fixture','fixture'],ensure_ascii=False,separators=(',',':')).encode()).hexdigest(),cfg['phoneNumber'],cfg['deviceId'],cfg['androidUser']],separators=(',',':')).encode()).hexdigest()
+        for error in(TypeError('private contact'),RuntimeError('qa_tcp_table_changed_too_often')):
+            authority=ScreenAuthority(c);authority.inspection_operation='adb_listener'
+            with patch.object(authority,'host_identity',side_effect=error)as inspect:
+                self.assertFalse(authority.check(cfg));self.assertFalse(authority.check(cfg));self.assertEqual(inspect.call_count,1)
+            self.assertEqual(authority.last_failure_stage,'host_identity');self.assertEqual(authority.last_failure_detail['errorType'],type(error).__name__)
+            self.assertNotIn('private',json.dumps(authority.last_failure_detail))
+            self.assertEqual(authority.last_failure_detail.get('fixedCode'),'qa_tcp_table_changed_too_often'if isinstance(error,RuntimeError)else None)
+
     def verify(self, config, proof, inventory, **changes):
         return validate(config,proof,inventory,**dict(dict(nonce='a'*32,round_trip=.1,local_age=0,inventory_age=1),**changes))
 

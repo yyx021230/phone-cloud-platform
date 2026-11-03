@@ -1,4 +1,4 @@
-import { wecomStatusLabel } from "./wecom-automation-ui.js?v=20261029-invitation-rc5";
+import { wecomStatusLabel, wecomErrorLabel } from "./wecom-automation-ui.js?v=20261103-errors-rc1";
 const root = "/api/v1/user/automation";
 const form = document.querySelector("#previewForm");
 const devices = document.querySelector("#device");
@@ -53,7 +53,7 @@ async function refresh() {
   for (const task of list.tasks) {
     const row = document.createElement("article"); row.className = "wecom-preview-task";
     row.append(text("b", `${task.deviceNumber}号 · ${task.appSlot === "clone" ? "分身" : "主应用"} · ${wecomStatusLabel(task)}`));
-    row.append(text("p", task.result.code || "所有操作都停在发送前"));
+    row.append(text("p", wecomErrorLabel(task) || "所有操作都停在发送前"));
     row.append(text("small", `${new Date(task.createdAt).toLocaleString()} · ${task.jobId}`)); history.append(row);
   }
   if (unresolved) {
@@ -61,7 +61,7 @@ async function refresh() {
     if (found) { accepted = found.jobId; unresolved = null; }
   }
   const own = accepted && list.tasks.find(task => task.jobId === accepted);
-  if (own) feedback.textContent = `${own.deviceNumber}号：${wecomStatusLabel(own)}${own.result.code ? `（${own.result.code}）` : ""}`;
+  if (own) feedback.textContent = `${own.deviceNumber}号：${wecomStatusLabel(own)}${wecomErrorLabel(own) ? `；${wecomErrorLabel(own)}` : ""}`;
   submit.disabled = requestInFlight || Boolean(unresolved) || Boolean(own && ["queued", "running", "stalled"].includes(own.status));
 }
 

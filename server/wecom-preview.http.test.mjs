@@ -134,11 +134,13 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   const freed=(await request('GET',discovery,admin)).devices.find(d=>d.deviceNumber==='25');assert.equal(freed.available,true);assert.equal(freed.busy,false);
 
   assert.equal(done.status,"succeeded");assert.equal(done.result.status,"ready_before_send");assert.equal(done.result.invitationSent,false);
+  assert.equal(done.result.errorInfo,undefined);
   const replay=await request("POST",route,admin,input,200);assert.equal(replay.task.jobId,done.jobId);
   await request("POST",route,admin,{...cloneInput,appSlot:"main",requestId:"request_same_phone_main"},409);
   await request("POST",`/api/v1/windows-agent-tasks/${clonePicked.taskId}/status`,agent,{status:"failed",result:{previewStatus:"blocked",previewCode:"remark_persistence_unconfirmed",remarkSaveStatus:"unknown"}});
   const stopped=(await request("GET",`${route}/${clone.jobId}`,admin)).task;
   assert.equal(stopped.result.remarkSaveStatus,"unknown");assert.equal(stopped.result.code,"remark_persistence_unconfirmed");
+  assert.equal(stopped.result.errorInfo.category,'result_unconfirmed');assert.equal(stopped.result.errorInfo.outcomeUnconfirmed,true);
   const locks=(await request("GET","/api/v1/device-locks",admin)).locks;
   assert.equal(locks.filter(l=>l.status==="active"&&l.lockType==="wecom_customer_preview").length,0);
   const mainInput={...cloneInput,appSlot:"main",requestId:"request_same_phone_main"};
@@ -223,6 +225,7 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   await request('POST',`/api/v1/windows-agent-tasks/${simpleTask.taskId}/status`,agent,{status:'succeeded',result:{previewStatus:'send_attempted',previewCode:'invitation_click_issued_delivery_unknown',sendStatus:'unknown',invitationSent:null,remarkSaveStatus:'confirmed'}});
   const externalResult=await request('GET',`${integration}/${accepted.taskId}`,admin);
   assert.equal(externalResult.status,'unknown');assert.equal(externalResult.taskId,accepted.taskId);
+  assert.equal(externalResult.errorInfo.category,'result_unconfirmed');assert.equal(externalResult.errorInfo.outcomeUnconfirmed,true);
   await request('GET',`${integration}/${accepted.taskId}`,user,undefined,401);
   assert.equal((await request('POST',integration,admin,simple,200)).taskId,accepted.taskId);
   await stop();await start();
@@ -239,7 +242,11 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   assert.equal(new Set(concurrentResponses.map(r=>r.body.taskId)).size,1,'simultaneous body-only retries create one durable task');
 
   const pending145=(await request('GET',next+'?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1&wecomCausalProtocol=wecom-causal-v1',agent)).task;
-  await request('POST',`/api/v1/windows-agent-tasks/${pending145.taskId}/status`,agent,{status:'failed',result:{previewStatus:'blocked',previewCode:'not_found',invitationSent:false,remarkSaveStatus:'not_attempted'}});
+  const rpcExecution={version:1,phase:'cleanup',failurePhase:'recipient_search',elapsedMs:25000,cleanupConfirmed:true,events:[],transportFailure:{reason:'read_timeout',errorType:'ReadTimeout',elapsedMs:23000}};
+  await request('POST',`/api/v1/windows-agent-tasks/${pending145.taskId}/status`,agent,{status:'failed',result:{previewStatus:'blocked',previewCode:'wecom_rpc_delivery_unknown_no_replay',invitationSent:false,remarkSaveStatus:'not_attempted',diagnostic:{wecomExecution:rpcExecution}}});
+  const rpcResult=await request('GET',`${integration}/${concurrentResponses[0].body.taskId}`,admin);
+  assert.equal(rpcResult.status,'failed');assert.equal(rpcResult.errorInfo.category,'transport');assert.equal(rpcResult.errorInfo.phase,'recipient_search');
+  assert.equal(rpcResult.execution.transportFailure.reason,'read_timeout');assert.match(rpcResult.message,/等待响应超时/);
   await request('POST',`/api/v1/windows-agent-tasks/${cloneSendTask.taskId}/status`,agent,{status:'failed',result:{previewStatus:'blocked',previewCode:'invitation_outcome_unknown_no_retry',sendStatus:'unknown',invitationSent:null}});
   const explicitClone={...simple,deviceNumber:155,appSlot:'clone',phoneNumber:'13900139000'};
   const cloneExternal=(await request('POST',integration,admin,explicitClone,202));

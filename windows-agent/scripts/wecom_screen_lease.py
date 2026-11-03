@@ -70,6 +70,8 @@ class ScreenAuthority:
         self.revoked = False
         self.last_failure = None
         self.last_failure_stage = None
+        self.last_failure_detail = None
+        self.inspection_operation = ''
         self.observe = lambda label:contextlib.nullcontext()
         self.observe_blank_screen = lambda capture:None
         self.observe_startup = lambda kind,raw,user:None
@@ -95,13 +97,18 @@ class ScreenAuthority:
             import psutil
             runtime=psutil
         value = self.binding
+        self.inspection_operation='agent_process'
         agent = runtime.Process(value['agentPid'])
+        self.inspection_operation='agent_identity'
         if (agent.username() != r'NT AUTHORITY\SYSTEM' or agent.exe() != value['agentExe']
                 or agent.create_time() != value['agentCreatedAt']):
             raise ValueError('qa_agent_identity_changed')
+        self.inspection_operation='adb_listener'
         listeners = {row.pid for row in runtime.net_connections(kind='tcp') if row.status == 'LISTEN' and row.laddr.port == 5037}
         if listeners != {value['adbPid']}: raise ValueError('qa_adb_listener_changed')
+        self.inspection_operation='adb_process'
         adb = runtime.Process(value['adbPid'])
+        self.inspection_operation='adb_identity'
         if (adb.username() != r'NT AUTHORITY\SYSTEM' or Path(adb.exe()) != Path(r'D:\PhoneCloud\tools\android-sdk\platform-tools\adb.exe')
                 or adb.create_time() != value['adbCreatedAt']):
             raise ValueError('qa_adb_identity_changed')
@@ -152,6 +159,15 @@ class ScreenAuthority:
             fixed=('qa_lease_denied','qa_proof_nonce_changed','qa_lease_identity_changed','qa_proof_stale','qa_lease_not_exclusive','qa_inventory_stale','qa_inventory_ambiguous','qa_inventory_identity_changed','qa_inventory_not_owned_reservation','qa_send_forbidden','qa_config_changed','qa_operation_changed','qa_authority_purpose_changed','qa_proof_too_large','qa_agent_identity_changed','qa_adb_listener_changed','qa_adb_identity_changed')
             self.last_failure_stage=stage
             name=type(error).__name__
+            # Fixed metadata only. A failed proof still revokes this generation;
+            # these details cannot authorize a retry or expose exception text.
+            self.last_failure_detail={'errorType':name if name in('ValueError','RuntimeError','TypeError','AttributeError','AssertionError','OSError','PermissionError','FileNotFoundError','AccessDenied','NoSuchProcess','ZombieProcess','TimeoutError','JSONDecodeError','HTTPError','URLError','ConnectionError','ConnectionResetError','ConnectionAbortedError')else'OtherError',
+                'operation':self.inspection_operation if stage=='host_identity'else stage}
+            safe_codes=fixed+('qa_tcp_table_changed_too_often','qa_tcp_table_invalid','qa_tcp_table_kind_invalid','qa_tcp_table_size_invalid','qa_tcp_table_read_failed','qa_tcp_state_invalid','qa_tcp_listener_state_invalid','qa_tcp_windows_only')
+            if type(error)in(ValueError,RuntimeError)and str(error)in safe_codes:self.last_failure_detail['fixedCode']=str(error)
+            for key in('errno','winerror'):
+                number=getattr(error,key,None)
+                if type(number)is int and -200000<=number<=200000:self.last_failure_detail[key]=number
             category=('timeout'if isinstance(error,TimeoutError)or isinstance(getattr(error,'reason',None),TimeoutError)else 'json_invalid'if name=='JSONDecodeError'else 'file_missing'if name=='FileNotFoundError'else 'file_denied'if name=='PermissionError'else 'host_inspection'if name in ('AccessDenied','NoSuchProcess','ZombieProcess')else 'http_denied'if name=='HTTPError'else 'connection'if name in ('URLError','ConnectionError','ConnectionResetError','ConnectionAbortedError')else 'timeout'if isinstance(error,TimeoutError)else 'os_error'if isinstance(error,OSError)else 'unknown')
             self.last_failure=str(error) if isinstance(error,ValueError)and str(error)in fixed else 'qa_authority_'+category
             self.revoked = True  # No implicit resume of the same generation.

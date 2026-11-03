@@ -138,6 +138,32 @@
 | elapsedMs | 子进程内单调时钟累计毫秒，不是接口耗时 |
 | cleanupConfirmed | true仅表示执行器自己的工具进程及转发清理按既有检查完成；false未确认；null没有清理回执。不证明其他应用或整台手机状态 |
 | events | 最多24条固定阶段begin/end/error，包含step及elapsedMs；不含号码、备注、页面文本、Token或原始异常 |
+| transportFailure（可选，本地候选） | 首次RPC失败的固定reason、errorType、elapsedMs及可选数值errno/winerror。不是原始异常文本；缺失表示没有有效诊断，不能反推没有通信故障 |
+
+### 失败原因与处理建议（2026-11-03本地候选，尚未上线）
+
+任务结果新增可选`errorInfo`，外部GET结果直接返回该对象，内部任务放在`result.errorInfo`。既有`status`、`code`、防重、发送及清理合同不变；正在排队/执行或正常停在发送前时不附加错误。对接方兼容字段缺失，不能据此自动重试。
+
+```json
+{"category":"transport","message":"读取通道等待响应超时，操作交付未确认","phase":"recipient_search","phaseLabel":"客户搜索","outcomeUnconfirmed":true,"action":"发送或保存结果尚未确认，请勿重复提交。核对原任务及手机日志；有匹配证据后再处理原因，不自动重放。"}
+```
+
+| category | 问题 | 处理 |
+|---|---|---|
+| login / human | 未登录、需要人工验证或解锁 | 在对应手机处理，先核对原任务 |
+| device_connection | 单机连接或执行端未就绪 | 检查对应连接；不重建共享ADB或切身份 |
+| device_busy | 占用、独占权丢失、清理等待 | 等待原占用，不强退其他任务 |
+| configuration | 编号映射或主号/分身未配置 | 按设备目录核对，不能自动换账户 |
+| page_compatibility | 页面结构、目标号码或前台不符合预期 | 根据phase排查适配，不盲点 |
+| transport | RPC读超时或断连，操作交付未确认 | 查原任务和单机日志，不自动重放；不能仅凭超时认定ADB故障 |
+| timeout | 阶段等待超时、组件未就绪 | 核对phase，不能只扩大等待或重新提交 |
+| cleanup | 工具清理未确认 | 保留单机占用，核对原工具归属，不能直接清锁 |
+| result_unconfirmed | 备注保存、发送凭据或实际发送待核对 | 查看原任务及手机实际结果，不重复保存/发送 |
+| business_stop | already_contact已添加；not_found本次未找到 | 均不是本次发送成功；按具体code处理 |
+| test_environment | 隔离测试授权、缓存或通道归属检查失败 | 检查测试环境，不能当成企微页面故障 |
+| internal | 暂未分类的中止 | 保留taskId、code和phase交给维护人员 |
+
+`outcomeUnconfirmed`与原因分开：即使原因是登录或页面变化，只要保存/发送状态unknown或任务stalled，仍须先核对原结果。false也不等于允许重试，更不表示邀请已送达。`transportFailure.reason`只区分固定的连接/读取超时、断连和归属核验失败等类型，不包含根因猜测；无现场证据不会自动修改手机设置。
 
 阶段包括`configuration`、`adb_identity`、`device_preflight`、`screen_prepare`、`poco_launch`、`poco_health`、`wecom_launch`、`rpc_setup`、`startup_guards`、`foreground_wait`、`selector_observe`、`selector_click`、`home_navigation`、`recipient_search`、`remark_edit`、`remark_save`、`send_claim`、`invitation_send`、`cleanup`。父进程超时保留已收到的阶段；没有回执时不虚构清理成功。
 

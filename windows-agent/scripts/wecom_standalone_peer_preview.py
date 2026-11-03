@@ -53,6 +53,8 @@ def main():
     result['diagnostic'] = {'wecomExecution':host.trace.summary()}
     result['isolation'] = {'mode':'real_screen_reservation', 'resources':host.resource_state,
                            'productionWindowsTask':False, 'primaryFailure':host.primary_failure, 'authorityFailure':authority.last_failure if authority else None, 'authorityFailureStage':authority.last_failure_stage if authority else None}
+    if authority and authority.last_failure_detail is not None:
+        result['isolation']['authorityFailureDetail']=dict(authority.last_failure_detail)
     if peer_guard is not None:
         result['isolation']['socketPeer'] = peer_guard.summary()
         result['isolation']['tcpOwnerBackend']=runtime.backend

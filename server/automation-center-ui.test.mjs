@@ -55,7 +55,7 @@ test("dynamic state rendering preserves the designed action-button structure", (
 test("lookup startup exposes elapsed progress and a ready-to-query message", () => {
   assert.match(app, /已等待 \$\{startingSeconds\} 秒/);
   assert.match(app, /查询会话已就绪，可以输入手机号/);
-  assert.match(html, /app\.js\?v=20261029-wecom-invitation-rc5/);
+  assert.match(html, /app\.js\?v=20261103-wecom-errors-rc1/);
 });
 
 test("lookup results provide tail-copy controls inside a bounded scroll stream", () => {
@@ -110,7 +110,7 @@ test("an active lookup reloads when the deployed frontend version changes", () =
   assert.match(app, /async function reloadActiveLookupAfterClientUpdate\(\)/);
   assert.match(app, /client-version-check=/);
   assert.match(app, /if \(lookupActive\) window\.location\.reload\(\)/);
-  assert.match(html, /app\.js\?v=20261029-wecom-invitation-rc5/);
+  assert.match(html, /app\.js\?v=20261103-wecom-errors-rc1/);
 });
 
 test("lookup end can interrupt an already-running Windows automation task", () => {

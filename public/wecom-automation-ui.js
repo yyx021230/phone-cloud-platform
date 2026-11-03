@@ -2,6 +2,10 @@ const ROOT = "/api/v1/user/automation";
 const ACTIVE = new Set(["queued", "running", "stalled"]);
 export const wecomSlotLabel = slot => slot === "clone" ? "分身" : "主应用";
 export const wecomStatusLabel = task => task.result?.sendStatus === "unknown" ? "发送已尝试或状态待核对，请勿重发" : task.result?.status === "blocked" ? "已停止，请核对原因" : task.status === "succeeded" ? (task.result?.status === "ready_before_send" ? "已到发送前，未发送邀请" : "执行已结束，请核对结果") : ({ queued: "等待设备领取", running: "正在执行", stalled: "状态待核对", failed: "已停止", expired: "已超时" })[task.status] || task.status;
+export const wecomErrorLabel = task => {
+  const info = task.result?.errorInfo;
+  return info ? `${info.phaseLabel ? info.phaseLabel + '：' : ''}${info.message}。${info.action}${task.result.code ? '（' + task.result.code + '）' : ''}` : task.result?.code || '';
+};
 const localRejection = message => Object.assign(new Error(message), { definiteResponse: true });
 
 // One pending submission per physical phone, across both slots. Storage contains
@@ -113,7 +117,7 @@ export function createWecomAutomationPanel({ context, document: doc = document, 
     const tasks = state.tasks.filter(t => t.deviceId === ctx.deviceId);
     for (const task of tasks) {
       const row = doc.createElement("article"); row.className = "scan-task-card";
-      row.append(text("strong", `${wecomSlotLabel(task.appSlot)} · ${wecomStatusLabel(task)}`), text("p", task.result?.code || "等待执行"), text("small", `${task.requestId} · ${task.jobId}`)); history.append(row);
+      row.append(text("strong", `${wecomSlotLabel(task.appSlot)} · ${wecomStatusLabel(task)}`), text("p", wecomErrorLabel(task) || "等待执行"), text("small", `${task.requestId} · ${task.jobId}`)); history.append(row);
     }
     if (!tasks.length) history.append(text("p", "暂无企微任务记录。"));
   }
