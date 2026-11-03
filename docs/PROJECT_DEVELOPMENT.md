@@ -6258,3 +6258,12 @@ root bed2a7f与范围提醒后，暂停后继adapter/DDL/runner，保留全部�
 ### 决策日志｜2026-11-03 原生启动失败必须进入验收分母并保留原单机义务
 
 本轮attempt1/pass0/failed-before-UI1，不用受理201充当脚本成功；原businessLock已释放，新duty278c3012-04bf-4d61-8bf6-f378b322ea93仍awaiting_host/hosts null，43旧义务不动。Windows picked日志早于云端picked是跨机时钟差事实，但原ready body缺失，不能断言唯一拒绝条件。实际回执和现成0e2配套13运行文件最小加载审阅在verification/wecom-native-23-20261103；不再撞旧路径制造更多占用，不重造host/proof，不创建替代SYSTEM入口。线上未更新/共享Agent未重载/ADB身份与服务未操作；新候选加载需发布负责人核对版本和中断范围后取得具体授权。
+
+
+### 变更记录｜2026-11-03 先逐机核心脚本QA的单机候选执行补齐
+
+按用户选择“先逐机实测优化，最后统一切换”，新增独立QA runner/定向READ ONLY reader/维护归属检查及派生preview/cleanup入口；生产Agent/index和旧standalone原件不改。已有真实screen独占后再排除全部本机任务/别名/持久清理/查名stop，再正常单字段下架并复核PG与runtime，作为中断后继续保留的手工维护标记；管理员直派仍有旁路，要求窗口排除同serial，不宣称全入口隔离。新socket guard在实际连接建立后匹配ESTABLISHED反向四元组及原SYSTEM ADB PID/birth/固定路径，5037与本轮两个forward逐连接核验、发送前重查，未知不可复活；仅独立候选进程内安装，不改共享ADB或身份。
+
+### 决策日志｜2026-11-03 受控单机实测与正式API验收继续分开
+
+删除新runner对旧LocalAPI假Agent任务层的依赖，直接沿已有ScreenAuthority调用核心run_host，不冒充SYSTEM协议。实际controller/native PID与birth在stdin放行前fsync；结构化资源帧逐行落盘，避免read(8192)等到EOF；只有实际close和同scope两次cleanup、原维护标记与无竞争成立才恢复原listing。明确从未调用native的准备失败可按fresh归属收尾，不制造无必要永久占用；可能已投递的原生执行未知则不恢复。原23/43义务不改。496项WeCom Python（含socket10）、runner6项及Node9项通过；实际本地TCP/child管道已测，reader是fake PG/runtime控制逻辑，不是PG/Windows/真机。verification/wecom-single-device-20261103保留源hash、依赖闭包和回执；新候选仍未加载/未操作手机/未下架/未部署，下一步由根窄审固定候选后做59现场准入和预览。

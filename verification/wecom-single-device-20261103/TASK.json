@@ -1,0 +1,55 @@
+{
+  "status": "local_candidate_not_loaded",
+  "branch": "codex/wecom-single-device-transport-20261103",
+  "baseCommit": "641369e812f58a0a0b97da4da7e1dc18c7a80b7c",
+  "targetPlan": "59 main / tail6441 / pre-send only; actual admission not yet observed",
+  "scope": "Controlled standalone core-script QA, not production SYSTEM Agent or public API acceptance",
+  "changes": [
+    "scripts/qa/test_wecom_single_candidate.py",
+    "scripts/qa/wecom_single_candidate.py",
+    "scripts/qa/wecom_single_capture.py",
+    "scripts/qa/wecom_single_reader.mjs",
+    "scripts/qa/wecom_single_reader.test.mjs",
+    "scripts/qa/wecom_single_state.py",
+    "windows-agent/scripts/test_wecom_qa_socket_peer.py",
+    "windows-agent/scripts/wecom_qa_socket_peer.py",
+    "windows-agent/scripts/wecom_standalone_peer_cleanup.py",
+    "windows-agent/scripts/wecom_standalone_peer_preview.py"
+  ],
+  "productionCodeChanged": false,
+  "sharedAgentReload": false,
+  "adbIdentityOrKeysChanged": false,
+  "phoneOrListingActions": 0,
+  "physicalReservationsCreated": 0,
+  "newSystemEntry": false,
+  "actualValidation": {
+    "wecomPythonCollected": 496,
+    "socketCasesIncludedInPython": 10,
+    "runnerPythonMethods": 6,
+    "qaNode": 9,
+    "qaNodeBreakdown": "reader control with fake PG/runtime5 + existing trace4",
+    "trueLocalTcp": "Missing owner closes before request bytes; known owner send and makefile reads; reused PID blocks second send",
+    "trueChildPipe": "Flushed resource sidecar durable while child still blocked waiting for parent exit permission",
+    "runnerMock": "normal2 cleanup before release/restore; nativeunknown/cleanupunknown/markerdrift no restore; competitor before unlist; known-unstarted preparation failure restores original marker; remote source compiles and actual write argument ends newline",
+    "sourceStable": true,
+    "stagedDependencyClosureFiles": 22,
+    "postgresExecuted": false,
+    "windowsPeerExecuted": false,
+    "nativeUiSteps": 0
+  },
+  "initialIssuesRetainedAsFindings": [
+    "Initial missing-module import before implementation, not a product failure reproduction.",
+    "Positive local TCP fixture accepted socket inherited patched class; fixture now constructs peer from original class.",
+    "Broker socket ResourceWarning fixed by explicit server_close; final runner run treats ResourceWarning as error.",
+    "Root caught TextIO read(8192) buffering; ResourcePipe now readline(size), validated with live child before EOF.",
+    "Known-unstarted preparation errors can recover after fresh exact maintenance marker/ownership checks; a possibly delivered native call stays unknown."
+  ],
+  "riskAndLimits": [
+    "Normal unlisting is a durable manual hold, not a universal administrator/independent-script admission barrier; operators must exclude target serial.",
+    "Runtime and read-only PG snapshot are independent observations, not an atomic cross-service transaction.",
+    "Windows TCP owner enumeration, native performance, current phone availability, SSH execution and PostgreSQL reader are not yet live-validated.",
+    "Original43 and23 duties remain, no fake host or proof upgrade.",
+    "A target mentioned by any stop/preparation is conservatively excluded; no broad terminal status grants physical closure."
+  ],
+  "rollback": "Only new local QA helpers and records. No production rollback needed. If later an actual run becomes unknown, retain original maintenance marker, hosts and resource journal; never restore listing from generic finally."
+}
