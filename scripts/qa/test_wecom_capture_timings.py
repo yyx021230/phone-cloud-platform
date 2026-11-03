@@ -7,6 +7,18 @@ from wecom_single_capture import ResourcePipe
 
 
 class CallSummaryTests(unittest.TestCase):
+    def test_progress_keeps_only_fixed_fields_and_is_not_a_resource_proof(self):
+        rows=[dict(phase='recipient_search',state='begin',elapsedMs=42,phone='secret customer'),
+              dict(phase='unknown private stage',state='end',elapsedMs=43),
+              dict(phase='remark_edit',state='error',elapsedMs=44,token='private credential')]
+        with tempfile.TemporaryDirectory()as stage:
+            pipe=ResourcePipe(io.StringIO(''.join('WECOM_DIAGNOSTIC '+json.dumps(r)+'\n'for r in rows)),stage,[])
+            while pipe.read(8192):pass
+            text=(Path(stage)/'qa-latest-progress.json').read_text()
+            self.assertEqual(json.loads(text),dict(version=1,phase='remark_edit',state='error',elapsedMs=44))
+            self.assertNotIn('private',text);self.assertNotIn('secret',text)
+            self.assertFalse((Path(stage)/'qa-owned-resources.json').exists());self.assertIsNone(pipe.failure)
+
     def test_only_fixed_numeric_durations_are_retained_without_tail_duplication(self):
         rows=[dict(kind='call',call='qa.proof_request',state='end',durationMs=7,private='secret customer'),
               dict(kind='tail',record=dict(kind='call',call='qa.proof_request',state='end',durationMs=7)),

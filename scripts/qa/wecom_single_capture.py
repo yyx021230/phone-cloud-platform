@@ -9,6 +9,10 @@ from wecom_staging_process import capture_process
 TIMED_CALLS=frozenset(('qa.host_identity','qa.inventory','qa.proof_request','rpc.transport',
                        'rpc.freeze','hierarchy.snapshot','hierarchy.snapshot_any',
                        'ui.fill_remark','ui.fill_description','ui.save_remark','ui.observed_click'))
+PROGRESS_PHASES=frozenset(('configuration','adb_identity','device_preflight','screen_prepare',
+    'poco_launch','poco_health','wecom_launch','rpc_setup','startup_guards','foreground_wait',
+    'selector_observe','selector_click','home_navigation','recipient_search','remark_edit',
+    'remark_save','send_claim','invitation_send','cleanup','complete'))
 
 def durable(path, value):
     path = Path(path)
@@ -44,6 +48,7 @@ class ResourcePipe:
         self.discard = False
         self.failure = None
         self.timings = {}
+        self.progress_count = 0
 
     def read(self, size):
         # A flushed short resource frame must reach fsync while the child is
@@ -51,6 +56,15 @@ class ResourcePipe:
         value = self.stream.readline(size)
         for char in value:
             if char == '\n':
+                if not self.discard and self.line.startswith('WECOM_DIAGNOSTIC '):
+                    try:
+                        row=json.loads(self.line[len('WECOM_DIAGNOSTIC '):]);phase=row.get('phase')
+                        if (isinstance(phase,str)and phase in PROGRESS_PHASES and row.get('state')in('begin','end','error')
+                                and type(row.get('elapsedMs'))is int and 0<=row['elapsedMs']<=900000
+                                and self.progress_count<80):
+                            self.progress_count+=1
+                            durable(self.stage/'qa-latest-progress.json',dict(version=1,phase=phase,state=row['state'],elapsedMs=row['elapsedMs']))
+                    except Exception:pass  # Optional progress cannot change resource/authority outcomes.
                 if not self.discard and self.line.startswith('WECOM_CALL '):
                     try:
                         row = json.loads(self.line[len('WECOM_CALL '):])
