@@ -164,10 +164,42 @@ class HostGuardTests(unittest.TestCase):
         with self.assertRaises(host.w.StopPreview):driver.apply('open_remark',PROFILE,PHONE)
         self.assertFalse(poco.effects)
 
+    def test_home_loading_reobserves_current_home_before_one_menu_click(self):
+        from dataclasses import replace
+        from test_wecom_invite_preview import HOME,PHONE,Poco,text
+        changed=replace(HOME,nodes=HOME.nodes+(text('fixture_loaded_row'),))
+        poco=Poco(changed);driver=host.PreviewRemarkEntryDriver(poco,lambda:host.w.PACKAGE,lambda:True)
+        driver.apply('open_menu',HOME,PHONE)
+        self.assertEqual(len(poco.effects),1)
+        self.assertEqual(poco.effects[0][0],'click')
+
+    def test_menu_reobserve_rejects_nonhome_and_live_lease_loss(self):
+        from dataclasses import replace
+        from test_wecom_invite_preview import HOME,MENU,PROFILE,PREVIEW,PHONE,Poco,text
+        for page in(MENU,PROFILE,PREVIEW):
+            poco=Poco(page);driver=host.PreviewRemarkEntryDriver(poco,lambda:host.w.PACKAGE,lambda:True)
+            with self.assertRaises(host.w.StopPreview):driver.apply('open_menu',HOME,PHONE)
+            self.assertFalse(poco.effects)
+        changed=replace(HOME,nodes=HOME.nodes+(text('fixture_loaded_row'),))
+        leases=iter([True,False]);poco=Poco(changed);driver=host.PreviewRemarkEntryDriver(poco,lambda:host.w.PACKAGE,lambda:next(leases))
+        with self.assertRaisesRegex(host.w.StopPreview,'device_lease_lost'):driver.apply('open_menu',HOME,PHONE)
+        self.assertFalse(poco.effects)
+
+    def test_menu_reobserve_is_bounded_and_timeout_stops_before_click(self):
+        from test_wecom_invite_preview import HOME,PHONE,Poco
+        driver=host.PreviewRemarkEntryDriver(Poco(HOME),lambda:host.w.PACKAGE,lambda:True)
+        with patch.object(host.remarks.PocoRemarkDriver,'apply',side_effect=host.w.StopPreview('page_changed_before_action'))as apply:
+            with self.assertRaises(host.w.StopPreview):driver.apply('open_menu',HOME,PHONE)
+        self.assertEqual(apply.call_count,3)
+        with patch.object(host.remarks.PocoRemarkDriver,'apply',side_effect=host.w.StopPreview('page_changed_before_action'))as apply:
+            def expired():raise host.w.StopPreview('timeout')
+            with self.assertRaisesRegex(host.w.StopPreview,'timeout'):driver.apply('open_menu',HOME,PHONE,expired)
+        self.assertEqual(apply.call_count,1)
+
     def test_transport_input_and_save_never_use_navigation_reobserve(self):
         from test_wecom_invite_preview import PROFILE,PHONE,Poco
         driver=host.PreviewRemarkEntryDriver(Poco(PROFILE),lambda:host.w.PACKAGE,lambda:True)
-        for action,error in [('open_remark',TimeoutError()),('save_remark',host.w.StopPreview('page_changed_before_action')),('enter_phone',host.w.StopPreview('page_changed_before_action')),('search',host.w.StopPreview('page_changed_before_action'))]:
+        for action,error in [('open_remark',TimeoutError()),('open_menu',TimeoutError()),('save_remark',host.w.StopPreview('page_changed_before_action')),('enter_phone',host.w.StopPreview('page_changed_before_action')),('search',host.w.StopPreview('page_changed_before_action'))]:
             with patch.object(host.remarks.PocoRemarkDriver,'apply',side_effect=error) as apply:
                 with self.assertRaises(type(error)):driver.apply(action,PROFILE,PHONE)
                 self.assertEqual(apply.call_count,1)

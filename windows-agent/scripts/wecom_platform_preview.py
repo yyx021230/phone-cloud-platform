@@ -127,7 +127,7 @@ class PreviewRemarkEntryDriver(invitation.InvitationDriverMixin, remarks.PocoRem
                 return self._apply(action, expected_screen, phone, check_budget, context)
 
     def _apply(self, action, expected_screen, phone, check_budget, context):
-        if action != "open_remark":
+        if action not in ("open_remark", "open_menu"):
             return super().apply(action, expected_screen, phone, check_budget, context=context)
         for attempt in range(3):
             try:
@@ -139,7 +139,8 @@ class PreviewRemarkEntryDriver(invitation.InvitationDriverMixin, remarks.PocoRem
                     raise
                 check_budget()
                 expected_screen=self.snapshot()
-                remarks.resolve_remark(action, expected_screen, phone, context)
+                if action == "open_remark":remarks.resolve_remark(action, expected_screen, phone, context)
+                else:w.resolve_action(action, expected_screen, phone)
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
