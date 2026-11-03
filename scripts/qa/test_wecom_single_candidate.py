@@ -13,6 +13,7 @@ import tempfile
 import time
 import threading
 import unittest
+import urllib.request
 from types import SimpleNamespace
 from unittest.mock import patch
 
@@ -31,7 +32,7 @@ class Keeper:
 class RunnerTests(unittest.TestCase):
     def execute(self, failure=None):
         session = '11111111-1111-4111-8111-111111111111'
-        live = dict(listing='listed', marker=None, locked=False, cleanup=0, natives=0)
+        live = dict(listing='listed', marker=None, locked=False, cleanup=0, natives=0, reads=0)
         events = []; saved_folders = []
         resources = dict(readerStarted=True, pid='123', startToken='456',
                          forwards=[[42001, 10080], [42002, 10081]], cleanupConfirmed=True)
@@ -39,10 +40,15 @@ class RunnerTests(unittest.TestCase):
                         adbPid=41, adbCreatedAt=2.0, adbExe='adb', files={'a':'a'})
         files = {'windows-agent/scripts/wecom_preview_devices.json': b'{"59":{"serial":"fixture"}}'}
         expected = {n:hashlib.sha256(v).hexdigest() for n,v in files.items()}
+        server_class=runner.http.server.ThreadingHTTPServer
+        def make_server(*args,**kwargs):
+            server=server_class(*args,**kwargs);live['brokerPort']=server.server_port;return server
 
         class Reader:
             def __init__(self, target): self.target = target
             def state(self, requested=None):
+                live['reads']+=1
+                if failure=='temporary_read'and live['reads']==4:raise RuntimeError('qa_transport_unknown')
                 marker = live['marker']
                 if failure == 'marker_drift' and live['cleanup'] == 2: marker = 'other-maintainer'
                 d = dict(deviceId='adb:fixture', deviceName='59', listingStatus=live['listing'],
@@ -56,6 +62,7 @@ class RunnerTests(unittest.TestCase):
                                            occupancy=dict(type='screen_control') if live['locked'] else None))
                 if requested: result['session']=dict(sessionId=session, deviceId='adb:fixture', status='ready',userId='operator',agentId='physical',adbSerial='fixture')
                 if failure == 'competing_work' and live['locked']: result['jobs']=[{'job_id':'other'}]
+                if failure=='late_competing_work'and live['reads']>=4:result['jobs']=[{'job_id':'other'}]
                 return result
 
         def request(route, method='GET', body=None):
@@ -89,7 +96,14 @@ class RunnerTests(unittest.TestCase):
                            and isinstance(n.func,ast.Attribute) and n.func.attr=='write')
                 actual=eval(compile(ast.Expression(write.args[0]),'<stdin-expression>','eval'),{'chr':chr})
                 self.assertTrue(actual.endswith(chr(10)))
-                self.assertEqual(json.loads(actual)['task']['mode'],'preview')
+                envelope=json.loads(actual);self.assertEqual(envelope['task']['mode'],'preview')
+                lease=envelope['reservation']
+                request=urllib.request.Request('http://127.0.0.1:'+str(live['brokerPort'])+'/guard',
+                    data=json.dumps({k:lease[k]for k in('taskId','purpose','authorityGeneration','proofVersion')}|{'nonce':'a'*32}).encode(),
+                    headers={'Authorization':'Bearer '+lease['brokerToken'],'Content-Type':'application/json'},method='POST')
+                with urllib.request.urlopen(request,timeout=2)as response:
+                    self.assertIsNotNone(response.headers.get('Content-Length'))
+                    self.assertTrue(json.load(response)['allowed'])
                 if failure == 'native_unknown': raise RuntimeError('qa_native_transport_unknown')
                 return dict(pending=False,hostExitCode=0,pipeDrainComplete=True,resourceRecordFailure=None,
                             originalHosts=[dict(pid=10,createdAt=1),dict(pid=11,createdAt=2)],
@@ -109,6 +123,7 @@ class RunnerTests(unittest.TestCase):
              patch.object(runner.q,'request',side_effect=request), patch.object(runner.q,'win',side_effect=win), \
              patch.object(runner.subprocess,'Popen',side_effect=lambda *a,**k:Keeper()), \
              patch.object(runner.subprocess,'run',return_value=SimpleNamespace(returncode=0)), \
+             patch.object(runner.http.server,'ThreadingHTTPServer',side_effect=make_server), \
              patch.object(sys,'stdin',io.StringIO(json.dumps(dict(deviceNumber='59',phoneNumber='13800006441',sourceRef='a'*40))+'\n')), \
              contextlib.redirect_stdout(stdout):
             runner.main()
@@ -145,6 +160,18 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual(events,['POST','GET','DELETE'])
         self.assertEqual(live['natives'],0)
         self.assertEqual(journal['phase'],'known_not_started_screen_closed')
+
+    def test_unavailable_read_is_not_a_grant_and_new_complete_read_can_recover(self):
+        result,journal,events,live=self.execute('temporary_read')
+        self.assertEqual(result['status'],'ready_before_send')
+        self.assertEqual(live['natives'],1)
+        self.assertEqual(journal['phase'],'complete_restored')
+
+    def test_observed_competitor_remains_a_hard_stop(self):
+        result,_,events,live=self.execute('late_competing_work')
+        self.assertEqual(live['natives'],0)
+        self.assertEqual(live['listing'],'unlisted')
+        self.assertNotIn('listed',events)
 
     def test_known_not_started_can_restore_only_its_own_marker(self):
         result,journal,events,live=self.execute('upload_failed')

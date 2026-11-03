@@ -21,6 +21,7 @@ import uuid
 
 import wecom_qa_access as q
 from wecom_single_state import Reader,assert_idle,assert_owned,listing,require,transport
+from wecom_qa_proof import current_snapshot
 
 ROOT=Path(__file__).resolve().parents[2]
 
@@ -108,6 +109,7 @@ def main():
     full=transport(fullsource,{},timeout=30);require(full.get('status')=='observed_not_admitted','qa_global_read_unknown');save('global-before.json',full)
     scope='qa-'+uuid.uuid4().hex;session=None;marker=None;unlist_attempted=False;keeper=None;broker=None;stage=None;physical_safe=False;created_owner=None
     stop=threading.Event();gate=threading.Lock();context={};cache={};revoked=False;forward=None
+    first_observation_failure=None
     native_delivery_unknown=False
     fingerprint=hashlib.sha256(json.dumps(['preview',hashlib.sha256(json.dumps(['QA预览','接口联调测试'],ensure_ascii=False,separators=(',',':')).encode()).hexdigest(),phone,target['deviceId'],0],separators=(',',':')).encode()).hexdigest()
     payload=dict(taskId=scope,**target,appSlot='main',androidUser=0,phoneNumber=phone,remarkName='QA预览',description='接口联调测试',mode='preview',previewOnly=True,agentId=scope,serverBaseUrl='http://127.0.0.1',agentToken='not-production-qa-only')
@@ -133,15 +135,33 @@ def main():
         state=reader.state(session);assert_owned(core,state,marker=marker);save('maintenance-confirmed.json',state)
         # This normal device mutation is the restart-surviving manual hold. All
         # cooperating operators must exclude this serial; admin tasks bypass it.
+        def fact(generation):
+            s=Reader(target).state(session)
+            try:expiry=assert_owned(core,s,marker=marker)
+            except Exception:
+                if not (folder/'first-observed-denial-state.json').exists():save('first-observed-denial-state.json',s)
+                raise
+            return dict(at=s['readStartedMono'],expiry=expiry,allowed=True,generation=generation)
+        def observation_failure(error):
+            nonlocal revoked,first_observation_failure
+            code=str(error)if isinstance(error,RuntimeError)and str(error).startswith('qa_')else 'qa_observation_unknown'
+            transient=code in('qa_read_unknown','qa_transport_unknown','qa_cloud_master_missing')
+            with gate:
+                if first_observation_failure is None:
+                    first_observation_failure=dict(code=code,transient=transient)
+                    save('first-observation-failure.json',first_observation_failure)
+                cache.clear()
+                if not transient:revoked=True
+            return transient
         def refresh():
             nonlocal revoked
             while not stop.is_set():
+                with gate:generation=context.get('authorityGeneration')
                 try:
-                    s=reader.state(session);expiry=assert_owned(core,s,marker=marker)
+                    snapshot=fact(generation)
                     with gate:
-                        if not revoked:cache.update(at=s['readStartedMono'],expiry=expiry,allowed=True)
-                except Exception:
-                    with gate:revoked=True;cache.clear()
+                        if not revoked and generation and context.get('authorityGeneration')==generation:cache.update(snapshot)
+                except Exception as error:observation_failure(error)
                 stop.wait(.6)
         class Handler(http.server.BaseHTTPRequestHandler):
             def log_message(self,*args):pass
@@ -155,13 +175,27 @@ def main():
                     require(self.path=='/guard'and c and not denied and keeper.poll()is None,'qa_guard_denied')
                     require(secrets.compare_digest(self.headers.get('Authorization',''),'Bearer '+c['brokerToken']),'qa_guard_denied')
                     require(all(request.get(k)==c[k]for k in('taskId','purpose','authorityGeneration','proofVersion'))and isinstance(request.get('nonce'),str)and len(request['nonce'])==32,'qa_guard_scope')
-                    age=received-fact.get('at',0);require(fact.get('allowed')is True and 0<=age<2.5,'qa_guard_stale')
+                    def cached():
+                        with gate:return dict(cache)
+                    def fresh():
+                        try:return fact_snapshot(c['authorityGeneration'])
+                        except Exception as error:
+                            observation_failure(error);raise
+                    snapshot,_,allowed,via=current_snapshot(cached,c['authorityGeneration'],fresh)
+                    require(allowed,'qa_guard_stale')
+                    with gate:require(not revoked and context.get('authorityGeneration')==c['authorityGeneration'],'qa_guard_revoked')
+                    age=max(0,received-snapshot['at'])
                     body={k:c[k]for k in('taskId','deviceId','serial','deviceNumber','appSlot','androidUser','agentId','physicalAgentId','sessionId','lockId','ownerUserId','operationFingerprint','purpose','authorityGeneration','scopeFingerprint')}
-                    body.update(version=2,ageReference='request_received',allowed=True,nonce=request['nonce'],brokerAgeSeconds=age,expiresInSeconds=fact['expiry']-age,activeLockCount=1,sessionAlive=True,lookupExcluded=True)
-                    self.send_response(200);self.end_headers();self.wfile.write(json.dumps(body).encode())
-                except Exception:
-                    with gate:revoked=True;cache.clear()
-                    self.send_response(409);self.end_headers();self.wfile.write(b'{"allowed":false}')
+                    body.update(version=2,ageReference='request_received',allowed=True,nonce=request['nonce'],brokerAgeSeconds=age,expiresInSeconds=snapshot['expiry']-age,activeLockCount=1,sessionAlive=True,lookupExcluded=True)
+                    raw=json.dumps(body).encode();self.send_response(200);self.send_header('Content-Length',str(len(raw)));self.end_headers();self.wfile.write(raw)
+                except Exception as error:
+                    if isinstance(error,OSError):return  # No scope change from a closed response socket.
+                    code=str(error)if isinstance(error,RuntimeError)else ''
+                    temporary=code in('qa_read_unknown','qa_transport_unknown','qa_cloud_master_missing','qa_guard_stale')
+                    with gate:
+                        if not temporary:revoked=True;cache.clear()
+                    raw=b'{"allowed":false}';self.send_response(503 if temporary else 409);self.send_header('Content-Length',str(len(raw)));self.end_headers();self.wfile.write(raw)
+        fact_snapshot=fact
         broker=http.server.ThreadingHTTPServer(('127.0.0.1',0),Handler)
         threading.Thread(target=broker.serve_forever,daemon=True).start();threading.Thread(target=refresh,daemon=True).start()
         port=q.win("import socket,json\ns=socket.socket();s.bind(('127.0.0.1',0));print(json.dumps(s.getsockname()[1]));s.close()")
@@ -174,7 +208,7 @@ def main():
             for _ in range(30):
                 with gate:fact=dict(cache);denied=revoked
                 require(not denied,'qa_guard_revoked')
-                if fact.get('allowed')and time.monotonic()-fact['at']<2:return
+                if fact.get('allowed')and fact.get('generation')==value['authorityGeneration']and time.monotonic()-fact['at']<2:return
                 time.sleep(.1)
             raise RuntimeError('qa_fresh_guard_unavailable')
         activate(binding)

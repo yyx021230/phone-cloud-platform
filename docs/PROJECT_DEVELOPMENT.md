@@ -6312,3 +6312,12 @@ c2f的59首轮fresh通过并创建原screen930036b7-f8f1-4d02-a2c6-4cbc580fdf5c�
 ### 决策日志｜2026-11-03 不把实际缺owner直接等同已知早关
 
 旧失败当时未采关闭信号，因此不能断言唯一OS原因。实际本地TCP反例、501项WeCom（含socket15）/runner9通过；Windows独立loopback对EOF检测与原timeout恢复通过，0ADB/手机。verification/wecom-single-device-20261103-rc5保存回执；下一轮真实closedForwardCount与业务结果仍待验，未修改生产/共享Agent/ADB或媒体。第二次原59残留已按新维护观察scope单机清理并恢复listed；本轮临时并发11/rev177保留一个名额供同一轮后续验证，结束后必须归属CAS恢复12。
+
+
+### 变更记录｜2026-11-03 单机QA原始观察未知与真实占用冲突分开
+
+rc5真机已通过Poco health/企微启动/主号选择/首页并进入recipient_search，实际closedForwardCount2且socket guard未revoked，证明启动门槛改动在本次生效；后因broker HTTP拒绝退出，旧协调器未保留首个观察失败原因。只补本地QA coordinator：每轮独立reader，未知/读失败清缓存不发grant，复用既有current_snapshot用新完整事实替代过旧缓存；真实owner/设备/任务/lookup/marker/到期冲突仍永久拒绝。同一原TTL/执行期限不续期，UI/RPC不重放。
+
+### 决策日志｜2026-11-03 未知观察不等于已证权限撤销，但未知时绝不操作
+
+首个固定失败码/首个实际拒绝state保存，proof前再核原generation与revocation；响应加Content-Length，客户端关响应socket不制造设备冲突。runner11（含实际loopback broker JSON与未知读后新完整事实恢复、正冲突仍硬停）与既有proof6通过，Windows阶段22源不改。verification/wecom-single-device-20261103-rc6保存回执；尚待下一次真实全流程，生产/共享Agent/ADB/媒体未改。rc5原Poco/forward已同scope清理双验、原screen关闭、59恢复listed；本轮并发11/rev177仍为同一轮测试临时保留，结束恢复12。
