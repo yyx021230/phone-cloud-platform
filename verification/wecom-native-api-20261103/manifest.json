@@ -1,0 +1,46 @@
+{
+  "tag": "wecom-native-api-20261103-blocked.1",
+  "branch": "codex/wecom-native-api-20261103",
+  "baselineCommit": "4355ccdd86ce6e7ebb3499bfae0bd664c3a4ce84",
+  "status": "blocked_native_acceptance_not_complete",
+  "productionBusinessSourceCommit": "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+  "sourceHashes": {
+    "docs/PROJECT_DEVELOPMENT.md": "4b96c5f44b7910db379d604e2980a366a05230cc067c223ad5bc72874750b1c0",
+    "docs/CPS企微接口本地候选验收与启用说明.md": "d363eb981564d006533ef60063d37ba28c6a592757d4cb95b0ae70ba94debdef",
+    "public/wecom-integration-api.md": "17b77832f22f5517618aa84908bc1974be6933f2d745c984fc12323557a0770e"
+  },
+  "evidenceHashes": {
+    "verification/wecom-native-api-20261103/REPORT.md": "2e280fc51afd4d47c82953b865fdadb1302b7a41a19d4d1cc92d448c4086faf3",
+    "verification/wecom-native-api-20261103/active-final.json": "0b68cbfeedbd0b4ce8cccf467785ced0324fe085132f86c35b780daebddc8c7e",
+    "verification/wecom-native-api-20261103/baseline.json": "b5f6d1f3c63b6d87b0c93c55165b69f5f477084730ac86003208c7665f537ec4",
+    "verification/wecom-native-api-20261103/current-targeted-tests.txt.gz": "38341977c0195daa96d14906d73f8d5aa157f7d2b64ef55eb985b7e0f4b71a75",
+    "verification/wecom-native-api-20261103/health-final.json": "9e795017f6a5fc990aff1e97629d5643c7dc903bc43e13d07c2c9c2af5811147",
+    "verification/wecom-native-api-20261103/identity-before.json": "4d84d2a0fe20ade3b95d4a0c8c427d410ee3858b332fc1480a96c43699ade522",
+    "verification/wecom-native-api-20261103/identity-final.json": "4249018638d2cbfe0136c65ec098326fcfc34de6e741a004156d1a7d04f69147",
+    "verification/wecom-native-api-20261103/isolation.json": "637356f88f671152c407ab6442439267e9e745d24edb6050352a37ec1995373d",
+    "verification/wecom-native-api-20261103/lookup-current.json": "61dae5abbd9970ea7e32a06844e85873ab456135747a4c63cb161917b1cc554b",
+    "verification/wecom-native-api-20261103/main-accepted.json": "50de3165f3e69b728ee250cac9b013a0cc8b1955f827395bb1660c078ed02431",
+    "verification/wecom-native-api-20261103/main-latest.json": "53caf529922698afefcbc5143bb90a311c9a6e0987718d53254a0371925f8300",
+    "verification/wecom-native-api-20261103/native-closure-final.json": "9094eb8a16814dfc757e7f994fa3e7265d7b683453ed471d2bf62f04b8e04c7c",
+    "verification/wecom-native-api-20261103/original-task-summary.json": "c1c5c6a816fcd3358e2b07090e83e1b2f779894c58a2f091cb4001b5b466cbc6",
+    "verification/wecom-native-api-20261103/private-evidence-hashes.json": "51e01bf991c83cb87cd58653e32df5a1f6b216b88b336c7768726d6af6d173a5",
+    "verification/wecom-native-api-20261103/production-before.json": "cc547bec11f6990525d428c4ac84a8ec8ca4ec2e2b64ead5c1aca07cfe3ed95a",
+    "verification/wecom-native-api-20261103/production-final.json": "e18e053f705c907668a1ac1c35c5f6bce1e2a53124a664381823c2412ab30f99",
+    "verification/wecom-native-api-20261103/production-v1-reproduction.txt.gz": "9b20b7e04c52c093a542188ebbe2fb87ef81e747c01eb7f595baae9ea94e33b7",
+    "verification/wecom-native-api-20261103/targeted-tests.txt.gz": "c6baeaabd691f2a85a618705514120de9a3de32960b7085ad806de268d8d81d9",
+    "verification/wecom-native-api-20261103/v1-fixture-source-hashes.json": "1caff80b84e64c419128af07a28cf7a0b4c7c324b37b1f6fae05b5e9a38b4c70"
+  },
+  "results": {
+    "productionPreviewSubmissions": 1,
+    "mainReadyBeforeSend": false,
+    "cloneSubmitted": false,
+    "invitations": 0,
+    "openPhysicalObligationsThisRound": 1,
+    "affectedDeviceNumber": "155",
+    "localCurrentProtocolTestsPassed": 45,
+    "isolatedLegacyReproductionTestsPassed": 9,
+    "misalignedHistoricalTestsFailed": 3,
+    "productionCodeChanged": false,
+    "deployment": false
+  }
+}

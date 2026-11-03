@@ -1,0 +1,12 @@
+{
+  "at": "2026-11-03T09:06:13.114883+00:00",
+  "agentPid": 19756,
+  "agentCreatedAt": 1793599962.9654255,
+  "adbPid": 27912,
+  "adbCreatedAt": 1793603626.369136,
+  "files": {
+    "src/index.mjs": "85b2b2eea012a345f87b455ebbb994ef6ce9dd70b6e1dddc4769594781c29eff",
+    "src/wecom-preview-task.mjs": "2d5fb3354edde14d2673e7c25bc7e9e25e60e8ba3d1e1e76358b675e20847e24",
+    "scripts/wecom_platform_preview.py": "5cb7e5fc041e5dbe62ec57aed4ddbf938d7f684fbab023f9fb86d67cb7cfa8cc"
+  }
+}

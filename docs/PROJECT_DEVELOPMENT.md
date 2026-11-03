@@ -6561,3 +6561,20 @@ rc10的145已实际ready_before_send并完成原资源清理、上架恢复。12
 延续rc.1协议与持久防重，不改接口字段、CPS结果语义、备注20码点、成员映射或生产范围。本轮没有发现需修改业务逻辑的新缺陷；新增测试准备阶段纠正首次离线不建库存、查名启动缺savedAccounts验证、停止请求应为202三处测试约定错误，原失败及后续级联失败日志保留，不称生产故障修复。明确平台已确认未受理的占用409可按原请求再提交，必须按创建任务/领取/发送凭据核对是否重复；提交应答未知仍不盲目重放。
 
 短等待默认测试不冒充两分钟验收，环境CPS_WECOM_LONG_E2E=1才真实等待；独立PG测试只接受回环及固定fixture库名，拒绝继承根.env，不删除用户环境文件。原生结果证明、实际登录成员映射及真实HTTPS/CPS联调仍待补，不因本地全通过宣称真机或生产验收。源码/文档候选以cps-wecom-contract-20261103-rc.2新annotated标签保存，rc.1不移动；报告、运行结果、哈希与失败记录见verification/cps-wecom-client-e2e-20261103。未推送、发布、重载共享服务、操作ADB/授权密钥或媒体；本轮无未归属既有改动。
+
+
+### 变更记录｜2026-11-03 155正式内部API预览失败与旧义务保留
+
+用户要求继续空闲真机API主号／分身验收，仍只到发送前、不影响线上查名、不上线。以4355ccdd86ce6e7ebb3499bfae0bd664c3a4ce84干净工作区建立codex/wecom-native-api-20261103；共同流程2026-09-30/SHA256 0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b保持。复核生产32c的10文件、Windows Agent19756与ADB27912/SYSTEM/出生代次和固定路径、空余reader容量，沿用安全SSH master，凭据不导出。未部署、重载或重建ADB，未切身份或改keys／媒体。
+
+155两个槽位已配置、初查无锁/任务/会话、runtime available=true但仍在启用查名池；本轮未充分落实本主文档已知旧32c门禁阻塞及不向其他手机累积义务的停止条件，向155/main提交1条正式内部mode=preview。09:11:40.800Z受理原job464661a8-a392-4030-80a5-522bf68ca67e，taskf0604d28-1db4-4b37-ac75-ffa3e9320914；09:11:41.667Z失败wecom_cleanup_host_unconfirmed。原job/Windows payload均preview、previewOnly=true、Android user0，sendClaimed=false、sendStatus=not_attempted、invitationSent=false，remarkSaveStatus=unknown保持；运行wrapper在登记ACK前不释放UI配置，且只在原child close后终态。只读后检无任何企微preview/verify进程，5个实际bootstrap/worker模块与32c精确匹配。未进入手机业务UI、0邀请；分身及其他手机没有继续投递。
+
+本轮遗留独立义务74f91db7-3beb-4f87-b7d7-678fe2376ad5，cleanup_pending/awaiting_host，hosts=null、hostClosedAt空、verification=null。155仍listed、查名配置仍启用，但围栏使其暂不可派发新任务；不是已恢复或本轮对所有查名设备零影响。未伪造host、关闭证明或人工清锁。其他查名09:19只读仍3执行/1人工、configRevision183，09:25 health/ready200，ACTIVE a539及10源hash、原Agent/ADB身份和文件保持。未中断其他任务/控屏，也未修改查名配置。
+
+### 决策日志｜2026-11-03 不能用空闲状态替代旧执行协议兼容与义务闭环
+
+纠正本轮只凭available和原子互斥就继续旧API的做法；此前43/23的host未确认、跨机wall先后风险及停止扩围条件仍适用。155此次原ready正文与PID/token未获持久登记，不能把历史时差模型当其唯一根因，不补造旧host或删除围栏。旧生产没有安全人工解除入口，当前不上线/不重载约束下原义务保留；后续须单独审核完整新协议加载与旧义务处理，不假定本地候选能自动消除它，也不把单独脚本预览当CPS/正式API真机通过。
+
+本轮测试客户端首个GET误带JSON null请求体、随后结果证明读取使用非索引JSON筛选导致控制超时；均已在本地读取方式纠正为无GET body及原job→task主键READ ONLY查询，增加statement/query timeout，未因此重新下发。后检pg_stat_activity无这些原读取。旧v1历史测试直接对当前因果协议运行出现3项协议不匹配失败，原件保留；改用32c原模块隔离复现后9项通过，仅证明旧风险能复现，当前候选相关45项另通过。没有更改旧测试或产品代码，也不称真机已修复；本轮不重复全套回归。
+
+本地操作脚本已禁用继续POST；更新公开企微接口和CPS启用说明的真实阻塞状态，保存脱敏证据及私有原件hash。回执见verification/wecom-native-api-20261103；采用新annotated观察标签wecom-native-api-20261103-blocked.1，非上线或通过标签。当前剩余为155原义务安全收尾、主号/分身正式真机验收、CPS实际成员映射和未部署适配器联调。

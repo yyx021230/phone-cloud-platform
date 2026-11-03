@@ -1,0 +1,56 @@
+{
+  "http": 200,
+  "configRevision": 183,
+  "config": {
+    "enabled": true
+  },
+  "counts": {
+    "registered": 51,
+    "executing": 3,
+    "waitingHuman": 1,
+    "queued": 0
+  },
+  "channels": [
+    {
+      "phase": "quarantined",
+      "deviceNumber": 57
+    },
+    {
+      "phase": "idle",
+      "deviceNumber": 191
+    },
+    {
+      "phase": "idle",
+      "deviceNumber": 53
+    },
+    {
+      "phase": "idle",
+      "deviceNumber": 161
+    },
+    {
+      "phase": "querying",
+      "deviceNumber": 164
+    },
+    {
+      "phase": "idle",
+      "deviceNumber": 74
+    },
+    {
+      "phase": "human",
+      "deviceNumber": 87
+    },
+    {
+      "phase": "starting",
+      "deviceNumber": 162
+    },
+    {
+      "phase": "starting",
+      "deviceNumber": 176
+    }
+  ],
+  "phone155": [
+    {
+      "enabled": true
+    }
+  ]
+}

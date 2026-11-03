@@ -1,0 +1,26 @@
+{
+  "status": 201,
+  "body": {
+    "reused": false,
+    "task": {
+      "jobId": "464661a8-a392-4030-80a5-522bf68ca67e",
+      "deviceNumber": "155",
+      "mode": "preview",
+      "appSlot": "main",
+      "androidUser": 0,
+      "requestId": "wecom-api-preview-c6aa09c51ade426ebb1c632655c93701-main",
+      "status": "queued",
+      "createdAt": "2026-11-03T09:11:40.800Z",
+      "updatedAt": "2026-11-03T09:11:40.800Z",
+      "completedAt": null,
+      "result": {
+        "status": "",
+        "code": "",
+        "invitationSent": false,
+        "sendStatus": "not_attempted",
+        "sendClaimed": false,
+        "remarkSaveStatus": "not_attempted"
+      }
+    }
+  }
+}

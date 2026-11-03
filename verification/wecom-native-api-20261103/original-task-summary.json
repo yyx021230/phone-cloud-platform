@@ -1,0 +1,36 @@
+{
+  "jobs": [
+    {
+      "job_id": "464661a8-a392-4030-80a5-522bf68ca67e",
+      "status": "failed",
+      "mode": "preview",
+      "slot": "main",
+      "windows_task_id": "f0604d28-1db4-4b37-ac75-ffa3e9320914",
+      "send_claimed": false
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "f0604d28-1db4-4b37-ac75-ffa3e9320914",
+      "status": "failed",
+      "agent_id": "win-bf-202605262318-20260727",
+      "type": "wecom_customer_preview",
+      "mode": "preview",
+      "preview_only": "true",
+      "slot": "main",
+      "android_user": "0",
+      "obligation_id": "74f91db7-3beb-4f87-b7d7-678fe2376ad5"
+    }
+  ],
+  "physicalCleanup": {
+    "obligationId": "74f91db7-3beb-4f87-b7d7-678fe2376ad5",
+    "status": "cleanup_pending",
+    "createdAt": "2026-11-03T09:11:40.836Z",
+    "phase": "awaiting_host",
+    "hosts": null,
+    "hostClosedAt": "",
+    "verification": null,
+    "originalTerminalAt": "2026-11-03T09:11:41.667Z"
+  },
+  "priorReads": []
+}
