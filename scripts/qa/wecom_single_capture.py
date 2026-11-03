@@ -6,6 +6,9 @@ import re
 
 from wecom_staging_process import capture_process
 
+TIMED_CALLS=frozenset(('qa.host_identity','qa.inventory','qa.proof_request','rpc.transport',
+                       'rpc.freeze','hierarchy.snapshot','hierarchy.snapshot_any',
+                       'ui.fill_remark','ui.fill_description','ui.save_remark','ui.observed_click'))
 
 def durable(path, value):
     path = Path(path)
@@ -40,6 +43,7 @@ class ResourcePipe:
         self.line = ''
         self.discard = False
         self.failure = None
+        self.timings = {}
 
     def read(self, size):
         # A flushed short resource frame must reach fsync while the child is
@@ -50,6 +54,15 @@ class ResourcePipe:
                 if not self.discard and self.line.startswith('WECOM_CALL '):
                     try:
                         row = json.loads(self.line[len('WECOM_CALL '):])
+                        label=row.get('call');duration=row.get('durationMs')
+                        if (row.get('kind')=='call'and row.get('state')in('end','error')
+                                and isinstance(label,str)and label in TIMED_CALLS and type(duration)is int and 0<=duration<=300000):
+                            stat=self.timings.setdefault(label,dict(count=0,totalMs=0,maxMs=0,errors=0))
+                            if stat['count']<8000:
+                                stat['count']+=1;stat['totalMs']+=duration;stat['maxMs']=max(stat['maxMs'],duration)
+                                stat['errors']+=int(row['state']=='error')
+                        if row.get('kind')=='lifecycle'and row.get('event')=='before_final_json':
+                            durable(self.stage/'qa-call-summary.json',dict(version=1,calls=self.timings,overlappingDurations=True))
                         if row.get('kind') == 'resources':
                             resources = safe_resources(row.get('resources'))
                             if resources is None: raise ValueError()
