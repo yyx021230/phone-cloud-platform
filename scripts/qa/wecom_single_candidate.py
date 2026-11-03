@@ -181,7 +181,7 @@ def main():
                         try:return fact_snapshot(c['authorityGeneration'])
                         except Exception as error:
                             observation_failure(error);raise
-                    snapshot,_,allowed,via=current_snapshot(cached,c['authorityGeneration'],fresh)
+                    snapshot,_,allowed,via=current_snapshot(cached,c['authorityGeneration'],fresh,cache_max_age=2)
                     require(allowed,'qa_guard_stale')
                     with gate:require(not revoked and context.get('authorityGeneration')==c['authorityGeneration'],'qa_guard_revoked')
                     age=max(0,received-snapshot['at'])

@@ -17,6 +17,17 @@ class ProofFreshnessTests(unittest.TestCase):
             self.assertFalse(allowed)
 
 class CurrentProofTests(unittest.TestCase):
+    def test_explicit_cache_budget_keeps_original_observation_time(self):
+        row=dict(at=8.5,allowed=True,generation='g')
+        actual,age,ok,via=current_snapshot(lambda:row,'g',lambda:self.fail('valid original fact need not spawn another read'),clock=lambda:10,cache_max_age=2)
+        self.assertEqual(actual['at'],8.5);self.assertEqual(age,1.5);self.assertTrue(ok);self.assertEqual(via,'recent_cache')
+
+    def test_cache_override_does_not_accept_over_budget_or_unknown(self):
+        for value in (True,-1,2.1,float('nan'),float('inf')):
+            with self.assertRaises(ValueError):current_snapshot(lambda:{},'g',lambda:{},cache_max_age=value)
+        row,age,ok,_=current_snapshot(lambda:dict(at=7,allowed=True,generation='g'),'g',lambda:dict(at=7,allowed=True,generation='g'),clock=lambda:10.1,cache_max_age=2)
+        self.assertFalse(ok);self.assertEqual(row['at'],7)
+
     def test_recent_cache_avoids_a_network_read_but_denial_is_never_revived(self):
         for allowed,age in ((True,.2),(False,5)):
             row=dict(at=10-age,allowed=allowed,generation='g')
