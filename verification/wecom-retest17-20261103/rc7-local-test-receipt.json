@@ -1,0 +1,14 @@
+{
+  "command": "PYTHONPATH=windows-agent/scripts python3 -W error::ResourceWarning -m unittest discover -s windows-agent/scripts -p 'test_wecom*.py'",
+  "exitCode": 0,
+  "tests": 523,
+  "errors": 0,
+  "failures": 0,
+  "elapsedSeconds": 2.322,
+  "type": "local_fake_no_device",
+  "sourceSha256": {
+    "windows-agent/scripts/wecom_platform_preview.py": "4521c3fbf6a5afe42778cf6f64b3ac15f7c772a07cecafd79b53e67cce12f1b2",
+    "windows-agent/scripts/wecom_startup_guards.py": "f3f0b3ae509a5568546e22413ca5fb39efa503dc037615dafd51a61fab364031",
+    "windows-agent/scripts/test_wecom_startup_guards.py": "51f83ff1886639062593bc4cb2ba8f79632158f792cc13119ba69176b5d4ad40"
+  }
+}

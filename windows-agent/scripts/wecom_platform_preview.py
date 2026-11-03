@@ -562,6 +562,7 @@ def run_host(value, diagnostic_stream=None, *, authority=None):
         wait_for_wecom_foreground(poco)
         with trace.phase("home_navigation", 60, "home_navigation_timeout"):
             until=min(deadline,time.monotonic()+60); home=False; update_dismissed=False; blank_frames=0
+            initial_return=startup.InitialPageReturn()
             for _ in range(20):
                 budget()
                 if time.monotonic()>=until: raise SafeStop("home_navigation_timeout")
@@ -584,6 +585,10 @@ def run_host(value, diagnostic_stream=None, *, authority=None):
                     continue
                 def return_back():
                     with calls.call('ui.return_back'):mutate('input keyevent 4')
+                if initial_return.apply(page,android_user=selected_user,phone=config['phoneNumber'],
+                        snapshot=driver.snapshot,foreground_info=foreground_info,lease_valid=lease_valid,
+                        back=return_back,check_budget=budget):
+                    time.sleep(.3);continue
                 if w.return_from_customer_detail(page,snapshot=driver.snapshot,foreground=foreground,
                         back=return_back,check_budget=budget):
                     time.sleep(.3);continue
