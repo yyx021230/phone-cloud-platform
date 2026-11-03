@@ -8,6 +8,7 @@ import wecom_platform_preview as host
 from wecom_cleanup import cleanup_reader, MAIN, TEST
 from wecom_screen_lease import ScreenAuthority
 from wecom_qa_socket_peer import SocketPeerGuard
+from wecom_qa_tcp_runtime import WindowsTcpRuntime,identity_scope
 from wecom_diagnostics import ExecutionTrace
 from wecom_call_trace import CallTrace
 
@@ -50,22 +51,22 @@ def execute(envelope, *, process):
     validate_scope(resources,original_hosts,process)
     if binding.get('purpose')!='cleanup' or binding.get('scopeFingerprint')!=scope_fingerprint(resources,original_hosts):
         raise ValueError('qa_cleanup_scope_changed')
-    authority=ScreenAuthority(binding)
+    authority=ScreenAuthority(binding,runtime=WindowsTcpRuntime())
     if not authority.check_cleanup(config):raise ValueError('qa_cleanup_authority_denied')
     host.config=config;host.SERIAL=config['serial'];host.selected_user=config['androidUser']
     host.external_authority=CleanupView(authority);host.initial_adb=binding['adbPid']
     host.cleaning_up=True;host.deadline=time.monotonic()+12
     host.trace=ExecutionTrace(None,clock=time.monotonic)
-    ok=cleanup_reader(serial=config['serial'],ports=resources['forwards'],owned_pid=resources['pid'],
-        owned_start=resources['startToken'],reader_started=resources['readerStarted'],pids=host.reader_pids,
-        start_token=lambda pid:host.process_start_token(host.shell('cat /proc/'+pid+'/stat')),
-        stop_main=lambda:host.shell('am force-stop com.netease.open.pocoservice'),
-        close_instrument=lambda:None,forwards=host.reader_forwards,remove_forward=host.remove_reader_forward)
-    # Even a preflight stop must not be confused with a clean phone. Limit the
-    # forward proof to this reader protocol, preserving control/other forwards.
-    return ok and not host.reader_pids(MAIN) and not host.reader_pids(TEST) and not any(
-        serial==config['serial'] and remote in ('tcp:10080','tcp:10081')
-        for serial,local,remote in host.reader_forwards())
+    with identity_scope(host,authority):
+        ok=cleanup_reader(serial=config['serial'],ports=resources['forwards'],owned_pid=resources['pid'],
+            owned_start=resources['startToken'],reader_started=resources['readerStarted'],pids=host.reader_pids,
+            start_token=lambda pid:host.process_start_token(host.shell('cat /proc/'+pid+'/stat')),
+            stop_main=lambda:host.shell('am force-stop com.netease.open.pocoservice'),
+            close_instrument=lambda:None,forwards=host.reader_forwards,remove_forward=host.remove_reader_forward)
+        # A preflight stop is not proof of a clean phone. Preserve other forwards.
+        return ok and not host.reader_pids(MAIN) and not host.reader_pids(TEST) and not any(
+            serial==config['serial'] and remote in ('tcp:10080','tcp:10081')
+            for serial,local,remote in host.reader_forwards())
 
 
 def main():
@@ -78,7 +79,7 @@ def main():
         raw=sys.stdin.readline(65537)
         if len(raw)>65536:raise ValueError('qa_cleanup_input_too_large')
         envelope=json.loads(raw)
-        guard=SocketPeerGuard(envelope['reservation'], forwards=lambda:envelope['resources']['forwards'])
+        guard=SocketPeerGuard(envelope['reservation'], forwards=lambda:envelope['resources']['forwards'],runtime=WindowsTcpRuntime())
         with guard.install():
             ok=execute(envelope,process=process)
         result={'cleanupConfirmed':ok,'code':'qa_cleanup_confirmed' if ok else 'qa_cleanup_unconfirmed'}

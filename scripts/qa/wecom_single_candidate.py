@@ -277,8 +277,9 @@ print(json.dumps(r))
         cleanenv=dict(task=payload,reservation=cleanupbinding,resources=resources,originalHosts=hosts)
         clean="import subprocess,json\nr=subprocess.run(["+repr(q.PYTHON)+","+repr(stage+'/windows-agent/scripts/wecom_standalone_peer_cleanup.py')+"],input="+repr(json.dumps(cleanenv))+"+chr(10),capture_output=True,text=True,encoding='utf-8',timeout=25);print(json.dumps({'exitCode':r.returncode,'result':json.loads(r.stdout)if r.stdout.strip()else None}))"
         proofs=[]
-        for _ in range(2):
-            cleanup=q.win(clean,timeout=30);proofs.append(cleanup);require(cleanup.get('exitCode')==0 and(cleanup.get('result')or{}).get('cleanupConfirmed')is True,'qa_cleanup_unknown');time.sleep(.2)
+        for attempt in range(2):
+            cleanup=q.win(clean,timeout=30);proofs.append(cleanup);save('cleanup-attempt-'+str(attempt+1)+'.json',cleanup)
+            require(cleanup.get('exitCode')==0 and(cleanup.get('result')or{}).get('cleanupConfirmed')is True,'qa_cleanup_unknown');time.sleep(.2)
         save('cleanup-proofs.json',proofs);physical_safe=True
         stop.set()
         final=q.attest();require(all(final[k]==identity[k]for k in('agentPid','agentCreatedAt','adbPid','adbCreatedAt','files')),'qa_runtime_changed_after');save('identity-after.json',final)

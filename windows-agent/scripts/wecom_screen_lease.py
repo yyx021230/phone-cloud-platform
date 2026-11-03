@@ -54,8 +54,9 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 
 
 class ScreenAuthority:
-    def __init__(self, binding, *, clock=time.monotonic, wall=time.time):
+    def __init__(self, binding, *, clock=time.monotonic, wall=time.time, runtime=None):
         self.binding = dict(binding); self.clock, self.wall = clock, wall
+        self.runtime=runtime
         self.revoked = False
         self.last_failure = None
         self.last_failure_stage = None
@@ -79,15 +80,18 @@ class ScreenAuthority:
             raise ValueError('qa_broker_credential_invalid')
 
     def host_identity(self):
-        import psutil
+        runtime=self.runtime
+        if runtime is None:
+            import psutil
+            runtime=psutil
         value = self.binding
-        agent = psutil.Process(value['agentPid'])
+        agent = runtime.Process(value['agentPid'])
         if (agent.username() != r'NT AUTHORITY\SYSTEM' or agent.exe() != value['agentExe']
                 or agent.create_time() != value['agentCreatedAt']):
             raise ValueError('qa_agent_identity_changed')
-        listeners = {row.pid for row in psutil.net_connections(kind='tcp') if row.status == 'LISTEN' and row.laddr.port == 5037}
+        listeners = {row.pid for row in runtime.net_connections(kind='tcp') if row.status == 'LISTEN' and row.laddr.port == 5037}
         if listeners != {value['adbPid']}: raise ValueError('qa_adb_listener_changed')
-        adb = psutil.Process(value['adbPid'])
+        adb = runtime.Process(value['adbPid'])
         if (adb.username() != r'NT AUTHORITY\SYSTEM' or Path(adb.exe()) != Path(r'D:\PhoneCloud\tools\android-sdk\platform-tools\adb.exe')
                 or adb.create_time() != value['adbCreatedAt']):
             raise ValueError('qa_adb_identity_changed')

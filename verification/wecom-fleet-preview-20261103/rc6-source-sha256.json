@@ -1,0 +1,7 @@
+{
+  "windows-agent/scripts/wecom_qa_tcp_runtime.py": "4f9202e1dd14cab5775d5d22143844b85a854c61ab16ff0e2ee8dffb6d036a7a",
+  "windows-agent/scripts/wecom_standalone_peer_preview.py": "2602895b9a21b54aa33d60bbf293be0df77d20e0409d2e5195b35d1e9edc7ade",
+  "windows-agent/scripts/wecom_standalone_peer_cleanup.py": "db16a584c376acb307a691c2c73caa20cee183c839be84c5a1ef79c3b80914c8",
+  "windows-agent/scripts/wecom_screen_lease.py": "99a728c3f7d3bb3f36668b889d6d2918cd351c46feb2609f18ea6e4a1d5a0197",
+  "scripts/qa/wecom_single_candidate.py": "06ac3496762fe9ca11b5af00726ef0257dff13e74f310d1026ce93f8dcc3fa4e"
+}

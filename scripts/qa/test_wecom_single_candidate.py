@@ -130,6 +130,7 @@ class RunnerTests(unittest.TestCase):
         result=json.loads(stdout.getvalue());folder=Path(result['evidence'])
         try:
             journal=json.loads((folder/'maintenance-journal.json').read_text())
+            live['cleanupEvidence']=[json.loads(path.read_text())for path in sorted(folder.glob('cleanup-attempt-*.json'))]
         finally: shutil.rmtree(folder)
         return result, journal, events, live
 
@@ -149,6 +150,12 @@ class RunnerTests(unittest.TestCase):
                 self.assertNotIn('listed',events)
                 self.assertEqual(live['natives'],1)
                 self.assertEqual(journal['phase'],'unknown_keep_unlisted')
+
+    def test_failed_cleanup_ack_is_durable_before_fail_closed_stop(self):
+        result,_,_,live=self.execute('cleanup_unknown')
+        self.assertTrue(result['keepUnlisted'])
+        self.assertEqual(len(live['cleanupEvidence']),1)
+        self.assertFalse(live['cleanupEvidence'][0]['result']['cleanupConfirmed'])
 
     def test_competitor_after_screen_is_detected_before_unlist_or_ui(self):
         _,_,events,live=self.execute('competing_work')
