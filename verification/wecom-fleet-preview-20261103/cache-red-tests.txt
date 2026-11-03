@@ -1,0 +1,17 @@
+E
+======================================================================
+ERROR: test_waits_for_existing_thirty_second_scan_without_forcing_a_refresh (test_wecom_single_candidate.RunnerTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/scripts/qa/test_wecom_single_candidate.py", line 204, in test_waits_for_existing_thirty_second_scan_without_forcing_a_refresh
+    result=runner.inventory_owned(binding,clock=lambda:now[0],sleep=lambda s:now.__setitem__(0,now[0]+s))
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/scripts/qa/wecom_single_candidate.py", line 107, in inventory_owned
+    remaining=until-clock();require(remaining>0,'qa_inventory_wait_timeout')
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/scripts/qa/wecom_single_state.py", line 13, in require
+    if not ok: raise RuntimeError(code)
+RuntimeError: qa_inventory_wait_timeout
+
+----------------------------------------------------------------------
+Ran 1 test in 0.003s
+
+FAILED (errors=1)

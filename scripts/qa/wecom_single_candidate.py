@@ -102,12 +102,14 @@ if len(rows)==1:
  ready=(d.get('deviceId')==t['deviceId']and str(d.get('deviceName'))==t['deviceNumber']and a.get('serial')==t['serial']and a.get('agentId')==t['physicalAgentId']and a.get('state')=='device'and o.get('kind')=='screen_control'and o.get('sessionId')==t['sessionId']and 0<=age<=90)
 print(json.dumps({'ready':ready,'ageSeconds':age,'matchingRows':len(rows)}))
 """.replace('TARGET',repr(target))
-    until=clock()+20
+    # The live Agent scans every 30 seconds; wait for its normal publication.
+    # This changes no scan trigger, cache freshness, identity or lease check.
+    until=clock()+75
     while True:
         remaining=until-clock();require(remaining>0,'qa_inventory_wait_timeout')
         result=q.win(code,timeout=min(8,remaining))
         if result.get('ready')is True:return result
-        sleep(min(.5,max(0,until-clock())))
+        sleep(min(1,max(0,until-clock())))
 
 
 def main():

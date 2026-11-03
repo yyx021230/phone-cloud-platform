@@ -194,6 +194,17 @@ class RunnerTests(unittest.TestCase):
         self.assertTrue(calls)
         self.assertTrue(all('read_text' in c and 'subprocess' not in c and 'socket' not in c for c in calls))
 
+    def test_waits_for_existing_thirty_second_scan_without_forcing_a_refresh(self):
+        now=[0];reads=[]
+        def win(code,timeout):
+            reads.append(code)
+            return dict(ready=now[0]>=32,ageSeconds=0 if now[0]>=32 else now[0],matchingRows=1)
+        binding=dict(deviceId='adb:fixture',serial='fixture',deviceNumber='59',physicalAgentId='agent',sessionId='session')
+        with patch.object(runner.q,'win',side_effect=win):
+            result=runner.inventory_owned(binding,clock=lambda:now[0],sleep=lambda s:now.__setitem__(0,now[0]+s))
+        self.assertTrue(result['ready']);self.assertEqual(now[0],32)
+        self.assertTrue(all('read_text'in code and 'subprocess'not in code and 'socket'not in code for code in reads))
+
     def test_capacity_access_denied_is_not_treated_as_free_slot(self):
         class Missing(Exception):pass
         class Denied(Exception):pass

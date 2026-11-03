@@ -6394,3 +6394,13 @@ QA capture只把既有WECOM_DIAGNOSTIC中固定phase/state/数值elapsedMs最多
 ### 决策日志｜2026-11-03 修复已证收尾错误，不扩大初始通信异常结论
 
 实际loopback Node fetch反例旧代码明确失败，修复后GET实收0字节；POST字段与删除后的同session再次删除拒绝一并覆盖。Python29通过，最初测试PATH缺Node的环境失败与有效红例分别保留，未伪作产品红。此改动只解决已证GET收尾问题，不能声称已解释初始qa_transport_unknown、native proof_request os_error或业务timeout。173在途仍使用原固定5018候选，源码门禁会在下一台投递前暂停；后续从新提交继续其余机型，生产服务/ADB/正式白名单不动。
+
+### 变更记录｜2026-11-03 QA缓存等待与真实30秒扫描周期对齐
+
+143/144在新一轮放行前实际遇到reader预算12满载，143自动known-not-started恢复、144未预约；不强退在用手机。之后按既有预留1名额授权，仅CAS concurrency12/rev178→11/rev179并回读，实际native11/预算12；早先快照移除的两条通道均有原session/generation对应成功stop task及readerCleanupConfirmed，不将自然结束（含原human）冒称surplus强退，reservation后无surplus audit。
+
+新143已到备注编辑但timeout且恢复；144/185在native前inventory wait20秒耗尽并恢复。只读Windows事实确认scanIntervalSeconds=30、当前cache age30.078，144/185的deviceId/serial/编号/Agent及ADB状态映射正确；20秒等待短于正常扫描周期，构成确定的准备设计缺陷，不宣称已复原两次所有历史时序。仅QA准备等待改75秒、每秒读一次既有文件，原cache age≤90、精确session/身份、租约与native210秒总预算不变，无主动扫描/重启。
+
+### 决策日志｜2026-11-03 等待生产正常发布缓存，不改变生产扫描行为
+
+新增32秒正常缓存到来反例旧20秒失败，新预算通过；既有超时仍无刷新/ADB调用，Python30通过，真实效果待下一轮144/185。91在途仍按旧来源收尾，下一台前源码门禁暂停后再切新候选。临时11/rev179仍仅为本轮预留，所有本轮原资源收尾后必须按实际revision CAS恢复12；生产代码/共享Agent/ADB身份、正式企微8台名单保持。
