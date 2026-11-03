@@ -49,7 +49,7 @@ try{
 }finally{await client.end();}
 async function get(route){const r=await fetch('http://127.0.0.1:8787'+route,{headers:{authorization:'Bearer '+process.env.ADMIN_API_TOKEN},redirect:'error',signal:AbortSignal.timeout(1800)});if(r.status!==200)throw Error('qa_runtime_read_failed');return r.json();}
 const inventory=await get('/api/v1/wecom/devices'),rows=inventory.devices.filter(d=>d.deviceNumber===t.deviceNumber);if(rows.length!==1)throw Error('qa_runtime_alias_conflict');
-result.runtime=Object.fromEntries(['online','adbOnline','agentOnline','listed','busy','available','occupancy'].map(k=>[k,rows[0][k]]));
+result.runtime=Object.fromEntries(['online','adbOnline','agentOnline','listed','busy','available','occupancy','unavailableReason'].map(k=>[k,rows[0][k]]));
 result.pgLocks=result.locks;result.runtimeLockTtlMs=lockTtl;
 if(runtimeLock){
  const l=runtimeLock;

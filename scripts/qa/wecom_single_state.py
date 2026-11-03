@@ -46,7 +46,7 @@ class Reader:
             raise
 
 
-def assert_idle(target, state):
+def assert_idle(target, state, *, allow_unconfigured=False):
     rows = state.get('devices', [])
     require(len(rows) == 1, 'qa_device_ambiguous')
     d = rows[0]
@@ -54,8 +54,12 @@ def assert_idle(target, state):
             and d['adb']['serial'] == target['serial'], 'qa_device_alias_conflict')
     require(state.get('lookupExcluded') is True and not any(state.get(k)
             for k in ('locks', 'tasks', 'jobs', 'sessions')), 'qa_target_not_exclusive')
-    require(d.get('listingStatus') == 'listed' and state['runtime']['online'] is True
-            and state['runtime']['available'] is True, 'qa_target_not_idle')
+    runtime=state['runtime']
+    unconfigured=(allow_unconfigured is True and runtime.get('unavailableReason')=='wecom_not_configured'
+                  and all(runtime.get(k)is True for k in('online','adbOnline','agentOnline','listed'))
+                  and runtime.get('busy')is False and runtime.get('occupancy')is None)
+    require(d.get('listingStatus') == 'listed' and runtime['online'] is True
+            and (runtime.get('available')is True or unconfigured), 'qa_target_not_idle')
     return d
 
 

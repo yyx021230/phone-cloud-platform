@@ -45,7 +45,7 @@ async function run(change={}){
   const context={fs:{readFileSync:()=>fs.readFileSync(new URL('../../server/index.mjs',import.meta.url),'utf8')},createHash:()=>({update(){return this;},digest:()=>hash}),
     net:{createConnection(){const s=new RedisSocket();queueMicrotask(()=>s.emit('connect'));return s;}},URL,
     pg:{Client},process,Date,Buffer,AbortSignal,console:{log:x=>logs.push(JSON.parse(x))},
-    fetch:async url=>{routes.push(url);return{status:200,json:async()=>url.includes('/screen-sessions/')?{session:{sessionId:session,deviceId:target.deviceId,userId:'operator',agentId:'agent',adbSerial:target.serial,status:'ready',expiresAt:new Date(Date.now()+3600000).toISOString()}}:{devices:[{deviceNumber:'59',online:true,listed:true,busy:false}]}};}};
+    fetch:async url=>{routes.push(url);return{status:200,json:async()=>url.includes('/screen-sessions/')?{session:{sessionId:session,deviceId:target.deviceId,userId:'operator',agentId:'agent',adbSerial:target.serial,status:'ready',expiresAt:new Date(Date.now()+3600000).toISOString()}}:{devices:[{deviceNumber:'59',online:true,listed:true,busy:false,...change.runtime}]}};}};
   await vm.runInNewContext('(async()=>{'+source+'})()',context);
   return{result:logs.at(-1),exitCode:process.exitCode,queries,routes,redisCommands};
 }
@@ -63,6 +63,12 @@ test('unknown stop array shape rejects rather than treating it as empty',async()
   for(const key of ['preparations','roundStops']){
     const r=await run({pool:{[key]:null}});assert.equal(r.exitCode,1);assert.equal(r.result.error,'qa_single_read_unknown');
   }
+});
+test('unconfigured reason is retained as evidence rather than rewriting availability',async()=>{
+  const r=await run({runtime:{available:false,unavailableReason:'wecom_not_configured'}});
+  assert.equal(r.result.runtime.available,false);
+  assert.equal(r.result.runtime.unavailableReason,'wecom_not_configured');
+  assert.deepEqual(r.routes,['http://127.0.0.1:8787/api/v1/wecom/devices']);
 });
 test('failed matching stop and disabled device channel are still exclusion evidence',async()=>{
   for(const pool of [{roundStops:[{status:'failed',serial:'FIXTURE'}]},

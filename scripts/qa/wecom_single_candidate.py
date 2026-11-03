@@ -12,6 +12,7 @@ import json
 import os
 from pathlib import Path
 import queue
+import re
 import secrets
 import subprocess
 import sys
@@ -24,6 +25,27 @@ from wecom_single_state import Reader,assert_idle,assert_owned,listing,require,t
 from wecom_qa_proof import current_snapshot
 
 ROOT=Path(__file__).resolve().parents[2]
+
+
+def qa_profiles(original, manifest):
+    """Derive a staged-only main-slot profile; never edit production profiles."""
+    base=json.loads(original);m=json.loads(manifest)
+    require(m.get('version')==1 and m.get('mode')=='preview_only'
+            and m.get('originalProfileSha256')==hashlib.sha256(original).hexdigest(),'qa_manifest_invalid')
+    rows=m.get('devices');require(isinstance(rows,dict)and 1<=len(rows)<=100,'qa_manifest_invalid')
+    serials=set();added=[]
+    for number,serial in rows.items():
+        require(isinstance(number,str)and re.fullmatch(r'[1-9]\d{0,2}',number)
+                and isinstance(serial,str)and re.fullmatch(r'[A-Za-z0-9_.:-]{1,100}',serial),'qa_manifest_invalid')
+        require(serial.lower()not in serials,'qa_manifest_alias');serials.add(serial.lower())
+        if number in base:
+            require(base[number]['serial']==serial,'qa_manifest_existing_conflict')
+        else:
+            require(not any(v['serial'].lower()==serial.lower()for v in base.values()),'qa_manifest_alias')
+            base[number]=dict(serial=serial,androidUser=0,defaultAppSlot='main',appSlots={'main':0});added.append(number)
+    encoded=json.dumps(base,ensure_ascii=True,sort_keys=True,indent=2).encode()
+    provenance=dict(originalProfileSha256=hashlib.sha256(original).hexdigest(),manifestSha256=hashlib.sha256(manifest).hexdigest(),derivedProfileSha256=hashlib.sha256(encoded).hexdigest(),qaOnlyNumbers=added,productionProfileChanged=False)
+    return encoded,json.dumps(provenance,sort_keys=True).encode()
 
 
 def candidate_files(ref):
@@ -39,6 +61,9 @@ def candidate_files(ref):
             pending.extend(m for m in mods if m and m.startswith('wecom_') and m!=name)
     for path in ['windows-agent/scripts/wecom_preview_devices.json','scripts/qa/wecom_staging_process.py','scripts/qa/wecom_single_capture.py']:
         files[path]=read(path)
+    name='scripts/qa/wecom_fleet_targets.json';files[name]=read(name)
+    profile='windows-agent/scripts/wecom_preview_devices.json'
+    files[profile],files['scripts/qa/wecom_qa_profile_provenance.json']=qa_profiles(files[profile],files[name])
     return files
 
 
@@ -87,7 +112,7 @@ print(json.dumps({'ready':ready,'ageSeconds':age,'matchingRows':len(rows)}))
 
 def main():
     incoming=json.loads(sys.stdin.readline());number=incoming['deviceNumber'];phone=incoming['phoneNumber'];ref=incoming['sourceRef']
-    require(number in ('59','25','145'),'qa_target_not_in_this_round')
+    require(isinstance(number,str)and re.fullmatch(r'[1-9]\d{0,2}',number),'qa_target_not_in_this_round')
     require(len(phone)==11 and phone.isdigit()and phone.endswith('6441'),'qa_recipient_scope')
     require(len(ref)==40 and all(c in'0123456789abcdef'for c in ref),'qa_source_not_immutable')
     files=candidate_files(ref)
@@ -101,9 +126,11 @@ def main():
     q.CLOUD=['ssh','-F','/dev/null','-S',q.CLOUD_SOCKET,'-o','ControlMaster=no','-o','BatchMode=yes','-o','ProxyCommand=/usr/bin/false','-T',q.CLOUD_HOST]
     identity=q.attest();save('identity-before.json',identity)
     cap=capacity();save('capacity-before.json',cap);require(len(cap['pids'])+1<=cap['limit'],'qa_reader_capacity_full')
-    cfg=json.loads(files['windows-agent/scripts/wecom_preview_devices.json']);serial=cfg[number]['serial']
+    cfg=json.loads(files['windows-agent/scripts/wecom_preview_devices.json']);require(number in cfg,'qa_target_not_in_this_round');serial=cfg[number]['serial']
+    provenance=json.loads(files.get('scripts/qa/wecom_qa_profile_provenance.json',b'{}'));qa_only=number in provenance.get('qaOnlyNumbers',[])
+    save('profile-provenance.json',provenance)
     target=dict(deviceId='adb:'+serial,serial=serial,deviceNumber=number)
-    reader=Reader(target);first=reader.state();d=assert_idle(target,first);save('preflight.json',first)
+    reader=Reader(target);first=reader.state();d=assert_idle(target,first,allow_unconfigured=qa_only);save('preflight.json',first)
     original=dict(listingStatus=d['listingStatus'],unlistedAt=d.get('unlistedAt'),updatedAt=d.get('updatedAt'))
     fullsource=(ROOT/'verification/wecom-native-rate-20261103/collect.mjs').read_text()
     full=transport(fullsource,{},timeout=30);require(full.get('status')=='observed_not_admitted','qa_global_read_unknown');save('global-before.json',full)

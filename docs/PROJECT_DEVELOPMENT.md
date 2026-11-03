@@ -6362,3 +6362,11 @@ rc4至rc10同一轮共6次native、1次仅准备，均使用已授权尾号6441�
 ### 决策日志｜2026-11-03 实测推进不能代替完整验收
 
 每次原资源按归属清理，末轮两次cleanupConfirmed、原screen关闭，59恢复listed/online/available，无本机活动锁/任务/会话。结束仅CAS concurrency11/rev177→12/rev178 HTTP200并READ ONLY回读确认；未改变设备/授权/启用配置。healthz/readyz均200，原Agent19756/ADB27912及birth/固定路径/生产3文件hash与轮前一致，不重载共享服务/切身份/重建ADB。verification/wecom-native59-20261103-followup保存脱敏固定字段观察、原回执哈希及恢复收据；旧失败原件不覆盖。候选0174501/rc10仅本地提交与单机暂存，不是正式生产API验收或发布，不扩大到其他手机，不发送邀请。
+
+### 变更记录｜2026-11-03 按实际企微名单扩大独立单机QA覆盖
+
+用户明确指出不能只测59、要求覆盖名单手机在线。本轮11:07:53纯库存/READ ONLY事务核对61个名单手机：49在线、5离线、7未找到；152相较09:05变为离线。生产10源hash及SYSTEM Agent19756/ADB27912未变，实际native hosts8/预算12，未改查名并发或配置。145单次native在wecom_launch因QA proof_request os_error停止，非socket-peer拒绝，0邀请；原reader30729/token760814504及原两forward按原scope清理并双验，原screen释放、恢复listed/available，原失败回执保留，不能计为完整通过。
+
+### 决策日志｜2026-11-03 测试名单扩围与正式平台开放分开
+
+延续逐机预览/发送前停止，替换QA helper仅59/25/145的临时限制：以本轮库存与既有账户名单hash固定49台main/user0测试绑定；已有8台profile及155原clone配置保留原值，不猜新增分身。只在独立暂存包派生profile，保存原始/manifest/派生三个hash及qaOnlyNumbers，不修改生产profile、API开放名单或共享Agent入口。未配置设备仅在明确wecom_not_configured、online/ADB/Agent/listed全真、busy明确false且occupancy为空时，允许进入同样的真实screen/持久下架/PG与Redis/查名排除/实际socket-peer门槛；未知、其他拒绝原因、旧物理义务或查名保留一律阻止，不清理他人锁。Python25与Node9实际本地通过，非49台真机通过；后续逐台真实结果独立记录，名单不等于当前登录或可用保证。
