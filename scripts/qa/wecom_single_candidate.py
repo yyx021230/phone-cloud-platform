@@ -205,7 +205,10 @@ def main():
         def activate(value):
             nonlocal revoked
             with gate:require(not revoked,'qa_guard_revoked');context.clear();context.update(value)
-            for _ in range(30):
+            # Preparation/cleanup may wait for a complete new observation;
+            # every accepted observation must still be less than two seconds old.
+            until=time.monotonic()+10
+            while time.monotonic()<until:
                 with gate:fact=dict(cache);denied=revoked
                 require(not denied,'qa_guard_revoked')
                 if fact.get('allowed')and fact.get('generation')==value['authorityGeneration']and time.monotonic()-fact['at']<2:return

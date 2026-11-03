@@ -1,0 +1,1 @@
+3767bba52f807aa3266629667c38c9a0a0d16f0dc313e5eca9bb399a75e949f3  scripts/qa/wecom_single_candidate.py
