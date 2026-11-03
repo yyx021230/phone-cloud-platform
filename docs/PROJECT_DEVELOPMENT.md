@@ -6249,3 +6249,12 @@ root bed2a7f与范围提醒后，暂停后继adapter/DDL/runner，保留全部�
 ### 决策日志｜2026-11-03 在线清单与脚本槽位、真实成功率分开
 
 现配置继续8台9槽，唯一已配置clone仍155/999，不随新名单自动扩白名单/猜槽位。43原duty不动；155两槽和157保持查名保留，93三条8月PG active旧xhs行与runtime available的差异不清。当前四控屏/11 activeTaskIds不是原生reader容量或最终物理准入；worker额外读取在自有socket已过期前置即停止，未执行。正式新候选未加载，旧standalone持久未知隔离/实际连接peer与原生准入未闭合，因此本轮attempt0、成功率n.a.，不得用50台在线或本地回归代替脚本实测。原fcab和root集成候选标签冻结，无部署/远端推送/新SYSTEM入口、无账户动作或邀请；本轮仅观察记录与名单报告。
+
+
+### 变更记录｜2026-11-03 23号正式内部预览单次真机启动失败
+
+按用户明确要求继续实际测试，09:17完整READ ONLY占用确认23在线且无锁/任务/会话/查名池项，SYSTEM Agent19756/ADB27912固定身份路径保持。09:18:14.974生产32c正式内部preview提交201，原job680a14a8-3988-4eb4-ad45-734bfafa03fd/task781489c2-6f52-4448-ac58-c4efa62103e8，09:18:16.649失败wecom_cleanup_host_unconfirmed；原Nginx日志host POST409、host-closed POST409，原events与Agent日志均保留。未到手机UI、0邀请，未换ID或扩大59。
+
+### 决策日志｜2026-11-03 原生启动失败必须进入验收分母并保留原单机义务
+
+本轮attempt1/pass0/failed-before-UI1，不用受理201充当脚本成功；原businessLock已释放，新duty278c3012-04bf-4d61-8bf6-f378b322ea93仍awaiting_host/hosts null，43旧义务不动。Windows picked日志早于云端picked是跨机时钟差事实，但原ready body缺失，不能断言唯一拒绝条件。实际回执和现成0e2配套13运行文件最小加载审阅在verification/wecom-native-23-20261103；不再撞旧路径制造更多占用，不重造host/proof，不创建替代SYSTEM入口。线上未更新/共享Agent未重载/ADB身份与服务未操作；新候选加载需发布负责人核对版本和中断范围后取得具体授权。
