@@ -6294,3 +6294,12 @@ c2f的59首轮fresh通过并创建原screen930036b7-f8f1-4d02-a2c6-4cbc580fdf5c�
 ### 决策日志｜2026-11-03 新维护观察残留实例与原执行记录分开
 
 原Poco27405/startToken34062869与原记录保留不改。原Windows hosts已退出、两个reader forward0；实际残留8061/token36793965，Android events在本轮启动窗口记录27405启动→kill→8061启动，且原维护marker/独占/无他人任务/lookup/固定SYSTEM身份保持。另建维护operationId，动作前再核8061同token/精确包/user0，只对59固定Poco包force-stop一次，实际socket-peer每连接/发送前核原ADB身份；两轮main/test包PID与该serial reader forward均空。随后原screen DELETE200+Redis消失，10:16恢复59原listed并复读online/available，再CAS11/rev175→12/rev176 HTTP200+PG回读。原23/43不改，生产代码/服务/Agent/ADB/媒体均未部署/重启/切身份；健康双200，ACTIVE a539、Agent19756/ADB27912与文件基线保持。verification/wecom-native59-20261103保存全部原始回执。broker EOF的Windows精确独立重放未复现，早关forward仅待验证假设，首个peer拒绝具体原因缺记录仍待修，不能把准备/辅助组件失败误称企微业务通过。
+
+
+### 变更记录｜2026-11-03 单机QA保留第一次实际peer拒绝的固定诊断
+
+继续59真机前只补隔离QA SocketPeerGuard：原全部连接/发送/身份检查与失败拒绝保留；首次拒绝记录固定reason/operation/portClass/ownerCount/expectedOwnerPresent/errorType/errno，后续revoked不覆盖首因，不保存原异常文本、客户或凭据。没有按未复现的EOF/早关假设放行连接。
+
+### 决策日志｜2026-11-03 先捕获真实首因，不用诊断猜测降低执行门槛
+
+本地WeCom498采集执行通过，最后纯固定label补充后socket12再跑通过（不累加）；精确diff自审完成，生产/共享Agent/ADB/媒体不改。verification/wecom-single-device-20261103-rc4保存本地回执；实际下一轮native结果仍待验证。59上轮已恢复listed和并发12/rev176，原23/43义务保持。

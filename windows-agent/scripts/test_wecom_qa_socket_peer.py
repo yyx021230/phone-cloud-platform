@@ -47,6 +47,25 @@ def fixture():
 
 
 class PeerTests(unittest.TestCase):
+    def test_first_denial_records_fixed_facts_and_is_not_overwritten(self):
+        runtime, wire, guard = fixture()
+        runtime.connections[0].pid = 42
+        with self.assertRaises(PeerDenied): guard.connected(wire, wire.peer)
+        first=dict(guard.summary()['firstDenial'])
+        self.assertEqual(first,dict(reason='connection_owner',operation='connect',portClass='adb',ownerCount=1,expectedOwnerPresent=False))
+        with self.assertRaises(PeerDenied): guard.before_io(wire)
+        self.assertEqual(guard.summary()['firstDenial'],first)
+
+    def test_inspection_exception_never_records_its_raw_text(self):
+        runtime, wire, guard = fixture()
+        def failure(kind):raise ValueError('private exception text must not be logged')
+        runtime.net_connections=failure
+        with self.assertRaises(PeerDenied): guard.connected(wire, wire.peer)
+        first=guard.summary()['firstDenial']
+        self.assertEqual(first['errorType'],'ValueError')
+        self.assertEqual(first['stage'],'connection_owner')
+        self.assertNotIn('private',str(first))
+
     def test_actual_reverse_tuple_not_listener_is_required(self):
         runtime, wire, guard = fixture()
         runtime.connections = [Row(status='LISTEN', pid=41, laddr=wire.peer, raddr=())]
