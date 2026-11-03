@@ -1,0 +1,55 @@
+{
+  "candidateTag": "cps-wecom-contract-20261103-rc.2",
+  "branch": "codex/cps-wecom-client-e2e-20261103",
+  "baselineCommit": "08fee83309e48b6fd01baa93f3f6bfeacf20e28b",
+  "productionAccess": false,
+  "deployed": false,
+  "pushed": false,
+  "sourceHashes": {
+    "package.json": "63c90c3c4bd7190d7cefad7ea041f68f029d138130a002e8c11bc23c5ca5ad8f",
+    "server/cps-wecom.client-http.test.mjs": "124954b190bad536656c6cab382948f6423874caff97e1653c27e6651ae7376e",
+    "docs/CPS企微接口本地候选验收与启用说明.md": "482dc471410bcdcea0c8bf5e3c4bb329ca00dfe817ab7ecae4a2aba93bb842de",
+    "docs/PROJECT_DEVELOPMENT.md": "ca1d616445d0251180c72522595c5a669082ea083c16f29f3db5977621cdfbc9"
+  },
+  "unchangedRuntimeComponentHashes": {
+    "server/index.mjs": "cb8a23cb2f3e9773268f2ba231734c56bb41c55822e0418a0d158ada27bd4c99",
+    "server/wecom-preview.mjs": "0320fb26e79105a523f231ae0a03eb238a77693458d29a6e4850424db949580c",
+    "server/wecom-errors.mjs": "7d5b116360dba9792fd61085ddd20cf499b4257d65b913161a2fea6039c2d6c5",
+    "deploy/sql/cps-wecom.sql": "aa39b53190a4e0d464347c4ee6bc68571fbab5bc94b66a9a8d3d69cf40a67fe6",
+    "server/cps-wecom/domain.mjs": "05ebaf61731b9c8be3dd2421781539683fe2f97f35e722b65a87519eca4512a3",
+    "server/cps-wecom/http.mjs": "f0e3a9acc7964379e176388ed6e74d20cde3b26f6a2a2b6f03b6938bc3417182",
+    "server/cps-wecom/main.mjs": "22402cc2c4ad810abbcc017e6f53da0befb7be0f3e202d47d394a0d55b7e164a",
+    "server/cps-wecom/platform.mjs": "a6da31167452b04ceb501df59214f339ab2bd8085360509fffffbc7a191fb967",
+    "server/cps-wecom/protocol.mjs": "0a556c021325ef03dbdb477a62cf4ec130890c4cc2f2c82bb12522ea36f6cc0d",
+    "server/cps-wecom/service.mjs": "7addd44de4b807e1fc825128e87a8bd163668a5a57f10feb53636a19e8f804c3",
+    "server/cps-wecom/store.mjs": "5fa22d3a35fd67562b967140ca156d260895d90bc60529297356843e617f33e0"
+  },
+  "evidenceHashes": {
+    "verification/cps-wecom-client-e2e-20261103/REPORT.md": "f3874455b591ce904d8d8402859b6c2b45f7c0e8dcf04e91f9f8c4004e5bcae6",
+    "verification/cps-wecom-client-e2e-20261103/baseline.json": "dccd5e8819b96bdcf93aaf36fcd95c86ef4cdfcbb2709cdbbd636f56a1130a68",
+    "verification/cps-wecom-client-e2e-20261103/client-expanded.txt.gz": "8cbf153355577ae671eab836df00e6d33ea2bb87a51cd7af02375017ba11ef01",
+    "verification/cps-wecom-client-e2e-20261103/client-first.txt.gz": "2f50d62c970bb3df2a76b098559bed66ba36c7096d7574c51fcc71226e3359c1",
+    "verification/cps-wecom-client-e2e-20261103/client-second.txt.gz": "5bff0b272db48a60978c0ab667dcfe526808efda8aedb7645a2a78575881367c",
+    "verification/cps-wecom-client-e2e-20261103/isolation.json": "35be5b4c1ee0d1f042aa43285b4eeae21d2e871787c354c2ba04e207a136a67f",
+    "verification/cps-wecom-client-e2e-20261103/postgres-fixture-cleanup.txt": "ca19178a35ab4153b75b494963b66ce8243e1b94c173107c87b44d09db23652d",
+    "verification/cps-wecom-client-e2e-20261103/postgres-fixture-result.txt": "8b45f1125e32d8a3b9302f68b68d2175aa3c18a36b1c885b5c723636d073ddfe",
+    "verification/cps-wecom-client-e2e-20261103/postgres-tests.txt": "8c6439ba7aa730ece50208f3562f4a22cc0df11c9c75a87fd76556286062f884",
+    "verification/cps-wecom-client-e2e-20261103/root-check.txt.gz": "d2b2cbb104165e35f1f33d36d39dfd48f6d08370089745043f33ef2b3d33e3f3",
+    "verification/cps-wecom-client-e2e-20261103/runtime.json": "a31d388e844589d1dbf7719baf5388f4bfc8abeb5242da59349ceaac9d0e78d1",
+    "verification/cps-wecom-client-e2e-20261103/screen-full.txt": "80d6a3b9b3b8c115c3be84147504f96f16a14a87c4e4bdc5f15cfa8006d70ec8"
+  },
+  "results": {
+    "clientScenarios": 13,
+    "realRetryWaitMs": 121000,
+    "postgresTestsPassed": 48,
+    "rootTestsPassed": 2304,
+    "rootTestsFailed": 0,
+    "rootTestsSkipped": 1,
+    "rootSkippedPgTestPassedSeparately": true,
+    "platformJobs": 9,
+    "syntheticTaskPicks": 9,
+    "syntheticSendClaims": 4,
+    "callbackAttempts": 11,
+    "uniqueCpsResults": 7
+  }
+}

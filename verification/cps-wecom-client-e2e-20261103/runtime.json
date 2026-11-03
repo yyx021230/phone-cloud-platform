@@ -1,0 +1,7 @@
+{
+  "recordedAt": "2026-11-03T08:55:37.276312+00:00",
+  "node": "v25.9.0",
+  "python": "Python 3.9.6",
+  "postgres": "pg_ctl (PostgreSQL) 16.15 (Homebrew)",
+  "productionAccess": false
+}
