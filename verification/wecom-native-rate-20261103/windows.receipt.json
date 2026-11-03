@@ -1,0 +1,8 @@
+{
+  "startedAt": "2026-11-03T00:58:36.931095+00:00",
+  "exit": 0,
+  "stdoutBytes": 1023,
+  "stderrBytes": 1338,
+  "sourceSha256": "9ded42d9a800011f642fd682123167898858ac45c809f333333a7179379266cd",
+  "noAdbClient": true
+}

@@ -1,0 +1,76 @@
+{
+  "kind": "native_test_and_inventory_observation",
+  "at": "2026-11-03T01:05:12.425Z",
+  "branch": "codex/wecom-native-rate-20261103",
+  "baseCommit": "fcabecf393ad267830e3f2c904b55e6944906878",
+  "observationTag": "wecom-inventory-20261103-observed.1",
+  "workflowRevision": "2026-09-30",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "inputRows": 164,
+  "uniqueAccountNumbers": 131,
+  "physicalNumbers": 61,
+  "platformPresent": 54,
+  "platformOnline": 50,
+  "platformOffline": [
+    "61",
+    "63",
+    "160",
+    "180"
+  ],
+  "notFound": [
+    "19",
+    "39",
+    "65",
+    "66",
+    "73",
+    "83",
+    "148"
+  ],
+  "unresolvedAccountNumbers": 18,
+  "productionManifestSha256": "a5390dcc93b5f1393e7b95732ca4df679dc5065200f80cf509d96e0f759e2a2f",
+  "productionSourceCommit": "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+  "nativeAttempts": 0,
+  "readyBeforeSend": 0,
+  "alreadyContact": 0,
+  "nativeSuccessRate": null,
+  "realInvitations": 0,
+  "productionChanges": 0,
+  "adbClientCalls": 0,
+  "workerReadAttempt": "not_executed_owned_control_socket_expired_before_command",
+  "runtimeIdentityRead": "SYSTEM Agent19756 and ADB listener27912 fixed paths; raw CIM stderr retained, not zero-error audit",
+  "nativeBlockers": [
+    "production causal candidate not loaded",
+    "execution connection peer binding unverified",
+    "legacy standalone cross-restart unknown-ownership isolation incomplete",
+    "actual reader/outbox/stop-proof admission unverified"
+  ],
+  "protected": [
+    "43 original physical obligation",
+    "155 both slots lookup isolation",
+    "157 enabled lookup pool",
+    "147 and52 prior obligations"
+  ],
+  "report": {
+    "path": "outputs/wecom-native-rate-20261103-a8d3/企微手机在线核对.xlsx",
+    "sha256": "90165cb04badfc1d1bfae334a7167db9b604486f143a98d3c5163ceff105385f",
+    "sheets": [
+      "手机核对",
+      "账户对应"
+    ],
+    "formulaChecks": [
+      61,
+      54,
+      50,
+      4,
+      7,
+      18
+    ],
+    "formulaErrorMatches": 0,
+    "summaryMutationAndRestoreVerified": true,
+    "bothSheetsVisuallyReviewed": true,
+    "exportXmlErrors": 0
+  },
+  "noProductionSqlWrites": true,
+  "readonlyCollectorPinnedSha256": "5e7c70ef85e2f2c3c88d43ef665d368a1d2c3c071cd1ebde05a5810db7b5ad1f",
+  "candidateTagsUnchanged": true
+}

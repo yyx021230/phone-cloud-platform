@@ -1,0 +1,19 @@
+{
+  "ACCOUNT_MATCH.json": "71244dd7d369fdcb0991a3b9f9af12046e04b9cdaad36033719f2afc4298e749",
+  "DIFF_CHECK.json": "e8290db7f0cdbe9fac8538d6b3e939a71ac9ef622f38fdd98ff7ccea43810974",
+  "TASK.json": "81157a242402a96984ba348bb0914d674774db9b07a5b0c253d3e114295aa974",
+  "cloud-observation-1/receipt.json": "09d92b277b19f6b6f555f9e29df4f3f376e6a37c99ffe3a2c86bbadcc518a15f",
+  "cloud-observation-1/stderr.raw": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "cloud-observation-1/stdout.raw": "30ff070f185fee5c53ba329f100f7d9abf35a8545a34c000704279c05c92bbf8",
+  "collect.mjs": "5e7c70ef85e2f2c3c88d43ef665d368a1d2c3c071cd1ebde05a5810db7b5ad1f",
+  "inventory-refresh.receipt.json": "9827dfb7d57a1b85b10c68073a17a8e4a026ff2618482631a741a198468e08c6",
+  "inventory-refresh.stderr.raw": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "inventory-refresh.stdout.raw": "a3116ef88e3fc16fd88c1df43361c269ee6563427a7310a2080814fd70f2916c",
+  "report-builder.mjs.txt": "c629e6c08b2b04125e090b2b27440e239ec715cea060016feb1c37f957cb7c64",
+  "run_readonly.py": "712c95d71142e94084bf4113ccd7bef8cd8a7258441c3bc8ba9cf165374c331c",
+  "windows.json": "a5b701e03f5cb85a6c4389b9ce69be8c849cbae1503434b70a2f09ba77cc1937",
+  "windows.receipt.json": "e11122c430992b8c7da96c3a05e1c98011586076f86136399b9c0b946eb81a7a",
+  "windows.stderr.raw": "f18c64b8a4ca377f7d14d9ef159b0a2ab38e94e209bfe377cd02a4bab57fd263",
+  "windows.stdout.raw": "528be11617f9d25abc705ab67564a331325e9df2ef399939c56b836e032f9797",
+  "windows_readonly.ps1": "9ded42d9a800011f642fd682123167898858ac45c809f333333a7179379266cd"
+}
