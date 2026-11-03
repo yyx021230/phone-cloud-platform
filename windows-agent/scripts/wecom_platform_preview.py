@@ -361,7 +361,7 @@ def resolve_observed_wecom_slot(poco):
     return True
 
 
-def wait_for_wecom_foreground(poco, seconds):
+def wait_for_wecom_foreground(poco, seconds=35):
     with trace.phase("foreground_wait", seconds, "wecom_launch_not_ready"):
         return _wait_for_wecom_foreground(poco, seconds)
 
@@ -559,7 +559,7 @@ def run_host(value, diagnostic_stream=None, *, authority=None):
                 lambda:mutate("input keyevent 224"),lambda:mutate("wm dismiss-keyguard"),check_budget=budget)
             driver=PreviewRemarkEntryDriver(poco,foreground,lease_valid,wake_guard.ensure_awake)
             if authority is not None:driver.before_action_difference=authority.observe_difference
-        wait_for_wecom_foreground(poco, 18)
+        wait_for_wecom_foreground(poco)
         with trace.phase("home_navigation", 60, "home_navigation_timeout"):
             until=min(deadline,time.monotonic()+60); home=False; update_dismissed=False; blank_frames=0
             for _ in range(20):
