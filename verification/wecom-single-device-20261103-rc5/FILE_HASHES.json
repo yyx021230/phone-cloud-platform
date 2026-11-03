@@ -1,0 +1,9 @@
+{
+  "verification/wecom-single-device-20261103-rc5/runner.stderr": "73a805cdc333c53a6ae01392fab35ab4ee4897f4eab2669ce438f8a082c4f63f",
+  "verification/wecom-single-device-20261103-rc5/TASK.json": "5401a93a9c7e7445657a6707200e19e1463f24a30406944d43866b1dc262a4c1",
+  "verification/wecom-single-device-20261103-rc5/runner.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "verification/wecom-single-device-20261103-rc5/python.stderr": "672c6ab5931b3519a2589a9353d01fd6b35064cef10bdbaa9657aed19d74c2d9",
+  "verification/wecom-single-device-20261103-rc5/SOURCE_HASHES.json": "3b1902eaf61e74b7e297935d1570d4e81df3d6dcbdeecd16bd7f196c5b1230c2",
+  "verification/wecom-single-device-20261103-rc5/python.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "verification/wecom-single-device-20261103-rc5/windows-peek.json": "dd9fc0686cd302187b0465db75d801f92fa2edd4b959a2ba0f1de00af7b7c91d"
+}

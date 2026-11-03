@@ -5,8 +5,11 @@ process-local socket class is restored on exit. Production entry points never
 import this helper. Missing Windows connection-owner evidence is a hard stop.
 """
 import contextlib
+import errno
 import math
 import socket
+import _socket
+import time
 import urllib.parse
 import weakref
 from pathlib import PureWindowsPath
@@ -16,6 +19,10 @@ from wecom_invite_preview import StopPreview
 
 class PeerDenied(StopPreview):
     pass
+
+
+class PeerUnavailable(StopPreview):
+    """This closed connection sent no bytes; never a grant or an RPC retry."""
 
 
 class SocketPeerGuard:
@@ -37,6 +44,26 @@ class SocketPeerGuard:
         self._connections = 0
         self._checks = 0
         self.first_denial = None
+        self.closed_forwards = 0
+
+    @staticmethod
+    def peer_closed(wire):
+        """A zero-byte peek proves EOF/reset, not merely a missing owner row."""
+        previous = None
+        restore = False
+        try:
+            previous = wire.gettimeout()
+            restore = True
+            wire.settimeout(0)
+            return _socket.socket.recv(wire, 1, socket.MSG_PEEK) == b''
+        except OSError as error:
+            return error.errno in (errno.ECONNRESET, errno.ENOTCONN, 10054, 10057)
+        except Exception:
+            return False
+        finally:
+            if restore:
+                try: wire.settimeout(previous)
+                except OSError: pass
 
     def deny(self, reason='unconfirmed', **details):
         if self.first_denial is None:
@@ -95,9 +122,20 @@ class SocketPeerGuard:
                 self.process_identity(operation=operation, portClass=port_class)
                 if scan:
                     stage = 'connection_owner'
-                    owners = [row.pid for row in self.runtime.net_connections(kind='tcp')
-                              if row.status == 'ESTABLISHED' and tuple(row.laddr) == peer
-                              and tuple(row.raddr) == local]
+                    until = time.monotonic() + (.25 if port_class == 'forward' else 0)
+                    while True:
+                        owners = [row.pid for row in self.runtime.net_connections(kind='tcp')
+                                  if row.status == 'ESTABLISHED' and tuple(row.laddr) == peer
+                                  and tuple(row.raddr) == local]
+                        if owners or port_class != 'forward': break
+                        if self.peer_closed(wire):
+                            self.closed_forwards += 1
+                            raise PeerUnavailable('qa_socket_forward_closed_no_send')
+                        if time.monotonic() >= until: break
+                        time.sleep(.025)
+                        self.process_identity(operation=operation, portClass=port_class)
+                        if (tuple(wire.getsockname()), tuple(wire.getpeername()), wire.fileno()) != state:
+                            self.deny('socket_reused', operation=operation, portClass=port_class)
                     if owners != [self.pid]:
                         self.deny('connection_owner', operation=operation, portClass=port_class,
                                   ownerCount=len(owners), expectedOwnerPresent=self.pid in owners)
@@ -105,7 +143,7 @@ class SocketPeerGuard:
                     self.process_identity(operation=operation, portClass=port_class)
                 self._checks += 1
             return state, port
-        except PeerDenied:
+        except (PeerDenied, PeerUnavailable):
             raise
         except Exception as error:
             kind = type(error).__name__
@@ -130,7 +168,8 @@ class SocketPeerGuard:
 
     def summary(self):
         return dict(executionConnections=self._connections, peerChecks=self._checks,
-                    revoked=self.revoked, firstDenial=self.first_denial)
+                    revoked=self.revoked, firstDenial=self.first_denial,
+                    closedForwardCount=self.closed_forwards)
 
     @contextlib.contextmanager
     def install(self):

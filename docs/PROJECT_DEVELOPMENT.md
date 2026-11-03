@@ -6303,3 +6303,12 @@ c2f的59首轮fresh通过并创建原screen930036b7-f8f1-4d02-a2c6-4cbc580fdf5c�
 ### 决策日志｜2026-11-03 先捕获真实首因，不用诊断猜测降低执行门槛
 
 本地WeCom498采集执行通过，最后纯固定label补充后socket12再跑通过（不累加）；精确diff自审完成，生产/共享Agent/ADB/媒体不改。verification/wecom-single-device-20261103-rc4保存本地回执；实际下一轮native结果仍待验证。59上轮已恢复listed和并发12/rev176，原23/43义务保持。
+
+
+### 变更记录｜2026-11-03 QA forward启动就绪连接不得因已证早关撤销整个租约
+
+59第二次native捕获实际首因connection_owner/connect/forward/ownerCount0，未客户搜索/发送；旧检查对该情况立即全局revoked，后续表现lease lost。仅隔离QA helper补：forward连接首字节前最多250ms等原ADB owner表发布并持续核身份；只有零字节peek证实EOF/reset时拒绝这个已关闭连接而不撤销其他租约，依旧不发数据。缺失但仍活连接、错误owner或ADB5037不放行；异常仍为StopPreview，不触发UI/RPC重放，原只读health就绪循环可再建连接。
+
+### 决策日志｜2026-11-03 不把实际缺owner直接等同已知早关
+
+旧失败当时未采关闭信号，因此不能断言唯一OS原因。实际本地TCP反例、501项WeCom（含socket15）/runner9通过；Windows独立loopback对EOF检测与原timeout恢复通过，0ADB/手机。verification/wecom-single-device-20261103-rc5保存回执；下一轮真实closedForwardCount与业务结果仍待验，未修改生产/共享Agent/ADB或媒体。第二次原59残留已按新维护观察scope单机清理并恢复listed；本轮临时并发11/rev177保留一个名额供同一轮后续验证，结束后必须归属CAS恢复12。

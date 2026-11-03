@@ -3,7 +3,7 @@ import unittest
 from types import SimpleNamespace as Row
 from unittest.mock import patch
 
-from wecom_qa_socket_peer import SocketPeerGuard, PeerDenied
+from wecom_qa_socket_peer import SocketPeerGuard, PeerDenied, PeerUnavailable
 
 
 class Runtime:
@@ -47,6 +47,39 @@ def fixture():
 
 
 class PeerTests(unittest.TestCase):
+    def test_closed_forward_never_sends_and_does_not_revoke_other_connections(self):
+        runtime, _, guard = fixture()
+        original = socket.socket
+        with original() as listener:
+            listener.bind(('127.0.0.1',0));listener.listen()
+            port=listener.getsockname()[1];guard.forwards=lambda:[(port,10080)]
+            runtime.connections=[]
+            with original() as client:
+                client.connect(('127.0.0.1',port));peer,_=listener.accept();peer.close()
+                # Observe the actual FIN first; MSG_PEEK does not consume data.
+                client.settimeout(.5);self.assertEqual(client.recv(1,socket.MSG_PEEK),b'')
+                with self.assertRaises(PeerUnavailable):guard.connected(client,('127.0.0.1',port))
+            self.assertFalse(guard.revoked)
+            self.assertEqual(guard.summary()['closedForwardCount'],1)
+            wire=Wire();runtime.connections=[Row(status='ESTABLISHED',pid=41,laddr=wire.peer,raddr=wire.local)]
+            guard.connected(wire,wire.peer);guard.before_io(wire)
+
+    def test_forward_owner_can_appear_before_bounded_deadline_without_sending(self):
+        runtime,wire,guard=fixture();wire.peer=('127.0.0.1',42001)
+        row=Row(status='ESTABLISHED',pid=41,laddr=wire.peer,raddr=wire.local)
+        replies=iter([[],[row]])
+        runtime.net_connections=lambda kind:next(replies)
+        guard.connected(wire,wire.peer)
+        self.assertFalse(guard.revoked)
+
+    def test_wrong_forward_owner_still_revokes_even_when_peer_is_closed(self):
+        runtime,wire,guard=fixture();wire.peer=('127.0.0.1',42001)
+        runtime.connections=[Row(status='ESTABLISHED',pid=42,laddr=wire.peer,raddr=wire.local)]
+        with patch.object(guard,'peer_closed',return_value=True):
+            with self.assertRaises(PeerDenied):guard.connected(wire,wire.peer)
+        self.assertTrue(guard.revoked)
+        self.assertEqual(guard.summary()['closedForwardCount'],0)
+
     def test_first_denial_records_fixed_facts_and_is_not_overwritten(self):
         runtime, wire, guard = fixture()
         runtime.connections[0].pid = 42
