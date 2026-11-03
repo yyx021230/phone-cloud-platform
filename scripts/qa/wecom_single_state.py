@@ -72,6 +72,8 @@ def assert_owned(binding, state, *, marker=None):
             and lock['type'] == 'screen_control' and lock['task_id'] == binding['sessionId']
             and lock['owner'] == binding['ownerUserId'], 'qa_lock_changed')
     require(session.get('sessionId') == binding['sessionId'] and session.get('deviceId') == binding['deviceId']
+            and session.get('userId') == binding['ownerUserId']
+            and session.get('agentId') == binding['physicalAgentId'] and session.get('adbSerial') == binding['serial']
             and session.get('status') in ('ready', 'streaming'), 'qa_session_changed')
     occupancy = state['runtime'].get('occupancy') or {}
     require(occupancy.get('type') == 'screen_control', 'qa_runtime_ownership_changed')

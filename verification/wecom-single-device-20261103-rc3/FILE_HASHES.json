@@ -1,0 +1,9 @@
+{
+  "verification/wecom-single-device-20261103-rc3/runner.stderr": "f0d2482264f7281c512d8854811513672a0c0cbf77719692300a58377ef5e5b1",
+  "verification/wecom-single-device-20261103-rc3/real-readonly-no-session.json": "7abe8fad606810f4f0adda29840bbcee9c6d8c7c639bdce3c66302b2a6412abb",
+  "verification/wecom-single-device-20261103-rc3/TASK.json": "278b48c664b92119900004da48d51c83fab105efe126286b32369c5f431f81cb",
+  "verification/wecom-single-device-20261103-rc3/runner.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "verification/wecom-single-device-20261103-rc3/node.stdout": "2979238d5721b5904e93e86393e73125b28e8aac965aaa7e9d400c96e81c196a",
+  "verification/wecom-single-device-20261103-rc3/SOURCE_HASHES.json": "87355b902441443c33e5d35fee12085a45840a3088c4c951885fcfb32bf0c12c",
+  "verification/wecom-single-device-20261103-rc3/node.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

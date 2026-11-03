@@ -48,13 +48,13 @@ class RunnerTests(unittest.TestCase):
                 d = dict(deviceId='adb:fixture', deviceName='59', listingStatus=live['listing'],
                          unlistedAt=marker, updatedAt='initial', adb=dict(serial='fixture', agentId='physical', state='device'))
                 locks = [dict(lock_id='lock', status='active', type='screen_control',
-                              task_id=session, owner='operator')] if live['locked'] else []
+                              task_id=session, owner='other'if failure=='wrong_redis_owner'else'operator')] if live['locked'] else []
                 result = dict(devices=[d], locks=locks, tasks=[], jobs=[], sessions=[], lookupExcluded=True,
                               readStartedMono=time.monotonic(), expiresInSeconds=1000,
                               runtime=dict(online=True, listed=live['listing']=='listed',
                                            available=not live['locked'] and live['listing']=='listed',
                                            occupancy=dict(type='screen_control') if live['locked'] else None))
-                if requested: result['session']=dict(sessionId=session, deviceId='adb:fixture', status='ready')
+                if requested: result['session']=dict(sessionId=session, deviceId='adb:fixture', status='ready',userId='operator',agentId='physical',adbSerial='fixture')
                 if failure == 'competing_work' and live['locked']: result['jobs']=[{'job_id':'other'}]
                 return result
 
@@ -62,7 +62,8 @@ class RunnerTests(unittest.TestCase):
             events.append(method)
             if method == 'POST':
                 live['locked']=True
-                return dict(status=201, body=dict(session=dict(sessionId=session),browserToken='fixture-only'))
+                return dict(status=201, body=dict(session=dict(sessionId=session,userId='operator'),browserToken='fixture-only'))
+            if method=='GET':return dict(status=200,body=dict(session=dict(sessionId=session,deviceId='adb:fixture',userId='operator')))
             live['locked']=False
             return dict(status=200)
 
@@ -136,8 +137,14 @@ class RunnerTests(unittest.TestCase):
 
     def test_competitor_after_screen_is_detected_before_unlist_or_ui(self):
         _,_,events,live=self.execute('competing_work')
-        self.assertEqual(events,['POST'])
+        self.assertEqual(events,['POST','GET','DELETE'])
         self.assertEqual(live['natives'],0)
+
+    def test_wrong_redis_owner_does_not_grant_native_or_unlist(self):
+        _,journal,events,live=self.execute('wrong_redis_owner')
+        self.assertEqual(events,['POST','GET','DELETE'])
+        self.assertEqual(live['natives'],0)
+        self.assertEqual(journal['phase'],'known_not_started_screen_closed')
 
     def test_known_not_started_can_restore_only_its_own_marker(self):
         result,journal,events,live=self.execute('upload_failed')

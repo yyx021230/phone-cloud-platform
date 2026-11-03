@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import {createHash} from 'node:crypto';
 import pg from 'pg';
+import net from 'node:net';
 try{
 let raw='';for await(const c of process.stdin){raw+=c;if(raw.length>4096)throw Error('qa_input_budget');}
 const input=JSON.parse(raw), t=input.target;
@@ -9,6 +10,19 @@ if(!t||!/^adb:[A-Za-z0-9_.:-]+$/.test(t.deviceId)||t.deviceId!=='adb:'+t.serial|
 const hash=()=>createHash('sha256').update(fs.readFileSync('server/index.mjs')).digest('hex');
 const expected='4bcecc8702ea577a77e5f17664b7833ced33b681f88e5beedcdc6875b6f047cc';
 if(hash()!==expected)throw Error('qa_production_source_changed');
+// Reuse only the exact hash-pinned production RESP client definitions. Do not
+// import/start server/index or call its memory fallback/lock-expiry endpoints.
+const runtimeSource=fs.readFileSync('server/index.mjs','utf8');
+const start=runtimeSource.indexOf('function createRedisRuntimeClient('),end=runtimeSource.indexOf('function runtimeJsonSet(',start);
+if(start<0||end<start||!process.env.REDIS_URL)throw Error('qa_runtime_lock_backend_unknown');
+const makeRedis=new Function('net','Buffer','URL','REDIS_COMMAND_TIMEOUT_MS',runtimeSource.slice(start,end)+';return createRedisRuntimeClient;')(net,Buffer,URL,1500);
+const redis=makeRedis(process.env.REDIS_URL),key='lock:device:'+t.deviceId;
+const rawLock=await redis.command(['GET',key]);
+const lockTtl=await redis.command(['PTTL',key]);
+if(await redis.command(['GET',key])!==rawLock)throw Error('qa_runtime_lock_changed');
+if(rawLock===null&&lockTtl!==-2)throw Error('qa_runtime_lock_unknown');
+if(rawLock!==null&&(typeof rawLock!=='string'||rawLock.length>16384||!Number.isFinite(lockTtl)||lockTtl<=0))throw Error('qa_runtime_lock_unknown');
+const runtimeLock=rawLock===null?null:JSON.parse(rawLock);
 const deadline=Date.now()+5000, client=new pg.Client({connectionString:process.env.DATABASE_URL,connectionTimeoutMillis:2000,query_timeout:1500});
 const run=async(s,v=[])=>{if(Date.now()>=deadline)throw Error('qa_read_deadline');const r=await client.query(s,v);if(r.rows.length>2000)throw Error('qa_row_budget');return r.rows;};
 const terminal=['succeeded','failed','cancelled','expired'];
@@ -36,8 +50,17 @@ try{
 async function get(route){const r=await fetch('http://127.0.0.1:8787'+route,{headers:{authorization:'Bearer '+process.env.ADMIN_API_TOKEN},redirect:'error',signal:AbortSignal.timeout(1800)});if(r.status!==200)throw Error('qa_runtime_read_failed');return r.json();}
 const inventory=await get('/api/v1/wecom/devices'),rows=inventory.devices.filter(d=>d.deviceNumber===t.deviceNumber);if(rows.length!==1)throw Error('qa_runtime_alias_conflict');
 result.runtime=Object.fromEntries(['online','adbOnline','agentOnline','listed','busy','available','occupancy'].map(k=>[k,rows[0][k]]));
-if(input.session){if(!/^[a-f0-9-]{36}$/.test(input.session))throw Error('qa_session_invalid');const s=(await get('/api/v1/screen-sessions/'+input.session)).session;result.session=Object.fromEntries(['sessionId','deviceId','status','expiresAt','ownerUserId'].map(k=>[k,s[k]]));}
+result.pgLocks=result.locks;result.runtimeLockTtlMs=lockTtl;
+if(runtimeLock){
+ const l=runtimeLock;
+ if(l.deviceId!==t.deviceId||typeof l.lockId!=='string'||!l.lockId||typeof l.taskId!=='string'||typeof l.ownerUserId!=='string'||l.status!=='active'||!Number.isFinite(Date.parse(l.expiresAt)))throw Error('qa_runtime_lock_invalid');
+ const row={lock_id:l.lockId,device_id:l.deviceId,status:l.status,expires_at:l.expiresAt,type:l.lockType,task_id:l.taskId,owner:l.ownerUserId};
+ const same=result.locks.find(x=>x.lock_id===row.lock_id);
+ if(same&&['device_id','status','type','task_id','owner'].some(k=>same[k]!==row[k]))throw Error('qa_runtime_lock_conflict');
+ if(!same)result.locks=[...result.locks,row];
+}
+if(input.session){if(!/^[a-f0-9-]{36}$/.test(input.session))throw Error('qa_session_invalid');const s=(await get('/api/v1/screen-sessions/'+input.session)).session;result.session=Object.fromEntries(['sessionId','deviceId','status','expiresAt','userId','agentId','adbSerial'].map(k=>[k,s[k]]));}
 if(hash()!==expected)throw Error('qa_production_source_changed');
-if(result.session)result.expiresInSeconds=(Math.min(Date.parse(result.session.expiresAt),...result.locks.map(l=>Date.parse(l.expires_at)))-Date.now())/1000;
+if(result.session)result.expiresInSeconds=Math.min(lockTtl/1000,(Math.min(Date.parse(result.session.expiresAt),...result.locks.map(l=>Date.parse(l.expires_at)))-Date.now())/1000);
 console.log(JSON.stringify(result));
 }catch{console.log(JSON.stringify({error:'qa_single_read_unknown'}));process.exitCode=1;}

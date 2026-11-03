@@ -6276,3 +6276,12 @@ root bed2a7f与范围提醒后，暂停后继adapter/DDL/runner，保留全部�
 ### 决策日志｜2026-11-03 云端screen ready不代替Agent本地占用事实
 
 上述缓存与容量均须在实际native放行前再核，旧候选标签不移动。runner8项（含缓存超时不刷新、容量拒绝AccessDenied）通过且ResourceWarning按错误处理；690的socket10/WeCom496/Node9为未改源码的既有回执，不累加或冒称本轮重跑。verification/wecom-single-device-20261103-rc2保存当前10源hash、2文件精确变化和runner回执。新缓存/容量尚未在Windows执行；本轮仍0手机/0下架/0生产部署，等固定后继候选窄审后现场59准入。
+
+
+### 变更记录｜2026-11-03 单机QA屏控锁事实源与真实准备失败修复
+
+c2f的59首轮fresh通过并创建原screen930036b7-f8f1-4d02-a2c6-4cbc580fdf5c，随后因结构化PG locks为0在native/下架前停止。源码与真实取证确认32c screen创建只改内存state.deviceLocks与runtime Redis，未同步写结构化phone_cloud_device_locks，故不是等checkpoint即可满足该投影；原session已精确核device后DELETE200 closed，59保持listed/available，0企微UI/0邀请，不计UI脚本失败。
+
+### 决策日志｜2026-11-03 屏控运行锁只读投影不得替代持久物理义务
+
+只补新QA reader/controller：从hash-pinned生产index抽取原RESP客户端定义，实际只GET lock:device:59原deviceId键→PTTL→GET同键值不变，无SET/DEL/TTL续租/进程内fallback；Redis非永远canonical，缺失/错误owner/TTL不明拒绝grant。结构化PG所有未释放/physical义务继续保留；原screen201.userId固定owner，当前screen.userId/device/agent/serial与Redisowner/task/expiry双向匹配。未启动且尚未下架的准备失败自动核原owner关闭自有screen。Node12（reader8+trace4）及runner9通过；真实生产PG/Redis对59无会话只读探测成功，尚无新候选native/UI验收。verification/wecom-single-device-20261103-rc3保存5源差异/10源hash/回执；Windows阶段闭包22未变，生产代码/Agent/ADB不改，旧23/43不动；临时查名并发11/rev175为另行明确授权资源安排，测试清理后仍须按归属CAS恢复12。

@@ -106,7 +106,7 @@ def main():
     original=dict(listingStatus=d['listingStatus'],unlistedAt=d.get('unlistedAt'),updatedAt=d.get('updatedAt'))
     fullsource=(ROOT/'verification/wecom-native-rate-20261103/collect.mjs').read_text()
     full=transport(fullsource,{},timeout=30);require(full.get('status')=='observed_not_admitted','qa_global_read_unknown');save('global-before.json',full)
-    scope='qa-'+uuid.uuid4().hex;session=None;marker=None;unlist_attempted=False;keeper=None;broker=None;stage=None;physical_safe=False
+    scope='qa-'+uuid.uuid4().hex;session=None;marker=None;unlist_attempted=False;keeper=None;broker=None;stage=None;physical_safe=False;created_owner=None
     stop=threading.Event();gate=threading.Lock();context={};cache={};revoked=False;forward=None
     native_delivery_unknown=False
     fingerprint=hashlib.sha256(json.dumps(['preview',hashlib.sha256(json.dumps(['QA预览','接口联调测试'],ensure_ascii=False,separators=(',',':')).encode()).hexdigest(),phone,target['deviceId'],0],separators=(',',':')).encode()).hexdigest()
@@ -115,7 +115,7 @@ def main():
     try:
         journal('screen_create_intent')
         r=q.request('/api/v1/user/devices/'+target['deviceId']+'/screen-sessions','POST',{});require(r['status']==201,'qa_screen_acquisition_unknown')
-        session=r['body']['session']['sessionId'];journal('screen_acquired')
+        session=r['body']['session']['sessionId'];created_owner=r['body']['session'].get('userId');require(isinstance(created_owner,str)and created_owner,'qa_created_owner_unknown');journal('screen_acquired')
         keepercode="import{WebSocket}from'ws';const w=new WebSocket('ws://127.0.0.1:8787/realtime/v1/sessions/'+"+json.dumps(session)+"+'/control?token='+encodeURIComponent("+json.dumps(r['body']['browserToken'])+"));w.on('open',()=>console.log('ready'));w.on('error',()=>process.exit(1));w.on('close',()=>process.exit(0));"
         keeper=subprocess.Popen(q.CLOUD+['docker exec -i phone-cloud-platform node --input-type=module'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,text=True)
         keeper.stdin.write(keepercode);keeper.stdin.close();ready=queue.Queue()
@@ -125,7 +125,7 @@ def main():
             if state.get('session',{}).get('status')in('ready','streaming'):break
             time.sleep(.25)
         require(len(state['locks'])==1,'qa_screen_lock_unknown');lock=state['locks'][0]
-        core=dict(taskId=scope,**target,appSlot='main',androidUser=0,agentId=scope,physicalAgentId=d['adb']['agentId'],sessionId=session,lockId=lock['lock_id'],ownerUserId=lock['owner'],operationFingerprint=fingerprint)
+        core=dict(taskId=scope,**target,appSlot='main',androidUser=0,agentId=scope,physicalAgentId=d['adb']['agentId'],sessionId=session,lockId=lock['lock_id'],ownerUserId=created_owner,operationFingerprint=fingerprint)
         assert_owned(core,state);save('screen-before-unlist.json',state)
         journal('unlist_intent')
         unlist_attempted=True
@@ -227,6 +227,17 @@ print(json.dumps(r))
         print(json.dumps({'deviceNumber':number,'status':native.get('previewStatus'),'code':native.get('previewCode'),'invitationSent':False,'cleanupConfirmed':True,'listingRestored':True,'evidence':str(folder),'productionApiAccepted':False}),flush=True)
     except Exception as error:
         code=str(error)if isinstance(error,RuntimeError)and str(error).startswith('qa_')else 'qa_single_execution_unknown'
+        if session and not unlist_attempted and not native_delivery_unknown:
+            try:
+                current=q.request('/api/v1/screen-sessions/'+session)
+                value=current.get('body',{}).get('session',{})
+                require(current['status']==200 and value.get('sessionId')==session and value.get('deviceId')==target['deviceId']
+                        and created_owner and value.get('userId')==created_owner,'qa_unstarted_screen_owner_changed')
+                closed=q.request('/api/v1/screen-sessions/'+session,'DELETE',{});require(closed['status']==200,'qa_unstarted_screen_close_unknown')
+                journal('known_not_started_screen_closed',code=code)
+                print(json.dumps({'deviceNumber':number,'code':code,'nativeStarted':False,'screenClosed':True,'listingChanged':False,'noRetry':True,'evidence':str(folder)}),flush=True)
+                return
+            except Exception:pass
         if marker is not None and not native_delivery_unknown:
             # Preparation made no native invocation. A fresh independent read
             # can prove this exact maintenance marker and owned screen still
