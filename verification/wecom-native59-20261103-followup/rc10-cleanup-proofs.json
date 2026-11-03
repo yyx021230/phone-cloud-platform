@@ -1,0 +1,16 @@
+[
+  {
+    "exitCode": 0,
+    "result": {
+      "cleanupConfirmed": true,
+      "code": "qa_cleanup_confirmed"
+    }
+  },
+  {
+    "exitCode": 0,
+    "result": {
+      "cleanupConfirmed": true,
+      "code": "qa_cleanup_confirmed"
+    }
+  }
+]

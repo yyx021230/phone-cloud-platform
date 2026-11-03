@@ -6354,3 +6354,11 @@ rc9真机40.562秒blocked wecom_launch_not_ready，原生trace记录foreground_w
 ### 决策日志｜2026-11-03 给单次真实选择后的确认保留预算
 
 新增可控时钟反例：20秒单次选择在旧18秒失败，新默认通过且仅选择一次，原总任务15秒仍中断；一并运行既有diagnostics/platform测试。只提交本地候选并在59单机验证，生产共享Agent/ADB/媒体不改；不把该次启动失败计为业务通过。
+
+### 变更记录｜2026-11-03 59后续真机预览结果与资源恢复
+
+rc4至rc10同一轮共6次native、1次仅准备，均使用已授权尾号6441且0邀请；完整ready_before_send通过0。rc10已通过主号选择/前台确认/首页，进入客户搜索和备注编辑，187.655秒结束blocked timeout，failurePhase remark_edit，sendStatus not_attempted、remarkSaveStatus not_needed；无authority/socket拒绝。当前仅能确认业务预算耗尽，不能直接判定页面结构或备注内容的唯一根因，仍需后续耗时/页面证据。
+
+### 决策日志｜2026-11-03 实测推进不能代替完整验收
+
+每次原资源按归属清理，末轮两次cleanupConfirmed、原screen关闭，59恢复listed/online/available，无本机活动锁/任务/会话。结束仅CAS concurrency11/rev177→12/rev178 HTTP200并READ ONLY回读确认；未改变设备/授权/启用配置。healthz/readyz均200，原Agent19756/ADB27912及birth/固定路径/生产3文件hash与轮前一致，不重载共享服务/切身份/重建ADB。verification/wecom-native59-20261103-followup保存脱敏固定字段观察、原回执哈希及恢复收据；旧失败原件不覆盖。候选0174501/rc10仅本地提交与单机暂存，不是正式生产API验收或发布，不扩大到其他手机，不发送邀请。

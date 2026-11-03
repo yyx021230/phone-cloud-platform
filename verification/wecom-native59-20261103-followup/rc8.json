@@ -1,0 +1,12 @@
+{
+  "candidate": "rc8",
+  "sourceRef": "350933a4e0bca011d5cecdb89b1efbe378e1f420",
+  "deviceNumber": "59",
+  "phase": "known_not_started_restored",
+  "productionApiAccepted": false,
+  "sentInvitations": 0,
+  "sourceFiles": {
+    "listing-restored.json": "b0fe2c6d10c920e497fc06c973085da299d2d0633367bcf7543e34417e1da674"
+  },
+  "listingRestored": true
+}

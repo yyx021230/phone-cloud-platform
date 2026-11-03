@@ -1,0 +1,235 @@
+{
+  "candidate": "rc10",
+  "sourceRef": "01745010a066d312a1787c48bce4420d9fa55f94",
+  "deviceNumber": "59",
+  "phase": "complete_restored",
+  "productionApiAccepted": false,
+  "sentInvitations": 0,
+  "native": {
+    "previewStatus": "blocked",
+    "previewCode": "timeout",
+    "invitationSent": false,
+    "sendStatus": "not_attempted",
+    "remarkSaveStatus": "not_needed",
+    "diagnostic": {
+      "wecomExecution": {
+        "version": 1,
+        "phase": "cleanup",
+        "failurePhase": "remark_edit",
+        "elapsedMs": 187655,
+        "cleanupConfirmed": true,
+        "events": [
+          {
+            "version": 1,
+            "step": 21,
+            "phase": "selector_click",
+            "state": "begin",
+            "elapsedMs": 16202
+          },
+          {
+            "version": 1,
+            "step": 22,
+            "phase": "selector_click",
+            "state": "end",
+            "elapsedMs": 41250
+          },
+          {
+            "version": 1,
+            "step": 23,
+            "phase": "selector_observe",
+            "state": "end",
+            "elapsedMs": 41250
+          },
+          {
+            "version": 1,
+            "step": 24,
+            "phase": "foreground_wait",
+            "state": "end",
+            "elapsedMs": 44141
+          },
+          {
+            "version": 1,
+            "step": 25,
+            "phase": "home_navigation",
+            "state": "begin",
+            "elapsedMs": 44141
+          },
+          {
+            "version": 1,
+            "step": 26,
+            "phase": "home_navigation",
+            "state": "end",
+            "elapsedMs": 49905
+          },
+          {
+            "version": 1,
+            "step": 27,
+            "phase": "recipient_search",
+            "state": "begin",
+            "elapsedMs": 49905
+          },
+          {
+            "version": 1,
+            "step": 28,
+            "phase": "recipient_search",
+            "state": "begin",
+            "elapsedMs": 54719
+          },
+          {
+            "version": 1,
+            "step": 29,
+            "phase": "recipient_search",
+            "state": "end",
+            "elapsedMs": 67109
+          },
+          {
+            "version": 1,
+            "step": 30,
+            "phase": "recipient_search",
+            "state": "begin",
+            "elapsedMs": 68905
+          },
+          {
+            "version": 1,
+            "step": 31,
+            "phase": "recipient_search",
+            "state": "end",
+            "elapsedMs": 86375
+          },
+          {
+            "version": 1,
+            "step": 32,
+            "phase": "recipient_search",
+            "state": "begin",
+            "elapsedMs": 90077
+          },
+          {
+            "version": 1,
+            "step": 33,
+            "phase": "recipient_search",
+            "state": "end",
+            "elapsedMs": 102780
+          },
+          {
+            "version": 1,
+            "step": 34,
+            "phase": "recipient_search",
+            "state": "begin",
+            "elapsedMs": 109030
+          },
+          {
+            "version": 1,
+            "step": 35,
+            "phase": "recipient_search",
+            "state": "end",
+            "elapsedMs": 127827
+          },
+          {
+            "version": 1,
+            "step": 36,
+            "phase": "recipient_search",
+            "state": "begin",
+            "elapsedMs": 130359
+          },
+          {
+            "version": 1,
+            "step": 37,
+            "phase": "recipient_search",
+            "state": "end",
+            "elapsedMs": 145469
+          },
+          {
+            "version": 1,
+            "step": 38,
+            "phase": "remark_edit",
+            "state": "begin",
+            "elapsedMs": 148422
+          },
+          {
+            "version": 1,
+            "step": 39,
+            "phase": "remark_edit",
+            "state": "end",
+            "elapsedMs": 164280
+          },
+          {
+            "version": 1,
+            "step": 40,
+            "phase": "remark_edit",
+            "state": "begin",
+            "elapsedMs": 167469
+          },
+          {
+            "version": 1,
+            "step": 41,
+            "phase": "remark_edit",
+            "state": "error",
+            "elapsedMs": 181719
+          },
+          {
+            "version": 1,
+            "step": 42,
+            "phase": "recipient_search",
+            "state": "end",
+            "elapsedMs": 182547
+          },
+          {
+            "version": 1,
+            "step": 43,
+            "phase": "cleanup",
+            "state": "begin",
+            "elapsedMs": 182547
+          },
+          {
+            "version": 1,
+            "step": 44,
+            "phase": "cleanup",
+            "state": "end",
+            "elapsedMs": 187655,
+            "cleanupConfirmed": true
+          }
+        ]
+      }
+    },
+    "isolation": {
+      "mode": "real_screen_reservation",
+      "resources": {
+        "readerStarted": true,
+        "pid": "22787",
+        "startToken": "37114021",
+        "forwards": [
+          [
+            61080,
+            10080
+          ],
+          [
+            61171,
+            10081
+          ]
+        ],
+        "cleanupConfirmed": true
+      },
+      "productionWindowsTask": false,
+      "primaryFailure": "timeout",
+      "authorityFailure": null,
+      "authorityFailureStage": null,
+      "socketPeer": {
+        "executionConnections": 315,
+        "peerChecks": 2066,
+        "revoked": false,
+        "firstDenial": null,
+        "closedForwardCount": 3
+      }
+    }
+  },
+  "hostExitCode": 0,
+  "pipeDrainComplete": true,
+  "sourceFiles": {
+    "native-answer.json": "00608f14f24adff0bb22d18b9264303ba93bc029ff18ebcd8f6f36e9bff15edc",
+    "cleanup-proofs.json": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a",
+    "listing-restored.json": "9f912d6b5b4c8473e7d18d218ea20c6a60f0c8f6d5e938e991e89ad016e986ec",
+    "final-state.json": "d3f1915ef7843920c6311df42036056f38907bd063d9d4a2a01216b1556352b8",
+    "identity-after.json": "b9fcfe677320b21090e1d32fcfa4c06af8397bdab1bea00100cfc9b56df5dd9d",
+    "staged-hashes.json": "ca4003ddb1d9c15cc890f03162aea37f200a065e32fb1ee76a4e9577fcca793a"
+  }
+}
