@@ -1,0 +1,18 @@
+{
+  "windows-agent/scripts/wecom_platform_preview.py": {
+    "baseline5813982": "4b49f9512d353363248b38e262124a5dbde176079aa9ac800b77550f12a5d895",
+    "candidate": "ce25d4537321962663494a8ca57347189cef0860f99803c1226889612b3f95e5"
+  },
+  "windows-agent/scripts/wecom_startup_guards.py": {
+    "baseline5813982": "4c0c76df4c1435b64bd7d7ab627ac007da89c454bfcb5cfa3b90a891fe42be76",
+    "candidate": "4c0c76df4c1435b64bd7d7ab627ac007da89c454bfcb5cfa3b90a891fe42be76"
+  },
+  "windows-agent/scripts/test_wecom_platform_preview.py": {
+    "baseline5813982": "e76b4dc42a28fc73ce218fc44dd072af8eedd95e60f4f8d3ac6a6793b17ebe3e",
+    "candidate": "087fdad5cc01b3ed75f7ee61ed99f80af33fc2217a0cb814883bfa390ecd93ad"
+  },
+  "windows-agent/scripts/test_wecom_startup_guards.py": {
+    "baseline5813982": "deb1cd6c802c735c41f2a03d4c1685482840e1798b6ede97b79a0dd101fcce3e",
+    "candidate": "deb1cd6c802c735c41f2a03d4c1685482840e1798b6ede97b79a0dd101fcce3e"
+  }
+}

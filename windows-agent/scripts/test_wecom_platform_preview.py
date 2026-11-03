@@ -100,7 +100,7 @@ class HostGuardTests(unittest.TestCase):
         self.assertIn("am force-stop com.netease.open.pocoservice",calls)
         self.assertNotIn("input keyevent 224",calls)
 
-    def test_observed_25_and_155_restart_only_bound_slot_before_poco_other_phones_do_not(self):
+    def test_every_main_and_clone_restarts_only_bound_slot_once_before_poco(self):
         for number,user in [('25',0),('155',999),('23',0),('155',0)]:
             calls=[];count=[0];clock=[0]
             def now():clock[0]+=.5;return clock[0]
@@ -119,11 +119,25 @@ class HostGuardTests(unittest.TestCase):
                 with self.assertRaisesRegex(host.SafeStop,'poco_not_ready'):host.run_host(value)
             restarts=[cmd for cmd in calls if cmd.startswith('am force-stop --user ') and cmd.endswith(' com.tencent.wework')]
             self.assertFalse(any('pm clear' in cmd for cmd in calls))
-            if (number,user) in [('23',0),('155',0)]:self.assertFalse(restarts)
-            else:
-                restart='am force-stop --user %d com.tencent.wework'%user
-                self.assertEqual(restarts,[restart])
-                self.assertLess(calls.index(restart),calls.index('am start -n com.netease.open.pocoservice/.TestActivity'))
+            restart='am force-stop --user %d com.tencent.wework'%user
+            self.assertEqual(restarts,[restart])
+            self.assertLess(calls.index(restart),calls.index('am start -n com.netease.open.pocoservice/.TestActivity'))
+
+    def test_restart_rejection_or_unknown_delivery_never_replays_or_starts_reader(self):
+        for mode in('denied','timeout'):
+            calls=[]
+            def shell(cmd,keep=False):
+                calls.append(cmd)
+                if cmd.startswith('pm '):return 'package:fixture'
+                if cmd.startswith('am force-stop --user '):
+                    if mode=='timeout':raise TimeoutError('unknown stop delivery')
+                    return 'Permission Denial'
+                return ''
+            with patch.object(host,'adb_identity',return_value=1),patch.object(host,'lease_valid',return_value=True),patch.object(host,'shell',side_effect=checked_pid_shell(shell)):
+                expected=TimeoutError if mode=='timeout'else host.SafeStop
+                with self.assertRaises(expected):host.run_host(self.config('23'))
+            self.assertEqual(calls.count('am force-stop --user 0 com.tencent.wework'),1)
+            self.assertFalse(any(cmd.startswith('am start ')or'pm clear'in cmd for cmd in calls))
 
     def test_driver_runs_normal_wake_guard_before_reading_page(self):
         from test_wecom_invite_preview import HOME,Poco

@@ -104,41 +104,6 @@ def is_observed_25_invite_foreground(device_number, android_user, current):
             'com.tencent.wework/.contact.controller.WechatContactInfoActivity'))
 
 
-class InitialPageReturn:
-    """One BACK from two observed startup activities; never saves or sends."""
-    MOMENTS = w.PACKAGE+'/.moments.controller.MomentsEnterpriseNotificationListActivity'
-    MOMENTS_INDEX = w.PACKAGE+'/.moments.controller.MomentsIndexListActivity'
-    REMARK = w.PACKAGE+'/.contact.controller.ContactRemarkAndOtherInfoEditActivity'
-
-    def __init__(self):
-        self.attempted=set()
-
-    def matches(self, page, current, android_user, phone):
-        if (page.package!=w.PACKAGE or len(current)!=3 or current[:2]!=(w.PACKAGE,android_user)
-                or type(android_user)is not int or android_user<0 or page.has(w.SEND)):
-            return False
-        if current[2]in(self.MOMENTS,self.MOMENTS_INDEX):
-            return len(page.nodes)>3 and not page.matching(lambda n:n.kind=='android.widget.EditText')
-        if current[2]==self.REMARK:
-            import wecom_remark_preview as remarks
-            return remarks.remark_page(page) and len(page.matching(
-                lambda n:n.kind=='android.widget.EditText' and re.sub(r'[\s-]','',n.text)==phone))==1
-        return False
-
-    def apply(self, page, *, android_user, phone, snapshot, foreground_info,
-              lease_valid, back, check_budget=lambda:None):
-        check_budget();current=foreground_info()
-        if not self.matches(page,current,android_user,phone):return False
-        if current[2]in self.attempted:raise w.StopPreview('initial_page_return_not_confirmed')
-        w.guard(page);check_budget()
-        fresh=snapshot();w.guard(fresh)
-        if fresh!=page or foreground_info()!=current or lease_valid()is not True:
-            raise w.StopPreview('initial_page_return_context_changed')
-        check_budget();self.attempted.add(current[2])
-        back()  # Unknown delivery propagates; this activity is never retried.
-        return True
-
-
 class ScreenWakeGuard:
     """The previously verified host's bounded normal wake, without settings edits."""
     def __init__(self, read_power, lease_valid, wake, dismiss, check_budget=lambda: None):
