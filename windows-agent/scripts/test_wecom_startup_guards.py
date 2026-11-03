@@ -123,6 +123,15 @@ class InitialPageReturnTests(unittest.TestCase):
         self.assertFalse(guard.matches(replace(page,nodes=page.nodes[:-1]),current,999,PHONE))
         self.assertFalse(guard.matches(page,current,0,PHONE))
 
+    def test_observed_notification_then_index_returns_once_per_activity(self):
+        guard=g.InitialPageReturn();page=self.moments();current=[guard.MOMENTS];calls=[]
+        args=dict(android_user=0,phone='13800138000',snapshot=lambda:page,
+                  foreground_info=lambda:(w.PACKAGE,0,current[0]),lease_valid=lambda:True,back=lambda:calls.append(current[0]))
+        self.assertTrue(guard.apply(page,**args));current[0]=guard.MOMENTS_INDEX
+        self.assertTrue(guard.apply(page,**args))
+        with self.assertRaises(w.StopPreview):guard.apply(page,**args)
+        self.assertEqual(calls,[guard.MOMENTS,guard.MOMENTS_INDEX])
+
     def test_unknown_activity_other_user_and_editable_moments_never_return(self):
         page=self.moments();guard=g.InitialPageReturn();good=(w.PACKAGE,0,guard.MOMENTS)
         for screen,current,user in ((page,(w.PACKAGE,0,w.PACKAGE+'/.OtherActivity'),0),

@@ -107,6 +107,7 @@ def is_observed_25_invite_foreground(device_number, android_user, current):
 class InitialPageReturn:
     """One BACK from two observed startup activities; never saves or sends."""
     MOMENTS = w.PACKAGE+'/.moments.controller.MomentsEnterpriseNotificationListActivity'
+    MOMENTS_INDEX = w.PACKAGE+'/.moments.controller.MomentsIndexListActivity'
     REMARK = w.PACKAGE+'/.contact.controller.ContactRemarkAndOtherInfoEditActivity'
 
     def __init__(self):
@@ -116,7 +117,7 @@ class InitialPageReturn:
         if (page.package!=w.PACKAGE or len(current)!=3 or current[:2]!=(w.PACKAGE,android_user)
                 or type(android_user)is not int or android_user<0 or page.has(w.SEND)):
             return False
-        if current[2]==self.MOMENTS:
+        if current[2]in(self.MOMENTS,self.MOMENTS_INDEX):
             return len(page.nodes)>3 and not page.matching(lambda n:n.kind=='android.widget.EditText')
         if current[2]==self.REMARK:
             import wecom_remark_preview as remarks

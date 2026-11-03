@@ -6431,3 +6431,11 @@ QA capture只把既有WECOM_DIAGNOSTIC中固定phase/state/数值elapsedMs最多
 ### 决策日志｜2026-11-03 按已观察页面兼容，不给所有未知页开放盲退
 
 这是对上一轮已确认启动白名单缺口的最小补充；未知Activity、其他user、目标号码不同或备注布局不全仍不动作。新增正常/错误槽位/未知页面/编辑态通知页/页面变化/租约丢失/超时/未知BACK反例，完整Python WeCom523项通过，尚不代表真机通过。05:34Z只读复核原SYSTEM Agent19756/ADB27912及birth未变，池12/rev180；17台中82有排他占用，暂跳过，另16台预约前合格，真正投递前仍重新校验。仅本地候选与独立原生预览，不重载或发布，不影响正在执行的查名和控屏。
+
+### 变更记录｜2026-11-03 144完整预览通过及125下一层朋友圈初始页
+
+rc7在144实际完成目标搜索、备注写入、保存后重开核对及发送前双帧确认，ready_before_send/stopped_before_send，remarkSaveStatus confirmed、invitationSent false，原生与两次清理确认、原listing恢复。125实际由通知页退到MomentsIndexListActivity，脱敏既有页面无编辑框，原白名单仍未识别这一层；随后home_navigation_timeout且清理proof_request os_error，原native退出已确认，未重放，先按原scope收尾。
+
+### 决策日志｜2026-11-03 补齐实际观察的朋友圈父页面
+
+只将精确MomentsIndexListActivity加入相同启动返回条件，与已观察通知Activity各限一次BACK。仍禁止任意未知Activity、输入页、其他槽位、页面变动或租约丢失时写入。增加通知→列表两级返回且列表重复不再返回的反例，Python WeCom524项实际通过。125清理通信异常与页面兼容缺口分别记载，不把新增页面支持说成通信异常已修复；新候选需固定后继续真机，生产代码与共享服务保持不变。
