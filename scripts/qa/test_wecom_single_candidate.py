@@ -74,6 +74,7 @@ class RunnerTests(unittest.TestCase):
 
         def win(code, timeout=12):
             compile(code, '<remote-python>', 'exec')
+            if 'p.stat().st_mtime' in code:return dict(ready=True,ageSeconds=1,matchingRows=1)
             if 's.bind' in code: return 43001
             if 'base64.b64decode' in code:
                 if failure == 'upload_failed': raise RuntimeError('qa_stage_upload_unknown')
@@ -144,6 +145,33 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual(events,['POST','unlisted','DELETE','listed'])
         self.assertEqual(journal['phase'],'known_not_started_restored')
         self.assertEqual(live['natives'],0)
+
+    def test_agent_cache_timeout_is_known_unstarted_and_runs_no_refresh(self):
+        now=[0]
+        calls=[]
+        def win(code,timeout):
+            calls.append(code)
+            return dict(ready=False,ageSeconds=1,matchingRows=1)
+        def sleep(seconds):now[0]+=seconds
+        binding=dict(deviceId='adb:fixture',serial='fixture',deviceNumber='59',physicalAgentId='agent',sessionId='session')
+        with patch.object(runner.q,'win',side_effect=win):
+            with self.assertRaisesRegex(RuntimeError,'qa_inventory_wait_timeout'):
+                runner.inventory_owned(binding,clock=lambda:now[0],sleep=sleep)
+        self.assertTrue(calls)
+        self.assertTrue(all('read_text' in c and 'subprocess' not in c and 'socket' not in c for c in calls))
+
+    def test_capacity_access_denied_is_not_treated_as_free_slot(self):
+        class Missing(Exception):pass
+        class Denied(Exception):pass
+        def denied():raise Denied()
+        process=SimpleNamespace(pid=7,info={'name':'python.exe'},cmdline=denied)
+        psutil=SimpleNamespace(process_iter=lambda attrs:[process],NoSuchProcess=Missing,AccessDenied=Denied)
+        def win(code):
+            namespace={}
+            with patch.dict(sys.modules,psutil=psutil),patch.object(Path,'read_text',return_value='{"airtestMaxResidentWorkers":12}'):
+                exec(compile(code,'<capacity-read>','exec'),namespace)
+        with patch.object(runner.q,'win',side_effect=win):
+            with self.assertRaisesRegex(RuntimeError,'qa_reader_capacity_unknown'):runner.capacity()
 
     def test_typed_sidecar_keeps_original_births_and_never_raw_ui(self):
         hosts=[dict(pid=1,createdAt=1.5),dict(pid=2,createdAt=2.5)]

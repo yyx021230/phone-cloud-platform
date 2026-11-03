@@ -6267,3 +6267,12 @@ root bed2a7f与范围提醒后，暂停后继adapter/DDL/runner，保留全部�
 ### 决策日志｜2026-11-03 受控单机实测与正式API验收继续分开
 
 删除新runner对旧LocalAPI假Agent任务层的依赖，直接沿已有ScreenAuthority调用核心run_host，不冒充SYSTEM协议。实际controller/native PID与birth在stdin放行前fsync；结构化资源帧逐行落盘，避免read(8192)等到EOF；只有实际close和同scope两次cleanup、原维护标记与无竞争成立才恢复原listing。明确从未调用native的准备失败可按fresh归属收尾，不制造无必要永久占用；可能已投递的原生执行未知则不恢复。原23/43义务不改。496项WeCom Python（含socket10）、runner6项及Node9项通过；实际本地TCP/child管道已测，reader是fake PG/runtime控制逻辑，不是PG/Windows/真机。verification/wecom-single-device-20261103保留源hash、依赖闭包和回执；新候选仍未加载/未操作手机/未下架/未部署，下一步由根窄审固定候选后做59现场准入和预览。
+
+
+### 变更记录｜2026-11-03 单机QA放行前等待原Agent缓存与容量未知拒绝
+
+根对690a241窄审后只补新QA runner：在native_start_intent前有界20秒只读等待既有device-scan-cache精确设备/serial/physicalAgentId/本次screen session且age0..90；不触发scan/ADB刷新，超时按known_not_started归属收尾。容量只对已识别Python显式读取cmdline，NoSuchProcess允许自然消失，AccessDenied或未知进程信息不再算空位。
+
+### 决策日志｜2026-11-03 云端screen ready不代替Agent本地占用事实
+
+上述缓存与容量均须在实际native放行前再核，旧候选标签不移动。runner8项（含缓存超时不刷新、容量拒绝AccessDenied）通过且ResourceWarning按错误处理；690的socket10/WeCom496/Node9为未改源码的既有回执，不累加或冒称本轮重跑。verification/wecom-single-device-20261103-rc2保存当前10源hash、2文件精确变化和runner回执。新缓存/容量尚未在Windows执行；本轮仍0手机/0下架/0生产部署，等固定后继候选窄审后现场59准入。

@@ -47,11 +47,41 @@ from pathlib import Path
 config=json.loads(Path(r'D:\PhoneCloud\agent\config.json').read_text(encoding='utf-8-sig'))
 names={'xhs_airtest_poco.py','alipay_name_lookup.py','wecom_platform_preview.py','wecom_standalone_preview.py','wecom_standalone_peer_preview.py','xhs_isolated_runner.py'}
 rows=[]
-for p in psutil.process_iter(['pid','cmdline']):
+for p in psutil.process_iter(['pid','name']):
  try:
-  if any(str(a).replace('\\','/').rsplit('/',1)[-1]in names for a in(p.info['cmdline']or[])):rows.append(p.pid)
- except(psutil.NoSuchProcess,psutil.AccessDenied):pass
+  name=p.info.get('name')
+  if not isinstance(name,str)or not name:raise RuntimeError('qa_reader_capacity_unknown')
+  if not name.lower().startswith('python'):continue
+  args=p.cmdline()
+  if not isinstance(args,list):raise RuntimeError('qa_reader_capacity_unknown')
+  if any(str(a).replace('\\','/').rsplit('/',1)[-1]in names for a in args):rows.append(p.pid)
+ except psutil.NoSuchProcess:pass
+ except psutil.AccessDenied:raise RuntimeError('qa_reader_capacity_unknown')from None
 print(json.dumps({'limit':int(config.get('airtestMaxResidentWorkers',8)),'pids':rows}))""")
+
+
+def inventory_owned(binding, *, clock=time.monotonic, sleep=time.sleep):
+    """Wait for the existing Agent cache; never refresh it or run ADB."""
+    target={k:binding[k]for k in('deviceId','serial','deviceNumber','physicalAgentId','sessionId')}
+    code=r"""import json,time
+from pathlib import Path
+t=TARGET
+p=Path(r'D:\PhoneCloud\agent\data\device-scan-cache.json')
+v=json.loads(p.read_text(encoding='utf-8-sig'));ds=v if isinstance(v,list)else v['devices']
+rows=[d for d in ds if str(d.get('deviceId','')).lower()==t['deviceId'].lower()or str(d.get('adb',{}).get('serial','')).lower()==t['serial'].lower()]
+age=time.time()-p.stat().st_mtime
+ready=False
+if len(rows)==1:
+ d=rows[0];a=d.get('adb',{});o=d.get('occupancy')or{}
+ ready=(d.get('deviceId')==t['deviceId']and str(d.get('deviceName'))==t['deviceNumber']and a.get('serial')==t['serial']and a.get('agentId')==t['physicalAgentId']and a.get('state')=='device'and o.get('kind')=='screen_control'and o.get('sessionId')==t['sessionId']and 0<=age<=90)
+print(json.dumps({'ready':ready,'ageSeconds':age,'matchingRows':len(rows)}))
+""".replace('TARGET',repr(target))
+    until=clock()+20
+    while True:
+        remaining=until-clock();require(remaining>0,'qa_inventory_wait_timeout')
+        result=q.win(code,timeout=min(8,remaining))
+        if result.get('ready')is True:return result
+        sleep(min(.5,max(0,until-clock())))
 
 
 def main():
@@ -152,6 +182,7 @@ def main():
         blobs={n:base64.b64encode(b).decode()for n,b in files.items()}
         upload="import base64,hashlib,json\nfrom pathlib import Path\ns=Path("+repr(stage)+");assert not s.exists();s.mkdir(parents=True)\nf="+repr(blobs)+"\nfor n,b in f.items():\n p=s/n;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(base64.b64decode(b))\nprint(json.dumps({n:hashlib.sha256((s/n).read_bytes()).hexdigest()for n in f}))"
         hashes=q.win(upload,timeout=20);require(hashes=={n:hashlib.sha256(b).hexdigest()for n,b in files.items()},'qa_staged_hash_changed');save('staged-hashes.json',hashes)
+        cache_fact=inventory_owned(core);save('inventory-before-native.json',cache_fact)
         fresh=q.attest();require(all(fresh[k]==identity[k]for k in('agentPid','agentCreatedAt','adbPid','adbCreatedAt','files')),'qa_runtime_changed')
         cap=capacity();require(len(cap['pids'])+1<=cap['limit'],'qa_reader_capacity_changed')
         state=reader.state(session);assert_owned(core,state,marker=marker);journal('native_start_intent',stage=stage)
