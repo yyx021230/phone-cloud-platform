@@ -6386,3 +6386,11 @@ rc4至rc10同一轮共6次native、1次仅准备，均使用已授权尾号6441�
 ### 决策日志｜2026-11-03 进度记录仅说明执行阶段，不能充当清理或通过证明
 
 QA capture只把既有WECOM_DIAGNOSTIC中固定phase/state/数值elapsedMs最多80次写入单个latest文件，不留正文、手机号、Token；坏进度帧/写入失败不影响实际资源证明和授权。新增固定字段脱敏反例连同既有runner共13项通过。新捕获器须固定下一候选，当前已启动手机仍用原Git来源收尾，外层已验证源码hash门禁会在下一台投递前停止，不热改在途执行；生产服务、8台正式开放名单、ADB身份和查名配置保持。
+
+### 变更记录｜2026-11-03 QA未启动预约收尾的GET请求体修复
+
+143的native前准备读取失败后，收尾helper仍给GET传body:null，Node fetch因此在发请求前抛Request with GET/HEAD method cannot have body，导致自有控屏未被自动关闭；这不是143已经执行过客户搜索。修正QA request只给非GET传body，POST原payload、DELETE原session归属限制保持；journal从创建确认起保留实际ownerUserId，便于固定原归属收尾。143已通过独立GET/原Redis锁/设备serial核对，正常DELETE仅关闭原session，原listing未改且恢复无本测试占用。
+
+### 决策日志｜2026-11-03 修复已证收尾错误，不扩大初始通信异常结论
+
+实际loopback Node fetch反例旧代码明确失败，修复后GET实收0字节；POST字段与删除后的同session再次删除拒绝一并覆盖。Python29通过，最初测试PATH缺Node的环境失败与有效红例分别保留，未伪作产品红。此改动只解决已证GET收尾问题，不能声称已解释初始qa_transport_unknown、native proof_request os_error或业务timeout。173在途仍使用原固定5018候选，源码门禁会在下一台投递前暂停；后续从新提交继续其余机型，生产服务/ADB/正式白名单不动。

@@ -1,0 +1,29 @@
+E.
+======================================================================
+ERROR: test_get_uses_real_fetch_without_a_request_body (test_wecom_qa_access.RequestTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/scripts/qa/test_wecom_qa_access.py", line 23, in test_get_uses_real_fetch_without_a_request_body
+    result=access.request('/api/v1/screen-sessions/fixture')
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/scripts/qa/wecom_qa_access.py", line 39, in request
+    value=cloud("const result=await api(input.route,input.method,input.body);console.log(JSON.stringify(result));",{'route':route,'method':method,'body':body},timeout=10)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/mock.py", line 1093, in __call__
+    return self._mock_call(*args, **kwargs)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/mock.py", line 1097, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/unittest/mock.py", line 1158, in _execute_mock_call
+    result = effect(*args, **kwargs)
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/scripts/qa/test_wecom_qa_access.py", line 18, in cloud
+    r=subprocess.run(['node','--input-type=module','-e',script],capture_output=True,text=True,timeout=5,
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 505, in run
+    with Popen(*popenargs, **kwargs) as process:
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 951, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1821, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: 'node'
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.004s
+
+FAILED (errors=1)

@@ -140,7 +140,7 @@ def main():
     native_delivery_unknown=False
     fingerprint=hashlib.sha256(json.dumps(['preview',hashlib.sha256(json.dumps(['QA预览','接口联调测试'],ensure_ascii=False,separators=(',',':')).encode()).hexdigest(),phone,target['deviceId'],0],separators=(',',':')).encode()).hexdigest()
     payload=dict(taskId=scope,**target,appSlot='main',androidUser=0,phoneNumber=phone,remarkName='QA预览',description='接口联调测试',mode='preview',previewOnly=True,agentId=scope,serverBaseUrl='http://127.0.0.1',agentToken='not-production-qa-only')
-    def journal(phase,**extra):save('maintenance-journal.json',dict(phase=phase,scope=scope,target=target,sourceRef=ref,sessionId=session,unlistedAt=marker,original=original,productionTask=False,unknownMustStayUnlisted=True,**extra))
+    def journal(phase,**extra):save('maintenance-journal.json',dict(phase=phase,scope=scope,target=target,sourceRef=ref,sessionId=session,ownerUserId=created_owner,unlistedAt=marker,original=original,productionTask=False,unknownMustStayUnlisted=True,**extra))
     try:
         journal('screen_create_intent')
         r=q.request('/api/v1/user/devices/'+target['deviceId']+'/screen-sessions','POST',{});require(r['status']==201,'qa_screen_acquisition_unknown')

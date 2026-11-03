@@ -36,7 +36,9 @@ def request(route,method='GET',body=None):
         if route!='/api/v1/screen-sessions/'+route.rsplit('/',1)[-1] or route.rsplit('/',1)[-1] not in OWN_SESSIONS:
             raise ValueError('qa_not_owned_session')
     elif method!='GET':raise ValueError('qa_production_method_forbidden')
-    value=cloud("const result=await api(input.route,input.method,input.body);console.log(JSON.stringify(result));",{'route':route,'method':method,'body':body},timeout=10)
+    payload={'route':route,'method':method}
+    if method!='GET':payload['body']=body
+    value=cloud("const result=await api(input.route,input.method,input.body);console.log(JSON.stringify(result));",payload,timeout=10)
     if method=='POST' and value['status']==201: OWN_SESSIONS.add(value['body']['session']['sessionId'])
     if method=='DELETE' and value['status']==200: OWN_SESSIONS.discard(route.rsplit('/',1)[-1])
     return value
