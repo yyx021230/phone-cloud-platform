@@ -1,0 +1,121 @@
+{
+  "environment": "local_allowlist_without_production_credentials_or_database",
+  "rootCheck": 0,
+  "agentCheck": 0,
+  "finalPython": {
+    "passed": 538,
+    "failed": 0
+  },
+  "finalScreen": {
+    "passed": 2256,
+    "failed": 0,
+    "skipped": 0
+  },
+  "agentTests": {
+    "passed": 675,
+    "failed": 0
+  },
+  "targetedNode": {
+    "passed": 62,
+    "failed": 0
+  },
+  "earlierFailure": {
+    "tests": 2256,
+    "failed": 1,
+    "reason": "Old static app cache-version URL assertion; fixed only the expected URL and reran."
+  },
+  "logs": [
+    {
+      "file": "/private/tmp/pc-wecom-rpc-errors-20261103/diagnostic-python-tests.txt",
+      "sha256": "56411fbf92e8a55b6de59adea48180189e59e2637c181efdeaa095a9101f3acc",
+      "aggregate": [
+        "Ran 537 tests in 2.252s",
+        "OK"
+      ]
+    },
+    {
+      "file": "/private/tmp/pc-wecom-rpc-errors-20261103/diagnostic-node-tests.txt",
+      "sha256": "22e830d7be978ebb77a22662857349fdc8a1cb22aed820e8dbc729a54228194f",
+      "aggregate": [
+        "\u2139 tests 16",
+        "\u2139 pass 16",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0"
+      ]
+    },
+    {
+      "file": "/private/tmp/pc-wecom-rpc-errors-20261103/diagnostic-screen-regression.txt",
+      "sha256": "66e88b15422797eea74dd89f96b2be80c1be463064979c0730fc389f91a92159",
+      "aggregate": [
+        "\u2139 tests 2253",
+        "\u2139 pass 2253",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0"
+      ]
+    },
+    {
+      "file": "/private/tmp/pc-wecom-rpc-errors-20261103/final-python-tests.txt",
+      "sha256": "f9757d24ae3197fe39c4fa268159cd57da3c5ecf2a8d8859d80e7af2dac4d35a",
+      "aggregate": [
+        "Ran 538 tests in 2.201s",
+        "OK"
+      ]
+    },
+    {
+      "file": "/private/tmp/pc-wecom-rpc-errors-20261103/catalog-and-ui-tests-final.txt",
+      "sha256": "8d612373573b00b67e3c4982bd8264f45d0ff47b7311a84f1525662f25857340",
+      "aggregate": [
+        "\u2139 tests 62",
+        "\u2139 pass 62",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0"
+      ]
+    },
+    {
+      "file": "/private/tmp/pc-wecom-rpc-errors-20261103/error-catalog-http-final.txt",
+      "sha256": "ec15b7e86dedf58db0f104952fb981bfa7c32afcd94ce09ff2971cf4f385b75a",
+      "aggregate": [
+        "\u2139 tests 4",
+        "\u2139 pass 4",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0"
+      ]
+    },
+    {
+      "file": "/private/tmp/pc-wecom-rpc-errors-20261103/final-screen-regression.txt",
+      "sha256": "49221fb86d4ab891e74e04d41b35db6d0c4043de3d4db9ab91ca651852a45755",
+      "aggregate": []
+    },
+    {
+      "file": "/private/tmp/pc-wecom-rpc-errors-20261103/final-screen-regression-fixed.txt",
+      "sha256": "682395bdf69a5d59ca6f0b5910276209e31ed318aff81680c6f4b8cce93beeb3",
+      "aggregate": [
+        "\u2139 tests 2256",
+        "\u2139 pass 2256",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0"
+      ]
+    },
+    {
+      "file": "/private/tmp/pc-wecom-rpc-errors-20261103/root-check.txt",
+      "sha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+      "aggregate": []
+    },
+    {
+      "file": "/private/tmp/pc-wecom-rpc-errors-20261103/agent-check.txt",
+      "sha256": "5175e4adf7af3fa89f60878dd996ec0bbfccc209b1cd9d0e83e5e3293c886b20",
+      "aggregate": [
+        "\u2139 tests 675",
+        "\u2139 pass 675",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0"
+      ]
+    }
+  ]
+}

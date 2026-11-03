@@ -1,0 +1,138 @@
+[
+  {
+    "deviceNumber": "185",
+    "sourceCommit": "768cc33b82ff64412ebe385f8d4b08bde09f3ec6",
+    "settingEnabled": false,
+    "status": "blocked",
+    "code": "wecom_rpc_delivery_unknown_no_replay",
+    "primaryCode": "wecom_rpc_delivery_unknown_no_replay",
+    "failurePhase": "recipient_search",
+    "elapsedMs": 25438,
+    "remarkSaveStatus": "not_attempted",
+    "invitationSent": false,
+    "sendStatus": "not_attempted",
+    "transportFailure": {
+      "reason": "read_timeout",
+      "errorType": "ReadTimeout",
+      "elapsedMs": 23969
+    },
+    "nativeCleanupConfirmed": true,
+    "laterOriginalCleanupProofs": [
+      true,
+      true
+    ],
+    "nativeExited": true,
+    "scopeRestored": true,
+    "finalOwnLocks": 0,
+    "authorityFailure": null,
+    "authorityFailureStage": null,
+    "authorityFailureDetail": null,
+    "privateEvidenceFolder": "/private/tmp/pc-wecom-single-c024960e1c404161970ec58921af1e5e",
+    "receiptSha256": {
+      "native-answer.json": "1f4115a8fd0a5ed3ceca2903471b31085bc8bb74c8fa813928956258a0f8d6f7",
+      "cleanup-proofs.json": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a",
+      "final-state.json": "3cc9ae9762cfb9eaec98f87e5c95c391f9cbe2dfeb7ad0f59454bf3fc1500907",
+      "maintenance-journal.json": "b6a80e2dca5ed59b29a1acfea7653f167ed31ba13f34e064f515304380350370",
+      "staged-hashes.json": "73a9da9de1b65989e6c499bd553eb458cc98d3725fde515099554b0115643aa0"
+    }
+  },
+  {
+    "deviceNumber": "185",
+    "sourceCommit": "768cc33b82ff64412ebe385f8d4b08bde09f3ec6",
+    "settingEnabled": true,
+    "status": "blocked",
+    "code": "preview_cleanup_unconfirmed",
+    "primaryCode": "device_lease_lost",
+    "failurePhase": "remark_edit",
+    "elapsedMs": 58922,
+    "remarkSaveStatus": "not_attempted",
+    "invitationSent": false,
+    "sendStatus": "not_attempted",
+    "transportFailure": null,
+    "nativeCleanupConfirmed": false,
+    "laterOriginalCleanupProofs": [
+      true,
+      true
+    ],
+    "nativeExited": true,
+    "scopeRestored": true,
+    "finalOwnLocks": 0,
+    "authorityFailure": "qa_authority_unknown",
+    "authorityFailureStage": "host_identity",
+    "authorityFailureDetail": null,
+    "privateEvidenceFolder": "/private/tmp/pc-wecom-single-aa6d0e94e5544b778531e119186f3ee6",
+    "receiptSha256": {
+      "native-answer.json": "4e8a565b0fd34bea9894c0f9da43e36ea62c1ba7217812037b05fdb16332733f",
+      "cleanup-proofs.json": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a",
+      "final-state.json": "89ca901ff7a05787eb4dbb6087d3eaf639560e1526ace656263f75b9d002cce6",
+      "maintenance-journal.json": "dadefac0cac9ffd2e0fb4de6c89c19665b700f626b46d846e6e126dcb6936e8f",
+      "staged-hashes.json": "73a9da9de1b65989e6c499bd553eb458cc98d3725fde515099554b0115643aa0"
+    }
+  },
+  {
+    "deviceNumber": "185",
+    "sourceCommit": "c17ff0dc1d15372762e38d5b89e126fe3cd337f9",
+    "settingEnabled": true,
+    "status": "ready_before_send",
+    "code": "stopped_before_send",
+    "primaryCode": null,
+    "failurePhase": "",
+    "elapsedMs": 69327,
+    "remarkSaveStatus": "confirmed",
+    "invitationSent": false,
+    "sendStatus": "not_attempted",
+    "transportFailure": null,
+    "nativeCleanupConfirmed": true,
+    "laterOriginalCleanupProofs": [
+      true,
+      true
+    ],
+    "nativeExited": true,
+    "scopeRestored": true,
+    "finalOwnLocks": 0,
+    "authorityFailure": null,
+    "authorityFailureStage": null,
+    "authorityFailureDetail": null,
+    "privateEvidenceFolder": "/private/tmp/pc-wecom-single-15795f6da07847a58593ce21a7e686a8",
+    "receiptSha256": {
+      "native-answer.json": "e17e69b9af7f3d18b9842f0ceb6793ee525606a4ea89d2fb2cef64bc128d8394",
+      "cleanup-proofs.json": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a",
+      "final-state.json": "10ff58944b86c2a03c0e68893661dd6d0ab166bc6bea67c753da5564583ff77b",
+      "maintenance-journal.json": "3c166531233aedeb797d6b182a0ecc679926de36bc696af29fc2ccd9534c96cc",
+      "staged-hashes.json": "30d65b0454f05966fa46133924a0748306d02da22c54f97898c51a2c717fcc10"
+    }
+  },
+  {
+    "deviceNumber": "185",
+    "sourceCommit": "c17ff0dc1d15372762e38d5b89e126fe3cd337f9",
+    "settingEnabled": true,
+    "status": "ready_before_send",
+    "code": "stopped_before_send",
+    "primaryCode": null,
+    "failurePhase": "",
+    "elapsedMs": 54280,
+    "remarkSaveStatus": "not_needed",
+    "invitationSent": false,
+    "sendStatus": "not_attempted",
+    "transportFailure": null,
+    "nativeCleanupConfirmed": true,
+    "laterOriginalCleanupProofs": [
+      true,
+      true
+    ],
+    "nativeExited": true,
+    "scopeRestored": true,
+    "finalOwnLocks": 0,
+    "authorityFailure": null,
+    "authorityFailureStage": null,
+    "authorityFailureDetail": null,
+    "privateEvidenceFolder": "/private/tmp/pc-wecom-single-bad551cf5cd2403492bb754012756c59",
+    "receiptSha256": {
+      "native-answer.json": "029a724599201e6cac023f97557676448f16f3ddeacb02d904b56c15f77a09df",
+      "cleanup-proofs.json": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a",
+      "final-state.json": "064a71ff637bfecbee40001d2556089a9f56394e399f8270774d14590a3643de",
+      "maintenance-journal.json": "65ed289ea5ee99f4c95e5c96e6528016818ccb38971580b4f22889b5c38d475a",
+      "staged-hashes.json": "30d65b0454f05966fa46133924a0748306d02da22c54f97898c51a2c717fcc10"
+    }
+  }
+]

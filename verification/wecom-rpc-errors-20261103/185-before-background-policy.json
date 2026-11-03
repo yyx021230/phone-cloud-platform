@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "rawRetained": false,
+  "rpcFailureObserved": true,
+  "baselineAvailable": true,
+  "uid": 10318,
+  "deviceStart": "2026-11-03 15:06:04.000",
+  "transportFailure": {
+    "reason": "read_timeout",
+    "errorType": "ReadTimeout",
+    "elapsedMs": 23969
+  },
+  "available": true,
+  "ownedPid": "17592",
+  "events": [
+    {
+      "deviceTime": "2026-11-03T15:06:22.159",
+      "kind": "binder_freeze",
+      "uid": 10318,
+      "pids": []
+    },
+    {
+      "deviceTime": "2026-11-03T15:06:22.162",
+      "kind": "network_block",
+      "uid": 10318,
+      "pids": []
+    }
+  ],
+  "activeFreezeForOwnedPid": false,
+  "matchedFreeze": null
+}
