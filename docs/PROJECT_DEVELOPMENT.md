@@ -6415,3 +6415,11 @@ QA capture只把既有WECOM_DIAGNOSTIC中固定phase/state/数值elapsedMs最多
 ### 决策日志｜2026-11-03 先减已测QA开销，不能据此宣布超时根因已解决
 
 精确候选模块在真实Windows只读12对样本中owner/listener与原psutil一致，关闭自有loopback socket后消失可见，中位10.455ms对69.426ms，0手机动作/0ADB请求；这不是企微通过证明。Python WeCom518与QA runner31项实际通过，错误/表增长/IPv6第二owner/更换owner/每次身份检查及hook还原反例保留。本地候选固定提交后再测125/127，不修改生产代码/正式8台名单，不重载共享Agent、不切ADB身份。临时并发11/rev179仍待本轮资源收尾后CAS恢复12。
+
+### 变更记录｜2026-11-03 17台主号扩围实测完成与生产测试资源归还
+
+名单收尾仍49台在线；17台主号（25/59/69/71/78/82/91/98/106/123/125/127/143/144/145/173/185，7种model）均至少一次native，完整ready_before_send通过0、0邀请，非正式生产任务API或分身验收。rc6复测144为home_not_confirmed，脱敏结构与精确前台证明原页为ContactRemarkAndOtherInfoEditActivity；125/127同错误，实际为MomentsEnterpriseNotificationListActivity。现有启动白名单不包含这些初始页，未在未知页盲点返回或保存。185再次导航RPC交付未知且cleanup ACK false，保存失败ACK后停批；只读shell一度3秒、10秒超时，而后get-state、固定echo及原stat/pidof恢复，不能据此定为共享ADB故障。原native与控制进程OS证明已退出，原PID20897/startToken760485284按单机归属清理并双验，无UI重放；原失败保留。
+
+### 决策日志｜2026-11-03 在线、预检、实测、完整通过四个口径分开
+
+其余32台仍因查名保留15、锁或物理义务16、191别名冲突1保守避开；部分普通锁已过期，不冒称当下有人使用，不擅自清数据。不同阶段候选结果不能当同版本成功率，仍须修复初始页与业务超时，再补完整通过。所有本轮原native退出与最终PG/Redis/清理证明齐后，CAS11/rev179→12/rev180 HTTP200及READ ONLY回读确认。04:34:33Z逐机复查17台listed、0本轮活动锁，healthz/readyz200；04:34:47Z生产10源hash一致，SYSTEM Agent19756/ADB27912与birth、3个Agent文件hash一致。未发布、推送、重载Agent、重启共享ADB、切身份或改媒体，不改正式企微名单。verification/wecom-fleet-preview-20261103保存逐台固定字段结果、源回执hash与恢复收据，本地版本记录不能宣称企微全量通过。
