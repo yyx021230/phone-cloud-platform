@@ -1,0 +1,83 @@
+{
+  "status": "bounded_attempt_closed_not_business_accepted",
+  "candidateCommit": "648044020ea5744794b74a3e5f2a17dbf59122ff",
+  "candidateTag": "wecom-single-device-20261103-rc.3",
+  "deviceNumber": "59",
+  "appSlot": "main",
+  "phoneTail": "6441",
+  "preSendOnly": true,
+  "realNativeAttempts": 1,
+  "businessPreviewPass": 0,
+  "customerSearchReached": false,
+  "invitationAttempts": 0,
+  "preparationAttemptCount": 1,
+  "preparationFailure": "c2f structured-PG screen projection mismatch; original9300session closed without unlist/native",
+  "nativeOriginalScope": "qa-a3ab4264db934d158e2eb0c3965a729f",
+  "nativeSessionId": "6b993d40-210e-4ebe-a1dc-3132b2089f44",
+  "nativeOriginalHosts": [
+    {
+      "pid": 20436,
+      "createdAt": 1793671566.9582727
+    },
+    {
+      "pid": 22728,
+      "createdAt": 1793671567.0479963
+    }
+  ],
+  "nativeExit": {
+    "exitCode": 0,
+    "pipeDrainComplete": true,
+    "result": "device_lease_lost",
+    "failurePhase": "poco_health",
+    "elapsedMs": 22656,
+    "socketPeer": {
+      "executionConnections": 14,
+      "peerChecks": 97,
+      "revoked": true
+    }
+  },
+  "confirmedFailureBoundary": "Stopped in Poco readiness before WeCom launch/search. First peer denial reason not retained; final authority failure proof_request/qa_authority_unknown is not a unique root cause.",
+  "hypothesesNotConfirmed": [
+    "Broker EOF: Windows independent GET and exactPOST/read16385 with noContentLength each20 loops passed.",
+    "ADB forward early-close during readiness is a plausible source risk, not established as this attempt cause."
+  ],
+  "physicalRecovery": {
+    "originalPocoPid": "27405",
+    "originalStartToken": "34062869",
+    "observedResiduePid": "8061",
+    "observedResidueStartToken": "36793965",
+    "evidence": "Android events show original27405 start, instrumentation interval kill then8061start during same native Poco phase; original records preserved.",
+    "maintenanceNewScope": "maintenance59-fd0e6e42543c4745880662df389c50a4",
+    "singleScopedMutation": "am force-stop --user 0 com.netease.open.pocoservice on59 only",
+    "forceStopCount": 1,
+    "dualPackagesAndForwardsEmpty": true,
+    "originalWindowsHostsAbsent": true,
+    "sameSystemAdbPeerVerified": true,
+    "old23and43DutyChanged": false
+  },
+  "restored": {
+    "ownScreen": "DELETE200 closed",
+    "redisOwnLockTtl": -2,
+    "listing": "listed",
+    "online": true,
+    "available": true,
+    "poolConcurrency": 12,
+    "poolConfigRevision": 176,
+    "reserveHttp": 200,
+    "reserveRevision": 175,
+    "restoreHttp": 200
+  },
+  "runtimeBaseline": {
+    "activeManifestSha256": "a5390dcc93b5f1393e7b95732ca4df679dc5065200f80cf509d96e0f759e2a2f",
+    "productionSource": "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+    "agentPid": 19756,
+    "adbPid": 27912,
+    "healthz": 200,
+    "readyz": 200,
+    "codeDeployed": false,
+    "sharedServiceReloaded": false,
+    "adbIdentityKeysOrStartupChanged": false
+  },
+  "noClaim": "This is actual one native readiness failure and safely closed resource operation, not successful WeCom business/API acceptance.",
+  "next": "Record fixed operation/port-class/owner-count/errno at first peer denial; fix only evidence-backed QA readiness handling before another live round."
+}

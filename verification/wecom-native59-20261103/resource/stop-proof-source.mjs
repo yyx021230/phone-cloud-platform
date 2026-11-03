@@ -1,0 +1,10 @@
+import pg from'pg';let raw='';for await(const c of process.stdin)raw+=c;const input=JSON.parse(raw);const client=new pg.Client({connectionString:process.env.DATABASE_URL,connectionTimeoutMillis:2500,query_timeout:3000});
+try{await client.connect();await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');await client.query("SET LOCAL statement_timeout='2000ms'");
+const p=(await client.query('SELECT data FROM phone_cloud_managed_lookup LIMIT 2')).rows;if(p.length!==1)throw Error();const s=p[0].data;
+const channels=s.channels.map(c=>({deviceId:c.deviceId,sessionId:c.sessionId,generation:c.generation,phase:c.phase}));
+const removed=input.before.filter(b=>!channels.some(c=>c.sessionId===b.sessionId&&c.generation===b.generation));
+const sessions=removed.length?(await client.query("SELECT session_id,device_id,status,data->>'managedLookupGeneration' AS generation,data->'lookupStopConfirmation' AS stop_confirmation,data->'lookupStopFailure' AS stop_failure FROM phone_cloud_automation_sessions WHERE session_id=ANY($1::text[])",[removed.map(c=>c.sessionId)])).rows:[];
+const ids=sessions.map(x=>x.stop_confirmation?.taskId).filter(Boolean);
+const tasks=ids.length?(await client.query("SELECT task_id,status,data->>'type' AS type,data->>'deviceId' AS device_id,data#>>'{payload,automationSessionId}' AS session_id,data#>>'{payload,managedLookup,generation}' AS generation,data#>'{result,diagnostic,lookupStopProof}' AS stop_proof FROM phone_cloud_windows_tasks WHERE task_id=ANY($1::text[])",[ids])).rows:[];
+const audits=s.audits.filter(a=>a.action==='lookup_surplus_idle_stop'&&a.at>='2026-11-03T01:57:46.245Z').map(a=>({action:a.action,at:a.at,deviceId:a.deviceId,sessionId:a.sessionId}));
+await client.query('ROLLBACK');console.log(JSON.stringify({at:new Date().toISOString(),configRevision:s.configRevision,concurrency:s.config.concurrency,channels,removed,sessions,tasks,surplusAudits:audits,readOnly:true}));}finally{await client.end();}

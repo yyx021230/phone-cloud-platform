@@ -1,0 +1,12 @@
+{
+  "completed": 20,
+  "failure": null,
+  "denied": [],
+  "guard": {
+    "executionConnections": 0,
+    "peerChecks": 0,
+    "revoked": false
+  },
+  "phoneActions": 0,
+  "adbConnections": 0
+}

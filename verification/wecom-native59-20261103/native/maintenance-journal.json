@@ -1,0 +1,22 @@
+{
+  "phase": "unknown_keep_unlisted",
+  "scope": "qa-a3ab4264db934d158e2eb0c3965a729f",
+  "target": {
+    "deviceId": "adb:10AEAS224X005FT",
+    "serial": "10AEAS224X005FT",
+    "deviceNumber": "59"
+  },
+  "sourceRef": "648044020ea5744794b74a3e5f2a17dbf59122ff",
+  "sessionId": "6b993d40-210e-4ebe-a1dc-3132b2089f44",
+  "unlistedAt": "2026-11-03T02:06:02.975Z",
+  "original": {
+    "listingStatus": "listed",
+    "unlistedAt": "",
+    "updatedAt": "2026-11-03T02:05:27.995Z"
+  },
+  "productionTask": false,
+  "unknownMustStayUnlisted": true,
+  "stage": "D:/PhoneCloud/staging/wecom-qa-peer-64804402-81d86c14",
+  "code": "qa_cleanup_unknown",
+  "physicalCleanup": false
+}

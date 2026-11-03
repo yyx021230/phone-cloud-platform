@@ -1,0 +1,16 @@
+{
+  "candidate": "c2f68784f3e4eb8ece994d9cafa360f38722c281",
+  "target": "59/main",
+  "oldConcurrency": 12,
+  "newConcurrency": 11,
+  "expectedConfigRevision": 174,
+  "authorized": "Human approved temporary one-slot reservation, restore12 after own cleanup",
+  "bodyKeys": [
+    "expectedConfigRevision",
+    "concurrency"
+  ],
+  "noCodeDeploy": true,
+  "noSharedRestart": true,
+  "sourceSha256": "4bcecc8702ea577a77e5f17664b7833ced33b681f88e5beedcdc6875b6f047cc",
+  "status": "intent_not_yet_mutated"
+}

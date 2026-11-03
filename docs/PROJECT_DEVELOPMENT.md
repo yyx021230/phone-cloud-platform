@@ -6285,3 +6285,12 @@ c2f的59首轮fresh通过并创建原screen930036b7-f8f1-4d02-a2c6-4cbc580fdf5c�
 ### 决策日志｜2026-11-03 屏控运行锁只读投影不得替代持久物理义务
 
 只补新QA reader/controller：从hash-pinned生产index抽取原RESP客户端定义，实际只GET lock:device:59原deviceId键→PTTL→GET同键值不变，无SET/DEL/TTL续租/进程内fallback；Redis非永远canonical，缺失/错误owner/TTL不明拒绝grant。结构化PG所有未释放/physical义务继续保留；原screen201.userId固定owner，当前screen.userId/device/agent/serial与Redisowner/task/expiry双向匹配。未启动且尚未下架的准备失败自动核原owner关闭自有screen。Node12（reader8+trace4）及runner9通过；真实生产PG/Redis对59无会话只读探测成功，尚无新候选native/UI验收。verification/wecom-single-device-20261103-rc3保存5源差异/10源hash/回执；Windows阶段闭包22未变，生产代码/Agent/ADB不改，旧23/43不动；临时查名并发11/rev175为另行明确授权资源安排，测试清理后仍须按归属CAS恢复12。
+
+
+### 变更记录｜2026-11-03 59单机native实测与临时名额完整收尾
+
+明确批准临时预留1名额后，09:57仅CAS配置concurrency12/rev174→11/rev175；原既有通道自然结束且原stop task/proof匹配，实际host11后再准入59，不把无surplus审计的自然结束称强退人工。c2f首轮只创建screen9300后因旧PG投影失败，原screen已DELETE200 closed，0native/0下架。修正648/rc3后第二个独立scope qa-a3ab4264db934d158e2eb0c3965a729f实际native1次；仅59原screen6b993d40与单字段下架，Agent cache/PG/runtime/Redis匹配后执行。原Windows controller20436/native22728实际close，22.656秒blocked device_lease_lost/failurePhase poco_health，14实际peer连接/97检查后revoked；未进入WeCom启动/客户搜索，0邀请，不能称业务成功。
+
+### 决策日志｜2026-11-03 新维护观察残留实例与原执行记录分开
+
+原Poco27405/startToken34062869与原记录保留不改。原Windows hosts已退出、两个reader forward0；实际残留8061/token36793965，Android events在本轮启动窗口记录27405启动→kill→8061启动，且原维护marker/独占/无他人任务/lookup/固定SYSTEM身份保持。另建维护operationId，动作前再核8061同token/精确包/user0，只对59固定Poco包force-stop一次，实际socket-peer每连接/发送前核原ADB身份；两轮main/test包PID与该serial reader forward均空。随后原screen DELETE200+Redis消失，10:16恢复59原listed并复读online/available，再CAS11/rev175→12/rev176 HTTP200+PG回读。原23/43不改，生产代码/服务/Agent/ADB/媒体均未部署/重启/切身份；健康双200，ACTIVE a539、Agent19756/ADB27912与文件基线保持。verification/wecom-native59-20261103保存全部原始回执。broker EOF的Windows精确独立重放未复现，早关forward仅待验证假设，首个peer拒绝具体原因缺记录仍待修，不能把准备/辅助组件失败误称企微业务通过。

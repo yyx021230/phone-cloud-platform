@@ -1,0 +1,44 @@
+{
+  "at": "2026-11-03T01:59:41.836Z",
+  "nonAtomicAcrossRuntime": true,
+  "devices": [
+    {
+      "deviceId": "adb:10AEAS224X005FT",
+      "deviceName": "59",
+      "listingStatus": "listed",
+      "unlistedAt": "",
+      "updatedAt": "2026-11-03T01:57:27.870Z",
+      "adb": {
+        "serial": "10AEAS224X005FT",
+        "agentId": "win-bf-202605262318-20260727",
+        "state": "device",
+        "lastSeenAt": "2026-11-03T01:57:27.870Z"
+      }
+    }
+  ],
+  "locks": [],
+  "tasks": [],
+  "jobs": [],
+  "sessions": [],
+  "lookupExcluded": true,
+  "runtime": {
+    "online": true,
+    "adbOnline": true,
+    "agentOnline": true,
+    "listed": true,
+    "busy": true,
+    "available": false,
+    "occupancy": {
+      "type": "screen_control",
+      "label": "\u5b9e\u65f6\u63a7\u5236"
+    }
+  },
+  "session": {
+    "sessionId": "930036b7-f8f1-4d02-a2c6-4cbc580fdf5c",
+    "deviceId": "adb:10AEAS224X005FT",
+    "status": "streaming",
+    "expiresAt": "2026-11-03T03:59:21.317Z"
+  },
+  "expiresInSeconds": 7179.081,
+  "readStartedMono": 0.030784208
+}

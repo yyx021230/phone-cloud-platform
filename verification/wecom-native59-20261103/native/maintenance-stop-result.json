@@ -1,0 +1,27 @@
+{
+  "purpose": "cleanup_only_observed_residue",
+  "observedPid": 8061,
+  "observedStartToken": "36793965",
+  "forceStopCount": 1,
+  "snapshots": [
+    {
+      "at": 1793672120.09453,
+      "mainPids": "",
+      "testPids": "",
+      "readerForwards": []
+    },
+    {
+      "at": 1793672121.133798,
+      "mainPids": "",
+      "testPids": "",
+      "readerForwards": []
+    }
+  ],
+  "socketPeer": {
+    "executionConnections": 13,
+    "peerChecks": 36,
+    "revoked": false
+  },
+  "customerActions": 0,
+  "cleanupConfirmed": true
+}

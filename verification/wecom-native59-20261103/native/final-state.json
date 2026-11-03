@@ -1,0 +1,36 @@
+{
+  "at": "2026-11-03T02:16:02.852Z",
+  "nonAtomicAcrossRuntime": true,
+  "devices": [
+    {
+      "deviceId": "adb:10AEAS224X005FT",
+      "deviceName": "59",
+      "listingStatus": "listed",
+      "unlistedAt": "",
+      "updatedAt": "2026-11-03T02:16:02.639Z",
+      "adb": {
+        "serial": "10AEAS224X005FT",
+        "agentId": "win-bf-202605262318-20260727",
+        "state": "device",
+        "lastSeenAt": "2026-11-03T02:15:58.053Z"
+      }
+    }
+  ],
+  "locks": [],
+  "tasks": [],
+  "jobs": [],
+  "sessions": [],
+  "lookupExcluded": true,
+  "runtime": {
+    "online": true,
+    "adbOnline": true,
+    "agentOnline": true,
+    "listed": true,
+    "busy": false,
+    "available": true,
+    "occupancy": null
+  },
+  "pgLocks": [],
+  "runtimeLockTtlMs": -2,
+  "readStartedMono": 3.02582
+}

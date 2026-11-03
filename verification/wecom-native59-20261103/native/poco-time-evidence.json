@@ -1,0 +1,50 @@
+{
+  "observations": [
+    {
+      "at": 1793672039.965777,
+      "pid": 8061,
+      "startToken": "36793965",
+      "mainPids": "8061",
+      "testPids": ""
+    },
+    {
+      "at": 1793672041.119531,
+      "pid": 8061,
+      "startToken": "36793965",
+      "mainPids": "8061",
+      "testPids": ""
+    }
+  ],
+  "deviceEpochNow": "1793672042",
+  "pocoProcessEvents": [
+    {
+      "deviceEpoch": "1793671576.261",
+      "event": "am_proc_start",
+      "user": 0,
+      "pid": 27405,
+      "isMain": true
+    },
+    {
+      "deviceEpoch": "1793671578.857",
+      "event": "am_kill",
+      "user": 0,
+      "pid": 27405,
+      "isMain": true
+    },
+    {
+      "deviceEpoch": "1793671578.929",
+      "event": "am_proc_start",
+      "user": 0,
+      "pid": 8061,
+      "isMain": true
+    }
+  ],
+  "pocoEventLineCount": 3,
+  "readOnlyAdb": true,
+  "mutatingCommands": 0,
+  "socketPeer": {
+    "executionConnections": 8,
+    "peerChecks": 24,
+    "revoked": false
+  }
+}

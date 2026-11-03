@@ -1,0 +1,16 @@
+{
+  "pid": 8061,
+  "startToken": "36793965",
+  "originalPid": 27405,
+  "originalStartToken": "34062869",
+  "cmdlineIsExactPoco": true,
+  "instrumentationMentionsPoco": false,
+  "instrumentationMentionsPid": false,
+  "socketPeer": {
+    "executionConnections": 3,
+    "peerChecks": 9,
+    "revoked": false
+  },
+  "readOnlyAdb": true,
+  "mutatingCommands": 0
+}

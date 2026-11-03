@@ -1,0 +1,119 @@
+{
+  "at": "2026-11-03T01:58:44.492Z",
+  "configRevision": 175,
+  "concurrency": 11,
+  "channels": [
+    {
+      "deviceId": "adb:10HFAAF4A8000NR",
+      "sessionId": "afae0e2e-cd27-4db0-8de8-09a9c78e6d6c",
+      "generation": "877cf4d1-d358-4e92-aa94-f86c38d3a08c",
+      "phase": "querying"
+    },
+    {
+      "deviceId": "adb:10HG1SF983000X8",
+      "sessionId": "c0ca391d-8b3f-4a75-a388-6d9047562b44",
+      "generation": "d2e541c8-58ab-4f1e-b4f9-56398e4a571c",
+      "phase": "querying"
+    },
+    {
+      "deviceId": "adb:10AEAQ1D7P00583",
+      "sessionId": "23e3b17e-d3e1-4f85-8c0a-27f8d7a5d114",
+      "generation": "f86cd071-c28b-4555-915e-35715acc9ce5",
+      "phase": "querying"
+    },
+    {
+      "deviceId": "adb:10AF7J261500DUS",
+      "sessionId": "d667a933-decb-432d-92e7-e3686d016af0",
+      "generation": "b604bc66-7201-4ebb-8e04-611debb63d84",
+      "phase": "querying"
+    },
+    {
+      "deviceId": "adb:10CFCG0QCK00376",
+      "sessionId": "eae539f4-5074-480a-8b56-972e5639e1bc",
+      "generation": "3cb371b6-c7f9-4f46-96d0-1179f9af3c14",
+      "phase": "recovery"
+    },
+    {
+      "deviceId": "adb:VEG0220A29011444",
+      "sessionId": "77b8c8a2-cda3-4af4-bf01-6ef02eedf911",
+      "generation": "96c0d074-2320-44e5-bd13-5f1e26163d6c",
+      "phase": "querying"
+    },
+    {
+      "deviceId": "adb:6c00a33b",
+      "sessionId": "e6207447-d821-4e7c-9340-acaaf5f21d53",
+      "generation": "55ae3709-d757-4223-a927-f59c2e537377",
+      "phase": "querying"
+    },
+    {
+      "deviceId": "adb:10AF2G1FNQ009QL",
+      "sessionId": "d95f8ef1-6a6c-4a87-b008-c08744a5e425",
+      "generation": "ec8f257f-273d-4e46-83bb-fd04d1870ef4",
+      "phase": "querying"
+    },
+    {
+      "deviceId": "adb:10HFC6F3S0000T4",
+      "sessionId": "e47a39fa-fba4-44d3-8e9a-614008407fb4",
+      "generation": "73be52e8-0c36-4833-96b9-9d59d2ceba2c",
+      "phase": "recovery"
+    },
+    {
+      "deviceId": "adb:ORNB65LBA6IRXCIF",
+      "sessionId": "f191b9ed-460a-4ad4-8037-30adf61097bc",
+      "generation": "6291d9a0-5521-46d1-a934-66b91b5c66d9",
+      "phase": "querying"
+    },
+    {
+      "deviceId": "adb:10HFAAFB77000NS",
+      "sessionId": "16362bcb-7d98-4c26-a234-bfe9a70e9d6f",
+      "generation": "2dbc568b-e787-4f95-8bef-f560cf718cd7",
+      "phase": "human"
+    }
+  ],
+  "removed": [
+    {
+      "deviceId": "adb:10HFC6F1SU000T4",
+      "generation": "b3c58bcf-166b-4219-9ae1-054a779abfee",
+      "phase": "human",
+      "sessionId": "69ff9ab7-fc10-442c-b912-ebe912049158",
+      "requestId": "15cd140b-b6a4-4791-8bbd-ab77bd7481b9",
+      "queryId": "b7c5ad78-4290-42cc-a94f-89c1364949e0",
+      "stateFieldNames": []
+    }
+  ],
+  "sessions": [
+    {
+      "session_id": "69ff9ab7-fc10-442c-b912-ebe912049158",
+      "device_id": "adb:10HFC6F1SU000T4",
+      "status": "ended",
+      "generation": "b3c58bcf-166b-4219-9ae1-054a779abfee",
+      "stop_confirmation": {
+        "taskId": "de3fa70d-2879-4faf-aa44-1db6865a69e8",
+        "version": 1,
+        "sessionId": "69ff9ab7-fc10-442c-b912-ebe912049158",
+        "generation": "b3c58bcf-166b-4219-9ae1-054a779abfee",
+        "readerCleanupConfirmed": true
+      },
+      "stop_failure": null
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "de3fa70d-2879-4faf-aa44-1db6865a69e8",
+      "status": "succeeded",
+      "type": "alipay_name_stop",
+      "device_id": "adb:10HFC6F1SU000T4",
+      "session_id": "69ff9ab7-fc10-442c-b912-ebe912049158",
+      "generation": "b3c58bcf-166b-4219-9ae1-054a779abfee",
+      "stop_proof": {
+        "taskId": "de3fa70d-2879-4faf-aa44-1db6865a69e8",
+        "version": 1,
+        "sessionId": "69ff9ab7-fc10-442c-b912-ebe912049158",
+        "generation": "b3c58bcf-166b-4219-9ae1-054a779abfee",
+        "readerCleanupConfirmed": true
+      }
+    }
+  ],
+  "surplusAudits": [],
+  "readOnly": true
+}

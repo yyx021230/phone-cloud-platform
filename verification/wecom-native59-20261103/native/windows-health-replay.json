@@ -1,0 +1,11 @@
+{
+  "fixedCode": "original_forwards_not_present",
+  "originalForwards": [],
+  "denied": null,
+  "summary": {
+    "executionConnections": 1,
+    "peerChecks": 2,
+    "revoked": false
+  },
+  "customerActions": 0
+}

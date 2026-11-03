@@ -1,0 +1,32 @@
+{
+  "http": 200,
+  "body": {
+    "ok": true,
+    "session": {
+      "sessionId": "6b993d40-210e-4ebe-a1dc-3132b2089f44",
+      "deviceId": "adb:10AEAS224X005FT",
+      "agentId": "win-bf-202605262318-20260727",
+      "adbSerial": "10AEAS224X005FT",
+      "userId": "admin:admin",
+      "status": "closed",
+      "statusMessage": "\u6295\u5c4f\u5df2\u7ed3\u675f",
+      "browserConnected": false,
+      "agentConnected": false,
+      "metadata": {
+        "codec": 1748121140,
+        "deviceName": "V2357A",
+        "serial": "10AEAS224X005FT",
+        "width": 480,
+        "height": 1080
+      },
+      "transportMode": "split-v1",
+      "mediaTransport": "webrtc",
+      "mediaPath": "pc/slot-7",
+      "requestedQualityProfile": "auto",
+      "qualityProfile": "realtime",
+      "createdAt": "2026-11-03T02:05:56.992Z",
+      "updatedAt": "2026-11-03T02:16:01.978Z",
+      "expiresAt": "2026-11-03T04:05:56.992Z"
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "records": {
+    "qa-original-hosts.json": {
+      "originalHosts": [
+        {
+          "pid": 20436,
+          "createdAt": 1793671566.9582727
+        },
+        {
+          "pid": 22728,
+          "createdAt": 1793671567.0479963
+        }
+      ]
+    },
+    "qa-owned-resources.json": {
+      "originalHosts": [
+        {
+          "pid": 20436,
+          "createdAt": 1793671566.9582727
+        },
+        {
+          "pid": 22728,
+          "createdAt": 1793671567.0479963
+        }
+      ],
+      "resources": {
+        "readerStarted": true,
+        "pid": "27405",
+        "startToken": "34062869",
+        "forwards": [
+          [
+            58760,
+            10080
+          ],
+          [
+            58807,
+            10081
+          ]
+        ],
+        "cleanupConfirmed": false
+      }
+    }
+  },
+  "hosts": [
+    {
+      "pid": 20436,
+      "absent": true
+    },
+    {
+      "pid": 22728,
+      "absent": true
+    }
+  ]
+}
