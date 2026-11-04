@@ -104,6 +104,14 @@ def is_observed_25_invite_foreground(device_number, android_user, current):
             'com.tencent.wework/.contact.controller.WechatContactInfoActivity'))
 
 
+def is_observed_25_loading(device_number, android_user, current, screen):
+    # Actual private screenshot showed the startup logo, with an empty Poco
+    # tree. Waiting here grants no click or return action and no extra budget.
+    return (device_number == '25' and android_user == 0
+            and current == ('com.tencent.wework',0,'com.tencent.wework/.launch.LaunchSplashActivity')
+            and screen.package == w.PACKAGE and len(screen.nodes) <= 3)
+
+
 class ScreenWakeGuard:
     """The previously verified host's bounded normal wake, without settings edits."""
     def __init__(self, read_power, lease_valid, wake, dismiss, check_budget=lambda: None):

@@ -576,13 +576,16 @@ def run_host(value, diagnostic_stream=None, *, authority=None):
             if authority is not None:driver.before_action_difference=authority.observe_difference
         wait_for_wecom_foreground(poco)
         with trace.phase("home_navigation", 60, "home_navigation_timeout"):
-            until=min(deadline,time.monotonic()+60); home=False; update_dismissed=False; blank_frames=0
-            for _ in range(20):
+            until=min(deadline,time.monotonic()+60); home=False; update_dismissed=False; blank_frames=0; home_steps=0
+            while home_steps < 20:
                 budget()
                 if time.monotonic()>=until: raise SafeStop("home_navigation_timeout")
                 page=driver.snapshot(); w.guard(page)
                 if authority is not None:authority.observe_page('home',page)
                 observed=any_snapshot(poco)
+                if config['deviceNumber'] == '25' and selected_user == 0 and startup.is_observed_25_loading(config['deviceNumber'],selected_user,foreground_info(),page):
+                    time.sleep(.3);continue
+                home_steps += 1
                 if config["deviceNumber"] == "25" and startup.is_miui_proximity_overlay(observed):
                     if proximity_dismissals>=2: raise SafeStop("system_overlay_reappeared")
                     if startup.dismiss_miui_proximity(lambda:any_snapshot(poco),foreground,lease_valid,
