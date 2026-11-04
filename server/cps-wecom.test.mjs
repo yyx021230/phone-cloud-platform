@@ -104,8 +104,9 @@ test('platform bridge joins only verified private identities, requests phone pro
   }});
   const rows=await adapter.inventory();assert.equal(rows.devices[0].deviceId,'adb:verified');assert.equal(rows.devices[0].remarkPhoneReady,true);assert.equal(rows.devices[1].deviceId,null);
   await adapter.submit({leadId:'12345678',input:{phone:'13800138000'},requestId:'cps_fixture',deviceId:'adb:verified',target:{appSlot:'main'}});
-  const sent=JSON.parse(calls.at(-1).options.body);assert.equal(sent.requireRemarkPhone,true);assert.equal(sent.remarkName,'13800138000_12345678');assert.equal(sent.description,'leadId:12345678');assert.equal(sent.mode,'preview');
-  const count=calls.length;await assert.rejects(adapter.submit({leadId:'9223372036854775807',input:{phone:'13800138000'},target:{appSlot:'main'}}));assert.equal(calls.length,count);
+  const sent=JSON.parse(calls.at(-1).options.body);assert.equal(sent.requireRemarkPhone,true);assert.equal(sent.remarkName,'12345678');assert.equal(sent.phoneNumber,'13800138000');assert.equal(sent.description,'leadId:12345678');assert.equal(sent.mode,'preview');
+  await adapter.submit({leadId:'9223372036854775807',input:{phone:'13800138000'},target:{appSlot:'main'}});
+  const longest=JSON.parse(calls.at(-1).options.body);assert.equal(longest.remarkName,'9223372036854775807');assert.equal(longest.description,'leadId:9223372036854775807');assert.equal(longest.phoneNumber,'13800138000');assert.equal(longest.requireRemarkPhone,true);
 });
 test('busy before admission may wait; stale physical remapping cannot switch the selected phone',async t=>{
   let count=0;const platform={mode:'send',inventory:async()=>inventory(),submit:async()=>{count++;throw Object.assign(Error(),{noAdmission:true});},find:async()=>null};const f=await fixture(t,{platform});
@@ -132,14 +133,43 @@ test('HTTP oversized body is rejected with a defined response before authenticat
   assert.equal(r.status,413);assert.equal((await r.json()).code,2003);assert.equal(f.store.snapshot().nonces.length,0);assert.equal(f.store.snapshot().leads.length,0);
 });
 
-test('remark rule rejects overlength before creating a task, preserving full INT64 without fallback',async t=>{
-  const f=await fixture(t);
+test('lead-only remarks admit nine-digit and maximum INT64 IDs without losing idempotency',async t=>{
   for(const lead_id of [123456789n,9223372036854775807n]){
+    const f=await fixture(t);
     const r=await f.service.handle('POST',ROUTES.dispatch,f.signed(business(lead_id)));
-    assert.equal(r.body.code,2003);assert.match(r.body.message,/20/);
+    assert.equal(r.body.success,true);
+    assert.equal((await f.service.handle('POST',ROUTES.dispatch,f.signed(business(lead_id)))).body.success,true);
+    assert.equal(f.store.snapshot().leads.length,1);assert.equal(f.store.snapshot().leads[0].leadId,lead_id.toString());
+    assert.equal(f.store.snapshot().recipients.length,1);await f.service.tick();assert.equal(f.submissions.length,1);
   }
-  assert.equal(f.store.snapshot().leads.length,0);assert.equal(f.store.snapshot().recipients.length,0);assert.equal(f.submissions.length,0);
-  assert.equal((await f.service.handle('POST',ROUTES.dispatch,f.signed(business(12345678n)))).body.success,true);
+});
+
+test('signed HTTP preserves maximum INT64 through remark, phone proof request and callback',async t=>{
+  const posts=[];const adapter=createPlatform({baseUrl:'http://127.0.0.1:1',token:'fixture-private-platform-token',mode:'send',fetchImpl:async(url,options)=>{
+    let body;
+    if(url.pathname.endsWith('wecom-cps-devices'))body={devices:members.map(m=>({deviceNumber:m.deviceNumber,deviceId:'adb:fixture'+m.deviceNumber,cpsRemarkPhoneReady:true}))};
+    else if(url.pathname.endsWith('wecom/devices'))body=inventory();
+    else{
+      assert.equal(options.method,'POST');const input=JSON.parse(options.body);posts.push(input);
+      body={task:{jobId:'fixture-max-id',deviceId:input.deviceId,deviceNumber:'59',appSlot:input.appSlot,requestId:input.requestId,mode:input.mode,status:'failed',result:{code:'already_contact',sendStatus:'not_attempted',remarkSaveStatus:'not_attempted'}}};
+    }
+    return new Response(JSON.stringify(body),{status:200});
+  }});
+  const f=await fixture(t,{platform:adapter});const server=createHttpServer(f.service),address=await listen(server);
+  t.after(()=>{server.closeAllConnections();return new Promise(r=>server.close(r));});
+  const post=async input=>{
+    const response=await fetch('http://127.0.0.1:'+address.port+ROUTES.dispatch,{method:'POST',headers:{'content-type':'application/json'},body:f.signed(input)});
+    assert.equal(response.status,200);return response.json();
+  };
+  const input=business(9223372036854775807n);
+  assert.equal((await post(input)).success,true);assert.equal((await post(input)).success,true);
+  await f.service.tick();assert.equal(posts.length,1);
+  assert.equal(posts[0].remarkName,'9223372036854775807');assert.equal(posts[0].description,'leadId:9223372036854775807');
+  assert.equal(posts[0].phoneNumber,input.phone);assert.equal(posts[0].requireRemarkPhone,true);
+  await f.service.tick();assert.equal(f.callbacks.length,1);assert.equal(f.callbacks[0].lead_id,9223372036854775807n);
+  assert.equal(f.callbacks[0].result,'duplicate');assert.equal(signature(f.callbacks[0],secret),f.callbacks[0].sign);
+  assert.equal((await post(input)).success,true);await f.service.tick();assert.equal(posts.length,1);
+  assert.equal((await post(business(9223372036854775806n))).code,2003);
 });
 
 test('two-minute timeout, fresh lead ID, restart and phone migration cannot bypass the logical recipient fence',async t=>{

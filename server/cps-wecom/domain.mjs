@@ -4,7 +4,7 @@ const digest=value=>createHash('sha256').update(JSON.stringify(value)).digest('h
 export const memberIdentity=value=>digest([value.wecom_corp_id,value.wecom_userid]);
 export const recipientIdentity=value=>digest([value.wecom_corp_id,value.wecom_userid,value.phone]);
 export function remarkName(input) {
-  const value=input.phone+'_'+input.lead_id;
+  const value=input.lead_id;
   if([...value].length>20)throw failure(2003,'备注名超过20字符，请CPS按约定处理；平台不会截断或改换格式');
   return value;
 }

@@ -290,12 +290,12 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   const cpsCall=async(endpoint,input)=>{const body={...input,app_id:'fixture_cps',timestamp:Date.now(),nonce:(await import('node:crypto')).randomBytes(16).toString('hex')};body.sign=signature(body,cpsSecret);const r=await fetch('http://127.0.0.1:'+cpsServer.address().port+endpoint,{method:'POST',headers:{'content-type':'application/json'},body:stringifyBody(body)});assert.equal(r.status,200);return r.json();};
   assert.equal((await request('GET',cpsPoll,agent)).task,null);
   const cpsDevices=await cpsCall(ROUTES.devices,{});assert.equal(cpsDevices.result.total,9);assert.equal(cpsDevices.result.devices.find(d=>d.device_number==='43').accounts[0].wecom_userid,'member_main');
-  const lead={lead_id:12345678n,phone:'13800138000',wecom_corp_id:'ww_fixture',wecom_userid:'member_main'};
-  assert.equal((await cpsCall(ROUTES.dispatch,{...lead,lead_id:9223372036854775807n})).code,2003);assert.equal(cpsStore.snapshot().leads.length,0);
+  const lead={lead_id:9223372036854775807n,phone:'13800138000',wecom_corp_id:'ww_fixture',wecom_userid:'member_main'};
+  assert.equal((await cpsCall(ROUTES.dispatch,{...lead,lead_id:9223372036854775808n})).code,2003);assert.equal(cpsStore.snapshot().leads.length,0);
   assert.equal((await cpsCall(ROUTES.dispatch,lead)).success,true);assert.equal((await cpsCall(ROUTES.dispatch,lead)).success,true);
-  await cpsService.tick();const leadTask=(await request('GET',cpsPoll,agent)).task;assert.equal(leadTask.payload.requireRemarkPhone,true);assert.equal(leadTask.payload.remarkName,'13800138000_12345678');assert.equal(leadTask.payload.mode,'send');
+  await cpsService.tick();const leadTask=(await request('GET',cpsPoll,agent)).task;assert.equal(leadTask.payload.requireRemarkPhone,true);assert.equal(leadTask.payload.remarkName,'9223372036854775807');assert.equal(leadTask.payload.description,'leadId:9223372036854775807');assert.equal(leadTask.payload.phoneNumber,lead.phone);assert.equal(leadTask.payload.mode,'send');
   await request('POST',`/api/v1/windows-agent-tasks/${leadTask.taskId}/status`,agent,{status:'failed',result:{previewStatus:'blocked',previewCode:'already_contact',invitationSent:false,sendStatus:'not_attempted',remarkSaveStatus:'not_attempted'}});
-  cpsNow+=2001;await cpsService.tick();await cpsService.tick();assert.equal(callbackRows.length,1);assert.equal(callbackRows[0].lead_id,12345678n);assert.equal(callbackRows[0].result,'duplicate');assert.equal(cpsStore.snapshot().leads[0].stage,'completed');
+  cpsNow+=2001;await cpsService.tick();await cpsService.tick();assert.equal(callbackRows.length,1);assert.equal(callbackRows[0].lead_id,9223372036854775807n);assert.equal(callbackRows[0].result,'duplicate');assert.equal(cpsStore.snapshot().leads[0].stage,'completed');
   // A native application acknowledgement is distinct from recipient delivery.
   await request('GET',cpsPoll,agent);
   const sentLead={...lead,lead_id:2n,phone:'13900139001'};assert.equal((await cpsCall(ROUTES.dispatch,sentLead)).success,true);

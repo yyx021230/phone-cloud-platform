@@ -19,8 +19,8 @@ const root=path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const dispatchPath='/api/v1/lead/dispatch',devicesPath='/api/v1/lead/devices/query';
 const taskPath='/api/v1/user/automation/wecom-preview-tasks';
 const appId='cps_external_fixture',secret='demo_secret_only_for_document';
-// Deliberately independent of the bridge protocol implementation. These IDs are
-// <=8 digits, as required by the agreed phone_ID remark format, and JSON-safe.
+// Deliberately independent of the bridge protocol implementation. The fixture
+// uses JSON-safe IDs; full INT64 transport has separate lossless HTTP coverage.
 function cpsSign(body){
   const fields=Object.entries(body).filter(([k,v])=>k!=='sign'&&v!==null&&v!=='').sort(([a],[b])=>a<b?-1:a>b?1:0);
   return createHash('sha256').update(fields.map(([k,v])=>k+'='+String(v)).join('&')+'&secret='+secret,'utf8').digest('hex');
@@ -93,6 +93,8 @@ test(`CPS external HTTP lifecycle (${long?'real 121-second timeout':'short defau
       let raw='';for await(const b of req)raw+=b;
       if(req.method==='POST'&&req.url===taskPath){
         const input=JSON.parse(raw);submissions.set(input.requestId,(submissions.get(input.requestId)||0)+1);
+        assert.match(input.description,/^leadId:\d+$/);assert.equal(input.remarkName,input.description.slice('leadId:'.length));
+        assert.equal(input.requireRemarkPhone,true);
         if(input.description==='leadId:208'&&!raceLookup){
           raceLookup=(await platformCall('POST',lookupPath,admin,{deviceId:'adb:'+phones['155'].serial},201)).session;
           const task=(await platformCall('GET',poll,agent)).task;assert.equal(task.type,'alipay_name_start');
