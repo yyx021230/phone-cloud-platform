@@ -394,10 +394,11 @@ def prepare_screen_before_poco():
     if not re.search(r'mWakefulness=(?:Asleep|Dozing)\b', observe_startup_state('power_before',shell('dumpsys power'))):
         return False
     observe_startup_state('wake_response',mutate('input keyevent 224'))
-    observe_startup_state('dismiss_response',mutate('wm dismiss-keyguard'))
-    if config['deviceNumber'] == '25':
-        startup.dismiss_nonsecure_keyguard(lambda:observe_startup_state('keyguard',shell('dumpsys window policy')), lease_valid,
-            lambda:mutate('input keyevent 82'), android_user=selected_user, check_budget=budget)
+    if config['deviceNumber'] != '25':
+        observe_startup_state('dismiss_response',mutate('wm dismiss-keyguard'))
+    if config['deviceNumber'] == '25' and startup.keyguard_state(
+            observe_startup_state('keyguard',shell('dumpsys window policy')),selected_user) not in ('nonsecure_clear','nonsecure_showing'):
+        raise SafeStop('device_unlock_requires_user')
     try:
         startup.confirm_awake(lambda:observe_startup_state('power_after',shell('dumpsys power')),
             lease_valid,check_budget=budget)
@@ -407,6 +408,10 @@ def prepare_screen_before_poco():
             lambda:observe_startup_state('power_after',shell('dumpsys power')),
             lambda:observe_startup_state('keyguard',shell('dumpsys window policy')),lease_valid,
             lambda:observe_startup_state('power_fallback_response',mutate('input keyevent 26')),check_budget=budget)
+    if config['deviceNumber'] == '25':
+        observe_startup_state('dismiss_response',mutate('wm dismiss-keyguard'))
+        startup.dismiss_nonsecure_keyguard(lambda:observe_startup_state('keyguard',shell('dumpsys window policy')), lease_valid,
+            lambda:mutate('input keyevent 82'), android_user=selected_user, check_budget=budget)
     return True
 
 

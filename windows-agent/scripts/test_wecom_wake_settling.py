@@ -55,8 +55,8 @@ class Observed25WakeTests(unittest.TestCase):
             values=iter(frames)
             try:self.call(lambda:next(values),lambda:self.fail('no toggle'))
             except w.StopPreview:pass
-    def test_secure_locked_or_wrong_user_never_gets_power(self):
-        for text in [self.clear.replace('secure=false','secure=true'),self.clear.replace('mIsShowing=false','mIsShowing=true'),self.clear.replace('mCurrentUserId=0','mCurrentUserId=999')]:
+    def test_secure_or_wrong_user_never_gets_power(self):
+        for text in [self.clear.replace('secure=false','secure=true'),self.clear.replace('mCurrentUserId=0','mCurrentUserId=999')]:
             with self.assertRaisesRegex(w.StopPreview,'device_unlock_requires_user'):
                 g.wake_observed_25_once('25',0,lambda:self.asleep,lambda:text,lambda:True,lambda:self.fail('no key'),sleep=lambda _:None)
     def test_lost_lease_or_budget_never_toggles(self):
@@ -81,5 +81,17 @@ class Observed25WakeTests(unittest.TestCase):
             self.assertTrue(host.prepare_screen_before_poco())
         self.assertEqual([c for c in calls if c.startswith('input keyevent')],['input keyevent 224','input keyevent 26'])
         self.assertEqual(calls.count('wm dismiss-keyguard'),1)
+    def test_real_host_confirms_display_awake_before_one_nonsecure_menu_dismissal(self):
+        calls=[]
+        def shell(command):
+            calls.append(command)
+            if command=='dumpsys power':return 'mWakefulness=Awake'if'input keyevent 26'in calls else self.asleep
+            if command=='dumpsys window policy':return self.clear if'input keyevent 82'in calls else self.clear.replace('mIsShowing=false','mIsShowing=true')
+            return ''
+        with patch.object(host,'config',{'deviceNumber':'25'},create=True),patch.object(host,'selected_user',0,create=True),patch.object(host,'external_authority',None),patch.object(host,'shell',side_effect=shell),patch.object(host,'lease_valid',return_value=True),patch.object(host,'budget'),patch.object(g.time,'sleep'):
+            self.assertTrue(host.prepare_screen_before_poco())
+        self.assertEqual([c for c in calls if c.startswith('input keyevent')],['input keyevent 224','input keyevent 26','input keyevent 82'])
+        self.assertLess(calls.index('input keyevent 26'),calls.index('wm dismiss-keyguard'))
+        self.assertLess(calls.index('wm dismiss-keyguard'),calls.index('input keyevent 82'))
 
 if __name__=='__main__':unittest.main()

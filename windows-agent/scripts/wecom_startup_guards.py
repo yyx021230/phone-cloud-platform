@@ -161,7 +161,7 @@ def wake_observed_25_once(device_number, android_user, read_power, read_policy,
         if states == ['Awake']:return False
         if states != ['Asleep'] or changing != ['false'] or re.search(r'mWakefulness=Awake\b',raw):
             raise w.StopPreview('screen_wake_not_confirmed')
-        if keyguard_state(read_policy(),android_user) != 'nonsecure_clear':
+        if keyguard_state(read_policy(),android_user) not in ('nonsecure_clear','nonsecure_showing'):
             raise w.StopPreview('device_unlock_requires_user')
         if attempt == 0:sleep(.2)
     check_budget()

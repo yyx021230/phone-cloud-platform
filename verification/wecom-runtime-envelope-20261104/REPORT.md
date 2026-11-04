@@ -23,3 +23,8 @@
 ## 25第二轮实际证据与加载等待候选
 
 3f209c8单机复测以Awake开始，单次POWER分支未触发；在两个空树处提前停止，已查看实际截图25-observed-splash.jpg（只含启动Logo，无客户/账号数据），实际为LaunchSplashActivity加载中。原资源双核验和listing恢复。新的局部候选只在25/user0、确切Splash+最多3节点状态继续原60秒等待，不额外启动/点击，不延长业务/全局预算；其他机型不增加读取，未知页面仍原停止规则。实际代码块合成覆盖延迟到首页、永久Logo到时限、页/机型/user改变与不盲点；完整Python572通过。待新不可变来源单机复测，不能把加载等待或未触发的POWER分支先写通过。
+
+
+## 25第三轮与唤醒/解锁顺序候选
+
+bf16cd9第三轮开始Asleep且nonsecure_showing，旧顺序在未醒时先MENU导致device_unlock_not_confirmed，未进入UI，双核验及listing恢复。修正25先只读拒绝密码/未知/错误user，再确认Awake（必要时稳定Asleep下最多一个普通POWER），之后才发一次原wm dismiss及必要的一次原MENU。非安全锁屏只是允许正常唤醒，仍不处理密码/未知锁；其他机型顺序保持。完整Python573通过，实际入口断言224→26→wm dismiss→82，原secure负例保持原报错。尚待新来源单机复测，不报告真实唤醒分支通过；此前失败不覆盖。
