@@ -6805,3 +6805,12 @@ wecom-recover-four-20261104-rc.1源码de6cf40已提交，inactive image50a1fafc�
 ### 决策日志｜2026-11-04 以实际内核发送边界校验替换同一读操作多层重复扫描
 
 延续3秒期限，不靠延长过期证明获得恢复；以真实43原生耗时证据修正重复成本。已批准同一原生文件热更新范围内实施，不改Agent Node模块、进程或ADB。初始授权必须在第一条ADB读前，当前帧与最终授权仍独立；未知worker在connect后、send前出现的负例必须拒绝且无字节发送。原维护任务仍failed，不因局部生成proof而释放。
+
+
+### 变更记录｜2026-11-04 已签发challenge但证明无效的人工复核入口
+
+43原生证明完整生成但父级原3秒期限拒绝，原业务及维护任务保持failed；23同为已签发challenge后recovery_invalid，不能直接释放。补充这类显式重试仅在原恢复记录已有与causalLease同protocol/epoch/leaseId的四字段challenge、当前维护任务确已failed且无proof、仍满足原指纹/同具名管理员/新requestId/retryOf及5代封顶时允许。没有签发challenge或challenge绑定错的invalid继续拒绝。67项定向全通过；该入口不放宽proof验证、不更改原failed、不将本地成功当生产成功。原生f6b8ebd已在获准单文件范围热更新，Agent/ADB进程保持；59一条新核验因另一个独立staged worker进入而failed/worker_present，未释放，不能假称完成。
+
+### 决策日志｜2026-11-04 证明校验失败允许新一代核验，旧证明永不续期
+
+在43实际“原生ok但外层期限失效”的证据基础上扩充有界管理员重试；不将所有invalid都视为可恢复，必须存在原服务签发且绑定匹配的challenge。重试重新领取独立期限和新proof，不能重新提交旧proof或抹去失败。继续不追加云端重启、不重载Agent/ADB、不停其他测试。

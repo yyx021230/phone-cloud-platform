@@ -74,7 +74,9 @@ export function canRetryRecovery(state,lock){
     &&task?.status==='failed'&&task.type==='wecom_cleanup_verify'&&task.payload?.preinputRecovery===PREINPUT_RECOVERY
     &&task.payload.verificationTaskId===v.verificationTaskId&&equal(task.payload.physicalCleanup,d.binding)
     &&task.deviceId===lock.deviceId&&task.agentId===d.binding.agentId&&task.result?.cleanupVerified!==true
-    &&['wecom_cleanup_recovery_worker_present','wecom_cleanup_verify_timeout','wecom_cleanup_recovery_processes_unconfirmed','wecom_cleanup_worker_timeout','wecom_cleanup_request_failed'].includes(task.result?.errorCode));
+    &&(['wecom_cleanup_recovery_worker_present','wecom_cleanup_verify_timeout','wecom_cleanup_recovery_processes_unconfirmed','wecom_cleanup_worker_timeout','wecom_cleanup_request_failed'].includes(task.result?.errorCode)
+      ||task.result?.errorCode==='wecom_cleanup_recovery_invalid'&&exact(v.challenge,['protocol','epoch','verificationLeaseId','challengeId'])
+        &&v.challenge.protocol===v.causalLease?.protocol&&v.challenge.epoch===v.causalLease?.epoch&&v.challenge.verificationLeaseId===v.causalLease?.leaseId));
 }
 export function recoveryProposal(state,lock){
   const {fingerprint,retiredProducer}=originalRecoveryContext(state,lock),b=lock.physicalCleanup.binding;

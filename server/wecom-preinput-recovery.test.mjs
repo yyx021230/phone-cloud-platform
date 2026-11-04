@@ -140,3 +140,16 @@ test('maintenance attempts are capped at five and never restart automatically',a
  await assert.rejects(f.service.recoveryStart(f.lock.lockId,{...f.request(),requestId:'retry-extra',retryOf:f.getTask().taskId},'operator'),/retry_not_allowed/);
  assert.equal(f.state.windowsTasks.length,6);
 });
+
+
+test('explicit retry after an issued challenge keeps failed invalid proof immutable',async()=>{
+ const f=fixture(),old=await failedMaintenance(f,'wecom_cleanup_recovery_invalid'),before=structuredClone(old.task);
+ assert.equal(f.service.recoveryGet(f.lock.lockId).canRetry,true);
+ await f.service.recoveryStart(f.lock.lockId,{...f.request(),requestId:'retry-invalid',retryOf:old.task.taskId},'operator');
+ f.pick();await f.challenge();assert.equal((await f.call('recovery-proof',f.proof())).verified,true);assert.deepEqual(old.task,before);
+});
+for(const malformed of [undefined,{}, {protocol:'other',epoch:'old',verificationLeaseId:'old',challengeId:'id'}])test('invalid maintenance without its issued challenge cannot retry '+JSON.stringify(malformed),async()=>{
+ const f=fixture(),old=await failedMaintenance(f,'wecom_cleanup_recovery_invalid');f.lock.physicalCleanup.recovery.challenge=malformed;
+ assert.equal(f.service.recoveryGet(f.lock.lockId).canRetry,false);
+ await assert.rejects(f.service.recoveryStart(f.lock.lockId,{...f.request(),requestId:'retry-invalid',retryOf:old.task.taskId},'operator'),/retry_not_allowed/);
+});
