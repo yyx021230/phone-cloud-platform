@@ -71,7 +71,7 @@ DEVICES = json.loads(Path(__file__).with_name("wecom_preview_devices.json").read
 def validate_config(value):
     allowed = {"taskId", "deviceId", "serial", "deviceNumber", "androidUser", "phoneNumber",
                "previewOnly", "agentId", "serverBaseUrl", "agentToken"}
-    if not isinstance(value, dict) or not allowed <= set(value) or set(value) - allowed - {"appSlot", "remarkName", "description", "mode", "claimDirectory", "physicalCleanup", "requireRemarkPhone"}:
+    if not isinstance(value, dict) or not allowed <= set(value) or set(value) - allowed - {"appSlot", "remarkName", "description", "mode", "claimDirectory", "physicalCleanup", "causalLease", "requireRemarkPhone"}:
         raise SafeStop("invalid_preview_config")
     if 'requireRemarkPhone' in value and type(value['requireRemarkPhone']) is not bool:
         raise SafeStop('invalid_wecom_remark_phone_requirement')
@@ -102,7 +102,7 @@ def validate_config(value):
         ticket=value.get('causalLease')
         if not isinstance(ticket,dict)or set(ticket)!={'protocol','epoch','leaseId','purpose'}or ticket.get('protocol')!='wecom-causal-v1'or ticket.get('purpose')!='business'or physical_bootstrap_causal is None or physical_bootstrap_causal['bindingNonce']!=value['physicalCleanup']['nonce']:
             raise SafeStop('wecom_cleanup_causal_context_unconfirmed')
-    elif physical_bootstrap_hosts is not None:raise SafeStop('wecom_cleanup_binding_mismatch')
+    elif physical_bootstrap_hosts is not None or 'causalLease' in value:raise SafeStop('wecom_cleanup_binding_mismatch')
     name, description = remarks.validate_remark_input(value)
     return dict(value, mode=mode, remarkName=name, description=description)
 

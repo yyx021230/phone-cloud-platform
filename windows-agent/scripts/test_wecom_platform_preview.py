@@ -30,6 +30,22 @@ class HostGuardTests(unittest.TestCase):
         self.assertEqual(len(host.DEVICES),8)
         for number in host.DEVICES:self.assertEqual(host.validate_config(self.config(number))["androidUser"],999 if number=="155" else 0)
 
+    def test_actual_agent_causal_envelope_passes_configuration_after_private_bootstrap(self):
+        value=dict(self.config('59'),appSlot='main',mode='preview',remarkName='联调客户',description='仅预览')
+        binding=dict(version=1,obligationId='fixture-duty',originalTaskId=value['taskId'],executionId='fixture-execution',
+                     deviceId=value['deviceId'],serial=value['serial'],agentId=value['agentId'],appSlot='main',androidUser=0,nonce='fixture-nonce')
+        value.update(physicalCleanup=binding,causalLease=dict(protocol='wecom-causal-v1',epoch='fixture-epoch',leaseId='fixture-lease',purpose='business'))
+        with patch.object(host,'physical_bootstrap_hosts',[object()]),patch.object(host,'physical_bootstrap_runtime',object()),patch.object(host,'physical_bootstrap_causal',dict(bindingNonce='fixture-nonce')):
+            parsed=host.validate_config(json.loads(json.dumps(value)))
+            self.assertEqual(parsed['causalLease'],value['causalLease'])
+            for change in [dict(causalLease={}),dict(causalLease=dict(value['causalLease'],purpose='verification')),dict(extra='not-allowed')]:
+                with self.subTest(change=change),self.assertRaises(host.SafeStop):host.validate_config(dict(value,**change))
+        with self.assertRaisesRegex(host.SafeStop,'wecom_cleanup_bootstrap_missing'):host.validate_config(value)
+
+    def test_orphan_causal_ticket_without_physical_binding_cannot_bypass_bootstrap(self):
+        with self.assertRaisesRegex(host.SafeStop,'wecom_cleanup_binding_mismatch'):
+            host.validate_config(dict(self.config(),causalLease=dict(protocol='wecom-causal-v1',epoch='e',leaseId='l',purpose='business')))
+
     def test_invalid_binding_or_send_flag_stops_before_network(self):
         changes=[dict(deviceNumber="67"),dict(serial="OTHER"),dict(deviceId="adb:OTHER"),dict(androidUser=999),dict(previewOnly=False),dict(send=True),dict(agentId="a/other"),dict(serverBaseUrl="http://user:pass@example.invalid")]
         for change in changes:

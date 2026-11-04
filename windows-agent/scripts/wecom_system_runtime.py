@@ -34,7 +34,9 @@ def process_identity(runtime,pid,expected_path):
 class SystemRuntimeGuard:
     def __init__(self,*,runtime=None,agent_pid=None,current_pid=None,parent_pid=None,platform=None):
         if (os.name if platform is None else platform)!='nt':raise VerifyStop('wecom_windows_system_required')
-        if runtime is None:import psutil;runtime=psutil
+        if runtime is None:
+            from wecom_qa_tcp_runtime import WindowsTcpRuntime
+            runtime=WindowsTcpRuntime()
         self.runtime=runtime;self.current_pid=os.getpid()if current_pid is None else current_pid
         self.parent_pid=os.getppid()if parent_pid is None else parent_pid
         self.agent_pid=self.parent_pid if agent_pid is None else agent_pid

@@ -6647,3 +6647,18 @@ SYSTEM Agent仍19756/同出生代次，固定路径SYSTEM ADB为31384，后续�
 ### 决策日志｜2026-11-04 rc.2暂存不扩大已结束维护授权
 
 延续上一条“未resolved义务引用生命周期”的本地设计。rc.1授权只加载已提交候选并核验155，原维护已结束且查名恢复；rc.2仅准备待批准，不能因额外故障就顺带生产reload。后续预计约3分钟只重载云端，先重新核对实际任务/控屏并安全排空；不需Agent重载、ADB重建、身份/keys/启动动作或媒体改动。155目前未恢复、没有创建attempt，不把539项回归/两项PG或inactive镜像校验当Windows SYSTEM真机proof。保留原lease/challenge时限、原记录、具名POST和逐字段持久化要求；不许直接清锁或手动更新时间。
+
+
+### 变更记录｜2026-11-04 59正式预览发现因果字段入口缺口，其他手机独立预览继续
+
+用户明确要求不应只等待155，可直接测试其他空闲企微手机。以3eb89bf9c803c5d2c4a1bcd57f6840b2d4c47a81干净工作区建立codex/wecom-fleet-preview-20261104；共同流程修订/哈希不变。生产仍deployed.1/aba0ddc3，SYSTEM Agent15224和ADB31384/出生/路径/身份不变，主文件hash一致；本轮没有新维护、服务重载、ADB操作或上线。93实时控屏，157仍启用查名池，23/43/155有物理义务，保守跳过；59/145/25无活动锁/任务/会话、lookupExcluded=true。
+
+先向59/main正式内部preview API仅提交1条（job51764154-492c-4670-a7e3-c93873efa1a6、taska96959f8-91d1-43cb-ae37-84650ae6bd04），尾6441/previewOnly=true，无sendClaim/邀请。因果host登记与真实close已成功，但configuration阶段0ms报invalid_preview_config，根因确认为Node传causalLease、Python字段白名单漏列，尽管其后代码要求该字段。独立验证task1984121a-055a-4108-9abc-5b2333929ff1又报wecom_cleanup_verify_timeout，新增义务bca54f78-f4ac-4944-870f-2a5512e4071a保留pending，原失败/unknown不改，不再向其他手机重复正式API。不是59硬件故障，也不是155占用影响全局。
+
+本地修正Python白名单并拒绝脱离physicalCleanup的ticket，保留完整bootstrap/binding和未知字段拒绝；新增真实Node生产函数经OS pipe生成payload后调用真实Python配置validator的合成验收，补足原mock分层盲点。另将WeCom SystemRuntimeGuard默认TCP读取切到已部署的WindowsTcpRuntime/IPHelper，每次仍实时核对双栈监听和SYSTEM/path/birth/parent/入口，不缓存、不延长3秒挑战或120秒租约。实际Windows只读三组对比psutil47/47/78ms与IPHelper16/15/0ms，ADB owner均31384；只能证明读取开销有差别，尚未分解59校验所有耗时，不宣称该超时唯一根因或原生已解决。
+
+完整Python企微561、Agent跨语言/清理/管道30、QA协调器13通过；仅两个WeCom Python运行文件和定向测试，不动Agent入口/共享调度/投屏/查名。未追加到生产，未来可在没有企微worker时对两文件准备有界热补，不需为它们重载Agent，仍须发布授权。其他名单手机使用原已审查的独立screen reservation+持久单机hold+实际peer证明协调器逐台跑3eb不可变源码；只更新QA只读守卫到精确已发布源码hash，不改历史回执或生产配置。145已ready_before_send且双清理/上架恢复，25为screen_wake_not_confirmed并已安全恢复，其余继续另记逐机结果，不把独立脚本当正式API通过。详情verification/wecom-runtime-envelope-20261104。
+
+### 决策日志｜2026-11-04 将单机旧义务恢复与其他手机脚本验收分开推进
+
+延续不直接清锁、已失败验证不自动续代、先单机后扩围的要求，纠正把155修复当所有手机测试前置的推进顺序。当前正式API单机灰度发现新的共用配置/校验缺陷，停止重复该入口以免给其他手机累积物理围栏；这不阻止以既有隔离预览协调器在其他真正空闲且不在查名池的名单设备上验收业务脚本。后者逐机真实排他/原进程资源记录/两次清理证明后才恢复listing，未知保留单机hold并停批，不操作其他设备或重放发送。明确分开正式API故障、独立脚本成功/失败和仍待原生证明，不保证所有系统完美或把模拟结果替代实机。78沿用用户此前明确暂跳过，不反复要求登录或人为解锁。

@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch
 from types import SimpleNamespace as O
 from wecom_system_runtime import SYSTEM,SystemRuntimeGuard,VerifyStop
 
@@ -15,6 +16,13 @@ class RuntimeGuardTests(unittest.TestCase):
     def guard(self,runtime):return SystemRuntimeGuard(runtime=runtime,current_pid=2,parent_pid=1,agent_pid=1,platform='nt')
     def test_same_original_system_agent_adb_and_child_are_read_only(self):
         r=Runtime();g=self.guard(r);self.assertTrue(g.check());self.assertEqual(g.adb.host.pid,3)
+    def test_default_windows_backend_still_reloads_fresh_identity_and_listener_facts(self):
+        runtime=Runtime()
+        with patch('wecom_qa_tcp_runtime.WindowsTcpRuntime',return_value=runtime)as factory:
+            g=SystemRuntimeGuard(current_pid=2,parent_pid=1,agent_pid=1,platform='nt')
+            factory.assert_called_once_with();self.assertTrue(g.check())
+            runtime.listeners=[]
+            with self.assertRaisesRegex(VerifyStop,'wecom_adb_listener_unconfirmed'):g.check()
     def test_other_platform_or_non_parent_agent_is_rejected(self):
         with self.assertRaisesRegex(VerifyStop,'wecom_windows_system_required'):SystemRuntimeGuard(runtime=Runtime(),platform='posix')
         with self.assertRaisesRegex(VerifyStop,'wecom_agent_parent_unconfirmed'):SystemRuntimeGuard(runtime=Runtime(),current_pid=2,parent_pid=1,agent_pid=9,platform='nt')

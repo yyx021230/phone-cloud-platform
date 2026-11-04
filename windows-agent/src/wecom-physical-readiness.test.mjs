@@ -15,7 +15,7 @@ const task={type:'wecom_customer_preview',taskId:fixture.binding.originalTaskId,
   payload:{mode:'preview',previewOnly:true,phoneNumber:'13900000000',deviceNumber:'43',appSlot:'main',androidUser:0,physicalCleanup:fixture.binding,
     wecomCausalLease:{protocol:'wecom-causal-v1',epoch:'fixture-epoch',leaseId:'fixture-lease',purpose:'business'}}};
 const defer=()=>{let resolve;const promise=new Promise(r=>resolve=r);return{resolve,promise};};
-async function prepare(t,{wrongPid=false,wrongPipe=false,earlyExit=false}={}){
+async function prepare(t,{wrongPid=false,wrongPipe=false,earlyExit=false,validateAgentEnvelope=false}={}){
   try{await promisify(execFile)(config.pythonCommand,['-c','import psutil'],{timeout:1000});}
   catch{throw Error('fixture_python_psutil_dependency_unavailable');}
   const dir=await fs.mkdtemp(path.join(os.tmpdir(),'wecom-real-pipe-'));t.after(()=>fs.rm(dir,{recursive:true,force:true}));
@@ -31,7 +31,14 @@ ${wrongPipe?"proof=dict(proof,pipeNonce='f'*48)":"pass"}
 print('WECOM_PHYSICAL_READY '+json.dumps({'version':1,'hosts':[host],'bootstrap':proof}),file=sys.stderr,flush=True)
 line=sys.stdin.readline()
 if line:
- json.loads(line)
+ payload=json.loads(line)
+ ${validateAgentEnvelope?`sys.path.insert(0,${JSON.stringify(path.resolve('windows-agent/scripts'))})
+ import wecom_platform_preview as real_host
+ real_host.DEVICES={payload['deviceNumber']:{'serial':payload['serial'],'defaultAppSlot':'main','appSlots':{'main':0}}}
+ real_host.physical_bootstrap_hosts=[host]
+ real_host.physical_bootstrap_runtime=object()
+ real_host.physical_bootstrap_causal=bootstrap['bootstrap']
+ real_host.validate_config(payload)`:'pass'}
  Path(${JSON.stringify(marker)}).write_text('fixture configuration only')
  print(json.dumps({'previewStatus':'ready_before_send','previewCode':'stopped_before_send','invitationSent':False,'remarkSaveStatus':'not_needed'}),flush=True)
  time.sleep(.2)
@@ -65,6 +72,14 @@ test('real OS pipe keeps config behind durable host ACK and result behind actual
   assert.ok(!JSON.stringify(args).includes(config.agentToken));assert.ok(!JSON.stringify(args).includes(task.payload.phoneNumber));
   ack.resolve();await Promise.race([jsonSeen.promise,early]);assert.equal(finished,false);
   assert.equal((await pending).previewStatus,'ready_before_send');assert.equal(closed,true);
+  assert.equal(await fs.readFile(marker,'utf8'),'fixture configuration only');
+});
+
+test('actual Node payload crosses the real Python causal configuration validator after host ACK',{timeout:5000},async t=>{
+  const{dir,marker}=await prepare(t,{validateAgentEnvelope:true}),controller=new AbortController();
+  const result=await runWecomPreviewTask(task,{config,agentDir:dir,signal:AbortSignal.any([controller.signal,t.signal]),
+    spawnChild:(...args)=>ownChild(t,spawn(...args),controller),cleanupRequest:async()=>({ok:true})});
+  assert.equal(result.previewStatus,'ready_before_send');
   assert.equal(await fs.readFile(marker,'utf8'),'fixture configuration only');
 });
 
