@@ -1,0 +1,27 @@
+{
+  "rows": [
+    {
+      "number": "23",
+      "candidateReadiness": false,
+      "code": "wecom_cleanup_recovery_worker_present"
+    },
+    {
+      "number": "43",
+      "candidateReadiness": false,
+      "code": "wecom_cleanup_recovery_worker_present"
+    },
+    {
+      "number": "59",
+      "candidateReadiness": false,
+      "code": "wecom_cleanup_recovery_worker_present"
+    },
+    {
+      "number": "155",
+      "candidateReadiness": false,
+      "code": "wecom_cleanup_recovery_worker_present"
+    }
+  ],
+  "elapsedMs": 56.104899999999994,
+  "agentAndAdbUnchanged": true,
+  "productionFilesChanged": false
+}

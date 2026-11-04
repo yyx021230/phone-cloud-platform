@@ -6744,3 +6744,16 @@ wecom-recover-four-20261104-rc.1源码de6cf40已提交，inactive image50a1fafc�
 ### 决策日志｜2026-11-04 恢复准备完成不等于状态已恢复
 
 用户本次恢复四台的授权覆盖有界取证、最小补丁、本地验证及受限备份/未启用产物；发现必须重载共享主业务且五路控屏在用，按用户原要求等待明确本次窗口。Agent、ADB和身份完全保持，无需把云端窗口扩大成Agent/ADB维护。用户答复前不激活镜像、不改查名开关、不删除或释放原义务；保留原结果，只有真实维护proof成功持久化且库存复核可用才能报告四台恢复。
+
+
+### 变更记录｜2026-11-04 用户批准一次云端维护并要求保留全部查名状态；发现原生恢复误拦正常worker
+
+用户明确批准等当前任务结束后一次云端重载，禁止动Agent/ADB，并追加保留查名每台占用/当前状态，避免重新探索。为此不使用enabled=false维护方式：现有managed-lookup在disabled时会清退idle channels，违背保留热会话的要求。生产做一致性只读完整快照：51设备、9channel、49session、288job、326task、140未released历史/当前lock及完整managed pool（含账号/冷却/请求/人工状态）；远端受限lookup-before-maintenance.json，SHA f1670f63，configRevision187/configHash9bbe3bbe、enabled未改。重载应按原ID接续，不能恢复旧快照覆盖维护期间正常进度。一次有界快照调用失败未落文件，后续成功；先前两条实际在途已failed/succeeded终结，历史DB running/queued行不等同Agent当前任务。
+
+维护前只读检查发现现有wecom_preinput_recovery.quiescent_processes只认可直接alipay_name_lookup.py/lookup_ocr_worker.py，实际查名使用固定SYSTEM xhs_airtest_poco.py --mode worker --serial及-I -u隔离OCR/venv跳板，导致正常查名常驻worker被误判企微残留。旧校验实际worker_present，尚未创建恢复attempt；单加载云端候选仍不能解开四台。因此未消耗获准的一次重载，也未动生产Agent文件/进程、ADB或查名配置。四台单设备只读smart-socket预检Poco两个包PID与serial forward均0；这是Administrator SSH预检，不伪称原生SYSTEM proof或已释放。
+
+本地仅修正恢复校验脚本：显式target_serial下，固定SYSTEM/Python路径、直属原Agent、固定runner/mode/ADB路径且明确其他serial的worker才允许共存；仅已观察固定lookup_ocr_worker.py的-I -u/固定venv或原Python路径及同祖先链继承其其他设备范围，父创建时间晚于子/PID重用、循环/缺父、未知脚本、任意-I -c、同serial仍拒绝；精确NoSuchProcess按已退出处理，拒绝AccessDenied。未改变共享ADB、3秒challenge、固定SYSTEM/parent/peer校验、包/forward双帧或控屏行为。完整Python企微579通过，现有Windows screen回归69通过。SSH只读执行本地候选函数时已排除正常worker，另外独立staging小红书测试仍触发未知worker停止，未放宽或杀进程；真实SYSTEM proof尚未运行。由于用户明确禁止动Agent，热更新这一个恢复脚本也须取得明确单文件例外；保留已批准云端窗口，不重复请求同一授权。
+
+### 决策日志｜2026-11-04 企微恢复按目标设备核对残留，正常其他设备常驻查名不作为残留
+
+替换原前置恢复“正常查名仅两种直接脚本可共存”的不完整进程分类，延续未知不当作已清理、同目标串行互斥和固定SYSTEM/ADB/双帧原约束；不将全部xhs或Python进程列白名单。正常其他serial的已识别Agent worker及其严格OCR祖先链不拖住单台恢复；未知独立测试进程等待其安全结束，不停止无关手机。用户要求保留现有查名状态优先于旧维护手册关pool开关的做法，不清退/重探热手机。禁止将云端维护批准解释为允许修改Agent目录：一文件热更新可以不重载Agent，但仍需本次明确例外；未获准则保持生产不变并报告真正阻塞。

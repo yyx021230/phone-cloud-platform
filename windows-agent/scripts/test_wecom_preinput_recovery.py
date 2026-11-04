@@ -89,6 +89,57 @@ class RecoveryTests(unittest.TestCase):
         with self.assertRaisesRegex(VerifyStop,'worker_present'):f.run(sleep=change)
         self.assertEqual(len([c for c in f.calls if c[0]=='pid']),2)
 
+
+class OwnedProcess(Process):
+    def __init__(self,pid,args,parent=200,owner=r'NT AUTHORITY\SYSTEM',exe=r'D:\PhoneCloud\tools\python39\python.exe'):
+        super().__init__(pid,'python.exe',args);self.parent,self.owner,self.path=parent,owner,exe
+    def ppid(self):return self.parent
+    def username(self):return self.owner
+    def exe(self):return self.path
+    def create_time(self):return float(self.pid)
+
+class OtherPhoneTests(unittest.TestCase):
+    def root(self,serial='other-phone'):
+        return OwnedProcess(700,['python',r'D:\PhoneCloud\agent\scripts\xhs_airtest_poco.py','--serial',serial,'--mode','worker','--adb-path',r'D:\PhoneCloud\tools\android-sdk\platform-tools\adb.exe'])
+    def test_actual_other_phone_worker_and_nested_isolated_helpers_do_not_block(self):
+        f=Fixture();f.workers=[self.root(),OwnedProcess(701,['python','-I','-u',r'D:\PhoneCloud\agent\scripts\lookup_ocr_worker.py'],parent=700,exe=r'D:\PhoneCloud\agent\runtime\lookup-ocr\Scripts\python.exe'),OwnedProcess(702,['python','-I','-u',r'D:\PhoneCloud\agent\scripts\lookup_ocr_worker.py'],parent=701)]
+        self.assertTrue(f.run()['snapshots'][1]['wecomWorkersAbsent'])
+    def test_worker_on_target_still_blocks_even_with_different_serial_case(self):
+        f=Fixture();f.workers=[self.root('SYNTHETIC155')]
+        with self.assertRaisesRegex(VerifyStop,'worker_present'):f.run()
+    def test_same_wrapper_requires_an_explicit_target_context(self):
+        f=Fixture();f.workers=[self.root()]
+        with self.assertRaisesRegex(VerifyStop,'worker_present'):quiescent_processes(f.processes,self_pid=300,agent_pid=200,budget=lambda:None)
+    def test_exited_process_is_absent_but_denied_or_unknown_process_is_not(self):
+        import psutil
+        class Exited(Process):
+            def name(self):raise psutil.NoSuchProcess(self.pid)
+        f=Fixture();f.workers=[Exited(901,'python.exe',[])];self.assertTrue(f.run()['snapshots'][1]['wecomWorkersAbsent'])
+        class Denied(Process):
+            def name(self):raise psutil.AccessDenied(self.pid)
+        f=Fixture();f.workers=[Denied(901,'python.exe',[])]
+        with self.assertRaisesRegex(VerifyStop,'processes_unconfirmed'):f.run()
+    def test_reused_parent_pid_cannot_give_child_another_phone_scope(self):
+        f=Fixture();root=self.root();child=OwnedProcess(701,['python','-I','-u',r'D:\PhoneCloud\agent\scripts\lookup_ocr_worker.py'],parent=700)
+        child.create_time=lambda:600.0;f.workers=[root,child]
+        with self.assertRaisesRegex(VerifyStop,'worker_present'):f.run()
+    def test_bad_root_and_unknown_children_remain_fenced(self):
+        for mutation in ['owner','exe','parent','mode','duplicate','missing_serial','wrong_adb','unknown_child','unknown_isolated_code','orphan','cycle']:
+            with self.subTest(mutation=mutation):
+                f=Fixture();root=self.root();f.workers=[root]
+                if mutation=='owner':root.owner='Administrator'
+                elif mutation=='exe':root.path=r'C:\other\python.exe'
+                elif mutation=='parent':root.parent=999
+                elif mutation=='mode':root.args[root.args.index('--mode')+1]='run'
+                elif mutation=='duplicate':root.args+=['--serial','second']
+                elif mutation=='missing_serial':del root.args[2:4]
+                elif mutation=='wrong_adb':root.args[-1]=r'C:\other\adb.exe'
+                elif mutation=='unknown_child':f.workers.append(OwnedProcess(701,['python','unknown.py'],parent=700))
+                elif mutation=='unknown_isolated_code':f.workers.append(OwnedProcess(701,['python','-I','-c','unknown'],parent=700))
+                elif mutation=='orphan':f.workers.append(OwnedProcess(701,['python','-I'],parent=999))
+                elif mutation=='cycle':f.workers.extend([OwnedProcess(701,['python','-I'],parent=702),OwnedProcess(702,['python','-I'],parent=701)])
+                with self.assertRaisesRegex(VerifyStop,'worker_present'):f.run()
+
 class Wire:
     def __init__(self):self.sent=[];self.fd=10
     def getsockname(self):return('127.0.0.1',40000)

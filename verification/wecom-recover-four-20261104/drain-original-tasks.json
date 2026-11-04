@@ -1,0 +1,24 @@
+{
+  "at": "2026-11-04T06:10:26.436Z",
+  "originalInflight": [
+    {
+      "task_id": "ae4727e4-d720-4551-b150-01833513bc57",
+      "status": "failed"
+    },
+    {
+      "task_id": "ee8844fd-c779-407a-a2d6-c28b77e29cb5",
+      "status": "succeeded"
+    }
+  ],
+  "originalInflightTerminal": true,
+  "pool": {
+    "enabled": true,
+    "revision": 187,
+    "counts": {
+      "registered": 51,
+      "executing": 1,
+      "waitingHuman": 0,
+      "queued": 0
+    }
+  }
+}

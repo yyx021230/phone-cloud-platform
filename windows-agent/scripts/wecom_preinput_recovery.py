@@ -48,9 +48,10 @@ def validate(value):
     return value
 
 
-def quiescent_processes(processes,*,self_pid,agent_pid,budget):
-    """Unrecognized Python is unknown, not assumed absent. Lookup is allowed."""
-    count=0;agents=[]
+def quiescent_processes(processes,*,self_pid,agent_pid,budget,target_serial=None):
+    """Keep unknown Python fenced; identify existing other-phone Agent workers."""
+    from psutil import NoSuchProcess
+    count=0;agents=[];python={}
     allowed={r'd:/phonecloud/agent/scripts/alipay_name_lookup.py',r'd:/phonecloud/agent/scripts/lookup_ocr_worker.py'}
     for process in processes():
         budget();count+=1
@@ -62,12 +63,40 @@ def quiescent_processes(processes,*,self_pid,agent_pid,budget):
             if not isinstance(args,list)or not args:raise ValueError('unknown')
             if name=='node.exe':
                 if any(path_key(a)==AGENT_ENTRY for a in args):agents.append(pid)
-                continue
-            if pid==self_pid:continue
-            if len(args)<2 or path_key(args[1])not in allowed:raise VerifyStop('wecom_cleanup_recovery_worker_present')
+            elif pid!=self_pid:
+                meta=None
+                if len(args)>1 and(path_key(args[1])=='d:/phonecloud/agent/scripts/xhs_airtest_poco.py'or args[1]=='-I'):
+                    meta={'exe':path_key(process.exe()),'owner':process.username(),'parent':process.ppid(),'created':process.create_time()}
+                python[pid]=(args,meta)
         except VerifyStop:raise
+        except NoSuchProcess as error:
+            if type(error)is not NoSuchProcess:raise VerifyStop('wecom_cleanup_recovery_processes_unconfirmed')from None
+            continue
         except Exception:raise VerifyStop('wecom_cleanup_recovery_processes_unconfirmed')from None
     if agents!=[agent_pid]:raise VerifyStop('wecom_cleanup_recovery_producer_unconfirmed')
+    def other_phone(pid,seen=()):
+        budget()
+        if not target_serial or pid in seen or len(seen)>=8 or pid not in python:return False
+        args,meta=python[pid]
+        try:
+            if not meta:return False
+            exe=meta['exe']
+            if exe not in{'d:/phonecloud/tools/python39/python.exe','d:/phonecloud/agent/runtime/lookup-ocr/scripts/python.exe'}or meta['owner']!=r'NT AUTHORITY\SYSTEM':return False
+            parent=meta['parent']
+            if len(args)>1 and path_key(args[1])=='d:/phonecloud/agent/scripts/xhs_airtest_poco.py':
+                if exe!='d:/phonecloud/tools/python39/python.exe'or parent!=agent_pid or any(args.count(k)!=1 for k in('--serial','--mode','--adb-path')):return False
+                def value(key):return args[args.index(key)+1]
+                serial=value('--serial')
+                return value('--mode')=='worker'and path_key(value('--adb-path'))==ADB_EXE and bool(re.fullmatch(r'[A-Za-z0-9_.:-]{1,160}',serial))and serial.casefold()!=target_serial.casefold()
+            # Only the observed isolated OCR executable/script chain may inherit
+            # the known worker's other-device scope; arbitrary -I code stays unknown.
+            return len(args)==4 and args[1:3]==['-I','-u']and path_key(args[3])=='d:/phonecloud/agent/scripts/lookup_ocr_worker.py'and parent in python and python[parent][1]is not None and python[parent][1]['created']<=meta['created']and other_phone(parent,seen+(pid,))
+        except Exception:return False
+    for pid,(args,meta)in python.items():
+        budget()
+        if len(args)>1 and path_key(args[1])in allowed:continue
+        if other_phone(pid):continue
+        raise VerifyStop('wecom_cleanup_recovery_worker_present')
     return True
 
 
@@ -114,7 +143,7 @@ def execute(value,*,cancelled=lambda:False,clock=time.monotonic,wall=time.time,s
     if observer==config['retiredProducer']:raise VerifyStop('wecom_cleanup_recovery_producer_not_retired')
     def local():
         budget();identity.check();observe_exited_hosts([old],process_created_at)
-        quiescent_processes(processes,self_pid=identity.current_pid,agent_pid=identity.agent_pid,budget=budget);budget();return True
+        quiescent_processes(processes,self_pid=identity.current_pid,agent_pid=identity.agent_pid,budget=budget,target_serial=config['serial']);budget();return True
     lease_budget=CausalLeaseBudget(config['causalLease'],clock=clock)
     # Reuse only the bounded authenticated GET transport, with the distinct
     # recovery route; no original host identities are supplied to that transport.

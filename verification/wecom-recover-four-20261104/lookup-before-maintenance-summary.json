@@ -1,0 +1,32 @@
+{
+  "label": "before-maintenance",
+  "at": "2026-11-04T06:09:16.360Z",
+  "sha256": "f1670f631060ebac895a8b24a3e5830736664e2ec4fa2aa6758d0c73aa78d089",
+  "counts": {
+    "pools": 1,
+    "sessions": 49,
+    "jobs": 288,
+    "tasks": 326,
+    "locks": 140
+  },
+  "deviceCount": 51,
+  "channelCount": 9,
+  "configRevision": 187,
+  "configSha256": "9bbe3bbe479c1686202b4770008e65263ccbd7a9769d9e0faf997eddb9f4bdc4",
+  "poolTopKeys": [
+    "audits",
+    "config",
+    "grants",
+    "devices",
+    "version",
+    "channels",
+    "requests",
+    "revision",
+    "lastClient",
+    "roundStops",
+    "preparations",
+    "configRevision",
+    "preparationKeys",
+    "businessSequence"
+  ]
+}

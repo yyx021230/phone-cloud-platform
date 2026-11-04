@@ -20,3 +20,12 @@
 真实媒体宿主D-075 live通过，PID2503525、原binary、8Mbps/2包保持。当前ACTIVE仍9afc29ae、运行image aba0ddc3、Agent15224/ADB31384未变化，无服务重载或状态释放。
 
 05:59Z在用74/82/163/159/91五路控屏，查名2执行/2等人工，配置enabled/rev187。数据库还含历史非终态行，不能把这些行数直接当Agent真实在途数。已向用户请求“等当前任务安全收尾后，约3分钟仅云端维护”，待本次明确答复，不沿用上一窗口授权；未提交任何恢复POST。prepared.json/manifest.json/impact.json为此次准备和影响范围记录。
+
+
+## 06:06后新增授权与前置阻塞（未切换）
+
+用户已批准一次云端重载，另要求完整保留现有查名占用/账号/冷却/请求状态。完整一致性快照已在远端0600保存，仓库仅保存脱敏摘要lookup-before-maintenance-summary.json；51设备/9channel及关联49session/288job/326task/140历史和当前lock。pool enabled/configRevision187未动，不用会清退热channel的disabled维护方式。原两条当前任务已终态，见drain-original-tasks.json。
+
+旧SYSTEM恢复脚本把实际查名runner与隔离OCR误识别为残留，四台恢复将在原生第一关失败。因此未上线云端、未创建proof attempt、未消耗一次重载。四台只读预检包PID/forward均0，见target-resource-preflight.json；这不是原生proof。
+
+新增本地一文件恢复脚本修复及反例：固定其他serial/SYSTEM/Agent/Python/模式/ADB路径和严格OCR父子链可共存，目标serial/未知/伪路径/非SYSTEM/循环/孤儿/父PID重用等继续停止。Python企微579和投屏69通过，原3秒challenge与SDK/ADB/控屏不变。实际只读候选另遇独立staged小红书进程，保持未知停止、等待其完成，不结束他人进程。云端窗口已有授权，但用户“别动Agent”仍限制一文件生产热更新：单文件例外未获准，不重载Agent、不触碰ADB、不把本地579当四台真实恢复成功。
