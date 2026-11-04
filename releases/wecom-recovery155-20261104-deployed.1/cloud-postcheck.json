@@ -1,0 +1,48 @@
+{
+  "ready": {
+    "status": 200,
+    "ok": true,
+    "postgres": true,
+    "redis": true
+  },
+  "pool": {
+    "enabled": true,
+    "revision": 187,
+    "counts": {
+      "registered": 51,
+      "executing": 3,
+      "waitingHuman": 6,
+      "queued": 3
+    }
+  },
+  "devices": {
+    "total": 141,
+    "online": 125,
+    "target155": [
+      {
+        "online": true,
+        "available": false,
+        "reason": "device_busy"
+      }
+    ]
+  },
+  "agent": [
+    {
+      "lastSeenAt": "2026-11-04T02:39:41.428Z",
+      "taskCounts": {
+        "running": 3,
+        "failed": 1549,
+        "succeeded": 3447,
+        "cancelled": 1
+      },
+      "wecomRecoveryProtocol": "wecom-preinput-recovery-v1",
+      "wecomRecoveryAt": "2026-11-04T02:40:09.738Z",
+      "control": {
+        "enabled": true,
+        "connected": true,
+        "activeSessions": 1,
+        "serverJarReady": true
+      }
+    }
+  ]
+}

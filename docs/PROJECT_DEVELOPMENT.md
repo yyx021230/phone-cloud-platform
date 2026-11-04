@@ -6616,3 +6616,14 @@ SYSTEM Agent仍19756/同出生代次，固定路径SYSTEM ADB为31384，后续�
 延续local.1维护证明与原host证据分离、具名操作者、未知不放行、只恢复155的边界；本轮没有改运行代码，准备脚本和回执另提交，新rc.1标签绑定准备快照，26个运行文件与462e源提交逐字一致。初次Compose预检在新SSH环境缺XHS_BATCH_CONFIG_PATH/IMAGE/DATABASE_URL而拒绝；没有填假值、跳过插值或改既有Compose。依据当前同项目运行xhs-batch的实际只读挂载、image及现有ENV，在命令内存中复用原三项引用；完整old/new解析仅图像不同，预测应用环境与当前容器逐项完全一致。小红书私有配置、image、数据库、进程和启动方式均未修改；resolved配置与凭据不落盘。通用旧prepare脚本未修改，本轮只新增可审阅的只读操作器，必须显式--run才读取Docker/Compose，不提供服务切换能力。
 
 一次有界只读占用采集未取得有效回执，按未知保留，随后相同源码完整采集成功；没有因此执行恢复或将其当生产根因。Windows临时SSH master按会话策略过期使可选只读计时未执行，未绕过认证或把模拟/元数据读取标成SYSTEM正向验收；维护前重新认证并复核即可，不因此动ADB。云端和Windows均已暂存未启用材料，原清理义务仍pending。真正启动恢复仍需本次明确维护窗口，先等在途查询/采集安全收尾，云端与共享Agent重载可能短断控屏；不得以提供登录信息当作发布或重载授权。回滚只退组件/配置引用，保留原task/job及recovery审计，未获proof不能删围栏。来源、产物、备份范围、原生/PG未验项和维护条件见verification/wecom-recovery155-20261104-prepared；不推送、未上线，不宣称155或生产真机验收完成。
+
+
+### 变更记录｜2026-11-04 已授权维护加载155协议补丁，原记录历史窗口阻塞仍保留
+
+用户明确批准等任务收尾后维护wecom-recovery155-20261104-rc.1（a91036f，运行源码462eaf3）。旧基线32c/ACTIVE a5390dcc保持至切换前；原35份Compose仅追加main image覆盖，云端新镜像aba0ddc3，SYSTEM Agent19756退出→15224。原SYSTEM固定ADB31384及出生代次、计划任务动作、keys、环境均不变，ADB不在Agent进程组内；不重建ADB、不切身份、不重启Windows/USB/媒体。临时使用既有enabled开关185→186暂停接单让在途任务/outbox归零，186→187恢复原值true，其他配置hash deeaeb269cba7ca104e697ab3a6ef63a291cfa788d4aaf5be686564b05fe9d3c保持；未取消/重提业务请求。补丁仅9cloud/17Agent运行文件，无数据库迁移。health/ready200、PG/Redis正常、141总/125在线，后检outbox0、其他查名自然恢复执行；旧控制连接按本次授权短断。D-075真实宿主发布前后live通过，媒体PID2503525与binary/drop-in/8Mbps/2包保持。
+
+155仍cleanup_pending，恢复GET409 ineligible，未提交恢复POST/worker/proof，未删锁、未改原失败或hosts=null/hostClosedAt空。四条原数据库记录与维护前逐字段相同，独立只读资格校验成功；原job/task在最新记录的排名已超过5000（分别5311/5343条更新记录），启动loadOverlay只取最近5000，未一起加载pending义务引用的原上下文。此为本轮确认的新根因，不能称原记录丢失或155恢复。已上线状态wecom-recovery155-20261104-deployed.1明确deployed_155_recovery_blocked；回执releases/wecom-recovery155-20261104-deployed.1，旧镜像/实际文件/ACTIVE与四记录备份保持，无全库备份，不倒退业务数据。原生proof和新业务真机验收仍未测。
+
+### 决策日志｜2026-11-04 围栏存在不等于其原上下文已保留
+
+延续本日独立维护证明、不伪造原host和未知不放行；本次已授权维护仅加载已提交rc.1，无权将新的未验证修复直接追加到生产。拒绝手工注入内存、修改原更新时间、调大全局历史上限或删除155围栏。后续本地最小修复应按pending义务所引用的原job/task/普通lock及验证task主键补载，并在常规裁剪时保留这些引用；不改变查名历史/任务写入和调度。修复本地验证成新不可变候选，再确认实际追加重载窗口；现有服务已恢复，不延长维护等待开发。部署备份、凭据不落盘、SYSTEM身份、媒体冻结及D-075继续有效。

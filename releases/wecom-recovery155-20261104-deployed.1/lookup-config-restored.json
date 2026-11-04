@@ -1,0 +1,13 @@
+{
+  "status": 200,
+  "configRevision": 187,
+  "enabled": true,
+  "revision": 187,
+  "otherHash": "deeaeb269cba7ca104e697ab3a6ef63a291cfa788d4aaf5be686564b05fe9d3c",
+  "counts": {
+    "registered": 51,
+    "executing": 0,
+    "waitingHuman": 0,
+    "queued": 3
+  }
+}
