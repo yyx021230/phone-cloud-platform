@@ -174,5 +174,22 @@ class PeerTests(unittest.TestCase):
         peer=PeerSocket(w,g,runtime,lambda:None);w.fd=11
         with self.assertRaisesRegex(VerifyStop,'peer_unconfirmed'):peer.sendall(b'0000')
         self.assertEqual(w.sent,[])
+    def test_worker_appearing_after_connect_blocks_actual_send(self):
+        w=Wire();g=Guard();row=types.SimpleNamespace(status='ESTABLISHED',laddr=('127.0.0.1',5037),raddr=('127.0.0.1',40000),pid=500)
+        class P:
+            def create_time(self):return 1700000000
+            def exe(self):return r'D:\PhoneCloud\tools\android-sdk\platform-tools\adb.exe'
+            def username(self):return r'NT AUTHORITY\SYSTEM'
+        from wecom_system_runtime import ProcessIdentity
+        g.adb=ProcessIdentity(HostRef(500,1700000000),'d:/phonecloud/tools/android-sdk/platform-tools/adb.exe',r'NT AUTHORITY\SYSTEM')
+        runtime=types.SimpleNamespace(net_connections=lambda **k:[row],Process=lambda pid:P())
+        checks=[]
+        def local():
+            checks.append(True)
+            if len(checks)>1:raise VerifyStop('wecom_cleanup_recovery_worker_present')
+            g.check();return True
+        peer=PeerSocket(w,g,runtime,lambda:None,process_guard=local)
+        with self.assertRaisesRegex(VerifyStop,'worker_present'):peer.sendall(b'0000')
+        self.assertEqual(w.sent,[]);self.assertEqual(len(checks),2)
 
 if __name__=='__main__':unittest.main()

@@ -116,12 +116,16 @@ def quiescent_processes(processes,*,self_pid,agent_pid,budget,target_serial=None
 
 class PeerSocket:
     """Attest the actual reverse TCP endpoint before every smart-socket send."""
-    def __init__(self,wire,identity,runtime,budget):
+    def __init__(self,wire,identity,runtime,budget,process_guard=None):
         self.wire,self.identity,self.runtime,self.budget=wire,identity,runtime,budget
+        self.process_guard=process_guard
         self.endpoints=(tuple(wire.getsockname()),tuple(wire.getpeername()),wire.fileno())
         self.attest()
     def attest(self):
-        self.budget();self.identity.check();self.budget()
+        self.budget()
+        if self.process_guard is None:self.identity.check()
+        elif self.process_guard()is not True:raise VerifyStop('wecom_cleanup_recovery_processes_unconfirmed')
+        self.budget()
         local,peer,fd=self.endpoints
         if local[0]!='127.0.0.1'or peer!=('127.0.0.1',5037)or fd<0 or self.endpoints!=(tuple(self.wire.getsockname()),tuple(self.wire.getpeername()),self.wire.fileno()):raise VerifyStop('wecom_cleanup_recovery_peer_unconfirmed')
         owners=[c.pid for c in self.runtime.net_connections(kind='tcp')if c.status=='ESTABLISHED'and tuple(c.laddr)==peer and tuple(c.raddr)==local]
@@ -180,13 +184,15 @@ def execute(value,*,cancelled=lambda:False,clock=time.monotonic,wall=time.time,s
         local()
         if address!=('127.0.0.1',5037):raise VerifyStop('wecom_cleanup_recovery_peer_unconfirmed')
         wire=connect(address,timeout=timeout)
-        try:return PeerSocket(wire,identity,runtime,budget)
+        try:return PeerSocket(wire,identity,runtime,budget,process_guard=local)
         except Exception:wire.close();raise
     authority()
     # These commands only read facts. Revalidate server authority before each
     # complete frame and after both; every socket operation still rechecks the
     # current SYSTEM identity, target workers, peer owner and the 3s deadline.
-    adb=adb_factory(config['serial'],lambda:(budget()or True),budget,connect=peer_connect,operation_guard=local)
+    # PeerSocket owns that single combined send boundary; do not duplicate the
+    # same full scan in ReadOnlyAdb.operation_guard before PeerSocket scans again.
+    adb=adb_factory(config['serial'],lambda:(budget()or True),budget,connect=peer_connect)
     def frame_pids(package):
         if package==MAIN:authority()
         return adb.pids(package)
@@ -199,14 +205,24 @@ def execute(value,*,cancelled=lambda:False,clock=time.monotonic,wall=time.time,s
 
 
 def main():
-    cancelled=threading.Event()
+    cancelled=threading.Event();started=time.perf_counter();task_id=None
     try:
-        value=json.loads(read_line(sys.stdin,32768));start(sys.stdin,cancelled)
+        value=json.loads(read_line(sys.stdin,32768));task_id=value.get('taskId')if isinstance(value,dict)else None;start(sys.stdin,cancelled)
         result={'ok':True,'proof':execute(value,cancelled=cancelled.is_set)}
     except VerifyStop as error:
         code=str(error)if re.fullmatch(r'[a-z0-9_]{1,100}',str(error))else 'wecom_cleanup_recovery_unconfirmed'
         result={'ok':False,'code':code}
     except Exception:result={'ok':False,'code':'wecom_cleanup_recovery_unconfirmed'}
+    if os.name=='nt':
+        try:
+            import tempfile
+            from pathlib import Path
+            directory=Path(tempfile.gettempdir())/'PhoneCloudWecomRecovery'
+            directory.mkdir(exist_ok=True)
+            if isinstance(task_id,str)and re.fullmatch(r'[A-Za-z0-9_-]{1,160}',task_id)and len(list(directory.glob('result-*.json')))<100:
+                diagnostic={'taskId':task_id,'ok':result['ok'],'code':result.get('code'),'elapsedMs':round((time.perf_counter()-started)*1000,2),'snapshotElapsedMs':[r['elapsedMs']for r in result.get('proof',{}).get('snapshots',[])]}
+                with (directory/('result-'+task_id+'.json')).open('x',encoding='utf-8')as output:json.dump(diagnostic,output)
+        except Exception:pass
     print(json.dumps(result),flush=True)
 
 if __name__=='__main__':main()
