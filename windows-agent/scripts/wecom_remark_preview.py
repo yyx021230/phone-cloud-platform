@@ -171,15 +171,26 @@ class _RemarkingDriver:
         if observe is not None:observe(action,before,after)
 
     def read_until(self, predicate, check_budget):
-        for _ in range(30):
+        reads = 0
+        stable = None
+        while reads < 30:
             check_budget()
             screen = self.driver.snapshot()
             check_budget()
             w.guard(screen)
+            if w.is_observed_progress(screen):
+                stable = None
+                self.sleep(.25)
+                continue
+            reads += 1
             if screen.has(w.SEND):
                 raise w.StopPreview("unexpected_send_page")
             if predicate(screen):
-                return screen
+                if stable == screen:
+                    return screen
+                stable = screen
+            else:
+                stable = None
             self.sleep(.25)
         raise w.StopPreview("remark_observation_budget_exhausted")
 
@@ -255,6 +266,7 @@ class _RemarkingDriver:
             if values(second) != expected or not remark_phone_matches(second, phone):
                 raise w.StopPreview('remark_phone_not_verified')
             self.remark_phone_set = True
+            screen = second
         self.perform("close_remark", screen, phone, check_budget, context)
         screen = self.profile(phone, check_budget)
         self.prepared = True

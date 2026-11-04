@@ -122,10 +122,105 @@ class PreviewFlowTests(unittest.TestCase):
         self.assertEqual(device.calls.count("enter_phone"), 1)
         self.assertNotIn("search", device.calls)
 
+    def test_search_waits_for_settled_row_and_is_delivered_once(self):
+        moving = replace(TYPED, nodes=(TYPED.nodes[0],
+                         replace(TYPED.nodes[1], position=(.5, .19))))
+        class MovingRow(Device):
+            def __init__(self):
+                super().__init__()
+                self.observations = []
+            def snapshot(self):
+                if self.index == 4:
+                    page = moving if not self.observations else TYPED
+                    self.observations.append(page)
+                    return page
+                return super().snapshot()
+            def apply(self, action, expected, phone, check_budget):
+                if action == "search":
+                    if len(self.observations) < 3 or self.observations[-2:] != [TYPED, TYPED]:
+                        raise AssertionError("Search row was still moving")
+                return super().apply(action, expected, phone, check_budget)
+        device = MovingRow()
+        self.assertEqual(run(device)["status"], "ready_before_send")
+        self.assertEqual(device.calls.count("search"), 1)
+
+    def test_number_changes_during_search_settling_stop_before_search(self):
+        wrong = frame(w.Node("android.widget.EditText", text=OTHER),
+                      "网络查找手机/邮箱：" + OTHER)
+        class ChangedNumber(Device):
+            observed = False
+            def snapshot(self):
+                if self.index == 4:
+                    if self.observed:
+                        return wrong
+                    self.observed = True
+                return super().snapshot()
+        device = ChangedNumber()
+        self.assertEqual(run(device)["code"], "phone_readback_mismatch")
+        self.assertNotIn("search", device.calls)
+        self.assertEqual(device.calls.count("enter_phone"), 1)
+
+    def test_search_ack_without_navigation_never_repeats_click(self):
+        class NoNavigation(Device):
+            def apply(self, action, expected, phone, check_budget):
+                if action == "search":
+                    self.calls.append(action)
+                    return
+                return super().apply(action, expected, phone, check_budget)
+        device = NoNavigation()
+        self.assertEqual(run(device, max_reads=25)["code"], "observation_budget_exhausted")
+        self.assertEqual(device.calls.count("search"), 1)
+
+    def test_observed_search_progress_uses_original_deadline_not_read_count(self):
+        busy = frame(text("查找中", name="com.tencent.wework:id/krm"))
+        class SlowSearch(Device):
+            remaining = 40
+            def snapshot(self):
+                if self.index == 5 and self.remaining:
+                    self.remaining -= 1
+                    return busy
+                return super().snapshot()
+        device = SlowSearch()
+        self.assertEqual(run(device, max_reads=15)["status"], "ready_before_send")
+        self.assertEqual(device.calls.count("search"), 1)
+
+    def test_progress_whitelist_excludes_unknown_pages_and_live_controls(self):
+        busy = frame(text("请稍候…", name="com.tencent.wework:id/krm"))
+        self.assertTrue(w.is_observed_progress(busy))
+        for page in (replace(busy, package="com.other.app"),
+                     frame(text("请稍候…", name="unknown")),
+                     frame(text("加载中", name="com.tencent.wework:id/krm")),
+                     replace(busy, nodes=busy.nodes + (text("保存"),)),
+                     replace(busy, nodes=busy.nodes * 2)):
+            self.assertFalse(w.is_observed_progress(page))
+
+    def test_oppo_clock_and_battery_only_ignored_in_top_system_band(self):
+        clock = text("18:47", name="com.android.systemui:id/clock",
+                     position=(.208, .03), size=(.102, .028))
+        battery = text("84", name="com.android.systemui:id/battery_text",
+                       position=(.859, .03), size=(.064, .015))
+        self.assertTrue(w.is_system_status_indicator(clock))
+        self.assertTrue(w.is_system_status_indicator(battery))
+        for node in (replace(clock, name="com.tencent.wework:id/clock"),
+                     replace(clock, position=(.2, .2)),
+                     replace(battery, text="101"),
+                     replace(battery, name="com.android.systemui:id/unknown"),
+                     replace(battery, desc="确认")):
+            self.assertFalse(w.is_system_status_indicator(node))
+
     def test_prepopulated_input_is_not_overwritten(self):
         device = Device(PATH[:3] + [TYPED])
         self.assertEqual(run(device)["code"], "unrecognized_phone_input")
         self.assertNotIn("enter_phone", device.calls)
+
+    def test_only_empty_status_bar_background_in_observed_top_band_is_ignored(self):
+        node=w.Node('android.view.View',name='android:id/statusBarBackground',position=(.5,.022),size=(1,.044))
+        self.assertTrue(w.is_system_status_indicator(node))
+        for other in (replace(node,name='com.tencent.wework:id/statusBarBackground'),
+                      replace(node,position=(.5,.2)),replace(node,size=(1,.2)),
+                      replace(node,text='unknown'),replace(node,desc='click'),
+                      replace(node,kind='android.widget.Button')):
+            self.assertFalse(w.is_system_status_indicator(other))
 
     def test_duplicate_search_rows_or_editors_fail_closed(self):
         for extra in (text("网络查找手机/邮箱：" + PHONE, name="duplicate"),

@@ -1,12 +1,12 @@
 # CPS企微三接口：本地候选验收与启用说明
 
-日期：2026-11-04（备注名规则更新）。协议依据：[双方对接方案v0.1](CPS企微客户对接方案-v0.1.md)。本次为本地候选，未部署、未推送，未连接生产手机或真实CPS服务。
+日期：2026-11-04（新名单一机一企微、本地200/202流程与Poco兼容）。协议依据：[双方对接方案v0.3](CPS企微客户对接方案-v0.1.md)。当前为本地候选，未部署、未推送。本轮只操作200/202两台本地手机，不连接真实CPS；下方旧生产记录保留为历史。
 
 ## 本次实现
 
 | 方向 | 接口 | 行为 |
 |---|---|---|
-| CPS→平台 | POST /api/v1/lead/dispatch | Body签名；可靠保存后立即返回；按wecom_phone显式绑定定位手机主号／分身 |
+| CPS→平台 | POST /api/v1/lead/dispatch | Body签名；可靠保存后立即返回；新接入按wecom_phone定位手机主号，旧分身路由仅兼容保留 |
 | 平台→CPS | POST /api/v1/lead/callback | 只回传申请明确提交、已是好友、真实添加频繁；回调重试不重复操作手机 |
 | CPS→平台 | POST /api/v1/lead/devices/query | 默认全部设备，可筛在线；分别报告成员、物理占用和全局容量 |
 
@@ -44,14 +44,14 @@
 | CPS_WECOM_ENABLED | 必须显式为true，否则拒绝启动 |
 | CPS_EXECUTION_MODE | 必须显式preview或send；preview从不发送邀请或结果回调 |
 | CPS_WECOM_CLIENTS_JSON | 接入appId、secret、固定callbackUrl、allDeviceStatus及members；凭据用安全渠道注入 |
-| members | 本版每项含wecom_phone、deviceNumber、appSlot(main/clone)、enabled、bindingVerified；可额外钉住wecom_corp_id和wecom_userid（须成对配置） |
+| members | 新名单每项含wecom_phone、deviceNumber、appSlot=main、enabled、bindingVerified；可额外钉住wecom_corp_id和wecom_userid（须成对配置）。旧clone配置不迁入新名单 |
 | CPS_PLATFORM_BASE_URL / CPS_PLATFORM_TOKEN | 内部平台地址与平台管理员凭据，仅桥接端使用，不交给CPS |
 | CPS_DATABASE_URL | 生产必须PostgreSQL；仅连接独立CPS账本，不能用文件模式代替 |
 | CPS_STATE_KEY | 稳定账本命名空间，默认default；不能为重试、迁机或切版本更换以绕过防重 |
 | CPS_DATA_DIR | 仅本地文件测试使用，默认data/cps-wecom；目录/账本受限权限 |
 | CPS_PORT | 默认8797，仅绑定127.0.0.1；对外HTTPS入口需另行准备和授权 |
 
-手机号模式的wecom_phone不能在多个客户端重复配置，同一手机槽位也不能绑定多个账号；可额外登记的官方企业＋成员同样不能重复。一个客户端不能混用手机号配置与旧成员ID配置，旧全成员ID配置仍兼容。`bindingVerified`缺省为false；未核验不执行。现有真实映射表仍待补，不能用示例值启用。更换实际登录成员时先停用原映射并核验新绑定。
+手机号模式的wecom_phone不能在多个客户端重复配置，同一手机槽位也不能绑定多个账号；可额外登记的官方企业＋成员同样不能重复。一个客户端不能混用手机号配置与旧成员ID配置，旧全成员ID配置仍兼容。`bindingVerified`缺省为false；未经管理方确认不执行。本轮以用户已确认准确的新表QohJH2登记，不再逐台读取号码；不能用演示号码启用。更换实际登录成员时先停用原映射并确认新绑定。
 
 生产回调必须HTTPS；内部平台凭据也仅通过HTTPS或本机回环传输。仅本地测试可配置allowLoopbackTest=true的回环HTTP回调，不向公网开放测试接收器。服务启动命令为`npm run start:cps-wecom`，不会顺带重启平台或Agent。
 
@@ -96,7 +96,7 @@
 记录见[本轮生产内部预览阻塞回执](../verification/wecom-native-api-20261103/REPORT.md)。本地Postgres／客户端模拟回归仍是原来范围，不能用于解除这条真实旧义务。
 
 
-## 2026-11-04 企微登录手机号配置补充（本地候选）
+## 2026-11-04 旧名单手机号导入（历史，停止用于新绑定）
 
 下发新增wecom_phone；设备列表在accounts每一项返回相同字段，主号/分身分别有自己的手机号。客户phone不改变用途，仍用于搜索与备注。新模式不需要先补“官方成员ID到手机”的手工表，但CPS原企业/成员字段仍下发；若配置钉住官方ID，收到不一致即拒绝。该字段参加签名、原任务指纹、防重与限频，未知手机号不按成员ID退回其他账号。
 
@@ -112,3 +112,15 @@
 ```
 
 真正启用前分别核对实际主号/分身登录手机号，确认后才设置bindingVerified和enabled；表格登记不等于手机当前登录证明。本轮不热更新或重启生产；不修改查名代码、Agent、ADB或在用手机。CPS调用方仍需同步wecom_phone并联调，不能称已经上线可用。
+
+## 2026-11-04 新名单和本地手机准备
+
+当前改用QohJH2新表，一机一企微。用户已确认号码准确，本轮直接测200/202的搜索、备注保存与回读、邀请页边界；201/203/204未接入本机，不冒充已测。旧手机号草稿不自动启用或迁移。CPS仍只传客户phone、执行账号wecom_phone及原业务字段，不选择分身。
+
+本地发现PocoService被手机后台策略暂停：200相同PID的cgroup从freezer:/变为freezer:/frozen，RPC和手机内HTTP同时不响应。只提高RPC超时、重复安装或重启ADB不能解决该原因。202有相同延迟后无响应表现，后台策略调整后的复测改善；未把200的cgroup证据套到202。
+
+仅两台本地测试手机已调整PocoService自身设置：200在“电池→后台耗电管理→PocoService”选“允许后台高耗电”；202在PocoService耗电管理中开启“允许完全后台行为”。202自启动和关联启动未开启，不全局关闭系统冻结策略。回退时分别恢复200的“智能控制后台耗电”和202上述开关关闭；这会恢复原限制，需要重新验证。
+
+代码仅为200/202固定身份启用元素点击适配：从当前Poco元素得到位置，再核对Poco与wm屏幕尺寸，沿用租约及前台校验发出一次ADB tap。没有固定页面坐标、点击重放或ADB server管理；旧八台点击方式不变。搜索框与备注表单先等稳定帧，已知“查找中／请稍候…”仅在原任务时限内等待；未知保存仍保留unknown，禁止补点。
+
+测试回执见[本轮本地流程记录](../verification/wecom-local-single-20261104/REPORT.md)。独立Mac测试夹具执行实际业务驱动，不修改正式Windows SYSTEM守卫；不能据此宣称生产CPS API、Windows原生执行器或真实发送已验收。

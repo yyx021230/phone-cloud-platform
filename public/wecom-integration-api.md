@@ -176,6 +176,8 @@ CPS专用接入请见[CPS客户下发、结果回传与全部设备状态](./cps
 | screen_prepare_timeout / screen_wake_not_confirmed | 屏幕准备超时／未确认唤醒；核对手机，不自动重发 |
 | device_unlock_requires_user | 系统锁屏需要本人处理；不输入密码或修改设置 |
 | poco_not_ready | 已有读取组件未就绪，不代表未操作；核对原任务及备注状态 |
+| wecom_element_geometry_unconfirmed / wecom_element_display_unconfirmed | 元素位置或当前屏幕尺寸未核对，未发出该次点击；检查适配，不猜坐标。本地200/202候选新增，未上线 |
+| wecom_element_tap_delivery_unknown | 该次元素点击响应未确认，禁止盲目补点；按原任务核对。本地200/202候选新增，未上线 |
 | adb_io_timeout | 本任务对原有ADB的单次I/O超时；不重启、切身份或重发 |
 | wecom_launch_not_ready | 指定账户应用未在前台等待预算内确认；结合selector阶段核对，不重复点账户 |
 | home_navigation_timeout | 回首页超出阶段预算；不在未知页面继续操作 |

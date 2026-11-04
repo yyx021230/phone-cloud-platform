@@ -52,6 +52,15 @@ def run(driver,**kwargs):
 
 
 class RemarkFlowTests(unittest.TestCase):
+    def test_matching_remark_page_must_finish_animation_before_it_can_be_used(self):
+        page=remark();moving=replace(page,nodes=page.nodes+(w.Node('android.view.View',position=(1.3,.7)),))
+        frames=iter([moving,page,page]);checks=[]
+        class Reader:
+            def snapshot(self):return next(frames)
+        wrapper=r._RemarkingDriver(Reader(),lambda _:None,(r.DEFAULT_REMARK,r.DEFAULT_DESCRIPTION))
+        self.assertEqual(wrapper.read_until(r.remark_page,lambda:checks.append(True)),page)
+        self.assertEqual(len(checks),6)
+
     def test_custom_text_is_saved_once_and_persisted_without_leaking_into_result(self):
         name,desc='客户甲😀','渠道A\n联调备注'
         d=Driver(requested_name=name,requested_description=desc)
@@ -137,6 +146,36 @@ class RemarkFlowTests(unittest.TestCase):
         self.assertEqual(out['code'],'executor_error_no_replay');self.assertFalse(out['remarkSaved'])
         self.assertEqual(out['remarkSaveStatus'],'unknown');self.assertEqual(d.calls.count('save_remark'),1)
         self.assertNotIn('open_preview',d.calls);self.assertNotIn(PHONE,json.dumps(out))
+
+    def test_slow_save_spinner_is_waited_then_persistence_verified_once(self):
+        busy=frame(text('请稍候…',name='com.tencent.wework:id/krm'))
+        class SlowSave(Driver):
+            remaining=40
+            def snapshot(self):
+                if self.calls and self.calls[-1]=='save_remark' and self.remaining:
+                    self.remaining-=1
+                    return busy
+                return super().snapshot()
+        d=SlowSave();out=run(d)
+        self.assertTrue(out['readyToSend'])
+        self.assertEqual(out['remarkSaveStatus'],'confirmed')
+        self.assertEqual(d.calls.count('save_remark'),1)
+
+    def test_permanent_save_spinner_keeps_deadline_and_unknown_outcome(self):
+        busy=frame(text('请稍候…',name='com.tencent.wework:id/krm'))
+        class PendingSave(Driver):
+            def snapshot(self):
+                if self.calls and self.calls[-1]=='save_remark':return busy
+                return super().snapshot()
+        now=[0]
+        def sleep(seconds):now[0]+=seconds
+        d=PendingSave()
+        out=r.run_customer_preview(d,{'phoneNumber':PHONE},timeout=4,
+                                  clock=lambda:now[0],sleep=sleep)
+        self.assertEqual(out['code'],'timeout')
+        self.assertEqual(out['remarkSaveStatus'],'unknown')
+        self.assertEqual(d.calls.count('save_remark'),1)
+        self.assertNotIn('open_preview',d.calls)
 
     def test_persistence_not_proven_by_successful_navigation(self):
         d=Driver();d.pages[10]=remark()

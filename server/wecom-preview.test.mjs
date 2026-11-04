@@ -6,14 +6,20 @@ import vm from "node:vm";
 import {isManagedLookupTask} from "./managed-lookup-delivery.mjs";
 import { WECOM_PREVIEW_DEVICES as pool, previewTarget, previewRequest, previewLease, previewRemarkInput, previewRemarkFingerprint, createPreviewSubmissionGate, invitationRequest, publicInvitation, publicWecomDevice } from "./wecom-preview.mjs";
 
-test("only eight fixed physical identities and the verified Android users are allowed", () => {
+test("legacy identities plus the two local single-account phones have exact bindings", () => {
   assert.deepEqual(pool, JSON.parse(fs.readFileSync(new URL("../windows-agent/scripts/wecom_preview_devices.json", import.meta.url), "utf8")));
-  assert.equal(Object.keys(pool).length, 8);
+  assert.deepEqual(Object.keys(pool).sort(), ['23','25','43','59','93','145','155','157','200','202'].sort());
   for (const [number, entry] of Object.entries(pool)) {
     assert.equal(previewTarget({ deviceName: number, deviceId: `adb:${entry.serial}`, adb: { serial: entry.serial } }).androidUser, number === "155" ? 999 : 0);
     assert.throws(() => previewTarget({ deviceName: number, deviceId: "adb:OTHER", adb: { serial: "OTHER" } }), /mapping_unconfirmed/);
   }
   assert.throws(() => previewTarget({ deviceName: "67" }), /not_allowed/);
+  for (const number of ['200','202']) {
+    assert.deepEqual(pool[number].appSlots, {main:0});
+    assert.equal(pool[number].elementInput, 'adb_v1');
+    assert.throws(() => previewTarget({deviceName:number,deviceId:`adb:${pool[number].serial}`,adb:{serial:pool[number].serial}}, 'clone'), /slot_not_configured/);
+  }
+  for (const number of ['23','25','43','59','93','145','155','157']) assert.equal(pool[number].elementInput, undefined);
 });
 
 test("API requires explicit known execution mode and rejects arbitrary flags or slots", () => {

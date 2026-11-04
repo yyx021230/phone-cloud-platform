@@ -76,22 +76,27 @@ def is_system_status_indicator(node):
     in WeCom's hierarchy. Keep every app node, body overlay and unknown text;
     the action-time full-page and live-target comparisons remain unchanged.
     """
-    if not node.name.startswith("com.android.systemui:id/"):
+    background = node.name == 'android:id/statusBarBackground'
+    if not background and not node.name.startswith("com.android.systemui:id/"):
         return False
     x, y = node.position
     width, height = node.size
     if (not all(math.isfinite(v) for v in (x, y, width, height))
-            or not 0 <= x <= 1 or not 0 <= y <= .04
-            or not 0 < width <= 1 or not 0 < height <= .04
-            or y + height / 2 > .04):
+            or not 0 <= x <= 1 or not 0 <= y <= .05
+            or not 0 < width <= 1 or not 0 < height <= (.05 if background else .04)
+            or y + height / 2 > .05):
         return False
     if node.desc:
         return False
+    if background:
+        return node.kind == 'android.view.View' and not node.text
     if node.kind == "android.widget.TextView":
         return ((node.name == "com.android.systemui:id/clock"
                  and re.fullmatch(r"[0-2]?[0-9]:[0-5][0-9]", node.text) is not None)
                 or (node.name == "com.android.systemui:id/battery_percentage_view"
                     and re.fullmatch(r"(?:100|[0-9]{1,2})%", node.text) is not None)
+                or (node.name == "com.android.systemui:id/battery_text"
+                    and re.fullmatch(r"(?:100|[0-9]{1,2})", node.text) is not None)
                 or (node.name == "com.android.systemui:id/networkspeed_num"
                     and re.fullmatch(r"[0-9]{1,4}(?:\.[0-9]{1,2})?", node.text) is not None)
                 or (node.name == "com.android.systemui:id/networkspeed_unit"
@@ -150,6 +155,17 @@ def is_add_page(screen):
 def is_phone_editor(node):
     return (node.kind == "android.widget.EditText" or
             (node.kind == "android.widget.SearchView" and node.name == OBSERVED_PHONE_SEARCH_VIEW))
+
+
+def is_observed_progress(screen):
+    """Observed WeCom modal only; never treat an arbitrary page as loading."""
+    nodes = [n for n in screen.nodes if n.visible and not is_system_status_indicator(n)]
+    progress = [n for n in nodes if n.kind == "android.widget.TextView"
+                and n.name == "com.tencent.wework:id/krm"
+                and n.text in ("查找中", "请稍候…")]
+    return (screen.package == PACKAGE and len(progress) == 1 and len(nodes) <= 3
+            and all(n.kind not in ("android.widget.EditText", "android.widget.Button")
+                    and (not n.text or n == progress[0]) for n in nodes))
 
 
 def editor(screen):
@@ -260,6 +276,7 @@ def run_preview(driver, request, timeout=45, max_reads=90, cancelled=lambda: Fal
     preview_frames = 0
     empty_input_frame = None
     home_menu_frame = None
+    search_input_frame = None
 
     def result(status, code):
         return {"workflowVersion": WORKFLOW, "status": status, "code": code,
@@ -280,11 +297,18 @@ def run_preview(driver, request, timeout=45, max_reads=90, cancelled=lambda: Fal
             if clock() >= deadline:
                 raise StopPreview("timeout")
 
-        for _ in range(max_reads):
+        reads = 0
+        while reads < max_reads:
             check_budget()
             screen = driver.snapshot()
             check_budget()
             guard(screen)
+            if stage in ("profile", "preview") and is_observed_progress(screen):
+                # An acknowledged operation is still in progress. Keep the
+                # original deadline/cancellation; never click it again.
+                sleep(0.25)
+                continue
+            reads += 1
             if screen.has(SEND):
                 if stage != "preview" or not target_verified:
                     raise StopPreview("preview_target_unverified")
@@ -341,13 +365,25 @@ def run_preview(driver, request, timeout=45, max_reads=90, cancelled=lambda: Fal
                     empty_input_frame=None
             elif stage == "readback":
                 if not screen.matching(is_phone_editor):
+                    search_input_frame = None
                     sleep(0.25)
                     continue
                 value = editor(screen).text
                 if value not in ("", "手机号", phone):
                     raise StopPreview("phone_readback_mismatch")
                 if value == phone and screen.matching(lambda n: n.text.startswith("网络查找手机/邮箱")):
+                    # The network-search row can appear before the keyboard and
+                    # its click listener have settled. Observe two identical
+                    # target-bound frames, then use the existing fresh action
+                    # guard. This never repeats an already delivered search.
+                    resolve_action("search", screen, phone)
+                    if search_input_frame != screen:
+                        search_input_frame = screen
+                        sleep(0.25)
+                        continue
                     action, next_stage = "search", "profile"
+                else:
+                    search_input_frame = None
             elif stage == "profile" and (screen.has("个人信息") or screen.has("客户详情")):
                 if not profile_matches(screen, phone):
                     raise StopPreview("profile_phone_mismatch")

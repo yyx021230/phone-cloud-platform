@@ -37,3 +37,13 @@ test('active/safe pre-send tasks do not acquire error labels and unknown sends r
   assert.equal(task.result.errorInfo.category,'login');assert.equal(task.result.errorInfo.outcomeUnconfirmed,true);
   assert.equal(wecomErrorLabel({result:{code:'legacy_code'}}),'legacy_code');
 });
+
+test('element transport distinguishes rejected geometry from unknown click delivery without retry permission',()=>{
+  for(const code of ['wecom_element_geometry_unconfirmed','wecom_element_display_unconfirmed']){
+    const info=wecomErrorInfo({code,status:'failed',remarkSaveStatus:'not_attempted'});
+    assert.equal(info.category,'page_compatibility');assert.equal(info.canRetry,undefined);
+  }
+  const info=wecomErrorInfo({code:'wecom_element_tap_delivery_unknown',status:'failed',remarkSaveStatus:'unknown'});
+  assert.equal(info.category,'transport');assert.equal(info.outcomeUnconfirmed,true);assert.equal(info.canRetry,undefined);
+  assert.match(info.action,/不重复点击/);
+});

@@ -26,9 +26,15 @@ class HostGuardTests(unittest.TestCase):
                     androidUser=row["androidUser"],phoneNumber="13800138000",previewOnly=True,
                     agentId="fixture-agent",serverBaseUrl="http://127.0.0.1:8787",agentToken="fixture-only-token")
 
-    def test_all_eight_exact_devices_and_users(self):
-        self.assertEqual(len(host.DEVICES),8)
+    def test_exact_legacy_and_two_local_single_account_devices_and_users(self):
+        self.assertEqual(set(host.DEVICES),{'23','25','43','59','93','145','155','157','200','202'})
         for number in host.DEVICES:self.assertEqual(host.validate_config(self.config(number))["androidUser"],999 if number=="155" else 0)
+        for number in ('200','202'):
+            self.assertEqual(host.DEVICES[number]['appSlots'],{'main':0})
+            self.assertEqual(host.DEVICES[number]['elementInput'],'adb_v1')
+            with self.assertRaises(host.SafeStop):host.validate_config(dict(self.config(number),appSlot='clone',androidUser=999))
+        for number in ('23','25','43','59','93','145','155','157'):
+            self.assertNotIn('elementInput',host.DEVICES[number])
 
     def test_actual_agent_causal_envelope_passes_configuration_after_private_bootstrap(self):
         value=dict(self.config('59'),appSlot='main',mode='preview',remarkName='联调客户',description='仅预览')
@@ -47,7 +53,7 @@ class HostGuardTests(unittest.TestCase):
             host.validate_config(dict(self.config(),causalLease=dict(protocol='wecom-causal-v1',epoch='e',leaseId='l',purpose='business')))
 
     def test_invalid_binding_or_send_flag_stops_before_network(self):
-        changes=[dict(deviceNumber="67"),dict(serial="OTHER"),dict(deviceId="adb:OTHER"),dict(androidUser=999),dict(previewOnly=False),dict(send=True),dict(agentId="a/other"),dict(serverBaseUrl="http://user:pass@example.invalid")]
+        changes=[dict(deviceNumber="67"),dict(serial="OTHER"),dict(deviceId="adb:OTHER"),dict(androidUser=999),dict(previewOnly=False),dict(send=True),dict(elementInput='adb_v1'),dict(agentId="a/other"),dict(serverBaseUrl="http://user:pass@example.invalid")]
         for change in changes:
             with self.subTest(change=change),patch.object(host,"adb_identity",side_effect=AssertionError("no network")):
                 with self.assertRaises((host.SafeStop,host.w.StopPreview)):host.run_host(dict(self.config(),**change))
@@ -219,6 +225,21 @@ class HostGuardTests(unittest.TestCase):
             with patch.object(host.remarks.PocoRemarkDriver,'apply',side_effect=error) as apply:
                 with self.assertRaises(type(error)):driver.apply(action,PROFILE,PHONE)
                 self.assertEqual(apply.call_count,1)
+
+    def test_add_navigation_reobserves_before_click_but_never_replays_transport(self):
+        from dataclasses import replace
+        from test_wecom_invite_preview import MENU,ADD,PROFILE,PHONE,Poco,text
+        for action,page in [('open_add',MENU),('open_search',ADD)]:
+            changed=replace(page,nodes=page.nodes+(text('loaded_after_transition'),))
+            poco=Poco(changed);driver=host.PreviewRemarkEntryDriver(poco,lambda:host.w.PACKAGE,lambda:True)
+            driver.apply(action,page,PHONE)
+            self.assertEqual(len(poco.effects),1)
+            with patch.object(host.remarks.PocoRemarkDriver,'apply',side_effect=TimeoutError())as apply:
+                with self.assertRaises(TimeoutError):driver.apply(action,page,PHONE)
+                self.assertEqual(apply.call_count,1)
+            poco=Poco(PROFILE);driver=host.PreviewRemarkEntryDriver(poco,lambda:host.w.PACKAGE,lambda:True)
+            with self.assertRaises(host.w.StopPreview):driver.apply(action,page,PHONE)
+            self.assertFalse(poco.effects)
 
     def test_remark_entry_reobserve_is_bounded_without_any_click(self):
         from test_wecom_invite_preview import PROFILE,PHONE,Poco

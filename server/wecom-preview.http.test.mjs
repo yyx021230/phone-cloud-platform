@@ -10,7 +10,7 @@ import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
-test("preview HTTP covers authentication, eight phones, leases, original-id reuse and restart", { timeout: 30_000 }, async (t) => {
+test("preview HTTP covers authentication, legacy and local phones, leases, original-id reuse and restart", { timeout: 30_000 }, async (t) => {
   const databaseUrl = process.env.WECOM_PREVIEW_TEST_DATABASE_URL || "";
   if (databaseUrl) {
     const u = new URL(databaseUrl);
@@ -66,14 +66,15 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   await request('GET',discovery,'',undefined,401);await request('GET',discovery,user,undefined,401);
   await request('GET',discovery+'?onlineOnly=invalid',admin,undefined,400);
   const fullInventory=await request('GET',discovery,admin);
-  assert.equal(fullInventory.total,9);assert.ok(fullInventory.updatedAt);assert.deepEqual(fullInventory.capacity,{limit:2,active:0,remaining:2});
+  assert.equal(fullInventory.total,11);assert.ok(fullInventory.updatedAt);assert.deepEqual(fullInventory.capacity,{limit:2,active:0,remaining:2});
   const live59=fullInventory.devices.find(d=>d.deviceNumber==='59');assert.equal(live59.available,true);assert.equal(live59.online,true);assert.equal(live59.busy,false);
   assert.deepEqual(fullInventory.devices.find(d=>d.deviceNumber==='155').appSlots.map(s=>s.appSlot),['main','clone']);
+  for (const number of ['200','202']) assert.deepEqual(fullInventory.devices.find(d=>d.deviceNumber===number).appSlots.map(s=>s.appSlot),['main']);
   const other=fullInventory.devices.find(d=>d.deviceNumber==='67');assert.equal(other.online,true);assert.equal(other.wecomAllowed,false);assert.equal(other.available,false);
-  assert.equal((await request('GET',discovery+'?onlineOnly=true',admin)).total,9);
+  assert.equal((await request('GET',discovery+'?onlineOnly=true',admin)).total,11);
   await request('POST','/api/v1/windows-agents/fixture-agent/devices/sync',agent,{agent:{agentId:'fixture-agent'},devices:[...Object.values(pool).map(d=>({adbSerial:d.serial,state:'device',model:'Fixture'})),{adbSerial:'fixture-extra',state:'offline',model:'OtherFixture'}]});
-  assert.equal((await request('GET',discovery,admin)).total,9,'default includes offline devices');
-  assert.equal((await request('GET',discovery+'?onlineOnly=true',admin)).total,8,'online filter excludes the offline phone');
+  assert.equal((await request('GET',discovery,admin)).total,11,'default includes offline devices');
+  assert.equal((await request('GET',discovery+'?onlineOnly=true',admin)).total,10,'online filter excludes the offline phone');
   const route="/api/v1/user/automation/wecom-preview-tasks";
   const next="/api/v1/windows-agents/fixture-agent/tasks/next";
   cleanupFixture=createSimulatedWecomCleanup({request,agentId:"fixture-agent",token:agent,nextRoute:next+"?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1&wecomCausalProtocol=wecom-causal-v1"});
@@ -86,7 +87,7 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   await request("POST",route,admin,{...input,remarkName:"字".repeat(21)},400);
   await request("POST",route,admin,{...input,description:null},400);
   const allowed=await request("GET","/api/v1/user/automation/wecom-preview-devices",admin);
-  assert.equal(allowed.devices.length,8);assert.equal(allowed.devices.find(d=>d.deviceNumber==="155").androidUser,999);
+  assert.equal(allowed.devices.length,10);assert.equal(allowed.devices.find(d=>d.deviceNumber==="155").androidUser,999);
   assert.deepEqual(allowed.devices.find(d=>d.deviceNumber==="155").appSlots.map(s=>[s.appSlot,s.androidUser]),[["main",0],["clone",999]]);
   await request("POST",route,admin,{...input,appSlot:"clone"},409);
   await request("POST",route,admin,{...input,appSlot:"auto"},400);
@@ -289,7 +290,7 @@ test("preview HTTP covers authentication, eight phones, leases, original-id reus
   t.after(async()=>{cpsServer.closeAllConnections();await new Promise(r=>cpsServer.close(r));await cpsService.close();await fs.rm(cpsDir,{recursive:true,force:true});});
   const cpsCall=async(endpoint,input)=>{const body={...input,app_id:'fixture_cps',timestamp:Date.now(),nonce:(await import('node:crypto')).randomBytes(16).toString('hex')};body.sign=signature(body,cpsSecret);const r=await fetch('http://127.0.0.1:'+cpsServer.address().port+endpoint,{method:'POST',headers:{'content-type':'application/json'},body:stringifyBody(body)});assert.equal(r.status,200);return r.json();};
   assert.equal((await request('GET',cpsPoll,agent)).task,null);
-  const cpsDevices=await cpsCall(ROUTES.devices,{});assert.equal(cpsDevices.result.total,9);assert.equal(cpsDevices.result.devices.find(d=>d.device_number==='43').accounts[0].wecom_userid,'member_main');
+  const cpsDevices=await cpsCall(ROUTES.devices,{});assert.equal(cpsDevices.result.total,11);assert.equal(cpsDevices.result.devices.find(d=>d.device_number==='43').accounts[0].wecom_userid,'member_main');
   const lead={lead_id:9223372036854775807n,phone:'13800138000',wecom_corp_id:'ww_fixture',wecom_userid:'member_main'};
   assert.equal((await cpsCall(ROUTES.dispatch,{...lead,lead_id:9223372036854775808n})).code,2003);assert.equal(cpsStore.snapshot().leads.length,0);
   assert.equal((await cpsCall(ROUTES.dispatch,lead)).success,true);assert.equal((await cpsCall(ROUTES.dispatch,lead)).success,true);

@@ -131,7 +131,7 @@ class PreviewRemarkEntryDriver(invitation.InvitationDriverMixin, remarks.PocoRem
                 return self._apply(action, expected_screen, phone, check_budget, context)
 
     def _apply(self, action, expected_screen, phone, check_budget, context):
-        if action not in ("open_remark", "open_menu"):
+        if action not in ("open_remark", "open_menu", "open_add", "open_search"):
             return super().apply(action, expected_screen, phone, check_budget, context=context)
         for attempt in range(3):
             try:
@@ -564,6 +564,16 @@ def run_host(value, diagnostic_stream=None, *, authority=None):
                 remote=client.remote("poco-uiautomation-framework")
                 agent=u.PocoAgent(u.RemotePocoHierarchy(remote.dumper,remote.selector,remote.attributor),remote.inputer,u.ScreenWrapper(remote.screen),None)
                 poco=u.Poco(agent,**w.PREVIEW_POCO_OPTIONS)
+                if DEVICES[config['deviceNumber']].get('elementInput') == 'adb_v1':
+                    from wecom_element_input import ElementAdbInput
+                    def authorize_element_tap():
+                        budget()
+                        if not lease_valid():raise SafeStop('device_lease_lost')
+                        if foreground() != w.PACKAGE:raise SafeStop('wrong_foreground_app')
+                        return True
+                    poco.agent.input=ElementAdbInput(poco.agent.input,
+                        authorize=authorize_element_tap, shell=shell,
+                        screen_size=poco.get_screen_size, tap=mutate)
         with trace.phase("startup_guards"):
             proximity_dismissals=0
             if config["deviceNumber"] == "25":

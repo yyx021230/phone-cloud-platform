@@ -63,5 +63,23 @@
       "main": 0,
       "clone": 999
     }
+  },
+  "200": {
+    "serial": "30620834210068C",
+    "androidUser": 0,
+    "defaultAppSlot": "main",
+    "appSlots": {
+      "main": 0
+    },
+    "elementInput": "adb_v1"
+  },
+  "202": {
+    "serial": "c06a13fa",
+    "androidUser": 0,
+    "defaultAppSlot": "main",
+    "appSlots": {
+      "main": 0
+    },
+    "elementInput": "adb_v1"
   }
 }

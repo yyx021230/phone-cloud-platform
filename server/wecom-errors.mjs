@@ -1,6 +1,8 @@
 import { wecomExecution } from './wecom-diagnostics.mjs';
 
 const groups = [
+  ['page_compatibility', ['wecom_element_geometry_unconfirmed', 'wecom_element_display_unconfirmed'], '元素位置或屏幕尺寸未通过核对', '查看这台手机的页面和显示尺寸，不猜坐标或切换ADB。'],
+  ['transport', ['wecom_element_tap_delivery_unknown'], '元素点击的交付结果未确认', '核对原任务和手机当前页面，不重复点击、保存或发送。'],
   ['account_limit', ['wecom_add_friend_too_frequent'], '指定企微成员添加好友过于频繁', '暂停该成员分配并核对原任务，不自动换账户或重发。'],
   ['login', ['login_required'], '企微账户未登录', '在对应手机登录所选账户，再核对原任务。'],
   ['human', ['human_required', 'device_unlock_requires_user'], '手机需要人工验证或解锁', '在对应手机完成验证或解锁，不重新提交原任务。'],
