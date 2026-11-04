@@ -1,3 +1,4 @@
+import {PREINPUT_RECOVERY,originalRecoveryContext,recoveryProposal,recoveryRequest,validateRecoveryProof,exact as recoveryExact,recoveryFail} from './wecom-preinput-recovery.mjs';
 import { isDeepStrictEqual } from "node:util";
 import { randomUUID } from "node:crypto";
 import {createWecomCausalClock,WECOM_CAUSAL_PROTOCOL} from "./wecom-causal-clock.mjs";
@@ -149,6 +150,7 @@ export function createWecomCleanupService({ state, persist, conflict = () => fal
       && !lock.physicalCleanup.originalTerminalAt && task.status === "running");
   }
   function canPick(task) {
+    if(task?.payload?.preinputRecovery)return recoveryCanPick(task);
     if(["wecom_customer_preview",WECOM_CLEANUP_KIND].includes(task.type)&&task.status!=="queued")return false;
     const lock = pending(task.deviceId) || [...committing.values(), ...(state.deviceLocks || [])].find(l => isWecomCleanupPending(l)
       && serialKey(l.physicalCleanup?.binding?.serial || l.physicalCleanup?.legacySerial || state.devices.find(d => d.deviceId === l.deviceId)?.adb?.serial) === serialKey(task.adbSerial) && serialKey(task.adbSerial));
@@ -163,8 +165,9 @@ export function createWecomCleanupService({ state, persist, conflict = () => fal
   function picked(task) {
     if (task.type !== WECOM_CLEANUP_KIND) return null;
     const lock = pendingWecomCleanup(state.deviceLocks, task.deviceId);
-    if (!lock || lock.physicalCleanup?.verification?.verificationTaskId !== task.taskId) fail("binding_mismatch");
-    lock.physicalCleanup.verification.pickedAt = task.pickedAt;
+    const verification=task.payload?.preinputRecovery?lock?.physicalCleanup?.recovery:lock?.physicalCleanup?.verification;
+    if (!lock || verification?.verificationTaskId !== task.taskId) fail("binding_mismatch");
+    verification.pickedAt = task.pickedAt;
     lock.updatedAt = iso(now()); return lock;
   }
   function noteTerminal(task, job) {
@@ -273,6 +276,7 @@ export function createWecomCleanupService({ state, persist, conflict = () => fal
     return handle(agentId, lock.lockId, "verify", { binding: structuredClone(lock.physicalCleanup.binding) });
   }
   async function status(task, input) {
+    if(task?.payload?.preinputRecovery)return recoveryStatus(task,input);
     if (input.status === "succeeded") fail("proof_required");
     if (!["running", "failed", "cancelled"].includes(input.status)) fail("invalid_status");
     const lock = locate(task.agentId, task.payload?.physicalCleanup?.obligationId);
@@ -301,7 +305,7 @@ export function createWecomCleanupService({ state, persist, conflict = () => fal
   // prematurely expire this protocol, and never release its physical hold.
   function expireTask(task){
     if(!causalTask(task)||committing.has(task.deviceId)||terminal(task.status))return false;
-    const budget=task.type===WECOM_CLEANUP_KIND?verificationLeaseState(pending(task.deviceId)):businessLeaseState(task);
+    const budget=task.payload?.preinputRecovery?recoveryLeaseState(pending(task.deviceId)):task.type===WECOM_CLEANUP_KIND?verificationLeaseState(pending(task.deviceId)):businessLeaseState(task);
     if(budget.known&&budget.remainingMs>0)return false;
     const code=budget.known?"wecom_cleanup_causal_lease_expired":"wecom_cleanup_causal_context_unconfirmed";
     if(task.status==="stalled"&&task.result?.errorCode===code)return false;
@@ -313,6 +317,111 @@ export function createWecomCleanupService({ state, persist, conflict = () => fal
     }
     return true;
   }
+  const recoveryScope=lock=>{const v=lock.physicalCleanup.recovery;return {binding:lock.physicalCleanup.binding,verificationId:v.verificationId,verificationNonce:v.verificationNonce,verificationTaskId:v.verificationTaskId};};
+  const recoveryTask=lock=>state.windowsTasks.find(t=>t.taskId===lock?.physicalCleanup?.recovery?.verificationTaskId);
+  function recoveryBusy(lock,task){
+    const d=lock.physicalCleanup,serial=serialKey(d.binding.serial);
+    const same=(deviceId,adbSerial)=>deviceId===lock.deviceId||serialKey(adbSerial||state.devices.find(x=>x.deviceId===deviceId)?.adb?.serial)===serial;
+    return conflict(lock,task)||state.deviceLocks.some(l=>l.lockId!==lock.lockId&&l.lockId!==d.originalLockId
+      &&same(l.deviceId,l.physicalCleanup?.binding?.serial)&&(l.status==='active'||isWecomCleanupPending(l)))
+      ||state.windowsTasks.some(t=>t.taskId!==task?.taskId&&t.taskId!==d.binding.originalTaskId&&same(t.deviceId,t.adbSerial)&&!terminal(t.status))
+      ||state.automationJobs.some(j=>j.jobId!==d.originalJobId&&same(j.deviceId,j.adbSerial)&&!terminal(j.status));
+  }
+  function recoveryLeaseState(lock){try{return {known:true,remainingMs:clock.remaining(lock.physicalCleanup.recovery.causalLease,recoveryScope(lock))};}catch{return {known:false,remainingMs:0};}}
+  function recoveryValid(lock,task,fields,{queued=false}={}){
+    try{
+      const v=lock.physicalCleanup.recovery,b=lock.physicalCleanup.binding;
+      return isWecomCleanupPending(lock)&&!committing.has(lock.deviceId)&&deviceMatches(lock)
+        &&originalRecoveryContext(state,lock).fingerprint===v.request.fingerprint
+        &&v.protocol===PREINPUT_RECOVERY&&v.serverEpoch===clock.epoch&&recoveryLeaseState(lock).remainingMs>3000
+        &&task?.type===WECOM_CLEANUP_KIND&&task.agentId===b.agentId&&task.deviceId===b.deviceId&&task.adbSerial===b.serial
+        &&task.status===(queued?'queued':'running')&&task.payload.preinputRecovery===PREINPUT_RECOVERY
+        &&task.taskId===v.verificationTaskId&&isDeepStrictEqual(task.payload.physicalCleanup,b)
+        &&isDeepStrictEqual(task.payload.retiredProducer,v.retiredProducer)&&isDeepStrictEqual(task.payload.causalLease,v.causalLease)
+        &&['verificationId','verificationNonce','verificationTaskId'].every(k=>fields?.[k]===v[k]&&task.payload[k]===v[k])
+        &&(queued||v.pickedAt===task.pickedAt&&Number.isFinite(Date.parse(task.pickedAt)))&&!recoveryBusy(lock,task);
+    }catch{return false;}
+  }
+  function recoveryCanPick(task){const lock=pending(task.deviceId);return Boolean(lock&&recoveryValid(lock,task,task.payload,{queued:true}));}
+  function recoveryGet(obligationId){const lock=state.deviceLocks.find(l=>l.lockId===obligationId&&l.lockType===WECOM_CLEANUP_LOCK);return recoveryProposal(state,lock);}
+  async function recoveryStart(obligationId,body,operatorId){
+    const lock=state.deviceLocks.find(l=>l.lockId===obligationId&&l.lockType===WECOM_CLEANUP_LOCK);
+    if(!lock)recoveryFail('request_invalid');
+    if(typeof operatorId!=='string'||!operatorId)recoveryFail('operator_required');
+    const request=recoveryRequest(body);
+    return serialize(lock.deviceId,async()=>{
+      const {fingerprint}=originalRecoveryContext(state,lock),existing=lock.physicalCleanup.recovery;
+      if(existing){
+        if(existing.operatorId!==operatorId||!isDeepStrictEqual(existing.request,request))recoveryFail('attempt_exists');
+        return {ok:true,reused:true,taskId:existing.verificationTaskId,verified:lock.status==='released'};
+      }
+      if(!isWecomCleanupPending(lock)||!deviceMatches(lock)||fingerprint!==request.fingerprint)recoveryFail('context_changed');
+      if(recoveryBusy(lock,null))recoveryFail('device_busy');
+      const agent=state.windowsAgents?.find(a=>a.agentId===lock.physicalCleanup.binding.agentId);
+      const age=now()-Date.parse(agent?.wecomRecoveryAt);
+      if(agent?.wecomRecoveryProtocol!==PREINPUT_RECOVERY||!(age>=0&&age<30000))recoveryFail('agent_upgrade_required');
+      return transaction(lock,({add})=>{
+        const at=iso(now()),v={protocol:PREINPUT_RECOVERY,verificationId:id(),verificationNonce:id(),verificationTaskId:id(),
+          serverEpoch:clock.epoch,issuedAt:at,pickedAt:'',operatorId,request,retiredProducer:request.retiredProducer};
+        lock.physicalCleanup.recovery=v;lock.physicalCleanup.phase='maintenance_verifying';lock.updatedAt=at;
+        const stamp=clock.mark('verification');
+        try{v.causalLease=clock.verificationLease(stamp,recoveryScope(lock));}finally{clock.releaseMark(stamp);}
+        add({taskId:v.verificationTaskId,type:WECOM_CLEANUP_KIND,agentId:lock.physicalCleanup.binding.agentId,deviceId:lock.deviceId,
+          adbSerial:lock.physicalCleanup.binding.serial,status:'queued',createdAt:at,updatedAt:at,recoverable:false,
+          payload:{physicalCleanup:structuredClone(lock.physicalCleanup.binding),preinputRecovery:PREINPUT_RECOVERY,
+            verificationId:v.verificationId,verificationNonce:v.verificationNonce,verificationTaskId:v.verificationTaskId,
+            issuedAt:at,retiredProducer:structuredClone(v.retiredProducer),causalLease:structuredClone(v.causalLease)},result:{},events:[]});
+        return {ok:true,reused:false,taskId:v.verificationTaskId,verified:false};
+      });
+    });
+  }
+  function recoveryLease(agentId,obligationId,fields){
+    const lock=locate(agentId,obligationId),task=recoveryTask(lock);
+    return recoveryExact(fields,['verificationId','verificationNonce','verificationTaskId'])&&recoveryValid(lock,task,fields)
+      ?{valid:true,remainingMs:recoveryLeaseState(lock).remainingMs,causalLease:structuredClone(lock.physicalCleanup.recovery.causalLease)}:{valid:false};
+  }
+  async function recoveryHandle(agentId,obligationId,action,body){
+    const lock=locate(agentId,obligationId);
+    return serialize(lock.deviceId,async()=>{
+      const v=lock.physicalCleanup.recovery,task=recoveryTask(lock);
+      if(action==='recovery-proof'&&lock.status==='released'&&v?.proof){
+        if(!isDeepStrictEqual(body,v.proof))recoveryFail('proof_invalid');return {ok:true,verified:true,reused:true};
+      }
+      assertCleanupBinding(lock,body?.binding,agentId);
+      if(!recoveryValid(lock,task,body))recoveryFail('lease_lost');
+      const result=await transaction(lock,({track,trackLock})=>{
+        if(action==='recovery-challenge'){
+          if(!recoveryExact(body,['binding','verificationId','verificationNonce','verificationTaskId']))recoveryFail('request_invalid');
+          v.challenge=clock.challenge(v.causalLease,recoveryScope(lock));return {ok:true,challenge:structuredClone(v.challenge)};
+        }
+        if(action!=='recovery-proof')recoveryFail('request_invalid');
+        const proof=validateRecoveryProof(body,{binding:lock.physicalCleanup.binding,recovery:v});
+        const {original}=originalRecoveryContext(state,lock);
+        clock.validateChallenge(proof.challenge,v.causalLease,recoveryScope(lock));
+        const at=iso(now());
+        // Distinct maintenance evidence; never manufacture original hosts/close,
+        // rewrite its failed business result or delete its historical lock.
+        v.proof=proof;v.completedAt=at;lock.physicalCleanup.phase='maintenance_verified';
+        lock.status='released';lock.releasedAt=lock.updatedAt=at;lock.releaseReason='wecom_preinput_recovery_verified';
+        if(original.status==='active'){trackLock(original);original.status='released';original.releasedAt=original.updatedAt=at;original.releaseReason=lock.releaseReason;}
+        track(task);task.status='succeeded';task.updatedAt=task.completedAt=at;task.result={cleanupVerified:true,recoveryProtocol:PREINPUT_RECOVERY,obligationId:lock.lockId};
+        return {ok:true,verified:true,reused:false};
+      });
+      if(result.verified)clock.retire(v.causalLease,recoveryScope(lock));return result;
+    });
+  }
+  async function recoveryStatus(task,input){
+    if(!['running','failed','cancelled'].includes(input.status))recoveryFail('proof_required');
+    const lock=locate(task.agentId,task.payload?.physicalCleanup?.obligationId);
+    return serialize(lock.deviceId,async()=>{
+      if(terminal(task.status))return {ok:true,ignored:true};
+      if(!isWecomCleanupPending(lock)||recoveryTask(lock)!==task||task.status!=='running')recoveryFail('context_changed');
+      return transaction(lock,({track})=>{track(task);task.status=input.status;task.updatedAt=iso(now());
+        if(terminal(task.status)){task.completedAt=task.updatedAt;task.result={errorCode:String(input.result?.errorCode||'wecom_cleanup_recovery_unconfirmed').slice(0,100)};lock.physicalCleanup.phase='maintenance';lock.updatedAt=task.updatedAt;}
+        return {ok:true};});
+    });
+  }
   return { pending, canPick, picked, noteTerminal, ensureLegacy, handle, lease, leaseProof,reconcile, status, originalReady, checkpoint, checkpointWriting,
+    recoveryGet,recoveryStart,recoveryLease,recoveryHandle,
     beginBusinessLease:()=>clock.mark(),finishBusinessCreation:stamp=>clock.releaseMark(stamp),bindBusinessLease,businessRemaining,businessLeaseState,businessLockState,createObligation,causalTask,expireTask };
 }

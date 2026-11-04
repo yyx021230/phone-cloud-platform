@@ -30,11 +30,11 @@ function validateProof(proof,input){
   return proof;
 }
 
-async function nativeProof(input,{config,agentDir,signal,spawnChild=spawn}={}){
+export async function nativeProof(input,{config,agentDir,signal,spawnChild=spawn,script='wecom_cleanup_verify.py',validate=validateProof}={}){
   if(signal?.aborted)throw problem('wecom_cleanup_cancelled');
   return new Promise((resolve,reject)=>{
     let child,output='',settled=false,reason=null,killTimer=null,started=false;
-    try{child=spawnChild(config.pythonCommand,[path.join(agentDir,'scripts/wecom_cleanup_verify.py')],{cwd:agentDir,windowsHide:true,stdio:['pipe','pipe','ignore'],env:{...process.env,PYTHONIOENCODING:'utf-8'}});}
+    try{child=spawnChild(config.pythonCommand,[path.join(agentDir,'scripts',script)],{cwd:agentDir,windowsHide:true,stdio:['pipe','pipe','ignore'],env:{...process.env,PYTHONIOENCODING:'utf-8'}});}
     catch{reject(problem('wecom_cleanup_worker_start_failed'));return;}
     started=Number.isInteger(child.pid)&&child.pid>0;child.once('spawn',()=>started=true);
     const finish=(error,result)=>{
@@ -60,7 +60,7 @@ async function nativeProof(input,{config,agentDir,signal,spawnChild=spawn}={}){
         const value=JSON.parse(output.trim());
         if(value.ok===false&&exact(value,['ok','code']))throw problem(code({message:value.code}));
         if(!exact(value,['ok','proof'])||value.ok!==true)throw problem('wecom_cleanup_worker_output_invalid');
-        finish(null,validateProof(value.proof,input));
+        finish(null,validate(value.proof,input));
       }catch(error){finish(problem(code(error)));}
     });
     try{child.stdin.write(JSON.stringify(input)+'\n');}catch{stop(problem('wecom_cleanup_input_unknown'));}

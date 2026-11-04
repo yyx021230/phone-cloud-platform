@@ -1,0 +1,72 @@
+{
+  "version": "wecom-recovery155-20261104-local.1",
+  "status": "local_scoped_validation_not_deployed",
+  "branch": "codex/wecom-recovery155-20261103",
+  "baseline": "e9741209892e7d7acdb976ed0c87a5159b1c0d3d",
+  "baselineWasClean": true,
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "lastObservedProduction": {
+    "commit": "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+    "activeSha256": "a5390dcc93b5f1393e7b95732ca4df679dc5065200f80cf509d96e0f759e2a2f",
+    "currentRecheck": "blocked: authenticated SSH masters expired; both BatchMode key authentication refused; no password fallback"
+  },
+  "validation": {
+    "targeted": {
+      "passed": 143,
+      "failed": 0
+    },
+    "realLocalPostgres": {
+      "passed": 1,
+      "failed": 0,
+      "temporaryServerStopped": true
+    },
+    "agentCheck": {
+      "passed": 680,
+      "failed": 0
+    },
+    "pythonWecom": {
+      "passed": 556,
+      "failed": 0
+    },
+    "screenRegression": {
+      "passed": 183,
+      "failed": 0
+    },
+    "cpsClientHttp": {
+      "passed": 14,
+      "failed": 0
+    },
+    "failedTimingGroupRerun": {
+      "passed": 14,
+      "failed": 0
+    },
+    "protectedLookupEntry": {
+      "passed": 13,
+      "failed": 0
+    },
+    "rootCheck": "passed",
+    "smoke": "passed",
+    "countsOverlap": true,
+    "singleFullTestAllPassed": false,
+    "firstFullNodeRun": {
+      "tests": 2513,
+      "passed": 2498,
+      "failed": 8,
+      "cancelled": 3,
+      "skipped": 4
+    },
+    "fullAttempts2and3": "aborted after interruptions over 1000000ms; no test timeout relaxation; original logs retained"
+  },
+  "notVerified": [
+    "native Windows SYSTEM recovery worker and actual 3 second budget",
+    "actual155 recovery and current production state",
+    "single end-to-end test:all pass",
+    "production CPS mapping/native main-clone acceptance"
+  ],
+  "productionChanges": false,
+  "pushed": false,
+  "schemaMigration": false,
+  "protectedFilesUnchanged": 132,
+  "rollback": "docs/企微155清理恢复候选与维护方案.md",
+  "originalRecordEvidenceSha256": "0a30cb1a2a182250458007e41e17687287a724352d2a78a35729b2fa9b02769b"
+}

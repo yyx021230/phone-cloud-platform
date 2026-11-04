@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import {physicalBinding} from './wecom-cleanup-protocol.mjs';
 import {handleWecomCleanupVerification} from './wecom-cleanup-verify.mjs';
+import {PREINPUT_RECOVERY} from './wecom-preinput-recovery.mjs';
 const source=fs.readFileSync(new URL('./index.mjs',import.meta.url),'utf8');
 const fixture=JSON.parse(fs.readFileSync(new URL('../../verification/wecom-cleanup-v1/fixtures.json',import.meta.url)));
 function load(name,values){
@@ -40,9 +41,17 @@ test('actual verification failure reports fixed failure without generic capture 
 test('actual polling advertises protocol and does not start verification after unknown ACK',async()=>{
   let polls=0,starts=0;
   const run=load('pollTask',{config:{...config,maxConcurrentAdbTasks:1},activeTasksById:new Map(),activeTaskSerials:new Set(),screenControlledSerials:new Set(),lookupStatusOutbox:{pendingTasks:()=>[]},
-    URLSearchParams,MANAGED_LOOKUP_PROTOCOL:'fixture',SCREEN_GALLERY_DELIVERY_PROTOCOL:'fixture',XHS_PUBLISH_DELIVERY_PROTOCOL:'fixture',lookupReaderCapacityReport:()=>({}),
+    URLSearchParams,PREINPUT_RECOVERY,MANAGED_LOOKUP_PROTOCOL:'fixture',SCREEN_GALLERY_DELIVERY_PROTOCOL:'fixture',XHS_PUBLISH_DELIVERY_PROTOCOL:'fixture',lookupReaderCapacityReport:()=>({}),
     observeLookupReaderAdmission:()=>{},abortCancelledAutomationTasks:()=>{},log:()=>{},
-    api:async route=>{polls++;assert.equal(new URL('http://fixture'+route).searchParams.get('wecomCleanupProtocol'),'1');return polls===1?{task:{taskId:'fixture',type:'wecom_cleanup_verify',payload:{}},cancelledTaskIds:[]}:{task:null};},
+    api:async route=>{polls++;assert.equal(new URL('http://fixture'+route).searchParams.get('wecomCleanupProtocol'),'1');assert.equal(new URL('http://fixture'+route).searchParams.get('wecomPreinputRecovery'),PREINPUT_RECOVERY);return polls===1?{task:{taskId:'fixture',type:'wecom_cleanup_verify',payload:{}},cancelledTaskIds:[]}:{task:null};},
     hydrateLeasedWindowsTask:async task=>({task,acknowledged:false,acknowledgementError:Error('fixture')}),startTask:()=>starts++});
   await run();assert.equal(starts,0);assert.equal(polls,2);
+});
+test('actual recovery entry selects only the new read-only leaf, bypassing generic phone actions',async()=>{
+  let calls=0;
+  const leaf=async()=>{calls++;return {verified:false,pending:true};};
+  const run=load('runTask',{config,agentDir:'/fixture',runWecomPreinputRecovery:leaf,
+    handleWecomCleanupVerification:async(task,options)=>{assert.equal(options.run,leaf);return options.run(task,options);},
+    taskEvent:async()=>{},taskStatus:()=>assert.fail('no generic status'),log:()=>assert.fail('no generic runTask body'),scanAndSync:()=>assert.fail('no scan')});
+  assert.equal((await run({type:'wecom_cleanup_verify',payload:{preinputRecovery:PREINPUT_RECOVERY}})).pending,true);assert.equal(calls,1);
 });

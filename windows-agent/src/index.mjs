@@ -7,6 +7,7 @@ const lookupReaderStopBarriers = new Map();
 import { runWecomPreviewTask } from "./wecom-preview-task.mjs";
 import { physicalBinding } from "./wecom-cleanup-protocol.mjs";
 import { handleWecomCleanupVerification } from "./wecom-cleanup-verify.mjs";
+import {runWecomPreinputRecovery} from './wecom-preinput-recovery.mjs';
 import {collectLookupTrace, isAutomaticLookupResume} from "./lookup-recovery-trace.mjs";
 import { createRecoveryIsolation } from './recovery-isolation.mjs';
 import { createDeviceScanPipeline, recoverySnapshotAdmission } from './device-scan-pipeline.mjs';
@@ -1155,6 +1156,7 @@ async function pollTask() {
     params.set("wecomRemarkPhone", "verified-v1");
     params.set("wecomCleanupProtocol", "1");
     params.set("wecomCausalProtocol", "wecom-causal-v1");
+    params.set('wecomPreinputRecovery','wecom-preinput-recovery-v1');
     const suffix = params.size ? `?${params.toString()}` : "";
     const payload = await api(`/api/v1/windows-agents/${encodeURIComponent(config.agentId)}/tasks/next${suffix}`);
     observeLookupReaderAdmission(payload.readerCapacity);
@@ -1222,6 +1224,7 @@ function startTask(task) {
 async function runTask(task, options = {}) {
   if (task.type === "wecom_cleanup_verify") {
     return handleWecomCleanupVerification(task, {
+      ...(task.payload?.preinputRecovery?{run:runWecomPreinputRecovery}:{}),
       config, agentDir, signal: options.signal,
       event: (phase, level, message) => taskEvent(task, phase, level, message),
       reportFailure: result => taskStatus(task, "failed", result)

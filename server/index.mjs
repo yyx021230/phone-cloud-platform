@@ -1,4 +1,6 @@
 import { WECOM_CLEANUP_KIND, WECOM_CLEANUP_LOCK, isWecomCleanupPending, pendingWecomCleanup } from "./wecom-physical-cleanup.mjs";
+import {PREINPUT_RECOVERY} from './wecom-preinput-recovery.mjs';
+import {persistWecomRecovery} from './wecom-recovery-postgres.mjs';
 import { publicWecomCleanupState } from "./wecom-physical-cleanup.mjs";
 import { createWecomCleanupService } from "./wecom-cleanup-service.mjs";
 import { createLookupReaderCapabilities } from './lookup-reader-capabilities.mjs';
@@ -426,7 +428,8 @@ if (releaseOrphanedScreenLocksAfterRestart()) {
 const wecomSubmissionGate = createPreviewSubmissionGate();
 const pendingWecomCommits = new Set();
 wecomCleanup = createWecomCleanupService({ state,
-  persist: bundle => structuredRepos ? persistencePolicy.persist(() => structuredRepos.persistTaskMutation(bundle)) : saveState(bundle),
+  persist: bundle => structuredRepos ? persistencePolicy.persist(() => bundle.deviceLock?.physicalCleanup?.recovery
+    ? persistWecomRecovery({bundle,repos:structuredRepos,getPool:getPostgresPool}) : structuredRepos.persistTaskMutation(bundle)) : saveState(bundle),
   conflict: (lock, verification) => {
     const device = repos.devices.findById(lock.deviceId);
     if (!device || !isAdbOnline(device) || screenSessions.activeForDevice(lock.deviceId) || managedLookup?.reserved(lock.deviceId)) return true;
@@ -455,6 +458,21 @@ process.on("SIGINT", () => shutdown("SIGINT"));
 
 async function routeApi(req, res, url) {
   enforceRequestOrigin(req);
+  const recoveryAdmin=url.pathname.match(/^\/api\/v1\/admin\/wecom-cleanup\/([^/]+)\/preinput-recovery$/);
+  if(recoveryAdmin){
+    const ctx=requireAuth(req,['admin']);
+    if(req.method==='GET')return json(res,200,wecomCleanup.recoveryGet(recoveryAdmin[1]));
+    if(req.method==='POST')return json(res,200,await wecomCleanup.recoveryStart(recoveryAdmin[1],await readJson(req),ctx.userId));
+    return json(res,405,{error:'method_not_allowed'});
+  }
+  const recoveryAgent=url.pathname.match(/^\/api\/v1\/windows-agents\/([^/]+)\/wecom-cleanup\/([^/]+)\/(recovery-lease|recovery-challenge|recovery-proof)$/);
+  if(recoveryAgent){
+    const agentId=decodeURIComponent(recoveryAgent[1]),ctx=requireWindowsAgent(req,agentId),action=recoveryAgent[3];
+    requireWindowsScope(ctx,action==='recovery-lease'?'tasks:read':'tasks:write');
+    if(action==='recovery-lease'&&req.method==='GET')return json(res,200,wecomCleanup.recoveryLease(agentId,recoveryAgent[2],Object.fromEntries(url.searchParams)));
+    if(action!=='recovery-lease'&&req.method==='POST')return json(res,200,await wecomCleanup.recoveryHandle(agentId,recoveryAgent[2],action,await readJson(req)));
+    return json(res,405,{error:'method_not_allowed'});
+  }
   const physicalCleanupRoute = url.pathname.match(/^\/api\/v1\/windows-agents\/([^/]+)\/wecom-cleanup\/([^/]+)\/(host|host-closed|verify|proof|lease|challenge)$/);
   if (physicalCleanupRoute) {
     const agentId = decodeURIComponent(physicalCleanupRoute[1]);
@@ -2197,6 +2215,8 @@ async function routeApi(req, res, url) {
     if (!agent) return json(res, 404, { error: "windows_agent_not_found" });
     agent.wecomRemarkPhoneProtocol = url.searchParams.get('wecomRemarkPhone') === 'verified-v1' ? 'verified-v1' : '';
     agent.wecomRemarkPhoneAt = nowIso();
+    agent.wecomRecoveryProtocol=url.searchParams.get('wecomPreinputRecovery')===PREINPUT_RECOVERY?PREINPUT_RECOVERY:'';
+    agent.wecomRecoveryAt=nowIso();
     if (url.searchParams.get("wecomCleanupProtocol") === "1" && url.searchParams.get("wecomCausalProtocol") === "wecom-causal-v1") await wecomCleanup.reconcile(agentId);
     const activeTaskIds = new Set(String(url.searchParams.get("activeTaskIds") || "")
       .split(",")
@@ -2264,6 +2284,7 @@ async function routeApi(req, res, url) {
       && (item.type !== WECOM_PREVIEW_KIND || url.searchParams.get("wecomPreview") === "wecom-invitation-v4")
       && (item.type !== WECOM_PREVIEW_KIND || item.payload?.requireRemarkPhone !== true || url.searchParams.get('wecomRemarkPhone') === 'verified-v1')
       && (![WECOM_PREVIEW_KIND, WECOM_CLEANUP_KIND].includes(item.type) || (url.searchParams.get("wecomCleanupProtocol") === "1" && url.searchParams.get("wecomCausalProtocol") === "wecom-causal-v1"))
+      && (!item.payload?.preinputRecovery || url.searchParams.get('wecomPreinputRecovery')===PREINPUT_RECOVERY)
       && wecomCleanup.canPick(item)
       && !pendingWecomCommits.has(item)
       && !pendingXhsCollectionCommits.has(item)
@@ -8837,7 +8858,7 @@ async function savePostgresSnapshot(snapshot, cleanupBundle = null) {
         const duty = deviceLock.physicalCleanup || {};
         await cleanupRepos.persistTaskMutation({ deviceLock,
           deviceLocks: snapshot.deviceLocks.filter(l => l.lockId === duty.originalLockId),
-          windowsTasks: snapshot.windowsTasks.filter(t => t.taskId === duty.verification?.verificationTaskId),
+          windowsTasks: snapshot.windowsTasks.filter(t => t.taskId === duty.verification?.verificationTaskId || t.taskId === duty.recovery?.verificationTaskId),
           windowsTask: snapshot.windowsTasks.find(t => t.taskId === (duty.binding?.originalTaskId || duty.legacyTaskId)) || null,
           automationJob: snapshot.automationJobs.find(j => j.jobId === duty.originalJobId) || null,
           transactionClient: client });
@@ -8845,7 +8866,8 @@ async function savePostgresSnapshot(snapshot, cleanupBundle = null) {
     }
     if (cleanupBundle) {
       const cleanupRepos = createPostgresRepositories({ getPool: getPostgresPool, stringify: stringifyPostgresJson });
-      await cleanupRepos.persistTaskMutation({ ...cleanupBundle, transactionClient: client });
+      if(cleanupBundle.deviceLock?.physicalCleanup?.recovery)await persistWecomRecovery({bundle:cleanupBundle,repos:cleanupRepos,transactionClient:client});
+      else await cleanupRepos.persistTaskMutation({ ...cleanupBundle, transactionClient: client });
     }
     if (STRUCTURED_TABLE_SYNC) {
       await syncStructuredTables(client, snapshot);

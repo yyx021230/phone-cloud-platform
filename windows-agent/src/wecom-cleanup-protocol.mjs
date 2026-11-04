@@ -43,7 +43,7 @@ export function physicalHosts(value){
 }
 
 export function cleanupRoute(binding,action){
-  if(!['host','host-closed','verify','lease','challenge','proof'].includes(action))fail('wecom_cleanup_route_invalid');
+  if(!['host','host-closed','verify','lease','challenge','proof','recovery-lease','recovery-challenge','recovery-proof'].includes(action))fail('wecom_cleanup_route_invalid');
   return `/api/v1/windows-agents/${encodeURIComponent(binding.agentId)}/wecom-cleanup/${encodeURIComponent(binding.obligationId)}/${action}`;
 }
 
@@ -51,7 +51,7 @@ export function createCleanupRequest(config){
   const base=new URL(config.serverBaseUrl);
   if(!['http:','https:'].includes(base.protocol)||base.username||base.password)fail('wecom_cleanup_origin_invalid');
   return async(route,{method='POST',body,timeoutMs=5000}={})=>{
-    if(!/^\/api\/v1\/windows-agents\/[^/]+\/wecom-cleanup\/[^/]+\/(host|host-closed|verify|lease|challenge|proof)(?:\?.*)?$/.test(route))fail('wecom_cleanup_route_invalid');
+    if(!/^\/api\/v1\/windows-agents\/[^/]+\/wecom-cleanup\/[^/]+\/(host|host-closed|verify|lease|challenge|proof|recovery-lease|recovery-challenge|recovery-proof)(?:\?.*)?$/.test(route))fail('wecom_cleanup_route_invalid');
     let response,value;
     try{
       if(!Number.isFinite(timeoutMs)||timeoutMs<=0)throw Error('expired');
@@ -114,12 +114,13 @@ export function createPhysicalLifecycle(task,{config,request=createCleanupReques
   };
 }
 
-export async function submitSamePhysicalProof(binding,body,{request}={}){
+export async function submitSamePhysicalProof(binding,body,{request,action='proof'}={}){
+  if(!['proof','recovery-proof'].includes(action))fail('wecom_cleanup_route_invalid');
   const original=JSON.stringify(body);
   let unknown=false;
   for(let attempt=0;attempt<2;attempt++){
     try{
-      const result=await request(cleanupRoute(binding,'proof'),{body:JSON.parse(original)});
+      const result=await request(cleanupRoute(binding,action),{body:JSON.parse(original)});
       if(result?.ok!==true||result.verified!==true)throw Object.assign(new Error('wecom_cleanup_proof_ack_unknown'),{deliveryUnknown:true});
       return result;
     }catch(error){
