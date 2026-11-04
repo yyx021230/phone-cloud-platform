@@ -7,7 +7,7 @@ export function moduleUri(serviceSource,preinputSource,baseUrl){
  return 'data:text/javascript;base64,'+Buffer.from(rewrite(serviceSource,{'./wecom-preinput-recovery.mjs':pre})).toString('base64');
 }
 export function recoveryFunctionHash(source){const start=source.indexOf('  async function recoveryStart('),end=source.indexOf('\n  function recoveryLease',start);assert.ok(start>=0&&end>start);return hash(source.slice(start,end).trim());}
-export async function applyHotpatch({origin,serviceSource,preinputSource,beforeHash,afterHash,expectedPid,apply=false,closeInspector=false}){
+export async function applyHotpatch({origin,serviceSource,preinputSource,beforeHash,afterHash,expectedPid,apply=false,closeInspector=false,allowReplacement=false}){
  const target=new URL(origin);assert.ok(target.protocol==='http:'&&target.hostname==='127.0.0.1'&&!target.username&&!target.password&&!target.search);
  const list=await(await fetch(new URL('/json/list',target),{signal:AbortSignal.timeout(3000)})).json();assert.equal(list.length,1);
  const wsurl=new URL(list[0].webSocketDebuggerUrl);assert.equal(wsurl.hostname,'127.0.0.1');assert.equal(wsurl.port,target.port);
@@ -23,7 +23,7 @@ export async function applyHotpatch({origin,serviceSource,preinputSource,beforeH
   const functions=(await properties(listeners.result.objectId)).result.filter(p=>/^\d+$/.test(p.name)&&p.value?.type==='function');let service;
   for(const fn of functions){for(const sid of await scopes(fn.value.objectId)){const values=(await properties(sid)).result;const found=values.find(p=>p.name==='wecomCleanup'&&p.value?.objectId);if(found){service=found.value;break;}}if(service)break;}
   assert.ok(service,'service_scope_not_found');const method=(await properties(service.objectId)).result.find(p=>p.name==='recoveryStart');assert.ok(method?.value?.objectId);
-  function imports(source){const rows=[];const body=source.replace(/^import\s*\{([\s\S]*?)\}\s*from\s*['"]([^'"]+)['"];\s*/gm,(_,entries,spec)=>{rows.push({spec,names:entries.split(',').map(v=>v.trim().split(/\s+as\s+/).at(-1)).filter(Boolean)});return'';});assert.ok(rows.length>=3);assert.ok(!/^import\b/m.test(body));return{rows,body:body.replace(/^export\s+/gm,''),exports:[...source.matchAll(/^export\s+(?:const|function)\s+(\w+)/gm)].map(m=>m[1])};}
+  function imports(source){const rows=[];const body=source.replace(/^import\s*\{([\s\S]*?)\}\s*from\s*['"]([^'"]+)['"];\s*/gm,(_,entries,spec)=>{rows.push({spec,names:entries.split(',').map(v=>v.trim().split(/\s+as\s+/).at(-1)).filter(Boolean),imported:entries.split(',').map(v=>v.trim().split(/\s+as\s+/)[0]).filter(Boolean)});return'';});assert.ok(rows.length>=3);assert.ok(!/^import\b/m.test(body));return{rows,body:body.replace(/^export\s+/gm,''),exports:[...source.matchAll(/^export\s+(?:const|function)\s+(\w+)/gm)].map(m=>m[1])};}
   const svc=imports(serviceSource),pre=imports(preinputSource);
   const preSpec=svc.rows.find(r=>r.spec.endsWith('wecom-preinput-recovery.mjs'));assert.ok(preSpec);
   const names=['state','persist','conflict','clock','now','id','queues','committing','checkpointFences'];
@@ -33,22 +33,24 @@ export async function applyHotpatch({origin,serviceSource,preinputSource,beforeH
   assert.ok([...names,...serviceDeps,'originalRecoveryContext'].every(k=>config[k]),'service_options_scope_not_found');
   const preNames=pre.rows.flatMap(r=>r.names),preCaptured=await capture(config.originalRecoveryContext.objectId,preNames);assert.ok(preNames.every(k=>preCaptured[k]),'preinput_scope_not_found');
   const arg=v=>v.objectId?{objectId:v.objectId}:{value:v.value};
-  const args=names.map(n=>arg(config[n]));args.push({value:svc.body},{value:pre.body},{value:svc.rows},{value:preNames},{value:pre.exports},{value:beforeHash},{value:afterHash},{value:apply});args.push(...serviceDeps.map(n=>arg(config[n])),...preNames.map(n=>arg(preCaptured[n])));
-  const action=function(state,persist,conflict,clock,now,id,queues,committing,checkpointFences,serviceBody,preBody,serviceImports,preNames,preExports,beforeHash,afterHash,apply,...deps){
+  const args=names.map(n=>arg(config[n]));args.push({value:svc.body},{value:pre.body},{value:svc.rows},{value:preNames},{value:pre.exports},{value:beforeHash},{value:afterHash},{value:apply},{value:allowReplacement});args.push(...serviceDeps.map(n=>arg(config[n])),...preNames.map(n=>arg(preCaptured[n])));
+  const action=function(state,persist,conflict,clock,now,id,queues,committing,checkpointFences,serviceBody,preBody,serviceImports,preNames,preExports,beforeHash,afterHash,apply,allowReplacement,...deps){
    const {createHash}=process.getBuiltinModule('node:crypto');const hash=x=>createHash('sha256').update(x).digest('hex');
    function check(){if(queues.size||committing.size||checkpointFences.size)throw Error('wecom_mutation_in_progress');if(state.automationJobs.some(j=>j.kind==='wecom_customer_preview'&&!['succeeded','failed','cancelled','expired'].includes(j.status)))throw Error('active_wecom_job');if(state.windowsTasks.some(t=>['wecom_customer_preview','wecom_cleanup_verify'].includes(t.type)&&!['succeeded','failed','cancelled','expired'].includes(t.status)))throw Error('active_wecom_task');if(hash(this.recoveryStart.toString())!==beforeHash)throw Error('service_source_drift');}
    check.call(this);
    const regularNames=serviceImports.filter(r=>!r.spec.endsWith('wecom-preinput-recovery.mjs')).flatMap(r=>r.names);
    const pre=Function(...preNames,'"use strict";\n'+preBody+'\nreturn {'+preExports.join(',')+'};')(...deps.slice(regularNames.length));
-   let offset=0;const bindings=serviceImports.flatMap(r=>r.names.map(n=>r.spec.endsWith('wecom-preinput-recovery.mjs')?pre[n]:deps[offset++]));
+   let offset=0;const bindings=serviceImports.flatMap(r=>r.names.map((n,i)=>r.spec.endsWith('wecom-preinput-recovery.mjs')?pre[r.imported[i]]:deps[offset++]));
+   if(bindings.some(v=>v===undefined))throw Error('dependency_binding_missing');
    const mod=Function(...serviceImports.flatMap(r=>r.names),'"use strict";\n'+serviceBody+'\nreturn {createWecomCleanupService};')(...bindings);
    const replacement=mod.createWecomCleanupService({state,persist,conflict,clock,now,id});
    if(Object.keys(this).some(k=>typeof this[k]!=='function'||Object.getOwnPropertyDescriptor(this,k)?.writable!==true))throw Error('service_descriptor_drift');
    if(Object.keys(this).sort().join('|')!==Object.keys(replacement).sort().join('|')||hash(replacement.recoveryStart.toString())!==afterHash)throw Error('replacement_shape_or_source_mismatch');
    for(const lock of state.deviceLocks.filter(l=>l.lockType==='wecom_physical_cleanup'&&l.status!=='released'))if(replacement.pending(lock.deviceId)!==this.pending(lock.deviceId))throw Error('state_reference_changed');
-   check.call(this);const symbol=Symbol.for('phonecloud.wecom.recovery.hotpatch');if(globalThis[symbol])throw Error('existing_hotpatch');
+   check.call(this);const symbol=Symbol.for('phonecloud.wecom.recovery.hotpatch'),previous=globalThis[symbol];
+   if(previous&&(!allowReplacement||previous.service!==this||previous.state!==state||previous.clock!==clock||previous.afterHash!==beforeHash||(previous.repairs||[]).length>=4))throw Error('existing_hotpatch');
    const before={pid:process.pid,uptime:process.uptime(),state,clock,methods:{...this}};
-   if(apply){globalThis[symbol]={service:this,...before,appliedAt:Date.now(),beforeHash,afterHash};Object.assign(this,replacement);}
+   if(apply){globalThis[symbol]=previous?{...previous,afterHash,repairs:[...(previous.repairs||[]),{beforeHash,afterHash,at:Date.now()}]}:{service:this,...before,appliedAt:Date.now(),beforeHash,afterHash};Object.assign(this,replacement);}
    return{applied:apply,pid:process.pid,uptime:process.uptime(),sameState:true,sameClock:true,methods:Object.keys(replacement),beforeHash,afterHash,paused:false,restarted:false};
   };
   const result=await rpc('Runtime.callFunctionOn',{objectId:service.objectId,functionDeclaration:action.toString(),arguments:args,awaitPromise:true,returnByValue:true});

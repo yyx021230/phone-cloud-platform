@@ -130,13 +130,13 @@ for(const[name,change]of[
  const operator=request.operator||'operator';delete request.operator;const before=structuredClone(f.state);
  await assert.rejects(f.service.recoveryStart(f.lock.lockId,request,operator),/wecom_cleanup_recovery/);assert.deepEqual(f.state,before);
 });
-test('maintenance attempts are capped at three and never restart automatically',async()=>{
+test('maintenance attempts are capped at five and never restart automatically',async()=>{
  const f=fixture();await failedMaintenance(f);
- for(let i=1;i<3;i++){
+ for(let i=1;i<5;i++){
   const old=f.getTask();await f.service.recoveryStart(f.lock.lockId,{...f.request(),requestId:'retry-'+i,retryOf:old.taskId},'operator');
   f.pick();await f.service.status(f.getTask(),{status:'failed',result:{errorCode:'wecom_cleanup_verify_timeout'}});
  }
- assert.equal(f.lock.physicalCleanup.recoveryHistory.length,2);assert.equal(f.service.recoveryGet(f.lock.lockId).canRetry,false);
+ assert.equal(f.lock.physicalCleanup.recoveryHistory.length,4);assert.equal(f.service.recoveryGet(f.lock.lockId).canRetry,false);
  await assert.rejects(f.service.recoveryStart(f.lock.lockId,{...f.request(),requestId:'retry-extra',retryOf:f.getTask().taskId},'operator'),/retry_not_allowed/);
- assert.equal(f.state.windowsTasks.length,4);
+ assert.equal(f.state.windowsTasks.length,6);
 });

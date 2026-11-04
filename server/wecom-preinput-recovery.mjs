@@ -70,11 +70,11 @@ export function originalRecoveryContext(state,lock){
 export function canRetryRecovery(state,lock){
   const d=lock?.physicalCleanup,v=d?.recovery,history=d?.recoveryHistory||[];
   const task=state.windowsTasks.find(t=>t.taskId===v?.verificationTaskId);
-  return Boolean(isWecomCleanupPending(lock)&&Array.isArray(history)&&history.length<2&&v&&!v.proof
+  return Boolean(isWecomCleanupPending(lock)&&Array.isArray(history)&&history.length<4&&v&&!v.proof
     &&task?.status==='failed'&&task.type==='wecom_cleanup_verify'&&task.payload?.preinputRecovery===PREINPUT_RECOVERY
     &&task.payload.verificationTaskId===v.verificationTaskId&&equal(task.payload.physicalCleanup,d.binding)
     &&task.deviceId===lock.deviceId&&task.agentId===d.binding.agentId&&task.result?.cleanupVerified!==true
-    &&['wecom_cleanup_recovery_worker_present','wecom_cleanup_verify_timeout','wecom_cleanup_recovery_processes_unconfirmed','wecom_cleanup_worker_timeout'].includes(task.result?.errorCode));
+    &&['wecom_cleanup_recovery_worker_present','wecom_cleanup_verify_timeout','wecom_cleanup_recovery_processes_unconfirmed','wecom_cleanup_worker_timeout','wecom_cleanup_request_failed'].includes(task.result?.errorCode));
 }
 export function recoveryProposal(state,lock){
   const {fingerprint,retiredProducer}=originalRecoveryContext(state,lock),b=lock.physicalCleanup.binding;
