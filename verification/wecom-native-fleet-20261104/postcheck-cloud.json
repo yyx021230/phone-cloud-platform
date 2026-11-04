@@ -1,0 +1,233 @@
+{
+  "at": "2026-11-04T03:57:31.032Z",
+  "ready": {
+    "http": 200,
+    "ok": true,
+    "postgres": true,
+    "redis": true
+  },
+  "lookup": {
+    "enabled": true,
+    "configRevision": 187,
+    "otherConfigHash": "deeaeb269cba7ca104e697ab3a6ef63a291cfa788d4aaf5be686564b05fe9d3c",
+    "counts": {
+      "registered": 51,
+      "executing": 3,
+      "waitingHuman": 0,
+      "queued": 1
+    }
+  },
+  "inventory": {
+    "total": 141,
+    "online": 125,
+    "targets": [
+      {
+        "deviceNumber": "59",
+        "online": true,
+        "adbOnline": true,
+        "agentOnline": true,
+        "listed": true,
+        "busy": true,
+        "wecomAllowed": true,
+        "available": false,
+        "unavailableReason": "device_busy",
+        "occupancy": {
+          "type": "wecom_physical_cleanup",
+          "label": "\u4f01\u5fae\u6e05\u7406\u5f85\u786e\u8ba4"
+        }
+      },
+      {
+        "deviceNumber": "82",
+        "online": true,
+        "adbOnline": true,
+        "agentOnline": true,
+        "listed": true,
+        "busy": false,
+        "wecomAllowed": false,
+        "available": false,
+        "unavailableReason": "wecom_not_configured",
+        "occupancy": null
+      },
+      {
+        "deviceNumber": "69",
+        "online": true,
+        "adbOnline": true,
+        "agentOnline": true,
+        "listed": true,
+        "busy": false,
+        "wecomAllowed": false,
+        "available": false,
+        "unavailableReason": "wecom_not_configured",
+        "occupancy": null
+      },
+      {
+        "deviceNumber": "71",
+        "online": true,
+        "adbOnline": true,
+        "agentOnline": true,
+        "listed": true,
+        "busy": false,
+        "wecomAllowed": false,
+        "available": false,
+        "unavailableReason": "wecom_not_configured",
+        "occupancy": null
+      },
+      {
+        "deviceNumber": "125",
+        "online": true,
+        "adbOnline": true,
+        "agentOnline": true,
+        "listed": true,
+        "busy": false,
+        "wecomAllowed": false,
+        "available": false,
+        "unavailableReason": "wecom_not_configured",
+        "occupancy": null
+      },
+      {
+        "deviceNumber": "185",
+        "online": true,
+        "adbOnline": true,
+        "agentOnline": true,
+        "listed": true,
+        "busy": false,
+        "wecomAllowed": false,
+        "available": false,
+        "unavailableReason": "wecom_not_configured",
+        "occupancy": null
+      },
+      {
+        "deviceNumber": "173",
+        "online": true,
+        "adbOnline": true,
+        "agentOnline": true,
+        "listed": true,
+        "busy": false,
+        "wecomAllowed": false,
+        "available": false,
+        "unavailableReason": "wecom_not_configured",
+        "occupancy": null
+      },
+      {
+        "deviceNumber": "145",
+        "online": true,
+        "adbOnline": true,
+        "agentOnline": true,
+        "listed": true,
+        "busy": false,
+        "wecomAllowed": true,
+        "available": true,
+        "unavailableReason": "",
+        "occupancy": null
+      },
+      {
+        "deviceNumber": "25",
+        "online": true,
+        "adbOnline": true,
+        "agentOnline": true,
+        "listed": true,
+        "busy": false,
+        "wecomAllowed": true,
+        "available": true,
+        "unavailableReason": "",
+        "occupancy": null
+      },
+      {
+        "deviceNumber": "144",
+        "online": true,
+        "adbOnline": true,
+        "agentOnline": true,
+        "listed": true,
+        "busy": false,
+        "wecomAllowed": false,
+        "available": false,
+        "unavailableReason": "wecom_not_configured",
+        "occupancy": null
+      },
+      {
+        "deviceNumber": "143",
+        "online": true,
+        "adbOnline": true,
+        "agentOnline": true,
+        "listed": true,
+        "busy": false,
+        "wecomAllowed": false,
+        "available": false,
+        "unavailableReason": "wecom_not_configured",
+        "occupancy": null
+      },
+      {
+        "deviceNumber": "106",
+        "online": true,
+        "adbOnline": true,
+        "agentOnline": true,
+        "listed": true,
+        "busy": false,
+        "wecomAllowed": false,
+        "available": false,
+        "unavailableReason": "wecom_not_configured",
+        "occupancy": null
+      },
+      {
+        "deviceNumber": "127",
+        "online": true,
+        "adbOnline": true,
+        "agentOnline": true,
+        "listed": true,
+        "busy": false,
+        "wecomAllowed": false,
+        "available": false,
+        "unavailableReason": "wecom_not_configured",
+        "occupancy": null
+      },
+      {
+        "deviceNumber": "123",
+        "online": true,
+        "adbOnline": true,
+        "agentOnline": true,
+        "listed": true,
+        "busy": false,
+        "wecomAllowed": false,
+        "available": false,
+        "unavailableReason": "wecom_not_configured",
+        "occupancy": null
+      },
+      {
+        "deviceNumber": "98",
+        "online": true,
+        "adbOnline": true,
+        "agentOnline": true,
+        "listed": true,
+        "busy": false,
+        "wecomAllowed": false,
+        "available": false,
+        "unavailableReason": "wecom_not_configured",
+        "occupancy": null
+      },
+      {
+        "deviceNumber": "78",
+        "online": true,
+        "adbOnline": true,
+        "agentOnline": true,
+        "listed": true,
+        "busy": false,
+        "wecomAllowed": false,
+        "available": false,
+        "unavailableReason": "wecom_not_configured",
+        "occupancy": null
+      },
+      {
+        "deviceNumber": "91",
+        "online": true,
+        "adbOnline": true,
+        "agentOnline": true,
+        "listed": true,
+        "busy": false,
+        "wecomAllowed": false,
+        "available": false,
+        "unavailableReason": "wecom_not_configured",
+        "occupancy": null
+      }
+    ]
+  }
+}
