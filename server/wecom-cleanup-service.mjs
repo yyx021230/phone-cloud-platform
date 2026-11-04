@@ -350,7 +350,8 @@ export function createWecomCleanupService({ state, persist, conflict = () => fal
     if(typeof operatorId!=='string'||!operatorId)recoveryFail('operator_required');
     const request=recoveryRequest(body);
     return serialize(lock.deviceId,async()=>{
-      const {fingerprint}=originalRecoveryContext(state,lock),existing=lock.physicalCleanup.recovery;
+      const {fingerprint,retiredProducer}=originalRecoveryContext(state,lock),existing=lock.physicalCleanup.recovery;
+      if(retiredProducer&&!isDeepStrictEqual(retiredProducer,request.retiredProducer))recoveryFail('producer_invalid');
       if(existing){
         if(existing.operatorId!==operatorId||!isDeepStrictEqual(existing.request,request))recoveryFail('attempt_exists');
         return {ok:true,reused:true,taskId:existing.verificationTaskId,verified:lock.status==='released'};

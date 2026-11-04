@@ -1,0 +1,10 @@
+✔ real PG cold-load retains 155-like original context behind 5005 newer rows without changing any record (56.411917ms)
+✔ real PG rollback, original history, other-phone sentinel, lost commit reply and restart proof ACK (24.767959ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 143.901833

@@ -1,0 +1,75 @@
+{
+  "at": "2026-11-04T05:56:06.682831+00:00",
+  "agentPid": 15224,
+  "agentExe": "D:\\PhoneCloud\\tools\\node\\node.exe",
+  "agentCreatedAt": 1793759770.136942,
+  "adbPid": 31384,
+  "adbCreatedAt": 1793703601.6539898,
+  "adbExe": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+  "readers": [
+    {
+      "pid": 14024,
+      "parent": 31436,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 16652,
+      "parent": 15224,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 17724,
+      "parent": 26748,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 24088,
+      "parent": 32376,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 24488,
+      "parent": 16652,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 26748,
+      "parent": 15224,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 26980,
+      "parent": 15224,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 31436,
+      "parent": 15224,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 32376,
+      "parent": 15224,
+      "kind": "native_candidate_or_lookup"
+    }
+  ],
+  "staged": [
+    {
+      "pid": 13580,
+      "parent": 22856
+    },
+    {
+      "pid": 18544,
+      "parent": 13580
+    },
+    {
+      "pid": 22856,
+      "parent": 28924
+    }
+  ],
+  "files": {
+    "src/index.mjs": "dd15cc1f6ab588d45ba5f2a19c3cebc06b663e6315f08c68025d5df904e27041",
+    "src/wecom-preview-task.mjs": "9360cd118160632da18e85e913b7555fcc2c366b2fea684ac0264a11728f1f54",
+    "scripts/wecom_platform_preview.py": "faadc5f6e504348efa5a55276b251965a6ff6e78486b89b26e811ff363bbd417"
+  }
+}

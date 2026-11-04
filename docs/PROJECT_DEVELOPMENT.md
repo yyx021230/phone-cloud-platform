@@ -6722,3 +6722,16 @@ ad2856b最后25实机已记录Asleep、普通POWER回执、Awake、nonsecure_cle
 ### 决策日志｜2026-11-04 用户以纯线索ID替换CPS旧组合备注规则
 
 此项替换2026-11-03要求沿用手机号_线索ID的备注决策和旧组合超长受理前拒绝行为；不改写历史记录。完整lead_id为当前备注名规则，描述和独立备注手机号证明、未知不重放及成员/客户防重继续保留。合法19位ID无需截断或另造短ID，调用方仍须无损构造JSON数值和签名。CPS官方事件匹配须按完整线索ID联调，本轮本地模拟不替代实际成员映射、原生手机号证明和正式CPS真机验收；不借此启用未发布桥接或改变生产。
+
+
+### 变更记录｜2026-11-04 四台企微遗留占用恢复候选（23/43/59/155，尚未执行恢复）
+
+用户明确要求优先恢复23、155、59并补43。05:51Z只读核对四台均在线，实际占用均为wecom_physical_cleanup；23/43/155为旧预览在配置交付前wecom_cleanup_host_unconfirmed，59为invalid_preview_config/configuration/0ms，其已登记reader退出，但独立验证任务wecom_cleanup_verify_timeout。原业务均failed、not_attempted、invitationSent=false。线上ACTIVE仍9afc29ae、image aba0ddc3和02:36启动未变，CPS lead_id候选a644525未上线。
+
+沿用7029028已准备的pending原上下文精确补载，不调大全局历史窗口。增加严格的配置阶段维护恢复分支：只接纳已登记host并已close、原task/job均configuration/0ms配置拒绝、原验证为同绑定且已failed/verify_timeout、无发送凭据/原proof的preview。服务端钉住所记录reader的PID/creationToken/machineId，不能由调用者任选旧producer；对该分支的指纹同时纳入原causal和原验证记录。既有legacy恢复分支与原始任务/失败、host/verification完全保留，独立的新维护proof通过才释放，不改原任务为成功、不重放添加、不删锁。新分支继续使用已上线SYSTEM原生只读worker，不改Agent、共享ADB、身份/keys、手机UI或媒体。
+
+本轮开始分支codex/cps-lead-id-remark-20261104、HEAD a6445251771a1139e0318c4218585a9cb5c84c42，工作区干净；新任务分支codex/wecom-recover-four-20261104。55项定向通过；扩围172项170通过/0失败/2隔离PG条件跳过，随后独立本地临时PG将这2项真实运行并2/2通过，环境已清理；root check、smoke通过。独立Node进程只读生产原记录执行候选校验，四台均符合对应条件，不改变运行服务或状态。一次只读查询误用无updated_at的lock列失败、一次按JSON历史排序超过3秒后停止，改为有界主键关联查询；无DB变更。Windows只读确认SYSTEM Agent15224及固定SYSTEM ADB31384、原出生/路径保持，其他在途与staged进程不处理。候选待备份/暂存及本次云端维护授权；尚无四台原生恢复proof，不宣称已恢复。
+
+### 决策日志｜2026-11-04 恢复旧占用须生成新的维护证明，不续签失败的原核验
+
+延续原155前置失败的显式维护恢复，补充59已登记并退出的配置拒绝情形；替换该情形“只能永久保留pending、没有合法维护入口”的缺口，不改变普通verify失败不自动续签原代次的决策。由具名管理员启动独立维护代次，要求固定SYSTEM观察者、实际旧reader退休、无未知企微worker、目标Poco进程和serial forward均为空、两帧与原3秒challenge，以及原指纹/绑定/互斥/持久化原规则。发送或业务阶段失败不在此分支。43数据库另有多条8月旧active记录，不能凭数据库历史直接当作当前任务或批量删除；只恢复本次已核对的单台物理义务，若运行态仍冲突按实际主键再查。加载候选须云端重载，不能把“恢复四台”扩大为中断正在用的控屏或重启Agent/ADB授权，先备份和准备最小镜像再确认本次窗口。

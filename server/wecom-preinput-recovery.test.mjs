@@ -66,3 +66,40 @@ test('storage failure and concurrent checkpoint never expose a speculative relea
  resolve();await assert.rejects(saving,/storage_unavailable/);assert.equal(f.lock.status,'cleanup_pending');assert.equal(f.getTask().status,'running');
  block=false;assert.equal((await f.call('recovery-proof',p)).verified,true);
 });
+
+
+function configFailureFixture(){
+ const f=fixture(),producer=f.request().retiredProducer,d=f.lock.physicalCleanup,at=d.originalTerminalAt;
+ for(const row of [f.task,f.job])Object.assign(row.result,{previewCode:'invalid_preview_config',message:'invalid_preview_config',diagnostic:{wecomExecution:{phase:'configuration',failurePhase:'configuration',elapsedMs:0}}});
+ d.hosts=[{role:'reader',...producer,createdAt:at}];d.hostClosedAt=at;d.phase='awaiting_verification';
+ d.causal={protocol:'wecom-causal-v1',bootstrap:{protocol:'wecom-causal-v1',bindingNonce:f.binding.nonce,pipeNonce:'a'.repeat(48)}};
+ const ticket={protocol:'wecom-causal-v1',epoch:'old-epoch',leaseId:'old-verification',purpose:'verification'};
+ d.verification={verificationTaskId:'old-verify',verificationId:'old-id',verificationNonce:'old-nonce',issuedAt:at,expiresAt:at,pickedAt:at,causalLease:ticket};
+ const oldVerify={taskId:'old-verify',type:'wecom_cleanup_verify',status:'failed',deviceId:f.binding.deviceId,adbSerial:f.binding.serial,agentId:f.binding.agentId,
+  payload:{physicalCleanup:f.binding,verificationTaskId:'old-verify',verificationId:'old-id',verificationNonce:'old-nonce',causalLease:ticket},result:{errorCode:'wecom_cleanup_verify_timeout'}};
+ f.state.windowsTasks.push(oldVerify);return {...f,oldVerify,producer};
+}
+
+test('registered configuration rejection can receive a separate maintenance proof, preserving the old timeout',async()=>{
+ const f=configFailureFixture(),before=structuredClone([f.task,f.job,f.oldVerify,f.lock.physicalCleanup.hosts,f.lock.physicalCleanup.verification]);
+ const proposal=f.service.recoveryGet(f.lock.lockId);assert.equal(proposal.requiresAgentReload,false);assert.deepEqual(proposal.retiredProducer,f.producer);
+ await f.start();f.pick();await f.challenge();assert.equal((await f.call('recovery-proof',f.proof())).verified,true);
+ assert.equal(f.lock.status,'released');assert.deepEqual([f.task,f.job,f.oldVerify,f.lock.physicalCleanup.hosts,f.lock.physicalCleanup.verification],before);
+ assert.equal(f.getTask().status,'succeeded');assert.equal(f.oldVerify.status,'failed');assert.equal(f.state.windowsTasks.length,3);
+});
+for(const [name,change]of [
+ ['different failure',f=>f.task.result.previewCode='timeout'],['UI phase',f=>f.job.result.diagnostic.wecomExecution.phase='recipient_search'],
+ ['nonzero elapsed',f=>f.task.result.diagnostic.wecomExecution.elapsedMs=1],['send claimed',f=>f.task.result.sendClaimed=true],
+ ['unclosed host',f=>f.lock.physicalCleanup.hostClosedAt=''],['bad host',f=>f.lock.physicalCleanup.hosts[0].creationToken='unknown'],
+ ['missing bootstrap binding',f=>delete f.lock.physicalCleanup.causal.bootstrap.bindingNonce],['proof already present',f=>f.lock.physicalCleanup.proof={}],
+ ['missing failed verifier',f=>f.state.windowsTasks.pop()],['running verifier',f=>f.oldVerify.status='running'],
+ ['other verify failure',f=>f.oldVerify.result.errorCode='proof_invalid'],['wrong verifier device',f=>f.oldVerify.deviceId='adb:other'],
+ ['different original binding',f=>f.oldVerify.payload.physicalCleanup={...f.binding,originalTaskId:'other'}],
+ ['wrong verifier nonce',f=>f.oldVerify.payload.verificationNonce='other'],['wrong verifier authority',f=>f.oldVerify.payload.causalLease={...f.oldVerify.payload.causalLease,epoch:'other'}]
+])test('registered configuration recovery denies '+name+' without releasing the fence',async()=>{
+ const f=configFailureFixture();change(f);const before=structuredClone(f.state);await assert.rejects(f.start(),/wecom_cleanup_recovery/);assert.deepEqual(f.state,before);
+});
+test('registered reader identity is pinned by the server, not chosen by the caller',async()=>{
+ const f=configFailureFixture(),request=f.request();request.retiredProducer={...request.retiredProducer,pid:999};
+ await assert.rejects(f.service.recoveryStart(f.lock.lockId,request,'operator'),/producer_invalid/);assert.equal(f.lock.status,'cleanup_pending');
+});
