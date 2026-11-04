@@ -1,0 +1,39 @@
+{
+  "version": "wecom-recover-four-20261104-rc.1",
+  "sourceCommit": "de6cf4057de8c0c24fe0b23405db4a9a8d80748f",
+  "imageId": "sha256:50a1fafcf13f739a0a4173048ed9065e470484eef95f2381ca2ed94cf29a86b6",
+  "previousImage": "sha256:aba0ddc3f61015a797ac6437fe6f1ec5c801af8cbc300036197c39ffb7c71893",
+  "backupCounts": {
+    "devices": 4,
+    "locks": 4,
+    "originalLocks": 4,
+    "tasks": 5,
+    "jobs": 4
+  },
+  "backupSha256": "84126890838dfbda8d854f3e206957b2d0c4aba57a32c7ef417ee476d1445379",
+  "stage": "/opt/phone-cloud-staging/wecom-recover-four-20261104-rc.1",
+  "validation": {
+    "filesVerified": 5,
+    "imports": true
+  },
+  "composePreflight": {
+    "status": "validated_not_activated",
+    "composeOnlyImageChanged": true,
+    "runtimeEnvironmentMatchesCurrent": true,
+    "existingXhsReferencesReused": true,
+    "credentialValuesPersisted": false,
+    "serviceReloaded": false
+  },
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "activeSha256Unchanged": "9afc29aee37eec07c4049cea3c9c776926d7b01c830b314deca0e3e25c705648",
+  "serviceReloaded": false,
+  "agentReloadRequired": false,
+  "status": "prepared_not_activated"
+}
