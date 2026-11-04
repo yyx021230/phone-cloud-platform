@@ -8,7 +8,7 @@ import {EventEmitter} from 'node:events';
 
 const source=fs.readFileSync(new URL('./wecom_single_reader.mjs',import.meta.url),'utf8')
   .replace(/^import .*;\n/gm,'');
-const hash='4bcecc8702ea577a77e5f17664b7833ced33b681f88e5beedcdc6875b6f047cc';
+const hash='e65c591b962056b5a03460c9b41fc127add40b5e42ba88355f9f6c6db3303754';
 async function run(change={}){
   const queries=[],routes=[],logs=[],redisCommands=[];
   const target={deviceId:'adb:Fixture',serial:'Fixture',deviceNumber:'59'};

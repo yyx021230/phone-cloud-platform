@@ -8,7 +8,7 @@ let raw='';for await(const c of process.stdin){raw+=c;if(raw.length>4096)throw E
 const input=JSON.parse(raw), t=input.target;
 if(!t||!/^adb:[A-Za-z0-9_.:-]+$/.test(t.deviceId)||t.deviceId!=='adb:'+t.serial||!/^\d{1,3}$/.test(t.deviceNumber))throw Error('qa_target_invalid');
 const hash=()=>createHash('sha256').update(fs.readFileSync('server/index.mjs')).digest('hex');
-const expected='4bcecc8702ea577a77e5f17664b7833ced33b681f88e5beedcdc6875b6f047cc';
+const expected='e65c591b962056b5a03460c9b41fc127add40b5e42ba88355f9f6c6db3303754';
 if(hash()!==expected)throw Error('qa_production_source_changed');
 // Reuse only the exact hash-pinned production RESP client definitions. Do not
 // import/start server/index or call its memory fallback/lock-expiry endpoints.
