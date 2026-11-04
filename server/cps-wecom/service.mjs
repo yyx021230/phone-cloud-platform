@@ -1,6 +1,6 @@
 import {createHash,randomBytes} from 'node:crypto';
 import {AUTH_FIELDS,ROUTES,parseBody,authenticate,dispatchInput,memberKey,fingerprint,signature,stringifyBody,failure} from './protocol.mjs';
-import {remarkName,recipientIdentity,memberIdentity,memberLimit,businessDay,businessDayEnd} from './domain.mjs';
+import {remarkName,recipientIdentity,physicalRecipientIdentity,memberIdentity,memberLimit,businessDay,businessDayEnd} from './domain.mjs';
 import {bounded} from './platform.mjs';
 const key=(app,id)=>JSON.stringify([app,id]);
 const fixedCode=value=>typeof value==='string'&&/^[a-z0-9_]{1,100}$/.test(value)?value:'execution_outcome_unknown';
@@ -47,17 +47,25 @@ export function createService({store,clients,platform,fetchImpl=fetch,clock=Date
     if(!Array.isArray(row.appSlots)||!row.appSlots.some(a=>a.appSlot===target.appSlot))return 'wecom_not_configured';
     return row.available===true?'':'device_busy';
   }
-  function rejectPriorRecipient(s,recipientKey) {
-    if(s.recipients.some(r=>r.key===recipientKey&&r.state!=='not_sent'))throw failure(2003,'该企微成员与客户已有已处理或待确认任务，请核对原线索，不能重复添加');
+  function rejectPriorRecipient(s,recipientKey,physicalKey,legacyKey,input,target) {
+    const leads=new Map(s.leads.map(l=>[key(l.appId,l.leadId),l]));
+    const legacyPhysical=r=>{
+      const lead=leads.get(key(r.appId,r.leadId));
+      return !r.physicalKey&&lead?.target?.deviceNumber===target.deviceNumber&&lead.target.appSlot===target.appSlot
+        &&r.key===recipientIdentity({...lead.input,phone:input.phone});
+    };
+    if(s.recipients.some(r=>(r.key===recipientKey||r.key===legacyKey||r.physicalKey===physicalKey||legacyPhysical(r))&&r.state!=='not_sent'))throw failure(2003,'该企微成员与客户已有已处理或待确认任务，请核对原线索，不能重复添加');
   }
   async function dispatch(client,body) {
     const input=dispatchInput(body),id=input.lead_id,hash=fingerprint(input),snapshot=store.snapshot();
     const old=find(snapshot,client.appId,id);
     if(old){if(old.fingerprint!==hash)throw failure(2003,'同一lead_id的业务参数发生变化');return response(true,200,'已接收');}
+    if(client.phoneRouting&&!input.wecom_phone)throw failure(2003,'请传企微登录手机号wecom_phone，phone为客户手机号');
     remarkName(input); // Reject >20 before acknowledging or reserving a phone.
     const target=client.members.get(memberKey(input));
     if(!target)throw failure(2003,reasons.member_not_configured);
-    const recipientKey=recipientIdentity(input);rejectPriorRecipient(snapshot,recipientKey);
+    if(input.wecom_phone&&['wecom_userid','wecom_corp_id'].some(k=>target[k]!==undefined&&target[k]!==input[k]))throw failure(2003,'企微登录手机号与配置的企业或成员ID不一致');
+    const recipientKey=recipientIdentity(input),physicalKey=physicalRecipientIdentity(input,target),legacyKey=recipientIdentity({...input,wecom_phone:undefined});rejectPriorRecipient(snapshot,recipientKey,physicalKey,legacyKey,input,target);
     const inventory=await platform.inventory(),row=matchedDevice(inventory,target);
     const unavailable=targetReason(row,target,store.snapshot());
     if(unavailable)throw failure(2003,reasons[unavailable]);
@@ -66,10 +74,10 @@ export function createService({store,clients,platform,fetchImpl=fetch,clock=Date
     await store.transact(s=>{
       const prior=find(s,client.appId,id);
       if(prior){if(prior.fingerprint!==hash)throw failure(2003,'同一lead_id的业务参数发生变化');return;}
-      rejectPriorRecipient(s,recipientKey);
+      rejectPriorRecipient(s,recipientKey,physicalKey,legacyKey,input,target);
       if(memberLimit(s,target,clock()))throw failure(2003,reasons.member_rate_limited);
       if(s.leads.length>=10000)throw failure(500,'任务账本容量已满，请联系维护人员',503);
-      const reservation={key:recipientKey,appId:client.appId,leadId:id,state:'reserved',updatedAt:clock()};
+      const reservation={key:recipientKey,physicalKey,appId:client.appId,leadId:id,state:'reserved',updatedAt:clock()};
       const previous=s.recipients.findIndex(r=>r.key===recipientKey);
       if(previous<0)s.recipients.push(reservation);else s.recipients[previous]=reservation;
       s.leads.push({appId:client.appId,leadId:id,input,fingerprint:hash,target:{...target},recipientKey,callbackUrl:client.callbackUrl,
@@ -84,7 +92,7 @@ export function createService({store,clients,platform,fetchImpl=fetch,clock=Date
     const rows=visible.filter(d=>body.online_only!==true||d.online===true).map(d=>{
       const accounts=[...client.members.values()].filter(m=>m.deviceNumber===d.deviceNumber).map(m=>{
         const reason=targetReason(d,m,state);
-        return {app_slot:m.appSlot,binding_verified:m.bindingVerified===true,enabled:m.enabled!==false,wecom_corp_id:m.wecom_corp_id,wecom_userid:m.wecom_userid,available:reason==='',unavailable_reason:reason};
+        return {app_slot:m.appSlot,binding_verified:m.bindingVerified===true,enabled:m.enabled!==false,...(m.wecom_phone?{wecom_phone:m.wecom_phone}:{}),wecom_corp_id:m.wecom_corp_id,wecom_userid:m.wecom_userid,available:reason==='',unavailable_reason:reason};
       });
       const available=accounts.some(a=>a.available);
       return {device_number:d.deviceNumber,device_name:d.deviceName||d.deviceNumber,online:d.online===true,adb_online:d.adbOnline===true,agent_online:d.agentOnline===true,listed:d.listed===true,busy:d.busy===true,
@@ -119,7 +127,7 @@ export function createService({store,clients,platform,fetchImpl=fetch,clock=Date
       if(outcome?.result==='failed'){
         const at=Date.parse(job.completedAt||'');
         const valid=Number.isFinite(at)&&at>=r.createdAt-300000&&at<=clock()+300000;
-        const limit={key:memberIdentity(r.input),until:valid?businessDayEnd(at):null,observedAt:valid?at:null};
+        const limit={key:memberIdentity(r.target),until:valid?businessDayEnd(at):null,observedAt:valid?at:null};
         const index=s.limits.findIndex(x=>x.key===limit.key);if(index<0)s.limits.push(limit);else s.limits[index]=limit;
         if(!valid){r.stage='needs_attention';r.error='limit_time_unconfirmed';return;}
         r.outcomeObservedAt=at;
@@ -155,7 +163,8 @@ export function createService({store,clients,platform,fetchImpl=fetch,clock=Date
     const client=clients.get(lead.appId);if(!client)return update(lead,r=>{r.stage='needs_attention';r.error='client_configuration_unavailable';});
     if(['callback_pending','callback_inflight'].includes(lead.stage))return callback(lead,client);
     const current=client.members.get(memberKey(lead.input));
-    if(!current||current.enabled===false||current.bindingVerified!==true||current.deviceNumber!==lead.target.deviceNumber||current.appSlot!==lead.target.appSlot)return update(lead,r=>{r.stage='needs_attention';r.error='member_mapping_changed';});
+    if(!current||current.enabled===false||current.bindingVerified!==true||current.deviceNumber!==lead.target.deviceNumber||current.appSlot!==lead.target.appSlot||current.wecom_phone!==lead.target.wecom_phone
+      ||['wecom_userid','wecom_corp_id'].some(k=>current[k]!==undefined&&current[k]!==lead.input[k]))return update(lead,r=>{r.stage='needs_attention';r.error='member_mapping_changed';});
     if(lead.stage==='queued') {
       const inv=await platform.inventory(),row=matchedDevice(inv,lead.target);
       if(row?.deviceId&&row.deviceId!==lead.deviceId)return update(lead,r=>{r.stage='needs_attention';r.error='physical_device_mapping_changed';});

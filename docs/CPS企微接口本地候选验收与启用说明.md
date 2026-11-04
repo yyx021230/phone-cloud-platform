@@ -6,7 +6,7 @@
 
 | 方向 | 接口 | 行为 |
 |---|---|---|
-| CPS→平台 | POST /api/v1/lead/dispatch | Body签名；可靠保存后立即返回；显式成员映射定位手机主号／分身 |
+| CPS→平台 | POST /api/v1/lead/dispatch | Body签名；可靠保存后立即返回；按wecom_phone显式绑定定位手机主号／分身 |
 | 平台→CPS | POST /api/v1/lead/callback | 只回传申请明确提交、已是好友、真实添加频繁；回调重试不重复操作手机 |
 | CPS→平台 | POST /api/v1/lead/devices/query | 默认全部设备，可筛在线；分别报告成员、物理占用和全局容量 |
 
@@ -44,14 +44,14 @@
 | CPS_WECOM_ENABLED | 必须显式为true，否则拒绝启动 |
 | CPS_EXECUTION_MODE | 必须显式preview或send；preview从不发送邀请或结果回调 |
 | CPS_WECOM_CLIENTS_JSON | 接入appId、secret、固定callbackUrl、allDeviceStatus及members；凭据用安全渠道注入 |
-| members | 每项含wecom_corp_id、wecom_userid、deviceNumber、appSlot(main/clone)、enabled、bindingVerified |
+| members | 本版每项含wecom_phone、deviceNumber、appSlot(main/clone)、enabled、bindingVerified；可额外钉住wecom_corp_id和wecom_userid（须成对配置） |
 | CPS_PLATFORM_BASE_URL / CPS_PLATFORM_TOKEN | 内部平台地址与平台管理员凭据，仅桥接端使用，不交给CPS |
 | CPS_DATABASE_URL | 生产必须PostgreSQL；仅连接独立CPS账本，不能用文件模式代替 |
 | CPS_STATE_KEY | 稳定账本命名空间，默认default；不能为重试、迁机或切版本更换以绕过防重 |
 | CPS_DATA_DIR | 仅本地文件测试使用，默认data/cps-wecom；目录/账本受限权限 |
 | CPS_PORT | 默认8797，仅绑定127.0.0.1；对外HTTPS入口需另行准备和授权 |
 
-同一官方企业＋成员不能在多个客户端重复配置，同一个手机槽位也不能绑定多个成员。`bindingVerified`缺省为false；未核验不执行。现有真实映射表仍待补，不能用示例值启用。更换实际登录成员时先停用原映射并核验新绑定。
+手机号模式的wecom_phone不能在多个客户端重复配置，同一手机槽位也不能绑定多个账号；可额外登记的官方企业＋成员同样不能重复。一个客户端不能混用手机号配置与旧成员ID配置，旧全成员ID配置仍兼容。`bindingVerified`缺省为false；未核验不执行。现有真实映射表仍待补，不能用示例值启用。更换实际登录成员时先停用原映射并核验新绑定。
 
 生产回调必须HTTPS；内部平台凭据也仅通过HTTPS或本机回环传输。仅本地测试可配置allowLoopbackTest=true的回环HTTP回调，不向公网开放测试接收器。服务启动命令为`npm run start:cps-wecom`，不会顺带重启平台或Agent。
 
@@ -94,3 +94,21 @@
 现有生产API拒绝人工直接释放此物理围栏，且原hosts/hostClosedAt未登记。当前无可在“不上线／不重载”条件下安全完成的收尾入口。保持原job/task/obligation，不补造旧PID或proof、不删除围栏、不改时钟／身份、不放宽校验；后续须独立审核原义务处理及完整新协议加载和验证。当前没有提供或执行清锁命令，也不承诺已有本地候选可自动迁移这条旧义务。
 
 记录见[本轮生产内部预览阻塞回执](../verification/wecom-native-api-20261103/REPORT.md)。本地Postgres／客户端模拟回归仍是原来范围，不能用于解除这条真实旧义务。
+
+
+## 2026-11-04 企微登录手机号配置补充（本地候选）
+
+下发新增wecom_phone；设备列表在accounts每一项返回相同字段，主号/分身分别有自己的手机号。客户phone不改变用途，仍用于搜索与备注。新模式不需要先补“官方成员ID到手机”的手工表，但CPS原企业/成员字段仍下发；若配置钉住官方ID，收到不一致即拒绝。该字段参加签名、原任务指纹、防重与限频，未知手机号不按成员ID退回其他账号。
+
+用户飞书登记表已导出只读处理。脚本scripts/qa/wecom_phone_registry.py从五张企微工作表识别登录设备列、重复表头和分身标记，排除支付宝/个微；不把装卡手机当登录手机。Feishu导出的dimension可误写A1，读取时必须reset_dimensions，不可只读第一格。输出完整手机号仅保存在受限本地JSON，stdout/版本回执只含数量及问题类别，membersDraft一律disabled且bindingVerified=false。手机号换号、旧记录、重复冲突和无明确槽位仍需核对，不按行顺序把第一行当主号。
+
+例如内部members（演示手机号）：
+
+```json
+[
+  {"wecom_phone":"13900139155","deviceNumber":"155","appSlot":"main","enabled":false,"bindingVerified":false},
+  {"wecom_phone":"13900139255","deviceNumber":"155","appSlot":"clone","enabled":false,"bindingVerified":false}
+]
+```
+
+真正启用前分别核对实际主号/分身登录手机号，确认后才设置bindingVerified和enabled；表格登记不等于手机当前登录证明。本轮不热更新或重启生产；不修改查名代码、Agent、ADB或在用手机。CPS调用方仍需同步wecom_phone并联调，不能称已经上线可用。

@@ -1,0 +1,48 @@
+{
+  "status": "local_candidate_not_deployed",
+  "branch": "codex/cps-phone-bindings-20261104",
+  "baselineCommit": "5002b53b8a8a7b3650800b5b363436169783851b",
+  "candidateTag": "cps-phone-bindings-20261104-rc.1",
+  "sourceWorkbookSha256": "9046f4ba10915816fe96d3fedcfbfbef721cdac07e5a480f07640088afc7c0a1",
+  "privateRegistrySha256": "51d58650e19f0cd300beb599a65a9c83a7d2500b06106f31e7c3347d566c5358",
+  "sourceWorkbookUnchanged": true,
+  "sourceDataExcludedFromGit": true,
+  "files": {
+    "server/cps-wecom/protocol.mjs": "9bbc754f8aad90252340b253bef3baee0b9af844c2337b64be60c363a5791523",
+    "server/cps-wecom/domain.mjs": "315c32b29e39c98ab80c64646e0a27482be81c22131345f52dc5960ff333929a",
+    "server/cps-wecom/service.mjs": "3b7da1b2f7c72e1921a23ae38a1b0e72e5a0f6df579a0adc08daec4f14306f96",
+    "server/cps-wecom/store.mjs": "d816f631064c5d181c5ccb98b382f5150f0d66c7df788d73f76db4d48c2831f6",
+    "server/cps-wecom-phone.test.mjs": "7919d910dca1ef43edd6a38d54a7325a09b2807a23c26d22a69e0fca02e47cf9",
+    "server/cps-wecom.client-http.test.mjs": "c6fae811fc778d5213370c0f91ed2aea3da9050b7308d52eef594b153ada6b48",
+    "scripts/qa/wecom_phone_registry.py": "4469d2b5fad667a229bba1441f89a15d7a51007946fd9aefa3e51635bc0ab822",
+    "scripts/qa/test_wecom_phone_registry.py": "77daef2617b3382acae81a6d75350d09e5c1fcdad6442d0230a12c2e29219ebe",
+    "docs/CPS企微客户对接方案-v0.1.md": "bfbf32b3a88bafff220fcdd8f205ac70365da9d00c512c04b4787dc3d68ded05",
+    "docs/CPS企微接口本地候选验收与启用说明.md": "47ff8b079199ec942b6ceefc489ecad09236b453444f18018d883c65b28a02ee"
+  },
+  "checks": {
+    "postgresActualHttpTests": 58,
+    "postgresSkips": 0,
+    "realCallerTimeoutMs": 121000,
+    "pythonRegistryTests": 10,
+    "rootSyntaxCheck": true,
+    "phoneTasksRun": 0,
+    "productionRequests": 0,
+    "invitationsSent": 0,
+    "productionRestarted": false,
+    "remotePush": false
+  },
+  "evidenceSha256": {
+    "postgres-fixture-setup.txt": "96cc2c5413648f427b29215cd73678bf6d995947c7a5d4b1d81e3de310a4eeff",
+    "postgres-tests.txt": "6cc538e6120d82b2b21a2d1b58711183e05454e90c394965dc57f57fee4378b1",
+    "registry-tests-final.txt": "38eeff1237d74275801617a271eced659e08b1cad8069897d18e659ae40641d8",
+    "postgres-fixture-result.txt": "8b45f1125e32d8a3b9302f68b68d2175aa3c18a36b1c885b5c723636d073ddfe",
+    "postgres-fixture-cleanup.txt": "ca19178a35ab4153b75b494963b66ce8243e1b94c173107c87b44d09db23652d",
+    "registry-summary-final.json": "8eebb8eff54a4ac66f1485c10067a263c6212d16b0a523d6ae09399c205f1477",
+    "check.txt.gz": "d2b2cbb104165e35f1f33d36d39dfd48f6d08370089745043f33ef2b3d33e3f3"
+  },
+  "runtime": {
+    "node": "v25.9.0",
+    "pythonRegistryTests": "Python 3.9.6",
+    "sourcePhoneLeakCheckPassed": true
+  }
+}
