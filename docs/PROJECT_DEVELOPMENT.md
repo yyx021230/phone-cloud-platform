@@ -6794,3 +6794,14 @@ wecom-recover-four-20261104-rc.1源码de6cf40已提交，inactive image50a1fafc�
 ### 决策日志｜2026-11-04 维护工具必须验证真实证明链路而非只验证受理
 
 延续用户不再重启及同对象热修复范围；修正前轮维护工具别名注入实现，不扩大Inspector端口/命令或业务范围。完整演练以实际旧工具失败后原位修复为前提，旧失败保留，新proof独立持久化；有界显式5代替换此前3代，request_failed只限已明确终结且无证明的维护任务，不把未知交付或普通业务错误纳入重放。未实际恢复时继续如实记录pending，不伪改task成功或直接删锁。
+
+
+### 变更记录｜2026-11-04 真实原生证明生成成功但父进程3秒预算超限；合并重复检查
+
+6602d70恢复模块于07:40Z原PID补修，双文件运行层同步，未激活下一启动镜像81860363；没有追加重启。23再核验failed/recovery_invalid。获准单原生脚本内合并ReadOnlyAdb.operation_guard与PeerSocket发送检查：在真实send之前单次执行完整local（SYSTEM/原parent/ADB/目标worker/旧producer），再核对实际反向TCP归属，不缓存跨send的事实；21定向/582全Python通过，15c9d43单文件热更新。43实际原生生成完整proof且两帧采集成功，诊断elapsed2861.62ms，但加父进程启动/传输后超过原challenge3秒，Agent拒绝提交，仍pending。不能把原生ok当服务端成功。
+
+继续只对该获准文件消除重叠扫描：第一帧前的authority同时承担initial检查（此前两次HTTP在任何ADB读之前连续重复），每帧前及最终共3次；所有真实socket open/send仍完整新鲜本地校验及反向归属，双帧和四分之一秒间隔、server原3秒challenge不改。通用verify_empty内部循环guard仅检查预算，其每个真实ADB读已在socket边界完整校验，帧边界及最终由authority校验；没有放宽未知进程、身份、peer、原指纹或最终原子证明规则。仅脱敏有界TEMP诊断记录taskId/ok/error/时长，不写令牌/argv/客户号码。四台未恢复之前继续核对真实proof，不改原业务失败。
+
+### 决策日志｜2026-11-04 以实际内核发送边界校验替换同一读操作多层重复扫描
+
+延续3秒期限，不靠延长过期证明获得恢复；以真实43原生耗时证据修正重复成本。已批准同一原生文件热更新范围内实施，不改Agent Node模块、进程或ADB。初始授权必须在第一条ADB读前，当前帧与最终授权仍独立；未知worker在connect后、send前出现的负例必须拒绝且无字节发送。原维护任务仍failed，不因局部生成proof而释放。

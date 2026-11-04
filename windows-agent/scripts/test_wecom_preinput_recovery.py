@@ -92,7 +92,7 @@ class RecoveryTests(unittest.TestCase):
 
 class FrameAuthorityTests(unittest.TestCase):
     def test_authority_is_fresh_before_both_frames_and_after_the_facts(self):
-        f=Fixture();f.run();self.assertEqual(len([r for r in f.calls if r[0]=='lease']),4)
+        f=Fixture();f.run();self.assertEqual(len([r for r in f.calls if r[0]=='lease']),3)
         self.assertEqual(len([r for r in f.calls if r[0]=='pid']),4)
     def test_authority_loss_between_frames_stops_before_more_device_reads(self):
         f=Fixture()

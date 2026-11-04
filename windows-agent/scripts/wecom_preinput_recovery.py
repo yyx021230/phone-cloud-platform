@@ -186,7 +186,8 @@ def execute(value,*,cancelled=lambda:False,clock=time.monotonic,wall=time.time,s
         wire=connect(address,timeout=timeout)
         try:return PeerSocket(wire,identity,runtime,budget,process_guard=local)
         except Exception:wire.close();raise
-    authority()
+    # The first-frame authority is also the initial authority: no ADB socket
+    # is opened before it. Avoid an identical extra HTTP round-trip here.
     # These commands only read facts. Revalidate server authority before each
     # complete frame and after both; every socket operation still rechecks the
     # current SYSTEM identity, target workers, peer owner and the 3s deadline.
@@ -196,8 +197,10 @@ def execute(value,*,cancelled=lambda:False,clock=time.monotonic,wall=time.time,s
     def frame_pids(package):
         if package==MAIN:authority()
         return adb.pids(package)
+    # Every real socket open/send performs local(); frame boundaries also
+    # perform authority(). The generic read loop only needs its budget guard.
     frames=verify_empty(serial=config['serial'],hosts=[old],process_created_at=process_created_at,pids=frame_pids,forwards=adb.forwards,
-                        guard=local,check_budget=budget,sleep=sleep,clock=clock,wall_clock=wall)
+                        guard=lambda:(budget()or True),check_budget=budget,sleep=sleep,clock=clock,wall_clock=wall)
     authority();budget()
     return {'binding':config['physicalCleanup'],**{k:config[k]for k in('verificationId','verificationNonce','verificationTaskId','challenge','retiredProducer')},'observer':observer,
             'snapshots':[{'sequence':i+1,'elapsedMs':(f.captured_at-began)*1000,'observedAt':proof_time(f.observed_at),'packagesAbsent':True,
