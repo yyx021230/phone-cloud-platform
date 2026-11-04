@@ -1,0 +1,149 @@
+{
+  "at": "2026-11-04T07:51:49.059Z",
+  "targets": [
+    {
+      "number": "23",
+      "online": true,
+      "busy": false,
+      "available": true,
+      "releaseAt": "2026-11-04T07:48:18.096Z",
+      "recoveryTaskId": "9726a311-b1d4-4454-8895-c6c5a9ffec94",
+      "proofPersisted": true,
+      "originalTaskAndJobUnchanged": true,
+      "previousFailedAttemptsRetained": true
+    },
+    {
+      "number": "43",
+      "online": true,
+      "busy": false,
+      "available": true,
+      "releaseAt": "2026-11-04T07:47:58.441Z",
+      "recoveryTaskId": "0e1ed617-d55a-4009-8fb3-4de66fbac898",
+      "proofPersisted": true,
+      "originalTaskAndJobUnchanged": true,
+      "previousFailedAttemptsRetained": true
+    },
+    {
+      "number": "59",
+      "online": true,
+      "busy": false,
+      "available": true,
+      "releaseAt": "2026-11-04T07:48:37.758Z",
+      "recoveryTaskId": "48c7751c-863b-4c9e-9ec1-48fcd05d7391",
+      "proofPersisted": true,
+      "originalTaskAndJobUnchanged": true,
+      "previousFailedAttemptsRetained": true
+    },
+    {
+      "number": "155",
+      "online": true,
+      "busy": false,
+      "available": true,
+      "releaseAt": "2026-11-04T07:48:57.407Z",
+      "recoveryTaskId": "cef5ce9e-11b6-4252-8b45-3d6870cc7fe8",
+      "proofPersisted": true,
+      "originalTaskAndJobUnchanged": true,
+      "previousFailedAttemptsRetained": true
+    }
+  ],
+  "ready": {
+    "status": 200,
+    "postgres": true,
+    "redis": true
+  },
+  "health": 200,
+  "inspectorClosed": true,
+  "rootPid": 3613382,
+  "startedAt": "2026-11-04T06:24:48.578192202Z",
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "lookup": {
+    "configIdentical": true,
+    "revision": 187,
+    "deviceMappingPreserved": true,
+    "currentChannelCount": 9,
+    "originalNonterminalRequestsRetained": 4,
+    "originalSessionAccountComparison": [
+      {
+        "deviceNumber": 138,
+        "originalSessionRetained": true,
+        "changedAccountFields": [
+          "accountQueryStarted"
+        ]
+      },
+      {
+        "deviceNumber": 117,
+        "originalSessionRetained": true,
+        "changedAccountFields": [
+          "accountQueryStarted"
+        ]
+      },
+      {
+        "deviceNumber": 101,
+        "originalSessionRetained": true,
+        "changedAccountFields": [
+          "accountQueryStarted"
+        ]
+      },
+      {
+        "deviceNumber": 164,
+        "originalSessionRetained": true,
+        "changedAccountFields": [
+          "accountQueryStarted"
+        ]
+      },
+      {
+        "deviceNumber": 156,
+        "originalSessionRetained": true,
+        "changedAccountFields": []
+      },
+      {
+        "deviceNumber": 57,
+        "originalSessionRetained": true,
+        "changedAccountFields": [
+          "accountQueryStarted"
+        ]
+      },
+      {
+        "deviceNumber": 53,
+        "originalSessionRetained": true,
+        "changedAccountFields": []
+      },
+      {
+        "deviceNumber": 161,
+        "originalSessionRetained": true,
+        "changedAccountFields": []
+      },
+      {
+        "deviceNumber": 116,
+        "originalSessionRetained": true,
+        "changedAccountFields": [
+          "accountIdentityVerified",
+          "currentAccount",
+          "savedAccounts"
+        ]
+      }
+    ],
+    "fullFinalBackupSha256": "c9e646577b50fbbebbc8b610fdfa06ada68731a99d03134160d1eea87b89ba58",
+    "noSnapshotRestoredOverLiveProgress": true,
+    "warmChannelsNotClaimedUnchanged": true
+  },
+  "agent": [
+    {
+      "agentId": "win-bf-202605262318-20260727",
+      "lastSeenAt": "2026-11-04T07:51:44.007Z",
+      "taskCounts": {
+        "running": 4,
+        "failed": 1401,
+        "succeeded": 3595
+      }
+    }
+  ],
+  "privateEvidenceSha256": "3b5fa5e04816fee008a7d9587956938c77a47ca22f683c72a4990116b07e3012"
+}

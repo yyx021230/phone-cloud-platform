@@ -1,0 +1,45 @@
+{
+  "fileSha256": "b8b15ee5d2c79598c39ccc1c5131bbac8338f5ff3c1c18c7ae1ee302164b7241",
+  "nativeResults": [
+    {
+      "taskId": "0e1ed617-d55a-4009-8fb3-4de66fbac898",
+      "ok": true,
+      "code": null,
+      "elapsedMs": 2074.31,
+      "snapshotElapsedMs": [
+        30.999999959021807,
+        1155.9999999590218
+      ]
+    },
+    {
+      "taskId": "9726a311-b1d4-4454-8895-c6c5a9ffec94",
+      "ok": true,
+      "code": null,
+      "elapsedMs": 1629.0,
+      "snapshotElapsedMs": [
+        31.999999890103936,
+        906.9999998901039
+      ]
+    },
+    {
+      "taskId": "48c7751c-863b-4c9e-9ec1-48fcd05d7391",
+      "ok": true,
+      "code": null,
+      "elapsedMs": 1605.71,
+      "snapshotElapsedMs": [
+        47.0000000204891,
+        969.0000000409782
+      ]
+    },
+    {
+      "taskId": "cef5ce9e-11b6-4252-8b45-3d6870cc7fe8",
+      "ok": true,
+      "code": null,
+      "elapsedMs": 2436.64,
+      "snapshotElapsedMs": [
+        77.9999999795109,
+        1452.999999979511
+      ]
+    }
+  ]
+}

@@ -6814,3 +6814,16 @@ wecom-recover-four-20261104-rc.1源码de6cf40已提交，inactive image50a1fafc�
 ### 决策日志｜2026-11-04 证明校验失败允许新一代核验，旧证明永不续期
 
 在43实际“原生ok但外层期限失效”的证据基础上扩充有界管理员重试；不将所有invalid都视为可恢复，必须存在原服务签发且绑定匹配的challenge。重试重新领取独立期限和新proof，不能重新提交旧proof或抹去失败。继续不追加云端重启、不重载Agent/ADB、不停其他测试。
+
+
+### 变更记录｜2026-11-04 四台企微在不追加重启下真实恢复，运行层及下次镜像同步
+
+23于07:48:18Z、43于07:47:58Z、59于07:48:37Z、155于07:48:57Z分别通过SYSTEM原生双帧proof和原持久化事务释放；07:51:49Z四台均online/available=true、busy=false，原业务task/job与rc.4备份逐项一致，旧失败维护记录全保留，没有邀请发送、删锁或伪改业务成功。最终原生时长分别1629/2074/1606/2437ms，原3秒challenge不改。主PID3613382/06:24:48.578Z启动保持，无追加重启，Inspector关闭。
+
+cloud a733181/rc.9、native单文件f6b8ebd/rc.8、工具6602d70；运行image仍50a1fafc加双文件/内存热修复，下一镜像afb66834及仅主image差异Compose预检通过，登记而不up/recreate。Agent15224/ADB31384的出生、SYSTEM/固定路径及3个业务入口hash保持；获准native单文件b8b15ee5。CPS候选未混入、没有推送。health/ready200、PG/Redis正常，D-075真实宿主live通过，媒体2503525/自定义binary/8Mbps/2包保持。582 Python、67维护服务、69 screen和root check通过；隔离Node22完整proof演练通过。证据verification/wecom-recover-four-20261104/final-no-restart。
+
+查名enabled/rev187、51设备映射保持，原4条非终态请求在实时或历史表中，原9会话仍存；8条此前已确定账号currentAccount/savedAccounts保持，部分accountQueryStarted正常变化，原116从starting补齐账号。最终9个当前channel及完整账号/冷却/请求/占用受限快照SHA c9e64657，未关闭pool或用旧快照覆盖进展。不宣称此前一次授权切换前后热channel全保持或零重探，原8条结束原因未全归因。最终核对工具字段/活动窗口断言只读失败，改编号及原主键/历史表后证实记录存在，不误报丢失。
+
+### 决策日志｜2026-11-04 四台恢复以实际新证明和当前库存可用为完成标准
+
+四台清理恢复本轮验收通过，长期观察未完成；不等于企微/CPS正式API、分身、真实添加或永久无故障。原业务失败不改写，只维护任务凭真实proof成功。保留原进程state/clock与当前查名进度，回执分别标记运行镜像/热文件/native/下次镜像；回退保留原件与最初方法快照，不复原旧数据库、不动Agent/ADB/身份。追加重载仍须另获批准。

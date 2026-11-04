@@ -1,0 +1,33 @@
+{
+  "at": "2026-11-04T07:48:06.512728+00:00",
+  "commit": "a73318151cc0872f6012bc2d4cf3222afc5b2901",
+  "files": [
+    {
+      "path": "server/wecom-cleanup-service.mjs",
+      "old": "26839ec25cbe47960e5dea136ef502cd43d1e6a54e4c3c536a397f8f1780b40d",
+      "sha256": "26839ec25cbe47960e5dea136ef502cd43d1e6a54e4c3c536a397f8f1780b40d"
+    },
+    {
+      "path": "server/wecom-preinput-recovery.mjs",
+      "old": "3bd97cf678e9beb56697a8508be3c33c2be75985c4740f7c7e106ce17f7d9c1d",
+      "sha256": "c6ce123dc7e4e647e84f2101bc359221216b4f1b7ef25f5a2528214dceae6a71"
+    }
+  ],
+  "imageId": "sha256:afb66834c491c35864fb24230a29ca567dd644b9aed63ba3eb21f9258aa0c88b",
+  "imageTag": "phone-cloud-platform:wecom-recover-four-20261104-rc.9",
+  "runningImage": "sha256:50a1fafcf13f739a0a4173048ed9065e470484eef95f2381ca2ed94cf29a86b6",
+  "startedAt": "2026-11-04T06:24:48.578192202Z",
+  "rootPid": 3613382,
+  "runtimeFilesSynchronized": true,
+  "nextImagePreparedNotActivated": true,
+  "additionalRestart": false,
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "activeBeforeSha256": "771575354b22e7c827fc9b0a062edaac2f113aa8a54ce5714c006c84ad95bd2c"
+}
