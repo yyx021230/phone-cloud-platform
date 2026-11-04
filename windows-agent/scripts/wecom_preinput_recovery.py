@@ -96,6 +96,19 @@ def quiescent_processes(processes,*,self_pid,agent_pid,budget,target_serial=None
         budget()
         if len(args)>1 and path_key(args[1])in allowed:continue
         if other_phone(pid):continue
+        # A failed read-only maintenance check must identify its blocker without
+        # copying argv/payloads, phone numbers or credentials into normal logs.
+        if os.name=='nt':
+            try:
+                import tempfile
+                from pathlib import Path
+                directory=Path(tempfile.gettempdir())/'PhoneCloudWecomRecovery'
+                directory.mkdir(exist_ok=True)
+                if len(list(directory.glob('blocked-*.json')))<100:
+                    report={'observerPid':self_pid,'blockerPid':pid,'targetScopeProvided':target_serial is not None,'script':PureWindowsPath(str(args[1])).name if len(args)>1 else'missing','metadata':meta}
+                    path=directory/('blocked-'+str(self_pid)+'.json')
+                    with path.open('x',encoding='utf-8')as output:json.dump(report,output)
+            except Exception:pass
         raise VerifyStop('wecom_cleanup_recovery_worker_present')
     return True
 
