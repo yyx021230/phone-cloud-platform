@@ -67,16 +67,25 @@ export function originalRecoveryContext(state,lock){
     originalJobId:d.originalJobId,originalLockId:d.originalLockId,originalTerminalAt:d.originalTerminalAt,hosts:d.hosts,hostClosedAt:d.hostClosedAt,verification:d.verification,...(retiredProducer?{causal:d.causal,verificationTask:state.windowsTasks.find(t=>t.taskId===d.verification.verificationTaskId)}:{})}))).digest('hex');
   return {task,job,original,fingerprint,retiredProducer};
 }
+export function canRetryRecovery(state,lock){
+  const d=lock?.physicalCleanup,v=d?.recovery,history=d?.recoveryHistory||[];
+  const task=state.windowsTasks.find(t=>t.taskId===v?.verificationTaskId);
+  return Boolean(isWecomCleanupPending(lock)&&Array.isArray(history)&&history.length<2&&v&&!v.proof
+    &&task?.status==='failed'&&task.type==='wecom_cleanup_verify'&&task.payload?.preinputRecovery===PREINPUT_RECOVERY
+    &&task.payload.verificationTaskId===v.verificationTaskId&&equal(task.payload.physicalCleanup,d.binding)
+    &&task.deviceId===lock.deviceId&&task.agentId===d.binding.agentId&&task.result?.cleanupVerified!==true
+    &&['wecom_cleanup_recovery_worker_present','wecom_cleanup_verify_timeout','wecom_cleanup_recovery_processes_unconfirmed','wecom_cleanup_worker_timeout'].includes(task.result?.errorCode));
+}
 export function recoveryProposal(state,lock){
   const {fingerprint,retiredProducer}=originalRecoveryContext(state,lock),b=lock.physicalCleanup.binding;
   return {protocol:PREINPUT_RECOVERY,obligationId:lock.lockId,deviceId:lock.deviceId,originalTaskId:b.originalTaskId,
     originalJobId:lock.physicalCleanup.originalJobId,fingerprint,pending:isWecomCleanupPending(lock),
-    requiresRetiredProducer:true,requiresAgentReload:!retiredProducer,...(retiredProducer?{retiredProducer}:{}),attempt:lock.physicalCleanup.recovery?.verificationTaskId||null};
+    requiresRetiredProducer:true,requiresAgentReload:!retiredProducer,...(retiredProducer?{retiredProducer}:{}),canRetry:canRetryRecovery(state,lock),attempt:lock.physicalCleanup.recovery?.verificationTaskId||null};
 }
 export function recoveryRequest(body){
-  if(!exact(body,['protocol','requestId','fingerprint','retiredProducer','acknowledgeMaintenance'])||body.protocol!==PREINPUT_RECOVERY
+  if(!(exact(body,['protocol','requestId','fingerprint','retiredProducer','acknowledgeMaintenance'])||exact(body,['protocol','requestId','fingerprint','retiredProducer','acknowledgeMaintenance','retryOf']))||body.protocol!==PREINPUT_RECOVERY
     ||!id(body.requestId)||typeof body.fingerprint!=='string'||!/^[a-f0-9]{64}$/.test(body.fingerprint)
-    ||body.acknowledgeMaintenance!==true)recoveryFail('request_invalid');
+    ||body.acknowledgeMaintenance!==true||(body.retryOf!==undefined&&!id(body.retryOf)))recoveryFail('request_invalid');
   producerRef(body.retiredProducer);return structuredClone(body);
 }
 export function validateRecoveryProof(body,{binding,recovery}){

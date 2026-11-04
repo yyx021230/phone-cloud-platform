@@ -1,4 +1,4 @@
-import {PREINPUT_RECOVERY,originalRecoveryContext,recoveryProposal,recoveryRequest,validateRecoveryProof,exact as recoveryExact,recoveryFail} from './wecom-preinput-recovery.mjs';
+import {PREINPUT_RECOVERY,originalRecoveryContext,recoveryProposal,canRetryRecovery,recoveryRequest,validateRecoveryProof,exact as recoveryExact,recoveryFail} from './wecom-preinput-recovery.mjs';
 import { isDeepStrictEqual } from "node:util";
 import { randomUUID } from "node:crypto";
 import {createWecomCausalClock,WECOM_CAUSAL_PROTOCOL} from "./wecom-causal-clock.mjs";
@@ -352,10 +352,17 @@ export function createWecomCleanupService({ state, persist, conflict = () => fal
     return serialize(lock.deviceId,async()=>{
       const {fingerprint,retiredProducer}=originalRecoveryContext(state,lock),existing=lock.physicalCleanup.recovery;
       if(retiredProducer&&!isDeepStrictEqual(retiredProducer,request.retiredProducer))recoveryFail('producer_invalid');
-      if(existing){
-        if(existing.operatorId!==operatorId||!isDeepStrictEqual(existing.request,request))recoveryFail('attempt_exists');
-        return {ok:true,reused:true,taskId:existing.verificationTaskId,verified:lock.status==='released'};
+      const history=lock.physicalCleanup.recoveryHistory||[];
+      if(!Array.isArray(history))recoveryFail('attempt_exists');
+      const prior=[...history,...(existing?[existing]:[])].find(v=>v.request?.requestId===request.requestId);
+      if(prior){
+        if(prior.operatorId!==operatorId||!isDeepStrictEqual(prior.request,request))recoveryFail('attempt_exists');
+        return {ok:true,reused:true,taskId:prior.verificationTaskId,verified:Boolean(prior.proof&&lock.status==='released')};
       }
+      if(existing){
+        if(existing.operatorId!==operatorId||request.retryOf!==existing.verificationTaskId)recoveryFail('attempt_exists');
+        if(!canRetryRecovery(state,lock))recoveryFail('retry_not_allowed');
+      }else if(request.retryOf!==undefined)recoveryFail('request_invalid');
       if(!isWecomCleanupPending(lock)||!deviceMatches(lock)||fingerprint!==request.fingerprint)recoveryFail('context_changed');
       if(recoveryBusy(lock,null))recoveryFail('device_busy');
       const agent=state.windowsAgents?.find(a=>a.agentId===lock.physicalCleanup.binding.agentId);
@@ -364,6 +371,7 @@ export function createWecomCleanupService({ state, persist, conflict = () => fal
       return transaction(lock,({add})=>{
         const at=iso(now()),v={protocol:PREINPUT_RECOVERY,verificationId:id(),verificationNonce:id(),verificationTaskId:id(),
           serverEpoch:clock.epoch,issuedAt:at,pickedAt:'',operatorId,request,retiredProducer:request.retiredProducer};
+        if(existing)lock.physicalCleanup.recoveryHistory=[...history,structuredClone(existing)];
         lock.physicalCleanup.recovery=v;lock.physicalCleanup.phase='maintenance_verifying';lock.updatedAt=at;
         const stamp=clock.mark('verification');
         try{v.causalLease=clock.verificationLease(stamp,recoveryScope(lock));}finally{clock.releaseMark(stamp);}

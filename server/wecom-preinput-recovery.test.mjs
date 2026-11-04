@@ -103,3 +103,40 @@ test('registered reader identity is pinned by the server, not chosen by the call
  const f=configFailureFixture(),request=f.request();request.retiredProducer={...request.retiredProducer,pid:999};
  await assert.rejects(f.service.recoveryStart(f.lock.lockId,request,'operator'),/producer_invalid/);assert.equal(f.lock.status,'cleanup_pending');
 });
+
+
+async function failedMaintenance(f,code='wecom_cleanup_recovery_worker_present'){
+ await f.start();f.pick();await f.challenge();const proof=f.proof(),task=f.getTask(),request=f.request();
+ await f.service.status(task,{status:'failed',result:{errorCode:code}});return {task,proof,request};
+}
+test('explicit named maintenance retry creates fresh authority, preserves the failed attempt and old-request ACK',async()=>{
+ const f=fixture(),old=await failedMaintenance(f),before=structuredClone(old.task);
+ const request={...f.request(),requestId:'retry-one',retryOf:old.task.taskId};
+ assert.equal(f.service.recoveryGet(f.lock.lockId).canRetry,true);
+ const accepted=await f.service.recoveryStart(f.lock.lockId,request,'operator');assert.notEqual(accepted.taskId,old.task.taskId);
+ assert.deepEqual(old.task,before);assert.equal(f.lock.physicalCleanup.recoveryHistory.length,1);
+ assert.equal((await f.service.recoveryStart(f.lock.lockId,old.request,'operator')).taskId,old.task.taskId);
+ assert.equal((await f.service.recoveryStart(f.lock.lockId,request,'operator')).taskId,accepted.taskId);assert.equal(f.state.windowsTasks.length,3);
+ f.pick();await f.challenge();await assert.rejects(f.call('recovery-proof',old.proof),/lease_lost/);
+ assert.equal((await f.call('recovery-proof',f.proof())).verified,true);assert.equal(f.lock.status,'released');assert.deepEqual(old.task,before);
+ assert.equal((await f.service.recoveryStart(f.lock.lockId,old.request,'operator')).verified,false);
+});
+for(const[name,change]of[
+ ['wrong previous attempt',(f,r)=>r.retryOf='other'],['wrong operator',(f,r)=>r.operator='other'],
+ ['changed original',(f,r)=>f.job.result.remarkSaveStatus='changed'],['unclassified failure',(f,r)=>f.getTask().result.errorCode='unclassified'],
+ ['active attempt',(f,r)=>f.getTask().status='running'],['proof present',(f,r)=>f.lock.physicalCleanup.recovery.proof={}]
+])test('explicit retry rejects '+name,async()=>{
+ const f=fixture(),old=await failedMaintenance(f),request={...f.request(),requestId:'retry-one',retryOf:old.task.taskId};change(f,request);
+ const operator=request.operator||'operator';delete request.operator;const before=structuredClone(f.state);
+ await assert.rejects(f.service.recoveryStart(f.lock.lockId,request,operator),/wecom_cleanup_recovery/);assert.deepEqual(f.state,before);
+});
+test('maintenance attempts are capped at three and never restart automatically',async()=>{
+ const f=fixture();await failedMaintenance(f);
+ for(let i=1;i<3;i++){
+  const old=f.getTask();await f.service.recoveryStart(f.lock.lockId,{...f.request(),requestId:'retry-'+i,retryOf:old.taskId},'operator');
+  f.pick();await f.service.status(f.getTask(),{status:'failed',result:{errorCode:'wecom_cleanup_verify_timeout'}});
+ }
+ assert.equal(f.lock.physicalCleanup.recoveryHistory.length,2);assert.equal(f.service.recoveryGet(f.lock.lockId).canRetry,false);
+ await assert.rejects(f.service.recoveryStart(f.lock.lockId,{...f.request(),requestId:'retry-extra',retryOf:f.getTask().taskId},'operator'),/retry_not_allowed/);
+ assert.equal(f.state.windowsTasks.length,4);
+});

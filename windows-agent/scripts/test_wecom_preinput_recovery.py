@@ -90,6 +90,16 @@ class RecoveryTests(unittest.TestCase):
         self.assertEqual(len([c for c in f.calls if c[0]=='pid']),2)
 
 
+class FrameAuthorityTests(unittest.TestCase):
+    def test_authority_is_fresh_before_both_frames_and_after_the_facts(self):
+        f=Fixture();f.run();self.assertEqual(len([r for r in f.calls if r[0]=='lease']),4)
+        self.assertEqual(len([r for r in f.calls if r[0]=='pid']),4)
+    def test_authority_loss_between_frames_stops_before_more_device_reads(self):
+        f=Fixture()
+        def change(s):f.sleep(s);f.denied=True
+        with self.assertRaisesRegex(VerifyStop,'lease_lost|causal_context_unconfirmed'):f.run(sleep=change)
+        self.assertEqual(len([r for r in f.calls if r[0]=='pid']),2)
+
 class OwnedProcess(Process):
     def __init__(self,pid,args,parent=200,owner=r'NT AUTHORITY\SYSTEM',exe=r'D:\PhoneCloud\tools\python39\python.exe'):
         super().__init__(pid,'python.exe',args);self.parent,self.owner,self.path=parent,owner,exe

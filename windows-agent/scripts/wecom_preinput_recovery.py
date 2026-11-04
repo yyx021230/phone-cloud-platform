@@ -91,6 +91,7 @@ def quiescent_processes(processes,*,self_pid,agent_pid,budget,target_serial=None
             # Only the observed isolated OCR executable/script chain may inherit
             # the known worker's other-device scope; arbitrary -I code stays unknown.
             return len(args)==4 and args[1:3]==['-I','-u']and path_key(args[3])=='d:/phonecloud/agent/scripts/lookup_ocr_worker.py'and parent in python and python[parent][1]is not None and python[parent][1]['created']<=meta['created']and other_phone(parent,seen+(pid,))
+        except VerifyStop:raise
         except Exception:return False
     for pid,(args,meta)in python.items():
         budget()
@@ -182,8 +183,14 @@ def execute(value,*,cancelled=lambda:False,clock=time.monotonic,wall=time.time,s
         try:return PeerSocket(wire,identity,runtime,budget)
         except Exception:wire.close();raise
     authority()
-    adb=adb_factory(config['serial'],lambda:(budget()or True),budget,connect=peer_connect,operation_guard=authority)
-    frames=verify_empty(serial=config['serial'],hosts=[old],process_created_at=process_created_at,pids=adb.pids,forwards=adb.forwards,
+    # These commands only read facts. Revalidate server authority before each
+    # complete frame and after both; every socket operation still rechecks the
+    # current SYSTEM identity, target workers, peer owner and the 3s deadline.
+    adb=adb_factory(config['serial'],lambda:(budget()or True),budget,connect=peer_connect,operation_guard=local)
+    def frame_pids(package):
+        if package==MAIN:authority()
+        return adb.pids(package)
+    frames=verify_empty(serial=config['serial'],hosts=[old],process_created_at=process_created_at,pids=frame_pids,forwards=adb.forwards,
                         guard=local,check_budget=budget,sleep=sleep,clock=clock,wall_clock=wall)
     authority();budget()
     return {'binding':config['physicalCleanup'],**{k:config[k]for k in('verificationId','verificationNonce','verificationTaskId','challenge','retiredProducer')},'observer':observer,
