@@ -1,4 +1,5 @@
 import { WECOM_CLEANUP_KIND, WECOM_CLEANUP_LOCK, isWecomCleanupPending, pendingWecomCleanup } from "./wecom-physical-cleanup.mjs";
+import {pendingWecomContext} from './wecom-pending-context.mjs';
 import {PREINPUT_RECOVERY} from './wecom-preinput-recovery.mjs';
 import {persistWecomRecovery} from './wecom-recovery-postgres.mjs';
 import { publicWecomCleanupState } from "./wecom-physical-cleanup.mjs";
@@ -7440,6 +7441,7 @@ function pruneState(options = {}) {
   expireDeviceLocks();
   const dryRun = Boolean(options.dryRun);
   const before = stateCounts();
+  const wecomContext = pendingWecomContext(state.deviceLocks);
   const next = {
     smsOrders: pruneArray(state.smsOrders, {
       isActive: (order) => order.status === "waiting",
@@ -7457,7 +7459,7 @@ function pruneState(options = {}) {
       maxItems: MAX_SMS_MESSAGES
     }),
     windowsTasks: pruneArray(state.windowsTasks, {
-      isActive: (task) => ["queued", "running", "stalled"].includes(task.status),
+      isActive: (task) => ["queued", "running", "stalled"].includes(task.status) || wecomContext.tasks.has(task.taskId),
       getTime: (task) => task.updatedAt || task.createdAt,
       maxItems: MAX_WINDOWS_TASKS
     }),
@@ -7467,7 +7469,7 @@ function pruneState(options = {}) {
       maxItems: MAX_XHS_TASKS
     }),
     automationJobs: pruneArray(state.automationJobs || [], {
-      isActive: (job) => isActiveAutomationStatus(job.status),
+      isActive: (job) => isActiveAutomationStatus(job.status) || wecomContext.jobs.has(job.jobId),
       getTime: (job) => job.updatedAt || job.createdAt,
       maxItems: MAX_AUTOMATION_JOBS
     }),
@@ -7487,7 +7489,7 @@ function pruneState(options = {}) {
       maxItems: MAX_AUDIT_EVENTS
     }),
     deviceLocks: pruneArray(state.deviceLocks || [], {
-      isActive: (lock) => lock.status === "active" || isWecomCleanupPending(lock),
+      isActive: (lock) => lock.status === "active" || isWecomCleanupPending(lock) || wecomContext.locks.has(lock.lockId),
       getTime: (lock) => lock.updatedAt || lock.createdAt,
       maxItems: MAX_XHS_TASKS
     }),
