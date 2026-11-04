@@ -68,8 +68,8 @@ def writer(folder,phone):
     startup_rows={}
     capture_attempted=False
     def startup(kind,raw,user):
-        if kind not in ('power_before','power_after','keyguard','foreground','wake_response','dismiss_response'):return
-        if kind in ('wake_response','dismiss_response'):
+        if kind not in ('power_before','power_after','keyguard','foreground','wake_response','dismiss_response','power_fallback_response'):return
+        if kind in ('wake_response','dismiss_response','power_fallback_response'):
             value={'response':'empty'if not raw.strip()else 'denied'if re.search(r'Permission|denied',raw,re.I)else 'error'if re.search(r'Error|Exception|not found',raw,re.I)else 'nonempty'}
         elif kind=='foreground':
             lines=[line for line in raw.splitlines()if 'ResumedActivity'in line or re.search(r'\bResumed:',line)]

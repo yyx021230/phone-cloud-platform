@@ -133,3 +133,31 @@ def confirm_awake(read_power, lease_valid, check_budget=lambda:None, sleep=time.
         if not re.search(r'mWakefulness=(?:Asleep|Dozing)\b',raw):break
         if attempt<3:sleep(.2)
     raise w.StopPreview('screen_wake_not_confirmed')
+
+
+def wake_observed_25_once(device_number, android_user, read_power, read_policy,
+                          lease_valid, press_power, check_budget=lambda:None, sleep=time.sleep):
+    """One ordinary short POWER after WAKEUP was confirmed ineffective on 25.
+
+    Two stable sleeping/nonsecure observations are required. A changing or
+    unknown display never gets a toggle; uncertain delivery is never retried.
+    """
+    if device_number != '25' or android_user != 0:
+        raise w.StopPreview('screen_wake_not_confirmed')
+    for attempt in range(2):
+        check_budget()
+        if lease_valid() is not True:raise w.StopPreview('device_lease_lost')
+        raw=read_power();check_budget()
+        states=re.findall(r'(?m)^\s*mWakefulness=(Awake|Asleep|Dozing|Dreaming)\s*$',raw)
+        changing=re.findall(r'(?m)^\s*mWakefulnessChanging=(true|false)\s*$',raw)
+        if states == ['Awake']:return False
+        if states != ['Asleep'] or changing != ['false'] or re.search(r'mWakefulness=Awake\b',raw):
+            raise w.StopPreview('screen_wake_not_confirmed')
+        if keyguard_state(read_policy(),android_user) != 'nonsecure_clear':
+            raise w.StopPreview('device_unlock_requires_user')
+        if attempt == 0:sleep(.2)
+    check_budget()
+    if lease_valid() is not True:raise w.StopPreview('device_lease_lost')
+    press_power()  # One short normal key; never long-press, PIN or settings.
+    confirm_awake(read_power,lease_valid,check_budget=check_budget,sleep=sleep)
+    return True

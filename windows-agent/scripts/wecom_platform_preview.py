@@ -398,8 +398,15 @@ def prepare_screen_before_poco():
     if config['deviceNumber'] == '25':
         startup.dismiss_nonsecure_keyguard(lambda:observe_startup_state('keyguard',shell('dumpsys window policy')), lease_valid,
             lambda:mutate('input keyevent 82'), android_user=selected_user, check_budget=budget)
-    startup.confirm_awake(lambda:observe_startup_state('power_after',shell('dumpsys power')),
-        lease_valid,check_budget=budget)
+    try:
+        startup.confirm_awake(lambda:observe_startup_state('power_after',shell('dumpsys power')),
+            lease_valid,check_budget=budget)
+    except w.StopPreview as error:
+        if str(error) != 'screen_wake_not_confirmed' or config['deviceNumber'] != '25':raise
+        startup.wake_observed_25_once(config['deviceNumber'],selected_user,
+            lambda:observe_startup_state('power_after',shell('dumpsys power')),
+            lambda:observe_startup_state('keyguard',shell('dumpsys window policy')),lease_valid,
+            lambda:observe_startup_state('power_fallback_response',mutate('input keyevent 26')),check_budget=budget)
     return True
 
 

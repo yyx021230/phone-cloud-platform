@@ -99,10 +99,12 @@ class PrivateObservationTests(unittest.TestCase):
             observe=writer(folder,'19900000001')
             observe.startup('wake_response','Permission denied private 19900000001',0)
             observe.startup('dismiss_response','',0)
+            observe.startup('power_fallback_response','',0)
             observe.startup('power_after','mWakefulness=Asleep\nmScreenState=OFF\nmProximity=Positive\nmScreenOffBecauseOfProximity=true\nmRequestWaitForNegativeProximity=false\nprivate 19900000001',0)
             raw=(folder/'startup-sanitized.json').read_text();v=json.loads(raw)['observations']
             self.assertEqual(v[0]['response'],'denied');self.assertEqual(v[1]['response'],'empty')
-            self.assertEqual(v[2]['displayState'],'OFF');self.assertEqual(v[2]['proximity'],'Positive')
+            self.assertEqual(v[2],{'kind':'power_fallback_response','response':'empty'})
+            self.assertEqual(v[3]['displayState'],'OFF');self.assertEqual(v[3]['proximity'],'Positive')
             for secret in ('private','19900000001','Permission denied'):self.assertNotIn(secret,raw)
 
 if __name__=='__main__':unittest.main()
