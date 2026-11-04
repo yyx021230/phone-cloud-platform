@@ -1,0 +1,12 @@
+{
+  "status": "built_not_activated",
+  "imageId": "sha256:aba0ddc3f61015a797ac6437fe6f1ec5c801af8cbc300036197c39ffb7c71893",
+  "imageTag": "phone-cloud-platform:wecom-recovery155-20261104-rc.1",
+  "baseImage": "sha256:4468f5ce0f2107b8df7c4ab6cb90bb0dc584e41d0a3a55a8a9dee3c1e20440e0",
+  "baseLayersPreserved": true,
+  "runtimeConfigIdentical": true,
+  "activeSha256": "a5390dcc93b5f1393e7b95732ca4df679dc5065200f80cf509d96e0f759e2a2f",
+  "sourceCommit": "462eaf35442b943dda128b88085ba7a449c6257b",
+  "contextSha256": "0ac5eb48eb31ee17e948d98dadbe7ba6c0a33696ff0abdeb4518c2f900335608",
+  "atUtc": "2026-11-04T01:27:24.567788+00:00"
+}

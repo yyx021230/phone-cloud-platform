@@ -1,0 +1,19 @@
+{
+  "docs/PROJECT_DEVELOPMENT.md": "3451856c767cb74cbbd3b6abef08aac8a20eedc89053188b73b083cb57703082",
+  "verification/wecom-recovery155-20261104-prepared/REPORT.md": "83fe77c2db30959c4c8766b4c447d0e03b6995b94aafc3f93aba9f22c0c79442",
+  "verification/wecom-recovery155-20261104-prepared/cloud-prepared.json": "3909019207ed056b0a823a3c01a3f5e9bf905fc416ae4ef067d5e3f0dd4e7ad4",
+  "verification/wecom-recovery155-20261104-prepared/compose-preflight.json": "036b477bc723f037e21e9876217eb2c05b3336eca0b0b2ba132fa7d687e67da3",
+  "verification/wecom-recovery155-20261104-prepared/compose-preflight.py": "afcb88fcbc5699b9f531625618c27d3e122ae997d9811c9cf13c7269a38d371b",
+  "verification/wecom-recovery155-20261104-prepared/compose-preflight_test.py": "bc729412d9627de230666d421e0a71d4b187d9d30558bcb0d8766400d7ebd4a5",
+  "verification/wecom-recovery155-20261104-prepared/evidence/compose-helper-tests.log.gz": "279ead50d119faeacd1104504a68f853bd88cf3feedab6a5627a83a15c1cd9b2",
+  "verification/wecom-recovery155-20261104-prepared/evidence/full-regression.log.gz": "e8d86ef7f63904c433ad219bfb08816ee11b6e7e7aaef6339150fb1f9b4c6a80",
+  "verification/wecom-recovery155-20261104-prepared/evidence/image-build.log.gz": "0d3128a8bd75ede26fbe7b27ba1987cd7297bf44dc4835ee0a3befeba94ce5e8",
+  "verification/wecom-recovery155-20261104-prepared/evidence/postgres-test.log.gz": "f377e555f6d52855febc9e34d377252cecb715c4e02ee5972af096d9cfa24035",
+  "verification/wecom-recovery155-20261104-prepared/final-readiness.json": "675bb2f972deed5ed80ae7de7d76597f6f0aa8a3697974ea8cfb1ecff68953d4",
+  "verification/wecom-recovery155-20261104-prepared/image-prepared.json": "b49eb08bc6a3ae183ed3bf074f38949b142ed1c2be9a86c27e7609f705405110",
+  "verification/wecom-recovery155-20261104-prepared/image-validation.json": "654a74acd8ce071e0bbf378688f6f4a3d9d4887590b962ef0571b48e9cf03d3e",
+  "verification/wecom-recovery155-20261104-prepared/operator-auth-preflight.json": "a453a7f5b847d572e8eb8fc3054a17c59dbfde430d44b2fb3fab51d4547f5185",
+  "verification/wecom-recovery155-20261104-prepared/overlay-plan.json": "65db975c5891d1a9076fbea46382cd0bccb36cd7b1ca030c1cc759f39eef1cd2",
+  "verification/wecom-recovery155-20261104-prepared/summary.json": "2cb6a8e3bc9572f023483b3ea466f8666deb7de392c2cf32436daa8289c6c789",
+  "verification/wecom-recovery155-20261104-prepared/windows-prepared.json": "5e26c0318eee64a26b18266b20f698ae34b21beab57f576b074d3c015c70237e"
+}

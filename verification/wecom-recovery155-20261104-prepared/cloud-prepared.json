@@ -1,0 +1,17 @@
+{
+  "status": "prepared_not_activated",
+  "composeOnlyImageChanged": true,
+  "runtimeEnvironmentMatchesCurrent": true,
+  "existingXhsReferencesReused": true,
+  "credentialValuesPersisted": false,
+  "serviceReloaded": false,
+  "stage": "/opt/phone-cloud-staging/wecom-recovery155-20261104-rc.1",
+  "sourceCommit": "462eaf35442b943dda128b88085ba7a449c6257b",
+  "imageId": "sha256:aba0ddc3f61015a797ac6437fe6f1ec5c801af8cbc300036197c39ffb7c71893",
+  "originalRecordsBackedUp": 4,
+  "fullDatabaseBackup": false,
+  "helperSha256": "afcb88fcbc5699b9f531625618c27d3e122ae997d9811c9cf13c7269a38d371b",
+  "rollbackArchiveSha256": "263ec158ba11845053a09386e3371c938833fc8ae1733c72161784300c673493",
+  "agentReloaded": false,
+  "adbChanged": false
+}

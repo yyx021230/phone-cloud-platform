@@ -1,0 +1,35 @@
+{
+  "candidateTag": "wecom-recovery155-20261104-rc.1",
+  "runtimeSourceCommit": "462eaf35442b943dda128b88085ba7a449c6257b",
+  "previousProductionCommit": "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+  "status": "prepared_waiting_for_maintenance_authorization",
+  "nodeCombined": {
+    "tests": 2516,
+    "pass": 2512,
+    "fail": 0,
+    "skip": 4
+  },
+  "postgresRecoverySeparate": {
+    "pass": 1,
+    "fail": 0,
+    "fixtureStopped": true
+  },
+  "composeReferenceTests": {
+    "pass": 5,
+    "fail": 0
+  },
+  "windows": {
+    "mockTests": 12,
+    "syntaxFiles": 6,
+    "nativeSystemRecoveryExecuted": false
+  },
+  "businessTasksSubmitted": 0,
+  "invitationsSent": 0,
+  "locksDeletedOrReleased": 0,
+  "serviceOrAgentReloaded": false,
+  "adbIdentityOrKeysChanged": false,
+  "authPreflight": "normal named administrator login verified; own temporary session logged out",
+  "backups": "four original155 records, exact verified previous runtime source and retained old immutable image; not a full database dump",
+  "mediaLiveVerified": true,
+  "actualSecretsCopiedToEvidence": false
+}
