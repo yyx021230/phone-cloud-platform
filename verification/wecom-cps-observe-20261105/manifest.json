@@ -1,0 +1,27 @@
+{
+  "status": "local_observation_complete_not_deployed",
+  "sourceHead": "e1a7ade4bb58d62119993f90fce3de49d2f91162",
+  "branch": "codex/wecom-search200-20261105",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "httpRequests": 6,
+  "nativeStarts": 2,
+  "realInvitations": 0,
+  "previewCallbacks": 0,
+  "syntheticCallbacks": 1,
+  "privateHarnessSha256": {
+    "controller.mjs": "5c96851a763db20c704e70d8b9d0ab61a95f42db17c940e127adf6b0b2871712",
+    "probe.py": "2332f82557e7460d848720d3d8f9492752b27ee097d581e912cc397f85925ccc",
+    "callback-demo.mjs": "71fd0cc01664d7bd3b72647309f2862e061a1a9dc13d6e97112c9a0fbd01d020"
+  },
+  "nativeFixtureSha256": {
+    "local_poco.py": "995364cd67c4d76a18dc7a26eba48a0d8724bb9660a33b5794269f3a4d215406",
+    "run_local_flow.py": "f97cb71893e6f3579b06e8c2ca135691f8e9b17b9221e3eed4aa22be194ffabf"
+  },
+  "rollback": "No product, production, DB or persistent CPS config change; local test services closed, reader/forwards verified absent. Do not reset real phone remarks or other work.",
+  "artifactSha256": {
+    "REQUESTS_AND_RESPONSES.md": "69018c97cf287f86e8a8c2ec9552b661b974ce48b1b310bf7825d5e440a906c6",
+    "cleanup.json": "e02de81ddf6249fa9de9a451365dba2df1ecf862a1369deaa670b9b8a60f30c4",
+    "callback-demo.redacted.json": "3d8f990d4e8ab0d22ee337813e413dc5d249edb674b73df5a01acea9e88d8575",
+    "events.redacted.json": "db6547858ad94cbf44f7838bc902ee353af63e69c1e0d6484491f5a6aff442c6"
+  }
+}

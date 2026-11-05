@@ -1,0 +1,73 @@
+{
+  "boundary": "Synthetic completed job only; no phone action or invitation; separate app and ledger from real previews",
+  "events": [
+    {
+      "kind": "synthetic_dispatch",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:52032/api/v1/lead/dispatch",
+        "headers": {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        "body": {
+          "lead_id": 61104999,
+          "phone": "13900000001",
+          "wecom_phone": "13900000000",
+          "wecom_corp_id": "synthetic_test_corp",
+          "wecom_userid": "synthetic_test_member",
+          "app_id": "cps_callback_example",
+          "timestamp": 1793847688926,
+          "nonce": "ce69385177d653e54c6e90dd",
+          "sign": "<已脱敏>"
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "result": null,
+          "timestamp": 1793847688951,
+          "success": true,
+          "code": 200,
+          "message": "已接收"
+        }
+      }
+    },
+    {
+      "kind": "synthetic_callback",
+      "request": {
+        "method": "POST",
+        "url": "http://127.0.0.1:52031/api/v1/lead/callback",
+        "headers": {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        "body": {
+          "lead_id": 61104999,
+          "result": "success",
+          "remark_phone_set": true,
+          "app_id": "cps_callback_example",
+          "timestamp": 1793847688979,
+          "nonce": "70ecc7c615a7f1e57ab24206fac2c560",
+          "sign": "<已脱敏>"
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "success": true,
+          "code": 200,
+          "message": "接收成功",
+          "result": null,
+          "timestamp": 1793847688988
+        }
+      },
+      "signatureVerified": true
+    }
+  ],
+  "status": {
+    "mode": "send",
+    "fenced": false,
+    "stages": {
+      "completed": 1
+    }
+  }
+}
