@@ -1,6 +1,7 @@
 import { wecomExecution } from './wecom-diagnostics.mjs';
 
 const groups = [
+  ['result_unconfirmed', ['wecom_search_returned_without_result'], '企微搜索后返回搜索页，未确认客户结果', '核对这台手机的网络和企微搜索状态，保留原任务；不自动重查、保存或发送。'],
   ['page_compatibility', ['system_overlay_interrupted'], '系统通知栏或快捷设置遮挡了企微', '收起系统面板后核对原任务；不自动关闭面板或重新提交。'],
   ['configuration', ['wecom_rpc_session_context_unconfirmed'], '本任务的本地读取连接绑定未通过核对', '核对原任务的读取通道，不换ADB入口或重试未知操作。'],
   ['page_compatibility', ['wecom_element_geometry_unconfirmed', 'wecom_element_display_unconfirmed'], '元素位置或屏幕尺寸未通过核对', '查看这台手机的页面和显示尺寸，不猜坐标或切换ADB。'],

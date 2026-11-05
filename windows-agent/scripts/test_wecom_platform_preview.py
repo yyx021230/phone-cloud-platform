@@ -125,7 +125,7 @@ class HostGuardTests(unittest.TestCase):
         self.assertNotIn("input keyevent 224",calls)
 
     def test_every_main_and_clone_restarts_only_bound_slot_once_before_poco(self):
-        for number,user in [('25',0),('155',999),('23',0),('155',0)]:
+        for number,user in [('25',0),('155',999),('23',0),('155',0),('200',0),('202',0)]:
             calls=[];count=[0];clock=[0]
             def now():clock[0]+=.5;return clock[0]
             def shell(cmd,keep=False):

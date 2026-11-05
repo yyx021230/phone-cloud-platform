@@ -176,6 +176,7 @@ CPS专用接入请见[CPS客户下发、结果回传与全部设备状态](./cps
 | screen_prepare_timeout / screen_wake_not_confirmed | 屏幕准备超时／未确认唤醒；核对手机，不自动重发 |
 | device_unlock_requires_user | 系统锁屏需要本人处理；不输入密码或修改设置 |
 | poco_not_ready | 已有读取组件未就绪，不代表未操作；核对原任务及备注状态 |
+| wecom_search_returned_without_result | 查找中消失后连续三帧回到同一号码搜索页，客户结果未确认；保留原任务，不当作客户不存在，不自动补点。本地11月5日候选新增，未上线 |
 | system_overlay_interrupted | 通知栏／快捷设置遮挡企微，任务已停止操作；收起面板后核对原任务，不自动关面板或补发。本地11月5日候选新增，未上线 |
 | wecom_rpc_session_context_unconfirmed | 本任务本地读取连接的固定端点／会话未核对；不更换ADB入口。本地11月5日候选新增，未上线 |
 | wecom_element_geometry_unconfirmed / wecom_element_display_unconfirmed | 元素位置或当前屏幕尺寸未核对，未发出该次点击；检查适配，不猜坐标。本地200/202候选新增，未上线 |

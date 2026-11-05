@@ -285,6 +285,9 @@ def run_preview(driver, request, timeout=45, max_reads=90, cancelled=lambda: Fal
     empty_input_frame = None
     home_menu_frame = None
     search_input_frame = None
+    search_progress_seen = False
+    returned_search_frame = None
+    returned_search_count = 0
 
     def result(status, code):
         return {"workflowVersion": WORKFLOW, "status": status, "code": code,
@@ -314,6 +317,10 @@ def run_preview(driver, request, timeout=45, max_reads=90, cancelled=lambda: Fal
             if stage in ("profile", "preview") and is_observed_progress(screen):
                 # An acknowledged operation is still in progress. Keep the
                 # original deadline/cancellation; never click it again.
+                if stage == "profile":
+                    search_progress_seen = True
+                    returned_search_frame = None
+                    returned_search_count = 0
                 sleep(0.25)
                 continue
             reads += 1
@@ -399,6 +406,20 @@ def run_preview(driver, request, timeout=45, max_reads=90, cancelled=lambda: Fal
                     raise StopPreview("already_contact")
                 target_verified = True
                 action, next_stage = "open_preview", "preview"
+            elif stage == "profile" and search_progress_seen:
+                # The observed modal disappeared back to this exact customer's
+                # search row. This is neither a profile nor proof of not-found.
+                # Require three consecutive identical frames; never tap again.
+                try:
+                    resolve_action("search", screen, phone)
+                except StopPreview:
+                    returned_search_frame = None
+                    returned_search_count = 0
+                else:
+                    returned_search_count = returned_search_count + 1 if returned_search_frame == screen else 1
+                    returned_search_frame = screen
+                    if returned_search_count >= 3:
+                        raise StopPreview("wecom_search_returned_without_result")
             if action:
                 resolve_action(action, screen, phone)
                 check_budget()

@@ -60,6 +60,58 @@ def run(device, **kwargs):
 
 
 class PreviewFlowTests(unittest.TestCase):
+    def test_search_modal_returns_to_same_customer_without_a_result(self):
+        progress = frame(w.Node('android.widget.TextView', text='查找中', name='com.tencent.wework:id/krm'))
+
+        class ReturningSearch(Device):
+            def __init__(self, observed):
+                super().__init__()
+                self.observed = iter(observed)
+                self.last = TYPED
+
+            def snapshot(self):
+                if self.index == 5:
+                    self.reads += 1
+                    self.last = next(self.observed, self.last)
+                    return self.last
+                return super().snapshot()
+
+        device = ReturningSearch([progress, TYPED, TYPED, TYPED])
+        out = run(device)
+        self.assertEqual(out['code'], 'wecom_search_returned_without_result')
+        self.assertEqual(out['stage'], 'profile')
+        self.assertEqual(device.calls, ACTIONS[:5])
+        self.assertFalse(out['invitationSent'])
+        # Stale search frames before the first modal, or brief frames while
+        # the result opens, are not terminal evidence.
+        for observed in ([TYPED, TYPED, TYPED, PROFILE],
+                         [progress, TYPED, TYPED, PROFILE],
+                         [progress, TYPED, TYPED, progress, TYPED, TYPED, PROFILE]):
+            device = ReturningSearch(observed)
+            self.assertEqual(run(device)['status'], 'ready_before_send')
+            self.assertEqual(device.calls.count('search'), 1)
+
+    def test_returned_search_requires_exact_current_customer_and_unchanged_frames(self):
+        progress = frame(w.Node('android.widget.TextView', text='查找中', name='com.tencent.wework:id/krm'))
+        other = frame(w.Node('android.widget.EditText', text=OTHER), '网络查找手机/邮箱：' + OTHER)
+        changed = replace(TYPED, nodes=(TYPED.nodes[0], replace(TYPED.nodes[1], position=(.4, .2))))
+
+        class Transitions(Device):
+            def __init__(self, frames):
+                super().__init__()
+                self.remaining = iter(frames)
+            def snapshot(self):
+                if self.index == 5:
+                    self.reads += 1
+                    return next(self.remaining, PROFILE)
+                return super().snapshot()
+
+        for observed in ([progress, other, other, other, PROFILE],
+                         [progress, TYPED, TYPED, changed, TYPED, TYPED, PROFILE]):
+            device = Transitions(observed)
+            self.assertEqual(run(device)['status'], 'ready_before_send')
+            self.assertEqual(device.calls.count('search'), 1)
+
     def test_observed_system_panels_stop_before_navigation_without_dismissing_them(self):
         for names in [('qs_detail_back','detail_items_title'),('settings_button','notification_container_parent')]:
             panel=tuple(w.Node('android.view.View',name='com.android.systemui:id/'+name)for name in names)

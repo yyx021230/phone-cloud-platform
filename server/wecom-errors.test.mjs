@@ -39,6 +39,9 @@ test('active/safe pre-send tasks do not acquire error labels and unknown sends r
 });
 
 test('element transport distinguishes rejected geometry from unknown click delivery without retry permission',()=>{
+  const search=wecomErrorInfo({code:'wecom_search_returned_without_result',status:'failed',sendStatus:'not_attempted',remarkSaveStatus:'not_attempted'});
+  assert.equal(search.category,'result_unconfirmed');assert.equal(search.outcomeUnconfirmed,false);
+  assert.equal(search.canRetry,undefined);assert.match(search.action,/不自动重查/);
   assert.equal(wecomErrorInfo({code:'system_overlay_interrupted',status:'failed'}).category,'page_compatibility');
   assert.equal(wecomErrorInfo({code:'wecom_rpc_session_context_unconfirmed',status:'failed'}).category,'configuration');
   for(const code of ['wecom_element_geometry_unconfirmed','wecom_element_display_unconfirmed']){
