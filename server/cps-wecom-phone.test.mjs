@@ -36,8 +36,50 @@ test('signed device list exposes account phones under the correct main and clone
   const f=await fixture(t);const list=(await f.post(ROUTES.devices,{})).body.result;
   assert.deepEqual(list.devices[0].accounts.map(a=>[a.wecom_phone,a.app_slot]),[[members[0].wecom_phone,'main'],[members[1].wecom_phone,'clone']]);
   assert.equal(list.devices[0].device_number,'155');assert.deepEqual(list.devices[1].accounts,[]);
+  assert.ok(list.devices[0].accounts.every(a=>a.wecom_name===null));
   assert.equal((await f.post(ROUTES.dispatch,input(1n,members[1].wecom_phone))).body.success,true);await f.service.tick();
   const lead=f.submitted[0];assert.equal(lead.target.appSlot,'clone');assert.equal(lead.target.deviceNumber,'155');assert.equal(lead.input.phone,'13800138001');assert.notEqual(lead.input.phone,lead.input.wecom_phone);
+});
+
+test('configured account nicknames are display-only, may repeat, and include offline registered phones',async t=>{
+  const names=['小文','小文','小文','小珍','珍珍'];
+  const rows=names.map((wecom_name,i)=>({deviceNumber:String(200+i),wecom_phone:'13900139'+String(200+i),wecom_name,appSlot:'main',bindingVerified:true}));
+  const deviceRows=rows.map((m,i)=>({deviceNumber:m.deviceNumber,deviceName:'phone '+m.deviceNumber,deviceId:i===0||i===2?'adb:synthetic'+m.deviceNumber:null,
+    listed:true,online:i===0||i===2,adbOnline:i===0||i===2,agentOnline:i===0||i===2,busy:false,available:i===0||i===2,wecomAllowed:true,remarkPhoneReady:true,appSlots:[{appSlot:'main'}],wecom_name:'untrusted upstream name'}));
+  deviceRows.push({deviceNumber:'78',online:false,busy:false,appSlots:[],wecom_name:'not authorized for this app'});
+  const f=await fixture(t,{rows,deviceRows});
+  const result=(await f.post(ROUTES.devices,{})).body.result;
+  assert.deepEqual(result.devices.slice(0,5).map(d=>[d.device_number,d.accounts[0].wecom_phone,d.accounts[0].wecom_name]),rows.map(m=>[m.deviceNumber,m.wecom_phone,m.wecom_name]));
+  assert.deepEqual(result.devices[5].accounts,[]);
+  const offline=result.devices.filter(d=>['201','203','204'].includes(d.device_number));
+  assert.ok(offline.every(d=>!d.online&&!d.available&&d.accounts[0].unavailable_reason==='adb_offline'));
+  const online=(await f.post(ROUTES.devices,{online_only:true})).body.result.devices;
+  assert.deepEqual(online.map(d=>[d.device_number,d.accounts[0].wecom_name]),[['200','小文'],['202','小文']]);
+  assert.equal((await f.post(ROUTES.dispatch,{...input(1n,rows[1].wecom_phone),wecom_name:'小文'})).body.code,2003);
+  assert.equal((await f.post(ROUTES.dispatch,input(1n,rows[1].wecom_phone))).body.code,2003);
+  assert.equal((await f.post(ROUTES.dispatch,input(2n,rows[2].wecom_phone))).body.success,true);await f.service.tick();
+  assert.equal(f.submitted.length,1);assert.equal(f.submitted[0].target.deviceNumber,'202');
+  assert.equal(f.submitted[0].target.wecom_phone,rows[2].wecom_phone);assert.equal(f.submitted[0].input.wecom_name,undefined);
+  assert.ok(!JSON.stringify(result).includes('untrusted upstream name'));assert.ok(!JSON.stringify(result).includes('not authorized for this app'));
+});
+
+test('nickname changes never invalidate or repeat an existing phone-routed task',async t=>{
+  const f=await fixture(t,{rows:[{...members[0],wecom_name:'旧昵称'}]});
+  assert.equal((await f.post(ROUTES.dispatch,input())).body.success,true);
+  const member=[...f.clients.get('fixture').members.values()][0];member.wecom_name='新昵称';
+  await f.service.tick();assert.equal(f.submitted.length,1);
+  assert.equal((await f.post(ROUTES.devices,{})).body.result.devices[0].accounts[0].wecom_name,'新昵称');
+  member.wecom_name='小文';f.advance(2100);await f.service.tick();
+  assert.equal((await f.post(ROUTES.dispatch,input())).body.success,true);await f.service.tick();
+  assert.equal(f.submitted.length,1);assert.equal(f.store.snapshot().leads[0].stage,'submitted');
+});
+
+test('nickname config accepts Unicode and rejects invalid values without requiring names for old configs',()=>{
+  for(const name of ['小文','名字 😀','😀'.repeat(80)])assert.equal(parseClients(JSON.stringify([client([{...members[0],wecom_name:name}])])).get('fixture').members.values().next().value.wecom_name,name);
+  for(const name of [null,1,{},'', ' ', ' 小文','小文 ', '😀'.repeat(81),'小\n文','小\u0000文','小\u0085文','\ud800']){
+    assert.throws(()=>parseClients(JSON.stringify([client([{...members[0],wecom_name:name}])])),/cps_member_name_invalid/);
+  }
+  assert.equal(parseClients(JSON.stringify([client([members[0]])])).size,1);
 });
 test('account phone is required in phone mode, validated, signed, and never falls back to another member',async t=>{
   const f=await fixture(t);

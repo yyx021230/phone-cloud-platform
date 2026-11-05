@@ -1,6 +1,6 @@
 # CPS企微三接口：本地候选验收与启用说明
 
-日期：2026-11-05（本地读取连接复用、空备注及系统面板兼容）。协议依据：[双方对接方案v0.4](CPS企微客户对接方案-v0.1.md)。当前为本地候选，未部署、未推送。仅操作200/202本地手机；202初期网络失败保留，用户换网后已补齐发送前验证。下方旧生产记录保留为历史。
+日期：2026-11-05（本地读取连接复用、空备注及系统面板兼容）。协议依据：[双方对接方案v0.5](CPS企微客户对接方案-v0.1.md)。当前为本地候选，未部署、未推送。仅操作200/202本地手机；202初期网络失败保留，用户换网后已补齐发送前验证。下方旧生产记录保留为历史。
 
 ## 本次实现
 
@@ -44,7 +44,7 @@
 | CPS_WECOM_ENABLED | 必须显式为true，否则拒绝启动 |
 | CPS_EXECUTION_MODE | 必须显式preview或send；preview从不发送邀请或结果回调 |
 | CPS_WECOM_CLIENTS_JSON | 接入appId、secret、固定callbackUrl、allDeviceStatus及members；凭据用安全渠道注入 |
-| members | 新名单每项含wecom_phone、deviceNumber、appSlot=main、enabled、bindingVerified；可额外钉住wecom_corp_id和wecom_userid（须成对配置）。旧clone配置不迁入新名单 |
+| members | 新名单每项含wecom_phone、deviceNumber、appSlot=main、enabled、bindingVerified，配置昵称使用wecom_name（非空、无首尾空白/控制字符、最多80个Unicode码点；旧配置可省略）；可额外钉住wecom_corp_id和wecom_userid（须成对配置）。旧clone配置不迁入新名单 |
 | CPS_PLATFORM_BASE_URL / CPS_PLATFORM_TOKEN | 内部平台地址与平台管理员凭据，仅桥接端使用，不交给CPS |
 | CPS_DATABASE_URL | 生产必须PostgreSQL；仅连接独立CPS账本，不能用文件模式代替 |
 | CPS_STATE_KEY | 稳定账本命名空间，默认default；不能为重试、迁机或切版本更换以绕过防重 |
@@ -145,3 +145,10 @@
 补丁已自然识别一次查找中消失、三帧回同号码搜索页的wecom_search_returned_without_result；不重复点击，不将搜索未确认当成频繁或未找到。新语义和瞬时帧反例、200/202正式宿主重启顺序均有回归。612 Python、5 Node及root check通过；独立模拟12个合成客户（含6条突发）经过真实HTTP，验证双机排他/并行、忙碌和重试、回调500仅通知重试、普通错误保留与单成员限频。模拟时间不是长期观察，模拟结果不是实际发送。
 
 新联调包rc.2使用预留的61120200/61120202默认测试线索号，避免旧包已执行/失败ID仅返回原受理而不重跑。测试密钥仍只在受限私有配置/交接包，不入仓。本地服务继续运行，生产未改动；两台reader/test reader和forward已清理、ADB同一代次。完整实际请求/原生回执/历史失败/源码hash/回退见verification/wecom-cps-multi-20261105。正式Windows SYSTEM、CPS实际回调和真实邀请仍未验，不宣称生产全量验收。
+
+
+## 2026-11-05 查询账号补配置昵称（v0.5）
+
+按用户登记表给accounts每项返回wecom_name：200/201/202小文，203小珍，204珍珍；号码绑定使用企微登录手机编号，不用装卡手机编号，实名人不额外公开。字段为配置昵称，仅显示、允许重名，不作为官方身份认证或定位依据；缺省返回null。配置无效昵称拒绝启动，不把空对象/控制字符送出。下发请求不增加wecom_name，原签名和回调不变；配置改昵称不更换账号、不取消或重跑旧任务。
+
+本地登记五条，但实际仅200/202有固定ADB映射。另三条登记项在本地显示offline/available=false、未知心跳为null，不能受理手机任务；不查询或改动生产来补状态。当前本地并发仍为2。生产接口源码仅形成候选，不在本轮上线。

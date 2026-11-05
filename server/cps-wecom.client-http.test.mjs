@@ -114,7 +114,7 @@ test(`CPS external HTTP lifecycle (${long?'real 121-second timeout':'short defau
   const journal=path.join(dir,'bridge','journal.json');
   const snapshot=async()=>databaseUrl?(await pool.query('select data from phone_cloud_cps_wecom where state_key=$1',[stateKey])).rows[0]?.data:JSON.parse(await fs.readFile(journal,'utf8'));
   const bridgePort=await unusedPort(),bridgeBase='http://127.0.0.1:'+bridgePort;
-  const members=[{deviceNumber:'43',appSlot:'main',wecom_phone:executionPhones.member_43},{deviceNumber:'59',appSlot:'main',wecom_phone:executionPhones.member_59},{deviceNumber:'155',appSlot:'main',wecom_phone:executionPhones.member_155_main},{deviceNumber:'155',appSlot:'clone',wecom_phone:executionPhones.member_155_clone}].map(m=>({...m,bindingVerified:true}));
+  const members=[{deviceNumber:'43',appSlot:'main',wecom_phone:executionPhones.member_43},{deviceNumber:'59',appSlot:'main',wecom_phone:executionPhones.member_59},{deviceNumber:'155',appSlot:'main',wecom_phone:executionPhones.member_155_main},{deviceNumber:'155',appSlot:'clone',wecom_phone:executionPhones.member_155_clone}].map(m=>({...m,wecom_name:'已配置昵称',bindingVerified:true}));
   const bridgeEnv=isolatedEnv({NODE_ENV:'test',CPS_WECOM_ENABLED:'true',CPS_EXECUTION_MODE:'send',CPS_WECOM_CLIENTS_JSON:JSON.stringify([{appId,secret,callbackUrl:callbackBase+'/api/v1/lead/callback',allowLoopbackTest:true,allDeviceStatus:true,members}]),CPS_PLATFORM_BASE_URL:upstreamBase,CPS_PLATFORM_TOKEN:admin,CPS_DATA_DIR:path.dirname(journal),CPS_PORT:String(bridgePort),...(databaseUrl?{CPS_DATABASE_URL:databaseUrl,CPS_STATE_KEY:stateKey}:{})});
   bridge=await child('server/cps-wecom/main.mjs',bridgeEnv,bridgeBase);
   let dropCpsAck=true;const clientProxy=http.createServer(async(req,res)=>{
@@ -143,8 +143,10 @@ test(`CPS external HTTP lifecycle (${long?'real 121-second timeout':'short defau
     assert.equal(r.body.result.devices.find(d=>d.device_number==='67').online,false);
     const busy=r.body.result.devices.find(d=>d.device_number==='59');assert.equal(busy.busy,true);assert.equal(busy.accounts[0].unavailable_reason,'device_busy');
     assert.equal(busy.accounts[0].wecom_phone,executionPhones.member_59);
+    assert.equal(busy.accounts[0].wecom_name,'已配置昵称');
     const dual=r.body.result.devices.find(d=>d.device_number==='155');assert.equal(dual.accounts.length,2);
     assert.deepEqual(dual.accounts.map(a=>[a.app_slot,a.wecom_phone]),[['main',executionPhones.member_155_main],['clone',executionPhones.member_155_clone]]);
+    assert.ok(dual.accounts.every(a=>a.wecom_name==='已配置昵称'));
     assert.equal((await call(devicesPath,{online_only:true})).body.result.total,3);
     assert.equal((await call(dispatchPath,lead(90,'member_59'))).body.code,2003);assert.equal((await snapshot()).leads.length,0);
     assert.deepEqual(await locksForLookup(),lookupLocksBefore);

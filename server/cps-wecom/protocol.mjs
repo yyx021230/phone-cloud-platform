@@ -89,6 +89,7 @@ export function parseClients(raw) {
       if(!m||!/^[1-9]\d{0,2}$/.test(m.deviceNumber)||!['main','clone'].includes(m.appSlot)
         ||phoneRouting&&(typeof m.wecom_phone!=='string'||!/^1[3-9]\d{9}$/.test(m.wecom_phone))
         ||(!phoneRouting||m.wecom_corp_id!==undefined||m.wecom_userid!==undefined)&&!official)throw Error('cps_member_config_invalid');
+      if(m.wecom_name!==undefined&&(typeof m.wecom_name!=='string'||m.wecom_name!==m.wecom_name.trim()||[...m.wecom_name].length<1||[...m.wecom_name].length>80||/[\u0000-\u001f\u007f-\u009f\uD800-\uDFFF]/u.test(m.wecom_name)))throw Error('cps_member_name_invalid');
       const key=memberKey(m),physical=JSON.stringify([m.deviceNumber,m.appSlot]);
       const officialKey=JSON.stringify([m.wecom_corp_id,m.wecom_userid]);
       if(members.has(key)||slots.has(physical)||official&&officialMembers.has(officialKey)||phoneRouting&&accountPhones.has(m.wecom_phone))throw Error('cps_member_config_conflict');

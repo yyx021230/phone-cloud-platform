@@ -92,7 +92,7 @@ export function createService({store,clients,platform,fetchImpl=fetch,clock=Date
     const rows=visible.filter(d=>body.online_only!==true||d.online===true).map(d=>{
       const accounts=[...client.members.values()].filter(m=>m.deviceNumber===d.deviceNumber).map(m=>{
         const reason=targetReason(d,m,state);
-        return {app_slot:m.appSlot,binding_verified:m.bindingVerified===true,enabled:m.enabled!==false,...(m.wecom_phone?{wecom_phone:m.wecom_phone}:{}),wecom_corp_id:m.wecom_corp_id,wecom_userid:m.wecom_userid,available:reason==='',unavailable_reason:reason};
+        return {app_slot:m.appSlot,binding_verified:m.bindingVerified===true,enabled:m.enabled!==false,...(m.wecom_phone?{wecom_phone:m.wecom_phone}:{}),wecom_name:m.wecom_name??null,wecom_corp_id:m.wecom_corp_id,wecom_userid:m.wecom_userid,available:reason==='',unavailable_reason:reason};
       });
       const available=accounts.some(a=>a.available);
       return {device_number:d.deviceNumber,device_name:d.deviceName||d.deviceNumber,online:d.online===true,adb_online:d.adbOnline===true,agent_online:d.agentOnline===true,listed:d.listed===true,busy:d.busy===true,
