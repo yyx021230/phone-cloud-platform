@@ -1,0 +1,48 @@
+# CPS本地开发联调
+
+日期：2026-11-05。状态：本地开发入口已启动，生产未改动；仅200、202主号，到发送邀请前停止。
+
+## 1. 发给开发的资料
+
+使用本轮联调包中的API.md、cps_local_client.py和client-config.private.json。配置内含本地测试专用app_id、secret、允许测试的客户号码和执行账号，不包含生产管理员令牌。测试密钥不要写入源码、API文档或日志。
+
+- 基础地址：`http://192.168.10.119:8797`。这是当前Mac的局域网IP；IP变化需重新配置，不能用开发自己电脑的127.0.0.1替代。
+- 连通检查：浏览器打开`http://192.168.10.119:8797/healthz`，正常为HTTP200且ok=true。该健康检查不操作手机。
+- 本机用上述LAN地址已验证健康、签名查询和错误拒绝；尚未从开发电脑验证，不保证网络路由或防火墙已放行。不要自动修改防火墙、路由或重启共享服务。
+- 手机执行仍是Mac本地QA适配器，agent_online表示该适配器就绪，并非正式Windows Agent已验收。测试只绑定200/202，不调用线上查名或生产Agent。
+
+## 2. 按顺序调用
+
+联调包解压到同一目录，使用Python3（无需安装pip依赖），运行：
+
+```sh
+python3 cps_local_client.py health
+python3 cps_local_client.py devices
+python3 cps_local_client.py dispatch 202
+```
+
+在Windows可将python3替换为已安装的Python3命令python。示例客户端会读取同目录私有配置，为每次请求重新生成时间戳、nonce和签名。stdout展示完整业务字段，客户号码与sign脱敏，wecom_phone明文展示。
+
+`devices`实际调用`POST /api/v1/lead/devices/query`；`dispatch`实际调用`POST /api/v1/lead/dispatch`。示例参数202仅在客户端选择已配置账号，HTTP Body中不传手机编号或分身编号。对接方直接从列表中取available=true的accounts[].wecom_phone，并按API.md下发客户号码及业务字段。
+
+- 200 → wecom_phone：17508437040；默认lead_id：61104200。
+- 202 → wecom_phone：13067238489；默认lead_id：61104202。
+- `phone`使用私有配置中的本轮已授权客户号码（尾号6441）；本地测试入口会拒绝其他客户号码，不接单、不操作手机。
+- 示例企业/成员ID是本地测试业务标识，不是从手机号认证得到的官方ID。实际CPS可传自己的原业务标识，此测试映射仅钉住执行账号手机号。
+- 手机保持USB连接，Mac保持运行；在当前手机执行期间不要手动操作该台企微。可以从另一台空闲手机独立执行。
+
+重复运行`dispatch 202`会用相同lead_id/业务内容和新的nonce，不创建第二次手机执行。要测200运行`python3 cps_local_client.py dispatch 200`。`--lead-id`可指定另一个正INT64；不要把换线索ID当成超时重试方式，不得因此绕过旧发送/未知记录。
+
+## 3. 如何判断结果
+
+HTTP200且success=true/code=200只表示受理。当前入口固定preview，手机到发送邀请前停止，不产生success回调；运行中查询busy=true，清理确认后busy=false，但空闲并不等于真实发送成功。最终预览回执由本地测试维护人员核对原任务和手机画面，本轮没有新增第四个公共结果查询接口。
+
+CPS须提供自己的`/api/v1/lead/callback`完整测试地址，随后单独用明确标识的模拟结果验签、确认和重试；不伪造200/202真实发送成功。CPS收到回调应返回HTTP200及JSON success=true、code=200。该地址尚未提供，本轮尚未向开发侧发回调。
+
+原协议仅接受success/duplicate/添加过频的failed。普通页面、登录、连接和发送未知错误保留真实原码待处理；双方通用失败约定仍未完成。开发不能把没收到回调或设备空闲当成添加成功。
+
+## 4. 实际边界
+
+本地服务使用隔离的受限文件账本和仅本机监听的CPS核心，局域网入口由当前QA Node代理转发；不是修改正式bridge的监听地址，也未启动Nginx、修改防火墙或生产配置。新测试服务与上轮已结束的观察服务使用不同接入应用和独立账本，之前的私有观察地址不能复用。停止或重新运行时保留账本和原任务；崩溃后不删owner文件或猜PID清锁，先核实本地进程和手机资源。
+
+本轮验证未触发任何新手机执行；此前200/202原生预览已分别30.252/51.598秒到发送前。完整记录见verification/wecom-cps-observe-20261105。正式Windows/CPS公网、真实发送、长期运行仍待后续验收；本入口不解除任何生产冻结。

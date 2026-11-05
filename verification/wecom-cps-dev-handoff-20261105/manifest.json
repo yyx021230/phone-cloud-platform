@@ -1,0 +1,30 @@
+{
+  "status": "local_preview_endpoint_running_not_deployed",
+  "baselineHead": "aacc4ae8c42cae9cad619bfdcb4f258e2487761b",
+  "productSourceHead": "e1a7ade4bb58d62119993f90fce3de49d2f91162",
+  "branch": "codex/wecom-search200-20261105",
+  "baseUrl": "http://192.168.10.119:8797",
+  "developmentComputerConnectivity": "not verified",
+  "executionMode": "preview",
+  "customerAllowlist": "One previously authorized test customer; exact value only in private configuration.",
+  "callbackAddress": "awaiting CPS developer",
+  "newNativeStartsThisRound": 0,
+  "productionTouched": false,
+  "packageSha256": "d00dc009fcaa31f7b3aeffe6f1f8caf118a1770b7e13bb1c5014fc9f295de62b",
+  "privateHarnessSha256": {
+    "dev-server.mjs": "9a45e057c771e6f41ac2653558d198e0e4b279fd791b9bbbc5426e9a1c62080e",
+    "probe.py": "2332f82557e7460d848720d3d8f9492752b27ee097d581e912cc397f85925ccc"
+  },
+  "publicFilesSha256": {
+    "public/cps-wecom-integration-api.md": "11b61b334fc5456cd7cfbd315f2999af26613d3c0e943284124e4d9c857c9f7e",
+    "docs/CPS本地开发联调.md": "398861e6f1b67b2e8543870f226102b9c22f32e4364483fb9b786c0c5a7477b2",
+    "scripts/qa/cps_local_client.py": "ff393d5fbefc4ab3fe7b8a0f15207d1de0d99079922a03658635fb796708ce44",
+    "verification/wecom-cps-dev-handoff-20261105/readiness.redacted.json": "f58a2b6a1a4d21ea463502c59df3d39d6a1f046ac3b26539593d9127551599d0"
+  },
+  "credentials": "Generated test-only secret in restricted private config and handoff ZIP; not in repository or report. No production credentials used.",
+  "stop": "Stop admission and close only this local QA server after native jobs finish. Keep original ledger and failure records; do not touch Agent or ADB.",
+  "preparationFailures": [
+    "Initial shell stdin writer rejected source encoding before mutation; retried via file-based writer."
+  ],
+  "clientTimeoutCheck": "Synthetic disconnection: one attempt, response unconfirmed, original lead_id preserved; no automatic replay."
+}
