@@ -1,0 +1,22 @@
+{
+  "rows": [
+    {
+      "number": "200",
+      "readerAbsent": true,
+      "testReaderAbsent": true,
+      "serialForwards": 0,
+      "sameAdbProcess": true,
+      "installedPocoApkSha256": "ed96af302a803ed8f7696fa5c1267c7b1c7a3a5d4b1ddd457eeb76e0d19b70d9"
+    },
+    {
+      "number": "202",
+      "readerAbsent": true,
+      "testReaderAbsent": true,
+      "serialForwards": 0,
+      "sameAdbProcess": true,
+      "installedPocoApkSha256": "ed96af302a803ed8f7696fa5c1267c7b1c7a3a5d4b1ddd457eeb76e0d19b70d9"
+    }
+  ],
+  "productionActions": 0,
+  "invitationsSent": 0
+}

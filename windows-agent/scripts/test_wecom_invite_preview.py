@@ -60,6 +60,19 @@ def run(device, **kwargs):
 
 
 class PreviewFlowTests(unittest.TestCase):
+    def test_observed_system_panels_stop_before_navigation_without_dismissing_them(self):
+        for names in [('qs_detail_back','detail_items_title'),('settings_button','notification_container_parent')]:
+            panel=tuple(w.Node('android.view.View',name='com.android.systemui:id/'+name)for name in names)
+            page=replace(HOME,nodes=HOME.nodes+panel);device=Device([page])
+            self.assertEqual(run(device)['code'],'system_overlay_interrupted');self.assertFalse(device.calls)
+            w.guard(replace(HOME,nodes=HOME.nodes+panel[:1]))
+
+    def test_system_panel_during_search_is_not_reported_as_rpc_timeout_or_reclicked(self):
+        panel=frame('WLAN',w.Node('android.view.View',name='com.android.systemui:id/qs_detail_back'),
+                    w.Node('android.view.View',name='com.android.systemui:id/detail_items_title'))
+        device=Device(PATH[:5]+[panel]);out=run(device)
+        self.assertEqual(out['code'],'system_overlay_interrupted');self.assertEqual(device.calls.count('search'),1)
+        self.assertNotIn('open_preview',device.calls)
     def test_full_path_stops_before_send_and_does_not_save_remarks(self):
         device = Device()
         result = run(device)

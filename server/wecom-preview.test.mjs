@@ -17,9 +17,11 @@ test("legacy identities plus the two local single-account phones have exact bind
   for (const number of ['200','202']) {
     assert.deepEqual(pool[number].appSlots, {main:0});
     assert.equal(pool[number].elementInput, 'adb_v1');
+    assert.equal(pool[number].rpcSession, 'loopback_v1');
     assert.throws(() => previewTarget({deviceName:number,deviceId:`adb:${pool[number].serial}`,adb:{serial:pool[number].serial}}, 'clone'), /slot_not_configured/);
   }
   for (const number of ['23','25','43','59','93','145','155','157']) assert.equal(pool[number].elementInput, undefined);
+  for (const number of ['23','25','43','59','93','145','155','157']) assert.equal(pool[number].rpcSession, undefined);
 });
 
 test("API requires explicit known execution mode and rejects arbitrary flags or slots", () => {
@@ -29,7 +31,7 @@ test("API requires explicit known execution mode and rejects arbitrary flags or 
   assert.equal(previewRequest({...input,mode:"send"}).mode,"send");
   for (const mode of [null, "", "auto", true]) assert.throws(()=>previewRequest({...input,mode}),/invalid_wecom_mode/);
   for (const appSlot of [null, "", "auto", 999, {}, "app2"]) assert.throws(() => previewRequest({ ...input, appSlot }), /invalid_wecom_app_slot/);
-  for (const extra of [{ send: true }, { androidUser: 999 }, { maxRetries: 5 }]) assert.throws(() => previewRequest({ ...input, ...extra }), /invalid_wecom_preview_fields/);
+  for (const extra of [{ send: true }, { androidUser: 999 }, { maxRetries: 5 }, { rpcSession: 'loopback_v1' }]) assert.throws(() => previewRequest({ ...input, ...extra }), /invalid_wecom_preview_fields/);
   for (const phoneNumber of ["10086", "138 0013 8000", 13800138000, "11800138000"]) assert.throws(() => previewRequest({ ...input, phoneNumber }), /invalid_phone_number/);
 });
 

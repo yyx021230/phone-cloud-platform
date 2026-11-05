@@ -119,6 +119,14 @@ def validate_request(request):
 def guard(screen):
     if screen.package != PACKAGE:
         raise StopPreview("wrong_foreground_app")
+    visible_ids = {n.name for n in screen.nodes if n.visible}
+    if ({'com.android.systemui:id/qs_detail_back',
+         'com.android.systemui:id/detail_items_title'} <= visible_ids
+            or {'com.android.systemui:id/settings_button',
+                'com.android.systemui:id/notification_container_parent'} <= visible_ids):
+        # The underlying resumed Activity can still be WeCom while SystemUI
+        # covers it. Stop, never close panels or operate beneath them.
+        raise StopPreview('system_overlay_interrupted')
     if any(n.kind == 'android.widget.TextView' and n.name == 'android:id/message'
            and n.text in ('添加好友过于频繁', '添加好友过于频繁，请稍后再试', '添加好友过于频繁，请稍后再试。')
            for n in screen.nodes if n.visible):

@@ -118,8 +118,8 @@ const apiFailure = status => error => error instanceof WecomApiError && error.st
 
 test('external client: discover -> four-field submit -> actual synthetic remark/send -> result; dual slots, timeout and restart never replay', { timeout: 45000 }, async t => {
   const f = await fixture(t), c = f.client;
-  const inventory = await c.devices(); assert.equal(inventory.total, 10);
-  const online = await c.devices({ onlineOnly: true }); assert.equal(online.total, 9);
+  const inventory = await c.devices(); assert.equal(inventory.total, 12);
+  const online = await c.devices({ onlineOnly: true }); assert.equal(online.total, 11);
   assert.equal(online.devices.find(d => d.deviceNumber === '67').available, false);
   const dual = online.devices.find(d => d.deviceNumber === '155');
   assert.equal(dual.available, true); assert.deepEqual(dual.appSlots.map(s => s.appSlot), ['main', 'clone']);

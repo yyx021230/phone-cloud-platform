@@ -71,7 +71,8 @@
     "appSlots": {
       "main": 0
     },
-    "elementInput": "adb_v1"
+    "elementInput": "adb_v1",
+    "rpcSession": "loopback_v1"
   },
   "202": {
     "serial": "c06a13fa",
@@ -80,6 +81,7 @@
     "appSlots": {
       "main": 0
     },
-    "elementInput": "adb_v1"
+    "elementInput": "adb_v1",
+    "rpcSession": "loopback_v1"
   }
 }

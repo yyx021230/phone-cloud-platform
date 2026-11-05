@@ -1,0 +1,573 @@
+[
+  {
+    "number": "200",
+    "case": "baseline-no-extra-health",
+    "sourceStage": "baseline",
+    "elapsedMs": 44699,
+    "lateReadMs": null,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "not_needed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true
+    },
+    "cleanupConfirmed": true,
+    "rpcHttpCalls": null,
+    "rpcTcpSourcePorts": null,
+    "screenshotSha256": "51a89a4e95f194c765f6b632177cb8d4967ff6c77dba8f4e9d6c07111129f74f",
+    "privateOutputFile": "200-baseline-no-extra-health.stdout.private.txt",
+    "privateOutputSha256": "713d0c4016d26de674f9d0ea02d92e742f8eccb32cd2756de352c47e0d791dbe"
+  },
+  {
+    "number": "200",
+    "case": "ab-extra-health",
+    "sourceStage": "baseline",
+    "elapsedMs": 65403,
+    "lateReadMs": null,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "not_needed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true
+    },
+    "cleanupConfirmed": true,
+    "rpcHttpCalls": null,
+    "rpcTcpSourcePorts": null,
+    "screenshotSha256": "67e13131803fbe70c20ec244b4d50f41e7af0d81907145318782f9446e0b544f",
+    "privateOutputFile": "200-ab-extra-health.stdout.private.txt",
+    "privateOutputSha256": "511475c55f2f9726df3bc68b0817a45002d8d65676f917e3a746c66cfff58376"
+  },
+  {
+    "number": "200",
+    "case": "session-round1",
+    "sourceStage": "session_before_ui_guards",
+    "elapsedMs": 39422,
+    "lateReadMs": null,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "not_needed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true
+    },
+    "cleanupConfirmed": true,
+    "rpcHttpCalls": 226,
+    "rpcTcpSourcePorts": 1,
+    "screenshotSha256": "584c4852f3d8249384be36adb7a977d349d5fba9ae183192e24cc7328a003ac8",
+    "privateOutputFile": "200-session-round1.stdout.private.txt",
+    "privateOutputSha256": "2acc66330da7be225578c35b9b1f0092c2cab7f19284ab168245ba80b9b22d03"
+  },
+  {
+    "number": "202",
+    "case": "session-round1",
+    "sourceStage": "session_before_ui_guards",
+    "elapsedMs": 73734,
+    "lateReadMs": null,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "stopped",
+      "code": "observation_budget_exhausted",
+      "readyToSend": false,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "profile",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        }
+      ],
+      "remarkSaveStatus": "not_attempted",
+      "remarkPrepared": false,
+      "remarkEvents": [],
+      "remarkPhoneSet": false
+    },
+    "cleanupConfirmed": true,
+    "rpcHttpCalls": 229,
+    "rpcTcpSourcePorts": 1,
+    "screenshotSha256": "e754f43620597b20210e2063a48668850825ee35f273c5ee4ad43fd8fffc0b01",
+    "privateOutputFile": "202-session-round1.stdout.private.txt",
+    "privateOutputSha256": "aafd96b4cc266007f2be2106a7f2dcfb2702fbfac9a7ae0ac87221d51aeece5f"
+  },
+  {
+    "number": "200",
+    "case": "full-write",
+    "sourceStage": "final",
+    "elapsedMs": 50771,
+    "lateReadMs": null,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": true,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "confirmed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "fill_remark"
+        },
+        {
+          "step": "fill_description"
+        },
+        {
+          "step": "save_remark"
+        },
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true
+    },
+    "cleanupConfirmed": true,
+    "rpcHttpCalls": 336,
+    "rpcTcpSourcePorts": 2,
+    "screenshotSha256": "50bcfbee8265d37d7c7964d2765a4d54af97ce1b27fd0c041a1551b9c9935b03",
+    "privateOutputFile": "200-full-write.stdout.private.txt",
+    "privateOutputSha256": "533927dfc12e309413f31ef0812edeeb17ee7bfd2b982722505663b6fc0f58c8"
+  },
+  {
+    "number": "200",
+    "case": "idle90",
+    "sourceStage": "final",
+    "elapsedMs": 128127,
+    "lateReadMs": 626,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "not_needed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true
+    },
+    "cleanupConfirmed": true,
+    "rpcHttpCalls": 222,
+    "rpcTcpSourcePorts": 3,
+    "screenshotSha256": "124d955ef1263e02871ce9e90aa3078d026991c9b0acad3f07a489432fd4a648",
+    "privateOutputFile": "200-idle90.stdout.private.txt",
+    "privateOutputSha256": "fbe4b3eed4741a3579c288b6b78cbaeac83c919119af2a696fede4766cabf8b4"
+  },
+  {
+    "number": "202",
+    "case": "network-restored",
+    "sourceStage": "final",
+    "elapsedMs": 32293,
+    "lateReadMs": null,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "not_needed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true
+    },
+    "cleanupConfirmed": true,
+    "rpcHttpCalls": 228,
+    "rpcTcpSourcePorts": 1,
+    "screenshotSha256": "3e37d6bf5dbdf7918f2a23776a75ec3dc39ef68aead6e7f74257ff1888572f22",
+    "privateOutputFile": "202-network-restored.stdout.private.txt",
+    "privateOutputSha256": "17237cd6980368dac8ddefcfd327c0a55c7c8219baeb4fad395f20d06f948df9"
+  },
+  {
+    "number": "200",
+    "case": "final-parallel",
+    "sourceStage": "final",
+    "elapsedMs": 40081,
+    "lateReadMs": null,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "not_needed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true
+    },
+    "cleanupConfirmed": true,
+    "rpcHttpCalls": 224,
+    "rpcTcpSourcePorts": 2,
+    "screenshotSha256": "b692501349d68017b57cd4046d101f583b7420985956b7400889be57ba4c48e9",
+    "privateOutputFile": "200-final-parallel.stdout.private.txt",
+    "privateOutputSha256": "0b2560efb65ccc95c5473a6f0249c41ae1d3e66157b8bcd732514683f72dbb58"
+  },
+  {
+    "number": "202",
+    "case": "final-parallel",
+    "sourceStage": "final",
+    "elapsedMs": 130161,
+    "lateReadMs": 727,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": true,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "confirmed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "fill_remark"
+        },
+        {
+          "step": "fill_description"
+        },
+        {
+          "step": "save_remark"
+        },
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true
+    },
+    "cleanupConfirmed": true,
+    "rpcHttpCalls": 342,
+    "rpcTcpSourcePorts": 2,
+    "screenshotSha256": "c0c67ad5aca1700054bec96a84b9d9236d3a518d6509cedebf3f4f4a0a16b3d8",
+    "privateOutputFile": "202-final-parallel.stdout.private.txt",
+    "privateOutputSha256": "d9c8688c16666e38c8b3114c0cdf8e6e5e94a203ae36cc2794ea0c8820db9760"
+  },
+  {
+    "number": "200",
+    "case": "final-concurrent",
+    "sourceStage": "final",
+    "elapsedMs": 9094,
+    "lateReadMs": null,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "stopped",
+      "code": "ambiguous_or_missing_element",
+      "readyToSend": false,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "entry",
+      "events": [],
+      "remarkSaveStatus": "not_attempted",
+      "remarkPrepared": false,
+      "remarkEvents": [],
+      "remarkPhoneSet": false
+    },
+    "cleanupConfirmed": true,
+    "rpcHttpCalls": 4,
+    "rpcTcpSourcePorts": 1,
+    "screenshotSha256": "4a9a77eef3f323299ea85ad2b0a76f4b323a1f7bfc827713e42fa8095b70f880",
+    "privateOutputFile": "200-final-concurrent.stdout.private.txt",
+    "privateOutputSha256": "8c2e70b77dc6f63fe3595ed181a4b5b20611cbd831af15f32c19dba1e31f8e05"
+  },
+  {
+    "number": "202",
+    "case": "final-concurrent",
+    "sourceStage": "final",
+    "elapsedMs": 29201,
+    "lateReadMs": null,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "not_needed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true
+    },
+    "cleanupConfirmed": true,
+    "rpcHttpCalls": 226,
+    "rpcTcpSourcePorts": 1,
+    "screenshotSha256": "b62704143a8cb190e44e7845416b8e654672225f1c9797bf7967e9a542dfc110",
+    "privateOutputFile": "202-final-concurrent.stdout.private.txt",
+    "privateOutputSha256": "a0c1d5b7cfdfa4fc7edfe1962d59f24f69e83354e02d5effb394e12fbd2dd184"
+  }
+]

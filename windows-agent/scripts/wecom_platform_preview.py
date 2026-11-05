@@ -467,6 +467,7 @@ def run_host(value, diagnostic_stream=None, *, authority=None):
     SERIAL = config["serial"]; selected_user = config["androidUser"]
     deadline = time.monotonic() + 210
     ports = []; instrument = None; owned_pid = ""; owned_start = ""; result = {}; reader_started = False
+    rpc_session = None
     with trace.phase("adb_identity"):
         initial_adb = adb_identity()
     try:
@@ -547,7 +548,11 @@ def run_host(value, diagnostic_stream=None, *, authority=None):
                     trace.record_rpc_failure(error)
                     observer=getattr(external_authority,'observe_rpc_failure',None)
                     if observer is not None:observer(dict(trace.transport_failure),dict(resource_state))
-                client=u.AndroidRpcClient("http://127.0.0.1:"+str(ports[1])); client.set_timeout(3); bound_rpc_transport(client,6,on_error=rpc_failed)
+                client=u.AndroidRpcClient("http://127.0.0.1:"+str(ports[1])); client.set_timeout(3)
+                if DEVICES[config['deviceNumber']].get('rpcSession') == 'loopback_v1':
+                    from wecom_rpc_session import LocalRpcSession
+                    rpc_session=LocalRpcSession(client)
+                bound_rpc_transport(client,6,on_error=rpc_failed)
             send=client.transport.send
             def bounded_send(request,timeout=None):
                 with calls.call(rpc_label(request)):
@@ -672,6 +677,9 @@ def run_host(value, diagnostic_stream=None, *, authority=None):
         cleaning_up = True
         deadline = time.monotonic() + 12
         trace.emit("cleanup", "begin")
+        if rpc_session is not None:
+            try:rpc_session.close()
+            except Exception:pass  # Reader cleanup below must still retire owned resources.
         with calls.call('cleanup.reader'):
             cleanup_ok = cleanup_reader(serial=SERIAL,
                 ports=list(zip(ports, (10080, 10081))), owned_pid=owned_pid, owned_start=owned_start,

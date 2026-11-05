@@ -52,6 +52,13 @@ def run(driver,**kwargs):
 
 
 class RemarkFlowTests(unittest.TestCase):
+    def test_observed_5013_add_remark_hint_is_filled_and_persisted(self):
+        d=Driver();mapping={r.NAME_ID:'com.tencent.wework:id/d67',r.DESCRIPTION_ID:'com.tencent.wework:id/d4r',r.BACK_ID:'com.tencent.wework:id/o62'}
+        d.pages=[replace(page,nodes=tuple(replace(n,name=mapping.get(n.name,n.name),
+            text='添加备注'if n.name==r.NAME_ID and n.text==''else n.text)for n in page.nodes))for page in d.pages]
+        out=run(d);self.assertTrue(out['readyToSend']);self.assertEqual(out['remarkSaveStatus'],'confirmed')
+        self.assertEqual(d.calls.count('fill_remark'),1);self.assertEqual(d.calls.count('save_remark'),1)
+        self.assertNotIn('添加备注',r.EMPTY_VALUES[r.NAME_ID])
     def test_matching_remark_page_must_finish_animation_before_it_can_be_used(self):
         page=remark();moving=replace(page,nodes=page.nodes+(w.Node('android.view.View',position=(1.3,.7)),))
         frames=iter([moving,page,page]);checks=[]

@@ -1,0 +1,15 @@
+{
+  "sourceSha256": "8a6d4b1b2146954ec7b1a8f63e222dc2885081d41425a2f44a157c2cc9d69b19",
+  "results": [
+    {
+      "scene": "wifi_panel",
+      "code": "system_overlay_interrupted",
+      "uiActions": 0
+    },
+    {
+      "scene": "notification_panel",
+      "code": "system_overlay_interrupted",
+      "uiActions": 0
+    }
+  ]
+}

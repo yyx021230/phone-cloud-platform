@@ -279,10 +279,12 @@ test("preview HTTP covers authentication, legacy and local phones, leases, origi
   const {createService}=await import('./cps-wecom/service.mjs');
   const {parseClients,signature,stringifyBody,parseBody,ROUTES}=await import('./cps-wecom/protocol.mjs');
   const {createHttpServer,listen}=await import('./cps-wecom/http.mjs');
-  const callbackRows=[];const cpsSecret='fixture-cps-contract-secret';
-  const cpsReceiver=http.createServer(async(req,res)=>{let raw='';for await(const chunk of req)raw+=chunk;const data=parseBody(raw);assert.equal(signature(data,cpsSecret),data.sign);callbackRows.push(data);res.setHeader('content-type','application/json');res.end(JSON.stringify({success:true,code:200}));});
+  const callbackRows=[];const cpsSecret='fixture-cps-contract-secret',singleSecret='fixture-main-document-only';let singleCallbackFailures=1;
+  const cpsReceiver=http.createServer(async(req,res)=>{assert.equal(req.method,'POST');assert.equal(req.url,'/api/v1/lead/callback');let raw='';for await(const chunk of req)raw+=chunk;const data=parseBody(raw);assert.equal(signature(data,data.app_id==='fixture_single_main'?singleSecret:cpsSecret),data.sign);callbackRows.push(data);const failed=data.app_id==='fixture_single_main'&&(singleCallbackFailures-- > 0);res.statusCode=failed?500:200;res.setHeader('content-type','application/json');res.end(JSON.stringify({success:!failed,code:failed?500:200}));});
   await listen(cpsReceiver);t.after(()=>{cpsReceiver.closeAllConnections();return new Promise(r=>cpsReceiver.close(r));});
-  const clients=parseClients(JSON.stringify([{appId:'fixture_cps',secret:cpsSecret,callbackUrl:'http://127.0.0.1:'+cpsReceiver.address().port+'/api/v1/lead/callback',allowLoopbackTest:true,allDeviceStatus:true,members:[{deviceNumber:'43',appSlot:'main',bindingVerified:true,wecom_corp_id:'ww_fixture',wecom_userid:'member_main'},{deviceNumber:'59',appSlot:'main',bindingVerified:true,wecom_corp_id:'ww_fixture',wecom_userid:'busy_member'},{deviceNumber:'155',appSlot:'clone',bindingVerified:true,wecom_corp_id:'ww_fixture',wecom_userid:'idle_clone'}]}]));
+  const singleMembers=[{deviceNumber:'200',appSlot:'main',bindingVerified:true,wecom_phone:'13900139200'},{deviceNumber:'202',appSlot:'main',bindingVerified:true,wecom_phone:'13900139202'}];
+  const clients=parseClients(JSON.stringify([{appId:'fixture_cps',secret:cpsSecret,callbackUrl:'http://127.0.0.1:'+cpsReceiver.address().port+'/api/v1/lead/callback',allowLoopbackTest:true,allDeviceStatus:true,members:[{deviceNumber:'43',appSlot:'main',bindingVerified:true,wecom_corp_id:'ww_fixture',wecom_userid:'member_main'},{deviceNumber:'59',appSlot:'main',bindingVerified:true,wecom_corp_id:'ww_fixture',wecom_userid:'busy_member'},{deviceNumber:'155',appSlot:'clone',bindingVerified:true,wecom_corp_id:'ww_fixture',wecom_userid:'idle_clone'}]},
+    {appId:'fixture_single_main',secret:singleSecret,callbackUrl:'http://127.0.0.1:'+cpsReceiver.address().port+'/api/v1/lead/callback',allowLoopbackTest:true,allDeviceStatus:true,members:singleMembers}]));
   const cpsDir=await fs.mkdtemp(path.join(os.tmpdir(),'cps-real-http-'));
   const cpsStore=await createStore({file:path.join(cpsDir,'journal.json')});let cpsNow=Date.now();
   const cpsService=createService({store:cpsStore,clients,platform:createPlatform({baseUrl:base,token:admin,mode:'send'}),clock:()=>cpsNow});
@@ -329,6 +331,60 @@ test("preview HTTP covers authentication, legacy and local phones, leases, origi
   const preserved=(await request('GET',lookupPath,admin)).sessions.find(s=>s.sessionId===lookup.session.sessionId);
   assert.equal(preserved.status,'starting');assert.equal(preserved.pendingJobId,lookup.session.pendingJobId);
 
-
-
+  {
+  // New document contract: independent CPS caller, one account per phone,
+  // actual bridge/platform HTTP. Agent results and callbacks are synthetic;
+  // no native phone or invitation is involved in this fixture.
+  const oldIdle=(await request('GET',cpsPoll,agent)).task;
+  assert.equal(oldIdle.payload.deviceNumber,'155');
+  await request('POST',`/api/v1/windows-agent-tasks/${oldIdle.taskId}/status`,agent,{status:'failed',result:{previewStatus:'blocked',previewCode:'already_contact',invitationSent:false,sendStatus:'not_attempted',remarkSaveStatus:'not_attempted'}});
+  cpsNow+=2001;await cpsService.tick();await cpsService.tick();
+  await request('GET',cpsPoll,agent);
+  const {createHash,randomBytes}=await import('node:crypto');
+  // Reimplement only the public document's signing steps, not server.signature.
+  const callerSign=body=>createHash('sha256').update(Object.keys(body).filter(k=>k!=='sign'&&body[k]!==null&&body[k]!=='').sort().map(k=>k+'='+String(body[k])).join('&')+'&secret='+singleSecret,'utf8').digest('hex');
+  const exchange=[],docPaths={devices:'/api/v1/lead/devices/query',dispatch:'/api/v1/lead/dispatch'};
+  const documentCall=async(endpoint,input)=>{
+    const body={...input,app_id:'fixture_single_main',timestamp:Date.now(),nonce:randomBytes(16).toString('hex')};body.sign=callerSign(body);
+    const response=await fetch('http://127.0.0.1:'+cpsServer.address().port+endpoint,{method:'POST',headers:{'content-type':'application/json; charset=utf-8'},body:JSON.stringify(body)});
+    const result=await response.json();assert.equal(response.status,200);exchange.push({endpoint,code:result.code,success:result.success});return result;
+  };
+  const all=(await documentCall(docPaths.devices,{online_only:false})).result;
+  assert.equal(all.total,11);
+  for(const m of singleMembers){const d=all.devices.find(d=>d.device_number===m.deviceNumber);assert.equal(d.available,true);assert.deepEqual(d.accounts.map(a=>[a.wecom_phone,a.app_slot]),[[m.wecom_phone,'main']]);}
+  assert.ok(all.devices.filter(d=>!['200','202'].includes(d.device_number)).every(d=>d.accounts.length===0),'other app account mappings remain private');
+  const mainLead=(id,number,phone='13800138000')=>({lead_id:id,phone,wecom_phone:singleMembers.find(m=>m.deviceNumber===number).wecom_phone,wecom_corp_id:'ww_document_fixture',wecom_userid:'member_'+number});
+  const a=mainLead(1000200,'200'),b=mainLead(1000202,'202');
+  const accepted=await Promise.all([documentCall(docPaths.dispatch,a),documentCall(docPaths.dispatch,a),documentCall(docPaths.dispatch,b)]);assert.ok(accepted.every(r=>r.success));
+  await cpsService.tick();
+  const ownLeads=()=>cpsStore.snapshot().leads.filter(l=>l.appId==='fixture_single_main');assert.equal(ownLeads().length,2);
+  const busy=(await documentCall(docPaths.devices,{})).result.devices.filter(d=>['200','202'].includes(d.device_number));assert.ok(busy.every(d=>d.busy&&!d.available));
+  assert.equal((await documentCall(docPaths.dispatch,mainLead(1000299,'200','13800138099'))).code,2003);
+  const picked=[];for(let i=0;i<2;i++){const task=(await request('GET',cpsPoll,agent)).task;assert.equal(task.type,'wecom_customer_preview');assert.equal(task.payload.androidUser,0);assert.equal(task.payload.appSlot,'main');assert.equal(task.payload.requireRemarkPhone,true);picked.push(task);}
+  assert.deepEqual(picked.map(t=>t.payload.deviceNumber).sort(),['200','202']);
+  const task200=picked.find(t=>t.payload.deviceNumber==='200'),task202=picked.find(t=>t.payload.deviceNumber==='202');
+  assert.equal(task200.payload.remarkName,'1000200');assert.equal(task200.payload.description,'leadId:1000200');assert.equal(task200.payload.phoneNumber,a.phone);
+  await request('POST',`/api/v1/windows-agents/fixture-agent/wecom-preview-tasks/${task200.taskId}/send-claim`,agent,{},201);
+  await request('POST',`/api/v1/windows-agent-tasks/${task200.taskId}/status`,agent,{status:'succeeded',result:{previewStatus:'send_attempted',previewCode:'invitation_click_issued_delivery_unknown',invitationSent:null,sendStatus:'unknown',remarkSaveStatus:'confirmed',remarkPhoneSet:true,invitationRequestConfirmed:true,invitationRequestProof:'wecom_system_dialog_v1'}});
+  await request('POST',`/api/v1/windows-agent-tasks/${task202.taskId}/status`,agent,{status:'failed',result:{previewStatus:'blocked',previewCode:'already_contact',invitationSent:false,sendStatus:'not_attempted',remarkSaveStatus:'not_attempted'}});
+  cpsNow+=2001;await cpsService.tick();await cpsService.tick();
+  const ownCallbacks=()=>callbackRows.filter(r=>r.app_id==='fixture_single_main');assert.equal(ownCallbacks().length,2);
+  assert.equal(ownLeads().find(l=>l.leadId==='1000200').stage,'callback_pending');
+  cpsNow+=5000;await cpsService.tick();assert.equal(ownCallbacks().length,3);assert.ok(ownLeads().every(l=>l.stage==='completed'));
+  const retryCallbacks=ownCallbacks().filter(r=>String(r.lead_id)==='1000200');assert.equal(retryCallbacks.length,2);assert.notEqual(retryCallbacks[0].nonce,retryCallbacks[1].nonce);
+  for(const callback of ownCallbacks())assert.equal(callerSign(callback),callback.sign);
+  assert.equal(retryCallbacks[1].result,'success');assert.equal(retryCallbacks[1].remark_phone_set,true);assert.equal(ownCallbacks().find(r=>String(r.lead_id)==='1000202').result,'duplicate');
+  const originalJobs=ownLeads().map(l=>l.jobId);assert.equal((await documentCall(docPaths.dispatch,a)).success,true);await cpsService.tick();assert.deepEqual(ownLeads().map(l=>l.jobId),originalJobs);
+  await request('GET',cpsPoll,agent); // Restore the full capability after the legacy verification fixture's narrower poll.
+  const after=(await documentCall(docPaths.devices,{})).result.devices;assert.ok(after.filter(d=>['200','202'].includes(d.device_number)).every(d=>d.available&&!d.busy),JSON.stringify(after.filter(d=>['200','202'].includes(d.device_number)).map(d=>({number:d.device_number,available:d.available,busy:d.busy,reason:d.unavailable_reason}))));
+  const attentionLead=mainLead(1000300,'200','13800138300');assert.equal((await documentCall(docPaths.dispatch,attentionLead)).success,true);await cpsService.tick();
+  const interrupted=(await request('GET',cpsPoll,agent)).task;assert.equal(interrupted.payload.deviceNumber,'200');
+  await request('POST',`/api/v1/windows-agent-tasks/${interrupted.taskId}/status`,agent,{status:'failed',result:{previewStatus:'blocked',previewCode:'ambiguous_or_missing_element',invitationSent:false,sendStatus:'not_attempted',remarkSaveStatus:'not_attempted'}});
+  cpsNow+=2001;await cpsService.tick();await cpsService.tick();
+  const attention=ownLeads().find(l=>l.leadId==='1000300');assert.equal(attention.stage,'needs_attention');assert.equal(attention.error,'ambiguous_or_missing_element');assert.equal(ownCallbacks().length,3,'ordinary failure is never disguised as success or frequency');
+  assert.equal((await documentCall(docPaths.dispatch,attentionLead)).success,true);await cpsService.tick();assert.equal(ownLeads().length,3);assert.equal(ownLeads().find(l=>l.leadId==='1000300').jobId,attention.jobId);
+  await request('GET',cpsPoll,agent);const recovered=(await documentCall(docPaths.devices,{})).result.devices.find(d=>d.device_number==='200');assert.equal(recovered.busy,false);assert.equal(recovered.available,true);
+  assert.deepEqual((await request('GET','/api/v1/device-locks',admin)).locks.filter(l=>l.deviceId==='adb:'+pool['59'].serial&&l.status==='active'),locksBefore);
+  t.diagnostic(JSON.stringify({contract:'CPS-v0.4-single-account',exchanges:exchange,executionAccounts:2,physicalTasks:3,mainAndroidUser:0,duplicateDispatchReused:true,callbackAttempts:3,callback500RetriedOnlyNotification:true,ordinaryFailurePreserved:true,phoneReleasedAfterFailure:true,lookupLockPreserved:true,syntheticAgent:true,realInvitations:0}));
+  }
 });

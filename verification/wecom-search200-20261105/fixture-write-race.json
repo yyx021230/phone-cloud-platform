@@ -1,0 +1,6 @@
+{
+  "source": "actual 500-write/500-read loopback filesystem reproduction",
+  "nonAtomicEmptyReads": 5,
+  "atomicRenameEmptyReads": 0,
+  "agentRuntimeModified": false
+}

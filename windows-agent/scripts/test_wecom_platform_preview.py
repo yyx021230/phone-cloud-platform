@@ -32,9 +32,11 @@ class HostGuardTests(unittest.TestCase):
         for number in ('200','202'):
             self.assertEqual(host.DEVICES[number]['appSlots'],{'main':0})
             self.assertEqual(host.DEVICES[number]['elementInput'],'adb_v1')
+            self.assertEqual(host.DEVICES[number]['rpcSession'],'loopback_v1')
             with self.assertRaises(host.SafeStop):host.validate_config(dict(self.config(number),appSlot='clone',androidUser=999))
         for number in ('23','25','43','59','93','145','155','157'):
             self.assertNotIn('elementInput',host.DEVICES[number])
+            self.assertNotIn('rpcSession',host.DEVICES[number])
 
     def test_actual_agent_causal_envelope_passes_configuration_after_private_bootstrap(self):
         value=dict(self.config('59'),appSlot='main',mode='preview',remarkName='联调客户',description='仅预览')
@@ -53,7 +55,7 @@ class HostGuardTests(unittest.TestCase):
             host.validate_config(dict(self.config(),causalLease=dict(protocol='wecom-causal-v1',epoch='e',leaseId='l',purpose='business')))
 
     def test_invalid_binding_or_send_flag_stops_before_network(self):
-        changes=[dict(deviceNumber="67"),dict(serial="OTHER"),dict(deviceId="adb:OTHER"),dict(androidUser=999),dict(previewOnly=False),dict(send=True),dict(elementInput='adb_v1'),dict(agentId="a/other"),dict(serverBaseUrl="http://user:pass@example.invalid")]
+        changes=[dict(deviceNumber="67"),dict(serial="OTHER"),dict(deviceId="adb:OTHER"),dict(androidUser=999),dict(previewOnly=False),dict(send=True),dict(elementInput='adb_v1'),dict(rpcSession='loopback_v1'),dict(agentId="a/other"),dict(serverBaseUrl="http://user:pass@example.invalid")]
         for change in changes:
             with self.subTest(change=change),patch.object(host,"adb_identity",side_effect=AssertionError("no network")):
                 with self.assertRaises((host.SafeStop,host.w.StopPreview)):host.run_host(dict(self.config(),**change))

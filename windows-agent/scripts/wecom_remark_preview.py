@@ -41,6 +41,8 @@ for _name, _description, _back in REMARK_LAYOUTS[1:]:
     EMPTY_VALUES[_name] = ("", "备注名")
     EMPTY_VALUES[_description] = ("", "添加更多备注信息")
     DEFAULTS[_name], DEFAULTS[_description] = DEFAULT_REMARK, DEFAULT_DESCRIPTION
+# Observed empty-field hint on WeCom 5.0.13, within its complete known layout.
+EMPTY_VALUES['com.tencent.wework:id/d67'] += ('添加备注',)
 
 
 def editors(screen):
