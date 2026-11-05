@@ -1,0 +1,23 @@
+{
+  "releaseId": "recovery-status-20261105-rc.1",
+  "status": "local_candidate_not_deployed",
+  "repositoryBase": "6811aef632eeaaacd6d6ce1effc4afa64bf6d363",
+  "repositoryBaseIsProduction": false,
+  "workflow": {
+    "revision": "2026-09-30",
+    "sha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+  },
+  "readOnlyProductionSources": {
+    "agent/src/recovery-isolation.mjs": "2fe4305e6ca9afabb72b0406a224786659d88f2d8f3a1351e4a8b2aa475e312f",
+    "agent/src/index.mjs": "dd15cc1f6ab588d45ba5f2a19c3cebc06b663e6315f08c68025d5df904e27041",
+    "cloud/public/app.js": "946d396cd2846d3a5e7d18e80d8bdfa685c2bb53fbdf95bef0182435cdba66f9",
+    "cloud/public/index.html": "63bd54b052795277a8725d60934753c721daa4db93dc5f5c460338889fcd7b71"
+  },
+  "cacheReference": {
+    "before": "./app.js?v=20261029-wecom-invitation-rc5",
+    "after": "./app.js?v=20261105-recovery-status-rc1"
+  },
+  "productionWrites": 0,
+  "deviceCommands": 0,
+  "serviceRestarts": 0
+}

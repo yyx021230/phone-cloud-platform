@@ -1,0 +1,18 @@
+{
+  "releaseId": "recovery-status-20261105-rc.1",
+  "algorithm": "sha256",
+  "files": {
+    "README.md": "c52fc11bd64bb5199ef21ea1cc71927f43397a3aee35047d2cccdafd8a06dc8a",
+    "baseline/public/recovery-console.js": "cbe08276fc6b1902cc25143c13a5cfaf3e57d5df82c086714f603628bfd75306",
+    "baseline/windows-agent/src/publish-device-snapshot.mjs": "126483f04246fa5b7409da3c4ef3a71d8eb98175045a8ff7829cf6e903157e13",
+    "baseline/windows-agent/src/recovery-isolation.mjs": "2fe4305e6ca9afabb72b0406a224786659d88f2d8f3a1351e4a8b2aa475e312f",
+    "baseline.json": "17f11811d66642bfd4290f4bda55fc61802d3e04d134002629d5860349e73970",
+    "candidate/public/recovery-console.js": "822f31a0ccb20e1483702ce278d7105136ea829e37325c422aea90524d3a11ce",
+    "candidate/windows-agent/src/publish-device-snapshot.mjs": "695302a5f3c53eff9d12d728a2adb96ef4ec242f4027f5c8f0fcb32c2c8398db",
+    "candidate/windows-agent/src/recovery-isolation.mjs": "639954f270e27a95aa6a664e3c0582ce35da8f909dfa07a43c9a3000199bcdc1",
+    "prepare.mjs": "49b4188714dca246da135ae20c10d966b1d407540becac88d4dc52799cdea1fd",
+    "tests/artifact.test.mjs": "677abcd29b5d6c847dffdc35bf6022cb105ec95b2ea0225e44ae5c5e845baa08",
+    "tests/recovery-status.test.mjs": "3d339bd964b97fa7e3de8932c196469b42e495922c63ed893e5ba51a195e7a48",
+    "verification.json": "28e5a0a24f324c324fb6b9d8c32d301e6747c969293f180f1f6a9352b621631c"
+  }
+}

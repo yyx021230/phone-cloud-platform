@@ -1,0 +1,168 @@
+{
+  "releaseId": "recovery-status-20261105-rc.1",
+  "date": "2026-11-05",
+  "status": "local_review_candidate_not_deployed",
+  "productionWrites": 0,
+  "deviceCommands": 0,
+  "serviceRestarts": 0,
+  "branch": "codex/recovery-status-20261105",
+  "repositoryBase": "6811aef632eeaaacd6d6ce1effc4afa64bf6d363",
+  "repositoryBaseIsProduction": false,
+  "runtime": {
+    "releaseId": "recovery-status-20261105-rc.1",
+    "status": "offline_prepared_not_deployed",
+    "sourceHashes": {
+      "agent/src/recovery-isolation.mjs": "2fe4305e6ca9afabb72b0406a224786659d88f2d8f3a1351e4a8b2aa475e312f",
+      "agent/src/index.mjs": "dd15cc1f6ab588d45ba5f2a19c3cebc06b663e6315f08c68025d5df904e27041",
+      "cloud/public/app.js": "946d396cd2846d3a5e7d18e80d8bdfa685c2bb53fbdf95bef0182435cdba66f9",
+      "cloud/public/index.html": "63bd54b052795277a8725d60934753c721daa4db93dc5f5c460338889fcd7b71"
+    },
+    "candidateHashes": {
+      "agent/src/recovery-isolation.mjs": "639954f270e27a95aa6a664e3c0582ce35da8f909dfa07a43c9a3000199bcdc1",
+      "agent/src/index.mjs": "c20d7eb5c643a6c468590648a4a3659f7c3c5a32800901d98e3b92c486a68f9f",
+      "cloud/public/app.js": "64ff909afc2bef3b1b68b0d62714dee685d418c616b7bf46f2bc3ec7f32b738a",
+      "cloud/public/index.html": "38c5c99ff9fecf2fe46ef657c9c998cd8de4503aab90362e3458b4841f429308"
+    },
+    "runtimeFiles": [
+      "agent/src/recovery-isolation.mjs",
+      "agent/src/index.mjs",
+      "cloud/public/app.js",
+      "cloud/public/index.html"
+    ],
+    "productionWrites": 0,
+    "deviceCommands": 0
+  },
+  "validation": {
+    "runtime": "Node.js v25.9.0 on macOS, env-i; no business credentials; loopback/fake-device fixtures",
+    "specific": {
+      "sha256": "5375605762a2705330a5eda6c833aeb102e6f62772be38c059505aa2bbeb3332",
+      "tests": 25,
+      "pass": 25,
+      "fail": 0,
+      "failedNames": []
+    },
+    "existingRecovery": {
+      "tests": 18,
+      "pass": 18,
+      "fail": 0,
+      "includes": [
+        "recovery-controls-ui",
+        "recovery-console-ui",
+        "recovery-controls HTTP",
+        "recovery-controls store",
+        "recovery-isolation",
+        "real Agent entrypoint with fake ADB"
+      ]
+    },
+    "screen": {
+      "sha256": "f8c62fb5b66dcdf6a9bdb96d677c094f9eb8810d254aa9cfba7611203556b4ce",
+      "tests": 183,
+      "pass": 183,
+      "fail": 0,
+      "failedNames": []
+    },
+    "rootNpmCheck": {
+      "exitCode": 0,
+      "scope": "root syntax checks, not the Windows Agent same-name command"
+    },
+    "historicalFullBaseline": {
+      "sha256": "b06fc4ff31bbfd006523338cb7267ed1117289ba71cc380af83b6653e85e057d",
+      "tests": 1908,
+      "pass": 1889,
+      "fail": 19,
+      "failedNames": [
+        "external client: discover -> four-field submit -> actual synthetic remark/send -> result; dual slots, timeout and restart never replay",
+        "ready must bind the actual OS child and cannot invent a wrapper exit requirement",
+        "host registration ACK precedes release; close cannot be fabricated by final JSON",
+        "duplicate ready and mismatched precision are rejected without another grant",
+        "host and close each retry the exact body once for lost ACK only",
+        "permanent close uncertainty and exhausted original budget stay pending",
+        "proof stays behind child close and pickedAt comes from the actual claimed task",
+        "lease denial and business payload in verification cannot start a child",
+        "lost proof ACK retries exact original proof once and never sends generic success",
+        "permanent proof uncertainty never downgrades a possibly committed task or resamples",
+        "native read failure reports only fixed failure, without evidence or scan callbacks",
+        "verify hard kill false is not child close",
+        "verify hard kill throw is not child close",
+        "real OS pipe returns fixture facts before exit, but HTTP proof waits for exit",
+        "real OS pipe keeps config behind durable host ACK and result behind actual close (fixture machine)",
+        "cancel during host ACK cannot release config after a late ACK (real pipe)",
+        "mismatched ready PID stops before registration and config (real pipe)",
+        "two unknown registration ACKs never allow config, even if close is acknowledged",
+        "fixture exit before ready wakes the waiter instead of hanging"
+      ]
+    },
+    "fullCandidate": {
+      "sha256": "25468b12442e1b38f01460d8c9de7706dcc5a65a001cd601401f1c7456c873ab",
+      "tests": 1908,
+      "pass": 1889,
+      "fail": 19,
+      "failedNames": [
+        "external client: discover -> four-field submit -> actual synthetic remark/send -> result; dual slots, timeout and restart never replay",
+        "ready must bind the actual OS child and cannot invent a wrapper exit requirement",
+        "host registration ACK precedes release; close cannot be fabricated by final JSON",
+        "duplicate ready and mismatched precision are rejected without another grant",
+        "host and close each retry the exact body once for lost ACK only",
+        "permanent close uncertainty and exhausted original budget stay pending",
+        "proof stays behind child close and pickedAt comes from the actual claimed task",
+        "lease denial and business payload in verification cannot start a child",
+        "lost proof ACK retries exact original proof once and never sends generic success",
+        "permanent proof uncertainty never downgrades a possibly committed task or resamples",
+        "native read failure reports only fixed failure, without evidence or scan callbacks",
+        "verify hard kill false is not child close",
+        "verify hard kill throw is not child close",
+        "real OS pipe returns fixture facts before exit, but HTTP proof waits for exit",
+        "real OS pipe keeps config behind durable host ACK and result behind actual close (fixture machine)",
+        "cancel during host ACK cannot release config after a late ACK (real pipe)",
+        "mismatched ready PID stops before registration and config (real pipe)",
+        "two unknown registration ACKs never allow config, even if close is acknowledged",
+        "fixture exit before ready wakes the waiter instead of hanging"
+      ]
+    },
+    "sameFullFailureSet": true,
+    "newFinalFullFailures": []
+  },
+  "fixtureProvenance": {
+    "testGitCommit": "7b5598784a107baa005386b8d9016f6a0b7d279f",
+    "productionOverlays": [
+      "agent/src/index.mjs",
+      "agent/src/recovery-isolation.mjs",
+      "cloud/public/app.js",
+      "cloud/public/index.html"
+    ],
+    "additionalReadOnlyAgentDependencies": {
+      "src/wecom-preinput-recovery.mjs": "66d952e4f4e6f5f7ff981d7d4bdefea3629c48aa7b4b13d9cdd460df124cbe36",
+      "src/wecom-cleanup-protocol.mjs": "0deeb504c8b329c4e4010fe59c1934f9461fcf8711aa52986fb7d04313854e59",
+      "src/wecom-cleanup-verify.mjs": "85ea0c005d3a1687ce43af8da23f73660b5c2ada054a9927f9d4d31c111dde5e"
+    },
+    "agentSourceMatchedGitCommit": "462eaf35442b943dda128b88085ba7a449c6257b",
+    "matchScope": "Agent index + isolation + three dependencies only; not a claim about the full cloud release",
+    "testAdaptations": {
+      "runtimeBehaviorAssertionsChanged": 0,
+      "cacheAssertionReplacements": 3,
+      "files": [
+        "server/automation-center-ui.test.mjs",
+        "screen-client/screen-ui.test.mjs"
+      ],
+      "before": "20261029-wecom-invitation-rc5",
+      "after": "20261105-recovery-status-rc1"
+    }
+  },
+  "failuresAndLimits": [
+    "Initial full export had six missing-resource/dependency failures; fixture corrected before final comparison.",
+    "Intermediate candidate added one pause-feedback failure; corrected, 25/25 specific and 18/18 existing recovery tests rerun, final full comparison has no new failing names.",
+    "Final full suite is NOT green: 19 identical WeCom failures on both baseline and candidate. Legacy tests use the old cleanup contract; current read-only Agent sources match later commit 462eaf3. One external-client synthetic send-boundary timeout also reproduces on baseline. No unrelated protocol/test assertions were weakened.",
+    "No production or real-device/browser acceptance, canary, durable live isolation update, remote push or deployment was performed.",
+    "Before any release, align the integration test fixture with actual production component versions and rerun full gates; then obtain explicit idle-window/deployment/canary approval."
+  ],
+  "review": {
+    "frozenRuntimeOutsideReviewedRegions": "byte-identical by reverse-substitution artifact tests",
+    "adbPnpMediaCallsAdded": 0,
+    "manualPauseStore": "untouched",
+    "persistenceFailure": "fails closed",
+    "rootExistingWorktreeEntries": 1467,
+    "rootExistingStatusPreserved": true,
+    "rootMainDocExistingContentPreservedByReverseHash": true
+  },
+  "versionIdentity": "Resolve the immutable annotated tag recovery-status-20261105-rc.1; receipt cannot embed its own commit hash."
+}
