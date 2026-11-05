@@ -4,7 +4,7 @@
 
 这是实际回环HTTP与200/202本地真机预览，内部使用Mac原生测试适配器，不是正式Windows SYSTEM Agent链路。生产未连接、未更新。
 
-以下业务字段完整保留，真实手机号和签名脱敏，不能直接重放。企业/成员标识为本地测试资料。响应头的Content-Length来自脱敏前原响应。请求仅列应用设置的Content-Type；HTTP客户端自动生成的传输头没有逐项采集。
+以下业务字段完整保留；按用户要求，企微登录手机号wecom_phone明文展示，客户手机号phone和签名sign继续脱敏，不能直接重放。企业/成员标识为本地测试资料。响应头的Content-Length来自脱敏前原响应。请求仅列应用设置的Content-Type；HTTP客户端自动生成的传输头没有逐项采集。
 
 流程：查全部设备 → 下发202 → 同lead_id重试 → 查运行占用 → 下发200 → 查最终设备状态。调度tick为测试控制器内部操作，不是第四个对外接口。
 
@@ -56,7 +56,7 @@ Content-Type: application/json; charset=utf-8
               "app_slot": "main",
               "binding_verified": true,
               "enabled": true,
-              "wecom_phone": "175****7040",
+              "wecom_phone": "17508437040",
               "available": true,
               "unavailable_reason": ""
             }
@@ -81,7 +81,7 @@ Content-Type: application/json; charset=utf-8
               "app_slot": "main",
               "binding_verified": true,
               "enabled": true,
-              "wecom_phone": "130****8489",
+              "wecom_phone": "13067238489",
               "available": true,
               "unavailable_reason": ""
             }
@@ -120,7 +120,7 @@ Content-Type: application/json; charset=utf-8
 {
   "lead_id": 61104202,
   "phone": "136****6441",
-  "wecom_phone": "130****8489",
+  "wecom_phone": "13067238489",
   "wecom_corp_id": "local_test_corp",
   "wecom_userid": "local_test_member_202",
   "app_id": "cps_local_observe",
@@ -164,7 +164,7 @@ Content-Type: application/json; charset=utf-8
 {
   "lead_id": 61104202,
   "phone": "136****6441",
-  "wecom_phone": "130****8489",
+  "wecom_phone": "13067238489",
   "wecom_corp_id": "local_test_corp",
   "wecom_userid": "local_test_member_202",
   "app_id": "cps_local_observe",
@@ -244,7 +244,7 @@ Content-Type: application/json; charset=utf-8
               "app_slot": "main",
               "binding_verified": true,
               "enabled": true,
-              "wecom_phone": "175****7040",
+              "wecom_phone": "17508437040",
               "available": true,
               "unavailable_reason": ""
             }
@@ -272,7 +272,7 @@ Content-Type: application/json; charset=utf-8
               "app_slot": "main",
               "binding_verified": true,
               "enabled": true,
-              "wecom_phone": "130****8489",
+              "wecom_phone": "13067238489",
               "available": false,
               "unavailable_reason": "device_busy"
             }
@@ -311,7 +311,7 @@ Content-Type: application/json; charset=utf-8
 {
   "lead_id": 61104200,
   "phone": "136****6441",
-  "wecom_phone": "175****7040",
+  "wecom_phone": "17508437040",
   "wecom_corp_id": "local_test_corp",
   "wecom_userid": "local_test_member_200",
   "app_id": "cps_local_observe",
@@ -391,7 +391,7 @@ Content-Type: application/json; charset=utf-8
               "app_slot": "main",
               "binding_verified": true,
               "enabled": true,
-              "wecom_phone": "175****7040",
+              "wecom_phone": "17508437040",
               "available": true,
               "unavailable_reason": ""
             }
@@ -416,7 +416,7 @@ Content-Type: application/json; charset=utf-8
               "app_slot": "main",
               "binding_verified": true,
               "enabled": true,
-              "wecom_phone": "130****8489",
+              "wecom_phone": "13067238489",
               "available": true,
               "unavailable_reason": ""
             }

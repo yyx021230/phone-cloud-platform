@@ -19,9 +19,15 @@
   },
   "rollback": "No product, production, DB or persistent CPS config change; local test services closed, reader/forwards verified absent. Do not reset real phone remarks or other work.",
   "artifactSha256": {
-    "REQUESTS_AND_RESPONSES.md": "69018c97cf287f86e8a8c2ec9552b661b974ce48b1b310bf7825d5e440a906c6",
+    "REQUESTS_AND_RESPONSES.md": "c70c83262fef61c333bdc30ffa2e250f0c0033b575b1ca2c5b7e994ef883df7c",
     "cleanup.json": "e02de81ddf6249fa9de9a451365dba2df1ecf862a1369deaa670b9b8a60f30c4",
     "callback-demo.redacted.json": "3d8f990d4e8ab0d22ee337813e413dc5d249edb674b73df5a01acea9e88d8575",
-    "events.redacted.json": "db6547858ad94cbf44f7838bc902ee353af63e69c1e0d6484491f5a6aff442c6"
+    "events.redacted.json": "b28491d3d539d112e8ad94e319f99ee179cde04c35e47603fccbe73d35b3d0e5"
+  },
+  "displayPolicy": {
+    "wecom_phone": "plaintext per explicit user request",
+    "phone": "masked",
+    "sign": "masked",
+    "note": "Presentation-only change; product API already returns configured wecom_phone without this transcript masking."
   }
 }

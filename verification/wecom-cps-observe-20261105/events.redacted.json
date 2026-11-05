@@ -61,7 +61,7 @@
                   "app_slot": "main",
                   "binding_verified": true,
                   "enabled": true,
-                  "wecom_phone": "175****7040",
+                  "wecom_phone": "17508437040",
                   "available": true,
                   "unavailable_reason": ""
                 }
@@ -86,7 +86,7 @@
                   "app_slot": "main",
                   "binding_verified": true,
                   "enabled": true,
-                  "wecom_phone": "130****8489",
+                  "wecom_phone": "13067238489",
                   "available": true,
                   "unavailable_reason": ""
                 }
@@ -124,7 +124,7 @@
       "body": {
         "lead_id": 61104202,
         "phone": "136****6441",
-        "wecom_phone": "130****8489",
+        "wecom_phone": "13067238489",
         "wecom_corp_id": "local_test_corp",
         "wecom_userid": "local_test_member_202",
         "app_id": "cps_local_observe",
@@ -198,7 +198,7 @@
       "body": {
         "lead_id": 61104202,
         "phone": "136****6441",
-        "wecom_phone": "130****8489",
+        "wecom_phone": "13067238489",
         "wecom_corp_id": "local_test_corp",
         "wecom_userid": "local_test_member_202",
         "app_id": "cps_local_observe",
@@ -271,7 +271,7 @@
                   "app_slot": "main",
                   "binding_verified": true,
                   "enabled": true,
-                  "wecom_phone": "175****7040",
+                  "wecom_phone": "17508437040",
                   "available": true,
                   "unavailable_reason": ""
                 }
@@ -299,7 +299,7 @@
                   "app_slot": "main",
                   "binding_verified": true,
                   "enabled": true,
-                  "wecom_phone": "130****8489",
+                  "wecom_phone": "13067238489",
                   "available": false,
                   "unavailable_reason": "device_busy"
                 }
@@ -462,7 +462,7 @@
       "body": {
         "lead_id": 61104200,
         "phone": "136****6441",
-        "wecom_phone": "175****7040",
+        "wecom_phone": "17508437040",
         "wecom_corp_id": "local_test_corp",
         "wecom_userid": "local_test_member_200",
         "app_id": "cps_local_observe",
@@ -887,7 +887,7 @@
                   "app_slot": "main",
                   "binding_verified": true,
                   "enabled": true,
-                  "wecom_phone": "175****7040",
+                  "wecom_phone": "17508437040",
                   "available": true,
                   "unavailable_reason": ""
                 }
@@ -912,7 +912,7 @@
                   "app_slot": "main",
                   "binding_verified": true,
                   "enabled": true,
-                  "wecom_phone": "130****8489",
+                  "wecom_phone": "13067238489",
                   "available": true,
                   "unavailable_reason": ""
                 }
