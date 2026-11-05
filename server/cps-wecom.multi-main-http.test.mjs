@@ -60,7 +60,7 @@ test('two main accounts process multiple customers independently; retries never 
       if(kind==='success')Object.assign(result,{invitationSent:true,sendStatus:'confirmed',remarkPhoneSet:true,invitationRequestConfirmed:true,invitationRequestProof:'wecom_system_dialog_v1'});
       else if(kind==='duplicate')result.code='already_contact';
       else if(kind==='frequency')Object.assign(result,{code:'wecom_add_friend_too_frequent',addFriendLimitConfirmed:true,addFriendLimitProof:'wecom_system_dialog_v1'});
-      else Object.assign(result,{code:'wecom_search_wait_timeout'});
+      else Object.assign(result,{code:'wecom_search_returned_without_result'});
       Object.assign(job,{status:kind==='success'?'succeeded':'failed',result,completedAt:new Date(now).toISOString()});await tick();await tick();
     }
     const initial=await devices();assert.equal(initial.result.total,2);assert.ok(initial.result.devices.every(d=>d.accounts.length===1&&d.accounts[0].app_slot==='main'));
@@ -79,6 +79,7 @@ test('two main accounts process multiple customers independently; retries never 
     await finish(20001);
     assert.equal((await dispatch('200',20002,'13900200002')).success,true);await tick();await finish(20002,'ordinary');
     assert.equal(store.snapshot().leads.find(l=>l.leadId==='20002').stage,'needs_attention');assert.equal(callbacks.filter(c=>c.lead_id===20002).length,0);
+    assert.equal(store.snapshot().leads.find(l=>l.leadId==='20002').error,'wecom_search_returned_without_result');
     assert.equal((await dispatch('200',20003,'13900200003')).success,true);await tick();await finish(20003);
     assert.equal((await dispatch('200',20001,'13900200001')).success,true);await tick();
     assert.equal(jobs.size,6);assert.equal(events.filter(e=>e.start).length,6);assert.equal(new Set(events.filter(e=>e.start).map(e=>e.phone)).size,6);
@@ -86,7 +87,29 @@ test('two main accounts process multiple customers independently; retries never 
     assert.equal(store.snapshot().leads.filter(l=>l.stage==='completed').length,5);
     const final=await devices();assert.equal(final.result.devices.find(d=>d.device_number==='200').available,true);
     assert.equal(final.result.devices.find(d=>d.device_number==='202').accounts[0].unavailable_reason,'member_rate_limited');
-    t.diagnostic(JSON.stringify({boundary:'synthetic phones and results only',customers:6,jobs:6,callbackAttempts:callbacks.length,completed:5,needsAttention:1,blockedPhoneDidNotBlockOtherPhone:true,realInvitations:0}));
+    // Next virtual business day: a burst can be acknowledged before the first
+    // physical job claims its phone. All six must drain, one per phone at once.
+    // Do not erase the previous recipient/limit records to make this possible.
+    now+=86400000;
+    const burst=[];
+    for(const n of ['200','202'])for(let i=1;i<=3;i++){
+      const id=Number(n)*100+100+i;burst.push(String(id));
+      assert.equal((await dispatch(n,id,'139003'+n+String(i).padStart(2,'0'))).success,true);
+    }
+    assert.equal(store.snapshot().leads.filter(l=>l.stage==='queued').length,6);
+    await tick();assert.equal(busy.size,2);
+    for(let round=0;round<20;round++){
+      const running=[...jobs].filter(([id,j])=>burst.includes(id)&&j.status==='running').map(([id])=>id);
+      for(const id of running)await finish(id);
+      if(burst.every(id=>store.snapshot().leads.find(l=>l.leadId===id)?.stage==='completed'))break;
+      await tick();
+    }
+    assert.ok(burst.every(id=>store.snapshot().leads.find(l=>l.leadId===id)?.stage==='completed'));
+    assert.equal(jobs.size,12);assert.equal(events.filter(e=>e.start).length,12);
+    assert.equal(new Set(events.filter(e=>e.start).map(e=>e.phone)).size,12);
+    assert.equal(busy.size,0);assert.equal(callbacks.length,12);assert.ok(!events.some(e=>e.error));
+    assert.ok((await devices()).result.devices.every(d=>d.available&&!d.busy));
+    t.diagnostic(JSON.stringify({boundary:'synthetic phones/results and virtual time only',customers:12,jobs:12,burstCustomers:6,callbackAttempts:callbacks.length,completed:11,needsAttention:1,blockedPhoneDidNotBlockOtherPhone:true,realInvitations:0}));
   }finally{
     if(api)await new Promise(r=>api.close(r));if(service)await service.close();else await store.close();await new Promise(r=>receiver.close(r));await fs.rm(dir,{recursive:true,force:true});
   }

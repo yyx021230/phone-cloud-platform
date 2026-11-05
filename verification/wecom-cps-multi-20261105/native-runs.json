@@ -1,0 +1,734 @@
+[
+  {
+    "number": "200",
+    "requestLeadId": "61104200",
+    "elapsedMs": 567,
+    "result": {
+      "status": "stopped",
+      "code": "ValueError",
+      "invitationSent": false
+    },
+    "wecomRestart": {
+      "forceStopCommands": 0,
+      "startCommands": 0,
+      "stopBeforeReader": false
+    },
+    "nativeSource": null,
+    "rpcHttpCalls": null,
+    "rpcTcpSourcePorts": 0,
+    "cleanupConfirmed": true,
+    "finalObservationSha256": null
+  },
+  {
+    "number": "200",
+    "requestLeadId": "61105200",
+    "elapsedMs": 111064,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "stopped",
+      "code": "observation_budget_exhausted",
+      "readyToSend": false,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "profile",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        }
+      ],
+      "remarkSaveStatus": "not_attempted",
+      "remarkPrepared": false,
+      "remarkEvents": [],
+      "remarkPhoneSet": false
+    },
+    "wecomRestart": {
+      "forceStopCommands": 1,
+      "startCommands": 1,
+      "stopBeforeReader": true,
+      "previousMainPids": [
+        "7454"
+      ],
+      "stoppedMainPids": [],
+      "newMainPids": [
+        "10141"
+      ]
+    },
+    "nativeSource": null,
+    "rpcHttpCalls": 291,
+    "rpcTcpSourcePorts": 1,
+    "cleanupConfirmed": true,
+    "finalObservationSha256": "e0c9d4716f5292fd83baa175f9d6f1e6073333a5078f00e3d4e2a3bd209389e0"
+  },
+  {
+    "number": "200",
+    "requestLeadId": "61106200",
+    "elapsedMs": 49232,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": true,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "confirmed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "fill_remark"
+        },
+        {
+          "step": "save_remark"
+        },
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true
+    },
+    "wecomRestart": {
+      "forceStopCommands": 1,
+      "startCommands": 1,
+      "stopBeforeReader": true,
+      "previousMainPids": [
+        "10141"
+      ],
+      "stoppedMainPids": [],
+      "newMainPids": [
+        "12821"
+      ]
+    },
+    "nativeSource": null,
+    "rpcHttpCalls": 310,
+    "rpcTcpSourcePorts": 1,
+    "cleanupConfirmed": true,
+    "finalObservationSha256": "e99ba74c6cf39c84c5add59acc5e49795d2edb3268bd5c003c86db96fce479fc"
+  },
+  {
+    "number": "200",
+    "requestLeadId": "61107200",
+    "elapsedMs": 63010,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "stopped",
+      "code": "wecom_search_returned_without_result",
+      "readyToSend": false,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "profile",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        }
+      ],
+      "remarkSaveStatus": "not_attempted",
+      "remarkPrepared": false,
+      "remarkEvents": [],
+      "remarkPhoneSet": false
+    },
+    "wecomRestart": {
+      "forceStopCommands": 1,
+      "startCommands": 1,
+      "stopBeforeReader": true,
+      "previousMainPids": [
+        "12821"
+      ],
+      "stoppedMainPids": [],
+      "newMainPids": [
+        "14513"
+      ]
+    },
+    "nativeSource": {
+      "businessSha256": "bd331918e2a2ac487c82cda41e9dffdaf63c481fc55c44a05e3c39bc77400dc3",
+      "remarkSha256": "8a437495483df26e5696a12ae6758d97eeacd0f2458e8f4555411b21b0bddcf5",
+      "gitHeadAtStart": "8eddb5b974fcb7d1038b744bef31e76c87cdf084"
+    },
+    "rpcHttpCalls": 203,
+    "rpcTcpSourcePorts": 1,
+    "cleanupConfirmed": true,
+    "finalObservationSha256": "258a7aaec90975425e4638f517a9d7729101e1a66247974cc114d565b3da95f6"
+  },
+  {
+    "number": "200",
+    "requestLeadId": "61108200",
+    "elapsedMs": 50847,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": true,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "confirmed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "fill_remark"
+        },
+        {
+          "step": "save_remark"
+        },
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true
+    },
+    "wecomRestart": {
+      "forceStopCommands": 1,
+      "startCommands": 1,
+      "stopBeforeReader": true,
+      "previousMainPids": [
+        "14513"
+      ],
+      "stoppedMainPids": [],
+      "newMainPids": [
+        "17535"
+      ]
+    },
+    "nativeSource": {
+      "businessSha256": "bd331918e2a2ac487c82cda41e9dffdaf63c481fc55c44a05e3c39bc77400dc3",
+      "remarkSha256": "8a437495483df26e5696a12ae6758d97eeacd0f2458e8f4555411b21b0bddcf5",
+      "gitHeadAtStart": "8eddb5b974fcb7d1038b744bef31e76c87cdf084"
+    },
+    "rpcHttpCalls": 311,
+    "rpcTcpSourcePorts": 1,
+    "cleanupConfirmed": true,
+    "finalObservationSha256": "56b64af5d0769cb1419ecd06b830bdedfac056493ee24e85157c896e646187db"
+  },
+  {
+    "number": "200",
+    "requestLeadId": "61109200",
+    "elapsedMs": 50514,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": true,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "confirmed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "fill_remark"
+        },
+        {
+          "step": "save_remark"
+        },
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true
+    },
+    "wecomRestart": {
+      "forceStopCommands": 1,
+      "startCommands": 1,
+      "stopBeforeReader": true,
+      "previousMainPids": [
+        "17535"
+      ],
+      "stoppedMainPids": [],
+      "newMainPids": [
+        "19114"
+      ]
+    },
+    "nativeSource": {
+      "businessSha256": "bd331918e2a2ac487c82cda41e9dffdaf63c481fc55c44a05e3c39bc77400dc3",
+      "remarkSha256": "8a437495483df26e5696a12ae6758d97eeacd0f2458e8f4555411b21b0bddcf5",
+      "gitHeadAtStart": "8eddb5b974fcb7d1038b744bef31e76c87cdf084"
+    },
+    "rpcHttpCalls": 310,
+    "rpcTcpSourcePorts": 1,
+    "cleanupConfirmed": true,
+    "finalObservationSha256": "103a90ea89d704c03868b7fc16c82213c1c63f5ac5e8bd1e30482686749217c5"
+  },
+  {
+    "number": "200",
+    "requestLeadId": "61110200",
+    "elapsedMs": 50518,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": true,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "confirmed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "fill_remark"
+        },
+        {
+          "step": "save_remark"
+        },
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true
+    },
+    "wecomRestart": {
+      "forceStopCommands": 1,
+      "startCommands": 1,
+      "stopBeforeReader": true,
+      "previousMainPids": [
+        "19114"
+      ],
+      "stoppedMainPids": [],
+      "newMainPids": [
+        "20448"
+      ]
+    },
+    "nativeSource": {
+      "businessSha256": "bd331918e2a2ac487c82cda41e9dffdaf63c481fc55c44a05e3c39bc77400dc3",
+      "remarkSha256": "8a437495483df26e5696a12ae6758d97eeacd0f2458e8f4555411b21b0bddcf5",
+      "gitHeadAtStart": "8eddb5b974fcb7d1038b744bef31e76c87cdf084"
+    },
+    "rpcHttpCalls": 310,
+    "rpcTcpSourcePorts": 2,
+    "cleanupConfirmed": true,
+    "finalObservationSha256": "910f4c9e6350dab7ce1cb482dd2f98ddcfb2c06ea291cf7d931296b0e4c43703"
+  },
+  {
+    "number": "202",
+    "requestLeadId": "61104202",
+    "elapsedMs": 545,
+    "result": {
+      "status": "stopped",
+      "code": "ValueError",
+      "invitationSent": false
+    },
+    "wecomRestart": {
+      "forceStopCommands": 0,
+      "startCommands": 0,
+      "stopBeforeReader": false
+    },
+    "nativeSource": null,
+    "rpcHttpCalls": null,
+    "rpcTcpSourcePorts": 0,
+    "cleanupConfirmed": true,
+    "finalObservationSha256": null
+  },
+  {
+    "number": "202",
+    "requestLeadId": "61105202",
+    "elapsedMs": 37927,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": true,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "confirmed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "fill_remark"
+        },
+        {
+          "step": "save_remark"
+        },
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true
+    },
+    "wecomRestart": {
+      "forceStopCommands": 1,
+      "startCommands": 1,
+      "stopBeforeReader": true,
+      "previousMainPids": [
+        "17843"
+      ],
+      "stoppedMainPids": [],
+      "newMainPids": [
+        "18700"
+      ]
+    },
+    "nativeSource": null,
+    "rpcHttpCalls": 314,
+    "rpcTcpSourcePorts": 1,
+    "cleanupConfirmed": true,
+    "finalObservationSha256": "49dde538194e28e2841b8c1af658589d980e737826c780535b7140dec16be2ce"
+  },
+  {
+    "number": "202",
+    "requestLeadId": "61106202",
+    "elapsedMs": 38676,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": true,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "confirmed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "fill_remark"
+        },
+        {
+          "step": "save_remark"
+        },
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true
+    },
+    "wecomRestart": {
+      "forceStopCommands": 1,
+      "startCommands": 1,
+      "stopBeforeReader": true,
+      "previousMainPids": [
+        "18700"
+      ],
+      "stoppedMainPids": [],
+      "newMainPids": [
+        "22067"
+      ]
+    },
+    "nativeSource": null,
+    "rpcHttpCalls": 314,
+    "rpcTcpSourcePorts": 1,
+    "cleanupConfirmed": true,
+    "finalObservationSha256": "6b52c0c7269443f5f4127e5933eb2ddc8c99cbda4280c4160e46569cb3b7d12c"
+  },
+  {
+    "number": "202",
+    "requestLeadId": "61107202",
+    "elapsedMs": 38196,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": true,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "confirmed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "fill_remark"
+        },
+        {
+          "step": "save_remark"
+        },
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true
+    },
+    "wecomRestart": {
+      "forceStopCommands": 1,
+      "startCommands": 1,
+      "stopBeforeReader": true,
+      "previousMainPids": [
+        "22067"
+      ],
+      "stoppedMainPids": [],
+      "newMainPids": [
+        "23549"
+      ]
+    },
+    "nativeSource": null,
+    "rpcHttpCalls": 313,
+    "rpcTcpSourcePorts": 1,
+    "cleanupConfirmed": true,
+    "finalObservationSha256": "23704e1efcbd0d02f13cfbfe155b8deea75fe9311e722bb5900d877be3fb3a9f"
+  },
+  {
+    "number": "202",
+    "requestLeadId": "61108202",
+    "elapsedMs": 38145,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": true,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "confirmed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "fill_remark"
+        },
+        {
+          "step": "save_remark"
+        },
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true
+    },
+    "wecomRestart": {
+      "forceStopCommands": 1,
+      "startCommands": 1,
+      "stopBeforeReader": true,
+      "previousMainPids": [
+        "23549"
+      ],
+      "stoppedMainPids": [],
+      "newMainPids": [
+        "25106"
+      ]
+    },
+    "nativeSource": {
+      "businessSha256": "bd331918e2a2ac487c82cda41e9dffdaf63c481fc55c44a05e3c39bc77400dc3",
+      "remarkSha256": "8a437495483df26e5696a12ae6758d97eeacd0f2458e8f4555411b21b0bddcf5",
+      "gitHeadAtStart": "8eddb5b974fcb7d1038b744bef31e76c87cdf084"
+    },
+    "rpcHttpCalls": 313,
+    "rpcTcpSourcePorts": 1,
+    "cleanupConfirmed": true,
+    "finalObservationSha256": "395b342216d55dc623c9e9f18d5dedc509ff22bd1dc071a55b6c47d5faf51bb1"
+  }
+]

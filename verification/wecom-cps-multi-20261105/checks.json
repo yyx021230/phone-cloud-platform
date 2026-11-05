@@ -1,0 +1,26 @@
+{
+  "python": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s windows-agent/scripts -p 'test_wecom*.py'",
+    "passed": 612,
+    "failed": 0,
+    "note": "Actual tool output; raw Python log was not separately captured. Includes the 29 host tests also run separately. System Python 3.9 emitted the known urllib3/LibreSSL warning."
+  },
+  "node": {
+    "command": "node --test server/wecom-errors.test.mjs server/cps-wecom.multi-main-http.test.mjs",
+    "passed": 5,
+    "failed": 0
+  },
+  "syntax": {
+    "command": "npm run check",
+    "exitCode": 0
+  },
+  "recordedShapeReplay": "passed; uses observed shapes with three synthesized identical return frames",
+  "notRun": [
+    "Formal Windows SYSTEM execution",
+    "CPS developer receiver (URL not provided)",
+    "Connectivity from the developer computer",
+    "True invitation sends (not authorized)",
+    "Additional distinct real customer numbers (only 6441 authorized for this test)",
+    "Repeat of full screen suite or production/media tests; no shared lifecycle/control/media change"
+  ]
+}

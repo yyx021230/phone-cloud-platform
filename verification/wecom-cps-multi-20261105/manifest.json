@@ -1,0 +1,99 @@
+{
+  "status": "local_preview_acceptance_passed_with_historical_failures_retained",
+  "branch": "codex/wecom-search200-20261105",
+  "baselineHead": "c91a9ad1f4e7c7fc89e805a308bfcd488c25e096",
+  "nativeCodeCommit": "8eddb5b974fcb7d1038b744bef31e76c87cdf084",
+  "nativeBusinessSha256": "bd331918e2a2ac487c82cda41e9dffdaf63c481fc55c44a05e3c39bc77400dc3",
+  "CPSRuntimeModulesBase": "e1a7ade4bb58d62119993f90fce3de49d2f91162; unchanged CPS modules, not a claim about the Python child version",
+  "localNativeCalls": 12,
+  "appTraversalsWithRestart": 10,
+  "readyBeforeSend": 8,
+  "oldNetworkSearchFailures": 2,
+  "preRestartFixtureFailures": 2,
+  "stableNetwork200": {
+    "passed": 3,
+    "failed": 0
+  },
+  "phone202": {
+    "passed": 4,
+    "failed": 0
+  },
+  "simulatedCustomers": 12,
+  "simulatedJobs": 12,
+  "simulatedCallbackAttempts": 12,
+  "simulatedCompleted": 11,
+  "simulatedExpectedNeedsAttention": 1,
+  "realInvitations": 0,
+  "realPreviewCallbacks": 0,
+  "baseUrl": "http://192.168.10.119:8797",
+  "testServerLeftRunning": true,
+  "nextDeveloperDefaultLeadIds": [
+    61120200,
+    61120202
+  ],
+  "handoffPackageSha256": "90c556feef1562c4479eab15e0bf0c3cb5d10e53a4785de8937204c6318d26dd",
+  "privateHarnessSha256": {
+    "dev-server.mjs": "9a45e057c771e6f41ac2653558d198e0e4b279fd791b9bbbc5426e9a1c62080e",
+    "run_local_flow.py": "4a72a9f15da575e995b71b0381ba7207af50752584d901cf9c01c84c84710037",
+    "retest-200.py": "ff8627d976727212ed1c6f825be74f3b96f9e9229a354b90d30130be573bba8e"
+  },
+  "checks": {
+    "python": {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s windows-agent/scripts -p 'test_wecom*.py'",
+      "passed": 612,
+      "failed": 0,
+      "note": "Actual tool output; raw Python log was not separately captured. Includes the 29 host tests also run separately. System Python 3.9 emitted the known urllib3/LibreSSL warning."
+    },
+    "node": {
+      "command": "node --test server/wecom-errors.test.mjs server/cps-wecom.multi-main-http.test.mjs",
+      "passed": 5,
+      "failed": 0
+    },
+    "syntax": {
+      "command": "npm run check",
+      "exitCode": 0
+    },
+    "recordedShapeReplay": "passed; uses observed shapes with three synthesized identical return frames",
+    "notRun": [
+      "Formal Windows SYSTEM execution",
+      "CPS developer receiver (URL not provided)",
+      "Connectivity from the developer computer",
+      "True invitation sends (not authorized)",
+      "Additional distinct real customer numbers (only 6441 authorized for this test)",
+      "Repeat of full screen suite or production/media tests; no shared lifecycle/control/media change"
+    ]
+  },
+  "credentials": "No credentials in tracked artifacts; test-only handoff configuration kept private.",
+  "productionTouched": false,
+  "rollback": "Retain all ledger and failure records; stop only this local QA process after draining; no Agent/ADB/identity/USB/media action.",
+  "artifactSha256": {
+    "200-stable-network-results.json": "89d2a3412b4b59ebb7a1cde653b0922118d72115dc1687198c1b79e223b6b987",
+    "recorded-search-return-replay.json": "a6d8be907217ab562d9e3717980bf7191052c8b99456ac181a3234fc3940316a",
+    "client-request-responses.json": "0d39df17e43635cf70cc2d5d8318404993129b0466c8731b5235746fb934421b",
+    "REPORT.md": "99efcecdb1680ca512429462704e40c8359648cee2cfcab086f1ed1de14eddc2",
+    "final-ledger.redacted.json": "9f862981c7042f367f8562eb1e981aa86535c6e92920cbaf47e3339ea89619fa",
+    "checks.json": "25e01d5ee44db044061e305f6f31bfda290b6a4181d796faeb26ad674cfaafd9",
+    "cleanup.json": "e02de81ddf6249fa9de9a451365dba2df1ecf862a1369deaa670b9b8a60f30c4",
+    "native-events.json": "b513aed6fa3457246769f7a7a10e0d6a947efff71e56f2dd053b417c1a4d4487",
+    "native-runs.json": "9b64ddc1e9616ac0dbd47a571a89985d5de6093891ea7c1b20b7773568275e72",
+    "final-devices-response.json": "2ebf584708d079e770d03fbbf1bc5f9738cb35c4799b3d9684ff045abb975be8",
+    "node-final-tests.txt": "2118d1c84a334287468b307bd46ddc0085fdcaf12fd1cd1bc5b3656f09794f08"
+  },
+  "sourceFilesSha256": {
+    "windows-agent/scripts/wecom_invite_preview.py": "bd331918e2a2ac487c82cda41e9dffdaf63c481fc55c44a05e3c39bc77400dc3",
+    "windows-agent/scripts/test_wecom_invite_preview.py": "ad032f11d1f2542747a7c77353a352432e1004abaf7483fa36f545bf2e2b35ba",
+    "windows-agent/scripts/test_wecom_platform_preview.py": "88c7c6eb38341ce6b89b5833e134633591950c3a8d70a8aa01155789786811b5",
+    "server/wecom-errors.mjs": "ec28418626f0dce3d9a50268c906af0a4a28bea340ebf91264ae66a4a61e703b",
+    "server/wecom-errors.test.mjs": "6bc6c8c8f410b051b7a86c735c149677a055d5fb1951249715e70b6bb0588d9c",
+    "server/cps-wecom.multi-main-http.test.mjs": "170f8860be13b32bf83e0f141b5b5c73174da13e9478adf0f4ff69d97cf5e014",
+    "docs/CPS企微接口本地候选验收与启用说明.md": "f981921f6c5ded37dc9a621d09a3547506b0ebba854e2777e5495f6136343c74",
+    "docs/PROJECT_DEVELOPMENT.md": "ef6712d9b61f6c59b2b525de41dc1664e7decd67eff22daf01ff88af86384455",
+    "docs/CPS企微客户对接方案-v0.1.md": "d7b3a5b5c3c4507db45360dcec14878aec4718d283695969d555417d99875565",
+    "public/cps-wecom-integration-api.md": "25e8237d34fe1476d34aea5fa3ba4a7d723ea265d5bc89b5dc75aae120273562",
+    "server/cps-wecom/service.mjs": "3b7da1b2f7c72e1921a23ae38a1b0e72e5a0f6df579a0adc08daec4f14306f96",
+    "server/cps-wecom/protocol.mjs": "9bbc754f8aad90252340b253bef3baee0b9af844c2337b64be60c363a5791523",
+    "server/cps-wecom/store.mjs": "d816f631064c5d181c5ccb98b382f5150f0d66c7df788d73f76db4d48c2831f6",
+    "server/cps-wecom/http.mjs": "f0e3a9acc7964379e176388ed6e74d20cde3b26f6a2a2b6f03b6938bc3417182",
+    "docs/CPS本地开发联调.md": "11b8e1e01a808b69654d80f7a68e96cf38fc03e63d877ee7739d832573bfc3ab"
+  }
+}

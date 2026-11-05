@@ -1,0 +1,728 @@
+[
+  {
+    "at": "2026-11-05T03:25:20.186Z",
+    "kind": "native_start",
+    "deviceNumber": "202",
+    "leadId": "61104202",
+    "jobId": "local_native_202_61104202",
+    "adapter": "Mac local native preview; not Windows Agent"
+  },
+  {
+    "at": "2026-11-05T03:25:20.196Z",
+    "kind": "native_start",
+    "deviceNumber": "200",
+    "leadId": "61104200",
+    "jobId": "local_native_200_61104200",
+    "adapter": "Mac local native preview; not Windows Agent"
+  },
+  {
+    "at": "2026-11-05T03:25:20.843Z",
+    "kind": "native_result",
+    "deviceNumber": "202",
+    "leadId": "61104202",
+    "jobId": "local_native_202_61104202",
+    "processExitCode": 0,
+    "elapsedMs": 545,
+    "result": {
+      "status": "stopped",
+      "code": "ValueError",
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "execution": {
+        "cleanupConfirmed": true
+      }
+    },
+    "status": "failed"
+  },
+  {
+    "at": "2026-11-05T03:25:20.855Z",
+    "kind": "native_result",
+    "deviceNumber": "200",
+    "leadId": "61104200",
+    "jobId": "local_native_200_61104200",
+    "processExitCode": 0,
+    "elapsedMs": 567,
+    "result": {
+      "status": "stopped",
+      "code": "ValueError",
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "execution": {
+        "cleanupConfirmed": true
+      }
+    },
+    "status": "failed"
+  },
+  {
+    "at": "2026-11-05T03:26:15.277Z",
+    "kind": "native_start",
+    "deviceNumber": "202",
+    "leadId": "61105202",
+    "jobId": "local_native_202_61105202",
+    "adapter": "Mac local native preview; not Windows Agent"
+  },
+  {
+    "at": "2026-11-05T03:26:15.285Z",
+    "kind": "native_start",
+    "deviceNumber": "200",
+    "leadId": "61105200",
+    "jobId": "local_native_200_61105200",
+    "adapter": "Mac local native preview; not Windows Agent"
+  },
+  {
+    "at": "2026-11-05T03:26:53.338Z",
+    "kind": "native_result",
+    "deviceNumber": "202",
+    "leadId": "61105202",
+    "jobId": "local_native_202_61105202",
+    "processExitCode": 0,
+    "elapsedMs": 37927,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": true,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "confirmed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "fill_remark"
+        },
+        {
+          "step": "save_remark"
+        },
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true,
+      "sendStatus": "not_attempted",
+      "execution": {
+        "cleanupConfirmed": true
+      }
+    },
+    "status": "succeeded"
+  },
+  {
+    "at": "2026-11-05T03:28:06.481Z",
+    "kind": "native_result",
+    "deviceNumber": "200",
+    "leadId": "61105200",
+    "jobId": "local_native_200_61105200",
+    "processExitCode": 0,
+    "elapsedMs": 111064,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "stopped",
+      "code": "observation_budget_exhausted",
+      "readyToSend": false,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "profile",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        }
+      ],
+      "remarkSaveStatus": "not_attempted",
+      "remarkPrepared": false,
+      "remarkEvents": [],
+      "remarkPhoneSet": false,
+      "sendStatus": "not_attempted",
+      "execution": {
+        "cleanupConfirmed": true
+      }
+    },
+    "status": "failed"
+  },
+  {
+    "at": "2026-11-05T03:28:29.369Z",
+    "kind": "native_start",
+    "deviceNumber": "202",
+    "leadId": "61106202",
+    "jobId": "local_native_202_61106202",
+    "adapter": "Mac local native preview; not Windows Agent"
+  },
+  {
+    "at": "2026-11-05T03:29:08.181Z",
+    "kind": "native_result",
+    "deviceNumber": "202",
+    "leadId": "61106202",
+    "jobId": "local_native_202_61106202",
+    "processExitCode": 0,
+    "elapsedMs": 38676,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": true,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "confirmed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "fill_remark"
+        },
+        {
+          "step": "save_remark"
+        },
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true,
+      "sendStatus": "not_attempted",
+      "execution": {
+        "cleanupConfirmed": true
+      }
+    },
+    "status": "succeeded"
+  },
+  {
+    "at": "2026-11-05T03:30:14.466Z",
+    "kind": "native_start",
+    "deviceNumber": "200",
+    "leadId": "61106200",
+    "jobId": "local_native_200_61106200",
+    "adapter": "Mac local native preview; not Windows Agent"
+  },
+  {
+    "at": "2026-11-05T03:31:03.838Z",
+    "kind": "native_result",
+    "deviceNumber": "200",
+    "leadId": "61106200",
+    "jobId": "local_native_200_61106200",
+    "processExitCode": 0,
+    "elapsedMs": 49232,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": true,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "confirmed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "fill_remark"
+        },
+        {
+          "step": "save_remark"
+        },
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true,
+      "sendStatus": "not_attempted",
+      "execution": {
+        "cleanupConfirmed": true
+      }
+    },
+    "status": "succeeded"
+  },
+  {
+    "at": "2026-11-05T03:31:07.521Z",
+    "kind": "native_start",
+    "deviceNumber": "202",
+    "leadId": "61107202",
+    "jobId": "local_native_202_61107202",
+    "adapter": "Mac local native preview; not Windows Agent"
+  },
+  {
+    "at": "2026-11-05T03:31:45.900Z",
+    "kind": "native_result",
+    "deviceNumber": "202",
+    "leadId": "61107202",
+    "jobId": "local_native_202_61107202",
+    "processExitCode": 0,
+    "elapsedMs": 38196,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": true,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "confirmed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "fill_remark"
+        },
+        {
+          "step": "save_remark"
+        },
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true,
+      "sendStatus": "not_attempted",
+      "execution": {
+        "cleanupConfirmed": true
+      }
+    },
+    "status": "succeeded"
+  },
+  {
+    "at": "2026-11-05T03:35:42.779Z",
+    "kind": "native_start",
+    "deviceNumber": "202",
+    "leadId": "61108202",
+    "jobId": "local_native_202_61108202",
+    "adapter": "Mac local native preview; not Windows Agent"
+  },
+  {
+    "at": "2026-11-05T03:35:42.790Z",
+    "kind": "native_start",
+    "deviceNumber": "200",
+    "leadId": "61107200",
+    "jobId": "local_native_200_61107200",
+    "adapter": "Mac local native preview; not Windows Agent"
+  },
+  {
+    "at": "2026-11-05T03:36:21.095Z",
+    "kind": "native_result",
+    "deviceNumber": "202",
+    "leadId": "61108202",
+    "jobId": "local_native_202_61108202",
+    "processExitCode": 0,
+    "elapsedMs": 38145,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": true,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "confirmed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "fill_remark"
+        },
+        {
+          "step": "save_remark"
+        },
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true,
+      "sendStatus": "not_attempted",
+      "execution": {
+        "cleanupConfirmed": true
+      }
+    },
+    "status": "succeeded"
+  },
+  {
+    "at": "2026-11-05T03:36:45.944Z",
+    "kind": "native_result",
+    "deviceNumber": "200",
+    "leadId": "61107200",
+    "jobId": "local_native_200_61107200",
+    "processExitCode": 0,
+    "elapsedMs": 63010,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "stopped",
+      "code": "wecom_search_returned_without_result",
+      "readyToSend": false,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "profile",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        }
+      ],
+      "remarkSaveStatus": "not_attempted",
+      "remarkPrepared": false,
+      "remarkEvents": [],
+      "remarkPhoneSet": false,
+      "sendStatus": "not_attempted",
+      "execution": {
+        "cleanupConfirmed": true
+      }
+    },
+    "status": "failed"
+  },
+  {
+    "at": "2026-11-05T03:43:28.199Z",
+    "kind": "native_start",
+    "deviceNumber": "200",
+    "leadId": "61108200",
+    "jobId": "local_native_200_61108200",
+    "adapter": "Mac local native preview; not Windows Agent"
+  },
+  {
+    "at": "2026-11-05T03:44:19.211Z",
+    "kind": "native_result",
+    "deviceNumber": "200",
+    "leadId": "61108200",
+    "jobId": "local_native_200_61108200",
+    "processExitCode": 0,
+    "elapsedMs": 50847,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": true,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "confirmed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "fill_remark"
+        },
+        {
+          "step": "save_remark"
+        },
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true,
+      "sendStatus": "not_attempted",
+      "execution": {
+        "cleanupConfirmed": true
+      }
+    },
+    "status": "succeeded"
+  },
+  {
+    "at": "2026-11-05T03:44:23.258Z",
+    "kind": "native_start",
+    "deviceNumber": "200",
+    "leadId": "61109200",
+    "jobId": "local_native_200_61109200",
+    "adapter": "Mac local native preview; not Windows Agent"
+  },
+  {
+    "at": "2026-11-05T03:45:13.975Z",
+    "kind": "native_result",
+    "deviceNumber": "200",
+    "leadId": "61109200",
+    "jobId": "local_native_200_61109200",
+    "processExitCode": 0,
+    "elapsedMs": 50514,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": true,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "confirmed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "fill_remark"
+        },
+        {
+          "step": "save_remark"
+        },
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true,
+      "sendStatus": "not_attempted",
+      "execution": {
+        "cleanupConfirmed": true
+      }
+    },
+    "status": "succeeded"
+  },
+  {
+    "at": "2026-11-05T03:45:18.301Z",
+    "kind": "native_start",
+    "deviceNumber": "200",
+    "leadId": "61110200",
+    "jobId": "local_native_200_61110200",
+    "adapter": "Mac local native preview; not Windows Agent"
+  },
+  {
+    "at": "2026-11-05T03:46:08.988Z",
+    "kind": "native_result",
+    "deviceNumber": "200",
+    "leadId": "61110200",
+    "jobId": "local_native_200_61110200",
+    "processExitCode": 0,
+    "elapsedMs": 50518,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": true,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "confirmed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "fill_remark"
+        },
+        {
+          "step": "save_remark"
+        },
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true,
+      "sendStatus": "not_attempted",
+      "execution": {
+        "cleanupConfirmed": true
+      }
+    },
+    "status": "succeeded"
+  }
+]

@@ -1,0 +1,83 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "http://192.168.10.119:8797/api/v1/lead/devices/query",
+    "body": {
+      "online_only": false,
+      "app_id": "cps_local_dev_20261105",
+      "timestamp": 1793850871432,
+      "nonce": "7cdddce6688db370c379bab18e64f235",
+      "sign": "<已脱敏>"
+    }
+  },
+  "response": {
+    "http_status": 200,
+    "body": {
+      "result": {
+        "devices": [
+          {
+            "device_number": "200",
+            "device_name": "200号本地测试手机",
+            "online": true,
+            "adb_online": true,
+            "agent_online": true,
+            "listed": true,
+            "busy": false,
+            "busy_reason": "",
+            "occupancy": null,
+            "accounts": [
+              {
+                "app_slot": "main",
+                "binding_verified": true,
+                "enabled": true,
+                "wecom_phone": "17508437040",
+                "available": true,
+                "unavailable_reason": ""
+              }
+            ],
+            "available": true,
+            "unavailable_reason": "",
+            "last_seen_at": "2026-11-05T03:54:31.565Z",
+            "adb_last_seen_at": "2026-11-05T03:54:31.565Z"
+          },
+          {
+            "device_number": "202",
+            "device_name": "202号本地测试手机",
+            "online": true,
+            "adb_online": true,
+            "agent_online": true,
+            "listed": true,
+            "busy": false,
+            "busy_reason": "",
+            "occupancy": null,
+            "accounts": [
+              {
+                "app_slot": "main",
+                "binding_verified": true,
+                "enabled": true,
+                "wecom_phone": "13067238489",
+                "available": true,
+                "unavailable_reason": ""
+              }
+            ],
+            "available": true,
+            "unavailable_reason": "",
+            "last_seen_at": "2026-11-05T03:54:31.565Z",
+            "adb_last_seen_at": "2026-11-05T03:54:31.565Z"
+          }
+        ],
+        "total": 2,
+        "updated_at": "2026-11-05T03:54:31.565Z",
+        "capacity": {
+          "limit": 2,
+          "active": 0,
+          "remaining": 2
+        }
+      },
+      "timestamp": 1793850871565,
+      "success": true,
+      "code": 200,
+      "message": "查询成功"
+    }
+  }
+}
