@@ -1,0 +1,93 @@
+{
+  "newAppId": "PRi5GUYYuW",
+  "extractedSecretAuthenticated": true,
+  "oldCredentialsAbsentFromUpdatedFile": true,
+  "codeContainsSecretLiteral": false,
+  "checks": [
+    {
+      "action": "health",
+      "response": {
+        "http_status": 200,
+        "body": {
+          "result": null,
+          "timestamp": 1793858311926,
+          "ok": true
+        }
+      }
+    },
+    {
+      "action": "devices",
+      "response": {
+        "http_status": 200,
+        "body": {
+          "result": {
+            "devices": [
+              {
+                "device_number": "200",
+                "device_name": "200号本地测试手机",
+                "online": true,
+                "adb_online": true,
+                "agent_online": true,
+                "listed": true,
+                "busy": false,
+                "busy_reason": "",
+                "occupancy": null,
+                "accounts": [
+                  {
+                    "app_slot": "main",
+                    "binding_verified": true,
+                    "enabled": true,
+                    "wecom_phone": "17508437040",
+                    "available": true,
+                    "unavailable_reason": ""
+                  }
+                ],
+                "available": true,
+                "unavailable_reason": "",
+                "last_seen_at": "2026-11-05T05:58:32.066Z",
+                "adb_last_seen_at": "2026-11-05T05:58:32.066Z"
+              },
+              {
+                "device_number": "202",
+                "device_name": "202号本地测试手机",
+                "online": true,
+                "adb_online": true,
+                "agent_online": true,
+                "listed": true,
+                "busy": false,
+                "busy_reason": "",
+                "occupancy": null,
+                "accounts": [
+                  {
+                    "app_slot": "main",
+                    "binding_verified": true,
+                    "enabled": true,
+                    "wecom_phone": "13067238489",
+                    "available": true,
+                    "unavailable_reason": ""
+                  }
+                ],
+                "available": true,
+                "unavailable_reason": "",
+                "last_seen_at": "2026-11-05T05:58:32.066Z",
+                "adb_last_seen_at": "2026-11-05T05:58:32.066Z"
+              }
+            ],
+            "total": 2,
+            "updated_at": "2026-11-05T05:58:32.066Z",
+            "capacity": {
+              "limit": 2,
+              "active": 0,
+              "remaining": 2
+            }
+          },
+          "timestamp": 1793858312066,
+          "success": true,
+          "code": 200,
+          "message": "查询成功"
+        }
+      }
+    }
+  ],
+  "newPhoneTasks": 0
+}
