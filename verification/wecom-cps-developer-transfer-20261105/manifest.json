@@ -1,0 +1,39 @@
+{
+  "status": "private_single_file_handoff_ready_preview_only",
+  "branch": "codex/wecom-search200-20261105",
+  "baselineHead": "47a7f6703832f6a55e34dae8779f05b426c51dd9",
+  "baseUrl": "http://192.168.10.119:8797",
+  "appId": "cps_local_dev_20261105",
+  "executionMode": "preview",
+  "handoffFile": "/Users/yyx/.codex/private/wecom-cps-developer-20261105/CPS企微本地联调交接单-20261105.md",
+  "handoffFileSha256": "f8da2a3f8a18834b00af91c4a685e2ccf9af77a4e904ee6146a5794f76a5e934",
+  "handoffFileMode": "0o600",
+  "privateDirectoryMode": "0o700",
+  "secretIncludedInPrivateHandoff": true,
+  "secretInRepositoryOrPublicDocs": false,
+  "clientSourceSha256": "0944042dac2802513932e4514c208e06ee5ebb4325a299533b25801bf091802f",
+  "checks": {
+    "embeddedSourceExtractedExactly": true,
+    "python39Syntax": "pass",
+    "actualHandoffSecretAuthenticated": true,
+    "healthHTTP": 200,
+    "deviceQueryHTTP": 200,
+    "bothDevicesAvailable": true,
+    "defaultIdsStillUnused": true
+  },
+  "newPhoneTasks": 0,
+  "realInvitations": 0,
+  "callbackAddress": "awaiting developer",
+  "developerComputerConnectivity": "not verified",
+  "productionTouched": false,
+  "localServiceLeftRunning": true,
+  "rollback": "Documentation-only handoff. Keep the existing service/config/ledger; do not alter original tasks, credentials or phone state. No production rollback needed.",
+  "artifactSha256": {
+    "validation.redacted.json": "5e6743f62f3284a8c33f23b86182273b4d8edaa8136d1b9b49bbbb29aa69ac85"
+  },
+  "sourceFilesSha256": {
+    "docs/PROJECT_DEVELOPMENT.md": "7a7b656d32d01929eb389d43dd4c6e3c0c7f6b26c87a3f6f10a102bece9fa769",
+    "docs/CPS本地开发联调.md": "e78fe6b990f82be8b29f7948294d2e2a317ab5fef617621a20885d45ecc358c6"
+  },
+  "validationNote": "Sensitive-value scan covers new artifacts and this turn diff. Whole legacy master-document scan initially matched pre-existing historical test-phone content; historical records were preserved, not rewritten."
+}
