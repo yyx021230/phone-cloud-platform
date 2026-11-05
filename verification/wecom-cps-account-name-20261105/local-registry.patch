@@ -1,0 +1,30 @@
+--- a/private-local-preview-dev-server.mjs
++++ b/private-local-preview-dev-server.mjs
+@@ -43,13 +43,14 @@
+ const config=JSON.parse(await fs.readFile(base+'/client-config.private.json','utf8'));
+ const secret=config.secret;
+ const clients=parseClients(JSON.stringify([{appId:config.app_id,secret,callbackUrl:`http://127.0.0.1:${callbackAddress.port}/api/v1/lead/callback`,allowLoopbackTest:true,allDeviceStatus:true,
+- members:Object.keys(targets).map(n=>({deviceNumber:n,appSlot:'main',wecom_phone:inputs.accounts[n],enabled:true,bindingVerified:true}))}]));
++ members:config.accounts.map(a=>({deviceNumber:a.device_number,appSlot:'main',wecom_phone:a.wecom_phone,wecom_name:a.wecom_name,enabled:true,bindingVerified:true}))}]));
+ const platform={mode:'preview',
+  async inventory(){
+   const p=await probe();if(JSON.stringify(p.identity)!==JSON.stringify(initial.identity))throw Error('local_adb_changed');
+-  const at=new Date().toISOString();return {updatedAt:at,capacity:{limit:2,active:busy.size,remaining:Math.max(0,2-busy.size)},devices:Object.entries(targets).map(([n,serial])=>{
+-   const online=p.states[n]==='device',occupied=busy.has(n)||fenced.has(n);
+-   return {deviceNumber:n,deviceName:n+'号本地测试手机',deviceId:'adb:'+serial,listed:true,online,adbOnline:online,agentOnline:true,busy:occupied,available:online&&!occupied,busyReason:occupied?'local_preview_running':'',occupancy:occupied?{type:'automation',label:'企微本地预览'}:null,wecomAllowed:true,remarkPhoneReady:true,appSlots:[{appSlot:'main',androidUser:0}],lastSeenAt:at,adbLastSeenAt:online?at:null};
++  const at=new Date().toISOString();return {updatedAt:at,capacity:{limit:2,active:busy.size,remaining:Math.max(0,2-busy.size)},devices:config.accounts.map(a=>{
++   const n=a.device_number,serial=targets[n]||null,managed=typeof serial==='string';
++   const online=managed&&p.states[n]==='device',occupied=busy.has(n)||fenced.has(n);
++   return {deviceNumber:n,deviceName:managed?n+'号本地测试手机':n+'号（未接入本地测试）',deviceId:managed?'adb:'+serial:null,listed:true,online,adbOnline:online,agentOnline:managed,busy:occupied,available:online&&!occupied,busyReason:occupied?'local_preview_running':'',occupancy:occupied?{type:'automation',label:'企微本地预览'}:null,wecomAllowed:managed,remarkPhoneReady:managed,appSlots:[{appSlot:'main',androidUser:0}],lastSeenAt:online?at:null,adbLastSeenAt:online?at:null};
+   })};
+  },
+  async submit(lead){
+@@ -105,7 +106,7 @@
+ const lanAddress=await listen(proxy,Number(localHost.port),localHost.hostname);
+ let stopping=false;
+ const timer=setInterval(()=>service.tick().catch(()=>record({kind:'scheduler_error',code:'local_scheduler_unavailable'})),1000);
+-await record({kind:'ready',origin:config.base_url,mode:'preview',appId:config.app_id,localDevices:['200','202'],sourceHead:'e1a7ade4bb58d62119993f90fce3de49d2f91162',boundary:'LAN QA only: real CPS HTTP + Mac native preview adapter; not Windows SYSTEM Agent',adbIdentity:initial.identity});
++await record({kind:'ready',origin:config.base_url,mode:'preview',appId:config.app_id,localDevices:['200','202'],registeredDevices:config.accounts.map(a=>a.device_number),sourceHead:'1f7444ec45d886b07fbe882831ba8cbaf296ea80',boundary:'LAN QA only: real CPS HTTP + Mac native preview adapter; not Windows SYSTEM Agent',adbIdentity:initial.identity});
+ async function close(){
+  if(stopping)return;stopping=true;clearInterval(timer);
+  await new Promise(r=>proxy.close(r));
