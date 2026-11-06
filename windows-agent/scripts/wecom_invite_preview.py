@@ -234,6 +234,34 @@ def profile_matches(screen, phone):
                     for n in screen.nodes))
 
 
+DUAL_ACCOUNT_HINT = "对方同时使用微信和企业微信"
+
+
+def personal_wechat_entry(screen):
+    """Recognize the observed dual-account result and return its WeChat row."""
+    if not screen.has(DUAL_ACCOUNT_HINT):
+        return None
+    if not screen.has("个人信息") or screen.has(SEND) or screen.has("添加为联系人"):
+        raise StopPreview("dual_wechat_entry_unverified")
+
+    def observed(resource, kind):
+        matches = screen.matching(lambda n: n.kind == kind and n.name == PACKAGE + ":id/" + resource)
+        if len(matches) != 1:
+            raise StopPreview("dual_wechat_entry_unverified")
+        return matches[0]
+
+    personal = observed("dz9", "android.widget.TextView")
+    personal_icon = observed("dz_", "android.widget.ImageView")
+    enterprise = observed("dzg", "android.widget.TextView")
+    enterprise_icon = observed("dzh", "android.widget.ImageView")
+    if (not personal.text or not enterprise.text
+            or abs(personal.position[1] - personal_icon.position[1]) > .03
+            or abs(enterprise.position[1] - enterprise_icon.position[1]) > .03
+            or not personal.position[1] < enterprise.position[1]):
+        raise StopPreview("dual_wechat_entry_unverified")
+    return personal
+
+
 def resolve_action(action, screen, phone):
     """Closed action vocabulary: the final send and remark-save do not exist."""
     guard(screen)
@@ -262,6 +290,10 @@ def resolve_action(action, screen, phone):
             raise StopPreview("phone_readback_mismatch")
         return unique(screen.matching(lambda n: re.sub(r"\s", "", n.text).replace("：", ":")
                                       == "网络查找手机/邮箱:" + phone))
+    if action == "open_personal_wechat":
+        node = personal_wechat_entry(screen)
+        if node is not None:
+            return node
     if action == "open_preview" and profile_matches(screen, phone):
         if screen.has("发消息"):
             raise StopPreview("already_contact")
@@ -314,7 +346,7 @@ def run_preview(driver, request, timeout=45, max_reads=90, cancelled=lambda: Fal
             screen = driver.snapshot()
             check_budget()
             guard(screen)
-            if stage in ("profile", "preview") and is_observed_progress(screen):
+            if stage in ("profile", "personal_profile", "preview") and is_observed_progress(screen):
                 # An acknowledged operation is still in progress. Keep the
                 # original deadline/cancellation; never click it again.
                 if stage == "profile":
@@ -399,7 +431,13 @@ def run_preview(driver, request, timeout=45, max_reads=90, cancelled=lambda: Fal
                     action, next_stage = "search", "profile"
                 else:
                     search_input_frame = None
-            elif stage == "profile" and (screen.has("个人信息") or screen.has("客户详情")):
+            elif stage == "profile" and screen.has(DUAL_ACCOUNT_HINT):
+                action, next_stage = "open_personal_wechat", "personal_profile"
+            elif stage == "personal_profile" and screen.has(DUAL_ACCOUNT_HINT):
+                # The tap was already delivered. Wait for the actual profile.
+                sleep(.25)
+                continue
+            elif stage in ("profile", "personal_profile") and (screen.has("个人信息") or screen.has("客户详情")):
                 if not profile_matches(screen, phone):
                     raise StopPreview("profile_phone_mismatch")
                 if screen.has("发消息"):
@@ -516,7 +554,9 @@ class PocoPreviewDriver:
             if action in ('enter_phone','open_menu'):self.observe_action_change(action,expected_screen,fresh)
             raise StopPreview("page_changed_before_action")
         node = resolve_action(action, fresh, phone)
-        if node.text:
+        if action == "open_personal_wechat":
+            selector = {"type": node.kind, "name": node.name, "text": node.text}
+        elif node.text:
             selector = {"type": node.kind, "text": node.text}
         elif node.desc:
             selector = {"type": node.kind, "contentDescription": node.desc}
@@ -529,6 +569,7 @@ class PocoPreviewDriver:
         # Recheck position and visible/enabled after resolving the live selector.
         if (item.attr("visible") is not True or item.attr("enabled") is not True
                 or (item.attr("text") or "") != node.text
+                or (action == "open_personal_wechat" and (item.attr("name") or "") != node.name)
                 or (item.attr("contentDescription") or "") != node.desc
                 or tuple(item.get_position()) != node.position or tuple(item.get_size()) != node.size):
             raise StopPreview("element_changed_before_action")
@@ -537,7 +578,7 @@ class PocoPreviewDriver:
         if action == "enter_phone":
             item.set_text(phone)  # One bounded write, followed by exact readback.
         else:
-            item.click()  # Only the five explicitly allowed navigation actions.
+            item.click()  # Only explicitly allowed navigation actions.
 
 
 class ReplayDriver:
