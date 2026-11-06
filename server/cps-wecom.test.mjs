@@ -84,6 +84,20 @@ test('a native unknown send or unrelated failure cannot be disguised as CPS succ
 test('successful callback requires both send confirmation and independent remark phone confirmation',async t=>{
   const f=await fixture(t);await f.service.handle('POST',ROUTES.dispatch,f.signed(business()));await f.service.tick();Object.assign(f.task(),{status:'succeeded',result:{sendStatus:'unknown',invitationSent:null,remarkPhoneSet:true,invitationRequestConfirmed:true,invitationRequestProof:'wecom_system_dialog_v1'}});f.advance(2000);await f.service.tick();await f.service.tick();assert.equal(f.callbacks[0].result,'success');assert.equal(f.callbacks[0].remark_phone_set,true);
 });
+test('only the local sender can use a system toast to trigger a success callback',async t=>{
+  for(const enabled of [false,true]){
+    const f=await fixture(t);f.platform.localToastProof=enabled;
+    assert.equal((await f.service.handle('POST',ROUTES.dispatch,f.signed(business()))).body.success,true);
+    await f.service.tick();
+    Object.assign(f.task(),{status:'succeeded',result:{sendStatus:'unknown',invitationSent:null,remarkPhoneSet:true,
+      invitationRequestConfirmed:true,invitationRequestProof:'wecom_system_toast_v1'}});
+    f.advance(2000);await f.service.tick();await f.service.tick();
+    assert.equal(f.callbacks.length,enabled?1:0);
+    assert.equal(f.store.snapshot().leads[0].stage,enabled?'completed':'needs_attention');
+    assert.equal((await f.service.handle('POST',ROUTES.dispatch,f.signed(business()))).body.success,true);
+    await f.service.tick();assert.equal(f.submissions.length,1);
+  }
+});
 test('preview never calls CPS callback, including verified duplicate; same journal survives graceful restart',async t=>{
   const f=await fixture(t,{mode:'preview'});await f.service.handle('POST',ROUTES.dispatch,f.signed(business()));await f.service.tick();Object.assign(f.task(),{status:'succeeded',result:{status:'ready_before_send'}});f.advance(2000);await f.service.tick();assert.equal(f.store.snapshot().leads[0].stage,'preview_complete');assert.equal(f.callbacks.length,0);await f.close();
   const next=await createStore({file:path.join(f.dir,'journal.json')});assert.equal(next.snapshot().leads.length,1);await next.close();

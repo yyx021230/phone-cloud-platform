@@ -148,20 +148,31 @@ class CpsApplicationAckTests(unittest.TestCase):
 
     def prepared(self):return dict(status='ready_before_send',remarkPrepared=True,remarkSaveStatus='confirmed',remarkPhoneSet=True)
 
-    def run_send(self,after,second=None):
+    def run_send(self,after,second=None,read_toasts=None):
         frames=iter([PREVIEW,PREVIEW,after,second or after]);calls=[]
         class TestDriver:
             def snapshot(inner):return next(frames)
             def _guard_host(inner):calls.append('lease')
             def send_invitation(inner,*args):calls.append('click')
         def claim():calls.append('claim');return True
-        result=invite.send_once(TestDriver(),self.prepared(),claim,lambda:None,observe_application_ack=True)
+        result=invite.send_once(TestDriver(),self.prepared(),claim,lambda:None,observe_application_ack=True,read_toasts=read_toasts)
         return result,calls
 
     def test_explicit_two_frame_application_ack_does_not_clear_unknown_delivery_fence(self):
         out,calls=self.run_send(self.dialog())
         self.assertTrue(out['invitationRequestConfirmed']);self.assertEqual(out['invitationRequestProof'],'wecom_system_dialog_v1')
         self.assertEqual(out['sendStatus'],'unknown');self.assertIsNone(out['invitationSent']);self.assertEqual(calls.count('click'),1);self.assertEqual(calls.count('claim'),1)
+
+    def test_new_system_wecom_success_toast_confirms_one_click(self):
+        toast='TextToastRecord{e1 token=android.os.BinderProxy@a2 packageName=com.tencent.wework text=好友申请已发送 duration=0}'
+        notices=iter(['',toast])
+        out,calls=self.run_send(PREVIEW,read_toasts=lambda:next(notices))
+        self.assertEqual(out['invitationRequestProof'],'wecom_system_toast_v1')
+        self.assertEqual(calls.count('click'),1)
+        for unrelated in (toast.replace('com.tencent.wework','com.example.other'),
+                          toast.replace('好友申请已发送','发送失败'),
+                          toast.replace('好友申请已发送','好友申请已发送，但暂不可送达')):
+            self.assertEqual(invite.application_toasts(unrelated),set())
 
     def test_nickname_text_unstable_dialog_and_wrong_app_cannot_prove_sent(self):
         for after,second in [(self.dialog(resource='com.tencent.wework:id/nickname'),None),(self.dialog(),PREVIEW),(replace(self.dialog(),package='other.package'),None)]:

@@ -1,0 +1,21 @@
+{
+  "baselineCommit": "679f6db4e9eca71d46ffee931d825aec2af2d1ff",
+  "scope": "local CPS send mode",
+  "resumeLeadId": "157811",
+  "preservePreviewJournal": true,
+  "serverSha256": "e08930377685a2165bd76cb65b8d5c4e63c90b2ac57dc20a907b8c06d34b953d",
+  "runnerSha256": "f67986613011dfad86d64e2b4a07ef5b91f03be4745b7906a6eacae67ac767cd",
+  "wecomPythonPassed": 615,
+  "cpsTargetedPassed": 46,
+  "mockCpsResult": {
+    "oneNativeStart": true,
+    "callbackAttempts": 2,
+    "callbackCodes": [
+      500,
+      200
+    ],
+    "originalFieldsRequired": true,
+    "duplicateNoResend": true
+  },
+  "realHardwareResult": "pending"
+}
