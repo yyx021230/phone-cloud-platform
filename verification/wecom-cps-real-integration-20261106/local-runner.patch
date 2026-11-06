@@ -1,0 +1,42 @@
+--- a/run_local_flow.py
++++ b/run_local_flow.py
+@@ -0,0 +1,2 @@
++import sys
++sys.path.insert(0,"/tmp/pc-wecom-search200-20261105")
+@@ -2 +4,6 @@
+-request=json.loads(sys.stdin.readline());number=request['number'];assert request.get('mode')=='preview'
++import wecom_customer_invitation as invitation
++request=json.loads(sys.stdin.readline())
++number=request['number']
++assert number in ('200','202') and request.get('mode')=='send'
++assert re.fullmatch(r'[1-9][0-9]{0,18}',request['leadId'])
++assert re.fullmatch(r'1[3-9][0-9]{9}',request['phone'])
+@@ -37,0 +45,28 @@
++  if result.get('status')=='ready_before_send':
++   deadline=time.monotonic()+18
++   def budget():
++    s.check()
++    if time.monotonic()>=deadline:raise w.StopPreview('local_send_ack_budget_exhausted')
++   def claim():
++    budget()
++    invitation.claim_local('/Users/yyx/.codex/private/wecom-cps-single-send-20261106/claims',
++      {'serial':s.serial,'androidUser':0,'phoneNumber':request['phone'],'taskId':'CPS-'+request['leadId']})
++    return True
++   def read_toasts():
++    return s.shell("dumpsys notification --noredact | grep -F 'TextToastRecord{' | grep -F 'packageName=com.tencent.wework ' | head -12")
++   original_tap=s.driver.send_invitation
++   def tap_with_evidence(expected, check_budget):
++    original_tap(expected, check_budget)
++    if request['leadId']!='157811':return
++    def capture():
++     for i in range(8):
++      try:
++       image=s.shell('screencap -p'); path=BASE/(number+'-send-proof-'+request['leadId']+'-'+str(i)+'.png')
++       with path.open('xb') as out:out.write(image);path.chmod(0o600)
++      except Exception:break
++      time.sleep(.23)
++    worker=threading.Thread(target=capture,daemon=True)
++    s.send_proof_capture=worker;worker.start()
++   s.driver.send_invitation=tap_with_evidence
++   result=invitation.send_once(s.driver,result,claim,budget,observe_application_ack=True,read_toasts=read_toasts)
++   if hasattr(s,'send_proof_capture'):s.send_proof_capture.join(timeout=4)

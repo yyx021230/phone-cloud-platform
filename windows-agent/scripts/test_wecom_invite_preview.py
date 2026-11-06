@@ -31,6 +31,11 @@ TYPED = frame(w.Node("android.widget.EditText", name="phone_input", text=PHONE),
               "网络查找手机/邮箱：" + PHONE)
 PROFILE = frame("个人信息", "设置备注和描述", "电话", PHONE, "添加为联系人")
 PREVIEW = frame("测试企业", "测试成员", "测试邀请文案", "发送添加邀请")
+DUAL_PROFILE = frame("个人信息", w.DUAL_ACCOUNT_HINT,
+                     text("测试微信", name=w.PACKAGE + ":id/dz9", position=(.5, .23)),
+                     w.Node("android.widget.ImageView", name=w.PACKAGE + ":id/dz_", position=(.12, .23)),
+                     text("测试企业微信", name=w.PACKAGE + ":id/dzg", position=(.5, .33)),
+                     w.Node("android.widget.ImageView", name=w.PACKAGE + ":id/dzh", position=(.12, .34)))
 PATH = [HOME, MENU, ADD, EMPTY, TYPED, PROFILE, PREVIEW]
 ACTIONS = ["open_menu", "open_add", "open_search", "enter_phone", "search", "open_preview"]
 
@@ -60,6 +65,34 @@ def run(device, **kwargs):
 
 
 class PreviewFlowTests(unittest.TestCase):
+    def test_dual_result_opens_personal_wechat_after_search_and_verifies_detail(self):
+        class DualDevice(Device):
+            def apply(self, action, expected, phone, check_budget):
+                if action == "open_personal_wechat":
+                    self.assert_personal = w.resolve_action(action, expected, phone).name
+                    self.calls.append(action)
+                    self.index += 1
+                    return
+                super().apply(action, expected, phone, check_budget)
+
+        for profile, code in [(PROFILE, "stopped_before_send"),
+                              (frame("个人信息", "设置备注和描述", OTHER, "添加为联系人"),
+                               "profile_phone_mismatch")]:
+            device = DualDevice([*PATH[:5], DUAL_PROFILE, profile, PREVIEW])
+            self.assertEqual(run(device)["code"], code)
+            self.assertEqual(device.assert_personal, w.PACKAGE + ":id/dz9")
+            self.assertEqual(device.calls.count("open_personal_wechat"), 1)
+            self.assertEqual("open_preview" in device.calls, profile is PROFILE)
+
+    def test_dual_result_without_verified_row_or_search_never_selects(self):
+        unverified = frame(*DUAL_PROFILE.nodes[:-1])
+        device = Device([*PATH[:5], unverified])
+        self.assertEqual(run(device)["code"], "dual_wechat_entry_unverified")
+        self.assertNotIn("open_personal_wechat", device.calls)
+        reentry = Device([DUAL_PROFILE])
+        self.assertEqual(run(reentry)["code"], "unsupported_start_page")
+        self.assertEqual(reentry.calls, [])
+
     def test_search_modal_returns_to_same_customer_without_a_result(self):
         progress = frame(w.Node('android.widget.TextView', text='查找中', name='com.tencent.wework:id/krm'))
 

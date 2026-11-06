@@ -6,8 +6,28 @@ one-use durable claim; unknown send outcomes are never replayed.
 import hashlib
 import json
 import os
+import re
+import time
 from pathlib import Path
 import wecom_invite_preview as w
+
+
+INVITATION_ACKS = frozenset(('已发送好友申请', '好友申请已发送', '已成功发送好友申请',
+                            '添加申请已发送', '申请已发送', '邀请已发送', '已发送添加邀请'))
+TEXT_TOAST = re.compile(
+    r'TextToastRecord\{([a-f0-9]+) token=([^\r\n]+?) '
+    r'packageName=com\.tencent\.wework text=([^\r\n]+) duration=[01]\}'
+)
+
+
+def application_toasts(dump):
+    """Identifiers of explicit WeCom success notices from Android's toast queue."""
+    matches = set()
+    for line in dump.splitlines():
+        match = TEXT_TOAST.fullmatch(line.strip())
+        if match and match[3] in INVITATION_ACKS:
+            matches.add((match[1], match[2]))
+    return matches
 
 
 def claim_local(directory, config):
@@ -60,7 +80,8 @@ def application_ack(screen):
     return len(messages)==len(buttons)==1 and messages[0].text in ('已发送好友申请','好友申请已发送','已成功发送好友申请')
 
 
-def send_once(driver, prepared, claim, check_budget, observe_application_ack=False):
+def send_once(driver, prepared, claim, check_budget, observe_application_ack=False,
+              read_toasts=None):
     if (prepared.get('status') != 'ready_before_send' or prepared.get('remarkPrepared') is not True
             or prepared.get('remarkSaveStatus') not in ('confirmed', 'not_needed')):
         return prepared
@@ -76,6 +97,7 @@ def send_once(driver, prepared, claim, check_budget, observe_application_ack=Fal
         w.unique(page.matching(lambda n: n.labeled(w.SEND)))
         if driver.snapshot() != page:
             raise w.StopPreview('invitation_page_unstable')
+        prior_toasts = application_toasts(read_toasts()) if read_toasts else set()
         # Mark unknown BEFORE awaiting the cloud. A failed acknowledgement can
         # already have persisted the claim. Never automatically try it again.
         claimed = True
@@ -88,11 +110,22 @@ def send_once(driver, prepared, claim, check_budget, observe_application_ack=Fal
         if observe_application_ack:
             # Two fresh exact frames and a live original lease. No second tap,
             # no retry of a timed out RPC and no changed overall deadline.
-            driver._guard_host();check_budget();after=driver.snapshot();w.guard(after)
-            if application_ack(after):
-                driver._guard_host();check_budget();second=driver.snapshot();w.guard(second)
-                if second==after and application_ack(second):
-                    result.update(invitationRequestConfirmed=True,invitationRequestProof='wecom_system_dialog_v1')
+            until = time.monotonic() + 6 if read_toasts else None
+            while True:
+                driver._guard_host();check_budget()
+                toast_proof = bool(read_toasts and application_toasts(read_toasts()) - prior_toasts)
+                after=driver.snapshot();w.guard(after)
+                if application_ack(after):
+                    driver._guard_host();check_budget();second=driver.snapshot();w.guard(second)
+                    if second==after and application_ack(second):
+                        result.update(invitationRequestConfirmed=True,invitationRequestProof='wecom_system_dialog_v1')
+                        break
+                if toast_proof:
+                    result.update(invitationRequestConfirmed=True,invitationRequestProof='wecom_system_toast_v1')
+                    break
+                if until is None or time.monotonic() >= until:
+                    break
+                time.sleep(.2)
     except w.StopPreview as error:
         result.update(status='blocked', code=str(error))
         if str(error)=='wecom_add_friend_too_frequent':

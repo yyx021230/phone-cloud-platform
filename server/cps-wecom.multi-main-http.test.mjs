@@ -51,7 +51,7 @@ test('two main accounts process multiple customers independently; retries never 
       const r=await fetch(`http://127.0.0.1:${address.port}`+route,{method:'POST',headers:{'Content-Type':'application/json; charset=utf-8'},body:JSON.stringify(body),signal:AbortSignal.timeout(5000)});
       assert.equal(r.status,200);return r.json();
     }
-    const dispatch=(n,id,customer)=>call('/api/v1/lead/dispatch',{lead_id:id,phone:customer,wecom_phone:accounts[n],wecom_corp_id:'synthetic_corp',wecom_userid:'synthetic_member_'+n});
+    const dispatch=(n,id,customer)=>call('/api/v1/lead/dispatch',{lead_id:id,phone:customer,wecom_phone:accounts[n]});
     const devices=()=>call('/api/v1/lead/devices/query',{online_only:false});
     const tick=async()=>{now+=2100;await service.tick();};
     async function finish(id,kind='success'){

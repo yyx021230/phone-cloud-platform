@@ -2,6 +2,7 @@ import {createHash, timingSafeEqual} from 'node:crypto';
 
 export const AUTH_FIELDS = new Set(['app_id', 'timestamp', 'nonce', 'sign']);
 export const ROUTES = Object.freeze({dispatch:'/api/v1/lead/dispatch', devices:'/api/v1/lead/devices/query'});
+export const MEMBER_ID_FIELDS = Object.freeze(['wecom_userid','wecom_corp_id']);
 export const failure = (code, message, httpStatus=200) => Object.assign(new Error(message), {businessCode:code, httpStatus});
 const fields = new Set(['lead_id','phone','wecom_phone','wecom_userid','wecom_corp_id','city_id','city_name','cmb_id','cmb_name','cmd_id','cmd_name',...AUTH_FIELDS]);
 
@@ -59,7 +60,8 @@ export function dispatchInput(body) {
     if(typeof body.wecom_phone!=='string'||!/^1[3-9]\d{9}$/.test(body.wecom_phone))throw failure(2003,'企微登录手机号wecom_phone格式错误');
     business.wecom_phone=body.wecom_phone;
   }
-  for(const k of ['wecom_userid','wecom_corp_id']) {
+  for(const k of MEMBER_ID_FIELDS) {
+    if(business.wecom_phone&&(body[k]===undefined||body[k]===null||body[k]===''))continue;
     if(typeof body[k]!=='string'||!body[k]||body[k].length>128||/[\u0000-\u0020\u007f&=]/.test(body[k]))throw failure(2003,'企微企业或成员标识格式错误');
     business[k]=body[k];
   }
@@ -85,7 +87,7 @@ export function parseClients(raw) {
     const members=new Map();
     const phoneRouting=row.members.some(m=>m?.wecom_phone!==undefined);
     for(const m of row.members) {
-      const official=['wecom_corp_id','wecom_userid'].every(k=>typeof m?.[k]==='string'&&m[k]&&m[k].length<=128&&!/[\u0000-\u0020\u007f&=]/.test(m[k]));
+      const official=MEMBER_ID_FIELDS.every(k=>typeof m?.[k]==='string'&&m[k]&&m[k].length<=128&&!/[\u0000-\u0020\u007f&=]/.test(m[k]));
       if(!m||!/^[1-9]\d{0,2}$/.test(m.deviceNumber)||!['main','clone'].includes(m.appSlot)
         ||phoneRouting&&(typeof m.wecom_phone!=='string'||!/^1[3-9]\d{9}$/.test(m.wecom_phone))
         ||(!phoneRouting||m.wecom_corp_id!==undefined||m.wecom_userid!==undefined)&&!official)throw Error('cps_member_config_invalid');

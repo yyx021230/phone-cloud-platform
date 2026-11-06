@@ -1,0 +1,50 @@
+{
+  "at": "2026-11-06T15:52:22.096050+08:00",
+  "oldApiPid": 41468,
+  "newApiPid": 51363,
+  "baselineSource": "02f841ec583d4bafdaff823ff59cd239935ea853aeffcbb75f18f2e0f0af961c",
+  "activeSource": "5ab89814c14656a30b754eb3c7a391771dcb556ca783463a9b577cc590f6b5b9",
+  "adbPid": 5057,
+  "originalLeadCount": 12,
+  "originalRecordsPreservedAtCutover": true,
+  "mode": "preview",
+  "baselineCommit": "326cf3a8f63453049b899bac871aafca5eebd2dd",
+  "cpsRuntimeSourceCommit": "1f7444ec45d886b07fbe882831ba8cbaf296ea80",
+  "branch": "codex/wecom-local-customer-scope-20261106",
+  "liveHttpChecks": {
+    "healthHttp": 200,
+    "signedDeviceQueryHttp": 200,
+    "availableDevices": [
+      "200",
+      "202"
+    ],
+    "alternatePhoneReachedOfflineCheck": 2003,
+    "invalidPhoneRejected": 2003,
+    "admittedVerificationLeads": 0,
+    "ledgerMode": "preview",
+    "leadCountAtStart": 12,
+    "leadCountAtEnd": 12
+  },
+  "isolatedChecks": {
+    "passed": 8,
+    "coverage": [
+      "health",
+      "invalid signature",
+      "invalid phone",
+      "send override",
+      "offline device",
+      "two distinct simulated customer numbers",
+      "preview and no callback",
+      "duplicate idempotency"
+    ]
+  },
+  "nativeRunnerChanged": false,
+  "realInvitations": 0,
+  "productionChanged": false,
+  "notTested": [
+    "real handset traversal with another customer number",
+    "CPS positive callback"
+  ],
+  "patchSha256": "416bb836aba67f777506c5eeb2ce4f2beba7d36f42d054804fe2c5de8b2d3805",
+  "rollback": "Drain the local preview API, restore the backed-up adapter, retain the live journal and restart only this local API."
+}

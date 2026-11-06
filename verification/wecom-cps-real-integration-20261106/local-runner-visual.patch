@@ -1,0 +1,33 @@
+--- a/run_send_flow.py
++++ b/run_send_flow.py
+@@ -57,0 +58,2 @@
++   frames=[]; capture_stop=threading.Event()
++   frame_prefix=BASE/(number+'-local-proof-'+request['leadId']+'-'+str(time.time_ns()))
+@@ -60 +61,0 @@
+-    if request['leadId']!='157811':return
+@@ -62 +63,2 @@
+-     for i in range(8):
++     for i in range(12):
++      if capture_stop.is_set():break
+@@ -64,2 +66,3 @@
+-       image=s.shell('screencap -p'); path=BASE/(number+'-send-proof-'+request['leadId']+'-'+str(i)+'.png')
+-       with path.open('xb') as out:out.write(image);path.chmod(0o600)
++       image=s.shell('screencap -p');path=Path(str(frame_prefix)+'-'+str(i)+'.png')
++       with path.open('xb') as out:os.fchmod(out.fileno(),0o600);out.write(image)
++       frames.append(str(path))
+@@ -67 +70 @@
+-      time.sleep(.23)
++      if capture_stop.wait(.23):break
+@@ -72 +75,11 @@
+-   if hasattr(s,'send_proof_capture'):s.send_proof_capture.join(timeout=4)
++   capture_stop.set()
++   if hasattr(s,'send_proof_capture'):s.send_proof_capture.join(timeout=2)
++   if result.get('status')=='send_attempted' and result.get('invitationRequestConfirmed') is not True and len(frames)>=2:
++    try:
++     checked=subprocess.run(['/Users/yyx/.codex/private/wecom-cps-dev-20261105/sent-overlay'],
++       input=json.dumps({'lead':request['leadId'],'phone':request['phone'],'frames':frames}),
++       capture_output=True,text=True,timeout=16,check=True)
++     if checked.stdout.strip()=='confirmed':
++      s.check()
++      result.update(invitationRequestConfirmed=True,invitationRequestProof='wecom_sent_overlay_v1')
++    except (OSError,subprocess.SubprocessError):pass

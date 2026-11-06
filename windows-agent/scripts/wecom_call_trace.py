@@ -14,7 +14,7 @@ CALLS = frozenset(('adb.identity', 'adb.connect', 'adb.command', 'adb.shell',
     'hierarchy.snapshot', 'hierarchy.snapshot_any', 'ui.observed_click',
     'ui.startup_action', 'ui.return_back', 'ui.action', 'cleanup.reader', 'qa.host_identity',
     'qa.inventory', 'qa.proof_request', 'adb.socket_connect', 'rpc.transport')) | frozenset('ui.'+name for name in (
-        'open_menu','open_add','open_search','enter_phone','search','open_preview',
+        'open_menu','open_add','open_search','enter_phone','search','open_personal_wechat','open_preview',
         'open_remark','fill_remark','fill_description','save_remark','close_remark')) | frozenset('rpc.'+name for name in (
         'dump','dumpHierarchy','select','getAttr','setAttr','click','longClick','swipe','keyevent','getPortSize','setText','getScreen'))
 ERRORS = frozenset(('SafeStop', 'StopPreview', 'TimeoutError', 'OSError',
