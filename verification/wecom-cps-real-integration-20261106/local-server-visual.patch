@@ -1,0 +1,5 @@
+--- a/dev-server.mjs
++++ b/dev-server.mjs
+@@ -50 +50 @@
+-const platform={mode:'send',localToastProof:true,
++const platform={mode:'send',localInvitationProof:true,

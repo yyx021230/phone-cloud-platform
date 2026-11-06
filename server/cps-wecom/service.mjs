@@ -138,7 +138,7 @@ export function createService({store,clients,platform,fetchImpl=fetch,clock=Date
     if(result.code==='already_contact'&&result.sendStatus==='not_attempted'&&result.remarkSaveStatus!=='unknown')outcome={result:'duplicate'};
     else if(job.status==='succeeded'&&result.invitationRequestConfirmed===true&&result.remarkPhoneSet===true
         &&(result.invitationRequestProof==='wecom_system_dialog_v1'
-          ||(platform.localToastProof===true&&result.invitationRequestProof==='wecom_system_toast_v1')))outcome={result:'success',remark_phone_set:true};
+          ||(platform.localInvitationProof===true&&['wecom_system_toast_v1','wecom_sent_overlay_v1'].includes(result.invitationRequestProof))))outcome={result:'success',remark_phone_set:true};
     else if(result.code==='wecom_add_friend_too_frequent'&&result.addFriendLimitConfirmed===true&&result.addFriendLimitProof==='wecom_system_dialog_v1')outcome={result:'failed',fail_reason:'添加好友过于频繁'};
     await update(lead,(r,s)=>{
       r.jobId=job.jobId;

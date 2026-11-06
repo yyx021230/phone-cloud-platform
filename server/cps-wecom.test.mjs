@@ -84,13 +84,13 @@ test('a native unknown send or unrelated failure cannot be disguised as CPS succ
 test('successful callback requires both send confirmation and independent remark phone confirmation',async t=>{
   const f=await fixture(t);await f.service.handle('POST',ROUTES.dispatch,f.signed(business()));await f.service.tick();Object.assign(f.task(),{status:'succeeded',result:{sendStatus:'unknown',invitationSent:null,remarkPhoneSet:true,invitationRequestConfirmed:true,invitationRequestProof:'wecom_system_dialog_v1'}});f.advance(2000);await f.service.tick();await f.service.tick();assert.equal(f.callbacks[0].result,'success');assert.equal(f.callbacks[0].remark_phone_set,true);
 });
-test('only the local sender can use a system toast to trigger a success callback',async t=>{
-  for(const enabled of [false,true]){
-    const f=await fixture(t);f.platform.localToastProof=enabled;
+test('only the local sender can use its toast or visual proof to trigger a success callback',async t=>{
+  for(const [enabled,proof] of [[false,'wecom_sent_overlay_v1'],[true,'wecom_system_toast_v1'],[true,'wecom_sent_overlay_v1']]){
+    const f=await fixture(t);f.platform.localInvitationProof=enabled;
     assert.equal((await f.service.handle('POST',ROUTES.dispatch,f.signed(business()))).body.success,true);
     await f.service.tick();
     Object.assign(f.task(),{status:'succeeded',result:{sendStatus:'unknown',invitationSent:null,remarkPhoneSet:true,
-      invitationRequestConfirmed:true,invitationRequestProof:'wecom_system_toast_v1'}});
+      invitationRequestConfirmed:true,invitationRequestProof:proof}});
     f.advance(2000);await f.service.tick();await f.service.tick();
     assert.equal(f.callbacks.length,enabled?1:0);
     assert.equal(f.store.snapshot().leads[0].stage,enabled?'completed':'needs_attention');

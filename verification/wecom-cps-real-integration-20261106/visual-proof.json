@@ -1,0 +1,16 @@
+{
+  "leadId": "157811",
+  "device": "202",
+  "physicalTapCount": 1,
+  "recipientConfirmed": true,
+  "checks": {
+    "sent": "confirmed",
+    "plain_profile": "unconfirmed",
+    "wrong_phone": "unconfirmed",
+    "wrong_lead": "unconfirmed"
+  },
+  "serverSha256": "156073b154c3200286f52729423b529572136fc08a04a86f71d2832b19197603",
+  "runnerSha256": "f6a84807f4819cb0b8cc5c280e2631e2d53e0ae3300b290b31fcc63957020b7f",
+  "verifierSourceSha256": "5296a3528d9b7f2dced8d2dda30b8323857112ae37716710747df79dd9a42905",
+  "callbackStatus": "pending"
+}
