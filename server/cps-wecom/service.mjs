@@ -1,11 +1,25 @@
 import {createHash,randomBytes} from 'node:crypto';
-import {AUTH_FIELDS,ROUTES,parseBody,authenticate,dispatchInput,memberKey,fingerprint,signature,stringifyBody,failure} from './protocol.mjs';
+import {AUTH_FIELDS,ROUTES,MEMBER_ID_FIELDS,parseBody,authenticate,dispatchInput,memberKey,fingerprint,signature,stringifyBody,failure} from './protocol.mjs';
 import {remarkName,recipientIdentity,physicalRecipientIdentity,memberIdentity,memberLimit,businessDay,businessDayEnd} from './domain.mjs';
 import {bounded} from './platform.mjs';
 const key=(app,id)=>JSON.stringify([app,id]);
 const fixedCode=value=>typeof value==='string'&&/^[a-z0-9_]{1,100}$/.test(value)?value:'execution_outcome_unknown';
 const activeStages=new Set(['queued','dispatching','reconcile','submitted','callback_pending','callback_inflight']);
 const reasons={member_not_configured:'指定企微成员未配置手机与主号/分身映射',member_binding_unverified:'指定企微成员未启用或未完成账号绑定核验',member_rate_limited:'指定企微成员添加过频，暂停新任务',device_not_listed:'指定成员的设备未上架',adb_offline:'指定成员的手机连接离线',agent_offline:'指定成员的执行端离线',device_busy:'指定成员的设备正在被占用',device_number_conflict:'指定成员的手机编号映射未确认',wecom_not_configured:'指定成员的设备或应用未在已验证企微范围',remark_phone_protocol_not_ready:'指定成员的执行器尚未就绪（备注手机号校验协议）'};
+
+function sameDispatch(prior,input,hash) {
+  if(prior.fingerprint===hash)return true;
+  if(!input.wecom_phone||input.wecom_phone!==prior.input.wecom_phone)return false;
+  // Match the original fingerprint without rewriting historical records.
+  const original={...input};
+  for(const k of MEMBER_ID_FIELDS){
+    const recorded=prior.input[k],expected=recorded??prior.target[k];
+    if(input[k]!==undefined&&expected!==undefined&&input[k]!==expected)return false;
+    if(recorded===undefined)delete original[k];
+    else original[k]=recorded;
+  }
+  return prior.fingerprint===fingerprint(original);
+}
 
 export function createService({store,clients,platform,fetchImpl=fetch,clock=Date.now,nonce=()=>randomBytes(16).toString('hex'),maxCallbackAttempts=5}={}) {
   if(!Number.isInteger(maxCallbackAttempts)||maxCallbackAttempts<1||maxCallbackAttempts>10||!['preview','send'].includes(platform.mode))throw Error('cps_service_config_invalid');
@@ -59,13 +73,16 @@ export function createService({store,clients,platform,fetchImpl=fetch,clock=Date
   async function dispatch(client,body) {
     const input=dispatchInput(body),id=input.lead_id,hash=fingerprint(input),snapshot=store.snapshot();
     const old=find(snapshot,client.appId,id);
-    if(old){if(old.fingerprint!==hash)throw failure(2003,'同一lead_id的业务参数发生变化');return response(true,200,'已接收');}
+    if(old){if(!sameDispatch(old,input,hash))throw failure(2003,'同一lead_id的业务参数发生变化');return response(true,200,'已接收');}
     if(client.phoneRouting&&!input.wecom_phone)throw failure(2003,'请传企微登录手机号wecom_phone，phone为客户手机号');
     remarkName(input); // Reject >20 before acknowledging or reserving a phone.
     const target=client.members.get(memberKey(input));
     if(!target)throw failure(2003,reasons.member_not_configured);
-    if(input.wecom_phone&&['wecom_userid','wecom_corp_id'].some(k=>target[k]!==undefined&&target[k]!==input[k]))throw failure(2003,'企微登录手机号与配置的企业或成员ID不一致');
-    const recipientKey=recipientIdentity(input),physicalKey=physicalRecipientIdentity(input,target),legacyKey=recipientIdentity({...input,wecom_phone:undefined});rejectPriorRecipient(snapshot,recipientKey,physicalKey,legacyKey,input,target);
+    if(input.wecom_phone&&MEMBER_ID_FIELDS.some(k=>input[k]!==undefined&&target[k]!==undefined&&target[k]!==input[k]))throw failure(2003,'企微登录手机号与配置的企业或成员ID不一致');
+    const recipientKey=recipientIdentity(input),physicalKey=physicalRecipientIdentity(input,target);
+    const legacyInput={phone:input.phone,wecom_userid:input.wecom_userid??target.wecom_userid,wecom_corp_id:input.wecom_corp_id??target.wecom_corp_id};
+    const legacyKey=MEMBER_ID_FIELDS.every(k=>legacyInput[k]!==undefined)?recipientIdentity(legacyInput):undefined;
+    rejectPriorRecipient(snapshot,recipientKey,physicalKey,legacyKey,input,target);
     const inventory=await platform.inventory(),row=matchedDevice(inventory,target);
     const unavailable=targetReason(row,target,store.snapshot());
     if(unavailable)throw failure(2003,reasons[unavailable]);
@@ -73,7 +90,7 @@ export function createService({store,clients,platform,fetchImpl=fetch,clock=Date
     const requestId='cps_'+createHash('sha256').update(key(client.appId,id)).digest('hex');
     await store.transact(s=>{
       const prior=find(s,client.appId,id);
-      if(prior){if(prior.fingerprint!==hash)throw failure(2003,'同一lead_id的业务参数发生变化');return;}
+      if(prior){if(!sameDispatch(prior,input,hash))throw failure(2003,'同一lead_id的业务参数发生变化');return;}
       rejectPriorRecipient(s,recipientKey,physicalKey,legacyKey,input,target);
       if(memberLimit(s,target,clock()))throw failure(2003,reasons.member_rate_limited);
       if(s.leads.length>=10000)throw failure(500,'任务账本容量已满，请联系维护人员',503);
@@ -164,7 +181,7 @@ export function createService({store,clients,platform,fetchImpl=fetch,clock=Date
     if(['callback_pending','callback_inflight'].includes(lead.stage))return callback(lead,client);
     const current=client.members.get(memberKey(lead.input));
     if(!current||current.enabled===false||current.bindingVerified!==true||current.deviceNumber!==lead.target.deviceNumber||current.appSlot!==lead.target.appSlot||current.wecom_phone!==lead.target.wecom_phone
-      ||['wecom_userid','wecom_corp_id'].some(k=>current[k]!==undefined&&current[k]!==lead.input[k]))return update(lead,r=>{r.stage='needs_attention';r.error='member_mapping_changed';});
+      ||MEMBER_ID_FIELDS.some(k=>current[k]!==undefined&&current[k]!==(lead.input[k]??lead.target[k])))return update(lead,r=>{r.stage='needs_attention';r.error='member_mapping_changed';});
     if(lead.stage==='queued') {
       const inv=await platform.inventory(),row=matchedDevice(inv,lead.target);
       if(row?.deviceId&&row.deviceId!==lead.deviceId)return update(lead,r=>{r.stage='needs_attention';r.error='physical_device_mapping_changed';});

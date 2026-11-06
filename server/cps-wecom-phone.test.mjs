@@ -12,7 +12,8 @@ const secret='synthetic-cps-phone-secret';
 const members=[{wecom_phone:'13900139155',deviceNumber:'155',appSlot:'main',bindingVerified:true},
   {wecom_phone:'13900139255',deviceNumber:'155',appSlot:'clone',bindingVerified:true}];
 const client=rows=>({appId:'fixture',secret,callbackUrl:'http://127.0.0.1:1/api/v1/lead/callback',allowLoopbackTest:true,allDeviceStatus:true,members:rows});
-const input=(id=1n,account=members[0].wecom_phone)=>({lead_id:id,phone:'13800138001',wecom_phone:account,wecom_userid:'member',wecom_corp_id:'ww_fixture'});
+const phoneOnly=(id=1n,account=members[0].wecom_phone)=>({lead_id:id,phone:'13800138001',wecom_phone:account});
+const input=(id=1n,account=members[0].wecom_phone)=>({...phoneOnly(id,account),wecom_userid:'member',wecom_corp_id:'ww_fixture'});
 async function fixture(t,{rows=members,callbackFailures=0,deviceRows}={}){
   const dir=await fs.mkdtemp(path.join(os.tmpdir(),'cps-phone-')),store=await createStore({file:path.join(dir,'journal.json')});
   let now=1793584800000,seq=0,busy=false;
@@ -97,6 +98,20 @@ test('121-second retry and changed member ID do not duplicate the same account/c
   assert.equal((await f.post(ROUTES.dispatch,{...input(3n),wecom_userid:'different-member'})).body.success,false);
   assert.equal((await f.post(ROUTES.dispatch,input(1n,members[1].wecom_phone))).body.success,false);
 });
+test('phone-only retries reuse the original lead even after its callback redacts the customer phone',async t=>{
+  const f=await fixture(t);
+  assert.equal((await f.post(ROUTES.dispatch,input())).body.success,true);
+  await f.service.tick();await f.finish();
+  assert.equal(f.store.snapshot().leads[0].input.phone,undefined);
+  for(const body of [phoneOnly(),{...phoneOnly(),wecom_corp_id:null,wecom_userid:''}]){
+    assert.equal((await f.post(ROUTES.dispatch,body)).body.success,true);
+  }
+  assert.equal((await f.post(ROUTES.dispatch,{...phoneOnly(),wecom_userid:'different-member'})).body.code,2003);
+  assert.equal((await f.post(ROUTES.dispatch,{...phoneOnly(),phone:'13800138002'})).body.code,2003);
+  assert.equal((await f.post(ROUTES.dispatch,phoneOnly(2n))).body.code,2003);
+  await f.service.tick();
+  assert.equal(f.submitted.length,1);assert.equal(f.callbacks.length,1);
+});
 test('callbacks retry notification only; changing configured slot never reroutes a pending phone task',async t=>{
   const f=await fixture(t,{callbackFailures:1});await f.post(ROUTES.dispatch,input());await f.service.tick();await f.finish();
   assert.equal(f.callbacks.length,1);f.advance(5000);await f.service.tick();assert.equal(f.callbacks.length,2);assert.equal(f.submitted.length,1);
@@ -119,13 +134,28 @@ test('a rate limit belongs to account phone even when caller changes member meta
 test('phone binding optionally pins official IDs and rejects conflicting caller identity',async t=>{
   const f=await fixture(t,{rows:[{...members[0],wecom_corp_id:'ww_other',wecom_userid:'member'}]});
   assert.equal((await f.post(ROUTES.dispatch,input())).body.success,false);assert.equal(f.submitted.length,0);
+  assert.equal((await f.post(ROUTES.dispatch,{...phoneOnly(),wecom_userid:123})).body.code,2003);
+  assert.equal((await f.post(ROUTES.dispatch,phoneOnly())).body.success,true);await f.service.tick();
+  assert.equal(f.submitted.length,1);assert.equal(f.submitted[0].target.wecom_corp_id,'ww_other');
+  assert.equal((await f.post(ROUTES.dispatch,{...input(),wecom_corp_id:'ww_other'})).body.success,true);
+  assert.equal((await f.post(ROUTES.dispatch,input())).body.code,2003);
+  assert.equal((await f.post(ROUTES.dispatch,{...phoneOnly(2n),phone:'13800138002'})).body.success,true);
+  [...f.clients.get('fixture').members.values()][0].wecom_corp_id='ww_changed';
+  await f.service.tick();
+  assert.equal(f.store.snapshot().leads.find(l=>l.leadId==='2').error,'member_mapping_changed');
+  assert.equal(f.submitted.length,1);
 });
 test('legacy recipient fence survives phone routing migration and callback phone redaction',async t=>{
   const legacy={deviceNumber:'155',appSlot:'main',wecom_corp_id:'ww_fixture',wecom_userid:'member',bindingVerified:true};const f=await fixture(t,{rows:[legacy]});
+  assert.equal((await f.post(ROUTES.dispatch,{lead_id:1n,phone:'13800138001'})).body.code,2003);
   const old=input();delete old.wecom_phone;await f.post(ROUTES.dispatch,old);await f.service.tick();await f.finish();
   await f.store.transact(s=>{delete s.recipients[0].physicalKey;});assert.equal(f.store.snapshot().leads[0].input.phone,undefined);
   f.clients.set('fixture',parseClients(JSON.stringify([client([members[0]])])).get('fixture'));
+  assert.match((await f.post(ROUTES.dispatch,phoneOnly(2n))).body.message,/不能重复添加/);
   assert.equal((await f.post(ROUTES.dispatch,{...input(2n),wecom_userid:'new-member'})).body.success,false);assert.equal(f.submitted.length,1);
+  const moved={...members[0],deviceNumber:'202',wecom_corp_id:legacy.wecom_corp_id,wecom_userid:legacy.wecom_userid};
+  f.clients.set('fixture',parseClients(JSON.stringify([client([moved])])).get('fixture'));
+  assert.match((await f.post(ROUTES.dispatch,phoneOnly(2n))).body.message,/不能重复添加/);
 });
 test('configuration rejects duplicate account phones, mixed routing, shared slots and partial official IDs',()=>{
   for(const rows of [[members[0],{...members[1],wecom_phone:members[0].wecom_phone}], [members[0],{...members[1],appSlot:'main'}],
