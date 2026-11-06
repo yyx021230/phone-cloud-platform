@@ -1,0 +1,26 @@
+{
+  "verifiedAt": "2026-11-06T08:51:33.534Z",
+  "leadId": "157811",
+  "device": "202",
+  "dispatch": "replayed original signed CPS fields through local HTTP",
+  "sendAttempts": 1,
+  "recipientConfirmed": true,
+  "visualEvidence": "wecom_sent_overlay_v1",
+  "confirmationRecoveredFromOriginalCapture": true,
+  "automaticCallback": {
+    "httpStatus": 200,
+    "businessCode": 200,
+    "acknowledged": true,
+    "attempts": 1,
+    "result": "success"
+  },
+  "duplicateRequest": {
+    "httpStatus": 200,
+    "businessCode": 200,
+    "additionalNativeStarts": 0,
+    "additionalCallbacks": 0
+  },
+  "retainedPreviousSentLead": "157812",
+  "runtimeCommit": "6372e63fba9418bf57ecb778dccdbba1d47b97bf",
+  "mode": "send"
+}
