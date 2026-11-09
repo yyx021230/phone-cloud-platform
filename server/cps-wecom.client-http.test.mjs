@@ -27,7 +27,7 @@ function cpsSign(body){
 }
 function envelope(input){const body={...input,app_id:appId,timestamp:Date.now(),nonce:randomBytes(16).toString('hex')};return{...body,sign:cpsSign(body)};}
 const executionPhones={member_43:'13900139043',member_59:'13900139059',member_155_main:'13900139155',member_155_clone:'13900139255'};
-const lead=(id,member='member_43',phone='13800138000')=>({lead_id:id,phone,wecom_phone:executionPhones[member],wecom_corp_id:'ww_external_fixture',wecom_userid:member});
+const lead=(id,member='member_43',phone='13800138000')=>({lead_id:id,phone,wecom_phone:executionPhones[member]});
 async function listen(server,port=0){server.listen(port,'127.0.0.1');await once(server,'listening');return'http://127.0.0.1:'+server.address().port;}
 async function unusedPort(){const server=http.createServer();await listen(server);const port=server.address().port;await new Promise(r=>server.close(r));return port;}
 async function waitFor(fn,message,timeout=18000){const until=Date.now()+timeout;do{if(await fn())return;await pause(80);}while(Date.now()<until);throw Error(message);}
@@ -139,7 +139,12 @@ test(`CPS external HTTP lifecycle (${long?'real 121-second timeout':'short defau
   };
 
   await t.test('device status is signed, complete and read-only; real lookup occupancy refuses CPS admission',async()=>{
-    const r=await call(devicesPath,{online_only:false});assert.equal(r.body.success,true);assert.equal(r.body.result.total,4);
+    const r=await call(devicesPath,{online_only:false});assert.equal(r.status,200);assert.equal(r.body.success,true);assert.equal(r.body.result.total,4);
+    const accounts=r.body.result.devices.flatMap(d=>d.accounts);
+    assert.equal(accounts.length,4);
+    for(const account of accounts){
+      assert.deepEqual(Object.keys(account).sort(),['app_slot','available','binding_verified','enabled','unavailable_reason','wecom_name','wecom_phone']);
+    }
     assert.equal(r.body.result.devices.find(d=>d.device_number==='67').online,false);
     const busy=r.body.result.devices.find(d=>d.device_number==='59');assert.equal(busy.busy,true);assert.equal(busy.accounts[0].unavailable_reason,'device_busy');
     assert.equal(busy.accounts[0].wecom_phone,executionPhones.member_59);
@@ -168,10 +173,18 @@ test(`CPS external HTTP lifecycle (${long?'real 121-second timeout':'short defau
   });
   let main;
   await t.test('another phone finishes while the first waits; callback 500 retries notification only',async()=>{
-    callbackPolicy.set(201,'500_once');assert.equal((await call(dispatchPath,lead(201,'member_155_main'))).body.success,true);
+    const input=lead(201,'member_155_main');
+    assert.deepEqual(Object.keys(input),['lead_id','phone','wecom_phone']);
+    callbackPolicy.set(201,'500_once');
+    const accepted=await call(dispatchPath,input);
+    assert.equal(accepted.status,200);assert.equal(accepted.body.success,true);assert.equal(accepted.body.code,200);
     main=await pick();assert.equal(main.payload.appSlot,'main');assert.equal(main.payload.androidUser,0);assert.equal(main.payload.deviceNumber,'155');
     await finish(main);await waitStage(201,'completed');
     const callbacks=callbackRequests.filter(r=>r.lead_id===201);assert.equal(callbacks.length,2);assert.notEqual(callbacks[0].nonce,callbacks[1].nonce);assert.equal(applied.get(201),'success');
+    for(const callback of callbacks){
+      assert.deepEqual(Object.keys(callback).sort(),['app_id','lead_id','nonce','remark_phone_set','result','sign','timestamp']);
+      assert.equal(callback.remark_phone_set,true);
+    }
     assert.equal(claims.get(main.payload.automationJobId),1);assert.equal((await stage(101)).stage,'submitted');assert.equal((await jobs()).find(j=>j.jobId===held.payload.automationJobId).status,'running');
   });
   await t.test('main and clone bind distinct Android users and share one physical busy fence',async()=>{
