@@ -2339,7 +2339,7 @@ function recoveryRequestKey(agentId, serial) {
 function recoveryControlFeedback(item) {
   const request = item.recoveryRequest;
   if (!request) {
-    if (item.agentOnline && item.recoveryIsolated && item.recoveryReleaseRevision > 0 && !item.recoveryControlPending && !item.recoveryIsolationError) {
+    if (item.agentOnline && item.recoveryIsolated && !item.recoveryRecordOnly && item.recoveryReleaseRevision > 0 && !item.recoveryControlPending && !item.recoveryIsolationError) {
       return { tone: "warning", label: "当前仍处于隔离", next: "解除请求已送达；设备仍有故障，请查看下方原因", pending: false };
     }
     return null;
@@ -2357,6 +2357,7 @@ function recoveryControlFeedback(item) {
   if (request.kind === "release") {
     if (!item.recoveryIsolated && item.recoveryPaused) return { tone: "warning", label: "隔离已解除，恢复仍暂停", next: "当前设置已更新；此手机仍保持暂停", pending: false };
     if (!item.recoveryIsolated) return { tone: "active", label: "隔离已解除", next: "已继续自动恢复；设备是否上线以当前断点为准", pending: false };
+    if (item.recoveryRecordOnly && item.state === "adb_device") return {tone:"warning",label:"旧隔离待稳定核对",next:"请求已送达；以连续在线扫描核对旧隔离，不等于当前仍有故障",pending:false};
     if (Date.parse(item.recoveryIsolated.isolatedAt) > Date.parse(request.previousIsolationAt)) {
       return { tone: "warning", label: "恢复后再次隔离", next: "已尝试恢复，但故障仍在；请查看下方原因", pending: false };
     }
@@ -2410,13 +2411,14 @@ function renderWindowsRecoveryConsole() {
     recovery: agent.health?.deviceRecovery || {},
     online: isOnline(agent.lastSeenAt)
   })).filter(({ recovery, online }) => online || recovery.observedAt || recovery.inventoryObservedAt);
-  const queue = telemetryAgents.flatMap(({ agent, recovery, online }) => {
+  const entries = telemetryAgents.flatMap(({ agent, recovery, online }) => {
     const desired = agent.recoveryControl || {revision:0,paused:[]};
-    const rows = [...(recovery.queue || [])];
+    const rows = (recovery.queue || []).map(item=>({...item,recoveryRecordOnly:item.state==="adb_device" && !item.inProgress}));
     for (const hold of [...(desired.paused || []), ...(agent.health?.recoveryControl?.isolated || [])]) {
-      if (!rows.some(item => String(item.serial).toUpperCase() === hold.serial)) {
-        const device = state.devices.find(d => d.adb?.agentId === agent.agentId && String(d.adb?.serial || "").toUpperCase() === hold.serial);
-        rows.push({serial:hold.serial,deviceName:device?.deviceName || hold.serial,state:device?.recovery?.state || "unknown"});
+      const serial=String(hold.serial || "").toUpperCase();
+      if (!rows.some(item => String(item.serial).toUpperCase() === serial)) {
+        const device = state.devices.find(d => d.adb?.agentId === agent.agentId && String(d.adb?.serial || "").toUpperCase() === serial);
+        rows.push({serial,deviceName:device?.deviceName || serial,state:device?.recovery?.state || "unknown",recoveryRecordOnly:true});
       }
     }
     return rows.map((item) => ({
@@ -2443,6 +2445,10 @@ function renderWindowsRecoveryConsole() {
     nextActionAt: item.nextActionAt || recovery.actionReadyAt || (recovery.circuitOpen ? recovery.circuitUntil : "")
   }));
   });
+  // Holds are settings/history, not evidence of a current recovery candidate.
+  // Preserve their controls without inflating recovery counts or clearing pauses.
+  const queue=entries.filter(item=>!item.recoveryRecordOnly);
+  const records=entries.filter(item=>item.recoveryRecordOnly && (item.recoveryPaused || item.recoveryIsolated));
   const events = telemetryAgents.flatMap(({ agent, recovery }) => (recovery.recentEvents || []).map((event) => ({
     ...event,
     agentId: agent.agentId,
@@ -2467,13 +2473,13 @@ function renderWindowsRecoveryConsole() {
       ? { tone: "danger", label: "保护熔断", detail: circuitAgents.map(({ agent, recovery }) => `${agent.agentName || agent.agentId}：${recoveryBlockReason(recovery)}`).join("；") }
       : activeCount
         ? { tone: "active", label: `${activeCount} 台正在恢复`, detail: "动作执行后会先验证 ADB，再决定是否进入下一次重试" }
-        : telemetryAgents.some(({ recovery }) => recovery.recoveryMode === "continuous_recovery")
+        : queue.length && telemetryAgents.some(({ recovery }) => recovery.recoveryMode === "continuous_recovery")
           ? { tone: "active", label: "异常设备持续恢复", detail: "连续失败或动作链耗尽的手机单独隔离，其他手机继续检测与恢复" }
-        : telemetryAgents.some(({ recovery }) => recovery.recoveryMode === "degraded_recovery")
+        : queue.length && telemetryAgents.some(({ recovery }) => recovery.recoveryMode === "degraded_recovery")
           ? { tone: "active", label: "残余队列并发恢复", detail: "批量异常已稳定，正在按每批最多 8 台执行精确恢复" }
         : queue.length
           ? { tone: "warning", label: `${queue.length} 台待恢复`, detail: recoveryBlockSummary(telemetryAgents) }
-          : { tone: "healthy", label: "恢复链路稳定", detail: "当前没有物理在线但 ADB 异常的手机" };
+          : { tone: "healthy", label: "当前无待恢复项", detail: "恢复设置与历史隔离单独保留；不以空队列推断全部设备在线" };
   const filter = ["all", "active", "waiting", "manual"].includes(state.windowsRecoveryFilter) ? state.windowsRecoveryFilter : "all";
   const filteredQueue = queue.filter((item) => recoveryQueueMatchesFilter(item, filter));
   const filterCounts = {
@@ -2546,6 +2552,11 @@ function renderWindowsRecoveryConsole() {
           </div>
         </aside>
       </div>
+      ${records.length ? `<details class="recovery-queue-panel">
+        <summary>恢复设置与历史隔离（${records.length} 台，不计入恢复队列）</summary>
+        <p>保留人工暂停与历史记录；这里只展示设置，不代表需要执行恢复动作。</p>
+        <div class="recovery-queue-list">${records.map(renderRecoveryQueueRow).join("")}</div>
+      </details>` : ""}
       <footer class="recovery-legend">
         <span><i class="is-auto"></i>自动处理：精确 ADB reconnect / 单设备 PnP 重启</span>
         <span><i class="is-wait"></i>安全等待：任务占用、Windows 安装器或退避冷却</span>
@@ -2577,7 +2588,8 @@ function renderRecoveryQueueRow(item) {
   const stateLabel = recoveryStateLabel(item.state);
   const attempts = Math.max(0, Number(item.attempts || 0));
   const maxAttempts = Math.max(1, Number(item.maxAttempts || 5));
-  const isolationReason=item.recoveryIsolated ? (item.recoveryIsolated.reason === "recovery_attempts_exhausted" ? "恢复动作链已耗尽，等待管理员解除" : `连续恢复失败 ${Number(item.recoveryIsolated.failures || 0)} 次，等待管理员解除`) : "";
+  const historicalOnlineIsolation=item.recoveryRecordOnly && item.state==="adb_device" && item.recoveryIsolated;
+  const isolationReason=historicalOnlineIsolation ? "旧隔离待稳定核对；不会对在线手机执行恢复动作" : item.recoveryIsolated ? (item.recoveryIsolated.reason === "recovery_attempts_exhausted" ? "恢复动作链已耗尽，等待管理员解除" : `连续恢复失败 ${Number(item.recoveryIsolated.failures || 0)} 次，等待管理员解除`) : "";
   const evidence = [isolationReason,item.lastError, item.rootProblem && `USB ${item.rootProblem}`, item.adbInterfaceProblem && `ADB ${item.adbInterfaceProblem}`].filter(Boolean).join(" · ");
   return `
     <article class="recovery-device-row is-${status.tone}">
@@ -2586,7 +2598,7 @@ function renderRecoveryQueueRow(item) {
         <div><strong>${escapeHtml(item.deviceName || item.serial)}</strong><code>${escapeHtml(item.serial)}</code></div>
       </div>
       <div class="recovery-breakpoint">
-        <span>当前断点</span>
+        <span>${item.recoveryRecordOnly ? "记录状态（以最新扫描为准）" : "当前断点"}</span>
         <strong>${escapeHtml(stateLabel)}</strong>
         <small>${escapeHtml(item.agentName || item.agentId || "-")}</small>
       </div>
@@ -2603,8 +2615,8 @@ function renderRecoveryQueueRow(item) {
         <small>${escapeHtml(item.lastAttemptAt ? `上次动作 ${shortTime(item.lastAttemptAt)}` : "尚未执行恢复动作")}</small>
       </div>
       <div class="recovery-evidence">
-        <button class="ghost-button" type="button" data-recovery-toggle="${escapeHtml(item.serial)}" data-agent-id="${escapeHtml(item.agentId)}" data-revision="${Number(item.recoveryControlRevision || 0)}" data-reset-isolation="${Boolean(item.recoveryIsolated)}" data-paused="${item.recoveryPaused || item.recoveryIsolated ? "false" : "true"}" ${item.recoveryControlSupported && (!item.recoveryIsolated || item.recoveryIsolationReset) && !feedback?.pending ? "" : "disabled"}>
-          ${feedback?.pending ? "处理中…" : item.recoveryIsolated ? "解除隔离并继续" : item.recoveryPaused ? "继续自动恢复" : "暂停自动恢复"}
+        <button class="ghost-button" type="button" data-recovery-toggle="${escapeHtml(item.serial)}" data-agent-id="${escapeHtml(item.agentId)}" data-revision="${Number(item.recoveryControlRevision || 0)}" data-reset-isolation="${Boolean(item.recoveryIsolated)}" data-paused="${item.recoveryPaused || item.recoveryIsolated ? "false" : "true"}" ${!historicalOnlineIsolation && item.recoveryControlSupported && (!item.recoveryIsolated || item.recoveryIsolationReset) && !feedback?.pending ? "" : "disabled"}>
+          ${historicalOnlineIsolation ? "等待稳定核对" : feedback?.pending ? "处理中…" : item.recoveryIsolated ? "解除隔离并继续" : item.recoveryPaused ? "继续自动恢复" : "暂停自动恢复"}
         </button>
         <small role="status" aria-live="polite">${escapeHtml(feedback?.next || (!item.recoveryControlSupported ? "管理器升级后可用" : !item.agentOnline || item.recoveryControlPending ? "设置等待管理器确认" : item.recoveryPaused ? "已暂停新恢复动作；已启动的驱动安装仍需收尾" : "只控制此手机的自动恢复，保留在线检测"))}</small>
       </div>
@@ -2628,6 +2640,10 @@ function recoveryAttemptClass(index, attempts, item) {
 function recoveryDeviceStatus(item) {
   const feedback = recoveryControlFeedback(item);
   if (feedback) return feedback;
+  if(item.recoveryRecordOnly && item.state==="adb_device" && item.agentOnline) {
+    if(item.recoveryIsolated)return {tone:"warning",label:"旧隔离待稳定核对",next:"以新鲜连续扫描确认；仅观察、不恢复"};
+    if(item.recoveryPaused)return {tone:"warning",label:item.recoveryControlPending?"暂停待确认":"自动恢复已暂停",next:"ADB 在线，人工暂停保留；暂停设置不会停止在线检测"};
+  }
   if (item.recoveryIsolated) return {tone:"warning",label:"自动恢复已隔离",next:"需管理员解除；在线检测继续"};
   if (item.recoveryPaused) return {tone:"warning",label:!item.agentOnline || item.recoveryControlPending ? "暂停待确认" : "自动恢复已暂停",next:item.inProgress ? "已有动作正在收尾" : "在线检测继续"};
   if (!item.agentOnline) return { tone: "danger", label: "主机离线", next: "等待管理器恢复" };
@@ -2786,7 +2802,7 @@ function recoveryReasonLabel(value) {
 
 function renderRecoveryEmpty(hasQueue, filter) {
   if (hasQueue && filter !== "all") return `<div class="recovery-empty"><strong>这个筛选下没有设备</strong><span>切换“全部”可查看当前完整恢复队列。</span></div>`;
-  return `<div class="recovery-empty is-healthy"><strong>当前队列已清空</strong><span>所有已物理连接的手机都已到达 ADB 在线状态。</span></div>`;
+  return `<div class="recovery-empty is-healthy"><strong>当前队列没有待恢复项</strong><span>设备是否在线以最新扫描为准；人工暂停及历史隔离在下方单独保留。</span></div>`;
 }
 
 function renderWindows() {

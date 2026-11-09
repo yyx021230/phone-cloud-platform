@@ -9,6 +9,9 @@ export async function createRecoveryIsolation({file, agentId, now=Date.now, writ
   await fs.rename(tmp,file);
 }}) {
   let state={version:1,agentId,targets:{}}, error='', chain=Promise.resolve(), corrupt=false;
+  // Proof belongs to this process and this incident, never to a cached file.
+  const stable = new Map();
+  let lastObservation = 0, observationPending = false;
   try {
     const saved=JSON.parse(await fs.readFile(file,'utf8'));
     if(saved.version!==1 || saved.agentId!==agentId || !saved.targets || typeof saved.targets!=='object' || Array.isArray(saved.targets)) throw Error('invalid_isolation');
@@ -39,6 +42,49 @@ export async function createRecoveryIsolation({file, agentId, now=Date.now, writ
     });},
     isolate(serial,reason='recovery_attempts_exhausted') {return mutate(next=>{const r=row(next,key(serial));if(r.isolatedAt)return false;r.isolatedAt=now();r.reason=reason;return true;});},
     confirmed(serial) {return mutate(next=>{const r=next.targets[key(serial)];if(!r || r.isolatedAt || !r.failures)return false;r.failures=0;r.lastAttempt='';return true;},true);},
+    observeAdb(snapshot, {minStableMs=90_000,minStableScans=3,maxAgeMs=30_000,maxGapMs=45_000}={}) {
+      // Bound queued work if disk I/O stalls. Skipped scans never count as proof.
+      if(observationPending)return Promise.resolve([]);
+      // Copy only direct discovery fields before publication adds physical rows.
+      const observedAt=snapshot?.observedAt;
+      const devices=Array.isArray(snapshot?.devices)
+        ? snapshot.devices.map(d=>({serial:key(d?.adbSerial),state:d?.state})) : null;
+      observationPending=true;
+      return mutate(next=>{
+        const at=now();
+        if(!devices || !Number.isFinite(observedAt) || observedAt<=0
+          || !Number.isFinite(at) || observedAt>at || at-observedAt>maxAgeMs
+          || !Number.isFinite(minStableMs) || minStableMs<90_000
+          || !Number.isSafeInteger(minStableScans) || minStableScans<3
+          || !Number.isFinite(maxAgeMs) || maxAgeMs<=0
+          || !Number.isFinite(maxGapMs) || maxGapMs<=0 || observedAt<lastObservation) {
+          stable.clear();return false;
+        }
+        if(observedAt===lastObservation)return false;
+        if(lastObservation && observedAt-lastObservation>maxGapMs)stable.clear();
+        lastObservation=observedAt;
+        const states=new Map();
+        for(const d of devices) {
+          if(!d.serial)continue;
+          states.set(d.serial,states.has(d.serial)?'ambiguous':d.state);
+        }
+        const changed=[];
+        for(const [serial,r] of Object.entries(next.targets)) {
+          if((!r.isolatedAt && !r.failures) || states.get(serial)!=='device') {stable.delete(serial);continue;}
+          const incident=JSON.stringify([r.isolatedAt,r.failures,r.lastAttempt,r.reason,r.releaseRevision]);
+          const old=stable.get(serial);
+          const proof=old?.incident===incident ? {...old,scans:old.scans+1} : {incident,startedAt:observedAt,scans:1};
+          stable.set(serial,proof);
+          if(proof.scans<minStableScans || observedAt-proof.startedAt<minStableMs)continue;
+          if(r.isolatedAt)r.lastIsolation={isolatedAt:r.isolatedAt,reason:r.reason,failures:r.failures,lastAttempt:r.lastAttempt};
+          Object.assign(r,{failures:0,isolatedAt:0,reason:'',lastAttempt:'',recoveredAt:observedAt});
+          changed.push(serial);
+        }
+        // Release revision and manual pause (a separate store) are untouched.
+        // mutate(...,true) exposes the clear only after durable write succeeds.
+        return changed.length?changed:false;
+      },true).finally(()=>{observationPending=false;});
+    },
     release(control) {return mutate(next=>{
       const changed=[];
       for(const item of control.releases || []) {

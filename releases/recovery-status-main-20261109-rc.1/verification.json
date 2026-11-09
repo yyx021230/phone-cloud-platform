@@ -1,0 +1,107 @@
+{
+  "version": "recovery-status-main-20261109-rc.1",
+  "date": "2026-11-09",
+  "state": "local_main_merge_not_deployed",
+  "merge": {
+    "firstParent": "5327172d8f31618b9abfb7118e5450720a47dcac",
+    "secondParent": "dccc00e1da85c0bc6f79b2b692561e4c956e2c3c",
+    "previousLocalMain": "0034b939d0c10b4e445b691809d8fb79f2099ed8",
+    "remoteMainFetched": true,
+    "push": false,
+    "repositoryBaselineIsProduction": false
+  },
+  "sourceReview": {
+    "windows-agent/src/recovery-isolation.mjs": {
+      "before": "2fe4305e6ca9afabb72b0406a224786659d88f2d8f3a1351e4a8b2aa475e312f",
+      "after": "639954f270e27a95aa6a664e3c0582ce35da8f909dfa07a43c9a3000199bcdc1",
+      "outsideRegionByteIdentical": true
+    },
+    "windows-agent/src/index.mjs": {
+      "before": "884bc370558e6b0b3f2d0d46dee309da4467757b613c0da03576de8f9b34df74",
+      "after": "8e364c688a7f7e36e3be790ef2415f48ed53677c05929a8963b753acfc763c61",
+      "outsideRegionByteIdentical": true
+    },
+    "public/app.js": {
+      "before": "98e828b9288cd4ec6b82850d526ada380ae9b21892c6a0c695bd2b5e6feeb7c7",
+      "after": "70ac5f45bad7afdc84014bfc72d64591aa6636c815589e01c382b46e62690486",
+      "outsideRegionByteIdentical": true
+    },
+    "public/index.html": {
+      "before": "185aded6485a64a9f905389b09c8cc18530540a5a01691e8305c5728333bd7ee",
+      "after": "86ec411407a3aadba757e7e6f420d74ceadddd7d1cddbb517f2c5ab87cc728b2",
+      "onlyBusinessCacheReferenceChanged": true
+    }
+  },
+  "files": {
+    "docs/PROJECT_DEVELOPMENT.md": "e9090f5095a7ed054d562283a237d87d378a4731bcbfb245e1b6dd633aa145cc",
+    "windows-agent/src/recovery-online-isolation.test.mjs": "a1b3f994bddefc5cd78749a856136c93e6da84c4b129dbb2ec36a0920babb0d0",
+    "server/automation-center-ui.test.mjs": "533ca5d9c4d8b05679ba76fccd54cb7f5230be015b1a958278e5d54ec03f22cb",
+    "screen-client/screen-ui.test.mjs": "f36079512b676f73a67c97caa2c349a07e8375b29be95c0bb11b110421710349"
+  },
+  "mainDocHistoryPreserved": true,
+  "immutableCandidateFilesVerified": 12,
+  "tests": {
+    "environment": "Node v25.9.0; macOS; env-i; loopback and fake ADB; no business credentials",
+    "fullBaseline": {
+      "tests": 1447,
+      "pass": 1447,
+      "fail": 0,
+      "sha256": "041df9f657b17bc9b757c62174352127fe10f02b408ec9b1276da36a9a7e80cb"
+    },
+    "fullMergedCandidate": {
+      "tests": 1471,
+      "pass": 1471,
+      "fail": 0,
+      "sha256": "5b0a118369ea4cc6fb979a2cc2c779cef2134e39282853567f3de23943b07e98"
+    },
+    "screen": {
+      "tests": 174,
+      "pass": 174,
+      "fail": 0,
+      "sha256": "2599173020e532525e966771675b20a1f8fa839a5e2aecf73388e00852693c10"
+    },
+    "recovery": {
+      "tests": 42,
+      "pass": 42,
+      "fail": 0
+    },
+    "originalCandidate": {
+      "tests": 25,
+      "pass": 25,
+      "fail": 0
+    },
+    "rootNpmCheck": {
+      "exitCode": 0,
+      "scope": "syntax only"
+    },
+    "mediaBaseline": {
+      "exitCode": 0,
+      "verified": "repository-only",
+      "liveVerified": false
+    }
+  },
+  "fullCommand": "node --test screen-client/*.test.mjs server/*.test.mjs scripts/*.test.mjs windows-agent/src/*.test.mjs",
+  "review": {
+    "reviewer": "self-review, not independent review",
+    "runtimeAddedDeviceCommands": 0,
+    "restorePauseStore": false,
+    "cacheAssertionChanges": 3,
+    "otherRuntimeRegions": "byte-identical to first parent",
+    "conflictResolution": "preserved all target main document lines; added original candidate records and this merge record",
+    "originalCandidatePreexistingFullFailureCount": 19,
+    "originalCandidateFailuresFixedByThisMerge": false
+  },
+  "productionWrites": 0,
+  "deviceOperations": 0,
+  "serviceRestarts": 0,
+  "unverified": [
+    "production activation",
+    "one/two device canaries",
+    "live D-075",
+    "long-term stability",
+    "business versions outside fetched main",
+    "the older mixed-source WeCom test failures"
+  ],
+  "rollback": "local reviewed revert relative to first parent; no destructive reset or production rollback performed",
+  "gitIdentity": "Resolve annotated tag recovery-status-main-20261109-rc.1; hash is not embedded in its own commit"
+}
