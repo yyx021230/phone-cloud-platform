@@ -186,6 +186,27 @@ class CpsApplicationAckTests(unittest.TestCase):
         out,calls=self.run_send(self.dialog('添加好友过于频繁'))
         self.assertTrue(out['addFriendLimitConfirmed']);self.assertEqual(out['code'],'wecom_add_friend_too_frequent');self.assertEqual(out['sendStatus'],'unknown')
 
+    def test_observed_wecom_frequency_dialog_blocks_and_preserves_send_claim(self):
+        message = w.Node('android.widget.TextView', text='添加好友过于频繁，当前功能暂时被限制',
+                         name='com.tencent.wework:id/dnb')
+        acknowledge = w.Node('android.widget.TextView', text='我知道了', name='com.tencent.wework:id/dnc')
+        details = w.Node('android.widget.TextView', text='查看详情', name='com.tencent.wework:id/dnf')
+        dialog = w.Screen(w.PACKAGE, (message, acknowledge, details))
+
+        w.guard(replace(dialog, nodes=(replace(message, name='com.tencent.wework:id/nickname'),)))
+        w.guard(replace(dialog, nodes=(message, acknowledge, replace(details, visible=False))))
+        with self.assertRaisesRegex(w.StopPreview, 'wecom_add_friend_too_frequent'):
+            w.guard(dialog)
+
+        result, calls = self.run_send(dialog)
+        self.assertEqual(result['status'], 'blocked')
+        self.assertEqual(result['code'], 'wecom_add_friend_too_frequent')
+        self.assertTrue(result['addFriendLimitConfirmed'])
+        self.assertEqual(result['addFriendLimitProof'], 'wecom_system_dialog_v1')
+        self.assertEqual(result['sendStatus'], 'unknown')
+        self.assertEqual(calls.count('click'), 1)
+        self.assertEqual(calls.count('claim'), 1)
+
     def test_missing_phone_proof_cannot_claim_or_send(self):
         class NoRead:
             def snapshot(self):raise AssertionError('no read')

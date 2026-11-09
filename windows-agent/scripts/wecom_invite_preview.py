@@ -127,9 +127,16 @@ def guard(screen):
         # The underlying resumed Activity can still be WeCom while SystemUI
         # covers it. Stop, never close panels or operate beneath them.
         raise StopPreview('system_overlay_interrupted')
-    if any(n.kind == 'android.widget.TextView' and n.name == 'android:id/message'
-           and n.text in ('添加好友过于频繁', '添加好友过于频繁，请稍后再试', '添加好友过于频繁，请稍后再试。')
-           for n in screen.nodes if n.visible):
+    system_limit = any(n.kind == 'android.widget.TextView' and n.name == 'android:id/message'
+                       and n.text in ('添加好友过于频繁', '添加好友过于频繁，请稍后再试', '添加好友过于频繁，请稍后再试。')
+                       for n in screen.nodes if n.visible)
+    # 152's native WeCom dialog has its own message and action resource IDs.
+    wecom_limit = {'com.tencent.wework:id/dnc', 'com.tencent.wework:id/dnf'} <= visible_ids and any(
+        n.visible and n.kind == 'android.widget.TextView' and n.name == 'com.tencent.wework:id/dnb'
+        and n.text == '添加好友过于频繁，当前功能暂时被限制'
+        for n in screen.nodes
+    )
+    if system_limit or wecom_limit:
         raise StopPreview('wecom_add_friend_too_frequent')
     texts = [v for n in screen.nodes if n.visible for v in (n.text, n.desc)]
     if any(marker in v for v in texts for marker in HUMAN_MARKERS):
