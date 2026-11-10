@@ -1,0 +1,51 @@
+{
+  "version": "wecom-cps-20261110-platform-deployed.1",
+  "atUtc": "2026-11-10T10:32:51Z",
+  "status": "platform_executor_loaded_cps_send_closed",
+  "sourceCandidate": "wecom-cps-release-preflight-20261109-rc.3",
+  "sourceCommit": "e183b8fc4fe85509f8c860faf74586e528075562",
+  "previousMainActiveSha256": "d5082e744ded77cddff23b49941da6bb92ee005ee4eeae23f6f70cb71471efcd",
+  "priorMainImage": "sha256:afb66834c491c35864fb24230a29ca567dd644b9aed63ba3eb21f9258aa0c88b",
+  "mainImage": "sha256:ad60e030143f0fdd8dcbdc9920186cdf2383b2271c038d028b80794e9991b073",
+  "mainImageTag": "phone-cloud-platform:wecom-cps-20261110-rc.3",
+  "mainContainer": "e23f7f0c6f9085783c74236eb8091ee9292c88137bf74ac2d1fe63be078b8883",
+  "mainPid": 405768,
+  "mainStartedAtUtc": "2026-11-10T10:29:14.878662753Z",
+  "observedReadyUtc": "2026-11-10T10:30:49.818Z",
+  "startupBudgetSeconds": 120,
+  "composeOverlay": "/opt/phone-cloud-staging/wecom-cps-rc3-20261110/platform-overlay/compose.pending.json",
+  "composeOverlaySha256": "a9d4806005ec34259b72e9529d9973ada05a760b1741c3ccfda202cd92b14b4d",
+  "cloudFiles": {
+    "server/wecom-errors.mjs": "ec28418626f0dce3d9a50268c906af0a4a28bea340ebf91264ae66a4a61e703b",
+    "server/wecom-preview-devices.json": "2d3c18e81914948573751772ad75bb677dc9ef36e8b979b95bda3571740de7e0",
+    "public/cps-wecom-integration-api.md": "d34503607ecffc281ab0faaa132fbe8bfe2d1f87128d8e1b2be19c24513e81a7"
+  },
+  "windowsFiles": {
+    "scripts/wecom_call_trace.py": "1fb0191619bb5078a0752420a8f22250545df41e04d63eef1b1db2408ff527c4",
+    "scripts/wecom_customer_invitation.py": "ec58c20026e4600eb128cfcbe8f2913340060ef1488e9c0a2c2d5ef55d2b6aff",
+    "scripts/wecom_element_input.py": "c97004c0dc2132cc06cd6ed073d5606987fe278953f7ce52aeb5c4ea776f8b1d",
+    "scripts/wecom_invite_preview.py": "afdf91768645c1bae3286791a86f1090afb7be84b03d2e37e014c00a8b58fde9",
+    "scripts/wecom_platform_preview.py": "429788fcf96ebe3656ba082713aecbe1d551b2cf30283ab639165efdf7f5c0f9",
+    "scripts/wecom_remark_preview.py": "8a437495483df26e5696a12ae6758d97eeacd0f2458e8f4555411b21b0bddcf5",
+    "scripts/wecom_rpc_session.py": "5eff8f05e5d36c87cedb1831d8133aa531a3cc20c52235b2dae453dae62a22a1",
+    "scripts/wecom_startup_guards.py": "1af5db13d5703419882916429b670e7fa07299213bde822e0176a2a40560ca96",
+    "scripts/wecom_preview_devices.json": "2d3c18e81914948573751772ad75bb677dc9ef36e8b979b95bda3571740de7e0"
+  },
+  "inventoryRelease": "wecom-cps-20261110-inventory-deployed.1",
+  "acceptance": {
+    "postStartHealth": "healthy",
+    "d075": "live_pass",
+    "oldManifestFilesCompared": 704,
+    "outOfScopeFileDrift": 0,
+    "lookupCompletedAfterStartObserved": 4,
+    "maintenanceAdmissionRestored": true,
+    "202IsolatedPreviewAdmission": "accepted",
+    "formalSendAndCallbackVerified": false
+  },
+  "rollback": {
+    "cloudOldImage": "sha256:afb66834c491c35864fb24230a29ca567dd644b9aed63ba3eb21f9258aa0c88b",
+    "cloudRestoreCompose": "previous ordered Compose set from preserved ACTIVE file",
+    "windowsBackupFiles": 7,
+    "windowsNewFiles": 2
+  }
+}
