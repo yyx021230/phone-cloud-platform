@@ -1,0 +1,76 @@
+{
+  "version": "wecom-cps-20261110-inventory-deployed.1",
+  "atUtc": "2026-11-10T10:12:11Z",
+  "status": "deployed_inventory_only",
+  "candidateTag": "wecom-cps-release-preflight-20261109-rc.3",
+  "candidateCommit": "e183b8fc4fe85509f8c860faf74586e528075562",
+  "runtimeCommit": "7eb45e81734563c0292857827665de75323f9808",
+  "scope": {
+    "bridgeImage": "sha256:4c3823e7aab5328c6e9ecfa37683ea210405fdddb14c0d52f61664812f755b33",
+    "bridgeDockerfileSha256": "816954a7ab54dddbfb77bef0b9702a196c005e57eec9d28ab9ae45b1572d3d30",
+    "bridgeContainer": "phone-cloud-cps-wecom",
+    "loopback": "127.0.0.1:8797",
+    "executionMode": "preview",
+    "membersEnabled": false,
+    "ledgerDatabase": "phone_cloud_cps_preview",
+    "ledgerNamespace": "preview-20261110",
+    "ingress": [
+      "/api/v1/lead/devices/query",
+      "/api/v1/lead/dispatch"
+    ],
+    "callbackEndpoint": "https://crm.ztvcar.com/cps-api/api/v1/lead/callback"
+  },
+  "rollback": {
+    "stageRoot": "/opt/phone-cloud-staging/wecom-cps-rc3-20261110",
+    "nginxSite": "/etc/nginx/sites-enabled/sms-code-center",
+    "priorNginxSiteSha256": "ba11eabc40b46e38af71d4dfe698425a1ba48d7155c6460e831d8ca3e1bb06fc",
+    "currentNginxSiteSha256": "24cd66a94a4543080374572c9a20ad7cc924636368626f1dac62cf4a2e5b54b3",
+    "priorNginxCopy": "rollback/nginx-site-before.conf",
+    "preserveLedger": true
+  },
+  "mainPlatform": {
+    "version": "wecom-recover-four-20261104-deployed.2",
+    "activeSha256": "e4eeded6498f66752966beaac853b5c7d6eb4c69dc417b80e21f0032f30caac1",
+    "liveImage": "sha256:50a1fafcf13f739a0a4173048ed9065e470484eef95f2381ca2ed94cf29a86b6",
+    "currentRestartImage": "sha256:afb66834c491c35864fb24230a29ca567dd644b9aed63ba3eb21f9258aa0c88b",
+    "recreated": false,
+    "windowsAgentRecreated": false,
+    "stagedImage": "sha256:ad60e030143f0fdd8dcbdc9920186cdf2383b2271c038d028b80794e9991b073",
+    "pendingComposeSha256": "a9d4806005ec34259b72e9529d9973ada05a760b1741c3ccfda202cd92b14b4d",
+    "stagedWindowsZipSha256": "79b1d8a518fed60b8b7e03e6e28e3f31d907a3420dd45e6679ecc9508971c8d4",
+    "stagedWindowsFiles": 9,
+    "windowsRollbackFiles": 7
+  },
+  "acceptance": {
+    "signedPublicQueryCode": 200,
+    "inventoryCount": 145,
+    "signedDispatchRefusalCode": 2003,
+    "unsignedDispatchHttp": 401,
+    "leadLedgerCount": 0,
+    "recipientLedgerCount": 0,
+    "platformHealth": 200,
+    "platformReady": 200,
+    "nginxIsolatedCasesPassed": 6,
+    "nginxProductionTempMetadataDrift": false,
+    "d075BeforeAndAfter": "live_pass",
+    "windowsSyntaxFilesPassed": 8,
+    "pilots": [
+      {
+        "deviceNumber": "200",
+        "online": true,
+        "listed": false
+      },
+      {
+        "deviceNumber": "202",
+        "online": true,
+        "listed": true
+      }
+    ],
+    "notYetVerified": [
+      "Windows product execution",
+      "real sends",
+      "signed CPS callback",
+      "two-device production canary"
+    ]
+  }
+}
