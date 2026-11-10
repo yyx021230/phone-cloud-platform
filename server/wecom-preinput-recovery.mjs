@@ -15,14 +15,37 @@ export function producerRef(v){
     ||typeof v.machineId!=='string'||!/^[a-f0-9]{64}$/.test(v.machineId))recoveryFail('producer_invalid');
   return structuredClone(v);
 }
-// A configuration rejection never entered UI. A timed-out cleanup remains a
-// failed original attempt: maintenance obtains fresh, separate evidence only.
-function registeredConfigFailure(state,d,task,job){
+// Allow only failures with recorded evidence that preview stopped before it
+// touched a contact's remarks. A fresh maintenance proof is still required.
+const PRE_REMARK_PHASES = new Set([
+  'configuration', 'adb_identity', 'device_preflight', 'screen_prepare',
+  'poco_launch', 'poco_health', 'wecom_launch', 'rpc_setup', 'startup_guards',
+  'foreground_wait', 'selector_observe', 'selector_click', 'home_navigation',
+  'recipient_search', 'cleanup'
+]);
+
+function previewStoppedBeforeEditing(result) {
+  if (result?.previewStatus !== 'blocked') return false;
+  const trace = result.diagnostic?.wecomExecution;
+  if (result.previewCode === 'invalid_preview_config') {
+    return trace?.phase === 'configuration' && trace.failurePhase === 'configuration' && trace.elapsedMs === 0;
+  }
+  const preflight = result.previewCode === 'poco_already_running'
+    && trace?.failurePhase === 'device_preflight' && result.remarkSaveStatus === 'unknown';
+  const recipient = result.previewCode === 'profile_phone_mismatch'
+    && trace?.failurePhase === 'recipient_search' && result.remarkSaveStatus === 'not_attempted';
+  return (preflight || recipient) && trace.phase === 'cleanup'
+    && trace.cleanupConfirmed === true && result.remarkPhoneSet !== true
+    && Number.isFinite(trace.elapsedMs) && trace.elapsedMs > 0
+    && Array.isArray(trace.events) && trace.events.length <= 24
+    && trace.events.some(event => event?.phase === trace.failurePhase)
+    && trace.events.every(event => PRE_REMARK_PHASES.has(event?.phase));
+}
+
+function registeredPreviewFailure(state,d,task,job){
   const v=d.verification,verify=state.windowsTasks.find(t=>t.taskId===v?.verificationTaskId);
-  if(![task,job].every(x=>x.result?.previewStatus==='blocked'&&x.result?.previewCode==='invalid_preview_config'
-      &&x.result?.diagnostic?.wecomExecution?.phase==='configuration'
-      &&x.result?.diagnostic?.wecomExecution?.failurePhase==='configuration'
-      &&x.result?.diagnostic?.wecomExecution?.elapsedMs===0)
+  if(task.result?.previewCode!==job.result?.previewCode
+    ||![task,job].every(x=>previewStoppedBeforeEditing(x.result))
     ||d.causal?.protocol!=='wecom-causal-v1'||d.causal?.bootstrap?.bindingNonce!==d.binding.nonce
     ||!Number.isFinite(Date.parse(d.hostClosedAt))||d.proof
     ||!verify||verify.status!=='failed'||verify.type!=='wecom_cleanup_verify'
@@ -55,7 +78,7 @@ export function originalRecoveryContext(state,lock){
   const legacy=d.hosts===null&&d.hostClosedAt===''&&d.verification===null&&!d.causal
     &&[task,job].every(x=>x.result?.previewStatus==='blocked'&&x.result?.previewCode==='wecom_cleanup_host_unconfirmed'
       &&x.result?.message==='wecom_cleanup_host_unconfirmed'&&x.result?.errorCode==='task_failed');
-  const retiredProducer=legacy?null:registeredConfigFailure(state,d,task,job);
+  const retiredProducer=legacy?null:registeredPreviewFailure(state,d,task,job);
   if(!legacy&&!retiredProducer)recoveryFail('ineligible');
   const original=state.deviceLocks.find(l=>l.lockId===d.originalLockId);
   if(!original||original.deviceId!==b.deviceId||original.taskId!==job.jobId||original.lockType!==task.type

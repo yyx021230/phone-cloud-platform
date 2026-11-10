@@ -99,6 +99,50 @@ for(const [name,change]of [
 ])test('registered configuration recovery denies '+name+' without releasing the fence',async()=>{
  const f=configFailureFixture();change(f);const before=structuredClone(f.state);await assert.rejects(f.start(),/wecom_cleanup_recovery/);assert.deepEqual(f.state,before);
 });
+for (const [code, phase, remarkSaveStatus] of [
+ ['poco_already_running', 'device_preflight', 'unknown'],
+ ['profile_phone_mismatch', 'recipient_search', 'not_attempted']
+]) {
+ function observedFailure() {
+  const f = configFailureFixture();
+  for (const row of [f.task, f.job]) {
+   row.result.previewCode = code;
+   row.result.remarkSaveStatus = remarkSaveStatus;
+   row.result.diagnostic = {wecomExecution: {
+    phase: 'cleanup', failurePhase: phase, elapsedMs: 953, cleanupConfirmed: true,
+    events: [{phase}, {phase: 'cleanup'}]
+   }};
+  }
+  return f;
+ }
+
+ test(code + ' can release the original hold only after a new physical proof', async () => {
+  const f = observedFailure();
+  const previous = structuredClone([f.job, f.task, f.oldVerify]);
+  await f.start();
+  f.pick();
+  await f.challenge();
+  const proof = f.proof();
+  proof.snapshots[0].packagesAbsent = false;
+  await assert.rejects(f.call('recovery-proof', proof), /wecom_cleanup/);
+  assert.equal(f.lock.status, 'cleanup_pending');
+  assert.equal((await f.call('recovery-proof', f.proof())).verified, true);
+  assert.deepEqual([f.job, f.task, f.oldVerify], previous);
+ });
+
+ test(code + ' recovery requires verified cleanup and no remark edit', async () => {
+  for (const mutate of [
+   trace => { trace.cleanupConfirmed = false; },
+   trace => { trace.events.push({phase: 'remark_edit'}); }
+  ]) {
+   const f = observedFailure();
+   mutate(f.job.result.diagnostic.wecomExecution);
+   await assert.rejects(f.start(), /wecom_cleanup_recovery_ineligible/);
+   assert.equal(f.lock.status, 'cleanup_pending');
+  }
+ });
+}
+
 test('registered reader identity is pinned by the server, not chosen by the caller',async()=>{
  const f=configFailureFixture(),request=f.request();request.retiredProducer={...request.retiredProducer,pid:999};
  await assert.rejects(f.service.recoveryStart(f.lock.lockId,request,'operator'),/producer_invalid/);assert.equal(f.lock.status,'cleanup_pending');
