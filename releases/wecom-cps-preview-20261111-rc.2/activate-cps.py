@@ -3,6 +3,7 @@ import datetime
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import subprocess
 import time
@@ -14,7 +15,8 @@ assert Path('/run/phone-cloud-cps-rc3-maintenance.flag').is_file(), 'admission_g
 proof = json.loads((stage / 'agent-applied.json').read_text(encoding='utf-8-sig'))
 assert proof['applied'] is True and proof['agentPidAfter'] != 15224 and proof['adb']['pid'] == 20016
 assert proof['indexAfter'] == '8a94d6a5ce8e3d26eb9513e38a49163b74f80271ddf5952cb98423139911a871'
-assert (datetime.datetime.now(datetime.timezone.utc) - datetime.datetime.fromisoformat(proof['completedAtUtc'].replace('Z', '+00:00'))).total_seconds() < 600
+stamp = re.sub(r'(\.\d{6})\d+(?=Z|[+-])', r'\1', proof['completedAtUtc'])
+assert (datetime.datetime.now(datetime.timezone.utc) - datetime.datetime.fromisoformat(stamp.replace('Z', '+00:00'))).total_seconds() < 600
 
 
 def inspect(name):
