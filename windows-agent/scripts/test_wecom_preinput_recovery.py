@@ -102,6 +102,20 @@ class FrameAuthorityTests(unittest.TestCase):
         def change(s):f.sleep(s);f.denied=True
         with self.assertRaisesRegex(VerifyStop,'lease_lost|causal_context_unconfirmed'):f.run(sleep=change)
         self.assertEqual(len([r for r in f.calls if r[0]=='pid']),2)
+    def test_worker_appearing_during_socket_connect_blocks_before_any_bytes(self):
+        f=Fixture();wire=Wire()
+        def connect(*args,**kwargs):
+            f.workers.append(Process(900,'python.exe',['python','unknown']))
+            return wire
+        def adb(serial,guard,budget,**options):
+            class Adb:
+                def pids(self,package):
+                    socket=options['connect'](('127.0.0.1',5037),timeout=1)
+                    socket.sendall(b'forbidden');return()
+                def forwards(self):return()
+            return Adb()
+        with self.assertRaisesRegex(VerifyStop,'worker_present'):f.run(adb_factory=adb,connect=connect)
+        self.assertEqual(wire.sent,[])
 
 class OwnedProcess(Process):
     def __init__(self,pid,args,parent=200,owner=r'NT AUTHORITY\SYSTEM',exe=r'D:\PhoneCloud\tools\python39\python.exe'):
@@ -220,6 +234,7 @@ class Wire:
     def getpeername(self):return('127.0.0.1',5037)
     def fileno(self):return self.fd
     def sendall(self,b):self.sent.append(b)
+    def close(self):self.fd=-1
 class PeerTests(unittest.TestCase):
     def test_actual_reverse_owner_required_before_any_bytes(self):
         w=Wire();g=Guard();runtime=types.SimpleNamespace(net_connections=lambda **k:[])

@@ -231,7 +231,10 @@ def execute(value,*,cancelled=lambda:False,clock=time.monotonic,wall=time.time,s
         if not lease(config,budget,request=recovery_request,lease_budget=lease_budget):raise VerifyStop('wecom_cleanup_lease_lost')
         local();return True
     def peer_connect(address,timeout):
-        local()
+        # Connecting sends no ADB bytes. Keep live identity/producer checks here;
+        # PeerSocket rechecks the complete worker set after connect and again
+        # before every send, avoiding one identical global scan per socket.
+        budget();identity.check();observe_exited_hosts([old],process_created_at)
         if address!=('127.0.0.1',5037):raise VerifyStop('wecom_cleanup_recovery_peer_unconfirmed')
         wire=connect(address,timeout=timeout)
         try:return PeerSocket(wire,identity,runtime,budget,process_guard=local)
