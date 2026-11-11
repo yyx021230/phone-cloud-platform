@@ -20,7 +20,7 @@
 
 ## 版本及回退
 
-分支codex/wecom-cps-send-20261111，候选rc.1–rc.5，本轮未推送。部署完整镜像、源提交、配置哈希、源账本哈希及运行文件清单见deployment.json与manifest.json。
+分支codex/wecom-cps-send-20261111，候选rc.1–rc.5。发布时尚未推送，后续已补齐GitHub与gitlab两个远端：38个待同步提交、2个分支、15个既有annotated版本标签均回读核对，见[远端同步回执](remote-sync.json)。上线源码仍绑定不可变deployed.1标签的1ca3c4f，分支随后追加的同步说明属于文档，不是新生产版本。部署完整镜像、源提交、配置哈希、源账本哈希及运行文件清单见deployment.json与manifest.json。
 
 受限备份位于/opt/phone-cloud-staging/wecom-cps-send-20261111-rc.1；真实凭据、客户号码及完整账本不进入仓库。正常服务未来持续使用production。正式接单后如需停止，应停用新准入、保留在途及回调与production账本，修复后继续原任务；不能回切preview、删除或恢复较旧发送记录来重新添加。原preview容器和pilot只作历史证据，不并行启动。
 

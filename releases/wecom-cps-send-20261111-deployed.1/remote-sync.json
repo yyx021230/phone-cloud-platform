@@ -1,0 +1,55 @@
+{
+  "verifiedAtUtc": "2026-11-11T09:20:47.931793+00:00",
+  "releaseCommit": "1ca3c4fb1f2a3dc596133e59c49ff1f51da7c4a8",
+  "releaseTag": "wecom-cps-send-20261111-deployed.1",
+  "branch": "codex/wecom-cps-send-20261111",
+  "previousPushedWecomCommit": "aefdbe4db51e79f4abbabf5fd19cccecfb434d42",
+  "releaseCommitsAdded": 38,
+  "branchesPushed": 2,
+  "annotatedReleaseTagsPushed": 15,
+  "forcePush": false,
+  "mainMergedOrChangedByThisTask": false,
+  "productionTouched": false,
+  "remoteVerification": {
+    "origin": {
+      "verifiedRefs": 17,
+      "branchCommit": "1ca3c4fb1f2a3dc596133e59c49ff1f51da7c4a8",
+      "previewBranchCommit": "00c19e9cf117d7456a4d0c348bbc11ab18361920",
+      "defaultMainObserved": "3bdb9467de10f41ff2159180c7c8fa2d74e09c10",
+      "allReleaseRefsMatchLocal": true
+    },
+    "gitlab": {
+      "verifiedRefs": 17,
+      "branchCommit": "1ca3c4fb1f2a3dc596133e59c49ff1f51da7c4a8",
+      "previewBranchCommit": "00c19e9cf117d7456a4d0c348bbc11ab18361920",
+      "defaultMainObserved": "ec378680a7ac4ded60f7ade63ad2590ff04cb275",
+      "allReleaseRefsMatchLocal": true
+    }
+  },
+  "refObjects": {
+    "refs/heads/codex/wecom-cps-send-20261111": "1ca3c4fb1f2a3dc596133e59c49ff1f51da7c4a8",
+    "refs/heads/codex/wecom-cps-preview-20261111": "00c19e9cf117d7456a4d0c348bbc11ab18361920",
+    "refs/tags/wecom-cps-preview-20261111-deployed.1": "18b87440401616caad57322a814264f4259ddacb",
+    "refs/tags/wecom-cps-preview-20261111-rc.1": "d7125a167a257f4dae819dc7b0cec421c0665571",
+    "refs/tags/wecom-cps-preview-20261111-rc.2": "394229a3947f7c3a508767b69bb5f64379755c59",
+    "refs/tags/wecom-cps-preview-20261111-rc.3": "2f0d3ec2623707950ec68c26fa7774c9d1d1958d",
+    "refs/tags/wecom-cps-preview-20261111-rc.4": "56cdab680711c5f565c347f9c5e91bd89b753baa",
+    "refs/tags/wecom-cps-preview-20261111-rc.5": "806788e5ba8f51d1d44c335696d0e9ea17520f69",
+    "refs/tags/wecom-cps-preview-20261111-rc.6": "6a2a4ff975f5b09925989a04529ee9df7da3766e",
+    "refs/tags/wecom-cps-preview-20261111-rc.7": "b8c6504c27a8dcea03d1903939729ef01782149e",
+    "refs/tags/wecom-cps-preview-20261111-rc.8": "12738d08bf3a4a2113a943ec57d092d9fc70a7d7",
+    "refs/tags/wecom-cps-send-20261111-deployed.1": "048bfb676aac0ed5cf7cf5915fe5d71986ccf255",
+    "refs/tags/wecom-cps-send-20261111-rc.1": "585c5782a0afa9e4ddc1da5261823d49884fd6bd",
+    "refs/tags/wecom-cps-send-20261111-rc.2": "702f145a58be47a27b3ac93b5b80922337e6f6dc",
+    "refs/tags/wecom-cps-send-20261111-rc.3": "c0b1f6e608b9694e3e5f4856c7f3181e01167e17",
+    "refs/tags/wecom-cps-send-20261111-rc.4": "7aa016c180ee67957de93468255d3e1d7a615edf",
+    "refs/tags/wecom-cps-send-20261111-rc.5": "89a17768cef9bdfbfe3d5009cf936f220dbe0090"
+  },
+  "incrementalCredentialReview": {
+    "blobVersionsInspected": 118,
+    "literalCredentialCandidates": 0,
+    "oneWebhookFinding": "synthetic UUID fixture in admin-history.test.mjs; not a real webhook"
+  },
+  "verificationPhase": "Release publication before this documentation-only receipt commit",
+  "receiptHistoryNote": "The branch may advance for sync documentation; deployed release tags remain immutable."
+}
