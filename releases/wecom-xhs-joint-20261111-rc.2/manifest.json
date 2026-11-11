@@ -1,0 +1,137 @@
+{
+  "version": "wecom-xhs-joint-20261111-rc.2",
+  "status": "candidate_pending_additional_maintenance_authorization",
+  "sourceCommit": "8177e73f7167867d395b79a1430cbb8fd4243ab0",
+  "runtimeFixCommit": "ad6b2dd",
+  "productionVersion": "wecom-xhs-joint-20261111-deployed.1",
+  "productionActiveSha256": "020ae5afef9ae2c5fdd1531b2fa0367761115836ca447f79b819347835f2a7bf",
+  "productionImage": "sha256:fc0bb8c3458470ad21397fa16aed8b5207882a0fe112f4107d7b89ef094c52ce",
+  "candidateImage": "sha256:e6a2bf5e7754890b93b1fc52aeb0bb159af58850d2a059622d7f127ebf53747f",
+  "cloudStage": "/opt/phone-cloud-staging/wecom-xhs-joint-20261111-rc.2",
+  "windowsStage": "D:\\PhoneCloud\\staging\\wecom-xhs-proof-20261111-rc2",
+  "activated": false,
+  "remotePushPerformed": false,
+  "runtimeFiles": {
+    "server/wecom-preinput-recovery.mjs": {
+      "before": "de5de848afa9e9e04ec13d6efc2614e019ec33345b4339b82c9a48130c0fbb2c",
+      "after": "9061288bb756fe4091c074220abfa74bfacc27c7af0d0d153c1fb5223defaae7"
+    },
+    "windows-agent/src/index.mjs": {
+      "before": "dd15cc1f6ab588d45ba5f2a19c3cebc06b663e6315f08c68025d5df904e27041",
+      "after": "8a94d6a5ce8e3d26eb9513e38a49163b74f80271ddf5952cb98423139911a871"
+    },
+    "windows-agent/scripts/wecom_cleanup_verify.py": {
+      "before": "8994310828f9ec9542c2ef3c85af79608ae22476510358e42ee1c019a255644f",
+      "after": "f801f860b28439965e6efd28fda408046ba1f9400a25f4dd8504ef769a8c73a6"
+    }
+  },
+  "tests": {
+    "rootSyntax": "passed",
+    "pythonWecom": {
+      "passed": 618
+    },
+    "fullScreen": {
+      "total": 2410,
+      "passed": 2404,
+      "failed": 3,
+      "skipped": 3
+    },
+    "baseUiFailures": {
+      "total": 39,
+      "passed": 36,
+      "failed": 3,
+      "sameNamesAsFullScreen": true
+    },
+    "agentFromAgentCwdConcurrency2": {
+      "total": 684,
+      "passed": 684
+    },
+    "isolatedPostgresCpsAndRecovery": {
+      "total": 67,
+      "passed": 67,
+      "usesActualAgentSerializer": true
+    },
+    "windowsNative": {
+      "nodeVersion": "24.18.0",
+      "statusTransportPassed": 3,
+      "python39CleanupPassed": 11,
+      "phoneActions": 0,
+      "liveFilesChanged": 0
+    },
+    "d075": "repository_only_for_this_candidate_actual_host_passed_for_running_deployed_1"
+  },
+  "baselineFailedTests": [
+    "uses direct keyboard input on the focused phone surface",
+    "lookup startup exposes elapsed progress and a ready-to-query message",
+    "an active lookup reloads when the deployed frontend version changes"
+  ],
+  "attempts": [
+    "First full run lacked existing Agent dependency link. Retested with the existing local dependency tree.",
+    "First isolated Postgres run omitted the explicit fixture username. Corrected loopback-only URL and reran all 67 tests.",
+    "Agent-cwd test used a cwd-relative product script path. Fixed the test fixture path and reran all 684 tests from the Agent directory.",
+    "Windows EncodedCommand staging exceeded cmd input size and did not parse. PowerShell file execution was then denied by existing execution policy. Native Python staging and tests succeeded without changing the policy.",
+    "First candidate image build interpreted a sha256 ID as a repository name. Rebuilt from the verified local deployed tag."
+  ],
+  "logEvidence": {
+    "full_screen": {
+      "path": "/tmp/wecom-xhs-proof-screen-complete-20261111.log",
+      "sha256": "0a2d3c23579d78d3740106888f2aecb00b66a71f0e64dffc1f5631a38e51eebf"
+    },
+    "agent_complete": {
+      "path": "/tmp/wecom-xhs-proof-agent-fixed-20261111.log",
+      "sha256": "90ecbe464f263bf5d7a9067aefa2626175bf88e480477e3edd806afd204b103f"
+    },
+    "python": {
+      "path": "/tmp/wecom-xhs-proof-python-20261111.log",
+      "sha256": "b61f6b7c2e2fceca38a4f2c7189511e182d82832995e512ddc237cef1ff40c10"
+    },
+    "postgres_cps": {
+      "path": "/tmp/wecom-xhs-proof-postgres-retry.SH5kAugs/result.log",
+      "sha256": "2a7b7a332c30a395d39bf2cfbf5f8a60b75b994038d66cc35f2bfaa17e6dae92"
+    },
+    "base_ui_failures": {
+      "path": "/tmp/wecom-xhs-joint-ui-baseline.K4Ovb9Wz/result.log",
+      "sha256": "f02571fd69fffb8cae16c993457abad72724ce230f25c6f8d9fb142890048e77"
+    },
+    "targeted": {
+      "path": "/tmp/wecom-xhs-proof-focused-20261111.log",
+      "sha256": "b0e6aa2e098490ee5814ecca10f38e7a275ae38b611b0dbff09b99cfa6453c26"
+    }
+  },
+  "productionAcceptance": {
+    "202": {
+      "jobId": "f0693dfa-0d45-4d30-aba1-2f780c928906",
+      "taskId": "adeb7468-6c2f-485f-b14e-cc25fb3094e5",
+      "code": "timeout",
+      "cleanupHold": "4033f958-4db8-4fb9-a4e8-466f6ed1987c"
+    },
+    "200": {
+      "jobId": "7b43b69d-c3e5-4d1b-ac16-4bb7a619a988",
+      "taskId": "b27a52f1-3d87-4f80-a148-6e59f11e6ed9",
+      "nativeTaskStatus": "succeeded",
+      "nativePreviewStatus": "ready_before_send",
+      "nativeRemarkSaveStatus": "confirmed",
+      "platformCode": "remark_phone_not_verified",
+      "cleanupHold": "7c03a63f-8659-403b-b8f5-6fbc956e8220"
+    },
+    "invitationAttempts": 0,
+    "businessCallbacks": 0,
+    "bothPreviewsPassed": false,
+    "formalDispatchEnabled": false,
+    "newPatchProductionVerified": false,
+    "202LatencyRootCauseConfirmed": false
+  },
+  "maintenance": {
+    "required": [
+      "cloud service reload",
+      "shared Windows Agent reload"
+    ],
+    "mustDrainCurrentTasks": true,
+    "latestObservedScreenConnections": 7,
+    "latestObservedLookupOccupancies": 10,
+    "sharedAdbRestartRequired": false,
+    "identityChangeRequired": false,
+    "automaticRollbackAuthorized": false
+  },
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+}
