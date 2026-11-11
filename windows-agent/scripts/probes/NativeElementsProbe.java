@@ -62,6 +62,14 @@ public final class NativeElementsProbe {
         return s.toString();
     }
     static final class Reader {
+        final String expectedPackage;
+        Reader() { this("com.xingin.xhs"); }
+        Reader(String expectedPackage) {
+            if (!"com.xingin.xhs".equals(expectedPackage)
+                    && !"com.hihonor.android.internal.app".equals(expectedPackage))
+                throw new IllegalArgumentException("unsupported native package");
+            this.expectedPackage = expectedPackage;
+        }
         final long deadline = System.nanoTime() + 12_000_000_000L;
         int visited;
         int[] clip;
@@ -104,8 +112,9 @@ public final class NativeElementsProbe {
         }
         String read(Node root) throws Exception {
             if (root == null) throw new IllegalStateException("native root missing");
-            if (!"com.xingin.xhs".equals(root.value("package"))) {
-                root.close(); throw new IllegalStateException("foreground package is not XHS");
+            if (!expectedPackage.equals(root.value("package"))) {
+                root.close(); throw new IllegalStateException("com.xingin.xhs".equals(expectedPackage)
+                    ? "foreground package is not XHS" : "foreground package is not Honor chooser");
             }
             clip = box(root.value("bounds"));
             clip[0] = Math.max(0, clip[0]); clip[1] = Math.max(0, clip[1]);

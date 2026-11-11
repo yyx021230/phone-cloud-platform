@@ -135,4 +135,36 @@ class BoundedNativeScrollTests(unittest.TestCase):
    with self.assertRaises((sync.ElementListReadError,RuntimeError)):sync.swipe('adb','serial',root,lambda:None,[])
   adb.assert_not_called()
 
+
+
+
+class VivoStoreDuringLoadingTests(unittest.TestCase):
+ def events(self):return ['collection_slot_requested:app2','clone_user_requested:999','xhs_cold_started','collection_verification_pass']
+ def test_loading_resumes_existing_navigation_only_before_scan(self):
+  root=ET.parse(S/'fixtures/xhs/works-elements-141.xml').getroot();events=self.events()
+  with patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync,'focus',return_value=VivoStoreUpdateTests.current),patch.object(sync,'resume_vivo_update_entry',return_value=root),patch.object(sync,'ensure_creator_list',side_effect=lambda a,b,r,slot,guard,ev: self.assertNotIn('data_center_loading_active',ev) or r) as enter:
+   self.assertIs(sync.wait_data_center_loading('adb','serial',root,lambda:None,events),root)
+  enter.assert_called_once();self.assertNotIn('data_center_loading_active',events)
+ def test_fresh_foreign_xml_and_same_foreground_are_required_before_back(self):
+  root=ET.parse(S/'fixtures/xhs/vivo-store-update-elements.xml').getroot();events=self.events();ready=ET.Element('hierarchy')
+  with patch.object(sync,'capture',return_value=root),patch.object(sync,'focus',side_effect=[VivoStoreUpdateTests.current,VivoStoreUpdateTests.current,VivoStoreUpdateTests.xhs,VivoStoreUpdateTests.xhs]),patch.object(sync,'adb',return_value='vivo') as adb,patch.object(sync.time,'sleep'),patch.object(sync,'navigation_capture',return_value=ready):
+   self.assertIs(sync.resume_vivo_update_entry('adb','serial',VivoStoreUpdateTests.current,lambda:None,events),ready)
+  self.assertEqual([c.args[2:] for c in adb.call_args_list],[('shell','getprop','ro.product.manufacturer'),('shell','input','keyevent','4')]);self.assertIn('vivo_store_update_back',events)
+ def test_unknown_foreign_activity_and_mid_scan_never_back_or_read_foreign(self):
+  for current,extra in [(VivoStoreUpdateTests.current,['collection_scan_as_of:2026-11-05']),(VivoStoreUpdateTests.current.replace('ManageUpdateActivity','InstallActivity'),[])]:
+   with patch.object(sync,'capture') as read,patch.object(sync,'adb') as adb:
+    self.assertIsNone(sync.resume_vivo_update_entry('adb','serial',current,lambda:None,self.events()+extra));read.assert_not_called();adb.assert_not_called()
+ def test_changed_foreground_or_lost_ownership_stops_before_back(self):
+  with patch.object(sync,'capture',return_value=ET.Element('hierarchy')),patch.object(sync,'focus',return_value=VivoStoreUpdateTests.xhs),patch.object(sync,'adb') as adb:
+   with self.assertRaisesRegex(sync.ElementListReadError,'changed during'):sync.resume_vivo_update_entry('adb','serial',VivoStoreUpdateTests.current,lambda:None,self.events())
+   adb.assert_not_called()
+  with patch.object(sync,'capture') as read,self.assertRaisesRegex(RuntimeError,'occupied'):
+   sync.resume_vivo_update_entry('adb','serial',VivoStoreUpdateTests.current,Mock(side_effect=RuntimeError('occupied')),self.events())
+  read.assert_not_called()
+ def test_same_update_page_is_not_dismissed_twice_in_one_task(self):
+  root=ET.parse(S/'fixtures/xhs/vivo-store-update-elements.xml').getroot()
+  with patch.object(sync,'capture',return_value=root),patch.object(sync,'focus',return_value=VivoStoreUpdateTests.current),patch.object(sync,'adb') as adb:
+   with self.assertRaisesRegex(RuntimeError,'repeated'):sync.resume_vivo_update_entry('adb','serial',VivoStoreUpdateTests.current,lambda:None,self.events()+['vivo_store_update_back'])
+   adb.assert_not_called()
+
 if __name__=='__main__':unittest.main()

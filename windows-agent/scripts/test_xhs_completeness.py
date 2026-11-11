@@ -144,6 +144,27 @@ class IndependentPassTests(unittest.TestCase):
         self.assertEqual(len(digests),2)
         self.assertEqual(digests[0],digests[1])
 
+    def test_stable_current_account_can_differ_from_table_id(self):
+        first, second = result(), result()
+        proof = {'serial':'serial','app_slot':'app1','configured_id':'TABLE_ID',
+                 'visible_public_id':'CURRENT_ID','matches_exactly':False}
+        first['account_identity'] = dict(proof)
+        second['account_identity'] = dict(proof)
+        with patch.object(sync,'require_current_account_binding') as binding:
+            out,_ = self.collect(first,second)
+        self.assertTrue(out['complete'])
+        self.assertIn('account_identity:configured_id_mismatch_collected_current_slot',out['recovery_events'])
+        self.assertEqual(binding.call_args.args[1],'TABLE_ID')
+
+    def test_current_account_switch_between_passes_fails_even_for_equal_posts(self):
+        first, second = result(), result()
+        first['account_identity'] = {'serial':'serial','app_slot':'app1','configured_id':'TABLE_ID',
+                                     'visible_public_id':'FIRST_ID','matches_exactly':False}
+        second['account_identity'] = dict(first['account_identity'],visible_public_id='SECOND_ID')
+        out,_ = self.collect(first,second)
+        self.assertFalse(out['complete'])
+        self.assertIn('collection_integrity:account_changed_between_passes',out['recovery_events'])
+
     def test_missing_added_reordered_or_duplicate_post_cannot_pass(self):
         for first,second in [(result(),result(('A','C'))),
                              (result(),result(('A','B','C','D'))),

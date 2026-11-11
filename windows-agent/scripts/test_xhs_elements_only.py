@@ -24,6 +24,15 @@ def list_shell():
  return r
 
 class NativeReadingTests(unittest.TestCase):
+ def test_owner_without_chooser_records_actual_slot_proof(self):
+  events=['collection_slot_requested:app1']
+  with patch.object(sync,'focus',return_value='mCurrentFocus=Window{x u0 com.xingin.xhs/.index.v2.IndexActivityV2}'):
+   sync.verify_collection_slot('adb','serial','app1',events)
+  self.assertIn('clone_slot_selected:app1',events)
+ def test_owner_without_chooser_rejects_foreign_or_clone_focus(self):
+  for focus in ('mCurrentFocus=Window{x u999 com.xingin.xhs/.index.v2.IndexActivityV2}','mCurrentFocus=Window{x u0 foreign.app/.Activity}'):
+   with patch.object(sync,'focus',return_value=focus),self.assertRaisesRegex(RuntimeError,'owner user'):
+    sync.verify_collection_slot('adb','serial','app1',['collection_slot_requested:app1'])
  def test_retained_native_shape_reads_five_exact_titles_dates_and_metrics_without_selected_tab_text(self):
   r=listing();self.assertFalse(sync.label(r,'作品分析'));self.assertTrue(sync.creator_list(r))
   cards=sync.note_cards(r);self.assertEqual(len(cards),5)
@@ -70,9 +79,126 @@ class NativeReadingTests(unittest.TestCase):
  def test_only_explicit_empty_element_state_can_be_empty(self):
   r=list_shell();ET.SubElement(r[0],'node',{'package':sync.XHS_PACKAGE,'class':'android.widget.TextView','text':'暂无笔记','bounds':'[300,900][420,950]'})
   self.assertIsNotNone(sync.element_page_signature(r));self.assertEqual(sync.note_cards(r),[])
+ def test_observed_no_displayable_notes_requires_full_page_and_explicit_publish_button(self):
+  r=ET.parse(S/'fixtures/xhs/works-empty-display-elements.xml').getroot()
+  self.assertTrue(sync.creator_list(r));self.assertEqual(sync.proven_list_terminal(r),(True,False))
+  self.assertEqual(sync.element_page_signature(r),((),True,False))
+  for node in r.iter('node'):
+   if node.get('text') in ('全部笔记','仅统计近半年内笔记','暂无可展示的笔记'):
+    node.set('class','android.widget.TextView')
+  self.assertEqual(sync.proven_list_terminal(r),(True,False))
+  self.assertEqual(sync.element_page_signature(r),((),True,False))
+ def test_no_displayable_copy_alone_or_changed_page_never_proves_zero(self):
+  original=ET.parse(S/'fixtures/xhs/works-empty-display-elements.xml').getroot()
+  for mode in ('missing_button','disabled','foreign','duplicate','wrong_class','above_filter','missing_scope','partial_row','permission'):
+   r=copy.deepcopy(original);message=next(n for n in r.iter('node') if n.get('text')=='暂无可展示的笔记');button=next(n for n in r.iter('node') if n.get('text')=='去发布');view=next(n for n in r.iter('node') if n.get('text')=='数据中心' and n.get('class')=='android.webkit.WebView')
+   if mode=='missing_button':button.set('text','')
+   if mode=='disabled':button.set('enabled','false')
+   if mode=='foreign':message.set('package','other.app')
+   if mode=='duplicate':view.append(copy.deepcopy(message))
+   if mode=='wrong_class':message.set('class','android.widget.TextView')
+   if mode=='above_filter':message.set('bounds','[0,100][200,150]')
+   if mode=='missing_scope':next(n for n in r.iter('node') if n.get('text')=='仅统计近半年内笔记').set('text','')
+   if mode in ('partial_row','permission'):ET.SubElement(view,'node',{'text':'10-28' if mode=='partial_row' else '开通数据权限','class':'android.view.View','package':sync.XHS_PACKAGE,'bounds':'[20,800][200,850]'})
+   with self.subTest(mode=mode):self.assertFalse(sync.proven_list_terminal(r)[0]);self.assertIsNone(sync.element_page_signature(r))
+
+class SlotEntryRetryTests(unittest.TestCase):
+ def test_restarting_same_clone_preserves_one_user_marker_and_real_user_check(self):
+  events=['collection_slot_requested:app2','clone_user_requested:999']
+  def adb(a,b,*args,**kw):
+   if args[:4]==('shell','pm','list','packages'):return 'package:com.xingin.xhs'
+   if 'resolve-activity' in args:return 'com.xingin.xhs/.index.v2.IndexActivityV2'
+   return ''
+  current='mCurrentFocus=Window{x u999 com.xingin.xhs/.index.v2.IndexActivityV2}'
+  with patch.object(sync,'adb',side_effect=adb),patch.object(sync,'explicit_clone_user',return_value='999'),patch.object(sync,'dismiss_unsecured_keyguard'),patch.object(sync,'navigation_capture',return_value=ET.Element('hierarchy')),patch.object(sync,'focus',return_value=current),patch.object(sync.time,'sleep'):
+   sync.start_xhs('adb','serial','app2',lambda:None,events)
+   sync.verify_collection_slot('adb','serial','app2',events)
+  self.assertEqual(events.count('clone_user_requested:999'),1)
+ def test_wrong_slot_reopens_requested_slot_once_then_requires_proof(self):
+  args=SimpleNamespace(adb='adb',serial='serial',app_slot='app2');events=['collection_slot_requested:app2','clone_user_requested:999'];root=ET.Element('hierarchy');ready=ET.Element('hierarchy')
+  with patch.object(sync,'ensure_creator_list',side_effect=[RuntimeError('Xiaohongshu foreground clone user does not match the requested slot'),ready]),patch.object(sync,'start_xhs',return_value=root) as start,patch.object(sync,'verify_collection_slot') as verify:
+   self.assertIs(sync.enter_creator_with_slot_retry(args,root,lambda:None,events),ready)
+  self.assertEqual(start.call_args.args[:3],('adb','serial','app2'));start.assert_called_once();verify.assert_called_once();self.assertTrue(args.used_slot_entry_retry)
+ def test_no_account_retry_no_scanning_retry_and_no_repeated_wrong_slot_retry(self):
+  for mode in ('login','permission','scan','used','wrong_again'):
+   args=SimpleNamespace(adb='adb',serial='serial',app_slot='app1',used_slot_entry_retry=mode=='used');events=['collection_slot_requested:app1'];root=ET.Element('hierarchy');error='Xiaohongshu foreground owner user does not match the requested slot'
+   if mode=='login':error='Xiaohongshu account is logged out; manual login is required'
+   if mode=='permission':error='Creator Center data permission is not enabled'
+   if mode=='scan':events.append('collection_scan_as_of:2026-11-05')
+   with patch.object(sync,'ensure_creator_list',side_effect=RuntimeError(error)),patch.object(sync,'start_xhs',return_value=root) as start,patch.object(sync,'verify_collection_slot') as verify:
+    with self.assertRaisesRegex(RuntimeError,error):sync.enter_creator_with_slot_retry(args,root,lambda:None,events)
+   self.assertEqual(start.call_count,1 if mode=='wrong_again' else 0);verify.assert_not_called()
+
+class ActivatedCreatorEntryTests(unittest.TestCase):
+ def fixture(self):return ET.parse(S/'fixtures/xhs/creator-data-center-after-permission.xml').getroot()
+ def test_available_metric_keeps_legacy_path_instead_of_new_header_action(self):
+  r=self.fixture();next(n for n in r.iter('node') if n.get('content-desc')=='观看, -, -').set('content-desc','观看, 20, 0')
+  with patch.object(sync,'tap_label') as metric,patch('xhs_native_navigation.perform') as action,patch.object(sync,'adb') as adb:
+   sync.tap_creator_overview('adb','serial',r,lambda:None,['collection_slot_requested:app1'])
+  self.assertEqual(metric.call_args.args[:4],('adb','serial',r,'观看'));action.assert_not_called();adb.assert_not_called()
+ def test_placeholder_metric_does_not_trigger_an_unvalidated_header_action(self):
+  with patch.object(sync,'adb') as adb,patch.object(sync,'tap_label') as metric,patch('xhs_native_navigation.perform') as action:
+   with self.assertRaisesRegex(sync.ElementListReadError,'latest-notes entrance required'):sync.tap_creator_overview('adb','serial',self.fixture(),lambda:None,[])
+  adb.assert_not_called();metric.assert_not_called();action.assert_not_called()
+ def test_permission_missing_disabled_duplicate_or_foreign_link_is_not_activated_entry(self):
+  for mode in ('permission','disabled','duplicate','foreign','no_center'):
+   r=self.fixture();n=next(n for n in r.iter('node') if n.get('text')=='数据中心')
+   if mode=='permission':ET.SubElement(r,'node',{'package':sync.XHS_PACKAGE,'text':'开通数据权限','bounds':'[0,800][300,850]'})
+   if mode=='disabled':n.set('enabled','false')
+   if mode=='duplicate':r.append(copy.deepcopy(n))
+   if mode=='foreign':n.set('package','other')
+   if mode=='no_center':r[0].set('content-desc','')
+   with self.subTest(mode=mode):self.assertIsNone(sync.creator_data_center_button(r))
+ def test_placeholder_never_acts_even_if_foreground_is_different(self):
+  with patch.object(sync,'focus',return_value='other'),patch.object(sync,'adb') as adb:
+   with self.assertRaisesRegex(sync.ElementListReadError,'latest-notes entrance required'):sync.tap_creator_overview('adb','serial',self.fixture(),lambda:None,[])
+  adb.assert_not_called()
+
+class CreatorHomeScrollFallbackTests(unittest.TestCase):
+ def root(self):
+  r=ET.parse(S/'fixtures/xhs/native-creator-data-nested.xml').getroot()
+  ET.SubElement(r,'node',{'package':sync.XHS_PACKAGE,'class':'android.widget.TextView','text':'观看','enabled':'true','bounds':'[64,629][112,665]'})
+  return r
+ def test_scroll_uses_only_the_observed_creator_scrollview_and_requested_user(self):
+  events=['collection_slot_requested:app2','clone_user_requested:999'];root=self.root()
+  with patch.object(sync,'focus',return_value='mCurrentFocus=Window{x u999 com.xingin.xhs/com.xingin.reactnative.ui.XhsReactActivity}'),patch.object(sync,'adb') as adb,patch.object(sync.time,'sleep'):
+   self.assertTrue(sync.scroll_creator_home_for_latest('adb','serial',root,lambda:None,events,0))
+  adb.assert_called_once_with('adb','serial','shell','input','swipe','360','1247','360','574','400',timeout=8)
+ def test_scroll_never_bypasses_permission_wrong_user_unknown_surface_or_budget(self):
+  for mode in ('permission','user','surface','budget','duplicate'):
+   r=self.root();current='mCurrentFocus=Window{x u999 com.xingin.xhs/com.xingin.reactnative.ui.XhsReactActivity}';attempt=0
+   if mode=='permission':ET.SubElement(r,'node',{'package':sync.XHS_PACKAGE,'text':'开通数据权限','bounds':'[0,900][200,950]'})
+   if mode=='user':current=current.replace('u999','u0')
+   if mode=='surface':current=current.replace('com.xingin.reactnative.ui.XhsReactActivity','.index.v2.IndexActivityV2')
+   if mode=='budget':attempt=2
+   if mode=='duplicate':r.append(copy.deepcopy(next(n for n in r.iter('node') if n.get('class')=='android.widget.ScrollView')))
+   with patch.object(sync,'focus',return_value=current),patch.object(sync,'adb') as adb:
+    if mode=='user':
+     with self.assertRaisesRegex(RuntimeError,'requested slot'):sync.scroll_creator_home_for_latest('adb','serial',r,lambda:None,['collection_slot_requested:app2','clone_user_requested:999'],attempt)
+    else:self.assertFalse(sync.scroll_creator_home_for_latest('adb','serial',r,lambda:None,['collection_slot_requested:app2','clone_user_requested:999'],attempt))
+   adb.assert_not_called()
+ def test_nonresponding_overview_scrolls_then_uses_original_more_entrance(self):
+  r=self.root();scrolled=copy.deepcopy(r)
+  next(n for n in scrolled.iter('node') if n.get('text')=='观看').set('text','')
+  for text in ('最新笔记','更多'):
+   ET.SubElement(scrolled,'node',{'package':sync.XHS_PACKAGE,'class':'android.widget.TextView','text':text,'enabled':'true','clickable':'true','bounds':'[0,900][200,950]'})
+  ready=listing();events=['collection_slot_requested:app1']
+  with patch.object(sync,'focus',return_value='mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.reactnative.ui.XhsReactActivity}'),patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync,'recover_known_overlay',return_value=False),patch.object(sync,'tap_creator_overview') as overview,patch.object(sync,'scroll_creator_home_for_latest',return_value=True) as scroll,patch.object(sync,'navigation_capture',side_effect=[r,scrolled,ready]),patch.object(sync,'tap_label') as tap,patch.object(sync.time,'sleep'):
+   self.assertIs(sync.ensure_creator_list('adb','serial',r,'app1',lambda:None,events),ready)
+  overview.assert_called_once();scroll.assert_called_once();self.assertEqual(tap.call_args.args[3],'更多')
 
 class ElementCaptureTests(unittest.TestCase):
  current='mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}'
+ def test_focusless_actual_sleep_gets_one_state_checked_wake_and_fresh_read(self):
+  root=listing();events=['collection_slot_requested:app1']
+  with patch.object(sync,'capture',side_effect=[RuntimeError('UIAutomator did not return an XML hierarchy'),root]),patch.object(sync,'focus',return_value=''),patch.object(sync,'wake_if_asleep',return_value=True) as wake:
+   self.assertIs(sync.navigation_capture('adb','serial',lambda:None,events),root)
+  wake.assert_called_once();self.assertIn('focusless_asleep_recovered',events)
+ def test_focusless_wake_is_not_repeated_when_native_export_stays_unavailable(self):
+  events=['collection_slot_requested:app1']
+  with patch.object(sync,'capture',side_effect=RuntimeError('UIAutomator did not return an XML hierarchy')),patch.object(sync,'focus',return_value=''),patch.object(sync,'wake_if_asleep',return_value=True) as wake,patch.object(sync,'wake_focusless_display',return_value=False):
+   with self.assertRaisesRegex(RuntimeError,'XML hierarchy'):sync.navigation_capture('adb','serial',lambda:None,events)
+  wake.assert_called_once()
  def test_failed_uncompressed_modes_can_use_a_fresh_compressed_element_tree(self):
   def read(a,b,*args,**kw):
    if '--compressed' in args:return ET.tostring(listing(),encoding='unicode')
@@ -150,6 +276,9 @@ class ElementCollectionTests(unittest.TestCase):
   def start(*arguments):arguments[-1].append('collection_slot_requested:app1');return first
   with ExitStack() as stack:
    for name in ('release_idle_poco','verify_collection_slot','assert_no_poco','swipe'):stack.enter_context(patch.object(sync,name))
+   def prove(a,r,g,e,expected):
+    a.verified_account_identity={'serial':a.serial,'app_slot':a.app_slot,'configured_id':expected,'visible_public_id':expected,'sample_count':2};return r
+   stack.enter_context(patch.object(sync,'prove_profile_identity',side_effect=prove))
    stack.enter_context(patch.object(sync,'assert_idle',return_value={'xhsAccounts':[{'appSlot':'app1','enabled':True,'xhsId':'test'}]}))
    stack.enter_context(patch.object(sync,'adb',return_value='device'));stack.enter_context(patch.object(sync,'start_xhs',side_effect=start))
    stack.enter_context(patch.object(sync,'ensure_creator_list',side_effect=lambda a,b,r,*rest:r));stack.enter_context(patch.object(sync,'reopen_creator_list',return_value=first))
@@ -218,6 +347,9 @@ class LongNativeWindowTests(unittest.TestCase):
    if limit is not None:argv+=['--max-scrolls',str(limit)]
    stack.enter_context(patch.object(sys,'argv',argv));stack.enter_context(patch.object(sync.dt,'datetime',FixedDateTime));stack.enter_context(patch('builtins.print'))
    for name in ('release_idle_poco','verify_collection_slot','assert_no_poco','swipe'):stack.enter_context(patch.object(sync,name))
+   def prove(a,r,g,e,expected):
+    a.verified_account_identity={'serial':a.serial,'app_slot':a.app_slot,'configured_id':expected,'visible_public_id':expected,'sample_count':2};return r
+   stack.enter_context(patch.object(sync,'prove_profile_identity',side_effect=prove))
    stack.enter_context(patch.object(sync,'assert_idle',return_value={'xhsAccounts':[{'appSlot':'app1','enabled':True,'xhsId':'test'}]}))
    stack.enter_context(patch.object(sync,'adb',side_effect=lambda a,b,*args,**kw: 'device' if args==('get-state',) else '1800000'))
    def start(a,b,slot,guard,events):

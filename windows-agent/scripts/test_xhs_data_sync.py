@@ -17,7 +17,10 @@ SPEC.loader.exec_module(sync)
 
 
 def xml(*children):
-    return ET.fromstring("<hierarchy>" + "".join(children) + "</hierarchy>")
+    # An absent overlay still has a fresh native root. A truly empty export is
+    # tested separately and must not be accepted as a successful dismissal.
+    return ET.fromstring("<hierarchy>" + ("".join(children) if children else
+        '<node package="com.xingin.xhs" class="android.widget.FrameLayout" bounds="[0,0][1080,2400]"/>') + "</hierarchy>")
 
 
 class MiuiCloneTests(unittest.TestCase):
@@ -541,6 +544,24 @@ class RestoredAiCloseTests(unittest.TestCase):
 
 
 class CloneProfileTests(unittest.TestCase):
+    def test_owner_start_scopes_resolve_stop_and_start_to_user_zero(self):
+        def command(_adb, _serial, *args, **kwargs):
+            if args[:4] == ("shell", "pm", "list", "packages"):
+                return "package:com.xingin.xhs\n"
+            if "resolve-activity" in args:
+                return "com.xingin.xhs/.index.v2.IndexActivityV2"
+            return ""
+        events = []
+        with patch.object(sync, "adb", side_effect=command) as adb, \
+                patch.object(sync, "capture", return_value=xml()), patch.object(sync.time, "sleep"), \
+                patch.object(sync, "focus", return_value="mCurrentFocus=Window{x u0 com.xingin.xhs/.index.v2.IndexActivityV2}"):
+            sync.start_xhs("adb", "serial", "app1", lambda: None, events)
+            sync.verify_collection_slot("adb", "serial", "app1", events)
+        targeted = [c.args[2:] for c in adb.call_args_list if "resolve-activity" in c.args or "force-stop" in c.args or "start" in c.args]
+        self.assertEqual(len(targeted), 3)
+        self.assertTrue(all(args[args.index("--user") + 1] == "0" for args in targeted))
+        self.assertIn("collection_slot_requested:app1", events)
+
     def test_vivo_selects_only_the_installed_999_clone_even_with_another_space_user(self):
         with patch.object(sync, "adb", side_effect=["vivo", "UserInfo{0:机主:4c13}\nUserInfo{666:XSpace User:80001010}\nUserInfo{999:应用分身:20001010} running", "package:com.xingin.xhs\n"]):
             self.assertEqual(sync.explicit_clone_user("adb", "serial"), "999")
@@ -875,7 +896,7 @@ class OverlayRecoveryTests(unittest.TestCase):
     def test_logged_out_device_stops_without_login_actions(self):
         with patch.object(sync, "wake_if_asleep", return_value=False), \
                 patch.object(sync, "focus", return_value="mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.login.device.offline.DeviceOfflineRemindActivity}"), \
-                patch.object(sync, "adb") as adb, patch.object(sync, "tap_label") as tap:
+                patch.object(sync, "native_window_capture", return_value=xml()), patch.object(sync, "adb") as adb, patch.object(sync, "tap_label") as tap:
             with self.assertRaisesRegex(sync.ElementListReadError, "lacks native element evidence"):
                 sync.ensure_creator_list("adb", "serial", xml(), "app1", lambda: None, ["collection_slot_requested:app1"])
         adb.assert_not_called()
@@ -926,7 +947,7 @@ class OverlayRecoveryTests(unittest.TestCase):
         root = self.honor_update('<node package="com.hihonor.ouc" text="稍后" clickable="true" '
                                  'enabled="true" bounds="[1,85][90,120]"/>')
         with patch.object(sync, "focus", return_value="com.hihonor.ouc}"), \
-                patch.object(sync.time, "sleep"), patch.object(sync, "adb") as adb:
+                patch.object(sync.time, "sleep"), patch.object(sync, "navigation_capture", return_value=root), patch.object(sync, "adb") as adb:
             with self.assertRaisesRegex(RuntimeError, "stayed open"):
                 sync.recover_known_overlay("adb", "serial", root, lambda: None, [])
         self.assertEqual(adb.call_count, 1)

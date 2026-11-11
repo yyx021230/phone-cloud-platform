@@ -56,7 +56,9 @@ class StartupElementsTests(unittest.TestCase):
                 self.assertEqual(len(launches),2);self.assertEqual(sum('force-stop' in c for c in commands),1);self.assertEqual(reads,2)
                 for c in launches:
                     if slot=='app2':self.assertEqual(c[c.index('--user')+1],'999')
-                    else:self.assertNotIn('--user',c)
+                    else:
+                        self.assertIn('--user',c)
+                        self.assertEqual(c[c.index('--user')+1],'0')
                 self.assertIn('startup_elements_retry_recovered',events)
 
     def test_second_empty_tree_stops_without_third_launch(self):

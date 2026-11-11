@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<hierarchy data-source="xml">
+  <node package="com.xingin.xhs" class="android.view.ViewGroup" content-desc="创作中心" enabled="true" bounds="[0,0][720,1600]" />
+  <node index="2" text="" resource-id="" class="android.view.ViewGroup" package="com.xingin.xhs" content-desc="数据中心" checkable="false" checked="false" clickable="true" enabled="true" focusable="true" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[263,549][656,589]">
+    <node index="0" text="数据中心" resource-id="" class="android.widget.TextView" package="com.xingin.xhs" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[536,553][632,585]" />
+    <node index="1" text="" resource-id="" class="android.widget.ImageView" package="com.xingin.xhs" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[632,557][656,581]" />
+  </node>
+  <node package="com.xingin.xhs" class="android.widget.TextView" text="近 7 日数据" enabled="true" bounds="[64,553][208,585]" />
+  <node index="3" text="" resource-id="" class="android.view.ViewGroup" package="com.xingin.xhs" content-desc="观看, -, -" checkable="false" checked="false" clickable="true" enabled="true" focusable="true" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[64,629][112,761]">
+    <node index="0" text="观看" resource-id="" class="android.widget.TextView" package="com.xingin.xhs" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[64,629][112,665]" />
+    <node index="1" text="-" resource-id="" class="android.widget.TextView" package="com.xingin.xhs" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[80,671][96,725]" />
+    <node index="2" text="-" resource-id="" class="android.widget.TextView" package="com.xingin.xhs" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[83,733][93,761]" />
+  </node>
+</hierarchy>

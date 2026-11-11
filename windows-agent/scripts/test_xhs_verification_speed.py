@@ -110,6 +110,14 @@ class VerificationEntryTests(unittest.TestCase):
             self.assertNotIn('data_center_loading_reopen:1',events)
             if slot=='app2':self.assertIn('clone_slot_selected:app2',events)
 
+    def test_verification_carries_only_proven_cold_start_and_single_store_back_budget(self):
+        args=self.args('app2');args.verified_entry_events+=['xhs_cold_started','vivo_store_update_back']
+        events=[];root=native('ABCDE')
+        with patch.object(sync,'focus',return_value=FOCUS.replace('u0','u999')),patch.object(sync,'navigation_capture',return_value=root):
+            self.assertIs(sync.verification_entry(args,Mock(),events),root)
+        self.assertIn('xhs_cold_started',events);self.assertIn('vivo_store_update_back',events)
+        self.assertFalse(any(e.startswith('collection_scan_as_of:') for e in events))
+
     def test_no_primary_slot_proof_requires_full_entry(self):
         args=self.args();args.verified_entry_events=[]
         with patch.object(sync,'navigation_capture') as capture:
@@ -138,6 +146,11 @@ class VerificationEntryTests(unittest.TestCase):
 
     def test_changed_focus_or_occupancy_stops_before_reopen(self):
         with patch.object(sync,'focus',side_effect=[FOCUS,FOCUS.replace('u0','u999')]), \
+                patch.object(sync,'navigation_capture') as capture:
+            with self.assertRaisesRegex(RuntimeError,'owner user'):
+                sync.verification_entry(self.args(),Mock(),[])
+        capture.assert_not_called()
+        with patch.object(sync,'focus',side_effect=[FOCUS,FOCUS,FOCUS.replace('u0','u999')]), \
                 patch.object(sync,'navigation_capture',return_value=native('ABCDE')):
             with self.assertRaisesRegex(sync.ElementListReadError,'entry foreground changed'):
                 sync.verification_entry(self.args(),Mock(),[])

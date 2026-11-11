@@ -165,39 +165,188 @@ def login_element_evidence(root, current, events):
     require_element_tree(root)
     nodes = [n for n in live_nodes(root) if n.get("package") == XHS_PACKAGE]
     texts = {n.get("text", "").strip() for n in nodes}
-    if ("账号下线通知" in texts and "重新登录" in texts
-            and "你的小红书账号已在其他设备登录，如非本人操作，请尽快在「设置-账号与安全-登录设备管理」中移除未知设备。" in texts
+    welcome_kind = native_welcome_login_controls(root, current)
+    if welcome_kind and not {"我的草稿", "最新笔记", "作品分析"} & texts:
+        assert_requested_foreground(current, events)
+        return welcome_kind
+    offline_copy = ("你的小红书账号已在其他设备登录，如非本人操作，请尽快在「设置-账号与安全-登录设备管理」中移除未知设备。" in texts
+                    or any(re.fullmatch(r"你的小红书账号[^\r\n]{1,100}于\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"
+                                        r"在其他设备[^\r\n]{1,100}登录。该账号的在线设备数量已达上限，本设备将自动退出登录", text) for text in texts))
+    offline_copy = offline_copy or ("账号下线提示" in texts
+                    and "账号已退出登录，请尝试重新登录" in texts)
+    if ({"账号下线通知", "账号下线提示"} & texts and "重新登录" in texts and offline_copy
             and login_activity(current)):
         assert_requested_foreground(current, events)
         return "account_offline_notice"
     index = re.search(r"mCurrentFocus=Window\{[^\n}]*\bu\d+\s+com\.xingin\.xhs/(?:com\.xingin\.xhs\.index\.v2\.IndexActivityV2|\.index\.v2\.IndexActivityV2)[}\s]", current)
-    if ((login_activity(current) or index) and {"登录后展示自己", "微信登录"} <= texts
-            and ("手机号登录" in texts or {"一键登录", "其他登录方式"} <= texts)
+    login_title = bool({"登录后展示自己", "登录后，体验更多功能"} & texts)
+    standard_controls = "微信登录" in texts and ("手机号登录" in texts or {"一键登录", "其他登录方式"} <= texts)
+    selected_profile = any(n.get("class") == "android.view.ViewGroup" and n.get("selected") == "true"
+                           and (n.get("content-desc") == "我" or n.get("text") == "我") for n in nodes)
+    one_key_profile = (index and selected_profile and {"一键登录", "其他登录方式",
+                       "我已阅读并同意《用户协议》《隐私政策》《未成年人个人信息保护规则》"} <= texts
+                       and any(n.get("text") == "其他登录方式" and n.get("clickable") == "true"
+                               and n.get("enabled") == "true" for n in nodes))
+    if index and phone_only_profile_login_controls(root):
+        assert_requested_foreground(current, events)
+        return "phone_only_profile_login_controls"
+    if ((login_activity(current) or index) and login_title and (standard_controls or one_key_profile)
             and not {"我的草稿", "最新笔记", "作品分析"} & texts):
         assert_requested_foreground(current, events)
         return "login_controls"
     return None
 
 
+def phone_only_profile_login_controls(root):
+    """Exact signed-out own-profile variant with a phone login button."""
+    nodes = [n for n in live_nodes(root) if n.get("package") == XHS_PACKAGE
+             and n.get("enabled") == "true" and n.get("visible-to-user") != "false"]
+    if any(n.get("text") in {"编辑主页", "编辑资料", "我的草稿", "最新笔记", "作品分析"}
+           or n.get("text", "").startswith(("小红书号:", "小红书号：")) for n in nodes):
+        return False
+    own = [n for n in nodes if n.get("class") == "android.view.ViewGroup"
+           and n.get("content-desc") == "我" and n.get("selected") == "true"
+           and n.get("clickable") == "true"]
+    labels = ("登录后展示自己", "手机号登录", "其他登录方式",
+              "我已阅读并同意《用户协议》《隐私政策》《未成年人个人信息保护规则》",
+              "账号丢失了？", "找回账号")
+    groups = [[n for n in nodes if n.get("class") == "android.widget.TextView"
+               and n.get("text") == text] for text in labels]
+    if len(own) != 1 or any(len(group) != 1 for group in groups):
+        return False
+    title, phone, other, agreement, lost, recover = [group[0] for group in groups]
+    parents = {child: parent for parent in root.iter() for child in parent}
+    button = parents.get(phone)
+    if (button not in nodes or button.get("class") != "android.view.ViewGroup"
+            or button.get("clickable") != "true" or other.get("clickable") != "true"
+            or recover.get("clickable") != "true" or parents.get(lost) is not parents.get(recover)):
+        return False
+    boxes = [bounds(n) for n in (title, phone, other, agreement, lost, recover, own[0])]
+    return (all(boxes) and boxes[0][3] < boxes[1][1] < boxes[2][1] < boxes[3][1] < boxes[4][1]
+            and boxes[4][1] == boxes[5][1] < boxes[6][1])
+
+
+def native_welcome_login_controls(root, current):
+    """Exact native WelcomeActivity variants, with no image or SIM-number inference."""
+    if not re.search(r"mCurrentFocus=Window\{[^\n}]*\bu\d+\s+com\.xingin\.xhs/"
+                     r"com\.xingin\.login\.activity\.WelcomeActivity(?:[}\s]|$)", current):
+        return None
+    nodes = [n for n in live_nodes(root) if n.get("package") == XHS_PACKAGE]
+    def one(name, cls, parent=None):
+        found = [n for n in nodes if n.get("resource-id") == XHS_PACKAGE+":id/"+name
+                 and n.get("class") == cls and n.get("enabled") == "true"]
+        return found[0] if len(found) == 1 and (parent is None or found[0] in parent.iter("node")) else None
+    welcome = one("welcomeContainer", "android.widget.FrameLayout")
+    if welcome is None:return None
+    main = one("mainLoginLayout", "android.widget.LinearLayout", welcome)
+    if main is None:return None
+    phone = one("mPhoneLoginView", "android.view.ViewGroup", main)
+    privacy = one("privacyCheckContainer", "android.widget.LinearLayout", welcome)
+    if privacy is None:return None
+    check = one("privacyCheck", "android.widget.ImageView", privacy)
+    protocol = one("loginProtocol", "android.widget.TextView", privacy)
+    if check is None or check.get("clickable") != "true" or protocol is None:return None
+    base_protocol = "我已阅读并同意《用户协议》《隐私政策》《儿童/青少年个人信息保护规则》"
+    quick = one("quickLoginBtn", "android.widget.LinearLayout", main)
+    phone_present = any(n.get("resource-id") == XHS_PACKAGE+":id/mPhoneLoginView" for n in nodes)
+    quick_present = any(n.get("resource-id") == XHS_PACKAGE+":id/quickLoginBtn" for n in nodes)
+    if phone is not None and not quick_present:
+        text = one("mPhoneLoginTextView", "android.widget.TextView", phone)
+        if (phone.get("clickable") == "true" and text is not None and text.get("text") == "手机号登录"
+                and protocol.get("text") == base_protocol):return "phone_only_welcome_controls"
+    if quick is not None and not phone_present:
+        text = one("mTextTv", "android.widget.TextView", quick)
+        other = one("otherLoginWays", "android.widget.TextView", main)
+        if (quick.get("clickable") == "true" and text is not None and text.get("text") == "一键登录"
+                and other is not None and other.get("text") == "其他登录方式" and other.get("clickable") == "true"
+                and protocol.get("text") == base_protocol + "《联通统一认证服务条款》"):
+            return "carrier_quick_welcome_controls"
+    return None
+
+
 def confirm_logged_out(adb_path, serial, root, guard, events):
     """Two fresh native trees plus the requested foreground user are required."""
     guard()
-    first = login_element_evidence(root, focus(adb_path, serial), events)
+    current = focus(adb_path, serial)
+    first = login_element_evidence(root, current, events)
+    if first is None and login_activity(current):
+        # Some OEM stock exports contain a valid but incomplete login root.
+        # This is a read-only fallback, never an inference from the Activity.
+        try:
+            root = native_window_capture(adb_path, serial, current, guard, events)
+        except RuntimeError as error:
+            # A spontaneous update can replace the login window during a
+            # read-only native export too. Its helper has proved cleanup before
+            # this exception reaches us. Discard the entire stale tree once;
+            # normal navigation must prove and dismiss the new overlay itself.
+            changed = focus(adb_path, serial)
+            if (str(error) not in {"native elements foreground changed before staging",
+                                  "native elements foreground changed before read",
+                                  "native elements foreground changed during read"}
+                    or "login_confirmation_update_recheck" in events
+                    or not re.search(r"com\.xingin\.xhs/com\.xingin\.update\.UpdateDialogActivity(?:[}\s]|$)", changed)):
+                raise
+            assert_requested_foreground(changed, events)
+            guard()
+            events.append("login_confirmation_update_recheck")
+            return navigation_capture(adb_path, serial, guard, events)
+        first = login_element_evidence(root, current, events)
+        events.append("login_native_confirmation_fallback")
     if first is None:
         raise ElementListReadError("login state lacks native element evidence")
+    def signature(tree):
+        if first in {"phone_only_welcome_controls", "carrier_quick_welcome_controls"}:
+            roles = {"welcomeContainer", "mainLoginLayout", "mPhoneLoginView", "mPhoneLoginTextView",
+                     "privacyCheckContainer", "privacyCheck", "loginProtocol", "quickLoginBtn", "mTextTv", "otherLoginWays"}
+            return sorted(tuple(n.get(k, "") for k in ("resource-id", "class", "text", "clickable", "enabled"))
+                          for n in live_nodes(tree) if n.get("package") == XHS_PACKAGE
+                          and n.get("resource-id", "").removeprefix(XHS_PACKAGE+":id/") in roles)
+        markers = {"登录后展示自己", "登录后，体验更多功能", "微信登录", "手机号登录", "一键登录", "其他登录方式", "账号下线通知", "账号下线提示", "账号已退出登录，请尝试重新登录", "重新登录"}
+        return sorted(n.get("text", "").strip() for n in live_nodes(tree) if n.get("package") == XHS_PACKAGE
+                      and (n.get("text", "").strip() in markers or n.get("text", "").startswith("你的小红书账号")))
+    first_signature = signature(root)
     time.sleep(.5)
     guard()
-    fresh = capture(adb_path, serial)
+    if first == "phone_only_profile_login_controls":
+        from xhs_native_window import same_foreground
+        first_native = native_window_capture(adb_path, serial, current, guard, list(events))
+        if (not same_foreground(current, focus(adb_path, serial))
+                or login_element_evidence(first_native, current, events) != first
+                or signature(first_native) != first_signature):
+            raise ElementListReadError("login state changed during native confirmation")
+        guard()
+        time.sleep(.5)
+        fresh = native_window_capture(adb_path, serial, current, guard, list(events))
+        if not same_foreground(current, focus(adb_path, serial)):
+            raise ElementListReadError("login state changed during native confirmation")
+    else:
+        fresh = (navigation_capture(adb_path, serial, guard, events)
+                 if "native_window_elements_enabled" in events else capture(adb_path, serial))
     second = login_element_evidence(fresh, focus(adb_path, serial), events)
-    if first != second:
+    if first != second or first_signature != signature(fresh):
+        modes = {"phone_only_welcome_controls", "carrier_quick_welcome_controls"}
+        if (first in modes and second in modes and "native_welcome_confirmation_recheck_once" not in events):
+            # Carrier auth may finish loading after the phone-only page. Discard
+            # the mismatched pair once and require two new matching native reads.
+            events.append("native_welcome_confirmation_recheck_once")
+            time.sleep(.5);guard()
+            current = focus(adb_path, serial);assert_requested_foreground(current, events)
+            fresh = native_window_capture(adb_path, serial, current, guard, events)
+            return confirm_logged_out(adb_path, serial, fresh, guard, events)
         raise ElementListReadError("login state changed during native confirmation")
     events.append("login_state_confirmed:" + first)
     raise RuntimeError("Xiaohongshu account is logged out; manual login is required")
 
 
 def assert_requested_foreground(current, events):
+    current = current_window_dump(current)
     slots = {e.split(":", 1)[1] for e in events if e.startswith("collection_slot_requested:")}
     users = {e.split(":", 1)[1] for e in events if e.startswith("clone_user_requested:")}
+    windows = re.findall(r"mCurrentFocus=Window\{[^\n}]+\}",current)
+    if (slots == {"app1"} and not (users-{"0"}) and len(windows) == 1
+            and re.search(r"\bu0\s+Application Not Responding: com\.xingin\.xhs(?:[}\s]|$)",windows[0])):
+        # This is an app failure, never a wrong-slot or signed-out assertion.
+        raise RuntimeError("Xiaohongshu app is not responding; collection stopped")
     expected = "0" if slots == {"app1"} else next(iter(users)) if slots == {"app2"} and len(users) == 1 else None
     if expected is None or not re.search(r"mCurrentFocus=Window\{[^\n}]*\bu" + re.escape(expected)
                                        + r"\s+com\.xingin\.xhs/", current):
@@ -225,11 +374,29 @@ def data_center_tab_header(root):
 
 
 
+class CleanNativeRootUnavailable(RuntimeError):
+    """Exact missing-root rejection after normal reader exit and file cleanup."""
+
+
 def native_window_capture(adb_path, serial, current, guard, events):
     from xhs_native_window import read
     assert_requested_foreground(current, events)
     assert_no_poco(adb_path, serial)
-    root = read(adb_path, serial, adb_process, lambda: focus(adb_path, serial), guard, current)
+    reader_exit_codes = []
+    def read_process(adb, target, *args, **kwargs):
+        result = adb_process(adb, target, *args, **kwargs)
+        if len(args) == 2 and args[0] == "shell" and args[1].endswith(" NativeWindowReader"):
+            reader_exit_codes.append(result.returncode)
+        return result
+    try:
+        root = read(adb_path, serial, read_process, lambda: focus(adb_path, serial), guard, current)
+    except RuntimeError as error:
+        if (str(error) == "native elements command failed: native_elements_unproven:IllegalStateException:native root missing"
+                and reader_exit_codes == [1]):
+            # The fixed reader's finally has also removed and checked its jar;
+            # cleanup rejection would replace this exception before it returns.
+            raise CleanNativeRootUnavailable(str(error)) from error
+        raise
     require_element_tree(root)
     if "native_window_elements_enabled" not in events:
         events.append("native_window_elements_enabled")
@@ -239,25 +406,77 @@ def native_window_capture(adb_path, serial, current, guard, events):
 def navigation_capture(adb_path, serial, guard, events):
     # Once stock export fails, use the complete native reader on this WebView.
     # Every read still proves foreground user, occupancy and native node identity.
+    from xhs_native_window import readable_foreground, honor_owner_foreground, read_honor_owner
     if "native_window_elements_enabled" in events:
         current = focus(adb_path, serial)
-        if works_webview_activity(current):
-            return native_window_capture(adb_path, serial, current, guard, events)
+        if readable_foreground(current):
+            transitions = {
+                "native elements foreground changed before staging",
+                "native elements foreground changed before read",
+                "native elements foreground changed during read",
+            }
+            for attempt in range(3):
+                try:
+                    return native_window_capture(adb_path, serial, current, guard, events)
+                except RuntimeError as error:
+                    if (str(error) not in transitions or attempt == 2
+                            or any(e.startswith("collection_scan_as_of:") for e in events)):
+                        raise
+                    events.append("navigation_native_transition_read_retry")
+                    for _ in range(6):
+                        time.sleep(.4)
+                        guard()
+                        fresh = focus(adb_path, serial)
+                        if not fresh:
+                            continue
+                        assert_requested_foreground(fresh, events)
+                        if not readable_foreground(fresh):
+                            raise ElementListReadError("navigation transition surface is unproven")
+                        current = fresh
+                        break
+                    else:
+                        raise ElementListReadError("navigation focus did not settle after transition") from error
     try:
         root = capture(adb_path, serial)
+        if not list(root.iter("node")):
+            raise RuntimeError("UIAutomator did not return an XML hierarchy")
     except (RuntimeError,subprocess.TimeoutExpired) as error:
         current = focus(adb_path, serial)
+        if ("collection_slot_requested:app1" in events and
+                re.search(r"mCurrentFocus=Window\{[^\n}]*\bu0\s+Application Not Responding: com\.xingin\.xhs(?:[}\s]|$)",current)):
+            # Preserve the existing element-backed ANR wait when a dialog tree
+            # is readable. Only classify a failed export here; never reopen it
+            # as a wrong-slot task or infer account logout.
+            assert_requested_foreground(current,events)
+        if (not current and (isinstance(error,subprocess.TimeoutExpired)
+                             or "did not return an XML hierarchy" in str(error))
+                and "focusless_asleep_recovery_attempted" not in events
+                and len({e for e in events if e.startswith("collection_slot_requested:")}) == 1):
+            # 47 had no input focus because its physical display actually slept.
+            # The older focusless recovery covers an awake-but-unlit panel only.
+            # Reuse the existing power-state-checked wake, once, then read afresh.
+            events.append("focusless_asleep_recovery_attempted")
+            if wake_if_asleep(adb_path, serial, guard, events):
+                events.append("focusless_asleep_recovered")
+                return navigation_capture(adb_path, serial, guard, events)
         if (not current and (isinstance(error,subprocess.TimeoutExpired)
                              or "did not return an XML hierarchy" in str(error))
                 and wake_focusless_display(adb_path, serial, guard, events)):
             return capture(adb_path, serial)
-        if login_activity(current):
-            assert_requested_foreground(current, events)
-            raise ElementListReadError("login foreground could not be read; logout is unproven") from error
         notification = re.search(
             r"com\.xingin\.xhs/(?:com\.xingin\.authorization\.NotificationAuthorizationTranslucentActivity|"
             r"\.authorization\.NotificationAuthorizationTranslucentActivity)(?:[}\s]|$)", current)
-        if works_webview_activity(current) and (isinstance(error,subprocess.TimeoutExpired)
+        if (honor_owner_foreground(current) and "did not return an XML hierarchy" in str(error)
+                and {e for e in events if e.startswith("collection_slot_requested:")} == {"collection_slot_requested:app1"}
+                and not any(e.startswith("collection_scan_as_of:") for e in events)):
+            # Read only the exact owner chooser; the existing two-card element
+            # validator selects it and must subsequently prove XHS user zero.
+            assert_no_poco(adb_path, serial)
+            root = read_honor_owner(adb_path,serial,adb_process,lambda:focus(adb_path,serial),guard,current)
+            require_element_tree(root)
+            events.append("honor_owner_chooser_native_elements")
+            return root
+        if readable_foreground(current) and (isinstance(error,subprocess.TimeoutExpired)
                 or "did not return an XML hierarchy" in str(error)):
             assert_requested_foreground(current, events)
             try:
@@ -271,7 +490,7 @@ def navigation_capture(adb_path, serial, guard, events):
                 guard()
                 assert_requested_foreground(focus(adb_path, serial), events)
                 events.append("native_window_elements_rejected:" + type(native_error).__name__)
-            if ("creator_more_selected" in events and "works_native_more_recovery_attempted" not in events
+            if (works_webview_activity(current) and "creator_more_selected" in events and "works_native_more_recovery_attempted" not in events
                     and "data_center_loading_active" not in events
                     and not any(e.startswith("collection_scan_as_of:") for e in events)):
                 return recover_inaccessible_more(adb_path, serial, current, guard, events)
@@ -364,8 +583,25 @@ def tap_label(adb_path, serial, root, value, guard=lambda: None):
     time.sleep(0.5)
 
 
+def current_window_dump(output):
+    """Discard a recorded LAST ANR snapshot; never borrow its old focus."""
+    if "WINDOW MANAGER LAST ANR (dumpsys window lastanr)" not in output:
+        return output
+    policies = list(re.finditer(r"(?m)^WINDOW MANAGER POLICY STATE \(dumpsys window policy\)\r?$", output))
+    if policies:
+        current = output[policies[-1].start():]
+        if (re.search(r"(?m)^WINDOW MANAGER DISPLAY CONTENTS \(dumpsys window displays\)\r?$", current)
+                and re.search(r"(?m)^WINDOW MANAGER WINDOWS \(dumpsys window windows\)\r?$", current)):
+            return current
+    sections = re.split(r"(?m)^WINDOW MANAGER ", output)
+    first = sections[1] if len(sections)>1 else ""
+    if re.search(r"(?m)^\s*<no ANR has occurred since boot>\s*$",first):
+        return output
+    return ""
+
+
 def focus(adb_path, serial):
-    output = adb(adb_path, serial, "shell", "dumpsys", "window", timeout=8)
+    output = current_window_dump(adb(adb_path, serial, "shell", "dumpsys", "window", timeout=8))
     lines = [line.strip() for line in output.splitlines() if "mCurrentFocus=" in line]
     return next((line for line in reversed(lines) if "mCurrentFocus=null" not in line), "")
 
@@ -500,8 +736,26 @@ def dismiss_unsecured_keyguard(adb_path, serial, guard, events):
                 raise RuntimeError("unsecured keyguard screen size is not proven")
             width, height = map(int, sizes[0])
             guard()
-            adb(adb_path, serial, "shell", "input", "swipe", str(width//2), str(height*85//100),
-                str(width//2), str(height*30//100), "350", timeout=7)
+            try:
+                adb(adb_path, serial, "shell", "input", "swipe", str(width//2), str(height*85//100),
+                    str(width//2), str(height*30//100), "350", timeout=7)
+            except subprocess.TimeoutExpired:
+                # The swipe can complete on-device after its ADB client times
+                # out. Accept only the readback of the actual unlocked state.
+                guard()
+                window = adb(adb_path, serial, "shell", "dumpsys", "window", timeout=8)
+                after = window.partition("KeyguardServiceDelegate")[2].partition("KeyguardStateMonitor")[0]
+                if (default_display_state(window) != ("true", "true", "true")
+                        or any(re.findall(r"^\s*" + key + r"=(true|false)\s*$", after, re.MULTILINE) != ["false"]
+                               for key in ("showing", "secure", "occluded", "inputRestricted"))):
+                    raise
+                focused = [line.strip() for line in window.splitlines()
+                           if "mCurrentFocus=Window{" in line]
+                if len(focused) != 1:
+                    raise
+                assert_requested_foreground(focused[0], events)
+                events.append("unsecured_keyguard_swipe_completed_after_timeout")
+                break
             swiped = True
         if attempt == 7:
             raise RuntimeError("unsecured keyguard stayed visible after dismissal")
@@ -512,6 +766,14 @@ def dismiss_unsecured_keyguard(adb_path, serial, guard, events):
 
 def verify_collection_slot(adb_path, serial, slot, events):
     requested = [event.split(":", 1)[1] for event in events if event.startswith("clone_user_requested:")]
+    if slot == "app1" and not requested:
+        # Owner-only models have no clone chooser. Persist the same foreground
+        # proof instead of making downstream audits infer it from call paths.
+        current = focus(adb_path, serial)
+        if not re.search(r"\bu0\s+com\.xingin\.xhs/", current):
+            raise RuntimeError("Xiaohongshu foreground owner user does not match the requested slot")
+        if "clone_slot_selected:app1" not in events:
+            events.append("clone_slot_selected:app1")
     if requested:
         current = focus(adb_path, serial)
         if len(requested) != 1 or not re.search(r"\bu" + re.escape(requested[0]) + r"\s+com\.xingin\.xhs/", current):
@@ -739,10 +1001,110 @@ def retry_startup_elements(adb_path, serial, slot, clone_user, activity, guard, 
     guard()
     if not vivo_startup_launcher(adb(adb_path, serial, "shell", "dumpsys", "window", timeout=8)):
         raise RuntimeError("Xiaohongshu startup retry foreground changed")
-    user_args = ("--user", clone_user) if clone_user else ()
+    user_args = (("--user", "0") if slot == "app1" else
+                 ("--user", clone_user) if clone_user else ())
     guard()
     adb(adb_path, serial, "shell", "am", "start", "-W", *user_args, "-n", activity, timeout=20)
     return capture_vivo_startup_retry(adb_path, serial, slot, clone_user, guard, events)
+
+
+def xhs_launch_activity(resolved, events):
+    """Never launch an unrelated/resolver component returned by OEM resolution."""
+    activities=set(re.findall(r"(?m)^\s*(com\.xingin\.xhs/[\w.$]+)\s*$", resolved))
+    if len(activities)>1:
+        raise RuntimeError("Xiaohongshu launcher activity is not uniquely proven")
+    if activities:
+        events.append("xhs_launcher_component:validated_owned_package")
+        return next(iter(activities))
+    events.append("xhs_launcher_component:fixed_owned_fallback")
+    return XHS_PACKAGE+"/.index.v2.IndexActivityV2"
+
+
+def close_startup_control_center(adb_path, serial, root, current, slot, guard, events):
+    """Collapse the observed Vivo control center over our XHS launch once."""
+    requested = {e.split(":", 1)[1] for e in events if e.startswith("collection_slot_requested:")}
+    if requested != {slot} or slot not in ("app1", "app2") or "xhs_cold_started" not in events:
+        return False
+    if slot == "app2" and "clone_user_requested:999" not in events:
+        return False
+    window_pattern = r"mCurrentFocus=Window\{[^\n}]*\bu0 NotificationShade(?:[}\s]|$)"
+    if not re.search(window_pattern, current):
+        return False
+    marker = "startup_control_center_back"
+    if marker in events:
+        raise ElementListReadError("startup control center recurred after Back")
+
+    def state():
+        guard()
+        dump = adb(adb_path, serial, "shell", "dumpsys", "window", timeout=8)
+        windows = re.findall(r"mCurrentFocus=Window\{[^\n}]+\}", dump)
+        owners = re.findall(r"(?m)^\s*mFocusedApp=ActivityRecord\{[^\n]+", dump)
+        return windows, owners
+
+    before = state()
+    windows = re.findall(r"mCurrentFocus=Window\{[^\n}]+\}", current)
+    user = "0" if slot == "app1" else "999"
+    target = r"\bu" + user + r" com\.xingin\.xhs/[\w.$]+(?:[}\s]|$)"
+    chooser = r"\bu0 com\.android\.intentresolver/(?:com\.android\.intentresolver)?\.DoubleAppResolverActivity(?:[}\s]|$)"
+    if (len(windows) != 1 or before[0] != windows or len(before[1]) != 1
+            or not (re.search(target, before[1][0]) or re.search(chooser, before[1][0]))):
+        return False
+    guard()
+    nodes = live_nodes(capture(adb_path, serial))
+    packages = {"com.android.systemui", "com.vivo.systemuiplugin"}
+    required = ("qs_focus_content_container", "vivo_volume_tile_slider", "vivo_brightness_slider_summary")
+    if (not nodes or any(n.get("package") not in packages for n in nodes)
+            or any(len([n for n in nodes if n.get("resource-id") == "com.vivo.systemuiplugin:id/" + rid
+                        and n.get("enabled") == "true"]) != 1 for rid in required)):
+        return False
+    if state() != before:
+        raise ElementListReadError("startup control center changed before Back")
+    guard()
+    events.append(marker)
+    adb(adb_path, serial, "shell", "input", "keyevent", "4", timeout=7)
+    for _ in range(6):
+        time.sleep(.5)
+        guard()
+        after = focus(adb_path, serial)
+        active = re.findall(r"mCurrentFocus=Window\{[^\n}]+\}", after)
+        if len(active) == 1 and (re.search(target, active[0]) or re.search(chooser, active[0])):
+            return True
+        if active and active != windows:
+            raise ElementListReadError("startup control center Back opened an unexpected foreground")
+    raise ElementListReadError("startup control center stayed open after Back")
+
+
+def wake_for_startup(adb_path, serial, slot, guard, events):
+    """One wake command; an owner already awake and unlocked needs no replay."""
+    try:
+        adb(adb_path, serial, "shell", "input", "keyevent", "224", timeout=7)
+    except subprocess.TimeoutExpired:
+        # 141's timed-out wake left display0 lit, unlocked and on the same
+        # owner XHS window. Verify that exact completion state, read-only.
+        if slot != "app1":
+            raise
+        guard()
+        window = adb(adb_path, serial, "shell", "dumpsys", "window", timeout=8)
+        # dumpsys window can prepend a full historical LAST ANR snapshot.
+        # The last exact policy header starts the current state, not history.
+        window = current_window_dump(window)
+        after = window.partition("KeyguardServiceDelegate")[2].partition("KeyguardStateMonitor")[0]
+        if (default_display_state(window) != ("true", "true", "true")
+                or any(re.findall(r"^\s*" + key + r"=(true|false)\s*$", after, re.MULTILINE) != ["false"]
+                       for key in ("showing", "secure", "occluded", "inputRestricted"))):
+            raise
+        focused = re.findall(r"mCurrentFocus=Window\{[^\n}]+\}", window)
+        if len(focused) != 1:
+            raise
+        target_anr = re.search(r"mCurrentFocus=Window\{[^\n}]*\bu0\s+Application Not Responding: com\.xingin\.xhs(?:[}\s]|$)",focused[0])
+        if target_anr:
+            # No UI input is repeated. The existing explicit user-0 cold start
+            # below will stop only XHS and clear its own unresponsive task.
+            events.append("startup_target_anr_window_proven")
+        else:
+            assert_requested_foreground(focused[0], events)
+        guard()
+        events.append("startup_wake_completed_after_timeout")
 
 
 def start_xhs(adb_path, serial, slot, guard, events):
@@ -750,7 +1112,7 @@ def start_xhs(adb_path, serial, slot, guard, events):
     guard()
     marker = "collection_slot_requested:" + slot
     if marker not in events:events.append(marker)
-    adb(adb_path, serial, "shell", "input", "keyevent", "224", timeout=7)
+    wake_for_startup(adb_path, serial, slot, guard, events)
     # Vivo reports the old unlocked state briefly while its screen wakes.
     # Inspect the settled lock before the generic asynchronous dismissal.
     time.sleep(.7)
@@ -759,16 +1121,18 @@ def start_xhs(adb_path, serial, slot, guard, events):
     if f"package:{XHS_PACKAGE}" not in adb(adb_path, serial, "shell", "pm", "list", "packages", XHS_PACKAGE):
         raise RuntimeError("Xiaohongshu is not installed on this phone")
     clone_user = explicit_clone_user(adb_path, serial) if slot == "app2" else None
-    user_args = ("--user", clone_user) if clone_user else ()
+    # The owner slot is an explicit Android user too. Do not ask an OEM's
+    # default-user resolver to choose between the owner and its clone.
+    user_args = (("--user", "0") if slot == "app1" else
+                 ("--user", clone_user) if clone_user else ())
     resolved = adb(adb_path, serial, "shell", "cmd", "package", "resolve-activity", "--brief", *user_args, XHS_PACKAGE)
-    activity = next((line.strip() for line in reversed(resolved.splitlines())
-                     if "/" in line and " " not in line), f"{XHS_PACKAGE}/.index.v2.IndexActivityV2")
+    activity = xhs_launch_activity(resolved, events)
     guard()
     adb(adb_path, serial, "shell", "am", "force-stop", *user_args, XHS_PACKAGE, timeout=8)
     events.append("xhs_cold_started")
     guard()
     adb(adb_path, serial, "shell", "am", "start", "-W", *user_args, "-n", activity, timeout=20)
-    if clone_user:
+    if clone_user and "clone_user_requested:" + clone_user not in events:
         events.append("clone_user_requested:" + clone_user)
     time.sleep(0.7)
     try:
@@ -781,6 +1145,9 @@ def start_xhs(adb_path, serial, slot, guard, events):
             raise
     for _ in range(5):
         current = focus(adb_path, serial)
+        if close_startup_control_center(adb_path, serial, root, current, slot, guard, events):
+            root = navigation_capture(adb_path, serial, guard, events)
+            continue
         if any(marker in current for marker in ("com.bbk.updater", "VivoUsbDialog", "UsbDetailsActivity")):
             if recover_known_overlay(adb_path, serial, root, guard, events):
                 root = navigation_capture(adb_path, serial, guard, events)
@@ -896,6 +1263,42 @@ def recover_known_overlay(adb_path, serial, root, guard, events, read_guard=None
         guard()
         adb(adb_path, serial, "shell", "input", "keyevent", "4", timeout=7)
         time.sleep(0.4)
+
+    honor_push = "com.hihonor.android.pushagent"
+    honor_title = "是否允许“小红书”发送通知？"
+    honor_focus = r"mCurrentFocus=Window\{[^\n}]*\bu0\s+com\.hihonor\.android\.pushagent/com\.hihonor\.android\.pushagent\.activity\.NotificationDialogForOverMagic6Activity(?:[}\s]|$)"
+    if re.search(honor_focus, current) and label(root, honor_title):
+        def decline(tree):
+            nodes = live_nodes(tree)
+            def exact(rid, text, cls):
+                return [n for n in nodes if n.get("package") == honor_push and n.get("resource-id") == rid
+                        and n.get("text") == text and n.get("class") == cls and n.get("enabled") == "true"]
+            titles = exact(honor_push+":id/tvTitle", honor_title, "android.widget.TextView")
+            messages = exact("android:id/message", "通知可能包括锁屏、铃声等。可前往“设置”中更改。", "android.widget.TextView")
+            deny = exact("android:id/button2", "禁止", "android.widget.Button")
+            allow = exact("android:id/button1", "允许", "android.widget.Button")
+            parents_ = {child: parent for parent in tree.iter() for child in parent}
+            if (len(titles) != 1 or len(messages) != 1 or len(deny) != 1 or len(allow) != 1
+                    or any(n.get("package") != honor_push for n in nodes)
+                    or deny[0].get("clickable") != "true" or allow[0].get("clickable") != "true"
+                    or parents_.get(deny[0]) is None or parents_.get(deny[0]) is not parents_.get(allow[0])):
+                raise ElementListReadError("Honor notification decline elements are unproven")
+            return deny[0]
+        target = decline(root)
+        if any(e in events for e in ("honor_notification_back", "honor_notification_denied")):
+            raise ElementListReadError("Honor notification repeated after bounded recovery")
+        guard()
+        if not re.search(honor_focus, focus(adb_path, serial)):
+            raise ElementListReadError("Honor notification foreground changed before decline")
+        x1, y1, x2, y2 = bounds(target)
+        adb(adb_path, serial, "shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2), timeout=7)
+        time.sleep(.4)
+        after = navigation_capture(adb_path, serial, read_guard, events)
+        if label(after, honor_title):
+            raise ElementListReadError("Honor notification remained after decline")
+        assert_requested_foreground(focus(adb_path, serial), events)
+        events.append("honor_notification_denied")
+        return True
 
     if ("NotificationAuthorizationTranslucentActivity" in current or
             ("com.vivo.pushservice" in current and "type=2038" in current)):
@@ -1110,7 +1513,37 @@ def recover_known_overlay(adb_path, serial, root, guard, events, read_guard=None
 
     honor_package = "com.hihonor.ouc"
     honor_focus = bool(re.search(r"\bcom\.hihonor\.ouc(?:[}/\s]|$)", current))
+    def decline_honor_download(snapshot, foreground):
+        if not label(snapshot, "开启 WLAN 自动下载"):
+            return False
+        live = live_nodes(snapshot)
+        title = [n for n in live if n.get("package") == honor_package
+                 and n.get("resource-id") == "android:id/alertTitle" and n.get("text") == "开启 WLAN 自动下载"]
+        message = [n for n in live if n.get("package") == honor_package
+                   and n.get("resource-id") == "android:id/message" and n.get("text") == "有软件更新时，自动下载安装包。"]
+        cancel = [n for n in live if n.get("package") == honor_package
+                  and n.get("resource-id") == "android:id/button3" and n.get("text") == "取消"
+                  and n.get("class") == "android.widget.Button" and n.get("clickable") == "true" and n.get("enabled") == "true"]
+        enable = [n for n in live if n.get("package") == honor_package
+                  and n.get("resource-id") == "android:id/button1" and n.get("text") == "开启"]
+        if (not re.search(r"mCurrentFocus=Window\{[^\n}]*\bu0\s+com\.hihonor\.ouc(?:[}/\s]|$)", foreground)
+                or len(title) != 1 or len(message) != 1 or len(cancel) != 1 or len(enable) != 1
+                or any(n.get("package") != honor_package for n in live)
+                or "honor_auto_download_cancelled" in events):
+            raise ElementListReadError("Honor automatic download cancel element is not uniquely proven")
+        guard()
+        if focus(adb_path, serial) != foreground:
+            raise ElementListReadError("Honor automatic download foreground changed before cancel")
+        x1,y1,x2,y2 = bounds(cancel[0])
+        adb(adb_path,serial,"shell","input","tap",str((x1+x2)//2),str((y1+y2)//2),timeout=7)
+        time.sleep(.4)
+        if label(navigation_capture(adb_path,serial,read_guard,events),"开启 WLAN 自动下载"):
+            raise ElementListReadError("Honor automatic download prompt stayed open after cancel")
+        events.append("honor_auto_download_cancelled")
+        return True
     if honor_focus or any(node.get("package") == honor_package for node in nodes):
+        if decline_honor_download(root, current):
+            return True
         titles = [node for node in live_nodes(root) if node.get("package") == honor_package
                   and (node.get("text") or "").strip() == "软件更新"]
         installs = [node for node in live_nodes(root) if node.get("package") == honor_package
@@ -1124,8 +1557,11 @@ def recover_known_overlay(adb_path, serial, root, guard, events, read_guard=None
         guard()
         adb(adb_path, serial, "shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2), timeout=7)
         time.sleep(0.4)
-        if re.search(r"\bcom\.hihonor\.ouc(?:[}/\s]|$)", focus(adb_path, serial)):
-            raise RuntimeError("Honor update overlay stayed open after defer")
+        after = focus(adb_path, serial)
+        if re.search(r"\bcom\.hihonor\.ouc(?:[}/\s]|$)", after):
+            refreshed = navigation_capture(adb_path, serial, read_guard, events)
+            if not decline_honor_download(refreshed, after):
+                raise RuntimeError("Honor update overlay stayed open after defer")
         events.append("honor_update_deferred")
         return True
 
@@ -1319,7 +1755,7 @@ def recover_known_overlay(adb_path, serial, root, guard, events, read_guard=None
     if XHS_PACKAGE in current and len(milestone) == 1 and len(children) == 5:
         subtitle = ("发笔记记录一下此刻吧！✌" if "单篇笔记阅读" in milestone[0].get("text", "")
                     else ("发笔记感谢一下大家的喜爱❤️", "发笔记让更多人看到你的精彩分享 🙌",
-                          "分享喜悦，获得更多人的关注💗", "去记录在小红书留下的每一步👣"))
+                          "分享喜悦，获得更多人的关注💗", "去记录在小红书留下的每一步👣", "发笔记被更多人看见👀"))
         if (children[1] is not milestone[0] or children[2].get("text") not in ((subtitle,) if isinstance(subtitle, str) else subtitle)
                 or children[4].get("text") != "去发布"
                 or any(n.get("package") != XHS_PACKAGE for n in children)):
@@ -1407,11 +1843,112 @@ def creator_overview_entry(root):
                          and n.get("class") == "android.widget.TextView"]) == 1)
 
 
+def creator_data_center_button(root):
+    """Exact RN header link after data permission activation, not '-' metrics."""
+    if not creator_overview_entry(root) or label(root,'开通数据权限'):
+        return None
+    nodes=live_nodes(root)
+    links=[n for n in nodes if n.get('text')=='数据中心' and n.get('class')=='android.widget.TextView']
+    if len(links)!=1:return None
+    leaf=links[0];parents={child:parent for parent in root.iter() for child in parent}
+    parent=leaf
+    while parent is not None:
+        if parent.get('package')!=XHS_PACKAGE or parent.get('enabled')!='true':return None
+        if parent.get('clickable')=='true':break
+        parent=parents.get(parent)
+    if parent is None or parent not in nodes:return None
+    lb,pb=bounds(leaf),bounds(parent)
+    if not lb or not pb or not(pb[0]<=lb[0]<lb[2]<=pb[2] and pb[1]<=lb[1]<lb[3]<=pb[3]):return None
+    return lb
+
+
+def creator_overview_metric_placeholder(root):
+    parents={child:parent for parent in root.iter() for child in parent}
+    placeholder=False
+    watching=[n for n in live_nodes(root) if n.get('package')==XHS_PACKAGE
+              and n.get('class')=='android.widget.TextView' and n.get('text')=='观看']
+    if len(watching)==1:
+        parent=parents.get(watching[0])
+        while parent is not None and parent.get('package')==XHS_PACKAGE:
+            if parent.get('content-desc') in ('观看, -, -','观看，-，-'):
+                placeholder=True;break
+            parent=parents.get(parent)
+    return placeholder
+
+
+def tap_creator_overview(adb_path,serial,root,guard,events):
+    if creator_overview_metric_placeholder(root):
+        raise ElementListReadError('Creator Center metric data is unavailable; latest-notes entrance required')
+    tap_label(adb_path,serial,root,'观看',guard)
+
+
+def scroll_creator_home_for_latest(adb_path,serial,root,guard,events,attempt=0):
+    """A bounded fallback to the original latest-notes/More entrance."""
+    used=sum(e.startswith('creator_home_latest_scroll:') for e in events)
+    if attempt not in (0,1) or not label(root,'创作中心') or label(root,'开通数据权限'):
+        return False
+    scrolls=[n for n in live_nodes(root) if n.get('package')==XHS_PACKAGE
+             and n.get('class')=='android.widget.ScrollView' and n.get('content-desc')=='创作中心滚动区'
+             and n.get('scrollable')=='true' and n.get('enabled')=='true']
+    if len(scrolls)!=1:return False
+    x1,y1,x2,y2=bounds(scrolls[0])
+    if x2-x1<200 or y2-y1<400:return False
+    guard();current=focus(adb_path,serial);assert_requested_foreground(current,events)
+    if not re.search(r'com\.xingin\.xhs/com\.xingin\.reactnative\.ui\.XhsReactActivity(?:[}\s]|$)',current):return False
+    events.append('creator_home_latest_scroll:'+str(used+1))
+    adb(adb_path,serial,'shell','input','swipe',str((x1+x2)//2),str(y1+int((y2-y1)*.8)),
+        str((x1+x2)//2),str(y1+int((y2-y1)*.3)),'400',timeout=8)
+    time.sleep(.7)
+    return True
+
+
 def creator_more_label(root):
     return next((value for value in ("更多", "更多笔记") if label(root, value)), "")
 
 
-def open_works_tab(adb_path, serial, root, guard, events, expected_foreground=None):
+def allow_warned_creator_data_entry(root, events):
+    """A status badge alone is not a data-access denial. Use only a proven existing entry."""
+    if not label(root, "账号异常") or not label(root, "创作中心"):
+        return False
+    value = ("观看" if creator_overview_entry(root) else creator_more_label(root)
+             if label(root, "最新笔记") else "")
+    if not value:return False
+    parents = {child:parent for parent in root.iter() for child in parent}
+    actions = set()
+    for node in label(root,value):
+        if node.get("package") != XHS_PACKAGE or node.get("enabled") != "true":continue
+        parent = node
+        while parent is not None and parent.get("clickable") != "true":parent=parents.get(parent)
+        if (parent is not None and parent.get("package") == XHS_PACKAGE
+                and parent.get("enabled") == "true" and parent in live_nodes(root)):
+            actions.add(id(parent))
+    if len(actions) != 1 and creator_data_center_button(root) is None:return False
+    marker="creator_account_status_abnormal_observed"
+    if marker not in events:events.append(marker)
+    return True
+
+
+def works_overview_still_open(root, tab_box):
+    """Prove the observed account overview survived the timed-out tab tap."""
+    if not data_center_tab_header(root):
+        return False
+    nodes = live_nodes(root)
+    if any(n.get("package") != XHS_PACKAGE or n.get("class") in (
+            "android.widget.ProgressBar", "android.app.Dialog") for n in nodes):
+        return False
+    if any(label(root, value) for value in (
+            "全部笔记", "开通数据权限", "账号异常", "个人信息保护提示", "服务器出错")):
+        return False
+    view, = [n for n in nodes if n.get("class") == "android.webkit.WebView" and n.get("text") == "数据中心"]
+    tabs = label(view, "作品分析")
+    return (len(tabs) == 1 and bounds(tabs[0]) == tab_box
+            and tabs[0].get("class") == "android.view.View"
+            and all(tabs[0].get(key) == "true" for key in ("enabled", "clickable", "visible-to-user"))
+            and all(len(matches := label(view, value)) == 1 and bounds(matches[0])[1] >= tab_box[3]
+                    for value in ("账号诊断", "观看数据")))
+
+
+def open_works_tab(adb_path, serial, root, guard, events, expected_foreground=None, deadline=None):
     """The observed data-center WebView marks its tab label non-clickable."""
     if not (label(root, "数据中心") and label(root, "账号概览") and not label(root, "全部笔记")):
         return False
@@ -1460,7 +1997,43 @@ def open_works_tab(adb_path, serial, root, guard, events, expected_foreground=No
     guard()
     if expected_foreground is not None and focus(adb_path, serial) != expected_foreground:
         raise ElementListReadError("data-center tab foreground changed before tap")
-    adb(adb_path, serial, "shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2), timeout=7)
+    tap = ("shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2))
+    try:
+        adb(adb_path, serial, *tap, timeout=7)
+    except subprocess.TimeoutExpired:
+        timeout_marker = "data_center_works_tab_tap_timeout"
+        reset_marker = "data_center_works_tab_post_reset_timeout_readback"
+        prior_timeout = timeout_marker in events
+        reset_readback = (prior_timeout
+                          and "data_center_works_tab_ready_after_timeout" in events
+                          and "creator_overview_reopened" in events
+                          and reset_marker not in events)
+        if expected_foreground is None or deadline is None or (prior_timeout and not reset_readback):
+            raise
+        # 141 completed its first timed-out tap, then the required newest-list
+        # reset made another distinct tap. Permit readback once at this reset;
+        # never spend another tap retry or infer success from the command error.
+        events.append(reset_marker if reset_readback else timeout_marker)
+        assert_requested_foreground(expected_foreground, events)
+        for _ in range(2):
+            guard()
+            if time.monotonic() >= deadline or focus(adb_path, serial) != expected_foreground:
+                raise
+            fresh = native_window_capture(adb_path, serial, expected_foreground, guard, events)
+            if focus(adb_path, serial) != expected_foreground:
+                raise
+            if creator_list(fresh):
+                events.append("data_center_works_tab_ready_after_timeout")
+                return True
+            if not works_overview_still_open(fresh, (x1, y1, x2, y2)):
+                raise
+        if reset_readback:
+            raise
+        guard()
+        if focus(adb_path, serial) != expected_foreground or deadline - time.monotonic() < 7:
+            raise
+        events.append("data_center_works_tab_retry_after_timeout")
+        adb(adb_path, serial, *tap, timeout=7)
     time.sleep(0.5)
     events.append("data_center_works_tab_selected")
     return True
@@ -1509,13 +2082,55 @@ def close_restored_ai_page(adb_path, serial, root, current, guard, events):
 
 def native_index_navigation(action, adb_path, serial, guard, events):
     from xhs_native_navigation import perform
-    current = focus(adb_path, serial)
-    assert_requested_foreground(current, events)
-    if not re.search(r"com\.xingin\.xhs/(?:com\.xingin\.xhs\.index\.v2\.IndexActivityV2|\.index\.v2\.IndexActivityV2)(?:[}\s]|$)", current):
-        raise ElementListReadError("native navigation requires the requested XHS index page")
-    assert_no_poco(adb_path, serial)
-    perform(action, adb_path, serial, adb_process, lambda: focus(adb_path, serial), guard, current)
-    events.append("native_accessibility_action:" + action)
+    # An update may appear between the caller's tree and native selection.
+    # Retry only a proven pre-action rejection, never an unknown click outcome.
+    for attempt in range(2):
+        current = focus(adb_path, serial)
+        assert_requested_foreground(current, events)
+        update = bool(re.search(r"com\.xingin\.xhs/com\.xingin\.update\.UpdateDialogActivity(?:[}\s]|$)", current))
+        if update and attempt == 0:
+            root = navigation_capture(adb_path, serial, guard, events)
+            if not recover_known_overlay(adb_path, serial, root, guard, events):
+                raise ElementListReadError("native navigation update dismissal is unproven")
+            events.append("native_navigation_update_before_action")
+            continue
+        if not re.search(r"com\.xingin\.xhs/(?:com\.xingin\.xhs\.index\.v2\.IndexActivityV2|\.index\.v2\.IndexActivityV2)(?:[}\s]|$)", current):
+            raise ElementListReadError("native navigation requires the requested XHS index page")
+        assert_no_poco(adb_path, serial)
+        try:
+            perform(action, adb_path, serial, adb_process, lambda: focus(adb_path, serial), guard, current)
+        except RuntimeError as error:
+            preaction = str(error) in ("native navigation foreground changed before staging",
+                "native navigation foreground changed before action",
+                "native navigation command failed: native_navigation_unproven:IllegalStateException:own profile menu unproven",
+                        "native navigation command failed: native_navigation_unproven:IllegalStateException:profile query is ambiguous")
+            preaction = preaction or (action == "profile" and str(error) ==
+                "native navigation command failed: native_navigation_unproven:IllegalStateException:missing native child")
+            rejected_menu = action == "menu" and str(error) == "native navigation command failed: native_navigation_unproven:IllegalStateException:native action rejected"
+            if attempt or not (preaction or rejected_menu):
+                raise
+            fresh = focus(adb_path, serial)
+            assert_requested_foreground(fresh, events)
+            if not re.search(r"com\.xingin\.xhs/com\.xingin\.update\.UpdateDialogActivity(?:[}\s]|$)", fresh):
+                raise
+            root = navigation_capture(adb_path, serial, guard, events)
+            if not recover_known_overlay(adb_path, serial, root, guard, events):
+                raise
+            if rejected_menu:
+                # A rejected action may have taken effect. Before a new menu
+                # action prove it has NOT opened the drawer and that the exact
+                # own-profile precondition is back, using fresh native nodes.
+                after = navigation_capture(adb_path, serial, guard, events)
+                assert_requested_foreground(focus(adb_path, serial), events)
+                selected = [n for n in live_nodes(after) if n.get("package") == XHS_PACKAGE
+                            and n.get("content-desc") == "我" and n.get("selected") == "true"]
+                if len(selected) != 1 or not label(after, "菜单") or label(after, "我的草稿") or label(after, "创作者中心"):
+                    raise ElementListReadError("native rejected menu postcondition is unproven; action not repeated")
+            events.append("native_navigation_update_before_action")
+            continue
+        events.append("native_accessibility_action:" + action)
+        return
+    raise ElementListReadError("native navigation update recovery exhausted")
 
 
 def tap_index_menu(adb_path, serial, root, guard, events):
@@ -1642,6 +2257,56 @@ def recover_vivo_store_update(adb_path, serial, root, slot, current, guard, even
     return True
 
 
+def resume_vivo_update_entry(adb_path, serial, current, guard, events):
+    """Only a known OEM update surface before a scan; never install or scan over it."""
+    slots = {e.split(":", 1)[1] for e in events if e.startswith("collection_slot_requested:")}
+    if ("xhs_cold_started" not in events or len(slots) != 1
+            or any(e.startswith("collection_scan_as_of:") for e in events)
+            or not re.search(r"mCurrentFocus=Window\{[^\n}]*\bu0\s+com\.bbk\.appstore/com\.bbk\.appstore\.ui\.manage\.ManageUpdateActivity(?:[}\s]|$)", current)):
+        return None
+    guard()
+    fresh = capture(adb_path, serial)  # Stock XML for this exact foreign activity.
+    if focus(adb_path, serial) != current:
+        raise ElementListReadError("Vivo update surface changed during fresh element read")
+    if not recover_vivo_store_update(adb_path, serial, fresh, next(iter(slots)), current, guard, events):
+        return None
+    root = navigation_capture(adb_path, serial, guard, events)
+    assert_requested_foreground(focus(adb_path, serial), events)
+    events.append("vivo_store_update_entry_resumed")
+    return root
+
+
+def recover_vivo_store_detail(adb_path, serial, root, slot, current, guard, events):
+    """Leave the observed startup advertisement's store page; never install."""
+    package = "com.bbk.appstore"
+    if ("xhs_cold_started" not in events
+            or {e.split(":", 1)[1] for e in events if e.startswith("collection_slot_requested:")} != {slot}
+            or not re.search(r"mCurrentFocus=Window\{[^\n}]*\bu0\s+com\.bbk\.appstore/com\.bbk\.appstore\.ui\.details\.AppDetailActivity(?:[}\s]|$)", current)):
+        return False
+    nodes = live_nodes(root)
+    exact = lambda key, text: [n for n in nodes if n.get("package") == package
+                               and n.get("resource-id") == package+":id/"+key and n.get("text") == text]
+    backs = [n for n in nodes if n.get("package") == package
+             and n.get("resource-id") == package+":id/originui_vtoolbar_navigation_view_btn_rom14_0"
+             and n.get("content-desc") == "返回" and n.get("class") == "android.widget.ImageButton"
+             and n.get("enabled") == "true" and n.get("clickable") == "true"]
+    if len(exact("package_detail_title", "丰巢")) != 1 or len(backs) != 1:
+        return False
+    if "vivo_store_detail_back" in events:
+        raise ElementListReadError("Vivo startup store redirect repeated")
+    guard()
+    if adb(adb_path, serial, "shell", "getprop", "ro.product.manufacturer").strip().upper() != "VIVO":
+        return False
+    guard()
+    if focus(adb_path, serial) != current:
+        raise ElementListReadError("Vivo startup store foreground changed")
+    adb(adb_path, serial, "shell", "input", "keyevent", "4", timeout=7)
+    time.sleep(.5)
+    assert_requested_foreground(focus(adb_path, serial), events)
+    events.append("vivo_store_detail_back")
+    return True
+
+
 def recover_vivo_browser_permission_redirect(adb_path,serial,root,slot,current,guard,events):
     """Leave the observed browser permission surface; never press its buttons."""
     package="com.android.permissioncontroller"
@@ -1714,19 +2379,32 @@ def recover_vivo_browser_redirect(adb_path, serial, slot, current, guard, events
 
 
 def blank_works_loading(root):
-    """The observed empty full-screen WebView with a small central spinner."""
+    """An empty content-sized WebView, with or without its central spinner."""
     nodes = live_nodes(root)
     if not nodes or any(n.get("package") != XHS_PACKAGE or n.get("text", "").strip()
                         or n.get("content-desc", "").strip() for n in nodes):
         return False
     width = max(bounds(n)[2] for n in nodes)
     height = max(bounds(n)[3] for n in nodes)
+    content = [n for n in nodes if n.get("resource-id") == "android:id/content"
+               and n.get("class") == "android.widget.FrameLayout" and n.get("enabled") == "true"]
+    if len(content) > 1:
+        return False
+    if content:
+        area = bounds(content[0])
+        if not area or area[0:3] != (0, 0, width) or not 0 < area[3] <= height:
+            return False
+        height = area[3]
     views = [n for n in nodes if n.get("class") == "android.webkit.WebView"
              and n.get("enabled") == "true" and bounds(n) == (0, 0, width, height)
              and not list(n)]
     spinners = [bounds(n) for n in nodes if n.get("class") == "android.widget.ImageView"
                 and n.get("clickable") == "false" and n.get("enabled") == "true"]
-    if len(views) != 1 or len(spinners) != 1:return False
+    if len(views) != 1 or len(spinners) > 1:return False
+    if not spinners:
+        containers = {"android.widget.FrameLayout", "android.widget.LinearLayout",
+                      "android.view.ViewGroup", "android.webkit.WebView", "android.view.View"}
+        return bool(content) and all(n.get("class") in containers for n in nodes)
     x1,y1,x2,y2 = spinners[0]
     return (width*.05 <= x2-x1 <= width*.12 and height*.02 <= y2-y1 <= height*.08
             and width*.45 <= (x1+x2)/2 <= width*.55
@@ -1764,7 +2442,7 @@ def recover_inaccessible_more(adb_path, serial, current, guard, events):
     center = capture(adb_path, serial)
     assert_requested_foreground(focus(adb_path, serial), events)
     require_creator_service_available(center)
-    if label(center, "账号异常"):
+    if label(center, "账号异常") and not allow_warned_creator_data_entry(center, events):
         raise RuntimeError("creator account shows abnormal status; collection skipped")
     if not (label(center, "创作中心") and label(center, "最新笔记")
             and creator_more_label(center) and creator_overview_entry(center)):
@@ -1786,6 +2464,47 @@ def require_creator_service_available(root):
         raise RuntimeError("Creator Center service is unavailable; collection skipped")
 
 
+def blank_creator_center_loading(root, current):
+    """Observed RN skeleton, not a permission/login page or an empty post list."""
+    require_element_tree(root)
+    if not re.search(r"mCurrentFocus=Window\{[^\n}]*\bu\d+\s+com\.xingin\.xhs/com\.xingin\.reactnative\.ui\.XhsReactActivity(?:[}\s]|$)", current):
+        return False
+    nodes=live_nodes(root)
+    words={n.get(k,'').strip() for n in nodes for k in ('text','content-desc') if n.get(k,'').strip()}
+    return (bool(nodes) and all(n.get('package')==XHS_PACKAGE for n in nodes)
+            and words=={'创作中心','创作中心滚动区'}
+            and len([n for n in nodes if n.get('content-desc')=='创作中心'
+                     and n.get('class')=='android.view.ViewGroup'])==1
+            and len([n for n in nodes if n.get('content-desc')=='创作中心滚动区'
+                     and n.get('class')=='android.widget.ScrollView'])==1)
+
+
+def wait_creator_center_loading(adb_path, serial, root, guard, events, budget=45):
+    """Wait, then reopen the proven drawer once; never infer zero or logout."""
+    deadline=time.monotonic()+budget
+    while True:
+        guard()
+        current=focus(adb_path,serial)
+        assert_requested_foreground(current,events)
+        if not blank_creator_center_loading(root,current):return root
+        if time.monotonic()>=deadline:break
+        time.sleep(min(1,max(0,deadline-time.monotonic())))
+        root=navigation_capture(adb_path,serial,guard,events)
+    if 'creator_center_blank_reopened' in events:
+        raise ElementListReadError('Creator Center loading remained empty after bounded wait and reopen')
+    guard()
+    current=focus(adb_path,serial)
+    assert_requested_foreground(current,events)
+    if not blank_creator_center_loading(root,current):return root
+    adb(adb_path,serial,'shell','input','keyevent','4',timeout=7)
+    fresh=navigation_capture(adb_path,serial,guard,events)
+    assert_requested_foreground(focus(adb_path,serial),events)
+    if not (label(fresh,'我的草稿') and label(fresh,'创作者中心')):
+        raise ElementListReadError('Creator Center loading Back did not return to the proven drawer')
+    events.append('creator_center_blank_reopened')
+    return fresh
+
+
 def creator_navigation_state(root):
     """Bounded diagnostics: UI landmarks only, never account or note text."""
     names = ("我", "菜单", "已选定笔记", "我的草稿", "创作者中心", "创作中心",
@@ -1801,6 +2520,8 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events, _notificati
     recoveries = 0
     more_attempts = 0
     overview_opened = "creator_overview_reopened" in events
+    overview_attempts = 0
+    home_scrolls = 0
     chat_backs = 0
     server_refreshes = 0
     states = []
@@ -1808,10 +2529,15 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events, _notificati
         states.append(creator_navigation_state(root))
         if wake_if_asleep(adb_path, serial, guard, events):
             root = navigation_capture(adb_path, serial, guard, events)
-        if any(event.startswith("clone_user_requested:") for event in events):
+        if ("collection_slot_requested:app1" in events
+                or any(event.startswith("clone_user_requested:") for event in events)):
             current = focus(adb_path, serial)
             if re.search(r"\bu\d+\s+com\.xingin\.xhs/", current):
                 verify_collection_slot(adb_path, serial, slot, events)
+            resumed = resume_vivo_update_entry(adb_path, serial, current, guard, events)
+            if resumed is not None:
+                root = resumed
+                continue
         require_creator_service_available(root)
         if creator_filter_panel(root):
             tap_filter_label(adb_path,serial,root,"收起",guard)
@@ -1822,7 +2548,8 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events, _notificati
             return root
         # Creator Center also labels its overview entry “数据中心”. Keep the
         # proven native home on the existing entry/overlay/account checks below.
-        if ((label(root, "数据中心") and not creator_overview_entry(root))
+        if ((label(root, "数据中心") and not creator_overview_entry(root)
+                and not (overview_attempts and label(root,"创作中心")))
                 or ((more_attempts or overview_opened) and blank_works_loading(root))):
             return wait_data_center_loading(adb_path, serial, root, guard, events)
         if (label(root, "个人信息保护提示") and any(n.get("package") == XHS_PACKAGE
@@ -1842,12 +2569,24 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events, _notificati
                 recoveries += 1
                 root = navigation_capture(adb_path, serial, guard, events)
                 continue
-            raise RuntimeError("creator account shows abnormal status; collection skipped")
+            if not allow_warned_creator_data_entry(root,events):
+                if (overview_attempts and 'creator_account_status_abnormal_observed' in events
+                        and scroll_creator_home_for_latest(adb_path,serial,root,guard,events,home_scrolls)):
+                    home_scrolls+=1
+                    root=navigation_capture(adb_path,serial,guard,events)
+                    continue
+                raise RuntimeError("creator account shows abnormal status; collection skipped")
         if recoveries < 3 and recover_known_overlay(adb_path, serial, root, guard, events):
             recoveries += 1
             root = navigation_capture(adb_path, serial, guard, events)
             continue
         current = focus(adb_path, serial)
+        if blank_creator_center_loading(root,current):
+            root=wait_creator_center_loading(adb_path,serial,root,guard,events)
+            continue
+        if recover_vivo_store_detail(adb_path,serial,root,slot,current,guard,events):
+            root = navigation_capture(adb_path,serial,guard,events)
+            continue
         if recover_vivo_store_update(adb_path,serial,root,slot,current,guard,events):
             root = navigation_capture(adb_path,serial,guard,events)
             continue
@@ -1859,7 +2598,8 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events, _notificati
             continue
         if login_activity(current) or (re.search(r"mCurrentFocus=Window\{[^\n}]*\bu\d+\s+com\.xingin\.xhs/", current)
                                        and login_element_evidence(root, current, events)):
-            confirm_logged_out(adb_path, serial, root, guard, events)
+            root = confirm_logged_out(adb_path, serial, root, guard, events)
+            continue
         if (XHS_PACKAGE in current and label(root, "创作中心") and label(root, "开通数据权限")
                 and not label(root, "最新笔记")):
             raise RuntimeError("Creator Center data permission is not enabled")
@@ -1894,8 +2634,29 @@ def ensure_creator_list(adb_path, serial, root, slot, guard, events, _notificati
         elif label(root, "笔记分析详情"):
             guard()
             adb(adb_path, serial, "shell", "input", "keyevent", "4", timeout=7)
+        elif (overview_attempts or creator_overview_metric_placeholder(root)) and label(root, "创作中心") and label(root,"最新笔记") and creator_more_label(root):
+            if more_attempts>=2:
+                raise ElementListReadError('Creator Center More entrance did not open after two proven attempts')
+            tap_label(adb_path,serial,root,creator_more_label(root),guard)
+            events.append('creator_more_selected');more_attempts+=1
+            time.sleep(.7)
+        elif overview_attempts and label(root,'创作中心'):
+            if scroll_creator_home_for_latest(adb_path,serial,root,guard,events,home_scrolls):
+                home_scrolls += 1
+                root=navigation_capture(adb_path,serial,guard,events)
+                continue
+            raise ElementListReadError('Creator Center data entrance stayed on home; latest-notes entrance not proven')
         elif creator_overview_entry(root):
-            tap_label(adb_path, serial, root, "观看", guard)
+            if creator_overview_metric_placeholder(root):
+                overview_attempts+=1
+                events.append('creator_placeholder_requires_latest_entry')
+                if scroll_creator_home_for_latest(adb_path,serial,root,guard,events,home_scrolls):
+                    home_scrolls+=1
+                    root=navigation_capture(adb_path,serial,guard,events)
+                    continue
+                raise ElementListReadError('Creator Center placeholder metric has no proven works entrance')
+            tap_creator_overview(adb_path, serial, root, guard, events)
+            overview_attempts += 1
             overview_opened = True
             events.append("creator_overview_selected" if label(root, "最新笔记")
                           else "creator_overview_opened_without_latest_notes")
@@ -1998,7 +2759,12 @@ def reopen_creator_list(adb_path, serial, root, guard, events, slot="app1"):
 
 
 def is_note_status(text):
-    return text.startswith("笔记状态") or text in ("笔记审核中", "该篇笔记已不可被他人查看", "该篇笔记已不被推荐给未关注用户")
+    return text.startswith("笔记状态") or text in (
+        "笔记审核中",
+        "该篇笔记已不可被他人查看",
+        "该篇笔记已不被推荐给未关注用户",
+        "该笔记已被限制推荐和搜索展示，但广告投放和蒲公英流量不受影响。",
+    )
 
 
 def note_cards(root):
@@ -2151,9 +2917,40 @@ def proven_list_terminal(root):
                    and top <= bounds(n)[1] < bounds(n)[3] <= bottom
                    and not any(bounds(row)[1] <= bounds(n)[1] < bounds(row)[3] for row, _ in raw)]
         markers[value] = len(matches) == 1 and (not raw or bounds(matches[0])[1] >= max(bounds(row)[3] for row, _ in raw))
-    empty = markers["暂无笔记"] and not raw and not any(
+    empty = (markers["暂无笔记"] or proven_display_empty_state(view)) and not raw and not any(
         is_note_status(n.get("text", "")) or DATE.fullmatch(n.get("text", "")) for n in nodes)
     return bool(empty), bool(markers["到底了"] and raw)
+
+
+def proven_display_empty_state(view):
+    """The observed full works-page empty state, never a loading/error shell.
+
+    This means no notes are displayed by this data page, not a guarantee that
+    the service has no hidden or restricted posts. Both independent scans still
+    have to reach this exact terminal state.
+    """
+    nodes = live_nodes(view)
+    def unique(text, classes):
+        matches = [n for n in nodes if n.get("text") == text]
+        return matches[0] if (len(matches) == 1 and matches[0].get("package") == XHS_PACKAGE
+            and matches[0].get("class") in classes and matches[0].get("enabled") == "true") else None
+    text_classes = ("android.view.View", "android.widget.TextView")
+    message = unique("暂无可展示的笔记", text_classes)
+    publish = unique("去发布", ("android.widget.Button",))
+    filter_ = unique("全部笔记", text_classes)
+    scope = unique("仅统计近半年内笔记", text_classes)
+    if any(n is None for n in (message, publish, filter_, scope)):
+        return False
+    if len({node.get("class") for node in (message, filter_, scope)}) != 1:
+        return False
+    if (publish.get("clickable") != "true" or not data_center_tab_header(view)
+            or any(n.get("text") in ("账号异常", "开通数据权限", "服务器开小差了") for n in nodes)):
+        return False
+    boxes = [bounds(n) for n in (view, filter_, scope, message, publish)]
+    vb, fb, sb, mb, pb = boxes
+    return (all(boxes) and vb[1] <= fb[1] < fb[3] < mb[1] < mb[3] < pb[1] < pb[3] <= vb[3]
+        and sb[3] < mb[1] and vb[0] <= mb[0] < mb[2] <= vb[2]
+        and vb[0] <= pb[0] < pb[2] <= vb[2])
 
 
 def element_page_signature(root, allow_duplicate_rows=False):
@@ -2333,7 +3130,7 @@ def reopen_loading_data_center(adb_path, serial, root, guard, events):
     guard()
     assert_requested_foreground(focus(adb_path, serial), events)
     require_creator_service_available(center)
-    if label(center, "账号异常"):
+    if label(center, "账号异常") and not allow_warned_creator_data_entry(center, events):
         raise RuntimeError("creator account shows abnormal status; collection skipped")
     more = creator_more_label(center)
     if label(center, "创作中心") and label(center, "最新笔记") and more:
@@ -2342,7 +3139,13 @@ def reopen_loading_data_center(adb_path, serial, root, guard, events):
         entry = "观看"
     else:
         raise ElementListReadError("loading retry did not return to proven Creator Center")
-    tap_label(adb_path, serial, center, entry, guard)
+    if entry == "观看":
+        if creator_overview_metric_placeholder(center) and label(center,'最新笔记') and creator_more_label(center):
+            tap_label(adb_path,serial,center,creator_more_label(center),guard)
+            return navigation_capture(adb_path,serial,guard,events)
+        tap_creator_overview(adb_path,serial,center,guard,events)
+    else:
+        tap_label(adb_path, serial, center, entry, guard)
     return navigation_capture(adb_path, serial, guard, events)
 
 
@@ -2374,6 +3177,17 @@ def wait_data_center_loading(adb_path, serial, root, guard, events, require_cont
                     if not creator_list(root) and label(root, "账号异常"):
                         raise RuntimeError("creator account shows abnormal status; collection skipped")
                 current = focus(adb_path, serial)
+                resumed = resume_vivo_update_entry(adb_path, serial, current, guard, events)
+                if resumed is not None:
+                    # The one proven Back can return to native Creator Center.
+                    # Leave this loading frame while the existing navigation
+                    # resumes; its once-per-task marker forbids another Back.
+                    events.remove(marker)
+                    try:
+                        slot = next(e.split(":", 1)[1] for e in events if e.startswith("collection_slot_requested:"))
+                        return ensure_creator_list(adb_path, serial, resumed, slot, guard, events)
+                    finally:
+                        events.append(marker)
                 assert_requested_foreground(current, events)
                 if login_activity(current):
                     confirm_logged_out(adb_path, serial, navigation_capture(adb_path, serial, guard, events), guard, events)
@@ -2398,7 +3212,8 @@ def wait_data_center_loading(adb_path, serial, root, guard, events, require_cont
                     break
                 if (not creator_list(root) and not selected and data_center_tab_header(root)
                         and not any(e.startswith("collection_scan_as_of:") for e in events)):
-                    selected = open_works_tab(adb_path, serial, root, guard, events, expected_foreground=current)
+                    selected = open_works_tab(adb_path, serial, root, guard, events,
+                                              expected_foreground=current, deadline=deadline)
                     if selected:
                         root = navigation_capture(adb_path, serial, guard, events)
                         continue
@@ -2660,7 +3475,7 @@ def verification_entry(args, guard, events):
     if {e for e in prior if e.startswith("collection_slot_requested:")} != {"collection_slot_requested:" + args.app_slot}:
         return None
     carried = [e for e in prior if e.startswith(("collection_slot_requested:", "clone_user_requested:"))
-               or e == "native_window_elements_enabled"]
+               or e in {"native_window_elements_enabled", "xhs_cold_started", "vivo_store_update_back"}]
     guard()
     current = focus(args.adb, args.serial)
     assert_requested_foreground(current, carried)
@@ -2681,6 +3496,611 @@ def verification_entry(args, guard, events):
     return root
 
 
+def enter_creator_with_slot_retry(args, root, guard, events, expected_identity=None):
+    """One explicit same-slot re-entry before scanning, never read the other user.
+
+    OEM task restoration can return an existing task from the other profile.
+    Account/login/permissions and all unrelated failures retain their errors.
+    """
+    try:
+        if expected_identity is not None:
+            root=prove_profile_identity(args,root,guard,events,expected_identity)
+        return ensure_creator_list(args.adb,args.serial,root,args.app_slot,guard,events)
+    except RuntimeError as error:
+        mismatches={"Xiaohongshu foreground user does not match the requested slot",
+                    "Xiaohongshu foreground clone user does not match the requested slot",
+                    "Xiaohongshu foreground owner user does not match the requested slot"}
+        if (str(error) not in mismatches or getattr(args,'used_slot_entry_retry',False)
+                or any(e.startswith('collection_scan_as_of:') for e in events)):
+            raise
+        guard()
+        args.used_slot_entry_retry=True
+        events.append('entry_slot_mismatch_reopen_attempted')
+        root=start_xhs(args.adb,args.serial,args.app_slot,guard,events)
+        if expected_identity is not None:
+            root=prove_profile_identity(args,root,guard,events,expected_identity)
+        root=ensure_creator_list(args.adb,args.serial,root,args.app_slot,guard,events)
+        verify_collection_slot(args.adb,args.serial,args.app_slot,events)
+        events.append('entry_slot_mismatch_recovered')
+        return root
+
+
+def profile_header_identity(root, current, events):
+    """Read a public ID only from a proven own-profile header, never a post."""
+    assert_requested_foreground(current, events)
+    if not re.search(r"com\.xingin\.xhs/(?:com\.xingin\.xhs\.index\.v2\.IndexActivityV2|"
+                     r"\.index\.v2\.IndexActivityV2)(?:[}\s]|$)", current):
+        raise ElementListReadError("account identity unproven: profile activity required")
+    own = [n for n in root.iter("node") if n.get("package") == XHS_PACKAGE
+           and n.get("class") == "android.view.ViewGroup" and n.get("content-desc") == "我"
+           and n.get("selected") == "true" and n.get("enabled") == "true"
+           and n.get("visible-to-user") != "false"]
+    if len(own) != 1:
+        raise ElementListReadError("account identity unproven: own profile selection required")
+    nodes = [n for n in live_nodes(root) if n.get("package") == XHS_PACKAGE
+             and n.get("enabled") == "true" and n.get("visible-to-user") != "false"
+             and n.get("class") == "android.widget.TextView"]
+    tabs = [[n for n in nodes if n.get("text") == text] for text in ("笔记", "收藏")]
+    if any(len(v) != 1 for v in tabs):
+        raise ElementListReadError("account identity unproven: profile tabs ambiguous")
+    a, b = [bounds(v[0]) for v in tabs]
+    if abs(a[1]-b[1]) > max(a[3]-a[1], b[3]-b[1]) / 2 or a[2] >= b[0]:
+        raise ElementListReadError("account identity unproven: profile tab row invalid")
+    parents = {n: parent for parent in root.iter() for n in parent}
+    candidates = []
+    for n in nodes:
+        match = re.fullmatch(r"小红书号\s*[:：]\s*([A-Za-z0-9_-]{3,64})", n.get("text", "").strip())
+        if not match or bounds(n)[3] >= min(a[1], b[1]):
+            continue
+        parent = parents.get(n)
+        if (parent is None or parent.get("package") != XHS_PACKAGE
+                or parent.get("class") != "android.widget.LinearLayout"
+                or parent.get("enabled") != "true" or parent.get("visible-to-user") == "false"
+                or n.get("clickable") != "true"):
+            raise ElementListReadError("account identity unproven: header roles invalid")
+        pb, nb = bounds(parent), bounds(n)
+        copies = [c for c in parent if c.get("package") == XHS_PACKAGE
+                  and c.get("class") == "android.widget.ImageView" and c.get("enabled") == "true"
+                  and c.get("visible-to-user") != "false" and bounds(c)]
+        if pb and (len(list(parent)) > 3 or sum(c.get("class") == "android.widget.ImageView" for c in parent) > 1):
+            # Captured25: ID/copy | IP-location/arrow share the header row.
+            # Accept only this exact companion sequence, never any extra icon.
+            row = list(parent)
+            roles = ("android.widget.TextView", "android.widget.ImageView", "android.widget.TextView",
+                     "android.widget.TextView", "android.widget.ImageView")
+            exact = (len(row) == 5 and row[0] is n and all(c.get("class") == role
+                     and c.get("package") == XHS_PACKAGE and c.get("enabled") == "true"
+                     and c.get("visible-to-user") != "false" and bounds(c) for c, role in zip(row, roles))
+                     and row[1] in copies and row[4] in copies
+                     and row[1].get("clickable") == "true" and row[2].get("clickable") == "false"
+                     and row[3].get("clickable") == "true" and row[4].get("clickable") == "false"
+                     and row[2].get("text") == "|"
+                     and re.fullmatch(r"IP属地[:：]\S{1,24}", row[3].get("text", "")))
+            if exact:
+                boxes = [bounds(c) for c in row]
+                exact = (all(pb[0] <= b[0] < b[2] <= pb[2] and pb[1] <= b[1] < b[3] <= pb[3]
+                             and abs(b[1]-nb[1]) <= max(b[3]-b[1], nb[3]-nb[1])/2 for b in boxes)
+                         and all(a[2] <= b[0] for a,b in zip(boxes,boxes[1:])))
+            copies = [row[1]] if exact else []
+        if (not pb or len(copies) != 1 or not (pb[0] <= nb[0] < nb[2] <= pb[2]
+                and pb[1] <= nb[1] < nb[3] <= pb[3])):
+            raise ElementListReadError("account identity unproven: header geometry invalid")
+        cb = bounds(copies[0])
+        if not (nb[2] <= cb[0] < cb[2] <= pb[2] and pb[1] <= cb[1] < cb[3] <= pb[3]):
+            raise ElementListReadError("account identity unproven: copy role geometry invalid")
+        candidates.append(match.group(1))
+    if len(candidates) != 1:
+        raise ElementListReadError("account identity unproven: header ID not unique")
+    return candidates[0]
+
+
+def profile_edit_entry(root, current, events):
+    """Only a proven own profile whose header genuinely omits the public ID."""
+    try:
+        profile_header_identity(root, current, events)
+    except ElementListReadError as error:
+        if str(error) != "account identity unproven: header ID not unique":
+            raise
+    else:
+        raise ElementListReadError("account identity unproven: editor fallback is unnecessary")
+    if any(re.fullmatch(r"小红书号\s*[:：]\s*[A-Za-z0-9_-]{3,64}", n.get("text", "").strip())
+           for n in live_nodes(root)):
+        raise ElementListReadError("account identity unproven: ambiguous visible header cannot use editor fallback")
+    nodes = [n for n in live_nodes(root) if n.get("package") == XHS_PACKAGE
+             and n.get("class") == "android.widget.TextView" and n.get("text") == "编辑主页"
+             and n.get("enabled") == "true" and n.get("visible-to-user") != "false"]
+    if len(nodes) != 1:
+        raise ElementListReadError("account identity unproven: own editor entry not unique")
+    parents = {n: parent for parent in root.iter() for n in parent}
+    node = nodes[0]; parent = parents.get(node); b = bounds(node)
+    if (parent is None or parent.get("package") != XHS_PACKAGE
+            or parent.get("class") != "android.widget.LinearLayout" or parent.get("enabled") != "true"
+            or parent.get("clickable") != "true" or parent.get("visible-to-user") == "false"):
+        raise ElementListReadError("account identity unproven: own editor entry roles invalid")
+    pb = bounds(parent)
+    tab_top = min(bounds(n)[1] for n in live_nodes(root) if n.get("package") == XHS_PACKAGE and n.get("text") in ("笔记", "收藏"))
+    if not pb or not (pb[0] <= b[0] < b[2] <= pb[2] and pb[1] <= b[1] < b[3] <= pb[3] < tab_top):
+        raise ElementListReadError("account identity unproven: own editor entry geometry invalid")
+    return b, pb
+
+
+def profile_editor_identity(root, current, events):
+    """Read an ID row in the editor opened by our own exact profile entry."""
+    assert_requested_foreground(current, events)
+    if not re.search(r"com\.xingin\.xhs/com\.xingin\.reactnative\.ui\.XhsReactActivity(?:[}\s]|$)", current):
+        raise ElementListReadError("account identity unproven: expected profile editor activity")
+    nodes = [n for n in live_nodes(root) if n.get("package") == XHS_PACKAGE
+             and n.get("enabled") == "true" and n.get("visible-to-user") != "false"]
+    if any("EditText" in n.get("class", "") and n.get("focused") == "true" for n in nodes):
+        raise ElementListReadError("account identity unproven: an editor input is focused")
+    title = [n for n in nodes if n.get("class") == "android.widget.TextView" and n.get("text") == "编辑资料"]
+    labels = [n for n in nodes if n.get("class") == "android.widget.TextView" and n.get("text") == "小红书号"]
+    if len(title) != 1 or len(labels) != 1 or bounds(title[0])[3] >= bounds(labels[0])[1]:
+        raise ElementListReadError("account identity unproven: editor header or ID row ambiguous")
+    parents = {n: parent for parent in root.iter() for n in parent}; label_node = labels[0]; row = parents.get(label_node)
+    if (row is None or row.get("package") != XHS_PACKAGE or row.get("class") != "android.view.ViewGroup"
+            or row.get("enabled") != "true" or row.get("clickable") != "true"
+            or row.get("visible-to-user") == "false" or not bounds(row)):
+        raise ElementListReadError("account identity unproven: editor ID row roles invalid")
+    candidates = [n for n in row if n in nodes and n.get("class") == "android.widget.TextView"
+                  and re.fullmatch(r"[A-Za-z0-9_-]{3,64}", n.get("text", ""))]
+    if len(candidates) != 1:
+        raise ElementListReadError("account identity unproven: editor ID value not unique")
+    value_node = candidates[0]; lb, vb, rb = bounds(label_node), bounds(value_node), bounds(row)
+    if not (rb[0] <= lb[0] < lb[2] <= vb[0] < vb[2] <= rb[2]
+            and rb[1] <= lb[1] < lb[3] <= rb[3] and rb[1] <= vb[1] < vb[3] <= rb[3]
+            and abs(lb[1]-vb[1]) <= max(lb[3]-lb[1], vb[3]-vb[1]) / 2):
+        raise ElementListReadError("account identity unproven: editor ID value geometry invalid")
+    return value_node.get("text")
+
+
+def identity_proof(args, expected, visible, hashes, method):
+    return {"method": method, "serial": args.serial, "app_slot": args.app_slot,
+            "configured_id": expected, "visible_public_id": visible, "matches_exactly": visible == expected,
+            "sample_count": 2, "sample_xml_sha256": hashes,
+            "verified_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+            "scope": "Visible public ID; not server-side immutable account authentication"}
+
+
+def settle_identity_transition(args, guard, events, surface):
+    """Only read focus while an already-owned editor transition settles.
+
+    A null focus is unproven, not evidence of a different XHS slot. Other
+    applications are never relaunched or dismissed by this bounded wait.
+    """
+    from xhs_native_window import foreground_identity
+    activities={"editor":"com.xingin.reactnative.ui.XhsReactActivity",
+                "profile":"com.xingin.xhs.index.v2.IndexActivityV2"}
+    if surface not in activities:
+        raise ValueError("unsupported identity transition")
+    for attempt in range(6):
+        guard();current=focus(args.adb,args.serial)
+        windows=re.findall(r"(?m)^\s*mCurrentFocus=Window\{[^\n}]*\}",current)
+        if len(windows)>1:
+            raise ElementListReadError("account identity unproven: ambiguous foreground during transition")
+        if windows:
+            identity=foreground_identity(current)
+            if identity is None:
+                raise ElementListReadError("account identity unproven: transition interrupted by foreign foreground")
+            assert_requested_foreground(current,events)
+            if identity[2]==activities[surface]:
+                return current
+            if identity[2] not in activities.values():
+                raise ElementListReadError("account identity unproven: unsupported transitional activity")
+        if attempt<5:
+            events.append("identity_focus_wait:"+surface+":"+str(attempt+1))
+            time.sleep(.4)
+    raise ElementListReadError("account identity unproven: requested foreground transition did not settle")
+
+
+def read_profile_editor_identity(args, root, current, guard, events, expected):
+    """Read-only fallback for the observed enterprise header; never type/save."""
+    from xhs_native_window import same_foreground
+    box = profile_edit_entry(root, current, events)
+    guard()
+    fresh = native_window_capture(args.adb,args.serial,current,guard,list(events))
+    if profile_edit_entry(fresh,current,events) != box or not same_foreground(current,focus(args.adb,args.serial)):
+        raise ElementListReadError("account identity unproven: own editor entry changed")
+    guard()
+    x1,y1,x2,y2 = box[0]
+    adb(args.adb,args.serial,"shell","input","tap",str((x1+x2)//2),str((y1+y2)//2),timeout=7)
+    events.append("account_identity_editor_opened_read_only")
+    values = []; hashes = []; proven_editor = None; returned = None
+    try:
+        for _ in range(2):
+            time.sleep(.5); active = settle_identity_transition(args,guard,events,"editor")
+            assert_requested_foreground(active,events)
+            proven_editor = None
+            editor = native_window_capture(args.adb,args.serial,active,guard,list(events))
+            guard()
+            if not same_foreground(active,focus(args.adb,args.serial)):
+                raise ElementListReadError("account identity unproven: editor foreground changed during read")
+            value = profile_editor_identity(editor,active,events)
+            proven_editor = active
+            values.append(value); hashes.append(hashlib.sha256(ET.tostring(editor,encoding="utf-8")).hexdigest())
+        if values[0] != values[1]:
+            raise ElementListReadError("account identity unproven: editor ID changed between reads")
+        proof = identity_proof(args,expected,values[0],hashes,"own_profile_editor_public_id_two_fresh_native_reads")
+    finally:
+        if proven_editor is not None:
+            guard()
+            if not same_foreground(proven_editor,focus(args.adb,args.serial)):
+                raise ElementListReadError("account identity unproven: editor changed before Back")
+            adb(args.adb,args.serial,"shell","input","keyevent","4",timeout=7)
+            time.sleep(.5); active = settle_identity_transition(args,guard,events,"profile")
+            assert_requested_foreground(active,events)
+            returned = native_window_capture(args.adb,args.serial,active,guard,list(events))
+            try:
+                visible = profile_header_identity(returned,active,events)
+            except ElementListReadError as error:
+                if str(error) != "account identity unproven: header ID not unique":raise
+                profile_edit_entry(returned,active,events)
+            else:
+                if values and visible != values[-1]:
+                    raise ElementListReadError("account identity unproven: returned profile ID changed")
+            events.append("account_identity_editor_returned_to_own_profile")
+    args.verified_account_identity = proof
+    events.append("account_identity:verified_editor_public_id_two_reads")
+    return returned
+
+
+def requested_account_id(device, slot):
+    accounts = [a for a in device.get("xhsAccounts", []) if isinstance(a, dict)
+                and a.get("appSlot") == slot and a.get("enabled") is True]
+    if len(accounts) != 1 or not re.fullmatch(r"[A-Za-z0-9_-]{3,64}", str(accounts[0].get("xhsId", ""))):
+        raise RuntimeError("account identity unproven: unique configured ID required")
+    return str(accounts[0]["xhsId"])
+
+
+def recover_profile_system_dialog(args, current, guard, events):
+    """Dismiss an observed owner-profile USB or notification dialog once."""
+    if args.app_slot != "app1" or "collection_slot_requested:app1" not in events:
+        return None
+    specs = {
+        "com.android.systemui": (
+            "profile_usb_systemui_back",
+            (("com.android.systemui:id/usb_select_title_tv", "USB 用于", "TextView"),
+             ("com.android.systemui:id/usb_select_list_view", "", "ListView"),
+             ("com.android.systemui:id/title", "仅充电", "TextView"),
+             ("com.android.systemui:id/title", "传输文件 / Android Auto", "TextView"),
+             ("com.android.systemui:id/title", "传输照片", "TextView"))),
+        "com.android.settings": (
+            "profile_usb_settings_back",
+            (("android:id/alertTitle", "USB 连接方式", "TextView"),
+             ("android:id/select_dialog_listview", "", "ListView"),
+             ("com.android.settings:id/text1", "仅充电", "CheckedTextView"),
+             ("com.android.settings:id/text1", "传输文件", "CheckedTextView"),
+             ("com.android.settings:id/text1", "传输照片", "CheckedTextView"),
+             ("android:id/button2", "取消", "Button"))),
+        "com.vivo.pushservice": (
+            "profile_vivo_notification_back",
+            (("com.vivo.pushservice:id/alertTitle", "确定允许“小红书”发送通知吗？", "TextView"),
+             ("com.vivo.pushservice:id/description_title", "通知可能包括：桌面角标、悬浮通知、锁屏通知等，可前往“设置”中进行更改。", "TextView"),
+             ("android:id/button1", "", "Button"),
+             ("android:id/button2", "", "Button"),
+             ("com.vivo.pushservice:id/vbutton_title", "允许", "TextView"),
+             ("com.vivo.pushservice:id/vbutton_title", "取消", "TextView"))),
+    }
+    windows = re.findall(r"mCurrentFocus=Window\{[^\n}]+\}", current)
+    if len(windows) != 1:
+        return None
+    packages = [p for p in specs if re.search(r"\bu0 " + re.escape(p) + r"(?:[}\s]|$)", windows[0])]
+    if len(packages) != 1:
+        return None
+    package = packages[0]
+    event, roles = specs[package]
+    index = r"\bu0 com\.xingin\.xhs/(?:com\.xingin\.xhs)?\.index\.v2\.IndexActivityV2(?:[}\s]|$)"
+
+    def state():
+        guard()
+        dump = adb(args.adb, args.serial, "shell", "dumpsys", "window", timeout=8)
+        focused = re.findall(r"mCurrentFocus=Window\{[^\n}]+\}", dump)
+        owners = re.findall(r"(?m)^\s*mFocusedApp=(?:ActivityRecord|AppWindowToken)\{[^\n]+", dump)
+        return focused, owners
+
+    before = state()
+    if before[0] != windows or len(before[1]) != 1 or not re.search(index, before[1][0]):
+        return None
+    if event in events:
+        raise ElementListReadError("profile system dialog recurred after Back")
+    def dialog_nodes():
+        guard()
+        nodes = live_nodes(capture(args.adb, args.serial))
+        if not nodes or any(n.get("package") != package for n in nodes):
+            return []
+        for rid, text, kind in roles:
+            matches = [n for n in nodes if n.get("resource-id") == rid
+                       and " ".join(n.get("text", "").split()) == text
+                       and n.get("class") == "android.widget." + kind
+                       and n.get("enabled") == "true" and n.get("visible-to-user") != "false"]
+            if len(matches) != 1:
+                return []
+        return nodes
+
+    if not dialog_nodes():
+        return None
+    if state() != before:
+        raise ElementListReadError("profile system dialog changed before Back")
+    guard()
+    events.append(event)
+    adb(args.adb, args.serial, "shell", "input", "keyevent", "4", timeout=7)
+    def returned_profile():
+        for _ in range(4):
+            time.sleep(.5)
+            guard()
+            resumed = focus(args.adb, args.serial)
+            active = re.findall(r"mCurrentFocus=Window\{[^\n}]+\}", resumed)
+            if len(active) == 1 and re.search(index, active[0]):
+                assert_requested_foreground(resumed, events)
+                return navigation_capture(args.adb, args.serial, guard, events)
+            if active and active != windows:
+                raise ElementListReadError("profile system dialog dismissal opened an unexpected foreground")
+        return None
+
+    returned = returned_profile()
+    if returned is not None:
+        return returned
+    if package == "com.android.settings" and state() == before:
+        nodes = dialog_nodes()
+        cancel = [n for n in nodes if n.get("resource-id") == "android:id/button2"
+                  and n.get("text") == "取消" and n.get("clickable") == "true" and bounds(n)]
+        if len(cancel) == 1 and state() == before:
+            guard()
+            x1, y1, x2, y2 = bounds(cancel[0])
+            events.append("profile_usb_settings_cancel_after_back")
+            adb(args.adb, args.serial, "shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2), timeout=7)
+            returned = returned_profile()
+            if returned is not None:
+                return returned
+    raise ElementListReadError("profile system dialog did not close after Back")
+
+
+def recover_clone_location_prompt(args, current, guard, events):
+    """Back out of the proven clone-only location request without choosing a permission."""
+    package = "com.android.permissioncontroller"
+    activity = r"com\.android\.permissioncontroller/(?:com\.android\.permissioncontroller)?\.permission\.ui\.GrantPermissionsActivity"
+    focused = re.fullmatch(r"mCurrentFocus=Window\{[^}\n]+ u999 " + activity + r"(?: [^}\n]*)?\}", current)
+    marker = "clone_profile_location_back_once"
+    if (args.app_slot != "app2" or "clone_user_requested:999" not in events
+            or "collection_slot_requested:app2" not in events or not focused or marker in events):
+        return None
+
+    def read_task():
+        guard()
+        dump = adb(args.adb, args.serial, "shell", "dumpsys", "window", timeout=8)
+        windows = [line.strip() for line in dump.splitlines()
+                   if "mCurrentFocus=" in line and "mCurrentFocus=null" not in line]
+        record = re.findall(r"(?m)^\s*mFocusedApp=ActivityRecord\{[^}\n]+ u999 "
+                            + activity + r" t(\d+)(?:[ }\n])", dump)
+        tasks = re.findall(r"(?m)^\s*mPreferredTopFocusableRootTask=Task\{[^}\n]+ #(\d+) "
+                           r"type=standard A=999\d+:com\.xingin\.xhs\} U=999 displayId=0(?:\s|$)", dump)
+        return windows, record, tasks
+
+    before = read_task()
+    if before[0] != [current] or len(before[1]) != 1 or before[1] != before[2]:
+        return None
+    guard()
+    fresh = capture(args.adb, args.serial)
+    nodes = live_nodes(fresh)
+    if not nodes or any(n.get("package") != package for n in nodes):
+        return None
+    roles = (("permission_message", "“Ⅱ·小红书”请求访问您的位置信息", "android.widget.TextView", "false"),
+             ("permission_allow_foreground_only_button", "使用应用时允许", "android.widget.Button", "true"),
+             ("permission_allow_one_time_button", "本次使用时允许", "android.widget.Button", "true"),
+             ("permission_deny_button", "禁止", "android.widget.Button", "true"))
+    for name, value, cls, clickable in roles:
+        matches = [n for n in nodes if n.get("resource-id") == package+":id/"+name
+                   and n.get("text") == value and n.get("class") == cls and n.get("clickable") == clickable
+                   and n.get("enabled") == "true" and n.get("visible-to-user") != "false"]
+        if len(matches) != 1:
+            return None
+    if read_task() != before:
+        raise ElementListReadError("clone location prompt changed before Back")
+    guard()
+    events.append(marker)
+    adb(args.adb, args.serial, "shell", "input", "keyevent", "4", timeout=7)
+    for _ in range(4):
+        time.sleep(.5)
+        guard()
+        after = focus(args.adb, args.serial)
+        if not after or after == current:
+            continue
+        assert_requested_foreground(after, events)
+        if not re.search(r"\bu999 com\.xingin\.xhs/(?:com\.xingin\.xhs)?\.index\.v2\.IndexActivityV2(?:[}\s]|$)", after):
+            raise ElementListReadError("clone location Back did not return to profile")
+        return native_window_capture(args.adb, args.serial, after, guard, list(events))
+    raise ElementListReadError("clone location prompt stayed foreground after Back")
+
+
+def release_observed_late_poco(args, current, guard, events):
+    """142 owner: its recorded next_app preload restarted Poco after cold start."""
+    from xhs_native_window import same_foreground
+    marker = "profile_late_poco_release_once"
+    if ((args.device_name, args.app_slot) != ("142", "app1")
+            or "xhs_cold_started" not in events or marker in events):
+        return False
+    guard()
+    assert_requested_foreground(current, events)
+    if not re.search(r"com\.xingin\.xhs/(?:com\.xingin\.xhs)?\.index\.v2\.IndexActivityV2(?:[}\s]|$)", current):
+        return False
+    maker = adb(args.adb,args.serial,"shell","getprop","ro.product.manufacturer",timeout=8).strip().upper()
+    model = adb(args.adb,args.serial,"shell","getprop","ro.product.model",timeout=8).strip()
+    if (maker, model) != ("OPPO", "PDYM20"):
+        return False
+    guard()
+    if not same_foreground(current, focus(args.adb,args.serial)):
+        raise ElementListReadError("account identity unproven: foreground changed before late Poco release")
+    events.append(marker)
+    release_idle_poco(args.adb,args.serial,guard,events)
+    guard()
+    if not same_foreground(current, focus(args.adb,args.serial)):
+        raise ElementListReadError("account identity unproven: foreground changed after late Poco release")
+    return True
+
+
+def prove_profile_identity(args, root, guard, events, expected):
+    """Two fresh native profile reads before data entry. No account changes."""
+    from xhs_native_window import same_foreground
+    samples = []; hashes = []; selected = False; backs = 0; retries = 0; chat_backs = 0; dialog_reads = 0
+    for _ in range(10):
+        guard(); current = focus(args.adb, args.serial)
+        resumed = resume_vivo_update_entry(args.adb, args.serial, current, guard, events)
+        if resumed is not None:
+            root = resumed
+            continue
+        if not re.search(r"mCurrentFocus=Window\{[^\n}]*\bu\d+\s+com\.xingin\.xhs/", current):
+            resumed = recover_profile_system_dialog(args, current, guard, events)
+            if resumed is not None:
+                root = resumed
+                samples.clear()
+                hashes.clear()
+                continue
+            resumed = recover_clone_location_prompt(args, current, guard, events)
+            if resumed is not None:
+                root = resumed
+                samples.clear()
+                hashes.clear()
+                continue
+            if (recover_vivo_store_detail(args.adb,args.serial,root,args.app_slot,current,guard,events)
+                    or recover_vivo_browser_permission_redirect(args.adb,args.serial,root,args.app_slot,current,guard,events)
+                    or recover_vivo_browser_redirect(args.adb,args.serial,args.app_slot,current,guard,events,root)):
+                root = navigation_capture(args.adb,args.serial,guard,events)
+                continue
+            raise ElementListReadError("account identity unproven: unsupported foreground before profile")
+        assert_requested_foreground(current, events)
+        if login_activity(current) or login_element_evidence(root, current, events):
+            confirm_logged_out(args.adb, args.serial, root, guard, events)
+        index = re.search(r"com\.xingin\.xhs/(?:com\.xingin\.xhs\.index\.v2\.IndexActivityV2|"
+                          r"\.index\.v2\.IndexActivityV2)(?:[}\s]|$)", current)
+        if index:
+            try:
+                # A header proof uses the native reader locally; it must not
+                # switch the established stock/fallback reader for every list page.
+                fresh = native_window_capture(args.adb, args.serial, current, guard, list(events))
+            except RuntimeError as error:
+                if (str(error) == "PocoService is active on this phone; collection stopped"
+                        and release_observed_late_poco(args,current,guard,events)):
+                    samples.clear(); hashes.clear()
+                    continue
+                root_missing = "native elements command failed: native_elements_unproven:IllegalStateException:native root missing"
+                if (selected and isinstance(error, CleanNativeRootUnavailable) and str(error) == root_missing
+                        and "identity_native_root_recheck_once" not in events):
+                    # This exact normal-exit rejection has returned through the
+                    # fixed helper's disconnect and temporary-file cleanup.
+                    # Discard all samples; read again once on the same profile
+                    # component without repeating the profile action.
+                    guard()
+                    time.sleep(.5)
+                    after = focus(args.adb, args.serial)
+                    assert_requested_foreground(after, events)
+                    if not same_foreground(current, after):
+                        raise ElementListReadError("account identity unproven: profile changed after missing native root") from error
+                    samples.clear(); hashes.clear()
+                    events.append("identity_native_root_recheck_once")
+                    continue
+                if retries >= 2 or str(error) not in {
+                        "native elements foreground changed before staging", "native elements foreground changed before read",
+                        "native elements foreground changed during read"}:
+                    raise
+                retries += 1; time.sleep(.5); continue
+            guard(); after = focus(args.adb, args.serial)
+            if not same_foreground(current, after):
+                raise ElementListReadError("account identity unproven: profile foreground changed")
+            root = fresh
+            # The index Activity may expose login controls only in this newer
+            # native tree. Confirm two fresh matching trees before classifying
+            # logout; missing profile tabs alone remain unproven identity.
+            if login_element_evidence(root, after, events):
+                root = confirm_logged_out(args.adb, args.serial, root, guard, events)
+                continue
+            own = [n for n in root.iter("node") if n.get("package") == XHS_PACKAGE
+                   and n.get("content-desc") == "我" and n.get("selected") == "true"]
+            if len(own) != 1:
+                def profile_overlay_guard():
+                    guard()
+                    if not same_foreground(current, focus(args.adb, args.serial)):
+                        raise ElementListReadError("account identity unproven: foreground changed before overlay dismissal")
+                if recover_known_overlay(args.adb, args.serial, root, profile_overlay_guard, events):
+                    # A newly exposed known sheet can hide the footer after
+                    # the profile action. Close only its existing proven path,
+                    # then require two new ID reads without replaying that action.
+                    samples.clear(); hashes.clear()
+                    root = navigation_capture(args.adb, args.serial, guard, events)
+                    events.append("identity_fresh_overlay_recovered")
+                    continue
+                if selected:
+                    raise ElementListReadError("account identity unproven: profile selection did not settle")
+                native_index_navigation("profile", args.adb, args.serial, guard, events)
+                selected = True; time.sleep(.5); continue
+            try:
+                visible = profile_header_identity(root, current, events)
+            except ElementListReadError as error:
+                if str(error) != "account identity unproven: header ID not unique":raise
+                return read_profile_editor_identity(args,root,current,guard,events,expected)
+            samples.append(visible)
+            hashes.append(hashlib.sha256(ET.tostring(root, encoding="utf-8")).hexdigest())
+            if len(samples) == 2:
+                if samples[0] != samples[1]:
+                    raise ElementListReadError("account identity unproven: profile ID changed between reads")
+                proof = identity_proof(args,expected,visible,hashes,"own_profile_public_id_two_fresh_native_reads")
+                args.verified_account_identity = proof
+                events.append("account_identity:verified_public_id_two_reads")
+                return root
+            time.sleep(.5); continue
+        known_dialog = re.search(r"com\.xingin\.xhs/(?:com\.xingin\.update\.UpdateDialogActivity|"
+                                 r"com\.xingin\.authorization\.NotificationAuthorizationTranslucentActivity|"
+                                 r"\.authorization\.NotificationAuthorizationTranslucentActivity)(?:[}\s]|$)", current)
+        if known_dialog:
+            if dialog_reads >= 2:
+                raise ElementListReadError("account identity unproven: known dialog roles did not settle")
+            guard(); root = navigation_capture(args.adb,args.serial,guard,events); dialog_reads += 1
+            events.append("identity_known_dialog_fresh_read")
+            after = focus(args.adb,args.serial); assert_requested_foreground(after,events)
+            if not same_foreground(current,after):
+                time.sleep(.5); continue
+            if recover_known_overlay(args.adb,args.serial,root,guard,events):
+                root = navigation_capture(args.adb,args.serial,guard,events)
+            else:
+                time.sleep(.5)
+            continue
+        if xhs_chat_activity(current):
+            if any(n.get("package") == XHS_PACKAGE and "EditText" in n.get("class", "")
+                   and (n.get("text") or "").strip() not in ("", "请友善发言...")
+                   and not ((n.get("text") or "").strip() in ("发消息…", "发消息或按住说话...")
+                            and n.get("focused") == "false") for n in live_nodes(root)):
+                raise RuntimeError("restored chat has unsent text; collection stopped")
+            if close_restored_ai_page(args.adb,args.serial,root,current,guard,events):
+                root = navigation_capture(args.adb,args.serial,guard,events)
+                continue
+            if chat_backs >= 2:
+                raise ElementListReadError("account identity unproven: restored chat did not close")
+            guard()
+            if focus(args.adb,args.serial) != current:
+                raise ElementListReadError("account identity unproven: restored chat foreground changed")
+            adb(args.adb,args.serial,"shell","input","keyevent","4",timeout=7)
+            chat_backs += 1; events.append("identity_restored_chat_back")
+            root = navigation_capture(args.adb,args.serial,guard,events)
+            continue
+        known_creator = re.search(r"com\.xingin\.xhs/com\.xingin\.reactnative\.ui\.XhsReactActivity(?:[}\s]|$)", current) and label(root, "创作中心")
+        known_data = works_webview_activity(current) and label(root, "数据中心")
+        if backs < 2 and (known_creator or known_data):
+            guard()
+            if focus(args.adb, args.serial) != current:
+                raise ElementListReadError("account identity unproven: return surface changed")
+            adb(args.adb, args.serial, "shell", "input", "keyevent", "4", timeout=7)
+            backs += 1; time.sleep(.5)
+        elif not recover_known_overlay(args.adb, args.serial, root, guard, events):
+            raise ElementListReadError("account identity unproven: no supported route to own profile")
+        root = navigation_capture(args.adb, args.serial, guard, events)
+    raise ElementListReadError("account identity unproven: native profile read budget exhausted")
+
+
+def require_current_account_binding(args, expected):
+    device = assert_idle(args.device_cache, args.serial, args.device_name, args.task_id, args.app_slot, args.cancel_file)
+    if requested_account_id(device, args.app_slot) != expected:
+        raise RuntimeError("account identity unproven: configured binding changed during collection")
+
+
 def collect_once(args):
     device = assert_idle(args.device_cache, args.serial, args.device_name, args.task_id, args.app_slot, args.cancel_file)
     if adb(args.adb, args.serial, "get-state", timeout=6).strip() != "device":
@@ -2690,6 +4110,7 @@ def collect_once(args):
                 and a.get("appSlot") == args.app_slot and a.get("enabled")]
     if not accounts:
         raise RuntimeError("requested Xiaohongshu app slot is not enabled")
+    expected_identity = requested_account_id(device, args.app_slot)
     events = ["collection_window_days:" + str(args.days), "collection_reader:ui_elements_only"]
     if getattr(args, "verification_pass", False):
         events.append("collection_verification_pass")
@@ -2701,7 +4122,14 @@ def collect_once(args):
     if root is None:
         release_idle_poco(args.adb, args.serial, guard, events)
         root = start_xhs(args.adb, args.serial, args.app_slot, guard, events)
-        root = ensure_creator_list(args.adb, args.serial, root, args.app_slot, guard, events)
+        root = enter_creator_with_slot_retry(args, root, guard, events, expected_identity)
+    else:
+        proof = getattr(args, "verified_account_identity", {})
+        if ((proof.get("serial"), proof.get("app_slot"), proof.get("configured_id"), proof.get("sample_count"))
+                != (args.serial, args.app_slot, expected_identity, 2)
+                or not re.fullmatch(r"[A-Za-z0-9_-]{3,64}", proof.get("visible_public_id") or "")):
+            raise ElementListReadError("account identity unproven: reused list lacks primary identity proof")
+        events.append("account_identity:reused_same_slot_list_proof")
     verify_collection_slot(args.adb, args.serial, args.app_slot, events)
     events.append("collection_entry_ms:" + str(round((time.monotonic() - entry_started) * 1000)))
     newest_started = time.monotonic()
@@ -2716,14 +4144,15 @@ def collect_once(args):
     cutoff = as_of - dt.timedelta(days=args.days - 1)
     result = {"schema_version": 3, "source": "xhs_creator_center_works_analysis_list",
               "serial": args.serial, "device_name": args.device_name, "app_slot": args.app_slot,
-              "account_bound": any(a.get("xhsId") for a in accounts),
+              "account_bound": True, "account_identity": dict(args.verified_account_identity),
               "captured_at": dt.datetime.now(dt.timezone.utc).isoformat(),
               "window_days": args.days, "window_start_date": cutoff.isoformat(),
               "window_end_date": as_of.isoformat(), "stop_reason": None,
               "list_scope_raw": next((n.get("text") for n in live_nodes(root)
                                       if (n.get("text") or "").startswith("仅统计")), None),
               "notes": [], "scrolls": 0, "complete": False, "recovery_events": events,
-              "scan_rounds": [], "warnings": []}
+              "scan_rounds": [], "warnings": ["creator_account_status_abnormal_observed"]
+                  if "creator_account_status_abnormal_observed" in events else []}
     seen = {}
     stagnant = 0
     previous_top_date = None
@@ -2844,6 +4273,7 @@ def collect_once(args):
     if not result["account_bound"]:
         result["warnings"].append("app_slot_has_no_bound_xhs_account")
     events.extend(["scan_page_read_ms:" + str(page_read_ms), "native_pair_fast_pages:" + str(fast_pages)])
+    require_current_account_binding(args, expected_identity)
     return result
 
 
@@ -2947,6 +4377,13 @@ def ordered_identity_coverage(previous, current):
     return index == len(previous)
 
 
+def collection_account_key(result):
+    proof = result.get("account_identity")
+    if proof is None:
+        return None
+    return tuple(proof[k] for k in ("serial", "app_slot", "configured_id", "visible_public_id"))
+
+
 def recover_integrity_mismatch(args, first, second):
     # One extra *pair*, never concatenate old notes or choose a count-only match.
     # The CLI enables one attempt; recursion explicitly removes that budget.
@@ -2971,6 +4408,7 @@ def recover_integrity_mismatch(args, first, second):
         return first
     fresh = identities(recovered)
     if (not recovered["complete"] or len(set(fresh)) != len(fresh)
+            or collection_account_key(recovered) != collection_account_key(first)
             or any(first[k] != recovered[k] for k in fields)
             or not all(ordered_identity_coverage(values, fresh) for values in observed)):
         first["recovery_events"].insert(0, "collection_integrity_recovery:coverage_or_pair_unproven")
@@ -2980,7 +4418,21 @@ def recover_integrity_mismatch(args, first, second):
                 "collection_verification_stop:"))]
     recovered["recovery_events"][0:0] = ["collection_integrity_recovery:verified_after_mismatch"] + [
         "prior_" + e for e in evidence]
+    status_warning="creator_account_status_abnormal_observed"
+    if any(status_warning in r.get("recovery_events",[]) for r in (first,second)):
+        if status_warning not in recovered["recovery_events"]:recovered["recovery_events"].append(status_warning)
+        if status_warning not in recovered["warnings"]:recovered["warnings"].append(status_warning)
     return recovered
+
+
+def public_list_audit_events(ordered_identities):
+    """A digest the formal API can verify after clipping titles to 180 UTF-16 units."""
+    projected = [(title.encode("utf-16-le")[:356].decode("utf-16-le", "ignore"), *key)
+                 for title, *key in ordered_identities]
+    if len(set(projected)) != len(projected) or projected == ordered_identities:
+        return []
+    digest = hashlib.sha256(json.dumps(projected, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
+    return ["collection_public_identity:prefix178_utf16_v1", "collection_public_sha256:" + digest]
 
 
 def collect(args):
@@ -3013,6 +4465,14 @@ def collect(args):
         first["warnings"].append("verification_elements_unproven")
         first["recovery_events"].insert(0, "collection_integrity:verification_elements_unproven")
         return first
+    if collection_account_key(first) != collection_account_key(second):
+        first["warnings"].append("account_identity_changed_between_collection_passes")
+        first["recovery_events"].insert(0, "collection_integrity:account_changed_between_passes")
+        return first
+    status_warning="creator_account_status_abnormal_observed"
+    if status_warning in second.get("recovery_events",[]):
+        if status_warning not in first["recovery_events"]:first["recovery_events"].append(status_warning)
+        if status_warning not in first["warnings"]:first["warnings"].append(status_warning)
     identities = lambda result: [note_identity(n, normalized_date=True) if duplicate_titles else (n["title"], n["published_date"]) for n in result["notes"]]
     a, b = identities(first), identities(second)
     digest = lambda values: hashlib.sha256(json.dumps(values, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
@@ -3038,16 +4498,22 @@ def collect(args):
             or any(first[k] != second[k] for k in ("app_slot", "window_start_date", "window_end_date", "list_scope_raw"))):
         first["warnings"].append("two_pass_identity_or_boundary_unproven")
         first["recovery_events"].insert(0, "collection_integrity:two_pass_mismatch")
-        seam_failure = second["stop_reason"] == "elements_unproven" and any(
-            e == "works_elements_scan_stopped:ordered element overlap has a gap, reorder or backward jump"
-            or e == "works_elements_scan_stopped:element page continuity is unproven after scroll"
-            for e in second["recovery_events"])
-        if first_stop in valid_stops and (second["complete"] and second["stop_reason"] in valid_stops or seam_failure):
+        # Preserve the rejected second pass's actual reason (the API keeps only
+        # 100 events). One fresh *pair* can repair a transient complete-tree or
+        # seam rejection, but still must cover every old identity in order.
+        rejected = [e for e in second["recovery_events"] if e.startswith("works_elements_scan_stopped:")]
+        first["recovery_events"][1:1] = ["verification_"+e for e in rejected[-1:]]
+        element_rejection = second["stop_reason"] == "elements_unproven" and bool(rejected)
+        if first_stop in valid_stops and (second["complete"] and second["stop_reason"] in valid_stops or element_rejection):
             return recover_integrity_mismatch(args, first, second)
         return first
+    if "account_identity" in first:
+        require_current_account_binding(args, first["account_identity"]["configured_id"])
+        if first["account_identity"].get("matches_exactly") is False:
+            first["recovery_events"].insert(0, "account_identity:configured_id_mismatch_collected_current_slot")
     first["complete"] = True
     first["stop_reason"] = first_stop
-    first["recovery_events"].insert(0, "collection_integrity:verified_two_pass")
+    first["recovery_events"][0:0] = ["collection_integrity:verified_two_pass"] + public_list_audit_events(a)
     return first
 
 

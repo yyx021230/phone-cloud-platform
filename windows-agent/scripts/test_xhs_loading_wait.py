@@ -40,6 +40,41 @@ class LoadingWaitTests(unittest.TestCase):
         return sync.wait_data_center_loading('adb', 'serial', root if root is not None else self.missing,
                                              guard, self.events, require_content=content)
 
+    def test_vivo_store_redirect_only_returns_to_proven_clone_works(self):
+        current = ('mCurrentFocus=Window{x u0 com.bbk.appstore/'
+                   'com.bbk.appstore.ui.details.AppDetailActivity type=1}')
+        store = ET.fromstring(
+            '<hierarchy><node package="com.bbk.appstore" resource-id="com.bbk.appstore:id/package_detail_title"'
+            ' text="极简记账" bounds="[0,200][200,280]"/><node package="com.bbk.appstore"'
+            ' resource-id="com.bbk.appstore:id/originui_vtoolbar_navigation_view_btn_rom14_0"'
+            ' content-desc="返回" class="android.widget.ImageButton" enabled="true" clickable="true"'
+            ' bounds="[12,82][104,174]"/></hierarchy>')
+        self.events.extend(['xhs_cold_started', 'account_identity:verified_public_id_two_reads'])
+        self.focus.side_effect = [current, current, CURRENT, CURRENT, CURRENT]
+        self.adb.side_effect = ['VIVO', '']
+        with patch.object(sync, 'capture', return_value=store) as capture, \
+                patch.object(sync, 'navigation_capture', return_value=self.good), \
+                patch.object(sync, 'element_page_signature', return_value='stable'):
+            self.assertIs(self.run_wait(content=True), self.good)
+        capture.assert_called_once_with('adb', 'serial')
+        self.assertEqual(self.adb.call_count, 2)
+        self.assertEqual(self.adb.call_args.args[2:], ('shell', 'input', 'keyevent', '4'))
+        self.assertIn('vivo_store_detail_back', self.events)
+        for reason in ('unknown_ad', 'identity_missing', 'already_scanning'):
+            trial = [e for e in self.events if e != 'vivo_store_detail_back']
+            original_title = store[0].get('text')
+            if reason == 'unknown_ad':
+                store[0].set('text', '未知应用')
+            elif reason == 'identity_missing':
+                trial.remove('account_identity:verified_public_id_two_reads')
+            else:
+                trial.append('collection_scan_as_of:fixture')
+            with self.subTest(reason=reason):
+                self.assertFalse(sync.recover_vivo_store_detail(
+                    'adb', 'serial', store, 'app2', current, lambda: None, trial, works_loading=True))
+            store[0].set('text', original_title)
+        self.assertEqual(self.adb.call_count, 2)
+
     def test_observed_missing_tab_waits_twenty_seconds_then_clicks_once(self):
         self.assertFalse(sync.data_center_tab_header(self.missing))
         self.assertTrue(sync.data_center_tab_header(self.header))
@@ -95,6 +130,49 @@ class LoadingWaitTests(unittest.TestCase):
         self.assertEqual(capture.call_count, 2)
         self.assertEqual(sync.element_page_signature(result), sync.element_page_signature(changed))
 
+    def test_blank_overview_retry_uses_proven_more_route(self):
+        center = ET.fromstring('<hierarchy><node text="创作中心" bounds="[0,0][100,100]"/>'
+                               '<node text="最新笔记" bounds="[0,100][100,200]"/>'
+                               '<node text="更多" bounds="[0,200][100,300]"/></hierarchy>')
+        self.events.append('creator_overview_selected')
+        with patch.object(sync, 'blank_works_loading', return_value=True), \
+                patch.object(sync, 'creator_overview_entry', return_value=True), \
+                patch.object(sync, 'navigation_capture', side_effect=[center, self.good]), \
+                patch.object(sync, 'tap_label') as tap, patch.object(sync, 'tap_creator_overview') as overview:
+            result = sync.reopen_loading_data_center('adb', 'serial', self.missing, lambda: None, self.events)
+        self.assertIs(result, self.good)
+        self.assertEqual(tap.call_args.args[3], '更多')
+        overview.assert_not_called()
+        self.assertEqual(self.adb.call_count, 1)
+        self.assertIn('data_center_loading_reopened_via_more', self.events)
+
+    def test_blank_stock_loading_can_use_two_complete_native_reads(self):
+        def native(adb, serial, current, guard, events):
+            events.append('native_window_elements_enabled')
+            return copy.deepcopy(self.good)
+        with patch.object(sync, 'blank_works_loading', return_value=True), \
+                patch.object(sync, 'navigation_capture', return_value=self.missing), \
+                patch.object(sync, 'native_window_capture', side_effect=native) as capture, \
+                patch.object(sync, 'reopen_loading_data_center') as reopen:
+            result = self.run_wait(content=True)
+        self.assertEqual(sync.element_page_signature(result), sync.element_page_signature(self.good))
+        self.assertEqual(capture.call_count, 2)
+        reopen.assert_not_called()
+        self.adb.assert_not_called()
+        self.assertIn('native_window_elements_enabled', self.events)
+        self.assertIn('data_center_blank_native_probe_ready', self.events)
+
+    def test_blank_native_probe_does_not_accept_a_partial_second_tree(self):
+        self.events.extend(['data_center_loading_reopen:1', 'data_center_loading_reopen:2'])
+        with patch.object(sync, 'blank_works_loading', return_value=True), \
+                patch.object(sync, 'navigation_capture', return_value=self.missing), \
+                patch.object(sync, 'native_window_capture', side_effect=[self.good, self.missing]) as capture:
+            with self.assertRaisesRegex(sync.ElementListReadError, 'loading timed out'):
+                self.run_wait(content=True)
+        self.assertEqual(capture.call_count, 2)
+        self.assertNotIn('native_window_elements_enabled', self.events)
+        self.adb.assert_not_called()
+
     def test_mid_scan_waits_but_never_reopens_or_selects_tabs(self):
         self.events.append('collection_scan_as_of:2026-10-22')
         with patch.object(sync, 'navigation_capture', return_value=self.header), patch.object(sync, 'open_works_tab') as tab:
@@ -140,7 +218,7 @@ class LoadingWaitTests(unittest.TestCase):
     def test_login_and_account_abnormal_are_not_loading(self):
         self.focus.return_value = CURRENT.replace('com.xingin.xywebview.activity.WebViewActivityV2', 'com.xingin.login.device.offline.DeviceOfflineRemindActivity')
         # Foreground Activity without native login controls is unproven.
-        with patch.object(sync, 'navigation_capture', return_value=self.missing):
+        with patch.object(sync, 'navigation_capture', return_value=self.missing), patch.object(sync, 'native_window_capture', return_value=self.missing):
             with self.assertRaisesRegex(sync.ElementListReadError, 'lacks native element'):
                 self.run_wait()
         self.focus.return_value = CURRENT
@@ -200,6 +278,7 @@ class CreatorHomeRoutingTests(unittest.TestCase):
             'mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.reactnative.ui.XhsReactActivity}'))
         self.adb = self.stack.enter_context(patch.object(sync, 'adb'))
         self.tap = self.stack.enter_context(patch.object(sync, 'tap_label'))
+        self.native = self.stack.enter_context(patch('xhs_native_navigation.perform'))
         self.ready = fixture('works-elements-141.xml')
         self.read = self.stack.enter_context(patch.object(sync, 'navigation_capture', return_value=self.ready))
         self.events = ['collection_slot_requested:app1']
@@ -207,7 +286,7 @@ class CreatorHomeRoutingTests(unittest.TestCase):
     def navigate(self, root):
         return sync.ensure_creator_list('adb', 'serial', root, 'app1', lambda: None, self.events)
 
-    def test_observed_creator_homes_use_existing_overview_entry(self):
+    def test_observed_creator_homes_keep_the_working_overview_metric_path(self):
         # Native failure evidence from 173/app1 and 182/app1, with private text redacted.
         for phone in ('173', '182'):
             with self.subTest(phone=phone):
@@ -216,18 +295,31 @@ class CreatorHomeRoutingTests(unittest.TestCase):
                 self.assertTrue(sync.label(root, '数据中心'))
                 self.assertFalse(sync.creator_list(root))
                 self.tap.reset_mock()
+                self.adb.reset_mock()
+                self.native.reset_mock()
                 self.assertIs(self.navigate(root), self.ready)
-                self.tap.assert_called_once_with('adb', 'serial', root, '观看', unittest.mock.ANY)
-        self.adb.assert_not_called()
+                self.tap.assert_called_once_with('adb','serial',root,'观看',unittest.mock.ANY)
+                self.adb.assert_not_called()
+                self.native.assert_not_called()
 
-    def test_creator_home_account_abnormal_still_stops_before_entry(self):
+    def test_creator_home_status_badge_uses_proven_entry_and_retains_warning(self):
         root = fixture('creator-home-data-label-173.xml')
         next(n for n in root.iter('node') if n.get('text') == '账号正常').set('text', '账号异常')
+        self.assertIs(self.navigate(root), self.ready)
+        self.tap.assert_called_once_with('adb','serial',root,'观看',unittest.mock.ANY)
+        self.assertIn('creator_account_status_abnormal_observed', self.events)
+        self.adb.assert_not_called()
+        self.native.assert_not_called()
+        self.read.assert_called_once()
+
+    def test_status_badge_without_an_enabled_entry_still_stops(self):
+        root = fixture('creator-home-data-label-173.xml')
+        next(n for n in root.iter('node') if n.get('text') == '账号正常').set('text', '账号异常')
+        for n in root.iter('node'):
+            if n.get('clickable') == 'true':n.set('enabled', 'false')
         with self.assertRaisesRegex(RuntimeError, 'account shows abnormal'):
             self.navigate(root)
-        self.tap.assert_not_called()
-        self.adb.assert_not_called()
-        self.read.assert_not_called()
+        self.tap.assert_not_called();self.read.assert_not_called();self.adb.assert_not_called()
 
     def test_unproven_native_page_with_data_center_label_remains_rejected(self):
         root = fixture('creator-home-data-label-173.xml')

@@ -1,0 +1,370 @@
+{
+  "version": "device18-replacement-20261111-deployed.1",
+  "status": "device18_platform_bindings_migrated_inventory_retired",
+  "atUtc": "2026-11-11T08:49:45.651333+00:00",
+  "receiptCommit": "2cd85d8e6dd71a1c533f92f052012f7dc792ea03",
+  "receiptTag": "device18-replacement-20261111-deployed.1",
+  "imageId": "sha256:fc0bb8c3458470ad21397fa16aed8b5207882a0fe112f4107d7b89ef094c52ce",
+  "restartImageId": "sha256:e5b243b5e3b8c7bbd5c014bf059212db704f4d9592e639cbb5c773915f16ca30",
+  "runningContainerId": "55de67a8cf46fc71094d8759a0d44bca8fb4d1f410002eca9747027f4b661308",
+  "runningContainerPid": 1730700,
+  "mainStartedAt": "2026-11-11T01:13:54.196513707Z",
+  "agentPid": 11604,
+  "adbServerPid": 20016,
+  "agentOwner": "NT AUTHORITY\\SYSTEM",
+  "adbOwner": "NT AUTHORITY\\SYSTEM",
+  "productionAcceptanceComplete": false,
+  "cpsFormalActivation": {
+    "version": "wecom-cps-send-20261111-deployed.1",
+    "atUtc": "2026-11-11T07:32:46.567050+00:00",
+    "branch": "codex/wecom-cps-send-20261111",
+    "candidateTag": "wecom-cps-send-20261111-rc.5",
+    "codeCommit": "6116477bdb12fa56169e7dab7051db44de4917d9",
+    "previousActiveSha256": "cfd4dcf0bc510ead8ba2556f6c4e3b33d722b0d8114f4f67e26a9394cf85203c",
+    "activation": {
+      "atUtc": "2026-11-11T07:28:04.665969+00:00",
+      "applied": true,
+      "imageUnchanged": "sha256:4c3823e7aab5328c6e9ecfa37683ea210405fdddb14c0d52f61664812f755b33",
+      "containerBefore": "13de64066b3d0cd2a5d92e0355b421153ff4328de6ee93406352cd59c9fe97a4",
+      "containerAfter": "88703bcbe6da15af62e45258f09320e782f82b6514e6f73fb19d6bbc3b261241",
+      "modeBefore": "preview",
+      "modeAfter": "send",
+      "stateKeyAfter": "production",
+      "onlyEnvChanges": [
+        "CPS_EXECUTION_MODE",
+        "CPS_STATE_KEY"
+      ],
+      "mainPidUnchanged": 1730700,
+      "agentReloaded": false,
+      "adbTouched": false,
+      "preflight": {
+        "atUtc": "2026-11-11T07:28:04.526Z",
+        "apply": false,
+        "targetStateKey": "production",
+        "sourceJournals": [
+          {
+            "key": "preview-20261110",
+            "revision": 152,
+            "sha256": "441bff6bba800c6d71a16fdd4b01bcc791761a730c1a2aa99d8e5338a4fef811",
+            "leadCount": 5
+          },
+          {
+            "key": "preview-20261110-pilot200",
+            "revision": 45,
+            "sha256": "d3d2f0762dd1de420a95f610392d37b6b76dd2d649354bccde641479b83a7af5",
+            "leadCount": 2
+          },
+          {
+            "key": "preview-20261110-pilot202",
+            "revision": 79,
+            "sha256": "3fe4a75a88aab2b34d7472d727e0cc3ab155d8631116509147142295c8dc42df",
+            "leadCount": 2
+          }
+        ],
+        "seedSha256": "f040ceabe3a2ee92e0723b6bc15b62bff0fb9032fc28d2bc8929fcd4c7862026",
+        "seedLeads": 9,
+        "seedRecipients": 4,
+        "seedNonces": 7,
+        "seedLimits": 0,
+        "originalPreviewJobsChecked": 9,
+        "historicSendsOnCurrentPhones": 0,
+        "oldPreviewJobsReplayed": 0,
+        "callbacksInvoked": 0
+      },
+      "retiredIdlePilotServices": [
+        {
+          "name": "phone-cloud-cps-preview-200",
+          "containerId": "470867f98e1b9d7cd3fc9dc44bc6fdc6d434074b1a61bfc9d45df334bedab48c",
+          "wasRunning": false
+        },
+        {
+          "name": "phone-cloud-cps-preview-202",
+          "containerId": "5d1a9232a06bacd65b16ae582d1d24b435102aab3da7a7260274e1721cb5899f",
+          "wasRunning": false
+        }
+      ],
+      "completedAtUtc": "2026-11-11T07:28:05.731897+00:00",
+      "independentCpsSwitchElapsedSeconds": 1.04,
+      "journalProof": {
+        "atUtc": "2026-11-11T07:28:05.178Z",
+        "apply": true,
+        "targetStateKey": "production",
+        "sourceJournals": [
+          {
+            "key": "preview-20261110",
+            "revision": 152,
+            "sha256": "441bff6bba800c6d71a16fdd4b01bcc791761a730c1a2aa99d8e5338a4fef811",
+            "leadCount": 5
+          },
+          {
+            "key": "preview-20261110-pilot200",
+            "revision": 45,
+            "sha256": "d3d2f0762dd1de420a95f610392d37b6b76dd2d649354bccde641479b83a7af5",
+            "leadCount": 2
+          },
+          {
+            "key": "preview-20261110-pilot202",
+            "revision": 79,
+            "sha256": "3fe4a75a88aab2b34d7472d727e0cc3ab155d8631116509147142295c8dc42df",
+            "leadCount": 2
+          }
+        ],
+        "seedSha256": "f040ceabe3a2ee92e0723b6bc15b62bff0fb9032fc28d2bc8929fcd4c7862026",
+        "seedLeads": 9,
+        "seedRecipients": 4,
+        "seedNonces": 7,
+        "seedLimits": 0,
+        "originalPreviewJobsChecked": 9,
+        "historicSendsOnCurrentPhones": 0,
+        "oldPreviewJobsReplayed": 0,
+        "callbacksInvoked": 0
+      },
+      "rollbackContainer": "phone-cloud-cps-wecom-preview-rollback-20261111",
+      "realInvitationsByOperator": 0,
+      "formalAcceptanceComplete": false
+    },
+    "mode": "send",
+    "stateKey": "production",
+    "formalAdmissionOpen": true,
+    "formalAcceptanceComplete": false,
+    "oldPreviewLeadsRetained": 9,
+    "recipientGuardsRetained": 4,
+    "oldSourcesAndLeadsUnchanged": true,
+    "newFormalLeadsObserved": 0,
+    "oldPreviewsReplayed": 0,
+    "callbackAttemptsOnOldPreviews": 0,
+    "mainContainerId": "55de67a8cf46fc71094d8759a0d44bca8fb4d1f410002eca9747027f4b661308",
+    "mainPid": 1730700,
+    "mainStartedAt": "2026-11-11T01:13:54.196513707Z",
+    "mainReloads": 0,
+    "agentReloads": 0,
+    "adbChanges": 0,
+    "cpsImageId": "sha256:4c3823e7aab5328c6e9ecfa37683ea210405fdddb14c0d52f61664812f755b33",
+    "cpsUser": "node",
+    "cpsContainerId": "88703bcbe6da15af62e45258f09320e782f82b6514e6f73fb19d6bbc3b261241",
+    "cpsStartedAt": "2026-11-11T07:28:05.380344732Z",
+    "runningMainImageId": "sha256:fc0bb8c3458470ad21397fa16aed8b5207882a0fe112f4107d7b89ef094c52ce",
+    "nextMainImageId": "sha256:16e06c48a5fb32a92ba14b8d22d9c814341bb143f23c4fe1205426bab6b322d7",
+    "nextMainImageTag": "phone-cloud-platform:wecom-cps-send-20261111-rc.5",
+    "cloudRuntimeFilesVerified": 708,
+    "cloudChangedFiles": {
+      "public/cps-wecom-integration-api.md": "ee761208e5e81707cd246e02f59ed97df08da30291e1540e5049031ccb6f5a6e"
+    },
+    "health": {
+      "main": 200,
+      "ready": 200,
+      "cps": 200
+    },
+    "mediaVerification": {
+      "decision": "D-075",
+      "verified": "live",
+      "pid": 2503525,
+      "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+      "bitsPerSecond": 8000000,
+      "packetsPerGroup": 2
+    },
+    "publicSignedDeviceQuery": {
+      "http": 200,
+      "targetsOnlineAvailable": [
+        "200",
+        "202"
+      ],
+      "legacyCorpMemberIdsAbsent": true
+    },
+    "publicMalformedDispatch": {
+      "http": 200,
+      "code": 2003,
+      "taskCreated": false
+    },
+    "callbackTlsHead": 200,
+    "callbackBusinessPostTested": false,
+    "configSha256": "8b5ec703776e56c74c23e0899a2100967b04bb8838cd5c86ab207e145c0a48ce",
+    "testSummary": {
+      "localPassed": 59,
+      "localSkippedOptionalPg": 1,
+      "localFailed": 0,
+      "sourceSeedGuardCases": 11,
+      "realDbReadOnlyPreflight": true,
+      "realDbTransactionalSeed": true
+    },
+    "rollbackDirectory": "/opt/phone-cloud-staging/wecom-cps-send-20261111-rc.1",
+    "notVerified": [
+      "First fresh CPS lead actual invitation, confirmation and automatic business callback",
+      "202 new non-contact remark/send-page path"
+    ],
+    "receiptCommitPending": false,
+    "activeBeforeReceiptBindingSha256": "53f8cb80185c68a5f7abdf2d39e226bec3da6cfdd08ee22fce364a88cbe44003",
+    "receiptCommit": "1ca3c4fb1f2a3dc596133e59c49ff1f51da7c4a8",
+    "receiptTag": "wecom-cps-send-20261111-deployed.1"
+  },
+  "device18Replacement": {
+    "version": "device18-replacement-20261111-deployed.1",
+    "atUtc": "2026-11-11T08:49:45.651333+00:00",
+    "baselineVersion": "wecom-cps-send-20261111-deployed.1",
+    "activeBeforeSha256": "d74ea72e6003951d2f669e1bfdaa526b77f814166c9a3d0ac39f83c676818056",
+    "branch": "codex/device18-replacement-20261111",
+    "runtimePatchCommit": "a661b57935adb0356694f4c35c6e05374e006baa",
+    "runtimePatchTag": "device18-replacement-20261111-rc.1",
+    "operationToolsCommit": "ff99e06998c35b207744fb003f0072900a4d73fb",
+    "operationToolsTag": "device18-replacement-20261111-rc.3",
+    "preparedRelease": {
+      "atUtc": "2026-11-11T08:38:43.354120+00:00",
+      "candidateCommit": "a661b57935adb0356694f4c35c6e05374e006baa",
+      "candidateTag": "device18-replacement-20261111-rc.1",
+      "activeBeforeSha256": "d74ea72e6003951d2f669e1bfdaa526b77f814166c9a3d0ac39f83c676818056",
+      "previousNextImageId": "sha256:16e06c48a5fb32a92ba14b8d22d9c814341bb143f23c4fe1205426bab6b322d7",
+      "nextImageId": "sha256:e5b243b5e3b8c7bbd5c014bf059212db704f4d9592e639cbb5c773915f16ca30",
+      "nextImageTag": "phone-cloud-platform:device18-replacement-20261111-rc.1",
+      "runtimeFilesVerified": 708,
+      "onlyChangedFile": "server/postgres-repositories.mjs",
+      "beforeRepositorySha256": "f2e9b9544d3d7f12afd59ea7836e73f55aa752260eb0e2f1c2ecec4fb76ca7fc",
+      "repositorySha256": "e8d42324f5e67922d5b558abd31bc995c8af796c8e39e439a2556692f415634e",
+      "nextImageAllOtherHashesUnchanged": true,
+      "composeOnlyImageChanged": true,
+      "composeOverlay": "/opt/phone-cloud-staging/device18-replacement-20261111-rc.1/compose.pending.json",
+      "structuredBackupSha256": "64353c44f0f6ca7d7aab7bc1babde475c54e235e2678556c10c1fcb01e35ec14"
+    },
+    "applied": {
+      "atUtc": "2026-11-11T08:45:53.478979+00:00",
+      "applied": true,
+      "oldDeviceId": "adb:2e74c3a20920",
+      "newDeviceId": "adb:10CF3B074E002N1",
+      "bindingsMoved": 2,
+      "simBindingsChanged": false,
+      "oldInventoryArchived": true,
+      "newListed": true,
+      "newAdbOnline": true,
+      "mainPidUnchanged": 1730700,
+      "sharedServicesRestarted": false,
+      "backupSha256": "7abc2e90af658f3bdaca467250fc4e37311fac1cf478868b1415ca5c19f45b1e",
+      "retirement": {
+        "mode": "retire",
+        "archived": true,
+        "removedFromInventory": true,
+        "oldDeviceId": "adb:2e74c3a20920",
+        "newDeviceId": "adb:10CF3B074E002N1",
+        "retiredAt": "2026-11-11T08:45:53.247Z",
+        "remainingNumber18": 1,
+        "historicalTasksAndSmsDeleted": 0,
+        "fullSnapshotRewritten": false
+      }
+    },
+    "batchApplied": {
+      "mode": "apply",
+      "targetCount": 1,
+      "appSlot": "app1",
+      "xhsId": "63033691880",
+      "oldDeviceId": "adb:2e74c3a20920",
+      "newDeviceId": "adb:10CF3B074E002N1",
+      "activeRuns": 0,
+      "changed": true,
+      "credentialsChanged": false,
+      "schedulesChanged": false,
+      "historyChanged": false,
+      "restarted": false,
+      "configBeforeSha256": "ae267f7f8cd3af9c057e7e239be098a355cada649c99520526f1d216cb7462ee",
+      "configAfterSha256": "1d85daaeb9a25ce8362e48f1951896c7156c26ed8e28ab6e58b6cd4eb37d583a",
+      "inodeUnchanged": true
+    },
+    "batchVerification": {
+      "actualRuntimeAndDiskTargetsAgree": true,
+      "targetDeviceId": "adb:10CF3B074E002N1",
+      "targetCount": 1,
+      "readOnlyVerification": true,
+      "activeRuns": 0
+    },
+    "productionVerification": {
+      "atUtc": "2026-11-11T08:48:38.804150+00:00",
+      "number18Count": 1,
+      "newDeviceId": "adb:10CF3B074E002N1",
+      "newModel": "V2410A",
+      "newOnline": true,
+      "newListed": true,
+      "newOccupancy": null,
+      "newLastSeenAt": "2026-11-11T08:48:20.016Z",
+      "xhsAccounts": [
+        {
+          "appSlot": "app1",
+          "xhsId": "63033691880",
+          "accountName": "云凌胜"
+        },
+        {
+          "appSlot": "app2",
+          "xhsId": "63025254245",
+          "accountName": "云盛久"
+        }
+      ],
+      "simBindingsUnchanged": true,
+      "oldDeviceAbsentFromInventory": true,
+      "oldArchiveMarkerPersisted": true,
+      "noDuplicateXhsBindings": true,
+      "mainPidUnchanged": 1730700,
+      "mainStartedAt": "2026-11-11T01:13:54.196513707Z",
+      "batchPidUnchanged": 2508335,
+      "batchStartedAt": "2026-11-09T08:51:15.04199097Z",
+      "cpsContainerUnchanged": "88703bcbe6da15af62e45258f09320e782f82b6514e6f73fb19d6bbc3b261241",
+      "cpsMode": "send",
+      "health": {
+        "main": 200,
+        "ready": 200,
+        "cps": 200
+      },
+      "media": {
+        "decision": "D-075",
+        "verified": "live",
+        "pid": 2503525,
+        "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+        "bitsPerSecond": 8000000,
+        "packetsPerGroup": 2
+      },
+      "phoneSideLoginVerified": false,
+      "historicalTasksOrSmsDeleted": 0,
+      "realPhoneTasksStarted": 0
+    },
+    "cloudRuntimeFilesVerified": 708,
+    "nextStartupReplayProbePassed": true,
+    "inspectorClosedOnBothServices": true,
+    "restartedComponents": [],
+    "adbOrAgentOperations": 0,
+    "historicalRowsDeleted": 0,
+    "realPhoneTasksStarted": 0,
+    "tests": {
+      "repositoryPassed": 17,
+      "isolatedPostgresPassed": 1,
+      "screenRegressionPassed": 27,
+      "batchEnginePassed": 34
+    },
+    "failuresResolved": [
+      "Runtime sync awaitPromise collected; synchronous calls corrected",
+      "Read-only batch container copy denied; stdin used without changing permissions",
+      "Inspector dynamic import unavailable; require ESM export used",
+      "Whole pool idle precondition blocked on coordinator lease; pre-activation transaction barrier verified"
+    ],
+    "observerFailuresResolved": [
+      "Missing XHS id on unrelated empty account template; read-only observer made tolerant",
+      "Health probe path corrected to healthz/readyz",
+      "Shell-expanded SQL parameter in read-only timestamp query; moved to structured subprocess argument"
+    ],
+    "rollbackDirectory": "/opt/phone-cloud-staging/device18-replacement-20261111-rc.1",
+    "notVerified": [
+      "New phone app-side XHS login state, QR scan, data collection and publishing were not executed",
+      "No production restart performed; next-start image replay and all 708 hashes verified instead"
+    ],
+    "previousUnverifiedItemsRetained": [
+      "Full WeCom SYSTEM phone cleanup protocol",
+      "176 hierarchy failure and147 post-input recovery/retyping issue",
+      "158 initial target disappearance cause and original/next query",
+      "Next natural02:00 and100-account acceptance",
+      "PG internal SIGABRT initial cause",
+      "Four historical hashes with API-truncated titles",
+      "Legacy complete runtime download archive not updated",
+      "202 new-customer remark/send-page path: authorized test customer is already a contact",
+      "Production invitation and official CPS callback using a new CPS lead",
+      "Source commit for preserved external XHS collector hot overlay",
+      "Previous three baseline UI assertions still fail; not a full green regression"
+    ]
+  },
+  "activeManifestSha256": "7bb60f27ef2612fd6bca524d5875084a37253aa0f6fffa0a75033c39bb765f53",
+  "recordedCloudFileCount": 708,
+  "recordedAgentFileCount": 109
+}

@@ -31,7 +31,8 @@ class FasterEntryTests(unittest.TestCase):
   r=home();ready=listing();events=['collection_slot_requested:app1']
   with patch.object(sync,'navigation_capture',side_effect=[r,ready]),patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync,'tap_label') as tap,patch.object(sync,'adb') as adb,patch.object(sync.time,'sleep'):
    self.assertIs(sync.reopen_creator_list('adb','s',ready,lambda:None,events),ready)
-  self.assertEqual(tap.call_args.args[3],'观看');self.assertEqual(adb.call_args.args[2:],('shell','input','keyevent','4'))
+  self.assertEqual(tap.call_args.args[3],'观看')
+  self.assertEqual([c.args[2:] for c in adb.call_args_list if c.args[2:4]==('shell','input')],[('shell','input','keyevent','4')])
   self.assertIn('list_reopened_at_newest',events)
  def test_unproven_overview_does_not_select_arbitrary_metric(self):
   r=home();r.append(ET.fromstring(ET.tostring(next(n for n in r if n.get('text')=='观看'))))

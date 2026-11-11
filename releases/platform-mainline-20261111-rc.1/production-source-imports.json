@@ -1,0 +1,415 @@
+{
+  "activeVersion": "device18-replacement-20261111-deployed.1",
+  "activeManifestSha256": "7bb60f27ef2612fd6bca524d5875084a37253aa0f6fffa0a75033c39bb765f53",
+  "files": [
+    {
+      "path": "windows-agent/scripts/\u5c0f\u7ea2\u4e66\u6570\u636e\u540c\u6b65.py",
+      "sha256": "86aa18abe0a0abd26075ec51392559868fbe7ceb7584147fb4ed39a69093844b",
+      "source": "production ACTIVE manifest; existing Git payload b13c6e0 / 1e3aa34",
+      "integratedSha256": "86aa18abe0a0abd26075ec51392559868fbe7ceb7584147fb4ed39a69093844b"
+    },
+    {
+      "path": "windows-agent/scripts/xhs_native_navigation.py",
+      "sha256": "2337eeb265eca7b89f87e6db574f203f24655dd7fd8469b5559bafe0d5131c2c",
+      "source": "production ACTIVE manifest; existing Git payload b13c6e0 / 1e3aa34",
+      "integratedSha256": "2337eeb265eca7b89f87e6db574f203f24655dd7fd8469b5559bafe0d5131c2c"
+    },
+    {
+      "path": "windows-agent/scripts/xhs_native_window.py",
+      "sha256": "5ffff3cabf18ccf3217faea5ef8ff1bd185f3d5862eefd5c117110a638e8590f",
+      "source": "production ACTIVE manifest; existing Git payload b13c6e0 / 1e3aa34",
+      "integratedSha256": "5ffff3cabf18ccf3217faea5ef8ff1bd185f3d5862eefd5c117110a638e8590f"
+    },
+    {
+      "path": "windows-agent/scripts/native/xhs-native-navigation-b17657420d9545dc824b777dff3b139f0587b4865a08b1dde7fa6b59c418a10e.jar",
+      "sha256": "b17657420d9545dc824b777dff3b139f0587b4865a08b1dde7fa6b59c418a10e",
+      "source": "xhs-script-hotupdate-20261105-rc.4:releases/xhs-script-hotupdate-20261105-rc.4/files/scripts/native/xhs-native-navigation-b17657420d9545dc824b777dff3b139f0587b4865a08b1dde7fa6b59c418a10e.jar",
+      "integratedSha256": "b17657420d9545dc824b777dff3b139f0587b4865a08b1dde7fa6b59c418a10e"
+    },
+    {
+      "path": "windows-agent/scripts/native/xhs-native-window-21d844ef1b9437b8011d0b08768e9e11f65473e87cc2685a11eab1fcc101edd1.jar",
+      "sha256": "21d844ef1b9437b8011d0b08768e9e11f65473e87cc2685a11eab1fcc101edd1",
+      "source": "xhs-script-hotupdate-20261105-rc.4:releases/xhs-script-hotupdate-20261105-rc.4/files/scripts/native/xhs-native-window-21d844ef1b9437b8011d0b08768e9e11f65473e87cc2685a11eab1fcc101edd1.jar",
+      "integratedSha256": "21d844ef1b9437b8011d0b08768e9e11f65473e87cc2685a11eab1fcc101edd1"
+    },
+    {
+      "path": "windows-agent/scripts/native/xhs-native-pair-e9a54a8b7e5ecaeb258c62896fa45d96ad9109eaad60f9baf801c893a5e40272.jar",
+      "sha256": "e9a54a8b7e5ecaeb258c62896fa45d96ad9109eaad60f9baf801c893a5e40272",
+      "source": "xhs-script-hotupdate-20261105-rc.4:releases/xhs-script-hotupdate-20261105-rc.4/files/scripts/native/xhs-native-pair-e9a54a8b7e5ecaeb258c62896fa45d96ad9109eaad60f9baf801c893a5e40272.jar",
+      "integratedSha256": "e9a54a8b7e5ecaeb258c62896fa45d96ad9109eaad60f9baf801c893a5e40272"
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/creator-center-blank-91.xml",
+      "sha256": "5778c7b5d15f4fddb846a16645c0369595ffe9e616652132f4c5e9c30a8bc3a3",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "5778c7b5d15f4fddb846a16645c0369595ffe9e616652132f4c5e9c30a8bc3a3"
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/creator-data-center-after-permission.xml",
+      "sha256": "d2b4bac9ab4449c3cc22ccad6c44fe6cb56b94a97ab08952003fbf8ee6747e1d",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "d2b4bac9ab4449c3cc22ccad6c44fe6cb56b94a97ab08952003fbf8ee6747e1d"
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/honor-auto-download-confirm-192.xml",
+      "sha256": "231561835ae7b234f4a210d05243ac54e15e25d11c318908d7459317b1c7d10c",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "231561835ae7b234f4a210d05243ac54e15e25d11c318908d7459317b1c7d10c"
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/honor-carrier-welcome-elements.xml",
+      "sha256": "f701960bca2c7d9e285550823018ac58c7915213847cb8b63a0068428b74e60e",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "f701960bca2c7d9e285550823018ac58c7915213847cb8b63a0068428b74e60e"
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/honor-notification-192.xml",
+      "sha256": "99932239b2406f7c916e9a2f75ed56663a5ff860916bc06841e9e8b2ece34d3a",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "99932239b2406f7c916e9a2f75ed56663a5ff860916bc06841e9e8b2ece34d3a"
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/honor-phone-only-welcome-elements.xml",
+      "sha256": "22fde2e22e6e94c6543a4617eabb54ef4958626ffe20fcb6dc4f70211e56e6b5",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "22fde2e22e6e94c6543a4617eabb54ef4958626ffe20fcb6dc4f70211e56e6b5"
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/legacy-native-navigation-910f03a9.jar",
+      "sha256": "910f03a9c4cd6963b89ce1dd4bf4a6ad21b6f888029970401134fdcf820af754",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "910f03a9c4cd6963b89ce1dd4bf4a6ad21b6f888029970401134fdcf820af754"
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/milestone-50-likes-58.xml",
+      "sha256": "0e7007ab5a1c511f7c28b1ebab3bd810da959a24adf29f5a1c62c2d9896ed382",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "0e7007ab5a1c511f7c28b1ebab3bd810da959a24adf29f5a1c62c2d9896ed382"
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/native-creator-data-nested.xml",
+      "sha256": "f59b3a809acd08829a4fd3d5a8cd2351925650015bc9c751af2a19bf5a36349f",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "f59b3a809acd08829a4fd3d5a8cd2351925650015bc9c751af2a19bf5a36349f"
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/native-creator-permission-nested.xml",
+      "sha256": "81cc2d47c98c986ffaeec49ad972bc70922ae9f18f992eaf5103a44df2b568cb",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "81cc2d47c98c986ffaeec49ad972bc70922ae9f18f992eaf5103a44df2b568cb"
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/profile-index-notification-71.xml",
+      "sha256": "b98c983ea4cb49d13ecabcbe9154b4eb3f95b3da4ba3aa7c0580c844a3657c12",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "b98c983ea4cb49d13ecabcbe9154b4eb3f95b3da4ba3aa7c0580c844a3657c12"
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/profile-milestone-500-likes-86.xml",
+      "sha256": "8e63ecc531327c5f1219707e7347ec6251253e6a6f8bd67ff2dfd265cf14835f",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "8e63ecc531327c5f1219707e7347ec6251253e6a6f8bd67ff2dfd265cf14835f"
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs/works-empty-display-elements.xml",
+      "sha256": "ccc070d6e1d0bb9af874556dd829588aed949993ee8fdccd195c2872113b55de",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "ccc070d6e1d0bb9af874556dd829588aed949993ee8fdccd195c2872113b55de"
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeElementsProbe.java",
+      "sha256": "17fbf26753ef542a0788b4e1175439b03a66261facf3a01bd75208da0abe45c1",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "17fbf26753ef542a0788b4e1175439b03a66261facf3a01bd75208da0abe45c1"
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeNavigationAction.java",
+      "sha256": "80fe6ac3b5a6436417ca3c2d2ac9a3fe0f773635f4f818f4dbeadde878e42326",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "80fe6ac3b5a6436417ca3c2d2ac9a3fe0f773635f4f818f4dbeadde878e42326"
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeNavigationActionTest.java",
+      "sha256": "88a0242dcf7bb41bd9be085d461878ec5c2cf2bba2c9ca19e810d276f0431d1d",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "88a0242dcf7bb41bd9be085d461878ec5c2cf2bba2c9ca19e810d276f0431d1d"
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeWindowReader.java",
+      "sha256": "70be31f52f5044224296eba981239aeced591d53167d8f6d5a25d77309ede350",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "70be31f52f5044224296eba981239aeced591d53167d8f6d5a25d77309ede350"
+    },
+    {
+      "path": "windows-agent/scripts/probes/NativeWindowReaderTest.java",
+      "sha256": "84058fc5504569b497bf2862b65814ecd630be9446acc1f00b932afcfc58e630",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "84058fc5504569b497bf2862b65814ecd630be9446acc1f00b932afcfc58e630"
+    },
+    {
+      "path": "windows-agent/scripts/probes/build-native-navigation.py",
+      "sha256": "be532b0fdf77c26617f9a29d6eb7746b3f6fb163acd9fe25eaae1acd928421a0",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "be532b0fdf77c26617f9a29d6eb7746b3f6fb163acd9fe25eaae1acd928421a0"
+    },
+    {
+      "path": "windows-agent/scripts/probes/build-native-window.py",
+      "sha256": "a41d1e18c454997a8d1b78f2de3c602fdc109072b20cc478c3c34a63da05e967",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "a41d1e18c454997a8d1b78f2de3c602fdc109072b20cc478c3c34a63da05e967"
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_collection_20261102.py",
+      "sha256": "f88ffbca4a976f67e9344d5eccf67f6050d396c7f6f2671becbdee2b99faa05b",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "f88ffbca4a976f67e9344d5eccf67f6050d396c7f6f2671becbdee2b99faa05b"
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_compat_recovery_20261103.py",
+      "sha256": "1ddfdcde27324fed3a63a3a824d1f8a5df8b0213b169534e841b8db9041a0db4",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "1ddfdcde27324fed3a63a3a824d1f8a5df8b0213b169534e841b8db9041a0db4"
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_completeness.py",
+      "sha256": "45f1fc7b8e68960b0a255de58dee46d60332adac2d303f2407de72bcd572420a",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "45f1fc7b8e68960b0a255de58dee46d60332adac2d303f2407de72bcd572420a"
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_data_sync.py",
+      "sha256": "e0027cf44331e276500c97c8f7beba8c692020ad3261376e9eeb844edf3c4d32",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "e0027cf44331e276500c97c8f7beba8c692020ad3261376e9eeb844edf3c4d32"
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_elements_only.py",
+      "sha256": "5c374834215df928431397d12a44a030556c7e2fa54b0034683f47d5448cba75",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "5c374834215df928431397d12a44a030556c7e2fa54b0034683f47d5448cba75"
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_elements_stability.py",
+      "sha256": "4ac9c20f70c42dc28d6fa8428059f8572ae21ecfc3d687eada61a815f18dd176",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "4ac9c20f70c42dc28d6fa8428059f8572ae21ecfc3d687eada61a815f18dd176"
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_identity_transition.py",
+      "sha256": "5d8d3ec93014a1b8609473ee44d279fb00154af3ca7445a3f22a189517c026e0",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "5d8d3ec93014a1b8609473ee44d279fb00154af3ca7445a3f22a189517c026e0"
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_live_asset_compatibility.py",
+      "sha256": "f28c486bf717aff99ea15171be86bd80c1b5ffc083fcb41e392d923ecd37ae4a",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "f28c486bf717aff99ea15171be86bd80c1b5ffc083fcb41e392d923ecd37ae4a"
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_loading_wait.py",
+      "sha256": "58e31605dd8dd434bf084d2083677bab6660e82a716584404baa3c0b64b60be2",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "58e31605dd8dd434bf084d2083677bab6660e82a716584404baa3c0b64b60be2"
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_native_navigation.py",
+      "sha256": "cb0ab604e49ed3ff8ce2bf7054dc848c8d5413780f3fa154c335eedbdea705e9",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "cb0ab604e49ed3ff8ce2bf7054dc848c8d5413780f3fa154c335eedbdea705e9"
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_native_window.py",
+      "sha256": "ac02a8d0699d21f60f20d3782b0222152128491af97e6316f4ec252bcead1299",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "ac02a8d0699d21f60f20d3782b0222152128491af97e6316f4ec252bcead1299"
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_profile_identity.py",
+      "sha256": "1ce3bd7ffefd81c6a64256272e22f27e385e246690adf91bca20d960644a3ddb",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "1ce3bd7ffefd81c6a64256272e22f27e385e246690adf91bca20d960644a3ddb"
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_speed_entry_scroll.py",
+      "sha256": "89604fdd1dc45aefb9ff9bef8fc517cb27a95a3c806d71d701649fe8b2f3a840",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "89604fdd1dc45aefb9ff9bef8fc517cb27a95a3c806d71d701649fe8b2f3a840"
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_startup_elements.py",
+      "sha256": "5f8c58cd7d568dcb675a1845091524ef1d470b1b303b64253d4a8eeca828eff6",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "5f8c58cd7d568dcb675a1845091524ef1d470b1b303b64253d4a8eeca828eff6"
+    },
+    {
+      "path": "windows-agent/scripts/test_xhs_verification_speed.py",
+      "sha256": "fb511e16220ff0718ac9a84ff7a21d4ddf53f75737475bab951a122691628c0b",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1",
+      "integratedSha256": "fb511e16220ff0718ac9a84ff7a21d4ddf53f75737475bab951a122691628c0b"
+    },
+    {
+      "path": "releases/xhs-collector-dialogs-20261111-rc.11/verify.py",
+      "sha256": "ef4c9ffd2067869b9dfc4248ba72959f3f8b7661679d0d89b1809e828d601357",
+      "source": "b13c6e0",
+      "integratedSha256": "19a436482e301f5817725f01c4f6d30ed231c2559b717d318458b4c9e70c8d60"
+    },
+    {
+      "path": "releases/xhs-collector-dialogs-20261111-rc.11/verify_broad.py",
+      "sha256": "e0aeace8a6d31ffd6041be3ddb7bacae40011c429fa7964ac6315ac1776c4802",
+      "source": "b13c6e0",
+      "integratedSha256": "5c27fce595467038f565f3fe135413c98323553612a08af9e5a0b377b0293918"
+    },
+    {
+      "path": "releases/xhs-collector-dialogs-20261111-rc.11/test_existing_anr_wait.py",
+      "sha256": "8ce4225ee2c117a9fc31f361f66cc20162e1455b86d76f8fc669545306b4fece",
+      "source": "b13c6e0",
+      "integratedSha256": "8001dfce7ae5f279b546d49776bfab0d1f581a73be75e3c306bc3b366adb8681"
+    },
+    {
+      "path": "releases/xhs-collector-dialogs-20261111-rc.11/test_anr_navigation.py",
+      "sha256": "2d4b08103278b955d224a6f456f01edacbaa8f7ed3aa00073a6981b878cec213",
+      "source": "b13c6e0",
+      "integratedSha256": "a5a7f185bab1c682f2e131340db15d05c1e5d838f90a8ba143cb5b68720d91b9"
+    },
+    {
+      "path": "releases/xhs-collector-dialogs-20261111-rc.11/test_late_poco.py",
+      "sha256": "cd38234bb823bbded023d9752ee1bbee2d95daf5a5f1f82ab3af2c130d3d7cd4",
+      "source": "b13c6e0",
+      "integratedSha256": "772ea90d818178218daddfc02feeb82b2f0de94502a655675b6fb6068f4e8273"
+    },
+    {
+      "path": "releases/xhs-collector-dialogs-20261111-rc.11/test_anr_classification.py",
+      "sha256": "78541a1a9d0b0a74de539ec3fa282cdecf295866142d707ec050c560636a4421",
+      "source": "b13c6e0",
+      "integratedSha256": "cd1f8da3dbb0fdd23959f71c246d97ebcfe2ff348937e57fff2ccce7a5d51095"
+    },
+    {
+      "path": "releases/xhs-collector-dialogs-20261111-rc.6/test_anr_history_wake.py",
+      "sha256": "61aec4f660e510b3af7d481e0ca5126deb7e7f763d67a004a3a9410d06ba59aa",
+      "source": "b13c6e0",
+      "integratedSha256": "1d288e4bdba1c6b1e346247b677a62f26372da87ebc1bcd7d95d22a3c321f78e"
+    },
+    {
+      "path": "releases/xhs-collector-dialogs-20261111-rc.6/test_current_focus_history.py",
+      "sha256": "12f26291fe1ec00de60ff1033b4b42d9914d6438c1a80cfeea3457f95054a044",
+      "source": "b13c6e0",
+      "integratedSha256": "dea92fea3bad0331ba8e1bfe5b1f4c9f891a933d7e8939c1d5067ddb1ff66307"
+    },
+    {
+      "path": "releases/xhs-collector-dialogs-20261111-rc.4/test_clean_root_exit.py",
+      "sha256": "4721e7c26d0e05b9d607349b5201ac0edded482485782a63bd942f445cc08c00",
+      "source": "b13c6e0",
+      "integratedSha256": "69bc84c61e11f6993bcba469d3396ebfae33c41021616d3d194c3c9d8e623de0"
+    },
+    {
+      "path": "releases/xhs-collector-dialogs-20261111-rc.4/test_profile_root_recheck.py",
+      "sha256": "a7b25d82ad2e235a0db19eba8168d7ba02ba297ebedf3a4107c789713b584407",
+      "source": "b13c6e0",
+      "integratedSha256": "c3bb30e79c39b13b9260ca5d5f8cbf663d7972039f02d9c8b88e0c491d190946"
+    },
+    {
+      "path": "releases/xhs-collector-dialogs-20261111-rc.4/test_startup_wake.py",
+      "sha256": "bf14d460a20d1924a0e717545b7d19e0a0ab28b8bb40910d156dacc61f6508d1",
+      "source": "b13c6e0",
+      "integratedSha256": "c20540d21f8666fb1acadc846d505fb94b8e0a7fa77df6cbc3b6fcb2de147688"
+    },
+    {
+      "path": "releases/xhs-collector-dialogs-20261111-rc.4/test_reset_timeout.py",
+      "sha256": "3a70ac0fca858278d8e79b772dd28dcbda1d8981dfb375bfd67e561a616126d8",
+      "source": "b13c6e0",
+      "integratedSha256": "5677063048c58a669870b9fd81ac9a9816ac047a21f2efd4c1569aab60b5948e"
+    },
+    {
+      "path": "releases/xhs-collector-dialogs-20261111-rc.3/test_blank_viewport.py",
+      "sha256": "173056ba71bfa0eb6b9312daff0ec179926a63e8df3c9f4c17e22dc32266d34c",
+      "source": "b13c6e0",
+      "integratedSha256": "11b2347edddb60d026ea44fed4f446a8795ab92465e903946b445e52f61488c6"
+    },
+    {
+      "path": "releases/xhs-collector-dialogs-20261111-rc.3/test_navigation_transition.py",
+      "sha256": "63aa73ea9c381f3857bcfc638fd04b455b505f98c9ab47b6c0f332bc36fae6f5",
+      "source": "b13c6e0",
+      "integratedSha256": "dc237ce12f7f2bc95a12f550d44d025f090db5a4fc0899c1c135f8252a9a4544"
+    },
+    {
+      "path": "releases/xhs-collector-dialogs-20261111-rc.2/test_control_center.py",
+      "sha256": "c0a8aa201e61a4b8fcff268ba941c2038bc3d2873ad620d59911374629910c61",
+      "source": "b13c6e0",
+      "integratedSha256": "33da7ced64a567e63128016d0c491eb75a2d01763d574713bf036c1486269a0a"
+    },
+    {
+      "path": "releases/xhs-collector-dialogs-20261111-rc.2/test_dialogs.py",
+      "sha256": "e02fbd79886683acada9830fd7fd7f6c1427f166002399157dc8f2caea84b503",
+      "source": "b13c6e0",
+      "integratedSha256": "f6f712ccd0271970144ce419c10044405c7325a1a338432dc08e855e5422601f"
+    },
+    {
+      "path": "releases/xhs-collector-recovery-20261109-rc.7/test_candidate.py",
+      "sha256": "539a7b2125158e06659cf50271ca42aff112b32af00a143e57f8aecf80671f29",
+      "source": "b13c6e0",
+      "integratedSha256": "dc99a2e5792fab85da6c567359db41f17cb2dd14900d38a79f1b4309107f0c20"
+    },
+    {
+      "path": "releases/xhs-collector-recovery-20261110-rc.1/test_note_status.py",
+      "sha256": "d3308835abe2fcfc60af7f6202d45860e5a0c607b12e479efa53b2331c145257",
+      "source": "b13c6e0",
+      "integratedSha256": "92aa35e54d54be0928e59541776267c12bbf7f004878ee553ae14de1894b9cb3"
+    },
+    {
+      "path": "releases/xhs-collector-recovery-20261110-rc.2/test_works_tab_timeout.py",
+      "sha256": "8c7c9d94babe5a0ddab9b2dc36e927c3911db276a19772d6ff11d7475f3a76f0",
+      "source": "b13c6e0",
+      "integratedSha256": "57f0ea0a5b01bd3c82848045c65f995b2e2636fd758ed380fe69ee369f2378a6"
+    },
+    {
+      "path": "releases/xhs-collector-recovery-20261110-rc.3/test_keyguard_timeout.py",
+      "sha256": "2f2a108304e6323e9c9958d415109a2d37f66f749c0006ff650422813996d265",
+      "source": "b13c6e0",
+      "integratedSha256": "1e598a7739be47fdc0cfd69f127aaf9901960a63852b682352c17d487d736095"
+    },
+    {
+      "path": "releases/xhs-collector-recovery-20261109-rc.7/audit_formal_order.py",
+      "sha256": "93561c35235724bfdc7247f4e8614bfe6d9658b7024f6777517703c1a546798c",
+      "source": "b13c6e0",
+      "integratedSha256": "93561c35235724bfdc7247f4e8614bfe6d9658b7024f6777517703c1a546798c"
+    },
+    {
+      "path": "releases/xhs-collector-recovery-20261109-rc.7/verify_public_order.py",
+      "sha256": "863ca13b75567e474b1045e14eaf4ca47ca1d05630f1a705a3b871a38450e2f7",
+      "source": "b13c6e0",
+      "integratedSha256": "863ca13b75567e474b1045e14eaf4ca47ca1d05630f1a705a3b871a38450e2f7"
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs-enterprise-profile-no-id.xml",
+      "sha256": "b2158d993e507bebaa369368c9919a265c581607e36627aedc91bbcdc2cd24d1",
+      "integratedSha256": "b2158d993e507bebaa369368c9919a265c581607e36627aedc91bbcdc2cd24d1",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1"
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs-profile-editor-id.xml",
+      "sha256": "304bfe5fcb34d89091aad3607cee4c740e7f291df1d2b038ba83374378cf6fca",
+      "integratedSha256": "304bfe5fcb34d89091aad3607cee4c740e7f291df1d2b038ba83374378cf6fca",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1"
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs-profile-header-id-ip-row.xml",
+      "sha256": "42ba5e7329253289d1501ea0e814150820933eadfe6ff7f6d874978d85bea42c",
+      "integratedSha256": "42ba5e7329253289d1501ea0e814150820933eadfe6ff7f6d874978d85bea42c",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1"
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs-profile-header-three-tabs.xml",
+      "sha256": "e2df2ec95af35ae71aad4a388f56953317cd72791c24e35ce524121f86ad3f18",
+      "integratedSha256": "e2df2ec95af35ae71aad4a388f56953317cd72791c24e35ce524121f86ad3f18",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1"
+    },
+    {
+      "path": "windows-agent/scripts/fixtures/xhs-profile-header-two-tabs.xml",
+      "sha256": "a42b38d4ac070ae9b344ef2d230d6d55d7942a7e53e03efec72c894aec94d158",
+      "integratedSha256": "a42b38d4ac070ae9b344ef2d230d6d55d7942a7e53e03efec72c894aec94d158",
+      "source": "xhs-collector-dialogs-20261111-rc.11-production-tools.1"
+    }
+  ],
+  "verifierAdaptation": "Imported standalone release tests/verifiers load the integrated root collector; original source hashes retained; final hashes recorded separately."
+}

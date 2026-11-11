@@ -22,6 +22,21 @@ public final class NativeNavigationActionTest {
   try(NativeNavigationAction.Selection s=new NativeNavigationAction.Selection()){s.queryNavigation(r,"profile");s.perform("profile");}catch(IllegalStateException e){failed=true;}if(!failed||target.clicks!=0)throw new AssertionError("incomplete footer accepted");count++;
   int[] reads={0};Object marker=new Object();if(NativeNavigationAction.freshRoot(()->++reads[0]<3?null:marker)!=marker||reads[0]!=3)throw new AssertionError();count++;
   reads[0]=0;failed=false;try{NativeNavigationAction.freshRoot(()->{reads[0]++;return null;});}catch(IllegalStateException e){failed=true;}if(!failed||reads[0]!=3)throw new AssertionError();count++;
+  for(String action:new String[]{"permission-entry","creator-data-center"}){
+   r=tree();target=r.kids.get(0).kids.get(4);boolean unsupported=false;
+   try{run(r,action);}catch(IllegalArgumentException expected){unsupported=true;}
+   if(!unsupported||target.clicks!=0)throw new AssertionError("unsupported diagnostic action became active");count++;
+  }
+  // Real25 footer: 首页 / 购物 / 发布 / 消息 / 我, home selected.
+  r=tree();r.kids.get(0).kids.get(1).fields.put("desc","购物");target=r.kids.get(0).kids.get(4);
+  run(r,"profile");if(target.clicks!=1)throw new AssertionError("captured shopping footer rejected");count++;
+  r=tree();r.kids.get(0).kids.get(1).fields.put("desc","购物");target=r.kids.get(0).kids.get(4);target.parent=r.kids.get(0);r.queries.put("我",Arrays.asList(target));
+  try(NativeNavigationAction.Selection s=new NativeNavigationAction.Selection()){s.queryNavigation(r,"profile");s.perform("profile");}if(target.clicks!=1)throw new AssertionError("shopping query footer rejected");count++;
+  for(String unknown:new String[]{"购物中心","未知"}){
+   r=tree();r.kids.get(0).kids.get(1).fields.put("desc",unknown);target=r.kids.get(0).kids.get(4);failed=false;
+   try{run(r,"profile");}catch(IllegalStateException expected){failed=true;}
+   if(!failed||target.clicks!=0)throw new AssertionError("unknown footer alias accepted");count++;
+  }
   System.out.println("NativeNavigationAction tests passed: "+count);
  }
 }

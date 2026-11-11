@@ -5,10 +5,19 @@ from unittest.mock import Mock
 from pathlib import Path
 import tempfile
 import xhs_native_navigation as nav
+FOCUS='mCurrentFocus=Window{x u0 com.xingin.xhs/.index.v2.IndexActivityV2}'
 
 class NativeBridgeTests(unittest.TestCase):
+ def test_experimental_permission_action_is_rejected_before_any_device_call(self):
+  run=self.runner()
+  with self.assertRaisesRegex(RuntimeError,'unsupported'):self.call(run,action='permission-entry')
+  run.assert_not_called()
+ def test_experimental_data_header_action_is_rejected_before_any_device_call(self):
+  run=self.runner()
+  with self.assertRaisesRegex(RuntimeError,'unsupported'):self.call(run,action='creator-data-center')
+  run.assert_not_called()
  def call(self,run,focus=None,guard=None,action='profile',asset=None):
-  return nav.perform(action,'SDK/adb.exe','target',run,focus or Mock(return_value='proven'),guard or Mock(),'proven',asset)
+  return nav.perform(action,'SDK/adb.exe','target',run,focus or Mock(return_value=FOCUS),guard or Mock(),FOCUS,asset)
  def runner(self,mode='ok'):
   def f(adb,serial,*args,**kw):
    self.assertEqual((adb,serial),('SDK/adb.exe','target'))
@@ -35,7 +44,7 @@ class NativeBridgeTests(unittest.TestCase):
   run=self.runner()
   with self.assertRaisesRegex(RuntimeError,'occupied'):self.call(run,guard=Mock(side_effect=RuntimeError('occupied')))
   run.assert_not_called()
-  with self.assertRaisesRegex(RuntimeError,'foreground changed'):self.call(run,focus=Mock(side_effect=['proven','other']))
+  with self.assertRaisesRegex(RuntimeError,'foreground changed'):self.call(run,focus=Mock(side_effect=[FOCUS,'other']))
   self.assertFalse(any('NativeNavigationAction' in str(c.args) for c in run.call_args_list))
  def test_unknown_action_or_modified_asset_never_touches_device(self):
   run=self.runner()
@@ -51,5 +60,11 @@ class NativeBridgeTests(unittest.TestCase):
    return original(*args,**kw)
   run.side_effect=f
   with self.assertRaisesRegex(RuntimeError,'cleanup'):self.call(run)
+ def test_window_metadata_change_keeps_exact_user_component_but_wrong_user_stops(self):
+  fresh=FOCUS.replace('Window{x','Window{new taskId=99')+'\nmFocusedApp=ActivityRecord{extra}'
+  self.call(self.runner(),focus=Mock(return_value=fresh))
+  run=self.runner()
+  with self.assertRaisesRegex(RuntimeError,'foreground changed'):self.call(run,focus=Mock(return_value=FOCUS.replace('u0','u999')))
+  run.assert_not_called()
 
 if __name__=='__main__':unittest.main()

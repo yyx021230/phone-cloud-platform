@@ -18,9 +18,18 @@ public final class NativeWindowReaderTest {
   public N fetch(int conn,int win,long id){if(conn!=3||win!=10)throw new AssertionError("wrong routing");fetches++;return replies.get(id);}
  }
  static void ok(boolean v){if(!v)throw new AssertionError();}
+ public static class LegacyCache {int calls;public void clearCache(){calls++;}}
+ public static class ScopedCache {int seen=-1;public void clearCache(int id){seen=id;}}
+ public static class Connection {final int id;Connection(int id){this.id=id;}public int getConnectionId(){return id;}}
+ public static class BrokenLegacy {public void clearCache(){throw new IllegalStateException("broken cache");}public void clearCache(int id){throw new AssertionError("must not mask failed legacy invocation");}}
  interface Test {void run() throws Exception;}
  static void reject(Test t,String reason)throws Exception{try{t.run();throw new AssertionError("accepted "+reason);}catch(IllegalStateException e){ok(e.getMessage().contains(reason));}tests++;}
  public static void main(String[] args)throws Exception{
+  LegacyCache oldCache=new LegacyCache();NativeWindowReader.clearLocalCache(LegacyCache.class,oldCache,new Object());ok(oldCache.calls==1);tests++;
+  ScopedCache scoped=new ScopedCache();NativeWindowReader.clearLocalCache(ScopedCache.class,scoped,new Connection(7));ok(scoped.seen==7);tests++;
+  reject(()->NativeWindowReader.clearLocalCache(ScopedCache.class,new ScopedCache(),new Connection(-1)),"cache connection");
+  try{NativeWindowReader.clearLocalCache(Object.class,new Object(),new Connection(7));throw new AssertionError("unsupported cache accepted");}catch(NoSuchMethodException expected){tests++;}
+  try{NativeWindowReader.clearLocalCache(BrokenLegacy.class,new BrokenLegacy(),new Connection(7));throw new AssertionError("broken cache accepted");}catch(java.lang.reflect.InvocationTargetException expected){ok(expected.getCause() instanceof IllegalStateException);tests++;}
   B b=new B();String xml=NativeWindowReader.read(b);ok(xml.contains("current")&&xml.contains("row")&&!xml.contains("cached"));ok(b.fetches==2&&b.root.closed==2&&b.stale.closed==1&&b.fresh.closed==1&&b.leaf.closed==1);tests++;
   B missing=new B();missing.replies.remove(missing.leaf.id);reject(()->NativeWindowReader.read(missing),"child missing");ok(missing.root.closed==1&&missing.fresh.closed==1);
   B foreign=new B();foreign.web.cls="android.view.View";reject(()->NativeWindowReader.read(foreign),"outside proven WebView");ok(foreign.fetches==0);
@@ -33,6 +42,14 @@ public final class NativeWindowReaderTest {
   B childHost=new B();childHost.leaf.id=(3L<<32)|8;reject(()->NativeWindowReader.read(childHost),"foreign native child");
   B empty=new B();empty.root.kids.clear();ok(NativeWindowReader.read(empty).contains("hierarchy"));tests++;
   B budget=new B();NativeWindowReader.Context context=new NativeWindowReader.Context(budget,budget.root);context.requests=2500;reject(()->context.fetch(budget.fresh.id),"budget exceeded");ok(budget.fetches==0);
+  B honor=new B();for(N n:Arrays.asList(honor.root,honor.web,honor.stale,honor.fresh,honor.leaf))n.pkg=NativeWindowReader.HONOR_CHOOSER;
+  ok(NativeWindowReader.read(honor,NativeWindowReader.HONOR_CHOOSER).contains("row"));tests++;
+  B honorDefault=new B();honorDefault.root.pkg=NativeWindowReader.HONOR_CHOOSER;
+  reject(()->NativeWindowReader.read(honorDefault),"root identity");
+  B wrongHonorChild=new B();wrongHonorChild.root.pkg=NativeWindowReader.HONOR_CHOOSER;
+  reject(()->NativeWindowReader.read(wrongHonorChild,NativeWindowReader.HONOR_CHOOSER),"identity mismatch");
+  B wrongHonorRoot=new B();reject(()->NativeWindowReader.read(wrongHonorRoot,NativeWindowReader.HONOR_CHOOSER),"root identity");
+  B arbitrary=new B();reject(()->NativeWindowReader.read(arbitrary,"com.other"),"unsupported native package");
   System.out.println(tests+" native window reader tests passed");
  }
 }

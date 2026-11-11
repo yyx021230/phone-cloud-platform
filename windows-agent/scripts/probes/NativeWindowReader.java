@@ -1,6 +1,7 @@
 /** Bounded element-only snapshot with exact WebView node IDs routed to the active window. */
 public final class NativeWindowReader {
     static final String PKG = "com.xingin.xhs";
+    static final String HONOR_CHOOSER = "com.hihonor.android.internal.app";
     interface Info extends NativeElementsProbe.Node {
         int window() throws Exception;
         int connection() throws Exception;
@@ -14,17 +15,24 @@ public final class NativeWindowReader {
     }
     static final class Context {
         final Backend backend;
+        final String expectedPackage;
         final int window, connection;
         final long rootId;
         final long deadline = System.nanoTime() + 12_000_000_000L;
         int requests, corrected;
         Context(Backend backend, Info root) throws Exception {
-            this.backend=backend; window=root.window(); connection=root.connection(); rootId=root.id();
-            if(window<0 || connection<0 || !PKG.equals(root.value("package")))
+            this(backend, root, PKG);
+        }
+        Context(Backend backend, Info root, String expectedPackage) throws Exception {
+            if(!PKG.equals(expectedPackage) && !HONOR_CHOOSER.equals(expectedPackage))
+                throw new IllegalStateException("unsupported native package");
+            this.backend=backend; this.expectedPackage=expectedPackage;
+            window=root.window(); connection=root.connection(); rootId=root.id();
+            if(window<0 || connection<0 || !expectedPackage.equals(root.value("package")))
                 throw new IllegalStateException("unproven native root identity");
         }
         void check(Info node, long expected) throws Exception {
-            if(node.id()!=expected || node.connection()!=connection || !PKG.equals(node.value("package")))
+            if(node.id()!=expected || node.connection()!=connection || !expectedPackage.equals(node.value("package")))
                 throw new IllegalStateException("native node identity mismatch");
         }
         Info fetch(long id) throws Exception {
@@ -83,12 +91,15 @@ public final class NativeWindowReader {
         }
     }
     static String read(Backend backend) throws Exception {
+        return read(backend, PKG);
+    }
+    static String read(Backend backend, String expectedPackage) throws Exception {
         Info root=backend.root();
         if(root==null)throw new IllegalStateException("native root missing");
         Context context;
-        try {context=new Context(backend,root);}
+        try {context=new Context(backend,root,expectedPackage);}
         catch(Exception e){root.close();throw e;}
-        String xml=new NativeElementsProbe.Reader().read(context.wrap(root,-1,false));
+        String xml=new NativeElementsProbe.Reader(expectedPackage).read(context.wrap(root,-1,false));
         context.verifyRoot();
         return xml.replace("<hierarchy data-source=\"xml\">", "<hierarchy data-source=\"xml\" native-window-reader=\"1\" corrected-nodes=\""+context.corrected+"\">");
     }
@@ -105,6 +116,16 @@ public final class NativeWindowReader {
         public String value(String key) throws Exception{return node.value(key);}
         public void close() throws Exception{node.close();}
     }
+    static void clearLocalCache(Class<?> clientClass, Object client, Object automation) throws Exception {
+        try { clientClass.getMethod("clearCache").invoke(client); }
+        catch (NoSuchMethodException missingLegacySignature) {
+            // Newer Android scopes its local client cache by connection. Never
+            // skip freshness, enumerate other connections or clear a service.
+            int connection = (Integer)NativeElementsProbe.call(automation,"getConnectionId");
+            if (connection < 0) throw new IllegalStateException("unproven cache connection");
+            clientClass.getMethod("clearCache",int.class).invoke(client,connection);
+        }
+    }
     static final class AndroidBackend implements Backend {
         final Object automation, client; final Class<?> clientClass;
         AndroidBackend(Object automation) throws Exception {
@@ -114,7 +135,7 @@ public final class NativeWindowReader {
         }
         public Info root() throws Exception {
             // This process's accessibility client cache only; no server/settings changes.
-            clientClass.getMethod("clearCache").invoke(client);
+            clearLocalCache(clientClass,client,automation);
             Object root=NativeElementsProbe.call(automation,"getRootInActiveWindow");
             return root==null?null:new AndroidInfo(root);
         }
@@ -128,12 +149,15 @@ public final class NativeWindowReader {
     public static void main(String[] args) {
         Object wrapper=null; boolean connected=false; String xml=null; int code=1;
         try {
-            if(args.length!=0)throw new IllegalArgumentException("no arguments accepted");
+            String expectedPackage;
+            if(args.length==0)expectedPackage=PKG;
+            else if(args.length==1 && args[0].equals("honor-owner-chooser"))expectedPackage=HONOR_CHOOSER;
+            else throw new IllegalArgumentException("unsupported native read mode");
             wrapper=Class.forName("com.android.uiautomator.core.UiAutomationShellWrapper").getConstructor().newInstance();
             NativeElementsProbe.call(wrapper,"connect");connected=true;
             wrapper.getClass().getMethod("setCompressedLayoutHierarchy",boolean.class).invoke(wrapper,false);
             Thread.sleep(2000);
-            xml=read(new AndroidBackend(NativeElementsProbe.call(wrapper,"getUiAutomation")));code=0;
+            xml=read(new AndroidBackend(NativeElementsProbe.call(wrapper,"getUiAutomation")),expectedPackage);code=0;
         } catch(Exception e){System.err.println("native_elements_unproven:"+e.getClass().getSimpleName()+":"+e.getMessage());}
         finally {
             if(connected)try{NativeElementsProbe.call(wrapper,"disconnect");}

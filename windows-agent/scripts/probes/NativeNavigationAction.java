@@ -97,7 +97,10 @@ public final class NativeNavigationAction {
                 if(cs.size()!=5)continue;boolean match=true;
                 for(int i=0;i<5;i++){
                     Node n=cs.get(i);String desc=n.value("desc").split("，",2)[0];
-                    if(!names[i].equals(desc)||!actionable(n)||!(i==2?"android.widget.RelativeLayout":"android.view.ViewGroup").equals(n.value("class")))match=false;
+                    // Captured25 has the same five-item footer with 购物 in slot1.
+                    // Keep every other role, class, count and selected-state proof.
+                    boolean knownName=names[i].equals(desc)||(i==1&&"购物".equals(desc));
+                    if(!knownName||!actionable(n)||!(i==2?"android.widget.RelativeLayout":"android.view.ViewGroup").equals(n.value("class")))match=false;
                 }
                 if(match&&"true".equals(cs.get(0).value("selected"))&&"false".equals(cs.get(4).value("selected")))targets.add(cs.get(4));
             }

@@ -12,6 +12,40 @@ sync=importlib.util.module_from_spec(spec);spec.loader.exec_module(sync)
 FOCUS='mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}'
 XML=b'<hierarchy data-source="xml" native-window-reader="1"><node package="com.xingin.xhs"/></hierarchy>'
 class NativeElementsTests(unittest.TestCase):
+ def test_honor_owner_reader_is_a_separate_exact_u0_chooser_mode(self):
+  current='mCurrentFocus=Window{x u0 com.hihonor.android.internal.app/.HwChooserActivity}'
+  run=self.runner();original=run.side_effect
+  def honor(*args,**kw):
+   result=original(*args,**kw)
+   if 'NativeWindowReader' in str(args):
+    self.assertIn('NativeWindowReader honor-owner-chooser',str(args))
+    result.stdout=XML.replace(b'com.xingin.xhs',b'com.hihonor.android.internal.app')
+   return result
+  run.side_effect=honor
+  self.assertEqual(native.read_honor_owner('adb','selected',run,lambda:current,lambda:None,current).tag,'hierarchy')
+  self.assertFalse(native.readable_foreground(current))
+  for bad in [current.replace('u0','u128'),current.replace('HwChooserActivity','OtherActivity'),current+'\n'+current,FOCUS]:
+   forbidden=self.runner()
+   with self.subTest(bad=bad),self.assertRaises(RuntimeError):native.read_honor_owner('adb','selected',forbidden,lambda:bad,lambda:None,bad)
+   forbidden.assert_not_called()
+ def test_honor_mode_rejects_xhs_nodes_and_still_cleans_up(self):
+  current='mCurrentFocus=Window{x u0 com.hihonor.android.internal.app/.HwChooserActivity}'
+  run=self.runner()
+  with self.assertRaisesRegex(RuntimeError,'complete hierarchy'):
+   native.read_honor_owner('adb','selected',run,lambda:current,lambda:None,current)
+  self.assertEqual(run.call_args_list[-2].args[2:5],('shell','rm','-f'))
+ def test_honor_navigation_fallback_never_runs_for_clone_or_after_scanning(self):
+  current='mCurrentFocus=Window{x u0 com.hihonor.android.internal.app/.HwChooserActivity}'
+  root=sync.ET.fromstring(XML.replace(b'com.xingin.xhs',b'com.hihonor.android.internal.app'))
+  for events,accepted in [(['collection_slot_requested:app1'],True),(['collection_slot_requested:app2','clone_user_requested:128'],False),(['collection_slot_requested:app1','collection_scan_as_of:2026-11-05'],False),([],False)]:
+   with self.subTest(events=events),patch.object(sync,'capture',side_effect=RuntimeError('UIAutomator did not return an XML hierarchy')),patch.object(sync,'focus',return_value=current),patch.object(sync,'assert_no_poco'),patch.object(native,'read_honor_owner',return_value=root) as reader,patch.object(sync,'adb') as adb:
+    if accepted:
+     self.assertIs(sync.navigation_capture('adb','selected',lambda:None,events),root)
+     self.assertIn('honor_owner_chooser_native_elements',events);reader.assert_called_once()
+    else:
+     with self.assertRaises(RuntimeError):sync.navigation_capture('adb','selected',lambda:None,events)
+     reader.assert_not_called()
+    adb.assert_not_called()
  def runner(self,mode='ok'):
   def run(adb,serial,*args,**kw):
    self.assertEqual((adb,serial),('adb','selected'))
@@ -37,6 +71,26 @@ class NativeElementsTests(unittest.TestCase):
    run=self.runner()
    with self.assertRaisesRegex(RuntimeError,'foreground changed'):self.call(run,Mock(side_effect=values))
    self.assertEqual(run.call_args_list[-2].args[2:5],('shell','rm','-f'))
+ def test_window_handle_and_task_metadata_change_keeps_exact_user_component(self):
+  expected=FOCUS+'\nmFocusedApp=ActivityRecord{old u0 com.xingin.xhs/.xywebview.activity.WebViewActivityV2 t12}'
+  fresh='mCurrentFocus=Window{new mode=0 rootTaskId=99 u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}\nmFocusedApp=ActivityRecord{new u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2 t99}'
+  run=self.runner()
+  tree=native.read('adb','selected',run,Mock(return_value=fresh),Mock(),expected)
+  self.assertEqual(tree.tag,'hierarchy')
+  self.assertEqual(sum('NativeWindowReader' in str(c.args) for c in run.call_args_list),1)
+ def test_relative_component_normalization_does_not_guess_cross_package_class(self):
+  relative='mCurrentFocus=Window{x u999 com.xingin.xhs/.index.v2.IndexActivityV2}'
+  full=relative.replace('/.index','/com.xingin.xhs.index')
+  self.assertTrue(native.same_foreground(relative,full))
+  self.assertFalse(native.same_foreground(FOCUS,FOCUS.replace('/com.xingin.xywebview','/.xywebview')))
+ def test_wrong_user_component_null_or_ambiguous_focus_never_returns_tree(self):
+  for value in (FOCUS.replace('u0','u999'),FOCUS.replace('WebViewActivityV2','OtherActivity'),
+                'mCurrentFocus=null\nmFocusedApp=ActivityRecord{x u0 com.xingin.xhs/.xywebview.activity.WebViewActivityV2}',
+                FOCUS+'\n'+FOCUS, FOCUS+'\nmCurrentFocus=Window{foreign u0 other.app/OtherActivity}'):
+   run=self.runner()
+   with self.subTest(value=value),self.assertRaisesRegex(RuntimeError,'foreground changed'):
+    self.call(run,Mock(return_value=value))
+   run.assert_not_called()
  def test_guard_failure_does_not_touch_device(self):
   run=self.runner()
   with self.assertRaisesRegex(RuntimeError,'occupied'):self.call(run,guard=Mock(side_effect=RuntimeError('occupied')))
@@ -50,6 +104,21 @@ class NativeElementsTests(unittest.TestCase):
   with self.assertRaisesRegex(RuntimeError,'proven XHS WebView'):
    native.read('adb','selected',run,lambda:'foreign',lambda:None,'foreign')
   run.assert_not_called()
+ def test_navigation_tree_fallback_is_allowlisted_but_pair_remains_webview_only(self):
+  for activity in ('com.xingin.xhs.index.v2.IndexActivityV2','com.xingin.reactnative.ui.XhsReactActivity',
+                   'com.xingin.login.device.offline.DeviceOfflineRemindActivity'):
+   current='mCurrentFocus=Window{x u0 com.xingin.xhs/'+activity+'}'
+   run=self.runner()
+   self.assertEqual(native.read('adb','selected',run,lambda:current,lambda:None,current).tag,'hierarchy')
+   with self.assertRaisesRegex(RuntimeError,'proven XHS'):
+    native.read('adb','selected',self.runner(),lambda:current,lambda:None,current,pair=True)
+  self.assertFalse(native.readable_foreground('mCurrentFocus=Window{x u0 com.xingin.xhs/UnknownActivity}'))
+ def test_empty_stock_hierarchy_uses_fresh_native_tree_without_inferring_logout(self):
+  current='mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.login.device.offline.DeviceOfflineRemindActivity}'
+  events=['collection_slot_requested:app1'];root=sync.ET.fromstring(XML)
+  with patch.object(sync,'capture',return_value=sync.ET.fromstring('<hierarchy/>')),patch.object(sync,'focus',return_value=current),patch.object(sync,'assert_no_poco'),patch.object(native,'read',return_value=root):
+   self.assertIs(sync.navigation_capture('adb','selected',lambda:None,events),root)
+   self.assertFalse(sync.login_element_evidence(root,current,events))
  def test_cleanup_failure_rejects_even_valid_snapshot(self):
   run=self.runner();original=run.side_effect
   def retained(*args,**kw):

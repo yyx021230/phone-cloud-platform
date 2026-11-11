@@ -58,7 +58,7 @@ class LoginEvidenceTests(unittest.TestCase):
     with self.assertRaisesRegex(RuntimeError,'manual login is required'):sync.confirm_logged_out('adb','serial',root,lambda:None,events)
    capture.assert_called_once();adb.assert_not_called();self.assertIn('login_state_confirmed:'+marker,events)
  def test_empty_elements_or_activity_only_never_proves_logout(self):
-  with patch.object(sync,'focus',return_value=focus('0',OFFLINE)),patch.object(sync,'capture')as capture:
+  with patch.object(sync,'focus',return_value=focus('0',OFFLINE)),patch.object(sync,'native_window_capture',return_value=ET.Element('hierarchy')),patch.object(sync,'capture')as capture:
    with self.assertRaisesRegex(sync.ElementListReadError,'lacks native element'):sync.confirm_logged_out('adb','serial',ET.Element('hierarchy'),lambda:None,['collection_slot_requested:app1'])
   capture.assert_not_called()
  def test_transient_login_tree_is_not_reported_as_logged_out(self):
@@ -84,6 +84,16 @@ class IntegrityRecoveryTests(unittest.TestCase):
    out,run=self.run_audit(self.result(a),self.result(b),self.result('ABC'),self.result('ABC'))
    self.assertTrue(out['complete']);self.assertEqual([n['title']for n in out['notes']],list('ABC'))
    self.assertEqual(run.call_count,4);self.assertIn('collection_integrity_recovery:verified_after_mismatch',out['recovery_events'])
+ def test_second_pass_tree_rejection_can_retry_pair_but_must_cover_old_tail(self):
+  for fresh in ('ABC','AC'):
+   second=self.result('A');second.update(complete=False,stop_reason='elements_unproven')
+   second['recovery_events']=['works_elements_scan_stopped:element rows are incomplete after fresh read']
+   out,run=self.run_audit(self.result('ABC'),second,self.result(fresh),self.result(fresh))
+   self.assertEqual(run.call_count,4);self.assertEqual(out['complete'],fresh=='ABC')
+ def test_unexplained_incomplete_result_does_not_get_automatic_pair_retry(self):
+  second=self.result('A');second.update(complete=False,stop_reason='elements_unproven')
+  out,run=self.run_audit(self.result('ABC'),second)
+  self.assertFalse(out['complete']);self.assertEqual(run.call_count,2)
  def test_equal_smaller_recovery_pair_cannot_discard_any_previously_read_post(self):
   out,run=self.run_audit(self.result('ABC'),self.result('AC'),self.result('AC'),self.result('AC'))
   self.assertFalse(out['complete']);self.assertEqual(run.call_count,4)
