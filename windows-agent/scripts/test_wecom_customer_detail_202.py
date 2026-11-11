@@ -17,6 +17,14 @@ class CustomerDetail202Tests(unittest.TestCase):
         screen=observed();self.assertEqual(w.customer_detail_phone(screen),PHONE)
         self.assertTrue(w.profile_matches(screen,PHONE));self.assertFalse(w.profile_matches(screen,OTHER))
 
+    def test_poco_class_name_fallback_and_raw_xml_resource_name_are_both_supported(self):
+        screen=observed()
+        for fallback in ('','android.widget.TextView'):
+            nodes=tuple(replace(n,name=fallback)if n.text in('电话',PHONE)else n for n in screen.nodes)
+            self.assertEqual(w.customer_detail_phone(replace(screen,nodes=nodes)),PHONE)
+        nodes=tuple(replace(n,name='unknown:phone')if n.text==PHONE else n for n in screen.nodes)
+        self.assertIsNone(w.customer_detail_phone(replace(screen,nodes=nodes)))
+
     def test_full_home_search_stops_as_already_contact_without_add_message_or_remark(self):
         device=Device([*PATH[:5],observed()]);result=run(device)
         self.assertEqual(result['code'],'already_contact')

@@ -1,5 +1,5 @@
 {
-  "source": "202 native customer detail layout; all personal values removed or replaced",
+  "source": "202 native customer detail, normalized using PocoService Node.getAttr name fallback; personal values replaced",
   "nodes": [
     {
       "kind": "android.widget.TextView",
@@ -19,7 +19,7 @@
     {
       "kind": "android.widget.TextView",
       "text": "电话",
-      "name": "",
+      "name": "android.widget.TextView",
       "enabled": true,
       "visible": true,
       "position": [
@@ -34,7 +34,7 @@
     {
       "kind": "android.widget.TextView",
       "text": "19900000001",
-      "name": "",
+      "name": "android.widget.TextView",
       "enabled": true,
       "visible": true,
       "position": [

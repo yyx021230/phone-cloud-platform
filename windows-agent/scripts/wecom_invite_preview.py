@@ -206,10 +206,13 @@ def customer_detail_phone(screen):
         or not (has_layout(layout)or has_layout(layout_202))):
         return None
     if has_layout(layout_202):
-        labels=screen.matching(lambda n:n.kind=='android.widget.TextView'and n.text=='电话'and not n.name)
+        # PocoService Node.getAttr("name") falls back to the native class when
+        # resourceId/contentDescription are empty; an XML resource-id stays empty.
+        unnamed=lambda n:n.name in ('','android.widget.TextView')
+        labels=screen.matching(lambda n:n.kind=='android.widget.TextView'and n.text=='电话'and unnamed(n))
         if len(labels)!=1:return None
         label=labels[0];phones=[]
-        for node in screen.matching(lambda n:n.kind=='android.widget.TextView'and not n.name):
+        for node in screen.matching(lambda n:n.kind=='android.widget.TextView'and unnamed(n)):
             value=re.sub(r'[\s-]','',node.text)
             if not re.fullmatch(r'1[3-9][0-9]{9}',value):continue
             lx,ly=label.position;lw,lh=label.size;nx,ny=node.position;nw,nh=node.size
