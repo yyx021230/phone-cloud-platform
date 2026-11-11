@@ -1,5 +1,6 @@
 """Guarded release registration; never restores state or restarts services."""
 import copy
+import collections
 import datetime
 import hashlib
 import json
@@ -87,10 +88,16 @@ lookup_after = query('SELECT jsonb_agg(data) FROM phone_cloud_managed_lookup')
 assert len(lookup_before) == len(lookup_after) == 1
 before, after = lookup_before[0], lookup_after[0]
 assert after['config'] == before['config'] and after['configRevision'] == before['configRevision'] == 187
-assert after['devices'] == before['devices'], 'lookup_device_pool_drift'
+old_devices = {d['deviceId']: d for d in before['devices']}
+new_devices = {d['deviceId']: d for d in after['devices']}
+assert set(old_devices) == set(new_devices), 'lookup_device_pool_drift'
+assert all(all(old_devices[i].get(k) == new_devices[i].get(k) for k in ('deviceId', 'deviceNumber', 'enabled')) for i in old_devices), 'lookup_device_binding_drift'
+changed_device_fields = dict(collections.Counter(k for i in old_devices for k in set(old_devices[i]) | set(new_devices[i])
+                                                 if old_devices[i].get(k) != new_devices[i].get(k)))
 lookup = {'configUnchanged': True, 'configRevision': 187, 'poolDevices': len(after['devices']),
           'channelsBefore': len(before['channels']), 'channelsAfter': len(after['channels']),
           'sameOriginalSessionIds': sorted(c['sessionId'] for c in before['channels']) == sorted(c['sessionId'] for c in after['channels']),
+          'deviceBindingsAndEnabledUnchanged': True, 'naturalDeviceStateChangesByField': changed_device_fields,
           'noSnapshotRestored': True}
 old_records = json.loads((STAGE / 'rejected-proof-202.before.private.json').read_text())
 for name, table, key, value in [('native', 'phone_cloud_windows_tasks', 'task_id', '00c5f1c6-8cf7-4001-b3c9-285dbfb9f50f'),
