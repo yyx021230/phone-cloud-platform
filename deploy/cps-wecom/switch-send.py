@@ -53,8 +53,11 @@ for pilot in pilots:
  assert inspect(pilot['name'])['State']['ExitCode']==0,'old_pilot_unclean_exit'
 command(['docker','stop','-t','20','phone-cloud-cps-wecom'])
 assert inspect('phone-cloud-cps-wecom')['State']['ExitCode']==0,'old_cps_unclean_exit'
-name='wecom-cps-send-bootstrap-20261111-retry1'
-command(['docker','create','--name',name,'--network=host','--cap-drop=ALL','--pids-limit=32','--memory=256m','--env-file',str(live),'--entrypoint','node',operator,'/app/activate-send-journal.mjs','--apply'])
+name='wecom-cps-send-bootstrap-20261111-retry2'
+# This disposable operator has no host mounts or Linux capabilities. Its own
+# /receipt must be writable; the production CPS container keeps its node user
+# and the database role stays the existing limited CPS role.
+command(['docker','create','--name',name,'--user','0:0','--network=host','--cap-drop=ALL','--pids-limit=32','--memory=256m','--env-file',str(live),'--entrypoint','node',operator,'/app/activate-send-journal.mjs','--apply'])
 output=command(['docker','start','-a',name]);assert inspect(name)['State']['ExitCode']==0,output
 proof=json.loads(output);assert proof['apply']is True and proof['seedLeads']==preflight['seedLeads']
 for file in ('journals.before.private.json','send-seed.private.json','journal-activated.json'):
