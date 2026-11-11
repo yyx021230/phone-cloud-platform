@@ -169,6 +169,25 @@ test('registered reader identity is pinned by the server, not chosen by the call
  await assert.rejects(f.service.recoveryStart(f.lock.lockId,request,'operator'),/producer_invalid/);assert.equal(f.lock.status,'cleanup_pending');
 });
 
+test('registered rejected causal proof needs a new maintenance proof and preserves the rejection',async()=>{
+ const f=configFailureFixture(),v=f.lock.physicalCleanup.verification;
+ f.oldVerify.result.errorCode='wecom_cleanup_causal_context_unconfirmed';
+ v.challenge={protocol:v.causalLease.protocol,epoch:v.causalLease.epoch,verificationLeaseId:v.causalLease.leaseId,challengeId:'original-challenge'};
+ const before=structuredClone([f.task,f.job,f.oldVerify,v]);
+ await f.start();f.pick();await f.challenge();
+ assert.equal(f.lock.status,'cleanup_pending');
+ assert.equal((await f.call('recovery-proof',f.proof())).verified,true);
+ assert.deepEqual([f.task,f.job,f.oldVerify,f.lock.physicalCleanup.verification],before);
+});
+for(const change of [v=>delete v.challenge,v=>v.challenge.epoch='foreign',v=>v.challenge.verificationLeaseId='foreign',v=>v.challenge.extra=true])
+test('causal rejection without exact original challenge cannot start maintenance',async()=>{
+ const f=configFailureFixture(),v=f.lock.physicalCleanup.verification;
+ f.oldVerify.result.errorCode='wecom_cleanup_causal_context_unconfirmed';
+ v.challenge={protocol:v.causalLease.protocol,epoch:v.causalLease.epoch,verificationLeaseId:v.causalLease.leaseId,challengeId:'original-challenge'};
+ change(v);const before=structuredClone(f.state);
+ await assert.rejects(f.start(),/wecom_cleanup_recovery_ineligible/);assert.deepEqual(f.state,before);
+});
+
 
 async function failedMaintenance(f,code='wecom_cleanup_recovery_worker_present'){
  await f.start();f.pick();await f.challenge();const proof=f.proof(),task=f.getTask(),request=f.request();

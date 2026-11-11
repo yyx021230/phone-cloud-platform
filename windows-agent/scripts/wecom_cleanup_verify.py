@@ -98,7 +98,10 @@ def execute(value,*,cancelled=lambda:False,clock=time.monotonic,wall=time.time,r
     def frame_pids(package):
         if package==MAIN:authority_guard()
         return adb.pids(package)
-    frames=verify_empty(serial=config['serial'],hosts=hosts,process_created_at=process_created_at,pids=frame_pids,forwards=adb.forwards,guard=local_guard,check_budget=budget,sleep=sleep,clock=clock,wall_clock=wall)
+    # Full identity checks remain at every socket open/send and authority
+    # boundary. Generic receive/bookkeeping loops only check cancellation/time;
+    # duplicating the global TCP scan there delays the exact same proof.
+    frames=verify_empty(serial=config['serial'],hosts=hosts,process_created_at=process_created_at,pids=frame_pids,forwards=adb.forwards,guard=io_guard,check_budget=budget,sleep=sleep,clock=clock,wall_clock=wall)
     authority_guard()
     if clock()-frames[0].captured_at>3:raise VerifyStop('wecom_tool_proof_stale')
     proof={'binding':config['physicalCleanup'],**{k:config[k]for k in ('verificationId','verificationNonce','verificationTaskId')},'challenge':dict(config['challenge']),

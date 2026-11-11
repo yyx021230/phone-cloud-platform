@@ -43,13 +43,20 @@ function registeredPreviewFailure(state,d,task,job){
     ||d.causal?.protocol!=='wecom-causal-v1'||d.causal?.bootstrap?.bindingNonce!==d.binding.nonce
     ||!Number.isFinite(Date.parse(d.hostClosedAt))||d.proof
     ||!verify||verify.status!=='failed'||verify.type!=='wecom_cleanup_verify'
-    ||verify.result?.errorCode!=='wecom_cleanup_verify_timeout'
+    ||!['wecom_cleanup_verify_timeout','wecom_cleanup_causal_context_unconfirmed'].includes(verify.result?.errorCode)
     ||verify.agentId!==d.binding.agentId||verify.deviceId!==d.binding.deviceId||verify.adbSerial!==d.binding.serial
     ||!equal(verify.payload?.physicalCleanup,d.binding)
     ||!['verificationId','verificationNonce','verificationTaskId'].every(k=>typeof v?.[k]==='string'&&v[k]&&verify.payload?.[k]===v[k])
     ||verify.payload.verificationTaskId!==verify.taskId
     ||v.causalLease?.protocol!=='wecom-causal-v1'||v.causalLease?.purpose!=='verification'
     ||!equal(v.causalLease,verify.payload.causalLease))return null;
+  // A rejected causal proof is not success. An explicitly requested new
+  // maintenance proof may establish the current facts only if the original
+  // server-issued challenge is still fully bound to that failed verifier.
+  if(verify.result.errorCode==='wecom_cleanup_causal_context_unconfirmed'
+    &&(!exact(v.challenge,['protocol','epoch','verificationLeaseId','challengeId'])
+      ||v.challenge.protocol!==v.causalLease.protocol||v.challenge.epoch!==v.causalLease.epoch
+      ||v.challenge.verificationLeaseId!==v.causalLease.leaseId||!id(v.challenge.challengeId)))return null;
   try{
     const hosts=validateWecomHosts(d.hosts),reader=hosts.find(h=>h.role==='reader');
     return producerRef({pid:reader.pid,creationToken:reader.creationToken,machineId:reader.machineId});

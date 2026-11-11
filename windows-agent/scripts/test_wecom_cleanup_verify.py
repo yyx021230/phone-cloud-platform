@@ -90,6 +90,16 @@ class VerifyWireTests(unittest.TestCase):
         with self.assertRaisesRegex(VerifyStop,'wecom_agent_entry_unconfirmed'):execute(value,**kwargs)
         self.assertFalse(calls)
 
+    def test_replaced_identity_at_later_io_boundary_denies_proof(self):
+        value,kwargs,calls,_=self.context();checks=[]
+        def check():
+            checks.append(True)
+            if len(checks)==5:raise VerifyStop('wecom_system_runtime_changed')
+            return True
+        kwargs['runtime_factory']=lambda:SimpleNamespace(check=check)
+        with self.assertRaisesRegex(VerifyStop,'wecom_system_runtime_changed'):execute(value,**kwargs)
+        self.assertLess(len(calls),6)
+
     def test_slow_first_frame_is_rejected_not_restamped_at_serialize(self):
         value,kwargs,calls,now=self.context()
         class Slow:
