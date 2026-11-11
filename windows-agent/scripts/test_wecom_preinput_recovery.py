@@ -158,7 +158,8 @@ class IsolatedXhsTests(unittest.TestCase):
         stage='D:/PhoneCloud/staging/xhs-qa-live-0123456789ab-139-app1-01234567'
         args=['python',stage+'/xhs_isolated_runner.py','--serial','other-phone','--adb',r'D:\PhoneCloud\tools\android-sdk\platform-tools\adb.exe',
               '--device-name','139','--device-cache','D:/PhoneCloud/agent/data/device-scan-cache.json','--app-slot','app1',
-              '--task-id','fixture-job','--cancel-file',stage+'/cancel','--days','7','--output',stage+'/result.json']
+              '--task-id','fixture-job','--cancel-file',stage+'/cache/xhs-data-collection/01234567-0123-4567-89ab-0123456789ab.cancel',
+              '--days','7','--output',stage+'/cache/xhs-data-collection/01234567-0123-4567-89ab-0123456789ab.json']
         process=OwnedProcess(710,args,owner=r'FIXTURE\Administrator',parent=999)
         process.environ=lambda:{'XHS_QA_CONFIG':stage+'/config.json'}
         config=dict(stage=stage,serial='other-phone',deviceName='139',appSlot='app1',jobId='fixture-job',agentPid=200,
@@ -178,7 +179,7 @@ class IsolatedXhsTests(unittest.TestCase):
     def test_unproven_or_same_device_runner_remains_blocked(self):
         mutations=('same_serial','case_serial','unknown_version','unknown_guard','missing_config','config_serial','config_agent','config_stage',
                    'config_python','config_adb','config_inventory','remote_broker','script_path','exe','owner','duplicate_flag',
-                   'qa_adb_mode','output_scope','cancel_scope','missing_target','wrong_config_path')
+                   'qa_adb_mode','output_scope','cancel_scope','output_mismatch','output_traversal','missing_target','wrong_config_path')
         for change in mutations:
             with self.subTest(change=change):
                 p,c,files,read,hashes=self.fixture();target='synthetic155'
@@ -198,6 +199,8 @@ class IsolatedXhsTests(unittest.TestCase):
                 elif change=='qa_adb_mode':p.args=p.args[:2]+['--qa-adb','devices']
                 elif change=='output_scope':p.args[-1]='D:/elsewhere/result.json'
                 elif change=='cancel_scope':p.args[p.args.index('--cancel-file')+1]='D:/elsewhere/cancel'
+                elif change=='output_mismatch':p.args[-1]=p.args[-1].replace('0123456789ab.json','0123456789ac.json')
+                elif change=='output_traversal':p.args[-1]=p.args[-1].replace('/cache/','/../cache/')
                 elif change=='missing_target':target=None
                 elif change=='wrong_config_path':p.environ=lambda:{'XHS_QA_CONFIG':'D:/elsewhere/config.json'}
                 with self.assertRaisesRegex(VerifyStop,'worker_present'):self.run_fixture(p,read,hashes,target)

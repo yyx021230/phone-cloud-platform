@@ -84,7 +84,10 @@ def isolated_xhs_other_device(process,args,agent_pid,target_serial,budget):
             or path_key(config.get('inventoryPath',''))!='d:/phonecloud/agent/data/device-scan-cache.json'
             or path_key(values['--device-cache'])!=path_key(config['inventoryPath'])
             or not re.fullmatch(r'http://127\.0\.0\.1:\d{1,5}',config.get('brokerUrl',''))):return False
-        if any(PureWindowsPath(path_key(values[k])).parent!=stage for k in ('--cancel-file','--output')):return False
+        cancel=PureWindowsPath(path_key(values['--cancel-file']));output=PureWindowsPath(path_key(values['--output']))
+        cache=stage/'cache'/'xhs-data-collection'
+        if(cancel.parent!=cache or output.parent!=cache or cancel.suffix!='.cancel'or output.suffix!='.json'
+            or cancel.stem!=output.stem or not re.fullmatch(r'[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}',cancel.stem)):return False
         if tuple(hashlib.sha256(bounded_file(p,131072)).hexdigest()for p in
                  (args[1],str(stage/'xhs_isolated_guard.py')))!=ISOLATED_XHS_HASHES:return False
         budget();return True
