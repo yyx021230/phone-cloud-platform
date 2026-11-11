@@ -4104,6 +4104,16 @@ function compactTaskResultForStatus(result = {}) {
     compact.sendStatus = result.sendStatus === "unknown" ? "unknown" : "not_attempted";
     compact.invitationSent = compact.sendStatus === "unknown" ? null : false;
     compact.remarkSaveStatus = ["not_attempted", "unknown", "confirmed", "not_needed"].includes(result.remarkSaveStatus) ? result.remarkSaveStatus : "unknown";
+    if (typeof result.remarkPhoneSet === "boolean") compact.remarkPhoneSet = result.remarkPhoneSet;
+    if (result.invitationRequestConfirmed === true && result.invitationRequestProof === "wecom_system_dialog_v1") {
+      compact.invitationRequestConfirmed = true;
+      compact.invitationRequestProof = "wecom_system_dialog_v1";
+    }
+    if (result.previewCode === "wecom_add_friend_too_frequent" && result.addFriendLimitConfirmed === true
+        && result.addFriendLimitProof === "wecom_system_dialog_v1") {
+      compact.addFriendLimitConfirmed = true;
+      compact.addFriendLimitProof = "wecom_system_dialog_v1";
+    }
   }
   const uiHierarchy = result.uiHierarchy || result.evidence?.uiHierarchy || "";
   const uiSnapshot = result.uiSnapshot || result.evidence?.uiSnapshot || uiHierarchy;

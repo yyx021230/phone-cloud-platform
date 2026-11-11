@@ -16,6 +16,10 @@ import {WECOM_PREVIEW_DEVICES as phones} from './wecom-preview.mjs';
 
 const pause=ms=>new Promise(r=>setTimeout(r,ms));
 const root=path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+const agentSource=await fs.readFile(path.join(root,'windows-agent/src/index.mjs'),'utf8');
+const statusSerializer=agentSource.match(/^function compactTaskResultForStatus\(result = \{\}\) \{[\s\S]*?^\}/m)?.[0];
+assert.ok(statusSerializer,'actual Agent status serializer exists');
+const compactAgentStatus=new Function('compactEventDetail',statusSerializer+';return compactTaskResultForStatus;')(value=>value);
 const dispatchPath='/api/v1/lead/dispatch',devicesPath='/api/v1/lead/devices/query';
 const taskPath='/api/v1/user/automation/wecom-preview-tasks';
 const appId='cps_external_fixture',secret='demo_secret_only_for_document';
@@ -135,6 +139,7 @@ test(`CPS external HTTP lifecycle (${long?'real 121-second timeout':'short defau
     let payload;if(result==='frequency')payload={status:'failed',result:{previewStatus:'blocked',previewCode:'wecom_add_friend_too_frequent',sendStatus:'not_attempted',invitationSent:false,addFriendLimitConfirmed:true,addFriendLimitProof:'wecom_system_dialog_v1'}};
     else if(result==='duplicate')payload={status:'failed',result:{previewStatus:'blocked',previewCode:'already_contact',sendStatus:'not_attempted',invitationSent:false,remarkSaveStatus:'not_attempted'}};
     else{await platformCall('POST','/api/v1/windows-agents/cps-fixture-agent/wecom-preview-tasks/'+task.taskId+'/send-claim',agent,{},201);claims.set(task.payload.automationJobId,(claims.get(task.payload.automationJobId)||0)+1);payload={status:'succeeded',result:{previewStatus:'send_attempted',previewCode:'invitation_click_issued_delivery_unknown',sendStatus:'unknown',invitationSent:null,remarkSaveStatus:'confirmed',remarkPhoneSet:true,...(result==='success'?{invitationRequestConfirmed:true,invitationRequestProof:'wecom_system_dialog_v1'}:{})}};}
+    payload.result=compactAgentStatus(payload.result);
     await platformCall('POST','/api/v1/windows-agent-tasks/'+task.taskId+'/status',agent,payload);active.delete(task.taskId);
   };
 

@@ -75,7 +75,6 @@ def execute(value,*,cancelled=lambda:False,clock=time.monotonic,wall=time.time,r
         local_guard();valid=lease(config,budget,request=lease_request,lease_budget=lease_budget);local_guard()
         if not valid:raise VerifyStop('wecom_cleanup_lease_lost')
         return True
-    authority_guard()
     if closed_hosts is None:
         if not original_hosts_closed(config['hosts']):raise VerifyStop('wecom_original_host_still_alive')
     elif closed_hosts(config['hosts'])is not True:raise VerifyStop('wecom_original_host_still_alive')
@@ -90,12 +89,16 @@ def execute(value,*,cancelled=lambda:False,clock=time.monotonic,wall=time.time,r
             except psutil.NoSuchProcess as error:
                 if type(error)is not psutil.NoSuchProcess:raise
                 return None
-    # Cancellation/deadline checks apply to each IO byte. Full runtime + lease
-    # checks run before every fixed smart-socket command/open, not a cached
-    # proof or repeated HTTP request for each byte of the same response.
+    # Read fresh server authority before each complete frame and after both.
+    # Keep fresh local identity and the original deadline at each socket
+    # open/send. Repeating the same HTTP GET for every read-only command used
+    # most of the three-second proof window before the second frame existed.
     def io_guard():budget();return True
-    adb=adb_factory(config['serial'],io_guard,budget,operation_guard=authority_guard)
-    frames=verify_empty(serial=config['serial'],hosts=hosts,process_created_at=process_created_at,pids=adb.pids,forwards=adb.forwards,guard=local_guard,check_budget=budget,sleep=sleep,clock=clock,wall_clock=wall)
+    adb=adb_factory(config['serial'],io_guard,budget,operation_guard=local_guard)
+    def frame_pids(package):
+        if package==MAIN:authority_guard()
+        return adb.pids(package)
+    frames=verify_empty(serial=config['serial'],hosts=hosts,process_created_at=process_created_at,pids=frame_pids,forwards=adb.forwards,guard=local_guard,check_budget=budget,sleep=sleep,clock=clock,wall_clock=wall)
     authority_guard()
     if clock()-frames[0].captured_at>3:raise VerifyStop('wecom_tool_proof_stale')
     proof={'binding':config['physicalCleanup'],**{k:config[k]for k in ('verificationId','verificationNonce','verificationTaskId')},'challenge':dict(config['challenge']),

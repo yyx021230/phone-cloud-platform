@@ -130,16 +130,37 @@ for (const [code, phase, remarkSaveStatus] of [
   assert.deepEqual([f.job, f.task, f.oldVerify], previous);
  });
 
- test(code + ' recovery requires verified cleanup and no remark edit', async () => {
+ test(code + ' recovery requires verified cleanup and excludes sending phases', async () => {
   for (const mutate of [
    trace => { trace.cleanupConfirmed = false; },
-   trace => { trace.events.push({phase: 'remark_edit'}); }
+   trace => { trace.events.push({phase: 'invitation_send'}); },
+   trace => { trace.events.push({phase: 'send_claim'}); }
   ]) {
    const f = observedFailure();
    mutate(f.job.result.diagnostic.wecomExecution);
    await assert.rejects(f.start(), /wecom_cleanup_recovery_ineligible/);
    assert.equal(f.lock.status, 'cleanup_pending');
   }
+ });
+}
+
+for (const code of ['timeout', 'remark_phone_not_verified']) {
+ test(code + ' after remarks retains both original results and releases only after physical proof', async () => {
+  const f = configFailureFixture();
+  for (const row of [f.task, f.job]) {
+   row.result = {previewStatus:'blocked', previewCode:code, sendStatus:'not_attempted', invitationSent:false,
+    remarkSaveStatus:'unknown', diagnostic:{wecomExecution:{phase:'cleanup',failurePhase:'recipient_search',
+     elapsedMs:136218,cleanupConfirmed:true,events:[{phase:'remark_edit'},{phase:'remark_save'},{phase:'cleanup'}]}}};
+  }
+  if (code === 'remark_phone_not_verified') {
+   f.task.status = 'succeeded';
+   Object.assign(f.task.result,{previewStatus:'ready_before_send',previewCode:'stopped_before_send',remarkSaveStatus:'confirmed'});
+  }
+  const original = structuredClone([f.task, f.job, f.oldVerify]);
+  await f.start(); f.pick(); await f.challenge();
+  assert.equal(f.lock.status, 'cleanup_pending');
+  assert.equal((await f.call('recovery-proof',f.proof())).verified,true);
+  assert.deepEqual([f.task,f.job,f.oldVerify],original);
  });
 }
 

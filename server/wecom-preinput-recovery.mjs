@@ -1,5 +1,5 @@
-// Explicit maintenance recovery for a terminal PREVIEW which failed before
-// UI configuration: legacy missing host or a registered configuration rejection.
+// Explicit maintenance proof for a terminal PREVIEW. This retires tool ownership
+// without rewriting the original business result or confirming remark writes.
 // Fresh maintenance evidence never replaces the original failure or PID proof.
 import {createHash} from 'node:crypto';
 import {isDeepStrictEqual as equal} from 'node:util';
@@ -15,37 +15,31 @@ export function producerRef(v){
     ||typeof v.machineId!=='string'||!/^[a-f0-9]{64}$/.test(v.machineId))recoveryFail('producer_invalid');
   return structuredClone(v);
 }
-// Allow only failures with recorded evidence that preview stopped before it
-// touched a contact's remarks. A fresh maintenance proof is still required.
-const PRE_REMARK_PHASES = new Set([
+const PREVIEW_PHASES = new Set([
   'configuration', 'adb_identity', 'device_preflight', 'screen_prepare',
   'poco_launch', 'poco_health', 'wecom_launch', 'rpc_setup', 'startup_guards',
   'foreground_wait', 'selector_observe', 'selector_click', 'home_navigation',
-  'recipient_search', 'cleanup'
+  'recipient_search', 'remark_edit', 'remark_save', 'cleanup'
 ]);
 
-function previewStoppedBeforeEditing(result) {
-  if (result?.previewStatus !== 'blocked') return false;
+function terminalPreviewCleanupObserved(result) {
+  if (!['blocked', 'ready_before_send'].includes(result?.previewStatus)) return false;
   const trace = result.diagnostic?.wecomExecution;
   if (result.previewCode === 'invalid_preview_config') {
-    return trace?.phase === 'configuration' && trace.failurePhase === 'configuration' && trace.elapsedMs === 0;
+    return result.previewStatus === 'blocked' && trace?.phase === 'configuration'
+      && trace.failurePhase === 'configuration' && trace.elapsedMs === 0;
   }
-  const preflight = result.previewCode === 'poco_already_running'
-    && trace?.failurePhase === 'device_preflight' && result.remarkSaveStatus === 'unknown';
-  const recipient = result.previewCode === 'profile_phone_mismatch'
-    && trace?.failurePhase === 'recipient_search' && result.remarkSaveStatus === 'not_attempted';
-  return (preflight || recipient) && trace.phase === 'cleanup'
-    && trace.cleanupConfirmed === true && result.remarkPhoneSet !== true
+  return /^[a-z][a-z0-9_]{0,99}$/.test(result.previewCode || '') && trace?.phase === 'cleanup'
+    && trace.cleanupConfirmed === true
     && Number.isFinite(trace.elapsedMs) && trace.elapsedMs > 0
     && Array.isArray(trace.events) && trace.events.length <= 24
-    && trace.events.some(event => event?.phase === trace.failurePhase)
-    && trace.events.every(event => PRE_REMARK_PHASES.has(event?.phase));
+    && trace.events.some(event => event?.phase === 'cleanup')
+    && trace.events.every(event => PREVIEW_PHASES.has(event?.phase));
 }
 
 function registeredPreviewFailure(state,d,task,job){
   const v=d.verification,verify=state.windowsTasks.find(t=>t.taskId===v?.verificationTaskId);
-  if(task.result?.previewCode!==job.result?.previewCode
-    ||![task,job].every(x=>previewStoppedBeforeEditing(x.result))
+  if(![task,job].every(x=>terminalPreviewCleanupObserved(x.result))
     ||d.causal?.protocol!=='wecom-causal-v1'||d.causal?.bootstrap?.bindingNonce!==d.binding.nonce
     ||!Number.isFinite(Date.parse(d.hostClosedAt))||d.proof
     ||!verify||verify.status!=='failed'||verify.type!=='wecom_cleanup_verify'
@@ -66,7 +60,8 @@ export function originalRecoveryContext(state,lock){
   const task=state.windowsTasks.find(t=>t.taskId===b?.originalTaskId),job=state.automationJobs.find(j=>j.jobId===d?.originalJobId);
   if(!b||b.version!==1||lock.deviceId!==b.deviceId||b.obligationId!==lock.lockId||b.deviceId!==`adb:${b.serial}`
     ||!((b.appSlot==='main'&&b.androidUser===0)||(b.appSlot==='clone'&&b.androidUser===999))
-    ||!task||!job||task.type!=='wecom_customer_preview'||job.kind!==task.type||task.status!=='failed'||job.status!=='failed'
+    ||!task||!job||task.type!=='wecom_customer_preview'||job.kind!==task.type
+    ||![task,job].every(x=>['failed','succeeded'].includes(x.status))
     ||!task.pickedAt||!d.originalTerminalAt
     ||task.agentId!==b.agentId||task.adbSerial!==b.serial||task.deviceId!==b.deviceId||job.deviceId!==b.deviceId
     ||job.windowsTaskId!==task.taskId||task.payload?.automationJobId!==job.jobId||job.lockId!==d.originalLockId

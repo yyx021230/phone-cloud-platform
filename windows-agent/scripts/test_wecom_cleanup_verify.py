@@ -35,6 +35,28 @@ class VerifyWireTests(unittest.TestCase):
         self.assertEqual([f['sequence']for f in proof['snapshots']],[1,2]);self.assertLess(proof['snapshots'][0]['elapsedMs'],proof['snapshots'][1]['elapsedMs'])
         old=proof['snapshots'][0]['observedAt'];now[0]+=10;self.assertEqual(proof['snapshots'][0]['observedAt'],old)
 
+    def test_cloud_rtt_is_consumed_at_each_frame_boundary_and_final_check(self):
+        value,kwargs,calls,now=self.context();requests=[]
+        def request(url,token):
+            requests.append(now[0]);now[0]+=.15
+            return {'valid':True,'remainingMs':120000,'causalLease':value['causalLease']}
+        kwargs['lease_request']=request
+        proof=execute(value,**kwargs)
+        self.assertEqual(len(requests),3)
+        self.assertEqual(calls,[MAIN,TEST,'forwards']*2)
+        self.assertLess(now[0],3)
+        self.assertLess(proof['snapshots'][0]['elapsedMs'],proof['snapshots'][1]['elapsedMs'])
+
+    def test_revocation_at_either_frame_or_after_both_never_returns_proof(self):
+        for denied_at in (1,2,3):
+            value,kwargs,calls,_=self.context();requests=[]
+            def request(url,token):
+                requests.append(url)
+                return {'valid':len(requests)!=denied_at,'remainingMs':120000,'causalLease':value['causalLease']}
+            kwargs['lease_request']=request
+            with self.assertRaises(VerifyStop):execute(value,**kwargs)
+            self.assertEqual(len(calls),3*(denied_at-1))
+
     def test_phone_or_business_payload_cannot_enter_verify_config(self):
         value,_,_,_=self.context()
         for key in ('phoneNumber','remarkName','mode','claimDirectory'):
