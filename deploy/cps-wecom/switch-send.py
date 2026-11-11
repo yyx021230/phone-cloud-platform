@@ -39,11 +39,21 @@ assert next_container['State']['Status']=='created' and next_container['Image']=
 assert dict(x.split('=',1)for x in next_container['Config']['Env'])==new
 assert next_container['Config']['Cmd']==old['Config']['Cmd'] and next_container['Config']['Entrypoint']==old['Config']['Entrypoint']
 report={'atUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'applied':False,'imageUnchanged':image,'containerBefore':old['Id'],'containerAfter':next_container['Id'],'modeBefore':'preview','modeAfter':'send','stateKeyAfter':'production','onlyEnvChanges':['CPS_EXECUTION_MODE','CPS_STATE_KEY'],'mainPidUnchanged':1730700,'agentReloaded':False,'adbTouched':False,'preflight':preflight}
+pilots=[]
+for number in ('200','202'):
+ name='phone-cloud-cps-preview-'+number
+ pilot=inspect(name);env=dict(x.split('=',1)for x in pilot['Config']['Env'])
+ assert pilot['Image']==image and env['CPS_EXECUTION_MODE']=='preview' and env['CPS_STATE_KEY']=='preview-20261110-pilot'+number
+ pilots.append({'name':name,'containerId':pilot['Id'],'wasRunning':pilot['State']['Running']})
+report['retiredIdlePilotServices']=pilots
 if not apply:print(json.dumps(report));sys.exit(0)
 started=time.monotonic()
+for pilot in pilots:
+ if pilot['wasRunning']:command(['docker','stop','-t','20',pilot['name']])
+ assert inspect(pilot['name'])['State']['ExitCode']==0,'old_pilot_unclean_exit'
 command(['docker','stop','-t','20','phone-cloud-cps-wecom'])
 assert inspect('phone-cloud-cps-wecom')['State']['ExitCode']==0,'old_cps_unclean_exit'
-name='wecom-cps-send-bootstrap-20261111'
+name='wecom-cps-send-bootstrap-20261111-retry1'
 command(['docker','create','--name',name,'--network=host','--cap-drop=ALL','--pids-limit=32','--memory=256m','--env-file',str(live),'--entrypoint','node',operator,'/app/activate-send-journal.mjs','--apply'])
 output=command(['docker','start','-a',name]);assert inspect(name)['State']['ExitCode']==0,output
 proof=json.loads(output);assert proof['apply']is True and proof['seedLeads']==preflight['seedLeads']
